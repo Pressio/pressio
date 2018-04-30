@@ -1,0 +1,3 @@
+[submodule "TriBITS"]
+	path = TriBITS
+	url = https://github.com/TriBITSPub/TriBITS.git
