@@ -31,9 +31,10 @@ PROJECT(${PROJECT_NAME} NONE)
 # B) Pull in the TriBITS system and execute
 #
 
-SET(${PROJECT_NAME}_TRIBITS_DIR
-   "${CMAKE_CURRENT_LIST_DIR}/../.."  CACHE  STRING
-  "TriBITS base directory (default assumes in TriBITS source tree)")
+SET(${PROJECT_NAME}_TRIBITS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/TriBITS/tribits" CACHE STRING "TriBITS base directory")
+
+#SET(${PROJECT_NAME}_TRIBITS_DIR "${CMAKE_CURRENT_LIST_DIR}/../.."  CACHE  STRING
+#  "TriBITS base directory (default assumes in TriBITS source tree)")
 INCLUDE("${${PROJECT_NAME}_TRIBITS_DIR}/TriBITS.cmake")
 
 # Set default location for header-only TPL to make easy to configure out of
