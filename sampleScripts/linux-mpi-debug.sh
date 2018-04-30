@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Set TRIBITS_DIR in the env then call this!
 #
