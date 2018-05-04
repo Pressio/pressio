@@ -17,11 +17,11 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
-  SimpleCxx_HelloWorld.hpp
+  evector.h
   )
 
 APPEND_SET(SOURCES
-  SimpleCxx_HelloWorld.cpp
+  evector.cc
   )
 
 #
@@ -34,11 +34,10 @@ TRIBITS_ADD_LIBRARY(
   SOURCES ${SOURCES}
   )
 
-#
-# D) Define an executable that gets installed
-#
-
-TRIBITS_ADD_EXECUTABLE(simplecxx-helloworld  NOEXEPREFIX  NOEXESUFFIX
-  SOURCES  SimpleCxx_HelloWorld_Prog.cpp
-  INSTALLABLE
-  )
+# #
+# # D) Define an executable that gets installed
+# #
+# TRIBITS_ADD_EXECUTABLE(simplecxx-helloworld  NOEXEPREFIX  NOEXESUFFIX
+#   SOURCES  SimpleCxx_HelloWorld_Prog.cpp
+#   INSTALLABLE
+#   )

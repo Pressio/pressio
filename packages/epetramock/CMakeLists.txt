@@ -1,7 +1,7 @@
 #
 # A) Define the package
 #
-TRIBITS_PACKAGE( TimeIntegrator  ENABLE_SHADOWING_WARNINGS  CLEANED )
+TRIBITS_PACKAGE( epetramock  ENABLE_SHADOWING_WARNINGS  CLEANED )
 
 #
 # B) Platform-specific checks
