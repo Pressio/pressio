@@ -1,5 +1,5 @@
 TRIBITS_REPOSITORY_DEFINE_PACKAGES(
-  TimeIntegrator     packages/time_integrator   PT
+  commonBase          packages/commonBase   PT
   #SimpleCxx          packages/simple_cxx        PT
   #MixedLang          packages/mixed_lang         PT
   #InsertedPkg        InsertedPkg                 ST

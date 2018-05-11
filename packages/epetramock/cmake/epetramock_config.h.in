@@ -1,3 +1,0 @@
-
-#cmakedefine HAVE_EPETRAMOCK_DEBUG
-#cmakedefine HAVE_EPETRAMOCK_SIMPLETPL
