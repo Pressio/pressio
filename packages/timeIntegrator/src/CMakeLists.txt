@@ -16,15 +16,14 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
-  commonBase_ConfigDefs.hpp
-  commonBase_vectorInterface.hpp
-  commonBase_vector.hpp
-  meta/same_instance.hpp
+  timeIntegrator_ConfigDefs.hpp
+  timeIntegrator_explicit_stepper_base.hpp
+  timeIntegrator_euler.hpp
 )
 
 APPEND_SET(SOURCES
-  commonBase_vectorInterface.cc
-  commonBase_vector.cc
+  timeIntegrator_explicit_stepper_base.cc
+  timeIntegrator_euler.cc
   )
 
 #

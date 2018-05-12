@@ -5,8 +5,6 @@
 #include "commonBase_config.h"
 
 
-/// \brief Namespace for Tpetra implementation details.
-/// \warning Do NOT rely on the contents of this namespace.
 namespace commonBase{
 namespace details{
 namespace defaultTypes {
@@ -23,8 +21,7 @@ typedef int global_ordinal_t;
 
 } // namespace DefaultTypes
 } // namespace Details
-} // end of Tpetra namespace
-
+} // end of commonBase namespace
 
 namespace commonBase
 {
