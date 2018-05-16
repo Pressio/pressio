@@ -19,11 +19,17 @@ APPEND_SET(HEADERS
   timeIntegrator_ConfigDefs.hpp
   timeIntegrator_explicit_stepper_base.hpp
   timeIntegrator_euler.hpp
+  timeIntegrator_stepper_rk4.hpp
+  #
+  timeIntegrator_integrate_n_steps.hpp
 )
 
 APPEND_SET(SOURCES
   timeIntegrator_explicit_stepper_base.cc
   timeIntegrator_euler.cc
+  timeIntegrator_stepper_rk4.cc
+  #
+  timeIntegrator_integrate_n_steps.cc
   )
 
 #
@@ -36,7 +42,7 @@ APPEND_SET(SOURCES
 # )
 # this is the original in case we have sources too for the library
 TRIBITS_ADD_LIBRARY(
-  commomBase
+  timeIntegrator
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
   )

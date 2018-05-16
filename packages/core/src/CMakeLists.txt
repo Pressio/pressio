@@ -16,28 +16,47 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
-  commonBase_ConfigDefs.hpp
-  commonBase_vectorInterface.hpp
-  commonBase_vector.hpp
-  meta/same_instance.hpp
+  core_ConfigDefs.hpp
+  meta.hpp
+  forwardDeclarations.hpp
+  staticAssert.hpp
+  #
+  vector/core_vectorTraits.hpp
+  vector/core_vectorBaseImpl.hpp
+  vector/core_vectorDistImpl.hpp
+  vector/core_vectorSerImpl.hpp
+  vector/core_vectorMathImpl.hpp
+  vector/core_vector_epetra.hpp
+  vector/core_vector_std.hpp
+  vector/core_vector_serarb.hpp
 )
 
 APPEND_SET(SOURCES
-  commonBase_vectorInterface.cc
-  commonBase_vector.cc
+  src/meta.cc
+  src/forwardDeclarations.cc
+  src/staticAssert.cc
+  #
+  vector/src/core_vectorTraits.cc
+  vector/src/core_vectorBaseImpl.cc
+  vector/src/core_vectorDistImpl.cc
+  vector/src/core_vectorSerImpl.cc
+  vector/src/core_vectorMathImpl.cc
+  vector/src/core_vector_epetra.cc
+  vector/src/core_vector_std.cc
+  vector/src/core_vector_serarb.cc
   )
 
 #
 # C) Define the targets for package's library(s)
 #
 
-# # this seems to work for header only library
+# # # this seems to work for header only library
 # TRIBITS_INSTALL_HEADERS(
 #   HEADERS ${HEADERS}
 # )
 # this is the original in case we have sources too for the library
 TRIBITS_ADD_LIBRARY(
-  commomBase
+  core
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
   )

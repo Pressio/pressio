@@ -6,15 +6,16 @@
 
 template<
   class stepper_type,
-  unsigned int order_type,
+  unsigned int Order,
   class state_type,
   class deriv_type = state_type,
-  class scalar_type = typename timeIntegrator::details::defaultTypes::scalar_t,
-  class time_type = typename timeIntegrator::details::defaultTypes::scalar_t
+  class scalar_type = typename timeIntegrator::defaultTypes::scalar_t,
+  class time_type = typename timeIntegrator::defaultTypes::scalar_t
 >
 class explicit_stepper_base
 {
 public:
+  using order_type = unsigned int;
   static constexpr order_type order_value = Order;
 
   // (de)constructors
@@ -47,6 +48,7 @@ protected:
 
 };
 
+#endif
 
 
   // typedef explicit_stepper_base< Stepper, Order , State , Value , Deriv , Time , Algebra , Operations , Resizer > internal_stepper_base_type;

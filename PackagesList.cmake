@@ -1,5 +1,5 @@
 TRIBITS_REPOSITORY_DEFINE_PACKAGES(
-  commonBase          packages/commonBase   PT
+  core                packages/core   PT
   timeIntegrator      packages/timeIntegrator PT
   )
 

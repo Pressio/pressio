@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   // // epetramock::evector obj;
   // //obj.print();
  
-   MPI_Finalize();
+  //   MPI_Finalize();
 
   return 0;
 }

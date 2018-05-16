@@ -1,61 +1,64 @@
 
-#ifndef COMMONBASE_VECTORINTERFACE_HPP
-#define COMMONBASE_VECTORINTERFACE_HPP
+#ifndef CORE_VECTORINTERFACE_HPP
+#define CORE_VECTORINTERFACE_HPP
 
-#include "commonBase_ConfigDefs.hpp"
+#include "core_ConfigDefs.hpp"
+#include "forwardDeclarations.hpp"
 
-namespace commonBase
+namespace core
 {
   
-template <class wrapped_type,
-	  class scalar_type = typename commonBase::details::defaultTypes::scalar_t,
-	  class local_ordinal_type = typename commonBase::details::defaultTypes::local_ordinal_t,
- 	  class global_ordinal_type = typename commonBase::details::defaultTypes::global_ordinal_t,
-	  typename derived_type = void>
+template<typename derived_type>
 class vectorInterface
 {
 public:
-  using sc_t = scalar_type;
-  using LO_t = local_ordinal_type;
-  using GO_t = global_ordinal_type;
-  using der_t = derived_type;
+  using sc_t = typename details::traits<derived_type>::scalar_t;
+  using LO_t = typename details::traits<derived_type>::local_ordinal_t;
+  using GO_t = typename details::traits<derived_type>::global_ordinal_t;
+  using der_t = typename details::traits<derived_type>::derived_t;
+  using wrap_t = typename details::traits<derived_type>::wrapped_t;
+  using map_t = typename details::traits<derived_type>::map_t;
+  using comm_t = typename details::traits<derived_type>::comm_t;
+  //------------------------------------------------------------
 
-  //------------
-  int dot (const der_t &, sc_t &) const = 0;
-  // wrapped_type const * view() const = 0;
+  virtual sc_t dot (const der_t &) const = 0;
+  virtual sc_t & operator [] (LO_t) = 0;
+  virtual sc_t const & operator [] (LO_t) const = 0;
+  virtual size_t sizeLocal() const = 0;
+  virtual wrap_t const * view() const = 0;
+  virtual void resize(size_t) = 0;
+  virtual wrap_t & getNonConstRefToData() = 0;
+  virtual sc_t norm2() const = 0;
+
+  //-------------------
+  // the following ones are defined inside impl only
+  //-------------------
+  // template <typename op_t>
+  // void applyOp(op_t op, sc_t a1, sc_t a2, const der_t &);
+
+  // template<class U=map_t>
+  // const typename std::enable_if< !std::is_same<U,void>::value, U>::type & 
+  // getMap() const{
+  //   return this->underlying().getMapImpl();
+  // }
+  //-------------------
+
+  
   // int replaceGlobalValue(GO_t GlobalRow, sc_t ScalarValue) = 0;
   // int replaceMyValue(LO_t MyRow, sc_t ScalarValue) = 0;
   // int abs(der_t & a) const = 0;
   // int putScalar (sc_t ScalarConstant) = 0;
   // int extractCopy(sc_t *a) const = 0;
   // int scale(sc_t ScalarValue) = 0;
-  // sc_t * operator [] (LO_t i) = 0;
   // int norm1(sc_t & Result) const = 0;
 };
+    
+} // end namespace core
+
+#endif
 
 
 
-template <class wrapped_type,
-	  class scalar_type = typename commonBase::details::defaultTypes::scalar_t,
-	  class local_ordinal_type = typename commonBase::details::defaultTypes::local_ordinal_t,
- 	  class global_ordinal_type = typename commonBase::details::defaultTypes::global_ordinal_t,
-	  typename derived_type = void>
-class vectorImpl : public vectorInterface<wrapped_type,scalar_type,local_ordinal_type,global_ordinal_type,derived_type>
-{
-public:
-  using vectorInterface_t = vectorInterface<wrapped_type,scalar_type,local_ordinal_type,global_ordinal_type,derived_type>;
-  using sc_t = typename vectorInterface_t::sc_t;
-  using LO_t = typename vectorInterface_t::LO_t;
-  using GO_t = typename vectorInterface_t::GO_t;
-  using der_t = typename vectorInterface_t::der_t;
-
-  //------------
-  int dot (const der_t & vecIn, sc_t &res) const override{
-    return static_cast<der_t const *>(this)->dotImpl(vecIn, res);
-  };
-  // wrapped_type const * view() const override{
-  //   static_cast<der_t const *>(this)->viewImpl();
-  // };
   // int replaceGlobalValue(GO_t GlobalRow, sc_t ScalarValue) override{
   //   return static_cast<der_t *>(this)->replaceGlobalValueImpl(GlobalRow, ScalarValue);
   // };
@@ -74,21 +77,9 @@ public:
   // int scale(sc_t ScalarValue) override{
   //   return static_cast<der_t *>(this)->scaleImpl(ScalarValue);
   // };
-  // sc_t * operator [] (LO_t i) override{
-  //   static_cast<der_t const *>(this)->[](i);
-  // };
   // int norm1(sc_t & Result) const override{
   //   return static_cast<der_t const *>(this)->norm1Impl(Result);
   // };
-};
-
-
-
-} // namespace
-#endif
-
-
-
 
 
 

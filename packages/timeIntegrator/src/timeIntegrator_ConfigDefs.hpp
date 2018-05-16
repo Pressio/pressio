@@ -2,15 +2,14 @@
 #ifndef TIMEINTEGRATOR_CONFIGDEFS_HPP
 #define TIMEINTEGRATOR_CONFIGDEFS_HPP
 
-#include "commonBase_ConfigDefs.hpp"
+#include "core_ConfigDefs.hpp"
 
-namespace commonBase{
-namespace details{
+namespace timeIntegrator{
 namespace defaultTypes {
 
 // namespace DefaultTypes {
 //! Default value of Scalar template parameter.
-using scalar_t = ::commonBase::details::defaultTypes::scala_t;
+using scalar_t = ::core::defaultTypes::scalar_t;
  
 //! Default value of LocalOrdinal template parameter.
 //typedef int local_ordinal_t;
@@ -18,8 +17,7 @@ using scalar_t = ::commonBase::details::defaultTypes::scala_t;
 /// \typedef global_ordinal_type
 //typedef int global_ordinal_t;
 
-} // namespace DefaultTypes
-} // namespace Details
+} // namespace defaultTypes
 } // end of timeIntegrator namespace
 
 

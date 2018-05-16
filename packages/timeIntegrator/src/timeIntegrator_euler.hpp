@@ -7,8 +7,8 @@
 template<
   class state_type,
   class deriv_type = state_type,
-  class scalar_type = typename timeIntegrator::details::defaultTypes::scalar_t,
-  class time_type = typename timeIntegrator::details::defaultTypes::scalar_t
+  class scalar_type = typename timeIntegrator::defaultTypes::scalar_t,
+  class time_type = typename timeIntegrator::defaultTypes::scalar_t
 >
 class euler
 : public explicit_stepper_base<
@@ -26,7 +26,7 @@ public :
 
   // methods
   template< class system_type>
-  void step_impl( System /* system */,
+  void step_impl( system_type /* system */,
 		  const state_type &in,
 		  const deriv_type & rhs,
 		  state_type & out,
@@ -41,10 +41,10 @@ public :
       out[i] = in[i] + dt*rhs[i];
     }
   }
-
-
   
 }; //end class
+
+#endif 
 
   
   // #ifndef DOXYGEN_SKIP

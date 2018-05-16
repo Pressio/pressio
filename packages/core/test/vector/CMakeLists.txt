@@ -1,8 +1,12 @@
+
+#INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/packages/core/src)
+#MESSAGE( "${CMAKE_CURRENT_SOURCE_DIR}/../../src" )
+
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  HelloWorldTests
+  vector_test1
   SOURCES
     main.cc
-  NUM_MPI_PROCS 4
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 

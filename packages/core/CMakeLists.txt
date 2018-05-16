@@ -1,7 +1,7 @@
 #
 # A) Define the package
 #
-TRIBITS_PACKAGE( commonBase  ENABLE_SHADOWING_WARNINGS  CLEANED )
+TRIBITS_PACKAGE( core  ENABLE_SHADOWING_WARNINGS  CLEANED )
 
 #
 # B) Platform-specific checks

@@ -8,10 +8,12 @@ PFX=/Users/fnrizzi/Desktop/romppInstall
 MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc550
 TRILPATH=/Users/fnrizzi/tpl/trilinos/installCPPonly
 
+
 cmake \
     -D CMAKE_BUILD_TYPE:STRING=DEBUG \
     -D CMAKE_INSTALL_PREFIX:PATH=${PFX} \
     -D BUILD_SHARED_LIBS:BOOL=ON \
+    -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
     \
     -D TPL_ENABLE_MPI=ON \
     -D MPI_BASE_DIR:PATH=${MPIPATH} \
@@ -26,7 +28,8 @@ cmake \
     -D rompp_ENABLE_ALL_PACKAGES:BOOL=OFF \
     -D rompp_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=OFF \
     \
-    -D rompp_ENABLE_commonBase:BOOL=ON \
+    -D rompp_ENABLE_core:BOOL=ON \
+    -D rompp_ENABLE_timeIntegrator:BOOL=OFF \
     \
     $EXTRA_ARGS \
     ${SRC}

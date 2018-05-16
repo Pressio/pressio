@@ -1,6 +1,6 @@
 
-#ifndef TIMEINTEGRATOR_INTEG_N_STEPS_HPP
-#define TIMEINTEGRATOR_INTEG_N_STEPS_HPP
+#ifndef TIMEINTEGRATOR_INTEGRATE_N_STEPS_HPP
+#define TIMEINTEGRATOR_INTEGRATE_N_STEPS_HPP
 
 #include "timeIntegrator_ConfigDefs.hpp"
 
@@ -8,7 +8,7 @@ template<
   class stepper_type,
   class system_type, 
   class state_type,
-  class time_type = typename timeIntegrator::details::defaultTypes::scalar_t,
+  class time_type = typename timeIntegrator::defaultTypes::scalar_t,
   class observer_type = void
   >
 time_type integrate_n_steps(stepper_type & stepper,

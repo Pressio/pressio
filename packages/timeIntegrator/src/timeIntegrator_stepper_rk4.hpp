@@ -8,8 +8,8 @@
 template<
   class state_type,
   class deriv_type = state_type,
-  class scalar_type = typename timeIntegrator::details::defaultTypes::scalar_t,
-  class time_type = typename timeIntegrator::details::defaultTypes::scalar_t
+  class scalar_type = typename timeIntegrator::defaultTypes::scalar_t,
+  class time_type = typename timeIntegrator::defaultTypes::scalar_t
 >
 class runge_kutta4
 : public explicit_stepper_base<
@@ -34,7 +34,8 @@ public :
 		  time_type t,
 		  time_type dt )
   {
-    cassert( in.size()==out.size() && in.size()==rhs.size() );
+    assert( y_n.size()==y_next.size() );
+    accert( y_n.size()==rhs.size() );
     static const scalar_type val1 = static_cast< scalar_type >( 1 );
 
     const time_type dh = dt / static_cast< scalar_type >( 2 );
@@ -65,8 +66,8 @@ public :
 
     //x += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     time_type dt6 = dt / static_cast< scalar_type >( 6.0 );
-    time_type dt3 = dt / static_cast< scalar_type >( 3.0 )
-    for (int i=0; i<in.size(); i++){
+    time_type dt3 = dt / static_cast< scalar_type >( 3.0 );
+    for (int i=0; i < y_n.size(); i++){
       y_next[i] = y_n[i] + dt6*rhs[i] + dt3*rhs2[i] + dt3*rhs3[i] + dt6*rhs4[i];
     }
   }//end step_impl
@@ -77,3 +78,6 @@ private:
     deriv_type rhs4;
     state_type y_tmp;
 };
+
+
+#endif
