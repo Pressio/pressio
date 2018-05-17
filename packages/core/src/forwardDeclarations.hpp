@@ -28,13 +28,36 @@ namespace details {
   template <typename wrapped_type,
   	    typename scalar_type = typename core::defaultTypes::scalar_t,
   	    typename local_ordinal_type = typename core::defaultTypes::local_ordinal_t,
-  	    typename global_ordinal_type = void,//typename core::defaultTypes::global_ordinal_t,
+  	    typename global_ordinal_type = void,
   	    typename map_type = void,
   	    typename comm_type = void,
   	    typename enable = void
   	    >
   class vector;
 
+  
+  //***************************************
+  // forward declaration of matrix class
+  //***************************************
+  template <typename wrapped_type,
+  	    typename scalar_type = typename core::defaultTypes::scalar_t,
+  	    typename local_ordinal_type = typename core::defaultTypes::local_ordinal_t,
+  	    typename global_ordinal_type = void,
+  	    typename map_type = void,
+  	    typename comm_type = void,
+  	    typename enable = void
+  	    >
+  class matrix;
+
+
+  // template <typename scalar_type,
+  //  	     typename RowsAtCompileTime,
+  //  	     typename ColsAtCompileTime
+  //  	     >
+  // using matrixStatic = matrix<Eigen::Matrix<scalar_type,RowsAtCompileTime,ColsAtCompileTime>,
+  // 			      scalar_type,int,void,RowsAtCompileTime,ColsAtCompileTime>;
+
+  
   
 } // end namespace core
 
