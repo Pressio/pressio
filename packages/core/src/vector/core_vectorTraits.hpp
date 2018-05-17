@@ -2,53 +2,40 @@
 #ifndef CORE_VECTORTRAITS_HPP
 #define CORE_VECTORTRAITS_HPP
 
-// #include "core_ConfigDefs.hpp"
 #include "forwardDeclarations.hpp"
 #include <vector>
 #include "Epetra_Vector.h"
-
 
 
 namespace core{
 
 namespace details{
 
-  /*
-   *******************************
-   contains traits for vector wrappers 
-   *******************************
-  */
-
-  
   //*******************************
   // for a general distributed vector 
   //******************************* 
-  template <typename wrapped_type,
-	    typename scalar_type,
-  	    typename local_ordinal_type,
-  	    typename global_ordinal_type,
-  	    typename map_type,
-  	    typename comm_type
-  	    >
-  struct traits<vector<wrapped_type,scalar_type,local_ordinal_type,
-		       global_ordinal_type,map_type,comm_type>,
-		typename std::enable_if<!std::is_integral<scalar_type>::value &&
-					!std::is_same<wrapped_type,Epetra_Vector>::value && 
-					!std::is_void<map_type>::value &&
-					!std::is_void<comm_type>::value
-					>::type >
+  template <typename wrapped_type>
+  struct traits<vector<wrapped_type,
+		       typename std::enable_if<!std::is_same<wrapped_type,Epetra_Vector>::value && 
+					       !std::is_void<typename wrapped_type::map_type>::value &&
+					       !std::is_void<typename wrapped_type::comm_type>::value &&
+					       !std::is_void<typename wrapped_type::scalar_type>::value &&
+					       !std::is_void<typename wrapped_type::local_ordinal_type>::value &&
+					       !std::is_void<typename wrapped_type::local_global_type>::value
+					       >::type
+		       >
+		>
   {
-    using scalar_t = scalar_type;
-    using local_ordinal_t = local_ordinal_type;
-    using global_ordinal_t = global_ordinal_type;
+    using scalar_t = typename wrapped_type::scalar_type;
+    using local_ordinal_t = typename wrapped_type::local_ordinal_type;
+    using global_ordinal_t = typename wrapped_type::global_ordinal_type;
     using wrapped_t = wrapped_type;
-    using derived_t = vector<wrapped_t,scalar_t,local_ordinal_t,global_ordinal_t>;
-    using map_t = map_type;
-    using comm_t = comm_type;
+    using derived_t = vector<wrapped_t>;
+    using map_t = typename wrapped_type::map_type;
+    using comm_t = typename wrapped_type::comm_type;
     enum {
       isVector = 1,
       isSTDVector = 0,
-      //std::is_same<wrapped_type,std::vector<scalar_t>>::value,
       isSerial = 0,
       isDistributed = 1
     };
@@ -58,28 +45,21 @@ namespace details{
   //*******************************
   // for epetra vector wrapper
   //******************************* 
-  template <typename scalar_type,
-	    typename global_ordinal_type,
-  	    typename map_type,
-  	    typename comm_type
-  	    >
-  struct traits<vector<Epetra_Vector,scalar_type,core::defaultTypes::epetra_lo_t,
-		       global_ordinal_type,map_type,comm_type>,
-		typename std::enable_if<
-		  std::is_same<scalar_type, core::defaultTypes::epetra_scalar_t>::value &&
-		  (std::is_same<global_ordinal_type,core::defaultTypes::epetra_go_t1>::value ||
-		   std::is_same<global_ordinal_type,core::defaultTypes::epetra_go_t2>::value) &&
-		  !std::is_void<map_type>::value &&
-		  !std::is_void<comm_type>::value
-		  >::type >
+  template<typename wrapped_type>
+  struct traits<vector<wrapped_type,
+		       typename std::enable_if<
+			 std::is_same<wrapped_type,Epetra_Vector>::value
+			 >::type
+		       >
+		>
   {
-    using scalar_t = scalar_type;
+    using scalar_t = defaultTypes::epetra_scalar_t;
     using local_ordinal_t = core::defaultTypes::epetra_lo_t;
-    using global_ordinal_t = global_ordinal_type;
+    using global_ordinal_t = core::defaultTypes::epetra_go_t1;
     using wrapped_t = Epetra_Vector;
-    using map_t = map_type;
-    using comm_t = comm_type;
-    using derived_t = vector<wrapped_t,scalar_t,local_ordinal_t,global_ordinal_t,map_t,comm_t>;
+    using map_t = Epetra_Map;
+    using comm_t = Epetra_Comm;
+    using derived_t = vector<wrapped_t>;
     enum {
       isVector = 1,
       isSTDVector = 0,
@@ -90,21 +70,20 @@ namespace details{
 
   
   //*******************************
-  // for a general serial vec wrapper 
+  // general serial vector wrapper 
   //******************************* 
-  template <typename wrapped_type,
-	    typename scalar_type,
-  	    typename ordinal_type
-  	    >
-  struct traits<vector<wrapped_type,scalar_type,ordinal_type>,
-		typename std::enable_if<
-		  !std::is_same<wrapped_type,std::vector<scalar_type>>::value
-		  >::type >
+  template <typename wrapped_type>
+  struct traits<vector<wrapped_type,
+		       typename std::enable_if<
+			 !std::is_same<wrapped_type,
+				      std::vector<typename wrapped_type::scalar_type> >::value>::type
+		       >
+		>
   {
-    using scalar_t = scalar_type;
-    using ordinal_t = ordinal_type;
+    using scalar_t = typename wrapped_type::scalar_type;
+    using ordinal_t = typename wrapped_type::ordinal_type;
     using wrapped_t = wrapped_type;
-    using derived_t = vector<wrapped_t,scalar_t,ordinal_t>;
+    using derived_t = vector<wrapped_type>;
     enum {
       isVector = 1,
       isSTDVector = 0,
@@ -113,18 +92,21 @@ namespace details{
     };
   };
   
+  
   //*******************************
   // for a std vector vec wrapper 
   //******************************* 
-  template <typename scalar_type,
-  	    typename ordinal_type
-  	    >
-  struct traits<vector<std::vector<scalar_type>,scalar_type,ordinal_type> >
+  template <typename wrapped_type>
+  struct traits<vector<wrapped_type,
+		       typename std::enable_if<
+			 std::is_same<wrapped_type,
+				      std::vector<typename wrapped_type::value_type>>::value
+			 >::type > >
   {
-    using scalar_t = scalar_type;
-    using ordinal_t = ordinal_type;
-    using wrapped_t = std::vector<scalar_t>;
-    using derived_t = vector<wrapped_t,scalar_t,ordinal_t>;
+    using scalar_t = typename wrapped_type::value_type;
+    using ordinal_t = core::defaultTypes::local_ordinal_t;
+    using wrapped_t = wrapped_type;
+    using derived_t = vector<wrapped_t>;
     enum {
       isVector = 1,
       isSTDVector = 1,

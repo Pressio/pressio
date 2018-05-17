@@ -22,6 +22,7 @@ public:
   der_t const& underlying() const{
     return static_cast<der_t const&>(*this);
   };
+  //--------------------------------------------
   
   sc_t dot(const der_t & vecIn) const {
     return this->underlying().dotImpl(vecIn);

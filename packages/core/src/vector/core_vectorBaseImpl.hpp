@@ -22,15 +22,13 @@ public:
   der_t const& underlying() const{
     return static_cast<der_t const&>(*this);
   };
+  //--------------------------------------------
   
   wrap_t const * view() const {
     return this->underlying().viewImpl();
   };
   wrap_t & getNonConstRefToData() {
     return this->underlying().getNonConstRefToDataImpl();
-  };
-  void resize(size_t newSize) {
-    this->underlying().resizeImpl(newSize);
   };
   
 };

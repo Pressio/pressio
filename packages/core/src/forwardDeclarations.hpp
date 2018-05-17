@@ -25,29 +25,22 @@ namespace details {
   //***************************************
   // forward declaration of vector class
   //***************************************
-  template <typename wrapped_type,
-  	    typename scalar_type = typename core::defaultTypes::scalar_t,
-  	    typename local_ordinal_type = typename core::defaultTypes::local_ordinal_t,
-  	    typename global_ordinal_type = void,
-  	    typename map_type = void,
-  	    typename comm_type = void,
-  	    typename enable = void
-  	    >
+  template <typename wrapped_type, typename enable = void>
   class vector;
 
   
-  //***************************************
-  // forward declaration of matrix class
-  //***************************************
-  template <typename wrapped_type,
-  	    typename scalar_type = typename core::defaultTypes::scalar_t,
-  	    typename local_ordinal_type = typename core::defaultTypes::local_ordinal_t,
-  	    typename global_ordinal_type = void,
-  	    typename map_type = void,
-  	    typename comm_type = void,
-  	    typename enable = void
-  	    >
-  class matrix;
+  // //***************************************
+  // // forward declaration of matrix class
+  // //***************************************
+  // template <typename wrapped_type,
+  // 	    typename scalar_type = typename core::defaultTypes::scalar_t,
+  // 	    typename local_ordinal_type = typename core::defaultTypes::local_ordinal_t,
+  // 	    typename global_ordinal_type = void,
+  // 	    typename map_type = void,
+  // 	    typename comm_type = void,
+  // 	    typename enable = void
+  // 	    >
+  // class matrix;
 
 
   // template <typename scalar_type,

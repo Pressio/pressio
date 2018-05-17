@@ -13,11 +13,11 @@
 #include "vector/core_vector_serarb.hpp"
 #include "vector/core_vector_std.hpp"
 
-#include "matrix/core_matrixTraits.hpp"
-#include "matrix/core_matrix_eigen.hpp"
-#include "matrix/core_matrix_eigenStatic.hpp"
-//#include "matrix/core_matrix_serarb.hpp"
-#include "matrix/core_matrix_std.hpp"
+// #include "matrix/core_matrixTraits.hpp"
+// #include "matrix/core_matrix_eigen.hpp"
+// #include "matrix/core_matrix_eigenStatic.hpp"
+// //#include "matrix/core_matrix_serarb.hpp"
+// #include "matrix/core_matrix_std.hpp"
 
 #include <Eigen/Dense>
 
@@ -34,17 +34,17 @@ int main()
   m(1,1) = m(1,0) + m(0,1);
   std::cout << m << std::endl;
 
-  using wrap_t = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>;
-  using mat_t = core::matrix<wrap_t,double>;
-  mat_t A;
+  // using wrap_t = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>;
+  // using mat_t = core::matrix<wrap_t,double>;
+  // mat_t A;
 
-  using wrap_t2 = vecT<vecT<double>>;
-  using mat_t2 = core::matrix<wrap_t2,double>;
-  mat_t2 A2;
+  // using wrap_t2 = vecT<vecT<double>>;
+  // using mat_t2 = core::matrix<wrap_t2,double>;
+  // mat_t2 A2;
   
-  using wrap_t3 = Eigen::Matrix<double,3,3>;
-  core::matrix<wrap_t3,double,3,3> DD;
-  //mat_t3 A3;
+  // using wrap_t3 = Eigen::Matrix<double,3,3>;
+  // core::matrix<wrap_t3,double,3,3> DD;
+  // //mat_t3 A3;
 
   
   return 0;

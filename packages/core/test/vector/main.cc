@@ -29,6 +29,8 @@ class myve{
 public:
  double data_[5];
 public:
+  using scalar_type = double;
+  using ordinal_type = int;
   myve(){
     data_[0] = 2.2;
     data_[1] = 2.2;
@@ -55,7 +57,7 @@ public:
 int main(int argc, char *argv[]){
   {
     using state_t = std::vector<double>;
-    using vec_t = core::vector<state_t,double,int>;
+    using vec_t = core::vector<state_t>;
     vec_t gigi;
     gigi.resize(10);
     gigi[0] = 22.4;
@@ -66,7 +68,7 @@ int main(int argc, char *argv[]){
 
   {
     using state_t = myve;
-    using vec_t = core::vector<state_t,double,int>;
+    using vec_t = core::vector<state_t>;
     vec_t gigi2;
     size_t ss = gigi2.size();
     std::cout << "size l = " << ss << std::endl;
@@ -83,23 +85,18 @@ int main(int argc, char *argv[]){
     int MyPID = Comm.MyPID();
     int NumProc = Comm.NumProc();
 
-    using lo_t = int;
-    using go_t = int;
-    
-    const go_t numGlobalEntries = Comm.NumProc () * 10;
+    const int numGlobalEntries = Comm.NumProc () * 10;
     Epetra_Map contigMap (numGlobalEntries, 0, Comm);
   
     Epetra_Vector x (contigMap);
     x.PutScalar(21.0);
 
-
-    using vec_t = core::vector<Epetra_Vector,double,lo_t,go_t,
-			       Epetra_Map,Epetra_MpiComm>;
+    using vec_t = core::vector<Epetra_Vector>;
     vec_t gigi2(x);
     std::cout << "size l = " << gigi2.localSize() << std::endl;
     std::cout << "size g = " << gigi2.globalSize() << std::endl;
-    // // auto * vv = gigi2.view();
-    // // std::cout << "view = " << (*vv)[0] << std::endl;
+    auto * vv = gigi2.view();
+    std::cout << "view = " << (*vv)[0] << std::endl;
 
     // // Define some constants for use below.
     // const double alpha = 3.14159;
@@ -112,12 +109,10 @@ int main(int argc, char *argv[]){
     // y.Update (alpha, x, beta, z, gamma);
     // // Compute the 2-norm of y.
     // double theNorm = 0.0;
-    // y.Norm2 (&theNorm);
-
-    
+    // y.Norm2 (&theNorm);    
     MPI_Finalize();
-  }
-  
+   }
+
   return 0;
 }
 

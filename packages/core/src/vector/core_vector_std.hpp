@@ -14,15 +14,17 @@
 namespace core{
 
 
-template <typename scalar_type,
-	  typename ordinal_type>
-class vector<std::vector<scalar_type>,scalar_type,ordinal_type>
-  : public vectorBaseImpl<vector<std::vector<scalar_type>,scalar_type,ordinal_type> >,
-    public vectorSerImpl<vector<std::vector<scalar_type>,scalar_type,ordinal_type> >,
-    public vectorMathImpl<vector<std::vector<scalar_type>,scalar_type,ordinal_type> >
+template <typename wrapped_type>
+class vector<wrapped_type,
+	     typename std::enable_if<std::is_same<wrapped_type,
+			    std::vector<typename wrapped_type::value_type>>::value
+	       >::type >
+  : public vectorBaseImpl<vector<wrapped_type> >,
+    public vectorSerImpl<vector<wrapped_type> >,
+    public vectorMathImpl<vector<wrapped_type> >
 {
 public:
-  using derived_t = vector<std::vector<scalar_type>,scalar_type,ordinal_type>;
+  using derived_t = vector<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using der_t = typename details::traits<derived_t>::derived_t;
   using wrap_t = typename details::traits<derived_t>::wrapped_t;

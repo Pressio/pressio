@@ -20,26 +20,19 @@ public:
   using map_t = typename details::traits<derived_type>::map_t;
   using comm_t = typename details::traits<derived_type>::comm_t;
 
-
   der_t & underlying(){
     return static_cast<der_t &>(*this);
   };
   der_t const& underlying() const{
     return static_cast<der_t const&>(*this);
   };
-
+  //--------------------------------------------
 
   size_t globalSize() const {
     return this->underlying().globalSizeImpl();
   };
   size_t localSize() const {
     return this->underlying().localSizeImpl();
-  };
-  wrap_t const * view() const {
-    return this->underlying().viewImpl();
-  };
-  wrap_t & getNonConstRefToData() {
-    return this->underlying().getNonConstRefToDataImpl();
   };
 
   // template<typename U=map_t,

@@ -22,9 +22,13 @@ public:
   der_t const& underlying() const{
     return static_cast<der_t const&>(*this);
   };
+  //--------------------------------------------
   
   size_t size() const {
     return this->underlying().sizeImpl();
+  };
+  void resize(size_t newSize) {
+    this->underlying().resizeImpl(newSize);
   };
   
 };
