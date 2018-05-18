@@ -76,7 +76,9 @@ namespace details{
   template <typename wrapped_type>
   struct traits<vector<wrapped_type,
 		       typename
-		       std::enable_if< !std::is_same<wrapped_type,
+		       std::enable_if< core::meta::has_scalarTypedef<wrapped_type>::value &&
+				       core::meta::has_ordinalTypedef<wrapped_type>::value &&
+				       !std::is_same<wrapped_type,
 						     std::vector<typename wrapped_type::scalar_type> >::value
 				       && !core::meta::is_vectorEigen<wrapped_type>::value
 				       > ::type
