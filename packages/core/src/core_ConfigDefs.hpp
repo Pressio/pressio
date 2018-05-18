@@ -35,14 +35,6 @@ namespace core{
 
   constexpr defaultTypes::errcode_t _SUCCESS = 0;
   constexpr defaultTypes::errcode_t _FAILURE = 1;
-
-
-  //  namespace shortCuts{
-    // template <typename scalar_type, int nRows, int nCols>
-    // using eigenDynVec = Eigen::Matrix<scalar_type,nRos,nCols>;    
-  //}
-
-
   
 } // end of core namespace
 

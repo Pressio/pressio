@@ -9,21 +9,23 @@
 namespace core{
 
 
-template <typename scalar_type>
-class matrix<Eigen::Matrix<scalar_type,Eigen::Dynamic,Eigen::Dynamic>,scalar_type,int>
-  : public matrixBaseImpl< matrix<Eigen::Matrix<scalar_type,Eigen::Dynamic,Eigen::Dynamic>,
-				  scalar_type,int> >
+template <typename wrapped_type>
+class matrix<wrapped_type,
+	     typename std::enable_if< core::meta::is_matrixEigen<wrapped_type>::value
+				      >::type
+	     >
+  : public matrixBaseImpl<matrix<wrapped_type> >
 {
 public:
-  using derived_t = matrix< Eigen::Matrix<scalar_type,Eigen::Dynamic,Eigen::Dynamic>,scalar_type,int>;
+  using derived_t = matrix<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
-  using der_t = typename details::traits<derived_t>::derived_t;
-  using wrap_t = typename details::traits<derived_t>::wrapped_t;
   using ord_t = typename details::traits<derived_t>::ordinal_t;
+  using wrap_t = typename details::traits<derived_t>::wrapped_t;
+  using der_t = typename details::traits<derived_t>::derived_t;
   static_assert(std::is_same<ord_t,int>::value, "ordinal_type should be int for this class");
 
 private:
-  Eigen::Matrix<scalar_type,Eigen::Dynamic,Eigen::Dynamic> data_;
+  wrap_t data_;
 
 public:
   matrix(){

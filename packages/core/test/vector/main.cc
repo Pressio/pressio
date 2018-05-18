@@ -117,7 +117,7 @@ int main(int argc, char *argv[]){
    }
 
   {
-    using mat_t = Eigen::Matrix<double,3,5>;
+    using mat_t = Eigen::Matrix<double,1,5>;
     mat_t M1;
     core::vector<mat_t> V1;
   }

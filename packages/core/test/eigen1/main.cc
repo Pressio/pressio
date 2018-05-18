@@ -13,10 +13,8 @@
 #include "vector/core_vector_serarb.hpp"
 #include "vector/core_vector_std.hpp"
 
-// #include "matrix/core_matrixTraits.hpp"
-// #include "matrix/core_matrix_eigen.hpp"
-// #include "matrix/core_matrix_eigenStatic.hpp"
-// //#include "matrix/core_matrix_serarb.hpp"
+#include "matrix/core_matrixTraits.hpp"
+#include "matrix/core_matrix_eigen.hpp"
 // #include "matrix/core_matrix_std.hpp"
 
 #include <Eigen/Dense>
@@ -33,6 +31,10 @@ int main()
   m(0,1) = -1;
   m(1,1) = m(1,0) + m(0,1);
   std::cout << m << std::endl;
+
+  using mat_t = Eigen::Matrix<double,4,5>;
+  mat_t AA;
+  core::matrix<mat_t> BB;
 
   // using wrap_t = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>;
   // using mat_t = core::matrix<wrap_t,double>;

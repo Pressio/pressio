@@ -151,22 +151,33 @@ namespace meta {
   /////////////////////////////////////////////////
 
   // check if type is an Eigen vector
+  // this is true when at least one dimension is 1
   
   template <typename T, typename enable = void>
   struct is_vectorEigen : std::false_type {};
 
   template <typename T>
   struct is_vectorEigen< T,
-			 typename std::enable_if< std::is_same<T,
-							       Eigen::Matrix<typename T::Scalar,
-									     T::RowsAtCompileTime,
-									     T::ColsAtCompileTime>
-							       >::value
-						  >::type
+			 typename
+			 std::enable_if< std::is_same<T,Eigen::Matrix<typename T::Scalar,
+								      1, T::ColsAtCompileTime>
+						      >::value
+					 >::type
   			 > : std::true_type{};
 
- 
+  template <typename T>
+  struct is_vectorEigen< T,
+			 typename
+			 std::enable_if< std::is_same<T,Eigen::Matrix<typename T::Scalar,
+								      T::RowsAtCompileTime,1>
+						      >::value
+					 >::type
+  			 > : std::true_type{};
 
+  template<class T>
+  using is_matrixEigen = std::integral_constant<bool,!is_vectorEigen<T>::value>;
+  
+ 
   /////////////////////////////////////////////////
 
   
