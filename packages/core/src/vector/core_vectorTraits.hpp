@@ -5,6 +5,7 @@
 #include "forwardDeclarations.hpp"
 #include <vector>
 #include "Epetra_Vector.h"
+#include "meta.hpp"
 
 
 namespace core{
@@ -74,9 +75,11 @@ namespace details{
   //******************************* 
   template <typename wrapped_type>
   struct traits<vector<wrapped_type,
-		       typename std::enable_if<
-			 !std::is_same<wrapped_type,
-				      std::vector<typename wrapped_type::scalar_type> >::value>::type
+		       typename
+		       std::enable_if< !std::is_same<wrapped_type,
+						     std::vector<typename wrapped_type::scalar_type> >::value
+				       && !core::meta::is_vectorEigen<wrapped_type>::value
+				       > ::type
 		       >
 		>
   {
@@ -110,6 +113,28 @@ namespace details{
     enum {
       isVector = 1,
       isSTDVector = 1,
+      isSerial = 1,
+      isDistributed = !isSerial
+    };
+  };
+
+  //*******************************
+  // Eigen vector wrapper 
+  //******************************* 
+  template <typename wrapped_type>
+  struct traits<vector<wrapped_type,
+		       typename std::enable_if< core::meta::is_vectorEigen<wrapped_type>::value
+						>::type
+		       >
+		>     		       
+  {
+    using scalar_t = typename wrapped_type::Scalar;
+    using ordinal_t = int;
+    using wrapped_t = wrapped_type;
+    using derived_t = vector<wrapped_t>;
+    enum {
+      isVector = 1,
+      isSTDVector = 0,
       isSerial = 1,
       isDistributed = !isSerial
     };

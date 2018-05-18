@@ -29,6 +29,7 @@ APPEND_SET(HEADERS
   vector/core_vector_epetra.hpp
   vector/core_vector_std.hpp
   vector/core_vector_serarb.hpp
+  vector/core_vector_eigen.hpp
   #
   # matrix/core_matrixTraits.hpp
   # matrix/core_matrixBaseImpl.hpp
@@ -50,6 +51,7 @@ APPEND_SET(SOURCES
   vector/src/core_vector_epetra.cc
   vector/src/core_vector_std.cc
   vector/src/core_vector_serarb.cc
+  vector/src/core_vector_eigen.cc
   #
   # matrix/src/core_matrixTraits.cc
   # matrix/src/core_matrixBaseImpl.cc

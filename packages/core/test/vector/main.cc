@@ -12,6 +12,7 @@
 #include "vector/core_vector_epetra.hpp"
 #include "vector/core_vector_serarb.hpp"
 #include "vector/core_vector_std.hpp"
+#include "vector/core_vector_eigen.hpp"
 
 // Epetra headers
 #include "Epetra_Time.h"
@@ -23,6 +24,8 @@
 #include "Epetra_MpiComm.h"
 #include <mpi.h>
 #include "Teuchos_VerboseObject.hpp"
+
+#include "Eigen/Dense"
 
 
 class myve{
@@ -113,6 +116,13 @@ int main(int argc, char *argv[]){
     MPI_Finalize();
    }
 
+  {
+    using mat_t = Eigen::Matrix<double,3,5>;
+    mat_t M1;
+    core::vector<mat_t> V1;
+  }
+
+  
   return 0;
 }
 
