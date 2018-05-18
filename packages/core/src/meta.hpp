@@ -58,7 +58,8 @@ namespace meta {
 
   template <typename T>
   struct has_scalarTypedef<T,
-			   typename std::enable_if< !std::is_void<typename T::scalar_type>::value >::type
+			   typename std::enable_if<!std::is_void<typename T::scalar_type>::value
+						   >::type
 			   > : std::true_type{};
   
   // An alternative way to do same thing above:
@@ -82,8 +83,8 @@ namespace meta {
 
   template <typename T>
   struct has_ordinalTypedef<T,
-			   typename std::enable_if< !std::is_void<typename T::ordinal_type>::value
-						    >::type
+			   typename std::enable_if<!std::is_void<typename T::ordinal_type>::value
+						   >::type
 			   > : std::true_type{};
   
   /////////////////////////////////////////////////
@@ -97,8 +98,8 @@ namespace meta {
 
   template <typename T>
   struct has_localOrdinalTypedef<T,
-			   typename std::enable_if< !std::is_void<typename T::local_ordinal_type>::value
-						    >::type
+			   typename std::enable_if<!std::is_void<typename T::local_ordinal_type>::value
+						   >::type
 			   > : std::true_type{};
   
   /////////////////////////////////////////////////
@@ -112,8 +113,8 @@ namespace meta {
 
   template <typename T>
   struct has_globalOrdinalTypedef<T,
-			   typename std::enable_if< !std::is_void<typename T::global_ordinal_type>::value
-						    >::type
+			   typename std::enable_if<!std::is_void<typename T::global_ordinal_type>::value
+						   >::type
 			   > : std::true_type{};
   
   /////////////////////////////////////////////////
@@ -127,8 +128,23 @@ namespace meta {
 
   template <typename T>
   struct has_mapTypedef<T,
-			   typename std::enable_if< !std::is_void<typename T::map_type>::value
-						    >::type
+			   typename std::enable_if<!std::is_void<typename T::map_type>::value
+						   >::type
+			   > : std::true_type{};
+
+  /////////////////////////////////////////////////
+  /////////////////////////////////////////////////
+
+  // meta functions for checking if a
+  // type has a public typedef named: comm_type
+
+  template <typename T, typename enable = void>
+  struct has_commTypedef : std::false_type{};
+
+  template <typename T>
+  struct has_commTypedef<T,
+			   typename std::enable_if<!std::is_void<typename T::comm_type>::value
+						   >::type
 			   > : std::true_type{};
   
   /////////////////////////////////////////////////

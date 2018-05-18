@@ -17,12 +17,12 @@ namespace details{
   //******************************* 
   template <typename wrapped_type>
   struct traits<vector<wrapped_type,
-		       typename std::enable_if<!std::is_same<wrapped_type,Epetra_Vector>::value && 
-					       !std::is_void<typename wrapped_type::map_type>::value &&
-					       !std::is_void<typename wrapped_type::comm_type>::value &&
-					       !std::is_void<typename wrapped_type::scalar_type>::value &&
-					       !std::is_void<typename wrapped_type::local_ordinal_type>::value &&
-					       !std::is_void<typename wrapped_type::local_global_type>::value
+		       typename std::enable_if<!std::is_same<wrapped_type,Epetra_Vector>::value &&
+					       core::meta::has_scalarTypedef<wrapped_type>::value &&
+					       core::meta::has_localOrdinalTypedef<wrapped_type>::value &&
+					       core::meta::has_globalOrdinalTypedef<wrapped_type>::value &&
+					       core::meta::has_mapTypedef<wrapped_type>::value && 
+					       core::meta::has_commTypedef<wrapped_type>::value
 					       >::type
 		       >
 		>
@@ -104,7 +104,9 @@ namespace details{
 		       typename std::enable_if<
 			 std::is_same<wrapped_type,
 				      std::vector<typename wrapped_type::value_type>>::value
-			 >::type > >
+			 >::type
+		       >
+		>
   {
     using scalar_t = typename wrapped_type::value_type;
     using ordinal_t = core::defaultTypes::local_ordinal_t;
@@ -123,8 +125,7 @@ namespace details{
   //******************************* 
   template <typename wrapped_type>
   struct traits<vector<wrapped_type,
-		       typename std::enable_if< core::meta::is_vectorEigen<wrapped_type>::value
-						>::type
+		       typename std::enable_if< core::meta::is_vectorEigen<wrapped_type>::value >::type
 		       >
 		>     		       
   {

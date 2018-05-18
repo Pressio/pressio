@@ -17,8 +17,10 @@ namespace core{
 template <typename wrapped_type>
 class vector<wrapped_type,
 	     typename std::enable_if<std::is_same<wrapped_type,
-			    std::vector<typename wrapped_type::value_type>>::value
-	       >::type >
+						  std::vector<typename wrapped_type::value_type>
+						  >::value
+				     >::type
+	     >
   : public vectorBaseImpl<vector<wrapped_type> >,
     public vectorSerImpl<vector<wrapped_type> >,
     public vectorMathImpl<vector<wrapped_type> >

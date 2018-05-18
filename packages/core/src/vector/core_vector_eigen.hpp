@@ -18,8 +18,8 @@ namespace core{
   
 template <typename wrapped_type>
 class vector<wrapped_type,
-	     typename std::enable_if< core::meta::is_vectorEigen<wrapped_type>::value
-				      >::type
+	     typename std::enable_if<core::meta::is_vectorEigen<wrapped_type>::value
+				     >::type
 	     >
   : public vectorBaseImpl<vector<wrapped_type> >,
     public vectorSerImpl<vector<wrapped_type> >,

@@ -18,14 +18,16 @@ namespace core{
   
 template <typename wrapped_type>
 class vector<wrapped_type,
-	     typename std::enable_if<std::is_same<wrapped_type,Epetra_Vector>::value>::type
+	     typename std::enable_if<std::is_same<wrapped_type,
+						  Epetra_Vector>::value
+				     >::type
 	     >
-  : public vectorBaseImpl<vector<Epetra_Vector> >,
-    public vectorDistImpl<vector<Epetra_Vector> >,
-    public vectorMathImpl<vector<Epetra_Vector> >
+  : public vectorBaseImpl<vector<wrapped_type> >,
+    public vectorDistImpl<vector<wrapped_type> >,
+    public vectorMathImpl<vector<wrapped_type> >
 {
 public:    
-  using derived_t = vector<Epetra_Vector>;
+  using derived_t = vector<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using LO_t = typename details::traits<derived_t>::local_ordinal_t;
   using GO_t = typename details::traits<derived_t>::global_ordinal_t;
