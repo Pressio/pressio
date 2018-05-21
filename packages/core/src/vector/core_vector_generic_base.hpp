@@ -1,15 +1,15 @@
 
-#ifndef CORE_VECTORMATHIMPL_HPP
-#define CORE_VECTORMATHIMPL_HPP
+#ifndef CORE_VECTOR_GENERIC_BASE_HPP_
+#define CORE_VECTOR_GENERIC_BASE_HPP_
 
-#include "core_vectorTraits.hpp"
+#include "core_vector_traits.hpp"
 
 
 namespace core
 {
     
 template<typename derived_type>
-class vectorMathImpl
+class vectorGenericBase
 {
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;
@@ -24,22 +24,16 @@ public:
   };
   //--------------------------------------------
   
-  sc_t dot(const der_t & vecIn) const {
-    return this->underlying().dotImpl(vecIn);
+  wrap_t const * view() const {
+    return this->underlying().viewImpl();
   };
-
-  template <typename op_t>
-  void applyOp(op_t op, sc_t a1, sc_t a2, const der_t & vin){
-    // this = a1*this op a2*vin;
-    this->underlying().applyOpImpl(op,a1,a2,vin);
-  }
-
-  sc_t norm2() const {
-    return this->underlying().norm2Impl();
+  wrap_t & getNonConstRefToData() {
+    return this->underlying().getNonConstRefToDataImpl();
   };
-
   
 };
 
+    
 } // end namespace core
+
 #endif

@@ -1,6 +1,6 @@
 
-#ifndef CORE_STATIC_ASSERT_HPP
-#define CORE_STATIC_ASSERT_HPP
+#ifndef CORE_STATIC_ASSERT_HPP_
+#define CORE_STATIC_ASSERT_HPP_
 
 #include <type_traits>
 

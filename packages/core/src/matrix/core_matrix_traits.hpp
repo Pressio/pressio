@@ -1,9 +1,9 @@
 
-#ifndef CORE_MATRIXTRAITS_HPP
-#define CORE_MATRIXTRAITS_HPP
+#ifndef CORE_MATRIX_TRAITS_HPP_
+#define CORE_MATRIX_TRAITS_HPP_
 
-#include "forwardDeclarations.hpp"
-#include "meta.hpp"
+#include "core_forward_declarations.hpp"
+#include "core_meta.hpp"
 #include <vector>
 #include <Eigen/Core>
 
@@ -41,7 +41,7 @@ namespace details{
 		       std::enable_if< core::meta::is_matrixEigen<wrapped_type>::value >::type
 		       >
 		>     		       
-  {
+  {    
     using scalar_t = typename wrapped_type::Scalar;
     using ordinal_t = int;
     using wrapped_t = wrapped_type;

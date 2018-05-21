@@ -4,13 +4,13 @@
 #include <cstdlib>
 
 #include "core_ConfigDefs.hpp"
-#include "meta.hpp"
-#include "forwardDeclarations.hpp"
-#include "staticAssert.hpp"
+#include "core_meta.hpp"
+#include "core_forward_declarations.hpp"
+#include "core_static_assert.hpp"
 
-#include "vector/core_vectorTraits.hpp"
+#include "vector/core_vector_traits.hpp"
 #include "vector/core_vector_epetra.hpp"
-#include "vector/core_vector_serarb.hpp"
+#include "vector/core_vector_serial_arbitrary.hpp"
 #include "vector/core_vector_std.hpp"
 #include "vector/core_vector_eigen.hpp"
 

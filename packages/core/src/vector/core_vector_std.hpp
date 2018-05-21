@@ -1,10 +1,10 @@
 
-#ifndef CORE_VECTOR_STD_HPP
-#define CORE_VECTOR_STD_HPP
+#ifndef CORE_VECTOR_STD_HPP_
+#define CORE_VECTOR_STD_HPP_
 
-#include "core_vectorBaseImpl.hpp"
-#include "core_vectorSerImpl.hpp"
-#include "core_vectorMathImpl.hpp"
+#include "core_vector_generic_base.hpp"
+#include "core_vector_serial_base.hpp"
+#include "core_vector_math_base.hpp"
 
 
 
@@ -21,9 +21,9 @@ class vector<wrapped_type,
 						  >::value
 				     >::type
 	     >
-  : public vectorBaseImpl<vector<wrapped_type> >,
-    public vectorSerImpl<vector<wrapped_type> >,
-    public vectorMathImpl<vector<wrapped_type> >
+  : public vectorGenericBase<vector<wrapped_type> >,
+    public vectorSerialBase<vector<wrapped_type> >,
+    public vectorMathBase<vector<wrapped_type> >
 {
 public:
   using derived_t = vector<wrapped_type>;

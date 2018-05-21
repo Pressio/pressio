@@ -1,11 +1,11 @@
 
-#ifndef CORE_VECTORTRAITS_HPP
-#define CORE_VECTORTRAITS_HPP
+#ifndef CORE_VECTOR_TRAITS_HPP_
+#define CORE_VECTOR_TRAITS_HPP_
 
-#include "forwardDeclarations.hpp"
+#include "core_forward_declarations.hpp"
 #include <vector>
 #include "Epetra_Vector.h"
-#include "meta.hpp"
+#include "core_meta.hpp"
 
 
 namespace core{

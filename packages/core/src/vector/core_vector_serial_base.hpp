@@ -1,20 +1,21 @@
 
-#ifndef CORE_VECTORBASEIMPL_HPP
-#define CORE_VECTORBASEIMPL_HPP
+#ifndef CORE_VECTOR_SERIAL_BASE_HPP_
+#define CORE_VECTOR_SERIAL_BASE_HPP_
 
-#include "core_vectorTraits.hpp"
+#include "core_vector_traits.hpp"
 
 
 namespace core
 {
     
 template<typename derived_type>
-class vectorBaseImpl
+class vectorSerialBase
 {
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
+  using ord_t = typename details::traits<derived_type>::ordinal_t;
 
   der_t & underlying(){
     return static_cast<der_t &>(*this);
@@ -24,11 +25,11 @@ public:
   };
   //--------------------------------------------
   
-  wrap_t const * view() const {
-    return this->underlying().viewImpl();
+  size_t size() const {
+    return this->underlying().sizeImpl();
   };
-  wrap_t & getNonConstRefToData() {
-    return this->underlying().getNonConstRefToDataImpl();
+  void resize(size_t newSize) {
+    this->underlying().resizeImpl(newSize);
   };
   
 };

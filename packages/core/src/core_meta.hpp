@@ -1,6 +1,6 @@
 
-#ifndef CORE_META_HPP
-#define CORE_META_HPP
+#ifndef CORE_META_HPP_
+#define CORE_META_HPP_
 
 #include <type_traits>
 #include <Eigen/Dense>

@@ -1,10 +1,17 @@
 
-#ifndef CORE_MATRIX_STD_HPP
-#define CORE_MATRIX_STD_HPP
+#ifndef CORE_MATRIX_STD_HPP_
+#define CORE_MATRIX_STD_HPP_
 
-#include "core_matrixBaseImpl.hpp"
-// #include "core_vectorSerImpl.hpp"
+#include "core_matrix_generic_base.hpp"
+// #include "core_vector_serial_base.hpp"
 // #include "core_vectorMathImpl.hpp"
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!
+// WIP
+// TO FINISH 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 
 
 
@@ -19,7 +26,7 @@ template <typename scalar_type,
 class matrix<std::vector<std::vector<scalar_type> >, scalar_type,ordinal_type>
   // : public matrixBaseImpl<matrix<std::vector<std::vector<scalar_type>>,
   // 				 scalar_type,ordinal_type> >
-  //   public vectorSerImpl<vector<std::vector<scalar_type>,scalar_type,ordinal_type> >,
+  //   public vectorSerialBase<vector<std::vector<scalar_type>,scalar_type,ordinal_type> >,
   //   public vectorMathImpl<vector<std::vector<scalar_type>,scalar_type,ordinal_type> >
 {
 public:

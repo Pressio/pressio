@@ -1,11 +1,11 @@
 
-#ifndef CORE_VECTORSERARB_HPP
-#define CORE_VECTORSERARB_HPP
+#ifndef CORE_VECTOR_SERIAL_ARBITRARY_HPP_
+#define CORE_VECTOR_SERIAL_ARBITRARY_HPP_
 
+#include "core_vector_generic_base.hpp"
+#include "core_vector_serial_base.hpp"
+#include "core_vector_math_base.hpp"
 
-#include "core_vectorBaseImpl.hpp"
-#include "core_vectorSerImpl.hpp"
-#include "core_vectorMathImpl.hpp"
 
 
 //***********************************
@@ -22,9 +22,9 @@ class vector<wrapped_type,
 						   >::value
 				     >::type
 	     >
-  : public vectorBaseImpl<vector<wrapped_type> >,
-    public vectorSerImpl<vector<wrapped_type> >,
-    public vectorMathImpl<vector<wrapped_type> >
+  : public vectorGenericBase<vector<wrapped_type> >,
+    public vectorSerialBase<vector<wrapped_type> >,
+    public vectorMathBase<vector<wrapped_type> >
 {
 public:
   using derived_t = vector<wrapped_type>;

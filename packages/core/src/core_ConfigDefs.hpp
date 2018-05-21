@@ -1,13 +1,11 @@
 
-#ifndef CORE_CONFIGDEFS_HPP
-#define CORE_CONFIGDEFS_HPP
+#ifndef CORE_CONFIGDEFS_HPP_
+#define CORE_CONFIGDEFS_HPP_
 
 #include "core_config.h"
 #include <stdlib.h>
 #include <iostream>
-#include "staticAssert.hpp"
-
-#include <Eigen/Dense>
+#include "core_static_assert.hpp"
 
 
 namespace core{

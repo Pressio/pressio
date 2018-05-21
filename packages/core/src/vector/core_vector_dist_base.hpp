@@ -1,15 +1,15 @@
 
-#ifndef CORE_VECTORDISTIMPL_HPP
-#define CORE_VECTORDISTIMPL_HPP
+#ifndef CORE_VECTOR_DIST_BASE_HPP_
+#define CORE_VECTOR_DIST_BASE_HPP_
 
-#include "core_vectorTraits.hpp"
+#include "core_vector_traits.hpp"
 
 
 namespace core
 {
     
 template<typename derived_type>
-class vectorDistImpl
+class vectorDistBase
 {
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;

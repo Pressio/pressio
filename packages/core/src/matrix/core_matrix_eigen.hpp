@@ -1,8 +1,8 @@
 
-#ifndef CORE_MATRIX_EIGEN_HPP
-#define CORE_MATRIX_EIGEN_HPP
+#ifndef CORE_MATRIX_EIGEN_HPP_
+#define CORE_MATRIX_EIGEN_HPP_
 
-#include "core_matrixBaseImpl.hpp"
+#include "core_matrix_generic_base.hpp"
 #include <Eigen/Core>
 
 
@@ -14,7 +14,7 @@ class matrix<wrapped_type,
 	     typename std::enable_if< core::meta::is_matrixEigen<wrapped_type>::value
 				      >::type
 	     >
-  : public matrixBaseImpl<matrix<wrapped_type> >
+  : public matrixGenericBase<matrix<wrapped_type> >
 {
 public:
   using derived_t = matrix<wrapped_type>;
@@ -23,11 +23,15 @@ public:
   using wrap_t = typename details::traits<derived_t>::wrapped_t;
   using der_t = typename details::traits<derived_t>::derived_t;
   static_assert(std::is_same<ord_t,int>::value, "ordinal_type should be int for this class");
-
+  static_assert(details::traits<derived_t>::isEigen==1, "isEigen");
+  //static_assert( std::is_same<sc_t, double>::value, "isEigen");
+  
 private:
   wrap_t data_;
 
 public:
+  matrix(wrap_t & other) : data_(other)
+  {}
   matrix(){
     std::cout << "default" << std::endl;
   }

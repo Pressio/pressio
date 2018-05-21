@@ -1,15 +1,15 @@
 
-#ifndef CORE_MATRIXBASEIMPL_HPP
-#define CORE_MATRIXBASEIMPL_HPP
+#ifndef CORE_MATRIX_GENERIC_BASE_HPP_
+#define CORE_MATRIX_GENERIC_BASE_HPP_
 
-#include "core_matrixTraits.hpp"
+#include "core_matrix_traits.hpp"
 
 
 namespace core
 {
     
 template<typename derived_type>
-class matrixBaseImpl
+class matrixGenericBase
 {
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;

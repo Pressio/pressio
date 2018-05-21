@@ -1,11 +1,10 @@
 
-#ifndef CORE_VECTOR_EPETRA_HPP
-#define CORE_VECTOR_EPETRA_HPP
+#ifndef CORE_VECTOR_EPETRA_HPP_
+#define CORE_VECTOR_EPETRA_HPP_
 
-#include "core_vectorBaseImpl.hpp"
-#include "core_vectorMathImpl.hpp"
-#include "core_vectorDistImpl.hpp"
-
+#include "core_vector_generic_base.hpp"
+#include "core_vector_dist_base.hpp"
+#include "core_vector_math_base.hpp"
 #include "Epetra_Vector.h"
 
 
@@ -22,9 +21,9 @@ class vector<wrapped_type,
 						  Epetra_Vector>::value
 				     >::type
 	     >
-  : public vectorBaseImpl<vector<wrapped_type> >,
-    public vectorDistImpl<vector<wrapped_type> >,
-    public vectorMathImpl<vector<wrapped_type> >
+  : public vectorGenericBase<vector<wrapped_type> >,
+    public vectorDistBase<vector<wrapped_type> >,
+    public vectorMathBase<vector<wrapped_type> >
 {
 public:    
   using derived_t = vector<wrapped_type>;
