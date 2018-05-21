@@ -31,6 +31,7 @@ cmake \
     -D rompp_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=OFF \
     \
     -D rompp_ENABLE_core:BOOL=ON \
+    -D rompp_ENABLE_svd:BOOL=ON \
     -D rompp_ENABLE_timeIntegrator:BOOL=OFF \
     \
     $EXTRA_ARGS \

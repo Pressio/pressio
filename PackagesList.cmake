@@ -1,6 +1,7 @@
 TRIBITS_REPOSITORY_DEFINE_PACKAGES(
   core                packages/core   PT
   timeIntegrator      packages/timeIntegrator PT
+  svd           packages/svd PT
   )
 
 
@@ -8,3 +9,4 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
 
 #TRIBITS_DISABLE_PACKAGE_ON_PLATFORMS(WrapExternal Windows)
 #TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(InsertedPkg)
+
