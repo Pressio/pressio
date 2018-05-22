@@ -8,7 +8,7 @@ template<
   class stepper_type,
   class system_type, 
   class state_type,
-  class time_type = typename timeIntegrator::defaultTypes::scalar_t,
+  class time_type = typename core::defaultTypes::scalar_t,
   class observer_type = void
   >
 time_type integrate_n_steps(stepper_type & stepper,

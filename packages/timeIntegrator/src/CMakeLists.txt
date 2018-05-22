@@ -25,11 +25,11 @@ APPEND_SET(HEADERS
 )
 
 APPEND_SET(SOURCES
-  timeIntegrator_explicit_stepper_base.cc
-  timeIntegrator_euler.cc
-  timeIntegrator_stepper_rk4.cc
+  src/timeIntegrator_explicit_stepper_base.cc
+  src/timeIntegrator_euler.cc
+  src/timeIntegrator_stepper_rk4.cc
   #
-  timeIntegrator_integrate_n_steps.cc
+  src/timeIntegrator_integrate_n_steps.cc
   )
 
 #

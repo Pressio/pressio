@@ -7,8 +7,8 @@
 template<
   class state_type,
   class deriv_type = state_type,
-  class scalar_type = typename timeIntegrator::defaultTypes::scalar_t,
-  class time_type = typename timeIntegrator::defaultTypes::scalar_t
+  class scalar_type = typename core::defaultTypes::scalar_t,
+  class time_type = typename core::defaultTypes::scalar_t
 >
 class euler
 : public explicit_stepper_base<

@@ -1,31 +1,91 @@
 
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
+#include <vector>
+#include <type_traits>
+#include <cmath>
+#include <fstream>
 
-// #include "Epetra_Time.h"
-// #include "Epetra_BlockMap.h"
-// #include "Epetra_Map.h"
-// #include "Epetra_LocalMap.h"
-// #include "Epetra_Vector.h"
-// // #include "BuildTestProblems.h"
-// // #include "ExecuteTestProblems.h"
-// // #include "../epetra_test_err.h"
-// #include "Epetra_Version.h"
-// // #ifdef EPETRA_MPI
-// #  include "Epetra_MpiComm.h"
-// #  include <mpi.h>
-// // #else
-// // #  include "Epetra_SerialComm.h"
-// // #endif
+class burg1d
+{
+private:
+  using vecD = std::vector<double>;
+  const double xL_ = 0.0;
+  const double xR_ = 100.0;
+  const vecD mu_ {5.0, 0.02, 0.02};
+  const unsigned int nel_ = 10;
+  const double t0 = 0.0;
+  const double tfinal_ = 35.0;
+  double dx_;
+  vecD xGrid_;
+  vecD U_;
 
-// #  include "Teuchos_VerboseObject.hpp"
+public:
+  using state_type = vecD;
+  
+  burg1d(){
+    dx_ = (xR_ - xL_)/static_cast<double>(nel_);
+    xGrid_.resize(nel_,0.0);
+    for (int i=0; i<nel_; ++i){
+      xGrid_[i] = dx_*i + dx_*0.5;
+    };
+  }
+
+  void init(){
+    U_.resize(nel_, 1.0);
+  };
+
+  void operator() ( const state_type & u,
+		    state_type & R,
+		    const double /* t */ )
+  {
+    R[0] = (0.5 * ( mu_[0]*mu_[0] - u[0]*u[0] ) )/dx_;
+    for (int i=1; i<nel_; ++i){
+      R[i] = ( 0.5*(u[i-1]*u[i-1] - u[i]*u[i]) )/dx_;
+    }
+    for (int i=0; i<nel_; ++i){
+      R[i] += mu_[1]*exp(mu_[2]*xGrid_[i]);
+    }    
+  }
+  void integrate()
+  {
+    int nsteps = 2500;
+    vecD rhs(nel_,0.0);
+    double dt = tfinal_/static_cast<double>(nsteps);
+
+    std::ofstream file;
+    file.open( "out.txt" );
+    for (int step=0; step<nsteps; ++step)
+    {
+      (*this)(U_, rhs, step*dt);
+      for (int i=0; i<nel_; ++i){
+      	U_[i] += dt*(rhs[i]);
+	if (step % 50 == 0 || step==0)
+	 file << std::fixed << std::setprecision(10) << U_[i] << " ";
+      }      
+      if (step % 50 == 0)
+	file << std::endl;
+    }
+    file.close();
+  }
+
+};
 
 
 int main(int argc, char *argv[])
 {
-  bool success = true;
-  std::cout << std::boolalpha << success;
+  burg1d app;
+  app.init();
+  app.integrate();
+  
+  return 0;
+}
+
+
+  // bool success = true;
+  // std::cout << std::boolalpha << success;
 
   // MPI_Init(&argc,&argv);
   // int rank; // My process ID
@@ -49,9 +109,6 @@ int main(int argc, char *argv[])
   // //obj.print();
  
   //   MPI_Finalize();
-
-  return 0;
-}
 
 
 

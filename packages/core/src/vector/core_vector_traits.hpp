@@ -127,9 +127,9 @@ namespace details{
   //******************************* 
   template <typename wrapped_type>
   struct traits<vector<wrapped_type,
-		       typename std::enable_if< core::meta::is_vectorEigen<wrapped_type>::value >::type
-		       >
-		>     		       
+  		       typename std::enable_if< core::meta::is_vectorEigen<wrapped_type>::value >::type
+  		       >
+  		>     		       
   {
     using scalar_t = typename wrapped_type::Scalar;
     using ordinal_t = int;
