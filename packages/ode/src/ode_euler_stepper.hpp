@@ -1,50 +1,58 @@
 
-#ifndef TIMEINTEGRATOR_STEPPER_EULER_HPP
-#define TIMEINTEGRATOR_STEPPER_EULER_HPP
+#ifndef ODE_EULER_STEPPER_HPP_
+#define ODE_EULER_STEPPER_HPP_
 
-#include "timeIntegrator_explicit_stepper_base.hpp"
+#include "ode_explicit_stepper_base.hpp"
 
-template<
-  class state_type,
-  class deriv_type = state_type,
-  class scalar_type = typename core::defaultTypes::scalar_t,
-  class time_type = typename core::defaultTypes::scalar_t
->
-class euler
-: public explicit_stepper_base<
-  euler< state_type, deriv_type, scalar_type, time_type>,
-  1, state_type, deriv_type, scalar_type, time_type>
+
+template<typename state_type,
+	 typename rhs_type,
+	 typename scalar_type
+	 >
+class eulerStepper<state_type, rhs_type, scalar_type,
+		   std::enable_if< !std::is_same<state_type,void>::value
+				   >::type>
+  : public explicit_stepper_base<eulerStepper<state_type,rhs_type,scalar_type> >
+				 /*1,state_type,rhs_type,scalar_type*/
 {
 public :
-  using stepper_base_t = explicit_stepper_base<
-  euler< state_type, deriv_type, scalar_type, time_type>,
-  1, state_type, deriv_type, scalar_type, time_type>;
+  using stepper_type = eulerStepper<state_type,deriv_type,scalar_type>;
+  using stepper_base_t = explicit_stepper_base<stepper_type>;
+				/*,1,state_type,rhs_type,
+				  scalar_type,ode::details::time_type*/
 
   // (de)constructors
-  euler() : stepper_base_t(){}
-  virtual ~euler(){}
+  eulerStepper() : stepper_base_t(){}
+  ~eulerStepper(){}
 
   // methods
-  template< class system_type>
-  void step_impl( system_type /* system */,
-		  const state_type &in,
-		  const deriv_type & rhs,
-		  state_type & out,
-		  time_type /*t*/,
-		  time_type dt )
+  template< typename functor_type>
+  void do_step_impl(functor_type & func,
+		    const state_type &in,
+		    state_type & out,
+		    ode::details::time_type /*t*/,
+		    ode::details::time_type dt )
   {
     cassert( in.size()==out.size() && in.size()==rhs.size() );
+
+    functor(inout, R_, t);
     
-    // TODO: change this so that it uses the methods of the target data types
+    // TODO: if possible, change to use native operations of the target data types
     // out = in + dt * rhs
     for (int i=0; i<in.size(); i++){
       out[i] = in[i] + dt*rhs[i];
     }
   }
+
+private:
+    rhs_type R_;
   
 }; //end class
 
 #endif 
+
+
+
 
   
   // #ifndef DOXYGEN_SKIP

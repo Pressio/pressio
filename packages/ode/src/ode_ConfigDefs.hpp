@@ -1,8 +1,15 @@
 
-#ifndef TIMEINTEGRATOR_CONFIGDEFS_HPP
-#define TIMEINTEGRATOR_CONFIGDEFS_HPP
+#ifndef ODE_CONFIGDEFS_HPP_
+#define ODE_CONFIGDEFS_HPP_
 
 #include "core_ConfigDefs.hpp"
+
+
+namespace ode{
+  namespace details{
+    using time_type = double;
+  }
+}
 
 //namespace timeIntegrator{
 // namespace defaultTypes {

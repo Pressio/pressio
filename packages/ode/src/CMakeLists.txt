@@ -16,20 +16,22 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
-  timeIntegrator_ConfigDefs.hpp
-  timeIntegrator_explicit_stepper_base.hpp
-  timeIntegrator_euler.hpp
-  timeIntegrator_stepper_rk4.hpp
-  #
-  timeIntegrator_integrate_n_steps.hpp
+  ode_ConfigDefs.hpp
+  ode_forward_declarations.hpp
+  ode_stepper_traits.hpp
+  ode_explicit_stepper_base.hpp
+  ode_euler_stepper.hpp
+  ode_rk4_stepper.hpp
+  ode_integrate_n_steps.hpp
 )
 
 APPEND_SET(SOURCES
-  src/timeIntegrator_explicit_stepper_base.cc
-  src/timeIntegrator_euler.cc
-  src/timeIntegrator_stepper_rk4.cc
-  #
-  src/timeIntegrator_integrate_n_steps.cc
+  src/ode_forward_declarations.cc
+  src/ode_stepper_traits.cc  
+  src/ode_explicit_stepper_base.cc
+  src/ode_euler_stepper.cc
+  src/ode_rk4_stepper.cc
+  src/ode_integrate_n_steps.cc
   )
 
 #
@@ -42,7 +44,7 @@ APPEND_SET(SOURCES
 # )
 # this is the original in case we have sources too for the library
 TRIBITS_ADD_LIBRARY(
-  timeIntegrator
+  ode
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
   )

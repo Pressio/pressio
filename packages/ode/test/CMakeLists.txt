@@ -1,5 +1,5 @@
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  timeIntegrator_test1
+  ode_test1
   SOURCES
     main.cc
   NUM_MPI_PROCS 4

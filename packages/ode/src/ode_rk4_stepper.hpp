@@ -1,8 +1,8 @@
 
-#ifndef TIMEINTEGRATOR_STEPPER_RK4_HPP
-#define TIMEINTEGRATOR_STEPPER_RK4_HPP
+#ifndef ODE_RK4_STEPPER_HPP_
+#define ODE_RK4_STEPPER_HPP_
 
-#include "timeIntegrator_explicit_stepper_base.hpp"
+#include "ode_explicit_stepper_base.hpp"
 
 
 template<
@@ -11,23 +11,23 @@ template<
   class scalar_type = typename core::defaultTypes::scalar_t,
   class time_type = typename core::defaultTypes::scalar_t
 >
-class runge_kutta4
+class rungeKutta4Stepper
 : public explicit_stepper_base<
-  runge_kutta4< state_type, deriv_type, scalar_type, time_type>,
+  rungeKutta4Stepper< state_type, deriv_type, scalar_type, time_type>,
   4, state_type, deriv_type, scalar_type, time_type>
 {
 public :
   using stepper_base_t = explicit_stepper_base<
-  runge_kutta4< state_type, deriv_type, scalar_type, time_type>,
+  rungeKutta4Stepper< state_type, deriv_type, scalar_type, time_type>,
   4, state_type, deriv_type, scalar_type, time_type>;
 
   // (de)constructors
-  runge_kutta4() : stepper_base_t(){}
-  virtual ~runge_kutta4(){}
+  rungeKutta4Stepper() : stepper_base_t(){}
+  virtual ~rungeKutta4Stepper(){}
 
     // methods
-  template< class system_type>
-  void step_impl( system_type & func,
+  template< class functor_type>
+  void do_step_impl( functor_type & func,
 		  const state_type & y_n,
 		  const deriv_type & rhs,
 		  state_type & y_next,

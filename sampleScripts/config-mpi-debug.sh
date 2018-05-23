@@ -32,7 +32,7 @@ cmake \
     \
     -D rompp_ENABLE_core:BOOL=ON \
     -D rompp_ENABLE_svd:BOOL=ON \
-    -D rompp_ENABLE_timeIntegrator:BOOL=ON \
+    -D rompp_ENABLE_ode:BOOL=ON \
     \
     $EXTRA_ARGS \
     ${SRC}
