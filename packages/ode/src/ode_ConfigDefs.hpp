@@ -3,6 +3,7 @@
 #define ODE_CONFIGDEFS_HPP_
 
 #include "core_ConfigDefs.hpp"
+#include "core_meta.hpp"
 
 
 namespace ode{

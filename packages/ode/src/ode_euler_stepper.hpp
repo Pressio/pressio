@@ -5,49 +5,57 @@
 #include "ode_explicit_stepper_base.hpp"
 
 
+namespace ode{
+
 template<typename state_type,
 	 typename rhs_type,
-	 typename scalar_type
+	 typename scalar_type,
+	 typename state_resizer_fnctor_type
 	 >
-class eulerStepper<state_type, rhs_type, scalar_type,
-		   std::enable_if< !std::is_same<state_type,void>::value
-				   >::type>
-  : public explicit_stepper_base<eulerStepper<state_type,rhs_type,scalar_type> >
-				 /*1,state_type,rhs_type,scalar_type*/
+class eulerStepper<state_type, rhs_type, scalar_type, state_resizer_fnctor_type,
+		   typename 
+		   std::enable_if< !std::is_same<state_type,void>::value &&
+				   core::meta::is_default_constructible<state_resizer_fnctor_type>::value
+				   >::type
+		   >
+  : public explicit_stepper_base<eulerStepper<state_type,rhs_type,
+					      scalar_type, state_resizer_fnctor_type> >
 {
 public :
-  using stepper_type = eulerStepper<state_type,deriv_type,scalar_type>;
-  using stepper_base_t = explicit_stepper_base<stepper_type>;
-				/*,1,state_type,rhs_type,
-				  scalar_type,ode::details::time_type*/
+  using stepper_t = eulerStepper<state_type,rhs_type,scalar_type,state_resizer_fnctor_type>;
+  using stepper_base_t = explicit_stepper_base<stepper_t>;
 
   // (de)constructors
   eulerStepper() : stepper_base_t(){}
   ~eulerStepper(){}
 
+
   // methods
   template< typename functor_type>
-  void do_step_impl(functor_type & func,
-		    const state_type &in,
-		    state_type & out,
-		    ode::details::time_type /*t*/,
-		    ode::details::time_type dt )
+  void doStepImpl(functor_type & functor,
+		  state_type & y_inout,
+		  ode::details::time_type t,
+		  ode::details::time_type dt )
   {
-    cassert( in.size()==out.size() && in.size()==rhs.size() );
+    this->myResizer_(y_inout, RHS_);
 
-    functor(inout, R_, t);
+    //eval RHS
+    functor(y_inout, RHS_, t);
     
     // TODO: if possible, change to use native operations of the target data types
-    // out = in + dt * rhs
-    for (int i=0; i<in.size(); i++){
-      out[i] = in[i] + dt*rhs[i];
+    // out = in + dt * rhs    
+    for (int i=0; i < y_inout.size(); i++){
+      y_inout[i] += dt*RHS_[i];
     }
   }
 
 private:
-    rhs_type R_;
+    rhs_type RHS_;
   
 }; //end class
+
+
+}//end namespace
 
 #endif 
 

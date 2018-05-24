@@ -5,79 +5,96 @@
 #include "ode_explicit_stepper_base.hpp"
 
 
-template<
-  class state_type,
-  class deriv_type = state_type,
-  class scalar_type = typename core::defaultTypes::scalar_t,
-  class time_type = typename core::defaultTypes::scalar_t
->
-class rungeKutta4Stepper
-: public explicit_stepper_base<
-  rungeKutta4Stepper< state_type, deriv_type, scalar_type, time_type>,
-  4, state_type, deriv_type, scalar_type, time_type>
+namespace ode{
+
+template<typename state_type,
+	 typename rhs_type,
+	 typename scalar_type,
+	 typename state_resizer_fnctor_type
+	 >
+class rungeKutta4Stepper<state_type, rhs_type, scalar_type, state_resizer_fnctor_type,
+			 typename
+			 std::enable_if< !std::is_same<state_type,void>::value &&
+					 core::meta::is_default_constructible<state_resizer_fnctor_type>::value
+					 >::type
+			 >
+  : public explicit_stepper_base< rungeKutta4Stepper<state_type,rhs_type,
+						     scalar_type,state_resizer_fnctor_type> >
 {
 public :
-  using stepper_base_t = explicit_stepper_base<
-  rungeKutta4Stepper< state_type, deriv_type, scalar_type, time_type>,
-  4, state_type, deriv_type, scalar_type, time_type>;
-
+  using stepper_t = rungeKutta4Stepper<state_type,rhs_type,scalar_type,state_resizer_fnctor_type>;
+  using stepper_base_t = explicit_stepper_base<stepper_t>;
+  using time_t = ode::details::time_type;
+  
   // (de)constructors
   rungeKutta4Stepper() : stepper_base_t(){}
   virtual ~rungeKutta4Stepper(){}
 
     // methods
-  template< class functor_type>
-  void do_step_impl( functor_type & func,
-		  const state_type & y_n,
-		  const deriv_type & rhs,
-		  state_type & y_next,
-		  time_type t,
-		  time_type dt )
+  template< typename functor_type>
+  void do_step_impl( functor_type & functor,
+		     state_type & y_inout,
+		     time_t t,
+		     time_t dt )
   {
-    assert( y_n.size()==y_next.size() );
-    accert( y_n.size()==rhs.size() );
     static const scalar_type val1 = static_cast< scalar_type >( 1 );
+    const time_t dt_half = dt / static_cast< scalar_type >(2);
+    const time_t t_phalf = t + dt_half;
 
-    const time_type dh = dt / static_cast< scalar_type >( 2 );
-    const time_type th = t + dh;
+    myResizer_(y_inout, rhs1_);
+    myResizer_(y_inout, rhs2_);
+    myResizer_(y_inout, rhs3_);
+    myResizer_(y_inout, rhs4_);
 
-    // k1 = dt * rhs (rhs already calculated)
-
-    // y_tmp = y_n + dh*dxdt
-    for (int i=0; i<y_n.size(); i++){
-      y_tmp[i] = y_n[i] + dh*rhs[i];
+    // ----------
+    // stage 1: 
+    // ----------
+    // rhs1_(y_n,t)
+    functor( y_inout, rhs1_, t );
+    // y_tmp_ = y_n + rhs1_*dt/2
+    for (int i=0; i<y_inout.size(); i++){
+      y_tmp_[i] = y_inout[i] + dt_half*rhs1_[i];
     }
-    // k2 = dt * rhs2
-    func( y_tmp, rhs2.data_, th );
-
-    // y_tmp = y_n + dh*rhs2
-    for (int i=0; i<y_n.size(); i++){
-      y_tmp[i] = y_n[i] + dh*rhs2[i];
+    // ----------
+    // stage 2: 
+    // ----------
+    // rhs2_
+    functor( y_tmp_, rhs2_, t_phalf );
+    // y_tmp_ = y_n + rhs2_*dt/2
+    for (int i=0; i<y_inout.size(); i++){
+      y_tmp_[i] = y_inout[i] + dt_half*rhs2_[i];
     }
-    // k3 = dt * rhs3
-    func( y_tmp, rhs3.data_, th );
-
-    //y_tmp = y_n + dt*rhs3
-    for (int i=0; i<y_n.size(); i++){
-      y_tmp[i] = y_n[i] + dt*rhs3[i];
+    // ----------
+    // stage 3: 
+    // ----------
+    // rhs3_
+    functor( y_tmp_, rhs3_, t_phalf );
+    //y_tmp_ = y_n + rhs3_*dt/2
+    for (int i=0; i<y_inout.size(); i++){
+      y_tmp_[i] = y_inout[i] + dt*rhs3_[i];
     }
-    // k4 = dt * rhs4
-    func( y_tmp, rhs4.data_, t + dt );
+
+    // ----------
+    // stage 4: 
+    // ----------
+    // rhs4_
+    functor( y_tmp_, rhs4_, t + dt );
 
     //x += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    time_type dt6 = dt / static_cast< scalar_type >( 6.0 );
-    time_type dt3 = dt / static_cast< scalar_type >( 3.0 );
-    for (int i=0; i < y_n.size(); i++){
-      y_next[i] = y_n[i] + dt6*rhs[i] + dt3*rhs2[i] + dt3*rhs3[i] + dt6*rhs4[i];
+    time_t dt6 = dt / static_cast< scalar_type >( 6.0 );
+    time_t dt3 = dt / static_cast< scalar_type >( 3.0 );
+    for (int i=0; i < y_inout.size(); i++){
+      y_inout[i] = y_inout[i] + dt6*rhs1_[i] + dt3*rhs2_[i] + dt3*rhs3_[i] + dt6*rhs4_[i];
     }
   }//end step_impl
   
 private:
-    deriv_type rhs2;
-    deriv_type rhs3;
-    deriv_type rhs4;
-    state_type y_tmp;
+    rhs_type rhs1_;
+    rhs_type rhs2_;
+    rhs_type rhs3_;
+    rhs_type rhs4_;
+    state_type y_tmp_;
 };
 
-
+}//end namespace
 #endif

@@ -7,84 +7,151 @@
 #include <type_traits>
 #include <cmath>
 #include <fstream>
+#include <cassert>
 
+#include "ode_euler_stepper.hpp"
+#include "ode_rk4_stepper.hpp"
+#include "ode_integrate_n_steps.hpp"
+
+
+using vecD = std::vector<double>;
+using ui_t = unsigned int;
+
+
+//==================================================
 class burg1d
 {
-private:
-  using vecD = std::vector<double>;
-  const double xL_ = 0.0;
-  const double xR_ = 100.0;
-  const vecD mu_ {5.0, 0.02, 0.02};
-  const unsigned int nel_ = 10;
-  const double t0 = 0.0;
-  const double tfinal_ = 35.0;
-  double dx_;
-  vecD xGrid_;
-  vecD U_;
-
 public:
-  using state_type = vecD;
-  
-  burg1d(){
-    dx_ = (xR_ - xL_)/static_cast<double>(nel_);
-    xGrid_.resize(nel_,0.0);
-    for (int i=0; i<nel_; ++i){
+  using state_type = std::vector<double>;
+
+public:  
+  burg1d(vecD params) : mu_(params){}
+
+  void setup(){
+    dx_ = (xR_ - xL_)/static_cast<double>(Ncell_);
+    xGrid_.resize(Ncell_,0.0);
+    for (ui_t i=0; i<Ncell_; ++i){
       xGrid_[i] = dx_*i + dx_*0.5;
     };
-  }
-
-  void init(){
-    U_.resize(nel_, 1.0);
+    U_.resize(Ncell_, 1.0);
   };
 
+  state_type viewInitCond(){
+    return U_;
+  };
+  
   void operator() ( const state_type & u,
 		    state_type & R,
 		    const double /* t */ )
   {
     R[0] = (0.5 * ( mu_[0]*mu_[0] - u[0]*u[0] ) )/dx_;
-    for (int i=1; i<nel_; ++i){
+    for (ui_t i=1; i<Ncell_; ++i){
       R[i] = ( 0.5*(u[i-1]*u[i-1] - u[i]*u[i]) )/dx_;
     }
-    for (int i=0; i<nel_; ++i){
+    for (ui_t i=0; i<Ncell_; ++i){
       R[i] += mu_[1]*exp(mu_[2]*xGrid_[i]);
     }    
   }
+
   void integrate()
   {
-    int nsteps = 2500;
-    vecD rhs(nel_,0.0);
-    double dt = tfinal_/static_cast<double>(nsteps);
+    // int nsteps = 2500;
+    // vecD rhs(Ncell_,0.0);
+    // double dt = tfinal_/static_cast<double>(nsteps);
 
-    std::ofstream file;
-    file.open( "out.txt" );
-    for (int step=0; step<nsteps; ++step)
-    {
-      (*this)(U_, rhs, step*dt);
-      for (int i=0; i<nel_; ++i){
-      	U_[i] += dt*(rhs[i]);
-	if (step % 50 == 0 || step==0)
-	 file << std::fixed << std::setprecision(10) << U_[i] << " ";
-      }      
-      if (step % 50 == 0)
-	file << std::endl;
-    }
-    file.close();
+    // std::ofstream file;
+    // file.open( "out.txt" );
+    // for (ui_t step=0; step<nsteps; ++step)
+    // {
+    //   (*this)(U_, rhs, step*dt);
+    //   for (ui_t i=0; i<Ncell_; ++i){
+    //   	U_[i] += dt*(rhs[i]);
+    // 	if (step % 50 == 0 || step==0)
+    // 	 file << std::fixed << std::setprecision(10) << U_[i] << " ";
+    //   }      
+    //   if (step % 50 == 0)
+    // 	file << std::endl;
+    // }
+    // file.close();
   }
 
+private:
+  
+  const double xL_ = 0.0;
+  const double xR_ = 100.0;
+  const ui_t Ncell_ = 10;
+  vecD mu_;
+  const double t0 = 0.0;
+  const double tfinal_ = 35.0;
+  double dx_;
+  vecD xGrid_;
+  state_type U_;
+};
+//==================================================
+
+struct stateResizer{
+  // has to be default constructible
+  stateResizer() = delete;
+  
+  void operator()(const vecD  & source,
+		  vecD & dest)
+  {
+    if ( dest.size()!=source.size() )
+      dest.resize(source.size());
+  };
+};
+
+
+struct snapshot_collector
+{
+  using matrix = std::vector<vecD>;
+  using state_t = vecD;
+  
+  matrix snaps_;
+  size_t count_;
+
+  void operator()(size_t step, double t, const state_t & x)
+  {
+    if (step % 50 ==0 ){
+      snaps_.emplace_back(x);
+      count_++;
+    }
+    std::cout << step << " " << t << std::endl;
+  }
+  size_t getCount(){ return count_; };
+
+  void print()
+  {
+    std::ofstream file;
+    file.open( "out.txt" );
+    for (ui_t step=0; step<count_; ++step)
+    {
+      for (auto & it : snaps_[step])
+    	 file << std::fixed << std::setprecision(10) << it << " "; 
+      file << std::endl;
+    }
+    file.close();    
+  };
 };
 
 
 int main(int argc, char *argv[])
 {
-  burg1d app;
-  app.init();
-  app.integrate();
-  
+  const vecD mu{5.0, 0.02, 0.02};
+  burg1d app(mu);
+  app.setup();
+
+  using state_t = burg1d::state_type;
+  state_t U = app.viewInitCond();
+  snapshot_collector snColl;  
+  ode::eulerStepper<state_t,state_t,double,stateResizer> myStepper;
+  ode::integrate_n_steps(myStepper, app, U, snColl, 0.0, 0.0035, 10000);
+
+  std::cout << snColl.getCount() << std::endl;
+  snColl.print();
+
   return 0;
 }
-
-
-
 
 
   // bool success = true;
@@ -112,58 +179,3 @@ int main(int argc, char *argv[])
   // //obj.print();
  
   //   MPI_Finalize();
-
-
-
-
-
-
-
-/*
-// #define TEST_FIND_SUBSTR_IN_STR(SUBSTR, STR) \
-//   { \
-//     const bool foundSubStr = ((STR).find(SUBSTR) != std::string::npos); \
-//     std::cout << "Found \"" SUBSTR "\" ? " << foundSubStr << "\n"; \
-//     if (!foundSubStr) success=false; \
-//   } \
-//   (void)(success)
-
-
-// int main() {
-
-//   bool success = true;
-//   std::cout << std::boolalpha;
-
-//   SimpleCxx::HelloWorld helloWorld;
-//   std::ostringstream oss;
-//   helloWorld.printHelloWorld(oss);
-//   std::cout << oss.str();
-
-//   TEST_FIND_SUBSTR_IN_STR("Hello World", oss.str());
-
-// #ifdef HAVE_SIMPLECXX___INT64
-//   TEST_FIND_SUBSTR_IN_STR("We have __int64", oss.str());
-// #endif
-
-// #ifdef HAVE_SIMPLECXX_DEBUG
-//   TEST_FIND_SUBSTR_IN_STR("Debug is enabled", oss.str());
-// #else
-//   TEST_FIND_SUBSTR_IN_STR("Release is enabled", oss.str());
-// #endif
-
-//   TEST_FIND_SUBSTR_IN_STR("Sqr(3) = 9", oss.str());
-
-// #ifdef HAVE_SIMPLECXX_SIMPLETPL
-//   TEST_FIND_SUBSTR_IN_STR("Cube(3) = 27", oss.str());
-// #endif
-
-//   if (success) {
-//     std::cout << "End Result: TEST PASSED\n";
-//   }
-//   else {
-//     std::cout << "End Result: TEST FAILED\n";
-//   }
-//   return (success ? EXIT_SUCCESS : EXIT_FAILURE);
-
-// }
-*/

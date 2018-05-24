@@ -3,15 +3,10 @@
 #define ODE_EXPLICIT_STEPPER_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
+#include "ode_stepper_traits.hpp"
 
-// template<
-//   typename stepper_type,
-//   unsigned int order,
-//   typename state_type,
-//   typename deriv_type = state_type,
-//   typename scalar_type = typename core::defaultTypes::scalar_t,
-//   typename time_type = typename core::defaultTypes::scalar_t
-// >
+
+namespace ode{
 
 template<typename stepper_type>
 class explicit_stepper_base
@@ -20,32 +15,41 @@ public:
 
   using state_t = typename ode::details::traits<stepper_type>::state_t;
   using sc_t = typename ode::details::traits<stepper_type>::scalar_t;
-  using order_type = typename ode::details::traits<stepper_type>::order_t;
-  static constexpr order_type order_value = ode::details::traits<stepper_type>::order_value;
+  using order_t = typename ode::details::traits<stepper_type>::order_t; 
+  static constexpr order_t order_value = ode::details::traits<stepper_type>::order_value;
+  using time_t = ode::details::time_type;
+  using resizer_t = typename ode::details::traits<stepper_type>::resizer_t;
+  using rhs_t = typename ode::details::traits<stepper_type>::rhs_t;
 
   // (de)constructors
   explicit_stepper_base(){}
   virtual ~explicit_stepper_base(){}
 
   // methods
-  order_type order() const{  return order_value; }
+  order_t order() const{  return order_value; }
 
   template< typename functor_type>
-  void do_step( functor_type & functor, state_type &inout, time_type t, time_type dt )
-  {
-    this->stepper()->do_step_impl( functor, inout, inout, t, dt );
+  void doStep( functor_type & functor, state_t &inout, time_t t, time_t dt ){
+    this->stepper()->doStepImpl( functor, inout, t, dt );
   }
 
-private:
-    stepper_type * stepper( ){
-        return static_cast< stepper_type* >( this );
-    }
-    const stepper_type * stepper( void ) const{
-        return static_cast< const stepper_type* >( this );
-    }
+  
+private:  
+  stepper_type * stepper( ){
+    return static_cast< stepper_type* >( this );
+  }
+  const stepper_type * stepper( void ) const{
+    return static_cast< const stepper_type* >( this );
+  }
+
+protected:
+  resizer_t myResizer_;
 
 };
 
+
+}//end namespace
+  
 #endif
 
 
