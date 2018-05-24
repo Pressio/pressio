@@ -91,7 +91,6 @@ private:
 
 struct stateResizer{
   // has to be default constructible
-  stateResizer() = delete;
   
   void operator()(const vecD  & source,
 		  vecD & dest)
@@ -110,15 +109,17 @@ struct snapshot_collector
   matrix snaps_;
   size_t count_;
 
-  void operator()(size_t step, double t, const state_t & x)
-  {
+  void operator()(size_t step, double t, const state_t & x){
     if (step % 50 ==0 ){
       snaps_.emplace_back(x);
       count_++;
     }
     std::cout << step << " " << t << std::endl;
   }
-  size_t getCount(){ return count_; };
+
+  size_t getCount(){
+    return count_;
+  };
 
   void print()
   {
@@ -130,7 +131,7 @@ struct snapshot_collector
     	 file << std::fixed << std::setprecision(10) << it << " "; 
       file << std::endl;
     }
-    file.close();    
+.    file.close();    
   };
 };
 
@@ -145,8 +146,10 @@ int main(int argc, char *argv[])
   state_t U = app.viewInitCond();
   snapshot_collector snColl;  
   ode::eulerStepper<state_t,state_t,double,stateResizer> myStepper;
-  ode::integrate_n_steps(myStepper, app, U, snColl, 0.0, 0.0035, 10000);
-
+  ode::integrateNSteps(myStepper, app, U, snColl, 0.0, 0.0035, 10000);
+  //ode::integrateNSteps(myStepper, app, U, 0.0, 0.0035, 10000);
+  // for (auto & it : U)
+  //   std::cout << it  << std::endl;
   std::cout << snColl.getCount() << std::endl;
   snColl.print();
 

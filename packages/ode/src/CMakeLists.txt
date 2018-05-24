@@ -18,6 +18,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   ode_ConfigDefs.hpp
   ode_forward_declarations.hpp
+  ode_void_collector.hpp
   ode_stepper_traits.hpp
   ode_explicit_stepper_base.hpp
   ode_euler_stepper.hpp
@@ -27,6 +28,7 @@ APPEND_SET(HEADERS
 
 APPEND_SET(SOURCES
   src/ode_forward_declarations.cc
+  src/ode_void_collector.cc
   src/ode_stepper_traits.cc  
   src/ode_explicit_stepper_base.cc
   src/ode_euler_stepper.cc
