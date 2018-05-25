@@ -36,7 +36,9 @@ private:
   std::vector<sc_t> data_;
 
 public:
-  ~vector(){};
+  vector(){}
+  vector(const std::vector<sc_t> & src) : data_(src){}
+  ~vector(){}
 
   sc_t & operator [] (ord_t i){
     return data_[i];

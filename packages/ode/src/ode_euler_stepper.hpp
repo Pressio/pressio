@@ -44,7 +44,7 @@ public :
     
     // TODO: if possible, change to use native operations of the target data types
     // out = in + dt * rhs    
-    for (size_t i=0; i < y_inout.size(); i++){
+    for (decltype(y_inout.size()) i=0; i < y_inout.size(); i++){
       y_inout[i] += dt*RHS_[i];
     }
   }

@@ -33,6 +33,7 @@ cmake \
     -D rompp_ENABLE_core:BOOL=ON \
     -D rompp_ENABLE_svd:BOOL=ON \
     -D rompp_ENABLE_ode:BOOL=ON \
+    -D rompp_ENABLE_apps:BOOL=ON \
     \
     $EXTRA_ARGS \
     ${SRC}

@@ -6,6 +6,13 @@
 #include "ode_forward_declarations.hpp"
 #include "ode_void_collector.hpp"
 
+#include "vector/core_vector_traits.hpp"
+#include "vector/core_vector_epetra.hpp"
+#include "vector/core_vector_serial_arbitrary.hpp"
+#include "vector/core_vector_std.hpp"
+#include "vector/core_vector_eigen.hpp"
+
+
 namespace ode{
 
   
@@ -76,7 +83,6 @@ namespace ode{
     			start_time, dt, num_steps, collector);
   }
 
-
   template<typename stepper_type,
 	   typename rhs_functor_type,
 	   typename state_type
@@ -97,6 +103,32 @@ namespace ode{
 					    start_time, dt, num_steps,
 					    ode::voidCollector());
   }
+
+
+
+  template<typename stepper_type,
+	   typename rhs_functor_type, 
+	   typename wrapped_state_type,
+	   typename collector_functor_type
+	   >
+  typename std::enable_if<!std::is_same<stepper_type,void>::value &&
+			  !std::is_same<rhs_functor_type,void>::value 
+			  >::type
+  integrateNSteps(stepper_type & stepper,
+		  rhs_functor_type & rhs_functor,
+		  core::vector<wrapped_state_type> & stateIn,
+		  collector_functor_type & collector,
+		  ode::details::time_type start_time,
+		  ode::details::time_type dt,
+		  size_t num_steps)
+  {
+    integrateNStepsImpl<stepper_type, rhs_functor_type, wrapped_state_type,
+      			ode::details::time_type, size_t,
+      			collector_functor_type>(stepper, rhs_functor,
+						stateIn.getNonConstRefToData(),
+						start_time, dt, num_steps, collector);
+  }
+
 
   
 }//end namespace

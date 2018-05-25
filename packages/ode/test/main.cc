@@ -13,12 +13,17 @@
 #include "ode_rk4_stepper.hpp"
 #include "ode_integrate_n_steps.hpp"
 
+#include "vector/core_vector_traits.hpp"
+#include "vector/core_vector_epetra.hpp"
+#include "vector/core_vector_serial_arbitrary.hpp"
+#include "vector/core_vector_std.hpp"
+#include "vector/core_vector_eigen.hpp"
+
 
 using vecD = std::vector<double>;
 using ui_t = unsigned int;
 
 
-//==================================================
 class burg1d
 {
 public:
@@ -101,14 +106,12 @@ struct stateResizer{
 };
 
 
-struct snapshot_collector
-{
+struct snapshot_collector{
   using matrix = std::vector<vecD>;
   using state_t = vecD;
   
   matrix snaps_;
   size_t count_;
-
   void operator()(size_t step, double t, const state_t & x){
     if (step % 50 ==0 ){
       snaps_.emplace_back(x);
@@ -116,7 +119,6 @@ struct snapshot_collector
     }
     std::cout << step << " " << t << std::endl;
   }
-
   size_t getCount(){
     return count_;
   };
@@ -131,9 +133,34 @@ struct snapshot_collector
     	 file << std::fixed << std::setprecision(10) << it << " "; 
       file << std::endl;
     }
-.    file.close();    
+    file.close();    
   };
 };
+
+
+// template <typename state_type, typename oapp>
+// class GP()
+// {
+// private:
+//   state_type myY_;
+//   oapp * appPtr_;
+    
+// public:
+//   GP(state_type & src, ...)
+//     : myY(src), ... {}
+//   ~GP(){}
+  
+//   void operator()()
+//   {
+//     (*oappPtr)()( V' * y )
+//   }
+
+//   void run()
+//   {
+//     ode::eulerStepper<state_t,state_t,double,stateResizer> myStepper;
+//     ode::integrateNSteps(myStepper, *this, myY, snColl, 0.0, 0.0035, 10000);    
+//   }
+// };
 
 
 int main(int argc, char *argv[])
@@ -145,14 +172,30 @@ int main(int argc, char *argv[])
   using state_t = burg1d::state_type;
   state_t U = app.viewInitCond();
   snapshot_collector snColl;  
-  ode::eulerStepper<state_t,state_t,double,stateResizer> myStepper;
-  ode::integrateNSteps(myStepper, app, U, snColl, 0.0, 0.0035, 10000);
-  //ode::integrateNSteps(myStepper, app, U, 0.0, 0.0035, 10000);
-  // for (auto & it : U)
-  //   std::cout << it  << std::endl;
-  std::cout << snColl.getCount() << std::endl;
-  snColl.print();
+  {
+    ode::eulerStepper<state_t,state_t,double,stateResizer> myStepper;
+    ode::integrateNSteps(myStepper, app, U, snColl, 0.0, 0.0035, 10000);
+    //ode::integrateNSteps(myStepper, app, U, 0.0, 0.0035, 10000);
+    // for (auto & it : U)
+    //   std::cout << it  << std::endl;
+    std::cout << snColl.getCount() << std::endl;
+    snColl.print();
+  }
 
+  // //----------------------------------------  
+  // // lets assume we have snapshot matrix V
+  
+  // using myvec_t = core::vector<state_t>;
+  // myvec_t y(U); // y contains the initial condition
+  // y.matmul(V); // something like this
+
+  // GP gpSolver(y, app, ...);
+  // gpSolver.run();
+  
+  // // auto const * data = gigi.view();
+  // // for (auto & it : *data)
+  // //   std::cout << it  << std::endl;
+  
   return 0;
 }
 
