@@ -2,5 +2,6 @@
 
 ADD_SUBDIRECTORIES(
   burgers1d_stdvector
-  burgers1d_eigen_gp
+  burgers1d_eigen
+  taylor_green
   )

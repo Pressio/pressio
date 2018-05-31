@@ -32,7 +32,19 @@ public:
   // void resize(size_t newSize) {
   //   this->underlying().resizeImpl(newSize);
   // };
+
+  size_t rows() const{
+    return this->underlying().rowsImpl();
+  }
+
+  size_t cols() const{
+    return this->underlying().colsImpl();
+  }
   
+  void transpose(derived_type & result)const {
+    return this->underlying().transposeImpl(result);
+  }
+
 };
 
     

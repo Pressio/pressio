@@ -3,6 +3,7 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
   ode    packages/ode   PT
   svd    packages/svd   PT
   apps   packages/apps  PT
+  rom    packages/rom   PT
   )
 
 

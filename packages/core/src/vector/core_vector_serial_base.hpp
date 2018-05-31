@@ -31,6 +31,18 @@ public:
   void resize(size_t newSize) {
     this->underlying().resizeImpl(newSize);
   };
+
+  // template <typename wrapped_matrix_type, typename U>
+  // void matMultiply(const matrix<wrapped_matrix_type> & matin,
+  // 		   typename std::enable_if<std::is_same<U,der_t>::value, der_t >::type & result) const{
+  //   this->underlying().matMultiplyImpl(matin, result);
+  // };
+  template <typename wrapped_matrix_type, typename U>
+  typename std::enable_if<std::is_same<U,der_t>::value>::type
+  matMultiply(const matrix<wrapped_matrix_type> & matin,
+		   U & result) const{
+    this->underlying().matMultiplyImpl(matin, result);
+  };
   
 };
 

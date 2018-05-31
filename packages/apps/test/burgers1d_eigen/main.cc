@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
   apps::burgers1dEigen appObj(mu);
   appObj.setup();
 
-  state_t U = appObj.getInitialState();
+  state_t U = appObj.copyInitialState();
   snapshot_collector snColl;
   ode::eulerStepper<state_t,state_t,double,eigenVectorStateResizer> myStepper;
   ode::integrateNSteps(myStepper, appObj, U, snColl, 0.0, 0.0035, 10000);

@@ -30,7 +30,7 @@ private:
   wrap_t data_;
 
 public:
-  matrix(wrap_t & other) : data_(other)
+  matrix(const wrap_t & other) : data_(other)
   {}
   matrix(){
     std::cout << "default" << std::endl;
@@ -44,14 +44,28 @@ public:
   //   return data_[i];
   // };  
   //-----------------------------------
+
+  void transposeImpl(derived_t & result) const{
+    result.getNonConstRefToData() = data_.transpose();
+  }
   
   wrap_t const * viewImpl() const{
     return &data_;
   };
+
   wrap_t & getNonConstRefToDataImpl(){
     return data_;
   };
 
+  size_t rows() const{
+    return data_.rows();
+  }
+
+  size_t cols() const{
+    return data_.cols();
+  }
+
+  
   // void resizeImpl(size_t val) {
   //   data_.resize(val);
   // };

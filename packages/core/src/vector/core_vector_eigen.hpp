@@ -36,7 +36,12 @@ private:
   wrap_t data_;
 
 public:
+  vector(){}
+  vector(const wrap_t & src) : data_(src){}
+  vector(const wrap_t && src) : data_(std::move(src)){}
+  ~vector(){}
 
+  
   sc_t & operator [] (ord_t i){
     return data_[i];
   };
@@ -51,15 +56,27 @@ public:
   wrap_t & getNonConstRefToDataImpl(){
     return data_;
   };
-  void resizeImpl(size_t val) {
-    //data_.resize(val);
+  void resizeImpl(size_t val){
+    data_.resize(val);
   };
   //-----------------------------------
 
   size_t sizeImpl() const {
-    return 1;//data_.size();
+    return (data_.rows()==1) ? data_.cols() : data_.rows();
   };
   //-----------------------------------
+
+  template <typename wrapped_matrix_type, typename U>
+  typename std::enable_if<std::is_same<U,der_t>::value >::type
+  matMultiplyImpl(const matrix<wrapped_matrix_type> & matin, U& result) const
+  {
+    auto & resVec = result.getNonConstRefToData();
+    auto * matPtr = matin.view();
+    assert( matPtr->cols() == this->size() );
+    //assert( result.size() == this->size() );
+    resVec = (*matPtr)*data_;
+  };
+
   
   sc_t dotImpl(const der_t & b) const{
     // // what is this?

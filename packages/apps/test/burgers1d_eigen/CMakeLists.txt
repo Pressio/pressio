@@ -1,5 +1,5 @@
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  apps_burgers1d_eigen_gp
+  apps_burgers1d_eigen
   SOURCES
     main.cc
   NUM_MPI_PROCS 1

@@ -25,6 +25,8 @@ namespace details{
 			>
 		 >
   {
+    using derived_t = solver<matrix_type, which_impl>;
+
     using native_matrix_t = typename core::details::traits<matrix_type>::wrapped_t;
 
     using wrapped_solver_t = typename std::conditional<which_impl==svdKind::EigenJacobi,
@@ -32,8 +34,9 @@ namespace details{
 						Eigen::BDCSVD<native_matrix_t>
     					     >::type;
     using scalar_t = typename core::details::traits<matrix_type>::scalar_t;
-    using derived_t = solver<matrix_type, which_impl>;
-
+    using u_matrix_t = core::matrix<native_matrix_t>;
+    using v_matrix_t = core::matrix<native_matrix_t>;
+    
     enum {
       isSerial = 1,
       isDistributed = !isSerial,

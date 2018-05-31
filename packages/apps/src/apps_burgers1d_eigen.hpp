@@ -31,7 +31,8 @@ public:
   using state_type = Eigen::VectorXd;
 
 public:  
-  burgers1dEigen(eigVec params) : mu_(params)
+  burgers1dEigen(eigVec params, ui_t Ncell=1000)
+    : mu_(params), Ncell_(Ncell)
   {}
 
   void setup(){
@@ -43,11 +44,10 @@ public:
     U_.resize(Ncell_);
     for (ui_t i=0; i<Ncell_; ++i)
       U_(i) = 1.0;
+    U0_ = U_;
   };
 
-  state_type getInitialState(){
-    return U_;
-  };
+  state_type copyInitialState(){ return U0_; };
   
   void operator() ( const state_type & u,
 		    state_type & R,
@@ -65,16 +65,15 @@ public:
 private:  
   const double xL_ = 0.0;
   const double xR_ = 100.0;
-  const ui_t Ncell_ = 100;
+  ui_t Ncell_;
   eigVec mu_;
   const double t0 = 0.0;
   const double tfinal_ = 35.0;
   double dx_;
   eigVec xGrid_;
-
   state_type U_;
+  state_type U0_;
 };
 
-  
 }//end namespace apps
 #endif 

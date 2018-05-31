@@ -11,16 +11,37 @@ namespace svd
 template<typename derived_type>
 class solverGenericBase
 {
-public:
+private:
   using sc_t = typename svd::details::traits<derived_type>::scalar_t;
   using wrap_solver_t = typename svd::details::traits<derived_type>::wrapped_solver_t;
-  using der_t = derived_type;
+  using native_matrix_t = typename svd::details::traits<derived_type>::native_matrix_t;
+  using u_matrix_type = typename svd::details::traits<derived_type>::u_matrix_t;
+  using v_matrix_type = typename svd::details::traits<derived_type>::v_matrix_t;
 
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
+public:
+
+  derived_type & underlying(){
+    return static_cast<derived_type &>(*this);
   };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
+  derived_type const& underlying() const{
+    return static_cast<derived_type const&>(*this);
+  };
+
+  template <typename matrix_in_type>
+  void compute(const matrix_in_type & mat){
+    this->underlying().computeImpl(mat);
+  };
+
+  // const native_matrix_t & singularValues(){
+  //   return this->underlying().singularValuesImpl();
+  // };
+
+  const u_matrix_type & leftSingularVectors() const {
+    return this->underlying().leftSingularVectorsImpl();
+  };
+
+  const v_matrix_type & rightSingularVectors() const {
+    return this->underlying().rightSingularVectorsImpl();
   };
   
   wrap_solver_t const & getConstRefToWrappedSolver() const {
