@@ -105,29 +105,37 @@ namespace ode{
   }
 
 
-  // template<typename stepper_type,
-  // 	   typename rhs_functor_type, 
-  // 	   typename wrapped_state_type,
-  // 	   typename collector_functor_type
-  // 	   >
-  // typename std::enable_if<!std::is_same<stepper_type,void>::value &&
-  // 			  !std::is_same<rhs_functor_type,void>::value 
-  // 			  >::type
-  // integrateNSteps(stepper_type & stepper,
-  // 		  rhs_functor_type & rhs_functor,
-  // 		  core::vector<wrapped_state_type> & stateIn,
-  // 		  collector_functor_type & collector,
-  // 		  ode::details::time_type start_time,
-  // 		  ode::details::time_type dt,
-  // 		  size_t num_steps)
-  // {
-  //   integrateNStepsImpl<stepper_type, rhs_functor_type, wrapped_state_type,
-  //     			ode::details::time_type, size_t,
-  //     			collector_functor_type>(stepper, rhs_functor,
-  // 						stateIn.getNonConstRefToData(),
-  // 						start_time, dt, num_steps, collector);
-  // }
+  // the following is for testing, needs to be cleaned up and made properly
+  // because it has a different name now, NOT GOOG.
+  template<typename stepper_type,
+	   typename state_type,
+	   typename collector_functor_type
+	   >
+  typename std::enable_if< !std::is_same<stepper_type,void>::value &&
+			   core::details::traits<state_type>::isVector == 1
+			   >::type
+  integrateNStepsImpl(stepper_type & stepper,
+		  state_type & stateIn,
+		  collector_functor_type & collector,
+		  ode::details::time_type start_time,
+		  ode::details::time_type dt,
+		  size_t num_steps)
+  {
+    ode::details::time_type time = start_time;
+    size_t step = 0;
+    for( ; step < num_steps ; ++step)
+    {
+      // call collector/observer
+      collector(step, time, stateIn);
 
+      // do one step
+      stepper.doStep( stateIn, time, dt );
+
+      // advance time
+      time += + dt;
+    }
+    collector(step, time, stateIn);    
+  }
 
   
 }//end namespace

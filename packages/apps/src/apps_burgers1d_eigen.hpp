@@ -4,7 +4,6 @@
 #define APPS_BURGERS1D_EIGEN_HPP_
 
 #include "apps_ConfigDefs.hpp"
-
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -14,7 +13,6 @@
 #include <cmath>
 #include <fstream>
 #include <cassert>
-
 #include "Eigen/Dense"
 
 
@@ -29,6 +27,7 @@ private:
 
 public:
   using state_type = Eigen::VectorXd;
+  using jacobian_type = Eigen::MatrixXd;
 
 public:  
   burgers1dEigen(eigVec params, ui_t Ncell=1000)
@@ -50,18 +49,38 @@ public:
   state_type copyInitialState(){ return U0_; };
   
   void operator() ( const state_type & u,
-		    state_type & R,
+		    state_type & rhs,
 		    const double /* t */ )
   {
-    R(0) = (0.5 * ( mu_(0)*mu_(0) - u(0)*u(0) ) )/dx_;
+    rhs(0) = (0.5 * ( mu_(0)*mu_(0) - u(0)*u(0) ) )/dx_;
     for (ui_t i=1; i<Ncell_; ++i){
-      R(i) = ( 0.5*(u(i-1)*u(i-1) - u(i)*u(i)) )/dx_;
+      rhs(i) = ( 0.5*(u(i-1)*u(i-1) - u(i)*u(i)) )/dx_;
     }
     for (ui_t i=0; i<Ncell_; ++i){
-      R(i) += mu_(1)*exp(mu_(2)*xGrid_(i));
+      rhs(i) += mu_(1)*exp(mu_(2)*xGrid_(i));
     }    
   }
 
+  void operator() ( const state_type & u,
+		    state_type & rhs,
+		    jacobian_type & jac,
+		    const double t )
+  {
+    (*this)(u,rhs,t);
+
+    double dxInv = 1.0/dx_;
+    //evaluate jacobian
+    jac.resize(u.size(), u.size());
+    jac = jacobian_type::Zero(jac.rows(), jac.cols());
+    
+    jac(0,0) = -dxInv * u(0)*u(0);
+    for (ui_t i=1; i<Ncell_; ++i){
+      jac(i,i-1) = dxInv * u(i-1)*u(i-1);
+      jac(i,i) = -dxInv * u(i-1)*u(i-1);     
+    }    
+  }
+
+  
 private:  
   const double xL_ = 0.0;
   const double xR_ = 100.0;

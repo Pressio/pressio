@@ -1,6 +1,6 @@
 
-#ifndef ROM_GP_MOCK_HPP_
-#define ROM_GP_MOCK_HPP_
+#ifndef ROM_GP_DRAFT_HPP_
+#define ROM_GP_DRAFT_HPP_
 
 #include "rom_ConfigDefs.hpp"
 #include "svd_solver_traits.hpp"

@@ -56,7 +56,7 @@ public:
   wrap_t & getNonConstRefToDataImpl(){
     return data_;
   };
-
+  
   size_t rows() const{
     return data_.rows();
   }
@@ -65,17 +65,11 @@ public:
     return data_.cols();
   }
 
+  void resizeImpl(size_t nrows, size_t ncols){
+    data_.resize(nrows, ncols);
+  }
   
-  // void resizeImpl(size_t val) {
-  //   data_.resize(val);
-  // };
-  // //-----------------------------------
 
-  // size_t sizeImpl() const {
-  //   return data_.size();
-  // };
-  // //-----------------------------------
-  
   // sc_t dotImpl(const der_t & b) const{
   //   // what is this?
   //   // dot product: <this,b>

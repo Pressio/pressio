@@ -25,7 +25,6 @@ namespace ode {
 	   >
   class eulerStepper;
 
-
   template<typename state_type,
 	   typename rhs_type,
 	   typename scalar_type,
@@ -34,7 +33,16 @@ namespace ode {
 	   >
   class rungeKutta4Stepper;
 
-  
+  template<typename state_type,
+	   typename rhs_type,
+	   typename jacobian_type,
+	   typename functor_type,
+	   typename scalar_type,
+	   typename state_resizer_fnctor_type,
+	   typename enable = void
+	   >
+  class implicitEulerStepper;
+
   
 } // end namespace 
 

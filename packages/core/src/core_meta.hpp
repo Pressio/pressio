@@ -204,10 +204,8 @@ namespace meta {
   //   static const bool value = sizeof(test<T>(0)) == sizeof(yes);
   // };
   
-  
-  
+    
 } // namespace meta
-
 } // namespace core
 #endif
 

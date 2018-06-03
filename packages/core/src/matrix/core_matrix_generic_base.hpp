@@ -40,6 +40,10 @@ public:
   size_t cols() const{
     return this->underlying().colsImpl();
   }
+
+  void resize(size_t nrows, size_t ncols){
+    return this->underlying().resizeImpl(nrows, ncols);
+  }
   
   void transpose(derived_type & result)const {
     return this->underlying().transposeImpl(result);

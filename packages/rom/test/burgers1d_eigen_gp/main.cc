@@ -15,7 +15,7 @@
 #include "ode_integrate_n_steps.hpp"
 
 #include "apps_burgers1d_eigen.hpp"
-#include "rom_gp_mock.hpp"
+#include "rom_gp_draft.hpp"
 
 #include "matrix/core_matrix_traits.hpp"
 #include "matrix/core_matrix_eigen.hpp"
@@ -185,7 +185,7 @@ struct snapshot_collector_myvec{
 int main(int argc, char *argv[])
 {
   using app_state_t = apps::burgers1dEigen::state_type;
-
+  
   //-----------------
   // create the app 
   //-----------------
@@ -198,42 +198,41 @@ int main(int argc, char *argv[])
   // collect snapshots 
   //-------------------
   auto snColl = std::make_shared<snapshot_collector>();
-  ode::eulerStepper<app_state_t,app_state_t,
-		    double,eigenVectorStateResizer> myStepper;
+  ode::eulerStepper<app_state_t,app_state_t,double,eigenVectorStateResizer> myStepper;
   ode::integrateNSteps(myStepper, appObj, U, *snColl, 0.0, 0.0035, 10000);
   std::cout << snColl->getCount() << std::endl;
   snColl->printFile();
     
-  // somehow someway wrap state and snaps into vector and matrix
-  // this can be done inside the collector directly
-  auto snaps = snColl->getSnaps();
+  // wrap snaps into matrix (this can be done inside the collector directly)
   using mymat_t = core::matrix<Eigen::MatrixXd>;
+  auto snaps = snColl->getSnaps();
   mymat_t MM(snaps);
 
+  //-------------------
   // do SVD
+  //-------------------
   using svd_type = svd::solver<mymat_t, svd::svdKind::EigenJacobi>;
   svd_type svdSolve;
   svdSolve.compute(MM);
-  mymat_t const & matU = svdSolve.leftSingularVectors();
-  //  std::cout << "U:" << std::endl << matU << std::endl;
   
   //--------------------------------------
   // wrap the app state with our vector
   //--------------------------------------
   using myvec_t = core::vector<app_state_t>;
-  myvec_t y( appObj.copyInitialState() ); // y contains the initial condition
-  // for (int i=0; i<y.size(); i++)
-  //   std::cout << y[i] << std::endl;
+  myvec_t y( appObj.copyInitialState() ); // y contains the initial condition of app
   
   // galerkin projection class 
   rom::GP<myvec_t,apps::burgers1dEigen,svd_type> gpSolver(y, appObj, svdSolve);
-  // std::cout << "------------" << std::endl;
-  // for (int i=0; i<y.size(); i++)
-  //   std::cout << y[i] << std::endl;
   snapshot_collector_myvec<svd_type> snColl2(svdSolve);
   ode::eulerStepper<myvec_t,myvec_t,double,myVectorStateResizer> myStepper2;
   ode::integrateNSteps(myStepper2, gpSolver, y, snColl2, 0.0, 0.0035, 10000); //0, to 35
   snColl2.printFile();
-    
+
+  // // lspg
+  // rom::lspg<myvec_t,apps::burgers1dEigen,svd_type> gpSolver(y, appObj, svdSolve);
+  // ode::implicitEulerStepper<myvec_t,myvec_t,double,myVectorStateResizer> myStepper3;
+  // ode::integrateNSteps(myStepper3, gpSolver, y, snColl2, 0.0, 0.0035, 10000); //0, to 35
+  
+  
   return 0;
 }

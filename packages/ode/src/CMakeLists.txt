@@ -22,6 +22,8 @@ APPEND_SET(HEADERS
   ode_stepper_traits.hpp
   ode_explicit_stepper_base.hpp
   ode_euler_stepper.hpp
+  ode_implicit_stepper_base.hpp
+  ode_implicit_euler_stepper.hpp
   ode_rk4_stepper.hpp
   ode_integrate_n_steps.hpp
 )
@@ -32,6 +34,8 @@ APPEND_SET(SOURCES
   src/ode_stepper_traits.cc  
   src/ode_explicit_stepper_base.cc
   src/ode_euler_stepper.cc
+  src/ode_implicit_stepper_base.cc
+  src/ode_implicit_euler_stepper.cc
   src/ode_rk4_stepper.cc
   src/ode_integrate_n_steps.cc
   )

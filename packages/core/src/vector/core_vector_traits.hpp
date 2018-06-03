@@ -38,7 +38,8 @@ namespace details{
       isVector = 1,
       isSTDVector = 0,
       isSerial = 0,
-      isDistributed = 1
+      isDistributed = 1,
+      isEigen = 0
     };
   };
 
@@ -65,7 +66,8 @@ namespace details{
       isVector = 1,
       isSTDVector = 0,
       isSerial = 0,
-      isDistributed = 1
+      isDistributed = 1,
+      isEigen = 0
     };
   };
 
@@ -93,7 +95,8 @@ namespace details{
       isVector = 1,
       isSTDVector = 0,
       isSerial = 1,
-      isDistributed = !isSerial
+      isDistributed = !isSerial,
+      isEigen = 0
     };
   };
   
@@ -118,7 +121,8 @@ namespace details{
       isVector = 1,
       isSTDVector = 1,
       isSerial = 1,
-      isDistributed = !isSerial
+      isDistributed = !isSerial,
+      isEigen = 0
     };
   };
 
@@ -139,7 +143,8 @@ namespace details{
       isVector = 1,
       isSTDVector = 0,
       isSerial = 1,
-      isDistributed = !isSerial
+      isDistributed = !isSerial,
+      isEigen = 1
     };
   };
   

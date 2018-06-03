@@ -1,6 +1,6 @@
 
-#ifndef ODE_EXPLICIT_STEPPER_BASE_HPP_
-#define ODE_EXPLICIT_STEPPER_BASE_HPP_
+#ifndef ODE_IMPLICIT_STEPPER_BASE_HPP_
+#define ODE_IMPLICIT_STEPPER_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
 #include "ode_stepper_traits.hpp"
@@ -9,10 +9,9 @@
 namespace ode{
 
 template<typename stepper_type>
-class explicit_stepper_base
+class implicit_stepper_base
 {
 public:
-
   using state_t = typename ode::details::traits<stepper_type>::state_t;
   using sc_t = typename ode::details::traits<stepper_type>::scalar_t;
   using order_t = typename ode::details::traits<stepper_type>::order_t; 
@@ -22,15 +21,14 @@ public:
   using rhs_t = typename ode::details::traits<stepper_type>::rhs_t;
 
   // (de)constructors
-  explicit_stepper_base(){}
-  virtual ~explicit_stepper_base(){}
+  implicit_stepper_base(){}
+  ~implicit_stepper_base(){}
 
   // methods
   order_t order() const{  return order_value; }
 
-  template< typename functor_type>
-  void doStep( functor_type & functor, state_t &inout, time_t t, time_t dt ){
-    this->stepper()->doStepImpl( functor, inout, t, dt );
+  void doStep( state_t &inout, time_t t, time_t dt ){
+    this->stepper()->doStepImpl( inout, t, dt );
   }
 
   
@@ -48,6 +46,5 @@ protected:
 };
 
 
-}//end namespace
-  
+}//end namespace  
 #endif
