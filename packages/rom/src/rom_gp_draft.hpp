@@ -36,7 +36,13 @@ public:
     // U^T * y0
     myY_->matMultiply(lsvT_, Udoty_);
     *myY_ = Udoty_;
-    // for (int i=0; i<Udoty_.size(); i++)
+    std::cout << "GP y0 " << std::endl;
+    for (int i=0; i<Udoty_.size(); i++)
+      std::cout << (*myY_)[i] << " ";
+    std::cout << std::endl;
+    std::cout << "--------- " << std::endl;
+
+  // for (int i=0; i<Udoty_.size(); i++)
     //   std::cout << Udoty_[i] << std::endl;
     dudtRed_.resize( lsv_.rows() );
   }

@@ -32,22 +32,65 @@ public :
   using stepper_base_t = implicit_stepper_base<stepper_t>;
   
   // (de)constructors
-  implicitEulerStepper(functor_type & sysFunctor)
-    : stepper_base_t(), sysFunctor_(&sysFunctor)
+  implicitEulerStepper(functor_type & sysFunctor, bool romOn = false)
+    : stepper_base_t(), sysFunctor_(&sysFunctor), romOn_(romOn)
   {}
+
   ~implicitEulerStepper(){}
 
-  
+
   void operator()(const state_type & y, state_type & R, jacobian_type & J)
   {
     R.resize(y.size());
     assert(y.size() == yOld_.size());
+
+    if (romOn_ == false)
+      doMathFullCase(y, R, J);
+    else
+      doMathReducedCase(y, R, J);
+  }
+
+  void doMathReducedCase(const state_type & yRed, state_type & R, jacobian_type & J)
+  {
+    //R.resize(y.size());
+    // assert(y.size() == yOld_.size());
+    
+    state_type Vdoty;
+    (*sysFunctor_).rescaleState(yRed, Vdoty);
+    state_type Vdotyold;
+    (*sysFunctor_).rescaleState(yOld_, Vdotyold);
     
     // compute RHS(y)
-    (*sysFunctor_)(*y.view(), R.getNonConstRefToData(), J.getNonConstRefToData(), t_);
+    jacobian_type Jfull; //Jfull is resized inside functor
+    (*sysFunctor_)(yRed, R, Jfull, t_);
+    
+    // R = y - yOld - dt*rhs(y)
+    for (decltype(R.size()) i=0; i < R.size(); i++){
+      R[i] = Vdoty[i] - Vdotyold[i] -dt_*R[i];
+    }
+
+    auto & jac = Jfull.getNonConstRefToData();
+    jac(0,0) = 1.0 - dt_ * jac(0,0);
+    for (size_t i=1; i < J.rows(); ++i){
+      jac(i,i-1) = - dt_ * jac(i,i-1);
+      jac(i,i) = 1.0 - dt_ * jac(i,i);
+    }
+    // J should have here reduced size, this is done inside function 
+    (*sysFunctor_).rescaleJacobian(Jfull, J);
+  }
+
+
+  void doMathFullCase(const state_type & y, state_type & R, jacobian_type & J)
+  {
+    R.resize(y.size());
+    assert(y.size() == yOld_.size());
+    
+    // compute RHS(y), this is bad because we should not know that y,R and J are
+    // my vectors types, these could be anything. Needs to be fixed.
+    (*sysFunctor_)(y, R, J, t_);
 
     // R = y - yOld - dt*rhs(y)
-    for (decltype(y.size()) i=0; i < y.size(); i++){
+    for (decltype(R.size()) i=0; i < R.size(); i++){
       R[i] = y[i] - yOld_[i] -dt_*R[i];
     }
 
@@ -56,10 +99,11 @@ public :
     for (size_t i=1; i < J.rows(); ++i){
       jac(i,i-1) = - dt_ * jac(i,i-1);
       jac(i,i) = 1.0 - dt_ * jac(i,i);
-    }    
+    }
   }
 
-  
+
+
   void doStepImpl(state_type & y_inout,
 		  ode::details::time_type t,
 		  ode::details::time_type dt )
@@ -69,26 +113,26 @@ public :
     t_ = t;
 
     std::cout << "STEP IMP EULER " << t_ << std::endl;
-    for (int i=0; i < yOld_.size(); ++i)
-      std::cout << yOld_[i]  << " ";
+    state_type Vdotyold;
+    (*sysFunctor_).rescaleState(yOld_, Vdotyold);
+    for (int i=0; i < Vdotyold.size(); ++i)
+      std::cout << std::setprecision(10) << Vdotyold[i]  << " ";
     std::cout << std::endl;
 
-    algebra::newtonRaph<stepper_t,state_type,jacobian_type>(*this, y_inout);
-    //algebra::nonLinearLstsq<stepper_t,state_type,jacobian_type>(*this, y_inout);
+    //algebra::newtonRaph<stepper_t,state_type,jacobian_type>(*this, y_inout);
+    algebra::nonLinearLstsq<stepper_t,state_type,jacobian_type>(*this, y_inout);
 
-    std::cout << "AFTER SOLVE at t = " << t_+dt_ << std::endl;
-    for (int i=0; i < y_inout.size(); ++i)
-      std::cout << std::setprecision(10) << y_inout[i]  << " ";
+    std::cout << "AFTER SOLVE " << std::endl;
+    state_type Vdotynew;
+    (*sysFunctor_).rescaleState(y_inout, Vdotynew);
+    for (int i=0; i < Vdotynew.size(); ++i)
+      std::cout << std::setprecision(10) << Vdotynew[i]  << " ";
     std::cout << std::endl;
-    
-    // this->myResizer_(y_inout, RHS_);
-    // //eval RHS
-    // functor(y_inout, RHS_, t);    
-    // // TODO: if possible, change to use native operations of the target data types
-    // // out = in + dt * rhs    
-    // for (decltype(y_inout.size()) i=0; i < y_inout.size(); i++){
-    //   y_inout[i] += dt*RHS_[i];
-    // }
+
+    // std::cout << "AFTER SOLVE at t = " << t_+dt_ << std::endl;
+    // for (int i=0; i < y_inout.size(); ++i)
+    //   std::cout <<  << y_inout[i]  << " ";
+    // std::cout << std::endl;    
   }
 
 private:
@@ -97,12 +141,17 @@ private:
   rhs_type RHS_;
   functor_type * sysFunctor_;
   state_type yOld_;
+  bool romOn_;
 
 }; //end class
 
 
 }//end namespace
 #endif 
+
+
+
+
 
 
 

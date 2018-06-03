@@ -51,13 +51,8 @@ void newtonRaph(nonlinfunctor_type & F, state_type & y)
   state_type dy; dy.resize(y.size());
   jacobian_type jac;
   jac.getNonConstRefToData() = core::details::traits<jacobian_type>::wrapped_t::Zero(y.size(), y.size());
-
   int maxIter = 100;
   // on entry, y contains the initial guess
-  // state_type y0;
-  // y0.resize(y.size());
-  // for (int i=0; i < y0.size(); ++i)
-  //   y0[i]=0.0;
   
   // get residual and jacobian at initial guess
   F(y, res, jac);

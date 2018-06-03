@@ -32,9 +32,7 @@ private:
 public:
   matrix(const wrap_t & other) : data_(other)
   {}
-  matrix(){
-    std::cout << "default" << std::endl;
-  }
+  matrix(){}
   ~matrix(){}
   
   // sc_t & operator [] (ord_t i){

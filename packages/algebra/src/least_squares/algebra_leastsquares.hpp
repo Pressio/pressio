@@ -5,7 +5,7 @@
 #include "matrix/core_matrix_eigen.hpp"
 #include <Eigen/Core>
 #include <unsupported/Eigen/NonLinearOptimization>
-
+#include <iomanip>
 
 namespace algebra{
 
@@ -23,9 +23,9 @@ linearLstsq(const matrix_type & A,
   auto * eb = b.view();
   auto & ex = x.getNonConstRefToData();
 
-  ex = (*eA).bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(*eb);
+  // ex = (*eA).bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(*eb);
   //ex = (*eA).colPivHouseholderQr().solve(*eb);
-  //ex = (eA->transpose() * (*eA)).ldlt().solve(eA->transpose() * *eb);
+  ex = (eA->transpose() * (*eA)).ldlt().solve(eA->transpose() * *eb);
 }
 //-------------------------------------------
 
@@ -38,7 +38,7 @@ bool isconverged(const vec_type & y, double eps = 1e-6)
     sum += y[i]*y[i];
   }
   sum /= static_cast<double>(y.size());
-  sum = std::sqrt(sum);    
+  sum = std::sqrt(sum);
   return sum < eps;
 }
 
@@ -46,21 +46,15 @@ bool isconverged(const vec_type & y, double eps = 1e-6)
 template <typename nonlinfunctor_type,
 	  typename state_type,
 	  typename jacobian_type>
-void nonLinearLstsq(nonlinfunctor_type & F, state_type & y)
+void nonLinearLstsq(nonlinfunctor_type & F, state_type & y)//, int jRows, int jCols)
 {
   state_type res;
   state_type dy; dy.resize(y.size());  
   jacobian_type jac;
-  jac.getNonConstRefToData() = core::details::traits<jacobian_type>::wrapped_t::Zero(y.size(), y.size());
-  int maxIter = 100;  
+  //  jac.getNonConstRefToData() = core::details::traits<jacobian_type>::wrapped_t::Zero(jRows, jCols);
+  int maxIter = 50;
   // get residual and jacobian at initial guess
   F(y, res, jac);
-
-  std::cout << "After EULER, Residual" << std::endl;
-  // for (int i=0; i < res.size(); ++i)
-  //   std::cout << res[i]  << " ";
-  // std::cout << std::endl;
-  
   
   bool done = isconverged<state_type>(res, 1e-6);
   if (done){
@@ -68,9 +62,8 @@ void nonLinearLstsq(nonlinfunctor_type & F, state_type & y)
   }
   for (int step=0; step<maxIter; step++)
   {
-    for (decltype(y.size()) i=0; i < y.size(); i++){
-      dy[i] = 1.0;
-    }
+    for (decltype(y.size()) i=0; i < y.size(); i++)
+      dy[i] = 0.0;
     linearLstsq(jac, res, dy);
 
     for (decltype(y.size()) i=0; i < y.size(); i++){

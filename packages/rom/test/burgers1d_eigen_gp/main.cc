@@ -11,11 +11,12 @@
 #include <cassert>
 
 #include "ode_euler_stepper.hpp"
-#include "ode_rk4_stepper.hpp"
+#include "ode_implicit_euler_stepper.hpp"
 #include "ode_integrate_n_steps.hpp"
 
 #include "apps_burgers1d_eigen.hpp"
 #include "rom_gp_draft.hpp"
+#include "rom_lspg_draft.hpp"
 
 #include "matrix/core_matrix_traits.hpp"
 #include "matrix/core_matrix_eigen.hpp"
@@ -30,10 +31,8 @@
 
 struct eigenVectorStateResizer{
   using vec_t = Eigen::VectorXd;
-
   // this has to be default constructible
-  // this will be checked at compile-time by ode package
-  
+  // this will be checked at compile-time by ode package  
   void operator()(const vec_t & source, vec_t & dest)
   {
     if ( dest.size()!=source.size() )
@@ -71,16 +70,11 @@ struct snapshot_collector{
       j = 0;
       snapshots_.resize(x.rows(), 11);
     }   
-    if ( checkTime(t, 0.0) ||
-	 checkTime(t, 3.5) ||
-	 checkTime(t, 7.0) ||
-	 checkTime(t, 10.5) ||
-	 checkTime(t, 14.0)||
-	 checkTime(t, 17.5)||
-	 checkTime(t, 21.0)||
-	 checkTime(t, 24.5)||
-	 checkTime(t, 28.0)||
-	 checkTime(t, 31.5)||
+    if ( checkTime(t, 0.0) || checkTime(t, 3.5) ||
+	 checkTime(t, 7.0) || checkTime(t, 10.5) ||
+	 checkTime(t, 14.0)|| checkTime(t, 17.5)||
+	 checkTime(t, 21.0)|| checkTime(t, 24.5)||
+	 checkTime(t, 28.0)|| checkTime(t, 31.5)||
 	 checkTime(t, 35.0)
 	){
       std::cout << t << std::endl;
@@ -128,8 +122,7 @@ struct snapshot_collector_myvec{
   using lsv_matrix_type = typename svd::details::traits<svdsolve_type>::u_matrix_t;    
   lsv_matrix_type lsv_;
 
-  snapshot_collector_myvec(svdsolve_type & svd)
-  {
+  snapshot_collector_myvec(svdsolve_type & svd){
     lsv_ = svd.leftSingularVectors();
   }
   
@@ -138,7 +131,7 @@ struct snapshot_collector_myvec{
   {
     if (snapshots_.rows() == 0){
       j = 0;
-      snapshots_.resize(lsv_.rows(), 11);
+      snapshots_.resize(lsv_.rows(),11);
       Udoty_.resize(lsv_.rows());
     }   
     if ( checkTime(t, 0.0) ||
@@ -164,19 +157,20 @@ struct snapshot_collector_myvec{
 
   size_t getCount() const{ return count_; };
 
-  void printFile(){
+  void printFile(std::string filename){
     std::ofstream file;
-    file.open( "outRed.txt" );
+    file.open(filename);
     for (int i=0; i<snapshots_.rows(); ++i){
       for (int k=0; k<snapshots_.cols(); ++k){
   	file << std::fixed
 	     << std::setprecision(10) << snapshots_(i,k) << " ";
+	std::cout << std::setprecision(10) << snapshots_(i,k) << " ";
       }
       file << std::endl;
+      std::cout << std::endl;
     }
     file.close();    
   }
-
 };
 
 
@@ -221,18 +215,31 @@ int main(int argc, char *argv[])
   using myvec_t = core::vector<app_state_t>;
   myvec_t y( appObj.copyInitialState() ); // y contains the initial condition of app
   
-  // galerkin projection class 
+  // //---------------------
+  // // galerkin projection
+  // //---------------------
   rom::GP<myvec_t,apps::burgers1dEigen,svd_type> gpSolver(y, appObj, svdSolve);
   snapshot_collector_myvec<svd_type> snColl2(svdSolve);
   ode::eulerStepper<myvec_t,myvec_t,double,myVectorStateResizer> myStepper2;
-  ode::integrateNSteps(myStepper2, gpSolver, y, snColl2, 0.0, 0.0035, 10000); //0, to 35
-  snColl2.printFile();
+  ode::integrateNSteps(myStepper2, gpSolver, y, snColl2, 0.0, 0.07, 501); //0, to 35
+  snColl2.printFile("outGP.txt");
 
-  // // lspg
-  // rom::lspg<myvec_t,apps::burgers1dEigen,svd_type> gpSolver(y, appObj, svdSolve);
-  // ode::implicitEulerStepper<myvec_t,myvec_t,double,myVectorStateResizer> myStepper3;
-  // ode::integrateNSteps(myStepper3, gpSolver, y, snColl2, 0.0, 0.0035, 10000); //0, to 35
+  //---------------------
+  // lspg
+  //---------------------
+  myvec_t y2( appObj.copyInitialState() ); // y contains the initial condition of app
   
+  using app_jac_t = apps::burgers1dEigen::jacobian_type;
+  using mymatjac_t = core::matrix<app_jac_t>;
+
+  using rom_algo_type = rom::lspg<myvec_t, mymatjac_t,apps::burgers1dEigen,svd_type>;
+  rom_algo_type lspgObj(y2, appObj, svdSolve);
+
+  ode::implicitEulerStepper<myvec_t,myvec_t, mymatjac_t, rom_algo_type,
+  			    double, myVectorStateResizer> myStepperImp(lspgObj, true);
+  snapshot_collector_myvec<svd_type> snCollEI(svdSolve);
+  ode::integrateNStepsImpl(myStepperImp, y2, snCollEI, 0.0, 0.07, 501);
+  snCollEI.printFile("outLSPG.txt");
   
   return 0;
 }
