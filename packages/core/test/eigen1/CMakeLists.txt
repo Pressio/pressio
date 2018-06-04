@@ -1,8 +1,7 @@
 
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   eigen1
-  SOURCES
-    main.cc
+  SOURCES main.cc
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )

@@ -124,16 +124,16 @@ int main(int argc, char *argv[])
   std::cout << snColl.getCount() << std::endl;
   snColl.print();
 
-  // wrap state vector
-  using myvec_t = core::vector<app_state_t>;
-  myvec_t y( appObj.copyInitialState() ); // y contains the initial condition of app
-  // wrap jacobian
-  using mymat_t = core::matrix<app_jac_t>;
-  snapshot_collector_myvec coll2;
-  ode::implicitEulerStepper<myvec_t,myvec_t, mymat_t, apps::burgers1dEigen,
-  			    double, myVectorStateResizer> myStepperImp(appObj);
-  ode::integrateNStepsImpl(myStepperImp, y, coll2, 0.0, 0.07, 500);
-  //std::cout << coll2.getCount() << std::endl;
+  // // wrap state vector
+  // using myvec_t = core::vector<app_state_t>;
+  // myvec_t y( appObj.copyInitialState() ); // y contains the initial condition of app
+  // // wrap jacobian
+  // using mymat_t = core::matrix<app_jac_t>;
+  // snapshot_collector_myvec coll2;
+  // ode::implicitEulerStepper<myvec_t,myvec_t, mymat_t, apps::burgers1dEigen,
+  // 			    double, myVectorStateResizer> myStepperImp(appObj);
+  // ode::integrateNStepsImpl(myStepperImp, y, coll2, 0.0, 0.07, 500);
+  // //std::cout << coll2.getCount() << std::endl;
 
   return 0;
 }

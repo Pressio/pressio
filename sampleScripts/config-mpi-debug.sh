@@ -8,6 +8,7 @@ PFX=/Users/fnrizzi/Desktop/romppInstall
 MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc550
 TRILPATH=/Users/fnrizzi/tpl/trilinos/installCPPonly
 EIGENINCPATH=/Users/fnrizzi/tpl/eigen/3.3.4/install
+GTESTPATH=/Users/fnrizzi/tpl/gtest/install
 
 cmake \
     -D CMAKE_BUILD_TYPE:STRING=DEBUG \
@@ -23,6 +24,9 @@ cmake \
     -D TRILINOS_INCLUDE_DIRS:PATH=${TRILPATH}/include \
     -D TPL_ENABLE_EIGEN=ON \
     -D EIGEN_INCLUDE_DIRS:PATH=${EIGENINCPATH} \
+    -D TPL_ENABLE_GTEST=ON \
+    -D GTEST_LIBRARY_DIRS:PATH=${GTESTPATH}/lib \
+    -D GTEST_INCLUDE_DIRS:PATH=${GTESTPATH}/include \
     \
     -D rompp_ENABLE_Fortran=OFF \
     -D rompp_ENABLE_TESTS:BOOL=ON \
