@@ -52,7 +52,7 @@ void nonLinearLstsq(nonlinfunctor_type & F, state_type & y)//, int jRows, int jC
   state_type dy; dy.resize(y.size());  
   jacobian_type jac;
   //  jac.getNonConstRefToData() = core::details::traits<jacobian_type>::wrapped_t::Zero(jRows, jCols);
-  int maxIter = 50;
+  int maxIter = 10;
   // get residual and jacobian at initial guess
   F(y, res, jac);
   

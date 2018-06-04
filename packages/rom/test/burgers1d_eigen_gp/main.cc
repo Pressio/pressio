@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
   // create the app 
   //-----------------
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
-  apps::burgers1dEigen appObj(mu, 20);
+  apps::burgers1dEigen appObj(mu, 200);
   appObj.setup();
   app_state_t U = appObj.copyInitialState();
 
@@ -193,7 +193,7 @@ int main(int argc, char *argv[])
   //-------------------
   auto snColl = std::make_shared<snapshot_collector>();
   ode::eulerStepper<app_state_t,app_state_t,double,eigenVectorStateResizer> myStepper;
-  ode::integrateNSteps(myStepper, appObj, U, *snColl, 0.0, 0.0035, 10000);
+  ode::integrateNSteps(myStepper, appObj, U, *snColl, 0.0, 0.07, 501);
   std::cout << snColl->getCount() << std::endl;
   snColl->printFile();
     

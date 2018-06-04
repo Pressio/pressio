@@ -51,10 +51,7 @@ public :
   }
 
   void doMathReducedCase(const state_type & yRed, state_type & R, jacobian_type & J)
-  {
-    //R.resize(y.size());
-    // assert(y.size() == yOld_.size());
-    
+  {    
     state_type Vdoty;
     (*sysFunctor_).rescaleState(yRed, Vdoty);
     state_type Vdotyold;
@@ -112,22 +109,22 @@ public :
     dt_ = dt;
     t_ = t;
 
-    std::cout << "STEP IMP EULER " << t_ << std::endl;
-    state_type Vdotyold;
-    (*sysFunctor_).rescaleState(yOld_, Vdotyold);
-    for (int i=0; i < Vdotyold.size(); ++i)
-      std::cout << std::setprecision(10) << Vdotyold[i]  << " ";
-    std::cout << std::endl;
+    // std::cout << "STEP IMP EULER " << t_ << std::endl;
+    // state_type Vdotyold;
+    // (*sysFunctor_).rescaleState(yOld_, Vdotyold);
+    // for (int i=0; i < Vdotyold.size(); ++i)
+    //   std::cout << std::setprecision(10) << Vdotyold[i]  << " ";
+    // std::cout << std::endl;
 
     //algebra::newtonRaph<stepper_t,state_type,jacobian_type>(*this, y_inout);
     algebra::nonLinearLstsq<stepper_t,state_type,jacobian_type>(*this, y_inout);
 
-    std::cout << "AFTER SOLVE " << std::endl;
-    state_type Vdotynew;
-    (*sysFunctor_).rescaleState(y_inout, Vdotynew);
-    for (int i=0; i < Vdotynew.size(); ++i)
-      std::cout << std::setprecision(10) << Vdotynew[i]  << " ";
-    std::cout << std::endl;
+    // std::cout << "AFTER SOLVE " << std::endl;
+    // state_type Vdotynew;
+    // (*sysFunctor_).rescaleState(y_inout, Vdotynew);
+    // for (int i=0; i < Vdotynew.size(); ++i)
+    //   std::cout << std::setprecision(10) << Vdotynew[i]  << " ";
+    // std::cout << std::endl;
 
     // std::cout << "AFTER SOLVE at t = " << t_+dt_ << std::endl;
     // for (int i=0; i < y_inout.size(); ++i)
