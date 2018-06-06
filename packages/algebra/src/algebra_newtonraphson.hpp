@@ -3,7 +3,8 @@
 #ifndef algebra_newtonraphson_HPP
 #define algebra_newtonraphson_HPP
 
-#include "matrix/core_matrix_eigen.hpp"
+#include "vector/core_vector_traits.hpp"
+#include "matrix/core_matrix_traits.hpp"
 #include <Eigen/Core>
 #include <unsupported/Eigen/NonLinearOptimization>
 

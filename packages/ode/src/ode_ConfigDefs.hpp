@@ -5,12 +5,23 @@
 #include "core_ConfigDefs.hpp"
 #include "core_meta.hpp"
 
-
 namespace ode{
-  namespace details{
+namespace details {
+
+    template<typename T, typename enable = void>
+    struct traits;
+    // traits<const T> == traits<T> 
+    // For example, traits<Vector<const T> > != traits<Vector<T> >, but
+    //              traits<const Vector<T> > == traits<Vector<T> >
+    template<typename T> 
+    struct traits<const T> : traits<T> {};
+
+
     using time_type = double;
-  }
-}
+
+
+} // end namespace details
+} // end ode
 
 //namespace timeIntegrator{
 // namespace defaultTypes {

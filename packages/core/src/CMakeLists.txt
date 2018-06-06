@@ -18,23 +18,33 @@ APPEND_SET(HEADERS
   core_meta.hpp
   core_forward_declarations.hpp
   core_static_assert.hpp
-  #
-  vector/core_vector_traits.hpp
-  vector/core_vector_generic_base.hpp
-  vector/core_vector_dist_base.hpp
-  vector/core_vector_serial_base.hpp
-  vector/core_vector_math_base.hpp
-  #
-  vector/core_vector_epetra.hpp
-  vector/core_vector_std.hpp
-  vector/core_vector_serial_arbitrary.hpp
-  vector/core_vector_eigen.hpp
-  #
+  )
+
+APPEND_SET(HEADERS
+  vector/core_vector_traits.hpp  
+  vector/base/core_vector_generic_base.hpp
+  vector/base/core_vector_math_base.hpp
+  vector/base/core_vector_serial_base.hpp
+  vector/core_vector_distributed_epetra.hpp
+  vector/core_vector_serial_eigen.hpp
+  vector/core_vector_serial_stdlib.hpp
+  vector/core_vector_serial_userdefined.hpp
+  )
+
+APPEND_SET(HEADERS
   matrix/core_matrix_traits.hpp
-  matrix/core_matrix_generic_base.hpp
-  matrix/core_matrix_eigen.hpp
+  matrix/base/core_matrix_dense_distributed_base.hpp
+  matrix/base/core_matrix_dense_serial_base.hpp
+  matrix/base/core_matrix_generic_base.hpp
+  matrix/base/core_matrix_sparse_distributed_base.hpp
+  matrix/base/core_matrix_sparse_serial_base.hpp
+  matrix/core_matrix_dense_serial_eigen.hpp
+  matrix/core_matrix_dense_serial_stdlib.hpp
 )
 
+
+# adding all sources is temporary, we need to wait 
+# until tribits allows one to have a header-only library.
 APPEND_SET(SOURCES
   src/core_meta.cc
   src/core_forward_declarations.cc
@@ -42,18 +52,21 @@ APPEND_SET(SOURCES
   #
   vector/src/core_vector_traits.cc
   vector/src/core_vector_generic_base.cc
-  vector/src/core_vector_dist_base.cc
-  vector/src/core_vector_serial_base.cc
   vector/src/core_vector_math_base.cc
-  #
-  vector/src/core_vector_epetra.cc
-  vector/src/core_vector_std.cc
-  vector/src/core_vector_serial_arbitrary.cc
-  vector/src/core_vector_eigen.cc
+  vector/src/core_vector_serial_base.cc
+  vector/src/core_vector_distributed_epetra.cc
+  vector/src/core_vector_serial_eigen.cc
+  vector/src/core_vector_serial_stdlib.cc
+  vector/src/core_vector_serial_userdefined.cc
   #
   matrix/src/core_matrix_traits.cc
+  matrix/src/core_matrix_dense_distributed_base.cc
+  matrix/src/core_matrix_dense_serial_base.cc
   matrix/src/core_matrix_generic_base.cc
-  matrix/src/core_matrix_eigen.cc
+  matrix/src/core_matrix_sparse_distributed_base.cc
+  matrix/src/core_matrix_sparse_serial_base.cc
+  matrix/src/core_matrix_dense_serial_eigen.cc
+  matrix/src/core_matrix_dense_serial_stdlib.cc
 )
 
 #

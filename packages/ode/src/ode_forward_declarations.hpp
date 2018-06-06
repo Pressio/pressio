@@ -6,39 +6,33 @@
 
 
 namespace ode {
-
-  namespace details {
-    template<typename T, typename enable = void>
-    struct traits; // : core::details::traits<T,enable>{};
-
-    template<typename T>
-    struct traits<const T> : traits<T>{}; //core::details::traits<const T> {};
-  } // end namespace details
   
+  // template<typename state_type,
+  // 	   typename rhs_type,
+  // 	   typename scalar_type,
+  // 	   typename state_resizer_fnctor_type,
+  // 	   typename enable = void
+  // 	   >
+  // class rungeKutta4Stepper;
 
-  // forward declaration 
-  template<typename state_type,
-	   typename rhs_type,
-	   typename scalar_type,
-	   typename state_resizer_fnctor_type, 
-	   typename enable = void
-	   >
-  class eulerStepper;
 
   template<typename state_type,
 	   typename rhs_type,
 	   typename scalar_type,
 	   typename state_resizer_fnctor_type,
+	   typename residual_policy_type,
 	   typename enable = void
 	   >
-  class rungeKutta4Stepper;
-
+  class explicitEulerStepper;
+  
   template<typename state_type,
 	   typename rhs_type,
 	   typename jacobian_type,
-	   typename functor_type,
 	   typename scalar_type,
 	   typename state_resizer_fnctor_type,
+	   typename residual_policy_type,
+	   typename jacobian_policy_type,
+	   typename nonlinearsolver_policy_type,
 	   typename enable = void
 	   >
   class implicitEulerStepper;

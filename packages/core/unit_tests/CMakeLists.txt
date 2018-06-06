@@ -13,7 +13,7 @@ endfunction()
 
 
 add_unit_test(Test1 1)
-add_unit_test(Test2 2)
+# add_unit_test(Test2 2)
 
 
 # function(add_unit_test test_name)

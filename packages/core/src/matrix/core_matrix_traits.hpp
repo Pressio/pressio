@@ -11,51 +11,64 @@
 namespace core{
 namespace details{
 
-  // //*******************************
-  // // std::vector-based matrix wrapper 
-  // //******************************* 
-  // template <typename scalar_type,
-  // 	    typename ordinal_type>
-  // struct traits<matrix<std::vector<std::vector<scalar_type>>,
-  // 		       scalar_type,
-  // 		       ordinal_type> >
-  // {
-  //   using scalar_t = scalar_type;
-  //   using ordinal_t = ordinal_type;
-  //   using wrapped_t = std::vector<std::vector<scalar_t>>;
-  //   using derived_t = vector<wrapped_t,scalar_t,ordinal_t>;
-  //   enum {
-  //     isMatrix=1,
-  //     isVector = !isMatrix,
-  //     isSerial = 1,
-  //     isDistributed = !isSerial
-  //   };
-  // };
 
-  //*******************************
-  // eigen matrix wrapper 
-  //******************************* 
-  template <typename wrapped_type>
-  struct traits<matrix<wrapped_type,
-		       typename
-		       std::enable_if< core::meta::is_matrixEigen<wrapped_type>::value >::type
-		       >
-		>     		       
-  {    
-    using scalar_t = typename wrapped_type::Scalar;
-    using ordinal_t = int;
-    using wrapped_t = wrapped_type;
-    using derived_t = matrix<wrapped_t>;
-    enum {
-      isMatrix=1,
-      isVector = !isMatrix,
-      isSerial = 1,
-      isDistributed = !isSerial,
-      isEigen = 1,
-      isStatic =  ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic && 
-		    wrapped_t::ColsAtCompileTime != Eigen::Dynamic )
-    };
+//***********************************
+// eigen dense matrix specialization
+//***********************************
+template <typename wrapped_type>
+struct traits<matrix<wrapped_type,
+		     typename
+		     std::enable_if<core::meta::is_denseMatrixEigen<wrapped_type>::value
+				    >::type
+		     >
+	     >
+{
+  using scalar_t = typename wrapped_type::Scalar;
+  using ordinal_t = int;
+  using wrapped_t = wrapped_type;
+  using derived_t = matrix<wrapped_t>;
+  enum {
+    isMatrix = 1,
+    isEigen = 1,
+    isDense = 1,
+    isSerial = 1,
+    isVector = !isMatrix,
+    isDistributed = !isSerial,
+    isStdlib = 0,
+    isStatic =  ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic && 
+		  wrapped_t::ColsAtCompileTime != Eigen::Dynamic )
   };
+};
+
+
+//***********************************
+// matrix specialization for matrix 
+// based on std::vector<std::vector<>>
+//***********************************
+template <typename wrapped_type>
+struct traits<matrix<wrapped_type,
+		     typename
+		     std::enable_if<core::meta::is_stdlibMatrix<wrapped_type>::value
+				    >::type
+		     >
+	     >
+{
+  using scalar_t = typename wrapped_type::Scalar;
+  using ordinal_t = int;
+  using wrapped_t = wrapped_type;
+  using derived_t = matrix<wrapped_t>;
+  enum {
+    isMatrix = 1,
+    isStdlib = 1,
+    isEigen = 0,
+    isDense = 1,
+    isSerial = 1,
+    isVector = !isMatrix,
+    isDistributed = !isSerial,
+    isStatic = 0
+  };
+};
+
   
   
 }//end namespace details

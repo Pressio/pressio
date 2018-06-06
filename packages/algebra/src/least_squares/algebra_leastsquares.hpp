@@ -2,7 +2,9 @@
 #ifndef algebra_leastsquares_HPP
 #define algebra_leastsquares_HPP
 
-#include "matrix/core_matrix_eigen.hpp"
+#include "vector/core_vector_traits.hpp"
+#include "matrix/core_matrix_traits.hpp"
+
 #include <Eigen/Core>
 #include <unsupported/Eigen/NonLinearOptimization>
 #include <iomanip>
@@ -19,13 +21,13 @@ linearLstsq(const matrix_type & A,
 	    const vector_type & b,
 	    vector_type & x)
 {
-  auto * eA = A.view();
-  auto * eb = b.view();
-  auto & ex = x.getNonConstRefToData();
+  // auto * eA = A.view();
+  // auto * eb = b.view();
+  // auto & ex = x.getNonConstRefToData();
 
-  // ex = (*eA).bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(*eb);
-  //ex = (*eA).colPivHouseholderQr().solve(*eb);
-  ex = (eA->transpose() * (*eA)).ldlt().solve(eA->transpose() * *eb);
+  // // ex = (*eA).bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(*eb);
+  // //ex = (*eA).colPivHouseholderQr().solve(*eb);
+  // ex = (eA->transpose() * (*eA)).ldlt().solve(eA->transpose() * *eb);
 }
 //-------------------------------------------
 
@@ -48,32 +50,32 @@ template <typename nonlinfunctor_type,
 	  typename jacobian_type>
 void nonLinearLstsq(nonlinfunctor_type & F, state_type & y)//, int jRows, int jCols)
 {
-  state_type res;
-  state_type dy; dy.resize(y.size());  
-  jacobian_type jac;
-  //  jac.getNonConstRefToData() = core::details::traits<jacobian_type>::wrapped_t::Zero(jRows, jCols);
-  int maxIter = 10;
-  // get residual and jacobian at initial guess
-  F(y, res, jac);
+  // state_type res;
+  // state_type dy; dy.resize(y.size());  
+  // jacobian_type jac;
+  // //  jac.getNonConstRefToData() = core::details::traits<jacobian_type>::wrapped_t::Zero(jRows, jCols);
+  // int maxIter = 10;
+  // // get residual and jacobian at initial guess
+  // F(y, res, jac);
   
-  bool done = isconverged<state_type>(res, 1e-6);
-  if (done){
-    return;
-  }
-  for (int step=0; step<maxIter; step++)
-  {
-    for (decltype(y.size()) i=0; i < y.size(); i++)
-      dy[i] = 0.0;
-    linearLstsq(jac, res, dy);
+  // bool done = isconverged<state_type>(res, 1e-6);
+  // if (done){
+  //   return;
+  // }
+  // for (int step=0; step<maxIter; step++)
+  // {
+  //   for (decltype(y.size()) i=0; i < y.size(); i++)
+  //     dy[i] = 0.0;
+  //   linearLstsq(jac, res, dy);
 
-    for (decltype(y.size()) i=0; i < y.size(); i++){
-      y[i] -= dy[i];
-    }
-    F(y, res, jac);  
-    done = isconverged(res, 1e-6);
-    if (done)
-      	return;
-  }//end for
+  //   for (decltype(y.size()) i=0; i < y.size(); i++){
+  //     y[i] -= dy[i];
+  //   }
+  //   F(y, res, jac);  
+  //   done = isconverged(res, 1e-6);
+  //   if (done)
+  //     	return;
+  // }//end for
   
 };
 

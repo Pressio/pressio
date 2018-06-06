@@ -19,25 +19,38 @@ APPEND_SET(HEADERS
   ode_ConfigDefs.hpp
   ode_forward_declarations.hpp
   ode_void_collector.hpp
-  ode_stepper_traits.hpp
-  ode_explicit_stepper_base.hpp
-  ode_euler_stepper.hpp
-  ode_implicit_stepper_base.hpp
-  ode_implicit_euler_stepper.hpp
-  ode_rk4_stepper.hpp
-  ode_integrate_n_steps.hpp
+  )
+
+APPEND_SET(HEADERS
+  integrators/ode_integrate_n_steps.hpp
+  )
+
+APPEND_SET(HEADERS
+  step_methods/base/ode_explicit_stepper_base.hpp
+  step_methods/base/ode_implicit_stepper_base.hpp
+  step_methods/ode_stepper_traits.hpp
+)
+APPEND_SET(HEADERS
+  step_methods/ode_explicit_euler_stepper.hpp
+  step_methods/ode_implicit_euler_stepper.hpp
+  step_methods/policies/ode_euler_standard_policies.hpp
+  step_methods/impl/ode_euler_implicit_impl.hpp
 )
 
+
+# this is temporary until tribits supports header only
 APPEND_SET(SOURCES
   src/ode_forward_declarations.cc
   src/ode_void_collector.cc
-  src/ode_stepper_traits.cc  
-  src/ode_explicit_stepper_base.cc
-  src/ode_euler_stepper.cc
-  src/ode_implicit_stepper_base.cc
-  src/ode_implicit_euler_stepper.cc
-  src/ode_rk4_stepper.cc
-  src/ode_integrate_n_steps.cc
+  integrators/src/ode_integrate_n_steps.cc
+  #
+  step_methods/src/ode_explicit_stepper_base.cc
+  step_methods/src/ode_implicit_stepper_base.cc
+  step_methods/src/ode_euler_standard_policies.cc
+  step_methods/src/ode_euler_implicit_impl.cc
+  step_methods/src/ode_explicit_euler_stepper.cc
+  step_methods/src/ode_implicit_euler_stepper.cc
+  step_methods/src/ode_stepper_traits.cc
   )
 
 #

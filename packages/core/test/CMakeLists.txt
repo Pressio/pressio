@@ -1,6 +1,6 @@
 
 
 ADD_SUBDIRECTORIES(
-  vector
-  eigen1
+  #vector
+  #eigen1
 )
