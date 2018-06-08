@@ -18,6 +18,7 @@ APPEND_SET(HEADERS
   core_meta.hpp
   core_forward_declarations.hpp
   core_static_assert.hpp
+  core_crtp_helper.hpp
   )
 
 APPEND_SET(HEADERS
@@ -49,6 +50,7 @@ APPEND_SET(SOURCES
   src/core_meta.cc
   src/core_forward_declarations.cc
   src/core_static_assert.cc
+  src/core_crtp_helper.cc
   #
   vector/src/core_vector_traits.cc
   vector/src/core_vector_generic_base.cc

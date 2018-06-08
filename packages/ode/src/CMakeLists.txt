@@ -33,8 +33,13 @@ APPEND_SET(HEADERS
 APPEND_SET(HEADERS
   step_methods/ode_explicit_euler_stepper.hpp
   step_methods/ode_implicit_euler_stepper.hpp
-  step_methods/policies/ode_euler_standard_policies.hpp
   step_methods/impl/ode_euler_implicit_impl.hpp
+)
+APPEND_SET(HEADERS
+  step_methods/policies/ode_explicit_euler_policy_base.hpp
+  step_methods/policies/ode_explicit_euler_standard_policy.hpp
+  step_methods/policies/ode_implicit_euler_policy_base.hpp
+  step_methods/policies/ode_implicit_euler_standard_policy.hpp
 )
 
 
@@ -46,11 +51,15 @@ APPEND_SET(SOURCES
   #
   step_methods/src/ode_explicit_stepper_base.cc
   step_methods/src/ode_implicit_stepper_base.cc
-  step_methods/src/ode_euler_standard_policies.cc
   step_methods/src/ode_euler_implicit_impl.cc
   step_methods/src/ode_explicit_euler_stepper.cc
   step_methods/src/ode_implicit_euler_stepper.cc
   step_methods/src/ode_stepper_traits.cc
+  #
+  step_methods/src/ode_explicit_euler_policy_base.cc
+  step_methods/src/ode_explicit_euler_standard_policy.cc
+  step_methods/src/ode_implicit_euler_policy_base.cc
+  step_methods/src/ode_implicit_euler_standard_policy.cc
   )
 
 #

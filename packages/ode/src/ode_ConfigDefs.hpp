@@ -4,6 +4,7 @@
 
 #include "core_ConfigDefs.hpp"
 #include "core_meta.hpp"
+#include "core_crtp_helper.hpp"
 
 namespace ode{
 namespace details {

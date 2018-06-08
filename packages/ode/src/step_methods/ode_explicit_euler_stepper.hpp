@@ -11,10 +11,11 @@ template<typename state_type,
 	 typename rhs_type,
 	 typename scalar_type,
 	 typename state_resizer_fnctor_type,
+	 typename model_type,
 	 typename residual_policy_type
 	 >
 class explicitEulerStepper<state_type, rhs_type, scalar_type,
-		   state_resizer_fnctor_type, residual_policy_type,
+		   state_resizer_fnctor_type, model_type, residual_policy_type,
 		   typename 
 		   std::enable_if< !std::is_void<state_type>::value &&
 				   core::meta::is_default_constructible<state_resizer_fnctor_type>::value &&
@@ -22,16 +23,19 @@ class explicitEulerStepper<state_type, rhs_type, scalar_type,
 				   >::type
 		   >
   : public explicitStepperBase<explicitEulerStepper<state_type,rhs_type,scalar_type,
-					      state_resizer_fnctor_type, residual_policy_type> >
+						    state_resizer_fnctor_type, model_type,
+						    residual_policy_type>,
+			       model_type>
 {
 public :
   using stepper_t = explicitEulerStepper<state_type,rhs_type,scalar_type,
-				 state_resizer_fnctor_type, residual_policy_type>;
-  using stepper_base_t = explicitStepperBase<stepper_t>;
+					 state_resizer_fnctor_type, model_type, residual_policy_type>;
+  using stepper_base_t = explicitStepperBase<stepper_t, model_type>;
 
   // (de)constructors  
-  explicitEulerStepper(residual_policy_type & res_policy_obj)
-    : stepper_base_t(), residual_policy_obj_(res_policy_obj)
+  explicitEulerStepper(model_type & model,
+		       residual_policy_type & res_policy_obj)
+    : stepper_base_t(model), residual_policy_obj_(res_policy_obj)
   {}
   ~explicitEulerStepper(){}
 

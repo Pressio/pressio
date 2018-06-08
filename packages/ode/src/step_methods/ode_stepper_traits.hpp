@@ -13,14 +13,15 @@ namespace details{
 	   typename rhs_type,
 	   typename scalar_type,
 	   typename state_resizer_fnctor_type,
+	   typename model_type,
 	   typename residual_policy_type
 	   >
-  struct traits< explicitEulerStepper<state_type, rhs_type, scalar_type,
-				      state_resizer_fnctor_type, residual_policy_type> >
+  struct traits< explicitEulerStepper<state_type, rhs_type, scalar_type, state_resizer_fnctor_type,
+				      model_type, residual_policy_type> >
   {
     using order_t = unsigned int;
-    using stepper_t = explicitEulerStepper<state_type,rhs_type,scalar_type,
-				   state_resizer_fnctor_type, residual_policy_type>;
+    using stepper_t = explicitEulerStepper<state_type,rhs_type,scalar_type,state_resizer_fnctor_type,
+					   model_type, residual_policy_type>;
     using state_t =  state_type;
     using rhs_t = rhs_type;
     using scalar_t = scalar_type;

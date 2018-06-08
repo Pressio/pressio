@@ -20,6 +20,7 @@ namespace ode {
 	   typename rhs_type,
 	   typename scalar_type,
 	   typename state_resizer_fnctor_type,
+	   typename model_type,
 	   typename residual_policy_type,
 	   typename enable = void
 	   >

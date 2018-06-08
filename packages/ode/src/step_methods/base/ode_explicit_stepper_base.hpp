@@ -8,7 +8,8 @@
 
 namespace ode{
 
-template<typename stepper_type>
+template<typename stepper_type,
+	 typename model_type>
 class explicitStepperBase
 {
 public:
@@ -22,7 +23,7 @@ public:
   using rhs_t = typename ode::details::traits<stepper_type>::rhs_t;
 
   // (de)constructors
-  explicitStepperBase(){}
+  explicitStepperBase(model_type & model) : model_(&model){}
   ~explicitStepperBase(){}
 
   //methods
@@ -42,6 +43,7 @@ private:
 
 protected:
   resizer_t myResizer_;
+  model_type * model_;
 
 };
 
