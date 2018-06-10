@@ -1,3 +1,19 @@
+TODO: 
+
+* maybe we need to change the policy base class for explicit methods. 
+Right now each method has its own base policy, but it seems to me 
+that all expicit methods have the same policy base class. 
+So it makes no sense to have separate ones. 
+NOTE THAT THIS DOES NOT HOLD TRUE FOR IMPLICIT METHODS WHERE THINGS 
+CHANGE FOR EVERY METHOD.
+
+* fix how time is passed around, because now it is defaulted to 
+ode::details::time_type, which is a double.
+
+* fix initialization of the states and containers because this can create 
+issues. Find a way to have a consistent initializataion
+
+
 
 
 June 2nd: 

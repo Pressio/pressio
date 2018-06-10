@@ -19,12 +19,27 @@ public:
   using resizer_t = typename ode::details::traits<stepper_type>::resizer_t;
   using rhs_t = typename ode::details::traits<stepper_type>::rhs_t;
   using jacobian_t = typename ode::details::traits<stepper_type>::jacobian_t;
+  using residual_policy_t = typename ode::details::traits<stepper_type>::residual_policy_t;  
+  using jacobian_policy_t = typename ode::details::traits<stepper_type>::jacobian_policy_t;  
+  using model_t = typename ode::details::traits<stepper_type>::model_t;
 
   static constexpr order_t order_value = ode::details::traits<stepper_type>::order_value;
   
   // (de)constructors
-  implicitStepperBase(){}
-  ~implicitStepperBase(){}
+  implicitStepperBase(model_t & model,
+		      residual_policy_t & res_policy_obj,
+		      jacobian_policy_t & jac_policy_obj)
+    : model_(&model), residual_policy_obj_(res_policy_obj), jacobian_policy_obj_(jac_policy_obj)
+  {}
+
+  // implicitStepperBase(model_t & model,
+  // 		      residual_policy_t res_policy_obj,
+  // 		      jacobian_policy_t jac_policy_obj)
+  //   : model_(&model), residual_policy_obj_(res_policy_obj), jacobian_policy_obj_(jac_policy_obj)
+  // {}
+
+  ~implicitStepperBase()
+  {}
 
   // methods
   order_t order() const{  return order_value; }
@@ -52,6 +67,9 @@ private:
 
 protected:
   resizer_t myResizer_;
+  model_t * model_;
+  residual_policy_t & residual_policy_obj_;
+  jacobian_policy_t & jacobian_policy_obj_;
 
 };
 

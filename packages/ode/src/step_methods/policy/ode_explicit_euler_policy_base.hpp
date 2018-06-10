@@ -4,28 +4,27 @@
 
 #include "ode_ConfigDefs.hpp"
 
-
-namespace ode{  
-namespace policies{  
-
+namespace ode{
+namespace policy{
     
-template <typename derived_type>
-class explicitEulerResidualPolicyBase : core::crtpBase<derived_type,
-						       explicitEulerResidualPolicyBase>
-{
+template <typename derived_type,
+	  typename state_type, typename residual_type,
+	  typename model_type, typename time_type
+	  >
+class explicitEulerResidualPolicyBase{
 public:
-  explicitEulerResidualPolicyBase(){}
-
-  template<typename state_type,
-	   typename residual_type,
-	   typename model_type,
-	   typename time_type>
+  derived_type * underlying(){
+    return static_cast< derived_type* >( this );
+  }
+  const derived_type * underlying() const{
+    return static_cast< const derived_type* >( this );
+  }
+  
   void compute(const state_type & y, residual_type & R,
 	       model_type & model, time_type t){
     this->underlying()->computeImpl(y, R, model, t);
   } 
 };
-
   
 }//end namespace polices
 }//end namespace ode  

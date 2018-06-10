@@ -22,7 +22,8 @@ APPEND_SET(HEADERS
   )
 
 APPEND_SET(HEADERS
-  vector/core_vector_traits.hpp  
+  vector/core_vector_traits.hpp
+  vector/core_vector_meta.hpp  
   vector/base/core_vector_generic_base.hpp
   vector/base/core_vector_math_base.hpp
   vector/base/core_vector_serial_base.hpp
@@ -34,6 +35,7 @@ APPEND_SET(HEADERS
 
 APPEND_SET(HEADERS
   matrix/core_matrix_traits.hpp
+  matrix/core_matrix_meta.hpp  
   matrix/base/core_matrix_dense_distributed_base.hpp
   matrix/base/core_matrix_dense_serial_base.hpp
   matrix/base/core_matrix_generic_base.hpp
@@ -53,6 +55,7 @@ APPEND_SET(SOURCES
   src/core_crtp_helper.cc
   #
   vector/src/core_vector_traits.cc
+  vector/src/core_vector_meta.cc
   vector/src/core_vector_generic_base.cc
   vector/src/core_vector_math_base.cc
   vector/src/core_vector_serial_base.cc
@@ -62,6 +65,7 @@ APPEND_SET(SOURCES
   vector/src/core_vector_serial_userdefined.cc
   #
   matrix/src/core_matrix_traits.cc
+  matrix/src/core_matrix_meta.cc
   matrix/src/core_matrix_dense_distributed_base.cc
   matrix/src/core_matrix_dense_serial_base.cc
   matrix/src/core_matrix_generic_base.cc

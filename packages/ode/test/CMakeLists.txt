@@ -1,10 +1,10 @@
-# TRIBITS_ADD_EXECUTABLE_AND_TEST(
-#   ode_test1
-#   SOURCES
-#     main.cc
-#   NUM_MPI_PROCS 4
-#   STANDARD_PASS_OUTPUT
-#   )
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  ode_test1
+  SOURCES
+    main.cc
+  NUM_MPI_PROCS 4
+  STANDARD_PASS_OUTPUT
+  )
 
 # TRIBITS_ADD_TEST(simplecxx-helloworld  NOEXEPREFIX  NOEXESUFFIX
 #   NAME HelloWorldProg

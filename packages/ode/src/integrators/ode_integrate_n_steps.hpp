@@ -17,18 +17,15 @@ namespace ode{
 
   
   template<typename stepper_type,
-  	   typename rhs_functor_type,	   
   	   typename state_type,
   	   typename time_type,
   	   typename n_steps_type,
   	   typename collector_type
   	   >
   typename std::enable_if<!std::is_void<stepper_type>::value &&
-  			  !std::is_void<rhs_functor_type>::value &&
 			  std::is_integral<n_steps_type>::value
   			  >::type
   integrateNStepsImpl(stepper_type & stepper,
-  		      rhs_functor_type & rhs_functor,
   		      state_type & stateIn,
   		      time_type start_time,
   		      time_type dt,
@@ -42,12 +39,10 @@ namespace ode{
     {
       // call collector/observer
       collector(step, time, stateIn);
-
       // do one step
-      stepper.doStep( rhs_functor, stateIn, time, dt );
-
+      stepper.doStep(stateIn, time, dt);
       // advance time
-      time += + dt;
+      time += dt; //change this so that we do multiply rather than summing
     }
     collector(step, time, stateIn);
   }
@@ -56,88 +51,87 @@ namespace ode{
 
 
   /*+++++++++++++++++++++++++++++++++++++++++++++++++++++
-  
     TODO: separate interface and impl
-
   +++++++++++++++++++++++++++++++++++++++++++++++++++++*/  
 
   template<typename stepper_type,
-	   typename rhs_functor_type, 
 	   typename state_type,
 	   typename collector_functor_type
 	   >
-  typename std::enable_if<!std::is_same<stepper_type,void>::value &&
-			  !std::is_same<rhs_functor_type,void>::value 
-			  >::type
+  typename std::enable_if< !std::is_same<stepper_type,void>::value >::type
   integrateNSteps(stepper_type & stepper,
-		  rhs_functor_type & rhs_functor,
 		  state_type & stateIn,
 		  collector_functor_type & collector,
 		  ode::details::time_type start_time,
 		  ode::details::time_type dt,
 		  size_t num_steps)
   {
-    integrateNStepsImpl<stepper_type, rhs_functor_type, state_type,
+    integrateNStepsImpl<stepper_type, state_type,
       			ode::details::time_type, size_t,
-      			collector_functor_type>(stepper, rhs_functor, stateIn,
-    			start_time, dt, num_steps, collector);
+      			collector_functor_type>(stepper, stateIn,
+						start_time, dt,
+						num_steps, collector);
   }
 
+
+  
   template<typename stepper_type,
-	   typename rhs_functor_type,
 	   typename state_type
 	   >
-  typename std::enable_if<!std::is_same<stepper_type,void>::value &&
-			  !std::is_same<rhs_functor_type,void>::value 
-			  >::type
+  typename std::enable_if< !std::is_same<stepper_type,void>::value >::type
   integrateNSteps(stepper_type & stepper,
-		  rhs_functor_type & rhs_functor,
 		  state_type & stateIn,
 		  ode::details::time_type start_time,
 		  ode::details::time_type dt,
 		  size_t num_steps)
   {
-    integrateNStepsImpl<stepper_type, rhs_functor_type, state_type,
+    integrateNStepsImpl<stepper_type, state_type,
       			ode::details::time_type, size_t,
-			ode::voidCollector>(stepper, rhs_functor,stateIn,
-					    start_time, dt, num_steps,
-					    ode::voidCollector());
-  }
-
-
-  // the following is for testing, needs to be cleaned up and made properly
-  // because it has a different name now, NOT GOOG.
-  template<typename stepper_type,
-	   typename state_type,
-	   typename collector_functor_type
-	   >
-  typename std::enable_if< !std::is_same<stepper_type,void>::value &&
-			   core::details::traits<state_type>::isVector == 1
-			   >::type
-  integrateNStepsImpl(stepper_type & stepper,
-		  state_type & stateIn,
-		  collector_functor_type & collector,
-		  ode::details::time_type start_time,
-		  ode::details::time_type dt,
-		  size_t num_steps)
-  {
-    ode::details::time_type time = start_time;
-    size_t step = 0;
-    for( ; step < num_steps ; ++step)
-    {
-      // call collector/observer
-      collector(step, time, stateIn);
-
-      // do one step
-      stepper.doStep( stateIn, time, dt );
-
-      // advance time
-      time += + dt;
-    }
-    collector(step, time, stateIn);    
+			ode::voidCollector>(stepper, start_time, dt,
+					    num_steps, ode::voidCollector());
   }
 
   
 }//end namespace
 
 #endif 
+
+
+
+
+
+
+
+
+
+// // the following is for testing, needs to be cleaned up and made properly
+// // because it has a different name now, NOT GOOG.
+// template<typename stepper_type,
+// 	   typename state_type,
+// 	   typename collector_functor_type
+// 	   >
+// typename std::enable_if< !std::is_same<stepper_type,void>::value &&
+// 			   core::details::traits<state_type>::isVector == 1
+// 			   >::type
+// integrateNStepsImpl(stepper_type & stepper,
+// 		  state_type & stateIn,
+// 		  collector_functor_type & collector,
+// 		  ode::details::time_type start_time,
+// 		  ode::details::time_type dt,
+// 		  size_t num_steps)
+// {
+//   ode::details::time_type time = start_time;
+//   size_t step = 0;
+//   for( ; step < num_steps ; ++step)
+//   {
+//     // call collector/observer
+//     collector(step, time, stateIn);
+
+//     // do one step
+//     stepper.doStep( stateIn, time, dt );
+
+//     // advance time
+//     time += + dt;
+//   }
+//   collector(step, time, stateIn);    
+// }

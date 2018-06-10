@@ -3,7 +3,7 @@
 #define CORE_MATRIX_TRAITS_HPP_
 
 #include "core_forward_declarations.hpp"
-#include "core_meta.hpp"
+#include "core_matrix_meta.hpp"
 #include <vector>
 #include <Eigen/Core>
 

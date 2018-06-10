@@ -15,31 +15,40 @@ SET(SOURCES "")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
+# general headers
 APPEND_SET(HEADERS
   ode_ConfigDefs.hpp
   ode_forward_declarations.hpp
   ode_void_collector.hpp
   )
 
+# integrators 
 APPEND_SET(HEADERS
   integrators/ode_integrate_n_steps.hpp
   )
 
+# base classes
 APPEND_SET(HEADERS
   step_methods/base/ode_explicit_stepper_base.hpp
   step_methods/base/ode_implicit_stepper_base.hpp
   step_methods/ode_stepper_traits.hpp
 )
+
+# concrete steppers and policies for euler 
 APPEND_SET(HEADERS
   step_methods/ode_explicit_euler_stepper.hpp
   step_methods/ode_implicit_euler_stepper.hpp
   step_methods/impl/ode_euler_implicit_impl.hpp
-)
+  step_methods/policy/ode_explicit_euler_policy_base.hpp
+  step_methods/policy/ode_explicit_euler_standard_policy.hpp
+  step_methods/policy/ode_implicit_euler_policy_base.hpp
+  step_methods/policy/ode_implicit_euler_standard_policy.hpp
+  )
+# concrete steppers and policies for rk4
 APPEND_SET(HEADERS
-  step_methods/policies/ode_explicit_euler_policy_base.hpp
-  step_methods/policies/ode_explicit_euler_standard_policy.hpp
-  step_methods/policies/ode_implicit_euler_policy_base.hpp
-  step_methods/policies/ode_implicit_euler_standard_policy.hpp
+  step_methods/ode_explicit_runge_kutta4_stepper.hpp
+  step_methods/policy/ode_explicit_runge_kutta4_policy_base.hpp
+  step_methods/policy/ode_explicit_runge_kutta4_standard_policy.hpp
 )
 
 
@@ -48,18 +57,22 @@ APPEND_SET(SOURCES
   src/ode_forward_declarations.cc
   src/ode_void_collector.cc
   integrators/src/ode_integrate_n_steps.cc
+  step_methods/src/ode_stepper_traits.cc
   #
   step_methods/src/ode_explicit_stepper_base.cc
   step_methods/src/ode_implicit_stepper_base.cc
+  #
   step_methods/src/ode_euler_implicit_impl.cc
   step_methods/src/ode_explicit_euler_stepper.cc
   step_methods/src/ode_implicit_euler_stepper.cc
-  step_methods/src/ode_stepper_traits.cc
-  #
   step_methods/src/ode_explicit_euler_policy_base.cc
   step_methods/src/ode_explicit_euler_standard_policy.cc
   step_methods/src/ode_implicit_euler_policy_base.cc
   step_methods/src/ode_implicit_euler_standard_policy.cc
+  #
+  step_methods/src/ode_explicit_runge_kutta4_stepper.cc
+  step_methods/src/ode_explicit_runge_kutta4_policy_base.cc
+  step_methods/src/ode_explicit_runge_kutta4_standard_policy.cc
   )
 
 #

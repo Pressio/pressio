@@ -8,22 +8,34 @@
 
 namespace ode{
 
-template<typename stepper_type,
-	 typename model_type>
+template<typename stepper_type>
 class explicitStepperBase
 {
 public:
 
   using state_t = typename ode::details::traits<stepper_type>::state_t;
   using sc_t = typename ode::details::traits<stepper_type>::scalar_t;
-  using order_t = typename ode::details::traits<stepper_type>::order_t; 
-  static constexpr order_t order_value = ode::details::traits<stepper_type>::order_value;
+  using order_t = typename ode::details::traits<stepper_type>::order_t;
+  static constexpr order_t order_value =
+    ode::details::traits<stepper_type>::order_value;
   using time_t = ode::details::time_type;
   using resizer_t = typename ode::details::traits<stepper_type>::resizer_t;
   using rhs_t = typename ode::details::traits<stepper_type>::rhs_t;
-
+  using residual_policy_t =
+    typename ode::details::traits<stepper_type>::residual_policy_t;  
+  using model_t =
+    typename ode::details::traits<stepper_type>::model_t;
+  
+  
   // (de)constructors
-  explicitStepperBase(model_type & model) : model_(&model){}
+  explicitStepperBase(model_t & model, residual_policy_t & res_policy_obj)
+    : model_(&model), residual_policy_obj_(res_policy_obj)
+  {}
+
+  explicitStepperBase(model_t & model, residual_policy_t res_policy_obj)
+    : model_(&model), residual_policy_obj_(res_policy_obj)
+  {}
+
   ~explicitStepperBase(){}
 
   //methods
@@ -43,7 +55,8 @@ private:
 
 protected:
   resizer_t myResizer_;
-  model_type * model_;
+  model_t * model_;
+  residual_policy_t & residual_policy_obj_;
 
 };
 

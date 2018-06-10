@@ -17,14 +17,12 @@ void implicit_euler_residual_impl(const state_type & yn, const state_type & ynm1
     R[i] = yn[i] - ynm1[i] - dt*R[i];
   }
 }
-//----------------------------------------------------
 
 template<typename jacobian_type, typename time_type>
 void implicit_euler_jacobian_impl(jacobian_type & jac,
 				  time_type dt)
 {
   // obviously this needs to be fixed to use operator []
-  // of the type coming in 
   // auto & jac = J.getNonConstRefToData();
  jac[0,0] = 1.0 - dt * jac[0,0];
  for (size_t i=1; i < jac.rows(); ++i){
@@ -32,7 +30,6 @@ void implicit_euler_jacobian_impl(jacobian_type & jac,
    jac[i,i] = 1.0 - dt * jac[i,i];
  }
 }
-//----------------------------------------------------
 
 
 

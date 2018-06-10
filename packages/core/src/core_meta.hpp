@@ -3,9 +3,6 @@
 #define CORE_META_HPP_
 
 #include <type_traits>
-#include <Eigen/Dense>
-#include <vector>
-
 
 
 namespace core{
@@ -25,7 +22,6 @@ namespace meta {
 
   template<typename T>
   struct is_integral: std::is_integral<T>{};
-
 
   /////////////////////////////////////////////////
 
@@ -48,8 +44,6 @@ namespace meta {
   //   static const bool value = sizeof(test<T>(0)) == sizeof(yes);
   // };
 
-
-  
   /////////////////////////////////////////////////
 
   // meta functions for checking if a
@@ -146,100 +140,7 @@ namespace meta {
   
   /////////////////////////////////////////////////
 
-  // check if type is an Eigen vector
-  // this is true when at least one dimension is 1
-  
-  template <typename T, typename enable = void>
-  struct is_vectorEigen : std::false_type {};
 
-  template <typename T>
-  struct is_vectorEigen< T,
-			 typename
-			 std::enable_if< std::is_same<T,Eigen::Matrix<typename T::Scalar,
-								      1, T::ColsAtCompileTime>
-						      >::value
-					 >::type
-  			 > : std::true_type{};
-
-  template <typename T>
-  struct is_vectorEigen< T,
-			 typename
-			 std::enable_if< std::is_same<T,Eigen::Matrix<typename T::Scalar,
-								      T::RowsAtCompileTime,1>
-						      >::value
-					 >::type
-  			 > : std::true_type{};
-
-  //---------------------------------------------
-
-  template<typename T>
-  struct is_matrixEigen : std::integral_constant<bool,!is_vectorEigen<T>::value> {};
-
-  //---------------------------------------------
-
-
-  template <typename T, typename enable = void>
-  struct is_denseMatrixEigen : std::false_type {};
-
-  
-  /* a type is a dense eigen matrix if
-     (a) it is not a eigen vector, 
-     (b) matches a eigen matrix sized at compile time
-     (c) its rows and cols are fully dynamic
-  */
-  template<typename T>
-  struct is_denseMatrixEigen<T, typename
-  			        std::enable_if<is_matrixEigen<T>::value &&
-  					       (std::is_same<T,
-  						             Eigen::Matrix<typename T::Scalar,
-  						                           T::RowsAtCompileTime,
-  						                           T::ColsAtCompileTime
-  						                           >
-  						            >::value ||
-  						std::is_same<T,
-  						             Eigen::Matrix<typename T::Scalar,
-  						                           Eigen::Dynamic,
-  						                           Eigen::Dynamic>
-  						            >::value
-						)
-  					       >::type
-  			     > : std::true_type{};
-
-  
-  //////////////////////////////////////////////////////
-
-  template <typename T, typename enable = void>
-  struct is_stdlibMatrix : std::false_type {};
-
-  template <typename T>
-  struct  is_stdlibMatrix<T,
-  			  typename
-  			  std::enable_if<std::is_same<T,std::vector<std::vector<typename
-  										T::value_type::value_type
-  										>
-  								    >
-  						      >::value
-  					 >::type
-  			 > : std::true_type{};
-
-  
-  
-  // /////////////////////////////////////////////////
-
-  template <typename T, typename enable = void>
-  struct is_stdlibVector : std::false_type {};
-
-  template <typename T>
-  struct is_stdlibVector<T,
-  			 typename
-  			 std::enable_if<std::is_same<T,std::vector<typename T::value_type>
-  					            >::value
-  					>::type
-  			 > : std::true_type{};
-
-  // //////////////////////////////////////////////////////
-  
-    
 } // namespace meta
 } // namespace core
 #endif

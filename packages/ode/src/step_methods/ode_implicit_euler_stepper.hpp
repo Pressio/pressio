@@ -11,10 +11,10 @@ namespace ode{
 
 template<typename state_type, typename rhs_type, typename jacobian_type,
 	 typename scalar_type, typename state_resizer_fnctor_type,
-	 typename residual_policy_type, typename jacobian_policy_type,
+	 typename model_type, typename residual_policy_type, typename jacobian_policy_type,
 	 typename nonlinearsolver_policy_type>
 class implicitEulerStepper<state_type, rhs_type, jacobian_type,
-			   scalar_type, state_resizer_fnctor_type,
+			   scalar_type, state_resizer_fnctor_type, model_type,
 			   residual_policy_type, jacobian_policy_type,
 			   nonlinearsolver_policy_type,
 			   typename 
@@ -23,23 +23,102 @@ class implicitEulerStepper<state_type, rhs_type, jacobian_type,
 					   >::type
 			   >
   : public implicitStepperBase<implicitEulerStepper<state_type, rhs_type, jacobian_type,
-						    scalar_type, state_resizer_fnctor_type,
+						    scalar_type, state_resizer_fnctor_type,model_type,
 						    residual_policy_type, jacobian_policy_type,
 						    nonlinearsolver_policy_type> >
 {
 public :
   using stepper_t = implicitEulerStepper<state_type, rhs_type, jacobian_type, scalar_type,
-					 state_resizer_fnctor_type, residual_policy_type,
+					 state_resizer_fnctor_type, model_type, residual_policy_type,
 					 jacobian_policy_type, nonlinearsolver_policy_type>;
   using stepper_base_t = implicitStepperBase<stepper_t>;
   
 
   // (de)constructors
-  implicitEulerStepper(residual_policy_type & resPolicy,
-		       jacobian_policy_type & jacPolicy)
-    : stepper_base_t(), res_policy_obj_(&resPolicy), jac_policy_obj_(&jacPolicy)
+
+
+  // residual policy is the standard one, but jacobian is not
+  template < typename U = residual_policy_type, typename T = jacobian_policy_type>
+  implicitEulerStepper(model_type & model,
+		       U & res_policy_obj,
+		       T & jac_policy_obj,
+		       typename
+		       std::enable_if< std::is_same<U,
+		                                    ode::policy::implicitEulerStandardResidual<state_type, rhs_type,
+		                                                                               model_type, details::time_type
+		                                                                               >
+		                                    >::value &&
+		                      !std::is_same<T,
+		                                    ode::policy::implicitEulerStandardJacobian<state_type, jacobian_type,
+		                                                                               model_type, details::time_type
+		                                                                               >
+		                                    >::value
+		                     >::type * = 0)
+  : stepper_base_t(model, U(), jac_policy_obj)
   {}
 
+  // residual policy is not standard , and jacobian is standard
+  template < typename U = residual_policy_type, typename T = jacobian_policy_type>
+  implicitEulerStepper(model_type & model,
+		       U & res_policy_obj,
+		       T & jac_policy_obj,
+		       typename
+		       std::enable_if< !std::is_same<U,
+		                                    ode::policy::implicitEulerStandardResidual<state_type, rhs_type,
+		                                                                               model_type, details::time_type
+		                                                                               >
+		                                    >::value &&
+		                      std::is_same<T,
+		                                    ode::policy::implicitEulerStandardJacobian<state_type, jacobian_type,
+		                                                                               model_type, details::time_type
+		                                                                               >
+		                                    >::value
+		                     >::type * = 0)
+  : stepper_base_t(model, res_policy_obj, T() )
+  {}
+
+  // residual policy is standard , and jacobian is standard
+  template < typename U = residual_policy_type, typename T = jacobian_policy_type>
+  implicitEulerStepper(model_type & model,
+		       U & res_policy_obj,
+		       T & jac_policy_obj,
+		       typename
+		       std::enable_if< std::is_same<U,
+		                                    ode::policy::implicitEulerStandardResidual<state_type, rhs_type,
+		                                                                               model_type, details::time_type
+		                                                                               >
+		                                    >::value &&
+		                      std::is_same<T,
+		                                    ode::policy::implicitEulerStandardJacobian<state_type, jacobian_type,
+		                                                                               model_type, details::time_type
+		                                                                               >
+		                                    >::value
+		                     >::type * = 0)
+  : stepper_base_t( model, U(), T() )
+  {}
+
+
+  // residual policy is not standard , and jacobian is not standard
+  template < typename U = residual_policy_type, typename T = jacobian_policy_type>
+  implicitEulerStepper(model_type & model,
+		       U & res_policy_obj,
+		       T & jac_policy_obj,
+		       typename
+		       std::enable_if< !std::is_same<U,
+		                                    ode::policy::implicitEulerStandardResidual<state_type, rhs_type,
+		                                                                               model_type, details::time_type
+		                                                                               >
+		                                    >::value &&
+		                      !std::is_same<T,
+		                                    ode::policy::implicitEulerStandardJacobian<state_type, jacobian_type,
+		                                                                               model_type, details::time_type
+		                                                                               >
+		                                    >::value
+		                     >::type * = 0)
+  : stepper_base_t( model, res_policy_obj, jac_policy_obj )
+  {}
+  
+  
   ~implicitEulerStepper(){}
 
 
@@ -58,20 +137,17 @@ public :
 
    
   void residualImpl(const state_type & y, state_type & R){
-    res_policy_obj_->compute(y, y_nm1_, R, dt_);
+    this->res_policy_obj_.compute(y, y_nm1_, R, dt_);
   }
 
   void jacobianImpl(const state_type & y, jacobian_type & J){
-    jac_policy_obj_->compute(y, J, dt_);
+    this->jac_policy_obj_.compute(y, J, dt_);
   }
 
 private:
   ode::details::time_type t_;
   ode::details::time_type dt_;
   state_type y_nm1_;
-  residual_policy_type * res_policy_obj_;
-  jacobian_policy_type * jac_policy_obj_;
-
 
 }; //end class
 
