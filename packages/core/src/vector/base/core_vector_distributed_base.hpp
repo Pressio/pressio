@@ -4,13 +4,10 @@
 
 #include "../core_vector_traits.hpp"
 
-
-namespace core
-{
+namespace core{
     
 template<typename derived_type>
-class vectorDistributedBase
-{
+class vectorDistributedBase{
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;
@@ -20,35 +17,29 @@ public:
   using map_t = typename details::traits<derived_type>::map_t;
   using comm_t = typename details::traits<derived_type>::comm_t;
 
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
-  //--------------------------------------------
-
+public:
   size_t globalSize() const {
     return this->underlying().globalSizeImpl();
   };
   size_t localSize() const {
     return this->underlying().localSizeImpl();
   };
-
-  // template<typename U=map_t,
-  // 	   typename std::enable_if< !std::is_same<U,void>::value >::type >
   map_t const & getMap() const{
     return this->underlying().getMapImpl();
   }    
-  // template<class U=map_t>
-  // const typename std::enable_if< !std::is_same<U,void>::value, U>::type & 
-  // getMap() const{
-  //   return this->underlying().getMapImpl();
-  // }
-  
-};
 
-    
+private:
+  //  friend class derived_type;
+   vectorDistributedBase(){}
+   ~vectorDistributedBase(){}
+
+  der_t & underlying(){
+    return static_cast<der_t &>(*this);
+  };
+  der_t const& underlying() const{
+    return static_cast<der_t const&>(*this);
+  };
+
+};//end class
 } // end namespace core
-
 #endif

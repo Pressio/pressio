@@ -35,9 +35,9 @@ cmake \
     -D rompp_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=OFF \
     \
     -D rompp_ENABLE_core:BOOL=ON \
-    -D rompp_ENABLE_algebra:BOOL=ON \
+    -D rompp_ENABLE_algebra:BOOL=OFF \
     -D rompp_ENABLE_svd:BOOL=OFF \
-    -D rompp_ENABLE_ode:BOOL=ON \
+    -D rompp_ENABLE_ode:BOOL=OFF \
     -D rompp_ENABLE_apps:BOOL=OFF \
     -D rompp_ENABLE_rom:BOOL=OFF \
     \

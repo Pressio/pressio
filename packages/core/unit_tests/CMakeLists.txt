@@ -1,19 +1,31 @@
 
+# function(add_single_unit_test test_name ranks)
+#   TRIBITS_ADD_EXECUTABLE_AND_TEST(
+#     ${test_name} 
+#     SOURCES ${test_name}.cc gTestMain.cc
+#     COMM serial mpi
+#     NUM_MPI_PROCS ${ranks}
+#     #STANDARD_PASS_OUTPUT
+#     #FAIL_REGULAR_EXPRESSION "  FAILED  "
+#   )
+# endfunction()
+#add_unit_test(Test1 1)
+#add_unit_test(Test2 1)
 
-function(add_unit_test test_name ranks)
-  TRIBITS_ADD_EXECUTABLE_AND_TEST(
-    ${test_name} 
-    SOURCES ${test_name}.cc gTestMain.cc
-    COMM serial mpi
-    NUM_MPI_PROCS ${ranks}
-    STANDARD_PASS_OUTPUT
-    #FAIL_REGULAR_EXPRESSION "  FAILED  "
-  )
-endfunction()
+SET(TESTFILES "")
+APPEND_SET(TESTFILES Test1.cc)
+#APPEND_SET(TESTFILES Test2.cc)
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  core_meta_test
+  SOURCES ${TESTFILES} gTestMain.cc
+  COMM serial mpi
+  NUM_MPI_PROCS 1
+  #STANDARD_PASS_OUTPUT
+  #FAIL_REGULAR_EXPRESSION "  FAILED  "
+)
 
 
-add_unit_test(Test1 1)
-# add_unit_test(Test2 2)
 
 
 # function(add_unit_test test_name)

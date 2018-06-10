@@ -15,10 +15,12 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
   core_ConfigDefs.hpp
-  core_meta.hpp
   core_forward_declarations.hpp
-  core_static_assert.hpp
+  core_static_assert_definitions.hpp
   core_crtp_helper.hpp
+  meta/core_meta_basic.hpp
+  meta/core_meta_detect_operators.hpp
+  meta/core_meta_detect_typedefs.hpp
   )
 
 APPEND_SET(HEADERS
@@ -49,9 +51,11 @@ APPEND_SET(HEADERS
 # adding all sources is temporary, we need to wait 
 # until tribits allows one to have a header-only library.
 APPEND_SET(SOURCES
-  src/core_meta.cc
+  src/core_meta_basic.cc
+  src/core_meta_detect_operators.cc
+  src/core_meta_detect_typedefs.cc
   src/core_forward_declarations.cc
-  src/core_static_assert.cc
+  src/core_static_assert_definitions.cc
   src/core_crtp_helper.cc
   #
   vector/src/core_vector_traits.cc

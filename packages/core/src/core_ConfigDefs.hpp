@@ -5,49 +5,48 @@
 #include "core_config.h"
 #include <stdlib.h>
 #include <iostream>
-#include "core_static_assert.hpp"
+#include "core_static_assert_definitions.hpp"
 
 
 namespace core{
+namespace details {
 
-  namespace details {
+  template<typename T, typename enable = void>
+  struct traits;
 
-    template<typename T, typename enable = void>
-    struct traits;
+  // traits<const T> == traits<T> 
+  // For example, traits<Vector<const T> > != traits<Vector<T> >, but
+  //              traits<const Vector<T> > == traits<Vector<T> >
+  template<typename T> 
+  struct traits<const T> : traits<T> {};
 
-    // traits<const T> == traits<T> 
-    // For example, traits<Vector<const T> > != traits<Vector<T> >, but
-    //              traits<const Vector<T> > == traits<Vector<T> >
-    template<typename T> 
-    struct traits<const T> : traits<T> {};
-
-  } // end namespace details
+} // end namespace details
 
 
-  namespace defaultTypes {
+namespace defaultTypes {
 
-    //! Default value of Scalar template parameter.
-    using scalar_t = double;
+  //! Default value of Scalar template parameter.
+  using scalar_t = double;
 
-    //! Default value of LocalOrdinal template parameter.
-    using local_ordinal_t = int;
+  //! Default value of LocalOrdinal template parameter.
+  using local_ordinal_t = int;
 
-    /// default global_ordinal_type
-    using global_ordinal_t = int;
+  /// default global_ordinal_type
+  using global_ordinal_t = int;
 
-    /// default type for error codes
-    using errcode_t = int;
+  /// default type for error codes
+  using errcode_t = int;
 
-    // admissible types for epetra vector
-    using epetra_scalar_t = double;
-    using epetra_lo_t = int;
-    using epetra_go_t1 = int;
-    using epetra_go_t2 = long long;
+  // admissible types for epetra vector
+  using epetra_scalar_t = double;
+  using epetra_lo_t = int;
+  using epetra_go_t1 = int;
+  using epetra_go_t2 = long long;
 
-  } // namespace defaultTypes
+} // namespace defaultTypes
 
-  constexpr defaultTypes::errcode_t _SUCCESS = 0;
-  constexpr defaultTypes::errcode_t _FAILURE = 1;
+constexpr defaultTypes::errcode_t _SUCCESS = 0;
+constexpr defaultTypes::errcode_t _FAILURE = 1;
   
 } // end of core namespace
 

@@ -13,8 +13,9 @@ namespace core{
 
 template <typename wrapped_type>
 class vector<wrapped_type,
-	     typename std::enable_if<core::meta::is_stdlibVector<wrapped_type>::value
-				     >::type
+	     typename std::enable_if<
+	       core::meta::is_stdlibVector<wrapped_type>::value
+	       >::type
 	     >
   : public vectorGenericBase< vector<wrapped_type> >,
     public vectorSerialBase< vector<wrapped_type> >,
@@ -28,21 +29,72 @@ public:
   using ord_t = typename details::traits<derived_t>::ordinal_t;
 
 private:
+  friend vectorGenericBase< derived_t >;
+  friend vectorSerialBase< derived_t >;
+  friend vectorMathBase< derived_t >;
+  
+private:
   std::vector<sc_t> data_;
 
 public:
-  vector(){}
+  vector() = default;
+  vector(ord_t insize,
+	 sc_t value = static_cast<sc_t>(0) ){
+    this->resize(insize);
+  }
   vector(const std::vector<sc_t> & src) : data_(src){}
   ~vector(){}
 
+public:
   sc_t & operator [] (ord_t i){
     return data_[i];
   };
+
   sc_t const & operator [] (ord_t i) const{
     return data_[i];
   };  
-  //-----------------------------------
+
+
+  derived_t operator+(const derived_t & other) {
+    derived_t res(other.size());
+    std::transform(this->data_.begin(), this->data_.end(),
+		   other.data()->begin(), res.data()->begin(),
+		   std::plus<sc_t>());
+    return res;
+  }
+
+  derived_t operator-(const derived_t & other) {
+    derived_t res(other.size()); 
+    std::transform(this->data_.begin(), this->data_.end(),
+		   other.data()->begin(), res.data()->begin(),
+		   std::minus<sc_t>());
+    return res;
+  }
+
+  derived_t operator*(const derived_t & other) {
+    derived_t res(other.size()); 
+    std::transform(this->data_.begin(), this->data_.end(),
+		   other.data()->begin(), res.data()->begin(),
+		   std::multiplies<sc_t>());
+    return res;
+  }
   
+  derived_t & operator+=(const derived_t & other) {
+    std::transform(this->data_.begin(), this->data_->end(),
+		   other.data()->begin(), this->data_.begin(),
+		   std::plus<sc_t>());
+    return *this;
+  }
+  
+  derived_t & operator-=(const derived_t & other) {
+    std::transform(this->data_.begin(), this->data_->end(),
+		   other.data()->begin(), this->data_.begin(),
+		   std::minus<sc_t>());
+    return *this;
+  }
+
+
+private:
   wrap_t const * dataImpl() const{
     return &data_;
   };

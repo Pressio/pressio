@@ -2,7 +2,9 @@
 #ifndef CORE_MATRIX_META_HPP_
 #define CORE_MATRIX_META_HPP_
 
-#include "core_meta.hpp"
+#include "meta/core_meta_basic.hpp"
+//#include "meta/core_meta_detect_operators.hpp"
+//#include "meta/core_meta_detect_typedefs.hpp"
 #include "vector/core_vector_meta.hpp"
 
 

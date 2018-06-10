@@ -7,14 +7,14 @@
 #include "./base/core_vector_math_base.hpp"
 #include "Epetra_Vector.h"
 
-
-
 namespace core{
   
 template <typename wrapped_type>
 class vector<wrapped_type,
-	     typename std::enable_if<std::is_same<wrapped_type,
-						  Epetra_Vector>::value
+	     typename
+	     std::enable_if<std::is_same<wrapped_type,
+					 Epetra_Vector
+					 >::value
 				     >::type
 	     >
   : public vectorGenericBase< vector<wrapped_type> >,
@@ -32,29 +32,34 @@ public:
   using mpicomm_t = typename details::traits<derived_t>::mpicomm_t;
 
 private:
+  friend vectorGenericBase< derived_t >;
+  friend vectorDistributedBase< derived_t >;
+  friend vectorMathBase< derived_t >;
+  
+private:
   wrap_t data_;
 
 public:
-  vector(){};
+  vector() = default;
   vector(const wrap_t & obj) : data_(obj){};
   ~vector(){};
 
-
+public:
   sc_t & operator [] (LO_t i){
     return data_[i];
   };
   sc_t const & operator [] (LO_t i) const{
     return data_[i];
   };  
-  //-----------------------------------
 
+
+private:  
   wrap_t const * dataImpl() const{
     return &data_;
   };
   wrap_t * dataImpl(){
     return data_;
   };
-  //-----------------------------------
 
   size_t localSizeImpl() const {
     return data_.MyLength();
@@ -68,8 +73,13 @@ public:
     return data_.Map();
   }
 
+};//end class
+    
+}//end namespace core
+#endif
 
-  
+
+
   // sc_t dotImpl(const der_t & b) const{
   //   // what is this?
   //   // dot product: <this,b>
@@ -93,10 +103,4 @@ public:
   //   data_.Norm2(&result);
   //   return result;
   // };
-
-};
-
-    
-}//end namespace core
-#endif
 

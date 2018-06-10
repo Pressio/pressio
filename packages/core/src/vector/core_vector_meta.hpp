@@ -2,7 +2,9 @@
 #ifndef CORE_VECTOR_META_HPP_
 #define CORE_VECTOR_META_HPP_
 
-#include "core_meta.hpp"
+#include "../meta/core_meta_basic.hpp"
+#include "../meta/core_meta_detect_operators.hpp"
+#include "../meta/core_meta_detect_typedefs.hpp"
 #include <Eigen/Dense>
 #include <vector>
 
