@@ -83,7 +83,7 @@ public:
   template <typename U = derived_t>
   derived_t operator-(typename
 		      std::enable_if<
-		      meta::has_diff_op<wrap_t>::value,
+		      meta::has_subtract_op<wrap_t>::value,
 		      const U & >::type other)
   {
     derived_t res(other.size());
@@ -94,7 +94,7 @@ public:
   template <typename U = derived_t>
   derived_t operator-(typename
 		      std::enable_if<
-		      !meta::has_diff_op<wrap_t>::value,
+		      !meta::has_subtract_op<wrap_t>::value,
 		      const U & >::type other)
   {
     derived_t res(other.size());

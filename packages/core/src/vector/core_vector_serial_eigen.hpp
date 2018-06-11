@@ -38,8 +38,7 @@ private:
 
 public:
   vector() = default;
-  vector(ord_t insize,
-	 sc_t value = static_cast<sc_t>(0) ){
+  vector(ord_t insize){
     this->resize(insize);
   }
   vector(const wrap_t & src) : data_(src){}
@@ -65,7 +64,7 @@ public:
     *res.data() = this->data_ - *other.data();
     return res;
   }
-
+  
   derived_t operator*(const derived_t & other) {
     derived_t res(other.size());
     *res.data() = this->data_ * (*other.data());

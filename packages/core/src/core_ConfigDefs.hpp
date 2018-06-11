@@ -5,8 +5,6 @@
 #include "core_config.h"
 #include <stdlib.h>
 #include <iostream>
-#include "core_static_assert_definitions.hpp"
-
 
 namespace core{
 namespace details {

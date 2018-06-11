@@ -3,6 +3,7 @@
 #define CORE_META_BASIC_HPP_
 
 #include <type_traits>
+#include <complex>
 
 namespace core{
 namespace meta {
@@ -49,6 +50,22 @@ namespace meta {
 
   /////////////////////////////////////////////////  
 
+  template <typename T,
+	    typename enable = void>
+  struct is_stdComplex : std::false_type{};
+
+  template <typename T>
+  struct is_stdComplex<T, typename
+		       std::enable_if<
+			    std::is_same<T,
+					 std::complex<typename
+						      T::value_type
+						      >
+					 >::value
+			    >::type
+		       > : std::true_type{};
+
+  
 } // namespace meta
 } // namespace core
 #endif

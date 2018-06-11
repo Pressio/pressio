@@ -59,7 +59,8 @@ namespace meta {
   template <typename T>
   struct has_localOrdinalTypedef<T,typename
 				 std::enable_if<
-				     !std::is_void<typename T::local_ordinal_type
+				     !std::is_void<typename
+						   T::local_ordinal_type
 						   >::value
 				     >::type
 				 > : std::true_type{};
@@ -75,7 +76,8 @@ namespace meta {
   struct has_globalOrdinalTypedef<T,
 				  typename
 				  std::enable_if<
-				    !std::is_void<typename T::global_ordinal_type
+				    !std::is_void<typename
+						  T::global_ordinal_type
 						  >::value
 				    >::type
 				  > : std::true_type{};
@@ -86,13 +88,13 @@ namespace meta {
   /////////////////////////////////////////////////
 
   template <typename T, typename enable = void>
-  struct has_mapTypedef : std::false_type{};
+  struct has_dataMapTypedef : std::false_type{};
 
   template <typename T>
-  struct has_mapTypedef<T,
+  struct has_dataMapTypedef<T,
 			typename
 			std::enable_if<
-			  !std::is_void<typename T::map_type
+			  !std::is_void<typename T::data_map_type
 					>::value
 			  >::type
 			> : std::true_type{};
@@ -109,7 +111,8 @@ namespace meta {
   struct has_mpicommTypedef<T,
 			    typename
 			    std::enable_if<
-			      !std::is_void<typename T::comm_type
+			      !std::is_void<typename
+					    T::communicator_type
 					    >::value
 			      >::type
 			    > : std::true_type{};

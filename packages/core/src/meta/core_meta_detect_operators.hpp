@@ -60,10 +60,10 @@ namespace meta {
   template<typename T,
 	   typename U=T,
 	   typename enable = void>
-  struct has_diff_op : std::false_type { };
+  struct has_subtract_op : std::false_type { };
 
   template<typename T, typename U>
-  struct has_diff_op<T,U,
+  struct has_subtract_op<T,U,
 		    typename
 		    std::enable_if<
 		      !std::is_void<decltype(std::declval<T>() -
