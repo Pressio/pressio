@@ -7,14 +7,13 @@
 #include "../meta/core_meta_detect_typedefs.hpp"
 #include <Eigen/Dense>
 #include <vector>
-
+#include "Epetra_Vector.h"
 
 namespace core{
 namespace meta {
 
-  // check if type is an Eigen vector
-  // this is true when at least one dimension is 1
-  
+  //----------------------------------------------------------------------
+
   template <typename T, typename enable = void>
   struct is_vectorEigen : std::false_type {};
 
@@ -43,11 +42,14 @@ namespace meta {
 			   >::type
   			 > : std::true_type{};
 
+  //----------------------------------------------------------------------
+
+  
   template <typename T, typename enable = void>
-  struct is_stdlibVector : std::false_type {};
+  struct is_vectorStdLib : std::false_type {};
 
   template <typename T>
-  struct is_stdlibVector<T,
+  struct is_vectorStdLib<T,
   			 typename
   			 std::enable_if<
 			   std::is_same<T,
@@ -63,7 +65,51 @@ namespace meta {
 			   >::type
   			 > : std::true_type{};
 
+  //----------------------------------------------------------------------
+
+
+  template <typename T, typename enable = void>
+  struct is_vectorEpetra : std::false_type {};
+
+  template <typename T>
+  struct is_vectorEpetra<T,
+  			 typename
+  			 std::enable_if<
+			   std::is_same<T,Epetra_Vector>::value 
+			   >::type
+  			 > : std::true_type{};
+  
    
+/////////////////
 } // namespace meta
+/////////////////
+
+
+  
+#define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \
+  static_assert( core::meta::is_vectorEigen<TYPE>::value, \
+		 "NOT_A_VECTOR_FROM_EIGEN")
+#define STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(TYPE) \
+  static_assert( !core::meta::is_vectorEigen<TYPE>::value, \
+		 "IS_A_VECTOR_FROM_EIGEN")
+
+#define STATIC_ASSERT_IS_VECTOR_STDLIB(TYPE) \
+  static_assert( core::meta::is_vectorStdLib<TYPE>::value, \
+		 "NOT_A_STDLIB_VECTOR")
+#define STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(TYPE) \
+  static_assert( !core::meta::is_vectorStdLib<TYPE>::value, \
+		 "IS_A_STDLIB_VECTOR")
+
+#define STATIC_ASSERT_IS_VECTOR_EPETRA(TYPE) \
+  static_assert( core::meta::is_vectorEpetra<TYPE>::value, \
+		 "NOT_A_VECTOR_EPETRA")
+#define STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(TYPE) \
+  static_assert( !core::meta::is_vectorEpetra<TYPE>::value, \
+		 "IS_A_VECTOR_EPETRA")
+
+  
+/////////////////
 } // namespace core
+/////////////////
+
 #endif

@@ -14,8 +14,8 @@ public:
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
   using LO_t = typename details::traits<derived_type>::local_ordinal_t;
   using GO_t = typename details::traits<derived_type>::global_ordinal_t;
-  using map_t = typename details::traits<derived_type>::map_t;
-  using comm_t = typename details::traits<derived_type>::comm_t;
+  using map_t = typename details::traits<derived_type>::data_map_t;
+  using comm_t = typename details::traits<derived_type>::communicator_t;
 
 public:
   size_t globalSize() const {
@@ -24,14 +24,14 @@ public:
   size_t localSize() const {
     return this->underlying().localSizeImpl();
   };
-  map_t const & getMap() const{
-    return this->underlying().getMapImpl();
+  map_t const & getDataMap() const{
+    return this->underlying().getDataMapImpl();
   }    
 
 private:
-  //  friend class derived_type;
-   vectorDistributedBase(){}
-   ~vectorDistributedBase(){}
+  friend derived_type;
+  vectorDistributedBase() = default;
+  ~vectorDistributedBase() = default;
 
   der_t & underlying(){
     return static_cast<der_t &>(*this);

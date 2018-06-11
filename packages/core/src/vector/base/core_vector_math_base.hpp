@@ -7,12 +7,14 @@
 namespace core{
     
 template<typename derived_type>
-class vectorMathBase{
+class vectorMathBase
+{
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
-  
+
+public:
   template <typename op_t>
   void inPlaceOp(op_t op, sc_t a1, sc_t a2, const der_t & vin){
     // this = a1*this op a2*vin;
@@ -24,9 +26,9 @@ public:
   // };
 
 private:
-  //friend class derived_type;
-  vectorMathBase(){}
-  ~vectorMathBase(){}
+  friend derived_type;
+  vectorMathBase() = default;
+  ~vectorMathBase() = default;
 
   der_t & underlying(){
     return static_cast<der_t &>(*this);

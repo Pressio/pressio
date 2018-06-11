@@ -3,7 +3,7 @@
 #include "meta/core_meta_basic.hpp"
 #include "meta/core_meta_detect_typedefs.hpp"
 
-TEST(coreMeta, scalarTypedefDetect)
+TEST(core_meta_detect_typedefs, scalarTypedefDetect)
 {
   class A{
   public:
@@ -27,7 +27,7 @@ TEST(coreMeta, scalarTypedefDetect)
 }
 
 
-TEST(coreMeta, ordinalTypedefDetect)
+TEST(core_meta_detect_typedefs, ordinalTypedefDetect)
 {
   class A{
   public:
@@ -51,7 +51,7 @@ TEST(coreMeta, ordinalTypedefDetect)
 }
 
 
-TEST(coreMeta, localglobalOrdinalTypedefDetect)
+TEST(core_meta_detect_typedefs, localglobalOrdinalTypedefDetect)
 {
   class A{
   public:
@@ -84,7 +84,7 @@ TEST(coreMeta, localglobalOrdinalTypedefDetect)
 }
 
 
-TEST(coreMeta, mapCommTypedefDetect)
+TEST(core_meta_detect_typedefs, mapCommTypedefDetect)
 {
   class A{
   public:

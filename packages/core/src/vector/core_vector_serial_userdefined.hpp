@@ -13,13 +13,13 @@ namespace core{
 template <typename wrapped_type>
 class vector<wrapped_type,
 	     typename std::enable_if<
-	       !core::meta::is_stdlibVector<wrapped_type>::value &&
+	       !core::meta::is_vectorStdLib<wrapped_type>::value &&
 	       !core::meta::is_vectorEigen<wrapped_type>::value
 	       >::type
 	     >
-  : private vectorGenericBase< vector<wrapped_type> >,
-    private vectorSerialBase< vector<wrapped_type> >,
-    private vectorMathBase< vector<wrapped_type> >
+  : public vectorGenericBase< vector<wrapped_type> >,
+    public vectorSerialBase< vector<wrapped_type> >,
+    public vectorMathBase< vector<wrapped_type> >
 {
 public:
   using derived_t = vector<wrapped_type>;

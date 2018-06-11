@@ -6,15 +6,12 @@
 #include "./base/core_vector_serial_base.hpp"
 #include "./base/core_vector_math_base.hpp"
 
-
-
 namespace core{
-
 
 template <typename wrapped_type>
 class vector<wrapped_type,
 	     typename std::enable_if<
-	       core::meta::is_stdlibVector<wrapped_type>::value
+	       core::meta::is_vectorStdLib<wrapped_type>::value
 	       >::type
 	     >
   : public vectorGenericBase< vector<wrapped_type> >,
@@ -98,17 +95,17 @@ private:
   wrap_t const * dataImpl() const{
     return &data_;
   };
-
   wrap_t * dataImpl(){
     return data_;
   };
-
   void resizeImpl(size_t val) {
     data_.resize(val);
   };
-
   size_t sizeImpl() const {
     return data_.size();
+  };
+  bool emptyImpl() const{
+    return data_.empty();
   };
    
 };

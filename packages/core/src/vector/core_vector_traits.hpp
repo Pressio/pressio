@@ -18,7 +18,8 @@ namespace details{
   struct traits<vector<wrapped_type,
   		       typename
 		       std::enable_if<
-			 core::meta::is_vectorEigen<wrapped_type>::value
+			 core::meta::is_vectorEigen<wrapped_type
+						    >::value
 			 >::type
   		       >
   		>     		       
@@ -44,7 +45,8 @@ namespace details{
   struct traits<vector<wrapped_type,
 		       typename
 		       std::enable_if<
-			 core::meta::is_stdlibVector<wrapped_type>::value
+			 core::meta::is_vectorStdLib<wrapped_type
+						     >::value
 			 >::type
 		       >
 		>
@@ -70,10 +72,14 @@ namespace details{
   struct traits<vector<wrapped_type,
   		       typename
   		       std::enable_if<
-			 core::meta::has_scalarTypedef<wrapped_type>::value &&
-			 core::meta::has_ordinalTypedef<wrapped_type>::value &&
-			 !core::meta::is_stdlibVector<wrapped_type>::value &&
-			 !core::meta::is_vectorEigen<wrapped_type>::value
+			 core::meta::has_scalarTypedef<wrapped_type
+						       >::value &&
+			 core::meta::has_ordinalTypedef<wrapped_type
+							>::value &&
+			 !core::meta::is_vectorStdLib<wrapped_type
+						      >::value &&
+			 !core::meta::is_vectorEigen<wrapped_type
+						     >::value
 			 >::type
 		       >
   		>
@@ -109,20 +115,20 @@ namespace details{
     using local_ordinal_t = core::defaultTypes::epetra_lo_t;
     using global_ordinal_t = core::defaultTypes::epetra_go_t1;
     using wrapped_t = Epetra_Vector;
-    using map_t = Epetra_Map;
-    using comm_t = Epetra_Comm;
+    using data_map_t = Epetra_Map;
+    using communicator_t = Epetra_Comm;
     using derived_t = vector<wrapped_t>;
     enum {
       isVector = 1,
       isDistributed = 1,
+      isEpetra = 1,
       isSTDVector = 0,
       isSerial = 0,
       isEigen = 0
     };
   };
  
-
-}//end namespace details
+}//end namespace details  
 }//end namespace core
 
 #endif

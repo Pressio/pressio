@@ -22,11 +22,14 @@ public:
   void resize(size_t newSize) {
     this->underlying().resizeImpl(newSize);
   };
+  bool empty() const {
+    return this->underlying().emptyImpl();
+  };
     
 private:
-  //friend class derived_type;
-  vectorSerialBase(){}
-  ~vectorSerialBase(){}
+  friend derived_type;
+  vectorSerialBase() = default;
+  ~vectorSerialBase() = default;
  
   der_t & underlying(){
     return static_cast<der_t &>(*this);
@@ -39,11 +42,3 @@ private:
     
 } // end namespace core
 #endif
-
-
-// template <typename wrapped_matrix_type, typename U>
-// typename std::enable_if<std::is_same<U,der_t>::value>::type
-// matMultiply(const matrix<wrapped_matrix_type> & matin,
-// 		   U & result) const{
-//   this->underlying().matMultiplyImpl(matin, result);
-// };

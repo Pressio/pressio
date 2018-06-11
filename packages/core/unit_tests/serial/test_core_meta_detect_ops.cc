@@ -4,7 +4,7 @@
 #include "meta/core_meta_detect_operators.hpp"
 
 
-TEST(core_meta, operatorAddDetecting)
+TEST(core_meta_detect_operators, operatorAddDetecting)
 {
   class A{
    public:
@@ -35,7 +35,7 @@ TEST(core_meta, operatorAddDetecting)
 }
 
 
-TEST(core_meta, operatorSubtractDetecting)
+TEST(core_meta_detect_operators, operatorSubtractDetecting)
 {
   class A{
    public:
@@ -66,7 +66,7 @@ TEST(core_meta, operatorSubtractDetecting)
 }
 
 
-TEST(core_meta, operatorStarDetecting)
+TEST(core_meta_detect_operators, operatorStarDetecting)
 {
   class A{
    public:
@@ -98,7 +98,7 @@ TEST(core_meta, operatorStarDetecting)
 
 
 
-TEST(core_meta, operatorCompAssignDetecting)
+TEST(core_meta_detect_operators, operatorCompAssignDetecting)
 {
   class A{
    public:
@@ -124,7 +124,7 @@ TEST(core_meta, operatorCompAssignDetecting)
 
 
 
-TEST(core_meta, operatorCompAssignMinusDetecting)
+TEST(core_meta_detect_operators, operatorCompAssignMinusDetecting)
 {
   class A{
    public:

@@ -19,20 +19,6 @@ namespace core{
 //   static_assert( TYPE::isMatrix, \
 // 		 "NOT_A_MATRIX")
 
-  
-#define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \
-  static_assert( core::meta::is_vectorEigen<TYPE>::value, \
-		 "NOT_A_VECTOR_FROM_EIGEN")
-#define STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(TYPE) \
-  static_assert( !core::meta::is_vectorEigen<TYPE>::value, \
-		 "IS_A_VECTOR_FROM_EIGEN")
-
-#define STATIC_ASSERT_IS_STDLIB_VECTOR(TYPE) \
-  static_assert( core::meta::is_stdlibVector<TYPE>::value, \
-		 "NOT_A_STDLIB_VECTOR")
-#define STATIC_ASSERT_IS_NOT_STDLIB_VECTOR(TYPE) \
-  static_assert( !core::meta::is_stdlibVector<TYPE>::value, \
-		 "IS_A_STDLIB_VECTOR")
 
   
 

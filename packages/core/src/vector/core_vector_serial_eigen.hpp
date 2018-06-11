@@ -17,9 +17,9 @@ class vector<wrapped_type,
 	       core::meta::is_vectorEigen<wrapped_type>::value
 	       >::type
 	     >
-  : private vectorGenericBase< vector<wrapped_type> >,
-    private vectorSerialBase< vector<wrapped_type> >,
-    private vectorMathBase< vector<wrapped_type> >
+  : public vectorGenericBase< vector<wrapped_type> >,
+    public vectorSerialBase< vector<wrapped_type> >,
+    public vectorMathBase< vector<wrapped_type> >
 {
 public:    
   using derived_t = vector<wrapped_type>;
@@ -27,14 +27,6 @@ public:
   using ord_t = typename details::traits<derived_t>::ordinal_t;
   using der_t = typename details::traits<derived_t>::derived_t;
   using wrap_t = typename details::traits<derived_t>::wrapped_t;
-
-private:
-  friend vectorGenericBase< derived_t >;
-  friend vectorSerialBase< derived_t >;
-  friend vectorMathBase< derived_t >;
-  
-private:
-  wrap_t data_;
 
 public:
   vector() = default;
@@ -46,10 +38,12 @@ public:
   
 public:
   sc_t & operator [] (ord_t i){
+    assert(!this->empty());
     return data_(i);
   };
 
   sc_t const & operator [] (ord_t i) const{
+    assert(!this->empty());
     return data_(i);
   };  
 
@@ -67,7 +61,8 @@ public:
   
   derived_t operator*(const derived_t & other) {
     derived_t res(other.size());
-    *res.data() = this->data_ * (*other.data());
+    for (size_t i=0; i<this->size(); i++)
+      res[i] = this->data_(i) * other[i];
     return res;
   }
   
@@ -80,7 +75,7 @@ public:
     this->data_ -= *other.data();
     return *this;
   }
-  
+
 private:
   wrap_t const * dataImpl() const{
     return &data_;
@@ -94,7 +89,18 @@ private:
   void resizeImpl(size_t val){
     data_.resize(val);
   };
+  bool emptyImpl() const{
+    return this->size()==0 ? true : false;
+  };
 
+private:
+  friend vectorGenericBase< derived_t >;
+  friend vectorSerialBase< derived_t >;
+  friend vectorMathBase< derived_t >;
+
+private:
+  wrap_t data_;
+ 
 };//end class
     
 }//end namespace core

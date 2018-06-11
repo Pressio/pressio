@@ -12,10 +12,11 @@ namespace core{
 template <typename wrapped_type>
 class vector<wrapped_type,
 	     typename
-	     std::enable_if<std::is_same<wrapped_type,
-					 Epetra_Vector
-					 >::value
-				     >::type
+	     std::enable_if<
+	       std::is_same<wrapped_type,
+			    Epetra_Vector
+			    >::value
+	       >::type
 	     >
   : public vectorGenericBase< vector<wrapped_type> >,
     public vectorDistributedBase< vector<wrapped_type> >,
@@ -28,30 +29,24 @@ public:
   using GO_t = typename details::traits<derived_t>::global_ordinal_t;
   using der_t = typename details::traits<derived_t>::derived_t;
   using wrap_t = typename details::traits<derived_t>::wrapped_t;
-  using map_t = typename details::traits<derived_t>::map_t;
-  using mpicomm_t = typename details::traits<derived_t>::mpicomm_t;
-
-private:
-  friend vectorGenericBase< derived_t >;
-  friend vectorDistributedBase< derived_t >;
-  friend vectorMathBase< derived_t >;
-  
-private:
-  wrap_t data_;
+  using map_t = typename details::traits<derived_t>::data_map_t;
+  using mpicomm_t = typename details::traits<derived_t>::communicator_t;
 
 public:
-  vector() = default;
-  vector(const wrap_t & obj) : data_(obj){};
-  ~vector(){};
+  vector() = delete;
+  vector(const map_t & mapobj) : data_(mapobj){};
+  vector(const wrap_t & vecobj) : data_(vecobj){};
+  ~vector() = default;
 
 public:
   sc_t & operator [] (LO_t i){
+    assert(i < this->localSize());
     return data_[i];
   };
   sc_t const & operator [] (LO_t i) const{
+    assert(i < this->localSize());
     return data_[i];
   };  
-
 
 private:  
   wrap_t const * dataImpl() const{
@@ -69,12 +64,20 @@ private:
     return data_.GlobalLength();
   };
   
-  map_t const & getMapImpl() const{
+  map_t const & getDataMapImpl() const{
     return data_.Map();
   }
 
-};//end class
-    
+private:
+  friend vectorGenericBase< derived_t >;
+  friend vectorDistributedBase< derived_t >;
+  friend vectorMathBase< derived_t >;
+  
+private:
+  wrap_t data_;
+
+};//end class    
+
 }//end namespace core
 #endif
 

@@ -7,7 +7,8 @@
 namespace core{
     
 template<typename derived_type>
-class vectorGenericBase{
+class vectorGenericBase
+{
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;
@@ -22,9 +23,9 @@ public:
   };
   
 private:
-  //  friend class derived_type;
-  vectorGenericBase(){}
-  ~vectorGenericBase(){}
+  friend derived_type;
+  vectorGenericBase() = default;
+  ~vectorGenericBase() = default;
   
   der_t & underlying(){
     return static_cast<der_t &>(*this);

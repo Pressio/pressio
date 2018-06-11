@@ -13,11 +13,11 @@ struct StdVecChecker
 public:
   using stdV_t = std::vector<T>;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(stdV_t);
-  STATIC_ASSERT_IS_STDLIB_VECTOR(stdV_t);
+  STATIC_ASSERT_IS_VECTOR_STDLIB(stdV_t);
 
   using myvec_t = core::vector<stdV_t>;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
-  STATIC_ASSERT_IS_NOT_STDLIB_VECTOR(myvec_t);
+  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(myvec_t);
 
   using vecTrait = core::details::traits<myvec_t>;
   void check(){   
@@ -38,7 +38,7 @@ public:
   }
 };
 
-struct StdVecFixture : public ::testing::Test{
+struct core_vector_serial_stdlib_traits_Fixture : public ::testing::Test{
 public:
   // virtual void SetUp(){}
   // virtual void TearDown(){}
@@ -48,7 +48,7 @@ public:
   StdVecChecker<std::complex<double>> d;
 };
 
-TEST_F(StdVecFixture, StdVectorTraits)
+TEST_F(core_vector_serial_stdlib_traits_Fixture, StdVectorTraits)
 {
   a.check();
   b.check();
@@ -57,7 +57,7 @@ TEST_F(StdVecFixture, StdVectorTraits)
  
   // check that a matrix is not a vector
   using stdmat_t = std::vector<std::vector<double>>;
-  STATIC_ASSERT_IS_NOT_STDLIB_VECTOR(stdmat_t);
+  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(stdmat_t);
   using stdmat_t2 = std::vector<std::vector<int>>;
-  STATIC_ASSERT_IS_NOT_STDLIB_VECTOR(stdmat_t2);
+  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(stdmat_t2);
 }

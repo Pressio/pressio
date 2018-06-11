@@ -3,7 +3,7 @@
 #include "meta/core_meta_basic.hpp"
 #include "meta/core_meta_detect_operators.hpp"
 
-TEST(core_meta, isDefaultConstructible)
+TEST(core_meta_basic, isDefaultConstructible)
 {
   class A{
   public:
@@ -26,7 +26,7 @@ TEST(core_meta, isDefaultConstructible)
 
 
 
-TEST(core_meta, isComplexNumber)
+TEST(core_meta_basic, isComplexNumber)
 {
   using t1 = std::complex<float>;
   static_assert( core::meta::is_stdComplex<t1>::value, "should be complex" );

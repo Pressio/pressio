@@ -1,10 +1,8 @@
-
 #include <gtest/gtest.h>
 #include "vector/core_vector_serial_eigen.hpp"
 #include "vector/core_vector_serial_stdlib.hpp"
 #include "vector/core_vector_serial_userdefined.hpp"
 #include "vector/core_vector_meta.hpp"
-#include "core_static_assert_definitions.hpp"
 
 
 //Eigen::MatrixNt
@@ -13,38 +11,44 @@
 // cf ( complex<float>), or cd (complex<double>)
 
 
-template <typename T, int row, int col>
-struct EigenVecChecker
-{
+struct core_vector_serial_eigen_traits_Fixture
+  : public ::testing::Test{
 public:
-  using eigV_t = Eigen::Matrix<T, row, col>;
-  STATIC_ASSERT_IS_VECTOR_EIGEN(eigV_t);
-  STATIC_ASSERT_IS_NOT_STDLIB_VECTOR(eigV_t);
 
-  using myvec_t = core::vector<eigV_t>;
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
-  STATIC_ASSERT_IS_NOT_STDLIB_VECTOR(myvec_t);
+  template <typename T, int row, int col>
+  struct EigenVecChecker
+  {
+  public:
+    using eigV_t = Eigen::Matrix<T, row, col>;
+    STATIC_ASSERT_IS_VECTOR_EIGEN(eigV_t);
+    STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(eigV_t);
 
-  using vecTrait = core::details::traits<myvec_t>;
-  void check(){   
-    ::testing::StaticAssertTypeEq<typename
-				  vecTrait::scalar_t,T>();
-    ::testing::StaticAssertTypeEq<typename
-				  vecTrait::ordinal_t,int>();
-    ::testing::StaticAssertTypeEq<typename
-				  vecTrait::wrapped_t,eigV_t>();
-    ::testing::StaticAssertTypeEq<typename
-				  vecTrait::derived_t,myvec_t>();
-    EXPECT_EQ(vecTrait::isVector, 1);
-    EXPECT_EQ(vecTrait::isEigen, 1);
-    EXPECT_EQ(vecTrait::isSerial, 1);
-    EXPECT_EQ(vecTrait::isSTDVector, 0);
-    EXPECT_EQ(vecTrait::isDistributed, 0);
+    using myvec_t = core::vector<eigV_t>;
+    STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
+    STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(myvec_t);
+
+    using vecTrait = core::details::traits<myvec_t>;
+    void check(){   
+      ::testing::StaticAssertTypeEq<typename
+				    vecTrait::scalar_t,T>();
+      ::testing::StaticAssertTypeEq<typename
+				    vecTrait::ordinal_t,int>();
+      ::testing::StaticAssertTypeEq<typename
+				    vecTrait::wrapped_t,eigV_t>();
+      ::testing::StaticAssertTypeEq<typename
+				    vecTrait::derived_t,myvec_t>();
+      EXPECT_EQ(vecTrait::isVector, 1);
+      EXPECT_EQ(vecTrait::isEigen, 1);
+      EXPECT_EQ(vecTrait::isSerial, 1);
+      EXPECT_EQ(vecTrait::isSTDVector, 0);
+      EXPECT_EQ(vecTrait::isDistributed, 0);
+    }
+  };
+
+  void print(){
+    std::cout << "gigi" << std::endl;
   }
-};
-
-struct EigVecFixture : public ::testing::Test{
-public:
+  
   // virtual void SetUp(){}
   // virtual void TearDown(){}
   static constexpr int dyn = Eigen::Dynamic;
@@ -64,7 +68,7 @@ public:
   EigenVecChecker<std::complex<int>,dyn,1> e1;
 };
 
-TEST_F(EigVecFixture, EigenVectorTraits)
+TEST_F(core_vector_serial_eigen_traits_Fixture, EigenVectorTraits)
 {
   a.check();
   b.check();
@@ -76,7 +80,7 @@ TEST_F(EigVecFixture, EigenVectorTraits)
   c1.check();
   d1.check();
   e1.check();
-
+  
   // check that a matrix from eigen is not a vector
   using eigmat_t = Eigen::Matrix<double, dyn, dyn>;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(eigmat_t);
