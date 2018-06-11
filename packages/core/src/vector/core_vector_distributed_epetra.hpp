@@ -48,6 +48,38 @@ public:
     return data_[i];
   };  
 
+  der_t operator+(const der_t & other) {
+    der_t res( other.getDataMap() );
+    for (LO_t i=0; i<this->localSize(); i++)
+      res[i] = (*this)[i] + other[i];
+    return res;
+  }
+
+  der_t operator-(const der_t & other) {
+    der_t res( other.getDataMap() );
+    for (LO_t i=0; i<this->localSize(); i++)
+      res[i] = (*this)[i] - other[i];
+    return res;
+  }
+
+  der_t operator*(const der_t & other) {
+    der_t res( other.getDataMap() );
+    for (LO_t i=0; i<this->localSize(); i++)
+      res[i] = (*this)[i] * other[i];
+    return res;
+  }
+
+  der_t & operator+=(const der_t & other) {
+    this->data_.Update(1.0, *other.data(), 1.0 );
+    return *this;
+  }
+
+  der_t & operator-=(const der_t & other) {
+    this->data_.Update(-1.0, *other.data(), 1.0 );
+    return *this;
+  }
+  
+  
 private:  
   wrap_t const * dataImpl() const{
     return &data_;
@@ -68,6 +100,11 @@ private:
     return data_.Map();
   }
 
+  void putScalarImpl(sc_t value) {
+    this->data_.PutScalar(value);
+  }    
+
+  
 private:
   friend vectorGenericBase< derived_t >;
   friend vectorDistributedBase< derived_t >;

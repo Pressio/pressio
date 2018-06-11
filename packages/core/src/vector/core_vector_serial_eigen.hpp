@@ -48,18 +48,21 @@ public:
   };  
 
   derived_t operator+(const derived_t & other) {
+    assert( other.size() == this->size() );
     derived_t res(other.size());
     *res.data() = this->data_ + *other.data();
     return res;
   }
 
   derived_t operator-(const derived_t & other) {
+    assert( other.size() == this->size() );
     derived_t res(other.size());
     *res.data() = this->data_ - *other.data();
     return res;
   }
   
   derived_t operator*(const derived_t & other) {
+    assert( other.size() == this->size() );
     derived_t res(other.size());
     for (size_t i=0; i<this->size(); i++)
       res[i] = this->data_(i) * other[i];
@@ -67,11 +70,13 @@ public:
   }
   
   derived_t & operator+=(const derived_t & other) {
+    assert( other.size() == this->size() );
     this->data_ += *other.data();
     return *this;
   }
   
   derived_t & operator-=(const derived_t & other) {
+    assert( other.size() == this->size() );
     this->data_ -= *other.data();
     return *this;
   }

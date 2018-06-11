@@ -115,7 +115,7 @@ namespace details{
     using local_ordinal_t = core::defaultTypes::epetra_lo_t;
     using global_ordinal_t = core::defaultTypes::epetra_go_t1;
     using wrapped_t = Epetra_Vector;
-    using data_map_t = Epetra_Map;
+    using data_map_t = Epetra_BlockMap;
     using communicator_t = Epetra_Comm;
     using derived_t = vector<wrapped_t>;
     enum {
@@ -130,6 +130,7 @@ namespace details{
  
 }//end namespace details  
 }//end namespace core
+
 
 #endif
 

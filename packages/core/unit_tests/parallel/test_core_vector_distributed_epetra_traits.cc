@@ -43,7 +43,7 @@ TEST(core_vector_distributed_epetra, EpetraVectorTraits)
   				vecTrait::derived_t, myvec_t>();
 
   ::testing::StaticAssertTypeEq<typename
-  				vecTrait::data_map_t, Epetra_Map>();
+  				vecTrait::data_map_t, Epetra_BlockMap>();
 
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::communicator_t, Epetra_Comm>();

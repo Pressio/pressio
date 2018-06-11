@@ -8,7 +8,6 @@
 #include "Epetra_MpiComm.h"
 
 
-
 struct core_vector_distributed_epetraFix
   : public ::testing::Test{
 public:
@@ -33,6 +32,9 @@ public:
     x_ = new Epetra_Vector(*contigMap_);
   }
 
+  int getRank() const{
+    return rank_;
+  }
   int getNumProc() const{
     return NumProc_;
   }
@@ -59,10 +61,13 @@ public:
   }
 };
 
-using core_vector_distributed_epetra_DeathTest = core_vector_distributed_epetraFix;
+
+using core_vector_distributed_epetra_DeathTest
+= core_vector_distributed_epetraFix;
 
 
-TEST_F(core_vector_distributed_epetraFix, EpetraVectorConstructor)
+TEST_F(core_vector_distributed_epetraFix,
+       EpetraVectorConstructor)
 {
   using myvec_t = core::vector<Epetra_Vector>;
   ASSERT_TRUE( core::details::traits<myvec_t>::isEpetra==1 );
@@ -76,7 +81,8 @@ TEST_F(core_vector_distributed_epetraFix, EpetraVectorConstructor)
 }
 
 
-TEST_F(core_vector_distributed_epetraFix, EpetraVectorQueryWrappedData)
+TEST_F(core_vector_distributed_epetraFix,
+       EpetraVectorQueryWrappedData)
 {    
   using myvec_t = core::vector<Epetra_Vector>;
   myvec_t v1( *getMap() );
@@ -87,7 +93,8 @@ TEST_F(core_vector_distributed_epetraFix, EpetraVectorQueryWrappedData)
   				 const Epetra_Vector * >();
 }
 
-TEST_F(core_vector_distributed_epetraFix, EpetraVectorSubscriptOperator)
+TEST_F(core_vector_distributed_epetraFix,
+       EpetraVectorSubscriptOperator)
 {
   using myvec_t = core::vector<Epetra_Vector>;
 
@@ -103,119 +110,126 @@ TEST_F(core_vector_distributed_epetraFix, EpetraVectorSubscriptOperator)
   EXPECT_DOUBLE_EQ( v1[3], 56.0);
 }
 
-TEST_F(core_vector_distributed_epetra_DeathTest, EpetraVectorSubscriptOperator)
+
+TEST_F(core_vector_distributed_epetraFix,
+       EpetraVectorSetScalar)
 {
   using myvec_t = core::vector<Epetra_Vector>;
   myvec_t v1( *getMap() );
-  int localSize = numLocalEntries();
-  ASSERT_DEATH(v1[localSize+1]=4.0, "Assertion failed:");
+  v1.putScalar(43.3);
+
+  for (size_t i=0; i<v1.localSize(); i++){
+    EXPECT_DOUBLE_EQ( v1[i], 43.3 );
+  }
 }
 
 
+TEST_F(core_vector_distributed_epetra_DeathTest,
+       EpetraVectorSubscriptOperator)
+{
+  if (getRank()==0){
+    using myvec_t = core::vector<Epetra_Vector>;
+    myvec_t v1( *getMap() );
+    int localSize = numLocalEntries();
+    ASSERT_DEATH(v1[localSize+1]=4.0, "Assertion failed:");
+  }
+}
 
 
-// TEST(core_vector_serial_eigen, EigenVectorAdditionOperator)
-// {
-//   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-//   using myvec_t = core::vector<eigvec_t>;
-//   using vecTrait = core::details::traits<myvec_t>;
-//   ASSERT_EQ(vecTrait::isEigen, 1);
+TEST_F(core_vector_distributed_epetraFix,
+       EpetraVectorAdditionOperator)
+{
+  using myvec_t = core::vector<Epetra_Vector>;
+  myvec_t v1( *getMap() );
+  double rankD = static_cast<double>(getRank());  
+  v1.putScalar( 3.3 +rankD );
+  
+  myvec_t v2( *getMap() );
+  v2.putScalar(1.0);
 
-//   myvec_t m_v1(4);
-//   m_v1[0] = 3.; m_v1[1] = 2.;
-//   m_v1[2] = 4.; m_v1[3] = 5.;
-//   myvec_t m_v2(4);
-//   m_v2[0] = 1.; m_v2[1] = 1.;
-//   m_v2[2] = 1.; m_v2[3] = 1.;
-
-//   myvec_t res = m_v1 + m_v2;
-//   EXPECT_DOUBLE_EQ(res[0], 4.);
-//   EXPECT_DOUBLE_EQ(res[1], 3.);
-//   EXPECT_DOUBLE_EQ(res[2], 5.);
-//   EXPECT_DOUBLE_EQ(res[3], 6.);
-// }
-
-// TEST(core_vector_serial_eigen, EigenVectorSubstractOperator)
-// {
-//   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-//   using myvec_t = core::vector<eigvec_t>;
-//   using vecTrait = core::details::traits<myvec_t>;
-//   ASSERT_EQ(vecTrait::isEigen, 1);
-
-//   myvec_t m_v1(4);
-//   m_v1[0] = 3.; m_v1[1] = 2.;
-//   m_v1[2] = 4.; m_v1[3] = 5.;
-//   myvec_t m_v2(4);
-//   m_v2[0] = 1.; m_v2[1] = 1.;
-//   m_v2[2] = 1.; m_v2[3] = 1.;
-
-//   myvec_t res = m_v1 - m_v2;
-//   EXPECT_DOUBLE_EQ(res[0], 2.);
-//   EXPECT_DOUBLE_EQ(res[1], 1.);
-//   EXPECT_DOUBLE_EQ(res[2], 3.);
-//   EXPECT_DOUBLE_EQ(res[3], 4.);
-// }
-
-// TEST(core_vector_serial_eigen, EigenVectorStarOperator)
-// {
-//   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-//   using myvec_t = core::vector<eigvec_t>;
-//   using vecTrait = core::details::traits<myvec_t>;
-//   ASSERT_EQ(vecTrait::isEigen, 1);
-
-//   myvec_t m_v1(4);
-//   m_v1[0] = 3.; m_v1[1] = 2.;
-//   m_v1[2] = 4.; m_v1[3] = 5.;
-//   myvec_t m_v2(4);
-//   m_v2[0] = 1.; m_v2[1] = 1.;
-//   m_v2[2] = 1.; m_v2[3] = 1.;
-
-//   myvec_t res = m_v1 * m_v2;
-//   EXPECT_DOUBLE_EQ(res[0], 3.);
-//   EXPECT_DOUBLE_EQ(res[1], 2.);
-//   EXPECT_DOUBLE_EQ(res[2], 4.);
-//   EXPECT_DOUBLE_EQ(res[3], 5.);
-// }
-
-// TEST(core_vector_serial_eigen, EigenVectorCompoundAssignAddOperator)
-// {
-//   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-//   using myvec_t = core::vector<eigvec_t>;
-//   using vecTrait = core::details::traits<myvec_t>;
-//   ASSERT_EQ(vecTrait::isEigen, 1);
-
-//   myvec_t m_v1(4);
-//   m_v1[0] = 3.; m_v1[1] = 2.;
-//   m_v1[2] = 4.; m_v1[3] = 5.;
-//   myvec_t m_v2(4);
-//   m_v2[0] = 1.; m_v2[1] = 1.;
-//   m_v2[2] = 1.; m_v2[3] = 1.;
-
-//   m_v1 += m_v2;
-//   EXPECT_DOUBLE_EQ(m_v1[0], 4.);
-//   EXPECT_DOUBLE_EQ(m_v1[1], 3.);
-//   EXPECT_DOUBLE_EQ(m_v1[2], 5.);
-//   EXPECT_DOUBLE_EQ(m_v1[3], 6.);
-// }
+  myvec_t v3 = v1 + v2;
+  for (size_t i=0; i<v3.localSize(); i++){
+    EXPECT_DOUBLE_EQ( v3[i], 4.3 + rankD );
+  }
+  //missing test for a case where vectors are incompatible
+}
 
 
-// TEST(core_vector_serial_eigen, EigenVectorCompoundAssignSubtractOperator)
-// {
-//   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-//   using myvec_t = core::vector<eigvec_t>;
-//   using vecTrait = core::details::traits<myvec_t>;
-//   ASSERT_EQ(vecTrait::isEigen, 1);
+TEST_F(core_vector_distributed_epetraFix,
+       EpetraVectorSubtraactOperator)
+{
+  using myvec_t = core::vector<Epetra_Vector>;
+  myvec_t v1( *getMap() );
+  double rankD = static_cast<double>(getRank());  
+  v1.putScalar( 3.3 +rankD );
+  
+  myvec_t v2( *getMap() );
+  v2.putScalar(1.0);
 
-//   myvec_t m_v1(4);
-//   m_v1[0] = 3.; m_v1[1] = 2.;
-//   m_v1[2] = 4.; m_v1[3] = 5.;
-//   myvec_t m_v2(4);
-//   m_v2[0] = 1.; m_v2[1] = 1.;
-//   m_v2[2] = 1.; m_v2[3] = 1.;
+  myvec_t v3 = v1 - v2;
+  for (size_t i=0; i<v3.localSize(); i++){
+    EXPECT_DOUBLE_EQ( v3[i], 2.3 + rankD );
+  }
+  //missing test for a case where vectors are incompatible
+}
 
-//   m_v1 -= m_v2;
-//   EXPECT_DOUBLE_EQ(m_v1[0], 2.);
-//   EXPECT_DOUBLE_EQ(m_v1[1], 1.);
-//   EXPECT_DOUBLE_EQ(m_v1[2], 3.);
-//   EXPECT_DOUBLE_EQ(m_v1[3], 4.);
-// }
+
+TEST_F(core_vector_distributed_epetraFix,
+       EpetraVectorStarOperator)
+{
+  using myvec_t = core::vector<Epetra_Vector>;
+  myvec_t v1( *getMap() );
+  double rankD = static_cast<double>(getRank());  
+  v1.putScalar( 3. +rankD );
+  
+  myvec_t v2( *getMap() );
+  v2.putScalar(1.0);
+
+  myvec_t v3 = v1 * v2;
+  for (size_t i=0; i<v3.localSize(); i++){
+    if (getRank()==0)
+      EXPECT_DOUBLE_EQ( v3[i], 3. );
+    if (getRank()==1)
+      EXPECT_DOUBLE_EQ( v3[i], 4. );
+    if (getRank()==2)
+      EXPECT_DOUBLE_EQ( v3[i], 5. );
+  }
+  //missing test for a case where vectors are incompatible
+}
+
+
+TEST_F(core_vector_distributed_epetraFix,
+       EpetraVectorCompoundAssignAddOperator)
+{
+  using myvec_t = core::vector<Epetra_Vector>;
+  myvec_t v1( *getMap() );
+  v1.putScalar( 3. );
+  
+  myvec_t v2( *getMap() );
+  v2.putScalar(1.0);
+
+  v1 += v2;
+  for (size_t i=0; i<v1.localSize(); i++){
+    EXPECT_DOUBLE_EQ( v1[i], 4. );
+  }
+  //missing test for a case where vectors are incompatible
+}
+
+
+TEST_F(core_vector_distributed_epetraFix,
+       EpetraVectorCompoundAssignSubtractOperator)
+{
+  using myvec_t = core::vector<Epetra_Vector>;
+  myvec_t v1( *getMap() );
+  v1.putScalar( 3. );
+  
+  myvec_t v2( *getMap() );
+  v2.putScalar(1.0);
+
+  v1 -= v2;
+  for (size_t i=0; i<v1.localSize(); i++){
+    EXPECT_DOUBLE_EQ( v1[i], 2. );
+  }
+  //missing test for a case where vectors are incompatible
+}
+
