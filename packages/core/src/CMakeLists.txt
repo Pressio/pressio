@@ -18,6 +18,7 @@ APPEND_SET(HEADERS
   core_forward_declarations.hpp
   core_static_assert_definitions.hpp
   core_crtp_helper.hpp
+  core_operators_base.hpp
   meta/core_meta_basic.hpp
   meta/core_meta_detect_operators.hpp
   meta/core_meta_detect_typedefs.hpp
@@ -45,6 +46,7 @@ APPEND_SET(HEADERS
   matrix/base/core_matrix_sparse_serial_base.hpp
   matrix/core_matrix_dense_serial_eigen.hpp
   matrix/core_matrix_dense_serial_stdlib.hpp
+  matrix/core_matrix_sparse_serial_eigen.hpp
 )
 
 
@@ -57,6 +59,7 @@ APPEND_SET(SOURCES
   src/core_forward_declarations.cc
   src/core_static_assert_definitions.cc
   src/core_crtp_helper.cc
+  src/core_operators_base.cc
   #
   vector/src/core_vector_traits.cc
   vector/src/core_vector_meta.cc
@@ -77,6 +80,7 @@ APPEND_SET(SOURCES
   matrix/src/core_matrix_sparse_serial_base.cc
   matrix/src/core_matrix_dense_serial_eigen.cc
   matrix/src/core_matrix_dense_serial_stdlib.cc
+  matrix/src/core_matrix_sparse_serial_eigen.cc
 )
 
 #

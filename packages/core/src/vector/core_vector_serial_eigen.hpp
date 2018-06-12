@@ -19,9 +19,12 @@ class vector<wrapped_type,
 	     >
   : public vectorGenericBase< vector<wrapped_type> >,
     public vectorSerialBase< vector<wrapped_type> >,
-    public vectorMathBase< vector<wrapped_type> >
+    public vectorMathBase< vector<wrapped_type> >,
+    // maybe move operators inheritance to serial/generic base
+    public arithmeticOperatorsBase<vector<wrapped_type>>,
+    public compoundAssignmentOperatorsBase<vector<wrapped_type>>
 {
-public:    
+private:
   using derived_t = vector<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using ord_t = typename details::traits<derived_t>::ordinal_t;
@@ -38,12 +41,12 @@ public:
   
 public:
   sc_t & operator [] (ord_t i){
-    assert(!this->empty());
+    //assert(!this->empty());
     return data_(i);
   };
 
   sc_t const & operator [] (ord_t i) const{
-    assert(!this->empty());
+    //assert(!this->empty());
     return data_(i);
   };  
 
@@ -97,7 +100,7 @@ private:
   bool emptyImpl() const{
     return this->size()==0 ? true : false;
   };
-
+  
 private:
   friend vectorGenericBase< derived_t >;
   friend vectorSerialBase< derived_t >;

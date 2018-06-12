@@ -5,9 +5,17 @@ SET(TESTFILES "")
 APPEND_SET(TESTFILES test_core_meta_basic.cc)
 APPEND_SET(TESTFILES test_core_meta_detect_ops.cc)
 APPEND_SET(TESTFILES test_core_meta_detect_typedefs.cc)
+
+APPEND_SET(TESTFILES test_core_vector_meta.cc)
 APPEND_SET(TESTFILES test_core_vector_serial_eigen_traits.cc)
 APPEND_SET(TESTFILES test_core_vector_serial_stdlib_traits.cc)
 APPEND_SET(TESTFILES test_core_vector_serial_eigen_class.cc)
+
+APPEND_SET(TESTFILES test_core_matrix_meta.cc)
+APPEND_SET(TESTFILES test_core_matrix_dense_serial_eigen_traits.cc)
+APPEND_SET(TESTFILES test_core_matrix_dense_serial_stdlib_traits.cc)
+APPEND_SET(TESTFILES test_core_matrix_sparse_serial_eigen_traits.cc)
+
 # append here tests to be grouped into a single executable
 # APPEND_SET(...)
 # ...

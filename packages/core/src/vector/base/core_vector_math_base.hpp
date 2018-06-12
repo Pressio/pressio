@@ -15,11 +15,12 @@ public:
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
 
 public:
-  template <typename op_t>
-  void inPlaceOp(op_t op, sc_t a1, sc_t a2, const der_t & vin){
-    // this = a1*this op a2*vin;
-    this->underlying().inPlaceOpImpl(op,a1,a2,vin);
-  }
+
+  // template <typename op_t>
+  // void inPlaceOp(op_t op, sc_t a1, sc_t a2, const der_t & vin){
+  //   // this = a1*this op a2*vin;
+  //   this->underlying().inPlaceOpImpl(op,a1,a2,vin);
+  // }
 
   // sc_t norm2() const {
   //   return this->underlying().norm2Impl();

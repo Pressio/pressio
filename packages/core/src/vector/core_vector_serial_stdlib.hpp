@@ -16,7 +16,10 @@ class vector<wrapped_type,
 	     >
   : public vectorGenericBase< vector<wrapped_type> >,
     public vectorSerialBase< vector<wrapped_type> >,
-    public vectorMathBase< vector<wrapped_type> >
+    public vectorMathBase< vector<wrapped_type> >,
+    // maybe move operators inheritance to serial/generic base
+    public arithmeticOperatorsBase< vector<wrapped_type> >,
+    public compoundAssignmentOperatorsBase< vector<wrapped_type> >
 {
 public:
   using derived_t = vector<wrapped_type>;
@@ -50,7 +53,6 @@ public:
   sc_t const & operator [] (ord_t i) const{
     return data_[i];
   };  
-
 
   derived_t operator+(const derived_t & other) {
     derived_t res(other.size());

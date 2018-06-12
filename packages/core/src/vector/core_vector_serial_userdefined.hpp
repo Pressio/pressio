@@ -19,7 +19,10 @@ class vector<wrapped_type,
 	     >
   : public vectorGenericBase< vector<wrapped_type> >,
     public vectorSerialBase< vector<wrapped_type> >,
-    public vectorMathBase< vector<wrapped_type> >
+    public vectorMathBase< vector<wrapped_type> >,
+    // maybe move operators inheritance to serial/generic base
+    public arithmeticOperatorsBase<vector<wrapped_type>>,
+    public compoundAssignmentOperatorsBase<vector<wrapped_type>>
 {
 public:
   using derived_t = vector<wrapped_type>;

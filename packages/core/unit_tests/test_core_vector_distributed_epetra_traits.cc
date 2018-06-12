@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include "vector/core_vector_meta.hpp"
-//#include "vector/core_vector_serial_eigen.hpp"
-// #include "vector/core_vector_serial_stdlib.hpp"
-// #include "vector/core_vector_serial_userdefined.hpp"
+#include "vector/core_vector_serial_eigen.hpp"
+#include "vector/core_vector_serial_stdlib.hpp"
+#include "vector/core_vector_serial_userdefined.hpp"
 #include "vector/core_vector_distributed_epetra.hpp"
 
 #include "Epetra_Map.h"
@@ -24,7 +24,6 @@ TEST(core_vector_distributed_epetra, EpetraVectorTraits)
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(myvec_t);
 
   using vecTrait = core::details::traits<myvec_t>;
- 
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::scalar_t,
   				core::defaultTypes::epetra_scalar_t>();
@@ -44,7 +43,7 @@ TEST(core_vector_distributed_epetra, EpetraVectorTraits)
   				vecTrait::derived_t, myvec_t>();
 
   ::testing::StaticAssertTypeEq<typename
-  				vecTrait::data_map_t, Epetra_BlockMap>();
+  				vecTrait::data_map_t, Epetra_Map>();
 
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::communicator_t, Epetra_Comm>();

@@ -48,7 +48,7 @@ public:
   StdVecChecker<std::complex<double>> d;
 };
 
-TEST_F(core_vector_serial_stdlib_traits_Fixture, StdVectorTraits)
+TEST_F(core_vector_serial_stdlib_traits_Fixture, traits)
 {
   a.check();
   b.check();

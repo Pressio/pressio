@@ -3,11 +3,13 @@
 #define CORE_VECTOR_DISTRIBUTED_BASE_HPP_
 
 #include "../core_vector_traits.hpp"
+#include "core_operators_base.hpp"
 
 namespace core{
     
 template<typename derived_type>
-class vectorDistributedBase{
+class vectorDistributedBase
+{
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;

@@ -29,6 +29,7 @@ public:
 
     using vecTrait = core::details::traits<myvec_t>;
     void check(){   
+
       ::testing::StaticAssertTypeEq<typename
 				    vecTrait::scalar_t,T>();
       ::testing::StaticAssertTypeEq<typename
@@ -45,20 +46,17 @@ public:
     }
   };
 
-  void print(){
-    std::cout << "gigi" << std::endl;
-  }
-  
   // virtual void SetUp(){}
   // virtual void TearDown(){}
+
   static constexpr int dyn = Eigen::Dynamic;
 
-  // row vectors
-  EigenVecChecker<int,1,dyn> a;
-  EigenVecChecker<double,1,dyn> b;
-  EigenVecChecker<float,1,dyn> c;
-  EigenVecChecker<std::complex<double>,1,dyn> d;
-  EigenVecChecker<std::complex<int>,1,dyn> e;
+  // // row vectors
+  // EigenVecChecker<int,1,dyn> a;
+  // EigenVecChecker<double,1,dyn> b;
+  // EigenVecChecker<float,1,dyn> c;
+  // EigenVecChecker<std::complex<double>,1,dyn> d;
+  // EigenVecChecker<std::complex<int>,1,dyn> e;
 
   // column vectors
   EigenVecChecker<int,dyn,1> a1;
@@ -68,13 +66,13 @@ public:
   EigenVecChecker<std::complex<int>,dyn,1> e1;
 };
 
-TEST_F(core_vector_serial_eigen_traits_Fixture, EigenVectorTraits)
+TEST_F(core_vector_serial_eigen_traits_Fixture, traits)
 {
-  a.check();
-  b.check();
-  c.check();
-  d.check(); 
-  e.check();
+  // a.check();
+  // b.check();
+  // c.check();
+  // d.check(); 
+  // e.check();
   a1.check();
   b1.check();
   c1.check();
@@ -89,4 +87,3 @@ TEST_F(core_vector_serial_eigen_traits_Fixture, EigenVectorTraits)
   using eigmat_t3 = Eigen::Matrix<double, dyn, 5>;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(eigmat_t3);
 }
-

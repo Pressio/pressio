@@ -12,10 +12,14 @@ template<typename derived_type>
 class matrixDenseDistributedBase
 {
 public:
-  using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
 
+private:  
+  friend derived_type;
+  matrixDenseDistributedBase() = default;
+  ~matrixDenseDistributedBase() = default;
+ 
 private:  
   der_t & underlying(){
     return static_cast<der_t &>(*this);
@@ -24,12 +28,7 @@ private:
     return static_cast<der_t const&>(*this);
   };
 
-
-  
-
-};
-
+};//end class
     
 } // end namespace core
-
 #endif

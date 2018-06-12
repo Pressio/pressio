@@ -7,7 +7,6 @@
 #include "./base/core_matrix_dense_serial_base.hpp"
 
 
-
 // !!!!!!!!!!!!!!!!!!!!!!!!!!
 // WIPL to finish
 // !!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -17,7 +16,10 @@ namespace core{
 template <typename wrapped_type>
 class matrix<wrapped_type,
 	     typename
-	     std::enable_if< core::meta::is_stdlibMatrix<wrapped_type>::value >::type
+	     std::enable_if<
+	       core::meta::is_matrixDenseSerialStdlib<wrapped_type
+					   >::value
+	       >::type
 	     >
   : public matrixGenericBase< matrix<wrapped_type> >,
     public matrixDenseSerialBase< matrix<wrapped_type> >  
@@ -28,14 +30,26 @@ public:
   using ord_t = typename details::traits<derived_t>::ordinal_t;
   using wrap_t = typename details::traits<derived_t>::wrapped_t;
   using der_t = typename details::traits<derived_t>::derived_t;
-  
-private:
-  std::vector<std::vector<sc_t>> data_;
 
 public:
-  matrix(){}
-  ~matrix(){}
-  //-----------------------------------
+  matrix() = delete;
+  matrix(ord_t rows, ord_t cols){
+    this->resize(rows,cols);
+  }
+  ~matrix() = default;
+
+public:
+  sc_t & operator() (ord_t row, ord_t col){
+    // check if we are withinbound 
+    return data_(row,col);
+  }
+
+  sc_t const & operator() (ord_t row, ord_t col) const{
+    // check if we are withinbound 
+    return data_(row,col);
+  }
+
+private:
 
   wrap_t const * dataImpl() const{
     return &data_;
@@ -45,22 +59,29 @@ public:
     return &data_;
   };
 
-  size_t rows() const{
+  ord_t rows() const{
+    assert(!data_.empty());
     return data_.size();
   }
 
-  size_t cols() const{
-    return data_[0].size();
+  ord_t cols() const{
+    return data_.empty() ? 0 : data_[0].size();
   }
 
-  void resizeImpl(size_t nrows, size_t ncols){    
+  void resizeImpl(ord_t nrows, ord_t ncols){    
     data_.resize(nrows);
     for (auto & it : data_)
       it.resize(ncols);
   }
-  
-};
 
+private:
+  friend matrixGenericBase< matrix<wrapped_type> >;
+  friend matrixDenseSerialBase< matrix<wrapped_type> >;
+  
+private:
+  std::vector<std::vector<sc_t>> data_;
+ 
+};
   
 }//end namespace core
 #endif

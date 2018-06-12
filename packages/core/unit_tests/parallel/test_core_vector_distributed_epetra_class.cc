@@ -62,8 +62,21 @@ public:
 };
 
 
+
 using core_vector_distributed_epetra_DeathTest
 = core_vector_distributed_epetraFix;
+
+TEST_F(core_vector_distributed_epetra_DeathTest,
+       EpetraVectorSubscriptOperator)
+{
+  if (getRank()==0){
+    using myvec_t = core::vector<Epetra_Vector>;
+    myvec_t v1( *getMap() );
+    int localSize = numLocalEntries();
+    ASSERT_DEATH(v1[localSize+1]=4.0, "Assertion failed:");
+  }
+}
+
 
 
 TEST_F(core_vector_distributed_epetraFix,
@@ -124,18 +137,6 @@ TEST_F(core_vector_distributed_epetraFix,
 }
 
 
-TEST_F(core_vector_distributed_epetra_DeathTest,
-       EpetraVectorSubscriptOperator)
-{
-  if (getRank()==0){
-    using myvec_t = core::vector<Epetra_Vector>;
-    myvec_t v1( *getMap() );
-    int localSize = numLocalEntries();
-    ASSERT_DEATH(v1[localSize+1]=4.0, "Assertion failed:");
-  }
-}
-
-
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorAdditionOperator)
 {
@@ -156,7 +157,7 @@ TEST_F(core_vector_distributed_epetraFix,
 
 
 TEST_F(core_vector_distributed_epetraFix,
-       EpetraVectorSubtraactOperator)
+       EpetraVectorSubtractOperator)
 {
   using myvec_t = core::vector<Epetra_Vector>;
   myvec_t v1( *getMap() );

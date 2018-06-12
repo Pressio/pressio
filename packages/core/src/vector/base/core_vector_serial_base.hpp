@@ -3,6 +3,7 @@
 #define CORE_VECTOR_SERIAL_BASE_HPP_
 
 #include "../core_vector_traits.hpp"
+#include "core_operators_base.hpp"
 
 namespace core{
     
@@ -27,7 +28,7 @@ public:
   };
     
 private:
-  friend derived_type;
+  friend derived_type; 
   vectorSerialBase() = default;
   ~vectorSerialBase() = default;
  

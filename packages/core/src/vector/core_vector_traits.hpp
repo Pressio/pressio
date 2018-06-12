@@ -35,6 +35,9 @@ namespace details{
       isSTDVector = 0,
       isDistributed = 0
     };
+    // make these void just to be clear they are not usable
+    using local_ordinal_t = void;
+    using global_ordinal_t = void;
   };
   
      
@@ -62,6 +65,9 @@ namespace details{
       isDistributed = 0,
       isEigen = 0
     };
+    // make these void just to be clear they are not usable
+    using local_ordinal_t = void;
+    using global_ordinal_t = void;
   };
 
   
@@ -95,6 +101,9 @@ namespace details{
       isEigen = 0,
       isSTDVector = 0
     };
+    // make these void just to be clear they are not usable
+    using local_ordinal_t = void;
+    using global_ordinal_t = void;
   };
 
 
@@ -126,12 +135,13 @@ namespace details{
       isSerial = 0,
       isEigen = 0
     };
+    // make these void just to be clear they are not usable
+    using ordinal_t = void;
   };
- 
+
+  
 }//end namespace details  
 }//end namespace core
-
-
 #endif
 
 
