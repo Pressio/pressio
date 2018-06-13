@@ -7,8 +7,7 @@
 namespace core{
     
 template<typename derived_type>
-class matrixGenericBase
-{
+class matrixGenericBase{
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;

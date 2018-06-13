@@ -28,13 +28,11 @@ namespace details{
     using ordinal_t = int;
     using wrapped_t = wrapped_type;
     using derived_t = vector<wrapped_t>;
-    enum {
-      isVector = 1,
-      isEigen = 1,
-      isSerial = 1,
-      isSTDVector = 0,
-      isDistributed = 0
-    };
+    static constexpr int isVector = 1;
+    static constexpr int isEigen = 1;
+    static constexpr int isSerial = 1;
+    static constexpr int isSTDVector = 0;
+    static constexpr int isDistributed = 0;
     // make these void just to be clear they are not usable
     using local_ordinal_t = void;
     using global_ordinal_t = void;
@@ -58,13 +56,11 @@ namespace details{
     using ordinal_t = core::defaultTypes::local_ordinal_t;
     using wrapped_t = wrapped_type;
     using derived_t = vector<wrapped_t>;
-    enum {
-      isVector = 1,
-      isSTDVector = 1,
-      isSerial = 1,
-      isDistributed = 0,
-      isEigen = 0
-    };
+    static constexpr int isVector = 1;
+    static constexpr int isSTDVector = 1;
+    static constexpr int isSerial = 1;
+    static constexpr int isDistributed = 0;
+    static constexpr int isEigen = 0;
     // make these void just to be clear they are not usable
     using local_ordinal_t = void;
     using global_ordinal_t = void;
@@ -94,13 +90,11 @@ namespace details{
     using ordinal_t = typename wrapped_type::ordinal_type;
     using wrapped_t = wrapped_type;
     using derived_t = vector<wrapped_type>;
-    enum {
-      isVector = 1,
-      isSerial = 1,
-      isDistributed = 0,
-      isEigen = 0,
-      isSTDVector = 0
-    };
+    static constexpr int isVector = 1;
+    static constexpr int isSerial = 1;
+    static constexpr int isDistributed = 0;
+    static constexpr int isEigen = 0;
+    static constexpr int isSTDVector = 0;
     // make these void just to be clear they are not usable
     using local_ordinal_t = void;
     using global_ordinal_t = void;
@@ -127,14 +121,12 @@ namespace details{
     using data_map_t = Epetra_BlockMap;
     using communicator_t = Epetra_Comm;
     using derived_t = vector<wrapped_t>;
-    enum {
-      isVector = 1,
-      isDistributed = 1,
-      isEpetra = 1,
-      isSTDVector = 0,
-      isSerial = 0,
-      isEigen = 0
-    };
+    static constexpr int isVector = 1;
+    static constexpr int isDistributed = 1;
+    static constexpr int isEpetra = 1;
+    static constexpr int isSTDVector = 0;
+    static constexpr int isSerial = 0;
+    static constexpr int isEigen = 0;
     // make these void just to be clear they are not usable
     using ordinal_t = void;
   };

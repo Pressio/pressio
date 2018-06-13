@@ -36,17 +36,14 @@ public:
     ::testing::StaticAssertTypeEq<typename
 				  vecTrait::derived_t,myvec_t>();
 
-    EXPECT_EQ(vecTrait::isMatrix, 1);
-    EXPECT_EQ(vecTrait::isEigen, 1);
-    EXPECT_EQ(vecTrait::isDense, 1);
-    EXPECT_EQ(vecTrait::isVector, 0);
-    EXPECT_EQ(vecTrait::isSerial, 1);
-    EXPECT_EQ(vecTrait::isDistributed, 0);
-    EXPECT_EQ(vecTrait::isStatic, T::nr!=-1 && T::nc!=-1 );
+    ASSERT_TRUE(vecTrait::isMatrix == 1);
+    ASSERT_TRUE(vecTrait::isEigen == 1);
+    ASSERT_TRUE(vecTrait::isDense == 1);
+    ASSERT_TRUE(vecTrait::isVector == 0);
+    ASSERT_TRUE(vecTrait::isSerial == 1);
+    ASSERT_TRUE(vecTrait::isDistributed == 0);
+    ASSERT_TRUE(vecTrait::isStatic == (T::nr!=-1 && T::nc!=-1) );
   }
-
-  // virtual void SetUp(){}
-  // virtual void TearDown(){}
 };
 
 typedef ::testing::Types< typesEig<int,-1,-1>, typesEig<int,2,2>,

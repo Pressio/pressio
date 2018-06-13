@@ -6,7 +6,7 @@
 #include "./base/core_matrix_generic_base.hpp"
 #include "./base/core_matrix_sparse_serial_base.hpp"
 #include "../core_operators_base.hpp"
-
+#include <stdexcept>
 
 namespace core{
 
@@ -19,26 +19,88 @@ class matrix<wrapped_type,
 	       >::type
 	     >
   : public matrixGenericBase< matrix<wrapped_type> >,
-    public matrixSparseSerialBase< matrix<wrapped_type> >
-    // // maybe move operators inheritance to one of the bases
-    // public arithmeticOperatorsBase<matrix<wrapped_type>>,
-    // public compoundAssignmentOperatorsBase<matrix<wrapped_type>>
+    public matrixSparseSerialBase< matrix<wrapped_type> >,
+    public arithmeticOperatorsBase< matrix<wrapped_type> >,
+    public compoundAssignmentOperatorsBase< matrix<wrapped_type> >
 {
 public:
   using derived_t = matrix<wrapped_type>;
-  using sc_t = typename details::traits<derived_t>::scalar_t;
-  using ord_t = typename details::traits<derived_t>::ordinal_t;
-  using wrap_t = typename details::traits<derived_t>::wrapped_t;
-  using der_t = typename details::traits<derived_t>::derived_t;
+  using mytraits = details::traits<derived_t>;
+  using sc_t = typename mytraits::scalar_t;
+  using ord_t = typename mytraits::ordinal_t;
+  using wrap_t = typename mytraits::wrapped_t;
+  using der_t = typename mytraits::derived_t;
   
-public:
+public: 
   matrix() = default;
   matrix(ord_t nrows, ord_t ncols) {
-    //   this->resize(nrows, ncols);
+    this->resize(nrows, ncols);
   }
+
+  // row-major matrix constructor (U is just a trick to enable sfinae)
+  template <typename U = ord_t,
+	    typename std::enable_if<mytraits::isRowMajor==1,U>::type * = nullptr>
+  matrix(U nrows, U ncols, U nonZerosPerRow) {
+    this->resize(nrows, ncols);
+    if( nonZerosPerRow > ncols )
+      throw std::runtime_error("SPARSE MATRIX CNTR: estimated nonzeros larger then size of cols");
+    data_.reserve(Eigen::VectorXi::Constant(nrows,nonZerosPerRow));
+  }
+
+  // col-major matrix constructor
+  template <typename U = ord_t, 
+	    typename std::enable_if<mytraits::isRowMajor==0,U>::type * = nullptr>
+  matrix(U nrows, U ncols, U nonZerosPerCol) {
+    this->resize(nrows, ncols);
+    if( nonZerosPerCol > nrows )
+      throw std::runtime_error("SPARSE MATRIX CNTR: estimated nonzeros larger then size of rows");
+    data_.reserve(Eigen::VectorXi::Constant(ncols,nonZerosPerCol));
+  }
+
   matrix(const wrap_t & other) : data_(other){}
   ~matrix() = default;
   
+
+public: 
+  // note here that we return by copy
+  sc_t operator() (ord_t row, ord_t col) const{
+    // eigen returns 0 if the item is zero
+    return data_.coeff(row,col);
+  }
+
+  derived_t operator+(const derived_t & other) {
+    assert(haveCompatibleDimensions(*this, other) );
+    derived_t res(other.rows(), other.cols());
+    *res.data() = this->data_ + *other.data();
+    return res;
+  }
+
+   derived_t operator-(const derived_t & other) {
+    assert(haveCompatibleDimensions(*this, other) );
+    derived_t res(other.rows(), other.cols());
+    *res.data() = this->data_ - (*other.data());
+    return res;
+  }
+  
+  derived_t operator*(const derived_t & other) {
+    assert(haveCompatibleDimensions(*this, other) );
+    derived_t res(other.rows(), other.cols());
+    *res.data() = this->data_ * (*other.data());
+    return res;
+  }
+  
+  derived_t & operator+=(const derived_t & other) {
+    assert(haveCompatibleDimensions(*this, other) );
+    this->data_ += *other.data();
+    return *this;
+  }
+  
+  derived_t & operator-=(const derived_t & other) {
+    assert(haveCompatibleDimensions(*this, other) );
+    this->data_ -= *other.data();
+    return *this;
+  }
+
 private:
   wrap_t const * dataImpl() const{
     return &data_;
@@ -57,9 +119,35 @@ private:
   }
 
   void resizeImpl(ord_t nrows, ord_t ncols){
-    // data_.resize(nrows, ncols);
-    // //need to check if the wrapped matrix is static size,
-    // //if so, we cannot resize it
+    data_.resize(nrows, ncols);
+  }
+
+  ord_t nonZerosCountImpl()const{
+    return data_.nonZeros();
+  }
+
+  // inserting for row major storage
+  template <typename U = ord_t, 
+	    typename std::enable_if<mytraits::isRowMajor==1,U>::type * = nullptr>
+  void insertValuesImpl(U rowInd, U numEntries,
+			const sc_t * values, const U * indices){
+    for (ord_t j=0; j<numEntries; ++j)
+      data_.insert(rowInd,indices[j]) = values[j];
+  }
+
+  // inserting for column major storage
+  template <typename U = ord_t, 
+	    typename std::enable_if<mytraits::isRowMajor==0,U>::type * = nullptr>
+  void insertValuesImpl(U colInd, U numEntries,
+			const sc_t * values, const U * indices){
+    for (ord_t i=0; i<numEntries; ++i)
+      data_.insert(indices[i],colInd) = values[i];
+  }
+
+private:
+  bool haveCompatibleDimensions(const derived_t & m1,
+			    const derived_t & m2)const{
+    return (m1.rows()==m2.rows() && m1.cols()==m2.cols()) ? true : false;
   }
 
 private:

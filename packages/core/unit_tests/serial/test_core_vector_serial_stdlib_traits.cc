@@ -30,11 +30,11 @@ public:
 				  vecTrait::wrapped_t,stdV_t>();
     ::testing::StaticAssertTypeEq<typename
 				  vecTrait::derived_t,myvec_t>();
-    EXPECT_EQ(vecTrait::isVector, 1);
-    EXPECT_EQ(vecTrait::isEigen, 0);
-    EXPECT_EQ(vecTrait::isSerial, 1);
-    EXPECT_EQ(vecTrait::isSTDVector, 1);
-    EXPECT_EQ(vecTrait::isDistributed, 0);
+    ASSERT_TRUE(vecTrait::isVector == 1);
+    ASSERT_TRUE(vecTrait::isEigen == 0);
+    ASSERT_TRUE(vecTrait::isSerial == 1);
+    ASSERT_TRUE(vecTrait::isSTDVector == 1);
+    ASSERT_TRUE(vecTrait::isDistributed == 0);
   }
 };
 

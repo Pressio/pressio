@@ -88,6 +88,6 @@ TEST(core_matrix_meta, metaSparseEigenSerial)
 
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
   STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(native_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(native_t);  
+  STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(native_t);
 }
 

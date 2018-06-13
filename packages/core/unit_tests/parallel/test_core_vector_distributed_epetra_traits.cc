@@ -49,10 +49,10 @@ TEST(core_vector_distributed_epetra, EpetraVectorTraits)
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::communicator_t, Epetra_Comm>();
   
-  EXPECT_EQ(vecTrait::isVector, 1);
-  EXPECT_EQ(vecTrait::isEigen, 0);
-  EXPECT_EQ(vecTrait::isSerial, 0);
-  EXPECT_EQ(vecTrait::isSTDVector, 0);
-  EXPECT_EQ(vecTrait::isDistributed, 1);
+  ASSERT_TRUE(vecTrait::isVector == 1);
+  ASSERT_TRUE(vecTrait::isEigen == 0);
+  ASSERT_TRUE(vecTrait::isSerial == 0);
+  ASSERT_TRUE(vecTrait::isSTDVector == 0);
+  ASSERT_TRUE(vecTrait::isDistributed == 1);
 
 }//end TEST

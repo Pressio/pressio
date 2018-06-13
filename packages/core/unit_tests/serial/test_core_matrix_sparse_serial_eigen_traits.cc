@@ -10,6 +10,7 @@ struct typesEig{
   using sc_t = scalar;
   using mat_t = Eigen::SparseMatrix<sc_t,storage,index>;
   using storeindex_t = index;
+  static constexpr int storemode = storage;
 };
 
 template<typename T>
@@ -19,33 +20,35 @@ public:
   using native_t = typename T::mat_t;
   STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_EIGEN(native_t);
   STATIC_ASSERT_IS_MATRIX_SPARSE_SERIAL_EIGEN(native_t);
-  using myvec_t = core::matrix<native_t>;
-  using vecTrait = core::details::traits<myvec_t>;
+  using my_t = core::matrix<native_t>;
+  using myTrait = core::details::traits<my_t>;
 
   //need this void method otherwise the static assertion for type dont work
   void check(){
-    ::testing::StaticAssertTypeEq<typename vecTrait::scalar_t,
+    ::testing::StaticAssertTypeEq<typename myTrait::scalar_t,
 				  typename T::sc_t>();
-    ::testing::StaticAssertTypeEq<typename vecTrait::ordinal_t,
+    ::testing::StaticAssertTypeEq<typename myTrait::ordinal_t,
 				  typename T::storeindex_t>();
     ::testing::StaticAssertTypeEq<typename
-				  vecTrait::wrapped_t,native_t>();
+				  myTrait::wrapped_t,native_t>();
     ::testing::StaticAssertTypeEq<typename
-				  vecTrait::derived_t,myvec_t>();
+				  myTrait::derived_t,my_t>();
 
-    EXPECT_EQ(vecTrait::isMatrix, 1);
-    EXPECT_EQ(vecTrait::isEigen, 1);
-    EXPECT_EQ(vecTrait::isDense, 0);
-    EXPECT_EQ(vecTrait::isSparse, 1);
-    EXPECT_EQ(vecTrait::isVector, 0);
-    EXPECT_EQ(vecTrait::isSerial, 1);
-    EXPECT_EQ(vecTrait::isDistributed, 0);
-    EXPECT_EQ(vecTrait::isStdlib, 0);
-    EXPECT_EQ(vecTrait::isStatic, 0);
+    if (T::storemode == Eigen::RowMajor)
+      EXPECT_TRUE(myTrait::isRowMajor == Eigen::StorageOptions::RowMajor);
+    else
+       EXPECT_TRUE(myTrait::isRowMajor == Eigen::ColMajor);
+    
+    ASSERT_TRUE(myTrait::isColMajor == !myTrait::isRowMajor);
+    ASSERT_TRUE(myTrait::isEigen == 1);
+    ASSERT_TRUE(myTrait::isDense == 0);
+    ASSERT_TRUE(myTrait::isSparse == 1);
+    ASSERT_TRUE(myTrait::isVector == 0);
+    ASSERT_TRUE(myTrait::isSerial == 1);
+    ASSERT_TRUE(myTrait::isDistributed == 0);
+    ASSERT_TRUE(myTrait::isStdlib == 0);
+    ASSERT_TRUE(myTrait::isStatic == 0);
   }
-
-  // virtual void SetUp(){}
-  // virtual void TearDown(){}
 };
 
 typedef ::testing::Types< typesEig<int,Eigen::RowMajor,int>,
@@ -74,4 +77,8 @@ TYPED_TEST(core_matrix_sparse_serial_eigen_traitsTest, traits)
 {
   //this runs all types, no need to put anything
   this->check();
+
+  using type1 = core::matrix<Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;  
+  using type2 = core::matrix<Eigen::SparseMatrix<double,Eigen::ColMajor,int>>;
+  static_assert( core::meta::sparseSerialEigenSameStorage<type1,type2>::value == false, "ohh" );
 }

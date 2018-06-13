@@ -27,18 +27,17 @@ struct traits<matrix<wrapped_type,
   using ordinal_t = int;
   using wrapped_t = wrapped_type;
   using derived_t = matrix<wrapped_t>;
-  enum {
-    isMatrix = 1,
-    isEigen = 1,
-    isDense = 1,
-    isSparse = !isDense,
-    isSerial = 1,
-    isVector = !isMatrix,
-    isDistributed = !isSerial,
-    isStdlib = 0,
-    isStatic =  ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic && 
-		  wrapped_t::ColsAtCompileTime != Eigen::Dynamic )
-  };
+
+  static constexpr int isMatrix = 1;
+  static constexpr int isEigen = 1;
+  static constexpr int isDense = 1;
+  static constexpr int isSparse = !isDense;
+  static constexpr int isSerial = 1;
+  static constexpr int isVector = !isMatrix;
+  static constexpr int isDistributed = !isSerial;
+  static constexpr int isStdlib = 0;
+  static constexpr int isStatic =  ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
+				     wrapped_t::ColsAtCompileTime != Eigen::Dynamic );
 };
 
 
@@ -66,17 +65,18 @@ struct traits<matrix<wrapped_type,
   
   using wrapped_t = wrapped_type;
   using derived_t = matrix<wrapped_t>;
-  enum {
-    isMatrix = 1,
-    isEigen = 1,
-    isDense = 0,
-    isSparse = 1,
-    isSerial = 1,
-    isVector = !isMatrix,
-    isDistributed = !isSerial,
-    isStdlib = 0,
-    isStatic = 0
-  };
+
+  static constexpr int isMatrix = 1;
+  static constexpr int isRowMajor = wrapped_type::IsRowMajor;
+  static constexpr int isColMajor = !isRowMajor;
+  static constexpr int isEigen = 1;
+  static constexpr int isDense = 0;
+  static constexpr int isSparse = 1;
+  static constexpr int isSerial = 1;
+  static constexpr int isVector = !isMatrix;
+  static constexpr int isDistributed = !isSerial;
+  static constexpr int isStdlib = 0;
+  static constexpr int isStatic = 0;
 };
 
   
@@ -99,17 +99,16 @@ struct traits<matrix<wrapped_type,
   using ordinal_t = int;
   using wrapped_t = wrapped_type;
   using derived_t = matrix<wrapped_t>;
-  enum {
-    isMatrix = 1,
-    isStdlib = 1,
-    isEigen = 0,
-    isDense = 1,
-    isSparse = !isDense,
-    isSerial = 1,
-    isVector = !isMatrix,
-    isDistributed = !isSerial,
-    isStatic = 0
-  };
+
+  static constexpr int isMatrix = 1;
+  static constexpr int isStdlib = 1;
+  static constexpr int isEigen = 0;
+  static constexpr int isDense = 1;
+  static constexpr int isSparse = !isDense;
+  static constexpr int isSerial = 1;
+  static constexpr int isVector = !isMatrix;
+  static constexpr int isDistributed = !isSerial;
+  static constexpr int isStatic = 0;
 };
 
   
