@@ -1,0 +1,20 @@
+
+
+# this function creates and adds an individual test executable
+# this is needed for cases where we need to specify the number
+# of MPI processes, for example to do testing for distributed objects
+function(add_single_unit_test test_name ranks)  
+  TRIBITS_ADD_EXECUTABLE_AND_TEST(
+    ${test_name}
+    SOURCES ${test_name}.cc gTestMain.cc
+    COMM serial mpi
+    NUM_MPI_PROCS ${ranks}
+    #STANDARD_PASS_OUTPUT
+    #FAIL_REGULAR_EXPRESSION "  FAILED  "
+  )
+endfunction()
+
+# append tests need to have a unique executable each
+add_single_unit_test(example 2)
+#add_unit_test(Test2 1)
+

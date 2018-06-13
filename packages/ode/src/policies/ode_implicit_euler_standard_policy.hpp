@@ -3,7 +3,7 @@
 #define ODE_IMPLICIT_EULER_STANDARD_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "../impl/ode_euler_implicit_impl.hpp"
+#include "./step_methods/impl/ode_euler_implicit_impl.hpp"
 #include "ode_implicit_euler_policy_base.hpp"
 
 namespace ode{

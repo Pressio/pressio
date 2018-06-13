@@ -34,6 +34,7 @@ APPEND_SET(HEADERS
   vector/core_vector_serial_eigen.hpp
   vector/core_vector_serial_stdlib.hpp
   vector/core_vector_serial_userdefined.hpp
+  vector/core_vector_dot_product.hpp
   )
 
 APPEND_SET(HEADERS
@@ -47,7 +48,9 @@ APPEND_SET(HEADERS
   matrix/core_matrix_dense_serial_eigen.hpp
   matrix/core_matrix_dense_serial_stdlib.hpp
   matrix/core_matrix_sparse_serial_eigen.hpp
+  matrix/core_matrix_vector_product.hpp
 )
+
 
 
 # adding all sources is temporary, we need to wait 
@@ -70,6 +73,7 @@ APPEND_SET(SOURCES
   vector/src/core_vector_serial_eigen.cc
   vector/src/core_vector_serial_stdlib.cc
   vector/src/core_vector_serial_userdefined.cc
+  vector/src/core_vector_dot_product.cc
   #
   matrix/src/core_matrix_traits.cc
   matrix/src/core_matrix_meta.cc
@@ -81,6 +85,7 @@ APPEND_SET(SOURCES
   matrix/src/core_matrix_dense_serial_eigen.cc
   matrix/src/core_matrix_dense_serial_stdlib.cc
   matrix/src/core_matrix_sparse_serial_eigen.cc
+  matrix/src/core_matrix_vector_product.cc
 )
 
 #

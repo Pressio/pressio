@@ -24,7 +24,7 @@ APPEND_SET(TESTFILES test_core_matrix_sparse_serial_eigen_class.cc)
 
 # we create a single executable to run all the tests above
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  core_unitTest_grouped
+  core_unitTest_serial_grouped
   SOURCES ${TESTFILES} gTestMain.cc
   COMM serial mpi
   NUM_MPI_PROCS 1

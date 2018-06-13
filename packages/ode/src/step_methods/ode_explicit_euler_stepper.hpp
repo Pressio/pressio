@@ -41,7 +41,7 @@ public :
   		       typename std::enable_if< !std::is_same<U,
   		       ode::policy::explicitEulerStandardResidual<state_type, rhs_type,
 		                                                  model_type, details::time_type>
-		       >::value >::type * = 0)
+		       >::value >::type * = nullptr)
     : stepper_base_t(model, res_policy_obj)
   {}
 
@@ -51,7 +51,7 @@ public :
   		       std::enable_if< std::is_same<U,
   		       ode::policy::explicitEulerStandardResidual<state_type, rhs_type,
 		                                                  model_type, details::time_type>
-  		       >::value >::type * = 0)
+  		       >::value >::type * = nullptr)
     : stepper_base_t( model, U() ) 
   {}
 
@@ -78,56 +78,11 @@ public :
 
 private:
   rhs_type RHS_;
-  
   // additional members inherited from the base class:
   //   model_, myResizer_, residual_policy_t
   
 }; //end class
 
 
-
-
-
-
-// template<typename state_type,
-// 	 typename rhs_type,
-// 	 typename scalar_type,
-// 	 typename state_resizer_fnctor_type,
-// 	 typename model_type>
-// class explicitEulerStepper<state_type, rhs_type, scalar_type,
-// 			   state_resizer_fnctor_type, model_type, void,
-// 			   typename 
-// 		   std::enable_if< !std::is_void<state_type>::value &&
-// 				   core::meta::is_default_constructible<state_resizer_fnctor_type>::value &&
-// 				   !std::is_void<residual_policy_type>::value
-// 				   >::type
-// 		   >
-// {
-
-// };
-  
-
 }//end namespace
 #endif 
-
-
-
-
-  
-  // #ifndef DOXYGEN_SKIP
-    // #else
-    // typedef explicit_stepper_base< euler< ... > , ... > stepper_base_type;
-    // #endif
-    // typedef typename stepper_base_type::state_type state_type;
-    // typedef typename stepper_base_type::value_type value_type;
-    // typedef typename stepper_base_type::deriv_type deriv_type;
-    // typedef typename stepper_base_type::time_type time_type;
-    // typedef typename stepper_base_type::algebra_type algebra_type;
-    // typedef typename stepper_base_type::operations_type operations_type;
-    // typedef typename stepper_base_type::resizer_type resizer_type;
-
-    // #ifndef DOXYGEN_SKIP
-    // typedef typename stepper_base_type::stepper_type stepper_type;
-    // typedef typename stepper_base_type::wrapped_state_type wrapped_state_type;
-    // typedef typename stepper_base_type::wrapped_deriv_type wrapped_deriv_type;
-    // #endif 
