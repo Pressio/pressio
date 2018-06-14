@@ -6,16 +6,8 @@
 #include "ode_forward_declarations.hpp"
 #include "ode_void_collector.hpp"
 
-// #include "vector/core_vector_traits.hpp"
-// #include "vector/core_vector_epetra.hpp"
-// #include "vector/core_vector_serial_arbitrary.hpp"
-// #include "vector/core_vector_std.hpp"
-// #include "vector/core_vector_eigen.hpp"
-
-
 namespace ode{
 
-  
   template<typename stepper_type,
   	   typename state_type,
   	   typename time_type,

@@ -4,12 +4,10 @@
 #include "vector/core_vector_serial_userdefined.hpp"
 #include "vector/core_vector_meta.hpp"
 
-
 //Eigen::MatrixNt
 // N can be any one of 2, 3, 4, or X (meaning Dynamic).
 // t = i (int), f (float), d (double),
 // cf ( complex<float>), or cd (complex<double>)
-
 
 struct core_vector_serial_eigen_traits_Fixture
   : public ::testing::Test{
@@ -43,41 +41,50 @@ public:
       ASSERT_TRUE(vecTrait::isSerial == 1);
       ASSERT_TRUE(vecTrait::isSTDVector == 0);
       ASSERT_TRUE(vecTrait::isDistributed == 0);
+      if (row == 1 && col != Eigen::Dynamic) // row vector
+	ASSERT_TRUE(vecTrait::isStatic == 1);
+      else if (col == 1 && row != Eigen::Dynamic) // col vector
+	ASSERT_TRUE(vecTrait::isStatic == 1);
+      else
+	ASSERT_TRUE(vecTrait::isStatic == 0);
     }
   };
-
-  // virtual void SetUp(){}
-  // virtual void TearDown(){}
-
+  
   static constexpr int dyn = Eigen::Dynamic;
 
-  // // row vectors
-  // EigenVecChecker<int,1,dyn> a;
-  // EigenVecChecker<double,1,dyn> b;
-  // EigenVecChecker<float,1,dyn> c;
-  // EigenVecChecker<std::complex<double>,1,dyn> d;
-  // EigenVecChecker<std::complex<int>,1,dyn> e;
+  // row vectors
+  EigenVecChecker<int,1,dyn> a;
+  EigenVecChecker<double,1,dyn> b;
+  EigenVecChecker<float,1,dyn> c;
+  EigenVecChecker<std::complex<double>,1,dyn> d;
+  EigenVecChecker<std::complex<int>,1,dyn> e;
 
+  EigenVecChecker<int,1,5> a1;
+  EigenVecChecker<double,1,5> b1;
+  EigenVecChecker<float,1,5> c1;
+  EigenVecChecker<std::complex<double>,1,5> d1;
+  EigenVecChecker<std::complex<int>,1,5> e1;
+  
   // column vectors
-  EigenVecChecker<int,dyn,1> a1;
-  EigenVecChecker<double,dyn,1> b1;
-  EigenVecChecker<float,dyn,1> c1;
-  EigenVecChecker<std::complex<double>,dyn,1> d1;
-  EigenVecChecker<std::complex<int>,dyn,1> e1;
+  EigenVecChecker<int,dyn,1> f;
+  EigenVecChecker<double,dyn,1> g;
+  EigenVecChecker<float,dyn,1> h;
+  EigenVecChecker<std::complex<double>,dyn,1> k;
+  EigenVecChecker<std::complex<int>,dyn,1> p;
+
+  EigenVecChecker<int,4,1> f1;
+  EigenVecChecker<double,4,1> g1;
+  EigenVecChecker<float,4,1> h1;
+  EigenVecChecker<std::complex<double>,4,1> k1;
+  EigenVecChecker<std::complex<int>,4,1> p1;
 };
 
 TEST_F(core_vector_serial_eigen_traits_Fixture, traits)
 {
-  // a.check();
-  // b.check();
-  // c.check();
-  // d.check(); 
-  // e.check();
-  a1.check();
-  b1.check();
-  c1.check();
-  d1.check();
-  e1.check();
+  a.check(); b.check(); c.check(); d.check(); e.check();
+  a1.check(); b1.check(); c1.check(); d1.check(); e1.check();
+  f.check(); g.check(); h.check(); k.check(); p.check();
+  f1.check(); g1.check(); h1.check(); k1.check(); p1.check();
   
   // check that a matrix from eigen is not a vector
   using eigmat_t = Eigen::Matrix<double, dyn, dyn>;

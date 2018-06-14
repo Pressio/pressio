@@ -72,11 +72,11 @@ class MatrixStdlibTest{
 
 TEST(core_matrix_meta, metaStdlib)
 {
-  MatrixStdlibTest<double> a;
-  MatrixStdlibTest<int> a1;
-  MatrixStdlibTest<long int> a2;
-  MatrixStdlibTest<unsigned> a3;
-  MatrixStdlibTest<std::complex<double>> a4; 
+  using a1 = MatrixStdlibTest<double>; a1 o1;
+  using a2 = MatrixStdlibTest<int>; a2 o2;
+  using a3 = MatrixStdlibTest<long int>; a3 o3;
+  using a4 = MatrixStdlibTest<unsigned>; a4 o4;
+  using a5 = MatrixStdlibTest<std::complex<double>>; a5 o5; 
 }
 
 TEST(core_matrix_meta, metaSparseEigenSerial)

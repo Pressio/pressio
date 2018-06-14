@@ -26,14 +26,19 @@ class vector<wrapped_type,
 {
 private:
   using derived_t = vector<wrapped_type>;
-  using sc_t = typename details::traits<derived_t>::scalar_t;
-  using ord_t = typename details::traits<derived_t>::ordinal_t;
-  using der_t = typename details::traits<derived_t>::derived_t;
-  using wrap_t = typename details::traits<derived_t>::wrapped_t;
+  using mytraits = typename details::traits<derived_t>;  
+  using sc_t = typename mytraits::scalar_t;
+  using ord_t = typename  mytraits::ordinal_t;
+  using der_t = typename mytraits::derived_t;
+  using wrap_t = typename mytraits::wrapped_t;
 
 public:
   vector() = default;
   vector(ord_t insize){
+    // need to check that the wrapped type is NOT a static vector from Eigen
+    // otherwise we cannot resizee a static vector.
+    static_assert(mytraits::isStatic == false,
+		  "You are trying to resize a vector wrapping a static Eigen vector!");
     this->resize(insize);
   }
   vector(const wrap_t & src) : data_(src){}

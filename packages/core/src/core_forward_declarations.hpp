@@ -21,18 +21,6 @@ template <typename wrapped_type,
 	  typename Enable = void>
 class matrix;
   
-
-template <typename vector_a_type,
-      typename vector_b_type,
-      typename Enable = void>
-class dotProduct;
-
-
-template <typename matrix_type,
-      typename vector_type,
-      typename Enable = void>
-class matVecProduct;
-
   
 } // end namespace core
 #endif

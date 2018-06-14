@@ -26,14 +26,19 @@ class matrix<wrapped_type,
 {
 public:
   using derived_t = matrix<wrapped_type>;
-  using sc_t = typename details::traits<derived_t>::scalar_t;
-  using ord_t = typename details::traits<derived_t>::ordinal_t;
-  using wrap_t = typename details::traits<derived_t>::wrapped_t;
-  using der_t = typename details::traits<derived_t>::derived_t;
+  using mytraits = typename details::traits<derived_t>;  
+  using sc_t = typename mytraits::scalar_t;
+  using ord_t = typename mytraits::ordinal_t;
+  using wrap_t = typename mytraits::wrapped_t;
+  using der_t = typename mytraits::derived_t;
   
 public:
   matrix() = default;
   matrix(ord_t nrows, ord_t ncols) {    
+    // need to check that the wrapped type is NOT a static matrix from Eigen
+    // otherwise we cannot resizee a static object.
+    static_assert(mytraits::isStatic == false,
+		  "You are trying to resize a matrix wrapping a static Eigen matrix!");
    this->resize(nrows, ncols);
   }
   matrix(const wrap_t & other) : data_(other){}

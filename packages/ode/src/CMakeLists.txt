@@ -37,11 +37,11 @@ APPEND_SET(HEADERS
 # concrete steppers and policies for euler 
 
 APPEND_SET(HEADERS
-  policies/ode_explicit_euler_policy_base.hpp
+  policies/base/ode_explicit_policy_base.hpp
+  policies/ode_implicit_euler_residual_policy_base.hpp
+  policies/ode_implicit_euler_jacobian_policy_base.hpp
   policies/ode_explicit_euler_standard_policy.hpp
-  policies/ode_implicit_euler_policy_base.hpp
   policies/ode_implicit_euler_standard_policy.hpp
-  policies/ode_explicit_runge_kutta4_policy_base.hpp
   policies/ode_explicit_runge_kutta4_standard_policy.hpp
 )
 
@@ -62,11 +62,11 @@ APPEND_SET(SOURCES
   src/ode_void_collector.cc
   integrators/src/ode_integrate_n_steps.cc
   #
-  policies/src/ode_explicit_euler_policy_base.cc
+  policies/src/ode_explicit_policy_base.cc
   policies/src/ode_explicit_euler_standard_policy.cc
-  policies/src/ode_implicit_euler_policy_base.cc
+  policies/src/ode_implicit_euler_residual_policy_base.cc
+  policies/src/ode_implicit_euler_jacobian_policy_base.cc
   policies/src/ode_implicit_euler_standard_policy.cc
-  policies/src/ode_explicit_runge_kutta4_policy_base.cc
   policies/src/ode_explicit_runge_kutta4_standard_policy.cc
   #
   step_methods/src/ode_stepper_traits.cc

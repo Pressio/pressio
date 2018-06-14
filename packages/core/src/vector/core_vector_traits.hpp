@@ -33,6 +33,13 @@ namespace details{
     static constexpr int isSerial = 1;
     static constexpr int isSTDVector = 0;
     static constexpr int isDistributed = 0;
+    static constexpr int isStatic = ( // if it is a row vector NON dynamic
+				     ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
+				       wrapped_t::ColsAtCompileTime == 1 ) ||
+				     // if it is a col vector NON dynamic
+				     ( wrapped_t::RowsAtCompileTime == 1 &&
+				       wrapped_t::ColsAtCompileTime != Eigen::Dynamic )
+				     );
     // make these void just to be clear they are not usable
     using local_ordinal_t = void;
     using global_ordinal_t = void;

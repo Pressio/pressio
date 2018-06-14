@@ -2,46 +2,43 @@
 #ifndef CORE_VECTOR_DOT_PRODUCT_HPP_
 #define CORE_VECTOR_DOT_PRODUCT_HPP_
 
+#include "vector/core_vector_meta.hpp"
+#include "vector/core_vector_serial_eigen.hpp"
+#include "vector/core_vector_serial_stdlib.hpp"
+
 namespace core{
 
+template <typename vec_a_type,
+	  typename vec_b_type,/* = vec_a_type,*/
+	  typename res_t>
+void dotProduct(const vec_a_type & vecA,
+		const vec_b_type & vecB,
+		res_t & result,
+		typename
+		std::enable_if<
+		  // vec a has to be eigen 
+		  details::traits<vec_a_type>::isVector &&
+		  details::traits<vec_a_type>::isEigen && 
+		  // vec b has to be eigen 
+		  details::traits<vec_b_type>::isVector &&
+		  details::traits<vec_b_type>::isEigen &&
+		  // the two vectors need matching scalar type
+		  std::is_same<typename
+		               details::traits<vec_a_type>::scalar_t,
+			       typename
+		               details::traits<vec_b_type>::scalar_t
+			      >::value &&
+		 // result type must match too
+		  std::is_same<typename
+		               details::traits<vec_a_type>::scalar_t,
+		               res_t>::value
+		>::type * = nullptr
+	   )
+{
+  assert(vecA.size() == vecB.size());
+  result = vecA.data()->dot(*vecB.data());
+}
 
-// template <typename wrapped_matrix_type, typename U>
-// typename std::enable_if<std::is_same<U,der_t>::value >::type
-// matMultiplyImpl(const matrix<wrapped_matrix_type> & matin, U& result) const
-// {
-//   auto & resVec = result.getNonConstRefToData();
-//   auto * matPtr = matin.view();
-//   assert( matPtr->cols() == this->size() );
-//   //assert( result.size() == this->size() );
-//   resVec = (*matPtr)*data_;
-// };
-
-// sc_t dotImpl(const der_t & b) const{
-//   // // what is this?
-//   // // dot product: <this,b>
-//   // sc_t res = 0.0;
-//   // for (size_t i=0; i<this->size(); i++)
-//   //   res += data_[i]*b[i];
-//   // return res;
-// };
-
-// template <typename op_t>
-// void applyOpImpl(op_t op, sc_t a1,
-// 		   sc_t a2, const der_t & vin){
-//   // // what is this?
-//   // // this = a1*this op a2*vin;
-//   // for (size_t i=0; i<this->size(); i++)
-//   //   data_[i] = op()( a1*data_[i], a2*vin[i] );
-// }
-
-// sc_t norm2Impl() const{
-//   // sc_t result = 0;
-//   // for (size_t i=0; i<this->size(); i++)
-//   //   result += data_[i]*data_[i];
-//   // return result;
-// };
-
-  
     
 } // end namespace core
 #endif
