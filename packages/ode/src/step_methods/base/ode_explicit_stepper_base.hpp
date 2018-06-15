@@ -4,6 +4,8 @@
 
 #include "ode_ConfigDefs.hpp"
 #include "../ode_stepper_traits.hpp"
+#include "../../ode_meta.hpp"
+#include "../../policies/ode_policies_meta.hpp"
 
 
 namespace ode{
@@ -11,41 +13,71 @@ namespace ode{
 template<typename stepper_type>
 class explicitStepperBase
 {
+private:
+  using step_traits = ode::details::traits<stepper_type>;
+  using state_t = typename step_traits::state_t;
+  using sc_t = typename step_traits::scalar_t;
+  using order_t = typename step_traits::order_t;
+  using time_t = typename step_traits::time_t;
+  using resizer_t = typename step_traits::resizer_t;
+  using residual_t = typename step_traits::residual_t;
+  using residual_policy_t = typename step_traits::residual_policy_t;  
+  using model_t = typename step_traits::model_t;
+  static constexpr order_t order_value = step_traits::order_value;
+
+  //do checking here that things are as supposed
+  static_assert( meta::isLegitimateStateType<state_t>::value,
+		 "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
+  static_assert( meta::isLegitimateResidualType<residual_t>::value,
+		 "OOPS: RESIDUAL_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
+  static_assert( meta::isLegitimateTimeType<time_t>::value,
+		 "OOPS: TIME_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
+  static_assert( meta::derivesFromExplicitResidualPolicyBase<residual_policy_t>::value,
+		 "RESIDUAL_POLICY_TYPE DOES NOT INHERIT FROM EXPLICIT POLICY BASE");
+  
 public:
-
-  using state_t = typename ode::details::traits<stepper_type>::state_t;
-  using sc_t = typename ode::details::traits<stepper_type>::scalar_t;
-  using order_t = typename ode::details::traits<stepper_type>::order_t;
-  static constexpr order_t order_value =
-    ode::details::traits<stepper_type>::order_value;
-  using time_t = ode::details::time_type;
-  using resizer_t = typename ode::details::traits<stepper_type>::resizer_t;
-  using rhs_t = typename ode::details::traits<stepper_type>::rhs_t;
-  using residual_policy_t =
-    typename ode::details::traits<stepper_type>::residual_policy_t;  
-  using model_t =
-    typename ode::details::traits<stepper_type>::model_t;
-  
-  
-  // (de)constructors
-  explicitStepperBase(model_t & model, residual_policy_t & res_policy_obj)
-    : model_(&model), residual_policy_obj_(res_policy_obj)
-  {}
-
-  explicitStepperBase(model_t & model, residual_policy_t res_policy_obj)
-    : model_(&model), residual_policy_obj_(res_policy_obj)
-  {}
-
-  ~explicitStepperBase(){}
-
-  //methods
-  order_t order() const{  return order_value; }
+  order_t order() const{
+    return order_value;
+  }
 
   void doStep(state_t &inout, time_t t, time_t dt ){
     this->stepper()->doStepImpl(inout, t, dt);
   }
   
-private:  
+private:
+  friend stepper_type;
+    
+  // constructor when policy is NOT standard.
+  // we then we store ptr to the incoming object
+  explicitStepperBase(model_t & model,
+		      residual_policy_t & res_policy_obj)
+    : model_(&model),
+      residual_policy_obj_(&res_policy_obj),
+      standardPolicyActive_(false)
+  {}
+
+  // constructor when the policy is standard
+  // when policy is standard, because standard policies
+  // need to be default constructible, we simply create
+  // a new object and store it, and delete it in destructor.
+  template <typename U = residual_policy_t,
+  	    typename std::enable_if<
+  	      core::meta::is_default_constructible<U>::value 
+  	      >::type * = nullptr
+  	    >
+  explicitStepperBase(model_t & model)
+    : model_(&model),
+      residual_policy_obj_(new residual_policy_t()),
+      standardPolicyActive_(true)
+  {}
+
+  explicitStepperBase() = delete;
+
+  ~explicitStepperBase(){
+    if (standardPolicyActive_)
+      delete residual_policy_obj_;
+  }
+
   stepper_type * stepper( ){
     return static_cast< stepper_type* >( this );
   }
@@ -56,8 +88,9 @@ private:
 protected:
   resizer_t myResizer_;
   model_t * model_;
-  residual_policy_t & residual_policy_obj_;
-
+  residual_policy_t * residual_policy_obj_;
+private:
+  bool standardPolicyActive_;
 };
 
 
