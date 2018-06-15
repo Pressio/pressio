@@ -18,7 +18,7 @@ class VectorEigenMetaTest : public ::testing::Test {
  public:
   using native_t = Eigen::Matrix<typename T::sc_t, T::nr, T::nc>;
 
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
+  STATIC_ASSERT_IS_VECTOR_EIGEN(native_t);
   STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(native_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(native_t); 
 };
@@ -55,18 +55,18 @@ TYPED_TEST(VectorEigenMetaTest, meta)
   //this runs all types, no need to put anything
 }
 
-// TEST(core_vector_meta, vectorMetasStdlib)
-// {
-//   using native_t = std::vector<double>;
-//   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
-//   STATIC_ASSERT_IS_VECTOR_STDLIB(native_t);
-//   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(native_t);
-// }
+TEST(core_vector_meta, vectorMetasStdlib)
+{
+  using native_t = std::vector<double>;
+  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
+  STATIC_ASSERT_IS_VECTOR_STDLIB(native_t);
+  STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(native_t);
+}
 
-// TEST(core_vector_meta, vectorMetasEpetra)
-// {
-//   using native_t = Epetra_Vector;
-//   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
-//   STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(native_t);
-//   STATIC_ASSERT_IS_VECTOR_EPETRA(native_t);
-// }
+TEST(core_vector_meta, vectorMetasEpetra)
+{
+  using native_t = Epetra_Vector;
+  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
+  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(native_t);
+  STATIC_ASSERT_IS_VECTOR_EPETRA(native_t);
+}

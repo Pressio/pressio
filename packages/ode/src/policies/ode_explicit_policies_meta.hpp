@@ -1,6 +1,6 @@
 
-#ifndef ODE_POLICIES_META_HPP_
-#define ODE_POLICIES_META_HPP_
+#ifndef ODE_EXPLICIT_POLICIES_META_HPP_
+#define ODE_EXPLICIT_POLICIES_META_HPP_
 
 #include "./base/ode_explicit_policy_base.hpp"
 #include "ode_explicit_euler_standard_policy.hpp"
@@ -69,7 +69,7 @@ struct isExplicitRungeKutta4ResidualStandardPolicy<
 		 >::value
 			  >::type
   > : std::true_type{};
-
+//-----------------------------------------------------------------
   
 
 } // namespace meta

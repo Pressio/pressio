@@ -7,11 +7,12 @@
 namespace ode{
 namespace policy{
   
-template <typename derived_type,
+template <template <typename...> class derived_type,
 	  typename state_type,
 	  typename jacobian_type,
 	  typename model_type,
-	  typename time_type>
+	  typename time_type,
+	  typename ... Args>
 class implicitEulerJacobianPolicyBase{
 public:
   void compute(const state_type & y, jacobian_type & J,
@@ -19,15 +20,17 @@ public:
     this->underlying()->computeImpl(y,J,model,t,dt);
   } 
 private:
-  friend derived_type; 
+  using derived_t = derived_type<state_type,jacobian_type,
+				 model_type, time_type, Args...>;
+  friend derived_t; 
   implicitEulerJacobianPolicyBase() = default;
   ~implicitEulerJacobianPolicyBase() = default;
   
-  derived_type & underlying(){
-    return static_cast<derived_type& >( *this );
+  derived_t & underlying(){
+    return static_cast<derived_t& >( *this );
   }
-  derived_type const & underlying() const{
-    return static_cast<derived_type const & >( *this );
+  derived_t const & underlying() const{
+    return static_cast<derived_t const & >( *this );
   }
 };
 

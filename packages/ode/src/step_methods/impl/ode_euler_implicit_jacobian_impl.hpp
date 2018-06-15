@@ -1,22 +1,11 @@
 
-#ifndef ODE_EULER_IMPLICIT_IMPL_HPP_
-#define ODE_EULER_IMPLICIT_IMPL_HPP_
+#ifndef ODE_EULER_IMPLICIT_JACOBIAN_IMPL_HPP_
+#define ODE_EULER_IMPLICIT_JACOBIAN_IMPL_HPP_
 
 #include "ode_ConfigDefs.hpp"
 
 namespace ode{
 namespace impl{
-
-template<typename state_type, typename residual_type, typename time_type>
-void implicit_euler_residual_impl(const state_type & yn, const state_type & ynm1,
-				  residual_type & R, time_type dt)
-{
-  // on input, R contains the application RHS, i.e. if
-  // dudt = f(x,u,...), R contains f(...)
-  for (decltype(R.size()) i=0; i < R.size(); i++){
-    R[i] = yn[i] - ynm1[i] - dt*R[i];
-  }
-}
 
 template<typename jacobian_type, typename time_type>
 void implicit_euler_jacobian_impl(jacobian_type & jac,
@@ -30,8 +19,6 @@ void implicit_euler_jacobian_impl(jacobian_type & jac,
    jac[i,i] = 1.0 - dt * jac[i,i];
  }
 }
-
-
 
 }//end namespace impl
 }//end namespace ode

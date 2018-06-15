@@ -5,7 +5,7 @@
 #include "ode_ConfigDefs.hpp"
 #include "../ode_stepper_traits.hpp"
 #include "../../ode_meta.hpp"
-#include "../../policies/ode_policies_meta.hpp"
+#include "../../policies/ode_explicit_policies_meta.hpp"
 
 
 namespace ode{
@@ -26,9 +26,9 @@ private:
   static constexpr order_t order_value = step_traits::order_value;
 
   //do checking here that things are as supposed
-  static_assert( meta::isLegitimateStateType<state_t>::value,
+  static_assert( meta::isLegitimateExplicitStateType<state_t>::value,
 		 "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::isLegitimateResidualType<residual_t>::value,
+  static_assert( meta::isLegitimateExplicitResidualType<residual_t>::value,
 		 "OOPS: RESIDUAL_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateTimeType<time_t>::value,
 		 "OOPS: TIME_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");

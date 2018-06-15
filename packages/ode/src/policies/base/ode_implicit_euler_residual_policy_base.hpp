@@ -7,29 +7,33 @@
 namespace ode{
 namespace policy{
   
-template<typename derived_type,
-	 typename state_type,
-	 typename residual_type,
-	 typename model_type,
-	 typename time_type>
+template <template <typename...> class derived_type,
+	  typename state_type,
+	  typename residual_type,
+	  typename model_type,
+	  typename time_type,
+	  typename ... Args>
 class implicitEulerResidualPolicyBase{
 public:
   void compute(const state_type & y, const state_type & ynm1,
 	       residual_type & R, model_type & model,
 	       time_type t, time_type dt){
-    this->underlying()->computeImpl(y,ynm1,R,model,t,dt);
+    this->underlying().computeImpl(y,ynm1,R,model,t,dt);
   } 
 
 private:
-  friend derived_type; 
+  using derived_t = derived_type<state_type,residual_type,
+				 model_type, time_type, Args...>;
+
+  friend derived_t; 
   implicitEulerResidualPolicyBase() = default;
   ~implicitEulerResidualPolicyBase() = default;
   
-  derived_type & underlying(){
-    return static_cast<derived_type& >( *this );
+  derived_t & underlying(){
+    return static_cast<derived_t& >( *this );
   }
-  derived_type const & underlying() const{
-    return static_cast<derived_type const & >( *this );
+  derived_t const & underlying() const{
+    return static_cast<derived_t const & >( *this );
   }
 };
 

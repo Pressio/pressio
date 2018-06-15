@@ -13,13 +13,13 @@
 // euler stepper
 #include "step_methods/ode_explicit_euler_stepper.hpp"
 #include "policies/ode_explicit_euler_standard_policy.hpp"
-// // rk4 
-// #include "step_methods/ode_explicit_runge_kutta4_stepper.hpp"
-// #include "step_methods/policy/ode_explicit_runge_kutta4_standard_policy.hpp"
+// rk4 
+#include "step_methods/ode_explicit_runge_kutta4_stepper.hpp"
+#include "policies/ode_explicit_runge_kutta4_standard_policy.hpp"
 // vector wrappers
 // #include "vector/core_vector_serial_eigen.hpp"
 // #include "vector/core_vector_serial_stdlib.hpp"
-#include "policies/base/ode_explicit_policy_base.hpp"
+//#include "policies/base/ode_explicit_policy_base.hpp"
 
 
 constexpr double sigma = 10.0;
@@ -111,32 +111,35 @@ int main(int argc, char *argv[])
     // initial condition
     state_t y0 = { 10.0 , 1.0 , 1.0 };
 
+    // using stepper_t =
+    //   ode::explicitEulerStepper<state_t, rhs_t, scalar_t,
+    // 				stdvectorResizer, model_t,
+    // 				time_type /*, default: standard policy residual */>;
     using stepper_t =
-      ode::explicitEulerStepper<state_t, rhs_t, scalar_t,
+      ode::explicitRungeKutta4Stepper<state_t, rhs_t, scalar_t,
   				stdvectorResizer, model_t,
   				time_type /*, default: standard policy residual */>;
     stepper_t stepperObj(appObj);
     coll<state_t> observer;
     ode::integrateNSteps( stepperObj, y0, observer, 0.0, dt, final_time/dt );
   }
+  // {
+  //   // initial condition
+  //   state_t y0 = { 10.0 , 1.0 , 1.0 }; 
 
-  {
-    // initial condition
-    state_t y0 = { 10.0 , 1.0 , 1.0 }; 
+  //   using residual_policy_t = expEulerMine<state_t, rhs_t,
+  // 					   model_t, time_type, int>;
 
-    using residual_policy_t = expEulerMine<state_t, rhs_t,
-					   model_t, time_type, int>;
-
-    static_assert(!ode::meta::isExplicitEulerResidualStandardPolicy<
-		  residual_policy_t>::value, "");
-    using stepper_t =
-      ode::explicitEulerStepper<state_t, rhs_t, scalar_t,stdvectorResizer,
-    				model_t,time_type, residual_policy_t>;
-    residual_policy_t resObj(55);
-    stepper_t stepperObj(appObj, resObj);
-    coll<state_t> observer;
-    ode::integrateNSteps( stepperObj, y0, observer, 0.0, dt, final_time/dt );
-  }
+  //   static_assert(!ode::meta::isExplicitEulerResidualStandardPolicy<
+  // 		  residual_policy_t>::value, "");
+  //   using stepper_t =
+  //     ode::explicitEulerStepper<state_t, rhs_t, scalar_t,stdvectorResizer,
+  //   				model_t,time_type, residual_policy_t>;
+  //   residual_policy_t resObj(55);
+  //   stepper_t stepperObj(appObj, resObj);
+  //   coll<state_t> observer;
+  //   ode::integrateNSteps( stepperObj, y0, observer, 0.0, dt, final_time/dt );
+  // }
 
 
   

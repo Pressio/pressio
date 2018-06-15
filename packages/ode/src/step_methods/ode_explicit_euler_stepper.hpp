@@ -27,8 +27,7 @@ class explicitEulerStepper<state_type, residual_type, scalar_type,
   : public explicitStepperBase<
   explicitEulerStepper<state_type,residual_type,scalar_type,
 		       state_resizer_fnctor_type, model_type,
-		       time_type,residual_policy_type
-		       >>
+		       time_type,residual_policy_type>>
 {  
 private:
   using stepper_t = explicitEulerStepper<state_type,residual_type,scalar_type,
@@ -37,25 +36,29 @@ private:
   using stepper_base_t = explicitStepperBase<stepper_t>;
 
 public:
-  // constructor for the case when the policy is NOT the standard one
+  //*********************************************************
+  // when the policy is NOT the standard 
+  //*********************************************************
   template < typename U = residual_policy_type,
 	     typename std::enable_if<
 	       !meta::isExplicitEulerResidualStandardPolicy<U>::value
 	     >::type * = nullptr>
   explicitEulerStepper(model_type & model,
   		       U & res_policy_obj)
-    : stepper_base_t(model, res_policy_obj)
-  {}
+    : stepper_base_t(model, res_policy_obj){}
 
+  //*********************************************************
   // constructor for the case when the policy is the standard one
   // Standard policies have to be default constructible
+  //*********************************************************
   template < typename U = residual_policy_type,
 	     typename std::enable_if<
 	       meta::isExplicitEulerResidualStandardPolicy<U>::value
 	       >::type * = nullptr>
   explicitEulerStepper(model_type & model)
-    : stepper_base_t(model)
-  {}
+    : stepper_base_t(model){}
+
+  //*********************************************************
 
   explicitEulerStepper() = delete;
   ~explicitEulerStepper() = default;

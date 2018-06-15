@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include "policies/base/ode_explicit_policy_base.hpp"
 #include "policies/ode_explicit_euler_standard_policy.hpp"
-#include "policies/ode_policies_meta.hpp"
+#include "policies/ode_explicit_policies_meta.hpp"
 
 
 template<typename T1,typename T2>
