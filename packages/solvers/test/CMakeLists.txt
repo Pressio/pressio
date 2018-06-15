@@ -1,0 +1,4 @@
+
+ADD_SUBDIRECTORIES(
+  # leastsquares
+)

@@ -1,0 +1,9 @@
+
+
+Unit tests here should be grouped properly.
+Maybe do one file for each vector class, for instance.
+You have some freedom on how to choose things. 
+Overall, let's keep things simple and selfcontained.
+So if you are testing a particular feature of something, make it a unit test
+well-defined so that it is clearly recognizable.
+

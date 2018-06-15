@@ -9,12 +9,11 @@ function(add_single_unit_test test_name ranks)
     SOURCES ${test_name}.cc gTestMain.cc
     COMM serial mpi
     NUM_MPI_PROCS ${ranks}
-  	PASS_REGULAR_EXPRESSION "PASSED"
-  	FAIL_REGULAR_EXPRESSION "FAILED"
-  )
+    PASS_REGULAR_EXPRESSION "PASSED"
+    FAIL_REGULAR_EXPRESSION "FAILED"
+   )
 endfunction()
 
 # append tests need to have a unique executable each
-add_single_unit_test(example 2)
 #add_unit_test(Test2 1)
 

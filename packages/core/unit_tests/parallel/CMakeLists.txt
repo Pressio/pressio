@@ -9,8 +9,8 @@ function(add_single_unit_test test_name ranks)
     SOURCES ${test_name}.cc gTestMain.cc
     COMM serial mpi
     NUM_MPI_PROCS ${ranks}
-    #STANDARD_PASS_OUTPUT
-    #FAIL_REGULAR_EXPRESSION "  FAILED  "
+    PASS_REGULAR_EXPRESSION "PASSED"
+    FAIL_REGULAR_EXPRESSION "FAILED"
   )
 endfunction()
 

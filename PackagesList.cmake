@@ -1,10 +1,12 @@
 TRIBITS_REPOSITORY_DEFINE_PACKAGES(
-  core   	packages/core  PT
-  algebra 	packages/algebra PT
-  ode    	packages/ode   PT
-  svd    	packages/svd   PT
-  apps   	packages/apps  PT
-  rom    	packages/rom   PT
+  core   		packages/core  		PT
+  solvers 		packages/solvers 	PT
+  ode    		packages/ode   		PT
+  #
+  # optimization	packages/optimization   PT
+  # apps   		packages/apps  PT
+  #svd    	packages/svd   PT
+  #rom    	packages/rom   PT
   )
 
 

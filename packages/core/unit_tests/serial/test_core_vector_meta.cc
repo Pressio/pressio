@@ -5,9 +5,6 @@
 #include "vector/core_vector_meta.hpp"
 
 
-
-
-
 template<typename scalar, int rows, int cols>
 struct typesEig{
   using sc_t = scalar;
@@ -20,15 +17,8 @@ template <typename T>
 class VectorEigenMetaTest : public ::testing::Test {
  public:
   using native_t = Eigen::Matrix<typename T::sc_t, T::nr, T::nc>;
-  //  using native_t = Eigen::Matrix<double, 1, Eigen::Dynamic>;
 
-  // STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_EIGEN(native_t);
-  // STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_STDLIB(native_t);
-  // STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
-  // STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(native_t);
-  // STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(native_t);
-
-  STATIC_ASSERT_IS_VECTOR_EIGEN(native_t);
+  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
   STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(native_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(native_t); 
 };

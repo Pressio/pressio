@@ -102,26 +102,26 @@ struct is_matrixDenseSerialStdlib<T,
  
 #define STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_EIGEN(TYPE) \
   static_assert( core::meta::is_matrixDenseSerialEigen<TYPE>::value,	\
-		 "SHOULD_BE_A_MATRIX_DENSE_SERIAL_EIGEN")
+		 "THIS_IS_NOT_A_MATRIX_DENSE_SERIAL_EIGEN")
 #define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_EIGEN(TYPE) \
   static_assert( !core::meta::is_matrixDenseSerialEigen<TYPE>::value, \
-		 "SHOULD_NOT_BE_A_MATRIX_DENSE_SERIAL_EIGEN")
+		 "THIS_IS_A_MATRIX_DENSE_SERIAL_EIGEN")
 
   
 #define STATIC_ASSERT_IS_MATRIX_SPARSE_SERIAL_EIGEN(TYPE) \
   static_assert( core::meta::is_matrixSparseSerialEigen<TYPE>::value,	\
-		 "SHOULD_BE_A_MATRIX_SPARSE_SERIAL_EIGEN")
+		 "THIS_IS_NOT_A_MATRIX_SPARSE_SERIAL_EIGEN")
 #define STATIC_ASSERT_IS_NOT_MATRIX_SPARSE_SERIAL_EIGEN(TYPE) \
   static_assert( !core::meta::is_matrixSparseSerialEigen<TYPE>::value, \
-		 "SHOULD_NOT_BE_A_MATRIX_SPARSE_SERIAL_EIGEN")
+		 "THIS_IS_A_MATRIX_SPARSE_SERIAL_EIGEN")
 
   
 #define STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_STDLIB(TYPE)	      \
   static_assert( core::meta::is_matrixDenseSerialStdlib<TYPE>::value, \
-		 "SHOULD_BE_A_MATRIX_DENSE_SERIAL_STDLIB")
+		 "THIS_IS_NOT_A_MATRIX_DENSE_SERIAL_STDLIB")
 #define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_STDLIB(TYPE) \
   static_assert( !core::meta::is_matrixDenseSerialStdlib<TYPE>::value, \
-		 "SHOULD_NOT_BE_A_MATRIX_DENSE_SERIAL_STDLIB")
+		 "THIS_IS_A_MATRIX_DENSE_SERIAL_STDLIB")
 
 
 

@@ -84,28 +84,27 @@ namespace meta {
 } // namespace meta
 /////////////////
 
-
   
 #define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \
   static_assert( core::meta::is_vectorEigen<TYPE>::value, \
-		 "SHOULD_BE_A_VECTOR_FROM_EIGEN")
+		 "THIS_IS_NOT_A_VECTOR_FROM_EIGEN")
 #define STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(TYPE) \
   static_assert( !core::meta::is_vectorEigen<TYPE>::value, \
-		 "SHOULD_NOT_BE_A_VECTOR_FROM_EIGEN")
+		 "THIS_IS_A_VECTOR_FROM_EIGEN")
 
 #define STATIC_ASSERT_IS_VECTOR_STDLIB(TYPE) \
   static_assert( core::meta::is_vectorStdLib<TYPE>::value, \
-		 "SHOULD_BE_A_STDLIB_VECTOR")
+		 "THIS_IS_NOT_A_STDLIB_VECTOR")
 #define STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(TYPE) \
   static_assert( !core::meta::is_vectorStdLib<TYPE>::value, \
-		 "SHOULD_NOT_BE_A_STDLIB_VECTOR")
+		 "THIS_IS_A_STDLIB_VECTOR")
 
 #define STATIC_ASSERT_IS_VECTOR_EPETRA(TYPE) \
   static_assert( core::meta::is_vectorEpetra<TYPE>::value, \
-		 "SHOULD_BE_A_VECTOR_EPETRA")
+		 "THIS_IS_NOT_A_VECTOR_EPETRA")
 #define STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(TYPE) \
   static_assert( !core::meta::is_vectorEpetra<TYPE>::value, \
-		 "SHOULD_NOT_BE_A_VECTOR_EPETRA")
+		 "THIS_IS_A_VECTOR_EPETRA")
 
   
 /////////////////
