@@ -15,6 +15,9 @@ public:
   using der_t = typename details::traits<derived_type>::derived_t;
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
   using ord_t = typename details::traits<derived_type>::ordinal_t;
+
+  static_assert(details::traits<derived_type>::isSerial==1,
+		"OOPS: non-serial concrete vector inheriting from serial base!");
   
 public:
   size_t size() const {

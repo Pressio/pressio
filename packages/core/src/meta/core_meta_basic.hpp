@@ -65,32 +65,27 @@ namespace meta {
 			    >::type
 		       > : std::true_type{};
 
+  //////////////////////////////////////////////////
+
+  // template<template<class> class T, class U>
+  // struct isDerivedFrom
+  // {
+  //   static constexpr bool value =
+  //     decltype(isDerivedFrom::test(std::declval<U>()))::value;
+  // private:
+  //   template<class V>
+  //   static decltype(static_cast<T<V>>(std::declval<U>()),
+  // 		    std::true_type{}) test(const T<V>&);
+
+  //   static std::false_type test(...);
+  // };
+
+  template<typename T, typename base_t>
+  struct publiclyInheritsFrom : std::is_base_of<base_t,T>{};
   
+  //////////////////////////////////////////////////
+
+   
 } // namespace meta
 } // namespace core
 #endif
-
-
-
-
-
-/////////////////////////////////////////////////
-// template<class T1 , class T2> 
-// struct same_instance_impl{ 
-//   static bool same_instance( const T1& /* x1 */ , const T2& /* x2 */ ){
-//     return false;
-//   }
-// };
-// template< class T > 
-// struct same_instance_impl<T,T>{ 
-//   static bool same_instance( const T &x1 , const T &x2 ){
-//     return (&x1 == &x2);
-//   }
-// };
-// template< class T1 , class T2 > 
-// bool same_instance( const T1 &x1 , const T2 &x2 ){
-//   return same_instance_impl< T1,T2 >::same_instance( x1 , x2 );
-// }
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////

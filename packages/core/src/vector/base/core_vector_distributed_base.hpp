@@ -10,15 +10,19 @@ namespace core{
 template<typename derived_type>
 class vectorDistributedBase
 {
-public:
+private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
   using LO_t = typename details::traits<derived_type>::local_ordinal_t;
   using GO_t = typename details::traits<derived_type>::global_ordinal_t;
   using map_t = typename details::traits<derived_type>::data_map_t;
-  using comm_t = typename details::traits<derived_type>::communicator_t;
+  using comm_t =  typename details::traits<derived_type>::communicator_t;
 
+  static_assert( details::traits<derived_type>::isDistributed==1,
+		 "OOPS: non-distributed concrete vector inheriting from distributed base!");
+
+    
 public:
   size_t globalSize() const {
     return this->underlying().globalSizeImpl();
