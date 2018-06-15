@@ -1,4 +1,3 @@
-
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -13,17 +12,20 @@
 #include "integrators/ode_integrate_n_steps.hpp"
 // euler stepper
 #include "step_methods/ode_explicit_euler_stepper.hpp"
-#include "step_methods/policy/ode_explicit_euler_standard_policy.hpp"
-// rk4 
-#include "step_methods/ode_explicit_runge_kutta4_stepper.hpp"
-#include "step_methods/policy/ode_explicit_runge_kutta4_standard_policy.hpp"
+#include "policies/ode_explicit_euler_standard_policy.hpp"
+// // rk4 
+// #include "step_methods/ode_explicit_runge_kutta4_stepper.hpp"
+// #include "step_methods/policy/ode_explicit_runge_kutta4_standard_policy.hpp"
 // vector wrappers
-#include "vector/core_vector_serial_eigen.hpp"
-#include "vector/core_vector_serial_stdlib.hpp"
+// #include "vector/core_vector_serial_eigen.hpp"
+// #include "vector/core_vector_serial_stdlib.hpp"
+#include "policies/base/ode_explicit_policy_base.hpp"
+
 
 constexpr double sigma = 10.0;
 constexpr double R = 28.0;
 constexpr double b = 8.0 / 3.0;
+using time_type = double;
 
 struct stdvectorResizer{
   using vecD = std::vector<double>;
@@ -33,6 +35,8 @@ struct stdvectorResizer{
       dest.resize(source.size());
   };
 };
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 
 struct lorenzStd{
   using state_t = std::vector<double>;
@@ -43,18 +47,45 @@ struct lorenzStd{
     dxdt[2] = -b * x[2] + x[0] * x[1];
   }
 };
-
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 
 template<typename state_t>
 struct coll{
-  void operator()(size_t step, double t, const state_t & x){
-    if ( step % 100 == 0){
+  void operator()(size_t step, time_type t, const state_t & x){
+    // if ( step % 100 == 0){
       std::cout << "step: " << step << " "
+		<< "t = " << t << " " 
 		<< x[0] << " "
 		<< x[1] << " "
 		<< x[2] << std::endl;
-    }
+      //    }
   }
+};
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+
+
+template<class state_t, class res_t,
+	 class mod_t, class time_t, class T4>
+class expEulerMine
+  : public ode::policy::explicitResidualPolicyBase<
+           expEulerMine,state_t,res_t,mod_t,time_t,T4>
+{
+public:
+  expEulerMine(T4 perturb) : bump_(perturb){}
+  expEulerMine() = delete;
+  ~expEulerMine() = default;
+  T4 bump_;
+private:
+  void computeImpl(const state_t & y, res_t & res,
+		   mod_t & model, time_t t){
+    model.residual(y, res, t);
+    std::cout << "THIS IS MY ONW bump = " << t << std::endl;
+  }  
+private:
+  friend ode::policy::explicitResidualPolicyBase<
+         expEulerMine,state_t,res_t,mod_t,time_t,T4>;
 };
 
 
@@ -65,39 +96,59 @@ int main(int argc, char *argv[])
   using rhs_t = lorenzStd::state_t;
   using scalar_t = double;
   using model_t = lorenzStd;
-
-  double final_time = 25.0;
-  double dt = 0.005;
+  
+  time_type final_time = 0.10;
+  time_type dt = 0.01;
   
   // create app obj
   model_t appObj;
-  // initial condition
-  state_t y0 = { 10.0 , 1.0 , 1.0 }; 
 
   // stepper and integrator
   // using residual_policy_t = myOwnExEu<state_t,rhs_t,model_t,double>;
   // residual_policy_t resPol;
 
-  // {
-  //   // omitting the policy defaults to creating corresponding standard residual policy
-  //   using stepper_t =
-  //     ode::explicitEulerStepper<state_t, rhs_t, scalar_t,
-  // 				stdvectorResizer, model_t /*, standard policy residual */>;
-  //   stepper_t stepperObj(appObj);
-  //   coll<state_t> observer;
-  //   ode::integrateNSteps( stepperObj, y0, observer, 0.0, dt, final_time/dt );
-  // }
-
-
   {
-    // omitting the policy defaults to creating a corresponding standard residual policy
+    // initial condition
+    state_t y0 = { 10.0 , 1.0 , 1.0 };
+
     using stepper_t =
-      ode::explicitRungeKutta4Stepper<state_t, rhs_t, scalar_t,
-  				      stdvectorResizer, model_t /*, standard policy residual */>;
+      ode::explicitEulerStepper<state_t, rhs_t, scalar_t,
+  				stdvectorResizer, model_t,
+  				time_type /*, default: standard policy residual */>;
     stepper_t stepperObj(appObj);
     coll<state_t> observer;
     ode::integrateNSteps( stepperObj, y0, observer, 0.0, dt, final_time/dt );
   }
+
+  {
+    // initial condition
+    state_t y0 = { 10.0 , 1.0 , 1.0 }; 
+
+    using residual_policy_t = expEulerMine<state_t, rhs_t,
+					   model_t, time_type, int>;
+
+    static_assert(!ode::meta::isExplicitEulerResidualStandardPolicy<
+		  residual_policy_t>::value, "");
+    using stepper_t =
+      ode::explicitEulerStepper<state_t, rhs_t, scalar_t,stdvectorResizer,
+    				model_t,time_type, residual_policy_t>;
+    residual_policy_t resObj(55);
+    stepper_t stepperObj(appObj, resObj);
+    coll<state_t> observer;
+    ode::integrateNSteps( stepperObj, y0, observer, 0.0, dt, final_time/dt );
+  }
+
+
+  
+  // {
+  //   // omitting the policy defaults to creating a corresponding standard residual policy
+  //   using stepper_t =
+  //     ode::explicitRungeKutta4Stepper<state_t, rhs_t, scalar_t,
+  // 				      stdvectorResizer, model_t /*, standard policy residual */>;
+  //   stepper_t stepperObj(appObj);
+  //   coll<state_t> observer;
+  //   ode::integrateNSteps( stepperObj, y0, observer, 0.0, dt, final_time/dt );
+  // }
   
   
   // do time integration wrapping with my vector
