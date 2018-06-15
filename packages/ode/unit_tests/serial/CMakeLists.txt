@@ -2,7 +2,12 @@
 
 SET(TESTFILES "")
 
-APPEND_SET(TESTFILES test1.cc)
+APPEND_SET(TESTFILES test_ode_meta.cc)
+APPEND_SET(TESTFILES test_policies_meta.cc)
+APPEND_SET(TESTFILES test_explicit_euler_policy.cc)
+APPEND_SET(TESTFILES test_explicit_euler_stepper_traits.cc)
+
+
 # append here tests to be grouped into a single executable
 # APPEND_SET(...)
 # ...

@@ -3,8 +3,8 @@
 #define ODE_CONFIGDEFS_HPP_
 
 #include "core_ConfigDefs.hpp"
-#include "core_meta.hpp"
-#include "core_crtp_helper.hpp"
+#include "meta/core_meta_basic.hpp"
+//#include "core_crtp_helper.hpp"
 
 namespace ode{
 namespace details {
@@ -17,9 +17,7 @@ namespace details {
     template<typename T> 
     struct traits<const T> : traits<T> {};
 
-
     using time_type = double;
-
 
 } // end namespace details
 } // end ode
