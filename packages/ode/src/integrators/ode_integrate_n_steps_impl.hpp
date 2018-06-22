@@ -37,7 +37,7 @@ void integrateNStepsImpl(stepper_type & stepper,
 
     // advance time
     //mulitply (vs adding) benefits roundoff
-    time = static_cast<double>(step) * dt;  
+    time = static_cast<time_type>(step) * dt;  
   }
   collector(step, time, stateIn);
 }
@@ -45,8 +45,7 @@ void integrateNStepsImpl(stepper_type & stepper,
 
 //----------------------------------------------------
 
-  
-  
+    
 template<typename stepper_type,
 	 typename state_type,
 	 typename time_type,
@@ -68,7 +67,7 @@ void integrateNStepsImpl(stepper_type & stepper,
     stepper.doStep(stateIn, time, dt);
     // advance time
     //mulitply (vs adding) benefits roundoff
-    time = static_cast<double>(step) * dt;  
+    time = static_cast<time_type>(step) * dt;  
   }
 }
   

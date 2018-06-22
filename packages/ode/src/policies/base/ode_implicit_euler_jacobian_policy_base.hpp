@@ -3,6 +3,10 @@
 #define ODE_IMPLICIT_EULER_JACOBIAN_POLICY_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
+#include "vector/core_vector_meta.hpp"
+#include "vector/core_vector_traits.hpp"
+#include "matrix/core_matrix_meta.hpp"
+#include "matrix/core_matrix_traits.hpp"
 
 namespace ode{
 namespace policy{
@@ -13,11 +17,12 @@ template <template <typename...> class derived_type,
 	  typename model_type,
 	  typename time_type,
 	  typename ... Args>
-class implicitEulerJacobianPolicyBase{
+class implicitEulerJacobianPolicyBase
+{
 public:
   void compute(const state_type & y, jacobian_type & J,
 	       model_type & model, time_type t, time_type dt){
-    this->underlying()->computeImpl(y,J,model,t,dt);
+    this->underlying().computeImpl(y,J,model,t,dt);
   } 
 private:
   using derived_t = derived_type<state_type,jacobian_type,

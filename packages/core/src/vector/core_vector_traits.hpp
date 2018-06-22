@@ -140,6 +140,27 @@ namespace details{
 
   
 }//end namespace details  
+
+namespace meta {
+
+template <typename T, typename enable = void>
+struct is_coreVectorWrapper : std::false_type {};
+
+template <typename T>
+struct is_coreVectorWrapper< T,
+		       typename
+		       std::enable_if<
+			 core::details::traits<T>::isVector==1
+			 >::type
+		       > : std::true_type{};
+
+#define STATIC_ASSERT_IS_CORE_VECTOR_WRAPPER(TYPE) \
+  static_assert( core::meta::is_coreVectorWrapper<TYPE>::value, \
+		 "THIS_IS_NOT_A_CORE_VECTOR_WRAPPER")
+
+}//end meta
+
+  
 }//end namespace core
 #endif
 

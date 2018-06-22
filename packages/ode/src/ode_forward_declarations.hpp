@@ -13,6 +13,7 @@
 
 namespace ode {
 
+    
 template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
@@ -26,6 +27,7 @@ template<typename state_type,
 	 >
 class explicitEulerStepper;
 
+  
 
 template<typename state_type,
 	 typename residual_type,
@@ -40,6 +42,7 @@ template<typename state_type,
 	 >
 class explicitRungeKutta4Stepper;
 
+  
 template<typename state_type,
          typename residual_type,
          typename jacobian_type,
@@ -57,6 +60,7 @@ template<typename state_type,
 	 typename enable = void
          >
 class implicitEulerStepper;
+
 
   
 } // end namespace 

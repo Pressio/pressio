@@ -3,6 +3,8 @@
 #define ODE_IMPLICIT_EULER_RESIDUAL_POLICY_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
+#include "vector/core_vector_meta.hpp"
+#include "vector/core_vector_traits.hpp"
 
 namespace ode{
 namespace policy{
@@ -13,7 +15,8 @@ template <template <typename...> class derived_type,
 	  typename model_type,
 	  typename time_type,
 	  typename ... Args>
-class implicitEulerResidualPolicyBase{
+class implicitEulerResidualPolicyBase
+{
 public:
   void compute(const state_type & y, const state_type & ynm1,
 	       residual_type & R, model_type & model,
@@ -24,7 +27,6 @@ public:
 private:
   using derived_t = derived_type<state_type,residual_type,
 				 model_type, time_type, Args...>;
-
   friend derived_t; 
   implicitEulerResidualPolicyBase() = default;
   ~implicitEulerResidualPolicyBase() = default;

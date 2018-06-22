@@ -30,8 +30,6 @@ void integrateNSteps(stepper_type & stepper,
 			time_type, collector_functor_type>
     (stepper,stateIn,start_time, dt,num_steps, collector);
 }
-
-
 //----------------------------------------------------------------
 
 
@@ -48,7 +46,8 @@ void integrateNSteps(stepper_type & stepper,
 		     time_type dt,
 		     size_t num_steps)
 {
-  impl::integrateNStepsImpl<stepper_type, state_type,
+  impl::integrateNStepsImpl<stepper_type,
+			    state_type,
 			    time_type>
     (stepper, stateIn, start_time, dt, num_steps);
 }

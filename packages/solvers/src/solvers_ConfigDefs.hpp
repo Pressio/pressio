@@ -1,8 +1,8 @@
 
-#ifndef ALGEBRA_CONFIGDEFS_HPP_
-#define ALGEBRA_CONFIGDEFS_HPP_
+#ifndef SOLVERS_CONFIGDEFS_HPP_
+#define SOLVERS_CONFIGDEFS_HPP_
 
-#include "algebra_config.h"
+#include "solvers_config.h"
 #include "core_ConfigDefs.hpp"
 
 

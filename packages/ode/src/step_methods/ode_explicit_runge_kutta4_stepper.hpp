@@ -68,7 +68,7 @@ private:
 		  time_type t,
 		  time_type dt )
   {
-    static const scalar_type val1 = static_cast< scalar_type >( 1 );
+    //static const scalar_type val1 = static_cast< scalar_type >( 1 );
     const time_type dt_half = dt / static_cast< scalar_type >(2);
     const time_type t_phalf = t + dt_half;
     
@@ -84,7 +84,7 @@ private:
     // rhs1_(y_n,t)
     this->residual_policy_obj_->compute(y_inout, rhs1_, *(this->model_), t);
     // y_tmp_ = y_n + rhs1_*dt/2
-    for (size_t i=0; i<y_inout.size(); i++){
+    for (decltype(y_inout.size()) i=0; i<y_inout.size(); i++){
       y_tmp_[i] = y_inout[i] + dt_half*rhs1_[i];
     }
 
@@ -95,7 +95,7 @@ private:
     this->residual_policy_obj_->compute(y_tmp_,rhs2_,
 				       *(this->model_), t_phalf);
     // y_tmp_ = y_n + rhs2_*dt/2
-    for (size_t i=0; i<y_inout.size(); i++){
+    for (decltype(y_inout.size()) i=0; i<y_inout.size(); i++){
       y_tmp_[i] = y_inout[i] + dt_half*rhs2_[i];
     }
 
@@ -106,7 +106,7 @@ private:
     this->residual_policy_obj_->compute(y_tmp_, rhs3_,
 				       *(this->model_), t_phalf);
     //y_tmp_ = y_n + rhs3_*dt/2
-    for (size_t i=0; i<y_inout.size(); i++){
+    for (decltype(y_inout.size()) i=0; i<y_inout.size(); i++){
       y_tmp_[i] = y_inout[i] + dt*rhs3_[i];
     }
 
@@ -120,7 +120,7 @@ private:
     //x += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     time_type dt6 = dt / static_cast< scalar_type >( 6.0 );
     time_type dt3 = dt / static_cast< scalar_type >( 3.0 );
-    for (size_t i=0; i < y_inout.size(); i++){
+    for (decltype(y_inout.size()) i=0; i < y_inout.size(); i++){
       y_inout[i] = y_inout[i] + dt6*rhs1_[i] +
 	dt3*rhs2_[i] + dt3*rhs3_[i] + dt6*rhs4_[i];
     }

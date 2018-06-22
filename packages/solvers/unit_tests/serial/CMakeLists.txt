@@ -2,7 +2,9 @@
 
 SET(TESTFILES "")
 
-#APPEND_SET(TESTFILES test_name.cc)
+APPEND_SET(TESTFILES test_solvers_linear_eigen.cc)
+APPEND_SET(TESTFILES test_solvers_nonlinear_eigen.cc)
+
 # append here tests to be grouped into a single executable
 # APPEND_SET(...)
 # ...

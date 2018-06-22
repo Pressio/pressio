@@ -32,10 +32,10 @@ class implicitEulerStepper<state_type,residual_type,jacobian_type,scalar_type,
 		       solver_policy_type,residual_policy_type,jacobian_policy_type>>
 {
 
-  static_assert( meta::derivesFromImplicitEulerResidualPolicyBase<residual_policy_type>::value,
-		 "RESIDUAL_POLICY_TYPE DOES NOT INHERIT FROM IMPLICIT EULER RESIDUAL POLICY BASE");
-  static_assert( meta::derivesFromImplicitEulerJacobianPolicyBase<jacobian_policy_type>::value,
-		 "JACOBIAN_POLICY_TYPE DOES NOT INHERIT FROM IMPLICIT EULER JACOBIAN POLICY BASE");
+  static_assert(meta::derivesFromImplicitEulerResidualPolicyBase<residual_policy_type>::value,
+		"RESIDUAL_POLICY_TYPE DOES NOT INHERIT FROM IMPLICIT EULER RESIDUAL POLICY BASE");
+  static_assert(meta::derivesFromImplicitEulerJacobianPolicyBase<jacobian_policy_type>::value,
+		"JACOBIAN_POLICY_TYPE DOES NOT INHERIT FROM IMPLICIT EULER JACOBIAN POLICY BASE");
 
 public :
   using stepper_t = implicitEulerStepper<state_type,residual_type,jacobian_type,scalar_type,
@@ -48,7 +48,9 @@ public :
   // residual policy = NOT standard 
   // jacobian policy = NOT standard 
   //*********************************************************
-  template < typename U = residual_policy_type,
+  template < typename M = model_type,
+	     typename S = solver_policy_type,
+	     typename U = residual_policy_type,
 	     typename T = jacobian_policy_type,
 	     typename
 	     std::enable_if<
@@ -56,27 +58,36 @@ public :
 	       !meta::isImplicitEulerJacobianStandardPolicy<T>::value
 	       >::type * = nullptr
 	     >
-  implicitEulerStepper(model_type & model, U & res_policy_obj, T & jac_policy_obj)
-    : stepper_base_t(model, res_policy_obj, jac_policy_obj){}
+  implicitEulerStepper(M & model,
+		       const S & solver,
+		       U & res_policy_obj,
+		       T & jac_policy_obj)
+    : stepper_base_t(model, res_policy_obj, jac_policy_obj), solver_(&solver){}
 
   //*********************************************************
   // residual policy = standard 
   // jacobian policy = NOT standard 
   //*********************************************************
-  template < typename U = residual_policy_type,
+  template < typename M = model_type,
+	     typename S = solver_policy_type,
+	     typename U = residual_policy_type,
 	     typename T = jacobian_policy_type,
 	     typename std::enable_if<
 	       meta::isImplicitEulerResidualStandardPolicy<U>::value &&
 	       !meta::isImplicitEulerJacobianStandardPolicy<T>::value
 	      >::type * = nullptr>
-  implicitEulerStepper(model_type & model, T & jac_policy_obj)
-    : stepper_base_t(model, jac_policy_obj){}
+  implicitEulerStepper(M & model,
+		       const S & solver,
+		       T & jac_policy_obj)
+    : stepper_base_t(model, jac_policy_obj), solver_(&solver){}
 
   //*********************************************************
   // residual policy = NOT standard 
   // jacobian policy = standard 
   //*********************************************************
-  template < typename U = residual_policy_type,
+  template < typename M = model_type,
+	     typename S = solver_policy_type,
+	     typename U = residual_policy_type,
 	     typename T = jacobian_policy_type,
 	     typename
 	     std::enable_if<
@@ -84,14 +95,18 @@ public :
 	       meta::isImplicitEulerJacobianStandardPolicy<T>::value
 	       >::type * = nullptr
 	     >
-  implicitEulerStepper(model_type & model, U & res_policy_obj)
-    : stepper_base_t(model, res_policy_obj){}
+  implicitEulerStepper(M & model,
+		       const S & solver,
+		       U & res_policy_obj)
+    : stepper_base_t(model, res_policy_obj), solver_(&solver){}
 
   //*********************************************************
   // residual policy = standard 
   // jacobian policy = standard 
   //*********************************************************
-  template < typename U = residual_policy_type,
+  template < typename M = model_type,
+	     typename S = solver_policy_type,
+	     typename U = residual_policy_type,
 	     typename T = jacobian_policy_type,
 	     typename
 	     std::enable_if<
@@ -99,29 +114,38 @@ public :
 	       meta::isImplicitEulerJacobianStandardPolicy<T>::value
 	       >::type * = nullptr
 	     >
-  implicitEulerStepper(model_type & model)
-    : stepper_base_t(model){}
+  implicitEulerStepper(M & model,
+		       const S & solver)
+    : stepper_base_t(model), solver_(&solver){}
 
   //*********************************************************
     
   implicitEulerStepper() = delete;
   ~implicitEulerStepper() = default;
-
+  
 private:
   void doStepImpl(state_type & y_inout, time_type t, time_type dt ){
     y_nm1_ = y_inout;
     dt_ = dt;
     t_ = t;
-    //solver_policy_type::compute(*this, y_inout);
-    //algebra::newtonRaph<stepper_t,state_type,jacobian_type>(*this, y_inout);
-    //algebra::nonLinearLstsq<stepper_t,state_type,jacobian_type>(*this, y_inout);
+
+    std::cout << " doStepImpl: right " << std::endl;
+    for (int i=0; i<y_inout.size(); ++i)
+      std::cout << std::setprecision(14) << y_inout[i]  << " ";
+    std::cout << "------------------ " << std::endl;
+    solver_->solve(y_inout, *this);
+
+    for (int i=0; i<y_inout.size(); ++i)
+      std::cout << std::setprecision(14) << y_inout[i]  << " ";
+    std::cout << std::endl;    
+    std::cout << std::endl;    
   }
-   
+  
   void residualImpl(const state_type & y, state_type & R){
-    this->res_policy_obj_.compute(y, y_nm1_, R, dt_);
+    this->residual_policy_obj_->compute(y, y_nm1_, R, *(this->model_), t_, dt_);
   }
   void jacobianImpl(const state_type & y, jacobian_type & J){
-    this->jac_policy_obj_.compute(y, J, dt_);
+    this->jacobian_policy_obj_->compute(y, J, *(this->model_), t_, dt_);
   }
 
 private:
@@ -129,6 +153,7 @@ private:
   time_type t_;
   time_type dt_;
   state_type y_nm1_;
+  solver_policy_type const * solver_;
 
 }; //end class
 }//end namespace

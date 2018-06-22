@@ -1,5 +1,5 @@
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  apps_burgers1d_eigen
+  apps_burgers1d_eigen_wrapped
   SOURCES main.cc
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT

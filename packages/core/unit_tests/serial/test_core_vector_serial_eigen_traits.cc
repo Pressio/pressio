@@ -24,6 +24,7 @@ public:
     using myvec_t = core::vector<eigV_t>;
     STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
     STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(myvec_t);
+    STATIC_ASSERT_IS_CORE_VECTOR_WRAPPER(myvec_t);
 
     using vecTrait = core::details::traits<myvec_t>;
     void check(){   

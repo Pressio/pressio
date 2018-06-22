@@ -7,7 +7,7 @@ PFX=/Users/fnrizzi/Desktop/romppInstall
 
 MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc550
 TRILPATH=/Users/fnrizzi/tpl/trilinos/installCPPonly
-EIGENINCPATH=/Users/fnrizzi/tpl/eigen/3.3.4/install
+EIGENINCPATH=/Users/fnrizzi/tpl/eigen/3.3.3/install
 GTESTPATH=/Users/fnrizzi/tpl/gtest/install
 
 cmake \
@@ -35,8 +35,9 @@ cmake \
     -D rompp_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=OFF \
     \
     -D rompp_ENABLE_core:BOOL=ON \
-    -D rompp_ENABLE_solvers:BOOL=OFF \
+    -D rompp_ENABLE_solvers:BOOL=ON \
     -D rompp_ENABLE_ode:BOOL=ON \
+    -D rompp_ENABLE_apps:BOOL=ON \
     \
     $EXTRA_ARGS \
     ${SRC}

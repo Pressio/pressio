@@ -10,7 +10,6 @@
 namespace core{
 namespace meta {
 
-//----------------------------------------------------------------------
 
 template <typename T, typename enable = void>
 struct is_matrixDenseSerialEigen : std::false_type {};
@@ -80,20 +79,17 @@ struct is_matrixDenseSerialStdlib<T,
 
 //----------------------------------------------------------------------
 
-  template <typename T1, typename T2, typename enable = void>
-  struct sparseSerialEigenSameStorage : std::false_type{};
+template <typename T1, typename T2, typename enable = void>
+struct sparseSerialEigenSameStorage : std::false_type{};
 
-  template <typename T1, typename T2>
-  struct sparseSerialEigenSameStorage<T1, T2,
-				      typename
-				      std::enable_if<
-					(T1::isRowMajor && T2::isRowMajor) ||
-					(T1::isColMajor && T2::isColMajor)
-					>::type
-				      > : std::true_type{};
-  
-  
-
+template <typename T1, typename T2>
+struct sparseSerialEigenSameStorage<T1, T2,
+				    typename
+				    std::enable_if<
+				      (T1::isRowMajor && T2::isRowMajor) ||
+				      (T1::isColMajor && T2::isColMajor)
+				      >::type
+				    > : std::true_type{};
   
   
   

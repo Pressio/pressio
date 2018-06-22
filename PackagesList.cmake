@@ -2,9 +2,9 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
   core   		packages/core  		PT
   solvers 		packages/solvers 	PT
   ode    		packages/ode   		PT
+  apps   		packages/apps  		PT
   #
   # optimization	packages/optimization   PT
-  # apps   		packages/apps  PT
   #svd    	packages/svd   PT
   #rom    	packages/rom   PT
   )

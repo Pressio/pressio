@@ -13,9 +13,6 @@ TEST(core_vector_serial_eigen_class, EigenVectorConstructor)
   using vecTrait = core::details::traits<myvec_t>;
   ASSERT_TRUE(vecTrait::isEigen == 1);
  
-  myvec_t m_v1;
-  ASSERT_TRUE( m_v1.empty() );
-  ASSERT_TRUE( m_v1.size() == 0 );
   myvec_t m_v2(5);
   ASSERT_FALSE( m_v2.empty() );
   ASSERT_TRUE( m_v2.size() == 5 );
@@ -47,10 +44,10 @@ TEST(core_vector_serial_eigen_class, sizeResize)
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::vector<eigvec_t>;
  
-  myvec_t m_v1;
-  ASSERT_TRUE( m_v1.empty() );
-  ASSERT_TRUE( m_v1.size() == 0 );
-  m_v1.resize(11);
+  // myvec_t m_v1;
+  // ASSERT_TRUE( m_v1.empty() );
+  // ASSERT_TRUE( m_v1.size() == 0 );
+  myvec_t m_v1(11);
   ASSERT_FALSE( m_v1.empty() );
   ASSERT_TRUE( m_v1.size() == 11 );
 

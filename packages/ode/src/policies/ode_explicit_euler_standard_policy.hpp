@@ -20,10 +20,36 @@ public:
   explicitEulerStandardResidual() = default;
   ~explicitEulerStandardResidual() = default;
 private:
-  void computeImpl(const state_type & y, residual_type & R,
+
+  // enable for general type, NOT from core
+  template <typename U = state_type,
+	    typename T = residual_type,	    
+	    typename
+	    std::enable_if<
+	      core::meta::is_coreVectorWrapper<U>::value==false &&
+	      core::meta::is_coreVectorWrapper<T>::value==false
+	      >::type * = nullptr
+	    >
+  void computeImpl(const U & y, T & R,
 		   model_type & model, time_type t){
     model.residual(y, R, t);
   }
+
+  // enable if using types from core package
+  template <typename U = state_type,
+	    typename T = residual_type,
+	    typename
+	    std::enable_if<
+	      core::meta::is_coreVectorWrapper<U>::value==true &&
+	      core::meta::is_coreVectorWrapper<T>::value==true
+	      >::type * = nullptr
+	    >
+  void computeImpl(const U & y, T & R,
+		   model_type & model, time_type t){
+    model.residual(*y.data(), *R.data(), t);
+  }
+
+
 private:
   friend explicitResidualPolicyBase<explicitEulerStandardResidual,
 				    state_type, residual_type,

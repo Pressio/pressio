@@ -7,6 +7,8 @@ TEST(core_matrix_dense_serial_eigen_class, constructor)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
   using mymat_t = core::matrix<native_t>;
+  STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(mymat_t);
+  
   using matTrait = core::details::traits<mymat_t>;
   ASSERT_TRUE(matTrait::isEigen == 1);
    

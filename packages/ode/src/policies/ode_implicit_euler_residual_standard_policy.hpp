@@ -16,24 +16,54 @@ class implicitEulerStandardResidual
              implicitEulerStandardResidual,state_type,
                  residual_type,model_type, time_type>
 {
+public:
   implicitEulerStandardResidual() = default;
   ~implicitEulerStandardResidual() = default;  
 private:
-  void computeImpl(const state_type & y, const state_type & ynm1,
-		   residual_type & R, model_type & model,
+  // // enable if using general type, not from core
+  // template <typename U = state_type,
+  // 	    typename T = residual_type,
+  // 	    typename
+  // 	    std::enable_if<
+  // 	      core::meta::is_coreVectorWrapper<U>::value==false &&
+  // 	      core::meta::is_coreVectorWrapper<T>::value==false
+  // 	      >::type * = nullptr
+  // 	    >
+  // void computeImpl(const U & y, const U & ynm1,
+  // 		   T & R, model_type & model,
+  // 		   time_type t, time_type dt)
+  // {
+  //   // first eval RHS
+  //   model.residual(y,R,t);
+  //   // then fix residual based on time stepping features
+  //   ode::impl::implicit_euler_residual_impl(y, ynm1, R, dt);
+  // }
+  // //---------------------------------------------------------
+
+  // enable if using types from core package
+  template <typename U = state_type,
+	    typename T = residual_type,
+	    typename
+	    std::enable_if<
+	      core::meta::is_coreVectorWrapper<U>::value==true &&
+	      core::meta::is_coreVectorWrapper<T>::value==true
+	      >::type * = nullptr
+	    >
+  void computeImpl(const U & y, const U & ynm1,
+		   T & R, model_type & model,
 		   time_type t, time_type dt)
   {
     // first eval RHS
-    model.residual(y,R,t);
+    model.residual(*y.data(), *R.data(), t);
     // then fix residual based on time stepping features
     ode::impl::implicit_euler_residual_impl(y, ynm1, R, dt);
   }
+
 private:
   friend implicitEulerResidualPolicyBase<implicitEulerStandardResidual,
 					 state_type,residual_type,
 					 model_type, time_type>;
 };
-
   
 }//end namespace polices
 }//end namespace ode  

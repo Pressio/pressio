@@ -114,6 +114,27 @@ struct traits<matrix<wrapped_type,
   
   
 }//end namespace details
+
+
+namespace meta{
+
+template <typename T, typename enable = void>
+struct is_coreMatrixWrapper : std::false_type {};
+
+template <typename T>
+struct is_coreMatrixWrapper< T,
+		       typename
+		       std::enable_if<
+			 core::details::traits<T>::isMatrix==1
+			 >::type
+		       > : std::true_type{};
+
+#define STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(TYPE) \
+  static_assert( core::meta::is_coreMatrixWrapper<TYPE>::value, \
+		 "THIS_IS_NOT_A_CORE_MATRIX_WRAPPER")
+  
+}//end meta
+
 }//end namespace core
 
 #endif

@@ -16,18 +16,33 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   solvers_ConfigDefs.hpp
   #
-  # least_squares/algebra_leastsquares.hpp
-  # algebra_newtonraphson.hpp
+  solvers_forward_declarations.hpp
+  linear/solvers_linear_base.hpp
+  linear/solvers_linear_eigen.hpp
+  #
 )
+###########################
+## this experimental stuff
+###########################
+APPEND_SET(HEADERS
+  nonlinear/experimental/solvers_nonlinear_newton_raphson.hpp
+)
+
 
 APPEND_SET(SOURCES
   # least_squares/src/algebra_leastsquares.cc
   # src/algebra_newtonraphson.cc
+  src/solvers_forward_declarations.cc
+  linear/src/solvers_linear_base.cc
+  linear/src/solvers_linear_eigen.cc
+)
+###########################
+## this experimental stuff
+###########################
+APPEND_SET(SOURCES
+  nonlinear/experimental/solvers_nonlinear_newton_raphson.cc
 )
 
-#
-# C) Define the targets for package's library(s)
-#
 
 # # # this seems to work for header only library
 # TRIBITS_INSTALL_HEADERS(

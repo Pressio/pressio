@@ -22,7 +22,7 @@ private:
   using sc_t = typename traits::scalar_t;
   using resizer_t = typename traits::resizer_t;
   using model_t = typename traits::model_t;
-  using time_t = typename traits::time_type;
+  using time_t = typename traits::time_t;
   using residual_policy_t = typename traits::residual_policy_t;  
   using jacobian_policy_t = typename traits::jacobian_policy_t;  
   using order_t = typename traits::order_t; 
@@ -106,14 +106,15 @@ private:
   // residual policy = standard (not passed from derived)
   // jacobian policy = standard (not passed from derived)
   //*********************************************************
-  template <typename U = residual_policy_t,
+  template <typename M = model_t,
+	    typename U = residual_policy_t,
 	    typename T = jacobian_policy_t,
   	    typename std::enable_if<
   	      core::meta::is_default_constructible<U>::value &&
   	      core::meta::is_default_constructible<T>::value 
   	      >::type * = nullptr
   	    >
-  implicitStepperBase(model_t & model
+  implicitStepperBase(M & model
 		      /*residual policy obj not given because is standard
 		        jacobian policy obj not given because is standard*/)
     : model_(&model),
@@ -130,7 +131,8 @@ private:
       delete jacobian_policy_obj_;
   }
   
-private:  
+private:
+  friend stepper_type;
   stepper_type * stepper( ){
     return static_cast< stepper_type* >( this );
   }
