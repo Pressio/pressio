@@ -19,7 +19,7 @@ class linearBase{
 public:  
   void solve(const matrix_type & A,
 	     const rhs_type & b,
-	     result_type & x)const {
+	     result_type & x){
     this->underlying().solveImpl(A,b,x);
   }
 

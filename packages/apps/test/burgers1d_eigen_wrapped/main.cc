@@ -12,8 +12,8 @@
 #include "step_methods/ode_explicit_runge_kutta4_stepper.hpp"
 #include "step_methods/ode_implicit_euler_stepper.hpp"
 // solvers
-#include "nonlinear/experimental/solvers_nonlinear_newton_raphson.hpp"
-#include "linear/solvers_linear_eigen.hpp"
+#include "experimental/solvers_linear_eigen.hpp"
+#include "experimental/solvers_nonlinear_newton_raphson.hpp"
 
 
 struct stateResizer{

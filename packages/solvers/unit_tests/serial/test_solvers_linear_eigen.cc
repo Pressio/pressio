@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "linear/solvers_linear_eigen.hpp"
+#include "experimental/solvers_linear_eigen.hpp"
 #include "matrix/core_matrix_dense_serial_eigen.hpp"
 #include "matrix/core_matrix_sparse_serial_eigen.hpp"
 #include "vector/core_vector_serial_eigen.hpp"
@@ -85,9 +85,9 @@ TEST(solvers_linear, simpleTestSparse)
   
   // solution
   constexpr sc_t zero = static_cast<sc_t>(0);
-  constexpr sc_t one = static_cast<sc_t>(1);
+  // constexpr sc_t one = static_cast<sc_t>(1);
   core::vector<native_v_t> x(N);
-  for (int i=0; i<N; i++)
+  for (i=0; i<N; i++)
     x[i] = zero;
 
   // solve
@@ -95,7 +95,7 @@ TEST(solvers_linear, simpleTestSparse)
   ls.solve(A,b,x);
 
   sc_t error = 0.0;
-  for (int i=0; i<N; i++){
+  for (i=0; i<N; i++){
     sc_t xpt = dx + i*dx;
     sc_t truex = sin(2*PI*xpt);
     sc_t tmp =std::abs(x[i]-truex); 

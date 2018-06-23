@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
-#include "linear/solvers_linear_eigen.hpp"
-#include "nonlinear/experimental/solvers_nonlinear_newton_raphson.hpp"
+#include "experimental/solvers_linear_eigen.hpp"
+#include "experimental/solvers_nonlinear_newton_raphson.hpp"
 #include "matrix/core_matrix_dense_serial_eigen.hpp"
 #include "matrix/core_matrix_sparse_serial_eigen.hpp"
 #include "vector/core_vector_serial_eigen.hpp"

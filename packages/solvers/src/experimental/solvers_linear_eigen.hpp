@@ -45,7 +45,7 @@ public:
 private:
   void solveImpl(const matrix_type & A,
 		 const rhs_type & b,
-		 result_type & x)const{
+		 result_type & x){
     *x.data() = A.data()->colPivHouseholderQr().solve(*b.data());
   }
   friend linearBase<linearSolver<matrix_type,rhs_type,result_type,algo_type>,

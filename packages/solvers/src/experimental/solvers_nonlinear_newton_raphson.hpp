@@ -3,7 +3,7 @@
 #define SOLVERS_NONLINEAR_NEWTON_RAPHSON_HPP_
 
 #include "solvers_ConfigDefs.hpp"
-#include "linear/solvers_linear_eigen.hpp"
+#include "solvers_linear_eigen.hpp"
 
 namespace solvers{
 namespace experimental{
@@ -89,7 +89,7 @@ public:
   };//end solve
 
 private:
-  linear_solver_type const * ls_;
+  linear_solver_type * ls_;
   // state_type dy_;
   // state_type RE_;
   // jacobian_type JA_;
