@@ -59,7 +59,7 @@ public :
 	       >::type * = nullptr
 	     >
   implicitEulerStepper(M & model,
-		       const S & solver,
+		       S & solver,
 		       U & res_policy_obj,
 		       T & jac_policy_obj)
     : stepper_base_t(model, res_policy_obj, jac_policy_obj), solver_(&solver){}
@@ -77,7 +77,7 @@ public :
 	       !meta::isImplicitEulerJacobianStandardPolicy<T>::value
 	      >::type * = nullptr>
   implicitEulerStepper(M & model,
-		       const S & solver,
+		       S & solver,
 		       T & jac_policy_obj)
     : stepper_base_t(model, jac_policy_obj), solver_(&solver){}
 
@@ -96,7 +96,7 @@ public :
 	       >::type * = nullptr
 	     >
   implicitEulerStepper(M & model,
-		       const S & solver,
+		       S & solver,
 		       U & res_policy_obj)
     : stepper_base_t(model, res_policy_obj), solver_(&solver){}
 
@@ -115,7 +115,7 @@ public :
 	       >::type * = nullptr
 	     >
   implicitEulerStepper(M & model,
-		       const S & solver)
+		       S & solver)
     : stepper_base_t(model), solver_(&solver){}
 
   //*********************************************************
@@ -153,7 +153,7 @@ private:
   time_type t_;
   time_type dt_;
   state_type y_nm1_;
-  solver_policy_type const * solver_;
+  solver_policy_type * solver_;
 
 }; //end class
 }//end namespace

@@ -34,14 +34,18 @@ public:
   
 public:
   matrix() = default;
+
   matrix(ord_t nrows, ord_t ncols) {    
     // need to check that the wrapped type is NOT a static matrix from Eigen
     // otherwise we cannot resizee a static object.
     static_assert(mytraits::isStatic == false,
 		  "You are trying to resize a matrix wrapping a static Eigen matrix!");
-   this->resize(nrows, ncols);
+    //   this->resize(nrows, ncols);
+   this->data_ = wrapped_type::Zero(nrows,ncols);
   }
+
   matrix(const wrap_t & other) : data_(other){}
+
   ~matrix() = default;
 
 public:
@@ -114,6 +118,7 @@ private:
     data_.resize(nrows, ncols);
     //need to check if the wrapped matrix is static size,
     //if so, we cannot resize it
+    //    data_ = wrap_t::Zero(nrows,ncols);
   }
 
 private:

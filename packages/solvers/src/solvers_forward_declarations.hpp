@@ -5,9 +5,17 @@
 #include "solvers_ConfigDefs.hpp"
 
 namespace solvers {
-namespace experimental{
 
-// need to think properly how to design, maybe this not the best choice
+
+
+
+
+
+namespace experimental
+{
+
+// this is just a hack to have a solver to see 
+// how overall workflow fits together
 template<typename matrix_type, 
 	 typename rhs_type, 
 	 typename result_type,
@@ -15,9 +23,11 @@ template<typename matrix_type,
 	 int algo_type = 0, 
 	 typename Enable = void
 	 >
-class linearSolver;
+class linearSolver;   
 
-   
 } // end experimental
+
+
+
 } // end solvers
 #endif

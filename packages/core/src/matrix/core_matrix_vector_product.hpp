@@ -45,7 +45,7 @@ void matrixVectorProduct(const matrix_type & A,
   assert(A.cols() == b.size());
   assert(res.size() == A.rows());
   (*res.data()) = (*A.data()) * (*b.data());
-};
+}
 
 } // end namespace core
 #endif

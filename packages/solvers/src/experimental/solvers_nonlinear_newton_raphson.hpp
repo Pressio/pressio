@@ -31,16 +31,29 @@ class newtonRaphson
   static constexpr scalar_t zero = static_cast<scalar_t>(0);
 
 public:
-  newtonRaphson(const linear_solver_type & ls) : ls_(&ls){}
+  newtonRaphson(linear_solver_type & ls)
+    : ls_(&ls)
+  {
+    // dy_= state_type();
+    // RE_ = state_type();
+    // JA_ = jacobian_type();
+  }
+
   ~newtonRaphson() = default;
 
   template<typename evaluator_type>
-  void solve(state_type & y, evaluator_type & appObj) const
+  void solve(state_type & y, evaluator_type & appObj)
   {
-    // create aux variables 
-    state_type dy(y.size());
-    state_type RE(y.size());
-    jacobian_type JA(RE.size(), y.size());
+    // if(dy_.size()!=y.size()){
+    //   dy_.resize(y.size());
+    //   RE_.resize(y.size());
+    // }
+    // if(JA_.rows()!=RE_.size()){
+    //   JA_.resize(RE_.size(), y.size());
+    // }    
+    state_type dy_(y.size());
+    state_type RE_(y.size());
+    jacobian_type JA_(RE_.size(), y.size());
 
     scalar_t errf = zero;
     scalar_t erry = zero;
@@ -48,8 +61,8 @@ public:
     {
       //      std::cout << "STEP " << step << std::endl;
       // compute residual and jacobian for initial guess
-      appObj.residual(y, RE);
-      appObj.jacobian(y, JA);
+      appObj.residual(y, RE_);
+      appObj.jacobian(y, JA_);
       // std::cout << *RE.data() << std::endl;
       // std::cout << *JA.data() << std::endl;
 
@@ -62,12 +75,12 @@ public:
     	break;
 
       // solve J dy = -F
-      ls_->solve(JA, RE, dy);
+      ls_->solve(JA_, RE_, dy_);
 
       erry = zero;
       for (decltype(y.size()) i=0; i < y.size(); i++){
-    	erry += std::abs(dy[i]);
-    	y[i] -= dy[i];
+    	erry += std::abs(dy_[i]);
+    	y[i] -= dy_[i];
       }
       //      std::cout << " erry " << erry << std::endl;
       if (erry < tolf)
@@ -77,6 +90,9 @@ public:
 
 private:
   linear_solver_type const * ls_;
+  // state_type dy_;
+  // state_type RE_;
+  // jacobian_type JA_;
   
 };//end class
   

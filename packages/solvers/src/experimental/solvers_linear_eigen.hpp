@@ -91,7 +91,7 @@ public:
 private:
   void solveImpl(const matrix_type & A,
 		 const rhs_type & b,
-		 result_type & x) const
+		 result_type & x)
   {
     // //SparseLU<SparseMatrix<scalar, ColMajor>, COLAMDOrdering<Index>> solver;
     Eigen::ConjugateGradient<eigMat_t, Eigen::Lower|Eigen::Upper> solver;
