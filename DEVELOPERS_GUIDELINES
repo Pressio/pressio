@@ -1,0 +1,40 @@
+
+---------------------------------------
+SOME GENERAL GUIDELINES for developers
+----------------------------------------
+
+- File name should conform to:
+	packageName_classname
+
+we basically want to prepend every file with the name of 
+the package that file belongs to, followed by the specific name 
+of the class or whatever that file covers.
+
+- file names should be explicative. From the filename I should be 
+able to guess what it contains.
+
+- If the name of the class is made of multiple words, then the file name 
+should be all lowercase with underscore separating the 
+components words making up the class but the class name itself should be 
+ONE single string of words where each subword starts with uppercare letter. 
+For instance, if the target class name is: 
+	
+	vectorEpetraDistributed
+
+and the file belongs to the package "core", then the filename should be:
+
+	core_vector_epetra_distributed
+
+
+- Include guards should have the filename all capitalized ending with _HPP_ like: 
+
+	CORE_VECTOR_EPETRA_DISTRIBUTED_HPP_
+
+
+- This library is intended to be a header-only library, but for now we cannot do that 
+because Tribits does not support this format. 
+So every .hpp file has a corresponding .cc file that is EMPTY and only includes the associated .hpp.
+This makes things easier later on, when we remove all cc files. 
+So, follow this rule. 
+
+
