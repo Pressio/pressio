@@ -4,7 +4,7 @@
 #include "vector/core_vector_serial_stdlib.hpp"
 #include "vector/core_vector_serial_userdefined.hpp"
 #include "vector/core_vector_meta.hpp"
-#include "core_static_assert_definitions.hpp"
+// #include "core_static_assert_definitions.hpp"
 
 
 template <typename T>

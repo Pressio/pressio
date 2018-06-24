@@ -17,12 +17,10 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
   apps_ConfigDefs.hpp
-  apps_burgers1d_stdvector.hpp
   apps_burgers1d_eigen.hpp
 )
 
 APPEND_SET(SOURCES
-  src/apps_burgers1d_stdvector.cc
   src/apps_burgers1d_eigen.cc
   )
 

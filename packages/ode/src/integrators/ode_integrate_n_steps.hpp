@@ -14,9 +14,7 @@ template<typename stepper_type,
 	 typename time_type,
 	 typename std::enable_if<
 	   !std::is_void<stepper_type>::value &&
-	   !std::is_void<collector_functor_type>::value && 
-	   !std::is_same<collector_functor_type,
-			 voidCollector>::value
+	   !std::is_void<collector_functor_type>::value
 	   >::type * = nullptr
 	 >
 void integrateNSteps(stepper_type & stepper,

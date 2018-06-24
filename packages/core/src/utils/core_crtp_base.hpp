@@ -1,6 +1,6 @@
 
-#ifndef CORE_CRPT_HELPER_HPP_
-#define CORE_CRPT_HELPER_HPP_ 
+#ifndef CORE_CRPT_BASE_HPP_
+#define CORE_CRTP_BASE_HPP_ 
 
 namespace core{
   
@@ -8,12 +8,6 @@ template <typename T,
 	  template<typename T, typename...> class crtpType,
 	  typename ... Args>
 struct crtpBase{
-  // T * underlying(){
-  //   return static_cast< T* >( this );
-  // }
-  // const T * underlying() const{
-  //   return static_cast< const T* >( this );
-  // }
   T & underlying() {
     return static_cast<T&>(*this);
   }

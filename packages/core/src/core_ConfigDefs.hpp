@@ -46,15 +46,3 @@ constexpr defaultTypes::errcode_t _FAILURE = 1;
 } // end of core namespace
 
 #endif
-
-
-
-/*
-  // #define EPETRA_CHK_ERR(a) { { int epetra_err = a; \
-  //                             if ((epetra_err < 0 && Epetra_Object::GetTracebackMode() > 0) || \
-  //                                 (epetra_err > 0 && Epetra_Object::GetTracebackMode() > 1)) { \
-  //                     Epetra_Object::GetTracebackStream() << "Epetra ERROR " << epetra_err << ", " \
-  //                          << __FILE__ << ", line " << __LINE__ << std::endl; }\
-  //                     if (epetra_err != 0) return(epetra_err);  }\
-  //                  }
-*/

@@ -16,9 +16,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   core_ConfigDefs.hpp
   core_forward_declarations.hpp
-  core_static_assert_definitions.hpp
-  core_crtp_helper.hpp
   core_operators_base.hpp
+  utils/core_static_assert_definitions.hpp
+  utils/core_crtp_base.hpp
   meta/core_meta_basic.hpp
   meta/core_meta_detect_operators.hpp
   meta/core_meta_detect_typedefs.hpp
@@ -60,8 +60,8 @@ APPEND_SET(SOURCES
   src/core_meta_detect_operators.cc
   src/core_meta_detect_typedefs.cc
   src/core_forward_declarations.cc
-  src/core_static_assert_definitions.cc
-  src/core_crtp_helper.cc
+  utils/src/core_static_assert_definitions.cc
+  utils/src/core_crtp_base.cc
   src/core_operators_base.cc
   #
   vector/src/core_vector_traits.cc
