@@ -5,7 +5,7 @@
 # of MPI processes, for example to do testing for distributed objects
 function(add_single_unit_test test_name ranks)  
   TRIBITS_ADD_EXECUTABLE_AND_TEST(
-    ${test_name}
+    solvers_${test_name}
     SOURCES ${test_name}.cc gTestMain.cc
     COMM serial mpi
     NUM_MPI_PROCS ${ranks}
