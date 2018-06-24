@@ -3,8 +3,6 @@
 #define ODE_INTEGRATE_N_STEPS_IMPL_HPP_
 
 #include "ode_ConfigDefs.hpp"
-//#include "ode_forward_declarations.hpp"
-#include "ode_void_collector.hpp"
 
 namespace ode{
 namespace impl{
@@ -14,9 +12,7 @@ template<typename stepper_type,
 	 typename time_type,
 	 typename collector_type,
 	 typename std::enable_if<
-	   !std::is_void<stepper_type>::value &&
-	   !std::is_same<collector_type,
-			ode::voidCollector>::value
+	   !std::is_void<stepper_type>::value
 	   >::type * = nullptr
 	 >
 void integrateNStepsImpl(stepper_type & stepper,

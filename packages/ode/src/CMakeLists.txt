@@ -17,7 +17,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   ode_ConfigDefs.hpp
   ode_forward_declarations.hpp
-  ode_void_collector.hpp
   ode_meta.hpp
   )
 
@@ -79,7 +78,6 @@ APPEND_SET(HEADERS
 #======================================================
 APPEND_SET(SOURCES
   src/ode_forward_declarations.cc
-  src/ode_void_collector.cc
   src/ode_meta.cc
   integrators/src/ode_integrate_n_steps.cc
   integrators/src/ode_integrate_n_steps_impl.cc
