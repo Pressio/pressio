@@ -36,8 +36,9 @@ struct traits<matrix<wrapped_type,
   static constexpr int isVector = !isMatrix;
   static constexpr int isDistributed = !isSerial;
   static constexpr int isStdlib = 0;
-  static constexpr int isStatic =  ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
-				     wrapped_t::ColsAtCompileTime != Eigen::Dynamic );
+  static constexpr int isStatic =
+    ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
+      wrapped_t::ColsAtCompileTime != Eigen::Dynamic );
 };
 
 
@@ -112,7 +113,6 @@ struct traits<matrix<wrapped_type,
 };
 
   
-  
 }//end namespace details
 
 
@@ -135,6 +135,6 @@ struct is_coreMatrixWrapper< T,
   
 }//end meta
 
+  
 }//end namespace core
-
 #endif
