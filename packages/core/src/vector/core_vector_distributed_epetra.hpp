@@ -22,7 +22,7 @@ class vector<wrapped_type,
     public vectorDistributedBase< vector<wrapped_type> >,
     public vectorMathBase< vector<wrapped_type> >
 {
-public:    
+private:
   using derived_t = vector<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using LO_t = typename details::traits<derived_t>::local_ordinal_t;
@@ -78,8 +78,7 @@ public:
     this->data_.Update(-1.0, *other.data(), 1.0 );
     return *this;
   }
-  
-  
+    
 private:  
   wrap_t const * dataImpl() const{
     return &data_;
@@ -103,7 +102,6 @@ private:
   void putScalarImpl(sc_t value) {
     this->data_.PutScalar(value);
   }    
-
   
 private:
   friend vectorGenericBase< derived_t >;
@@ -117,30 +115,3 @@ private:
 
 }//end namespace core
 #endif
-
-
-
-  // sc_t dotImpl(const der_t & b) const{
-  //   // what is this?
-  //   // dot product: <this,b>
-  //   sc_t res = 0.0;
-  //   data_.Dot( *b.view(), &res );
-  //   return res;    
-  // };
-
-  // template <typename op_t>
-  // void applyOpImpl(op_t op, sc_t a1,
-  // 		   sc_t a2, const der_t & vin)
-  // {
-  //   // static_assert(std::is_same<op_t,std::plus>::value,
-  //   // 		  "This should be a +");
-  //   // what is this?: this = a1*this op a2*vin;
-  //   data_.Update(a2, *(vin.view()), a1);
-  // }
-  
-  // sc_t norm2Impl() const{
-  //   sc_t result = 0;
-  //   data_.Norm2(&result);
-  //   return result;
-  // };
-

@@ -24,7 +24,7 @@ class matrix<wrapped_type,
     public arithmeticOperatorsBase<matrix<wrapped_type>>,
     public compoundAssignmentOperatorsBase<matrix<wrapped_type>>
 {
-public:
+private:
   using derived_t = matrix<wrapped_type>;
   using mytraits = typename details::traits<derived_t>;  
   using sc_t = typename mytraits::scalar_t;
@@ -35,13 +35,8 @@ public:
 public:
   matrix() = default;
 
-  matrix(ord_t nrows, ord_t ncols) {    
-    // need to check that the wrapped type is NOT a static matrix from Eigen
-    // otherwise we cannot resizee a static object.
-    static_assert(mytraits::isStatic == false,
-		  "You are trying to resize a matrix wrapping a static Eigen matrix!");
-    //   this->resize(nrows, ncols);
-   this->data_ = wrapped_type::Zero(nrows,ncols);
+  matrix(ord_t nrows, ord_t ncols) {
+    this->resize(nrow,ncols);
   }
 
   matrix(const wrap_t & other) : data_(other){}
@@ -115,10 +110,10 @@ private:
   }
 
   void resizeImpl(ord_t nrows, ord_t ncols){
+    static_assert(mytraits::isStatic == false,
+		  "You are trying to resize a matrix wrapping a static Eigen matrix!");
     data_.resize(nrows, ncols);
-    //need to check if the wrapped matrix is static size,
-    //if so, we cannot resize it
-    //    data_ = wrap_t::Zero(nrows,ncols);
+    data_ = wrapped_type::Zero(nrows,ncols);
   }
 
 private:
@@ -132,39 +127,3 @@ private:
  
 }//end namespace core 
 #endif
-
-
-
-
-
-
-
-// void transposeImpl(derived_t & result) const{
-//   result.getNonConstRefToData() = data_.transpose();
-// }
-
-// sc_t dotImpl(const der_t & b) const{
-//   // what is this?
-//   // dot product: <this,b>
-//   sc_t res = 0.0;
-//   for (size_t i=0; i<this->size(); i++)
-//     res += data_[i]*b[i];
-//   return res;
-// };
-
-// template <typename op_t>
-// void applyOpImpl(op_t op, sc_t a1,
-// 		   sc_t a2, const der_t & vin){
-//   // what is this?
-//   // this = a1*this op a2*vin;
-//   for (size_t i=0; i<this->size(); i++)
-//     data_[i] = op()( a1*data_[i], a2*vin[i] );
-// }
-
-// sc_t norm2Impl() const{
-//   sc_t result = 0;
-//   for (size_t i=0; i<this->size(); i++)
-//     result += data_[i]*data_[i];
-//   return result;
-// };
-

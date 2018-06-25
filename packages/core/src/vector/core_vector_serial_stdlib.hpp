@@ -17,30 +17,21 @@ class vector<wrapped_type,
   : public vectorGenericBase< vector<wrapped_type> >,
     public vectorSerialBase< vector<wrapped_type> >,
     public vectorMathBase< vector<wrapped_type> >,
-    // maybe move operators inheritance to serial/generic base
     public arithmeticOperatorsBase< vector<wrapped_type> >,
     public compoundAssignmentOperatorsBase< vector<wrapped_type> >
 {
-public:
+private:
   using derived_t = vector<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using der_t = typename details::traits<derived_t>::derived_t;
   using wrap_t = typename details::traits<derived_t>::wrapped_t;
   using ord_t = typename details::traits<derived_t>::ordinal_t;
 
-private:
-  friend vectorGenericBase< derived_t >;
-  friend vectorSerialBase< derived_t >;
-  friend vectorMathBase< derived_t >;
-  
-private:
-  std::vector<sc_t> data_;
-
 public:
   vector() = default;
   vector(ord_t insize,
 	 sc_t value = static_cast<sc_t>(0) ){
-    this->resize(insize);
+    this->resize(insize, value);
   }
   vector(const std::vector<sc_t> & src) : data_(src){}
   ~vector(){}
@@ -109,9 +100,16 @@ private:
   bool emptyImpl() const{
     return data_.empty();
   };
-   
-};
 
+private:
+  friend vectorGenericBase< derived_t >;
+  friend vectorSerialBase< derived_t >;
+  friend vectorMathBase< derived_t >;
+  
+private:
+  std::vector<sc_t> data_;
+  
+};//end class
   
 }//end namespace core  
 #endif

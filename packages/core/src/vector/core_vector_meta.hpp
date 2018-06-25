@@ -40,7 +40,6 @@ struct is_vectorEigen< T,
 				      >::value
 			 >::type
 		       > : std::true_type{};
-
 //----------------------------------------------------------------------
 
 
@@ -63,7 +62,6 @@ struct is_vectorStdLib<T,
 			  )
 			 >::type
 		       > : std::true_type{};
-
 //----------------------------------------------------------------------
 
 
@@ -79,9 +77,9 @@ struct is_vectorEpetra<T,
 		       > : std::true_type{};
   
    
-/////////////////
+//////////////////////
 } // namespace meta
-/////////////////
+/////////////////////
 
   
 #define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \

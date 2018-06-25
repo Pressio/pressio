@@ -7,8 +7,9 @@
 namespace core{
     
 template<typename derived_type>
-class matrixSparseSerialBase{
-public:
+class matrixSparseSerialBase
+{
+private:
   using traits_t = details::traits<derived_type>;
   using der_t = typename traits_t::derived_t;
   using wrap_t = typename traits_t::wrapped_t;
@@ -61,6 +62,5 @@ private:
 
 
 };//end class
-    
 } // end namespace core
 #endif

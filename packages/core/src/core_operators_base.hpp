@@ -10,61 +10,53 @@ namespace core{
 template<typename derived_type>
 class arithmeticOperatorsBase{ 
 public:
-  // disable if callers'type does not match input type
-  // if needed, define it later
+  // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
   	   typename std::enable_if<
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
   derived_type operator+(const U & other);
   //--------------------------------------------------
-
-  // disable if callers'type does not match input type
-  // if needed, define it later
+  // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
   	   typename std::enable_if<
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
   derived_type operator-(const U & other);
   //--------------------------------------------------
-
-  // disable if callers'type does not match input type
-  // if needed, define it later
+  // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
   	   typename std::enable_if<
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
   derived_type operator*(const U & other);
-  //--------------------------------------------------  
 private:
   friend derived_type;
   arithmeticOperatorsBase() = default;
   ~arithmeticOperatorsBase() = default;
-
 };//end class   
 
+  
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
   
 
 template<typename derived_type>
 class compoundAssignmentOperatorsBase{
 public:
-  // disable if callers'type does not match input type
-  // if needed, define it later
+  // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
   	   typename std::enable_if<
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
   derived_type & operator+=(const U & other);  
   //--------------------------------------------------
-
-  // disable if callers'type does not match input type
-  // if needed, define it later
+  // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
   	   typename std::enable_if<
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
   derived_type & operator-=(const U & other);
-  //--------------------------------------------------
 
 private:
   friend derived_type;
@@ -73,6 +65,9 @@ private:
   
 };//end class   
 
+  
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
 
   
 template<typename derived_type,

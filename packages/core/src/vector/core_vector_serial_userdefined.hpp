@@ -24,25 +24,18 @@ class vector<wrapped_type,
     public arithmeticOperatorsBase<vector<wrapped_type>>,
     public compoundAssignmentOperatorsBase<vector<wrapped_type>>
 {
-public:
+private:
   using derived_t = vector<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using der_t = typename details::traits<derived_t>::derived_t;
   using wrap_t = typename details::traits<derived_t>::wrapped_t;
   using ord_t = typename details::traits<derived_t>::ordinal_t;
 
-private:
-  friend vectorGenericBase< derived_t >;
-  friend vectorSerialBase< derived_t >;
-  friend vectorMathBase< derived_t >;
-
-private:
-   wrap_t data_;
-
 public:
+  vector() = default;
   vector(ord_t insize,
 	 sc_t value = static_cast<sc_t>(0) ){
-    this->resize(insize);
+    this->resize(insize, value);
   }
   vector(const wrap_t & obj) : data_(obj){};
   ~vector(){};
@@ -179,7 +172,6 @@ public:
       (*this)[i] -= other[i];
     return *this;
   }
-
   
 private:
   wrap_t const * dataImpl() const{
@@ -198,29 +190,16 @@ private:
     return data_.size();
   };
 
-};
+private:
+  friend vectorGenericBase< derived_t >;
+  friend vectorSerialBase< derived_t >;
+  friend vectorMathBase< derived_t >;
+
+private:
+   wrap_t data_;
   
-  
+};//end class
+    
 }//end namespace core
 #endif
 
-
-
-
-
-  // sc_t dotImpl(const der_t & b) const{
-  //   return data_.dot(b);
-  // };
-
-  // template <typename op_t>
-  // void applyOpImpl(op_t op, sc_t a1,
-  // 		   sc_t a2, const der_t & vin){
-  //   // what is this?
-  //   // this = a1*this op a2*vin;
-  //   for (size_t i=0; i<this->size(); i++)
-  //     data_[i] = op()( a1*data_[i], a2*vin[i] );
-  // }
-  
-  // sc_t norm2Impl() const{
-  //   return data_.norm2();
-  // };

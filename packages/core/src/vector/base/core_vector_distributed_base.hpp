@@ -21,7 +21,6 @@ private:
 
   static_assert( details::traits<derived_type>::isDistributed==1,
 		 "OOPS: non-distributed concrete vector inheriting from distributed base!");
-
     
 public:
   size_t globalSize() const {
@@ -39,7 +38,6 @@ public:
   void putScalar(sc_t value) {
     return this->underlying().putScalarImpl(value);
   }    
-
 
 private:
   friend derived_type;

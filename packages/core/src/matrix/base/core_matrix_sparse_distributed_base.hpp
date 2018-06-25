@@ -9,7 +9,7 @@ namespace core{
 template<typename derived_type>
 class matrixSparseDistributedBase
 {
-public:
+private:
   using der_t = typename details::traits<derived_type>::derived_t;
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
 

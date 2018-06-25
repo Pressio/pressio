@@ -34,14 +34,13 @@ private:
 
 public:
   vector() = default;
+
   vector(ord_t insize){
-    // need to check that the wrapped type is NOT a static vector from Eigen
-    // otherwise we cannot resizee a static vector.
-    static_assert(mytraits::isStatic == false,
-		  "You are trying to resize a vector wrapping a static Eigen vector!");
     this->resize(insize);
   }
+
   vector(const wrap_t & src) : data_(src){}
+
   ~vector(){}
   
 public:
@@ -100,6 +99,10 @@ private:
     return (data_.rows()==1) ? data_.cols() : data_.rows();
   };
   void resizeImpl(size_t val){
+    // check that the wrapped type is NOT a static vector from Eigen
+    // otherwise we cannot resizee a static vector.
+    static_assert(mytraits::isStatic == false,
+		  "You cannot resize a vector wrapping a STATIC Eigen vector!");
     data_.resize(val);
   };
   bool emptyImpl() const{

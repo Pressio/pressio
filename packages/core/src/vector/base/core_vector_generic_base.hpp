@@ -12,12 +12,11 @@ class vectorGenericBase
   : public subscriptingOperatorsBase<
   vectorGenericBase<derived_type>,
     typename details::traits<derived_type>::scalar_t,
-    //select ordinal indexing type based on whetherthe vector is serial or distributed
+    //select ordinal indexing type based on whether the vector is serial or distributed
     typename std::conditional<details::traits<derived_type>::isSerial==1,
 			      typename details::traits<derived_type>::ordinal_t,
 			      typename details::traits<derived_type>::local_ordinal_t
-			      >::type
-  >
+			      >::type>
 {
 public:
   using sc_t = typename details::traits<derived_type>::scalar_t;
@@ -32,7 +31,7 @@ public:
     return this->underlying().dataImpl();
   };   
 
-  // this inherits also subscripting operator [] from base (see above)
+  // inherits also subscripting operator [] from base (see above)
 
 private:
   friend derived_type;

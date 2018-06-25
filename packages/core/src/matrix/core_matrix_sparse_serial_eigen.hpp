@@ -23,7 +23,7 @@ class matrix<wrapped_type,
     public arithmeticOperatorsBase< matrix<wrapped_type> >,
     public compoundAssignmentOperatorsBase< matrix<wrapped_type> >
 {
-public:
+private:
   using derived_t = matrix<wrapped_type>;
   using mytraits = details::traits<derived_t>;
   using sc_t = typename mytraits::scalar_t;

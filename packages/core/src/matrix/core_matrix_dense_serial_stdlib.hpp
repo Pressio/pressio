@@ -24,7 +24,7 @@ class matrix<wrapped_type,
   : public matrixGenericBase< matrix<wrapped_type> >,
     public matrixDenseSerialBase< matrix<wrapped_type> >  
 {
-public:
+private:
   using derived_t = matrix<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using ord_t = typename details::traits<derived_t>::ordinal_t;
