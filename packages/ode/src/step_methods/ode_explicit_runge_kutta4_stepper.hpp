@@ -10,30 +10,24 @@ namespace ode{
 template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
-	 typename state_resizer_fnctor_type,
 	 typename model_type,
 	 typename time_type,	 
 	 typename residual_policy_type
 	 >
 class explicitRungeKutta4Stepper<state_type, residual_type, scalar_type,
-				 state_resizer_fnctor_type, model_type,
-				 time_type, residual_policy_type, 
+				 model_type, time_type, residual_policy_type, 
 			 typename
 			 std::enable_if<
-			   !std::is_void<state_type>::value &&
-			   core::meta::is_default_constructible<
-			     state_resizer_fnctor_type>::value
+			   !std::is_void<state_type>::value
 			   >::type
 			 >
   : public explicitStepperBase<
-  explicitRungeKutta4Stepper<state_type,residual_type,scalar_type,
-			     state_resizer_fnctor_type, model_type,
-			     time_type, residual_policy_type>>
+  explicitRungeKutta4Stepper<state_type, residual_type, scalar_type,
+			     model_type, time_type, residual_policy_type>>
 {
 public :
   using stepper_t = explicitRungeKutta4Stepper<state_type,residual_type,
 					       scalar_type,
-					       state_resizer_fnctor_type,
 					       model_type,time_type,
 					       residual_policy_type>;
   using stepper_base_t = explicitStepperBase<stepper_t>;
@@ -72,11 +66,11 @@ private:
     const time_type dt_half = dt / static_cast< scalar_type >(2);
     const time_type t_phalf = t + dt_half;
     
-    this->myResizer_(y_inout, rhs1_);
-    this->myResizer_(y_inout, rhs2_);
-    this->myResizer_(y_inout, rhs3_);
-    this->myResizer_(y_inout, rhs4_);
-    this->myResizer_(y_inout, y_tmp_);
+    // this->myResizer_(y_inout, rhs1_);
+    // this->myResizer_(y_inout, rhs2_);
+    // this->myResizer_(y_inout, rhs3_);
+    // this->myResizer_(y_inout, rhs4_);
+    // this->myResizer_(y_inout, y_tmp_);
     
     // ----------
     // stage 1: 
@@ -122,7 +116,7 @@ private:
     time_type dt3 = dt / static_cast< scalar_type >( 3.0 );
     for (decltype(y_inout.size()) i=0; i < y_inout.size(); i++){
       y_inout[i] = y_inout[i] + dt6*rhs1_[i] +
-	dt3*rhs2_[i] + dt3*rhs3_[i] + dt6*rhs4_[i];
+	    dt3*rhs2_[i] + dt3*rhs3_[i] + dt6*rhs4_[i];
     }
     
   }//end doStepImpl
@@ -136,7 +130,7 @@ private:
 
   friend stepper_base_t;
   // additional members inherited from the base class:
-  //   model_ * , myResizer_, residual_policy_t * 
+  //   model_ *, residual_policy_t * 
 
 }; //end class  
 }//end namespace

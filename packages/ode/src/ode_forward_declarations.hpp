@@ -17,7 +17,6 @@ namespace ode {
 template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
-	 typename state_resizer_fnctor_type,
 	 typename model_type,
 	 typename time_type,
 	 typename residual_policy_type =
@@ -32,7 +31,6 @@ class explicitEulerStepper;
 template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
-	 typename state_resizer_fnctor_type,
 	 typename model_type,
 	 typename time_type,
 	 typename residual_policy_type =
@@ -47,7 +45,6 @@ template<typename state_type,
          typename residual_type,
          typename jacobian_type,
          typename scalar_type,
-         typename state_resizer_fnctor_type,
          typename model_type,
 	 typename time_type,
 	 typename solver_policy_type,

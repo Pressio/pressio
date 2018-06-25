@@ -19,7 +19,6 @@ private:
   using sc_t = typename step_traits::scalar_t;
   using order_t = typename step_traits::order_t;
   using time_t = typename step_traits::time_t;
-  using resizer_t = typename step_traits::resizer_t;
   using residual_t = typename step_traits::residual_t;
   using residual_policy_t = typename step_traits::residual_policy_t;  
   using model_t = typename step_traits::model_t;
@@ -86,7 +85,6 @@ private:
   }
 
 protected:
-  resizer_t myResizer_;
   model_t * model_;
   residual_policy_t * residual_policy_obj_;
 private:

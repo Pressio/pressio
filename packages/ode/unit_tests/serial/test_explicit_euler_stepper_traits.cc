@@ -21,10 +21,7 @@ TEST(ode_explicit_euler_stepper, traits)
   using residual_t = vecd;
   using scalar_t = double;
 
-  struct resizer{};
-  struct app{};
-  
-  using resizer_t = resizer;
+  struct app{};  
   using model_t = app;
   using time_type = double;
   using res_policy_t = fakePol<vecd,vecd,
@@ -32,8 +29,7 @@ TEST(ode_explicit_euler_stepper, traits)
 
   using stepper_t =
     ode::explicitEulerStepper<state_t, residual_t, scalar_t,
-			      resizer_t, model_t, time_type,
-			      res_policy_t>;
+			      model_t, time_type, res_policy_t>;
 
   static_assert(
   		!ode::meta::isExplicitEulerResidualStandardPolicy<
@@ -51,8 +47,6 @@ TEST(ode_explicit_euler_stepper, traits)
   				traits::residual_t,vecd>();
   ::testing::StaticAssertTypeEq<typename
   				traits::scalar_t,double>();
-  ::testing::StaticAssertTypeEq<typename
-  				traits::resizer_t,resizer>();
   ::testing::StaticAssertTypeEq<typename
   				traits::model_t,app>();
   ::testing::StaticAssertTypeEq<typename
@@ -73,16 +67,13 @@ TEST(ode_explicit_euler_stepper, traits2)
   using residual_t = vecd;
   using scalar_t = double;
 
-  struct resizer{};
-  struct app{};
- 
-  using resizer_t = resizer;
+  struct app{}; 
   using model_t = app;
   using time_type = double;
 
   using stepper_t =
     ode::explicitEulerStepper<state_t, residual_t, scalar_t,
-			      resizer_t, model_t, time_type
+			      model_t, time_type
 			      /*res_policy defaulted*/>;
   app appObj;
   stepper_t obj(appObj);
@@ -94,8 +85,6 @@ TEST(ode_explicit_euler_stepper, traits2)
   				traits::residual_t,vecd>();
   ::testing::StaticAssertTypeEq<typename
   				traits::scalar_t,double>();
-  ::testing::StaticAssertTypeEq<typename
-  				traits::resizer_t,resizer>();
   ::testing::StaticAssertTypeEq<typename
   				traits::model_t,app>();
   ::testing::StaticAssertTypeEq<typename

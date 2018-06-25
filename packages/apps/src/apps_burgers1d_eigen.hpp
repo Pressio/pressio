@@ -91,8 +91,6 @@ private:
   const scalar_type xL_ = 0.0; //left side of domain 
   const scalar_type xR_ = 100.0; // right side of domain
   ui_t Ncell_; // # of cells
-  // const scalar_type t0 = 0.0; // initial time
-  // const scalar_type tfinal_ = 35.0;
   scalar_type dx_; // cell size
   scalar_type dxInv_; // inv of cell size
   eigVec xGrid_; // mesh points coordinates

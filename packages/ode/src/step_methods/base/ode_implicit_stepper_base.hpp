@@ -20,7 +20,6 @@ private:
   using residual_t = typename traits::residual_t;
   using jacobian_t = typename traits::jacobian_t;
   using sc_t = typename traits::scalar_t;
-  using resizer_t = typename traits::resizer_t;
   using model_t = typename traits::model_t;
   using time_t = typename traits::time_t;
   using residual_policy_t = typename traits::residual_policy_t;  
@@ -141,7 +140,6 @@ private:
   }
 
 protected:
-  resizer_t myResizer_;
   model_t * model_;
   residual_policy_t * residual_policy_obj_;
   jacobian_policy_t * jacobian_policy_obj_;
