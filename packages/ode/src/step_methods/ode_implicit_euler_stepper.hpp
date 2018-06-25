@@ -29,17 +29,18 @@ class implicitEulerStepper<state_type, residual_type, jacobian_type, scalar_type
 		       residual_policy_type, jacobian_policy_type>>
 {
 
+private:
   static_assert(meta::derivesFromImplicitEulerResidualPolicyBase<residual_policy_type>::value,
 		"RESIDUAL_POLICY_TYPE DOES NOT INHERIT FROM IMPLICIT EULER RESIDUAL POLICY BASE");
   static_assert(meta::derivesFromImplicitEulerJacobianPolicyBase<jacobian_policy_type>::value,
 		"JACOBIAN_POLICY_TYPE DOES NOT INHERIT FROM IMPLICIT EULER JACOBIAN POLICY BASE");
 
-public :
   using stepper_t = implicitEulerStepper<state_type, residual_type, jacobian_type, scalar_type,
 					 model_type, time_type, solver_policy_type,
 					 residual_policy_type, jacobian_policy_type>;
   using stepper_base_t = implicitStepperBase<stepper_t>;
 
+public:
   //*********************************************************
   // residual policy = NOT standard 
   // jacobian policy = NOT standard 

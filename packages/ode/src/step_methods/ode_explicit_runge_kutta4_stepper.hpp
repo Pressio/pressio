@@ -25,7 +25,7 @@ class explicitRungeKutta4Stepper<state_type, residual_type, scalar_type,
   explicitRungeKutta4Stepper<state_type, residual_type, scalar_type,
 			     model_type, time_type, residual_policy_type>>
 {
-public :
+private:
   using stepper_t = explicitRungeKutta4Stepper<state_type,residual_type,
 					       scalar_type,
 					       model_type,time_type,
