@@ -68,3 +68,29 @@ TEST(core_meta_basic, inheritanceVector)
   static_assert(core::meta::publiclyInheritsFrom<epeV_t,base_t2>::value==false, "");
   static_assert(core::meta::publiclyInheritsFrom<epeV_t,base_t3>::value==true, "");
 }
+
+
+
+TEST(core_meta_basic, hasSizeMethod)
+{
+  struct foo{
+    int size() const{
+      return 3;
+    };
+  };
+  static_assert(core::meta::has_sizeMethod<foo>::value==true,"");
+
+  struct foo2{
+    int size(){
+      return 3;
+    };
+  };
+  static_assert(core::meta::has_sizeMethod<foo2>::value==true,"");
+
+  struct foo3{
+    void size(){
+    };
+  };
+  static_assert(core::meta::has_sizeMethod<foo3>::value==false,"");
+  
+}

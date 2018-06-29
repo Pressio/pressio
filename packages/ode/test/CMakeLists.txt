@@ -2,7 +2,7 @@
 #   ode_test1
 #   SOURCES
 #     main.cc
-#   NUM_MPI_PROCS 4
+#   NUM_MPI_PROCS 1
 #   STANDARD_PASS_OUTPUT
 #   )
 

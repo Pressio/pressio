@@ -8,22 +8,30 @@
 // integrator
 #include "integrators/ode_integrate_n_steps.hpp"
 // steppers
-#include "step_methods/ode_explicit_euler_stepper.hpp"
-#include "step_methods/ode_explicit_runge_kutta4_stepper.hpp"
-#include "step_methods/ode_implicit_euler_stepper.hpp"
+#include "explicit_steppers/ode_explicit_euler_stepper.hpp"
+#include "implicit_steppers/ode_implicit_euler_stepper.hpp"
 // solvers
 #include "experimental/solvers_linear_eigen.hpp"
 #include "experimental/solvers_nonlinear_newton_raphson.hpp"
 
 
-struct stateResizer{
-  using native_state_t = apps::burgers1dEigen::state_type;
-  using vec_t = core::vector<native_state_t>;
-  void operator()(const vec_t & source, vec_t & dest){
-    if ( dest.size()!=source.size() )
-      dest.resize(source.size());
-  };
+struct mysizer{
+ using state_t = core::vector<apps::burgers1dEigen::state_type>;
+ static size_t getSize(const state_t & obj){
+   return obj.size();
+ };
+ static void resize(state_t & obj, size_t newSize){};
 };
+
+
+// struct stateResizer{
+//   using native_state_t = apps::burgers1dEigen::state_type;
+//   using vec_t = core::vector<native_state_t>;
+//   void operator()(const vec_t & source, vec_t & dest){
+//     if ( dest.size()!=source.size() )
+//       dest.resize(source.size());
+//   };
+// };
 
 
 int main(int argc, char *argv[])
@@ -43,6 +51,42 @@ int main(int argc, char *argv[])
 
   using state_t = core::vector<native_state_t>;
   native_state_t y0n = appObj.getInitialState();
+  {
+    using jac_t = core::matrix<native_jac_t>;
+
+    //********************************************
+    // IMPLICIT EULER
+    //********************************************
+    state_t y0(y0n);
+    snapshot_collector collectorObj;
+
+    // linear solver
+    using lin_solve_t =
+      solvers::experimental::linearSolver<jac_t,state_t,state_t>;
+    lin_solve_t ls;
+    
+    // nonlinear solver
+    using nonlin_solve_t =
+      solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
+    nonlin_solve_t nonls(ls);
+
+    //stepper
+    using stepper_t = ode::implicitEulerStepper<
+      state_t, state_t, jac_t, scalar_t,
+      model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
+    stepper_t stepperObj(appObj, nonls);
+
+    ode::integrateNSteps( stepperObj, y0, 0.0, dt, 1);//final_time/dt );
+    // // std::cout << collectorObj.getCount() << std::endl;
+
+    std::cout << "Final solution " << std::endl;
+    std::cout << *y0.data();
+    // for (int i=0; i<y0.size(); ++i)
+    //   std::cout << std::setprecision(14) << y0[i]  << " ";
+    // std::cout << std::endl;
+  }
+
+
   // {
   //   //********************************************
   //   // EXPLICIT EULER
@@ -86,40 +130,6 @@ int main(int argc, char *argv[])
   //   std::cout << std::endl;
   // }
 
-  //  {
-    using jac_t = core::matrix<native_jac_t>;
-
-    //********************************************
-    // IMPLICIT EULER
-    //********************************************
-    state_t y0(y0n);
-    snapshot_collector collectorObj;
-
-    // linear solver
-    using lin_solve_t =
-      solvers::experimental::linearSolver<jac_t,state_t,state_t>;
-    lin_solve_t ls;
-    
-    // nonlinear solver
-    using nonlin_solve_t =
-      solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
-    nonlin_solve_t nonls(ls);
-
-    //stepper
-    using stepper_t = ode::implicitEulerStepper<
-      state_t, state_t, jac_t, scalar_t, stateResizer,
-      model_eval_t, scalar_t, nonlin_solve_t
-      /*, default = standard policy for res and jac*/>;
-    stepper_t stepperObj(appObj, nonls);
-
-    ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_time/dt );
-    // std::cout << collectorObj.getCount() << std::endl;
-
-    // // std::cout << "Final solution " << std::endl;
-    for (int i=0; i<y0.size(); ++i)
-      std::cout << std::setprecision(14) << y0[i]  << " ";
-    std::cout << std::endl;
-    // //  }
 
   
   return 0;

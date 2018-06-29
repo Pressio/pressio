@@ -3,7 +3,7 @@
 #define CORE_VECTOR_DISTRIBUTED_BASE_HPP_
 
 #include "../core_vector_traits.hpp"
-#include "core_operators_base.hpp"
+#include "../../core_operators_base.hpp"
 
 namespace core{
     

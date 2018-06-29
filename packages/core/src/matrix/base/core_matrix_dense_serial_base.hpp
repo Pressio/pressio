@@ -3,7 +3,7 @@
 #define CORE_MATRIX_DENSE_SERIAL_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
-#include "core_operators_base.hpp"
+#include "../../core_operators_base.hpp"
 
 namespace core{
     

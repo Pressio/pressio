@@ -23,6 +23,8 @@ namespace meta {
   template<typename T>
   struct is_integral: std::is_integral<T>{};
 
+  /////////////////////////////////////////////////
+
   template <typename... >
   using void_t = void;
   
@@ -85,6 +87,21 @@ namespace meta {
   
   //////////////////////////////////////////////////
 
+
+  template<typename T,
+	   typename = void>
+  struct has_sizeMethod : std::false_type{};
+
+  template<typename T>
+  struct has_sizeMethod<T,
+			typename
+			std::enable_if<
+			  !std::is_void<
+			    decltype(std::declval<T>().size())
+			    >::value
+			  >::type
+			> : std::true_type{};
+  
    
 } // namespace meta
 } // namespace core

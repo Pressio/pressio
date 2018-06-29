@@ -36,7 +36,7 @@ public:
   matrix() = default;
 
   matrix(ord_t nrows, ord_t ncols) {
-    this->resize(nrow,ncols);
+    this->resize(nrows,ncols);
   }
 
   matrix(const wrap_t & other) : data_(other){}

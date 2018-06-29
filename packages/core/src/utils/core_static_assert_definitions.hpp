@@ -2,8 +2,6 @@
 #ifndef CORE_STATIC_ASSERT_DEFINITIONS_HPP_
 #define CORE_STATIC_ASSERT_DEFINITIONS_HPP_
 
-#include "vector/core_vector_meta.hpp"
-
 
 namespace core{
 

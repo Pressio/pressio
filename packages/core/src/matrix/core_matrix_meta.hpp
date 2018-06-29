@@ -2,8 +2,8 @@
 #ifndef CORE_MATRIX_META_HPP_
 #define CORE_MATRIX_META_HPP_
 
-#include "meta/core_meta_basic.hpp"
-#include "vector/core_vector_meta.hpp"
+#include "../meta/core_meta_basic.hpp"
+#include "../vector/core_vector_meta.hpp"
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
 

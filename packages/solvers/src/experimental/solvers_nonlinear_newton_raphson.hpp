@@ -86,7 +86,7 @@ public:
       if (erry < tolf)
     	break;
     };//end for
-  };//end solve
+  }//end solve
 
 private:
   linear_solver_type * ls_;

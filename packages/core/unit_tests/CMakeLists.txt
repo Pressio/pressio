@@ -1,3 +1,7 @@
 
+
+#include the code
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+
 ADD_SUBDIRECTORY(serial)
 ADD_SUBDIRECTORY(parallel)

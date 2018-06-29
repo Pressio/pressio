@@ -7,106 +7,93 @@ TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
 SET(HEADERS "")
 SET(SOURCES "")
 
-# To include the configured header above
+#To include "ode_config.h" (because it lives in the binary folder)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+# # To include the configured header above
+# INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-##################
-# general 
-##################
-APPEND_SET(HEADERS
-  ode_ConfigDefs.hpp
-  ode_forward_declarations.hpp
-  ode_meta.hpp
-  )
 
-####################
-# integrators 
-####################
-APPEND_SET(HEADERS
-  integrators/ode_integrate_n_steps.hpp
-  integrators/ode_integrate_n_steps_impl.hpp
-  )
+# include all headers
+FILE(GLOB ode_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
 
-####################
-# policies bases
-####################
-APPEND_SET(HEADERS
-  policies/base/ode_explicit_policy_base.hpp
-  policies/base/ode_implicit_euler_residual_policy_base.hpp
-  policies/base/ode_implicit_euler_jacobian_policy_base.hpp
-)
-####################
-# policies concrete
-####################
-APPEND_SET(HEADERS
-  policies/ode_explicit_euler_standard_policy.hpp
-  policies/ode_explicit_runge_kutta4_standard_policy.hpp
-  policies/ode_implicit_euler_residual_standard_policy.hpp
-  policies/ode_implicit_euler_jacobian_standard_policy.hpp
-)
-####################
-# policies meta
-####################
-APPEND_SET(HEADERS
-  policies/ode_explicit_policies_meta.hpp
-  policies/ode_implicit_policies_meta.hpp
-)
+FILE(GLOB ode_integrators_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/integrators/*.hpp")
 
-###################
-# step_methods
-###################
-APPEND_SET(HEADERS
-  step_methods/ode_stepper_traits.hpp
-  step_methods/base/ode_explicit_stepper_base.hpp
-  step_methods/base/ode_implicit_stepper_base.hpp
-)
-APPEND_SET(HEADERS
-  # euler-related 
-  step_methods/ode_explicit_euler_stepper.hpp
-  step_methods/ode_explicit_runge_kutta4_stepper.hpp
-  step_methods/ode_implicit_euler_stepper.hpp
-  step_methods/impl/ode_euler_implicit_residual_impl.hpp
-  step_methods/impl/ode_euler_implicit_jacobian_impl.hpp
-)
+FILE(GLOB ode_explicit_policies_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_policies/base/*.hpp")
+FILE(GLOB ode_explicit_policies_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_policies/*.hpp")
+
+FILE(GLOB ode_implicit_policies_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_policies/base/*.hpp")
+FILE(GLOB ode_implicit_policies_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_policies/*.hpp")
+
+FILE(GLOB ode_explicit_steppers_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_steppers/base/*.hpp")
+FILE(GLOB ode_explicit_steppers_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_steppers/*.hpp")
+FILE(GLOB ode_explicit_steppers_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_steppers/impl/*.hpp")
+
+FILE(GLOB ode_implicit_steppers_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_steppers/base/*.hpp")
+FILE(GLOB ode_implicit_steppers_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_steppers/*.hpp")
+FILE(GLOB ode_implicit_steppers_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_steppers/impl/*.hpp")
 
 
-#======================================================
-#======================================================
-# add sources *temporary* until tribits supports header only
-#======================================================
-#======================================================
+# include all sources
+FILE(GLOB ode_meta_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/meta/src/*.cc")
+FILE(GLOB ode_integrators_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/integrators/src/*.cc")
+
+FILE(GLOB ode_explicit_policies_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_policies/base/src/*.cc")
+FILE(GLOB ode_explicit_policies_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_policies/src/*.cc")
+
+FILE(GLOB ode_implicit_policies_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_policies/base/src/*.cc")
+FILE(GLOB ode_implicit_policies_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_policies/src/*.cc")
+
+FILE(GLOB ode_explicit_steppers_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_steppers/base/src/*.cc")
+FILE(GLOB ode_explicit_steppers_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_steppers/src/*.cc")
+FILE(GLOB ode_explicit_steppers_impl_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/explicit_steppers/impl/src/*.cc")
+
+FILE(GLOB ode_implicit_steppers_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_steppers/base/src/*.cc")
+FILE(GLOB ode_implicit_steppers_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_steppers/src/*.cc")
+FILE(GLOB ode_implicit_steppers_impl_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit_steppers/impl/src/*.cc")
+
+APPEND_SET(HEADERS
+  ${ode_meta_HEADERS}
+  ${ode_integrators_HEADERS}
+  ${ode_policies_base_HEADERS}
+  ${ode_policies_HEADERS}
+  ${ode_step_methods_base_HEADERS}
+  ${ode_step_methods_HEADERS}
+  ${ode_step_methods_impl_HEADERS}
+)
 APPEND_SET(SOURCES
-  src/ode_forward_declarations.cc
-  src/ode_meta.cc
-  integrators/src/ode_integrate_n_steps.cc
-  integrators/src/ode_integrate_n_steps_impl.cc
-  #
-  policies/src/ode_explicit_policies_meta.cc
-  policies/src/ode_implicit_policies_meta.cc
-  policies/src/ode_explicit_policy_base.cc
-  policies/src/ode_explicit_euler_standard_policy.cc
-  policies/src/ode_explicit_runge_kutta4_standard_policy.cc
-  policies/src/ode_implicit_euler_residual_policy_base.cc
-  policies/src/ode_implicit_euler_jacobian_policy_base.cc
-  policies/src/ode_implicit_euler_residual_standard_policy.cc
-  policies/src/ode_implicit_euler_jacobian_standard_policy.cc
-  #
-  step_methods/src/ode_stepper_traits.cc
-  step_methods/src/ode_explicit_stepper_base.cc
-  step_methods/src/ode_implicit_stepper_base.cc
-  ############
-  #  euler
-  step_methods/src/ode_explicit_euler_stepper.cc
-  step_methods/src/ode_euler_implicit_residual_impl.cc
-  step_methods/src/ode_euler_implicit_jacobian_impl.cc
-  step_methods/src/ode_implicit_euler_stepper.cc
-  ############
-  # rk4-related 
-  step_methods/src/ode_explicit_runge_kutta4_stepper.cc
-  )
-
-
+  ${ode_meta_SRCS}
+  ${ode_integrators_SRCS}
+  ${ode_policies_base_SRCS}
+  ${ode_policies_SRCS}
+  ${ode_step_methods_base_SRCS}
+  ${ode_step_methods_SRCS}
+  ${ode_step_methods_impl_SRCS}
+)
 
 # C) Define the targets for package's library(s)
 TRIBITS_ADD_LIBRARY(

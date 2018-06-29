@@ -14,7 +14,7 @@ namespace meta {
   template<typename T,
 	   typename ord_t,
 	   typename enable = void>
-  struct has_subscript_op : std::false_type { };
+  struct has_subscript_op : std::false_type{};
 
   template<typename T,
 	   typename ord_t>
@@ -23,9 +23,10 @@ namespace meta {
 			  typename
 			  std::enable_if<
 			    !std::is_void<decltype(
-				std::declval<T>()[std::declval<ord_t>()])
-					  >::value, void
-					>::type
+			    std::declval<T>()[std::declval<ord_t>()]
+						   )
+					  >::value
+			    >::type
 			  > : std::true_type { };
 
   // void_t<

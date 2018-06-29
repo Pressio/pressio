@@ -2,6 +2,7 @@
 #ifndef ODE_CONFIGDEFS_HPP_
 #define ODE_CONFIGDEFS_HPP_
 
+#include "ode_config.h"
 #include "core_ConfigDefs.hpp"
 #include "meta/core_meta_basic.hpp"
 //#include "core_crtp_helper.hpp"
