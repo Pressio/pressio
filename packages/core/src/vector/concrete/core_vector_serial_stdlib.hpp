@@ -2,9 +2,9 @@
 #ifndef CORE_VECTOR_STDLIB_HPP_
 #define CORE_VECTOR_STDLIB_HPP_
 
-#include "./base/core_vector_generic_base.hpp"
-#include "./base/core_vector_serial_base.hpp"
-#include "./base/core_vector_math_base.hpp"
+#include "../base/core_vector_generic_base.hpp"
+#include "../base/core_vector_serial_base.hpp"
+#include "../base/core_vector_math_base.hpp"
 
 namespace core{
 

@@ -1,10 +1,11 @@
 
 #include <gtest/gtest.h>
-#include "vector/core_vector_meta.hpp"
-#include "vector/core_vector_serial_eigen.hpp"
-#include "vector/core_vector_serial_stdlib.hpp"
-#include "vector/core_vector_dot_product.hpp"
-#include "Eigen/Dense"
+// #include "vector/meta/core_vector_meta.hpp"
+// #include "vector/concrete/core_vector_serial_eigen.hpp"
+// #include "vector/concrete/core_vector_serial_stdlib.hpp"
+// #include "vector/operations/core_vector_dot_product.hpp"
+// #include "Eigen/Dense"
+#include "CORE_VECTOR"
 
 TEST(core_vector_dot_product, eigenVector)
 {

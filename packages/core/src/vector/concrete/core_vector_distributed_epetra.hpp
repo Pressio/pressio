@@ -2,9 +2,10 @@
 #ifndef CORE_VECTOR_EPETRA_HPP_
 #define CORE_VECTOR_EPETRA_HPP_
 
-#include "./base/core_vector_generic_base.hpp"
-#include "./base/core_vector_distributed_base.hpp"
-#include "./base/core_vector_math_base.hpp"
+#include "../meta/core_vector_meta.hpp"
+#include "../base/core_vector_generic_base.hpp"
+#include "../base/core_vector_distributed_base.hpp"
+#include "../base/core_vector_math_base.hpp"
 #include "Epetra_Vector.h"
 
 namespace core{
@@ -13,9 +14,8 @@ template <typename wrapped_type>
 class vector<wrapped_type,
 	     typename
 	     std::enable_if<
-	       std::is_same<wrapped_type,
-			    Epetra_Vector
-			    >::value
+	       meta::is_vectorEpetra<
+		 wrapped_type>::value
 	       >::type
 	     >
   : public vectorGenericBase< vector<wrapped_type> >,

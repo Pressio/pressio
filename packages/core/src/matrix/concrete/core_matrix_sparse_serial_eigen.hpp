@@ -3,9 +3,9 @@
 #define CORE_MATRIX_SPARSE_SERIAL_EIGEN_HPP_
 
 #include <Eigen/Core>
-#include "./base/core_matrix_generic_base.hpp"
-#include "./base/core_matrix_sparse_serial_base.hpp"
-#include "../core_operators_base.hpp"
+#include "../base/core_matrix_generic_base.hpp"
+#include "../base/core_matrix_sparse_serial_base.hpp"
+#include "../../core_operators_base.hpp"
 #include <stdexcept>
 
 namespace core{

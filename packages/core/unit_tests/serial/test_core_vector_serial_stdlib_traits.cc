@@ -1,11 +1,10 @@
 
 #include <gtest/gtest.h>
-#include "vector/core_vector_serial_eigen.hpp"
-#include "vector/core_vector_serial_stdlib.hpp"
-#include "vector/core_vector_serial_userdefined.hpp"
-#include "vector/core_vector_meta.hpp"
-// #include "core_static_assert_definitions.hpp"
-
+// #include "vector/concrete/core_vector_serial_eigen.hpp"
+// #include "vector/concrete/core_vector_serial_stdlib.hpp"
+// #include "vector/concrete/core_vector_serial_userdefined.hpp"
+// #include "vector/meta/core_vector_meta.hpp"
+#include "CORE_VECTOR"
 
 template <typename T>
 struct StdVecChecker

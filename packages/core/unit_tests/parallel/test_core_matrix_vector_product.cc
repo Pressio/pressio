@@ -1,11 +1,13 @@
 
 #include <gtest/gtest.h>
-#include "matrix/core_matrix_meta.hpp"
-#include "vector/core_vector_serial_eigen.hpp"
-#include "vector/core_vector_serial_stdlib.hpp"
-#include "matrix/core_matrix_vector_product.hpp"
-#include "matrix/core_matrix_dense_serial_eigen.hpp"
-#include "matrix/core_matrix_sparse_serial_eigen.hpp"
+// #include "matrix/meta/core_matrix_meta.hpp"
+// #include "vector/concrete/core_vector_serial_eigen.hpp"
+// #include "vector/concrete/core_vector_serial_stdlib.hpp"
+// #include "matrix/operations/core_matrix_vector_product.hpp"
+// #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
+// #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
+#include "CORE_MATRIX"
+#include "CORE_VECTOR"
 
 TEST(core_matrix_vector_product, eigenVectorDenseMatrix)
 {

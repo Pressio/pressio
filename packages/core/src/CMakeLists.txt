@@ -13,42 +13,91 @@ SET(SOURCES "")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-FILE(GLOB general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+###############
+# HEADERS
+###############
+FILE(GLOB core_general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
-FILE(GLOB meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB core_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
-FILE(GLOB vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/*.hpp")
-FILE(GLOB matrix_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/*.hpp")
-FILE(GLOB utils_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB core_utils_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/utils/*.hpp")
 
-FILE(GLOB general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB core_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/*.hpp")
+FILE(GLOB core_vector_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/meta/*.hpp")
+FILE(GLOB core_vector_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/operations/*.hpp")
+FILE(GLOB core_vector_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/base/*.hpp")
+FILE(GLOB core_vector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/concrete/*.hpp")
+
+FILE(GLOB core_matrix_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/*.hpp")
+FILE(GLOB core_matrix_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/meta/*.hpp")
+FILE(GLOB core_matrix_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/operations/*.hpp")
+FILE(GLOB core_matrix_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/base/*.hpp")
+FILE(GLOB core_matrix_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/concrete/*.hpp")
+
+
+#################
+#### SOURCES
+#################
+FILE(GLOB core_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
-FILE(GLOB meta_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB core_meta_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/meta/src/*.cc")
-FILE(GLOB vector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/src/*.cc")
-FILE(GLOB matrix_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/src/*.cc")
-FILE(GLOB utils_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB core_utils_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/utils/src/*.cc")
+
+FILE(GLOB core_vector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/src/*.cc")
+FILE(GLOB core_vector_meta_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/meta/src/*.cc")
+FILE(GLOB core_vector_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/operations/src/*.cc")
+FILE(GLOB core_vector_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/base/src/*.cc")
+FILE(GLOB core_vector_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/concrete/src/*.cc")
+
 
 # MESSAGE( "GIGI" ${general_HEADERS} )
 APPEND_SET(HEADERS
-  ${general_HEADERS}
-  ${meta_HEADERS}
-  ${vector_HEADERS}
-  ${matrix_HEADERS}
-  ${utils_HEADERS}
+  ${core_general_HEADERS}
+  ${core_meta_HEADERS}
+  ${core_utils_HEADERS}
+  ${core_vector_HEADERS}
+  ${core_vector_meta_HEADERS}
+  ${core_vector_ops_HEADERS}
+  ${core_vector_base_HEADERS}
+  ${core_vector_concrete_HEADERS}
+  ${core_matrix_HEADERS}
+  ${core_matrix_meta_HEADERS}
+  ${core_matrix_ops_HEADERS}
+  ${core_matrix_base_HEADERS}
+  ${core_matrix_concrete_HEADERS}
 )
 APPEND_SET(SOURCES
-  ${general_SRCS}
-  ${meta_SRCS}
-  ${vector_SRCS}
-  ${matrix_SRCS}
-  ${utils_SRCS}
+  ${core_general_SRCS}
+  ${core_meta_SRCS}
+  ${core_utils_SRCS}
+  ${core_vector_SRCS}
+  ${core_vector_meta_SRCS}
+  ${core_vector_ops_SRCS}
+  ${core_vector_base_SRCS}
+  ${core_vector_concrete_SRCS}
+  ${core_matrix_SRCS}
+  ${core_matrix_meta_SRCS}
+  ${core_matrix_ops_SRCS}
+  ${core_matrix_base_SRCS}
+  ${core_matrix_concrete_SRCS}
 )
 
 

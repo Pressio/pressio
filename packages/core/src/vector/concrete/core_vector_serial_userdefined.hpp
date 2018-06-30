@@ -2,11 +2,11 @@
 #ifndef CORE_VECTOR_SERIAL_USERDEFINED_HPP_
 #define CORE_VECTOR_SERIAL_USERDEFINED_HPP_
 
-#include "./base/core_vector_generic_base.hpp"
-#include "./base/core_vector_serial_base.hpp"
-#include "./base/core_vector_math_base.hpp"
-#include "../meta/core_meta_detect_typedefs.hpp"
-#include "../meta/core_meta_detect_operators.hpp"
+#include "../base/core_vector_generic_base.hpp"
+#include "../base/core_vector_serial_base.hpp"
+#include "../base/core_vector_math_base.hpp"
+#include "../../meta/core_meta_detect_typedefs.hpp"
+#include "../../meta/core_meta_detect_operators.hpp"
 
 namespace core{
   
@@ -14,7 +14,8 @@ template <typename wrapped_type>
 class vector<wrapped_type,
 	     typename std::enable_if<
 	       !core::meta::is_vectorStdLib<wrapped_type>::value &&
-	       !core::meta::is_vectorEigen<wrapped_type>::value
+	       !core::meta::is_vectorEigen<wrapped_type>::value &&
+	       !core::meta::is_vectorEpetra<wrapped_type>::value
 	       >::type
 	     >
   : public vectorGenericBase< vector<wrapped_type> >,

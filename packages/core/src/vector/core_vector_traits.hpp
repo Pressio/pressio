@@ -3,7 +3,7 @@
 #define CORE_VECTOR_TRAITS_HPP_
 
 #include "../core_forward_declarations.hpp"
-#include "core_vector_meta.hpp"
+#include "./meta/core_vector_meta.hpp"
 #include <vector>
 #include "Epetra_Vector.h"
 #include "Eigen/Dense"

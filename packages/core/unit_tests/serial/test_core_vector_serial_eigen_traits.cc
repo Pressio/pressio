@@ -1,8 +1,9 @@
 #include <gtest/gtest.h>
-#include "vector/core_vector_serial_eigen.hpp"
-#include "vector/core_vector_serial_stdlib.hpp"
-#include "vector/core_vector_serial_userdefined.hpp"
-#include "vector/core_vector_meta.hpp"
+// #include "vector/concrete/core_vector_serial_eigen.hpp"
+// #include "vector/concrete/core_vector_serial_stdlib.hpp"
+// #include "vector/concrete/core_vector_serial_userdefined.hpp"
+// #include "vector/meta/core_vector_meta.hpp"
+#include "CORE_VECTOR"
 
 //Eigen::MatrixNt
 // N can be any one of 2, 3, 4, or X (meaning Dynamic).

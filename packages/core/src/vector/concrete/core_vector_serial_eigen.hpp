@@ -2,12 +2,12 @@
 #ifndef CORE_VECTOR_SERIAL_EIGEN_HPP_
 #define CORE_VECTOR_SERIAL_EIGEN_HPP_
 
-#include "../meta/core_meta_basic.hpp"
-#include "../meta/core_meta_detect_operators.hpp"
-#include "../meta/core_meta_detect_typedefs.hpp"
-#include "./base/core_vector_generic_base.hpp"
-#include "./base/core_vector_serial_base.hpp"
-#include "./base/core_vector_math_base.hpp"
+#include "../../meta/core_meta_basic.hpp"
+#include "../../meta/core_meta_detect_operators.hpp"
+#include "../../meta/core_meta_detect_typedefs.hpp"
+#include "../base/core_vector_generic_base.hpp"
+#include "../base/core_vector_serial_base.hpp"
+#include "../base/core_vector_math_base.hpp"
 
 namespace core{
   
@@ -20,7 +20,6 @@ class vector<wrapped_type,
   : public vectorGenericBase< vector<wrapped_type> >,
     public vectorSerialBase< vector<wrapped_type> >,
     public vectorMathBase< vector<wrapped_type> >,
-    // maybe move operators inheritance to serial/generic base
     public arithmeticOperatorsBase<vector<wrapped_type>>,
     public compoundAssignmentOperatorsBase<vector<wrapped_type>>
 {
@@ -35,11 +34,11 @@ private:
 public:
   vector() = default;
 
-  vector(ord_t insize){
+  explicit vector(ord_t insize){
     this->resize(insize);
   }
 
-  vector(const wrap_t & src) : data_(src){}
+  explicit vector(const wrap_t & src) : data_(src){}
 
   ~vector(){}
   
@@ -117,8 +116,7 @@ private:
 private:
   wrap_t data_;
  
-};//end class
-    
+};//end class    
 }//end namespace core
 #endif
 

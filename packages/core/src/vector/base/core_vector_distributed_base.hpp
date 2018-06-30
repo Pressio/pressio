@@ -26,18 +26,12 @@ public:
   size_t globalSize() const {
     return this->underlying().globalSizeImpl();
   };
-
   size_t localSize() const {
     return this->underlying().localSizeImpl();
   };
-
   map_t const & getDataMap() const{
     return this->underlying().getDataMapImpl();
-  }    
-
-  void putScalar(sc_t value) {
-    return this->underlying().putScalarImpl(value);
-  }    
+  }
 
 private:
   friend derived_type;

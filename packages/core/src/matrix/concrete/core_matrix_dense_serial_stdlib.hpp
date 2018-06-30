@@ -3,8 +3,8 @@
 #define CORE_MATRIX_DENSE_SERIAL_STDLIB_HPP_
 
 #include <vector>
-#include "./base/core_matrix_generic_base.hpp"
-#include "./base/core_matrix_dense_serial_base.hpp"
+#include "../base/core_matrix_generic_base.hpp"
+#include "../base/core_matrix_dense_serial_base.hpp"
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!

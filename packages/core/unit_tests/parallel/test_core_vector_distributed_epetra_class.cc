@@ -1,11 +1,12 @@
 
 #include <gtest/gtest.h>
-#include "vector/core_vector_meta.hpp"
-#include "vector/core_vector_distributed_epetra.hpp"
+// #include "vector/meta/core_vector_meta.hpp"
+// #include "vector/concrete/core_vector_distributed_epetra.hpp"
 #include "Epetra_Map.h"
 #include "Epetra_Vector.h"
 #include "Epetra_Version.h"
 #include "Epetra_MpiComm.h"
+#include "CORE_VECTOR"
 
 
 struct core_vector_distributed_epetraFix

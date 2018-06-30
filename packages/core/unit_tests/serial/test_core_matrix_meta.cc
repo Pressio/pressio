@@ -1,7 +1,9 @@
 
 #include <gtest/gtest.h>
-#include "matrix/core_matrix_meta.hpp"
-#include "vector/core_vector_meta.hpp"
+// #include "matrix/meta/core_matrix_meta.hpp"
+// #include "vector/meta/core_vector_meta.hpp"
+#include "CORE_MATRIX"
+#include "CORE_VECTOR"
 
 template<typename scalar, int rows, int cols>
 struct typesEig{
