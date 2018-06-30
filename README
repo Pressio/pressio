@@ -1,16 +1,16 @@
-#
+#----------------------
 # rompp Documentation
-#
+#----------------------
 
-WARNING: WORK IN PROGRESS!  This code for ROM is based on TriBITS.
-The project defines a TriBITS CMake project.
+WARNING: WORK IN PROGRESS!  
+This code for ROM is based on TriBITS. The project defines a TriBITS CMake project.
+
+To clone this repo, use NEED to use this command:   git clone --recursive repo_url
+The recursive option is necessary because it has a git submodule for TriBITS. 
 
 Example configure files are under sampleScripts.
-More to come... 
 
-
-Some utilities commands: 
-
+Some utilities commands:
 (a) to replace string inside files 
 
 	grep -rl 'timeIntegrator' . | xargs sed -i '' 's/timeIntegrator/ode/g'
@@ -19,3 +19,6 @@ Some utilities commands:
 (b) to rename files by replacing part of the string 
 
 	rename-5.26 's/timeIntegrator/ode/' *.cc
+
+
+More to come 
