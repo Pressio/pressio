@@ -143,7 +143,6 @@ private:
   void maxValueImpl(sc_t & result) const {
   };
   
-  
 private:
   friend vectorGenericBase< derived_t >;
   friend vectorSerialBase< derived_t >;
@@ -155,6 +154,3 @@ private:
 };//end class    
 }//end namespace core
 #endif
-
-
-
