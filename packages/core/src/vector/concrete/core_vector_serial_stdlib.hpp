@@ -29,11 +29,11 @@ private:
 
 public:
   vector() = default;
-  vector(ord_t insize,
-	 sc_t value = static_cast<sc_t>(0) ){
+  explicit vector(ord_t insize,
+		  sc_t value = static_cast<sc_t>(0) ){
     this->resize(insize, value);
   }
-  vector(const std::vector<sc_t> & src) : data_(src){}
+  explicit vector(const std::vector<sc_t> & src) : data_(src){}
   ~vector(){}
 
 public:
@@ -85,20 +85,59 @@ public:
 
 
 private:
+  //----------------
+  //from generic base
+  //----------------
   wrap_t const * dataImpl() const{
     return &data_;
   };
   wrap_t * dataImpl(){
     return data_;
   };
-  void resizeImpl(size_t val) {
-    data_.resize(val);
-  };
-  size_t sizeImpl() const {
+  void putScalarImpl(sc_t value) {
+    for (ord_t i=0; i<this->size(); i++)
+      data_[i] = value;
+  }    
+
+  //----------------
+  //from serial base
+  //----------------
+  ord_t sizeImpl() const {
     return data_.size();
+  };
+  void resizeImpl(ord_t val) {
+    data_.resize(val);
   };
   bool emptyImpl() const{
     return data_.empty();
+  };
+
+  //----------------
+  //from math base
+  //----------------
+  template<typename op>
+  void inPlaceOpImpl(op_t op, sc_t a1, sc_t a2, const der_t & other){
+    // this = a1*this op a2*other;
+    for (ord_t i=0; i<this->size(); i++)
+      data_[i] = op(]( a1*data_[i], a2*other[i] );
+  }
+  void scaleImpl(sc_t & factor){
+    for (ord_t i=0; i<this->size(); i++)
+      data_[i] *= factor;
+  };
+  void norm1Impl(sc_t & result) const {
+  };
+  void norm2Impl(sc_t & result) const {
+    // sc_t result = 0;
+    // for (size_t i=0; i<this->size(); i++)
+    //   result += data_[i]*data_[i];
+    // return std::sqrt(result);
+  };
+  void normInfImpl(sc_t & result) const {
+  };
+  void minValueImpl(sc_t & result) const {
+  };
+  void maxValueImpl(sc_t & result) const {
   };
 
 private:
@@ -109,34 +148,6 @@ private:
 private:
   std::vector<sc_t> data_;
   
-};//end class
-  
+};//end class  
 }//end namespace core  
 #endif
-
-
-// sc_t dotImpl(const der_t & b) const{
-//   // what is this?
-//   // dot product: <this,b>
-//   sc_t res = 0.0;
-//   for (size_t i=0; i<this->size(); i++)
-//     res += data_[i]*b[i];
-//   return res;
-// };
-
-// template <typename op_t>
-// void applyOpImpl(op_t op, sc_t a1,
-// 		   sc_t a2, const der_t & vin){
-//   // what is this?
-//   // this = a1*this op a2*vin;
-//   for (size_t i=0; i<this->size(); i++)
-//     data_[i] = op()( a1*data_[i], a2*vin[i] );
-// }
-
-// sc_t norm2Impl() const{
-//   sc_t result = 0;
-//   for (size_t i=0; i<this->size(); i++)
-//     result += data_[i]*data_[i];
-//   return result;
-// };
-

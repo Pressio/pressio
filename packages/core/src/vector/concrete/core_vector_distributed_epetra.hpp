@@ -34,8 +34,8 @@ private:
 
 public:
   vector() = delete;
-  vector(const map_t & mapobj) : data_(mapobj){};
-  vector(const wrap_t & vecobj) : data_(vecobj){};
+  explicit vector(const map_t & mapobj) : data_(mapobj){};
+  explicit vector(const wrap_t & vecobj) : data_(vecobj){};
   ~vector() = default;
 
 public:
@@ -79,29 +79,65 @@ public:
     return *this;
   }
     
-private:  
+private:
+  //----------------
+  //from general base
+  //----------------
   wrap_t const * dataImpl() const{
     return &data_;
   };
   wrap_t * dataImpl(){
     return data_;
   };
-
-  size_t localSizeImpl() const {
-    return data_.MyLength();
-  };
-
-  size_t globalSizeImpl() const {
+  void putScalarImpl(sc_t value) {
+    data_.PutScalar(value);
+  }    
+  
+  //----------------
+  //from distributed base
+  //----------------
+  GO_t globalSizeImpl() const {
     return data_.GlobalLength();
   };
-  
+  LO_t localSizeImpl() const {
+    return data_.MyLength();
+  };
   map_t const & getDataMapImpl() const{
     return data_.Map();
   }
+  void replaceGlobalValuesImpl(GO_t numentries,
+			       const GO_t * indices,
+			       const sc_t * values){
+    data_.ReplaceGlobalValues(numentries, values, indices);
+  }
 
-  void putScalarImpl(sc_t value) {
-    this->data_.PutScalar(value);
-  }    
+  //----------------
+  //from math base
+  //----------------
+  template<typename op>
+  void inPlaceOpImpl(op_t op, sc_t a1, sc_t a2, const der_t & other){
+    // this = a1*this op a2*other;
+    for (LO_t i=0; i<this->localSize(); i++)
+      data_[i] = op()( a1*data_[i], a2*other[i] );
+  }
+  void scaleImpl(sc_t & factor){
+    data_.Scale(factor);
+  };
+  void norm1Impl(sc_t & result) const {
+    data_.Norm1(&result);
+  };
+  void norm2Impl(sc_t & result) const {
+    data_.Norm2(&result);
+  };
+  void normInfImpl(sc_t & result) const {
+    data_.NormInf(&result);
+  };
+  void minValueImpl(sc_t & result) const {
+    data_.MinValue(&result):
+  };
+  void maxValueImpl(sc_t & result) const {
+    data_.MaxValue(&result):
+  };
   
 private:
   friend vectorGenericBase< derived_t >;

@@ -23,16 +23,21 @@ private:
 		 "OOPS: non-distributed concrete vector inheriting from distributed base!");
     
 public:
-  size_t globalSize() const {
+  GO_t globalSize() const {
     return this->underlying().globalSizeImpl();
   };
-  size_t localSize() const {
+  LO_t localSize() const {
     return this->underlying().localSizeImpl();
   };
   map_t const & getDataMap() const{
     return this->underlying().getDataMapImpl();
   }
-
+  void replaceGlobalValues(GO_t numentries,
+			   const GO_t * indices,
+			   const sc_t * values){
+    this->underlying().replaceGlobalValuesImpl(numentries, indices, value);
+  }
+  
 private:
   friend derived_type;
   vectorDistributedBase() = default;

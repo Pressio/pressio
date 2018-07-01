@@ -20,10 +20,10 @@ private:
 		"OOPS: non-serial concrete vector inheriting from serial base!");
   
 public:
-  size_t size() const {
+  ord_t size() const {
     return this->underlying().sizeImpl();
   };
-  void resize(size_t newSize) {
+  void resize(ord_t newSize) {
     this->underlying().resizeImpl(newSize);
   };
   bool empty() const {

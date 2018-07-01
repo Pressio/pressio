@@ -33,7 +33,7 @@ public:
     return this->underlying().dataImpl();
   };
   void putScalar(sc_t value) {
-    return this->underlying().putScalarImpl(value);
+    this->underlying().putScalarImpl(value);
   }    
   
   // inherits also subscripting operator [] from base (see above)

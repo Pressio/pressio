@@ -88,12 +88,22 @@ public:
   }
 
 private:
+  //-----------------
+  //from generic base
+  //-----------------
   wrap_t const * dataImpl() const{
     return &data_;
   };
   wrap_t * dataImpl(){
     return &data_;
   };
+  void putScalarImpl(sc_t value) {
+    data_.setConstant(this->size(), value);
+  }    
+
+  //-----------------
+  //from serial base
+  //-----------------
   size_t sizeImpl() const {
     return (data_.rows()==1) ? data_.cols() : data_.rows();
   };
@@ -107,6 +117,32 @@ private:
   bool emptyImpl() const{
     return this->size()==0 ? true : false;
   };
+
+  //----------------
+  //from math base
+  //----------------
+  template<typename op>
+  void inPlaceOpImpl(op_t op, sc_t a1, sc_t a2, const der_t & other){
+    // this = a1*this op a2*other;
+    for (ord_t i=0; i<this->size(); i++)
+      data_(i) = op()( a1*data_(i), a2*other(i) );
+  }
+  void scaleImpl(sc_t & factor){
+    for (ord_t i=0; i<this->size(); i++)
+      data_(i) = op()( a1*data_(i), a2*other(i) );
+  };
+  void norm1Impl(sc_t & result) const {
+    
+  };
+  void norm2Impl(sc_t & result) const {
+  };
+  void normInfImpl(sc_t & result) const {
+  };
+  void minValueImpl(sc_t & result) const {
+  };
+  void maxValueImpl(sc_t & result) const {
+  };
+  
   
 private:
   friend vectorGenericBase< derived_t >;
