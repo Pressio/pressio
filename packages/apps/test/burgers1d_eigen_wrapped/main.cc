@@ -1,8 +1,11 @@
 
 #include "ode_observer.hpp"
 
-#include "vector/core_vector_serial_eigen.hpp"
-#include "matrix/core_matrix_dense_serial_eigen.hpp"
+#include "vector/concrete/core_vector_serial_eigen.hpp"
+#include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
+#include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
+// #include "CORE_VECTOR"
+// #include "CORE_MATRIX"
 // app class
 #include "apps_burgers1d_eigen.hpp"
 // integrator
@@ -20,9 +23,10 @@ struct mysizer{
  static size_t getSize(const state_t & obj){
    return obj.size();
  };
- static void resize(state_t & obj, size_t newSize){};
+ static void resize(state_t & obj, size_t newSize){
+   obj.resize(newSize);
+ };
 };
-
 
 // struct stateResizer{
 //   using native_state_t = apps::burgers1dEigen::state_type;
@@ -32,7 +36,6 @@ struct mysizer{
 //       dest.resize(source.size());
 //   };
 // };
-
 
 int main(int argc, char *argv[])
 {
@@ -45,21 +48,22 @@ int main(int argc, char *argv[])
   model_eval_t appObj(mu, 10);
   appObj.setup();
 
-  // integrate in time starting from y0
-  scalar_t final_time = 35.;
+  // integrate in time startxbi5ng from y0
   scalar_t dt = 0.01;
+  scalar_t final_t = 35.;
 
   using state_t = core::vector<native_state_t>;
+  using residual_t = state_t;
   native_state_t y0n = appObj.getInitialState();
+  state_t y0(y0n);
+  snapshot_collector collectorObj;
+
   {
     using jac_t = core::matrix<native_jac_t>;
 
     //********************************************
     // IMPLICIT EULER
     //********************************************
-    state_t y0(y0n);
-    snapshot_collector collectorObj;
-
     // linear solver
     using lin_solve_t =
       solvers::experimental::linearSolver<jac_t,state_t,state_t>;
@@ -72,65 +76,37 @@ int main(int argc, char *argv[])
 
     //stepper
     using stepper_t = ode::implicitEulerStepper<
-      state_t, state_t, jac_t, scalar_t,
+      state_t, residual_t, jac_t, scalar_t,
       model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
     stepper_t stepperObj(appObj, nonls);
 
-    ode::integrateNSteps( stepperObj, y0, 0.0, dt, 1);//final_time/dt );
-    // // std::cout << collectorObj.getCount() << std::endl;
-
-    std::cout << "Final solution " << std::endl;
+    ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
+    // // // std::cout << collectorObj.getCount() << std::endl;
+    // std::cout << "Final solution " << std::endl;
+    std::cout << "\n-----------" << std::endl;
     std::cout << *y0.data();
-    // for (int i=0; i<y0.size(); ++i)
-    //   std::cout << std::setprecision(14) << y0[i]  << " ";
-    // std::cout << std::endl;
+    // // for (int i=0; i<y0.size(); ++i)
+    // //   std::cout << std::setprecision(14) << y0[i]  << " ";
+    // // std::cout << std::endl;
   }
-
 
   // {
   //   //********************************************
   //   // EXPLICIT EULER
   //   //********************************************
-  //   state_t y0(y0n);
-  //   snapshot_collector collectorObj;
-
   //   using stepper_t = ode::explicitEulerStepper<
-  //     state_t, state_t, scalar_t, stateResizer,
-  //     model_eval_t, scalar_t /*default = standard policy */>;
+  //     state_t, residual_t, scalar_t,
+  //     model_eval_t, scalar_t, mysizer>;
   //   stepper_t stepperObj(appObj);
     
-  //   ode::integrateNSteps(stepperObj, y0, collectorObj,
-  // 			 0.0, dt, final_time/dt);
+  //   ode::integrateNSteps(stepperObj, y0, 0.0, dt, final_time/dt, collectorObj);
   //   std::cout << collectorObj.getCount() << std::endl;
 
-  //   std::cout << "Final solution " << std::endl;
-  //   for (int i=0; i<y0.size(); ++i)
-  //     std::cout << std::setprecision(14) << y0[i]  << " ";
-  //   std::cout << std::endl;
+  //   // std::cout << "Final solution " << std::endl;
+  //   // for (int i=0; i<y0.size(); ++i)
+  //   //   std::cout << std::setprecision(14) << y0[i]  << " ";
+  //   // std::cout << std::endl;
   // }
-  // {
-  //   //********************************************
-  //   // EXPLICIT RUNGE KUTTA 4
-  //   //********************************************
-  //   state_t y0(y0n);
-  //   snapshot_collector collectorObj;
-
-  //   using stepper_t = ode::explicitRungeKutta4Stepper<
-  //     state_t, state_t, scalar_t, stateResizer,
-  //     model_eval_t, scalar_t /*default = standard policy */>;
-  //   stepper_t stepperObj(appObj);
-
-  //   ode::integrateNSteps( stepperObj, y0, collectorObj,
-  // 			  0.0, dt, final_time/dt );
-  //   std::cout << collectorObj.getCount() << std::endl;
-
-  //   std::cout << "Final solution " << std::endl;
-  //   for (int i=0; i<y0.size(); ++i)
-  //     std::cout << std::setprecision(14) << y0[i]  << " ";
-  //   std::cout << std::endl;
-  // }
-
-
-  
+    
   return 0;
 }
