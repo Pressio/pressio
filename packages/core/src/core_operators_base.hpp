@@ -15,21 +15,21 @@ public:
   	   typename std::enable_if<
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
-  derived_type operator+(const U & other);
+  derived_type operator+(const U & other) const;
   //--------------------------------------------------
   // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
   	   typename std::enable_if<
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
-  derived_type operator-(const U & other);
+  derived_type operator-(const U & other) const;
   //--------------------------------------------------
   // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
   	   typename std::enable_if<
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
-  derived_type operator*(const U & other);
+  derived_type operator*(const U & other) const;
 private:
   friend derived_type;
   arithmeticOperatorsBase() = default;

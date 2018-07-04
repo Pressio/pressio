@@ -45,7 +45,7 @@ public:
     return data_[i];
   };  
 
-  derived_t operator+(const derived_t & other) {
+  derived_t operator+(const derived_t & other) const{
     derived_t res(other.size());
     std::transform(this->data_.begin(), this->data_.end(),
 		   other.data()->begin(), res.data()->begin(),
@@ -53,7 +53,7 @@ public:
     return res;
   }
 
-  derived_t operator-(const derived_t & other) {
+  derived_t operator-(const derived_t & other) const{
     derived_t res(other.size()); 
     std::transform(this->data_.begin(), this->data_.end(),
 		   other.data()->begin(), res.data()->begin(),
@@ -61,7 +61,7 @@ public:
     return res;
   }
 
-  derived_t operator*(const derived_t & other) {
+  derived_t operator*(const derived_t & other) const{
     derived_t res(other.size()); 
     std::transform(this->data_.begin(), this->data_.end(),
 		   other.data()->begin(), res.data()->begin(),

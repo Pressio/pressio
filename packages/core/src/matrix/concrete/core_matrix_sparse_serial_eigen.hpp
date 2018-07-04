@@ -75,19 +75,19 @@ public:
     // eigen returns 0 if the item is zero
     return data_.coeff(row,col);
   }
-  derived_t operator+(const derived_t & other) {
+  derived_t operator+(const derived_t & other) const{
     assert(haveCompatibleDimensions(*this, other) );
     derived_t res(other.rows(), other.cols());
     *res.data() = this->data_ + *other.data();
     return res;
   }
-  derived_t operator-(const derived_t & other) {
+  derived_t operator-(const derived_t & other) const{
     assert(haveCompatibleDimensions(*this, other) );
     derived_t res(other.rows(), other.cols());
     *res.data() = this->data_ - (*other.data());
     return res;
   }
-  derived_t operator*(const derived_t & other) {
+  derived_t operator*(const derived_t & other) const{
     assert(haveCompatibleDimensions(*this, other) );
     derived_t res(other.rows(), other.cols());
     *res.data() = this->data_ * (*other.data());

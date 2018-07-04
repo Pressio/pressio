@@ -55,7 +55,7 @@ public:
   derived_t operator+(typename
 		      std::enable_if<
 		      meta::has_add_op<wrap_t>::value,
-		      const U & >::type other)
+		      const U & >::type other) const
   {
     derived_t res(other.size());
     *res.data() = this->data_ + *other.data();
@@ -67,7 +67,7 @@ public:
   derived_t operator+(typename
 		      std::enable_if<
 		      !meta::has_add_op<wrap_t>::value,
-		      const U & >::type other)
+		      const U & >::type other) const
   {
     derived_t res(other.size());
     for (size_t i=0; i<other.size(); i++)
@@ -81,7 +81,7 @@ public:
   derived_t operator-(typename
 		      std::enable_if<
 		      meta::has_subtract_op<wrap_t>::value,
-		      const U & >::type other)
+		      const U & >::type other) const
   {
     derived_t res(other.size());
     *res.data() = this->data_ - *other.data();
@@ -92,7 +92,7 @@ public:
   derived_t operator-(typename
 		      std::enable_if<
 		      !meta::has_subtract_op<wrap_t>::value,
-		      const U & >::type other)
+		      const U & >::type other) const
   {
     derived_t res(other.size());
     for (size_t i=0; i<other.size(); i++)
@@ -106,7 +106,7 @@ public:
   derived_t operator*(typename
 		      std::enable_if<
 		      meta::has_star_op<wrap_t>::value,
-		      const U & >::type other)
+		      const U & >::type other) const
   {
     derived_t res(other.size());
     *res.data() = this->data_ * (*other.data());
@@ -118,7 +118,7 @@ public:
   derived_t operator*(typename
 		      std::enable_if<
 		      !meta::has_star_op<wrap_t>::value,
-		      const U & >::type other)
+		      const U & >::type other) const
   {
     derived_t res(other.size());
     for (size_t i=0; i<other.size(); i++)

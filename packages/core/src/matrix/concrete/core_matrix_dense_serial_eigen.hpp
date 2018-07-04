@@ -47,7 +47,7 @@ public:
     // check if we are withinbound 
     return data_(row,col);
   }
-  derived_t operator+(const derived_t & other) {
+  derived_t operator+(const derived_t & other) const{
     assert( other.rows() == this->rows() );
     assert( other.cols() == this->cols() );
     derived_t res(other.rows(), other.cols());
@@ -55,7 +55,7 @@ public:
     return res;
   }
 
-  derived_t operator-(const derived_t & other) {
+  derived_t operator-(const derived_t & other) const{
     assert( other.rows() == this->rows() );
     assert( other.cols() == this->cols() );
     derived_t res(other.rows(), other.cols());
@@ -63,7 +63,7 @@ public:
     return res;
   }
   
-  derived_t operator*(const derived_t & other) {
+  derived_t operator*(const derived_t & other) const{
     assert( other.rows() == this->rows() );
     assert( other.cols() == this->cols() );
     derived_t res(other.rows(), other.cols());

@@ -53,21 +53,21 @@ public:
     return data_(i);
   };  
 
-  derived_t operator+(const derived_t & other) {
+  derived_t operator+(const derived_t & other) const{
     assert( other.size() == this->size() );
     derived_t res(other.size());
     *res.data() = this->data_ + *other.data();
     return res;
   }
 
-  derived_t operator-(const derived_t & other) {
+  derived_t operator-(const derived_t & other) const{
     assert( other.size() == this->size() );
     derived_t res(other.size());
     *res.data() = this->data_ - *other.data();
     return res;
   }
   
-  derived_t operator*(const derived_t & other) {
+  derived_t operator*(const derived_t & other) const{
     assert( other.size() == this->size() );
     derived_t res(other.size());
     for (size_t i=0; i<this->size(); i++)
