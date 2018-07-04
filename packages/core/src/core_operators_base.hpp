@@ -85,9 +85,6 @@ private:
  
 };//end class   
 
-
 } // end namespace core
 #endif
-
-
 

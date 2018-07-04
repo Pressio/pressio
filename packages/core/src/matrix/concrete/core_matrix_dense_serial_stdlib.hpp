@@ -43,37 +43,36 @@ public:
     // check if we are withinbound 
     return data_(row,col);
   }
-
   sc_t const & operator() (ord_t row, ord_t col) const{
     // check if we are withinbound 
     return data_(row,col);
   }
-
+  
 private:
-
   wrap_t const * dataImpl() const{
     return &data_;
   };
-
   wrap_t * data(){
     return &data_;
   };
-
   ord_t rows() const{
     assert(!data_.empty());
     return data_.size();
   }
-
   ord_t cols() const{
     return data_.empty() ? 0 : data_[0].size();
   }
-
   void resizeImpl(ord_t nrows, ord_t ncols){    
     data_.resize(nrows);
     for (auto & it : data_)
       it.resize(ncols);
   }
 
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!
+  // WIPL to finish
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  
 private:
   friend matrixGenericBase< matrix<wrapped_type> >;
   friend matrixDenseSerialBase< matrix<wrapped_type> >;

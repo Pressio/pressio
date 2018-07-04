@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_EPETRA_HPP_
-#define CORE_VECTOR_EPETRA_HPP_
+#ifndef CORE_VECTOR_DISTRIBUTED_EPETRA_HPP_
+#define CORE_VECTOR_DISTRIBUTED_EPETRA_HPP_
 
 #include "../meta/core_vector_meta.hpp"
 #include "../base/core_vector_generic_base.hpp"
@@ -114,12 +114,12 @@ private:
   //----------------
   //from math base
   //----------------
-  template<typename op>
+  template<typename op_t>
   void inPlaceOpImpl(op_t op, sc_t a1, sc_t a2, const der_t & other){
     // this = a1*this op a2*other;
     for (LO_t i=0; i<this->localSize(); i++)
       data_[i] = op()( a1*data_[i], a2*other[i] );
-  }
+  };
   void scaleImpl(sc_t & factor){
     data_.Scale(factor);
   };
@@ -133,10 +133,10 @@ private:
     data_.NormInf(&result);
   };
   void minValueImpl(sc_t & result) const {
-    data_.MinValue(&result):
+    data_.MinValue(&result);
   };
   void maxValueImpl(sc_t & result) const {
-    data_.MaxValue(&result):
+    data_.MaxValue(&result);
   };
   
 private:
@@ -147,7 +147,6 @@ private:
 private:
   wrap_t data_;
 
-};//end class    
-
+};//end class
 }//end namespace core
 #endif

@@ -35,7 +35,7 @@ public:
   void replaceGlobalValues(GO_t numentries,
 			   const GO_t * indices,
 			   const sc_t * values){
-    this->underlying().replaceGlobalValuesImpl(numentries, indices, value);
+    this->underlying().replaceGlobalValuesImpl(numentries, indices, values);
   }
   
 private:

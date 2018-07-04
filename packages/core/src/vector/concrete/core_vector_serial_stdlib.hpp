@@ -115,29 +115,40 @@ private:
   //----------------
   //from math base
   //----------------
-  template<typename op>
+  template<typename op_t>
   void inPlaceOpImpl(op_t op, sc_t a1, sc_t a2, const der_t & other){
     // this = a1*this op a2*other;
     for (ord_t i=0; i<this->size(); i++)
-      data_[i] = op(]( a1*data_[i], a2*other[i] );
-  }
+      data_[i] = op()( a1*data_[i], a2*other[i] );
+  };
   void scaleImpl(sc_t & factor){
     for (ord_t i=0; i<this->size(); i++)
       data_[i] *= factor;
   };
   void norm1Impl(sc_t & result) const {
+    result = static_cast<sc_t>(0);
+    for (decltype(this->size()) i=0; i<this->size(); i++)
+      result += std::abs(data_[i]);
   };
-  void norm2Impl(sc_t & result) const {
-    // sc_t result = 0;
-    // for (size_t i=0; i<this->size(); i++)
-    //   result += data_[i]*data_[i];
-    // return std::sqrt(result);
+  void norm2Impl(sc_t & res) const {
+    res = static_cast<sc_t>(0);
+    for (decltype(this->size()) i=0; i<this->size(); i++)
+      res += data_[i]*data_[i];
+    res = std::sqrt(res);
   };
-  void normInfImpl(sc_t & result) const {
+  void normInfImpl(sc_t & res) const {
+    res = std::abs(data_[0]);
+    for (decltype(this->size()) i=1; i<this->size(); i++){
+      sc_t currVal = std::abs(data_[i]);
+      if(currVal>res)
+	res = currVal;
+    }
   };
   void minValueImpl(sc_t & result) const {
+    result = std::max_element(data_.begin(), data_.end());
   };
   void maxValueImpl(sc_t & result) const {
+    result = std::min_element(data_.begin(), data_.end());
   };
 
 private:

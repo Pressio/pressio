@@ -14,8 +14,8 @@ private:
   using der_t = typename traits_t::derived_t;
   using wrap_t = typename traits_t::wrapped_t;
   using ord_t = typename traits_t::ordinal_t;
-  using sc_t = typename traits_t::scalar_t;
-    
+  using sc_t = typename traits_t::scalar_t;    
+
 public:
   ord_t rows() const{
     return this->underlying().rowsImpl();
@@ -26,23 +26,35 @@ public:
   }
 
   void resize(ord_t nrows, ord_t ncols){
-    return this->underlying().resizeImpl(nrows, ncols);
+    this->underlying().resizeImpl(nrows, ncols);
   }
 
   ord_t nonZerosCount()const{
     return this->underlying().nonZerosCountImpl();
+  }  
+
+  void setIdentity(){
+    this->underlying().setIdentityImpl();
+  }
+
+  void setZero(){
+    this->underlying().setZeroImpl();
   }
   
   //------------------------------------------------------------------
   // note this insert one by one might not be the best method
   // for efficiency. But it provides a simple nice way to store.
+  // NOTE: targetLocation can be either a row index or a columnm
+  // depending on whether the matrix is stored row-wise of columnwise.
   //------------------------------------------------------------------
-  void insertValues(ord_t targetLocation, ord_t numEntries,
-		    const sc_t * values, const ord_t * indices){
-    return this->underlying().insertValuesImpl(targetLocation, numEntries,
+  void insertValues(ord_t targetLocation,
+		    ord_t numEntries,
+		    const sc_t * values,
+		    const ord_t * indices){
+    this->underlying().insertValuesImpl(targetLocation, numEntries,
 					       values, indices);
   }
-
+  
   // note here that we return by copy. We do not enable to refernce []
   // because it makes little sense for a sparse matrix
   sc_t operator() (ord_t row, ord_t col) const;
@@ -50,8 +62,7 @@ public:
 private:  
   friend der_t;
   matrixSparseSerialBase() = default;
-  ~matrixSparseSerialBase() = default;
- 
+  ~matrixSparseSerialBase() = default; 
 private:  
   der_t & underlying(){
     return static_cast<der_t &>(*this);
@@ -59,8 +70,6 @@ private:
   der_t const& underlying() const{
     return static_cast<der_t const&>(*this);
   };
-
-
 };//end class
 } // end namespace core
 #endif

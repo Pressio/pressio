@@ -4,9 +4,7 @@
 
 #include "../core_matrix_traits.hpp"
 
-
-namespace core
-{
+namespace core{
     
 template<typename derived_type>
 class matrixDenseDistributedBase
@@ -28,7 +26,6 @@ private:
     return static_cast<der_t const&>(*this);
   };
 
-};//end class
-    
+};//end class    
 } // end namespace core
 #endif

@@ -5,6 +5,7 @@
 
 namespace core{
 
+/*
 // // static assertion failing if the type is not a vector
 // #define STATIC_ASSERT_IS_VECTOR(TYPE) \
 //   static_assert( TYPE::isVector, \
@@ -16,7 +17,7 @@ namespace core{
 // #define STATIC_ASSERT_IS_MATRIX(TYPE) \
 //   static_assert( TYPE::isMatrix, \
 // 		 "NOT_A_MATRIX")
-
+*/
 
   
 

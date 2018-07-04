@@ -34,11 +34,11 @@ private:
 
 public:
   vector() = default;
-  vector(ord_t insize,
-	 sc_t value = static_cast<sc_t>(0) ){
+  explicit vector(ord_t insize,
+		  sc_t value = static_cast<sc_t>(0) ){
     this->resize(insize, value);
   }
-  vector(const wrap_t & obj) : data_(obj){};
+  explicit vector(const wrap_t & obj) : data_(obj){};
   ~vector(){};
 
 public:
@@ -175,22 +175,24 @@ public:
   }
   
 private:
-  wrap_t const * dataImpl() const{
-    return &data_;
-  };
+  // wrap_t const * dataImpl() const{
+  //   return &data_;
+  // };
 
-  wrap_t * dataImpl(){
-    return data_;
-  };
+  // wrap_t * dataImpl(){
+  //   return data_;
+  // };
 
-  void resizeImpl(size_t val) {
-    data_.resize(val);
-  };
+  // void resizeImpl(size_t val) {
+  //   data_.resize(val);
+  // };
 
-  size_t sizeImpl() const {
-    return data_.size();
-  };
+  // size_t sizeImpl() const {
+  //   return data_.size();
+  // };
 
+  // TODO: missing everything here
+  
 private:
   friend vectorGenericBase< derived_t >;
   friend vectorSerialBase< derived_t >;

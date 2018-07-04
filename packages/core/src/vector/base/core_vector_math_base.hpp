@@ -3,6 +3,7 @@
 #define CORE_VECTOR_MATH_BASE_HPP_
 
 #include "../core_vector_traits.hpp"
+#include <cmath>
 
 namespace core{
     
@@ -22,7 +23,7 @@ public:
   }
   void scale(sc_t & factor){
     // this = factor * this
-    this->underlying().scaleImpl(result);
+    this->underlying().scaleImpl(factor);
   };  
   void norm1(sc_t & result) const {
     this->underlying().norm1Impl(result);
