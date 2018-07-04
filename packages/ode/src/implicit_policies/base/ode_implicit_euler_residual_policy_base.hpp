@@ -3,8 +3,8 @@
 #define ODE_IMPLICIT_EULER_RESIDUAL_POLICY_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "vector/core_vector_meta.hpp"
-#include "vector/core_vector_traits.hpp"
+// #include "vector/core_vector_meta.hpp"
+// #include "vector/core_vector_traits.hpp"
 
 namespace ode{
 namespace policy{

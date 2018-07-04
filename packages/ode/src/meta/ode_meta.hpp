@@ -32,23 +32,21 @@ template<typename functor,
 	 typename state_type,
 	 typename enable = void>
 struct isLegitimateCollector : std::false_type{};
-
+  
 template<typename functor,
 	 typename int_type,
 	 typename time_type,
 	 typename state_type>
 struct isLegitimateCollector<
   functor,int_type,time_type,state_type,
-  typename std::enable_if<
-    !std::is_void<
-      decltype(std::declval<functor>()(std::declval<int_type>(),
-				       std::declval<time_type>(),
-				       std::declval<state_type>()
-				       ))
-      >::value
-    >::type
+  core::meta::void_t<
+    decltype(std::declval<functor>()(std::declval<int_type>(),
+				     std::declval<time_type>(),
+				     std::declval<state_type>()
+				     )
+	     )
+    >
   > : std::true_type{};
-  
   
  
 } // namespace meta

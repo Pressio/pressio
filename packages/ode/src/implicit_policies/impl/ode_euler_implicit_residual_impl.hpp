@@ -21,6 +21,8 @@ void implicit_euler_residual_impl(const state_type & yn,
   for (decltype(R.size()) i=0; i < R.size(); i++){
     R[i] = yn[i] - ynm1[i] - dt*R[i];
   }
+  // std::cout << "\ndoImpl res euler " << std::endl;
+  // std::cout << *R.data();
 }
 
 

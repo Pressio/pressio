@@ -67,22 +67,13 @@ protected:
   ~implicitEulerStepperImpl() = default;
   
 protected:
-  void doStepImpl(state_type & y_inout, time_type t, time_type dt )
+  void doStepImpl(state_type & y, time_type t, time_type dt )
   {
-    y_nm1_ = y_inout;
+    y_nm1_ = y;
     dt_ = dt;
     t_ = t;
+    solver_->solve(y, *this);
 
-    solver_->solve(y_inout, *this);
-
-    //   std::cout << " doStepImpl: right " << std::endl;
-    //   for (int i=0; i<y_inout.size(); ++i)
-    //     std::cout << std::setprecision(14) << y_inout[i]  << " ";
-    //   std::cout << "------------------ " << std::endl;
-    //   for (int i=0; i<y_inout.size(); ++i)
-    //     std::cout << std::setprecision(14) << y_inout[i]  << " ";
-    //   std::cout << std::endl;    
-    //   std::cout << std::endl;    
   }//end doStepImpl
   
   void residualImpl(const state_type & y, state_type & R){

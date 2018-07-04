@@ -45,8 +45,8 @@ public:
   order_t order() const{
     return order_value;
   }
-  void doStep(state_t &inout, time_t t, time_t dt){
-    this->stepper()->doStepImpl( inout, t, dt );
+  void doStep(state_t & y, time_t t, time_t dt){
+    this->stepper()->doStepImpl( y, t, dt );
   }
   void residual(const state_t & y, state_t & R){
     this->stepper()->residualImpl(y, R);

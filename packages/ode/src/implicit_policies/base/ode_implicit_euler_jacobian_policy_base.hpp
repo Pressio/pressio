@@ -3,8 +3,8 @@
 #define ODE_IMPLICIT_EULER_JACOBIAN_POLICY_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "matrix/core_matrix_meta.hpp"
-#include "matrix/core_matrix_traits.hpp"
+// #include "matrix/core_matrix_meta.hpp"
+// #include "matrix/core_matrix_traits.hpp"
 
 namespace ode{
 namespace policy{

@@ -64,6 +64,7 @@ public:
 		       Args&&... rest)
     : base_t(model, solver, res_policy_obj_, jac_policy_obj_,
     	std::forward<Args>(rest)...){}
+
   implicitEulerStepper() = delete;
   ~implicitEulerStepper() = default;
 
