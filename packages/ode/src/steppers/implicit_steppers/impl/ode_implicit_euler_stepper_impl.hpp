@@ -35,6 +35,10 @@ class implicitEulerStepperImpl<state_type,
 			   residual_policy_type,
 			   jacobian_policy_type> >
 {
+  static_assert( meta::isLegitimateImplicitEulerResidualPolicy<residual_policy_type>::value,
+		 "IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
+  static_assert( meta::isLegitimateImplicitEulerJacobianPolicy<jacobian_policy_type>::value,
+		 "IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
   
 private:
   using stepper_t = implicitEulerStepperImpl<state_type,
@@ -68,14 +72,15 @@ protected:
   ~implicitEulerStepperImpl() = default;
   
 protected:
-  void doStepImpl(state_type & y, time_type t, time_type dt )
+  template<typename step_t>
+  void doStepImpl(state_type & y, time_type t, time_type dt, step_t step )
   {
     y_nm1_ = y;
     dt_ = dt;
     t_ = t;
     solver_->solve(y, *this);
   }//end doStepImpl
-  
+
   void residualImpl(const state_type & y, state_type & R){
     this->residual_policy_obj_->compute(y, y_nm1_, R,
 					*(this->model_), t_, dt_);

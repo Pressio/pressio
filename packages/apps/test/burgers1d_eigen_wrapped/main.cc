@@ -13,9 +13,12 @@
 // policies
 #include "policies/implicit_policies/ode_implicit_euler_residual_increment_policy.hpp"
 #include "policies/implicit_policies/ode_implicit_euler_jacobian_increment_policy.hpp"
+#include "policies/implicit_policies/ode_implicit_bdf2_residual_increment_policy.hpp"
+#include "policies/implicit_policies/ode_implicit_bdf2_jacobian_increment_policy.hpp"
 // steppers
 #include "steppers/explicit_steppers/ode_explicit_euler_stepper.hpp"
 #include "steppers/implicit_steppers/ode_implicit_euler_stepper.hpp"
+#include "steppers/implicit_steppers/ode_implicit_bdf2_stepper.hpp"
 // solvers
 #include "experimental/solvers_linear_eigen.hpp"
 #include "experimental/solvers_nonlinear_newton_raphson.hpp"
@@ -52,11 +55,12 @@ int main(int argc, char *argv[])
   state_t y0(y0n);
   snapshot_collector collectorObj;
 
+
   {
     using jac_t = core::matrix<native_jac_t>;
 
     //********************************************
-    // IMPLICIT EULER
+    // IMPLICIT BDF2
     //********************************************
     // linear solver
     using lin_solve_t =
@@ -68,29 +72,84 @@ int main(int argc, char *argv[])
       solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
     nonlin_solve_t nonls(ls);
 
-    using res_pol_t = ode::policy::implicitEulerIncrementResidual<
-      state_t, residual_t, model_eval_t, scalar_t>;
-    res_pol_t resObj(y0);
-
-    using jac_pol_t = ode::policy::implicitEulerIncrementJacobian<
-      state_t, jac_t, model_eval_t, scalar_t>;
-    jac_pol_t jacObj(y0);    
-
-    //stepper 1
-    using stepper_t = ode::implicitEulerStepper<
+    // first define the auxiliary stepper for initial stepping
+    // using aux_res_pol_t = ode::policy::implicitEulerIncrementResidual<
+    //   state_t, residual_t, model_eval_t, scalar_t>;
+    // aux_res_pol_t auxResObj(y0);
+    // using aux_jac_pol_t = ode::policy::implicitEulerIncrementJacobian<
+    //   state_t, jac_t, model_eval_t, scalar_t>;
+    // aux_jac_pol_t auxJacObj(y0);
+    //stepper
+    using aux_stepper_t = ode::implicitEulerStepper<
       state_t, residual_t, jac_t, scalar_t,
-      model_eval_t, scalar_t, mysizer, nonlin_solve_t, res_pol_t, jac_pol_t>;
-    stepper_t stepperObj(appObj, nonls, resObj, jacObj);
+      model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
+    //      aux_res_pol_t, aux_jac_pol_t>;
+    aux_stepper_t auxStepperObj(appObj, nonls);//, auxResObj, auxJacObj);
+
+    // now define the target stepper 
+    // using res_pol_t = ode::policy::implicitBDF2IncrementResidual<
+    //   state_t, residual_t, model_eval_t, scalar_t>;
+    // res_pol_t resObj(y0);
+    // using jac_pol_t = ode::policy::implicitBDF2IncrementJacobian<
+    //   state_t, jac_t, model_eval_t, scalar_t>;
+    // jac_pol_t jacObj(y0);
+    //stepper
+    using stepper_t = ode::implicitBDF2Stepper<
+      state_t, residual_t, jac_t, scalar_t,
+      model_eval_t, scalar_t, mysizer, nonlin_solve_t,
+      aux_stepper_t>;//, res_pol_t, jac_pol_t>;
+    stepper_t stepperObj(appObj, nonls, auxStepperObj);//, resObj, jacObj);
     
     ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
-    // // // // std::cout << collectorObj.getCount() << std::endl;
-    // std::cout << "Final solution " << std::endl;
+    // // // // // std::cout << collectorObj.getCount() << std::endl;
+    std::cout << "Final solution " << std::endl;
     std::cout << "\n-----------" << std::endl;
     std::cout << *y0.data();
-    // // // for (int i=0; i<y0.size(); ++i)
-    // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
-    // // // std::cout << std::endl;
+    // // // // for (int i=0; i<y0.size(); ++i)
+    // // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
+    // // // // std::cout << std::endl;
   }
+
+  
+  // {
+  //   using jac_t = core::matrix<native_jac_t>;
+
+  //   //********************************************
+  //   // IMPLICIT EULER
+  //   //********************************************
+  //   // linear solver
+  //   using lin_solve_t =
+  //     solvers::experimental::linearSolver<jac_t,state_t,state_t>;
+  //   lin_solve_t ls;
+    
+  //   // nonlinear solver
+  //   using nonlin_solve_t =
+  //     solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
+  //   nonlin_solve_t nonls(ls);
+
+  //   using res_pol_t = ode::policy::implicitEulerIncrementResidual<
+  //     state_t, residual_t, model_eval_t, scalar_t>;
+  //   res_pol_t resObj(y0);
+
+  //   using jac_pol_t = ode::policy::implicitEulerIncrementJacobian<
+  //     state_t, jac_t, model_eval_t, scalar_t>;
+  //   jac_pol_t jacObj(y0);    
+
+  //   //stepper 1
+  //   using stepper_t = ode::implicitEulerStepper<
+  //     state_t, residual_t, jac_t, scalar_t,
+  //     model_eval_t, scalar_t, mysizer, nonlin_solve_t, res_pol_t, jac_pol_t>;
+  //   stepper_t stepperObj(appObj, nonls, resObj, jacObj);
+    
+  //   ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
+  //   // // // // std::cout << collectorObj.getCount() << std::endl;
+  //   // std::cout << "Final solution " << std::endl;
+  //   std::cout << "\n-----------" << std::endl;
+  //   std::cout << *y0.data();
+  //   // // // for (int i=0; i<y0.size(); ++i)
+  //   // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
+  //   // // // std::cout << std::endl;
+  // }
 
   // {
   //   //********************************************

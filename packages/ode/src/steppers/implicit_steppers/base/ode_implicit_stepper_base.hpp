@@ -36,21 +36,21 @@ private:
 		 "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateTimeType<time_t>::value,
 		 "OOPS: TIME_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::isLegitimateImplicitEulerResidualPolicy<residual_policy_t>::value,
-		 "RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF IMPLICIT POLICY BASE");
-  static_assert( meta::isLegitimateImplicitEulerJacobianPolicy<jacobian_policy_t>::value,
-		 "RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF IMPLICIT POLICY BASE");
 
 public:
   order_t order() const{
     return order_value;
   }
-  void doStep(state_t & y, time_t t, time_t dt){
-    this->stepper()->doStepImpl( y, t, dt );
+
+  template <typename step_t>
+  void doStep(state_t & y, time_t t, time_t dt, step_t step){
+    this->stepper()->doStepImpl( y, t, dt, step);
   }
+
   void residual(const state_t & y, state_t & R){
     this->stepper()->residualImpl(y, R);
   }
+
   void jacobian(const state_t & y, jacobian_t & J){
     this->stepper()->jacobianImpl(y, J);
   }

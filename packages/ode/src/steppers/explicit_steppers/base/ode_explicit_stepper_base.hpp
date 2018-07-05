@@ -38,7 +38,7 @@ public:
   order_t order() const{
     return order_value;
   }
-  void doStep(state_t &inout, time_t t, time_t dt ){
+  void doStep(state_t &inout, time_t t, time_t dt){
     this->stepper()->doStepImpl(inout, t, dt);
   }
 

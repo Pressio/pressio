@@ -20,15 +20,15 @@ void integrateNStepsImpl(stepper_type & stepper,
 			 collector_type & collector)
 {
   time_type time = start_time;
-  integral_type step = 0;
+  integral_type step = 1;
 
   // time loop
-  for( ; step < num_steps ; ++step)
+  for( ; step <= num_steps ; ++step)
   {
     // call collector/observer 
     collector(step, time, y);
     // do one step
-    stepper.doStep(y, time, dt);
+    stepper.doStep(y, time, dt, step);
     // advance time: mulitply (vs adding) benefits roundoff
     time = start_time + static_cast<time_type>(step) * dt;  
   }
