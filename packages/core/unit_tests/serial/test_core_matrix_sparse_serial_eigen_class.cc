@@ -236,9 +236,9 @@ public:
     STATIC_ASSERT_IS_MATRIX_SPARSE_SERIAL_EIGEN(native_t);
     EXPECT_TRUE(matTrait::isEigen == 1);
     //EXPECT_TRUE(matTrait::isRowMajor == storage_type);
-    mymat_t m1;
-    EXPECT_EQ( m1.rows(), 0 );
-    EXPECT_EQ( m1.cols(), 0 );
+    // mymat_t m1;
+    // EXPECT_EQ( m1.rows(), 0 );
+    // EXPECT_EQ( m1.cols(), 0 );
     mymat_t m2(5, 8);
     EXPECT_EQ( m2.rows(), 5 );
     EXPECT_EQ( m2.cols(), 8 );
@@ -293,9 +293,9 @@ public:
   //---------------------------------------------------
 
   void checkQuery(){
-    mymat_t m1;
-    ::testing::StaticAssertTypeEq<decltype(m1.data()),
-				  native_t * >();
+    // mymat_t m1;
+    // ::testing::StaticAssertTypeEq<decltype(m1.data()),
+				//   native_t * >();
     const mymat_t m2(45,64);
     ::testing::StaticAssertTypeEq< decltype(m2.data()),
 				   const native_t * >();

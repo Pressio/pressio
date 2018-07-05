@@ -9,15 +9,26 @@ TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
 SET(HEADERS "")
 SET(SOURCES "")
 
-# To include the configured header above
+
+#To include "rom_config.h" (because it lives in the binary folder)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+# # To include the configured header above
+# INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-APPEND_SET(HEADERS
-  rom_ConfigDefs.hpp
-)
+# include all headers
+FILE(GLOB rom_exp_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/experimental/*.hpp")
 
+# include all sources
+FILE(GLOB rom_exp_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/experimental/src/*.cc")
+
+APPEND_SET(HEADERS
+  ${rom_exp_HEADERS}
+)
 APPEND_SET(SOURCES
+  ${rom_exp_SRCS}
 )
 
 #

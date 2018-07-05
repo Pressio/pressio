@@ -28,13 +28,16 @@ private:
 public:
   wrap_t const * data() const {
     return this->underlying().dataImpl();
-  };
+  }
   wrap_t * data(){
     return this->underlying().dataImpl();
-  };
+  }
   void putScalar(sc_t value) {
     this->underlying().putScalarImpl(value);
-  }    
+  }
+  void setZero() {
+    this->underlying().setZeroImpl();
+  }
   
   // inherits also subscripting operator [] from base (see above)
 
@@ -45,10 +48,10 @@ private:
   
   der_t & underlying(){
     return static_cast<der_t &>(*this);
-  };
+  }
   der_t const& underlying() const{
     return static_cast<der_t const&>(*this);
-  };
+  }
     
 };//end class    
 } // end namespace core

@@ -10,9 +10,12 @@
 #include "apps_burgers1d_eigen.hpp"
 // integrator
 #include "integrators/ode_integrate_n_steps.hpp"
+// policies
+#include "policies/implicit_policies/ode_implicit_euler_residual_increment_policy.hpp"
+#include "policies/implicit_policies/ode_implicit_euler_jacobian_increment_policy.hpp"
 // steppers
-#include "explicit_steppers/ode_explicit_euler_stepper.hpp"
-#include "implicit_steppers/ode_implicit_euler_stepper.hpp"
+#include "steppers/explicit_steppers/ode_explicit_euler_stepper.hpp"
+#include "steppers/implicit_steppers/ode_implicit_euler_stepper.hpp"
 // solvers
 #include "experimental/solvers_linear_eigen.hpp"
 #include "experimental/solvers_nonlinear_newton_raphson.hpp"
@@ -50,7 +53,7 @@ int main(int argc, char *argv[])
 
   // integrate in time startxbi5ng from y0
   scalar_t dt = 0.01;
-  scalar_t final_t = 35.;
+  scalar_t final_t = 35;
 
   using state_t = core::vector<native_state_t>;
   using residual_t = state_t;
@@ -74,20 +77,28 @@ int main(int argc, char *argv[])
       solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
     nonlin_solve_t nonls(ls);
 
-    //stepper
+    using res_pol_t = ode::policy::implicitEulerIncrementResidual<
+      state_t, residual_t, model_eval_t, scalar_t>;
+    res_pol_t resObj(y0);
+
+    using jac_pol_t = ode::policy::implicitEulerIncrementJacobian<
+      state_t, jac_t, model_eval_t, scalar_t>;
+    jac_pol_t jacObj(y0);    
+
+    //stepper 1
     using stepper_t = ode::implicitEulerStepper<
       state_t, residual_t, jac_t, scalar_t,
-      model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
-    stepper_t stepperObj(appObj, nonls);
-
+      model_eval_t, scalar_t, mysizer, nonlin_solve_t, res_pol_t, jac_pol_t>;
+    stepper_t stepperObj(appObj, nonls, resObj, jacObj);
+    
     ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
-    // // // std::cout << collectorObj.getCount() << std::endl;
+    // // // // std::cout << collectorObj.getCount() << std::endl;
     // std::cout << "Final solution " << std::endl;
     std::cout << "\n-----------" << std::endl;
     std::cout << *y0.data();
-    // // for (int i=0; i<y0.size(); ++i)
-    // //   std::cout << std::setprecision(14) << y0[i]  << " ";
-    // // std::cout << std::endl;
+    // // // for (int i=0; i<y0.size(); ++i)
+    // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
+    // // // std::cout << std::endl;
   }
 
   // {

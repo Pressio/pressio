@@ -90,27 +90,30 @@ private:
   //----------------
   wrap_t const * dataImpl() const{
     return &data_;
-  };
+  }
   wrap_t * dataImpl(){
     return data_;
-  };
+  }
   void putScalarImpl(sc_t value) {
     for (ord_t i=0; i<this->size(); i++)
       data_[i] = value;
   }    
+  void setZeroImpl() {
+    this->putScalarImpl( static_cast<sc_t>(0) );
+  }
 
   //----------------
   //from serial base
   //----------------
   ord_t sizeImpl() const {
     return data_.size();
-  };
+  }
   void resizeImpl(ord_t val) {
     data_.resize(val);
-  };
+  }
   bool emptyImpl() const{
     return data_.empty();
-  };
+  }
 
   //----------------
   //from math base
@@ -120,22 +123,22 @@ private:
     // this = a1*this op a2*other;
     for (ord_t i=0; i<this->size(); i++)
       data_[i] = op()( a1*data_[i], a2*other[i] );
-  };
+  }
   void scaleImpl(sc_t & factor){
     for (ord_t i=0; i<this->size(); i++)
       data_[i] *= factor;
-  };
+  }
   void norm1Impl(sc_t & result) const {
     result = static_cast<sc_t>(0);
     for (decltype(this->size()) i=0; i<this->size(); i++)
       result += std::abs(data_[i]);
-  };
+  }
   void norm2Impl(sc_t & res) const {
     res = static_cast<sc_t>(0);
     for (decltype(this->size()) i=0; i<this->size(); i++)
       res += data_[i]*data_[i];
     res = std::sqrt(res);
-  };
+  }
   void normInfImpl(sc_t & res) const {
     res = std::abs(data_[0]);
     for (decltype(this->size()) i=1; i<this->size(); i++){
@@ -143,13 +146,13 @@ private:
       if(currVal>res)
 	res = currVal;
     }
-  };
+  }
   void minValueImpl(sc_t & result) const {
     result = std::max_element(data_.begin(), data_.end());
-  };
+  }
   void maxValueImpl(sc_t & result) const {
     result = std::min_element(data_.begin(), data_.end());
-  };
+  }
 
 private:
   friend vectorGenericBase< derived_t >;

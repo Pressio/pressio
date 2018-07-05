@@ -93,30 +93,33 @@ private:
   //-----------------
   wrap_t const * dataImpl() const{
     return &data_;
-  };
+  }
   wrap_t * dataImpl(){
     return &data_;
-  };
+  }
   void putScalarImpl(sc_t value) {
     data_.setConstant(value);
-  }    
+  }
+  void setZeroImpl() {
+    this->putScalarImpl( static_cast<sc_t>(0) );
+  }
 
   //-----------------
   //from serial base
   //-----------------
   size_t sizeImpl() const {
     return (data_.rows()==1) ? data_.cols() : data_.rows();
-  };
+  }
   void resizeImpl(size_t val){
     // check that the wrapped type is NOT a static vector from Eigen
     // otherwise we cannot resizee a static vector.
     static_assert(mytraits::isStatic == false,
 		  "You cannot resize a vector wrapping a STATIC Eigen vector!");
     data_.resize(val);
-  };
+  }
   bool emptyImpl() const{
     return this->size()==0 ? true : false;
-  };
+  }
 
   //----------------
   //from math base
@@ -131,18 +134,18 @@ private:
     // this = factor * this;
     for (decltype(this->size()) i=0; i<this->size(); i++)
       data_(i) *= factor;
-  };
+  }
   void norm1Impl(sc_t & result) const {
     result = static_cast<sc_t>(0);
     for (decltype(this->size()) i=0; i<this->size(); i++)
       result += std::abs(data_(i));
-  };
+  }
   void norm2Impl(sc_t & res) const {
     res = static_cast<sc_t>(0);
     for (decltype(this->size()) i=0; i<this->size(); i++)
       res += data_(i)*data_(i);
     res = std::sqrt(res);
-  };
+  }
   void normInfImpl(sc_t & res) const {
     res = std::abs(data_(0));
     for (decltype(this->size()) i=1; i<this->size(); i++){
@@ -150,13 +153,13 @@ private:
       if(currVal>res)
 	res = currVal;
     }
-  };
+  }
   void minValueImpl(sc_t & result) const {
     result = data_.minCoeff();
-  };
+  }
   void maxValueImpl(sc_t & result) const {
     result = data_.maxCoeff();
-  };
+  }
   
 private:
   friend vectorGenericBase< derived_t >;

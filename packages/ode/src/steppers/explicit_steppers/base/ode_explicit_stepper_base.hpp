@@ -4,9 +4,9 @@
 
 #include "ode_ConfigDefs.hpp"
 #include "../ode_explicit_stepper_traits.hpp"
-#include "../../meta/ode_meta.hpp"
-#include "../../meta/ode_meta_explicit.hpp"
-#include "../../explicit_policies/ode_explicit_policies_meta.hpp"
+#include "../../../meta/ode_meta.hpp"
+#include "../../../meta/ode_meta_explicit.hpp"
+#include "../../../policies/explicit_policies/ode_explicit_policies_meta.hpp"
 
 namespace ode{
 

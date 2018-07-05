@@ -19,11 +19,11 @@ public:
   void operator()(size_t step,
 		  double t,
 		  state_t x){
-    if (step % 50 ==0 ){
-      print(x);
-      snapshots_.emplace_back(x);
-      count_++;
-    }
+    // if (step % 50 ==0 ){
+    //   print(x);
+    //   snapshots_.emplace_back(x);
+    //   count_++;
+    // }
   }
   void print(const state_t & x){
     for (int i=0; i<x.size(); ++i)

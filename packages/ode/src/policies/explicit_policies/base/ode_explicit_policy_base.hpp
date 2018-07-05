@@ -3,8 +3,6 @@
 #define ODE_EXPLICIT_POLICY_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
-// #include "vector/core_vector_meta.hpp"
-// #include "vector/core_vector_traits.hpp"
 
 namespace ode{
 namespace policy{
@@ -22,7 +20,6 @@ public:
          model_type & model, time_type t){
     this->underlying().computeImpl(y, R, model, t);
   }
-
 private:
   using derived_t = derived_type<state_type,residual_type,
 				 model_type, time_type, Args...>;

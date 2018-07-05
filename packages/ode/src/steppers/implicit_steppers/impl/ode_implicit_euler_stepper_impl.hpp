@@ -35,6 +35,7 @@ class implicitEulerStepperImpl<state_type,
 			   residual_policy_type,
 			   jacobian_policy_type> >
 {
+  
 private:
   using stepper_t = implicitEulerStepperImpl<state_type,
 					     residual_type,
@@ -73,7 +74,6 @@ protected:
     dt_ = dt;
     t_ = t;
     solver_->solve(y, *this);
-
   }//end doStepImpl
   
   void residualImpl(const state_type & y, state_type & R){

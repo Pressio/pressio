@@ -5,6 +5,7 @@
 #include "ode_ConfigDefs.hpp"
 #include "./impl/ode_euler_implicit_jacobian_impl.hpp"
 #include "./base/ode_implicit_euler_jacobian_policy_base.hpp"
+#include "../common/ode_advance_full_state_policy_base.hpp"
 
 namespace ode{
 namespace policy{
@@ -14,13 +15,17 @@ template<typename state_type,
 	 typename model_type, 
 	 typename time_type>
 class implicitEulerStandardJacobian
-  : public implicitEulerJacobianPolicyBase<
-  implicitEulerStandardJacobian,state_type,
-  jacobian_type,model_type,time_type>
+  : public implicitEulerJacobianPolicyBase<implicitEulerStandardJacobian,
+					   state_type, jacobian_type,
+					   model_type, time_type>,
+  public advanceFullStatePolicyBase<implicitEulerStandardJacobian,
+			     state_type, jacobian_type,
+			     model_type, time_type>
 {
 public:
   implicitEulerStandardJacobian() = default;
   ~implicitEulerStandardJacobian() = default;
+
 private:
   // enable if using types from core package
   template <typename U = state_type,
@@ -37,19 +42,25 @@ private:
     // first eval jac
     model.jacobian( *y.data(), *J.data(), t);
 
-    jacobian_type A(J.rows(),J.cols());
-    A.setIdentity();
+    jacobian_type A_( J.rows(),J.cols() );
+    A_.setIdentity();
 
     // then fix it based on time stepping features
-    ode::impl::implicit_euler_jacobian_impl(J, A, dt);
+    ode::impl::implicit_euler_jacobian_impl(J, A_, dt);
   }
 
 private:
   friend implicitEulerJacobianPolicyBase<implicitEulerStandardJacobian,
            state_type,jacobian_type,
            model_type, time_type>;
+
+  friend advanceFullStatePolicyBase<implicitEulerStandardJacobian,
+				    state_type, jacobian_type,
+				    model_type, time_type>;
+
+
 };//end class
   
 }//end namespace polices
-}//end namespace ode  
+}//end namespace ode
 #endif 

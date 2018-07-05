@@ -85,23 +85,26 @@ private:
   //----------------
   wrap_t const * dataImpl() const{
     return &data_;
-  };
+  }
   wrap_t * dataImpl(){
     return data_;
-  };
+  }
   void putScalarImpl(sc_t value) {
     data_.PutScalar(value);
-  }    
+  }
+  void setZeroImpl() {
+    this->putScalarImpl( static_cast<sc_t>(0) );
+  }
   
   //----------------
   //from distributed base
   //----------------
   GO_t globalSizeImpl() const {
     return data_.GlobalLength();
-  };
+  }
   LO_t localSizeImpl() const {
     return data_.MyLength();
-  };
+  }
   map_t const & getDataMapImpl() const{
     return data_.Map();
   }
@@ -119,25 +122,25 @@ private:
     // this = a1*this op a2*other;
     for (LO_t i=0; i<this->localSize(); i++)
       data_[i] = op()( a1*data_[i], a2*other[i] );
-  };
+  }
   void scaleImpl(sc_t & factor){
     data_.Scale(factor);
-  };
+  }
   void norm1Impl(sc_t & result) const {
     data_.Norm1(&result);
-  };
+  }
   void norm2Impl(sc_t & result) const {
     data_.Norm2(&result);
-  };
+  }
   void normInfImpl(sc_t & result) const {
     data_.NormInf(&result);
-  };
+  }
   void minValueImpl(sc_t & result) const {
     data_.MinValue(&result);
-  };
+  }
   void maxValueImpl(sc_t & result) const {
     data_.MaxValue(&result);
-  };
+  }
   
 private:
   friend vectorGenericBase< derived_t >;

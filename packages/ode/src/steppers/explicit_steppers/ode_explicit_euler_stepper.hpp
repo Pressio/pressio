@@ -11,8 +11,7 @@ template<typename state_type,
 	 typename scalar_type,
 	 typename model_type,	
 	 typename time_type,
-	 typename sizer_type,
-	 typename residual_policy_type
+	 typename sizer_type
 	 >
 class explicitEulerStepper<state_type,
 			   residual_type,
@@ -20,11 +19,10 @@ class explicitEulerStepper<state_type,
 			   model_type,
 			   time_type,
 			   sizer_type,
-			   residual_policy_type,
+			   void,
 			   typename
 			   std::enable_if<
-			     meta::isExplicitEulerResidualStandardPolicy<
-			       residual_policy_type>::value == true
+			     !std::is_void<state_type>::value
 			     >::type
 			   >
   : public impl::explicitEulerStepperImpl<state_type,
@@ -33,7 +31,10 @@ class explicitEulerStepper<state_type,
 					  model_type,
 					  time_type,
 					  sizer_type,
-					  residual_policy_type>
+					  ode::policy::explicitEulerStandardResidual<
+					    state_type, residual_type,
+					    model_type, time_type>
+					  >
 {
 private:
   using pol_t = ode::policy::explicitEulerStandardResidual<
@@ -85,8 +86,7 @@ class explicitEulerStepper<state_type,
 			   residual_policy_type,
 			   typename
 			   std::enable_if<
-			     !meta::isExplicitEulerResidualStandardPolicy<
-			       residual_policy_type>::value
+			     !std::is_void<residual_policy_type>::value
 			     >::type
 			   >
   : public impl::explicitEulerStepperImpl<state_type,

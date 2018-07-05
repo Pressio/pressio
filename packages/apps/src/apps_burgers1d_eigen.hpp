@@ -77,19 +77,13 @@ public:
     if (jac.rows() == 0 || jac.cols()==0 ){
       jac.resize(u.size(), u.size());
     }
+    tripletList.clear();
     tripletList.push_back( Tr( 0, 0, -dxInv_*u(0)) );
     for (ui_t i=1; i<Ncell_; ++i){
       tripletList.push_back( Tr( i, i-1, dxInv_ * u(i-1) ) );
       tripletList.push_back( Tr( i, i, -dxInv_ * u(i) ) );
     }
     jac.setFromTriplets(tripletList.begin(), tripletList.end());
-    
-    // jac = jacobian_type::Zero(jac.rows(), jac.cols());
-    // jac(0,0) = -dxInv_ * u(0)*u(0);
-    // for (ui_t i=1; i<Ncell_; ++i){
-    //   jac(i,i-1) = dxInv_ * u(i-1)*u(i-1);
-    //   jac(i,i) = -dxInv_ * u(i-1)*u(i-1);     
-    // }    
   }
   
 private:  

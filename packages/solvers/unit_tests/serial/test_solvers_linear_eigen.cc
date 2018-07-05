@@ -1,9 +1,9 @@
 
 #include <gtest/gtest.h>
 #include "experimental/solvers_linear_eigen.hpp"
-#include "matrix/core_matrix_dense_serial_eigen.hpp"
-#include "matrix/core_matrix_sparse_serial_eigen.hpp"
-#include "vector/core_vector_serial_eigen.hpp"
+#include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
+#include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
+#include "vector/concrete/core_vector_serial_eigen.hpp"
 
 
 TEST(solvers_linear, simpleTest)

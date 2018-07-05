@@ -5,6 +5,7 @@
 #include "ode_ConfigDefs.hpp"
 #include "./impl/ode_euler_implicit_residual_impl.hpp"
 #include "./base/ode_implicit_euler_residual_policy_base.hpp"
+#include "../common/ode_advance_full_state_policy_base.hpp"
 
 namespace ode{
 namespace policy{
@@ -12,13 +13,17 @@ namespace policy{
 template<typename state_type, typename residual_type,
 	 typename model_type, typename time_type>
 class implicitEulerStandardResidual
-  : public implicitEulerResidualPolicyBase<
-  implicitEulerStandardResidual,state_type,
-  residual_type,model_type, time_type>
+  : public implicitEulerResidualPolicyBase<implicitEulerStandardResidual,
+					   state_type, residual_type,
+					   model_type, time_type>,
+  public advanceFullStatePolicyBase<implicitEulerStandardResidual,
+				    state_type, residual_type,
+				    model_type, time_type>
 {
 public:
   implicitEulerStandardResidual() = default;
   ~implicitEulerStandardResidual() = default;  
+
 private:
   // enable if using types from core package
   template <typename U = state_type,
@@ -37,11 +42,17 @@ private:
     // then fix residual based on time stepping features
     ode::impl::implicit_euler_residual_impl(y, ynm1, R, dt);
   }  
+
 private:
   friend implicitEulerResidualPolicyBase<implicitEulerStandardResidual,
 					 state_type,residual_type,
 					 model_type, time_type>;
-};
+
+  friend advanceFullStatePolicyBase<implicitEulerStandardResidual,
+				    state_type,residual_type,
+				    model_type, time_type>;
+  
+};//end class
   
 }//end namespace polices
 }//end namespace ode  

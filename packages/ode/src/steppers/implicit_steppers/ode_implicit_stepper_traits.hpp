@@ -50,9 +50,15 @@ struct traits< impl::implicitEulerStepperImpl<state_type,
   using residual_policy_t = residual_policy_type;
   using jacobian_policy_t = jacobian_policy_type;
 
+  static constexpr bool advanceIncrement = residual_policy_t::advanceIncrement;
+  static_assert(residual_policy_t::advanceIncrement ==
+		jacobian_policy_t::advanceIncrement,
+		"Residual and jacobian policies BOTH need to advance full state or just increment wrt initial condition. In this case they are not");
+
   using order_t = unsigned int;
   static constexpr order_t order_value = 1;
 };
+
 
   
 }//end namespace details
