@@ -33,7 +33,9 @@ private:
 	      >::type * = nullptr
 	    >
   void computeImpl(const U & y, T & R,
-		   model_type & model, time_type t){
+		   model_type & model, time_type t,
+		   size_t stateSz, size_t resSz)
+  {
     model.residual(*y.data(), *R.data(), t);
   }
   //----------------------------------------------------------------
@@ -48,7 +50,9 @@ private:
   	      >::type * = nullptr
   	    >
   void computeImpl(const U & y, T & R,
-  		   model_type & model, time_type t){
+  		   model_type & model, time_type t,
+		   size_t stateSz, size_t resSz)
+  {
     model.residual(y, R, t);
   }
 

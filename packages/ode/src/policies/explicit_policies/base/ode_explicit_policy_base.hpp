@@ -17,8 +17,8 @@ class explicitResidualPolicyBase
 {
 public:
   void compute(const state_type & y, residual_type & R,
-         model_type & model, time_type t){
-    this->underlying().computeImpl(y, R, model, t);
+         model_type & model, time_type t, size_t stateSz, size_t resSz){
+    this->underlying().computeImpl(y, R, model, t, stateSz, resSz);
   }
 private:
   using derived_t = derived_type<state_type,residual_type,

@@ -57,20 +57,23 @@ protected:
 protected:
 
   //TODO: sfinae out for special cases, like native operators
-  void doStepImpl(state_type & y_inout,
+  void doStepImpl(state_type & y,
 		  ode::details::time_type t,
 		  ode::details::time_type dt )
   {
-    size_t nEl = sizer_type::getSize(y_inout);
-    sizer_type::resize(RHS_, nEl);
+    size_t ySz = sizer_type::getSize(y);
+
+    // rhs has to be same size of lhs
+    sizer_type::resize(RHS_, ySz);
+
     //eval RHS
-    this->residual_policy_obj_->compute(y_inout,
-    					RHS_,
-    					*(this->model_), t);
+    this->residual_policy_obj_->compute(y, RHS_,
+					*(this->model_),
+					t, ySz, ySz);
     
     //out = in + dt * rhs
-    for (size_t i=0; i < nEl; i++){
-      y_inout[i] += dt*RHS_[i];
+    for (size_t i=0; i < ySz; i++){
+      y[i] += dt*RHS_[i];
     }
   }
   //----------------------------------------------------------------

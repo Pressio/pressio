@@ -20,8 +20,9 @@ class implicitEulerJacobianPolicyBase
 public:
   void compute(const state_type & y, jacobian_type & J,
 	       model_type & model, time_type t, time_type dt){
-    this->underlying().computeImpl(y,J,model,t,dt);
+    this->underlying().computeImpl(y, J, model, t, dt);
   } 
+
 private:
   using derived_t = derived_type<state_type,jacobian_type,
 				 model_type, time_type, Args...>;

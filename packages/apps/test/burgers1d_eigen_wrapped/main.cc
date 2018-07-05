@@ -31,15 +31,6 @@ struct mysizer{
  };
 };
 
-// struct stateResizer{
-//   using native_state_t = apps::burgers1dEigen::state_type;
-//   using vec_t = core::vector<native_state_t>;
-//   void operator()(const vec_t & source, vec_t & dest){
-//     if ( dest.size()!=source.size() )
-//       dest.resize(source.size());
-//   };
-// };
-
 int main(int argc, char *argv[])
 {
   using native_state_t = apps::burgers1dEigen::state_type;

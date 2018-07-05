@@ -77,7 +77,8 @@ protected:
   }//end doStepImpl
   
   void residualImpl(const state_type & y, state_type & R){
-    this->residual_policy_obj_->compute(y, y_nm1_, R, *(this->model_), t_, dt_);
+    this->residual_policy_obj_->compute(y, y_nm1_, R,
+					*(this->model_), t_, dt_);
   }
   void jacobianImpl(const state_type & y, jacobian_type & J){
     this->jacobian_policy_obj_->compute(y, J, *(this->model_), t_, dt_);

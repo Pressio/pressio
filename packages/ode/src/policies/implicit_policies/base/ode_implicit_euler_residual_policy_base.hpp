@@ -21,7 +21,7 @@ public:
   void compute(const state_type & y, const state_type & ynm1,
 	       residual_type & R, model_type & model,
 	       time_type t, time_type dt){
-    this->underlying().computeImpl(y,ynm1,R,model,t,dt);
+    this->underlying().computeImpl(y, ynm1, R, model, t, dt);
   } 
 
 private:
