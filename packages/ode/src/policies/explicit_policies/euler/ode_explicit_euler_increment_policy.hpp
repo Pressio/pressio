@@ -38,13 +38,14 @@ private:
   //----------------------------------------------------------------
   template <typename U = state_type,
 	    typename T = residual_type,
+	    typename sizer_t, 
 	    typename std::enable_if<
 	      core::meta::is_coreVectorWrapper<U>::value==true &&
 	      core::meta::is_coreVectorWrapper<T>::value==true
 	    >::type * = nullptr>
   void computeImpl(const U & y, T & R,
 		   model_type & model, time_type t,
-		   size_t stateSz, size_t resSz)
+		   sizer_t & sizerObj)
   { 
     // reconstruct the solution
     yFull_ = *y0ptr_ + y;
@@ -57,7 +58,8 @@ private:
   // enable for general type, NOT from core
   //----------------------------------------------------------------
   template <typename U = state_type,
-  	    typename T = residual_type,	    
+  	    typename T = residual_type,
+	    typename sizer_t, 
   	    typename
   	    std::enable_if<
   	      core::meta::is_coreVectorWrapper<U>::value==false &&
@@ -66,14 +68,18 @@ private:
   	    >
   void computeImpl(const U & y, T & R,
   		   model_type & model, time_type t,
-		   size_t stateSz, size_t resSz)
+		   sizer_t & sizerObj)
   {
+    auto stateSz = sizerObj.getSize(y);
+    if (sizerObj.getSize(R)==0)
+      sizerObj.resize(R, sizerObj.getSize(y));
+
     // reconstruct the solution
     for (size_t i=0; i<stateSz; i++)
       yFull_[i] = *y0ptr_[i] + y[i];
 
     auto zero = static_cast<decltype(R[0])>(0);
-    for (size_t i=0; i<resSz; i++)
+    for (size_t i=0; i<stateSz; i++)
       R[i] = zero;
     
     model.residual(yFull_, R, t);

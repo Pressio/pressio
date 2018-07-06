@@ -21,6 +21,7 @@ private:
   using model_t = typename step_traits::model_t;
   using time_t = typename step_traits::time_t;
   using residual_policy_t = typename step_traits::residual_policy_t;
+  using sizer_t = typename step_traits::sizer_t;
 
   using order_t = typename step_traits::order_t;
   static constexpr order_t order_value = step_traits::order_value;
@@ -38,15 +39,16 @@ public:
   order_t order() const{
     return order_value;
   }
-  void doStep(state_t &inout, time_t t, time_t dt){
-    this->stepper()->doStepImpl(inout, t, dt);
+  template<typename step_t>
+  void doStep(state_t &inout, time_t t, time_t dt, step_t step){
+    this->stepper()->doStepImpl(inout, t, dt, step);
   }
 
 private:    
   explicitStepperBase(model_t & model,
 		      residual_policy_t & res_policy_obj)
     : model_(&model),
-      residual_policy_obj_(&res_policy_obj)
+      residual_obj_(&res_policy_obj)
   {}
   explicitStepperBase() = delete;
   ~explicitStepperBase() = default;
@@ -63,8 +65,9 @@ private:
 
 protected:
   model_t * model_;
-  residual_policy_t * residual_policy_obj_;
-
+  residual_policy_t * residual_obj_;
+  sizer_t mysizer_;
+  
 };//end class
 }//end namespace
 #endif

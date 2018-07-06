@@ -36,7 +36,7 @@ class explicitEulerStepper<state_type,
 					    model_type, time_type>
 					  >
 {
-private:
+public:
   using pol_t = ode::policy::explicitEulerStandardResidual<
     state_type,residual_type,model_type,time_type>;
 

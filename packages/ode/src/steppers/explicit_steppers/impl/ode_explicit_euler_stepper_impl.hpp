@@ -42,6 +42,11 @@ private:
   using stepper_base_t = explicitStepperBase<stepper_t>;
 
 protected:
+  using stepper_base_t::model_;
+  using stepper_base_t::residual_obj_;
+  using stepper_base_t::mysizer_;
+  
+protected:
   template < typename T = model_type,
   	     typename U = residual_policy_type,
 	     typename... Args>
@@ -55,21 +60,16 @@ protected:
   ~explicitEulerStepperImpl() = default;
 
 protected:
-
-  //TODO: sfinae out for special cases, like native operators
+  template<typename step_t>
   void doStepImpl(state_type & y,
-		  ode::details::time_type t,
-		  ode::details::time_type dt )
+		  time_type t,
+		  time_type dt,
+		  step_t step)
   {
     size_t ySz = sizer_type::getSize(y);
 
-    // rhs has to be same size of lhs
-    sizer_type::resize(RHS_, ySz);
-
     //eval RHS
-    this->residual_policy_obj_->compute(y, RHS_,
-					*(this->model_),
-					t, ySz, ySz);
+    residual_obj_->compute(y, RHS_, *model_, t, mysizer_);
     
     //out = in + dt * rhs
     for (size_t i=0; i < ySz; i++){

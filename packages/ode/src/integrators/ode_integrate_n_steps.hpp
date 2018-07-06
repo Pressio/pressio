@@ -4,9 +4,9 @@
 
 #include "ode_ConfigDefs.hpp"
 #include "../meta/ode_meta.hpp"
-#include "../steppers/implicit_steppers/ode_implicit_stepper_traits.hpp"
-//#include "../steppers/explicit_steppers/ode_explicit_stepper_traits.hpp"
 #include "./impl/ode_integrate_n_steps_impl.hpp"
+#include "../steppers/implicit_steppers/ode_implicit_stepper_traits.hpp"
+#include "../steppers/explicit_steppers/ode_explicit_stepper_traits.hpp"
 
 namespace ode{
   
@@ -23,17 +23,19 @@ template<typename stepper_type, typename state_type,
 	   ode::details::traits<typename
 				stepper_type::base_t>::advanceIncrement==false
 	   >::type * = nullptr >
-void integrateNSteps(stepper_type & stepper, state_type & yIn,
-		     time_type start_time, time_type dt,
-		     integral_type num_steps, collector_type & collector)
+void integrateNSteps(stepper_type & stepper,
+		     state_type & yIn,
+		     time_type start_time,
+		     time_type dt,
+		     integral_type num_steps,
+		     collector_type & collector)
 {
   impl::integrateNStepsImpl(stepper, yIn, start_time,
 			    dt, num_steps, collector);
-}
-
-  
+}  
 //----------------------------------------------------------------
 
+  
   
 /* enable if: 
    (1) advancing the increment wrt y0
@@ -65,6 +67,9 @@ void integrateNSteps(stepper_type & stepper, state_type & yIn,
     yIn[i] += y[i];
 }
 //----------------------------------------------------------------
+
+
+
   
 
 // template<typename stepper_type,
