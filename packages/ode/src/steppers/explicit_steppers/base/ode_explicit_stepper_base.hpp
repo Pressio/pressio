@@ -59,14 +59,13 @@ private:
   stepper_type * stepper( ){
     return static_cast< stepper_type* >( this );
   }
-  const stepper_type * stepper( void ) const{
+  const stepper_type * stepper( ) const{
     return static_cast< const stepper_type* >( this );
   }
 
 protected:
   model_t * model_;
   residual_policy_t * residual_obj_;
-  sizer_t mysizer_;
   
 };//end class
 }//end namespace

@@ -10,21 +10,22 @@
 #include "apps_burgers1d_eigen.hpp"
 // integrator
 #include "integrators/ode_integrate_n_steps.hpp"
-// policies
-#include "policies/implicit_policies/euler/ode_implicit_euler_residual_increment_policy.hpp"
-#include "policies/implicit_policies/euler/ode_implicit_euler_jacobian_increment_policy.hpp"
-#include "policies/implicit_policies/bdf/ode_implicit_bdf2_residual_increment_policy.hpp"
-#include "policies/implicit_policies/bdf/ode_implicit_bdf2_jacobian_increment_policy.hpp"
-#include "policies/implicit_policies/adams_moulton/ode_implicit_adams_moulton1_residual_increment_policy.hpp"
-#include "policies/implicit_policies/adams_moulton/ode_implicit_adams_moulton1_jacobian_increment_policy.hpp"
+// // policies
+// #include "policies/implicit_policies/euler/ode_implicit_euler_residual_increment_policy.hpp"
+// #include "policies/implicit_policies/euler/ode_implicit_euler_jacobian_increment_policy.hpp"
+// #include "policies/implicit_policies/bdf/ode_implicit_bdf2_residual_increment_policy.hpp"
+// #include "policies/implicit_policies/bdf/ode_implicit_bdf2_jacobian_increment_policy.hpp"
+// #include "policies/implicit_policies/adams_moulton/ode_implicit_adams_moulton1_residual_increment_policy.hpp"
+// #include "policies/implicit_policies/adams_moulton/ode_implicit_adams_moulton1_jacobian_increment_policy.hpp"
 // steppers
 #include "steppers/explicit_steppers/ode_explicit_euler_stepper.hpp"
-#include "steppers/implicit_steppers/ode_implicit_euler_stepper.hpp"
-#include "steppers/implicit_steppers/ode_implicit_bdf2_stepper.hpp"
-#include "steppers/implicit_steppers/ode_implicit_adams_moulton1_stepper.hpp"
+#include "steppers/explicit_steppers/ode_explicit_runge_kutta4_stepper.hpp"
+// #include "steppers/implicit_steppers/ode_implicit_euler_stepper.hpp"
+// #include "steppers/implicit_steppers/ode_implicit_bdf2_stepper.hpp"
+// #include "steppers/implicit_steppers/ode_implicit_adams_moulton1_stepper.hpp"
 // solvers
-#include "experimental/solvers_linear_eigen.hpp"
-#include "experimental/solvers_nonlinear_newton_raphson.hpp"
+// #include "experimental/solvers_linear_eigen.hpp"
+// #include "experimental/solvers_nonlinear_newton_raphson.hpp"
 
 
 struct mysizer{
@@ -36,6 +37,7 @@ struct mysizer{
    obj.resize(newSize);
  };
 };
+
 
 int main(int argc, char *argv[])
 {
@@ -49,15 +51,52 @@ int main(int argc, char *argv[])
   appObj.setup();
 
   // integrate in time startxbi5ng from y0
-  scalar_t dt = 0.01;
+  scalar_t dt = 0.001;
   scalar_t final_t = 35;
 
   using state_t = core::vector<native_state_t>;
   using residual_t = state_t;
   native_state_t y0n = appObj.getInitialState();
-  state_t y0(y0n);
   snapshot_collector collectorObj;
 
+  {
+    //********************************************
+    // EXPLICIT EULER
+    //********************************************
+    state_t y0(y0n);
+
+    using stepper_t = ode::explicitEulerStepper<
+      state_t, residual_t, scalar_t,
+      model_eval_t, scalar_t, mysizer>;
+    stepper_t stepperObj(appObj);
+    
+    ode::integrateNSteps(stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
+    //    std::cout << collectorObj.getCount() << std::endl;
+    std::cout << "Final solution " << std::endl;
+    for (int i=0; i<y0.size(); ++i)
+      std::cout << std::setprecision(14) << y0[i]  << " ";
+    std::cout << std::endl;
+  }
+
+  {
+    //********************************************
+    // EXPLICIT RK4
+    //********************************************
+    state_t y0(y0n);
+
+    using stepper_t = ode::explicitRungeKutta4Stepper<
+      state_t, residual_t, scalar_t,
+      model_eval_t, scalar_t, mysizer>;
+    stepper_t stepperObj(appObj);
+    
+    ode::integrateNSteps(stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
+    //    std::cout << collectorObj.getCount() << std::endl;
+    std::cout << "Final solution " << std::endl;
+    for (int i=0; i<y0.size(); ++i)
+      std::cout << std::setprecision(14) << y0[i]  << " ";
+    std::cout << std::endl;
+  }
+  
   // {
   //   using jac_t = core::matrix<native_jac_t>;
 
@@ -157,23 +196,6 @@ int main(int argc, char *argv[])
   //   // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
   //   // // // std::cout << std::endl;
   // }
-
-  {
-    //********************************************
-    // EXPLICIT EULER
-    //********************************************
-    using stepper_t = ode::explicitEulerStepper<
-      state_t, residual_t, scalar_t,
-      model_eval_t, scalar_t, mysizer>;
-    stepper_t stepperObj(appObj);
-    
-    ode::integrateNSteps(stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
-    //    std::cout << collectorObj.getCount() << std::endl;
-    std::cout << "Final solution " << std::endl;
-    for (int i=0; i<y0.size(); ++i)
-      std::cout << std::setprecision(14) << y0[i]  << " ";
-    std::cout << std::endl;
-  }
     
   return 0;
 }

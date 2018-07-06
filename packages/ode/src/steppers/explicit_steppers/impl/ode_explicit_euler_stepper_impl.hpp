@@ -31,6 +31,7 @@ class explicitEulerStepperImpl<state_type,
 			   sizer_type,
 			   residual_policy_type> >
 {  
+
 private:
   using stepper_t = explicitEulerStepperImpl<state_type,
 					     residual_type,
@@ -44,7 +45,6 @@ private:
 protected:
   using stepper_base_t::model_;
   using stepper_base_t::residual_obj_;
-  using stepper_base_t::mysizer_;
   
 protected:
   template < typename T = model_type,
@@ -66,13 +66,12 @@ protected:
 		  time_type dt,
 		  step_t step)
   {
-    size_t ySz = sizer_type::getSize(y);
-
     //eval RHS
-    residual_obj_->compute(y, RHS_, *model_, t, mysizer_);
+    residual_obj_->compute(y, RHS_, *model_, t);
     
     //out = in + dt * rhs
-    for (size_t i=0; i < ySz; i++){
+    auto ySz = sizer_type::getSize(y);
+    for (decltype(ySz) i=0; i < ySz; i++){
       y[i] += dt*RHS_[i];
     }
   }
@@ -80,8 +79,9 @@ protected:
   
 private:
   friend stepper_base_t;
+
   residual_type RHS_;
-  // inherited: model_, residual_policy_obj_
+  // inherited: model_, residual_obj_
   
 }; //end class
 

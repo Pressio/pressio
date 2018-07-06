@@ -3,9 +3,14 @@
 #define ODE_EXPLICIT_EULER_STEPPER_HPP_
 
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
+#include "./impl/ode_explicit_runge_kutta4_stepper_impl.hpp"
 
 namespace ode{
 
+///////////////////////
+// Standard policy 
+/////////////////////// 
+  
 template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
@@ -33,12 +38,12 @@ class explicitEulerStepper<state_type,
 					  sizer_type,
 					  ode::policy::explicitEulerStandardResidual<
 					    state_type, residual_type,
-					    model_type, time_type>
+					    model_type, time_type, sizer_type>
 					  >
 {
 public:
   using pol_t = ode::policy::explicitEulerStandardResidual<
-    state_type,residual_type,model_type,time_type>;
+  state_type, residual_type, model_type, time_type, sizer_type>;
 
   using base_t = impl::explicitEulerStepperImpl<state_type,
 						residual_type,
@@ -68,6 +73,10 @@ private:
 ////////////////////////////////////////////////////////////
 
 
+
+///////////////////////
+// NON Standard policy 
+/////////////////////// 
   
 template<typename state_type,
 	 typename residual_type,

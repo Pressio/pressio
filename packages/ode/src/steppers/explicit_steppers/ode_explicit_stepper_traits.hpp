@@ -24,14 +24,6 @@ struct traits<impl::explicitEulerStepperImpl<state_type,
 					     residual_policy_type>
 	      >
 {
-  using stepper_t =
-    impl::explicitEulerStepperImpl<state_type,
-				   residual_type,
-				   scalar_type,
-				   model_type,
-				   time_type,
-				   sizer_type,
-				   residual_policy_type>;
   using state_t =  state_type;
   using residual_t = residual_type;
   using scalar_t = scalar_type;
@@ -46,6 +38,42 @@ struct traits<impl::explicitEulerStepperImpl<state_type,
   static constexpr order_t order_value = 1;    
 };
 
+
+////////////////////////////////////////////////////////////////
+
+
+template<typename state_type,
+	 typename residual_type,
+	 typename scalar_type,
+	 typename model_type,
+	 typename time_type,
+	 typename sizer_type,
+	 typename residual_policy_type
+	 >
+struct traits<impl::explicitRungeKutta4StepperImpl<state_type,
+						   residual_type,
+						   scalar_type,
+						   model_type,
+						   time_type,
+						   sizer_type,
+						   residual_policy_type>
+	      >
+{
+  using state_t =  state_type;
+  using residual_t = residual_type;
+  using scalar_t = scalar_type;
+  using model_t = model_type;
+  using time_t = time_type;
+  using sizer_t = sizer_type;
+  using residual_policy_t = residual_policy_type;
+
+  static constexpr bool advanceIncrement = residual_policy_t::advanceIncrement;
+  
+  using order_t = unsigned int;
+  static constexpr order_t order_value = 4;
+};
+
+
   
 }//end namespace details
 }//end namespace ode
@@ -54,33 +82,6 @@ struct traits<impl::explicitEulerStepperImpl<state_type,
 
 
 
-
-
-// template<typename state_type,
-// 	 typename residual_type,
-// 	 typename scalar_type,
-// 	 typename model_type,
-// 	 typename time_type,
-// 	 typename residual_policy_type
-// 	 >
-// struct traits<explicitRungeKutta4Stepper<state_type, residual_type,
-// 					 scalar_type,
-// 					 model_type, time_type,
-// 					 residual_policy_type> >
-// {
-//   using stepper_t = explicitRungeKutta4Stepper<state_type,
-// 					       residual_type, scalar_type,
-// 					       model_type, time_type,
-// 					       residual_policy_type>;
-//   using state_t =  state_type;
-//   using residual_t = residual_type;
-//   using scalar_t = scalar_type;
-//   using model_t = model_type;
-//   using time_t = time_type;
-//   using residual_policy_t = residual_policy_type;
-//   using order_t = unsigned int;
-//   static constexpr order_t order_value = 4;
-// };
 
   
   

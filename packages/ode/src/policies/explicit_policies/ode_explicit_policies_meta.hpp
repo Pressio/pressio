@@ -2,15 +2,16 @@
 #ifndef ODE_EXPLICIT_POLICIES_META_HPP_
 #define ODE_EXPLICIT_POLICIES_META_HPP_
 
-#include "./base/ode_explicit_policy_base.hpp"
+#include "./base/ode_explicit_residual_policy_base.hpp"
 #include "./euler/ode_explicit_euler_standard_policy.hpp"
-// #include "ode_explicit_runge_kutta4_standard_policy.hpp"
+#include "./runge_kutta/ode_explicit_runge_kutta4_standard_policy.hpp"
 
 
 namespace ode{
 namespace meta {
   
-template<typename policy_t, typename enable = void>
+template<typename policy_t,
+	 typename enable = void>
 struct isLegitimateExplicitResidualPolicy : std::false_type{};
   
 template <template <typename...> class policy_t,
@@ -18,39 +19,85 @@ template <template <typename...> class policy_t,
 	  typename residual_type,
 	  typename model_type,
 	  typename time_type,
+	  typename sizer_type,
 	  typename ...Args>
 struct isLegitimateExplicitResidualPolicy<
-  policy_t<state_type, residual_type,model_type, time_type, Args...>,
+  policy_t<state_type, residual_type,
+	   model_type, time_type, sizer_type, Args...>,
   typename std::enable_if<
     core::meta::publiclyInheritsFrom<
-      policy_t<state_type,residual_type,model_type,time_type,Args...>,
-      ode::policy::explicitResidualPolicyBase<policy_t,state_type,
-					      residual_type,model_type,
-					      time_type, Args...
+      policy_t<state_type, residual_type,
+	       model_type, time_type, sizer_type, Args...>,
+      ode::policy::explicitResidualPolicyBase<policy_t, state_type,
+					      residual_type, model_type,
+					      time_type, sizer_type, Args...
 					      >
                                     >::value
                          >::type
   > : std::true_type{};
+
+
 //-----------------------------------------------------------------
 
-template<typename policy_t, typename enable = void>
+  
+template<typename policy_t,
+	 typename enable = void>
 struct isExplicitEulerResidualStandardPolicy: std::false_type{};
 
 template <template <typename...> class policy_t,
 	  typename state_type,
 	  typename residual_type,
 	  typename model_type,
-	  typename time_type>
+	  typename time_type,
+	  typename sizer_type>
 struct isExplicitEulerResidualStandardPolicy<
-  policy_t<state_type, residual_type,model_type, time_type>,
+  policy_t<state_type, residual_type,
+	   model_type, time_type, sizer_type>,
   typename std::enable_if<
-    std::is_same<policy_t<state_type, residual_type,model_type, time_type>,
+    std::is_same<policy_t<state_type, residual_type,
+			  model_type, time_type, sizer_type>,
 		 ode::policy::explicitEulerStandardResidual<
-		   state_type, residual_type,model_type, time_type>
+		   state_type, residual_type,
+		   model_type, time_type, sizer_type>
 		 >::value
 			  >::type
   > : std::true_type{};
 //----------------------------------------------------------------
+
+
+template<typename policy_t,
+	 typename enable = void>
+struct isExplicitRungeKutta4ResidualStandardPolicy: std::false_type{};
+
+template <template <typename...> class policy_t,
+	  typename state_type,
+	  typename residual_type,
+	  typename model_type,
+	  typename time_type,
+	  typename sizer_type>
+struct isExplicitRungeKutta4ResidualStandardPolicy<
+  policy_t<state_type, residual_type,
+	   model_type, time_type, sizer_type>,
+  typename std::enable_if<
+    std::is_same<policy_t<state_type, residual_type,
+			  model_type, time_type, sizer_type>,
+		 ode::policy::explicitRungeKutta4StandardResidual<
+		   state_type, residual_type,
+		   model_type, time_type, sizer_type>
+		 >::value
+			  >::type
+  > : std::true_type{};
+//----------------------------------------------------------------
+
+  
+
+} // namespace meta
+} // namespace core
+#endif
+
+
+
+
 
 // template<typename policy_t, typename enable = void>
 // struct isExplicitRungeKutta4ResidualStandardPolicy : std::false_type{};
@@ -71,14 +118,6 @@ struct isExplicitEulerResidualStandardPolicy<
 //   > : std::true_type{};
 // //-----------------------------------------------------------------
   
-
-} // namespace meta
-} // namespace core
-#endif
-
-
-
-
 
 
 // /*
