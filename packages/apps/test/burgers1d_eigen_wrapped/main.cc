@@ -11,14 +11,17 @@
 // integrator
 #include "integrators/ode_integrate_n_steps.hpp"
 // policies
-#include "policies/implicit_policies/ode_implicit_euler_residual_increment_policy.hpp"
-#include "policies/implicit_policies/ode_implicit_euler_jacobian_increment_policy.hpp"
-#include "policies/implicit_policies/ode_implicit_bdf2_residual_increment_policy.hpp"
-#include "policies/implicit_policies/ode_implicit_bdf2_jacobian_increment_policy.hpp"
+#include "policies/implicit_policies/euler/ode_implicit_euler_residual_increment_policy.hpp"
+#include "policies/implicit_policies/euler/ode_implicit_euler_jacobian_increment_policy.hpp"
+#include "policies/implicit_policies/bdf/ode_implicit_bdf2_residual_increment_policy.hpp"
+#include "policies/implicit_policies/bdf/ode_implicit_bdf2_jacobian_increment_policy.hpp"
+#include "policies/implicit_policies/adams_moulton/ode_implicit_adams_moulton1_residual_increment_policy.hpp"
+#include "policies/implicit_policies/adams_moulton/ode_implicit_adams_moulton1_jacobian_increment_policy.hpp"
 // steppers
 #include "steppers/explicit_steppers/ode_explicit_euler_stepper.hpp"
 #include "steppers/implicit_steppers/ode_implicit_euler_stepper.hpp"
 #include "steppers/implicit_steppers/ode_implicit_bdf2_stepper.hpp"
+#include "steppers/implicit_steppers/ode_implicit_adams_moulton1_stepper.hpp"
 // solvers
 #include "experimental/solvers_linear_eigen.hpp"
 #include "experimental/solvers_nonlinear_newton_raphson.hpp"
@@ -59,9 +62,6 @@ int main(int argc, char *argv[])
   {
     using jac_t = core::matrix<native_jac_t>;
 
-    //********************************************
-    // IMPLICIT BDF2
-    //********************************************
     // linear solver
     using lin_solve_t =
       solvers::experimental::linearSolver<jac_t,state_t,state_t>;
@@ -79,12 +79,12 @@ int main(int argc, char *argv[])
     // using aux_jac_pol_t = ode::policy::implicitEulerIncrementJacobian<
     //   state_t, jac_t, model_eval_t, scalar_t>;
     // aux_jac_pol_t auxJacObj(y0);
-    //stepper
-    using aux_stepper_t = ode::implicitEulerStepper<
-      state_t, residual_t, jac_t, scalar_t,
-      model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
-    //      aux_res_pol_t, aux_jac_pol_t>;
-    aux_stepper_t auxStepperObj(appObj, nonls);//, auxResObj, auxJacObj);
+    // //stepper
+    // using aux_stepper_t = ode::implicitEulerStepper<
+    //   state_t, residual_t, jac_t, scalar_t,
+    //   model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
+    // //      aux_res_pol_t, aux_jac_pol_t>;
+    // aux_stepper_t auxStepperObj(appObj, nonls);//, auxResObj, auxJacObj);
 
     // now define the target stepper 
     // using res_pol_t = ode::policy::implicitBDF2IncrementResidual<
@@ -93,12 +93,20 @@ int main(int argc, char *argv[])
     // using jac_pol_t = ode::policy::implicitBDF2IncrementJacobian<
     //   state_t, jac_t, model_eval_t, scalar_t>;
     // jac_pol_t jacObj(y0);
+
+    // //stepper
+    // using stepper_t = ode::implicitBDF2Stepper<
+    //   state_t, residual_t, jac_t, scalar_t,
+    //   model_eval_t, scalar_t, mysizer, nonlin_solve_t,
+    //   aux_stepper_t>;//, res_pol_t, jac_pol_t>;
+    // stepper_t stepperObj(appObj, nonls, auxStepperObj);//, resObj, jacObj);
+
     //stepper
-    using stepper_t = ode::implicitBDF2Stepper<
+    //using stepper_t = ode::implicitEulerStepper<
+    using stepper_t = ode::implicitAdamsMoulton1Stepper<
       state_t, residual_t, jac_t, scalar_t,
-      model_eval_t, scalar_t, mysizer, nonlin_solve_t,
-      aux_stepper_t>;//, res_pol_t, jac_pol_t>;
-    stepper_t stepperObj(appObj, nonls, auxStepperObj);//, resObj, jacObj);
+      model_eval_t, scalar_t, mysizer, nonlin_solve_t>;//, res_pol_t, jac_pol_t>;
+    stepper_t stepperObj(appObj, nonls);//, resObj, jacObj);
     
     ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
     // // // // // std::cout << collectorObj.getCount() << std::endl;

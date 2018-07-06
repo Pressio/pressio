@@ -3,8 +3,8 @@
 #define ODE_EXPLICIT_EULER_INCREMENT_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "./base/ode_explicit_policy_base.hpp"
-#include "../common/ode_advance_increment_policy_base.hpp"
+#include "../base/ode_explicit_policy_base.hpp"
+#include "../../common/ode_advance_increment_policy_base.hpp"
 
 namespace ode{
 namespace policy{
@@ -80,7 +80,7 @@ private:
   }
 
 private:
-  friend implicitEulerResidualPolicyBase<explicitEulerIncrementResidual,
+  friend explicitResidualPolicyBase<explicitEulerIncrementResidual,
 					 state_type, residual_type,
 					 model_type, time_type>;
   friend baseIncr_t;

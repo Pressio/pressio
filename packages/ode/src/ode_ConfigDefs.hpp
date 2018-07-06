@@ -5,6 +5,8 @@
 #include "ode_config.h"
 #include "core_ConfigDefs.hpp"
 #include "meta/core_meta_basic.hpp"
+#include "vector/core_vector_traits.hpp"
+#include "matrix/core_matrix_traits.hpp"
 //#include "core_crtp_helper.hpp"
 
 namespace ode{

@@ -101,6 +101,9 @@ private:
   void setZeroImpl() {
     this->putScalarImpl( static_cast<sc_t>(0) );
   }
+  bool emptyImpl() const{
+    return data_.empty();
+  }
 
   //----------------
   //from serial base
@@ -110,9 +113,6 @@ private:
   }
   void resizeImpl(ord_t val) {
     data_.resize(val);
-  }
-  bool emptyImpl() const{
-    return data_.empty();
   }
 
   //----------------

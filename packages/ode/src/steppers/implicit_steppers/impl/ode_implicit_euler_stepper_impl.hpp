@@ -54,6 +54,14 @@ private:
   using stepper_base_t = implicitStepperBase<stepper_t>;
 
 protected:
+  using stepper_base_t::model_;
+  using stepper_base_t::solver_;
+  using stepper_base_t::residual_obj_;
+  using stepper_base_t::jacobian_obj_;
+  using stepper_base_t::t_;
+  using stepper_base_t::dt_;
+
+protected:
   template < typename M = model_type,
 	     typename S = solver_policy_type,
 	     typename U = residual_policy_type,
@@ -64,7 +72,7 @@ protected:
 			   U & res_policy_obj,
 			   T & jac_policy_obj,
 			   Args&& ... rest)
-    : stepper_base_t(model, res_policy_obj, jac_policy_obj), solver_(&solver),
+    : stepper_base_t(model, solver, res_policy_obj, jac_policy_obj), 
       y_nm1_(std::forward<Args>(rest)...)
   {}
     
@@ -75,25 +83,23 @@ protected:
   template<typename step_t>
   void doStepImpl(state_type & y, time_type t, time_type dt, step_t step )
   {
-    y_nm1_ = y;
     dt_ = dt;
     t_ = t;
+    y_nm1_ = y;
     solver_->solve(y, *this);
   }//end doStepImpl
 
-  void residualImpl(const state_type & y, state_type & R){
-    this->residual_policy_obj_->compute(y, y_nm1_, R,
-					*(this->model_), t_, dt_);
+  void residualImpl(const state_type & y, residual_type & R){
+    residual_obj_->compute(y, y_nm1_, R,
+					*(model_), t_, dt_);
   }
   void jacobianImpl(const state_type & y, jacobian_type & J){
-    this->jacobian_policy_obj_->compute(y, J, *(this->model_), t_, dt_);
+    jacobian_obj_->compute(y, J, *(model_), t_, dt_);
   }
 
 private:
   friend stepper_base_t;
-  solver_policy_type * solver_;
-  time_type t_;
-  time_type dt_;
+
   state_type y_nm1_;
 
 }; //end class

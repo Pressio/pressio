@@ -22,8 +22,10 @@ private:
   using sc_t = typename traits::scalar_t;
   using model_t = typename traits::model_t;
   using time_t = typename traits::time_t;
+  using solver_t = typename traits::solver_policy_t;
   using residual_policy_t = typename traits::residual_policy_t;  
   using jacobian_policy_t = typename traits::jacobian_policy_t;  
+
   using order_t = typename traits::order_t; 
   static constexpr order_t order_value = ode::details::traits<stepper_type>::order_value;
 
@@ -57,11 +59,13 @@ public:
 
 private:
   implicitStepperBase(model_t & model,
+		      solver_t & solver,
 		      residual_policy_t & res_policy_obj,
 		      jacobian_policy_t & jac_policy_obj)
     : model_(&model),
-      residual_policy_obj_(&res_policy_obj),
-      jacobian_policy_obj_(&jac_policy_obj)
+      solver_(&solver),
+      residual_obj_(&res_policy_obj),
+      jacobian_obj_(&jac_policy_obj)
   {}
   
   ~implicitStepperBase(){}
@@ -78,8 +82,12 @@ private:
 
 protected:
   model_t * model_;
-  residual_policy_t * residual_policy_obj_;
-  jacobian_policy_t * jacobian_policy_obj_;
+  solver_t * solver_;
+  residual_policy_t * residual_obj_;
+  jacobian_policy_t * jacobian_obj_;
+
+  time_t t_;
+  time_t dt_;
 
 };//end class
 }//end namespace  

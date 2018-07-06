@@ -29,16 +29,23 @@ public:
   wrap_t const * data() const {
     return this->underlying().dataImpl();
   }
+
   wrap_t * data(){
     return this->underlying().dataImpl();
   }
+
   void putScalar(sc_t value) {
     this->underlying().putScalarImpl(value);
   }
+
   void setZero() {
     this->underlying().setZeroImpl();
   }
   
+  bool empty() const {
+    return this->underlying().emptyImpl();
+  };
+
   // inherits also subscripting operator [] from base (see above)
 
 private:

@@ -3,9 +3,9 @@
 #define ODE_IMPLICIT_EULER_RESIDUAL_STANDARD_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "./impl/ode_euler_implicit_residual_impl.hpp"
-#include "./base/ode_implicit_euler_residual_policy_base.hpp"
-#include "../common/ode_advance_full_state_policy_base.hpp"
+#include "../impl/ode_euler_implicit_residual_impl.hpp"
+#include "../base/ode_implicit_euler_residual_policy_base.hpp"
+#include "../../common/ode_advance_full_state_policy_base.hpp"
 
 namespace ode{
 namespace policy{

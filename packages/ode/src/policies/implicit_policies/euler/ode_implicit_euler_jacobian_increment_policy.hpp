@@ -1,34 +1,34 @@
 
-#ifndef ODE_IMPLICIT_BDF2_JACOBIAN_INCREMENT_POLICY_HPP_
-#define ODE_IMPLICIT_BDF2_JACOBIAN_INCREMENT_POLICY_HPP_
+#ifndef ODE_IMPLICIT_EULER_JACOBIAN_INCREMENT_POLICY_HPP_
+#define ODE_IMPLICIT_EULER_JACOBIAN_INCREMENT_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "./impl/ode_bdf2_implicit_jacobian_impl.hpp"
-#include "./base/ode_implicit_bdf2_jacobian_policy_base.hpp"
-#include "../common/ode_advance_increment_policy_base.hpp"
+#include "../impl/ode_euler_implicit_jacobian_impl.hpp"
+#include "../base/ode_implicit_euler_jacobian_policy_base.hpp"
+#include "../../common/ode_advance_increment_policy_base.hpp"
 
 namespace ode{
 namespace policy{
 
 template<typename state_type, typename jacobian_type,
 	 typename model_type, typename time_type>
-class implicitBDF2IncrementJacobian
-  : public implicitBDF2JacobianPolicyBase<implicitBDF2IncrementJacobian,
+class implicitEulerIncrementJacobian
+  : public implicitEulerJacobianPolicyBase<implicitEulerIncrementJacobian,
 					   state_type, jacobian_type,
 					   model_type, time_type>,
-  public advanceIncrementPolicyBase<implicitBDF2IncrementJacobian,
+  public advanceIncrementPolicyBase<implicitEulerIncrementJacobian,
 			     state_type, jacobian_type,
 			     model_type, time_type>
 {
 private:
-  using baseIncr_t = advanceIncrementPolicyBase<implicitBDF2IncrementJacobian,
+  using baseIncr_t = advanceIncrementPolicyBase<implicitEulerIncrementJacobian,
 						state_type, jacobian_type,
 						model_type, time_type>;
 
 public:
-  implicitBDF2IncrementJacobian(const state_type & y0)
+  implicitEulerIncrementJacobian(const state_type & y0)
     : baseIncr_t(y0){}
-  ~implicitBDF2IncrementJacobian() = default;
+  ~implicitEulerIncrementJacobian() = default;
 
 private:
   using baseIncr_t::yFull_;
@@ -58,11 +58,11 @@ private:
     jacobian_type A_( J.rows(), J.cols() );
     A_.setIdentity();
     // then fix it based on time stepping features
-    ode::impl::implicit_bdf2_jacobian_impl(J, A_, dt);
+    ode::impl::implicit_euler_jacobian_impl(J, A_, dt);
   }
   
 private:
-  friend implicitBDF2JacobianPolicyBase<implicitBDF2IncrementJacobian,
+  friend implicitEulerJacobianPolicyBase<implicitEulerIncrementJacobian,
            state_type,jacobian_type,
            model_type, time_type>;
   friend baseIncr_t;

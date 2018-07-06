@@ -3,9 +3,9 @@
 #define ODE_IMPLICIT_EULER_JACOBIAN_STANDARD_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "./impl/ode_euler_implicit_jacobian_impl.hpp"
-#include "./base/ode_implicit_euler_jacobian_policy_base.hpp"
-#include "../common/ode_advance_full_state_policy_base.hpp"
+#include "../impl/ode_euler_implicit_jacobian_impl.hpp"
+#include "../base/ode_implicit_euler_jacobian_policy_base.hpp"
+#include "../../common/ode_advance_full_state_policy_base.hpp"
 
 namespace ode{
 namespace policy{

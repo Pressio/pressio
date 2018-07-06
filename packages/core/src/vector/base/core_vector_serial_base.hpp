@@ -26,9 +26,6 @@ public:
   void resize(ord_t newSize) {
     this->underlying().resizeImpl(newSize);
   };
-  bool empty() const {
-    return this->underlying().emptyImpl();
-  };
     
 private:
   friend derived_type; 
