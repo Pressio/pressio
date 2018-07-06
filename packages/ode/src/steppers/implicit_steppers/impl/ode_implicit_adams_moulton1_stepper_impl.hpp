@@ -14,7 +14,6 @@ template<typename state_type,
 	 typename scalar_type,
 	 typename model_type,
 	 typename time_type,
-	 typename sizer_type,
 	 typename solver_policy_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
@@ -24,7 +23,6 @@ class implicitAdamsMoulton1StepperImpl<state_type,
 				       scalar_type,
 				       model_type,
 				       time_type,
-				       sizer_type,
 				       solver_policy_type,
 				       residual_policy_type,
 				       jacobian_policy_type>
@@ -32,7 +30,7 @@ class implicitAdamsMoulton1StepperImpl<state_type,
   implicitAdamsMoulton1StepperImpl<state_type, residual_type,
 			  jacobian_type, scalar_type,
 			  model_type, time_type,
-			  sizer_type, solver_policy_type,
+			  solver_policy_type,
 			  residual_policy_type,
 			  jacobian_policy_type> >
 { 
@@ -48,7 +46,6 @@ private:
 					    scalar_type,
 					    model_type,
 					    time_type,
-					    sizer_type,
 					    solver_policy_type,
 					    residual_policy_type,
 					    jacobian_policy_type>;

@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     //using stepper_t = ode::implicitEulerStepper<
     using stepper_t = ode::implicitAdamsMoulton1Stepper<
       state_t, residual_t, jac_t, scalar_t,
-      model_eval_t, scalar_t, mysizer, nonlin_solve_t>;//, res_pol_t, jac_pol_t>;
+      model_eval_t, scalar_t, nonlin_solve_t>;//, res_pol_t, jac_pol_t>;
     stepper_t stepperObj(appObj, nonls);//, resObj, jacObj);
     
     ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);

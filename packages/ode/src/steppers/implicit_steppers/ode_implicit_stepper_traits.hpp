@@ -13,7 +13,6 @@ template<typename state_type,
 	 typename scalar_type,
 	 typename model_type,
 	 typename time_type,
-	 typename sizer_type,
 	 typename solver_policy_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
@@ -23,7 +22,6 @@ struct traits< impl::implicitEulerStepperImpl<state_type,
 					      scalar_type,
 					      model_type,
 					      time_type,
-					      sizer_type,
 					      solver_policy_type,
 					      residual_policy_type,
 					      jacobian_policy_type>>
@@ -35,7 +33,6 @@ struct traits< impl::implicitEulerStepperImpl<state_type,
 				   scalar_type,
 				   model_type,
 				   time_type,
-				   sizer_type,
 				   solver_policy_type,
 				   residual_policy_type,
 				   jacobian_policy_type>;
@@ -45,7 +42,6 @@ struct traits< impl::implicitEulerStepperImpl<state_type,
   using scalar_t = scalar_type;    
   using model_t = model_type;
   using time_t = time_type;
-  using sizer_t = sizer_type;
   using solver_policy_t = solver_policy_type;
   using residual_policy_t = residual_policy_type;
   using jacobian_policy_t = jacobian_policy_type;
@@ -73,7 +69,6 @@ template<typename state_type,
 	 typename scalar_type,
 	 typename model_type,
 	 typename time_type,
-	 typename sizer_type,
 	 typename solver_policy_type,
 	 typename aux_start_stepper_type,
 	 typename residual_policy_type,
@@ -84,7 +79,6 @@ struct traits< impl::implicitBDF2StepperImpl<state_type,
 					     scalar_type,
 					     model_type,
 					     time_type,
-					     sizer_type,
 					     solver_policy_type,
 					     aux_start_stepper_type,
 					     residual_policy_type,
@@ -97,7 +91,6 @@ struct traits< impl::implicitBDF2StepperImpl<state_type,
 				  scalar_type,
 				  model_type,
 				  time_type,
-				  sizer_type,
 				  solver_policy_type,
 				  aux_start_stepper_type,
 				  residual_policy_type,
@@ -108,7 +101,6 @@ struct traits< impl::implicitBDF2StepperImpl<state_type,
   using scalar_t = scalar_type;    
   using model_t = model_type;
   using time_t = time_type;
-  using sizer_t = sizer_type;
   using solver_policy_t = solver_policy_type;
   using aux_stepper_t = aux_start_stepper_type;
   using residual_policy_t = residual_policy_type;
@@ -137,7 +129,6 @@ template<typename state_type,
 	 typename scalar_type,
 	 typename model_type,
 	 typename time_type,
-	 typename sizer_type,
 	 typename solver_policy_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
@@ -147,7 +138,6 @@ struct traits< impl::implicitAdamsMoulton1StepperImpl<state_type,
 						      scalar_type,
 						      model_type,
 						      time_type,
-						      sizer_type,
 						      solver_policy_type,
 						      residual_policy_type,
 						      jacobian_policy_type>>
@@ -159,7 +149,6 @@ struct traits< impl::implicitAdamsMoulton1StepperImpl<state_type,
 					   scalar_type,
 					   model_type,
 					   time_type,
-					   sizer_type,
 					   solver_policy_type,
 					   residual_policy_type,
 					   jacobian_policy_type>;
@@ -170,7 +159,6 @@ struct traits< impl::implicitAdamsMoulton1StepperImpl<state_type,
   using scalar_t = scalar_type;    
   using model_t = model_type;
   using time_t = time_type;
-  using sizer_t = sizer_type;
   using solver_policy_t = solver_policy_type;
   using residual_policy_t = residual_policy_type;
   using jacobian_policy_t = jacobian_policy_type;

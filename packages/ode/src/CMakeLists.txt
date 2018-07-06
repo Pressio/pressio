@@ -44,7 +44,7 @@ FILE(GLOB ode_implicit_policies_bdf2_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DI
     "${CMAKE_CURRENT_SOURCE_DIR}/policies/implicit_policies/bdf2/*.hpp")
 #policies adams-moulton1
 FILE(GLOB ode_implicit_policies_adams_moulton1_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/policies/implicit_policies/adams_moulton1/*.hpp")
+    "${CMAKE_CURRENT_SOURCE_DIR}/policies/implicit_policies/adams_moulton/*.hpp")
 
 #-------------------------
 # EXPLICIT POLICIES
@@ -109,7 +109,7 @@ FILE(GLOB ode_implicit_policies_bdf2_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/policies/implicit_policies/bdf2/src/*.cc")
 #policies adams-moulton1
 FILE(GLOB ode_implicit_policies_adams_moulton1_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-   "${CMAKE_CURRENT_SOURCE_DIR}/policies/implicit_policies/adams_moulton1/src/*.cc")
+   "${CMAKE_CURRENT_SOURCE_DIR}/policies/implicit_policies/adams_moulton/src/*.cc")
 
 #-------------------------
 # EXPLICIT POLICIES

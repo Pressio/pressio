@@ -13,12 +13,12 @@ namespace ode{
 template<typename state_type, typename residual_type,
 	 typename jacobian_type, typename scalar_type,
 	 typename model_type, typename time_type,
-	 typename sizer_type, typename solver_policy_type
+	 typename solver_policy_type
 	 >
 class implicitEulerStepper<state_type, residual_type,
 			   jacobian_type, scalar_type,
 			   model_type, time_type,
-			   sizer_type, solver_policy_type,
+			   solver_policy_type,
 			   void,void,
 			   typename std::enable_if<
 			     !std::is_void<state_type>::value
@@ -26,7 +26,7 @@ class implicitEulerStepper<state_type, residual_type,
   : public impl::implicitEulerStepperImpl<state_type, residual_type,
   					  jacobian_type, scalar_type,
   					  model_type, time_type,
-  					  sizer_type, solver_policy_type,
+  					  solver_policy_type,
 					  ode::policy::implicitEulerStandardResidual<
 					    state_type, residual_type,
 					    model_type, time_type>,
@@ -48,7 +48,6 @@ public:
 						scalar_type,
   						model_type,
 						time_type,
-  						sizer_type,
   						solver_policy_type,
   						res_pol_t,
 						jac_pol_t>;
@@ -88,7 +87,6 @@ template<typename state_type,
 	 typename scalar_type,
 	 typename model_type,
 	 typename time_type,
-	 typename sizer_type,
 	 typename solver_policy_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type
@@ -99,7 +97,6 @@ class implicitEulerStepper<state_type,
 			   scalar_type,
 			   model_type,
 			   time_type,
-			   sizer_type,
 			   solver_policy_type,
 			   residual_policy_type,
 			   jacobian_policy_type,
@@ -115,7 +112,6 @@ class implicitEulerStepper<state_type,
 					  scalar_type,
 					  model_type,
 					  time_type,
-					  sizer_type,
 					  solver_policy_type,
 					  residual_policy_type,
 					  jacobian_policy_type>
@@ -127,7 +123,6 @@ public:
 						scalar_type,
 						model_type,
 						time_type,
-						sizer_type,
 						solver_policy_type,
 						residual_policy_type,
 						jacobian_policy_type>;
