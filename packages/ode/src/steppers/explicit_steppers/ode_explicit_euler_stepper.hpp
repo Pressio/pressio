@@ -3,7 +3,6 @@
 #define ODE_EXPLICIT_EULER_STEPPER_HPP_
 
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
-#include "./impl/ode_explicit_runge_kutta4_stepper_impl.hpp"
 
 namespace ode{
 
