@@ -2,7 +2,7 @@
 #ifndef ODE_EXPLICIT_POLICIES_META_HPP_
 #define ODE_EXPLICIT_POLICIES_META_HPP_
 
-#include "./base/ode_explicit_residual_policy_base.hpp"
+#include "../base/ode_residual_policy_base.hpp"
 #include "./euler/ode_explicit_euler_standard_policy.hpp"
 #include "./runge_kutta/ode_explicit_runge_kutta4_standard_policy.hpp"
 
@@ -28,7 +28,7 @@ struct isLegitimateExplicitResidualPolicy<
     core::meta::publiclyInheritsFrom<
       policy_t<state_type, residual_type,
 	       model_type, time_type, sizer_type, Args...>,
-      ode::policy::explicitResidualPolicyBase<policy_t, state_type,
+      ode::policy::residualPolicyBase<policy_t, state_type,
 					      residual_type, model_type,
 					      time_type, sizer_type, Args...
 					      >
@@ -122,7 +122,7 @@ struct isExplicitRungeKutta4ResidualStandardPolicy<
 
 // /*
 // A policy for residual for an explicit stepper has to meet:
-// * it should inherit from the explicitResidualPolicyBase
+// * it should inherit from the residualPolicyBase
 
 // * it should contain a void PRIVATE method:  void computeImpl()
 // if(a) is met, then if this is not there, then compiler gives an error
@@ -150,7 +150,7 @@ struct isExplicitRungeKutta4ResidualStandardPolicy<
 //     // first check that inheritance property
 //     core::meta::publiclyInheritsFrom<
 //       policy_t<state_type,residual_type,model_type,time_type,Args...>,
-//       ode::policy::explicitResidualPolicyBase<policy_t,state_type,
+//       ode::policy::residualPolicyBase<policy_t,state_type,
 // 					      residual_type,model_type,
 // 					      time_type, Args...
 // 					      >

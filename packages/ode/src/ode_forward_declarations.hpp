@@ -29,18 +29,19 @@ template<typename state_type,
 class explicitRungeKutta4Stepper;
   
 
-// template<typename state_type,
-//          typename residual_type,
-//          typename jacobian_type,
-//          typename scalar_type,
-//          typename model_type,
-// 	 typename time_type,
-// 	 typename solver_policy_type,
-//          typename residual_policy_type=void,
-//          typename jacobian_policy_type=void,
-// 	 typename enable = void
-//          >
-// class implicitEulerStepper;
+template<typename state_type,
+         typename residual_type,
+         typename jacobian_type,
+         typename scalar_type,
+         typename model_type,
+		 typename time_type,
+		 typename sizer_type,
+		 typename solver_policy_type,
+         typename residual_policy_type=void,
+         typename jacobian_policy_type=void,
+	 typename enable = void
+         >
+class implicitEulerStepper;
 
 
 // template<typename state_type,
@@ -105,18 +106,19 @@ template<typename state_type,
 class explicitRungeKutta4StepperImpl;
   
 
-// template<typename state_type,
-//          typename residual_type,
-//          typename jacobian_type,
-//          typename scalar_type,
-//          typename model_type,
-// 	 typename time_type,
-// 	 typename solver_policy_type,
-//          typename residual_policy_type,
-//          typename jacobian_policy_type,
-// 	 typename enable = void
-//          >
-// class implicitEulerStepperImpl;
+template<typename state_type,
+         typename residual_type,
+         typename jacobian_type,
+         typename scalar_type,
+         typename model_type,
+	 	 typename time_type,
+	 	 typename sizer_type,
+	 	 typename solver_policy_type,
+         typename residual_policy_type,
+         typename jacobian_policy_type,
+	 typename enable = void
+         >
+class implicitEulerStepperImpl;
 
 
 // template<typename state_type,

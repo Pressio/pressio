@@ -105,7 +105,7 @@ class explicitEulerStepper<state_type,
 					  sizer_type,
 					  residual_policy_type>
 {
-private:
+public:
   using base_t = impl::explicitEulerStepperImpl<state_type,
 						residual_type,
 						scalar_type,

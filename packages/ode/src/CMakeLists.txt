@@ -30,19 +30,19 @@ FILE(GLOB ode_integrators_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB ode_policies_common_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
      "${CMAKE_CURRENT_SOURCE_DIR}/policies/common/*.hpp")
 
+#policies base
+FILE(GLOB ode_policies_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/policies/base/*.hpp")
+
 #-------------------------
 # EXPLICIT POLICIES
 #-------------------------  
-#policies explicit base
-FILE(GLOB ode_explicit_policies_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/policies/explicit_policies/base/*.hpp")
-#policies euler
+# euler
 FILE(GLOB ode_explicit_policies_euler_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/policies/explicit_policies/euler/*.hpp")
-#policies 
+# rk
 FILE(GLOB ode_explicit_policies_rk_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/policies/explicit_policies/runge_kutta/*.hpp")
-  
 #-------------------------
 # EXPLICIT STEPPERS
 #-------------------------  
@@ -53,7 +53,30 @@ FILE(GLOB ode_explicit_steppers_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB ode_explicit_steppers_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/steppers/explicit_steppers/impl/*.hpp")
 
+#-------------------------
+# IMPLICIT POLICIES
+#-------------------------  
+# euler
+FILE(GLOB ode_implicit_policies_euler_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/policies/implicit_policies/euler/*.hpp")
+#-------------------------
+# IMPLICIT STEPPERS
+#-------------------------  
+FILE(GLOB ode_implicit_steppers_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/steppers/implicit_steppers/base/*.hpp")
+FILE(GLOB ode_implicit_steppers_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/steppers/implicit_steppers/*.hpp")
+FILE(GLOB ode_implicit_steppers_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/steppers/implicit_steppers/impl/*.hpp")
 
+#-------------------------
+# CUSTOM POLICIES
+#------------------------- 
+FILE(GLOB ode_custom_policies_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/policies/custom/*.hpp")
+  
+
+ 
 #######################
 #######################
 # include all sources
@@ -71,20 +94,20 @@ FILE(GLOB ode_integrators_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 # policies common
 FILE(GLOB ode_policies_common_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
      "${CMAKE_CURRENT_SOURCE_DIR}/policies/common/src/*.cc")
+#policies  base
+FILE(GLOB ode_policies_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/policies/base/src/*.cc")
 
 #-------------------------
 # EXPLICIT POLICIES
 #-------------------------  
-#policies explicit base
-FILE(GLOB ode_explicit_policies_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/policies/explicit_policies/base/src/*.cc")
 #policies euler
 FILE(GLOB ode_explicit_policies_euler_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/policies/explicit_policies/euler/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/policies/explicit_policies/euler/src/*.cc")
 #policies runge_kutta
 FILE(GLOB ode_explicit_policies_rk_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/policies/explicit_policies/runge_kutta/src/*.cc")
-  
+  "${CMAKE_CURRENT_SOURCE_DIR}/policies/explicit_policies/runge_kutta/src/*.cc")
+
 #-------------------------
 # EXPLICIT STEPPERS
 #-------------------------  
@@ -95,26 +118,51 @@ FILE(GLOB ode_explicit_steppers_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB ode_explicit_steppers_impl_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/steppers/explicit_steppers/impl/src/*.cc")
 
+#-------------------------
+# IMPLICIT POLICIES
+#-------------------------  
+#policies euler
+FILE(GLOB ode_implicit_policies_euler_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/policies/implicit_policies/euler/src/*.cc")
+
+#-------------------------
+# IMPLICIT STEPPERS
+#-------------------------  
+FILE(GLOB ode_implicit_steppers_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/steppers/implicit_steppers/base/src/*.cc")
+FILE(GLOB ode_implicit_steppers_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/steppers/implicit_steppers/src/*.cc")
+FILE(GLOB ode_implicit_steppers_impl_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/steppers/implicit_steppers/impl/src/*.cc")
+
+#-------------------------
+# CUSTOM POLICIES
+#------------------------- 
+FILE(GLOB ode_custom_policies_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/policies/custom/src/*.cc")
+  
+
+  
 
 APPEND_SET(HEADERS
   ${ode_meta_HEADERS}
   ${ode_integrators_impl_HEADERS}
   ${ode_integrators_HEADERS}
+  #
   ${ode_policies_common_HEADERS}
-  # ${ode_implicit_policies_base_HEADERS}
-  # ${ode_implicit_policies_euler_HEADERS}
-  # ${ode_implicit_policies_bdf2_HEADERS} 
-  # ${ode_implicit_policies_adams_moulton1_HEADERS}
-  ${ode_explicit_policies_base_HEADERS} 
+  ${ode_policies_base_HEADERS} 
   ${ode_explicit_policies_euler_HEADERS}
   ${ode_explicit_policies_rk_HEADERS}
+  ${ode_implicit_policies_euler_HEADERS}
+  ${ode_custom_policies_HEADERS}
   #
   ${ode_explicit_steppers_base_HEADERS} 
   ${ode_explicit_steppers_impl_HEADERS} 
   ${ode_explicit_steppers_HEADERS} 
-  # ${ode_implicit_steppers_base_HEADERS} 
-  # ${ode_implicit_steppers_HEADERS} 
-  # ${ode_implicit_steppers_impl_HEADERS}
+  ${ode_implicit_steppers_base_HEADERS}
+  ${ode_implicit_steppers_HEADERS} 
+  ${ode_implicit_steppers_impl_HEADERS}
+  ${ode_custom_policies_SRCS}
 )
 
 APPEND_SET(SOURCES
@@ -122,20 +170,17 @@ APPEND_SET(SOURCES
   ${ode_integrators_impl_SRCS}
   ${ode_integrators_SRCS}
   ${ode_policies_common_SRCS}
-  #${ode_implicit_policies_base_SRCS}
-  #${ode_implicit_policies_euler_SRCS}
-  #${ode_implicit_policies_bdf2_SRCS} 
-  #${ode_implicit_policies_adams_moulton1_SRCS}
-  ${ode_explicit_policies_base_SRCS} 
+  ${ode_policies_base_SRCS}
   ${ode_explicit_policies_euler_SRCS}
   ${ode_explicit_policies_rk_SRCS}
+  ${ode_implicit_policies_euler_SRCS}
   #
   ${ode_explicit_steppers_base_SRCS} 
   ${ode_explicit_steppers_impl_SRCS} 
   ${ode_explicit_steppers_SRCS} 
-  #${ode_implicit_steppers_base_SRCS} 
-  #${ode_implicit_steppers_SRCS} 
-  #${ode_implicit_steppers_impl_SRCS}
+  ${ode_implicit_steppers_base_SRCS} 
+  ${ode_implicit_steppers_SRCS} 
+  ${ode_implicit_steppers_impl_SRCS}
 )
 
 # C) Define the targets for package's library(s)

@@ -3,7 +3,7 @@
 #define ODE_EXPLICIT_RUNGE_KUTTA4_STANDARD_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "../base/ode_explicit_residual_policy_base.hpp"
+#include "../../base/ode_residual_policy_base.hpp"
 #include "../../common/ode_advance_full_state_policy_base.hpp"
 
 namespace ode{
@@ -15,7 +15,7 @@ template<typename state_type,
 	 typename time_type,
 	 typename sizer_type>
 class explicitRungeKutta4StandardResidual
-  : public explicitResidualPolicyBase<explicitRungeKutta4StandardResidual,
+  : public residualPolicyBase<explicitRungeKutta4StandardResidual,
 				      state_type, residual_type,
 				      model_type, time_type,
 				      sizer_type>,
@@ -77,7 +77,7 @@ private:
   
 
 private:
-  friend explicitResidualPolicyBase<explicitRungeKutta4StandardResidual,
+  friend residualPolicyBase<explicitRungeKutta4StandardResidual,
 				    state_type, residual_type,
 				    model_type, time_type, sizer_type>;
 
