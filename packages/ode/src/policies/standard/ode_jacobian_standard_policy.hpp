@@ -1,10 +1,10 @@
 
-#ifndef ODE_IMPLICIT_EULER_JACOBIAN_STANDARD_POLICY_HPP_
-#define ODE_IMPLICIT_EULER_JACOBIAN_STANDARD_POLICY_HPP_
+#ifndef ODE_JACOBIAN_STANDARD_POLICY_HPP_
+#define ODE_JACOBIAN_STANDARD_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "../../base/ode_jacobian_policy_base.hpp"
-#include "../../common/ode_advance_full_state_policy_base.hpp"
+#include "../base/ode_jacobian_policy_base.hpp"
+#include "../base/ode_advance_full_state_policy_base.hpp"
 
 namespace ode{
 namespace policy{
@@ -14,17 +14,17 @@ template<typename state_type,
 	 typename model_type, 
 	 typename time_type, 
    typename sizer_type>
-class implicitEulerStandardJacobian
-  : public jacobianPolicyBase<implicitEulerStandardJacobian,
+class jacobianStandardPolicy
+  : public jacobianPolicyBase<jacobianStandardPolicy,
 					   state_type, jacobian_type,
 					   model_type, time_type, sizer_type>,
-  public advanceFullStatePolicyBase<implicitEulerStandardJacobian,
+  public advanceFullStatePolicyBase<jacobianStandardPolicy,
 			     state_type, jacobian_type,
 			     model_type, time_type, sizer_type>
 {
 public:
-  implicitEulerStandardJacobian() = default;
-  ~implicitEulerStandardJacobian() = default;
+  jacobianStandardPolicy() = default;
+  ~jacobianStandardPolicy() = default;
 
 private:
   // enable if using types from core package
@@ -49,11 +49,11 @@ private:
   }
 
 private:
-  friend jacobianPolicyBase<implicitEulerStandardJacobian,
+  friend jacobianPolicyBase<jacobianStandardPolicy,
            state_type,jacobian_type,
            model_type, time_type, sizer_type>;
 
-  friend advanceFullStatePolicyBase<implicitEulerStandardJacobian,
+  friend advanceFullStatePolicyBase<jacobianStandardPolicy,
 				    state_type, jacobian_type,
 				    model_type, time_type, sizer_type>;
 

@@ -4,9 +4,8 @@
 
 #include "../base/ode_residual_policy_base.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
-
-#include "./euler/ode_implicit_euler_residual_standard_policy.hpp"
-#include "./euler/ode_implicit_euler_jacobian_standard_policy.hpp"
+#include "../standard/ode_residual_standard_policy.hpp"
+#include "../standard/ode_jacobian_standard_policy.hpp"
 
 namespace ode{
 namespace meta {
@@ -82,11 +81,14 @@ template <template <typename...> class policy_t,
 	  typename time_type,
 	  typename sizer_type>
 struct isImplicitEulerResidualStandardPolicy<
-  policy_t<state_type,residual_type,model_type,time_type, sizer_type>,
+  policy_t<state_type,residual_type,model_type,
+  time_type, sizer_type>,
   typename std::enable_if<
-    std::is_same<policy_t<state_type,residual_type,model_type,time_type, sizer_type>,
-		 ode::policy::implicitEulerStandardResidual<
-		   state_type, residual_type,model_type, time_type, sizer_type>
+    std::is_same<policy_t<state_type,residual_type,
+    	 	model_type,time_type, sizer_type>,
+		 ode::policy::residualStandardPolicy<
+		   state_type, residual_type,model_type, 
+		   time_type, sizer_type>
 		 >::value
 			  >::type
   > : std::true_type{};
@@ -103,11 +105,14 @@ template <template <typename...> class policy_t,
 	  typename time_type,
 	  typename sizer_type>
 struct isImplicitEulerJacobianStandardPolicy<
-  policy_t<state_type,jacobian_type,model_type,time_type, sizer_type>,
+  policy_t<state_type,jacobian_type,model_type,
+  time_type, sizer_type>,
   typename std::enable_if<
-    std::is_same<policy_t<state_type,jacobian_type,model_type,time_type, sizer_type>,
-		 ode::policy::implicitEulerStandardJacobian<
-		   state_type, jacobian_type,model_type, time_type, sizer_type>
+    std::is_same<policy_t<state_type,jacobian_type,
+    		model_type,time_type, sizer_type>,
+		 ode::policy::jacobianStandardPolicy<
+		   state_type, jacobian_type,model_type, 
+		   time_type, sizer_type>
 		 >::value
 			  >::type
   > : std::true_type{};

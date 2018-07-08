@@ -3,8 +3,7 @@
 #define ODE_EXPLICIT_POLICIES_META_HPP_
 
 #include "../base/ode_residual_policy_base.hpp"
-#include "./euler/ode_explicit_euler_standard_policy.hpp"
-#include "./runge_kutta/ode_explicit_runge_kutta4_standard_policy.hpp"
+#include "../standard/ode_residual_standard_policy.hpp"
 
 
 namespace ode{
@@ -56,7 +55,7 @@ struct isExplicitEulerResidualStandardPolicy<
   typename std::enable_if<
     std::is_same<policy_t<state_type, residual_type,
 			  model_type, time_type, sizer_type>,
-		 ode::policy::explicitEulerStandardResidual<
+		 ode::policy::residualStandardPolicy<
 		   state_type, residual_type,
 		   model_type, time_type, sizer_type>
 		 >::value
@@ -81,7 +80,7 @@ struct isExplicitRungeKutta4ResidualStandardPolicy<
   typename std::enable_if<
     std::is_same<policy_t<state_type, residual_type,
 			  model_type, time_type, sizer_type>,
-		 ode::policy::explicitRungeKutta4StandardResidual<
+		 ode::policy::residualStandardPolicy<
 		   state_type, residual_type,
 		   model_type, time_type, sizer_type>
 		 >::value

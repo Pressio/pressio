@@ -35,13 +35,13 @@ class explicitEulerStepper<state_type,
 					  model_type,
 					  time_type,
 					  sizer_type,
-					  ode::policy::explicitEulerStandardResidual<
+					  ode::policy::residualStandardPolicy<
 					    state_type, residual_type,
 					    model_type, time_type, sizer_type>
 					  >
 {
 public:
-  using pol_t = ode::policy::explicitEulerStandardResidual<
+  using pol_t = ode::policy::residualStandardPolicy<
   state_type, residual_type, model_type, time_type, sizer_type>;
 
   using base_t = impl::explicitEulerStepperImpl<state_type,

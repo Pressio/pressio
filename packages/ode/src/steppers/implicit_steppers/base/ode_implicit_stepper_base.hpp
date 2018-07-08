@@ -6,7 +6,7 @@
 #include "../ode_implicit_stepper_traits.hpp"
 #include "../../../meta/ode_meta.hpp"
 #include "../../../meta/ode_meta_implicit.hpp"
-#include "../../../policies/implicit_policies/ode_implicit_policies_meta.hpp"
+#include "../../../policies/meta/ode_implicit_policies_meta.hpp"
 
 namespace ode{
 

@@ -4,7 +4,7 @@
 
 #include "ode_ConfigDefs.hpp"
 #include "../base/ode_residual_policy_base.hpp"
-#include "../common/ode_advance_increment_policy_base.hpp"
+#include "../base/ode_advance_increment_policy_base.hpp"
 
 namespace ode{
 namespace policy{
