@@ -80,7 +80,15 @@ protected:
     auto ySz = sizer_type::getSize(y);
     if(sizer_type::getSize(y_tmp_) == 0)
       sizer_type::resize(y_tmp_, ySz);
-
+    if(sizer_type::getSize(rhs1_) == 0)
+      sizer_type::resize(rhs1_, ySz);
+    if(sizer_type::getSize(rhs2_) == 0)
+      sizer_type::resize(rhs2_, ySz);
+    if(sizer_type::getSize(rhs3_) == 0)
+      sizer_type::resize(rhs3_, ySz);
+    if(sizer_type::getSize(rhs4_) == 0)
+      sizer_type::resize(rhs4_, ySz);
+    
     // ----------
     // stage 1: 
     // ----------

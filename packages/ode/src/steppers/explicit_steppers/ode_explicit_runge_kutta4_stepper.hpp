@@ -35,13 +35,13 @@ class explicitRungeKutta4Stepper<state_type,
   						model_type,
   						time_type,
   						sizer_type,
-  						ode::policy::explicitRungeKutta4StandardResidual<
+  						ode::policy::residualStandardPolicy<
   						  state_type, residual_type,
   						  model_type, time_type, sizer_type>
   						     >
 {
 public:
-  using pol_t = ode::policy::explicitRungeKutta4StandardResidual<state_type,
+  using pol_t = ode::policy::residualStandardPolicy<state_type,
 								 residual_type,
 								 model_type,
 								 time_type,
@@ -113,7 +113,7 @@ class explicitRungeKutta4Stepper<state_type,
 						residual_policy_type>
 {
 
-private:
+public:
   using base_t = impl::explicitRungeKutta4StepperImpl<state_type,
 						      residual_type,
 						      scalar_type,

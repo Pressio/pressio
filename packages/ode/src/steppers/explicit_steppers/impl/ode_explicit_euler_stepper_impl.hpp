@@ -66,11 +66,14 @@ protected:
 		  time_type dt,
 		  step_t step)
   {
+    auto ySz = sizer_type::getSize(y);
+    if (sizer_type::getSize(RHS_) == 0)
+      sizer_type::resize(RHS_, ySz);
+
     //eval RHS
     residual_obj_->compute(y, RHS_, *model_, t);
     
-    //out = in + dt * rhs
-    auto ySz = sizer_type::getSize(y);
+    // //out = in + dt * rhs
     for (decltype(ySz) i=0; i < ySz; i++){
       y[i] += dt*RHS_[i];
     }

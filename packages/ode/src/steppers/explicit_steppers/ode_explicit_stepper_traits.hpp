@@ -32,7 +32,7 @@ struct traits<impl::explicitEulerStepperImpl<state_type,
   using sizer_t = sizer_type;
   using residual_policy_t = residual_policy_type;
 
-  static constexpr bool advanceIncrement = residual_policy_t::advanceIncrement;
+  static constexpr bool advanceIncrement = true;//residual_policy_t::advanceIncrement;
   
   using order_t = unsigned int;
   static constexpr order_t order_value = 1;    
