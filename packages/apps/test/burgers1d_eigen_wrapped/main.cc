@@ -18,6 +18,7 @@
 #include "steppers/explicit_steppers/ode_explicit_runge_kutta4_stepper.hpp"
 #include "steppers/implicit_steppers/ode_implicit_euler_stepper.hpp"
 #include "steppers/implicit_steppers/ode_implicit_bdf2_stepper.hpp"
+#include "steppers/implicit_steppers/ode_implicit_bdf3_stepper.hpp"
 //solvers
 #include "experimental/solvers_linear_eigen.hpp"
 #include "experimental/solvers_nonlinear_newton_raphson.hpp"
@@ -184,7 +185,7 @@ int main(int argc, char *argv[])
     // jac_pol_t jacObj(y0);
 
     // //stepper
-    using stepper_t = ode::implicitBDF2Stepper<
+    using stepper_t = ode::implicitBDF3Stepper<
       state_t, residual_t, jac_t, scalar_t,
       model_eval_t, scalar_t, mysizer, nonlin_solve_t,
       aux_stepper_t>;//, res_pol_t, jac_pol_t>;

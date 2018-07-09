@@ -43,7 +43,6 @@ struct isImplicitEulerJacobianStandardPolicy
 //----------------------------------------------------------------
 
 
-
 //////////////////////////////////////////////////////////////////
 //
 // IMPLICIT BDF2
@@ -70,6 +69,37 @@ struct isImplicitBDF2ResidualStandardPolicy
 
 template<typename policy_t, typename enable = void>
 struct isImplicitBDF2JacobianStandardPolicy 
+: isJacobianStandardPolicy<policy_t>{};
+
+//----------------------------------------------------------------
+
+
+//////////////////////////////////////////////////////////////////
+//
+// IMPLICIT BDF3
+//
+//////////////////////////////////////////////////////////////////
+
+template<typename policy_t, typename enable = void>
+struct isLegitimateImplicitBDF3ResidualPolicy 
+: isLegitimateResidualPolicy<policy_t>{};
+
+//-----------------------------------------------------------------
+
+template<typename policy_t, typename enable = void>
+struct isLegitimateImplicitBDF3JacobianPolicy 
+: isLegitimateJacobianPolicy<policy_t>{};
+
+//-----------------------------------------------------------------
+
+template<typename policy_t, typename enable = void>
+struct isImplicitBDF3ResidualStandardPolicy 
+: isResidualStandardPolicy<policy_t>{};
+
+//----------------------------------------------------------------
+
+template<typename policy_t, typename enable = void>
+struct isImplicitBDF3JacobianStandardPolicy 
 : isJacobianStandardPolicy<policy_t>{};
 
 //----------------------------------------------------------------
