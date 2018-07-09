@@ -2,7 +2,7 @@
 #ifndef ODE_EXPLICIT_POLICIES_META_HPP_
 #define ODE_EXPLICIT_POLICIES_META_HPP_
 
-#include "../base/ode_residual_policy_base.hpp"
+#include "ode_policies_meta.hpp"
 #include "../standard/ode_residual_standard_policy.hpp"
 
 
@@ -11,159 +11,26 @@ namespace meta {
   
 template<typename policy_t,
 	 typename enable = void>
-struct isLegitimateExplicitResidualPolicy : std::false_type{};
-  
-template <template <typename...> class policy_t,
-	  typename state_type,
-	  typename residual_type,
-	  typename model_type,
-	  typename time_type,
-	  typename sizer_type,
-	  typename ...Args>
-struct isLegitimateExplicitResidualPolicy<
-  policy_t<state_type, residual_type,
-	   model_type, time_type, sizer_type, Args...>,
-  typename std::enable_if<
-    core::meta::publiclyInheritsFrom<
-      policy_t<state_type, residual_type,
-	       model_type, time_type, sizer_type, Args...>,
-      ode::policy::residualPolicyBase<policy_t, state_type,
-					      residual_type, model_type,
-					      time_type, sizer_type, Args...
-					      >
-                                    >::value
-                         >::type
-  > : std::true_type{};
-
+struct isLegitimateExplicitResidualPolicy 
+: isLegitimateResidualPolicy<policy_t>{};
 
 //-----------------------------------------------------------------
-
   
 template<typename policy_t,
 	 typename enable = void>
-struct isExplicitEulerResidualStandardPolicy: std::false_type{};
+struct isExplicitEulerResidualStandardPolicy 
+: isResidualStandardPolicy<policy_t>{};
 
-template <template <typename...> class policy_t,
-	  typename state_type,
-	  typename residual_type,
-	  typename model_type,
-	  typename time_type,
-	  typename sizer_type>
-struct isExplicitEulerResidualStandardPolicy<
-  policy_t<state_type, residual_type,
-	   model_type, time_type, sizer_type>,
-  typename std::enable_if<
-    std::is_same<policy_t<state_type, residual_type,
-			  model_type, time_type, sizer_type>,
-		 ode::policy::residualStandardPolicy<
-		   state_type, residual_type,
-		   model_type, time_type, sizer_type>
-		 >::value
-			  >::type
-  > : std::true_type{};
 //----------------------------------------------------------------
-
 
 template<typename policy_t,
 	 typename enable = void>
-struct isExplicitRungeKutta4ResidualStandardPolicy: std::false_type{};
+struct isExplicitRungeKutta4ResidualStandardPolicy
+: isResidualStandardPolicy<policy_t>{};
 
-template <template <typename...> class policy_t,
-	  typename state_type,
-	  typename residual_type,
-	  typename model_type,
-	  typename time_type,
-	  typename sizer_type>
-struct isExplicitRungeKutta4ResidualStandardPolicy<
-  policy_t<state_type, residual_type,
-	   model_type, time_type, sizer_type>,
-  typename std::enable_if<
-    std::is_same<policy_t<state_type, residual_type,
-			  model_type, time_type, sizer_type>,
-		 ode::policy::residualStandardPolicy<
-		   state_type, residual_type,
-		   model_type, time_type, sizer_type>
-		 >::value
-			  >::type
-  > : std::true_type{};
 //----------------------------------------------------------------
-
   
 
 } // namespace meta
 } // namespace core
 #endif
-
-
-
-
-
-// template<typename policy_t, typename enable = void>
-// struct isExplicitRungeKutta4ResidualStandardPolicy : std::false_type{};
-
-// template <template <typename...> class policy_t,
-// 	  typename state_type,
-// 	  typename residual_type,
-// 	  typename model_type,
-// 	  typename time_type>
-// struct isExplicitRungeKutta4ResidualStandardPolicy<
-//   policy_t<state_type, residual_type,model_type, time_type>,
-//   typename std::enable_if<
-//     std::is_same<policy_t<state_type, residual_type,model_type, time_type>,
-// 		 ode::policy::explicitRungeKutta4StandardResidual<
-// 		   state_type, residual_type,model_type, time_type>
-// 		 >::value
-// 			  >::type
-//   > : std::true_type{};
-// //-----------------------------------------------------------------
-  
-
-
-// /*
-// A policy for residual for an explicit stepper has to meet:
-// * it should inherit from the residualPolicyBase
-
-// * it should contain a void PRIVATE method:  void computeImpl()
-// if(a) is met, then if this is not there, then compiler gives an error
-
-// * state_type and residual_type should not be simply std::is_integral
-// * state_type and residual_type should not be simply std::is_floating_point
-
-// * time_type should be std::is_floating_point
-
-// **** more if comes to mind
-// */
-  
-// template<typename policy_t, typename enable = void>
-// struct isLegitimateOdeExplicitResidualPolicy : std::false_type{};
-  
-// template <template <typename...> class policy_t,
-// 	  typename state_type,
-// 	  typename residual_type,
-// 	  typename model_type,
-// 	  typename time_type,
-// 	  typename ...Args>
-// struct isLegitimateOdeExplicitResidualPolicy<
-//   policy_t<state_type, residual_type,model_type, time_type, Args...>,
-//   typename std::enable_if<
-//     // first check that inheritance property
-//     core::meta::publiclyInheritsFrom<
-//       policy_t<state_type,residual_type,model_type,time_type,Args...>,
-//       ode::policy::residualPolicyBase<policy_t,state_type,
-// 					      residual_type,model_type,
-// 					      time_type, Args...
-// 					      >
-//                                     >::value
-//     // // check that state_type is legitimate
-//     // isLegitimateStateType<state_type>::value &&
-//     // // check that residual_type is legitimate 
-//     // isLegitimateResidualType<state_type>::value &&
-//     // // check that time_type is floating point
-//     // std::is_floating_point<time_type>::value
-//                          >::type
-//   >
-// {
-//   static_assert(isLegitimateStateType<state_type>::value, "difdjfdfj");
-//   static_assert(std::is_floating_point<time_type>::value, "ddfdfdsfdsfdifdjfdfj");
-//   static constexpr bool value = true;
-// };

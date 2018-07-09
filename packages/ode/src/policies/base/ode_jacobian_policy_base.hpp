@@ -12,7 +12,7 @@ template <template <typename...> class derived_type,
 	  typename jacobian_type,
 	  typename model_type,
 	  typename time_type,
-    typename sizer_type,
+	  typename sizer_type,
 	  typename ... Args>
 class jacobianPolicyBase
 {

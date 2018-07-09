@@ -13,12 +13,12 @@ namespace ode{
 template<typename state_type, typename residual_type,
 	 typename jacobian_type, typename scalar_type,
 	 typename model_type, typename time_type,
-	 typename solver_policy_type,
+	 typename sizer_type, typename solver_policy_type,
 	 typename aux_start_stepper_type	 
 	 >
 class implicitBDF2Stepper<state_type, residual_type,
 			  jacobian_type, scalar_type,
-			  model_type, time_type,
+			  model_type, time_type, sizer_type,
 			  solver_policy_type,
 			  aux_start_stepper_type,
 			  void,void,
@@ -27,30 +27,32 @@ class implicitBDF2Stepper<state_type, residual_type,
 			    >::type>
   : public impl::implicitBDF2StepperImpl<state_type, residual_type,
 					 jacobian_type, scalar_type,
-					 model_type, time_type,
+					 model_type, time_type, sizer_type,
 					 solver_policy_type,
 					 aux_start_stepper_type,
-					 ode::policy::implicitBDF2StandardResidual<
+					 ode::policy::residualStandardPolicy<
 					   state_type, residual_type,
-					   model_type, time_type>,
-					 ode::policy::implicitBDF2StandardJacobian<
+					   model_type, time_type, sizer_type>,
+					 ode::policy::jacobianStandardPolicy<
 					   state_type, jacobian_type,
-					   model_type, time_type>
+					   model_type, time_type, sizer_type>
 					 >
 {
+
 public:
-  using res_pol_t = ode::policy::implicitBDF2StandardResidual<
-  state_type, residual_type, model_type, time_type>;
+  using res_pol_t = ode::policy::residualStandardPolicy<
+  state_type, residual_type, model_type, time_type, sizer_type>;
 
-  using jac_pol_t = ode::policy::implicitBDF2StandardJacobian<
-  state_type, jacobian_type, model_type, time_type>;
-
+  using jac_pol_t = ode::policy::jacobianStandardPolicy<
+  state_type, jacobian_type, model_type, time_type, sizer_type>;
+  
   using base_t = impl::implicitBDF2StepperImpl<state_type,
 					       residual_type,
 					       jacobian_type,
 					       scalar_type,
 					       model_type,
 					       time_type,
+					       sizer_type,
 					       solver_policy_type,
 					       aux_start_stepper_type,
 					       res_pol_t,
@@ -94,6 +96,7 @@ template<typename state_type,
 	 typename scalar_type,
 	 typename model_type,
 	 typename time_type,
+	 typename sizer_type,
 	 typename solver_policy_type,
 	 typename aux_start_stepper_type,
 	 typename residual_policy_type,
@@ -105,6 +108,7 @@ class implicitBDF2Stepper<state_type,
 			  scalar_type,
 			  model_type,
 			  time_type,
+			  sizer_type,
 			  solver_policy_type,
 			  aux_start_stepper_type,
 			  residual_policy_type,
@@ -121,6 +125,7 @@ class implicitBDF2Stepper<state_type,
 					 scalar_type,
 					 model_type,
 					 time_type,
+					 sizer_type,
 					 solver_policy_type,
 					 aux_start_stepper_type,
 					 residual_policy_type,
@@ -133,6 +138,7 @@ public:
 					       scalar_type,
 					       model_type,
 					       time_type,
+					       sizer_type,
 					       solver_policy_type,
 					       aux_start_stepper_type,
 					       residual_policy_type,

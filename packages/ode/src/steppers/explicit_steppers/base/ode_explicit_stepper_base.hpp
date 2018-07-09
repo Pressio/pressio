@@ -6,6 +6,7 @@
 #include "../ode_explicit_stepper_traits.hpp"
 #include "../../../meta/ode_meta.hpp"
 #include "../../../meta/ode_meta_explicit.hpp"
+#include "../../../policies/meta/ode_policies_meta.hpp"
 #include "../../../policies/meta/ode_explicit_policies_meta.hpp"
 
 namespace ode{
@@ -35,6 +36,7 @@ private:
 		 "OOPS: TIME_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateExplicitResidualPolicy<residual_policy_t>::value,
 		 "RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF EXPLICIT POLICY BASE");
+
 public:
   order_t order() const{
     return order_value;

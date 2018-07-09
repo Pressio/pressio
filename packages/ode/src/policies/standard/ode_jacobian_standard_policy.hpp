@@ -13,21 +13,23 @@ template<typename state_type,
 	 typename jacobian_type,
 	 typename model_type, 
 	 typename time_type, 
-   typename sizer_type>
+	 typename sizer_type>
 class jacobianStandardPolicy
   : public jacobianPolicyBase<jacobianStandardPolicy,
-					   state_type, jacobian_type,
-					   model_type, time_type, sizer_type>,
+			      state_type, jacobian_type,
+			      model_type, time_type, sizer_type>,
   public advanceFullStatePolicyBase<jacobianStandardPolicy,
-			     state_type, jacobian_type,
-			     model_type, time_type, sizer_type>
+				    state_type, jacobian_type,
+				    model_type, time_type, sizer_type>
 {
 public:
   jacobianStandardPolicy() = default;
   ~jacobianStandardPolicy() = default;
 
 private:
+  //----------------------------------------------------------------
   // enable if using types from core package
+  //----------------------------------------------------------------
   template <typename U = state_type,
 	    typename T = jacobian_type,
 	    typename
@@ -37,8 +39,8 @@ private:
 	      >::type * = nullptr
 	    >
   void computeImpl(const U & y, 
-       T & J, 
-       model_type & model,
+		   T & J, 
+		   model_type & model,
 		   time_type t)
   {
     // first eval jac
@@ -47,7 +49,8 @@ private:
     jacobian_type A_( J.rows(),J.cols() );
     A_.setIdentity();
   }
-
+  //----------------------------------------------------------------
+  
 private:
   friend jacobianPolicyBase<jacobianStandardPolicy,
            state_type,jacobian_type,

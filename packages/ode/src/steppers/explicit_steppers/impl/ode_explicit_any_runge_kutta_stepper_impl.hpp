@@ -17,8 +17,7 @@ template<typename state_type,
 	 typename time_type,
 	 typename sizer_type,
 	 typename residual_policy_type,
-	 typename butcher_table_type
-	 >
+	 typename butcher_table_type>
 class explicitAnyRungeKuttaStepperImpl<state_type,
 				       residual_type,
 				       scalar_type,
@@ -26,8 +25,7 @@ class explicitAnyRungeKuttaStepperImpl<state_type,
 				       time_type,
 				       sizer_type,
 				       residual_policy_type,
-				       butcher_table_type
-				       >
+				       butcher_table_type>
   : public explicitStepperBase<
   explicitAnyRungeKuttaStepperImpl<state_type,
 				   residual_type,
@@ -67,7 +65,7 @@ protected:
 				 butcher_table_type bT,
 				 Args&&... rest)
     : stepper_base_t(model, res_policy_obj),
-      rungeKuttaStorage<state_type,residual_type,4>(std::forward<Args>(rest)...),
+      storage_base_t(std::forward<Args>(rest)...),
       y_tmp_(std::forward<Args>(rest)...),
       bT_(bT){}
 

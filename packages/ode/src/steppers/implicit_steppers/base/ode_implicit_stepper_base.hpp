@@ -6,6 +6,7 @@
 #include "../ode_implicit_stepper_traits.hpp"
 #include "../../../meta/ode_meta.hpp"
 #include "../../../meta/ode_meta_implicit.hpp"
+#include "../../../policies/meta/ode_policies_meta.hpp"
 #include "../../../policies/meta/ode_implicit_policies_meta.hpp"
 
 namespace ode{
@@ -36,9 +37,9 @@ private:
   static_assert( meta::isLegitimateImplicitResidualType<residual_t>::value,
 		 "OOPS: RESIDUAL_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateJacobianType<jacobian_t>::value,
-		 "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
+  		 "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateTimeType<time_t>::value,
-		 "OOPS: TIME_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
+  		 "OOPS: TIME_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
 public:
   order_t order() const{

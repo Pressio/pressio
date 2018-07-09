@@ -13,8 +13,7 @@ namespace ode{
 template<typename state_type, typename residual_type,
 	 typename jacobian_type, typename scalar_type,
 	 typename model_type, typename time_type,
-	 typename sizer_type,
-	 typename solver_policy_type
+	 typename sizer_type, typename solver_policy_type
 	 >
 class implicitEulerStepper<state_type, residual_type,
 			   jacobian_type, scalar_type,
@@ -39,7 +38,7 @@ class implicitEulerStepper<state_type, residual_type,
 public:
   using res_pol_t = ode::policy::residualStandardPolicy<
   state_type, residual_type, model_type, time_type, sizer_type>;
-
+			      
   using jac_pol_t = ode::policy::jacobianStandardPolicy<
   state_type, jacobian_type, model_type, time_type, sizer_type>;
 
