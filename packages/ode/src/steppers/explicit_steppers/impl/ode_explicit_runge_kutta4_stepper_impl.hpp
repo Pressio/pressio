@@ -3,10 +3,12 @@
 #define ODE_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
 
 #include "../base/ode_explicit_stepper_base.hpp"
+#include "../../ode_butcher_tableau.hpp"
+#include "ode_runge_kutta_storage.hpp"
 
 namespace ode{
 namespace impl{
-
+  
 template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
@@ -29,7 +31,8 @@ class explicitRungeKutta4StepperImpl<state_type,
 				 model_type,
 				 time_type,
 				 sizer_type,
-				 residual_policy_type> >
+				 residual_policy_type> >,
+    private rungeKuttaStorage<state_type, residual_type, 4>
 {
 
 private:
@@ -42,10 +45,12 @@ private:
 						   residual_policy_type>;
   
   using stepper_base_t = explicitStepperBase<stepper_t>;
-
+  using storage_base_t = rungeKuttaStorage<state_type, residual_type, 4>;
+  
 protected:
   using stepper_base_t::model_;
   using stepper_base_t::residual_obj_;
+  using storage_base_t::rhs_;
   
 protected:
   template < typename T = model_type,
@@ -55,13 +60,10 @@ protected:
 				 U & res_policy_obj,
 				 Args&&... rest)
     : stepper_base_t(model, res_policy_obj),
-      rhs1_(std::forward<Args>(rest)...),
-      rhs2_(std::forward<Args>(rest)...),
-      rhs3_(std::forward<Args>(rest)...),
-      rhs4_(std::forward<Args>(rest)...),
-      y_tmp_(std::forward<Args>(rest)...){}
+      rungeKuttaStorage<state_type,residual_type,4>(std::forward<Args>(rest)...),
+    y_tmp_(std::forward<Args>(rest)...){}
 
-  explicitRungeKutta4StepperImpl(){};
+  explicitRungeKutta4StepperImpl() = delete;
   ~explicitRungeKutta4StepperImpl() = default;
 
 protected:
@@ -71,75 +73,71 @@ protected:
 		  time_type dt,
 		  step_t step)
   {
-    //static const scalar_type val1 = static_cast< scalar_type >( 1 );
+    auto ySz = sizer_type::getSize(y);
+    if(sizer_type::getSize(y_tmp_) == 0)
+      sizer_type::resize(y_tmp_, ySz);
+
     const time_type dt_half = dt / static_cast< scalar_type >(2);
     const time_type t_phalf = t + dt_half;
     const time_type dt6 = dt / static_cast< scalar_type >( 6 );
     const time_type dt3 = dt / static_cast< scalar_type >( 3 );
-
-    auto ySz = sizer_type::getSize(y);
+    
     if(sizer_type::getSize(y_tmp_) == 0)
       sizer_type::resize(y_tmp_, ySz);
-    if(sizer_type::getSize(rhs1_) == 0)
-      sizer_type::resize(rhs1_, ySz);
-    if(sizer_type::getSize(rhs2_) == 0)
-      sizer_type::resize(rhs2_, ySz);
-    if(sizer_type::getSize(rhs3_) == 0)
-      sizer_type::resize(rhs3_, ySz);
-    if(sizer_type::getSize(rhs4_) == 0)
-      sizer_type::resize(rhs4_, ySz);
+    if(sizer_type::getSize(rhs_[0]) == 0)
+      sizer_type::resize(rhs_[0], ySz);
+    if(sizer_type::getSize(rhs_[1]) == 0)
+      sizer_type::resize(rhs_[1], ySz);
+    if(sizer_type::getSize(rhs_[2]) == 0)
+      sizer_type::resize(rhs_[2], ySz);
+    if(sizer_type::getSize(rhs_[3]) == 0)
+      sizer_type::resize(rhs_[3], ySz);
     
     // ----------
     // stage 1: 
     // ----------
-    // rhs1_(y_n,t)
-    residual_obj_->compute(y, rhs1_, *model_, t);
-    // y_tmp_ = y_n + rhs1_*dt/2
+    // rhs_[0](y_n,t)
+    residual_obj_->compute(y, rhs_[0], *model_, t);
+    // y_tmp_ = y_n + rhs_[0]*dt/2
     for (decltype(ySz) i=0; i<ySz; i++){
-      y_tmp_[i] = y[i] + dt_half*rhs1_[i];
+      y_tmp_[i] = y[i] + dt_half*rhs_[0][i];
     }
 
     // ----------
     // stage 2: 
     // ----------
-    // rhs2_
-    residual_obj_->compute(y_tmp_, rhs2_, *model_, t_phalf);
-    // y_tmp_ = y_n + rhs2_*dt/2
+    // rhs_[1]
+    residual_obj_->compute(y_tmp_, rhs_[1], *model_, t_phalf);
+    // y_tmp_ = y_n + rhs_[1]*dt/2
     for (decltype(ySz) i=0; i<ySz; i++){
-      y_tmp_[i] = y[i] + dt_half*rhs2_[i];
+      y_tmp_[i] = y[i] + dt_half*rhs_[1][i];
     }
 
     // ----------
     // stage 3: 
     // ----------
-    // rhs3_
-    residual_obj_->compute(y_tmp_, rhs3_, *model_, t_phalf);
-    //y_tmp_ = y_n + rhs3_*dt/2
+    // rhs_[2]
+    residual_obj_->compute(y_tmp_, rhs_[2], *model_, t_phalf);
+    //y_tmp_ = y_n + rhs_[2]*dt/2
     for (decltype(ySz) i=0; i<ySz; i++){
-      y_tmp_[i] = y[i] + dt*rhs3_[i];
+      y_tmp_[i] = y[i] + dt*rhs_[2][i];
     }
 
     // ----------
     // stage 4: 
     // ----------
-    // rhs4_
-    residual_obj_->compute(y_tmp_, rhs4_, *model_, t + dt);
+    // rhs_[3]
+    residual_obj_->compute(y_tmp_, rhs_[3], *model_, t + dt);
     //x += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     for (decltype(ySz) i=0; i < ySz; i++)
     {
-      y[i] += dt6*rhs1_[i] + dt3*rhs2_[i] + dt3*rhs3_[i] + dt6*rhs4_[i];
+      y[i] += dt6*rhs_[0][i] + dt3*rhs_[1][i] + dt3*rhs_[2][i] + dt6*rhs_[3][i];
     }
+  }//end doStep
 
-  }
-  //----------------------------------------------------------------
-  
 private:
   friend stepper_base_t;
 
-  residual_type rhs1_;
-  residual_type rhs2_;
-  residual_type rhs3_;
-  residual_type rhs4_;
   state_type y_tmp_;
   // inherited: model_, residual_obj_
   

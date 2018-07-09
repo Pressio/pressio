@@ -48,15 +48,16 @@ template<typename state_type,
 	 typename model_type,
 	 typename time_type,
 	 typename sizer_type,
-	 typename residual_policy_type
-	 >
+	 typename residual_policy_type,
+	 typename butcher_table_type>
 struct traits<impl::explicitRungeKutta4StepperImpl<state_type,
 						   residual_type,
 						   scalar_type,
 						   model_type,
 						   time_type,
 						   sizer_type,
-						   residual_policy_type>
+						   residual_policy_type,
+						   butcher_table_type>
 	      >
 {
   using state_t =  state_type;
@@ -66,6 +67,7 @@ struct traits<impl::explicitRungeKutta4StepperImpl<state_type,
   using time_t = time_type;
   using sizer_t = sizer_type;
   using residual_policy_t = residual_policy_type;
+  using  butcher_table_t = butcher_table_type;
 
   static constexpr bool advanceIncrement = residual_policy_t::advanceIncrement;
   

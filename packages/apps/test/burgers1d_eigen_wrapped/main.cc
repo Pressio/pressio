@@ -64,29 +64,11 @@ int main(int argc, char *argv[])
     state_t, jac_t, model_eval_t, scalar_t, mysizer>;
   jac_pol_t jacObj(y0);    
   
-  {
-    //********************************************
-    // EXPLICIT EULER
-    //********************************************
-    using stepper_t = ode::explicitEulerStepper<
-      state_t, residual_t, scalar_t,
-      model_eval_t, scalar_t, mysizer, res_pol_t>;
-    stepper_t stepperObj(appObj, resObj);
-    
-    ode::integrateNSteps(stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
-    //    std::cout << collectorObj.getCount() << std::endl;
-    std::cout << "Final solution " << std::endl;
-    for (int i=0; i<y0.size(); ++i)
-      std::cout << std::setprecision(14) << y0[i]  << " ";
-    std::cout << std::endl;
-  }
-
   // {
-  //   *y0.data() = y0n;
   //   //********************************************
-  //   // EXPLICIT RK4
+  //   // EXPLICIT EULER
   //   //********************************************
-  //   using stepper_t = ode::explicitRungeKutta4Stepper<
+  //   using stepper_t = ode::explicitEulerStepper<
   //     state_t, residual_t, scalar_t,
   //     model_eval_t, scalar_t, mysizer, res_pol_t>;
   //   stepper_t stepperObj(appObj, resObj);
@@ -98,6 +80,24 @@ int main(int argc, char *argv[])
   //     std::cout << std::setprecision(14) << y0[i]  << " ";
   //   std::cout << std::endl;
   // }
+
+  {
+    *y0.data() = y0n;
+    //********************************************
+    // EXPLICIT RK4
+    //********************************************
+    using stepper_t = ode::explicitRungeKutta4Stepper<
+      state_t, residual_t, scalar_t,
+      model_eval_t, scalar_t, mysizer, res_pol_t>;
+    stepper_t stepperObj(appObj, resObj);
+    
+    ode::integrateNSteps(stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
+    //    std::cout << collectorObj.getCount() << std::endl;
+    std::cout << "Final solution " << std::endl;
+    for (int i=0; i<y0.size(); ++i)
+      std::cout << std::setprecision(14) << y0[i]  << " ";
+    std::cout << std::endl;
+  }
   
   // {
   //   *y0.data() = y0n;
@@ -117,36 +117,36 @@ int main(int argc, char *argv[])
   //   std::cout << std::endl;
   // }
 
-  {
-    *y0.data() = y0n;
+  // {
+  //   *y0.data() = y0n;
 
-    //********************************************
-    // IMPLICIT EULER
-    //********************************************
-    // linear solver
-    using lin_solve_t = solvers::experimental::linearSolver<jac_t,state_t,state_t>;
-    lin_solve_t ls;
+  //   //********************************************
+  //   // IMPLICIT EULER
+  //   //********************************************
+  //   // linear solver
+  //   using lin_solve_t = solvers::experimental::linearSolver<jac_t,state_t,state_t>;
+  //   lin_solve_t ls;
     
-    // nonlinear solver
-    using nonlin_solve_t =
-      solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
-    nonlin_solve_t nonls(ls);
+  //   // nonlinear solver
+  //   using nonlin_solve_t =
+  //     solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
+  //   nonlin_solve_t nonls(ls);
 
-    //stepper 1
-    using stepper_t = ode::implicitEulerStepper<
-      state_t, residual_t, jac_t, scalar_t,
-      model_eval_t, scalar_t, mysizer, nonlin_solve_t, res_pol_t, jac_pol_t>;
-    stepper_t stepperObj(appObj, nonls, resObj, jacObj);
+  //   //stepper 1
+  //   using stepper_t = ode::implicitEulerStepper<
+  //     state_t, residual_t, jac_t, scalar_t,
+  //     model_eval_t, scalar_t, mysizer, nonlin_solve_t, res_pol_t, jac_pol_t>;
+  //   stepper_t stepperObj(appObj, nonls, resObj, jacObj);
     
-    ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
-    // // // // std::cout << collectorObj.getCount() << std::endl;
-    // std::cout << "Final solution " << std::endl;
-    std::cout << "\n-----------" << std::endl;
-    std::cout << *y0.data();
-    // // // for (int i=0; i<y0.size(); ++i)
-    // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
-    // // // std::cout << std::endl;
-  }
+  //   ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
+  //   // // // // std::cout << collectorObj.getCount() << std::endl;
+  //   // std::cout << "Final solution " << std::endl;
+  //   std::cout << "\n-----------" << std::endl;
+  //   std::cout << *y0.data();
+  //   // // // for (int i=0; i<y0.size(); ++i)
+  //   // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
+  //   // // // std::cout << std::endl;
+  // }
 
   // {
   //   using jac_t = core::matrix<native_jac_t>;
