@@ -21,7 +21,7 @@ namespace details {
 
 // Solvers traits
 template <typename T>
-struct solvers_traits {
+struct solver_traits {
   static constexpr bool eigen_enabled = false;
   static constexpr bool trilinos_enabled = false;
 };
@@ -58,7 +58,7 @@ template<>
 struct preconditioner_traits<DefaultPreconditioner> {
   static constexpr bool eigen_enabled = false;
   static constexpr bool trilinos_enabled = true;
-}
+};
 
 template <>
 struct preconditioner_traits<Jacobi> {

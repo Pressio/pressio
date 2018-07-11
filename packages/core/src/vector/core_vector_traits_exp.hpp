@@ -15,8 +15,11 @@ namespace details {
 
 template <typename T, typename Enable = void>
 struct vector_traits {
+  typedef T wrapped_type;
   static constexpr bool is_eigen = false;
   static constexpr bool is_trilinos = false;
+  static constexpr bool is_dynamic = false;
+  static constexpr int rows = -1;
 };
 
 
@@ -30,8 +33,11 @@ struct vector_traits<
     >::value, void
   >::type
 > {
+  typedef T wrapped_type;
   static constexpr bool is_eigen = false;
   static constexpr bool is_trilinos = true;
+  static constexpr bool is_dynamic = true;
+  static constexpr int rows = -1;
 }; 
   
 
@@ -51,8 +57,11 @@ struct vector_traits<
     >::value, void
   >::type
 > {
+  typedef T wrapped_type;
   static constexpr bool is_eigen = true;
   static constexpr bool is_trilinos = false;
+  static constexpr bool is_dynamic = T::RowsAtCompileTime == Eigen::Dynamic;
+  static constexpr int rows = is_dynamic ? -1 : T::RowsAtCompileTime;
 };
 
 } // end namespace details

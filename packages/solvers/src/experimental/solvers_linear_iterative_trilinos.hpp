@@ -47,7 +47,7 @@ class TrilinosLinearIterativeSolver
 
     template <typename T>
     void resetLinearSystem(const core::matrix<T>& A) {
-      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<T>>::value);
+      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<T>>::value, "Error: the supplied linear system cannot be used with the linear solver due to type incompatibility");
       solver->SetUserMatrix(A.data(), true);
     }
 
@@ -55,8 +55,8 @@ class TrilinosLinearIterativeSolver
     template <typename T, typename U>
     void resetLinearSystem(const core::matrix<T>& A, const core::matrix<U>& P) {
       assert(A.data()->NumMyRows() == P.data()->NumMyRows());
-      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<T>>::value);
-      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<U>>::value);
+      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<T>>::value, "Error: the supplied linear system cannot be used with the linear solver due to type incompatibility");
+      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<U>>::value, "Error: the supplied preconditioner cannot be used with the linear solver due to type incompatibility");
       solver->SetUserMatrix(A.data());
       solver->SetPrecMatrix(P.data());
     }
@@ -72,7 +72,7 @@ class TrilinosLinearIterativeSolver
     void setPreconditionerMatrix(const core::matrix<T>& P) {
       assert(solver->GetUserMatrix() != 0);
       assert(solver->GetUserMatrix()->NumMyRows() == P.data()->NumMyRows());
-      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<T>>::value);
+      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<T>>::value, "Error: the supplied preconditioner cannot be used with the linear solver due to type incompatibility");
       solver->SetPrecMatrix(P.data());
     }
 
