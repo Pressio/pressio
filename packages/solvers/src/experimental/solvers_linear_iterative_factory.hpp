@@ -143,7 +143,6 @@ struct LinearIterativeSolvers {
     return solver;    
   } 
 
-
 };
 
 } // end namespace solvers
