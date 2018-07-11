@@ -6,11 +6,6 @@
 
 namespace solvers {
 
-
-
-
-
-
 namespace experimental
 {
 

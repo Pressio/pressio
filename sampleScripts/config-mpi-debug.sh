@@ -30,7 +30,7 @@ cmake \
     \
     -D rompp_ENABLE_Fortran=OFF \
     -D rompp_ENABLE_TESTS:BOOL=ON \
-    -D rompp_ENABLE_EXAMPLES:BOOL=ON \
+    -D rompp_ENABLE_EXAMPLES:BOOL=OFF \
     -D rompp_ENABLE_ALL_PACKAGES:BOOL=OFF \
     -D rompp_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=OFF \
     \
@@ -38,8 +38,8 @@ cmake \
     -D rompp_ENABLE_solvers:BOOL=ON \
     -D rompp_ENABLE_ode:BOOL=ON \
     -D rompp_ENABLE_apps:BOOL=ON \
-    -D rompp_ENABLE_rom:BOOL=OFF \
-    -D rompp_ENABLE_optimization:BOOL=OFF \
+    -D rompp_ENABLE_optimization:BOOL=ON \
+    -D rompp_ENABLE_rom:BOOL=ON \
     \
     $EXTRA_ARGS \
     ${SRC}

@@ -1,0 +1,21 @@
+
+#ifndef ODE_POLICIES_HPP_
+#define ODE_POLICIES_HPP_
+
+#include "ODE_BASIC"
+
+#include "../src/policies/base/ode_advance_full_state_policy_base.hpp"
+#include "../src/policies/base/ode_advance_increment_policy_base.hpp"
+#include "../src/policies/base/ode_jacobian_policy_base.hpp"
+#include "../src/policies/base/ode_residual_policy_base.hpp"
+
+#include "../src/policies/standard/ode_jacobian_standard_policy.hpp"
+#include "../src/policies/standard/ode_residual_standard_policy.hpp"
+#include "../src/policies/custom/ode_jacobian_increment_policy.hpp"
+#include "../src/policies/custom/ode_residual_increment_policy.hpp"
+
+#include "../src/policies/meta/ode_policies_meta.hpp"
+#include "../src/policies/meta/ode_explicit_policies_meta.hpp"
+#include "../src/policies/meta/ode_implicit_policies_meta.hpp"
+
+#endif

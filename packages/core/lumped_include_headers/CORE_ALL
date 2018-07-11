@@ -1,0 +1,9 @@
+
+#ifndef CORE_ALL_HPP_
+#define CORE_ALL_HPP_
+
+#include "CORE_BASIC"
+#include "CORE_VECTOR"
+#include "CORE_MATRIX"
+
+#endif

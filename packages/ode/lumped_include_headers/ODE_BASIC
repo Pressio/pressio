@@ -1,0 +1,12 @@
+
+#ifndef ODE_BASIC_HPP_
+#define ODE_BASIC_HPP_
+
+#include "../src/ode_ConfigDefs.hpp"
+#include "../src/ode_forward_declarations.hpp"
+
+#include "../src/meta/ode_meta.hpp"
+#include "../src/meta/ode_meta_explicit.hpp"
+#include "../src/meta/ode_meta_implicit.hpp"
+
+#endif

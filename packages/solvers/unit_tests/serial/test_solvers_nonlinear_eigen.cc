@@ -1,10 +1,9 @@
 
 #include <gtest/gtest.h>
-#include "experimental/solvers_linear_eigen.hpp"
-#include "experimental/solvers_nonlinear_newton_raphson.hpp"
-#include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
-#include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
-#include "vector/concrete/core_vector_serial_eigen.hpp"
+
+#include "SOLVERS_EXP"
+#include "CORE_VECTOR"
+#include "CORE_MATRIX"
 
 TEST(solvers_nonlinear, simpleTest)
 {

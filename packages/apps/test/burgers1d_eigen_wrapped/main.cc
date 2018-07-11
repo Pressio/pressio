@@ -1,27 +1,31 @@
 
-#include "ode_observer.hpp"
 
-#include "vector/concrete/core_vector_serial_eigen.hpp"
-#include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
-#include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
-// #include "CORE_VECTOR"
-// #include "CORE_MATRIX"
+#include "CORE_VECTOR"
+#include "CORE_MATRIX"
+#include "ODE_ALL"
+#include "SOLVERS_EXP"
 // app class
 #include "apps_burgers1d_eigen.hpp"
-// integrator
-#include "integrators/ode_integrate_n_steps.hpp"
-// policies
-#include "policies/custom/ode_residual_increment_policy.hpp"
-#include "policies/custom/ode_jacobian_increment_policy.hpp"
-// steppers
-#include "steppers/explicit_steppers/ode_explicit_euler_stepper.hpp"
-#include "steppers/explicit_steppers/ode_explicit_runge_kutta4_stepper.hpp"
-#include "steppers/implicit_steppers/ode_implicit_euler_stepper.hpp"
-#include "steppers/implicit_steppers/ode_implicit_bdf2_stepper.hpp"
-#include "steppers/implicit_steppers/ode_implicit_bdf3_stepper.hpp"
-//solvers
-#include "experimental/solvers_linear_eigen.hpp"
-#include "experimental/solvers_nonlinear_newton_raphson.hpp"
+#include "ode_observer.hpp"
+
+
+// // integrator
+// #include "integrators/ode_integrate_n_steps.hpp"
+// // policies
+// #include "policies/custom/ode_residual_increment_policy.hpp"
+// #include "policies/custom/ode_jacobian_increment_policy.hpp"
+// // steppers
+// #include "steppers/explicit_steppers/ode_explicit_euler_stepper.hpp"
+// #include "steppers/explicit_steppers/ode_explicit_runge_kutta4_stepper.hpp"
+// #include "steppers/implicit_steppers/ode_implicit_euler_stepper.hpp"
+// #include "steppers/implicit_steppers/ode_implicit_bdf2_stepper.hpp"
+// #include "steppers/implicit_steppers/ode_implicit_bdf3_stepper.hpp"
+// //solvers
+// #include "experimental/solvers_linear_eigen.hpp"
+// #include "experimental/solvers_nonlinear_newton_raphson.hpp"
+// #include "vector/concrete/core_vector_serial_eigen.hpp"
+// #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
+// #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 
 
 struct mysizer{
@@ -201,7 +205,6 @@ int main(int argc, char *argv[])
     // // // std::cout << std::endl;
   }
 
-  
-    
+     
   return 0;
 }

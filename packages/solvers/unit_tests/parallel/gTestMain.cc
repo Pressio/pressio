@@ -30,7 +30,5 @@ int main(int argc, char *argv[])
   ::testing::InitGoogleMock(&argc,argv);
   ::testing::AddGlobalTestEnvironment(new MPIEnvironment);
   
-  RUN_ALL_TESTS();
-  
-  return 0;
+  return RUN_ALL_TESTS();
 }
