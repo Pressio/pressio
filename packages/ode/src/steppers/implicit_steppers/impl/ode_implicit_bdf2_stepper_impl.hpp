@@ -81,6 +81,7 @@ protected:
 			  Args&& ... rest)
     : stepper_base_t(model, solver, res_policy_obj, jac_policy_obj),
       y_nm1_(std::forward<Args>(rest)...),
+      y_nm2_(std::forward<Args>(rest)...),      
       auxStp_(&auxStepper)
   {}
     
@@ -115,8 +116,8 @@ protected:
   // residual policy is STANDARD  
   //------------------------------------------------
   template <typename U = state_type,
-      typename T = residual_type,
-      typename V = residual_policy_type,
+	    typename T = residual_type,
+	    typename V = residual_policy_type,
   	    typename
   	    std::enable_if<
   	      ode::meta::isImplicitBDF2ResidualStandardPolicy<V>::value
@@ -131,8 +132,8 @@ protected:
   // weight the time discrete residual after it is computed
   //------------------------------------------------
   template <typename U = state_type,
-      typename T = residual_type,
-      typename V = residual_policy_type,
+	    typename T = residual_type,
+	    typename V = residual_policy_type,
   	    typename
   	    std::enable_if<
   	      !ode::meta::isImplicitBDF2ResidualStandardPolicy<V>::value
@@ -165,8 +166,8 @@ protected:
   // after it is computed
   //------------------------------------------------
   template <typename U = state_type,
-      typename T = jacobian_type,
-      typename V = jacobian_policy_type,
+	    typename T = jacobian_type,
+	    typename V = jacobian_policy_type,
   	    typename
   	    std::enable_if<
   	      !ode::meta::isImplicitBDF2JacobianStandardPolicy<V>::value
@@ -214,9 +215,9 @@ private:
   state_type y_nm2_;
   aux_stepper_type * auxStp_;
 
-  const scalar_type c1_ = static_cast<scalar_type>(4)/3;
-  const scalar_type c2_ = static_cast<scalar_type>(1)/3;
-  const scalar_type c3_ = static_cast<scalar_type>(2)/3;
+  const time_type c1_ = static_cast<time_type>(4)/3;
+  const time_type c2_ = static_cast<time_type>(1)/3;
+  const time_type c3_ = static_cast<time_type>(2)/3;
   
 }; //end class
 

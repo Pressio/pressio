@@ -19,21 +19,21 @@ class implicitEulerStepper<state_type, residual_type,
 			   jacobian_type, scalar_type,
 			   model_type, time_type, sizer_type,
 			   solver_policy_type,
-			   void,void,
+			   void, void,
 			   typename std::enable_if<
 			     !std::is_void<state_type>::value
 			     >::type>
-  : public impl::implicitEulerStepperImpl<state_type, residual_type,
-  					  jacobian_type, scalar_type,
-  					  model_type, time_type, sizer_type,
-  					  solver_policy_type,
-					  ode::policy::residualStandardPolicy<
-					    state_type, residual_type,
-					    model_type, time_type, sizer_type>,
-					  ode::policy::jacobianStandardPolicy<
-					    state_type, jacobian_type,
-					    model_type, time_type, sizer_type>
-					  >
+  : public impl::implicitEulerStepperImpl<
+  state_type, residual_type, jacobian_type, scalar_type,
+  model_type, time_type, sizer_type,
+  solver_policy_type,
+  ode::policy::residualStandardPolicy<
+    state_type, residual_type,
+    model_type, time_type, sizer_type>,
+  ode::policy::jacobianStandardPolicy<
+    state_type, jacobian_type,
+    model_type, time_type, sizer_type>
+  >
 {
 public:
   using res_pol_t = ode::policy::residualStandardPolicy<

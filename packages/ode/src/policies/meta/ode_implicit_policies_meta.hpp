@@ -11,7 +11,6 @@
 namespace ode{
 namespace meta {
 
-
 //////////////////////////////////////////////////////////////////
 //
 // IMPLICIT EULER 
@@ -21,26 +20,21 @@ namespace meta {
 template<typename policy_t, typename enable = void>
 struct isLegitimateImplicitEulerResidualPolicy 
 : isLegitimateResidualPolicy<policy_t>{};
-
 //-----------------------------------------------------------------
 
 template<typename policy_t, typename enable = void>
 struct isLegitimateImplicitEulerJacobianPolicy 
 : isLegitimateJacobianPolicy<policy_t>{};
-
 //-----------------------------------------------------------------
 
 template<typename policy_t, typename enable = void>
 struct isImplicitEulerResidualStandardPolicy 
 : isResidualStandardPolicy<policy_t>{};
-
 //----------------------------------------------------------------
 
 template<typename policy_t, typename enable = void>
 struct isImplicitEulerJacobianStandardPolicy 
 : isJacobianStandardPolicy<policy_t>{};
-
-//----------------------------------------------------------------
 
 
 //////////////////////////////////////////////////////////////////
@@ -52,26 +46,21 @@ struct isImplicitEulerJacobianStandardPolicy
 template<typename policy_t, typename enable = void>
 struct isLegitimateImplicitBDF2ResidualPolicy 
 : isLegitimateResidualPolicy<policy_t>{};
-
 //-----------------------------------------------------------------
 
 template<typename policy_t, typename enable = void>
 struct isLegitimateImplicitBDF2JacobianPolicy 
 : isLegitimateJacobianPolicy<policy_t>{};
-
 //-----------------------------------------------------------------
 
 template<typename policy_t, typename enable = void>
 struct isImplicitBDF2ResidualStandardPolicy 
 : isResidualStandardPolicy<policy_t>{};
-
 //----------------------------------------------------------------
-
+  
 template<typename policy_t, typename enable = void>
 struct isImplicitBDF2JacobianStandardPolicy 
 : isJacobianStandardPolicy<policy_t>{};
-
-//----------------------------------------------------------------
 
 
 //////////////////////////////////////////////////////////////////
@@ -83,26 +72,48 @@ struct isImplicitBDF2JacobianStandardPolicy
 template<typename policy_t, typename enable = void>
 struct isLegitimateImplicitBDF3ResidualPolicy 
 : isLegitimateResidualPolicy<policy_t>{};
-
 //-----------------------------------------------------------------
 
 template<typename policy_t, typename enable = void>
 struct isLegitimateImplicitBDF3JacobianPolicy 
 : isLegitimateJacobianPolicy<policy_t>{};
-
 //-----------------------------------------------------------------
 
 template<typename policy_t, typename enable = void>
 struct isImplicitBDF3ResidualStandardPolicy 
 : isResidualStandardPolicy<policy_t>{};
-
 //----------------------------------------------------------------
 
 template<typename policy_t, typename enable = void>
 struct isImplicitBDF3JacobianStandardPolicy 
 : isJacobianStandardPolicy<policy_t>{};
 
+
+//////////////////////////////////////////////////////////////////
+//
+// IMPLICIT Adams Moulton1
+//
+//////////////////////////////////////////////////////////////////
+
+template<typename policy_t, typename enable = void>
+struct isLegitimateImplicitAdamsMoulton1ResidualPolicy 
+: isLegitimateResidualPolicy<policy_t>{};
+//-----------------------------------------------------------------
+
+template<typename policy_t, typename enable = void>
+struct isLegitimateImplicitAdamsMoulton1JacobianPolicy 
+: isLegitimateJacobianPolicy<policy_t>{};
+//-----------------------------------------------------------------
+
+template<typename policy_t, typename enable = void>
+struct isImplicitAdamsMoulton1ResidualStandardPolicy 
+: isResidualStandardPolicy<policy_t>{};
 //----------------------------------------------------------------
+
+template<typename policy_t, typename enable = void>
+struct isImplicitAdamsMoulton1JacobianStandardPolicy 
+: isJacobianStandardPolicy<policy_t>{};
+  
 
   
 } // namespace meta

@@ -9,25 +9,6 @@
 #include "ode_observer.hpp"
 
 
-// // integrator
-// #include "integrators/ode_integrate_n_steps.hpp"
-// // policies
-// #include "policies/custom/ode_residual_increment_policy.hpp"
-// #include "policies/custom/ode_jacobian_increment_policy.hpp"
-// // steppers
-// #include "steppers/explicit_steppers/ode_explicit_euler_stepper.hpp"
-// #include "steppers/explicit_steppers/ode_explicit_runge_kutta4_stepper.hpp"
-// #include "steppers/implicit_steppers/ode_implicit_euler_stepper.hpp"
-// #include "steppers/implicit_steppers/ode_implicit_bdf2_stepper.hpp"
-// #include "steppers/implicit_steppers/ode_implicit_bdf3_stepper.hpp"
-// //solvers
-// #include "experimental/solvers_linear_eigen.hpp"
-// #include "experimental/solvers_nonlinear_newton_raphson.hpp"
-// #include "vector/concrete/core_vector_serial_eigen.hpp"
-// #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
-// #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
-
-
 struct mysizer{
  using state_t = core::vector<apps::burgers1dEigen::state_type>;
  static size_t getSize(const state_t & obj){
@@ -123,36 +104,32 @@ int main(int argc, char *argv[])
   //   std::cout << std::endl;
   // }
 
-  // {
-  //   *y0.data() = y0n;
+  {
+    *y0.data() = y0n;
 
-  //   //********************************************
-  //   // IMPLICIT EULER
-  //   //********************************************
-  //   // linear solver
-  //   using lin_solve_t = solvers::experimental::linearSolver<jac_t,state_t,state_t>;
-  //   lin_solve_t ls;
-    
-  //   // nonlinear solver
-  //   using nonlin_solve_t =
-  //     solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
-  //   nonlin_solve_t nonls(ls);
+    // linear solver
+    using lin_solve_t = solvers::experimental::linearSolver<jac_t,state_t,state_t>;
+    lin_solve_t ls;    
+    // nonlinear solver
+    using nonlin_solve_t =
+      solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
+    nonlin_solve_t nonls(ls);
 
-  //   //stepper 1
-  //   using stepper_t = ode::implicitEulerStepper<
-  //     state_t, residual_t, jac_t, scalar_t,
-  //     model_eval_t, scalar_t, mysizer, nonlin_solve_t>;//, res_pol_t, jac_pol_t>;
-  //   stepper_t stepperObj(appObj, nonls);//, resObj, jacObj);
+    //stepper
+    using stepper_t = ode::implicitAdamsMoulton1Stepper<
+      state_t, residual_t, jac_t, scalar_t,
+      model_eval_t, scalar_t, mysizer, nonlin_solve_t>;//, res_pol_t, jac_pol_t>;
+    stepper_t stepperObj(appObj, nonls);//, resObj, jacObj);
     
-  //   ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
-  //   // // // // std::cout << collectorObj.getCount() << std::endl;
-  //   // std::cout << "Final solution " << std::endl;
-  //   std::cout << "\n-----------" << std::endl;
-  //   std::cout << *y0.data();
-  //   // // // for (int i=0; i<y0.size(); ++i)
-  //   // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
-  //   // // // std::cout << std::endl;
-  // }
+    ode::integrateNSteps( stepperObj, y0, 0.0, dt, final_t/dt, collectorObj);
+    // // // // std::cout << collectorObj.getCount() << std::endl;
+    // std::cout << "Final solution " << std::endl;
+    std::cout << "\n-----------" << std::endl;
+    std::cout << std::setprecision(14) << *y0.data();
+    // // // for (int i=0; i<y0.size(); ++i)
+    // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
+    // // // std::cout << std::endl;
+  }
 
   {
     *y0.data() = y0n;
@@ -199,7 +176,7 @@ int main(int argc, char *argv[])
     // // // // // std::cout << collectorObj.getCount() << std::endl;
     std::cout << "Final solution " << std::endl;
     std::cout << "\n-----------" << std::endl;
-    std::cout << *y0.data();
+    std::cout << std::setprecision(14) << *y0.data();
     // // // // for (int i=0; i<y0.size(); ++i)
     // // // //   std::cout << std::setprecision(14) << y0[i]  << " ";
     // // // std::cout << std::endl;
