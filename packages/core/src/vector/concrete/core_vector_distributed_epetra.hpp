@@ -87,7 +87,7 @@ private:
     return &data_;
   }
   wrap_t * dataImpl(){
-    return data_;
+    return &data_;
   }
   void putScalarImpl(sc_t value) {
     data_.PutScalar(value);
