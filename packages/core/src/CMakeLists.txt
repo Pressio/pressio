@@ -1,17 +1,12 @@
-#
+
 # A) Package-specific configuration options
-#
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
 
-#
+#----------------------------------------------------------------
 # B) Define the header and source files (and include directories)
-#
-SET(HEADERS "")
-SET(SOURCES "")
-
+#----------------------------------------------------------------
 #To include "core_config.h"
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############
 # HEADERS
@@ -45,7 +40,6 @@ FILE(GLOB core_matrix_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB core_matrix_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/matrix/concrete/*.hpp")
 
-
 #################
 #### SOURCES
 #################
@@ -67,9 +61,7 @@ FILE(GLOB core_vector_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB core_vector_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/vector/concrete/src/*.cc")
 
-
-# MESSAGE( "GIGI" ${general_HEADERS} )
-APPEND_SET(HEADERS
+SET(HEADERS
   ${core_general_HEADERS}
   ${core_meta_HEADERS}
   ${core_utils_HEADERS}
@@ -84,7 +76,8 @@ APPEND_SET(HEADERS
   ${core_matrix_base_HEADERS}
   ${core_matrix_concrete_HEADERS}
 )
-APPEND_SET(SOURCES
+
+SET(SOURCES 
   ${core_general_SRCS}
   ${core_meta_SRCS}
   ${core_utils_SRCS}
@@ -100,15 +93,9 @@ APPEND_SET(SOURCES
   ${core_matrix_concrete_SRCS}
 )
 
-
-
+#----------------------------------------------------------------
 # C) Define the targets for package's library(s)
-
-# # # this seems to work for header only library
-# TRIBITS_INSTALL_HEADERS(
-#   HEADERS ${HEADERS}
-# )
-# this is the original in case we have sources too for the library
+#----------------------------------------------------------------
 TRIBITS_ADD_LIBRARY(
   core
   HEADERS ${HEADERS}

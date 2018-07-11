@@ -4,6 +4,4 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../lumped_include_headers)
 
 ADD_SUBDIRECTORIES(
-  #vector
-  #eigen1
 )

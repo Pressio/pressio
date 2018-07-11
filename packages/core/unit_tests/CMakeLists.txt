@@ -1,7 +1,7 @@
 
 
-#include the code
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/..)
+#include the lumped headers
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../lumped_include_headers)
 
 ADD_SUBDIRECTORY(serial)
 ADD_SUBDIRECTORY(parallel)
