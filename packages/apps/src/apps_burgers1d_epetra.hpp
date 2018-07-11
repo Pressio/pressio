@@ -4,7 +4,6 @@
 
 #include "apps_ConfigDefs.hpp"
 #include <memory>
-
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
 #include "Epetra_IntVector.h"

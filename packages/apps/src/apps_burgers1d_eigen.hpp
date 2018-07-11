@@ -3,15 +3,6 @@
 #define APPS_BURGERS1D_EIGEN_HPP_
 
 #include "apps_ConfigDefs.hpp"
-// #include <iomanip>
-// #include <iostream>
-// #include <sstream>
-// #include <cstdlib>
-// #include <vector>
-// #include <type_traits>
-// #include <cmath>
-// #include <fstream>
-// #include <cassert>
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
 
@@ -26,7 +17,6 @@ private:
 public:
   using scalar_type = double;
   using state_type = Eigen::VectorXd;
-  //  using jacobian_type = Eigen::Matrix<scalar_type,-1,-1>;
   using jacobian_type = Eigen::SparseMatrix<scalar_type,Eigen::RowMajor,int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;

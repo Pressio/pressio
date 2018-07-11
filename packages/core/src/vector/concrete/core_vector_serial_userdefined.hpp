@@ -70,7 +70,7 @@ public:
 		      const U & >::type other) const
   {
     derived_t res(other.size());
-    for (size_t i=0; i<other.size(); i++)
+    for (decltype(other.size()) i=0; i<other.size(); i++)
       res[i] = (*this)[i] + other[i];
     return res;
   }
@@ -95,7 +95,7 @@ public:
 		      const U & >::type other) const
   {
     derived_t res(other.size());
-    for (size_t i=0; i<other.size(); i++)
+    for (decltype(other.size()) i=0; i<other.size(); i++)
       res[i] = (*this)[i] - other[i];
     return res;
   }
@@ -121,7 +121,7 @@ public:
 		      const U & >::type other) const
   {
     derived_t res(other.size());
-    for (size_t i=0; i<other.size(); i++)
+    for (decltype(other.size()) i=0; i<other.size(); i++)
       res[i] = (*this)[i] * other[i];
     return res;
   }
@@ -145,7 +145,7 @@ public:
 		      !meta::has_comp_assign_plus_op<wrap_t>::value,
 		      const U & >::type other)
   {
-    for (size_t i=0; i<other.size(); i++)
+    for (decltype(other.size()) i=0; i<other.size(); i++)
       (*this)[i] += other[i];
     return *this;
   }
@@ -169,7 +169,7 @@ public:
 		      !meta::has_comp_assign_minus_op<wrap_t>::value,
 		      const U & >::type other)
   {
-    for (size_t i=0; i<other.size(); i++)
+    for (decltype(other.size()) i=0; i<other.size(); i++)
       (*this)[i] -= other[i];
     return *this;
   }
@@ -183,11 +183,11 @@ private:
   //   return data_;
   // };
 
-  // void resizeImpl(size_t val) {
+  // void resizeImpl(ord_t val) {
   //   data_.resize(val);
   // };
 
-  // size_t sizeImpl() const {
+  // ord_t sizeImpl() const {
   //   return data_.size();
   // };
 

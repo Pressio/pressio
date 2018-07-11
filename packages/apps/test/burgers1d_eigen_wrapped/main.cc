@@ -1,5 +1,4 @@
 
-
 #include "CORE_VECTOR"
 #include "CORE_MATRIX"
 #include "ODE_ALL"
@@ -8,14 +7,14 @@
 #include "apps_burgers1d_eigen.hpp"
 #include "ode_observer.hpp"
 
-
 struct mysizer{
  using state_t = core::vector<apps::burgers1dEigen::state_type>;
  static size_t getSize(const state_t & obj){
    return obj.size();
  };
- static void resize(state_t & obj, size_t newSize){
-   obj.resize(newSize);
+ static void matchSize(const state_t & src,
+		       state_t & obj){
+   obj.resize(src.size());
  };
 };
 

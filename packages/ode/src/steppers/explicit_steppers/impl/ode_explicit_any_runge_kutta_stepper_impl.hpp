@@ -81,13 +81,13 @@ protected:
   {
     auto ySz = sizer_type::getSize(y);
     if(sizer_type::getSize(y_tmp_) == 0)
-      sizer_type::resize(y_tmp_, ySz);
+      sizer_type::matchSize(y_tmp_, y);
 
     int nStages = 4;
     for (int iStage=1; iStage<=nStages; iStage++)
     {
       if(sizer_type::getSize(rhs_[iStage-1]) == 0)
-    	sizer_type::resize(rhs_[iStage-1], ySz);
+    	sizer_type::matchSize(rhs_[iStage-1], y);
 
       time_type tnow = t + dt*bT_.c(iStage);	
       if (iStage==1)

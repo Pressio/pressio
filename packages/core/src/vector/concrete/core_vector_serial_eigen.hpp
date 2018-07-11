@@ -110,10 +110,10 @@ private:
   //-----------------
   //from serial base
   //-----------------
-  size_t sizeImpl() const {
+  ord_t sizeImpl() const {
     return (data_.rows()==1) ? data_.cols() : data_.rows();
   }
-  void resizeImpl(size_t val){
+  void resizeImpl(ord_t val){
     // check that the wrapped type is NOT a static vector from Eigen
     // otherwise we cannot resizee a static vector.
     static_assert(mytraits::isStatic == false,

@@ -68,7 +68,7 @@ protected:
   {
     auto ySz = sizer_type::getSize(y);
     if (sizer_type::getSize(RHS_) == 0)
-      sizer_type::resize(RHS_, ySz);
+      sizer_type::matchSize(RHS_, y);
 
     //eval RHS
     residual_obj_->compute(y, RHS_, *model_, t);
