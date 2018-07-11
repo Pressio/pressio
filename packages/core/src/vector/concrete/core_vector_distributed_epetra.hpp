@@ -116,6 +116,9 @@ private:
 			       const sc_t * values){
     data_.ReplaceGlobalValues(numentries, values, indices);
   }
+  void replaceDataMapImpl(const map_t & mapObj){
+    data_.ReplaceMap(mapObj);
+  }
 
   //----------------
   //from math base

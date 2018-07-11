@@ -32,7 +32,6 @@ class explicitEulerStepperImpl<state_type,
 			   residual_policy_type> >
 {  
 
-private:
   using stepper_t = explicitEulerStepperImpl<state_type,
 					     residual_type,
 					     scalar_type,
@@ -68,7 +67,7 @@ protected:
   {
     auto ySz = sizer_type::getSize(y);
     if (sizer_type::getSize(RHS_) == 0)
-      sizer_type::matchSize(RHS_, y);
+      sizer_type::matchSize(y, RHS_);
 
     //eval RHS
     residual_obj_->compute(y, RHS_, *model_, t);

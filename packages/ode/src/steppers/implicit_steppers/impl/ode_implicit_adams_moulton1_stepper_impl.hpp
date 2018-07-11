@@ -36,10 +36,14 @@ class implicitAdamsMoulton1StepperImpl<state_type,
 				   residual_policy_type,
 				   jacobian_policy_type> >
 { 
-  static_assert( meta::isLegitimateImplicitAdamsMoulton1ResidualPolicy<residual_policy_type>::value,
-  		 "IMPLICIT ADAMS-MOULTON1 Residual_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
-  static_assert( meta::isLegitimateImplicitAdamsMoulton1JacobianPolicy<jacobian_policy_type>::value,
-  		 "IMPLICIT ADAMS-MOULTON1 JACOBIAN_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
+  static_assert( meta::isLegitimateImplicitAdamsMoulton1ResidualPolicy<
+		 residual_policy_type>::value,
+  		 "IMPLICIT ADAMS-MOULTON1 Residual_POLICY NOT ADMISSIBLE, \
+MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
+  static_assert( meta::isLegitimateImplicitAdamsMoulton1JacobianPolicy<
+		 jacobian_policy_type>::value,
+  		 "IMPLICIT ADAMS-MOULTON1 JACOBIAN_POLICY NOT ADMISSIBLE, \
+MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
  
 private:
   using stepper_t = implicitAdamsMoulton1StepperImpl<state_type,

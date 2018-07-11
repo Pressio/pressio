@@ -56,7 +56,7 @@ void integrateNSteps(stepper_type & stepper, state_type & yIn,
 {
   using sizer_t = typename ode::details::traits<typename stepper_type::base_t>::sizer_t;
   auto stSz = sizer_t::getSize(yIn);
-  state_type y(stSz);
+  state_type y(yIn);
   for (decltype(stSz) i=0; i<stSz; i++)
     y[i] = 0.0;
 

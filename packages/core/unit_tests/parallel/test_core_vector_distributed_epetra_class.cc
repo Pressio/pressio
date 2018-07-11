@@ -114,10 +114,10 @@ TEST_F(core_vector_distributed_epetraFix,
 
   fillScalar(11.2);
   myvec_t v1( *getMap() );
-  for (size_t i=0; i<v1.localSize(); i++){
+  for (int i=0; i<v1.localSize(); i++){
     v1[i] = 11.2;
   }
-  for (size_t i=0; i<v1.localSize(); i++){
+  for (int i=0; i<v1.localSize(); i++){
     EXPECT_DOUBLE_EQ( v1[i], (*getVector())[i] );
   }
   v1[3] = 56.;
@@ -132,7 +132,7 @@ TEST_F(core_vector_distributed_epetraFix,
   myvec_t v1( *getMap() );
   v1.putScalar(43.3);
 
-  for (size_t i=0; i<v1.localSize(); i++){
+  for (int i=0; i<v1.localSize(); i++){
     EXPECT_DOUBLE_EQ( v1[i], 43.3 );
   }
 }
@@ -150,7 +150,7 @@ TEST_F(core_vector_distributed_epetraFix,
   v2.putScalar(1.0);
 
   myvec_t v3 = v1 + v2;
-  for (size_t i=0; i<v3.localSize(); i++){
+  for (int i=0; i<v3.localSize(); i++){
     EXPECT_DOUBLE_EQ( v3[i], 4.3 + rankD );
   }
   //missing test for a case where vectors are incompatible
@@ -169,7 +169,7 @@ TEST_F(core_vector_distributed_epetraFix,
   v2.putScalar(1.0);
 
   myvec_t v3 = v1 - v2;
-  for (size_t i=0; i<v3.localSize(); i++){
+  for (int i=0; i<v3.localSize(); i++){
     EXPECT_DOUBLE_EQ( v3[i], 2.3 + rankD );
   }
   //missing test for a case where vectors are incompatible
@@ -188,7 +188,7 @@ TEST_F(core_vector_distributed_epetraFix,
   v2.putScalar(1.0);
 
   myvec_t v3 = v1 * v2;
-  for (size_t i=0; i<v3.localSize(); i++){
+  for (int i=0; i<v3.localSize(); i++){
     if (getRank()==0)
       EXPECT_DOUBLE_EQ( v3[i], 3. );
     if (getRank()==1)
@@ -211,7 +211,7 @@ TEST_F(core_vector_distributed_epetraFix,
   v2.putScalar(1.0);
 
   v1 += v2;
-  for (size_t i=0; i<v1.localSize(); i++){
+  for (int i=0; i<v1.localSize(); i++){
     EXPECT_DOUBLE_EQ( v1[i], 4. );
   }
   //missing test for a case where vectors are incompatible
@@ -229,7 +229,7 @@ TEST_F(core_vector_distributed_epetraFix,
   v2.putScalar(1.0);
 
   v1 -= v2;
-  for (size_t i=0; i<v1.localSize(); i++){
+  for (int i=0; i<v1.localSize(); i++){
     EXPECT_DOUBLE_EQ( v1[i], 2. );
   }
   //missing test for a case where vectors are incompatible

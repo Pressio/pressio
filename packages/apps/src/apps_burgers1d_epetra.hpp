@@ -19,7 +19,6 @@ class burgers1dEpetra
 {
 private:
   using nativeVec = Epetra_Vector;
-
   template<typename T>
   using rcp = std::shared_ptr<T>;
 
@@ -30,9 +29,9 @@ public:
 
 public:  
   burgers1dEpetra(std::vector<scalar_type> params,
-		  Epetra_MpiComm * comm,
-		  int Ncell=1000)
-    : mu_(params), comm_(comm), Ncell_(Ncell)
+		  int Ncell,
+		  Epetra_MpiComm * comm)
+    : mu_(params), Ncell_(Ncell), comm_(comm)
   {}
 
   ~burgers1dEpetra() = default; 
@@ -56,7 +55,7 @@ public:
       (*xGrid_)[i] = dx_*it + dx_*0.5;
       i++;
     };
-    xGrid_->Print(std::cout);
+    //xGrid_->Print(std::cout);
     // init condition
     U0_ = std::make_shared<nativeVec>(*dataMap_);
     U_ = std::make_shared<nativeVec>(*dataMap_);
@@ -101,7 +100,7 @@ public:
       i++;
     }
 
-    for (int i=0; i<NumMyElem_; ++i){
+    for (i=0; i<NumMyElem_; ++i){
       rhs[i] += mu_[1]*exp(mu_[2] * (*xGrid_)[i]);
     }  
   }//end residual

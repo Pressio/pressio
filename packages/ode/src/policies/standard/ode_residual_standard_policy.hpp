@@ -45,7 +45,7 @@ private:
 		   time_type t)
   {
     if (R.empty())
-      R.resize(y.size());
+      sizer_type::matchSize(y, R);
 
     R.setZero();
     model.residual(*y.data(), *R.data(), t);

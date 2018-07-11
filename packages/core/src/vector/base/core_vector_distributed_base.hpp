@@ -37,6 +37,9 @@ public:
 			   const sc_t * values){
     this->underlying().replaceGlobalValuesImpl(numentries, indices, values);
   }
+  void replaceDataMap(const map_t & mapObj){
+    return this->underlying().replaceDataMapImpl(mapObj);
+  }
   
 private:
   friend derived_type;

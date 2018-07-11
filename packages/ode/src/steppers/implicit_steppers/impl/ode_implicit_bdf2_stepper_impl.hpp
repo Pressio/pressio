@@ -40,10 +40,14 @@ class implicitBDF2StepperImpl<state_type,
 			  jacobian_policy_type> >
 { 
 
-  static_assert( meta::isLegitimateImplicitBDF2ResidualPolicy<residual_policy_type>::value,
-  		 "IMPLICIT BDF2 RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
-  static_assert( meta::isLegitimateImplicitBDF2JacobianPolicy<jacobian_policy_type>::value,
-  		 "IMPLICIT BDF2 JACOBIAN_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
+  static_assert( meta::isLegitimateImplicitBDF2ResidualPolicy<
+		 residual_policy_type>::value,
+  		 "IMPLICIT BDF2 RESIDUAL_POLICY NOT ADMISSIBLE, \
+MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
+  static_assert( meta::isLegitimateImplicitBDF2JacobianPolicy<
+		 jacobian_policy_type>::value,
+  		 "IMPLICIT BDF2 JACOBIAN_POLICY NOT ADMISSIBLE, \
+MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
  
   using stepper_t = implicitBDF2StepperImpl<state_type,
 					    residual_type,

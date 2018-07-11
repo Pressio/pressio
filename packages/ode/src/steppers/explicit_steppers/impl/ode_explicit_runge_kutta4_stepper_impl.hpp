@@ -75,7 +75,7 @@ protected:
   {
     auto ySz = sizer_type::getSize(y);
     if(sizer_type::getSize(y_tmp_) == 0)
-      sizer_type::matchSize(y_tmp_, y);
+      sizer_type::matchSize(y, y_tmp_);
 
     const time_type dt_half = dt / static_cast< scalar_type >(2);
     const time_type t_phalf = t + dt_half;
@@ -83,15 +83,15 @@ protected:
     const time_type dt3 = dt / static_cast< scalar_type >( 3 );
     
     if(sizer_type::getSize(y_tmp_) == 0)
-      sizer_type::matchSize(y_tmp_, y);
+      sizer_type::matchSize(y, y_tmp_);
     if(sizer_type::getSize(rhs_[0]) == 0)
-      sizer_type::matchSize(rhs_[0], y);
+      sizer_type::matchSize(y, rhs_[0]);
     if(sizer_type::getSize(rhs_[1]) == 0)
-      sizer_type::matchSize(rhs_[1], y);
+      sizer_type::matchSize(y, rhs_[1]);
     if(sizer_type::getSize(rhs_[2]) == 0)
-      sizer_type::matchSize(rhs_[2], y);
+      sizer_type::matchSize(y, rhs_[2]);
     if(sizer_type::getSize(rhs_[3]) == 0)
-      sizer_type::matchSize(rhs_[3], y);
+      sizer_type::matchSize(y, rhs_[3]);
     
     // ----------
     // stage 1: 
