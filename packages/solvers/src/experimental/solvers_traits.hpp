@@ -2,6 +2,9 @@
 #ifndef _SOLVERS_TRAITS_HPP_
 #define _SOLVERS_TRAITS_HPP_
 
+#include <Eigen/Core>
+
+
 namespace solvers {
 
 // Iterative solvers types
@@ -11,13 +14,14 @@ struct Bicgstab {};
 
 // Preconditioner types
 struct Jacobi {};
+struct DefaultPreconditioner {};
 
 
 namespace details {
 
-// Solvers traits
+// Solver traits
 template <typename T>
-struct solvers_traits {
+struct solver_traits {
   static constexpr bool eigen_enabled = false;
   static constexpr bool trilinos_enabled = false;
 };
@@ -49,6 +53,12 @@ struct preconditioner_traits {
   static constexpr bool eigen_enabled = false;
   static constexpr bool trilinos_enabled = false;
 };
+
+template<>
+struct preconditioner_traits<DefaultPreconditioner> {
+  static constexpr bool eigen_enabled = false;
+  static constexpr bool trilinos_enabled = true;
+}
 
 template <>
 struct preconditioner_traits<Jacobi> {

@@ -2,8 +2,8 @@
 #ifndef SOLVERS_LINEAR_ITERATIVE_POLICIES_TRILINOS_HPP_
 #define SOLVERS_LINEAR_ITERATIVE_POLICIES_TRILINOS_HPP_
 
-#include "solvers_ConfigDefs.hpp"
-#include "solvers_forward_declarations.hpp"
+#include "AztecOO.h"
+
 
 namespace solvers {
 namespace trilinos_policies {
@@ -12,7 +12,7 @@ namespace trilinos_policies {
 // Linear solvers policies
 struct CG {
   static void set_solver_type(AztecOO& solver) {
-    solver.SetAztecOption(AZ_solver, AZ_);
+    solver.SetAztecOption(AZ_solver, AZ_cg);
   }
 };
 

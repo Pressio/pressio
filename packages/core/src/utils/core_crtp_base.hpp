@@ -5,7 +5,7 @@
 namespace core{
   
 template <typename T,
-	  template<typename T, typename...> class crtpType,
+	  template<typename, typename...> class crtpType,
 	  typename ... Args>
 struct crtpBase{
   T & underlying() {

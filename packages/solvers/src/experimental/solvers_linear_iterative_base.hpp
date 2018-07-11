@@ -17,11 +17,6 @@ namespace solvers {
 template<typename Derived>
 class LinearIterativeSolverBase {
 
-  private:
-
-    typedef Derived::matrix_type matrix_type;
-
-
   public: 
 
 
@@ -30,7 +25,8 @@ class LinearIterativeSolverBase {
      *
      * @param  A Matrix representing the linear system to solve
      */
-    void resetLinearSystem(const matrix_type& A) {
+    template <typename T>
+    void resetLinearSystem(const T& A) {
       this->underlying().resetLinearSystem(A);
     }
 
@@ -54,12 +50,8 @@ class LinearIterativeSolverBase {
      * @param  X is the solution vector
      * @return void
      */
-    template <typename T, 
-      typename U
-    >
-    void solve(const T& b,
-      U& x
-    ) {
+    template <typename T, typename U>
+    void solve(const T& b, U& x) {
       this->underlying().solve(b, x);
     }
 
@@ -89,7 +81,6 @@ class LinearIterativeSolverBase {
     LinearIterativeSolverBase() = default;
     ~LinearIterativeSolverBase() = default;
 
-    LinearIterativeSolverBase(LinearIterativeSolverBase&&) = delete;
     LinearIterativeSolverBase(const LinearIterativeSolverBase&) = delete;
 
 

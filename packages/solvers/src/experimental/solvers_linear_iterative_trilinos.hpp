@@ -2,8 +2,18 @@
 #ifndef SOLVERS_TRILINOS_LINEAR_ITERATIVE_HPP_
 #define SOLVERS_TRILINOS_LINEAR_ITERATIVE_HPP_
 
-#include "solvers_ConfigDefs.hpp"
-#include "solvers_forward_declarations.hpp"
+#include <iostream>
+#include <memory>
+#include <type_traits>
+
+#include "AztecOO.h"
+#include "Epetra_RowMatrix.h"
+
+#include "matrix/core_matrix_traits_exp.hpp"
+#include "vector/core_vector_traits_exp.hpp"
+
+#include "solvers_linear_iterative_base.hpp"
+
 
 namespace solvers {
 
@@ -28,21 +38,27 @@ class TrilinosLinearIterativeSolver
 
   private:
 
-    friend LinearIterativeSolvers;  
+    friend LinearIterativeSolvers;
+    typedef LinearIterativeSolverBase<TrilinosLinearIterativeSolver<SolverT, PrecT>> base_type;  
     typedef Epetra_RowMatrix matrix_type;
 
 
   public: 
 
-    void resetLinearSystem(const matrix_type& A) {
-      solver.SetUserMatrix(&A, true);
+    template <typename T>
+    void resetLinearSystem(const core::matrix<T>& A) {
+      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<T>>::value);
+      solver->SetUserMatrix(A.data(), true);
     }
 
 
-    void resetLinearSystem(const matrix_type& A, const matrix_type& P) {
-      assert(A.NumMyRows() == P.NumMyRows());
-      solver.SetUserMatrix(&A);
-      solver.SetPrecMatrix(&P);
+    template <typename T, typename U>
+    void resetLinearSystem(const core::matrix<T>& A, const core::matrix<U>& P) {
+      assert(A.data()->NumMyRows() == P.data()->NumMyRows());
+      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<T>>::value);
+      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<U>>::value);
+      solver->SetUserMatrix(A.data());
+      solver->SetPrecMatrix(P.data());
     }
 
 
@@ -52,10 +68,12 @@ class TrilinosLinearIterativeSolver
      * @param  P A preconditioner matrix 
      * @return void
      */
-    void setPreconditionerMatrix(const matrix_type& P) {
-      assert(solver.GetUserMatrix() != 0);
-      assert(solver.GetUserMatrix()->NumMyRows() == P.NumMyRows());
-      solver.SetPrecMatrix(&P);
+    template <typename T>
+    void setPreconditionerMatrix(const core::matrix<T>& P) {
+      assert(solver->GetUserMatrix() != 0);
+      assert(solver->GetUserMatrix()->NumMyRows() == P.data()->NumMyRows());
+      static_assert(std::is_base_of<Epetra_RowMatrix, std::decay_t<T>>::value);
+      solver->SetPrecMatrix(P.data());
     }
 
 
@@ -66,33 +84,33 @@ class TrilinosLinearIterativeSolver
      * @return void
      */
     void setPreconditionerMatrix() {
-      assert(solver.GetUserMatrix() != 0);
-      solver.SetPrecMatrix(solver.GetUserMatrix()); 
+      assert(solver->GetUserMatrix() != 0);
+      solver->SetPrecMatrix(solver->GetUserMatrix()); 
     }
 
 
     template <typename T>
     auto solve(const T& b) {
-      assert(solver.GetUserMatrix() != 0, "Error: the linear system has not been assigned yet");
-      static_assert(core::vector_traits<T>::is_trilinos, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
+      if (solver->GetUserMatrix() == 0) {std::cerr << "Error: the linear system has not been assigned yet" << std::endl; assert(0);}
+      static_assert(core::details::vector_traits<T>::is_trilinos, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
 
-      T x(b.Map());
-      solver.SetLHS(&x);
-      solver.SetRHS(&b);
-      solver.Iterate(maxIters_, tolerance_); 
+      T x(b.data()->Map());
+      solver->SetLHS(&x);
+      solver->SetRHS(b.data());
+      solver->Iterate(maxIters_, tolerance_); 
       return x;
     }
 
 
     template <typename T, typename U>
     void solve(const T& b, U& x) {
-      assert(solver.GetUserMatrix() != 0);
-      static_assert(core::vector_traits<T>::is_trilinos, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
-      static_assert(core::vector_traits<U>::is_trilinos, "Error: the supplied result vector cannot be used with the linear solver due to type incompatibility");
+      assert(solver->GetUserMatrix() != 0);
+      static_assert(core::details::vector_traits<T>::is_trilinos, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
+      static_assert(core::details::vector_traits<U>::is_trilinos, "Error: the supplied result vector cannot be used with the linear solver due to type incompatibility");
 
-      solver.SetLHS(&x);
-      solver.SetRHS(&b);
-      solver.Iterate(maxIters_, tolerance_);
+      solver->SetLHS(&x);
+      solver->SetRHS(&b);
+      solver->Iterate(maxIters_, tolerance_);
     }
 
 
@@ -120,7 +138,7 @@ class TrilinosLinearIterativeSolver
 
     TrilinosLinearIterativeSolver() = delete;
     TrilinosLinearIterativeSolver(const Epetra_RowMatrix& A) : 
-      base()
+      base_type(), solver(std::make_unique<AztecOO>()), maxIters_(0), tolerance_(1.0e-5)
     {
       resetLinearSystem(A);
       SolverT::set_solver_type(solver);
@@ -130,13 +148,12 @@ class TrilinosLinearIterativeSolver
 
   private:
 
-    AztecOO solver;
+    std::unique_ptr<AztecOO> solver;
  
     int maxIters_;
     double tolerance_; 
 };
 
-} //end namespace experimental
 } //end namespace solvers
 
 #endif
