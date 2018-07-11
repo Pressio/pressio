@@ -38,3 +38,7 @@ This makes things easier later on, when we remove all cc files.
 So, follow this rule. 
 
 
+- text inside files should not be too wide, maximum 90 character
+Prefer wrapping text around than huge long lines, or it will be hard 
+for other developers to read code because everybody uses different editors.
+
