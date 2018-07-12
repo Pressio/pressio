@@ -42,3 +42,11 @@ So, follow this rule.
 Prefer wrapping text around than huge long lines, or it will be hard 
 for other developers to read code because everybody uses different editors.
 
+- Files organization: the src directory of a package should not have 
+a bunch of files all dumped there. Things should be separated logically 
+basedo on functionality. Best practice is to create subfolders to contain things 
+that go together. Follow examples in core or ode packages. 
+Also, the CMakeList inside the src folder should preferably be written using 
+globs to make the process of adding headers much easier and less prone to forgetting files. 
+
+
