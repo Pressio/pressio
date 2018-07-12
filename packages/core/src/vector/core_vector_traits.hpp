@@ -146,10 +146,10 @@ struct traits<vector<wrapped_type,
 namespace meta {
 
 template <typename T, typename enable = void>
-struct is_coreVectorWrapper : std::false_type {};
+struct is_coreVector : std::false_type {};
 
 template <typename T>
-struct is_coreVectorWrapper< T,
+struct is_coreVector< T,
 		       typename
 		       std::enable_if<
 			 core::details::traits<T>::isVector==1
@@ -157,7 +157,7 @@ struct is_coreVectorWrapper< T,
 		       > : std::true_type{};
 
 #define STATIC_ASSERT_IS_CORE_VECTOR_WRAPPER(TYPE) \
-  static_assert( core::meta::is_coreVectorWrapper<TYPE>::value, \
+  static_assert( core::meta::is_coreVector<TYPE>::value, \
 		 "THIS_IS_NOT_A_CORE_VECTOR_WRAPPER")
 
 /////////////////////////
