@@ -1,6 +1,5 @@
 
-#include "CORE_VECTOR"
-#include "CORE_MATRIX"
+#include "CORE_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_EXP"
 #include "apps_burgers1d_eigen.hpp"
