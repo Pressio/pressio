@@ -19,8 +19,6 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeFactoryEigen)
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = core::vector<vector_n_t>;
 
-  
-
   // Define linear system
   vector_w_t b(3);
   matrix_w_t A(3, 3);
