@@ -6,10 +6,11 @@
 #include "../../vector/meta/core_vector_meta.hpp"
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
+#include <Epetra_CrsMatrix.h>
+
 
 namespace core{
 namespace meta {
-
 
 template <typename T, typename enable = void>
 struct is_matrixDenseSerialEigen : std::false_type {};
@@ -20,21 +21,22 @@ struct is_matrixDenseSerialEigen : std::false_type {};
    (c) its rows and cols are fully dynamic
 */
 template<typename T>
-struct is_matrixDenseSerialEigen<T, typename
-			      std::enable_if< !is_vectorEigen<T>::value &&
-				(std::is_same<T,Eigen::Matrix<typename T::Scalar,
-							      T::RowsAtCompileTime,
-							      T::ColsAtCompileTime
-							      >
-					     >::value ||
-				 std::is_same<T, Eigen::Matrix<typename T::Scalar,
-							       Eigen::Dynamic,
-							       Eigen::Dynamic
-							       >
-					     >::value
-				 )
-			     >::type
-			   > : std::true_type{};
+struct is_matrixDenseSerialEigen<T,
+    typename
+    std::enable_if< !is_vectorEigen<T>::value &&
+	(std::is_same<T,Eigen::Matrix<typename T::Scalar,
+	 T::RowsAtCompileTime,
+	 T::ColsAtCompileTime
+	 >
+	 >::value ||
+	 std::is_same<T, Eigen::Matrix<typename T::Scalar,
+	 Eigen::Dynamic,
+	 Eigen::Dynamic
+	 >
+	 >::value
+	 )
+	>::type
+		   > : std::true_type{};
 
 //----------------------------------------------------------------------
   
@@ -48,16 +50,16 @@ struct is_matrixSparseSerialEigen : std::false_type {};
 */
 template<typename T>
 struct is_matrixSparseSerialEigen<T, typename
-			      std::enable_if< !is_vectorEigen<T>::value &&
-					      !is_matrixDenseSerialEigen<T>::value &&
-					      std::is_same<T,
-							   Eigen::SparseMatrix<
-							   typename T::Scalar,
-							     T::Options,
-						           typename T::StorageIndex>
-							  >::value
-					      >::type
-				  > : std::true_type{};
+  std::enable_if< !is_vectorEigen<T>::value &&
+		  !is_matrixDenseSerialEigen<T>::value &&
+		  std::is_same<T,
+			       Eigen::SparseMatrix<
+			       typename T::Scalar,
+				 T::Options,
+			       typename T::StorageIndex>
+			      >::value
+		  >::type
+      > : std::true_type{};
 
 //----------------------------------------------------------------------
 
@@ -66,16 +68,16 @@ struct is_matrixDenseSerialStdlib : std::false_type {};
 
 template <typename T>
 struct is_matrixDenseSerialStdlib<T,
-			typename
-			std::enable_if<
-			  std::is_same<T,std::vector<
-					   std::vector<typename
-						       T::value_type::value_type
-						       >
-						    >
-				       >::value
-				       >::type
-		       > : std::true_type{};
+     typename
+     std::enable_if<
+       std::is_same<T,std::vector<
+			std::vector<typename
+			T::value_type::value_type
+			>
+		     >
+		    >::value
+		    >::type
+    > : std::true_type{};
 
 //----------------------------------------------------------------------
 
@@ -83,19 +85,35 @@ template <typename T1, typename T2, typename enable = void>
 struct sparseSerialEigenSameStorage : std::false_type{};
 
 template <typename T1, typename T2>
-struct sparseSerialEigenSameStorage<T1, T2,
-				    typename
-				    std::enable_if<
-				      (T1::isRowMajor && T2::isRowMajor) ||
-				      (T1::isColMajor && T2::isColMajor)
-				      >::type
-				    > : std::true_type{};
+struct sparseSerialEigenSameStorage<
+  T1, T2, typename
+  std::enable_if<
+	    (T1::isRowMajor && T2::isRowMajor) ||
+	    (T1::isColMajor && T2::isColMajor)
+	    >::type
+  > : std::true_type{};
   
-  
-  
-} // namespace meta
+//----------------------------------------------------------------------
 
- 
+
+template <typename T, typename enable = void>
+struct is_matrixSparseDistributedEpetra
+  : std::false_type {};
+
+template<typename T>
+struct is_matrixSparseDistributedEpetra<T,
+    typename std::enable_if<
+      std::is_same<T, Epetra_CrsMatrix>::value
+      >::type >
+  : std::true_type{};
+
+
+  
+/////////////////////
+} // namespace meta
+/////////////////////
+
+  
 #define STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_EIGEN(TYPE) \
   static_assert( core::meta::is_matrixDenseSerialEigen<TYPE>::value,	\
 		 "THIS_IS_NOT_A_MATRIX_DENSE_SERIAL_EIGEN")
@@ -119,7 +137,13 @@ struct sparseSerialEigenSameStorage<T1, T2,
   static_assert( !core::meta::is_matrixDenseSerialStdlib<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_DENSE_SERIAL_STDLIB")
 
-
-
+  
+#define STATIC_ASSERT_IS_MATRIX_SPARSE_DISTRIBUTED_EPETRA(TYPE)	      \
+  static_assert( core::meta::is_matrixSparseDistributedEpetra<TYPE>::value, \
+		 "THIS_IS_NOT_A_MATRIX_SPARSE_DIST_EPETRA")
+#define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_STDLIB(TYPE) \
+  static_assert( !core::meta::is_matrixSparseDistributedEpetra<TYPE>::value, \
+		 "THIS_IS_A_MATRIX_SPARSE_DIST_EPETRA")
+  
 } // namespace core
 #endif

@@ -38,6 +38,23 @@ private:
   using baseIncr_t::yFull_;
   using baseIncr_t::y0ptr_;
 
+  /* 
+    residual_type appRHS_;
+
+    I need here this auxiliary RHS container 
+    that is needed below to evaluate the spatial residual
+    because the R that we are passed below inthe compute 
+    is supposed to have same size as the 
+    state integrated in time, so for galerkin projection, 
+    we have a modified "space residual" that is 
+
+      fnew = \phi^T f(y,...)
+
+    where f(y,...) is the actual space RHS computed 
+    from the application and so f has to have size suitabel 
+    for the application, whereas fnew has same size of y 
+  */
+
 private:
   // enable if using types from core package
   template <typename U = state_type, typename T = residual_type,
@@ -52,9 +69,12 @@ private:
   {
     // reconstruct the solution
     yFull_ = *y0ptr_ + y;
+
     // eval RHS from target model
-    R.setZero();
-    model.residual(*yFull_.data(), *R.data(), t);
+    //model.residual(*yFull_.data(), *appRHS_.data(), t);
+
+    // do projection of the space residual
+    // R = phi^T appRHS_
   }  
 
   // void weightTimeDiscreteResidualImpl(const state_type & y,

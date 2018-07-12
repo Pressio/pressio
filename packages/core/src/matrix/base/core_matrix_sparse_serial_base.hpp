@@ -17,18 +17,6 @@ private:
   using sc_t = typename traits_t::scalar_t;    
 
 public:
-  ord_t rows() const{
-    return this->underlying().rowsImpl();
-  }
-
-  ord_t cols() const{
-    return this->underlying().colsImpl();
-  }
-
-  void resize(ord_t nrows, ord_t ncols){
-    this->underlying().resizeImpl(nrows, ncols);
-  }
-
   ord_t nonZerosCount()const{
     return this->underlying().nonZerosCountImpl();
   }  
@@ -51,8 +39,10 @@ public:
 		    ord_t numEntries,
 		    const sc_t * values,
 		    const ord_t * indices){
-    this->underlying().insertValuesImpl(targetLocation, numEntries,
-					       values, indices);
+    this->underlying().insertValuesImpl(targetLocation,
+					numEntries,
+					values,
+					indices);
   }
   
   // note here that we return by copy. We do not enable to refernce []
@@ -63,6 +53,7 @@ private:
   friend der_t;
   matrixSparseSerialBase() = default;
   ~matrixSparseSerialBase() = default; 
+
 private:  
   der_t & underlying(){
     return static_cast<der_t &>(*this);
@@ -70,6 +61,7 @@ private:
   der_t const& underlying() const{
     return static_cast<der_t const&>(*this);
   };
+
 };//end class
 } // end namespace core
 #endif

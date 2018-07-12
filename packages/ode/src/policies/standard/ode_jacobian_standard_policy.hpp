@@ -43,11 +43,8 @@ private:
 		   model_type & model,
 		   time_type t)
   {
-    // first eval jac
+    // first eval space jac
     model.jacobian( *y.data(), *J.data(), t);
-
-    jacobian_type A_( J.rows(),J.cols() );
-    A_.setIdentity();
   }
   //----------------------------------------------------------------
   

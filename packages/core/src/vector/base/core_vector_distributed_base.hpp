@@ -20,23 +20,27 @@ private:
   using comm_t =  typename details::traits<derived_type>::communicator_t;
 
   static_assert( details::traits<derived_type>::isDistributed==1,
-		 "OOPS: non-distributed concrete vector inheriting from distributed base!");
+  "OOPS: non-distributed concrete vector inheriting from distributed base!");
     
 public:
   GO_t globalSize() const {
     return this->underlying().globalSizeImpl();
   };
+
   LO_t localSize() const {
     return this->underlying().localSizeImpl();
   };
+
   map_t const & getDataMap() const{
     return this->underlying().getDataMapImpl();
   }
+
   void replaceGlobalValues(GO_t numentries,
 			   const GO_t * indices,
 			   const sc_t * values){
     this->underlying().replaceGlobalValuesImpl(numentries, indices, values);
   }
+
   void replaceDataMap(const map_t & mapObj){
     return this->underlying().replaceDataMapImpl(mapObj);
   }
@@ -49,6 +53,7 @@ private:
   der_t & underlying(){
     return static_cast<der_t &>(*this);
   };
+
   der_t const& underlying() const{
     return static_cast<der_t const&>(*this);
   };

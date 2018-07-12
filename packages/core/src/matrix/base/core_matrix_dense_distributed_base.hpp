@@ -12,7 +12,7 @@ class matrixDenseDistributedBase
 private:
   using der_t = typename details::traits<derived_type>::derived_t;
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
-
+  
 private:  
   friend derived_type;
   matrixDenseDistributedBase() = default;

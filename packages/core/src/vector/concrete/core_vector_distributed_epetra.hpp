@@ -34,8 +34,8 @@ private:
 
 public:
   vector() = delete;
-  explicit vector(const map_t & mapobj) : data_(mapobj){};
-  explicit vector(const wrap_t & vecobj) : data_(vecobj){};
+  explicit vector(const map_t & mapobj) : data_(mapobj){}
+  explicit vector(const wrap_t & vecobj) : data_(vecobj){}
   ~vector() = default;
 
 public:
@@ -86,15 +86,19 @@ private:
   wrap_t const * dataImpl() const{
     return &data_;
   }
+
   wrap_t * dataImpl(){
     return &data_;
   }
+
   void putScalarImpl(sc_t value) {
     data_.PutScalar(value);
   }
+
   void setZeroImpl() {
     this->putScalarImpl( static_cast<sc_t>(0) );
   }
+
   bool emptyImpl() const{
     return this->globalSize()==0 ? true : false;
   }
@@ -105,17 +109,21 @@ private:
   GO_t globalSizeImpl() const {
     return data_.GlobalLength();
   }
+
   LO_t localSizeImpl() const {
     return data_.MyLength();
   }
+
   map_t const & getDataMapImpl() const{
     return data_.Map();
   }
+
   void replaceGlobalValuesImpl(GO_t numentries,
 			       const GO_t * indices,
 			       const sc_t * values){
     data_.ReplaceGlobalValues(numentries, values, indices);
   }
+
   void replaceDataMapImpl(const map_t & mapObj){
     data_.ReplaceMap(mapObj);
   }
@@ -129,21 +137,27 @@ private:
     for (LO_t i=0; i<this->localSize(); i++)
       data_[i] = op()( a1*data_[i], a2*other[i] );
   }
+
   void scaleImpl(sc_t & factor){
     data_.Scale(factor);
   }
+
   void norm1Impl(sc_t & result) const {
     data_.Norm1(&result);
   }
+
   void norm2Impl(sc_t & result) const {
     data_.Norm2(&result);
   }
+
   void normInfImpl(sc_t & result) const {
     data_.NormInf(&result);
   }
+
   void minValueImpl(sc_t & result) const {
     data_.MinValue(&result);
   }
+
   void maxValueImpl(sc_t & result) const {
     data_.MaxValue(&result);
   }

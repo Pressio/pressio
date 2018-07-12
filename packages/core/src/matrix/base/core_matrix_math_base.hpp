@@ -9,12 +9,14 @@ namespace core{
 template<typename derived_type>
 class matrixMathBase
 {
+
 private:
   using traits_t = details::traits<derived_type>;
   using der_t = typename traits_t::derived_t;
   using wrap_t = typename traits_t::wrapped_t;
   using ord_t = typename traits_t::ordinal_t;
   using sc_t = typename traits_t::scalar_t;    
+
 public:
   void scale(sc_t factor){
     // this = factor * this
@@ -22,6 +24,7 @@ public:
   };  
     
 private:  
+
   friend der_t;
   matrixMathBase() = default;
   ~matrixMathBase() = default; 

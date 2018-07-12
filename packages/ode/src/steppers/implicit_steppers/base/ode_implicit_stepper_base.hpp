@@ -29,17 +29,18 @@ private:
   using jacobian_policy_t = typename traits::jacobian_policy_t;  
 
   using order_t = typename traits::order_t; 
-  static constexpr order_t order_value = ode::details::traits<stepper_type>::order_value;
+  static constexpr order_t order_value =
+    ode::details::traits<stepper_type>::order_value;
 
   //do checking here that things are as supposed
   static_assert( meta::isLegitimateImplicitStateType<state_t>::value,
-		 "OOPS: STATE_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
+       "OOPS: STATE_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateImplicitResidualType<residual_t>::value,
-		 "OOPS: RESIDUAL_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
+       "OOPS: RESIDUAL_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateJacobianType<jacobian_t>::value,
-  		 "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
+       "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateTimeType<time_t>::value,
-  		 "OOPS: TIME_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
+       "OOPS: TIME_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
 public:
   order_t order() const{

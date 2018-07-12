@@ -14,14 +14,15 @@ namespace details{
 // eigen dense matrix 
 //***********************************
 template <typename wrapped_type>
-struct traits<matrix<wrapped_type,
-		     typename
-		     std::enable_if<
-		       core::meta::is_matrixDenseSerialEigen<
-			                  wrapped_type>::value
-				    >::type
-		     >
-	     >
+struct traits<matrix<
+		wrapped_type,
+		typename
+		std::enable_if<
+		  core::meta::is_matrixDenseSerialEigen<
+		    wrapped_type>::value
+		  >::type
+		>
+	      >
 {
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
@@ -30,6 +31,7 @@ struct traits<matrix<wrapped_type,
 
   static constexpr int isMatrix = 1;
   static constexpr int isEigen = 1;
+  static constexpr int isEpetra = 0;
   static constexpr int isDense = 1;
   static constexpr int isSparse = !isDense;
   static constexpr int isSerial = 1;
@@ -46,22 +48,24 @@ struct traits<matrix<wrapped_type,
 // eigen sparse matrix 
 //***********************************
 template <typename wrapped_type>
-struct traits<matrix<wrapped_type,
-		     typename
-		     std::enable_if<
-		       core::meta::is_matrixSparseSerialEigen<
-			                           wrapped_type
-						   >::value
-				    >::type
-		     >
-	     >
+struct traits<matrix<
+		wrapped_type,
+		typename
+		std::enable_if<
+		  core::meta::is_matrixSparseSerialEigen<
+		    wrapped_type
+		    >::value
+		  >::type
+		>
+	      >
 {
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = typename wrapped_type::StorageIndex;
   //  ordinal has to be integral and signed
   static_assert( std::is_integral<ordinal_t>::value &&
   		 std::is_signed<ordinal_t>::value,
-  		 "ordinal type for indexing eigen sparse matrix has to be signed"
+  		 "ordinal type for indexing eigen sparse \
+matrix has to be signed"
   		 );
   
   using wrapped_t = wrapped_type;
@@ -71,6 +75,7 @@ struct traits<matrix<wrapped_type,
   static constexpr int isRowMajor = wrapped_type::IsRowMajor;
   static constexpr int isColMajor = !isRowMajor;
   static constexpr int isEigen = 1;
+  static constexpr int isEpetra = 0;
   static constexpr int isDense = 0;
   static constexpr int isSparse = 1;
   static constexpr int isSerial = 1;
@@ -86,15 +91,16 @@ struct traits<matrix<wrapped_type,
 // based on std::vector<std::vector<>>
 //***********************************
 template <typename wrapped_type>
-struct traits<matrix<wrapped_type,
-		     typename
-		     std::enable_if<
-		       core::meta::is_matrixDenseSerialStdlib<
-			                          wrapped_type
-						 >::value
-				    >::type
-		     >
-	     >
+struct traits<matrix<
+		wrapped_type,
+		typename
+		std::enable_if<
+		  core::meta::is_matrixDenseSerialStdlib<
+		    wrapped_type
+		    >::value
+		  >::type
+		>
+	      >
 {
   using scalar_t = typename wrapped_type::value_type::value_type;
   using ordinal_t = int;
@@ -104,6 +110,7 @@ struct traits<matrix<wrapped_type,
   static constexpr int isMatrix = 1;
   static constexpr int isStdlib = 1;
   static constexpr int isEigen = 0;
+  static constexpr int isEpetra = 0;
   static constexpr int isDense = 1;
   static constexpr int isSparse = !isDense;
   static constexpr int isSerial = 1;
@@ -112,10 +119,50 @@ struct traits<matrix<wrapped_type,
   static constexpr int isStatic = 0;
 };
 
-  
+
+//***********************************
+// epetra sparse distributed matrix 
+//***********************************
+template <typename wrapped_type>
+struct traits<matrix
+	      <wrapped_type,
+	       typename
+	       std::enable_if<
+		 core::meta::is_matrixSparseDistributedEpetra<
+		   wrapped_type
+		   >::value
+		 >::type
+	       >
+	     >
+{
+  using wrapped_t = wrapped_type;
+  using derived_t = matrix<wrapped_t>;
+  using scalar_t = defaultTypes::epetra_scalar_t;
+  using local_ordinal_t = core::defaultTypes::epetra_lo_t;
+  using global_ordinal_t = core::defaultTypes::epetra_go_t1;
+  using row_map_t = Epetra_BlockMap;
+  using col_map_t = Epetra_BlockMap;
+  using communicator_t = Epetra_Comm;
+
+  static constexpr int isMatrix = 1;
+  static constexpr int isEpetra = 1;
+  static constexpr int isSparse = 1;
+  static constexpr int isDistributed = 1;
+  static constexpr int isEigen = 0;
+  static constexpr int isDense = 0;
+  static constexpr int isSerial = 0;
+  static constexpr int isVector = 0;
+  static constexpr int isStdlib = 0;
+  static constexpr int isStatic = 0;
+};
+
+
+    
+////////////////////////////
 }//end namespace details
+////////////////////////////
 
-
+  
 namespace meta{
 
 template <typename T, typename enable = void>
