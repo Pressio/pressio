@@ -4,18 +4,23 @@
 
 #include "ODE_BASIC"
 
-#include "../src/policies/base/ode_advance_full_state_policy_base.hpp"
-#include "../src/policies/base/ode_advance_increment_policy_base.hpp"
-#include "../src/policies/base/ode_jacobian_policy_base.hpp"
-#include "../src/policies/base/ode_residual_policy_base.hpp"
 
-#include "../src/policies/standard/ode_jacobian_standard_policy.hpp"
-#include "../src/policies/standard/ode_residual_standard_policy.hpp"
-#include "../src/policies/custom/ode_jacobian_increment_policy.hpp"
-#include "../src/policies/custom/ode_residual_increment_policy.hpp"
-
-#include "../src/policies/meta/ode_policies_meta.hpp"
+// explicit
+#include "../src/policies/base/ode_explicit_residual_policy_base.hpp"
+#include "../src/policies/standard/ode_explicit_residual_standard_policy.hpp"
 #include "../src/policies/meta/ode_explicit_policies_meta.hpp"
+#include "../src/policies/meta/ode_explicit_euler_policies_meta.hpp"
+#include "../src/policies/meta/ode_explicit_runge_kutta4_policies_meta.hpp"
+
+//implicit
+#include "../src/policies/base/ode_implicit_residual_policy_base.hpp"
+#include "../src/policies/base/ode_jacobian_policy_base.hpp"
+
+#include "../src/policies/standard/ode_implicit_euler_residual_standard_policy.hpp"
+#include "../src/policies/standard/ode_implicit_euler_jacobian_standard_policy.hpp"
+
 #include "../src/policies/meta/ode_implicit_policies_meta.hpp"
+#include "../src/policies/meta/ode_implicit_euler_policies_meta.hpp"
+
 
 #endif

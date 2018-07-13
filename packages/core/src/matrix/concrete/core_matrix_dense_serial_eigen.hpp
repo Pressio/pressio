@@ -103,6 +103,14 @@ private:
     return &data_;
   };
 
+  void addToDiagonalImpl(sc_t value) {
+    // check matrix is diagonal
+    assert(this->rows()==this->cols());
+    for (ord_t ir=0; ir<this->rows(); ir++)
+      data_(ir,ir) += value;
+  };
+  
+  // from serial base
   ord_t rowsImpl() const{
     return data_.rows();
   }

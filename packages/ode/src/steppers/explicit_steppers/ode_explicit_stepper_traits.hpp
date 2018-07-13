@@ -31,8 +31,6 @@ struct traits<impl::explicitEulerStepperImpl<state_type,
   using time_t = time_type;
   using sizer_t = sizer_type;
   using residual_policy_t = residual_policy_type;
-
-  static constexpr bool advanceIncrement = residual_policy_t::advanceIncrement;
   
   using order_t = unsigned int;
   static constexpr order_t order_value = 1;    
@@ -67,9 +65,7 @@ struct traits<impl::explicitRungeKutta4StepperImpl<state_type,
   using time_t = time_type;
   using sizer_t = sizer_type;
   using residual_policy_t = residual_policy_type;
-  using  butcher_table_t = butcher_table_type;
-
-  static constexpr bool advanceIncrement = residual_policy_t::advanceIncrement;
+  using butcher_table_t = butcher_table_type;
   
   using order_t = unsigned int;
   static constexpr order_t order_value = 4;

@@ -3,6 +3,8 @@
 #define ODE_IMPLICIT_EULER_STEPPER_HPP_
 
 #include "./impl/ode_implicit_euler_stepper_impl.hpp"
+#include "../../policies/standard/ode_implicit_euler_residual_standard_policy.hpp"
+#include "../../policies/standard/ode_implicit_euler_jacobian_standard_policy.hpp"
 
 namespace ode{
 
@@ -27,19 +29,19 @@ class implicitEulerStepper<state_type, residual_type,
   state_type, residual_type, jacobian_type, scalar_type,
   model_type, time_type, sizer_type,
   solver_policy_type,
-  ode::policy::residualStandardPolicy<
+  ode::policy::implicitEulerResidualStandardPolicy<
     state_type, residual_type,
     model_type, time_type, sizer_type>,
-  ode::policy::jacobianStandardPolicy<
+  ode::policy::implicitEulerJacobianStandardPolicy<
     state_type, jacobian_type,
     model_type, time_type, sizer_type>
   >
 {
 public:
-  using res_pol_t = ode::policy::residualStandardPolicy<
+  using res_pol_t = ode::policy::implicitEulerResidualStandardPolicy<
   state_type, residual_type, model_type, time_type, sizer_type>;
 			      
-  using jac_pol_t = ode::policy::jacobianStandardPolicy<
+  using jac_pol_t = ode::policy::implicitEulerJacobianStandardPolicy<
   state_type, jacobian_type, model_type, time_type, sizer_type>;
 
   using base_t = impl::implicitEulerStepperImpl<state_type,

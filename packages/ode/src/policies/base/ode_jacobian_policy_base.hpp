@@ -7,39 +7,24 @@
 namespace ode{
 namespace policy{
   
-template <template <typename...> class derived_type,
-	  typename state_type,
-	  typename jacobian_type,
-	  typename model_type,
-	  typename time_type,
-	  typename sizer_type,
-	  typename ... Args>
+template <typename derived_t>
 class jacobianPolicyBase
 {
 public:
+
+  template <typename state_type, typename jacobian_type,
+	    typename model_type, typename time_type>
   void compute(const state_type & y, 
 	       jacobian_type & J,
 	       model_type & model, 
-	       time_type t){
-    this->underlying().computeImpl(y, J, model, t);
+	       time_type t,
+	       time_type dt)
+  {
+    this->underlying().computeImpl(y, J, model, t, dt);
   } 
-
-  void weightJacobian(const state_type & y,
-		      jacobian_type & J,
-		      model_type & model, 
-		      time_type t){
-    this->underlying().weightJacobianImpl(y, J, model, t);
-  }
   
 private:
-  using derived_t = derived_type<state_type,
-                  jacobian_type,
-				          model_type, 
-                  time_type, 
-                  sizer_type,
-                  Args...>;
-
-  friend derived_t; 
+  friend derived_t;
 
   jacobianPolicyBase() = default;
   ~jacobianPolicyBase() = default;

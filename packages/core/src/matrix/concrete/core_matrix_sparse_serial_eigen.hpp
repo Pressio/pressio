@@ -16,8 +16,8 @@ template <typename wrapped_type>
 class matrix<wrapped_type,
 	     typename
 	     std::enable_if<
-	       core::meta::is_matrixSparseSerialEigen<wrapped_type
-					 	      >::value
+	       core::meta::is_matrixSparseSerialEigen<
+		 wrapped_type >::value
 	       >::type
 	     >
   : public matrixGenericBase< matrix<wrapped_type> >,
@@ -126,6 +126,17 @@ private:
     return &data_;
   };  
 
+  void addToDiagonalImpl(sc_t value) {
+    // check matrix is squre
+    assert(this->rows()==this->cols()); 
+    auto ide(data_);
+    ide.setIdentity();
+    ide.coeffs() *= value;
+    data_ += ide;
+    //    data_.diagonal() += ide.asDiagonal();
+  };
+  
+  // from serial base  
   ord_t rowsImpl() const{
     return data_.rows();
   }
@@ -137,7 +148,7 @@ private:
   void resizeImpl(ord_t nrows, ord_t ncols){
     data_.resize(nrows, ncols);
   }
-  
+
   //from sparse serial base
   ord_t nonZerosCountImpl()const{
     return data_.nonZeros();

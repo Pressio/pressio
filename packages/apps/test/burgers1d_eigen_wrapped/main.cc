@@ -6,8 +6,7 @@
 // app class
 #include "apps_burgers1d_eigen.hpp"
 #include "ode_observer.hpp"
-
-#include "../apps_helper_ode.hpp"
+//#include "../apps_helper_ode.hpp"
 
 struct mysizer{
  using state_t = core::vector<apps::burgers1dEigen::state_type>;
@@ -39,11 +38,11 @@ int main(int argc, char *argv[])
 
   // create app object
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
-  model_eval_t appObj(mu, 20);
+  model_eval_t appObj(mu, 10);
   appObj.setup();
 
   // integrate in time startxbi5ng from y0
-  scalar_t dt = 0.001;
+  scalar_t dt = 0.01;
   scalar_t final_t = 35;
 
   // wrap with core structures
@@ -55,17 +54,44 @@ int main(int argc, char *argv[])
 
   state_t y0(y0n);
 
-  using exstd_t = apps::test::appsExpOdeHelper<
-    state_t, residual_t, scalar_t, model_eval_t,
-    scalar_t, mysizer, void, void, snapshot_collector>;
+  // linear solver
+  using lin_solve_t =
+    solvers::experimental::linearSolver<jac_t, state_t, state_t>;
+  lin_solve_t ls;
+  // nonlinear solver
+  using nonlin_solve_t =
+    solvers::experimental::newtonRaphson<state_t, state_t,
+  					 jac_t, lin_solve_t>;
+  nonlin_solve_t nonls(ls);
 
-  exstd_t::explicitStandardEuler(y0, 0.0, final_t, dt, appObj, collObj);
-  printSol("Exp Euler", y0);
+  // stepper
+  // using stepper_t = ode::implicitEulerStepper<
+  //   state_t, residual_t, jac_t, scalar_t,
+  //   model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
+  // stepper_t stepperObj(appObj, nonls);//, resObj, jacObj);
+  
+  // using stepper_t = ode::explicitEulerStepper<
+  //   state_t, residual_t, scalar_t,
+  //   model_eval_t, scalar_t, mysizer>;
+  // stepper_t stepperObj(appObj);//, resObj, jacObj);
 
-  *y0.data() = y0n;  
-  exstd_t::explicitStandardRK4(y0, 0.0, final_t, dt, appObj, collObj);
-  printSol("Exp RK4", y0);
+  // ode::integrateNSteps(stepperObj, y0, 0.0, dt, final_t/dt, collObj);
+  // printSol("final", y0);
 
+
+  ///////////////////////////
+
+  
+  // exstd_t::explicitStandardEuler(y0, 0.0, final_t, dt, appObj, collObj);
+  // printSol("Exp Euler", y0);
+
+  // *y0.data() = y0n;  
+  // exstd_t::explicitStandardRK4(y0, 0.0, final_t, dt, appObj, collObj);
+  // printSol("Exp RK4", y0);
+
+
+
+  
 
 
 

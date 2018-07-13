@@ -24,6 +24,11 @@ public:
     return this->underlying().dataImpl();
   };
 
+  void addToDiagonal(sc_t value) {
+    return this->underlying().addToDiagonalImpl(value);
+  };
+
+  
 private:
   friend derived_type;
    matrixGenericBase() = default;

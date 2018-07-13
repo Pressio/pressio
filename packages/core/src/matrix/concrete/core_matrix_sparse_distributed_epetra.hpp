@@ -60,6 +60,11 @@ private:
     return &data_;
   }
 
+  // void addToDiagonalImpl(sc_t value) {
+  //   // check matrix is diagonal
+  //   assert(this->globalRows()==this->globalCols());
+  // };
+  
   //----------------------
   //from distributed base
   //----------------------

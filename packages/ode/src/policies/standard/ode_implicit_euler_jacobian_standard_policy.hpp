@@ -4,7 +4,8 @@
 
 #include "ode_ConfigDefs.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
-#include "../base/ode_advance_full_state_policy_base.hpp"
+#include "../../ode_jacobian_impl.hpp"
+
 
 namespace ode{
 namespace policy{
@@ -14,17 +15,14 @@ template<typename state_type,
 	 typename model_type, 
 	 typename time_type, 
 	 typename sizer_type>
-class jacobianStandardPolicy
-  : public jacobianPolicyBase<jacobianStandardPolicy,
-			      state_type, jacobian_type,
-			      model_type, time_type, sizer_type>,
-  public advanceFullStatePolicyBase<jacobianStandardPolicy,
-				    state_type, jacobian_type,
-				    model_type, time_type, sizer_type>
+class implicitEulerJacobianStandardPolicy
+  : public jacobianPolicyBase<implicitEulerJacobianStandardPolicy<
+				state_type, jacobian_type,
+				model_type, time_type, sizer_type> >
 {
 public:
-  jacobianStandardPolicy() = default;
-  ~jacobianStandardPolicy() = default;
+  implicitEulerJacobianStandardPolicy() = default;
+  ~implicitEulerJacobianStandardPolicy() = default;
 
 private:
   //----------------------------------------------------------------
@@ -41,22 +39,20 @@ private:
   void computeImpl(const U & y, 
 		   T & J, 
 		   model_type & model,
-		   time_type t)
+		   time_type t,
+		   time_type dt)
   {
     // first eval space jac
     model.jacobian( *y.data(), *J.data(), t);
+    // update from time discrete residual
+    ode::impl::implicit_euler_time_discrete_jacobian(J, dt);
   }
   //----------------------------------------------------------------
   
 private:
-  friend jacobianPolicyBase<jacobianStandardPolicy,
-           state_type,jacobian_type,
-           model_type, time_type, sizer_type>;
-
-  friend advanceFullStatePolicyBase<jacobianStandardPolicy,
-				    state_type, jacobian_type,
-				    model_type, time_type, sizer_type>;
-
+  friend jacobianPolicyBase<implicitEulerJacobianStandardPolicy<
+			      state_type, jacobian_type,
+			      model_type, time_type, sizer_type> >;
 
 };//end class
   

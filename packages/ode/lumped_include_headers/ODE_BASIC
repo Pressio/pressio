@@ -9,4 +9,8 @@
 #include "../src/meta/ode_meta_explicit.hpp"
 #include "../src/meta/ode_meta_implicit.hpp"
 
+#include "../src/ode_storage.hpp"
+#include "../src/ode_residual_impl.hpp"
+#include "../src/ode_jacobian_impl.hpp"
+
 #endif
