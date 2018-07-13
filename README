@@ -21,4 +21,9 @@ Some utilities commands:
 	rename-5.26 's/timeIntegrator/ode/' *.cc
 
 
+BUILDING info: 
+- make sure that gtest is built using same compiler used to build this repo
+- make sure that on Mac, you add the rpath flag: -D CMAKE_MACOSX_RPATH:BOOL=ON 
+
 More to come 
+
