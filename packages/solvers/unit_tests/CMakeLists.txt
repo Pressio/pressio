@@ -1,3 +1,3 @@
 
 ADD_SUBDIRECTORY(serial)
-ADD_SUBDIRECTORY(parallel)
+#ADD_SUBDIRECTORY(parallel)

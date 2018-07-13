@@ -49,7 +49,7 @@ struct matrix_traits<
     >::value, void 
   >::type
 > {
-  typedef T wrapped_t;
+  typedef T wrapped_type;
   static constexpr bool is_eigen = true;
   static constexpr bool is_trilinos = false;
   static constexpr bool is_sparse = true;

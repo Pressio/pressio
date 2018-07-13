@@ -4,11 +4,9 @@
 
 #include <memory>
 
-#include "solvers_ConfigDefs.hpp"
-#include "solvers_forward_declarations.hpp"
-
-#include "vector/core_vector_traits_exp.hpp"
 #include "solvers_linear_iterative_base.hpp"
+#include "matrix/core_matrix_traits_exp.hpp"
+#include "vector/core_vector_traits_exp.hpp"
 
 
 namespace solvers {
@@ -41,24 +39,99 @@ class EigenLinearIterativeSolver
     EigenLinearIterativeSolver(EigenLinearIterativeSolver&& other) : solver(std::move(other.solver)), rows_(other.rows_) {}
     
 
+    /// Type of new linear system matrix is the same one used to initialize the solver  
     void resetLinearSystem(const core::matrix<matrix_type>& A) {
       rows_ = A.rows();
       solver->compute(*A.data());
     }
 
 
-    template <typename T>
+    /// Scalar type of new linear system matrix differs from the one used to initialize the solver
+    template <
+      typename T,
+      typename std::enable_if<
+        !std::is_same<
+          typename matrix_type::Scalar,
+          typename core::details::matrix_traits<T>::wrapped_type::Scalar
+        >::value, T
+      >::type* = nullptr
+    >
+    void resetLinearSystem(const T& A) {
+      static_assert(core::details::matrix_traits<T>::is_eigen, "Error: the supplied linear system matrix is not compatible with the linear solver"); 
+      rows_ = A.rows();
+      solver->compute(A.data()->template cast<typename matrix_type::Scalar>());
+    }
+
+
+    /// Scalar types of linear system matrix A and RHS vector b are the same
+    template <
+      typename T,
+      typename std::enable_if<
+        std::is_same<
+          typename core::details::vector_traits<T>::wrapped_type::Scalar,
+          typename matrix_type::Scalar
+        >::value, T
+      >::type* = nullptr
+    >
     auto solve(const T& b) {
       static_assert(core::details::vector_traits<T>::is_eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
-      assert(core::details::vector_traits<T>::is_dynamic || rows_ == core::details::vector_traits<T>::rows);   
+      assert(core::details::vector_traits<T>::is_dynamic || rows_ == core::details::vector_traits<T>::rows);
 
-      T x = T(solver->solve(*b.data()).rhs());
+      auto x = T(solver->solve(*b.data()));
       return x;
     }
 
 
+    /// Scalar types of linear system matrix A and RHS vector b differs 
+    template <
+      typename T,
+      typename std::enable_if<
+        !std::is_same<
+          typename core::details::vector_traits<T>::wrapped_type::Scalar, 
+          typename matrix_type::Scalar
+        >::value, T
+      >::type* = nullptr 
+    >
+    auto solve(const T& b) {
+      static_assert(core::details::vector_traits<T>::is_eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
+      assert(core::details::vector_traits<T>::is_dynamic || rows_ == core::details::vector_traits<T>::rows);   
+
+      typedef typename core::details::vector_traits<T>::wrapped_type::Scalar scalar_type;
+      return T(solver->solve(b.data()->template cast<typename matrix_type::Scalar>()).template cast<scalar_type>()); 
+    }
+
+
+    /// Scalar types of RHS vector b and solution vector x are the smae
+    template <typename T,
+      typename U,
+      typename std::enable_if<
+        std::is_same<
+          typename core::details::vector_traits<T>::wrapped_type::Scalar,
+          typename core::details::vector_traits<U>::wrapped_type::Scalar
+        >::value, T
+      >::type* = nullptr
+    >
+    void solve(const T& b,
+      U& x
+    ) {
+      static_assert(core::details::vector_traits<T>::is_eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
+      static_assert(core::details::vector_traits<U>::is_eigen, "Error: the supplied result vector cannot be used with the linear solver due to type incompatibiliy");
+      assert(core::details::vector_traits<T>::is_dynamic || rows_ == core::details::vector_traits<T>::rows);
+      assert(core::details::vector_traits<U>::is_dynamic || rows_ == core::details::vector_traits<U>::rows);
+
+      x= this->solve(b);
+    }
+
+
+    /// Scalar types of RHS vector b and solution vector x differs
     template <typename T, 
-      typename U
+      typename U,
+      typename std::enable_if<
+        !std::is_same<
+          typename core::details::vector_traits<T>::wrapped_type::Scalar,
+          typename core::details::vector_traits<U>::wrapped_type::Scalar
+        >::value, T
+      >::type* = nullptr
     >
     void solve(const T& b, 
       U& x
@@ -68,8 +141,8 @@ class EigenLinearIterativeSolver
       assert(core::details::vector_traits<T>::is_dynamic || rows_ == core::details::vector_traits<T>::rows);
       assert(core::details::vector_traits<U>::is_dynamic || rows_ == core::details::vector_traits<U>::rows);
 
-      typename core::details::vector_traits<U>::wrapped_type tmp = solver->solve(*b.data()).rhs();
-      x = U(tmp);
+      typedef typename core::details::vector_traits<U>::wrapped_type::Scalar scalar_type;
+      x = U(this->solve(b).data()->template cast<scalar_type>()); 
     }
 
 

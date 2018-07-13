@@ -136,10 +136,10 @@ struct LinearIterativeSolvers {
     static_assert(matrix_traits::is_sparse, "Iterative solvers in Eigen can only be used with sparse matrices");
     static_assert(solver_traits::eigen_enabled, "Solver not available for linear systems defined by Eigen matrices");
     
-    typedef typename matrix_traits::wrapped_t wrapped_t;
-    typedef typename solver_traits::template eigen_solver_type<wrapped_t> eigen_solver_t;
+    typedef typename matrix_traits::wrapped_type wrapped_type;
+    typedef typename solver_traits::template eigen_solver_type<wrapped_type> eigen_solver_type;
  
-    EigenLinearIterativeSolver<eigen_solver_t> solver(A);
+    EigenLinearIterativeSolver<eigen_solver_type> solver(A);
     return solver;    
   } 
 
