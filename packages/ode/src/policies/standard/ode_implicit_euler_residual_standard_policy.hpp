@@ -15,11 +15,10 @@ template<typename state_type,
 	 typename time_type,
 	 typename sizer_type>
 class implicitEulerResidualStandardPolicy
-  : public implicitResidualPolicyBase<1,0,
+  : public implicitResidualPolicyBase<
   implicitEulerResidualStandardPolicy<state_type, residual_type,
 				      model_type, time_type,
-				      sizer_type>
-  >
+				      sizer_type>, 1, 0 >
 {
 public:
   implicitEulerResidualStandardPolicy() = default;
@@ -55,11 +54,11 @@ private:
   //----------------------------------------------------------------
 
 private:
-  friend implicitResidualPolicyBase<1,0,
+  friend implicitResidualPolicyBase<
 				    implicitEulerResidualStandardPolicy<
 				      state_type, residual_type,
 				      model_type, time_type,
-				      sizer_type> >;
+				      sizer_type>, 1,0>;
   
 };//end class
 

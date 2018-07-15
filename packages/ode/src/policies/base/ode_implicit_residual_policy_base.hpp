@@ -9,16 +9,19 @@ namespace policy{
 
 //-----------------------------------------------------------------
 
-template <int numAuxStates, int numAuxRHS, typename derived_t,
+template <typename derived_t, int numAuxStates, int numAuxRHS,
 	  typename enable = void>
 class implicitResidualPolicyBase;
 
 //-----------------------------------------------------------------
   
-template <int numAuxStates, int numAuxRHS, typename derived_t>
-class implicitResidualPolicyBase<numAuxStates, numAuxRHS, derived_t,
+template <typename derived_t,
+	  int numAuxStates,
+	  int numAuxRHS>
+class implicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS,
 				 typename std::enable_if<
 				   numAuxRHS==0 >::type>
+  : private core::details::crtpBase<implicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS>>
 {
 public:
   template <typename state_type,
@@ -37,26 +40,23 @@ public:
 
 private:
   friend derived_t;
-
+  friend core::details::crtpBase<implicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS>>;
+  
   implicitResidualPolicyBase() = default;
   ~implicitResidualPolicyBase() = default;
   
-  derived_t & underlying(){
-    return static_cast<derived_t& >( *this );
-  }
-  derived_t const & underlying() const{
-    return static_cast<derived_t const & >( *this );
-  } 
 };//end class
 
 //-----------------------------------------------------------------
 
 
-template <int numAuxStates, int numAuxRHS, typename derived_t>
-class implicitResidualPolicyBase<numAuxStates, numAuxRHS, derived_t,
+template <typename derived_t, int numAuxStates, int numAuxRHS>
+class implicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS,
 				 typename std::enable_if<
 				   numAuxStates!=0 &&
 				   numAuxRHS!=0 >::type>
+  : private core::details::crtpBase<implicitResidualPolicyBase<derived_t,
+							       numAuxStates, numAuxRHS>>
 {
 public:  
   template <typename state_type, typename residual_type,
@@ -74,24 +74,13 @@ public:
   
 private:
   friend derived_t;
-
+  friend core::details::crtpBase<implicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS>>;
+  
   implicitResidualPolicyBase() = default;
   ~implicitResidualPolicyBase() = default;
   
-  derived_t & underlying(){
-    return static_cast<derived_t& >( *this );
-  }
-  derived_t const & underlying() const{
-    return static_cast<derived_t const & >( *this );
-  } 
 };//end class
 //-----------------------------------------------------------------
-
-
-
-
-
-
 
   
 }//end namespace polices

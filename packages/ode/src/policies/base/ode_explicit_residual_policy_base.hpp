@@ -9,6 +9,7 @@ namespace policy{
     
 template <typename derived_t>
 class explicitResidualPolicyBase
+  : private core::details::crtpBase<explicitResidualPolicyBase<derived_t>>
 {
 public:
   template <typename state_type,
@@ -24,18 +25,13 @@ public:
 
 private:
   friend derived_t;
+  friend core::details::crtpBase<explicitResidualPolicyBase<derived_t>>;
 
   explicitResidualPolicyBase() = default;
   ~explicitResidualPolicyBase() = default;
   
-  derived_t & underlying(){
-    return static_cast<derived_t& >( *this );
-  }
-  derived_t const & underlying() const{
-    return static_cast<derived_t const & >( *this );
-  } 
-};
 
+};//end class
   
 }//end namespace polices
 }//end namespace ode  

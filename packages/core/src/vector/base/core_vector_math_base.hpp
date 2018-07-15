@@ -9,6 +9,7 @@ namespace core{
     
 template<typename derived_type>
 class vectorMathBase
+  : private core::details::crtpBase<vectorMathBase<derived_type>>
 {
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
@@ -43,16 +44,13 @@ public:
 
 private:
   friend derived_type;
+  friend core::details::crtpBase<vectorMathBase<derived_type>>;
+
   vectorMathBase() = default;
   ~vectorMathBase() = default;
 
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
-
 };//end class
+
+  
 } // end namespace core
 #endif

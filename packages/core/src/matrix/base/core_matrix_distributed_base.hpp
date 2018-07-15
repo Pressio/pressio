@@ -7,7 +7,9 @@
 namespace core{
     
 template<typename derived_type>
-class matrixDistributedBase{
+class matrixDistributedBase
+  : private core::details::crtpBase<matrixDistributedBase<derived_type>>
+{
 private:
   using traits_t = details::traits<derived_type>;
 
@@ -58,18 +60,12 @@ public:
   
 private:
   friend derived_type;
-   matrixDistributedBase() = default;
+  friend core::details::crtpBase<matrixDistributedBase<derived_type>>;
+
+  matrixDistributedBase() = default;
   ~matrixDistributedBase() = default;
   
-private:  
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  }; 
-
 };//end class
+  
 } // end namespace core
 #endif

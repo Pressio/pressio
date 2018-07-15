@@ -1,12 +1,4 @@
 #include <gtest/gtest.h>
-// #include "meta/core_meta_basic.hpp"
-// #include "meta/core_meta_detect_operators.hpp"
-// #include "vector/concrete/core_vector_serial_eigen.hpp"
-// #include "vector/concrete/core_vector_serial_stdlib.hpp"
-// #include "vector/concrete/core_vector_distributed_epetra.hpp"
-// #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
-// #include "matrix/concrete/core_matrix_dense_serial_stdlib.hpp"
-// #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 #include "CORE_VECTOR"
 #include "CORE_MATRIX"
 

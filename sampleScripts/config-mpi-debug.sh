@@ -37,7 +37,7 @@ cmake \
     -D rompp_ENABLE_core:BOOL=ON \
     -D rompp_ENABLE_solvers:BOOL=ON \
     -D rompp_ENABLE_ode:BOOL=ON \
-    -D rompp_ENABLE_apps:BOOL=ON \
+    -D rompp_ENABLE_apps:BOOL=OFF \
     -D rompp_ENABLE_optimization:BOOL=OFF \
     -D rompp_ENABLE_rom:BOOL=OFF \
     \

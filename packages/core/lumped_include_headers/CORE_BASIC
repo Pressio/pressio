@@ -11,7 +11,6 @@
 #include "../src/meta/core_meta_detect_operators.hpp"
 #include "../src/meta/core_meta_detect_typedefs.hpp"
 
-#include "../src/utils/core_crtp_base.hpp"
 #include "../src/utils/core_static_assert_definitions.hpp"
 
 #endif

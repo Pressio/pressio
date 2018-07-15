@@ -9,6 +9,7 @@ namespace core{
     
 template<typename derived_type>
 class vectorSerialBase
+  : private core::details::crtpBase<vectorSerialBase<derived_type>>
 {
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
@@ -28,17 +29,13 @@ public:
   };
     
 private:
-  friend derived_type; 
+  friend derived_type;
+  friend core::details::crtpBase<vectorSerialBase<derived_type>>;
+
   vectorSerialBase() = default;
   ~vectorSerialBase() = default;
- 
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
-   
-};//end class    
+    
+};//end class
+  
 } // end namespace core
 #endif

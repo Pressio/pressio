@@ -20,7 +20,6 @@ APPEND_SET(TESTFILES test_core_matrix_sparse_serial_eigen_class.cc)
 # APPEND_SET(...)
 # ...
 
-
 # we create a single executable to run all the tests above
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   core_unitTest_serial_grouped

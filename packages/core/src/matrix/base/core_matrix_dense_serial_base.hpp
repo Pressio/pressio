@@ -9,12 +9,14 @@ namespace core{
     
 template<typename derived_type>
 class matrixDenseSerialBase
+  : private core::details::crtpBase<matrixDenseSerialBase<derived_type>>
 {
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
   using ord_t = typename details::traits<derived_type>::ordinal_t;  
+
 public:
   // the () operators below are placed here becasue they serve the
   // purpose of scripting operator for matrices, but this is just meant
@@ -25,17 +27,12 @@ public:
 
 private:  
   friend derived_type;
-   matrixDenseSerialBase() = default;
-  ~matrixDenseSerialBase() = default;
+  friend core::details::crtpBase<matrixDenseSerialBase<derived_type>>;
 
-private:
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
+  matrixDenseSerialBase() = default;
+  ~matrixDenseSerialBase() = default;
   
-};//end class    
+};//end class
+  
 } // end namespace core
 #endif

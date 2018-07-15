@@ -8,6 +8,7 @@ namespace core{
     
 template<typename derived_type>
 class matrixGenericBase
+  : private core::details::crtpBase<matrixGenericBase<derived_type>>
 {
 
 private:
@@ -31,18 +32,12 @@ public:
   
 private:
   friend derived_type;
-   matrixGenericBase() = default;
+  friend core::details::crtpBase<matrixGenericBase<derived_type>>;
+
+  matrixGenericBase() = default;
   ~matrixGenericBase() = default;
   
-private:  
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  }; 
-
-};//end class    
+};//end class
+  
 } // end namespace core
 #endif

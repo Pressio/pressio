@@ -1,7 +1,5 @@
 
 #include <gtest/gtest.h>
-// #include "meta/core_meta_basic.hpp"
-// #include "meta/core_meta_detect_typedefs.hpp"
 #include "CORE_BASIC"
 
 TEST(core_meta_detect_typedefs, scalarTypedefDetect)

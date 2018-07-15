@@ -21,7 +21,7 @@ struct isLegitimateImplicitEulerResidualPolicy<
   typename std::enable_if<
     core::meta::publiclyInheritsFrom<
       policy_t,
-      ode::policy::implicitResidualPolicyBase<1, 0, policy_t>
+      ode::policy::implicitResidualPolicyBase<policy_t, 1, 0>
       >::value 
     >::type
   > : std::true_type{};

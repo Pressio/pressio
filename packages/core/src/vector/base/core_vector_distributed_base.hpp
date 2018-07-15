@@ -9,6 +9,7 @@ namespace core{
     
 template<typename derived_type>
 class vectorDistributedBase
+  : private core::details::crtpBase<vectorDistributedBase<derived_type>>
 {
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
@@ -47,16 +48,10 @@ public:
   
 private:
   friend derived_type;
+  friend core::details::crtpBase<vectorDistributedBase<derived_type>>;
+
   vectorDistributedBase() = default;
   ~vectorDistributedBase() = default;
-
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
 
 };//end class
 } // end namespace core

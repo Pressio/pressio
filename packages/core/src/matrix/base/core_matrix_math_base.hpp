@@ -8,6 +8,7 @@ namespace core{
     
 template<typename derived_type>
 class matrixMathBase
+  : private core::details::crtpBase<matrixMathBase<derived_type>>
 {
 
 private:
@@ -23,20 +24,15 @@ public:
     this->underlying().scaleImpl(factor);
   };  
     
-private:  
-
+private:
   friend der_t;
+  friend core::details::crtpBase<matrixMathBase<derived_type>>;
+
   matrixMathBase() = default;
   ~matrixMathBase() = default; 
 
-private:  
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
-
 };//end class
+
+  
 } // end namespace core
 #endif

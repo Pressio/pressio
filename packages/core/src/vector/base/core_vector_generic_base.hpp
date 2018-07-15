@@ -12,13 +12,13 @@ class vectorGenericBase
   : public subscriptingOperatorsBase<
   vectorGenericBase<derived_type>,
     typename details::traits<derived_type>::scalar_t,
-    //select ordinal type based on whether the vector is serial or distributed
-    typename std::conditional<details::traits<derived_type>::isSerial==1,
-			      typename
-			      details::traits<derived_type>::ordinal_t,
-			      typename
-			      details::traits<derived_type>::local_ordinal_t
-			      >::type>
+    //ordinal type based on vector being serial or distributed
+    typename
+  std::conditional<details::traits<derived_type>::isSerial==1,
+	      typename details::traits<derived_type>::ordinal_t,
+	      typename details::traits<derived_type>::local_ordinal_t
+		   >::type>,
+  private core::details::crtpBase<vectorGenericBase<derived_type>>
 {
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
@@ -50,16 +50,13 @@ public:
 
 private:
   friend derived_type;
+  friend core::details::crtpBase<vectorGenericBase<derived_type>>;
+
   vectorGenericBase() = default;
   ~vectorGenericBase() = default;
+      
+};//end class
+
   
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  }
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  }
-    
-};//end class    
 } // end namespace core
 #endif

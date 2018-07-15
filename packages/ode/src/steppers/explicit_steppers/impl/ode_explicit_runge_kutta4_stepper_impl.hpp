@@ -3,6 +3,7 @@
 #define ODE_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
 
 #include "../base/ode_explicit_stepper_base.hpp"
+#include "../../../policies/meta/ode_explicit_runge_kutta4_policies_meta.hpp"
 
 namespace ode{
 namespace impl{

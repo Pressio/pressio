@@ -2,7 +2,7 @@
 #ifndef CORE_MATRIX_HPP_
 #define CORE_MATRIX_HPP_
 
-#include "CORE_BASIC"
+#include "CORE_VECTOR"
 
 #include "../src/matrix/meta/core_matrix_meta.hpp"
 #include "../src/matrix/core_matrix_traits.hpp"

@@ -141,7 +141,7 @@ struct is_matrixSparseDistributedEpetra<T,
 #define STATIC_ASSERT_IS_MATRIX_SPARSE_DISTRIBUTED_EPETRA(TYPE)	      \
   static_assert( core::meta::is_matrixSparseDistributedEpetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_MATRIX_SPARSE_DIST_EPETRA")
-#define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_STDLIB(TYPE) \
+#define STATIC_ASSERT_IS_NOT_MATRIX_SPARSE_DISTRIBUTED_EPETRA(TYPE) \
   static_assert( !core::meta::is_matrixSparseDistributedEpetra<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_SPARSE_DIST_EPETRA")
   

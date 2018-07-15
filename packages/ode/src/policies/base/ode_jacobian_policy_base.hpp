@@ -9,6 +9,7 @@ namespace policy{
   
 template <typename derived_t>
 class jacobianPolicyBase
+  : private core::details::crtpBase<jacobianPolicyBase<derived_t>>
 {
 public:
 
@@ -25,18 +26,12 @@ public:
   
 private:
   friend derived_t;
+  friend core::details::crtpBase<jacobianPolicyBase<derived_t>>;
 
   jacobianPolicyBase() = default;
   ~jacobianPolicyBase() = default;
   
-  derived_t & underlying(){
-    return static_cast<derived_t& >( *this );
-  }
-  derived_t const & underlying() const{
-    return static_cast<derived_t const & >( *this );
-  }
-};
-
+};//end class
 
 }//end namespace polices
 }//end namespace ode  

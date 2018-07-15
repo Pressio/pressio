@@ -1,8 +1,5 @@
+
 #include <gtest/gtest.h>
-// #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
-// #include "matrix/concrete/core_matrix_dense_serial_stdlib.hpp"
-// #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
-// #include "matrix/meta/core_matrix_meta.hpp"
 #include "CORE_MATRIX"
 
 

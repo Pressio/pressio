@@ -13,6 +13,7 @@ namespace ode{
 
 template<typename stepper_type>
 class implicitStepperBase
+  : private core::details::crtpBase<implicitStepperBase<stepper_type>>
 {
 private:
   using traits = typename ode::details::traits<stepper_type>;
@@ -49,15 +50,15 @@ public:
 
   template <typename step_t>
   void doStep(state_t & y, time_t t, time_t dt, step_t step){
-    this->stepper()->doStepImpl( y, t, dt, step);
+    this->underlying().doStepImpl( y, t, dt, step);
   }
 
   void residual(const state_t & y, state_t & R){
-    this->stepper()->residualImpl(y, R);
+    this->underlying().residualImpl(y, R);
   }
 
   void jacobian(const state_t & y, jacobian_t & J){
-    this->stepper()->jacobianImpl(y, J);
+    this->underlying().jacobianImpl(y, J);
   }
 
 private:
@@ -75,13 +76,7 @@ private:
   
 private:
   friend stepper_type;
-
-  stepper_type * stepper( ){
-    return static_cast< stepper_type* >( this );
-  }
-  const stepper_type * stepper( void ) const{
-    return static_cast< const stepper_type* >( this );
-  }
+  friend core::details::crtpBase<implicitStepperBase<stepper_type>>;
 
 protected:
   model_t * model_;
@@ -93,5 +88,6 @@ protected:
   time_t dt_;
 
 };//end class
+
 }//end namespace  
 #endif

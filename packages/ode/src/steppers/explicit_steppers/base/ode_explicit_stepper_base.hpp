@@ -7,11 +7,13 @@
 #include "../../../meta/ode_meta.hpp"
 #include "../../../meta/ode_meta_explicit.hpp"
 #include "../../../policies/meta/ode_explicit_policies_meta.hpp"
+#include "../../../ode_storage.hpp"
 
 namespace ode{
 
 template<typename stepper_type>
 class explicitStepperBase
+  : private core::details::crtpBase<explicitStepperBase<stepper_type>>
 {
 private:
   using step_traits = ode::details::traits<stepper_type>;
@@ -42,7 +44,7 @@ public:
   }
   template<typename step_t>
   void doStep(state_t &inout, time_t t, time_t dt, step_t step){
-    this->stepper()->doStepImpl(inout, t, dt, step);
+    this->underlying().doStepImpl(inout, t, dt, step);
   }
 
 private:    
@@ -56,18 +58,13 @@ private:
 
 private:
   friend stepper_type;
-
-  stepper_type * stepper( ){
-    return static_cast< stepper_type* >( this );
-  }
-  const stepper_type * stepper( ) const{
-    return static_cast< const stepper_type* >( this );
-  }
+  friend core::details::crtpBase<explicitStepperBase<stepper_type>>;
 
 protected:
   model_t * model_;
   residual_policy_t * residual_obj_;
   
 };//end class
+
 }//end namespace
 #endif

@@ -8,6 +8,7 @@ namespace core{
     
 template<typename derived_type>
 class matrixSparseSerialBase
+  : private core::details::crtpBase<matrixSparseSerialBase<derived_type>>
 {
 private:
   using traits_t = details::traits<derived_type>;
@@ -51,17 +52,13 @@ public:
   
 private:  
   friend der_t;
+  friend core::details::crtpBase<matrixSparseSerialBase<derived_type>>;
+
   matrixSparseSerialBase() = default;
   ~matrixSparseSerialBase() = default; 
 
-private:  
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
-
 };//end class
+
+  
 } // end namespace core
 #endif

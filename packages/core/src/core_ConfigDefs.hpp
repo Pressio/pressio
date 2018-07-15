@@ -3,21 +3,50 @@
 #define CORE_CONFIGDEFS_HPP_
 
 #include "core_config.h"
-#include <stdlib.h>
-#include <iostream>
 
 namespace core{
 namespace details {
 
+
+//---------------------------------------
+// TRAITS
+//---------------------------------------
 template<typename T, typename enable = void>
 struct traits;
 
 template<typename T> 
 struct traits<const T> : traits<T> {};
 
+
+//---------------------------------------
+// CRTP HELPER BASE CLASS
+//---------------------------------------
+template <typename T, typename enable = void>
+struct crtpBase;
+  
+template <typename T,
+	  template<typename T, typename...> class crtpType,
+	  typename ... Args>
+struct crtpBase< crtpType<T, Args...>>
+{
+  T & underlying() {
+    return static_cast<T&>(*this);
+  }
+  T const & underlying() const {
+    return static_cast<T const&>(*this);
+  }
+private:
+  crtpBase(){}
+  friend crtpType<T, Args...>;
+};//end class
+
+  
+//------------------------
 } // end namespace details
+//------------------------
 
-
+  
+  
 namespace defaultTypes {
 
   //! Default value of Scalar template parameter.
