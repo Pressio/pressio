@@ -38,8 +38,27 @@ struct crtpBase< crtpType<T, Args...>>
 private:
   crtpBase(){}
   friend crtpType<T, Args...>;
+
 };//end class
 
+
+template <typename T, int a, int b,
+	  template<typename T, int a, int b> class crtpType>
+struct crtpBase< crtpType<T, a, b> >
+{
+  T & underlying() {
+    return static_cast<T&>(*this);
+  }
+  T const & underlying() const {
+    return static_cast<T const&>(*this);
+  }
+private:
+  crtpBase(){}
+  friend crtpType<T, a, b>;
+
+};//end class
+
+  
   
 //------------------------
 } // end namespace details

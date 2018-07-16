@@ -45,23 +45,23 @@ int main(int argc, char *argv[])
   // init state vector
   state_t y(y0n);
 
-  // policy for computing space residual using the target app
-  using res_pol_t = rom::exp::romGalerkinResidualPolicy<
-    state_t, residual_t, model_eval_t, scalar_t, mysizer>;
-  res_pol_t resObj(y);
+  // // policy for computing space residual using the target app
+  // using res_pol_t = rom::exp::romGalerkinResidualPolicy<
+  //   state_t, residual_t, model_eval_t, scalar_t, mysizer>;
+  // res_pol_t resObj(y);
 
-  //using stepper_t = ode::explicitEulerStepper<
-  using stepper_t = ode::explicitRungeKutta4Stepper<
-    state_t, residual_t, scalar_t, model_eval_t,
-    scalar_t, mysizer, res_pol_t>;
-  stepper_t stepperObj(appObj, resObj);
+  // //using stepper_t = ode::explicitEulerStepper<
+  // using stepper_t = ode::explicitRungeKutta4Stepper<
+  //   state_t, residual_t, scalar_t, model_eval_t,
+  //   scalar_t, mysizer, res_pol_t>;
+  // stepper_t stepperObj(appObj, resObj);
 
-  // integration details
-  scalar_t dt = 0.01;
-  scalar_t final_t = dt*1;
-  snapshot_collector collObj;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, final_t/dt, collObj);    
-  printSol("", y);
+  // // integration details
+  // scalar_t dt = 0.01;
+  // scalar_t final_t = dt*1;
+  // snapshot_collector collObj;
+  // ode::integrateNSteps(stepperObj, y, 0.0, dt, final_t/dt, collObj);    
+  // printSol("", y);
        
   return 0;
 }
