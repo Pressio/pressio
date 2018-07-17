@@ -21,30 +21,11 @@ void implicit_euler_time_discrete_jacobian(jacobian_type & jac,
 					   time_type dt)
 {
   jac.scale(-dt);
+  // auwo II(jac);
+  // II.setIdentity();
+  //jac += II;  
   jac.addToDiagonal(static_cast<time_type>(1));
 }
-
-
-// // enable for SPARSE serial eigen matrix
-// template <typename jacobian_type,
-// 	  typename time_type,
-// 	  typename
-// 	  std::enable_if<
-// 	    core::details::traits<jacobian_type>::isMatrix==1 &&
-// 	    core::details::traits<jacobian_type>::isSparse==1 &&
-// 	    core::details::traits<jacobian_type>::isEigen==1
-// 	    >::type * = nullptr
-// 	  >
-// void implicit_bdf2_time_discrete_jacobian(jacobian_type & jac,
-// 					  time_type dt)
-// {
-//   using sc_t = typename core::details::traits<jacobian_type>::scalar_t;
-//   const sc_t c1 = static_cast<sc_t>(2)/3;
-
-//   jac.scale(-c1*dt);
-//   jac.addDiagonal(static_cast<scalar_type>(1));
-// }
-
   
 
 }//end namespace impl

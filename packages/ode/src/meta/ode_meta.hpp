@@ -38,7 +38,7 @@ template<typename functor,
 	 typename time_type,
 	 typename state_type>
 struct isLegitimateCollector<
-  functor,int_type,time_type,state_type,
+  functor, int_type, time_type, state_type,
   core::meta::void_t<
     decltype(std::declval<functor>()(std::declval<int_type>(),
 				     std::declval<time_type>(),

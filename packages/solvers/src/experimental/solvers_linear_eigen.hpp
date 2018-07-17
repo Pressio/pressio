@@ -94,12 +94,12 @@ private:
 		 result_type & x)
   {
     // //SparseLU<SparseMatrix<scalar, ColMajor>, COLAMDOrdering<Index>> solver;
-    Eigen::ConjugateGradient<eigMat_t, Eigen::Lower|Eigen::Upper> solver;
+    // Eigen::ConjugateGradient<eigMat_t, Eigen::Lower|Eigen::Upper> solver;
+    // solver.compute(*A.data());
+
+    //Eigen::SimplicialLDLT<eigMat_t> solver;  
+    Eigen::BiCGSTAB<eigMat_t> solver;
     solver.compute(*A.data());
- 
-    //Eigen::BiCGSTAB<eigMat_t> solver;
-    //Eigen::SimplicialLDLT<eigMat_t> solver;
-    //solver.compute(*A.data());
     *x.data() = solver.solve(*b.data());
   }
   friend linearBase<linearSolver<matrix_type,rhs_type,

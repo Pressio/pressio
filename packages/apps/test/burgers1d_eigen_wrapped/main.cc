@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
   // integrate in time startxbi5ng from y0
   scalar_t dt = 0.01;
   scalar_t final_t = 35;
+  int numSteps = (int) final_t/(int) dt;
 
   // wrap with core structures
   using state_t = core::vector<native_state_t>;
@@ -75,7 +76,7 @@ int main(int argc, char *argv[])
     model_eval_t, scalar_t, mysizer>;
   stepper_t stepperObj(appObj);//, resObj, jacObj);
 
-  ode::integrateNSteps(stepperObj, y0, 0.0, dt, final_t/dt, collObj);
+  ode::integrateNSteps(stepperObj, y0, 0.0, dt, numSteps, collObj);
   printSol("final", y0);
 
 
