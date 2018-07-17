@@ -13,11 +13,16 @@
 namespace core {
 namespace details {
 
+enum class MatrixClass{
+  Eigen,
+  Trilinos,
+  Undefined
+};
+
 template <typename T, typename Enabled = void>
 struct matrix_traits {
   typedef void wrapped_t;
-  static constexpr bool is_eigen = false;
-  static constexpr bool is_trilinos = false;
+  static constexpr MatrixClass matrix_class = MatrixClass::Undefined;
   static constexpr bool is_sparse = false;
 };
 
@@ -30,8 +35,7 @@ struct matrix_traits<core::matrix<T>,
     >::value, void
   >::type
 > {
-  static constexpr bool is_eigen = false;
-  static constexpr bool is_trilinos = true;
+  static constexpr MatrixClass matrix_class = MatrixClass::Trilinos;
   static constexpr bool is_sparse = true;
 };
 
@@ -50,8 +54,7 @@ struct matrix_traits<
   >::type
 > {
   typedef T wrapped_type;
-  static constexpr bool is_eigen = true;
-  static constexpr bool is_trilinos = false;
+  static constexpr MatrixClass matrix_class = MatrixClass::Eigen;
   static constexpr bool is_sparse = true;
 };
 	

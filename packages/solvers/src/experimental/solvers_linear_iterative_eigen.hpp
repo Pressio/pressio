@@ -22,7 +22,7 @@ template<typename SolverT>
 class EigenLinearIterativeSolver 
   : public LinearIterativeSolverBase<
       EigenLinearIterativeSolver<
-        SolverT
+        SolverT 
       >
     >
 {
@@ -57,7 +57,7 @@ class EigenLinearIterativeSolver
       >::type* = nullptr
     >
     void resetLinearSystem(const T& A) {
-      static_assert(core::details::matrix_traits<T>::is_eigen, "Error: the supplied linear system matrix is not compatible with the linear solver"); 
+      static_assert(core::details::matrix_traits<T>::matrix_class == core::details::MatrixClass::Eigen, "Error: the supplied linear system matrix is not compatible with the linear solver"); 
       rows_ = A.rows();
       solver->compute(A.data()->template cast<typename matrix_type::Scalar>());
     }
@@ -74,8 +74,10 @@ class EigenLinearIterativeSolver
       >::type* = nullptr
     >
     auto solve(const T& b) {
-      static_assert(core::details::vector_traits<T>::is_eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
-      assert(core::details::vector_traits<T>::is_dynamic || rows_ == core::details::vector_traits<T>::rows);
+      typedef typename core::details::vector_traits<T> vector_traits;
+
+      static_assert(vector_traits::vector_class == core::details::VectorClass::Eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
+      assert(vector_traits::is_dynamic || rows_ == vector_traits::rows);
 
       auto x = T(solver->solve(*b.data()));
       return x;
@@ -93,10 +95,12 @@ class EigenLinearIterativeSolver
       >::type* = nullptr 
     >
     auto solve(const T& b) {
-      static_assert(core::details::vector_traits<T>::is_eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
-      assert(core::details::vector_traits<T>::is_dynamic || rows_ == core::details::vector_traits<T>::rows);   
+      typedef typename core::details::vector_traits<T> vector_traits;
 
-      typedef typename core::details::vector_traits<T>::wrapped_type::Scalar scalar_type;
+      static_assert(vector_traits::vector_class == core::details::VectorClass::Eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
+      assert(vector_traits::is_dynamic || rows_ == vector_traits::rows);   
+
+      typedef typename vector_traits::wrapped_type::Scalar scalar_type;
       return T(solver->solve(b.data()->template cast<typename matrix_type::Scalar>()).template cast<scalar_type>()); 
     }
 
@@ -114,10 +118,13 @@ class EigenLinearIterativeSolver
     void solve(const T& b,
       U& x
     ) {
-      static_assert(core::details::vector_traits<T>::is_eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
-      static_assert(core::details::vector_traits<U>::is_eigen, "Error: the supplied result vector cannot be used with the linear solver due to type incompatibiliy");
-      assert(core::details::vector_traits<T>::is_dynamic || rows_ == core::details::vector_traits<T>::rows);
-      assert(core::details::vector_traits<U>::is_dynamic || rows_ == core::details::vector_traits<U>::rows);
+      typedef typename core::details::vector_traits<T> t_vector_traits;
+      typedef typename core::details::vector_traits<U> u_vector_traits;
+
+      static_assert(t_vector_traits::vector_class == core::details::VectorClass::Eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
+      static_assert(u_vector_traits::vector_class == core::details::VectorClass::Eigen, "Error: the supplied result vector cannot be used with the linear solver due to type incompatibiliy");
+      assert(t_vector_traits::is_dynamic || rows_ == t_vector_traits::rows);
+      assert(u_vector_traits::is_dynamic || rows_ == u_vector_traits::rows);
 
       x= this->solve(b);
     }
@@ -136,12 +143,15 @@ class EigenLinearIterativeSolver
     void solve(const T& b, 
       U& x
     ) {
-      static_assert(core::details::vector_traits<T>::is_eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
-      static_assert(core::details::vector_traits<U>::is_eigen, "Error: the supplied result vector cannot be used with the linear solver due to type incompatibiliy");
-      assert(core::details::vector_traits<T>::is_dynamic || rows_ == core::details::vector_traits<T>::rows);
-      assert(core::details::vector_traits<U>::is_dynamic || rows_ == core::details::vector_traits<U>::rows);
+      typedef typename core::details::vector_traits<T> t_vector_traits;
+      typedef typename core::details::vector_traits<U> u_vector_traits;
 
-      typedef typename core::details::vector_traits<U>::wrapped_type::Scalar scalar_type;
+      static_assert(t_vector_traits::vector_class == core::details::VectorClass::Eigen, "Error: the supplied RHS vector cannot be used with the linear solver due to type incompatibility");
+      static_assert(u_vector_traits::vector_class == core::details::VectorClass::Eigen, "Error: the supplied result vector cannot be used with the linear solver due to type incompatibiliy");
+      assert(t_vector_traits::is_dynamic || rows_ == t_vector_traits::rows);
+      assert(u_vector_traits::is_dynamic || rows_ == u_vector_traits::rows);
+
+      typedef typename u_vector_traits::wrapped_type::Scalar scalar_type;
       x = U(this->solve(b).data()->template cast<scalar_type>()); 
     }
 

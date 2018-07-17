@@ -1,55 +1,58 @@
 
-#ifndef SOLVERS_LINEAR_ITERATIVE_EIGEN_HPP_
-#define SOLVERS_LINEAR_ITERATIVE_EIGEN_HPP_
+#ifndef SOLVERS_NONLINEAR_NEWTON_RAPHSON_HPP_
+#define SOLVERS_NONLINEAR_NEWTON_RAPHSON_HPP_
 
 #include <memory>
 
-#include "matrix/core_vector_traits_exp.hpp"
-#include "vector/core_vector_traits_exp.hpp"
+#include "meta/core_meta_static_checks.hpp"
+
 #include "solvers_linear_iterative_factory.hpp"
+#include "solvers_nonlinear_iterative_base.hpp"
+
+#include "system_traits.hpp"
 
 
 namespace solvers {
 
-// Forward declarations
-struct NonlinearIterativeSolvers;
+// Forward declaration
+class NonlinearIterativeSolvers;
 
 
 /**
  * @brief Class that implements a non linear Newton-Raphson solver
  */ 
-template<typename SystemT, 
-  typename NormT
->  
-class NonlinearNewtonRaphson 
+template<typename SystemT>  
+class NonlinearNewtonRaphsonSolver 
   : public NonlinearIterativeSolverBase<
-      NonlinearNewtonRaphson<
-        SystemT,
-        NormT
-      >
+      NonlinearNewtonRaphsonSolver<SystemT>
     >
 {
 
   private:
-
+          
     friend NonlinearIterativeSolvers;
-    typedef NonlinearIterativeSolverBase<NonlinearNewtonRaphson<SystemT,NormT>> base_type;
+    typedef NonlinearIterativeSolverBase<NonlinearNewtonRaphsonSolver<SystemT>> base_type;
 
     
   public: 
 
+
+    NonlinearNewtonRaphsonSolver(NonlinearNewtonRaphsonSolver&& other) : system_(std::move(other.system_)), mStep_(other.mStep_) {}
+
+
     template <typename NewSystemT>
     void reassignSystem(const NewSystemT& newSystem) {
-      static_assert(details::system_traits<T>::is_system, "Error: the object passed to reassignSystem is not a valid system");
-      static_assert(meta::are_system_compatible<SystemT, NewSystemT>::value, "Error: the new system is not compatible with the nonlinear solver");
+      static_assert(details::system_traits<NewSystemT>::is_system, "Error: the object passed to reassignSystem is not a valid system");
+      static_assert(details::are_system_compatible<SystemT, NewSystemT>::value, "Error: the new system is not compatible with the existing nonlinear solver");
       system_ = newSystem; 
     }
 
 
     template <typename SolverT,
+      typename NormT,
       typename VectorT,
       typename std::enable_if<
-        typename SystemT::meta::are_vector_matrix_compatible<VectorT, typename SystemT::matrix_type>::value,
+        core::meta::are_vector_matrix_compatible<VectorT, typename SystemT::matrix_type>::value,
         VectorT
       >::type* = nullptr
     >
@@ -66,7 +69,7 @@ class NonlinearNewtonRaphson
       auto xNew = linearSolver.solve(dy);
       auto xOld = xInit;
 
-      while (iStep++ < mStep && norm_.check_convergence(xOld, xNew)) {
+      while (iStep++ < mStep_ && NormT::template compute_norm_difference(xOld, xNew) > 1.0e-5) {
         xOld = xNew;
         dy = system_.residual(xNew);
         Ja = system_.jacobian(xNew);
@@ -81,9 +84,10 @@ class NonlinearNewtonRaphson
  
     template <typename SolverT,
       typename PrecT,
+      typename NormT,
       typename VectorT,
       typename std::enable_if<
-        meta::are_vector_matrix_compatible<VectorT, typename SystemT::matrix_type>::value,
+        core::meta::are_vector_matrix_compatible<VectorT, typename SystemT::matrix_type>::value,
         VectorT
       >::type* = nullptr
     >
@@ -100,7 +104,7 @@ class NonlinearNewtonRaphson
       auto xNew = linearSolver.solve(dy);
       auto xOld = xInit;
 
-      while (iStep++ < mStep && norm_.check_convergence(xOld, xNew)) {
+      while (iStep++ < mStep_ && NormT::template compute_norm_difference(xOld, xNew) > 1.0e-5) {
         xOld = xNew;
         dy = system_.residual(xNew);
         Ja = system_.jacobian(xNew);
@@ -115,14 +119,14 @@ class NonlinearNewtonRaphson
 
   private:
 
-    NonlinearNewtonRaphson() = delete;
-    NonlinearNewtonRaphson(const SystemT& system) : base_type(), system_(system), norm_() {}
+    NonlinearNewtonRaphsonSolver() = delete;
+    NonlinearNewtonRaphsonSolver(const SystemT& system) : base_type(), system_(system), mStep_(100) {}
 
 
   private:
  
-    SystemT system_;
-    NormT norm_;
+    SystemT system_; 
+    int mStep_;
 };
 
 } //end namespace solvers

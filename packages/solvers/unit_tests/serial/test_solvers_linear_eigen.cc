@@ -1,16 +1,9 @@
 
 #include <gtest/gtest.h>
-<<<<<<< HEAD
-
-#include "SOLVERS_EXP"
-#include "CORE_VECTOR"
-#include "CORE_MATRIX"
-=======
 #include "experimental/solvers_linear_iterative_factory.hpp"
 #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
 #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 #include "vector/concrete/core_vector_serial_eigen.hpp"
->>>>>>> solvers
 
 
 TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenReturnSameType)
@@ -37,7 +30,7 @@ TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenReturnSameTy
   A.data()->coeffRef(1, 1) = -1;
 
   // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<CG>(A);
+  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A);
   auto x = solver.solve(b);
 
   // Expectations
@@ -71,7 +64,7 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenReturnDiff
   A.data()->coeffRef(1, 1) = -1;
   
   // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<CG>(A);
+  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A);
   auto x = solver.solve(b);
   
   // Expectations
@@ -105,7 +98,7 @@ TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenNoReturnSame
   A.data()->coeffRef(1, 1) = -1;
 
   // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<CG>(A);
+  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A);
   solver.solve(b, x);
 
   // Expectations
@@ -142,7 +135,7 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenNoReturnDi
   A.data()->coeffRef(1, 1) = -1;
   
   // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<CG>(A);
+  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A);
   solver.solve(b, x);
   
   // Expectations
@@ -182,7 +175,7 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenResetSyste
   A1.data()->coeffRef(1, 1) = -1;
 
   // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<CG>(A0);
+  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A0);
   solver.resetLinearSystem(A1);
   auto x = solver.solve(b);
 
@@ -225,7 +218,7 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenResetSyste
   A1.data()->coeffRef(1, 1) = -1;
 
   // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<CG>(A0);
+  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A0);
   solver.resetLinearSystem(A1);
   auto x = solver.solve(b);
 

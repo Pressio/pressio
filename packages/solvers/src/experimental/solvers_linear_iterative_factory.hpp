@@ -23,7 +23,11 @@ struct LinearIterativeSolvers {
 
   template <typename SolverT,
     typename MatrixT,
-    typename std::enable_if<!(core::details::matrix_traits<MatrixT>::is_eigen || core::details::matrix_traits<MatrixT>::is_trilinos), MatrixT>::type* = nullptr
+    typename std::enable_if<!(
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Eigen || 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Trilinos), 
+      MatrixT
+    >::type* = nullptr
   > 
   static void createSolver(
     MatrixT const& A
@@ -38,7 +42,11 @@ struct LinearIterativeSolvers {
   template <typename SolverT,
     typename PrecT,
     typename MatrixT,
-    typename std::enable_if<!(core::details::matrix_traits<MatrixT>::is_eigen || core::details::matrix_traits<MatrixT>::is_trilinos), MatrixT>::type* = nullptr
+    typename std::enable_if<!(
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Eigen || 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Trilinos), 
+      MatrixT
+    >::type* = nullptr
   >
   static void createSolver(
     MatrixT const& A
@@ -61,21 +69,15 @@ struct LinearIterativeSolvers {
    */
   template <typename SolverT,
     typename MatrixT,
-    typename std::enable_if<core::details::matrix_traits<MatrixT>::is_trilinos, MatrixT>::type* = nullptr
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Trilinos, 
+      MatrixT
+    >::type* = nullptr
   >
   static auto createSolver(
     MatrixT const& A
   ) {
-
-    typedef details::solver_traits<SolverT> solver_traits;
-    static_assert(solver_traits::trilinos_enabled, "Solver not available for linear systems defined by Eetra matrices");
-      
-    TrilinosLinearIterativeSolver<typename solver_traits::trilinos_policy,
-      typename trilinos_policies::DefaultPreconditioner
-    > solver(A);
-
-    return solver;
-  
+    return LinearIterativeSolvers::template createSolver<SolverT, typename trilinos_policies::DefaultPreconditioner>(A);
   }
 
 
@@ -92,14 +94,17 @@ struct LinearIterativeSolvers {
   template <typename SolverT, 
     typename PrecT,
     typename MatrixT,
-    typename std::enable_if<core::details::matrix_traits<MatrixT>::is_trilinos, MatrixT>::type* = nullptr
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Trilinos, 
+      MatrixT
+    >::type* = nullptr
   >
   static auto createSolver(
     MatrixT const& A
   ) {
 
-    typedef details::solver_traits<SolverT> solver_traits;
-    typedef details::preconditioner_traits<PrecT> preconditioner_traits;
+    typedef linear::details::solver_traits<SolverT> solver_traits;
+    typedef linear::details::preconditioner_traits<PrecT> preconditioner_traits;
 
     static_assert(solver_traits::trilinos_enabled, "Solver not available for linear systems defined by Epetra matrices");
     static_assert(preconditioner_traits::trilinos_enabled, "Preconditioner not available for linear systems defined by Epetra matrices");
@@ -123,14 +128,46 @@ struct LinearIterativeSolvers {
    * for linear systems defined by Eigen sparse matrices
    */
   template <typename SolverT,
+    typename PrecT,
     typename MatrixT,
-    typename std::enable_if<core::details::matrix_traits<MatrixT>::is_eigen, MatrixT>::type* = nullptr
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Eigen, 
+      MatrixT
+    >::type* = nullptr
   >
   static auto createSolver(
     MatrixT const& A
   ) {
 
-    typedef details::solver_traits<SolverT> solver_traits;
+    typedef linear::details::preconditioner_traits<PrecT> preconditioner_traits;
+    static_assert(preconditioner_traits::eigen_enabled, "Preconditioner not available for linear systems defined by Eigen matrices");
+
+    return LinearIterativeSolvers::template createSolver<SolverT>(A);
+  }
+
+
+  /**
+   * @brief  createSolver
+   * @param  A Eigen::SparseMatrix object representing a linear system
+   * @return An Iterative linear solver for Eigen sparse matrices
+   *
+   * @section DESCRIPTION
+   *
+   * Create an instance of the appropriate sparse linear iterative solver 
+   * for linear systems defined by Eigen sparse matrices
+   */
+  template <typename SolverT,
+    typename MatrixT,
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Eigen, 
+      MatrixT
+    >::type* = nullptr
+  >
+  static auto createSolver(
+    MatrixT const& A
+  ) {
+
+    typedef linear::details::solver_traits<SolverT> solver_traits;
     typedef core::details::matrix_traits<MatrixT> matrix_traits;
   
     static_assert(matrix_traits::is_sparse, "Iterative solvers in Eigen can only be used with sparse matrices");
@@ -141,7 +178,7 @@ struct LinearIterativeSolvers {
  
     EigenLinearIterativeSolver<eigen_solver_type> solver(A);
     return solver;    
-  } 
+  }
 
 };
 
