@@ -24,6 +24,9 @@ public:
   implicitEulerJacobianStandardPolicy() = default;
   ~implicitEulerJacobianStandardPolicy() = default;
 
+// private:
+//   jacobian_type II_;
+  
 private:
   //----------------------------------------------------------------
   // enable if using types from core package
@@ -42,6 +45,10 @@ private:
 		   time_type t,
 		   time_type dt)
   {
+    // if (II_.rows()==0){
+    //   II_.resize(J.rows(), J.cols());
+    //   II_.setIdentity();
+    // }
     // first eval space jac
     model.jacobian( *y.data(), *J.data(), t);
     // update from time discrete residual
