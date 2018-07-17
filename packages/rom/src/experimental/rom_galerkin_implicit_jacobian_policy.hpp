@@ -43,13 +43,21 @@ private:
 
 public:
   romGalerkinImplicitJacobianPolicy(const state_type & y0,
-				    const basis_t & phi)
-    : incr_base_t(y0), phiPtr_(&phi){}
+				    basis_t const & phi,
+				    basis_t const & phiT)
+    : incr_base_t(y0), phiPtr_(&phi), phiTPtr_(&phiT)
+  {
+    yFOM_.resize(phiPtr_->rows());
+    J2_.resize(phiPtr_->rows(), phiPtr_->rows());
+  }
 
   ~romGalerkinImplicitJacobianPolicy() = default;
 
 private:
   basis_t const * phiPtr_;
+  basis_t const * phiTPtr_;
+  jacobian_type J2_;
+  state_type yFOM_;
   
 private:
   // enable if using types from core package
@@ -66,12 +74,33 @@ private:
 		   time_type dt)
   {
     // reconstruct the solution
-    yFull_ = *y0ptr_ + y;
+    //    yFull_ = y;//*y0ptr_ + y;
 
+    if (J.rows()==0)
+      J.resize(y.size(), y.size());
+
+    *yFOM_.data() = *phiPtr_->data() * (*y.data());
+
+    if (J2_.rows()==0)
+      J2_.resize(yFOM_.size(), yFOM_.size());
+    
     // first eval space jac
-    model.jacobian( *yFull_.data(), *J.data(), t);
+    model.jacobian( *yFOM_.data(), *J2_.data(), t);
+
+    Eigen::MatrixXd JJ(*J2_.data());
+    auto a = phiTPtr_->data();
+    auto b = phiPtr_->data();
+    auto res = (*a) * JJ * (*b);
+    // std::cout << "resSize "
+    // 	      << a->rows() << " " << a->cols() << " "
+    // 	      << JJ.rows() << " " << JJ.cols() << " "
+    // 	      << b->rows() << " " << b->cols() << " "
+    // 	      << std::endl;
+
+    (*J.data()) = res.sparseView();
+    
     // update from time discrete residual
-    ode::impl::implicit_euler_time_discrete_jacobian(J, dt);    
+    ode::impl::implicit_euler_time_discrete_jacobian(J, dt);
   }  
 
 private:

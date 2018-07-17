@@ -42,8 +42,16 @@ private:
   
 public:
   romGalerkinImplicitResidualPolicy(const state_type & y0,
-				    const basis_t & phi)
-    : incr_base_t(y0), phiPtr_(&phi){}
+				    basis_t const & phi,
+				    basis_t const & phiT)
+    : incr_base_t(y0), phiPtr_(&phi), phiTPtr_(&phiT)
+  {
+    //if (yFOM_.size()==0)
+      yFOM_.resize(phiPtr_->rows());
+
+      //if (appRHS_.size()==0)
+      appRHS_.resize(phiPtr_->rows());
+  }
   
   ~romGalerkinImplicitResidualPolicy() = default;  
 
@@ -62,8 +70,10 @@ private:
   // for the application, whereas fnew has same size of y 
 
   basis_t const * phiPtr_;
+  basis_t const * phiTPtr_;
   residual_type appRHS_;
-  
+  state_type yFOM_;
+
 private:
   // enable if using types from core package
   template <typename U = state_type,
@@ -79,17 +89,26 @@ private:
 		   time_type t,
 		   time_type dt)
   {
-    // // reconstruct the solution
-    // yFull_ = (y0ptr_ + y);
-    // *yFull_.data() = phiPtr_->data() * *yFull_.data();
-    // std::cout << yFull_.size() << std::endl;
+    // reconstruct the reduced actual solution
+    //    yFull_ = y;//(*y0ptr_ + y);
+    // std::cout << *yFull_.data() << std::endl;
+    // std::cout << "--------------" << std::endl;
+    // std::cout << *y0ptr_->data() << std::endl;
+    // std::cout << "--------------" << std::endl;
+    // std::cout << *y.data() << std::endl;
+
+    *yFOM_.data() = *phiPtr_->data() * (*y.data());
     
-    // // eval RHS from target model
-    // model.residual(*yFull_.data(), *R.data(), t);
+    // eval RHS from target model
+    model.residual(*yFOM_.data(), *appRHS_.data(), t);
 
-    // ode::impl::implicit_euler_time_discrete_residual(y, oldYs[0], R, dt);
-									   
+    if (R.empty())
+      R.resize(y.size());
 
+    *R.data() = *phiTPtr_->data() * (*appRHS_.data());
+    ode::impl::implicit_euler_time_discrete_residual(y, oldYs[0], R, dt);
+
+    //    exit(EXIT_FAILURE);
     // // do projection of the space residual
     // // R = phi^T appRHS_
   }  

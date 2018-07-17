@@ -43,11 +43,7 @@ void integrateNSteps(stepper_type & stepper,
 
 
 template<typename stepper_type, typename state_type,
-	 typename time_type, typename integral_type,
-	 typename std::enable_if<
-	   std::is_integral<integral_type>::value
-	   >::type
-	 >
+	 typename time_type, typename integral_type>
 void integrateNSteps(stepper_type & stepper,
 		     state_type & yIn,
 		     time_type start_time,

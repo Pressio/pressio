@@ -17,7 +17,8 @@ private:
 public:
   using scalar_type = double;
   using state_type = Eigen::VectorXd;
-  using jacobian_type = Eigen::SparseMatrix<scalar_type,Eigen::RowMajor,int>;
+  using jacobian_type
+  = Eigen::SparseMatrix<scalar_type,Eigen::RowMajor,int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;
   std::vector<Tr> tripletList;

@@ -12,19 +12,18 @@ struct snapshot_collector
 
 public:
   snapshot_collector(int ncell, int nimages) : count_(0){
-    snapshots_.resize(ncell, nimages);
+    snapshots_.resize(ncell, nimages+1);
   }
-  
+
 public:
   void operator()(size_t step,
 		  double t,
-		  state_t y){
-    // //    if (step % 50 ==0 || step==0){
-    //   for(int i=0; i<y.size(); i++){
-    // 	snapshots_(i,count_) = y[i];
-    //   }
-    //   count_++;
-    //   //}
+		  state_t y)
+  {
+    for(int i=0; i<y.size(); i++){
+      snapshots_(i,count_) = y[i];
+    }
+    count_++;
   }
 
   void printAll()

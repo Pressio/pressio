@@ -1,16 +1,14 @@
 
 #include <gtest/gtest.h>
-<<<<<<< HEAD
-
-#include "SOLVERS_EXP"
-#include "CORE_VECTOR"
-#include "CORE_MATRIX"
-=======
+// #include "SOLVERS_EXP"
+// #include "CORE_VECTOR"
+// #include "CORE_MATRIX"
+// =======
 #include "experimental/solvers_linear_iterative_factory.hpp"
 #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
 #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 #include "vector/concrete/core_vector_serial_eigen.hpp"
->>>>>>> solvers
+// >>>>>>> solvers
 
 
 TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenReturnSameType)
