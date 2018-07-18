@@ -1,19 +1,17 @@
 
 #include <gtest/gtest.h>
 
+#include <iostream>
+
+#include "experimental/solvers_norms.hpp"
 #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 #include "vector/concrete/core_vector_serial_eigen.hpp"
 #include "experimental/solvers_nonlinear_iterative_factory.hpp"
 
-
-TEST(solvers_nonlinear_iterative_eigen, solversTestNonLinearIterativeEigenRungeKutta)
-{
-  // Namespaces
-  using namespace solvers;
-
-  struct System {
+struct NonLinearSystem {
 
     // Matrix typedefs
+
     using matrix_n_t = Eigen::SparseMatrix<double>;
     using matrix_w_t = core::matrix<matrix_n_t>;
 
@@ -21,7 +19,7 @@ TEST(solvers_nonlinear_iterative_eigen, solversTestNonLinearIterativeEigenRungeK
     using vector_n_t = Eigen::VectorXd;
     using vector_w_t = core::vector<vector_n_t>;
 
-    typedef vector_w_t state_type;
+    using state_type = vector_w_t;// state_type;
     typedef matrix_w_t matrix_type;
 
 
@@ -55,19 +53,27 @@ TEST(solvers_nonlinear_iterative_eigen, solversTestNonLinearIterativeEigenRungeK
       jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
       return jac;
     }
-  };
+};
+
+
+TEST(solvers_nonlinear_iterative_eigen, solversTestNonLinearIterativeEigenRungeKutta)
+{
+  // Namespaces
+  using namespace solvers;
 
   // Define a system to solve
-  System system; 
+  NonLinearSystem system;
+  core::vector<Eigen::VectorXd> b(2);
+
+  // Initialize b
+  b[0] = 0.0015;
+  b[1] = 1.5; 
 
   // Solve nonlinear system using 
   auto solver = NonlinearIterativeSolvers::createSolver<nonlinear::NewtonRaphson>(system);
- // auto x = solver.solve<linear::CG>(b);
-  
-  // Expectations
-  // EXPECT_NEAR( x[0],  1.0, 1e-14 );
-//  EXPECT_NEAR( x[1], -1.0, 1e-14 );
+  auto x = solver.solve<linear::CG, L2Norm>(b);
 }
+
 
 #if 0
 TEST(solvers_nonlinear, simpleTest)
@@ -107,5 +113,6 @@ TEST(solvers_nonlinear, simpleTest)
   nonls.solve(y,obj);
   std::cout << y[0] << " " << y[1] << std::endl;
 }
-
 #endif
+
+

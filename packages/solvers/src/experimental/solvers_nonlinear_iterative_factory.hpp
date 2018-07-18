@@ -24,7 +24,6 @@ struct NonlinearIterativeSolvers {
    * @param  An object that does not represent a nonlinear system 
    * @return Fail at compile time
    */ 
-  /*
   template <typename SolverT,
     typename SystemT,
     typename std::enable_if<
@@ -40,7 +39,6 @@ struct NonlinearIterativeSolvers {
     std::cerr << "Error: the system object supplied is not valid" << std::endl;
     assert(false);
   }
-  */
 
 
   /**
@@ -53,11 +51,11 @@ struct NonlinearIterativeSolvers {
    * Create a nonlinear iterative solver of the specified type
    */
   template <typename SolverT,
-    typename SystemT //,
-   // typename std::enable_if<
-  //    details::system_traits<SystemT>::is_system,
-  //    SystemT
-  //  >::type* = nullptr
+    typename SystemT,
+    typename std::enable_if<
+      details::system_traits<SystemT>::is_system,
+      SystemT
+    >::type* = nullptr
   >
   static auto createSolver(
     SystemT const& A

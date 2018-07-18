@@ -7,22 +7,17 @@
 
 #include "Epetra_RowMatrix.h"
 
+#include "core_ConfigDefs.hpp"
 #include "core_forward_declarations.hpp"
 
 
 namespace core {
 namespace details {
 
-enum class MatrixClass{
-  Eigen,
-  Trilinos,
-  Undefined
-};
-
 template <typename T, typename Enabled = void>
 struct matrix_traits {
   typedef void wrapped_t;
-  static constexpr MatrixClass matrix_class = MatrixClass::Undefined;
+  static constexpr WrappedClass matrix_class = WrappedClass::Undefined;
   static constexpr bool is_sparse = false;
 };
 
@@ -35,7 +30,7 @@ struct matrix_traits<core::matrix<T>,
     >::value, void
   >::type
 > {
-  static constexpr MatrixClass matrix_class = MatrixClass::Trilinos;
+  static constexpr WrappedClass matrix_class = WrappedClass::Trilinos;
   static constexpr bool is_sparse = true;
 };
 
@@ -54,7 +49,7 @@ struct matrix_traits<
   >::type
 > {
   typedef T wrapped_type;
-  static constexpr MatrixClass matrix_class = MatrixClass::Eigen;
+  static constexpr WrappedClass matrix_class = WrappedClass::Eigen;
   static constexpr bool is_sparse = true;
 };
 	
