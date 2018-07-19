@@ -24,8 +24,8 @@ struct LinearIterativeSolvers {
   template <typename SolverT,
     typename MatrixT,
     typename std::enable_if<!(
-      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Eigen || 
-      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Trilinos), 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Eigen || 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Trilinos), 
       MatrixT
     >::type* = nullptr
   > 
@@ -43,8 +43,8 @@ struct LinearIterativeSolvers {
     typename PrecT,
     typename MatrixT,
     typename std::enable_if<!(
-      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Eigen || 
-      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Trilinos), 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Eigen || 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Trilinos), 
       MatrixT
     >::type* = nullptr
   >
@@ -70,7 +70,7 @@ struct LinearIterativeSolvers {
   template <typename SolverT,
     typename MatrixT,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Trilinos, 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Trilinos, 
       MatrixT
     >::type* = nullptr
   >
@@ -95,7 +95,7 @@ struct LinearIterativeSolvers {
     typename PrecT,
     typename MatrixT,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Trilinos, 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Trilinos, 
       MatrixT
     >::type* = nullptr
   >
@@ -131,7 +131,7 @@ struct LinearIterativeSolvers {
     typename PrecT,
     typename MatrixT,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Eigen, 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Eigen, 
       MatrixT
     >::type* = nullptr
   >
@@ -159,7 +159,7 @@ struct LinearIterativeSolvers {
   template <typename SolverT,
     typename MatrixT,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::matrix_class == core::details::MatrixClass::Eigen, 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Eigen, 
       MatrixT
     >::type* = nullptr
   >

@@ -8,6 +8,16 @@ namespace core{
 namespace details {
 
 
+//--------------------------------------------
+// Wrapped class type for vectors and matrices
+//--------------------------------------------
+enum class WrappedClass{
+  Eigen,
+  Trilinos,
+  Undefined
+};
+
+
 //---------------------------------------
 // TRAITS
 //---------------------------------------
@@ -25,7 +35,7 @@ template <typename T, typename enable = void>
 struct crtpBase;
   
 template <typename T,
-	  template<typename T, typename...> class crtpType,
+	  template<typename, typename...> class crtpType,
 	  typename ... Args>
 struct crtpBase< crtpType<T, Args...>>
 {
@@ -43,7 +53,7 @@ private:
 
 
 template <typename T, int a, int b,
-	  template<typename T, int a, int b> class crtpType>
+	  template<typename, int, int> class crtpType>
 struct crtpBase< crtpType<T, a, b> >
 {
   T & underlying() {
