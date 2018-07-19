@@ -56,9 +56,19 @@ class NonlinearIterativeSolverBase {
       this->underlying().solve(b, x);
     }
 
+ 
+    int getMaxIterations() {
+      return maxIters_;
+    }
+
 
     int getLinearSolverMaxIterations() {
       return linearSolverMaxIters_;
+    }
+
+
+    void setMaxIterations(int maxIters) {
+      maxIters_ = maxIters;
     }
 
 
@@ -67,8 +77,17 @@ class NonlinearIterativeSolverBase {
     }
 
 
-    double getLinearSolverTolerance() {
+    double getTolerance() {
+      return tolerance_;
+    }
+
+    inline double getLinearSolverTolerance() {
       return linearSolverTolerance_;
+    }
+
+
+    void setTolerance(double tolerance) {
+      tolerance_ = tolerance;
     }
 
 
@@ -79,7 +98,7 @@ class NonlinearIterativeSolverBase {
 
   protected:
 
-    NonlinearIterativeSolverBase() : linearSolverMaxIters_(100), linearSolverTolerance_(1.0e-5) {}
+    NonlinearIterativeSolverBase() : maxIters_(100), linearSolverMaxIters_(100), tolerance_(1.0e-5), linearSolverTolerance_(1.0e-7) {}
     ~NonlinearIterativeSolverBase() = default;
 
     NonlinearIterativeSolverBase(const NonlinearIterativeSolverBase&) = delete;
@@ -99,8 +118,8 @@ class NonlinearIterativeSolverBase {
 
   private:
 
-    int linearSolverMaxIters_;
-    double linearSolverTolerance_;
+    int maxIters_, linearSolverMaxIters_;
+    double tolerance_, linearSolverTolerance_;
       
 };
 

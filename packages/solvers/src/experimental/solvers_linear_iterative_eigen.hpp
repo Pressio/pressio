@@ -42,7 +42,7 @@ class EigenLinearIterativeSolver
     /// Type of new linear system matrix is the same one used to initialize the solver  
     void resetLinearSystem(const core::matrix<matrix_type>& A) {
       rows_ = A.rows();
-      solver->compute(*A.data());
+      solver->compute(*A.data()); 
     }
 
 
@@ -126,7 +126,7 @@ class EigenLinearIterativeSolver
       assert(t_vector_traits::is_dynamic || rows_ == t_vector_traits::rows);
       assert(u_vector_traits::is_dynamic || rows_ == u_vector_traits::rows);
 
-      x= this->solve(b);
+      x = this->solve(b);
     }
 
 
