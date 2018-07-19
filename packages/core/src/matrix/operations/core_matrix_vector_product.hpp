@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_VECTOR_PRODUCT_HPP_
-#define CORE_MATRIX_VECTOR_PRODUCT_HPP_
+#ifndef CORE_MATRIX_MATRIX_VECTOR_PRODUCT_HPP_
+#define CORE_MATRIX_MATRIX_VECTOR_PRODUCT_HPP_
 
 #include "../../vector/meta/core_vector_meta.hpp"
 #include "../../vector/concrete/core_vector_serial_eigen.hpp"

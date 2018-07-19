@@ -1,6 +1,6 @@
 
-#ifndef _SOLVERS_TRAITS_HPP_
-#define _SOLVERS_TRAITS_HPP_
+#ifndef SOLVERS_EXPERIMENTAL_TRAITS_HPP_
+#define SOLVERS_EXPERIMENTAL_TRAITS_HPP_
 
 #include <Eigen/Core>
 

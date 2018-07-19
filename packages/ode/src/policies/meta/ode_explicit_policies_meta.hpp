@@ -1,6 +1,6 @@
 
-#ifndef ODE_EXPLICIT_POLICIES_META_HPP_
-#define ODE_EXPLICIT_POLICIES_META_HPP_
+#ifndef ODE_POLICIES_META_EXPLICIT_POLICIES_META_HPP_
+#define ODE_POLICIES_META_EXPLICIT_POLICIES_META_HPP_
 
 #include "../base/ode_explicit_residual_policy_base.hpp"
 

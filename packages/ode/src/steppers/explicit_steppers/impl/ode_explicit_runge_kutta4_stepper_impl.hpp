@@ -1,6 +1,6 @@
 
-#ifndef ODE_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
-#define ODE_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
+#ifndef ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
+#define ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
 
 #include "../base/ode_explicit_stepper_base.hpp"
 #include "../../../policies/meta/ode_explicit_runge_kutta4_policies_meta.hpp"

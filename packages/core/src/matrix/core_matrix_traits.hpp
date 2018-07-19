@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_TRAITS_HPP_
-#define CORE_MATRIX_TRAITS_HPP_
+#ifndef CORE_MATRIX_MATRIX_TRAITS_HPP_
+#define CORE_MATRIX_MATRIX_TRAITS_HPP_
 
 #include "../core_forward_declarations.hpp"
 #include "./meta/core_matrix_meta.hpp"
@@ -176,9 +176,9 @@ struct is_coreMatrixWrapper< T,
 			 >::type
 		       > : std::true_type{};
 
-#define STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(TYPE) \
+#define STATIC_ASSERT_IS_CORE_MATRIX_MATRIX_WRAPPER(TYPE) \
   static_assert( core::meta::is_coreMatrixWrapper<TYPE>::value, \
-		 "THIS_IS_NOT_A_CORE_MATRIX_WRAPPER")
+		 "THIS_IS_NOT_A_CORE_MATRIX_MATRIX_WRAPPER")
   
 }//end meta
 

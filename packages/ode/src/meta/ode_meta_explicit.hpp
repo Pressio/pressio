@@ -1,6 +1,6 @@
 
-#ifndef ODE_META_EXPLICIT_HPP_
-#define ODE_META_EXPLICIT_HPP_
+#ifndef ODE_META_META_EXPLICIT_HPP_
+#define ODE_META_META_EXPLICIT_HPP_
 
 #include "meta/core_meta_basic.hpp"
 #include "vector/core_vector_traits.hpp"

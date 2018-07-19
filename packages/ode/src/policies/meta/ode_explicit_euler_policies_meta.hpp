@@ -1,6 +1,6 @@
 
-#ifndef ODE_EXPLICIT_EULER_POLICIES_META_HPP_
-#define ODE_EXPLICIT_EULER_POLICIES_META_HPP_
+#ifndef ODE_POLICIES_META_EXPLICIT_EULER_POLICIES_META_HPP_
+#define ODE_POLICIES_META_EXPLICIT_EULER_POLICIES_META_HPP_
 
 #include "ode_explicit_policies_meta.hpp"
 #include "../standard/ode_explicit_residual_standard_policy.hpp"

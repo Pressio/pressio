@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_DENSE_SERIAL_EIGEN_HPP_
-#define CORE_MATRIX_DENSE_SERIAL_EIGEN_HPP_
+#ifndef CORE_MATRIX_CONCRETE_MATRIX_DENSE_SERIAL_EIGEN_HPP_
+#define CORE_MATRIX_CONCRETE_MATRIX_DENSE_SERIAL_EIGEN_HPP_
 
 #include <Eigen/Core>
 #include "../base/core_matrix_generic_base.hpp"

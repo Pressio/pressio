@@ -1,6 +1,6 @@
 
-#ifndef ODE_IMPLICIT_POLICIES_META_HPP_
-#define ODE_IMPLICIT_POLICIES_META_HPP_
+#ifndef ODE_POLICIES_META_IMPLICIT_POLICIES_META_HPP_
+#define ODE_POLICIES_META_IMPLICIT_POLICIES_META_HPP_
 
 #include "../base/ode_implicit_residual_policy_base.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"

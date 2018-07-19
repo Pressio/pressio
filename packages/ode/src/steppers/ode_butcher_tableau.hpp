@@ -1,6 +1,6 @@
 
-#ifndef ODE_BUTCHER_TABLEAU_HPP_
-#define ODE_BUTCHER_TABLEAU_HPP_
+#ifndef ODE_STEPPERS_BUTCHER_TABLEAU_HPP_
+#define ODE_STEPPERS_BUTCHER_TABLEAU_HPP_
 
 #include "ode_ConfigDefs.hpp"
 #include <Eigen/Dense>

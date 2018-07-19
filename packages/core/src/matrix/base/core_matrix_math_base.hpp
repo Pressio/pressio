@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_MATH_BASE_HPP_
-#define CORE_MATRIX_MATH_BASE_HPP_
+#ifndef CORE_MATRIX_BASE_MATRIX_MATH_BASE_HPP_
+#define CORE_MATRIX_BASE_MATRIX_MATH_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
 

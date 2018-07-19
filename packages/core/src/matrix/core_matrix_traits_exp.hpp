@@ -1,7 +1,8 @@
 
-#ifndef CORE_MATRIX_TRAITS_EXP_HPP_
-#define CORE_MATRIX_TRAITS_EXP_HPP_
+#ifndef CORE_MATRIX_MATRIX_TRAITS_EXP_HPP_
+#define CORE_MATRIX_MATRIX_TRAITS_EXP_HPP_
 
+#include <Eigen/Sparse>
 #include <Eigen/Core>
 #include <type_traits>
 

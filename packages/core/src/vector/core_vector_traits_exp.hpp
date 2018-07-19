@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_TRAITS_EXP_HPP_
-#define CORE_VECTOR_TRAITS_EXP_HPP_
+#ifndef CORE_VECTOR_VECTOR_TRAITS_EXP_HPP_
+#define CORE_VECTOR_VECTOR_TRAITS_EXP_HPP_
 
 #include <Eigen/Core>
 #include <type_traits>

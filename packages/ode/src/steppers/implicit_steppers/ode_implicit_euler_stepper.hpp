@@ -1,6 +1,6 @@
 
-#ifndef ODE_IMPLICIT_EULER_STEPPER_HPP_
-#define ODE_IMPLICIT_EULER_STEPPER_HPP_
+#ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_EULER_STEPPER_HPP_
+#define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_EULER_STEPPER_HPP_
 
 #include "./impl/ode_implicit_euler_stepper_impl.hpp"
 #include "../../policies/standard/ode_implicit_euler_residual_standard_policy.hpp"

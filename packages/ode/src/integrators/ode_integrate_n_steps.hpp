@@ -1,6 +1,6 @@
 
-#ifndef ODE_INTEGRATE_N_STEPS_HPP_
-#define ODE_INTEGRATE_N_STEPS_HPP_
+#ifndef ODE_INTEGRATORS_INTEGRATE_N_STEPS_HPP_
+#define ODE_INTEGRATORS_INTEGRATE_N_STEPS_HPP_
 
 #include "ode_ConfigDefs.hpp"
 #include "../meta/ode_meta.hpp"

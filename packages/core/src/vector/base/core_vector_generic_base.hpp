@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_GENERIC_BASE_HPP_
-#define CORE_VECTOR_GENERIC_BASE_HPP_
+#ifndef CORE_VECTOR_BASE_VECTOR_GENERIC_BASE_HPP_
+#define CORE_VECTOR_BASE_VECTOR_GENERIC_BASE_HPP_
 
 #include "../core_vector_traits.hpp"
 #include "../../core_operators_base.hpp"

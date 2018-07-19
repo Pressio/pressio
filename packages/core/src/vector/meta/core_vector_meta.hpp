@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_META_HPP_
-#define CORE_VECTOR_META_HPP_
+#ifndef CORE_VECTOR_META_VECTOR_META_HPP_
+#define CORE_VECTOR_META_VECTOR_META_HPP_
 
 #include "../../meta/core_meta_basic.hpp"
 #include "../../meta/core_meta_detect_operators.hpp"

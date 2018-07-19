@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_SERIAL_USERDEFINED_HPP_
-#define CORE_VECTOR_SERIAL_USERDEFINED_HPP_
+#ifndef CORE_VECTOR_CONCRETE_VECTOR_SERIAL_USERDEFINED_HPP_
+#define CORE_VECTOR_CONCRETE_VECTOR_SERIAL_USERDEFINED_HPP_
 
 #include "../base/core_vector_generic_base.hpp"
 #include "../base/core_vector_serial_base.hpp"

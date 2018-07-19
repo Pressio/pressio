@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_META_HPP_
-#define CORE_MATRIX_META_HPP_
+#ifndef CORE_MATRIX_MATRIX_META_HPP_
+#define CORE_MATRIX_MATRIX_META_HPP_
 
 #include "../../meta/core_meta_basic.hpp"
 #include "../../vector/meta/core_vector_meta.hpp"

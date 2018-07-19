@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_SERIAL_EIGEN_HPP_
-#define CORE_VECTOR_SERIAL_EIGEN_HPP_
+#ifndef CORE_VECTOR_CONCRETE_VECTOR_SERIAL_EIGEN_HPP_
+#define CORE_VECTOR_CONCRETE_VECTOR_SERIAL_EIGEN_HPP_
 
 #include "../../meta/core_meta_basic.hpp"
 #include "../../meta/core_meta_detect_operators.hpp"

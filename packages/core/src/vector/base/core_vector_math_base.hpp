@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_MATH_BASE_HPP_
-#define CORE_VECTOR_MATH_BASE_HPP_
+#ifndef CORE_VECTOR_BASE_VECTOR_MATH_BASE_HPP_
+#define CORE_VECTOR_BASE_VECTOR_MATH_BASE_HPP_
 
 #include "../core_vector_traits.hpp"
 #include <cmath>

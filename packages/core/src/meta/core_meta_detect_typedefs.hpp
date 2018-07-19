@@ -1,6 +1,6 @@
 
-#ifndef CORE_META_DETECT_TYPEDEFS_HPP_
-#define CORE_META_DETECT_TYPEDEFS_HPP_
+#ifndef CORE_META_META_DETECT_TYPEDEFS_HPP_
+#define CORE_META_META_DETECT_TYPEDEFS_HPP_
 
 #include "core_meta_basic.hpp"
 

@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_DENSE_SERIAL_BASE_HPP_
-#define CORE_MATRIX_DENSE_SERIAL_BASE_HPP_
+#ifndef CORE_MATRIX_BASE_MATRIX_DENSE_SERIAL_BASE_HPP_
+#define CORE_MATRIX_BASE_MATRIX_DENSE_SERIAL_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
 #include "../../core_operators_base.hpp"

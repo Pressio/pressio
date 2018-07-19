@@ -1,6 +1,6 @@
 
-#ifndef ODE_JACOBIAN_STANDARD_POLICY_HPP_
-#define ODE_JACOBIAN_STANDARD_POLICY_HPP_
+#ifndef ODE_POLICIES_STANDARD_JACOBIAN_STANDARD_POLICY_HPP_
+#define ODE_POLICIES_STANDARD_JACOBIAN_STANDARD_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"

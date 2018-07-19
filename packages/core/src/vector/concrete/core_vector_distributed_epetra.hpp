@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_DISTRIBUTED_EPETRA_HPP_
-#define CORE_VECTOR_DISTRIBUTED_EPETRA_HPP_
+#ifndef CORE_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_EPETRA_HPP_
+#define CORE_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_EPETRA_HPP_
 
 #include "../meta/core_vector_meta.hpp"
 #include "../base/core_vector_generic_base.hpp"
