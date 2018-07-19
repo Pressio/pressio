@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_GENERIC_BASE_HPP_
-#define CORE_VECTOR_GENERIC_BASE_HPP_
+#ifndef CORE_VECTOR_BASE_VECTOR_GENERIC_BASE_HPP_
+#define CORE_VECTOR_BASE_VECTOR_GENERIC_BASE_HPP_
 
 #include "../core_vector_traits.hpp"
 #include "../../core_operators_base.hpp"
@@ -8,9 +8,9 @@
 namespace core{
     
 template<typename derived_type>
-class vectorGenericBase
-  : public subscriptingOperatorsBase<
-  vectorGenericBase<derived_type>,
+class VectorGenericBase
+  : public SubscriptingOperatorsBase<
+  VectorGenericBase<derived_type>,
     typename details::traits<derived_type>::scalar_t,
     //ordinal type based on vector being serial or distributed
     typename
@@ -18,7 +18,7 @@ class vectorGenericBase
 	      typename details::traits<derived_type>::ordinal_t,
 	      typename details::traits<derived_type>::local_ordinal_t
 		   >::type>,
-  private core::details::crtpBase<vectorGenericBase<derived_type>>
+  private core::details::CrtpBase<VectorGenericBase<derived_type>>
 {
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
@@ -50,10 +50,10 @@ public:
 
 private:
   friend derived_type;
-  friend core::details::crtpBase<vectorGenericBase<derived_type>>;
+  friend core::details::CrtpBase<VectorGenericBase<derived_type>>;
 
-  vectorGenericBase() = default;
-  ~vectorGenericBase() = default;
+  VectorGenericBase() = default;
+  ~VectorGenericBase() = default;
       
 };//end class
 

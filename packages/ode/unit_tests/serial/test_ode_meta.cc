@@ -10,9 +10,9 @@ TEST(ode_meta, checkStateType)
   using st_t1 = std::vector<double>;
   using st_t2 = double;
   using st_t3 = std::map<int,int>;
-  static_assert( core::meta::is_vectorStdLib<st_t1>::value, "");
+  static_assert( core::meta::is_vector_stdlib<st_t1>::value, "");
   static_assert( ode::meta::isLegitimateExplicitStateType<st_t1>::value,"");
-  using myt = core::vector<st_t1>;
+  using myt = core::Vector<st_t1>;
   static_assert( ode::meta::isLegitimateExplicitStateType<myt>::value,"");  
   static_assert( !ode::meta::isLegitimateExplicitStateType<st_t2>::value,"");
   static_assert( !ode::meta::isLegitimateExplicitStateType<st_t3>::value,"");

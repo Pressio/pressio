@@ -1,6 +1,6 @@
 
-#ifndef ODE_EXPLICIT_STEPPER_BASE_HPP_
-#define ODE_EXPLICIT_STEPPER_BASE_HPP_
+#ifndef ODE_STEPPERS_EXPLICIT_STEPPERS_BASE_EXPLICIT_STEPPER_BASE_HPP_
+#define ODE_STEPPERS_EXPLICIT_STEPPERS_BASE_EXPLICIT_STEPPER_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
 #include "../ode_explicit_stepper_traits.hpp"
@@ -12,8 +12,8 @@
 namespace ode{
 
 template<typename stepper_type>
-class explicitStepperBase
-  : private core::details::crtpBase<explicitStepperBase<stepper_type>>
+class ExplicitStepperBase
+  : private core::details::CrtpBase<ExplicitStepperBase<stepper_type>>
 {
 private:
   using step_traits = ode::details::traits<stepper_type>;
@@ -35,7 +35,7 @@ private:
 		 "OOPS: RESIDUAL_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateTimeType<time_t>::value,
 		 "OOPS: TIME_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::isLegitimateExplicitResidualPolicy<residual_policy_t>::value,
+  static_assert( meta::is_legitimate_explicit_residual_policy<residual_policy_t>::value,
       "RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF EXPLICIT POLICY BASE");
 
 public:
@@ -48,17 +48,17 @@ public:
   }
 
 private:    
-  explicitStepperBase(model_t & model,
+  ExplicitStepperBase(model_t & model,
 		      residual_policy_t & res_policy_obj)
     : model_(&model),
       residual_obj_(&res_policy_obj)
   {}
-  explicitStepperBase() = delete;
-  ~explicitStepperBase() = default;
+  ExplicitStepperBase() = delete;
+  ~ExplicitStepperBase() = default;
 
 private:
   friend stepper_type;
-  friend core::details::crtpBase<explicitStepperBase<stepper_type>>;
+  friend core::details::CrtpBase<ExplicitStepperBase<stepper_type>>;
 
 protected:
   model_t * model_;

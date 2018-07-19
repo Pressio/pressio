@@ -1,14 +1,14 @@
 
-#ifndef CORE_MATRIX_SPARSE_SERIAL_BASE_HPP_
-#define CORE_MATRIX_SPARSE_SERIAL_BASE_HPP_
+#ifndef CORE_MATRIX_BASE_MATRIX_SPARSE_SERIAL_BASE_HPP_
+#define CORE_MATRIX_BASE_MATRIX_SPARSE_SERIAL_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
 
 namespace core{
     
 template<typename derived_type>
-class matrixSparseSerialBase
-  : private core::details::crtpBase<matrixSparseSerialBase<derived_type>>
+class MatrixSparseSerialBase
+  : private core::details::CrtpBase<MatrixSparseSerialBase<derived_type>>
 {
 private:
   using traits_t = details::traits<derived_type>;
@@ -52,10 +52,10 @@ public:
   
 private:  
   friend der_t;
-  friend core::details::crtpBase<matrixSparseSerialBase<derived_type>>;
+  friend core::details::CrtpBase<MatrixSparseSerialBase<derived_type>>;
 
-  matrixSparseSerialBase() = default;
-  ~matrixSparseSerialBase() = default; 
+  MatrixSparseSerialBase() = default;
+  ~MatrixSparseSerialBase() = default; 
 
 };//end class
 

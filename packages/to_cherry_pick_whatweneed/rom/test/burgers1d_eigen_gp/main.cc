@@ -42,7 +42,7 @@ struct eigenVectorStateResizer{
 
 
 struct myVectorStateResizer{
-  using vec_t = core::vector<Eigen::VectorXd>;
+  using vec_t = core::Vector<Eigen::VectorXd>;
   // this has to be default constructible
   // this will be checked at compile-time by ode package
   void operator()(const vec_t & source, vec_t & dest)
@@ -59,7 +59,7 @@ bool checkTime(double t, double targetT)
 }
 
 struct snapshot_collector{
-  using state_t = apps::burgers1dEigen::state_type;
+  using state_t = apps::Burgers1dEigen::state_type;
   using matrix_t = Eigen::MatrixXd;
   matrix_t snapshots_;
   size_t count_;
@@ -113,7 +113,7 @@ struct snapshot_collector{
 
 template <typename svdsolve_type>
 struct snapshot_collector_myvec{
-  using state_t = core::vector<apps::burgers1dEigen::state_type>;
+  using state_t = core::Vector<apps::Burgers1dEigen::state_type>;
   using matrix_t = Eigen::MatrixXd;
 
   matrix_t snapshots_;
@@ -178,13 +178,13 @@ struct snapshot_collector_myvec{
 
 int main(int argc, char *argv[])
 {
-  using app_state_t = apps::burgers1dEigen::state_type;
+  using app_state_t = apps::Burgers1dEigen::state_type;
   
   //-----------------
   // create the app 
   //-----------------
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
-  apps::burgers1dEigen appObj(mu, 200);
+  apps::Burgers1dEigen appObj(mu, 200);
   appObj.setup();
   app_state_t U = appObj.copyInitialState();
 
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
   snColl->printFile();
     
   // wrap snaps into matrix (this can be done inside the collector directly)
-  using mymat_t = core::matrix<Eigen::MatrixXd>;
+  using mymat_t = core::Matrix<Eigen::MatrixXd>;
   auto snaps = snColl->getSnaps();
   mymat_t MM(snaps);
 
@@ -212,13 +212,13 @@ int main(int argc, char *argv[])
   //--------------------------------------
   // wrap the app state with our vector
   //--------------------------------------
-  using myvec_t = core::vector<app_state_t>;
+  using myvec_t = core::Vector<app_state_t>;
   myvec_t y( appObj.copyInitialState() ); // y contains the initial condition of app
   
   // //---------------------
   // // galerkin projection
   // //---------------------
-  rom::GP<myvec_t,apps::burgers1dEigen,svd_type> gpSolver(y, appObj, svdSolve);
+  rom::GP<myvec_t,apps::Burgers1dEigen,svd_type> gpSolver(y, appObj, svdSolve);
   snapshot_collector_myvec<svd_type> snColl2(svdSolve);
   ode::eulerStepper<myvec_t,myvec_t,double,myVectorStateResizer> myStepper2;
   ode::integrateNSteps(myStepper2, gpSolver, y, snColl2, 0.0, 0.07, 501); //0, to 35
@@ -229,13 +229,13 @@ int main(int argc, char *argv[])
   //---------------------
   myvec_t y2( appObj.copyInitialState() ); // y contains the initial condition of app
   
-  using app_jac_t = apps::burgers1dEigen::jacobian_type;
-  using mymatjac_t = core::matrix<app_jac_t>;
+  using app_jac_t = apps::Burgers1dEigen::jacobian_type;
+  using mymatjac_t = core::Matrix<app_jac_t>;
 
-  using rom_algo_type = rom::lspg<myvec_t, mymatjac_t,apps::burgers1dEigen,svd_type>;
+  using rom_algo_type = rom::lspg<myvec_t, mymatjac_t,apps::Burgers1dEigen,svd_type>;
   rom_algo_type lspgObj(y2, appObj, svdSolve);
 
-  ode::implicitEulerStepper<myvec_t,myvec_t, mymatjac_t, rom_algo_type,
+  ode::ImplicitEulerStepper<myvec_t,myvec_t, mymatjac_t, rom_algo_type,
   			    double, myVectorStateResizer> myStepperImp(lspgObj, true);
   snapshot_collector_myvec<svd_type> snCollEI(svdSolve);
   ode::integrateNStepsImpl(myStepperImp, y2, snCollEI, 0.0, 0.07, 501);

@@ -8,7 +8,7 @@
 
 namespace apps{
 
-class burgers1dEigen
+class Burgers1dEigen
 {
 private:
   using eigVec = Eigen::VectorXd;
@@ -24,9 +24,9 @@ public:
   std::vector<Tr> tripletList;
 
 public:  
-  explicit burgers1dEigen(eigVec params, ui_t Ncell=1000)
+  explicit Burgers1dEigen(eigVec params, ui_t Ncell=1000)
     : mu_(params), Ncell_(Ncell){}
-  ~burgers1dEigen() = default; 
+  ~Burgers1dEigen() = default; 
 
   void setup(){
     dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);

@@ -13,11 +13,11 @@ struct NonLinearSystem {
     // Matrix typedefs
 
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = core::matrix<matrix_n_t>;
+    using matrix_w_t = core::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = core::vector<vector_n_t>;
+    using vector_w_t = core::Vector<vector_n_t>;
 
     typedef vector_w_t state_type;
     typedef matrix_w_t matrix_type;
@@ -63,7 +63,7 @@ TEST(solvers_nonlinear_iterative_eigen, solversTestNonLinearIterativeEigenRungeK
 
   // Define a system to solve
   NonLinearSystem system;
-  core::vector<Eigen::VectorXd> b(2);
+  core::Vector<Eigen::VectorXd> b(2);
 
   // Initialize b
   b[0] = 0.15;
@@ -85,8 +85,8 @@ TEST(solvers_nonlinear, simpleTest)
 {
   using native_state_t = Eigen::VectorXd;
   using native_jac_t = Eigen::Matrix<double,-1,-1>;
-  using state_t = core::vector<native_state_t>;
-  using jac_t = core::matrix<native_jac_t>;
+  using state_t = core::Vector<native_state_t>;
+  using jac_t = core::Matrix<native_jac_t>;
   using scalar_t = double;
 
   struct app{

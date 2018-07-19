@@ -18,7 +18,7 @@ public:
     STATIC_ASSERT_IS_VECTOR_EIGEN(eigV_t);
     STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(eigV_t);
 
-    using myvec_t = core::vector<eigV_t>;
+    using myvec_t = core::Vector<eigV_t>;
     STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
     STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(myvec_t);
     STATIC_ASSERT_IS_CORE_VECTOR_WRAPPER(myvec_t);

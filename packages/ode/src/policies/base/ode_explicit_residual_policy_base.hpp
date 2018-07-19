@@ -1,6 +1,6 @@
 
-#ifndef ODE_EXPLICIT_RESIDUAL_POLICY_BASE_HPP_
-#define ODE_EXPLICIT_RESIDUAL_POLICY_BASE_HPP_
+#ifndef ODE_POLICIES_BASE_EXPLICIT_RESIDUAL_POLICY_BASE_HPP_
+#define ODE_POLICIES_BASE_EXPLICIT_RESIDUAL_POLICY_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
 
@@ -8,8 +8,8 @@ namespace ode{
 namespace policy{
     
 template <typename derived_t>
-class explicitResidualPolicyBase
-  : private core::details::crtpBase<explicitResidualPolicyBase<derived_t>>
+class ExplicitResidualPolicyBase
+  : private core::details::CrtpBase<ExplicitResidualPolicyBase<derived_t>>
 {
 public:
   template <typename state_type,
@@ -25,10 +25,10 @@ public:
 
 private:
   friend derived_t;
-  friend core::details::crtpBase<explicitResidualPolicyBase<derived_t>>;
+  friend core::details::CrtpBase<ExplicitResidualPolicyBase<derived_t>>;
 
-  explicitResidualPolicyBase() = default;
-  ~explicitResidualPolicyBase() = default;
+  ExplicitResidualPolicyBase() = default;
+  ~ExplicitResidualPolicyBase() = default;
   
 
 };//end class

@@ -2,7 +2,7 @@
 #ifndef ODE_IMPLICIT_BDF2_STEPPER_IMPL_HPP_
 #define ODE_IMPLICIT_BDF2_STEPPER_IMPL_HPP_
 
-#include "../base/ode_implicit_stepper_base.hpp"
+#include "../base/ode_ImplicitStepperBase.hpp"
 
 namespace ode{
 namespace impl{
@@ -29,7 +29,7 @@ class implicitBDF2StepperImpl<state_type,
 			      aux_stepper_type,
 			      residual_policy_type,
 			      jacobian_policy_type>
-  : public implicitStepperBase<
+  : public ImplicitStepperBase<
   implicitBDF2StepperImpl<state_type, residual_type,
 			  jacobian_type, scalar_type,
 			  model_type, time_type,
@@ -60,7 +60,7 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					    aux_stepper_type,
 					    residual_policy_type,
 					    jacobian_policy_type>;
-  using stepper_base_t = implicitStepperBase<stepper_t>;
+  using stepper_base_t = ImplicitStepperBase<stepper_t>;
   
 protected:
   using stepper_base_t::model_;

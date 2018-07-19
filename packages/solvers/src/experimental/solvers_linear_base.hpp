@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_LINEAR_BASE_HPP_
-#define SOLVERS_LINEAR_BASE_HPP_
+#ifndef SOLVERS_EXPERIMENTAL_LINEAR_BASE_HPP_
+#define SOLVERS_EXPERIMENTAL_LINEAR_BASE_HPP_
 
 #include "solvers_ConfigDefs.hpp"
 #include "solvers_forward_declarations.hpp"

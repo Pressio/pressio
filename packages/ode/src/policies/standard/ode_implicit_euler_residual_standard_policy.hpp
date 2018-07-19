@@ -1,6 +1,6 @@
 
-#ifndef ODE_IMPLICIT_EULER_RESIDUAL_STANDARD_POLICY_HPP_
-#define ODE_IMPLICIT_EULER_RESIDUAL_STANDARD_POLICY_HPP_
+#ifndef ODE_POLICIES_STANDARD_IMPLICIT_EULER_RESIDUAL_STANDARD_POLICY_HPP_
+#define ODE_POLICIES_STANDARD_IMPLICIT_EULER_RESIDUAL_STANDARD_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
 #include "../base/ode_implicit_residual_policy_base.hpp"
@@ -14,15 +14,15 @@ template<typename state_type,
 	 typename model_type,
 	 typename time_type,
 	 typename sizer_type>
-class implicitEulerResidualStandardPolicy
-  : public implicitResidualPolicyBase<
-  implicitEulerResidualStandardPolicy<state_type, residual_type,
+class implicit_euler_residual_standard_policy
+  : public ImplicitResidualPolicyBase<
+  implicit_euler_residual_standard_policy<state_type, residual_type,
 				      model_type, time_type,
 				      sizer_type>, 1, 0 >
 {
 public:
-  implicitEulerResidualStandardPolicy() = default;
-  ~implicitEulerResidualStandardPolicy() = default;  
+  implicit_euler_residual_standard_policy() = default;
+  ~implicit_euler_residual_standard_policy() = default;  
 
 private:
 
@@ -54,8 +54,8 @@ private:
   //----------------------------------------------------------------
 
 private:
-  friend implicitResidualPolicyBase<
-				    implicitEulerResidualStandardPolicy<
+  friend ImplicitResidualPolicyBase<
+				    implicit_euler_residual_standard_policy<
 				      state_type, residual_type,
 				      model_type, time_type,
 				      sizer_type>, 1,0>;

@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_DENSE_SERIAL_EIGEN_HPP_
-#define CORE_MATRIX_DENSE_SERIAL_EIGEN_HPP_
+#ifndef CORE_MATRIX_CONCRETE_MATRIX_DENSE_SERIAL_EIGEN_HPP_
+#define CORE_MATRIX_CONCRETE_MATRIX_DENSE_SERIAL_EIGEN_HPP_
 
 #include <Eigen/Core>
 #include "../base/core_matrix_generic_base.hpp"
@@ -11,22 +11,22 @@
 namespace core{
 
 template <typename wrapped_type>
-class matrix<wrapped_type,
+class Matrix<wrapped_type,
 	     typename
 	     std::enable_if<
-	       core::meta::is_matrixDenseSerialEigen<
+	       core::meta::is_matrix_dense_serial_eigen<
 		 wrapped_type>::value
 	       >::type
 	     >
-  : public matrixGenericBase< matrix<wrapped_type> >,
-    public matrixSerialBase< matrix<wrapped_type> >,
-    public matrixDenseSerialBase< matrix<wrapped_type> >,
-    public arithmeticOperatorsBase<matrix<wrapped_type>>,
-    public compoundAssignmentOperatorsBase<matrix<wrapped_type>>
+  : public MatrixGenericBase< Matrix<wrapped_type> >,
+    public MatrixSerialBase< Matrix<wrapped_type> >,
+    public MatrixDenseSerialBase< Matrix<wrapped_type> >,
+    public ArithmeticOperatorsBase< Matrix<wrapped_type>>,
+    public CompoundAssignmentOperatorsBase< Matrix<wrapped_type>>
 {
 
 private:
-  using derived_t = matrix<wrapped_type>;
+  using derived_t = Matrix<wrapped_type>;
   using mytraits = typename details::traits<derived_t>;  
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename mytraits::ordinal_t;
@@ -34,15 +34,15 @@ private:
   using der_t = typename mytraits::derived_t;
   
 public:
-  matrix() = default;
+  Matrix() = default;
 
-  explicit matrix(ord_t nrows, ord_t ncols) {
+  explicit Matrix(ord_t nrows, ord_t ncols) {
     this->resize(nrows,ncols);
   }
 
-  explicit matrix(const wrap_t & other) : data_(other){}
+  explicit Matrix(const wrap_t & other) : data_(other){}
 
-  ~matrix() = default;
+  ~Matrix() = default;
 
 public:
   sc_t & operator() (ord_t row, ord_t col){
@@ -127,9 +127,9 @@ private:
   }
     
 private:
-  friend matrixGenericBase< derived_t >;
-  friend matrixSerialBase< derived_t >;
-  friend matrixDenseSerialBase< derived_t >;
+  friend MatrixGenericBase< derived_t >;
+  friend MatrixSerialBase< derived_t >;
+  friend MatrixDenseSerialBase< derived_t >;
 
 private:
   wrap_t data_;

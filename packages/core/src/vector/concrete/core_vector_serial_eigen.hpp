@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_SERIAL_EIGEN_HPP_
-#define CORE_VECTOR_SERIAL_EIGEN_HPP_
+#ifndef CORE_VECTOR_CONCRETE_VECTOR_SERIAL_EIGEN_HPP_
+#define CORE_VECTOR_CONCRETE_VECTOR_SERIAL_EIGEN_HPP_
 
 #include "../../meta/core_meta_basic.hpp"
 #include "../../meta/core_meta_detect_operators.hpp"
@@ -12,19 +12,19 @@
 namespace core{
   
 template <typename wrapped_type>
-class vector<wrapped_type,
+class Vector<wrapped_type,
 	     typename std::enable_if<
-	       core::meta::is_vectorEigen<wrapped_type>::value
+	       core::meta::is_vector_eigen<wrapped_type>::value
 	       >::type
 	     >
-  : public vectorGenericBase< vector<wrapped_type> >,
-    public vectorSerialBase< vector<wrapped_type> >,
-    public vectorMathBase< vector<wrapped_type> >,
-    public arithmeticOperatorsBase<vector<wrapped_type>>,
-    public compoundAssignmentOperatorsBase<vector<wrapped_type>>
+  : public VectorGenericBase< Vector<wrapped_type> >,
+    public VectorSerialBase< Vector<wrapped_type> >,
+    public VectorMathBase< Vector<wrapped_type> >,
+    public ArithmeticOperatorsBase<Vector<wrapped_type>>,
+    public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>
 {
 private:
-  using derived_t = vector<wrapped_type>;
+  using derived_t = Vector<wrapped_type>;
   using mytraits = typename details::traits<derived_t>;  
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename  mytraits::ordinal_t;
@@ -32,15 +32,15 @@ private:
   using wrap_t = typename mytraits::wrapped_t;
 
 public:
-  vector() = default;
+  Vector() = default;
 
-  explicit vector(ord_t insize){
+  explicit Vector(ord_t insize){
     this->resize(insize);
   }
 
-  explicit vector(const wrap_t & src) : data_(src){}
+  explicit Vector(const wrap_t & src) : data_(src){}
 
-  ~vector(){}
+  ~Vector(){}
   
 public:
   sc_t & operator [] (ord_t i){
@@ -162,9 +162,9 @@ private:
   }
   
 private:
-  friend vectorGenericBase< derived_t >;
-  friend vectorSerialBase< derived_t >;
-  friend vectorMathBase< derived_t >;
+  friend VectorGenericBase< derived_t >;
+  friend VectorSerialBase< derived_t >;
+  friend VectorMathBase< derived_t >;
 
 private:
   wrap_t data_;

@@ -5,7 +5,7 @@
 TEST(core_matrix_dense_serial_eigen_class, constructor)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
   STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(mymat_t);
   
   using matTrait = core::details::traits<mymat_t>;
@@ -30,7 +30,7 @@ TEST(core_matrix_dense_serial_eigen_class, constructor)
 TEST(core_matrix_dense_serial_eigen_class, queryWrappedData)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
 
   mymat_t m1;
   ::testing::StaticAssertTypeEq<decltype(m1.data()),
@@ -44,7 +44,7 @@ TEST(core_matrix_dense_serial_eigen_class, queryWrappedData)
 TEST(core_matrix_dense_serial_eigen_class, sizeResize)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
 
   mymat_t m1;
   EXPECT_EQ( m1.rows(), 0 );
@@ -60,7 +60,7 @@ TEST(core_matrix_dense_serial_eigen_class, sizeResize)
 TEST(core_matrix_dense_serial_eigen_class, subscriptOperator)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
 
   native_t em1;
   em1.resize(2,3);
@@ -88,7 +88,7 @@ TEST(core_matrix_dense_serial_eigen_class, subscriptOperator)
 TEST(core_matrix_dense_serial_eigen_class, additionOperator)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
 
   native_t em1;
   em1.resize(2,2);
@@ -110,7 +110,7 @@ TEST(core_matrix_dense_serial_eigen_class, additionOperator)
 TEST(core_matrix_dense_serial_eigen_class, substractOperator)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
 
   native_t em1;
   em1.resize(2,2);
@@ -133,7 +133,7 @@ TEST(core_matrix_dense_serial_eigen_class, substractOperator)
 TEST(core_matrix_dense_serial_eigen_class, starOperator)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
 
   native_t em1;
   em1.resize(2,2);
@@ -152,10 +152,10 @@ TEST(core_matrix_dense_serial_eigen_class, starOperator)
   EXPECT_DOUBLE_EQ(res(1,1), 18.);
 }
 
-TEST(core_matrix_dense_serial_eigen_class, compoundAssignAddOperator)
+TEST(core_matrix_dense_serial_eigen_class, CompoundAssignAddOperator)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
 
   native_t em1;
   em1.resize(2,2);
@@ -175,10 +175,10 @@ TEST(core_matrix_dense_serial_eigen_class, compoundAssignAddOperator)
 }
 
 
-TEST(core_matrix_dense_serial_eigen_class, compoundAssignSubtractOperator)
+TEST(core_matrix_dense_serial_eigen_class, CompoundAssignSubtractOperator)
 {
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
 
   native_t em1;
   em1.resize(2,2);

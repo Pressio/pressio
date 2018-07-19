@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_STDLIB_HPP_
-#define CORE_VECTOR_STDLIB_HPP_
+#ifndef CORE_VECTOR_CONCRETE_VECTOR_STDLIB_HPP_
+#define CORE_VECTOR_CONCRETE_VECTOR_STDLIB_HPP_
 
 #include "../base/core_vector_generic_base.hpp"
 #include "../base/core_vector_serial_base.hpp"
@@ -9,32 +9,32 @@
 namespace core{
 
 template <typename wrapped_type>
-class vector<wrapped_type,
+class Vector<wrapped_type,
 	     typename std::enable_if<
-	       core::meta::is_vectorStdLib<wrapped_type>::value
+	       core::meta::is_vector_stdlib<wrapped_type>::value
 	       >::type
 	     >
-  : public vectorGenericBase< vector<wrapped_type> >,
-    public vectorSerialBase< vector<wrapped_type> >,
-    public vectorMathBase< vector<wrapped_type> >,
-    public arithmeticOperatorsBase< vector<wrapped_type> >,
-    public compoundAssignmentOperatorsBase< vector<wrapped_type> >
+  : public VectorGenericBase< Vector<wrapped_type> >,
+    public VectorSerialBase< Vector<wrapped_type> >,
+    public VectorMathBase< Vector<wrapped_type> >,
+    public ArithmeticOperatorsBase< Vector<wrapped_type> >,
+    public CompoundAssignmentOperatorsBase< Vector<wrapped_type> >
 {
 private:
-  using derived_t = vector<wrapped_type>;
+  using derived_t = Vector<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using der_t = typename details::traits<derived_t>::derived_t;
   using wrap_t = typename details::traits<derived_t>::wrapped_t;
   using ord_t = typename details::traits<derived_t>::ordinal_t;
 
 public:
-  vector() = default;
-  explicit vector(ord_t insize,
+  Vector() = default;
+  explicit Vector(ord_t insize,
 		  sc_t value = static_cast<sc_t>(0) ){
     this->resize(insize, value);
   }
-  explicit vector(const std::vector<sc_t> & src) : data_(src){}
-  ~vector(){}
+  explicit Vector(const std::vector<sc_t> & src) : data_(src){}
+  ~Vector(){}
 
 public:
   sc_t & operator [] (ord_t i){
@@ -155,9 +155,9 @@ private:
   }
 
 private:
-  friend vectorGenericBase< derived_t >;
-  friend vectorSerialBase< derived_t >;
-  friend vectorMathBase< derived_t >;
+  friend VectorGenericBase< derived_t >;
+  friend VectorSerialBase< derived_t >;
+  friend VectorMathBase< derived_t >;
   
 private:
   std::vector<sc_t> data_;

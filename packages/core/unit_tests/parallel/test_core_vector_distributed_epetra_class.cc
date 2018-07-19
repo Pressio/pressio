@@ -71,7 +71,7 @@ TEST_F(core_vector_distributed_epetra_DeathTest,
        EpetraVectorSubscriptOperator)
 {
   if (getRank()==0){
-    using myvec_t = core::vector<Epetra_Vector>;
+    using myvec_t = core::Vector<Epetra_Vector>;
     myvec_t v1( *getMap() );
     int localSize = numLocalEntries();
     ASSERT_DEATH(v1[localSize+1]=4.0, "Assertion failed:");
@@ -83,7 +83,7 @@ TEST_F(core_vector_distributed_epetra_DeathTest,
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorConstructor)
 {
-  using myvec_t = core::vector<Epetra_Vector>;
+  using myvec_t = core::Vector<Epetra_Vector>;
   ASSERT_TRUE( core::details::traits<myvec_t>::isEpetra==1 );
 
   myvec_t a( *getMap() );
@@ -98,7 +98,7 @@ TEST_F(core_vector_distributed_epetraFix,
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorQueryWrappedData)
 {    
-  using myvec_t = core::vector<Epetra_Vector>;
+  using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *getMap() );
   ::testing::StaticAssertTypeEq<decltype(v1.data()),
   				Epetra_Vector * >(); 
@@ -110,7 +110,7 @@ TEST_F(core_vector_distributed_epetraFix,
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorSubscriptOperator)
 {
-  using myvec_t = core::vector<Epetra_Vector>;
+  using myvec_t = core::Vector<Epetra_Vector>;
 
   fillScalar(11.2);
   myvec_t v1( *getMap() );
@@ -128,7 +128,7 @@ TEST_F(core_vector_distributed_epetraFix,
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorSetScalar)
 {
-  using myvec_t = core::vector<Epetra_Vector>;
+  using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *getMap() );
   v1.putScalar(43.3);
 
@@ -141,7 +141,7 @@ TEST_F(core_vector_distributed_epetraFix,
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorAdditionOperator)
 {
-  using myvec_t = core::vector<Epetra_Vector>;
+  using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *getMap() );
   double rankD = static_cast<double>(getRank());  
   v1.putScalar( 3.3 +rankD );
@@ -160,7 +160,7 @@ TEST_F(core_vector_distributed_epetraFix,
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorSubtractOperator)
 {
-  using myvec_t = core::vector<Epetra_Vector>;
+  using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *getMap() );
   double rankD = static_cast<double>(getRank());  
   v1.putScalar( 3.3 +rankD );
@@ -179,7 +179,7 @@ TEST_F(core_vector_distributed_epetraFix,
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorStarOperator)
 {
-  using myvec_t = core::vector<Epetra_Vector>;
+  using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *getMap() );
   double rankD = static_cast<double>(getRank());  
   v1.putScalar( 3. +rankD );
@@ -203,7 +203,7 @@ TEST_F(core_vector_distributed_epetraFix,
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorCompoundAssignAddOperator)
 {
-  using myvec_t = core::vector<Epetra_Vector>;
+  using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *getMap() );
   v1.putScalar( 3. );
   
@@ -221,7 +221,7 @@ TEST_F(core_vector_distributed_epetraFix,
 TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorCompoundAssignSubtractOperator)
 {
-  using myvec_t = core::vector<Epetra_Vector>;
+  using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *getMap() );
   v1.putScalar( 3. );
   

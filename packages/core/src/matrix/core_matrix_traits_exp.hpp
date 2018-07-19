@@ -1,7 +1,8 @@
 
-#ifndef CORE_MATRIX_TRAITS_EXP_HPP_
-#define CORE_MATRIX_TRAITS_EXP_HPP_
+#ifndef CORE_MATRIX_MATRIX_TRAITS_EXP_HPP_
+#define CORE_MATRIX_MATRIX_TRAITS_EXP_HPP_
 
+#include <Eigen/Sparse>
 #include <Eigen/Core>
 #include <type_traits>
 
@@ -23,7 +24,7 @@ struct matrix_traits {
 
 
 template <typename T>
-struct matrix_traits<core::matrix<T>,
+struct matrix_traits<core::Matrix<T>,
   typename std::enable_if<
     std::is_base_of<
       Epetra_RowMatrix, T
@@ -37,7 +38,7 @@ struct matrix_traits<core::matrix<T>,
 
 template <typename T>
 struct matrix_traits<
-  core::matrix<T>,
+  core::Matrix<T>,
   typename std::enable_if<
     std::is_base_of<
       Eigen::SparseMatrix<

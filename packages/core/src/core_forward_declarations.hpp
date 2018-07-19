@@ -8,12 +8,12 @@ namespace core {
   
 template <typename wrapped_type,
 	  typename Enable = void>
-class vector;
+class Vector;
 
 
 template <typename wrapped_type,
 	  typename Enable = void>
-class matrix;
+class Matrix;
   
   
 } // end namespace core

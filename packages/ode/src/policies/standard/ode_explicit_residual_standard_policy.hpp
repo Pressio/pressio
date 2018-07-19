@@ -1,6 +1,6 @@
 
-#ifndef ODE_EXPLICIT_RESIDUAL_STANDARD_POLICY_HPP_
-#define ODE_EXPLICIT_RESIDUAL_STANDARD_POLICY_HPP_
+#ifndef ODE_POLICIES_STANDARD_EXPLICIT_RESIDUAL_STANDARD_POLICY_HPP_
+#define ODE_POLICIES_STANDARD_EXPLICIT_RESIDUAL_STANDARD_POLICY_HPP_
 
 #include "ode_ConfigDefs.hpp"
 #include "../base/ode_explicit_residual_policy_base.hpp"
@@ -13,17 +13,17 @@ template<typename state_type,
 	 typename model_type,
 	 typename time_type,
 	 typename sizer_type>
-class explicitResidualStandardPolicy
-  : public explicitResidualPolicyBase<
-  explicitResidualStandardPolicy<
+class explicit_residual_standard_policy
+  : public ExplicitResidualPolicyBase<
+  explicit_residual_standard_policy<
     state_type, residual_type,
     model_type, time_type,
     sizer_type> >
 {
 
 public:
-  explicitResidualStandardPolicy() = default;
-  ~explicitResidualStandardPolicy() = default;  
+  explicit_residual_standard_policy() = default;
+  ~explicit_residual_standard_policy() = default;  
 
 private:
   //-----------------------------------------------------
@@ -51,8 +51,8 @@ private:
   //-----------------------------------------------------
 
 private:
-  friend explicitResidualPolicyBase<
-  explicitResidualStandardPolicy<
+  friend ExplicitResidualPolicyBase<
+  explicit_residual_standard_policy<
     state_type, residual_type,
     model_type, time_type,
     sizer_type>>;

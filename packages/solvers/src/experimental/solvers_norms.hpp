@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_L2_NORM_HPP
-#define SOLVERS_L2_NORM_HPP
+#ifndef SOLVERS_EXPERIMENTAL_NORMS_HPP
+#define SOLVERS_EXPERIMENTAL_NORMS_HPP
 
 #include "vector/core_vector_traits_exp.hpp"
 

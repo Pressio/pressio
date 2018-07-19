@@ -14,7 +14,7 @@
 int main()
 {
   using native_mat_t = Eigen::Matrix<double,10,10>;
-  using mat_t = core::matrix<native_mat_t>;
+  using mat_t = core::Matrix<native_mat_t>;
   native_mat_t M1;
   mat_t AA;
 
@@ -71,7 +71,7 @@ int main()
 //   BG1D appObj;
 
 //   // snapshot matrix
-//   using mat_t = core::matrix<native_mat_t>;
+//   using mat_t = core::Matrix<native_mat_t>;
 //   mat_t myM;
 //   createSnapshotMatrix(myM, appObj);
 
@@ -99,7 +99,7 @@ int main()
   // // define the matrix 
   // using wrapped_mat_t = Eigen::Matrix<double,10,10>;
   // wrapped_mat_t AA;
-  // using mat_t = core::matrix<wrapped_mat_t>;
+  // using mat_t = core::Matrix<wrapped_mat_t>;
   // mat_t myM(AA);
 
   // // code filling the matrix 
@@ -114,15 +114,15 @@ int main()
   
   
   // using wrap_t = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>;
-  // using mat_t = core::matrix<wrap_t,double>;
+  // using mat_t = core::Matrix<wrap_t,double>;
   // mat_t A;
 
   // // using wrap_t2 = vecT<vecT<double>>;
-  // // using mat_t2 = core::matrix<wrap_t2,double>;
+  // // using mat_t2 = core::Matrix<wrap_t2,double>;
   // // mat_t2 A2;
   
   // // using wrap_t3 = Eigen::Matrix<double,3,3>;
-  // // core::matrix<wrap_t3,double,3,3> DD;
+  // // core::Matrix<wrap_t3,double,3,3> DD;
   // // //mat_t3 A3;
 
   

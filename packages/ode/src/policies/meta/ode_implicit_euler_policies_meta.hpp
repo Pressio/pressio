@@ -1,6 +1,6 @@
 
-#ifndef ODE_IMPLICIT_EULER_POLICIES_META_HPP_
-#define ODE_IMPLICIT_EULER_POLICIES_META_HPP_
+#ifndef ODE_POLICIES_META_IMPLICIT_EULER_POLICIES_META_HPP_
+#define ODE_POLICIES_META_IMPLICIT_EULER_POLICIES_META_HPP_
 
 #include "ode_implicit_policies_meta.hpp"
 #include "../standard/ode_implicit_euler_residual_standard_policy.hpp"
@@ -13,15 +13,15 @@ namespace meta {
 // METAF FOR ADMISSIBLE IMPLICIT EULER RESIDUAL
 //-----------------------------------------------------------------
 template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitEulerResidualPolicy : std::false_type{};
+struct is_legitimate_implicit_euler_residual_policy : std::false_type{};
   
 template <typename policy_t>
-struct isLegitimateImplicitEulerResidualPolicy<
+struct is_legitimate_implicit_euler_residual_policy<
   policy_t,
   typename std::enable_if<
-    core::meta::publiclyInheritsFrom<
+    core::meta::publicly_inherits_from<
       policy_t,
-      ode::policy::implicitResidualPolicyBase<policy_t, 1, 0>
+      ode::policy::ImplicitResidualPolicyBase<policy_t, 1, 0>
       >::value 
     >::type
   > : std::true_type{};
@@ -31,15 +31,15 @@ struct isLegitimateImplicitEulerResidualPolicy<
 // METAF FOR ADMISSIBLE IMPLICIT EULER JACOBIAN
 //-----------------------------------------------------------------
 template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitEulerJacobianPolicy
-  : isLegitimateImplicitJacobianPolicy<policy_t>{};
+struct is_legitimate_implicit_euler_jacobian_policy
+  : is_legitimate_implicit_jacobian_policy<policy_t>{};
 
 
 //-----------------------------------------------------------------
 // METAF TO CHECK RESIDUAL POLICY IS STANDARD
 //-----------------------------------------------------------------
 template<typename policy_t, typename enable = void>
-struct isImplicitEulerResidualStandardPolicy
+struct is_implicit_euler_residual_standard_policy
   : std::false_type{};
 
   
@@ -49,13 +49,13 @@ template <template <typename...> class policy_t,
 	  typename model_type,
 	  typename time_type,
 	  typename sizer_type>
-struct isImplicitEulerResidualStandardPolicy<
+struct is_implicit_euler_residual_standard_policy<
   policy_t<state_type, residual_type, model_type, 
 	   time_type, sizer_type>,
   typename std::enable_if<
     std::is_same<policy_t<state_type, residual_type, 
 			  model_type, time_type, sizer_type>,
-		 ode::policy::implicitEulerResidualStandardPolicy<
+		 ode::policy::implicit_euler_residual_standard_policy<
 		   state_type, residual_type, 
 		   model_type, time_type, sizer_type>
 		 >::value
@@ -67,7 +67,7 @@ struct isImplicitEulerResidualStandardPolicy<
 // METAF TO CHECK JACOBIAN POLICY IS STANDARD
 //-----------------------------------------------------------------
 template<typename policy_t, typename enable = void>
-struct isImplicitEulerJacobianStandardPolicy
+struct is_implicit_euler_jacobian_standard_oolicy
   : std::false_type{};
 
   
@@ -77,13 +77,13 @@ template <template <typename...> class policy_t,
 	  typename model_type,
 	  typename time_type,
 	  typename sizer_type>
-struct isImplicitEulerJacobianStandardPolicy<
+struct is_implicit_euler_jacobian_standard_oolicy<
   policy_t<state_type, jacobian_type, model_type,
 	   time_type, sizer_type>,
   typename std::enable_if<
     std::is_same<policy_t<state_type, jacobian_type, 
 			  model_type, time_type, sizer_type>,
-		 ode::policy::implicitEulerJacobianStandardPolicy<
+		 ode::policy::implicit_euler_jacobian_standard_policy<
 		   state_type, jacobian_type, 
 		   model_type, time_type, sizer_type>
 		 >::value

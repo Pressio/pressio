@@ -1,7 +1,8 @@
 
-#ifndef CORE_VECTOR_TRAITS_HPP_
-#define CORE_VECTOR_TRAITS_HPP_
+#ifndef CORE_VECTOR_VECTOR_TRAITS_HPP_
+#define CORE_VECTOR_VECTOR_TRAITS_HPP_
 
+#include "../meta/core_meta_detection_idiom.hpp"
 #include "../core_forward_declarations.hpp"
 #include "./meta/core_vector_meta.hpp"
 #include <vector>
@@ -15,10 +16,10 @@ namespace details{
 // Eigen vector 
 //******************************* 
 template <typename wrapped_type>
-struct traits<vector<wrapped_type,
+struct traits<Vector<wrapped_type,
 		     typename
 		     std::enable_if<
-		       core::meta::is_vectorEigen<
+		       core::meta::is_vector_eigen<
 			 wrapped_type>::value
 		       >::type
 		     >
@@ -27,7 +28,7 @@ struct traits<vector<wrapped_type,
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
   using wrapped_t = wrapped_type;
-  using derived_t = vector<wrapped_t>;
+  using derived_t = Vector<wrapped_t>;
   static constexpr int isVector = 1;
   static constexpr int isEigen = 1;
   static constexpr int isSerial = 1;
@@ -50,10 +51,10 @@ struct traits<vector<wrapped_type,
 // for a std vector 
 //******************************* 
 template <typename wrapped_type>
-struct traits<vector<wrapped_type,
+struct traits<Vector<wrapped_type,
 		     typename
 		     std::enable_if<
-		       core::meta::is_vectorStdLib<wrapped_type
+		       core::meta::is_vector_stdlib<wrapped_type
 						   >::value
 		       >::type
 		     >
@@ -62,7 +63,7 @@ struct traits<vector<wrapped_type,
   using scalar_t = typename wrapped_type::value_type;
   using ordinal_t = core::defaultTypes::local_ordinal_t;
   using wrapped_t = wrapped_type;
-  using derived_t = vector<wrapped_t>;
+  using derived_t = Vector<wrapped_t>;
   static constexpr int isVector = 1;
   static constexpr int isSTDVector = 1;
   static constexpr int isSerial = 1;
@@ -78,16 +79,18 @@ struct traits<vector<wrapped_type,
 // user-defined serial vector 
 //******************************* 
 template <typename wrapped_type>
-struct traits<vector<wrapped_type,
+struct traits<Vector<wrapped_type,
 		     typename
 		     std::enable_if<
-		       core::meta::has_scalarTypedef<wrapped_type
-						     >::value &&
-		       core::meta::has_ordinalTypedef<wrapped_type
+           core::meta::is_detected<
+           core::meta::has_scalar_typedef, wrapped_type
+           >::value &&
+		       /*core::meta::has_scalar_typedef<wrapped_type>::value &&*/
+		       core::meta::has_ordinal_typedef<wrapped_type
 						      >::value &&
-		       !core::meta::is_vectorStdLib<wrapped_type
+		       !core::meta::is_vector_stdlib<wrapped_type
 						    >::value &&
-		       !core::meta::is_vectorEigen<wrapped_type
+		       !core::meta::is_vector_eigen<wrapped_type
 						   >::value
 		       >::type
 		     >
@@ -96,7 +99,7 @@ struct traits<vector<wrapped_type,
   using scalar_t = typename wrapped_type::scalar_type;
   using ordinal_t = typename wrapped_type::ordinal_type;
   using wrapped_t = wrapped_type;
-  using derived_t = vector<wrapped_type>;
+  using derived_t = Vector<wrapped_type>;
   static constexpr int isVector = 1;
   static constexpr int isSerial = 1;
   static constexpr int isDistributed = 0;
@@ -112,7 +115,7 @@ struct traits<vector<wrapped_type,
 // for epetra vector 
 //******************************* 
 template<typename wrapped_type>
-struct traits<vector<wrapped_type,
+struct traits<Vector<wrapped_type,
 		     typename std::enable_if<
 		       std::is_same<wrapped_type,
 				    Epetra_Vector
@@ -127,7 +130,7 @@ struct traits<vector<wrapped_type,
   using wrapped_t = Epetra_Vector;
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
-  using derived_t = vector<wrapped_t>;
+  using derived_t = Vector<wrapped_t>;
   static constexpr int isVector = 1;
   static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
@@ -178,11 +181,11 @@ struct is_coreVector< T,
   // // for a general distributed vector 
   // //******************************* 
   // template <typename wrapped_type>
-  // struct traits<vector<wrapped_type,
+  // struct traits<Vector<wrapped_type,
   // 		       typename std::enable_if<!std::is_same<wrapped_type,Epetra_Vector>::value &&
-  // 					       core::meta::has_scalarTypedef<wrapped_type>::value &&
-  // 					       core::meta::has_localOrdinalTypedef<wrapped_type>::value &&
-  // 					       core::meta::has_globalOrdinalTypedef<wrapped_type>::value &&
+  // 					       core::meta::has_scalar_typedef<wrapped_type>::value &&
+  // 					       core::meta::has_local_ordinal_typedef<wrapped_type>::value &&
+  // 					       core::meta::has_global_ordinal_typedef<wrapped_type>::value &&
   // 					       core::meta::has_mapTypedef<wrapped_type>::value && 
   // 					       core::meta::has_commTypedef<wrapped_type>::value
   // 					       >::type
@@ -193,7 +196,7 @@ struct is_coreVector< T,
   //   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   //   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
   //   using wrapped_t = wrapped_type;
-  //   using derived_t = vector<wrapped_t>;
+  //   using derived_t = Vector<wrapped_t>;
   //   using map_t = typename wrapped_type::map_type;
   //   using comm_t = typename wrapped_type::comm_type;
   //   enum {

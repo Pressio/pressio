@@ -1,6 +1,6 @@
 
-#ifndef ODE_IMPLICIT_STEPPER_BASE_HPP_
-#define ODE_IMPLICIT_STEPPER_BASE_HPP_
+#ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
+#define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
 #include "ode_ConfigDefs.hpp"
 #include "../ode_implicit_stepper_traits.hpp"
@@ -12,8 +12,8 @@
 namespace ode{
 
 template<typename stepper_type>
-class implicitStepperBase
-  : private core::details::crtpBase<implicitStepperBase<stepper_type>>
+class ImplicitStepperBase
+  : private core::details::CrtpBase<ImplicitStepperBase<stepper_type>>
 {
 private:
   using traits = typename ode::details::traits<stepper_type>;
@@ -62,7 +62,7 @@ public:
   }
 
 private:
-  implicitStepperBase(model_t & model,
+  ImplicitStepperBase(model_t & model,
 		      solver_t & solver,
 		      residual_policy_t & res_policy_obj,
 		      jacobian_policy_t & jac_policy_obj)
@@ -72,11 +72,11 @@ private:
       jacobian_obj_(&jac_policy_obj)
   {}
   
-  ~implicitStepperBase(){}
+  ~ImplicitStepperBase(){}
   
 private:
   friend stepper_type;
-  friend core::details::crtpBase<implicitStepperBase<stepper_type>>;
+  friend core::details::CrtpBase<ImplicitStepperBase<stepper_type>>;
 
 protected:
   model_t * model_;

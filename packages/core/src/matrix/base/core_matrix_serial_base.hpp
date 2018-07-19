@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_SERIAL_BASE_HPP_
-#define CORE_MATRIX_SERIAL_BASE_HPP_
+#ifndef CORE_MATRIX_BASE_MATRIX_SERIAL_BASE_HPP_
+#define CORE_MATRIX_BASE_MATRIX_SERIAL_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
 #include "../../core_operators_base.hpp"
@@ -8,8 +8,8 @@
 namespace core{
     
 template<typename derived_type>
-class matrixSerialBase
-  : private core::details::crtpBase<matrixSerialBase<derived_type>>
+class MatrixSerialBase
+  : private core::details::CrtpBase<MatrixSerialBase<derived_type>>
 {
 
 private:
@@ -33,10 +33,10 @@ public:
 
 private:  
   friend derived_type;
-  friend core::details::crtpBase<matrixSerialBase<derived_type>>;
+  friend core::details::CrtpBase<MatrixSerialBase<derived_type>>;
 
-  matrixSerialBase() = default;
-  ~matrixSerialBase() = default;
+  MatrixSerialBase() = default;
+  ~MatrixSerialBase() = default;
   
 };//end class
   

@@ -7,7 +7,7 @@
 struct snapshot_collector
 {
 private:
-  using state_t = core::vector<apps::burgers1dEpetra::state_type>;
+  using state_t = core::Vector<apps::Burgers1dEpetra::state_type>;
   using matrix = std::vector<state_t>;
   matrix snapshots_;
   size_t count_;

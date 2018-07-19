@@ -946,7 +946,7 @@ class EpetraSerialDenseSolverTestCase(unittest.TestCase):
         try:
             A0 = mat(self.A,copy=True)
         except TypeError:
-            A0 = matrix(self.A,copy=True)
+            A0 = Matrix(self.A,copy=True)
         self.buildProblem(sds)
         result = sds.EquilibrateMatrix()
         self.assertEqual(result,0)

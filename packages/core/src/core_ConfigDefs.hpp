@@ -17,7 +17,6 @@ enum class WrappedClass{
   Undefined
 };
 
-
 //---------------------------------------
 // TRAITS
 //---------------------------------------
@@ -32,12 +31,12 @@ struct traits<const T> : traits<T> {};
 // CRTP HELPER BASE CLASS
 //---------------------------------------
 template <typename T, typename enable = void>
-struct crtpBase;
+struct CrtpBase;
   
 template <typename T,
 	  template<typename, typename...> class crtpType,
 	  typename ... Args>
-struct crtpBase< crtpType<T, Args...>>
+struct CrtpBase< crtpType<T, Args...>>
 {
   T & underlying() {
     return static_cast<T&>(*this);
@@ -46,7 +45,7 @@ struct crtpBase< crtpType<T, Args...>>
     return static_cast<T const&>(*this);
   }
 private:
-  crtpBase(){}
+  CrtpBase(){}
   friend crtpType<T, Args...>;
 
 };//end class
@@ -54,7 +53,7 @@ private:
 
 template <typename T, int a, int b,
 	  template<typename, int, int> class crtpType>
-struct crtpBase< crtpType<T, a, b> >
+struct CrtpBase< crtpType<T, a, b> >
 {
   T & underlying() {
     return static_cast<T&>(*this);
@@ -63,19 +62,17 @@ struct crtpBase< crtpType<T, a, b> >
     return static_cast<T const&>(*this);
   }
 private:
-  crtpBase(){}
+  CrtpBase(){}
   friend crtpType<T, a, b>;
 
 };//end class
 
-  
-  
+   
 //------------------------
 } // end namespace details
 //------------------------
 
-  
-  
+   
 namespace defaultTypes {
 
   //! Default value of Scalar template parameter.

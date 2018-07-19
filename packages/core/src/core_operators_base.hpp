@@ -8,7 +8,7 @@
 namespace core{
   
 template<typename derived_type>
-class arithmeticOperatorsBase{ 
+class ArithmeticOperatorsBase{ 
 public:
   // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
@@ -32,8 +32,10 @@ public:
   derived_type operator*(const U & other) const;
 private:
   friend derived_type;
-  arithmeticOperatorsBase() = default;
-  ~arithmeticOperatorsBase() = default;
+
+  ArithmeticOperatorsBase() = default;
+  ~ArithmeticOperatorsBase() = default;
+
 };//end class   
 
   
@@ -42,7 +44,7 @@ private:
   
 
 template<typename derived_type>
-class compoundAssignmentOperatorsBase{
+class CompoundAssignmentOperatorsBase{
 public:
   // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
@@ -60,8 +62,9 @@ public:
 
 private:
   friend derived_type;
-  compoundAssignmentOperatorsBase() = default;
-  ~compoundAssignmentOperatorsBase() = default;
+
+  CompoundAssignmentOperatorsBase() = default;
+  ~CompoundAssignmentOperatorsBase() = default;
   
 };//end class   
 
@@ -73,15 +76,16 @@ private:
 template<typename derived_type,
 	 typename scalar_type,
 	 typename ordinal_type>
-class subscriptingOperatorsBase{
+class SubscriptingOperatorsBase{
 public:
   scalar_type & operator[] (ordinal_type index);
   scalar_type const & operator[] (ordinal_type index) const;
 
 private:
   friend derived_type;
-  subscriptingOperatorsBase() = default;
-  ~subscriptingOperatorsBase() = default;  
+
+  SubscriptingOperatorsBase() = default;
+  ~SubscriptingOperatorsBase() = default;  
  
 };//end class   
 

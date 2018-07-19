@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_LINEAR_EIGEN_HPP_
-#define SOLVERS_LINEAR_EIGEN_HPP_
+#ifndef SOLVERS_EXPERIMENTAL_LINEAR_EIGEN_HPP_
+#define SOLVERS_EXPERIMENTAL_LINEAR_EIGEN_HPP_
 
 #include "solvers_ConfigDefs.hpp"
 #include "solvers_linear_base.hpp"

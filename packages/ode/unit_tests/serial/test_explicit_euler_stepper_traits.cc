@@ -5,11 +5,11 @@
 
 template<class T1, class T2, class T3, class T4>
 struct fakePol :
-    public ode::policy::explicitResidualPolicyBase<
+    public ode::policy::ExplicitResidualPolicyBase<
       fakePol,T1,T2,T3,T4>
 {
 private:
-  friend ode::policy::explicitResidualPolicyBase<
+  friend ode::policy::ExplicitResidualPolicyBase<
   fakePol,T1,T2,T3,T4>;
 };
 
@@ -28,11 +28,11 @@ TEST(ode_explicit_euler_stepper, traits)
 			       model_t,time_type>;
 
   using stepper_t =
-    ode::explicitEulerStepper<state_t, residual_t, scalar_t,
+    ode::ExplicitEulerStepper<state_t, residual_t, scalar_t,
 			      model_t, time_type, res_policy_t>;
 
   static_assert(
-  		!ode::meta::isExplicitEulerResidualStandardPolicy<
+  		!ode::meta::is_explicit_euler_residual_standard_policy<
   		res_policy_t>::value,
   		"");
     
@@ -72,7 +72,7 @@ TEST(ode_explicit_euler_stepper, traits2)
   using time_type = double;
 
   using stepper_t =
-    ode::explicitEulerStepper<state_t, residual_t, scalar_t,
+    ode::ExplicitEulerStepper<state_t, residual_t, scalar_t,
 			      model_t, time_type
 			      /*res_policy defaulted*/>;
   app appObj;

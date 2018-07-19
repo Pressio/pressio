@@ -43,7 +43,7 @@ TEST(explicit_euler_standard_policy, simpleTest)
 // takes any # of temp arguments, since we want this to be as flexible as possible
 template<class state_t, class res_t, class mod_t, class time_t, class flag_t>
 class expEulerFakeNewPol
-  : public ode::policy::explicitResidualPolicyBase<expEulerFakeNewPol,state_t,
+  : public ode::policy::ExplicitResidualPolicyBase<expEulerFakeNewPol,state_t,
    						   res_t,mod_t,time_t,flag_t>{
 public:
   expEulerFakeNewPol(flag_t perturb) : perturbation_(perturb){}
@@ -56,7 +56,7 @@ private:
     R[1] += perturbation_[1];
   }  
 private:
-  friend ode::policy::explicitResidualPolicyBase<expEulerFakeNewPol,state_t,
+  friend ode::policy::ExplicitResidualPolicyBase<expEulerFakeNewPol,state_t,
 						 res_t,mod_t,time_t,flag_t>;
 };
 

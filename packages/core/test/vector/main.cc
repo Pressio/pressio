@@ -60,7 +60,7 @@ public:
 int main(int argc, char *argv[]){
   {
     using state_t = std::vector<double>;
-    using vec_t = core::vector<state_t>;
+    using vec_t = core::Vector<state_t>;
     vec_t gigi;
     gigi.resize(10);
     gigi[0] = 22.4;
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]){
 
   {
     using state_t = myve;
-    using vec_t = core::vector<state_t>;
+    using vec_t = core::Vector<state_t>;
     vec_t gigi2;
     size_t ss = gigi2.size();
     std::cout << "size l = " << ss << std::endl;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]){
     Epetra_Vector x (contigMap);
     x.PutScalar(21.0);
 
-    using vec_t = core::vector<Epetra_Vector>;
+    using vec_t = core::Vector<Epetra_Vector>;
     vec_t gigi2(x);
     std::cout << "size l = " << gigi2.localSize() << std::endl;
     std::cout << "size g = " << gigi2.globalSize() << std::endl;
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]){
   {
     using mat_t = Eigen::Matrix<double,1,5>;
     mat_t M1;
-    core::vector<mat_t> V1;
+    core::Vector<mat_t> V1;
   }
 
   

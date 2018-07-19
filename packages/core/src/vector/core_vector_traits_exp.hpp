@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_TRAITS_EXP_HPP_
-#define CORE_VECTOR_TRAITS_EXP_HPP_
+#ifndef CORE_VECTOR_VECTOR_TRAITS_EXP_HPP_
+#define CORE_VECTOR_VECTOR_TRAITS_EXP_HPP_
 
 #include <Eigen/Core>
 #include <type_traits>
@@ -26,7 +26,7 @@ struct vector_traits {
 
 template <typename T>
 struct vector_traits<
-  core::vector<T>,
+  core::Vector<T>,
   typename std::enable_if<
     std::is_base_of<
       Epetra_Vector,
@@ -43,7 +43,7 @@ struct vector_traits<
 
 template <typename T>
 struct vector_traits<
-  core::vector<T>,
+  core::Vector<T>,
   typename std::enable_if<
     std::is_base_of<
       Eigen::Matrix<

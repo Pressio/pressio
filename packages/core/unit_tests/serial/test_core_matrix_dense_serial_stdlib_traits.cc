@@ -10,7 +10,7 @@ public:
   using native_t = std::vector<std::vector<T>>;
   STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_EIGEN(native_t);
   STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_STDLIB(native_t);
-  using myvec_t = core::matrix<native_t>;
+  using myvec_t = core::Matrix<native_t>;
   using vecTrait = core::details::traits<myvec_t>;
 
   //need to have this void method otherwise the static assertion for type cannot be used

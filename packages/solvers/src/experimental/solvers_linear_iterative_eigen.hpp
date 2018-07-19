@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_LINEAR_ITERATIVE_EIGEN_HPP_
-#define SOLVERS_LINEAR_ITERATIVE_EIGEN_HPP_
+#ifndef SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_EIGEN_HPP_
+#define SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_EIGEN_HPP_
 
 #include <memory>
 
@@ -40,7 +40,7 @@ class EigenLinearIterativeSolver
     
 
     /// Type of new linear system matrix is the same one used to initialize the solver  
-    void resetLinearSystem(const core::matrix<matrix_type>& A) {
+    void resetLinearSystem(const core::Matrix<matrix_type>& A) {
       rows_ = A.rows();
       solver->compute(*A.data()); 
     }
@@ -179,7 +179,7 @@ class EigenLinearIterativeSolver
   private:
 
     EigenLinearIterativeSolver() = delete;
-    EigenLinearIterativeSolver(const core::matrix<matrix_type>& A) : 
+    EigenLinearIterativeSolver(const core::Matrix<matrix_type>& A) : 
       base_type(), solver(std::make_unique<SolverT>()), rows_(0)
     {
       resetLinearSystem(A);

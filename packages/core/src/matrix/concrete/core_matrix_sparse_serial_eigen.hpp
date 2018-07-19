@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_SPARSE_SERIAL_EIGEN_HPP_
-#define CORE_MATRIX_SPARSE_SERIAL_EIGEN_HPP_
+#ifndef CORE_MATRIX_CONCRETE_MATRIX_SPARSE_SERIAL_EIGEN_HPP_
+#define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_SERIAL_EIGEN_HPP_
 
 #include <Eigen/Core>
 #include "../base/core_matrix_generic_base.hpp"
@@ -13,22 +13,22 @@
 namespace core{
 
 template <typename wrapped_type>
-class matrix<wrapped_type,
+class Matrix<wrapped_type,
 	     typename
 	     std::enable_if<
-	       core::meta::is_matrixSparseSerialEigen<
+	       core::meta::is_matrix_sparse_serial_eigen<
 		 wrapped_type >::value
 	       >::type
 	     >
-  : public matrixGenericBase< matrix<wrapped_type> >,
-    public matrixSerialBase< matrix<wrapped_type> >,
-    public matrixSparseSerialBase< matrix<wrapped_type> >,
-    public matrixMathBase< matrix<wrapped_type> >,
-    public arithmeticOperatorsBase< matrix<wrapped_type> >,
-    public compoundAssignmentOperatorsBase< matrix<wrapped_type> >
+  : public MatrixGenericBase< Matrix<wrapped_type> >,
+    public MatrixSerialBase< Matrix<wrapped_type> >,
+    public MatrixSparseSerialBase< Matrix<wrapped_type> >,
+    public MatrixMathBase< Matrix<wrapped_type> >,
+    public ArithmeticOperatorsBase< Matrix<wrapped_type> >,
+    public CompoundAssignmentOperatorsBase< Matrix<wrapped_type> >
 {
 private:
-  using derived_t = matrix<wrapped_type>;
+  using derived_t = Matrix<wrapped_type>;
   using mytraits = details::traits<derived_t>;
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename mytraits::ordinal_t;
@@ -36,9 +36,9 @@ private:
   using der_t = typename mytraits::derived_t;
   
 public: 
-  matrix() = delete;
+  Matrix() = delete;
 
-  explicit matrix(ord_t nrows, ord_t ncols) {
+  explicit Matrix(ord_t nrows, ord_t ncols) {
     this->resize(nrows, ncols);
     this->compress();
   }
@@ -47,7 +47,7 @@ public:
   template <typename U = ord_t,
 	    typename std::enable_if<
 	      mytraits::isRowMajor==1,U>::type * = nullptr>
-  explicit matrix(U nrows, U ncols, U nonZerosPerRow) {
+  explicit Matrix(U nrows, U ncols, U nonZerosPerRow) {
     this->resize(nrows, ncols);
     if( nonZerosPerRow > ncols )
       throw std::runtime_error(
@@ -60,7 +60,7 @@ public:
   template <typename U = ord_t, 
 	    typename std::enable_if<
 	      mytraits::isRowMajor==0,U>::type * = nullptr>
-  explicit matrix(U nrows, U ncols, U nonZerosPerCol) {
+  explicit Matrix(U nrows, U ncols, U nonZerosPerCol) {
     this->resize(nrows, ncols);
     if( nonZerosPerCol > nrows )
       throw std::runtime_error(
@@ -69,11 +69,11 @@ public:
     this->compress();
   }
 
-  explicit matrix(const wrap_t & other) : data_(other){
+  explicit Matrix(const wrap_t & other) : data_(other){
     this->compress();
   }
 
-  ~matrix() = default;
+  ~Matrix() = default;
   
 public: 
 
@@ -200,10 +200,10 @@ private:
   }
 
 private:
-  friend matrixGenericBase< derived_t >;
-  friend matrixSerialBase< derived_t >;
-  friend matrixSparseSerialBase< derived_t >;
-  friend matrixMathBase< derived_t >;
+  friend MatrixGenericBase< derived_t >;
+  friend MatrixSerialBase< derived_t >;
+  friend MatrixSparseSerialBase< derived_t >;
+  friend MatrixMathBase< derived_t >;
 
 private:
   wrap_t data_;

@@ -1,14 +1,14 @@
 
-#ifndef CORE_MATRIX_DISTRIBUTED_BASE_HPP_
-#define CORE_MATRIX_DISTRIBUTED_BASE_HPP_
+#ifndef CORE_MATRIX_BASE_MATRIX_DISTRIBUTED_BASE_HPP_
+#define CORE_MATRIX_BASE_MATRIX_DISTRIBUTED_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
 
 namespace core{
     
 template<typename derived_type>
-class matrixDistributedBase
-  : private core::details::crtpBase<matrixDistributedBase<derived_type>>
+class MatrixDistributedBase
+  : private core::details::CrtpBase<MatrixDistributedBase<derived_type>>
 {
 private:
   using traits_t = details::traits<derived_type>;
@@ -60,10 +60,10 @@ public:
   
 private:
   friend derived_type;
-  friend core::details::crtpBase<matrixDistributedBase<derived_type>>;
+  friend core::details::CrtpBase<MatrixDistributedBase<derived_type>>;
 
-  matrixDistributedBase() = default;
-  ~matrixDistributedBase() = default;
+  MatrixDistributedBase() = default;
+  ~MatrixDistributedBase() = default;
   
 };//end class
   
