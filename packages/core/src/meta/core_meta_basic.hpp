@@ -38,18 +38,6 @@ namespace meta {
   struct is_default_constructible
     : std::is_default_constructible<T> {};
   
-  // template<typename T>
-  // class is_default_constructible{
-  //   typedef char yes;
-  //   typedef struct { char arr[2]; } no;
-  //   template<typename U>
-  //   static decltype(U(), yes()) test(int);
-  //   template<typename>
-  //   static no test(...);
-  // public:
-  //   static const bool value = sizeof(test<T>(0)) == sizeof(yes);
-  // };
-
   /////////////////////////////////////////////////  
 
   template <typename T,

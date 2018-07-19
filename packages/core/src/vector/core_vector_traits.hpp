@@ -2,6 +2,7 @@
 #ifndef CORE_VECTOR_TRAITS_HPP_
 #define CORE_VECTOR_TRAITS_HPP_
 
+#include "../meta/core_meta_detection_idiom.hpp"
 #include "../core_forward_declarations.hpp"
 #include "./meta/core_vector_meta.hpp"
 #include <vector>
@@ -81,8 +82,10 @@ template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
 		     typename
 		     std::enable_if<
-		       core::meta::has_scalar_typedef<wrapped_type
-						     >::value &&
+           core::meta::is_detected<
+           core::meta::has_scalar_typedef, wrapped_type
+           >::value &&
+		       /*core::meta::has_scalar_typedef<wrapped_type>::value &&*/
 		       core::meta::has_ordinal_typedef<wrapped_type
 						      >::value &&
 		       !core::meta::is_vector_stdlib<wrapped_type

@@ -17,7 +17,10 @@ struct nonesuch {
 };
 
 
-template <class Default, class AlwaysVoid, template <class...> class Op, class... Args>
+template <class Default,
+	  class AlwaysVoid,
+	  template <class...> class Op,
+	  class... Args>
 struct detector {
   using value_t = std::false_type;
   using type = Default;
@@ -26,27 +29,32 @@ struct detector {
 
 template <typename... Ts>
 struct my_make_void {
-  typedef void type;
+  using type = void;
 };
-
 
 template <typename... Ts>
 using my_void_t = typename my_make_void<Ts...>::type;
 
 
-template <class Default, template <class...> class Op, class... Args>
+template <class Default,
+	  template <class...> class Op,
+	  class... Args>
 struct detector<Default, my_void_t<Op<Args...>>, Op, Args...> {
   using value_t = std::true_type;
   using type = Op<Args...>;
 };
 
 
-template <template <class...> class Op, class... Args>
-using is_detected = typename detector<nonesuch, void, Op, Args...>::value_t;
+template <template <class...> class Op,
+	  class... Args>
+using is_detected =
+  typename detector<nonesuch, void, Op, Args...>::value_t;
 
 
-template <template <class...> class Op, class... Args>
-using detected_t = typename detector<nonesuch, void, Op, Args...>::type;
+template <template <class...> class Op,
+	  class... Args>
+using detected_t =
+  typename detector<nonesuch, void, Op, Args...>::type;
 
 
 } // end namespace meta

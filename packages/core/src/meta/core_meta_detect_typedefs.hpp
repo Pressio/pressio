@@ -11,18 +11,24 @@ namespace meta {
   // check type has a public typedef named: scalar_type
   /////////////////////////////////////////////////
 
-  template <typename T, typename enable = void>
-  struct has_scalar_typedef : std::false_type{};
+  // template <typename T, typename enable = void>
+  // struct has_scalar_typedef : std::false_type{};
+
+  // template <typename T>
+  // struct has_scalar_typedef<T,
+  // 			   typename
+  // 			   std::enable_if<
+  // 			     !std::is_void<typename T::scalar_type
+  // 					   >::value
+  // 			     >::type
+  // 			   > : std::true_type{};
+  
 
   template <typename T>
-  struct has_scalar_typedef<T,
-			   typename
-			   std::enable_if<
-			     !std::is_void<typename T::scalar_type
-					   >::value
-			     >::type
-			   > : std::true_type{};
-  
+  using has_scalar_typedef = typename T::scalar_type;
+
+
+
   // An alternative way to do same thing above:
   //------------------------------------------
   // template <typename T> struct has_scTypedef {

@@ -67,14 +67,12 @@ private:
 
 };//end class
 
-  
-  
+   
 //------------------------
 } // end namespace details
 //------------------------
 
-  
-  
+   
 namespace defaultTypes {
 
   //! Default value of Scalar template parameter.
