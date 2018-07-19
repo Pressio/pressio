@@ -11,20 +11,20 @@
 namespace core{
 
 template <typename wrapped_type>
-class matrix<wrapped_type,
+class Matrix<wrapped_type,
 	     typename
 	     std::enable_if<
-	       core::meta::is_matrixSparseDistributedEpetra<
+	       core::meta::is_matrix_sparse_distributed_epetra<
 		 wrapped_type>::value
 	       >::type
 	     >
-  : public matrixGenericBase< matrix<wrapped_type> >,
-    public matrixDistributedBase< matrix<wrapped_type> >,
-    public matrixSparseDistributedBase< matrix<wrapped_type> >
+  : public MatrixGenericBase< Matrix<wrapped_type> >,
+    public MatrixDistributedBase< Matrix<wrapped_type> >,
+    public MatrixSparseDistributedBase< Matrix<wrapped_type> >
 {
 
 private:
-  using derived_t = matrix<wrapped_type>;
+  using derived_t = Matrix<wrapped_type>;
   using traits_t = details::traits<derived_t>;
 
   using sc_t = typename traits_t::scalar_t;
@@ -37,17 +37,17 @@ private:
   using wrap_t = typename traits_t::wrapped_t;
   
 public:
-  matrix() = delete;
+  Matrix() = delete;
 
-  explicit matrix(const row_map_t & rowMap,
+  explicit Matrix(const row_map_t & rowMap,
 		  LO_t NumEntriesPerRow,
 		  bool StaticProfile=false)
     : data_(Copy, rowMap, NumEntriesPerRow, StaticProfile){}
 
-  explicit matrix(const wrapped_type & objin)
+  explicit Matrix(const wrapped_type & objin)
     : data_(objin){}
   
-  ~matrix() = default;
+  ~Matrix() = default;
 
 private:
   //----------------
@@ -112,9 +112,9 @@ private:
   }
   
 private:
-  friend matrixGenericBase< derived_t >;
-  friend matrixSerialBase< derived_t >;
-  friend matrixDenseSerialBase< derived_t >;
+  friend MatrixGenericBase< derived_t >;
+  friend MatrixSerialBase< derived_t >;
+  friend MatrixDenseSerialBase< derived_t >;
 
 private:
   wrap_t data_;

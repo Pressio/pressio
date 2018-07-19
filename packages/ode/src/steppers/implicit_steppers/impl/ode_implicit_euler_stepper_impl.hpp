@@ -18,7 +18,7 @@ template<typename state_type,
 	 typename solver_policy_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
-class implicitEulerStepperImpl<state_type,
+class ImplicitEulerStepperImpl<state_type,
 			       residual_type,
 			       jacobian_type,
 			       scalar_type,
@@ -28,30 +28,30 @@ class implicitEulerStepperImpl<state_type,
 			       solver_policy_type,
 			       residual_policy_type,
 			       jacobian_policy_type>
-  : public implicitStepperBase<
-  implicitEulerStepperImpl<state_type, residual_type,
+  : public ImplicitStepperBase<
+  ImplicitEulerStepperImpl<state_type, residual_type,
 			   jacobian_type, scalar_type,
 			   model_type, time_type, 
 			   sizer_type,
 			   solver_policy_type,
 			   residual_policy_type,
 			   jacobian_policy_type> >,
-    private odeStorage<state_type, residual_type, 1>
+    private OdeStorage<state_type, residual_type, 1>
 {
 
-  static_assert( meta::isLegitimateImplicitEulerResidualPolicy<
+  static_assert( meta::is_legitimate_implicit_euler_residual_policy<
 		 residual_policy_type>::value ||
-		 meta::isImplicitEulerResidualStandardPolicy<
+		 meta::is_implicit_euler_residual_standard_policy<
 		 residual_policy_type>::value,
 		 "IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
-  static_assert( meta::isLegitimateImplicitEulerJacobianPolicy<
+  static_assert( meta::is_legitimate_implicit_euler_jacobian_policy<
 		 jacobian_policy_type>::value,
 		 "IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
   
-  using stepper_t = implicitEulerStepperImpl<state_type,
+  using stepper_t = ImplicitEulerStepperImpl<state_type,
 					     residual_type,
 					     jacobian_type,
 					     scalar_type,
@@ -61,8 +61,8 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					     solver_policy_type,
 					     residual_policy_type,
 					     jacobian_policy_type>;
-  using stepper_base_t = implicitStepperBase<stepper_t>;
-  using storage_base_t = odeStorage<state_type, residual_type, 1>;
+  using stepper_base_t = ImplicitStepperBase<stepper_t>;
+  using storage_base_t = OdeStorage<state_type, residual_type, 1>;
 
 protected:
   using stepper_base_t::model_;
@@ -79,7 +79,7 @@ protected:
 	     typename U = residual_policy_type,
 	     typename T = jacobian_policy_type,
 	     typename... Args>
-  implicitEulerStepperImpl(M & model,
+  ImplicitEulerStepperImpl(M & model,
 			   S & solver,
 			   U & res_policy_obj,
 			   T & jac_policy_obj,
@@ -88,8 +88,8 @@ protected:
       storage_base_t(std::forward<Args>(rest)...)
   {}
     
-  implicitEulerStepperImpl() = delete;
-  ~implicitEulerStepperImpl() = default;
+  ImplicitEulerStepperImpl() = delete;
+  ~ImplicitEulerStepperImpl() = default;
   
 protected:
   template<typename step_t>

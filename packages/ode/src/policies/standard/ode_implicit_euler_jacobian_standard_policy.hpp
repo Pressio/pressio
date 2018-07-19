@@ -15,14 +15,14 @@ template<typename state_type,
 	 typename model_type, 
 	 typename time_type, 
 	 typename sizer_type>
-class implicitEulerJacobianStandardPolicy
-  : public jacobianPolicyBase<implicitEulerJacobianStandardPolicy<
+class implicit_euler_jacobian_standard_policy
+  : public JacobianPolicyBase<implicit_euler_jacobian_standard_policy<
 				state_type, jacobian_type,
 				model_type, time_type, sizer_type> >
 {
 public:
-  implicitEulerJacobianStandardPolicy() = default;
-  ~implicitEulerJacobianStandardPolicy() = default;
+  implicit_euler_jacobian_standard_policy() = default;
+  ~implicit_euler_jacobian_standard_policy() = default;
 
 // private:
 //   jacobian_type II_;
@@ -57,7 +57,7 @@ private:
   //----------------------------------------------------------------
   
 private:
-  friend jacobianPolicyBase<implicitEulerJacobianStandardPolicy<
+  friend JacobianPolicyBase<implicit_euler_jacobian_standard_policy<
 			      state_type, jacobian_type,
 			      model_type, time_type, sizer_type> >;
 

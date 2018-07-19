@@ -7,8 +7,8 @@
 namespace core{
     
 template<typename derived_type>
-class matrixMathBase
-  : private core::details::crtpBase<matrixMathBase<derived_type>>
+class MatrixMathBase
+  : private core::details::CrtpBase<MatrixMathBase<derived_type>>
 {
 
 private:
@@ -26,10 +26,10 @@ public:
     
 private:
   friend der_t;
-  friend core::details::crtpBase<matrixMathBase<derived_type>>;
+  friend core::details::CrtpBase<MatrixMathBase<derived_type>>;
 
-  matrixMathBase() = default;
-  ~matrixMathBase() = default; 
+  MatrixMathBase() = default;
+  ~MatrixMathBase() = default; 
 
 };//end class
 

@@ -15,14 +15,14 @@ struct matrix_traits {
 };
 
 template <T>
-struct matrix_traits<core::matrix<T>,
+struct matrix_traits<core::Matrix<T>,
   std::enable_if<std::is_base_of<EPetra_RowMatrix, T>, void>::type> {
   constexpr bool is_eigen = false;
   constexpr bool is_trilinos = true;
 };
 
 template <T>
-struct matrix_traits<core::matrix<T>,
+struct matrix_traits<core::Matrix<T>,
   std::enable_if<std::is_base_of<Eigen::SparseMatrix<typename T::Scalar,
       T::Options,
       typename T::StorageIndex

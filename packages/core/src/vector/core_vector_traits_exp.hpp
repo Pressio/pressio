@@ -26,7 +26,7 @@ struct vector_traits {
 
 template <typename T>
 struct vector_traits<
-  core::vector<T>,
+  core::Vector<T>,
   typename std::enable_if<
     std::is_base_of<
       Epetra_Vector,
@@ -43,7 +43,7 @@ struct vector_traits<
 
 template <typename T>
 struct vector_traits<
-  core::vector<T>,
+  core::Vector<T>,
   typename std::enable_if<
     std::is_base_of<
       Eigen::Matrix<

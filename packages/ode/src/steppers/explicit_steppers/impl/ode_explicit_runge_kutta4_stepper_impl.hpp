@@ -16,37 +16,37 @@ template<typename state_type,
 	 typename sizer_type,
 	 typename residual_policy_type
 	 >
-class explicitRungeKutta4StepperImpl<state_type,
+class ExplicitRungeKutta4StepperImpl<state_type,
 				     residual_type,
 				     scalar_type,
 				     model_type,
 				     time_type,
 				     sizer_type,
 				     residual_policy_type>
-  : public explicitStepperBase<
-  explicitRungeKutta4StepperImpl<state_type,
+  : public ExplicitStepperBase<
+  ExplicitRungeKutta4StepperImpl<state_type,
 				 residual_type,
 				 scalar_type,
 				 model_type,
 				 time_type,
 				 sizer_type,
 				 residual_policy_type> >,
-    private odeStorage<state_type, residual_type, 1, 4>
+    private OdeStorage<state_type, residual_type, 1, 4>
 {
-  static_assert( meta::isLegitimateExplicitResidualPolicy<
+  static_assert( meta::is_legitimate_explicit_residual_policy<
 		 residual_policy_type>::value ||
-		 meta::isExplicitRungeKutta4ResidualStandardPolicy<
+		 meta::is_explicit_runge_kutta4_residual_standard_policy<
 		 residual_policy_type>::value,
      "EXPLICIT RUNGEKUTTA4 RESIDUAL_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
 private:
-  using stepper_t = explicitRungeKutta4StepperImpl<
+  using stepper_t = ExplicitRungeKutta4StepperImpl<
   state_type, residual_type, scalar_type,
   model_type, time_type, sizer_type, residual_policy_type>;
   
-  using stepper_base_t = explicitStepperBase<stepper_t>;
-  using storage_base_t = odeStorage<state_type, residual_type, 1, 4>;
+  using stepper_base_t = ExplicitStepperBase<stepper_t>;
+  using storage_base_t = OdeStorage<state_type, residual_type, 1, 4>;
   
 protected:
   using stepper_base_t::model_;
@@ -58,14 +58,14 @@ protected:
   template < typename T = model_type,
   	     typename U = residual_policy_type,
 	     typename... Args>
-  explicitRungeKutta4StepperImpl(T & model,
+  ExplicitRungeKutta4StepperImpl(T & model,
 				 U & res_policy_obj,
 				 Args&&... rest)
     : stepper_base_t(model, res_policy_obj),
       storage_base_t(std::forward<Args>(rest)...){}
 
-  explicitRungeKutta4StepperImpl() = delete;
-  ~explicitRungeKutta4StepperImpl() = default;
+  ExplicitRungeKutta4StepperImpl() = delete;
+  ~ExplicitRungeKutta4StepperImpl() = default;
 
 protected:
   template<typename step_t>

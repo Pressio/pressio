@@ -10,8 +10,8 @@
 struct snapshot_collector
 {
 private:
-  using native_state_t = apps::burgers1dEigen::state_type;
-  using state_t = core::vector<native_state_t>;
+  using native_state_t = apps::Burgers1dEigen::state_type;
+  using state_t = core::Vector<native_state_t>;
   using matrix = std::vector<state_t>;
   matrix snapshots_;
   size_t count_;

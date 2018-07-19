@@ -12,7 +12,7 @@
 namespace ode{
 
 template<typename stepper_type>
-class implicitStepperBase
+class ImplicitStepperBase
 {
 private:
   using traits = typename ode::details::traits<stepper_type>;
@@ -61,7 +61,7 @@ public:
   }
 
 private:
-  implicitStepperBase(model_t & model,
+  ImplicitStepperBase(model_t & model,
 		      solver_t & solver,
 		      residual_policy_t & res_policy_obj,
 		      jacobian_policy_t & jac_policy_obj)
@@ -71,7 +71,7 @@ private:
       jacobian_obj_(&jac_policy_obj)
   {}
   
-  ~implicitStepperBase(){}
+  ~ImplicitStepperBase(){}
   
 private:
   friend stepper_type;

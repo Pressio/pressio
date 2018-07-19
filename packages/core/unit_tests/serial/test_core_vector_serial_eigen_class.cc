@@ -6,7 +6,7 @@
 TEST(core_vector_serial_eigen_class, EigenVectorConstructor)
 {
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using myvec_t = core::vector<eigvec_t>;
+  using myvec_t = core::Vector<eigvec_t>;
   using vecTrait = core::details::traits<myvec_t>;
   ASSERT_TRUE(vecTrait::isEigen == 1);
  
@@ -25,7 +25,7 @@ TEST(core_vector_serial_eigen_class, EigenVectorConstructor)
 TEST(core_vector_serial_eigen_class, queryWrappedData)
 {
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using myvec_t = core::vector<eigvec_t>;
+  using myvec_t = core::Vector<eigvec_t>;
 
   myvec_t m_v1(4);
   ::testing::StaticAssertTypeEq<decltype(m_v1.data()),
@@ -39,7 +39,7 @@ TEST(core_vector_serial_eigen_class, queryWrappedData)
 TEST(core_vector_serial_eigen_class, sizeResize)
 {
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using myvec_t = core::vector<eigvec_t>;
+  using myvec_t = core::Vector<eigvec_t>;
  
   // myvec_t m_v1;
   // ASSERT_TRUE( m_v1.empty() );
@@ -57,7 +57,7 @@ TEST(core_vector_serial_eigen_class, sizeResize)
 TEST(core_vector_serial_eigen_class, subscriptOperator)
 {
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using myvec_t = core::vector<eigvec_t>;
+  using myvec_t = core::Vector<eigvec_t>;
 
   // create an eigen-type vector
   Eigen::Vector4d e_v1;
@@ -79,7 +79,7 @@ TEST(core_vector_serial_eigen_class, subscriptOperator)
 TEST(core_vector_serial_eigen_class, additionOperator)
 {
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using myvec_t = core::vector<eigvec_t>;
+  using myvec_t = core::Vector<eigvec_t>;
   
   myvec_t m_v1(4);
   m_v1[0] = 3.; m_v1[1] = 2.;
@@ -98,7 +98,7 @@ TEST(core_vector_serial_eigen_class, additionOperator)
 TEST(core_vector_serial_eigen_class, substractOperator)
 {
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using myvec_t = core::vector<eigvec_t>;
+  using myvec_t = core::Vector<eigvec_t>;
 
   myvec_t m_v1(4);
   m_v1[0] = 3.; m_v1[1] = 2.;
@@ -117,7 +117,7 @@ TEST(core_vector_serial_eigen_class, substractOperator)
 TEST(core_vector_serial_eigen_class, starOperator)
 {
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using myvec_t = core::vector<eigvec_t>;
+  using myvec_t = core::Vector<eigvec_t>;
 
   myvec_t m_v1(4);
   m_v1[0] = 3.; m_v1[1] = 2.;
@@ -136,7 +136,7 @@ TEST(core_vector_serial_eigen_class, starOperator)
 TEST(core_vector_serial_eigen_class, CompoundAssignAddOperator)
 {
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using myvec_t = core::vector<eigvec_t>;
+  using myvec_t = core::Vector<eigvec_t>;
 
   myvec_t m_v1(4);
   m_v1[0] = 3.; m_v1[1] = 2.;
@@ -153,10 +153,10 @@ TEST(core_vector_serial_eigen_class, CompoundAssignAddOperator)
 }
 
 
-TEST(core_vector_serial_eigen_class, compoundAssignSubtractOperator)
+TEST(core_vector_serial_eigen_class, CompoundAssignSubtractOperator)
 {
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using myvec_t = core::vector<eigvec_t>;
+  using myvec_t = core::Vector<eigvec_t>;
 
   myvec_t m_v1(4);
   m_v1[0] = 3.; m_v1[1] = 2.;

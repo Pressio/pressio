@@ -11,7 +11,7 @@
 
 
 struct mysizer{
-  using state_t = core::vector<apps::burgers1dEpetra::state_type>;
+  using state_t = core::Vector<apps::Burgers1dEpetra::state_type>;
  static size_t getSize(const state_t & obj){
    return obj.localSize();
  };
@@ -23,11 +23,11 @@ struct mysizer{
 
 int main(int argc, char *argv[])
 {
-  using native_state_t = apps::burgers1dEpetra::state_type;
+  using native_state_t = apps::Burgers1dEpetra::state_type;
   using native_residual_t = native_state_t;
-  using native_jac_t = apps::burgers1dEpetra::jacobian_type;
-  using scalar_t = apps::burgers1dEpetra::scalar_type;
-  using target_app_t = apps::burgers1dEpetra;
+  using native_jac_t = apps::Burgers1dEpetra::jacobian_type;
+  using scalar_t = apps::Burgers1dEpetra::scalar_type;
+  using target_app_t = apps::Burgers1dEpetra;
 
   MPI_Init(&argc,&argv);
   int rank; // My process ID
@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
   scalar_t dt = 0.001;
 
   // wrap with core structures
-  using state_t = core::vector<native_state_t>;
-  using jac_t = core::matrix<native_jac_t>;
+  using state_t = core::Vector<native_state_t>;
+  using jac_t = core::Matrix<native_jac_t>;
   using residual_t = state_t;
   native_state_t y0n = appObj.getInitialState();
   snapshot_collector collObj;
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     
   state_t y0(y0n);
 
-  // using stepper_t = ode::explicitEulerStepper<
+  // using stepper_t = ode::ExplicitEulerStepper<
   //   state_t, residual_t, scalar_t,
   //   target_app_t, scalar_t, mysizer>;
   // stepper_t stepperObj(appObj, dmap);

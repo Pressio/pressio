@@ -13,11 +13,11 @@ TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenReturnSameTy
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::matrix<matrix_n_t>;
+  using matrix_w_t = core::Matrix<matrix_n_t>;
 
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = core::vector<vector_n_t>;
+  using vector_w_t = core::Vector<vector_n_t>;
 
   // Define linear system
   vector_w_t b(2);
@@ -46,11 +46,11 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenReturnDiff
   
   // Matrix typedefs 
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::matrix<matrix_n_t>;
+  using matrix_w_t = core::Matrix<matrix_n_t>;
   
   // Vector typedefs
   using vectorf_n_t = Eigen::VectorXf;
-  using vectorf_w_t = core::vector<vectorf_n_t>;
+  using vectorf_w_t = core::Vector<vectorf_n_t>;
 
   
   // Define linear system
@@ -80,11 +80,11 @@ TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenNoReturnSame
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::matrix<matrix_n_t>;
+  using matrix_w_t = core::Matrix<matrix_n_t>;
 
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = core::vector<vector_n_t>;
+  using vector_w_t = core::Vector<vector_n_t>;
 
   // Define linear system
   vector_w_t b(2);
@@ -114,13 +114,13 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenNoReturnDi
   
   // Matrix typedefs 
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::matrix<matrix_n_t>;
+  using matrix_w_t = core::Matrix<matrix_n_t>;
   
   // Vector typedefs
   using vectord_n_t = Eigen::VectorXd;
   using vectorf_n_t = Eigen::VectorXf;
-  using vectord_w_t = core::vector<vectord_n_t>;
-  using vectorf_w_t = core::vector<vectorf_n_t>;
+  using vectord_w_t = core::Vector<vectord_n_t>;
+  using vectorf_w_t = core::Vector<vectorf_n_t>;
 
   
   // Define linear system
@@ -151,11 +151,11 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenResetSyste
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::matrix<matrix_n_t>;
+  using matrix_w_t = core::Matrix<matrix_n_t>;
 
   // Vector typedefs
   using vectord_n_t = Eigen::VectorXd;
-  using vectord_w_t = core::vector<vectord_n_t>;
+  using vectord_w_t = core::Vector<vectord_n_t>;
 
 
   // Define linear system
@@ -193,12 +193,12 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenResetSyste
   // Matrix typedefs
   using matrixd_n_t = Eigen::SparseMatrix<double>;
   using matrixf_n_t = Eigen::SparseMatrix<float>;
-  using matrixd_w_t = core::matrix<matrixd_n_t>;
-  using matrixf_w_t = core::matrix<matrixf_n_t>;
+  using matrixd_w_t = core::Matrix<matrixd_n_t>;
+  using matrixf_w_t = core::Matrix<matrixf_n_t>;
 
   // Vector typedefs
   using vectord_n_t = Eigen::VectorXd;
-  using vectord_w_t = core::vector<vectord_n_t>;
+  using vectord_w_t = core::Vector<vectord_n_t>;
 
 
   // Define linear system
@@ -242,16 +242,16 @@ TEST(solvers_linear, simpleTest)
 {
   // vector
   using native_v_t = Eigen::Matrix<double, 3, 1>;
-  core::vector<native_v_t> b;
+  core::Vector<native_v_t> b;
   (*b.data()) << 3, 3, 4;
 
   // matrix
   using native_m_t = Eigen::Matrix<double, 3, 3>;
-  core::matrix<native_m_t> A;
+  core::Matrix<native_m_t> A;
   (*A.data()) <<  1,2,3,  4,5,6,  7,8,10;
 
   // solution
-  core::vector<native_v_t> x;
+  core::Vector<native_v_t> x;
 
   // std::cout << *A.data() << std::endl;
   // std::cout << *b.data() << std::endl;
@@ -282,7 +282,7 @@ TEST(solvers_linear, simpleTestSparse)
   
   // vector
   using native_v_t = Eigen::Matrix<sc_t, Eigen::Dynamic, 1>;
-  core::vector<native_v_t> b(N);
+  core::Vector<native_v_t> b(N);
   b[0] = -c*sin(2*PI*dx)*dx2 - uLeft;
   for (int i=1; i<=N-2; i++){
     sc_t x = dx + i*dx;
@@ -292,7 +292,7 @@ TEST(solvers_linear, simpleTestSparse)
   
   // matrix
   using native_m_t = Eigen::SparseMatrix<sc_t,Eigen::RowMajor,int>;
-  core::matrix<native_m_t> A(N,N);
+  core::Matrix<native_m_t> A(N,N);
   using veci = std::vector<int>;
   using vecd = std::vector<sc_t>;
   veci indices; vecd vals;
@@ -318,7 +318,7 @@ TEST(solvers_linear, simpleTestSparse)
   // solution
   constexpr sc_t zero = static_cast<sc_t>(0);
   // constexpr sc_t one = static_cast<sc_t>(1);
-  core::vector<native_v_t> x(N);
+  core::Vector<native_v_t> x(N);
   for (i=0; i<N; i++)
     x[i] = zero;
 

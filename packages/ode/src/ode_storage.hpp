@@ -11,15 +11,15 @@ template<typename state_type,
 	 typename residual_type,
 	 int numAuxStates,
 	 int numAuxRHS = 0>
-class odeStorage;
+class OdeStorage;
 
 //--------------------------------------------------
 
 template<typename state_type, typename residual_type>
-class odeStorage<state_type, residual_type, 1>{
+class OdeStorage<state_type, residual_type, 1>{
 public:
   template<typename... Args>
-  odeStorage(Args&&... rest)
+  OdeStorage(Args&&... rest)
     : auxStates_(std::forward<Args>(rest)...){}
 
 protected:
@@ -29,10 +29,10 @@ protected:
 //--------------------------------------------------
 
 template<typename state_type, typename residual_type>
-class odeStorage<state_type, residual_type, 1, 4>{
+class OdeStorage<state_type, residual_type, 1, 4>{
 public:
   template<typename... Args>
-  odeStorage(Args&&... rest)
+  OdeStorage(Args&&... rest)
     : auxStates_(std::forward<Args>(rest)...),
       auxRHS_(std::forward<Args>(rest)...,
 	      std::forward<Args>(rest)...,
@@ -47,10 +47,10 @@ protected:
 //--------------------------------------------------
   
 template<typename state_type, typename residual_type>
-class odeStorage<state_type, residual_type, 0, 1>{
+class OdeStorage<state_type, residual_type, 0, 1>{
 public:
   template<typename... Args>
-  odeStorage(Args&&... rest)
+  OdeStorage(Args&&... rest)
     : auxRHS_(std::forward<Args>(rest)...){}
 
 protected:

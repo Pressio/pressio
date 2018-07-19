@@ -8,8 +8,8 @@
 namespace core{
     
 template<typename derived_type>
-class matrixDenseSerialBase
-  : private core::details::crtpBase<matrixDenseSerialBase<derived_type>>
+class MatrixDenseSerialBase
+  : private core::details::CrtpBase<MatrixDenseSerialBase<derived_type>>
 {
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
@@ -27,10 +27,10 @@ public:
 
 private:  
   friend derived_type;
-  friend core::details::crtpBase<matrixDenseSerialBase<derived_type>>;
+  friend core::details::CrtpBase<MatrixDenseSerialBase<derived_type>>;
 
-  matrixDenseSerialBase() = default;
-  ~matrixDenseSerialBase() = default;
+  MatrixDenseSerialBase() = default;
+  ~MatrixDenseSerialBase() = default;
   
 };//end class
   

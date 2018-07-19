@@ -17,7 +17,7 @@ template<typename state_type,
 	 typename solver_policy_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
-struct traits< impl::implicitEulerStepperImpl<state_type,
+struct traits< impl::ImplicitEulerStepperImpl<state_type,
 					      residual_type,
 					      jacobian_type,
 					      scalar_type,
@@ -29,7 +29,7 @@ struct traits< impl::implicitEulerStepperImpl<state_type,
 					      jacobian_policy_type>>
 {
   using stepper_t =
-    impl::implicitEulerStepperImpl<state_type,
+    impl::ImplicitEulerStepperImpl<state_type,
 				   residual_type,
 				   jacobian_type,
 				   scalar_type,

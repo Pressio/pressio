@@ -7,8 +7,8 @@
 namespace core {
 namespace meta {
 
-
-// This implementation of the detection idiom was copied from cppreference. No credit taken
+// Source: cppreference. 
+  
 struct nonesuch {
   nonesuch() = delete;
   ~nonesuch() = delete;

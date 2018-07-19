@@ -18,7 +18,7 @@ template<typename state_type,
 	 typename phi_op_t,
 	 typename wei_op_t>
 class romGalerkinImplicitResidualPolicy
-  : public ode::policy::implicitResidualPolicyBase<
+  : public ode::policy::ImplicitResidualPolicyBase<
   romGalerkinImplicitResidualPolicy<state_type, residual_type,
 				    model_type, time_type, sizer_type,
 				    phi_op_t, wei_op_t>, 1, 0>
@@ -28,7 +28,7 @@ class romGalerkinImplicitResidualPolicy
 {
 
 private:
-  using base_t = ode::policy::implicitResidualPolicyBase<
+  using base_t = ode::policy::ImplicitResidualPolicyBase<
   romGalerkinImplicitResidualPolicy<state_type, residual_type,
 				    model_type, time_type,
 				    sizer_type, phi_op_t, wei_op_t>, 1, 0>;

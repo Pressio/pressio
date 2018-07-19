@@ -29,7 +29,7 @@ struct appsExpOdeHelper
 				    coll_t & collectorObj,
 				    Args && ... rest)
   {
-    // using stepper_t = ode::explicitEulerStepper<
+    // using stepper_t = ode::ExplicitEulerStepper<
     //   state_t, residual_t, scalar_t,
     //   model_t, scalar_t, sizer_t>;
     // stepper_t stepperObj(appObj, std::forward<Args>(rest)... );
@@ -44,7 +44,7 @@ struct appsExpOdeHelper
 				  model_t & appObj,
 				  coll_t & collectorObj)
   {
-    // using stepper_t = ode::explicitRungeKutta4Stepper<
+    // using stepper_t = ode::ExplicitRungeKutta4Stepper<
     //   state_t, residual_t, scalar_t,
     //   model_t, scalar_t, sizer_t>;
     // stepper_t stepperObj(appObj);
@@ -81,7 +81,7 @@ struct appsImpOdeHelper
   // 				    model_t & appObj,
   // 				    coll_t & collectorObj)
   // {
-  //   using stepper_t = ode::explicitEulerStepper<
+  //   using stepper_t = ode::ExplicitEulerStepper<
   //     state_t, residual_t, scalar_t,
   //     model_t, scalar_t, sizer_t>;
   //   stepper_t stepperObj(appObj);

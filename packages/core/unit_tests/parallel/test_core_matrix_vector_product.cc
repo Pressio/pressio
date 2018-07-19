@@ -13,14 +13,14 @@ TEST(core_matrix_vector_product, eigenVectorDenseMatrix)
 {
   using natV_t = Eigen::Matrix<double,3,1>;
   natV_t a; a << 4.,2.,6;
-  core::vector<natV_t> myV(a);
+  core::Vector<natV_t> myV(a);
   
   using natM_t = Eigen::Matrix<double,3,3>;
   natM_t M;
   M << 1,0,2,2,1,3,0,0,1;
-  core::matrix<natM_t> myM(M);
+  core::Matrix<natM_t> myM(M);
   
-  core::vector<natV_t> myR;
+  core::Vector<natV_t> myR;
   core::matrixVectorProduct(myM, myV, myR);
   EXPECT_DOUBLE_EQ( myR[0], 16.0);
   EXPECT_DOUBLE_EQ( myR[1], 28.0);
@@ -34,10 +34,10 @@ TEST(core_matrix_vector_product, eigenVectorSparseMatrix)
   // create vector
   using natV_t = Eigen::Matrix<double,3,1>;
   natV_t a; a << 4.,2.,6;
-  core::vector<natV_t> myV(a);
+  core::Vector<natV_t> myV(a);
 
   // create sparse matrix
-  using mymat_t = core::matrix<Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;
+  using mymat_t = core::Matrix<Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;
   mymat_t myM(4,3);
   using veci = std::vector<int>;
   using vecd = std::vector<double>;
@@ -53,7 +53,7 @@ TEST(core_matrix_vector_product, eigenVectorSparseMatrix)
     myM.insertValues(ind,(int)data.size(),data.data(),cols.data());
   }
     
-  core::vector<Eigen::Matrix<double,4,1>> myR;
+  core::Vector<Eigen::Matrix<double,4,1>> myR;
   core::matrixVectorProduct(myM, myV, myR);
   EXPECT_DOUBLE_EQ( myR[0], 16.0);
   EXPECT_DOUBLE_EQ( myR[1], 26.0);

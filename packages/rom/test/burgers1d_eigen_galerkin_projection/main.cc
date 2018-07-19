@@ -15,7 +15,7 @@
 
 
 struct mysizer{
- using state_t = core::vector<apps::burgers1dEigen::state_type>;
+ using state_t = core::Vector<apps::Burgers1dEigen::state_type>;
  static size_t getSize(state_t & obj){
    return obj.size();
  };
@@ -64,14 +64,14 @@ Eigen::MatrixXd readPhi(int nr, int nc)
 int main(int argc, char *argv[])
 {
   // define native types
-  using native_state_t = apps::burgers1dEigen::state_type;
-  using native_jac_t = apps::burgers1dEigen::jacobian_type;
-  using scalar_t = apps::burgers1dEigen::scalar_type;
-  using model_eval_t = apps::burgers1dEigen;
+  using native_state_t = apps::Burgers1dEigen::state_type;
+  using native_jac_t = apps::Burgers1dEigen::jacobian_type;
+  using scalar_t = apps::Burgers1dEigen::scalar_type;
+  using model_eval_t = apps::Burgers1dEigen;
   // define our wrapper types
-  using state_t = core::vector<native_state_t>;
+  using state_t = core::Vector<native_state_t>;
   using residual_t = state_t;
-  using jac_t = core::matrix<native_jac_t>;
+  using jac_t = core::Matrix<native_jac_t>;
 
   // create app object
   int numCell = 100; // number of fv cells
@@ -97,13 +97,13 @@ int main(int argc, char *argv[])
   // // SVD
   // //-------------------------------
   // using native_basis_type = Eigen::MatrixXd;
-  // using basis_type = core::matrix<native_basis_type>;
+  // using basis_type = core::Matrix<native_basis_type>;
   // auto phi_nat = readPhi(numCell, 10);
   // basis_type phi(phi_nat);
   // // auto phiT_nat = phi_nat;
   // // phiT_nat.transposeInPlace();
-  // // core::matrix<decltype(phi_nat)> phi(phi_nat);
-  // // core::matrix<decltype(phiT_nat)> phiT(phiT_nat);
+  // // core::Matrix<decltype(phi_nat)> phi(phi_nat);
+  // // core::Matrix<decltype(phiT_nat)> phiT(phiT_nat);
   // // //  std::cout << std::setprecision(14) << phi_nat << std::endl;
 
   // using phiOp_t = rom::experimental::basisOperatorDefault<basis_type>;
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
   //   state_t, jac_t, model_eval_t, scalar_t, mysizer, phiOp_t, scale_op_t>;
   // jac_pol_t jaObj(y0, yr, phiOp, WOp);
     
-  // using stepper_t = ode::implicitEulerStepper<
+  // using stepper_t = ode::ImplicitEulerStepper<
   //   state_t, residual_t, jac_t, scalar_t, model_eval_t,
   //   scalar_t, mysizer, nonlin_solve_t, res_pol_t, jac_pol_t>;
   // stepper_t stepperObj(appObj, nonls, resObj, jaObj);
@@ -159,15 +159,15 @@ int main(int argc, char *argv[])
 
 
 
-  // using stepper_t = ode::implicitEulerStepper<
+  // using stepper_t = ode::ImplicitEulerStepper<
   //   state_t, residual_t, jac_t, scalar_t, model_eval_t,
   //   scalar_t, mysizer, nonlin_solve_t, res_pol_t, jac_pol_t>;
   // stepper_t stepperObj(appObj, nonls, resObj, jaObj);  
   // snapshot_collector collObj;
   // ode::integrateNSteps(stepperObj, y, 0.0, dt, numSteps, collObj);
   // printSol("", y+y0);
-  // //using stepper_t = ode::explicitRungeKutta4Stepper<
-  // using stepper_t = ode::explicitEulerStepper<
+  // //using stepper_t = ode::ExplicitRungeKutta4Stepper<
+  // using stepper_t = ode::ExplicitEulerStepper<
   //   state_t, residual_t, scalar_t, model_eval_t,
   //   scalar_t, mysizer>;//, res_pol_t>;
   // stepper_t stepperObj(appObj);//, resObj);
@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
   // state_t y(y0);
   // snapshot_collector collObj(numCell, numSteps);
 
-  // using stepper_t = ode::implicitEulerStepper<
+  // using stepper_t = ode::ImplicitEulerStepper<
   //   state_t, residual_t, jac_t, scalar_t, model_eval_t,
   //   scalar_t, mysizer, nonlin_solve_t>;
   // stepper_t stepperObj(appObj, nonls);

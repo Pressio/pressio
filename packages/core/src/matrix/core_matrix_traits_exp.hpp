@@ -23,7 +23,7 @@ struct matrix_traits {
 
 
 template <typename T>
-struct matrix_traits<core::matrix<T>,
+struct matrix_traits<core::Matrix<T>,
   typename std::enable_if<
     std::is_base_of<
       Epetra_RowMatrix, T
@@ -37,7 +37,7 @@ struct matrix_traits<core::matrix<T>,
 
 template <typename T>
 struct matrix_traits<
-  core::matrix<T>,
+  core::Matrix<T>,
   typename std::enable_if<
     std::is_base_of<
       Eigen::SparseMatrix<

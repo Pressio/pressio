@@ -11,19 +11,19 @@
 namespace core{
   
 template <typename wrapped_type>
-class vector<wrapped_type,
+class Vector<wrapped_type,
 	     typename
 	     std::enable_if<
-	       meta::is_vectorEpetra<
+	       meta::is_vector_epetra<
 		 wrapped_type>::value
 	       >::type
 	     >
-  : public vectorGenericBase< vector<wrapped_type> >,
-    public vectorDistributedBase< vector<wrapped_type> >,
-    public vectorMathBase< vector<wrapped_type> >
+  : public VectorGenericBase< Vector<wrapped_type> >,
+    public VectorDistributedBase< Vector<wrapped_type> >,
+    public VectorMathBase< Vector<wrapped_type> >
 {
 private:
-  using derived_t = vector<wrapped_type>;
+  using derived_t = Vector<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using LO_t = typename details::traits<derived_t>::local_ordinal_t;
   using GO_t = typename details::traits<derived_t>::global_ordinal_t;
@@ -33,10 +33,10 @@ private:
   using mpicomm_t = typename details::traits<derived_t>::communicator_t;
 
 public:
-  vector() = delete;
-  explicit vector(const map_t & mapobj) : data_(mapobj){}
-  explicit vector(const wrap_t & vecobj) : data_(vecobj){}
-  ~vector() = default;
+  Vector() = delete;
+  explicit Vector(const map_t & mapobj) : data_(mapobj){}
+  explicit Vector(const wrap_t & vecobj) : data_(vecobj){}
+  ~Vector() = default;
 
 public:
   sc_t & operator [] (LO_t i){
@@ -163,9 +163,9 @@ private:
   }
   
 private:
-  friend vectorGenericBase< derived_t >;
-  friend vectorDistributedBase< derived_t >;
-  friend vectorMathBase< derived_t >;
+  friend VectorGenericBase< derived_t >;
+  friend VectorDistributedBase< derived_t >;
+  friend VectorMathBase< derived_t >;
   
 private:
   wrap_t data_;

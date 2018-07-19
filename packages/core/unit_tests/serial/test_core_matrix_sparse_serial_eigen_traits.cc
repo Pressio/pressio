@@ -18,7 +18,7 @@ public:
   using native_t = typename T::mat_t;
   STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_EIGEN(native_t);
   STATIC_ASSERT_IS_MATRIX_SPARSE_SERIAL_EIGEN(native_t);
-  using my_t = core::matrix<native_t>;
+  using my_t = core::Matrix<native_t>;
   using myTrait = core::details::traits<my_t>;
 
   //need this void method otherwise the static assertion for type dont work
@@ -76,7 +76,7 @@ TYPED_TEST(core_matrix_sparse_serial_eigen_traitsTest, traits)
   //this runs all types, no need to put anything
   this->check();
 
-  using type1 = core::matrix<Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;  
-  using type2 = core::matrix<Eigen::SparseMatrix<double,Eigen::ColMajor,int>>;
-  static_assert( core::meta::sparseSerialEigenSameStorage<type1,type2>::value == false, "ohh" );
+  using type1 = core::Matrix<Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;  
+  using type2 = core::Matrix<Eigen::SparseMatrix<double,Eigen::ColMajor,int>>;
+  static_assert( core::meta::sparse_serial_eigen_same_storage<type1,type2>::value == false, "ohh" );
 }

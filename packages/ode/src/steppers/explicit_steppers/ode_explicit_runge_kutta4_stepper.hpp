@@ -48,7 +48,7 @@ template<typename state_type,
 	 typename time_type,
 	 typename sizer_type
 	 >
-class explicitRungeKutta4Stepper<state_type,
+class ExplicitRungeKutta4Stepper<state_type,
 				 residual_type,
 				 scalar_type,
 				 model_type,
@@ -60,24 +60,24 @@ class explicitRungeKutta4Stepper<state_type,
 				   !std::is_void<state_type>::value
 				   >::type
 				 >
-  : public impl::explicitRungeKutta4StepperImpl<
+  : public impl::ExplicitRungeKutta4StepperImpl<
 	state_type, residual_type,
 	scalar_type,
 	model_type,
 	time_type,
 	sizer_type,
-	ode::policy::explicitResidualStandardPolicy<
+	ode::policy::explicit_residual_standard_policy<
 	  state_type, residual_type,
 	  model_type, time_type, sizer_type>>
 {
 public:
-  using pol_t = ode::policy::explicitResidualStandardPolicy<state_type,
+  using pol_t = ode::policy::explicit_residual_standard_policy<state_type,
 						    residual_type,
 						    model_type,
 						    time_type,
 						    sizer_type>;
 
-  using base_t = impl::explicitRungeKutta4StepperImpl<state_type,
+  using base_t = impl::ExplicitRungeKutta4StepperImpl<state_type,
 						      residual_type,
 						      scalar_type,
 						      model_type,
@@ -88,13 +88,13 @@ public:
 public:
   template < typename T = model_type,
 	     typename... Args>
-  explicitRungeKutta4Stepper(T & model,
+  ExplicitRungeKutta4Stepper(T & model,
 			     Args&&... rest)
     : base_t(model, policy_, std::forward<Args>(rest)...)
   {}
 
-  explicitRungeKutta4Stepper() = delete;
-  ~explicitRungeKutta4Stepper() = default;
+  ExplicitRungeKutta4Stepper() = delete;
+  ~ExplicitRungeKutta4Stepper() = default;
 
 private:
   pol_t policy_;
@@ -117,7 +117,7 @@ template<typename state_type,
 	 typename sizer_type,
 	 typename residual_policy_type
 	 >
-class explicitRungeKutta4Stepper<state_type,
+class ExplicitRungeKutta4Stepper<state_type,
 			   residual_type,
 			   scalar_type,
 			   model_type,
@@ -129,7 +129,7 @@ class explicitRungeKutta4Stepper<state_type,
 			     !std::is_void<residual_policy_type>::value
 			     >::type
 			   >
-  : public impl::explicitRungeKutta4StepperImpl<state_type,
+  : public impl::ExplicitRungeKutta4StepperImpl<state_type,
 						residual_type,
 						scalar_type,
 						model_type,
@@ -139,7 +139,7 @@ class explicitRungeKutta4Stepper<state_type,
 {
 
 public:
-  using base_t = impl::explicitRungeKutta4StepperImpl<state_type,
+  using base_t = impl::ExplicitRungeKutta4StepperImpl<state_type,
 						      residual_type,
 						      scalar_type,
 						      model_type,
@@ -151,13 +151,13 @@ public:
   template < typename T = model_type,
 	     typename U = residual_policy_type,
 	     typename... Args>
-  explicitRungeKutta4Stepper(T & model,
+  ExplicitRungeKutta4Stepper(T & model,
 		       U & policy,
 		       Args&&... rest)
     : base_t(model, policy, std::forward<Args>(rest)...)
   {}
-  explicitRungeKutta4Stepper() = delete;
-  ~explicitRungeKutta4Stepper() = default;
+  ExplicitRungeKutta4Stepper() = delete;
+  ~ExplicitRungeKutta4Stepper() = default;
 
 };//end class
 

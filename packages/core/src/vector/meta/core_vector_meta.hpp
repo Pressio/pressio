@@ -14,10 +14,10 @@ namespace meta {
 
   
 template <typename T, typename enable = void>
-struct is_vectorEigen : std::false_type {};
+struct is_vector_eigen : std::false_type {};
 
 template <typename T>
-struct is_vectorEigen< T,
+struct is_vector_eigen< T,
      typename
      std::enable_if<
        std::is_same<T,
@@ -30,7 +30,7 @@ struct is_vectorEigen< T,
      > : std::true_type{};
 
 template <typename T>
-struct is_vectorEigen< T,
+struct is_vector_eigen< T,
       typename
       std::enable_if<
 	std::is_same<T,
@@ -44,21 +44,21 @@ struct is_vectorEigen< T,
 
 
 template <typename T, typename enable = void>
-struct is_vectorStdLib : std::false_type {};
+struct is_vector_stdlib : std::false_type {};
 
 template <typename T>
-struct is_vectorStdLib<T,
+struct is_vector_stdlib<T,
       typename
       std::enable_if<
 	std::is_same<T,
 	  std::vector<typename T::value_type>
 	  >::value &&
-	// we do not want to have vector<vector<...>>
+	// we do not want to have Vector<Vector<...>>
 	// so we need to check that the T::value_type is a
 	// scalar type or integral type or complex
 	(std::is_floating_point<typename T::value_type>::value ||
 	 std::is_integral<typename T::value_type>::value ||
-	 is_stdComplex<typename T::value_type>::value
+	 is_std_complex<typename T::value_type>::value
 	 )
 	>::type
       > : std::true_type{};
@@ -66,10 +66,10 @@ struct is_vectorStdLib<T,
 
 
 template <typename T, typename enable = void>
-struct is_vectorEpetra : std::false_type {};
+struct is_vector_epetra : std::false_type {};
 
 template <typename T>
-struct is_vectorEpetra<T,
+struct is_vector_epetra<T,
       typename
       std::enable_if<
 	std::is_same<T,Epetra_Vector>::value 
@@ -83,24 +83,24 @@ struct is_vectorEpetra<T,
 
   
 #define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \
-  static_assert( core::meta::is_vectorEigen<TYPE>::value, \
+  static_assert( core::meta::is_vector_eigen<TYPE>::value, \
 		 "THIS_IS_NOT_A_VECTOR_FROM_EIGEN")
 #define STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(TYPE) \
-  static_assert( !core::meta::is_vectorEigen<TYPE>::value, \
+  static_assert( !core::meta::is_vector_eigen<TYPE>::value, \
 		 "THIS_IS_A_VECTOR_FROM_EIGEN")
 
 #define STATIC_ASSERT_IS_VECTOR_STDLIB(TYPE) \
-  static_assert( core::meta::is_vectorStdLib<TYPE>::value, \
+  static_assert( core::meta::is_vector_stdlib<TYPE>::value, \
 		 "THIS_IS_NOT_A_STDLIB_VECTOR")
 #define STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(TYPE) \
-  static_assert( !core::meta::is_vectorStdLib<TYPE>::value, \
+  static_assert( !core::meta::is_vector_stdlib<TYPE>::value, \
 		 "THIS_IS_A_STDLIB_VECTOR")
 
 #define STATIC_ASSERT_IS_VECTOR_EPETRA(TYPE) \
-  static_assert( core::meta::is_vectorEpetra<TYPE>::value, \
+  static_assert( core::meta::is_vector_epetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_VECTOR_EPETRA")
 #define STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(TYPE) \
-  static_assert( !core::meta::is_vectorEpetra<TYPE>::value, \
+  static_assert( !core::meta::is_vector_epetra<TYPE>::value, \
 		 "THIS_IS_A_VECTOR_EPETRA")
 
   

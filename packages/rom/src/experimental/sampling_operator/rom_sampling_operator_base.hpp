@@ -9,7 +9,7 @@ namespace experimental{
 
 template <typename derived_t>
 class samplingOperatorBase
-  : private core::details::crtpBase<samplingOperatorBase<derived_t>>
+  : private core::details::CrtpBase<samplingOperatorBase<derived_t>>
 {
 
 public:
@@ -22,7 +22,7 @@ public:
   
 private:
   friend derived_t;
-  friend core::details::crtpBase<samplingOperatorBase<derived_t>>;
+  friend core::details::CrtpBase<samplingOperatorBase<derived_t>>;
 
   samplingOperatorBase() = default;
   ~samplingOperatorBase() = default;  

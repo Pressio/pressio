@@ -15,7 +15,7 @@ template<typename state_type,
 	 typename sizer_type,
 	 typename residual_policy_type
 	 >
-struct traits<impl::explicitEulerStepperImpl<state_type,
+struct traits<impl::ExplicitEulerStepperImpl<state_type,
 					     residual_type,
 					     scalar_type,
 					     model_type,
@@ -48,7 +48,7 @@ template<typename state_type,
 	 typename sizer_type,
 	 typename residual_policy_type,
 	 typename butcher_table_type>
-struct traits<impl::explicitRungeKutta4StepperImpl<state_type,
+struct traits<impl::ExplicitRungeKutta4StepperImpl<state_type,
 						   residual_type,
 						   scalar_type,
 						   model_type,

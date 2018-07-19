@@ -9,7 +9,7 @@ namespace experimental{
 
 template <typename derived_t>
 class weightingOperatorBase
-  : private core::details::crtpBase<weightingOperatorBase<derived_t>>
+  : private core::details::CrtpBase<weightingOperatorBase<derived_t>>
 {
 
 public:
@@ -27,7 +27,7 @@ public:
   
 private:
   friend derived_t;
-  friend core::details::crtpBase<weightingOperatorBase<derived_t>>;
+  friend core::details::CrtpBase<weightingOperatorBase<derived_t>>;
 
   weightingOperatorBase() = default;
   ~weightingOperatorBase() = default;

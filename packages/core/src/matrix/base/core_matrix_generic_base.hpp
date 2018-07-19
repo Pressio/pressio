@@ -7,8 +7,8 @@
 namespace core{
     
 template<typename derived_type>
-class matrixGenericBase
-  : private core::details::crtpBase<matrixGenericBase<derived_type>>
+class MatrixGenericBase
+  : private core::details::CrtpBase<MatrixGenericBase<derived_type>>
 {
 
 private:
@@ -32,10 +32,10 @@ public:
   
 private:
   friend derived_type;
-  friend core::details::crtpBase<matrixGenericBase<derived_type>>;
+  friend core::details::CrtpBase<MatrixGenericBase<derived_type>>;
 
-  matrixGenericBase() = default;
-  ~matrixGenericBase() = default;
+  MatrixGenericBase() = default;
+  ~MatrixGenericBase() = default;
   
 };//end class
   

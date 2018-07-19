@@ -8,8 +8,8 @@
 namespace core{
     
 template<typename derived_type>
-class vectorSerialBase
-  : private core::details::crtpBase<vectorSerialBase<derived_type>>
+class VectorSerialBase
+  : private core::details::CrtpBase<VectorSerialBase<derived_type>>
 {
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
@@ -30,10 +30,10 @@ public:
     
 private:
   friend derived_type;
-  friend core::details::crtpBase<vectorSerialBase<derived_type>>;
+  friend core::details::CrtpBase<VectorSerialBase<derived_type>>;
 
-  vectorSerialBase() = default;
-  ~vectorSerialBase() = default;
+  VectorSerialBase() = default;
+  ~VectorSerialBase() = default;
     
 };//end class
   

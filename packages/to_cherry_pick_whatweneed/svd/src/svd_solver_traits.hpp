@@ -34,8 +34,8 @@ namespace details{
 						Eigen::BDCSVD<native_matrix_t>
     					     >::type;
     using scalar_t = typename core::details::traits<matrix_type>::scalar_t;
-    using u_matrix_t = core::matrix<native_matrix_t>;
-    using v_matrix_t = core::matrix<native_matrix_t>;
+    using u_matrix_t = core::Matrix<native_matrix_t>;
+    using v_matrix_t = core::Matrix<native_matrix_t>;
     
     enum {
       isSerial = 1,

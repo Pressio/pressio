@@ -16,7 +16,7 @@ struct core_matrix_sparse_serial_eigen_classTest
   : public ::testing::Test{
 public:
   using native_t = typename T::mat_t;
-  using mymat_t = core::matrix<native_t>;
+  using mymat_t = core::Matrix<native_t>;
   using matTrait = core::details::traits<mymat_t>;
 
   mymat_t createMatrix1(){

@@ -8,8 +8,8 @@ namespace ode{
 namespace policy{
     
 template <typename derived_t>
-class explicitResidualPolicyBase
-  : private core::details::crtpBase<explicitResidualPolicyBase<derived_t>>
+class ExplicitResidualPolicyBase
+  : private core::details::CrtpBase<ExplicitResidualPolicyBase<derived_t>>
 {
 public:
   template <typename state_type,
@@ -25,10 +25,10 @@ public:
 
 private:
   friend derived_t;
-  friend core::details::crtpBase<explicitResidualPolicyBase<derived_t>>;
+  friend core::details::CrtpBase<ExplicitResidualPolicyBase<derived_t>>;
 
-  explicitResidualPolicyBase() = default;
-  ~explicitResidualPolicyBase() = default;
+  ExplicitResidualPolicyBase() = default;
+  ~ExplicitResidualPolicyBase() = default;
   
 
 };//end class

@@ -10,7 +10,7 @@ public:
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(stdV_t);
   STATIC_ASSERT_IS_VECTOR_STDLIB(stdV_t);
 
-  using myvec_t = core::vector<stdV_t>;
+  using myvec_t = core::Vector<stdV_t>;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
   STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(myvec_t);
 

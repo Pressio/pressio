@@ -11,7 +11,7 @@ namespace meta {
 
 // For implicit methods, things are more complicated. We need to solve
 // linear or non linear systems. So allow ONLY if the state is wrapped
-// with out core::vector<> class. 
+// with out core::Vector<> class. 
 
 template<typename state_type, typename enable = void>
 struct isLegitimateImplicitStateType : std::false_type{};

@@ -12,7 +12,7 @@ namespace policy{
 template<typename state_type, typename jacobian_type,
 	 typename model_type, typename time_type, typename sizer_type>
 class incrementBasedJacobian
-  : public jacobianPolicyBase<incrementBasedJacobian,
+  : public ImplicitResidualPolicyBase<incrementBasedJacobian,
 			      state_type, jacobian_type,
 			      model_type, time_type, sizer_type>,
     public advanceIncrementPolicyBase<incrementBasedJacobian,
@@ -62,7 +62,7 @@ private:
   }
   
 private:
-  friend jacobianPolicyBase<incrementBasedJacobian,
+  friend ImplicitResidualPolicyBase<incrementBasedJacobian,
 			    state_type,jacobian_type,
 			    model_type, time_type, sizer_type>;
 

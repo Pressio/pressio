@@ -70,7 +70,7 @@
 //        EpetraVectorSubscriptOperator)
 // {
 //   if (getRank()==0){
-//     using myvec_t = core::vector<Epetra_Vector>;
+//     using myvec_t = core::Vector<Epetra_Vector>;
 //     myvec_t v1( *getMap() );
 //     int localSize = numLocalEntries();
 //     //ASSERT_DEATH(v1[localSize+1]=4.0, "Assertion failed:");

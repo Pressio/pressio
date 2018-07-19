@@ -33,18 +33,18 @@ int main()
 
   using mat_t = Eigen::Matrix<double,4,5>;
   mat_t AA;
-  core::matrix<mat_t> BB;
+  core::Matrix<mat_t> BB;
 
   // using wrap_t = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>;
-  // using mat_t = core::matrix<wrap_t,double>;
+  // using mat_t = core::Matrix<wrap_t,double>;
   // mat_t A;
 
   // using wrap_t2 = vecT<vecT<double>>;
-  // using mat_t2 = core::matrix<wrap_t2,double>;
+  // using mat_t2 = core::Matrix<wrap_t2,double>;
   // mat_t2 A2;
   
   // using wrap_t3 = Eigen::Matrix<double,3,3>;
-  // core::matrix<wrap_t3,double,3,3> DD;
+  // core::Matrix<wrap_t3,double,3,3> DD;
   // //mat_t3 A3;
 
   
@@ -96,7 +96,7 @@ int main()
 // int main(int argc, char *argv[]){
 //   {
 //     using state_t = std::vector<double>;
-//     using vec_t = core::vector<state_t,double,int>;
+//     using vec_t = core::Vector<state_t,double,int>;
 //     vec_t gigi;
 //     gigi.resize(10);
 //     gigi[0] = 22.4;
@@ -107,7 +107,7 @@ int main()
 
 //   {
 //     using state_t = myve;
-//     using vec_t = core::vector<state_t,double,int>;
+//     using vec_t = core::Vector<state_t,double,int>;
 //     vec_t gigi2;
 //     size_t ss = gigi2.size();
 //     std::cout << "size l = " << ss << std::endl;
@@ -134,7 +134,7 @@ int main()
 //     x.PutScalar(21.0);
 
 
-//     using vec_t = core::vector<Epetra_Vector,double,lo_t,go_t,
+//     using vec_t = core::Vector<Epetra_Vector,double,lo_t,go_t,
 // 			       Epetra_Map,Epetra_MpiComm>;
 //     vec_t gigi2(x);
 //     std::cout << "size l = " << gigi2.localSize() << std::endl;

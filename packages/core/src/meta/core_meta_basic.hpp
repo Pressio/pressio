@@ -54,10 +54,10 @@ namespace meta {
 
   template <typename T,
 	    typename enable = void>
-  struct is_stdComplex : std::false_type{};
+  struct is_std_complex : std::false_type{};
 
   template <typename T>
-  struct is_stdComplex<T, typename
+  struct is_std_complex<T, typename
 		       std::enable_if<
 			    std::is_same<T,
 					 std::complex<typename
@@ -83,17 +83,17 @@ namespace meta {
   // };
 
   template<typename T, typename base_t>
-  struct publiclyInheritsFrom : std::is_base_of<base_t,T>{};
+  struct publicly_inherits_from : std::is_base_of<base_t,T>{};
   
   //////////////////////////////////////////////////
 
 
   template<typename T,
 	   typename = void>
-  struct has_sizeMethod : std::false_type{};
+  struct has_size_method : std::false_type{};
 
   template<typename T>
-  struct has_sizeMethod<T,
+  struct has_size_method<T,
 			typename
 			std::enable_if<
 			  !std::is_void<

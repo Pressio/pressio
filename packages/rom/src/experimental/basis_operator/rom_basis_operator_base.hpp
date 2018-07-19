@@ -9,7 +9,7 @@ namespace experimental{
 
 template <typename derived_t>
 class basisOperatorBase
-  : private core::details::crtpBase<basisOperatorBase<derived_t>>
+  : private core::details::CrtpBase<basisOperatorBase<derived_t>>
 {
 
 public:
@@ -33,7 +33,7 @@ public:
   
 private:
   friend derived_t;
-  friend core::details::crtpBase<basisOperatorBase<derived_t>>;
+  friend core::details::CrtpBase<basisOperatorBase<derived_t>>;
 
   basisOperatorBase() = default;
   ~basisOperatorBase() = default;

@@ -8,8 +8,8 @@ namespace ode{
 namespace policy{
   
 template <typename derived_t>
-class jacobianPolicyBase
-  : private core::details::crtpBase<jacobianPolicyBase<derived_t>>
+class JacobianPolicyBase
+  : private core::details::CrtpBase<JacobianPolicyBase<derived_t>>
 {
 public:
 
@@ -26,10 +26,10 @@ public:
   
 private:
   friend derived_t;
-  friend core::details::crtpBase<jacobianPolicyBase<derived_t>>;
+  friend core::details::CrtpBase<JacobianPolicyBase<derived_t>>;
 
-  jacobianPolicyBase() = default;
-  ~jacobianPolicyBase() = default;
+  JacobianPolicyBase() = default;
+  ~JacobianPolicyBase() = default;
   
 };//end class
 

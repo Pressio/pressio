@@ -8,8 +8,8 @@
 namespace core{
     
 template<typename derived_type>
-class matrixSerialBase
-  : private core::details::crtpBase<matrixSerialBase<derived_type>>
+class MatrixSerialBase
+  : private core::details::CrtpBase<MatrixSerialBase<derived_type>>
 {
 
 private:
@@ -33,10 +33,10 @@ public:
 
 private:  
   friend derived_type;
-  friend core::details::crtpBase<matrixSerialBase<derived_type>>;
+  friend core::details::CrtpBase<MatrixSerialBase<derived_type>>;
 
-  matrixSerialBase() = default;
-  ~matrixSerialBase() = default;
+  MatrixSerialBase() = default;
+  ~MatrixSerialBase() = default;
   
 };//end class
   

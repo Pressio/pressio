@@ -2,7 +2,7 @@
 #ifndef ODE_IMPLICIT_ADAMS_MOULTON1_STEPPER_IMPL_HPP_
 #define ODE_IMPLICIT_ADAMS_MOULTON1_STEPPER_IMPL_HPP_
 
-#include "../base/ode_implicit_stepper_base.hpp"
+#include "../base/ode_ImplicitStepperBase.hpp"
 
 namespace ode{
 namespace impl{
@@ -27,7 +27,7 @@ class implicitAdamsMoulton1StepperImpl<state_type,
 				       solver_policy_type,
 				       residual_policy_type,
 				       jacobian_policy_type>
-  : public implicitStepperBase<
+  : public ImplicitStepperBase<
   implicitAdamsMoulton1StepperImpl<state_type, residual_type,
 				   jacobian_type, scalar_type,
 				   model_type, time_type,
@@ -56,7 +56,7 @@ private:
 						     solver_policy_type,
 						     residual_policy_type,
 						     jacobian_policy_type>;
-  using stepper_base_t = implicitStepperBase<stepper_t>;
+  using stepper_base_t = ImplicitStepperBase<stepper_t>;
   
 protected:
   using stepper_base_t::model_;

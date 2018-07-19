@@ -14,11 +14,11 @@ namespace details{
 // eigen dense matrix 
 //***********************************
 template <typename wrapped_type>
-struct traits<matrix<
+struct traits< Matrix<
 		wrapped_type,
 		typename
 		std::enable_if<
-		  core::meta::is_matrixDenseSerialEigen<
+		  core::meta::is_matrix_dense_serial_eigen<
 		    wrapped_type>::value
 		  >::type
 		>
@@ -27,7 +27,7 @@ struct traits<matrix<
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
   using wrapped_t = wrapped_type;
-  using derived_t = matrix<wrapped_t>;
+  using derived_t = Matrix<wrapped_t>;
 
   static constexpr int isMatrix = 1;
   static constexpr int isEigen = 1;
@@ -48,11 +48,11 @@ struct traits<matrix<
 // eigen sparse matrix 
 //***********************************
 template <typename wrapped_type>
-struct traits<matrix<
+struct traits< Matrix<
 		wrapped_type,
 		typename
 		std::enable_if<
-		  core::meta::is_matrixSparseSerialEigen<
+		  core::meta::is_matrix_sparse_serial_eigen<
 		    wrapped_type
 		    >::value
 		  >::type
@@ -69,7 +69,7 @@ matrix has to be signed"
   		 );
   
   using wrapped_t = wrapped_type;
-  using derived_t = matrix<wrapped_t>;
+  using derived_t = Matrix<wrapped_t>;
 
   static constexpr int isMatrix = 1;
   static constexpr int isRowMajor = wrapped_type::IsRowMajor;
@@ -91,11 +91,11 @@ matrix has to be signed"
 // based on std::vector<std::vector<>>
 //***********************************
 template <typename wrapped_type>
-struct traits<matrix<
+struct traits< Matrix<
 		wrapped_type,
 		typename
 		std::enable_if<
-		  core::meta::is_matrixDenseSerialStdlib<
+		  core::meta::is_matrix_dense_serial_stdlib<
 		    wrapped_type
 		    >::value
 		  >::type
@@ -105,7 +105,7 @@ struct traits<matrix<
   using scalar_t = typename wrapped_type::value_type::value_type;
   using ordinal_t = int;
   using wrapped_t = wrapped_type;
-  using derived_t = matrix<wrapped_t>;
+  using derived_t = Matrix<wrapped_t>;
 
   static constexpr int isMatrix = 1;
   static constexpr int isStdlib = 1;
@@ -124,11 +124,11 @@ struct traits<matrix<
 // epetra sparse distributed matrix 
 //***********************************
 template <typename wrapped_type>
-struct traits<matrix
+struct traits<Matrix
 	      <wrapped_type,
 	       typename
 	       std::enable_if<
-		 core::meta::is_matrixSparseDistributedEpetra<
+		 core::meta::is_matrix_sparse_distributed_epetra<
 		   wrapped_type
 		   >::value
 		 >::type
@@ -136,7 +136,7 @@ struct traits<matrix
 	     >
 {
   using wrapped_t = wrapped_type;
-  using derived_t = matrix<wrapped_t>;
+  using derived_t = Matrix<wrapped_t>;
   using scalar_t = defaultTypes::epetra_scalar_t;
   using local_ordinal_t = core::defaultTypes::epetra_lo_t;
   using global_ordinal_t = core::defaultTypes::epetra_go_t1;

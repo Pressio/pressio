@@ -7,8 +7,8 @@
 namespace core{
     
 template<typename derived_type>
-class matrixSparseDistributedBase
-  : private core::details::crtpBase<matrixSparseDistributedBase<derived_type>>
+class MatrixSparseDistributedBase
+  : private core::details::CrtpBase<MatrixSparseDistributedBase<derived_type>>
 {
 
 private:
@@ -36,10 +36,10 @@ public:
 
 private:  
   friend der_t;
-  friend core::details::crtpBase<matrixSparseDistributedBase<derived_type>>;
+  friend core::details::CrtpBase<MatrixSparseDistributedBase<derived_type>>;
 
-  matrixSparseDistributedBase() = default;
-  ~matrixSparseDistributedBase() = default; 
+  MatrixSparseDistributedBase() = default;
+  ~MatrixSparseDistributedBase() = default; 
 
 };//end class
 

@@ -7,7 +7,7 @@
 struct snapshot_collector
 {
 private:
-  using state_t = apps::burgers1dEigen::state_type;
+  using state_t = apps::Burgers1dEigen::state_type;
   using matrix = std::vector<state_t>;  
 
   matrix snapshots_;

@@ -7,8 +7,8 @@
 namespace core{
     
 template<typename derived_type>
-class matrixDenseDistributedBase
-  : private core::details::crtpBase<matrixDenseDistributedBase<derived_type>>
+class MatrixDenseDistributedBase
+  : private core::details::CrtpBase<MatrixDenseDistributedBase<derived_type>>
 {
 private:
   using der_t = typename details::traits<derived_type>::derived_t;
@@ -16,10 +16,10 @@ private:
   
 private:  
   friend derived_type;
-  friend core::details::crtpBase<matrixDenseDistributedBase<derived_type>>;
+  friend core::details::CrtpBase<MatrixDenseDistributedBase<derived_type>>;
 
-  matrixDenseDistributedBase() = default;
-  ~matrixDenseDistributedBase() = default;
+  MatrixDenseDistributedBase() = default;
+  ~MatrixDenseDistributedBase() = default;
  
 };//end class
   

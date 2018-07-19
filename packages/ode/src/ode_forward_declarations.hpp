@@ -15,7 +15,7 @@ template<typename state_type,
 	 typename residual_policy_type = void,
 	 typename enable = void
 	 >
-class explicitEulerStepper;
+class ExplicitEulerStepper;
 
 template<typename state_type,
 	 typename residual_type,
@@ -26,7 +26,7 @@ template<typename state_type,
 	 typename residual_policy_type = void,
 	 typename enable = void
 	 >
-class explicitRungeKutta4Stepper;
+class ExplicitRungeKutta4Stepper;
   
 
 template<typename state_type,
@@ -41,7 +41,7 @@ template<typename state_type,
          typename jacobian_policy_type=void,
 	 typename enable = void
          >
-class implicitEulerStepper;
+class ImplicitEulerStepper;
 
 
 // template<typename state_type,
@@ -108,7 +108,7 @@ template<typename state_type,
 	 typename residual_policy_type,
 	 typename enable = void
 	 >
-class explicitEulerStepperImpl;
+class ExplicitEulerStepperImpl;
 
 template<typename state_type,
 	 typename residual_type,
@@ -119,7 +119,7 @@ template<typename state_type,
 	 typename residual_policy_type,
 	 typename enable = void
 	 >
-class explicitRungeKutta4StepperImpl;
+class ExplicitRungeKutta4StepperImpl;
 
 // template<typename state_type,
 // 	 typename residual_type,
@@ -146,7 +146,7 @@ template<typename state_type,
 	 typename jacobian_policy_type,
 	 typename enable = void
 	 >
-class implicitEulerStepperImpl;
+class ImplicitEulerStepperImpl;
 
 
 // template<typename state_type,

@@ -16,36 +16,36 @@ template<typename state_type,
 	 typename sizer_type,
 	 typename residual_policy_type
 	 >
-class explicitEulerStepperImpl<state_type,
+class ExplicitEulerStepperImpl<state_type,
 			       residual_type,
 			       scalar_type,
 			       model_type,
 			       time_type,
 			       sizer_type,
 			       residual_policy_type>
-  : public explicitStepperBase<
-  explicitEulerStepperImpl<state_type,
+  : public ExplicitStepperBase<
+  ExplicitEulerStepperImpl<state_type,
 			   residual_type,
 			   scalar_type,
 			   model_type,
 			   time_type,
 			   sizer_type,
 			   residual_policy_type> >,
-    private odeStorage<state_type, residual_type, 0, 1>
+    private OdeStorage<state_type, residual_type, 0, 1>
 {  
-  static_assert( meta::isLegitimateExplicitResidualPolicy<
+  static_assert( meta::is_legitimate_explicit_residual_policy<
 		 residual_policy_type>::value ||
-		 meta::isExplicitEulerResidualStandardPolicy<
+		 meta::is_explicit_euler_residual_standard_policy<
 		 residual_policy_type>::value,
 	  "EXPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
-  using stepper_t = explicitEulerStepperImpl<
+  using stepper_t = ExplicitEulerStepperImpl<
   state_type, residual_type, scalar_type,
   model_type, time_type, sizer_type, residual_policy_type>;
 
-  using stepper_base_t = explicitStepperBase<stepper_t>;
-  using storage_base_t = odeStorage<state_type, residual_type, 0, 1>;
+  using stepper_base_t = ExplicitStepperBase<stepper_t>;
+  using storage_base_t = OdeStorage<state_type, residual_type, 0, 1>;
 
 protected:
   using stepper_base_t::model_;
@@ -56,14 +56,14 @@ protected:
   template < typename T = model_type,
   	     typename U = residual_policy_type,
 	     typename... Args>
-  explicitEulerStepperImpl(T & model,
+  ExplicitEulerStepperImpl(T & model,
 			   U & res_policy_obj,
 			   Args&&... rest)
     : stepper_base_t(model, res_policy_obj),
       storage_base_t(std::forward<Args>(rest)...){}
 
-  explicitEulerStepperImpl() = delete;
-  ~explicitEulerStepperImpl() = default;
+  ExplicitEulerStepperImpl() = delete;
+  ~ExplicitEulerStepperImpl() = default;
 
 protected:
   template<typename step_t>

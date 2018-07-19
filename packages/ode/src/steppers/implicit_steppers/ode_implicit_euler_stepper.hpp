@@ -17,7 +17,7 @@ template<typename state_type, typename residual_type,
 	 typename model_type, typename time_type,
 	 typename sizer_type, typename solver_policy_type
 	 >
-class implicitEulerStepper<state_type, residual_type,
+class ImplicitEulerStepper<state_type, residual_type,
 			   jacobian_type, scalar_type,
 			   model_type, time_type, sizer_type,
 			   solver_policy_type,
@@ -25,26 +25,26 @@ class implicitEulerStepper<state_type, residual_type,
 			   typename std::enable_if<
 			     !std::is_void<state_type>::value
 			     >::type>
-  : public impl::implicitEulerStepperImpl<
+  : public impl::ImplicitEulerStepperImpl<
   state_type, residual_type, jacobian_type, scalar_type,
   model_type, time_type, sizer_type,
   solver_policy_type,
-  ode::policy::implicitEulerResidualStandardPolicy<
+  ode::policy::implicit_euler_residual_standard_policy<
     state_type, residual_type,
     model_type, time_type, sizer_type>,
-  ode::policy::implicitEulerJacobianStandardPolicy<
+  ode::policy::implicit_euler_jacobian_standard_policy<
     state_type, jacobian_type,
     model_type, time_type, sizer_type>
   >
 {
 public:
-  using res_pol_t = ode::policy::implicitEulerResidualStandardPolicy<
+  using res_pol_t = ode::policy::implicit_euler_residual_standard_policy<
   state_type, residual_type, model_type, time_type, sizer_type>;
 			      
-  using jac_pol_t = ode::policy::implicitEulerJacobianStandardPolicy<
+  using jac_pol_t = ode::policy::implicit_euler_jacobian_standard_policy<
   state_type, jacobian_type, model_type, time_type, sizer_type>;
 
-  using base_t = impl::implicitEulerStepperImpl<state_type,
+  using base_t = impl::ImplicitEulerStepperImpl<state_type,
 						residual_type,
   						jacobian_type,
 						scalar_type,
@@ -58,14 +58,14 @@ public:
   template < typename M = model_type,
 	     typename S = solver_policy_type,
 	     typename ... Args>
-  implicitEulerStepper(M & model,
+  ImplicitEulerStepper(M & model,
 		       S & solver,
 		       Args&&... rest)
     : base_t(model, solver, res_policy_obj_, jac_policy_obj_,
     	std::forward<Args>(rest)...){}
 
-  implicitEulerStepper() = delete;
-  ~implicitEulerStepper() = default;
+  ImplicitEulerStepper() = delete;
+  ~ImplicitEulerStepper() = default;
 
 private:
   res_pol_t res_policy_obj_;
@@ -95,7 +95,7 @@ template<typename state_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type
 	 >
-class implicitEulerStepper<state_type,
+class ImplicitEulerStepper<state_type,
 			   residual_type,
 			   jacobian_type,
 			   scalar_type,
@@ -111,7 +111,7 @@ class implicitEulerStepper<state_type,
 			     !std::is_void<jacobian_policy_type>::value
 			     >::type
 			   >
-  : public impl::implicitEulerStepperImpl<state_type,
+  : public impl::ImplicitEulerStepperImpl<state_type,
 					  residual_type,
 					  jacobian_type,
 					  scalar_type,
@@ -123,7 +123,7 @@ class implicitEulerStepper<state_type,
 					  jacobian_policy_type>
 {
 public:
-  using base_t = impl::implicitEulerStepperImpl<state_type,
+  using base_t = impl::ImplicitEulerStepperImpl<state_type,
 						residual_type,
 						jacobian_type,
 						scalar_type,
@@ -139,7 +139,7 @@ public:
 	     typename U = residual_policy_type,
 	     typename T = jacobian_policy_type,
 	     typename ... Args>
-  implicitEulerStepper(M & model,
+  ImplicitEulerStepper(M & model,
 		       S & solver,
 		       U & res_policy_obj,
 		       T & jac_policy_obj,
@@ -147,8 +147,8 @@ public:
     : base_t(model, solver, res_policy_obj, jac_policy_obj,
 	     std::forward<Args>(rest)...)
   {}
-  implicitEulerStepper() = delete;
-  ~implicitEulerStepper() = default;
+  ImplicitEulerStepper() = delete;
+  ~ImplicitEulerStepper() = default;
 
 }; //end class
 
@@ -215,7 +215,7 @@ public:
 // 	 typename residual_policy_type,
 // 	 typename jacobian_policy_type
 // 	 >
-// class implicitEulerStepper<state_type,
+// class ImplicitEulerStepper<state_type,
 // 			   residual_type,
 // 			   jacobian_type,
 // 			   scalar_type,
@@ -227,13 +227,13 @@ public:
 // 			   jacobian_policy_type,
 // 			   typename
 // 			   std::enable_if<
-// 			     !meta::isImplicitEulerResidualStandardPolicy<
+// 			     !meta::is_implicit_euler_residual_standard_policy<
 // 			       residual_policy_type>::value &&
-// 			     meta::isImplicitEulerJacobianStandardPolicy<
+// 			     meta::is_implicit_euler_jacobian_standard_oolicy<
 // 			       jacobian_policy_type>::value
 // 			     >::type
 // 			   >
-//   : public impl::implicitEulerStepperImpl<state_type,
+//   : public impl::ImplicitEulerStepperImpl<state_type,
 // 					  residual_type,
 // 					  jacobian_type,
 // 					  scalar_type,
@@ -248,7 +248,7 @@ public:
 //   using jac_pol_t = ode::policy::implicitEulerStandardJacobian<
 //   state_type, jacobian_type, model_type, time_type>;
 
-//   using base_t = impl::implicitEulerStepperImpl<state_type,
+//   using base_t = impl::ImplicitEulerStepperImpl<state_type,
 // 						residual_type,
 // 						jacobian_type,
 // 						scalar_type,
@@ -263,15 +263,15 @@ public:
 // 	     typename S = solver_policy_type,
 // 	     typename U = residual_policy_type,
 // 	     typename ... Args>
-//   implicitEulerStepper(M & model,
+//   ImplicitEulerStepper(M & model,
 // 		       S & solver,
 // 		       U & residual_policy_obj,
 // 		       Args&&... rest)
 //     : base_t(model, solver, residual_policy_obj, jac_policy_obj_,
 // 	     std::forward<Args>(rest)...)
 //   {}
-//   implicitEulerStepper() = delete;
-//   ~implicitEulerStepper() = default;
+//   ImplicitEulerStepper() = delete;
+//   ~ImplicitEulerStepper() = default;
 
 // private:
 //   jac_pol_t jac_policy_obj_;
@@ -302,7 +302,7 @@ public:
 // 	 typename residual_policy_type,
 // 	 typename jacobian_policy_type
 // 	 >
-// class implicitEulerStepper<state_type,
+// class ImplicitEulerStepper<state_type,
 // 			   residual_type,
 // 			   jacobian_type,
 // 			   scalar_type,
@@ -314,13 +314,13 @@ public:
 // 			   jacobian_policy_type,
 // 			   typename
 // 			   std::enable_if<
-// 			     meta::isImplicitEulerResidualStandardPolicy<
+// 			     meta::is_implicit_euler_residual_standard_policy<
 // 			       residual_policy_type>::value &&
-// 			     !meta::isImplicitEulerJacobianStandardPolicy<
+// 			     !meta::is_implicit_euler_jacobian_standard_oolicy<
 // 			       jacobian_policy_type>::value
 // 			     >::type
 // 			   >
-//   : public impl::implicitEulerStepperImpl<state_type,
+//   : public impl::ImplicitEulerStepperImpl<state_type,
 // 					  residual_type,
 // 					  jacobian_type,
 // 					  scalar_type,
@@ -335,7 +335,7 @@ public:
 //   using res_pol_t = ode::policy::implicitEulerStandardResidual<
 //   state_type,residual_type,model_type,time_type>;
 
-//   using base_t = impl::implicitEulerStepperImpl<state_type,
+//   using base_t = impl::ImplicitEulerStepperImpl<state_type,
 // 					  residual_type,
 // 					  jacobian_type,
 // 					  scalar_type,
@@ -350,7 +350,7 @@ public:
 // 	     typename S = solver_policy_type,
 // 	     typename T = jacobian_policy_type,
 // 	     typename ... Args>
-//   implicitEulerStepper(M & model,
+//   ImplicitEulerStepper(M & model,
 // 		       S & solver,
 // 		       T & jac_policy_obj,
 // 		       Args&&... rest)
@@ -358,8 +358,8 @@ public:
 // 	     std::forward<Args>(rest)...)
 //   {}
 
-//   implicitEulerStepper() = delete;
-//   ~implicitEulerStepper() = default;
+//   ImplicitEulerStepper() = delete;
+//   ~ImplicitEulerStepper() = default;
 
 // private:
 //   res_pol_t res_policy_obj_;

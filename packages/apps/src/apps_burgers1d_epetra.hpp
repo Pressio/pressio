@@ -15,7 +15,7 @@
 
 namespace apps{
 
-class burgers1dEpetra
+class Burgers1dEpetra
 {
 private:
   using nativeVec = Epetra_Vector;
@@ -28,13 +28,13 @@ public:
   using jacobian_type = Epetra_CrsMatrix;
 
 public:  
-  burgers1dEpetra(std::vector<scalar_type> params,
+  Burgers1dEpetra(std::vector<scalar_type> params,
 		  int Ncell,
 		  Epetra_MpiComm * comm)
     : mu_(params), Ncell_(Ncell), comm_(comm)
   {}
 
-  ~burgers1dEpetra() = default; 
+  ~Burgers1dEpetra() = default; 
 
   void setup()
   {

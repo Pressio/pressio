@@ -18,7 +18,7 @@ struct testResWrong{
 
 template<class T1, class T2, class T3, class T4, class T5>
 struct testResRight :
-  public ode::policy::explicitResidualPolicyBase<
+  public ode::policy::ExplicitResidualPolicyBase<
   testResRight,T1,T2,T3,T4,T5>
 {};
 
@@ -40,13 +40,13 @@ TEST(policies_meta, checkInheritance)
 		 model_t, double>
   		 >::value, "");
 
-  static_assert( !ode::meta::isExplicitEulerResidualStandardPolicy
+  static_assert( !ode::meta::is_explicit_euler_residual_standard_policy
   		 <testResWrong<vecd, vecd>>::value, "");
 
-  static_assert( !ode::meta::isExplicitEulerResidualStandardPolicy
+  static_assert( !ode::meta::is_explicit_euler_residual_standard_policy
    		 <testResRight<vecd,vecd,veci,double,int>>::value, "");
   
-  static_assert( ode::meta::isExplicitEulerResidualStandardPolicy<
+  static_assert( ode::meta::is_explicit_euler_residual_standard_policy<
   		 ode::policy::explicitEulerStandardResidual<vecd, vecd,
 		 model_t, double>
   		 >::value, "");
