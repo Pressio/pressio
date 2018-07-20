@@ -8,6 +8,7 @@
 #include "../../../meta/ode_meta_implicit.hpp"
 #include "../../../policies/meta/ode_implicit_policies_meta.hpp"
 #include "../../../ode_storage.hpp"
+#include "../../../ode_aux_data.hpp"
 
 namespace ode{
 
@@ -59,30 +60,13 @@ public:
   }
 
 private:
-  ImplicitStepperBase(model_t & model,
-		      solver_t & solver,
-		      residual_policy_t & res_policy_obj,
-		      jacobian_policy_t & jac_policy_obj)
-    : model_(&model),
-      solver_(&solver),
-      residual_obj_(&res_policy_obj),
-      jacobian_obj_(&jac_policy_obj)
-  {}
   
-  ~ImplicitStepperBase(){}
+  ImplicitStepperBase() = default;
+  ~ImplicitStepperBase() = default;
   
 private:
   friend stepper_type;
   friend core::details::CrtpBase<ImplicitStepperBase<stepper_type>>;
-
-protected:
-  model_t * model_;
-  solver_t * solver_;
-  residual_policy_t * residual_obj_;
-  jacobian_policy_t * jacobian_obj_;
-
-  sc_t t_;
-  sc_t dt_;
 
 };//end class
 

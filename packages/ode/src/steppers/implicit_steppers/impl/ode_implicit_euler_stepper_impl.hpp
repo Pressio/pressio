@@ -27,14 +27,18 @@ class ImplicitEulerStepperImpl<state_type,
 			       residual_policy_type,
 			       jacobian_policy_type>
   : public ImplicitStepperBase<
-  ImplicitEulerStepperImpl<state_type, residual_type,
-			   jacobian_type, scalar_type,
-			   model_type, 
-			   sizer_type,
-			   solver_policy_type,
-			   residual_policy_type,
-			   jacobian_policy_type> >,
-    private OdeStorage<state_type, residual_type, 1>
+	    ImplicitEulerStepperImpl<state_type, residual_type,
+				     jacobian_type, scalar_type,
+				     model_type, sizer_type,
+				     solver_policy_type,
+				     residual_policy_type,
+				     jacobian_policy_type> >,
+    private OdeStorage<state_type, residual_type, 1>,
+    private ImpOdeAuxData<model_type, scalar_type,
+			  residual_policy_type,
+			  jacobian_policy_type,
+			  solver_policy_type>
+  
 {
 
   static_assert( meta::is_legitimate_implicit_euler_residual_policy<
@@ -60,15 +64,20 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					     jacobian_policy_type>;
   using stepper_base_t = ImplicitStepperBase<stepper_t>;
   using storage_base_t = OdeStorage<state_type, residual_type, 1>;
+  using auxdata_base_t = ImpOdeAuxData<model_type, scalar_type,
+				       residual_policy_type,
+				       jacobian_policy_type,
+				       solver_policy_type>;
 
 protected:
-  using stepper_base_t::model_;
-  using stepper_base_t::solver_;
-  using stepper_base_t::residual_obj_;
-  using stepper_base_t::jacobian_obj_;
-  using stepper_base_t::t_;
-  using stepper_base_t::dt_;
   using storage_base_t::auxStates_;
+
+  using auxdata_base_t::model_;
+  using auxdata_base_t::solver_;
+  using auxdata_base_t::residual_obj_;
+  using auxdata_base_t::jacobian_obj_;
+  using auxdata_base_t::t_;
+  using auxdata_base_t::dt_;
   
 protected:
   template < typename M = model_type,
@@ -81,8 +90,8 @@ protected:
 			   U & res_policy_obj,
 			   T & jac_policy_obj,
 			   Args&& ... rest)
-    : stepper_base_t(model, solver, res_policy_obj, jac_policy_obj),      
-      storage_base_t(std::forward<Args>(rest)...)
+    : storage_base_t(std::forward<Args>(rest)...),
+      auxdata_base_t(model, res_policy_obj, jac_policy_obj, solver)
   {}
     
   ImplicitEulerStepperImpl() = delete;

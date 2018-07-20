@@ -28,8 +28,10 @@ class ExplicitRungeKutta4StepperImpl<state_type,
 				 model_type,
 				 sizer_type,
 				 residual_policy_type> >,
-    private OdeStorage<state_type, residual_type, 1, 4>
+    private OdeStorage<state_type, residual_type, 1, 4>,
+    private ExpOdeAuxData<model_type, residual_policy_type>
 {
+
   static_assert( meta::is_legitimate_explicit_residual_policy<
 		 residual_policy_type>::value ||
 		 meta::is_explicit_runge_kutta4_residual_standard_policy<
@@ -44,12 +46,13 @@ private:
   
   using stepper_base_t = ExplicitStepperBase<stepper_t>;
   using storage_base_t = OdeStorage<state_type, residual_type, 1, 4>;
+  using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
   
 protected:
-  using stepper_base_t::model_;
-  using stepper_base_t::residual_obj_;
   using storage_base_t::auxStates_;
   using storage_base_t::auxRHS_;
+  using auxdata_base_t::model_;
+  using auxdata_base_t::residual_obj_;
   
 protected:
   template < typename T = model_type,
@@ -58,8 +61,8 @@ protected:
   ExplicitRungeKutta4StepperImpl(T & model,
 				 U & res_policy_obj,
 				 Args&&... rest)
-    : stepper_base_t(model, res_policy_obj),
-      storage_base_t(std::forward<Args>(rest)...){}
+    : storage_base_t(std::forward<Args>(rest)...),
+      auxdata_base_t(model, res_policy_obj){}
 
   ExplicitRungeKutta4StepperImpl() = delete;
   ~ExplicitRungeKutta4StepperImpl() = default;
@@ -138,7 +141,6 @@ protected:
 
 private:
   friend stepper_base_t;
-  // inherited: model_, residual_obj_
   
 }; //end class
 

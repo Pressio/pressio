@@ -8,6 +8,7 @@
 #include "../../../meta/ode_meta_explicit.hpp"
 #include "../../../policies/meta/ode_explicit_policies_meta.hpp"
 #include "../../../ode_storage.hpp"
+#include "../../../ode_aux_data.hpp"
 
 namespace ode{
 
@@ -48,21 +49,12 @@ public:
   }
 
 private:    
-  ExplicitStepperBase(model_t & model,
-		      residual_policy_t & res_policy_obj)
-    : model_(&model),
-      residual_obj_(&res_policy_obj)
-  {}
-  ExplicitStepperBase() = delete;
+  ExplicitStepperBase() = default;
   ~ExplicitStepperBase() = default;
 
 private:
   friend stepper_type;
   friend core::details::CrtpBase<ExplicitStepperBase<stepper_type>>;
-
-protected:
-  model_t * model_;
-  residual_policy_t * residual_obj_;
   
 };//end class
 
