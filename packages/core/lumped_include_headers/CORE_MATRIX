@@ -36,6 +36,7 @@
 ///operations
 ///------------------
 #include "../src/matrix/operations/core_matrix_vector_product.hpp"
+#include "../src/matrix/operations/core_matrix_matrix_product.hpp"
 
 
 #endif
