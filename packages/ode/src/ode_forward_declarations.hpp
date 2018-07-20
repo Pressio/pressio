@@ -30,7 +30,6 @@ class ExplicitRungeKutta4Stepper;
 template<typename state_type,
          typename residual_type,
          typename jacobian_type,
-         typename scalar_type,
          typename model_type,
 	 typename sizer_type,
 	 typename solver_policy_type,

@@ -55,25 +55,25 @@ int main(int argc, char *argv[])
 
   state_t y0(y0n);
 
-  // // linear solver
-  // using lin_solve_t =
-  //   solvers::experimental::linearSolver<jac_t, state_t, state_t>;
-  // lin_solve_t ls;
-  // // nonlinear solver
-  // using nonlin_solve_t =
-  //   solvers::experimental::newtonRaphson<state_t, state_t,
-  // 					 jac_t, lin_solve_t>;
-  // nonlin_solve_t nonls(ls);
+  // linear solver
+  using lin_solve_t =
+    solvers::experimental::linearSolver<jac_t, state_t, state_t>;
+  lin_solve_t ls;
+  // nonlinear solver
+  using nonlin_solve_t =
+    solvers::experimental::newtonRaphson<state_t, state_t,
+  					 jac_t, lin_solve_t>;
+  nonlin_solve_t nonls(ls);
 
   // stepper
-  // using stepper_t = ode::ImplicitEulerStepper<
-  //   state_t, residual_t, jac_t, scalar_t,
-  //   model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
-  // stepper_t stepperObj(appObj, nonls);//, resObj, jacObj);
+  using stepper_t = ode::ImplicitEulerStepper<
+    state_t, residual_t, jac_t, model_eval_t,
+    mysizer, nonlin_solve_t>;
+  stepper_t stepperObj(appObj, nonls);//, resObj, jacObj);
   
-  using stepper_t = ode::ExplicitEulerStepper<
-    state_t, residual_t, scalar_t, model_eval_t, mysizer>;
-  stepper_t stepperObj(appObj);//, resObj, jacObj);
+  // using stepper_t = ode::ExplicitEulerStepper<
+  //   state_t, residual_t, scalar_t, model_eval_t, mysizer>;
+  // stepper_t stepperObj(appObj);//, resObj, jacObj);
 
   ode::integrateNSteps(stepperObj, y0, 0.0, dt, numSteps, collObj);
   printSol("final", y0);

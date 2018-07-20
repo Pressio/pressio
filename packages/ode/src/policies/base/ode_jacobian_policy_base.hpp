@@ -13,8 +13,10 @@ class JacobianPolicyBase
 {
 public:
 
-  template <typename state_type, typename jacobian_type,
-	    typename model_type, typename scalar_type>
+  template <typename state_type,
+	    typename jacobian_type,
+	    typename model_type,
+	    typename scalar_type>
   void compute(const state_type & y, 
 	       jacobian_type & J,
 	       model_type & model, 
