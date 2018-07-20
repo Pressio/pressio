@@ -37,7 +37,7 @@ class NonlinearNewtonRaphsonSolver
   public: 
 
 
-    NonlinearNewtonRaphsonSolver(NonlinearNewtonRaphsonSolver&& other) : system_(std::move(other.system_)), mStep_(other.mStep_) {}
+    NonlinearNewtonRaphsonSolver(NonlinearNewtonRaphsonSolver&& other) : system_(std::move(other.system_)) {}
 
 
     template <typename NewSystemT>
@@ -66,16 +66,16 @@ class NonlinearNewtonRaphsonSolver
       linearSolver.setMaxIterations(this->getLinearSolverMaxIterations());
 
       int iStep = 1;
-      auto xNew = linearSolver.solve(dy);
       auto xOld = xInit;
-
-      while (iStep++ < mStep_ && NormT::template compute_norm_difference(xOld, xNew) > 1.0e-5) {
+      auto xNew = xInit - linearSolver.solve(dy);
+ 
+      while (iStep++ < this->getMaxIterations() && NormT::template compute_norm_difference(xOld, xNew) > this->getTolerance()) {
         xOld = xNew;
         dy = system_.residual(xNew);
         Ja = system_.jacobian(xNew);
 
         linearSolver.resetLinearSystem(Ja);
-        xNew = linearSolver.solve(dy);
+        xNew = xNew - linearSolver.solve(dy);
       }
 
       return xNew;
@@ -101,16 +101,16 @@ class NonlinearNewtonRaphsonSolver
       linearSolver.setMaxIterations(this->getLinearSolverMaxIterations());
 
       int iStep = 1;
-      auto xNew = linearSolver.solve(dy);
       auto xOld = xInit;
+      auto xNew = xInit - linearSolver.solve(dy);
 
-      while (iStep++ < mStep_ && NormT::template compute_norm_difference(xOld, xNew) > 1.0e-5) {
+      while (iStep++ < this->getMaxIterations() && NormT::template compute_norm_difference(xOld, xNew) > this->getTolerance()) {
         xOld = xNew;
         dy = system_.residual(xNew);
         Ja = system_.jacobian(xNew);
 
         linearSolver.resetLinearSystem(Ja);
-        xNew = linearSolver.solve(dy);
+        xNew = xNew - linearSolver.solve(dy);
       }
 
       return xNew;
@@ -120,13 +120,12 @@ class NonlinearNewtonRaphsonSolver
   private:
 
     NonlinearNewtonRaphsonSolver() = delete;
-    NonlinearNewtonRaphsonSolver(const SystemT& system) : base_type(), system_(system), mStep_(100) {}
+    NonlinearNewtonRaphsonSolver(const SystemT& system) : base_type(), system_(system) {}
 
 
   private:
  
     SystemT system_; 
-    int mStep_;
 };
 
 } //end namespace solvers

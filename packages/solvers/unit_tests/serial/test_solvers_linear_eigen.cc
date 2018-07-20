@@ -21,20 +21,20 @@ TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenReturnSameTy
 
   // Define linear system
   vector_w_t b(2);
-  (*b.data()) << 0.0, 2.0;
+  (*b.data()) << 7.0, 1.0;
 
   matrix_w_t A(2, 2);
-  A.data()->coeffRef(0, 0) =  1;
-  A.data()->coeffRef(0, 1) =  1;
-  A.data()->coeffRef(1, 0) =  1;
-  A.data()->coeffRef(1, 1) = -1;
+  A.data()->insert(0, 0) +=  3.0;
+  A.data()->insert(0, 1) += -1.0;
+  A.data()->insert(1, 0) +=  2.0;
+  A.data()->insert(1, 1) +=  3.0;
 
   // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A);
+  auto solver = LinearIterativeSolvers::createSolver<linear::Bicgstab>(A);
   auto x = solver.solve(b);
 
   // Expectations
-  EXPECT_NEAR( x[0],  1.0, 1e-14 );
+  EXPECT_NEAR( x[0],  2.0, 1e-14 );
   EXPECT_NEAR( x[1], -1.0, 1e-14 );
 }
 

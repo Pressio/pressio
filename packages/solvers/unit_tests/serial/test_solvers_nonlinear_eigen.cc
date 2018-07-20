@@ -19,7 +19,7 @@ struct NonLinearSystem {
     using vector_n_t = Eigen::VectorXd;
     using vector_w_t = core::Vector<vector_n_t>;
 
-    using state_type = vector_w_t;// state_type;
+    typedef vector_w_t state_type;
     typedef matrix_w_t matrix_type;
 
 
@@ -66,12 +66,17 @@ TEST(solvers_nonlinear_iterative_eigen, solversTestNonLinearIterativeEigenRungeK
   core::Vector<Eigen::VectorXd> b(2);
 
   // Initialize b
-  b[0] = 0.0015;
-  b[1] = 1.5; 
+  b[0] = 0.15;
+  b[1] = 0.5; 
 
   // Solve nonlinear system using 
   auto solver = NonlinearIterativeSolvers::createSolver<nonlinear::NewtonRaphson>(system);
-  auto x = solver.solve<linear::CG, L2Norm>(b);
+  auto y = solver.solve<linear::Bicgstab, L2Norm>(b);
+
+  // Expectations
+  EXPECT_NEAR( y[0],  1.0, 1e-8 );
+  EXPECT_NEAR( y[1],  0.0, 1e-8 );
+ 
 }
 
 
