@@ -45,14 +45,12 @@ template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
 	 typename model_type,	
-	 typename time_type,
 	 typename sizer_type
 	 >
 class ExplicitRungeKutta4Stepper<state_type,
 				 residual_type,
 				 scalar_type,
 				 model_type,
-				 time_type,
 				 sizer_type,
 				 void,
 				 typename
@@ -64,24 +62,22 @@ class ExplicitRungeKutta4Stepper<state_type,
 	state_type, residual_type,
 	scalar_type,
 	model_type,
-	time_type,
 	sizer_type,
 	ode::policy::explicit_residual_standard_policy<
 	  state_type, residual_type,
-	  model_type, time_type, sizer_type>>
+	  model_type, scalar_type, sizer_type>>
 {
 public:
   using pol_t = ode::policy::explicit_residual_standard_policy<state_type,
-						    residual_type,
-						    model_type,
-						    time_type,
-						    sizer_type>;
+							       residual_type,
+							       model_type,
+							       scalar_type,
+							       sizer_type>;
 
   using base_t = impl::ExplicitRungeKutta4StepperImpl<state_type,
 						      residual_type,
 						      scalar_type,
 						      model_type,
-						      time_type,
 						      sizer_type,
 						      pol_t>;
 
@@ -113,7 +109,6 @@ template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
 	 typename model_type,	
-	 typename time_type,
 	 typename sizer_type,
 	 typename residual_policy_type
 	 >
@@ -121,7 +116,6 @@ class ExplicitRungeKutta4Stepper<state_type,
 			   residual_type,
 			   scalar_type,
 			   model_type,
-			   time_type,
 			   sizer_type,
 			   residual_policy_type,
 			   typename
@@ -133,7 +127,6 @@ class ExplicitRungeKutta4Stepper<state_type,
 						residual_type,
 						scalar_type,
 						model_type,
-						time_type,
 						sizer_type,
 						residual_policy_type>
 {
@@ -143,7 +136,6 @@ public:
 						      residual_type,
 						      scalar_type,
 						      model_type,
-						      time_type,
 						      sizer_type,
 						      residual_policy_type>;
 

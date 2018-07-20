@@ -13,7 +13,6 @@ template<typename state_type,
 	 typename jacobian_type,
 	 typename scalar_type,
 	 typename model_type,
-	 typename time_type,
 	 typename sizer_type,
 	 typename solver_policy_type,
 	 typename residual_policy_type,
@@ -23,7 +22,6 @@ class ImplicitEulerStepperImpl<state_type,
 			       jacobian_type,
 			       scalar_type,
 			       model_type,
-			       time_type, 
 			       sizer_type,
 			       solver_policy_type,
 			       residual_policy_type,
@@ -31,7 +29,7 @@ class ImplicitEulerStepperImpl<state_type,
   : public ImplicitStepperBase<
   ImplicitEulerStepperImpl<state_type, residual_type,
 			   jacobian_type, scalar_type,
-			   model_type, time_type, 
+			   model_type, 
 			   sizer_type,
 			   solver_policy_type,
 			   residual_policy_type,
@@ -56,7 +54,6 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					     jacobian_type,
 					     scalar_type,
 					     model_type,
-					     time_type, 
 					     sizer_type,
 					     solver_policy_type,
 					     residual_policy_type,
@@ -93,8 +90,8 @@ protected:
   
 protected:
   template<typename step_t>
-  void doStepImpl(state_type & y, time_type t,
-		  time_type dt, step_t step )
+  void doStepImpl(state_type & y, scalar_type t,
+		  scalar_type dt, step_t step )
   {
     dt_ = dt;
     t_ = t;

@@ -14,12 +14,12 @@ namespace ode{
 //*********************************************************
 template<typename state_type, typename residual_type,
 	 typename jacobian_type, typename scalar_type,
-	 typename model_type, typename time_type,
-	 typename sizer_type, typename solver_policy_type
+	 typename model_type, typename sizer_type,
+	 typename solver_policy_type
 	 >
 class ImplicitEulerStepper<state_type, residual_type,
 			   jacobian_type, scalar_type,
-			   model_type, time_type, sizer_type,
+			   model_type, sizer_type,
 			   solver_policy_type,
 			   void, void,
 			   typename std::enable_if<
@@ -27,29 +27,26 @@ class ImplicitEulerStepper<state_type, residual_type,
 			     >::type>
   : public impl::ImplicitEulerStepperImpl<
   state_type, residual_type, jacobian_type, scalar_type,
-  model_type, time_type, sizer_type,
-  solver_policy_type,
+  model_type, sizer_type, solver_policy_type,
   ode::policy::implicit_euler_residual_standard_policy<
-    state_type, residual_type,
-    model_type, time_type, sizer_type>,
+    state_type, residual_type, model_type, scalar_type, sizer_type>,
   ode::policy::implicit_euler_jacobian_standard_policy<
-    state_type, jacobian_type,
-    model_type, time_type, sizer_type>
+    state_type, jacobian_type, model_type, scalar_type, sizer_type>
   >
 {
+
 public:
   using res_pol_t = ode::policy::implicit_euler_residual_standard_policy<
-  state_type, residual_type, model_type, time_type, sizer_type>;
+  state_type, residual_type, model_type, scalar_type, sizer_type>;
 			      
   using jac_pol_t = ode::policy::implicit_euler_jacobian_standard_policy<
-  state_type, jacobian_type, model_type, time_type, sizer_type>;
+    state_type, jacobian_type, model_type, scalar_type, sizer_type>;
 
   using base_t = impl::ImplicitEulerStepperImpl<state_type,
 						residual_type,
   						jacobian_type,
 						scalar_type,
   						model_type,
-						time_type,
 						sizer_type,
   						solver_policy_type,
   						res_pol_t,
@@ -89,7 +86,6 @@ template<typename state_type,
 	 typename jacobian_type,
 	 typename scalar_type,
 	 typename model_type,
-	 typename time_type,
 	 typename sizer_type,
 	 typename solver_policy_type,
 	 typename residual_policy_type,
@@ -100,7 +96,6 @@ class ImplicitEulerStepper<state_type,
 			   jacobian_type,
 			   scalar_type,
 			   model_type,
-			   time_type,
 			   sizer_type,
 			   solver_policy_type,
 			   residual_policy_type,
@@ -116,7 +111,6 @@ class ImplicitEulerStepper<state_type,
 					  jacobian_type,
 					  scalar_type,
 					  model_type,
-					  time_type,
 					  sizer_type,
 					  solver_policy_type,
 					  residual_policy_type,
@@ -128,7 +122,6 @@ public:
 						jacobian_type,
 						scalar_type,
 						model_type,
-						time_type,
 						sizer_type,
 						solver_policy_type,
 						residual_policy_type,

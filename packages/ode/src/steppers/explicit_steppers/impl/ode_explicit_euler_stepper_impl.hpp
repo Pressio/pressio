@@ -12,7 +12,6 @@ template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
 	 typename model_type,	
-	 typename time_type,
 	 typename sizer_type,
 	 typename residual_policy_type
 	 >
@@ -20,7 +19,6 @@ class ExplicitEulerStepperImpl<state_type,
 			       residual_type,
 			       scalar_type,
 			       model_type,
-			       time_type,
 			       sizer_type,
 			       residual_policy_type>
   : public ExplicitStepperBase<
@@ -28,7 +26,6 @@ class ExplicitEulerStepperImpl<state_type,
 			   residual_type,
 			   scalar_type,
 			   model_type,
-			   time_type,
 			   sizer_type,
 			   residual_policy_type> >,
     private OdeStorage<state_type, residual_type, 0, 1>
@@ -41,8 +38,8 @@ class ExplicitEulerStepperImpl<state_type,
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using stepper_t = ExplicitEulerStepperImpl<
-  state_type, residual_type, scalar_type,
-  model_type, time_type, sizer_type, residual_policy_type>;
+    state_type, residual_type, scalar_type,
+    model_type, sizer_type, residual_policy_type>;
 
   using stepper_base_t = ExplicitStepperBase<stepper_t>;
   using storage_base_t = OdeStorage<state_type, residual_type, 0, 1>;
@@ -67,8 +64,8 @@ protected:
 
 protected:
   template<typename step_t>
-  void doStepImpl(state_type & y, time_type t,
-		  time_type dt, step_t step)
+  void doStepImpl(state_type & y, scalar_type t,
+		  scalar_type dt, step_t step)
   {
     auto ySz = sizer_type::getSize(y);
     if (sizer_type::getSize(auxRHS_[0]) == 0)

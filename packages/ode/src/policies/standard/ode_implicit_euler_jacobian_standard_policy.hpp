@@ -13,12 +13,12 @@ namespace policy{
 template<typename state_type,
 	 typename jacobian_type,
 	 typename model_type, 
-	 typename time_type, 
+	 typename scalar_type, 
 	 typename sizer_type>
 class implicit_euler_jacobian_standard_policy
   : public JacobianPolicyBase<implicit_euler_jacobian_standard_policy<
 				state_type, jacobian_type,
-				model_type, time_type, sizer_type> >
+				model_type, scalar_type, sizer_type> >
 {
 public:
   implicit_euler_jacobian_standard_policy() = default;
@@ -42,8 +42,8 @@ private:
   void computeImpl(const U & y, 
 		   T & J, 
 		   model_type & model,
-		   time_type t,
-		   time_type dt)
+		   scalar_type t,
+		   scalar_type dt)
   {
     // if (II_.rows()==0){
     //   II_.resize(J.rows(), J.cols());
@@ -59,7 +59,7 @@ private:
 private:
   friend JacobianPolicyBase<implicit_euler_jacobian_standard_policy<
 			      state_type, jacobian_type,
-			      model_type, time_type, sizer_type> >;
+			      model_type, scalar_type, sizer_type> >;
 
 };//end class
   

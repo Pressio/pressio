@@ -12,7 +12,6 @@ template<typename state_type,
 	 typename jacobian_type,
 	 typename scalar_type,
 	 typename model_type,
-	 typename time_type,
 	 typename sizer_type,
 	 typename solver_policy_type,
 	 typename residual_policy_type,
@@ -22,7 +21,6 @@ struct traits< impl::ImplicitEulerStepperImpl<state_type,
 					      jacobian_type,
 					      scalar_type,
 					      model_type,
-					      time_type,
 					      sizer_type,
 					      solver_policy_type,
 					      residual_policy_type,
@@ -34,7 +32,6 @@ struct traits< impl::ImplicitEulerStepperImpl<state_type,
 				   jacobian_type,
 				   scalar_type,
 				   model_type,
-				   time_type,
 				   sizer_type,
 				   solver_policy_type,
 				   residual_policy_type,
@@ -44,7 +41,6 @@ struct traits< impl::ImplicitEulerStepperImpl<state_type,
   using jacobian_t =  jacobian_type;
   using scalar_t = scalar_type;    
   using model_t = model_type;
-  using time_t = time_type;
   using sizer_t = sizer_type;
   using solver_policy_t = solver_policy_type;
   using residual_policy_t = residual_policy_type;

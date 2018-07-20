@@ -11,13 +11,13 @@ namespace policy{
 template<typename state_type,
 	 typename residual_type,
 	 typename model_type,
-	 typename time_type,
+	 typename scalar_type,
 	 typename sizer_type>
 class explicit_residual_standard_policy
   : public ExplicitResidualPolicyBase<
   explicit_residual_standard_policy<
     state_type, residual_type,
-    model_type, time_type,
+    model_type, scalar_type,
     sizer_type> >
 {
 
@@ -40,7 +40,7 @@ private:
   void computeImpl(const U & y,
 		   T & R,
 		   model_type & model,
-		   time_type t)
+		   scalar_type t)
   {
     if (R.empty())
       sizer_type::matchSize(y, R);
@@ -54,7 +54,7 @@ private:
   friend ExplicitResidualPolicyBase<
   explicit_residual_standard_policy<
     state_type, residual_type,
-    model_type, time_type,
+    model_type, scalar_type,
     sizer_type>>;
 
 };//end class

@@ -14,12 +14,12 @@ class JacobianPolicyBase
 public:
 
   template <typename state_type, typename jacobian_type,
-	    typename model_type, typename time_type>
+	    typename model_type, typename scalar_type>
   void compute(const state_type & y, 
 	       jacobian_type & J,
 	       model_type & model, 
-	       time_type t,
-	       time_type dt)
+	       scalar_type t,
+	       scalar_type dt)
   {
     this->underlying().computeImpl(y, J, model, t, dt);
   } 
