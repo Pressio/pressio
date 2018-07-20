@@ -29,18 +29,16 @@ protected:
 template<typename model_type,
 	 typename scalar_type,
 	 typename residual_policy_type,
-	 typename jacobian_policy_type,
-	 typename solver_type>
+	 typename jacobian_policy_type>
 class ImpOdeAuxData
 {
 
 public:
   ImpOdeAuxData(model_type & mod,
 		residual_policy_type & rpolo,
-		jacobian_policy_type & jpolo,
-		solver_type & solver)
+		jacobian_policy_type & jpolo)
     : model_(&mod), residual_obj_(&rpolo),
-      jacobian_obj_(&jpolo), solver_(&solver){}
+      jacobian_obj_(&jpolo){}
 
   ~ImpOdeAuxData() = default;
 
@@ -48,7 +46,6 @@ protected:
   model_type * model_;
   residual_policy_type * residual_obj_;
   jacobian_policy_type * jacobian_obj_;
-  solver_type * solver_;
   scalar_type t_;
   scalar_type dt_;
   

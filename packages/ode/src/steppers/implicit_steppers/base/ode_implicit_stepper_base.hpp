@@ -25,7 +25,6 @@ private:
   using sc_t = typename traits::scalar_t;
   using model_t = typename traits::model_t;
   using sizer_t = typename traits::sizer_t;
-  using solver_t = typename traits::solver_policy_t;
   using residual_policy_t = typename traits::residual_policy_t;  
   using jacobian_policy_t = typename traits::jacobian_policy_t;  
 
@@ -46,9 +45,12 @@ public:
     return order_value;
   }
 
-  template <typename step_t>
-  void doStep(state_t & y, sc_t t, sc_t dt, step_t step){
-    this->underlying().doStepImpl( y, t, dt, step);
+  template <typename solver_type,
+	    typename step_t>
+  void doStep(state_t & y, sc_t t,
+	      sc_t dt, step_t step,
+	      solver_type & solver){
+    this->underlying().doStepImpl( y, t, dt, step, solver);
   }
 
   void residual(const state_t & y, state_t & R){

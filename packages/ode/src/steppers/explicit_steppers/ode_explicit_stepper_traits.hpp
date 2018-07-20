@@ -28,7 +28,10 @@ struct traits<impl::ExplicitEulerStepperImpl<state_type,
   using model_t = model_type;
   using sizer_t = sizer_type;
   using residual_policy_t = residual_policy_type;
-  
+
+  static constexpr bool is_implicit = false;
+  static constexpr bool is_explicit = true;
+
   using order_t = unsigned int;
   static constexpr order_t order_value = 1;    
 };
@@ -63,6 +66,9 @@ struct traits<impl::ExplicitRungeKutta4StepperImpl<state_type,
   
   using order_t = unsigned int;
   static constexpr order_t order_value = 4;
+
+  static constexpr bool is_implicit = false;
+  static constexpr bool is_explicit = true;
 };
 
   

@@ -67,15 +67,14 @@ int main(int argc, char *argv[])
 
   // stepper
   using stepper_t = ode::ImplicitEulerStepper<
-    state_t, residual_t, jac_t, model_eval_t,
-    mysizer, nonlin_solve_t>;
-  stepper_t stepperObj(appObj, nonls);//, resObj, jacObj);
+    state_t, residual_t, jac_t, model_eval_t, mysizer>;
+  stepper_t stepperObj(appObj);//, resObj, jacObj);
   
   // using stepper_t = ode::ExplicitEulerStepper<
   //   state_t, residual_t, scalar_t, model_eval_t, mysizer>;
   // stepper_t stepperObj(appObj);//, resObj, jacObj);
 
-  ode::integrateNSteps(stepperObj, y0, 0.0, dt, numSteps, collObj);
+  ode::integrateNSteps(stepperObj, y0, 0.0, dt, numSteps, collObj, nonls);
   printSol("final", y0);
 
   return 0;
