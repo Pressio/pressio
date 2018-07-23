@@ -21,28 +21,6 @@ struct NonlinearIterativeSolvers {
 
   /**
    * @brief  createSolver
-   * @param  An object that does not represent a nonlinear system 
-   * @return Fail at compile time
-   */ 
-  template <typename SolverT,
-    typename SystemT,
-    typename std::enable_if<
-      !details::system_traits<SystemT>::is_system,
-      SystemT
-    >::type* = nullptr
-  > 
-  static void createSolver(
-    SystemT const& A
-  ) {
-
-    // The system object used to initialize the solver is not valid
-    std::cerr << "Error: the system object supplied is not valid" << std::endl;
-    assert(false);
-  }
-
-
-  /**
-   * @brief  createSolver
    * @param  An object representing a nonlinear system to be solved
    * @return A nonlinear iterative solver
    *
@@ -50,22 +28,14 @@ struct NonlinearIterativeSolvers {
    *
    * Create a nonlinear iterative solver of the specified type
    */
-  template <typename SolverT,
-    typename SystemT,
-    typename std::enable_if<
-      details::system_traits<SystemT>::is_system,
-      SystemT
-    >::type* = nullptr
-  >
-  static auto createSolver(
-    SystemT const& A
-  ) {
-
+  template <typename SolverT>
+  static auto createSolver()
+  {
     typedef typename nonlinear::details::solver_traits<SolverT> solver_traits;
-    typedef typename solver_traits::template solver_type<SystemT> solver_type;
+    typedef typename solver_traits::solver_type solver_type;
     static_assert(solver_traits::solver_exists, "Error: the nonlinear solver selected is not available");
 
-    solver_type solver(A);
+    solver_type solver;
     return solver;
   }
 

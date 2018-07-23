@@ -7,56 +7,46 @@ namespace solvers {
 
 
 /**
- * @brief Base class for nonlinear iterative solver implemented through CRTP
+ * @brief Base class for nonlinear iterative solver using CRTP
  *
  * @section DESCRIPTION
  *
- * This class defines the public interface for a nonlinear iterative solver. 
+ * This class defines the methods common to different nonlinear iterative solvers.
+ *  
  * Objects of the class cannot be created directly. To create a solver,
  * use the factory class NonlinearIterativeSolvers.
  */
-template<typename Derived>
+template <typename Derived>
 class NonlinearIterativeSolverBase {
 
   public: 
 
-
-    /**
-     * @brief  Reinitialize the new nonlinear solver
-     *
-     * @param  A Matrix representing the nonlinear system to solve
-     */
-    template <typename T>
-    void reassignSystem(const T& A) {
-      this->underlying().reassignSystem(A);
+    // Uses default preconditioner and L2 norm
+    template <typename SolverT,
+      typename SystemT,
+      typename VectorT
+    > 
+    auto solve(const SystemT& system, const VectorT& xInit) {
+      return this->underlying().template solve<SolverT>(system, xInit);
     }
 
 
-    /**
-     * @brief  Solve the nonlinear system
-     *
-     * @param  B is the RHS vector
-     * @return Solution vector
-     */
-    template <typename T>
-    auto solve(const T& b) {
-      return this->underlying().solve(b);  
+    // Specifies linear solver, preconditioner and norm to be used
+    template <typename SolverT,
+      typename PrecT,
+      typename NormT,
+      typename SystemT,
+      typename VectorT,
+      typename std::enable_if<
+        core::meta::are_vector_matrix_compatible<VectorT, typename SystemT::matrix_type>::value,
+        VectorT
+      >::type* = nullptr
+    >
+    auto solve(const SystemT& system, const VectorT& xInit) {
+      return this->underlying().template solve<SolverT, PrecT, NormT>(system, xInit);
     }
 
 
-    /**
-     * @brief  Solve the linear system
-     *
-     * @param  B is the RHS vector
-     * @param  X is the solution vector
-     * @return void
-     */
-    template <typename T, typename U>
-    void solve(const T& b, U& x) {
-      this->underlying().solve(b, x);
-    }
-
- 
     int getMaxIterations() {
       return maxIters_;
     }
