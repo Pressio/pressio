@@ -7,16 +7,16 @@
 namespace ode{
 namespace meta {
 
-template<typename time_type, typename enable = void>
-struct isLegitimateTimeType : std::false_type{};
+// template<typename time_type, typename enable = void>
+// struct isLegitimateTimeType : std::false_type{};
 
-template<typename time_type>
-struct isLegitimateTimeType<
-  time_type,
-  typename std::enable_if<
-    std::is_floating_point<time_type>::value
-    >::type
-  > : std::true_type{};
+// template<typename time_type>
+// struct isLegitimateTimeType<
+//   time_type,
+//   typename std::enable_if<
+//     std::is_floating_point<time_type>::value
+//     >::type
+//   > : std::true_type{};
 
 //---------------------------------------------------------------
 
@@ -40,11 +40,12 @@ template<typename functor,
 struct isLegitimateCollector<
   functor, int_type, time_type, state_type,
   core::meta::void_t<
-    decltype(std::declval<functor>()(std::declval<int_type>(),
-				     std::declval<time_type>(),
-				     std::declval<state_type>()
-				     )
-	     )
+    decltype(std::declval<functor>()(
+      std::declval<int_type>(),
+      std::declval<time_type>(),
+      std::declval<state_type>()
+	      )
+	    )
     >
   > : std::true_type{};
   

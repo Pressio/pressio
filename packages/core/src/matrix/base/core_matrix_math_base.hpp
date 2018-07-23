@@ -10,12 +10,9 @@ template<typename derived_type>
 class MatrixMathBase
   : private core::details::CrtpBase<MatrixMathBase<derived_type>>
 {
-
+  
 private:
   using traits_t = details::traits<derived_type>;
-  using der_t = typename traits_t::derived_t;
-  using wrap_t = typename traits_t::wrapped_t;
-  using ord_t = typename traits_t::ordinal_t;
   using sc_t = typename traits_t::scalar_t;    
 
 public:
@@ -25,14 +22,12 @@ public:
   };  
     
 private:
-  friend der_t;
+  friend derived_type;
   friend core::details::CrtpBase<MatrixMathBase<derived_type>>;
-
   MatrixMathBase() = default;
   ~MatrixMathBase() = default; 
 
 };//end class
-
   
 } // end namespace core
 #endif

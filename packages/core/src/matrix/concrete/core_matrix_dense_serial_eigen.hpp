@@ -94,7 +94,6 @@ public:
   }
 
 private:  
-  //from generic base
   wrap_t * dataImpl(){
     return &data_;
   };  
@@ -110,7 +109,6 @@ private:
       data_(ir,ir) += value;
   };
   
-  // from serial base
   ord_t rowsImpl() const{
     return data_.rows();
   }

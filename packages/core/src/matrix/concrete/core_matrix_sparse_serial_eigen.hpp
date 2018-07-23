@@ -117,7 +117,6 @@ public:
   }
 
 private:
-  //from generic base
   wrap_t const * dataImpl() const{
     return &data_;
   };
@@ -149,7 +148,6 @@ private:
     data_.resize(nrows, ncols);
   }
 
-  //from sparse serial base
   ord_t nonZerosCountImpl()const{
     return data_.nonZeros();
   }
@@ -184,7 +182,6 @@ private:
       data_.insert(indices[i],colInd) = values[i];
   }
 
-  // from math base
   void scaleImpl(sc_t & factor){
     data_.coeffs() *= factor;
   };  
@@ -192,7 +189,8 @@ private:
 private:
   bool haveCompatibleDimensions(const derived_t & m1,
 				const derived_t & m2)const{
-    return (m1.rows()==m2.rows() && m1.cols()==m2.cols()) ? true : false;
+    return (m1.rows()==m2.rows() &&
+	    m1.cols()==m2.cols()) ? true : false;
   }
 
   void compress(){

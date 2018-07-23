@@ -12,10 +12,13 @@ class MatrixSerialBase
   : private core::details::CrtpBase<MatrixSerialBase<derived_type>>
 {
 
+  static_assert( details::traits<derived_type>::isDistributed==0 &&
+		 details::traits<derived_type>::isSerial==1,
+		 "OOPS: distributed matrix inheriting \
+from serial base!");
+  
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
-  using der_t = typename details::traits<derived_type>::derived_t;
-  using wrap_t = typename details::traits<derived_type>::wrapped_t;
   using ord_t = typename details::traits<derived_type>::ordinal_t;  
 
 public:
@@ -31,10 +34,13 @@ public:
     this->underlying().resizeImpl(nrows, ncols);
   }
 
+  void addToDiagonal(sc_t value) {
+    return this->underlying().addToDiagonalImpl(value);
+  };
+  
 private:  
   friend derived_type;
   friend core::details::CrtpBase<MatrixSerialBase<derived_type>>;
-
   MatrixSerialBase() = default;
   ~MatrixSerialBase() = default;
   

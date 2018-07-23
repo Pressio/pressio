@@ -5,6 +5,7 @@
 #include "../meta/core_vector_meta.hpp"
 #include "../base/core_vector_generic_base.hpp"
 #include "../base/core_vector_distributed_base.hpp"
+#include "../base/core_vector_distributed_trilinos.hpp"
 #include "../base/core_vector_math_base.hpp"
 #include "Epetra_Vector.h"
 
@@ -20,6 +21,7 @@ class Vector<wrapped_type,
 	     >
   : public VectorGenericBase< Vector<wrapped_type> >,
     public VectorDistributedBase< Vector<wrapped_type> >,
+    public VectorDistributedTrilinos< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >
 {
 private:
@@ -114,20 +116,23 @@ private:
     return data_.MyLength();
   }
 
-  map_t const & getDataMapImpl() const{
-    return data_.Map();
-  }
-
   void replaceGlobalValuesImpl(GO_t numentries,
 			       const GO_t * indices,
 			       const sc_t * values){
     data_.ReplaceGlobalValues(numentries, values, indices);
   }
 
+  //-------------------
+  //from trilinos base
+  //-------------------
+  map_t const & getDataMapImpl() const{
+    return data_.Map();
+  }
+
   void replaceDataMapImpl(const map_t & mapObj){
     data_.ReplaceMap(mapObj);
   }
-
+    
   //----------------
   //from math base
   //----------------
@@ -166,6 +171,7 @@ private:
   friend VectorGenericBase< derived_t >;
   friend VectorDistributedBase< derived_t >;
   friend VectorMathBase< derived_t >;
+  friend VectorDistributedTrilinos< derived_t >;
   
 private:
   wrap_t data_;

@@ -8,12 +8,17 @@ namespace core{
     
 template<typename derived_type>
 class MatrixSparseSerialBase
-  : private core::details::CrtpBase<MatrixSparseSerialBase<derived_type>>
+  : private core::details::CrtpBase<
+  MatrixSparseSerialBase<derived_type>>
 {
+
+  static_assert( details::traits<derived_type>::isDistributed==0 &&
+		 details::traits<derived_type>::isSerial==1,
+		 "OOPS: distributed matrix inheriting \
+from sparse serial base!");
+
 private:
   using traits_t = details::traits<derived_type>;
-  using der_t = typename traits_t::derived_t;
-  using wrap_t = typename traits_t::wrapped_t;
   using ord_t = typename traits_t::ordinal_t;
   using sc_t = typename traits_t::scalar_t;    
 
@@ -51,14 +56,14 @@ public:
   sc_t operator() (ord_t row, ord_t col) const;
   
 private:  
-  friend der_t;
-  friend core::details::CrtpBase<MatrixSparseSerialBase<derived_type>>;
+  friend derived_type;
+  friend core::details::CrtpBase<
+    MatrixSparseSerialBase<derived_type>>;
 
   MatrixSparseSerialBase() = default;
   ~MatrixSparseSerialBase() = default; 
 
 };//end class
-
   
 } // end namespace core
 #endif

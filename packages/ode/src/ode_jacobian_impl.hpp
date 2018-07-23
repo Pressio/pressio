@@ -7,7 +7,6 @@
 namespace ode{
 namespace impl{
 
-// enable for SPARSE serial eigen matrix
 template <typename jacobian_type,
 	  typename time_type,
 	  typename
@@ -26,7 +25,9 @@ void implicit_euler_time_discrete_jacobian(jacobian_type & jac,
   //jac += II;  
   jac.addToDiagonal(static_cast<time_type>(1));
 }
-  
+
+
+//need to add also other overloads  
 
 }//end namespace impl
 }//end namespace ode

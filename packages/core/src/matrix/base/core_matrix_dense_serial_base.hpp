@@ -11,6 +11,12 @@ template<typename derived_type>
 class MatrixDenseSerialBase
   : private core::details::CrtpBase<MatrixDenseSerialBase<derived_type>>
 {
+
+  static_assert( details::traits<derived_type>::isDistributed==0 &&
+		 details::traits<derived_type>::isSerial==1,
+		 "OOPS: distributed matrix inheriting \
+from dense serial base!");
+  
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using der_t = typename details::traits<derived_type>::derived_t;

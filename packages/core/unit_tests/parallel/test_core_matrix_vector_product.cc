@@ -1,11 +1,5 @@
 
 #include <gtest/gtest.h>
-// #include "matrix/meta/core_matrix_meta.hpp"
-// #include "vector/concrete/core_vector_serial_eigen.hpp"
-// #include "vector/concrete/core_vector_serial_stdlib.hpp"
-// #include "matrix/operations/core_matrix_vector_product.hpp"
-// #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
-// #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 #include "CORE_MATRIX"
 #include "CORE_VECTOR"
 
@@ -19,7 +13,7 @@ TEST(core_matrix_vector_product, eigenVectorDenseMatrix)
   natM_t M;
   M << 1,0,2,2,1,3,0,0,1;
   core::Matrix<natM_t> myM(M);
-  
+
   core::Vector<natV_t> myR;
   core::matrixVectorProduct(myM, myV, myR);
   EXPECT_DOUBLE_EQ( myR[0], 16.0);

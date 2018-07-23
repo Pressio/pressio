@@ -47,17 +47,15 @@ template <template <typename...> class policy_t,
 	  typename state_type,
 	  typename residual_type,
 	  typename model_type,
-	  typename time_type,
 	  typename sizer_type>
 struct is_implicit_euler_residual_standard_policy<
-  policy_t<state_type, residual_type, model_type, 
-	   time_type, sizer_type>,
+  policy_t<state_type, residual_type, model_type, sizer_type>,
   typename std::enable_if<
     std::is_same<policy_t<state_type, residual_type, 
-			  model_type, time_type, sizer_type>,
+			  model_type, sizer_type>,
 		 ode::policy::implicit_euler_residual_standard_policy<
 		   state_type, residual_type, 
-		   model_type, time_type, sizer_type>
+		   model_type, sizer_type>
 		 >::value
 			  >::type
   > : std::true_type{};
@@ -75,17 +73,15 @@ template <template <typename...> class policy_t,
 	  typename state_type,
 	  typename jacobian_type,
 	  typename model_type,
-	  typename time_type,
 	  typename sizer_type>
 struct is_implicit_euler_jacobian_standard_oolicy<
-  policy_t<state_type, jacobian_type, model_type,
-	   time_type, sizer_type>,
+  policy_t<state_type, jacobian_type, model_type, sizer_type>,
   typename std::enable_if<
     std::is_same<policy_t<state_type, jacobian_type, 
-			  model_type, time_type, sizer_type>,
+			  model_type, sizer_type>,
 		 ode::policy::implicit_euler_jacobian_standard_policy<
 		   state_type, jacobian_type, 
-		   model_type, time_type, sizer_type>
+		   model_type, sizer_type>
 		 >::value
 			  >::type
   > : std::true_type{};

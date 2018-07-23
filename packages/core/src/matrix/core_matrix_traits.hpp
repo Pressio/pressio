@@ -15,14 +15,14 @@ namespace details{
 //***********************************
 template <typename wrapped_type>
 struct traits< Matrix<
-		wrapped_type,
-		typename
-		std::enable_if<
-		  core::meta::is_matrix_dense_serial_eigen<
-		    wrapped_type>::value
-		  >::type
-		>
-	      >
+    wrapped_type,
+    typename
+    std::enable_if<
+      core::meta::is_matrix_dense_serial_eigen<
+	wrapped_type>::value
+      >::type
+    >
+  >
 {
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
@@ -49,15 +49,15 @@ struct traits< Matrix<
 //***********************************
 template <typename wrapped_type>
 struct traits< Matrix<
-		wrapped_type,
-		typename
-		std::enable_if<
-		  core::meta::is_matrix_sparse_serial_eigen<
-		    wrapped_type
-		    >::value
-		  >::type
-		>
-	      >
+    wrapped_type,
+    typename
+    std::enable_if<
+      core::meta::is_matrix_sparse_serial_eigen<
+	wrapped_type
+	>::value
+      >::type
+    >
+  >
 {
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = typename wrapped_type::StorageIndex;
@@ -92,15 +92,15 @@ matrix has to be signed"
 //***********************************
 template <typename wrapped_type>
 struct traits< Matrix<
-		wrapped_type,
-		typename
-		std::enable_if<
-		  core::meta::is_matrix_dense_serial_stdlib<
-		    wrapped_type
-		    >::value
-		  >::type
-		>
-	      >
+    wrapped_type,
+    typename
+    std::enable_if<
+      core::meta::is_matrix_dense_serial_stdlib<
+	wrapped_type
+	>::value
+      >::type
+    >
+  >
 {
   using scalar_t = typename wrapped_type::value_type::value_type;
   using ordinal_t = int;
@@ -125,24 +125,27 @@ struct traits< Matrix<
 //***********************************
 template <typename wrapped_type>
 struct traits<Matrix
-	      <wrapped_type,
-	       typename
-	       std::enable_if<
-		 core::meta::is_matrix_sparse_distributed_epetra<
-		   wrapped_type
-		   >::value
-		 >::type
-	       >
-	     >
+   <wrapped_type,
+    typename
+    std::enable_if<
+      core::meta::is_matrix_sparse_distributed_epetra<
+	wrapped_type
+	>::value
+      >::type
+    >
+  >
 {
   using wrapped_t = wrapped_type;
   using derived_t = Matrix<wrapped_t>;
   using scalar_t = defaultTypes::epetra_scalar_t;
   using local_ordinal_t = core::defaultTypes::epetra_lo_t;
   using global_ordinal_t = core::defaultTypes::epetra_go_t1;
-  using row_map_t = Epetra_BlockMap;
-  using col_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
+  using row_map_t = Epetra_Map;
+  using col_map_t = Epetra_Map;
+  using range_map_t = Epetra_Map;
+  using domain_map_t = Epetra_Map;
+  using crs_graph_t = Epetra_CrsGraph;
 
   static constexpr int isMatrix = 1;
   static constexpr int isEpetra = 1;
@@ -155,7 +158,6 @@ struct traits<Matrix
   static constexpr int isStdlib = 0;
   static constexpr int isStatic = 0;
 };
-
 
     
 ////////////////////////////

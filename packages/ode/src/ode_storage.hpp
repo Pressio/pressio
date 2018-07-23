@@ -22,6 +22,8 @@ public:
   OdeStorage(Args&&... rest)
     : auxStates_(std::forward<Args>(rest)...){}
 
+  ~OdeStorage() = default;
+
 protected:
   std::array<state_type, 1> auxStates_;
 };
@@ -38,6 +40,7 @@ public:
 	      std::forward<Args>(rest)...,
 	      std::forward<Args>(rest)...,
 	      std::forward<Args>(rest)...){}
+  ~OdeStorage() = default;
 
 protected:
   std::array<state_type, 1> auxStates_;
@@ -52,6 +55,7 @@ public:
   template<typename... Args>
   OdeStorage(Args&&... rest)
     : auxRHS_(std::forward<Args>(rest)...){}
+  ~OdeStorage() = default;
 
 protected:
   std::array<residual_type, 1> auxRHS_;

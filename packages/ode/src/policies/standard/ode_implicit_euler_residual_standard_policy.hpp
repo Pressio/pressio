@@ -12,20 +12,20 @@ namespace policy{
 template<typename state_type,
 	 typename residual_type,
 	 typename model_type,
-	 typename time_type,
 	 typename sizer_type>
 class implicit_euler_residual_standard_policy
   : public ImplicitResidualPolicyBase<
   implicit_euler_residual_standard_policy<state_type, residual_type,
-				      model_type, time_type,
-				      sizer_type>, 1, 0 >
+					  model_type, sizer_type>, 1, 0 >
 {
 public:
   implicit_euler_residual_standard_policy() = default;
   ~implicit_euler_residual_standard_policy() = default;  
 
 private:
-
+  using scalar_type = typename core::details::traits<state_type>::scalar_t;
+    
+private:
   // enable when using types from core package
   template <typename U = state_type,
 	    typename T = residual_type,
@@ -39,8 +39,8 @@ private:
 		   T & R,
 		   const std::array<U, 1> & oldYs,
 		   model_type & model,
-		   time_type t,
-		   time_type dt)
+		   scalar_type t,
+		   scalar_type dt)
   {
     if (R.empty())
       sizer_type::matchSize(y, R);
@@ -57,8 +57,7 @@ private:
   friend ImplicitResidualPolicyBase<
 				    implicit_euler_residual_standard_policy<
 				      state_type, residual_type,
-				      model_type, time_type,
-				      sizer_type>, 1,0>;
+				      model_type, sizer_type>, 1,0>;
   
 };//end class
 

@@ -8,15 +8,18 @@ namespace core{
     
 template<typename derived_type>
 class MatrixDenseDistributedBase
-  : private core::details::CrtpBase<MatrixDenseDistributedBase<derived_type>>
+  : private core::details::CrtpBase<
+  MatrixDenseDistributedBase<derived_type>>
 {
-private:
-  using der_t = typename details::traits<derived_type>::derived_t;
-  using wrap_t = typename details::traits<derived_type>::wrapped_t;
+
+  static_assert( details::traits<derived_type>::isDistributed==1,
+		 "OOPS: non-distributed matrix inheriting \
+from dense distributed base!");
   
 private:  
   friend derived_type;
-  friend core::details::CrtpBase<MatrixDenseDistributedBase<derived_type>>;
+  friend core::details::CrtpBase<
+    MatrixDenseDistributedBase<derived_type>>;
 
   MatrixDenseDistributedBase() = default;
   ~MatrixDenseDistributedBase() = default;

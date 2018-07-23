@@ -17,14 +17,15 @@ namespace details{
 //******************************* 
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
-		       core::meta::is_vector_eigen<
-			 wrapped_type>::value
-		       >::type
-		     >
-	      >     		       
+	  typename
+	  std::enable_if<
+	    core::meta::is_vector_eigen<
+	      wrapped_type>::value
+	    >::type
+	  >
+   >     		       
 {
+
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
   using wrapped_t = wrapped_type;
@@ -34,13 +35,14 @@ struct traits<Vector<wrapped_type,
   static constexpr int isSerial = 1;
   static constexpr int isSTDVector = 0;
   static constexpr int isDistributed = 0;
-  static constexpr int isStatic = ( // if it is a row vector NON dynamic
-				   ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
-				     wrapped_t::ColsAtCompileTime == 1 ) ||
-				   // if it is a col vector NON dynamic
-				   ( wrapped_t::RowsAtCompileTime == 1 &&
-				     wrapped_t::ColsAtCompileTime != Eigen::Dynamic )
-				   );
+  static constexpr int isStatic = (
+	// if it is a row vector NON dynamic
+	( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
+	  wrapped_t::ColsAtCompileTime == 1 ) ||
+	// if it is a col vector NON dynamic
+	( wrapped_t::RowsAtCompileTime == 1 &&
+	  wrapped_t::ColsAtCompileTime != Eigen::Dynamic )
+	);
   // make these void just to be clear they are not usable
   using local_ordinal_t = void;
   using global_ordinal_t = void;
@@ -52,14 +54,15 @@ struct traits<Vector<wrapped_type,
 //******************************* 
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
-		       core::meta::is_vector_stdlib<wrapped_type
-						   >::value
-		       >::type
-		     >
-	      >
+    typename
+    std::enable_if<
+      core::meta::is_vector_stdlib<
+	wrapped_type>::value
+      >::type
+    >
+  >
 {
+
   using scalar_t = typename wrapped_type::value_type;
   using ordinal_t = core::defaultTypes::local_ordinal_t;
   using wrapped_t = wrapped_type;
@@ -80,22 +83,22 @@ struct traits<Vector<wrapped_type,
 //******************************* 
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
+      typename
+      std::enable_if<
            core::meta::is_detected<
-           core::meta::has_scalar_typedef, wrapped_type
-           >::value &&
-		       /*core::meta::has_scalar_typedef<wrapped_type>::value &&*/
-		       core::meta::has_ordinal_typedef<wrapped_type
-						      >::value &&
-		       !core::meta::is_vector_stdlib<wrapped_type
-						    >::value &&
-		       !core::meta::is_vector_eigen<wrapped_type
-						   >::value
-		       >::type
-		     >
-	      >
+	     core::meta::has_scalar_typedef, wrapped_type
+	     >::value &&
+	  core::meta::has_ordinal_typedef<
+	     wrapped_type>::value &&
+	  !core::meta::is_vector_stdlib<
+	     wrapped_type>::value &&
+	  !core::meta::is_vector_eigen<
+	     wrapped_type>::value
+	  >::type
+	>
+     >
 {
+
   using scalar_t = typename wrapped_type::scalar_type;
   using ordinal_t = typename wrapped_type::ordinal_type;
   using wrapped_t = wrapped_type;
@@ -116,14 +119,13 @@ struct traits<Vector<wrapped_type,
 //******************************* 
 template<typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     typename std::enable_if<
-		       std::is_same<wrapped_type,
-				    Epetra_Vector
-				    >::value
-		       >::type
-		     >
-	      >
+      typename
+      std::enable_if<
+      core::meta::is_vector_epetra<wrapped_type
+      >::value>::type>
+      >
 {
+
   using scalar_t = defaultTypes::epetra_scalar_t;
   using local_ordinal_t = core::defaultTypes::epetra_lo_t;
   using global_ordinal_t = core::defaultTypes::epetra_go_t1;
@@ -132,6 +134,7 @@ struct traits<Vector<wrapped_type,
   using communicator_t = Epetra_Comm;
   using derived_t = Vector<wrapped_t>;
   static constexpr int isVector = 1;
+  static constexpr int isMultiVector = 0;
   static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
   static constexpr int isSTDVector = 0;
@@ -141,6 +144,7 @@ struct traits<Vector<wrapped_type,
   using ordinal_t = void;
 };
 
+  
 /////////////////////////
 }//end namespace details  
 /////////////////////////
@@ -152,12 +156,12 @@ template <typename T, typename enable = void>
 struct is_coreVector : std::false_type {};
 
 template <typename T>
-struct is_coreVector< T,
-		       typename
-		       std::enable_if<
-			 core::details::traits<T>::isVector==1
-			 >::type
-		       > : std::true_type{};
+struct is_coreVector<T,
+	   typename
+	   std::enable_if<
+	     core::details::traits<T>::isVector==1
+	     >::type
+	   > : std::true_type{};
 
 #define STATIC_ASSERT_IS_CORE_VECTOR_WRAPPER(TYPE) \
   static_assert( core::meta::is_coreVector<TYPE>::value, \

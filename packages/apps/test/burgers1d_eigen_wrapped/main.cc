@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
   // integrate in time startxbi5ng from y0
   scalar_t dt = 0.01;
   scalar_t final_t = 35;
-  int numSteps = (int) final_t/(int) dt;
+  int numSteps = static_cast<int>(final_t)/dt;
 
   // wrap with core structures
   using state_t = core::Vector<native_state_t>;
@@ -66,19 +66,20 @@ int main(int argc, char *argv[])
   nonlin_solve_t nonls(ls);
 
   // stepper
-  // using stepper_t = ode::ImplicitEulerStepper<
-  //   state_t, residual_t, jac_t, scalar_t,
-  //   model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
-  // stepper_t stepperObj(appObj, nonls);//, resObj, jacObj);
-  
-  using stepper_t = ode::ExplicitEulerStepper<
-    state_t, residual_t, scalar_t,
-    model_eval_t, scalar_t, mysizer>;
+  using stepper_t = ode::ImplicitEulerStepper<
+    state_t, residual_t, jac_t, model_eval_t, mysizer>;
   stepper_t stepperObj(appObj);//, resObj, jacObj);
+  
+  // using stepper_t = ode::ExplicitEulerStepper<
+  //   state_t, residual_t, scalar_t, model_eval_t, mysizer>;
+  // stepper_t stepperObj(appObj);//, resObj, jacObj);
 
-  ode::integrateNSteps(stepperObj, y0, 0.0, dt, numSteps, collObj);
+  ode::integrateNSteps(stepperObj, y0, 0.0, dt, numSteps, collObj, nonls);
   printSol("final", y0);
 
+  return 0;
+}
+  
 
   ///////////////////////////
 
@@ -93,9 +94,6 @@ int main(int argc, char *argv[])
 
 
   
-
-
-
 
   // using res_pol_t = ode::policy::incrementBasedResidual<
   //   state_t, residual_t, model_eval_t, scalar_t, mysizer>;
@@ -238,5 +236,3 @@ int main(int argc, char *argv[])
   // }
 
      
-  return 0;
-}
