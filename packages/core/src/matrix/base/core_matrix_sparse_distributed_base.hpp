@@ -8,20 +8,19 @@ namespace core{
     
 template<typename derived_type>
 class MatrixSparseDistributedBase
-  : private core::details::CrtpBase<MatrixSparseDistributedBase<derived_type>>
+  : private core::details::CrtpBase<
+  MatrixSparseDistributedBase<derived_type>>
 {
+
+  static_assert( details::traits<derived_type>::isDistributed==1,
+		 "OOPS: non-distributed matrix inheriting \
+from sparse distributed base!");
 
 private:
   using traits_t = details::traits<derived_type>;
-  using der_t = typename traits_t::derived_t;
-  using wrap_t = typename traits_t::wrapped_t;
-
   using sc_t = typename traits_t::scalar_t;
   using LO_t = typename traits_t::local_ordinal_t;
   using GO_t = typename traits_t::global_ordinal_t;
-  using row_map_t = typename traits_t::row_map_t;
-  using col_map_t = typename traits_t::col_map_t;
-  using comm_t =  typename traits_t::communicator_t;
   
 public:
   void insertGlobalValues(GO_t targetRow,
@@ -35,14 +34,13 @@ public:
   }
 
 private:  
-  friend der_t;
-  friend core::details::CrtpBase<MatrixSparseDistributedBase<derived_type>>;
+  friend derived_type;
+  friend core::details::CrtpBase<
+    MatrixSparseDistributedBase<derived_type>>;
 
   MatrixSparseDistributedBase() = default;
   ~MatrixSparseDistributedBase() = default; 
 
-};//end class
-
-  
+};//end class  
 } // end namespace core
 #endif

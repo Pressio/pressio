@@ -9,19 +9,24 @@ namespace core{
     
 template<typename derived_type>
 class VectorDistributedBase
-  : private core::details::CrtpBase<VectorDistributedBase<derived_type>>
+  : private core::details::CrtpBase<
+              VectorDistributedBase<derived_type>>,
+    public SubscriptingOperatorsBase<
+	     VectorDistributedBase<derived_type>,
+             typename details::traits<derived_type>::scalar_t,
+             typename details::traits<derived_type>::local_ordinal_t>
 {
+
+  static_assert( details::traits<derived_type>::isDistributed==1,
+  "OOPS: serial concrete vector inheriting from distributed base!");
+
 private:
+  using this_t = VectorDistributedBase<derived_type>;
+
   using sc_t = typename details::traits<derived_type>::scalar_t;
-  using der_t = typename details::traits<derived_type>::derived_t;
-  using wrap_t = typename details::traits<derived_type>::wrapped_t;
   using LO_t = typename details::traits<derived_type>::local_ordinal_t;
   using GO_t = typename details::traits<derived_type>::global_ordinal_t;
   using map_t = typename details::traits<derived_type>::data_map_t;
-  using comm_t =  typename details::traits<derived_type>::communicator_t;
-
-  static_assert( details::traits<derived_type>::isDistributed==1,
-  "OOPS: non-distributed concrete vector inheriting from distributed base!");
     
 public:
   GO_t globalSize() const {
@@ -32,23 +37,18 @@ public:
     return this->underlying().localSizeImpl();
   };
 
-  map_t const & getDataMap() const{
-    return this->underlying().getDataMapImpl();
-  }
-
   void replaceGlobalValues(GO_t numentries,
 			   const GO_t * indices,
 			   const sc_t * values){
     this->underlying().replaceGlobalValuesImpl(numentries, indices, values);
   }
-
-  void replaceDataMap(const map_t & mapObj){
-    return this->underlying().replaceDataMapImpl(mapObj);
-  }
   
 private:
   friend derived_type;
-  friend core::details::CrtpBase<VectorDistributedBase<derived_type>>;
+  friend core::details::CrtpBase<this_t>;
+  friend SubscriptingOperatorsBase<this_t,
+             typename details::traits<derived_type>::scalar_t,
+	     typename details::traits<derived_type>::local_ordinal_t>;
 
   VectorDistributedBase() = default;
   ~VectorDistributedBase() = default;

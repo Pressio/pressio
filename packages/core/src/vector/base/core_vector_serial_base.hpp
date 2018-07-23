@@ -9,17 +9,20 @@ namespace core{
     
 template<typename derived_type>
 class VectorSerialBase
-  : private core::details::CrtpBase<VectorSerialBase<derived_type>>
+  : private core::details::CrtpBase<VectorSerialBase<derived_type>>,
+    public SubscriptingOperatorsBase<
+	     VectorSerialBase<derived_type>,
+             typename details::traits<derived_type>::scalar_t,
+	     typename details::traits<derived_type>::ordinal_t>
 {
-private:
-  using sc_t = typename details::traits<derived_type>::scalar_t;
-  using der_t = typename details::traits<derived_type>::derived_t;
-  using wrap_t = typename details::traits<derived_type>::wrapped_t;
-  using ord_t = typename details::traits<derived_type>::ordinal_t;
 
   static_assert(details::traits<derived_type>::isSerial==1,
-		"OOPS: non-serial concrete vector inheriting from serial base!");
+  "OOPS: distributed concrete vector inheriting from serial base!");
   
+private:
+  using this_t = VectorSerialBase<derived_type>;
+  using ord_t = typename details::traits<derived_type>::ordinal_t;
+
 public:
   ord_t size() const {
     return this->underlying().sizeImpl();
@@ -30,7 +33,10 @@ public:
     
 private:
   friend derived_type;
-  friend core::details::CrtpBase<VectorSerialBase<derived_type>>;
+  friend core::details::CrtpBase<this_t>;
+  friend SubscriptingOperatorsBase<this_t,
+             typename details::traits<derived_type>::scalar_t,
+	     typename details::traits<derived_type>::ordinal_t>;
 
   VectorSerialBase() = default;
   ~VectorSerialBase() = default;

@@ -6,6 +6,7 @@
 #include "../base/core_matrix_generic_base.hpp"
 #include "../base/core_matrix_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_base.hpp"
+#include "../base/core_matrix_sparse_distributed_trilinos.hpp"
 #include "../../core_operators_base.hpp"
 
 namespace core{
@@ -20,7 +21,8 @@ class Matrix<wrapped_type,
 	     >
   : public MatrixGenericBase< Matrix<wrapped_type> >,
     public MatrixDistributedBase< Matrix<wrapped_type> >,
-    public MatrixSparseDistributedBase< Matrix<wrapped_type> >
+    public MatrixSparseDistributedBase< Matrix<wrapped_type> >,
+    public MatrixSparseDistributedTrilinos< Matrix<wrapped_type> >
 {
 
 private:
@@ -28,13 +30,15 @@ private:
   using traits_t = details::traits<derived_t>;
 
   using sc_t = typename traits_t::scalar_t;
-  using der_t = typename traits_t::derived_t;
   using LO_t = typename traits_t::local_ordinal_t;
   using GO_t = typename traits_t::global_ordinal_t;
-  using row_map_t = typename traits_t::row_map_t;
-  using col_map_t = typename traits_t::col_map_t;
   using comm_t =  typename traits_t::communicator_t;
   using wrap_t = typename traits_t::wrapped_t;
+  using row_map_t = typename traits_t::row_map_t;
+  using col_map_t = typename traits_t::col_map_t;
+  using range_map_t = typename traits_t::range_map_t;
+  using domain_map_t = typename traits_t::domain_map_t;
+  using crs_graph_t = typename traits_t::crs_graph_t;
   
 public:
   Matrix() = delete;
@@ -44,7 +48,7 @@ public:
 		  bool StaticProfile=false)
     : data_(Copy, rowMap, NumEntriesPerRow, StaticProfile){}
 
-  explicit Matrix(const wrapped_type & objin)
+  explicit Matrix(const wrap_t & objin)
     : data_(objin){}
   
   ~Matrix() = default;
@@ -59,11 +63,6 @@ private:
   wrap_t * dataImpl(){
     return &data_;
   }
-
-  // void addToDiagonalImpl(sc_t value) {
-  //   // check matrix is diagonal
-  //   assert(this->globalRows()==this->globalCols());
-  // };
   
   //----------------------
   //from distributed base
@@ -83,7 +82,22 @@ private:
   GO_t globalColsImpl() const{
     return data_.NumGlobalCols();
   }
+
+  comm_t const & commCRef() const{
+    return data_.Comm();
+  }
   
+  //--------------------------------
+  //from sparse distributed trilinos
+  //--------------------------------
+  bool isFillingCompletedImpl() const{
+    return data_.Filled();
+  }
+
+  void fillingIsCompletedImpl(){
+    data_.FillComplete();
+  }
+
   row_map_t const & getRowDataMapImpl() const{
     return data_.RowMap();
   }
@@ -92,14 +106,14 @@ private:
     return data_.ColMap();
   }
 
-  bool isFillingCompleted() const{
-    return data_.Filled();
+  range_map_t const & getRangeDataMapImpl() const{
+    return data_.RangeMap();
   }
-
-  void fillingIsCompleted(){
-    data_.FillComplete();
+ 
+  domain_map_t const & getDomainDataMapImpl() const{
+    return data_.DomainMap();
   }
-
+  
   //----------------------------
   //from sparse distributed base
   //----------------------------
@@ -113,8 +127,9 @@ private:
   
 private:
   friend MatrixGenericBase< derived_t >;
-  friend MatrixSerialBase< derived_t >;
-  friend MatrixDenseSerialBase< derived_t >;
+  friend MatrixDistributedBase< derived_t >;
+  friend MatrixSparseDistributedBase< derived_t >;
+  friend MatrixSparseDistributedTrilinos< derived_t >;
 
 private:
   wrap_t data_;

@@ -1,1 +1,1 @@
-#include "../ode_aux_data.cc"
+#include "../ode_aux_data.hpp"

@@ -1,10 +1,5 @@
 
 #include <gtest/gtest.h>
-// #include "vector/meta/core_vector_meta.hpp"
-// #include "vector/concrete/core_vector_distributed_epetra.hpp"
-#include "Epetra_Map.h"
-#include "Epetra_Vector.h"
-#include "Epetra_Version.h"
 #include "Epetra_MpiComm.h"
 #include "CORE_VECTOR"
 
@@ -63,20 +58,19 @@ public:
 };
 
 
+// using core_vector_distributed_epetra_DeathTest
+// = core_vector_distributed_epetraFix;
 
-using core_vector_distributed_epetra_DeathTest
-= core_vector_distributed_epetraFix;
-
-TEST_F(core_vector_distributed_epetra_DeathTest,
-       EpetraVectorSubscriptOperator)
-{
-  if (getRank()==0){
-    using myvec_t = core::Vector<Epetra_Vector>;
-    myvec_t v1( *getMap() );
-    int localSize = numLocalEntries();
-    ASSERT_DEATH(v1[localSize+1]=4.0, "Assertion failed:");
-  }
-}
+// TEST_F(core_vector_distributed_epetra_DeathTest,
+//        EpetraVectorSubscriptOperator)
+// {
+//   if (getRank()==0){
+//     using myvec_t = core::Vector<Epetra_Vector>;
+//     myvec_t v1( *getMap() );
+//     int localSize = numLocalEntries();
+//     ASSERT_DEATH(v1[localSize+1]==4.0, "Exit code:    1");
+//   }
+// }
 
 
 

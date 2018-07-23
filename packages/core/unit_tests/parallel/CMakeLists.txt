@@ -17,7 +17,7 @@ endfunction()
 # append tests need to have a unique executable each
 add_single_unit_test(test_core_vector_distributed_epetra_traits 1)
 add_single_unit_test(test_core_vector_distributed_epetra_class 3)
-add_single_unit_test(test_core_vector_dot_product 1)
 add_single_unit_test(test_core_matrix_vector_product 1)
+add_single_unit_test(test_core_vector_dot_product 1)
 #add_unit_test(Test2 1)
 

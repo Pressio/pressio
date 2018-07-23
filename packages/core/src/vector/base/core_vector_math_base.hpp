@@ -11,14 +11,14 @@ template<typename derived_type>
 class VectorMathBase
   : private core::details::CrtpBase<VectorMathBase<derived_type>>
 {
+
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
-  using der_t = typename details::traits<derived_type>::derived_t;
-  using wrap_t = typename details::traits<derived_type>::wrapped_t;
 
 public:
   template <typename op_t>
-  void inPlaceOp(op_t op, sc_t a1, sc_t a2, const der_t & other){
+  void inPlaceOp(op_t op, sc_t a1, sc_t a2,
+		 const derived_type & other){
     // this = a1*this op a2*other;
     this->underlying().inPlaceOpImpl(op, a1, a2, other);
   }

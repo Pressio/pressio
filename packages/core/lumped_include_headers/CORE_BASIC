@@ -12,7 +12,6 @@
 #include "../src/meta/core_meta_detect_typedefs.hpp"
 #include "../src/meta/core_meta_detection_idiom.hpp"
 
-
 #include "../src/utils/core_static_assert_definitions.hpp"
 
 #endif

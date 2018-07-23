@@ -72,7 +72,8 @@ template <typename T>
 struct is_vector_epetra<T,
       typename
       std::enable_if<
-	std::is_same<T,Epetra_Vector>::value 
+	std::is_same<T,Epetra_Vector>::value &&
+	publicly_inherits_from<T, Epetra_MultiVector>::value
 	>::type
       > : std::true_type{};
   

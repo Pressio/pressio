@@ -17,13 +17,13 @@ namespace details{
 //******************************* 
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
-		       core::meta::is_vector_eigen<
-			 wrapped_type>::value
-		       >::type
-		     >
-	      >     		       
+	  typename
+	  std::enable_if<
+	    core::meta::is_vector_eigen<
+	      wrapped_type>::value
+	    >::type
+	  >
+   >     		       
 {
 
   using scalar_t = typename wrapped_type::Scalar;
@@ -54,13 +54,13 @@ struct traits<Vector<wrapped_type,
 //******************************* 
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-      typename
-      std::enable_if<
-	core::meta::is_vector_stdlib<
-	  wrapped_type>::value
-	>::type
-      >
+    typename
+    std::enable_if<
+      core::meta::is_vector_stdlib<
+	wrapped_type>::value
+      >::type
     >
+  >
 {
 
   using scalar_t = typename wrapped_type::value_type;
@@ -83,20 +83,20 @@ struct traits<Vector<wrapped_type,
 //******************************* 
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
+      typename
+      std::enable_if<
            core::meta::is_detected<
 	     core::meta::has_scalar_typedef, wrapped_type
 	     >::value &&
-	  core::meta::has_ordinal_typedef<wrapped_type
-					 >::value &&
-	  !core::meta::is_vector_stdlib<wrapped_type
-				       >::value &&
-	  !core::meta::is_vector_eigen<wrapped_type
-				      >::value
+	  core::meta::has_ordinal_typedef<
+	     wrapped_type>::value &&
+	  !core::meta::is_vector_stdlib<
+	     wrapped_type>::value &&
+	  !core::meta::is_vector_eigen<
+	     wrapped_type>::value
 	  >::type
 	>
-	      >
+     >
 {
 
   using scalar_t = typename wrapped_type::scalar_type;
@@ -119,13 +119,11 @@ struct traits<Vector<wrapped_type,
 //******************************* 
 template<typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     typename std::enable_if<
-		       std::is_same<wrapped_type,
-				    Epetra_Vector
-				    >::value
-		       >::type
-		     >
-	      >
+      typename
+      std::enable_if<
+      core::meta::is_vector_epetra<wrapped_type
+      >::value>::type>
+      >
 {
 
   using scalar_t = defaultTypes::epetra_scalar_t;
@@ -136,6 +134,7 @@ struct traits<Vector<wrapped_type,
   using communicator_t = Epetra_Comm;
   using derived_t = Vector<wrapped_t>;
   static constexpr int isVector = 1;
+  static constexpr int isMultiVector = 0;
   static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
   static constexpr int isSTDVector = 0;
@@ -145,6 +144,7 @@ struct traits<Vector<wrapped_type,
   using ordinal_t = void;
 };
 
+  
 /////////////////////////
 }//end namespace details  
 /////////////////////////

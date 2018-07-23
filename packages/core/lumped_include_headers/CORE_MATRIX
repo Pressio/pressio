@@ -14,15 +14,13 @@
 #include "../src/matrix/base/core_matrix_distributed_base.hpp"
 #include "../src/matrix/base/core_matrix_serial_base.hpp"
 #include "../src/matrix/base/core_matrix_math_base.hpp"
-
 ///---- dense ----
 #include "../src/matrix/base/core_matrix_dense_distributed_base.hpp"
 #include "../src/matrix/base/core_matrix_dense_serial_base.hpp"
-
 ///---- sparse ----
-#include "../src/matrix/base/core_matrix_sparse_distributed_base.hpp"
 #include "../src/matrix/base/core_matrix_sparse_serial_base.hpp"
-
+#include "../src/matrix/base/core_matrix_sparse_distributed_base.hpp"
+#include "../src/matrix/base/core_matrix_sparse_distributed_trilinos.hpp"
 
 ///------------------
 ///concrete classes

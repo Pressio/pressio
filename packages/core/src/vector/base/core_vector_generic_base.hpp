@@ -8,21 +8,12 @@
 namespace core{
     
 template<typename derived_type>
-class VectorGenericBase
-  : public SubscriptingOperatorsBase<
-  VectorGenericBase<derived_type>,
-    typename details::traits<derived_type>::scalar_t,
-    //ordinal type based on vector being serial or distributed
-    typename
-  std::conditional<details::traits<derived_type>::isSerial==1,
-	      typename details::traits<derived_type>::ordinal_t,
-	      typename details::traits<derived_type>::local_ordinal_t
-		   >::type>,
-  private core::details::CrtpBase<VectorGenericBase<derived_type>>
+class VectorGenericBase 
+  : private core::details::CrtpBase<VectorGenericBase<derived_type>>
 {
+  
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
-  using der_t = typename details::traits<derived_type>::derived_t;
   using wrap_t = typename details::traits<derived_type>::wrapped_t;
 
 public:
