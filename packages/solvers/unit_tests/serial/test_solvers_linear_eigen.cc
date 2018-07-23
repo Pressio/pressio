@@ -39,40 +39,6 @@ TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenReturnSameTy
 }
 
 
-TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenReturnDifferentType)
-{ 
-  // Namespaces
-  using namespace solvers;
-  
-  // Matrix typedefs 
-  using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::Matrix<matrix_n_t>;
-  
-  // Vector typedefs
-  using vectorf_n_t = Eigen::VectorXf;
-  using vectorf_w_t = core::Vector<vectorf_n_t>;
-
-  
-  // Define linear system
-  vectorf_w_t b(2);
-  (*b.data()) << 0.0, 2.0;
-  
-  matrix_w_t A(2, 2);
-  A.data()->coeffRef(0, 0) =  1;
-  A.data()->coeffRef(0, 1) =  1;
-  A.data()->coeffRef(1, 0) =  1;
-  A.data()->coeffRef(1, 1) = -1;
-  
-  // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A);
-  auto x = solver.solve(b);
-  
-  // Expectations
-  EXPECT_NEAR( x[0],  1.0, 1e-14 );
-  EXPECT_NEAR( x[1], -1.0, 1e-14 );
-}
-
-
 TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenNoReturnSameType)
 {
   // Namespaces
@@ -107,43 +73,6 @@ TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenNoReturnSame
 }
 
 
-TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenNoReturnDifferentType)
-{ 
-  // Namespaces
-  using namespace solvers;
-  
-  // Matrix typedefs 
-  using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::Matrix<matrix_n_t>;
-  
-  // Vector typedefs
-  using vectord_n_t = Eigen::VectorXd;
-  using vectorf_n_t = Eigen::VectorXf;
-  using vectord_w_t = core::Vector<vectord_n_t>;
-  using vectorf_w_t = core::Vector<vectorf_n_t>;
-
-  
-  // Define linear system
-  vectord_w_t b(2);
-  vectorf_w_t x(2);
-  (*b.data()) << 0.0, 2.0;
-  
-  matrix_w_t A(2, 2);
-  A.data()->coeffRef(0, 0) =  1;
-  A.data()->coeffRef(0, 1) =  1;
-  A.data()->coeffRef(1, 0) =  1;
-  A.data()->coeffRef(1, 1) = -1;
-  
-  // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A);
-  solver.solve(b, x);
-  
-  // Expectations
-  EXPECT_NEAR( x[0],  1.0, 1e-14 );
-  EXPECT_NEAR( x[1], -1.0, 1e-14 );
-}
-
-
 TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenResetSystemSameType)
 {
   // Namespaces
@@ -164,49 +93,6 @@ TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenResetSyste
 
   matrix_w_t A0(2, 2);
   matrix_w_t A1(2, 2);
-  A0.data()->coeffRef(0, 0) =  1;
-  A0.data()->coeffRef(0, 1) =  1;
-  A0.data()->coeffRef(1, 0) =  1;
-  A0.data()->coeffRef(1, 1) = -3;
-
-  A1.data()->coeffRef(0, 0) =  1;
-  A1.data()->coeffRef(0, 1) =  1;
-  A1.data()->coeffRef(1, 0) =  1;
-  A1.data()->coeffRef(1, 1) = -1;
-
-  // Solve linear system
-  auto solver = LinearIterativeSolvers::createSolver<linear::CG>(A0);
-  solver.resetLinearSystem(A1);
-  auto x = solver.solve(b);
-
-  // Expectations
-  EXPECT_NEAR( x[0],  1.0, 1e-14 );
-  EXPECT_NEAR( x[1], -1.0, 1e-14 );
-}
-
-
-TEST(solvers_linear_iterative_factory, solversTestLinearIterativeEigenResetSystemDifferentType)
-{
-  // Namespaces
-  using namespace solvers;
-
-  // Matrix typedefs
-  using matrixd_n_t = Eigen::SparseMatrix<double>;
-  using matrixf_n_t = Eigen::SparseMatrix<float>;
-  using matrixd_w_t = core::Matrix<matrixd_n_t>;
-  using matrixf_w_t = core::Matrix<matrixf_n_t>;
-
-  // Vector typedefs
-  using vectord_n_t = Eigen::VectorXd;
-  using vectord_w_t = core::Vector<vectord_n_t>;
-
-
-  // Define linear system
-  vectord_w_t b(2);
-  (*b.data()) << 0.0, 2.0;
-
-  matrixd_w_t A0(2, 2);
-  matrixf_w_t A1(2, 2);
   A0.data()->coeffRef(0, 0) =  1;
   A0.data()->coeffRef(0, 1) =  1;
   A0.data()->coeffRef(1, 0) =  1;
