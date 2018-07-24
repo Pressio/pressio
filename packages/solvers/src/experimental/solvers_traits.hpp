@@ -9,7 +9,7 @@ namespace solvers {
 
 
 // Forward declarations
-template <typename T> class NonlinearNewtonRaphsonSolver;
+class NonlinearNewtonRaphsonSolver;
 
 
 namespace linear {
@@ -89,7 +89,6 @@ namespace details {
 template <typename T>
 struct solver_traits {
   
-  template <typename...>
   using solver_type = void;
 
   static constexpr bool solver_exists = false; 
@@ -99,8 +98,7 @@ struct solver_traits {
 template <>
 struct solver_traits<NewtonRaphson> {
 
-  template <typename SystemT>
-  using solver_type = NonlinearNewtonRaphsonSolver<SystemT>;
+  using solver_type = NonlinearNewtonRaphsonSolver;
   
   static constexpr bool solver_exists = true;
 };
