@@ -24,6 +24,7 @@ struct traits< Matrix<
     >
   >
 {
+
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
   using wrapped_t = wrapped_type;
@@ -41,6 +42,7 @@ struct traits< Matrix<
   static constexpr int isStatic =
     ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
       wrapped_t::ColsAtCompileTime != Eigen::Dynamic );
+
 };
 
 
@@ -59,13 +61,13 @@ struct traits< Matrix<
     >
   >
 {
+
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = typename wrapped_type::StorageIndex;
   //  ordinal has to be integral and signed
   static_assert( std::is_integral<ordinal_t>::value &&
   		 std::is_signed<ordinal_t>::value,
-  		 "ordinal type for indexing eigen sparse \
-matrix has to be signed"
+  "ordinal type for indexing eigen sparse matrix has to be signed"
   		 );
   
   using wrapped_t = wrapped_type;
@@ -102,6 +104,7 @@ struct traits< Matrix<
     >
   >
 {
+
   using scalar_t = typename wrapped_type::value_type::value_type;
   using ordinal_t = int;
   using wrapped_t = wrapped_type;
@@ -135,6 +138,7 @@ struct traits<Matrix
     >
   >
 {
+
   using wrapped_t = wrapped_type;
   using derived_t = Matrix<wrapped_t>;
   using scalar_t = defaultTypes::epetra_scalar_t;
@@ -178,9 +182,9 @@ struct is_coreMatrixWrapper< T,
 			 >::type
 		       > : std::true_type{};
 
-#define STATIC_ASSERT_IS_CORE_MATRIX_MATRIX_WRAPPER(TYPE) \
+#define STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(TYPE) \
   static_assert( core::meta::is_coreMatrixWrapper<TYPE>::value, \
-		 "THIS_IS_NOT_A_CORE_MATRIX_MATRIX_WRAPPER")
+		 "THIS_IS_NOT_A_CORE_MATRIX_WRAPPER")
   
 }//end meta
 

@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_MATRIX_MATRIX_PRODUCT_HPP_
-#define CORE_MATRIX_MATRIX_MATRIX_PRODUCT_HPP_
+#ifndef CORE_MATRIX_OPERATIONS_MATRIX_MATRIX_PRODUCT_HPP_
+#define CORE_MATRIX_OPERATIONS_MATRIX_MATRIX_PRODUCT_HPP_
 
 #include "../../meta/core_matrix_meta.hpp"
 #include "../concrete/core_matrix_dense_serial_eigen.hpp"
@@ -25,7 +25,8 @@ matrixMatrixProduct(const mat_type & A,
 		    bool transposeB = false,
 		    bool call_filingIsCompleted_on_result = true,
 		    typename std::enable_if<
-		    meta::is_matrix_sparse_distributed_epetra<mat_type>::value
+		     details::traits<mat_type>::isEpetra &&
+		     details::traits<mat_type>::isSparse
 		    >::type * = nullptr)
 {
 

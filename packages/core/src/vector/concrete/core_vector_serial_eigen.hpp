@@ -72,7 +72,7 @@ public:
   derived_t operator*(const derived_t & other) const{
     assert( other.size() == this->size() );
     derived_t res(other.size());
-    for (size_t i=0; i<this->size(); i++)
+    for (decltype(this->size()) i=0; i<this->size(); i++)
       res[i] = this->data_(i) * other[i];
     return res;
   }
