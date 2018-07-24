@@ -7,6 +7,7 @@
 #include <vector>
 #include <Eigen/Dense>
 #include "Epetra_Vector.h"
+#include "Epetra_MultiVector.h"
 
 namespace core{
 namespace meta {
@@ -71,8 +72,7 @@ template <typename T>
 struct is_vector_epetra<T,
       typename
       std::enable_if<
-	std::is_same<T,Epetra_Vector>::value &&
-	publicly_inherits_from<T, Epetra_MultiVector>::value
+	std::is_same<T,Epetra_Vector>::value 
 	>::type
       > : std::true_type{};
 

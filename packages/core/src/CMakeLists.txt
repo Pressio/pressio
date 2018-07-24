@@ -30,14 +30,14 @@ FILE(GLOB core_vector_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB core_vector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/vector/concrete/*.hpp")
 
-# FILE(GLOB core_multivector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/multivector/*.hpp")
-# # FILE(GLOB core_multivector_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-# #     "${CMAKE_CURRENT_SOURCE_DIR}/multivector/operations/*.hpp")
-# FILE(GLOB core_multivector_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/multivector/base/*.hpp")
-# FILE(GLOB core_multivector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/multivector/concrete/*.hpp")
+FILE(GLOB core_multi_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/*.hpp")
+# FILE(GLOB core_multi_vector_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/operations/*.hpp")
+FILE(GLOB core_multi_vector_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/base/*.hpp")
+FILE(GLOB core_multi_vector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/concrete/*.hpp")
 
 FILE(GLOB core_matrix_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/matrix/*.hpp")
@@ -69,14 +69,14 @@ FILE(GLOB core_vector_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB core_vector_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/vector/concrete/src/*.cc")
 
-# FILE(GLOB core_multivector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/multivector/src/*.cc")
-# # FILE(GLOB core_multivector_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-# #     "${CMAKE_CURRENT_SOURCE_DIR}/multivector/operations/src/*.cc")
-# FILE(GLOB core_multivector_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/multivector/base/src/*.cc")
-# FILE(GLOB core_multivector_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/multivector/concrete/src/*.cc")
+FILE(GLOB core_multi_vector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/src/*.cc")
+# FILE(GLOB core_multi_vector_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/operations/src/*.cc")
+FILE(GLOB core_multi_vector_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/base/src/*.cc")
+FILE(GLOB core_multi_vector_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/concrete/src/*.cc")
 
 FILE(GLOB core_matrix_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/matrix/src/*.cc")
@@ -99,16 +99,17 @@ SET(HEADERS
   ${core_vector_base_HEADERS}
   ${core_vector_concrete_HEADERS}
   #
-  # ${core_multivector_HEADERS}
-  # #${core_multivector_ops_HEADERS}
-  # ${core_multivector_base_HEADERS}
-  # ${core_multivector_concrete_HEADERS}
+  ${core_multi_vector_HEADERS}
+  #${core_multi_vector_ops_HEADERS}
+  ${core_multi_vector_base_HEADERS}
+  ${core_multi_vector_concrete_HEADERS}
   #
   ${core_matrix_HEADERS}
   ${core_matrix_ops_HEADERS}
   ${core_matrix_base_HEADERS}
   ${core_matrix_concrete_HEADERS}
 )
+
 
 SET(SOURCES 
   ${core_general_SRCS}
@@ -121,10 +122,10 @@ SET(SOURCES
   ${core_vector_base_SRCS}
   ${core_vector_concrete_SRCS}
   #
-  # ${core_multivector_SRCS}
-  # #${core_multivector_ops_SRCS}
-  # ${core_multivector_base_SRCS}
-  # ${core_multivector_concrete_SRCS}
+  ${core_multi_vector_SRCS}
+  #${core_multi_vector_ops_SRCS}
+  ${core_multi_vector_base_SRCS}
+  ${core_multi_vector_concrete_SRCS}
   #
   ${core_matrix_SRCS}
   ${core_matrix_ops_SRCS}
