@@ -35,7 +35,7 @@ private:
 	    typename T = jacobian_type,
 	    typename
 	    std::enable_if<
-	      core::meta::is_coreVector<U>::value==true &&
+	      core::meta::is_core_vector<U>::value==true &&
 	      core::meta::is_coreMatrixWrapper<T>::value==true
 	      >::type * = nullptr
 	    >

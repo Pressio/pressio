@@ -60,8 +60,8 @@ private:
   template <typename U = state_type,
 	    typename T = residual_type,
 	    typename std::enable_if<
-	      core::meta::is_coreVector<U>::value==true &&
-	      core::meta::is_coreVector<T>::value==true
+	      core::meta::is_core_vector<U>::value==true &&
+	      core::meta::is_core_vector<T>::value==true
 	    >::type * = nullptr>
   void computeImpl(const U & y,
 		   T & R,
