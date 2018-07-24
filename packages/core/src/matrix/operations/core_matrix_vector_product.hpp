@@ -2,9 +2,9 @@
 #ifndef CORE_MATRIX_MATRIX_VECTOR_PRODUCT_HPP_
 #define CORE_MATRIX_MATRIX_VECTOR_PRODUCT_HPP_
 
-#include "../../vector/meta/core_vector_meta.hpp"
+#include "../../meta/core_vector_meta.hpp"
 #include "../../vector/concrete/core_vector_serial_eigen.hpp"
-#include "../../matrix/meta/core_matrix_meta.hpp"
+#include "../../meta/core_matrix_meta.hpp"
 #include "../concrete/core_matrix_dense_serial_eigen.hpp"
 #include "../concrete/core_matrix_sparse_serial_eigen.hpp"
 

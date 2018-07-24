@@ -2,12 +2,13 @@
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 
-#include <Eigen/Core>
-#include "../base/core_matrix_generic_base.hpp"
+
+#include "../../shared_base/core_container_base.hpp"
 #include "../base/core_matrix_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_trilinos.hpp"
-#include "../../core_operators_base.hpp"
+#include "../../shared_base/core_container_distributed_base.hpp"
+
 
 namespace core{
 
@@ -19,10 +20,12 @@ class Matrix<wrapped_type,
 		 wrapped_type>::value
 	       >::type
 	     >
-  : public MatrixGenericBase< Matrix<wrapped_type> >,
+  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
     public MatrixDistributedBase< Matrix<wrapped_type> >,
     public MatrixSparseDistributedBase< Matrix<wrapped_type> >,
-    public MatrixSparseDistributedTrilinos< Matrix<wrapped_type> >
+    public MatrixSparseDistributedTrilinos< Matrix<wrapped_type> >,
+    public ContainerDistributedBase< Vector<wrapped_type>, 
+              typename details::traits<Vector<wrapped_type>>::communicator_t >
 {
 
 private:
@@ -126,10 +129,11 @@ private:
   }
   
 private:
-  friend MatrixGenericBase< derived_t >;
+  friend ContainerBase< derived_t, wrapped_type >;
   friend MatrixDistributedBase< derived_t >;
   friend MatrixSparseDistributedBase< derived_t >;
   friend MatrixSparseDistributedTrilinos< derived_t >;
+  friend ContainerDistributedBase< derived_t, comm_t >;
 
 private:
   wrap_t data_;

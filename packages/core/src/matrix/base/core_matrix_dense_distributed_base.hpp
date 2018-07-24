@@ -9,12 +9,11 @@ namespace core{
 template<typename derived_type>
 class MatrixDenseDistributedBase
   : private core::details::CrtpBase<
-  MatrixDenseDistributedBase<derived_type>>
+  			MatrixDenseDistributedBase<derived_type>>
 {
 
   static_assert( details::traits<derived_type>::isDistributed==1,
-		 "OOPS: non-distributed matrix inheriting \
-from dense distributed base!");
+  "OOPS: non-distributed matrix inheriting from dense distributed base!");
   
 private:  
   friend derived_type;

@@ -19,7 +19,7 @@ public:
   void scale(sc_t factor){
     // this = factor * this
     this->underlying().scaleImpl(factor);
-  };  
+  };
     
 private:
   friend derived_type;

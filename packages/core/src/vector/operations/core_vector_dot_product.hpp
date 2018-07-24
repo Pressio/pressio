@@ -2,9 +2,8 @@
 #ifndef CORE_VECTOR_OPERATIONS_VECTOR_DOT_PRODUCT_HPP_
 #define CORE_VECTOR_OPERATIONS_VECTOR_DOT_PRODUCT_HPP_
 
-#include "../meta/core_vector_meta.hpp"
+#include "../../meta/core_vector_meta.hpp"
 #include "../concrete/core_vector_serial_eigen.hpp"
-#include "../concrete/core_vector_serial_stdlib.hpp"
 
 namespace core{
 

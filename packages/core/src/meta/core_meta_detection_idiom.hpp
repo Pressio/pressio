@@ -2,7 +2,7 @@
 #ifndef CORE_META_META_DETECTION_IDIOM_HPP 
 #define CORE_META_META_DETECTION_IDIOM_HPP
 
-#include <type_traits>
+#include "core_meta_basic.hpp"
 
 namespace core {
 namespace meta {
@@ -16,8 +16,9 @@ struct nonesuch {
   void operator=(nonesuch const&) = delete;
 };
 
-template <typename...>
-using my_void_t = void;
+// already defined in core_meta_basic
+// template <typename...>
+// using my_void_t = void;
 
 template <class Default,
 	  class AlwaysVoid,
@@ -31,7 +32,7 @@ struct detector {
 template <class Default,
 	  template <class...> class Op,
 	  class... Args>
-struct detector<Default, my_void_t<Op<Args...>>, Op, Args...> {
+struct detector<Default, void_t<Op<Args...>>, Op, Args...> {
   using value_t = std::true_type;
   using type = Op<Args...>;
 };

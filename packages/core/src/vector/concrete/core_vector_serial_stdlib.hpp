@@ -2,9 +2,11 @@
 #ifndef CORE_VECTOR_CONCRETE_VECTOR_STDLIB_HPP_
 #define CORE_VECTOR_CONCRETE_VECTOR_STDLIB_HPP_
 
-#include "../base/core_vector_generic_base.hpp"
+#include "../../shared_base/core_container_base.hpp"
+#include "../../shared_base/core_operators_base.hpp"
 #include "../base/core_vector_serial_base.hpp"
 #include "../base/core_vector_math_base.hpp"
+
 
 namespace core{
 
@@ -14,11 +16,14 @@ class Vector<wrapped_type,
 	       core::meta::is_vector_stdlib<wrapped_type>::value
 	       >::type
 	     >
-  : public VectorGenericBase< Vector<wrapped_type> >,
+  : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSerialBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >,
     public ArithmeticOperatorsBase< Vector<wrapped_type> >,
-    public CompoundAssignmentOperatorsBase< Vector<wrapped_type> >
+    public CompoundAssignmentOperatorsBase< Vector<wrapped_type> >,
+    public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
+              typename details::traits<Vector<wrapped_type>>::scalar_t,
+              typename details::traits<Vector<wrapped_type>>::ordinal_t>
 {
 private:
   using derived_t = Vector<wrapped_type>;
@@ -85,22 +90,23 @@ public:
 
 
 private:
-  //----------------
-  //from generic base
-  //----------------
   wrap_t const * dataImpl() const{
     return &data_;
   }
+
   wrap_t * dataImpl(){
     return data_;
   }
+
   void putScalarImpl(sc_t value) {
     for (ord_t i=0; i<this->size(); i++)
       data_[i] = value;
   }    
+
   void setZeroImpl() {
     this->putScalarImpl( static_cast<sc_t>(0) );
   }
+
   bool emptyImpl() const{
     return data_.empty();
   }
@@ -155,10 +161,13 @@ private:
   }
 
 private:
-  friend VectorGenericBase< derived_t >;
+  friend ContainerBase< derived_t, wrapped_type >;
   friend VectorSerialBase< derived_t >;
   friend VectorMathBase< derived_t >;
-  
+  friend ArithmeticOperatorsBase< derived_t >;
+  friend CompoundAssignmentOperatorsBase< derived_t >;  
+  friend Subscripting1DOperatorsBase< derived_t, sc_t, ord_t>;
+
 private:
   std::vector<sc_t> data_;
   

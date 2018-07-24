@@ -2,9 +2,12 @@
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_DENSE_SERIAL_STDLIB_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_DENSE_SERIAL_STDLIB_HPP_
 
-#include <vector>
-#include "../base/core_matrix_generic_base.hpp"
+#include "../../shared_base/core_container_base.hpp"
+#include "../base/core_matrix_serial_base.hpp"
 #include "../base/core_matrix_dense_serial_base.hpp"
+// #include "../base/core_matrix_math_base.hpp"
+// #include "../../shared_base/core_operators_base.hpp"
+
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -21,7 +24,7 @@ class Matrix<wrapped_type,
 					   >::value
 	       >::type
 	     >
-  : public MatrixGenericBase< Matrix<wrapped_type> >,
+  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
     public MatrixDenseSerialBase< Matrix<wrapped_type> >  
 {
 private:
@@ -74,7 +77,7 @@ private:
 
   
 private:
-  friend MatrixGenericBase< Matrix<wrapped_type> >;
+  friend ContainerBase< Matrix<wrapped_type>, wrapped_type >;
   friend MatrixDenseSerialBase< Matrix<wrapped_type> >;
   
 private:

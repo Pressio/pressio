@@ -30,10 +30,6 @@ public:
   void setIdentity(){
     this->underlying().setIdentityImpl();
   }
-
-  void setZero(){
-    this->underlying().setZeroImpl();
-  }
   
   //------------------------------------------------------------------
   // note this insert one by one might not be the best method

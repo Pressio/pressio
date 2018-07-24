@@ -2,7 +2,7 @@
 #ifndef CORE_META_META_DETECT_OPERATORS_HPP_
 #define CORE_META_META_DETECT_OPERATORS_HPP_
 
-#include "core_meta_basic.hpp"
+#include <type_traits>
 
 namespace core{
 namespace meta {

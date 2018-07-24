@@ -2,12 +2,10 @@
 #ifndef CORE_VECTOR_VECTOR_TRAITS_HPP_
 #define CORE_VECTOR_VECTOR_TRAITS_HPP_
 
-#include "../meta/core_meta_detection_idiom.hpp"
 #include "../core_forward_declarations.hpp"
-#include "./meta/core_vector_meta.hpp"
-#include <vector>
-#include "Epetra_Vector.h"
-#include "Eigen/Dense"
+#include "../meta/core_vector_meta.hpp"
+#include "../meta/core_meta_detect_typedefs.hpp"
+#include "../meta/core_meta_detect_operators.hpp"
 
 namespace core{
 namespace details{

@@ -3,9 +3,9 @@
 #define CORE_MATRIX_MATRIX_TRAITS_HPP_
 
 #include "../core_forward_declarations.hpp"
-#include "./meta/core_matrix_meta.hpp"
-#include <vector>
-#include <Eigen/Core>
+#include "../meta/core_matrix_meta.hpp"
+#include "../meta/core_meta_detect_typedefs.hpp"
+#include "../meta/core_meta_detect_operators.hpp"
 
 namespace core{
 namespace details{

@@ -2,7 +2,7 @@
 #ifndef CORE_MATRIX_MATRIX_MATRIX_PRODUCT_HPP_
 #define CORE_MATRIX_MATRIX_MATRIX_PRODUCT_HPP_
 
-#include "../../matrix/meta/core_matrix_meta.hpp"
+#include "../../meta/core_matrix_meta.hpp"
 #include "../concrete/core_matrix_dense_serial_eigen.hpp"
 #include "../concrete/core_matrix_sparse_serial_eigen.hpp"
 #include <EpetraExt_MatrixMatrix.h>

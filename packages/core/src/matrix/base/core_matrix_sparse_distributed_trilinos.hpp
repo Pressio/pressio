@@ -22,7 +22,7 @@ private:
   using col_map_t = typename traits_t::col_map_t;
   using range_map_t = typename traits_t::range_map_t;
   using domain_map_t = typename traits_t::domain_map_t;
-  using crs_graph_t = typename traits_t::crs_graph_t;
+  // using crs_graph_t = typename traits_t::crs_graph_t;
 
 public:
   

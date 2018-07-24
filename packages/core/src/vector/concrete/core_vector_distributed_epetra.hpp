@@ -2,12 +2,12 @@
 #ifndef CORE_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_EPETRA_HPP_
 #define CORE_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_EPETRA_HPP_
 
-#include "../meta/core_vector_meta.hpp"
-#include "../base/core_vector_generic_base.hpp"
+#include "../../shared_base/core_container_base.hpp"
 #include "../base/core_vector_distributed_base.hpp"
 #include "../base/core_vector_distributed_trilinos.hpp"
 #include "../base/core_vector_math_base.hpp"
-#include "Epetra_Vector.h"
+#include "../../shared_base/core_container_distributed_base.hpp"
+#include "../../shared_base/core_operators_base.hpp"
 
 namespace core{
   
@@ -19,10 +19,15 @@ class Vector<wrapped_type,
 		 wrapped_type>::value
 	       >::type
 	     >
-  : public VectorGenericBase< Vector<wrapped_type> >,
+  : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorDistributedBase< Vector<wrapped_type> >,
     public VectorDistributedTrilinos< Vector<wrapped_type> >,
-    public VectorMathBase< Vector<wrapped_type> >
+    public VectorMathBase< Vector<wrapped_type> >, 
+    public ContainerDistributedBase< Vector<wrapped_type>, 
+              typename details::traits<Vector<wrapped_type>>::communicator_t >, 
+    public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
+              typename details::traits<Vector<wrapped_type>>::scalar_t,
+              typename details::traits<Vector<wrapped_type>>::local_ordinal_t>
 {
 private:
   using derived_t = Vector<wrapped_type>;
@@ -82,9 +87,11 @@ public:
   }
     
 private:
-  //----------------
-  //from general base
-  //----------------
+
+  mpicomm_t const & commCRef() const{
+    return data_.Comm();
+  }
+
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -168,11 +175,13 @@ private:
   }
   
 private:
-  friend VectorGenericBase< derived_t >;
+  friend ContainerBase< derived_t, wrapped_type >;
   friend VectorDistributedBase< derived_t >;
-  friend VectorMathBase< derived_t >;
   friend VectorDistributedTrilinos< derived_t >;
-  
+  friend VectorMathBase< derived_t >;
+  friend ContainerDistributedBase< derived_t, mpicomm_t >;
+  friend Subscripting1DOperatorsBase< derived_t, sc_t, LO_t>;
+
 private:
   wrap_t data_;
 
