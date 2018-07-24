@@ -217,7 +217,7 @@ TEST(core_matrix_dense_serial_eigen_class, transposeDynamic)
   EXPECT_DOUBLE_EQ( m1(1,1), 3.0);
   EXPECT_DOUBLE_EQ( m1(1,2), 6.0);
 
-  auto tm1 = core::matrixTranspose(m1);
+  auto tm1 = core::transpose(m1);
   std::cout << *tm1.data() << std::endl;
   EXPECT_DOUBLE_EQ( tm1(0,0), 34.0);
   EXPECT_DOUBLE_EQ( tm1(1,0), 22.5);
@@ -245,7 +245,7 @@ TEST(core_matrix_dense_serial_eigen_class, transposeStatic)
   EXPECT_DOUBLE_EQ( m1(1,1), 3.0);
   EXPECT_DOUBLE_EQ( m1(1,2), 6.0);
 
-  auto tm1 = core::matrixTranspose(m1);
+  auto tm1 = core::transpose(m1);
   //std::cout << *tm1.data() << std::endl;
   EXPECT_DOUBLE_EQ( tm1(0,0), 34.0);
   EXPECT_DOUBLE_EQ( tm1(1,0), 22.5);

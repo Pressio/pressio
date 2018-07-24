@@ -5,9 +5,25 @@
 #include "../../meta/core_matrix_meta.hpp"
 #include "../concrete/core_matrix_dense_serial_eigen.hpp"
 #include "../concrete/core_matrix_sparse_serial_eigen.hpp"
+#include <Epetra_RowMatrixTransposer.h>
+
 
 namespace core{
 
+/*-----------------------------------------------------
+  EIGEN SPARSE
+----------------------------------------------------- */
+template <typename mat_type,
+	  typename std::enable_if<
+	    details::traits<mat_type>::isEigen &&
+	    details::traits<mat_type>::isSparse 
+	    >::type * = nullptr>
+auto transpose(const mat_type & A)
+{
+  mat_type res(A.data()->transpose());
+  return res;
+}
+  
 /*-----------------------------------------------------
   EIGEN DENSE DYNAMIC
 ----------------------------------------------------- */
@@ -17,7 +33,7 @@ template <typename mat_type,
 	    details::traits<mat_type>::isDense &&
 	    details::traits<mat_type>::isStatic==0
 	    >::type * = nullptr>
-mat_type matrixTranspose(const mat_type & A)
+mat_type transpose(const mat_type & A)
 {
   mat_type res(A);
   res.data()->transposeInPlace();
@@ -33,7 +49,7 @@ template <typename mat_type,
 	    details::traits<mat_type>::isDense &&
 	    details::traits<mat_type>::isStatic
 	    >::type * = nullptr>
-auto matrixTranspose(const mat_type & A)
+auto transpose(const mat_type & A)
 {
   using scalar_t = typename details::traits<mat_type>::scalar_t;
   static constexpr int rowsIn

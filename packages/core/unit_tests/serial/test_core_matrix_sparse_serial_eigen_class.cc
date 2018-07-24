@@ -35,6 +35,7 @@ public:
     }
     return m4;
   };
+
   mymat_t createMatrix2(){
     mymat_t m4(6,6);
     using veci = std::vector<int>;
@@ -301,7 +302,7 @@ public:
 };
 
 
-typedef ::testing::Types< typesEig<double,Eigen::RowMajor,int>,
+typedef ::testing::Types< typesEig<double,Eigen::RowMajor,int>, 
 			  typesEig<double,Eigen::ColMajor,int>
 			  > MyTypes;
 TYPED_TEST_CASE(core_matrix_sparse_serial_eigen_classTest, MyTypes);
@@ -336,6 +337,41 @@ TYPED_TEST(core_matrix_sparse_serial_eigen_classTest, compoundAddOperator){
 
 TYPED_TEST(core_matrix_sparse_serial_eigen_classTest, compoundSubOperator){
   this->checkCompoundSubOperator();
+}
+
+
+
+TEST(core_matrix_sparse_serial_eigen_class, transpose)
+{
+  using native_t = Eigen::SparseMatrix<double, Eigen::RowMajor, int>;
+  using mymat_t = core::Matrix<native_t>;
+  using matTrait = core::details::traits<mymat_t>;
+
+  mymat_t m4(6,6);
+  using veci = std::vector<int>;
+  using vecd = std::vector<double>;
+  std::map<int,std::pair<vecd,veci>> DD;
+  DD[0] = std::make_pair<vecd,veci>({2.,4.},   {1,2});
+  DD[2] = std::make_pair<vecd,veci>({3.,5.,6.},{3,4,5});
+  DD[5] = std::make_pair<vecd,veci>({1.,22.},  {2,4});
+  for (auto const & it : DD){
+    int ind = it.first;
+    vecd data = std::get<0>(it.second);
+    veci cols = std::get<1>(it.second);
+    m4.insertValues(ind,(int)data.size(),data.data(),cols.data());
+  }
+
+  std::cout << *m4.data() << std::endl;
+
+  auto tm1 = core::transpose(m4);
+  std::cout << *tm1.data() << std::endl;
+  EXPECT_DOUBLE_EQ( tm1(1,0), 2.0 );
+  EXPECT_DOUBLE_EQ( tm1(2,0), 4. );
+  EXPECT_DOUBLE_EQ( tm1(2,5), 1. );
+  EXPECT_DOUBLE_EQ( tm1(3,2), 3. );
+  EXPECT_DOUBLE_EQ( tm1(4,2), 5. );
+  EXPECT_DOUBLE_EQ( tm1(4,5), 22. );
+  EXPECT_DOUBLE_EQ( tm1(5,2), 6.0 );
 }
 
 
