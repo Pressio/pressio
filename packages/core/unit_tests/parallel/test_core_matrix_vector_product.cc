@@ -31,7 +31,8 @@ TEST(core_matrix_vector_product, eigenVectorSparseMatrix)
   core::Vector<natV_t> myV(a);
 
   // create sparse matrix
-  using mymat_t = core::Matrix<Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;
+  using mymat_t = core::Matrix<
+    Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;
   mymat_t myM(4,3);
   using veci = std::vector<int>;
   using vecd = std::vector<double>;

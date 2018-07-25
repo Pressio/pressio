@@ -6,10 +6,44 @@
 #include "../concrete/core_matrix_dense_serial_eigen.hpp"
 #include "../concrete/core_matrix_sparse_serial_eigen.hpp"
 #include <Epetra_RowMatrixTransposer.h>
-
+#include "EpetraExt_Transpose_RowMatrix.h"
 
 namespace core{
 
+
+/*-----------------------------------------------------
+  EPETRA CRSMATRIX
+----------------------------------------------------- */
+template <typename mat_type,
+	  typename std::enable_if<
+	    details::traits<mat_type>::isEpetra &&
+	    details::traits<mat_type>::isSparse 
+	    >::type * = nullptr>
+auto transpose(mat_type & A /*nonconst & because it is needed by rowmatrix transposer*/) 
+{
+  using nat_t = typename details::traits<mat_type>::wrapped_t;
+
+  //-----------
+  // method 1
+  //-----------
+  // Epetra_RowMatrixTransposer transposer(A.data());
+  // nat_t * transA;
+  // transposer.CreateTranspose(false, transA);
+  // core::Matrix<nat_t> res( *transA );
+  // assert( res.isFillingCompleted() );
+  // delete transA;
+
+  //-----------
+  // method 2
+  //-----------
+  EpetraExt::RowMatrix_Transpose transposer;
+  Epetra_CrsMatrix & transA = dynamic_cast<Epetra_CrsMatrix&>(transposer(*A.data()));
+  core::Matrix<nat_t> res( transA );
+  assert( res.isFillingCompleted() );
+  return res;
+}
+
+  
 /*-----------------------------------------------------
   EIGEN SPARSE
 ----------------------------------------------------- */

@@ -24,8 +24,8 @@ class Matrix<wrapped_type,
     public MatrixDistributedBase< Matrix<wrapped_type> >,
     public MatrixSparseDistributedBase< Matrix<wrapped_type> >,
     public MatrixSparseDistributedTrilinos< Matrix<wrapped_type> >,
-    public ContainerDistributedBase< Vector<wrapped_type>, 
-              typename details::traits<Vector<wrapped_type>>::communicator_t >
+    public ContainerDistributedBase< Matrix<wrapped_type>, 
+              typename details::traits<Matrix<wrapped_type>>::communicator_t >
 {
 
 private:
@@ -57,9 +57,6 @@ public:
   ~Matrix() = default;
 
 private:
-  //----------------
-  //from general base
-  //----------------
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -67,9 +64,6 @@ private:
     return &data_;
   }
   
-  //----------------------
-  //from distributed base
-  //----------------------
   LO_t localRowsImpl() const{
     return data_.NunMyRows();
   }
