@@ -5,11 +5,10 @@
 #include "../../meta/core_matrix_meta.hpp"
 #include "../concrete/core_matrix_dense_serial_eigen.hpp"
 #include "../concrete/core_matrix_sparse_serial_eigen.hpp"
-#include <Epetra_RowMatrixTransposer.h>
 #include "EpetraExt_Transpose_RowMatrix.h"
+//#include <Epetra_RowMatrixTransposer.h>
 
 namespace core{
-
 
 /*-----------------------------------------------------
   EPETRA CRSMATRIX
