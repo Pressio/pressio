@@ -65,7 +65,7 @@ TEST_F(core_matrix_sparse_distributed_epetraFix,
     }
   }
   A_->fillingIsCompleted();
-  A_->data()->Print(std::cout);
+  //A_->data()->Print(std::cout);
 
   //--------------------------------------------
   //--------------------------------------------
@@ -150,7 +150,7 @@ TEST_F(core_matrix_sparse_distributed_epetraFix,
   // -------------
   // -------------
   auto At = core::transpose(*A_);
-  At.data()->Print(std::cout);
+  //  At.data()->Print(std::cout);
 
   // check that row 0 matches
   {

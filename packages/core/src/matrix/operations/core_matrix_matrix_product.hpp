@@ -21,8 +21,8 @@ void
 matrixMatrixProduct(const mat_type & A,
 		    const mat_type & B,
 		    mat_type & C,
-		    bool transposeA = false,
-		    bool transposeB = false,
+		    bool transposeA,
+		    bool transposeB,
 		    bool call_filingIsCompleted_on_result = true,
 		    typename std::enable_if<
 		     details::traits<mat_type>::isEpetra &&
@@ -32,11 +32,11 @@ matrixMatrixProduct(const mat_type & A,
 
   assert( A.isFillingCompleted() );
   assert( B.isFillingCompleted() );
-  assert( C.rowMap() == A.rowMap() );
+  assert( C.hasSameRowDataMapAs(A) );
 
   if ( C.isFillingCompleted() ){
-    assert( C.rangeMap() == A.rangeMap() );
-    assert( C.domainMap() == B.domainMap() );
+    assert( C.hasSameRangeDataMapAs(A) );
+    assert( C.hasSameDomainDataMapAs(B) );
     EpetraExt::MatrixMatrix::Multiply(*A.data(), transposeA,
 				      *B.data(), transposeB,
 				      *C.data(),

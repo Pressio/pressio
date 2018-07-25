@@ -110,7 +110,23 @@ private:
   domain_map_t const & getDomainDataMapImpl() const{
     return data_.DomainMap();
   }
-  
+
+  bool hasSameRangeDataMapAsImpl(derived_t const & other) const{
+    return data_.RangeMap().SameAs(other.getRangeDataMap());
+  }
+
+  bool hasSameDomainDataMapAsImpl(derived_t const & other) const{
+    return data_.DomainMap().SameAs(other.getDomainDataMap());
+  }
+
+  bool hasSameRowDataMapAsImpl(derived_t const & other) const{
+    return data_.RowMap().SameAs(other.getRowDataMap());
+  }
+
+  bool hasSameColDataMapAsImpl(derived_t const & other) const{
+    return data_.ColMap().SameAs(other.getColDataMap());
+  }
+
   //----------------------------
   //from sparse distributed base
   //----------------------------

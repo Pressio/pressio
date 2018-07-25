@@ -52,6 +52,22 @@ public:
     return this->underlying().getColDataMapImpl();
   }
 
+  bool hasSameRangeDataMapAs(derived_type const & other) const{
+    return this->underlying().hasSameRangeDataMapAsImpl(other);
+  }
+
+  bool hasSameDomainDataMapAs(derived_type const & other) const{
+    return this->underlying().hasSameDomainDataMapAsImpl(other);
+  }
+
+  bool hasSameRowDataMapAs(derived_type const & other) const{
+    return this->underlying().hasSameRowDataMapAsImpl(other);
+  }
+
+  bool hasSameColDataMapAs(derived_type const & other) const{
+    return this->underlying().hasSameColDataMapAsImpl(other);
+  }
+  
   // crs_graph_t const & getCrsGraph() const{
   //   return this->underlying().getCrsGraphImpl();
   // }
