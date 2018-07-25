@@ -15,11 +15,11 @@ function(add_single_unit_test test_name ranks)
 endfunction()
 
 # append tests need to have a unique executable each
-# add_single_unit_test(test_core_vector_distributed_epetra_traits 1)
-# add_single_unit_test(test_core_vector_distributed_epetra_class 3)
-# add_single_unit_test(test_core_matrix_vector_product 1)
-# add_single_unit_test(test_core_vector_dot_product 1)
-# add_single_unit_test(test_core_multivector_distributed_epetra_traits 1)
+add_single_unit_test(test_core_vector_distributed_epetra_traits 1)
+add_single_unit_test(test_core_vector_distributed_epetra_class 3)
+add_single_unit_test(test_core_matrix_vector_product 1)
+add_single_unit_test(test_core_vector_dot_product 1)
+add_single_unit_test(test_core_multivector_distributed_epetra_traits 1)
 add_single_unit_test(test_core_matrix_sparse_distributed_epetra_class 3)
 add_single_unit_test(test_core_matrix_matrix_product_sparse_distributed_epetra 3)
 
