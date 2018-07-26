@@ -37,7 +37,7 @@ struct isLegitimateJacobianType : std::false_type{};
 template<typename jacobian_type>
 struct isLegitimateJacobianType<jacobian_type,
        typename std::enable_if<
-	 core::meta::is_coreMatrixWrapper<jacobian_type>::value
+	 core::meta::is_core_matrix_wrapper<jacobian_type>::value
 	 >::type
        > : std::true_type{};
   

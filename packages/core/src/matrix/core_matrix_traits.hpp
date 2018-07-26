@@ -163,6 +163,50 @@ struct traits<Matrix
   static constexpr int isStatic = 0;
 };
 
+
+//***********************************
+// epetra dense distributed matrix 
+//***********************************
+template <typename wrapped_type>
+struct traits<Matrix
+   <wrapped_type,
+    typename
+    std::enable_if<
+      core::meta::is_matrix_dense_distributed_epetra<
+	wrapped_type
+	>::value
+      >::type
+    >
+  >
+{
+
+  using wrapped_t = wrapped_type;
+  using derived_t = Matrix<wrapped_t>;
+  using scalar_t = defaultTypes::epetra_scalar_t;
+  using local_ordinal_t = core::defaultTypes::epetra_lo_t;
+  using global_ordinal_t = core::defaultTypes::epetra_go_t1;
+  using communicator_t = Epetra_Comm;
+  using row_map_t = Epetra_BlockMap;
+
+  static constexpr int isMatrix = 1;
+  static constexpr int isEpetra = 1;
+  static constexpr int isSparse = 0;
+  static constexpr int isDistributed = 1;
+
+  // a multivector can also be seen as literally a multi-vector.
+  // But here is intended as distributed dense matrix.
+  // So we set actsAsMultiVector = false, actingAsDenseMatrix = true
+  static constexpr int actingAsMultiVector = 0;
+  static constexpr int actingAsDenseMatrix = 1;
+
+  static constexpr int isEigen = 0;
+  static constexpr int isDense = 1;
+  static constexpr int isSerial = 0;
+  static constexpr int isVector = 0;
+  static constexpr int isStdlib = 0;
+  static constexpr int isStatic = 0;
+};
+  
     
 ////////////////////////////
 }//end namespace details
@@ -172,10 +216,10 @@ struct traits<Matrix
 namespace meta{
 
 template <typename T, typename enable = void>
-struct is_coreMatrixWrapper : std::false_type {};
+struct is_core_matrix_wrapper : std::false_type {};
 
 template <typename T>
-struct is_coreMatrixWrapper< T,
+struct is_core_matrix_wrapper< T,
 		       typename
 		       std::enable_if<
 			 core::details::traits<T>::isMatrix==1
@@ -183,7 +227,7 @@ struct is_coreMatrixWrapper< T,
 		       > : std::true_type{};
 
 #define STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(TYPE) \
-  static_assert( core::meta::is_coreMatrixWrapper<TYPE>::value, \
+  static_assert( core::meta::is_core_matrix_wrapper<TYPE>::value, \
 		 "THIS_IS_NOT_A_CORE_MATRIX_WRAPPER")
   
 }//end meta

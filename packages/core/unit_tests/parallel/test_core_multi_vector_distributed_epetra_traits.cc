@@ -5,7 +5,7 @@
 #include "CORE_VECTOR"
 #include "CORE_MULTI_VECTOR"
 
-TEST(core_multivector_distributed_epetra, EpetraMultiVectorAactinVectorTraits)
+TEST(core_multivector_distributed_epetra, EpetraMultiVectorActingVectorTraits)
 {
   using natV_t = Epetra_MultiVector;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(natV_t);

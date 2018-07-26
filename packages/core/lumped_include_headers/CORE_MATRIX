@@ -27,6 +27,7 @@
 #include "../src/matrix/concrete/core_matrix_dense_serial_stdlib.hpp"
 #include "../src/matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 #include "../src/matrix/concrete/core_matrix_sparse_distributed_epetra.hpp"
+#include "../src/matrix/concrete/core_matrix_dense_distributed_epetra.hpp"
 
 ///------------------
 ///operations

@@ -33,6 +33,7 @@ struct traits<MultiVector<wrapped_type,
   // But here is intended as multivector. so we set actsAsMultiVector
   // while for dense distributed matrix, we set actsAsMultiVector = 0
   static constexpr int actingAsMultiVector = 1;
+  static constexpr int actingAsDenseMatrix = 0;
  
   static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
@@ -53,10 +54,10 @@ struct traits<MultiVector<wrapped_type,
 namespace meta {
 
 template <typename T, typename enable = void>
-struct is_core_multi_vector : std::false_type {};
+struct is_core_multi_vector_wrapper : std::false_type {};
 
 template <typename T>
-struct is_core_multi_vector<T,
+struct is_core_multi_vector_wrapper<T,
 	   typename
 	   std::enable_if<
 	     core::details::traits<T>::isMultiVector==1 &&
@@ -65,9 +66,9 @@ struct is_core_multi_vector<T,
 	   > : std::true_type{};
 
 #define STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(TYPE) \
-  static_assert( core::meta::is_core_multi_vector<TYPE>::value, \
+  static_assert( core::meta::is_core_multi_vector_wrapper<TYPE>::value, \
 		 "THIS_IS_NOT_A_CORE_MULTI_VECTOR_WRAPPER")
-
+  
 /////////////////////////
 }//end meta
 /////////////////////////

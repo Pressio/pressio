@@ -41,7 +41,7 @@ private:
 	    typename
 	    std::enable_if<
 	      core::meta::is_coreVector<U>::value==true &&
-	      core::meta::is_coreMatrixWrapper<T>::value==true
+	      core::meta::is_core_matrix_wrapper<T>::value==true
 	      >::type * = nullptr
 	    >
   void computeImpl(const U & y, T & J, model_type & model, time_type t)
