@@ -9,7 +9,8 @@ namespace core{
 template<typename derived_type, 
          typename wrapped_t>
 class ContainerBase 
-  : private core::details::CrtpBase<ContainerBase<derived_type, wrapped_t>>
+  : private core::details::CrtpBase<
+  ContainerBase<derived_type, wrapped_t>>
 {
 
 public:
@@ -31,7 +32,8 @@ public:
 
 private:
   friend derived_type;
-  friend core::details::CrtpBase<ContainerBase<derived_type, wrapped_t>>;
+  friend core::details::CrtpBase<
+    ContainerBase<derived_type, wrapped_t>>;
 
   ContainerBase() = default;
   ~ContainerBase() = default;

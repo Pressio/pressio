@@ -14,10 +14,19 @@ class MultiVectorSerialBase
   "OOPS: distributed concrete vector inheriting from serial base!");
  
 private:
-	using this_t = MultiVectorSerialBase<derived_type>;
+  using sc_t = typename details::traits<derived_type>::scalar_t;
+  using ord_t = typename details::traits<derived_type>::ordinal_t;
+
 public:
-    
+  // ord_t numVectors() const{
+  //   return this->underlying().numVectorsImpl();
+  // }
+  // ord_t length() const {
+  //   return this->underlying().lengthImpl();
+  // };
+  
 private:
+  using this_t = MultiVectorSerialBase<derived_type>;
   friend derived_type;
   friend core::details::CrtpBase<this_t>;
 

@@ -13,31 +13,38 @@ class MultiVectorDistributedBase
 {
 
   static_assert( details::traits<derived_type>::isDistributed==1,
-  "OOPS: serial concrete vector inheriting from distributed base!");
+  "OOPS: serial concrete class inheriting from multi_vector distributed base!");
 
 private:
-  using this_t = MultiVectorDistributedBase<derived_type>;
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using LO_t = typename details::traits<derived_type>::local_ordinal_t;
   using GO_t = typename details::traits<derived_type>::global_ordinal_t;
-  using map_t = typename details::traits<derived_type>::data_map_t;
     
-// public:
-//   GO_t globalSize() const {
-//     return this->underlying().globalSizeImpl();
-//   };
+public:
+  GO_t globalNumVectors() const{
+    return this->underlying().globalNumVectorsImpl();
+  }
 
-//   LO_t localSize() const {
-//     return this->underlying().localSizeImpl();
-//   };
+  LO_t localNumVectors() const{
+    return this->underlying().localNumVectorsImpl();
+  }
+  
+  GO_t globalLength() const {
+    return this->underlying().globalLengthImpl();
+  };
 
-//   void replaceGlobalValues(GO_t numentries,
-// 			   const GO_t * indices,
-// 			   const sc_t * values){
-//     this->underlying().replaceGlobalValuesImpl(numentries, indices, values);
-//   }
+  LO_t localLength() const {
+    return this->underlying().localLengthImpl();
+  };
+
+  void replaceGlobalValue(GO_t globalRowIndex,
+			  GO_t vectorIndex,
+			  sc_t value){
+    this->underlying().replaceGlobalValueImpl(globalRowIndex, vectorIndex, value);
+  }
   
 private:
+  using this_t = MultiVectorDistributedBase<derived_type>;
   friend derived_type;
   friend core::details::CrtpBase<this_t>;
 

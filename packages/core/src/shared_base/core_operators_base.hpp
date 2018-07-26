@@ -95,14 +95,15 @@ private:
 
 
 template<typename derived_type,
-   typename scalar_type,
-   typename ordinal_type>
+	 typename scalar_type,
+	 typename row_ordinal_type,
+	 typename col_ordinal_type = row_ordinal_type>
 class Subscripting2DOperatorsBase{
 public:
-  scalar_type & operator()(ordinal_type irow, 
-                           ordinal_type icol);
-  scalar_type const & operator()(ordinal_type irow, 
-                                 ordinal_type icol) const;
+  scalar_type & operator()(row_ordinal_type irow, 
+                           col_ordinal_type icol);
+  scalar_type const & operator()(row_ordinal_type irow, 
+                                 col_ordinal_type icol) const;
 
 private:
   friend derived_type;

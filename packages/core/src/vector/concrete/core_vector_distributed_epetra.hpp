@@ -88,7 +88,7 @@ public:
     
 private:
 
-  mpicomm_t const & commCRef() const{
+  mpicomm_t const & commCRefImpl() const{
     return data_.Comm();
   }
 

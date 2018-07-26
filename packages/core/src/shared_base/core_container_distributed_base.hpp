@@ -12,11 +12,6 @@ class ContainerDistributedBase
   : private core::details::CrtpBase<
   ContainerDistributedBase<derived_type,comm_t>>
 {
-// static_assert( details::traits<derived_type>::isDistributed==1,
-//  "OOPS: non-distributed matrix inheriting from distributed base!");
-// private:
-//   using traits_t = details::traits<derived_type>;
-//   using comm_t =  typename traits_t::communicator_t;
 
 public:
   comm_t const & commCRef() const{
@@ -25,7 +20,8 @@ public:
   
 private:
   friend derived_type;
-  friend core::details::CrtpBase<ContainerDistributedBase<derived_type,comm_t>>;
+  friend core::details::CrtpBase<
+    ContainerDistributedBase<derived_type,comm_t>>;
 
   ContainerDistributedBase() = default;
   ~ContainerDistributedBase() = default;

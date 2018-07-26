@@ -4,7 +4,7 @@
 
 #include "CORE_BASIC"
 #include "CORE_VECTOR"
-#include "CORE_MULTIVECTOR"
+#include "CORE_MULTI_VECTOR"
 #include "CORE_MATRIX"
 
 #endif

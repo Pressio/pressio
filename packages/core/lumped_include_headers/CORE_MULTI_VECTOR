@@ -1,6 +1,6 @@
 
-#ifndef CORE_MULTIVECTOR_HPP_
-#define CORE_MULTIVECTOR_HPP_
+#ifndef CORE_MULTI_VECTOR_HPP_
+#define CORE_MULTI_VECTOR_HPP_
 
 #include "CORE_BASIC"
 

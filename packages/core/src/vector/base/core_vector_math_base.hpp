@@ -27,7 +27,7 @@ public:
     this->underlying().putScalarImpl(value);
   }
 
-  void scale(sc_t & factor){
+  void scale(sc_t factor){
     // this = factor * this
     this->underlying().scaleImpl(factor);
   };  

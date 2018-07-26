@@ -12,22 +12,21 @@ class MultiVectorDistributedTrilinos
 {
 
   static_assert( details::traits<derived_type>::isDistributed==1,
-  "OOPS: serial concrete vector inheriting from distributed trilonos!");
+  "OOPS: serial concrete class inheriting from multi_vector distributed trilonos!");
 
 private:
-  using this_t = MultiVectorDistributedTrilinos<derived_type>;
   using map_t = typename details::traits<derived_type>::data_map_t;
     
-// public:
-//   map_t const & getDataMap() const{
-//     return this->underlying().getDataMapImpl();
-//   }
-
-//   void replaceDataMap(const map_t & mapObj){
-//     return this->underlying().replaceDataMapImpl(mapObj);
-//   }
+public:
+  map_t const & getDataMap() const{
+    return this->underlying().getDataMapImpl();
+  }
+  void replaceDataMap(const map_t & mapObj){
+    return this->underlying().replaceDataMapImpl(mapObj);
+  }
   
 private:
+  using this_t = MultiVectorDistributedTrilinos<derived_type>;
   friend derived_type;
   friend core::details::CrtpBase<this_t>;
 

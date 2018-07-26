@@ -26,8 +26,14 @@ struct traits<MultiVector<wrapped_type,
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
   using derived_t = MultiVector<wrapped_t>;
+
   static constexpr int isVector = 0;
   static constexpr int isMultiVector = 1;
+  // a multivector can also be seen as dense matrix.
+  // But here is intended as multivector. so we set actsAsMultiVector
+  // while for dense distributed matrix, we set actsAsMultiVector = 0
+  static constexpr int actingAsMultiVector = 1;
+ 
   static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
   static constexpr int isSTDVector = 0;
@@ -53,13 +59,14 @@ template <typename T>
 struct is_core_multi_vector<T,
 	   typename
 	   std::enable_if<
-	     core::details::traits<T>::isMultiVector==1
+	     core::details::traits<T>::isMultiVector==1 &&
+	     core::details::traits<T>::actingAsMultiVector==1
 	     >::type
 	   > : std::true_type{};
 
-// #define STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(TYPE) \
-//   static_assert( core::meta::is_core_multi_vector<TYPE>::value, \
-// 		 "THIS_IS_NOT_A_CORE_MULTI_VECTOR_WRAPPER")
+#define STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(TYPE) \
+  static_assert( core::meta::is_core_multi_vector<TYPE>::value, \
+		 "THIS_IS_NOT_A_CORE_MULTI_VECTOR_WRAPPER")
 
 /////////////////////////
 }//end meta
