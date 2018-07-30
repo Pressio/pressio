@@ -37,6 +37,7 @@ class ExplicitEulerStepper<state_type,
 					    model_type, scalar_type, sizer_type>
 					  >
 {
+
 public:
   using pol_t = ode::policy::explicit_residual_standard_policy<
   state_type, residual_type, model_type, scalar_type, sizer_type>;

@@ -27,7 +27,9 @@ public:
 
 private:
   //-----------------------------------------------------
-  // enable when using types from core package
+  // enable when state and residual are vector wrappers
+  // what about the case when they are multivector wrappers?
+  // think if this works right away
   //-----------------------------------------------------
   template <typename U = state_type,
 	    typename T = residual_type,
