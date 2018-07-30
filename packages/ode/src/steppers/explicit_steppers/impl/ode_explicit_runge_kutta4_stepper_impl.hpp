@@ -72,7 +72,7 @@ protected:
   void doStepImpl(state_type & y, scalar_type t,
 		  scalar_type dt, step_t step)
   {
-    // auto ySz = sizer_type::getSize(y);
+    auto ySz = sizer_type::getSize(y);
     // if(sizer_type::getSize(auxStates_[0]) == 0)
     //   sizer_type::matchSize(y, auxStates_[0]);
 
