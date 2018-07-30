@@ -29,20 +29,29 @@ class Vector<wrapped_type,
               typename details::traits<Vector<wrapped_type>>::scalar_t,
               typename details::traits<Vector<wrapped_type>>::local_ordinal_t>
 {
+  
 private:
-  using derived_t = Vector<wrapped_type>;
-  using sc_t = typename details::traits<derived_t>::scalar_t;
-  using LO_t = typename details::traits<derived_t>::local_ordinal_t;
-  using GO_t = typename details::traits<derived_t>::global_ordinal_t;
-  using der_t = typename details::traits<derived_t>::derived_t;
-  using wrap_t = typename details::traits<derived_t>::wrapped_t;
-  using map_t = typename details::traits<derived_t>::data_map_t;
-  using mpicomm_t = typename details::traits<derived_t>::communicator_t;
+  using this_t = Vector<wrapped_type>;
+  using sc_t = typename details::traits<this_t>::scalar_t;
+  using LO_t = typename details::traits<this_t>::local_ordinal_t;
+  using GO_t = typename details::traits<this_t>::global_ordinal_t;
+  using der_t = typename details::traits<this_t>::derived_t;
+  using wrap_t = typename details::traits<this_t>::wrapped_t;
+  using map_t = typename details::traits<this_t>::data_map_t;
+  using mpicomm_t = typename details::traits<this_t>::communicator_t;
 
 public:
   Vector() = delete;
-  explicit Vector(const map_t & mapobj) : data_(mapobj){}
-  explicit Vector(const wrap_t & vecobj) : data_(vecobj){}
+
+  explicit Vector(const map_t & mapobj)
+    : data_(mapobj){}
+
+  explicit Vector(const wrap_t & vecobj)
+    : data_(vecobj){}
+
+  Vector(this_t const & other)
+    : data_(*other.data()){}
+
   ~Vector() = default;
 
 public:
@@ -144,10 +153,10 @@ private:
   //from math base
   //----------------
   template<typename op_t>
-  void inPlaceOpImpl(op_t op, sc_t a1, sc_t a2, const der_t & other){
+  void inPlaceOpImpl(sc_t a1, sc_t a2, const der_t & other){
     // this = a1*this op a2*other;
     for (LO_t i=0; i<this->localSize(); i++)
-      data_[i] = op()( a1*data_[i], a2*other[i] );
+      data_[i] = op_t()( a1*data_[i], a2*other[i] );
   }
 
   void scaleImpl(sc_t & factor){
@@ -175,12 +184,12 @@ private:
   }
   
 private:
-  friend ContainerBase< derived_t, wrapped_type >;
-  friend VectorDistributedBase< derived_t >;
-  friend VectorDistributedTrilinos< derived_t >;
-  friend VectorMathBase< derived_t >;
-  friend ContainerDistributedBase< derived_t, mpicomm_t >;
-  friend Subscripting1DOperatorsBase< derived_t, sc_t, LO_t>;
+  friend ContainerBase< this_t, wrapped_type >;
+  friend VectorDistributedBase< this_t >;
+  friend VectorDistributedTrilinos< this_t >;
+  friend VectorMathBase< this_t >;
+  friend ContainerDistributedBase< this_t, mpicomm_t >;
+  friend Subscripting1DOperatorsBase< this_t, sc_t, LO_t>;
 
 private:
   wrap_t data_;

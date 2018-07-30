@@ -4,7 +4,8 @@
 
 #include "../core_vector_traits.hpp"
 #include <cmath>
-
+#include <functional>
+  
 namespace core{
     
 template<typename derived_type>
@@ -17,10 +18,10 @@ private:
 
 public:
   template <typename op_t>
-  void inPlaceOp(op_t op, sc_t a1, sc_t a2,
+  void inPlaceOp(sc_t a1, sc_t a2,
 		 const derived_type & other){
     // this = a1*this op a2*other;
-    this->underlying().inPlaceOpImpl(op, a1, a2, other);
+    this->underlying().template inPlaceOpImpl<op_t>(a1, a2, other);
   }
 
   void putScalar(sc_t value) {
