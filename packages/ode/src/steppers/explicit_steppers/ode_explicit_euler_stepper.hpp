@@ -27,15 +27,16 @@ class ExplicitEulerStepper<state_type,
 			     !std::is_void<state_type>::value
 			     >::type
 			   >
-  : public impl::ExplicitEulerStepperImpl<state_type,
-					  residual_type,
-					  scalar_type,
-					  model_type,
-					  sizer_type,
-					  ode::policy::explicit_residual_standard_policy<
-					    state_type, residual_type,
-					    model_type, scalar_type, sizer_type>
-					  >
+  : public impl::ExplicitEulerStepperImpl<
+		   state_type,
+		   residual_type,
+		   scalar_type,
+		   model_type,
+		   sizer_type,
+		   ode::policy::explicit_residual_standard_policy<
+		     state_type, residual_type,
+		     model_type, scalar_type, sizer_type>
+		   >
 {
 
 public:

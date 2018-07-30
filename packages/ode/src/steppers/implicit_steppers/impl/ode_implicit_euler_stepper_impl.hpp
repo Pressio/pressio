@@ -81,9 +81,8 @@ protected:
 			   T & jac_policy_obj,
 			   Args&& ... rest)
     : storage_base_t(std::forward<Args>(rest)...),
-      auxdata_base_t(model, res_policy_obj, jac_policy_obj)
-  {}
-    
+      auxdata_base_t(model, res_policy_obj, jac_policy_obj){}
+
   ImplicitEulerStepperImpl() = delete;
   ~ImplicitEulerStepperImpl() = default;
   
@@ -94,7 +93,6 @@ protected:
   {
     dt_ = dt;
     t_ = t;
-
     // store previous state = y;
     auxStates_[0] = y;
     solver.solve(y, *this);

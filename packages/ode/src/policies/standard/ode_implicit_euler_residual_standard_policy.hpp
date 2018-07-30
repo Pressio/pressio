@@ -24,7 +24,7 @@ public:
 
 private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
-    
+  
 private:
   // enable when using types from core package
   template <typename U = state_type,
@@ -40,8 +40,7 @@ private:
 		   const std::array<U, 1> & oldYs,
 		   model_type & model,
 		   scalar_type t,
-		   scalar_type dt)
-  {
+		   scalar_type dt){
     if (R.empty())
       sizer_type::matchSize(y, R);
 

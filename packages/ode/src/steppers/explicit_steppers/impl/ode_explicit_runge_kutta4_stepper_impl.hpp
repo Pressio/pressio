@@ -69,14 +69,12 @@ protected:
 
 protected:
   template<typename step_t>
-  void doStepImpl(state_type & y,
-		  scalar_type t,
-		  scalar_type dt,
-		  step_t step)
+  void doStepImpl(state_type & y, scalar_type t,
+		  scalar_type dt, step_t step)
   {
-    auto ySz = sizer_type::getSize(y);
-    if(sizer_type::getSize(auxStates_[0]) == 0)
-      sizer_type::matchSize(y, auxStates_[0]);
+    // auto ySz = sizer_type::getSize(y);
+    // if(sizer_type::getSize(auxStates_[0]) == 0)
+    //   sizer_type::matchSize(y, auxStates_[0]);
 
     const scalar_type dt_half = dt / static_cast< scalar_type >(2);
     const scalar_type t_phalf = t + dt_half;

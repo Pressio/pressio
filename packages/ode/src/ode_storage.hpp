@@ -27,7 +27,6 @@ public:
 protected:
   std::array<state_type, 1> auxStates_;
 };
-
 //--------------------------------------------------
 
 template<typename state_type, typename residual_type>
@@ -46,7 +45,6 @@ protected:
   std::array<state_type, 1> auxStates_;
   std::array<residual_type, 4> auxRHS_;
 };
-
 //--------------------------------------------------
   
 template<typename state_type, typename residual_type>

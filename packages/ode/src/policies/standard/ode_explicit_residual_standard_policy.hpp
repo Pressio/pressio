@@ -37,6 +37,8 @@ private:
 	    std::enable_if<
 	      core::meta::is_core_vector<U>::value==true &&
 	      core::meta::is_core_vector<T>::value==true
+	      /*core::meta::is_core_multi_vector<U>::value==true &&
+	      core::meta::is_core_multi_vector<T>::value==true*/
 	      >::type * = nullptr
 	    >
   void computeImpl(const U & y,
@@ -57,7 +59,7 @@ private:
   explicit_residual_standard_policy<
     state_type, residual_type,
     model_type, scalar_type,
-    sizer_type>>;
+    sizer_type> >;
 
 };//end class
 

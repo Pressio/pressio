@@ -34,8 +34,6 @@ private:
 		 "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateExplicitResidualType<residual_t>::value,
 		 "OOPS: RESIDUAL_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
-  // static_assert( meta::isLegitimateTimeType<time_t>::value,
-  // 		 "OOPS: TIME_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
   static_assert( meta::is_legitimate_explicit_residual_policy<residual_policy_t>::value,
       "RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF EXPLICIT POLICY BASE");
 
@@ -43,6 +41,7 @@ public:
   order_t order() const{
     return order_value;
   }
+
   template<typename step_t>
   void doStep(state_t &inout, scalar_t t, scalar_t dt, step_t step){
     this->underlying().doStepImpl(inout, t, dt, step);

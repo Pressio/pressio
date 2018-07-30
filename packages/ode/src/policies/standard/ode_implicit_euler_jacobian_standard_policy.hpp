@@ -28,13 +28,9 @@ private:
 //   jacobian_type II_;
   
 private:
-  //----------------------------------------------------------------
-  // enable if using types from core package
-  //----------------------------------------------------------------
   template <typename U = state_type,
 	    typename T = jacobian_type,
-	    typename
-	    std::enable_if<
+	    typename std::enable_if<
 	      core::meta::is_core_vector<U>::value==true &&
 	      core::meta::is_core_matrix_wrapper<T>::value==true
 	      >::type * = nullptr

@@ -26,11 +26,9 @@ public:
 private:
   friend derived_t;
   friend core::details::CrtpBase<ExplicitResidualPolicyBase<derived_t>>;
-
   ExplicitResidualPolicyBase() = default;
   ~ExplicitResidualPolicyBase() = default;
   
-
 };//end class
   
 }//end namespace polices
