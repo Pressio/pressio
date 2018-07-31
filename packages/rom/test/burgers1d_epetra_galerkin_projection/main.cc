@@ -1,17 +1,14 @@
 
-#include <iostream>
-#include <iomanip>
-#include <fstream>
 #include "CORE_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_EXP"
 #include "apps_burgers1d_epetra.hpp"
 //#include "observer.hpp"
-#include "experimental/rom_galerkin_implicit_residual_policy.hpp"
-#include "experimental/rom_galerkin_implicit_jacobian_policy.hpp"
-#include "experimental/basis_operator/rom_basis_operator_default.hpp"
-#include "experimental/sampling_operator/rom_sampling_operator_identity.hpp"
-#include "experimental/weighting_operator/rom_weighting_operator_identity.hpp"
+// #include "experimental/rom_galerkin_implicit_residual_policy.hpp"
+// #include "experimental/rom_galerkin_implicit_jacobian_policy.hpp"
+// #include "experimental/basis_operator/rom_basis_operator_default.hpp"
+// #include "experimental/sampling_operator/rom_sampling_operator_identity.hpp"
+// #include "experimental/weighting_operator/rom_weighting_operator_identity.hpp"
 
 
 struct mysizer{
@@ -31,7 +28,6 @@ struct mysizer{
 //     std::cout << std::setprecision(14) << y[i]  << " ";
 //   std::cout << std::endl;
 // }
-
 
 // Eigen::MatrixXd readPhi(int nr, int nc)
 // {
@@ -57,6 +53,43 @@ struct mysizer{
 //   return phi;
 // }//end 
 
+// template <typename container_type>
+// class RomOperator{
+// public:
+//   RomOperator() = default;
+//   ~RomOperator() = default;
+
+// private:
+//   container_type * A_;
+// };
+// //-------------------------------------------
+
+// template <typename phiop_t, typename projop_t>
+// class WeightOperator1{
+// public:
+//   WeightOperator1(phiop_t & phi, projop_t & pop)
+//     : phi_(&phi), pop_(&pop)
+//   {
+//     //fullOp_ = (pop*phi_)^+ * pop;
+//     // auto a1 = phi_->rightMultiply(pop);
+//     // auto a2 = a1.pseudoInverse();
+//     // auto a3 = pop.rightMultiply(a2);
+//   }
+
+//   ~WeightOperator1() = default;
+
+//   template <typename T>
+//   auto leftMultiply(T const & y, bool transpose = false){
+//     return ...;
+//   }
+// private:
+//   phiop_t * phi_;
+//   projop_t * pop_;
+//   void * fullOp_;
+// };
+// //-------------------------------------------
+
+
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
@@ -66,14 +99,18 @@ int main(int argc, char *argv[])
   // define native types
   using model_eval_t = apps::Burgers1dEpetra;
   using native_state_t = model_eval_t::state_type;
+  using native_space_residual_type = model_eval_t::space_residual_type;
   using native_jac_t = model_eval_t::jacobian_type;
   using scalar_t = model_eval_t::scalar_type;
+
   //-------------------------------
   // define wrapper types
   using state_t = core::Vector<native_state_t>;
-  using residual_t = state_t;
+  using space_res_t = core::Vector<native_space_residual_type>;
   using jac_t = core::Matrix<native_jac_t>;
 
+  //-------------------------------
+  // MPI init
   MPI_Init(&argc,&argv);
   int rank; // My process ID
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -85,24 +122,67 @@ int main(int argc, char *argv[])
   std::vector<double> mu({5.0, 0.02, 0.02});
   model_eval_t appObj(mu, numCell, &Comm);
   appObj.setup();
-
-  // //-------------------------------
-  // // wrap with core structures
-  // auto y0n = appObj.getInitialState();
-  // state_t y0(y0n);
-
-  //-------------------------------
-  // SVD
-  //-------------------------------
-  // for anasazi, the eigenvectors are stored in a Multivector
+  auto & y0n = appObj.getInitialState();
+  auto & r0n = appObj.getInitialResidual();
   
-  // using native_basis_type = Eigen::MatrixXd;
-  // using basis_type = core::Matrix<native_basis_type>;
-  // auto phi_nat = readPhi(numCell, 10);
-  // basis_type phi(phi_nat);
+  //-------------------------------
+  // wrap with core structures
+  state_t y0FOM(y0n);
+  space_res_t r0FOM(r0n);
+  
+  // //---------------------------------
+  // // operators (faking here for now)
+  // // for anasazi, the eigenvectors are stored in a Multivector
+  // // but for us, they need to be see as a 2d matrix so we wrap it
+  // // with a core::Matrix<>. This is important. Maybe we
+  // // should make sure at compile time the phi operator is a core::matrix.
+  // using native_phi_type = Epetra_MultiVector;
+  // using my_phi_type = core::Matrix<native_phi_type>;
+  // using phi_optr_t = RomOperator<my_phi_type>;
+  // phi_optr_t phi;
 
+  // // collocation operator
+  // using my_P_type = core::IdentityMatrix<>;
+  // using P_optr_t = RomOperator<my_P_type>;
+  // P_optr_t P;
 
+  // // weighting operator
+  // WeightOperator1<phi_optr_t, P_optr_t> A(phi, P);
+  
+  // //---------------------------------
+  // // project initial condition phi^T * y0
+  // auto y = phi.leftMultiply(y0FOM, true);
+    
+  // // residual and jacob policies
+  // using res_pol_t = rom::exp::romGalerkinImplicitResidualPolicy<
+  //   state_t, space_res_t, model_eval_t, mysizer, phi_optr_t, P_optr_t>;
+  // res_pol_t resObj(y0, yr, phi, A);
+
+  
   MPI_Finalize();
+  return 0;
+}
+
+
+
+
+
+
+    // // stepper
+    // using stepper_t = ode::ExplicitEulerStepper<
+    //   state_t, space_res_t, scalar_t, target_app_t, mysizer>;
+    // // using stepper_t = ode::ExplicitRungeKutta4Stepper<
+    // //   state_t, space_res_t, scalar_t, target_app_t, mysizer>;
+    // stepper_t stepperObj(appObj, y, r);
+
+    // // integrate in time 
+    // snapshot_collector collObj;
+    // scalar_t final_t = 35;
+    // scalar_t dt = 0.01;
+    // ode::integrateNSteps(stepperObj, y, 0.0, dt, 3500, collObj);
+
+
+    
   
   // //-------------------------------
   // // Galerkin ROM
@@ -159,8 +239,6 @@ int main(int argc, char *argv[])
   // printSol("", yrFin);
   // //-------------------------------
 
-  return 0;
-}
 
 
 
@@ -184,7 +262,15 @@ int main(int argc, char *argv[])
   // snapshot_collector collObj;
   // ode::integrateNSteps(stepperObj, y, 0.0, dt, final_t/dt, collObj);    
   // printSol("", y);
-       
+
+
+
+
+
+
+  // using native_phi_type = Epetra_MultiVector;
+  // using my_phi_type = core::MultiVector<native_phi_type>;  
+
 
 
 
