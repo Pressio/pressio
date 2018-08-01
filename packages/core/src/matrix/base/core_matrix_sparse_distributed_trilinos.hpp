@@ -22,7 +22,7 @@ private:
   using col_map_t = typename traits_t::col_map_t;
   using range_map_t = typename traits_t::range_map_t;
   using domain_map_t = typename traits_t::domain_map_t;
-  using crs_graph_t = typename traits_t::crs_graph_t;
+  // using crs_graph_t = typename traits_t::crs_graph_t;
 
 public:
   
@@ -52,6 +52,22 @@ public:
     return this->underlying().getColDataMapImpl();
   }
 
+  bool hasSameRangeDataMapAs(derived_type const & other) const{
+    return this->underlying().hasSameRangeDataMapAsImpl(other);
+  }
+
+  bool hasSameDomainDataMapAs(derived_type const & other) const{
+    return this->underlying().hasSameDomainDataMapAsImpl(other);
+  }
+
+  bool hasSameRowDataMapAs(derived_type const & other) const{
+    return this->underlying().hasSameRowDataMapAsImpl(other);
+  }
+
+  bool hasSameColDataMapAs(derived_type const & other) const{
+    return this->underlying().hasSameColDataMapAsImpl(other);
+  }
+  
   // crs_graph_t const & getCrsGraph() const{
   //   return this->underlying().getCrsGraphImpl();
   // }

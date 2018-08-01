@@ -7,7 +7,6 @@
 namespace ode{
 namespace impl{
 
-
 template<typename model_type,
 	 typename residual_policy_type>
 class ExpOdeAuxData
@@ -16,7 +15,6 @@ public:
   ExpOdeAuxData(model_type & mod,
 		residual_policy_type & rpolo)
     : model_(&mod), residual_obj_(&rpolo){}
-
   ~ExpOdeAuxData() = default;
 
 protected:
@@ -37,9 +35,7 @@ public:
   ImpOdeAuxData(model_type & mod,
 		residual_policy_type & rpolo,
 		jacobian_policy_type & jpolo)
-    : model_(&mod), residual_obj_(&rpolo),
-      jacobian_obj_(&jpolo){}
-
+    : model_(&mod), residual_obj_(&rpolo), jacobian_obj_(&jpolo){}
   ~ImpOdeAuxData() = default;
 
 protected:

@@ -2,12 +2,12 @@
 #ifndef CORE_VECTOR_META_VECTOR_META_HPP_
 #define CORE_VECTOR_META_VECTOR_META_HPP_
 
-#include "../../meta/core_meta_basic.hpp"
-#include "../../meta/core_meta_detect_operators.hpp"
-#include "../../meta/core_meta_detect_typedefs.hpp"
-#include <Eigen/Dense>
+#include "core_meta_basic.hpp"
+#include "core_meta_detection_idiom.hpp"
 #include <vector>
+#include <Eigen/Dense>
 #include "Epetra_Vector.h"
+#include "Epetra_MultiVector.h"
 
 namespace core{
 namespace meta {
@@ -42,7 +42,7 @@ struct is_vector_eigen< T,
       > : std::true_type{};
 //----------------------------------------------------------------------
 
-
+  
 template <typename T, typename enable = void>
 struct is_vector_stdlib : std::false_type {};
 
@@ -64,7 +64,7 @@ struct is_vector_stdlib<T,
       > : std::true_type{};
 //----------------------------------------------------------------------
 
-
+  
 template <typename T, typename enable = void>
 struct is_vector_epetra : std::false_type {};
 
@@ -72,12 +72,13 @@ template <typename T>
 struct is_vector_epetra<T,
       typename
       std::enable_if<
-	std::is_same<T,Epetra_Vector>::value &&
-	publicly_inherits_from<T, Epetra_MultiVector>::value
+	std::is_same<T,Epetra_Vector>::value 
 	>::type
       > : std::true_type{};
-  
-   
+
+//----------------------------------------------------------------------
+
+ 
 //////////////////////
 } // namespace meta
 /////////////////////

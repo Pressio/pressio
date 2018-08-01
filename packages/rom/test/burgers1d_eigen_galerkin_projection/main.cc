@@ -74,17 +74,17 @@ int main(int argc, char *argv[])
   using residual_t = state_t;
   using jac_t = core::Matrix<native_jac_t>;
 
-  // //-------------------------------
-  // // create app object
-  // int numCell = 100; // number of fv cells
-  // Eigen::Vector3d mu(5.0, 0.02, 0.02);
-  // model_eval_t appObj(mu, numCell);
-  // appObj.setup();
+  //-------------------------------
+  // create app object
+  int numCell = 100; // number of fv cells
+  Eigen::Vector3d mu(5.0, 0.02, 0.02);
+  model_eval_t appObj(mu, numCell);
+  appObj.setup();
 
-  // //-------------------------------
-  // // wrap with core structures
-  // auto y0n = appObj.getInitialState();
-  // state_t y0(y0n);
+  //-------------------------------
+  // wrap with core structures
+  auto y0n = appObj.getInitialState();
+  state_t y0(y0n);
 
   // //-------------------------------
   // // SVD
@@ -94,14 +94,17 @@ int main(int argc, char *argv[])
   // auto phi_nat = readPhi(numCell, 10);
   // basis_type phi(phi_nat);
 
-  // //-------------------------------
-  // // Galerkin ROM
-  // //-------------------------------
+  //-------------------------------
+  // ROM
+  //-------------------------------
   // // operators
   // using phiOp_t = rom::experimental::basisOperatorDefault<basis_type>;
   // phiOp_t phiOp(phi);
   // using scale_op_t = rom::experimental::weightingOperatorIdentity<jac_t,phiOp_t>;
   // scale_op_t WOp(phiOp, phi.rows(), phi.cols());
+
+  // the weighting operator acts on residual and jacobian, so it needs to know
+  // types of residual and jacobian
 
   // // project initial condition
   // size_t redSize = phi.cols();
@@ -175,8 +178,6 @@ int main(int argc, char *argv[])
   // ode::integrateNSteps(stepperObj, y, 0.0, dt, final_t/dt, collObj);    
   // printSol("", y);
        
-
-
 
   // //-------------------------------
   // // collect snapshots usinf FOM

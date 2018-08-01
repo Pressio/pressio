@@ -2,12 +2,13 @@
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 
-#include <Eigen/Core>
-#include "../base/core_matrix_generic_base.hpp"
+
+#include "../../shared_base/core_container_base.hpp"
 #include "../base/core_matrix_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_trilinos.hpp"
-#include "../../core_operators_base.hpp"
+#include "../../shared_base/core_container_distributed_base.hpp"
+
 
 namespace core{
 
@@ -19,10 +20,12 @@ class Matrix<wrapped_type,
 		 wrapped_type>::value
 	       >::type
 	     >
-  : public MatrixGenericBase< Matrix<wrapped_type> >,
+  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
     public MatrixDistributedBase< Matrix<wrapped_type> >,
     public MatrixSparseDistributedBase< Matrix<wrapped_type> >,
-    public MatrixSparseDistributedTrilinos< Matrix<wrapped_type> >
+    public MatrixSparseDistributedTrilinos< Matrix<wrapped_type> >,
+    public ContainerDistributedBase< Matrix<wrapped_type>, 
+              typename details::traits<Matrix<wrapped_type>>::communicator_t >
 {
 
 private:
@@ -54,9 +57,6 @@ public:
   ~Matrix() = default;
 
 private:
-  //----------------
-  //from general base
-  //----------------
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -64,9 +64,6 @@ private:
     return &data_;
   }
   
-  //----------------------
-  //from distributed base
-  //----------------------
   LO_t localRowsImpl() const{
     return data_.NunMyRows();
   }
@@ -113,7 +110,23 @@ private:
   domain_map_t const & getDomainDataMapImpl() const{
     return data_.DomainMap();
   }
-  
+
+  bool hasSameRangeDataMapAsImpl(derived_t const & other) const{
+    return data_.RangeMap().SameAs(other.getRangeDataMap());
+  }
+
+  bool hasSameDomainDataMapAsImpl(derived_t const & other) const{
+    return data_.DomainMap().SameAs(other.getDomainDataMap());
+  }
+
+  bool hasSameRowDataMapAsImpl(derived_t const & other) const{
+    return data_.RowMap().SameAs(other.getRowDataMap());
+  }
+
+  bool hasSameColDataMapAsImpl(derived_t const & other) const{
+    return data_.ColMap().SameAs(other.getColDataMap());
+  }
+
   //----------------------------
   //from sparse distributed base
   //----------------------------
@@ -126,10 +139,11 @@ private:
   }
   
 private:
-  friend MatrixGenericBase< derived_t >;
+  friend ContainerBase< derived_t, wrapped_type >;
   friend MatrixDistributedBase< derived_t >;
   friend MatrixSparseDistributedBase< derived_t >;
   friend MatrixSparseDistributedTrilinos< derived_t >;
+  friend ContainerDistributedBase< derived_t, comm_t >;
 
 private:
   wrap_t data_;

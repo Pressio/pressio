@@ -9,26 +9,26 @@ namespace ode{
 namespace impl{
   
 template<typename state_type,
-	 typename residual_type,
+	 typename space_residual_type,
 	 typename scalar_type,
 	 typename model_type,	
 	 typename sizer_type,
 	 typename residual_policy_type
 	 >
 class ExplicitRungeKutta4StepperImpl<state_type,
-				     residual_type,
+				     space_residual_type,
 				     scalar_type,
 				     model_type,
 				     sizer_type,
 				     residual_policy_type>
   : public ExplicitStepperBase<
   ExplicitRungeKutta4StepperImpl<state_type,
-				 residual_type,
+				 space_residual_type,
 				 scalar_type,
 				 model_type,
 				 sizer_type,
 				 residual_policy_type> >,
-    private OdeStorage<state_type, residual_type, 1, 4>,
+    private OdeStorage<state_type, space_residual_type, 1, 4>,
     private ExpOdeAuxData<model_type, residual_policy_type>
 {
 
@@ -41,11 +41,11 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
 private:
   using stepper_t = ExplicitRungeKutta4StepperImpl<
-  state_type, residual_type, scalar_type,
+  state_type, space_residual_type, scalar_type,
   model_type, sizer_type, residual_policy_type>;
   
   using stepper_base_t = ExplicitStepperBase<stepper_t>;
-  using storage_base_t = OdeStorage<state_type, residual_type, 1, 4>;
+  using storage_base_t = OdeStorage<state_type, space_residual_type, 1, 4>;
   using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
   
 protected:
@@ -55,28 +55,28 @@ protected:
   using auxdata_base_t::residual_obj_;
   
 protected:
-  template < typename T = model_type,
-  	     typename U = residual_policy_type,
+  template < typename T1 = model_type,
+  	     typename T2 = residual_policy_type,
+	     typename T3 = state_type,
+	     typename T4 = space_residual_type,
 	     typename... Args>
-  ExplicitRungeKutta4StepperImpl(T & model,
-				 U & res_policy_obj,
+  ExplicitRungeKutta4StepperImpl(T1 & model, T2 & res_policy_obj,
+				 T3 const & y0, T4 const & r0,
 				 Args&&... rest)
-    : storage_base_t(std::forward<Args>(rest)...),
+    : storage_base_t(y0, r0 /*,std::forward<Args>(rest)...*/),
       auxdata_base_t(model, res_policy_obj){}
-
+  
   ExplicitRungeKutta4StepperImpl() = delete;
   ~ExplicitRungeKutta4StepperImpl() = default;
 
 protected:
   template<typename step_t>
-  void doStepImpl(state_type & y,
-		  scalar_type t,
-		  scalar_type dt,
-		  step_t step)
+  void doStepImpl(state_type & y, scalar_type t,
+		  scalar_type dt, step_t step)
   {
     auto ySz = sizer_type::getSize(y);
-    if(sizer_type::getSize(auxStates_[0]) == 0)
-      sizer_type::matchSize(y, auxStates_[0]);
+    // if(sizer_type::getSize(auxStates_[0]) == 0)
+    //   sizer_type::matchSize(y, auxStates_[0]);
 
     const scalar_type dt_half = dt / static_cast< scalar_type >(2);
     const scalar_type t_phalf = t + dt_half;

@@ -25,6 +25,7 @@ private:
 public:
   using scalar_type = double;
   using state_type = nativeVec;
+  using space_residual_type = nativeVec;
   using jacobian_type = Epetra_CrsMatrix;
 
 public:  
@@ -61,16 +62,22 @@ public:
     U_ = std::make_shared<nativeVec>(*dataMap_);
     U0_->PutScalar(1.0);
     U_->PutScalar(1.0);
-
     myRank_ =  comm_->MyPID();
+    
   };
 
-  state_type getInitialState(){
+  state_type const & getInitialState(){
     return *U0_;
+  };
+
+  space_residual_type const & getInitialResidual(){
+    r0_ = std::make_shared<nativeVec>(*dataMap_);
+    this->residual(*U0_, *r0_, 0.0);
+    return *r0_;
   };
   
   void residual(const state_type & u,
-		state_type & rhs,
+		space_residual_type & rhs,
 		const scalar_type /* t */)
   {
     double valueFromLeft = 0.0;
@@ -87,7 +94,7 @@ public:
     }
     
     int i=0;
-    scalar_type uim1, ui;
+    scalar_type uim1;
     for (auto const & it : myGel_)
     {
       uim1 = valueFromLeft;
@@ -145,6 +152,7 @@ private:
   
   rcp<nativeVec> U_; // state vector
   rcp<nativeVec> U0_; // initial state vector
+  rcp<nativeVec> r0_; // initial space residual
 };
 
 }//end namespace apps

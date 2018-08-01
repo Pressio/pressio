@@ -2,11 +2,12 @@
 #ifndef CORE_MATRIX_MATRIX_META_HPP_
 #define CORE_MATRIX_MATRIX_META_HPP_
 
-#include "../../meta/core_meta_basic.hpp"
-#include "../../vector/meta/core_vector_meta.hpp"
+#include "core_meta_basic.hpp"
+#include "core_vector_meta.hpp"
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
 #include <Epetra_CrsMatrix.h>
+#include <Epetra_MultiVector.h>
 
 
 namespace core{
@@ -107,6 +108,19 @@ struct is_matrix_sparse_distributed_epetra<T,
       >::type >
   : std::true_type{};
 
+//----------------------------------------------------------------------
+  
+  
+template <typename T, typename enable = void>
+struct is_matrix_dense_distributed_epetra
+  : std::false_type {};
+
+template<typename T>
+struct is_matrix_dense_distributed_epetra<T,
+    typename std::enable_if<
+      std::is_same<T, Epetra_MultiVector>::value
+      >::type >
+  : std::true_type{};
 
   
 /////////////////////
@@ -144,6 +158,14 @@ struct is_matrix_sparse_distributed_epetra<T,
 #define STATIC_ASSERT_IS_NOT_MATRIX_SPARSE_DISTRIBUTED_EPETRA(TYPE) \
   static_assert( !core::meta::is_matrix_sparse_distributed_epetra<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_SPARSE_DIST_EPETRA")
+
+
+#define STATIC_ASSERT_IS_MATRIX_DENSE_DISTRIBUTED_EPETRA(TYPE)	      \
+  static_assert( core::meta::is_matrix_dense_distributed_epetra<TYPE>::value, \
+		 "THIS_IS_NOT_A_MATRIX_DENSE_DIST_EPETRA")
+#define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_DISTRIBUTED_EPETRA(TYPE) \
+  static_assert( !core::meta::is_matrix_dense_distributed_epetra<TYPE>::value, \
+		 "THIS_IS_A_MATRIX_DENSE_DIST_EPETRA")
   
 } // namespace core
 #endif

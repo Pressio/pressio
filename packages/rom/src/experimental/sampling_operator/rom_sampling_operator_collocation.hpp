@@ -12,7 +12,7 @@ namespace experimental{
 template<typename matrix_type/*,
 	  typename
 	  std::enable_if<
-	    core::meta::is_coreMatrixWrapper<matrix_type>::value && 
+	    core::meta::is_core_matrix_wrapper<matrix_type>::value && 
 	    core::details::traits<matrix_type>::isEigen
 	    >::type * = nullptr */
 	  >

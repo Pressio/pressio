@@ -9,26 +9,26 @@ namespace ode{
 namespace impl{
     
 template<typename state_type,
-	 typename residual_type,
+	 typename space_residual_type,
 	 typename scalar_type,
 	 typename model_type,	
 	 typename sizer_type,
 	 typename residual_policy_type
 	 >
 class ExplicitEulerStepperImpl<state_type,
-			       residual_type,
+			       space_residual_type,
 			       scalar_type,
 			       model_type,
 			       sizer_type,
 			       residual_policy_type>
   : public ExplicitStepperBase<
   ExplicitEulerStepperImpl<state_type,
-			   residual_type,
+			   space_residual_type,
 			   scalar_type,
 			   model_type,
 			   sizer_type,
 			   residual_policy_type> >,
-    private OdeStorage<state_type, residual_type, 0, 1>,
+    private OdeStorage<state_type, space_residual_type, 0, 1>,
     private ExpOdeAuxData<model_type, residual_policy_type>
 {  
 
@@ -40,11 +40,11 @@ class ExplicitEulerStepperImpl<state_type,
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using stepper_t = ExplicitEulerStepperImpl<
-    state_type, residual_type, scalar_type,
+    state_type, space_residual_type, scalar_type,
     model_type, sizer_type, residual_policy_type>;
 
   using stepper_base_t = ExplicitStepperBase<stepper_t>;
-  using storage_base_t = OdeStorage<state_type, residual_type, 0, 1>;
+  using storage_base_t = OdeStorage<state_type, space_residual_type, 0, 1>;
   using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
 
 protected:
@@ -53,13 +53,15 @@ protected:
   using auxdata_base_t::residual_obj_;
   
 protected:
-  template < typename T = model_type,
-  	     typename U = residual_policy_type,
+  template < typename T1 = model_type,
+  	     typename T2 = residual_policy_type,
+	     typename T3 = state_type,
+	     typename T4 = space_residual_type,
 	     typename... Args>
-  ExplicitEulerStepperImpl(T & model,
-			   U & res_policy_obj,
+  ExplicitEulerStepperImpl(T1 & model, T2 & res_policy_obj,
+			   T3 const & y0, T4 const & r0,
 			   Args&&... rest)
-    : storage_base_t(std::forward<Args>(rest)...),
+    : storage_base_t(r0 /*,std::forward<Args>(rest)...*/),
       auxdata_base_t(model, res_policy_obj){}
 
   ExplicitEulerStepperImpl() = delete;
@@ -70,17 +72,15 @@ protected:
   void doStepImpl(state_type & y, scalar_type t,
 		  scalar_type dt, step_t step)
   {
-    auto ySz = sizer_type::getSize(y);
     if (sizer_type::getSize(auxRHS_[0]) == 0)
       sizer_type::matchSize(y, auxRHS_[0]);
 
     //eval RHS
     residual_obj_->compute(y, auxRHS_[0], *model_, t);
     
-    // //out = in + dt * rhs
-    for (decltype(ySz) i=0; i < ySz; i++){
-      y[i] += dt*auxRHS_[0][i];
-    }
+    // y = y + dt * rhs
+    y.template inPlaceOp<std::plus<double> >(static_cast<scalar_type>(1.0),
+					     dt, auxRHS_[0]);
   }
   //----------------------------------------------------------------
   

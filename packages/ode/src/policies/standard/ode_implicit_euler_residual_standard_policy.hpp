@@ -24,15 +24,15 @@ public:
 
 private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
-    
+  
 private:
   // enable when using types from core package
   template <typename U = state_type,
 	    typename T = residual_type,
 	    typename
 	    std::enable_if<
-	      core::meta::is_coreVector<U>::value==true &&
-	      core::meta::is_coreVector<T>::value==true
+	      core::meta::is_core_vector<U>::value==true &&
+	      core::meta::is_core_vector<T>::value==true
 	      >::type * = nullptr
 	    >
   void computeImpl(const U & y,
@@ -40,8 +40,7 @@ private:
 		   const std::array<U, 1> & oldYs,
 		   model_type & model,
 		   scalar_type t,
-		   scalar_type dt)
-  {
+		   scalar_type dt){
     if (R.empty())
       sizer_type::matchSize(y, R);
 

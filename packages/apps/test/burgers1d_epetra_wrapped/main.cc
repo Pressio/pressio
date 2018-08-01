@@ -1,14 +1,11 @@
 
-#include "CORE_VECTOR"
-#include "CORE_MATRIX"
+#include "CORE_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_EXP"
 // app class
 #include "apps_burgers1d_epetra.hpp"
 #include "ode_observer.hpp"
-
-#include "../apps_helper_ode.hpp"
-
+//#include "../apps_helper_ode.hpp"
 
 struct mysizer{
   using state_t = core::Vector<apps::Burgers1dEpetra::state_type>;
@@ -23,52 +20,53 @@ struct mysizer{
 
 int main(int argc, char *argv[])
 {
+  //-------------------------------
+  // define native types
   using native_state_t = apps::Burgers1dEpetra::state_type;
-  using native_residual_t = native_state_t;
+  using native_space_residual_t = apps::Burgers1dEpetra::space_residual_type;
   using native_jac_t = apps::Burgers1dEpetra::jacobian_type;
   using scalar_t = apps::Burgers1dEpetra::scalar_type;
   using target_app_t = apps::Burgers1dEpetra;
-
+  
   MPI_Init(&argc,&argv);
   int rank; // My process ID
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
 
+  //-------------------------------
+  // create app object
   std::vector<double> mu({5.0, 0.02, 0.02});
   target_app_t appObj(mu, 20, &Comm);
   appObj.setup();
+  auto & y0n = appObj.getInitialState();
+  auto & r0n = appObj.getInitialResidual();
+
+  {
+    //-------------------------------
+    // wrapper types 
+    using state_t = core::Vector<native_state_t>;
+    using jac_t = core::Matrix<native_jac_t>;
+    using space_res_t = core::Vector<native_space_residual_t>;
+
+    state_t y(y0n);
+    space_res_t r(r0n);
+
+    // stepper
+    using stepper_t = ode::ExplicitEulerStepper<
+      state_t, space_res_t, scalar_t, target_app_t, mysizer>;
+    // using stepper_t = ode::ExplicitRungeKutta4Stepper<
+    //   state_t, space_res_t, scalar_t, target_app_t, mysizer>;
+    stepper_t stepperObj(appObj, y, r);
+
+    // integrate in time 
+    snapshot_collector collObj;
+    scalar_t final_t = 35;
+    scalar_t dt = 0.01;
+    ode::integrateNSteps(stepperObj, y, 0.0, dt, 3500, collObj);
+    y.data()->Print(std::cout << std::setprecision(14));
+    // //printSol("Exp Euler", y0);
+  }
   
-  // integrate in time starting from y0
-  scalar_t final_t = 35;
-  scalar_t dt = 0.001;
-
-  // wrap with core structures
-  using state_t = core::Vector<native_state_t>;
-  using jac_t = core::Matrix<native_jac_t>;
-  using residual_t = state_t;
-  native_state_t y0n = appObj.getInitialState();
-  snapshot_collector collObj;
-
-  // data map from epetra
-  auto const & dmap = y0n.Map();
-    
-  state_t y0(y0n);
-
-  // using stepper_t = ode::ExplicitEulerStepper<
-  //   state_t, residual_t, scalar_t,
-  //   target_app_t, scalar_t, mysizer>;
-  // stepper_t stepperObj(appObj, dmap);
-
-  // ode::integrateNSteps(stepperObj, y, ti, dt, te/dt, collectorObj);
-  
-  using exstd_t = apps::test::appsExpOdeHelper<
-    state_t, residual_t, scalar_t, target_app_t,
-    scalar_t, mysizer, void, void, snapshot_collector>;
-
-  exstd_t::explicitStandardEuler(y0, 0.0, final_t, dt, appObj, collObj, dmap);
-  y0.data()->Print(std::cout << std::setprecision(14));
-  // //printSol("Exp Euler", y0);
-    
   MPI_Finalize();
   return 0;
 }

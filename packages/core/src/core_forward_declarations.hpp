@@ -10,6 +10,9 @@ template <typename wrapped_type,
 	  typename Enable = void>
 class Vector;
 
+template <typename wrapped_type,
+	  typename Enable = void>
+class MultiVector;
 
 template <typename wrapped_type,
 	  typename Enable = void>

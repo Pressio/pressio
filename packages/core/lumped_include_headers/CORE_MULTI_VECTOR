@@ -1,0 +1,16 @@
+
+#ifndef CORE_MULTI_VECTOR_HPP_
+#define CORE_MULTI_VECTOR_HPP_
+
+#include "CORE_BASIC"
+
+#include "../src/multi_vector/core_multi_vector_traits.hpp"
+
+#include "../src/multi_vector/base/core_multi_vector_math_base.hpp"
+#include "../src/multi_vector/base/core_multi_vector_serial_base.hpp"
+#include "../src/multi_vector/base/core_multi_vector_distributed_base.hpp"
+#include "../src/multi_vector/base/core_multi_vector_distributed_trilinos.hpp"
+
+#include "../src/multi_vector/concrete/core_multi_vector_distributed_epetra.hpp"
+
+#endif

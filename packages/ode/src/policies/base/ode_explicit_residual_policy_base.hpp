@@ -13,11 +13,11 @@ class ExplicitResidualPolicyBase
 {
 public:
   template <typename state_type,
-	    typename residual_type,
+	    typename space_residual_type,
 	    typename model_type,
 	    typename scalar_type>
   void compute(const state_type & y,
-	       residual_type & R,
+	       space_residual_type & R,
 	       model_type & model,
 	       scalar_type t){
     this->underlying().computeImpl(y, R, model, t);
@@ -26,11 +26,9 @@ public:
 private:
   friend derived_t;
   friend core::details::CrtpBase<ExplicitResidualPolicyBase<derived_t>>;
-
   ExplicitResidualPolicyBase() = default;
   ~ExplicitResidualPolicyBase() = default;
   
-
 };//end class
   
 }//end namespace polices

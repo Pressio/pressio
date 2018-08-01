@@ -2,13 +2,11 @@
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_SPARSE_SERIAL_EIGEN_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_SERIAL_EIGEN_HPP_
 
-#include <Eigen/Core>
-#include "../base/core_matrix_generic_base.hpp"
+#include "../../shared_base/core_container_base.hpp"
 #include "../base/core_matrix_serial_base.hpp"
 #include "../base/core_matrix_sparse_serial_base.hpp"
 #include "../base/core_matrix_math_base.hpp"
-#include "../../core_operators_base.hpp"
-#include <stdexcept>
+#include "../../shared_base/core_operators_base.hpp"
 
 namespace core{
 
@@ -20,7 +18,7 @@ class Matrix<wrapped_type,
 		 wrapped_type >::value
 	       >::type
 	     >
-  : public MatrixGenericBase< Matrix<wrapped_type> >,
+  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
     public MatrixSerialBase< Matrix<wrapped_type> >,
     public MatrixSparseSerialBase< Matrix<wrapped_type> >,
     public MatrixMathBase< Matrix<wrapped_type> >,
@@ -198,10 +196,12 @@ private:
   }
 
 private:
-  friend MatrixGenericBase< derived_t >;
+  friend ContainerBase< derived_t, wrapped_type >;
   friend MatrixSerialBase< derived_t >;
   friend MatrixSparseSerialBase< derived_t >;
   friend MatrixMathBase< derived_t >;
+  friend ArithmeticOperatorsBase< derived_t >;
+  friend CompoundAssignmentOperatorsBase< derived_t >;
 
 private:
   wrap_t data_;

@@ -1,8 +1,8 @@
 
-#ifndef CORE_MATRIX_MATRIX_MATRIX_PRODUCT_HPP_
-#define CORE_MATRIX_MATRIX_MATRIX_PRODUCT_HPP_
+#ifndef CORE_MATRIX_OPERATIONS_MATRIX_MATRIX_PRODUCT_HPP_
+#define CORE_MATRIX_OPERATIONS_MATRIX_MATRIX_PRODUCT_HPP_
 
-#include "../../matrix/meta/core_matrix_meta.hpp"
+#include "../../meta/core_matrix_meta.hpp"
 #include "../concrete/core_matrix_dense_serial_eigen.hpp"
 #include "../concrete/core_matrix_sparse_serial_eigen.hpp"
 #include <EpetraExt_MatrixMatrix.h>
@@ -21,21 +21,22 @@ void
 matrixMatrixProduct(const mat_type & A,
 		    const mat_type & B,
 		    mat_type & C,
-		    bool transposeA = false,
-		    bool transposeB = false,
+		    bool transposeA,
+		    bool transposeB,
 		    bool call_filingIsCompleted_on_result = true,
 		    typename std::enable_if<
-		    meta::is_matrix_sparse_distributed_epetra<mat_type>::value
+		     details::traits<mat_type>::isEpetra &&
+		     details::traits<mat_type>::isSparse
 		    >::type * = nullptr)
 {
 
   assert( A.isFillingCompleted() );
   assert( B.isFillingCompleted() );
-  assert( C.rowMap() == A.rowMap() );
+  assert( C.hasSameRowDataMapAs(A) );
 
   if ( C.isFillingCompleted() ){
-    assert( C.rangeMap() == A.rangeMap() );
-    assert( C.domainMap() == B.domainMap() );
+    assert( C.hasSameRangeDataMapAs(A) );
+    assert( C.hasSameDomainDataMapAs(B) );
     EpetraExt::MatrixMatrix::Multiply(*A.data(), transposeA,
 				      *B.data(), transposeB,
 				      *C.data(),

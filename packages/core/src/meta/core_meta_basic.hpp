@@ -46,29 +46,16 @@ namespace meta {
 
   template <typename T>
   struct is_std_complex<T, typename
-		       std::enable_if<
-			    std::is_same<T,
-					 std::complex<typename
-						      T::value_type
-						      >
-					 >::value
-			    >::type
-		       > : std::true_type{};
+	  std::enable_if<
+	   std::is_same<T,
+	     std::complex<typename
+		T::value_type
+		>
+	     >::value
+	   >::type
+	 > : std::true_type{};
 
   //////////////////////////////////////////////////
-
-  // template<template<class> class T, class U>
-  // struct isDerivedFrom
-  // {
-  //   static constexpr bool value =
-  //     decltype(isDerivedFrom::test(std::declval<U>()))::value;
-  // private:
-  //   template<class V>
-  //   static decltype(static_cast<T<V>>(std::declval<U>()),
-  // 		    std::true_type{}) test(const T<V>&);
-
-  //   static std::false_type test(...);
-  // };
 
   template<typename T, typename base_t>
   struct publicly_inherits_from : std::is_base_of<base_t,T>{};

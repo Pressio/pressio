@@ -9,13 +9,26 @@ namespace core{
 template<typename derived_type>
 class MatrixDenseDistributedBase
   : private core::details::CrtpBase<
-  MatrixDenseDistributedBase<derived_type>>
+  			MatrixDenseDistributedBase<derived_type>>
 {
 
   static_assert( details::traits<derived_type>::isDistributed==1,
-		 "OOPS: non-distributed matrix inheriting \
-from dense distributed base!");
+  "OOPS: non-distributed matrix inheriting from dense distributed base!");
+
+private:
+  using traits_t = details::traits<derived_type>;
+  using sc_t = typename traits_t::scalar_t;
+  using LO_t = typename traits_t::local_ordinal_t;
+  using GO_t = typename traits_t::global_ordinal_t;
   
+public:
+  void replaceGlobalValue(GO_t globalRowIndex,
+			  GO_t globalColIndex,
+			  sc_t value){
+    this->underlying().replaceGlobalValueImpl(globalRowIndex,
+					      globalColIndex, value);
+  }
+    
 private:  
   friend derived_type;
   friend core::details::CrtpBase<

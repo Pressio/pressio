@@ -3,7 +3,6 @@
 #define CORE_OPERATORS_BASE_HPP_
 
 #include <type_traits>
-#include <iostream>
 
 namespace core{
   
@@ -16,6 +15,7 @@ public:
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
   derived_type operator+(const U & other) const;
+
   //--------------------------------------------------
   // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
@@ -23,6 +23,7 @@ public:
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
   derived_type operator-(const U & other) const;
+
   //--------------------------------------------------
   // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
@@ -30,9 +31,9 @@ public:
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
   derived_type operator*(const U & other) const;
+
 private:
   friend derived_type;
-
   ArithmeticOperatorsBase() = default;
   ~ArithmeticOperatorsBase() = default;
 
@@ -52,6 +53,7 @@ public:
 	     std::is_same<derived_type,U>::value
 	     >::type * = nullptr>
   derived_type & operator+=(const U & other);  
+
   //--------------------------------------------------
   // disable (for now) if callers'type does not match input type
   template<typename U = derived_type,
@@ -62,7 +64,6 @@ public:
 
 private:
   friend derived_type;
-
   CompoundAssignmentOperatorsBase() = default;
   ~CompoundAssignmentOperatorsBase() = default;
   
@@ -76,18 +77,41 @@ private:
 template<typename derived_type,
 	 typename scalar_type,
 	 typename ordinal_type>
-class SubscriptingOperatorsBase{
+class Subscripting1DOperatorsBase{
 public:
   scalar_type & operator[] (ordinal_type index);
   scalar_type const & operator[] (ordinal_type index) const;
 
 private:
   friend derived_type;
-
-  SubscriptingOperatorsBase() = default;
-  ~SubscriptingOperatorsBase() = default;  
+  Subscripting1DOperatorsBase() = default;
+  ~Subscripting1DOperatorsBase() = default;  
  
 };//end class   
+
+  
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+
+
+template<typename derived_type,
+	 typename scalar_type,
+	 typename row_ordinal_type,
+	 typename col_ordinal_type = row_ordinal_type>
+class Subscripting2DOperatorsBase{
+public:
+  scalar_type & operator()(row_ordinal_type irow, 
+                           col_ordinal_type icol);
+  scalar_type const & operator()(row_ordinal_type irow, 
+                                 col_ordinal_type icol) const;
+
+private:
+  friend derived_type;
+  Subscripting2DOperatorsBase() = default;
+  ~Subscripting2DOperatorsBase() = default;  
+ 
+};//end class   
+
 
 } // end namespace core
 #endif

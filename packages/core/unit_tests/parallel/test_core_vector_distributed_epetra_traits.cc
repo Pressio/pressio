@@ -1,6 +1,4 @@
 #include <gtest/gtest.h>
-// #include "vector/meta/core_vector_meta.hpp"
-// #include "vector/concrete/core_vector_distributed_epetra.hpp"
 #include "Epetra_Map.h"
 #include "Epetra_Vector.h"
 #include "Epetra_Version.h"

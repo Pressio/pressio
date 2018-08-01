@@ -19,7 +19,6 @@ private:
   using traits_t = details::traits<derived_type>;
   using LO_t = typename traits_t::local_ordinal_t;
   using GO_t = typename traits_t::global_ordinal_t;
-  using comm_t =  typename traits_t::communicator_t;
 
 public:
   LO_t localRows() const{
@@ -36,10 +35,6 @@ public:
 
   GO_t globalCols() const{
     return this->underlying().globalColsImpl();
-  }
-
-  comm_t const & commCRef() const{
-    return this->underlying().commCRefImpl();
   }
   
 private:
