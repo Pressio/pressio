@@ -69,7 +69,6 @@ TEST_F(core_matrix_sparse_distributed_epetraFix,
 
   std::cout << A_->data()->NumGlobalRows() << " " << 
                A_->data()->NumGlobalCols() << std::endl;
-  // exit(EXIT_FAILURE);
 
   //--------------------------------------------
   //--------------------------------------------

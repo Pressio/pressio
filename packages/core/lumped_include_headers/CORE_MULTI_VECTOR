@@ -9,7 +9,6 @@
 #include "../src/multi_vector/base/core_multi_vector_math_base.hpp"
 #include "../src/multi_vector/base/core_multi_vector_serial_base.hpp"
 #include "../src/multi_vector/base/core_multi_vector_distributed_base.hpp"
-#include "../src/multi_vector/base/core_multi_vector_distributed_trilinos.hpp"
 
 #include "../src/multi_vector/concrete/core_multi_vector_distributed_epetra.hpp"
 

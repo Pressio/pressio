@@ -4,10 +4,10 @@
 
 #include "../../shared_base/core_container_base.hpp"
 #include "../base/core_multi_vector_distributed_base.hpp"
-#include "../base/core_multi_vector_distributed_trilinos.hpp"
 #include "../base/core_multi_vector_math_base.hpp"
 #include "../../shared_base/core_container_distributed_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
+#include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 
 namespace core{
   
@@ -21,12 +21,13 @@ class MultiVector<wrapped_type,
      >
   : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
     public MultiVectorDistributedBase< MultiVector<wrapped_type> >,
-    public MultiVectorDistributedTrilinos< MultiVector<wrapped_type> >,
     public MultiVectorMathBase< MultiVector<wrapped_type> >,
     public Subscripting2DOperatorsBase< MultiVector<wrapped_type>,
       typename details::traits<MultiVector<wrapped_type>>::scalar_t,
       typename details::traits<MultiVector<wrapped_type>>::local_ordinal_t,
       typename details::traits<MultiVector<wrapped_type>>::global_ordinal_t>,
+    public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>, 
+              typename details::traits<MultiVector<wrapped_type>>::data_map_t >, 
     public ContainerDistributedBase< MultiVector<wrapped_type>, 
       typename details::traits<MultiVector<wrapped_type>>::communicator_t >
 {
@@ -82,7 +83,7 @@ private:
   void setZeroImpl() {
     data_.PutScalar(static_cast<sc_t>(0));
   }
-
+  
   mpicomm_t const & commCRefImpl() const{
     return data_.Comm();
   }
@@ -127,9 +128,9 @@ private:
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend MultiVectorDistributedBase< this_t >;
-  friend MultiVectorDistributedTrilinos< this_t >;
   friend MultiVectorMathBase< this_t >;
   friend ContainerDistributedBase< this_t, mpicomm_t >;
+  friend ContainerDistributedTrilinosBase< this_t, map_t >;
   friend Subscripting2DOperatorsBase< this_t, sc_t, LO_t, GO_t>;
   
 private:

@@ -7,6 +7,7 @@
 #include "../base/core_matrix_dense_distributed_base.hpp"
 #include "../../shared_base/core_container_distributed_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
+#include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 
 namespace core{
 
@@ -25,6 +26,8 @@ class Matrix<wrapped_type,
       typename details::traits<Matrix<wrapped_type>>::scalar_t,
       typename details::traits<Matrix<wrapped_type>>::local_ordinal_t,
       typename details::traits<Matrix<wrapped_type>>::global_ordinal_t>,
+    public ContainerDistributedTrilinosBase< Matrix<wrapped_type>, 
+              typename details::traits<Matrix<wrapped_type>>::row_map_t >, 
     public ContainerDistributedBase< Matrix<wrapped_type>, 
               typename details::traits<Matrix<wrapped_type>>::communicator_t >
 {
@@ -83,7 +86,16 @@ private:
     data_.PutScalar(static_cast<sc_t>(0));
   }
   //--------------------------------
-  
+
+  row_map_t const & getDataMapImpl() const{
+    return data_.Map();
+  }
+
+  void replaceDataMapImpl(const row_map_t & mapObj){
+    data_.ReplaceMap(mapObj);
+  }
+  //--------------------------------
+
   LO_t localRowsImpl() const{
     return data_.MyLength();
   }
@@ -118,6 +130,7 @@ private:
   friend MatrixDistributedBase< this_t >;
   friend MatrixDenseDistributedBase< this_t >;
   friend ContainerDistributedBase< this_t, comm_t >;
+  friend ContainerDistributedTrilinosBase< this_t, row_map_t >;
   friend Subscripting2DOperatorsBase< this_t, sc_t, LO_t, GO_t>;
 
 private:

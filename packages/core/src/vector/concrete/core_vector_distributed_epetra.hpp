@@ -4,10 +4,10 @@
 
 #include "../../shared_base/core_container_base.hpp"
 #include "../base/core_vector_distributed_base.hpp"
-#include "../base/core_vector_distributed_trilinos.hpp"
 #include "../base/core_vector_math_base.hpp"
 #include "../../shared_base/core_container_distributed_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
+#include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 
 namespace core{
   
@@ -21,10 +21,11 @@ class Vector<wrapped_type,
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorDistributedBase< Vector<wrapped_type> >,
-    public VectorDistributedTrilinos< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >, 
     public ContainerDistributedBase< Vector<wrapped_type>, 
               typename details::traits<Vector<wrapped_type>>::communicator_t >, 
+    public ContainerDistributedTrilinosBase< Vector<wrapped_type>, 
+              typename details::traits<Vector<wrapped_type>>::data_map_t >, 
     public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
               typename details::traits<Vector<wrapped_type>>::scalar_t,
               typename details::traits<Vector<wrapped_type>>::local_ordinal_t>
@@ -186,9 +187,9 @@ private:
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorDistributedBase< this_t >;
-  friend VectorDistributedTrilinos< this_t >;
   friend VectorMathBase< this_t >;
   friend ContainerDistributedBase< this_t, mpicomm_t >;
+  friend ContainerDistributedTrilinosBase< this_t, map_t >;
   friend Subscripting1DOperatorsBase< this_t, sc_t, LO_t>;
 
 private:

@@ -13,47 +13,44 @@ namespace exp{
 template<typename state_type,
 	 typename space_residual_type,
 	 typename model_type,
-	 typename sizer_type
-	 /*typename phi_op_t, typename wei_op_t*/>
+	 typename sizer_type>
 class romGalerkinExplicitResidualPolicy
-  : public ode::policy::ExlicitResidualPolicyBase<
-  romGalerkinExplicitResidualPolicy<state_type, residual_type,
-				    model_type, sizer_type
-				    /*,phi_op_t, wei_op_t>*/>
+  : public ode::policy::ExplicitResidualPolicyBase<
+  romGalerkinExplicitResidualPolicy<state_type, space_residual_type,
+				    model_type, sizer_type>>
 {
 
 private:
-  using this_t = romGalerkinExplicitResidualPolicy<state_type, residual_type,
-						   model_type, sizer_type
-						   /*phi_op_t, wei_op_t*/>;
+  using this_t = romGalerkinExplicitResidualPolicy<state_type, space_residual_type,
+						   model_type, sizer_type>;
   using base_t = ode::policy::ExplicitResidualPolicyBase<this_t>;
   
 private:
   // phi_op_t * phiOp_;
   // wei_op_t * WOp_;
-  residual_type appRHS_;
+  space_residual_type appRHS_;
   state_type yFOM_;
   
 public:
   romGalerkinExplicitResidualPolicy(){}
   ~romGalerkinExplicitResidualPolicy() = default;  
 
-private:
-  template <typename U = state_type,
-	    typename T = residual_type,
-	    typename std::enable_if<
-	      core::meta::is_core_vector<U>::value==true &&
-	      core::meta::is_core_vector<T>::value==true
-	    >::type * = nullptr>
-  void computeImpl(const U & y,
-		   T & R,
-		   const std::array<U, 1> & oldYs,
-		   model_type & model,
-		   time_type t,
-		   time_type dt)
-  {
+// private:
+//   template <typename U = state_type,
+// 	    typename T = space_residual_type,
+// 	    typename std::enable_if<
+// 	      core::meta::is_core_vector<U>::value==true &&
+// 	      core::meta::is_core_vector<T>::value==true
+// 	    >::type * = nullptr>
+//   void computeImpl(const U & y,
+// 		   T & R,
+// 		   const std::array<U, 1> & oldYs,
+// 		   model_type & model,
+// 		   time_type t,
+// 		   time_type dt)
+//   {
     
-  }  
+//   }  
 
 private:
   friend base_t;

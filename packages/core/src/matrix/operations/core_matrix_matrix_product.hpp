@@ -12,22 +12,23 @@ namespace core{
 
 /*-----------------------------------------------------
   C = A * B
-   A: epetra sparse matrix
-   B: epetra sparse matrix
-   C: epetra sparse matrix
+  A: epetra sparse matrix
+  B: epetra sparse matrix
+  C: epetra sparse matrix
 ----------------------------------------------------- */
-template <typename mat_type>
-void
-matrixMatrixProduct(const mat_type & A,
-		    const mat_type & B,
-		    mat_type & C,
-		    bool transposeA,
-		    bool transposeB,
-		    bool call_filingIsCompleted_on_result = true,
-		    typename std::enable_if<
-		     details::traits<mat_type>::isEpetra &&
-		     details::traits<mat_type>::isSparse
-		    >::type * = nullptr)
+
+template <typename mat_type,
+	  typename std::enable_if<
+	    details::traits<mat_type>::isEpetra &&
+	    details::traits<mat_type>::isSparse
+	    >::type * = nullptr
+	  >
+void matrixMatrixProduct(const mat_type & A,
+			 const mat_type & B,
+			 mat_type & C,
+			 bool transposeA,
+			 bool transposeB,
+			 bool call_filingIsCompleted_on_result = true)
 {
 
   assert( A.isFillingCompleted() );
@@ -51,7 +52,83 @@ matrixMatrixProduct(const mat_type & A,
   }
 }
 
+  
 
+/*-----------------------------------------------------
+-------------------------------------------------------
+  C = A * B
+
+  A: epetra dense matrix
+  B: epetra dense matrix
+  C: epetra dense matrix
+-------------------------------------------------------
+-----------------------------------------------------*/
+template <typename mat_type,
+	  typename std::enable_if<
+	    details::traits<mat_type>::isEpetra &&
+	    details::traits<mat_type>::isDense
+	    >::type * = nullptr
+	  >
+auto matrixMatrixProduct(const mat_type & A,
+			 const mat_type & B)
+{
+  assert( A.globalCols() == B.globalRows() );
+
+  /* I tried here to use the Multiply method of MultiVectors but it 
+     does not seem to work as expected. When A,B,C are all distributed, I don't get 
+     the right result. So we need to figure out why. 
+     Nonetheless, for now put a placeholder doing nothing. Just create 
+     the result dense matrix and then fill it with zeros. 
+     Maybe we should just put here for now a simple implementation.
+  */
+  
+  // get row map of A
+  auto & mapA = A.getDataMap();
+  mat_type C( mapA, B.globalCols() );
+  C.setZero();
+  return C;
+}
+
+
+
+/*-----------------------------------------------------
+-------------------------------------------------------
+  C = A * B
+
+  A: epetra CRS matrix wrapper
+  B: epetra dense matrix wrapper
+  C: epetra dense matrix wrapper
+-------------------------------------------------------
+-----------------------------------------------------*/
+template <typename mat_sp_type,
+	  typename mat_ds_type,
+	  typename std::enable_if<
+	    details::traits<mat_ds_type>::isEpetra &&
+	    details::traits<mat_ds_type>::isDense &&
+	    details::traits<mat_sp_type>::isEpetra &&
+	    details::traits<mat_sp_type>::isSparse
+	    >::type * = nullptr
+	  >
+auto matrixMatrixProduct(const mat_sp_type & A,
+			 const mat_ds_type & B)
+{
+  assert( A.globalCols() == B.globalRows() );
+
+  std::cout << " OKKKK \n"; 
+
+  // get row map of A
+  auto & mapA = A.getRangeDataMap();
+  mat_ds_type C( mapA, B.globalCols() );
+  C.setZero();
+
+  A.data()->Multiply(false, *B.data(), *C.data());
+  return C;
+}
+  
+
+
+
+  
   
 
 

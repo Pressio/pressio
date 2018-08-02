@@ -2,13 +2,11 @@
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 
-
 #include "../../shared_base/core_container_base.hpp"
 #include "../base/core_matrix_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_trilinos.hpp"
 #include "../../shared_base/core_container_distributed_base.hpp"
-
 
 namespace core{
 
@@ -49,7 +47,7 @@ public:
   explicit Matrix(const row_map_t & rowMap,
 		  LO_t NumEntriesPerRow,
 		  bool StaticProfile=false)
-    : data_(Copy, rowMap, NumEntriesPerRow, StaticProfile){}
+    : data_(Epetra_DataAccess::Copy, rowMap, NumEntriesPerRow, StaticProfile){}
 
   explicit Matrix(const wrap_t & objin)
     : data_(objin){}
