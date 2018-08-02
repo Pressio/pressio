@@ -1,8 +1,10 @@
-
-#ifndef SOLVERS_EXPERIMENTAL_TRAITS_HPP_
-#define SOLVERS_EXPERIMENTAL_TRAITS_HPP_
+#ifndef SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_TRAITS_HPP
+#define SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_TRAITS_HPP
 
 #include <Eigen/Core>
+#include "AztecOO.h"
+
+#include "matrix/core_matrix_traits.hpp"
 
 
 namespace solvers {
@@ -36,19 +38,38 @@ struct solver_traits {
 template <>
 struct solver_traits<CG> {
 
-  template <typename T>
-  using eigen_solver_type = Eigen::ConjugateGradient<T>;
+  template <
+    typename MatrixT,
+    typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
+  >
+  using eigen_solver_type = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
+
+  static constexpr int trilinos_flag = AZ_cg;
 
   static constexpr bool eigen_enabled = true;
   static constexpr bool trilinos_enabled = true;
 };
 
 template <>
+struct solver_traits<Gmres> {
+
+  static constexpr int trilinos_flag = AZ_gmres;
+
+  static constexpr bool eigen_enabled = false;
+  static constexpr bool trilinos_enabled = true;
+};
+
+template <>
 struct solver_traits<Bicgstab> {
 
-  template <typename T>
-  using eigen_solver_type = Eigen::BiCGSTAB<T>;
+  template <
+    typename MatrixT,
+    typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
+  >
+  using eigen_solver_type = Eigen::BiCGSTAB<MatrixT, PrecT>;
 
+  static constexpr int trilinos_flag = AZ_bicgstab;
+  
   static constexpr bool eigen_enabled = true;
   static constexpr bool trilinos_enabled = true;
 };
@@ -63,6 +84,12 @@ struct preconditioner_traits {
 
 template<>
 struct preconditioner_traits<DefaultPreconditioner> {
+
+  template <typename MatrixT>
+  using eigen_preconditioner_type = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>;
+
+  static constexpr int trilinos_flag = INT_MIN;
+
   static constexpr bool eigen_enabled = true;
   static constexpr bool trilinos_enabled = true;
 };
@@ -70,7 +97,7 @@ struct preconditioner_traits<DefaultPreconditioner> {
 template <>
 struct preconditioner_traits<Jacobi> {
   static constexpr bool eigen_enabled = false;
-  static constexpr bool trilinos_enabled = true;
+  static constexpr bool trilinos_enabled = false;
 };
 
 } // end namespace details

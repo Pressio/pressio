@@ -1,14 +1,18 @@
 
-#ifndef SOLVERS_EXPERIMENTAL_LINEAR_FACTORY_HPP_
-#define SOLVERS_EXPERIMENTAL_LINEAR_FACTORY_HPP_
+#ifndef SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_FACTORY_HPP
+#define SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_FACTORY_HPP
 
 #include <iostream>
-
+#include <memory>
 #include <type_traits>
 #include <Eigen/Sparse>
 
-#include <solvers_traits.hpp>
-#include <solvers_linear_iterative_eigen.hpp>
+#include "solvers_linear_iterative.hpp"
+#include "solvers_linear_iterative_traits.hpp"
+#include "solvers_policy_linear_iterative_eigen.hpp"
+#include "solvers_policy_linear_iterative_trilinos.hpp"
+
+#include "matrix/core_matrix_traits_exp.hpp"
 
 
 namespace solvers {
@@ -16,116 +20,189 @@ namespace solvers {
 
 struct LinearSolvers {
  
-  // Unsopported matrix type
+
   template <typename SolverT,
-    typename MatrixT
+    typename MatrixT,
+    typename std::enable_if<!(
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Eigen || 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Trilinos), 
+      MatrixT
+    >::type* = nullptr
   > 
-  static auto createIterativeSolver(
-    MatrixT const& A,
-    typename std::enable_if<!(details::matrix_traits<MatrixT>::is_eigen && details::matrix_traits<MatrixT>::is_trilinos), int> = 0
+  static void createSolver(
+    MatrixT const& A
   ) {
 
-    static_assert(0, "No linear solver available for the matrix used to specify the linear system");
-    return 0;
-
+    // Linear system solver cannot be created from given input matrix
+    std::cerr << "No linear solver available for the matrix used to specify the linear system" << std::endl;
+    assert(false);
   }
 
-  // Unsupported matrix type 
+
   template <typename SolverT,
     typename PrecT,
-    typename MatrixT
+    typename MatrixT,
+    typename std::enable_if<!(
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Eigen || 
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Trilinos), 
+      MatrixT
+    >::type* = nullptr
   >
-  static auto createIterativeSolver(
-    MatrixT const& A,
-    typename std::enable_if<!(details::matrix_traits<MatrixT>::is_eigen && details::matrix_traits<MatrixT>::is_trilinos), int> = 0
+  static void createSolver(
+    MatrixT const& A
   ) {
-
-    static_assert(0, "No linear solver available for the matrix used to specify the linear system");
-    return 0;
-
+ 
+    // Linear system solver cannot be created from given input matrix
+    std::cerr << "No linear solver available for the matrix used to specify the linear system" << std::endl;
+    assert(false);
   } 
 
  
   /**
-   * @brief createIterativeSolver
-   * @param A EPetra matrix object representing a linear system
-   * @return solver Iterative linear solver for Epetra matrices based on AztecOO
+   * @brief  createIterativeSolver
+   * @param  A matrix representing a linear system to be solved using
+   * @return An iterative linear solver of the specified kind
    *
-   * Create an instance of TrilinosLinearIterativeSolver with specified solver  
+   * @section DESCRIPTION
+   *
+   * Create an instance of the appropriate sparse linear iterative
+   * solver for a linear system
    */
-  template <typename SolverT,
-    typename MatrixT
+  template <
+    typename SolverT,
+    typename MatrixT,
+    typename PrecT = linear::DefaultPreconditioner
   >
-  static auto createIterativeSolver(
-    MatrixT const& A,
-    typename std::enable_if<details::matrix_traits<MatrixT>::is_trilinos, int> = 0
-  ) {
-
-    static_assert(details::solver_traits<SolverT>::trilinos_enabled, "Solver not available for linear systems defined by Eetra matrices");
-    
-    typedef typename core::details::matrix_traits<MatrixT>::wrapped_t wrapped_t;
-  
-    TrilinosLinearIterativeSolver<SolverT> solver(A);
+  static auto createIterativeSolver(const MatrixT& A) {
+    auto solver = LinearSolvers::createIterativeSolver<SolverT, MatrixT, PrecT>();
+    solver.resetLinearSystem(A);
     return solver;
-  
   }
 
 
   /**
-   * @brief createIterativeSolver
-   * @param A EPetra matrix object representing a linear system
-   * @return solver Iterative linear solver for Epetra matrices based on AztecOO
+   * @brief  createIterativeSolver
+   * @return An Iterative linear solver for sparse Eigen matrices
    *
-   * Create an instance of TrilinosLinearIterativeSolver with specified solver 
-   * and preconditioner types
+   * @section DESCRIPTION
+   *
+   * Create an instance of the appropriate sparse Eigen linear iterative 
+   * solver for a linear system
    */
-  template <typename SolverT, 
-    typename PrecT,
-    typename MatrixT
+  template <
+    typename SolverT,
+    typename MatrixT,
+    typename PrecT = linear::DefaultPreconditioner,
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Eigen,
+      MatrixT
+    >::type* = nullptr
   >
-  static auto createIterativeSolver(
-    MatrixT const& A,
-    typename std::enable_if<details::matrix_traits<MatrixT>::is_trilinos, int> = 0
-  ) {
+  static auto createIterativeSolver() {
 
-    static_assert(details::solver_traits<SolverT>::trilinos_enabled, "Solver not available for linear systems defined by Epetra matrices");
-    static_assert(details::preconditioner_traits<PrecT>::trilinos_enabled, "Preconditioner not available for linear systems defined by Epetra matrices");
+    using solver_traits = linear::details::solver_traits<SolverT>;
+    using preconditioner_traits = linear::details::preconditioner_traits<PrecT>;
 
-    typedef typename core:details::matrix_traits<MatrixT>::wrapped_t wrapped_t;
+    static_assert(solver_traits::eigen_enabled, "Solver not available for linear systems defined by Eigen matrices");
+    static_assert(preconditioner_traits::eigen_enabled, "Preconditioner not available for linear systems defined by Eigen matrices");
 
-    TrilinosLinearIterativeSolver<SolvType, PrecType> solver(A);
-    return solver; 
+    using wrapped_type = typename core::details::traits<MatrixT>::wrapped_t;
+    using concrete_precon_type = typename preconditioner_traits::template eigen_preconditioner_type<wrapped_type>;
+    using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type, concrete_precon_type>;
+    using concrete_policy_type = SolversLinearIterativeEigenPolicy<concrete_solver_type, MatrixT>;
 
+    auto solver = std::make_shared<concrete_solver_type>();
+    auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
+
+    return wrapped_solver;
   }
 
 
   /**
-   * @brief createIterativeSolver
-   * @param A Eigen::SparseMatrix object representing a linear system
-   * @return solver Iterative linear solver for Eigen sparse matrices
+   * @brief  createIterativeSolver
+   * @return An iterative linear solver for sparse Trilinos matrices
    *
-   * Create an instance of the appropriate sparse linear iterative solver 
-   * for linear systems defined by Eigen sparse matrices
+   * @section DESCRIPTION
+   *
+   * Create an instance of the appropriate sparse Trilinos linear iterative
+   * solver for a linear system
    */
-  template <typename SolverT,
-    typename MatrixT
+  template <
+    typename SolverT,
+    typename MatrixT,
+    typename PrecT = linear::DefaultPreconditioner,
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Trilinos,
+      MatrixT
+    >::type* = nullptr
   >
-  static auto createIterativeSolver( 
-    MatrixT const& A,
-    typename std::enable_if<details::matrix_traits<MatrixT>::is_eigen, int> = 0
-  ) {
+  static auto createIterativeSolver() {
 
-    static_assert(details::matrix_traits<MatrixT>::is_sparse, "Iterative solvers in Eigen can only be used with sparse matrices");
-    static_assert(details::solver_traits<SolverT>::eigen_enabled, "Solver not available for linear systems defined by Eigen matrices");
+    using solver_traits = linear::details::solver_traits<SolverT>;
+    using preconditioner_traits = linear::details::preconditioner_traits<PrecT>;
+
+    static_assert(solver_traits::trilinos_enabled, "Solver not available for linear systems defined by Trilinos matrices");
+    static_assert(preconditioner_traits::trilinos_enabled, "Preconditioner not available for linear systems defined by Trilinos matrices");
+
+    using concrete_solver_type = AztecOO;
+    using concrete_policy_type = SolversLinearIterativeTrilinosPolicy<concrete_solver_type, MatrixT>;
+
+    auto solver_flag = solver_traits::trilinos_flag;
+    auto precon_flag = preconditioner_traits::trilinos_flag;
+
+    auto solver = std::make_shared<concrete_solver_type>();
+    solver->SetAztecOption(AZ_solver, solver_flag);
+
+    switch (precon_flag) {
+      case AZ_ilu: {
+        solver->SetAztecOption(AZ_precond, AZ_dom_decomp);
+        solver->SetAztecOption(AZ_subdomain_solve, AZ_ilu);
+        break;
+      }
+      case AZ_ilut: {
+        solver->SetAztecOption(AZ_precond, AZ_dom_decomp);
+        solver->SetAztecOption(AZ_subdomain_solve, AZ_ilut);
+        solver->SetAztecOption(AZ_overlap, 1);
+        solver->SetAztecOption(AZ_ilut_fill, 3.0);
+        break;
+      }
+      case AZ_icc: {
+        solver->SetAztecOption(AZ_precond, AZ_dom_decomp);
+        solver->SetAztecOption(AZ_subdomain_solve, AZ_icc);
+        break;
+      }
+    }
     
-    typedef typename core::details::matrix_traits<MatrixT>::wrapped_t wrapped_t;
-    typedef typename details::solver_traits<SolverT>::template eigen_solver_type<wrapped_t> EigenSolverT;
- 
-    EigenLinearIterativeSolver<EigenSolverT> solver(A);
-    return solver;    
+    auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
 
-  } 
- 
+    return wrapped_solver;
+  }
+
+  /**
+   * @brief  createDirectSolver
+   * @return A direct solver for sparse Trillinos matrices
+   *
+   * @section DESCRIPTION
+   *
+   * Create an instance of the appropriate sparse Trilinos direct 
+   * solver for a linear system. Underlying solver is Amesos2
+   */
+/*  template <
+    typename SolverT,
+    typename MatrixT,
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Trilinos,
+      MatrixT
+    >::type* = nullptr
+  >
+  static auto createDirectSolver() {
+
+    // Call to Amesos2
+    /*
+    auto solver = 
+    */
+//  }
+
 };
 
 } // end namespace solvers
