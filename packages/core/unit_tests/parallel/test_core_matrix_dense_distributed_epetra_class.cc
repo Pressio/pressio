@@ -13,7 +13,7 @@ public:
   int MyPID_;
   int NumProc_;
   const int localSize_ = 5;
-  const int numVectors_ = 3;
+  const int numVectors_ = 6;
   int numGlobalEntries_;
   Epetra_Map * dataMap_;
   Epetra_MultiVector * x_;
@@ -64,8 +64,8 @@ TEST_F(core_matrix_dense_distributed_epetraFix, EpetraDenseDistConstructor)
   my_t b( *getMap(), numVectors_ );
   ASSERT_FALSE( b.empty() );
 
-  EXPECT_EQ( b.globalCols(), 3 );
-  EXPECT_EQ( b.localCols(), 3 );
+  EXPECT_EQ( b.globalCols(), 6 );
+  EXPECT_EQ( b.localCols(), 6 );
   EXPECT_EQ( b.globalRows(), 15 );
   EXPECT_EQ( b.localRows(), 5);
 
@@ -83,6 +83,22 @@ TEST_F(core_matrix_dense_distributed_epetraFix, EpetraDenseDistConstructor)
   b.setZero();
   for (int i=0; i<b.localRows(); i++)
     for (int j=0; j<b.globalCols(); j++)
-      EXPECT_NEAR( 0.0, b(i,j), 1e-12);
+      EXPECT_NEAR( 0.0, b(i,j), 1e-12);  
+
+}
+
+
+TEST_F(core_matrix_dense_distributed_epetraFix, transpose)
+{
+  using nat_t = Epetra_MultiVector;
+  using my_t = core::Matrix<nat_t>;
+  STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(my_t);
+
+  my_t A( *getMap(), numVectors_ );
+  auto CC = core::transpose(A);
+  assert( CC.globalRows() == A.globalCols() );
+  assert( CC.globalCols() == A.globalRows() );
+
+  // missing test here because we are missing implementation
   
 }

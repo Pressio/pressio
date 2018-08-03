@@ -10,6 +10,58 @@
 
 namespace core{
 
+
+/*
+=====================================
+This is a list supported:
+
+Legend: 
+epCRS = epetra CRS matrix
+epDM = epetra dense matrix
+
+* transpose(epCRS) (ok)
+* transpose(eigenDense) (ok)
+* transpose(eigenSparse) (ok)
+* transpose(epDM) (missing)
+
+===================================
+*/
+
+
+/*-----------------------------------------------------
+  EPETRA DENSE MATRIX
+----------------------------------------------------- */
+template <typename mat_type,
+	  typename std::enable_if<
+	    details::traits<mat_type>::isEpetra &&
+	    details::traits<mat_type>::isDense
+	    >::type * = nullptr>
+auto transpose(const mat_type & A) 
+{
+  // auto & mapA = A.getDataMap();
+  auto const & mpicomm = A.commCRef();
+    
+  // let's ensure that the transposed matrix cna be distributed
+  // over the current processes, so the nuber of of cols of A
+  // needs to be greater than the number of MPI processes running 
+  const int numProc = mpicomm.NumProc();
+  if( numProc > A.globalRows() ){
+    std::cout << " ERROR: trying to transpose a dense dist matrix \
+with number of columns too small to be distributed over current communicator \n";}
+  assert( numProc < A.globalRows() );
+
+  Epetra_Map mapT(A.globalCols(), 0, mpicomm);  
+  mat_type C( mapT, A.globalRows() );
+  C.setZero();
+
+  // missing impl
+  
+  return C;
+}
+
+
+  
+  
 /*-----------------------------------------------------
   EPETRA CRSMATRIX
 ----------------------------------------------------- */

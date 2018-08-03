@@ -8,6 +8,24 @@
 #include <EpetraExt_MatrixMatrix.h>
 #include "TpetraExt_MatrixMatrix.hpp"
 
+
+/*
+=====================================
+This is a list of products supported:
+
+Legend: 
+epCRS = epetra CRS matrix
+epDM = epetra dense matrix
+
+* epCRS = epCRS * epCRS (ok)
+* epDM = epDM * epDM (missing)
+* epDM = epCRS * epDM (ok)
+* epDM = epDM * epCRS (ok)
+
+===================================
+*/
+
+
 namespace core{
 
 /*-----------------------------------------------------
@@ -114,7 +132,8 @@ auto matrixMatrixProduct(const mat_sp_type & A,
 {
   assert( A.globalCols() == B.globalRows() );
 
-  std::cout << " OKKKK \n"; 
+  std::cout << " ***WARNING***: this function is just \
+a placeholder, missing the actual implementation!!! \n"; 
 
   // get row map of A
   auto & mapA = A.getRangeDataMap();
