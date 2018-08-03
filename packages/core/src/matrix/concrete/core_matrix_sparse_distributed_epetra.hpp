@@ -93,6 +93,11 @@ private:
     data_.FillComplete();
   }
 
+  void fillingIsCompleted(domain_map_t const & dmap,
+			  range_map_t const & rmap){
+    data_.FillComplete(dmap, rmap);
+  }
+
   row_map_t const & getRowDataMapImpl() const{
     return data_.RowMap();
   }

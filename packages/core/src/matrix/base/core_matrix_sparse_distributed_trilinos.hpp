@@ -34,6 +34,11 @@ public:
     this->underlying().fillingIsCompletedImpl();
   }
 
+  void fillingIsCompleted(domain_map_t const & dmap,
+			  range_map_t const & rmap){
+    this->underlying().fillingIsCompletedImpl(dmap, rmap);
+  }
+  
   range_map_t const & getRangeDataMap() const{
     assert(this->isFillingCompleted());
     return this->underlying().getRangeDataMapImpl();
