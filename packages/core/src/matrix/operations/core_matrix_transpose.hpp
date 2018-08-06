@@ -11,8 +11,7 @@
 namespace core{
 
 
-/*
-=====================================
+/*=====================================
 This is a list supported:
 
 Legend: 
@@ -22,10 +21,10 @@ epDM = epetra dense matrix
 * transpose(epCRS) (ok)
 * transpose(eigenDense) (ok)
 * transpose(eigenSparse) (ok)
+
 * transpose(epDM) (missing)
 
-===================================
-*/
+===================================*/
 
 
 /*-----------------------------------------------------
