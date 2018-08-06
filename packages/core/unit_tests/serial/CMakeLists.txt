@@ -14,9 +14,10 @@ APPEND_SET(TESTFILES test_core_matrix_meta.cc)
 APPEND_SET(TESTFILES test_core_matrix_dense_serial_eigen_traits.cc)
 APPEND_SET(TESTFILES test_core_matrix_dense_serial_stdlib_traits.cc)
 APPEND_SET(TESTFILES test_core_matrix_sparse_serial_eigen_traits.cc)
-
 APPEND_SET(TESTFILES test_core_matrix_sparse_serial_eigen_class.cc)
 APPEND_SET(TESTFILES test_core_matrix_dense_serial_eigen_class.cc)
+
+APPEND_SET(TESTFILES test_core_matrix_vector_product.cc)
 
 # append here tests to be grouped into a single executable
 # APPEND_SET(...)

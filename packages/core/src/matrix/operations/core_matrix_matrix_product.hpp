@@ -51,22 +51,26 @@ void matrixMatrixProduct(const mat_type & A,
   /* From trilinos docs: 
 
      Given Epetra_CrsMatrix objects A, B and C, form the product C = A*B.
-     In a parallel setting, A and B need not have matching distributions, but C needs to have the same row-map as A.
+     In a parallel setting, A and B need not have matching distributions, 
+     but C needs to have the same row-map as A.
 
      Parameters:
      *A Input, must already have had 'FillComplete()' called.
      *transposeA Input, whether to use transpose of matrix A.
      *B Input, must already have had 'FillComplete()' called.
      *transposeB Input, whether to use transpose of matrix B.
-     *C Result. On entry to this method, it doesn't matter whether FillComplete() has already been called on C or not. 
-	 If it has, then C's graph must already contain all nonzero locations that will be produced when 
-	 forming the product A*B. On exit, C.FillComplete() will have been called, unless the 
-	 last argument to this function is specified to be false.
-     * call_FillComplete_on_result Optional argument, defaults to true. Power users may specify this 
-	 argument to be false if they *DON'T* want this function to call C.FillComplete. 
-	 (It is often useful to allow this function to call C.FillComplete, in cases where one 
-	 or both of the input matrices are rectangular and it is not trivial to know which 
-	 maps to use for the domain- and range-maps.)
+     *C Result. On entry to this method, it doesn't matter whether 
+     FillComplete() has already been called on C or not. If it has, 
+     then C's graph must already contain all nonzero locations that 
+     will be produced when forming the product A*B. On exit, C.FillComplete() 
+     will have been called, unless the last argument to this function 
+     is specified to be false.
+     * call_FillComplete_on_result Optional argument, defaults to true. 
+     Power users may specify this argument to be false if they *DON'T* 
+     want this function to call C.FillComplete. (It is often useful 
+     to allow this function to call C.FillComplete, in cases where one 
+     or both of the input matrices are rectangular and it is not 
+     trivial to know which maps to use for the domain- and range-maps.)
    */
   
   assert( A.isFillingCompleted() );

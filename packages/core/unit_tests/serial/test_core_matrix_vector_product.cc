@@ -55,5 +55,3 @@ TEST(core_matrix_vector_product, eigenVectorSparseMatrix)
   EXPECT_DOUBLE_EQ( myR[2], 6.0);
   EXPECT_DOUBLE_EQ( myR[3], 2.0);
 }//end TEST
-
-
