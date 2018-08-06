@@ -59,8 +59,6 @@ with number of columns too small to be distributed over current communicator \n"
 }
 
 
-  
-  
 /*-----------------------------------------------------
   EPETRA CRSMATRIX
 ----------------------------------------------------- */
@@ -69,7 +67,9 @@ template <typename mat_type,
 	    details::traits<mat_type>::isEpetra &&
 	    details::traits<mat_type>::isSparse 
 	    >::type * = nullptr>
-auto transpose(mat_type & A /*nonconst & because it is needed by rowmatrix transposer*/) 
+auto transpose(mat_type & A
+	       /*nonconst & because it is needed 
+		 by rowmatrix transposer*/) 
 {
   using nat_t = typename details::traits<mat_type>::wrapped_t;
 
@@ -87,7 +87,8 @@ auto transpose(mat_type & A /*nonconst & because it is needed by rowmatrix trans
   // method 2
   //-----------
   EpetraExt::RowMatrix_Transpose transposer;
-  Epetra_CrsMatrix & transA = dynamic_cast<Epetra_CrsMatrix&>(transposer(*A.data()));
+  Epetra_CrsMatrix & transA =
+    dynamic_cast<Epetra_CrsMatrix &>(transposer(*A.data()));
   core::Matrix<nat_t> res( transA );
   assert( res.isFillingCompleted() );
   return res;

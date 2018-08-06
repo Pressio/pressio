@@ -66,6 +66,10 @@ public:
     
   };
 
+  Epetra_Map const & getDataMap(){
+    return *dataMap_;
+  };
+  
   state_type const & getInitialState(){
     return *U0_;
   };

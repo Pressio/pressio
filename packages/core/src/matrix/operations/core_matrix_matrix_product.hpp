@@ -33,7 +33,6 @@ namespace core{
   B: epetra sparse matrix
   C: epetra sparse matrix
 ----------------------------------------------------- */
-
 template <typename mat_type,
 	  typename std::enable_if<
 	    details::traits<mat_type>::isEpetra &&
@@ -95,7 +94,6 @@ void matrixMatrixProduct(const mat_type & A,
 }
 
   
-
 /*-----------------------------------------------------
 -------------------------------------------------------
   C = A * B
@@ -114,6 +112,7 @@ template <typename mat_type,
 auto matrixMatrixProduct(const mat_type & A,
 			 const mat_type & B)
 {
+
   assert( A.globalCols() == B.globalRows() );
 
   /* I tried here to use the Multiply method of MultiVectors but it 
@@ -131,7 +130,6 @@ auto matrixMatrixProduct(const mat_type & A,
   return C;
 
 }
-
 
 
 /*-----------------------------------------------------
