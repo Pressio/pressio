@@ -47,7 +47,8 @@ public:
   explicit Matrix(const row_map_t & rowMap,
 		  LO_t NumEntriesPerRow,
 		  bool StaticProfile=false)
-    : data_(Epetra_DataAccess::Copy, rowMap, NumEntriesPerRow, StaticProfile){}
+    : data_(Epetra_DataAccess::Copy, rowMap,
+	    NumEntriesPerRow, StaticProfile){}
 
   explicit Matrix(const wrap_t & objin)
     : data_(objin){}
@@ -96,9 +97,12 @@ private:
   void fillingIsCompletedImpl(domain_map_t const & dmap,
 			      range_map_t const & rmap){
     // this is needed for rectangular matrices
+    /* also note that epetra crs matrix ONLY takes Epetra_Map as map type. 
+       There is no way (that I can see) to pass a Epetra_BlockMap */
+
     data_.FillComplete(dmap, rmap);
   }
-
+  
   row_map_t const & getRowDataMapImpl() const{
     return data_.RowMap();
   }
