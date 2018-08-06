@@ -89,13 +89,9 @@ TEST_F(core_matrix_dense_distributed_epetraFix, Test1)
   assert( CC.globalRows() == 9 );
   assert( CC.globalCols() == 4 );
   CC.data()->Print(std::cout);
-}
 
-
-TEST_F(core_matrix_dense_distributed_epetraFix, TestTrilinosNative)
-{
   // CANNOT TEST BECAUSE TRILINOS NATIVE IMPL DOES NOT WORK
   // WE NEED to put a simple hardcode impl ourselvses.
   // see file: core_matrix_matrix_product.hpp
-  
+
 }

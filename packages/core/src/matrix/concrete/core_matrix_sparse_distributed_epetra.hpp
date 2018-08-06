@@ -95,6 +95,7 @@ private:
 
   void fillingIsCompletedImpl(domain_map_t const & dmap,
 			      range_map_t const & rmap){
+    // this is needed for rectangular matrices
     data_.FillComplete(dmap, rmap);
   }
 

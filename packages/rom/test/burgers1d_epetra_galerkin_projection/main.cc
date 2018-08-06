@@ -10,7 +10,6 @@
 // #include "experimental/sampling_operator/rom_sampling_operator_identity.hpp"
 // #include "experimental/weighting_operator/rom_weighting_operator_identity.hpp"
 
-
 struct mysizer{
  using state_t = core::Vector<apps::Burgers1dEpetra::state_type>;
  static size_t getSize(state_t & obj){
@@ -136,16 +135,19 @@ int main(int argc, char *argv[])
   // // but for us, they need to be see as a 2d matrix so we wrap it
   // // with a core::Matrix<>. This is important. Maybe we
   // // should make sure at compile time the phi operator is a core::matrix.
-  // using native_phi_type = Epetra_MultiVector;
-  // using my_phi_type = core::Matrix<native_phi_type>;
-  // using phi_optr_t = RomOperator<my_phi_type>;
-  // phi_optr_t phi;
+  // // for now, the basis vectors have the same row map as states I assume.
+  // const int numBasisVecs = 12;
+  // using phi_type = core::Matrix<Epetra_MultiVector>;
+  // phi_type phi(y0FOM.getDataMap(), numBasisVecs);
 
   // // collocation operator
-  // using my_P_type = core::IdentityMatrix<>;
-  // using P_optr_t = RomOperator<my_P_type>;
-  // P_optr_t P;
+  // const int sampleMeshSize = 18; //has to be > numBasisVecs
+  // using P_type = core::Matrix<Epetra_CrsMatrix>;
+  // Epetra_Map Pmap(sampleMeshSize, 0, Comm);
+  // P_type P(Pmap, 1);//1 because P contains rows of the identity matrix
+  
 
+  
   // // weighting operator
   // WeightOperator1<phi_optr_t, P_optr_t> A(phi, P);
   
