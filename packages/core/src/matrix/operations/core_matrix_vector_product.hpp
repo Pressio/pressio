@@ -7,14 +7,20 @@
 #include "../../meta/core_matrix_meta.hpp"
 #include "../concrete/core_matrix_dense_serial_eigen.hpp"
 #include "../concrete/core_matrix_sparse_serial_eigen.hpp"
+#include "Epetra_LocalMap.h"
+#include <Epetra_Export.h>
+#include <Epetra_Import.h>
+
 
 namespace core{
 
-/*-----------------------------------------------------
+/*---------------------------------------------------------
+-----------------------------------------------------------
 c = A b
 - A is matrix from eigen
 - b is vector from eigen
------------------------------------------------------*/
+-----------------------------------------------------------
+---------------------------------------------------------*/
   
 template <typename matrix_type,
 	  typename vector_t_1,
@@ -50,14 +56,14 @@ void matrixVectorProduct(const matrix_type & A,
 }
 
 
-
-
-  
-/*-----------------------------------------------------------
+/*
+-----------------------------------------------------------
+-----------------------------------------------------------
   EPETRA 
   c = A b , 
   - A = crs matrix 
   - b = SINGLE vector
+-----------------------------------------------------------
 -----------------------------------------------------------*/
 
 template <typename matrix_type,
@@ -102,6 +108,66 @@ void matrixVectorProduct(const matrix_type & A,
   A.data()->Multiply(transposeA, *b.data(), *c.data());
 }
 
+
+/*
+-----------------------------------------------------------
+-----------------------------------------------------------
+  EPETRA 
+  c = A b , 
+  - A = DENSE matrix 
+  - b = SINGLE vector
+-----------------------------------------------------------
+-----------------------------------------------------------*/
+  
+template <typename matrix_type,
+	  typename vector_type,
+	  typename std::enable_if<
+	    core::details::traits<matrix_type>::isMatrix==1 &&
+	    core::details::traits<matrix_type>::isEpetra==1 &&
+	    core::details::traits<matrix_type>::isDense==1 &&
+	    core::details::traits<vector_type>::isVector==1 &&
+	    core::details::traits<vector_type>::isEpetra==1
+	    >::type * = nullptr>
+auto matrixVectorProduct(const matrix_type & A,
+			 const vector_type & b)
+{
+
+  /* I tried here to use the Multiply method of MultiVectors 
+     but it does not seem to work as expected. 
+     When A,b are all distributed, I don't get 
+     the right result. So we need to figure out why. 
+
+     Only solution that worked is to do this trick: 
+        b is distributed -> import into b replicated -> do multiply
+
+     Here we are doing matrix-vector product, where vector
+     is a single vector. So for now we replicate the
+     distributed vector across all processes.  
+     This is not too bad, but we should find out why not working 
+     for fully distributed case
+  */  
+
+  const auto bGSize = b.globalSize();
+  assert( A.globalCols() == bGSize );
+    
+  // define local map
+  Epetra_LocalMap locMap( bGSize, 0, b.commCRef() );
+  // define replicated vector
+  Epetra_Vector bRep(locMap);
+    
+  // get distributed map
+  auto & srcMap = b.getDataMap();
+  // define importer: Epetra_Import(targetMap, sourceMap)
+  Epetra_Import globToLocalImporter(locMap, srcMap);
+
+  // import global -> local
+  bRep.Import(*b.data(), globToLocalImporter, Insert);
+  
+  vector_type c( A.getDataMap() );
+  c.data()->Multiply( 'N','N', 1.0,  *A.data(), bRep, 0.0 );
+
+  return c;
+}
   
 
   
