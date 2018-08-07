@@ -28,25 +28,24 @@ struct mysizer{
 //   std::cout << std::endl;
 // }
 
-
-template <typename matrix_type,
-	  typename vector_type,
-	  typename std::enable_if<
-	    core::details::traits<matrix_type>::isMatrix==1 &&
-	    core::details::traits<matrix_type>::isEpetra==1 &&
-	    core::details::traits<matrix_type>::isDense==1 &&
-	    core::details::traits<vector_type>::isVector==1 &&
-	    core::details::traits<vector_type>::isEpetra==1
-	    >::type * = nullptr>
-auto matrixVectorProduct(const matrix_type & A,
-			 const vector_type & b)
-{
-  assert( A.globalCols() == b.globalSize() );
-  vector_type C( A.getDataMap() );
-  C.setZero();
-  return C;  
-}
-//------------------------------------------------------
+// template <typename matrix_type,
+// 	  typename vector_type,
+// 	  typename std::enable_if<
+// 	    core::details::traits<matrix_type>::isMatrix==1 &&
+// 	    core::details::traits<matrix_type>::isEpetra==1 &&
+// 	    core::details::traits<matrix_type>::isDense==1 &&
+// 	    core::details::traits<vector_type>::isVector==1 &&
+// 	    core::details::traits<vector_type>::isEpetra==1
+// 	    >::type * = nullptr>
+// auto matrixVectorProduct(const matrix_type & A,
+// 			 const vector_type & b)
+// {
+//   assert( A.globalCols() == b.globalSize() );
+//   vector_type C( A.getDataMap() );
+//   C.setZero();
+//   return C;  
+// }
+// //------------------------------------------------------
 
 template <typename mat_type,
 	  typename std::enable_if<
@@ -104,7 +103,7 @@ public:
 	      << b1.globalSize() << std::endl;
 
     // (P phi)^+ P b => vector
-    return matrixVectorProduct(A2, b1);
+    return core::matrixVectorProduct(A2, b1);
   }
   
 private:
@@ -142,14 +141,14 @@ int main(int argc, char *argv[])
   using model_eval_t = apps::Burgers1dEpetra;
   using native_state_t = model_eval_t::state_type;
   using native_space_residual_type = model_eval_t::space_residual_type;
-  using native_jac_t = model_eval_t::jacobian_type;
+  // using native_jac_t = model_eval_t::jacobian_type;
   using scalar_t = model_eval_t::scalar_type;
 
   //-------------------------------
   // define wrapper types
   using state_t = core::Vector<native_state_t>;
   using space_res_t = core::Vector<native_space_residual_type>;
-  using jac_t = core::Matrix<native_jac_t>;
+  //  using jac_t = core::Matrix<native_jac_t>;
 
   //-------------------------------
   // MPI init
@@ -212,27 +211,26 @@ int main(int argc, char *argv[])
 
   //---------------------------------------
   // project initial condition phi^T * y0
-  auto y = matrixVectorProduct(phiT, y0FOM);
-  std::cout << y.globalSize() << std::endl;
-  auto res = A.apply(r0FOM);
-  std::cout << "res :"
-	    << res.globalSize() << std::endl;
-  
-  // // // residual and jacob policies
-  // using res_pol_t = rom::exp::romGalerkinExplicitResidualPolicy<
-  //   state_t, space_res_t, model_eval_t, mysizer, phi_type, A_type>;
-  // res_pol_t resObj(y, r0FOM, phiT, A);
+  auto yROM = core::matrixVectorProduct(phiT, y0FOM);
+  std::cout << "yromSz = " << yROM.globalSize() << std::endl;
+  auto rROM = A.apply(r0FOM);
+  std::cout << "rromSz = " << rROM.globalSize() << std::endl;
+ 
+  // residual and jacob policies
+  using res_pol_t = rom::exp::romGalerkinExplicitResidualPolicy<
+    state_t, space_res_t, model_eval_t, mysizer, phi_type, A_type>;
+  res_pol_t resObj(y0FOM, r0FOM, phi, phiT, A);
 
-  // // stepper
-  // using stepper_t = ode::ExplicitEulerStepper<
-  //   state_t, space_res_t, scalar_t, target_app_t, mysizer>;
-  // stepper_t stepperObj(appObj, y, ...);
+  // stepper
+  using stepper_t = ode::ExplicitEulerStepper<
+    state_t, space_res_t, scalar_t, model_eval_t, mysizer, res_pol_t>;
+  stepper_t stepperObj(appObj, resObj, yROM, rROM);
 
-  // // integrate in time 
-  // snapshot_collector collObj;
-  // scalar_t final_t = 35;
-  // scalar_t dt = 0.01;
-  // ode::integrateNSteps(stepperObj, y, 0.0, dt, 3500, collObj);
+  // integrate in time 
+  //snapshot_collector collObj;
+  //  scalar_t final_t = 35;
+  scalar_t dt = 0.01;
+  ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);//, collObj);
   
   
   MPI_Finalize();

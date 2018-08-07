@@ -73,7 +73,6 @@ private:
 ////////////////////////////////////////////////////////////
 
 
-
 ///////////////////////
 // NON Standard policy 
 /////////////////////// 
@@ -116,14 +115,15 @@ public:
 	     typename T3 = state_type,
 	     typename T4 = space_residual_type,
 	     typename... Args>
-  ExplicitEulerStepper(T1 & model, T2 & policy,
-		       T3 const & y0, T4 const & r0,
+  ExplicitEulerStepper(T1 & model,
+		       T2 & policy,
+		       T3 const & y0,
+		       T4 const & r0,
 		       Args&&... rest)
     : base_t(model, policy, y0, r0, std::forward<Args>(rest)...)
   {}
 
   ExplicitEulerStepper() = delete;
-
   ~ExplicitEulerStepper() = default;
 
 };//end class
