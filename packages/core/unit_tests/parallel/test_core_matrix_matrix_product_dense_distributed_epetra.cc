@@ -55,13 +55,22 @@ TEST_F(core_matrix_dense_distributed_epetraFix, Test1)
   // 9 x 6 matrix 
   //-----------
   {
-    int myNRows = contigMapA_->NumMyElements();
-
     if (MyPID_ == 0){
       (*A_)(0,0) = 2.; (*A_)(0,1) = 1.;
       (*A_)(0,3) = 2.; (*A_)(0,4) = 2.;
       (*A_)(0,5) = 3.;
+
+      (*A_)(2,1) = 2.; (*A_)(2,3) = 3.;
     }
+    if (MyPID_ == 1){
+      (*A_)(2,0) = 1.; (*A_)(2,2) = 1.;
+      (*A_)(2,4) = 1.; (*A_)(2,5) = 1.;
+    }
+    if (MyPID_ == 2){
+      (*A_)(1,1) = 2.; (*A_)(1,3) = 2.;
+      (*A_)(1,4) = 2.; (*A_)(1,5) = 2.;
+    }
+
     A_->data()->Print(std::cout);
   }
 
@@ -70,15 +79,18 @@ TEST_F(core_matrix_dense_distributed_epetraFix, Test1)
   // 6 x 4 matrix 
   //-----------
   {
-    int myNRows = contigMapB_->NumMyElements();
-
     if (MyPID_ == 0){
       (*B_)(0,0) = 2.; (*B_)(1,0) = 1.;
+      (*B_)(1,2) = 1.; (*B_)(0,3) = 2.;
     }
     if (MyPID_ == 1){
-      (*B_)(0,0) = 2.; (*B_)(1,0) = 2.;
+      (*B_)(0,0) = 2.; (*B_)(0,3) = 1.;
+      (*B_)(1,0) = 2.; (*B_)(1,2) = 3.;
     }
-    //B_->data()->Print(std::cout);
+    if (MyPID_ == 2){
+      (*B_)(0,3) = 3.;
+    }
+    B_->data()->Print(std::cout);
   }
 
   //-----------
@@ -90,8 +102,20 @@ TEST_F(core_matrix_dense_distributed_epetraFix, Test1)
   assert( CC.globalCols() == 4 );
   CC.data()->Print(std::cout);
 
-  // CANNOT TEST BECAUSE TRILINOS NATIVE IMPL DOES NOT WORK
-  // WE NEED to put a simple hardcode impl ourselvses.
-  // see file: core_matrix_matrix_product.hpp
+  if (MyPID_ == 0){
+    EXPECT_DOUBLE_EQ( CC(0,0), 9.0 );
+    EXPECT_DOUBLE_EQ( CC(0,2), 7.0 );
+    EXPECT_DOUBLE_EQ( CC(0,3), 10.0 );
+    EXPECT_DOUBLE_EQ( CC(2,0), 8.0 );
+    EXPECT_DOUBLE_EQ( CC(2,2), 11.0 );
+  }
+  if (MyPID_ == 1){
+    EXPECT_DOUBLE_EQ( CC(2,0), 4.0 );
+    EXPECT_DOUBLE_EQ( CC(2,3), 6.0 );
+  }
+  if (MyPID_ == 2){
+    EXPECT_DOUBLE_EQ( CC(1,0), 6.0 );
+    EXPECT_DOUBLE_EQ( CC(1,2), 8.0 );
+  }  
 
 }
