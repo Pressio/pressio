@@ -5,10 +5,8 @@
 #include "apps_burgers1d_epetra.hpp"
 //#include "observer.hpp"
 #include "experimental/rom_galerkin_explicit_residual_policy.hpp"
-// #include "experimental/rom_galerkin_implicit_jacobian_policy.hpp"
-// #include "experimental/basis_operator/rom_basis_operator_default.hpp"
-// #include "experimental/sampling_operator/rom_sampling_operator_identity.hpp"
-// #include "experimental/weighting_operator/rom_weighting_operator_identity.hpp"
+#include "experimental/rom_matrix_pseudo_inverse.hpp"
+#include "experimental/rom_operators.hpp"
 
 struct mysizer{
  using state_t = core::Vector<apps::Burgers1dEpetra::state_type>;
@@ -28,89 +26,6 @@ struct mysizer{
 //   std::cout << std::endl;
 // }
 
-// template <typename matrix_type,
-// 	  typename vector_type,
-// 	  typename std::enable_if<
-// 	    core::details::traits<matrix_type>::isMatrix==1 &&
-// 	    core::details::traits<matrix_type>::isEpetra==1 &&
-// 	    core::details::traits<matrix_type>::isDense==1 &&
-// 	    core::details::traits<vector_type>::isVector==1 &&
-// 	    core::details::traits<vector_type>::isEpetra==1
-// 	    >::type * = nullptr>
-// auto matrixVectorProduct(const matrix_type & A,
-// 			 const vector_type & b)
-// {
-//   assert( A.globalCols() == b.globalSize() );
-//   vector_type C( A.getDataMap() );
-//   C.setZero();
-//   return C;  
-// }
-// //------------------------------------------------------
-
-template <typename mat_type,
-	  typename std::enable_if<
-	    core::details::traits<mat_type>::isEpetra &&
-	    core::details::traits<mat_type>::isDense
-	    >::type * = nullptr
-	  >
-auto pseudoInverse(const mat_type & A)
-{
-  const int nR = A.globalRows();
-  const int nC = A.globalCols();
-  Epetra_Map newMap(nC, 0, A.commCRef());
-  mat_type C(newMap, nR);
-  C.setZero();
-  return C;
-}
-//------------------------------------------------------
-
-// this is the operator: (P phi)^+ P 
-template <typename phi_t, typename P_t>
-class WeightOperator{
-public:
-  WeightOperator(phi_t const & phi, P_t const & pop)
-    : phi_(&phi), pop_(&pop)
-  {
-    //fullOp_ = (pop*phi_)^+ * pop;
-    // auto a1 = phi_->rightMultiply(pop);
-    // auto a2 = a1.pseudoInverse();
-    // auto a3 = pop.rightMultiply(a2);
-  }
-  ~WeightOperator() = default;
-
-  template <typename vecT,
-  	    typename std::enable_if<
-  	      core::details::traits<vecT>::isVector
-  	      >::type * = nullptr
-  	    >
-  auto apply(const vecT & b)
-  {
-    // P phi
-    auto A1 = core::matrixMatrixProduct(*pop_, *phi_);
-    std::cout << "P phi: "
-	      << A1.globalRows() << " "
-	      << A1.globalCols() << std::endl;
-
-    // (P phi)^+ => dense matrix
-    auto A2 = pseudoInverse(A1);
-    std::cout << "(P phi)^+ :"
-	      << A2.globalRows() << " "
-	      << A2.globalCols() << std::endl;
-
-    // P b => vector
-    auto b1 = core::matrixVectorProduct(*pop_, b);
-    std::cout << "P b :"
-	      << b1.globalSize() << std::endl;
-
-    // (P phi)^+ P b => vector
-    return core::matrixVectorProduct(A2, b1);
-  }
-  
-private:
-  phi_t const * phi_;
-  P_t const * pop_;
-};
-//-------------------------------------------
 
 template <typename T>
 void fillColloc(T & A, Epetra_Map map){
@@ -206,7 +121,7 @@ int main(int argc, char *argv[])
   
   //---------------------------------
   // weighting operator
-  using A_type = WeightOperator<phi_type, P_type>;
+  using A_type = rom::exp::WeightOperator<phi_type, P_type>;
   A_type A(phi, P);
 
   //---------------------------------------
@@ -217,9 +132,9 @@ int main(int argc, char *argv[])
   std::cout << "rromSz = " << rROM.globalSize() << std::endl;
  
   // residual and jacob policies
-  using res_pol_t = rom::exp::romGalerkinExplicitResidualPolicy<
+  using res_pol_t = rom::exp::RomGalerkinExplicitResidualPolicy<
     state_t, space_res_t, model_eval_t, mysizer, phi_type, A_type>;
-  res_pol_t resObj(y0FOM, r0FOM, phi, phiT, A);
+  res_pol_t resObj(y0FOM, r0FOM, phi, A);
 
   // stepper
   using stepper_t = ode::ExplicitEulerStepper<
@@ -231,8 +146,7 @@ int main(int argc, char *argv[])
   //  scalar_t final_t = 35;
   scalar_t dt = 0.01;
   ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);//, collObj);
-  
-  
+    
   MPI_Finalize();
   return 0;
 }

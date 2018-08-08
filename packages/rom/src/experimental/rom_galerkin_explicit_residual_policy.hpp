@@ -17,15 +17,15 @@ template<typename state_type,
 	 typename sizer_type,
 	 typename phi_type,
 	 typename A_type>
-class romGalerkinExplicitResidualPolicy
+class RomGalerkinExplicitResidualPolicy
   : public ode::policy::ExplicitResidualPolicyBase<
-  romGalerkinExplicitResidualPolicy<state_type, space_residual_type,
+  RomGalerkinExplicitResidualPolicy<state_type, space_residual_type,
 				    model_type, sizer_type,
 				    phi_type, A_type>>
 {
 
 private:
-  using this_t = romGalerkinExplicitResidualPolicy<state_type,
+  using this_t = RomGalerkinExplicitResidualPolicy<state_type,
 						   space_residual_type,
 						   model_type,
 						   sizer_type,
@@ -36,20 +36,18 @@ private:
   state_type yFOM_;
   space_residual_type appRHS_;
   phi_type * phi_;
-  phi_type * phiT_;
   A_type * A_;
   
 public:
-  romGalerkinExplicitResidualPolicy(const state_type & y0fom,
+  RomGalerkinExplicitResidualPolicy(const state_type & y0fom,
 				    const space_residual_type & r0fom,
 				    phi_type & phiOp,
-				    phi_type & phiTOp,
 				    A_type & AOp)
-    : yFOM_(y0fom), appRHS_(r0fom), phi_(&phiOp), phiT_(&phiTOp), A_(&AOp)
+    : yFOM_(y0fom), appRHS_(r0fom), phi_(&phiOp), A_(&AOp)
   {}
   
-  romGalerkinExplicitResidualPolicy() = delete;
-  ~romGalerkinExplicitResidualPolicy() = default;  
+  RomGalerkinExplicitResidualPolicy() = delete;
+  ~RomGalerkinExplicitResidualPolicy() = default;  
 
 private:
   template <typename T1 = state_type,
