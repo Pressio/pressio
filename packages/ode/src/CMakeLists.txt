@@ -13,8 +13,6 @@ FILE(GLOB ode_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
 
 # integrators
-FILE(GLOB ode_integrators_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/integrators/impl/*.hpp")
 FILE(GLOB ode_integrators_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/integrators/*.hpp")
 
@@ -33,8 +31,6 @@ FILE(GLOB ode_policies_standard_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 # custom
 FILE(GLOB ode_custom_policies_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/policies/custom/*.hpp")
-
-  
 
 #-------------------------
 # STEPPERS
@@ -70,8 +66,6 @@ FILE(GLOB ode_meta_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/meta/src/*.cc")
 
 # integrators
-FILE(GLOB ode_integrators_impl_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/integrators/impl/src/*.cc")
 FILE(GLOB ode_integrators_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/integrators/src/*.cc")
 
@@ -121,7 +115,6 @@ FILE(GLOB ode_implicit_steppers_impl_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   
 SET(HEADERS
   ${ode_meta_HEADERS}
-  ${ode_integrators_impl_HEADERS}
   ${ode_integrators_HEADERS}
   #
   ${ode_policies_base_HEADERS} 
@@ -140,7 +133,6 @@ SET(HEADERS
 
 SET(SOURCES
   ${ode_meta_SRCS}
-  ${ode_integrators_impl_SRCS}
   ${ode_integrators_SRCS}
   #
   ${ode_policies_base_SRCS} 
