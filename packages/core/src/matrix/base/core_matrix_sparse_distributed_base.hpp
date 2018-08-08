@@ -1,27 +1,46 @@
 
-#ifndef CORE_MATRIX_SPARSE_DISTRIBUTED_BASE_HPP_
-#define CORE_MATRIX_SPARSE_DISTRIBUTED_BASE_HPP_
+#ifndef CORE_MATRIX_BASE_MATRIX_SPARSE_DISTRIBUTED_BASE_HPP_
+#define CORE_MATRIX_BASE_MATRIX_SPARSE_DISTRIBUTED_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
 
 namespace core{
     
 template<typename derived_type>
-class matrixSparseDistributedBase{
+class MatrixSparseDistributedBase
+  : private core::details::CrtpBase<
+  MatrixSparseDistributedBase<derived_type>>
+{
+
+  static_assert( details::traits<derived_type>::isDistributed==1,
+		 "OOPS: non-distributed matrix inheriting \
+from sparse distributed base!");
+
 private:
-  using der_t = typename details::traits<derived_type>::derived_t;
-  using wrap_t = typename details::traits<derived_type>::wrapped_t;
+  using traits_t = details::traits<derived_type>;
+  using sc_t = typename traits_t::scalar_t;
+  using LO_t = typename traits_t::local_ordinal_t;
+  using GO_t = typename traits_t::global_ordinal_t;
+  
+public:
+  void insertGlobalValues(GO_t targetRow,
+			  LO_t numEntries,
+			  const sc_t * values,
+			  const GO_t * indices){
+    this->underlying().insertGlobalValuesImpl(targetRow,
+					      numEntries,
+					      values,
+					      indices);
+  }
+
 private:  
-  friend der_t;
-  matrixSparseDistributedBase() = default;
-  ~matrixSparseDistributedBase() = default; 
-private:  
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
-};//end class
+  friend derived_type;
+  friend core::details::CrtpBase<
+    MatrixSparseDistributedBase<derived_type>>;
+
+  MatrixSparseDistributedBase() = default;
+  ~MatrixSparseDistributedBase() = default; 
+
+};//end class  
 } // end namespace core
 #endif

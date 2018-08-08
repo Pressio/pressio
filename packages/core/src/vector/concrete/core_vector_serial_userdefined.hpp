@@ -1,45 +1,49 @@
 
-#ifndef CORE_VECTOR_SERIAL_USERDEFINED_HPP_
-#define CORE_VECTOR_SERIAL_USERDEFINED_HPP_
+#ifndef CORE_VECTOR_CONCRETE_VECTOR_SERIAL_USERDEFINED_HPP_
+#define CORE_VECTOR_CONCRETE_VECTOR_SERIAL_USERDEFINED_HPP_
 
-#include "../base/core_vector_generic_base.hpp"
+#include "../../shared_base/core_container_base.hpp"
+#include "../../shared_base/core_operators_base.hpp"
 #include "../base/core_vector_serial_base.hpp"
 #include "../base/core_vector_math_base.hpp"
+
 #include "../../meta/core_meta_detect_typedefs.hpp"
 #include "../../meta/core_meta_detect_operators.hpp"
 
 namespace core{
   
 template <typename wrapped_type>
-class vector<wrapped_type,
+class Vector<wrapped_type,
 	     typename std::enable_if<
-	       !core::meta::is_vectorStdLib<wrapped_type>::value &&
-	       !core::meta::is_vectorEigen<wrapped_type>::value &&
-	       !core::meta::is_vectorEpetra<wrapped_type>::value
+	       !core::meta::is_vector_stdlib<wrapped_type>::value &&
+	       !core::meta::is_vector_eigen<wrapped_type>::value &&
+	       !core::meta::is_vector_epetra<wrapped_type>::value
 	       >::type
 	     >
-  : public vectorGenericBase< vector<wrapped_type> >,
-    public vectorSerialBase< vector<wrapped_type> >,
-    public vectorMathBase< vector<wrapped_type> >,
-    // maybe move operators inheritance to serial/generic base
-    public arithmeticOperatorsBase<vector<wrapped_type>>,
-    public compoundAssignmentOperatorsBase<vector<wrapped_type>>
+  : public ContainerBase< Vector<wrapped_type>, wrapped_type>,
+    public VectorSerialBase< Vector<wrapped_type> >,
+    public VectorMathBase< Vector<wrapped_type> >,
+    public ArithmeticOperatorsBase<Vector<wrapped_type>>,
+    public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>,
+    public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
+              typename details::traits<Vector<wrapped_type>>::scalar_t,
+              typename details::traits<Vector<wrapped_type>>::ordinal_t>    
 {
 private:
-  using derived_t = vector<wrapped_type>;
+  using derived_t = Vector<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using der_t = typename details::traits<derived_t>::derived_t;
   using wrap_t = typename details::traits<derived_t>::wrapped_t;
   using ord_t = typename details::traits<derived_t>::ordinal_t;
 
 public:
-  vector() = default;
-  explicit vector(ord_t insize,
+  Vector() = default;
+  explicit Vector(ord_t insize,
 		  sc_t value = static_cast<sc_t>(0) ){
     this->resize(insize, value);
   }
-  explicit vector(const wrap_t & obj) : data_(obj){};
-  ~vector(){};
+  explicit Vector(const wrap_t & obj) : data_(obj){};
+  ~Vector(){};
 
 public:
   sc_t & operator [] (ord_t i){
@@ -194,9 +198,12 @@ private:
   // TODO: missing everything here
   
 private:
-  friend vectorGenericBase< derived_t >;
-  friend vectorSerialBase< derived_t >;
-  friend vectorMathBase< derived_t >;
+  friend ContainerBase< derived_t, wrapped_type >;
+  friend VectorSerialBase< derived_t >;
+  friend VectorMathBase< derived_t >;
+  friend ArithmeticOperatorsBase< derived_t >;
+  friend CompoundAssignmentOperatorsBase< derived_t >;  
+  friend Subscripting1DOperatorsBase< derived_t, sc_t, ord_t>;
 
 private:
    wrap_t data_;

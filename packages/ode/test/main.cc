@@ -68,7 +68,7 @@ struct lorenzStd{
 // template<class state_t, class res_t,
 // 	 class mod_t, class time_t, class T4>
 // class expEulerMine
-//   : public ode::policy::explicitResidualPolicyBase<
+//   : public ode::policy::ExplicitResidualPolicyBase<
 //            expEulerMine,state_t,res_t,mod_t,time_t,T4>
 // {
 // public:
@@ -83,7 +83,7 @@ struct lorenzStd{
 //     std::cout << "THIS IS MY ONW bump = " << t << std::endl;
 //   }  
 // private:
-//   friend ode::policy::explicitResidualPolicyBase<
+//   friend ode::policy::ExplicitResidualPolicyBase<
 //          expEulerMine,state_t,res_t,mod_t,time_t,T4>;
 // };
 
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
   state_t y0 = { 10.0 , 1.0 , 1.0 };
 
   using stepper_t =
-    ode::explicitEulerStepper<state_t, rhs_t, scalar_t,
+    ode::ExplicitEulerStepper<state_t, rhs_t, scalar_t,
 			      model_t, time_type>;
   stepper_t stepperObj(appObj);
   std::cout << "my add main " << &stepperObj << std::endl;
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 
 
   //   using stepper_t =
-  //     ode::explicitRungeKutta4Stepper<state_t, rhs_t, scalar_t,
+  //     ode::ExplicitRungeKutta4Stepper<state_t, rhs_t, scalar_t,
   // 				stdvectorResizer, model_t,
   // 				time_type /*, default: standard policy residual */>;
   //   stepper_t stepperObj(appObj);
@@ -124,10 +124,10 @@ int main(int argc, char *argv[])
   // //   using residual_policy_t = expEulerMine<state_t, rhs_t,
   // // 					   model_t, time_type, int>;
 
-  // //   static_assert(!ode::meta::isExplicitEulerResidualStandardPolicy<
+  // //   static_assert(!ode::meta::is_explicit_euler_residual_standard_policy<
   // // 		  residual_policy_t>::value, "");
   // //   using stepper_t =
-  // //     ode::explicitEulerStepper<state_t, rhs_t, scalar_t,stdvectorResizer,
+  // //     ode::ExplicitEulerStepper<state_t, rhs_t, scalar_t,stdvectorResizer,
   // //   				model_t,time_type, residual_policy_t>;
   // //   residual_policy_t resObj(55);
   // //   stepper_t stepperObj(appObj, resObj);
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
   // // {
   // //   // omitting the policy defaults to creating a corresponding standard residual policy
   // //   using stepper_t =
-  // //     ode::explicitRungeKutta4Stepper<state_t, rhs_t, scalar_t,
+  // //     ode::ExplicitRungeKutta4Stepper<state_t, rhs_t, scalar_t,
   // // 				      stdvectorResizer, model_t /*, standard policy residual */>;
   // //   stepper_t stepperObj(appObj);
   // //   coll<state_t> observer;
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
   
   
   // do time integration wrapping with my vector
-  //  using myvec_t = core::vector<state_t>;
+  //  using myvec_t = core::Vector<state_t>;
   // myvec_t y(y0);
   //static_assert( core::details::traits<myvec_t>::isVector == 1, "ok");
   //static_assert( core::details::traits<myvec_t>::isEigen == 0, "ok"); 
@@ -358,7 +358,7 @@ int main(int argc, char *argv[])
 //   // //----------------------------------------  
 //   // // lets assume we have snapshot matrix V
   
-//   // using myvec_t = core::vector<state_t>;
+//   // using myvec_t = core::Vector<state_t>;
 //   // myvec_t y(U); // y contains the initial condition
 //   // y.matmul(V); // something like this
 

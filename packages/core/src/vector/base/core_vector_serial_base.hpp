@@ -1,24 +1,23 @@
 
-#ifndef CORE_VECTOR_SERIAL_BASE_HPP_
-#define CORE_VECTOR_SERIAL_BASE_HPP_
+#ifndef CORE_VECTOR_BASE_VECTOR_SERIAL_BASE_HPP_
+#define CORE_VECTOR_BASE_VECTOR_SERIAL_BASE_HPP_
 
 #include "../core_vector_traits.hpp"
-#include "../../core_operators_base.hpp"
 
 namespace core{
     
 template<typename derived_type>
-class vectorSerialBase
+class VectorSerialBase
+  : private core::details::CrtpBase<VectorSerialBase<derived_type>>
 {
-private:
-  using sc_t = typename details::traits<derived_type>::scalar_t;
-  using der_t = typename details::traits<derived_type>::derived_t;
-  using wrap_t = typename details::traits<derived_type>::wrapped_t;
-  using ord_t = typename details::traits<derived_type>::ordinal_t;
 
   static_assert(details::traits<derived_type>::isSerial==1,
-		"OOPS: non-serial concrete vector inheriting from serial base!");
+  "OOPS: distributed concrete vector inheriting from serial base!");
   
+private:
+  using this_t = VectorSerialBase<derived_type>;
+  using ord_t = typename details::traits<derived_type>::ordinal_t;
+
 public:
   ord_t size() const {
     return this->underlying().sizeImpl();
@@ -28,17 +27,13 @@ public:
   };
     
 private:
-  friend derived_type; 
-  vectorSerialBase() = default;
-  ~vectorSerialBase() = default;
- 
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
-   
-};//end class    
+  friend derived_type;
+  friend core::details::CrtpBase<this_t>;
+
+  VectorSerialBase() = default;
+  ~VectorSerialBase() = default;
+    
+};//end class
+  
 } // end namespace core
 #endif

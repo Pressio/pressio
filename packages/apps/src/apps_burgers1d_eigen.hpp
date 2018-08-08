@@ -8,7 +8,7 @@
 
 namespace apps{
 
-class burgers1dEigen
+class Burgers1dEigen
 {
 private:
   using eigVec = Eigen::VectorXd;
@@ -17,15 +17,16 @@ private:
 public:
   using scalar_type = double;
   using state_type = Eigen::VectorXd;
-  using jacobian_type = Eigen::SparseMatrix<scalar_type,Eigen::RowMajor,int>;
+  using jacobian_type
+  = Eigen::SparseMatrix<scalar_type,Eigen::RowMajor,int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;
   std::vector<Tr> tripletList;
 
 public:  
-  explicit burgers1dEigen(eigVec params, ui_t Ncell=1000)
+  explicit Burgers1dEigen(eigVec params, ui_t Ncell=1000)
     : mu_(params), Ncell_(Ncell){}
-  ~burgers1dEigen() = default; 
+  ~Burgers1dEigen() = default; 
 
   void setup(){
     dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);

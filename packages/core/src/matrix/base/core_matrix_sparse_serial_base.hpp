@@ -1,44 +1,34 @@
 
-#ifndef CORE_MATRIX_SPARSE_SERIAL_BASE_HPP_
-#define CORE_MATRIX_SPARSE_SERIAL_BASE_HPP_
+#ifndef CORE_MATRIX_BASE_MATRIX_SPARSE_SERIAL_BASE_HPP_
+#define CORE_MATRIX_BASE_MATRIX_SPARSE_SERIAL_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
 
 namespace core{
     
 template<typename derived_type>
-class matrixSparseSerialBase
+class MatrixSparseSerialBase
+  : private core::details::CrtpBase<
+  MatrixSparseSerialBase<derived_type>>
 {
+
+  static_assert( details::traits<derived_type>::isDistributed==0 &&
+		 details::traits<derived_type>::isSerial==1,
+		 "OOPS: distributed matrix inheriting \
+from sparse serial base!");
+
 private:
   using traits_t = details::traits<derived_type>;
-  using der_t = typename traits_t::derived_t;
-  using wrap_t = typename traits_t::wrapped_t;
   using ord_t = typename traits_t::ordinal_t;
   using sc_t = typename traits_t::scalar_t;    
 
 public:
-  ord_t rows() const{
-    return this->underlying().rowsImpl();
-  }
-
-  ord_t cols() const{
-    return this->underlying().colsImpl();
-  }
-
-  void resize(ord_t nrows, ord_t ncols){
-    this->underlying().resizeImpl(nrows, ncols);
-  }
-
   ord_t nonZerosCount()const{
     return this->underlying().nonZerosCountImpl();
   }  
 
   void setIdentity(){
     this->underlying().setIdentityImpl();
-  }
-
-  void setZero(){
-    this->underlying().setZeroImpl();
   }
   
   //------------------------------------------------------------------
@@ -51,8 +41,10 @@ public:
 		    ord_t numEntries,
 		    const sc_t * values,
 		    const ord_t * indices){
-    this->underlying().insertValuesImpl(targetLocation, numEntries,
-					       values, indices);
+    this->underlying().insertValuesImpl(targetLocation,
+					numEntries,
+					values,
+					indices);
   }
   
   // note here that we return by copy. We do not enable to refernce []
@@ -60,16 +52,14 @@ public:
   sc_t operator() (ord_t row, ord_t col) const;
   
 private:  
-  friend der_t;
-  matrixSparseSerialBase() = default;
-  ~matrixSparseSerialBase() = default; 
-private:  
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
+  friend derived_type;
+  friend core::details::CrtpBase<
+    MatrixSparseSerialBase<derived_type>>;
+
+  MatrixSparseSerialBase() = default;
+  ~MatrixSparseSerialBase() = default; 
+
 };//end class
+  
 } // end namespace core
 #endif

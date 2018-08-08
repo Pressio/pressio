@@ -1,6 +1,6 @@
 
-#ifndef ODE_META_EXPLICIT_HPP_
-#define ODE_META_EXPLICIT_HPP_
+#ifndef ODE_META_META_EXPLICIT_HPP_
+#define ODE_META_META_EXPLICIT_HPP_
 
 #include "meta/core_meta_basic.hpp"
 #include "vector/core_vector_traits.hpp"
@@ -17,28 +17,28 @@ struct isLegitimateExplicitStateType : std::false_type{};
 template<typename state_type>
 struct isLegitimateExplicitStateType<state_type,
  typename std::enable_if<
-   core::meta::is_coreVector<state_type>::value
+   core::meta::is_core_vector<state_type>::value
    >::type
   > : std::true_type{};
 
 template<typename state_type>
 struct isLegitimateExplicitStateType<state_type,
   typename std::enable_if<
-    core::meta::is_vectorStdLib<state_type>::value
+    core::meta::is_vector_stdlib<state_type>::value
     >::type
   > : std::true_type{};
 
 template<typename state_type>
 struct isLegitimateExplicitStateType<state_type,
   typename std::enable_if<
-    core::meta::is_vectorEigen<state_type>::value
+    core::meta::is_vector_eigen<state_type>::value
     >::type
   > : std::true_type{};
 
 template<typename state_type>
 struct isLegitimateExplicitStateType<state_type,
   typename std::enable_if<
-    core::meta::is_vectorEpetra<state_type>::value
+    core::meta::is_vector_epetra<state_type>::value
     >::type
   > : std::true_type{};
   

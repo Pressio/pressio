@@ -1,16 +1,14 @@
 
-#include "CORE_VECTOR"
-#include "CORE_MATRIX"
+#include "CORE_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_EXP"
 // app class
 #include "apps_burgers1d_eigen.hpp"
 #include "ode_observer.hpp"
-
-#include "../apps_helper_ode.hpp"
+//#include "../apps_helper_ode.hpp"
 
 struct mysizer{
- using state_t = core::vector<apps::burgers1dEigen::state_type>;
+ using state_t = core::Vector<apps::Burgers1dEigen::state_type>;
  static size_t getSize(state_t & obj){
    return obj.size();
  };
@@ -27,48 +25,74 @@ void printSol(std::string mess,
   for (int i=0; i<y.size(); ++i)
     std::cout << std::setprecision(14) << y[i]  << " ";
   std::cout << std::endl;
-}
-
+}//end 
+//-------------------------------------------------------------
 
 int main(int argc, char *argv[])
 {
-  using native_state_t = apps::burgers1dEigen::state_type;
-  using native_jac_t = apps::burgers1dEigen::jacobian_type;
-  using scalar_t = apps::burgers1dEigen::scalar_type;
-  using model_eval_t = apps::burgers1dEigen;
+  using native_state_t = apps::Burgers1dEigen::state_type;
+  using native_jac_t = apps::Burgers1dEigen::jacobian_type;
+  using scalar_t = apps::Burgers1dEigen::scalar_type;
+  using model_eval_t = apps::Burgers1dEigen;
 
   // create app object
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
-  model_eval_t appObj(mu, 20);
+  model_eval_t appObj(mu, 10);
   appObj.setup();
-
-  // integrate in time startxbi5ng from y0
-  scalar_t dt = 0.001;
-  scalar_t final_t = 35;
+  native_state_t y0n = appObj.getInitialState();
 
   // wrap with core structures
-  using state_t = core::vector<native_state_t>;
-  using jac_t = core::matrix<native_jac_t>;
+  using state_t = core::Vector<native_state_t>;
+  using jac_t = core::Matrix<native_jac_t>;
   using residual_t = state_t;
-  native_state_t y0n = appObj.getInitialState();
-  snapshot_collector collObj;
 
-  state_t y0(y0n);
+  {
+    state_t y(y0n);
+    // stepper
+    using stepper_t = ode::ExplicitEulerStepper<
+      state_t, residual_t, model_eval_t, mysizer>;
+    stepper_t stepperObj(appObj);
+    
+    // integrate in time 
+    scalar_t dt = 0.01;
+    scalar_t final_t = 35;
+    int numSteps = static_cast<int>(final_t)/dt;  
+    snapshot_collector collObj;
+    ode::integrateNSteps(stepperObj, y, 0.0, dt, numSteps, collObj, nonls);
+    printSol("final", y);
 
-  using exstd_t = apps::test::appsExpOdeHelper<
-    state_t, residual_t, scalar_t, model_eval_t,
-    scalar_t, mysizer, void, void, snapshot_collector>;
-
-  exstd_t::explicitStandardEuler(y0, 0.0, final_t, dt, appObj, collObj);
-  printSol("Exp Euler", y0);
-
-  *y0.data() = y0n;  
-  exstd_t::explicitStandardRK4(y0, 0.0, final_t, dt, appObj, collObj);
-  printSol("Exp RK4", y0);
+  }//end 
+  
+  return 0;
+}
 
 
+  // // linear solver
+  // using lin_solve_t =
+  //   solvers::experimental::linearSolver<jac_t, state_t, state_t>;
+  // lin_solve_t ls;
+  // // nonlinear solver
+  // using nonlin_solve_t =
+  //   solvers::experimental::newtonRaphson<state_t, state_t,
+  // 					 jac_t, lin_solve_t>;
+  // nonlin_solve_t nonls(ls);
+
+  // using stepper_t = ode::ImplicitEulerStepper<
+  //   state_t, residual_t, jac_t, model_eval_t, mysizer>;
+  // stepper_t stepperObj(appObj);
+
+  ///////////////////////////
+  
+  // exstd_t::explicitStandardEuler(y0, 0.0, final_t, dt, appObj, collObj);
+  // printSol("Exp Euler", y0);
+
+  // *y0.data() = y0n;  
+  // exstd_t::explicitStandardRK4(y0, 0.0, final_t, dt, appObj, collObj);
+  // printSol("Exp RK4", y0);
 
 
+
+  
 
   // using res_pol_t = ode::policy::incrementBasedResidual<
   //   state_t, residual_t, model_eval_t, scalar_t, mysizer>;
@@ -83,7 +107,7 @@ int main(int argc, char *argv[])
   // //   //********************************************
   // //   // EXPLICIT EULER
   // //   //********************************************
-  //   using stepper_t = ode::explicitEulerStepper<
+  //   using stepper_t = ode::ExplicitEulerStepper<
   //     state_t, residual_t, scalar_t,
   //     model_eval_t, scalar_t, mysizer>;
   //   stepper_t stepperObj(appObj);
@@ -101,7 +125,7 @@ int main(int argc, char *argv[])
   //   //********************************************
   //   // EXPLICIT RK4
   //   //********************************************
-  //   using stepper_t = ode::explicitRungeKutta4Stepper<
+  //   using stepper_t = ode::ExplicitRungeKutta4Stepper<
   //     state_t, residual_t, scalar_t,
   //     model_eval_t, scalar_t, mysizer>;
   //   stepper_t stepperObj(appObj);
@@ -119,7 +143,7 @@ int main(int argc, char *argv[])
   //   //********************************************
   //   // EXPLICIT RK4
   //   //********************************************
-  //   using stepper_t = ode::explicitRungeKutta4Stepper<
+  //   using stepper_t = ode::ExplicitRungeKutta4Stepper<
   //     state_t, residual_t, scalar_t,
   //     model_eval_t, scalar_t, mysizer>;
   //   stepper_t stepperObj(appObj);
@@ -179,7 +203,7 @@ int main(int argc, char *argv[])
   //   //   state_t, jac_t, model_eval_t, scalar_t>;
   //   // aux_jac_pol_t auxJacObj(y0);
   //   // //stepper
-  //   using aux_stepper_t = ode::implicitEulerStepper<
+  //   using aux_stepper_t = ode::ImplicitEulerStepper<
   //     state_t, residual_t, jac_t, scalar_t,
   //     model_eval_t, scalar_t, mysizer, nonlin_solve_t>;
   //   //      aux_res_pol_t, aux_jac_pol_t>;
@@ -211,5 +235,3 @@ int main(int argc, char *argv[])
   // }
 
      
-  return 0;
-}

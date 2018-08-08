@@ -3,42 +3,87 @@
 SOME GENERAL GUIDELINES for developers
 ----------------------------------------
 
-- File name should conform to:
-	packageName_classname
 
-we basically want to prepend every file with the name of 
-the package that file belongs to, followed by the specific name 
-of the class or whatever that file covers.
+*****************
+Formatting style
+*****************
+- text inside files should not be too wide, maximum 90 character
+Prefer wrapping text around than huge long lines, or it will be hard 
+for other developers to read code because everybody uses different editors.
 
-- file names should be explicative. From the filename I should be 
-able to guess what it contains.
+
+**************
+Filenames
+**************
+- File name should conform to:   packageName_classname
+
+Prepend every file with the name of the package that file belongs to,
+followed by the specific name of the class or whatever that file covers.
+
+- file names should be explicative. From the filename I should be able to guess what it contains.
 
 - If the name of the class is made of multiple words, then the file name 
-should be all lowercase with underscore separating the 
-components words making up the class but the class name itself should be 
+should be all lowercase with underscore separating the components words
+making up the class but the class name itself should be 
 ONE single string of words where each subword starts with uppercare letter. 
 For instance, if the target class name is: 
 	
-	vectorEpetraDistributed
+	VectorEpetraDistributed
 
 and the file belongs to the package "core", then the filename should be:
 
 	core_vector_epetra_distributed
 
+************
+Classes
+************
+- class names should beging with uppercase letter
+- no spaces in the names, user camelCase convention
+- methods should beging with lowercase letter
 
-- Include guards should have the filename all capitalized ending with _HPP_ like: 
 
-	CORE_VECTOR_EPETRA_DISTRIBUTED_HPP_
-
-
-- This library is intended to be a header-only library, but for now we cannot do that 
-because Tribits does not support this format. 
+********************************
+Every hpp files has a .cc file
+********************************
+This library is intended to be a header-only library, but for now we cannot do that 
+because Tribits does not support this format.
 So every .hpp file has a corresponding .cc file that is EMPTY and only includes the associated .hpp.
 This makes things easier later on, when we remove all cc files. 
-So, follow this rule. 
 
 
-- text inside files should not be too wide, maximum 90 character
-Prefer wrapping text around than huge long lines, or it will be hard 
-for other developers to read code because everybody uses different editors.
+*******************
+The #define Guard
+*******************
+All header files should have #define guards. The format of the symbol name should be <PACKAGENAME>_<FILE>_HPP_.
+
+For example, the file packages/core/src/vector/core_vector_traits.hpp should have the following guard:
+
+#ifndef CORE_VECTOR_TRAITS_HPP_
+#define CORE_VECTOR_TRAITS_HPP_
+
+...
+
+#endif  //CORE_VECTOR_TRAITS_H_
+
+
+
+**************
+Namespaces
+**************
+Place code in a namespace. Namespaces should have unique names.
+Do not use using-directives (e.g. using namespace blabla), unless it is confined
+within a well-defined scope that is not going to pollute the overall project.
+Namespaces shoudl be lowercase
+
+
+
+*****************
+FIle organization
+*****************
+The src directory of a package should not have 
+a bunch of files all dumped there. Things should be separated logically 
+basedo on functionality. Best practice is to create subfolders to contain things 
+that go together. Follow examples in core or ode packages. 
+Also, the CMakeList inside the src folder should preferably be written using 
+globs to make the process of adding headers much easier and less prone to forgetting files. 
 

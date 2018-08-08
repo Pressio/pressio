@@ -1,8 +1,9 @@
 
-#ifndef CORE_META_DETECT_TYPEDEFS_HPP_
-#define CORE_META_DETECT_TYPEDEFS_HPP_
+#ifndef CORE_META_META_DETECT_TYPEDEFS_HPP_
+#define CORE_META_META_DETECT_TYPEDEFS_HPP_
 
-#include "core_meta_basic.hpp"
+#include <type_traits>
+
 
 namespace core{
 namespace meta {
@@ -11,18 +12,24 @@ namespace meta {
   // check type has a public typedef named: scalar_type
   /////////////////////////////////////////////////
 
-  template <typename T, typename enable = void>
-  struct has_scalarTypedef : std::false_type{};
+  // template <typename T, typename enable = void>
+  // struct has_scalar_typedef : std::false_type{};
+
+  // template <typename T>
+  // struct has_scalar_typedef<T,
+  // 			   typename
+  // 			   std::enable_if<
+  // 			     !std::is_void<typename T::scalar_type
+  // 					   >::value
+  // 			     >::type
+  // 			   > : std::true_type{};
+  
 
   template <typename T>
-  struct has_scalarTypedef<T,
-			   typename
-			   std::enable_if<
-			     !std::is_void<typename T::scalar_type
-					   >::value
-			     >::type
-			   > : std::true_type{};
-  
+  using has_scalar_typedef = typename T::scalar_type;
+
+
+
   // An alternative way to do same thing above:
   //------------------------------------------
   // template <typename T> struct has_scTypedef {
@@ -38,10 +45,10 @@ namespace meta {
   /////////////////////////////////////////////////
 
   template <typename T, typename enable = void>
-  struct has_ordinalTypedef : std::false_type{};
+  struct has_ordinal_typedef : std::false_type{};
 
   template <typename T>
-  struct has_ordinalTypedef<T,
+  struct has_ordinal_typedef<T,
 			   typename
 			    std::enable_if<
 			     !std::is_void<typename T::ordinal_type
@@ -54,10 +61,10 @@ namespace meta {
   /////////////////////////////////////////////////
 
   template <typename T, typename enable = void>
-  struct has_localOrdinalTypedef : std::false_type{};
+  struct has_local_ordinal_typedef : std::false_type{};
 
   template <typename T>
-  struct has_localOrdinalTypedef<T,typename
+  struct has_local_ordinal_typedef<T,typename
 				 std::enable_if<
 				     !std::is_void<typename
 						   T::local_ordinal_type
@@ -70,10 +77,10 @@ namespace meta {
   /////////////////////////////////////////////////
 
   template <typename T, typename enable = void>
-  struct has_globalOrdinalTypedef : std::false_type{};
+  struct has_global_ordinal_typedef : std::false_type{};
 
   template <typename T>
-  struct has_globalOrdinalTypedef<T,
+  struct has_global_ordinal_typedef<T,
 				  typename
 				  std::enable_if<
 				    !std::is_void<typename
@@ -88,10 +95,10 @@ namespace meta {
   /////////////////////////////////////////////////
 
   template <typename T, typename enable = void>
-  struct has_dataMapTypedef : std::false_type{};
+  struct has_data_map_typedef : std::false_type{};
 
   template <typename T>
-  struct has_dataMapTypedef<T,
+  struct has_data_map_typedef<T,
 			typename
 			std::enable_if<
 			  !std::is_void<typename T::data_map_type
@@ -105,10 +112,10 @@ namespace meta {
   /////////////////////////////////////////////////
 
   template <typename T, typename enable = void>
-  struct has_mpicommTypedef : std::false_type{};
+  struct has_mpi_comm_typedef : std::false_type{};
 
   template <typename T>
-  struct has_mpicommTypedef<T,
+  struct has_mpi_comm_typedef<T,
 			    typename
 			    std::enable_if<
 			      !std::is_void<typename

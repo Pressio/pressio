@@ -11,13 +11,26 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 FILE(GLOB rom_exp_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/*.hpp")
-
 FILE(GLOB rom_exp_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/src/*.cc")
 
+# FILE(GLOB rom_exp_basis_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/basis_operator*.hpp")
+# FILE(GLOB rom_exp_basis_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/basis_operator/src/*.cc")
+# FILE(GLOB rom_exp_sampling_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/sampling_operator*.hpp")
+# FILE(GLOB rom_exp_sampling_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/sampling_operator/src/*.cc")
+# FILE(GLOB rom_exp_weighting_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/weighting_operator*.hpp")
+# FILE(GLOB rom_exp_weighting_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/weighting_operator/src/*.cc")
+  
 SET(HEADERS
   ${rom_exp_HEADERS}
 )
+
 SET(SOURCES
   ${rom_exp_SRCS}
 )

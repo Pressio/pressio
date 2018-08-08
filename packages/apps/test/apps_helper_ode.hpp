@@ -29,12 +29,12 @@ struct appsExpOdeHelper
 				    coll_t & collectorObj,
 				    Args && ... rest)
   {
-    using stepper_t = ode::explicitEulerStepper<
-      state_t, residual_t, scalar_t,
-      model_t, scalar_t, sizer_t>;
-    stepper_t stepperObj(appObj, std::forward<Args>(rest)... );
+    // using stepper_t = ode::ExplicitEulerStepper<
+    //   state_t, residual_t, scalar_t,
+    //   model_t, scalar_t, sizer_t>;
+    // stepper_t stepperObj(appObj, std::forward<Args>(rest)... );
 
-    ode::integrateNSteps(stepperObj, y, ti, dt, te/dt, collectorObj);    
+    // ode::integrateNSteps(stepperObj, y, ti, dt, te/dt, collectorObj);    
   }//end 
 
   static void explicitStandardRK4(state_t & y,
@@ -44,12 +44,12 @@ struct appsExpOdeHelper
 				  model_t & appObj,
 				  coll_t & collectorObj)
   {
-    using stepper_t = ode::explicitRungeKutta4Stepper<
-      state_t, residual_t, scalar_t,
-      model_t, scalar_t, sizer_t>;
-    stepper_t stepperObj(appObj);
+    // using stepper_t = ode::ExplicitRungeKutta4Stepper<
+    //   state_t, residual_t, scalar_t,
+    //   model_t, scalar_t, sizer_t>;
+    // stepper_t stepperObj(appObj);
 
-    ode::integrateNSteps(stepperObj, y, ti, dt, te/dt, collectorObj);    
+    // ode::integrateNSteps(stepperObj, y, ti, dt, te/dt, collectorObj);    
   }//end 
 
   
@@ -81,7 +81,7 @@ struct appsImpOdeHelper
   // 				    model_t & appObj,
   // 				    coll_t & collectorObj)
   // {
-  //   using stepper_t = ode::explicitEulerStepper<
+  //   using stepper_t = ode::ExplicitEulerStepper<
   //     state_t, residual_t, scalar_t,
   //     model_t, scalar_t, sizer_t>;
   //   stepper_t stepperObj(appObj);

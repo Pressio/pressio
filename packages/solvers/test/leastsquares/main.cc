@@ -82,8 +82,8 @@ struct app
   
 int main()
 {     
-  // using myvec_t = core::vector<app::state_type>;
-  // using mymat_t = core::matrix<app::jacobian_type>;
+  // using myvec_t = core::Vector<app::state_type>;
+  // using mymat_t = core::Matrix<app::jacobian_type>;
 
   // app::myvec_t sol;
   // sol.resize(2);

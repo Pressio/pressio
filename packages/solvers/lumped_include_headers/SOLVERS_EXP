@@ -4,8 +4,8 @@
 
 #include "SOLVERS_BASIC"
 
-#include "../src/experimental/solvers_linear_base.hpp"
-#include "../src/experimental/solvers_linear_eigen.hpp"
-#include "../src/experimental/solvers_nonlinear_newton_raphson.hpp"
+//#include "../src/experimental/solvers_linear_base.hpp"
+//#include "../src/experimental/solvers_linear_eigen.hpp"
+//#include "../src/experimental/solvers_nonlinear_newton_raphson.hpp"
 
 #endif

@@ -20,15 +20,13 @@ SET(SOURCES
 
 # experimental/hacked stuff 
 APPEND_SET(HEADERS
-  experimental/solvers_linear_base.hpp
-  experimental/solvers_linear_eigen.hpp
-  experimental/solvers_nonlinear_newton_raphson.hpp
+  experimental/solvers_linear_iterative.hpp
+  experimental/solvers_linear_factory.hpp
   )
 
 APPEND_SET(SOURCES
-  experimental/src/solvers_linear_base.cc
-  experimental/src/solvers_linear_eigen.cc
-  experimental/src/solvers_nonlinear_newton_raphson.cc
+  experimental/src/solvers_linear_iterative.cc
+  experimental/src/solvers_linear_factory.cc
 )
 
 

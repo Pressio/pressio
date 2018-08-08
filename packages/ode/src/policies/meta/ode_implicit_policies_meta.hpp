@@ -1,121 +1,31 @@
 
-#ifndef ODE_IMPLICIT_POLICIES_META_HPP_
-#define ODE_IMPLICIT_POLICIES_META_HPP_
+#ifndef ODE_POLICIES_META_IMPLICIT_POLICIES_META_HPP_
+#define ODE_POLICIES_META_IMPLICIT_POLICIES_META_HPP_
 
-#include "../base/ode_residual_policy_base.hpp"
+#include "../base/ode_implicit_residual_policy_base.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
-
-#include "../standard/ode_residual_standard_policy.hpp"
-#include "../standard/ode_jacobian_standard_policy.hpp"
 
 namespace ode{
 namespace meta {
 
-//////////////////////////////////////////////////////////////////
-//
-// IMPLICIT EULER 
-//
-//////////////////////////////////////////////////////////////////
-
-template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitEulerResidualPolicy 
-: isLegitimateResidualPolicy<policy_t>{};
 //-----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitEulerJacobianPolicy 
-: isLegitimateJacobianPolicy<policy_t>{};
+// METAF FOR ADMISSIBLE JACOBIAN POLICY
 //-----------------------------------------------------------------
-
 template<typename policy_t, typename enable = void>
-struct isImplicitEulerResidualStandardPolicy 
-: isResidualStandardPolicy<policy_t>{};
-//----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isImplicitEulerJacobianStandardPolicy 
-: isJacobianStandardPolicy<policy_t>{};
-
-
-//////////////////////////////////////////////////////////////////
-//
-// IMPLICIT BDF2
-//
-//////////////////////////////////////////////////////////////////
-
-template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitBDF2ResidualPolicy 
-: isLegitimateResidualPolicy<policy_t>{};
-//-----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitBDF2JacobianPolicy 
-: isLegitimateJacobianPolicy<policy_t>{};
-//-----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isImplicitBDF2ResidualStandardPolicy 
-: isResidualStandardPolicy<policy_t>{};
-//----------------------------------------------------------------
+struct is_legitimate_implicit_jacobian_policy : std::false_type{};
   
-template<typename policy_t, typename enable = void>
-struct isImplicitBDF2JacobianStandardPolicy 
-: isJacobianStandardPolicy<policy_t>{};
-
-
-//////////////////////////////////////////////////////////////////
-//
-// IMPLICIT BDF3
-//
-//////////////////////////////////////////////////////////////////
-
-template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitBDF3ResidualPolicy 
-: isLegitimateResidualPolicy<policy_t>{};
+template <typename policy_t>
+struct is_legitimate_implicit_jacobian_policy<
+  policy_t,
+  typename std::enable_if<
+    core::meta::publicly_inherits_from<
+      policy_t,
+      ode::policy::JacobianPolicyBase<policy_t>
+      >::value
+    >::type
+  > : std::true_type{};
 //-----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitBDF3JacobianPolicy 
-: isLegitimateJacobianPolicy<policy_t>{};
-//-----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isImplicitBDF3ResidualStandardPolicy 
-: isResidualStandardPolicy<policy_t>{};
-//----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isImplicitBDF3JacobianStandardPolicy 
-: isJacobianStandardPolicy<policy_t>{};
-
-
-//////////////////////////////////////////////////////////////////
-//
-// IMPLICIT Adams Moulton1
-//
-//////////////////////////////////////////////////////////////////
-
-template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitAdamsMoulton1ResidualPolicy 
-: isLegitimateResidualPolicy<policy_t>{};
-//-----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isLegitimateImplicitAdamsMoulton1JacobianPolicy 
-: isLegitimateJacobianPolicy<policy_t>{};
-//-----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isImplicitAdamsMoulton1ResidualStandardPolicy 
-: isResidualStandardPolicy<policy_t>{};
-//----------------------------------------------------------------
-
-template<typename policy_t, typename enable = void>
-struct isImplicitAdamsMoulton1JacobianStandardPolicy 
-: isJacobianStandardPolicy<policy_t>{};
-  
-
-  
+    
 } // namespace meta
 } // namespace core
 #endif

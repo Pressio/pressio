@@ -5,16 +5,18 @@
 #include "core_ConfigDefs.hpp"
 
 namespace core {
-
+  
+template <typename wrapped_type,
+	  typename Enable = void>
+class Vector;
 
 template <typename wrapped_type,
 	  typename Enable = void>
-class vector;
-
+class MultiVector;
 
 template <typename wrapped_type,
 	  typename Enable = void>
-class matrix;
+class Matrix;
   
   
 } // end namespace core

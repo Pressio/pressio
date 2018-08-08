@@ -1,6 +1,6 @@
 
-#ifndef CORE_META_BASIC_HPP_
-#define CORE_META_BASIC_HPP_
+#ifndef CORE_META_META_BASIC_HPP_
+#define CORE_META_META_BASIC_HPP_
 
 #include <type_traits>
 #include <complex>
@@ -38,62 +38,37 @@ namespace meta {
   struct is_default_constructible
     : std::is_default_constructible<T> {};
   
-  // template<typename T>
-  // class is_default_constructible{
-  //   typedef char yes;
-  //   typedef struct { char arr[2]; } no;
-  //   template<typename U>
-  //   static decltype(U(), yes()) test(int);
-  //   template<typename>
-  //   static no test(...);
-  // public:
-  //   static const bool value = sizeof(test<T>(0)) == sizeof(yes);
-  // };
-
   /////////////////////////////////////////////////  
 
   template <typename T,
 	    typename enable = void>
-  struct is_stdComplex : std::false_type{};
+  struct is_std_complex : std::false_type{};
 
   template <typename T>
-  struct is_stdComplex<T, typename
-		       std::enable_if<
-			    std::is_same<T,
-					 std::complex<typename
-						      T::value_type
-						      >
-					 >::value
-			    >::type
-		       > : std::true_type{};
+  struct is_std_complex<T, typename
+	  std::enable_if<
+	   std::is_same<T,
+	     std::complex<typename
+		T::value_type
+		>
+	     >::value
+	   >::type
+	 > : std::true_type{};
 
   //////////////////////////////////////////////////
 
-  // template<template<class> class T, class U>
-  // struct isDerivedFrom
-  // {
-  //   static constexpr bool value =
-  //     decltype(isDerivedFrom::test(std::declval<U>()))::value;
-  // private:
-  //   template<class V>
-  //   static decltype(static_cast<T<V>>(std::declval<U>()),
-  // 		    std::true_type{}) test(const T<V>&);
-
-  //   static std::false_type test(...);
-  // };
-
   template<typename T, typename base_t>
-  struct publiclyInheritsFrom : std::is_base_of<base_t,T>{};
+  struct publicly_inherits_from : std::is_base_of<base_t,T>{};
   
   //////////////////////////////////////////////////
 
 
   template<typename T,
 	   typename = void>
-  struct has_sizeMethod : std::false_type{};
+  struct has_size_method : std::false_type{};
 
   template<typename T>
-  struct has_sizeMethod<T,
+  struct has_size_method<T,
 			typename
 			std::enable_if<
 			  !std::is_void<

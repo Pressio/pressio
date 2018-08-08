@@ -15,7 +15,7 @@
 
 namespace apps{
 
-class burgers1dEpetra
+class Burgers1dEpetra
 {
 private:
   using nativeVec = Epetra_Vector;
@@ -24,17 +24,18 @@ private:
 
 public:
   using scalar_type = double;
-  using state_type = nativeVec;
+  using state_type = Epetra_Vector;
+  using space_residual_type = Epetra_Vector;
   using jacobian_type = Epetra_CrsMatrix;
 
 public:  
-  burgers1dEpetra(std::vector<scalar_type> params,
+  Burgers1dEpetra(std::vector<scalar_type> params,
 		  int Ncell,
 		  Epetra_MpiComm * comm)
     : mu_(params), Ncell_(Ncell), comm_(comm)
   {}
 
-  ~burgers1dEpetra() = default; 
+  ~Burgers1dEpetra() = default; 
 
   void setup()
   {
@@ -61,16 +62,27 @@ public:
     U_ = std::make_shared<nativeVec>(*dataMap_);
     U0_->PutScalar(1.0);
     U_->PutScalar(1.0);
-
     myRank_ =  comm_->MyPID();
+    totRanks_ =  comm_->NumProc();
+    
   };
 
-  state_type getInitialState(){
+  Epetra_Map const & getDataMap(){
+    return *dataMap_;
+  };
+  
+  state_type const & getInitialState(){
     return *U0_;
+  };
+
+  space_residual_type const & getInitialResidual(){
+    r0_ = std::make_shared<nativeVec>(*dataMap_);
+    this->residual(*U0_, *r0_, 0.0);
+    return *r0_;
   };
   
   void residual(const state_type & u,
-		state_type & rhs,
+		space_residual_type & rhs,
 		const scalar_type /* t */)
   {
     double valueFromLeft = 0.0;
@@ -87,7 +99,7 @@ public:
     }
     
     int i=0;
-    scalar_type uim1, ui;
+    scalar_type uim1;
     for (auto const & it : myGel_)
     {
       uim1 = valueFromLeft;
@@ -105,18 +117,57 @@ public:
     }  
   }//end residual
 
-  
+  jacobian_type const & getInitialJacobian()
+  {
+    j0_ = std::make_shared<Epetra_CrsMatrix>(Copy, *dataMap_, nonZrPerRow_);
+    this->jacobian(*U0_, *j0_, 0.0);
+    j0_->FillComplete();
+    return *j0_;
+  };
+    
   void jacobian(const state_type & u,
 		jacobian_type & jac,
 		const scalar_type /*t*/)
   {
-    // //evaluate jacobian
-    // if (jac.rows() == 0 || jac.cols()==0 ){
-    //   jac.resize(u.size(), u.size());
-    // }
-    // // typedef Eigen::Triplet<double> Tr;
-    // // std::vector<Tr> tripletList;
-    // // tripletList.push_back( Tr(0,0,v_ij) );
+
+    // to populate the jacobian each process needs the last grid
+    // point solution from the previous process
+    double buffin = 0.0;
+    MPI_Comm mpiComm = comm_->Comm();
+    if (myRank_ < totRanks_-1){
+      double tosend = u[NumMyElem_-1];
+      MPI_Send(&tosend, 1, MPI_DOUBLE, myRank_+1, 1, mpiComm);
+    }
+    if (myRank_ >= 1){
+      MPI_Status st;
+      MPI_Recv(&buffin, 1, MPI_DOUBLE, myRank_-1, 1, mpiComm, &st);
+    }
+
+    std::vector<int> Indices {0, 0};
+    std::vector<double> Values {0., 0.};
+    for (int i=0; i<NumMyElem_; i++)
+    {
+       int thisGID = myGel_[i]; // global ID
+       if (thisGID==0){
+       	 Indices[0] = 0;
+       	 Values[0] = -dxInv_;// * u[0]*u[0];
+       	 jac.InsertGlobalValues(thisGID, 1, Values.data(), Indices.data() );
+       }
+       else{
+       	 Indices[0] = thisGID-1;
+       	 Indices[1] = thisGID;
+    	 if (i==0)
+    	   Values[0] = dxInv_ * buffin*buffin;
+    	 if (i>0)
+    	   Values[0] = dxInv_ * u[i-1]*u[i-1];
+
+    	 Values[1] = -Values[0];	 
+       	 jac.InsertGlobalValues(thisGID, 2, Values.data(), Indices.data() );
+       }
+    }
+    if (!jac.Filled())
+      jac.FillComplete();
+    
     
     // jac = jacobian_type::Zero(jac.rows(), jac.cols());
     // jac(0,0) = -dxInv_ * u(0)*u(0);
@@ -133,18 +184,21 @@ private:
   int Ncell_; // # of cells
   scalar_type dx_; // cell size
   scalar_type dxInv_; // inv of cell size
+  const int nonZrPerRow_ = 2;
+  // mesh points coordinates
+  rcp<nativeVec> xGrid_; 
 
   Epetra_MpiComm * comm_;
   rcp<Epetra_Map> dataMap_;
   int myRank_;
+  int totRanks_;
   int NumMyElem_;
-  std::vector<int> myGel_;
-
-  // mesh points coordinates
-  rcp<nativeVec> xGrid_; 
+  std::vector<int> myGel_;  
   
   rcp<nativeVec> U_; // state vector
   rcp<nativeVec> U0_; // initial state vector
+  rcp<nativeVec> r0_; // initial space residual
+  rcp<Epetra_CrsMatrix> j0_; // initial jacobian
 };
 
 }//end namespace apps

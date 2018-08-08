@@ -1,31 +1,43 @@
 
-#ifndef CORE_MATRIX_DENSE_DISTRIBUTED_BASE_HPP_
-#define CORE_MATRIX_DENSE_DISTRIBUTED_BASE_HPP_
+#ifndef CORE_MATRIX_BASE_MATRIX_DENSE_DISTRIBUTED_BASE_HPP_
+#define CORE_MATRIX_BASE_MATRIX_DENSE_DISTRIBUTED_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
 
 namespace core{
     
 template<typename derived_type>
-class matrixDenseDistributedBase
+class MatrixDenseDistributedBase
+  : private core::details::CrtpBase<
+  			MatrixDenseDistributedBase<derived_type>>
 {
-private:
-  using der_t = typename details::traits<derived_type>::derived_t;
-  using wrap_t = typename details::traits<derived_type>::wrapped_t;
 
+  static_assert( details::traits<derived_type>::isDistributed==1,
+  "OOPS: non-distributed matrix inheriting from dense distributed base!");
+
+private:
+  using traits_t = details::traits<derived_type>;
+  using sc_t = typename traits_t::scalar_t;
+  using LO_t = typename traits_t::local_ordinal_t;
+  using GO_t = typename traits_t::global_ordinal_t;
+  
+public:
+  void replaceGlobalValue(GO_t globalRowIndex,
+			  GO_t globalColIndex,
+			  sc_t value){
+    this->underlying().replaceGlobalValueImpl(globalRowIndex,
+					      globalColIndex, value);
+  }
+    
 private:  
   friend derived_type;
-  matrixDenseDistributedBase() = default;
-  ~matrixDenseDistributedBase() = default;
- 
-private:  
-  der_t & underlying(){
-    return static_cast<der_t &>(*this);
-  };
-  der_t const& underlying() const{
-    return static_cast<der_t const&>(*this);
-  };
+  friend core::details::CrtpBase<
+    MatrixDenseDistributedBase<derived_type>>;
 
-};//end class    
+  MatrixDenseDistributedBase() = default;
+  ~MatrixDenseDistributedBase() = default;
+ 
+};//end class
+  
 } // end namespace core
 #endif

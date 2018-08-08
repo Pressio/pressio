@@ -1,10 +1,13 @@
 
-#ifndef CORE_MATRIX_DENSE_SERIAL_STDLIB_HPP_
-#define CORE_MATRIX_DENSE_SERIAL_STDLIB_HPP_
+#ifndef CORE_MATRIX_CONCRETE_MATRIX_DENSE_SERIAL_STDLIB_HPP_
+#define CORE_MATRIX_CONCRETE_MATRIX_DENSE_SERIAL_STDLIB_HPP_
 
-#include <vector>
-#include "../base/core_matrix_generic_base.hpp"
+#include "../../shared_base/core_container_base.hpp"
+#include "../base/core_matrix_serial_base.hpp"
 #include "../base/core_matrix_dense_serial_base.hpp"
+// #include "../base/core_matrix_math_base.hpp"
+// #include "../../shared_base/core_operators_base.hpp"
+
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -14,29 +17,29 @@
 namespace core{
 
 template <typename wrapped_type>
-class matrix<wrapped_type,
+class Matrix<wrapped_type,
 	     typename
 	     std::enable_if<
-	       core::meta::is_matrixDenseSerialStdlib<wrapped_type
+	       core::meta::is_matrix_dense_serial_stdlib<wrapped_type
 					   >::value
 	       >::type
 	     >
-  : public matrixGenericBase< matrix<wrapped_type> >,
-    public matrixDenseSerialBase< matrix<wrapped_type> >  
+  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
+    public MatrixDenseSerialBase< Matrix<wrapped_type> >  
 {
 private:
-  using derived_t = matrix<wrapped_type>;
+  using derived_t = Matrix<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using ord_t = typename details::traits<derived_t>::ordinal_t;
   using wrap_t = typename details::traits<derived_t>::wrapped_t;
   using der_t = typename details::traits<derived_t>::derived_t;
 
 public:
-  matrix() = delete;
-  matrix(ord_t rows, ord_t cols){
+  Matrix() = delete;
+  Matrix(ord_t rows, ord_t cols){
     this->resize(rows,cols);
   }
-  ~matrix() = default;
+  ~Matrix() = default;
 
 public:
   sc_t & operator() (ord_t row, ord_t col){
@@ -74,8 +77,8 @@ private:
 
   
 private:
-  friend matrixGenericBase< matrix<wrapped_type> >;
-  friend matrixDenseSerialBase< matrix<wrapped_type> >;
+  friend ContainerBase< Matrix<wrapped_type>, wrapped_type >;
+  friend MatrixDenseSerialBase< Matrix<wrapped_type> >;
   
 private:
   std::vector<std::vector<sc_t>> data_;

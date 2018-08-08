@@ -1,46 +1,51 @@
 
-#ifndef CORE_VECTOR_SERIAL_EIGEN_HPP_
-#define CORE_VECTOR_SERIAL_EIGEN_HPP_
+#ifndef CORE_VECTOR_CONCRETE_VECTOR_SERIAL_EIGEN_HPP_
+#define CORE_VECTOR_CONCRETE_VECTOR_SERIAL_EIGEN_HPP_
 
-#include "../../meta/core_meta_basic.hpp"
-#include "../../meta/core_meta_detect_operators.hpp"
-#include "../../meta/core_meta_detect_typedefs.hpp"
-#include "../base/core_vector_generic_base.hpp"
+#include "../../shared_base/core_container_base.hpp"
+#include "../../shared_base/core_operators_base.hpp"
 #include "../base/core_vector_serial_base.hpp"
 #include "../base/core_vector_math_base.hpp"
+
 
 namespace core{
   
 template <typename wrapped_type>
-class vector<wrapped_type,
+class Vector<wrapped_type,
 	     typename std::enable_if<
-	       core::meta::is_vectorEigen<wrapped_type>::value
+	       core::meta::is_vector_eigen<wrapped_type>::value
 	       >::type
 	     >
-  : public vectorGenericBase< vector<wrapped_type> >,
-    public vectorSerialBase< vector<wrapped_type> >,
-    public vectorMathBase< vector<wrapped_type> >,
-    public arithmeticOperatorsBase<vector<wrapped_type>>,
-    public compoundAssignmentOperatorsBase<vector<wrapped_type>>
+  : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
+    public VectorSerialBase< Vector<wrapped_type> >,
+    public VectorMathBase< Vector<wrapped_type> >,
+    public ArithmeticOperatorsBase<Vector<wrapped_type>>,
+    public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>,
+    public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
+              typename details::traits<Vector<wrapped_type>>::scalar_t,
+              typename details::traits<Vector<wrapped_type>>::ordinal_t>
 {
+
 private:
-  using derived_t = vector<wrapped_type>;
-  using mytraits = typename details::traits<derived_t>;  
+  using this_t = Vector<wrapped_type>;
+  using mytraits = typename details::traits<this_t>;  
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename  mytraits::ordinal_t;
-  using der_t = typename mytraits::derived_t;
   using wrap_t = typename mytraits::wrapped_t;
 
 public:
-  vector() = default;
+  Vector() = default;
 
-  explicit vector(ord_t insize){
+  explicit Vector(ord_t insize){
     this->resize(insize);
   }
 
-  explicit vector(const wrap_t & src) : data_(src){}
+  explicit Vector(const wrap_t & src) : data_(src){}
 
-  ~vector(){}
+  Vector(this_t const & other)
+    : data_(*other.data()){}
+  
+  ~Vector(){}
   
 public:
   sc_t & operator [] (ord_t i){
@@ -53,56 +58,62 @@ public:
     return data_(i);
   };  
 
-  derived_t operator+(const derived_t & other) const{
+  this_t operator+(const this_t & other) const{
     assert( other.size() == this->size() );
-    derived_t res(other.size());
+    this_t res(other.size());
     *res.data() = this->data_ + *other.data();
     return res;
   }
 
-  derived_t operator-(const derived_t & other) const{
+  this_t operator-(const this_t & other) const{
     assert( other.size() == this->size() );
-    derived_t res(other.size());
+    this_t res(other.size());
     *res.data() = this->data_ - *other.data();
     return res;
   }
   
-  derived_t operator*(const derived_t & other) const{
+  this_t operator*(const this_t & other) const{
     assert( other.size() == this->size() );
-    derived_t res(other.size());
-    for (size_t i=0; i<this->size(); i++)
+    this_t res(other.size());
+    for (decltype(this->size()) i=0; i<this->size(); i++)
       res[i] = this->data_(i) * other[i];
     return res;
   }
   
-  derived_t & operator+=(const derived_t & other) {
+  this_t & operator+=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ += *other.data();
     return *this;
   }
   
-  derived_t & operator-=(const derived_t & other) {
+  this_t & operator-=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ -= *other.data();
     return *this;
   }
 
 private:
-  //-----------------
-  //from generic base
-  //-----------------
+
+  void matchLayoutWithImpl(const this_t & other){
+    this.resize( other.size() );
+  }
+  
   wrap_t const * dataImpl() const{
     return &data_;
   }
+
   wrap_t * dataImpl(){
     return &data_;
   }
+
   void putScalarImpl(sc_t value) {
     data_.setConstant(value);
   }
+
   void setZeroImpl() {
     this->putScalarImpl( static_cast<sc_t>(0) );
   }
+
   bool emptyImpl() const{
     return this->size()==0 ? true : false;
   }
@@ -125,10 +136,10 @@ private:
   //from math base
   //----------------
   template<typename op_t>
-  void inPlaceOpImpl(op_t op, sc_t a1, sc_t a2, const der_t & other){
+  void inPlaceOpImpl(sc_t a1, sc_t a2, const this_t & other){
     // this = a1*this op a2*other;
     for (decltype(this->size()) i=0; i<this->size(); i++)
-      data_(i) = op()( a1*data_(i), a2*other[i] );
+      data_(i) = op_t()( a1*data_(i), a2*other[i] );
   }
   void scaleImpl(sc_t & factor){
     // this = factor * this;
@@ -162,9 +173,12 @@ private:
   }
   
 private:
-  friend vectorGenericBase< derived_t >;
-  friend vectorSerialBase< derived_t >;
-  friend vectorMathBase< derived_t >;
+  friend ContainerBase< this_t, wrapped_type >;
+  friend VectorSerialBase< this_t >;
+  friend VectorMathBase< this_t >;
+  friend ArithmeticOperatorsBase< this_t >;
+  friend CompoundAssignmentOperatorsBase< this_t >;  
+  friend Subscripting1DOperatorsBase< this_t, sc_t, ord_t>;
 
 private:
   wrap_t data_;

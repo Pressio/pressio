@@ -22,9 +22,9 @@ struct mysizer{
 
 int main(int argc, char *argv[])
 {
-  using state_t = apps::burgers1dEigen::state_type;
-  using scalar_t = apps::burgers1dEigen::scalar_type;
-  using model_eval_t = apps::burgers1dEigen;
+  using state_t = apps::Burgers1dEigen::state_type;
+  using scalar_t = apps::Burgers1dEigen::scalar_type;
+  using model_eval_t = apps::Burgers1dEigen;
 
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   model_eval_t appObj(mu, 20);
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     state_t y0 = appObj.getInitialState();
     //    snapshot_collector collectorObj;
 
-    using stepper_t = ode::explicitEulerStepper<
+    using stepper_t = ode::ExplicitEulerStepper<
       state_t, state_t, scalar_t, 
       model_eval_t, scalar_t, mysizer
       /*default = standard policy */>;
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
   //   state_t y0 = appObj.getInitialState();
   //   snapshot_collector collectorObj;
 
-  //   using stepper_t = ode::explicitRungeKutta4Stepper<
+  //   using stepper_t = ode::ExplicitRungeKutta4Stepper<
   //     state_t, state_t, scalar_t, eigenStateResizer,
   //     model_eval_t, scalar_t /*default = standard policy */>;
   //   stepper_t stepperObj(appObj);
