@@ -53,11 +53,11 @@ protected:
   using auxdata_base_t::residual_obj_;
   
 protected:
-  template < typename T1 = model_type,
-  	     typename T2 = residual_policy_type,
-	     typename T3 = state_type,
-	     typename T4 = space_residual_type,
-	     typename... Args>
+  template <typename T1 = model_type,
+  	    typename T2 = residual_policy_type,
+	    typename T3 = state_type,
+	    typename T4 = space_residual_type,
+	    typename... Args>
   ExplicitEulerStepperImpl(T1 & model, T2 & res_policy_obj,
 			   T3 const & y0, T4 const & r0,
 			   Args&&... rest)

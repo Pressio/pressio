@@ -75,21 +75,25 @@ protected:
   template < typename M = model_type,
 	     typename U = residual_policy_type,
 	     typename T = jacobian_policy_type,
+	     typename T3 = state_type,
 	     typename... Args>
   ImplicitEulerStepperImpl(M & model,
 			   U & res_policy_obj,
 			   T & jac_policy_obj,
+			   T3 const & y0, 
 			   Args&& ... rest)
-    : storage_base_t(std::forward<Args>(rest)...),
-      auxdata_base_t(model, res_policy_obj, jac_policy_obj){}
-
+    : storage_base_t(y0 /*,std::forward<Args>(rest)...*/),
+      auxdata_base_t(model, res_policy_obj, jac_policy_obj){} 
+  
   ImplicitEulerStepperImpl() = delete;
   ~ImplicitEulerStepperImpl() = default;
   
 protected:
-  template<typename solver_type, typename step_t>
+  template<typename solver_type,
+	   typename step_t>
   void doStepImpl(state_type & y, scalar_type t,
-		  scalar_type dt, step_t step, solver_type & solver)
+		  scalar_type dt, step_t step,
+		  solver_type & solver)
   {
     dt_ = dt;
     t_ = t;

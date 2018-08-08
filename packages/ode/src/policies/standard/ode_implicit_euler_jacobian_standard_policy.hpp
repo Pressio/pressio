@@ -6,7 +6,6 @@
 #include "../base/ode_jacobian_policy_base.hpp"
 #include "../../ode_jacobian_impl.hpp"
 
-
 namespace ode{
 namespace policy{
 
@@ -25,7 +24,6 @@ public:
 
 private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
-//   jacobian_type II_;
   
 private:
   template <typename U = state_type,
@@ -41,16 +39,12 @@ private:
 		   scalar_type t,
 		   scalar_type dt)
   {
-    // if (II_.rows()==0){
-    //   II_.resize(J.rows(), J.cols());
-    //   II_.setIdentity();
-    // }
+
     // first eval space jac
     model.jacobian( *y.data(), *J.data(), t);
     // update from time discrete residual
     ode::impl::implicit_euler_time_discrete_jacobian(J, dt);
   }
-  //----------------------------------------------------------------
   
 private:
   friend JacobianPolicyBase<

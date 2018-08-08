@@ -54,8 +54,10 @@ public:
 	     typename T2 = state_type,
 	     typename T3 = space_residual_type,
 	     typename... Args>
-  ExplicitEulerStepper(T1 & model, T2 const & y0,
-		       T3 const & r0, Args&&... rest)
+  ExplicitEulerStepper(T1 & model,
+		       T2 const & y0,
+		       T3 const & r0,
+		       Args&&... rest)
     : base_t(model, policy_, y0, r0, std::forward<Args>(rest)...)
   {}
 

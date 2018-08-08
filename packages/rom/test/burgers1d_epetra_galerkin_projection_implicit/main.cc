@@ -3,8 +3,8 @@
 #include "ODE_ALL"
 #include "SOLVERS_EXP"
 #include "apps_burgers1d_epetra.hpp"
-//#include "observer.hpp"
-#include "experimental/rom_galerkin_explicit_residual_policy.hpp"
+#include "experimental/rom_galerkin_implicit_residual_policy.hpp"
+#include "experimental/rom_galerkin_implicit_jacobian_policy.hpp"
 #include "experimental/rom_matrix_pseudo_inverse.hpp"
 #include "experimental/rom_operators.hpp"
 
@@ -17,14 +17,6 @@ struct mysizer{
     //obj.resize(src.size());
  };
 };
-
-// template<typename T>
-// void printSol(std::string mess, const T & y){
-//   std::cout << mess << std::endl;
-//   for (int i=0; i<y.size(); ++i)
-//     std::cout << std::setprecision(14) << y[i]  << " ";
-//   std::cout << std::endl;
-// }
 
 
 template <typename T>
@@ -44,7 +36,17 @@ void fillColloc(T & A, Epetra_Map map){
       A.insertGlobalValues(it, 1, vals.data(), colind.data());
     }
   }
-}
+};
+
+
+struct solverFake
+{  
+  template <typename T, typename T2>
+  void solve(T & y, T2 & b){
+    
+  }
+};
+
 
 
 //////////////////////////////////////////////////////////
@@ -56,14 +58,14 @@ int main(int argc, char *argv[])
   using model_eval_t = apps::Burgers1dEpetra;
   using native_state_t = model_eval_t::state_type;
   using native_space_residual_type = model_eval_t::space_residual_type;
-  // using native_jac_t = model_eval_t::jacobian_type;
+  using native_jac_t = model_eval_t::jacobian_type;
   using scalar_t = model_eval_t::scalar_type;
 
   //-------------------------------
   // define wrapper types
   using state_t = core::Vector<native_state_t>;
-  using space_res_t = core::Vector<native_space_residual_type>;
-  //  using jac_t = core::Matrix<native_jac_t>;
+  using res_t = core::Vector<native_space_residual_type>;
+  using jac_t = core::Matrix<native_jac_t>;
 
   //-------------------------------
   // MPI init
@@ -79,13 +81,15 @@ int main(int argc, char *argv[])
   model_eval_t appObj(mu, numCell, &Comm);
   appObj.setup();
   auto & y0n = appObj.getInitialState();
-  auto & r0n = appObj.getInitialResidual();
   auto & yFOMMap = appObj.getDataMap();
+  auto & r0n = appObj.getInitialResidual();
+  auto & j0n = appObj.getInitialJacobian();
     
   //-------------------------------
   // wrap with core structures
-  state_t y0FOM(y0n);
-  space_res_t r0FOM(r0n);
+   state_t y0FOM(y0n);
+   res_t r0FOM(r0n);
+   jac_t j0FOM(j0n);
     
   //---------------------------------
   // for anasazi, the eigenvectors are stored in a Multivector
@@ -128,24 +132,40 @@ int main(int argc, char *argv[])
   // project initial condition phi^T * y0
   auto yROM = core::matrixVectorProduct(phiT, y0FOM);
   std::cout << "yromSz = " << yROM.globalSize() << std::endl;
-  auto rROM = A.apply(r0FOM);
-  std::cout << "rromSz = " << rROM.globalSize() << std::endl;
  
-  // residual policy
-  using res_pol_t = rom::exp::RomGalerkinExplicitResidualPolicy<
-    state_t, space_res_t, model_eval_t, mysizer, phi_type, A_type>;
+  // residual and jacob policies
+  using res_pol_t = rom::exp::RomGalerkinImplicitResidualPolicy<
+    state_t, res_t, model_eval_t, mysizer, phi_type, A_type>;
   res_pol_t resObj(y0FOM, r0FOM, phi, A);
 
+  using jac_pol_t = rom::exp::RomGalerkinImplicitJacobianPolicy<
+    state_t, jac_t, model_eval_t, mysizer, phi_type, A_type>;
+  jac_pol_t jaObj(y0FOM, j0FOM, phi, A);
+  
   // stepper
-  using stepper_t = ode::ExplicitEulerStepper<
-    state_t, space_res_t, scalar_t, model_eval_t, mysizer, res_pol_t>;
-  stepper_t stepperObj(appObj, resObj, yROM, rROM);
+  using stepper_t = ode::ImplicitEulerStepper<
+    state_t, res_t, jac_t, model_eval_t, mysizer,
+    res_pol_t, jac_pol_t>;
+  stepper_t stepperObj(appObj, resObj, jaObj, yROM);
 
-  // integrate in time 
-  //snapshot_collector collObj;
-  //  scalar_t final_t = 35;
-  scalar_t dt = 0.01;
-  ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);//, collObj);
+
+  // define solver
+  /* solver needs to know how to construct residual and jacobian objects
+     so we need to pass them to the solver because solver is the one
+     holding the residual and jacobian objects.
+     Need to be careful because solver needs to have the size of the 
+     REDUCED system, so taking into account the weighting operator.
+     Also, the type of the residual and jacobain need to be carefully set. 
+     FOr instance, the type of the jacobian should be inferred from 
+     the return type of the Apply method of the weighting operator. 
+  */
+  solverFake sobj;
+  // setup
+
+  //   // integrate in time 
+  // //  scalar_t final_t = 35;
+  // scalar_t dt = 0.01;
+  // ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1, sobj);
     
   MPI_Finalize();
   return 0;

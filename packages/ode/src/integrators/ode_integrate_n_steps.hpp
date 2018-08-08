@@ -4,18 +4,26 @@
 
 #include "ode_ConfigDefs.hpp"
 #include "../meta/ode_meta.hpp"
-#include "./impl/ode_integrate_n_steps_impl.hpp"
 
 namespace ode{
   
-template<typename stepper_type, typename state_type,
-	 typename time_type, typename integral_type,
+
+//----------------------------------------------------------------
+//----------------------------------------------------------------
+//----------------------------------------------------------------
+//                 FOR EXPLICIT METHODS
+//----------------------------------------------------------------
+//----------------------------------------------------------------
+//----------------------------------------------------------------
+
+ template<typename stepper_type,
+	 typename state_type,
+	 typename time_type,
+	 typename integral_type,
 	 typename collector_type,
 	 typename std::enable_if<
-	   ode::meta::isLegitimateCollector<collector_type,
-					    integral_type,
-					    time_type,
-					    state_type>::value &&
+	   ode::meta::isLegitimateCollector<collector_type, integral_type,
+					    time_type, state_type>::value &&
 	   std::is_integral<integral_type>::value &&
 	   details::traits<typename stepper_type::base_t>::is_explicit
 	   >::type * = nullptr>
@@ -44,8 +52,10 @@ void integrateNSteps(stepper_type & stepper,
 
 //----------------------------------------------------------------
 
-template<typename stepper_type, typename state_type,
-	 typename time_type, typename integral_type,
+template<typename stepper_type,
+	 typename state_type,
+	 typename time_type,
+	 typename integral_type,
 	 typename std::enable_if<
 	   details::traits<typename stepper_type::base_t>::is_explicit
 	   >::type * = nullptr>
@@ -68,10 +78,20 @@ void integrateNSteps(stepper_type & stepper,
   }
 }  
 
+
+  
+//----------------------------------------------------------------
+//----------------------------------------------------------------
+//----------------------------------------------------------------
+//                 FOR IMPLICIT METHODS
+//----------------------------------------------------------------
+//----------------------------------------------------------------
 //----------------------------------------------------------------
 
-template<typename stepper_type, typename state_type,
-	 typename time_type, typename integral_type,
+template<typename stepper_type,
+	 typename state_type,
+	 typename time_type,
+	 typename integral_type,
 	 typename collector_type,
 	 typename solver_type,
 	 typename std::enable_if<
@@ -106,8 +126,10 @@ void integrateNSteps(stepper_type & stepper,
 
 //----------------------------------------------------------------
 
-template<typename stepper_type, typename state_type,
-	 typename time_type, typename integral_type,
+template<typename stepper_type,
+	 typename state_type,
+	 typename time_type,
+	 typename integral_type,
 	 typename solver_type,
 	 typename std::enable_if<
 	   details::traits<typename stepper_type::base_t>::is_implicit

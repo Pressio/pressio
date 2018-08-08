@@ -54,13 +54,17 @@ public:
   						res_pol_t,
 						jac_pol_t>;
 public:
-  template < typename M = model_type,
-	     typename ... Args>
-  ImplicitEulerStepper(M & model,
+  template < typename T1 = model_type,
+	     typename T4 = state_type,
+	     typename... Args>
+  ImplicitEulerStepper(T1 & model,
+		       T4 const & y0,
 		       Args&&... rest)
     : base_t(model, res_policy_obj_, jac_policy_obj_,
-	     std::forward<Args>(rest)...){}
+	     y0, std::forward<Args>(rest)...)
+  {}
 
+  
   ImplicitEulerStepper() = delete;
   ~ImplicitEulerStepper() = default;
 
@@ -124,17 +128,20 @@ public:
 						residual_policy_type,
 						jacobian_policy_type>;
 public:
-  template < typename M = model_type,
-	     typename U = residual_policy_type,
-	     typename T = jacobian_policy_type,
-	     typename ... Args>
-  ImplicitEulerStepper(M & model,
-		       U & res_policy_obj,
-		       T & jac_policy_obj,
+  template < typename T1 = model_type,
+	     typename T2 = residual_policy_type,
+	     typename T3 = jacobian_policy_type,
+	     typename T4 = state_type,
+	     typename... Args>
+  ImplicitEulerStepper(T1 & model,
+		       T2 & res_policy_obj,
+		       T3 & jac_policy_obj,
+		       T4 const & y0,
 		       Args&&... rest)
     : base_t(model, res_policy_obj, jac_policy_obj,
-	     std::forward<Args>(rest)...)
+	     y0, std::forward<Args>(rest)...)
   {}
+  
   ImplicitEulerStepper() = delete;
   ~ImplicitEulerStepper() = default;
 

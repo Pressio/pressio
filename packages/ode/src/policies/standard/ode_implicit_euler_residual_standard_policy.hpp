@@ -26,7 +26,7 @@ private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
   
 private:
-  // enable when using types from core package
+
   template <typename U = state_type,
 	    typename T = residual_type,
 	    typename
@@ -56,8 +56,7 @@ private:
   friend ImplicitResidualPolicyBase<
 				    implicit_euler_residual_standard_policy<
 				      state_type, residual_type,
-				      model_type, sizer_type>, 1,0>;
-  
+				      model_type, sizer_type>, 1,0>;  
 };//end class
 
 }//end namespace polices
