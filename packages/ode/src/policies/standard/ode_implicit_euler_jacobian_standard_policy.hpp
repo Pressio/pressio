@@ -11,12 +11,11 @@ namespace policy{
 
 template<typename state_type,
 	 typename jacobian_type,
-	 typename model_type, 
-	 typename sizer_type>
+	 typename model_type>
 class implicit_euler_jacobian_standard_policy
   : public JacobianPolicyBase<implicit_euler_jacobian_standard_policy<
 				state_type, jacobian_type,
-				model_type, sizer_type> >
+				model_type> >
 {
 public:
   implicit_euler_jacobian_standard_policy() = default;
@@ -50,8 +49,7 @@ private:
   friend JacobianPolicyBase<
   implicit_euler_jacobian_standard_policy< state_type,
 					   jacobian_type,
-					   model_type,
-					   sizer_type> >;
+					   model_type> >;
 
 };//end class
   

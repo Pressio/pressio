@@ -10,7 +10,6 @@ template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
 	 typename model_type,
-	 typename sizer_type,
 	 typename residual_policy_type = void,
 	 typename enable = void
 	 >
@@ -20,24 +19,20 @@ template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
 	 typename model_type,
-	 typename sizer_type,
 	 typename residual_policy_type = void,
 	 typename enable = void
 	 >
 class ExplicitRungeKutta4Stepper;
   
-
 template<typename state_type,
          typename residual_type,
          typename jacobian_type,
          typename model_type,
-	 typename sizer_type,
          typename residual_policy_type=void,
          typename jacobian_policy_type=void,
 	 typename enable = void
          >
 class ImplicitEulerStepper;
-
 
 // template<typename state_type,
 //          typename residual_type,
@@ -45,7 +40,6 @@ class ImplicitEulerStepper;
 //          typename scalar_type,
 //          typename model_type,
 // 	 typename time_type,
-// 	 typename sizer_type,
 // 	 typename solver_policy_type,
 // 	 typename aux_start_stepper_type,
 //          typename residual_policy_type=void,
@@ -60,7 +54,6 @@ class ImplicitEulerStepper;
 //          typename scalar_type,
 //          typename model_type,
 // 	 typename time_type,
-// 	 typename sizer_type,
 // 	 typename solver_policy_type,
 // 	 typename aux_start_stepper_type,
 //          typename residual_policy_type=void,
@@ -75,7 +68,6 @@ class ImplicitEulerStepper;
 //          typename scalar_type,
 //          typename model_type,
 // 	 typename time_type,
-// 	 typename sizer_type,
 // 	 typename solver_policy_type,
 //          typename residual_policy_type=void,
 //          typename jacobian_policy_type=void,
@@ -98,7 +90,6 @@ template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
 	 typename model_type,	
-	 typename sizer_type,
 	 typename residual_policy_type,
 	 typename enable = void
 	 >
@@ -108,7 +99,6 @@ template<typename state_type,
 	 typename residual_type,
 	 typename scalar_type,
 	 typename model_type,	
-	 typename sizer_type,
 	 typename residual_policy_type,
 	 typename enable = void
 	 >
@@ -118,35 +108,28 @@ class ExplicitRungeKutta4StepperImpl;
 // 	 typename residual_type,
 // 	 typename scalar_type,
 // 	 typename model_type,	
-// 	 ,
-// 	 typename sizer_type,
 // 	 typename residual_policy_type,
 // 	 typename butcher_table_type,
 // 	 typename enable = void
 // 	 >
 // class explicitAnyRungeKuttaStepperImpl;
   
-
 template<typename state_type,
 	 typename residual_type,
 	 typename jacobian_type,
 	 typename scalar_type,
 	 typename model_type,
-	 typename sizer_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type,
 	 typename enable = void
 	 >
 class ImplicitEulerStepperImpl;
 
-
 // template<typename state_type,
 //          typename residual_type,
 //          typename jacobian_type,
 //          typename scalar_type,
 //          typename model_type,
-// 	 ,
-// 	 typename sizer_type,
 // 	 typename solver_policy_type,
 // 	 typename aux_start_stepper_type,
 //          typename residual_policy_type,
@@ -155,14 +138,11 @@ class ImplicitEulerStepperImpl;
 //          >
 // class implicitBDF2StepperImpl;
 
-
 // template<typename state_type,
 //          typename residual_type,
 //          typename jacobian_type,
 //          typename scalar_type,
 //          typename model_type,
-// 	 ,
-// 	 typename sizer_type,
 // 	 typename solver_policy_type,
 // 	 typename aux_start_stepper_type,
 //          typename residual_policy_type,
@@ -171,22 +151,17 @@ class ImplicitEulerStepperImpl;
 //          >
 // class implicitBDF3StepperImpl;
 
-
 // template<typename state_type,
 //          typename residual_type,
 //          typename jacobian_type,
 //          typename scalar_type,
 //          typename model_type,
-// 	 ,
-// 	 typename sizer_type,
 // 	 typename solver_policy_type,
 //          typename residual_policy_type,
 //          typename jacobian_policy_type,
 // 	 typename enable = void
 //          >
 // class implicitAdamsMoulton1StepperImpl;
-  
-
   
 }//end namespace impl  
 

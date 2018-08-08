@@ -12,21 +12,18 @@ template<typename state_type,
 	 typename space_residual_type,
 	 typename scalar_type,
 	 typename model_type,	
-	 typename sizer_type,
 	 typename residual_policy_type
 	 >
 class ExplicitEulerStepperImpl<state_type,
 			       space_residual_type,
 			       scalar_type,
 			       model_type,
-			       sizer_type,
 			       residual_policy_type>
   : public ExplicitStepperBase<
   ExplicitEulerStepperImpl<state_type,
 			   space_residual_type,
 			   scalar_type,
 			   model_type,
-			   sizer_type,
 			   residual_policy_type> >,
     private OdeStorage<state_type, space_residual_type, 0, 1>,
     private ExpOdeAuxData<model_type, residual_policy_type>
@@ -41,7 +38,7 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using stepper_t = ExplicitEulerStepperImpl<
     state_type, space_residual_type, scalar_type,
-    model_type, sizer_type, residual_policy_type>;
+    model_type, residual_policy_type>;
 
   using stepper_base_t = ExplicitStepperBase<stepper_t>;
   using storage_base_t = OdeStorage<state_type, space_residual_type, 0, 1>;
@@ -72,8 +69,8 @@ protected:
   void doStepImpl(state_type & y, scalar_type t,
 		  scalar_type dt, step_t step)
   {
-    if (sizer_type::getSize(auxRHS_[0]) == 0)
-      sizer_type::matchSize(y, auxRHS_[0]);
+    if ( auxRHS_[0].empty() )
+      auxRHS_[0].matchLayoutWith(y);
 
     //eval RHS
     residual_obj_->compute(y, auxRHS_[0], *model_, t);

@@ -8,16 +8,6 @@
 #include "experimental/rom_matrix_pseudo_inverse.hpp"
 #include "experimental/rom_operators.hpp"
 
-struct mysizer{
- using state_t = core::Vector<apps::Burgers1dEpetra::state_type>;
- static size_t getSize(state_t & obj){
-   return obj.globalSize();
- };
-  static void matchSize(const state_t & src, state_t & obj){
-    //obj.resize(src.size());
- };
-};
-
 // template<typename T>
 // void printSol(std::string mess, const T & y){
 //   std::cout << mess << std::endl;
@@ -133,12 +123,12 @@ int main(int argc, char *argv[])
  
   // residual policy
   using res_pol_t = rom::exp::RomGalerkinExplicitResidualPolicy<
-    state_t, space_res_t, model_eval_t, mysizer, phi_type, A_type>;
+    state_t, space_res_t, model_eval_t, phi_type, A_type>;
   res_pol_t resObj(y0FOM, r0FOM, phi, A);
 
   // stepper
   using stepper_t = ode::ExplicitEulerStepper<
-    state_t, space_res_t, scalar_t, model_eval_t, mysizer, res_pol_t>;
+    state_t, space_res_t, scalar_t, model_eval_t, res_pol_t>;
   stepper_t stepperObj(appObj, resObj, yROM, rROM);
 
   // integrate in time 

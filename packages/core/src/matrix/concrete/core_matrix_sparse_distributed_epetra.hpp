@@ -63,6 +63,12 @@ private:
     return &data_;
   }
   
+  void matchLayoutWithImpl(const derived_t & other){
+    data_.ReplaceRowMap( other.getRowDataMap() );
+    if ( other.data()->HaveColMap() )
+      data_.ReplaceColMap( other.getColDataMap() );
+  }
+
   LO_t localRowsImpl() const{
     return data_.NunMyRows();
   }

@@ -11,12 +11,11 @@ namespace policy{
 
 template<typename state_type,
 	 typename residual_type,
-	 typename model_type,
-	 typename sizer_type>
+	 typename model_type>
 class implicit_euler_residual_standard_policy
   : public ImplicitResidualPolicyBase<
   implicit_euler_residual_standard_policy<state_type, residual_type,
-					  model_type, sizer_type>, 1, 0 >
+					  model_type>, 1, 0 >
 {
 public:
   implicit_euler_residual_standard_policy() = default;
@@ -42,7 +41,7 @@ private:
 		   scalar_type t,
 		   scalar_type dt){
     if (R.empty())
-      sizer_type::matchSize(y, R);
+      R.matchLayoutWith(y);
 
     R.setZero();
     model.residual(*y.data(), *R.data(), t);
@@ -56,7 +55,7 @@ private:
   friend ImplicitResidualPolicyBase<
 				    implicit_euler_residual_standard_policy<
 				      state_type, residual_type,
-				      model_type, sizer_type>, 1,0>;  
+				      model_type>, 1,0>;
 };//end class
 
 }//end namespace polices

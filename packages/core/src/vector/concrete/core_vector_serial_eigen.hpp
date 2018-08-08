@@ -93,6 +93,11 @@ public:
   }
 
 private:
+
+  void matchLayoutWithImpl(const this_t & other){
+    this.resize( other.size() );
+  }
+  
   wrap_t const * dataImpl() const{
     return &data_;
   }

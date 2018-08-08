@@ -87,6 +87,10 @@ private:
   }
   //--------------------------------
 
+  void matchLayoutWithImpl(const this_t & other){
+    data_.ReplaceMap( other.getDataMap() );
+  }
+  
   row_map_t const & getDataMapImpl() const{
     return data_.Map();
   }

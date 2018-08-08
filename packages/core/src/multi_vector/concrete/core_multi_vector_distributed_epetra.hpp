@@ -65,6 +65,11 @@ public:
   }
   
 private:
+
+  void matchLayoutWithImpl(const this_t & other){
+    data_.ReplaceMap( other.getDataMap() );
+  }
+
   wrap_t const * dataImpl() const{
     return &data_;
   }

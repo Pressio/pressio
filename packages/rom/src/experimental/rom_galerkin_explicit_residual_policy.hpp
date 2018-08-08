@@ -14,21 +14,18 @@ namespace exp{
 template<typename state_type,
 	 typename space_residual_type,
 	 typename model_type,
-	 typename sizer_type,
 	 typename phi_type,
 	 typename A_type>
 class RomGalerkinExplicitResidualPolicy
   : public ode::policy::ExplicitResidualPolicyBase<
   RomGalerkinExplicitResidualPolicy<state_type, space_residual_type,
-				    model_type, sizer_type,
-				    phi_type, A_type>>
+				    model_type, phi_type, A_type>>
 {
 
 private:
   using this_t = RomGalerkinExplicitResidualPolicy<state_type,
 						   space_residual_type,
 						   model_type,
-						   sizer_type,
 						   phi_type, A_type>;
   using base_t = ode::policy::ExplicitResidualPolicyBase<this_t>;
   

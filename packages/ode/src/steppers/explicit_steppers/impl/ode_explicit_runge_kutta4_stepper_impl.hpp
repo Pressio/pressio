@@ -12,21 +12,18 @@ template<typename state_type,
 	 typename space_residual_type,
 	 typename scalar_type,
 	 typename model_type,	
-	 typename sizer_type,
 	 typename residual_policy_type
 	 >
 class ExplicitRungeKutta4StepperImpl<state_type,
 				     space_residual_type,
 				     scalar_type,
 				     model_type,
-				     sizer_type,
 				     residual_policy_type>
   : public ExplicitStepperBase<
   ExplicitRungeKutta4StepperImpl<state_type,
 				 space_residual_type,
 				 scalar_type,
 				 model_type,
-				 sizer_type,
 				 residual_policy_type> >,
     private OdeStorage<state_type, space_residual_type, 1, 4>,
     private ExpOdeAuxData<model_type, residual_policy_type>
@@ -42,7 +39,7 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 private:
   using stepper_t = ExplicitRungeKutta4StepperImpl<
   state_type, space_residual_type, scalar_type,
-  model_type, sizer_type, residual_policy_type>;
+  model_type, residual_policy_type>;
   
   using stepper_base_t = ExplicitStepperBase<stepper_t>;
   using storage_base_t = OdeStorage<state_type, space_residual_type, 1, 4>;
@@ -70,73 +67,81 @@ protected:
   ~ExplicitRungeKutta4StepperImpl() = default;
 
 protected:
+
   template<typename step_t>
-  void doStepImpl(state_type & y, scalar_type t,
-		  scalar_type dt, step_t step)
+  void doStepImpl(state_type & y,
+		  scalar_type t,
+		  scalar_type dt,
+		  step_t step)
   {
-    auto ySz = sizer_type::getSize(y);
-    // if(sizer_type::getSize(auxStates_[0]) == 0)
-    //   sizer_type::matchSize(y, auxStates_[0]);
-
-    const scalar_type dt_half = dt / static_cast< scalar_type >(2);
-    const scalar_type t_phalf = t + dt_half;
-    const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
-    const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-
-    auto & ytmp = auxStates_[0];
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // below needs to be fixed using algebra of core vector
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
-    if(sizer_type::getSize(ytmp) == 0)
-      sizer_type::matchSize(y, ytmp);
-    if(sizer_type::getSize(auxRHS_[0]) == 0)
-      sizer_type::matchSize(y, auxRHS_[0]);
-    if(sizer_type::getSize(auxRHS_[1]) == 0)
-      sizer_type::matchSize(y, auxRHS_[1]);
-    if(sizer_type::getSize(auxRHS_[2]) == 0)
-      sizer_type::matchSize(y, auxRHS_[2]);
-    if(sizer_type::getSize(auxRHS_[3]) == 0)
-      sizer_type::matchSize(y, auxRHS_[3]);
+    // auto ySz = sizer_type::getSize(y);
+    // // if(sizer_type::getSize(auxStates_[0]) == 0)
+    // //   sizer_type::matchSize(y, auxStates_[0]);
+
+    // const scalar_type dt_half = dt / static_cast< scalar_type >(2);
+    // const scalar_type t_phalf = t + dt_half;
+    // const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
+    // const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
+
+    // auto & ytmp = auxStates_[0];
     
-    // ----------
-    // stage 1: 
-    // ----------
-    // rhs_[0](y_n,t)
-    residual_obj_->compute(y, auxRHS_[0], *model_, t);
-    // ytmp = y_n + auxRHS_[0]*dt/2
-    for (decltype(ySz) i=0; i<ySz; i++){
-      ytmp[i] = y[i] + dt_half*auxRHS_[0][i];
-    }
+    // if(sizer_type::getSize(ytmp) == 0)
+    //   sizer_type::matchSize(y, ytmp);
+    // if(sizer_type::getSize(auxRHS_[0]) == 0)
+    //   sizer_type::matchSize(y, auxRHS_[0]);
+    // if(sizer_type::getSize(auxRHS_[1]) == 0)
+    //   sizer_type::matchSize(y, auxRHS_[1]);
+    // if(sizer_type::getSize(auxRHS_[2]) == 0)
+    //   sizer_type::matchSize(y, auxRHS_[2]);
+    // if(sizer_type::getSize(auxRHS_[3]) == 0)
+    //   sizer_type::matchSize(y, auxRHS_[3]);
+    
+    // // ----------
+    // // stage 1: 
+    // // ----------
+    // // rhs_[0](y_n,t)
+    // residual_obj_->compute(y, auxRHS_[0], *model_, t);
+    // // ytmp = y_n + auxRHS_[0]*dt/2
+    // for (decltype(ySz) i=0; i<ySz; i++){
+    //   ytmp[i] = y[i] + dt_half*auxRHS_[0][i];
+    // }
 
-    // ----------
-    // stage 2: 
-    // ----------
-    // rhs_[1]
-    residual_obj_->compute(ytmp, auxRHS_[1], *model_, t_phalf);
-    // ytmp = y_n + auxRHS_[1]*dt/2
-    for (decltype(ySz) i=0; i<ySz; i++){
-      ytmp[i] = y[i] + dt_half*auxRHS_[1][i];
-    }
+    // // ----------
+    // // stage 2: 
+    // // ----------
+    // // rhs_[1]
+    // residual_obj_->compute(ytmp, auxRHS_[1], *model_, t_phalf);
+    // // ytmp = y_n + auxRHS_[1]*dt/2
+    // for (decltype(ySz) i=0; i<ySz; i++){
+    //   ytmp[i] = y[i] + dt_half*auxRHS_[1][i];
+    // }
 
-    // ----------
-    // stage 3: 
-    // ----------
-    // auxRHS_[2]
-    residual_obj_->compute(ytmp, auxRHS_[2], *model_, t_phalf);
-    //ytmp = y_n + auxRHS_[2]*dt/2
-    for (decltype(ySz) i=0; i<ySz; i++){
-      ytmp[i] = y[i] + dt*auxRHS_[2][i];
-    }
+    // // ----------
+    // // stage 3: 
+    // // ----------
+    // // auxRHS_[2]
+    // residual_obj_->compute(ytmp, auxRHS_[2], *model_, t_phalf);
+    // //ytmp = y_n + auxRHS_[2]*dt/2
+    // for (decltype(ySz) i=0; i<ySz; i++){
+    //   ytmp[i] = y[i] + dt*auxRHS_[2][i];
+    // }
 
-    // ----------
-    // stage 4: 
-    // ----------
-    // auxRHS_[3]
-    residual_obj_->compute(ytmp, auxRHS_[3], *model_, t + dt);
-    //x += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    for (decltype(ySz) i=0; i < ySz; i++)
-    {
-      y[i] += dt6*auxRHS_[0][i] + dt3*auxRHS_[1][i] +
-	dt3*auxRHS_[2][i] + dt6*auxRHS_[3][i];
-    }
+    // // ----------
+    // // stage 4: 
+    // // ----------
+    // // auxRHS_[3]
+    // residual_obj_->compute(ytmp, auxRHS_[3], *model_, t + dt);
+    // //x += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
+    // for (decltype(ySz) i=0; i < ySz; i++)
+    // {
+    //   y[i] += dt6*auxRHS_[0][i] + dt3*auxRHS_[1][i] +
+    // 	dt3*auxRHS_[2][i] + dt6*auxRHS_[3][i];
+    // }
+
   }//end doStep
 
 private:

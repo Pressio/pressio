@@ -7,16 +7,6 @@
 #include "ode_observer.hpp"
 //#include "../apps_helper_ode.hpp"
 
-struct mysizer{
-  using state_t = core::Vector<apps::Burgers1dEpetra::state_type>;
- static size_t getSize(const state_t & obj){
-   return obj.localSize();
- };
- static void matchSize(const state_t & src,
-		       state_t & obj){
-   obj.replaceDataMap(src.getDataMap());
- };
-};
 
 int main(int argc, char *argv[])
 {
@@ -53,9 +43,9 @@ int main(int argc, char *argv[])
 
     // stepper
     using stepper_t = ode::ExplicitEulerStepper<
-      state_t, space_res_t, scalar_t, target_app_t, mysizer>;
+      state_t, space_res_t, scalar_t, target_app_t>;
     // using stepper_t = ode::ExplicitRungeKutta4Stepper<
-    //   state_t, space_res_t, scalar_t, target_app_t, mysizer>;
+    //   state_t, space_res_t, scalar_t, target_app_t>;
     stepper_t stepperObj(appObj, y, r);
 
     // integrate in time 

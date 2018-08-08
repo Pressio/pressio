@@ -15,12 +15,10 @@ namespace ode{
 template<typename state_type,
 	 typename residual_type,
 	 typename jacobian_type, 
-	 typename model_type,
-	 typename sizer_type
-	 >
+	 typename model_type>
 class ImplicitEulerStepper<state_type, residual_type,
 			   jacobian_type, 
-			   model_type, sizer_type,
+			   model_type, 
 			   void, void,
 			   typename std::enable_if<
 			     !std::is_void<state_type>::value
@@ -28,11 +26,11 @@ class ImplicitEulerStepper<state_type, residual_type,
   : public impl::ImplicitEulerStepperImpl<
        state_type, residual_type, jacobian_type,
        typename core::details::traits<state_type>::scalar_t,
-       model_type, sizer_type, 
+       model_type, 
        ode::policy::implicit_euler_residual_standard_policy<
-	 state_type, residual_type, model_type, sizer_type>,
+	 state_type, residual_type, model_type>,
        ode::policy::implicit_euler_jacobian_standard_policy<
-	 state_type, jacobian_type, model_type, sizer_type>
+	 state_type, jacobian_type, model_type>
   >
 {
 private:
@@ -40,17 +38,16 @@ private:
 
 public:
   using res_pol_t = ode::policy::implicit_euler_residual_standard_policy<
-  state_type, residual_type, model_type, sizer_type>;
+  state_type, residual_type, model_type>;
   
   using jac_pol_t = ode::policy::implicit_euler_jacobian_standard_policy<
-    state_type, jacobian_type, model_type, sizer_type>;
+    state_type, jacobian_type, model_type>;
 
   using base_t = impl::ImplicitEulerStepperImpl<state_type,
 						residual_type,
   						jacobian_type,
 						scalar_type,
   						model_type,
-						sizer_type,
   						res_pol_t,
 						jac_pol_t>;
 public:
@@ -88,7 +85,6 @@ template<typename state_type,
 	 typename residual_type,
 	 typename jacobian_type,
 	 typename model_type,
-	 typename sizer_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type
 	 >
@@ -96,7 +92,6 @@ class ImplicitEulerStepper<state_type,
 			   residual_type,
 			   jacobian_type,
 			   model_type,
-			   sizer_type,
 			   residual_policy_type,
 			   jacobian_policy_type,
 			   typename
@@ -110,7 +105,6 @@ class ImplicitEulerStepper<state_type,
 					  jacobian_type,
     typename core::details::traits<state_type>::scalar_t,
 					  model_type,
-					  sizer_type,
 					  residual_policy_type,
 					  jacobian_policy_type>
 {
@@ -124,7 +118,6 @@ public:
 						jacobian_type,
 						scalar_type,
 						model_type,
-						sizer_type,
 						residual_policy_type,
 						jacobian_policy_type>;
 public:

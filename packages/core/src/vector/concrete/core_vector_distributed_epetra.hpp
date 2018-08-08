@@ -36,7 +36,7 @@ private:
   using sc_t = typename details::traits<this_t>::scalar_t;
   using LO_t = typename details::traits<this_t>::local_ordinal_t;
   using GO_t = typename details::traits<this_t>::global_ordinal_t;
-  using der_t = typename details::traits<this_t>::derived_t;
+  using der_t = this_t;
   using wrap_t = typename details::traits<this_t>::wrapped_t;
   using map_t = typename details::traits<this_t>::data_map_t;
   using mpicomm_t = typename details::traits<this_t>::communicator_t;
@@ -98,6 +98,10 @@ public:
     
 private:
 
+  void matchLayoutWithImpl(const der_t & other){
+    data_.ReplaceMap( other.getDataMap() );
+  }
+  
   mpicomm_t const & commCRefImpl() const{
     return data_.Comm();
   }

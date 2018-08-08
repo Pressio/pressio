@@ -23,8 +23,6 @@ private:
   using residual_t = typename traits::residual_t;
   using jacobian_t = typename traits::jacobian_t;
   using sc_t = typename traits::scalar_t;
-  using model_t = typename traits::model_t;
-  using sizer_t = typename traits::sizer_t;
   using residual_policy_t = typename traits::residual_policy_t;  
   using jacobian_policy_t = typename traits::jacobian_policy_t;  
 

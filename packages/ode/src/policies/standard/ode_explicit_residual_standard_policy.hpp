@@ -11,14 +11,12 @@ namespace policy{
 template<typename state_type,
 	 typename space_residual_type,
 	 typename model_type,
-	 typename scalar_type,
-	 typename sizer_type>
+	 typename scalar_type>
 class explicit_residual_standard_policy
   : public ExplicitResidualPolicyBase<
   explicit_residual_standard_policy<
     state_type, space_residual_type,
-    model_type, scalar_type,
-    sizer_type> >
+    model_type, scalar_type> >
 {
 
 public:
@@ -45,7 +43,7 @@ private:
 		   model_type & model, scalar_type t)
   {
     if (R.empty())
-      sizer_type::matchSize(y, R);
+      R.matchLayoutWith(y);
 
     R.setZero();
     model.residual(*y.data(), *R.data(), t);
@@ -56,8 +54,7 @@ private:
   friend ExplicitResidualPolicyBase<
   explicit_residual_standard_policy<
     state_type, space_residual_type,
-    model_type, scalar_type,
-    sizer_type> >;
+    model_type, scalar_type> >;
 
 };//end class
 

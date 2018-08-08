@@ -13,7 +13,6 @@ template<typename state_type,
 	 typename jacobian_type,
 	 typename scalar_type,
 	 typename model_type,
-	 typename sizer_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
 class ImplicitEulerStepperImpl<state_type,
@@ -21,13 +20,12 @@ class ImplicitEulerStepperImpl<state_type,
 			       jacobian_type,
 			       scalar_type,
 			       model_type,
-			       sizer_type,
 			       residual_policy_type,
 			       jacobian_policy_type>
   : public ImplicitStepperBase<
 	    ImplicitEulerStepperImpl<state_type, residual_type,
 				     jacobian_type, scalar_type,
-				     model_type, sizer_type,
+				     model_type, 
 				     residual_policy_type,
 				     jacobian_policy_type> >,
     private OdeStorage<state_type, residual_type, 1>,
@@ -53,7 +51,6 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					     jacobian_type,
 					     scalar_type,
 					     model_type,
-					     sizer_type,
 					     residual_policy_type,
 					     jacobian_policy_type>;
   using stepper_base_t = ImplicitStepperBase<stepper_t>;

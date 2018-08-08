@@ -8,16 +8,6 @@
 #include "experimental/rom_matrix_pseudo_inverse.hpp"
 #include "experimental/rom_operators.hpp"
 
-struct mysizer{
- using state_t = core::Vector<apps::Burgers1dEpetra::state_type>;
- static size_t getSize(state_t & obj){
-   return obj.globalSize();
- };
-  static void matchSize(const state_t & src, state_t & obj){
-    //obj.resize(src.size());
- };
-};
-
 
 template <typename T>
 void fillColloc(T & A, Epetra_Map map){
@@ -135,17 +125,16 @@ int main(int argc, char *argv[])
  
   // residual and jacob policies
   using res_pol_t = rom::exp::RomGalerkinImplicitResidualPolicy<
-    state_t, res_t, model_eval_t, mysizer, phi_type, A_type>;
+    state_t, res_t, model_eval_t, phi_type, A_type>;
   res_pol_t resObj(y0FOM, r0FOM, phi, A);
 
   using jac_pol_t = rom::exp::RomGalerkinImplicitJacobianPolicy<
-    state_t, jac_t, model_eval_t, mysizer, phi_type, A_type>;
+    state_t, jac_t, model_eval_t, phi_type, A_type>;
   jac_pol_t jaObj(y0FOM, j0FOM, phi, A);
   
   // stepper
   using stepper_t = ode::ImplicitEulerStepper<
-    state_t, res_t, jac_t, model_eval_t, mysizer,
-    res_pol_t, jac_pol_t>;
+    state_t, res_t, jac_t, model_eval_t, res_pol_t, jac_pol_t>;
   stepper_t stepperObj(appObj, resObj, jaObj, yROM);
 
 

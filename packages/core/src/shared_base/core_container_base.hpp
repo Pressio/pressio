@@ -30,6 +30,10 @@ public:
     this->underlying().setZeroImpl();
   }
 
+  void matchLayoutWith(const derived_type & other){
+    this->underlying().matchLayoutWithImpl(other);
+  }
+  
 private:
   friend derived_type;
   friend core::details::CrtpBase<

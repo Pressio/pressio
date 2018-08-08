@@ -13,21 +13,18 @@ namespace exp{
 template<typename state_type,
 	 typename jacobian_type,
 	 typename model_type,
-	 typename sizer_type,
 	 typename phi_type,
 	 typename A_type>
 class RomGalerkinImplicitJacobianPolicy 
   : public ode::policy::JacobianPolicyBase<
   RomGalerkinImplicitJacobianPolicy<state_type, jacobian_type,
-				    model_type, sizer_type,
-				    phi_type, A_type> >
+				    model_type, phi_type, A_type> >
 {
 
 private:
   using base_t = ode::policy::JacobianPolicyBase<
   RomGalerkinImplicitJacobianPolicy<state_type, jacobian_type,
-				    model_type, sizer_type,
-				    phi_type, A_type> >;
+				    model_type, phi_type, A_type> >;
 private:
   state_type yFOM_;
   jacobian_type JFOM_;

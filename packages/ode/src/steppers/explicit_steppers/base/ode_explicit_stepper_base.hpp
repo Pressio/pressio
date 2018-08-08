@@ -24,7 +24,6 @@ private:
   using space_residual_t = typename step_traits::space_residual_t;
   using model_t = typename step_traits::model_t;
   using residual_policy_t = typename step_traits::residual_policy_t;
-  using sizer_t = typename step_traits::sizer_t;
 
   using order_t = typename step_traits::order_t;
   static constexpr order_t order_value = step_traits::order_value;
