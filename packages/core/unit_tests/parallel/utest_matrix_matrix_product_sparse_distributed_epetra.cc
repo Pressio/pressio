@@ -96,36 +96,73 @@ TEST_F(core_matrix_sparse_distributed_epetraFix,Test1)
   }
 
   //-----------
-  // product
+  // product 1
   //-----------
-  core::Matrix<Epetra_CrsMatrix> myC_(*contigMap_, 3);
-  matrixMatrixProduct(*A_, *B_, myC_, false, false);
-  //myC_.data()->Print(std::cout);
   {
-    double o_v[2]; int o_i[2]; int n;
-    int ec = myC_.data()->ExtractGlobalRowCopy( 0, 2, n, o_v, o_i );
-    if (MyPID_ == 0){
-      EXPECT_EQ(ec, 0); EXPECT_EQ(n, 2);
-      EXPECT_DOUBLE_EQ( o_v[0], 4.0);
-      EXPECT_DOUBLE_EQ( o_v[1], 12.0);
-      EXPECT_EQ( o_i[0], 0);
-      EXPECT_EQ( o_i[1], 2);
+    core::Matrix<Epetra_CrsMatrix> myC_(*contigMap_, 3);
+    matrixMatrixProduct(*A_, *B_, myC_, false, false);
+    //myC_.data()->Print(std::cout);
+    {
+      double o_v[2]; int o_i[2]; int n;
+      int ec = myC_.data()->ExtractGlobalRowCopy( 0, 2, n, o_v, o_i );
+      if (MyPID_ == 0){
+	EXPECT_EQ(ec, 0); EXPECT_EQ(n, 2);
+	EXPECT_DOUBLE_EQ( o_v[0], 4.0);
+	EXPECT_DOUBLE_EQ( o_v[1], 12.0);
+	EXPECT_EQ( o_i[0], 0);
+	EXPECT_EQ( o_i[1], 2);
+      }
+      else
+	EXPECT_EQ(ec, -1);
     }
-    else
-      EXPECT_EQ(ec, -1);
+
+    {
+      double o_v[2]; int o_i[2]; int n;
+      int ec = myC_.data()->ExtractGlobalRowCopy( 2, 2, n, o_v, o_i );
+      if (MyPID_ == 1){
+	EXPECT_EQ(ec, 0); EXPECT_EQ(n, 2);
+	EXPECT_DOUBLE_EQ( o_v[0], 6.0);
+	EXPECT_DOUBLE_EQ( o_v[1], 1.0);
+	EXPECT_EQ( o_i[0], 2);
+	EXPECT_EQ( o_i[1], 0);
+      }
+      else
+	EXPECT_EQ(ec, -1);
+    }
   }
 
+  //-----------
+  // product 2
+  //-----------
   {
-    double o_v[2]; int o_i[2]; int n;
-    int ec = myC_.data()->ExtractGlobalRowCopy( 2, 2, n, o_v, o_i );
-    if (MyPID_ == 1){
-      EXPECT_EQ(ec, 0); EXPECT_EQ(n, 2);
-      EXPECT_DOUBLE_EQ( o_v[0], 6.0);
-      EXPECT_DOUBLE_EQ( o_v[1], 1.0);
-      EXPECT_EQ( o_i[0], 2);
-      EXPECT_EQ( o_i[1], 0);
+    auto myC_ = matrixMatrixProduct(*A_, *B_, false, false);
+    {
+      double o_v[2]; int o_i[2]; int n;
+      int ec = myC_.data()->ExtractGlobalRowCopy( 0, 2, n, o_v, o_i );
+      if (MyPID_ == 0){
+	EXPECT_EQ(ec, 0); EXPECT_EQ(n, 2);
+	EXPECT_DOUBLE_EQ( o_v[0], 4.0);
+	EXPECT_DOUBLE_EQ( o_v[1], 12.0);
+	EXPECT_EQ( o_i[0], 0);
+	EXPECT_EQ( o_i[1], 2);
+      }
+      else
+	EXPECT_EQ(ec, -1);
     }
-    else
-      EXPECT_EQ(ec, -1);
-  }  
+
+    {
+      double o_v[2]; int o_i[2]; int n;
+      int ec = myC_.data()->ExtractGlobalRowCopy( 2, 2, n, o_v, o_i );
+      if (MyPID_ == 1){
+	EXPECT_EQ(ec, 0); EXPECT_EQ(n, 2);
+	EXPECT_DOUBLE_EQ( o_v[0], 6.);
+	EXPECT_DOUBLE_EQ( o_v[1], 1.0);
+	EXPECT_EQ( o_i[0], 2);
+	EXPECT_EQ( o_i[1], 0);
+      }
+      else
+	EXPECT_EQ(ec, -1);
+    }
+  }
+    
 }

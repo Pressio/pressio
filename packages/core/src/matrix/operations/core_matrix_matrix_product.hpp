@@ -21,9 +21,9 @@ epDM = epetra dense matrix
 
 * epCRS = epCRS * epCRS (ok)
 * epDM = epCRS * epDM (ok)
+* epDM = epDM * epDM (done but not optimal)
 
 * epDM = epDM * epCRS (missing)
-* epDM = epDM * epDM (missing)
 
 ===================================*/
 
@@ -39,6 +39,7 @@ namespace core{
   C: epetra sparse matrix
 -----------------------------------------------------
 ---------------------------------------------------*/
+
 template <typename mat_type,
 	  typename std::enable_if<
 	    details::traits<mat_type>::isEpetra &&
@@ -95,9 +96,40 @@ void matrixMatrixProduct(const mat_type & A,
 				      *B.data(), transposeB,
 				      *C.data(),
 				      call_filingIsCompleted_on_result);
-    C.fillingIsCompleted();
+    // if (call_filingIsCompleted_on_result)
+    //   C.fillingIsCompleted();
   }
 }
+
+
+template <typename mat_type,
+	  typename std::enable_if<
+	    details::traits<mat_type>::isEpetra &&
+	    details::traits<mat_type>::isSparse
+	    >::type * = nullptr
+	  >
+auto matrixMatrixProduct(const mat_type & A,
+			 const mat_type & B,
+			 bool transposeA,
+			 bool transposeB,
+			 bool call_filingIsCompleted_on_result = true)
+{  
+  assert( A.isFillingCompleted() );
+  assert( B.isFillingCompleted() );
+  //  assert( C.hasSameRowDataMapAs(A) );
+
+  auto & Armap = A.getRowDataMap();
+  auto maxNonzB = B.data()->GlobalMaxNumEntries();
+  // guesstimate of number of non zeros
+  mat_type C(Armap, maxNonzB);
+
+  matrixMatrixProduct(A, B, C, transposeA, transposeB,
+		      call_filingIsCompleted_on_result);
+  return C;
+}
+
+
+
 
   
 /*-----------------------------------------------------
