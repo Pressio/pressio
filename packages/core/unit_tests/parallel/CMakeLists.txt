@@ -28,4 +28,5 @@ add_single_unit_test(utest_matrix_matrix_product_dense_distributed_epetra 3)
 add_single_unit_test(utest_matrix_matrix_product_dense_sparse_distributed_epetra 3)
 add_single_unit_test(utest_matrix_vector_product_distributed_epetra 3)
 add_single_unit_test(utest_matrix_dense_to_crs_distributed_epetra 3)
+add_single_unit_test(utest_trilinos_map_export 3)
 

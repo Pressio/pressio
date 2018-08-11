@@ -14,8 +14,7 @@ template <typename phi_t, typename P_t>
 class WeightOperator{
 public:
   WeightOperator(phi_t const & phi, P_t const & pop)
-    : phi_(&phi), pop_(&pop)
-  {}
+    : phi_(&phi), pop_(&pop){}
 
   ~WeightOperator() = default;
 
@@ -45,6 +44,35 @@ public:
 
     // (P phi)^+ P b => vector
     return core::matrixVectorProduct(A2, b1);
+  }
+
+  template <typename T,
+  	    typename std::enable_if<
+  	      core::details::traits<T>::isMatrix
+  	      >::type * = nullptr
+  	    >
+  auto apply(const T & B)
+  {
+    // P phi
+    auto A1 = core::matrixMatrixProduct(*pop_, *phi_);
+    std::cout << "P phi: "
+	      << A1.globalRows() << " "
+	      << A1.globalCols() << std::endl;
+
+    // (P phi)^+ => dense matrix
+    auto A2 = pseudoInverse(A1);
+    std::cout << "(P phi)^+ :"
+	      << A2.globalRows() << " "
+	      << A2.globalCols() << std::endl;
+
+    // P B => matrix
+    auto B1 = core::matrixMatrixProduct(*pop_, B, false, false);
+    std::cout << "P B :"
+	      << B1.globalRows() << " "
+	      << B1.globalCols() << std::endl;
+
+    // (P phi)^+ P B => matrix
+    return core::matrixVectorProduct(A2, B1);
   }
   
 private:

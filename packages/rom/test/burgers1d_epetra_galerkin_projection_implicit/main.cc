@@ -8,26 +8,26 @@
 #include "experimental/rom_matrix_pseudo_inverse.hpp"
 #include "experimental/rom_operators.hpp"
 
-
 template <typename T>
-void fillColloc(T & A, Epetra_Map map){
+void fillColloc(T & A, Epetra_Map map, int sampleMeshSize)
+{
+  // collocation matrix contains target rows of the identity
+  // matrix of those points where to sample
+  std::vector<int> targRID {
+      0,3,4,5,6,7,18,45,46,47,68,69,81,82,83,84,85,86};
+  
   int myNR = map.NumMyElements();
   std::vector<int> mygid(myNR);
   map.MyGlobalElements( mygid.data() );
+
   std::array<double,1> vals({1.});
   std::array<int,1> colind;
-  for (auto const & it : mygid){
-    if(it == 0){
-      colind = {1};
-      A.insertGlobalValues(it, 1, vals.data(), colind.data());
-    }
-    if(it == 3){
-      colind = {5};
-      A.insertGlobalValues(it, 1, vals.data(), colind.data());
-    }
+  for (auto const & it : mygid)
+  {
+    colind = {targRID[it]};
+    A.insertGlobalValues(it, 1, vals.data(), colind.data());
   }
 };
-
 
 struct solverFake
 {  
@@ -36,7 +36,6 @@ struct solverFake
     
   }
 };
-
 
 
 //////////////////////////////////////////////////////////
@@ -90,6 +89,8 @@ int main(int argc, char *argv[])
   const int numBasisVecs = 12;
   using phi_type = core::Matrix<Epetra_MultiVector>;
   phi_type phi(yFOMMap, numBasisVecs);
+  phi.data()->Random();
+  phi.data()->Print(std::cout);
   auto phiT = core::transpose(phi);
   
   //---------------------------------
@@ -103,7 +104,7 @@ int main(int argc, char *argv[])
   // should have size sampleMesh x numCell
   P_type P(Pmap, 1);
   // fill collocation operator
-  fillColloc(P, Pmap);
+  fillColloc(P, Pmap, sampleMeshSize);
   // ...
   // when we fill complete P, we need to make sure we pass the
   // domain and range maps so we can do operatiors because P is a rect matrix.
@@ -120,41 +121,43 @@ int main(int argc, char *argv[])
 
   //---------------------------------------
   // project initial condition phi^T * y0
-  auto yROM = core::matrixVectorProduct(phiT, y0FOM);
-  std::cout << "yromSz = " << yROM.globalSize() << std::endl;
- 
-  // residual and jacob policies
-  using res_pol_t = rom::exp::RomGalerkinImplicitResidualPolicy<
-    state_t, res_t, model_eval_t, phi_type, A_type>;
-  res_pol_t resObj(y0FOM, r0FOM, phi, A);
+  //  auto yROM = core::matrixVectorProduct(phiT, y0FOM);
+  //  std::cout << "yromSz = " << yROM.globalSize() << std::endl;
 
-  using jac_pol_t = rom::exp::RomGalerkinImplicitJacobianPolicy<
-    state_t, jac_t, model_eval_t, phi_type, A_type>;
-  jac_pol_t jaObj(y0FOM, j0FOM, phi, A);
+  //  j0FOM.data()->Print(std::cout);
   
-  // stepper
-  using stepper_t = ode::ImplicitEulerStepper<
-    state_t, res_t, jac_t, model_eval_t, res_pol_t, jac_pol_t>;
-  stepper_t stepperObj(appObj, resObj, jaObj, yROM);
+  // // residual and jacob policies
+  // using res_pol_t = rom::exp::RomGalerkinImplicitResidualPolicy<
+  //   state_t, res_t, model_eval_t, phi_type, A_type>;
+  // res_pol_t resObj(y0FOM, r0FOM, phi, A);
+
+  // using jac_pol_t = rom::exp::RomGalerkinImplicitJacobianPolicy<
+  //   state_t, jac_t, model_eval_t, phi_type, A_type>;
+  // jac_pol_t jaObj(y0FOM, j0FOM, phi, A);
+  
+  // // stepper
+  // using stepper_t = ode::ImplicitEulerStepper<
+  //   state_t, res_t, jac_t, model_eval_t, res_pol_t, jac_pol_t>;
+  // stepper_t stepperObj(appObj, resObj, jaObj, yROM);
 
 
-  // define solver
-  /* solver needs to know how to construct residual and jacobian objects
-     so we need to pass them to the solver because solver is the one
-     holding the residual and jacobian objects.
-     Need to be careful because solver needs to have the size of the 
-     REDUCED system, so taking into account the weighting operator.
-     Also, the type of the residual and jacobain need to be carefully set. 
-     FOr instance, the type of the jacobian should be inferred from 
-     the return type of the Apply method of the weighting operator. 
-  */
-  solverFake sobj;
-  // setup
+  // // define solver
+  // /* solver needs to know how to construct residual and jacobian objects
+  //    so we need to pass them to the solver because solver is the one
+  //    holding the residual and jacobian objects.
+  //    Need to be careful because solver needs to have the size of the 
+  //    REDUCED system, so taking into account the weighting operator.
+  //    Also, the type of the residual and jacobain need to be carefully set. 
+  //    FOr instance, the type of the jacobian should be inferred from 
+  //    the return type of the Apply method of the weighting operator. 
+  // */
+  // solverFake sobj;
+  // // setup
 
-  //   // integrate in time 
-  // //  scalar_t final_t = 35;
-  // scalar_t dt = 0.01;
-  // ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1, sobj);
+  // //   // integrate in time 
+  // // //  scalar_t final_t = 35;
+  // // scalar_t dt = 0.01;
+  // // ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1, sobj);
     
   MPI_Finalize();
   return 0;
@@ -165,8 +168,42 @@ int main(int argc, char *argv[])
 
 
 
+// {
+//   // P phi
+//   auto Pphi = core::matrixMatrixProduct(P, phi);
+//   std::cout << "P phi: "
+// 	      << Pphi.globalRows() << " "
+// 	      << Pphi.globalCols() << std::endl;
+//   //    Pphi.data()->Print(std::cout);
 
+//   // (P phi)^+ => dense matrix
+//   auto PphiPI = rom::exp::pseudoInverse(Pphi);
+//   PphiPI.data()->Random();
+//   std::cout << "(P phi)^+ :"
+//   	      << PphiPI.globalRows() << " "
+//   	      << PphiPI.globalCols() << std::endl;
+//   //    PphiPI.data()->Print(std::cout);
 
+//   // J phi => matrix
+//   auto Jphi = core::matrixMatrixProduct(j0FOM, phi);
+//   std::cout << "J phi :"
+//   	      << Jphi.globalRows() << " "
+//   	      << Jphi.globalCols() << std::endl;
+    
+//   // P Jphi => matrix
+//   auto PJphi = core::matrixMatrixProduct(P, Jphi);
+//   std::cout << "P Jphi :"
+//   	      << PJphi.globalRows() << " "
+//   	      << PJphi.globalCols() << std::endl;
+    
+//   // (P phi)^+ P J phi => matrix
+//   auto JJF = core::matrixMatrixProduct(PphiPI, PJphi);
+//   std::cout << "JJF :"
+//   	      << JJF.globalRows() << " "
+//   	      << JJF.globalCols() << std::endl;
+//   //    JJF.data()->Print(std::cout);
+
+// }
 
 
 
@@ -209,32 +246,6 @@ int main(int argc, char *argv[])
 
 
 
-    
-  
-  // //-------------------------------
-  // // Galerkin ROM
-  // //-------------------------------
-  // // operators
-  // using phiOp_t = rom::experimental::basisOperatorDefault<basis_type>;
-  // phiOp_t phiOp(phi);
-  // using scale_op_t = rom::experimental::weightingOperatorIdentity<jac_t,phiOp_t>;
-  // scale_op_t WOp(phiOp, phi.rows(), phi.cols());
-
-  // // project initial condition
-  // size_t redSize = phi.cols();
-  // state_t yr(redSize);
-  // phiOp.project(y0, yr);
-  // // std::cout << "y " << *y.data() << std::endl;
-  
-  // // residual and jacob policies
-  // using res_pol_t = rom::exp::romGalerkinImplicitResidualPolicy<
-  //   state_t, residual_t, model_eval_t, scalar_t,
-  //   mysizer, phiOp_t, scale_op_t>;
-  // res_pol_t resObj(y0, yr, phiOp, WOp);
-  // using jac_pol_t = rom::exp::romGalerkinImplicitJacobianPolicy<
-  //   state_t, jac_t, model_eval_t, scalar_t, mysizer, phiOp_t, scale_op_t>;
-  // jac_pol_t jaObj(y0, yr, phiOp, WOp);
-
   // //-----------------------------------------------
   // // SOLVERS
   // using lin_solve_t
@@ -244,28 +255,6 @@ int main(int argc, char *argv[])
   //   = solvers::experimental::newtonRaphson<state_t, state_t, jac_t, lin_solve_t>;
   // nonlin_solve_t nonls(ls);
   
-  // //-----------------------------------------------
-  // // stepper
-  // using stepper_t = ode::ImplicitEulerStepper<
-  //   state_t, residual_t, jac_t, model_eval_t, mysizer,
-  //   res_pol_t, jac_pol_t>;
-  // stepper_t stepperObj(appObj, resObj, jaObj);
-
-  // //-----------------------------------------------
-  // // integrator
-  // scalar_t dt = 0.01;
-  // scalar_t final_t = dt*1;
-  // auto numSteps = static_cast<unsigned int>(final_t/dt);  
-  // ode::integrateNSteps(stepperObj, yr, 0.0, dt, numSteps, nonls);
-
-  // //-----------------------------------------------
-  // // process final state
-  // state_t yrFin(y0);
-  // phiOp.leftMultiply(yr, yrFin);
-  // // state_t tmp( *phi.data() * (*gg.data()) ) ;
-  // printSol("", yrFin);
-  // //-------------------------------
-
 
 
   // using stepper_t = ode::ImplicitEulerStepper<
@@ -286,11 +275,6 @@ int main(int argc, char *argv[])
   // snapshot_collector collObj;
   // ode::integrateNSteps(stepperObj, y, 0.0, dt, final_t/dt, collObj);    
   // printSol("", y);
-
-
-
-  // using native_phi_type = Epetra_MultiVector;
-  // using my_phi_type = core::MultiVector<native_phi_type>;  
 
 
   // //-------------------------------
