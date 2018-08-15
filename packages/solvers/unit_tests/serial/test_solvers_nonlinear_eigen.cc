@@ -6,6 +6,7 @@
 #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 #include "vector/concrete/core_vector_serial_eigen.hpp"
 #include "experimental/solvers_nonlinear_base.hpp"
+#include "experimental/solvers_nonlinear_factory.hpp"
 
 
 struct ValidSystem {
@@ -59,7 +60,7 @@ TEST(solvers_nonlinear_base, solversBaseGettersTest)
 {
   using namespace solvers;
 
-  NonLinearSolverBase solver;
+  auto solver = NonlinearSolvers::createSolver<void>();
   auto x = solver.getMaxIterations();
   auto tol = solver.getTolerance();
 
@@ -72,7 +73,7 @@ TEST(solvers_non_linear_base, solversBaseSettersTest)
 {
   using namespace solvers;
 
-  NonLinearSolverBase solver;
+  auto solver = NonlinearSolvers::createSolver<void>();
   solver.setMaxIterations(200);
   solver.setTolerance(-2.0e-5);
 
@@ -89,9 +90,13 @@ TEST(solvers_non_linear_base, solversBaseSolveTest)
 {
   using namespace solvers;
 
-  NonLinearSolverBase solver;
+  using vector_n_t = Eigen::VectorXd;
+  using vector_w_t = core::Vector<vector_n_t>;
 
-  ValidSystem left; int right;
+
+  auto solver = NonlinearSolvers::createSolver<void>();
+
+  ValidSystem left; vector_w_t right;
   auto x = solver.solve<void>(left, right);
 
   EXPECT_EQ(x, 0);
@@ -102,11 +107,14 @@ TEST(solvers_non_linear_base, solversBaseBadSolveTest)
 {
   using namespace solvers;
 
-  NonLinearSolverBase solver;
+  using vector_n_t = Eigen::VectorXd;
+  using vector_w_t = core::Vector<vector_n_t>;
+
+  auto solver = NonlinearSolvers::createSolver<void>();
 
   double left; int right;
 
-  ASSERT_DEATH(solver.solve<void>(left, right), "Error: the first argument to method solve must be of system type");
+  ASSERT_DEATH(solver.solve<void>(left, right), "Error: either the nonlinear system or the solution hint is invalid.");
 }
 
 

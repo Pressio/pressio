@@ -29,7 +29,12 @@ namespace solvers {
 //  typename PolicyT,
 //  typename Derived
 //>
+  
+struct NonlinearSolvers; // Fwd declaration
+
 class NonLinearSolverBase {
+
+  friend NonlinearSolvers;
 
   public: 
 
@@ -41,16 +46,51 @@ class NonLinearSolverBase {
      */
     template <
       typename SolverT,
+      typename PrecT,
+      typename NormT,
       typename SystemT,
       typename VectorT,
       typename std::enable_if<
-        !details::system_traits<SystemT>::is_system,
+        !(
+          details::system_traits<SystemT>::is_system &&
+          core::meta::are_vector_matrix_compatible<
+            VectorT,
+            typename details::system_traits<SystemT>::matrix_type
+          >::value
+        ),
         int
       >::type* = nullptr
     >
     void solve(const SystemT& system, const VectorT& x0) {
-      std::cerr << "Error: the first argument to method solve must be of system type" << std::endl;
+      std::cerr << "Error: either the nonlinear system or the solution hint is invalid." << std::endl;
       assert(0);
+    }
+
+
+    /**
+     * @brief  Solve the non linear system
+     *
+     * @param  system is the non linear system to be solved
+     * @param  x0 is the solution hint
+     * @return Solution vector
+     */
+    template <
+      typename SolverT,
+      typename PrecT,
+      typename NormT,
+      typename SystemT,
+      typename VectorT,
+      typename std::enable_if<
+        details::system_traits<SystemT>::is_system &&
+        core::meta::are_vector_matrix_compatible<
+          VectorT,
+          typename details::system_traits<SystemT>::matrix_type
+        >::value,
+        int
+      >::type* = nullptr
+    >
+    auto solve(const SystemT& system, const VectorT& x0) {
+      return 0;
     }
 
 
@@ -60,18 +100,19 @@ class NonLinearSolverBase {
      * @param  system is the non linear system to be solved
      * @param  x0 is the solution hint
      * @return Solution vector
+     *
+     * DESCRIPTION
+     *
+     * This version of solve takes a reduced set of meta-parameters 
+     * and forward the arguments tto the full solve method.
      */
     template <
       typename SolverT,
       typename SystemT,
-      typename VectorT,
-      typename std::enable_if<
-        details::system_traits<SystemT>::is_system,
-        int
-      >::type* = nullptr
+      typename VectorT
     >
     auto solve(const SystemT& system, const VectorT& x0) {
-      return 0;
+      return this->template solve<SolverT, void, void, SystemT, VectorT>(system, x0);
     }
 
 
@@ -94,7 +135,7 @@ class NonLinearSolverBase {
     }
 
 
-//  protected:
+  protected:
 
     NonLinearSolverBase() : maxIters_(100), tolerance_(1.0e-5) {}
 
