@@ -5,13 +5,13 @@
 #include <iostream>
 #include <type_traits>
 
-#include "solvers_nonlinear_base.hpp"
+#include "solvers_nonlinear_iterative.hpp"
 #include "solvers_nonlinear_traits.hpp"
 
 
 namespace solvers {
 	
-struct NonlinearSolvers {
+struct NonLinearSolvers {
 
   /**
    * @brief Raise an assertion as the nonlinear solver specified is invalid
@@ -41,7 +41,7 @@ struct NonlinearSolvers {
     >::type* = nullptr
   >
   static auto createSolver() {
-  	return NonLinearSolverBase();
+  	return NonLinearIterativeSolver<void>();
   }
 
 };

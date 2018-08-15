@@ -61,7 +61,7 @@ TEST(solvers_nonlinear_base, solversBaseGettersTest)
 {
   using namespace solvers;
 
-  auto solver = NonlinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
   auto x = solver.getMaxIterations();
   auto tol = solver.getTolerance();
 
@@ -74,7 +74,7 @@ TEST(solvers_non_linear_base, solversBaseSettersTest)
 {
   using namespace solvers;
 
-  auto solver = NonlinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
   solver.setMaxIterations(200);
   solver.setTolerance(-2.0e-5);
 
@@ -95,7 +95,7 @@ TEST(solvers_non_linear_base, solversBaseSolveTest)
   using vector_w_t = core::Vector<vector_n_t>;
 
 
-  auto solver = NonlinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
 
   ValidSystem left; vector_w_t right;
   auto x = solver.solve<void>(left, right);
@@ -111,7 +111,7 @@ TEST(solvers_non_linear_base, solversBaseBadSolveTest)
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = core::Vector<vector_n_t>;
 
-  auto solver = NonlinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
 
   double left; int right;
 

@@ -6,6 +6,7 @@ APPEND_SET(TESTFILES test_solvers_linear_eigen.cc)
 APPEND_SET(TESTFILES test_solvers_nonlinear_eigen.cc)
 APPEND_SET(TESTFILES test_system_traits.cc)
 APPEND_SET(TESTFILES test_solvers_factory_nonlinear.cc)
+APPEND_SET(TESTFILES test_solvers_nonlinear_policies.cc)
 
 # append here tests to be grouped into a single executable
 # APPEND_SET(...)

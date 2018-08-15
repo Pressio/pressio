@@ -32,9 +32,9 @@ namespace solvers {
   
 struct NonlinearSolvers; // Fwd declaration
 
+template <typename Derived>
 class NonLinearSolverBase {
 
-  friend NonlinearSolvers;
 
   public: 
 
