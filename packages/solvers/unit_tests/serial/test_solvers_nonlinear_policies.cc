@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include "experimental/solvers_linear_iterative_traits.hpp"
 #include "experimental/solvers_policy_nonlinear_iterative.hpp"
 #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
 #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
@@ -23,13 +24,13 @@ struct ValidSystem {
     typedef matrix_w_t matrix_type;
 
 
-    void residual(const vector_w_t& x, vector_w_t& res) {
+    void residual(const vector_w_t& x, vector_w_t& res) const {
       res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
       res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
     }
 
 
-    auto residual(const vector_w_t& x) {
+    auto residual(const vector_w_t& x) const {
       vector_w_t res(2);
       res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
       res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
@@ -37,7 +38,7 @@ struct ValidSystem {
     }
 
     
-    void jacobian(const vector_w_t& x, matrix_w_t& jac) {
+    void jacobian(const vector_w_t& x, matrix_w_t& jac) const {
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
       jac.data()->coeffRef(1, 0) = -1.0;
@@ -45,7 +46,7 @@ struct ValidSystem {
     }
 
 
-    auto jacobian(const vector_w_t& x) {
+    auto jacobian(const vector_w_t& x) const {
       matrix_w_t jac(2, 2);
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
@@ -64,12 +65,17 @@ TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newt
 
   typedef vector_w_t vector_type;
 
-  vector_w_t b;
+  vector_w_t b(2);
+  b[0] = 0.15;
+  b[1] = 0.5; 
 
-  auto val = SolversNonLinearIterativeNewtonRaphsonPolicy::solve(ValidSystem{}, b);
+  ValidSystem system;
+
+  auto val = SolversNonLinearIterativeNewtonRaphsonPolicy::solve<linear::Bicgstab, linear::DefaultPreconditioner, void>(system, b, 100, 100, 1.0e-5, 1.0e-5);
 
   EXPECT_EQ(val, 0);
 }
+
 
 TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newtonraphsonPolicyIncompatibleSystemVector)
 {
@@ -77,5 +83,5 @@ TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newt
 
   int b;
 
-  ASSERT_DEATH(SolversNonLinearIterativeNewtonRaphsonPolicy::solve(ValidSystem{}, b), "Error: the type of the RHS vector is not compatible with the provided nonlinear system");
+  ASSERT_DEATH((SolversNonLinearIterativeNewtonRaphsonPolicy::template solve<void, void, void>(ValidSystem{}, b, 100, 100, 1.0e-5, 1.0e-5)), "Error: the type of the RHS vector is not compatible with the provided nonlinear system");
 }

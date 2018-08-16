@@ -61,7 +61,7 @@ class NonLinearSolverBase {
         int
       >::type* = nullptr
     >
-    void solve(const SystemT& system, const VectorT& x0) {
+    void solve(const SystemT& sys, const VectorT& x0) {
       std::cerr << "Error: either the nonlinear system or the solution hint is invalid." << std::endl;
       assert(0);
     }
@@ -89,7 +89,7 @@ class NonLinearSolverBase {
         int
       >::type* = nullptr
     >
-    auto solve(const SystemT& system, const VectorT& x0) {
+    auto solve(const SystemT& sys, const VectorT& x0) {
       return 0;
     }
 
@@ -111,8 +111,8 @@ class NonLinearSolverBase {
       typename SystemT,
       typename VectorT
     >
-    auto solve(const SystemT& system, const VectorT& x0) {
-      return this->template solve<SolverT, void, void, SystemT, VectorT>(system, x0);
+    auto solve(const SystemT& sys, const VectorT& x0) {
+      return this->template solve<SolverT, void, void, SystemT, VectorT>(sys, x0);
     }
 
 

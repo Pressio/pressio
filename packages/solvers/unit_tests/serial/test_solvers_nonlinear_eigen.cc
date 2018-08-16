@@ -7,6 +7,7 @@
 #include "vector/concrete/core_vector_serial_eigen.hpp"
 #include "experimental/solvers_nonlinear_base.hpp"
 #include "experimental/solvers_nonlinear_traits.hpp"
+#include "experimental/solvers_linear_factory.hpp"
 #include "experimental/solvers_nonlinear_factory.hpp"
 
 
@@ -62,11 +63,19 @@ TEST(solvers_nonlinear_base, solversBaseGettersTest)
   using namespace solvers;
 
   auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  
   auto x = solver.getMaxIterations();
+  auto xNL = solver.getMaxNonLinearIterations();
+
   auto tol = solver.getTolerance();
+  auto tolNL = solver.getNonLinearTolerance();
+
 
   EXPECT_EQ(x, 100);
+  EXPECT_EQ(xNL, 100);
+
   EXPECT_NEAR(tol, 1.0e-5, 1.0e-8);
+  EXPECT_NEAR(tolNL, 1.0e-5, 1.0e-8);
 }
 
 
@@ -75,15 +84,24 @@ TEST(solvers_non_linear_base, solversBaseSettersTest)
   using namespace solvers;
 
   auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  
   solver.setMaxIterations(200);
+  solver.setMaxNonLinearIterations(200);
+  
   solver.setTolerance(-2.0e-5);
+  solver.setNonLinearTolerance(-2.0e-5);
 
   auto x = solver.getMaxIterations();
+  auto xNL = solver.getMaxNonLinearIterations();
+
   auto tol = solver.getTolerance();
+  auto tolNL = solver.getNonLinearTolerance();
 
   EXPECT_EQ(x, 200);
+  EXPECT_EQ(xNL, 200);
+
   EXPECT_NEAR(tol, 2.0e-5, 1.0e-8);
-  
+  EXPECT_NEAR(tolNL, 2.0e-5, 1.0e-8);
 }
 
 
@@ -116,6 +134,22 @@ TEST(solvers_non_linear_base, solversBaseBadSolveTest)
   double left; int right;
 
   ASSERT_DEATH(solver.solve<void>(left, right), "Error: either the nonlinear system or the solution hint is invalid.");
+}
+
+
+TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test) 
+{
+  using namespace solvers;
+
+  using vector_n_t = Eigen::VectorXd;
+  using vector_w_t = core::Vector<vector_n_t>;
+
+  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+
+  ValidSystem left; vector_w_t right;
+  auto x = solver.solve_<linear::Bicgstab, linear::DefaultPreconditioner, void>(left, right);
+
+  EXPECT_EQ(x, 0);
 }
 
 
