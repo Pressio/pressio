@@ -113,7 +113,7 @@ class LinearSolverBase {
       >::type = nullptr
     >
     void solve(const VectorLT& b, VectorRT& x) {
-      x = VectorRT(this->solve(b));
+      x = VectorRT(*this->solve(b).data());
     }
 
 

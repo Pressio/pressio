@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include "experimental/solvers_l2_vector_norm.hpp"
 #include "experimental/solvers_linear_iterative_traits.hpp"
 #include "experimental/solvers_policy_nonlinear_iterative.hpp"
 #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
@@ -63,17 +64,16 @@ TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newt
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = core::Vector<vector_n_t>;
 
-  typedef vector_w_t vector_type;
-
   vector_w_t b(2);
   b[0] = 0.15;
   b[1] = 0.5; 
 
   ValidSystem system;
 
-  auto val = SolversNonLinearIterativeNewtonRaphsonPolicy::solve<linear::Bicgstab, linear::DefaultPreconditioner, void>(system, b, 100, 100, 1.0e-5, 1.0e-5);
+  auto y = SolversNonLinearIterativeNewtonRaphsonPolicy::solve<linear::Bicgstab, linear::DefaultPreconditioner, L2Norm>(system, b, 100, 100, 1.0e-5, 1.0e-5);
 
-  EXPECT_EQ(val, 0);
+  EXPECT_NEAR( y[0],  1.0, 1e-8 );
+  EXPECT_NEAR( y[1],  0.0, 1e-8 );
 }
 
 

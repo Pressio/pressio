@@ -4,6 +4,7 @@
 #include <iostream>
 #include <type_traits>
 
+#include "solvers_linear_factory.hpp"
 #include "system_traits.hpp"
 #include "meta/core_meta_static_checks.hpp"
 
@@ -69,25 +70,24 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     auto dy = sys.residual(x0);
     auto Ja = sys.jacobian(x0);
 
-/*
-    auto solver = LinearIterativeSolver::createIterativeSolver<SolverT, SolverT::matrix_type, PrecT>(Ja);
+    auto solver = LinearSolvers::createIterativeSolver<SolverT, typename SystemT::matrix_type, PrecT>(Ja);
     solver.setMaxIterations(maxIterations);
     solver.setTolerance(tolerance);
 
-    int iStep = 1;
+    uint iStep = 1;
     auto xOld = x0;
     auto xNew = x0 - solver.solve(dy);
 
-    while (iStep++ < maxNonLinearIterations && NormT::template compute_norm_difference(xOld, xNew) > this->getTolerance()) {      
+    while (iStep++ < maxNonLinearIterations && NormT::template compute_norm_difference(xOld, xNew) > nonLinearTolerance) {      
         xOld = xNew;
-        dy = system.residual(xNew);
-        Ja = system.jacobian(xNew);
+        dy = sys.residual(xNew);
+        Ja = sys.jacobian(xNew);
 
-        linearSolver.resetLinearSystem(Ja);
-        xNew = xNew - linearSolver.solve(dy);
+        solver.resetLinearSystem(Ja);
+        xNew = xNew - solver.solve(dy);
       }
-*/
-    return 0;//xNew;
+
+    return xNew;
   }
 
 };
