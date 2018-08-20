@@ -8,12 +8,6 @@
 
 
 namespace solvers {
-
-
-// Forward declarations
-class NonlinearNewtonRaphsonSolver;
-
-
 namespace linear {
 
 // Linear iterative solvers types
@@ -102,37 +96,6 @@ struct preconditioner_traits<Jacobi> {
 
 } // end namespace details
 } // end namespace linear
-
-
-namespace nonlinear {
-
-// Nonlinear iterative solvers types
-struct NewtonRaphson {};
-
-
-namespace details {
-
-// Solvers traits
-template <typename T>
-struct solver_traits {
-  
-  using solver_type = void;
-
-  static constexpr bool solver_exists = false; 
-};
-
-
-template <>
-struct solver_traits<NewtonRaphson> {
-
-  using solver_type = NonlinearNewtonRaphsonSolver;
-  
-  static constexpr bool solver_exists = true;
-};
-
-
-} // end namespace details
-} // end namespace nonlinear
 } // end namespace solvers
 
 #endif

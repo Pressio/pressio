@@ -38,6 +38,7 @@ TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenCreateWithMa
   EXPECT_NEAR( x[1], -1.0, 1e-14 );
 }
 
+
 TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenCreateWithoutMatrixAndSolve)
 {
   // Namespaces
