@@ -3,12 +3,13 @@
 
 #include <iostream>
 
-#include "experimental/solvers_l2_vector_norm.hpp"
-#include "experimental/solvers_linear_iterative_traits.hpp"
-#include "experimental/solvers_policy_nonlinear_iterative.hpp"
 #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
 #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 #include "vector/concrete/core_vector_serial_eigen.hpp"
+
+#include "experimental/solvers_l2_vector_norm.hpp"
+#include "experimental/solvers_linear_iterative_traits.hpp"
+#include "experimental/solvers_policy_nonlinear_iterative.hpp"
 
 
 struct ValidSystem {

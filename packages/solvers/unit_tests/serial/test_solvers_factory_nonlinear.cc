@@ -4,6 +4,7 @@
 
 #include "experimental/solvers_nonlinear_factory.hpp"
 #include "experimental/solvers_nonlinear_traits.hpp"
+#include "experimental/solvers_policy_nonlinear_iterative.hpp"
 
 
 TEST(solvers_factory_nonlinear, solversFactoryTestValidSolver)
@@ -15,7 +16,7 @@ TEST(solvers_factory_nonlinear, solversFactoryTestValidSolver)
   auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
    
   // Expectations
-  auto value = std::is_same<decltype(solver), NonLinearIterativeSolver<void>>::value;
+  auto value = std::is_same<decltype(solver), NonLinearIterativeSolver<SolversNonLinearIterativeNewtonRaphsonPolicy>>::value;
   EXPECT_EQ( value, true);
 }
 

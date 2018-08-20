@@ -11,8 +11,8 @@
 
 namespace solvers {
 
-struct SolversNonLinearIterativeNewtonRaphsonPolicy {
-  
+
+struct SolversNonLinearIterativeNewtonRaphsonPolicy {  
 
   template <
     typename SolverT,

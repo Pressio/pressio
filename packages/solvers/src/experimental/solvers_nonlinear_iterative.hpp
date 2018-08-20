@@ -35,7 +35,7 @@ class NonLinearIterativeSolver
 
 
     /**
-     *
+     * @brief Implements the solve method for a non linear solver
      *
      */
     template <
@@ -46,7 +46,11 @@ class NonLinearIterativeSolver
       typename VectorT
     >
     auto solve_(const SystemT& sys, const VectorT& b) {
-      return 0;
+
+      double tolerance = this->getTolerance();
+      uint maxIterations = this->getMaxIterations();
+
+      return PolicyT::template solve<SolverT, PrecT, NormT>(sys, b, maxIterations, maxNonLinearIterations_, tolerance, nonLinearTolerance_);
     }
 
 
