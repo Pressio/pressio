@@ -1,0 +1,6 @@
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  rom_pod_trilinos
+  SOURCES main.cc
+  NUM_MPI_PROCS 3
+  #STANDARD_PASS_OUTPUT
+  )
