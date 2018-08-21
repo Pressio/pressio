@@ -178,31 +178,6 @@ struct LinearSolvers {
     return wrapped_solver;
   }
 
-  /**
-   * @brief  createDirectSolver
-   * @return A direct solver for sparse Trillinos matrices
-   *
-   * @section DESCRIPTION
-   *
-   * Create an instance of the appropriate sparse Trilinos direct 
-   * solver for a linear system. Underlying solver is Amesos2
-   */
-/*  template <
-    typename SolverT,
-    typename MatrixT,
-    typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::matrix_class == core::details::WrappedClass::Trilinos,
-      MatrixT
-    >::type* = nullptr
-  >
-  static auto createDirectSolver() {
-
-    // Call to Amesos2
-    /*
-    auto solver = 
-    */
-//  }
-
 };
 
 } // end namespace solvers

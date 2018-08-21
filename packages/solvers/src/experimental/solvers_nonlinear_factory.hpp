@@ -41,7 +41,9 @@ struct NonLinearSolvers {
     >::type* = nullptr
   >
   static auto createSolver() {
-  	return NonLinearIterativeSolver<void>();
+
+    typedef typename nonlinear::details::solver_traits<SolverT>::solver_type policy_type;
+  	return NonLinearIterativeSolver<policy_type>();
   }
 
 };

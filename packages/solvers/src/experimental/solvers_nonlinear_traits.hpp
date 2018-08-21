@@ -5,7 +5,7 @@
 
 namespace solvers {
 
-class NonlinearNewtonRaphsonSolver; // Fwd declaration
+class SolversNonLinearIterativeNewtonRaphsonPolicy; // Fwd declaration
 
 
 namespace nonlinear {
@@ -26,7 +26,7 @@ struct solver_traits {
 
 template <>
 struct solver_traits<NewtonRaphson> {
-  using solver_type = NonlinearNewtonRaphsonSolver;
+  using solver_type = SolversNonLinearIterativeNewtonRaphsonPolicy;
   static constexpr bool enabled = true;
 };
 

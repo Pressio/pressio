@@ -28,7 +28,7 @@ struct SolversLinearIterativeEigenPolicy {
   ) {
     solver->setMaxIterations(maxIters);
     solver->setTolerance(tolerance);
-    return solver->solve(*b.data());
+    return VectorT(solver->solve(*b.data()));
   }
 };
 

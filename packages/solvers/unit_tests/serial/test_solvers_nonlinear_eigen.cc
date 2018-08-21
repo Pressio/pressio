@@ -5,10 +5,13 @@
 
 #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 #include "vector/concrete/core_vector_serial_eigen.hpp"
+
+#include "experimental/solvers_l2_vector_norm.hpp"
 #include "experimental/solvers_nonlinear_base.hpp"
 #include "experimental/solvers_nonlinear_traits.hpp"
 #include "experimental/solvers_linear_factory.hpp"
 #include "experimental/solvers_nonlinear_factory.hpp"
+#include "experimental/solvers_policy_nonlinear_iterative.hpp"
 
 
 struct ValidSystem {
@@ -25,13 +28,13 @@ struct ValidSystem {
     typedef matrix_w_t matrix_type;
 
 
-    void residual(const vector_w_t& x, vector_w_t& res) {
+    void residual(const vector_w_t& x, vector_w_t& res) const {
       res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
       res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
     }
 
 
-    auto residual(const vector_w_t& x) {
+    auto residual(const vector_w_t& x) const {
       vector_w_t res(2);
       res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
       res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
@@ -39,7 +42,7 @@ struct ValidSystem {
     }
 
     
-    void jacobian(const vector_w_t& x, matrix_w_t& jac) {
+    void jacobian(const vector_w_t& x, matrix_w_t& jac) const {
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
       jac.data()->coeffRef(1, 0) = -1.0;
@@ -47,7 +50,7 @@ struct ValidSystem {
     }
 
 
-    auto jacobian(const vector_w_t& x) {
+    auto jacobian(const vector_w_t& x) const {
       matrix_w_t jac(2, 2);
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
@@ -112,7 +115,6 @@ TEST(solvers_non_linear_base, solversBaseSolveTest)
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = core::Vector<vector_n_t>;
 
-
   auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
 
   ValidSystem left; vector_w_t right;
@@ -125,9 +127,6 @@ TEST(solvers_non_linear_base, solversBaseSolveTest)
 TEST(solvers_non_linear_base, solversBaseBadSolveTest) 
 {
   using namespace solvers;
-
-  using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = core::Vector<vector_n_t>;
 
   auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
 
@@ -146,10 +145,15 @@ TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test)
 
   auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
 
-  ValidSystem left; vector_w_t right;
-  auto x = solver.solve_<linear::Bicgstab, linear::DefaultPreconditioner, void>(left, right);
+  vector_w_t b(2);
+  b[0] = 0.4;
+  b[1] = 0.5; 
 
-  EXPECT_EQ(x, 0);
+  ValidSystem sys; 
+  auto y = solver.solve_<linear::Bicgstab, linear::DefaultPreconditioner, L2Norm>(sys, b);
+
+  EXPECT_NEAR( y[0],  1.0, 1e-8 );
+  EXPECT_NEAR( y[1],  0.0, 1e-8 );
 }
 
 
