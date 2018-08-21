@@ -95,7 +95,7 @@ private:
     return data_.NumGlobalCols();
   }
 
-  comm_t const & commCRef() const{
+  comm_t const & commCRefImpl() const{
     return data_.Comm();
   }
   

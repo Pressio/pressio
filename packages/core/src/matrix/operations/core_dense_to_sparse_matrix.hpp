@@ -52,7 +52,6 @@ auto denseToSparse(const mat_type & A)
   std::vector<GO_t> mygel(numMyEl);
   dmap.MyGlobalElements(mygel.data());
   
-
   for (LO_t i=0; i<numMyEl; i++)
   {
     auto grow = mygel[i];

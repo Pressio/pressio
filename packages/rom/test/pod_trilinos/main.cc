@@ -11,7 +11,6 @@
 #include "Galeri_CrsMatrices.h"
 #include "Epetra_MpiComm.h"
 
-
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
 int main(int argc, char *argv[])
@@ -46,18 +45,18 @@ int main(int argc, char *argv[])
   // The global mesh size is nx * nx.
   //
   Teuchos::ParameterList GaleriList;
-  const int nx = 30;
+  const int nx = 8;
   GaleriList.set ("n", nx * nx);
   GaleriList.set ("nx", nx);
   GaleriList.set ("ny", nx);
   RCP<Epetra_Map> Map = rcp (Galeri::CreateMap ("Linear", Comm, GaleriList));
-  RCP<Epetra_RowMatrix> A =
+  RCP<Epetra_CrsMatrix> A =
     rcp (Galeri::CreateCrsMatrix ("Laplace2D", &*Map, GaleriList));
 
   // Set eigensolver parameters.
   const double tol = 1.0e-8; // convergence tolerance
-  const int nev = 4; // number of eigenvalues for which to solve
-  const int blockSize = 5; // block size (number of eigenvectors processed at once)
+  const int nev = 2; // number of eigenvalues for which to solve
+  const int blockSize = 4; // block size (number of eigenvectors processed at once)
   const int numBlocks = 8; // restart length
   const int maxRestarts = 100; // maximum number of restart cycles
 
@@ -88,6 +87,10 @@ int main(int argc, char *argv[])
     return -1;
   }
 
+  A->Print(std::cout);
+  
+
+  
   // Create a ParameterList, to pass parameters into the Block
   // Davidson eigensolver.
   Teuchos::ParameterList anasaziPL;
