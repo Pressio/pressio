@@ -126,16 +126,16 @@ int main(int argc, char *argv[])
     state_t, space_res_t, model_eval_t, phi_type, A_type>;
   res_pol_t resObj(y0FOM, r0FOM, phi, A);
 
-  // stepper
-  using stepper_t = ode::ExplicitEulerStepper<
-    state_t, space_res_t, scalar_t, model_eval_t, res_pol_t>;
-  stepper_t stepperObj(appObj, resObj, yROM, rROM);
+  // // stepper
+  // using stepper_t = ode::ExplicitEulerStepper<
+  //   state_t, space_res_t, model_eval_t, res_pol_t>;
+  // stepper_t stepperObj(appObj, resObj, yROM, rROM);
 
-  // integrate in time 
-  //snapshot_collector collObj;
-  //  scalar_t final_t = 35;
-  scalar_t dt = 0.01;
-  ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);//, collObj);
+  // // integrate in time 
+  // //snapshot_collector collObj;
+  // //  scalar_t final_t = 35;
+  // scalar_t dt = 0.01;
+  // ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);//, collObj);
     
   MPI_Finalize();
   return 0;

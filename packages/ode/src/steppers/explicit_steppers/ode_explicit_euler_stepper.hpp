@@ -6,52 +6,49 @@
 
 namespace ode{
 
-///////////////////////
-// Standard policy 
-/////////////////////// 
-  
+/////////////////////////////////////////
+//  (a) State and resid are same type
+//  (b) Standard policy 
+/////////////////////////////////////////
+ 
 template<typename state_type,
-	 typename space_residual_type,
-	 typename scalar_type,
 	 typename model_type>
-class ExplicitEulerStepper<state_type,
-			   space_residual_type,
-			   scalar_type,
-			   model_type,
-			   void,
+class ExplicitEulerStepper<state_type, state_type,
+			   model_type, void,
 			   typename
 			   std::enable_if<
 			     !std::is_void<state_type>::value
 			     >::type
 			   >
   : public impl::ExplicitEulerStepperImpl<
-		   state_type,
-		   space_residual_type,
-		   scalar_type,
-		   model_type,
-		   ode::policy::explicit_residual_standard_policy<
-		     state_type, space_residual_type,
-		     model_type, scalar_type>
-		   >
+	     state_type,
+             state_type,
+	     typename core::details::traits<state_type>::scalar_t,
+	     model_type,
+	     ode::policy::explicit_residual_standard_policy<
+	       state_type, state_type, model_type>
+	     >
 {
 
 public:
   using pol_t = ode::policy::explicit_residual_standard_policy<
-  state_type, space_residual_type, model_type, scalar_type>;
+     state_type, state_type, model_type>;
 
-  using base_t = impl::ExplicitEulerStepperImpl<state_type,
-						space_residual_type,
-						scalar_type,
-						model_type,
-						pol_t>;
+  using base_t = impl::ExplicitEulerStepperImpl<
+     state_type,
+     state_type,
+     typename core::details::traits<state_type>::scalar_t,
+     model_type,
+     pol_t>;
+
 public:
+  
   template < typename T1 = model_type,
 	     typename T2 = state_type,
-	     typename T3 = space_residual_type,
 	     typename... Args>
   ExplicitEulerStepper(T1 & model,
 		       T2 const & y0,
-		       T3 const & r0,
+		       T2 const & r0,
 		       Args&&... rest)
     : base_t(model, policy_, y0, r0, std::forward<Args>(rest)...)
   {}
@@ -70,48 +67,49 @@ private:
 ////////////////////////////////////////////////////////////
 
 
-///////////////////////
-// NON Standard policy 
-/////////////////////// 
+/////////////////////////////////////////
+//  (a) State and resid are same type
+//  (b) NON Standard policy 
+/////////////////////////////////////////
   
 template<typename state_type,
-	 typename space_residual_type,
-	 typename scalar_type,
-	 typename model_type,	
+	 typename model_type,
 	 typename residual_policy_type
 	 >
 class ExplicitEulerStepper<state_type,
-			   space_residual_type,
-			   scalar_type,
+			   state_type,
 			   model_type,
 			   residual_policy_type,
 			   typename
 			   std::enable_if<
-			     !std::is_void<residual_policy_type>::value
+			     !std::is_void<residual_policy_type>::value 
 			     >::type
 			   >
-  : public impl::ExplicitEulerStepperImpl<state_type,
-					  space_residual_type,
-					  scalar_type,
-					  model_type,
-					  residual_policy_type>
+  : public impl::ExplicitEulerStepperImpl<
+	     state_type,
+	     state_type,
+	     typename core::details::traits<state_type>::scalar_t,
+	     model_type,
+	     residual_policy_type>
 {
+
 public:
-  using base_t = impl::ExplicitEulerStepperImpl<state_type,
-						space_residual_type,
-						scalar_type,
-						model_type,
-						residual_policy_type>;
+  using base_t = impl::ExplicitEulerStepperImpl<
+     state_type,
+     state_type,
+     typename core::details::traits<state_type>::scalar_t,
+     model_type,
+     residual_policy_type>;
+
 public:
   template < typename T1 = model_type,
 	     typename T2 = residual_policy_type,
 	     typename T3 = state_type,
-	     typename T4 = space_residual_type,
 	     typename... Args>
   ExplicitEulerStepper(T1 & model,
 		       T2 & policy,
 		       T3 const & y0,
-		       T4 const & r0,
+		       T3 const & r0,
 		       Args&&... rest)
     : base_t(model, policy, y0, r0, std::forward<Args>(rest)...)
   {}

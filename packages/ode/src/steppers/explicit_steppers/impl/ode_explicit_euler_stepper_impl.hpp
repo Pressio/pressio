@@ -9,23 +9,23 @@ namespace ode{
 namespace impl{
     
 template<typename state_type,
-	 typename space_residual_type,
+	 typename ode_residual_type,
 	 typename scalar_type,
 	 typename model_type,	
 	 typename residual_policy_type
 	 >
 class ExplicitEulerStepperImpl<state_type,
-			       space_residual_type,
+			       ode_residual_type,
 			       scalar_type,
 			       model_type,
 			       residual_policy_type>
   : public ExplicitStepperBase<
   ExplicitEulerStepperImpl<state_type,
-			   space_residual_type,
+			   ode_residual_type,
 			   scalar_type,
 			   model_type,
 			   residual_policy_type> >,
-    private OdeStorage<state_type, space_residual_type, 0, 1>,
+    private OdeStorage<state_type, ode_residual_type, 0, 1>,
     private ExpOdeAuxData<model_type, residual_policy_type>
 {  
 
@@ -37,11 +37,11 @@ class ExplicitEulerStepperImpl<state_type,
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using stepper_t = ExplicitEulerStepperImpl<
-    state_type, space_residual_type, scalar_type,
+    state_type, ode_residual_type, scalar_type,
     model_type, residual_policy_type>;
 
   using stepper_base_t = ExplicitStepperBase<stepper_t>;
-  using storage_base_t = OdeStorage<state_type, space_residual_type, 0, 1>;
+  using storage_base_t = OdeStorage<state_type, ode_residual_type, 0, 1>;
   using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
 
 protected:
@@ -53,10 +53,12 @@ protected:
   template <typename T1 = model_type,
   	    typename T2 = residual_policy_type,
 	    typename T3 = state_type,
-	    typename T4 = space_residual_type,
+	    typename T4 = ode_residual_type,
 	    typename... Args>
-  ExplicitEulerStepperImpl(T1 & model, T2 & res_policy_obj,
-			   T3 const & y0, T4 const & r0,
+  ExplicitEulerStepperImpl(T1 & model,
+			   T2 & res_policy_obj,
+			   T3 const & y0,
+			   T4 const & r0,
 			   Args&&... rest)
     : storage_base_t(r0 /*,std::forward<Args>(rest)...*/),
       auxdata_base_t(model, res_policy_obj){}

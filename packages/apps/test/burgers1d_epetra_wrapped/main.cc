@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
     // stepper
     using stepper_t = ode::ExplicitEulerStepper<
-      state_t, space_res_t, scalar_t, target_app_t>;
+      state_t, space_res_t, target_app_t>;
     // using stepper_t = ode::ExplicitRungeKutta4Stepper<
     //   state_t, space_res_t, scalar_t, target_app_t>;
     stepper_t stepperObj(appObj, y, r);
@@ -52,9 +52,9 @@ int main(int argc, char *argv[])
     snapshot_collector collObj;
     scalar_t final_t = 35;
     scalar_t dt = 0.01;
-    ode::integrateNSteps(stepperObj, y, 0.0, dt, 3500, collObj);
+    ode::integrateNSteps(stepperObj, y, 0.0, dt, static_cast<unsigned int>(final_t/dt), collObj);
     y.data()->Print(std::cout << std::setprecision(14));
-    // //printSol("Exp Euler", y0);
+    // // //printSol("Exp Euler", y0);
   }
   
   MPI_Finalize();

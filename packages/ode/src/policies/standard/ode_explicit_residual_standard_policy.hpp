@@ -10,20 +10,19 @@ namespace policy{
 
 template<typename state_type,
 	 typename space_residual_type,
-	 typename model_type,
-	 typename scalar_type>
+	 typename model_type>
 class explicit_residual_standard_policy
   : public ExplicitResidualPolicyBase<
   explicit_residual_standard_policy<
-    state_type, space_residual_type,
-    model_type, scalar_type> >
+    state_type, space_residual_type, model_type> >
 {
 
 public:
   explicit_residual_standard_policy() = default;
   ~explicit_residual_standard_policy() = default;  
-
+  
 private:
+
   //-----------------------------------------------------
   // enable when state and residual are vector wrappers
   // what about the case when they are multivector wrappers?
@@ -31,16 +30,18 @@ private:
   //-----------------------------------------------------
   template <typename U = state_type,
 	    typename T = space_residual_type,
+	    typename sc_t,
 	    typename
 	    std::enable_if<
 	      core::meta::is_core_vector<U>::value==true &&
-	      core::meta::is_core_vector<T>::value==true
+	      std::is_same<U, T>::value &&
+	      std::is_same<typename core::details::traits<U>::scalar_t,
+			   sc_t>::value
 	      /*core::meta::is_core_multi_vector<U>::value==true &&
 	      core::meta::is_core_multi_vector<T>::value==true*/
 	      >::type * = nullptr
 	    >
-  void computeImpl(const U & y, T & R,
-		   model_type & model, scalar_type t)
+  void computeImpl(const U & y, T & R, model_type & model, sc_t t)
   {
     if (R.empty())
       R.matchLayoutWith(y);
@@ -53,8 +54,7 @@ private:
 private:
   friend ExplicitResidualPolicyBase<
   explicit_residual_standard_policy<
-    state_type, space_residual_type,
-    model_type, scalar_type> >;
+    state_type, space_residual_type, model_type> >;
 
 };//end class
 

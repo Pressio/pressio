@@ -7,8 +7,7 @@
 namespace ode {
 
 template<typename state_type,
-	 typename residual_type,
-	 typename scalar_type,
+	 typename ode_residual_type,
 	 typename model_type,
 	 typename residual_policy_type = void,
 	 typename enable = void
@@ -16,8 +15,7 @@ template<typename state_type,
 class ExplicitEulerStepper;
 
 template<typename state_type,
-	 typename residual_type,
-	 typename scalar_type,
+	 typename ode_residual_type,
 	 typename model_type,
 	 typename residual_policy_type = void,
 	 typename enable = void
@@ -87,7 +85,7 @@ namespace ode {
 namespace impl {
 
 template<typename state_type,
-	 typename residual_type,
+	 typename ode_residual_type,
 	 typename scalar_type,
 	 typename model_type,	
 	 typename residual_policy_type,
@@ -96,7 +94,7 @@ template<typename state_type,
 class ExplicitEulerStepperImpl;
 
 template<typename state_type,
-	 typename residual_type,
+	 typename ode_residual_type,
 	 typename scalar_type,
 	 typename model_type,	
 	 typename residual_policy_type,
