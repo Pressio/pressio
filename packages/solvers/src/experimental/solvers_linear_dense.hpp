@@ -24,7 +24,7 @@ class LinearDenseSolver
       SolverT,
       MatrixT, 
       PolicyT,
-      LinearIterativeSolver<
+      LinearDenseSolver<
         SolverT,
         MatrixT,
         PolicyT
