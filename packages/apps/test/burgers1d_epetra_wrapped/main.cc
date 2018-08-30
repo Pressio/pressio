@@ -27,13 +27,13 @@
 
 int main(int argc, char *argv[])
 {
-  // //-------------------------------
-  // // define native types
-  // using native_state_t = apps::Burgers1dEpetra::state_type;
-  // using native_space_residual_t = apps::Burgers1dEpetra::space_residual_type;
-  // using native_jac_t = apps::Burgers1dEpetra::jacobian_type;
-  // using scalar_t = apps::Burgers1dEpetra::scalar_type;
-  // using target_app_t = apps::Burgers1dEpetra;
+  //-------------------------------
+  // define native types
+  using native_state_t = apps::Burgers1dEpetra::state_type;
+  using native_space_residual_t = apps::Burgers1dEpetra::space_residual_type;
+  using native_jac_t = apps::Burgers1dEpetra::jacobian_type;
+  using scalar_t = apps::Burgers1dEpetra::scalar_type;
+  using target_app_t = apps::Burgers1dEpetra;
   
   // MPI_Init(&argc,&argv);
   // int rank; // My process ID

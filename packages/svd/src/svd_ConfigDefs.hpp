@@ -2,10 +2,10 @@
 #ifndef SVD_CONFIGDEFS_HPP
 #define SVD_CONFIGDEFS_HPP
 
-#include "core_ConfigDefs.hpp"
 #include "svd_config.h"
+#include "core_ConfigDefs.hpp"
 
-namespace ode{
+namespace svd{
 namespace details {
 
 // template<typename T, typename enable = void>

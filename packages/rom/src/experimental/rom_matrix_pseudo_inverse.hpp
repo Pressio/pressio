@@ -24,7 +24,6 @@ auto pseudoInverse(const mat_type & A)
   C.setZero();
   return C;
 }
-//------------------------------------------------------
 
   
 }//end namespace exp
