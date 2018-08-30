@@ -7,10 +7,10 @@
 namespace svd {
 
 template <typename matrix_type,
-	  typename precond_type = void,
+	  template<typename...> class lsv_type,
+	  template<typename...> class rsv_type,
 	  typename enable = void>
-class Solver;
-  
+class Solver;  
   
 } // end namespace 
 

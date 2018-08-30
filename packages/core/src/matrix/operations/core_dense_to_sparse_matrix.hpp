@@ -8,7 +8,6 @@
 #include "../concrete/core_matrix_dense_distributed_epetra.hpp"
 #include "../concrete/core_matrix_sparse_distributed_epetra.hpp"
 
-
 /*=====================================
 Transform a dense matrix to sparse 
 ===================================*/
@@ -16,11 +15,68 @@ Transform a dense matrix to sparse
 namespace core{
   
 /*---------------------------------------------------
------------------------------------------------------
-A => B
-Epetra dense A to CRS B
------------------------------------------------------
+A => B where Epetra dense A to CRS B.
+Here we pass the matrix and domain and range maps.
 ---------------------------------------------------*/
+template <typename mat_type,
+	  typename std::enable_if<
+	    details::traits<mat_type>::isEpetra &&
+	    details::traits<mat_type>::isDense
+	    >::type * = nullptr
+	  >
+auto denseToSparse(const mat_type & A,
+		   const Epetra_Map & domain_map,
+		   const Epetra_Map & range_map)
+{
+  
+  // non zeros per row
+  const auto nzPerRow = A.globalCols();
+  // row map: rememeber that A is a dense matrix
+  auto & rowmap = static_cast<const Epetra_Map &>(A.getDataMap());
+
+  // now create the target CRS matrix
+  using res_t = core::Matrix<Epetra_CrsMatrix>;
+  using traits_t = details::traits<res_t>;
+  using sc_t = typename traits_t::scalar_t;
+  using LO_t = typename traits_t::local_ordinal_t;
+  using GO_t = typename traits_t::global_ordinal_t;
+
+  // the CRS matrix
+  res_t B(rowmap, nzPerRow);
+
+  // fill it
+  const LO_t numMyEl = rowmap.NumMyElements();
+  std::vector<sc_t> val(nzPerRow);
+  std::vector<GO_t> ind(nzPerRow);
+  for (GO_t j=0; j<nzPerRow; j++)
+    ind[j]=j;
+
+  std::vector<GO_t> mygel(numMyEl);
+  rowmap.MyGlobalElements(mygel.data());  
+  for (LO_t i=0; i<numMyEl; i++){
+    auto grow = mygel[i];
+    for (GO_t j=0; j<nzPerRow; j++){
+      val[j]=A(i,j);
+    }
+    B.insertGlobalValues(grow, nzPerRow, val.data(), ind.data());
+  }
+
+  //fill complete
+  B.fillingIsCompleted(domain_map, range_map);
+  
+  return B;
+}
+
+
+  
+/*
+A => B where Epetra dense A to CRS B.
+
+if just the matrix is passed, then fill complete is 
+called on the matrix using the rowmap for both 
+domain and range maps. This is what the regular 
+fillcomplete() does within trilinos.
+*/
 template <typename mat_type,
 	  typename std::enable_if<
 	    details::traits<mat_type>::isEpetra &&
@@ -29,41 +85,13 @@ template <typename mat_type,
 	  >
 auto denseToSparse(const mat_type & A)
 {
-  // non zeros per row, single value
-  const auto nzPerRow = A.globalCols();
-  // row map
-  auto & dmap = A.getDataMap();
- 
-  // target CRS matrix
-  using res_t = core::Matrix<Epetra_CrsMatrix>;
-  using traits_t = details::traits<res_t>;
-  using sc_t = typename traits_t::scalar_t;
-  using LO_t = typename traits_t::local_ordinal_t;
-  using GO_t = typename traits_t::global_ordinal_t;
 
-  res_t B(dmap, nzPerRow);
-
-  const LO_t numMyEl = dmap.NumMyElements();
-  std::vector<sc_t> val(nzPerRow);
-  std::vector<GO_t> ind(nzPerRow);
-  for (GO_t j=0; j<nzPerRow; j++)
-    ind[j]=j;
-
-  std::vector<GO_t> mygel(numMyEl);
-  dmap.MyGlobalElements(mygel.data());
+  auto & rowmap = static_cast<const Epetra_Map &>(A.getDataMap());
+  // Epetra_LocalMap lm( A.globalCols(), 0, A.commCRef() );  
+  return denseToSparse(A, rowmap, rowmap);
   
-  for (LO_t i=0; i<numMyEl; i++)
-  {
-    auto grow = mygel[i];
-    for (GO_t j=0; j<nzPerRow; j++){
-      val[j]=A(i,j);
-    }
-    B.insertGlobalValues(grow, nzPerRow, val.data(), ind.data());
-  }  
-  return B;
 }
 
-
-   
+  
 } // end namespace core
 #endif

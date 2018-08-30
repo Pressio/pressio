@@ -1,5 +1,5 @@
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  rom_pod_epetra_wrapper
+  epetra_wrapper
   SOURCES main.cc
   NUM_MPI_PROCS 2
   #STANDARD_PASS_OUTPUT
