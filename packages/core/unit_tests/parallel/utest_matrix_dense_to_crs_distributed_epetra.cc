@@ -54,6 +54,12 @@ TEST_F(core_matrix_dense_to_crs_distributed_epetraFix, CRSMatTimesVector)
       (*Ad_)(0,4) = 1.0;
     }
     if (MyPID_ == 1){
+      (*Ad_)(1,0) = 3.1;
+      (*Ad_)(1,2) = 2.2;
+      (*Ad_)(1,3) = 3.3;
+      (*Ad_)(1,4) = 4.4;
+    }
+    if (MyPID_ == 2){
       (*Ad_)(1,0) = 3.0;
       (*Ad_)(1,2) = 2.0;
       (*Ad_)(1,3) = 3.0;
@@ -64,17 +70,26 @@ TEST_F(core_matrix_dense_to_crs_distributed_epetraFix, CRSMatTimesVector)
   auto B = core::denseToSparse(*Ad_);
   B.data()->Print(std::cout);
 
-  std::vector<double> val(5);
   std::vector<int> ind(5);
+  std::vector<double> val(5);  
   int numEntr;  
   if(MyPID_==0){
-    B.data()->ExtractGlobalRowCopy(0, 5, numEntr, val.data() );
-    EXPECT_DOUBLE_EQ( val[0], 1.0 );
-    EXPECT_DOUBLE_EQ( val[1], 0.0 );
-    EXPECT_DOUBLE_EQ( val[2], 2.0 );
-    EXPECT_DOUBLE_EQ( val[3], 3.0 );
-    EXPECT_DOUBLE_EQ( val[4], 1.0 );
-    B.data()->ExtractGlobalRowCopy(1, 5, numEntr, val.data() );
+    B.data()->ExtractGlobalRowCopy(0, 5, numEntr, val.data(), ind.data() );
+    EXPECT_EQ(numEntr,5);
+    for (int k=0; k<5; k++){
+      if (ind[k]==0)
+        EXPECT_DOUBLE_EQ( val[k], 1.0 );
+      if (ind[k]==1)
+        EXPECT_DOUBLE_EQ( val[k], 0.0 );
+      if (ind[k]==2)
+        EXPECT_DOUBLE_EQ( val[k], 2.0 );
+      if (ind[k]==3)
+        EXPECT_DOUBLE_EQ( val[k], 3.0 );
+      if (ind[k]==4)
+        EXPECT_DOUBLE_EQ( val[k], 1.0 );      
+    }
+
+    B.data()->ExtractGlobalRowCopy(1, 5, numEntr, val.data(), ind.data() );
     EXPECT_DOUBLE_EQ( val[0], 0.0 );
     EXPECT_DOUBLE_EQ( val[1], 0.0 );
     EXPECT_DOUBLE_EQ( val[2], 0.0 );
@@ -83,12 +98,40 @@ TEST_F(core_matrix_dense_to_crs_distributed_epetraFix, CRSMatTimesVector)
   }
 
   if(MyPID_==1){
-    B.data()->ExtractGlobalRowCopy(4, 5, numEntr, val.data() );
-    EXPECT_DOUBLE_EQ( val[0], 3.0 );
-    EXPECT_DOUBLE_EQ( val[1], 0.0 );
-    EXPECT_DOUBLE_EQ( val[2], 2.0 );
-    EXPECT_DOUBLE_EQ( val[3], 3.0 );
-    EXPECT_DOUBLE_EQ( val[4], 4.0 );
+    std::vector<double> val(5);
+    B.data()->ExtractGlobalRowCopy(4, 5, numEntr, val.data(), ind.data() );
+
+    EXPECT_EQ(numEntr,5);
+    for (int k=0; k<5; k++){
+      if (ind[k]==0)
+        EXPECT_DOUBLE_EQ( val[k], 3.1 );
+      if (ind[k]==1)
+        EXPECT_DOUBLE_EQ( val[k], 0.0 );
+      if (ind[k]==2)
+        EXPECT_DOUBLE_EQ( val[k], 2.2 );
+      if (ind[k]==3)
+        EXPECT_DOUBLE_EQ( val[k], 3.3 );
+      if (ind[k]==4)
+        EXPECT_DOUBLE_EQ( val[k], 4.4 );      
+    }
+  }
+
+  if(MyPID_==2){
+    std::vector<double> val(5);
+    B.data()->ExtractGlobalRowCopy(7, 5, numEntr, val.data(), ind.data() );
+    EXPECT_EQ(numEntr,5);
+    for (int k=0; k<5; k++){
+      if (ind[k]==0)
+        EXPECT_DOUBLE_EQ( val[k], 3. );
+      if (ind[k]==1)
+        EXPECT_DOUBLE_EQ( val[k], 0.0 );
+      if (ind[k]==2)
+        EXPECT_DOUBLE_EQ( val[k], 2. );
+      if (ind[k]==3)
+        EXPECT_DOUBLE_EQ( val[k], 3. );
+      if (ind[k]==4)
+        EXPECT_DOUBLE_EQ( val[k], 4. );      
+    }
   }
   
 

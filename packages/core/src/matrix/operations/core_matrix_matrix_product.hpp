@@ -96,11 +96,21 @@ void matrixMatrixProduct(const mat_type & A,
 				      *B.data(), transposeB,
 				      *C.data(),
 				      call_filingIsCompleted_on_result);
-    // if (call_filingIsCompleted_on_result)
-    //   C.fillingIsCompleted();
+    assert( C.data()->Filled() );
   }
-}
 
+}//end fnc
+
+  
+
+/*---------------------------------------------------
+-----------------------------------------------------
+  C = A * B
+  A: epetra sparse matrix
+  B: epetra sparse matrix
+  C: epetra sparse matrix
+-----------------------------------------------------
+---------------------------------------------------*/
 
 template <typename mat_type,
 	  typename std::enable_if<
@@ -114,9 +124,6 @@ auto matrixMatrixProduct(const mat_type & A,
 			 bool transposeB,
 			 bool call_filingIsCompleted_on_result = true)
 {  
-  assert( A.isFillingCompleted() );
-  assert( B.isFillingCompleted() );
-  //  assert( C.hasSameRowDataMapAs(A) );
 
   auto & Armap = A.getRowDataMap();
   auto maxNonzB = B.data()->GlobalMaxNumEntries();
@@ -124,10 +131,10 @@ auto matrixMatrixProduct(const mat_type & A,
   mat_type C(Armap, maxNonzB);
 
   matrixMatrixProduct(A, B, C, transposeA, transposeB,
-		      call_filingIsCompleted_on_result);
+   		      call_filingIsCompleted_on_result);
   return C;
-}
 
+}//end fnc
 
 
 

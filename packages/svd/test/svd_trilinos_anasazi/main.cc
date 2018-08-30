@@ -1,7 +1,4 @@
 
-#include "CORE_ALL"
-#include "experimental/rom_pod.hpp"
-
 #include "AnasaziBlockDavidsonSolMgr.hpp"
 #include "AnasaziBasicEigenproblem.hpp"
 #include "AnasaziEpetraAdapter.hpp"

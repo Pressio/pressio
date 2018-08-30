@@ -8,6 +8,7 @@
 #include "Eigen/Sparse"
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_MultiVector.h>
+#include "Epetra_LocalMap.h"
 
 
 namespace core{

@@ -1,4 +1,5 @@
 
+
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 
@@ -49,16 +50,16 @@ public:
 		  bool StaticProfile=false)
     : data_(Epetra_DataAccess::Copy, rowMap,
 	    NumEntriesPerRow, StaticProfile){}
-
-  template <typename T,
-  	    typename std::enable_if<
-  	      meta::publicly_inherits_from<T, Epetra_BlockMap>::value 
-  	      >::type * = nullptr>
-  explicit Matrix(const T & rowMap,
-  		  LO_t NumEntriesPerRow,
-  		  bool StaticProfile=false)
-    : data_(Epetra_DataAccess::Copy, static_cast<const Epetra_Map &>(rowMap),
-  	    NumEntriesPerRow, StaticProfile){}
+  
+  // template <typename T,
+  // 	    typename std::enable_if<
+  // 	      meta::publicly_inherits_from<T, Epetra_BlockMap>::value 
+  // 	      >::type * = nullptr>
+  // explicit Matrix(const T & rowMap,
+  // 		  LO_t NumEntriesPerRow,
+  // 		  bool StaticProfile=false)
+  //   : data_(Epetra_DataAccess::Copy, static_cast<const Epetra_Map &>(rowMap),
+  // 	    NumEntriesPerRow, StaticProfile){}
   
   explicit Matrix(const wrap_t & objin)
     : data_(objin){}
