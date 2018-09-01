@@ -81,15 +81,18 @@ void matrixMatrixProduct(const mat_type & A,
   
   assert( A.isFillingCompleted() );
   assert( B.isFillingCompleted() );
-  assert( C.hasSameRowDataMapAs(A) );
+
+  auto & rangeMapAB = transposeA ? A.getDomainDataMap() : A.getRowDataMap();
+  auto & rowMapC = C.getRowDataMap();
+  assert( rowMapC.SameAs(rangeMapAB) );
 
   if ( C.isFillingCompleted() ){
     assert( C.hasSameRangeDataMapAs(A) );
     assert( C.hasSameDomainDataMapAs(B) );
     EpetraExt::MatrixMatrix::Multiply(*A.data(), transposeA,
-				      *B.data(), transposeB,
-				      *C.data(),
-				      call_filingIsCompleted_on_result);
+  				      *B.data(), transposeB,
+  				      *C.data(),
+  				      call_filingIsCompleted_on_result);
   }
   else{
     EpetraExt::MatrixMatrix::Multiply(*A.data(), transposeA,
@@ -101,7 +104,6 @@ void matrixMatrixProduct(const mat_type & A,
 
 }//end fnc
 
-  
 
 /*---------------------------------------------------
 -----------------------------------------------------
@@ -124,11 +126,16 @@ auto matrixMatrixProduct(const mat_type & A,
 			 bool transposeB,
 			 bool call_filingIsCompleted_on_result = true)
 {  
+  assert( A.isFillingCompleted() );
+  assert( B.isFillingCompleted() );
 
-  auto & Armap = A.getRowDataMap();
+  // guess number of non zeros
   auto maxNonzB = B.data()->GlobalMaxNumEntries();
-  // guesstimate of number of non zeros
-  mat_type C(Armap, maxNonzB);
+
+  // rowmap of C is the range map of A if we use A
+  // rowmap of C is the domain map of A if we use A^T
+  auto & Crowmap = transposeA ? A.getDomainDataMap() : A.getRangeDataMap();
+  mat_type C(Crowmap, maxNonzB);
 
   matrixMatrixProduct(A, B, C, transposeA, transposeB,
    		      call_filingIsCompleted_on_result);

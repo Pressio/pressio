@@ -3,7 +3,7 @@ TRIBITS_TPL_FIND_INCLUDE_DIRS_AND_LIBRARIES( TRILINOS
   # REQUIRED_HEADERS  SimpleTpl.hpp
   REQUIRED_LIBS_NAMES libamesos2.dylib libanasazi.dylib libanasaziepetra.dylib libanasazitpetra.dylib 
   libaztecoo.dylib libbelos.dylib libbelosepetra.dylib libbelostpetra.dylib libepetra.dylib 
-  libepetraext.dylib libgaleri-epetra.dylib libifpack2.dylib libkokkosalgorithms.dylib 
+  libepetraext.dylib libgaleri-epetra.dylib libifpack.dylib libifpack2.dylib libkokkosalgorithms.dylib 
   libkokkoscontainers.dylib libkokkoscore.dylib libkokkoskernels.dylib libkokkostsqr.dylib 
   libloca.dylib liblocalapack.dylib libml.dylib libModeLaplace.dylib libnox.dylib 
   libnoxlapack.dylib librol.dylib libteuchoscomm.dylib libteuchoscore.dylib libteuchoskokkoscomm.dylib 

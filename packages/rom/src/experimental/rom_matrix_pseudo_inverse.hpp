@@ -4,6 +4,7 @@
 
 #include "rom_ConfigDefs.hpp"
 #include "CORE_MATRIX"
+#include "SVD_BASIC"
 
 namespace rom{
 namespace exp{

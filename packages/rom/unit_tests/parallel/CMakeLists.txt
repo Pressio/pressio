@@ -15,5 +15,5 @@ function(add_single_unit_test test_name ranks)
 endfunction()
 
 # append tests need to have a unique executable each
-#add_single_unit_test(utest_matrix_pseudoInverse_distributed_epetra 3)
+add_single_unit_test(utest_matrix_pseudoInverse_distributed_epetra 3)
 

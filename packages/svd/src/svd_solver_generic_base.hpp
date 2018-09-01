@@ -16,11 +16,16 @@ private:
   using sc_t = typename svd::details::svd_traits<derived_type>::scalar_t;
   using leftSvec_t = typename svd::details::svd_traits<derived_type>::lsv_t;
   using rightSvec_t = typename svd::details::svd_traits<derived_type>::rsv_t;
+  using sval_t = typename svd::details::svd_traits<derived_type>::sval_t;
 
 public:
 
-  void compute(matrix_t & mat, int nlsv, int nrsv){
-    this->underlying().computeImpl(mat, nlsv, nrsv);
+  template<svdType envalue,
+	   typename std::enable_if<
+	     envalue==svdType::truncated
+	     >::type * = nullptr>
+  void compute(matrix_t & mat, sc_t tol, int t){
+    this->underlying().template computeImpl<envalue>(mat, tol, t);
   }
 
   const leftSvec_t & cRefLeftSingularVectors() const {
@@ -31,9 +36,9 @@ public:
     return this->underlying().cRefRightSingularVectorsImpl();
   };
   
-  // const native_matrix_t & singularValues(){
-  //   return this->underlying().singularValuesImpl();
-  // };
+  const sval_t & singularValues() const{
+    return this->underlying().singularValuesImpl();
+  };
     
 private:    
   SolverBase() = default;

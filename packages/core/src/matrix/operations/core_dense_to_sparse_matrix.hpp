@@ -12,6 +12,7 @@
 Transform a dense matrix to sparse 
 ===================================*/
 
+
 namespace core{
   
 /*---------------------------------------------------
@@ -67,7 +68,6 @@ auto denseToSparse(const mat_type & A,
   return B;
 }
 
-
   
 /*
 A => B where Epetra dense A to CRS B.
@@ -87,8 +87,8 @@ auto denseToSparse(const mat_type & A)
 {
 
   auto & rowmap = static_cast<const Epetra_Map &>(A.getDataMap());
-  // Epetra_LocalMap lm( A.globalCols(), 0, A.commCRef() );  
-  return denseToSparse(A, rowmap, rowmap);
+  Epetra_Map colmap( A.globalCols(), 0, A.commCRef() );
+  return denseToSparse(A, colmap, rowmap);
   
 }
 

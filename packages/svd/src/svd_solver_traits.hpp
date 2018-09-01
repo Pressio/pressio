@@ -4,7 +4,6 @@
 
 #include "svd_forward_declarations.hpp"
 #include "matrix/core_matrix_traits.hpp"
-//#include meta/core_matrix_meta.hpp
 
 namespace svd{
 namespace details{
@@ -12,10 +11,12 @@ namespace details{
 template<typename T, typename enable = void>
 struct svd_traits{
   using derived_t = void;
+  using matrix_t = void;
   using native_matrix_t = void;
   using scalar_t = void;
   using lsv_t = void;
   using rsv_t = void;
+  using sval_t = void;
   
 };
 
@@ -25,10 +26,12 @@ struct svd_traits<const T> : svd_traits<T> {};
   
 template <typename matrix_type,
 	  template <typename...> class lsv_type,
-	  template <typename...> class rsv_type>
+	  template <typename...> class rsv_type,
+	  typename sval_type>
 struct svd_traits<Solver<matrix_type,
 			 lsv_type,
 			 rsv_type,
+			 sval_type,
 			 typename
 			 std::enable_if<
 			   core::meta::is_core_matrix_wrapper<
@@ -38,15 +41,15 @@ struct svd_traits<Solver<matrix_type,
 			 >
 		  >
 {
-  using derived_t = Solver<matrix_type,
-			   lsv_type,
-			   rsv_type>;
+  using derived_t = Solver<matrix_type, lsv_type, rsv_type, sval_type>;
 
   using matrix_t = matrix_type;
   using native_matrix_t = typename core::details::traits<matrix_type>::wrapped_t;
   using scalar_t = typename core::details::traits<matrix_type>::scalar_t;
   using lsv_t = lsv_type<Epetra_MultiVector>;
   using rsv_t = rsv_type<Epetra_MultiVector>;
+  using sval_t = sval_type;
+
 };
 
   

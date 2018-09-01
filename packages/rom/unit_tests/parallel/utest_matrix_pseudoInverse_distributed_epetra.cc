@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 #include "Epetra_MpiComm.h"
 #include "CORE_ALL"
-//#include "SVD_BASIC"
 #include "experimental/rom_matrix_pseudo_inverse.hpp"
 
 struct rom_matrix_pseudo_inverse_distributed_epetraFix

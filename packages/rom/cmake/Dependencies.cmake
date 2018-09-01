@@ -1,5 +1,5 @@
 TRIBITS_PACKAGE_DEFINE_DEPENDENCIES(
-  LIB_REQUIRED_PACKAGES core solvers optimization ode apps
+  LIB_REQUIRED_PACKAGES core solvers svd optimization ode apps
   LIB_OPTIONAL_PACKAGES
   #
   LIB_REQUIRED_TPLS  GTEST TRILINOS EIGEN 

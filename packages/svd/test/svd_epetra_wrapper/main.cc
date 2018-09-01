@@ -33,82 +33,94 @@ void doSVDNonSqMat(int rank, Epetra_MpiComm & Comm){
   // READ MATRIX
   //---------------------------------------------
   // every process reads the whole matrix
+  int ncols = 18;
   vvd_t A0;
-  int ncols = 4;
   readMatrixFromFile("mat_svd_notsq.dat", A0, ncols);
   int nrows = A0.size();
   assert(A0[0].size() == size_t(ncols));
   std::cout << A0.size() << " " << A0[0].size() << std::endl;
+
   // split matrix rows over processes
-  Epetra_Map dataMap(nrows,0,Comm);
+  Epetra_Map rowMap(nrows,0,Comm);
   // create a wrapper of a dense matrix
-  dmat_t ADW(dataMap, ncols);
+  dmat_t ADW(rowMap, ncols);
   // each process stores just its elements from A0
-  int nMyElem = dataMap.NumMyElements();
+  int nMyElem = rowMap.NumMyElements();
   std::vector<int> myGel(nMyElem);
-  dataMap.MyGlobalElements(myGel.data());
+  rowMap.MyGlobalElements(myGel.data());
   for (int i=0; i<nMyElem; i++){
     int gi = myGel[i];
     for (int j=0; j<ncols; j++)
       ADW.replaceGlobalValue(gi, j, A0[gi][j]);
   }
   //ADW.data()->Print(std::cout);
-  //---------------------------------------------
-    
+
+  //-------------------------
+  // dense -> CRS conversion
   auto ASW = core::denseToSparse(ADW);
-
+  //  ASW.data()->Print(std::cout);
+  
+  //-----------------------
+  // create svd solver
   using mat_type = core::Matrix<Epetra_CrsMatrix>;
-  svd::Solver<mat_type, core::MultiVector, core::MultiVector > svdO;
-  svdO.compute(ASW, 2, 2);
+  svd::Solver<mat_type,
+  	      core::MultiVector,
+  	      core::MultiVector,
+  	      core::Matrix<Epetra_CrsMatrix> > svdO;
+  svdO.compute<svd::svdType::truncated>(ASW, 1e-8, 10);
 
+  /////------------
+  //// get result
   auto & lsv = svdO.cRefLeftSingularVectors();
   lsv.data()->Print(std::cout);
   
   auto & rsv = svdO.cRefRightSingularVectors();
   rsv.data()->Print(std::cout);
 
-  // check
-  double eps = 1e-10;
-
-  std::vector<double> v1 = {-0.255073986070732, -0.783197539451064,\
-			    0.295471857367897,  0.267019285442986,\
-			    -0.230485066691989, -0.08924900944446,\
-			    0.319135091893764};
-  std::vector<double> v2 = {0.757338289561594, -0.119106054862375,\
-			    0.134771308681603,  0.173807034745873,\
-			    0.129247077197104,  0.517898868573332,\
-			    0.280991506730371};
+  auto & svals = svdO.singularValues();
+  svals.data()->Print(std::cout);
   
-  if (rank == 0){
-    for (int i=0; i<4; i++){
-      auto a1 = std::abs(lsv(i,0));
-      auto a2 = std::abs(v1[i]);
-      assert( std::abs(a1-a2) < eps  );
-    }
-    for (int i=0; i<4; i++){
-      auto a1 = std::abs(lsv(i,1));
-      auto a2 = std::abs(v2[i]);
-      assert( std::abs(a1-a2) < eps  );
-    }
+  // //----------
+  // // check
+  // double eps = 1e-10;
 
-  }
+  // std::vector<double> v1 = {-0.255073986070732, -0.783197539451064,
+  // 			    0.295471857367897,  0.267019285442986,
+  //  			    -0.230485066691989, -0.08924900944446,
+  //  			    0.319135091893764};
+  // std::vector<double> v2 = {0.757338289561594, -0.119106054862375,
+  // 			    0.134771308681603,  0.173807034745873,
+  //  			    0.129247077197104,  0.517898868573332,
+  //  			    0.280991506730371};
+  
+  // if (rank == 0){
+  //   for (int i=0; i<4; i++){
+  //     auto a1 = std::abs(lsv(i,0));
+  //     auto a2 = std::abs(v1[i]);
+  //     assert( std::abs(a1-a2) < eps  );
+  //   }
+  //   for (int i=0; i<4; i++){
+  //     auto a1 = std::abs(lsv(i,1));
+  //     auto a2 = std::abs(v2[i]);
+  //     assert( std::abs(a1-a2) < eps  );
+  //   }
+  // }
 
-  if (rank == 1){
-    for (int i=0; i<2; i++){
-      auto a1 = std::abs(lsv(i,0));
-      auto a2 = std::abs(v1[i+4]);
-      assert( std::abs(a1-a2) < eps  );
-    }
-    for (int i=0; i<2; i++){
-      auto a1 = std::abs(lsv(i,1));
-      auto a2 = std::abs(v2[i+4]);
-      assert( std::abs(a1-a2) < eps  );
-    }
-
-  }
+  // if (rank == 1){
+  //   for (int i=0; i<2; i++){
+  //     auto a1 = std::abs(lsv(i,0));
+  //     auto a2 = std::abs(v1[i+4]);
+  //     assert( std::abs(a1-a2) < eps  );
+  //   }
+  //   for (int i=0; i<2; i++){
+  //     auto a1 = std::abs(lsv(i,1));
+  //     auto a2 = std::abs(v2[i+4]);
+  //     assert( std::abs(a1-a2) < eps  );
+  //   }
+  // }
   
 }//end method
-
+//-------------------------------------------------------
 
 
 // void simple(Epetra_MpiComm & Comm, int rank){
