@@ -15,7 +15,7 @@ namespace core{
 namespace meta {
 
 template <typename T, typename enable = void>
-struct is_matrix_dense_serial_eigen : std::false_type {};
+struct is_matrix_dense_sharedmem_eigen : std::false_type {};
 
 /* a type is a dense eigen matrix if
    (a) it is not a eigen vector, 
@@ -23,7 +23,7 @@ struct is_matrix_dense_serial_eigen : std::false_type {};
    (c) its rows and cols are fully dynamic
 */
 template<typename T>
-struct is_matrix_dense_serial_eigen<T,
+struct is_matrix_dense_sharedmem_eigen<T,
     typename
     std::enable_if< !is_vector_eigen<T>::value &&
 	(std::is_same<T,Eigen::Matrix<typename T::Scalar,
@@ -43,7 +43,7 @@ struct is_matrix_dense_serial_eigen<T,
 //----------------------------------------------------------------------
   
 template <typename T, typename enable = void>
-struct is_matrix_sparse_serial_eigen : std::false_type {};
+struct is_matrix_sparse_sharedmem_eigen : std::false_type {};
 
 /* a type is a sparse eigen matrix if
    (a) it is not a eigen vector, 
@@ -51,9 +51,9 @@ struct is_matrix_sparse_serial_eigen : std::false_type {};
    (c) it is not a dense matrix
 */
 template<typename T>
-struct is_matrix_sparse_serial_eigen<T, typename
+struct is_matrix_sparse_sharedmem_eigen<T, typename
   std::enable_if< !is_vector_eigen<T>::value &&
-		  !is_matrix_dense_serial_eigen<T>::value &&
+		  !is_matrix_dense_sharedmem_eigen<T>::value &&
 		  std::is_same<T,
 			       Eigen::SparseMatrix<
 			       typename T::Scalar,
@@ -66,10 +66,10 @@ struct is_matrix_sparse_serial_eigen<T, typename
 //----------------------------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_matrix_dense_serial_stdlib : std::false_type {};
+struct is_matrix_dense_sharedmem_stdlib : std::false_type {};
 
 template <typename T>
-struct is_matrix_dense_serial_stdlib<T,
+struct is_matrix_dense_sharedmem_stdlib<T,
      typename
      std::enable_if<
        std::is_same<T,std::vector<
@@ -84,10 +84,10 @@ struct is_matrix_dense_serial_stdlib<T,
 //----------------------------------------------------------------------
 
 template <typename T1, typename T2, typename enable = void>
-struct sparse_serial_eigen_same_storage : std::false_type{};
+struct sparse_sharedmem_eigen_same_storage : std::false_type{};
 
 template <typename T1, typename T2>
-struct sparse_serial_eigen_same_storage<
+struct sparse_sharedmem_eigen_same_storage<
   T1, T2, typename
   std::enable_if<
 	    (T1::isRowMajor && T2::isRowMajor) ||
@@ -129,28 +129,28 @@ struct is_matrix_dense_distributed_epetra<T,
 /////////////////////
 
   
-#define STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_EIGEN(TYPE) \
-  static_assert( core::meta::is_matrix_dense_serial_eigen<TYPE>::value,	\
-		 "THIS_IS_NOT_A_MATRIX_DENSE_SERIAL_EIGEN")
-#define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_EIGEN(TYPE) \
-  static_assert( !core::meta::is_matrix_dense_serial_eigen<TYPE>::value, \
-		 "THIS_IS_A_MATRIX_DENSE_SERIAL_EIGEN")
+#define STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_EIGEN(TYPE) \
+  static_assert( core::meta::is_matrix_dense_sharedmem_eigen<TYPE>::value,	\
+		 "THIS_IS_NOT_A_MATRIX_DENSE_SHAREDMEM_EIGEN")
+#define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_EIGEN(TYPE) \
+  static_assert( !core::meta::is_matrix_dense_sharedmem_eigen<TYPE>::value, \
+		 "THIS_IS_A_MATRIX_DENSE_SHAREDMEM_EIGEN")
 
   
-#define STATIC_ASSERT_IS_MATRIX_SPARSE_SERIAL_EIGEN(TYPE) \
-  static_assert( core::meta::is_matrix_sparse_serial_eigen<TYPE>::value,	\
-		 "THIS_IS_NOT_A_MATRIX_SPARSE_SERIAL_EIGEN")
-#define STATIC_ASSERT_IS_NOT_MATRIX_SPARSE_SERIAL_EIGEN(TYPE) \
-  static_assert( !core::meta::is_matrix_sparse_serial_eigen<TYPE>::value, \
-		 "THIS_IS_A_MATRIX_SPARSE_SERIAL_EIGEN")
+#define STATIC_ASSERT_IS_MATRIX_SPARSE_SHAREDMEM_EIGEN(TYPE) \
+  static_assert( core::meta::is_matrix_sparse_sharedmem_eigen<TYPE>::value,	\
+		 "THIS_IS_NOT_A_MATRIX_SPARSE_SHAREDMEM_EIGEN")
+#define STATIC_ASSERT_IS_NOT_MATRIX_SPARSE_SHAREDMEM_EIGEN(TYPE) \
+  static_assert( !core::meta::is_matrix_sparse_sharedmem_eigen<TYPE>::value, \
+		 "THIS_IS_A_MATRIX_SPARSE_SHAREDMEM_EIGEN")
 
   
-#define STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_STDLIB(TYPE)	      \
-  static_assert( core::meta::is_matrix_dense_serial_stdlib<TYPE>::value, \
-		 "THIS_IS_NOT_A_MATRIX_DENSE_SERIAL_STDLIB")
-#define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_STDLIB(TYPE) \
-  static_assert( !core::meta::is_matrix_dense_serial_stdlib<TYPE>::value, \
-		 "THIS_IS_A_MATRIX_DENSE_SERIAL_STDLIB")
+#define STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_STDLIB(TYPE)	      \
+  static_assert( core::meta::is_matrix_dense_sharedmem_stdlib<TYPE>::value, \
+		 "THIS_IS_NOT_A_MATRIX_DENSE_SHAREDMEM_STDLIB")
+#define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_STDLIB(TYPE) \
+  static_assert( !core::meta::is_matrix_dense_sharedmem_stdlib<TYPE>::value, \
+		 "THIS_IS_A_MATRIX_DENSE_SHAREDMEM_STDLIB")
 
   
 #define STATIC_ASSERT_IS_MATRIX_SPARSE_DISTRIBUTED_EPETRA(TYPE)	      \

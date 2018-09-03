@@ -38,14 +38,13 @@ struct traits<MultiVector<wrapped_type,
   static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
   static constexpr int isSTDVector = 0;
-  static constexpr int isSerial = 0;
+  static constexpr int isSharedMem = 0;
   static constexpr int isEigen = 0;
   // make these void just to be clear they are not usable
   using ordinal_t = void;
 };
 
-  
-  
+    
 /////////////////////////
 }//end namespace details  
 /////////////////////////

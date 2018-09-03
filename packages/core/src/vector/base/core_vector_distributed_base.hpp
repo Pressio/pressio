@@ -13,7 +13,7 @@ class VectorDistributedBase
 {
 
   static_assert( details::traits<derived_type>::isDistributed==1,
-  "OOPS: serial concrete vector inheriting from distributed base!");
+  "OOPS: non-distributed concrete vector inheriting from distributed base!");
 
 private:
   using this_t = VectorDistributedBase<derived_type>;

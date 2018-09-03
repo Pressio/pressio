@@ -7,13 +7,13 @@
 #include "../src/vector/core_vector_traits.hpp"
 
 #include "../src/vector/base/core_vector_math_base.hpp"
-#include "../src/vector/base/core_vector_serial_base.hpp"
+#include "../src/vector/base/core_vector_sharedmem_base.hpp"
 #include "../src/vector/base/core_vector_distributed_base.hpp"
 
 #include "../src/vector/concrete/core_vector_distributed_epetra.hpp"
-#include "../src/vector/concrete/core_vector_serial_eigen.hpp"
-#include "../src/vector/concrete/core_vector_serial_stdlib.hpp"
-#include "../src/vector/concrete/core_vector_serial_userdefined.hpp"
+#include "../src/vector/concrete/core_vector_sharedmem_eigen.hpp"
+#include "../src/vector/concrete/core_vector_sharedmem_stdlib.hpp"
+#include "../src/vector/concrete/core_vector_sharedmem_userdefined.hpp"
 
 #include "../src/vector/operations/core_vector_dot_product.hpp"
 

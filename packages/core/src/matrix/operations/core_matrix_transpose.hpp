@@ -3,8 +3,8 @@
 #define CORE_MATRIX_OPERATIONS_MATRIX_TRANSPOSE_HPP_
 
 #include "../../meta/core_matrix_meta.hpp"
-#include "../concrete/core_matrix_dense_serial_eigen.hpp"
-#include "../concrete/core_matrix_sparse_serial_eigen.hpp"
+#include "../concrete/core_matrix_dense_sharedmem_eigen.hpp"
+#include "../concrete/core_matrix_sparse_sharedmem_eigen.hpp"
 #include "EpetraExt_Transpose_RowMatrix.h"
 //#include <Epetra_RowMatrixTransposer.h>
 

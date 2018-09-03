@@ -13,7 +13,8 @@ class MultiVectorDistributedBase
 {
 
   static_assert( details::traits<derived_type>::isDistributed==1,
-  "OOPS: serial concrete class inheriting from multi_vector distributed base!");
+  "OOPS: non-distributed concrete class inheriting \
+from multi_vector distributed base!");
 
 private:
   using sc_t = typename details::traits<derived_type>::scalar_t;

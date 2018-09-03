@@ -3,8 +3,8 @@
 #define CORE_MATRIX_OPERATIONS_MATRIX_MATRIX_PRODUCT_HPP_
 
 #include "../../meta/core_matrix_meta.hpp"
-#include "../concrete/core_matrix_dense_serial_eigen.hpp"
-#include "../concrete/core_matrix_sparse_serial_eigen.hpp"
+#include "../concrete/core_matrix_dense_sharedmem_eigen.hpp"
+#include "../concrete/core_matrix_sparse_sharedmem_eigen.hpp"
 #include <EpetraExt_MatrixMatrix.h>
 #include "TpetraExt_MatrixMatrix.hpp"
 #include "Epetra_LocalMap.h"

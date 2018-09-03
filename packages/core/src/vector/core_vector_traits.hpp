@@ -30,7 +30,7 @@ struct traits<Vector<wrapped_type,
   using derived_t = Vector<wrapped_t>;
   static constexpr int isVector = 1;
   static constexpr int isEigen = 1;
-  static constexpr int isSerial = 1;
+  static constexpr int isSharedMem = 1;
   static constexpr int isSTDVector = 0;
   static constexpr int isDistributed = 0;
   static constexpr int isStatic = (
@@ -67,7 +67,7 @@ struct traits<Vector<wrapped_type,
   using derived_t = Vector<wrapped_t>;
   static constexpr int isVector = 1;
   static constexpr int isSTDVector = 1;
-  static constexpr int isSerial = 1;
+  static constexpr int isSharedMem = 1;
   static constexpr int isDistributed = 0;
   static constexpr int isEigen = 0;
   // make these void just to be clear they are not usable
@@ -77,7 +77,7 @@ struct traits<Vector<wrapped_type,
 
 
 //*******************************
-// user-defined serial vector 
+// user-defined sharedMem vector 
 //******************************* 
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
@@ -102,13 +102,14 @@ struct traits<Vector<wrapped_type,
   using wrapped_t = wrapped_type;
   using derived_t = Vector<wrapped_type>;
   static constexpr int isVector = 1;
-  static constexpr int isSerial = 1;
+  static constexpr int isSharedMem = 1;
   static constexpr int isDistributed = 0;
   static constexpr int isEigen = 0;
   static constexpr int isSTDVector = 0;
   // make these void just to be clear they are not usable
   using local_ordinal_t = void;
   using global_ordinal_t = void;
+
 };
 
 
@@ -123,7 +124,7 @@ struct traits<Vector<wrapped_type,
       >::value>::type>
       >
 {
-
+  
   using scalar_t = defaultTypes::epetra_scalar_t;
   using local_ordinal_t = core::defaultTypes::epetra_lo_t;
   using global_ordinal_t = core::defaultTypes::epetra_go_t1;
@@ -136,10 +137,11 @@ struct traits<Vector<wrapped_type,
   static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
   static constexpr int isSTDVector = 0;
-  static constexpr int isSerial = 0;
+  static constexpr int isSharedMem = 0;
   static constexpr int isEigen = 0;
   // make these void just to be clear they are not usable
   using ordinal_t = void;
+
 };
 
   
@@ -172,40 +174,3 @@ struct is_core_vector<T,
   
 }//end namespace core
 #endif
-
-
-
-
-
-
-
-  // //*******************************
-  // // for a general distributed vector 
-  // //******************************* 
-  // template <typename wrapped_type>
-  // struct traits<Vector<wrapped_type,
-  // 		       typename std::enable_if<!std::is_same<wrapped_type,Epetra_Vector>::value &&
-  // 					       core::meta::has_scalar_typedef<wrapped_type>::value &&
-  // 					       core::meta::has_local_ordinal_typedef<wrapped_type>::value &&
-  // 					       core::meta::has_global_ordinal_typedef<wrapped_type>::value &&
-  // 					       core::meta::has_mapTypedef<wrapped_type>::value && 
-  // 					       core::meta::has_commTypedef<wrapped_type>::value
-  // 					       >::type
-  // 		       >
-  // 		>
-  // {
-  //   using scalar_t = typename wrapped_type::scalar_type;
-  //   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
-  //   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
-  //   using wrapped_t = wrapped_type;
-  //   using derived_t = Vector<wrapped_t>;
-  //   using map_t = typename wrapped_type::map_type;
-  //   using comm_t = typename wrapped_type::comm_type;
-  //   enum {
-  //     isVector = 1,
-  //     isSTDVector = 0,
-  //     isSerial = 0,
-  //     isDistributed = 1,
-  //     isEigen = 0
-  //   };
-  // };

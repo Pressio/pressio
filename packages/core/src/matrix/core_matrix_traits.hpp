@@ -18,7 +18,7 @@ struct traits< Matrix<
     wrapped_type,
     typename
     std::enable_if<
-      core::meta::is_matrix_dense_serial_eigen<
+      core::meta::is_matrix_dense_sharedmem_eigen<
 	wrapped_type>::value
       >::type
     >
@@ -35,9 +35,9 @@ struct traits< Matrix<
   static constexpr int isEpetra = 0;
   static constexpr int isDense = 1;
   static constexpr int isSparse = !isDense;
-  static constexpr int isSerial = 1;
+  static constexpr int isSharedMem = 1;
   static constexpr int isVector = !isMatrix;
-  static constexpr int isDistributed = !isSerial;
+  static constexpr int isDistributed = !isSharedMem;
   static constexpr int isStdlib = 0;
   static constexpr int isStatic =
     ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
@@ -54,7 +54,7 @@ struct traits< Matrix<
     wrapped_type,
     typename
     std::enable_if<
-      core::meta::is_matrix_sparse_serial_eigen<
+      core::meta::is_matrix_sparse_sharedmem_eigen<
 	wrapped_type
 	>::value
       >::type
@@ -80,9 +80,9 @@ struct traits< Matrix<
   static constexpr int isEpetra = 0;
   static constexpr int isDense = 0;
   static constexpr int isSparse = 1;
-  static constexpr int isSerial = 1;
+  static constexpr int isSharedMem = 1;
   static constexpr int isVector = !isMatrix;
-  static constexpr int isDistributed = !isSerial;
+  static constexpr int isDistributed = !isSharedMem;
   static constexpr int isStdlib = 0;
   static constexpr int isStatic = 0;
 };
@@ -97,7 +97,7 @@ struct traits< Matrix<
     wrapped_type,
     typename
     std::enable_if<
-      core::meta::is_matrix_dense_serial_stdlib<
+      core::meta::is_matrix_dense_sharedmem_stdlib<
 	wrapped_type
 	>::value
       >::type
@@ -116,9 +116,9 @@ struct traits< Matrix<
   static constexpr int isEpetra = 0;
   static constexpr int isDense = 1;
   static constexpr int isSparse = !isDense;
-  static constexpr int isSerial = 1;
+  static constexpr int isSharedMem = 1;
   static constexpr int isVector = !isMatrix;
-  static constexpr int isDistributed = !isSerial;
+  static constexpr int isDistributed = !isSharedMem;
   static constexpr int isStatic = 0;
 };
 
@@ -157,7 +157,7 @@ struct traits<Matrix
   static constexpr int isDistributed = 1;
   static constexpr int isEigen = 0;
   static constexpr int isDense = 0;
-  static constexpr int isSerial = 0;
+  static constexpr int isSharedMem = 0;
   static constexpr int isVector = 0;
   static constexpr int isStdlib = 0;
   static constexpr int isStatic = 0;
@@ -201,7 +201,7 @@ struct traits<Matrix
 
   static constexpr int isEigen = 0;
   static constexpr int isDense = 1;
-  static constexpr int isSerial = 0;
+  static constexpr int isSharedMem = 0;
   static constexpr int isVector = 0;
   static constexpr int isStdlib = 0;
   static constexpr int isStatic = 0;

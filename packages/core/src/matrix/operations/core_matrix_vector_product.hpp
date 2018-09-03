@@ -3,10 +3,10 @@
 #define CORE_MATRIX_OPERATIONS_MATRIX_VECTOR_PRODUCT_HPP_
 
 #include "../../meta/core_vector_meta.hpp"
-#include "../../vector/concrete/core_vector_serial_eigen.hpp"
+#include "../../vector/concrete/core_vector_sharedmem_eigen.hpp"
 #include "../../meta/core_matrix_meta.hpp"
-#include "../concrete/core_matrix_dense_serial_eigen.hpp"
-#include "../concrete/core_matrix_sparse_serial_eigen.hpp"
+#include "../concrete/core_matrix_dense_sharedmem_eigen.hpp"
+#include "../concrete/core_matrix_sparse_sharedmem_eigen.hpp"
 #include "Epetra_LocalMap.h"
 #include <Epetra_Export.h>
 #include <Epetra_Import.h>

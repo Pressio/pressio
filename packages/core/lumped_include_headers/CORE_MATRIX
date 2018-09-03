@@ -10,22 +10,22 @@
 ///base classes
 ///------------------
 #include "../src/matrix/base/core_matrix_math_base.hpp"
-#include "../src/matrix/base/core_matrix_serial_base.hpp"
+#include "../src/matrix/base/core_matrix_sharedmem_base.hpp"
 #include "../src/matrix/base/core_matrix_distributed_base.hpp"
 ///---- dense ----
 #include "../src/matrix/base/core_matrix_dense_distributed_base.hpp"
-#include "../src/matrix/base/core_matrix_dense_serial_base.hpp"
+#include "../src/matrix/base/core_matrix_dense_sharedmem_base.hpp"
 ///---- sparse ----
-#include "../src/matrix/base/core_matrix_sparse_serial_base.hpp"
+#include "../src/matrix/base/core_matrix_sparse_sharedmem_base.hpp"
 #include "../src/matrix/base/core_matrix_sparse_distributed_base.hpp"
 #include "../src/matrix/base/core_matrix_sparse_distributed_trilinos.hpp"
 
 ///------------------
 ///concrete classes
 ///------------------
-#include "../src/matrix/concrete/core_matrix_dense_serial_eigen.hpp"
-#include "../src/matrix/concrete/core_matrix_dense_serial_stdlib.hpp"
-#include "../src/matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
+#include "../src/matrix/concrete/core_matrix_dense_sharedmem_eigen.hpp"
+#include "../src/matrix/concrete/core_matrix_dense_sharedmem_stdlib.hpp"
+#include "../src/matrix/concrete/core_matrix_sparse_sharedmem_eigen.hpp"
 #include "../src/matrix/concrete/core_matrix_sparse_distributed_epetra.hpp"
 #include "../src/matrix/concrete/core_matrix_dense_distributed_epetra.hpp"
 

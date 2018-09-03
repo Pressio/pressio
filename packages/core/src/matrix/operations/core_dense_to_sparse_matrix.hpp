@@ -3,8 +3,8 @@
 #define CORE_MATRIX_DENSE_TO_SPARSE_HPP_
 
 #include "../../meta/core_matrix_meta.hpp"
-#include "../concrete/core_matrix_dense_serial_eigen.hpp"
-#include "../concrete/core_matrix_sparse_serial_eigen.hpp"
+#include "../concrete/core_matrix_dense_sharedmem_eigen.hpp"
+#include "../concrete/core_matrix_sparse_sharedmem_eigen.hpp"
 #include "../concrete/core_matrix_dense_distributed_epetra.hpp"
 #include "../concrete/core_matrix_sparse_distributed_epetra.hpp"
 
