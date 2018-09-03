@@ -8,6 +8,7 @@ PFX=/Users/fnrizzi/Desktop/romppInstall
 MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc550
 TRILPATH=/Users/fnrizzi/tpl/trilinos/installCPPonly
 EIGENINCPATH=/Users/fnrizzi/tpl/eigen/3.3.3/install
+KOKKOSPATH=/Users/fnrizzi/tpl/kokkos/install
 GTESTPATH=/Users/fnrizzi/tpl/gtest/install
 
 cmake \
@@ -15,6 +16,8 @@ cmake \
     -D CMAKE_INSTALL_PREFIX:PATH=${PFX} \
     -D BUILD_SHARED_LIBS:BOOL=ON \
     -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    \
+    -D CMAKE_CXX_FLAGS="-std=c++11 -fopenmp"\
     \
     -D TPL_ENABLE_MPI=ON \
     -D MPI_BASE_DIR:PATH=${MPIPATH} \
@@ -24,6 +27,7 @@ cmake \
     -D TRILINOS_INCLUDE_DIRS:PATH=${TRILPATH}/include \
     -D TPL_ENABLE_EIGEN=ON \
     -D EIGEN_INCLUDE_DIRS:PATH=${EIGENINCPATH} \
+    \
     -D TPL_ENABLE_GTEST=ON \
     -D GTEST_LIBRARY_DIRS:PATH=${GTESTPATH}/lib \
     -D GTEST_INCLUDE_DIRS:PATH=${GTESTPATH}/include \
@@ -49,3 +53,8 @@ cmake \
     # -D rompp_ENABLE_svd:BOOL=OFF \
     # -D rompp_ENABLE_apps:BOOL=OFF \
     # -D rompp_ENABLE_rom:BOOL=OFF \
+
+
+    # -D TPL_ENABLE_KOKKOS=ON \
+    # -D KOKKOS_LIBRARY_DIRS:PATH=${KOKKOSPATH}/lib \
+    # -D KOKKOS_INCLUDE_DIRS:PATH=${KOKKOSPATH}/include \
