@@ -4,29 +4,33 @@
 
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
+#include "../../shared_base/core_container_resizable_base.hpp"
+#include "../../shared_base/core_container_nonresizable_base.hpp"
+
 #include "../base/core_vector_sharedmem_base.hpp"
 #include "../base/core_vector_math_base.hpp"
-
 
 namespace core{
   
 template <typename wrapped_type>
 class Vector<wrapped_type,
-	     typename std::enable_if<
+	     core::meta::enable_if_t<
 	       core::meta::is_vector_eigen<wrapped_type>::value
-	       >::type
+	       >
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >,
     public ArithmeticOperatorsBase<Vector<wrapped_type>>,
     public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>,
-    public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
-              typename details::traits<Vector<wrapped_type>>::scalar_t,
-              typename details::traits<Vector<wrapped_type>>::ordinal_t>
+    public std::conditional<
+  details::traits<Vector<wrapped_type>>::isStatic == true,
+  ContainerNonResizableBase<Vector<wrapped_type>, 1>,
+  ContainerResizableBase<Vector<wrapped_type>, 1>
+  >::type
+  
 {
 
-private:
   using this_t = Vector<wrapped_type>;
   using mytraits = typename details::traits<this_t>;  
   using sc_t = typename mytraits::scalar_t;
@@ -36,11 +40,17 @@ private:
 public:
   Vector() = default;
 
-  explicit Vector(ord_t insize){
+  template <typename T,
+	    typename std::enable_if<
+	      std::is_same<T,ord_t>::value &&
+	      !mytraits::isStatic
+	      >::type * = nullptr>
+  explicit Vector(T insize){
     this->resize(insize);
   }
 
-  explicit Vector(const wrap_t & src) : data_(src){}
+  explicit Vector(const wrap_t & src)
+    : data_(src){}
 
   Vector(this_t const & other)
     : data_(*other.data()){}
@@ -94,6 +104,10 @@ public:
 
 private:
 
+  template <typename T = ord_t,
+  	    typename std::enable_if<
+  	      !mytraits::isStatic, T
+  	      >::type * = nullptr>
   void matchLayoutWithImpl(const this_t & other){
     this.resize( other.size() );
   }
@@ -118,23 +132,18 @@ private:
     return this->size()==0 ? true : false;
   }
 
-  //-----------------
-  //from sharedMem base
-  //-----------------
   ord_t sizeImpl() const {
     return (data_.rows()==1) ? data_.cols() : data_.rows();
   }
-  void resizeImpl(ord_t val){
-    // check that the wrapped type is NOT a static vector from Eigen
-    // otherwise we cannot resizee a static vector.
-    static_assert(mytraits::isStatic == false,
-		  "You cannot resize a vector wrapping a STATIC Eigen vector!");
+
+  template <typename T = ord_t,
+	    typename std::enable_if<
+	      !mytraits::isStatic, T
+	      >::type * = nullptr>
+  void resizeImpl(T val){
     data_.resize(val);
   }
 
-  //----------------
-  //from math base
-  //----------------
   template<typename op_t>
   void inPlaceOpImpl(sc_t a1, sc_t a2, const this_t & other){
     // this = a1*this op a2*other;
@@ -178,7 +187,11 @@ private:
   friend VectorMathBase< this_t >;
   friend ArithmeticOperatorsBase< this_t >;
   friend CompoundAssignmentOperatorsBase< this_t >;  
-  friend Subscripting1DOperatorsBase< this_t, sc_t, ord_t>;
+  friend typename std::conditional<
+    details::traits<this_t>::isStatic == true,
+    ContainerNonResizableBase<this_t, 1>,
+    ContainerResizableBase<this_t, 1>
+    >::type;
 
 private:
   wrap_t data_;

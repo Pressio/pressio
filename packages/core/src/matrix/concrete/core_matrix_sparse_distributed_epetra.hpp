@@ -1,36 +1,36 @@
 
-
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
+#include "../../shared_base/core_container_distributed_mpi_base.hpp"
+
+#include "../base/core_matrix_base.hpp"
+#include "../base/core_matrix_sparse_base.hpp"
 #include "../base/core_matrix_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_base.hpp"
-#include "../base/core_matrix_sparse_distributed_trilinos.hpp"
-#include "../../shared_base/core_container_distributed_base.hpp"
+#include "../base/core_matrix_sparse_distributed_trilinos_base.hpp"
 
 namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
-	     typename
-	     std::enable_if<
+	     core::meta::enable_if_t<
 	       core::meta::is_matrix_sparse_distributed_epetra<
-		 wrapped_type>::value
-	       >::type
+		 wrapped_type>::value>
 	     >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
+    public MatrixBase< Matrix<wrapped_type> >,
+    public MatrixSparseBase< Matrix<wrapped_type> >,
     public MatrixDistributedBase< Matrix<wrapped_type> >,
     public MatrixSparseDistributedBase< Matrix<wrapped_type> >,
-    public MatrixSparseDistributedTrilinos< Matrix<wrapped_type> >,
-    public ContainerDistributedBase< Matrix<wrapped_type>, 
-              typename details::traits<Matrix<wrapped_type>>::communicator_t >
+    public MatrixSparseDistributedTrilinosBase< Matrix<wrapped_type> >,
+    public ContainerDistributedMpiBase< Matrix<wrapped_type>, 
+      typename details::traits<Matrix<wrapped_type>>::communicator_t >
 {
 
-private:
   using derived_t = Matrix<wrapped_type>;
   using traits_t = details::traits<derived_t>;
-
   using sc_t = typename traits_t::scalar_t;
   using LO_t = typename traits_t::local_ordinal_t;
   using GO_t = typename traits_t::global_ordinal_t;
@@ -165,10 +165,12 @@ private:
   
 private:
   friend ContainerBase< derived_t, wrapped_type >;
+  friend MatrixBase< derived_t >;
+  friend MatrixSparseBase< derived_t >;
   friend MatrixDistributedBase< derived_t >;
   friend MatrixSparseDistributedBase< derived_t >;
-  friend MatrixSparseDistributedTrilinos< derived_t >;
-  friend ContainerDistributedBase< derived_t, comm_t >;
+  friend MatrixSparseDistributedTrilinosBase< derived_t >;
+  friend ContainerDistributedMpiBase< derived_t, comm_t >;
 
 private:
   wrap_t data_;

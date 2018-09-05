@@ -17,7 +17,8 @@ class Vector<wrapped_type,
 	     typename std::enable_if<
 	       !core::meta::is_vector_stdlib<wrapped_type>::value &&
 	       !core::meta::is_vector_eigen<wrapped_type>::value &&
-	       !core::meta::is_vector_epetra<wrapped_type>::value
+	       !core::meta::is_vector_epetra<wrapped_type>::value &&
+	       !core::meta::is_vector_kokkos<wrapped_type>::value
 	       >::type
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type>,

@@ -10,29 +10,26 @@ template<typename derived_type,
          typename wrapped_t>
 class ContainerBase 
   : private core::details::CrtpBase<
-  ContainerBase<derived_type, wrapped_t>>
-{
+  ContainerBase<derived_type, wrapped_t>>{
 
 public:
   wrapped_t const * data() const {
-    return this->underlying().dataImpl();
-  }
+    return this->underlying().dataImpl();}
 
   wrapped_t * data(){
-    return this->underlying().dataImpl();
-  }
+    return this->underlying().dataImpl();}
+
+  wrapped_t dataCp(){
+    return this->underlying().dataCpImpl();}
   
   bool empty() const {
-    return this->underlying().emptyImpl();
-  };
+    return this->underlying().emptyImpl();}
 
   void setZero() {
-    this->underlying().setZeroImpl();
-  }
+    this->underlying().setZeroImpl();}
 
   void matchLayoutWith(const derived_type & other){
-    this->underlying().matchLayoutWithImpl(other);
-  }
+    this->underlying().matchLayoutWithImpl(other);}
   
 private:
   friend derived_type;
@@ -43,6 +40,5 @@ private:
   ~ContainerBase() = default;
       
 };//end class
-  
 } // end namespace core
 #endif

@@ -9,28 +9,24 @@ namespace core{
 template<typename derived_type>
 class MatrixSparseDistributedBase
   : private core::details::CrtpBase<
-  MatrixSparseDistributedBase<derived_type>>
-{
+  MatrixSparseDistributedBase<derived_type>>{
 
   static_assert( details::traits<derived_type>::isDistributed==1,
-		 "OOPS: non-distributed matrix inheriting \
-from sparse distributed base!");
+  "OOPS: non-distributed matrix inheriting from sparse distributed base!");
 
-private:
   using traits_t = details::traits<derived_type>;
   using sc_t = typename traits_t::scalar_t;
   using LO_t = typename traits_t::local_ordinal_t;
   using GO_t = typename traits_t::global_ordinal_t;
   
 public:
-  void insertGlobalValues(GO_t targetRow,
+  void insertGlobalValues(GO_t row,
 			  LO_t numEntries,
 			  const sc_t * values,
 			  const GO_t * indices){
-    this->underlying().insertGlobalValuesImpl(targetRow,
+    this->underlying().insertGlobalValuesImpl(row,
 					      numEntries,
-					      values,
-					      indices);
+					      values, indices);
   }
 
 private:  

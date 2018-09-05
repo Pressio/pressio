@@ -9,7 +9,45 @@
 
 namespace core{
 namespace details{
+  
+//*******************************
+// Kokkos vector 
+//******************************* 
+template <typename wrapped_type>
+struct traits<Vector<wrapped_type,
+	       core::meta::enable_if_t<
+		 core::meta::is_vector_kokkos<
+		   wrapped_type>::value
+		 >
+	       >
+	      >
+{
 
+  using wrapped_t = wrapped_type;
+  using scalar_t = typename wrapped_type::traits::value_type;
+  using ordinal_t = int;
+  using derived_t = Vector<wrapped_t>;
+  static constexpr int isVector = 1;
+  static constexpr int isKokkos = 1;
+  static constexpr int isEigen = 0;
+  static constexpr int isSharedMem = 1;
+  static constexpr int isSTDVector = 0;
+  static constexpr int isDistributed = 0;
+
+  using  execution_space = typename wrapped_type::traits::execution_space;
+  using  memory_space = typename wrapped_type::traits::memory_space;
+  using  device_type = typename wrapped_type::traits::device_type;
+  using  memory_traits = typename wrapped_type::traits::memory_traits;
+  using  host_mirror_space = typename wrapped_type::traits::host_mirror_space;
+  static constexpr int isStatic = wrapped_type::traits::rank_dynamic==0;
+    
+  // make these void just to be clear they are not usable
+  using local_ordinal_t = void;
+  using global_ordinal_t = void;
+};
+
+  
+  
 //*******************************
 // Eigen vector 
 //******************************* 
@@ -32,6 +70,7 @@ struct traits<Vector<wrapped_type,
   static constexpr int isEigen = 1;
   static constexpr int isSharedMem = 1;
   static constexpr int isSTDVector = 0;
+  static constexpr int isKokkos = 0;
   static constexpr int isDistributed = 0;
   static constexpr int isStatic = (
 	// if it is a row vector NON dynamic
@@ -70,6 +109,7 @@ struct traits<Vector<wrapped_type,
   static constexpr int isSharedMem = 1;
   static constexpr int isDistributed = 0;
   static constexpr int isEigen = 0;
+  static constexpr int isKokkos = 0;
   // make these void just to be clear they are not usable
   using local_ordinal_t = void;
   using global_ordinal_t = void;
@@ -106,6 +146,7 @@ struct traits<Vector<wrapped_type,
   static constexpr int isDistributed = 0;
   static constexpr int isEigen = 0;
   static constexpr int isSTDVector = 0;
+  static constexpr int isKokkos = 0;
   // make these void just to be clear they are not usable
   using local_ordinal_t = void;
   using global_ordinal_t = void;
@@ -136,6 +177,7 @@ struct traits<Vector<wrapped_type,
   static constexpr int isMultiVector = 0;
   static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
+  static constexpr int isKokkos = 0;
   static constexpr int isSTDVector = 0;
   static constexpr int isSharedMem = 0;
   static constexpr int isEigen = 0;

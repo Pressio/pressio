@@ -3,23 +3,24 @@
 #define CORE_MATRIX_CONCRETE_MATRIX_DENSE_DISTRIBUTED_EPETRA_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
-#include "../base/core_matrix_distributed_base.hpp"
-#include "../base/core_matrix_dense_distributed_base.hpp"
-#include "../../shared_base/core_container_distributed_base.hpp"
+#include "../../shared_base/core_container_distributed_mpi_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
+
+#include "../base/core_matrix_distributed_base.hpp"
+#include "../base/core_matrix_dense_distributed_base.hpp"
+#include "../base/core_matrix_base.hpp"
 
 namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
-	     typename
-	     std::enable_if<
+	     core::meta::enable_if_t<
 	       core::meta::is_matrix_dense_distributed_epetra<
-		 wrapped_type>::value
-	       >::type
+		 wrapped_type>::value>
 	     >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
+    public MatrixBase< Matrix<wrapped_type> >,
     public MatrixDistributedBase< Matrix<wrapped_type> >,
     public MatrixDenseDistributedBase< Matrix<wrapped_type> >,
     public Subscripting2DOperatorsBase< Matrix<wrapped_type>,
@@ -27,15 +28,13 @@ class Matrix<wrapped_type,
       typename details::traits<Matrix<wrapped_type>>::local_ordinal_t,
       typename details::traits<Matrix<wrapped_type>>::global_ordinal_t>,
     public ContainerDistributedTrilinosBase< Matrix<wrapped_type>, 
-              typename details::traits<Matrix<wrapped_type>>::row_map_t >, 
-    public ContainerDistributedBase< Matrix<wrapped_type>, 
-              typename details::traits<Matrix<wrapped_type>>::communicator_t >
+      typename details::traits<Matrix<wrapped_type>>::row_map_t >, 
+    public ContainerDistributedMpiBase< Matrix<wrapped_type>, 
+      typename details::traits<Matrix<wrapped_type>>::communicator_t >
 {
 
-private:
   using this_t = Matrix<wrapped_type>;
   using traits_t = details::traits<this_t>;
-
   using sc_t = typename traits_t::scalar_t;
   using LO_t = typename traits_t::local_ordinal_t;
   using GO_t = typename traits_t::global_ordinal_t;
@@ -44,10 +43,10 @@ private:
   using row_map_t = typename traits_t::row_map_t;
   
 public:
+  
   Matrix() = delete;
-
-  explicit Matrix(const row_map_t & rowMap,
-		  GO_t ncols)
+  
+  explicit Matrix(const row_map_t & rowMap, GO_t ncols)
     : data_(rowMap, ncols){}
 
   explicit Matrix(const wrap_t & objin)
@@ -131,9 +130,10 @@ private:
   
 private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend MatrixBase< this_t >;
   friend MatrixDistributedBase< this_t >;
   friend MatrixDenseDistributedBase< this_t >;
-  friend ContainerDistributedBase< this_t, comm_t >;
+  friend ContainerDistributedMpiBase< this_t, comm_t >;
   friend ContainerDistributedTrilinosBase< this_t, row_map_t >;
   friend Subscripting2DOperatorsBase< this_t, sc_t, LO_t, GO_t>;
 

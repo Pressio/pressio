@@ -25,11 +25,24 @@ namespace meta {
 
   /////////////////////////////////////////////////
 
-  template <typename... >
-  using void_t = void;
+    
+  /*This allows allows for a shorter syntax:
+      enable_if_t<a_condition, MyType>
+    as opposed to:
+      typename enable_if<a_certain_condition, MyType>::type
+  */
+  template<bool condition, typename T = void>
+  using enable_if_t = typename std::enable_if<condition,T>::type;
   
   /////////////////////////////////////////////////
 
+  
+  template <typename... >
+  using void_t = void;
+
+  /////////////////////////////////////////////////
+
+  
   // check if a type is default constructible
   // we leave this commented out, for now.
   // we use the std method instead.

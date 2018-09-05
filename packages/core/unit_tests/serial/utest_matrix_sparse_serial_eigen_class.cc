@@ -231,7 +231,7 @@ public:
 
   //---------------------------------------------------
   void checkConstructor(){
-    STATIC_ASSERT_IS_MATRIX_SPARSE_SERIAL_EIGEN(native_t);
+    STATIC_ASSERT_IS_MATRIX_SPARSE_SHAREDMEM_EIGEN(native_t);
     EXPECT_TRUE(matTrait::isEigen == 1);
     //EXPECT_TRUE(matTrait::isRowMajor == storage_type);
     // mymat_t m1;

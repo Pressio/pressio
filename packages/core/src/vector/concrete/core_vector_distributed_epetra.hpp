@@ -3,11 +3,12 @@
 #define CORE_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_EPETRA_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
-#include "../base/core_vector_distributed_base.hpp"
-#include "../base/core_vector_math_base.hpp"
-#include "../../shared_base/core_container_distributed_base.hpp"
+#include "../../shared_base/core_container_distributed_mpi_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
+
+#include "../base/core_vector_distributed_base.hpp"
+#include "../base/core_vector_math_base.hpp"
 
 namespace core{
   
@@ -22,7 +23,7 @@ class Vector<wrapped_type,
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorDistributedBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >, 
-    public ContainerDistributedBase< Vector<wrapped_type>, 
+    public ContainerDistributedMpiBase< Vector<wrapped_type>, 
               typename details::traits<Vector<wrapped_type>>::communicator_t >, 
     public ContainerDistributedTrilinosBase< Vector<wrapped_type>, 
               typename details::traits<Vector<wrapped_type>>::data_map_t >, 
@@ -31,7 +32,6 @@ class Vector<wrapped_type,
               typename details::traits<Vector<wrapped_type>>::local_ordinal_t>
 {
   
-private:
   using this_t = Vector<wrapped_type>;
   using sc_t = typename details::traits<this_t>::scalar_t;
   using LO_t = typename details::traits<this_t>::local_ordinal_t;
@@ -126,9 +126,6 @@ private:
     return this->globalSize()==0 ? true : false;
   }
   
-  //----------------
-  //from distributed base
-  //----------------
   GO_t globalSizeImpl() const {
     return data_.GlobalLength();
   }
@@ -143,9 +140,6 @@ private:
     data_.ReplaceGlobalValues(numentries, values, indices);
   }
 
-  //-------------------
-  //from trilinos base
-  //-------------------
   map_t const & getDataMapImpl() const{
     return data_.Map();
   }
@@ -154,9 +148,6 @@ private:
     data_.ReplaceMap(mapObj);
   }
     
-  //----------------
-  //from math base
-  //----------------
   template<typename op_t>
   void inPlaceOpImpl(sc_t a1, sc_t a2, const der_t & other){
     // this = a1*this op a2*other;
@@ -192,7 +183,7 @@ private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorDistributedBase< this_t >;
   friend VectorMathBase< this_t >;
-  friend ContainerDistributedBase< this_t, mpicomm_t >;
+  friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
   friend ContainerDistributedTrilinosBase< this_t, map_t >;
   friend Subscripting1DOperatorsBase< this_t, sc_t, LO_t>;
 

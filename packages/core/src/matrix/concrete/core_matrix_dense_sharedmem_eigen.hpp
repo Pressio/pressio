@@ -3,33 +3,36 @@
 #define CORE_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
+#include "../../shared_base/core_operators_base.hpp"
+#include "../../shared_base/core_container_resizable_base.hpp"
+#include "../../shared_base/core_container_nonresizable_base.hpp"
+
+#include "../base/core_matrix_base.hpp"
 #include "../base/core_matrix_sharedmem_base.hpp"
 #include "../base/core_matrix_dense_sharedmem_base.hpp"
 #include "../base/core_matrix_math_base.hpp"
-#include "../../shared_base/core_operators_base.hpp"
-
 
 namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
-	     typename
-	     std::enable_if<
+	     core::meta::enable_if_t<
 	       core::meta::is_matrix_dense_sharedmem_eigen<
-		 wrapped_type>::value
-	       >::type
+		 wrapped_type>::value>
 	     >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
+    public MatrixBase< Matrix<wrapped_type> >,
     public MatrixSharedMemBase< Matrix<wrapped_type> >,
     public MatrixDenseSharedMemBase< Matrix<wrapped_type> >,
     public ArithmeticOperatorsBase< Matrix<wrapped_type>>,
     public CompoundAssignmentOperatorsBase< Matrix<wrapped_type>>,
-    public Subscripting2DOperatorsBase< Matrix<wrapped_type>, 
-                  typename details::traits<Matrix<wrapped_type>>::scalar_t,
-                  typename details::traits<Matrix<wrapped_type>>::ordinal_t>
+    public std::conditional<
+  details::traits<Matrix<wrapped_type>>::isStatic == true,
+  ContainerNonResizableBase<Matrix<wrapped_type>, 2>,
+  ContainerResizableBase<Matrix<wrapped_type>, 2>
+  >::type
 {
 
-private:
   using derived_t = Matrix<wrapped_type>;
   using mytraits = typename details::traits<derived_t>;  
   using sc_t = typename mytraits::scalar_t;
@@ -40,7 +43,11 @@ private:
 public:
   Matrix() = default;
 
-  explicit Matrix(ord_t nrows, ord_t ncols) {
+  template <typename T = ord_t,
+	    typename std::enable_if<
+	      !mytraits::isStatic, T
+	      >::type * = nullptr>
+  explicit Matrix(T nrows, T ncols) {
     this->resize(nrows,ncols);
   }
 
@@ -121,20 +128,27 @@ private:
     return data_.cols();
   }
 
-  void resizeImpl(ord_t nrows, ord_t ncols){
-    static_assert(mytraits::isStatic == false,
-    "Trying to resize a matrix wrapping a static Eigen matrix!");
+  template <typename T = ord_t,
+	    typename std::enable_if<
+	      !mytraits::isStatic, T
+	      >::type * = nullptr>
+  void resizeImpl(T nrows, T ncols){
     data_.resize(nrows, ncols);
     data_ = wrapped_type::Zero(nrows,ncols);
   }
     
 private:
   friend ContainerBase< derived_t, wrapped_type >;
+  friend MatrixBase< derived_t >;
   friend MatrixSharedMemBase< derived_t >;
   friend MatrixDenseSharedMemBase< derived_t >;
   friend ArithmeticOperatorsBase< derived_t >;
   friend CompoundAssignmentOperatorsBase< derived_t >;
-  friend Subscripting2DOperatorsBase< derived_t, sc_t, ord_t>;
+  friend typename std::conditional<
+    details::traits<derived_t>::isStatic == true,
+    ContainerNonResizableBase<derived_t, 2>,
+    ContainerResizableBase<derived_t, 2>
+    >::type;
 
 private:
   wrap_t data_;

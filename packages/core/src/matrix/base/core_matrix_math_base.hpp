@@ -8,22 +8,24 @@ namespace core{
     
 template<typename derived_type>
 class MatrixMathBase
-  : private core::details::CrtpBase<MatrixMathBase<derived_type>>
-{
+  : private core::details::CrtpBase<
+  MatrixMathBase<derived_type>>{
   
-private:
   using traits_t = details::traits<derived_type>;
   using sc_t = typename traits_t::scalar_t;    
 
 public:
   void scale(sc_t factor){
     // this = factor * this
-    this->underlying().scaleImpl(factor);
-  };
-    
+    this->underlying().scaleImpl(factor);}
+
+  void addToDiagonal(sc_t value) {
+    return this->underlying().addToDiagonalImpl(value);}
+  
 private:
   friend derived_type;
   friend core::details::CrtpBase<MatrixMathBase<derived_type>>;
+
   MatrixMathBase() = default;
   ~MatrixMathBase() = default; 
 

@@ -18,8 +18,8 @@ class MatrixEigenMetaTest : public ::testing::Test {
 
   //this is not even necessary, but lets put it for consistency with other tests
   void check(){
-   STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_EIGEN(native_t);
-   STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_STDLIB(native_t);
+   STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_EIGEN(native_t);
+   STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_STDLIB(native_t);
    STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
    STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(native_t);
    STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(native_t);
@@ -63,8 +63,8 @@ template <typename T>
 class MatrixStdlibTest{
  public:
   using native_t = std::vector<std::vector<T>>; 
-  STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_EIGEN(native_t);
-  STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_STDLIB(native_t);
+  STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_EIGEN(native_t);
+  STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_STDLIB(native_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
   STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(native_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(native_t);
@@ -82,9 +82,9 @@ TEST(core_matrix_meta, metaStdlib)
 TEST(core_matrix_meta, metaSparseEigenSerial)
 {
   using native_t = Eigen::SparseMatrix<double>;
-  STATIC_ASSERT_IS_MATRIX_SPARSE_SERIAL_EIGEN(native_t); 
-  STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_EIGEN(native_t); 
-  STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_STDLIB(native_t); 
+  STATIC_ASSERT_IS_MATRIX_SPARSE_SHAREDMEM_EIGEN(native_t); 
+  STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_EIGEN(native_t); 
+  STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_STDLIB(native_t); 
 
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
   STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(native_t);

@@ -10,19 +10,20 @@ APPEND_SET(TESTFILES utest_vector_serial_eigen_traits.cc)
 APPEND_SET(TESTFILES utest_vector_serial_stdlib_traits.cc)
 APPEND_SET(TESTFILES utest_vector_serial_eigen_class.cc)
 
-# APPEND_SET(TESTFILES utest_matrix_meta.cc)
-# APPEND_SET(TESTFILES utest_matrix_dense_serial_eigen_traits.cc)
-# APPEND_SET(TESTFILES utest_matrix_dense_serial_stdlib_traits.cc)
-# APPEND_SET(TESTFILES utest_matrix_sparse_serial_eigen_traits.cc)
-# APPEND_SET(TESTFILES utest_matrix_sparse_serial_eigen_class.cc)
-# APPEND_SET(TESTFILES utest_matrix_dense_serial_eigen_class.cc)
+APPEND_SET(TESTFILES utest_matrix_meta.cc)
+APPEND_SET(TESTFILES utest_matrix_dense_serial_eigen_traits.cc)
+APPEND_SET(TESTFILES utest_matrix_dense_serial_stdlib_traits.cc)
+APPEND_SET(TESTFILES utest_matrix_sparse_serial_eigen_traits.cc)
+APPEND_SET(TESTFILES utest_matrix_sparse_serial_eigen_class.cc)
+APPEND_SET(TESTFILES utest_matrix_dense_serial_eigen_class.cc)
 
-# APPEND_SET(TESTFILES utest_matrix_vector_product.cc)
+APPEND_SET(TESTFILES utest_matrix_vector_product.cc)
+
+
 
 # append here tests to be grouped into a single executable
 # APPEND_SET(...)
 # ...
-
 # we create a single executable to run all the tests above
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   unitTest_serial_grouped

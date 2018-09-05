@@ -10,10 +10,9 @@ namespace core{
     
 template<typename derived_type>
 class VectorMathBase
-  : private core::details::CrtpBase<VectorMathBase<derived_type>>
-{
+  : private core::details::CrtpBase<
+  VectorMathBase<derived_type>>{
 
-private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
 
 public:
@@ -25,33 +24,26 @@ public:
   }
 
   void putScalar(sc_t value) {
-    this->underlying().putScalarImpl(value);
-  }
+    this->underlying().putScalarImpl(value);}
 
   void scale(sc_t factor){
     // this = factor * this
-    this->underlying().scaleImpl(factor);
-  };  
+    this->underlying().scaleImpl(factor);}
 
   void norm1(sc_t & result) const {
-    this->underlying().norm1Impl(result);
-  };
+    this->underlying().norm1Impl(result);}
 
   void norm2(sc_t & result) const {
-    this->underlying().norm2Impl(result);
-  };
-
+    this->underlying().norm2Impl(result);}
+  
   void normInf(sc_t & result) const {
-    this->underlying().normInfImpl(result);
-  };
+    this->underlying().normInfImpl(result);}
 
   void minValue(sc_t & result) const {
-    this->underlying().minValueImpl(result);
-  };
+    this->underlying().minValueImpl(result);}
 
   void maxValue(sc_t & result) const {
-    this->underlying().maxValueImpl(result);
-  };
+    this->underlying().maxValueImpl(result);}
 
 private:
   friend derived_type;

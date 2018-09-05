@@ -12,6 +12,7 @@
 
 #include "../src/vector/concrete/core_vector_distributed_epetra.hpp"
 #include "../src/vector/concrete/core_vector_sharedmem_eigen.hpp"
+#include "../src/vector/concrete/core_vector_sharedmem_kokkos.hpp"
 #include "../src/vector/concrete/core_vector_sharedmem_stdlib.hpp"
 #include "../src/vector/concrete/core_vector_sharedmem_userdefined.hpp"
 

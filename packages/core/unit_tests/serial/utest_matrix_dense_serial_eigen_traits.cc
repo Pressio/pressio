@@ -19,7 +19,7 @@ struct core_matrix_dense_serial_eigen_traitsTest
   : public ::testing::Test{
 public:
   using native_t = Eigen::Matrix<typename T::sc_t,T::nr, T::nc>;
-  STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_EIGEN(native_t);
+  STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_EIGEN(native_t);
   using myvec_t = core::Matrix<native_t>;
   using vecTrait = core::details::traits<myvec_t>;
 

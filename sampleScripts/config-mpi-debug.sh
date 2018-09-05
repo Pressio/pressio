@@ -49,7 +49,7 @@ cmake \
     $EXTRA_ARGS \
     ${SRC}
 
-#    -DTribitsExProj_TRIBITS_DIR=$TRIBITS_DIR \
+    # -DTribitsExProj_TRIBITS_DIR=$TRIBITS_DIR \
     # -D rompp_ENABLE_svd:BOOL=OFF \
     # -D rompp_ENABLE_apps:BOOL=OFF \
     # -D rompp_ENABLE_rom:BOOL=OFF \

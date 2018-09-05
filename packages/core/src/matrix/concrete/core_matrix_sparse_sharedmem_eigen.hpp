@@ -3,29 +3,34 @@
 #define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_SHAREDMEM_EIGEN_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
+#include "../../shared_base/core_operators_base.hpp"
+#include "../../shared_base/core_container_resizable_base.hpp"
+
+#include "../base/core_matrix_base.hpp"
+#include "../base/core_matrix_sparse_base.hpp"
 #include "../base/core_matrix_sharedmem_base.hpp"
 #include "../base/core_matrix_sparse_sharedmem_base.hpp"
 #include "../base/core_matrix_math_base.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 
 namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
-	typename
-	std::enable_if<
-	  core::meta::is_matrix_sparse_sharedmem_eigen<
-	    wrapped_type >::value
-	  >::type
-	>
+	     core::meta::enable_if_t<
+	       core::meta::is_matrix_sparse_sharedmem_eigen<
+		 wrapped_type >::value>
+	     >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
+    public MatrixBase< Matrix<wrapped_type> >,
+    public MatrixSparseBase< Matrix<wrapped_type> >,
     public MatrixSharedMemBase< Matrix<wrapped_type> >,
     public MatrixSparseSharedMemBase< Matrix<wrapped_type> >,
     public MatrixMathBase< Matrix<wrapped_type> >,
     public ArithmeticOperatorsBase< Matrix<wrapped_type> >,
-    public CompoundAssignmentOperatorsBase< Matrix<wrapped_type> >
+    public CompoundAssignmentOperatorsBase< Matrix<wrapped_type> >,
+    public ContainerResizableBase<Matrix<wrapped_type>, 2>
 {
-private:
+
   using derived_t = Matrix<wrapped_type>;
   using mytraits = details::traits<derived_t>;
   using sc_t = typename mytraits::scalar_t;
@@ -41,10 +46,10 @@ public:
     this->compress();
   }
 
-  // row-major matrix constructor (U is just a trick to enable sfinae)
+  // row-major matrix constructor 
   template <typename U = ord_t,
 	    typename std::enable_if<
-	      mytraits::isRowMajor==1,U>::type * = nullptr>
+	      mytraits::isRowMajor==1, U>::type * = nullptr>
   explicit Matrix(U nrows, U ncols, U nonZerosPerRow) {
     this->resize(nrows, ncols);
     if( nonZerosPerRow > ncols )
@@ -57,7 +62,7 @@ public:
   // col-major matrix constructor
   template <typename U = ord_t, 
 	    typename std::enable_if<
-	      mytraits::isRowMajor==0,U>::type * = nullptr>
+	      mytraits::isRowMajor==0, U>::type * = nullptr>
   explicit Matrix(U nrows, U ncols, U nonZerosPerCol) {
     this->resize(nrows, ncols);
     if( nonZerosPerCol > nrows )
@@ -197,11 +202,14 @@ private:
 
 private:
   friend ContainerBase< derived_t, wrapped_type >;
+  friend MatrixBase< derived_t >;
+  friend MatrixSparseBase< derived_t >;
   friend MatrixSharedMemBase< derived_t >;
   friend MatrixSparseSharedMemBase< derived_t >;
   friend MatrixMathBase< derived_t >;
   friend ArithmeticOperatorsBase< derived_t >;
   friend CompoundAssignmentOperatorsBase< derived_t >;
+  friend ContainerResizableBase<derived_t, 2>;
 
 private:
   wrap_t data_;

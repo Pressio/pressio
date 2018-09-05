@@ -8,6 +8,7 @@
 #include <Eigen/Dense>
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
+#include <Kokkos_Core.hpp>
 
 namespace core{
 namespace meta {
@@ -78,6 +79,20 @@ struct is_vector_epetra<T,
 
 //----------------------------------------------------------------------
 
+
+template <typename T, typename enable = void>
+struct is_vector_kokkos : std::false_type {};
+
+template <typename T>
+struct is_vector_kokkos<T,
+	 core::meta::enable_if_t<
+	   // kokkos vector is it is a view and has rank=1
+	   Kokkos::is_view<T>::value && 
+	   T::traits::rank==1>
+      > : std::true_type{};
+
+//----------------------------------------------------------------------
+  
  
 //////////////////////
 } // namespace meta
@@ -105,6 +120,13 @@ struct is_vector_epetra<T,
   static_assert( !core::meta::is_vector_epetra<TYPE>::value, \
 		 "THIS_IS_A_VECTOR_EPETRA")
 
+#define STATIC_ASSERT_IS_VECTOR_KOKKOS(TYPE) \
+  static_assert( core::meta::is_vector_kokkos<TYPE>::value, \
+		 "THIS_IS_NOT_A_VECTOR_KOKKOS")
+#define STATIC_ASSERT_IS_NOT_VECTOR_KOKKOS(TYPE) \
+  static_assert( !core::meta::is_vector_kokkos<TYPE>::value, \
+		 "THIS_IS_A_VECTOR_KOKKOS")
+  
   
 /////////////////
 } // namespace core

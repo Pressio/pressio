@@ -10,12 +10,10 @@ template<typename derived_type>
 class VectorDistributedBase
   : private core::details::CrtpBase<
               VectorDistributedBase<derived_type>>
-{
-
+{ 
   static_assert( details::traits<derived_type>::isDistributed==1,
   "OOPS: non-distributed concrete vector inheriting from distributed base!");
 
-private:
   using this_t = VectorDistributedBase<derived_type>;
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using LO_t = typename details::traits<derived_type>::local_ordinal_t;

@@ -8,8 +8,8 @@ struct core_matrix_dense_serial_stdlib_traitsTest
   : public ::testing::Test{
 public:
   using native_t = std::vector<std::vector<T>>;
-  STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SERIAL_EIGEN(native_t);
-  STATIC_ASSERT_IS_MATRIX_DENSE_SERIAL_STDLIB(native_t);
+  STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_EIGEN(native_t);
+  STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_STDLIB(native_t);
   using myvec_t = core::Matrix<native_t>;
   using vecTrait = core::details::traits<myvec_t>;
 

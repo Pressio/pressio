@@ -5,13 +5,10 @@
 #include "../../shared_base/core_container_base.hpp"
 #include "../base/core_matrix_sharedmem_base.hpp"
 #include "../base/core_matrix_dense_sharedmem_base.hpp"
-// #include "../base/core_matrix_math_base.hpp"
-// #include "../../shared_base/core_operators_base.hpp"
-
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!
-// WIPL to finish
+// WIP to finish
 // !!!!!!!!!!!!!!!!!!!!!!!!!!
 
 namespace core{
@@ -25,9 +22,9 @@ class Matrix<wrapped_type,
 	 >::type
        >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
-    public MatrixDenseSharedMemBase< Matrix<wrapped_type> >  
+    public MatrixDenseSharedMemBase< Matrix<wrapped_type> >
 {
-private:
+
   using derived_t = Matrix<wrapped_type>;
   using sc_t = typename details::traits<derived_t>::scalar_t;
   using ord_t = typename details::traits<derived_t>::ordinal_t;
@@ -72,7 +69,7 @@ private:
   }
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!
-  // WIPL to finish
+  // WIP to finish
   // !!!!!!!!!!!!!!!!!!!!!!!!!!
 
   

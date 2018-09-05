@@ -11,6 +11,7 @@
 
 #include <Kokkos_Core.hpp>
 #include <cstdio>
+#include <vector>
 
 // A Kokkos::View is an array of zero or more dimensions.  The number
 // of dimensions is specified at compile time, as part of the type of
@@ -22,7 +23,7 @@
 //
 // The first dimension of the View is the dimension over which it is
 // efficient for Kokkos to parallelize.
-typedef Kokkos::View<double*[3]> view_type;
+using view_type = Kokkos::View<double*[3]>;
 
 // parallel_for functor that fills the View given to its constructor.
 // The View must already have been allocated.
@@ -71,7 +72,7 @@ struct ReduceFunctor {
 int main (int argc, char* argv[]) {
   Kokkos::initialize (argc, argv);
   const int N = 10;
-
+  
   // Allocate the View.  The first dimension is a run-time parameter
   // N.  We set N = 10 here.  The second dimension is a compile-time
   // parameter, 3.  We don't specify it here because we already set it
@@ -88,7 +89,27 @@ int main (int argc, char* argv[]) {
   // The string "A" is just the label; it only matters for debugging.
   // Different Views may have the same label.
   view_type a ("A", N);
+  auto ss = a.size();
+  //  std::cout << "SS " << ss << std::endl;
 
+  using view_type2 = Kokkos::View<double[1][3]>;
+  std::cout << "SS " << view_type2::traits::rank << std::endl;
+  std::cout << "SS " << view_type2::traits::rank_dynamic << std::endl;
+  
+  // using vec_t = std::vector<double>;
+  // static_assert( Kokkos::is_view<view_type>::value, " " );
+  // static_assert( Kokkos::is_view<vec_t>::value, " " );
+  
+  // static_assert( std::is_same<view_type::traits::value_type,double>::value, "");
+  // static_assert( view_type::Rank == 2 , " " );
+  // static_assert( std::is_same<view_type::traits::execution_space,
+  // 		 Kokkos::OpenMP>::value, "");
+
+
+  
+  // for (int i=0; i<2; i++)
+  //   std::cout << "SS2 " << a.extent(i) << std::endl;
+  
   Kokkos::parallel_for (N, InitView (a));
   double sum = 0;
   Kokkos::parallel_reduce (N, ReduceFunctor (a), sum);

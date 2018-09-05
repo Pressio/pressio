@@ -5,6 +5,9 @@
 
 TEST(core_vector_serial_eigen_class, EigenVectorConstructor)
 {
+  // using eigvec_t1 = Eigen::Matrix<double, 4, 1>;
+  // using myvec_t1 = core::Vector<eigvec_t1>;
+  // myvec_t1 m333(5);
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
   using vecTrait = core::details::traits<myvec_t>;
