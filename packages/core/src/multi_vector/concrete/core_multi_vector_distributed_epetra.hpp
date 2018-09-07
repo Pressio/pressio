@@ -88,6 +88,10 @@ private:
   void setZeroImpl() {
     data_.PutScalar(static_cast<sc_t>(0));
   }
+
+  bool isDistributedGloballyImpl() const{
+    data_.DistributedGlobal();
+  }
   
   mpicomm_t const & commCRefImpl() const{
     return data_.Comm();

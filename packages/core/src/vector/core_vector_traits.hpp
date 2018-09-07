@@ -32,7 +32,6 @@ struct traits<Vector<wrapped_type,
   static constexpr int isEigen = 0;
   static constexpr int isSharedMem = 1;
   static constexpr int isSTDVector = 0;
-  static constexpr int isDistributed = 0;
 
   using  execution_space = typename wrapped_type::traits::execution_space;
   using  memory_space = typename wrapped_type::traits::memory_space;
@@ -71,7 +70,6 @@ struct traits<Vector<wrapped_type,
   static constexpr int isSharedMem = 1;
   static constexpr int isSTDVector = 0;
   static constexpr int isKokkos = 0;
-  static constexpr int isDistributed = 0;
   static constexpr int isStatic = (
 	// if it is a row vector NON dynamic
 	( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
@@ -107,7 +105,6 @@ struct traits<Vector<wrapped_type,
   static constexpr int isVector = 1;
   static constexpr int isSTDVector = 1;
   static constexpr int isSharedMem = 1;
-  static constexpr int isDistributed = 0;
   static constexpr int isEigen = 0;
   static constexpr int isKokkos = 0;
   // make these void just to be clear they are not usable
@@ -143,7 +140,6 @@ struct traits<Vector<wrapped_type,
   using derived_t = Vector<wrapped_type>;
   static constexpr int isVector = 1;
   static constexpr int isSharedMem = 1;
-  static constexpr int isDistributed = 0;
   static constexpr int isEigen = 0;
   static constexpr int isSTDVector = 0;
   static constexpr int isKokkos = 0;
@@ -175,7 +171,6 @@ struct traits<Vector<wrapped_type,
   using derived_t = Vector<wrapped_t>;
   static constexpr int isVector = 1;
   static constexpr int isMultiVector = 0;
-  static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
   static constexpr int isKokkos = 0;
   static constexpr int isSTDVector = 0;

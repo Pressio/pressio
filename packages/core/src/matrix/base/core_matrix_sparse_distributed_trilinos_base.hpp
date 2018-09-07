@@ -11,7 +11,7 @@ class MatrixSparseDistributedTrilinosBase
   : private core::details::CrtpBase<
   MatrixSparseDistributedTrilinosBase<derived_type>>{
 
-  static_assert( details::traits<derived_type>::isDistributed==1,
+  static_assert( details::traits<derived_type>::isSharedMem==0,
   "OOPS: non-distributed matrix inheriting from sparse distributed trilinos!");
 
   using traits_t = details::traits<derived_type>;

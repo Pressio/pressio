@@ -42,7 +42,6 @@ TEST(core_matrxi_dense_distributed_epetra, EpetraMultiVectorActingDenseMatrixTra
   ASSERT_TRUE(mytraits::actingAsDenseMatrix == 1);
   ASSERT_TRUE(mytraits::isEigen == 0);
   ASSERT_TRUE(mytraits::isSharedMem == 0);
-  ASSERT_TRUE(mytraits::isDistributed == 1);
 
 }//end TEST
 

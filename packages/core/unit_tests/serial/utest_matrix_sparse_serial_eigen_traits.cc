@@ -43,7 +43,6 @@ public:
     ASSERT_TRUE(myTrait::isSparse == 1);
     ASSERT_TRUE(myTrait::isVector == 0);
     ASSERT_TRUE(myTrait::isSharedMem == 1);
-    ASSERT_TRUE(myTrait::isDistributed == 0);
     ASSERT_TRUE(myTrait::isStdlib == 0);
     ASSERT_TRUE(myTrait::isStatic == 0);
   }

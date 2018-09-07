@@ -35,7 +35,6 @@ struct traits<MultiVector<wrapped_type,
   static constexpr int actingAsMultiVector = 1;
   static constexpr int actingAsDenseMatrix = 0;
  
-  static constexpr int isDistributed = 1;
   static constexpr int isEpetra = 1;
   static constexpr int isSTDVector = 0;
   static constexpr int isSharedMem = 0;

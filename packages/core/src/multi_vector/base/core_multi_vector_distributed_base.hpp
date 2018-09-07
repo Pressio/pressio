@@ -12,7 +12,7 @@ class MultiVectorDistributedBase
               MultiVectorDistributedBase<derived_type>>
 {
 
-  static_assert( details::traits<derived_type>::isDistributed==1,
+  static_assert( details::traits<derived_type>::isSharedMem==0,
   "OOPS: non-distributed concrete class inheriting \
 from multi_vector distributed base!");
 

@@ -84,8 +84,11 @@ private:
   void setZeroImpl() {
     data_.PutScalar(static_cast<sc_t>(0));
   }
-  //--------------------------------
 
+  bool isDistributedGloballyImpl() const{
+    data_.DistributedGlobal();
+  }
+  
   void matchLayoutWithImpl(const this_t & other){
     data_.ReplaceMap( other.getDataMap() );
   }
@@ -97,7 +100,6 @@ private:
   void replaceDataMapImpl(const row_map_t & mapObj){
     data_.ReplaceMap(mapObj);
   }
-  //--------------------------------
 
   LO_t localRowsImpl() const{
     return data_.MyLength();
@@ -114,12 +116,10 @@ private:
   GO_t globalColsImpl() const{
     return data_.NumVectors();
   }
-  //--------------------------------
 
   comm_t const & commCRefImpl() const{
     return data_.Comm();
   }
-  //--------------------------------
 
   void replaceGlobalValueImpl(GO_t globalRowIndex,
 			      GO_t globalColIndex,

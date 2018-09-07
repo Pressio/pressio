@@ -37,7 +37,6 @@ struct traits< Matrix<
   static constexpr int isSparse = !isDense;
   static constexpr int isSharedMem = 1;
   static constexpr int isVector = !isMatrix;
-  static constexpr int isDistributed = !isSharedMem;
   static constexpr int isStdlib = 0;
   static constexpr int isStatic =
     ( wrapped_t::RowsAtCompileTime != Eigen::Dynamic &&
@@ -82,7 +81,6 @@ struct traits< Matrix<
   static constexpr int isSparse = 1;
   static constexpr int isSharedMem = 1;
   static constexpr int isVector = !isMatrix;
-  static constexpr int isDistributed = !isSharedMem;
   static constexpr int isStdlib = 0;
   static constexpr int isStatic = 0;
 };
@@ -118,7 +116,6 @@ struct traits< Matrix<
   static constexpr int isSparse = !isDense;
   static constexpr int isSharedMem = 1;
   static constexpr int isVector = !isMatrix;
-  static constexpr int isDistributed = !isSharedMem;
   static constexpr int isStatic = 0;
 };
 
@@ -154,7 +151,6 @@ struct traits<Matrix
   static constexpr int isMatrix = 1;
   static constexpr int isEpetra = 1;
   static constexpr int isSparse = 1;
-  static constexpr int isDistributed = 1;
   static constexpr int isEigen = 0;
   static constexpr int isDense = 0;
   static constexpr int isSharedMem = 0;
@@ -191,7 +187,6 @@ struct traits<Matrix
   static constexpr int isMatrix = 1;
   static constexpr int isEpetra = 1;
   static constexpr int isSparse = 0;
-  static constexpr int isDistributed = 1;
 
   // a multivector can also be seen as literally a multi-vector.
   // But here is intended as distributed dense matrix.

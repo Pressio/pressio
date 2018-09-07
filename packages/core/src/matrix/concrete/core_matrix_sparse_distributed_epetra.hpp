@@ -99,10 +99,11 @@ private:
   comm_t const & commCRefImpl() const{
     return data_.Comm();
   }
+
+  bool isDistributedGloballyImpl() const{
+    return data_.DistributedGlobal();
+  }
   
-  //--------------------------------
-  //from sparse distributed trilinos
-  //--------------------------------
   bool isFillingCompletedImpl() const{
     return data_.Filled();
   }
@@ -114,9 +115,10 @@ private:
   void fillingIsCompletedImpl(domain_map_t const & dmap,
 			      range_map_t const & rmap){
     // this is needed for rectangular matrices
-    /* also note that epetra crs matrix ONLY takes Epetra_Map as map type. 
-       There is no way (that I can see) to pass a Epetra_BlockMap */
-
+    /* also note that epetra crs matrix ONLY 
+       takes Epetra_Map as map type. 
+       There is no way (that I can see) 
+       to pass a Epetra_BlockMap */
     data_.FillComplete(dmap, rmap);
   }
   
@@ -152,9 +154,6 @@ private:
     return data_.ColMap().SameAs(other.getColDataMap());
   }
 
-  //----------------------------
-  //from sparse distributed base
-  //----------------------------
   void insertGlobalValuesImpl(GO_t targetRow,
 			      LO_t numEntries,
 			      const sc_t * values,

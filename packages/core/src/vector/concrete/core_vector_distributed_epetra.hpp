@@ -114,6 +114,10 @@ private:
     return &data_;
   }
 
+  bool isDistributedGloballyImpl() const{
+    data_.DistributedGlobal();
+  }
+  
   void putScalarImpl(sc_t value) {
     data_.PutScalar(value);
   }

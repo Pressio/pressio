@@ -29,7 +29,6 @@ public:
     ASSERT_TRUE(vecTrait::isEigen == 0);
     ASSERT_TRUE(vecTrait::isSharedMem == 1);
     ASSERT_TRUE(vecTrait::isSTDVector == 1);
-    ASSERT_TRUE(vecTrait::isDistributed == 0);
   }
 };
 

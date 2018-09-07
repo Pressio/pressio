@@ -3,6 +3,7 @@
 #define CORE_CONFIGDEFS_HPP_
 
 #include "core_config.h"
+#include <type_traits>
 
 namespace core{
 namespace details {

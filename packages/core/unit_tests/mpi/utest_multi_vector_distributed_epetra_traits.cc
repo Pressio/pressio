@@ -46,7 +46,6 @@ TEST(core_multivector_distributed_epetra, EpetraMultiVectorActingVectorTraits)
   ASSERT_TRUE(vecTrait::isEigen == 0);
   ASSERT_TRUE(vecTrait::isSharedMem == 0);
   ASSERT_TRUE(vecTrait::isSTDVector == 0);
-  ASSERT_TRUE(vecTrait::isDistributed == 1);
 
 }//end TEST
 

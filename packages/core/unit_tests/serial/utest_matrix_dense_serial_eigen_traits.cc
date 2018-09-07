@@ -39,7 +39,6 @@ public:
     ASSERT_TRUE(vecTrait::isDense == 1);
     ASSERT_TRUE(vecTrait::isVector == 0);
     ASSERT_TRUE(vecTrait::isSharedMem == 1);
-    ASSERT_TRUE(vecTrait::isDistributed == 0);
     ASSERT_TRUE(vecTrait::isStatic == (T::nr!=-1 && T::nc!=-1) );
   }
 };

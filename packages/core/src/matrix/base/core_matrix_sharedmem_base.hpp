@@ -11,8 +11,7 @@ class MatrixSharedMemBase
   : private core::details::CrtpBase<
   MatrixSharedMemBase<derived_type>>{
 
-  static_assert( details::traits<derived_type>::isDistributed==0 &&
-		 details::traits<derived_type>::isSharedMem==1,
+  static_assert( details::traits<derived_type>::isSharedMem==1,
   "OOPS: distributed matrix inheriting from sharedMem base!");
   
   using sc_t = typename details::traits<derived_type>::scalar_t;

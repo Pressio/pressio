@@ -38,7 +38,6 @@ public:
       ASSERT_TRUE(vecTrait::isEigen == 1);
       ASSERT_TRUE(vecTrait::isSharedMem == 1);
       ASSERT_TRUE(vecTrait::isSTDVector == 0);
-      ASSERT_TRUE(vecTrait::isDistributed == 0);
       if (row == 1 && col != Eigen::Dynamic) // row vector
 	ASSERT_TRUE(vecTrait::isStatic == 1);
       else if (col == 1 && row != Eigen::Dynamic) // col vector
