@@ -15,28 +15,27 @@ namespace core{
 namespace mat_ops{
   
 /*---------------------------------------------------------
------------------------------------------------------------
   EPETRA 
   c = A b , 
   - A = crs matrix 
   - b = SINGLE vector
------------------------------------------------------------
+  - c is epetra vector
 -----------------------------------------------------------*/
 
 template <typename matrix_type,
 	  typename vector_type,
-	  typename std::enable_if<
+	  core::meta::enable_if_t<
 	    details::traits<matrix_type>::isMatrix==1 &&
 	    details::traits<matrix_type>::isEpetra==1 &&
 	    details::traits<matrix_type>::isSparse==1 &&
 	    details::traits<vector_type>::isVector==1 &&
 	    details::traits<vector_type>::isEpetra==1
-	    >::type * = nullptr
+	    > * = nullptr
 	  >
 auto product(const matrix_type & A,
 	     const vector_type & b,
-	     bool transposeA = false)
-{
+	     bool transposeA = false){
+
   assert( A.isFillingCompleted() );
   assert( A.globalCols() == b.globalSize() );
   vector_type c( A.getRangeDataMap() );
@@ -47,19 +46,19 @@ auto product(const matrix_type & A,
 
 template <typename matrix_type,
 	  typename vector_type,
-	  typename std::enable_if<
+	  core::meta::enable_if_t<
 	    details::traits<matrix_type>::isMatrix==1 &&
 	    details::traits<matrix_type>::isEpetra==1 &&
 	    details::traits<matrix_type>::isSparse==1 &&
 	    details::traits<vector_type>::isVector==1 &&
 	    details::traits<vector_type>::isEpetra==1
-	    >::type * = nullptr
+	    > * = nullptr
 	  >
 void product(const matrix_type & A,
 	     const vector_type & b,
 	     vector_type & c,
-	     bool transposeA = false)
-{
+	     bool transposeA = false){
+
   assert( A.isFillingCompleted() );
   assert( A.globalCols() == b.globalSize() );
   A.data()->Multiply(transposeA, *b.data(), *c.data());
@@ -68,35 +67,33 @@ void product(const matrix_type & A,
 
   
 /*---------------------------------------------------------
------------------------------------------------------------
 c = A b
 - A is matrix from eigen
 - b is vector from eigen
------------------------------------------------------------
+- c is an eigen vector storing the result 
 ---------------------------------------------------------*/
   
 template <typename matrix_type,
-	  typename vector_t_1,
-	  typename vector_t_2,
-	  typename std::enable_if<
-	    details::traits<vector_t_1>::isEigen &&
-	    details::traits<vector_t_1>::isVector &&
-	    details::traits<vector_t_2>::isEigen &&
-	    details::traits<vector_t_2>::isVector &&
+	  typename vector_t,
+	  typename res_t,
+	  core::meta::enable_if_t<
+	    details::traits<vector_t>::isEigen &&
+	    details::traits<vector_t>::isVector &&
+	    details::traits<res_t>::isEigen &&
+	    details::traits<res_t>::isVector &&
 	    details::traits<matrix_type>::isEigen &&
 	    details::traits<matrix_type>::isSparse &&
 	    std::is_same<typename details::traits<matrix_type>::scalar_t,
-			 typename details::traits<vector_t_1>::scalar_t
-			 >::value &&
+			 typename details::traits<vector_t>::scalar_t
+			 >::value && 
 	    std::is_same<typename details::traits<matrix_type>::scalar_t,
-			 typename details::traits<vector_t_2>::scalar_t
-			 >::value 			 
-	    >::type * = nullptr
+			 typename details::traits<res_t>::scalar_t
+			 >::value 
+	    > * = nullptr
 	  >
 void product(const matrix_type & A,
-	     const vector_t_1 & b,
-	     vector_t_2 & c)
-{
+	     const vector_t & b,
+	     res_t & c){
 
   assert(A.cols() == b.size());
   assert(c.size() == A.rows());

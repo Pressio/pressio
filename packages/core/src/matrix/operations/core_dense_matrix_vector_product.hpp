@@ -64,13 +64,13 @@ void product(const matrix_type & A,
   
 template <typename matrix_type,
 	  typename vector_type,
-	  typename std::enable_if<
+	  core::meta::enable_if_t<
 	    core::details::traits<matrix_type>::isMatrix==1 &&
 	    core::details::traits<matrix_type>::isEpetra==1 &&
 	    core::details::traits<matrix_type>::isDense==1 &&
 	    core::details::traits<vector_type>::isVector==1 &&
 	    core::details::traits<vector_type>::isEpetra==1
-	    >::type * = nullptr>
+	    > * = nullptr>
 auto product(const matrix_type & A,
 	     const vector_type & b)
 {

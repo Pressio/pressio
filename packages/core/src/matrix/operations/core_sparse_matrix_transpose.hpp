@@ -14,10 +14,10 @@ namespace mat_ops{
   EPETRA CRSMATRIX
 ----------------------------------------------------- */
 template <typename mat_type,
-	  typename std::enable_if<
+	  core::meta::enable_if_t<
 	    details::traits<mat_type>::isEpetra &&
 	    details::traits<mat_type>::isSparse 
-	    >::type * = nullptr>
+	    > * = nullptr>
 auto transpose(mat_type & A
 	       /*nonconst & because it is needed 
 		 by rowmatrix transposer*/) 
@@ -45,16 +45,15 @@ auto transpose(mat_type & A
   return res;
 }
 
-
   
 /*-----------------------------------------------------
   EIGEN SPARSE
 ----------------------------------------------------- */
 template <typename mat_type,
-	  typename std::enable_if<
+	  core::meta::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
 	    details::traits<mat_type>::isSparse 
-	    >::type * = nullptr>
+	    > * = nullptr>
 auto transpose(const mat_type & A)
 {
   mat_type res(A.data()->transpose());
@@ -62,6 +61,7 @@ auto transpose(const mat_type & A)
 }
 
 
+  
 } // end namespace mat_ops  
 } // end namespace core
 #endif

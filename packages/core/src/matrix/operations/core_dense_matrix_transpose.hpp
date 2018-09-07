@@ -12,11 +12,11 @@ namespace mat_ops{
   EIGEN DENSE DYNAMIC
 ----------------------------------------------------- */
 template <typename mat_type,
-	  typename std::enable_if<
+	  core::meta::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
 	    details::traits<mat_type>::isDense &&
 	    details::traits<mat_type>::isStatic==0
-	    >::type * = nullptr>
+	    > * = nullptr>
 auto transpose(const mat_type & A)
 {
   mat_type res(A);
@@ -28,11 +28,11 @@ auto transpose(const mat_type & A)
   EIGEN DENSE STATIC
 ----------------------------------------------------- */
 template <typename mat_type,
-	  typename std::enable_if<
+	  core::meta::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
 	    details::traits<mat_type>::isDense &&
 	    details::traits<mat_type>::isStatic
-	    >::type * = nullptr>
+	    > * = nullptr>
 auto transpose(const mat_type & A)
 {
   using scalar_t = typename details::traits<mat_type>::scalar_t;
