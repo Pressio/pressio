@@ -18,62 +18,62 @@ public:
 
   ~WeightOperator() = default;
 
-  template <typename vecT,
-  	    typename std::enable_if<
-  	      core::details::traits<vecT>::isVector
-  	      >::type * = nullptr
-  	    >
-  auto apply(const vecT & b)
-  {
-    // P phi
-    auto A1 = core::matrixMatrixProduct(*pop_, *phi_);
-    std::cout << "P phi: "
-	      << A1.globalRows() << " "
-	      << A1.globalCols() << std::endl;
+  // template <typename vecT,
+  // 	    typename std::enable_if<
+  // 	      core::details::traits<vecT>::isVector
+  // 	      >::type * = nullptr
+  // 	    >
+  // auto apply(const vecT & b)
+  // {
+  //   // // P phi
+  //   // auto A1 = core::matrixMatrixProduct(*pop_, *phi_);
+  //   // std::cout << "P phi: "
+	 //   //    << A1.globalRows() << " "
+	 //   //    << A1.globalCols() << std::endl;
 
-    // (P phi)^+ => dense matrix
-    auto A2 = pseudoInverse(A1);
-    std::cout << "(P phi)^+ :"
-	      << A2.globalRows() << " "
-	      << A2.globalCols() << std::endl;
+  //   // // (P phi)^+ => dense matrix
+  //   // auto A2 = pseudoInverse(A1);
+  //   // std::cout << "(P phi)^+ :"
+	 //   //    << A2.globalRows() << " "
+	 //   //    << A2.globalCols() << std::endl;
 
-    // P b => vector
-    auto b1 = core::matrixVectorProduct(*pop_, b);
-    std::cout << "P b :"
-	      << b1.globalSize() << std::endl;
+  //   // // P b => vector
+  //   // auto b1 = core::matrixVectorProduct(*pop_, b);
+  //   // std::cout << "P b :"
+	 //   //    << b1.globalSize() << std::endl;
 
-    // (P phi)^+ P b => vector
-    return core::matrixVectorProduct(A2, b1);
-  }
+  //   // // (P phi)^+ P b => vector
+  //   // return core::matrixVectorProduct(A2, b1);
+  // }
 
-  template <typename T,
-  	    typename std::enable_if<
-  	      core::details::traits<T>::isMatrix
-  	      >::type * = nullptr
-  	    >
-  auto apply(const T & B)
-  {
-    // P phi
-    auto A1 = core::matrixMatrixProduct(*pop_, *phi_);
-    std::cout << "P phi: "
-	      << A1.globalRows() << " "
-	      << A1.globalCols() << std::endl;
+  // template <typename T,
+  // 	    typename std::enable_if<
+  // 	      core::details::traits<T>::isMatrix
+  // 	      >::type * = nullptr
+  // 	    >
+  // auto apply(const T & B)
+  // {
+  //   // P phi
+  //   auto A1 = core::matrixMatrixProduct(*pop_, *phi_);
+  //   std::cout << "P phi: "
+	 //      << A1.globalRows() << " "
+	 //      << A1.globalCols() << std::endl;
 
-    // (P phi)^+ => dense matrix
-    auto A2 = pseudoInverse(A1);
-    std::cout << "(P phi)^+ :"
-	      << A2.globalRows() << " "
-	      << A2.globalCols() << std::endl;
+  //   // (P phi)^+ => dense matrix
+  //   auto A2 = pseudoInverse(A1);
+  //   std::cout << "(P phi)^+ :"
+	 //      << A2.globalRows() << " "
+	 //      << A2.globalCols() << std::endl;
 
-    // P B => matrix
-    auto B1 = core::matrixMatrixProduct(*pop_, B, false, false);
-    std::cout << "P B :"
-	      << B1.globalRows() << " "
-	      << B1.globalCols() << std::endl;
+  //   // P B => matrix
+  //   auto B1 = core::matrixMatrixProduct(*pop_, B, false, false);
+  //   std::cout << "P B :"
+	 //      << B1.globalRows() << " "
+	 //      << B1.globalCols() << std::endl;
 
-    // (P phi)^+ P B => matrix
-    return core::matrixVectorProduct(A2, B1);
-  }
+  //   // (P phi)^+ P B => matrix
+  //   return core::matrixVectorProduct(A2, B1);
+  // }
   
 private:
   phi_t const * phi_;

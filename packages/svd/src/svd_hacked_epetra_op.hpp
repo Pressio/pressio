@@ -125,15 +125,15 @@ private:
   auto buildMatForEigSolve(matrix_type & A, char which)
   {
     if (which == 'L'){
-      //auto AAT = core::matrixMatrixProduct(A, ASWT, false, false, true);
-      auto AAT = core::matrixMatrixProduct(A, A, false, true, true); 
+      //auto AAT = core::mat_ops::product(A, ASWT, false, false, true);
+      auto AAT = core::mat_ops::product(A, A, false, true, true); 
       assert( AAT.isFillingCompleted() );
       return AAT;
    }
    else{
      // auto ASWT = core::transpose(A);
-     // auto ATA = core::matrixMatrixProduct(ASWT, A, false, false, true);
-     auto ATA = core::matrixMatrixProduct(A, A, true, false, true);
+     // auto ATA = core::mat_ops::product(ASWT, A, false, false, true);
+     auto ATA = core::mat_ops::product(A, A, true, false, true);
      assert( ATA.isFillingCompleted() );
      return ATA;
     }
