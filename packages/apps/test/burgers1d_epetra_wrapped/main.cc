@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     // stepper_t stepperObj(appObj, y, r);
 
     // Create linear solver using a valid solver type
-    auto solver = solvers::NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+    auto solver = solvers::NonLinearSolvers::createSolver<solvers::nonlinear::NewtonRaphson>();
     
     // // integrate in time 
     // snapshot_collector collObj;

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <type_traits>
 
+#include "solvers_types.hpp"
 #include "solvers_linear_factory.hpp"
 #include "system_traits.hpp"
 #include "meta/core_meta_static_checks.hpp"

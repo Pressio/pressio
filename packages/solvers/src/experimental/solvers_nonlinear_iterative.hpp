@@ -4,6 +4,7 @@
 
 #include <type_traits>
 
+#include "solvers_types.hpp"
 #include "solvers_nonlinear_base.hpp"
 #include "solvers_nonlinear_factory.hpp"
 
@@ -28,7 +29,7 @@ class NonLinearIterativeSolver
   private:
 
     friend NonLinearSolvers;
-  	typedef NonLinearSolverBase<NonLinearIterativeSolver<PolicyT>> base_type;
+    typedef NonLinearSolverBase<NonLinearIterativeSolver<PolicyT>> base_type;
 
 
   public:
