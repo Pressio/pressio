@@ -118,7 +118,7 @@ TEST_F(core_matrix_vec_product_distributed_epetraFix, CRSMatTimesVector)
   //------------------
   // product: b = A b
   //------------------
-  auto c = core::matrixVectorProduct(*A_, *b_);
+  auto c = core::mat_ops::product(*A_, *b_);
   c.data()->Print(std::cout);
 
   assert( c.globalSize() == 9);
@@ -179,7 +179,7 @@ TEST_F(core_matrix_vec_product_distributed_epetraFix, DenseMatTimesVector)
   //------------------
   // product: b = A b
   //------------------
-  auto c = core::matrixVectorProduct( *Ad_, *b2_ );  
+  auto c = core::mat_ops::product( *Ad_, *b2_ );  
   c.data()->Print(std::cout);
 
   assert( c.globalSize() == 9);

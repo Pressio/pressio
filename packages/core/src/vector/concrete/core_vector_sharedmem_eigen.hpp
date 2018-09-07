@@ -109,7 +109,7 @@ private:
   	      !mytraits::isStatic, T
   	      >::type * = nullptr>
   void matchLayoutWithImpl(const this_t & other){
-    this.resize( other.size() );
+    this->resize( other.size() );
   }
   
   wrap_t const * dataImpl() const{

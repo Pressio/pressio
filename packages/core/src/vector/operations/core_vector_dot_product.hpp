@@ -6,37 +6,34 @@
 #include "../concrete/core_vector_sharedmem_eigen.hpp"
 
 namespace core{
+namespace vec_ops{
 
 template <typename vec_a_type,
-	  typename vec_b_type, typename res_t,
-    typename
-    std::enable_if<
-      // vec a has to be eigen 
-      details::traits<vec_a_type>::isVector &&
-      details::traits<vec_a_type>::isEigen && 
-      // vec b has to be eigen 
-      details::traits<vec_b_type>::isVector &&
-      details::traits<vec_b_type>::isEigen &&
-      // the two vectors need matching scalar type
-      std::is_same<typename
-		   details::traits<vec_a_type>::scalar_t,
-		   typename
-		   details::traits<vec_b_type>::scalar_t
-		   >::value &&
-      // result type must match too
-      std::is_same<typename details::traits<vec_a_type>::scalar_t,
-		   res_t>::value
-      >::type * = nullptr
+	  typename vec_b_type,
+	  typename res_t,
+	  core::meta::enable_if_t<
+	   details::traits<vec_a_type>::isVector &&
+	   details::traits<vec_a_type>::isEigen && 
+	   details::traits<vec_b_type>::isVector &&
+	   details::traits<vec_b_type>::isEigen &&
+	   std::is_same<
+	     typename details::traits<vec_a_type>::scalar_t,
+	     typename details::traits<vec_b_type>::scalar_t
+	     >::value &&
+	   std::is_same<
+	     typename details::traits<vec_a_type>::scalar_t,
+	     res_t>::value
+	   > * = nullptr
 	  >
-void dotProduct(const vec_a_type & vecA,
-		const vec_b_type & vecB,
-		res_t & result)
+void dot(const vec_a_type & vecA,
+	 const vec_b_type & vecB,
+	 res_t & result)
 {
   assert(vecA.size() == vecB.size());
   result = vecA.data()->dot(*vecB.data());
 }
 
-    
+
+} // end namespace vec_ops
 } // end namespace core
 #endif
-

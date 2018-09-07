@@ -34,11 +34,17 @@
 ///------------------
 ///operations
 ///------------------
-#include "../src/matrix/operations/core_matrix_vector_product.hpp"
-#include "../src/matrix/operations/core_matrix_matrix_product.hpp"
-#include "../src/matrix/operations/core_matrix_transpose.hpp"
-#include "../src/matrix/operations/core_dense_to_sparse_matrix.hpp"
+#include "../src/matrix/operations/core_sparse_matrix_transpose.hpp"
+#include "../src/matrix/operations/core_dense_matrix_transpose.hpp"
 
+#include "../src/matrix/operations/core_dense_matrix_vector_product.hpp"
+#include "../src/matrix/operations/core_sparse_matrix_vector_product.hpp"
+
+#include "../src/matrix/operations/core_sparse_sparse_matrix_product.hpp"
+#include "../src/matrix/operations/core_dense_dense_matrix_product.hpp"
+#include "../src/matrix/operations/core_sparse_dense_matrix_product.hpp"
+
+#include "../src/matrix/operations/core_dense_to_sparse_matrix.hpp"
 
 #endif
 

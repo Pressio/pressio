@@ -88,17 +88,17 @@ TEST_F(core_matrix_dense_distributed_epetraFix, EpetraDenseDistConstructor)
 }
 
 
-TEST_F(core_matrix_dense_distributed_epetraFix, transpose)
-{
-  using nat_t = Epetra_MultiVector;
-  using my_t = core::Matrix<nat_t>;
-  STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(my_t);
+// TEST_F(core_matrix_dense_distributed_epetraFix, transpose)
+// {
+//   using nat_t = Epetra_MultiVector;
+//   using my_t = core::Matrix<nat_t>;
+//   STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(my_t);
 
-  my_t A( *getMap(), numVectors_ );
-  auto CC = core::transpose(A);
-  assert( CC.globalRows() == A.globalCols() );
-  assert( CC.globalCols() == A.globalRows() );
+//   my_t A( *getMap(), numVectors_ );
+//   auto CC = core::mat_ops::transpose(A);
+//   assert( CC.globalRows() == A.globalCols() );
+//   assert( CC.globalCols() == A.globalRows() );
 
-  // missing test here because we are missing implementation
+//   // missing test here because we are missing implementation
   
-}
+// }

@@ -100,7 +100,7 @@ TEST_F(core_matrix_sparse_distributed_epetraFix,Test1)
   //-----------
   {
     core::Matrix<Epetra_CrsMatrix> myC_(*contigMap_, 3);
-    matrixMatrixProduct(*A_, *B_, myC_, false, false);
+    core::mat_ops::product(*A_, *B_, myC_, false, false);
     //myC_.data()->Print(std::cout);
     {
       double o_v[2]; int o_i[2]; int n;
@@ -135,7 +135,7 @@ TEST_F(core_matrix_sparse_distributed_epetraFix,Test1)
   // product 2
   //-----------
   {
-    auto myC_ = matrixMatrixProduct(*A_, *B_, false, false);
+    auto myC_ = core::mat_ops::product(*A_, *B_, false, false);
     {
       double o_v[2]; int o_i[2]; int n;
       int ec = myC_.data()->ExtractGlobalRowCopy( 0, 2, n, o_v, o_i );

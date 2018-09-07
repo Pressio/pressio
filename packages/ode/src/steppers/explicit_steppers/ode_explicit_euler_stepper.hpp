@@ -35,11 +35,9 @@ public:
      state_type, state_type, model_type>;
 
   using base_t = impl::ExplicitEulerStepperImpl<
-     state_type,
-     state_type,
+     state_type, state_type,
      typename core::details::traits<state_type>::scalar_t,
-     model_type,
-     pol_t>;
+     model_type, pol_t>;
 
 public:
   
@@ -74,8 +72,7 @@ private:
   
 template<typename state_type,
 	 typename model_type,
-	 typename residual_policy_type
-	 >
+	 typename residual_policy_type>
 class ExplicitEulerStepper<state_type,
 			   state_type,
 			   model_type,
@@ -95,11 +92,9 @@ class ExplicitEulerStepper<state_type,
 
 public:
   using base_t = impl::ExplicitEulerStepperImpl<
-     state_type,
-     state_type,
+     state_type, state_type,
      typename core::details::traits<state_type>::scalar_t,
-     model_type,
-     residual_policy_type>;
+     model_type, residual_policy_type>;
 
 public:
   template < typename T1 = model_type,

@@ -97,7 +97,7 @@ TEST_F(core_matrix_dense_distributed_epetraFix, Test1)
   // product C
   // 9 x 4 matrix 
   //-----------
-  auto CC = core::matrixMatrixProduct(*A_, *B_);
+  auto CC = core::mat_ops::product(*A_, *B_);
   assert( CC.globalRows() == 9 );
   assert( CC.globalCols() == 4 );
   CC.data()->Print(std::cout);

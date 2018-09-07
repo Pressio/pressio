@@ -15,7 +15,7 @@ TEST(core_matrix_vector_product, eigenVectorDenseMatrix)
   core::Matrix<natM_t> myM(M);
 
   core::Vector<natV_t> myR;
-  core::matrixVectorProduct(myM, myV, myR);
+  core::mat_ops::product(myM, myV, myR);
   EXPECT_DOUBLE_EQ( myR[0], 16.0);
   EXPECT_DOUBLE_EQ( myR[1], 28.0);
   EXPECT_DOUBLE_EQ( myR[2], 6.0);
@@ -49,7 +49,7 @@ TEST(core_matrix_vector_product, eigenVectorSparseMatrix)
   }
     
   core::Vector<Eigen::Matrix<double,4,1>> myR;
-  core::matrixVectorProduct(myM, myV, myR);
+  core::mat_ops::product(myM, myV, myR);
   EXPECT_DOUBLE_EQ( myR[0], 16.0);
   EXPECT_DOUBLE_EQ( myR[1], 26.0);
   EXPECT_DOUBLE_EQ( myR[2], 6.0);

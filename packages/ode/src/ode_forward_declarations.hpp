@@ -5,7 +5,7 @@
 #include "ode_ConfigDefs.hpp"
 
 namespace ode {
-
+  
 template<typename state_type,
 	 typename ode_residual_type,
 	 typename model_type,

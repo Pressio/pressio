@@ -152,7 +152,7 @@ TEST_F(core_matrix_sparse_distributed_epetraFix,
   // TRANSPOSE
   // -------------
   // -------------
-  auto At = core::transpose(*A_);
+  auto At = core::mat_ops::transpose(*A_);
   //  At.data()->Print(std::cout);
 
   // check that row 0 matches

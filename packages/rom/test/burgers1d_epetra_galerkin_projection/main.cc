@@ -16,7 +16,6 @@
 //   std::cout << std::endl;
 // }
 
-
 template <typename T>
 void fillColloc(T & A, Epetra_Map map){
   int myNR = map.NumMyElements();
@@ -36,24 +35,17 @@ void fillColloc(T & A, Epetra_Map map){
   }
 }
 
-
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
 int main(int argc, char *argv[])
 {
   //-------------------------------
-  // define native types
-  using model_eval_t = apps::Burgers1dEpetra;
-  using native_state_t = model_eval_t::state_type;
-  using native_space_residual_type = model_eval_t::space_residual_type;
-  // using native_jac_t = model_eval_t::jacobian_type;
-  using scalar_t = model_eval_t::scalar_type;
-
-  //-------------------------------
-  // define wrapper types
-  using state_t = core::Vector<native_state_t>;
-  using space_res_t = core::Vector<native_space_residual_type>;
-  //  using jac_t = core::Matrix<native_jac_t>;
+  // define native app types
+  using app_t = apps::Burgers1dEpetra;
+  using app_state_t = app_t::state_type;
+  using app_space_res_t = app_t::space_residual_type;
+  using app_jac_t = app_t::jacobian_type;
+  using scalar_t = app_t::scalar_type;
 
   //-------------------------------
   // MPI init
@@ -64,78 +56,117 @@ int main(int argc, char *argv[])
 
   //-------------------------------
   // create app object
-  int numCell = 100; // number of fv cells
+  int numCell = 100; // # fv cells
   std::vector<double> mu({5.0, 0.02, 0.02});
-  model_eval_t appObj(mu, numCell, &Comm);
+  app_t appObj(mu, numCell, &Comm);
   appObj.setup();
   auto & y0n = appObj.getInitialState();
-  auto & r0n = appObj.getInitialResidual();
+  auto & r0n = appObj.getInitialResidual();  
+  // // wrap with core structures
+  // app_state_tw y0FOM(y0n);
+  // appspace_res_tw r0FOM(r0n);
+
+  //-------------------------------
+  /* lets say I obtain here the basis somehow
+     phi type is same as those of the app, so if 
+     app is trilinos based, phi is also based on trilinos 
+  */
   auto & yFOMMap = appObj.getDataMap();
+  using phi_type = core::MultiVector<Epetra_MultiVector>;
+  phi_type phi(yFOMMap, 15);
+  using phi_op_t = core::MultiVectorOperator<phi_type>;
+  phi_op_t phiOp(phi);
     
   //-------------------------------
-  // wrap with core structures
-  state_t y0FOM(y0n);
-  space_res_t r0FOM(r0n);
-    
-  //---------------------------------
-  // for anasazi, the eigenvectors are stored in a Multivector
-  // but for us, they need to be see as a 2d matrix so we wrap it
-  // with a core::Matrix<>. This is important. Maybe we
-  // should make sure at compile time the phi operator is a core::matrix.
-  // for now, the basis vectors have the same row map as states I assume.
-  const int numBasisVecs = 12;
-  using phi_type = core::Matrix<Epetra_MultiVector>;
-  phi_type phi(yFOMMap, numBasisVecs);
-  auto phiT = core::transpose(phi);
+  /* define rom types to use
+     this does not have to be the same as natives types, 
+     but you can choose what type you want to do ROM 
+  */
+  using rom_state_t = core::Vector<Eigen::VectorXd>;
+  using rom_res_t = rom_state_t;
+  using rom_jac_t = core::Matrix<Eigen::MatrixXd>;
+  rom_state_t yROM;
+  rom_res_t rROM;
   
-  //---------------------------------
-  // collocation operator
-  const int sampleMeshSize = 18; //has to be > numBasisVecs
-  Epetra_Map Pmap(sampleMeshSize, 0, Comm);
-  using P_type = core::Matrix<Epetra_CrsMatrix>;
-  // 1 nonzero for each row because P contains rows of
-  // the identity matrix of size numCell x nunCell.
-  // So after we select only subset of rows, then P
-  // should have size sampleMesh x numCell
-  P_type P(Pmap, 1);
-  // fill collocation operator
-  fillColloc(P, Pmap);
-  // ...
-  // when we fill complete P, we need to make sure we pass the
-  // domain and range maps so we can do operatiors because P is a rect matrix.
-  // (a) P will leftmultiply phi, so it has to have domain map of phi.
-  // (b) P will leftmultiply the space residual, so it has to have
-  // domain map of the rhs f(...)
-  P.fillingIsCompleted(yFOMMap, Pmap);
-  P.data()->Print(std::cout);
-  
-  //---------------------------------
-  // weighting operator
-  using A_type = rom::exp::WeightOperator<phi_type, P_type>;
-  A_type A(phi, P);
-
-  //---------------------------------------
-  // project initial condition phi^T * y0
-  auto yROM = core::matrixVectorProduct(phiT, y0FOM);
-  std::cout << "yromSz = " << yROM.globalSize() << std::endl;
-  auto rROM = A.apply(r0FOM);
-  std::cout << "rromSz = " << rROM.globalSize() << std::endl;
- 
-  // residual policy
+  // // residual policy needs to know about the app types
   using res_pol_t = rom::exp::RomGalerkinExplicitResidualPolicy<
-    state_t, space_res_t, model_eval_t, phi_type, A_type>;
-  res_pol_t resObj(y0FOM, r0FOM, phi, A);
+    app_state_t, app_space_res_t, phi_op_t, phi_op_t>;
+  res_pol_t resObj(y0n, r0n, phiOp, phiOp);
 
-  // // stepper
-  // using stepper_t = ode::ExplicitEulerStepper<
-  //   state_t, space_res_t, model_eval_t, res_pol_t>;
-  // stepper_t stepperObj(appObj, resObj, yROM, rROM);
+  // stepper needs to know about types for doing time integration,
+  // which here are those for ROM
+  using stepper_t = ode::ExplicitEulerStepper<
+    rom_state_t, rom_res_t, app_t, res_pol_t>;
+  stepper_t stepperObj(appObj, resObj, yROM, rROM);
 
-  // // integrate in time 
-  // //snapshot_collector collObj;
-  // //  scalar_t final_t = 35;
-  // scalar_t dt = 0.01;
-  // ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);//, collObj);
+  // integrate in time 
+  scalar_t dt = 0.01;
+  ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);
+
+
+
+  
+
+  
+  // //---------------------------------
+  // // for anasazi, the eigenvectors are stored in a Multivector
+  // // but for us, they need to be see as a 2d matrix so we wrap it
+  // // with a core::Matrix<>. This is important. Maybe we
+  // // should make sure at compile time the phi operator is a core::matrix.
+  // // for now, the basis vectors have the same row map as states I assume.
+  // const int numBasisVecs = 12;
+  // using phi_type = core::Matrix<Epetra_MultiVector>;
+  // phi_type phi(yFOMMap, numBasisVecs);
+  // auto phiT = core::transpose(phi);
+  
+  // //---------------------------------
+  // // collocation operator
+  // const int sampleMeshSize = 18; //has to be > numBasisVecs
+  // Epetra_Map Pmap(sampleMeshSize, 0, Comm);
+  // using P_type = core::Matrix<Epetra_CrsMatrix>;
+  // // 1 nonzero for each row because P contains rows of
+  // // the identity matrix of size numCell x nunCell.
+  // // So after we select only subset of rows, then P
+  // // should have size sampleMesh x numCell
+  // P_type P(Pmap, 1);
+  // // fill collocation operator
+  // fillColloc(P, Pmap);
+  // // ...
+  // // when we fill complete P, we need to make sure we pass the
+  // // domain and range maps so we can do operatiors because P is a rect matrix.
+  // // (a) P will leftmultiply phi, so it has to have domain map of phi.
+  // // (b) P will leftmultiply the space residual, so it has to have
+  // // domain map of the rhs f(...)
+  // P.fillingIsCompleted(yFOMMap, Pmap);
+  // P.data()->Print(std::cout);
+  
+  // //---------------------------------
+  // // weighting operator
+  // using A_type = rom::exp::WeightOperator<phi_type, P_type>;
+  // A_type A(phi, P);
+
+  // //---------------------------------------
+  // // project initial condition phi^T * y0
+  // auto yROM = core::matrixVectorProduct(phiT, y0FOM);
+  // std::cout << "yromSz = " << yROM.globalSize() << std::endl;
+  // auto rROM = A.apply(r0FOM);
+  // std::cout << "rromSz = " << rROM.globalSize() << std::endl;
+ 
+  // // residual policy
+  // using res_pol_t = rom::exp::RomGalerkinExplicitResidualPolicy<
+  //   state_t, space_res_t, model_eval_t, phi_type, A_type>;
+  // res_pol_t resObj(y0FOM, r0FOM, phi, A);
+
+  // // // stepper
+  // // using stepper_t = ode::ExplicitEulerStepper<
+  // //   state_t, space_res_t, model_eval_t, res_pol_t>;
+  // // stepper_t stepperObj(appObj, resObj, yROM, rROM);
+
+  // // // integrate in time 
+  // // //snapshot_collector collObj;
+  // // //  scalar_t final_t = 35;
+  // // scalar_t dt = 0.01;
+  // // ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);//, collObj);
     
   MPI_Finalize();
   return 0;

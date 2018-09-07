@@ -363,7 +363,7 @@ TEST(core_matrix_sparse_serial_eigen_class, transpose)
 
   std::cout << *m4.data() << std::endl;
 
-  auto tm1 = core::transpose(m4);
+  auto tm1 = core::mat_ops::transpose(m4);
   std::cout << *tm1.data() << std::endl;
   EXPECT_DOUBLE_EQ( tm1(1,0), 2.0 );
   EXPECT_DOUBLE_EQ( tm1(2,0), 4. );
