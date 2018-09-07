@@ -34,19 +34,20 @@ public:
   template <typename T= derived_type,
 	    typename std::enable_if<
   	      core::details::traits<T>::isSharedMem==0
-  	      ,int>::type * = nullptr
+  	      ,int>::type = 0
   	    >
   bool isDistributedGlobally() const{
     return this->underlying().isDistributedGloballyImpl();
   }
 
-  // template <typename std::enable_if<
-  // 	      core::details::traits<derived_type>::isSharedMem==1
-  // 	      ,int>::type * = nullptr
-  // 	    >
-  // bool isDistributedGlobally() const{
-  //   return false;
-  // }
+  template <typename T= derived_type,
+	    typename std::enable_if<
+  	      core::details::traits<T>::isSharedMem==1
+  	      ,int>::type = 0
+  	    >
+  bool isDistributedGlobally() const{
+    return false;
+  }
   
   
 private:
