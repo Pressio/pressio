@@ -6,6 +6,7 @@
 #include <memory>
 #include <type_traits>
 
+#include "solvers_types.hpp"
 #include "system_traits.hpp"
 #include "meta/core_meta_static_checks.hpp"
 #include "matrix/core_matrix_traits_exp.hpp"
@@ -34,7 +35,6 @@ struct NonlinearSolvers; // Fwd declaration
 
 template <typename Derived>
 class NonLinearSolverBase {
-
 
   public: 
 
