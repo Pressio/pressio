@@ -11,18 +11,14 @@
 #include <Epetra_Export.h>
 #include <Epetra_Import.h>
 
-
 namespace core{
 namespace mat_ops{
-
   
 /*---------------------------------------------------
------------------------------------------------------
   C = A * B
   A: epetra CRS matrix
   B: epetra CRS matrix
   C: epetra CRS matrix
------------------------------------------------------
 ---------------------------------------------------*/
 
 template <typename mat_type,
@@ -36,11 +32,9 @@ void product(const mat_type & A,
 	     mat_type & C,
 	     bool transposeA,
 	     bool transposeB,
-	     bool call_filingIsCompleted_on_result = true)
-{
+	     bool call_filingIsCompleted_on_result = true){
 
   /* From trilinos docs: 
-
      Given Epetra_CrsMatrix objects A, B and C, form the product C = A*B.
      In a parallel setting, A and B need not have matching distributions, 
      but C needs to have the same row-map as A.
@@ -66,7 +60,6 @@ void product(const mat_type & A,
   
   assert( A.isFillingCompleted() );
   assert( B.isFillingCompleted() );
-
   auto & rangeMapAB = transposeA ? A.getDomainDataMap() : A.getRowDataMap();
   auto & rowMapC = C.getRowDataMap();
   assert( rowMapC.SameAs(rangeMapAB) );
@@ -74,29 +67,29 @@ void product(const mat_type & A,
   if ( C.isFillingCompleted() ){
     assert( C.hasSameRangeDataMapAs(A) );
     assert( C.hasSameDomainDataMapAs(B) );
-    EpetraExt::MatrixMatrix::Multiply(*A.data(), transposeA,
-  				      *B.data(), transposeB,
-  				      *C.data(),
-  				      call_filingIsCompleted_on_result);
+    EpetraExt::MatrixMatrix::Multiply(*A.data(),
+		   transposeA,
+		   *B.data(), transposeB,
+		   *C.data(),
+		   call_filingIsCompleted_on_result);
   }
   else{
     EpetraExt::MatrixMatrix::Multiply(*A.data(), transposeA,
-				      *B.data(), transposeB,
-				      *C.data(),
-				      call_filingIsCompleted_on_result);
+		  *B.data(), transposeB,
+		  *C.data(),
+		  call_filingIsCompleted_on_result);
     assert( C.data()->Filled() );
   }
 
 }//end fnc
 
 
+
 /*---------------------------------------------------
------------------------------------------------------
   C = A * B
   A: epetra sparse matrix
   B: epetra sparse matrix
   C: epetra sparse matrix
------------------------------------------------------
 ---------------------------------------------------*/
 
 template <typename mat_type,
@@ -119,7 +112,8 @@ auto product(const mat_type & A,
 
   // rowmap of C is the range map of A if we use A
   // rowmap of C is the domain map of A if we use A^T
-  auto & Crowmap = transposeA ? A.getDomainDataMap() : A.getRangeDataMap();
+  auto & Crowmap = transposeA ? A.getDomainDataMap()
+    : A.getRangeDataMap();
   mat_type C(Crowmap, maxNonzB);
 
   core::mat_ops::product(A, B, C, transposeA, transposeB,

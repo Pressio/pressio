@@ -15,13 +15,11 @@ namespace core{
 namespace mat_ops{
   
 /*-----------------------------------------------------
--------------------------------------------------------
   C = A * B
 
   A: epetra dense matrix
   B: epetra dense matrix
   C: epetra dense matrix
--------------------------------------------------------
 -----------------------------------------------------*/
 template <typename mat_type,
 	  typename std::enable_if<

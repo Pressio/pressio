@@ -11,16 +11,13 @@
 #include <Epetra_Export.h>
 #include <Epetra_Import.h>
 
-
 namespace core{
 namespace mat_ops{
   
 /*---------------------------------------------------------
------------------------------------------------------------
 c = A b
 - A is matrix from eigen
 - b is vector from eigen
------------------------------------------------------------
 ---------------------------------------------------------*/
   
 template <typename matrix_type,
@@ -54,12 +51,10 @@ void product(const matrix_type & A,
   
   
 /*--------------------------------------------------------
------------------------------------------------------------
   EPETRA 
   c = A b , 
   - A = DENSE matrix 
   - b = SINGLE vector
------------------------------------------------------------
 -----------------------------------------------------------*/
   
 template <typename matrix_type,
@@ -92,22 +87,24 @@ auto product(const matrix_type & A,
 
   const auto bGSize = b.globalSize();
   assert( A.globalCols() == bGSize );
-    
-  // define local map
-  Epetra_LocalMap locMap( bGSize, 0, b.commCRef() );
-  // define replicated vector
-  Epetra_Vector bRep(locMap);
-    
-  // get distributed map
-  auto & srcMap = b.getDataMap();
-  // define importer: Epetra_Import(targetMap, sourceMap)
-  Epetra_Import globToLocalImporter(locMap, srcMap);
-
-  // import global -> local
-  bRep.Import(*b.data(), globToLocalImporter, Insert);
-  
   vector_type c( A.getDataMap() );
-  c.data()->Multiply( 'N','N', 1.0,  *A.data(), bRep, 0.0 );
+  
+  if ( b.isDistributedGlobally() ){
+    // define local map
+    Epetra_LocalMap locMap( bGSize, 0, b.commCRef() );
+    // define replicated vector
+    Epetra_Vector bRep(locMap);    
+    // get distributed map
+    auto & srcMap = b.getDataMap();
+    // define importer: Epetra_Import(targetMap, sourceMap)
+    Epetra_Import globToLocalImporter(locMap, srcMap);
+    // import global -> local
+    bRep.Import(*b.data(), globToLocalImporter, Insert);  
+    c.data()->Multiply( 'N','N', 1.0,  *A.data(), bRep, 0.0 );
+  }
+  else{
+    c.data()->Multiply( 'N','N', 1.0,  *A.data(), *b.data(), 0.0 );
+  }
 
   return c;
 }

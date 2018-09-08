@@ -64,7 +64,6 @@ void product(const matrix_type & A,
   A.data()->Multiply(transposeA, *b.data(), *c.data());
 }
 
-
   
 /*---------------------------------------------------------
 c = A b

@@ -67,12 +67,9 @@ public:
 
 
 
-TEST_F(core_matrix_vec_product_distributed_epetraFix, CRSMatTimesVector)
-{
-
+TEST_F(core_matrix_vec_product_distributed_epetraFix, CRSMatTimesVector){
   //-----------
   // FILL A
-  //-----------
   {
     int myNR = smMap_->NumMyElements();
 
@@ -136,8 +133,7 @@ TEST_F(core_matrix_vec_product_distributed_epetraFix, CRSMatTimesVector)
 
 
 
-TEST_F(core_matrix_vec_product_distributed_epetraFix, DenseMatTimesVector)
-{
+TEST_F(core_matrix_vec_product_distributed_epetraFix, DenseMatTimesVector){
 
   //-----------
   // FILL A
