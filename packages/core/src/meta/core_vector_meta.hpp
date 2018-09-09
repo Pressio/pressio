@@ -41,7 +41,7 @@ struct is_vector_eigen< T,
 	  >::value
 	>::type
       > : std::true_type{};
-//----------------------------------------------------------------------
+//----------------------------------------------
 
   
 template <typename T, typename enable = void>
@@ -63,7 +63,7 @@ struct is_vector_stdlib<T,
 	 )
 	>::type
       > : std::true_type{};
-//----------------------------------------------------------------------
+//--------------------------------------------
 
   
 template <typename T, typename enable = void>
@@ -76,8 +76,7 @@ struct is_vector_epetra<T,
 	std::is_same<T,Epetra_Vector>::value 
 	>::type
       > : std::true_type{};
-
-//----------------------------------------------------------------------
+//--------------------------------------------
 
 
 template <typename T, typename enable = void>
@@ -90,8 +89,7 @@ struct is_vector_kokkos<T,
 	   Kokkos::is_view<T>::value && 
 	   T::traits::rank==1>
       > : std::true_type{};
-
-//----------------------------------------------------------------------
+//--------------------------------------------
   
  
 //////////////////////

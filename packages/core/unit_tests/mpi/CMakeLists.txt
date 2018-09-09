@@ -21,6 +21,8 @@ add_single_unit_test(utest_vector_dot_product 1)
 
 add_single_unit_test(utest_multi_vector_distributed_epetra_traits 1)
 add_single_unit_test(utest_multi_vector_distributed_epetra_class 3)
+add_single_unit_test(utest_multi_vector_vector_dot_distributed_epetra_class 3)
+
 
 add_single_unit_test(utest_crs_matrix_vector_product_distributed_epetra 3)
 add_single_unit_test(utest_dense_matrix_vector_product_distributed_epetra 3)

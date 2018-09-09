@@ -20,8 +20,7 @@ struct traits<Vector<wrapped_type,
 		   wrapped_type>::value
 		 >
 	       >
-	      >
-{
+	      >{
 
   using wrapped_t = wrapped_type;
   using scalar_t = typename wrapped_type::traits::value_type;
@@ -52,14 +51,13 @@ struct traits<Vector<wrapped_type,
 //******************************* 
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-	  typename
-	  std::enable_if<
-	    core::meta::is_vector_eigen<
-	      wrapped_type>::value
-	    >::type
-	  >
-   >     		       
-{
+		typename
+		std::enable_if<
+		  core::meta::is_vector_eigen<
+		    wrapped_type>::value
+		  >::type
+		>
+	 >{
 
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
@@ -95,8 +93,7 @@ struct traits<Vector<wrapped_type,
 	wrapped_type>::value
       >::type
     >
-  >
-{
+  >{
 
   using scalar_t = typename wrapped_type::value_type;
   using ordinal_t = core::defaultTypes::local_ordinal_t;
@@ -131,8 +128,7 @@ struct traits<Vector<wrapped_type,
 	     wrapped_type>::value
 	  >::type
 	>
-     >
-{
+     >{
 
   using scalar_t = typename wrapped_type::scalar_type;
   using ordinal_t = typename wrapped_type::ordinal_type;
@@ -159,9 +155,8 @@ struct traits<Vector<wrapped_type,
       std::enable_if<
       core::meta::is_vector_epetra<wrapped_type
       >::value>::type>
-      >
-{
-  
+      >{
+
   using scalar_t = defaultTypes::epetra_scalar_t;
   using local_ordinal_t = core::defaultTypes::epetra_lo_t;
   using global_ordinal_t = core::defaultTypes::epetra_go_t1;

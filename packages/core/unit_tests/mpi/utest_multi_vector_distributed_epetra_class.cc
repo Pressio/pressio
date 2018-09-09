@@ -27,7 +27,6 @@ public:
     dataMap_ = new Epetra_Map(numGlobalEntries_, 0, *Comm_);
     x_ = new Epetra_MultiVector(*dataMap_, numVectors_);
   }
-
   Epetra_MultiVector & getNative(){
     return *x_;
   }
@@ -63,9 +62,11 @@ TEST_F(core_multi_vector_distributed_epetraFix,
 
   mymvec_t a( *getMap(), numVectors_ );
   ASSERT_FALSE( a.empty() );
+  a.data()->Print(std::cout);
 
   mymvec_t b( getNative() );  
   ASSERT_FALSE( b.empty() );
+  //b.data()->Print(std::cout);
 
   EXPECT_EQ( b.globalNumVectors(), 3 );
   EXPECT_EQ( b.localNumVectors(), 3 );
@@ -78,14 +79,23 @@ TEST_F(core_multi_vector_distributed_epetraFix,
 
   if(MyPID_==0)
     b.replaceGlobalValue(1,1, 43.3);
+  if(MyPID_==1)
+    b.replaceGlobalValue(5,2, 13.3);
+
+  b.data()->Print(std::cout);
+
   if(MyPID_==0)
     EXPECT_NEAR( 43.3, b(1,1), 1e-12);
+  else if (MyPID_==1)
+    EXPECT_NEAR( 13.3, b(0,2), 1e-12);
   else
     EXPECT_NEAR( 0.0, b(1,1), 1e-12);
 
   b.scale(2.0);
   if(MyPID_==0)
     EXPECT_NEAR( 86.6, b(1,1), 1e-12);
+  if (MyPID_==1)
+    EXPECT_NEAR( 26.6, b(0,2), 1e-12);
   
 }
 
