@@ -8,15 +8,41 @@
 namespace core{
 namespace details {
 
-//--------------------------------------------
-// Wrapped class type for vectors and matrices
-//--------------------------------------------
-enum class WrappedPackageName{
+/*--------------------------------------------
+Wrapped package name for containers
+
+This is not a sufficient identifier for a 
+wrapped type. Within a certain package one 
+can have more types of containers. 
+--------------------------------------------*/
+enum class WrappedPackageIdentifier{
    Undefined,
    Eigen,
-   Trilinos
+   Trilinos,
+   Kokkos
 };
 
+  
+/*--------------------------------------------
+Wrapped type name for containers.
+
+Within a given package, like trilinos, we can 
+have multiple types of vectors, for 
+instance epetra, tpetra.
+Same can be true for other packages.
+
+So combining this enum and the one above 
+allows us to identify one type uniquely.
+--------------------------------------------*/
+enum class WrappedContainerIdentifier{
+   Undefined,
+   TrilinosEpetra,
+   TrilinosTpetra,
+   Eigen, // maybe more specific 
+   Kokkos
+};
+
+  
   
 //---------------------------------------
 // TRAITS

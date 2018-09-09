@@ -53,7 +53,7 @@ class NonLinearSolverBase {
       typename std::enable_if<
         !(
           details::system_traits<SystemT>::is_system &&
-          core::meta::are_vector_matrix_compatible<
+          solvers::meta::are_vector_matrix_compatible<
             VectorT,
             typename details::system_traits<SystemT>::matrix_type
           >::value
@@ -82,7 +82,7 @@ class NonLinearSolverBase {
       typename VectorT,
       typename std::enable_if<
         details::system_traits<SystemT>::is_system &&
-        core::meta::are_vector_matrix_compatible<
+        solvers::meta::are_vector_matrix_compatible<
           VectorT,
           typename details::system_traits<SystemT>::matrix_type
         >::value,

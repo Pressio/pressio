@@ -3,6 +3,7 @@
 #define SOLVERS_EXPERIMENTAL_VECTOR_NORM_HPP
 
 #include "vector/core_vector_traits_exp.hpp"
+#include "solvers_meta_static_checks.hpp"
 
 
 namespace solvers {
@@ -18,9 +19,9 @@ struct L2Norm {
   	typedef typename core::details::vector_traits<T> t_vector_traits_type;
   	typedef typename core::details::vector_traits<U> u_vector_traits_type;
 
-  	static_assert(t_vector_traits_type::wrapped_package_name != core::details::WrappedPackageName::Undefined, "Error: the first argument is not a valid core vector");
-  	static_assert(u_vector_traits_type::wrapped_package_name != core::details::WrappedPackageName::Undefined, "Error: the second argument is not a valid core vector");
-  	static_assert(core::details::same_vector_structure<T, U>::value, "Error, the two vectors have incompatible dimensions");
+  	static_assert(t_vector_traits_type::wrapped_package_identifier != core::details::WrappedPackageIdentifier::Undefined, "Error: the first argument is not a valid core vector");
+  	static_assert(u_vector_traits_type::wrapped_package_identifier != core::details::WrappedPackageIdentifier::Undefined, "Error: the second argument is not a valid core vector");
+  	static_assert(solvers::meta::same_vector_structure<T, U>::value, "Error, the two vectors have incompatible dimensions");
 
     double value = 0;
 

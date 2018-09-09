@@ -22,7 +22,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     typename SystemT,
     typename VectorT,
     typename std::enable_if<
-      !core::meta::are_vector_compatible<
+      !solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,
         VectorT
       >::value,
@@ -52,7 +52,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     typename SystemT,
     typename VectorT,
     typename std::enable_if<
-      core::meta::are_vector_compatible<
+      solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,
         VectorT
       >::value,

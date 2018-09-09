@@ -41,7 +41,7 @@ class LinearSolverBase {
     template <
       typename CompatibleMatrixT,
       typename std::enable_if<
-        core::meta::are_matrix_compatible<
+        solvers::meta::are_matrix_compatible<
           MatrixT,
           CompatibleMatrixT
         >::value, MatrixT*
@@ -61,7 +61,7 @@ class LinearSolverBase {
     template <
       typename VectorLT,
       typename std::enable_if<
-        core::meta::are_vector_matrix_compatible<
+        solvers::meta::are_vector_matrix_compatible<
           VectorLT,
           MatrixT
         >::value, MatrixT*
@@ -83,7 +83,7 @@ class LinearSolverBase {
       typename CompatibleMatrixT, 
       typename VectorLT,
       typename std::enable_if<
-        core::details::matrix_traits<CompatibleMatrixT>::wrapped_package_name != core::details::WrappedPackageName::Undefined,
+        core::details::matrix_traits<CompatibleMatrixT>::wrapped_package_identifier != core::details::WrappedPackageIdentifier::Undefined,
         CompatibleMatrixT*
       >::type = nullptr
     >
@@ -104,11 +104,11 @@ class LinearSolverBase {
       typename VectorLT, 
       typename VectorRT,
       typename std::enable_if<
-        core::meta::are_vector_compatible<
+        solvers::meta::are_vector_compatible<
           VectorLT, 
           VectorRT
         >::value &&
-        core::details::vector_traits<VectorLT>::wrapped_package_name != core::details::WrappedPackageName::Undefined,
+        core::details::vector_traits<VectorLT>::wrapped_package_identifier != core::details::WrappedPackageIdentifier::Undefined,
         VectorLT*
       >::type = nullptr
     >

@@ -24,8 +24,8 @@ struct LinearSolvers {
   template <typename SolverT,
     typename MatrixT,
     typename std::enable_if<!(
-      core::details::matrix_traits<MatrixT>::wrapped_package_name == core::details::WrappedPackageName::Eigen || 
-      core::details::matrix_traits<MatrixT>::wrapped_package_name == core::details::WrappedPackageName::Trilinos), 
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen || 
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos), 
       MatrixT
     >::type* = nullptr
   > 
@@ -43,8 +43,8 @@ struct LinearSolvers {
     typename PrecT,
     typename MatrixT,
     typename std::enable_if<!(
-      core::details::matrix_traits<MatrixT>::wrapped_package_name == core::details::WrappedPackageName::Eigen || 
-      core::details::matrix_traits<MatrixT>::wrapped_package_name == core::details::WrappedPackageName::Trilinos), 
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen || 
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos), 
       MatrixT
     >::type* = nullptr
   >
@@ -94,7 +94,7 @@ struct LinearSolvers {
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::wrapped_package_name == core::details::WrappedPackageName::Eigen,
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
       MatrixT
     >::type* = nullptr
   >
@@ -132,7 +132,7 @@ struct LinearSolvers {
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::wrapped_package_name == core::details::WrappedPackageName::Trilinos,
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos,
       MatrixT
     >::type* = nullptr
   >

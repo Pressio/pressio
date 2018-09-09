@@ -9,17 +9,23 @@
 #include "core_ConfigDefs.hpp"
 #include "core_forward_declarations.hpp"
 
-
 namespace core {
 namespace details {
 
+  
 template <typename T, typename Enabled = void>
 struct matrix_traits {
   typedef void wrapped_t;
-  static constexpr WrappedPackageName wrapped_package_name
-  = WrappedPackageName::Undefined;
+
+  static constexpr WrappedPackageIdentifier wrapped_package_identifier
+      = WrappedPackageIdentifier::Undefined;
+  
+  static constexpr WrappedContainerIdentifier wrapped_container_identifier
+      = WrappedContainerIdentifier::Undefined;
+
   static constexpr bool is_sparse = false;
 };
+//----------------------------------------------------
 
 
 template <typename T>
@@ -30,10 +36,16 @@ struct matrix_traits<core::Matrix<T>,
     >::value, void
   >::type
 > {
-  static constexpr WrappedPackageName wrapped_package_name
-  = WrappedPackageName::Trilinos;
+
+  static constexpr WrappedPackageIdentifier wrapped_package_identifier
+      = WrappedPackageIdentifier::Trilinos;
+  
+  static constexpr WrappedContainerIdentifier wrapped_container_identifier
+      = WrappedContainerIdentifier::TrilinosEpetra;
+  
   static constexpr bool is_sparse = true;
 };
+//----------------------------------------------------
 
 
 template <typename T>
@@ -48,13 +60,22 @@ struct matrix_traits<
       >, T
     >::value, void 
   >::type
-> {
+  >
+{
+
   typedef T wrapped_type;
-  static constexpr WrappedPackageName wrapped_package_name
-  = WrappedPackageName::Eigen;
+
+  static constexpr WrappedPackageIdentifier wrapped_package_identifier
+      = WrappedPackageIdentifier::Eigen;
+
+  static constexpr WrappedContainerIdentifier wrapped_container_identifier
+      = WrappedContainerIdentifier::Eigen;
+  
   static constexpr bool is_sparse = true;
 };
-	
+//----------------------------------------------------
+
+  
 } // end namespace details
 } // end namespace core
 

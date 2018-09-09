@@ -16,15 +16,22 @@ namespace details {
 
 
 template <typename T, typename Enable = void>
-struct vector_traits {
-  typedef T wrapped_type;
-  static constexpr WrappedPackageName wrapped_package_name
-  = WrappedPackageName::Undefined;
+struct vector_traits{
+
+  using  wrapped_type = T;
+
+  static constexpr WrappedPackageIdentifier wrapped_package_identifier
+      = WrappedPackageIdentifier::Undefined;
+  
+  static constexpr WrappedContainerIdentifier wrapped_container_identifier
+      = WrappedContainerIdentifier::Undefined;
+  
   static constexpr bool is_dynamic = false;
   static constexpr int rows = -1;
 };
+//----------------------------------------------------
 
-
+  
 template <typename T>
 struct vector_traits<
   core::Vector<T>,
@@ -34,13 +41,21 @@ struct vector_traits<
       T
     >::value, void
   >::type
-> {
-  typedef T wrapped_type;
-  static constexpr WrappedPackageName wrapped_package_name
-  = WrappedPackageName::Trilinos;
+  >{
+
+  using  wrapped_type = T;
+
+  static constexpr WrappedPackageIdentifier wrapped_package_identifier
+      = WrappedPackageIdentifier::Trilinos;
+  
+  static constexpr WrappedContainerIdentifier wrapped_container_identifier
+      = WrappedContainerIdentifier::TrilinosEpetra;
+  
   static constexpr bool is_dynamic = true;
   static constexpr int rows = -1;
+
 }; 
+//----------------------------------------------------
   
 
 template <typename T>
@@ -58,40 +73,25 @@ struct vector_traits<
       >, T
     >::value, void
   >::type
-> {
-  typedef T wrapped_type;
+  >{
+  
+  using  wrapped_type = T;
 
-  static constexpr WrappedPackageName wrapped_package_name = WrappedPackageName::Eigen;
+  static constexpr WrappedPackageIdentifier wrapped_package_identifier
+      = WrappedPackageIdentifier::Eigen;
 
-  static constexpr bool is_dynamic = T::RowsAtCompileTime == Eigen::Dynamic;
+  static constexpr WrappedContainerIdentifier wrapped_container_identifier
+      = WrappedContainerIdentifier::Eigen;
+  
+  static constexpr bool is_dynamic =
+    T::RowsAtCompileTime == Eigen::Dynamic;
 
-  static constexpr int rows = is_dynamic ? -1 : T::RowsAtCompileTime;
+  static constexpr int rows =
+    is_dynamic ? -1 : T::RowsAtCompileTime;
 };
+//----------------------------------------------------
 
 
-template <typename T, typename U>
-struct same_vector_structure {
-  static constexpr bool value = vector_traits<T>::is_dynamic ||
-    vector_traits<U>::is_dynamic ||
-    vector_traits<T>::rows == vector_traits<U>::rows;
-};
-
-
-template <typename T, typename U>
-struct are_vector_compatible {
-  static constexpr bool valid_vector =
-    vector_traits<T>::wrapped_package_name != WrappedPackageName::Undefined;
-
-  static constexpr bool same_type =
-    vector_traits<T>::wrapped_package_name == vector_traits<U>::wrapped_package_name;
-
-  static constexpr bool same_structure =
-    vector_traits<T>::is_dynamic ||
-    vector_traits<U>::is_dynamic ||
-    vector_traits<T>::rows == vector_traits<U>::rows;
-
-  static constexpr bool value = valid_vector && same_type && same_structure;
-};
 
 
 } // end namespace details
