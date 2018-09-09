@@ -8,16 +8,16 @@
 namespace core{
 namespace details {
 
-
 //--------------------------------------------
 // Wrapped class type for vectors and matrices
 //--------------------------------------------
-enum class WrappedClass{
-  Eigen,
-  Trilinos,
-  Undefined
+enum class WrappedPackageName{
+   Undefined,
+   Eigen,
+   Trilinos
 };
 
+  
 //---------------------------------------
 // TRAITS
 //---------------------------------------
@@ -103,8 +103,8 @@ namespace defaultTypes {
   /// default global_ordinal_type
   using global_ordinal_t = int;
 
-  /// default type for error codes
-  using errcode_t = int;
+  // /// default type for error codes
+  // using errcode_t = int;
 
   // admissible types for epetra vector
   using epetra_scalar_t = double;
@@ -114,8 +114,10 @@ namespace defaultTypes {
 
 } // namespace defaultTypes
 
-constexpr defaultTypes::errcode_t _SUCCESS = 0;
-constexpr defaultTypes::errcode_t _FAILURE = 1;
+
+/// comment out for now because we do not do error checking
+// constexpr defaultTypes::errcode_t _SUCCESS = 0;
+// constexpr defaultTypes::errcode_t _FAILURE = 1;
   
 } // end of core namespace
 

@@ -18,7 +18,7 @@ namespace details {
 template <typename T, typename Enabled = void>
 struct matrix_traits {
   typedef void wrapped_t;
-  static constexpr WrappedClass matrix_class = WrappedClass::Undefined;
+  static constexpr WrappedPackageName matrix_class = WrappedPackageName::Undefined;
   static constexpr bool is_sparse = false;
 };
 
@@ -31,7 +31,7 @@ struct matrix_traits<core::Matrix<T>,
     >::value, void
   >::type
 > {
-  static constexpr WrappedClass matrix_class = WrappedClass::Trilinos;
+  static constexpr WrappedPackageName matrix_class = WrappedPackageName::Trilinos;
   static constexpr bool is_sparse = true;
 };
 
@@ -50,7 +50,7 @@ struct matrix_traits<
   >::type
 > {
   typedef T wrapped_type;
-  static constexpr WrappedClass matrix_class = WrappedClass::Eigen;
+  static constexpr WrappedPackageName matrix_class = WrappedPackageName::Eigen;
   static constexpr bool is_sparse = true;
 };
 	

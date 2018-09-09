@@ -18,8 +18,8 @@ struct L2Norm {
   	typedef typename core::details::vector_traits<T> t_vector_traits_type;
   	typedef typename core::details::vector_traits<U> u_vector_traits_type;
 
-  	static_assert(t_vector_traits_type::vector_class != core::details::WrappedClass::Undefined, "Error: the first argument is not a valid core vector");
-  	static_assert(u_vector_traits_type::vector_class != core::details::WrappedClass::Undefined, "Error: the second argument is not a valid core vector");
+  	static_assert(t_vector_traits_type::vector_class != core::details::WrappedPackageName::Undefined, "Error: the first argument is not a valid core vector");
+  	static_assert(u_vector_traits_type::vector_class != core::details::WrappedPackageName::Undefined, "Error: the second argument is not a valid core vector");
   	static_assert(core::details::same_vector_structure<T, U>::value, "Error, the two vectors have incompatible dimensions");
 
     double value = 0;
