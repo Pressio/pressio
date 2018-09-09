@@ -5,9 +5,7 @@
 #include <Eigen/Sparse>
 #include <Eigen/Core>
 #include <type_traits>
-
 #include "Epetra_RowMatrix.h"
-
 #include "core_ConfigDefs.hpp"
 #include "core_forward_declarations.hpp"
 
@@ -18,7 +16,8 @@ namespace details {
 template <typename T, typename Enabled = void>
 struct matrix_traits {
   typedef void wrapped_t;
-  static constexpr WrappedPackageName matrix_class = WrappedPackageName::Undefined;
+  static constexpr WrappedPackageName wrapped_package_name
+  = WrappedPackageName::Undefined;
   static constexpr bool is_sparse = false;
 };
 
@@ -31,7 +30,8 @@ struct matrix_traits<core::Matrix<T>,
     >::value, void
   >::type
 > {
-  static constexpr WrappedPackageName matrix_class = WrappedPackageName::Trilinos;
+  static constexpr WrappedPackageName wrapped_package_name
+  = WrappedPackageName::Trilinos;
   static constexpr bool is_sparse = true;
 };
 
@@ -50,7 +50,8 @@ struct matrix_traits<
   >::type
 > {
   typedef T wrapped_type;
-  static constexpr WrappedPackageName matrix_class = WrappedPackageName::Eigen;
+  static constexpr WrappedPackageName wrapped_package_name
+  = WrappedPackageName::Eigen;
   static constexpr bool is_sparse = true;
 };
 	

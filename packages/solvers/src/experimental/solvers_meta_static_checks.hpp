@@ -10,8 +10,8 @@ namespace meta {
 
 template <typename T, typename U>
 struct are_matrix_compatible {
-  static constexpr bool valid_matrix = details::matrix_traits<T>::matrix_class != details::WrappedPackageName::Undefined;
-  static constexpr bool same_type = details::matrix_traits<T>::matrix_class == details::matrix_traits<U>::matrix_class;
+  static constexpr bool valid_matrix = details::matrix_traits<T>::wrapped_package_name != details::WrappedPackageName::Undefined;
+  static constexpr bool same_type = details::matrix_traits<T>::wrapped_package_name == details::matrix_traits<U>::wrapped_package_name;
   static constexpr bool same_structure = details::matrix_traits<T>::is_sparse ? details::matrix_traits<U>::is_sparse : !details::matrix_traits<U>::is_sparse;
   static constexpr bool value = valid_matrix && same_type && same_structure;
 };
@@ -19,8 +19,8 @@ struct are_matrix_compatible {
 
 template <typename T, typename U>
 struct are_vector_compatible {
-  static constexpr bool valid_vector = details::vector_traits<T>::vector_class != details::WrappedPackageName::Undefined;
-  static constexpr bool same_type = details::vector_traits<T>::vector_class == details::vector_traits<U>::vector_class;
+  static constexpr bool valid_vector = details::vector_traits<T>::wrapped_package_name != details::WrappedPackageName::Undefined;
+  static constexpr bool same_type = details::vector_traits<T>::wrapped_package_name == details::vector_traits<U>::wrapped_package_name;
   static constexpr bool same_structure = details::vector_traits<T>::is_dynamic || details::vector_traits<U>::is_dynamic || details::vector_traits<T>::rows == details::vector_traits<U>::rows;
   static constexpr bool value = valid_vector && same_type && same_structure;
 };
@@ -28,9 +28,9 @@ struct are_vector_compatible {
 
 template <typename T, typename U>
 struct are_vector_matrix_compatible {
-  static constexpr bool valid_vector = details::vector_traits<T>::vector_class != details::WrappedPackageName::Undefined;
-  static constexpr bool valid_matrix = details::matrix_traits<U>::matrix_class != details::WrappedPackageName::Undefined; 
-  static constexpr bool same_type = details::vector_traits<T>::vector_class == details::matrix_traits<U>::matrix_class;
+  static constexpr bool valid_vector = details::vector_traits<T>::wrapped_package_name != details::WrappedPackageName::Undefined;
+  static constexpr bool valid_matrix = details::matrix_traits<U>::wrapped_package_name != details::WrappedPackageName::Undefined; 
+  static constexpr bool same_type = details::vector_traits<T>::wrapped_package_name == details::matrix_traits<U>::wrapped_package_name;
   static constexpr bool value = valid_matrix && valid_vector && same_type;
 };
 

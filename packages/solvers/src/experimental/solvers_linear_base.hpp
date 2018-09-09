@@ -83,7 +83,7 @@ class LinearSolverBase {
       typename CompatibleMatrixT, 
       typename VectorLT,
       typename std::enable_if<
-        core::details::matrix_traits<CompatibleMatrixT>::matrix_class != core::details::WrappedPackageName::Undefined,
+        core::details::matrix_traits<CompatibleMatrixT>::wrapped_package_name != core::details::WrappedPackageName::Undefined,
         CompatibleMatrixT*
       >::type = nullptr
     >
@@ -108,7 +108,7 @@ class LinearSolverBase {
           VectorLT, 
           VectorRT
         >::value &&
-        core::details::vector_traits<VectorLT>::vector_class != core::details::WrappedPackageName::Undefined,
+        core::details::vector_traits<VectorLT>::wrapped_package_name != core::details::WrappedPackageName::Undefined,
         VectorLT*
       >::type = nullptr
     >
