@@ -12,13 +12,13 @@
 #   )
 # endfunction()
 
-# add_single_unit_test(utest_vector_distributed_epetra_traits 1)
-
 
 
 SET(TESTFILES "")
 
 APPEND_SET(TESTFILES utest_vector_sharedmem_kokkos_class.cc)
+
+
 
 # append here tests to be grouped into a single executable
 # APPEND_SET(...)
