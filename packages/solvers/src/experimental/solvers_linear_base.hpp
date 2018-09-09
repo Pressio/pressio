@@ -5,9 +5,9 @@
 #include <memory>
 #include <type_traits>
 
-#include "meta/core_meta_static_checks.hpp"
-#include "matrix/core_matrix_traits_exp.hpp"
-#include "vector/core_vector_traits_exp.hpp"
+#include "solvers_meta_static_checks.hpp"
+// #include "matrix/core_matrix_traits_exp.hpp"
+// #include "vector/core_vector_traits_exp.hpp"
 
 
 namespace solvers {

@@ -1,6 +1,6 @@
 
-#ifndef CORE_META_META_STATIC_CHECKS_HPP
-#define CORE_META_META_STATIC_CHECKS_HPP
+#ifndef SOLVERS_META_META_STATIC_CHECKS_HPP
+#define SOLVERS_META_META_STATIC_CHECKS_HPP
 
 #include "matrix/core_matrix_traits_exp.hpp"
 #include "vector/core_vector_traits_exp.hpp"
