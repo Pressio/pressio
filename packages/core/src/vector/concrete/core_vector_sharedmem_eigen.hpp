@@ -24,7 +24,7 @@ class Vector<wrapped_type,
     public ArithmeticOperatorsBase<Vector<wrapped_type>>,
     public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>,
     public std::conditional<
-  details::traits<Vector<wrapped_type>>::isStatic == true,
+  details::traits<Vector<wrapped_type>>::is_static == true,
   ContainerNonResizableBase<Vector<wrapped_type>, 1>,
   ContainerResizableBase<Vector<wrapped_type>, 1>
   >::type
@@ -43,7 +43,7 @@ public:
   template <typename T,
 	    typename std::enable_if<
 	      std::is_same<T,ord_t>::value &&
-	      !mytraits::isStatic
+	      !mytraits::is_static
 	      >::type * = nullptr>
   explicit Vector(T insize){
     this->resize(insize);
@@ -106,7 +106,7 @@ private:
 
   template <typename T = ord_t,
   	    typename std::enable_if<
-  	      !mytraits::isStatic, T
+  	      !mytraits::is_static, T
   	      >::type * = nullptr>
   void matchLayoutWithImpl(const this_t & other){
     this->resize( other.size() );
@@ -138,7 +138,7 @@ private:
 
   template <typename T = ord_t,
 	    typename std::enable_if<
-	      !mytraits::isStatic, T
+	      !mytraits::is_static, T
 	      >::type * = nullptr>
   void resizeImpl(T val){
     data_.resize(val);
@@ -188,7 +188,7 @@ private:
   friend ArithmeticOperatorsBase< this_t >;
   friend CompoundAssignmentOperatorsBase< this_t >;  
   friend typename std::conditional<
-    details::traits<this_t>::isStatic == true,
+    details::traits<this_t>::is_static == true,
     ContainerNonResizableBase<this_t, 1>,
     ContainerResizableBase<this_t, 1>
     >::type;

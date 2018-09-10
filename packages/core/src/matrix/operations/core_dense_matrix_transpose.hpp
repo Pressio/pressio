@@ -14,8 +14,8 @@ namespace mat_ops{
 template <typename mat_type,
 	  core::meta::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
-	    details::traits<mat_type>::isDense &&
-	    details::traits<mat_type>::isStatic==0
+	    details::traits<mat_type>::is_dense &&
+	    details::traits<mat_type>::is_static==0
 	    > * = nullptr>
 auto transpose(const mat_type & A)
 {
@@ -30,8 +30,8 @@ auto transpose(const mat_type & A)
 template <typename mat_type,
 	  core::meta::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
-	    details::traits<mat_type>::isDense &&
-	    details::traits<mat_type>::isStatic
+	    details::traits<mat_type>::is_dense &&
+	    details::traits<mat_type>::is_static
 	    > * = nullptr>
 auto transpose(const mat_type & A)
 {
@@ -54,7 +54,7 @@ auto transpose(const mat_type & A)
 // template <typename mat_type,
 // 	  typename std::enable_if<
 // 	    details::traits<mat_type>::isEpetra &&
-// 	    details::traits<mat_type>::isDense
+// 	    details::traits<mat_type>::is_dense
 // 	    >::type * = nullptr>
 // auto transpose(const mat_type & A) 
 // {

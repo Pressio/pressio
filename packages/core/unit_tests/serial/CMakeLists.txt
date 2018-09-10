@@ -17,7 +17,7 @@ APPEND_SET(TESTFILES utest_matrix_sparse_serial_eigen_traits.cc)
 APPEND_SET(TESTFILES utest_matrix_sparse_serial_eigen_class.cc)
 APPEND_SET(TESTFILES utest_matrix_dense_serial_eigen_class.cc)
 
-APPEND_SET(TESTFILES utest_matrix_vector_product.cc)
+# APPEND_SET(TESTFILES utest_matrix_vector_product.cc)
 
 
 

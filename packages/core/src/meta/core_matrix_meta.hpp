@@ -90,8 +90,8 @@ template <typename T1, typename T2>
 struct sparse_sharedmem_eigen_same_storage<
   T1, T2, typename
   std::enable_if<
-	    (T1::isRowMajor && T2::isRowMajor) ||
-	    (T1::isColMajor && T2::isColMajor)
+	    (T1::is_row_major && T2::is_row_major) ||
+	    (T1::is_col_major && T2::is_col_major)
 	    >::type
   > : std::true_type{};
   

@@ -25,11 +25,11 @@ template <typename matrix_type,
 	  typename vector_t_2,
 	  typename std::enable_if<
 	    details::traits<vector_t_1>::isEigen &&
-	    details::traits<vector_t_1>::isVector &&
+	    details::traits<vector_t_1>::is_vector &&
 	    details::traits<vector_t_2>::isEigen &&
-	    details::traits<vector_t_2>::isVector &&
+	    details::traits<vector_t_2>::is_vector &&
 	    details::traits<matrix_type>::isEigen &&
-	    details::traits<matrix_type>::isDense &&
+	    details::traits<matrix_type>::is_dense &&
 	    std::is_same<typename details::traits<matrix_type>::scalar_t,
 			 typename details::traits<vector_t_1>::scalar_t
 			 >::value &&
@@ -60,10 +60,10 @@ void product(const matrix_type & A,
 template <typename matrix_type,
 	  typename vector_type,
 	  core::meta::enable_if_t<
-	    core::details::traits<matrix_type>::isMatrix==1 &&
+	    core::details::traits<matrix_type>::is_matrix==1 &&
 	    core::details::traits<matrix_type>::isEpetra==1 &&
-	    core::details::traits<matrix_type>::isDense==1 &&
-	    core::details::traits<vector_type>::isVector==1 &&
+	    core::details::traits<matrix_type>::is_dense==1 &&
+	    core::details::traits<vector_type>::is_vector==1 &&
 	    core::details::traits<vector_type>::isEpetra==1
 	    > * = nullptr>
 auto product(const matrix_type & A,

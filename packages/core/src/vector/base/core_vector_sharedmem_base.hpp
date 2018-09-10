@@ -17,7 +17,7 @@ class VectorSharedMemBase
     typename details::traits<derived_type>::ordinal_t>
 {
 
-  static_assert(details::traits<derived_type>::isSharedMem==1,
+  static_assert(details::traits<derived_type>::is_shared_mem==1,
   "OOPS: distributed concrete vector inheriting from sharedMem base!");
   
   using this_t = VectorSharedMemBase<derived_type>;

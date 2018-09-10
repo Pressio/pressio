@@ -12,9 +12,9 @@ template <typename vec_a_type,
 	  typename vec_b_type,
 	  typename res_t,
 	  core::meta::enable_if_t<
-	   details::traits<vec_a_type>::isVector &&
+	   details::traits<vec_a_type>::is_vector &&
 	   details::traits<vec_a_type>::isEigen && 
-	   details::traits<vec_b_type>::isVector &&
+	   details::traits<vec_b_type>::is_vector &&
 	   details::traits<vec_b_type>::isEigen &&
 	   std::is_same<
 	     typename details::traits<vec_a_type>::scalar_t,

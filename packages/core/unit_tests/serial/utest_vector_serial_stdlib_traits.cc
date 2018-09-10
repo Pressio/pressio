@@ -25,10 +25,10 @@ public:
 				  vecTrait::wrapped_t,stdV_t>();
     ::testing::StaticAssertTypeEq<typename
 				  vecTrait::derived_t,myvec_t>();
-    ASSERT_TRUE(vecTrait::isVector == 1);
-    ASSERT_TRUE(vecTrait::isEigen == 0);
-    ASSERT_TRUE(vecTrait::isSharedMem == 1);
-    ASSERT_TRUE(vecTrait::isSTDVector == 1);
+    ASSERT_TRUE(vecTrait::is_vector == 1);
+    ASSERT_TRUE(vecTrait::wrapped_vector_identifier 
+      == core::details::WrappedVectorIdentifier::CppStdLib);
+    ASSERT_TRUE(vecTrait::is_shared_mem == 1);
   }
 };
 

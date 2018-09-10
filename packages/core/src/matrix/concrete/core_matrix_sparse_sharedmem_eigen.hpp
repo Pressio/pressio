@@ -49,7 +49,7 @@ public:
   // row-major matrix constructor 
   template <typename U = ord_t,
 	    typename std::enable_if<
-	      mytraits::isRowMajor==1, U>::type * = nullptr>
+	      mytraits::is_row_major==1, U>::type * = nullptr>
   explicit Matrix(U nrows, U ncols, U nonZerosPerRow) {
     this->resize(nrows, ncols);
     if( nonZerosPerRow > ncols )
@@ -62,7 +62,7 @@ public:
   // col-major matrix constructor
   template <typename U = ord_t, 
 	    typename std::enable_if<
-	      mytraits::isRowMajor==0, U>::type * = nullptr>
+	      mytraits::is_row_major==0, U>::type * = nullptr>
   explicit Matrix(U nrows, U ncols, U nonZerosPerCol) {
     this->resize(nrows, ncols);
     if( nonZerosPerCol > nrows )
@@ -166,7 +166,7 @@ private:
   // inserting for row major storage
   template <typename U = ord_t, 
 	    typename std::enable_if<
-	      mytraits::isRowMajor==1,
+	      mytraits::is_row_major==1,
 	      U>::type * = nullptr>
   void insertValuesImpl(U rowInd, U numEntries,
 			const sc_t * values, const U * indices){
@@ -177,7 +177,7 @@ private:
   // inserting for column major storage
   template <typename U = ord_t, 
 	    typename std::enable_if<
-	      mytraits::isRowMajor==0,
+	      mytraits::is_row_major==0,
 	      U>::type * = nullptr>
   void insertValuesImpl(U colInd, U numEntries,
 			const sc_t * values, const U * indices){

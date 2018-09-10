@@ -11,7 +11,7 @@ class MatrixSparseBase
   : private core::details::CrtpBase<
   MatrixSparseBase<derived_type>>{
 
-  static_assert( details::traits<derived_type>::isSparse==1,
+  static_assert( details::traits<derived_type>::is_sparse==1,
   "OOPS: dense matrix inheriting from sparse base!");
 
   using traits_t = details::traits<derived_type>;

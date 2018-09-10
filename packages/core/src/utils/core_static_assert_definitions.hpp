@@ -8,14 +8,14 @@ namespace core{
 /*
 // // static assertion failing if the type is not a vector
 // #define STATIC_ASSERT_IS_VECTOR(TYPE) \
-//   static_assert( TYPE::isVector, \
+//   static_assert( TYPE::is_vector, \
 // 		 "NOT_A_VECTOR")
 // #define STATIC_ASSERT_IS_NOT_VECTOR(TYPE) \
-//   static_assert( TYPE::isVector, \
+//   static_assert( TYPE::is_vector, \
 // 		 "IS_A_VECTOR")
 // static assertion failing if the type is not a matrix
 // #define STATIC_ASSERT_IS_MATRIX(TYPE) \
-//   static_assert( TYPE::isMatrix, \
+//   static_assert( TYPE::is_matrix, \
 // 		 "NOT_A_MATRIX")
 */
 

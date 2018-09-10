@@ -2,9 +2,12 @@
 #ifndef CORE_BASIC_HPP_
 #define CORE_BASIC_HPP_
 
+#include "../src/core_crtp_helper.hpp"
 #include "../src/core_ConfigDefs.hpp"
-
 #include "../src/core_forward_declarations.hpp"
+#include "../src/core_shared_traits.hpp"
+#include "../src/core_wrapped_types_enum.hpp"
+
 
 #include "../src/shared_base/core_container_base.hpp"
 #include "../src/shared_base/core_container_distributed_mpi_base.hpp"

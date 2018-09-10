@@ -24,12 +24,14 @@ public:
     ::testing::StaticAssertTypeEq<typename
 				  vecTrait::derived_t,myvec_t>();
 
-    ASSERT_TRUE(vecTrait::isMatrix == 1);
-    ASSERT_TRUE(vecTrait::isEigen == 0);
-    ASSERT_TRUE(vecTrait::isDense == 1);
-    ASSERT_TRUE(vecTrait::isVector == 0);
-    ASSERT_TRUE(vecTrait::isSharedMem == 1);
-    ASSERT_TRUE(vecTrait::isStatic == 0);
+    ASSERT_TRUE(vecTrait::is_matrix == 1);
+    ASSERT_TRUE(vecTrait::wrapped_matrix_identifier 
+      == core::details::WrappedMatrixIdentifier::CppStdLib);
+
+    ASSERT_TRUE(vecTrait::is_dense == 1);
+    ASSERT_TRUE(vecTrait::is_vector == 0);
+    ASSERT_TRUE(vecTrait::is_shared_mem == 1);
+    ASSERT_TRUE(vecTrait::is_static == 0);
   }
 
   // virtual void SetUp(){}

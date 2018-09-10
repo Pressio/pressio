@@ -15,7 +15,7 @@ template <typename mvec_type,
 	  core::meta::enable_if_t<
 	   details::traits<mvec_type>::isMultiVector &&
 	   details::traits<vec_type>::isEpetra &&
-	   details::traits<vec_type>::isVector &&
+	   details::traits<vec_type>::is_vector &&
 	   details::traits<vec_type>::isEpetra &&
 	   std::is_same<
 	     typename details::traits<mvec_type>::scalar_t,
@@ -57,7 +57,7 @@ template <typename mvec_type,
 	  core::meta::enable_if_t<
 	   details::traits<mvec_type>::isMultiVector &&
 	   details::traits<vec_type>::isEpetra && 
-	   details::traits<vec_type>::isVector &&
+	   details::traits<vec_type>::is_vector &&
 	   details::traits<vec_type>::isEpetra &&
 	   std::is_same<
 	     typename details::traits<mvec_type>::scalar_t,

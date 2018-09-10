@@ -22,7 +22,7 @@ Here we pass the matrix and domain and range maps.
 template <typename mat_type,
 	  typename std::enable_if<
 	    details::traits<mat_type>::isEpetra &&
-	    details::traits<mat_type>::isDense
+	    details::traits<mat_type>::is_dense
 	    >::type * = nullptr
 	  >
 auto denseToSparse(const mat_type & A,
@@ -80,7 +80,7 @@ fillcomplete() does within trilinos.
 template <typename mat_type,
 	  typename std::enable_if<
 	    details::traits<mat_type>::isEpetra &&
-	    details::traits<mat_type>::isDense
+	    details::traits<mat_type>::is_dense
 	    >::type * = nullptr
 	  >
 auto denseToSparse(const mat_type & A)

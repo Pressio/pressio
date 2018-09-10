@@ -16,7 +16,7 @@ namespace mat_ops{
 template <typename mat_type,
 	  core::meta::enable_if_t<
 	    details::traits<mat_type>::isEpetra &&
-	    details::traits<mat_type>::isSparse 
+	    details::traits<mat_type>::is_sparse 
 	    > * = nullptr>
 auto transpose(mat_type & A
 	       /*nonconst & because it is needed 
@@ -52,7 +52,7 @@ auto transpose(mat_type & A
 template <typename mat_type,
 	  core::meta::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
-	    details::traits<mat_type>::isSparse 
+	    details::traits<mat_type>::is_sparse 
 	    > * = nullptr>
 auto transpose(const mat_type & A)
 {

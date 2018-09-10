@@ -24,7 +24,7 @@ namespace mat_ops{
 template <typename mat_type,
 	  typename std::enable_if<
 	    details::traits<mat_type>::isEpetra &&
-	    details::traits<mat_type>::isSparse
+	    details::traits<mat_type>::is_sparse
 	    >::type * = nullptr
 	  >
 void product(const mat_type & A,
@@ -95,7 +95,7 @@ void product(const mat_type & A,
 template <typename mat_type,
 	  typename std::enable_if<
 	    details::traits<mat_type>::isEpetra &&
-	    details::traits<mat_type>::isSparse
+	    details::traits<mat_type>::is_sparse
 	    >::type * = nullptr
 	  >
 auto product(const mat_type & A,

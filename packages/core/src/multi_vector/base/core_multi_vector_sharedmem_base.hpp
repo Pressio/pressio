@@ -10,7 +10,7 @@ template<typename derived_type>
 class MultiVectorSharedMemBase
   : private core::details::CrtpBase<MultiVectorSharedMemBase<derived_type>>
 {
-  static_assert(details::traits<derived_type>::isSharedMem==1,
+  static_assert(details::traits<derived_type>::is_shared_mem==1,
   "OOPS: distributed concrete vector inheriting from sharedMem base!");
  
 private:
