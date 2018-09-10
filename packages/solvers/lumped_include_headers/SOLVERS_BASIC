@@ -2,8 +2,8 @@
 #ifndef SOLVERS_BASIC_HPP_
 #define SOLVERS_BASIC_HPP_
 
-#include "../src/solvers_ConfigDefs.hpp"
+include "../src/solvers_ConfigDefs.hpp"
+include "../src/solvers_forward_declarations.hpp"
 
-#include "../src/solvers_forward_declarations.hpp"
 
 #endif
