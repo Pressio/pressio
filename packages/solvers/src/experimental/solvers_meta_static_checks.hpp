@@ -51,12 +51,12 @@ template <typename T, typename U>
 struct are_vector_compatible {
 
   static constexpr bool valid_vector =
-    core::details::vector_traits<T>::wrapped_container_identifier !=
-    core::details::WrappedContainerIdentifier::Undefined;
+    core::details::vector_traits<T>::wrapped_package_identifier !=
+    core::details::WrappedPackageIdentifier::Undefined;
 
   static constexpr bool same_type =
-    core::details::vector_traits<T>::wrapped_container_identifier ==
-    core::details::vector_traits<U>::wrapped_container_identifier;
+    core::details::vector_traits<T>::wrapped_package_identifier ==
+    core::details::vector_traits<U>::wrapped_package_identifier;
 
   static constexpr bool same_structure =
     core::details::vector_traits<T>::is_dynamic ||
