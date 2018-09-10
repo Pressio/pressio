@@ -13,16 +13,16 @@ struct LinearSolvers;
 
 /**
  * @brief Class that implements a linear iterative solver
- */ 
+ */
 template<
   typename SolverT,
   typename MatrixT,
   typename PolicyT
->  
-class LinearDenseSolver 
+>
+class LinearDenseSolver
   : public LinearSolverBase<
       SolverT,
-      MatrixT, 
+      MatrixT,
       PolicyT,
       LinearDenseSolver<
         SolverT,
@@ -38,11 +38,11 @@ class LinearDenseSolver
     typedef LinearSolverBase<SolverT, MatrixT, PolicyT, LinearDenseSolver<SolverT, MatrixT, PolicyT>> base_type;
 
 
-  public: 
+  public:
 
     LinearDenseSolver(LinearDenseSolver&& other) : base_type(std::move(other)) {}
 
-  
+
     template <typename T>
     auto _solve(const T& b) {
       auto solver = this->getSolver();
@@ -56,7 +56,7 @@ class LinearDenseSolver
 
 
     LinearDenseSolver(std::shared_ptr<SolverT> solver) : base_type(solver) {};
-     
+
 };
 
 } //end namespace solvers

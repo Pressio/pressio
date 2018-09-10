@@ -2,6 +2,7 @@
 #ifndef SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_HPP
 #define SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_HPP
 
+#include "core_ConfigDefs.hpp"
 #include "solvers_linear_base.hpp"
 
 
@@ -13,16 +14,16 @@ struct LinearSolvers;
 
 /**
  * @brief Class that implements a linear iterative solver
- */ 
+ */
 template<
   typename SolverT,
   typename MatrixT,
   typename PolicyT
->  
-class LinearIterativeSolver 
+>
+class LinearIterativeSolver
   : public LinearSolverBase<
       SolverT,
-      MatrixT, 
+      MatrixT,
       PolicyT,
       LinearIterativeSolver<
         SolverT,
@@ -38,12 +39,12 @@ class LinearIterativeSolver
     typedef LinearSolverBase<SolverT, MatrixT, PolicyT, LinearIterativeSolver<SolverT, MatrixT, PolicyT>> base_type;
 
 
-  public: 
+  public:
 
-    LinearIterativeSolver(LinearIterativeSolver&& other) : 
+    LinearIterativeSolver(LinearIterativeSolver&& other) :
       base_type(std::move(other)), maxIters_(other.maxIters_), tolerance_(other.tolerance_) {}
 
-  
+
     template <typename T>
     auto _solve(const T& b) {
       auto solver = this->getSolver();
@@ -51,12 +52,12 @@ class LinearIterativeSolver
     }
 
 
-    inline int getMaxIterations() {
+    inline core::defaultTypes::uint getMaxIterations() {
       return maxIters_;
     }
 
 
-    void setMaxIterations(int maxIters) {
+    void setMaxIterations(core::defaultTypes::uint maxIters) {
       maxIters_ = maxIters;
     }
 
@@ -65,7 +66,7 @@ class LinearIterativeSolver
       return tolerance_;
     }
 
- 
+
     void setTolerance(double tolerance) {
       tolerance_ = tolerance;
     }
@@ -73,17 +74,17 @@ class LinearIterativeSolver
 
   protected:
 
-    LinearIterativeSolver() : 
+    LinearIterativeSolver() :
       base_type(), maxIters_(100), tolerance_(1.0e-6) {};
-    
 
-    LinearIterativeSolver(std::shared_ptr<SolverT> solver) : 
+
+    LinearIterativeSolver(std::shared_ptr<SolverT> solver) :
       base_type(solver), maxIters_(100), tolerance_(1.0e-6) {};
 
 
   private:
- 
-    int maxIters_;
+
+    core::defaultTypes::uint maxIters_;
     double tolerance_;
 };
 
