@@ -1,0 +1,9 @@
+
+#ifndef SOLVERS_ALL_HPP_
+#define SOLVERS_ALL_HPP_
+
+#include "SOLVERS_BASIC"
+#include "SOLVERS_LINEAR"
+#include "SOLVERS_NONLINEAR"
+
+#endif
