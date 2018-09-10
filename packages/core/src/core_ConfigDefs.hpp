@@ -2,6 +2,7 @@
 #ifndef CORE_CONFIGDEFS_HPP_
 #define CORE_CONFIGDEFS_HPP_
 
+#include "core_crtp_helper.hpp"
 #include "core_config.h"
 #include <type_traits>
 #include "core_shared_traits.hpp"
@@ -20,65 +21,64 @@ containers_shared_traits<void, void,
 
 template<typename T> 
 struct traits<const T> : traits<T> {};
-
   
 
-//---------------------------------------
-// CRTP HELPER BASE CLASS
-//---------------------------------------
-template <typename T, typename enable = void>
-struct CrtpBase;
+// //---------------------------------------
+// // CRTP HELPER BASE CLASS
+// //---------------------------------------
+// template <typename T, typename enable = void>
+// struct CrtpBase;
   
-template <typename T,
-	  template<typename, typename...> class crtpType,
-	  typename ... Args>
-struct CrtpBase< crtpType<T, Args...>>{
-  T & underlying() {
-    return static_cast<T&>(*this);
-  }
-  T const & underlying() const {
-    return static_cast<T const&>(*this);
-  }
+// template <typename T,
+// 	  template<typename, typename...> class crtpType,
+// 	  typename ... Args>
+// struct CrtpBase< crtpType<T, Args...>>{
+//   T & underlying() {
+//     return static_cast<T&>(*this);
+//   }
+//   T const & underlying() const {
+//     return static_cast<T const&>(*this);
+//   }
 
-private:
-  CrtpBase() = default;
-  ~CrtpBase() = default;
-  friend crtpType<T, Args...>;
-};//end class
+// private:
+//   CrtpBase() = default;
+//   ~CrtpBase() = default;
+//   friend crtpType<T, Args...>;
+// };//end class
 
 
-template <typename T, int a, int b,
-	  template<typename, int, int> class crtpType>
-struct CrtpBase< crtpType<T, a, b> >{
-  T & underlying() {
-    return static_cast<T&>(*this);
-  }
-  T const & underlying() const {
-    return static_cast<T const&>(*this);
-  }
+// template <typename T, int a, int b,
+// 	  template<typename, int, int> class crtpType>
+// struct CrtpBase< crtpType<T, a, b> >{
+//   T & underlying() {
+//     return static_cast<T&>(*this);
+//   }
+//   T const & underlying() const {
+//     return static_cast<T const&>(*this);
+//   }
 
-private:
-  CrtpBase() = default;
-  ~CrtpBase() = default;
-  friend crtpType<T, a, b>;
-};//end class
+// private:
+//   CrtpBase() = default;
+//   ~CrtpBase() = default;
+//   friend crtpType<T, a, b>;
+// };//end class
 
   
-template <typename T, int a,
-	  template<typename, int> class crtpType>
-struct CrtpBase< crtpType<T, a> >{
-  T & underlying() {
-    return static_cast<T&>(*this);
-  }
-  T const & underlying() const {
-    return static_cast<T const&>(*this);
-  }
+// template <typename T, int a,
+// 	  template<typename, int> class crtpType>
+// struct CrtpBase< crtpType<T, a> >{
+//   T & underlying() {
+//     return static_cast<T&>(*this);
+//   }
+//   T const & underlying() const {
+//     return static_cast<T const&>(*this);
+//   }
 
-private:
-  CrtpBase() = default;
-  ~CrtpBase() = default;
-  friend crtpType<T, a>;
-};//end class
+// private:
+//   CrtpBase() = default;
+//   ~CrtpBase() = default;
+//   friend crtpType<T, a>;
+// };//end class
 
   
 //------------------------
