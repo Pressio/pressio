@@ -19,16 +19,16 @@ namespace solvers {
 
 
 struct LinearSolvers {
- 
+
 
   template <typename SolverT,
     typename MatrixT,
     typename std::enable_if<!(
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen || 
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos), 
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen ||
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos),
       MatrixT
     >::type* = nullptr
-  > 
+  >
   static void createSolver(
     MatrixT const& A
   ) {
@@ -43,21 +43,21 @@ struct LinearSolvers {
     typename PrecT,
     typename MatrixT,
     typename std::enable_if<!(
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen || 
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos), 
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen ||
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos),
       MatrixT
     >::type* = nullptr
   >
   static void createSolver(
     MatrixT const& A
   ) {
- 
+
     // Linear system solver cannot be created from given input matrix
     std::cerr << "No linear solver available for the matrix used to specify the linear system" << std::endl;
     assert(false);
-  } 
+  }
 
- 
+
   /**
    * @brief  createIterativeSolver
    * @param  A matrix representing a linear system to be solved using
@@ -86,7 +86,7 @@ struct LinearSolvers {
    *
    * @section DESCRIPTION
    *
-   * Create an instance of the appropriate sparse Eigen linear iterative 
+   * Create an instance of the appropriate sparse Eigen linear iterative
    * solver for a linear system
    */
   template <
@@ -119,7 +119,7 @@ struct LinearSolvers {
 
 
   /**
-   * @brief  createIterativeSolver
+   * Create a linear iterative solver for sparse Trilinos matrices
    * @return An iterative linear solver for sparse Trilinos matrices
    *
    * @section DESCRIPTION
@@ -172,11 +172,48 @@ struct LinearSolvers {
         break;
       }
     }
-    
+
     auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
 
     return wrapped_solver;
   }
+
+
+  /**
+   * Create an iterative linear solver for least square Eigen sparse matrices
+   * @return an iterative linear solver for least square Eigen sparse matrices
+   */
+  template <
+    typename MatrixT,
+    typename PrecT = linear::DefaultPreconditioner,
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
+      MatrixT
+    >::type* = nullptr
+  >
+  static auto createLeastSquareIterativeSolver() {
+    return LinearSolvers::createIterativeSolver<typename linear::LSCG, MatrixT, PrecT>();
+  }
+
+
+  /**
+   * Create an iterative linear solver for least square Eigen sparse matrices
+   *
+   * @param A the matrix defining the least square system
+   * @return an iterative linear solver for least square Eigen sparse matrices
+   */
+  template <
+    typename MatrixT,
+    typename PrecT = linear::DefaultPreconditioner,
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
+      MatrixT
+    >::type* = nullptr
+  >
+  static auto createLeastSquareIterativeSolver(const MatrixT& A) {
+    return LinearSolvers::createIterativeSolver<typename linear::LSCG, MatrixT, PrecT>(A);
+  }
+
 
 };
 

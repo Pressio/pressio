@@ -14,6 +14,7 @@ namespace linear {
 struct CG {};
 struct Gmres {};
 struct Bicgstab {};
+struct LSCG {};
 
 // Preconditioner types
 struct Jacobi {};
@@ -63,13 +64,26 @@ struct solver_traits<Bicgstab> {
   using eigen_solver_type = Eigen::BiCGSTAB<MatrixT, PrecT>;
 
   static constexpr int trilinos_flag = AZ_bicgstab;
-  
+
   static constexpr bool eigen_enabled = true;
   static constexpr bool trilinos_enabled = true;
 };
 
+template <>
+struct solver_traits<LSCG> {
 
-// Preconditioners traits 
+  template <
+    typename MatrixT,
+    typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
+  >
+  using eigen_solver_type = Eigen::LeastSquaresConjugateGradient<MatrixT, PrecT>;
+
+  static constexpr bool eigen_enabled = true;
+  static constexpr bool trilinos_enabled = false;
+};
+
+
+// Preconditioners traits
 template <typename T>
 struct preconditioner_traits {
   static constexpr bool eigen_enabled = false;
