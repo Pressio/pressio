@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-#include "solvers_types.hpp"
+#include "core_ConfigDefs.hpp"
 #include "solvers_nonlinear_base.hpp"
 #include "solvers_nonlinear_factory.hpp"
 
@@ -18,7 +18,7 @@ struct NonLinearSolvers; // Fwd declaration
 template <
   typename PolicyT
 >
-class NonLinearIterativeSolver 
+class NonLinearIterativeSolver
   : public NonLinearSolverBase<
       NonLinearIterativeSolver<
         PolicyT
@@ -49,7 +49,7 @@ class NonLinearIterativeSolver
     auto solve_(const SystemT& sys, const VectorT& b) {
 
       double tolerance = this->getTolerance();
-      uint maxIterations = this->getMaxIterations();
+      core::defaultTypes::uint maxIterations = this->getMaxIterations();
 
       return PolicyT::template solve<SolverT, PrecT, NormT>(sys, b, maxIterations, maxNonLinearIterations_, tolerance, nonLinearTolerance_);
     }
@@ -59,10 +59,10 @@ class NonLinearIterativeSolver
      * @brief Get the maximum number of iterations of the non linear iterative solver
      *
      */
-    uint getMaxNonLinearIterations() {
+    core::defaultTypes::uint getMaxNonLinearIterations() {
       return maxNonLinearIterations_;
     }
-  
+
 
     /**
      * @brief Get the tolerance of the non linear iterative solver
@@ -71,14 +71,14 @@ class NonLinearIterativeSolver
     double getNonLinearTolerance() {
       return nonLinearTolerance_;
     }
-    
+
 
     /**
      * @brief Set the maximum number of iterations of the non linear iterative solver
      *
      * @param maxNonLinearIterations represents number of iterations of the non linear solver
      */
-    void setMaxNonLinearIterations(uint maxNonLinearIterations) {
+    void setMaxNonLinearIterations(core::defaultTypes::uint maxNonLinearIterations) {
       maxNonLinearIterations_ = maxNonLinearIterations;
     }
 
@@ -90,7 +90,7 @@ class NonLinearIterativeSolver
     void setNonLinearTolerance(double nonLinearTolerance) {
       nonLinearTolerance_ = abs(nonLinearTolerance);
     }
-  	
+
 
   protected:
 
@@ -99,10 +99,10 @@ class NonLinearIterativeSolver
 
   private:
 
-    uint maxNonLinearIterations_;
+    core::defaultTypes::uint maxNonLinearIterations_;
     double nonLinearTolerance_;
 };
-	
+
 } // end namespace solvers
 
 #endif

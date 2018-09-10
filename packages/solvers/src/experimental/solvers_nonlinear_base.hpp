@@ -6,7 +6,7 @@
 #include <memory>
 #include <type_traits>
 
-#include "solvers_types.hpp"
+#include "core_ConfigDefs.hpp"
 #include "system_traits.hpp"
 #include "solvers_meta_static_checks.hpp"
 // #include "matrix/core_matrix_traits_exp.hpp"
@@ -21,7 +21,7 @@ namespace solvers {
  *
  * @section DESCRIPTION
  *
- * This class defines the public interface for a nonlinear solver. 
+ * This class defines the public interface for a nonlinear solver.
  * Objects of the class cannot be created directly. To create a solver,
  * use the factory class NonLinearSolvers.
  */
@@ -30,16 +30,16 @@ namespace solvers {
 //  typename PolicyT,
 //  typename Derived
 //>
-  
+
 struct NonlinearSolvers; // Fwd declaration
 
 template <typename Derived>
 class NonLinearSolverBase {
 
-  public: 
+  public:
 
     /**
-     * @brief  Raise an assertion as the non linear system supplied as input is invalid 
+     * @brief  Raise an assertion as the non linear system supplied as input is invalid
      *
      * @param  system is the non linear system to be solved
      * @param  x0 is the solution vector
@@ -96,14 +96,14 @@ class NonLinearSolverBase {
 
     /**
      * @brief  Solve the non linear system
-     * 
+     *
      * @param  system is the non linear system to be solved
      * @param  x0 is the solution hint
      * @return Solution vector
      *
      * DESCRIPTION
      *
-     * This version of solve takes a reduced set of meta-parameters 
+     * This version of solve takes a reduced set of meta-parameters
      * and forward the arguments tto the full solve method.
      */
     template <
@@ -116,7 +116,7 @@ class NonLinearSolverBase {
     }
 
 
-    uint getMaxIterations() {
+    core::defaultTypes::uint getMaxIterations() {
       return maxIters_;
     }
 
@@ -125,7 +125,7 @@ class NonLinearSolverBase {
     }
 
 
-    void setMaxIterations(uint maxIters) {
+    void setMaxIterations(core::defaultTypes::uint maxIters) {
       maxIters_ = maxIters;
     }
 
@@ -139,10 +139,10 @@ class NonLinearSolverBase {
 
     NonLinearSolverBase() : maxIters_(100), tolerance_(1.0e-5) {}
 
-  
+
   private:
 
-    uint maxIters_;
+    core::defaultTypes::uint maxIters_;
     double tolerance_;
 
 };

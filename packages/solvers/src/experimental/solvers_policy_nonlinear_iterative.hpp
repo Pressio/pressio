@@ -4,16 +4,16 @@
 #include <iostream>
 #include <type_traits>
 
-#include "solvers_types.hpp"
-#include "solvers_linear_factory.hpp"
 #include "system_traits.hpp"
+#include "core_ConfigDefs.hpp"
+#include "solvers_linear_factory.hpp"
 #include "solvers_meta_static_checks.hpp"
 
 
 namespace solvers {
 
 
-struct SolversNonLinearIterativeNewtonRaphsonPolicy {  
+struct SolversNonLinearIterativeNewtonRaphsonPolicy {
 
   template <
     typename SolverT,
@@ -30,10 +30,10 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     >::type* = nullptr
   >
   static auto solve(
-    const SystemT& system, 
+    const SystemT& system,
     const VectorT& x0,
-    uint maxIterations, 
-    uint maxNonLinearIterations,
+    core::defaultTypes::uint maxIterations,
+    core::defaultTypes::uint maxNonLinearIterations,
     double tolerance,
     double nonLinearTolerance
   ) {
@@ -60,14 +60,14 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     >::type* = nullptr
   >
   static auto solve(
-    const SystemT& sys, 
-    const VectorT& x0, 
-    uint maxIterations, 
-    uint maxNonLinearIterations, 
-    double tolerance, 
+    const SystemT& sys,
+    const VectorT& x0,
+    core::defaultTypes::uint maxIterations,
+    core::defaultTypes::uint maxNonLinearIterations,
+    double tolerance,
     double nonLinearTolerance
   ) {
-  	
+
     auto dy = sys.residual(x0);
     auto Ja = sys.jacobian(x0);
 
@@ -75,11 +75,11 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     solver.setMaxIterations(maxIterations);
     solver.setTolerance(tolerance);
 
-    uint iStep = 1;
+    core::defaultTypes::uint iStep = 1;
     auto xOld = x0;
     auto xNew = x0 - solver.solve(dy);
 
-    while (iStep++ < maxNonLinearIterations && NormT::template compute_norm_difference(xOld, xNew) > nonLinearTolerance) {      
+    while (iStep++ < maxNonLinearIterations && NormT::template compute_norm_difference(xOld, xNew) > nonLinearTolerance) {
         xOld = xNew;
         dy = sys.residual(xNew);
         Ja = sys.jacobian(xNew);

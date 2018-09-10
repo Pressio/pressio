@@ -98,6 +98,9 @@ namespace defaultTypes {
   /// default global_ordinal_type
   using global_ordinal_t = int;
 
+  // Unsigned int type
+  using uint = unsigned int;
+
   // /// default type for error codes
   // using errcode_t = int;
 
