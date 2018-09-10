@@ -25,10 +25,10 @@ namespace mat_ops{
 template <typename matrix_type,
 	  typename vector_type,
 	  core::meta::enable_if_t<
-	    details::traits<matrix_type>::isMatrix==1 &&
+	    details::traits<matrix_type>::is_matrix==1 &&
 	    details::traits<matrix_type>::isEpetra==1 &&
-	    details::traits<matrix_type>::isSparse==1 &&
-	    details::traits<vector_type>::isVector==1 &&
+	    details::traits<matrix_type>::is_sparse==1 &&
+	    details::traits<vector_type>::is_vector==1 &&
 	    details::traits<vector_type>::isEpetra==1
 	    > * = nullptr
 	  >
@@ -47,10 +47,10 @@ auto product(const matrix_type & A,
 template <typename matrix_type,
 	  typename vector_type,
 	  core::meta::enable_if_t<
-	    details::traits<matrix_type>::isMatrix==1 &&
+	    details::traits<matrix_type>::is_matrix==1 &&
 	    details::traits<matrix_type>::isEpetra==1 &&
-	    details::traits<matrix_type>::isSparse==1 &&
-	    details::traits<vector_type>::isVector==1 &&
+	    details::traits<matrix_type>::is_sparse==1 &&
+	    details::traits<vector_type>::is_vector==1 &&
 	    details::traits<vector_type>::isEpetra==1
 	    > * = nullptr
 	  >
@@ -77,11 +77,11 @@ template <typename matrix_type,
 	  typename res_t,
 	  core::meta::enable_if_t<
 	    details::traits<vector_t>::isEigen &&
-	    details::traits<vector_t>::isVector &&
+	    details::traits<vector_t>::is_vector &&
 	    details::traits<res_t>::isEigen &&
-	    details::traits<res_t>::isVector &&
+	    details::traits<res_t>::is_vector &&
 	    details::traits<matrix_type>::isEigen &&
-	    details::traits<matrix_type>::isSparse &&
+	    details::traits<matrix_type>::is_sparse &&
 	    std::is_same<typename details::traits<matrix_type>::scalar_t,
 			 typename details::traits<vector_t>::scalar_t
 			 >::value && 

@@ -17,7 +17,7 @@ class MatrixDenseSharedMemBase
     typename details::traits<derived_type>::ordinal_t>
 {
 
-  static_assert( details::traits<derived_type>::isSharedMem==1,
+  static_assert( details::traits<derived_type>::is_shared_mem==1,
   "OOPS: distributed matrix inheriting from dense sharedMem base!");
   
 private:

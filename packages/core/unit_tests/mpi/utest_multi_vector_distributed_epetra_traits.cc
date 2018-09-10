@@ -40,12 +40,9 @@ TEST(core_multivector_distributed_epetra, EpetraMultiVectorActingVectorTraits)
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::communicator_t, Epetra_Comm>();
   
-  ASSERT_TRUE(vecTrait::isVector == 0);
-  ASSERT_TRUE(vecTrait::isMultiVector == 1);
-  ASSERT_TRUE(vecTrait::actingAsMultiVector == 1);
-  ASSERT_TRUE(vecTrait::isEigen == 0);
-  ASSERT_TRUE(vecTrait::isSharedMem == 0);
-  ASSERT_TRUE(vecTrait::isSTDVector == 0);
+  ASSERT_TRUE(vecTrait::is_vector == 0);
+  ASSERT_TRUE(vecTrait::is_multi_vector == 1);
+  ASSERT_TRUE(vecTrait::is_shared_mem == 0);
 
 }//end TEST
 

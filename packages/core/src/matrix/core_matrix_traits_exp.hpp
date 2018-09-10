@@ -20,8 +20,8 @@ struct matrix_traits {
   static constexpr WrappedPackageIdentifier wrapped_package_identifier
       = WrappedPackageIdentifier::Undefined;
   
-  static constexpr WrappedContainerIdentifier wrapped_container_identifier
-      = WrappedContainerIdentifier::Undefined;
+  // static constexpr WrappedContainerIdentifier wrapped_container_identifier
+  //     = WrappedContainerIdentifier::Undefined;
 
   static constexpr bool is_sparse = false;
 };
@@ -40,8 +40,8 @@ struct matrix_traits<core::Matrix<T>,
   static constexpr WrappedPackageIdentifier wrapped_package_identifier
       = WrappedPackageIdentifier::Trilinos;
   
-  static constexpr WrappedContainerIdentifier wrapped_container_identifier
-      = WrappedContainerIdentifier::TrilinosEpetra;
+  // static constexpr WrappedContainerIdentifier wrapped_container_identifier
+  //     = WrappedContainerIdentifier::TrilinosEpetra;
   
   static constexpr bool is_sparse = true;
 };
@@ -68,8 +68,8 @@ struct matrix_traits<
   static constexpr WrappedPackageIdentifier wrapped_package_identifier
       = WrappedPackageIdentifier::Eigen;
 
-  static constexpr WrappedContainerIdentifier wrapped_container_identifier
-      = WrappedContainerIdentifier::Eigen;
+  // static constexpr WrappedContainerIdentifier wrapped_container_identifier
+  //     = WrappedContainerIdentifier::Eigen;
   
   static constexpr bool is_sparse = true;
 };

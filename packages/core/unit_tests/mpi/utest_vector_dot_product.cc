@@ -12,8 +12,8 @@ TEST(core_vector_dot_product, eigenVector)
   my_t va(a);
   my_t vb(b);
 
-  double res; core::vec_ops::dot(va,vb,res);
-  EXPECT_DOUBLE_EQ( res, 10.0);
+  // double res; core::vec_ops::dot(va,vb,res);
+  // EXPECT_DOUBLE_EQ( res, 10.0);
 }//end TEST
 
 

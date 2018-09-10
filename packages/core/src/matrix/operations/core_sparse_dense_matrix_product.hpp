@@ -28,9 +28,9 @@ namespace mat_ops{
 // 	  typename mat_ds_type,
 // 	  typename std::enable_if<
 // 	    details::traits<mat_ds_type>::isEpetra &&
-// 	    details::traits<mat_ds_type>::isDense &&
+// 	    details::traits<mat_ds_type>::is_dense &&
 // 	    details::traits<mat_sp_type>::isEpetra &&
-// 	    details::traits<mat_sp_type>::isSparse
+// 	    details::traits<mat_sp_type>::is_sparse
 // 	    >::type * = nullptr
 // 	  >
 // auto product(const mat_sp_type & A,

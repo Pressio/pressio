@@ -78,8 +78,6 @@ TEST_F(core_vector_distributed_epetraFix,
        EpetraVectorConstructor)
 {
   using myvec_t = core::Vector<Epetra_Vector>;
-  ASSERT_TRUE( core::details::traits<myvec_t>::isEpetra==1 );
-
   myvec_t a( *getMap() );
   ASSERT_EQ( a.globalSize(), numGlobalEntries() );
   ASSERT_EQ( a.localSize(), numLocalEntries() );

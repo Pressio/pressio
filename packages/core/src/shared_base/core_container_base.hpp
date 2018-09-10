@@ -33,7 +33,7 @@ public:
 
   template <typename T= derived_type,
 	    typename std::enable_if<
-  	      core::details::traits<T>::isSharedMem==0
+  	      core::details::traits<T>::is_shared_mem==0
   	      ,int>::type = 0
   	    >
   bool isDistributedGlobally() const{
@@ -42,7 +42,7 @@ public:
 
   template <typename T= derived_type,
 	    typename std::enable_if<
-  	      core::details::traits<T>::isSharedMem==1
+  	      core::details::traits<T>::is_shared_mem==1
   	      ,int>::type = 0
   	    >
   bool isDistributedGlobally() const{

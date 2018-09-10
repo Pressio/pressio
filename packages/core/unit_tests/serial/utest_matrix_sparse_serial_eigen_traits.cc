@@ -33,18 +33,18 @@ public:
 				  myTrait::derived_t,my_t>();
 
     if (T::storemode == Eigen::RowMajor)
-      EXPECT_TRUE(myTrait::isRowMajor == Eigen::StorageOptions::RowMajor);
+      EXPECT_TRUE(myTrait::is_row_major == Eigen::StorageOptions::RowMajor);
     else
-       EXPECT_TRUE(myTrait::isRowMajor == Eigen::ColMajor);
+       EXPECT_TRUE(myTrait::is_row_major == Eigen::ColMajor);
     
-    ASSERT_TRUE(myTrait::isColMajor == !myTrait::isRowMajor);
-    ASSERT_TRUE(myTrait::isEigen == 1);
-    ASSERT_TRUE(myTrait::isDense == 0);
-    ASSERT_TRUE(myTrait::isSparse == 1);
-    ASSERT_TRUE(myTrait::isVector == 0);
-    ASSERT_TRUE(myTrait::isSharedMem == 1);
-    ASSERT_TRUE(myTrait::isStdlib == 0);
-    ASSERT_TRUE(myTrait::isStatic == 0);
+    ASSERT_TRUE(myTrait::is_col_major == !myTrait::is_row_major);
+    ASSERT_TRUE(myTrait::wrapped_matrix_identifier 
+      == core::details::WrappedMatrixIdentifier::SparseEigen);
+    ASSERT_TRUE(myTrait::is_dense == 0);
+    ASSERT_TRUE(myTrait::is_sparse == 1);
+    ASSERT_TRUE(myTrait::is_vector == 0);
+    ASSERT_TRUE(myTrait::is_shared_mem == 1);
+    ASSERT_TRUE(myTrait::is_static == 0);
   }
 };
 

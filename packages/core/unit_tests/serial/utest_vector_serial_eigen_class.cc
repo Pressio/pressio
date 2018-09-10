@@ -11,7 +11,8 @@ TEST(core_vector_serial_eigen_class, EigenVectorConstructor)
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
   using vecTrait = core::details::traits<myvec_t>;
-  ASSERT_TRUE(vecTrait::isEigen == 1);
+  ASSERT_TRUE(vecTrait::wrapped_vector_identifier 
+    == core::details::WrappedVectorIdentifier::Eigen);
  
   myvec_t m_v2(5);
   ASSERT_FALSE( m_v2.empty() );

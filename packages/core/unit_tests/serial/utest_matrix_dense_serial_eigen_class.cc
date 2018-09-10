@@ -7,9 +7,7 @@ TEST(core_matrix_dense_serial_eigen_class, constructor)
   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
   using mymat_t = core::Matrix<native_t>;
   STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(mymat_t);
-  
   using matTrait = core::details::traits<mymat_t>;
-  ASSERT_TRUE(matTrait::isEigen == 1);
    
   mymat_t m1;
   EXPECT_EQ( m1.rows(), 0 );
@@ -199,58 +197,58 @@ TEST(core_matrix_dense_serial_eigen_class, CompoundAssignSubtractOperator)
 
 
 
-TEST(core_matrix_dense_serial_eigen_class, transposeDynamic)
-{
-  using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-  using mymat_t = core::Matrix<native_t>;
+// TEST(core_matrix_dense_serial_eigen_class, transposeDynamic)
+// {
+//   using native_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
+//   using mymat_t = core::Matrix<native_t>;
 
-  native_t em1;
-  em1.resize(2,3);
-  em1 << 34.0, 22.5, 11.5, 75., 3., 6.;  
-  std::cout << em1 << std::endl;
+//   native_t em1;
+//   em1.resize(2,3);
+//   em1 << 34.0, 22.5, 11.5, 75., 3., 6.;  
+//   std::cout << em1 << std::endl;
 
-  mymat_t m1(em1);
-  EXPECT_DOUBLE_EQ( m1(0,0), 34.0);
-  EXPECT_DOUBLE_EQ( m1(0,1), 22.5);
-  EXPECT_DOUBLE_EQ( m1(0,2), 11.5);
-  EXPECT_DOUBLE_EQ( m1(1,0), 75.);
-  EXPECT_DOUBLE_EQ( m1(1,1), 3.0);
-  EXPECT_DOUBLE_EQ( m1(1,2), 6.0);
+//   mymat_t m1(em1);
+//   EXPECT_DOUBLE_EQ( m1(0,0), 34.0);
+//   EXPECT_DOUBLE_EQ( m1(0,1), 22.5);
+//   EXPECT_DOUBLE_EQ( m1(0,2), 11.5);
+//   EXPECT_DOUBLE_EQ( m1(1,0), 75.);
+//   EXPECT_DOUBLE_EQ( m1(1,1), 3.0);
+//   EXPECT_DOUBLE_EQ( m1(1,2), 6.0);
 
-  auto tm1 = core::mat_ops::transpose(m1);
-  std::cout << *tm1.data() << std::endl;
-  EXPECT_DOUBLE_EQ( tm1(0,0), 34.0);
-  EXPECT_DOUBLE_EQ( tm1(1,0), 22.5);
-  EXPECT_DOUBLE_EQ( tm1(2,0), 11.5);
-  EXPECT_DOUBLE_EQ( tm1(0,1), 75.);
-  EXPECT_DOUBLE_EQ( tm1(1,1), 3.0);
-  EXPECT_DOUBLE_EQ( tm1(2,1), 6.0);
-}
+//   auto tm1 = core::mat_ops::transpose(m1);
+//   std::cout << *tm1.data() << std::endl;
+//   EXPECT_DOUBLE_EQ( tm1(0,0), 34.0);
+//   EXPECT_DOUBLE_EQ( tm1(1,0), 22.5);
+//   EXPECT_DOUBLE_EQ( tm1(2,0), 11.5);
+//   EXPECT_DOUBLE_EQ( tm1(0,1), 75.);
+//   EXPECT_DOUBLE_EQ( tm1(1,1), 3.0);
+//   EXPECT_DOUBLE_EQ( tm1(2,1), 6.0);
+// }
 
 
-TEST(core_matrix_dense_serial_eigen_class, transposeStatic)
-{
-  using native_t = Eigen::Matrix<double, 2, 3>;
-  using mymat_t = core::Matrix<native_t>;
+// TEST(core_matrix_dense_serial_eigen_class, transposeStatic)
+// {
+//   using native_t = Eigen::Matrix<double, 2, 3>;
+//   using mymat_t = core::Matrix<native_t>;
 
-  native_t em1;
-  em1 << 34.0, 22.5, 11.5, 75., 3., 6.;  
-  //std::cout << em1 << std::endl;
+//   native_t em1;
+//   em1 << 34.0, 22.5, 11.5, 75., 3., 6.;  
+//   //std::cout << em1 << std::endl;
 
-  mymat_t m1(em1);
-  EXPECT_DOUBLE_EQ( m1(0,0), 34.0);
-  EXPECT_DOUBLE_EQ( m1(0,1), 22.5);
-  EXPECT_DOUBLE_EQ( m1(0,2), 11.5);
-  EXPECT_DOUBLE_EQ( m1(1,0), 75.);
-  EXPECT_DOUBLE_EQ( m1(1,1), 3.0);
-  EXPECT_DOUBLE_EQ( m1(1,2), 6.0);
+//   mymat_t m1(em1);
+//   EXPECT_DOUBLE_EQ( m1(0,0), 34.0);
+//   EXPECT_DOUBLE_EQ( m1(0,1), 22.5);
+//   EXPECT_DOUBLE_EQ( m1(0,2), 11.5);
+//   EXPECT_DOUBLE_EQ( m1(1,0), 75.);
+//   EXPECT_DOUBLE_EQ( m1(1,1), 3.0);
+//   EXPECT_DOUBLE_EQ( m1(1,2), 6.0);
 
-  auto tm1 = core::mat_ops::transpose(m1);
-  //std::cout << *tm1.data() << std::endl;
-  EXPECT_DOUBLE_EQ( tm1(0,0), 34.0);
-  EXPECT_DOUBLE_EQ( tm1(1,0), 22.5);
-  EXPECT_DOUBLE_EQ( tm1(2,0), 11.5);
-  EXPECT_DOUBLE_EQ( tm1(0,1), 75.);
-  EXPECT_DOUBLE_EQ( tm1(1,1), 3.0);
-  EXPECT_DOUBLE_EQ( tm1(2,1), 6.0);
-}
+//   auto tm1 = core::mat_ops::transpose(m1);
+//   //std::cout << *tm1.data() << std::endl;
+//   EXPECT_DOUBLE_EQ( tm1(0,0), 34.0);
+//   EXPECT_DOUBLE_EQ( tm1(1,0), 22.5);
+//   EXPECT_DOUBLE_EQ( tm1(2,0), 11.5);
+//   EXPECT_DOUBLE_EQ( tm1(0,1), 75.);
+//   EXPECT_DOUBLE_EQ( tm1(1,1), 3.0);
+//   EXPECT_DOUBLE_EQ( tm1(2,1), 6.0);
+// }

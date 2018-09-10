@@ -11,9 +11,9 @@ class MatrixDenseDistributedBase
   : private core::details::CrtpBase<
   MatrixDenseDistributedBase<derived_type>>{
 
-  static_assert( details::traits<derived_type>::isSharedMem==0,
+  static_assert( details::traits<derived_type>::is_shared_mem==0,
   "OOPS: non-distributed matrix inheriting from dense distributed base!");
-  static_assert( details::traits<derived_type>::isDense==1,
+  static_assert( details::traits<derived_type>::is_dense==1,
   "OOPS: non-dense matrix inheriting from dense distributed base!");
 
   using traits_t = details::traits<derived_type>;

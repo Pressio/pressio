@@ -4,55 +4,24 @@
 
 #include "core_config.h"
 #include <type_traits>
+#include "core_shared_traits.hpp"
 
 namespace core{
 namespace details {
 
-/*--------------------------------------------
-Wrapped package name for containers
-
-This is not a sufficient identifier for a 
-wrapped type. Within a certain package one 
-can have more types of containers. 
---------------------------------------------*/
-enum class WrappedPackageIdentifier{
-   Undefined,
-   Eigen,
-   Trilinos,
-   Kokkos
-};
-
   
-/*--------------------------------------------
-Wrapped type name for containers.
-
-Within a given package, like trilinos, we can 
-have multiple types of vectors, for 
-instance epetra, tpetra.
-Same can be true for other packages.
-
-So combining this enum and the one above 
-allows us to identify one type uniquely.
---------------------------------------------*/
-enum class WrappedContainerIdentifier{
-   Undefined,
-   TrilinosEpetra,
-   TrilinosTpetra,
-   Eigen, // maybe more specific 
-   Kokkos
-};
-
-  
-  
-//---------------------------------------
-// TRAITS
-//---------------------------------------
 template<typename T, typename enable = void>
-struct traits;
+struct traits : public
+containers_shared_traits<void, void,
+			 false, false, false,
+			 WrappedPackageIdentifier::Undefined,
+			 false>
+{};
 
 template<typename T> 
 struct traits<const T> : traits<T> {};
 
+  
 
 //---------------------------------------
 // CRTP HELPER BASE CLASS

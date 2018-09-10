@@ -34,16 +34,16 @@ public:
 				    vecTrait::wrapped_t,eigV_t>();
       ::testing::StaticAssertTypeEq<typename
 				    vecTrait::derived_t,myvec_t>();
-      ASSERT_TRUE(vecTrait::isVector == 1);
-      ASSERT_TRUE(vecTrait::isEigen == 1);
-      ASSERT_TRUE(vecTrait::isSharedMem == 1);
-      ASSERT_TRUE(vecTrait::isSTDVector == 0);
+      ASSERT_TRUE(vecTrait::is_vector == 1);
+      ASSERT_TRUE(vecTrait::wrapped_vector_identifier 
+        == core::details::WrappedVectorIdentifier::Eigen);
+      ASSERT_TRUE(vecTrait::is_shared_mem == 1);
       if (row == 1 && col != Eigen::Dynamic) // row vector
-	ASSERT_TRUE(vecTrait::isStatic == 1);
+	ASSERT_TRUE(vecTrait::is_static == 1);
       else if (col == 1 && row != Eigen::Dynamic) // col vector
-	ASSERT_TRUE(vecTrait::isStatic == 1);
+	ASSERT_TRUE(vecTrait::is_static == 1);
       else
-	ASSERT_TRUE(vecTrait::isStatic == 0);
+	ASSERT_TRUE(vecTrait::is_static == 0);
     }
   };
   

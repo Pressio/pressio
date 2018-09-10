@@ -43,9 +43,7 @@ TEST(core_vector_distributed_epetra, EpetraVectorTraits)
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::communicator_t, Epetra_Comm>();
   
-  ASSERT_TRUE(vecTrait::isVector == 1);
-  ASSERT_TRUE(vecTrait::isEigen == 0);
-  ASSERT_TRUE(vecTrait::isSharedMem == 0);
-  ASSERT_TRUE(vecTrait::isSTDVector == 0);
+  ASSERT_TRUE(vecTrait::is_vector == 1);
+  ASSERT_TRUE(vecTrait::is_shared_mem == 0);
 
 }//end TEST

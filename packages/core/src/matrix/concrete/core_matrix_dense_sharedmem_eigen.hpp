@@ -27,7 +27,7 @@ class Matrix<wrapped_type,
     public ArithmeticOperatorsBase< Matrix<wrapped_type>>,
     public CompoundAssignmentOperatorsBase< Matrix<wrapped_type>>,
     public std::conditional<
-  details::traits<Matrix<wrapped_type>>::isStatic == true,
+  details::traits<Matrix<wrapped_type>>::is_static == true,
   ContainerNonResizableBase<Matrix<wrapped_type>, 2>,
   ContainerResizableBase<Matrix<wrapped_type>, 2>
   >::type
@@ -45,7 +45,7 @@ public:
 
   template <typename T = ord_t,
 	    typename std::enable_if<
-	      !mytraits::isStatic, T
+	      !mytraits::is_static, T
 	      >::type * = nullptr>
   explicit Matrix(T nrows, T ncols) {
     this->resize(nrows,ncols);
@@ -130,7 +130,7 @@ private:
 
   template <typename T = ord_t,
 	    typename std::enable_if<
-	      !mytraits::isStatic, T
+	      !mytraits::is_static, T
 	      >::type * = nullptr>
   void resizeImpl(T nrows, T ncols){
     data_.resize(nrows, ncols);
@@ -145,7 +145,7 @@ private:
   friend ArithmeticOperatorsBase< derived_t >;
   friend CompoundAssignmentOperatorsBase< derived_t >;
   friend typename std::conditional<
-    details::traits<derived_t>::isStatic == true,
+    details::traits<derived_t>::is_static == true,
     ContainerNonResizableBase<derived_t, 2>,
     ContainerResizableBase<derived_t, 2>
     >::type;

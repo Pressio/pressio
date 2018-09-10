@@ -60,7 +60,7 @@ TEST(core_vector_sharedmem_kokkos_class, Constructor)
   //Kokkos::parallel_for ("HelloWorld",15, hello_world());
   
   using myvec_t = core::Vector<view_type>;
-  static_assert( core::details::traits<myvec_t>::isStatic == 0, "" );
+  static_assert( core::details::traits<myvec_t>::is_static == 0, "" );
   myvec_t g(a);
   
   Kokkos::parallel_for (N, InitView<view_type>( g.dataCp() ));
@@ -71,6 +71,6 @@ TEST(core_vector_sharedmem_kokkos_class, Constructor)
 
   using view_type2 = Kokkos::View<double[11]>;
   using myvec_t2 = core::Vector<view_type2>;
-  static_assert( core::details::traits<myvec_t2>::isStatic == 1, "" );
+  static_assert( core::details::traits<myvec_t2>::is_static == 1, "" );
   
 }

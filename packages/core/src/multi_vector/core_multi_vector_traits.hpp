@@ -4,6 +4,7 @@
 
 #include "../core_forward_declarations.hpp"
 #include "../meta/core_multi_vector_meta.hpp"
+#include "../core_shared_traits.hpp"
 
 namespace core{
 namespace details{
@@ -17,37 +18,30 @@ struct traits<MultiVector<wrapped_type,
        meta::is_multi_vector_epetra<wrapped_type
       >::value>::type>
      >
+  : public containers_shared_traits<MultiVector<wrapped_type>,
+				    wrapped_type,
+				    false, false, true,
+				    WrappedPackageIdentifier::Eigen,
+				    false>
 {
 
   using scalar_t = defaultTypes::epetra_scalar_t;
   using local_ordinal_t = core::defaultTypes::epetra_lo_t;
   using global_ordinal_t = core::defaultTypes::epetra_go_t1;
-  using wrapped_t = Epetra_MultiVector;
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
-  using derived_t = MultiVector<wrapped_t>;
 
-  static constexpr int isVector = 0;
-  static constexpr int isMultiVector = 1;
-  // a multivector can also be seen as dense matrix.
-  // But here is intended as multivector. so we set actsAsMultiVector
-  // while for dense distributed matrix, we set actsAsMultiVector = 0
-  static constexpr int actingAsMultiVector = 1;
-  static constexpr int actingAsDenseMatrix = 0;
- 
-  static constexpr int isEpetra = 1;
-  static constexpr int isSTDVector = 0;
-  static constexpr int isSharedMem = 0;
-  static constexpr int isEigen = 0;
-  // make these void just to be clear they are not usable
-  using ordinal_t = void;
+  // // a multivector can also be seen as dense matrix.
+  // // But here is intended as multivector. so we set actsAsMultiVector
+  // // while for dense distributed matrix, we set actsAsMultiVector = 0
+  // static constexpr int actingAsMultiVector = 1;
+  // static constexpr int actingAsDenseMatrix = 0; 
 };
 
     
-/////////////////////////
 }//end namespace details  
-/////////////////////////
 
+  
   
 namespace meta {
 
@@ -58,8 +52,7 @@ template <typename T>
 struct is_core_multi_vector_wrapper<T,
 	   typename
 	   std::enable_if<
-	     core::details::traits<T>::isMultiVector==1 &&
-	     core::details::traits<T>::actingAsMultiVector==1
+	     core::details::traits<T>::is_multi_vector==1
 	     >::type
 	   > : std::true_type{};
 
