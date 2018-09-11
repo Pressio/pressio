@@ -9,6 +9,7 @@
 
 #include "solvers_linear_iterative.hpp"
 #include "solvers_linear_iterative_traits.hpp"
+#include "solvers_policy_linear_dense_eigen.hpp"
 #include "solvers_policy_linear_iterative_eigen.hpp"
 #include "solvers_policy_linear_iterative_trilinos.hpp"
 
@@ -48,9 +49,8 @@ struct LinearSolvers {
       MatrixT
     >::type* = nullptr
   >
-  static void createSolver(
-    MatrixT const& A
-  ) {
+  static void createSolver(MatrixT const& A)
+  {
 
     // Linear system solver cannot be created from given input matrix
     std::cerr << "No linear solver available for the matrix used to specify the linear system" << std::endl;
@@ -59,14 +59,61 @@ struct LinearSolvers {
 
 
   /**
-   * @brief  createIterativeSolver
+   * Create a linear solver for a dense Eigen matrix
+   *
+   * @param A dense Eigen matrix
+   * @return A dense linear solver of the specified kind
+   */
+/*  template <
+    typename SolverT,
+    typename MatrixT,
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen &&
+      core::details::matrix_traits<MatrixT>::is_sparse == false,
+    >::type* = nullptr
+  >
+  static auto createSolver(const MatrixT& A) {
+
+
+  }
+*/
+
+  /**
+   * Create a linear solver for a dense Eigen matrix_traits
+   *
+   * @return A dense linear solver of the specified kind
+   */
+  template <
+    typename SolverT,
+    typename MatrixT,
+    typename std::enable_if<
+      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen &&
+      core::details::matrix_traits<MatrixT>::is_sparse == false,
+      MatrixT
+    >::type* = nullptr
+  >
+  static auto createSolver() {
+    using solver_traits = linear::details::solver_traits<SolverT>;
+
+    static_assert(solver_traits::eigen_enabled && solver_traits::dense_only, "Solver not available for linear systems defined by Eigen matrices");
+
+    using wrapped_type = typename core::details::traits<MatrixT>::wrapped_t;
+    using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type>;
+    using concrete_policy_type = SolversLinearDenseEigenPolicy<concrete_solver_type, MatrixT>;
+
+    auto solver = std::make_shared<concrete_solver_type>();
+    auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
+
+    return wrapped_solver;
+  }
+
+
+
+  /**
+   * Create a linear iterative solver for a sparse Eigen matrix
+   *
    * @param  A matrix representing a linear system to be solved using
    * @return An iterative linear solver of the specified kind
-   *
-   * @section DESCRIPTION
-   *
-   * Create an instance of the appropriate sparse linear iterative
-   * solver for a linear system
    */
   template <
     typename SolverT,
