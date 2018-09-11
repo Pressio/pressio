@@ -10,8 +10,7 @@ namespace policy{
 template <typename derived_t, int numAuxStates, int numAuxRHS>
 class ImplicitResidualPolicyBase
   : private core::details::CrtpBase<
-       ImplicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS>>
-{
+       ImplicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS>>{
 public:
 
   template <typename state_type,
@@ -25,9 +24,8 @@ public:
   	      const std::array<state_type, numAuxStates> & auxYs,
   	      model_type & model,
   	      scalar_type t,
-  	      scalar_type dt)
-  {
-    this->underlying().computeImpl(y, R, auxYs, model, t, dt);
+  	      scalar_type dt){
+    this->underlying()(y, R, auxYs, model, t, dt);
   }
   //---------------------------------------------------------------
   

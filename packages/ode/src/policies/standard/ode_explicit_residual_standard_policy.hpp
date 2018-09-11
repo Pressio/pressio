@@ -41,7 +41,7 @@ private:
 	      core::meta::is_core_multi_vector<T>::value==true*/
 	      >::type * = nullptr
 	    >
-  void computeImpl(const U & y, T & R, model_type & model, sc_t t)
+  void operator()(const U & y, T & R, model_type & model, sc_t t)
   {
     if (R.empty())
       R.matchLayoutWith(y);

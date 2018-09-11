@@ -76,32 +76,34 @@ int main(int argc, char *argv[])
   phi_type phi(yFOMMap, 15);
   using phi_op_t = core::MultiVectorOperator<phi_type>;
   phi_op_t phiOp(phi);
-    
-  //-------------------------------
-  /* define rom types to use
-     this does not have to be the same as natives types, 
-     but you can choose what type you want to do ROM 
-  */
-  using rom_state_t = core::Vector<Eigen::VectorXd>;
-  using rom_res_t = rom_state_t;
-  using rom_jac_t = core::Matrix<Eigen::MatrixXd>;
-  rom_state_t yROM;
-  rom_res_t rROM;
+
+  if (rank==0){
+    //-------------------------------
+    /* define rom types to use
+       this does not have to be the same as natives types, 
+       but you can choose what type you want to do ROM 
+    */
+    using rom_state_t = core::Vector<Eigen::VectorXd>;
+    using rom_res_t = rom_state_t;
+    using rom_jac_t = core::Matrix<Eigen::MatrixXd>;
+    rom_state_t yROM;
+    rom_res_t rROM;
   
-  // // residual policy needs to know about the app types
-  using res_pol_t = rom::exp::RomGalerkinExplicitResidualPolicy<
-    app_state_t, app_space_res_t, phi_op_t, phi_op_t>;
-  res_pol_t resObj(y0n, r0n, phiOp, phiOp);
+    // // residual policy needs to know about the app types
+    using res_pol_t = rom::exp::RomGalerkinExplicitResidualPolicy<
+      app_state_t, app_space_res_t, phi_op_t, phi_op_t>;
+    res_pol_t resObj(y0n, r0n, phiOp, phiOp);
 
-  // stepper needs to know about types for doing time integration,
-  // which here are those for ROM
-  using stepper_t = ode::ExplicitEulerStepper<
-    rom_state_t, rom_res_t, app_t, res_pol_t>;
-  stepper_t stepperObj(appObj, resObj, yROM, rROM);
+    // stepper needs to know about types for doing time integration,
+    // which here are those for ROM
+    using stepper_t = ode::ExplicitEulerStepper<
+      rom_state_t, rom_res_t, app_t, res_pol_t>;
+    stepper_t stepperObj(appObj, resObj, yROM, rROM);
 
-  // integrate in time 
-  scalar_t dt = 0.01;
-  ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);
+    // integrate in time 
+    scalar_t dt = 0.01;
+    ode::integrateNSteps(stepperObj, yROM, 0.0, dt, 1);
+  }
 
 
 

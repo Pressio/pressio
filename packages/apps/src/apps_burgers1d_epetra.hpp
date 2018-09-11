@@ -15,8 +15,7 @@
 
 namespace apps{
 
-class Burgers1dEpetra
-{
+class Burgers1dEpetra{
 private:
   using nativeVec = Epetra_Vector;
   template<typename T>
@@ -30,15 +29,16 @@ public:
 
 public:  
   Burgers1dEpetra(std::vector<scalar_type> params,
-		  int Ncell,
-		  Epetra_MpiComm * comm)
-    : mu_(params), Ncell_(Ncell), comm_(comm)
-  {}
+		  int Ncell, Epetra_MpiComm * comm)
+    : mu_(params), Ncell_(Ncell), comm_(comm){}
 
   ~Burgers1dEpetra() = default; 
-
-  void setup()
-  {
+ 
+  Epetra_Map const & getDataMap(){
+    return *dataMap_;
+  };
+   
+  void setup(){
     // distribute cells 
     dataMap_ = std::make_shared<Epetra_Map>(Ncell_,0,*comm_);
 
@@ -67,10 +67,6 @@ public:
     
   };
 
-  Epetra_Map const & getDataMap(){
-    return *dataMap_;
-  };
-  
   state_type const & getInitialState(){
     return *U0_;
   };
@@ -87,7 +83,6 @@ public:
   {
     double valueFromLeft = 0.0;
     constexpr int tag_ = 1;
-
     if( myRank_ < comm_->NumProc()-1 ){
       MPI_Send( &u[NumMyElem_-1],1, MPI_DOUBLE,
 	        myRank_+1, tag_, comm_->Comm() );
@@ -100,8 +95,7 @@ public:
     
     int i=0;
     scalar_type uim1;
-    for (auto const & it : myGel_)
-    {
+    for (auto const & it : myGel_){
       uim1 = valueFromLeft;
       if (it==0)
 	uim1 = mu_[0]; // left boundary condition
@@ -117,14 +111,14 @@ public:
     }  
   }//end residual
 
-  jacobian_type const & getInitialJacobian()
-  {
+  jacobian_type const & getInitialJacobian(){
     j0_ = std::make_shared<Epetra_CrsMatrix>(Copy, *dataMap_, nonZrPerRow_);
     this->jacobian(*U0_, *j0_, 0.0);
     j0_->FillComplete();
     return *j0_;
   };
-    
+
+  
   void jacobian(const state_type & u,
 		jacobian_type & jac,
 		const scalar_type /*t*/)
@@ -167,14 +161,6 @@ public:
     }
     if (!jac.Filled())
       jac.FillComplete();
-    
-    
-    // jac = jacobian_type::Zero(jac.rows(), jac.cols());
-    // jac(0,0) = -dxInv_ * u(0)*u(0);
-    // for (int i=1; i<Ncell_; ++i){
-    //   jac(i,i-1) = dxInv_ * u(i-1)*u(i-1);
-    //   jac(i,i) = -dxInv_ * u(i-1)*u(i-1);     
-    // }    
   }//end jacobian
   
 private:  
