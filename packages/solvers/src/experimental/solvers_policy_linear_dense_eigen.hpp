@@ -1,34 +1,32 @@
 
-#ifndef SOLVERS_EXPERIMENTAL_POLICY_LINEAR_ITERATIVE_EIGEN_HPP
-#define SOLVERS_EXPERIMENTAL_POLICY_LINEAR_ITERATIVE_EIGEN_HPP
+#ifndef SOLVERS_EXPERIMENTAL_POLICY_LINEAR_DENSE_EIGEN_HPP
+#define SOLVERS_EXPERIMENTAL_POLICY_LINEAR_DENSE_EIGEN_HPP
 
 #include <Eigen/Core>
 
 
 namespace solvers {
 
-// Policy to solve a linear system
+// Policy to solve a dense linear system defined by an Eigen matrix
 template <
-  typename SolverT, 
+  typename SolverT,
   typename MatrixT
 >
-struct SolversLinearIterativeEigenPolicy {
+struct SolversLinearDenseEigenPolicy {
 
   static void resetLinearSystem(std::shared_ptr<SolverT>& solver, const MatrixT& A) {
-    solver->compute(*A.data());
+    solver->compute(A);
   }
 
 
   template <typename VectorT>
   static auto solve(
-    std::shared_ptr<SolverT> solver, 
-    const VectorT& b, 
-    int maxIters, 
+    std::shared_ptr<SolverT> solver,
+    const VectorT& b,
+    int maxIters,
     double tolerance
   ) {
-    solver->setMaxIterations(maxIters);
-    solver->setTolerance(tolerance);
-    return solver->solve(*b.data());
+    return VectorT(solver->solve(*b.data()));
   }
 };
 

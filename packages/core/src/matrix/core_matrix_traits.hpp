@@ -41,6 +41,7 @@ struct traits< Matrix<
     ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
       wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
 
+  static constexpr bool is_sparse = false;
 };
 
 
@@ -76,6 +77,7 @@ struct traits< Matrix<
   static constexpr bool is_row_major = wrapped_type::IsRowMajor;
   static constexpr bool is_col_major = !is_row_major;  
   static constexpr bool is_static = false;
+  static constexpr bool is_sparse = true;
 };
 
   
@@ -114,6 +116,7 @@ struct traits<Matrix
   using crs_graph_t = Epetra_CrsGraph;
 
   static constexpr int is_static = 0;
+  static constexpr bool is_sparse = true;
 };
 
   
@@ -153,6 +156,7 @@ struct traits<Matrix
   // static constexpr int actingAsDenseMatrix = 1;
 
   static constexpr bool is_static = false;
+  static constexpr bool is_sparse = false;
 };
 
   
@@ -184,7 +188,7 @@ struct traits< Matrix<
   using scalar_t = typename wrapped_type::value_type::value_type;
   using ordinal_t = int;
   static constexpr bool is_static = false;
-  
+  static constexpr bool is_sparse = false; 
 };
 
   

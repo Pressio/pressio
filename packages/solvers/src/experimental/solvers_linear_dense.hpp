@@ -12,7 +12,7 @@ struct LinearSolvers;
 
 
 /**
- * @brief Class that implements a linear iterative solver
+ * @brief Class that implements a linear dense solver
  */
 template<
   typename SolverT,
@@ -53,7 +53,6 @@ class LinearDenseSolver
   protected:
 
     LinearDenseSolver() : base_type() {};
-
 
     LinearDenseSolver(std::shared_ptr<SolverT> solver) : base_type(solver) {};
 
