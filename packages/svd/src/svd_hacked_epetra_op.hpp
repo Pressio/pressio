@@ -2,7 +2,7 @@
 #ifndef SVD_HACKED_EPETRA_OP_HPP_
 #define SVD_HACKED_EPETRA_OP_HPP_
 
-//#include <memory>
+#include <memory>
 #include "svd_solver_generic_base.hpp"
 #include "CORE_ALL"
 
@@ -124,19 +124,19 @@ private:
 
   auto buildMatForEigSolve(matrix_type & A, char which)
   {
-    if (which == 'L'){
-      //auto AAT = core::mat_ops::product(A, ASWT, false, false, true);
-      auto AAT = core::mat_ops::product(A, A, false, true, true); 
-      assert( AAT.isFillingCompleted() );
-      return AAT;
-   }
-   else{
-     // auto ASWT = core::transpose(A);
-     // auto ATA = core::mat_ops::product(ASWT, A, false, false, true);
-     auto ATA = core::mat_ops::product(A, A, true, false, true);
-     assert( ATA.isFillingCompleted() );
-     return ATA;
-    }
+   //  if (which == 'L'){
+   //    //auto AAT = core::mat_ops::product(A, ASWT, false, false, true);
+   //    auto AAT = core::ops::product(A, A, false, true, true); 
+   //    assert( AAT.isFillingCompleted() );
+   //    return AAT;
+   // }
+   // else{
+   //   // auto ASWT = core::transpose(A);
+   //   // auto ATA = core::mat_ops::product(ASWT, A, false, false, true);
+   //   auto ATA = core::ops::product(A, A, true, false, true);
+   //   assert( ATA.isFillingCompleted() );
+   //   return ATA;
+   //  }
     
   }//end method
   //-----------------------------------------------------

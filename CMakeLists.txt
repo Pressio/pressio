@@ -45,5 +45,14 @@ SET(HeaderOnlyTpl_INCLUDE_DIRS
   "${${PROJECT_NAME}_TRIBITS_DIR}/examples/tpls/HeaderOnlyTpl" 
   CACHE PATH "Default set by TriBITS/CMakeLists.txt" )
 
+#------------------------------------------------------------
+# set the directory where all the mains for google tests are
+SET(GTESTMAINSDIR "${CMAKE_CURRENT_SOURCE_DIR}/gtest_mains")
+MESSAGE("Google tests main files are in: " ${GTESTMAINSDIR})
+
+
 # Do all of the processing for this Tribits project
 TRIBITS_PROJECT()
+
+
+

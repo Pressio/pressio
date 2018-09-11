@@ -3,7 +3,7 @@
 #define CORE_MULTI_VECTOR_OPERATOR_HPP_
 
 #include "./core_operator_base.hpp"
-#include "../multi_vector/core_multi_vector_traits.hpp"
+#include "../multi_vector/core_multi_vector_meta.hpp"
 
 namespace core{
 

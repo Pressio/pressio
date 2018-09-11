@@ -5,12 +5,12 @@
 #include "CORE_BASIC"
 
 #include "../src/multi_vector/core_multi_vector_traits.hpp"
+#include "../src/multi_vector/core_multi_vector_meta.hpp"
 
 #include "../src/multi_vector/base/core_multi_vector_math_base.hpp"
 #include "../src/multi_vector/base/core_multi_vector_sharedmem_base.hpp"
 #include "../src/multi_vector/base/core_multi_vector_distributed_base.hpp"
 
 #include "../src/multi_vector/concrete/core_multi_vector_distributed_epetra.hpp"
-#include "../src/multi_vector/operations/core_multi_vector_vector_dot_product.hpp"
 
 #endif

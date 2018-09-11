@@ -41,21 +41,21 @@ public:
   ~RomGalerkinImplicitJacobianPolicy() = default;
   
 private:
-  template <typename U = state_type,
-	    typename T = jacobian_type,
-	    typename scalar_type,
-	    typename std::enable_if<
-	      core::meta::is_core_vector<U>::value==true &&
-	      core::meta::is_core_matrix_wrapper<T>::value==true
-	    >::type * = nullptr>
-  void computeImpl(const U & y,
-		   T & J,
-		   model_type & model,
-		   scalar_type t,
-		   scalar_type dt)
-  {
-    //
-  }  
+  // template <typename U = state_type,
+	 //    typename T = jacobian_type,
+	 //    typename scalar_type,
+	 //    typename std::enable_if<
+	 //      core::meta::is_core_vector<U>::value==true &&
+	 //      core::meta::is_core_matrix_wrapper<T>::value==true
+	 //    >::type * = nullptr>
+  // void computeImpl(const U & y,
+		//    T & J,
+		//    model_type & model,
+		//    scalar_type t,
+		//    scalar_type dt)
+  // {
+  //   //
+  // }  
 
 private:
   friend base_t;
