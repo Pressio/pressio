@@ -5,6 +5,7 @@
 #include "CORE_VECTOR"
 
 #include "../src/matrix/core_matrix_traits.hpp"
+#include "../src/matrix/core_matrix_meta.hpp"
 
 ///------------------
 ///base classes
@@ -30,21 +31,6 @@
 #include "../src/matrix/concrete/core_matrix_sparse_sharedmem_eigen.hpp"
 #include "../src/matrix/concrete/core_matrix_sparse_distributed_epetra.hpp"
 #include "../src/matrix/concrete/core_matrix_dense_distributed_epetra.hpp"
-
-///------------------
-///operations
-///------------------
-#include "../src/matrix/operations/core_sparse_matrix_transpose.hpp"
-#include "../src/matrix/operations/core_dense_matrix_transpose.hpp"
-
-#include "../src/matrix/operations/core_dense_matrix_vector_product.hpp"
-#include "../src/matrix/operations/core_sparse_matrix_vector_product.hpp"
-
-#include "../src/matrix/operations/core_sparse_sparse_matrix_product.hpp"
-#include "../src/matrix/operations/core_dense_dense_matrix_product.hpp"
-#include "../src/matrix/operations/core_sparse_dense_matrix_product.hpp"
-
-#include "../src/matrix/operations/core_dense_to_sparse_matrix.hpp"
 
 #endif
 

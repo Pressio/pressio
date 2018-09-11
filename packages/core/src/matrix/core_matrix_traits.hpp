@@ -3,7 +3,7 @@
 #define CORE_MATRIX_MATRIX_TRAITS_HPP_
 
 #include "../core_forward_declarations.hpp"
-#include "../meta/core_matrix_meta.hpp"
+#include "../meta/core_native_matrix_meta.hpp"
 #include "../meta/core_meta_detect_typedefs.hpp"
 #include "../meta/core_meta_detect_operators.hpp"
 #include "../core_shared_traits.hpp"
@@ -188,33 +188,7 @@ struct traits< Matrix<
 };
 
   
-    
-////////////////////////////
 }//end namespace details
-////////////////////////////
-
-  
-
-namespace meta{
-
-template <typename T, typename enable = void>
-struct is_core_matrix_wrapper : std::false_type {};
-
-template <typename T>
-struct is_core_matrix_wrapper< T,
-		       typename
-		       std::enable_if<
-			 core::details::traits<T>::is_matrix
-			 >::type
-		       > : std::true_type{};
-
-  
-#define STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(TYPE) \
-  static_assert( core::meta::is_core_matrix_wrapper<TYPE>::value, \
-		 "THIS_IS_NOT_A_CORE_MATRIX_WRAPPER")
-  
-}//end meta
-
-  
 }//end namespace core
+
 #endif

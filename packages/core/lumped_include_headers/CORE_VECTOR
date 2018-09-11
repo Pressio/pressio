@@ -5,6 +5,7 @@
 #include "CORE_BASIC"
 
 #include "../src/vector/core_vector_traits.hpp"
+#include "../src/vector/core_vector_meta.hpp"
 
 #include "../src/vector/base/core_vector_math_base.hpp"
 #include "../src/vector/base/core_vector_sharedmem_base.hpp"
@@ -14,7 +15,5 @@
 #include "../src/vector/concrete/core_vector_sharedmem_eigen.hpp"
 #include "../src/vector/concrete/core_vector_sharedmem_kokkos.hpp"
 #include "../src/vector/concrete/core_vector_sharedmem_stdlib.hpp"
-
-#include "../src/vector/operations/core_vector_dot_product.hpp"
 
 #endif

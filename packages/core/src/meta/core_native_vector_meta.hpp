@@ -1,6 +1,6 @@
 
-#ifndef CORE_VECTOR_META_VECTOR_META_HPP_
-#define CORE_VECTOR_META_VECTOR_META_HPP_
+#ifndef CORE_NATIVE_VECTOR_META_VECTOR_META_HPP_
+#define CORE_NATIVE_VECTOR_META_VECTOR_META_HPP_
 
 #include "core_meta_basic.hpp"
 #include "core_meta_detection_idiom.hpp"
@@ -13,7 +13,6 @@
 namespace core{
 namespace meta {
 
-  
 template <typename T, typename enable = void>
 struct is_vector_eigen : std::false_type {};
 
@@ -92,42 +91,7 @@ struct is_vector_kokkos<T,
 //--------------------------------------------
   
  
-//////////////////////
 } // namespace meta
-/////////////////////
-
-  
-#define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \
-  static_assert( core::meta::is_vector_eigen<TYPE>::value, \
-		 "THIS_IS_NOT_A_VECTOR_FROM_EIGEN")
-#define STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(TYPE) \
-  static_assert( !core::meta::is_vector_eigen<TYPE>::value, \
-		 "THIS_IS_A_VECTOR_FROM_EIGEN")
-
-#define STATIC_ASSERT_IS_VECTOR_STDLIB(TYPE) \
-  static_assert( core::meta::is_vector_stdlib<TYPE>::value, \
-		 "THIS_IS_NOT_A_STDLIB_VECTOR")
-#define STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(TYPE) \
-  static_assert( !core::meta::is_vector_stdlib<TYPE>::value, \
-		 "THIS_IS_A_STDLIB_VECTOR")
-
-#define STATIC_ASSERT_IS_VECTOR_EPETRA(TYPE) \
-  static_assert( core::meta::is_vector_epetra<TYPE>::value, \
-		 "THIS_IS_NOT_A_VECTOR_EPETRA")
-#define STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(TYPE) \
-  static_assert( !core::meta::is_vector_epetra<TYPE>::value, \
-		 "THIS_IS_A_VECTOR_EPETRA")
-
-#define STATIC_ASSERT_IS_VECTOR_KOKKOS(TYPE) \
-  static_assert( core::meta::is_vector_kokkos<TYPE>::value, \
-		 "THIS_IS_NOT_A_VECTOR_KOKKOS")
-#define STATIC_ASSERT_IS_NOT_VECTOR_KOKKOS(TYPE) \
-  static_assert( !core::meta::is_vector_kokkos<TYPE>::value, \
-		 "THIS_IS_A_VECTOR_KOKKOS")
-  
-  
-/////////////////
 } // namespace core
-/////////////////
 
 #endif

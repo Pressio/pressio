@@ -3,7 +3,7 @@
 #define CORE_MATRIX_OPERATOR_HPP_
 
 #include "./core_operator_base.hpp"
-#include "../matrix/core_matrix_traits.hpp"
+#include "../matrix/core_matrix_meta.hpp"
 
 namespace core{
 

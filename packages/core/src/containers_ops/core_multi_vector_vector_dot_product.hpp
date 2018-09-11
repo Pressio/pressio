@@ -2,28 +2,21 @@
 #ifndef CORE_MULTI_VECTOR_VECTOR_DOT_PRODUCT_HPP_
 #define CORE_MULTI_VECTOR_VECTOR_DOT_PRODUCT_HPP_
 
-#include "../core_multi_vector_traits.hpp"
-#include "../../meta/core_vector_meta.hpp"
-#include "../../meta/core_multi_vector_meta.hpp"
+#include "core_ops_meta.hpp"
+#include "../vector/core_vector_meta.hpp"
+#include "../multi_vector/core_multi_vector_meta.hpp"
 
 namespace core{
-namespace multivec_ops{
+namespace ops{
 
 //  Epetra multivector with epetra vector
 template <typename mvec_type,
 	  typename vec_type,
-  core::meta::enable_if_t<
-    core::details::traits<mvec_type>::is_multi_vector &&
-    core::details::traits<mvec_type>::wrapped_multi_vector_identifier==
-    core::details::WrappedMultiVectorIdentifier::Epetra &&
-    core::details::traits<vec_type>::is_vector &&
-    core::details::traits<vec_type>::wrapped_vector_identifier==
-    core::details::WrappedVectorIdentifier::Epetra &&
-   std::is_same<
-     typename details::traits<mvec_type>::scalar_t,
-     typename details::traits<vec_type>::scalar_t
-     >::value
-     > * = nullptr
+    typename std::enable_if<
+     core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value &&
+     core::meta::is_epetra_vector_wrapper<vec_type>::value &&
+     core::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value
+    > * = nullptr
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
@@ -51,23 +44,15 @@ void dot(const mvec_type & mvA,
   }
 
 }
-  
-  
+    
 //  Epetra multivector with epetra vector
 template <typename mvec_type,
 	  typename vec_type,
-  core::meta::enable_if_t<
-    core::details::traits<mvec_type>::is_multi_vector &&
-    core::details::traits<mvec_type>::wrapped_multi_vector_identifier==
-    core::details::WrappedMultiVectorIdentifier::Epetra &&
-    core::details::traits<vec_type>::is_vector &&
-    core::details::traits<vec_type>::wrapped_vector_identifier==
-    core::details::WrappedVectorIdentifier::Epetra &&
-   std::is_same<
-     typename details::traits<mvec_type>::scalar_t,
-     typename details::traits<vec_type>::scalar_t
-     >::value
-     > * = nullptr
+  typename std::enable_if<
+    core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value &&
+    core::meta::is_epetra_vector_wrapper<vec_type>::value &&
+    core::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value
+    > * = nullptr
   >
 auto dot(const mvec_type & mvA,
 	 const vec_type & vecB)
@@ -75,12 +60,13 @@ auto dot(const mvec_type & mvA,
   using sc_t = typename details::traits<mvec_type>::scalar_t;
   // how many vectors are in mvA
   auto numVecs = mvA.globalNumVectors();
-  std::vector<sc_t> res(numVecs);
+  using res_t = std::vector<sc_t>;
+  res_t res(numVecs);
   dot(mvA, vecB, res);
   return res;
 }
 
   
-} // end namespace multivec_ops
+} // end namespace linalg
 } // end namespace core
 #endif

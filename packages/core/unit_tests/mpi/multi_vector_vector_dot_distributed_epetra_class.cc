@@ -1,8 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "Epetra_MpiComm.h"
-#include "CORE_VECTOR"
-#include "CORE_MULTI_VECTOR"
+#include "CORE_ALL"
 
 struct epetraFix
   : public ::testing::Test{
@@ -73,7 +72,7 @@ TEST_F(epetraFix, MVVecDotProduct){
 
   // MV.data()->Print(std::cout);
   // b.data()->Print(std::cout);
-  auto res = core::multivec_ops::dot(MV, b);
+  auto res = core::ops::dot(MV, b);
 
   EXPECT_EQ(res.size(), 4);
   EXPECT_NEAR(res[0], 4.4, 1e-12);

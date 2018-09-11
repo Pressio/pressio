@@ -9,7 +9,7 @@
 // #include "core_forward_declarations.hpp"
 
 #include "../core_forward_declarations.hpp"
-#include "../meta/core_vector_meta.hpp"
+#include "../meta/core_native_vector_meta.hpp"
 #include "../meta/core_meta_detect_typedefs.hpp"
 #include "../meta/core_meta_detect_operators.hpp"
 

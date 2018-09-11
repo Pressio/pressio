@@ -3,7 +3,7 @@
 #define SVD_SOLVER_TRAITS_HPP_
 
 #include "svd_forward_declarations.hpp"
-#include "matrix/core_matrix_traits.hpp"
+#include "matrix/core_matrix_meta.hpp"
 
 namespace svd{
 namespace details{

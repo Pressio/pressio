@@ -8,7 +8,6 @@
 #include "../src/core_shared_traits.hpp"
 #include "../src/core_wrapped_types_enum.hpp"
 
-
 #include "../src/shared_base/core_container_base.hpp"
 #include "../src/shared_base/core_container_distributed_mpi_base.hpp"
 #include "../src/shared_base/core_operators_base.hpp"
@@ -20,11 +19,10 @@
 #include "../src/meta/core_meta_detect_operators.hpp"
 #include "../src/meta/core_meta_detect_typedefs.hpp"
 #include "../src/meta/core_meta_detection_idiom.hpp"
-#include "../src/meta/core_multi_vector_meta.hpp"
-#include "../src/meta/core_vector_meta.hpp"
-#include "../src/meta/core_matrix_meta.hpp"
-
-#include "../src/utils/core_static_assert_definitions.hpp"
+#include "../src/meta/core_native_vector_meta.hpp"
+#include "../src/meta/core_native_multi_vector_meta.hpp"
+#include "../src/meta/core_native_matrix_meta.hpp"
+#include "../src/meta/core_native_static_asserts.hpp"
 
 #include "../src/operator/core_operator_base.hpp"
 #include "../src/operator/core_multi_vector_operator.hpp"

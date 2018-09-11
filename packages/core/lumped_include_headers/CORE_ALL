@@ -6,5 +6,6 @@
 #include "CORE_VECTOR"
 #include "CORE_MULTI_VECTOR"
 #include "CORE_MATRIX"
+#include "CORE_OPS"
 
 #endif

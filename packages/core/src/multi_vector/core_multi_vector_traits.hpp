@@ -3,7 +3,7 @@
 #define CORE_MULTIVECTOR_MULTIVECTOR_TRAITS_HPP_
 
 #include "../core_forward_declarations.hpp"
-#include "../meta/core_multi_vector_meta.hpp"
+#include "../meta/core_native_multi_vector_meta.hpp"
 #include "../core_shared_traits.hpp"
 
 namespace core{
@@ -34,31 +34,6 @@ struct traits<MultiVector<wrapped_type,
   using communicator_t = Epetra_Comm;
 };
     
-}//end namespace details  
-
-  
-  
-namespace meta {
-
-template <typename T, typename enable = void>
-struct is_core_multi_vector_wrapper : std::false_type {};
-
-template <typename T>
-struct is_core_multi_vector_wrapper<T,
-	   typename
-	   std::enable_if<
-	     core::details::traits<T>::is_multi_vector
-	     >::type
-	   > : std::true_type{};
-
-#define STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(TYPE) \
-  static_assert(core::meta::is_core_multi_vector_wrapper<TYPE>::value,\
-		"THIS_IS_NOT_A_CORE_MULTI_VECTOR_WRAPPER")
-  
-/////////////////////////
-}//end meta
-/////////////////////////
-
-  
+}//end namespace details
 }//end namespace core
 #endif
