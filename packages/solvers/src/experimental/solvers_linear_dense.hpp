@@ -46,7 +46,7 @@ class LinearDenseSolver
     template <typename T>
     auto _solve(const T& b) {
       auto solver = this->getSolver();
-      return PolicyT::solve(solver, b, this->getMaxIterations(), this->getTolerance());
+      return PolicyT::solve(solver, b);
     }
 
 

@@ -7,12 +7,14 @@
 #include <type_traits>
 #include <Eigen/Sparse>
 
+#include "solvers_linear_dense.hpp"
 #include "solvers_linear_iterative.hpp"
 #include "solvers_linear_iterative_traits.hpp"
 #include "solvers_policy_linear_dense_eigen.hpp"
 #include "solvers_policy_linear_iterative_eigen.hpp"
 #include "solvers_policy_linear_iterative_trilinos.hpp"
 
+#include "matrix/core_matrix_traits.hpp"
 #include "matrix/core_matrix_traits_exp.hpp"
 
 
@@ -21,7 +23,7 @@ namespace solvers {
 
 struct LinearSolvers {
 
-
+/*
   template <typename SolverT,
     typename MatrixT,
     typename std::enable_if<!(
@@ -56,7 +58,7 @@ struct LinearSolvers {
     std::cerr << "No linear solver available for the matrix used to specify the linear system" << std::endl;
     assert(false);
   }
-
+*/
 
   /**
    * Create a linear solver for a dense Eigen matrix
@@ -81,14 +83,13 @@ struct LinearSolvers {
   /**
    * Create a linear solver for a dense Eigen matrix_traits
    *
-   * @return A dense linear solver of the specified kind
+   * @return wrapped_solver dense linear solver
    */
   template <
     typename SolverT,
     typename MatrixT,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen &&
-      core::details::matrix_traits<MatrixT>::is_sparse == false,
+      core::details::traits<MatrixT>::wrapped_matrix_identifier == core::details::WrappedMatrixIdentifier::DenseEigen,
       MatrixT
     >::type* = nullptr
   >
@@ -102,17 +103,37 @@ struct LinearSolvers {
     using concrete_policy_type = SolversLinearDenseEigenPolicy<concrete_solver_type, MatrixT>;
 
     auto solver = std::make_shared<concrete_solver_type>();
-    auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
+    auto wrapped_solver = LinearDenseSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
 
     return wrapped_solver;
   }
 
 
+  /**
+   * Create a linear solver for a dense Eigen matrix_traits
+   *
+   * @param A dense matrix representing the linear system to be solved
+   * @return solver dense linear solver
+   */
+  template <
+    typename SolverT,
+    typename MatrixT,
+    typename std::enable_if<
+      core::details::traits<MatrixT>::wrapped_matrix_identifier == core::details::WrappedMatrixIdentifier::DenseEigen,
+      MatrixT
+    >::type* = nullptr
+  >
+  static auto createSolver(const MatrixT& A) {
+    auto solver = LinearSolvers::createSolver<SolverT, MatrixT>();
+    solver.resetLinearSystem(A);
+    return solver;
+  }
+
 
   /**
    * Create a linear iterative solver for a sparse Eigen matrix
    *
-   * @param  A matrix representing a linear system to be solved using
+   * @param  A sparse matrix representing the linear system to be solved
    * @return An iterative linear solver of the specified kind
    */
   template <

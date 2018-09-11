@@ -15,16 +15,14 @@ template <
 struct SolversLinearDenseEigenPolicy {
 
   static void resetLinearSystem(std::shared_ptr<SolverT>& solver, const MatrixT& A) {
-    solver->compute(A);
+    solver->compute(*A.data());
   }
 
 
   template <typename VectorT>
   static auto solve(
     std::shared_ptr<SolverT> solver,
-    const VectorT& b,
-    int maxIters,
-    double tolerance
+    const VectorT& b
   ) {
     return VectorT(solver->solve(*b.data()));
   }
