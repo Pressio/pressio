@@ -1,28 +1,11 @@
 
+add_unit_test(vector_distributed_epetra_traits ${GTESTMAINSDIR}/gTestMain_mpi)
+add_unit_test(vector_distributed_epetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
+add_unit_test(multi_vector_distributed_epetra_traits ${GTESTMAINSDIR}/gTestMain_mpi)
+add_unit_test(multi_vector_vector_dot_distributed_epetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
 
-# this function creates and adds an individual test executable
-# this is needed for cases where we need to specify the number
-# of MPI processes, for example to do testing for distributed objects
-function(add_single_unit_test test_name ranks)  
-  TRIBITS_ADD_EXECUTABLE_AND_TEST(
-    ${test_name}
-    SOURCES ${test_name}.cc gTestMain.cc
-    COMM serial mpi
-    NUM_MPI_PROCS ${ranks}
-    PASS_REGULAR_EXPRESSION "PASSED"
-    FAIL_REGULAR_EXPRESSION "FAILED"
-  )
-endfunction()
-
-#### append tests need to each have a unique executable
-add_single_unit_test(utest_vector_distributed_epetra_traits 1)
-add_single_unit_test(utest_vector_distributed_epetra_class 3)
-add_single_unit_test(utest_vector_dot_product 1)
-
-add_single_unit_test(utest_multi_vector_distributed_epetra_traits 1)
-add_single_unit_test(utest_multi_vector_distributed_epetra_class 3)
-# add_single_unit_test(utest_multi_vector_vector_dot_distributed_epetra_class 3)
-
+# add_single_unit_test(utest_vector_dot_product 1)
+# add_single_unit_test(utest_multi_vector_distributed_epetra_class 3)
 # add_single_unit_test(utest_crs_matrix_vector_product_distributed_epetra 3)
 # add_single_unit_test(utest_dense_matrix_vector_product_distributed_epetra 3)
 # add_single_unit_test(utest_matrix_sparse_distributed_epetra_class 3)
@@ -32,6 +15,5 @@ add_single_unit_test(utest_multi_vector_distributed_epetra_class 3)
 # add_single_unit_test(utest_matrix_matrix_product_dense_distributed_epetra 3)
 # add_single_unit_test(utest_matrix_matrix_product_dense_sparse_distributed_epetra 3)
 # add_single_unit_test(utest_matrix_dense_to_crs_distributed_epetra 3)
-
-add_single_unit_test(utest_trilinos_map_export 3)
+#add_single_unit_test(utest_trilinos_map_export 3)
 

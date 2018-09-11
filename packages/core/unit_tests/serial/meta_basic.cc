@@ -3,8 +3,7 @@
 #include "CORE_MATRIX"
 
 
-TEST(core_meta_basic, isDefaultConstructible)
-{
+TEST(core_meta_basic, isDefaultConstructible){
   class A{
   public:
     A() = default;
@@ -24,10 +23,8 @@ TEST(core_meta_basic, isDefaultConstructible)
   EXPECT_EQ( core::meta::is_default_constructible<C>::value, false);
 }
 
-
-
-TEST(core_meta_basic, isComplexNumber)
-{
+TEST(core_meta_basic, isComplexNumber){
+  
   using t1 = std::complex<float>;
   static_assert( core::meta::is_std_complex<t1>::value, "should be complex" );
   using t2 = std::complex<double>;
@@ -39,8 +36,8 @@ TEST(core_meta_basic, isComplexNumber)
 }
 
 
-TEST(core_meta_basic, inheritanceVector)
-{
+TEST(core_meta_basic, inheritanceVector){
+  
   using eigV_t = core::Vector<Eigen::Matrix<double,4,1>>;
   using base_t1 = core::VectorSharedMemBase<eigV_t>;
 
@@ -64,9 +61,8 @@ TEST(core_meta_basic, inheritanceVector)
 }
 
 
-
-TEST(core_meta_basic, hasSizeMethod)
-{
+TEST(core_meta_basic, hasSizeMethod){
+  
   struct foo{
     int size() const{
       return 3;

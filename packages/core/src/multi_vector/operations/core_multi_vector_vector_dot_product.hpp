@@ -12,17 +12,19 @@ namespace multivec_ops{
 //  Epetra multivector with epetra vector
 template <typename mvec_type,
 	  typename vec_type,
-	  core::meta::enable_if_t<
-	   details::traits<mvec_type>::isMultiVector &&
-	   details::traits<vec_type>::isEpetra &&
-	   details::traits<vec_type>::is_vector &&
-	   details::traits<vec_type>::isEpetra &&
-	   std::is_same<
-	     typename details::traits<mvec_type>::scalar_t,
-	     typename details::traits<vec_type>::scalar_t
-	     >::value
-	     > * = nullptr
-	  >
+  core::meta::enable_if_t<
+    core::details::traits<mvec_type>::is_multi_vector &&
+    core::details::traits<mvec_type>::wrapped_multi_vector_identifier==
+    core::details::WrappedMultiVectorIdentifier::Epetra &&
+    core::details::traits<vec_type>::is_vector &&
+    core::details::traits<vec_type>::wrapped_vector_identifier==
+    core::details::WrappedVectorIdentifier::Epetra &&
+   std::is_same<
+     typename details::traits<mvec_type>::scalar_t,
+     typename details::traits<vec_type>::scalar_t
+     >::value
+     > * = nullptr
+  >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 std::vector<typename
@@ -54,17 +56,19 @@ void dot(const mvec_type & mvA,
 //  Epetra multivector with epetra vector
 template <typename mvec_type,
 	  typename vec_type,
-	  core::meta::enable_if_t<
-	   details::traits<mvec_type>::isMultiVector &&
-	   details::traits<vec_type>::isEpetra && 
-	   details::traits<vec_type>::is_vector &&
-	   details::traits<vec_type>::isEpetra &&
-	   std::is_same<
-	     typename details::traits<mvec_type>::scalar_t,
-	     typename details::traits<vec_type>::scalar_t
-	     >::value 
-	   > * = nullptr
-	  >
+  core::meta::enable_if_t<
+    core::details::traits<mvec_type>::is_multi_vector &&
+    core::details::traits<mvec_type>::wrapped_multi_vector_identifier==
+    core::details::WrappedMultiVectorIdentifier::Epetra &&
+    core::details::traits<vec_type>::is_vector &&
+    core::details::traits<vec_type>::wrapped_vector_identifier==
+    core::details::WrappedVectorIdentifier::Epetra &&
+   std::is_same<
+     typename details::traits<mvec_type>::scalar_t,
+     typename details::traits<vec_type>::scalar_t
+     >::value
+     > * = nullptr
+  >
 auto dot(const mvec_type & mvA,
 	 const vec_type & vecB)
 {

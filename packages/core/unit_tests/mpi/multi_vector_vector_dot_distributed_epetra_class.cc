@@ -18,14 +18,12 @@ public:
   Epetra_MultiVector * mv_;
   Epetra_Vector * x_;
   
-  virtual void SetUp()
-  {
+  virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     Comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
     MyPID_ = Comm_->MyPID();
     NumProc_ = Comm_->NumProc();
     numGlobalEntries_ = Comm_->NumProc() * localSize_;
-    
     dataMap_ = new Epetra_Map(numGlobalEntries_, 0, *Comm_);
     mv_ = new Epetra_MultiVector(*dataMap_, numVectors_);
     x_ = new Epetra_Vector(*dataMap_);
@@ -42,17 +40,13 @@ public:
 TEST_F(epetraFix, MVVecDotProduct){
 
   assert(NumProc_ == 3);
-  
   using mvec_t = core::MultiVector<Epetra_MultiVector>;
   STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(mvec_t);
-
   using vec_t = core::Vector<Epetra_Vector>;
   STATIC_ASSERT_IS_CORE_VECTOR_WRAPPER(vec_t);
-
   mvec_t MV(*mv_);
   vec_t b(*x_);
 
-      
   EXPECT_EQ( MV.globalNumVectors(), 4 );
   EXPECT_EQ( MV.localNumVectors(), 4 );
   EXPECT_EQ( MV.globalLength(), 9 );

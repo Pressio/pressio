@@ -9,7 +9,6 @@ TEST(core_meta_detect_typedefs, scalarTypedefDetect)
     using scalar_type = double;
     scalar_type x;
   };
-  //EXPECT_EQ( core::meta::has_scalar_typedef<A>::value, true);
   static_assert( core::meta::is_detected<core::meta::has_scalar_typedef, A>::value, "");
 
   class B{
@@ -17,14 +16,12 @@ TEST(core_meta_detect_typedefs, scalarTypedefDetect)
     using scalar_t = double;
     scalar_t x;
   };
-  // EXPECT_EQ( core::meta::has_scalar_typedef<B>::value, false);
   static_assert( core::meta::is_detected<core::meta::has_scalar_typedef, B>::value == false, "");
 
   struct C{
     using scalar_type = double;
     scalar_type x;
   };
-  // EXPECT_EQ( core::meta::has_scalar_typedef<C>::value, true);  
   static_assert( core::meta::is_detected<core::meta::has_scalar_typedef, C>::value, "");
 }
 
