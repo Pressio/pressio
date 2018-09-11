@@ -9,9 +9,9 @@ namespace policy{
     
 template <typename derived_t>
 class ExplicitResidualPolicyBase
-  : private core::details::CrtpBase<ExplicitResidualPolicyBase<derived_t>>
-{
+  : private core::details::CrtpBase<ExplicitResidualPolicyBase<derived_t>>{
 public:
+
   template <typename state_type,
 	    typename space_residual_type,
 	    typename model_type,
@@ -20,7 +20,7 @@ public:
 	       space_residual_type & R,
 	       model_type & model,
 	       scalar_type t){
-    this->underlying().computeImpl(y, R, model, t);
+    this->underlying()(y, R, model, t);
   }
 
 private:

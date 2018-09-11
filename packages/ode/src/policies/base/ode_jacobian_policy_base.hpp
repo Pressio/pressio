@@ -9,8 +9,7 @@ namespace policy{
   
 template <typename derived_t>
 class JacobianPolicyBase
-  : private core::details::CrtpBase<JacobianPolicyBase<derived_t>>
-{
+  : private core::details::CrtpBase<JacobianPolicyBase<derived_t>>{
 public:
 
   template <typename state_type,
@@ -21,9 +20,8 @@ public:
 	       jacobian_type & J,
 	       model_type & model, 
 	       scalar_type t,
-	       scalar_type dt)
-  {
-    this->underlying().computeImpl(y, J, model, t, dt);
+	       scalar_type dt){
+    this->underlying()(y, J, model, t, dt);
   } 
   
 private:

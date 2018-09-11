@@ -65,10 +65,10 @@ private:
 	    typename ode_res_t,
 	    typename app_type,
 	    typename scalar_type>
-  void computeImpl(const ode_state_t & odeY,
-		   ode_res_t & odeR,
-		   app_type & app,
-		   scalar_type t)
+  void operator()(const ode_state_t & odeY,
+		  ode_res_t & odeR,
+		  app_type & app,
+		  scalar_type t)
   {
     /* types: 
        - y: has type ode_state_t which is NOT for sure same as state_type
