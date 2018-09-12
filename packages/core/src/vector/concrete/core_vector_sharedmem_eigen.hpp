@@ -38,6 +38,7 @@ class Vector<wrapped_type,
   using wrap_t = typename mytraits::wrapped_t;
 
 public:
+
   Vector() = default;
 
   template <typename T,

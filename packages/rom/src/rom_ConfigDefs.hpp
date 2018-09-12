@@ -10,8 +10,8 @@
 namespace rom{
 namespace details {
 
-template<typename T, typename enable = void>
-struct traits : core::details::traits<T> {};
+// template<typename T, typename enable = void>
+// struct traits : core::details::traits<T> {};
   
 } // end namespace details
 } // end ode

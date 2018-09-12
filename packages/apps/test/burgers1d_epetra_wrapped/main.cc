@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
   // define native types
   using app_state_t = apps::Burgers1dEpetra::state_type;
   using app_space_residual_t = apps::Burgers1dEpetra::space_residual_type;
-  using app_jac_t = apps::Burgers1dEpetra::jacobian_type;
   using scalar_t = apps::Burgers1dEpetra::scalar_type;
   using target_app_t = apps::Burgers1dEpetra;
   
@@ -44,13 +43,11 @@ int main(int argc, char *argv[])
   appObj.setup();
   auto & y0n = appObj.getInitialState();
   auto & r0n = appObj.getInitialResidual();
-  auto & j0n = appObj.getInitialJacobian();
 
   //-------------------------------
   // types for ode
   using ode_state_t = core::Vector<app_state_t>;
-  using ode_res_t = ode_state_t;
-  using ode_jac_t = core::Matrix<app_jac_t>;
+  using ode_res_t = core::Vector<app_space_residual_t>;
 
   ode_state_t y(y0n);
   ode_res_t r(r0n);
@@ -79,7 +76,6 @@ int main(int argc, char *argv[])
 				  6.0211454752168,  6.1259551255163};
 
   const double eps = 1e-12;
-  int shift = rank*4;
   if (rank==0){
     assert(std::abs(y[0] - trueS[0]) < eps);
     assert(std::abs(y[1] - trueS[1]) < eps);

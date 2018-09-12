@@ -1,11 +1,12 @@
 
-#ifndef CORE_MATRIX_OPERATOR_HPP_
-#define CORE_MATRIX_OPERATOR_HPP_
+#ifndef ROM_MATRIX_OPERATOR_HPP_
+#define ROM_MATRIX_OPERATOR_HPP_
 
-#include "./core_operator_base.hpp"
-#include "../matrix/core_matrix_meta.hpp"
+#include "rom_operator_base.hpp"
+//#include "matrix/core_matrix_meta.hpp"
+#include "CORE_OPS"
 
-namespace core{
+namespace rom{
 
 template<typename operator_type,
 	 core::meta::enable_if_t<
@@ -17,21 +18,21 @@ class MatrixOperator
   : public OperatorBase<
       MatrixOperator<operator_type>>{
 
-  template <typename operand_type,
-	    typename result_type>
-  void applyImpl(const operand_type & X,
-		 result_type & Y,
-		 bool useTranspose = false)
-  {
-    // do something
-  }
+  // template <typename operand_type,
+  // 	    typename result_type>
+  // void applyImpl(const operand_type & X,
+  // 		 result_type & Y,
+  // 		 bool useTranspose = false)
+  // {
+  //   // do something
+  // }
 
 public:
   MatrixOperator() = delete;
 
   explicit MatrixOperator(operator_type & opIn)
     : op_(&opIn){}
-
+  
   ~MatrixOperator() = default;
 
 private:
@@ -41,5 +42,5 @@ private:
 
 };//end class
 
-} // end namespace core
+} // end namespace rom
 #endif

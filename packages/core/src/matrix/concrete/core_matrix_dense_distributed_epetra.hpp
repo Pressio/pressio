@@ -86,7 +86,7 @@ private:
   }
 
   bool isDistributedGloballyImpl() const{
-    data_.DistributedGlobal();
+    return data_.DistributedGlobal();
   }
   
   void matchLayoutWithImpl(const this_t & other){
