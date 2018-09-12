@@ -81,8 +81,6 @@ class LinearSolverBase {
       typename CompatibleMatrixT,
       typename VectorRT,
       typename std::enable_if<
-        core::details::traits<CompatibleMatrixT>::is_matrix &&
-        core::details::traits<VectorRT>::is_vector &&
         solvers::meta::are_vector_matrix_compatible<
           VectorRT,
           CompatibleMatrixT
@@ -107,8 +105,6 @@ class LinearSolverBase {
       typename VectorLT,
       typename VectorRT,
       typename std::enable_if<
-        core::details::traits<VectorLT>::is_vector &&
-        core::details::traits<VectorRT>::is_vector &&
         solvers::meta::are_vector_compatible<
           VectorLT,
           VectorRT

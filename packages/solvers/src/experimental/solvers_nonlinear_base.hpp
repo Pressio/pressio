@@ -8,6 +8,8 @@
 
 #include "core_ConfigDefs.hpp"
 #include "system_traits.hpp"
+#include "solvers_norms_fwd.hpp"
+#include "solvers_linear_traits.hpp"
 #include "solvers_meta_static_checks.hpp"
 
 
@@ -31,10 +33,10 @@ class NonLinearSolverBase {
   public:
 
     /**
-     * @brief  Raise an assertion as the non linear system supplied as input is invalid
+     * Raise an assertion as the non linear system supplied as input is invalid
      *
-     * @param  system is the non linear system to be solved
-     * @param  x0 is the solution vector
+     * @param  system non linear system to be solved
+     * @param  x0 initial solution guess
      */
     template <
       typename SolverT,
@@ -60,11 +62,11 @@ class NonLinearSolverBase {
 
 
     /**
-     * Solve the non linear system
+     * Solve the non linear system.
      *
-     * @param system non linear system to be solved
-     * @param x0 solution hint
-     * @return Solution vector
+     * @param system non linear system to be solved.
+     * @param x0 initial solution guess.
+     * @return solution vector.
      */
     template <
       typename SolverT,
@@ -82,18 +84,18 @@ class NonLinearSolverBase {
       >::type* = nullptr
     >
     auto solve(const SystemT& sys, const VectorT& x0) {
-      return 0;
+      return this->underlying().template solve_<SolverT, PrecT, NormT>(sys, x0);
     }
 
 
     /**
-     * @brief  Solve the non linear system
+     * @brief Solve the non linear system.
      *
-     * @param  system is the non linear system to be solved
-     * @param  x0 is the solution hint
-     * @return Solution vector
+     * @param system is the non linear system to be solved.
+     * @param x0 is the solution hint.
+     * @return solution vector.
      *
-     * DESCRIPTION
+     * @section DESCRIPTION
      *
      * This version of solve takes a reduced set of meta-parameters
      * and forward the arguments tto the full solve method.
@@ -104,38 +106,67 @@ class NonLinearSolverBase {
       typename VectorT
     >
     auto solve(const SystemT& sys, const VectorT& x0) {
-      return this->template solve<SolverT, void, void, SystemT, VectorT>(sys, x0);
+      return this->template solve<SolverT, linear::DefaultPreconditioner, L2Norm, SystemT, VectorT>(sys, x0);
     }
 
 
-    core::defaultTypes::uint getMaxIterations() {
-      return maxIters_;
-    }
-
-    double getTolerance() {
-      return tolerance_;
-    }
-
-
-    void setMaxIterations(core::defaultTypes::uint maxIters) {
-      maxIters_ = maxIters;
+    /**
+     * Get the maximum number of iterations of the nonlinear solver.
+     */
+    core::defaultTypes::uint getMaxNonLinearIterations() {
+      return maxNonLinearIterations_;
     }
 
 
-    void setTolerance(double tolerance) {
-      tolerance_ = abs(tolerance);
+    /**
+     * Get the tolerance of the nonlinear solver.
+     */
+    double getNonLinearTolerance() {
+      return nonLinearTolerance_;
+    }
+
+
+    /**
+     * Set the maximum number of iterations of the nonlinear solver.
+     *
+     * @param maxNonLinearIterations maximum number of iterations of the nonlinear solver.
+     */
+    void setMaxNonLinearIterations(core::defaultTypes::uint maxNonLinearIterations) {
+      maxNonLinearIterations_ = maxNonLinearIterations;
+    }
+
+
+    /**
+     * Set the tolerance of the nonlinear solver.
+     *
+     * @param nonLinearTolerance tolerance of the nonlinear solver.
+     */
+    void setNonLinearTolerance(double nonLinearTolerance) {
+      nonLinearTolerance_ = abs(nonLinearTolerance);
     }
 
 
   protected:
 
-    NonLinearSolverBase() : maxIters_(100), tolerance_(1.0e-5) {}
+    NonLinearSolverBase() : maxNonLinearIterations_(100), nonLinearTolerance_(1.0e-5) {}
 
 
   private:
 
-    core::defaultTypes::uint maxIters_;
-    double tolerance_;
+    Derived& underlying() {
+      return static_cast<Derived&>(*this);
+    }
+
+
+    Derived const& underlying() const {
+      return static_cast<Derived const&>(*this);
+    }
+
+
+  private:
+
+    core::defaultTypes::uint maxNonLinearIterations_;
+    double nonLinearTolerance_;
 
 };
 

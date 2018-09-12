@@ -42,12 +42,12 @@ struct ValidSystem {
       return res;
     }
 
-    
+
     void jacobian(const vector_w_t& x, matrix_w_t& jac) const {
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
       jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
+      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
     }
 
 
@@ -56,7 +56,7 @@ struct ValidSystem {
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
       jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
+      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
       return jac;
     }
 };
@@ -67,7 +67,7 @@ TEST(solvers_nonlinear_base, solversBaseGettersTest)
   using namespace solvers;
 
   auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
-  
+
   auto x = solver.getMaxIterations();
   auto xNL = solver.getMaxNonLinearIterations();
 
@@ -88,10 +88,10 @@ TEST(solvers_non_linear_base, solversBaseSettersTest)
   using namespace solvers;
 
   auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
-  
+
   solver.setMaxIterations(200);
   solver.setMaxNonLinearIterations(200);
-  
+
   solver.setTolerance(-2.0e-5);
   solver.setNonLinearTolerance(-2.0e-5);
 
@@ -118,14 +118,19 @@ TEST(solvers_non_linear_base, solversBaseSolveTest)
 
   auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
 
-  ValidSystem left; vector_w_t right;
-  auto x = solver.solve<void>(left, right);
+  vector_w_t b(2);
+  b[0] = 0.4;
+  b[1] = 0.5;
 
-  EXPECT_EQ(x, 0);
+  ValidSystem sys;
+  auto y = solver.solve<linear::Bicgstab>(sys, b);
+
+  EXPECT_NEAR( y[0],  1.0, 1e-8 );
+  EXPECT_NEAR( y[1],  0.0, 1e-8 );
 }
 
 
-TEST(solvers_non_linear_base, solversBaseBadSolveTest) 
+TEST(solvers_non_linear_base, solversBaseBadSolveTest)
 {
   using namespace solvers;
 
@@ -137,7 +142,7 @@ TEST(solvers_non_linear_base, solversBaseBadSolveTest)
 }
 
 
-TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test) 
+TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test)
 {
   using namespace solvers;
 
@@ -148,10 +153,10 @@ TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test)
 
   vector_w_t b(2);
   b[0] = 0.4;
-  b[1] = 0.5; 
+  b[1] = 0.5;
 
-  ValidSystem sys; 
-  auto y = solver.solve_<linear::Bicgstab, linear::DefaultPreconditioner, L2Norm>(sys, b);
+  ValidSystem sys;
+  auto y = solver.solve<linear::Bicgstab, linear::DefaultPreconditioner, L2Norm>(sys, b);
 
   EXPECT_NEAR( y[0],  1.0, 1e-8 );
   EXPECT_NEAR( y[1],  0.0, 1e-8 );
@@ -187,12 +192,12 @@ struct NonLinearSystem {
       return res;
     }
 
-    
+
     void jacobian(const vector_w_t& x, matrix_w_t& jac) const {
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
       jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
+      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
     }
 
 
@@ -201,7 +206,7 @@ struct NonLinearSystem {
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
       jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
+      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
       return jac;
     }
 };
@@ -218,16 +223,16 @@ TEST(solvers_nonlinear_iterative_eigen, solversTestNonLinearIterativeEigenRungeK
 
   // Initialize b
   b[0] = 0.15;
-  b[1] = 0.5; 
+  b[1] = 0.5;
 
-  // Solve nonlinear system using 
+  // Solve nonlinear system using
   auto solver = NonlinearIterativeSolvers::createSolver<nonlinear::NewtonRaphson>();
   auto y = solver.solve<linear::Bicgstab>(system, b);
 
   // Expectations
   EXPECT_NEAR( y[0],  1.0, 1e-8 );
   EXPECT_NEAR( y[1],  0.0, 1e-8 );
- 
+
 }
 
 
@@ -250,14 +255,14 @@ TEST(solvers_nonlinear, simpleTest)
       jac(0,1) = 1.;
       jac(1,0) = -1;
       jac(1,1) = 3.*x[1]*x[1];
-    }  
+    }
   };
 
   // linear solver
   using lin_solve_t =
     solvers::experimental::linearSolver<jac_t,state_t,state_t>;
   lin_solve_t ls;
-    
+
   // nonlinear solver
   using nonlin_solve_t =
     solvers::experimental::newtonRaphson<state_t,state_t,jac_t,lin_solve_t>;
@@ -271,4 +276,3 @@ TEST(solvers_nonlinear, simpleTest)
 }
 #endif
 */
-

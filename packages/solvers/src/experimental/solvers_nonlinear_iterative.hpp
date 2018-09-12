@@ -14,7 +14,9 @@ namespace solvers {
 
 struct NonLinearSolvers; // Fwd declaration
 
-
+/**
+ * Implements a non linear solver bases on a linear iterative solver.
+ */
 template <
   typename PolicyT
 >
@@ -36,8 +38,7 @@ class NonLinearIterativeSolver
 
 
     /**
-     * @brief Implements the solve method for a non linear solver
-     *
+     * Implements the solve method for a non linear solver.
      */
     template <
       typename SolverT,
@@ -48,59 +49,57 @@ class NonLinearIterativeSolver
     >
     auto solve_(const SystemT& sys, const VectorT& b) {
 
-      double tolerance = this->getTolerance();
-      core::defaultTypes::uint maxIterations = this->getMaxIterations();
+      double nonLinearTolerance = this->getNonLinearTolerance();
+      core::defaultTypes::uint maxNonLinearIterations = this->getMaxNonLinearIterations();
 
-      return PolicyT::template solve<SolverT, PrecT, NormT>(sys, b, maxIterations, maxNonLinearIterations_, tolerance, nonLinearTolerance_);
+      return PolicyT::template solve<SolverT, PrecT, NormT>(sys, b, maxIterations_, maxNonLinearIterations, tolerance_, nonLinearTolerance);
     }
 
 
     /**
-     * @brief Get the maximum number of iterations of the non linear iterative solver
-     *
+     * Get the maximum number of iterations of the underlying linear iterative solver.
      */
-    core::defaultTypes::uint getMaxNonLinearIterations() {
-      return maxNonLinearIterations_;
+    core::defaultTypes::uint getMaxIterations() {
+      return maxIterations_;
     }
 
 
     /**
-     * @brief Get the tolerance of the non linear iterative solver
-     *
+     * Get the tolerance of the underlying linear iterative solver.
      */
-    double getNonLinearTolerance() {
-      return nonLinearTolerance_;
+    double getTolerance() {
+      return tolerance_;
     }
 
 
     /**
-     * @brief Set the maximum number of iterations of the non linear iterative solver
+     * Set the maximum number of iterations of the underlying linear iterative solver.
      *
-     * @param maxNonLinearIterations represents number of iterations of the non linear solver
+     * @param maxIterations maximum number of iterations of the underlying linear iterative solver.
      */
-    void setMaxNonLinearIterations(core::defaultTypes::uint maxNonLinearIterations) {
-      maxNonLinearIterations_ = maxNonLinearIterations;
+    void setMaxIterations(core::defaultTypes::uint maxIterations) {
+      maxIterations_ = maxIterations;
     }
 
     /**
-     * @brief Set the tolerance of the non linear iterative solver
+     * Set the tolerance of the underlying linear iterative solver.
      *
-     * @param tolerance is the tolerance of the non linear solver
+     * @param tolerance tolerance of the underlying linear iterative solver.
      */
-    void setNonLinearTolerance(double nonLinearTolerance) {
-      nonLinearTolerance_ = abs(nonLinearTolerance);
+    void setTolerance(double tolerance) {
+      tolerance_ = abs(tolerance);
     }
 
 
   protected:
 
-  	NonLinearIterativeSolver() : base_type(), maxNonLinearIterations_(100), nonLinearTolerance_(1.0e-5) {}
+  	NonLinearIterativeSolver() : base_type(), maxIterations_(100), tolerance_(1.0e-5) {}
 
 
   private:
 
-    core::defaultTypes::uint maxNonLinearIterations_;
-    double nonLinearTolerance_;
+    core::defaultTypes::uint maxIterations_;
+    double tolerance_;
 };
 
 } // end namespace solvers
