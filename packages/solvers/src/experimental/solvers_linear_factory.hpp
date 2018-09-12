@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <Eigen/Sparse>
 
-#include "solvers_linear_dense.hpp"
+#include "solvers_linear_direct.hpp"
 #include "solvers_linear_iterative.hpp"
 #include "solvers_linear_traits.hpp"
 #include "solvers_policy_linear_dense_eigen.hpp"
@@ -23,46 +23,46 @@ namespace solvers {
 struct LinearSolvers {
 
   /**
-   * Create a linear solver for dense Eigen matrices
+   * Create a direct linear solver for dense Eigen matrices
    *
-   * @return wrapped_solver dense linear solver for Eigen matrices
+   * @return wrapped_solver direct linear solver for Eigen matrices
    */
   template <
     typename SolverT,
     typename MatrixT,
     typename std::enable_if<
-      core::details::traits<MatrixT>::wrapped_matrix_identifier == core::details::WrappedMatrixIdentifier::DenseEigen,
+      core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
       MatrixT
     >::type* = nullptr
   >
-  static auto createDenseSolver() {
+  static auto createDirectSolver() {
     using solver_traits = linear::details::solver_traits<SolverT>;
 
-    static_assert(solver_traits::eigen_enabled && solver_traits::dense_only, "Solver not available for linear systems defined by Eigen matrices");
+    static_assert(solver_traits::eigen_enabled && solver_traits::direct, "Solver not available for linear systems defined by Eigen matrices");
 
     using wrapped_type = typename core::details::traits<MatrixT>::wrapped_t;
     using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type>;
     using concrete_policy_type = SolversLinearDenseEigenPolicy<concrete_solver_type, MatrixT>;
 
     auto solver = std::make_shared<concrete_solver_type>();
-    auto wrapped_solver = LinearDenseSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
+    auto wrapped_solver = LinearDirectSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
 
     return wrapped_solver;
   }
 
 
   /**
-   * Create a linear solver for dense Eigen matrices
+   * Create a direct linear solver for Eigen matrices
    *
-   * @param A dense matrix representing the linear system to be solved
-   * @return solver dense linear solver for Eigen matrices
+   * @param A matrix representing the linear system to be solved
+   * @return solver direct linear solver for Eigen matrices
    */
   template <
     typename SolverT,
     typename MatrixT
   >
-  static auto createDenseSolver(const MatrixT& A) {
-    auto solver = LinearSolvers::createDenseSolver<SolverT, MatrixT>();
+  static auto createDirectSolver(const MatrixT& A) {
+    auto solver = LinearSolvers::createDirectSolver<SolverT, MatrixT>();
     solver.resetLinearSystem(A);
     return solver;
   }
@@ -87,7 +87,7 @@ struct LinearSolvers {
     using solver_traits = linear::details::solver_traits<SolverT>;
     using preconditioner_traits = linear::details::preconditioner_traits<PrecT>;
 
-    static_assert(solver_traits::eigen_enabled, "Solver not available for linear systems defined by Eigen matrices");
+    static_assert(solver_traits::eigen_enabled && !solver_traits::direct, "Solver not available for linear systems defined by Eigen matrices");
     static_assert(preconditioner_traits::eigen_enabled, "Preconditioner not available for linear systems defined by Eigen matrices");
 
     using wrapped_type = typename core::details::traits<MatrixT>::wrapped_t;
@@ -139,7 +139,7 @@ struct LinearSolvers {
     using solver_traits = linear::details::solver_traits<SolverT>;
     using preconditioner_traits = linear::details::preconditioner_traits<PrecT>;
 
-    static_assert(solver_traits::trilinos_enabled, "Solver not available for linear systems defined by Trilinos matrices");
+    static_assert(solver_traits::trilinos_enabled && !solver_traits::direct, "Solver not available for linear systems defined by Trilinos matrices");
     static_assert(preconditioner_traits::trilinos_enabled, "Preconditioner not available for linear systems defined by Trilinos matrices");
 
     using concrete_solver_type = AztecOO;

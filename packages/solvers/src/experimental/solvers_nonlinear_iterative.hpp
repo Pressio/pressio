@@ -18,12 +18,14 @@ struct NonLinearSolvers; // Fwd declaration
  * Implements a non linear solver bases on a linear iterative solver.
  */
 template <
-  typename PolicyT
+  typename PolicyT,
+  typename LSolverT
 >
 class NonLinearIterativeSolver
   : public NonLinearSolverBase<
       NonLinearIterativeSolver<
-        PolicyT
+        PolicyT,
+        LSolverT
       >
     >
 {
@@ -31,7 +33,7 @@ class NonLinearIterativeSolver
   private:
 
     friend NonLinearSolvers;
-    typedef NonLinearSolverBase<NonLinearIterativeSolver<PolicyT>> base_type;
+    typedef NonLinearSolverBase<NonLinearIterativeSolver<PolicyT, LSolverT>> base_type;
 
 
   public:
@@ -41,7 +43,6 @@ class NonLinearIterativeSolver
      * Implements the solve method for a non linear solver.
      */
     template <
-      typename SolverT,
       typename PrecT,
       typename NormT,
       typename SystemT,
@@ -52,7 +53,7 @@ class NonLinearIterativeSolver
       double nonLinearTolerance = this->getNonLinearTolerance();
       core::defaultTypes::uint maxNonLinearIterations = this->getMaxNonLinearIterations();
 
-      return PolicyT::template solve<SolverT, PrecT, NormT>(sys, b, maxIterations_, maxNonLinearIterations, tolerance_, nonLinearTolerance);
+      return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, maxIterations_, maxNonLinearIterations, tolerance_, nonLinearTolerance);
     }
 
 

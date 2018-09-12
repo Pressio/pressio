@@ -28,7 +28,7 @@ TEST(solvers_linear_dense_eigen, solversTestLinearDenseEigenCreateWithMatrixAndS
   A(1, 1) +=  3.0;
 
   // Solve linear system
-  auto solver = LinearSolvers::createDenseSolver<linear::ColPivHouseholderQR>(A);
+  auto solver = LinearSolvers::createDirectSolver<linear::ColPivHouseholderQR>(A);
   auto x = solver.solve(b);
 
   // Expectations
@@ -62,7 +62,7 @@ TEST(solvers_linear_dense_eigen, solversTestLinearLeastSquareDenseEigenCreateWit
   A(2, 1) += 6.0;
 
   // Solve linear system
-  auto solver = LinearSolvers::createDenseSolver<linear::ColPivHouseholderQR>(A);
+  auto solver = LinearSolvers::createDirectSolver<linear::ColPivHouseholderQR>(A);
   auto x = solver.solve(b);
 
   // Expectations

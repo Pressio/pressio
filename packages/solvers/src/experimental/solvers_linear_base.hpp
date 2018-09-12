@@ -16,7 +16,7 @@ namespace solvers {
  *
  * @section DESCRIPTION
  *
- * This class defines the public interface for a linear solver.
+ * This class defines the public interface for a linear solver class.
  * Objects of the class cannot be created directly. To create a solver,
  * use the factory class LinearSolvers.
  */

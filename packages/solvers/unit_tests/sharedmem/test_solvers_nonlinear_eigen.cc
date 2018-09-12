@@ -66,7 +66,7 @@ TEST(solvers_nonlinear_base, solversBaseGettersTest)
 {
   using namespace solvers;
 
-  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
   auto x = solver.getMaxIterations();
   auto xNL = solver.getMaxNonLinearIterations();
@@ -87,7 +87,7 @@ TEST(solvers_non_linear_base, solversBaseSettersTest)
 {
   using namespace solvers;
 
-  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
   solver.setMaxIterations(200);
   solver.setMaxNonLinearIterations(200);
@@ -116,14 +116,14 @@ TEST(solvers_non_linear_base, solversBaseSolveTest)
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = core::Vector<vector_n_t>;
 
-  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
   vector_w_t b(2);
   b[0] = 0.4;
   b[1] = 0.5;
 
   ValidSystem sys;
-  auto y = solver.solve<linear::Bicgstab>(sys, b);
+  auto y = solver.solve(sys, b);
 
   EXPECT_NEAR( y[0],  1.0, 1e-8 );
   EXPECT_NEAR( y[1],  0.0, 1e-8 );
@@ -134,11 +134,11 @@ TEST(solvers_non_linear_base, solversBaseBadSolveTest)
 {
   using namespace solvers;
 
-  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
   double left; int right;
 
-  ASSERT_DEATH(solver.solve<void>(left, right), "Error: either the nonlinear system or the solution hint is invalid.");
+  ASSERT_DEATH(solver.solve(left, right), "Error: either the nonlinear system or the solution hint is invalid.");
 }
 
 
@@ -149,14 +149,14 @@ TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test)
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = core::Vector<vector_n_t>;
 
-  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
+  auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
   vector_w_t b(2);
   b[0] = 0.4;
   b[1] = 0.5;
 
   ValidSystem sys;
-  auto y = solver.solve<linear::Bicgstab, linear::DefaultPreconditioner, L2Norm>(sys, b);
+  auto y = solver.solve<linear::DefaultPreconditioner, L2Norm>(sys, b);
 
   EXPECT_NEAR( y[0],  1.0, 1e-8 );
   EXPECT_NEAR( y[1],  0.0, 1e-8 );

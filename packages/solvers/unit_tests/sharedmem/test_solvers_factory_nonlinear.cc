@@ -13,19 +13,9 @@ TEST(solvers_factory_nonlinear, solversFactoryTestValidSolver)
   using namespace solvers;
 
   // Create linear solver using a valid solver type
-  auto solver = NonLinearSolvers::createSolver<nonlinear::NewtonRaphson>();
-   
+  auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
+
   // Expectations
-  auto value = std::is_same<decltype(solver), NonLinearIterativeSolver<SolversNonLinearIterativeNewtonRaphsonPolicy>>::value;
+  auto value = std::is_same<decltype(solver), NonLinearIterativeSolver<SolversNonLinearIterativeNewtonRaphsonPolicy, linear::Bicgstab>>::value;
   EXPECT_EQ( value, true);
-}
-
-
-TEST(solvers_factory_nonlinear, solversFactoryTestInvalidSolver)
-{
-  // Namespace
-  using namespace solvers;
-
-  // Create linear solver using an invalid solver type
-  ASSERT_DEATH(NonLinearSolvers::createSolver<void>(), "Error: the nonlinear solver selected is not available or its name was mispelt");
 }

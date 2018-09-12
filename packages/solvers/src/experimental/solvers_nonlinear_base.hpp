@@ -39,7 +39,6 @@ class NonLinearSolverBase {
      * @param  x0 initial solution guess
      */
     template <
-      typename SolverT,
       typename PrecT,
       typename NormT,
       typename SystemT,
@@ -69,7 +68,6 @@ class NonLinearSolverBase {
      * @return solution vector.
      */
     template <
-      typename SolverT,
       typename PrecT,
       typename NormT,
       typename SystemT,
@@ -84,7 +82,7 @@ class NonLinearSolverBase {
       >::type* = nullptr
     >
     auto solve(const SystemT& sys, const VectorT& x0) {
-      return this->underlying().template solve_<SolverT, PrecT, NormT>(sys, x0);
+      return this->underlying().template solve_<PrecT, NormT>(sys, x0);
     }
 
 
@@ -101,12 +99,11 @@ class NonLinearSolverBase {
      * and forward the arguments tto the full solve method.
      */
     template <
-      typename SolverT,
       typename SystemT,
       typename VectorT
     >
     auto solve(const SystemT& sys, const VectorT& x0) {
-      return this->template solve<SolverT, linear::DefaultPreconditioner, L2Norm, SystemT, VectorT>(sys, x0);
+      return this->template solve<linear::DefaultPreconditioner, L2Norm, SystemT, VectorT>(sys, x0);
     }
 
 

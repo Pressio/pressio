@@ -10,40 +10,45 @@
 
 
 namespace solvers {
-	
+
 struct NonLinearSolvers {
 
   /**
-   * @brief Raise an assertion as the nonlinear solver specified is invalid
-   *
+   * Raise an exception while trying to create an invalid nonlinear solver.
    */
   template <
-    typename SolverT,
+    typename NSolverT,
+		typename LSolverT,
     typename std::enable_if<
-      !nonlinear::details::solver_traits<SolverT>::enabled,
-      int
+      !nonlinear::details::solver_traits<NSolverT>::enabled,
+      void
     >::type* = nullptr
   >
-  static void createSolver() {
+  static void createIterativeSolver() {
   	std::cerr << "Error: the nonlinear solver selected is not available or its name was mispelt" << std::endl;
   	assert(0);
   }
-  
+
+
   /**
-   * @brief Create a valid non linear solver
-   *
+   * Create a nonlinear solver.
    */
   template <
-    typename SolverT,
+    typename NSolverT,
+		typename LSolverT,
     typename std::enable_if<
-      nonlinear::details::solver_traits<SolverT>::enabled,
-      int
+      nonlinear::details::solver_traits<NSolverT>::enabled,
+      void
     >::type* = nullptr
   >
-  static auto createSolver() {
+  static auto createIterativeSolver() {
 
-    typedef typename nonlinear::details::solver_traits<SolverT>::solver_type policy_type;
-  	return NonLinearIterativeSolver<policy_type>();
+    using solver_traits = linear::details::solver_traits<LSolverT>;
+
+    static_assert(solver_traits::eigen_enabled && !solver_traits::direct, "Error: either the linear solver is a direct one or is not available for linear systems defined by Eigen matrices");
+
+    typedef typename nonlinear::details::solver_traits<NSolverT>::solver_type policy_type;
+  	return NonLinearIterativeSolver<policy_type, LSolverT>();
   }
 
 };

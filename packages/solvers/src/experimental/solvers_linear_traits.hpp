@@ -45,7 +45,7 @@ struct solver_traits<CG> {
 
   static constexpr int trilinos_flag = AZ_cg;
 
-  static constexpr bool dense_only = false;
+  static constexpr bool direct = false;
   static constexpr bool eigen_enabled = true;
   static constexpr bool trilinos_enabled = true;
 };
@@ -55,7 +55,7 @@ struct solver_traits<Gmres> {
 
   static constexpr int trilinos_flag = AZ_gmres;
 
-  static constexpr bool dense_only = false;
+  static constexpr bool direct = false;
   static constexpr bool eigen_enabled = false;
   static constexpr bool trilinos_enabled = true;
 };
@@ -71,7 +71,7 @@ struct solver_traits<Bicgstab> {
 
   static constexpr int trilinos_flag = AZ_bicgstab;
 
-  static constexpr bool dense_only = false;
+  static constexpr bool direct = false;
   static constexpr bool eigen_enabled = true;
   static constexpr bool trilinos_enabled = true;
 };
@@ -84,9 +84,9 @@ struct solver_traits<ColPivHouseholderQR> {
   >
   using eigen_solver_type = Eigen::ColPivHouseholderQR<MatrixT>;
 
-  static constexpr bool dense_only = true;
+  static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
-  static constexpr bool trilinos_enabled = true;
+  static constexpr bool trilinos_enabled = false;
 };
 
 template <>
@@ -97,9 +97,9 @@ struct solver_traits<CompleteOrthogonalDecomposition> {
   >
   using eigen_solver_type = Eigen::CompleteOrthogonalDecomposition<MatrixT>;
 
-  static constexpr bool dense_only = true;
+  static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
-  static constexpr bool trilinos_enabled = true;
+  static constexpr bool trilinos_enabled = false;
 };
 
 template <>
@@ -111,7 +111,7 @@ struct solver_traits<LSCG> {
   >
   using eigen_solver_type = Eigen::LeastSquaresConjugateGradient<MatrixT, PrecT>;
 
-  static constexpr bool dense_only = false;
+  static constexpr bool direct = false;
   static constexpr bool eigen_enabled = true;
   static constexpr bool trilinos_enabled = false;
 };
