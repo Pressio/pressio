@@ -46,6 +46,7 @@ struct traits<Vector<wrapped_type,
 	  wrapped_type::ColsAtCompileTime != Eigen::Dynamic )
 	);
   static constexpr bool is_dynamic = !is_static;
+  static constexpr int rows = is_dynamic ? -1 : wrapped_type::RowsAtCompileTime;
 };
 
 
@@ -78,7 +79,7 @@ struct traits<Vector<wrapped_type,
   using communicator_t = Epetra_Comm;
 
   static constexpr bool is_dynamic = true;
-
+  static constexpr int rows = -1;
 };
   
   
@@ -113,7 +114,7 @@ struct traits<Vector<wrapped_type,
   using  host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   static constexpr bool is_static = wrapped_type::traits::rank_dynamic==0;
   static constexpr bool is_dynamic = !is_static;
-
+  static constexpr int rows = -1; 
 };
 
 //*******************************
@@ -141,7 +142,7 @@ struct traits<Vector<wrapped_type,
   using scalar_t = typename wrapped_type::value_type;
   using ordinal_t = core::defaultTypes::local_ordinal_t;
   static constexpr bool is_dynamic = true;
-
+  static constexpr int rows = -1;
 };
 
 

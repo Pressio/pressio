@@ -12,7 +12,11 @@ struct LinearSolvers;
 
 
 /**
- * @brief Class that implements a linear dense solver
+ * Linear dense solver
+ *
+ * @tparam SolverT linear dense solver
+ * @tparam MatrixT matrix defining the linear system
+ * @tparam PolicyT policy that implements the solution algorithm
  */
 template<
   typename SolverT,

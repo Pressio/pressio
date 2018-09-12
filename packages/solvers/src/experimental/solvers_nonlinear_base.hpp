@@ -9,12 +9,12 @@
 #include "core_ConfigDefs.hpp"
 #include "system_traits.hpp"
 #include "solvers_meta_static_checks.hpp"
-// #include "matrix/core_matrix_traits_exp.hpp"
-// #include "vector/core_vector_traits_exp.hpp"
 
 
 namespace solvers {
 
+
+struct NonlinearSolvers; // Fwd declaration
 
 /**
  * @brief Base class for nonlinear solver implemented through CRTP
@@ -25,14 +25,6 @@ namespace solvers {
  * Objects of the class cannot be created directly. To create a solver,
  * use the factory class NonLinearSolvers.
  */
-//template<
-//  typename MatrixT,
-//  typename PolicyT,
-//  typename Derived
-//>
-
-struct NonlinearSolvers; // Fwd declaration
-
 template <typename Derived>
 class NonLinearSolverBase {
 
@@ -68,10 +60,10 @@ class NonLinearSolverBase {
 
 
     /**
-     * @brief  Solve the non linear system
+     * Solve the non linear system
      *
-     * @param  system is the non linear system to be solved
-     * @param  x0 is the solution hint
+     * @param system non linear system to be solved
+     * @param x0 solution hint
      * @return Solution vector
      */
     template <

@@ -6,19 +6,17 @@
 #include <type_traits>
 
 #include "solvers_meta_static_checks.hpp"
-// #include "matrix/core_matrix_traits_exp.hpp"
-// #include "vector/core_vector_traits_exp.hpp"
 
 
 namespace solvers {
 
 
 /**
- * @brief Base class for linear solver implemented through CRTP
+ * Base class for linear solver implemented through CRTP.
  *
  * @section DESCRIPTION
  *
- * This class defines the public interface for a linear solver. 
+ * This class defines the public interface for a linear solver.
  * Objects of the class cannot be created directly. To create a solver,
  * use the factory class LinearSolvers.
  */
@@ -30,13 +28,13 @@ template<
 >
 class LinearSolverBase {
 
-  public: 
+  public:
 
 
     /**
-     * @brief  Initialize a new linear solver
+     * Initialize a new linear solver.
      *
-     * @param  A Matrix representing the new linear system to solve
+     * @param A matrix representing the linear system to be solved.
      */
     template <
       typename CompatibleMatrixT,
@@ -53,10 +51,10 @@ class LinearSolverBase {
 
 
     /**
-     * @brief  Solve the linear system
+     * Solve the linear system
      *
-     * @param  b is the RHS vector
-     * @return Solution vector
+     * @param b RHS vector
+     * @return solution vector
      */
     template <
       typename VectorLT,
@@ -68,26 +66,31 @@ class LinearSolverBase {
       >::type = nullptr
     >
     auto solve(const VectorLT& b) {
-      return this->underlying()._solve(b);  
+      return this->underlying()._solve(b);
     }
 
 
     /**
-     * @brief  Specify and solve the linear system
+     * Specify and solve the linear system
      *
-     * @param  A is the system matrix
-     * @param  b is the RHS vector
-     * @return Solution vector
+     * @param A matrix representing the linear system to be solved
+     * @param b RHS vector
+     * @return solution vector
      */
     template <
-      typename CompatibleMatrixT, 
-      typename VectorLT,
+      typename CompatibleMatrixT,
+      typename VectorRT,
       typename std::enable_if<
-        core::details::matrix_traits<CompatibleMatrixT>::wrapped_package_identifier != core::details::WrappedPackageIdentifier::Undefined,
+        core::details::traits<CompatibleMatrixT>::is_matrix &&
+        core::details::traits<VectorRT>::is_vector &&
+        solvers::meta::are_vector_matrix_compatible<
+          VectorRT,
+          CompatibleMatrixT
+        >::value,
         CompatibleMatrixT*
       >::type = nullptr
     >
-    auto solve(const CompatibleMatrixT& A, const VectorLT& b) {
+    auto solve(const CompatibleMatrixT& A, const VectorRT& b) {
       this->resetLinearSystem(A);
       return this->solve(b);
     }
@@ -101,14 +104,15 @@ class LinearSolverBase {
      * @return void
      */
     template <
-      typename VectorLT, 
+      typename VectorLT,
       typename VectorRT,
       typename std::enable_if<
+        core::details::traits<VectorLT>::is_vector &&
+        core::details::traits<VectorRT>::is_vector &&
         solvers::meta::are_vector_compatible<
-          VectorLT, 
+          VectorLT,
           VectorRT
-        >::value &&
-        core::details::vector_traits<VectorLT>::wrapped_package_identifier != core::details::WrappedPackageIdentifier::Undefined,
+        >::value,
         VectorLT*
       >::type = nullptr
     >
@@ -163,11 +167,11 @@ class LinearSolverBase {
     Derived& underlying() {
       return static_cast<Derived&>(*this);
     }
-  
+
 
     Derived const& underlying() const {
       return static_cast<Derived const&>(*this);
-    }  
+    }
 
 
   private:

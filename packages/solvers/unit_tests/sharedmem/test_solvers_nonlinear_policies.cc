@@ -9,7 +9,7 @@
 // #include "vector/concrete/core_vector_serial_eigen.hpp"
 
 #include "experimental/solvers_l2_vector_norm.hpp"
-#include "experimental/solvers_linear_iterative_traits.hpp"
+#include "experimental/solvers_linear_traits.hpp"
 #include "experimental/solvers_policy_nonlinear_iterative.hpp"
 
 
@@ -40,12 +40,12 @@ struct ValidSystem {
       return res;
     }
 
-    
+
     void jacobian(const vector_w_t& x, matrix_w_t& jac) const {
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
       jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
+      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
     }
 
 
@@ -54,7 +54,7 @@ struct ValidSystem {
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
       jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
+      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
       return jac;
     }
 };
@@ -68,7 +68,7 @@ TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newt
 
   vector_w_t b(2);
   b[0] = 0.15;
-  b[1] = 0.5; 
+  b[1] = 0.5;
 
   ValidSystem system;
 

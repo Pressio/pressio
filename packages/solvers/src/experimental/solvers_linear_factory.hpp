@@ -9,13 +9,12 @@
 
 #include "solvers_linear_dense.hpp"
 #include "solvers_linear_iterative.hpp"
-#include "solvers_linear_iterative_traits.hpp"
+#include "solvers_linear_traits.hpp"
 #include "solvers_policy_linear_dense_eigen.hpp"
 #include "solvers_policy_linear_iterative_eigen.hpp"
 #include "solvers_policy_linear_iterative_trilinos.hpp"
 
 #include "matrix/core_matrix_traits.hpp"
-#include "matrix/core_matrix_traits_exp.hpp"
 
 
 namespace solvers {
@@ -23,67 +22,10 @@ namespace solvers {
 
 struct LinearSolvers {
 
-/*
-  template <typename SolverT,
-    typename MatrixT,
-    typename std::enable_if<!(
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen ||
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos),
-      MatrixT
-    >::type* = nullptr
-  >
-  static void createSolver(
-    MatrixT const& A
-  ) {
-
-    // Linear system solver cannot be created from given input matrix
-    std::cerr << "No linear solver available for the matrix used to specify the linear system" << std::endl;
-    assert(false);
-  }
-
-
-  template <typename SolverT,
-    typename PrecT,
-    typename MatrixT,
-    typename std::enable_if<!(
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen ||
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos),
-      MatrixT
-    >::type* = nullptr
-  >
-  static void createSolver(MatrixT const& A)
-  {
-
-    // Linear system solver cannot be created from given input matrix
-    std::cerr << "No linear solver available for the matrix used to specify the linear system" << std::endl;
-    assert(false);
-  }
-*/
-
   /**
-   * Create a linear solver for a dense Eigen matrix
+   * Create a linear solver for dense Eigen matrices
    *
-   * @param A dense Eigen matrix
-   * @return A dense linear solver of the specified kind
-   */
-/*  template <
-    typename SolverT,
-    typename MatrixT,
-    typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen &&
-      core::details::matrix_traits<MatrixT>::is_sparse == false,
-    >::type* = nullptr
-  >
-  static auto createSolver(const MatrixT& A) {
-
-
-  }
-*/
-
-  /**
-   * Create a linear solver for a dense Eigen matrix_traits
-   *
-   * @return wrapped_solver dense linear solver
+   * @return wrapped_solver dense linear solver for Eigen matrices
    */
   template <
     typename SolverT,
@@ -93,7 +35,7 @@ struct LinearSolvers {
       MatrixT
     >::type* = nullptr
   >
-  static auto createSolver() {
+  static auto createDenseSolver() {
     using solver_traits = linear::details::solver_traits<SolverT>;
 
     static_assert(solver_traits::eigen_enabled && solver_traits::dense_only, "Solver not available for linear systems defined by Eigen matrices");
@@ -110,59 +52,33 @@ struct LinearSolvers {
 
 
   /**
-   * Create a linear solver for a dense Eigen matrix_traits
+   * Create a linear solver for dense Eigen matrices
    *
    * @param A dense matrix representing the linear system to be solved
-   * @return solver dense linear solver
+   * @return solver dense linear solver for Eigen matrices
    */
   template <
     typename SolverT,
-    typename MatrixT,
-    typename std::enable_if<
-      core::details::traits<MatrixT>::wrapped_matrix_identifier == core::details::WrappedMatrixIdentifier::DenseEigen,
-      MatrixT
-    >::type* = nullptr
+    typename MatrixT
   >
-  static auto createSolver(const MatrixT& A) {
-    auto solver = LinearSolvers::createSolver<SolverT, MatrixT>();
+  static auto createDenseSolver(const MatrixT& A) {
+    auto solver = LinearSolvers::createDenseSolver<SolverT, MatrixT>();
     solver.resetLinearSystem(A);
     return solver;
   }
 
 
   /**
-   * Create a linear iterative solver for a sparse Eigen matrix
+   * Create a linear iterative solver for sparse Eigen matrices
    *
-   * @param  A sparse matrix representing the linear system to be solved
-   * @return An iterative linear solver of the specified kind
-   */
-  template <
-    typename SolverT,
-    typename MatrixT,
-    typename PrecT = linear::DefaultPreconditioner
-  >
-  static auto createIterativeSolver(const MatrixT& A) {
-    auto solver = LinearSolvers::createIterativeSolver<SolverT, MatrixT, PrecT>();
-    solver.resetLinearSystem(A);
-    return solver;
-  }
-
-
-  /**
-   * @brief  createIterativeSolver
-   * @return An Iterative linear solver for sparse Eigen matrices
-   *
-   * @section DESCRIPTION
-   *
-   * Create an instance of the appropriate sparse Eigen linear iterative
-   * solver for a linear system
+   * @return wrapped_solver sparse linear iterative solver for Eigen matrices
    */
   template <
     typename SolverT,
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
+      core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
       MatrixT
     >::type* = nullptr
   >
@@ -187,20 +103,34 @@ struct LinearSolvers {
 
 
   /**
+   * Create a linear iterative solver for sparse Eigen matrices
+   *
+   * @param  A sparse matrix representing the linear system to be solved
+   * @return solver sparse linear iterative solver for Eigen matrices
+    */
+  template <
+    typename SolverT,
+    typename MatrixT,
+    typename PrecT = linear::DefaultPreconditioner
+  >
+  static auto createIterativeSolver(const MatrixT& A) {
+    auto solver = LinearSolvers::createIterativeSolver<SolverT, MatrixT, PrecT>();
+    solver.resetLinearSystem(A);
+    return solver;
+  }
+
+
+  /**
    * Create a linear iterative solver for sparse Trilinos matrices
+   *
    * @return An iterative linear solver for sparse Trilinos matrices
-   *
-   * @section DESCRIPTION
-   *
-   * Create an instance of the appropriate sparse Trilinos linear iterative
-   * solver for a linear system
    */
   template <
     typename SolverT,
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos,
+      core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos,
       MatrixT
     >::type* = nullptr
   >
@@ -248,14 +178,15 @@ struct LinearSolvers {
 
 
   /**
-   * Create an iterative linear solver for least square Eigen sparse matrices
-   * @return an iterative linear solver for least square Eigen sparse matrices
+   * Create an iterative least square linear solver for sparse Eigen matrices
+   *
+   * @return iterative least square linear solver for sparse Eigen matrices
    */
   template <
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
+      core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
       MatrixT
     >::type* = nullptr
   >
@@ -265,16 +196,16 @@ struct LinearSolvers {
 
 
   /**
-   * Create an iterative linear solver for least square Eigen sparse matrices
+   * Create an iterative least square linear solver for sparse Eigen matrices
    *
-   * @param A the matrix defining the least square system
-   * @return an iterative linear solver for least square Eigen sparse matrices
+   * @param A sparse Eigen matrix defining the least square system to be solved
+   * @return iterative least square linear solver for sparse Eigen matrices
    */
   template <
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner,
     typename std::enable_if<
-      core::details::matrix_traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
+      core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen,
       MatrixT
     >::type* = nullptr
   >

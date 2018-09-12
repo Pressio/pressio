@@ -22,10 +22,11 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     typename SystemT,
     typename VectorT,
     typename std::enable_if<
+      !core::details::traits<VectorT>::is_vector ||
       !solvers::meta::are_vector_compatible<
-        typename details::system_traits<SystemT>::vector_type,
-        VectorT
-      >::value,
+          typename details::system_traits<SystemT>::vector_type,
+          VectorT
+        >::value,
       int
     >::type* = nullptr
   >
@@ -52,6 +53,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     typename SystemT,
     typename VectorT,
     typename std::enable_if<
+      core::details::traits<VectorT>::is_vector &&
       solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,
         VectorT

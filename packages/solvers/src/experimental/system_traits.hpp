@@ -5,8 +5,6 @@
 #include <type_traits>
 
 #include "meta/core_meta_detection_idiom.hpp"
-#include "matrix/core_matrix_traits_exp.hpp"
-#include "vector/core_vector_traits_exp.hpp"
 
 
 namespace solvers {
@@ -55,7 +53,7 @@ template <typename T>
 struct system_traits {
   typedef typename core::meta::detected_t<has_public_vector_type, T> vector_type;
   typedef typename core::meta::detected_t<has_public_matrix_type, T> matrix_type;
- 
+
   static constexpr bool has_public_vector_type = core::meta::is_detected<has_public_vector_type, T>::value;
   static constexpr bool has_public_matrix_type = core::meta::is_detected<has_public_matrix_type, T>::value;
 
