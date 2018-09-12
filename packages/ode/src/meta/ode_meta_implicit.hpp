@@ -19,7 +19,7 @@ struct isLegitimateImplicitStateType : std::false_type{};
 template<typename state_type>
 struct isLegitimateImplicitStateType<state_type,
         typename std::enable_if<
-	  core::meta::is_core_vector<state_type>::value
+	  core::meta::is_core_vector_wrapper<state_type>::value
 	  >::type > : std::true_type{};
 
 //---------------------------------------------------------------

@@ -8,6 +8,7 @@
 
 #include "../src/containers_ops/core_ops_meta.hpp"
 #include "../src/containers_ops/core_multi_vector_vector_dot_product.hpp"
+#include "../src/containers_ops/core_multi_vector_vector_product.hpp"
 
 #endif
 

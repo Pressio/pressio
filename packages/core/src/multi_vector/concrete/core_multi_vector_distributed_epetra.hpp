@@ -58,11 +58,11 @@ public:
     return (*data_(icol))[irow];
   }
 
-  // sc_t const & operator()(LO_t irow, GO_t icol)const{
-  //   assert(icol < this->globalNumVectors() );
-  //   assert(irow < this->localLength() );
-  //   return data_[irow][icol];
-  // }
+  sc_t const & operator()(LO_t irow, GO_t icol)const{
+    assert(icol < this->globalNumVectors() );
+    assert(irow < this->localLength() );
+    return (*data_(icol))[irow];
+  }
   
 private:
 
@@ -90,7 +90,7 @@ private:
   }
 
   bool isDistributedGloballyImpl() const{
-    data_.DistributedGlobal();
+    return data_.DistributedGlobal();
   }
   
   mpicomm_t const & commCRefImpl() const{
@@ -129,7 +129,7 @@ private:
 			      sc_t value){
     data_.ReplaceGlobalValue(globalRowIndex, vectorIndex, value);
   }
-
+  
   void scaleImpl(sc_t factor){
     data_.Scale(factor);
   }

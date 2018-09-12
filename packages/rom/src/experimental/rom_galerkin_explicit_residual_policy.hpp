@@ -4,8 +4,8 @@
 
 #include "rom_ConfigDefs.hpp"
 #include "CORE_ALL"
-//#include "rom_incremental_solution_base.hpp"
 #include "policies/base/ode_explicit_residual_policy_base.hpp"
+//#include "rom_incremental_solution_base.hpp"
 //#include "ode_residual_impl.hpp"
 
 namespace rom{
@@ -17,9 +17,10 @@ template<typename state_type,
 	 typename A_type = void>
 class RomGalerkinExplicitResidualPolicy
   : public ode::policy::ExplicitResidualPolicyBase<
-  RomGalerkinExplicitResidualPolicy<state_type, space_res_type,
-				    phi_op, A_type>>
-{
+  RomGalerkinExplicitResidualPolicy<state_type,
+				    space_res_type,
+				    phi_op,
+				    A_type>>{
 
   using this_t = RomGalerkinExplicitResidualPolicy<state_type,
 						   space_res_type,
@@ -68,40 +69,30 @@ private:
   void operator()(const ode_state_t & odeY,
 		  ode_res_t & odeR,
 		  app_type & app,
-		  scalar_type t)
-  {
-    /* types: 
-       - y: has type ode_state_t which is NOT for sure same as state_type
-       - odeR: has type ode_res_t which is NOT for sure same as space_res_type
+		  scalar_type t){
+    /*
+      - odeY: has type = ode_state_t, NOT for sure = state_type
+      - odeR: has type = ode_res_t, NOT for sure = space_res_type
 
-       This is because the way we compute ROM stuff does not have to 
-       be the same as the types used by the application. 
-       It can be, but it is not.
+      Because the way we compute ROM stuff does not have to 
+      be the same as the types used by the application. 
+      It can be, but not necessarily.
      */
-
+    
     // odeY is the REDUCED state, we need to reconstruct full state
-    phi_->apply(odeY, yFOM_);
-
-    // // compute space residual from the application
-    // app.residual(*yFOM_.data(), *appRHS_.data(), t);
+    yFOM_ = phi_->apply(odeY);
+    //yFOM_.data()->Print(std::cout);
     
-    // // apply weighting 
-    // A_->apply(appRHS_, odeR);
-
-    //////////////////
+    /// compute space residual from the application
+    app.residual(*yFOM_.data(), *appRHS_.data(), t);
     
-    // // y coming in is the REDUCED state, so we need to reconstruct full state
-    // assert( y.globalSize() == phi_->globalCols() );
-    // yFOM_ = core::matrixVectorProduct(*phi_, y);
-    // std::cout << "yFOM_ = " << yFOM_.globalSize() << std::endl;
+    ///apply weighting
+    auto res = A_->applyTransp(appRHS_);
 
-    // // compute space residual from the application
-    // model.residual(*yFOM_.data(), *appRHS_.data(), t);
-
-    // // apply weighting 
-    // odeR = A_->apply(appRHS_);
-    // std::cout << "odeR = " << odeR.globalSize() << std::endl;
+    for (size_t i=0; i<res.size(); i++)
+      odeR[i] = res[i];
   }
+  
   
 private:
   friend base_t;

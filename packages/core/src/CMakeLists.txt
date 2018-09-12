@@ -19,6 +19,9 @@ FILE(GLOB core_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB core_shared_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/*.hpp")
 
+FILE(GLOB core_containers_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/*.hpp")
+
 FILE(GLOB core_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/vector/*.hpp")
 FILE(GLOB core_vector_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -40,11 +43,6 @@ FILE(GLOB core_matrix_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB core_matrix_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/matrix/concrete/*.hpp")
 
-FILE(GLOB core_containers_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/*.hpp")
-
-FILE(GLOB core_operator_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/operator/*.hpp")
   
 #################
 #### SOURCES
@@ -55,6 +53,9 @@ FILE(GLOB core_meta_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/meta/src/*.cc")
 FILE(GLOB core_shared_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/src/*.cc")
+
+FILE(GLOB core_containers_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops_ops/src/*.cc")
 
 FILE(GLOB core_vector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/vector/src/*.cc")
@@ -77,16 +78,13 @@ FILE(GLOB core_matrix_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB core_matrix_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/matrix/concrete/src/*.cc")
 
-FILE(GLOB core_containers_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops_ops/src/*.cc")
-
-FILE(GLOB core_operator_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/operator/src/*.cc")
   
 SET(HEADERS
   ${core_general_HEADERS}
   ${core_meta_HEADERS}
   ${core_core_shared_base_HEADERS}
+  #
+  ${core_containers_ops_HEADERS}
   #
   ${core_vector_HEADERS}
   ${core_vector_base_HEADERS}
@@ -99,15 +97,14 @@ SET(HEADERS
   ${core_matrix_HEADERS}
   ${core_matrix_base_HEADERS}
   ${core_matrix_concrete_HEADERS}
-  #
-  ${core_containers_ops_HEADERS}
-  ${core_operator_HEADERS}
 )
 
 SET(SOURCES 
   ${core_general_SRCS}
   ${core_meta_SRCS}
   ${core_core_shared_base_SRCS}
+  #
+  ${core_containers_ops_SRCS}
   #
   ${core_vector_SRCS}
   ${core_vector_base_SRCS}
@@ -120,9 +117,6 @@ SET(SOURCES
   ${core_matrix_SRCS}
   ${core_matrix_base_SRCS}
   ${core_matrix_concrete_SRCS}
-  #
-  ${core_containers_ops_SRCS}
-  ${core_operator_SRCS}
 )
 
 #----------------------------------------------------------------

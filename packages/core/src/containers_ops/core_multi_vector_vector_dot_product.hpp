@@ -21,8 +21,8 @@ template <typename mvec_type,
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 std::vector<typename
-	 details::traits<mvec_type>::scalar_t> & result)
-{
+	 details::traits<mvec_type>::scalar_t> & result){
+
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
 
@@ -34,7 +34,7 @@ void dot(const mvec_type & mvA,
   
   // how many vectors are in mvA
   auto numVecs = mvA.globalNumVectors();
-  if ( result.size() != numVecs )
+  if ( result.size() != (size_t)numVecs )
     result.resize(numVecs);
 
   auto * mvNatData = mvA.data();
@@ -44,7 +44,9 @@ void dot(const mvec_type & mvA,
   }
 
 }
-    
+
+
+  
 //  Epetra multivector with epetra vector
 template <typename mvec_type,
 	  typename vec_type,
@@ -55,8 +57,8 @@ template <typename mvec_type,
     > * = nullptr
   >
 auto dot(const mvec_type & mvA,
-	 const vec_type & vecB)
-{
+	 const vec_type & vecB){
+
   using sc_t = typename details::traits<mvec_type>::scalar_t;
   // how many vectors are in mvA
   auto numVecs = mvA.globalNumVectors();
@@ -64,6 +66,7 @@ auto dot(const mvec_type & mvA,
   res_t res(numVecs);
   dot(mvA, vecB, res);
   return res;
+
 }
 
   

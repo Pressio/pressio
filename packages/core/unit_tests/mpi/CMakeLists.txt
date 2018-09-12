@@ -3,6 +3,7 @@ add_unit_test(vector_distributed_epetra_traits ${GTESTMAINSDIR}/gTestMain_mpi)
 add_unit_test(vector_distributed_epetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
 add_unit_test(multi_vector_distributed_epetra_traits ${GTESTMAINSDIR}/gTestMain_mpi)
 add_unit_test(multi_vector_vector_dot_distributed_epetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
+add_unit_test(multi_vector_epetra_product_eigen_vector ${GTESTMAINSDIR}/gTestMain_mpi 3)
 
 # add_single_unit_test(utest_vector_dot_product 1)
 # add_single_unit_test(utest_multi_vector_distributed_epetra_class 3)

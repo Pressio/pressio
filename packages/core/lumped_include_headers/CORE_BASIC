@@ -24,8 +24,4 @@
 #include "../src/meta/core_native_matrix_meta.hpp"
 #include "../src/meta/core_native_static_asserts.hpp"
 
-#include "../src/operator/core_operator_base.hpp"
-#include "../src/operator/core_multi_vector_operator.hpp"
-#include "../src/operator/core_matrix_operator.hpp"
-
 #endif

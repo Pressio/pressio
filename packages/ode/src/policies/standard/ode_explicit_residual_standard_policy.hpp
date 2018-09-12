@@ -33,7 +33,7 @@ private:
 	    typename sc_t,
 	    typename
 	    std::enable_if<
-	      core::meta::is_core_vector<U>::value==true &&
+	      core::meta::is_core_vector_wrapper<U>::value==true &&
 	      std::is_same<U, T>::value &&
 	      std::is_same<typename core::details::traits<U>::scalar_t,
 			   sc_t>::value

@@ -115,15 +115,15 @@ private:
   }
 
   bool isDistributedGloballyImpl() const{
-    data_.DistributedGlobal();
+    return data_.DistributedGlobal();
   }
   
   void putScalarImpl(sc_t value) {
     data_.PutScalar(value);
   }
 
-  void setZeroImpl() {
-    this->putScalarImpl( static_cast<sc_t>(0) );
+  void setZeroImpl(){
+    data_.PutScalar(static_cast<sc_t>(0));
   }
 
   bool emptyImpl() const{
