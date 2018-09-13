@@ -17,15 +17,19 @@ private:
 public:
   using scalar_type = double;
   using state_type = Eigen::VectorXd;
-  using jacobian_type
-  = Eigen::SparseMatrix<scalar_type,Eigen::RowMajor,int>;
+  using space_residual_type = Eigen::VectorXd;
+  using jacobian_type = Eigen::SparseMatrix<scalar_type,
+			Eigen::RowMajor,
+			int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;
   std::vector<Tr> tripletList;
 
 public:  
-  explicit Burgers1dEigen(eigVec params, ui_t Ncell=1000)
+  explicit Burgers1dEigen(eigVec params,
+			  ui_t Ncell=1000)
     : mu_(params), Ncell_(Ncell){}
+
   ~Burgers1dEigen() = default; 
 
   void setup(){
@@ -43,12 +47,12 @@ public:
     U0_ = U_;
   };
 
-  state_type getInitialState(){
+  state_type const & getInitialState(){
     return U0_;
   };
   
   void residual(const state_type & u,
-		state_type & rhs,
+		space_residual_type & rhs,
 		const scalar_type /* t */)
   {
     rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
@@ -60,6 +64,12 @@ public:
     }    
   }
 
+  space_residual_type const & getInitialResidual(){
+    r0_.resize(U0_.size());
+    this->residual(U0_, r0_, 0.0);
+    return r0_;
+  };
+  
   void jacobian(const state_type & u,
 		jacobian_type & jac,
 		const scalar_type /*t*/)
@@ -76,6 +86,12 @@ public:
     }
     jac.setFromTriplets(tripletList.begin(), tripletList.end());
   }
+
+  jacobian_type const & getInitialJacobian(){
+    j0_.resize(U0_.size(), U0_.size());
+    this->jacobian(U0_, j0_, 0.0);
+    return j0_;
+  };
   
 private:  
   eigVec mu_; // parameters
@@ -85,8 +101,12 @@ private:
   scalar_type dx_; // cell size
   scalar_type dxInv_; // inv of cell size
   eigVec xGrid_; // mesh points coordinates
+
   state_type U_; // state vector
   state_type U0_; // initial state vector
+  space_residual_type r0_; // initial space residual
+  jacobian_type j0_; // initial jacobian
+
 };
 
 }//end namespace apps

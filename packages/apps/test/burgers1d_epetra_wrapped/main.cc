@@ -1,13 +1,9 @@
 
 #include "CORE_ALL"
 #include "ODE_ALL"
-#include "SOLVERS_LINEAR"
-#include "SOLVERS_NONLINEAR"
-
+// #include "SOLVERS_LINEAR"
+// #include "SOLVERS_NONLINEAR"
 #include "apps_burgers1d_epetra.hpp"
-//#include "ode_observer.hpp"
-//#include "../apps_helper_ode.hpp"
-
 
 const std::vector<double> trueExpEuler =
   { 5.0209814000128,   5.044067908724,\
@@ -71,7 +67,6 @@ void checkSol(int rank, const T & y,
     assert(std::abs(y[4] - trueS[19]) < eps);
   }
 }//end method
-
 
 
 int main(int argc, char *argv[])
