@@ -24,12 +24,12 @@ class ExplicitRungeKutta4Stepper<state_type, state_type,
 	state_type, state_type,
 	typename core::details::traits<state_type>::scalar_t,
         model_type,
-	ode::policy::explicit_residual_standard_policy<
+	ode::policy::ExplicitResidualStandardPolicy<
 	  state_type, state_type, model_type>>
 {
 
 public:
-  using pol_t = ode::policy::explicit_residual_standard_policy<
+  using pol_t = ode::policy::ExplicitResidualStandardPolicy<
      state_type, state_type, model_type>;
 
   using base_t = impl::ExplicitRungeKutta4StepperImpl<

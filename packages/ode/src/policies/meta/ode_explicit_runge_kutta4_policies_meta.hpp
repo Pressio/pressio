@@ -23,7 +23,7 @@ struct is_explicit_runge_kutta4_residual_standard_policy<
   policy_t<state_type, residual_type, model_type>,
   typename std::enable_if<
     std::is_same<policy_t<state_type, residual_type, model_type>,
-		 ode::policy::explicit_residual_standard_policy<
+		 ode::policy::ExplicitResidualStandardPolicy<
 		   state_type, residual_type, model_type>
 		 >::value
     >::type

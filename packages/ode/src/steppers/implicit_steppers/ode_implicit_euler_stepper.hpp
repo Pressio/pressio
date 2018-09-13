@@ -27,9 +27,9 @@ class ImplicitEulerStepper<state_type, residual_type,
        state_type, residual_type, jacobian_type,
        typename core::details::traits<state_type>::scalar_t,
        model_type, 
-       ode::policy::implicit_euler_residual_standard_policy<
+       ode::policy::ImplicitEulerResidualStandardPolicy<
 	 state_type, residual_type, model_type>,
-       ode::policy::implicit_euler_jacobian_standard_policy<
+       ode::policy::ImplicitEulerJacobianStandardPolicy<
 	 state_type, jacobian_type, model_type>
   >
 {
@@ -37,10 +37,10 @@ private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
 
 public:
-  using res_pol_t = ode::policy::implicit_euler_residual_standard_policy<
+  using res_pol_t = ode::policy::ImplicitEulerResidualStandardPolicy<
   state_type, residual_type, model_type>;
   
-  using jac_pol_t = ode::policy::implicit_euler_jacobian_standard_policy<
+  using jac_pol_t = ode::policy::ImplicitEulerJacobianStandardPolicy<
     state_type, jacobian_type, model_type>;
 
   using base_t = impl::ImplicitEulerStepperImpl<state_type,

@@ -12,14 +12,14 @@ namespace policy{
 template<typename state_type,
 	 typename residual_type,
 	 typename model_type>
-class implicit_euler_residual_standard_policy
+class ImplicitEulerResidualStandardPolicy
   : public ImplicitResidualPolicyBase<
-  implicit_euler_residual_standard_policy<state_type, residual_type,
+  ImplicitEulerResidualStandardPolicy<state_type, residual_type,
 					  model_type>, 1, 0 >
 {
 public:
-  implicit_euler_residual_standard_policy() = default;
-  ~implicit_euler_residual_standard_policy() = default;  
+  ImplicitEulerResidualStandardPolicy() = default;
+  ~ImplicitEulerResidualStandardPolicy() = default;  
 
 private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
@@ -53,7 +53,7 @@ private:
 
 private:
   friend ImplicitResidualPolicyBase<
-				    implicit_euler_residual_standard_policy<
+				    ImplicitEulerResidualStandardPolicy<
 				      state_type, residual_type,
 				      model_type>, 1,0>;
 };//end class

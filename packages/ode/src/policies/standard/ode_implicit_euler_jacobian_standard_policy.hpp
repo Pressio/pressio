@@ -12,14 +12,14 @@ namespace policy{
 template<typename state_type,
 	 typename jacobian_type,
 	 typename model_type>
-class implicit_euler_jacobian_standard_policy
-  : public JacobianPolicyBase<implicit_euler_jacobian_standard_policy<
+class ImplicitEulerJacobianStandardPolicy
+  : public JacobianPolicyBase<ImplicitEulerJacobianStandardPolicy<
 				state_type, jacobian_type,
 				model_type> >
 {
 public:
-  implicit_euler_jacobian_standard_policy() = default;
-  ~implicit_euler_jacobian_standard_policy() = default;
+  ImplicitEulerJacobianStandardPolicy() = default;
+  ~ImplicitEulerJacobianStandardPolicy() = default;
 
 private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
@@ -47,7 +47,7 @@ private:
   
 private:
   friend JacobianPolicyBase<
-  implicit_euler_jacobian_standard_policy< state_type,
+  ImplicitEulerJacobianStandardPolicy< state_type,
 					   jacobian_type,
 					   model_type> >;
 

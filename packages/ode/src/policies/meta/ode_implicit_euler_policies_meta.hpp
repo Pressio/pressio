@@ -51,7 +51,7 @@ struct is_implicit_euler_residual_standard_policy<
   policy_t<state_type, residual_type, model_type>,
   typename std::enable_if<
     std::is_same<policy_t<state_type, residual_type, model_type>,
-		 ode::policy::implicit_euler_residual_standard_policy<
+		 ode::policy::ImplicitEulerResidualStandardPolicy<
 		   state_type, residual_type, 
 		   model_type>
 		 >::value
@@ -75,7 +75,7 @@ struct is_implicit_euler_jacobian_standard_oolicy<
   policy_t<state_type, jacobian_type, model_type>,
   typename std::enable_if<
     std::is_same<policy_t<state_type, jacobian_type, model_type>,
-		 ode::policy::implicit_euler_jacobian_standard_policy<
+		 ode::policy::ImplicitEulerJacobianStandardPolicy<
 		   state_type, jacobian_type, 
 		   model_type>
 		 >::value

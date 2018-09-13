@@ -11,15 +11,15 @@ namespace policy{
 template<typename state_type,
 	 typename space_residual_type,
 	 typename model_type>
-class explicit_residual_standard_policy
+class ExplicitResidualStandardPolicy
   : public ExplicitResidualPolicyBase<
-  explicit_residual_standard_policy<
+  ExplicitResidualStandardPolicy<
     state_type, space_residual_type, model_type> >
 {
 
 public:
-  explicit_residual_standard_policy() = default;
-  ~explicit_residual_standard_policy() = default;  
+  ExplicitResidualStandardPolicy() = default;
+  ~ExplicitResidualStandardPolicy() = default;  
   
 private:
 
@@ -53,7 +53,7 @@ private:
 
 private:
   friend ExplicitResidualPolicyBase<
-  explicit_residual_standard_policy<
+  ExplicitResidualStandardPolicy<
     state_type, space_residual_type, model_type> >;
 
 };//end class
