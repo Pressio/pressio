@@ -74,7 +74,7 @@ TEST_F(epetraFix, MVVecDotProduct){
   // b.data()->Print(std::cout);
   auto res = core::ops::dot(MV, b);
 
-  EXPECT_EQ(res.size(), 4);
+  EXPECT_EQ((int) res.size(), 4);
   EXPECT_NEAR(res[0], 4.4, 1e-12);
   EXPECT_NEAR(res[1], 5.2, 1e-12);
   EXPECT_NEAR(res[2], 3., 1e-12);

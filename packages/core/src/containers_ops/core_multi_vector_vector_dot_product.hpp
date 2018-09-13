@@ -56,8 +56,9 @@ template <typename mvec_type,
     core::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >
-auto dot(const mvec_type & mvA,
-	 const vec_type & vecB){
+std::vector<typename details::traits<mvec_type>::scalar_t> 
+dot(const mvec_type & mvA, const vec_type & vecB)
+{
 
   using sc_t = typename details::traits<mvec_type>::scalar_t;
   // how many vectors are in mvA

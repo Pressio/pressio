@@ -54,8 +54,8 @@ template <typename mvec_type,
     core::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >
-auto product(const mvec_type & mvA,
-	     const vec_type & vecB)
+core::Vector<Epetra_Vector> product(const mvec_type & mvA,
+	     const vec_type & vecB) 
 {
   // here, mvA is distrubted, but vecB is NOT.
   // we interpret this as a linear combination of vectors
@@ -78,7 +78,7 @@ auto product(const mvec_type & mvA,
   // my number of rows
   auto myNrows = mvMap.NumMyElements();
   for (int i=0; i<myNrows; i++){
-    for (size_t j=0; j<numVecs; j++){
+    for (decltype(numVecs) j=0; j<numVecs; j++){
       c[i] += mvA(i,j) * vecB[j];
     }
   }

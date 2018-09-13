@@ -90,7 +90,7 @@ int main (int argc, char* argv[]) {
   // Different Views may have the same label.
   view_type a ("A", N);
   auto ss = a.size();
-  //  std::cout << "SS " << ss << std::endl;
+  std::cout << "SS " << ss << std::endl;
 
   using view_type2 = Kokkos::View<double[1][3]>;
   std::cout << "SS " << view_type2::traits::rank << std::endl;

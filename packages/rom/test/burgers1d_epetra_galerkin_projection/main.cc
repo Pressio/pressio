@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
   ode::integrateNSteps(romStepperObj, yROM, 0.0, dtrom, 1);
 
   if (rank==0){
-    for (size_t i=0; i<yROM.size(); i++)
+    for (int i=0; i<romSize; i++)
       std::cout << yROM[i] << " ";
     std::cout << std::endl;
   }
