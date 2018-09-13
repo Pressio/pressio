@@ -12,7 +12,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11 FATAL_ERROR)
 # this to be in the top-level CMakeLists.txt file and not an include file :-(
 SET(CMAKE_LEGACY_CYGWIN_WIN32 1 CACHE BOOL "" FORCE)
 
+# set(CMAKE_CXX_STANDARD 14)
+set(rompp_ENABLE_CXX11 OFF)
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 #
 # A) Define your project name and set up major project options
