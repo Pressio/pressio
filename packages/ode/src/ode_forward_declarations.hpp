@@ -6,7 +6,7 @@
 
 namespace ode {
   
-template<typename state_type,
+template<typename ode_state_type,
 	 typename ode_residual_type,
 	 typename model_type,
 	 typename residual_policy_type = void,
@@ -14,7 +14,7 @@ template<typename state_type,
 	 >
 class ExplicitEulerStepper;
 
-template<typename state_type,
+template<typename ode_state_type,
 	 typename ode_residual_type,
 	 typename model_type,
 	 typename residual_policy_type = void,
@@ -22,15 +22,64 @@ template<typename state_type,
 	 >
 class ExplicitRungeKutta4Stepper;
   
-template<typename state_type,
-         typename residual_type,
-         typename jacobian_type,
+template<typename ode_state_type,
+         typename ode_residual_type,
+         typename ode_jacobian_type,
          typename model_type,
          typename residual_policy_type=void,
          typename jacobian_policy_type=void,
 	 typename enable = void
          >
 class ImplicitEulerStepper;
+    
+} // end namespace ode
+
+
+/////////////////////////////////////
+/////////////////////////////////////
+
+
+namespace ode {
+namespace impl {
+
+template<typename ode_state_type,
+	 typename ode_residual_type,
+	 typename scalar_type,
+	 typename model_type,	
+	 typename residual_policy_type,
+	 typename enable = void
+	 >
+class ExplicitEulerStepperImpl;
+
+template<typename ode_state_type,
+	 typename ode_residual_type,
+	 typename scalar_type,
+	 typename model_type,	
+	 typename residual_policy_type,
+	 typename enable = void
+	 >
+class ExplicitRungeKutta4StepperImpl;
+  
+template<typename ode_state_type,
+	 typename ode_residual_type,
+	 typename ode_jacobian_type,
+	 typename scalar_type,
+	 typename model_type,
+	 typename residual_policy_type,
+	 typename jacobian_policy_type,
+	 typename enable = void
+	 >
+class ImplicitEulerStepperImpl;
+  
+}//end namespace impl
+} // end namespace ode
+#endif
+
+
+
+
+
+
 
 // template<typename state_type,
 //          typename residual_type,
@@ -72,35 +121,7 @@ class ImplicitEulerStepper;
 // 	 typename enable = void
 //          >
 // class implicitAdamsMoulton1Stepper;
-  
-  
-} // end namespace ode
 
-
-/////////////////////////////////////
-/////////////////////////////////////
-
-
-namespace ode {
-namespace impl {
-
-template<typename state_type,
-	 typename ode_residual_type,
-	 typename scalar_type,
-	 typename model_type,	
-	 typename residual_policy_type,
-	 typename enable = void
-	 >
-class ExplicitEulerStepperImpl;
-
-template<typename state_type,
-	 typename ode_residual_type,
-	 typename scalar_type,
-	 typename model_type,	
-	 typename residual_policy_type,
-	 typename enable = void
-	 >
-class ExplicitRungeKutta4StepperImpl;
 
 // template<typename state_type,
 // 	 typename residual_type,
@@ -111,17 +132,7 @@ class ExplicitRungeKutta4StepperImpl;
 // 	 typename enable = void
 // 	 >
 // class explicitAnyRungeKuttaStepperImpl;
-  
-template<typename state_type,
-	 typename residual_type,
-	 typename jacobian_type,
-	 typename scalar_type,
-	 typename model_type,
-	 typename residual_policy_type,
-	 typename jacobian_policy_type,
-	 typename enable = void
-	 >
-class ImplicitEulerStepperImpl;
+
 
 // template<typename state_type,
 //          typename residual_type,
@@ -160,8 +171,3 @@ class ImplicitEulerStepperImpl;
 // 	 typename enable = void
 //          >
 // class implicitAdamsMoulton1StepperImpl;
-  
-}//end namespace impl  
-
-} // end namespace ode
-#endif

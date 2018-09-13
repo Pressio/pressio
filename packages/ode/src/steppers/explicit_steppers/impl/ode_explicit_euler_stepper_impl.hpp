@@ -33,13 +33,12 @@ class ExplicitEulerStepperImpl<state_type,
 		 residual_policy_type>::value ||
 		 meta::is_explicit_euler_residual_standard_policy<
 		 residual_policy_type>::value,
-	  "EXPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, \
-MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
+"EXPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A \
+CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using stepper_t = ExplicitEulerStepperImpl<
-    state_type, ode_residual_type, scalar_type,
-    model_type, residual_policy_type>;
-
+	   state_type, ode_residual_type, scalar_type,
+	   model_type, residual_policy_type>;
   using stepper_base_t = ExplicitStepperBase<stepper_t>;
   using storage_base_t = OdeStorage<state_type, ode_residual_type, 0, 1>;
   using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
@@ -78,8 +77,8 @@ protected:
     residual_obj_->compute(y, auxRHS_[0], *model_, t);
     
     // y = y + dt * rhs
-    y.template inPlaceOp<std::plus<double> >(static_cast<scalar_type>(1.0),
-					     dt, auxRHS_[0]);
+    y.template inPlaceOp<std::plus<double>>(
+	     static_cast<scalar_type>(1.0), dt, auxRHS_[0]);
   }
   //----------------------------------------------------------------
   

@@ -33,17 +33,17 @@ class ExplicitRungeKutta4StepperImpl<state_type,
 		 residual_policy_type>::value ||
 		 meta::is_explicit_runge_kutta4_residual_standard_policy<
 		 residual_policy_type>::value,
-     "EXPLICIT RUNGEKUTTA4 RESIDUAL_POLICY NOT ADMISSIBLE, \
+"EXPLICIT RUNGEKUTTA4 RESIDUAL_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
-private:
   using stepper_t = ExplicitRungeKutta4StepperImpl<
-  state_type, ode_residual_type, scalar_type,
-  model_type, residual_policy_type>;
-  
+	   state_type, ode_residual_type, scalar_type,
+	   model_type, residual_policy_type>;
   using stepper_base_t = ExplicitStepperBase<stepper_t>;
   using storage_base_t = OdeStorage<state_type, ode_residual_type, 1, 4>;
   using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
+
+  using add_op_t = std::plus<scalar_type>;
   
 protected:
   using storage_base_t::auxStates_;
@@ -72,76 +72,55 @@ protected:
 
   template<typename step_t>
   void doStepImpl(state_type & y, scalar_type t,
-		  scalar_type dt, step_t step)
-  {
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // below needs to be fixed using algebra of core vector
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		  scalar_type dt, step_t step){
     
-    // auto ySz = sizer_type::getSize(y);
-    // // if(sizer_type::getSize(auxStates_[0]) == 0)
-    // //   sizer_type::matchSize(y, auxStates_[0]);
+    auto & ytmp = auxStates_[0];
+    if ( ytmp.empty() )
+      ytmp.matchLayoutWith(y);
+    if(auxRHS_[0].empty() == 0)
+      auxRHS_[0].matchLayoutWith(y);
+    if(auxRHS_[1].empty() == 0)
+      auxRHS_[1].matchLayoutWith(y);
+    if(auxRHS_[2].empty() == 0)
+      auxRHS_[2].matchLayoutWith(y);
+    if(auxRHS_[3].empty() == 0)
+      auxRHS_[3].matchLayoutWith(y);
 
-    // const scalar_type dt_half = dt / static_cast< scalar_type >(2);
-    // const scalar_type t_phalf = t + dt_half;
-    // const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
-    // const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-
-    // auto & ytmp = auxStates_[0];
+    const scalar_type dt_half = dt / static_cast< scalar_type >(2);
+    const scalar_type t_phalf = t + dt_half;
+    const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
+    const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
     
-    // if(sizer_type::getSize(ytmp) == 0)
-    //   sizer_type::matchSize(y, ytmp);
-    // if(sizer_type::getSize(auxRHS_[0]) == 0)
-    //   sizer_type::matchSize(y, auxRHS_[0]);
-    // if(sizer_type::getSize(auxRHS_[1]) == 0)
-    //   sizer_type::matchSize(y, auxRHS_[1]);
-    // if(sizer_type::getSize(auxRHS_[2]) == 0)
-    //   sizer_type::matchSize(y, auxRHS_[2]);
-    // if(sizer_type::getSize(auxRHS_[3]) == 0)
-    //   sizer_type::matchSize(y, auxRHS_[3]);
+    // ----------
+    // stage 1: 
+    // ----------
+    residual_obj_->compute(y, auxRHS_[0], *model_, t);
+    // ytmp = y_n + auxRHS_[0]*dt/2
+    ytmp.template inPlaceOp<add_op_t>(1.0,  y, dt_half, auxRHS_[0]);
     
-    // // ----------
-    // // stage 1: 
-    // // ----------
-    // // rhs_[0](y_n,t)
-    // residual_obj_->compute(y, auxRHS_[0], *model_, t);
-    // // ytmp = y_n + auxRHS_[0]*dt/2
-    // for (decltype(ySz) i=0; i<ySz; i++){
-    //   ytmp[i] = y[i] + dt_half*auxRHS_[0][i];
-    // }
+    // ----------
+    // stage 2: 
+    // ----------
+    residual_obj_->compute(ytmp, auxRHS_[1], *model_, t_phalf);
+    ytmp.template inPlaceOp<add_op_t>(1.0, y, dt_half, auxRHS_[1]);
+    
+    // ----------
+    // stage 3: 
+    // ----------
+    residual_obj_->compute(ytmp, auxRHS_[2], *model_, t_phalf);
+    //ytmp = y_n + auxRHS_[2]*dt/2
+    ytmp.template inPlaceOp<add_op_t>(1.0, y, dt, auxRHS_[2]);
 
-    // // ----------
-    // // stage 2: 
-    // // ----------
-    // // rhs_[1]
-    // residual_obj_->compute(ytmp, auxRHS_[1], *model_, t_phalf);
-    // // ytmp = y_n + auxRHS_[1]*dt/2
-    // for (decltype(ySz) i=0; i<ySz; i++){
-    //   ytmp[i] = y[i] + dt_half*auxRHS_[1][i];
-    // }
-
-    // // ----------
-    // // stage 3: 
-    // // ----------
-    // // auxRHS_[2]
-    // residual_obj_->compute(ytmp, auxRHS_[2], *model_, t_phalf);
-    // //ytmp = y_n + auxRHS_[2]*dt/2
-    // for (decltype(ySz) i=0; i<ySz; i++){
-    //   ytmp[i] = y[i] + dt*auxRHS_[2][i];
-    // }
-
-    // // ----------
-    // // stage 4: 
-    // // ----------
-    // // auxRHS_[3]
-    // residual_obj_->compute(ytmp, auxRHS_[3], *model_, t + dt);
-    // //x += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    // for (decltype(ySz) i=0; i < ySz; i++)
-    // {
-    //   y[i] += dt6*auxRHS_[0][i] + dt3*auxRHS_[1][i] +
-    // 	dt3*auxRHS_[2][i] + dt6*auxRHS_[3][i];
-    // }
-
+    // ----------
+    // stage 4: 
+    // ----------
+    residual_obj_->compute(ytmp, auxRHS_[3], *model_, t + dt);
+    //x += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
+    y.template inPlaceOp<add_op_t>(1.0, dt6, auxRHS_[0],
+				   dt3, auxRHS_[1],
+				   dt3, auxRHS_[2],
+				   dt6, auxRHS_[3]);
+    
   }//end doStep
 
 private:
