@@ -13,11 +13,23 @@ SET(HEADERS
   apps_ConfigDefs.hpp
   apps_burgers1d_eigen.hpp
   apps_burgers1d_epetra.hpp
+  #
+  apps_constants.hpp
+  apps_mpi_square_grid.hpp
+  apps_mpi_square_grid.hpp
+  apps_square_periodic_cc_mesh.hpp
+  apps_taylor_green.hpp
+  apps_shear_layer.hpp
 )
 
 SET(SOURCES
   src/apps_burgers1d_eigen.cc
   src/apps_burgers1d_epetra.cc
+  src/apps_constants.cc
+  src/apps_mpi_square_grid.cc
+  src/apps_square_periodic_cc_mesh.cc
+  src/apps_taylor_green.cc
+  src/apps_shear_layer.cc
 )
 
 #----------------------------------------------------------------

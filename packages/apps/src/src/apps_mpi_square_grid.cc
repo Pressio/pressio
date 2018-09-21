@@ -1,0 +1,1 @@
+#include "../apps_mpi_square_grid.hpp"
