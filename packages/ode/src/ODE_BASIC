@@ -1,0 +1,17 @@
+
+#ifndef ODE_BASIC_HPP_
+#define ODE_BASIC_HPP_
+
+#include "ode/ode_ConfigDefs.hpp"
+#include "ode/ode_forward_declarations.hpp"
+
+#include "ode/meta/ode_meta.hpp"
+#include "ode/meta/ode_meta_explicit.hpp"
+#include "ode/meta/ode_meta_implicit.hpp"
+
+#include "ode/ode_aux_data.hpp"
+#include "ode/ode_storage.hpp"
+#include "ode/ode_residual_impl.hpp"
+#include "ode/ode_jacobian_impl.hpp"
+
+#endif

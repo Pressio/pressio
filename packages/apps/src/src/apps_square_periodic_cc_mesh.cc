@@ -1,1 +1,0 @@
-#include "../apps_square_periodic_cc_mesh.hpp"

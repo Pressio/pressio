@@ -1,1 +1,0 @@
-#include "../apps_taylor_green.hpp"

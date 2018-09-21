@@ -1,9 +1,0 @@
-
-#ifndef ODE_INTEGRATORS_HPP_
-#define ODE_INTEGRATORS_HPP_
-
-#include "ODE_BASIC"
-
-#include "../src/integrators/ode_integrate_n_steps.hpp"
-
-#endif

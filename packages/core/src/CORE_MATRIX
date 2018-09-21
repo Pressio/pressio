@@ -1,0 +1,36 @@
+
+#ifndef CORE_MATRIX_HPP_
+#define CORE_MATRIX_HPP_
+
+#include "CORE_VECTOR"
+
+#include "core/matrix/core_matrix_traits.hpp"
+#include "core/matrix/core_matrix_meta.hpp"
+
+///------------------
+///base classes
+///------------------
+#include "core/matrix/base/core_matrix_base.hpp"
+#include "core/matrix/base/core_matrix_sparse_base.hpp"
+#include "core/matrix/base/core_matrix_math_base.hpp"
+#include "core/matrix/base/core_matrix_sharedmem_base.hpp"
+#include "core/matrix/base/core_matrix_distributed_base.hpp"
+///---- dense ----
+#include "core/matrix/base/core_matrix_dense_distributed_base.hpp"
+#include "core/matrix/base/core_matrix_dense_sharedmem_base.hpp"
+///---- sparse ----
+#include "core/matrix/base/core_matrix_sparse_sharedmem_base.hpp"
+#include "core/matrix/base/core_matrix_sparse_distributed_base.hpp"
+#include "core/matrix/base/core_matrix_sparse_distributed_trilinos_base.hpp"
+
+///------------------
+///concrete classes
+///------------------
+#include "core/matrix/concrete/core_matrix_dense_sharedmem_eigen.hpp"
+#include "core/matrix/concrete/core_matrix_dense_sharedmem_stdlib.hpp"
+#include "core/matrix/concrete/core_matrix_sparse_sharedmem_eigen.hpp"
+#include "core/matrix/concrete/core_matrix_sparse_distributed_epetra.hpp"
+#include "core/matrix/concrete/core_matrix_dense_distributed_epetra.hpp"
+
+#endif
+

@@ -1,0 +1,26 @@
+
+#ifndef ODE_POLICIES_HPP_
+#define ODE_POLICIES_HPP_
+
+#include "ODE_BASIC"
+
+
+// explicit
+#include "ode/policies/base/ode_explicit_residual_policy_base.hpp"
+#include "ode/policies/standard/ode_explicit_residual_standard_policy.hpp"
+#include "ode/policies/meta/ode_explicit_policies_meta.hpp"
+#include "ode/policies/meta/ode_explicit_euler_policies_meta.hpp"
+#include "ode/policies/meta/ode_explicit_runge_kutta4_policies_meta.hpp"
+
+//implicit
+#include "ode/policies/base/ode_implicit_residual_policy_base.hpp"
+#include "ode/policies/base/ode_jacobian_policy_base.hpp"
+
+#include "ode/policies/standard/ode_implicit_euler_residual_standard_policy.hpp"
+#include "ode/policies/standard/ode_implicit_euler_jacobian_standard_policy.hpp"
+
+#include "ode/policies/meta/ode_implicit_policies_meta.hpp"
+#include "ode/policies/meta/ode_implicit_euler_policies_meta.hpp"
+
+
+#endif
