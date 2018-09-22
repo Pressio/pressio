@@ -1,0 +1,9 @@
+
+#ifndef SOLVERS_BASIC_HPP_
+#define SOLVERS_BASIC_HPP_
+
+#include "solvers/src/solvers_ConfigDefs.hpp"
+#include "solvers/src/solvers_forward_declarations.hpp"
+
+
+#endif

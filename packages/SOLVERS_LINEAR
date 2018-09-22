@@ -1,0 +1,7 @@
+
+#ifndef SOLVERS_LINEAR_HPP_
+#define SOLVERS_LINEAR_HPP_
+
+#include "solvers/src/experimental/solvers_linear_factory.hpp"
+
+#endif

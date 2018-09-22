@@ -24,10 +24,9 @@ function(add_unit_test test_name mainfile )
   )
 endfunction()
 
-
-#include the lumped headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+#to include the lumped headers
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 ADD_SUBDIRECTORY(serial)
 ADD_SUBDIRECTORY(mpi)
-# ADD_SUBDIRECTORY(kokkos)
+ADD_SUBDIRECTORY(kokkos)

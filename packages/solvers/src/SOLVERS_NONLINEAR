@@ -1,7 +1,0 @@
-
-#ifndef SOLVERS_NONLINEAR_HPP_
-#define SOLVERS_NONLINEAR_HPP_
-
-#include "../src/experimental/solvers_nonlinear_factory.hpp"
-
-#endif

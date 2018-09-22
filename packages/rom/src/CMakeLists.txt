@@ -2,31 +2,27 @@
 # A) Package-specific configuration options
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "core_config.h"
+
 #----------------------------------------------------------------
 # B) Define the header and source files (and include directories)
 #----------------------------------------------------------------
-#To include "rom_config.h" (because it lives in the binary folder)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/rom)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 FILE(GLOB rom_gen_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/rom/*.hpp")
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
 FILE(GLOB rom_exp_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/rom/experimental/*.hpp")
+    "${CMAKE_CURRENT_SOURCE_DIR}/experimental/*.hpp")
 
 FILE(GLOB rom_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/rom/src/*.cc")
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
 FILE(GLOB rom_exp_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/rom/experimental/src/*.cc")
+    "${CMAKE_CURRENT_SOURCE_DIR}/experimental/src/*.cc")
     
 SET(SOURCES 
   ${rom_gen_SRCS}
   ${rom_exp_SRCS}
 )
 
-
-SET(ROM_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 
 # #--------------------------------------
 # SET(LUMPED_HEADERS
@@ -42,10 +38,11 @@ SET(ROM_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 #--------------------------------------
 # install the actual headers
 #--------------------------------------
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${ROM_INCDIR}/rom)
+SET(ROM_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/rom/src)
 
-INSTALL(FILES ${rom_gen_HEADERS} DESTINATION ${ROM_INCDIR}/rom)
-INSTALL(FILES ${rom_exp_HEADERS} DESTINATION ${ROM_INCDIR}/rom/experimental)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${ROM_INCDIR})
+INSTALL(FILES ${rom_gen_HEADERS} DESTINATION ${ROM_INCDIR})
+INSTALL(FILES ${rom_exp_HEADERS} DESTINATION ${ROM_INCDIR}/experimental)
 
 
 #----------------------------------------------------------------
@@ -53,6 +50,7 @@ INSTALL(FILES ${rom_exp_HEADERS} DESTINATION ${ROM_INCDIR}/rom/experimental)
 #----------------------------------------------------------------
 TRIBITS_ADD_LIBRARY(
   rom
+  #   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
   )
 

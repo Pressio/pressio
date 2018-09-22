@@ -2,53 +2,49 @@
 # A) Package-specific configuration options
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "core_config.h"
+
 #----------------------------------------------------------------
 # B) Define the header and source files (and include directories)
 #----------------------------------------------------------------
-#To include "svd_config.h"
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/svd)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 ###############
 # HEADERS
 ###############
 FILE(GLOB svd_general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/svd/*.hpp")
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
 
 #################
 #### SOURCES
 #################
 FILE(GLOB svd_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/svd/src/*.cc")
-
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
 
 SET(SOURCES 
   ${svd_general_SRCS}
 )
 
 
-SET(SVD_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
-
 #--------------------------------------
 SET(LUMPED_HEADERS
-  SVD_BASIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../SVD_BASIC
 )
-INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${SVD_INCDIR})
+INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 
 #--------------------------------------
 # install the actual headers
 #--------------------------------------
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${SVD_INCDIR}/svd)
+SET(SVD_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/svd/src)
 
-INSTALL(FILES ${svd_general_HEADERS} DESTINATION ${SVD_INCDIR}/svd)
-
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${SVD_INCDIR})
+INSTALL(FILES ${svd_general_HEADERS} DESTINATION ${SVD_INCDIR})
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)
 #----------------------------------------------------------------
 TRIBITS_ADD_LIBRARY(
   svd
+  #   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
   DEPLIBS
   )
