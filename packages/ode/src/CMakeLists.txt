@@ -167,7 +167,7 @@ INSTALL(FILES ${ode_meta_HEADERS} DESTINATION ${ODE_INCDIR}/meta)
 INSTALL(FILES ${ode_integrators_HEADERS} DESTINATION ${ODE_INCDIR}/integrators)
 #
 INSTALL(FILES ${ode_policies_base_HEADERS} DESTINATION ${ODE_INCDIR}/policies/base)
-INSTALL(FILES ${ode_policies_meta_HEADERS} DESTINATION ${ODE_INCDIR}/odepolicies/meta)
+INSTALL(FILES ${ode_policies_meta_HEADERS} DESTINATION ${ODE_INCDIR}/policies/meta)
 INSTALL(FILES ${ode_policies_standard_HEADERS} DESTINATION ${ODE_INCDIR}/policies/standard)
 INSTALL(FILES ${ode_custom_policies_HEADERS} DESTINATION ${ODE_INCDIR}/policies/custom)
 #
