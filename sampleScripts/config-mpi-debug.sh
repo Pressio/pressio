@@ -57,8 +57,6 @@ cmake \
     # -D rompp_ENABLE_svd:BOOL=OFF \
     # -D rompp_ENABLE_apps:BOOL=OFF \
     # -D rompp_ENABLE_rom:BOOL=OFF \
-
-
     # -D TPL_ENABLE_KOKKOS=ON \
     # -D KOKKOS_LIBRARY_DIRS:PATH=${KOKKOSPATH}/lib \
     # -D KOKKOS_INCLUDE_DIRS:PATH=${KOKKOSPATH}/include \
