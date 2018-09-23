@@ -4,7 +4,8 @@
 
 #include "solvers_ConfigDefs.hpp"
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 namespace experimental
 {
@@ -21,8 +22,6 @@ template<typename matrix_type,
 class linearSolver;   
 
 } // end experimental
-
-
-
-} // end solvers
+} // end namespace solvers
+}//end namespace rompp
 #endif

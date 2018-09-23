@@ -8,6 +8,7 @@
 #include "../../core/src/vector/core_vector_traits.hpp"
 #include "../../core/src/matrix/core_matrix_traits.hpp"
 
+namespace rompp{
 namespace ode{
 namespace details {
 
@@ -34,4 +35,5 @@ using time_type = double;
 //} // end of timeIntegrator namespace
 
 
+}//end namespace rompp
 #endif

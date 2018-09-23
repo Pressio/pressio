@@ -4,6 +4,7 @@
 
 #include "ode_ConfigDefs.hpp"
 
+namespace rompp{
 namespace ode{
 namespace impl{
 
@@ -55,5 +56,6 @@ protected:
 }//end namespace impl
 }//end namespace ode  
   
+}//end namespace rompp
 #endif
   

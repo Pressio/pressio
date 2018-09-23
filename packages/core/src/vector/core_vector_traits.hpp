@@ -8,6 +8,7 @@
 #include "../meta/core_meta_detect_operators.hpp"
 #include "../core_shared_traits.hpp"
 
+namespace rompp{
 namespace core{
 namespace details{
 
@@ -150,4 +151,5 @@ struct traits<Vector<wrapped_type,
 }//end namespace details
 }//end namespace core
 
+}//end namespace rompp
 #endif

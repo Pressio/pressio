@@ -5,6 +5,7 @@
 #include "ode_explicit_policies_meta.hpp"
 #include "../standard/ode_explicit_residual_standard_policy.hpp"
 
+namespace rompp{
 namespace ode{
 namespace meta {
   
@@ -33,4 +34,5 @@ struct is_explicit_euler_residual_standard_policy<
 
 } // namespace meta
 } // namespace core
+}//end namespace rompp
 #endif

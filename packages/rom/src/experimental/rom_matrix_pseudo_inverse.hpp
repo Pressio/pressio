@@ -6,6 +6,7 @@
 #include "../../../CORE_MATRIX"
 #include "../../../SVD_BASIC"
 
+namespace rompp{
 namespace rom{
 namespace exp{
 
@@ -29,4 +30,5 @@ auto pseudoInverse(const mat_type & A)
   
 }//end namespace exp
 }//end namespace rom
+}//end namespace rompp
 #endif 

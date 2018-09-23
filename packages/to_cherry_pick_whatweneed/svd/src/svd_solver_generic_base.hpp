@@ -5,8 +5,8 @@
 #include "svd_solver_traits.hpp"
 
 
-namespace svd
-{
+namespace rompp{ 
+namespace svd{
     
 template<typename derived_type>
 class solverGenericBase
@@ -50,6 +50,6 @@ public:
   
 };
     
-} // end namespace 
-
+} // end namespace svd 
+}//end namespace rompp
 #endif

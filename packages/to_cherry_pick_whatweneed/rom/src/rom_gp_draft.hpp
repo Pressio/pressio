@@ -5,6 +5,7 @@
 #include "rom_ConfigDefs.hpp"
 #include "svd_solver_traits.hpp"
 
+namespace rompp{
 namespace rom{
 
 template <typename state_type,
@@ -64,5 +65,6 @@ public:
 
 }//end namespace rom
 
+}//end namespace rompp
 #endif
 

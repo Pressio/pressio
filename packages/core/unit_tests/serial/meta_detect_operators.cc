@@ -5,6 +5,8 @@
 
 TEST(core_meta_detect_operators, operatorAddDetecting)
 {
+  using namespace rompp;
+
   class A{
    public:
     A operator+(const A & other) { return A(); }
@@ -36,6 +38,8 @@ TEST(core_meta_detect_operators, operatorAddDetecting)
 
 TEST(core_meta_detect_operators, operatorSubtractDetecting)
 {
+  using namespace rompp;
+
   class A{
    public:
     A operator-(const A & other) { return A(); }
@@ -67,6 +71,8 @@ TEST(core_meta_detect_operators, operatorSubtractDetecting)
 
 TEST(core_meta_detect_operators, operatorStarDetecting)
 {
+  using namespace rompp;
+
   class A{
    public:
     A operator*(const A & other) { return A(); }
@@ -99,6 +105,8 @@ TEST(core_meta_detect_operators, operatorStarDetecting)
 
 TEST(core_meta_detect_operators, operatorCompAssignDetecting)
 {
+  using namespace rompp;
+
   class A{
    public:
     A & operator+=(const A & other) { return *this; }
@@ -125,6 +133,8 @@ TEST(core_meta_detect_operators, operatorCompAssignDetecting)
 
 TEST(core_meta_detect_operators, operatorCompAssignMinusDetecting)
 {
+  using namespace rompp;
+
   class A{
    public:
     A & operator-=(const A & other) { return *this; }

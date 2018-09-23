@@ -10,6 +10,7 @@
 #include "../../../ode_storage.hpp"
 #include "../../../ode_aux_data.hpp"
 
+namespace rompp{
 namespace ode{
 
 template<typename stepper_type>
@@ -71,4 +72,5 @@ private:
 };//end class
 
 }//end namespace  
+}//end namespace rompp
 #endif

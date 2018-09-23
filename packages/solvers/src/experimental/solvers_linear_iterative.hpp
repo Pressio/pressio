@@ -6,7 +6,8 @@
 #include "solvers_linear_base.hpp"
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 // Forward declarations
 struct LinearSolvers;
@@ -89,5 +90,5 @@ class LinearIterativeSolver
 };
 
 } //end namespace solvers
-
+}//end namespace rompp
 #endif

@@ -17,7 +17,8 @@
 #include "../../../core/src/matrix/core_matrix_traits.hpp"
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 
 struct LinearSolvers {
@@ -218,4 +219,5 @@ struct LinearSolvers {
 
 } // end namespace solvers
 
+}//end namespace rompp
 #endif

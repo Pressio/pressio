@@ -5,6 +5,8 @@
 
 TEST(core_matrix_vector_product, eigenVectorDenseMatrix)
 {
+	using namespace rompp;
+
   using natV_t = Eigen::Matrix<double,3,1>;
   natV_t a; a << 4.,2.,6;
   core::Vector<natV_t> myV(a);
@@ -25,6 +27,8 @@ TEST(core_matrix_vector_product, eigenVectorDenseMatrix)
 
 TEST(core_matrix_vector_product, eigenVectorSparseMatrix)
 {
+	using namespace rompp;
+
   // create vector
   using natV_t = Eigen::Matrix<double,3,1>;
   natV_t a; a << 4.,2.,6;

@@ -11,6 +11,7 @@
 #include <Epetra_Export.h>
 #include <Epetra_Import.h>
 
+namespace rompp{
 namespace core{
 namespace mat_ops{
   
@@ -112,4 +113,5 @@ auto product(const matrix_type & A,
 
 } // end namespace mat_ops
 } // end namespace core
+}//end namespace rompp
 #endif

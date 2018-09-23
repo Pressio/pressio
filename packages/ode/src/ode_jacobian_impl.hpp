@@ -4,6 +4,7 @@
 
 #include "ode_ConfigDefs.hpp"
 
+namespace rompp{
 namespace ode{
 namespace impl{
 
@@ -31,5 +32,6 @@ void implicit_euler_time_discrete_jacobian(jacobian_type & jac,
 
 }//end namespace impl
 }//end namespace ode
+}//end namespace rompp
 #endif 
 

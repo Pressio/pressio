@@ -6,7 +6,8 @@
 #include <memory>
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 // Policy to solve a linear system
 template <
@@ -35,4 +36,5 @@ struct SolversLinearIterativeEigenPolicy {
 
 } // end namespace solvers
 
+}//end namespace rompp
 #endif

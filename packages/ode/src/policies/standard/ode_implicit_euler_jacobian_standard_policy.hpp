@@ -6,6 +6,7 @@
 #include "../base/ode_jacobian_policy_base.hpp"
 #include "../../ode_jacobian_impl.hpp"
 
+namespace rompp{
 namespace ode{
 namespace policy{
 
@@ -55,4 +56,5 @@ private:
   
 }//end namespace polices
 }//end namespace ode
+}//end namespace rompp
 #endif 

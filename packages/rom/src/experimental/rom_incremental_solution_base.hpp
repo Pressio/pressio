@@ -4,6 +4,7 @@
 
 #include "../rom_ConfigDefs.hpp"
 
+namespace rompp{
 namespace rom{
 namespace exp{
 
@@ -33,4 +34,5 @@ private:
 
 }//end namespace polices
 }//end namespace ode  
+}//end namespace rompp
 #endif 

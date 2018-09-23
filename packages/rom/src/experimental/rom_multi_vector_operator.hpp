@@ -5,6 +5,7 @@
 #include "rom_operator_base.hpp"
 #include "../../../CORE_ALL"
 
+namespace rompp{
 namespace rom{
 
 template<typename operator_type,
@@ -68,4 +69,5 @@ private:
 };//end class
 
 } // end namespace rom
+}//end namespace rompp
 #endif

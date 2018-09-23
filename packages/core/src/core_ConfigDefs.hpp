@@ -7,6 +7,7 @@
 #include <type_traits>
 #include "core_shared_traits.hpp"
 
+namespace rompp{
 namespace core{
 namespace details {
 
@@ -59,4 +60,5 @@ namespace defaultTypes {
   
 } // end of core namespace
 
+}//end namespace rompp
 #endif

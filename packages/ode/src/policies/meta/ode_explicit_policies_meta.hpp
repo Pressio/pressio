@@ -4,6 +4,7 @@
 
 #include "../base/ode_explicit_residual_policy_base.hpp"
 
+namespace rompp{
 namespace ode{
 namespace meta {
 
@@ -28,4 +29,5 @@ struct is_legitimate_explicit_residual_policy<
 
 } // namespace meta
 } // namespace core
+}//end namespace rompp
 #endif

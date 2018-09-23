@@ -7,6 +7,7 @@
 #include "../../../ode/src/ode_jacobian_impl.hpp"
 //#include "rom_incremental_solution_base.hpp"
 
+namespace rompp{
 namespace rom{
 namespace exp{
 
@@ -63,6 +64,7 @@ private:
   
 }//end namespace exp
 }//end namespace rom
+}//end namespace rompp
 #endif 
 
 

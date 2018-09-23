@@ -4,9 +4,11 @@
 
 #include "optimization_ConfigDefs.hpp"
 
+namespace rompp{
 namespace optimization{
 
 class dummy{};
 
 }//end namespace optimization
+}//end namespace rompp
 #endif 

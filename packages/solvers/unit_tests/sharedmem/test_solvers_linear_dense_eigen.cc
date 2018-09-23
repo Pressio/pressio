@@ -7,7 +7,8 @@
 TEST(solvers_linear_dense_eigen, solversTestLinearDenseEigenCreateWithMatrixAndSolve)
 {
   // Namespaces
-  using namespace solvers;
+  using namespace rompp;
+  using namespace rompp::solvers;
 
   // Matrix typedefs
   using matrix_n_t = Eigen::MatrixXd;
@@ -39,7 +40,8 @@ TEST(solvers_linear_dense_eigen, solversTestLinearDenseEigenCreateWithMatrixAndS
 TEST(solvers_linear_dense_eigen, solversTestLinearLeastSquareDenseEigenCreateWithMatrixAndSolve)
 {
   // Namespaces
-  using namespace solvers;
+  using namespace rompp;
+  using namespace rompp::solvers;
 
   // Matrix typedefs
   using matrix_n_t = Eigen::MatrixXd;

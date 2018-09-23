@@ -7,6 +7,7 @@
 TEST(solvers_linear_least_square_factory_eigen, solversTestLinearLeastSquareFactoryEigen)
 {
   // Namespaces
+  using namespace rompp;
   using namespace solvers;
 
   // Matrix typedefs
@@ -24,6 +25,7 @@ TEST(solvers_linear_least_square_factory_eigen, solversTestLinearLeastSquareFact
 TEST(solvers_linear_least_square_eigen, solversTestLinearLeastSquareEigenCreateWithMatrixAndSolve)
 {
   // Namespaces
+  using namespace rompp;
   using namespace solvers;
 
   // Matrix typedefs

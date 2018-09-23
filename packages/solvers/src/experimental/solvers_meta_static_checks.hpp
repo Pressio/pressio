@@ -8,6 +8,7 @@
 #include "../../../core/src/vector/core_vector_traits.hpp"
 
 
+namespace rompp{
 namespace solvers{
 namespace meta {
 
@@ -113,5 +114,5 @@ struct are_vector_compatible<
 
 } // end namespace meta
 } // end namespace solvers
-
+}//end namespace rompp
 #endif

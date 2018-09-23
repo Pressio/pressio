@@ -13,6 +13,7 @@ Transform a dense matrix to sparse
 ===================================*/
 
 
+namespace rompp{
 namespace core{
   
 /*---------------------------------------------------
@@ -94,4 +95,5 @@ auto denseToSparse(const mat_type & A)
 
   
 } // end namespace core
+}//end namespace rompp
 #endif

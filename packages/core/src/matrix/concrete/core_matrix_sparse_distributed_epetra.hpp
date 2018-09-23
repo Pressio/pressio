@@ -11,6 +11,7 @@
 #include "../base/core_matrix_sparse_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_trilinos_base.hpp"
 
+namespace rompp{
 namespace core{
 
 template <typename wrapped_type>
@@ -176,4 +177,5 @@ private:
      
 };//end class 
 }//end namespace core 
+}//end namespace rompp
 #endif

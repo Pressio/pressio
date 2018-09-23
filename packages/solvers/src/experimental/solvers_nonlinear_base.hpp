@@ -13,7 +13,8 @@
 #include "solvers_meta_static_checks.hpp"
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 
 struct NonlinearSolvers; // Fwd declaration
@@ -168,5 +169,5 @@ class NonLinearSolverBase {
 };
 
 } //end namespace solvers
-
+}//end namespace rompp
 #endif

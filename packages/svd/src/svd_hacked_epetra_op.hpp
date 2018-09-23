@@ -19,6 +19,7 @@
 #include "Epetra_InvOperator.h"
 #include "Ifpack.h"
 
+namespace rompp{ 
 namespace svd{
 
 template<typename matrix_type,
@@ -324,4 +325,5 @@ private:
 };//end class
   
 }//end namespace svd
+}//end namespace rompp
 #endif 

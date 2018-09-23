@@ -6,6 +6,7 @@
 //#include "matrix/core_matrix_meta.hpp"
 #include "../../../CORE_OPS"
 
+namespace rompp{
 namespace rom{
 
 template<typename operator_type,
@@ -43,4 +44,5 @@ private:
 };//end class
 
 } // end namespace rom
+}//end namespace rompp
 #endif

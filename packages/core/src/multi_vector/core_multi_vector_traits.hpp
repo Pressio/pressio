@@ -6,6 +6,7 @@
 #include "../meta/core_native_multi_vector_meta.hpp"
 #include "../core_shared_traits.hpp"
 
+namespace rompp{
 namespace core{
 namespace details{
 
@@ -36,4 +37,5 @@ struct traits<MultiVector<wrapped_type,
     
 }//end namespace details
 }//end namespace core
+}//end namespace rompp
 #endif

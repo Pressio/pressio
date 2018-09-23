@@ -5,7 +5,8 @@
 #include "AztecOO.h"
 #include <memory>
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 template <
   typename SolverT, 
@@ -38,4 +39,5 @@ class SolversLinearIterativeTrilinosPolicy {
 
 } // end namespace solvers
 
+}//end namespace rompp
 #endif

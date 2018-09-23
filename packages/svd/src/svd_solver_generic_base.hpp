@@ -4,6 +4,7 @@
 
 #include "svd_solver_traits.hpp"
 
+namespace rompp{ 
 namespace svd{
     
 template<typename derived_type>
@@ -50,5 +51,6 @@ private:
   
 };//end class
 
-} // end namespace 
+} // end namespace svd
+}//end namespace rompp
 #endif

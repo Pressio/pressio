@@ -78,16 +78,18 @@ public:
 
 TEST_F(core_vector_serial_eigen_traits_Fixture, traits)
 {
-  a.check(); b.check(); c.check(); d.check(); e.check();
-  a1.check(); b1.check(); c1.check(); d1.check(); e1.check();
-  f.check(); g.check(); h.check(); k.check(); p.check();
-  f1.check(); g1.check(); h1.check(); k1.check(); p1.check();
-  
-  // check that a matrix from eigen is not a vector
-  using eigmat_t = Eigen::Matrix<double, dyn, dyn>;
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(eigmat_t);
-  using eigmat_t2 = Eigen::Matrix<double, 4, dyn>;
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(eigmat_t2);
-  using eigmat_t3 = Eigen::Matrix<double, dyn, 5>;
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(eigmat_t3);
+	using namespace rompp;
+
+	a.check(); b.check(); c.check(); d.check(); e.check();
+	a1.check(); b1.check(); c1.check(); d1.check(); e1.check();
+	f.check(); g.check(); h.check(); k.check(); p.check();
+	f1.check(); g1.check(); h1.check(); k1.check(); p1.check();
+
+	// check that a matrix from eigen is not a vector
+	using eigmat_t = Eigen::Matrix<double, dyn, dyn>;
+	STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(eigmat_t);
+	using eigmat_t2 = Eigen::Matrix<double, 4, dyn>;
+	STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(eigmat_t2);
+	using eigmat_t3 = Eigen::Matrix<double, dyn, 5>;
+	STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(eigmat_t3);
 }

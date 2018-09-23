@@ -4,6 +4,7 @@
 
 #include "./impl/ode_explicit_runge_kutta4_stepper_impl.hpp"
 
+namespace rompp{
 namespace ode{
 
 /////////////////////////////////////////
@@ -112,6 +113,7 @@ public:
 };//end class
   
 }//end namespace
+}//end namespace rompp
 #endif 
 
 

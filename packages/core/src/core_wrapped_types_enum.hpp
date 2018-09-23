@@ -2,6 +2,7 @@
 #ifndef CORE_WRAPPED_TYPES_ENUM_HPP_
 #define CORE_WRAPPED_TYPES_ENUM_HPP_
 
+namespace rompp{
 namespace core{
 namespace details {  
 
@@ -58,4 +59,5 @@ enum class WrappedMultiVectorIdentifier{
 } // end namespace details
 } // end of core namespace
 
+}//end namespace rompp
 #endif

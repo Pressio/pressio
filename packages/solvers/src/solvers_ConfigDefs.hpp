@@ -7,4 +7,9 @@
 #include <iostream>
 #include <cassert>
 
+namespace rompp{
+namespace solvers{
+
+}//end namespace solvers
+}//end namespace rompp
 #endif

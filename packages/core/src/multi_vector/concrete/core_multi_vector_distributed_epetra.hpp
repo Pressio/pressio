@@ -9,6 +9,7 @@
 #include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 
+namespace rompp{
 namespace core{
   
 template <typename wrapped_type>
@@ -148,4 +149,5 @@ private:
 };//end class
 
 }//end namespace core
+}//end namespace rompp
 #endif

@@ -10,6 +10,7 @@
 #include "Epetra_MultiVector.h"
 #include <Kokkos_Core.hpp>
 
+namespace rompp{
 namespace core{
 namespace meta {
 
@@ -94,4 +95,5 @@ struct is_vector_kokkos<T,
 } // namespace meta
 } // namespace core
 
+}//end namespace rompp
 #endif

@@ -7,7 +7,8 @@
 #include "solvers_nonlinear_traits.hpp"
 #include "solvers_linear_traits.hpp"
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 struct NonLinearSolvers {
 
@@ -52,5 +53,5 @@ struct NonLinearSolvers {
 };
 
 } // end namespace solvers
-
+}//end namespace rompp
 #endif

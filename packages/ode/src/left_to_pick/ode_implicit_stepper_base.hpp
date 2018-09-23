@@ -9,6 +9,7 @@
 #include "../../../policies/meta/ode_policies_meta.hpp"
 #include "../../../policies/meta/ode_implicit_policies_meta.hpp"
 
+namespace rompp{
 namespace ode{
 
 template<typename stepper_type>
@@ -94,4 +95,5 @@ protected:
 
 };//end class
 }//end namespace  
+}//end namespace rompp
 #endif

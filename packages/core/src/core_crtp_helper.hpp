@@ -4,6 +4,7 @@
 
 #include <type_traits>
 
+namespace rompp{
 namespace core{
 namespace details {  
 
@@ -68,4 +69,5 @@ private:
 } // end namespace details
 } // end of core namespace
 
+}//end namespace rompp
 #endif

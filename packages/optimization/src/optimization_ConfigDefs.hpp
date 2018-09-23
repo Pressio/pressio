@@ -4,5 +4,7 @@
 
 #include "core_ConfigDefs.hpp"
 
+namespace rompp{
 
+}//end namespace rompp
 #endif

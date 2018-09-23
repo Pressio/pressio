@@ -5,6 +5,7 @@
 #include "../base/ode_explicit_stepper_base.hpp"
 #include "../../../policies/meta/ode_explicit_euler_policies_meta.hpp"
 
+namespace rompp{
 namespace ode{
 namespace impl{
     
@@ -89,4 +90,5 @@ private:
 
 }//end namespace impl
 }//end namespace ode  
+}//end namespace rompp
 #endif

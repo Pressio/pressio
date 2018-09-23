@@ -5,6 +5,7 @@
 #include "../../meta/core_matrix_meta.hpp"
 #include "../concrete/core_matrix_dense_sharedmem_eigen.hpp"
 
+namespace rompp{
 namespace core{
 namespace mat_ops{
 
@@ -82,4 +83,5 @@ auto transpose(const mat_type & A)
   
 } // end namespace mat_ops
 } // end namespace core
+}//end namespace rompp
 #endif

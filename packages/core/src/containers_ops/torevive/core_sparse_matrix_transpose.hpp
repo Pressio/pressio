@@ -7,6 +7,7 @@
 #include "EpetraExt_Transpose_RowMatrix.h"
 //#include <Epetra_RowMatrixTransposer.h>
 
+namespace rompp{
 namespace core{
 namespace mat_ops{
   
@@ -64,4 +65,5 @@ auto transpose(const mat_type & A)
   
 } // end namespace mat_ops  
 } // end namespace core
+}//end namespace rompp
 #endif

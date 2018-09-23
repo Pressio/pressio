@@ -5,6 +5,7 @@
 #include "../../meta/core_vector_meta.hpp"
 #include "../concrete/core_vector_sharedmem_eigen.hpp"
 
+namespace rompp{
 namespace core{
 namespace vec_ops{
 
@@ -36,4 +37,5 @@ void dot(const vec_a_type & vecA,
 
 } // end namespace vec_ops
 } // end namespace core
+}//end namespace rompp
 #endif

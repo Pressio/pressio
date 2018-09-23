@@ -4,8 +4,8 @@
 #include "Epetra_MpiComm.h"
 
 using sc_t = double;
-using dmat_t = core::Matrix<Epetra_MultiVector>;
-using smat_t = core::Matrix<Epetra_CrsMatrix>;
+using dmat_t = rompp::core::Matrix<Epetra_MultiVector>;
+using smat_t = rompp::core::Matrix<Epetra_CrsMatrix>;
 using vd_t = std::vector<sc_t>;
 using vvd_t = std::vector<vd_t>;
 

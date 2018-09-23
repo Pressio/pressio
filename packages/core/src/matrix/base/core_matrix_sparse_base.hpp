@@ -4,6 +4,7 @@
 
 #include "../core_matrix_traits.hpp"
 
+namespace rompp{
 namespace core{
     
 template<typename derived_type>
@@ -31,4 +32,5 @@ private:
 };//end class
   
 } // end namespace core
+}//end namespace rompp
 #endif

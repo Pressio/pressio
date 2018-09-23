@@ -7,7 +7,8 @@
 #include "../../../core/src/meta/core_meta_detection_idiom.hpp"
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 namespace details {
 
 
@@ -71,4 +72,5 @@ struct system_traits {
 } // end namespace details
 } // end namespace solvers
 
+}//end namespace rompp
 #endif

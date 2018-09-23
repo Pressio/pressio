@@ -4,7 +4,8 @@
 
 #include "ode_ConfigDefs.hpp"
 
-namespace ode {
+namespace rompp{
+namespace ode{
   
 template<typename ode_state_type,
 	 typename ode_residual_type,
@@ -39,7 +40,7 @@ class ImplicitEulerStepper;
 /////////////////////////////////////
 
 
-namespace ode {
+namespace ode{
 namespace impl {
 
 template<typename ode_state_type,
@@ -73,6 +74,7 @@ class ImplicitEulerStepperImpl;
   
 }//end namespace impl
 } // end namespace ode
+}//end namespace rompp
 #endif
 
 

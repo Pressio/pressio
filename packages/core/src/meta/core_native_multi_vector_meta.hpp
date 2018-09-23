@@ -6,6 +6,7 @@
 #include "core_native_vector_meta.hpp"
 #include "Epetra_MultiVector.h"
 
+namespace rompp{
 namespace core{
 namespace meta {
  
@@ -24,4 +25,5 @@ struct is_multi_vector_epetra<T,
 } // namespace meta
 } // namespace core
 
+}//end namespace rompp
 #endif

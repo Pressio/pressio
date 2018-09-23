@@ -5,6 +5,7 @@
 #include "../ode_ConfigDefs.hpp"
 #include "../meta/ode_meta.hpp"
 
+namespace rompp{
 namespace ode{
   
 
@@ -164,4 +165,5 @@ void integrateNSteps(stepper_type & stepper,
 
    
 }//end namespace
+}//end namespace rompp
 #endif 

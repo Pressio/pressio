@@ -5,6 +5,7 @@
 #include "svd_config.h"
 #include "../../core/src/core_ConfigDefs.hpp"
 
+namespace rompp{ 
 namespace svd{
   
 // put here definitions
@@ -47,6 +48,6 @@ enum class svdType{
 //} // end namespace details
 
 
-} // end of svd namespace
-
+} // end namespace svd
+}//end namespace rompp
 #endif

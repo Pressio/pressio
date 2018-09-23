@@ -6,6 +6,7 @@
 #include "../../../core/src/vector/core_vector_meta.hpp"
 #include "../../../core/src/matrix/core_matrix_meta.hpp"
 
+namespace rompp{
 namespace ode{
 namespace meta {
 
@@ -44,4 +45,5 @@ struct isLegitimateJacobianType<jacobian_type,
 
 } // namespace meta
 } // namespace core
+}//end namespace rompp
 #endif

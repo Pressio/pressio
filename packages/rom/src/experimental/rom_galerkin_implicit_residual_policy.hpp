@@ -8,6 +8,7 @@
 //#include "rom_incremental_solution_base.hpp"
 #include "../../../CORE_ALL"
 
+namespace rompp{
 namespace rom{
 namespace exp{
 
@@ -96,4 +97,5 @@ private:
   
 }//end namespace exp
 }//end namespace rom
+}//end namespace rompp
 #endif 

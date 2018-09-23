@@ -4,6 +4,7 @@
 
 #include "../core_ConfigDefs.hpp"
 
+namespace rompp{
 namespace core{
     
 template<typename derived_type, typename comm_t>
@@ -25,4 +26,5 @@ private:
   
 };//end class  
 } // end namespace core
+}//end namespace rompp
 #endif

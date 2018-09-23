@@ -9,6 +9,7 @@
 // #include <unsupported/Eigen/NonLinearOptimization>
 // #include <iomanip>
 
+namespace rompp{
 namespace optimization{
 
 
@@ -83,5 +84,6 @@ namespace optimization{
   
 }//end namespace 
   
+}//end namespace rompp
 #endif
 

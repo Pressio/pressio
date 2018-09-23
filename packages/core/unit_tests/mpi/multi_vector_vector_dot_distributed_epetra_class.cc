@@ -38,6 +38,8 @@ public:
 
 TEST_F(epetraFix, MVVecDotProduct){
 
+  using namespace rompp;
+
   assert(NumProc_ == 3);
   using mvec_t = core::MultiVector<Epetra_MultiVector>;
   STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(mvec_t);

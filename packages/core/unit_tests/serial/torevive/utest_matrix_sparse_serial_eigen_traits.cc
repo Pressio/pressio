@@ -15,6 +15,8 @@ template<typename T>
 struct core_matrix_sparse_serial_eigen_traitsTest
   : public ::testing::Test{
 public:
+	using namespace rompp;
+
   using native_t = typename T::mat_t;
   STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_EIGEN(native_t);
   STATIC_ASSERT_IS_MATRIX_SPARSE_SHAREDMEM_EIGEN(native_t);
@@ -72,6 +74,8 @@ TYPED_TEST_CASE(core_matrix_sparse_serial_eigen_traitsTest, MyTypes);
 
 TYPED_TEST(core_matrix_sparse_serial_eigen_traitsTest, traits)
 {
+	using namespace rompp;
+
   //this runs all types, no need to put anything
   this->check();
 

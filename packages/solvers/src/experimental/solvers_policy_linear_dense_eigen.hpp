@@ -6,7 +6,8 @@
 #include <memory>
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 // Policy to solve a dense linear system defined by an Eigen matrix
 template <
@@ -31,4 +32,5 @@ struct SolversLinearDenseEigenPolicy {
 
 } // end namespace solvers
 
+}//end namespace rompp
 #endif

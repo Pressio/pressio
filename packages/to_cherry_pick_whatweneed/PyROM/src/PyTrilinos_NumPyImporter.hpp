@@ -61,6 +61,7 @@ class NumPyImporter
     // But this return statement should supress compiler errors
     return NULL;
   }
+}//end namespace rompp
 #endif
 
 protected:
@@ -70,6 +71,7 @@ protected:
   NumPyImporter() {void * result = import_array_method();}
 #else
   NumPyImporter() {import_array();}
+}//end namespace rompp
 #endif
 
 private:

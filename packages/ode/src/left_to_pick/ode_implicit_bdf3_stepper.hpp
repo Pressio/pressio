@@ -4,6 +4,7 @@
 
 #include "./impl/ode_implicit_bdf3_stepper_impl.hpp"
 
+namespace rompp{
 namespace ode{
 
 //*********************************************************
@@ -167,4 +168,5 @@ public:
 
   
 }//end namespace ode
+}//end namespace rompp
 #endif

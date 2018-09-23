@@ -2,6 +2,7 @@
 #ifndef ROM_TEST_BURGERS1D_EIGEN_GALPRO_OBSERVER_HPP_
 #define ROM_TEST_BURGERS1D_EIGEN_GALPRO_OBSERVER_HPP_
 
+
 struct snapshot_collector
 {
   using native_state_t = apps::Burgers1dEigen::state_type;
@@ -61,5 +62,4 @@ public:
   /* }; */
 
 };//end class
-
 #endif

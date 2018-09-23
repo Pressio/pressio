@@ -11,6 +11,7 @@
 // WIP to finish
 // !!!!!!!!!!!!!!!!!!!!!!!!!!
 
+namespace rompp{
 namespace core{
 
 template <typename wrapped_type>
@@ -83,4 +84,5 @@ private:
 };
   
 }//end namespace core
+}//end namespace rompp
 #endif

@@ -5,6 +5,7 @@
 #include "svd_forward_declarations.hpp"
 #include "../../core/src/matrix/core_matrix_meta.hpp"
 
+namespace rompp{ 
 namespace svd{
 namespace details{
 
@@ -54,8 +55,8 @@ struct svd_traits<Solver<matrix_type,
 
   
 }//end namespace details
-}//end namespace svd
-
+}//end namespace svd 
+}//end namespace rompp
 #endif
 
 

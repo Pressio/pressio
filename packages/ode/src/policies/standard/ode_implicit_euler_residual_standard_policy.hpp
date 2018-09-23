@@ -6,6 +6,7 @@
 #include "../base/ode_implicit_residual_policy_base.hpp"
 #include "../../ode_residual_impl.hpp"
 
+namespace rompp{
 namespace ode{
 namespace policy{
 
@@ -60,4 +61,5 @@ private:
 
 }//end namespace polices
 }//end namespace ode  
+}//end namespace rompp
 #endif 

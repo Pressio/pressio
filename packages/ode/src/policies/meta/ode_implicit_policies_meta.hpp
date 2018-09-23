@@ -5,6 +5,7 @@
 #include "../base/ode_implicit_residual_policy_base.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
 
+namespace rompp{
 namespace ode{
 namespace meta {
 
@@ -28,4 +29,5 @@ struct is_legitimate_implicit_jacobian_policy<
     
 } // namespace meta
 } // namespace core
+}//end namespace rompp
 #endif

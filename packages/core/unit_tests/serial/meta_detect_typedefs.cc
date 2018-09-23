@@ -4,6 +4,8 @@
 
 TEST(core_meta_detect_typedefs, scalarTypedefDetect)
 {
+  using namespace rompp;
+
   class A{
   public:
     using scalar_type = double;
@@ -28,6 +30,7 @@ TEST(core_meta_detect_typedefs, scalarTypedefDetect)
 
 TEST(core_meta_detect_typedefs, ordinalTypedefDetect)
 {
+  using namespace rompp;
   class A{
   public:
     using ordinal_type = int;
@@ -52,6 +55,8 @@ TEST(core_meta_detect_typedefs, ordinalTypedefDetect)
 
 TEST(core_meta_detect_typedefs, localglobalOrdinalTypedefDetect)
 {
+  using namespace rompp;
+
   class A{
   public:
     using local_ordinal_type = int;
@@ -85,6 +90,8 @@ TEST(core_meta_detect_typedefs, localglobalOrdinalTypedefDetect)
 
 TEST(core_meta_detect_typedefs, mapCommTypedefDetect)
 {
+  using namespace rompp;
+
   class A{
   public:
     using data_map_type = int;

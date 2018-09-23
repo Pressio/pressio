@@ -5,6 +5,8 @@
 
 TEST(core_vector_serial_eigen_class, EigenVectorConstructor)
 {
+	using namespace rompp;
+
   // using eigvec_t1 = Eigen::Matrix<double, 4, 1>;
   // using myvec_t1 = core::Vector<eigvec_t1>;
   // myvec_t1 m333(5);
@@ -28,6 +30,8 @@ TEST(core_vector_serial_eigen_class, EigenVectorConstructor)
 
 TEST(core_vector_serial_eigen_class, queryWrappedData)
 {
+	using namespace rompp;
+
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
 
@@ -42,6 +46,7 @@ TEST(core_vector_serial_eigen_class, queryWrappedData)
 
 TEST(core_vector_serial_eigen_class, sizeResize)
 {
+	using namespace rompp;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
  
@@ -60,6 +65,7 @@ TEST(core_vector_serial_eigen_class, sizeResize)
 
 TEST(core_vector_serial_eigen_class, subscriptOperator)
 {
+	using namespace rompp;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
 
@@ -82,6 +88,7 @@ TEST(core_vector_serial_eigen_class, subscriptOperator)
 
 TEST(core_vector_serial_eigen_class, additionOperator)
 {
+	using namespace rompp;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
   
@@ -101,6 +108,7 @@ TEST(core_vector_serial_eigen_class, additionOperator)
 
 TEST(core_vector_serial_eigen_class, substractOperator)
 {
+	using namespace rompp;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
 
@@ -120,6 +128,7 @@ TEST(core_vector_serial_eigen_class, substractOperator)
 
 TEST(core_vector_serial_eigen_class, starOperator)
 {
+	using namespace rompp;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
 
@@ -139,6 +148,7 @@ TEST(core_vector_serial_eigen_class, starOperator)
 
 TEST(core_vector_serial_eigen_class, CompoundAssignAddOperator)
 {
+	using namespace rompp;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
 
@@ -159,6 +169,7 @@ TEST(core_vector_serial_eigen_class, CompoundAssignAddOperator)
 
 TEST(core_vector_serial_eigen_class, CompoundAssignSubtractOperator)
 {
+	using namespace rompp;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
 

@@ -10,7 +10,8 @@
 #include "solvers_meta_static_checks.hpp"
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 
 struct SolversNonLinearIterativeNewtonRaphsonPolicy {
@@ -97,4 +98,5 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
 
 } // end namespace solvers
 
+}//end namespace rompp
 #endif

@@ -6,6 +6,8 @@
 
 TEST(core_multivector_distributed_epetra,
      Traits){
+  using namespace rompp;
+
   using natV_t = Epetra_MultiVector;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(natV_t);
   STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(natV_t);

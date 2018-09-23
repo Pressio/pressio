@@ -4,6 +4,7 @@
 
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
 
+namespace rompp{
 namespace ode{
 
 /////////////////////////////////////////
@@ -112,4 +113,5 @@ public:
 
 
 }//end namespace
+}//end namespace rompp
 #endif 

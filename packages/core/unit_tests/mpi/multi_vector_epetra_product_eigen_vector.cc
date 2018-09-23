@@ -37,6 +37,8 @@ public:
 
 TEST_F(epetraFix, MVecEpetraProductEigenVector){
 
+  using namespace rompp;
+
   using mvec_t = core::MultiVector<Epetra_MultiVector>;
   STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(mvec_t);
   mvec_t MV(*mv_);

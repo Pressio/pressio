@@ -4,6 +4,7 @@
 
 #include <type_traits>
 
+namespace rompp{
 namespace core{
   
 template<typename derived_type>
@@ -103,5 +104,6 @@ private:
 
 
 } // end namespace core
+}//end namespace rompp
 #endif
 

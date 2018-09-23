@@ -7,6 +7,8 @@
 struct core_multi_vector_distributed_epetraFix
   : public ::testing::Test{
 public:
+  using namespace rompp;
+
   int rank_;
   Epetra_MpiComm * Comm_;
   int MyPID_;
@@ -56,6 +58,8 @@ public:
 TEST_F(core_multi_vector_distributed_epetraFix,
        EpetraMultiVectorConstructor)
 {
+  using namespace rompp;
+
   using nat_t = Epetra_MultiVector;
   using mymvec_t = core::MultiVector<nat_t>;
   STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(mymvec_t);

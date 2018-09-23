@@ -6,6 +6,7 @@
 #include "core_wrapped_types_enum.hpp"
 
 
+namespace rompp{
 namespace core{
 namespace details {
   
@@ -49,4 +50,5 @@ struct matrix_shared_traits{
 } // end namespace details
 } // end of core namespace
 
+}//end namespace rompp
 #endif

@@ -4,6 +4,7 @@
 
 #include "ode_ConfigDefs.hpp"
 
+namespace rompp{
 namespace ode{
 namespace impl{
 
@@ -54,5 +55,6 @@ void implicit_euler_time_discrete_residual(const state_type & yn,
 
 }//end namespace impl
 }//end namespace ode
+}//end namespace rompp
 #endif 
 

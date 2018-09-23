@@ -4,6 +4,7 @@
 
 #include "../../ode_forward_declarations.hpp"
 
+namespace rompp{
 namespace ode{
 namespace details{
 
@@ -68,4 +69,5 @@ struct traits<impl::ExplicitRungeKutta4StepperImpl<state_type,
   
 }//end namespace details
 }//end namespace ode
+}//end namespace rompp
 #endif

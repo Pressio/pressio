@@ -5,7 +5,8 @@
 #include "solvers_meta_static_checks.hpp"
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 	
 struct L2Norm {
 
@@ -28,4 +29,5 @@ struct L2Norm {
 
 } // end namespace solvers
 
+}//end namespace rompp
 #endif

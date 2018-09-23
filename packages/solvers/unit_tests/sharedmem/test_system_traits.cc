@@ -13,11 +13,11 @@ struct ValidSystemA {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = core::Matrix<matrix_n_t>;
+    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = core::Vector<vector_n_t>;
+    using vector_w_t = rompp::core::Vector<vector_n_t>;
 
     typedef vector_w_t vector_type;
     typedef matrix_w_t matrix_type;
@@ -60,11 +60,11 @@ struct ValidSystemB {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = core::Matrix<matrix_n_t>;
+    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = core::Vector<vector_n_t>;
+    using vector_w_t = rompp::core::Vector<vector_n_t>;
 
     typedef vector_w_t vector_type;
     typedef matrix_w_t matrix_type;
@@ -89,11 +89,11 @@ struct InvalidSystemA {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = core::Matrix<matrix_n_t>;
+    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = core::Vector<vector_n_t>;
+    using vector_w_t = rompp::core::Vector<vector_n_t>;
 
     typedef vector_w_t vector_type;
     typedef matrix_w_t matrix_type;
@@ -109,6 +109,7 @@ struct InvalidSystemA {
 
 TEST(system_traits, systemTraitsValidSystemATest)
 {
+  using namespace rompp;
   using namespace solvers::details;
 
   typedef system_traits<ValidSystemA> system_t;
@@ -131,6 +132,7 @@ TEST(system_traits, systemTraitsValidSystemATest)
 
 TEST(system_traits, systemTraitsValidSystemBTest) 
 {
+  using namespace rompp;
   using namespace solvers::details;
 
   typedef system_traits<ValidSystemB> system_t;
@@ -153,6 +155,7 @@ TEST(system_traits, systemTraitsValidSystemBTest)
 
 TEST(system_traits, systemTraitsInvalidSystemATest) 
 {
+  using namespace rompp;
   using namespace solvers::details;
 
   typedef system_traits<InvalidSystemA> system_t;

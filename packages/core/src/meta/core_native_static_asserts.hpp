@@ -6,6 +6,7 @@
 #include "../meta/core_native_multi_vector_meta.hpp"
 #include "../meta/core_native_matrix_meta.hpp"
 
+namespace rompp{
 namespace core{
 
 
@@ -99,4 +100,5 @@ namespace core{
 
   
 } // end namespace core
+}//end namespace rompp
 #endif

@@ -8,6 +8,7 @@
 #include "../base/core_vector_math_base.hpp"
 
 
+namespace rompp{
 namespace core{
 
 template <typename wrapped_type>
@@ -173,4 +174,5 @@ private:
   
 };//end class  
 }//end namespace core  
+}//end namespace rompp
 #endif

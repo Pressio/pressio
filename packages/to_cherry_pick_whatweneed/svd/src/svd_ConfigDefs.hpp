@@ -5,8 +5,9 @@
 #include "core_ConfigDefs.hpp"
 #include "svd_config.h"
 
+namespace rompp{ 
 namespace svd{
   
-} // end of svd namespace
-
+} // end namespace svd
+}//end namespace rompp
 #endif

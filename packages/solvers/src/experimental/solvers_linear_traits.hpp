@@ -7,7 +7,8 @@
 #include "../../../core/src/matrix/core_matrix_traits.hpp"
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 namespace linear {
 
 // Linear dense solvers types
@@ -145,5 +146,5 @@ struct preconditioner_traits<Jacobi> {
 } // end namespace details
 } // end namespace linear
 } // end namespace solvers
-
+}//end namespace rompp
 #endif

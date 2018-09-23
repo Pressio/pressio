@@ -4,6 +4,7 @@
 
 #include "../../../core/src/meta/core_meta_basic.hpp"
 
+namespace rompp{
 namespace ode{
 namespace meta {
 
@@ -52,4 +53,5 @@ struct isLegitimateCollector<
  
 } // namespace meta
 } // namespace core
+}//end namespace rompp
 #endif

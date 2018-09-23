@@ -6,6 +6,7 @@
 #include "../../policies/standard/ode_implicit_euler_residual_standard_policy.hpp"
 #include "../../policies/standard/ode_implicit_euler_jacobian_standard_policy.hpp"
 
+namespace rompp{
 namespace ode{
 
 //*********************************************************
@@ -142,4 +143,5 @@ public:
 
 
 }//end namespace ode
+}//end namespace rompp
 #endif

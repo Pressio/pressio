@@ -6,6 +6,8 @@
 #include "core_meta.hpp"
 
 
+namespace rompp{
+
 // namespace ode{
 //   namespace details{
 //     using time_type = double;
@@ -25,4 +27,5 @@
 //} // end of timeIntegrator namespace
 
 
+}//end namespace rompp
 #endif

@@ -5,6 +5,7 @@
 #include "../../../core/src/meta/core_meta_basic.hpp"
 #include "../../../core/src/vector/core_vector_meta.hpp"
 
+namespace rompp{
 namespace ode{
 namespace meta {
   
@@ -51,4 +52,5 @@ struct isLegitimateExplicitResidualType
 
 } // namespace meta
 } // namespace core
+}//end namespace rompp
 #endif

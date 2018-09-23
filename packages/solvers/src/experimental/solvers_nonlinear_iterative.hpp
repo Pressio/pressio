@@ -8,7 +8,8 @@
 // #include "solvers_nonlinear_factory.hpp"
 
 
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 
 struct NonLinearSolvers; // Fwd declaration
@@ -103,5 +104,5 @@ class NonLinearIterativeSolver
 };
 
 } // end namespace solvers
-
+}//end namespace rompp
 #endif

@@ -11,7 +11,8 @@
 TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenCreateWithMatrixAndSolve)
 {
   // Namespaces
-  using namespace solvers;
+  using namespace rompp;
+  using namespace rompp::solvers;
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
@@ -44,7 +45,8 @@ TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenCreateWithMa
 TEST(solvers_linear_iterative_eigen, solversTestLinearIterativeEigenCreateWithoutMatrixAndSolve)
 {
   // Namespaces
-  using namespace solvers;
+  using namespace rompp;
+  using namespace rompp::solvers;
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;

@@ -4,6 +4,7 @@
 
 #include "../rom_ConfigDefs.hpp"
 
+namespace rompp{
 namespace rom{
 
 template <typename derived_t>
@@ -48,4 +49,5 @@ private:
 };//end class
 
 } // end namespace rom
+}//end namespace rompp
 #endif

@@ -4,6 +4,7 @@
 
 #include "core_matrix_traits.hpp"
 
+namespace rompp{
 namespace core{
 namespace meta {
 
@@ -27,4 +28,5 @@ struct is_core_matrix_wrapper< T,
 } // namespace meta
 } // namespace core
 
+}//end namespace rompp
 #endif

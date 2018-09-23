@@ -4,6 +4,7 @@
 
 #include "../../ode_ConfigDefs.hpp"
 
+namespace rompp{
 namespace ode{
 namespace policy{   
   
@@ -59,4 +60,5 @@ private:
   
 }//end namespace polices
 }//end namespace ode  
+}//end namespace rompp
 #endif

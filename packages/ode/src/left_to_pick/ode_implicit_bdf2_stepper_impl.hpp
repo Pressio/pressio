@@ -4,6 +4,7 @@
 
 #include "../base/ode_ImplicitStepperBase.hpp"
 
+namespace rompp{
 namespace ode{
 namespace impl{
 
@@ -227,4 +228,5 @@ private:
 
 }//end namespace impl
 }//end namespace ode  
+}//end namespace rompp
 #endif 

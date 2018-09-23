@@ -4,6 +4,8 @@
 
 
 TEST(core_meta_basic, isDefaultConstructible){
+  using namespace rompp;
+
   class A{
   public:
     A() = default;
@@ -24,6 +26,8 @@ TEST(core_meta_basic, isDefaultConstructible){
 }
 
 TEST(core_meta_basic, isComplexNumber){
+  using namespace rompp;
+
   
   using t1 = std::complex<float>;
   static_assert( core::meta::is_std_complex<t1>::value, "should be complex" );
@@ -38,6 +42,8 @@ TEST(core_meta_basic, isComplexNumber){
 
 TEST(core_meta_basic, inheritanceVector){
   
+  using namespace rompp;
+
   using eigV_t = core::Vector<Eigen::Matrix<double,4,1>>;
   using base_t1 = core::VectorSharedMemBase<eigV_t>;
 
@@ -63,6 +69,8 @@ TEST(core_meta_basic, inheritanceVector){
 
 TEST(core_meta_basic, hasSizeMethod){
   
+  using namespace rompp;
+
   struct foo{
     int size() const{
       return 3;

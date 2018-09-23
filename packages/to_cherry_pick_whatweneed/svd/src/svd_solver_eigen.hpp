@@ -8,6 +8,7 @@
 #include <Eigen/SVD>
 
 
+namespace rompp{ 
 namespace svd{
 
      
@@ -68,7 +69,7 @@ namespace svd{
   };
 
   
-}//end namespace svd
-  
+}//end namespace svd  
+}//end namespace rompp
 #endif
 

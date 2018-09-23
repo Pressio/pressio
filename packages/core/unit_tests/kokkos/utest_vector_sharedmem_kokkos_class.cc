@@ -52,6 +52,8 @@ struct InitView {
 
 TEST(core_vector_sharedmem_kokkos_class, Constructor)
 {
+  using namespace rompp;
+
   // kokkos initialize and finalize already set from environment, see CMakeList
   const int N = 10;
 

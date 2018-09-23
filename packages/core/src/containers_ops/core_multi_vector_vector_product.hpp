@@ -6,6 +6,7 @@
 #include "../vector/core_vector_meta.hpp"
 #include "../multi_vector/core_multi_vector_meta.hpp"
 
+namespace rompp{
 namespace core{
 namespace ops{
 
@@ -89,4 +90,5 @@ core::Vector<Epetra_Vector> product(const mvec_type & mvA,
   
 } // end namespace linalg
 } // end namespace core
+}//end namespace rompp
 #endif

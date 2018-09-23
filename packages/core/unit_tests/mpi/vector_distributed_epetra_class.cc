@@ -6,7 +6,6 @@
 struct core_vector_distributed_epetraFix
   : public ::testing::Test{
 public:
-
   int rank_;
   Epetra_MpiComm * Comm_;
   int MyPID_;
@@ -36,6 +35,8 @@ public:
 
 
 TEST_F(core_vector_distributed_epetraFix, Constructor){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t a( *contigMap_ );
   ASSERT_EQ( a.globalSize(), numGlobalEntries_ );
@@ -50,7 +51,10 @@ TEST_F(core_vector_distributed_epetraFix, Constructor){
 
 
 TEST_F(core_vector_distributed_epetraFix,
-       QueryWrappedData){
+       QueryWrappedData)
+{
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   ::testing::StaticAssertTypeEq<decltype(v1.data()),
@@ -61,7 +65,10 @@ TEST_F(core_vector_distributed_epetraFix,
 }
 
 TEST_F(core_vector_distributed_epetraFix,
-       SubscriptOperator){
+       SubscriptOperator)
+{
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
 
   x_->PutScalar(11.2);
@@ -78,6 +85,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        SetScalar){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   v1.putScalar(43.3);
@@ -89,6 +98,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        AdditionOperator){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   double rankD = static_cast<double>(rank_);
@@ -106,6 +117,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        SubtractOperator){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   double rankD = static_cast<double>(rank_);  
@@ -124,6 +137,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        StarOperator){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   double rankD = static_cast<double>(rank_);  
@@ -147,6 +162,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        CompoundAssignAddOperator){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   v1.putScalar( 3. );
@@ -164,6 +181,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        CompoundAssignSubtractOperator){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   v1.putScalar( 3. );
@@ -181,6 +200,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        SetZero){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   v1.setZero();
@@ -193,6 +214,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        Empty){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   ASSERT_FALSE( v1.empty() );
@@ -201,6 +224,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        replaceGlobalData){
+
+  using namespace rompp;
 
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
@@ -222,6 +247,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        InPlaceOp){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   v1.putScalar(1.1);
@@ -241,6 +268,8 @@ TEST_F(core_vector_distributed_epetraFix,
 
 TEST_F(core_vector_distributed_epetraFix,
        Scale){
+  using namespace rompp;
+
   using myvec_t = core::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
   v1.putScalar(1.1);

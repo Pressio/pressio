@@ -6,6 +6,7 @@
 #include "../vector/core_vector_meta.hpp"
 #include "../multi_vector/core_multi_vector_meta.hpp"
 
+namespace rompp{
 namespace core{
 namespace ops{
 
@@ -73,4 +74,5 @@ dot(const mvec_type & mvA, const vec_type & vecB)
   
 } // end namespace linalg
 } // end namespace core
+}//end namespace rompp
 #endif

@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <complex>
 
+namespace rompp{
 namespace core{
 namespace meta {
 
@@ -93,4 +94,5 @@ namespace meta {
    
 } // namespace meta
 } // namespace core
+}//end namespace rompp
 #endif

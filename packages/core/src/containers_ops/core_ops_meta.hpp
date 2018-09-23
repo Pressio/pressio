@@ -7,7 +7,8 @@
 #include "../multi_vector/core_multi_vector_meta.hpp"
 
 
-namespace core {
+namespace rompp{
+namespace core{
 namespace meta {
 
 template <typename T, typename T2, typename enable = void>
@@ -26,4 +27,5 @@ struct wrappers_have_same_scalar<T, T2,
 } // namespace meta
 } // namespace core
 
+}//end namespace rompp
 #endif

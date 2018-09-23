@@ -4,6 +4,7 @@
 
 #include "core_vector_traits.hpp"
 
+namespace rompp{
 namespace core{
 namespace meta {
 
@@ -57,4 +58,5 @@ struct is_eigen_vector_wrapper<
 } // namespace meta
 } // namespace core
 
+}//end namespace rompp
 #endif

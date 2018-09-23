@@ -5,6 +5,7 @@
 #include "svd_ConfigDefs.hpp"
 #include "core_forward_declarations.hpp"
 
+namespace rompp{ 
 namespace svd {
 
   enum class svdKind {
@@ -46,6 +47,6 @@ namespace details {
   // };
   
   
-} // end namespace 
-
+} // end namespace svd
+}//end namespace rompp
 #endif

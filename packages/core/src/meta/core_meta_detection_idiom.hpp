@@ -4,6 +4,7 @@
 
 #include "core_meta_basic.hpp"
 
+namespace rompp{
 namespace core {
 namespace meta {
 
@@ -57,4 +58,5 @@ using is_detected_exact = std::is_same<T, detected_t<Op, Args...>>;
 } // end namespace meta
 } // end namespace core
 
+}//end namespace rompp
 #endif

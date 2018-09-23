@@ -4,6 +4,7 @@
 
 #include "core_multi_vector_traits.hpp"
 
+namespace rompp{
 namespace core{
 namespace meta {
 
@@ -43,4 +44,5 @@ struct is_epetra_multi_vector_wrapper<
 } // namespace meta
 } // namespace core
 
+}//end namespace rompp
 #endif
