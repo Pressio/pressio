@@ -7,8 +7,8 @@
 
 namespace rompp{
 namespace ode{
-  
 
+  
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 //----------------------------------------------------------------
@@ -39,19 +39,20 @@ void integrateNSteps(stepper_type & stepper,
 		     collector_type & collector)
 {
   time_type time = start_time;
+  // call collector/observer at starting time
+  collector(0, time, yIn);
+  
   integral_type step = 1;
-
   // time loop
   for( ; step <= num_steps ; ++step)
   {
-    // call collector/observer 
-    collector(step, time, yIn);
     // do one step
     stepper.doStep(yIn, time, dt, step);
     // advance time: mulitply (vs adding) benefits roundoff
-    time = start_time + static_cast<time_type>(step) * dt;  
+    time = start_time + static_cast<time_type>(step) * dt;
+    // call collector/observer at starting time
+    collector(step, time, yIn);
   }
-  collector(step, time, yIn);
 }  
 
 //----------------------------------------------------------------
@@ -117,19 +118,20 @@ void integrateNSteps(stepper_type & stepper,
 		     solver_type & solver)
 {
   time_type time = start_time;
+  // call collector/observer at starting time
+  collector(0, time, yIn);
+  
   integral_type step = 1;
-
   // time loop
   for( ; step <= num_steps ; ++step)
   {
-    // call collector/observer 
-    collector(step, time, yIn);
     // do one step
     stepper.doStep(yIn, time, dt, step, solver);
     // advance time: mulitply (vs adding) benefits roundoff
     time = start_time + static_cast<time_type>(step) * dt;  
+    // call collector/observer 
+    collector(step, time, yIn);
   }
-  collector(step, time, yIn);
 }  
 
 //----------------------------------------------------------------
