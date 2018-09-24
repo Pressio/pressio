@@ -56,13 +56,13 @@ public:
   sc_t & operator()(LO_t irow, GO_t icol){
     assert(icol < this->globalNumVectors() );
     assert(irow < this->localLength() );
-    return (*data_(icol))[irow];
+    return data_[icol][irow];//(*data_(icol))[irow];
   }
 
   sc_t const & operator()(LO_t irow, GO_t icol)const{
     assert(icol < this->globalNumVectors() );
     assert(irow < this->localLength() );
-    return (*data_(icol))[irow];
+    return data_[icol][irow];//(*data_(icol))[irow];
   }
   
 private:

@@ -21,12 +21,12 @@ private:
 
 public:
 
-  template<svdType envalue,
+  template<svdType svd_enum_value,
 	   typename std::enable_if<
-	     envalue==svdType::truncated
+	     svd_enum_value==svdType::truncated
 	     >::type * = nullptr>
-  void compute(matrix_t & mat, sc_t tol, int t){
-    this->underlying().template computeImpl<envalue>(mat, tol, t);
+  void compute(matrix_t & mat, int t, sc_t tol = 1e-12){
+    this->underlying().template computeImpl<svd_enum_value>(mat, t, tol);
   }
 
   const leftSvec_t & cRefLeftSingularVectors() const {

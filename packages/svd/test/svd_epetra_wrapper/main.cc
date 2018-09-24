@@ -4,8 +4,7 @@
 #include "Epetra_MpiComm.h"
 
 using sc_t = double;
-using dmat_t = rompp::core::Matrix<Epetra_MultiVector>;
-using smat_t = rompp::core::Matrix<Epetra_CrsMatrix>;
+using datamat_t = rompp::core::MultiVector<Epetra_MultiVector>;
 using vd_t = std::vector<sc_t>;
 using vvd_t = std::vector<vd_t>;
 
@@ -26,24 +25,16 @@ void readMatrixFromFile(std::string filename, vvd_t & A0, int ncols){
   source.close();
 }
 //------------------------------
-    
-void doSVDNonSqMat(int rank, Epetra_MpiComm & Comm){  
 
-  //---------------------------------------------
-  // READ MATRIX
-  //---------------------------------------------
-  // every process reads the whole matrix
-  int ncols = 18;
-  vvd_t A0;
-  readMatrixFromFile("mat_svd_notsq.dat", A0, ncols);
-  int nrows = A0.size();
-  assert(A0[0].size() == size_t(ncols));
-  std::cout << A0.size() << " " << A0[0].size() << std::endl;
+
+datamat_t comvertFromVVecToDDMat(const vvd_t & A0,
+			      int nrows, int ncols,
+			      Epetra_MpiComm & Comm){
 
   // split matrix rows over processes
   Epetra_Map rowMap(nrows,0,Comm);
   // create a wrapper of a dense matrix
-  dmat_t ADW(rowMap, ncols);
+  datamat_t ADW(rowMap, ncols);
   // each process stores just its elements from A0
   int nMyElem = rowMap.NumMyElements();
   std::vector<int> myGel(nMyElem);
@@ -53,12 +44,86 @@ void doSVDNonSqMat(int rank, Epetra_MpiComm & Comm){
     for (int j=0; j<ncols; j++)
       ADW.replaceGlobalValue(gi, j, A0[gi][j]);
   }
-  //ADW.data()->Print(std::cout);
+  //  ADW.data()->Print(std::cout);
+  return ADW;
+}
+//------------------------------
 
-  // //-------------------------
-  // // dense -> CRS conversion
-  // auto ASW = core::denseToSparse(ADW);
-  // //  ASW.data()->Print(std::cout);
+
+void doSVDNonSqMat(int rank, Epetra_MpiComm & Comm){  
+
+  //---------------------------------------------
+  // READ IN MATRIX
+  //---------------------------------------------
+  // every process reads the whole matrix
+  int ncols = 18;
+  vvd_t A0;
+  readMatrixFromFile("mat_svd_notsq.dat", A0, ncols);
+  int nrows = A0.size();
+  assert(A0[0].size() == size_t(ncols));
+  std::cout << A0.size() << " " << A0[0].size() << std::endl;
+  // convert to multivector
+  datamat_t ADW = comvertFromVVecToDDMat(A0, nrows, ncols, Comm);
+  
+  ///-----------------------
+  /// create svd solver
+  rompp::svd::Solver<datamat_t,
+  		     rompp::core::MultiVector,
+  		     rompp::core::MultiVector,
+  		     std::vector<double>> svdO;
+  svdO.compute<rompp::svd::svdType::truncated>(ADW, 10);
+
+  /// get result
+  auto & lsv = svdO.cRefLeftSingularVectors();
+  lsv.data()->Print(std::cout << std::setprecision(14));
+  
+  //------------------------------
+  // read the U solution from file
+  ncols = 10;
+  vvd_t Utrue;
+  readMatrixFromFile("mat_svd_notsq_U.dat", Utrue, ncols);
+  // convert to multivector
+  datamat_t UW = comvertFromVVecToDDMat(Utrue, Utrue.size(), ncols, Comm);
+  UW.data()->Print(std::cout << std::setprecision(14));
+
+  double eps = 1e-12;
+  assert(lsv.globalNumVectors()==10);
+  for (int i=0; i<lsv.localLength();i++)
+    for (int j=0; j<ncols;j++)
+      assert( std::abs(lsv(i,j)) - std::abs(UW(i,j)) < eps  );
+     
+}//end method
+//-------------------------------------------------------
+
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+int main(int argc, char *argv[])
+{  
+  //-------------------------------
+  // MPI init
+  MPI_Init(&argc,&argv);
+  int rank; // My process ID
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  Epetra_MpiComm Comm(MPI_COMM_WORLD);
+
+  doSVDNonSqMat(rank, Comm);
+  //  simple(Comm, rank);
+        
+  MPI_Finalize();
+  return 0;
+}
+
+
+
+
+
+
+
+  //-------------------------
+  // dense -> CRS conversion
+  //auto ASW = rompp::core::denseToSparse(ADW);
+  //  ASW.data()->Print(std::cout);
   
   // //-----------------------
   // // create svd solver
@@ -118,9 +183,6 @@ void doSVDNonSqMat(int rank, Epetra_MpiComm & Comm){
   // //     assert( std::abs(a1-a2) < eps  );
   // //   }
   // // }
-  
-}//end method
-//-------------------------------------------------------
 
 
 // void simple(Epetra_MpiComm & Comm, int rank){
@@ -162,30 +224,6 @@ void doSVDNonSqMat(int rank, Epetra_MpiComm & Comm){
 //   lsv.data()->Print(std::cout);
   
 // }    
-
-
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-int main(int argc, char *argv[])
-{  
-  //-------------------------------
-  // MPI init
-  MPI_Init(&argc,&argv);
-  int rank; // My process ID
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  Epetra_MpiComm Comm(MPI_COMM_WORLD);
-
-  // doSVDHermitMat(rank, Comm);
-  doSVDNonSqMat(rank, Comm);
-  //  simple(Comm, rank);
-        
-  MPI_Finalize();
-  return 0;
-}
-
-
-
-
 
 
 

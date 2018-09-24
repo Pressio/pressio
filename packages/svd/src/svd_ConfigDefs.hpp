@@ -41,12 +41,6 @@ enum class svdType{
 };
 
 
-  
-//namespace details {  
-// template<typename T, typename enable = void>
-// struct traits : core::details::traits<T> {};
-//} // end namespace details
-
 
 } // end namespace svd
 }//end namespace rompp

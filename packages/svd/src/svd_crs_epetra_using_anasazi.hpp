@@ -1,6 +1,6 @@
 
-#ifndef SVD_HACKED_EPETRA_OP_HPP_
-#define SVD_HACKED_EPETRA_OP_HPP_
+#ifndef SVD_CRS_EPETRA_USING_ANASAZI_HPP_
+#define SVD_CRS_EPETRA_USING_ANASAZI_HPP_
 
 #include <memory>
 #include "svd_solver_generic_base.hpp"
@@ -29,9 +29,9 @@ template<typename matrix_type,
 class Solver<matrix_type, lsv_type, rsv_type, sval_type,
 	     typename
 	     std::enable_if<
-	       core::meta::is_core_matrix_wrapper<matrix_type>::value==true &&
-	       core::details::traits<matrix_type>::isEpetra==1 &&
-	       core::details::traits<matrix_type>::isSparse==1
+	       core::meta::is_matrix_sparse_distributed_epetra<
+		 typename core::details::traits<matrix_type>::wrapped_t
+		 >::value
 	       >::type
 	     >
   : public SolverBase< Solver<matrix_type, lsv_type,
@@ -53,11 +53,11 @@ public:
   
 private:
 
-  template<svdType envalue,
+  template<svdType svd_enum_value,
 	   typename std::enable_if<
-	     envalue==svdType::truncated
+	     svd_enum_value==svdType::truncated
 	     >::type * = nullptr>
-  void computeImpl(matrix_type & A, sc_t tol, int t){
+  void computeImpl(matrix_type & A, int t, sc_t tol){
     tol_ = tol;
     //    auto m = A.globalRows();
     auto n = A.globalCols();
@@ -148,7 +148,7 @@ private:
     const Anasazi::Eigensolution<sc_t,MV> & sol = eigP_->getSolution();
     std::vector<Anasazi::Value<sc_t> > evals = sol.Evals;
     assert((int)evals.size() == N);
-    // compute singular values as sqrt of eigenvalues
+    // compute singular values as sqrt of eigsvd_enum_values
     std::transform(evals.cbegin(), evals.cend(),
 		   std::back_inserter(eigVals_),
 		   [](const Anasazi::Value<sc_t> & value) {
@@ -204,7 +204,7 @@ private:
   
     // Create the solver manager and solve
     Teuchos::ParameterList PL;
-    PL.set("Which", "LM"); // ordering of eigenvalues, lowest to largest
+    PL.set("Which", "LM"); // ordering of eigsvd_enum_values, lowest to largest
 
     PL.set("Block Size", 1);
     PL.set( "Num Blocks", 12);
