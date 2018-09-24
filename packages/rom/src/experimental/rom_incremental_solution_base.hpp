@@ -8,27 +8,19 @@ namespace rompp{
 namespace rom{
 namespace exp{
 
-template <template <typename...> class derived_type,
-	  typename state_type,
-	  typename ... Args>
-class incrementalSolutionBase
-{
-public:
-  static constexpr bool advanceIncrement = true;
-  static constexpr bool advanceFull = !advanceIncrement;
-
+template <typename derived_type, typename state_type>
+class IncrementalSolutionBase{
 protected:
-  state_type const * y0ptr_;
-  state_type yFull_;
+  state_type y0FOM_;
+  state_type yFOM_;
 
 private:
-  using derived_t = derived_type<state_type, Args...>;
-  friend derived_t; 
+  friend derived_type; 
 
-  incrementalSolutionBase(const state_type & y0)
-    : y0ptr_(&y0), yFull_(y0){}
+  IncrementalSolutionBase(const state_type & y0fom)
+    : y0FOM_(y0fom), yFOM_(y0fom){}
 
-  ~incrementalSolutionBase() = default;
+  ~IncrementalSolutionBase() = default;
 
 };//end class
 

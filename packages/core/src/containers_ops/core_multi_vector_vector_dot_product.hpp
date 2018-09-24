@@ -43,10 +43,10 @@ void dot(const mvec_type & mvA,
   for (decltype(numVecs) i=0; i<numVecs; i++){
     (*mvNatData)(i)->Dot(*vecNatData, &result[i]);
   }
-
+  
 }
-
-
+//--------------------------------------------------------
+  
   
 //  Epetra multivector with epetra vector
 template <typename mvec_type,
@@ -58,8 +58,7 @@ template <typename mvec_type,
     > * = nullptr
   >
 std::vector<typename details::traits<mvec_type>::scalar_t> 
-dot(const mvec_type & mvA, const vec_type & vecB)
-{
+dot(const mvec_type & mvA, const vec_type & vecB){
 
   using sc_t = typename details::traits<mvec_type>::scalar_t;
   // how many vectors are in mvA
@@ -70,6 +69,7 @@ dot(const mvec_type & mvA, const vec_type & vecB)
   return res;
 
 }
+//--------------------------------------------------------
 
   
 } // end namespace linalg

@@ -51,6 +51,9 @@ public:
     this->resize(insize);
   }
 
+  explicit Vector(const sc_t * src)
+    : data_(src){}
+
   explicit Vector(const wrap_t & src)
     : data_(src){}
 

@@ -18,36 +18,41 @@ class MultiVectorOperator
   : public OperatorBase<
       MultiVectorOperator<operator_type>>{
   
-  // template <typename operand_type,
-  // 	    typename result_type>
-  // void applyImpl(const operand_type & X,
-  // 		 result_type & Y,
-  // 		 bool useTranspose = false){
-  //   // do something
-  // }
-  // //---------------------------------
-  
+  //---------------------------------
+
   template <typename T, 
      core::meta::enable_if_t<
        core::meta::is_core_vector_wrapper<T>::value 
        > * = nullptr
      >
   auto applyImpl(const T & X){
-
-    //std::cout << "MultiVectorOperator" << std::endl;
-    op_->data()->Print(std::cout);
     return core::ops::product(*op_, X);
   }
   //---------------------------------
 
+  template <typename T1,
+	    typename T2, 
+     core::meta::enable_if_t<
+       core::meta::is_core_vector_wrapper<T1>::value &&
+       core::meta::is_core_vector_wrapper<T2>::value 
+       > * = nullptr
+     >
+  void applyImpl(const T1 & X, const T2 & Y){
+    core::ops::product(*op_, X);
+  }
+
+  //---------------------------------
+  //---------------------------------
+  //----      TRANSPOSE
+  //---------------------------------
+  //---------------------------------
+  
   template <typename T, 
      core::meta::enable_if_t<
        core::meta::is_core_vector_wrapper<T>::value
        > * = nullptr
      >
   auto applyTranspImpl(const T & X){
-
-    std::cout << "MultiVectorOperator trans" << std::endl;
     return core::ops::dot(*op_, X);
   }
   //---------------------------------
@@ -56,7 +61,7 @@ class MultiVectorOperator
 public:
   MultiVectorOperator() = delete;
 
-  explicit MultiVectorOperator(operator_type & opIn)
+  explicit MultiVectorOperator(const operator_type & opIn)
     : op_(&opIn){}
 
   ~MultiVectorOperator() = default;
@@ -64,7 +69,7 @@ public:
 private:
   friend OperatorBase<MultiVectorOperator<operator_type> >;
 
-  operator_type * op_;
+  const operator_type * op_;
 
 };//end class
 
