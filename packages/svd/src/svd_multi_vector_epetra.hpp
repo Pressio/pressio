@@ -1,6 +1,6 @@
 
-#ifndef SVD_DENSE_EPETRA_HPP_
-#define SVD_DENSE_EPETRA_HPP_
+#ifndef SVD_MULTI_VECTOR_EPETRA_HPP_
+#define SVD_MULTI_VECTOR_EPETRA_HPP_
 
 #include <memory>
 #include "svd_solver_generic_base.hpp"

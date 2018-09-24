@@ -8,7 +8,7 @@
 #include "svd/src/svd_solver_traits.hpp"
 #include "svd/src/svd_solver_generic_base.hpp"
 #include "svd/src/svd_crs_epetra_using_anasazi.hpp"
-#include "svd/src/svd_dense_epetra.hpp"
+#include "svd/src/svd_multi_vector_epetra.hpp"
 
 
 
