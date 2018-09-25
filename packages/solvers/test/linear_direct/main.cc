@@ -19,18 +19,18 @@ int main() {
 
   // Define linear system
   vector_w_t b(3);
-  (*b.data()) << -10.0, -8.0, 0.0;
+  (*b.data()) << 7.5, 1.0, 0.0;
 
   matrix_w_t A(3, 3);
-  A(0, 0) +=  3.0;
+  A(0, 0) +=  1.0;
   A(0, 1) +=  1.0;
-  A(0, 2) += -6.0;
-  A(1, 0) +=  2.0;
-  A(1, 1) +=  1.0;
-  A(1, 2) += -5.0;
-  A(2, 0) +=  6.0;
-  A(2, 1) += -3.0;
-  A(2, 2) +=  3.0;
+  A(0, 2) +=  2.0;
+  A(1, 0) += -1.0;
+  A(1, 1) +=  0.0;
+  A(1, 2) +=  1.0;
+  A(2, 0) +=  0.0;
+  A(2, 1) +=  6.0;
+  A(2, 2) +=  1.0;
 
   // Solve linear system
   auto solver = LinearSolvers::createDirectSolver<linear::ColPivHouseholderQR>(A);
