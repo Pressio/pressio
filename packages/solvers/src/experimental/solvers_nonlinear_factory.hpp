@@ -5,6 +5,8 @@
 #include "../solvers_ConfigDefs.hpp"
 #include "solvers_nonlinear_iterative.hpp"
 #include "solvers_nonlinear_traits.hpp"
+#include "solvers_policy_nonlinear_iterative.hpp"
+#include "solvers_l2_vector_norm.hpp"
 #include "solvers_linear_traits.hpp"
 
 namespace rompp{

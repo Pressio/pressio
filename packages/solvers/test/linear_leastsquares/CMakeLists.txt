@@ -1,0 +1,7 @@
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  linear_leastsquares1
+  SOURCES
+    main.cc
+  NUM_MPI_PROCS 1
+  STANDARD_PASS_OUTPUT
+  )
