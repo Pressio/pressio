@@ -112,7 +112,6 @@ auto operator*(T1 u, const T2 & v) {
 }
 //-----------------------------------------------------
 
-
 // T1: vector, T2: scalar:
 // example: a*3
 template <typename T1, typename T2,
@@ -131,7 +130,6 @@ auto operator*(const T1 & u, T2 v) {
 }
 //-----------------------------------------------------
 
-  
 // T1: expre, T2: scalar:
 // example: (a + b)*2
 template <typename T1,

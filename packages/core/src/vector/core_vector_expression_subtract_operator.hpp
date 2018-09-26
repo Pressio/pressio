@@ -34,7 +34,6 @@ auto operator-(const T1 & u, const T2 & v) {
     core::exprtemplates::subtract_,T1, T2, sc_t, LO_t>(u, v);
 }
 
-
   
 //-----------------------------------------------------  
 // T1: expre, T2: expr:
@@ -54,7 +53,6 @@ auto operator-(const T1 & u, const T2 & v) {
 }
 
   
-
 //-----------------------------------------------------
 // T1: vector, T2: expr:
 // example: a + b*21
@@ -82,7 +80,6 @@ auto operator-(const T1 & u, const T2 & v) {
 ////////////////////////////////////////////
 ////////////////////////////////////////////
   
-
 // T1: expre, T2: vector:
 // example: a*3 + b
 template <typename T1,
@@ -97,7 +94,6 @@ auto operator-(const T1 & u, const T2 & v) {
   return core::exprtemplates::SharedMemVectorBinaryExp<
     core::exprtemplates::subtract_,T1, T2, sc_t, ord_t>(u, v);
 }
-
 
 //-----------------------------------------------------  
 // T1: expre, T2: expr:
@@ -116,7 +112,6 @@ auto operator-(const T1 & u, const T2 & v) {
     core::exprtemplates::subtract_,T1, T2, sc_t, ord_t>(u, v);
 }
   
-
 //-----------------------------------------------------
 // T1: vector, T2: expr:
 // example: a + b*21
@@ -133,7 +128,6 @@ auto operator-(const T1 & u, const T2 & v) {
   return core::exprtemplates::SharedMemVectorBinaryExp<
     core::exprtemplates::subtract_,T1, T2, sc_t, ord_t>(u, v);
 }
-
 
 
   

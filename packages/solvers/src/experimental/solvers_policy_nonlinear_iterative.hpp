@@ -80,7 +80,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
 
     core::defaultTypes::uint iStep = 1;
     VectorT xOld = x0;
-    VectorT xNew = x0 - solver.solve(dy);
+    VectorT xNew(x0 - solver.solve(dy));
 
     while (iStep++ < maxNonLinearIterations && NormT::template compute_norm_difference(xOld, xNew) > nonLinearTolerance) {
         xOld = xNew;
@@ -88,7 +88,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
         Ja = sys.jacobian(xNew);
 
         solver.resetLinearSystem(Ja);
-        // xNew -= solver.solve(dy);
+        xNew = xNew - solver.solve(dy);
       }
 
     return xNew;

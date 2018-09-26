@@ -49,13 +49,14 @@ public:
     : data_(src){}
 
   Vector(this_t const & other)
-    : data_(*other.data()){}
+    : data_(*other.data()){
+  }
 
   // constructor from any expression, force evaluation
   template <typename T,
   	    core::meta::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
-  Vector(const T & expr){
+  explicit Vector(const T & expr){
     this->resize(expr.size());
     for (ord_t i = 0; i != expr.size(); ++i)
       data_[i] = expr[i];
@@ -63,8 +64,8 @@ public:
 
   // assignment from any expression, force evaluation
   template <typename T,
-	    core::meta::enable_if_t<
-	      T::is_vector_expression> * = nullptr>
+  	    core::meta::enable_if_t<
+  	      T::is_vector_expression> * = nullptr>
   this_t & operator=(const T & expr){
     if(this->size() != expr.size())
       this->resize(expr.size());
@@ -75,10 +76,10 @@ public:
 
   // assignment 
   template <typename T,
-	    core::meta::enable_if_t<
-	      std::is_same<T,this_t>::value> * = nullptr>
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator=(const T & other){
-    data_ = other;
+    data_ = *other.data();
     return *this;
   }
   
@@ -93,7 +94,7 @@ public:
     //assert(!this->empty());
     return data_(i);
   };  
-  
+
   this_t & operator+=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ += *other.data();

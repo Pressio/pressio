@@ -104,15 +104,15 @@ TEST(core_vector_serial_eigen_class, additionOperator)
   // v4 = 3.*v2;
   // v4 = v2*2.;
   
-  myvec_t v4(4);
-  v4 = v1 + v2 + v1;
-  std::cout << *v4.data() << "\n";
+  // myvec_t v4(4);
+  // v4 = v1 + v2 + v1;
+  // std::cout << *v4.data() << "\n";
 
-  myvec_t v5(v1 + v2);
-  std::cout << *v5.data() << "\n";
+  // myvec_t v5(v1 + v2);
+  // std::cout << *v5.data() << "\n";
 
-  v5 = v1 - v2;
-  std::cout << *v5.data() << "\n";
+  myvec_t v6 = v1;
+  std::cout << *v6.data() << "\n";
   
   // v4 = v2 - v1;
   // v4.data()->Print(std::cout);
