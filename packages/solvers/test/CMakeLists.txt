@@ -5,5 +5,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 ADD_SUBDIRECTORIES(
    linear_direct
    linear_iterative
+   linear_leastsquares
+   nonlinear_iterative
    # leastsquares
 )
