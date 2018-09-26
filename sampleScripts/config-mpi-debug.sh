@@ -46,12 +46,12 @@ cmake \
     -D rompp_ENABLE_solvers:BOOL=ON \
     -D rompp_ENABLE_svd:BOOL=ON \
     -D rompp_ENABLE_ode:BOOL=ON \
-    -D rompp_ENABLE_optimization:BOOL=OFF \
     -D rompp_ENABLE_rom:BOOL=ON \
     \
     $EXTRA_ARGS \
     ${SRC}
 
+    #-D rompp_ENABLE_optimization:BOOL=ON \
     #-D rompp_ENABLE_apps:BOOL=ON \
     # -DTribitsExProj_TRIBITS_DIR=$TRIBITS_DIR \
     # -D rompp_ENABLE_svd:BOOL=OFF \

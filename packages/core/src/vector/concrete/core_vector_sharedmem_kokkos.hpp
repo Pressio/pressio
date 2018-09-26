@@ -58,43 +58,7 @@ private:
   wrap_t dataCpImpl(){
     return data_;
   }
-  
-  
- 
-//   this_t operator+(const this_t & other) const{
-//     assert( other.size() == this->size() );
-//     this_t res(other.size());
-//     *res.data() = this->data_ + *other.data();
-//     return res;
-//   }
-
-//   this_t operator-(const this_t & other) const{
-//     assert( other.size() == this->size() );
-//     this_t res(other.size());
-//     *res.data() = this->data_ - *other.data();
-//     return res;
-//   }
-  
-//   this_t operator*(const this_t & other) const{
-//     assert( other.size() == this->size() );
-//     this_t res(other.size());
-//     for (decltype(this->size()) i=0; i<this->size(); i++)
-//       res[i] = this->data_(i) * other[i];
-//     return res;
-//   }
-  
-//   this_t & operator+=(const this_t & other) {
-//     assert( other.size() == this->size() );
-//     this->data_ += *other.data();
-//     return *this;
-//   }
-  
-//   this_t & operator-=(const this_t & other) {
-//     assert( other.size() == this->size() );
-//     this->data_ -= *other.data();
-//     return *this;
-//   }
-  
+    
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorSharedMemBase< this_t >;

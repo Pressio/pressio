@@ -1,10 +1,9 @@
 
-#ifndef CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_EIGEN_HPP_
-#define CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_EIGEN_HPP_
+#ifndef CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_EIGEN_STATIC_HPP_
+#define CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_EIGEN_STATIC_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
-#include "../../shared_base/core_container_resizable_base.hpp"
 #include "../../shared_base/core_container_nonresizable_base.hpp"
 
 #include "../base/core_vector_sharedmem_base.hpp"
@@ -16,21 +15,18 @@ namespace core{
 template <typename wrapped_type>
 class Vector<wrapped_type,
 	     core::meta::enable_if_t<
-	       core::meta::is_vector_eigen<wrapped_type>::value
+	       core::meta::is_vector_eigen<wrapped_type>::value &&
+	       details::traits<Vector<wrapped_type>>::is_static
 	       >
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >,
-    public ArithmeticOperatorsBase<Vector<wrapped_type>>,
     public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>,
-    public std::conditional<
-  details::traits<Vector<wrapped_type>>::is_static == true,
-  ContainerNonResizableBase<Vector<wrapped_type>, 1>,
-  ContainerResizableBase<Vector<wrapped_type>, 1>
-  >::type
-  
-{
+    public ContainerNonResizableBase<Vector<wrapped_type>, 1>,
+    public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
+     typename details::traits<Vector<wrapped_type>>::scalar_t,
+     typename details::traits<Vector<wrapped_type>>::ordinal_t>{
 
   using this_t = Vector<wrapped_type>;
   using mytraits = typename details::traits<this_t>;  
@@ -38,29 +34,29 @@ class Vector<wrapped_type,
   using ord_t = typename  mytraits::ordinal_t;
   using wrap_t = typename mytraits::wrapped_t;
 
-public:
-
+public:  
   Vector() = default;
-
-  template <typename T,
-	    typename std::enable_if<
-	      std::is_same<T,ord_t>::value &&
-	      !mytraits::is_static
-	      >::type * = nullptr>
-  explicit Vector(T insize){
-    this->resize(insize);
-  }
-
+  ~Vector() = default;
+ 
   explicit Vector(const sc_t * src)
     : data_(src){}
 
   explicit Vector(const wrap_t & src)
     : data_(src){}
 
-  Vector(this_t const & other)
+  explicit Vector(this_t const & other)
     : data_(*other.data()){}
-  
-  ~Vector(){}
+
+  // assignment from any expression, force evaluation
+  template <typename T,
+	    core::meta::enable_if_t<
+	      T::is_vector_expression> * = nullptr>
+  this_t & operator=(const T & expr){
+    assert(this->size() == expr.size());
+    for (size_t i = 0; i != expr.size(); ++i)
+      data_[i] = expr[i];
+    return *this;
+  }
   
 public:
   sc_t & operator [] (ord_t i){
@@ -73,27 +69,27 @@ public:
     return data_(i);
   };  
 
-  this_t operator+(const this_t & other) const{
-    assert( other.size() == this->size() );
-    this_t res(other.size());
-    *res.data() = this->data_ + *other.data();
-    return res;
-  }
+  // this_t operator+(const this_t & other) const{
+  //   assert( other.size() == this->size() );
+  //   this_t res(other.size());
+  //   *res.data() = this->data_ + *other.data();
+  //   return res;
+  // }
 
-  this_t operator-(const this_t & other) const{
-    assert( other.size() == this->size() );
-    this_t res(other.size());
-    *res.data() = this->data_ - *other.data();
-    return res;
-  }
+  // this_t operator-(const this_t & other) const{
+  //   assert( other.size() == this->size() );
+  //   this_t res(other.size());
+  //   *res.data() = this->data_ - *other.data();
+  //   return res;
+  // }
   
-  this_t operator*(const this_t & other) const{
-    assert( other.size() == this->size() );
-    this_t res(other.size());
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      res[i] = this->data_(i) * other[i];
-    return res;
-  }
+  // this_t operator*(const this_t & other) const{
+  //   assert( other.size() == this->size() );
+  //   this_t res(other.size());
+  //   for (decltype(this->size()) i=0; i<this->size(); i++)
+  //     res[i] = this->data_(i) * other[i];
+  //   return res;
+  // }
   
   this_t & operator+=(const this_t & other) {
     assert( other.size() == this->size() );
@@ -108,14 +104,6 @@ public:
   }
 
 private:
-
-  template <typename T = ord_t,
-  	    typename std::enable_if<
-  	      !mytraits::is_static, T
-  	      >::type * = nullptr>
-  void matchLayoutWithImpl(const this_t & other){
-    this->resize( other.size() );
-  }
   
   wrap_t const * dataImpl() const{
     return &data_;
@@ -139,14 +127,6 @@ private:
 
   ord_t sizeImpl() const {
     return (data_.rows()==1) ? data_.cols() : data_.rows();
-  }
-
-  template <typename T = ord_t,
-	    typename std::enable_if<
-	      !mytraits::is_static, T
-	      >::type * = nullptr>
-  void resizeImpl(T val){
-    data_.resize(val);
   }
 
   template<typename op_t, typename T,
@@ -259,14 +239,10 @@ private:
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorSharedMemBase< this_t >;
-  friend VectorMathBase< this_t >;
-  friend ArithmeticOperatorsBase< this_t >;
+  friend VectorMathBase< this_t >;  
   friend CompoundAssignmentOperatorsBase< this_t >;  
-  friend typename std::conditional<
-    details::traits<this_t>::is_static == true,
-    ContainerNonResizableBase<this_t, 1>,
-    ContainerResizableBase<this_t, 1>
-    >::type;
+  friend ContainerNonResizableBase<this_t, 1>;
+  friend Subscripting1DOperatorsBase< this_t, sc_t, ord_t>;
 
 private:
   wrap_t data_;

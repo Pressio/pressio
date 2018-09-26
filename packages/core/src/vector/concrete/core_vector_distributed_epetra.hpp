@@ -23,14 +23,14 @@ class Vector<wrapped_type,
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorDistributedBase< Vector<wrapped_type> >,
-    public VectorMathBase< Vector<wrapped_type> >, 
+    public VectorMathBase< Vector<wrapped_type> >,
     public ContainerDistributedMpiBase< Vector<wrapped_type>, 
-              typename details::traits<Vector<wrapped_type>>::communicator_t >, 
+     typename details::traits<Vector<wrapped_type>>::communicator_t >, 
     public ContainerDistributedTrilinosBase< Vector<wrapped_type>, 
-              typename details::traits<Vector<wrapped_type>>::data_map_t >, 
+     typename details::traits<Vector<wrapped_type>>::data_map_t >, 
     public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
-              typename details::traits<Vector<wrapped_type>>::scalar_t,
-              typename details::traits<Vector<wrapped_type>>::local_ordinal_t>
+     typename details::traits<Vector<wrapped_type>>::scalar_t,
+     typename details::traits<Vector<wrapped_type>>::local_ordinal_t>
 {
   
   using this_t = Vector<wrapped_type>;
@@ -54,6 +54,17 @@ public:
   Vector(this_t const & other)
     : data_(*other.data()){}
 
+  // assignment from any expression, force evaluation
+  template <typename T,
+	    core::meta::enable_if_t<
+	      T::is_vector_expression> * = nullptr>
+  this_t & operator=(const T & expr){
+    assert(this->localSize() == expr.localSize());
+    for (LO_t i = 0; i != expr.localSize(); ++i)
+      data_[i] = expr[i];
+    return *this;
+  }
+  
   ~Vector() = default;
 
 public:
@@ -65,27 +76,6 @@ public:
     assert(i < this->localSize());
     return data_[i];
   };  
-
-  der_t operator+(const der_t & other) const{
-    der_t res( other.getDataMap() );
-    for (LO_t i=0; i<this->localSize(); i++)
-      res[i] = (*this)[i] + other[i];
-    return res;
-  }
-
-  der_t operator-(const der_t & other) const{
-    der_t res( other.getDataMap() );
-    for (LO_t i=0; i<this->localSize(); i++)
-      res[i] = (*this)[i] - other[i];
-    return res;
-  }
-
-  der_t operator*(const der_t & other) const{
-    der_t res( other.getDataMap() );
-    for (LO_t i=0; i<this->localSize(); i++)
-      res[i] = (*this)[i] * other[i];
-    return res;
-  }
 
   der_t & operator+=(const der_t & other) {
     this->data_.Update(1.0, *other.data(), 1.0 );

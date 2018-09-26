@@ -22,6 +22,9 @@ public:
 	    typename std::enable_if<ndim_==1,int>::type * = nullptr>
   void resize(std::size_t news){
     this->underlying().resizeImpl(news);}
+
+  void matchLayoutWith(const derived_type & other){
+    this->underlying().matchLayoutWithImpl(other);}
   
 private:
   friend derived_type;

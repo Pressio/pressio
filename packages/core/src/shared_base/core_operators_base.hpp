@@ -71,8 +71,13 @@ template<typename derived_type,
 	 typename ordinal_type>
 class Subscripting1DOperatorsBase{
 public:
-  scalar_type & operator[] (ordinal_type index);
-  scalar_type const & operator[] (ordinal_type index) const;
+  scalar_type & operator[] (ordinal_type index){
+    return static_cast<derived_type &>(*this)[index];
+  }
+
+  scalar_type const & operator[] (ordinal_type index) const{
+    return static_cast<const derived_type &>(*this)[index];
+  }
 
 private:
   friend derived_type;
@@ -91,6 +96,7 @@ class Subscripting2DOperatorsBase{
 public:
   scalar_type & operator()(row_ordinal_type irow, 
                            col_ordinal_type icol);
+    
   scalar_type const & operator()(row_ordinal_type irow, 
                                  col_ordinal_type icol) const;
 

@@ -12,8 +12,18 @@
 #include "core/src/vector/base/core_vector_distributed_base.hpp"
 
 #include "core/src/vector/concrete/core_vector_distributed_epetra.hpp"
-#include "core/src/vector/concrete/core_vector_sharedmem_eigen.hpp"
+#include "core/src/vector/concrete/core_vector_sharedmem_eigen_dynamic.hpp"
+#include "core/src/vector/concrete/core_vector_sharedmem_eigen_static.hpp"
 #include "core/src/vector/concrete/core_vector_sharedmem_kokkos.hpp"
 #include "core/src/vector/concrete/core_vector_sharedmem_stdlib.hpp"
+
+#include "core/src/vector/core_vector_distributed_binary_expression_templates.hpp"
+#include "core/src/vector/core_vector_sharedmem_binary_expression_templates.hpp"
+
+#include "core/src/vector/core_vector_distributed_binary_expression_templates.hpp"
+#include "core/src/vector/core_vector_sharedmem_binary_expression_templates.hpp"
+#include "core/src/vector/core_vector_expression_plus_operator.hpp"
+#include "core/src/vector/core_vector_expression_times_operator.hpp"
+#include "core/src/vector/core_vector_expression_subtract_operator.hpp"
 
 #endif

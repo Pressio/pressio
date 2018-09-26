@@ -26,7 +26,7 @@ class VectorSharedMemBase
   using ord_t = typename details::traits<derived_type>::ordinal_t;
 
 public:
-  ord_t size() const {
+   ord_t size() const{
     return this->underlying().sizeImpl();
   };
     

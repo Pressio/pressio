@@ -20,28 +20,52 @@ class Vector<wrapped_type,
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >,
-    public ArithmeticOperatorsBase< Vector<wrapped_type> >,
     public CompoundAssignmentOperatorsBase< Vector<wrapped_type> >,
     public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
               typename details::traits<Vector<wrapped_type>>::scalar_t,
               typename details::traits<Vector<wrapped_type>>::ordinal_t>
 {
 private:
-  using derived_t = Vector<wrapped_type>;
-  using sc_t = typename details::traits<derived_t>::scalar_t;
-  using der_t = typename details::traits<derived_t>::derived_t;
-  using wrap_t = typename details::traits<derived_t>::wrapped_t;
-  using ord_t = typename details::traits<derived_t>::ordinal_t;
+  using this_t = Vector<wrapped_type>;
+  using sc_t = typename details::traits<this_t>::scalar_t;
+  using der_t = typename details::traits<this_t>::derived_t;
+  using wrap_t = typename details::traits<this_t>::wrapped_t;
+  using ord_t = typename details::traits<this_t>::ordinal_t;
 
 public:
   Vector() = default;
+  ~Vector(){}
+  
   explicit Vector(ord_t insize,
-		  sc_t value = static_cast<sc_t>(0) ){
+                  sc_t value = static_cast<sc_t>(0) ){
     this->resize(insize, value);
   }
-  explicit Vector(const std::vector<sc_t> & src) : data_(src){}
-  ~Vector(){}
 
+  explicit Vector(const std::vector<sc_t> & src)
+    : data_(src){}
+
+  // constructor from any expression, force evaluation
+  template <typename T,
+	    core::meta::enable_if_t<
+	      T::is_vector_expression> * = nullptr>
+  Vector(const T & expr){
+    this->resize(expr.size());
+    for (size_t i = 0; i != expr.size(); ++i)
+      data_[i] = expr[i];
+  }
+
+  // assignment from any expression, force evaluation
+  template <typename T,
+	    core::meta::enable_if_t<
+	      T::is_vector_expression> * = nullptr>
+  this_t & operator=(const T & expr){
+    if(this->size() != expr.size())
+      this->resize(expr.size());
+    for (size_t i = 0; i != expr.size(); ++i)
+      data_[i] = expr[i];
+    return *this;
+  }
+  
 public:
   sc_t & operator [] (ord_t i){
     return data_[i];
@@ -50,39 +74,15 @@ public:
   sc_t const & operator [] (ord_t i) const{
     return data_[i];
   };  
-
-  derived_t operator+(const derived_t & other) const{
-    derived_t res(other.size());
-    std::transform(this->data_.begin(), this->data_.end(),
-		   other.data()->begin(), res.data()->begin(),
-		   std::plus<sc_t>());
-    return res;
-  }
-
-  derived_t operator-(const derived_t & other) const{
-    derived_t res(other.size()); 
-    std::transform(this->data_.begin(), this->data_.end(),
-		   other.data()->begin(), res.data()->begin(),
-		   std::minus<sc_t>());
-    return res;
-  }
-
-  derived_t operator*(const derived_t & other) const{
-    derived_t res(other.size()); 
-    std::transform(this->data_.begin(), this->data_.end(),
-		   other.data()->begin(), res.data()->begin(),
-		   std::multiplies<sc_t>());
-    return res;
-  }
   
-  derived_t & operator+=(const derived_t & other) {
+  this_t & operator+=(const this_t & other) {
     std::transform(this->data_.begin(), this->data_->end(),
 		   other.data()->begin(), this->data_.begin(),
 		   std::plus<sc_t>());
     return *this;
   }
   
-  derived_t & operator-=(const derived_t & other) {
+  this_t & operator-=(const this_t & other) {
     std::transform(this->data_.begin(), this->data_->end(),
 		   other.data()->begin(), this->data_.begin(),
 		   std::minus<sc_t>());
@@ -162,12 +162,11 @@ private:
   }
 
 private:
-  friend ContainerBase< derived_t, wrapped_type >;
-  friend VectorSharedMemBase< derived_t >;
-  friend VectorMathBase< derived_t >;
-  friend ArithmeticOperatorsBase< derived_t >;
-  friend CompoundAssignmentOperatorsBase< derived_t >;  
-  friend Subscripting1DOperatorsBase< derived_t, sc_t, ord_t>;
+  friend ContainerBase< this_t, wrapped_type >;
+  friend VectorSharedMemBase< this_t >;
+  friend VectorMathBase< this_t >;
+  friend CompoundAssignmentOperatorsBase< this_t >;  
+  friend Subscripting1DOperatorsBase< this_t, sc_t, ord_t>;
 
 private:
   std::vector<sc_t> data_;

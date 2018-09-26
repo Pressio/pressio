@@ -88,7 +88,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
         Ja = sys.jacobian(xNew);
 
         solver.resetLinearSystem(Ja);
-        xNew = xNew - solver.solve(dy);
+        // xNew -= solver.solve(dy);
       }
 
     return xNew;
