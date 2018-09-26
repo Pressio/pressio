@@ -19,7 +19,7 @@ struct L2Norm {
     static_assert(solvers::meta::are_vector_compatible<T, U>::value, "Error: the two vectors are not compatible");
 
     double value = 0;
-    auto dVec = lVec - rVec;
+    T dVec = lVec - rVec;
 
     dVec.norm2(value);  	
     return value;

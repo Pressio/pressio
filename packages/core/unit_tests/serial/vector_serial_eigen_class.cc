@@ -92,33 +92,26 @@ TEST(core_vector_serial_eigen_class, additionOperator)
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = core::Vector<eigvec_t>;
   
-  myvec_t m_v1(4);
-  m_v1[0] = 3.; m_v1[1] = 2.;
-  m_v1[2] = 4.; m_v1[3] = 5.;
-  myvec_t m_v2(4);
-  m_v2[0] = 1.; m_v2[1] = 1.;
-  m_v2[2] = 1.; m_v2[3] = 1.;
+  myvec_t v1(4);
+  v1[0] = 3.; v1[1] = 2.;
+  v1[2] = 4.; v1[3] = 5.;
+  myvec_t v2(4);
+  v2[0] = 1.; v2[1] = 1.;
+  v2[2] = 1.; v2[3] = 1.;
 
-  // v4 = (v1+v2)*2.;
-  // v4.data()->Print(std::cout);
-
+  // myvec_t v4 = (v1+v2)*2.;
   // v4 = 3.*(v1+v2);
-  // v4.data()->Print(std::cout);
-  
   // v4 = 3.*v2;
-  // v4.data()->Print(std::cout);
-
   // v4 = v2*2.;
-  // v4.data()->Print(std::cout);
   
   myvec_t v4(4);
-  v4 = m_v1 + m_v2 + m_v1;
+  v4 = v1 + v2 + v1;
   std::cout << *v4.data() << "\n";
 
-  myvec_t v5(m_v1 + m_v2);
+  myvec_t v5(v1 + v2);
   std::cout << *v5.data() << "\n";
 
-  v5 = m_v1 - m_v2;
+  v5 = v1 - v2;
   std::cout << *v5.data() << "\n";
   
   // v4 = v2 - v1;

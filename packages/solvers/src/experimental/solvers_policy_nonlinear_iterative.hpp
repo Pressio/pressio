@@ -79,8 +79,8 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     solver.setTolerance(tolerance);
 
     core::defaultTypes::uint iStep = 1;
-    auto xOld = x0;
-    auto xNew = x0 - solver.solve(dy);
+    VectorT xOld = x0;
+    VectorT xNew = x0 - solver.solve(dy);
 
     while (iStep++ < maxNonLinearIterations && NormT::template compute_norm_difference(xOld, xNew) > nonLinearTolerance) {
         xOld = xNew;
