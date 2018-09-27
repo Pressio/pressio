@@ -1,3 +1,4 @@
 
-//#cmakedefine HAVE_COMMONBASE_DEBUG
-//#cmakedefine HAVE_COMMONBASE_SIMPLETPL
+// for now ok, but we need to turn this on
+// automatically if TPL is on
+#cmakedefine HAVE_BLAZE

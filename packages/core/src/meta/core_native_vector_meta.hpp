@@ -7,10 +7,14 @@
 //std::vector 
 #include <vector>
 // Eigen dynamic and static vectors
-#include <Eigen/Dense> 
+#include <Eigen/Dense>
+
+#ifdef HAVE_BLAZE
 // blaze offers few things but we include two for now
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticVector.h>
+#endif
+
 // epetra 
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
@@ -99,6 +103,7 @@ struct is_vector_kokkos<T,
       > : std::true_type{};
 //--------------------------------------------
 
+#ifdef HAVE_BLAZE
 
 template <typename T, typename enable = void>
 struct is_static_vector_blaze : std::false_type {};
@@ -124,7 +129,6 @@ struct is_dynamic_row_vector_blaze<T,
 	   >
       > : std::true_type{};
 //--------------------------------------------
-
   
 template <typename T, typename enable = void>
 struct is_dynamic_column_vector_blaze : std::false_type {};
@@ -140,7 +144,6 @@ struct is_dynamic_column_vector_blaze<T,
       > : std::true_type{};
 //--------------------------------------------
 
-
 template <typename T, typename enable = void>
 struct is_dynamic_vector_blaze : std::false_type {};
 
@@ -151,7 +154,8 @@ struct is_dynamic_vector_blaze<T,
 	     is_dynamic_column_vector_blaze<T>::value
 	   >
       > : std::true_type{};
-//--------------------------------------------
+
+#endif
   
  
 } // namespace meta

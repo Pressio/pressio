@@ -3,7 +3,10 @@ add_unit_test(meta_basic ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(meta_detect_operators ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(meta_detect_typedefs ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(vector_serial_eigen_class ${GTESTMAINSDIR}/gTestMain_serial)
+
+IF(TPL_ENABLE_BLAZE)
 add_unit_test(vector_serial_blaze_class ${GTESTMAINSDIR}/gTestMain_serial)
+ENDIF()
 
 
 # SET(TESTFILES "")

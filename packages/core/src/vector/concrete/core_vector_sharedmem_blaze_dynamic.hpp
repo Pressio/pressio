@@ -2,6 +2,9 @@
 #ifndef CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_
 #define CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_
 
+#ifdef HAVE_BLAZE
+
+
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
@@ -177,4 +180,9 @@ private:
 };//end class    
 }//end namespace core
 }//end namespace rompp
-#endif
+
+
+#endif //HAVE_BLAZE
+
+#endif /* CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_ */
+

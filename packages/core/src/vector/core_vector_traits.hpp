@@ -12,10 +12,10 @@ namespace rompp{
 namespace core{
 namespace details{
 
-
 //*******************************
 // Blaze dynamic vector 
-//******************************* 
+//*******************************   
+#ifdef HAVE_BLAZE
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
 		     core::meta::enable_if_t<
@@ -41,6 +41,7 @@ struct traits<Vector<wrapped_type,
   static constexpr bool is_dynamic = !is_static;
   static constexpr int rows = -1;
 };
+#endif
   
 
 //*******************************
