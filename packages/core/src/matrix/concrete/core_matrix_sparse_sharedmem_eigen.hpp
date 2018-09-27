@@ -5,6 +5,7 @@
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
+#include "../../shared_base/core_container_subscriptable_base.hpp"
 
 #include "../base/core_matrix_base.hpp"
 #include "../base/core_matrix_sparse_base.hpp"

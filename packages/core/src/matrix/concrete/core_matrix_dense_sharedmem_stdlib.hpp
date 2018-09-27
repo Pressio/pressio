@@ -5,6 +5,7 @@
 #include "../../shared_base/core_container_base.hpp"
 #include "../base/core_matrix_sharedmem_base.hpp"
 #include "../base/core_matrix_dense_sharedmem_base.hpp"
+#include "../../shared_base/core_container_subscriptable_base.hpp"
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -23,7 +24,11 @@ class Matrix<wrapped_type,
 	 >::type
        >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
-    public MatrixDenseSharedMemBase< Matrix<wrapped_type> >
+    public MatrixDenseSharedMemBase< Matrix<wrapped_type> >,
+    public ContainerSubscriptable2DBase<
+     Matrix<wrapped_type>, 
+     typename details::traits<Matrix<wrapped_type>>::scalar_t,
+     typename details::traits<Matrix<wrapped_type>>::ordinal_t>
 {
 
   using derived_t = Matrix<wrapped_type>;
@@ -77,6 +82,7 @@ private:
 private:
   friend ContainerBase< Matrix<wrapped_type>, wrapped_type >;
   friend MatrixDenseSharedMemBase< Matrix<wrapped_type> >;
+  friend ContainerSubscriptable2DBase< Matrix<wrapped_type>, sc_t, ord_t>;
   
 private:
   std::vector<std::vector<sc_t>> data_;

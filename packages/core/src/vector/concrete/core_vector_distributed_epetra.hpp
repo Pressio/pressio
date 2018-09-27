@@ -6,6 +6,8 @@
 #include "../../shared_base/core_container_distributed_mpi_base.hpp"
 #include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
+#include "../../shared_base/core_container_subscriptable_base.hpp"
+#include "../../shared_base/core_container_resizable_base.hpp"
 
 #include "../base/core_vector_distributed_base.hpp"
 #include "../base/core_vector_math_base.hpp"
@@ -27,8 +29,11 @@ class Vector<wrapped_type,
     public ContainerDistributedMpiBase< Vector<wrapped_type>, 
      typename details::traits<Vector<wrapped_type>>::communicator_t >, 
     public ContainerDistributedTrilinosBase< Vector<wrapped_type>, 
-     typename details::traits<Vector<wrapped_type>>::data_map_t >
-{
+     typename details::traits<Vector<wrapped_type>>::data_map_t >,
+    public ContainerResizableBase< Vector<wrapped_type>, 1>,
+    public ContainerSubscriptable1DBase< Vector<wrapped_type>, 
+     typename details::traits<Vector<wrapped_type>>::scalar_t,
+     typename details::traits<Vector<wrapped_type>>::local_ordinal_t>{
   
   using this_t = Vector<wrapped_type>;
   using sc_t = typename details::traits<this_t>::scalar_t;
@@ -223,6 +228,8 @@ private:
   friend VectorMathBase< this_t >;
   friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
   friend ContainerDistributedTrilinosBase< this_t, map_t >;
+  friend ContainerResizableBase< this_t, 1>;
+  friend ContainerSubscriptable1DBase< this_t, sc_t, LO_t>;
 
 private:
   wrap_t data_;

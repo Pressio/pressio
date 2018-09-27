@@ -6,6 +6,7 @@
 #include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
 #include "../../shared_base/core_container_nonresizable_base.hpp"
+#include "../../shared_base/core_container_subscriptable_base.hpp"
 
 #include "../base/core_matrix_base.hpp"
 #include "../base/core_matrix_sharedmem_base.hpp"
@@ -26,11 +27,15 @@ class Matrix<wrapped_type,
     public MatrixSharedMemBase< Matrix<wrapped_type> >,
     public MatrixDenseSharedMemBase< Matrix<wrapped_type> >,
     public ArithmeticOperatorsBase< Matrix<wrapped_type>>,
+    public ContainerSubscriptable2DBase<
+     Matrix<wrapped_type>, 
+     typename details::traits<Matrix<wrapped_type>>::scalar_t,
+     typename details::traits<Matrix<wrapped_type>>::ordinal_t>,
     public std::conditional<
-  details::traits<Matrix<wrapped_type>>::is_static == true,
-  ContainerNonResizableBase<Matrix<wrapped_type>, 2>,
-  ContainerResizableBase<Matrix<wrapped_type>, 2>
-  >::type
+      details::traits<Matrix<wrapped_type>>::is_static == true,
+      ContainerNonResizableBase<Matrix<wrapped_type>, 2>,
+  ContainerResizableBase<Matrix<wrapped_type>, 2>>::type
+
 {
 
   using derived_t = Matrix<wrapped_type>;
@@ -143,6 +148,7 @@ private:
   friend MatrixSharedMemBase< derived_t >;
   friend MatrixDenseSharedMemBase< derived_t >;
   friend ArithmeticOperatorsBase< derived_t >;
+  friend ContainerSubscriptable2DBase< derived_t, sc_t, ord_t>;
   friend typename std::conditional<
     details::traits<derived_t>::is_static == true,
     ContainerNonResizableBase<derived_t, 2>,
