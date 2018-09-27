@@ -65,7 +65,8 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
     auto dy = sys.residual(x0);
     auto Ja = sys.jacobian(x0);
     auto JaT = todeprecate::transpose(Ja);
-    auto lId = decltype(Ja)(Ja.cols(), Ja.cols()).setIdentity();
+    auto lId = decltype(Ja)(Ja.cols(), Ja.cols());
+    lId.setIdentity();
     lId.addToDiagonal(lambda);
 
     auto b = JaT * dy;

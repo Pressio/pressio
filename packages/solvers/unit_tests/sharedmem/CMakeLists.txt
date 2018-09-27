@@ -9,6 +9,7 @@ APPEND_SET(TESTFILES test_solvers_factory_nonlinear.cc)
 APPEND_SET(TESTFILES test_solvers_nonlinear_policies.cc)
 APPEND_SET(TESTFILES test_solvers_nonlinear_eigen.cc)
 APPEND_SET(TESTFILES test_solvers_leastsquare_linear_eigen.cc)
+#APPEND_SET(TESTFILES test_solvers_nonlinear_leastsquare_eigen.cc)
 
 # append here tests to be grouped into a single executable
 # APPEND_SET(...)

@@ -17,7 +17,7 @@ template <
 class NonLinearLeastSquareIterativeSolver
   : public NonLinearIterativeSolverHelper,
     public NonLinearSolverBase<
-      NonLinearIterativeSolver<
+      NonLinearLeastSquareIterativeSolver<
         PolicyT,
         LSolverT
       >
@@ -43,10 +43,13 @@ class NonLinearLeastSquareIterativeSolver
       typename VectorT
     >
     auto solve_(const SystemT& sys, const VectorT& b) {
+      double tolerance = this->getTolerance();
       double nonLinearTolerance = this->getNonLinearTolerance();
+
+      core::defaultTypes::uint maxIterations = this->getMaxIterations();
       core::defaultTypes::uint maxNonLinearIterations = this->getMaxNonLinearIterations();
 
-      return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, maxIterations_, maxNonLinearIterations, tolerance_, nonLinearTolerance, lambda_);
+      return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, maxIterations, maxNonLinearIterations, tolerance, nonLinearTolerance, lambda_);
     }
 
 
