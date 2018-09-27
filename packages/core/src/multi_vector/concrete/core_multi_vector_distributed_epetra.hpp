@@ -6,7 +6,6 @@
 #include "../base/core_multi_vector_distributed_base.hpp"
 #include "../base/core_multi_vector_math_base.hpp"
 #include "../../shared_base/core_container_distributed_mpi_base.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 
 namespace rompp{

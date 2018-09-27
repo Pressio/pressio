@@ -3,7 +3,6 @@
 #define CORE_MATRIX_BASE_MATRIX_DENSE_SHAREDMEM_BASE_HPP_
 
 #include "../core_matrix_traits.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 
 namespace rompp{
 namespace core{

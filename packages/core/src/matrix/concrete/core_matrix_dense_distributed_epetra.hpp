@@ -4,7 +4,6 @@
 
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_container_distributed_mpi_base.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 #include "../../shared_base/core_container_subscriptable_base.hpp"
 

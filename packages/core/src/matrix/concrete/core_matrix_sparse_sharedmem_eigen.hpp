@@ -3,7 +3,6 @@
 #define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_SHAREDMEM_EIGEN_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
 #include "../../shared_base/core_container_subscriptable_base.hpp"
 
@@ -28,7 +27,6 @@ class Matrix<wrapped_type,
     public MatrixSharedMemBase< Matrix<wrapped_type> >,
     public MatrixSparseSharedMemBase< Matrix<wrapped_type> >,
     public MatrixMathBase< Matrix<wrapped_type> >,
-    public ArithmeticOperatorsBase< Matrix<wrapped_type> >,
     public ContainerResizableBase<Matrix<wrapped_type>, 2>
 {
 
@@ -85,27 +83,6 @@ public:
   sc_t operator() (ord_t row, ord_t col) const{
     // eigen returns 0 if the item is zero
     return data_.coeff(row,col);
-  }
-
-  derived_t operator+(const derived_t & other) const{
-    assert(haveCompatibleDimensions(*this, other) );
-    derived_t res(other.rows(), other.cols());
-    *res.data() = this->data_ + *other.data();
-    return res;
-  }
-
-  derived_t operator-(const derived_t & other) const{
-    assert(haveCompatibleDimensions(*this, other) );
-    derived_t res(other.rows(), other.cols());
-    *res.data() = this->data_ - (*other.data());
-    return res;
-  }
-
-  derived_t operator*(const derived_t & other) const{
-    assert(haveCompatibleDimensions(*this, other) );
-    derived_t res(other.rows(), other.cols());
-    *res.data() = this->data_ * (*other.data());
-    return res;
   }
 
   derived_t & operator+=(const derived_t & other) {
@@ -208,7 +185,6 @@ private:
   friend MatrixSharedMemBase< derived_t >;
   friend MatrixSparseSharedMemBase< derived_t >;
   friend MatrixMathBase< derived_t >;
-  friend ArithmeticOperatorsBase< derived_t >;
   friend ContainerResizableBase<derived_t, 2>;
 
 private:

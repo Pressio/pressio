@@ -32,5 +32,9 @@
 #include "core/src/matrix/concrete/core_matrix_sparse_distributed_epetra.hpp"
 #include "core/src/matrix/concrete/core_matrix_dense_distributed_epetra.hpp"
 
+#include "core/src/matrix/core_matrix_plus_operator.hpp"
+#include "core/src/matrix/core_matrix_times_operator.hpp"
+#include "core/src/matrix/core_matrix_subtract_operator.hpp"
+
 #endif
 

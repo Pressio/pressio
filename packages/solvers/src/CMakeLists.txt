@@ -22,7 +22,6 @@ solvers_forward_declarations.hpp
 )
 
 SET(EXP_HEADERS
-experimental/solvers_nonlinear_factory.hpp
 experimental/solvers_l2_vector_norm.hpp
 experimental/solvers_linear_base.hpp
 experimental/solvers_linear_direct.hpp
@@ -32,6 +31,7 @@ experimental/solvers_linear_iterative.hpp
 experimental/solvers_linear_traits.hpp
 experimental/solvers_meta_static_checks.hpp
 experimental/solvers_nonlinear_base.hpp
+experimental/solvers_nonlinear_factory.hpp
 experimental/solvers_nonlinear_iterative.hpp
 experimental/solvers_nonlinear_traits.hpp
 experimental/solvers_norms_fwd.hpp
@@ -39,7 +39,8 @@ experimental/solvers_policy_linear_dense_eigen.hpp
 experimental/solvers_policy_linear_iterative_eigen.hpp
 experimental/solvers_policy_linear_iterative_trilinos.hpp
 experimental/solvers_policy_nonlinear_iterative.hpp
-experimental/system_traits.hpp
+experimental/solvers_policy_nonlinear_leastsquare_iterative.hpp
+experimental/solvers_system_traits.hpp
 )
 
 

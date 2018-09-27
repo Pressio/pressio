@@ -3,7 +3,6 @@
 #define CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 //#include "../../shared_base/core_container_resizable_base.hpp"
 //#include "../../shared_base/core_container_nonresizable_base.hpp"
 #include "../base/core_vector_sharedmem_base.hpp"

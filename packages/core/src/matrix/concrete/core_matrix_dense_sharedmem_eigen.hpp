@@ -3,7 +3,6 @@
 #define CORE_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
 #include "../../shared_base/core_container_nonresizable_base.hpp"
 #include "../../shared_base/core_container_subscriptable_base.hpp"
@@ -26,7 +25,6 @@ class Matrix<wrapped_type,
     public MatrixBase< Matrix<wrapped_type> >,
     public MatrixSharedMemBase< Matrix<wrapped_type> >,
     public MatrixDenseSharedMemBase< Matrix<wrapped_type> >,
-    public ArithmeticOperatorsBase< Matrix<wrapped_type>>,
     public ContainerSubscriptable2DBase<
      Matrix<wrapped_type>, 
      typename details::traits<Matrix<wrapped_type>>::scalar_t,
@@ -34,8 +32,7 @@ class Matrix<wrapped_type,
     public std::conditional<
       details::traits<Matrix<wrapped_type>>::is_static == true,
       ContainerNonResizableBase<Matrix<wrapped_type>, 2>,
-  ContainerResizableBase<Matrix<wrapped_type>, 2>>::type
-
+      ContainerResizableBase<Matrix<wrapped_type>, 2>>::type
 {
 
   using derived_t = Matrix<wrapped_type>;
@@ -69,30 +66,6 @@ public:
   sc_t const & operator() (ord_t row, ord_t col) const{
     // check if we are withinbound 
     return data_(row,col);
-  }
-
-  derived_t operator+(const derived_t & other) const{
-    assert( other.rows() == this->rows() );
-    assert( other.cols() == this->cols() );
-    derived_t res(other.rows(), other.cols());
-    *res.data() = this->data_ + *other.data();
-    return res;
-  }
-
-  derived_t operator-(const derived_t & other) const{
-    assert( other.rows() == this->rows() );
-    assert( other.cols() == this->cols() );
-    derived_t res(other.rows(), other.cols());
-    *res.data() = this->data_ - (*other.data());
-    return res;
-  }
-  
-  derived_t operator*(const derived_t & other) const{
-    assert( other.rows() == this->rows() );
-    assert( other.cols() == this->cols() );
-    derived_t res(other.rows(), other.cols());
-    *res.data() = this->data_ * (*other.data());
-    return res;
   }
   
   derived_t & operator+=(const derived_t & other) {
@@ -147,7 +120,6 @@ private:
   friend MatrixBase< derived_t >;
   friend MatrixSharedMemBase< derived_t >;
   friend MatrixDenseSharedMemBase< derived_t >;
-  friend ArithmeticOperatorsBase< derived_t >;
   friend ContainerSubscriptable2DBase< derived_t, sc_t, ord_t>;
   friend typename std::conditional<
     details::traits<derived_t>::is_static == true,

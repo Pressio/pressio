@@ -3,7 +3,6 @@
 #define CORE_VECTOR_BASE_VECTOR_SHAREDMEM_BASE_HPP_
 
 #include "../core_vector_traits.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 
 namespace rompp{
 namespace core{
