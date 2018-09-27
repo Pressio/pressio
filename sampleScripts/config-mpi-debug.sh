@@ -8,6 +8,7 @@ PFX=/Users/fnrizzi/Desktop/romppInstall
 MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc550
 TRILPATH=/Users/fnrizzi/tpl/trilinos/installCPPonly
 EIGENINCPATH=/Users/fnrizzi/tpl/eigen/3.3.5/install
+BLAZEINCPATH=/Users/fnrizzi/tpl/blaze/3.4/install/include
 KOKKOSPATH=/Users/fnrizzi/tpl/kokkos/install
 GTESTPATH=/Users/fnrizzi/tpl/gtest/install
 
@@ -31,6 +32,8 @@ cmake \
     -D TRILINOS_INCLUDE_DIRS:PATH=${TRILPATH}/include \
     -D TPL_ENABLE_EIGEN=ON \
     -D EIGEN_INCLUDE_DIRS:PATH=${EIGENINCPATH} \
+    -D TPL_ENABLE_BLAZE=ON \
+    -D BLAZE_INCLUDE_DIRS:PATH=${BLAZEINCPATH} \
     \
     -D TPL_ENABLE_GTEST=ON \
     -D GTEST_LIBRARY_DIRS:PATH=${GTESTPATH}/lib \

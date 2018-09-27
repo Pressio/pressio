@@ -23,11 +23,8 @@ class Vector<wrapped_type,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >,
     public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>,
-    public ContainerNonResizableBase<Vector<wrapped_type>, 1>,
-    public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
-     typename details::traits<Vector<wrapped_type>>::scalar_t,
-     typename details::traits<Vector<wrapped_type>>::ordinal_t>{
-
+    public ContainerNonResizableBase<Vector<wrapped_type>, 1>{
+  
   using this_t = Vector<wrapped_type>;
   using mytraits = typename details::traits<this_t>;  
   using sc_t = typename mytraits::scalar_t;
@@ -68,28 +65,6 @@ public:
     //assert(!this->empty());
     return data_(i);
   };  
-
-  // this_t operator+(const this_t & other) const{
-  //   assert( other.size() == this->size() );
-  //   this_t res(other.size());
-  //   *res.data() = this->data_ + *other.data();
-  //   return res;
-  // }
-
-  // this_t operator-(const this_t & other) const{
-  //   assert( other.size() == this->size() );
-  //   this_t res(other.size());
-  //   *res.data() = this->data_ - *other.data();
-  //   return res;
-  // }
-  
-  // this_t operator*(const this_t & other) const{
-  //   assert( other.size() == this->size() );
-  //   this_t res(other.size());
-  //   for (decltype(this->size()) i=0; i<this->size(); i++)
-  //     res[i] = this->data_(i) * other[i];
-  //   return res;
-  // }
   
   this_t & operator+=(const this_t & other) {
     assert( other.size() == this->size() );
@@ -242,7 +217,6 @@ private:
   friend VectorMathBase< this_t >;  
   friend CompoundAssignmentOperatorsBase< this_t >;  
   friend ContainerNonResizableBase<this_t, 1>;
-  friend Subscripting1DOperatorsBase< this_t, sc_t, ord_t>;
 
 private:
   wrap_t data_;

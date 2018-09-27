@@ -23,10 +23,7 @@ class Vector<wrapped_type,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >,
     public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>,
-    public ContainerResizableBase<Vector<wrapped_type>, 1>,
-    public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
-     typename details::traits<Vector<wrapped_type>>::scalar_t,
-     typename details::traits<Vector<wrapped_type>>::ordinal_t>{
+    public ContainerResizableBase<Vector<wrapped_type>, 1>{
 
   using this_t = Vector<wrapped_type>;
   using mytraits = typename details::traits<this_t>;  
@@ -254,8 +251,7 @@ private:
   friend VectorMathBase< this_t >;  
   friend CompoundAssignmentOperatorsBase< this_t >;  
   friend ContainerResizableBase<this_t, 1>;
-  friend Subscripting1DOperatorsBase< this_t, sc_t, ord_t>;
-
+  
 private:
   wrap_t data_;
  

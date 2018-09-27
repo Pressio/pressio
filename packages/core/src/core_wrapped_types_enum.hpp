@@ -12,6 +12,7 @@ Wrapped library name for containers
 enum class WrappedPackageIdentifier{
    Undefined,
    Eigen,
+   Blaze,
    Trilinos,
    Kokkos,
    CppStdLib
@@ -29,6 +30,8 @@ enum class WrappedVectorIdentifier{
    Undefined,
    Epetra,
    Eigen, // maybe more specific, like static or dynamic
+   BlazeStatic,
+   BlazeDynamic,
    Kokkos,
    CppStdLib
 };
@@ -42,6 +45,8 @@ enum class WrappedMatrixIdentifier{
    DenseEpetra,
    DenseEigen, // maybe more specific, like static or dynamic
    SparseEigen,
+   DenseBlaze, // maybe more specific
+   SparseBlaze,
    CppStdLib
 };
 
@@ -51,8 +56,7 @@ Identifier for wrapped multivector
 --------------------------------------------*/
 enum class WrappedMultiVectorIdentifier{
    Undefined,
-   Epetra,
-   Eigen // maybe more specific, like static or dynamic
+   Epetra
 };
 
   
