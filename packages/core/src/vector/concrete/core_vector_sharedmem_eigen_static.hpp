@@ -22,7 +22,6 @@ class Vector<wrapped_type,
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >,
-    public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>,
     public ContainerNonResizableBase<Vector<wrapped_type>, 1>{
   
   using this_t = Vector<wrapped_type>;
@@ -215,7 +214,6 @@ private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorSharedMemBase< this_t >;
   friend VectorMathBase< this_t >;  
-  friend CompoundAssignmentOperatorsBase< this_t >;  
   friend ContainerNonResizableBase<this_t, 1>;
 
 private:

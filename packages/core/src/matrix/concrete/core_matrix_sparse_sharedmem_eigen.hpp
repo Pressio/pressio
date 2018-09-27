@@ -28,7 +28,6 @@ class Matrix<wrapped_type,
     public MatrixSparseSharedMemBase< Matrix<wrapped_type> >,
     public MatrixMathBase< Matrix<wrapped_type> >,
     public ArithmeticOperatorsBase< Matrix<wrapped_type> >,
-    public CompoundAssignmentOperatorsBase< Matrix<wrapped_type> >,
     public ContainerResizableBase<Matrix<wrapped_type>, 2>
 {
 
@@ -209,7 +208,6 @@ private:
   friend MatrixSparseSharedMemBase< derived_t >;
   friend MatrixMathBase< derived_t >;
   friend ArithmeticOperatorsBase< derived_t >;
-  friend CompoundAssignmentOperatorsBase< derived_t >;
   friend ContainerResizableBase<derived_t, 2>;
 
 private:

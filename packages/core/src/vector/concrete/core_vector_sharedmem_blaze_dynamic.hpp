@@ -24,7 +24,6 @@ class Vector<wrapped_type,
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >,
-    public CompoundAssignmentOperatorsBase<Vector<wrapped_type>>,
     public ContainerResizableBase<Vector<wrapped_type>, 1>{
 
   using this_t = Vector<wrapped_type>;
@@ -171,7 +170,6 @@ private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorSharedMemBase< this_t >;
   friend VectorMathBase< this_t >;  
-  friend CompoundAssignmentOperatorsBase< this_t >;  
   friend ContainerResizableBase<this_t, 1>;
 
 private:
@@ -181,8 +179,6 @@ private:
 }//end namespace core
 }//end namespace rompp
 
-
 #endif //HAVE_BLAZE
-
 #endif /* CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_ */
 

@@ -20,12 +20,11 @@ class Vector<wrapped_type,
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public VectorMathBase< Vector<wrapped_type> >,
-    public CompoundAssignmentOperatorsBase< Vector<wrapped_type> >,
     public Subscripting1DOperatorsBase< Vector<wrapped_type>, 
               typename details::traits<Vector<wrapped_type>>::scalar_t,
               typename details::traits<Vector<wrapped_type>>::ordinal_t>
 {
-private:
+
   using this_t = Vector<wrapped_type>;
   using sc_t = typename details::traits<this_t>::scalar_t;
   using der_t = typename details::traits<this_t>::derived_t;
@@ -165,7 +164,6 @@ private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorSharedMemBase< this_t >;
   friend VectorMathBase< this_t >;
-  friend CompoundAssignmentOperatorsBase< this_t >;  
   friend Subscripting1DOperatorsBase< this_t, sc_t, ord_t>;
 
 private:

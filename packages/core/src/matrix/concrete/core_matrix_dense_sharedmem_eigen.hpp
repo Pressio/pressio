@@ -26,7 +26,6 @@ class Matrix<wrapped_type,
     public MatrixSharedMemBase< Matrix<wrapped_type> >,
     public MatrixDenseSharedMemBase< Matrix<wrapped_type> >,
     public ArithmeticOperatorsBase< Matrix<wrapped_type>>,
-    public CompoundAssignmentOperatorsBase< Matrix<wrapped_type>>,
     public std::conditional<
   details::traits<Matrix<wrapped_type>>::is_static == true,
   ContainerNonResizableBase<Matrix<wrapped_type>, 2>,
@@ -144,7 +143,6 @@ private:
   friend MatrixSharedMemBase< derived_t >;
   friend MatrixDenseSharedMemBase< derived_t >;
   friend ArithmeticOperatorsBase< derived_t >;
-  friend CompoundAssignmentOperatorsBase< derived_t >;
   friend typename std::conditional<
     details::traits<derived_t>::is_static == true,
     ContainerNonResizableBase<derived_t, 2>,

@@ -39,33 +39,6 @@ private:
 };//end class
 //--------------------------------------------------
   
-
-template<typename derived_type>
-class CompoundAssignmentOperatorsBase{
-public:
-  // disable (for now) if callers'type does not match input type
-  template<typename T,
-  	   typename std::enable_if<
-	     std::is_same<derived_type,T>::value
-	     >::type * = nullptr>
-  derived_type & operator+=(const T & other);  
-
-  // disable (for now) if callers'type does not match input type
-  template<typename T,
-  	   typename std::enable_if<
-	     std::is_same<derived_type,T>::value
-	     >::type * = nullptr>
-  derived_type & operator-=(const T & other);
-
-private:
-  friend derived_type;
-  CompoundAssignmentOperatorsBase() = default;
-  ~CompoundAssignmentOperatorsBase() = default;
-  
-};//end class   
-//--------------------------------------------------
-
-  
 template<typename derived_type,
 	 typename scalar_type,
 	 typename ordinal_type>
