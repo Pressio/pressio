@@ -39,47 +39,47 @@ private:
 };//end class
 //--------------------------------------------------
   
-template<typename derived_type,
-	 typename scalar_type,
-	 typename ordinal_type>
-class Subscripting1DOperatorsBase{
-public:
-  scalar_type & operator[] (ordinal_type index){
-    return static_cast<derived_type &>(*this)[index];
-  }
+// template<typename derived_type,
+// 	 typename scalar_type,
+// 	 typename ordinal_type>
+// class Subscripting1DOperatorsBase{
+// public:
+//   scalar_type & operator[] (ordinal_type index){
+//     return static_cast<derived_type &>(*this)[index];
+//   }
 
-  scalar_type const & operator[] (ordinal_type index) const{
-    return static_cast<const derived_type &>(*this)[index];
-  }
+//   scalar_type const & operator[] (ordinal_type index) const{
+//     return static_cast<const derived_type &>(*this)[index];
+//   }
 
-private:
-  friend derived_type;
-  Subscripting1DOperatorsBase() = default;
-  ~Subscripting1DOperatorsBase() = default;  
+// private:
+//   friend derived_type;
+//   Subscripting1DOperatorsBase() = default;
+//   ~Subscripting1DOperatorsBase() = default;  
  
-};//end class   
-//--------------------------------------------------
+// };//end class   
+// //--------------------------------------------------
 
 
-template<typename derived_type,
-	 typename scalar_type,
-	 typename row_ordinal_type,
-	 typename col_ordinal_type = row_ordinal_type>
-class Subscripting2DOperatorsBase{
-public:
-  scalar_type & operator()(row_ordinal_type irow, 
-                           col_ordinal_type icol);
+// template<typename derived_type,
+// 	 typename scalar_type,
+// 	 typename row_ordinal_type,
+// 	 typename col_ordinal_type = row_ordinal_type>
+// class Subscripting2DOperatorsBase{
+// public:
+//   scalar_type & operator()(row_ordinal_type irow, 
+//                            col_ordinal_type icol);
     
-  scalar_type const & operator()(row_ordinal_type irow, 
-                                 col_ordinal_type icol) const;
+//   scalar_type const & operator()(row_ordinal_type irow, 
+//                                  col_ordinal_type icol) const;
 
-private:
-  friend derived_type;
-  Subscripting2DOperatorsBase() = default;
-  ~Subscripting2DOperatorsBase() = default;  
+// private:
+//   friend derived_type;
+//   Subscripting2DOperatorsBase() = default;
+//   ~Subscripting2DOperatorsBase() = default;  
  
-};//end class   
-//--------------------------------------------------
+// };//end class   
+// //--------------------------------------------------
 
 
 } // end namespace core

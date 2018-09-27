@@ -11,12 +11,7 @@ namespace core{
 template<typename derived_type>
 class MatrixDenseSharedMemBase
   : private core::details::CrtpBase<
-     MatrixDenseSharedMemBase<derived_type>>,
-  public Subscripting2DOperatorsBase<
-    MatrixDenseSharedMemBase<derived_type>, 
-    typename details::traits<derived_type>::scalar_t,
-    typename details::traits<derived_type>::ordinal_t>
-{
+     MatrixDenseSharedMemBase<derived_type>>{
 
   static_assert( details::traits<derived_type>::is_shared_mem==1,
   "OOPS: distributed matrix inheriting from dense sharedMem base!");
@@ -27,9 +22,7 @@ private:
   friend core::details::CrtpBase<this_t>;
 
   using sc_t = typename details::traits<derived_type>::scalar_t;
-  using ord_t = typename details::traits<derived_type>::ordinal_t;
-  friend Subscripting2DOperatorsBase< this_t, sc_t, ord_t>;
-  
+  using ord_t = typename details::traits<derived_type>::ordinal_t;  
   MatrixDenseSharedMemBase() = default;
   ~MatrixDenseSharedMemBase() = default;
   
