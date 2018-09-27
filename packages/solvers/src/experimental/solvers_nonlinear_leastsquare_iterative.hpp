@@ -1,28 +1,20 @@
-
-#ifndef SOLVERS_EXPERIMENTAL_NONLINEAR_ITERATIVE_HPP
-#define SOLVERS_EXPERIMENTAL_NONLINEAR_ITERATIVE_HPP
+#ifndef SOLVERS_EXPERIMENTAL_NONLINEAR_LEASTSQUARE_ITERATIVE_HPP
+#define SOLVERS_EXPERIMENTAL_NONLINEAR_LEASTSQUARE_ITERATIVE_HPP
 
 #include <type_traits>
-// #include "core_ConfigDefs.hpp"
 #include "solvers_nonlinear_base.hpp"
 #include "solvers_nonlinear_iterative_helper.hpp"
-// #include "solvers_nonlinear_factory.hpp"
+#include "../solvers_ConfigDefs.hpp"
 
 
-namespace rompp{
-namespace solvers{
+namespace rompp {
+namespace solvers {
 
-
-struct NonLinearSolvers; // Fwd declaration
-
-/**
- * Implements a non linear solver bases on a linear iterative solver.
- */
 template <
   typename PolicyT,
   typename LSolverT
 >
-class NonLinearIterativeSolver
+class NonLinearLeastSquareIterativeSolver
   : public NonLinearIterativeSolverHelper,
     public NonLinearSolverBase<
       NonLinearIterativeSolver<
@@ -51,23 +43,32 @@ class NonLinearIterativeSolver
       typename VectorT
     >
     auto solve_(const SystemT& sys, const VectorT& b) {
-
-      double tolerance = this->getTolerance();
       double nonLinearTolerance = this->getNonLinearTolerance();
-
-      core::defaultTypes::uint maxIterations = this->getMaxIterations();
       core::defaultTypes::uint maxNonLinearIterations = this->getMaxNonLinearIterations();
 
-      return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, maxIterations, maxNonLinearIterations, tolerance, nonLinearTolerance);
+      return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, maxIterations_, maxNonLinearIterations, tolerance_, nonLinearTolerance, lambda_);
+    }
+
+
+    /**
+     * Get the value of lambda used in nonlinear least-square algorithms.
+     */
+    double getLambda() {
+      return lambda_;
     }
 
 
   protected:
 
-  	NonLinearIterativeSolver() : NonLinearIterativeSolverHelper(), base_type() {}
+    NonLinearLeastSquareIterativeSolver() : NonLinearIterativeSolverHelper(), base_type(), lambda_(1.0) {}
 
+
+  private:
+
+    double lambda_;
 };
 
 } // end namespace solvers
-}//end namespace rompp
+} // end namespace rompp
+
 #endif

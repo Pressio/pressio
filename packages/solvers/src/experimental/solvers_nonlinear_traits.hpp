@@ -7,6 +7,7 @@ namespace rompp{
 namespace solvers{
 
 class SolversNonLinearIterativeNewtonRaphsonPolicy; // Fwd declaration
+class SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy; // Fwd declaration
 
 
 namespace nonlinear {
@@ -21,7 +22,7 @@ namespace details {
 template <typename T>
 struct solver_traits {
   using solver_type = void;
-  static constexpr bool enabled = false; 
+  static constexpr bool enabled = false;
 };
 
 
@@ -34,6 +35,34 @@ struct solver_traits<NewtonRaphson> {
 
 } // end namespace details
 } // end namespace nonlinear
+
+
+namespace nonlinearleastsquare {
+
+// Nonlinear least square iterative solvers types
+struct LevenbergMarquardt;
+
+
+namespace details {
+
+// Solvers traits
+template <typename T>
+struct solver_traits {
+  using solver_type = void;
+  static constexpr bool enabled = false;
+};
+
+
+template <>
+struct solver_traits<LevenbergMarquardt> {
+  using solver_type = SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy;
+  static constexpr bool enabled = true;
+};
+
+} // end namespace details
+} // end namespace nonlinearleastsquare
+
 } // end namespace solvers
-}//end namespace rompp
+} // end namespace rompp
+
 #endif
