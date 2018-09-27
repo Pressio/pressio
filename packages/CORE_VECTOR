@@ -23,8 +23,8 @@
 
 #include "core/src/vector/core_vector_distributed_binary_expression_templates.hpp"
 #include "core/src/vector/core_vector_sharedmem_binary_expression_templates.hpp"
-#include "core/src/vector/core_vector_expression_plus_operator.hpp"
-#include "core/src/vector/core_vector_expression_times_operator.hpp"
-#include "core/src/vector/core_vector_expression_subtract_operator.hpp"
+#include "core/src/vector/core_vector_plus_operator.hpp"
+#include "core/src/vector/core_vector_times_operator.hpp"
+#include "core/src/vector/core_vector_subtract_operator.hpp"
 
 #endif
