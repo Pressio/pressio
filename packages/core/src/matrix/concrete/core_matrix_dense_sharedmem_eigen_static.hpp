@@ -1,6 +1,6 @@
 
-#ifndef CORE_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_HPP_
-#define CORE_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_HPP_
+#ifndef CORE_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_STATIC_HPP_
+#define CORE_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_STATIC_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
@@ -18,7 +18,7 @@ namespace core{
 template <typename wrapped_type>
 class Matrix<wrapped_type,
 	     core::meta::enable_if_t<
-	       core::meta::is_matrix_dense_sharedmem_eigen<
+	       core::meta::is_matrix_dense_sharedmem_eigen_static<
 		 wrapped_type>::value>
 	     >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
@@ -29,10 +29,7 @@ class Matrix<wrapped_type,
      Matrix<wrapped_type>, 
      typename details::traits<Matrix<wrapped_type>>::scalar_t,
      typename details::traits<Matrix<wrapped_type>>::ordinal_t>,
-    public std::conditional<
-      details::traits<Matrix<wrapped_type>>::is_static == true,
-      ContainerNonResizableBase<Matrix<wrapped_type>, 2>,
-      ContainerResizableBase<Matrix<wrapped_type>, 2>>::type
+    public ContainerNonResizableBase<Matrix<wrapped_type>, 2>
 {
 
   using derived_t = Matrix<wrapped_type>;
@@ -44,14 +41,6 @@ class Matrix<wrapped_type,
   
 public:
   Matrix() = default;
-
-  template <typename T = ord_t,
-	    typename std::enable_if<
-	      !mytraits::is_static, T
-	      >::type * = nullptr>
-  explicit Matrix(T nrows, T ncols) {
-    this->resize(nrows,ncols);
-  }
 
   explicit Matrix(const wrap_t & other) : data_(other){}
 
@@ -105,15 +94,6 @@ private:
   ord_t colsImpl() const{
     return data_.cols();
   }
-
-  template <typename T = ord_t,
-	    typename std::enable_if<
-	      !mytraits::is_static, T
-	      >::type * = nullptr>
-  void resizeImpl(T nrows, T ncols){
-    data_.resize(nrows, ncols);
-    data_ = wrapped_type::Zero(nrows,ncols);
-  }
     
 private:
   friend ContainerBase< derived_t, wrapped_type >;
@@ -121,11 +101,7 @@ private:
   friend MatrixSharedMemBase< derived_t >;
   friend MatrixDenseSharedMemBase< derived_t >;
   friend ContainerSubscriptable2DBase< derived_t, sc_t, ord_t>;
-  friend typename std::conditional<
-    details::traits<derived_t>::is_static == true,
-    ContainerNonResizableBase<derived_t, 2>,
-    ContainerResizableBase<derived_t, 2>
-    >::type;
+  friend ContainerNonResizableBase<derived_t, 2>;
 
 private:
   wrap_t data_;

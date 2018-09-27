@@ -52,7 +52,6 @@ struct is_epetra_sparse_matrix_wrapper<
   >
   : std::true_type{};
 //------------------------------------------------------------
-
   
 template <typename T, typename enable = void>
 struct is_eigen_dense_matrix_wrapper : std::false_type {};
