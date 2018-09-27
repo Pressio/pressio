@@ -15,7 +15,7 @@ template <typename mvec_type,
 	  typename vec_type,
     typename std::enable_if<
      core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value &&
-     core::meta::is_epetra_vector_wrapper<vec_type>::value &&
+     core::meta::is_eigen_vector_wrapper<vec_type>::value &&
      core::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >

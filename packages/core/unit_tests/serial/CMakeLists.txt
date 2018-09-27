@@ -4,6 +4,11 @@ add_unit_test(meta_detect_operators ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(meta_detect_typedefs ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(vector_serial_eigen_class ${GTESTMAINSDIR}/gTestMain_serial)
 
+IF(TPL_ENABLE_BLAZE)
+add_unit_test(vector_serial_blaze_class ${GTESTMAINSDIR}/gTestMain_serial)
+ENDIF()
+
+
 # SET(TESTFILES "")
 # APPEND_SET(TESTFILES utest_vector_meta.cc)
 # APPEND_SET(TESTFILES utest_vector_serial_eigen_traits.cc)

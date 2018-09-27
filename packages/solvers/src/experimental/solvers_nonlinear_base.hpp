@@ -7,7 +7,7 @@
 #include <type_traits>
 
 #include "../solvers_ConfigDefs.hpp"
-#include "system_traits.hpp"
+#include "solvers_system_traits.hpp"
 #include "solvers_norms_fwd.hpp"
 #include "solvers_linear_traits.hpp"
 #include "solvers_meta_static_checks.hpp"

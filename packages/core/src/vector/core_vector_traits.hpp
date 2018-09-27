@@ -12,6 +12,37 @@ namespace rompp{
 namespace core{
 namespace details{
 
+//*******************************
+// Blaze dynamic vector 
+//*******************************   
+#ifdef HAVE_BLAZE
+template <typename wrapped_type>
+struct traits<Vector<wrapped_type,
+		     core::meta::enable_if_t<
+		       core::meta::is_dynamic_vector_blaze<
+			 wrapped_type>::value
+		       >
+		     >
+	      >
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+				    WrappedPackageIdentifier::Blaze,
+				    true>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::BlazeDynamic;
+    
+  using scalar_t = typename wrapped_type::ElementType;
+  using ordinal_t = unsigned long;
+
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic = !is_static;
+  static constexpr int rows = -1;
+};
+#endif
+  
 
 //*******************************
 // Eigen vector 
@@ -38,7 +69,7 @@ struct traits<Vector<wrapped_type,
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
 
-  static constexpr int is_static = (
+  static constexpr bool is_static = (
 	// if it is a row vector NON dynamic
 	( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
 	  wrapped_type::ColsAtCompileTime == 1 ) ||
@@ -118,6 +149,8 @@ struct traits<Vector<wrapped_type,
   static constexpr int rows = -1; 
 };
 
+
+  
 //*******************************
 // for a std vector 
 //******************************* 

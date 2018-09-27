@@ -6,6 +6,7 @@
 #include "core_config.h"
 #include <type_traits>
 #include "core_shared_traits.hpp"
+#include "meta/core_meta_basic.hpp"
 
 namespace rompp{
 namespace core{

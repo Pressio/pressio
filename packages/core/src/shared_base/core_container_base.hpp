@@ -29,28 +29,24 @@ public:
   void setZero() {
     this->underlying().setZeroImpl();}
 
-  void matchLayoutWith(const derived_type & other){
-    this->underlying().matchLayoutWithImpl(other);}
-
   template <typename T= derived_type,
-	    typename std::enable_if<
-  	      core::details::traits<T>::is_shared_mem==0
-  	      ,int>::type = 0
+	    core::meta::enable_if_t<
+  	      core::details::traits<T>::is_shared_mem==0,
+  	      int> = 0
   	    >
   bool isDistributedGlobally() const{
     return this->underlying().isDistributedGloballyImpl();
   }
 
   template <typename T= derived_type,
-	    typename std::enable_if<
-  	      core::details::traits<T>::is_shared_mem==1
-  	      ,int>::type = 0
+	    core::meta::enable_if_t<
+  	      core::details::traits<T>::is_shared_mem==1,
+	      int> = 0
   	    >
   bool isDistributedGlobally() const{
     return false;
   }
-  
-  
+    
 private:
   friend derived_type;
   friend core::details::CrtpBase<

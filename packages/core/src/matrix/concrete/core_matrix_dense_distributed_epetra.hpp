@@ -4,8 +4,8 @@
 
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_container_distributed_mpi_base.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
+#include "../../shared_base/core_container_subscriptable_base.hpp"
 
 #include "../base/core_matrix_distributed_base.hpp"
 #include "../base/core_matrix_dense_distributed_base.hpp"
@@ -21,18 +21,20 @@ class Matrix<wrapped_type,
 		 wrapped_type>::value>
 	     >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
+    public ContainerDistributedTrilinosBase<
+      Matrix<wrapped_type>, 
+      typename details::traits<Matrix<wrapped_type>>::row_map_t >, 
+    public ContainerDistributedMpiBase<
+      Matrix<wrapped_type>, 
+      typename details::traits<Matrix<wrapped_type>>::communicator_t >,
+    public ContainerSubscriptable2DBase<
+     Matrix<wrapped_type>, 
+     typename details::traits<Vector<wrapped_type>>::scalar_t,
+     typename details::traits<Vector<wrapped_type>>::local_ordinal_t,
+     typename details::traits<Vector<wrapped_type>>::global_ordinal_t>,
     public MatrixBase< Matrix<wrapped_type> >,
     public MatrixDistributedBase< Matrix<wrapped_type> >,
-    public MatrixDenseDistributedBase< Matrix<wrapped_type> >,
-    public Subscripting2DOperatorsBase< Matrix<wrapped_type>,
-      typename details::traits<Matrix<wrapped_type>>::scalar_t,
-      typename details::traits<Matrix<wrapped_type>>::local_ordinal_t,
-      typename details::traits<Matrix<wrapped_type>>::global_ordinal_t>,
-    public ContainerDistributedTrilinosBase< Matrix<wrapped_type>, 
-      typename details::traits<Matrix<wrapped_type>>::row_map_t >, 
-    public ContainerDistributedMpiBase< Matrix<wrapped_type>, 
-      typename details::traits<Matrix<wrapped_type>>::communicator_t >
-{
+    public MatrixDenseDistributedBase< Matrix<wrapped_type> >{
 
   using this_t = Matrix<wrapped_type>;
   using traits_t = details::traits<this_t>;
@@ -136,7 +138,7 @@ private:
   friend MatrixDenseDistributedBase< this_t >;
   friend ContainerDistributedMpiBase< this_t, comm_t >;
   friend ContainerDistributedTrilinosBase< this_t, row_map_t >;
-  friend Subscripting2DOperatorsBase< this_t, sc_t, LO_t, GO_t>;
+  friend ContainerSubscriptable2DBase< this_t, sc_t, LO_t, GO_t>;
 
 private:
   wrap_t data_;

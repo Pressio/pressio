@@ -6,7 +6,6 @@
 #include "../base/core_multi_vector_distributed_base.hpp"
 #include "../base/core_multi_vector_math_base.hpp"
 #include "../../shared_base/core_container_distributed_mpi_base.hpp"
-#include "../../shared_base/core_operators_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 
 namespace rompp{
@@ -23,10 +22,6 @@ class MultiVector<wrapped_type,
   : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
     public MultiVectorDistributedBase< MultiVector<wrapped_type> >,
     public MultiVectorMathBase< MultiVector<wrapped_type> >,
-    public Subscripting2DOperatorsBase< MultiVector<wrapped_type>,
-      typename details::traits<MultiVector<wrapped_type>>::scalar_t,
-      typename details::traits<MultiVector<wrapped_type>>::local_ordinal_t,
-      typename details::traits<MultiVector<wrapped_type>>::global_ordinal_t>,
     public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>, 
               typename details::traits<MultiVector<wrapped_type>>::data_map_t >, 
     public ContainerDistributedMpiBase< MultiVector<wrapped_type>, 
@@ -141,7 +136,6 @@ private:
   friend MultiVectorMathBase< this_t >;
   friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
   friend ContainerDistributedTrilinosBase< this_t, map_t >;
-  friend Subscripting2DOperatorsBase< this_t, sc_t, LO_t, GO_t>;
   
 private:
   wrap_t data_;
