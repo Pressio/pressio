@@ -5,7 +5,8 @@
 #include <iostream>
 #include <type_traits>
 
-#include "system_traits.hpp"
+#include "solvers_system_traits.hpp"
+#include "solvers_linear_factory.hpp"
 #include "solvers_nonlinear_traits.hpp"
 #include "solvers_meta_static_checks.hpp"
 #include "../solvers_ConfigDefs.hpp"
