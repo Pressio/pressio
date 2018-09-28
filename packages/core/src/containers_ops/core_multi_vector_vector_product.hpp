@@ -10,13 +10,14 @@ namespace rompp{
 namespace core{
 namespace ops{
 
+  
 //  Epetra multivector with epetra vector
 template <typename mvec_type,
 	  typename vec_type,
-    typename std::enable_if<
-     core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value &&
-     core::meta::is_eigen_vector_wrapper<vec_type>::value &&
-     core::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value
+  core::meta::enable_if_t<
+   core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value &&
+   core::meta::is_eigen_vector_wrapper<vec_type>::value &&
+   core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >
 void product(const mvec_type & mvA,
@@ -43,17 +44,18 @@ void product(const mvec_type & mvA,
 //--------------------------------------------
 
   
+  
 //  Epetra multivector product with eigen vector
 template <typename mvec_type,
 	  typename vec_type,
-  typename std::enable_if<
+   core::meta::enable_if_t<
     core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value &&
     core::meta::is_eigen_vector_wrapper<vec_type>::value &&
-    core::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value
+    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >
-core::Vector<Epetra_Vector> product(const mvec_type & mvA,
-				    const vec_type & vecB) 
+auto product(const mvec_type & mvA,
+	     const vec_type & vecB) 
 {
 
   // here, mvA is distrubted, but vecB is NOT.
@@ -85,7 +87,7 @@ core::Vector<Epetra_Vector> product(const mvec_type & mvA,
 }
 
   
-} // end namespace linalg
+} // end namespace ops
 } // end namespace core
 }//end namespace rompp
 #endif

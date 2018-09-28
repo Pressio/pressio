@@ -1,4 +1,4 @@
 
-// for now ok, but we need to turn this on
-// automatically if TPL is on
+#cmakedefine HAVE_TRILINOS
 #cmakedefine HAVE_BLAZE
+#cmakedefine HAVE_MPI

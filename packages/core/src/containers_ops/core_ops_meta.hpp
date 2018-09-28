@@ -11,17 +11,36 @@ namespace rompp{
 namespace core{
 namespace meta {
 
-template <typename T, typename T2, typename enable = void>
-struct wrappers_have_same_scalar : std::false_type {};
 
-template <typename T, typename T2>
-struct wrappers_have_same_scalar<T, T2,
+template <typename T1, typename T2, typename enable = void>
+struct wrapper_pair_have_same_scalar : std::false_type {};
+
+template <typename T1, typename T2>
+struct wrapper_pair_have_same_scalar<T1,T2,
   core::meta::enable_if_t<
-    std::is_same<typename T::scalar_t,
-		 typename T2::scalar_t
+    std::is_same<typename
+		 core::details::traits<T1>::scalar_t,
+		 typename
+		 core::details::traits<T2>::scalar_t
 		 >::value
     >
   > : std::true_type{};
+//--------------------------------------------  
+
+
+template <typename T1, typename T2,
+	  typename T3, typename enable = void>
+struct wrapper_triplet_have_same_scalar : std::false_type {};
+
+template <typename T1, typename T2, typename T3>
+struct wrapper_triplet_have_same_scalar<T1,T2,T3,
+  core::meta::enable_if_t<
+    wrapper_pair_have_same_scalar<T1,T2>::value &&
+    wrapper_pair_have_same_scalar<T2,T3>::value
+    >
+  > : std::true_type{};
+//--------------------------------------------  
+
   
  
 } // namespace meta

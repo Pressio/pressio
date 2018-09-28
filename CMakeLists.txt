@@ -53,7 +53,24 @@ SET(HeaderOnlyTpl_INCLUDE_DIRS
 SET(GTESTMAINSDIR "${CMAKE_CURRENT_SOURCE_DIR}/gtest_mains")
 MESSAGE("Google tests main files are in: " ${GTESTMAINSDIR})
 
+#------------------------------------------------------------
+# turn on cmake variables based on corresponding TPL
+# these variables are defined inside the core package and 
+# are needed as preprocessor directives to turn on/off code
+# if the TPL is not linked to
 
+if(TPL_ENABLE_BLAZE)
+set(HAVE_BLAZE ON)
+endif()
+if(TPL_ENABLE_MPI)
+set(HAVE_MPI ON)
+endif()
+if(TPL_ENABLE_TRILINOS)
+set(HAVE_TRILINOS ON)
+endif()
+
+
+#------------------------------------------------------------
 # Do all of the processing for this Tribits project
 TRIBITS_PROJECT()
 

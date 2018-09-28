@@ -1,11 +1,9 @@
 
 #include <gtest/gtest.h>
-#include "CORE_MATRIX"
-#include "CORE_VECTOR"
+#include "CORE_ALL"
 
-TEST(core_matrix_vector_product, eigenVectorDenseMatrix)
-{
-	using namespace rompp;
+TEST(core_matrix_vector_product, eigenVectorDenseMatrix){
+  using namespace rompp;
 
   using natV_t = Eigen::Matrix<double,3,1>;
   natV_t a; a << 4.,2.,6;
@@ -17,18 +15,21 @@ TEST(core_matrix_vector_product, eigenVectorDenseMatrix)
   core::Matrix<natM_t> myM(M);
 
   core::Vector<natV_t> myR;
-  core::mat_ops::product(myM, myV, myR);
+  core::ops::product(myM, myV, myR);
   EXPECT_DOUBLE_EQ( myR[0], 16.0);
   EXPECT_DOUBLE_EQ( myR[1], 28.0);
   EXPECT_DOUBLE_EQ( myR[2], 6.0);
 
+  auto YY = core::ops::product(myM, myV);
+  EXPECT_DOUBLE_EQ( YY[0], 16.0);
+  EXPECT_DOUBLE_EQ( YY[1], 28.0);
+  EXPECT_DOUBLE_EQ( YY[2], 6.0);
+  
 }//end TEST
 
 
-TEST(core_matrix_vector_product, eigenVectorSparseMatrix)
-{
-	using namespace rompp;
-
+TEST(core_matrix_vector_product, eigenVectorSparseMatrix){
+  using namespace rompp;
   // create vector
   using natV_t = Eigen::Matrix<double,3,1>;
   natV_t a; a << 4.,2.,6;
@@ -53,9 +54,16 @@ TEST(core_matrix_vector_product, eigenVectorSparseMatrix)
   }
     
   core::Vector<Eigen::Matrix<double,4,1>> myR;
-  core::mat_ops::product(myM, myV, myR);
+  core::ops::product(myM, myV, myR);
   EXPECT_DOUBLE_EQ( myR[0], 16.0);
   EXPECT_DOUBLE_EQ( myR[1], 26.0);
   EXPECT_DOUBLE_EQ( myR[2], 6.0);
   EXPECT_DOUBLE_EQ( myR[3], 2.0);
+
+  auto YY = core::ops::product(myM, myV);
+  EXPECT_DOUBLE_EQ( YY[0], 16.0);
+  EXPECT_DOUBLE_EQ( YY[1], 26.0);
+  EXPECT_DOUBLE_EQ( YY[2], 6.0);
+  EXPECT_DOUBLE_EQ( YY[3], 2.0);
+
 }//end TEST

@@ -46,8 +46,8 @@ template <typename T>
 struct is_epetra_sparse_matrix_wrapper<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
-       core::details::traits<T>::wrapped_matrix_identifier==
-       core::details::WrappedMatrixIdentifier::SparseEpetra
+       (core::details::traits<T>::wrapped_matrix_identifier==
+	core::details::WrappedMatrixIdentifier::SparseEpetra)
        >
   >
   : std::true_type{};
@@ -60,8 +60,8 @@ template <typename T>
 struct is_eigen_dense_matrix_wrapper<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
-       core::details::traits<T>::wrapped_matrix_identifier==
-       core::details::WrappedMatrixIdentifier::DenseEigen
+       (core::details::traits<T>::wrapped_matrix_identifier==
+	core::details::WrappedMatrixIdentifier::DenseEigen)
        >
   >
   : std::true_type{};
@@ -74,8 +74,8 @@ template <typename T>
 struct is_eigen_sparse_matrix_wrapper<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
-       core::details::traits<T>::wrapped_matrix_identifier==
-       core::details::WrappedMatrixIdentifier::SparseEigen
+       (core::details::traits<T>::wrapped_matrix_identifier==
+       core::details::WrappedMatrixIdentifier::SparseEigen)
        >
   >
   : std::true_type{};
