@@ -27,7 +27,7 @@ class NonLinearLeastSquareIterativeSolver
   private:
 
     friend NonLinearSolvers;
-    typedef NonLinearSolverBase<NonLinearIterativeSolver<PolicyT, LSolverT>> base_type;
+    typedef NonLinearSolverBase<NonLinearLeastSquareIterativeSolver<PolicyT, LSolverT>> base_type;
 
 
   public:

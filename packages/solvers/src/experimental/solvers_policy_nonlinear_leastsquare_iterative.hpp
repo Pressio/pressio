@@ -8,8 +8,10 @@
 #include "solvers_system_traits.hpp"
 #include "solvers_linear_factory.hpp"
 #include "solvers_nonlinear_traits.hpp"
+#include "solvers_l2_vector_norm.hpp"
 #include "solvers_meta_static_checks.hpp"
 #include "../solvers_ConfigDefs.hpp"
+#include "../../../CORE_OPS"
 #include "../../../core/src/meta/core_meta_detection_idiom.hpp"
 
 
@@ -69,8 +71,8 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
     lId.setIdentity();
     lId.addToDiagonal(lambda);
 
-    auto b = JaT * dy;
-    auto A = JaT * Ja + lId;
+    auto b = core::ops::product(JaT, dy);
+    auto A = core::ops::product(JaT, Ja) + lId;
 
     auto solver = LinearSolvers::createIterativeSolver<SolverT, typename SystemT::matrix_type, PrecT>(A);
     solver.setMaxIterations(maxIterations);
@@ -96,7 +98,7 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
         lId.setIdentity();
         lId.addToDiagonal(lambda);
 
-        A = JaT * Ja + lId;
+        A = core::ops::product(JaT, Ja) + lId;
         solver.resetLinearSystem(A);
       } else {
         // Step accepted
@@ -110,8 +112,8 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
         lId.setIdentity();
         lId.addToDiagonal(lambda);
 
-        b = JaT * dy;
-        A = JaT * Ja + lId;
+        b = core::ops::product(JaT, dy);
+        A = core::ops::product(JaT, Ja) + lId;
         solver.resetLinearSystem(A);
       }
     }

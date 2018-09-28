@@ -7,6 +7,7 @@
 // #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
 // #include "vector/concrete/core_vector_serial_eigen.hpp"
 
+#include <iostream>
 #include "experimental/solvers_l2_vector_norm.hpp"
 #include "experimental/solvers_nonlinear_base.hpp"
 #include "experimental/solvers_nonlinear_traits.hpp"
@@ -16,7 +17,7 @@
 #include "experimental/solvers_policy_nonlinear_leastsquare_iterative.hpp"
 
 
-struct ValidSystem {
+struct ValidSystemLeastSquares {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
@@ -78,11 +79,11 @@ TEST(solvers_non_linear_least_square_base, solversBaseSolveTest)
   x0[0] = 2.50;
   x0[1] = 0.25;
 
-  ValidSystem sys;
+  ValidSystemLeastSquares sys;
   auto x = solver.solve(sys, x0);
 
-  EXPECT_NEAR( x[0],  1.0, 1e-8 );
-  EXPECT_NEAR( x[1],  0.0, 1e-8 );
+  EXPECT_NEAR( x[0],  2.541, 1e-3 );
+  EXPECT_NEAR( x[1],  0.259, 1e-3 );
 }
 
 /*
