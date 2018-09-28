@@ -10,6 +10,8 @@
 namespace rompp {
 namespace solvers {
 
+class NonLinearSolvers; // Fwd declaration
+
 template <
   typename PolicyT,
   typename LSolverT
