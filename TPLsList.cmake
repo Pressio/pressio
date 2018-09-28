@@ -1,9 +1,11 @@
 TRIBITS_REPOSITORY_DEFINE_TPLS(
-  MPI             "cmake/tpls/"  PT
   GTEST           "cmake/tpls/"  PT
-  TRILINOS        "cmake/tpls/"  PT  
   EIGEN           "cmake/tpls/"  PT
-  BLAZE           "cmake/tpls/"  PT
+  #
+  MPI             "cmake/tpls/"  ST
+  TRILINOS        "cmake/tpls/"  ST  
+  BLAZE           "cmake/tpls/"  ST
+  ARMADILLO       "cmake/tpls/"  ST
 
   # we need to strip kokkos from trilinos but for now leave it
   # later on we would like to possibly build rompp wihtout

@@ -68,6 +68,9 @@ endif()
 if(TPL_ENABLE_TRILINOS)
 set(HAVE_TRILINOS ON)
 endif()
+if(TPL_ENABLE_ARMADILLO)
+set(HAVE_ARMADILLO ON)
+endif()
 
 
 #------------------------------------------------------------
