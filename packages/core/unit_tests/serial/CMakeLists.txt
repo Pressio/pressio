@@ -3,6 +3,7 @@ add_unit_test(meta_basic ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(meta_detect_operators ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(meta_detect_typedefs ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(vector_serial_eigen_class ${GTESTMAINSDIR}/gTestMain_serial)
+add_unit_test(matrix_vector_product ${GTESTMAINSDIR}/gTestMain_serial)
 
 IF(TPL_ENABLE_BLAZE)
 add_unit_test(vector_serial_blaze_class ${GTESTMAINSDIR}/gTestMain_serial)
@@ -20,7 +21,6 @@ ENDIF()
 # APPEND_SET(TESTFILES utest_matrix_sparse_serial_eigen_traits.cc)
 # APPEND_SET(TESTFILES utest_matrix_sparse_serial_eigen_class.cc)
 # APPEND_SET(TESTFILES utest_matrix_dense_serial_eigen_class.cc)
-# APPEND_SET(TESTFILES utest_matrix_vector_product.cc)
 
 # # append here tests to be grouped into a single executable
 # # APPEND_SET(...)
