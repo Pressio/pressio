@@ -64,7 +64,7 @@ struct NonLinearSolvers {
     typename NSolverT,
     typename LSolverT,
     typename core::meta::enable_if_t<
-      nonlinear::details::solver_traits<NSolverT>::enabled
+      nonlinearleastsquare::details::solver_traits<NSolverT>::enabled
     >* = nullptr
   >
   static auto createNonLinearIterativeLeastSquareSolver() {
@@ -73,7 +73,7 @@ struct NonLinearSolvers {
 
     static_assert(solver_traits::eigen_enabled && !solver_traits::direct, "Error: either the linear solver is a direct one or is not available for linear systems defined by Eigen matrices");
 
-    typedef typename nonlinear::details::solver_traits<NSolverT>::solver_type policy_type;
+    typedef typename nonlinearleastsquare::details::solver_traits<NSolverT>::solver_type policy_type;
     return NonLinearLeastSquareIterativeSolver<policy_type, LSolverT>();
   }
 

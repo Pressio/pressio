@@ -10,5 +10,6 @@
 #include "core/src/containers_ops/core_multi_vector_vector_dot_product.hpp"
 #include "core/src/containers_ops/core_multi_vector_vector_product.hpp"
 #include "core/src/containers_ops/core_dense_matrix_vector_product.hpp"
+#include "core/src/containers_ops/core_sparse_matrix_vector_product.hpp"
 
 #endif

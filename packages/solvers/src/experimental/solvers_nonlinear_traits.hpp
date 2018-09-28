@@ -40,7 +40,7 @@ struct solver_traits<NewtonRaphson> {
 namespace nonlinearleastsquare {
 
 // Nonlinear least square iterative solvers types
-struct LevenbergMarquardt;
+struct LevenbergMarquardt {};
 
 
 namespace details {

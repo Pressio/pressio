@@ -218,6 +218,6 @@ struct LinearSolvers {
 };
 
 } // end namespace solvers
+} //end namespace rompp
 
-}//end namespace rompp
 #endif

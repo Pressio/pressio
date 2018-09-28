@@ -6,6 +6,7 @@
 #include <type_traits>
 
 #include "solvers_system_traits.hpp"
+#include "solvers_linear_factory.hpp"
 #include "solvers_nonlinear_traits.hpp"
 #include "solvers_meta_static_checks.hpp"
 #include "../solvers_ConfigDefs.hpp"
@@ -64,7 +65,8 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
     auto dy = sys.residual(x0);
     auto Ja = sys.jacobian(x0);
     auto JaT = todeprecate::transpose(Ja);
-    auto lId = decltype(Ja)(Ja.cols(), Ja.cols()).setIdentity();
+    auto lId = decltype(Ja)(Ja.cols(), Ja.cols());
+    lId.setIdentity();
     lId.addToDiagonal(lambda);
 
     auto b = JaT * dy;
