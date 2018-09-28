@@ -7,11 +7,11 @@
 
 namespace rompp{
 namespace solvers{
-	
+
 struct L2Norm {
 
   template <
-    typename T, 
+    typename T,
     typename U
   >
   static double compute_norm_difference(const T& lVec, const U& rVec) {
@@ -21,9 +21,19 @@ struct L2Norm {
     double value = 0;
     T dVec(lVec - rVec);
 
-    dVec.norm2(value);  	
+    dVec.norm2(value);
     return value;
-  }	
+  }
+
+
+	template <
+    typename T
+  >
+  static double compute_norm(const T& vec) {
+		double value;
+    vec.norm2(value);
+		return value;
+  }
 };
 
 

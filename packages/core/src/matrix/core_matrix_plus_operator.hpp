@@ -18,7 +18,7 @@ auto operator+(const T1 & A, const T1 & B) {
   assert( A.rows() == B.rows() );
   assert( A.cols() == B.cols() );
   T1 C(A.rows(), A.cols());
-  *C.data() = *A.data_ + *B.data();
+  *C.data() = *A.data() + *B.data();
   return C;
 }
   

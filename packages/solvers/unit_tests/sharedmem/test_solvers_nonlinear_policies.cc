@@ -13,7 +13,7 @@
 #include "experimental/solvers_policy_nonlinear_iterative.hpp"
 
 
-struct ValidSystem {
+struct ValidSystemPolicyTest {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
@@ -71,7 +71,7 @@ TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newt
   b[0] = 0.15;
   b[1] = 0.5;
 
-  ValidSystem system;
+  ValidSystemPolicyTest system;
 
   auto y = SolversNonLinearIterativeNewtonRaphsonPolicy::solve<linear::Bicgstab, linear::DefaultPreconditioner, L2Norm>(system, b, 100, 100, 1.0e-5, 1.0e-5);
 
@@ -87,5 +87,5 @@ TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newt
 
   int b;
 
-  ASSERT_DEATH((SolversNonLinearIterativeNewtonRaphsonPolicy::template solve<void, void, void>(ValidSystem{}, b, 100, 100, 1.0e-5, 1.0e-5)), "Error: the type of the RHS vector is not compatible with the provided nonlinear system");
+  ASSERT_DEATH((SolversNonLinearIterativeNewtonRaphsonPolicy::template solve<void, void, void>(ValidSystemPolicyTest{}, b, 100, 100, 1.0e-5, 1.0e-5)), "Error: the type of the RHS vector is not compatible with the provided nonlinear system");
 }

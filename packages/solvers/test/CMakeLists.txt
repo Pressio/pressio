@@ -7,5 +7,5 @@ ADD_SUBDIRECTORIES(
    linear_iterative
    linear_leastsquares
    nonlinear_iterative
-   # leastsquares
+   nonlinear_leastsquares
 )
