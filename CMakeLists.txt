@@ -76,6 +76,3 @@ endif()
 #------------------------------------------------------------
 # Do all of the processing for this Tribits project
 TRIBITS_PROJECT()
-
-
-
