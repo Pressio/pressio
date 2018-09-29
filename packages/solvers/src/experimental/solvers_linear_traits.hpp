@@ -2,6 +2,7 @@
 #define SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_TRAITS_HPP
 
 #include <Eigen/Core>
+#include "../solvers_ConfigDefs.hpp"
 #ifdef HAVE_TRILINOS
   #include "AztecOO.h"
 #endif
