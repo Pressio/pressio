@@ -7,8 +7,12 @@ add_unit_test(vector_serial_eigen_class ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(matrix_vector_product_eigen ${GTESTMAINSDIR}/gTestMain_serial)
 add_unit_test(matrix_matrix_product_eigen ${GTESTMAINSDIR}/gTestMain_serial)
 
-IF(TPL_ENABLE_BLAZE)
+IF(HAVE_BLAZE)
 add_unit_test(vector_serial_blaze_class ${GTESTMAINSDIR}/gTestMain_serial)
+ENDIF()
+
+IF(HAVE_ARMADILLO)
+add_unit_test(vector_serial_armadillo_class ${GTESTMAINSDIR}/gTestMain_serial)
 ENDIF()
 
 

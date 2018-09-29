@@ -15,6 +15,10 @@
 #include <blaze/math/StaticVector.h>
 #endif
 
+#ifdef HAVE_ARMADILLO
+#include <armadillo>
+#endif
+
 #ifdef HAVE_TRILINOS
 // epetra 
 #include "Epetra_Vector.h"
@@ -163,6 +167,50 @@ struct is_dynamic_vector_blaze<T,
       > : std::true_type{};
 
 #endif
+
+
+
+#ifdef HAVE_ARMADILLO
+template <typename T, typename enable = void>
+struct is_armadillo_column_vector : std::false_type {};
+
+template <typename T>
+struct is_armadillo_column_vector<T,
+	 core::meta::enable_if_t<
+	   std::is_same<T,
+     	    arma::Col<typename T::elem_type>
+			>::value
+	   >
+      > : std::true_type{};
+//--------------------------------------------
+
+template <typename T, typename enable = void>
+struct is_armadillo_row_vector : std::false_type {};
+
+template <typename T>
+struct is_armadillo_row_vector<T,
+	 core::meta::enable_if_t<
+	   std::is_same<T,
+     	    arma::Row<typename T::elem_type>
+			>::value
+	   >
+      > : std::true_type{};
+//--------------------------------------------
+  
+template <typename T, typename enable = void>
+struct is_vector_armadillo : std::false_type {};
+
+template <typename T>
+struct is_vector_armadillo<T,
+	 core::meta::enable_if_t<
+	   is_armadillo_row_vector<T>::value or
+	   is_armadillo_column_vector<T>::valu
+	   >
+      > : std::true_type{};
+
+#endif
+
+
   
  
 } // namespace meta

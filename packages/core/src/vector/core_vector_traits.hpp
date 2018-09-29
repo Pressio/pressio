@@ -12,6 +12,75 @@ namespace rompp{
 namespace core{
 namespace details{
 
+
+//*******************************
+// Armadillo column vector 
+//*******************************   
+#ifdef HAVE_ARMADILLO
+template <typename wrapped_type>
+struct traits<Vector<wrapped_type,
+		     core::meta::enable_if_t<
+		       core::meta::is_armadillo_column_vector<
+			 wrapped_type>::value
+		       >
+		     >
+	      >
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+				    WrappedPackageIdentifier::Armadillo,
+				    true>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier =
+    WrappedVectorIdentifier::ArmadilloCol;
+    
+  using scalar_t = typename wrapped_type::elem_type;
+  using ordinal_t = unsigned long;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = !is_static;
+  static constexpr int rows = -1;
+};
+#endif
+
+
+//*******************************
+// Armadillo row vector 
+//*******************************   
+#ifdef HAVE_ARMADILLO
+template <typename wrapped_type>
+struct traits<Vector<wrapped_type,
+		     core::meta::enable_if_t<
+		       core::meta::is_armadillo_row_vector<
+			 wrapped_type>::value
+		       >
+		     >
+	      >
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+				    WrappedPackageIdentifier::Armadillo,
+				    true>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier =
+    WrappedVectorIdentifier::ArmadilloRow;
+    
+  using scalar_t = typename wrapped_type::elem_type;
+  using ordinal_t = unsigned long;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = !is_static;
+  static constexpr int rows = -1;
+};
+#endif
+  
+
+
+  
 //*******************************
 // Blaze dynamic vector 
 //*******************************   

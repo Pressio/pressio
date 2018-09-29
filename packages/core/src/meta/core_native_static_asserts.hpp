@@ -9,7 +9,6 @@
 namespace rompp{
 namespace core{
 
-
 //////////////////////
 // VECTOR
 /////////////////////
@@ -53,6 +52,15 @@ namespace core{
 #define STATIC_ASSERT_IS_NOT_VECTOR_BLAZE(TYPE)				\
   static_assert( !core::meta::is_static_vector_blaze<TYPE>::value &&	\
                  !core::meta::is_dynamic_vector_blaze<TYPE>::value,	\
+		 "THIS_IS_A_VECTOR_BLAZE")
+#endif
+
+#ifdef HAVE_ARMADILLO
+#define STATIC_ASSERT_IS_VECTOR_ARMADILLO(TYPE)			\
+  static_assert( core::meta::is_vector_armadillo<TYPE>::value,	\
+		 "THIS_IS_NOT_A_VECTOR_ARMADILLO")
+#define STATIC_ASSERT_IS_NOT_VECTOR_ARMADILLO(TYPE)		\
+  static_assert( !core::meta::is_vector_armadillo<TYPE>::value,	\
 		 "THIS_IS_A_VECTOR_BLAZE")
 #endif
   

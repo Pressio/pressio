@@ -17,6 +17,7 @@
 #include "core/src/vector/concrete/core_vector_sharedmem_kokkos.hpp"
 #include "core/src/vector/concrete/core_vector_sharedmem_stdlib.hpp"
 #include "core/src/vector/concrete/core_vector_sharedmem_blaze_dynamic.hpp"
+#include "core/src/vector/concrete/core_vector_sharedmem_armadillo.hpp"
 
 #include "core/src/vector/core_vector_distributed_binary_expression_templates.hpp"
 #include "core/src/vector/core_vector_sharedmem_binary_expression_templates.hpp"

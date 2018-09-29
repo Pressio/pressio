@@ -15,6 +15,7 @@ enum class WrappedPackageIdentifier{
    Blaze,
    Trilinos,
    Kokkos,
+   Armadillo,
    CppStdLib
 };
 
@@ -33,6 +34,8 @@ enum class WrappedVectorIdentifier{
    BlazeStatic,
    BlazeDynamic,
    Kokkos,
+   ArmadilloCol,
+   ArmadilloRow,
    CppStdLib
 };
 

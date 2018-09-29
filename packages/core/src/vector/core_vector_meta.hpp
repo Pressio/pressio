@@ -57,7 +57,43 @@ struct is_eigen_vector_wrapper<
        >
   >
   : std::true_type{};
+  
+//------------------------------------------------------------
 
+  
+#ifdef HAVE_ARMADILLO  
+template <typename T, typename enable = void>
+struct is_armadillo_row_vector_wrapper : std::false_type {};
+
+template <typename T>
+struct is_armadillo_row_vector_wrapper<
+  T, core::meta::enable_if_t<
+       core::details::traits<T>::is_vector &&
+       core::details::traits<T>::wrapped_vector_identifier==
+       core::details::WrappedVectorIdentifier::ArmadilloRow
+       >
+  >
+  : std::true_type{};
+
+  
+template <typename T, typename enable = void>
+struct is_armadillo_column_vector_wrapper : std::false_type {};
+
+template <typename T>
+struct is_armadillo_column_vector_wrapper<
+  T, core::meta::enable_if_t<
+       core::details::traits<T>::is_vector &&
+       core::details::traits<T>::wrapped_vector_identifier==
+       core::details::WrappedVectorIdentifier::ArmadilloCol
+       >
+  >
+  : std::true_type{};
+
+
+#endif
+  
+
+  
 } // namespace meta
 } // namespace core
 
