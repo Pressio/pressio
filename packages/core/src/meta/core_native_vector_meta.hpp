@@ -15,11 +15,13 @@
 #include <blaze/math/StaticVector.h>
 #endif
 
+#ifdef HAVE_TRILINOS
 // epetra 
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
 // kokkos views
 #include <Kokkos_Core.hpp>
+#endif
 
 
 namespace rompp{
@@ -78,6 +80,7 @@ struct is_vector_stdlib<T,
 //--------------------------------------------
 
   
+#ifdef HAVE_TRILINOS  
 template <typename T, typename enable = void>
 struct is_vector_epetra : std::false_type {};
 
@@ -88,9 +91,11 @@ struct is_vector_epetra<T,
 	std::is_same<T,Epetra_Vector>::value 
 	>::type
       > : std::true_type{};
+#endif 
 //--------------------------------------------
 
 
+#ifdef HAVE_TRILINOS 
 template <typename T, typename enable = void>
 struct is_vector_kokkos : std::false_type {};
 
@@ -101,10 +106,12 @@ struct is_vector_kokkos<T,
 	   Kokkos::is_view<T>::value && 
 	   T::traits::rank==1>
       > : std::true_type{};
+#endif
 //--------------------------------------------
 
-#ifdef HAVE_BLAZE
 
+
+#ifdef HAVE_BLAZE
 template <typename T, typename enable = void>
 struct is_static_vector_blaze : std::false_type {};
 

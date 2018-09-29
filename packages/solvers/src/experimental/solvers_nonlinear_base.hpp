@@ -140,7 +140,7 @@ class NonLinearSolverBase {
      * @param nonLinearTolerance tolerance of the nonlinear solver.
      */
     void setNonLinearTolerance(double nonLinearTolerance) {
-      nonLinearTolerance_ = abs(nonLinearTolerance);
+      nonLinearTolerance_ = std::abs(nonLinearTolerance);
     }
 
 

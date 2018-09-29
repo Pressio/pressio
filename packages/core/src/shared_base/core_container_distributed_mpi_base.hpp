@@ -1,4 +1,5 @@
 
+#ifdef HAVE_MPI
 #ifndef CORE_SHARED_BASE_CONTAINER_DISTRIBUTED_MPI_BASE_HPP_
 #define CORE_SHARED_BASE_CONTAINER_DISTRIBUTED_MPI_BASE_HPP_
 
@@ -27,4 +28,5 @@ private:
 };//end class  
 } // end namespace core
 }//end namespace rompp
+#endif
 #endif

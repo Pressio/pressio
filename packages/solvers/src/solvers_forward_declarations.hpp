@@ -6,22 +6,12 @@
 
 namespace rompp{
 namespace solvers{
+namespace experimental{
 
-namespace experimental
-{
 
-// this is just a hack to have a solver to see 
-// how overall workflow fits together
-template<typename matrix_type, 
-	 typename rhs_type, 
-	 typename result_type,
-	 // or an enun class, or similar
-	 int algo_type = 0, 
-	 typename Enable = void
-	 >
-class linearSolver;   
 
 } // end experimental
 } // end namespace solvers
 }//end namespace rompp
+
 #endif

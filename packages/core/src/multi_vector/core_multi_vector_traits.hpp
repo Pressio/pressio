@@ -10,6 +10,7 @@ namespace rompp{
 namespace core{
 namespace details{
 
+#ifdef HAVE_TRILINOS 
 //*******************************
 // for epetra multivector 
 //******************************* 
@@ -34,6 +35,8 @@ struct traits<MultiVector<wrapped_type,
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
 };
+#endif
+
     
 }//end namespace details
 }//end namespace core

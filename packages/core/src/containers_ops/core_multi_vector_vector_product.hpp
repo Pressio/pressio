@@ -10,8 +10,8 @@ namespace rompp{
 namespace core{
 namespace ops{
 
-  
-//  Epetra multivector with epetra vector
+#ifdef HAVE_TRILINOS  
+//  Epetra multivector with eigen vector
 template <typename mvec_type,
 	  typename vec_type,
   core::meta::enable_if_t<
@@ -41,10 +41,11 @@ void product(const mvec_type & mvA,
     }
   }
 }
+#endif
 //--------------------------------------------
 
   
-  
+#ifdef HAVE_TRILINOS  
 //  Epetra multivector product with eigen vector
 template <typename mvec_type,
 	  typename vec_type,
@@ -55,19 +56,11 @@ template <typename mvec_type,
     > * = nullptr
   >
 auto product(const mvec_type & mvA,
-	     const vec_type & vecB) 
-{
+	     const vec_type & vecB) {
 
   // here, mvA is distrubted, but vecB is NOT.
   // we interpret this as a linear combination of vectors
-  
-  // // using sc_t = typename details::traits<mvec_type>::scalar_t;
-  // // how many vectors are in mvA
-  // auto numVecs = mvA.globalNumVectors();
-  // // size of vecB
-  // auto vecBLen = vecB.size();
-  // assert(numVecs == vecBLen);
-  
+    
   // the data map of the multivector
   auto mvMap = mvA.getDataMap();
   // result is an Epetra Vector with same distribution of mvA  
@@ -75,18 +68,11 @@ auto product(const mvec_type & mvA,
   res_t c(mvMap);
   // zero-out the result
   c.setZero();
-  // // my number of rows
-  // auto myNrows = mvMap.NumMyElements();
-  // for (int i=0; i<myNrows; i++){
-  //   for (decltype(numVecs) j=0; j<numVecs; j++){
-  //     c[i] += mvA(i,j) * vecB[j];
-  //   }
-  // }
   product(mvA, vecB, c);
   return c;
 }
+#endif 
 
-  
 } // end namespace ops
 } // end namespace core
 }//end namespace rompp

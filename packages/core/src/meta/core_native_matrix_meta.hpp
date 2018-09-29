@@ -6,9 +6,12 @@
 #include "core_native_vector_meta.hpp"
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
+
+#ifdef HAVE_TRILINOS
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_MultiVector.h>
 #include "Epetra_LocalMap.h"
+#endif
 
 
 namespace rompp{
@@ -134,6 +137,7 @@ struct sparse_sharedmem_eigen_same_storage<
 //----------------------------------------------------------------------
 
 
+#ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
 struct is_matrix_sparse_distributed_epetra
   : std::false_type {};
@@ -158,6 +162,8 @@ struct is_matrix_dense_distributed_epetra<T,
       std::is_same<T, Epetra_MultiVector>::value
       >::type >
   : std::true_type{};
+#endif
+
 
   
 } // namespace meta  

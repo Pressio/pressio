@@ -24,6 +24,8 @@ struct is_core_matrix_wrapper< T,
 		 "THIS_IS_NOT_A_CORE_MATRIX_WRAPPER")
 //------------------------------------------------------------
 
+
+#ifdef HAVE_TRILINOS  
 template <typename T, typename enable = void>
 struct is_epetra_dense_matrix_wrapper : std::false_type {};
 
@@ -36,9 +38,11 @@ struct is_epetra_dense_matrix_wrapper<
        >
   >
   : std::true_type{};
+  #endif
 //------------------------------------------------------------
 
 
+#ifdef HAVE_TRILINOS  
 template <typename T, typename enable = void>
 struct is_epetra_sparse_matrix_wrapper : std::false_type {};
 
@@ -51,6 +55,7 @@ struct is_epetra_sparse_matrix_wrapper<
        >
   >
   : std::true_type{};
+  #endif
 //------------------------------------------------------------
   
 template <typename T, typename enable = void>

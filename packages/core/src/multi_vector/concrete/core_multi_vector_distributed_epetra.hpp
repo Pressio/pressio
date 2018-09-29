@@ -1,4 +1,5 @@
 
+#ifdef HAVE_TRILINOS
 #ifndef CORE_MULTIVECTOR_CONCRETE_MULTIVECTOR_DISTRIBUTED_EPETRA_HPP_
 #define CORE_MULTIVECTOR_CONCRETE_MULTIVECTOR_DISTRIBUTED_EPETRA_HPP_
 
@@ -145,3 +146,5 @@ private:
 }//end namespace core
 }//end namespace rompp
 #endif
+#endif
+

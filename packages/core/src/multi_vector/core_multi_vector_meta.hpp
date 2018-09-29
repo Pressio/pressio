@@ -27,6 +27,7 @@ struct is_core_multi_vector_wrapper<T,
 //------------------------------------------------------------
 
 
+#ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
 struct is_epetra_multi_vector_wrapper : std::false_type {};
 
@@ -39,6 +40,7 @@ struct is_epetra_multi_vector_wrapper<
        >
   >
   : std::true_type{};
+#endif
  
  
 } // namespace meta

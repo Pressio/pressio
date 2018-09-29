@@ -1,4 +1,5 @@
 
+#ifdef HAVE_TRILINOS  
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_DENSE_DISTRIBUTED_EPETRA_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_DENSE_DISTRIBUTED_EPETRA_HPP_
 
@@ -147,3 +148,5 @@ private:
 }//end namespace core 
 }//end namespace rompp
 #endif
+#endif
+

@@ -28,6 +28,7 @@ namespace core{
   static_assert( !core::meta::is_vector_stdlib<TYPE>::value, \
 		 "THIS_IS_A_STDLIB_VECTOR")
 
+#ifdef HAVE_TRILINOS
 #define STATIC_ASSERT_IS_VECTOR_EPETRA(TYPE) \
   static_assert( core::meta::is_vector_epetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_VECTOR_EPETRA")
@@ -41,6 +42,8 @@ namespace core{
 #define STATIC_ASSERT_IS_NOT_VECTOR_KOKKOS(TYPE)\
   static_assert( !core::meta::is_vector_kokkos<TYPE>::value, \
 		 "THIS_IS_A_VECTOR_KOKKOS")
+#endif
+
 
 #ifdef HAVE_BLAZE
 #define STATIC_ASSERT_IS_VECTOR_BLAZE(TYPE)				\
@@ -58,12 +61,14 @@ namespace core{
 // MULTI VECTOR
 ///////////////////////
 
+#ifdef HAVE_TRILINOS
 #define STATIC_ASSERT_IS_MULTIVECTOR_EPETRA(TYPE) \
   static_assert( core::meta::is_multi_vector_epetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_MULTIVECTOR_EPETRA")
 #define STATIC_ASSERT_IS_NOT_MULTIVECTOR_EPETRA(TYPE) \
   static_assert( !core::meta::is_multi_vector_epetra<TYPE>::value, \
 		 "THIS_IS_A_MULTIVECTOR_EPETRA")
+#endif
 
 
 ////////////////////////
@@ -94,6 +99,7 @@ namespace core{
 		 "THIS_IS_A_MATRIX_DENSE_SHAREDMEM_STDLIB")
 
   
+#ifdef HAVE_TRILINOS
 #define STATIC_ASSERT_IS_MATRIX_SPARSE_DISTRIBUTED_EPETRA(TYPE)	      \
   static_assert( core::meta::is_matrix_sparse_distributed_epetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_MATRIX_SPARSE_DIST_EPETRA")
@@ -108,7 +114,8 @@ namespace core{
 #define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_DISTRIBUTED_EPETRA(TYPE) \
   static_assert( !core::meta::is_matrix_dense_distributed_epetra<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_DENSE_DIST_EPETRA")
-
+#endif
+  
   
 } // end namespace core
 }//end namespace rompp

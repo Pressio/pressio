@@ -27,6 +27,11 @@ endfunction()
 #to include the lumped headers
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
+
 ADD_SUBDIRECTORY(serial)
+
+IF(HAVE_MPI)
 ADD_SUBDIRECTORY(mpi)
+ENDIF()
+
 #ADD_SUBDIRECTORY(kokkos)

@@ -1,7 +1,7 @@
 
 #include "CORE_ALL"
 #include "SVD_BASIC"
-#include "Epetra_MpiComm.h"
+// #include "Epetra_MpiComm.h"
 
 using sc_t = double;
 using datamat_t = rompp::core::MultiVector<Epetra_MultiVector>;

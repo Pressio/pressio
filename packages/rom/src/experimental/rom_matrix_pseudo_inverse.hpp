@@ -11,6 +11,7 @@ namespace rom{
 namespace exp{
 
 
+#ifdef HAVE_TRILINOS
 template <typename mat_type,
 	  typename std::enable_if<
 	    core::details::traits<mat_type>::isEpetra &&
@@ -26,6 +27,7 @@ auto pseudoInverse(const mat_type & A)
   C.setZero();
   return C;
 }
+#endif 
 
   
 }//end namespace exp

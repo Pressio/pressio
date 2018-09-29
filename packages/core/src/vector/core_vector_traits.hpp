@@ -85,6 +85,7 @@ struct traits<Vector<wrapped_type,
 //*******************************
 // for epetra vector 
 //******************************* 
+#ifdef HAVE_TRILINOS
 template<typename wrapped_type>
 struct traits<Vector<wrapped_type,
 	  typename
@@ -148,6 +149,7 @@ struct traits<Vector<wrapped_type,
   static constexpr bool is_dynamic = !is_static;
   static constexpr int rows = -1; 
 };
+#endif
 
 
   

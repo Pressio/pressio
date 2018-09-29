@@ -1,4 +1,5 @@
 
+#ifdef HAVE_TRILINOS
 #ifndef SOLVERS_EXPERIMENTAL_POLICY_LINEAR_ITERATIVE_TRILINOS_HPP
 #define SOLVERS_EXPERIMENTAL_POLICY_LINEAR_ITERATIVE_TRILINOS_HPP
 
@@ -40,4 +41,5 @@ class SolversLinearIterativeTrilinosPolicy {
 } // end namespace solvers
 
 }//end namespace rompp
+#endif
 #endif

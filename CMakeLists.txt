@@ -60,16 +60,16 @@ MESSAGE("Google tests main files are in: " ${GTESTMAINSDIR})
 # if the TPL is not linked to
 
 if(TPL_ENABLE_BLAZE)
-set(HAVE_BLAZE ON)
+	set(HAVE_BLAZE ON)
 endif()
 if(TPL_ENABLE_MPI)
-set(HAVE_MPI ON)
+	set(HAVE_MPI ON)
 endif()
 if(TPL_ENABLE_TRILINOS)
-set(HAVE_TRILINOS ON)
+	set(HAVE_TRILINOS ON)
 endif()
 if(TPL_ENABLE_ARMADILLO)
-set(HAVE_ARMADILLO ON)
+	set(HAVE_ARMADILLO ON)
 endif()
 
 

@@ -28,6 +28,7 @@ struct svd_traits<const T> : svd_traits<T> {};
 //---------------------------------------------------------------
 
   
+#ifdef HAVE_TRILINOS
 template <typename matrix_type,
 	  template <typename...> class lsv_type,
 	  template <typename...> class rsv_type,
@@ -59,9 +60,11 @@ struct svd_traits<Solver<
   using sval_t = sval_type;
 
 };
+#endif
 //---------------------------------------------------------------
 
   
+#ifdef HAVE_TRILINOS
 template <typename matrix_type,
 	  template <typename...> class lsv_type,
 	  template <typename...> class rsv_type,
@@ -90,18 +93,11 @@ struct svd_traits<Solver<
   using lsv_t = lsv_type<Epetra_MultiVector>;
   using rsv_t = rsv_type<Epetra_MultiVector>;
   using sval_t = sval_type;
-
 };
+#endif
 
   
 }//end namespace details
 }//end namespace svd 
 }//end namespace rompp
 #endif
-
-
-
-// using wrapped_solver_t = typename std::conditional<which_impl==svdKind::EigenJacobi,
-// 						   Eigen::JacobiSVD<native_matrix_t>,
-// 						   Eigen::BDCSVD<native_matrix_t>
-// 						   >::type;

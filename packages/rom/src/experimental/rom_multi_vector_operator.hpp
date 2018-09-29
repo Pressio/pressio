@@ -41,21 +41,18 @@ class MultiVectorOperator
     core::ops::product(*op_, X);
   }
 
-  //---------------------------------
-  //---------------------------------
-  //----      TRANSPOSE
-  //---------------------------------
-  //---------------------------------
-  
-  template <typename T, 
-     core::meta::enable_if_t<
-       core::meta::is_core_vector_wrapper<T>::value
-       > * = nullptr
-     >
-  auto applyTranspImpl(const T & X){
-    return core::ops::dot(*op_, X);
-  }
-  //---------------------------------
+  // //---------------------------------
+  // //----      TRANSPOSE
+  // //---------------------------------
+  // template <typename T, 
+  //    core::meta::enable_if_t<
+  //      core::meta::is_core_vector_wrapper<T>::value
+  //      > * = nullptr
+  //    >
+  // auto applyTranspImpl(const T & X){
+  //   return core::ops::dot(*op_, X);
+  // }
+  // //---------------------------------
   
   
 public:

@@ -48,7 +48,7 @@ class NonLinearIterativeSolverHelper {
      * @param tolerance tolerance of the underlying linear iterative solver.
      */
     void setTolerance(double tolerance) {
-      tolerance_ = abs(tolerance);
+      tolerance_ = std::abs(tolerance);
     }
 
 

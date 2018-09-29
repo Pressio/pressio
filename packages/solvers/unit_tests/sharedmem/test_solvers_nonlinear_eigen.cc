@@ -75,10 +75,8 @@ TEST(solvers_nonlinear_base, solversBaseGettersTest)
   auto tol = solver.getTolerance();
   auto tolNL = solver.getNonLinearTolerance();
 
-
   EXPECT_EQ(x, 100);
   EXPECT_EQ(xNL, 100);
-
   EXPECT_NEAR(tol, 1.0e-5, 1.0e-8);
   EXPECT_NEAR(tolNL, 1.0e-5, 1.0e-8);
 }
@@ -92,7 +90,7 @@ TEST(solvers_non_linear_base, solversBaseSettersTest)
   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
   solver.setMaxIterations(200);
-  solver.setMaxNonLinearIterations(200);
+  solver.setMaxNonLinearIterations(222);
 
   solver.setTolerance(-2.0e-5);
   solver.setNonLinearTolerance(-2.0e-5);
@@ -104,8 +102,7 @@ TEST(solvers_non_linear_base, solversBaseSettersTest)
   auto tolNL = solver.getNonLinearTolerance();
 
   EXPECT_EQ(x, 200);
-  EXPECT_EQ(xNL, 200);
-
+  EXPECT_EQ(xNL, 222);
   EXPECT_NEAR(tol, 2.0e-5, 1.0e-8);
   EXPECT_NEAR(tolNL, 2.0e-5, 1.0e-8);
 }
@@ -166,6 +163,28 @@ TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test)
   EXPECT_NEAR( y[0],  1.0, 1e-8 );
   EXPECT_NEAR( y[1],  0.0, 1e-8 );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

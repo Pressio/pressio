@@ -126,6 +126,7 @@ struct LinearSolvers {
    *
    * @return An iterative linear solver for sparse Trilinos matrices
    */
+#ifdef HAVE_TRILINOS
   template <
     typename SolverT,
     typename MatrixT,
@@ -177,7 +178,8 @@ struct LinearSolvers {
     return wrapped_solver;
   }
 
-
+#endif
+  
   /**
    * Create an iterative least square linear solver for sparse Eigen matrices
    *

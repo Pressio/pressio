@@ -2,7 +2,9 @@
 #define SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_TRAITS_HPP
 
 #include <Eigen/Core>
-#include "AztecOO.h"
+#ifdef HAVE_TRILINOS
+  #include "AztecOO.h"
+#endif
 
 #include "../../../core/src/matrix/core_matrix_traits.hpp"
 
@@ -44,22 +46,32 @@ struct solver_traits<CG> {
   >
   using eigen_solver_type = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
 
+#ifdef HAVE_TRILINOS
   static constexpr int trilinos_flag = AZ_cg;
+#endif
 
   static constexpr bool direct = false;
   static constexpr bool eigen_enabled = true;
+#ifdef HAVE_TRILINOS
   static constexpr bool trilinos_enabled = true;
+#endif
 };
+
 
 template <>
 struct solver_traits<Gmres> {
 
+#ifdef HAVE_TRILINOS
   static constexpr int trilinos_flag = AZ_gmres;
+#endif
 
   static constexpr bool direct = false;
   static constexpr bool eigen_enabled = false;
+#ifdef HAVE_TRILINOS
   static constexpr bool trilinos_enabled = true;
+#endif
 };
+
 
 template <>
 struct solver_traits<Bicgstab> {
@@ -70,11 +82,15 @@ struct solver_traits<Bicgstab> {
   >
   using eigen_solver_type = Eigen::BiCGSTAB<MatrixT, PrecT>;
 
+#ifdef HAVE_TRILINOS
   static constexpr int trilinos_flag = AZ_bicgstab;
-
+#endif
+  
   static constexpr bool direct = false;
   static constexpr bool eigen_enabled = true;
+#ifdef HAVE_TRILINOS
   static constexpr bool trilinos_enabled = true;
+#endif
 };
 
 template <>
@@ -87,7 +103,9 @@ struct solver_traits<ColPivHouseholderQR> {
 
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
+#ifdef HAVE_TRILINOS
   static constexpr bool trilinos_enabled = false;
+#endif
 };
 
 template <>
@@ -100,7 +118,9 @@ struct solver_traits<CompleteOrthogonalDecomposition> {
 
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
+#ifdef HAVE_TRILINOS
   static constexpr bool trilinos_enabled = false;
+#endif
 };
 
 template <>
@@ -114,7 +134,9 @@ struct solver_traits<LSCG> {
 
   static constexpr bool direct = false;
   static constexpr bool eigen_enabled = true;
+#ifdef HAVE_TRILINOS
   static constexpr bool trilinos_enabled = false;
+#endif
 };
 
 
@@ -122,7 +144,9 @@ struct solver_traits<LSCG> {
 template <typename T>
 struct preconditioner_traits {
   static constexpr bool eigen_enabled = false;
+#ifdef HAVE_TRILINOS
   static constexpr bool trilinos_enabled = false;
+#endif
 };
 
 template<>
@@ -134,13 +158,17 @@ struct preconditioner_traits<DefaultPreconditioner> {
   static constexpr int trilinos_flag = INT_MIN;
 
   static constexpr bool eigen_enabled = true;
+#ifdef HAVE_TRILINOS
   static constexpr bool trilinos_enabled = true;
+#endif
 };
 
 template <>
 struct preconditioner_traits<Jacobi> {
   static constexpr bool eigen_enabled = false;
+#ifdef HAVE_TRILINOS
   static constexpr bool trilinos_enabled = false;
+#endif
 };
 
 } // end namespace details

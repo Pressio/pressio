@@ -20,8 +20,6 @@ TEST(core_matrix_matrix_product, eigenDenseDense){
 
   static_assert(
    core::meta::is_eigen_dense_matrix_wrapper<myA_t>::value,"");
-  static_assert(
-   !core::meta::is_epetra_multi_vector_wrapper<myA_t>::value,"");
   
   auto C = core::ops::product(A,B);
   EXPECT_EQ( C.cols(), B.cols());

@@ -1,4 +1,5 @@
 
+#ifdef HAVE_TRILINOS
 #ifndef SVD_CRS_EPETRA_USING_ANASAZI_HPP_
 #define SVD_CRS_EPETRA_USING_ANASAZI_HPP_
 
@@ -327,3 +328,4 @@ private:
 }//end namespace svd
 }//end namespace rompp
 #endif 
+#endif

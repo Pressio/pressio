@@ -4,6 +4,7 @@
 
 #include "../../../core/src/meta/core_meta_basic.hpp"
 #include "../../../core/src/vector/core_vector_meta.hpp"
+#include "../../../core/src/multi_vector/core_multi_vector_meta.hpp"
 
 namespace rompp{
 namespace ode{
@@ -20,27 +21,6 @@ struct isLegitimateExplicitStateType<state_type,
  typename std::enable_if<
    core::meta::is_core_vector_wrapper<state_type>::value
    >::type
-  > : std::true_type{};
-
-template<typename state_type>
-struct isLegitimateExplicitStateType<state_type,
-  typename std::enable_if<
-    core::meta::is_vector_stdlib<state_type>::value
-    >::type
-  > : std::true_type{};
-
-template<typename state_type>
-struct isLegitimateExplicitStateType<state_type,
-  typename std::enable_if<
-    core::meta::is_vector_eigen<state_type>::value
-    >::type
-  > : std::true_type{};
-
-template<typename state_type>
-struct isLegitimateExplicitStateType<state_type,
-  typename std::enable_if<
-    core::meta::is_vector_epetra<state_type>::value
-    >::type
   > : std::true_type{};
   
 //---------------------------------------------------------------

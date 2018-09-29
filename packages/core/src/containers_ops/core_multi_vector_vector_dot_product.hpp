@@ -11,7 +11,7 @@ namespace core{
 namespace ops{
 
 
-  
+#ifdef HAVE_TRILINOS    
 //  Epetra multivector with epetra vector
 template <typename mvec_type,
 	  typename vec_type,
@@ -44,13 +44,14 @@ void dot(const mvec_type & mvA,
   const auto * vecNatData = vecB.data();
   for (decltype(numVecs) i=0; i<numVecs; i++){
     (*mvNatData)(i)->Dot(*vecNatData, &result[i]);
-  }
-  
+  }  
 }
+#endif
 //--------------------------------------------------------
 
   
   
+#ifdef HAVE_TRILINOS  
 //  Epetra multivector with epetra vector
 template <typename mvec_type,
 	  typename vec_type,
@@ -70,12 +71,12 @@ dot(const mvec_type & mvA, const vec_type & vecB){
   res_t res(numVecs);
   dot(mvA, vecB, res);
   return res;
-
 }
+#endif
 //--------------------------------------------------------
 
   
-} // end namespace linalg
+} // end namespace ops
 } // end namespace core
 }//end namespace rompp
 #endif

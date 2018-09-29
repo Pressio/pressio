@@ -83,6 +83,7 @@ struct traits< Matrix<
 //***********************************
 // epetra sparse distributed matrix 
 //***********************************
+#ifdef HAVE_TRILINOS  
 template <typename wrapped_type>
 struct traits<Matrix
    <wrapped_type,
@@ -115,12 +116,12 @@ struct traits<Matrix
 
   static constexpr int is_static = 0;
 };
-
+#endif
   
-
 //***********************************
 // epetra dense distributed matrix 
 //***********************************
+#ifdef HAVE_TRILINOS  
 template <typename wrapped_type>
 struct traits<Matrix
    <wrapped_type,
@@ -154,7 +155,7 @@ struct traits<Matrix
 
   static constexpr bool is_static = false;
 };
-
+#endif
   
 
   
