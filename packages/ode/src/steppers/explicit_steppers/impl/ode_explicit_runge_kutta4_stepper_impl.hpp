@@ -96,31 +96,33 @@ protected:
     // stage 1: 
     // ----------
     residual_obj_->compute(y, auxRHS_[0], *model_, t);
-    // ytmp = y_n + auxRHS_[0]*dt/2
-    ytmp.template inPlaceOp<add_op_t>(1.0,  y, dt_half, auxRHS_[0]);
+    ytmp = y + auxRHS_[0]*dt_half;
+    //ytmp.template inPlaceOp<add_op_t>(1.0,  y, dt_half, auxRHS_[0]);
     
     // ----------
     // stage 2: 
     // ----------
     residual_obj_->compute(ytmp, auxRHS_[1], *model_, t_phalf);
-    ytmp.template inPlaceOp<add_op_t>(1.0, y, dt_half, auxRHS_[1]);
+    ytmp = y + auxRHS_[1]*dt_half;
+    //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt_half, auxRHS_[1]);
     
     // ----------
     // stage 3: 
     // ----------
     residual_obj_->compute(ytmp, auxRHS_[2], *model_, t_phalf);
-    //ytmp = y_n + auxRHS_[2]*dt/2
-    ytmp.template inPlaceOp<add_op_t>(1.0, y, dt, auxRHS_[2]);
+    ytmp = y + auxRHS_[2]*dt;
+    //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt, auxRHS_[2]);
 
     // ----------
     // stage 4: 
     // ----------
     residual_obj_->compute(ytmp, auxRHS_[3], *model_, t + dt);
-    //x += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    y.template inPlaceOp<add_op_t>(1.0, dt6, auxRHS_[0],
-				   dt3, auxRHS_[1],
-				   dt3, auxRHS_[2],
-				   dt6, auxRHS_[3]);
+    //y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
+    y += dt6*auxRHS_[0] + dt3*auxRHS_[1] + dt3*auxRHS_[2] + dt6*auxRHS_[3];
+    // y.template inPlaceOp<add_op_t>(1.0, dt6, auxRHS_[0],
+    // 				   dt3, auxRHS_[1],
+    // 				   dt3, auxRHS_[2],
+    // 				   dt6, auxRHS_[3]);
     
   }//end doStep
 

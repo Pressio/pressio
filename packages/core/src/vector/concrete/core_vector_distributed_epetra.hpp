@@ -79,15 +79,52 @@ public:
     return data_[i];
   };  
 
-  der_t & operator+=(const der_t & other) {
+
+  // compound assignment from expression template
+  // this += expr
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      T::is_vector_expression> * = nullptr>
+  this_t & operator+=(const T & expr) {
+    assert(this->localSize() == expr.localSize());
+    for (LO_t i = 0; i != expr.localSize(); ++i)
+      data_[i] += expr[i];
+    return *this;
+  }
+
+  // compound assignment when type(b) = type(this)
+  // this += b 
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator+=(const T & other) {
     this->data_.Update(1.0, *other.data(), 1.0 );
     return *this;
   }
 
-  der_t & operator-=(const der_t & other) {
+
+  // compound assignment from expression template
+  // this -= expr
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      T::is_vector_expression> * = nullptr>
+  this_t & operator-=(const T & expr) {
+    assert(this->localSize() == expr.localSize());
+    for (LO_t i = 0; i != expr.localSize(); ++i)
+      data_[i] -= expr[i];
+    return *this;
+  }
+
+  // compound assignment when type(b) = type(this)
+  // this -= b 
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator-=(const T & other) {
     this->data_.Update(-1.0, *other.data(), 1.0 );
     return *this;
   }
+  
     
 private:
 

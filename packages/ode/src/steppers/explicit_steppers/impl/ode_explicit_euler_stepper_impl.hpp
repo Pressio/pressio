@@ -78,8 +78,9 @@ protected:
     residual_obj_->compute(y, auxRHS_[0], *model_, t);
     
     // y = y + dt * rhs
-    y.template inPlaceOp<std::plus<double>>(
-	     static_cast<scalar_type>(1.0), dt, auxRHS_[0]);
+    y += dt * auxRHS_[0];
+    // y.template inPlaceOp<std::plus<double>>(
+    // 	     static_cast<scalar_type>(1.0), dt, auxRHS_[0]);
   }
   //----------------------------------------------------------------
   

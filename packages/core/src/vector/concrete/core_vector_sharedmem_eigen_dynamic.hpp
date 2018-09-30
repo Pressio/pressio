@@ -94,18 +94,55 @@ public:
     return data_(i);
   };  
 
-  this_t & operator+=(const this_t & other) {
+
+  // compound assignment from expression template
+  // this += expr
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      T::is_vector_expression> * = nullptr>
+  this_t & operator+=(const T & expr) {
+    assert( expr.size() == this->size() );
+    for (ord_t i = 0; i != expr.size(); ++i)
+      data_[i] += expr[i];
+    return *this;
+  }
+
+  // compound assignment when type(b) = type(this)
+  // this += b 
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator+=(const T & other) {
     assert( other.size() == this->size() );
     this->data_ += *other.data();
     return *this;
   }
-  
-  this_t & operator-=(const this_t & other) {
+
+
+  // compound assignment from expression template
+  // this -= expr
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      T::is_vector_expression> * = nullptr>
+  this_t & operator-=(const T & expr) {
+    assert( expr.size() == this->size() );
+    for (ord_t i = 0; i != expr.size(); ++i)
+      data_[i] -= expr[i];
+    return *this;
+  }
+
+  // compound assignment when type(b) = type(this)
+  // this -= b 
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator-=(const T & other) {
     assert( other.size() == this->size() );
     this->data_ -= *other.data();
     return *this;
   }
 
+  
 private:
 
   void matchLayoutWithImpl(const this_t & other){

@@ -16,7 +16,7 @@ TEST(core_vector_serial_armadillo_class, Constructor)
     == core::details::WrappedVectorIdentifier::ArmadilloCol);
   ASSERT_FALSE(vecTrait::wrapped_vector_identifier 
     == core::details::WrappedVectorIdentifier::Eigen);
-
+  
   myvec_t v1(3);
   ASSERT_TRUE( v1.size() == 3 );
   EXPECT_DOUBLE_EQ(v1[0], 0.0);
@@ -30,7 +30,10 @@ TEST(core_vector_serial_armadillo_class, Constructor)
   EXPECT_DOUBLE_EQ(v1[2], 0.0);
   EXPECT_DOUBLE_EQ(v1[3], 0.0);
   EXPECT_DOUBLE_EQ(v1[4], 0.0);
+
 }
+
+
 
 
 // TEST(core_vector_serial_eigen_class, queryWrappedData)

@@ -10,14 +10,21 @@ namespace rompp{
 namespace core{
 namespace ops{
 
-#ifdef HAVE_TRILINOS  
+
+#ifdef HAVE_TRILINOS
+//--------------------------------------------
 //  Epetra multivector with eigen vector
+//--------------------------------------------
+
+// we pass the result object
 template <typename mvec_type,
 	  typename vec_type,
   core::meta::enable_if_t<
-   core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value &&
-   core::meta::is_eigen_vector_wrapper<vec_type>::value &&
-   core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+   core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
+   core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+    (core::meta::is_eigen_vector_wrapper<vec_type>::value or
+     core::meta::is_armadillo_column_vector_wrapper<vec_type>::value or
+     core::meta::is_armadillo_row_vector_wrapper<vec_type>::value)
     > * = nullptr
   >
 void product(const mvec_type & mvA,
@@ -41,20 +48,18 @@ void product(const mvec_type & mvA,
     }
   }
 }
-#endif
-//--------------------------------------------
 
-  
-#ifdef HAVE_TRILINOS  
-//  Epetra multivector product with eigen vector
+// result is the return type
 template <typename mvec_type,
 	  typename vec_type,
-   core::meta::enable_if_t<
-    core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value &&
-    core::meta::is_eigen_vector_wrapper<vec_type>::value &&
-    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
-    > * = nullptr
-  >
+  core::meta::enable_if_t<
+   core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
+   core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+    (core::meta::is_eigen_vector_wrapper<vec_type>::value or
+     core::meta::is_armadillo_column_vector_wrapper<vec_type>::value or
+     core::meta::is_armadillo_row_vector_wrapper<vec_type>::value)
+  > * = nullptr
+ >
 auto product(const mvec_type & mvA,
 	     const vec_type & vecB) {
 
@@ -71,8 +76,11 @@ auto product(const mvec_type & mvA,
   product(mvA, vecB, c);
   return c;
 }
-#endif 
+#endif //HAVE_TRILINOS
 
+
+
+  
 } // end namespace ops
 } // end namespace core
 }//end namespace rompp
