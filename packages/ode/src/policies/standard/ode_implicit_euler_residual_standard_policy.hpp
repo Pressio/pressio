@@ -38,9 +38,9 @@ public:
 private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
   
-  void computeImpl(const state_type & y, state_type & R,
-  		   const std::array<state_type, 1> & oldYs,
-  		   model_type & model, scalar_type t, scalar_type dt){
+  void operator()(const state_type & y, state_type & R,
+		  const std::array<state_type, 1> & oldYs,
+		  model_type & model, scalar_type t, scalar_type dt){
     
     if (R.empty())
       R.matchLayoutWith(y);
@@ -52,10 +52,10 @@ private:
   }
   //----------------------------------------------------------------
 
-  state_type computeImpl(const state_type & y, 
-			 const std::array<state_type, 1> & oldYs,
-			 model_type & model,
-			 scalar_type t, scalar_type dt){
+  state_type operator()(const state_type & y, 
+			const std::array<state_type, 1> & oldYs,
+			model_type & model,
+			scalar_type t, scalar_type dt){
     
     auto nR = model.residual(*y.data(), t);
     state_type R(nR);

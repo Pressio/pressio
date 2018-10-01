@@ -2,7 +2,7 @@
 
 EXTRA_ARGS=$@
 
-SRC=/Users/fnrizzi/Desktop/indwork/NGA/ROM/codes/rompp
+SRC=/Users/fnrizzi/Desktop/cleanup/codes/rompp
 PFX=/Users/fnrizzi/Desktop/romppInstall
 
 MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc640

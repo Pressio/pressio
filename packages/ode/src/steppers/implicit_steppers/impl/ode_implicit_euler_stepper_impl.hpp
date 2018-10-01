@@ -60,9 +60,10 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 				       residual_policy_type,
 				       jacobian_policy_type>;
 
-// public:
-//   using vector_type = state_type;
-//   using matrix_type = jacobian_type;
+public:
+  // these aliases are needed by the solver
+  using vector_type = state_type;
+  using matrix_type = jacobian_type;
   
 protected:
   using storage_base_t::auxStates_;
@@ -99,28 +100,17 @@ protected:
     t_ = t;
     // store previous state = y;
     auxStates_[0] = y;
-    std::cout << "doStep: y" << std::endl;
-    std::cout << *y.data() << "\n";
-
-    solver.solve(*this, y);
+    y = solver.solve(*this, y);
   }//end doStepImpl
   //--------------------------------------------------------
 
   void residualImpl(const state_type & y, residual_type & R){
-    // std::cout << "residual" << std::endl;
-    // std::cout << *y.data() << "\n";
-    // std::cout << *R.data() << "\n";
     residual_obj_->compute(y, R, auxStates_, *model_, t_, dt_);
-    //    std::cout << *R.data() << "\n";
   }
   //--------------------------------------------------------
 
   void jacobianImpl(const state_type & y, jacobian_type & J){
-    // std::cout << "jacobian" << std::endl;
-    // std::cout << *y.data() << "\n";
-    // std::cout << *J.data() << "\n";
     jacobian_obj_->compute(y, J, *model_, t_, dt_);
-    //    std::cout << *J.data() << "\n";
   }
   //--------------------------------------------------------
 

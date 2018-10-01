@@ -16,11 +16,10 @@ void implicit_euler_time_discrete_residual(const state_type & yn,
   // On input: R contains the application RHS, i.e. if
   //           dudt = f(x,u,...), R contains f(...)
   // On output, it contains the residual
-  for (decltype(R.size()) i=0; i < R.size(); i++){
-    R[i] = yn[i] - ynm1[i] - dt*R[i];
-  }
-  // std::cout << "\ndoImpl res euler " << std::endl;
-  // std::cout << *R.data();
+  R = yn - ynm1 - dt*R;
+  // for (decltype(R.size()) i=0; i < R.size(); i++){
+  //   R[i] = yn[i] - ynm1[i] - dt*R[i];
+  // }
 }
 
 

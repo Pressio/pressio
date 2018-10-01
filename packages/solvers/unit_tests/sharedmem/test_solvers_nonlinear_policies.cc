@@ -80,12 +80,12 @@ TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newt
 }
 
 
-TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newtonraphsonPolicyIncompatibleSystemVector)
-{
-  using namespace rompp;
-  using namespace solvers;
+// TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newtonraphsonPolicyIncompatibleSystemVector)
+// {
+//   using namespace rompp;
+//   using namespace solvers;
 
-  int b;
+//   int b;
 
-  ASSERT_DEATH((SolversNonLinearIterativeNewtonRaphsonPolicy::template solve<void, void, void>(ValidSystemPolicyTest{}, b, 100, 100, 1.0e-5, 1.0e-5)), "Error: the type of the RHS vector is not compatible with the provided nonlinear system");
-}
+//   ASSERT_DEATH((SolversNonLinearIterativeNewtonRaphsonPolicy::template solve<void, void, void>(ValidSystemPolicyTest{}, b, 100, 100, 1.0e-5, 1.0e-5)), "Error: the type of the RHS vector is not compatible with the provided nonlinear system");
+// }

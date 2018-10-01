@@ -40,12 +40,13 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     double nonLinearTolerance
   ) {
 
-    std::cerr << "Error: the type of the RHS vector is not compatible with the provided nonlinear system" << std::endl;
+    std::cerr << "Error: the type of the RHS vector \
+is not compatible with the provided nonlinear system" << std::endl;
     assert(0);
 
   	return x0;
   }
-
+  //--------------------------------------------------------------
 
   template <
     typename SolverT,
@@ -96,7 +97,8 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
 
     return xNew;
   }
-
+  //--------------------------------------------------------------
+ 
 };
 
 } // end namespace solvers

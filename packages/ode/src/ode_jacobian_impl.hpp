@@ -3,6 +3,7 @@
 #define ODE_JACOBIAN_IMPL_HPP_
 
 #include "ode_ConfigDefs.hpp"
+#include "../../core/src/matrix/core_matrix_meta.hpp"
 
 namespace rompp{
 namespace ode{
@@ -11,18 +12,13 @@ namespace impl{
 template <typename jacobian_type, typename time_type,
 	  typename
 	  std::enable_if<
-	    core::details::traits<jacobian_type>::isMatrix==1 &&
-	    core::details::traits<jacobian_type>::isSparse==1 &&
-	    core::details::traits<jacobian_type>::isEigen==1
+	    core::meta::is_eigen_sparse_matrix_wrapper<jacobian_type>::value
 	    >::type * = nullptr
 	  >
 void implicit_euler_time_discrete_jacobian(jacobian_type & jac,
-					   time_type dt)
-{
+					   time_type dt){
+  
   jac.scale(-dt);
-  // auwo II(jac);
-  // II.setIdentity();
-  //jac += II;  
   jac.addToDiagonal(static_cast<time_type>(1));
 }
 

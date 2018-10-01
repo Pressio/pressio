@@ -84,7 +84,7 @@ struct system_traits {
   static constexpr bool has_jacobian_methods =
     has_jacobian_callable_with_one_arg || has_jacobian_callable_with_two_args;
 
-  static constexpr bool is_system = has_residual_methods;// && has_jacobian_methods;
+  static constexpr bool is_system = has_residual_methods and  has_jacobian_methods;
 };
 
 } // end namespace details

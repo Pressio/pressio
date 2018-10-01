@@ -29,42 +29,42 @@ class NonLinearIterativeSolver
         PolicyT,
         LSolverT
       >
-    >
-{
-
-  private:
+    >{
 
     friend NonLinearSolvers;
-    typedef NonLinearSolverBase<NonLinearIterativeSolver<PolicyT, LSolverT>> base_type;
-
+    typedef NonLinearSolverBase<
+      NonLinearIterativeSolver<PolicyT, LSolverT>> base_type;
 
   public:
 
-
     /**
-     * Implements the solve method for a non linear solver.
-     */
+    * Implements the solve method for a non linear solver.
+    */
     template <
       typename PrecT,
       typename NormT,
       typename SystemT,
       typename VectorT
     >
-    auto solve_(const SystemT& sys, const VectorT& b) {
+    auto solve_(SystemT& sys, const VectorT& b) {
 
       double tolerance = this->getTolerance();
       double nonLinearTolerance = this->getNonLinearTolerance();
 
       core::defaultTypes::uint maxIterations = this->getMaxIterations();
-      core::defaultTypes::uint maxNonLinearIterations = this->getMaxNonLinearIterations();
+      core::defaultTypes::uint maxNonLinearIterations =
+	this->getMaxNonLinearIterations();
 
-      return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, maxIterations, maxNonLinearIterations, tolerance, nonLinearTolerance);
+      return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b,
+			 maxIterations, maxNonLinearIterations,
+			 tolerance, nonLinearTolerance);
     }
+    //--------------------------------------------------------------
+  
+protected:
 
-
-  protected:
-
-  	NonLinearIterativeSolver() : NonLinearIterativeSolverHelper(), base_type() {}
+  NonLinearIterativeSolver()
+    : NonLinearIterativeSolverHelper(), base_type() {}
 
 };
 

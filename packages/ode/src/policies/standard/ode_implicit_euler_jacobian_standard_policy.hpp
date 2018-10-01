@@ -43,11 +43,11 @@ private:
     
 private:
   
-  void computeImpl(const state_type & y, 
-		   jacobian_type & J, 
-		   model_type & model,
-		   scalar_type t,
-		   scalar_type dt){
+  void operator()(const state_type & y, 
+		  jacobian_type & J, 
+		  model_type & model,
+		  scalar_type t,
+		  scalar_type dt){
     
     // first eval space jac
     model.jacobian( *y.data(), *J.data(), t);
@@ -56,10 +56,10 @@ private:
   }
   //----------------------------------------------------------------
 
-  jacobian_type computeImpl(const state_type & y, 
-			    model_type & model,
-			    scalar_type t,
-			    scalar_type dt){
+  jacobian_type operator()(const state_type & y, 
+			   model_type & model,
+			   scalar_type t,
+			   scalar_type dt){
     
     auto nJJ = model.jacobian( *y.data(), t);
     jacobian_type JJ(nJJ);

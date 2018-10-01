@@ -55,10 +55,12 @@ class NonLinearSolverBase {
         int
       >::type* = nullptr
     >
-    void solve(const SystemT& sys, const VectorT& x0) {
-      std::cerr << "Error: either the nonlinear system or the solution hint is invalid." << std::endl;
+    void solve(SystemT& sys, const VectorT& x0) {
+      std::cerr << "Error: either the nonlinear system or \
+the solution hint is invalid." << std::endl;
       assert(0);
     }
+    //--------------------------------------------------------------
 
 
     /**
@@ -82,11 +84,12 @@ class NonLinearSolverBase {
         int
       >::type* = nullptr
     >
-    auto solve(const SystemT& sys, const VectorT& x0) {
+    auto solve(SystemT& sys, const VectorT& x0) {
       return this->underlying().template solve_<PrecT, NormT>(sys, x0);
     }
+    //--------------------------------------------------------------
 
-
+  
     /**
      * @brief Solve the non linear system.
      *
@@ -103,9 +106,11 @@ class NonLinearSolverBase {
       typename SystemT,
       typename VectorT
     >
-    auto solve(const SystemT& sys, const VectorT& x0) {
-      return this->template solve<linear::DefaultPreconditioner, L2Norm, SystemT, VectorT>(sys, x0);
+    auto solve(SystemT& sys, const VectorT& x0) {
+      return this->template solve<linear::DefaultPreconditioner,
+				  L2Norm, SystemT, VectorT>(sys, x0);
     }
+    //--------------------------------------------------------------
 
 
     /**
@@ -114,6 +119,7 @@ class NonLinearSolverBase {
     core::defaultTypes::uint getMaxNonLinearIterations() {
       return maxNonLinearIterations_;
     }
+    //--------------------------------------------------------------
 
 
     /**
@@ -122,6 +128,7 @@ class NonLinearSolverBase {
     double getNonLinearTolerance() {
       return nonLinearTolerance_;
     }
+    //--------------------------------------------------------------
 
 
     /**
@@ -129,9 +136,11 @@ class NonLinearSolverBase {
      *
      * @param maxNonLinearIterations maximum number of iterations of the nonlinear solver.
      */
-    void setMaxNonLinearIterations(core::defaultTypes::uint maxNonLinearIterations) {
+    void setMaxNonLinearIterations(core::defaultTypes::uint
+				   maxNonLinearIterations) {
       maxNonLinearIterations_ = maxNonLinearIterations;
     }
+    //--------------------------------------------------------------
 
 
     /**
@@ -142,12 +151,12 @@ class NonLinearSolverBase {
     void setNonLinearTolerance(double nonLinearTolerance) {
       nonLinearTolerance_ = std::abs(nonLinearTolerance);
     }
-
+    //--------------------------------------------------------------
 
   protected:
 
-    NonLinearSolverBase() : maxNonLinearIterations_(100), nonLinearTolerance_(1.0e-5) {}
-
+    NonLinearSolverBase()
+      : maxNonLinearIterations_(100), nonLinearTolerance_(1.0e-5) {}
 
   private:
 
@@ -155,11 +164,9 @@ class NonLinearSolverBase {
       return static_cast<Derived&>(*this);
     }
 
-
     Derived const& underlying() const {
       return static_cast<Derived const&>(*this);
     }
-
 
   private:
 

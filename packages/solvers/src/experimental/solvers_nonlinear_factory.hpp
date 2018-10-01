@@ -30,9 +30,11 @@ struct NonLinearSolvers {
     >::type* = nullptr
   >
   static void createIterativeSolver() {
-  	std::cerr << "Error: the nonlinear solver selected is not available or its name was mispelt" << std::endl;
+  	std::cerr << "Error: the nonlinear solver selected \
+is not available or its name was mispelt" << std::endl;
   	assert(0);
   }
+  //--------------------------------------------------------------
 
 
   /**
@@ -50,11 +52,15 @@ struct NonLinearSolvers {
 
     using solver_traits = linear::details::solver_traits<LSolverT>;
 
-    static_assert(solver_traits::eigen_enabled && !solver_traits::direct, "Error: either the linear solver is a direct one or is not available for linear systems defined by Eigen matrices");
+    static_assert(solver_traits::eigen_enabled && !solver_traits::direct,
+		  "Error: either the linear solver is a direct one \
+or is not available for linear systems defined by Eigen matrices");
 
-    typedef typename nonlinear::details::solver_traits<NSolverT>::solver_type policy_type;
-  	return NonLinearIterativeSolver<policy_type, LSolverT>();
+    using policy_type =
+      typename nonlinear::details::solver_traits<NSolverT>::solver_type;
+    return NonLinearIterativeSolver<policy_type, LSolverT>();
   }
+  //--------------------------------------------------------------
 
 
   /**
@@ -71,11 +77,15 @@ struct NonLinearSolvers {
 
     using solver_traits = linear::details::solver_traits<LSolverT>;
 
-    static_assert(solver_traits::eigen_enabled && !solver_traits::direct, "Error: either the linear solver is a direct one or is not available for linear systems defined by Eigen matrices");
+    static_assert(solver_traits::eigen_enabled && !solver_traits::direct,
+		  "Error: either the linear solver is a direct one \
+or is not available for linear systems defined by Eigen matrices");
 
-    typedef typename nonlinearleastsquare::details::solver_traits<NSolverT>::solver_type policy_type;
+    using policy_type =
+      typename nonlinearleastsquare::details::solver_traits<NSolverT>::solver_type;
     return NonLinearLeastSquareIterativeSolver<policy_type, LSolverT>();
   }
+  //--------------------------------------------------------------
 
 };
 
