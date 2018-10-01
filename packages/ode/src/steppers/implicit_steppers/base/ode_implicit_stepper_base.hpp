@@ -52,7 +52,7 @@ public:
     this->underlying().doStepImpl( y, t, dt, step, solver);
   }
 
-  void residual(const state_t & y, state_t & R){
+  void residual(const state_t & y, residual_t & R){
     this->underlying().residualImpl(y, R);
   }
 
@@ -60,6 +60,14 @@ public:
     this->underlying().jacobianImpl(y, J);
   }
 
+  residual_t residual(const state_t & y){
+    return this->underlying().residualImpl(y);
+  }
+
+  jacobian_t jacobian(const state_t & y){
+    return this->underlying().jacobianImpl(y);
+  }
+  
 private:
   
   ImplicitStepperBase() = default;

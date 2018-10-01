@@ -10,14 +10,27 @@ namespace rompp{
 namespace ode{
 namespace policy{
 
-template<typename state_type,
-	 typename residual_type,
-	 typename model_type>
-class ImplicitEulerResidualStandardPolicy
+  
+template<typename state_type, typename model_type,
+	 typename residual_type = state_type, typename enable = void>
+class ImplicitEulerResidualStandardPolicy;
+
+
+//----------------------------------------------------------------
+//----------------------------------------------------------------
+//   default when state_type = residual_type
+//----------------------------------------------------------------
+//----------------------------------------------------------------
+template<typename state_type, typename model_type>
+class ImplicitEulerResidualStandardPolicy<
+  state_type, model_type, state_type,
+  core::meta::enable_if_t<
+    core::meta::is_core_vector_wrapper<state_type>::value
+    >
+  >
   : public ImplicitResidualPolicyBase<
-  ImplicitEulerResidualStandardPolicy<state_type, residual_type,
-					  model_type>, 1, 0 >
-{
+  ImplicitEulerResidualStandardPolicy<state_type, model_type>, 1, 0 >{
+  
 public:
   ImplicitEulerResidualStandardPolicy() = default;
   ~ImplicitEulerResidualStandardPolicy() = default;  
@@ -25,38 +38,37 @@ public:
 private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
   
-private:
-
-  template <typename U = state_type,
-	    typename T = residual_type,
-	    typename
-	    std::enable_if<
-	      core::meta::is_core_vector_wrapper<U>::value==true &&
-	      core::meta::is_core_vector_wrapper<T>::value==true
-	      >::type * = nullptr
-	    >
-  void computeImpl(const U & y,
-		   T & R,
-		   const std::array<U, 1> & oldYs,
-		   model_type & model,
-		   scalar_type t,
-		   scalar_type dt){
+  void computeImpl(const state_type & y, state_type & R,
+  		   const std::array<state_type, 1> & oldYs,
+  		   model_type & model, scalar_type t, scalar_type dt){
+    
     if (R.empty())
       R.matchLayoutWith(y);
 
     R.setZero();
     model.residual(*y.data(), *R.data(), t);
-
     // do time discrete residual
     ode::impl::implicit_euler_time_discrete_residual(y, oldYs[0], R, dt);
   }
   //----------------------------------------------------------------
 
+  state_type computeImpl(const state_type & y, 
+			 const std::array<state_type, 1> & oldYs,
+			 model_type & model,
+			 scalar_type t, scalar_type dt){
+    
+    auto nR = model.residual(*y.data(), t);
+    state_type R(nR);
+    // do time discrete residual
+    ode::impl::implicit_euler_time_discrete_residual(y, oldYs[0], R, dt);
+    return R;
+  }
+  //----------------------------------------------------------------
+  
 private:
   friend ImplicitResidualPolicyBase<
-				    ImplicitEulerResidualStandardPolicy<
-				      state_type, residual_type,
-				      model_type>, 1,0>;
+    ImplicitEulerResidualStandardPolicy<state_type, model_type,
+					state_type>, 1,0>;
 };//end class
 
 }//end namespace polices

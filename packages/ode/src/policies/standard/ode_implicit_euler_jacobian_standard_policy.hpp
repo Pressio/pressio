@@ -10,13 +10,29 @@ namespace rompp{
 namespace ode{
 namespace policy{
 
+
+template<typename state_type,
+	 typename jacobian_type,
+	 typename model_type,
+	 typename enable = void>
+class ImplicitEulerJacobianStandardPolicy;
+
+  
+
 template<typename state_type,
 	 typename jacobian_type,
 	 typename model_type>
-class ImplicitEulerJacobianStandardPolicy
+class ImplicitEulerJacobianStandardPolicy<
+  state_type, jacobian_type, model_type,
+  core::meta::enable_if_t<
+    core::meta::is_core_vector_wrapper<state_type>::value and 
+    core::meta::is_core_matrix_wrapper<jacobian_type>::value and
+    std::is_same<typename core::details::traits<state_type>::scalar_t,
+		 typename core::details::traits<jacobian_type>::scalar_t>::value
+    >
+  >
   : public JacobianPolicyBase<ImplicitEulerJacobianStandardPolicy<
-				state_type, jacobian_type,
-				model_type> >
+				state_type, jacobian_type, model_type> >
 {
 public:
   ImplicitEulerJacobianStandardPolicy() = default;
@@ -24,27 +40,34 @@ public:
 
 private:
   using scalar_type = typename core::details::traits<state_type>::scalar_t;
-  
+    
 private:
-  template <typename U = state_type,
-	    typename T = jacobian_type,
-	    typename std::enable_if<
-	      core::meta::is_core_vector_wrapper<U>::value==true &&
-	      core::meta::is_core_matrix_wrapper<T>::value==true
-	      >::type * = nullptr
-	    >
-  void computeImpl(const U & y, 
-		   T & J, 
+  
+  void computeImpl(const state_type & y, 
+		   jacobian_type & J, 
 		   model_type & model,
 		   scalar_type t,
-		   scalar_type dt)
-  {
-
+		   scalar_type dt){
+    
     // first eval space jac
     model.jacobian( *y.data(), *J.data(), t);
     // update from time discrete residual
     ode::impl::implicit_euler_time_discrete_jacobian(J, dt);
   }
+  //----------------------------------------------------------------
+
+  jacobian_type computeImpl(const state_type & y, 
+			    model_type & model,
+			    scalar_type t,
+			    scalar_type dt){
+    
+    auto nJJ = model.jacobian( *y.data(), t);
+    jacobian_type JJ(nJJ);
+    // update from time discrete residual
+    ode::impl::implicit_euler_time_discrete_jacobian(JJ, dt);
+    return JJ;
+  }
+
   
 private:
   friend JacobianPolicyBase<

@@ -8,8 +8,7 @@ namespace rompp{
 namespace ode{
 namespace impl{
 
-template <typename jacobian_type,
-	  typename time_type,
+template <typename jacobian_type, typename time_type,
 	  typename
 	  std::enable_if<
 	    core::details::traits<jacobian_type>::isMatrix==1 &&

@@ -32,7 +32,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     >::type* = nullptr
   >
   static auto solve(
-    const SystemT& system,
+    SystemT& system,
     const VectorT& x0,
     core::defaultTypes::uint maxIterations,
     core::defaultTypes::uint maxNonLinearIterations,
@@ -63,7 +63,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     >::type* = nullptr
   >
   static auto solve(
-    const SystemT& sys,
+    SystemT& sys,
     const VectorT& x0,
     core::defaultTypes::uint maxIterations,
     core::defaultTypes::uint maxNonLinearIterations,
@@ -74,7 +74,8 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     auto dy = sys.residual(x0);
     auto Ja = sys.jacobian(x0);
 
-    auto solver = LinearSolvers::createIterativeSolver<SolverT, typename SystemT::matrix_type, PrecT>(Ja);
+    auto solver = LinearSolvers::createIterativeSolver<
+      SolverT, typename SystemT::matrix_type, PrecT>(Ja);
     solver.setMaxIterations(maxIterations);
     solver.setTolerance(tolerance);
 
@@ -82,13 +83,15 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     VectorT xOld = x0;
     VectorT xNew(x0 - solver.solve(dy));
 
-    while (iStep++ < maxNonLinearIterations && NormT::template compute_norm_difference(xOld, xNew) > nonLinearTolerance) {
+    while (iStep++ < maxNonLinearIterations &&
+	   NormT::template compute_norm_difference(xOld, xNew)
+	   > nonLinearTolerance) {
         xOld = xNew;
-        dy = sys.residual(xNew);
-        Ja = sys.jacobian(xNew);
+        sys.residual(xNew, dy);
+        sys.jacobian(xNew, Ja);
 
         solver.resetLinearSystem(Ja);
-        xNew = xNew - solver.solve(dy);
+        xNew -= solver.solve(dy);
       }
 
     return xNew;

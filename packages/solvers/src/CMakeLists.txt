@@ -11,37 +11,43 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "core_config.h"
 # ###############
 # # HEADERS
 # ###############
-# FILE(GLOB solvers_general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/solvers/*.hpp")
-# FILE(GLOB solvers_exp_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/solvers/experimental/*.hpp")
+FILE(GLOB GEN_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+FILE(GLOB EXP_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/experimental/*.hpp")
 
-SET(GEN_HEADERS
-solvers_ConfigDefs.hpp
-solvers_forward_declarations.hpp
-)
+# SET(HEADERS
+#   ${solvers_general_HEADERS}
+#   ${solvers_exp_HEADERS}
+# )
 
-SET(EXP_HEADERS
-experimental/solvers_l2_vector_norm.hpp
-experimental/solvers_linear_base.hpp
-experimental/solvers_linear_direct.hpp
-experimental/solvers_linear_factory.hpp
-experimental/solvers_linear_iterative_policies_trilinos.hpp
-experimental/solvers_linear_iterative.hpp
-experimental/solvers_linear_traits.hpp
-experimental/solvers_meta_static_checks.hpp
-experimental/solvers_nonlinear_base.hpp
-experimental/solvers_nonlinear_factory.hpp
-experimental/solvers_nonlinear_iterative.hpp
-experimental/solvers_nonlinear_traits.hpp
-experimental/solvers_norms_fwd.hpp
-experimental/solvers_policy_linear_dense_eigen.hpp
-experimental/solvers_policy_linear_iterative_eigen.hpp
-experimental/solvers_policy_linear_iterative_trilinos.hpp
-experimental/solvers_policy_nonlinear_iterative.hpp
-experimental/solvers_policy_nonlinear_leastsquare_iterative.hpp
-experimental/solvers_system_traits.hpp
-)
+# SET(GEN_HEADERS
+# solvers_ConfigDefs.hpp
+# solvers_forward_declarations.hpp
+# )
+# SET(EXP_HEADERS
+# experimental/solvers_l2_vector_norm.hpp
+# experimental/solvers_linear_base.hpp
+# experimental/solvers_linear_direct.hpp
+# experimental/solvers_linear_factory.hpp
+# experimental/solvers_linear_iterative_policies_trilinos.hpp
+# experimental/solvers_linear_iterative.hpp
+# experimental/solvers_linear_traits.hpp
+# experimental/solvers_meta_static_checks.hpp
+# experimental/solvers_nonlinear_base.hpp
+# experimental/solvers_nonlinear_factory.hpp
+# experimental/solvers_nonlinear_iterative.hpp
+# experimental/solvers_nonlinear_traits.hpp
+# experimental/solvers_nonlinear_iterative_helper.hpp
+# experimental/solvers_nonlinear_leastsquare_iterative.hpp
+# experimental/solvers_norms_fwd.hpp
+# experimental/solvers_policy_linear_dense_eigen.hpp
+# experimental/solvers_policy_linear_iterative_eigen.hpp
+# experimental/solvers_policy_linear_iterative_trilinos.hpp
+# experimental/solvers_policy_nonlinear_iterative.hpp
+# experimental/solvers_policy_nonlinear_leastsquare_iterative.hpp
+# experimental/solvers_system_traits.hpp
+# )
 
 
 #################
@@ -56,7 +62,6 @@ SET(SOURCES
   ${solvers_general_SRCS}
   ${solvers_exp_SRCS}
 )
-
 
 #--------------------------------------
 SET(LUMPED_HEADERS
@@ -74,7 +79,6 @@ INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_
 SET(SOLVERS_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/solvers/src)
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${SOLVERS_INCDIR})
-
 INSTALL(FILES ${GEN_HEADERS} DESTINATION ${SOLVERS_INCDIR})
 INSTALL(FILES ${EXP_HEADERS} DESTINATION ${SOLVERS_INCDIR}/experimental)
 
