@@ -170,9 +170,9 @@ private:
     this->putScalarImpl( static_cast<sc_t>(0) );
   }
 
-  // bool emptyImpl() const{
-  //   return this->size()==0 ? true : false;
-  // }
+  bool emptyImpl() const{
+    return this->size()==0 ? true : false;
+  }
 
   ord_t sizeImpl() const {
     return data_.size();

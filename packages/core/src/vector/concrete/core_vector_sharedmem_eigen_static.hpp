@@ -149,77 +149,77 @@ private:
     return (data_.rows()==1) ? data_.cols() : data_.rows();
   }
 
-  template<typename op_t, typename T,
-	   core::meta::enable_if_t<
-	     std::is_same<T,this_t>::value
-	     > * = nullptr
-	   >
-  void inPlaceOpImpl(sc_t a1, sc_t a2, const T & other){
-    // this = a1*this op a2*other;
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      data_(i) = op_t()( a1*data_(i), a2*other[i] );
-  }
+  // template<typename op_t, typename T,
+  // 	   core::meta::enable_if_t<
+  // 	     std::is_same<T,this_t>::value
+  // 	     > * = nullptr
+  // 	   >
+  // void inPlaceOpImpl(sc_t a1, sc_t a2, const T & other){
+  //   // this = a1*this op a2*other;
+  //   for (decltype(this->size()) i=0; i<this->size(); i++)
+  //     data_(i) = op_t()( a1*data_(i), a2*other[i] );
+  // }
 
-  template<typename op_t, typename T,
-  	   core::meta::enable_if_t<
-  	     std::is_same<T,this_t>::value
-  	     > * = nullptr
-  	   >
-  void inPlaceOpImpl(sc_t a1, const T & x1,
-  		     sc_t a2, const T & x2){
-    // this = a1*x1 op a2*x2;
-    assert(this->size() == x1.size());
-    assert(this->size() == x2.size());
-    for (ord_t i=0; i<this->size(); i++)
-      data_(i) = op_t()( a1*x1[i], a2*x2[i] );
-  }
+  // template<typename op_t, typename T,
+  // 	   core::meta::enable_if_t<
+  // 	     std::is_same<T,this_t>::value
+  // 	     > * = nullptr
+  // 	   >
+  // void inPlaceOpImpl(sc_t a1, const T & x1,
+  // 		     sc_t a2, const T & x2){
+  //   // this = a1*x1 op a2*x2;
+  //   assert(this->size() == x1.size());
+  //   assert(this->size() == x2.size());
+  //   for (ord_t i=0; i<this->size(); i++)
+  //     data_(i) = op_t()( a1*x1[i], a2*x2[i] );
+  // }
 
-  template<typename T,
-  	   typename op1_t, typename op2_t, typename op3_t,
-  	   core::meta::enable_if_t<
-  	     std::is_same<T,this_t>::value &&
-  	     std::is_same<op1_t, std::plus<sc_t>>::value &&
-  	     std::is_same<op2_t,op1_t>::value &&
-  	     std::is_same<op3_t,op1_t>::value
-  	     > * = nullptr
-  	   >
-  void inPlaceOpImpl(sc_t a1, const T & x1,
-  		     sc_t a2, const T & x2,
-  		     sc_t a3, const T & x3,
-  		     sc_t a4, const T & x4){
-    // this = (a1*x1) + (a2*x2) + (a3*x3) + (a4*x4)
-    assert(this->size() == x1.size());
-    assert(this->size() == x2.size());
-    assert(this->size() == x3.size());
-    assert(this->size() == x4.size());
+  // template<typename T,
+  // 	   typename op1_t, typename op2_t, typename op3_t,
+  // 	   core::meta::enable_if_t<
+  // 	     std::is_same<T,this_t>::value &&
+  // 	     std::is_same<op1_t, std::plus<sc_t>>::value &&
+  // 	     std::is_same<op2_t,op1_t>::value &&
+  // 	     std::is_same<op3_t,op1_t>::value
+  // 	     > * = nullptr
+  // 	   >
+  // void inPlaceOpImpl(sc_t a1, const T & x1,
+  // 		     sc_t a2, const T & x2,
+  // 		     sc_t a3, const T & x3,
+  // 		     sc_t a4, const T & x4){
+  //   // this = (a1*x1) + (a2*x2) + (a3*x3) + (a4*x4)
+  //   assert(this->size() == x1.size());
+  //   assert(this->size() == x2.size());
+  //   assert(this->size() == x3.size());
+  //   assert(this->size() == x4.size());
 
-    for (ord_t i=0; i<this->size(); i++)
-      data_(i) = op1_t()( op1_t()( op1_t()(a1*x1[i],a2*x2[i]), a3*x3[i] ), a4*x4[i] );
-  }
+  //   for (ord_t i=0; i<this->size(); i++)
+  //     data_(i) = op1_t()( op1_t()( op1_t()(a1*x1[i],a2*x2[i]), a3*x3[i] ), a4*x4[i] );
+  // }
   
-  template<typename op0_t, typename T,
-	   typename op1_t, typename op2_t, typename op3_t,
-  	   core::meta::enable_if_t<
-  	     std::is_same<T,this_t>::value &&
-  	     std::is_same<op0_t, std::plus<sc_t>>::value &&
-  	     std::is_same<op1_t, op0_t>::value &&
-  	     std::is_same<op2_t, op1_t>::value &&
-  	     std::is_same<op3_t, op1_t>::value
-  	     > * = nullptr
-  	   >
-  void inPlaceOpImpl(sc_t a0, sc_t a1, const T & x1,
-  		     sc_t a2, const T & x2,
-  		     sc_t a3, const T & x3,
-  		     sc_t a4, const T & x4){
-    // this = a0 * this + (a1*x1) + (a2*x2) + (a3*x3) + (a4*x4)
-    assert(this->size() == x1.size());
-    assert(this->size() == x2.size());
-    assert(this->size() == x3.size());
-    assert(this->size() == x4.size());
-    for (ord_t i=0; i<this->size(); i++)
-      data_(i) = a0*data_(i) + a1*x1[i] + a2*x2[i]
-	+ a3*x3[i] + a4*x4[i];
-  }
+  // template<typename op0_t, typename T,
+  // 	   typename op1_t, typename op2_t, typename op3_t,
+  // 	   core::meta::enable_if_t<
+  // 	     std::is_same<T,this_t>::value &&
+  // 	     std::is_same<op0_t, std::plus<sc_t>>::value &&
+  // 	     std::is_same<op1_t, op0_t>::value &&
+  // 	     std::is_same<op2_t, op1_t>::value &&
+  // 	     std::is_same<op3_t, op1_t>::value
+  // 	     > * = nullptr
+  // 	   >
+  // void inPlaceOpImpl(sc_t a0, sc_t a1, const T & x1,
+  // 		     sc_t a2, const T & x2,
+  // 		     sc_t a3, const T & x3,
+  // 		     sc_t a4, const T & x4){
+  //   // this = a0 * this + (a1*x1) + (a2*x2) + (a3*x3) + (a4*x4)
+  //   assert(this->size() == x1.size());
+  //   assert(this->size() == x2.size());
+  //   assert(this->size() == x3.size());
+  //   assert(this->size() == x4.size());
+  //   for (ord_t i=0; i<this->size(); i++)
+  //     data_(i) = a0*data_(i) + a1*x1[i] + a2*x2[i]
+  // 	+ a3*x3[i] + a4*x4[i];
+  // }
 
   
   void scaleImpl(sc_t & factor){
