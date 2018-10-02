@@ -35,8 +35,8 @@ void product(const mvec_type & mvA,
   // how many vectors are in mvA
   auto numVecs = mvA.globalNumVectors();
   // size of vecB
-  auto vecBLen = vecB.size();
-  assert(numVecs == vecBLen);
+  size_t vecBLen = vecB.size();
+  assert(size_t(numVecs) == vecBLen);
   
   // the data map of the multivector
   auto mvMap = mvA.getDataMap();

@@ -51,7 +51,7 @@ public:
   Vector(const T & expr){
     this->resize(expr.size());
     for (size_t i = 0; i != expr.size(); ++i)
-      data_[i] = expr[i];
+      data_[i] = expr(i);
   }
 
   // assignment from any expression, force evaluation
@@ -62,7 +62,7 @@ public:
     if(this->size() != expr.size())
       this->resize(expr.size());
     for (size_t i = 0; i != expr.size(); ++i)
-      data_[i] = expr[i];
+      data_[i] = expr(i);
     return *this;
   }
   
@@ -72,6 +72,13 @@ public:
   };
 
   sc_t const & operator [] (ord_t i) const{
+    return data_[i];
+  };  
+
+  sc_t & operator()(ord_t i){
+    return data_[i];
+  };
+  sc_t const & operator()(ord_t i) const{
     return data_[i];
   };  
   

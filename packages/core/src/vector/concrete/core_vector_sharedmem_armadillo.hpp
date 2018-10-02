@@ -55,7 +55,7 @@ public:
   explicit Vector(const T & expr){
     this->resize(expr.size());
     for (ord_t i = 0; i != expr.size(); ++i)
-      data_[i] = expr[i];
+      data_[i] = expr(i);
   }
 
   // assignment from any expression, force evaluation
@@ -66,7 +66,7 @@ public:
     if(this->size() != expr.size())
       this->resize(expr.size());
     for (ord_t i = 0; i != expr.size(); ++i)
-      data_[i] = expr[i];
+      data_[i] = expr(i);
     return *this;
   }
 
@@ -89,6 +89,12 @@ public:
     return data_[i];
   };  
 
+  sc_t & operator()(ord_t i){
+    return data_[i];
+  };
+  sc_t const & operator()(ord_t i) const{
+    return data_[i];
+  };  
   
   // compound assignment from expression template
   // this += expr
@@ -99,7 +105,7 @@ public:
     std::cout << "CAET \n"; 
     assert( expr.size() == this->size() );
     for (ord_t i = 0; i != expr.size(); ++i)
-      data_[i] += expr[i];
+      data_[i] += expr(i);
     return *this;
   }
 
@@ -123,7 +129,7 @@ public:
   this_t & operator-=(const T & expr) {
     assert( expr.size() == this->size() );
     for (ord_t i = 0; i != expr.size(); ++i)
-      data_[i] -= expr[i];
+      data_[i] -= expr(i);
     return *this;
   }
 

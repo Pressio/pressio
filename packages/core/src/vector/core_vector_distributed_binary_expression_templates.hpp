@@ -73,8 +73,8 @@ class DistributedVectorBinaryExp
     : a_(a), b_(b){}
   ~DistributedVectorBinaryExp() = default;
 
-  value_t operator[](size_t i) const {
-    return op_(a_[i], b_[i]);}
+  value_t operator()(size_t i) const {
+    return op_(a_(i), b_(i));}
 
   LO_t localSize() const {
     return a_.localSize();}
@@ -109,8 +109,8 @@ public:
     : a_(a), b_(b){}
   ~DistributedVectorBinaryExp() = default;
 
-  value_t operator[](size_t i) const {
-    return op_(a_[i], b_[i]);}
+  value_t operator()(size_t i) const {
+    return op_(a_(i), b_(i));}
 
   LO_t localSize() const {
     return b_.localSize();}
@@ -144,8 +144,8 @@ public:
     : a_(a), b_(b){}
   ~DistributedVectorBinaryExp() = default;
 
-  value_t operator[](size_t i) const {
-    return op_(a_[i], b_);}
+  value_t operator()(size_t i) const {
+    return op_(a_(i), b_);}
 
   LO_t localSize() const{
     return a_.localSize();}

@@ -23,6 +23,14 @@ public:
   scalar_t const & operator[] (ord_t i) const{
     return this->underlying()[i];
   }
+
+  scalar_t & operator() (ord_t i){
+    return this->underlying()(i);
+  }
+
+  scalar_t const & operator() (ord_t i) const{
+    return this->underlying()(i);
+  }
   
 private:
   friend derived_type;

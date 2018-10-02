@@ -63,7 +63,7 @@ public:
   this_t & operator=(const T & expr){
     assert(this->localSize() == expr.localSize());
     for (LO_t i = 0; i != expr.localSize(); ++i)
-      data_[i] = expr[i];
+      data_[i] = expr(i);
     return *this;
   }
   
@@ -79,6 +79,15 @@ public:
     return data_[i];
   };  
 
+  sc_t & operator()(LO_t i){
+    assert(i < this->localSize());
+    return data_[i];
+  };
+  sc_t const & operator()(LO_t i) const{
+    assert(i < this->localSize());
+    return data_[i];
+  };  
+  
 
   // compound assignment from expression template
   // this += expr
