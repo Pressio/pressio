@@ -28,20 +28,16 @@ struct InitView {
 // template<typename T>
 // struct ReduceFunctor {
 //   T a;
-
 //   // Constructor takes View by "value"; this does a shallow copy.
 //   ReduceFunctor (T a_) : a (a_) {}
-
 //   // If you write a functor to do a reduction, you must specify the
 //   // type of the reduction result via a public 'value_type' typedef.
 //   typedef double value_type;
-
 //   KOKKOS_INLINE_FUNCTION
 //   void operator() (int i, double &lsum) const {
 //     lsum += a(i,0)*a(i,1)/(a(i,2)+0.1);
 //   }
 // };
-
 // struct hello_world {
 //   KOKKOS_INLINE_FUNCTION
 //   void operator() (const int i) const {
@@ -69,7 +65,6 @@ TEST(core_vector_sharedmem_kokkos_class, Constructor)
   // double sum = 0;
   // Kokkos::parallel_reduce (N, ReduceFunctor<view_type>(a), sum);
   // printf ("Result: %f\n", sum);
-
 
   using view_type2 = Kokkos::View<double[11]>;
   using myvec_t2 = core::Vector<view_type2>;

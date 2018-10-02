@@ -1,41 +1,8 @@
 
-#include <gtest/gtest.h>
-#include "Epetra_MpiComm.h"
-#include "CORE_ALL"
+#include "epetra_only_fixtures.hpp"
 
-struct epetraFix
-  : public ::testing::Test{
-public:
-  int rank_;
-  Epetra_MpiComm * Comm_;
-  int MyPID_;
-  int NumProc_;
-  const int localSize_ = 3;
-  const int numVectors_ = 4;
-  int numGlobalEntries_;
-  Epetra_Map * dataMap_;
-  Epetra_MultiVector * mv_;
-  
-  virtual void SetUp(){
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    Comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
-    MyPID_ = Comm_->MyPID();
-    NumProc_ = Comm_->NumProc();
-    assert(NumProc_ == 3);
-    numGlobalEntries_ = Comm_->NumProc() * localSize_;
-    dataMap_ = new Epetra_Map(numGlobalEntries_, 0, *Comm_);
-    mv_ = new Epetra_MultiVector(*dataMap_, numVectors_);
-  }
-
-  virtual void TearDown(){
-    delete Comm_;
-    delete dataMap_;
-    delete mv_;
-  }
-};
-
-
-TEST_F(epetraFix, MVecEpetraProductArmadilloVector){
+TEST_F(epetraMultiVectorR9C4VecS9Fixture,
+       MVecEpetraProductArmadilloVector){
 
   using namespace rompp;
 
@@ -51,12 +18,12 @@ TEST_F(epetraFix, MVecEpetraProductArmadilloVector){
     for (int j=0; j<MV.globalNumVectors(); j++)
       EXPECT_NEAR( 0.0, MV(i,j), 1e-12);
 
-  if(MyPID_==0){
+  if(rank_==0){
     MV(0,0) = 3.2;
     MV(1,0) = 1.2;
     MV(2,1) = 4;
     MV(0,1) = 1.2;}
-  if(MyPID_==1){
+  if(rank_==1){
     MV(2,2) = 3;}
 
   MV.data()->Print(std::cout);

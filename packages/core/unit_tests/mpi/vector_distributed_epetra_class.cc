@@ -1,39 +1,7 @@
 
-#include <gtest/gtest.h>
-#include "Epetra_MpiComm.h"
-#include "CORE_VECTOR"
+#include "epetra_only_fixtures.hpp"
 
-struct core_vector_distributed_epetraFix
-  : public ::testing::Test{
-public:
-  int rank_;
-  Epetra_MpiComm * Comm_;
-  int MyPID_;
-  int NumProc_;
-  const int localSize_ = 5;
-  int numGlobalEntries_;
-  Epetra_Map * contigMap_;
-  Epetra_Vector * x_;
-  
-  virtual void SetUp(){
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    Comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
-    MyPID_ = Comm_->MyPID();
-    NumProc_ = Comm_->NumProc();
-    numGlobalEntries_ = Comm_->NumProc() * localSize_;
-    contigMap_ = new Epetra_Map(numGlobalEntries_, 0, *Comm_);
-    x_ = new Epetra_Vector(*contigMap_);
-  }
-  
-  virtual void TearDown(){
-    delete Comm_;
-    delete contigMap_;
-    delete x_;
-  }
-};
-
-
-TEST_F(core_vector_distributed_epetraFix, Constructor){
+TEST_F(epetraVectorGlobSize15Fixture, Constructor){
   using namespace rompp;
 
   using myvec_t = core::Vector<Epetra_Vector>;
@@ -49,7 +17,7 @@ TEST_F(core_vector_distributed_epetraFix, Constructor){
 }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        QueryWrappedData)
 // {
 //   using namespace rompp;
@@ -64,7 +32,7 @@ TEST_F(core_vector_distributed_epetraFix, Constructor){
 // }
 
 
-TEST_F(core_vector_distributed_epetraFix,
+TEST_F(epetraVectorGlobSize15Fixture,
        SubscriptOperator)
 {
   using namespace rompp;
@@ -84,7 +52,7 @@ TEST_F(core_vector_distributed_epetraFix,
 }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        SetScalar){
 //   using namespace rompp;
 
@@ -97,7 +65,7 @@ TEST_F(core_vector_distributed_epetraFix,
 //   }
 // }
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        AdditionOperator){
 //   using namespace rompp;
 
@@ -117,7 +85,7 @@ TEST_F(core_vector_distributed_epetraFix,
 // }
 
 
-TEST_F(core_vector_distributed_epetraFix,
+TEST_F(epetraVectorGlobSize15Fixture,
        expreTempPlus){
   using namespace rompp;
 
@@ -172,7 +140,7 @@ TEST_F(core_vector_distributed_epetraFix,
 
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        SubtractOperator){
 //   using namespace rompp;
 
@@ -192,7 +160,7 @@ TEST_F(core_vector_distributed_epetraFix,
 // }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        StarOperator){
 //   using namespace rompp;
 
@@ -217,7 +185,7 @@ TEST_F(core_vector_distributed_epetraFix,
 // }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        CompoundAssignAddOperator){
 //   using namespace rompp;
 
@@ -236,7 +204,7 @@ TEST_F(core_vector_distributed_epetraFix,
 // }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        CompoundAssignSubtractOperator){
 //   using namespace rompp;
 
@@ -255,7 +223,7 @@ TEST_F(core_vector_distributed_epetraFix,
 // }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        SetZero){
 //   using namespace rompp;
 
@@ -269,7 +237,7 @@ TEST_F(core_vector_distributed_epetraFix,
 // }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        Empty){
 //   using namespace rompp;
 
@@ -279,7 +247,7 @@ TEST_F(core_vector_distributed_epetraFix,
 // }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        replaceGlobalData){
 
 //   using namespace rompp;
@@ -302,7 +270,7 @@ TEST_F(core_vector_distributed_epetraFix,
 // }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        InPlaceOp){
 //   using namespace rompp;
 
@@ -323,7 +291,7 @@ TEST_F(core_vector_distributed_epetraFix,
 // }
 
 
-// TEST_F(core_vector_distributed_epetraFix,
+// TEST_F(epetraVectorGlobSize15Fixture,
 //        Scale){
 //   using namespace rompp;
 
@@ -348,7 +316,7 @@ TEST_F(core_vector_distributed_epetraFix,
 
 
 // using core_vector_distributed_epetra_DeathTest
-// = core_vector_distributed_epetraFix;
+// = epetraVectorGlobSize15Fixture;
 // TEST_F(core_vector_distributed_epetra_DeathTest,
 //        EpetraVectorSubscriptOperator)
 // {

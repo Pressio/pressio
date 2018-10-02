@@ -1,106 +1,51 @@
 
-#include <gtest/gtest.h>
-#include "Epetra_MpiComm.h"
-#include "CORE_VECTOR"
-#include "CORE_MULTI_VECTOR"
+#include "epetra_only_fixtures.hpp"
 
-struct core_multi_vector_distributed_epetraFix
-  : public ::testing::Test{
-public:
-  using namespace rompp;
 
-  int rank_;
-  Epetra_MpiComm * Comm_;
-  int MyPID_;
-  int NumProc_;
-  const int localSize_ = 5;
-  const int numVectors_ = 3;
-  int numGlobalEntries_;
-  Epetra_Map * dataMap_;
-  Epetra_MultiVector * x_;
+TEST_F(epetraMultiVectorR9C4VecS9Fixture,
+       EpetraMultiVectorConstructor){
   
-  virtual void SetUp()
-  {
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    Comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
-    MyPID_ = Comm_->MyPID();
-    NumProc_ = Comm_->NumProc();
-    numGlobalEntries_ = Comm_->NumProc() * localSize_;
-    dataMap_ = new Epetra_Map(numGlobalEntries_, 0, *Comm_);
-    x_ = new Epetra_MultiVector(*dataMap_, numVectors_);
-  }
-  Epetra_MultiVector & getNative(){
-    return *x_;
-  }
-
-  int getRank() const{
-    return rank_;
-  }
-  int getNumProc() const{
-    return NumProc_;
-  }
-  int numGlobalEntries() const{
-    return numGlobalEntries_;
-  }
-  int numLocalEntries() const{
-    return localSize_;
-  }
-  const Epetra_Map * getMap() const{
-    return dataMap_;
-  }    
-  virtual void TearDown(){
-    delete Comm_;
-    delete dataMap_;
-    delete x_;
-  }
-};
-
-TEST_F(core_multi_vector_distributed_epetraFix,
-       EpetraMultiVectorConstructor)
-{
   using namespace rompp;
 
   using nat_t = Epetra_MultiVector;
   using mymvec_t = core::MultiVector<nat_t>;
   STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(mymvec_t);
 
-  mymvec_t a( *getMap(), numVectors_ );
+  mymvec_t a( *dataMap_, numVectors_ );
   ASSERT_FALSE( a.empty() );
-  a.data()->Print(std::cout);
+  //a.data()->Print(std::cout);
 
-  mymvec_t b( getNative() );  
+  mymvec_t b( *mv_ );
   ASSERT_FALSE( b.empty() );
   //b.data()->Print(std::cout);
 
-  EXPECT_EQ( b.globalNumVectors(), 3 );
-  EXPECT_EQ( b.localNumVectors(), 3 );
-  EXPECT_EQ( b.globalLength(), 15 );
-  EXPECT_EQ( b.localLength(), 5);
+  EXPECT_EQ( b.globalNumVectors(), 4 );
+  EXPECT_EQ( b.localNumVectors(), 4 );
+  EXPECT_EQ( b.globalLength(), 9 );
+  EXPECT_EQ( b.localLength(), 3);
 
   for (int i=0; i<localSize_; i++)
     for (int j=0; j<b.globalNumVectors(); j++)
       EXPECT_NEAR( 0.0, b(i,j), 1e-12);
 
-  if(MyPID_==0)
+  if(rank_==0)
     b.replaceGlobalValue(1,1, 43.3);
-  if(MyPID_==1)
-    b.replaceGlobalValue(5,2, 13.3);
-
+  if(rank_==1)
+    b.replaceGlobalValue(4,2, 13.3);
   b.data()->Print(std::cout);
 
-  if(MyPID_==0)
+  if(rank_==0)
     EXPECT_NEAR( 43.3, b(1,1), 1e-12);
-  else if (MyPID_==1)
-    EXPECT_NEAR( 13.3, b(0,2), 1e-12);
+  else if (rank_==1)
+    EXPECT_NEAR( 13.3, b(1,2), 1e-12);
   else
     EXPECT_NEAR( 0.0, b(1,1), 1e-12);
 
   b.scale(2.0);
-  if(MyPID_==0)
+  if(rank_==0)
     EXPECT_NEAR( 86.6, b(1,1), 1e-12);
-  if (MyPID_==1)
-    EXPECT_NEAR( 26.6, b(0,2), 1e-12);
-  
+  if (rank_==1)
+    EXPECT_NEAR( 26.6, b(1,2), 1e-12);
 }
 
 

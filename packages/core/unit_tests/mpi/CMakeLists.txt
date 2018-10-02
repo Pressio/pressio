@@ -1,29 +1,14 @@
 
 IF(HAVE_TRILINOS)
-add_unit_test(vector_distributed_epetra_traits ${GTESTMAINSDIR}/gTestMain_mpi)
-add_unit_test(vector_distributed_epetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
-add_unit_test(multi_vector_distributed_epetra_traits ${GTESTMAINSDIR}/gTestMain_mpi)
-add_unit_test(multi_vector_vector_dot_distributed_epetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
-add_unit_test(multi_vector_epetra_product_eigen_vector ${GTESTMAINSDIR}/gTestMain_mpi 3)
+  add_unit_test(vector_distributed_epetra_traits ${GTESTMAINSDIR}/gTestMain_mpi 1)
+  add_unit_test(vector_distributed_epetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
+  add_unit_test(multi_vector_distributed_epetra_traits ${GTESTMAINSDIR}/gTestMain_mpi 1)
+  add_unit_test(multi_vector_distributed_epetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
+  add_unit_test(multi_vector_dot_vector_distributed_epetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
+  add_unit_test(multi_vector_epetra_product_eigen_vector ${GTESTMAINSDIR}/gTestMain_mpi 3)
 ENDIF()
 
 IF(HAVE_TRILINOS AND HAVE_ARMADILLO)
-add_unit_test(multi_vector_epetra_product_armadillo_vector ${GTESTMAINSDIR}/gTestMain_mpi 3)
+  add_unit_test(multi_vector_epetra_product_armadillo_vector ${GTESTMAINSDIR}/gTestMain_mpi 3)
 ENDIF()
-
-
-
-
-# add_single_unit_test(utest_vector_dot_product 1)
-# add_single_unit_test(utest_multi_vector_distributed_epetra_class 3)
-# add_single_unit_test(utest_crs_matrix_vector_product_distributed_epetra 3)
-# add_single_unit_test(utest_dense_matrix_vector_product_distributed_epetra 3)
-# add_single_unit_test(utest_matrix_sparse_distributed_epetra_class 3)
-# add_single_unit_test(utest_matrix_matrix_product_sparse_distributed_epetra 3)
-# add_single_unit_test(utest_matrix_dense_distributed_epetra_traits 3)
-# add_single_unit_test(utest_matrix_dense_distributed_epetra_class 3)
-# add_single_unit_test(utest_matrix_matrix_product_dense_distributed_epetra 3)
-# add_single_unit_test(utest_matrix_matrix_product_dense_sparse_distributed_epetra 3)
-# add_single_unit_test(utest_matrix_dense_to_crs_distributed_epetra 3)
-#add_single_unit_test(utest_trilinos_map_export 3)
 
