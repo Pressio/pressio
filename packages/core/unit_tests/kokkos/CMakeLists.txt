@@ -1,5 +1,6 @@
 
 add_unit_test(vector_sharedmem_kokkos_class ${GTESTMAINSDIR}/gTestMain_kokkos 1)
+add_unit_test(vector_axpy_sharedmem_kokkos_class ${GTESTMAINSDIR}/gTestMain_kokkos 1)
 
 # SET(TESTFILES "")
 # APPEND_SET(TESTFILES utest_vector_sharedmem_kokkos_class.cc)

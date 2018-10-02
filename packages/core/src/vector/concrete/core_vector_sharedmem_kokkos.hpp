@@ -7,7 +7,7 @@
 //#include "../../shared_base/core_container_resizable_base.hpp"
 //#include "../../shared_base/core_container_nonresizable_base.hpp"
 #include "../base/core_vector_sharedmem_base.hpp"
-#include "../base/core_vector_math_base.hpp"
+//#include "../base/core_vector_math_base.hpp"
 
 namespace rompp{
 namespace core{
