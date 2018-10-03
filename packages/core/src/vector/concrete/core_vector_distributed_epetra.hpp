@@ -97,7 +97,7 @@ public:
   this_t & operator+=(const T & expr) {
     assert(this->localSize() == expr.localSize());
     for (LO_t i = 0; i != expr.localSize(); ++i)
-      data_[i] += expr[i];
+      data_[i] += expr(i);
     return *this;
   }
 
@@ -120,7 +120,7 @@ public:
   this_t & operator-=(const T & expr) {
     assert(this->localSize() == expr.localSize());
     for (LO_t i = 0; i != expr.localSize(); ++i)
-      data_[i] -= expr[i];
+      data_[i] -= expr(i);
     return *this;
   }
 
