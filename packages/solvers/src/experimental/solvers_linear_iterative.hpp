@@ -6,8 +6,8 @@
 #include "solvers_linear_base.hpp"
 
 
-namespace rompp{
-namespace solvers{
+namespace rompp {
+namespace solvers {
 
 // Forward declarations
 struct LinearSolvers;
@@ -18,18 +18,15 @@ struct LinearSolvers;
  */
 template<
   typename SolverT,
-  typename MatrixT,
-  typename PolicyT
+  typename MatrixT
 >
 class LinearIterativeSolver
   : public LinearSolverBase<
       SolverT,
       MatrixT,
-      PolicyT,
       LinearIterativeSolver<
         SolverT,
-        MatrixT,
-        PolicyT
+        MatrixT
       >
     >
 {
@@ -37,7 +34,7 @@ class LinearIterativeSolver
   private:
 
     friend LinearSolvers;
-    typedef LinearSolverBase<SolverT, MatrixT, PolicyT, LinearIterativeSolver<SolverT, MatrixT, PolicyT>> base_type;
+    typedef LinearSolverBase<SolverT, MatrixT, LinearIterativeSolver<SolverT, MatrixT>> base_type;
 
 
   public:
@@ -49,7 +46,9 @@ class LinearIterativeSolver
     template <typename T>
     auto _solve(const T& b) {
       auto solver = this->getSolver();
-      return PolicyT::solve(solver, b, this->getMaxIterations(), this->getTolerance());
+      solver->setMaxIterations(this->getMaxIterations());
+      solver->setTolerance(this->getTolerance());
+      return solver->solve(b);
     }
 
 
@@ -90,5 +89,6 @@ class LinearIterativeSolver
 };
 
 } //end namespace solvers
-}//end namespace rompp
+} //end namespace rompp
+
 #endif

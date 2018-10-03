@@ -21,18 +21,16 @@ struct LinearSolvers;
  */
 template<
   typename SolverT,
-  typename MatrixT,
-  typename PolicyT
+  typename MatrixT
+//  typename PolicyT
 >
 class LinearDirectSolver
   : public LinearSolverBase<
       SolverT,
       MatrixT,
-      PolicyT,
       LinearDirectSolver<
         SolverT,
-        MatrixT,
-        PolicyT
+        MatrixT
       >
     >
 {
@@ -40,7 +38,7 @@ class LinearDirectSolver
   private:
 
     friend LinearSolvers;
-    typedef LinearSolverBase<SolverT, MatrixT, PolicyT, LinearDirectSolver<SolverT, MatrixT, PolicyT>> base_type;
+    typedef LinearSolverBase<SolverT, MatrixT, LinearDirectSolver<SolverT, MatrixT>> base_type;
 
 
   public:
@@ -51,7 +49,7 @@ class LinearDirectSolver
     template <typename T>
     auto _solve(const T& b) {
       auto solver = this->getSolver();
-      return PolicyT::solve(solver, b);
+      return solver->solve(b);
     }
 
 

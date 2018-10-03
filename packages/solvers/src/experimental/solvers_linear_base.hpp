@@ -24,7 +24,6 @@ namespace solvers{
 template<
   typename SolverT,
   typename MatrixT,
-  typename PolicyT,
   typename Derived
 >
 class LinearSolverBase {
@@ -47,7 +46,7 @@ class LinearSolverBase {
       >::type = nullptr
     >
     void resetLinearSystem(const CompatibleMatrixT& A) {
-      PolicyT::resetLinearSystem(solver_, A);
+      solver_->resetLinearSystem(A);
     }
 
 
@@ -151,7 +150,7 @@ class LinearSolverBase {
     LinearSolverBase(const LinearSolverBase&) = delete;
 
 
-    ~LinearSolverBase() = default;
+    virtual ~LinearSolverBase() = default;
 
 
     std::shared_ptr<SolverT> getSolver() {

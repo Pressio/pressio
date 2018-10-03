@@ -3,6 +3,12 @@
 
 #include <Eigen/Core>
 #include "../solvers_ConfigDefs.hpp"
+#include "solvers_linear_wrapper_eigen.hpp"
+
+#ifdef HAVE_ARMADILLO
+  #include "solvers_linear_wrapper_armadillo.hpp"
+#endif
+
 #ifdef HAVE_TRILINOS
   #include "AztecOO.h"
 #endif
@@ -45,7 +51,7 @@ struct solver_traits<CG> {
     typename MatrixT,
     typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
   >
-  using eigen_solver_type = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
+  using eigen_solver_type = SolversLinearIterativeWrapperEigen<Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>>;
 
 #ifdef HAVE_TRILINOS
   static constexpr int trilinos_flag = AZ_cg;
@@ -81,12 +87,12 @@ struct solver_traits<Bicgstab> {
     typename MatrixT,
     typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
   >
-  using eigen_solver_type = Eigen::BiCGSTAB<MatrixT, PrecT>;
+  using eigen_solver_type = SolversLinearIterativeWrapperEigen<Eigen::BiCGSTAB<MatrixT, PrecT>>;
 
 #ifdef HAVE_TRILINOS
   static constexpr int trilinos_flag = AZ_bicgstab;
 #endif
-  
+
   static constexpr bool direct = false;
   static constexpr bool eigen_enabled = true;
 #ifdef HAVE_TRILINOS
@@ -100,7 +106,7 @@ struct solver_traits<ColPivHouseholderQR> {
   template <
     typename MatrixT
   >
-  using eigen_solver_type = Eigen::ColPivHouseholderQR<MatrixT>;
+  using eigen_solver_type = SolversLinearDirectWrapperEigen<Eigen::ColPivHouseholderQR<MatrixT>>;
 
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
@@ -115,7 +121,7 @@ struct solver_traits<CompleteOrthogonalDecomposition> {
   template <
     typename MatrixT
   >
-  using eigen_solver_type = Eigen::CompleteOrthogonalDecomposition<MatrixT>;
+  using eigen_solver_type = SolversLinearDirectWrapperEigen<Eigen::CompleteOrthogonalDecomposition<MatrixT>>;
 
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
@@ -131,7 +137,7 @@ struct solver_traits<LSCG> {
     typename MatrixT,
     typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
   >
-  using eigen_solver_type = Eigen::LeastSquaresConjugateGradient<MatrixT, PrecT>;
+  using eigen_solver_type = SolversLinearIterativeWrapperEigen<Eigen::LeastSquaresConjugateGradient<MatrixT, PrecT>>;
 
   static constexpr bool direct = false;
   static constexpr bool eigen_enabled = true;
