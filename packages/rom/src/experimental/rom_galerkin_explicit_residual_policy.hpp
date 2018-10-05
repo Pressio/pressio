@@ -4,7 +4,7 @@
 
 #include "../rom_ConfigDefs.hpp"
 #include "../../../CORE_ALL"
-#include "../../../ode/src/policies/base/ode_explicit_residual_policy_base.hpp"
+#include "../../../ode/src/explicit/policies/ode_explicit_residual_policy_base.hpp"
 #include "rom_incremental_solution_base.hpp"
 
 namespace rompp{

@@ -2,69 +2,66 @@
 #ifndef ROM_GALERKIN_IMPLICIT_JACOBIAN_POLICY_HPP_
 #define ROM_GALERKIN_IMPLICIT_JACOBIAN_POLICY_HPP_
 
-#include "../rom_ConfigDefs.hpp"
-#include "../../../ode/src/policies/base/ode_jacobian_policy_base.hpp"
-#include "../../../ode/src/ode_jacobian_impl.hpp"
-//#include "rom_incremental_solution_base.hpp"
+// #include "../rom_ConfigDefs.hpp"
+// #include "../../../ode/src/policies/base/ode_jacobian_policy_base.hpp"
+// #include "../../../ode/src/ode_jacobian_impl.hpp"
+// //#include "rom_incremental_solution_base.hpp"
 
-namespace rompp{
-namespace rom{
-namespace exp{
+namespace rompp{ namespace rom{ namespace exp{
 
-template<typename state_type,
-	 typename jacobian_type,
-	 typename model_type,
-	 typename phi_type,
-	 typename A_type>
-class RomGalerkinImplicitJacobianPolicy 
-  : public ode::policy::JacobianPolicyBase<
-  RomGalerkinImplicitJacobianPolicy<state_type, jacobian_type,
-				    model_type, phi_type, A_type> >
-{
+// template<typename state_type,
+// 	 typename jacobian_type,
+// 	 typename model_type,
+// 	 typename phi_type,
+// 	 typename A_type>
+// class RomGalerkinImplicitJacobianPolicy 
+//   : public ode::policy::JacobianPolicyBase<
+//   RomGalerkinImplicitJacobianPolicy<state_type, jacobian_type,
+// 				    model_type, phi_type, A_type> >
+// {
 
-private:
-  using base_t = ode::policy::JacobianPolicyBase<
-  RomGalerkinImplicitJacobianPolicy<state_type, jacobian_type,
-				    model_type, phi_type, A_type> >;
-private:
-  state_type yFOM_;
-  jacobian_type JFOM_;
-  phi_type * phi_;
-  A_type * A_;
+// private:
+//   using base_t = ode::policy::JacobianPolicyBase<
+//   RomGalerkinImplicitJacobianPolicy<state_type, jacobian_type,
+// 				    model_type, phi_type, A_type> >;
+// private:
+//   state_type yFOM_;
+//   jacobian_type JFOM_;
+//   phi_type * phi_;
+//   A_type * A_;
   
-public:
-  RomGalerkinImplicitJacobianPolicy(const state_type & y0fom,
-				    const jacobian_type & j0fom,
-				    phi_type & phiOp,
-				    A_type & AOp)
-    : yFOM_(y0fom), JFOM_(j0fom), phi_(&phiOp), A_(&AOp){}
+// public:
+//   RomGalerkinImplicitJacobianPolicy(const state_type & y0fom,
+// 				    const jacobian_type & j0fom,
+// 				    phi_type & phiOp,
+// 				    A_type & AOp)
+//     : yFOM_(y0fom), JFOM_(j0fom), phi_(&phiOp), A_(&AOp){}
 
-  ~RomGalerkinImplicitJacobianPolicy() = default;
+//   ~RomGalerkinImplicitJacobianPolicy() = default;
   
-private:
-  // template <typename U = state_type,
-	 //    typename T = jacobian_type,
-	 //    typename scalar_type,
-	 //    typename std::enable_if<
-	 //      core::meta::is_core_vector_wrapper<U>::value==true &&
-	 //      core::meta::is_core_matrix_wrapper<T>::value==true
-	 //    >::type * = nullptr>
-  // void computeImpl(const U & y,
-		//    T & J,
-		//    model_type & model,
-		//    scalar_type t,
-		//    scalar_type dt)
-  // {
-  //   //
-  // }  
+// private:
+//   // template <typename U = state_type,
+// 	 //    typename T = jacobian_type,
+// 	 //    typename scalar_type,
+// 	 //    typename std::enable_if<
+// 	 //      core::meta::is_core_vector_wrapper<U>::value==true &&
+// 	 //      core::meta::is_core_matrix_wrapper<T>::value==true
+// 	 //    >::type * = nullptr>
+//   // void computeImpl(const U & y,
+// 		//    T & J,
+// 		//    model_type & model,
+// 		//    scalar_type t,
+// 		//    scalar_type dt)
+//   // {
+//   //   //
+//   // }  
 
-private:
-  friend base_t;
-};//end class
+// private:
+//   friend base_t;
+// };//end class
   
-}//end namespace exp
-}//end namespace rom
-}//end namespace rompp
+}}}//end namespace rompp::rom::exp
+
 #endif 
 
 

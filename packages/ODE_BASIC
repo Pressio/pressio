@@ -9,7 +9,5 @@
 
 #include "ode/src/ode_aux_data.hpp"
 #include "ode/src/ode_storage.hpp"
-#include "ode/src/ode_residual_impl.hpp"
-#include "ode/src/ode_jacobian_impl.hpp"
 
 #endif
