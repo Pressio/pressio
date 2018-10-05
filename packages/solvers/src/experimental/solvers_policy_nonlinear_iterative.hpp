@@ -10,8 +10,8 @@
 #include "solvers_meta_static_checks.hpp"
 
 
-namespace rompp{
-namespace solvers{
+namespace rompp {
+namespace solvers {
 
 
 struct SolversNonLinearIterativeNewtonRaphsonPolicy {
@@ -32,7 +32,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     >::type* = nullptr
   >
   static auto solve(
-    SystemT& system,
+    const SystemT& system,
     const VectorT& x0,
     core::defaultTypes::uint maxIterations,
     core::defaultTypes::uint maxNonLinearIterations,
@@ -64,7 +64,7 @@ is not compatible with the provided nonlinear system" << std::endl;
     >::type* = nullptr
   >
   static auto solve(
-    SystemT& sys,
+    const SystemT& sys,
     const VectorT& x0,
     core::defaultTypes::uint maxIterations,
     core::defaultTypes::uint maxNonLinearIterations,
@@ -93,14 +93,14 @@ is not compatible with the provided nonlinear system" << std::endl;
 
         solver.resetLinearSystem(Ja);
         xNew -= solver.solve(dy);
-      }
-
+    }
     return xNew;
   }
   //--------------------------------------------------------------
- 
+
 };
 
 } // end namespace solvers
-}//end namespace rompp
+} //end namespace rompp
+
 #endif

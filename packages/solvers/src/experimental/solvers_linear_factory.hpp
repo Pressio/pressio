@@ -10,10 +10,9 @@
 #include "solvers_linear_direct.hpp"
 #include "solvers_linear_iterative.hpp"
 #include "solvers_linear_traits.hpp"
-#include "solvers_policy_linear_dense_eigen.hpp"
-#include "solvers_policy_linear_iterative_eigen.hpp"
 #include "solvers_policy_linear_iterative_trilinos.hpp"
 
+#include "../solvers_ConfigDefs.hpp"
 #include "../../../core/src/matrix/core_matrix_traits.hpp"
 
 
@@ -43,10 +42,10 @@ struct LinearSolvers {
 
     using wrapped_type = typename core::details::traits<MatrixT>::wrapped_t;
     using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type>;
-    using concrete_policy_type = SolversLinearDenseEigenPolicy<concrete_solver_type, MatrixT>;
+    //using concrete_policy_type = SolversLinearDenseEigenPolicy<concrete_solver_type, MatrixT>;
 
     auto solver = std::make_shared<concrete_solver_type>();
-    auto wrapped_solver = LinearDirectSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
+    auto wrapped_solver = LinearDirectSolver<concrete_solver_type, MatrixT>(solver);
 
     return wrapped_solver;
   }
@@ -94,10 +93,10 @@ struct LinearSolvers {
     using wrapped_type = typename core::details::traits<MatrixT>::wrapped_t;
     using concrete_precon_type = typename preconditioner_traits::template eigen_preconditioner_type<wrapped_type>;
     using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type, concrete_precon_type>;
-    using concrete_policy_type = SolversLinearIterativeEigenPolicy<concrete_solver_type, MatrixT>;
+//    using concrete_policy_type = SolversLinearIterativeEigenPolicy<concrete_solver_type, MatrixT>;
 
     auto solver = std::make_shared<concrete_solver_type>();
-    auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
+    auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT>(solver);
 
     return wrapped_solver;
   }
@@ -173,13 +172,13 @@ struct LinearSolvers {
       }
     }
 
-    auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT, concrete_policy_type>(solver);
+    auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT>(solver);
 
     return wrapped_solver;
   }
 
 #endif
-  
+
   /**
    * Create an iterative least square linear solver for sparse Eigen matrices
    *

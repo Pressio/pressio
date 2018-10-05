@@ -46,7 +46,7 @@ class NonLinearIterativeSolver
       typename SystemT,
       typename VectorT
     >
-    auto solve_(SystemT& sys, const VectorT& b) {
+    auto solve_(const SystemT& sys, const VectorT& b) {
 
       double tolerance = this->getTolerance();
       double nonLinearTolerance = this->getNonLinearTolerance();
@@ -60,7 +60,7 @@ class NonLinearIterativeSolver
 			 tolerance, nonLinearTolerance);
     }
     //--------------------------------------------------------------
-  
+
 protected:
 
   NonLinearIterativeSolver()

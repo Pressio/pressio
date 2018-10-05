@@ -22,9 +22,12 @@ template <typename mvec_type,
   core::meta::enable_if_t<
    core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    (core::meta::is_eigen_vector_wrapper<vec_type>::value or
-     core::meta::is_armadillo_column_vector_wrapper<vec_type>::value or
-     core::meta::is_armadillo_row_vector_wrapper<vec_type>::value)
+    (core::meta::is_eigen_vector_wrapper<vec_type>::value 
+#ifdef HAVE_ARMADILLO
+     or core::meta::is_armadillo_column_vector_wrapper<vec_type>::value or
+     core::meta::is_armadillo_row_vector_wrapper<vec_type>::value
+#endif
+    )
     > * = nullptr
   >
 void product(const mvec_type & mvA,
@@ -55,9 +58,12 @@ template <typename mvec_type,
   core::meta::enable_if_t<
    core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    (core::meta::is_eigen_vector_wrapper<vec_type>::value or
-     core::meta::is_armadillo_column_vector_wrapper<vec_type>::value or
-     core::meta::is_armadillo_row_vector_wrapper<vec_type>::value)
+    (core::meta::is_eigen_vector_wrapper<vec_type>::value 
+#ifdef HAVE_ARMADILLO
+    or core::meta::is_armadillo_column_vector_wrapper<vec_type>::value or
+     core::meta::is_armadillo_row_vector_wrapper<vec_type>::value
+#endif
+    )
   > * = nullptr
  >
 auto product(const mvec_type & mvA,

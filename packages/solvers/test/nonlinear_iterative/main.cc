@@ -11,25 +11,25 @@ struct NonLinearSystem {
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
   using vector_type = rompp::core::Vector<vector_n_t>;
- 
-  auto residual(const vector_type& x) {
+
+  auto residual(const vector_type& x) const {
     vector_type res(2);
     residual(x, res);
     return res;
   }
 
-  auto jacobian(const vector_type& x) {
+  auto jacobian(const vector_type& x) const {
     matrix_type jac(2, 2);
     jacobian(x, jac);
     return jac;
   }
 
-  void residual(const vector_type& x, vector_type & R){
+  void residual(const vector_type& x, vector_type & R) const {
     R[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
     R[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
   }
 
-  void jacobian(const vector_type& x, matrix_type & jac){
+  void jacobian(const vector_type& x, matrix_type & jac) const {
     jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
     jac.data()->coeffRef(0, 1) =  1.0;
     jac.data()->coeffRef(1, 0) = -1.0;
