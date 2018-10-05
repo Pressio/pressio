@@ -26,14 +26,14 @@ public:
 public:
 
   // for standard policy, I need to have and pass the model
-  ExplicitStepper(model_t & model,
+  ExplicitStepper(const model_t & model,
 		  state_t const & y0,
 		  res_t const & r0)
     : base_impl_t(model, policy_, y0, r0){}
 
   // for arbitrary policy, with also the model passed
-  ExplicitStepper(model_t & model,
-		  pol_t & policyObj,
+  ExplicitStepper(const model_t & model,
+		  const pol_t & policyObj,
 		  state_t const & y0,
 		  res_t const & r0)
     : base_impl_t(model, policyObj, y0, r0){}

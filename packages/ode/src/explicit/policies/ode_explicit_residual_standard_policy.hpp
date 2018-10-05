@@ -33,8 +33,8 @@ public:
   
   void operator()(const state_type & y,
 		  state_type & R,
-		  model_type & model,
-		  scalar_type t){
+		  const model_type & model,
+		  scalar_type t) const{
     if (R.empty())
       R.matchLayoutWith(y);
 

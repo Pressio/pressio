@@ -2,7 +2,7 @@
 #ifndef ODE_STEPPERS_BUTCHER_TABLEAU_HPP_
 #define ODE_STEPPERS_BUTCHER_TABLEAU_HPP_
 
-#include "../ode_ConfigDefs.hpp"
+#include "ode_ConfigDefs.hpp"
 #include <Eigen/Dense>
 
 namespace rompp{

@@ -19,9 +19,9 @@ public:
 	    typename model_type,
 	    typename scalar_type>
   void operator()(const state_type & y,
-	       space_residual_type & R,
-	       model_type & model,
-	       scalar_type t){
+		  space_residual_type & R,
+		  const model_type & model,
+		  scalar_type t) const{
     this->underlying()(y, R, model, t);
   }
   //--------------------------------------------------
@@ -32,8 +32,8 @@ public:
 	    typename space_residual_type,
 	    typename scalar_type>
   void operator()(const state_type & y,
-	       space_residual_type & R,
-	       scalar_type t){
+		  space_residual_type & R,
+		  scalar_type t) const{
     this->underlying()(y, R, t);
   }
   //--------------------------------------------------

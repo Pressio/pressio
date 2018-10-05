@@ -54,10 +54,10 @@ protected:
 	    typename T3 = ode_state_type,
 	    typename T4 = ode_residual_type,
 	    typename... Args>
-  ExplicitEulerStepperImpl(T1 & model,
-			   T2 & res_policy_obj,
-			   T3 const & y0,
-			   T4 const & r0,
+  ExplicitEulerStepperImpl(const T1 & model,
+			   const T2 & res_policy_obj,
+			   const T3 & y0,
+			   const T4 & r0,
 			   Args&&... rest)
     : storage_base_t(r0 /*,std::forward<Args>(rest)...*/),
       auxdata_base_t(model, res_policy_obj){}
@@ -66,9 +66,9 @@ protected:
 	    typename T2 = ode_state_type,
 	    typename T3 = ode_residual_type,
 	    typename... Args>
-  ExplicitEulerStepperImpl(T1 & res_policy_obj,
-			   T2 const & y0,
-			   T3 const & r0,
+  ExplicitEulerStepperImpl(const T1 & res_policy_obj,
+			   const T2 & y0,
+			   const T3 & r0,
 			   Args&&... rest)
     : storage_base_t(r0 /*,std::forward<Args>(rest)...*/),
       auxdata_base_t(res_policy_obj){}

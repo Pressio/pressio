@@ -13,18 +13,18 @@ template<typename model_type,
 class ExpOdeAuxData
 {
 public:
-  ExpOdeAuxData(model_type & mod,
-		residual_policy_type & rpolo)
+  ExpOdeAuxData(const model_type & mod,
+		const residual_policy_type & rpolo)
     : model_(&mod), residual_obj_(&rpolo){}
 
-  ExpOdeAuxData(residual_policy_type & rpolo)
+  ExpOdeAuxData(const residual_policy_type & rpolo)
     : model_(nullptr), residual_obj_(&rpolo){}
   
   ~ExpOdeAuxData() = default;
 
 protected:
-  model_type * model_;
-  residual_policy_type * residual_obj_;
+  const model_type * model_ = nullptr;
+  const residual_policy_type * residual_obj_ = nullptr;
   
 };
 //---------------------------------------------
@@ -37,16 +37,16 @@ class ImpOdeAuxData
 {
 
 public:
-  ImpOdeAuxData(model_type & mod,
-		residual_policy_type & rpolo,
-		jacobian_policy_type & jpolo)
+  ImpOdeAuxData(const model_type & mod,
+		const residual_policy_type & rpolo,
+		const jacobian_policy_type & jpolo)
     : model_(&mod), residual_obj_(&rpolo), jacobian_obj_(&jpolo){}
   ~ImpOdeAuxData() = default;
 
 protected:
-  model_type * model_;
-  residual_policy_type * residual_obj_;
-  jacobian_policy_type * jacobian_obj_;
+  const model_type * model_ = nullptr;
+  const residual_policy_type * residual_obj_ = nullptr;
+  const jacobian_policy_type * jacobian_obj_ = nullptr;
   scalar_type t_;
   scalar_type dt_;
   
