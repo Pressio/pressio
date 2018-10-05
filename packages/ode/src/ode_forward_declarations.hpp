@@ -63,20 +63,11 @@ template<typename ode_state_type,
 class ImplicitEulerStepperImpl;
 }//end namespace impl
 //-----------------------------------
-
     
 template<ExplicitSteppersEnum whichone,
 	 typename ... Args>
 class ExplicitStepper;
 //-----------------------------------
-
-// template<typename ode_state_type,
-// 	 typename ode_residual_type,
-// 	 typename model_type,
-// 	 typename residual_policy_type = void,
-// 	 typename enable = void
-// 	 >
-// class ExplicitRungeKutta4Stepper;
   
 template<typename ode_state_type,
          typename ode_residual_type,

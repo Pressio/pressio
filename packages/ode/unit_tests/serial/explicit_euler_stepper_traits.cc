@@ -18,7 +18,20 @@ TEST(ode_explicit_euler_stepper, traits)
 {
   using namespace rompp;
   
-  struct fakeapp{};
+  struct fakeapp{
+    using scalar_type = double;
+    using state_type = std::vector<double>;
+    using space_residual_type = std::vector<double>;
+
+    void residual(const state_type & y,
+		  space_residual_type & R,
+		  double t){
+    };
+    double residual(){
+      return 0.0;
+    };
+
+  };
   fakeapp APP;
 
   using nstate_t = Eigen::VectorXd;

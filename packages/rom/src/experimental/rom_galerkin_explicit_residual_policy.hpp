@@ -31,7 +31,7 @@ class RomGalerkinExplicitResidualPolicy
   using base_incr_sol_t = rompp::rom::exp::IncrementalSolutionBase<this_t, state_type>;
   
 public:
-  space_res_type appRHS_;
+  mutable space_res_type appRHS_;
   phi_op * phi_;
   A_type * A_;
 
@@ -63,8 +63,6 @@ public:
   RomGalerkinExplicitResidualPolicy() = delete;
   ~RomGalerkinExplicitResidualPolicy() = default;  
 
-private:
-
   // maybe sfinae here when types do not coincide
   // with those above
   template <typename ode_state_t,
@@ -73,8 +71,8 @@ private:
 	    typename scalar_type>
   void operator()(const ode_state_t & odeY,
 		  ode_res_t & odeR,
-		  app_type & app,
-		  scalar_type t){
+		  const app_type & app,
+		  scalar_type t) const {
 
     // I need to fix a few things like not creating new data structures,
     // but the overall idea is here.

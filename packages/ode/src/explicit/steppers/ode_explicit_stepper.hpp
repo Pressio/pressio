@@ -36,7 +36,7 @@ public:
 		  const pol_t & policyObj,
 		  state_t const & y0,
 		  res_t const & r0)
-    : base_impl_t(model, policyObj, y0, r0){}
+  : base_impl_t(model, policyObj, y0, r0){}
   
   ExplicitStepper() = delete;
   ~ExplicitStepper() = default;

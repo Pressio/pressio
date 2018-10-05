@@ -12,7 +12,7 @@ template <typename derived_type, typename state_type>
 class IncrementalSolutionBase{
 protected:
   state_type y0FOM_;
-  state_type yFOM_;
+  mutable state_type yFOM_;
 
 private:
   friend derived_type; 
