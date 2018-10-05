@@ -9,21 +9,18 @@ namespace ode{
 namespace impl{
   
 template<typename state_type,
-	 typename ode_residual_type,
-	 typename scalar_type,
 	 typename model_type,	
+	 typename ode_residual_type,
 	 typename residual_policy_type
 	 >
 class ExplicitRungeKutta4StepperImpl<state_type,
-				     ode_residual_type,
-				     scalar_type,
 				     model_type,
+				     ode_residual_type,
 				     residual_policy_type>
   : public ExplicitStepperBase<
   ExplicitRungeKutta4StepperImpl<state_type,
-				 ode_residual_type,
-				 scalar_type,
 				 model_type,
+				 ode_residual_type,
 				 residual_policy_type> >,
     private OdeStorage<state_type, ode_residual_type, 1, 4>,
     private ExpOdeAuxData<model_type, residual_policy_type>
@@ -36,14 +33,17 @@ class ExplicitRungeKutta4StepperImpl<state_type,
 "EXPLICIT RUNGEKUTTA4 RESIDUAL_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
-  using stepper_t = ExplicitRungeKutta4StepperImpl<
-	   state_type, ode_residual_type, scalar_type,
-	   model_type, residual_policy_type>;
-  using stepper_base_t = ExplicitStepperBase<stepper_t>;
+  using this_t = ExplicitRungeKutta4StepperImpl<
+    state_type, model_type, ode_residual_type, residual_policy_type>;
+  using stepper_base_t = ExplicitStepperBase<this_t>;
   using storage_base_t = OdeStorage<state_type, ode_residual_type, 1, 4>;
   using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
+  using scalar_type  = typename core::details::traits<state_type>::scalar_t;
+  using scalar_t2  = typename core::details::traits<ode_residual_type>::scalar_t;
+  static_assert(std::is_same<scalar_type, scalar_t2>::value,
+		"Not maching scalar types");
 
-  using add_op_t = std::plus<scalar_type>;
+  //  using add_op_t = std::plus<scalar_type>;
   
 protected:
   using storage_base_t::auxStates_;
@@ -57,10 +57,10 @@ protected:
 	     typename T3 = state_type,
 	     typename T4 = ode_residual_type,
 	     typename... Args>
-  ExplicitRungeKutta4StepperImpl(T1 & model,
-				 T2 & res_policy_obj,
-				 T3 const & y0,
-				 T4 const & r0,
+  ExplicitRungeKutta4StepperImpl(const T1 & model,
+				 const T2 & res_policy_obj,
+				 const T3 & y0,
+				 const T4 & r0,
 				 Args&&... rest)
     : storage_base_t(y0, r0 /*,std::forward<Args>(rest)...*/),
       auxdata_base_t(model, res_policy_obj){}
@@ -94,28 +94,28 @@ protected:
     // ----------
     // stage 1: 
     // ----------
-    residual_obj_->compute(y, auxRHS_[0], *model_, t);
+    (*residual_obj_)(y, auxRHS_[0], *model_, t);
     ytmp = y + auxRHS_[0]*dt_half;
     //ytmp.template inPlaceOp<add_op_t>(1.0,  y, dt_half, auxRHS_[0]);
     
     // ----------
     // stage 2: 
     // ----------
-    residual_obj_->compute(ytmp, auxRHS_[1], *model_, t_phalf);
+    (*residual_obj_)(ytmp, auxRHS_[1], *model_, t_phalf);
     ytmp = y + auxRHS_[1]*dt_half;
     //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt_half, auxRHS_[1]);
     
     // ----------
     // stage 3: 
     // ----------
-    residual_obj_->compute(ytmp, auxRHS_[2], *model_, t_phalf);
+    (*residual_obj_)(ytmp, auxRHS_[2], *model_, t_phalf);
     ytmp = y + auxRHS_[2]*dt;
     //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt, auxRHS_[2]);
 
     // ----------
     // stage 4: 
     // ----------
-    residual_obj_->compute(ytmp, auxRHS_[3], *model_, t + dt);
+    (*residual_obj_)(ytmp, auxRHS_[3], *model_, t + dt);
     //y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     y += dt6*auxRHS_[0] + dt3*auxRHS_[1] + dt3*auxRHS_[2] + dt6*auxRHS_[3];
     // y.template inPlaceOp<add_op_t>(1.0, dt6, auxRHS_[0],

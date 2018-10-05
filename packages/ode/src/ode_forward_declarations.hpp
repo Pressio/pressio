@@ -44,9 +44,8 @@ template<typename ode_state_type,
 class ExplicitEulerStepperImpl;
 
 template<typename ode_state_type,
-	 typename ode_residual_type,
-	 typename scalar_type,
 	 typename model_type,	
+	 typename ode_residual_type,
 	 typename residual_policy_type,
 	 typename enable = void
 	 >
@@ -71,13 +70,13 @@ template<ExplicitSteppersEnum whichone,
 class ExplicitStepper;
 //-----------------------------------
 
-template<typename ode_state_type,
-	 typename ode_residual_type,
-	 typename model_type,
-	 typename residual_policy_type = void,
-	 typename enable = void
-	 >
-class ExplicitRungeKutta4Stepper;
+// template<typename ode_state_type,
+// 	 typename ode_residual_type,
+// 	 typename model_type,
+// 	 typename residual_policy_type = void,
+// 	 typename enable = void
+// 	 >
+// class ExplicitRungeKutta4Stepper;
   
 template<typename ode_state_type,
          typename ode_residual_type,

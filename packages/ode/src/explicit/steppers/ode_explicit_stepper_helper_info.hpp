@@ -8,13 +8,8 @@
 
 namespace rompp{ namespace ode{ namespace impl{
   
-
-template <ExplicitSteppersEnum, typename...>
-struct stepper_helper_info;
-//--------------------------------------------
-
 template <typename... Args>
-struct stepper_helper_info<ExplicitSteppersEnum::Euler, Args...>{
+struct stepper_helper_info_base{
   
   // find if a state type is passed
   using ic1_t = ::tinympl::variadic::find_if_t<
@@ -46,56 +41,50 @@ struct stepper_helper_info<ExplicitSteppersEnum::Euler, Args...>{
   static constexpr auto k4 = ic4_t::value;
   using residual_policy_type =
     ::tinympl::variadic::at_or_t<res_std_pol_type, k4, Args...>;
-  static_assert( std::is_same<residual_policy_type,
-		 res_std_pol_type>::value,"");
   
+};
+//--------------------------------------------
+
+
+template <ExplicitSteppersEnum, typename...>
+struct stepper_helper_info;
+//--------------------------------------------
+
+template <typename... Args>
+struct stepper_helper_info<ExplicitSteppersEnum::Euler, Args...>
+  : stepper_helper_info_base<Args...>{
+
+  using base_t = stepper_helper_info_base<Args...>;
+  using state_type = typename base_t::state_type;
+  using model_type = typename base_t::model_type;
+  using res_type = typename base_t::res_type;
+  using res_std_pol_type = typename base_t::res_std_pol_type;
+  using residual_policy_type = typename base_t::residual_policy_type;
+
   // the impl class finally is
   using base_impl_type = impl::ExplicitEulerStepperImpl<
     state_type, model_type, res_type, residual_policy_type>;
 
 };
+//--------------------------------------------      
+
+template <typename... Args>
+struct stepper_helper_info<ExplicitSteppersEnum::RungeKutta4, Args...>
+  : stepper_helper_info_base<Args...>{
+
+  using base_t = stepper_helper_info_base<Args...>;
+  using state_type = typename base_t::state_type;
+  using model_type = typename base_t::model_type;
+  using res_type = typename base_t::res_type;
+  using res_std_pol_type = typename base_t::res_std_pol_type;
+  using residual_policy_type = typename base_t::residual_policy_type;
+  
+  // the impl class finally is
+  using base_impl_type = impl::ExplicitRungeKutta4StepperImpl<
+    state_type, model_type, res_type, residual_policy_type>;
+
+};
 //--------------------------------------------
-
-
-
-// template <ExplicitSteppersEnum,
-// 	  typename state_t, typename model_t,
-// 	  typename residual_t,
-// 	  typename res_policy_t = void,
-// 	  typename enable = void>
-// struct stepper_helper_info;
-// //--------------------------------------------
-      
-// template <typename state_t,
-// 	  typename model_t,
-// 	  typename residual_t>
-// struct stepper_helper_info<ExplicitSteppersEnum::Euler,
-// 		    state_t, model_t, residual_t, void>{
-  
-//   using res_pol_t =
-//     policy::ExplicitResidualStandardPolicy<
-//     state_t,model_t,residual_t>;
-
-//   using base_std_t =
-//     impl::ExplicitEulerStepperImpl<
-//     state_t, model_t, residual_t, res_pol_t>;
-// };
-// //--------------------------------------------
-      
-// template <typename state_t,
-// 	  typename model_t,
-// 	  typename residual_t,
-// 	  typename res_policy_t>
-// struct stepper_helper_info<ExplicitSteppersEnum::Euler,
-// 			   state_t, model_t,
-// 			   residual_t, res_policy_t>{
-  
-//   using res_pol_t = res_policy_t;
-  
-//   using base_std_t = impl::ExplicitEulerStepperImpl<
-//     state_t, model_t, residual_t, res_pol_t>;
-// };
-// //--------------------------------------------
       
 }}} // end namespace rompp::ode::impl
 #endif

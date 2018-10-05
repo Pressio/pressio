@@ -35,23 +35,20 @@ struct traits<impl::ExplicitEulerStepperImpl<
 
 
 template<typename state_type,
-	 typename ode_residual_type,
-	 typename scalar_type,
 	 typename model_type,
-	 typename residual_policy_type,
-	 typename butcher_table_type>
+	 typename ode_residual_type,
+	 typename residual_policy_type>
 struct traits<impl::ExplicitRungeKutta4StepperImpl<
-		state_type, ode_residual_type,
-		scalar_type, model_type,
-		residual_policy_type, butcher_table_type>
+		state_type, model_type, ode_residual_type,
+		residual_policy_type>
 	      >
 {
   using state_t =  state_type;
   using ode_residual_t = ode_residual_type;
-  using scalar_t = scalar_type;
+  using scalar_t = typename core::details::traits<state_type>::scalar_t;
   using model_t = model_type;
   using residual_policy_t = residual_policy_type;
-  using butcher_table_t = butcher_table_type;
+  //  using butcher_table_t = butcher_table_type;
   
   using order_t = unsigned int;
   static constexpr order_t order_value = 4;

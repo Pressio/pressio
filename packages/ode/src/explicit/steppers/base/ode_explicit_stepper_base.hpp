@@ -3,7 +3,6 @@
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_BASE_EXPLICIT_STEPPER_BASE_HPP_
 
 #include "../ode_explicit_stepper_traits.hpp"
-//#include "../ode_explicit_stepper_meta.hpp"
 #include "../../policies/ode_explicit_policies_meta.hpp"
 #include "../../../ode_storage.hpp"
 #include "../../../ode_aux_data.hpp"
