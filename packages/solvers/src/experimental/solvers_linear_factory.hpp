@@ -144,7 +144,7 @@ struct LinearSolvers {
     static_assert(preconditioner_traits::trilinos_enabled, "Preconditioner not available for linear systems defined by Trilinos matrices");
 
     using concrete_solver_type = AztecOO;
-    using concrete_policy_type = SolversLinearIterativeTrilinosPolicy<concrete_solver_type, MatrixT>;
+    // using concrete_policy_type = SolversLinearIterativeTrilinosPolicy<concrete_solver_type, MatrixT>;
 
     auto solver_flag = solver_traits::trilinos_flag;
     auto precon_flag = preconditioner_traits::trilinos_flag;
