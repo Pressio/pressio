@@ -16,6 +16,10 @@ public:
   ExpOdeAuxData(model_type & mod,
 		residual_policy_type & rpolo)
     : model_(&mod), residual_obj_(&rpolo){}
+
+  ExpOdeAuxData(residual_policy_type & rpolo)
+    : model_(nullptr), residual_obj_(&rpolo){}
+  
   ~ExpOdeAuxData() = default;
 
 protected:

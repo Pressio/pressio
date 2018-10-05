@@ -3,55 +3,41 @@
 #define ODE_FORWARD_DECLARATIONS_HPP_
 
 #include "ode_ConfigDefs.hpp"
+#include "../../core/src/meta/tinympl/variadic/find_if.hpp"
 
-namespace rompp{
-namespace ode{
-  
-// template<typename ode_state_type,
-// 	 typename ode_residual_type,
-// 	 typename model_type,
-// 	 typename residual_policy_type = void,
-// 	 typename enable = void
-// 	 >
-// class ExplicitEulerStepper;
+namespace rompp{ namespace ode{ 
 
-template<ExplicitSteppersEnum whichone,
-	 typename ode_state_type,
-	 typename ... Args>
-class ExplicitStepper;
+///begin namespace policy
+namespace policy{
   
-template<typename ode_state_type,
-	 typename ode_residual_type,
+template<typename state_type,
 	 typename model_type,
-	 typename residual_policy_type = void,
-	 typename enable = void
-	 >
-class ExplicitRungeKutta4Stepper;
+	 typename residual_type = state_type,
+	 typename enable = void>
+class ExplicitResidualStandardPolicy;
   
-template<typename ode_state_type,
-         typename ode_residual_type,
-         typename ode_jacobian_type,
-         typename model_type,
-         typename residual_policy_type=void,
-         typename jacobian_policy_type=void,
-	 typename enable = void
-         >
-class ImplicitEulerStepper;
-    
-} // end namespace ode
+template<typename state_type,
+	 typename model_type,
+	 typename residual_type = state_type,
+	 typename enable = void>
+class ImplicitEulerResidualStandardPolicy;
 
+template<typename state_type,
+	 typename jacobian_type,
+	 typename model_type,
+	 typename enable = void>
+class ImplicitEulerJacobianStandardPolicy;
 
-/////////////////////////////////////
-/////////////////////////////////////
+}//end namespace policy
+//-----------------------------------
 
-
-namespace ode{
+  
+///begin namespace impl
 namespace impl {
 
 template<typename ode_state_type,
+	 typename model_type,
 	 typename ode_residual_type,
-	 typename scalar_type,
-	 typename model_type,	
 	 typename residual_policy_type,
 	 typename enable = void
 	 >
@@ -76,9 +62,36 @@ template<typename ode_state_type,
 	 typename enable = void
 	 >
 class ImplicitEulerStepperImpl;
-  
 }//end namespace impl
+//-----------------------------------
+
+    
+template<ExplicitSteppersEnum whichone,
+	 typename ... Args>
+class ExplicitStepper;
+//-----------------------------------
+
+template<typename ode_state_type,
+	 typename ode_residual_type,
+	 typename model_type,
+	 typename residual_policy_type = void,
+	 typename enable = void
+	 >
+class ExplicitRungeKutta4Stepper;
+  
+template<typename ode_state_type,
+         typename ode_residual_type,
+         typename ode_jacobian_type,
+         typename model_type,
+         typename residual_policy_type=void,
+         typename jacobian_policy_type=void,
+	 typename enable = void
+         >
+class ImplicitEulerStepper;
+    
 } // end namespace ode
+//-----------------------------------------
+
 }//end namespace rompp
 #endif
 
@@ -86,6 +99,26 @@ class ImplicitEulerStepperImpl;
 
 
 
+
+
+
+
+
+
+
+// template <typename... Args>
+// class ExplicitStepper<ExplicitSteppersEnum::Euler,
+// 		      Args...>
+//   : public impl::ExplicitStepperHelper<
+//        ExplicitSteppersEnum::Euler, Args...>{
+// public:
+//   template <typename ... Ts>
+//   ExplicitStepper(Ts&&... all) :
+//   impl::ExplicitStepperHelper<
+//     ExplicitSteppersEnum::Euler, Args...>
+//     (std::forward<Ts>(all)...){}  
+// };
+// //-----------------------------------
 
 
 // template<typename state_type,

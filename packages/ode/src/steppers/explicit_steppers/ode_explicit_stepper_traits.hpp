@@ -9,21 +9,17 @@ namespace ode{
 namespace details{
 
 template<typename state_type,
-	 typename ode_residual_type,
-	 typename scalar_type,
 	 typename model_type,
+	 typename ode_residual_type,
 	 typename residual_policy_type
 	 >
-struct traits<impl::ExplicitEulerStepperImpl<state_type,
-					     ode_residual_type,
-					     scalar_type,
-					     model_type,
-					     residual_policy_type>
-	      >
-{
+struct traits<impl::ExplicitEulerStepperImpl<
+		state_type, model_type, ode_residual_type,
+		residual_policy_type>>{
+  
   using state_t =  state_type;
   using ode_residual_t = ode_residual_type;
-  using scalar_t = scalar_type;
+  using scalar_t = typename core::details::traits<state_type>::scalar_t;
   using model_t = model_type;
   using residual_policy_t = residual_policy_type;
 
@@ -35,7 +31,7 @@ struct traits<impl::ExplicitEulerStepperImpl<state_type,
 };
 
 
-////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
 
 
 template<typename state_type,
@@ -44,12 +40,10 @@ template<typename state_type,
 	 typename model_type,
 	 typename residual_policy_type,
 	 typename butcher_table_type>
-struct traits<impl::ExplicitRungeKutta4StepperImpl<state_type,
-						   ode_residual_type,
-						   scalar_type,
-						   model_type,
-						   residual_policy_type,
-						   butcher_table_type>
+struct traits<impl::ExplicitRungeKutta4StepperImpl<
+		state_type, ode_residual_type,
+		scalar_type, model_type,
+		residual_policy_type, butcher_table_type>
 	      >
 {
   using state_t =  state_type;

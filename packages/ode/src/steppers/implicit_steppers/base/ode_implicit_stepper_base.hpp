@@ -2,10 +2,8 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
-#include "../../../ode_ConfigDefs.hpp"
 #include "../ode_implicit_stepper_traits.hpp"
-#include "../../../meta/ode_meta.hpp"
-#include "../../../meta/ode_meta_implicit.hpp"
+#include "../../../ode_basic_meta.hpp"
 #include "../../../policies/meta/ode_implicit_policies_meta.hpp"
 #include "../../../ode_storage.hpp"
 #include "../../../ode_aux_data.hpp"
@@ -32,11 +30,11 @@ private:
     ode::details::traits<stepper_type>::order_value;
 
   //do checking here that things are as supposed
-  static_assert( meta::isLegitimateImplicitStateType<state_t>::value,
+  static_assert( meta::is_legitimate_implicit_state_type<state_t>::value,
        "OOPS: STATE_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::isLegitimateImplicitResidualType<residual_t>::value,
+  static_assert( meta::is_legitimate_implicit_residual_type<residual_t>::value,
        "OOPS: RESIDUAL_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::isLegitimateJacobianType<jacobian_t>::value,
+  static_assert( meta::is_legitimate_jacobian_type<jacobian_t>::value,
        "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
 public:

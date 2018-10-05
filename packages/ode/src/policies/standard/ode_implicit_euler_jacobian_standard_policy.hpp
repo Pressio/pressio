@@ -2,23 +2,13 @@
 #ifndef ODE_POLICIES_STANDARD_JACOBIAN_STANDARD_POLICY_HPP_
 #define ODE_POLICIES_STANDARD_JACOBIAN_STANDARD_POLICY_HPP_
 
-#include "../../ode_ConfigDefs.hpp"
+#include "../../ode_forward_declarations.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
 #include "../../ode_jacobian_impl.hpp"
 
-namespace rompp{
-namespace ode{
-namespace policy{
-
-
-template<typename state_type,
-	 typename jacobian_type,
-	 typename model_type,
-	 typename enable = void>
-class ImplicitEulerJacobianStandardPolicy;
+namespace rompp{ namespace ode{ namespace policy{
 
   
-
 template<typename state_type,
 	 typename jacobian_type,
 	 typename model_type>
@@ -28,12 +18,13 @@ class ImplicitEulerJacobianStandardPolicy<
     core::meta::is_core_vector_wrapper<state_type>::value and 
     core::meta::is_core_matrix_wrapper<jacobian_type>::value and
     std::is_same<typename core::details::traits<state_type>::scalar_t,
-		 typename core::details::traits<jacobian_type>::scalar_t>::value
+		 typename core::details::traits<jacobian_type>::scalar_t
+		 >::value
     >
   >
   : public JacobianPolicyBase<ImplicitEulerJacobianStandardPolicy<
-				state_type, jacobian_type, model_type> >
-{
+    state_type, jacobian_type,model_type> >{
+
 public:
   ImplicitEulerJacobianStandardPolicy() = default;
   ~ImplicitEulerJacobianStandardPolicy() = default;
@@ -43,6 +34,7 @@ private:
     
 private:
   
+  // jacobian is passed by reference
   void operator()(const state_type & y, 
 		  jacobian_type & J, 
 		  model_type & model,
@@ -56,6 +48,7 @@ private:
   }
   //----------------------------------------------------------------
 
+  // jacobian is returned by the method
   jacobian_type operator()(const state_type & y, 
 			   model_type & model,
 			   scalar_type t,

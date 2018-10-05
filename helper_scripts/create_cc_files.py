@@ -33,7 +33,7 @@ def createCCFiles(path, cwd):
     # get list of dirs here
     dirs_here = filter(os.path.isdir, os.listdir(os.curdir))
     # remove the 'src' from the list if there is one
-    dirs2 = [i for i in dirs_here if i!="src"]
+    dirs2 = [i for i in dirs_here if i!="src" and i!="tinympl"]
 
     # create for current src
     root = os.getcwd()

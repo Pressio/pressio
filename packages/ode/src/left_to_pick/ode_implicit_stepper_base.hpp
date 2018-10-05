@@ -34,11 +34,11 @@ private:
     ode::details::traits<stepper_type>::order_value;
 
   //do checking here that things are as supposed
-  static_assert( meta::isLegitimateImplicitStateType<state_t>::value,
+  static_assert( meta::is_legitimate_implicit_state_type<state_t>::value,
        "OOPS: STATE_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::isLegitimateImplicitResidualType<residual_t>::value,
+  static_assert( meta::is_legitimate_implicit_residual_type<residual_t>::value,
        "OOPS: RESIDUAL_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::isLegitimateJacobianType<jacobian_t>::value,
+  static_assert( meta::is_legitimate_jacobian_type<jacobian_t>::value,
        "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
   static_assert( meta::isLegitimateTimeType<time_t>::value,
        "OOPS: TIME_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");

@@ -4,6 +4,7 @@
 
 #include <type_traits>
 #include <complex>
+#include "./tinympl/variadic.hpp"
 
 namespace rompp{
 namespace core{

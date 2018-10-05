@@ -2,10 +2,8 @@
 #ifndef ODE_STEPPERS_EXPLICIT_STEPPERS_BASE_EXPLICIT_STEPPER_BASE_HPP_
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_BASE_EXPLICIT_STEPPER_BASE_HPP_
 
-#include "../../../ode_ConfigDefs.hpp"
 #include "../ode_explicit_stepper_traits.hpp"
-#include "../../../meta/ode_meta.hpp"
-#include "../../../meta/ode_meta_explicit.hpp"
+#include "../ode_explicit_stepper_meta.hpp"
 #include "../../../policies/meta/ode_explicit_policies_meta.hpp"
 #include "../../../ode_storage.hpp"
 #include "../../../ode_aux_data.hpp"
@@ -15,7 +13,8 @@ namespace ode{
 
 template<typename stepper_type>
 class ExplicitStepperBase
-  : private core::details::CrtpBase<ExplicitStepperBase<stepper_type>>
+  : private core::details::CrtpBase<
+  ExplicitStepperBase<stepper_type>>
 {
 private:
   using step_traits = ode::details::traits<stepper_type>;
@@ -29,13 +28,13 @@ private:
   static constexpr order_t order_value = step_traits::order_value;
 
   //do checking here that things are as supposed
-  static_assert( meta::isLegitimateExplicitStateType<state_t>::value,
+  static_assert( meta::is_legitimate_explicit_state_type<state_t>::value,
   "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::isLegitimateExplicitResidualType<
-		 ode_residual_t>::value,
+  static_assert( meta::is_legitimate_explicit_residual_type<
+  		 ode_residual_t>::value,
   "OOPS: RESIDUAL_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
   static_assert( meta::is_legitimate_explicit_residual_policy<
-		 residual_policy_t>::value,
+  		 residual_policy_t>::value,
   "RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OF EXPLICIT POLICY BASE");
 
 public:

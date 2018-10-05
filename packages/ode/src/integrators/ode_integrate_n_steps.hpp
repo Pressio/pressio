@@ -3,7 +3,7 @@
 #define ODE_INTEGRATORS_INTEGRATE_N_STEPS_HPP_
 
 #include "../ode_ConfigDefs.hpp"
-#include "../meta/ode_meta.hpp"
+#include "../ode_basic_meta.hpp"
 
 namespace rompp{
 namespace ode{
@@ -23,7 +23,7 @@ namespace ode{
 	 typename integral_type,
 	 typename collector_type,
 	 typename std::enable_if<
-	   ode::meta::isLegitimateCollector<collector_type,
+	   ode::meta::is_legitimate_collector<collector_type,
 					    integral_type,
 					    time_type,
 					    state_type>::value &&
@@ -101,7 +101,7 @@ template<typename stepper_type,
 	 typename collector_type,
 	 typename solver_type,
 	 typename std::enable_if<
-	   ode::meta::isLegitimateCollector<collector_type,
+	   ode::meta::is_legitimate_collector<collector_type,
 					    integral_type,
 					    time_type,
 					    state_type>::value &&
