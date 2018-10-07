@@ -17,20 +17,19 @@ namespace ode{
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 
- template<typename stepper_type,
-	 typename state_type,
-	 typename time_type,
-	 typename integral_type,
-	 typename collector_type,
-	 typename std::enable_if<
-	   ode::meta::is_legitimate_collector<collector_type,
-					    integral_type,
-					    time_type,
-					    state_type>::value &&
-	   std::is_integral<integral_type>::value &&
-	   details::traits<typename
-	     stepper_type::base_t>::is_explicit
-	   >::type * = nullptr>
+template<typename stepper_type,
+	typename state_type,
+	typename time_type,
+	typename integral_type,
+	typename collector_type,
+	typename std::enable_if<
+	  ode::meta::is_legitimate_collector<
+	    collector_type, integral_type,
+	    time_type, state_type>::value &&
+	  std::is_integral<integral_type>::value &&
+	  details::traits<typename
+	    stepper_type::base_t>::is_explicit
+	  >::type * = nullptr>
 void integrateNSteps(stepper_type & stepper,
 		     state_type & yIn,
 		     time_type start_time,
@@ -47,15 +46,15 @@ void integrateNSteps(stepper_type & stepper,
   for( ; step <= num_steps ; ++step)
   {
     // do one step
-    stepper.doStep(yIn, time, dt, step);
-    // advance time: mulitply (vs adding) benefits roundoff
+    stepper(yIn, time, dt, step);
+    // advance time
     time = start_time + static_cast<time_type>(step) * dt;
     // call collector/observer at starting time
     collector(step, time, yIn);
   }
 }  
 
-//----------------------------------------------------------------
+//-------------------------------------------------
 
 template<typename stepper_type,
 	 typename state_type,
@@ -78,8 +77,8 @@ void integrateNSteps(stepper_type & stepper,
   for( ; step <= num_steps ; ++step)
   {
     // do one step
-    stepper.doStep(yIn, time, dt, step);
-    // advance time: mulitply (vs adding) benefits roundoff
+    stepper(yIn, time, dt, step);
+    // advance time
     time = start_time + static_cast<time_type>(step) * dt;  
   }
 }  
@@ -101,10 +100,9 @@ template<typename stepper_type,
 	 typename collector_type,
 	 typename solver_type,
 	 typename std::enable_if<
-	   ode::meta::is_legitimate_collector<collector_type,
-					    integral_type,
-					    time_type,
-					    state_type>::value &&
+	   ode::meta::is_legitimate_collector<
+	     collector_type, integral_type,
+	     time_type, state_type>::value &&
 	   std::is_integral<integral_type>::value &&
 	   details::traits<
 	     typename stepper_type::base_t>::is_implicit
@@ -127,14 +125,14 @@ void integrateNSteps(stepper_type & stepper,
   {
     // do one step
     stepper.doStep(yIn, time, dt, step, solver);
-    // advance time: mulitply (vs adding) benefits roundoff
+    // advance time
     time = start_time + static_cast<time_type>(step) * dt;  
     // call collector/observer 
     collector(step, time, yIn);
   }
 }  
 
-//----------------------------------------------------------------
+//-------------------------------------------------
 
 template<typename stepper_type,
 	 typename state_type,
@@ -160,7 +158,7 @@ void integrateNSteps(stepper_type & stepper,
   {
     // do one step
     stepper.doStep(yIn, time, dt, step, solver);
-    // advance time: mulitply (vs adding) benefits roundoff
+    // advance time
     time = start_time + static_cast<time_type>(step) * dt;  
   }
 }  

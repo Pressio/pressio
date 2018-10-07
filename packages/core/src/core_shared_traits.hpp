@@ -5,10 +5,7 @@
 #include <type_traits>
 #include "core_wrapped_types_enum.hpp"
 
-
-namespace rompp{
-namespace core{
-namespace details {
+namespace rompp{ namespace core{ namespace details {
   
 //---------------------------------------
 /// common traits of core containers
@@ -45,10 +42,6 @@ struct matrix_shared_traits{
 
 };
   
-
   
-} // end namespace details
-} // end of core namespace
-
-}//end namespace rompp
+}}} // end namespace rompp::core::details
 #endif

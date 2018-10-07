@@ -76,10 +76,10 @@ protected:
   ExplicitEulerStepperImpl() = delete;
   ~ExplicitEulerStepperImpl() = default;
 
-protected:
-
+public:
+  
   template<typename step_t>
-  void doStepImpl(ode_state_type & y, scalar_type t,
+  void operator()(ode_state_type & y, scalar_type t,
 		  scalar_type dt, step_t step){
     
     if ( auxRHS_[0].empty() )
@@ -93,6 +93,8 @@ protected:
   }
   //-------------------------------------------------------
 
+protected:
+  
   template<typename T = model_type,
 	   typename std::enable_if<
 	     std::is_void<T>::value

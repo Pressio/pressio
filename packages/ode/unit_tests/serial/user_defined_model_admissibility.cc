@@ -11,7 +11,7 @@ TEST(user_defined_model, admissibleExplicitOde)
   struct fakeapp{
     using scalar_type = double;
     using state_type = std::vector<double>;
-    using space_residual_type = std::vector<double>;
+    using residual_type = std::vector<double>;
 
     // void residual(const state_type & y,
     // 		  space_residual_type & R,

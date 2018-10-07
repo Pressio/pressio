@@ -2,9 +2,7 @@
 #ifndef CORE_WRAPPED_TYPES_ENUM_HPP_
 #define CORE_WRAPPED_TYPES_ENUM_HPP_
 
-namespace rompp{
-namespace core{
-namespace details {  
+namespace rompp{ namespace core{ namespace details {  
 
 /*--------------------------------------------
 Wrapped library name for containers
@@ -63,9 +61,6 @@ enum class WrappedMultiVectorIdentifier{
    Epetra
 };
 
-  
-} // end namespace details
-} // end of core namespace
 
-}//end namespace rompp
+}}} // end namespace rompp::core::details
 #endif

@@ -4,8 +4,7 @@
 
 #include "core_ConfigDefs.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
   
 template <typename wrapped_type,
 	  typename Enable = void>
@@ -20,6 +19,5 @@ template <typename wrapped_type,
 class Matrix;
   
   
-} // end namespace core
-}//end namespace rompp
+}} // end namespace rompp::core
 #endif

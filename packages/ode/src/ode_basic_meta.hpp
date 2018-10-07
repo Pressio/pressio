@@ -17,9 +17,6 @@ template <typename T>
 using has_residual_typedef = typename T::residual_type;
 
 template <typename T>
-using has_space_residual_typedef = typename T::space_residual_type;
-
-template <typename T>
 using has_jacobian_typedef = typename T::jacobian_type;
 
 template <typename T>
@@ -84,13 +81,13 @@ struct is_legitimate_model_for_explicit_ode<
    core::meta::is_detected<has_scalar_typedef, model_type>::value and 
    // has to have state typedef
    core::meta::is_detected<has_state_typedef, model_type>::value and 
-   // has to have space residual typedef
-   core::meta::is_detected<has_space_residual_typedef, model_type>::value and 
+   // has to have residual typedef
+   core::meta::is_detected<has_residual_typedef, model_type>::value and 
    // has residual method with 3 arguments
    core::meta::is_detected<
      has_residual_method_callable_with_three_args,
      model_type, typename model_type::state_type,
-     typename model_type::space_residual_type,
+     typename model_type::residual_type,
      typename model_type::scalar_type>::value
    >::type
   > : std::true_type{};
@@ -104,8 +101,8 @@ struct is_legitimate_model_for_explicit_ode<
    core::meta::is_detected<has_scalar_typedef, model_type>::value and 
    // has to have state typedef
    core::meta::is_detected<has_state_typedef, model_type>::value and 
-   // has to have space residual typedef
-   core::meta::is_detected<has_space_residual_typedef, model_type>::value and 
+   // has to have residual typedef
+   core::meta::is_detected<has_residual_typedef, model_type>::value and 
    // has residual method with 2 arguments, so return should be non void
    core::meta::is_detected<
      has_residual_method_callable_with_two_args,
@@ -117,7 +114,7 @@ struct is_legitimate_model_for_explicit_ode<
       has_residual_method_callable_with_two_args,
       model_type, typename model_type::state_type,
       typename model_type::scalar_type>,
-     typename model_type::space_residual_type
+     typename model_type::residual_type
     >::value
    >::type
   > : std::true_type{};

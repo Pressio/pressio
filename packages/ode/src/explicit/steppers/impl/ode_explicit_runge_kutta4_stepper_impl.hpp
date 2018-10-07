@@ -68,10 +68,10 @@ protected:
   ExplicitRungeKutta4StepperImpl() = delete;
   ~ExplicitRungeKutta4StepperImpl() = default;
 
-protected:
-
+public:
+  
   template<typename step_t>
-  void doStepImpl(state_type & y, scalar_type t,
+  void operator()(state_type & y, scalar_type t,
 		  scalar_type dt, step_t step){
     
     auto & ytmp = auxStates_[0];

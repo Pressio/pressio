@@ -4,9 +4,7 @@
 
 #include <type_traits>
 
-namespace rompp{
-namespace core{
-namespace details {  
+namespace rompp{ namespace core{ namespace details {  
 
 //---------------------------------------
 // CRTP HELPER BASE CLASS
@@ -66,8 +64,6 @@ private:
 };//end class
 
   
-} // end namespace details
-} // end of core namespace
+}}} // end namespace rompp::core::details
 
-}//end namespace rompp
 #endif

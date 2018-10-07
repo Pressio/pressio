@@ -18,7 +18,7 @@ struct traits<impl::ExplicitEulerStepperImpl<
 		residual_policy_type>>{
   
   using state_t =  state_type;
-  using ode_residual_t = ode_residual_type;
+  using residual_t = ode_residual_type;
   using scalar_t = typename core::details::traits<state_type>::scalar_t;
   using model_t = model_type;
   using residual_policy_t = residual_policy_type;
@@ -44,7 +44,7 @@ struct traits<impl::ExplicitRungeKutta4StepperImpl<
 	      >
 {
   using state_t =  state_type;
-  using ode_residual_t = ode_residual_type;
+  using residual_t = ode_residual_type;
   using scalar_t = typename core::details::traits<state_type>::scalar_t;
   using model_t = model_type;
   using residual_policy_t = residual_policy_type;

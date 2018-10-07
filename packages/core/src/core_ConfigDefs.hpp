@@ -8,27 +8,25 @@
 #include "core_shared_traits.hpp"
 #include "meta/core_meta_basic.hpp"
 
-namespace rompp{
-namespace core{
-namespace details {
+namespace rompp{ namespace core{
 
+
+
+namespace details {
   
 template<typename T, typename enable = void>
 struct traits : public
 containers_shared_traits<void, void,
 			 false, false, false,
 			 WrappedPackageIdentifier::Undefined,
-			 false>
-{};
-
+			 false>{};
+  
 template<typename T> 
 struct traits<const T> : traits<T> {};
-
   
 } // end namespace details
 //--------------------------------------------
 
-  
 namespace exprtemplates{
 
 struct plus_{
@@ -83,12 +81,6 @@ namespace defaultTypes {
 
 } // namespace defaultTypes
 
-
-/// comment out for now because we do not do error checking
-// constexpr defaultTypes::errcode_t _SUCCESS = 0;
-// constexpr defaultTypes::errcode_t _FAILURE = 1;
-  
-} // end of core namespace
-
-}//end namespace rompp
+    
+}} // end of namespace rompp::core
 #endif
