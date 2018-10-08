@@ -36,8 +36,6 @@ class ImplicitBDF2StepperImpl<state_type,
 			  jacobian_policy_type>{
   
   static_assert( meta::is_legitimate_implicit_bdf2_residual_policy<
-		 residual_policy_type>::value ||
-		 meta::is_implicit_bdf2_residual_standard_policy<
 		 residual_policy_type>::value,
 		 "IMPLICIT BDF2 RESIDUAL_POLICY NOT ADMISSIBLE,\
 MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");

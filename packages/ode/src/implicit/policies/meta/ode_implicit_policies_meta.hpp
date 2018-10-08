@@ -57,6 +57,17 @@ struct is_legitimate_implicit_jacobian_policy<
       >::value 
     >::type > : std::true_type{};
 
+
+template<typename T>
+using is_legitimate_implicit_euler_jacobian_policy =
+  is_legitimate_implicit_jacobian_policy<
+  ::rompp::ode::ImplicitSteppersEnum::Euler,T>;
+
+template<typename T>
+using is_legitimate_implicit_bdf2_jacobian_policy =
+  is_legitimate_implicit_jacobian_policy<
+  ::rompp::ode::ImplicitSteppersEnum::BDF2,T>;
+  
   
 //-----------------------------------------------------------------
 // ADMISSIBLE IMPLICIT RESIDUAL
@@ -84,10 +95,21 @@ struct is_legitimate_implicit_residual_policy<
   typename std::enable_if<
     core::meta::publicly_inherits_from<
       policy_t,
-      ode::policy::ImplicitResidualPolicyBase<policy_t, 1, 0>
+      ode::policy::ImplicitResidualPolicyBase<policy_t, 2, 0>
       >::value 
     >::type
   > : std::true_type{};
+
+
+template<typename T>
+using is_legitimate_implicit_euler_residual_policy =
+  typename is_legitimate_implicit_residual_policy<
+  ::rompp::ode::ImplicitSteppersEnum::Euler,T>::type;
+
+template<typename T>
+using is_legitimate_implicit_bdf2_residual_policy =
+  typename is_legitimate_implicit_residual_policy<
+  ::rompp::ode::ImplicitSteppersEnum::BDF2,T>::type;
   
   
 //-----------------------------------------------------------------
@@ -121,6 +143,17 @@ struct is_implicit_residual_standard_policy<
     >::type > : std::true_type{};
 
 
+template<template <typename...> class policy_t, typename... Args>
+using is_implicit_euler_residual_standard_policy =
+  typename is_implicit_residual_standard_policy<
+  ::rompp::ode::ImplicitSteppersEnum::Euler, policy_t<Args...>>::type;
+
+template<template <typename...> class policy_t, typename... Args>
+using is_implicit_bdf2_residual_standard_policy =
+  typename is_implicit_residual_standard_policy<
+  ::rompp::ode::ImplicitSteppersEnum::BDF2, policy_t<Args...>>::type;
+  
+
 //-----------------------------------------------------------------
 // METAF TO CHECK JACOBIAN POLICY IS STANDARD
 //-----------------------------------------------------------------  
@@ -150,6 +183,17 @@ struct is_implicit_jacobian_standard_policy<
 		 Args...>
 		 >::value
     >::type > : std::true_type{};
+
+
+template<template <typename...> class policy_t, typename... Args>
+using is_implicit_euler_jacobian_standard_policy =
+  typename is_implicit_jacobian_standard_policy<
+  ::rompp::ode::ImplicitSteppersEnum::Euler,policy_t<Args...>>::type;
+
+template<template <typename...> class policy_t, typename... Args>
+using is_implicit_bdf2_jacobian_standard_policy =
+  typename is_implicit_jacobian_standard_policy<
+  ::rompp::ode::ImplicitSteppersEnum::BDF2,policy_t<Args...>>::type;
   
   
   

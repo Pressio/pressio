@@ -31,8 +31,6 @@ class ImplicitEulerStepperImpl<state_type,
 			  residual_policy_type, jacobian_policy_type>{
 
   static_assert( meta::is_legitimate_implicit_euler_residual_policy<
-		 residual_policy_type>::value ||
-		 meta::is_implicit_euler_residual_standard_policy<
 		 residual_policy_type>::value,
 		 "IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE,\
 MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");

@@ -31,12 +31,12 @@ TEST(ode_implicit_bdf2, traits){
   using impl_t = typename stepper_t::base_t;
   using traits = ode::details::traits<impl_t>;
   
-  static_assert(ode::meta::is_implicit_bdf2_residual_standard_policy<
-  		typename traits::residual_policy_t>::value,
-  		"");
-  static_assert(ode::meta::is_implicit_bdf2_jacobian_standard_policy<
-  		typename traits::jacobian_policy_t>::value,
-  		"");
+  // static_assert(ode::meta::is_implicit_bdf2_residual_standard_policy<
+  // 		typename traits::residual_policy_t>::value,
+  // 		"");
+  // static_assert(ode::meta::is_implicit_bdf2_jacobian_standard_policy<
+  // 		typename traits::jacobian_policy_t>::value,
+  // 		"");
   
   ::testing::StaticAssertTypeEq<typename
   				traits::aux_stepper_t, aux_stepper_t>();

@@ -58,7 +58,7 @@ template <typename... Args>
 struct implicit_stepper_helper_info<ImplicitSteppersEnum::Euler, Args...>
   : implicit_stepper_helper_info_base<Args...>{
 
-  auto myenum = ImplicitSteppersEnum::Euler;  
+  // static constexpr ImplicitSteppersEnum myenum = ImplicitSteppersEnum::Euler;  
   using base_t = implicit_stepper_helper_info_base<Args...>;
   using state_type = typename base_t::state_type;
   using model_type = typename base_t::model_type;
@@ -100,6 +100,7 @@ template <typename... Args>
 struct implicit_stepper_helper_info<ImplicitSteppersEnum::BDF2, Args...>
   : implicit_stepper_helper_info_base<Args...>{
 
+  // static constexpr ImplicitSteppersEnum myenum = ImplicitSteppersEnum::BDF2;  
   using base_t = implicit_stepper_helper_info_base<Args...>;
   using state_type = typename base_t::state_type;
   using model_type = typename base_t::model_type;
