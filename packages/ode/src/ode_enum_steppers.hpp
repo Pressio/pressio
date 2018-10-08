@@ -12,7 +12,8 @@ enum class ExplicitSteppersEnum{Undefined,
 
 
 enum class ImplicitSteppersEnum{Undefined,
-				Euler
+				Euler,
+				BDF2
 };
   
 } // end namespace ode

@@ -15,7 +15,7 @@ class OdeStorage;
 //--------------------------------------------------
 
 template<typename state_type, typename rhs_type>
-class OdeStorage<state_type, rhs_type, 1>{
+class OdeStorage<state_type, rhs_type, 1, 0>{
 public:
   OdeStorage(state_type const & y0)
     : auxStates_{y0}{}
@@ -26,6 +26,18 @@ protected:
 };
 //--------------------------------------------------
 
+template<typename state_type, typename rhs_type>
+class OdeStorage<state_type, rhs_type, 2, 0>{
+public:
+  OdeStorage(state_type const & y0)
+    : auxStates_{y0, y0}{}
+  ~OdeStorage() = default;
+
+protected:
+  std::array<state_type, 2> auxStates_;
+};
+//--------------------------------------------------
+  
 template<typename state_type, typename rhs_type>
 class OdeStorage<state_type, rhs_type, 1, 4>{
 public:

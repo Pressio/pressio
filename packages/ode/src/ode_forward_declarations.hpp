@@ -28,6 +28,18 @@ template<typename state_type,
 	 typename enable = void>
 class ImplicitEulerJacobianStandardPolicy;
 
+template<typename state_type,
+	 typename model_type,
+	 typename residual_type = state_type,
+	 typename enable = void>
+class ImplicitBDF2ResidualStandardPolicy;
+
+template<typename state_type,
+	 typename model_type,
+	 typename jacobian_type,
+	 typename enable = void>
+class ImplicitBDF2JacobianStandardPolicy;
+  
 }//end namespace policy
 //-----------------------------------
 
@@ -60,6 +72,18 @@ template<typename ode_state_type,
 	 typename enable = void
 	 >
 class ImplicitEulerStepperImpl;
+
+template<typename ode_state_type,
+	 typename ode_residual_type,
+	 typename ode_jacobian_type,
+	 typename model_type,
+	 typename aux_stepper_type,
+	 typename residual_policy_type,
+	 typename jacobian_policy_type,
+	 typename enable = void
+	 >
+class ImplicitBDF2StepperImpl;
+
 }//end namespace impl
 //-----------------------------------
 
@@ -88,18 +112,6 @@ class ImplicitStepper;
 
 
 
-// template<typename state_type,
-//          typename residual_type,
-//          typename jacobian_type,
-//          typename scalar_type,
-//          typename model_type,
-// 	 typename solver_policy_type,
-// 	 typename aux_start_stepper_type,
-//          typename residual_policy_type,
-//          typename jacobian_policy_type,
-// 	 typename enable = void
-//          >
-// class implicitBDF2StepperImpl;
 
 // template<typename state_type,
 //          typename residual_type,

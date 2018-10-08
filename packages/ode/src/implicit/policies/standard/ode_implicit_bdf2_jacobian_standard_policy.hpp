@@ -1,6 +1,6 @@
 
-#ifndef ODE_POLICIES_STANDARD_IMPLICIT_EULER_JACOBIAN_STANDARD_POLICY_HPP_
-#define ODE_POLICIES_STANDARD_IMPLICIT_EULER_JACOBIAN_STANDARD_POLICY_HPP_
+#ifndef ODE_POLICIES_STANDARD_IMPLICIT_BDF2_JACOBIAN_STANDARD_POLICY_HPP_
+#define ODE_POLICIES_STANDARD_IMPLICIT_BDF2_JACOBIAN_STANDARD_POLICY_HPP_
 
 #include "../../../ode_forward_declarations.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
@@ -12,7 +12,7 @@ namespace rompp{ namespace ode{ namespace policy{
 template<typename state_type,
 	 typename model_type,
 	 typename jacobian_type>
-class ImplicitEulerJacobianStandardPolicy<
+class ImplicitBDF2JacobianStandardPolicy<
   state_type, model_type, jacobian_type, 
   core::meta::enable_if_t<
     core::meta::is_core_vector_wrapper<state_type>::value and 
@@ -24,16 +24,16 @@ class ImplicitEulerJacobianStandardPolicy<
 		 >::value
     >
   >
-  : public JacobianPolicyBase<ImplicitEulerJacobianStandardPolicy<
+  : public JacobianPolicyBase<ImplicitBDF2JacobianStandardPolicy<
     state_type, model_type, jacobian_type> >{
 
-  using this_t = ImplicitEulerJacobianStandardPolicy<state_type,
+  using this_t = ImplicitBDF2JacobianStandardPolicy<state_type,
 						     model_type,
 						     jacobian_type>;
   
 public:
-  ImplicitEulerJacobianStandardPolicy() = default;
-  ~ImplicitEulerJacobianStandardPolicy() = default;
+  ImplicitBDF2JacobianStandardPolicy() = default;
+  ~ImplicitBDF2JacobianStandardPolicy() = default;
 
 private:
   using scalar_type =
@@ -51,7 +51,7 @@ public:
     
     // first eval space jac
     model.jacobian( *y.data(), *J.data(), t);
-    ode::impl::implicit_euler_time_discrete_jacobian(J, dt);
+    ode::impl::implicit_bdf2_time_discrete_jacobian(J, dt);
   }
   //----------------------------------------------------------------
 
@@ -63,7 +63,7 @@ public:
     
     auto nJJ = model.jacobian(*y.data(), t);
     jacobian_type JJ(nJJ);
-    ode::impl::implicit_euler_time_discrete_jacobian(JJ, dt);
+    ode::impl::implicit_bdf2_time_discrete_jacobian(JJ, dt);
     return JJ;
   }
   //----------------------------------------------------------------
@@ -73,5 +73,6 @@ private:
 
 };//end class
 
+      
 }}}//end namespace rompp::ode::policy
 #endif 

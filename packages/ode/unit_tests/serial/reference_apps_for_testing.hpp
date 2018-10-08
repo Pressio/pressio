@@ -64,6 +64,11 @@ struct refAppForImpEigen{
     for a given time-step, dt, we have: 
        Euler backward yields: 
           y_n+1 = y_n/(1+10*dt)
+
+       BDF2 yields: 
+          num = (4/3) * y_n - (1/3) * y_n-2
+	  den = 1 + (20/3) * dt
+          y_n+1 = num/den
    */
   
   using scalar_type = double;
@@ -72,6 +77,7 @@ struct refAppForImpEigen{
   using jacobian_type = Eigen::SparseMatrix<double>;
 
   state_type y0;
+  state_type y_nm1;
 
 public:  
   refAppForImpEigen(){
@@ -120,12 +126,29 @@ public:
   void analyticAdvanceBackEulerNSteps(double dt, int n){
     double den = 1.0 + 10.*dt;
     for (int i=1; i!=n+1; i++){
+      y_nm1 = y0;
       y0[0] = y0[0]/den;
       y0[1] = y0[1]/den;
       y0[2] = y0[2]/den;
     }
   };
+  //--------------------------------------------
 
+  void analyticAdvanceBDF2NSteps(double dt, int n){
+    double den = 1.0 + (20./3.)*dt;
+    for (int i=1; i!=n+1; i++){
+      double num1 = (4./3.) * y0[0] - (1./3.) * y_nm1[0];
+      double num2 = (4./3.) * y0[1] - (1./3.) * y_nm1[1];
+      double num3 = (4./3.) * y0[2] - (1./3.) * y_nm1[2];
+	
+      y_nm1 = y0;      
+      y0[0] = num1/den;
+      y0[1] = num2/den;
+      y0[2] = num3/den;
+    }    
+  };
+  
+  
 };//end app refAppForImpEigen
 //************************************************
 //************************************************

@@ -7,35 +7,40 @@
 
 namespace rompp{ namespace ode{ namespace impl{
 
-template <typename jacobian_type,
-	  typename time_type,
-	  typename std::enable_if<
+template <typename jacobian_type, typename scalar_type,
+	  core::meta::enable_if_t<
 	    core::meta::is_eigen_sparse_matrix_wrapper<jacobian_type>::value
-	    >::type * = nullptr
+	    > * = nullptr
 	  >
 void implicit_euler_time_discrete_jacobian(jacobian_type & jac,
-					   time_type dt){
+					   scalar_type dt){
   
   jac.scale(-dt);
-  jac.addToDiagonal(static_cast<time_type>(1));
+  jac.addToDiagonal(static_cast<scalar_type>(1));
 }
-
-template <typename jacobian_type,
-	  typename time_type,
-	  typename std::enable_if<
-	    core::meta::is_eigen_dense_matrix_wrapper<jacobian_type>::value
-	    >::type * = nullptr
-	  >
-void implicit_euler_time_discrete_jacobian(jacobian_type & jac,
-					   time_type dt){
-  
-  jac.scale(-dt);
-  jac.addToDiagonal(static_cast<time_type>(1));
-}
+//---------------------------------------------------------------
 
       
+template <typename jacobian_type, typename scalar_type,
+	  core::meta::enable_if_t<
+	    core::meta::is_eigen_sparse_matrix_wrapper<jacobian_type>::value
+	    > * = nullptr
+	  >
+void implicit_bdf2_time_discrete_jacobian(jacobian_type & jac,
+					   scalar_type dt){
+
+  constexpr scalar_type c3 = static_cast<scalar_type>(2.)/3.;
+  
+  jac.scale(-c3*dt);
+  jac.addToDiagonal(static_cast<scalar_type>(1));
+}
+      
+
+
+//--------------------------------------------
 //need to add also other overloads  
+//--------------------------------------------
 
-      
+
 }}}//end namespace rompp::ode::impl
 #endif 

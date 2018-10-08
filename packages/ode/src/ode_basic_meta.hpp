@@ -23,7 +23,6 @@ template <typename T>
 using has_scalar_typedef = typename T::scalar_type;
       
 
-
 //---------------------------------------------------------------
 template<typename state_type, typename enable = void>
 struct is_legitimate_explicit_state_type : std::false_type{};
@@ -229,7 +228,6 @@ struct model_has_needed_jacobian_methods<
   > : std::true_type{};
 
 //------------------------------------------------------
-
       
 template<typename model_type,
 	 typename enable = void>
@@ -251,11 +249,24 @@ struct is_legitimate_model_for_implicit_ode<
    model_has_needed_residual_methods<model_type>::value
   >::type
   > : std::true_type{};
-      
+
+
+//------------------------------------------------------
+
+// for now, just leave Backward Euler as the legitimate stepper
+template<typename T,
+	 typename enable = void>
+struct is_legitimate_auxiliary_stepper : std::false_type{};
+
+template<typename T>
+struct is_legitimate_auxiliary_stepper<T,
+  typename std::enable_if<
+    ::rompp::ode::details::traits<typename T::base_t>::enum_id ==
+    ::rompp::ode::ImplicitSteppersEnum::Euler
+    >::type
+  > : std::true_type{};
       
       
  
-} // namespace meta
-} // namespace ode
-} //end namespace rompp
+}}} // namespace rompp::ode::meta
 #endif

@@ -34,11 +34,13 @@ class ImplicitEulerStepperImpl<state_type,
 		 residual_policy_type>::value ||
 		 meta::is_implicit_euler_residual_standard_policy<
 		 residual_policy_type>::value,
-"IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
+		 "IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE,\
+MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
 
   static_assert( meta::is_legitimate_implicit_euler_jacobian_policy<
 		 jacobian_policy_type>::value,
-"IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
+		 "IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, \
+MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
   
   using stepper_t = ImplicitEulerStepperImpl<state_type,
 					     residual_type,
@@ -70,18 +72,16 @@ protected:
   template < typename M = model_type,
 	     typename U = residual_policy_type,
 	     typename T = jacobian_policy_type,
-	     typename T3 = state_type,
-	     typename... Args>
-  ImplicitEulerStepperImpl(M & model,
-			   U & res_policy_obj,
-			   T & jac_policy_obj,
-			   T3 const & y0, 
-			   Args&& ... rest)
-    : storage_base_t(y0 /*,std::forward<Args>(rest)...*/),
+	     typename T3 = state_type>
+  ImplicitEulerStepperImpl(const M & model,
+			   const U & res_policy_obj,
+			   const T & jac_policy_obj,
+			   const T3 & y0)
+    : storage_base_t(y0),
       auxdata_base_t(model, res_policy_obj, jac_policy_obj){} 
   
   ImplicitEulerStepperImpl() = delete;
-  ~ImplicitEulerStepperImpl() = default;
+  virtual ~ImplicitEulerStepperImpl(){};
   
 public:
   template<typename solver_type, typename step_t>
