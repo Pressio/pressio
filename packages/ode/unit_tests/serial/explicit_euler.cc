@@ -8,11 +8,16 @@
 TEST(ode_explicit_euler, traits){
   using namespace rompp;
   
-  using app_t = ode::testing::fakeAppForTraits;
+  using app_t = ode::testing::fakeAppForTraitsForExp;
   using nstate_t = typename app_t::state_type;
   using nres_t = typename app_t::residual_type;
   using state_t = core::Vector<nstate_t>;
   using res_t = core::Vector<nres_t>;
+
+  static_assert(
+    ode::meta::is_legitimate_model_for_explicit_ode<app_t>::value, "");
+  static_assert(
+   not ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
   
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitSteppersEnum::Euler, state_t, res_t, app_t>;
@@ -21,9 +26,7 @@ TEST(ode_explicit_euler, traits){
   using traits = ode::details::traits<impl_t>;
   
   static_assert(ode::meta::is_explicit_euler_residual_standard_policy<
-  		typename traits::residual_policy_t>::value,
-  		"");
-  
+  		typename traits::residual_policy_t>::value, "");
   ::testing::StaticAssertTypeEq<typename
   				traits::state_t, state_t>();
   ::testing::StaticAssertTypeEq<typename
@@ -61,7 +64,7 @@ TEST(ode_explicit_euler, numerics){
   EXPECT_DOUBLE_EQ( y[0], 1.1);
   EXPECT_DOUBLE_EQ( y[1], 2.2);
   EXPECT_DOUBLE_EQ( y[2], 3.3);
-  //  std::cout << std::setprecision(14) << *y.data();
+  std::cout << std::setprecision(14) << *y.data();
 
   // integrate in time 
   ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
@@ -69,6 +72,3 @@ TEST(ode_explicit_euler, numerics){
   EXPECT_DOUBLE_EQ( y[1], 2.42);
   EXPECT_DOUBLE_EQ( y[2], 3.63);
 }
-
-
-

@@ -2,11 +2,9 @@
 #ifndef ODE_RESIDUAL_IMPL_HPP_
 #define ODE_RESIDUAL_IMPL_HPP_
 
-#include "ode_ConfigDefs.hpp"
+#include "../ode_ConfigDefs.hpp"
 
-namespace rompp{
-namespace ode{
-namespace impl{
+namespace rompp{ namespace ode{ namespace impl{
 
 template<typename state_type, typename time_type>
 void implicit_euler_time_discrete_residual(const state_type & yn,
@@ -21,6 +19,14 @@ void implicit_euler_time_discrete_residual(const state_type & yn,
   //   R[i] = yn[i] - ynm1[i] - dt*R[i];
   // }
 }
+//-------------------------------------------------------
+
+}}}//end namespace rompp::ode::impl
+#endif 
+
+
+
+
 
 
 // template<typename state_type,
@@ -46,10 +52,3 @@ void implicit_euler_time_discrete_residual(const state_type & yn,
 //   // std::cout << "\ndoImpl res euler " << std::endl;
 //   // std::cout << *R.data();
 // }
-
-
-}//end namespace impl
-}//end namespace ode
-}//end namespace rompp
-#endif 
-

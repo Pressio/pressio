@@ -61,13 +61,13 @@ struct is_implicit_euler_residual_standard_policy<
 // METAF TO CHECK JACOBIAN POLICY IS STANDARD
 //-----------------------------------------------------------------
 template<typename policy_t, typename enable = void>
-struct is_implicit_euler_jacobian_standard_oolicy
+struct is_implicit_euler_jacobian_standard_policy
   : std::false_type{};
 
   
 template <template <typename...> class policy_t,
   	  typename... Args>
-struct is_implicit_euler_jacobian_standard_oolicy<
+struct is_implicit_euler_jacobian_standard_policy<
   policy_t<Args...>,
   typename std::enable_if<
     std::is_same<policy_t<Args...>,

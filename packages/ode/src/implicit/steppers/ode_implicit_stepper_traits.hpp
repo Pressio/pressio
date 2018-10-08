@@ -4,9 +4,7 @@
 
 #include "../../ode_forward_declarations.hpp"
 
-namespace rompp{
-namespace ode{
-namespace details{
+namespace rompp{ namespace ode{ namespace details{
   
 template<typename state_type,
 	 typename residual_type,
@@ -16,7 +14,6 @@ template<typename state_type,
 	 typename jacobian_policy_type>
 struct traits< impl::ImplicitEulerStepperImpl<
 		 state_type, residual_type, jacobian_type,
-		 typename core::details::traits<state_type>::scalar_t,
 		 model_type, residual_policy_type,
 		 jacobian_policy_type>>
 {
@@ -25,7 +22,6 @@ struct traits< impl::ImplicitEulerStepperImpl<
     impl::ImplicitEulerStepperImpl<state_type,
 				   residual_type,
 				   jacobian_type,
-	     typename core::details::traits<state_type>::scalar_t,
 				   model_type,
 				   residual_policy_type,
 				   jacobian_policy_type>;
@@ -49,9 +45,7 @@ struct traits< impl::ImplicitEulerStepperImpl<
 ////////////////////////////////////////////////////////
 
   
-}//end namespace details
-}//end namespace ode
-}//end namespace rompp
+}}}//end namespace rompp::ode::details
 #endif
 
 

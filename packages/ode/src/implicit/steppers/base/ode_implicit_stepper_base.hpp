@@ -4,7 +4,7 @@
 
 #include "../ode_implicit_stepper_traits.hpp"
 #include "../../../ode_basic_meta.hpp"
-#include "../../../policies/meta/ode_implicit_policies_meta.hpp"
+#include "../../policies/meta/ode_implicit_policies_meta.hpp"
 #include "../../../ode_storage.hpp"
 #include "../../../ode_aux_data.hpp"
 
@@ -44,25 +44,25 @@ public:
 
   template <typename solver_type,
 	    typename step_t>
-  void doStep(state_t & y, sc_t t,
-	      sc_t dt, step_t step,
-	      solver_type & solver){
+  void operator()(state_t & y, sc_t t,
+		  sc_t dt, step_t step,
+		  solver_type & solver){
     this->underlying().doStepImpl( y, t, dt, step, solver);
   }
 
-  void residual(const state_t & y, residual_t & R){
+  void residual(const state_t & y, residual_t & R)const{
     this->underlying().residualImpl(y, R);
   }
 
-  void jacobian(const state_t & y, jacobian_t & J){
+  void jacobian(const state_t & y, jacobian_t & J)const{
     this->underlying().jacobianImpl(y, J);
   }
 
-  residual_t residual(const state_t & y){
+  residual_t residual(const state_t & y)const{
     return this->underlying().residualImpl(y);
   }
 
-  jacobian_t jacobian(const state_t & y){
+  jacobian_t jacobian(const state_t & y)const{
     return this->underlying().jacobianImpl(y);
   }
   

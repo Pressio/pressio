@@ -34,14 +34,20 @@ FILE(GLOB ode_exp_steppers_common_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 #-------------------------
 # IMPLICIT 
 #-------------------------
-# FILE(GLOB ode_exp_policies_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/explicit/policies/*.hpp")
-# FILE(GLOB ode_exp_steppers_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/explicit/steppers/base/*.hpp")
-# FILE(GLOB ode_exp_steppers_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/explicit/steppers/impl/*.hpp")
-# FILE(GLOB ode_exp_steppers_common_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/explicit/steppers/*.hpp")
+FILE(GLOB ode_imp_comm_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/*.hpp")
+FILE(GLOB ode_imp_policies_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/base/*.hpp")
+FILE(GLOB ode_imp_policies_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/meta/*.hpp")
+FILE(GLOB ode_imp_policies_std_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/standard/*.hpp")
+FILE(GLOB ode_imp_steppers_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/base/*.hpp")
+FILE(GLOB ode_imp_steppers_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/impl/*.hpp")
+FILE(GLOB ode_imp_steppers_common_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/*.hpp")
 
 
 
@@ -68,6 +74,21 @@ FILE(GLOB ode_exp_steppers_impl_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB ode_exp_steppers_common_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
    "${CMAKE_CURRENT_SOURCE_DIR}/explicit/steppers/src/*.cc")
 
+FILE(GLOB ode_imp_comm_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/src/*.hpp")
+FILE(GLOB ode_imp_policies_base_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/base/src/*.hpp")
+FILE(GLOB ode_imp_policies_meta_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/meta/src/*.hpp")
+FILE(GLOB ode_imp_policies_std_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/standard/src/*.hpp")
+FILE(GLOB ode_imp_steppers_base_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/base/src/*.hpp")
+FILE(GLOB ode_imp_steppers_impl_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/impl/src/*.hpp")
+FILE(GLOB ode_imp_steppers_common_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/src/*.hpp")
+
 
 SET(SOURCES
   ${ode_general_SRCS}
@@ -77,6 +98,14 @@ SET(SOURCES
   ${ode_exp_steppers_base_SRCS}
   ${ode_exp_steppers_impl_SRCS}
   ${ode_exp_steppers_common_SRCS}
+  #
+  ${ode_imp_comm_SRCS}
+  ${ode_imp_policies_base_SRCS}
+  ${ode_imp_policies_meta_SRCS}
+  ${ode_imp_policies_std_SRCS}
+  ${ode_imp_steppers_base_SRCS}
+  ${ode_imp_steppers_impl_SRCS}
+  ${ode_imp_steppers_common_SRCS}
 )
 
 #--------------------------------------
@@ -104,6 +133,14 @@ INSTALL(FILES ${ode_exp_policies_HEADERS} DESTINATION ${ODE_INCDIR}/explicit/pol
 INSTALL(FILES ${ode_exp_steppers_base_HEADERS} DESTINATION ${ODE_INCDIR}/explicit/steppers/base)
 INSTALL(FILES ${ode_exp_steppers_impl_HEADERS} DESTINATION ${ODE_INCDIR}/explicit/steppers/impl)
 INSTALL(FILES ${ode_exp_steppers_common_HEADERS} DESTINATION ${ODE_INCDIR}/explicit/steppers)
+#
+INSTALL(FILES ${ode_imp_comm_HEADERS} DESTINATION ${ODE_INCDIR}/implicit)
+INSTALL(FILES ${ode_imp_policies_base_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/policies/base)
+INSTALL(FILES ${ode_imp_policies_meta_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/policies/meta)
+INSTALL(FILES ${ode_imp_policies_std_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/policies/standard)
+INSTALL(FILES ${ode_imp_steppers_base_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/steppers/base)
+INSTALL(FILES ${ode_imp_steppers_impl_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/steppers/impl)
+INSTALL(FILES ${ode_imp_steppers_common_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/steppers)
 
 
 #----------------------------------------------------------------

@@ -2,7 +2,7 @@
 #ifndef ODE_POLICIES_BASE_IMPLICIT_RESIDUAL_POLICY_BASE_HPP_
 #define ODE_POLICIES_BASE_IMPLICIT_RESIDUAL_POLICY_BASE_HPP_
 
-#include "../../ode_ConfigDefs.hpp"
+#include "../../../ode_ConfigDefs.hpp"
 
 namespace rompp{ namespace ode{ namespace policy{
   
@@ -20,11 +20,11 @@ public:
 	    int T = numAuxRHS,
   	    typename std::enable_if<T==0>::type * = nullptr>
   void operator()(const state_type & y,
-  	      residual_type & R,
-  	      const std::array<state_type, numAuxStates> & auxYs,
-  	      model_type & model,
-  	      scalar_type t,
-  	      scalar_type dt){
+		  residual_type & R,
+		  const std::array<state_type, numAuxStates> & auxYs,
+		  const model_type & model,
+		  scalar_type t,
+		  scalar_type dt)const {
     this->underlying()(y, R, auxYs, model, t, dt);
   }
   //-----------------------------------------------------
@@ -36,13 +36,36 @@ public:
 	    int T = numAuxRHS,
   	    typename std::enable_if<T==0>::type * = nullptr>
   auto operator()(const state_type & y,
-  	      const std::array<state_type, numAuxStates> & auxYs,
-  	      model_type & model,
-  	      scalar_type t,
-  	      scalar_type dt){
+		  const std::array<state_type, numAuxStates> & auxYs,
+		  const model_type & model,
+		  scalar_type t,
+		  scalar_type dt)const {
     return this->underlying()(y, auxYs, model, t, dt);
   }
   //-----------------------------------------------------
+  
+private:
+  friend derived_t;
+  friend core::details::CrtpBase<
+    ImplicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS>>;
+  
+  ImplicitResidualPolicyBase() = default;
+  ~ImplicitResidualPolicyBase() = default;
+  
+};//end class
+
+  
+}}}//end namespace rompp::ode::policy
+#endif
+
+
+
+
+
+
+
+
+
 
 
   //-----------------------------------------------------
@@ -66,19 +89,3 @@ public:
   //   this->underlying()(y, R, auxYs, auxRHSs, model, t, dt);
   // }
   //-----------------------------------------------------
-  
-private:
-  friend derived_t;
-  friend core::details::CrtpBase<
-    ImplicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS>>;
-  
-  ImplicitResidualPolicyBase() = default;
-  ~ImplicitResidualPolicyBase() = default;
-  
-};//end class
-
-  
-}//end namespace polices
-}//end namespace ode  
-}//end namespace rompp
-#endif

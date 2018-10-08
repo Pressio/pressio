@@ -102,7 +102,7 @@ protected:
   void evalRHS(const ode_state_type & y,
 	       ode_residual_type & RHS,
 	       scalar_type t){
-    (*residual_obj_)(y, auxRHS_[0], t);
+    (*residual_obj_)(y, RHS, t);
   }
   //-------------------------------------------------------
   
@@ -113,7 +113,7 @@ protected:
   void evalRHS(const ode_state_type & y,
 	       ode_residual_type & RHS,
 	       scalar_type t){
-    (*residual_obj_)(y, auxRHS_[0], *model_, t);
+    (*residual_obj_)(y, RHS, *model_, t);
   }
   //----------------------------------------------------------------
   

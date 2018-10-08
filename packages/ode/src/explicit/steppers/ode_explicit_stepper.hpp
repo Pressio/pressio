@@ -9,7 +9,8 @@ namespace rompp{ namespace ode{
       
 template<ExplicitSteppersEnum whichone, typename... Args>
 class ExplicitStepper
-  : public impl::stepper_helper_info<whichone, Args...>::base_impl_type{
+  : public impl::stepper_helper_info<whichone,
+				     Args...>::base_impl_type{
 
   using info_t = impl::stepper_helper_info<whichone, Args...>;
   using state_t = typename info_t::state_type;

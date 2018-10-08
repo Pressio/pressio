@@ -124,7 +124,7 @@ void integrateNSteps(stepper_type & stepper,
   for( ; step <= num_steps ; ++step)
   {
     // do one step
-    stepper.doStep(yIn, time, dt, step, solver);
+    stepper(yIn, time, dt, step, solver);
     // advance time
     time = start_time + static_cast<time_type>(step) * dt;  
     // call collector/observer 
@@ -157,7 +157,7 @@ void integrateNSteps(stepper_type & stepper,
   for( ; step <= num_steps ; ++step)
   {
     // do one step
-    stepper.doStep(yIn, time, dt, step, solver);
+    stepper(yIn, time, dt, step, solver);
     // advance time
     time = start_time + static_cast<time_type>(step) * dt;  
   }

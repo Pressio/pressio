@@ -42,8 +42,6 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
   using scalar_t2  = typename core::details::traits<ode_residual_type>::scalar_t;
   static_assert(std::is_same<scalar_type, scalar_t2>::value,
 		"Not maching scalar types");
-
-  //  using add_op_t = std::plus<scalar_type>;
   
 protected:
   using storage_base_t::auxStates_;

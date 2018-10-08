@@ -39,7 +39,7 @@ public:
       R.matchLayoutWith(y);
 
     R.setZero();
-    model.residual(*y.data(), *R.data(), t);
+    model.residual(*y.data(), *R.data(), t);    
   }
   //----------------------------------------------
   
@@ -50,7 +50,5 @@ private:
 
 };//end class
 
-}//end namespace polices
-}//end namespace ode  
-}//end namespace rompp
+}}}//end namespace rompp::ode::policy
 #endif 

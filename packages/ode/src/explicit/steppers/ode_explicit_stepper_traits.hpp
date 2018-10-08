@@ -4,22 +4,20 @@
 
 #include "../../ode_forward_declarations.hpp"
 
-namespace rompp{
-namespace ode{
-namespace details{
+namespace rompp{ namespace ode{ namespace details{
 
-template<typename state_type,
+template<typename ode_state_type,
 	 typename model_type,
 	 typename ode_residual_type,
 	 typename residual_policy_type
 	 >
 struct traits<impl::ExplicitEulerStepperImpl<
-		state_type, model_type, ode_residual_type,
-		residual_policy_type>>{
+		ode_state_type, model_type,
+		ode_residual_type, residual_policy_type>>{
   
-  using state_t =  state_type;
+  using state_t =  ode_state_type;
   using residual_t = ode_residual_type;
-  using scalar_t = typename core::details::traits<state_type>::scalar_t;
+  using scalar_t = typename core::details::traits<ode_state_type>::scalar_t;
   using model_t = model_type;
   using residual_policy_t = residual_policy_type;
 
@@ -34,18 +32,18 @@ struct traits<impl::ExplicitEulerStepperImpl<
 /////////////////////////////////////////////////////////
 
 
-template<typename state_type,
+template<typename ode_state_type,
 	 typename model_type,
 	 typename ode_residual_type,
 	 typename residual_policy_type>
 struct traits<impl::ExplicitRungeKutta4StepperImpl<
-		state_type, model_type, ode_residual_type,
+		ode_state_type, model_type, ode_residual_type,
 		residual_policy_type>
-	      >
-{
-  using state_t =  state_type;
+	      >{
+  
+  using state_t =  ode_state_type;
   using residual_t = ode_residual_type;
-  using scalar_t = typename core::details::traits<state_type>::scalar_t;
+  using scalar_t = typename core::details::traits<ode_state_type>::scalar_t;
   using model_t = model_type;
   using residual_policy_t = residual_policy_type;
   //  using butcher_table_t = butcher_table_type;
@@ -58,7 +56,5 @@ struct traits<impl::ExplicitRungeKutta4StepperImpl<
 };
 
   
-}//end namespace details
-}//end namespace ode
-}//end namespace rompp
+}}}//end namespace rompp::ode::details
 #endif

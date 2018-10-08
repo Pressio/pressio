@@ -2,7 +2,7 @@
 #ifndef ODE_POLICIES_BASE_JACOBIAN_POLICY_BASE_HPP_
 #define ODE_POLICIES_BASE_JACOBIAN_POLICY_BASE_HPP_
 
-#include "../../ode_ConfigDefs.hpp"
+#include "../../../ode_ConfigDefs.hpp"
 
 namespace rompp{ namespace ode{ namespace policy{
 
@@ -21,9 +21,9 @@ public:
 	    typename scalar_type>
   void operator()(const state_type & y, 
 		  jacobian_type & J,
-		  model_type & model, 
+		  const model_type & model, 
 		  scalar_type t,
-		  scalar_type dt){
+		  scalar_type dt)const {
     this->underlying()(y, J, model, t, dt);
   } 
   //----------------------------------------
@@ -33,9 +33,9 @@ public:
 	    typename model_type,
 	    typename scalar_type>
   auto operator()(const state_type & y,
-		  model_type & model, 
+		  const model_type & model, 
 		  scalar_type t,
-		  scalar_type dt){
+		  scalar_type dt)const {
     return this->underlying()(y, model, t, dt);
   } 
   //------------------------------------------

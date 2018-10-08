@@ -3,57 +3,50 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPL_IMPLICIT_EULER_STEPPER_IMPL_HPP_
 
 #include "../base/ode_implicit_stepper_base.hpp"
-#include "../../../policies/meta/ode_implicit_euler_policies_meta.hpp"
+#include "../../policies/meta/ode_implicit_euler_policies_meta.hpp"
 
-namespace rompp{
-namespace ode{
-namespace impl{
+namespace rompp{ namespace ode{ namespace impl{
 
 template<typename state_type,
 	 typename residual_type,
 	 typename jacobian_type,
-	 typename scalar_type,
 	 typename model_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
 class ImplicitEulerStepperImpl<state_type,
 			       residual_type,
 			       jacobian_type,
-			       scalar_type,
 			       model_type,
 			       residual_policy_type,
 			       jacobian_policy_type>
   : public ImplicitStepperBase<
 	    ImplicitEulerStepperImpl<state_type, residual_type,
-				     jacobian_type, scalar_type,
+				     jacobian_type, 
 				     model_type, 
 				     residual_policy_type,
 				     jacobian_policy_type> >,
     private OdeStorage<state_type, residual_type, 1>,
-    private ImpOdeAuxData<model_type, scalar_type,
-			  residual_policy_type,
-			  jacobian_policy_type>  
-{
+    private ImpOdeAuxData<model_type,
+			  typename core::details::traits<state_type>::scalar_t,
+			  residual_policy_type, jacobian_policy_type>{
 
   static_assert( meta::is_legitimate_implicit_euler_residual_policy<
 		 residual_policy_type>::value ||
 		 meta::is_implicit_euler_residual_standard_policy<
 		 residual_policy_type>::value,
-		 "IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, \
-MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
+"IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
 
   static_assert( meta::is_legitimate_implicit_euler_jacobian_policy<
 		 jacobian_policy_type>::value,
-		 "IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, \
-MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
+"IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
   
   using stepper_t = ImplicitEulerStepperImpl<state_type,
 					     residual_type,
 					     jacobian_type,
-					     scalar_type,
 					     model_type,
 					     residual_policy_type,
 					     jacobian_policy_type>;
+  using scalar_type  = typename core::details::traits<state_type>::scalar_t;
   using stepper_base_t = ImplicitStepperBase<stepper_t>;
   using storage_base_t = OdeStorage<state_type, residual_type, 1>;
   using auxdata_base_t = ImpOdeAuxData<model_type, scalar_type,
@@ -90,12 +83,12 @@ protected:
   ImplicitEulerStepperImpl() = delete;
   ~ImplicitEulerStepperImpl() = default;
   
-protected:
+public:
   template<typename solver_type, typename step_t>
-  void doStepImpl(state_type & y, scalar_type t,
+  void operator()(state_type & y, scalar_type t,
 		  scalar_type dt, step_t step,
-		  solver_type & solver)
-  {
+		  solver_type & solver){
+    
     dt_ = dt;
     t_ = t;
     // store previous state = y;
@@ -104,23 +97,25 @@ protected:
   }//end doStepImpl
   //--------------------------------------------------------
 
-  void residualImpl(const state_type & y, residual_type & R){
-    residual_obj_->compute(y, R, auxStates_, *model_, t_, dt_);
+protected:
+  
+  void residualImpl(const state_type & y, residual_type & R)const{
+    (*residual_obj_)(y, R, auxStates_, *model_, t_, dt_);
   }
   //--------------------------------------------------------
 
-  void jacobianImpl(const state_type & y, jacobian_type & J){
-    jacobian_obj_->compute(y, J, *model_, t_, dt_);
+  void jacobianImpl(const state_type & y, jacobian_type & J)const{
+    (*jacobian_obj_)(y, J, *model_, t_, dt_);
   }
   //--------------------------------------------------------
 
-  residual_type residualImpl(const state_type & y){
-    return residual_obj_->compute(y, auxStates_, *model_, t_, dt_);
+  residual_type residualImpl(const state_type & y)const{
+    return (*residual_obj_)(y, auxStates_, *model_, t_, dt_);
   }
   //--------------------------------------------------------
 
-  jacobian_type jacobianImpl(const state_type & y){
-    return jacobian_obj_->compute(y, *model_, t_, dt_);
+  jacobian_type jacobianImpl(const state_type & y)const{
+    return (*jacobian_obj_)(y, *model_, t_, dt_);
   }
   //--------------------------------------------------------
   
@@ -129,7 +124,5 @@ private:
 
 }; //end class
 
-}//end namespace impl
-}//end namespace ode  
-}//end namespace rompp
+}}}//end namespace rompp::ode::impl
 #endif 
