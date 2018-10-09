@@ -3,11 +3,13 @@
 #define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_HELPER_INFO_HPP_
 
 #include "../../ode_basic_meta.hpp"
-#include "../policies/meta/ode_implicit_policies_meta.hpp"
-#include "../policies/meta/ode_implicit_euler_policies_meta.hpp"
+#include "../../ode_is_legitimate_model_for_implicit_ode.hpp"
+
+#include "../policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
+#include "../policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
+
 #include "../policies/standard/ode_implicit_euler_residual_standard_policy.hpp"
 #include "../policies/standard/ode_implicit_euler_jacobian_standard_policy.hpp"
-#include "../policies/meta/ode_implicit_bdf2_policies_meta.hpp"
 #include "../policies/standard/ode_implicit_bdf2_residual_standard_policy.hpp"
 #include "../policies/standard/ode_implicit_bdf2_jacobian_standard_policy.hpp"
 

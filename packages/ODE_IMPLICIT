@@ -9,8 +9,12 @@
 
 #include "ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
-#include "ode/src/implicit/policies/meta/ode_implicit_euler_policies_meta.hpp"
-#include "ode/src/implicit/policies/meta/ode_implicit_policies_meta.hpp"
+
+#include "ode/src/implicit/policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
+#include "ode/src/implicit/policies/meta/ode_is_implicit_residual_standard_policy.hpp"
+#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
+#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
+
 #include "ode/src/implicit/policies/standard/ode_implicit_euler_residual_standard_policy.hpp"
 #include "ode/src/implicit/policies/standard/ode_implicit_euler_jacobian_standard_policy.hpp"
 #include "ode/src/implicit/policies/standard/ode_implicit_bdf2_residual_standard_policy.hpp"

@@ -100,7 +100,7 @@ TEST(ode_implicit_euler, numerics){
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
   appObj.analyticAdvanceBDF2NSteps(dt, 1);
   std::cout << std::setprecision(14) << appObj.y0 << "\n";
-  // EXPECT_DOUBLE_EQ(y[0], appObj.y0[0]);
-  // EXPECT_DOUBLE_EQ(y[1], appObj.y0[1]);
-  // EXPECT_DOUBLE_EQ(y[2], appObj.y0[2]);
+  EXPECT_DOUBLE_EQ(y[0], appObj.y0[0]);
+  EXPECT_DOUBLE_EQ(y[1], appObj.y0[1]);
+  EXPECT_DOUBLE_EQ(y[2], appObj.y0[2]);
 }

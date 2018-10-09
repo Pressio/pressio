@@ -4,12 +4,14 @@
 
 #include "../ode_implicit_stepper_traits.hpp"
 #include "../../../ode_basic_meta.hpp"
-#include "../../policies/meta/ode_implicit_policies_meta.hpp"
+#include "../../policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
+#include "../../policies/meta/ode_is_implicit_residual_standard_policy.hpp"
+#include "../../policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
+#include "../../policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
 #include "../../../ode_storage.hpp"
 #include "../../../ode_aux_data.hpp"
 
-namespace rompp{
-namespace ode{
+namespace rompp{ namespace ode{
 
 template<typename stepper_type>
 class ImplicitStepperBase
@@ -77,6 +79,5 @@ private:
 
 };//end class
 
-}//end namespace  
-}//end namespace rompp
+}}//end namespace rompp::ode
 #endif

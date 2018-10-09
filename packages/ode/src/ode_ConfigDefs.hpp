@@ -14,13 +14,10 @@
 
 #include "ode_enum_steppers.hpp"
 
-namespace rompp{ namespace ode{
+namespace rompp{ namespace ode{ namespace details {
 
-namespace details {
-  template<typename T, typename enable = void>
-  struct traits : core::details::traits<T> {};  
-}// end namespace details
+template<typename T, typename enable = void> struct traits{};
+template<typename T>  struct traits<const T> : traits<T> {};
 
-} // end ode
-}//end namespace rompp
+}}}// end namespace rompp::ode::details
 #endif

@@ -3,7 +3,7 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPL_IMPLICIT_EULER_STEPPER_IMPL_HPP_
 
 #include "../base/ode_implicit_stepper_base.hpp"
-#include "../../policies/meta/ode_implicit_euler_policies_meta.hpp"
+// #include "../../policies/meta/ode_implicit_euler_policies_meta.hpp"
 
 namespace rompp{ namespace ode{ namespace impl{
 

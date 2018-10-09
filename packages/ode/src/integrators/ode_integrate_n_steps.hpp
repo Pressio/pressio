@@ -4,6 +4,7 @@
 
 #include "../ode_ConfigDefs.hpp"
 #include "../ode_basic_meta.hpp"
+#include "../ode_is_legitimate_collector.hpp"
 
 namespace rompp{
 namespace ode{

@@ -8,8 +8,7 @@
 #include "../../../ode_aux_data.hpp"
 #include "../../../ode_basic_meta.hpp"
 
-namespace rompp{
-namespace ode{
+namespace rompp{ namespace ode{
 
 template<typename stepper_type>
 class ExplicitStepperBase
@@ -58,6 +57,5 @@ private:
   
 };//end class
 
-}//end namespace
-}//end namespace rompp
+}}//end namespace rompp::ode
 #endif
