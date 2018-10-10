@@ -4,10 +4,9 @@
 #define CORE_MULTIVECTOR_CONCRETE_MULTIVECTOR_DISTRIBUTED_EPETRA_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
-#include "../base/core_multi_vector_distributed_base.hpp"
-#include "../base/core_multi_vector_math_base.hpp"
 #include "../../shared_base/core_container_distributed_mpi_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
+#include "../base/core_multi_vector_distributed_base.hpp"
 
 namespace rompp{
 namespace core{
@@ -22,7 +21,6 @@ class MultiVector<wrapped_type,
      >
   : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
     public MultiVectorDistributedBase< MultiVector<wrapped_type> >,
-    public MultiVectorMathBase< MultiVector<wrapped_type> >,
     public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>, 
               typename details::traits<MultiVector<wrapped_type>>::data_map_t >, 
     public ContainerDistributedMpiBase< MultiVector<wrapped_type>, 
@@ -134,7 +132,6 @@ private:
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend MultiVectorDistributedBase< this_t >;
-  friend MultiVectorMathBase< this_t >;
   friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
   friend ContainerDistributedTrilinosBase< this_t, map_t >;
   

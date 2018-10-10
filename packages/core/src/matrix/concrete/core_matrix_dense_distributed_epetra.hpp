@@ -12,8 +12,7 @@
 #include "../base/core_matrix_dense_distributed_base.hpp"
 #include "../base/core_matrix_base.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,

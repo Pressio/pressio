@@ -10,7 +10,6 @@
 #include "../base/core_matrix_sparse_base.hpp"
 #include "../base/core_matrix_sharedmem_base.hpp"
 #include "../base/core_matrix_sparse_sharedmem_base.hpp"
-#include "../base/core_matrix_math_base.hpp"
 
 namespace rompp{
 namespace core{
@@ -26,7 +25,6 @@ class Matrix<wrapped_type,
     public MatrixSparseBase< Matrix<wrapped_type> >,
     public MatrixSharedMemBase< Matrix<wrapped_type> >,
     public MatrixSparseSharedMemBase< Matrix<wrapped_type> >,
-    public MatrixMathBase< Matrix<wrapped_type> >,
     public ContainerResizableBase<Matrix<wrapped_type>, 2>
 {
 
@@ -184,7 +182,6 @@ private:
   friend MatrixSparseBase< derived_t >;
   friend MatrixSharedMemBase< derived_t >;
   friend MatrixSparseSharedMemBase< derived_t >;
-  friend MatrixMathBase< derived_t >;
   friend ContainerResizableBase<derived_t, 2>;
 
 private:

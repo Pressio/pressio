@@ -26,6 +26,15 @@ public:
   bool empty() const {
     return this->underlying().emptyImpl();}
 
+  template <typename T,
+        core::meta::enable_if_t<
+        std::is_same<T, 
+        typename core::details::traits<derived_type>::scalar_t
+        >::value> * = nullptr>
+  void scale(T value) {
+    this->underlying().scaleImpl(value);
+  }
+
   void setZero() {
     this->underlying().setZeroImpl();}
 

@@ -7,7 +7,6 @@
 #include "core/src/multi_vector/core_multi_vector_traits.hpp"
 #include "core/src/multi_vector/core_multi_vector_meta.hpp"
 
-#include "core/src/multi_vector/base/core_multi_vector_math_base.hpp"
 #include "core/src/multi_vector/base/core_multi_vector_sharedmem_base.hpp"
 #include "core/src/multi_vector/base/core_multi_vector_distributed_base.hpp"
 

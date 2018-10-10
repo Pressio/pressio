@@ -4,8 +4,7 @@
 
 #include "../core_matrix_traits.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
     
 template<typename derived_type>
 class MatrixBase
@@ -17,13 +16,24 @@ class MatrixBase
 
 public:
   void setIdentity(){
-    this->underlying().setIdentityImpl();}
+    this->underlying().setIdentityImpl();
+  }
 
   bool isLowerTriangular(){
-    return this->underlying().isLowerTriangularImpl();}
+    return this->underlying().isLowerTriangularImpl();
+  }
   
   bool isUpperTriangular(){
-    return this->underlying().isUpperTriangularImpl();}
+    return this->underlying().isUpperTriangularImpl();
+  }
+
+  template <typename T,
+        core::meta::enable_if_t<
+        std::is_same<T,sc_t>::value
+        > * = nullptr>
+  void addToDiagonal(T value) {
+    return this->underlying().addToDiagonalImpl(value);
+  }
     
 private:  
   friend derived_type;
@@ -32,6 +42,6 @@ private:
   ~MatrixBase() = default; 
 };//end class
   
-} // end namespace core
-}//end namespace rompp
+
+}}//end namespace rompp::core
 #endif

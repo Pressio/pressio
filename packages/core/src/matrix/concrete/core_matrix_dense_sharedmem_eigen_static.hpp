@@ -10,10 +10,8 @@
 #include "../base/core_matrix_base.hpp"
 #include "../base/core_matrix_sharedmem_base.hpp"
 #include "../base/core_matrix_dense_sharedmem_base.hpp"
-#include "../base/core_matrix_math_base.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,

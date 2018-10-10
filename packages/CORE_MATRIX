@@ -12,7 +12,6 @@
 ///------------------
 #include "core/src/matrix/base/core_matrix_base.hpp"
 #include "core/src/matrix/base/core_matrix_sparse_base.hpp"
-#include "core/src/matrix/base/core_matrix_math_base.hpp"
 #include "core/src/matrix/base/core_matrix_sharedmem_base.hpp"
 #include "core/src/matrix/base/core_matrix_distributed_base.hpp"
 ///---- dense ----
