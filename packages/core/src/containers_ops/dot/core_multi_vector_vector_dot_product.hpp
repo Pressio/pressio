@@ -2,13 +2,11 @@
 #ifndef CORE_MULTI_VECTOR_VECTOR_DOT_PRODUCT_HPP_
 #define CORE_MULTI_VECTOR_VECTOR_DOT_PRODUCT_HPP_
 
-#include "core_ops_meta.hpp"
-#include "../vector/core_vector_meta.hpp"
-#include "../multi_vector/core_multi_vector_meta.hpp"
+#include "../core_ops_meta.hpp"
+#include "../../vector/core_vector_meta.hpp"
+#include "../../multi_vector/core_multi_vector_meta.hpp"
 
-namespace rompp{
-namespace core{
-namespace ops{
+namespace rompp{ namespace core{ namespace ops{
 
 
 #ifdef HAVE_TRILINOS    
@@ -76,7 +74,5 @@ dot(const mvec_type & mvA, const vec_type & vecB){
 //--------------------------------------------------------
 
   
-} // end namespace ops
-} // end namespace core
-}//end namespace rompp
+}}} // end namespace rompp::core::ops
 #endif

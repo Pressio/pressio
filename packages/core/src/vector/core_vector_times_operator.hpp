@@ -163,6 +163,43 @@ auto operator*(T1 u, const T2 & v) {
     core::exprtemplates::times_, T2, sc_t, sc_t, ord_t>(v,u);
 }
 //-----------------------------------------------------
+
+// T1: vector, T2: vector
+// example: u*v
+template <typename T1, typename T2,
+	    core::meta::enable_if_t<
+  exprtemplates::is_admissible_vec_for_sharedmem_expression<T1>::value and 
+  exprtemplates::is_admissible_vec_for_sharedmem_expression<T2>::value
+	      > * = nullptr>
+auto operator*(const T1 & u, const T2 & v) {
+  using vec_u_sc_t = typename core::details::traits<T1>::scalar_t;
+  using vec_v_sc_t = typename core::details::traits<T2>::scalar_t;
+  static_assert(std::is_same<vec_u_sc_t, vec_v_sc_t>::value, "");
+  using ord_t = typename core::details::traits<T1>::ordinal_t;
+
+  return core::exprtemplates::SharedMemVectorBinaryExp<
+    core::exprtemplates::times_, T1, T2, vec_u_sc_t, ord_t>(u,v);
+}
+//-----------------------------------------------------
+
+// T1: expre, T2: vector:
+// example: (a*b)*c
+template <typename T1,
+	  typename T2,
+	  core::meta::enable_if_t<
+  exprtemplates::is_sharedmem_vector_expression<T1>::value &&
+  exprtemplates::is_admissible_vec_for_sharedmem_expression<T2>::value
+	    > * = nullptr>
+auto operator*(const T1 & u, const T2 v) {
+  using sc_t = typename T1::sc_type;
+  using ord_t = typename T1::ord_type;
+  using vec_v_sc_t = typename core::details::traits<T2>::scalar_t;
+  static_assert(std::is_same<sc_t, vec_v_sc_t>::value, "");
+
+  return core::exprtemplates::SharedMemVectorBinaryExp<
+    core::exprtemplates::times_, T1, T2, sc_t, ord_t>(u, v);
+}
+//-----------------------------------------------------
   
   
 }//end namespace core

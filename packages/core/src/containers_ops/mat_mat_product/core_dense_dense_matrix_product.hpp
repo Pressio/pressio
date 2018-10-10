@@ -2,12 +2,10 @@
 #ifndef CORE_MATRIX_OPERATIONS_DENSE_DENSE_MATRIX_PRODUCT_HPP_
 #define CORE_MATRIX_OPERATIONS_DENSE_DENSE_MATRIX_PRODUCT_HPP_
 
-#include "core_ops_meta.hpp"
-#include "../matrix/core_matrix_meta.hpp"
+#include "../core_ops_meta.hpp"
+#include "../../matrix/core_matrix_meta.hpp"
 
-namespace rompp{
-namespace core{
-namespace ops{
+namespace rompp{ namespace core{ namespace ops{
   
 /*---------------------------------------------------------
 C = A B
@@ -49,9 +47,7 @@ auto product(const T1 & A, const T2 & B){
   
 
   
-} // end namespace ops
-} // end namespace core
-}//end namespace rompp
+}}}//end namespace rompp::core::ops
 #endif
 
 

@@ -2,13 +2,15 @@
 #ifndef CORE_MULTI_VECTOR_VECTOR_PRODUCT_HPP_
 #define CORE_MULTI_VECTOR_VECTOR_PRODUCT_HPP_
 
-#include "core_ops_meta.hpp"
-#include "../vector/core_vector_meta.hpp"
-#include "../multi_vector/core_multi_vector_meta.hpp"
+#include "../core_ops_meta.hpp"
+#include "../../vector/core_vector_meta.hpp"
+#include "../../multi_vector/core_multi_vector_meta.hpp"
+#ifdef HAVE_TRILINOS
+#include "../../vector/concrete/core_vector_distributed_epetra.hpp"
+#endif
 
-namespace rompp{
-namespace core{
-namespace ops{
+
+namespace rompp{ namespace core{ namespace ops{
 
 
 #ifdef HAVE_TRILINOS
@@ -86,8 +88,5 @@ auto product(const mvec_type & mvA,
 
 
 
-  
-} // end namespace ops
-} // end namespace core
-}//end namespace rompp
+}}}//end namespace rompp::core::ops
 #endif

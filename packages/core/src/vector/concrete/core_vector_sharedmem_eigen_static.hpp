@@ -5,12 +5,9 @@
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_container_nonresizable_base.hpp"
 #include "../../shared_base/core_container_subscriptable_base.hpp"
-
 #include "../base/core_vector_sharedmem_base.hpp"
-#include "../base/core_vector_math_base.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
   
 template <typename wrapped_type>
 class Vector<wrapped_type,
@@ -21,7 +18,6 @@ class Vector<wrapped_type,
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
-    public VectorMathBase< Vector<wrapped_type> >,
     public ContainerNonResizableBase<Vector<wrapped_type>, 1>,
     public ContainerSubscriptable1DBase< Vector<wrapped_type>, 
      typename details::traits<Vector<wrapped_type>>::scalar_t,
@@ -148,6 +144,25 @@ private:
   ord_t sizeImpl() const {
     return (data_.rows()==1) ? data_.cols() : data_.rows();
   }
+  
+private:
+  friend ContainerBase< this_t, wrapped_type >;
+  friend VectorSharedMemBase< this_t >;
+  friend ContainerNonResizableBase<this_t, 1>;
+  friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
+
+private:
+  wrap_t data_;
+ 
+};//end class    
+}}//end namespace rompp::core
+#endif
+
+
+
+
+
+
 
   // template<typename op_t, typename T,
   // 	   core::meta::enable_if_t<
@@ -220,53 +235,3 @@ private:
   //     data_(i) = a0*data_(i) + a1*x1[i] + a2*x2[i]
   // 	+ a3*x3[i] + a4*x4[i];
   // }
-
-  
-  void scaleImpl(sc_t & factor){
-    // this = factor * this;
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      data_(i) *= factor;
-  }
-
-  void norm1Impl(sc_t & result) const {
-    result = static_cast<sc_t>(0);
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      result += std::abs(data_(i));
-  }
-
-  void norm2Impl(sc_t & res) const {
-    res = static_cast<sc_t>(0);
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      res += data_(i)*data_(i);
-    res = std::sqrt(res);
-  }
-
-  void normInfImpl(sc_t & res) const {
-    res = std::abs(data_(0));
-    for (decltype(this->size()) i=1; i<this->size(); i++){
-      sc_t currVal = std::abs(data(i));
-      if(currVal>res)
-	res = currVal;
-    }
-  }
-  void minValueImpl(sc_t & result) const {
-    result = data_.minCoeff();
-  }
-  void maxValueImpl(sc_t & result) const {
-    result = data_.maxCoeff();
-  }
-  
-private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend VectorSharedMemBase< this_t >;
-  friend VectorMathBase< this_t >;  
-  friend ContainerNonResizableBase<this_t, 1>;
-  friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
-
-private:
-  wrap_t data_;
- 
-};//end class    
-}//end namespace core
-}//end namespace rompp
-#endif

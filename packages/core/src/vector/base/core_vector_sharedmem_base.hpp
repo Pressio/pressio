@@ -24,7 +24,13 @@ public:
    ord_t size() const{
     return this->underlying().sizeImpl();
   };
-    
+
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  void putScalar(T value) {
+    this->underlying().putScalarImpl(value);}
+  
 private:
   friend derived_type;
   friend core::details::CrtpBase<this_t>;

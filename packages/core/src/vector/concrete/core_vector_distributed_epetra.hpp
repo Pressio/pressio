@@ -8,12 +8,9 @@
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 #include "../../shared_base/core_container_subscriptable_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
-
 #include "../base/core_vector_distributed_base.hpp"
-#include "../base/core_vector_math_base.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
   
 template <typename wrapped_type>
 class Vector<wrapped_type,
@@ -25,7 +22,6 @@ class Vector<wrapped_type,
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorDistributedBase< Vector<wrapped_type> >,
-    public VectorMathBase< Vector<wrapped_type> >,
     public ContainerDistributedMpiBase< Vector<wrapped_type>, 
      typename details::traits<Vector<wrapped_type>>::communicator_t >, 
     public ContainerDistributedTrilinosBase< Vector<wrapped_type>, 
@@ -190,7 +186,29 @@ private:
   void replaceDataMapImpl(const map_t & mapObj){
     data_.ReplaceMap(mapObj);
   }
-    
+  
+private:
+  friend ContainerBase< this_t, wrapped_type >;
+  friend VectorDistributedBase< this_t >;
+  friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
+  friend ContainerDistributedTrilinosBase< this_t, map_t >;
+  friend ContainerResizableBase< this_t, 1>;
+  friend ContainerSubscriptable1DBase< this_t, sc_t, LO_t>;
+
+private:
+  wrap_t data_;
+
+};//end class
+
+}}//end namespace rompp::core
+#endif
+#endif
+
+
+
+
+
+
   // template<typename op_t, typename T,
   // 	   core::meta::enable_if_t<
   // 	     std::is_same<T,this_t>::value
@@ -243,45 +261,10 @@ private:
   // 	+ a3*x3[i] + a4*x4[i];
   // }
   
-  
-  void scaleImpl(sc_t & factor){
-    data_.Scale(factor);
-  }
+  // void minValueImpl(sc_t & result) const {
+  //   data_.MinValue(&result);
+  // }
 
-  void norm1Impl(sc_t & result) const {
-    data_.Norm1(&result);
-  }
-
-  void norm2Impl(sc_t & result) const {
-    data_.Norm2(&result);
-  }
-
-  void normInfImpl(sc_t & result) const {
-    data_.NormInf(&result);
-  }
-
-  void minValueImpl(sc_t & result) const {
-    data_.MinValue(&result);
-  }
-
-  void maxValueImpl(sc_t & result) const {
-    data_.MaxValue(&result);
-  }
-  
-private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend VectorDistributedBase< this_t >;
-  friend VectorMathBase< this_t >;
-  friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
-  friend ContainerDistributedTrilinosBase< this_t, map_t >;
-  friend ContainerResizableBase< this_t, 1>;
-  friend ContainerSubscriptable1DBase< this_t, sc_t, LO_t>;
-
-private:
-  wrap_t data_;
-
-};//end class
-}//end namespace core
-}//end namespace rompp
-#endif
-#endif
+  // void maxValueImpl(sc_t & result) const {
+  //   data_.MaxValue(&result);
+  // }

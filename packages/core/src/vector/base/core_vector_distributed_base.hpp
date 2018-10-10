@@ -21,6 +21,13 @@ class VectorDistributedBase
   using GO_t = typename details::traits<derived_type>::global_ordinal_t;
     
 public:
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  void putScalar(T value) {
+    this->underlying().putScalarImpl(value);
+  }
+  
   GO_t globalSize() const {
     return this->underlying().globalSizeImpl();
   };

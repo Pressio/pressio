@@ -37,7 +37,7 @@ auto operator-(const T1 & u, const T2 & v) {
   
 //-----------------------------------------------------  
 // T1: expre, T2: expr:
-// example: a*3 + b*21
+// example: a*3 - b*21
 template <typename T1,
 	  typename T2,
 	  core::meta::enable_if_t<
@@ -55,7 +55,7 @@ auto operator-(const T1 & u, const T2 & v) {
   
 //-----------------------------------------------------
 // T1: vector, T2: expr:
-// example: a + b*21
+// example: a - b*21
 template <typename T1,
 	  typename T2,
 	  core::meta::enable_if_t<
@@ -81,7 +81,7 @@ auto operator-(const T1 & u, const T2 & v) {
 ////////////////////////////////////////////
   
 // T1: expre, T2: vector:
-// example: a*3 + b
+// example: a*3 - b
 template <typename T1,
 	  typename T2,
 	  core::meta::enable_if_t<
@@ -97,7 +97,7 @@ auto operator-(const T1 & u, const T2 & v) {
 
 //-----------------------------------------------------  
 // T1: expre, T2: expr:
-// example: a*3 + b*21
+// example: a*3 - b*21
 template <typename T1,
 	  typename T2,
 	  core::meta::enable_if_t<
@@ -114,7 +114,7 @@ auto operator-(const T1 & u, const T2 & v) {
   
 //-----------------------------------------------------
 // T1: vector, T2: expr:
-// example: a + b*21
+// example: a - b*21
 template <typename T1,
 	  typename T2,
 	  core::meta::enable_if_t<

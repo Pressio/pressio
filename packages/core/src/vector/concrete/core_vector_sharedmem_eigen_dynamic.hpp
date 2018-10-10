@@ -5,9 +5,7 @@
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
 #include "../../shared_base/core_container_subscriptable_base.hpp"
-
 #include "../base/core_vector_sharedmem_base.hpp"
-#include "../base/core_vector_math_base.hpp"
 
 namespace rompp{ namespace core{
   
@@ -20,7 +18,6 @@ class Vector<wrapped_type,
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
-    public VectorMathBase< Vector<wrapped_type> >,
     public ContainerResizableBase<Vector<wrapped_type>, 1>,
     public ContainerSubscriptable1DBase< Vector<wrapped_type>, 
      typename details::traits<Vector<wrapped_type>>::scalar_t,
@@ -192,44 +189,9 @@ private:
     data_.resize(val);
   }
   
-  void scaleImpl(sc_t & factor){
-    // this = factor * this;
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      data_(i) *= factor;      
-  }
-
-  void norm1Impl(sc_t & result) const {
-    result = static_cast<sc_t>(0);
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      result += std::abs(data_(i));
-  }
-
-  void norm2Impl(sc_t & res) const {
-    res = static_cast<sc_t>(0);
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      res += data_(i)*data_(i);
-    res = std::sqrt(res);
-  }
-
-  void normInfImpl(sc_t & res) const {
-    res = std::abs(data_(0));
-    for (decltype(this->size()) i=1; i<this->size(); i++){
-      sc_t currVal = std::abs(data(i));
-      if(currVal>res)
-	res = currVal;
-    }
-  }
-  void minValueImpl(sc_t & result) const {
-    result = data_.minCoeff();
-  }
-  void maxValueImpl(sc_t & result) const {
-    result = data_.maxCoeff();
-  }
-  
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorSharedMemBase< this_t >;
-  friend VectorMathBase< this_t >;  
   friend ContainerResizableBase<this_t, 1>;
   friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
   
@@ -240,80 +202,3 @@ private:
     
 }}//end namespace rompp::core
 #endif
-
-
-
-
-
-  // template<typename op_t, typename T,
-  // 	   core::meta::enable_if_t<
-  // 	     std::is_same<T,this_t>::value
-  // 	     > * = nullptr
-  // 	   >
-  // void inPlaceOpImpl(sc_t a1, sc_t a2, const T & other){
-  //   // this = a1*this op a2*other;
-  //   for (decltype(this->size()) i=0; i<this->size(); i++)
-  //     data_(i) = op_t()( a1*data_(i), a2*other[i] );
-  // }
-
-  // template<typename op_t, typename T,
-  // 	   core::meta::enable_if_t<
-  // 	     std::is_same<T,this_t>::value
-  // 	     > * = nullptr
-  // 	   >
-  // void inPlaceOpImpl(sc_t a1, const T & x1,
-  // 		     sc_t a2, const T & x2){
-  //   // this = a1*x1 op a2*x2;
-  //   assert(this->size() == x1.size());
-  //   assert(this->size() == x2.size());
-  //   for (ord_t i=0; i<this->size(); i++)
-  //     data_(i) = op_t()( a1*x1[i], a2*x2[i] );
-  // }
-
-  // template<typename T,
-  // 	   typename op1_t, typename op2_t, typename op3_t,
-  // 	   core::meta::enable_if_t<
-  // 	     std::is_same<T,this_t>::value &&
-  // 	     std::is_same<op1_t, std::plus<sc_t>>::value &&
-  // 	     std::is_same<op2_t,op1_t>::value &&
-  // 	     std::is_same<op3_t,op1_t>::value
-  // 	     > * = nullptr
-  // 	   >
-  // void inPlaceOpImpl(sc_t a1, const T & x1,
-  // 		     sc_t a2, const T & x2,
-  // 		     sc_t a3, const T & x3,
-  // 		     sc_t a4, const T & x4){
-  //   // this = (a1*x1) + (a2*x2) + (a3*x3) + (a4*x4)
-  //   assert(this->size() == x1.size());
-  //   assert(this->size() == x2.size());
-  //   assert(this->size() == x3.size());
-  //   assert(this->size() == x4.size());
-
-  //   for (ord_t i=0; i<this->size(); i++)
-  //     data_(i) = op1_t()( op1_t()( op1_t()(a1*x1[i],a2*x2[i]), a3*x3[i] ), a4*x4[i] );
-  // }
-  
-  // template<typename op0_t, typename T,
-  // 	   typename op1_t, typename op2_t, typename op3_t,
-  // 	   core::meta::enable_if_t<
-  // 	     std::is_same<T,this_t>::value &&
-  // 	     std::is_same<op0_t, std::plus<sc_t>>::value &&
-  // 	     std::is_same<op1_t, op0_t>::value &&
-  // 	     std::is_same<op2_t, op1_t>::value &&
-  // 	     std::is_same<op3_t, op1_t>::value
-  // 	     > * = nullptr
-  // 	   >
-  // void inPlaceOpImpl(sc_t a0, sc_t a1, const T & x1,
-  // 		     sc_t a2, const T & x2,
-  // 		     sc_t a3, const T & x3,
-  // 		     sc_t a4, const T & x4){
-  //   // this = a0 * this + (a1*x1) + (a2*x2) + (a3*x3) + (a4*x4)
-  //   assert(this->size() == x1.size());
-  //   assert(this->size() == x2.size());
-  //   assert(this->size() == x3.size());
-  //   assert(this->size() == x4.size());
-  //   for (ord_t i=0; i<this->size(); i++)
-  //     data_(i) = a0*data_(i) + a1*x1[i] + a2*x2[i]
-  // 	+ a3*x3[i] + a4*x4[i];
-  // }
-

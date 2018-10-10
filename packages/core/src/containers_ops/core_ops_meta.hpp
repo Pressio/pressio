@@ -2,14 +2,12 @@
 #ifndef CORE_OPS_META_HPP_
 #define CORE_OPS_META_HPP_
 
-#include "../matrix/core_matrix_meta.hpp"
 #include "../vector/core_vector_meta.hpp"
+#include "../matrix/core_matrix_meta.hpp"
 #include "../multi_vector/core_multi_vector_meta.hpp"
 
 
-namespace rompp{
-namespace core{
-namespace meta {
+namespace rompp{ namespace core{ namespace meta {
 
 
 template <typename T1, typename T2, typename enable = void>
@@ -41,10 +39,6 @@ struct wrapper_triplet_have_same_scalar<T1,T2,T3,
   > : std::true_type{};
 //--------------------------------------------  
 
-  
  
-} // namespace meta
-} // namespace core
-
-}//end namespace rompp
+}}} // namespace rompp::core::meta
 #endif

@@ -7,7 +7,6 @@
 #include "core/src/vector/core_vector_traits.hpp"
 #include "core/src/vector/core_vector_meta.hpp"
 
-#include "core/src/vector/base/core_vector_math_base.hpp"
 #include "core/src/vector/base/core_vector_sharedmem_base.hpp"
 #include "core/src/vector/base/core_vector_distributed_base.hpp"
 

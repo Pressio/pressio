@@ -3,6 +3,7 @@
 #define SOLVERS_EXPERIMENTAL_VECTOR_NORM_HPP
 
 #include "solvers_meta_static_checks.hpp"
+#include "../../../core/src/containers_ops/norms/core_norm2_vector.hpp"
 
 
 namespace rompp{
@@ -18,10 +19,9 @@ struct L2Norm {
 
     static_assert(solvers::meta::are_vector_compatible<T, U>::value, "Error: the two vectors are not compatible");
 
-    double value = 0;
     T dVec(lVec - rVec);
-
-    dVec.norm2(value);
+    double value =::rompp::core::ops::norm2(dVec);
+    // dVec.norm2(value);
     return value;
   }
 
@@ -30,8 +30,8 @@ struct L2Norm {
     typename T
   >
   static double compute_norm(const T& vec) {
-		double value;
-    vec.norm2(value);
+		double value = ::rompp::core::ops::norm2(vec);
+    // vec.norm2(value);
 		return value;
   }
 };
