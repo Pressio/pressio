@@ -4,9 +4,7 @@
 
 #include "core_vector_meta.hpp"
 
-namespace rompp{
-namespace core{
-namespace exprtemplates{
+namespace rompp{ namespace core{ namespace exprtemplates{
   
 template <typename der_t>
 class DistributedVecExpressionBase {
@@ -154,7 +152,5 @@ public:
   
   
 
-}//end namespace exprtemplates
-}//end namespace core
-}//end namespace rompp
+}}}//end namespace rompp::core::exprtemplates
 #endif

@@ -21,10 +21,14 @@
 #include "core/src/vector/core_vector_distributed_binary_expression_templates.hpp"
 #include "core/src/vector/core_vector_sharedmem_binary_expression_templates.hpp"
 
-#include "core/src/vector/core_vector_distributed_binary_expression_templates.hpp"
 #include "core/src/vector/core_vector_sharedmem_binary_expression_templates.hpp"
-#include "core/src/vector/core_vector_plus_operator.hpp"
-#include "core/src/vector/core_vector_times_operator.hpp"
-#include "core/src/vector/core_vector_subtract_operator.hpp"
+#include "core/src/vector/core_vector_plus_operator_sharedmem.hpp"
+#include "core/src/vector/core_vector_times_operator_sharedmem.hpp"
+#include "core/src/vector/core_vector_subtract_operator_sharedmem.hpp"
+
+#include "core/src/vector/core_vector_distributed_binary_expression_templates.hpp"
+#include "core/src/vector/core_vector_plus_operator_distributed.hpp"
+#include "core/src/vector/core_vector_times_operator_distributed.hpp"
+#include "core/src/vector/core_vector_subtract_operator_distributed.hpp"
 
 #endif

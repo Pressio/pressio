@@ -1,1 +1,0 @@
-#include "../core_vector_plus_operator.hpp"

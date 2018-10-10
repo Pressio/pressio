@@ -4,9 +4,7 @@
 
 #include "core_vector_meta.hpp"
 
-namespace rompp{
-namespace core{
-namespace exprtemplates{
+namespace rompp{ namespace core{ namespace exprtemplates{
 
 
 template <typename der_t>
@@ -92,7 +90,7 @@ class SharedMemVectorBinaryExp<
 	 core::meta::enable_if_t<
 	   !std::is_scalar<T1>::value &&
 	   core::meta::is_core_vector_wrapper<T2>::value &&
-	   !core::details::traits<T2>::is_shared_mem>
+	   core::details::traits<T2>::is_shared_mem>
   >
   : public SharedMemVecExpressionBase<
   SharedMemVectorBinaryExp<OP_t,T1,T2,value_t,ord_t>>{
@@ -155,7 +153,5 @@ public:
 //-----------------------------------------------------
   
 
-}//end namespace exprtemplates
-}//end namespace core
-}//end namespace rompp
+}}}//end namespace rompp::core::exprtemplates
 #endif
