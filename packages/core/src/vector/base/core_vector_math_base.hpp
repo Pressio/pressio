@@ -18,26 +18,47 @@ class VectorMathBase
 
 public:
   
-  void putScalar(sc_t value) {
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  void putScalar(T value) {
     this->underlying().putScalarImpl(value);}
 
-  void scale(sc_t factor){
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  void scale(T factor){
     // this = factor * this
     this->underlying().scaleImpl(factor);}
 
-  void norm1(sc_t & result) const {
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  void norm1(T & result) const {
     this->underlying().norm1Impl(result);}
 
-  void norm2(sc_t & result) const {
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  void norm2(T & result) const {
     this->underlying().norm2Impl(result);}
   
-  void normInf(sc_t & result) const {
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  void normInf(T & result) const {
     this->underlying().normInfImpl(result);}
 
-  void minValue(sc_t & result) const {
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  void minValue(T & result) const {
     this->underlying().minValueImpl(result);}
 
-  void maxValue(sc_t & result) const {
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  void maxValue(T & result) const {
     this->underlying().maxValueImpl(result);}
 
 private:

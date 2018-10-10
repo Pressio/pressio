@@ -3,7 +3,7 @@ add_unit_test(meta_basic ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(meta_detect_operators ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(meta_detect_typedefs ${GTESTMAINSDIR}/gTestMain_serial 1)
 
-add_unit_test(vector_serial_eigen_class ${GTESTMAINSDIR}/gTestMain_serial 1)
+add_unit_test(vector_serial_eigen_dynamic_class ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(matrix_vector_product_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(matrix_matrix_product_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
 

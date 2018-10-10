@@ -9,8 +9,7 @@
 #include "../base/core_vector_sharedmem_base.hpp"
 #include "../base/core_vector_math_base.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
   
 template <typename wrapped_type>
 class Vector<wrapped_type,
@@ -35,14 +34,13 @@ class Vector<wrapped_type,
 
 public:  
   Vector() = default;
+
   ~Vector() = default;
  
   explicit Vector(ord_t insize){
     this->resize(insize);
+    this->setZero();
   }
-
-  explicit Vector(const sc_t * src)
-    : data_(src){}
 
   explicit Vector(const wrap_t & src)
     : data_(src){}
@@ -60,7 +58,9 @@ public:
     for (ord_t i = 0; i != expr.size(); ++i)
       data_[i] = expr(i);
   }
-
+  
+public:
+  
   // assignment from any expression, force evaluation
   template <typename T,
   	    core::meta::enable_if_t<
@@ -73,7 +73,7 @@ public:
     return *this;
   }
 
-  // assignment 
+  // assignment with other vector of same type
   template <typename T,
   	    core::meta::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
@@ -81,25 +81,17 @@ public:
     data_ = *other.data();
     return *this;
   }
-  
-  
-public:
-  sc_t & operator [] (ord_t i){
-    //assert(!this->empty());
-    return data_(i);
-  };
 
-  sc_t const & operator [] (ord_t i) const{
-    //assert(!this->empty());
-    return data_(i);
-  };  
-
-  sc_t & operator()(ord_t i){
-    return data_[i];
-  };
-  sc_t const & operator()(ord_t i) const{
-    return data_[i];
-  };  
+  // assignment with value
+  template <typename T,
+  	    core::meta::enable_if_t<
+	      std::is_same<T, sc_t>::value> * = nullptr>
+  this_t & operator=(const T value){
+    for (ord_t i = 0; i != data_.size(); ++i)
+      data_[i] = value;
+    return *this;
+  }
+  
 
   // compound assignment from expression template
   // this += expr
@@ -147,7 +139,24 @@ public:
     this->data_ -= *other.data();
     return *this;
   }
+    
+public:
+  sc_t & operator [] (ord_t i){
+    //assert(!this->empty());
+    return data_(i);
+  };
 
+  sc_t const & operator [] (ord_t i) const{
+    //assert(!this->empty());
+    return data_(i);
+  };  
+
+  sc_t & operator()(ord_t i){
+    return data_[i];
+  };
+  sc_t const & operator()(ord_t i) const{
+    return data_[i];
+  };  
   
 private:
 
@@ -182,6 +191,59 @@ private:
   void resizeImpl(ord_t val){
     data_.resize(val);
   }
+  
+  void scaleImpl(sc_t & factor){
+    // this = factor * this;
+    for (decltype(this->size()) i=0; i<this->size(); i++)
+      data_(i) *= factor;      
+  }
+
+  void norm1Impl(sc_t & result) const {
+    result = static_cast<sc_t>(0);
+    for (decltype(this->size()) i=0; i<this->size(); i++)
+      result += std::abs(data_(i));
+  }
+
+  void norm2Impl(sc_t & res) const {
+    res = static_cast<sc_t>(0);
+    for (decltype(this->size()) i=0; i<this->size(); i++)
+      res += data_(i)*data_(i);
+    res = std::sqrt(res);
+  }
+
+  void normInfImpl(sc_t & res) const {
+    res = std::abs(data_(0));
+    for (decltype(this->size()) i=1; i<this->size(); i++){
+      sc_t currVal = std::abs(data(i));
+      if(currVal>res)
+	res = currVal;
+    }
+  }
+  void minValueImpl(sc_t & result) const {
+    result = data_.minCoeff();
+  }
+  void maxValueImpl(sc_t & result) const {
+    result = data_.maxCoeff();
+  }
+  
+private:
+  friend ContainerBase< this_t, wrapped_type >;
+  friend VectorSharedMemBase< this_t >;
+  friend VectorMathBase< this_t >;  
+  friend ContainerResizableBase<this_t, 1>;
+  friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
+  
+private:
+  wrap_t data_;
+ 
+};//end class
+    
+}}//end namespace rompp::core
+#endif
+
+
+
+
 
   // template<typename op_t, typename T,
   // 	   core::meta::enable_if_t<
@@ -255,52 +317,3 @@ private:
   // 	+ a3*x3[i] + a4*x4[i];
   // }
 
-  
-  void scaleImpl(sc_t & factor){
-    // this = factor * this;
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      data_(i) *= factor;
-  }
-
-  void norm1Impl(sc_t & result) const {
-    result = static_cast<sc_t>(0);
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      result += std::abs(data_(i));
-  }
-
-  void norm2Impl(sc_t & res) const {
-    res = static_cast<sc_t>(0);
-    for (decltype(this->size()) i=0; i<this->size(); i++)
-      res += data_(i)*data_(i);
-    res = std::sqrt(res);
-  }
-
-  void normInfImpl(sc_t & res) const {
-    res = std::abs(data_(0));
-    for (decltype(this->size()) i=1; i<this->size(); i++){
-      sc_t currVal = std::abs(data(i));
-      if(currVal>res)
-	res = currVal;
-    }
-  }
-  void minValueImpl(sc_t & result) const {
-    result = data_.minCoeff();
-  }
-  void maxValueImpl(sc_t & result) const {
-    result = data_.maxCoeff();
-  }
-  
-private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend VectorSharedMemBase< this_t >;
-  friend VectorMathBase< this_t >;  
-  friend ContainerResizableBase<this_t, 1>;
-  friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
-  
-private:
-  wrap_t data_;
- 
-};//end class    
-}//end namespace core
-}//end namespace rompp
-#endif
