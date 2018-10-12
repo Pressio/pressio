@@ -4,8 +4,7 @@
 
 #include "../rom_ConfigDefs.hpp"
 
-namespace rompp{
-namespace rom{
+namespace rompp{ namespace rom{
 
 template <typename derived_t>
 class OperatorBase
@@ -13,36 +12,43 @@ class OperatorBase
 
 public:
 
-  // A_ (whatever that is) acts on X stored in Y
+  // A (whatever that is) acts on X, return result 
   template <typename operand_type>
   auto apply(const operand_type & X){
     return this->underlying().applyImpl(X);
   }
 
-  // A_ (whatever that is) acts on X stored in Y
+  // A (whatever that is) acts on X
+  // result stored in Y
   template <typename operand_t1,
 	    typename operand_t2>
   void apply(const operand_t1 & X,
-	     const operand_t2 & Y){
+	     operand_t2 & Y){
     this->underlying().applyImpl(X,Y);
   }
   
-  // A_ (whatever that is) acts on X stored in Y
+  // A^T (whatever that is) acts on X, return result
   template <typename operand_type>
-  auto applyTransp(const operand_type & X)
-  {
-    return this->underlying().applyTranspImpl(X);
+  auto applyTranspose(const operand_type & X){
+    return this->underlying().applyTransposeImpl(X);
   }
-    
+
+  // A^T (whatever that is) acts on X,
+  // result stored in Y
+  template <typename operand_t1,
+	    typename operand_t2>
+  void applyTranspose(const operand_t1 & X,
+		      operand_t2 & Y){
+    this->underlying().applyTransposeImpl(X,Y);
+  }
+  
 private:
   friend derived_t;
   friend core::details::CrtpBase<OperatorBase<derived_t>>;
-
   OperatorBase() = default;
   ~OperatorBase() = default;
 
 };//end class
 
-} // end namespace rom
-}//end namespace rompp
+}} // end namespace rompp::rom
 #endif

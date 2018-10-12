@@ -5,8 +5,7 @@
 #include "rom_operator_base.hpp"
 #include "../../../CORE_ALL"
 
-namespace rompp{
-namespace rom{
+namespace rompp{ namespace rom{
 
 template<typename operator_type,
 	 core::meta::enable_if_t<
@@ -17,9 +16,10 @@ template<typename operator_type,
 class MultiVectorOperator
   : public OperatorBase<
       MultiVectorOperator<operator_type>>{
-  
-  //---------------------------------
 
+  //-------------------------------
+  //----      APPLY AS IS      ----
+  //-------------------------------
   template <typename T, 
      core::meta::enable_if_t<
        core::meta::is_core_vector_wrapper<T>::value 
@@ -37,39 +37,55 @@ class MultiVectorOperator
        core::meta::is_core_vector_wrapper<T2>::value 
        > * = nullptr
      >
-  void applyImpl(const T1 & X, const T2 & Y){
-    core::ops::product(*op_, X);
+  void applyImpl(const T1 & X, T2 & Y){
+    // op_: multivector of size m,n
+    // X: vector of size n,1
+    // Y: vector of size m,1
+    core::ops::product(*op_, X, Y);
   }
 
-  //---------------------------------
-  //----      TRANSPOSE
-  //---------------------------------
+  //---------------------------
+  //----     TRANSPOSE     ----
+  //---------------------------
   template <typename T, 
      core::meta::enable_if_t<
        core::meta::is_core_vector_wrapper<T>::value
        > * = nullptr
      >
-  auto applyTranspImpl(const T & X){
+  auto applyTransposeImpl(const T & X){
+    // multivector^T acts on vector = take dot of each row 
+    // op_^T: multivector of size n,m
+    // X: vector of size m,1
+    // Y: vector with results of all dots of size n,1
     return core::ops::dot(*op_, X);
   }
   //---------------------------------
-  
-  
+
+  template <typename T1, typename T2,
+     core::meta::enable_if_t<
+       core::meta::is_core_vector_wrapper<T1>::value
+       > * = nullptr
+     >
+  void applyTransposeImpl(const T1 & X, T2 & Y){
+    // multivector^T acts on vector = take dot of each row 
+    // op_^T: multivector of size n,m
+    // X: vector of size m,1
+    // Y: vector with results of all dots of size n,1
+    core::ops::dot(*op_, X, Y);
+  }
+  //---------------------------------
+    
 public:
   MultiVectorOperator() = delete;
-
   explicit MultiVectorOperator(const operator_type & opIn)
     : op_(&opIn){}
-
   ~MultiVectorOperator() = default;
 
 private:
   friend OperatorBase<MultiVectorOperator<operator_type> >;
-
   const operator_type * op_;
 
 };//end class
 
-} // end namespace rom
-}//end namespace rompp
+}} // end namespace rompp::rom
 #endif

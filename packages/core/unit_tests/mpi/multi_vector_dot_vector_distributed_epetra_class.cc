@@ -1,7 +1,6 @@
 
 #include "epetra_only_fixtures.hpp"
 
-
 TEST_F(epetraMultiVectorR9C4VecS9Fixture,
        MVVecDotProduct){
 
@@ -39,20 +38,22 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   b[1] = 1.0;
   b[2] = 1.0;
 
-  // MV.data()->Print(std::cout);
-  // b.data()->Print(std::cout);
-  auto res = core::ops::dot(MV, b);
+  //MV dot b = c
+  auto c = core::ops::dot(MV, b);
+  EXPECT_EQ((int) c.size(), 4);
+  EXPECT_NEAR(c[0], 4.4, 1e-12);
+  EXPECT_NEAR(c[1], 5.2, 1e-12);
+  EXPECT_NEAR(c[2], 3., 1e-12);
+  EXPECT_NEAR(c[3], 0., 1e-12);
 
-  EXPECT_EQ((int) res.size(), 4);
-  EXPECT_NEAR(res[0], 4.4, 1e-12);
-  EXPECT_NEAR(res[1], 5.2, 1e-12);
-  EXPECT_NEAR(res[2], 3., 1e-12);
-  EXPECT_NEAR(res[3], 0., 1e-12);
-
-  // if (rank_==0){
-  //   //std::cout << res << " ";
-  //   for (const auto & it : res)
-  //     std::cout << it << " ";
-  //   std::cout << "\n";
-  // }  
+  //MV dot b = c2
+  core::Vector<Eigen::VectorXd> c2;
+  c2.resize(4);
+  core::ops::dot(MV, b, c2);
+  EXPECT_EQ( c2.size(), 4);
+  EXPECT_NEAR(c2[0], 4.4, 1e-12);
+  EXPECT_NEAR(c2[1], 5.2, 1e-12);
+  EXPECT_NEAR(c2[2], 3., 1e-12);
+  EXPECT_NEAR(c2[3], 0., 1e-12);
+  
 }

@@ -14,10 +14,9 @@ namespace rompp{ namespace core{ namespace ops{
 
 
 #ifdef HAVE_TRILINOS
-//--------------------------------------------
-//  Epetra multivector with eigen vector
-//--------------------------------------------
 
+//-----------------------------------------------------
+//  Epetra multivector with eigen or armadillo vector
 // we pass the result object
 template <typename mvec_type,
 	  typename vec_type,
@@ -36,23 +35,27 @@ void product(const mvec_type & mvA,
 	     const vec_type & vecB,
 	     core::Vector<Epetra_Vector> & C){
 
-  // using sc_t = typename details::traits<mvec_type>::scalar_t;
+  //zero out result
+  C.setZero();  
   // how many vectors are in mvA
   auto numVecs = mvA.globalNumVectors();
   // size of vecB
   size_t vecBLen = vecB.size();
   assert(size_t(numVecs) == vecBLen);
-  
   // the data map of the multivector
   auto mvMap = mvA.getDataMap();
   // my number of rows
   auto myNrows = mvMap.NumMyElements();
-  for (int i=0; i<myNrows; i++){
+
+  // loop
+  for (decltype(myNrows) i=0; i<myNrows; i++){
     for (decltype(numVecs) j=0; j<numVecs; j++){
       C[i] += mvA(i,j) * vecB[j];
     }
   }
 }
+//-------------------------------------------------------
+
 
 // result is the return type
 template <typename mvec_type,
@@ -79,14 +82,11 @@ auto product(const mvec_type & mvA,
   // result is an Epetra Vector with same distribution of mvA  
   using res_t = core::Vector<Epetra_Vector>;
   res_t c(mvMap);
-  // zero-out the result
-  c.setZero();
   product(mvA, vecB, c);
   return c;
 }
+
 #endif //HAVE_TRILINOS
-
-
 
 }}}//end namespace rompp::core::ops
 #endif

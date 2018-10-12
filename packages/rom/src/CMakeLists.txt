@@ -26,12 +26,8 @@ SET(SOURCES
 
 # #--------------------------------------
 # SET(LUMPED_HEADERS
-#   CORE_ALL
-#   CORE_BASIC
-#   CORE_MATRIX
-#   CORE_MULTI_VECTOR
-#   CORE_OPS
-#   CORE_VECTOR
+#   ROM_ALL
+#   ROM_...
 # )
 # INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${ROM_INCDIR})
 
@@ -43,7 +39,6 @@ SET(ROM_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/ro
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${ROM_INCDIR})
 INSTALL(FILES ${rom_gen_HEADERS} DESTINATION ${ROM_INCDIR})
 INSTALL(FILES ${rom_exp_HEADERS} DESTINATION ${ROM_INCDIR}/experimental)
-
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)
