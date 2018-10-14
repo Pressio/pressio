@@ -2,8 +2,8 @@
 
 EXTRA_ARGS=$@
 
-SRC=/Users/fnrizzi/Desktop/cleanup/codes/rompp
-PFX=/Users/fnrizzi/Desktop/romppInstall
+SRC=/Users/fnrizzi/Desktop/work/ROM/codes/sources/rompp
+PFX=/Users/fnrizzi/Desktop/work/ROM/codes/installs/rompp_install
 
 MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc640
 TRILPATH=/Users/fnrizzi/tpl/trilinos/install_debug_gcc640_ompi301
