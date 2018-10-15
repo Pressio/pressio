@@ -26,6 +26,12 @@ public:
 	     operand_t2 & Y){
     this->underlying().applyImpl(X,Y);
   }
+
+  // // A (whatever that is) acts on X from right, return result 
+  // template <typename operand_type>
+  // auto applyRight(const operand_type & X){
+  //   return this->underlying().applyRightImpl(X);
+  // }
   
   // A^T (whatever that is) acts on X, return result
   template <typename operand_type>

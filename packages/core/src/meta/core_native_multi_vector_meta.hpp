@@ -4,11 +4,9 @@
 
 #include "core_meta_basic.hpp"
 #include "core_native_vector_meta.hpp"
-// #include "Epetra_MultiVector.h"
+#include "core_native_matrix_meta.hpp"
 
-namespace rompp{
-namespace core{
-namespace meta {
+namespace rompp{ namespace core{ namespace meta {
  
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
@@ -18,14 +16,24 @@ template <typename T>
 struct is_multi_vector_epetra<T,
   typename
    std::enable_if<
-	std::is_same<T,Epetra_MultiVector>::value
+    std::is_same<T,Epetra_MultiVector>::value
    >::type
   > : std::true_type{};
 #endif
+//----------------------------------------------------------------------
 
 
-} // namespace meta
-} // namespace core
+template <typename T, typename enable = void>
+struct is_multi_vector_eigen_dynamic : std::false_type {};
 
-}//end namespace rompp
+template <typename T>
+struct is_multi_vector_eigen_dynamic<T,
+  typename
+   std::enable_if<
+    is_matrix_dense_sharedmem_eigen_dynamic<T>::value
+   >::type
+  > : std::true_type{};
+      
+
+}}}//end namespace rompp::core::meta
 #endif

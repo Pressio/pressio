@@ -4,7 +4,6 @@
 
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
-#include "../../shared_base/core_container_nonresizable_base.hpp"
 #include "../../shared_base/core_container_subscriptable_base.hpp"
 
 #include "../base/core_matrix_base.hpp"
@@ -97,9 +96,13 @@ private:
     return data_.cols();
   }
 
+  void setZeroImpl() {
+    data_.setConstant(static_cast<sc_t>(0));
+  }
+
   void resizeImpl(ord_t nrows, ord_t ncols){
     data_.resize(nrows, ncols);
-    data_ = wrapped_type::Zero(nrows,ncols);
+    this->setZero();
   }
     
 private:

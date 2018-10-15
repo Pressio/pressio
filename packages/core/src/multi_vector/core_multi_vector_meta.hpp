@@ -4,9 +4,7 @@
 
 #include "core_multi_vector_traits.hpp"
 
-namespace rompp{
-namespace core{
-namespace meta {
+namespace rompp{ namespace core{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_core_multi_vector_wrapper : std::false_type {};
@@ -41,10 +39,21 @@ struct is_epetra_multi_vector_wrapper<
   >
   : std::true_type{};
 #endif
+//------------------------------------------------------------
  
- 
-} // namespace meta
-} // namespace core
 
-}//end namespace rompp
+template <typename T, typename enable = void>
+struct is_eigen_multi_vector_wrapper : std::false_type {};
+
+template <typename T>
+struct is_eigen_multi_vector_wrapper<
+  T, core::meta::enable_if_t<
+       core::details::traits<T>::is_multi_vector &&
+       core::details::traits<T>::wrapped_multi_vector_identifier==
+       core::details::WrappedMultiVectorIdentifier::Eigen
+       >
+  >
+  : std::true_type{};
+ 
+}}}//end namespace rompp::core::meta
 #endif

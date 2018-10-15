@@ -6,9 +6,7 @@
 #include "../meta/core_native_multi_vector_meta.hpp"
 #include "../core_shared_traits.hpp"
 
-namespace rompp{
-namespace core{
-namespace details{
+namespace rompp{ namespace core{ namespace details{
 
 #ifdef HAVE_TRILINOS 
 //*******************************
@@ -37,8 +35,33 @@ struct traits<MultiVector<wrapped_type,
 };
 #endif
 
+
+//*******************************
+// for eigen multivector 
+//******************************* 
+template<typename wrapped_type>
+struct traits<MultiVector<wrapped_type,
+      typename std::enable_if<
+       meta::is_multi_vector_eigen_dynamic<wrapped_type
+      >::value>::type>
+     >
+  : public containers_shared_traits<MultiVector<wrapped_type>,
+            wrapped_type,
+            false, false, true,
+            WrappedPackageIdentifier::Eigen,
+            true>
+{
+  static constexpr WrappedMultiVectorIdentifier
+  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Eigen;
+
+  using scalar_t = typename wrapped_type::Scalar;
+  using ordinal_t = int;
+
+  static constexpr bool is_static =
+    ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
+      wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
+  static constexpr bool is_dynamic = !is_static;
+};
     
-}//end namespace details
-}//end namespace core
-}//end namespace rompp
+}}}//end namespace rompp::core::details
 #endif

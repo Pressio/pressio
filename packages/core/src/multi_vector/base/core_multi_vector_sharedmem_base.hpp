@@ -4,12 +4,12 @@
 
 #include "../core_multi_vector_traits.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
     
 template<typename derived_type>
 class MultiVectorSharedMemBase
-  : private core::details::CrtpBase<MultiVectorSharedMemBase<derived_type>>
+  : private core::details::CrtpBase<
+  MultiVectorSharedMemBase<derived_type>>
 {
   static_assert(details::traits<derived_type>::is_shared_mem==1,
   "OOPS: distributed concrete vector inheriting from sharedMem base!");
@@ -19,12 +19,13 @@ private:
   using ord_t = typename details::traits<derived_type>::ordinal_t;
 
 public:
-  // ord_t numVectors() const{
-  //   return this->underlying().numVectorsImpl();
-  // }
-  // ord_t length() const {
-  //   return this->underlying().lengthImpl();
-  // };
+  ord_t numVectors() const{
+    return this->underlying().numVectorsImpl();
+  }
+
+  ord_t length() const {
+    return this->underlying().lengthImpl();
+  };
   
 private:
   using this_t = MultiVectorSharedMemBase<derived_type>;
@@ -36,6 +37,5 @@ private:
     
 };//end class
   
-} // end namespace core
-}//end namespace rompp
+}}//end namespace rompp::core
 #endif

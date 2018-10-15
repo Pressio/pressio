@@ -4,13 +4,12 @@
 
 #include "../core_multi_vector_traits.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
     
 template<typename derived_type>
 class MultiVectorDistributedBase
   : private core::details::CrtpBase<
-              MultiVectorDistributedBase<derived_type>>
+  MultiVectorDistributedBase<derived_type>>
 {
 
   static_assert( details::traits<derived_type>::is_shared_mem==0,
@@ -54,6 +53,6 @@ private:
   ~MultiVectorDistributedBase() = default;
 
 };//end class
-} // end namespace core
-}//end namespace rompp
+
+}}//end namespace rompp::core
 #endif

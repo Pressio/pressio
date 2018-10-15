@@ -95,3 +95,66 @@ TEST(core_matrix_matrix_product, eigenSparseSparse){
   EXPECT_DOUBLE_EQ( C2(3,1), 1.0);
   
 }//end TEST
+
+
+
+
+TEST(core_matrix_matrix_product, eigenSparseDense){
+  using namespace rompp;  
+  // create sparse matrix
+  using mymat_t = core::Matrix<
+    Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;
+  mymat_t A(4,3);
+  {
+  using veci = std::vector<int>;
+  using vecd = std::vector<double>;
+  std::map<int,std::pair<vecd,veci>> DD;
+  DD[0] = std::make_pair<vecd,veci>({1.,2.}, {0,2});
+  DD[1] = std::make_pair<vecd,veci>({2.,3.}, {0,2});
+  DD[2] = std::make_pair<vecd,veci>({1}, {2});
+  DD[3] = std::make_pair<vecd,veci>({1}, {1});
+  for (auto const & it : DD){
+    int ind = it.first;
+    vecd data = std::get<0>(it.second);
+    veci cols = std::get<1>(it.second);
+    A.insertValues(ind,(int)data.size(),data.data(),cols.data());
+  }}
+  
+  // create dense matrix
+  using nat_t = Eigen::MatrixXd;
+  using myB_t = core::Matrix<nat_t>;
+  nat_t b(3,4);
+  b << 1.,2.,3.,4., 4.,3.,2.,1., 1.,2.,3.,4.;
+  myB_t B(b);
+  //  std::cout << *A.data() << "\n";
+
+  // do product  
+  auto C = core::ops::product(A,B);
+  //  std::cout << *C.data();
+  EXPECT_DOUBLE_EQ( C(0,0), 3.);
+  EXPECT_DOUBLE_EQ( C(0,1), 6.);
+  EXPECT_DOUBLE_EQ( C(0,2), 9.);
+  EXPECT_DOUBLE_EQ( C(0,3), 12.);
+
+  EXPECT_DOUBLE_EQ( C(1,0), 5.);
+  EXPECT_DOUBLE_EQ( C(1,1), 10.);
+  EXPECT_DOUBLE_EQ( C(1,2), 15.);
+  EXPECT_DOUBLE_EQ( C(1,3), 20.);
+
+  EXPECT_DOUBLE_EQ( C(2,0), 1.);
+  EXPECT_DOUBLE_EQ( C(2,1), 2.);
+  EXPECT_DOUBLE_EQ( C(2,2), 3.);
+  EXPECT_DOUBLE_EQ( C(2,3), 4.);
+
+  EXPECT_DOUBLE_EQ( C(3,0), 4.);
+  EXPECT_DOUBLE_EQ( C(3,1), 3.);
+  EXPECT_DOUBLE_EQ( C(3,2), 2.);
+  EXPECT_DOUBLE_EQ( C(3,3), 1.);
+
+  core::Matrix<Eigen::MatrixXd> C2(4,4);
+  core::ops::product(A,B,C2);
+  for (int i=0; i<4; i++)
+    for (int j=0; j<4; j++)
+      EXPECT_DOUBLE_EQ( C2(i,j), C(i,j) );
+  
+}//end TEST

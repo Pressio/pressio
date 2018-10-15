@@ -7,6 +7,8 @@ add_unit_test(vector_serial_eigen_dynamic_class ${GTESTMAINSDIR}/gTestMain_seria
 add_unit_test(vector_serial_eigen_dynamic_expr_templates ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(matrix_vector_product_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(matrix_matrix_product_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
+add_unit_test(multi_vector_serial_eigen_dynamic_class ${GTESTMAINSDIR}/gTestMain_serial 1)
+
 
 IF(HAVE_BLAZE)
 add_unit_test(vector_serial_blaze_class ${GTESTMAINSDIR}/gTestMain_serial 1)

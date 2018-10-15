@@ -58,7 +58,8 @@ Identifier for wrapped multivector
 --------------------------------------------*/
 enum class WrappedMultiVectorIdentifier{
    Undefined,
-   Epetra
+   Epetra,
+   Eigen
 };
 
 

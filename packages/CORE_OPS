@@ -14,6 +14,7 @@
 //// mat mat product ////
 #include "core/src/containers_ops/mat_mat_product/core_dense_dense_matrix_product.hpp"
 #include "core/src/containers_ops/mat_mat_product/core_sparse_sparse_matrix_product.hpp"
+#include "core/src/containers_ops/mat_mat_product/core_sparse_dense_matrix_product.hpp"
 
 //// mat vec product ////
 #include "core/src/containers_ops/mat_vec_product/core_dense_matrix_vector_product.hpp"

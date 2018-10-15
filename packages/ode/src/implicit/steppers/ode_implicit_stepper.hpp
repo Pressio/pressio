@@ -94,8 +94,8 @@ public:
 
 private:
   // not used if policy is passed from outside
-  residual_pol_t res_policy_obj_;
-  jacobian_pol_t jac_policy_obj_;
+  residual_pol_std_t res_policy_obj_;
+  jacobian_pol_std_t jac_policy_obj_;
 
 };//end class
 

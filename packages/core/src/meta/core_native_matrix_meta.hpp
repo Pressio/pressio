@@ -13,11 +13,7 @@
 #include "Epetra_LocalMap.h"
 #endif
 
-
-namespace rompp{
-namespace core{
-namespace meta {
-
+namespace rompp{ namespace core{ namespace meta {
 
 
 template <typename T, typename enable = void>
@@ -165,9 +161,5 @@ struct is_matrix_dense_distributed_epetra<T,
 #endif
 
 
-  
-} // namespace meta  
-} // namespace core
-
-}//end namespace rompp
+}}}//end namespace rompp::core::meta
 #endif
