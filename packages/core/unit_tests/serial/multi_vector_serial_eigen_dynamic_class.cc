@@ -68,4 +68,3 @@ TEST(core_multi_vector_serial_eigen_dynamic_class,
   EXPECT_DOUBLE_EQ( b(0,1), 1.2);
   EXPECT_DOUBLE_EQ( b(2,1), 1.3);
 }
-
