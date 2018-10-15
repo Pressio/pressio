@@ -32,6 +32,8 @@ FILE(GLOB core_containers_mat_vec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOU
     "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_vec_product/*.hpp")
 FILE(GLOB core_containers_multivec_vec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/multivec_vec_product/*.hpp")
+FILE(GLOB core_containers_mat_multivec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_multivec_product/*.hpp")
 FILE(GLOB core_containers_norms_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/norms/*.hpp")
 FILE(GLOB core_containers_minmax_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -79,6 +81,8 @@ FILE(GLOB core_containers_mat_vec_prod_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE
     "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_vec_product/src/*.cc")
 FILE(GLOB core_containers_multivec_vec_prod_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/multivec_vec_product/src/*.cc")
+FILE(GLOB core_containers_mat_multivec_prod_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_multivec_product/src/*.cc")
 FILE(GLOB core_containers_norms_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/norms/src/*.cc")
 FILE(GLOB core_containers_minmax_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -117,6 +121,7 @@ SET(SOURCES
   ${core_containers_mat_mat_prod_ops_SRCS}
   ${core_containers_mat_vec_prod_ops_SRCS}
   ${core_containers_multivec_vec_prod_ops_SRCS}
+  ${core_containers_mat_multivec_prod_ops_SRCS}
   ${core_containers_norms_ops_SRCS}
   ${core_containers_minmax_ops_SRCS}
   #
@@ -165,6 +170,7 @@ INSTALL(FILES ${core_containers_dot_ops_HEADERS} DESTINATION ${CORE_INCDIR}/cont
 INSTALL(FILES ${core_containers_mat_mat_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/mat_mat_product)
 INSTALL(FILES ${core_containers_mat_vec_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/mat_vec_product)
 INSTALL(FILES ${core_containers_multivec_vec_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/multivec_vec_product)
+INSTALL(FILES ${core_containers_mat_multivec_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/mat_multivec_product)
 INSTALL(FILES ${core_containers_norms_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/norms)
 INSTALL(FILES ${core_containers_minmax_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/min_max)
 

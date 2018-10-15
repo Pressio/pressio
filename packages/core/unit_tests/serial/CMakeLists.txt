@@ -9,6 +9,7 @@ add_unit_test(matrix_vector_product_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(matrix_matrix_product_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(multi_vector_serial_eigen_dynamic_class ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(multi_vector_eigen_product_eigen_vector ${GTESTMAINSDIR}/gTestMain_serial 1)
+add_unit_test(sparse_matrix_product_multi_vector_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
 
 
 IF(HAVE_BLAZE)

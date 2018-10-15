@@ -23,6 +23,9 @@
 //// multivec vec product ////
 #include "core/src/containers_ops/multivec_vec_product/core_multi_vector_vector_product.hpp"
 
+//// mat multivec product ////
+#include "core/src/containers_ops/mat_multivec_product/core_sparse_matrix_multi_vector_product.hpp"
+
 //// norms ////
 #include "core/src/containers_ops/norms/core_norm1_vector.hpp"
 #include "core/src/containers_ops/norms/core_norm2_vector.hpp"

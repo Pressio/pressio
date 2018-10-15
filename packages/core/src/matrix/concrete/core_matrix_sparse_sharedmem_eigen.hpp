@@ -105,13 +105,10 @@ private:
   };  
 
   void addToDiagonalImpl(sc_t value) {
-    // check matrix is squre
-    assert(this->rows()==this->cols()); 
     auto ide(data_);
     ide.setIdentity();
     ide.coeffs() *= value;
     data_ += ide;
-    //    data_.diagonal() += ide.asDiagonal();
   };
   
   // from sharedMem base  
