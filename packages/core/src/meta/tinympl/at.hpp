@@ -53,10 +53,10 @@
 
 #include <utility>
 
-#include <tinympl/variadic/at.hpp>
-#include <tinympl/as_sequence.hpp>
-#include <tinympl/sequence.hpp>
-#include <tinympl/size.hpp>
+#include "./variadic/at.hpp"
+#include "as_sequence.hpp"
+#include "sequence.hpp"
+#include "size.hpp"
 
 namespace tinympl {
 

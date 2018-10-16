@@ -56,9 +56,11 @@ public:
   ~RomLSPGJacobianPolicy() = default;
   //----------------------------------------------------------------
   
-  template <typename app_t>
-  void operator()(const app_state_w_type & odeY,
-  		  app_jac_w_type & odeJJ,
+  template <typename ode_state_t,
+	    typename ode_jac_t,
+	    typename app_t>
+  void operator()(const ode_state_t & odeY,
+  		  ode_jac_t & odeJJ,
   		  const app_t & app,
   		  scalar_type t,
   		  scalar_type dt) const{
@@ -70,18 +72,21 @@ public:
     // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
     
-    // since we are advancing the Incremental Solution,
-    // to compute the app residual we need to add the
-    // FOM initial condition to get full state 
-    yFOM_ += (*y0FOM_);
+    // // since we are advancing the Incremental Solution,
+    // // to compute the app residual we need to add the
+    // // FOM initial condition to get full state 
+    // yFOM_ += (*y0FOM_);
     
-    /// query the application for the SPACE residual 
-    app.jacobian(*yFOM_.data(), *odeJJ.data(), t);
+    // /// query the application for the jacobian
+    // app.jacobian(*yFOM_.data(), *appJJ_.data(), t);
 
-    // // do time discrete residual
+    // // do time discrete jacobian, which yields:
+    // // appJJ = dR/dq 
     // ode::impl::implicit_euler_time_discrete_jacobian(appJJ_, dt);
 
-    // product of odeJJ with phi_op: odeJJ x phi
+    // // since dq/dy = phi_op
+    // // right multiply appJJ with phi_op: odeJJ x phi
+    // // this is = dR/dq dq/dy 
     // odeJJ = phi_->applyRight(appJJ_);
     
     // /// apply weighting
@@ -89,37 +94,38 @@ public:
     //   A_->applyTranspose(appRHS_, odeR);
   }
   //----------------------------------------------------------------
-
-
-  template <typename app_t>
-  app_jac_w_type operator()(const app_state_w_type & odeY,
-			    const app_t & app,
-			    scalar_type t,
-			    scalar_type dt) const{
-    // odeY is the REDUCED state, we need to reconstruct FOM state
+  
+  
+  template <typename ode_state_t,
+	    typename app_t>
+  auto operator()(const ode_state_t & odeY,
+  		  const app_t & app,
+  		  scalar_type t,
+  		  scalar_type dt) const{
+    //   // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
-    // since we are advancing the Incremental Solution,
-    // to compute the app residual we need to add the
-    // FOM initial condition to get full state 
-    yFOM_ += (*y0FOM_);
+    //   // since we are advancing the Incremental Solution,
+    //   // to compute the app residual we need to add the
+    //   // FOM initial condition to get full state 
+    //   yFOM_ += (*y0FOM_);
     
-    /// query the application for the SPACE residual 
+    /// query the application for jacobian
     auto JJ = app.jacobian(*yFOM_.data(), t);
-    app_jac_w_type JJw(JJ);
+    core::Matrix<decltype(JJ)> JJw(JJ);
     
-    // // do time discrete residual
-    // ode::impl::implicit_euler_time_discrete_jacobian(JJw, dt);
+    //   // do time discrete residual
+    //   ode::impl::implicit_euler_time_discrete_jacobian(JJw, dt);
 
-    // // product of odeJJ with phi_op: odeJJ x phi
-    // app_jac_w_type JJout(JJw); //=phi_->applyRight(JJ);
-    // return JJout;
+    //   app_jac_w_type JJout(phi_->applyRight(JJw));
+    return JJw;
     
-    // /// apply weighting
-    // if (A_)
-    //   A_->applyTranspose(appRHS_, odeR);
+    //   // /// apply weighting
+    //   // if (A_)
+    //   //   A_->applyTranspose(appRHS_, odeR);
   }
   //----------------------------------------------------------------
-  
+
+
 private:
   friend base_pol_t;
   friend base_incr_sol_t;

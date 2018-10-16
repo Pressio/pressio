@@ -12,6 +12,8 @@
 #include "../policies/standard/ode_implicit_euler_jacobian_standard_policy.hpp"
 #include "../policies/standard/ode_implicit_bdf2_residual_standard_policy.hpp"
 #include "../policies/standard/ode_implicit_bdf2_jacobian_standard_policy.hpp"
+#include "../../../../core/src/meta/tinympl/at.hpp"
+#include "../../../../core/src/meta/tinympl/find_if.hpp"
 
 
 namespace rompp{ namespace ode{ namespace impl{
@@ -33,12 +35,6 @@ struct implicit_stepper_helper_info_base{
   static constexpr auto k2 = ic2_t::value;
   using model_type = ::tinympl::variadic::at_or_t<void, k2, Args...>;
 
-  // find if a residual type is passed: if not, default = state_type
-  using ic3_t = ::tinympl::variadic::find_if_t<
-    meta::is_legitimate_implicit_residual_type, Args...>;
-  static constexpr auto k3 = ic3_t::value;
-  using res_type = ::tinympl::variadic::at_or_t<state_type,k3,Args...>;
-
   // find if a jacobian type is passed, this has to be passed
   using ic4_t = ::tinympl::variadic::find_if_t<
     meta::is_legitimate_jacobian_type, Args...>;
@@ -46,7 +42,16 @@ struct implicit_stepper_helper_info_base{
   using jac_type = ::tinympl::variadic::at_or_t<void,k4,Args...>;
   static_assert( !std::is_void<jac_type>::value,
   "cannot pass void jacob type to implicit stepper, it has to be a valid template");
-  
+
+  // find if a residual type is passed: if not, default = state_type
+  // remove the state_type from Args... so that we can find the residual type
+  using newargs_t =
+    typename ::tinympl::variadic::erase<k1,k1+1, std::tuple, Args...>::type;  
+  using ic3_t = typename ::tinympl::find_if<newargs_t,
+				   meta::is_legitimate_implicit_residual_type>::type;
+  static constexpr auto k3 = ic3_t::value;
+  using res_type = typename ::tinympl::at_or<state_type,k3,newargs_t>::type;
+
 };
 //--------------------------------------------
 

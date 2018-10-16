@@ -17,6 +17,12 @@ class MultiVectorOperator
   : public OperatorBase<
       MultiVectorOperator<operator_type>>{
 
+  //----  APPLY RIGHT ----
+  template<typename T>
+  auto applyRightImpl(const T & X){
+    return core::ops::product(X, *op_);
+  }
+  
   //-------------------------------
   //----      APPLY AS IS      ----
   //-------------------------------

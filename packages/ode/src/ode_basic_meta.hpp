@@ -32,13 +32,19 @@ struct is_legitimate_explicit_state_type<state_type,
    core::meta::is_core_vector_wrapper<state_type>::value
    >::type
   > : std::true_type{};
-  
-//---------------------------------------------------------
-// residual satisfies same constraints as state type (for now)
-template<typename residual_type, typename enable = void>
-struct is_legitimate_explicit_residual_type
-  : is_legitimate_explicit_state_type<residual_type>{};
 
+      
+//---------------------------------------------------------
+template<typename residual_type, typename enable = void>
+struct is_legitimate_explicit_residual_type : std::false_type{};
+
+template<typename residual_type>
+struct is_legitimate_explicit_residual_type<residual_type,
+ typename std::enable_if<
+   core::meta::is_core_vector_wrapper<residual_type>::value
+   >::type
+  > : std::true_type{};
+      
 
 //---------------------------------------------------------
 template<typename state_type, typename enable = void>
@@ -50,12 +56,35 @@ struct is_legitimate_implicit_state_type<state_type,
 	  core::meta::is_core_vector_wrapper<state_type>::value
 	  >::type > : std::true_type{};
 
+      
 //---------------------------------------------------------
-// residual satisfies same constraints as state type (for now)
 template<typename residual_type, typename enable = void>
-struct is_legitimate_implicit_residual_type
-  : is_legitimate_implicit_state_type<residual_type>{};
+struct is_legitimate_implicit_residual_type : std::false_type{};
 
+template<typename residual_type>
+struct is_legitimate_implicit_residual_type<residual_type,
+ typename std::enable_if<
+   core::meta::is_core_vector_wrapper<residual_type>::value
+   >::type
+  > : std::true_type{};
+
+      
+//---------------------------------------------------------
+// template<typename res_type,
+// 	 typename state_type, typename enable = void>
+// struct is_implicit_residual_type_neq_to_state_type : std::false_type{};
+
+// template<typename res_type,
+// 	 typename state_type>
+// struct is_implicit_residual_type_neq_to_state_type<
+//   res_type, state_type, 
+//  typename std::enable_if<
+//    is_legitimate_implicit_residual_type<res_type>::value and
+//    is_legitimate_implicit_state_type<state_type>::value and
+//    !std::is_same<res_type, state_type>::value
+//    >::type
+//   > : std::true_type{};
+      
 //---------------------------------------------------------
 template<typename jacobian_type, typename enable = void>
 struct is_legitimate_jacobian_type : std::false_type{};

@@ -63,10 +63,12 @@ public:
   ~RomLSPGResidualPolicy() = default;
   //----------------------------------------------------------------
   
-  template <typename app_t>
-  void operator()(const app_state_w_type & odeY,
-  		  app_res_w_type & odeR,
-  		  const std::array<app_state_w_type, 1> & oldYs,
+  template <typename ode_state_t,
+	    typename ode_res_t,
+	    typename app_t>
+  void operator()(const ode_state_t & odeY,
+  		  ode_res_t & odeR,
+  		  const std::array<ode_state_t, 1> & oldYs,
   		  const app_t & app,
   		  scalar_type t,
   		  scalar_type dt) const{
@@ -76,21 +78,21 @@ public:
     // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
 
-    // reconstruct FOM state at previous step n-1
-    // the previous state is stored inside oldYs
-    phi_->apply(oldYs[0], yFOMnm1_);
+    // // reconstruct FOM state at previous step n-1
+    // // the previous state is stored inside oldYs
+    // phi_->apply(oldYs[0], yFOMnm1_);
     
-    // since we are advancing the Incremental Solution,
-    // to compute the app residual we need to add the
-    // FOM initial condition to get full state 
-    yFOM_ += (*y0FOM_);
-    yFOMnm1_ += (*y0FOM_);
-    
-    /// query the application for the SPACE residual 
-    app.residual(*yFOM_.data(), *odeR.data(), t);
+    // // since we are advancing the Incremental Solution,
+    // // to compute the app residual we need to add the
+    // // FOM initial condition to get full state 
+    // yFOM_ += (*y0FOM_);
+    // yFOMnm1_ += (*y0FOM_);
 
-    // do time discrete residual
-    ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_, odeR, dt);
+    // /// query the application for the SPACE residual 
+    // app.residual(*yFOM_.data(), *appRHS_.data(), t);
+
+    // // do time discrete residual
+    // ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_, odeR, dt);
     
     // /// apply weighting
     // if (A_)
@@ -98,38 +100,37 @@ public:
   }
   //----------------------------------------------------------------
 
-  template <typename app_t>
-  app_res_w_type operator()(const app_state_w_type & odeY,
-			    const std::array<app_state_w_type, 1> & oldYs,
-			    const app_t & app,
-			    scalar_type t,
-			    scalar_type dt) const{
-    // here y_n = odeY is reduced state
-    // need to compute: R( phi y_n) = phi y_n - phi y_n-1 - dt * f(phi y)
+  template <typename ode_state_t,
+	    typename app_t>
+  auto operator()(const ode_state_t & odeY,
+		  const std::array<ode_state_t, 1> & oldYs,
+		  const app_t & app,
+		  scalar_type t,
+		  scalar_type dt) const{
     
     // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
 
-    // reconstruct FOM state at previous step n-1
-    // the previous state is stored inside oldYs
-    phi_->apply(oldYs[0], yFOMnm1_);
+  //   // reconstruct FOM state at previous step n-1
+  //   // the previous state is stored inside oldYs
+  //   phi_->apply(oldYs[0], yFOMnm1_);
     
-    // since we are advancing the Incremental Solution,
-    // to compute the app residual we need to add the
-    // FOM initial condition to get full state 
-    yFOM_ += (*y0FOM_);
-    yFOMnm1_ += (*y0FOM_);
+  //   // since we are advancing the Incremental Solution,
+  //   // to compute the app residual we need to add the
+  //   // FOM initial condition to get full state 
+  //   yFOM_ += (*y0FOM_);
+  //   yFOMnm1_ += (*y0FOM_);
     
     /// query the application for the SPACE residual 
     auto RR = app.residual(*yFOM_.data(), t);
-    app_res_w_type RRw(RR);
+    core::Vector<decltype(RR)> RRw(RR);
 
-    // do time discrete residual
-    ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_,
-						     RRw, dt);
-    /// apply weighting
-    // if (A_)
-    //   A_->applyTranspose(appRHS_, odeR);
+  //   // do time discrete residual
+  //   ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_,
+  // 						     RRw, dt);
+  //   /// apply weighting
+  //   // if (A_)
+  //   //   A_->applyTranspose(appRHS_, odeR);
     
     return RRw;
   }
@@ -144,3 +145,4 @@ private:
   
 }}}//end namespace rompp::rom::exp
 #endif 
+    

@@ -9,19 +9,20 @@
 namespace rompp{ namespace ode{ namespace policy{
   
 
-//----------------------------------------------------------------
-//   default when state_type = residual_type
-//----------------------------------------------------------------
 template<typename state_type,
-	 typename model_type>
+	 typename model_type,
+	 typename residual_type>
 class ImplicitEulerResidualStandardPolicy<
-  state_type, model_type, state_type,
+  state_type, model_type, residual_type,
   core::meta::enable_if_t<
-    core::meta::is_core_vector_wrapper<state_type>::value
+    core::meta::is_core_vector_wrapper<state_type>::value and 
+    core::meta::is_core_vector_wrapper<residual_type>::value
     >
   >
   : public ImplicitResidualPolicyBase<
-  ImplicitEulerResidualStandardPolicy<state_type,model_type>,1,0>{
+  ImplicitEulerResidualStandardPolicy<state_type,
+				      model_type,
+				      residual_type>,1,0>{
   
 public:
   ImplicitEulerResidualStandardPolicy() = default;
@@ -34,13 +35,13 @@ private:
 public:  
   //----------------------------------------------------------------
   void operator()(const state_type & y,
-		  state_type & R,
+		  residual_type & R,
 		  const std::array<state_type, 1> & oldYs,
 		  const model_type & model,
 		  scalar_type t,
 		  scalar_type dt) const{    
-    if (R.empty())
-      R.matchLayoutWith(y);
+    // if (R.empty())
+    //   R.matchLayoutWith(y);
 
     R.setZero();
     model.residual(*y.data(), *R.data(), t);
@@ -50,14 +51,14 @@ public:
   }
   //----------------------------------------------------------------
 
-  state_type operator()(const state_type & y, 
+  residual_type operator()(const state_type & y, 
 			const std::array<state_type, 1> & oldYs,
 			const model_type & model,
 			scalar_type t,
 			scalar_type dt)const {
     
     auto nR = model.residual(*y.data(), t);
-    state_type R(nR);
+    residual_type R(nR);
     // do time discrete residual
     ode::impl::implicit_euler_time_discrete_residual(y, oldYs[0],
 						     R, dt);
@@ -68,7 +69,7 @@ public:
 private:
   friend ImplicitResidualPolicyBase<
     ImplicitEulerResidualStandardPolicy<state_type, model_type,
-					state_type>, 1,0>;
+					residual_type>, 1,0>;
 };//end class
 
 }}}//end namespace rompp::ode::policy

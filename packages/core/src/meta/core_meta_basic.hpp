@@ -5,10 +5,10 @@
 #include <type_traits>
 #include <complex>
 #include "./tinympl/variadic.hpp"
+#include "./tinympl/variadic/erase.hpp"
+#include <tuple>
 
-namespace rompp{
-namespace core{
-namespace meta {
+namespace rompp{ namespace core{ namespace meta {
 
   template<typename T>
   struct remove_const: std::remove_const<T>{};
@@ -93,7 +93,5 @@ namespace meta {
 			> : std::true_type{};
   
    
-} // namespace meta
-} // namespace core
-}//end namespace rompp
+}}} // namespace rompp::core::meta
 #endif
