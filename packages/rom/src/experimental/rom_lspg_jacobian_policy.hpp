@@ -83,7 +83,7 @@ public:
     // // do time discrete jacobian, which yields:
     // // appJJ = dR/dq 
     // ode::impl::implicit_euler_time_discrete_jacobian(appJJ_, dt);
-
+    
     // // since dq/dy = phi_op
     // // right multiply appJJ with phi_op: odeJJ x phi
     // // this is = dR/dq dq/dy 

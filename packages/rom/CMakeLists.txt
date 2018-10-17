@@ -22,7 +22,7 @@ TRIBITS_ADD_SHOW_DEPRECATED_WARNINGS_OPTION()
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(unit_tests)
-TRIBITS_ADD_TEST_DIRECTORIES(test)
+# TRIBITS_ADD_TEST_DIRECTORIES(test)
 #TRIBITS_ADD_EXAMPLE_DIRECTORIES(example)
 
 #----------------------------------------------------------------
