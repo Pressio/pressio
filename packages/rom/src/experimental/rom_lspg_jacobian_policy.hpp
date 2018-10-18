@@ -71,7 +71,7 @@ public:
     
     // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
-    
+
     // // since we are advancing the Incremental Solution,
     // // to compute the app residual we need to add the
     // // FOM initial condition to get full state 
@@ -102,22 +102,28 @@ public:
   		  const app_t & app,
   		  scalar_type t,
   		  scalar_type dt) const{
+
+    std::cout << " auto() jacobian \n";
     //   // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
-    //   // since we are advancing the Incremental Solution,
-    //   // to compute the app residual we need to add the
-    //   // FOM initial condition to get full state 
-    //   yFOM_ += (*y0FOM_);
+
+    // since we are advancing the Incremental Solution,
+    // to compute the app residual we need to add the
+    // FOM initial condition to get full state 
+    yFOM_ += (*y0FOM_);
+    //yFOM_.data()->Print(std::cout);
     
     /// query the application for jacobian
     auto JJ = app.jacobian(*yFOM_.data(), t);
     core::Matrix<decltype(JJ)> JJw(JJ);
     
-    //   // do time discrete residual
-    //   ode::impl::implicit_euler_time_discrete_jacobian(JJw, dt);
-
-    //   app_jac_w_type JJout(phi_->applyRight(JJw));
-    return JJw;
+    // do time discrete residual
+    ode::impl::implicit_euler_time_discrete_jacobian(JJw, dt);
+    //    JJw.data()->Print(std::cout);
+    
+    auto JJphi = phi_->applyRight(JJw);
+    //    JJphi.data()->Print(std::cout);
+    return JJphi;
     
     //   // /// apply weighting
     //   // if (A_)

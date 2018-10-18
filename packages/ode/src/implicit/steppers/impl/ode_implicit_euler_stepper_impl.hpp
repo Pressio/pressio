@@ -3,7 +3,6 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPL_IMPLICIT_EULER_STEPPER_IMPL_HPP_
 
 #include "../base/ode_implicit_stepper_base.hpp"
-// #include "../../policies/meta/ode_implicit_euler_policies_meta.hpp"
 
 namespace rompp{ namespace ode{ namespace impl{
 
@@ -32,12 +31,12 @@ class ImplicitEulerStepperImpl<state_type,
 
   static_assert( meta::is_legitimate_implicit_euler_residual_policy<
 		 residual_policy_type>::value,
-		 "IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE,\
+"IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
 
   static_assert( meta::is_legitimate_implicit_euler_jacobian_policy<
 		 jacobian_policy_type>::value,
-		 "IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, \
+"IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
   
   using stepper_t = ImplicitEulerStepperImpl<state_type,

@@ -6,17 +6,15 @@
 #include "../ode_basic_meta.hpp"
 #include "../ode_is_legitimate_collector.hpp"
 
-namespace rompp{
-namespace ode{
-
+namespace rompp{ namespace ode{
   
-//----------------------------------------------------------------
-//----------------------------------------------------------------
-//----------------------------------------------------------------
+//---------------------------------------------------
+//---------------------------------------------------
+//---------------------------------------------------
 //                 FOR EXPLICIT METHODS
-//----------------------------------------------------------------
-//----------------------------------------------------------------
-//----------------------------------------------------------------
+//---------------------------------------------------
+//---------------------------------------------------
+//---------------------------------------------------
 
 template<typename stepper_type,
 	typename state_type,
@@ -49,7 +47,8 @@ void integrateNSteps(stepper_type & stepper,
     // do one step
     stepper(yIn, time, dt, step);
     // advance time
-    time = start_time + static_cast<time_type>(step) * dt;
+    time = start_time +
+      static_cast<time_type>(step) * dt;
     // call collector/observer at starting time
     collector(step, time, yIn);
   }
@@ -80,19 +79,20 @@ void integrateNSteps(stepper_type & stepper,
     // do one step
     stepper(yIn, time, dt, step);
     // advance time
-    time = start_time + static_cast<time_type>(step) * dt;  
+    time = start_time
+      + static_cast<time_type>(step) * dt;
   }
 }  
 
 
   
-//----------------------------------------------------------------
-//----------------------------------------------------------------
-//----------------------------------------------------------------
+//----------------------------------------------------
+//----------------------------------------------------
+//----------------------------------------------------
 //                 FOR IMPLICIT METHODS
-//----------------------------------------------------------------
-//----------------------------------------------------------------
-//----------------------------------------------------------------
+//----------------------------------------------------
+//----------------------------------------------------
+//----------------------------------------------------
 
 template<typename stepper_type,
 	 typename state_type,
@@ -127,7 +127,8 @@ void integrateNSteps(stepper_type & stepper,
     // do one step
     stepper(yIn, time, dt, step, solver);
     // advance time
-    time = start_time + static_cast<time_type>(step) * dt;  
+    time = start_time
+      + static_cast<time_type>(step) * dt;  
     // call collector/observer 
     collector(step, time, yIn);
   }
@@ -160,11 +161,11 @@ void integrateNSteps(stepper_type & stepper,
     // do one step
     stepper(yIn, time, dt, step, solver);
     // advance time
-    time = start_time + static_cast<time_type>(step) * dt;  
+    time = start_time
+      + static_cast<time_type>(step) * dt;  
   }
 }  
 
    
-}//end namespace
-}//end namespace rompp
+}}//end namespace rompp::ode
 #endif 

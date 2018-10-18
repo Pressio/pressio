@@ -70,29 +70,14 @@ struct is_legitimate_implicit_residual_type<residual_type,
 
       
 //---------------------------------------------------------
-// template<typename res_type,
-// 	 typename state_type, typename enable = void>
-// struct is_implicit_residual_type_neq_to_state_type : std::false_type{};
-
-// template<typename res_type,
-// 	 typename state_type>
-// struct is_implicit_residual_type_neq_to_state_type<
-//   res_type, state_type, 
-//  typename std::enable_if<
-//    is_legitimate_implicit_residual_type<res_type>::value and
-//    is_legitimate_implicit_state_type<state_type>::value and
-//    !std::is_same<res_type, state_type>::value
-//    >::type
-//   > : std::true_type{};
-      
-//---------------------------------------------------------
 template<typename jacobian_type, typename enable = void>
 struct is_legitimate_jacobian_type : std::false_type{};
 
 template<typename jacobian_type>
 struct is_legitimate_jacobian_type<jacobian_type,
        typename std::enable_if<
-	 core::meta::is_core_matrix_wrapper<jacobian_type>::value
+	 core::meta::is_core_matrix_wrapper<jacobian_type>::value or
+	 core::meta::is_core_multi_vector_wrapper<jacobian_type>::value
 	 >::type
        > : std::true_type{};
  

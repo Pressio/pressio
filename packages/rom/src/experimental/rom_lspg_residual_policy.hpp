@@ -78,6 +78,8 @@ public:
     // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
 
+    std::cout << " void() residual \n";
+    
     // // reconstruct FOM state at previous step n-1
     // // the previous state is stored inside oldYs
     // phi_->apply(oldYs[0], yFOMnm1_);
@@ -110,28 +112,24 @@ public:
     
     // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
-
-  //   // reconstruct FOM state at previous step n-1
-  //   // the previous state is stored inside oldYs
-  //   phi_->apply(oldYs[0], yFOMnm1_);
-    
-  //   // since we are advancing the Incremental Solution,
-  //   // to compute the app residual we need to add the
-  //   // FOM initial condition to get full state 
-  //   yFOM_ += (*y0FOM_);
-  //   yFOMnm1_ += (*y0FOM_);
+    // reconstruct FOM state at previous step n-1
+    phi_->apply(oldYs[0], yFOMnm1_);
+    // since we are advancing the Incremental Solution,
+    // to compute the app residual we need to add the
+    // FOM initial condition to get full state 
+    yFOM_ += (*y0FOM_);
+    yFOMnm1_ += (*y0FOM_);
     
     /// query the application for the SPACE residual 
     auto RR = app.residual(*yFOM_.data(), t);
     core::Vector<decltype(RR)> RRw(RR);
 
-  //   // do time discrete residual
-  //   ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_,
-  // 						     RRw, dt);
+    // do time discrete residual
+    ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_,
+  						     RRw, dt);    
   //   /// apply weighting
   //   // if (A_)
-  //   //   A_->applyTranspose(appRHS_, odeR);
-    
+  //   //   A_->applyTranspose(appRHS_, odeR);    
     return RRw;
   }
   //----------------------------------------------------------------

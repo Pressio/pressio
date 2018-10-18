@@ -10,8 +10,7 @@ TRILPATH=/Users/fnrizzi/tpl/trilinos/install_debug_gcc640_ompi301
 EIGENINCPATH=/Users/fnrizzi/tpl/eigen/3.3.5/install
 BLAZEINCPATH=/Users/fnrizzi/tpl/blaze/3.4/install/include
 ARMADILLOPATH=/Users/fnrizzi/tpl/armadillo/install_gcc640
-KOKKOSPATH=/Users/fnrizzi/tpl/kokkos/install
-GTESTPATH=/Users/fnrizzi/tpl/gtest/install
+GTESTPATH=/Users/fnrizzi/tpl/gtest/installgcc640
 
 cmake \
     -D CMAKE_BUILD_TYPE:STRING=DEBUG \
@@ -50,14 +49,14 @@ cmake \
     \
     -D rompp_ENABLE_core:BOOL=ON \
     -D rompp_ENABLE_solvers:BOOL=ON \
-    -D rompp_ENABLE_svd:BOOL=ON \
-    -D rompp_ENABLE_ode:BOOL=ON \
-    -D rompp_ENABLE_rom:BOOL=ON \
+    -D rompp_ENABLE_svd:BOOL=ON\
+    -D rompp_ENABLE_ode:BOOL=ON\
+    -D rompp_ENABLE_rom:BOOL=ON\
     \
     $EXTRA_ARGS \
     ${SRC}
 
-    #-D rompp_ENABLE_optimization:BOOL=ON \
+    #-D rompp_ENABLE_optimization:BOOL=OFF
     #-D rompp_ENABLE_apps:BOOL=ON \
     # -DTribitsExProj_TRIBITS_DIR=$TRIBITS_DIR \
     # -D rompp_ENABLE_svd:BOOL=OFF \

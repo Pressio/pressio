@@ -46,7 +46,7 @@ void dot(const mvec_type & mvA,
 
 #ifdef HAVE_TRILINOS    
 // Epetra multivector dot epetra vector
-// result is a std::vector passed as an argument to change
+// result is an Eigen vector passed by reference to store the solution
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
@@ -73,7 +73,7 @@ void dot(const mvec_type & mvA,
       
 #ifdef HAVE_TRILINOS    
 // Epetra multivector dot epetra vector
-// result is a std::vector passed as an argument to change
+// result is a std::vector passed by reference 
 template <typename mvec_type,
 	  typename vec_type,
   core::meta::enable_if_t<

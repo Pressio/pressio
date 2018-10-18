@@ -4,7 +4,9 @@
 
 #include "../rom_ConfigDefs.hpp"
 #include "../../../CORE_ALL"
+#ifdef HAVE_TRILINOS
 #include <Epetra_Import.h>
+#endif
 
 namespace rompp{ namespace rom{ namespace hack{
 
@@ -15,7 +17,7 @@ template<typename matrix_type,
 class QRSolver;
 
 
-
+#ifdef HAVE_TRILINOS
 // overload for:
 // the input data is a wrapper of an Epetra_MultiVector
 // the Q factor is a Q_type wrapper of an Epetra_MultiVector
@@ -100,7 +102,7 @@ private:
   std::shared_ptr<R_type> Rmat_;
 
 };//end class
-
+#endif
       
       
 }}} // end namespace rompp::rom::hack

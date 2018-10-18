@@ -22,7 +22,7 @@ class ImplicitStepper
   using jacobian_pol_std_t = typename info_t::jac_std_pol_type;
   using auxiliary_stepper_t = typename info_t::auxiliary_stepper_type;
   using base_impl_t = typename info_t::base_impl_type;
-
+  
 //this needs to be public, it is detected by integrators
 public:
   using base_t = base_impl_t;

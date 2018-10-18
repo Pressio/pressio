@@ -47,7 +47,7 @@ class Matrix<wrapped_type,
 public:
   Matrix() = delete;
 
-  explicit Matrix(const row_map_t & rowMap,
+  Matrix(const row_map_t & rowMap,
 		  LO_t NumEntriesPerRow,
 		  bool StaticProfile=false)
     : data_(Epetra_DataAccess::Copy, rowMap,
@@ -64,7 +64,10 @@ public:
   // 	    NumEntriesPerRow, StaticProfile){}
   
   explicit Matrix(const wrap_t & objin)
-    : data_(objin){}
+    : data_(objin){
+    // cannot copy construct Crs matrix is filling is not completed
+    assert(this->isFillingCompleted());
+  }
   
   ~Matrix() = default;
 
@@ -139,7 +142,7 @@ private:
   domain_map_t const & getDomainDataMapImpl() const{
     return data_.DomainMap();
   }
-
+  
   bool hasSameRangeDataMapAsImpl(derived_t const & other) const{
     return data_.RangeMap().SameAs(other.getRangeDataMap());
   }
@@ -161,8 +164,27 @@ private:
 			      const sc_t * values,
 			      const GO_t * indices)
   {
-    data_.InsertGlobalValues(targetRow, numEntries, values, indices);
+    data_.InsertGlobalValues(targetRow,
+			     numEntries,
+			     values,
+			     indices);
   }
+
+  void addToDiagonalImpl(sc_t value) {
+    const auto &  myRowMap = this->getRowDataMap();
+    // get current diagonal
+    Epetra_Vector diag(myRowMap);
+    data_.ExtractDiagonalCopy(diag);
+    // add to diagonal
+    for (auto i=0; i<myRowMap.NumMyElements(); i++)
+      diag[i] += value;
+    // replace
+    data_.ReplaceDiagonalValues(diag);
+  }
+
+  void scaleImpl(sc_t value) {
+    data_.Scale(value);
+  }  
   
 private:
   friend ContainerBase< derived_t, wrapped_type >;

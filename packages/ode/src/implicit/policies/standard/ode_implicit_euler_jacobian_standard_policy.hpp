@@ -5,6 +5,7 @@
 #include "../../../ode_forward_declarations.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
 #include "../../ode_jacobian_impl.hpp"
+#include "../../../ode_basic_meta.hpp"
 
 namespace rompp{ namespace ode{ namespace policy{
 
@@ -15,13 +16,8 @@ template<typename state_type,
 class ImplicitEulerJacobianStandardPolicy<
   state_type, model_type, jacobian_type, 
   core::meta::enable_if_t<
-    core::meta::is_core_vector_wrapper<state_type>::value and 
-    core::meta::is_core_matrix_wrapper<jacobian_type>::value and
-    std::is_same<typename
-		 core::details::traits<state_type>::scalar_t,
-		 typename
-		 core::details::traits<jacobian_type>::scalar_t
-		 >::value
+    ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and 
+    ::rompp::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value 
     >
   >
   : public JacobianPolicyBase<ImplicitEulerJacobianStandardPolicy<
