@@ -1,0 +1,10 @@
+
+#ifndef QR_BASIC_HPP_
+#define QR_BASIC_HPP_
+
+#include "qr/src/qr_ConfigDefs.hpp"
+#include "qr/src/qr_forward_declarations.hpp"
+
+#include "qr/src/qr_hacked.hpp"
+
+#endif

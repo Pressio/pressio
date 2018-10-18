@@ -7,6 +7,7 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
   # from top to bottom. 
   core packages/core PT
   solvers packages/solvers PT
+  qr packages/qr PT
   svd packages/svd PT
   ode packages/ode PT
   optimization packages/optimization PT

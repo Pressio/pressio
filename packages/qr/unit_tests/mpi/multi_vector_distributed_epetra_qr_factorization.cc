@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "CORE_ALL"
-#include "../../src/experimental/rom_qr.hpp"
+#include "../../src/qr_hacked.hpp"
 #include "Epetra_MpiComm.h"
 
 struct epetraMultiVectorR9C4Fixture
@@ -66,7 +66,7 @@ TEST_F(epetraMultiVectorR9C4Fixture,
 
   // do QR
   using R_type = rompp::core::Matrix<Eigen::MatrixXd>;
-  rompp::rom::hack::QRSolver<mymvec_t, rompp::core::MultiVector, R_type> qrObj;
+  rompp::qr::hack::QRSolver<mymvec_t, rompp::core::MultiVector, R_type> qrObj;
   qrObj.compute(A);
   //  using Q_t = rompp::core::MultiVector<Epetra_MultiVector>;
   const auto & Q = qrObj.cRefQFactor();
