@@ -51,7 +51,7 @@ struct is_epetra_sparse_matrix_wrapper<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
        (core::details::traits<T>::wrapped_matrix_identifier==
-	core::details::WrappedMatrixIdentifier::SparseEpetra)
+	core::details::WrappedMatrixIdentifier::CrsEpetra)
        >
   >
   : std::true_type{};
