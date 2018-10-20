@@ -15,11 +15,20 @@ APPEND_SET(TESTFILES test_solvers_nonlinear_leastsquare_eigen.cc)
 # APPEND_SET(...)
 # ...
 
-
 # we create a single executable to run all the tests above
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   solvers_unitTest_serial_grouped
   SOURCES ${TESTFILES} gTestMain.cc
+  COMM serial mpi
+  NUM_MPI_PROCS 1
+  PASS_REGULAR_EXPRESSION "PASSED"
+  FAIL_REGULAR_EXPRESSION "FAILED"
+)
+
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  gauss_newton_with_qr_inner_solver
+  SOURCES gauss_newton_with_qr_inner_solver gTestMain.cc
   COMM serial mpi
   NUM_MPI_PROCS 1
   PASS_REGULAR_EXPRESSION "PASSED"

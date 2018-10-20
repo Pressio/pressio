@@ -95,13 +95,12 @@ or is not available for linear systems defined by Eigen matrices");
   template <
     typename NSolverT,
     typename core::meta::enable_if_t<
+      std::is_same<NSolverT, nonlinearleastsquare::GaussNewtonQR>::value and
       nonlinearleastsquare::details::solver_traits<NSolverT>::enabled
     >* = nullptr
   >
   static auto createNonLinearIterativeLeastSquareQRBasedSolver(){
-    using policy_type =
-      typename nonlinearleastsquare::details::solver_traits<NSolverT>::solver_type;
-    return NonLinearLeastSquareIterativeSolver<policy_type, void>();
+    return SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy();
   }
   //--------------------------------------------------------------
 
