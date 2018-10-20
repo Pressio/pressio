@@ -8,6 +8,53 @@
 
 namespace rompp{ namespace core{ namespace ops{
 
+// Eigen multivector dot eigen vector
+// result stored in Eigen vector passed by reference 
+template <typename mvec_type,
+	  typename vec_type,
+	  typename result_vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_eigen_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_eigen_vector_wrapper<vec_type>::value and 
+    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and 
+    core::meta::is_eigen_vector_wrapper<result_vec_type>::value and
+    core::meta::wrapper_pair_have_same_scalar<vec_type,result_vec_type>::value
+    > * = nullptr
+  >
+void dot(const mvec_type & mvA,
+	 const vec_type & vecB,
+	 result_vec_type & result){
+  auto numVecs = mvA.numVectors();
+  if ( result.size() != numVecs )
+    result.resize(numVecs);
+  *result.data() = (*mvA.data()).transpose() * (*vecB.data());
+}
+//--------------------------------------------------------
+
+      
+// Eigen multivector dot eigen vector
+// result is built and returned 
+template <typename mvec_type,
+	  typename vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_eigen_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_eigen_vector_wrapper<vec_type>::value and 
+    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    > * = nullptr
+  >
+auto dot(const mvec_type & mvA,
+	 const vec_type & vecB){
+  using sc_t = typename core::details::traits<mvec_type>::scalar_t;
+  core::Vector<Eigen::Matrix<sc_t, Eigen::Dynamic, 1>> c(vecB.size());
+  dot(mvA,vecB,c);
+  return c;
+}
+//--------------------------------------------------------
+
+
+
+
+      
 #ifdef HAVE_TRILINOS    
 // Epetra multivector dot epetra vector
 // result is a * passed as an argument to change

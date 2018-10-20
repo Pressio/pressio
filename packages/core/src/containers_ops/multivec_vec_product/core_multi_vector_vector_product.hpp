@@ -45,6 +45,7 @@ void product(const mvec_type & mvA,
   }
 }//end function
 
+      
 // result is constructed and returned 
 template <typename mvec_type,
 	  typename vec_type,
@@ -54,10 +55,10 @@ template <typename mvec_type,
    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value 
     > * = nullptr
   >
-core::Vector<Eigen::VectorXd>
-product(const mvec_type & mvA, const vec_type & vecB){
+auto product(const mvec_type & mvA, const vec_type & vecB){
 
-  core::Vector<Eigen::VectorXd> c(mvA.length());
+  using sc_t = typename core::details::traits<mvec_type>::scalar_t;
+  core::Vector<Eigen::Matrix<sc_t,Eigen::Dynamic,1>> c(mvA.length());
   product(mvA, vecB, c);
   return c;
 }
