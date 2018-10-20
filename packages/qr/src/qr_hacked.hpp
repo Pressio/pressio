@@ -24,6 +24,7 @@ template<typename matrix_type,
 class QRSolver<matrix_type, Q_type, R_type,
 	       typename
 	       std::enable_if<
+     core::meta::is_core_multi_vector_wrapper<matrix_type>::value and
 		 core::meta::is_multi_vector_epetra<
 		   typename core::details::traits<matrix_type>::wrapped_t
 		   >::value and 
