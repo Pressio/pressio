@@ -21,6 +21,14 @@ class MatrixSparseSharedMemBase
 
 public:
   
+  bool isCompressed() const{
+    return this->underlying().isCompressedImpl();
+  }
+
+  void compress(){
+    this->underlying().compressImpl();
+  }
+
   //-----------------------------------------------------------
   // note this insert one by one might not be the best method
   // for efficiency. But it provides a simple nice way to store.
@@ -40,7 +48,8 @@ public:
   // NOTE: we return by copy. We do not enable reference []
   // because it makes little sense for a sparse matrix
   sc_t operator() (ord_t row, ord_t col) const;
-  
+
+
 private:  
   friend derived_type;
   friend core::details::CrtpBase<

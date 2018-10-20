@@ -6,8 +6,8 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
   # depend on those lister higher. Dependencies should be read
   # from top to bottom. 
   core packages/core PT
-  solvers packages/solvers PT
   qr packages/qr PT
+  solvers packages/solvers PT
   svd packages/svd PT
   ode packages/ode PT
   optimization packages/optimization PT

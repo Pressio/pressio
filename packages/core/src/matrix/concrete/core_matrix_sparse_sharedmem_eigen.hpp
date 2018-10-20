@@ -161,16 +161,20 @@ private:
   void scaleImpl(sc_t & factor){
     data_.coeffs() *= factor;
   };  
+
+  void compressImpl(){
+    data_.makeCompressed();
+  }
+
+  bool isCompressedImpl() const{
+    return data_.isCompressed();
+  }
   
 private:
   bool haveCompatibleDimensions(const derived_t & m1,
 				const derived_t & m2)const{
     return (m1.rows()==m2.rows() &&
 	    m1.cols()==m2.cols()) ? true : false;
-  }
-
-  void compress(){
-    data_.makeCompressed();
   }
 
 private:

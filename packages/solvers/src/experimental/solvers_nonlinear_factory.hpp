@@ -8,6 +8,7 @@
 #include "solvers_nonlinear_traits.hpp"
 #include "solvers_policy_nonlinear_iterative.hpp"
 #include "solvers_policy_nonlinear_leastsquare_iterative.hpp"
+#include "solvers_policy_nonlinear_leastsquare_gauss_newton_qr.hpp"
 #include "solvers_l2_vector_norm.hpp"
 #include "solvers_linear_traits.hpp"
 #include "../../../core/src/meta/core_meta_detection_idiom.hpp"
@@ -87,6 +88,24 @@ or is not available for linear systems defined by Eigen matrices");
   }
   //--------------------------------------------------------------
 
+  /**
+   * Create a nonlinear least square iterative solver 
+   * using QR for each inner linear least square solve
+   */
+  template <
+    typename NSolverT,
+    typename core::meta::enable_if_t<
+      nonlinearleastsquare::details::solver_traits<NSolverT>::enabled
+    >* = nullptr
+  >
+  static auto createNonLinearIterativeLeastSquareQRBasedSolver(){
+    using policy_type =
+      typename nonlinearleastsquare::details::solver_traits<NSolverT>::solver_type;
+    return NonLinearLeastSquareIterativeSolver<policy_type, void>();
+  }
+  //--------------------------------------------------------------
+
+  
 };
 
 } // end namespace solvers
