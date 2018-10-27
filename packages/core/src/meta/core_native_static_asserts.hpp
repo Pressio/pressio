@@ -6,8 +6,7 @@
 #include "../meta/core_native_multi_vector_meta.hpp"
 #include "../meta/core_native_matrix_meta.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
 
 //////////////////////
 // VECTOR
@@ -35,6 +34,13 @@ namespace core{
   static_assert( !core::meta::is_vector_epetra<TYPE>::value, \
 		 "THIS_IS_A_VECTOR_EPETRA")
 
+#define STATIC_ASSERT_IS_VECTOR_TPETRA(TYPE) \
+  static_assert( core::meta::is_vector_tpetra<TYPE>::value, \
+		 "THIS_IS_NOT_A_VECTOR_TPETRA")
+#define STATIC_ASSERT_IS_NOT_VECTOR_TPETRA(TYPE) \
+  static_assert( !core::meta::is_vector_tpetra<TYPE>::value, \
+		 "THIS_IS_A_VECTOR_TPETRA")
+  
 #define STATIC_ASSERT_IS_VECTOR_KOKKOS(TYPE) \
   static_assert( core::meta::is_vector_kokkos<TYPE>::value, \
 		 "THIS_IS_NOT_A_VECTOR_KOKKOS")
@@ -125,6 +131,5 @@ namespace core{
 #endif
   
   
-} // end namespace core
-}//end namespace rompp
+}}//end namespace rompp::core
 #endif

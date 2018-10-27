@@ -8,9 +8,7 @@
 #include "../meta/core_meta_detect_operators.hpp"
 #include "../core_shared_traits.hpp"
 
-namespace rompp{
-namespace core{
-namespace details{
+namespace rompp{ namespace core{ namespace details{
 
 
 //*******************************
@@ -78,7 +76,6 @@ struct traits<Vector<wrapped_type,
 };
 #endif
   
-
 
   
 //*******************************
@@ -183,11 +180,54 @@ struct traits<Vector<wrapped_type,
   static constexpr bool is_dynamic = true;
   static constexpr int rows = -1;
 };
+#endif
+
+      
+//*******************************
+// for tpetra vector 
+//******************************* 
+#ifdef HAVE_TRILINOS
+template<typename wrapped_type>
+struct traits<Vector<wrapped_type,
+	  typename
+	  std::enable_if<
+	    core::meta::is_vector_tpetra<
+	      wrapped_type>::value
+	    >::type
+	  >
+	>
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+			       WrappedPackageIdentifier::Trilinos,
+				    false>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::Tpetra;
   
+  using scalar_t = typename wrapped_type::impl_scalar_type;
+  using local_ordinal_t = typename wrapped_type::local_ordinal_type;
+  using global_ordinal_t = typename wrapped_type::global_ordinal_type;
+  using data_map_t = typename wrapped_type::map_type;
+  using device_t = typename wrapped_type::device_type;
+  using node_t = typename wrapped_type::node_type;
+  using dual_view_t = typename wrapped_type::dual_view_type;
+  using dot_t = typename wrapped_type::dot_type;
+  using mag_t = typename wrapped_type::mag_type;
+  using communicator_t = decltype(std::declval<data_map_t>().getComm());
   
+  static constexpr bool is_dynamic = true;
+  static constexpr int rows = -1;
+};
+#endif
+      
+
+
 //*******************************
 // Kokkos vector 
 //******************************* 
+#ifdef HAVE_TRILINOS
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
 	  core::meta::enable_if_t<

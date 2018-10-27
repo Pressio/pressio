@@ -20,6 +20,8 @@
 #endif
 
 #ifdef HAVE_TRILINOS
+// tpetra
+#include <Tpetra_Vector.hpp>
 // epetra 
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
@@ -28,9 +30,7 @@
 #endif
 
 
-namespace rompp{
-namespace core{
-namespace meta {
+namespace rompp{ namespace core{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_vector_eigen : std::false_type {};
@@ -60,7 +60,6 @@ struct is_vector_eigen< T,
 	>::type
       > : std::true_type{};
 //----------------------------------------------
-
   
 template <typename T, typename enable = void>
 struct is_vector_stdlib : std::false_type {};
@@ -82,7 +81,6 @@ struct is_vector_stdlib<T,
 	>::type
       > : std::true_type{};
 //--------------------------------------------
-
   
 #ifdef HAVE_TRILINOS  
 template <typename T, typename enable = void>
@@ -98,7 +96,27 @@ struct is_vector_epetra<T,
 #endif 
 //--------------------------------------------
 
+#ifdef HAVE_TRILINOS  
+template <typename T, typename enable = void>
+struct is_vector_tpetra : std::false_type {};
 
+template <typename T>
+struct is_vector_tpetra<T,
+      typename
+      std::enable_if<
+	std::is_same<T,
+		     Tpetra::Vector<
+		       typename T::impl_scalar_type,
+		       typename T::local_ordinal_type,
+		       typename T::global_ordinal_type,
+		       typename T::node_type
+		       >
+		     >::value 
+	>::type
+      > : std::true_type{};
+#endif 
+//--------------------------------------------
+  
 #ifdef HAVE_TRILINOS 
 template <typename T, typename enable = void>
 struct is_vector_kokkos : std::false_type {};
@@ -113,8 +131,7 @@ struct is_vector_kokkos<T,
 #endif
 //--------------------------------------------
 
-
-
+  
 #ifdef HAVE_BLAZE
 template <typename T, typename enable = void>
 struct is_static_vector_blaze : std::false_type {};
@@ -125,7 +142,6 @@ struct is_static_vector_blaze<T,
 	   blaze::IsStatic<typename T::This>::value
 	   >
       > : std::true_type{};
-//--------------------------------------------
 
 template <typename T, typename enable = void>
 struct is_dynamic_row_vector_blaze : std::false_type {};
@@ -139,7 +155,6 @@ struct is_dynamic_row_vector_blaze<T,
 			>::value
 	   >
       > : std::true_type{};
-//--------------------------------------------
   
 template <typename T, typename enable = void>
 struct is_dynamic_column_vector_blaze : std::false_type {};
@@ -153,7 +168,6 @@ struct is_dynamic_column_vector_blaze<T,
 			>::value
 	   >
       > : std::true_type{};
-//--------------------------------------------
 
 template <typename T, typename enable = void>
 struct is_dynamic_vector_blaze : std::false_type {};
@@ -167,7 +181,7 @@ struct is_dynamic_vector_blaze<T,
       > : std::true_type{};
 
 #endif
-
+//--------------------------------------------
 
 
 #ifdef HAVE_ARMADILLO
@@ -182,7 +196,6 @@ struct is_armadillo_column_vector<T,
 			>::value
 	   >
       > : std::true_type{};
-//--------------------------------------------
 
 template <typename T, typename enable = void>
 struct is_armadillo_row_vector : std::false_type {};
@@ -195,7 +208,6 @@ struct is_armadillo_row_vector<T,
 			>::value
 	   >
       > : std::true_type{};
-//--------------------------------------------
   
 template <typename T, typename enable = void>
 struct is_vector_armadillo : std::false_type {};
@@ -209,12 +221,9 @@ struct is_vector_armadillo<T,
       > : std::true_type{};
 
 #endif
+//--------------------------------------------
 
 
-  
- 
-} // namespace meta
-} // namespace core
 
-}//end namespace rompp
+}}}//end namespace rompp::core::meta
 #endif

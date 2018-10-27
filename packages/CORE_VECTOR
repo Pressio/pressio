@@ -10,6 +10,7 @@
 #include "core/src/vector/base/core_vector_sharedmem_base.hpp"
 #include "core/src/vector/base/core_vector_distributed_base.hpp"
 
+#include "core/src/vector/concrete/core_vector_distributed_tpetra.hpp"
 #include "core/src/vector/concrete/core_vector_distributed_epetra.hpp"
 #include "core/src/vector/concrete/core_vector_sharedmem_eigen_dynamic.hpp"
 #include "core/src/vector/concrete/core_vector_sharedmem_eigen_static.hpp"
