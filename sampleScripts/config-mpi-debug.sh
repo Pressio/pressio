@@ -50,9 +50,9 @@ cmake \
     -D rompp_ENABLE_core:BOOL=ON \
     -D rompp_ENABLE_qr:BOOL=ON \
     -D rompp_ENABLE_solvers:BOOL=ON \
-    -D rompp_ENABLE_svd:BOOL=ON\
-    -D rompp_ENABLE_ode:BOOL=ON\
-    -D rompp_ENABLE_rom:BOOL=ON\
+    -D rompp_ENABLE_svd:BOOL=NF\
+    -D rompp_ENABLE_ode:BOOL=NF\
+    -D rompp_ENABLE_rom:BOOL=NF\
     \
     $EXTRA_ARGS \
     ${SRC}

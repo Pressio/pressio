@@ -43,82 +43,53 @@ class Vector<wrapped_type,
 public:
   Vector() = delete;
 
-  // explicit Vector(const map_t & mapobj)
-  //   : data_(mapobj){}
+  explicit Vector(const wrap_t & vecobj)
+    : data_(vecobj){
+    myLocDataView_ = data_.getDataNonConst();
+    myLocDataCView_= data_.getData();
+  }
 
-  // explicit Vector(const wrap_t & vecobj)
-  //   : data_(vecobj){}
-
-  // Vector(this_t const & other)
-  //   : data_(*other.data()){}
-
-  // // assignment from any expression, force evaluation
-  // template <typename T,
-  // 	    core::meta::enable_if_t<
-  // 	      T::is_vector_expression> * = nullptr>
-  // this_t & operator=(const T & expr){
-  //   assert(this->localSize() == expr.localSize());
-  //   for (LO_t i = 0; i != expr.localSize(); ++i)
-  //     data_[i] = expr(i);
-  //   return *this;
-  // }
+  Vector(this_t const & other)
+    : data_(*other.data()){
+    myLocDataView_ = data_.getDataNonConst();
+    myLocDataCView_ = data_.getData();
+  }
   
   ~Vector() = default;
 
 public:
-//   sc_t & operator [] (LO_t i){
-//     assert(i < this->localSize());
-//     return data_[i];
-//   };
-//   sc_t const & operator [] (LO_t i) const{
-//     assert(i < this->localSize());
-//     return data_[i];
-//   };  
+  sc_t & operator [] (LO_t i){
+    assert(!myLocDataView_.is_null());
+    assert(i < this->localSize());
+    return myLocDataView_[i];
+  };
+  sc_t const & operator [] (LO_t i) const{
+    assert(!myLocDataCView_.is_null());
+    assert(i < this->localSize());
+    return myLocDataCView_[i];
+  };  
 
-//   sc_t & operator()(LO_t i){
-//     assert(i < this->localSize());
-//     return data_[i];
-//   };
-//   sc_t const & operator()(LO_t i) const{
-//     assert(i < this->localSize());
-//     return data_[i];
-//   };  
-  
+  sc_t & operator()(LO_t i){
+    assert(!myLocDataView_.is_null());
+    assert(i < this->localSize());
+    return myLocDataView_[i];
+  };
+  sc_t const & operator()(LO_t i) const{
+    assert(!myLocDataCView_.is_null());
+    assert(i < this->localSize());
+    return myLocDataCView_[i];
+  };  
 
-//   // compound assignment from expression template
-//   // this += expr
-//   template <typename T,
-//   	    core::meta::enable_if_t<
-//   	      T::is_vector_expression> * = nullptr>
-//   this_t & operator+=(const T & expr) {
-//     assert(this->localSize() == expr.localSize());
-//     for (LO_t i = 0; i != expr.localSize(); ++i)
-//       data_[i] += expr(i);
-//     return *this;
-//   }
-
-//   // compound assignment when type(b) = type(this)
-//   // this += b 
-//   template <typename T,
-//   	    core::meta::enable_if_t<
-//   	      std::is_same<T,this_t>::value> * = nullptr>
-//   this_t & operator+=(const T & other) {
-//     this->data_.Update(1.0, *other.data(), 1.0 );
-//     return *this;
-//   }
-
-
-//   // compound assignment from expression template
-//   // this -= expr
-//   template <typename T,
-//   	    core::meta::enable_if_t<
-//   	      T::is_vector_expression> * = nullptr>
-//   this_t & operator-=(const T & expr) {
-//     assert(this->localSize() == expr.localSize());
-//     for (LO_t i = 0; i != expr.localSize(); ++i)
-//       data_[i] -= expr(i);
-//     return *this;
-//   }
+  // // compound assignment when type(b) = type(this)
+  // This gives a linking issue for daxpy in kokkos:blas
+  // // this += b 
+  // template <typename T,
+  // 	    core::meta::enable_if_t<
+  // 	      std::is_same<T,this_t>::value> * = nullptr>
+  // this_t & operator+=(const T & other) {
+  //   this->data_.update(1.0, *other.data(), 1.0 );
+  //   return *this;
+  // }
 
 //   // compound assignment when type(b) = type(this)
 //   // this -= b 
@@ -126,12 +97,11 @@ public:
 //   	    core::meta::enable_if_t<
 //   	      std::is_same<T,this_t>::value> * = nullptr>
 //   this_t & operator-=(const T & other) {
-//     this->data_.Update(-1.0, *other.data(), 1.0 );
+//     this->data_.update(-1.0, *other.data(), 1.0 );
 //     return *this;
 //   }
-  
-    
-// private:
+      
+private:
 
 //   void matchLayoutWithImpl(const der_t & other){
 //     data_.ReplaceMap( other.getDataMap() );
@@ -141,37 +111,37 @@ public:
 //     return data_.Comm();
 //   }
 
-//   wrap_t const * dataImpl() const{
-//     return &data_;
-//   }
+  wrap_t const * dataImpl() const{
+    return &data_;
+  }
 
-//   wrap_t * dataImpl(){
-//     return &data_;
-//   }
+  wrap_t * dataImpl(){
+    return &data_;
+  }
 
-//   bool isDistributedGloballyImpl() const{
-//     return data_.DistributedGlobal();
-//   }
+  bool isDistributedGloballyImpl() const{
+    return data_.isDistributed();
+  }
   
-//   void putScalarImpl(sc_t value) {
-//     data_.PutScalar(value);
-//   }
+  void putScalarImpl(sc_t value) {
+    data_.putScalar(value);
+  }
 
-//   void setZeroImpl(){
-//     data_.PutScalar(static_cast<sc_t>(0));
-//   }
+  void setZeroImpl(){
+    data_.putScalar(static_cast<sc_t>(0));
+  }
 
-//   bool emptyImpl() const{
-//     return this->globalSize()==0 ? true : false;
-//   }
+  bool emptyImpl() const{
+    return this->globalSize()==0 ? true : false;
+  }
   
-//   GO_t globalSizeImpl() const {
-//     return data_.GlobalLength();
-//   }
+  GO_t globalSizeImpl() const {
+    return data_.getGlobalLength();
+  }
 
-//   LO_t localSizeImpl() const {
-//     return data_.MyLength();
-//   }
+  LO_t localSizeImpl() const {
+    return data_.getLocalLength();
+  }
 
 //   void replaceGlobalValuesImpl(GO_t numentries,
 // 			       const GO_t * indices,
@@ -198,73 +168,13 @@ private:
 private:
   wrap_t data_;
 
+  // myLocDataView_: persistent non-const view of my local data
+  Teuchos::ArrayRCP<sc_t> myLocDataView_;
+  // myLocDataView_: persistent const view of my local data
+  Teuchos::ArrayRCP<const sc_t> myLocDataCView_;
+
 };//end class
 
 }}//end namespace rompp::core
 #endif
 #endif
-
-
-
-
-
-
-  // template<typename op_t, typename T,
-  // 	   core::meta::enable_if_t<
-  // 	     std::is_same<T,this_t>::value
-  // 	     > * = nullptr
-  // 	   >
-  // void inPlaceOpImpl(sc_t a1, sc_t a2, const T & other){
-  //   // this = a1*this op a2*other;
-  //   for (LO_t i=0; i<this->localSize(); i++)
-  //     data_[i] = op_t()( a1*data_[i], a2*other[i] );
-  // }
-
-  
-  // template<typename op_t, typename T,
-  // 	   core::meta::enable_if_t<
-  // 	     std::is_same<T,this_t>::value
-  // 	     > * = nullptr
-  // 	   >
-  // void inPlaceOpImpl(sc_t a1, const T & x1,
-  // 		     sc_t a2, const T & x2){
-  //   // this = a1*x1 op a2*x2;
-  //   assert(this->globalSizeImpl() == x1.globalSizeImpl());
-  //   assert(this->globalSizeImpl() == x2.globalSizeImpl());
-    
-  //   for (LO_t i=0; i<this->localSize(); i++)
-  //     data_[i] = op_t()( a1*x1[i], a2*x2[i] );
-  // }
-
-  // template<typename op0_t, typename T,
-  // 	   typename op1_t, typename op2_t, typename op3_t,
-  // 	   core::meta::enable_if_t<
-  // 	     std::is_same<T,this_t>::value &&
-  // 	     std::is_same<op0_t, std::plus<sc_t>>::value &&
-  // 	     std::is_same<op1_t, op0_t>::value &&
-  // 	     std::is_same<op2_t, op1_t>::value &&
-  // 	     std::is_same<op3_t, op1_t>::value
-  // 	     > * = nullptr
-  // 	   >
-  // void inPlaceOpImpl(sc_t a0, sc_t a1, const T & x1,
-  // 		     sc_t a2, const T & x2,
-  // 		     sc_t a3, const T & x3,
-  // 		     sc_t a4, const T & x4){
-  //   // this = a0 * this + (a1*x1) + (a2*x2) + (a3*x3) + (a4*x4)
-  //   assert(this->globalSizeImpl() == x1.globalSizeImpl());
-  //   assert(this->globalSizeImpl() == x2.globalSizeImpl());
-  //   assert(this->globalSizeImpl() == x3.globalSizeImpl());
-  //   assert(this->globalSizeImpl() == x4.globalSizeImpl());
-    
-  //   for (LO_t i=0; i<this->localSize(); i++)
-  //     data_[i] = a0*data_[i] + a1*x1[i] + a2*x2[i]
-  // 	+ a3*x3[i] + a4*x4[i];
-  // }
-  
-  // void minValueImpl(sc_t & result) const {
-  //   data_.MinValue(&result);
-  // }
-
-  // void maxValueImpl(sc_t & result) const {
-  //   data_.MaxValue(&result);
-  // }
