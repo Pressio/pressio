@@ -40,8 +40,25 @@ struct is_epetra_multi_vector_wrapper<
   : std::true_type{};
 #endif
 //------------------------------------------------------------
- 
 
+      
+#ifdef HAVE_TRILINOS
+template <typename T, typename enable = void>
+struct is_tpetra_multi_vector_wrapper : std::false_type {};
+
+template <typename T>
+struct is_tpetra_multi_vector_wrapper<
+  T, core::meta::enable_if_t<
+       core::details::traits<T>::is_multi_vector &&
+       core::details::traits<T>::wrapped_multi_vector_identifier==
+       core::details::WrappedMultiVectorIdentifier::Tpetra
+       >
+  >
+  : std::true_type{};
+#endif
+//------------------------------------------------------------
+
+      
 template <typename T, typename enable = void>
 struct is_eigen_multi_vector_wrapper : std::false_type {};
 

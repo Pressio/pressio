@@ -60,6 +60,7 @@ Identifier for wrapped multivector
 enum class WrappedMultiVectorIdentifier{
    Undefined,
    Epetra,
+   Tpetra,
    Eigen
 };
 

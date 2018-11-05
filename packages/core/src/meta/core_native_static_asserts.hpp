@@ -67,7 +67,7 @@ namespace rompp{ namespace core{
 		 "THIS_IS_NOT_A_VECTOR_ARMADILLO")
 #define STATIC_ASSERT_IS_NOT_VECTOR_ARMADILLO(TYPE)		\
   static_assert( !core::meta::is_vector_armadillo<TYPE>::value,	\
-		 "THIS_IS_A_VECTOR_BLAZE")
+		 "THIS_IS_A_VECTOR_ARMADILLO")
 #endif
   
 
@@ -82,8 +82,15 @@ namespace rompp{ namespace core{
 #define STATIC_ASSERT_IS_NOT_MULTIVECTOR_EPETRA(TYPE) \
   static_assert( !core::meta::is_multi_vector_epetra<TYPE>::value, \
 		 "THIS_IS_A_MULTIVECTOR_EPETRA")
-#endif
 
+#define STATIC_ASSERT_IS_MULTIVECTOR_TPETRA(TYPE)		  \
+  static_assert( core::meta::is_multi_vector_tpetra<TYPE>::value, \
+		 "THIS_IS_NOT_A_MULTIVECTOR_TPETRA")
+#define STATIC_ASSERT_IS_NOT_MULTIVECTOR_TPETRA(TYPE) \
+  static_assert( !core::meta::is_multi_vector_tpetra<TYPE>::value, \
+		 "THIS_IS_A_MULTIVECTOR_TPETRA")
+#endif
+    
 
 ////////////////////////
 // MATRIX

@@ -165,8 +165,7 @@ struct traits<Vector<wrapped_type,
 				    wrapped_type,
 				    true, false, false,
 			       WrappedPackageIdentifier::Trilinos,
-				    false>
-{
+				    false>{
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Epetra;
@@ -200,8 +199,7 @@ struct traits<Vector<wrapped_type,
 				    wrapped_type,
 				    true, false, false,
 			       WrappedPackageIdentifier::Trilinos,
-				    false>
-{
+				    false>{
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Tpetra;

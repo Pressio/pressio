@@ -20,8 +20,30 @@ struct is_multi_vector_epetra<T,
    >::type
   > : std::true_type{};
 #endif
-//----------------------------------------------------------------------
+//-------------------------------------------------
 
+
+#ifdef HAVE_TRILINOS  
+template <typename T, typename enable = void>
+struct is_multi_vector_tpetra : std::false_type {};
+
+template <typename T>
+struct is_multi_vector_tpetra<T,
+      typename
+      std::enable_if<
+	std::is_same<T,
+		     Tpetra::MultiVector<
+		       typename T::impl_scalar_type,
+		       typename T::local_ordinal_type,
+		       typename T::global_ordinal_type,
+		       typename T::node_type
+		       >
+		     >::value 
+	>::type
+      > : std::true_type{};
+#endif 
+//--------------------------------------------
+      
 
 template <typename T, typename enable = void>
 struct is_multi_vector_eigen_dynamic : std::false_type {};

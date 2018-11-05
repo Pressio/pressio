@@ -95,65 +95,79 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 }
 
 
-
 TEST_F(tpetraVectorGlobSize15Fixture,
-       SubscriptOperatorConstSqBrack){
+       getMap){
   using namespace rompp;
   using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;  
   using myvec_t = core::Vector<nvec_t>;
   myvec_t v1( *x_ );
-  v1.putScalar(11.2);
+  auto const & mapO = v1.getDataMap();
+
+  ::testing::StaticAssertTypeEq<decltype(mapO),
+  				const typename tpetraVectorGlobSize15Fixture::map_t & >(); 
+  EXPECT_TRUE(mapO.isContiguous());
+}
+
+
+
+// TEST_F(tpetraVectorGlobSize15Fixture,
+//        SubscriptOperatorConstSqBrack){
+//   using namespace rompp;
+//   using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;  
+//   using myvec_t = core::Vector<nvec_t>;
+//   myvec_t v1( *x_ );
+//   v1.putScalar(11.2);
   
-  const myvec_t v2(v1);
-  for (int i=0; i<v2.localSize(); i++){
-    EXPECT_DOUBLE_EQ( v2[i], 11.2 );
-  }
-}
+//   const myvec_t v2(v1);
+//   for (int i=0; i<v2.localSize(); i++){
+//     EXPECT_DOUBLE_EQ( v2[i], 11.2 );
+//   }
+// }
 
 
-TEST_F(tpetraVectorGlobSize15Fixture,
-       SubscriptOperatorConstParenth){
-  using namespace rompp;
-  using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;  
-  using myvec_t = core::Vector<nvec_t>;
-  myvec_t v1( *x_ );
-  v1.putScalar(11.2);
+// TEST_F(tpetraVectorGlobSize15Fixture,
+//        SubscriptOperatorConstParenth){
+//   using namespace rompp;
+//   using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;  
+//   using myvec_t = core::Vector<nvec_t>;
+//   myvec_t v1( *x_ );
+//   v1.putScalar(11.2);
   
-  const myvec_t v2(v1);
-  for (int i=0; i<v2.localSize(); i++){
-    EXPECT_DOUBLE_EQ( v2(i), 11.2 );
-  }
-}
+//   const myvec_t v2(v1);
+//   for (int i=0; i<v2.localSize(); i++){
+//     EXPECT_DOUBLE_EQ( v2(i), 11.2 );
+//   }
+// }
 
 
-TEST_F(tpetraVectorGlobSize15Fixture,
-       SubscriptOperatorNonConstSqBrack){
-  using namespace rompp;
-  using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;  
-  using myvec_t = core::Vector<nvec_t>;
-  myvec_t v1( *x_ );
-  for (int i=0; i<v1.localSize(); i++){
-    v1[i] = 11.2;
-  }
-  for (int i=0; i<v1.localSize(); i++){
-    EXPECT_DOUBLE_EQ( v1[i], 11.2 );
-  }
-}
+// TEST_F(tpetraVectorGlobSize15Fixture,
+//        SubscriptOperatorNonConstSqBrack){
+//   using namespace rompp;
+//   using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;  
+//   using myvec_t = core::Vector<nvec_t>;
+//   myvec_t v1( *x_ );
+//   for (int i=0; i<v1.localSize(); i++){
+//     v1[i] = 11.2;
+//   }
+//   for (int i=0; i<v1.localSize(); i++){
+//     EXPECT_DOUBLE_EQ( v1[i], 11.2 );
+//   }
+// }
 
 
-TEST_F(tpetraVectorGlobSize15Fixture,
-       SubscriptOperatorNonConstParenth){
-  using namespace rompp;
-  using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;  
-  using myvec_t = core::Vector<nvec_t>;
-  myvec_t v1( *x_ );
-  for (int i=0; i<v1.localSize(); i++){
-    v1(i) = 11.2;
-  }
-  for (int i=0; i<v1.localSize(); i++){
-    EXPECT_DOUBLE_EQ( v1(i), 11.2 );
-  }
-}
+// TEST_F(tpetraVectorGlobSize15Fixture,
+//        SubscriptOperatorNonConstParenth){
+//   using namespace rompp;
+//   using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;  
+//   using myvec_t = core::Vector<nvec_t>;
+//   myvec_t v1( *x_ );
+//   for (int i=0; i<v1.localSize(); i++){
+//     v1(i) = 11.2;
+//   }
+//   for (int i=0; i<v1.localSize(); i++){
+//     EXPECT_DOUBLE_EQ( v1(i), 11.2 );
+//   }
+// }
 
 
 // TEST_F(tpetraVectorGlobSize15Fixture,
