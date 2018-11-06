@@ -1,7 +1,8 @@
 TRIBITS_REPOSITORY_DEFINE_TPLS(
   GTEST           "cmake/tpls/"  PT
   EIGEN           "cmake/tpls/"  PT
-  #
+  BLAS            "TriBITS/tribits/common_tpls/"   PT
+  LAPACK          "TriBITS/tribits/common_tpls/"   PT
   MPI             "cmake/tpls/"  ST
   TRILINOS        "cmake/tpls/"  ST  
   BLAZE           "cmake/tpls/"  ST

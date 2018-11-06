@@ -1,34 +1,47 @@
 
 TRIBITS_TPL_FIND_INCLUDE_DIRS_AND_LIBRARIES( TRILINOS
   REQUIRED_LIBS_NAMES 
-  libkokkoskernels.dylib #kokkos kernels
-  libkokkosalgorithms.dylib libkokkoscontainers.dylib #kokkos
-  libteuchoskokkoscomm.dylib libteuchoskokkoscompat.dylib #kokkos
-  libkokkoscore.dylib  libkokkostsqr.dylib #kokkos
-  libteuchoscomm.dylib libteuchoscore.dylib libteuchosnumerics.dylib #teuchos 
-  libteuchosparameterlist.dylib libteuchosparser.dylib libteuchosremainder.dylib #teuchos
-  libepetra.dylib libgaleri-epetra.dylib #epetra 
-  libtpetra.dylib libtpetraclassic.dylib
-  libtpetraclassiclinalg.dylib libtpetraclassicnodeapi.dylib #tpetra
-  libtpetraext.dylib libtpetrainout.dylib #tpetra
-  libtriutils.dylib
-  libtrilinosss.dylib #trilinosSS
-  libepetraext.dylib #epetra ext
-  libxpetra-sup.dylib libxpetra.dylib #xpetra
-  libaztecoo.dylib #aztecoo  
-  libgaleri-xpetra.dylib
-  libifpack.dylib
-  libml.dylib
-  libbelos.dylib libbelosepetra.dylib libbelostpetra.dylib libbelosxpetra.dylib #belos
-  libamesos2.dylib
-  libanasazi.dylib libanasaziepetra.dylib libanasazitpetra.dylib
-  libifpack2.dylib
-  libnox.dylib libnoxepetra.dylib libnoxlapack.dylib
-  libmuelu-adapters.dylib libmuelu-interface.dylib  libmuelu.dylib
-  librol.dylib
+  kokkoskernels
+  kokkosalgorithms
+  kokkoscontainers
+  teuchoskokkoscomm
+  teuchoskokkoscompat
+  kokkoscore
+  kokkostsqr
+  teuchoscomm
+  teuchoscore
+  teuchosnumerics
+  teuchosparameterlist
+  teuchosparser
+  teuchosremainder
+  epetra
+  tpetra
+  tpetraclassic
+  tpetraclassiclinalg
+  tpetraclassicnodeapi
+  tpetraext
+  tpetrainout
+  epetraext
+  
   MUST_FIND_ALL_HEADERS
   )
 
+
+
+  #libaztecoo.dylib #aztecoo  
+  #libgaleri-xpetra.dylib
+  #libifpack.dylib
+  #libml.dylib
+  #libbelos.dylib libbelosepetra.dylib libbelostpetra.dylib libbelosxpetra.dylib #belos
+  #libamesos2.dylib
+  #libanasazi.dylib libanasaziepetra.dylib libanasazitpetra.dylib
+  #libifpack2.dylib
+  #libnox.dylib libnoxepetra.dylib libnoxlapack.dylib
+  #libmuelu-adapters.dylib libmuelu-interface.dylib  libmuelu.dylib
+  #librol.dylib
+
+
+  
 
 
 
