@@ -18,6 +18,7 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
   MV.setZero();
   // get trilinos tpetra multivector object
   auto trilD = MV.data();
+  trilD->sync<Kokkos::HostSpace>();
   
   /*--------------------------------------------
    * (1): modify the host view and then sync
