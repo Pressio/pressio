@@ -27,31 +27,31 @@ TEST(core_vector_distributed_tpetra, Traits){
  
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::scalar_t, double>();
-
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::local_ordinal_t,int>();
-
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::global_ordinal_t,unsigned long>();
+  ::testing::StaticAssertTypeEq<typename
+  				vecTrait::data_map_t, map_type>();
   
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::wrapped_t, natV_t>();
-
   ::testing::StaticAssertTypeEq<typename
-  				vecTrait::data_map_t, map_type>();
+				vecTrait::node_t, NT>();
 
-  ::testing::StaticAssertTypeEq<typename
-  				vecTrait::node_t, NT>();
-
-  ::testing::StaticAssertTypeEq<typename
-  				vecTrait::dot_t, double>();
-
-  ::testing::StaticAssertTypeEq<typename
-  				vecTrait::mag_t, double>();
+  // using dev_ms_t = typename vecTrait::device_mem_space_t;
+  // using dev_es_t = typename vecTrait::device_exec_space_t;
+  // using host_ms_t = typename vecTrait::host_mem_space_t;
+  // using host_es_t = typename vecTrait::host_exec_space_t;  
+  // ::testing::StaticAssertTypeEq<host_ms_t, dev_ms_t>();
+  // ::testing::StaticAssertTypeEq<host_es_t, dev_es_t>();
   
   ::testing::StaticAssertTypeEq<typename
+  				vecTrait::dot_t, double>();
+  ::testing::StaticAssertTypeEq<typename
+  				vecTrait::mag_t, double>();  
+  ::testing::StaticAssertTypeEq<typename
   				vecTrait::derived_t, myvec_t>();
-
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::communicator_t,
 				Teuchos::RCP<const Teuchos::Comm<int>>

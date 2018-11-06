@@ -35,6 +35,7 @@ class Vector<wrapped_type,
   using sc_t = typename details::traits<this_t>::scalar_t;
   using LO_t = typename details::traits<this_t>::local_ordinal_t;
   using GO_t = typename details::traits<this_t>::global_ordinal_t;
+  using device_t = typename details::traits<this_t>::device_t;
   using der_t = this_t;
   using wrap_t = typename details::traits<this_t>::wrapped_t;
   using map_t = typename details::traits<this_t>::data_map_t;
@@ -47,6 +48,10 @@ public:
     : data_(vecobj){
   }
 
+  explicit Vector(Teuchos::RCP<const map_t> mapO)
+    : data_(mapO){
+  }
+  
   Vector(this_t const & other)
     : data_(*other.data()){
   }
@@ -129,6 +134,8 @@ private:
   
   void setZeroImpl(){
     data_.putScalar(static_cast<sc_t>(0));
+    // putScalar doesn't sync afterwards, so we have to sync manually.
+    this->needSync();
   }
 
   bool emptyImpl() const{
@@ -137,6 +144,8 @@ private:
 
   void putScalarImpl(sc_t value) {
     data_.putScalar(value);
+    // putScalar doesn't sync afterwards, so we have to sync manually.
+    this->needSync();
   }
   
   GO_t globalSizeImpl() const {
@@ -146,7 +155,15 @@ private:
   LO_t localSizeImpl() const {
     return data_.getLocalLength();
   }
-  
+
+private:
+  void needSync(){
+    if (data_.template need_sync<Kokkos::HostSpace>())
+      data_.template sync<Kokkos::HostSpace> ();
+    else if (data_.template need_sync<device_t>())
+      data_.template sync<device_t> ();
+  }
+    
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorDistributedBase< this_t >;

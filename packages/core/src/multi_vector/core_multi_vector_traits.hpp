@@ -59,9 +59,23 @@ struct traits<MultiVector<wrapped_type,
   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
   using data_map_t = typename wrapped_type::map_type;
-  using device_t = typename wrapped_type::device_type;
+
+  /* node is a Tpetra concept, defined as:
+   * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
+   * where memory space is taken from the execution_space
+   */
   using node_t = typename wrapped_type::node_type;
   using dual_view_t = typename wrapped_type::dual_view_type;
+  // device_type is just an (execution space, memory space) pair.
+  // defined as: Kokkos::Device<execution_space, memory_space>
+  // so from the device we can get the device execution and memory space
+  using device_t = typename wrapped_type::device_type;
+  using device_mem_space_t = typename device_t::memory_space;
+  using device_exec_space_t = typename device_t::execution_space;
+  // store types for host
+  using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
+  using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
+
   using dot_t = typename wrapped_type::dot_type;
   using mag_t = typename wrapped_type::mag_type;
   using communicator_t = decltype(std::declval<data_map_t>().getComm());

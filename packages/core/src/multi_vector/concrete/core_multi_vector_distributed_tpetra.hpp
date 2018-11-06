@@ -19,9 +19,9 @@ class MultiVector<wrapped_type,
        >::type
      >
   : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
-    public MultiVectorDistributedBase< MultiVector<wrapped_type> >/*,
+    public MultiVectorDistributedBase< MultiVector<wrapped_type> >,
     public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>, 
-              typename details::traits<MultiVector<wrapped_type>>::data_map_t >, 
+              typename details::traits<MultiVector<wrapped_type>>::data_map_t >/*,
     public ContainerDistributedMpiBase< MultiVector<wrapped_type>, 
     typename details::traits<MultiVector<wrapped_type>>::communicator_t >*/{
 
@@ -30,6 +30,7 @@ private:
   using sc_t = typename details::traits<this_t>::scalar_t;
   using LO_t = typename details::traits<this_t>::local_ordinal_t;
   using GO_t = typename details::traits<this_t>::global_ordinal_t;
+  using device_t = typename details::traits<this_t>::device_t;
   using wrap_t = typename details::traits<this_t>::wrapped_t;
   using map_t = typename details::traits<this_t>::data_map_t;
   using mpicomm_t = typename details::traits<this_t>::communicator_t;
@@ -55,6 +56,14 @@ private:
     return &data_;
   }
 
+  map_t const & getDataMapImpl() const{
+    return *data_.getMap();
+  }
+
+  Teuchos::RCP<const map_t> getRCPDataMapImpl() const{
+    return data_.getMap();
+  }
+  
   bool emptyImpl() const{
     if (this->globalNumVectors()==0)
       return true;
@@ -64,6 +73,8 @@ private:
 
   void setZeroImpl() {
     data_.putScalar(static_cast<sc_t>(0));
+    // putScalar doesn't sync afterwards, so we have to sync manually.
+    this->needSync();
   }
 
   bool isDistributedGloballyImpl() const{
@@ -92,15 +103,23 @@ private:
   //   data_.replaceGlobalValue(globalRowIndex, vectorIndex, value);
   // }
   
-  void scaleImpl(sc_t factor){
-    data_.scale(factor);
+  // void scaleImpl(sc_t factor){
+  //   data_.scale(factor);
+  // }
+
+private:
+  void needSync(){
+    if (data_.template need_sync<Kokkos::HostSpace>())
+      data_.template sync<Kokkos::HostSpace> ();
+    else if (data_.template need_sync<device_t>())
+      data_.template sync<device_t> ();
   }
   
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend MultiVectorDistributedBase< this_t >;
-  // friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
-  // friend ContainerDistributedTrilinosBase< this_t, map_t >;
+  friend ContainerDistributedTrilinosBase< this_t, map_t >;
+  //  friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
   
 private:
   wrap_t data_;

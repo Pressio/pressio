@@ -18,6 +18,17 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
     for (int j=0; j<MV.globalNumVectors(); j++)
       EXPECT_NEAR( 0.0, MV(i,j), 1e-12);
 
+// MyPID    GID    
+//     0     0      3.2     1.2     0      0
+//     0     1      1.2      0      0      0
+//     0     2       0       4      0      0
+//     1     3       0       0      0      0
+//     1     4       0       0      0      0
+//     1     5       0       0      3      0
+//     2     6       0       0      0      0
+//     2     7       0       0      0      0
+//     2     8       0       0      0      0
+  
   if(rank_==0){
     MV(0,0) = 3.2;
     MV(1,0) = 1.2;

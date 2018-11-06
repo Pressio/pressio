@@ -97,23 +97,6 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
 }
 
 
-
-// TEST_F(tpetraMultiVectorGlobSize15Fixture,
-//        SetScalar){
-//   using namespace rompp;
-//   using sc_t = typename tpetraMultiVectorGlobSize15Fixture::ST;
-
-//   using mymvec_t = core::MultiVector<typename tpetraMultiVectorGlobSize15Fixture::mvec_t>;
-//   mymvec_t v1( *x_ );
-//   v1.putScalar(43.3);
-  
-//   Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
-//   for (int i=0; i<v1.localSize(); i++){
-//     EXPECT_DOUBLE_EQ( dd[i], 43.3 );
-//   }
-// }
-
-
 TEST_F(tpetraMultiVectorGlobSize15Fixture,
        SetZero){
   using namespace rompp;
@@ -129,4 +112,43 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
       EXPECT_DOUBLE_EQ( dd[i], 0.0 );
     }
   }
+}
+
+
+TEST_F(tpetraMultiVectorGlobSize15Fixture,
+       getMap){
+  using namespace rompp;
+  using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
+  using myvec_t = core::MultiVector<nvec_t>;
+  myvec_t v1( *x_ );
+  auto const & mapO = v1.getDataMap();  
+  ::testing::StaticAssertTypeEq<decltype(mapO),
+  				const typename tpetraMultiVectorGlobSize15Fixture::map_t & >(); 
+  EXPECT_TRUE(mapO.isContiguous());
+
+  auto mapO1 = v1.getRCPDataMap();
+  ::testing::StaticAssertTypeEq<decltype(mapO1),
+  	Teuchos::RCP< const typename tpetraMultiVectorGlobSize15Fixture::map_t>>(); 
+  EXPECT_TRUE(mapO1->isContiguous());  
+}
+
+
+TEST_F(tpetraMultiVectorGlobSize15Fixture,
+       constrcutTVectorFromMVMap){
+  using namespace rompp;
+  using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
+  using myvec_t = core::MultiVector<nvec_t>;
+  myvec_t v1( *x_ );
+
+  auto mapO1 = v1.getRCPDataMap();
+
+  using sc_t = typename tpetraMultiVectorGlobSize15Fixture::ST;
+  using LO_t = typename tpetraMultiVectorGlobSize15Fixture::LO;
+  using GO_t = typename tpetraMultiVectorGlobSize15Fixture::GO;
+  using NO_t = typename tpetraMultiVectorGlobSize15Fixture::NT;
+  
+  Tpetra::Vector<sc_t,LO_t,GO_t,NO_t> vec(mapO1);
+  // ::testing::StaticAssertTypeEq<decltype(mapO1),
+  // 	Teuchos::RCP< const typename tpetraMultiVectorGlobSize15Fixture::map_t>>(); 
+  // EXPECT_TRUE(mapO1->isContiguous());  
 }
