@@ -34,7 +34,7 @@ TEST(core_matrxi_dense_distributed_epetra, EpetraMultiVectorActingDenseMatrixTra
   using mytraits = core::details::traits<myDDM_t>;
   ::testing::StaticAssertTypeEq<typename
   				mytraits::scalar_t,
-  				core::defaultTypes::epetra_scalar_t>();
+  				core::default_types::epetra_scalar_t>();
   
   ASSERT_TRUE(mytraits::is_vector == 0);
   ASSERT_TRUE(mytraits::isEpetra == 1);

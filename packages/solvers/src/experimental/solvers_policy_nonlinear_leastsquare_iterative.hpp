@@ -60,8 +60,8 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
   static auto solve(
     const SystemT& sys,
     const VectorT& x0,
-    core::defaultTypes::uint maxIterations,
-    core::defaultTypes::uint maxNonLinearIterations,
+    core::default_types::uint maxIterations,
+    core::default_types::uint maxNonLinearIterations,
     double tolerance,
     double nonLinearTolerance,
     double lambda
@@ -86,7 +86,7 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
 
     double normO = 0.0;
     double normN = 0.0;
-    core::defaultTypes::uint iStep = 1;
+    core::default_types::uint iStep = 1;
 
     while (iStep++ < maxNonLinearIterations) {
       xNew = xOld - solver.solve(b);
@@ -147,8 +147,8 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
   static auto solve(
     const SystemT& sys,
     const VectorT& x0,
-    core::defaultTypes::uint maxIterations,
-    core::defaultTypes::uint maxNonLinearIterations,
+    core::default_types::uint maxIterations,
+    core::default_types::uint maxNonLinearIterations,
     double tolerance,
     double nonLinearTolerance
   ) {
@@ -167,7 +167,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
     double normN = 0.0;
     double normO = NormT::template compute_norm(dy);
 
-    core::defaultTypes::uint iStep = 1;
+    core::default_types::uint iStep = 1;
     while (iStep++ < maxNonLinearIterations) {
       x = x - solver.solve(b);
       dy = sys.residual(x);

@@ -52,12 +52,12 @@ class LinearIterativeSolver
     }
 
 
-    inline core::defaultTypes::uint getMaxIterations() {
+    inline core::default_types::uint getMaxIterations() {
       return maxIters_;
     }
 
 
-    void setMaxIterations(core::defaultTypes::uint maxIters) {
+    void setMaxIterations(core::default_types::uint maxIters) {
       maxIters_ = maxIters;
     }
 
@@ -84,7 +84,7 @@ class LinearIterativeSolver
 
   private:
 
-    core::defaultTypes::uint maxIters_;
+    core::default_types::uint maxIters_;
     double tolerance_;
 };
 

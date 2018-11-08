@@ -28,7 +28,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
   >
   static auto solve(const SystemT& sys,
 		    const VectorT& x0,
-		    core::defaultTypes::uint maxNonLinearIterations = 1000,
+		    core::default_types::uint maxNonLinearIterations = 1000,
 		    typename core::details::traits<VectorT>::scalar_t nonLinearTolerance = 1e-10) {
     using sc_t = typename core::details::traits<VectorT>::scalar_t;
     using eig_mat = Eigen::Matrix<sc_t,Eigen::Dynamic,Eigen::Dynamic>;
@@ -49,7 +49,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
     auto dx(x);
     double normN = 0.0;
     double normO = NormT::template compute_norm(dx);
-    core::defaultTypes::uint iStep = 1;
+    core::default_types::uint iStep = 1;
     while (iStep++ < maxNonLinearIterations)
     {	
       // QR decomposition of Jacobian

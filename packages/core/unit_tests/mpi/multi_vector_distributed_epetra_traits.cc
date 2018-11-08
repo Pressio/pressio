@@ -24,13 +24,13 @@ TEST(core_multivector_distributed_epetra,
   using vecTrait = core::details::traits<myvec_t>;
   ::testing::StaticAssertTypeEq<typename
 		   vecTrait::scalar_t,
-		   core::defaultTypes::epetra_scalar_t>();
+		   core::default_types::epetra_scalar_t>();
   ::testing::StaticAssertTypeEq<typename
 		   vecTrait::local_ordinal_t,
-		   core::defaultTypes::epetra_lo_t>();
+		   core::default_types::epetra_lo_t>();
   ::testing::StaticAssertTypeEq<typename
 		   vecTrait::global_ordinal_t,
-		   core::defaultTypes::epetra_go_t1>();
+		   core::default_types::epetra_go_t1>();
   
   ::testing::StaticAssertTypeEq<typename
 		   vecTrait::wrapped_t, natV_t>();

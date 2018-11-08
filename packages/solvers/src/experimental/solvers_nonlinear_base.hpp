@@ -116,7 +116,7 @@ the solution hint is invalid." << std::endl;
     /**
      * Get the maximum number of iterations of the nonlinear solver.
      */
-    core::defaultTypes::uint getMaxNonLinearIterations() {
+    core::default_types::uint getMaxNonLinearIterations() {
       return maxNonLinearIterations_;
     }
     //--------------------------------------------------------------
@@ -136,7 +136,7 @@ the solution hint is invalid." << std::endl;
      *
      * @param maxNonLinearIterations maximum number of iterations of the nonlinear solver.
      */
-    void setMaxNonLinearIterations(core::defaultTypes::uint
+    void setMaxNonLinearIterations(core::default_types::uint
 				   maxNonLinearIterations) {
       maxNonLinearIterations_ = maxNonLinearIterations;
     }
@@ -170,7 +170,7 @@ the solution hint is invalid." << std::endl;
 
   private:
 
-    core::defaultTypes::uint maxNonLinearIterations_;
+    core::default_types::uint maxNonLinearIterations_;
     double nonLinearTolerance_;
 
 };

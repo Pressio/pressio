@@ -20,7 +20,7 @@ public:
 				  vecTrait::scalar_t,T>();
     ::testing::StaticAssertTypeEq<typename
 				  vecTrait::ordinal_t,
-				  core::defaultTypes::local_ordinal_t>();
+				  core::default_types::local_ordinal_t>();
     ::testing::StaticAssertTypeEq<typename
 				  vecTrait::wrapped_t,stdV_t>();
     ::testing::StaticAssertTypeEq<typename

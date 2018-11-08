@@ -34,8 +34,8 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
   static auto solve(
     const SystemT& system,
     const VectorT& x0,
-    core::defaultTypes::uint maxIterations,
-    core::defaultTypes::uint maxNonLinearIterations,
+    core::default_types::uint maxIterations,
+    core::default_types::uint maxNonLinearIterations,
     double tolerance,
     double nonLinearTolerance
   ) {
@@ -66,8 +66,8 @@ is not compatible with the provided nonlinear system" << std::endl;
   static auto solve(
     const SystemT& sys,
     const VectorT& x0,
-    core::defaultTypes::uint maxIterations,
-    core::defaultTypes::uint maxNonLinearIterations,
+    core::default_types::uint maxIterations,
+    core::default_types::uint maxNonLinearIterations,
     double tolerance,
     double nonLinearTolerance
   ) {
@@ -80,7 +80,7 @@ is not compatible with the provided nonlinear system" << std::endl;
     solver.setMaxIterations(maxIterations);
     solver.setTolerance(tolerance);
 
-    core::defaultTypes::uint iStep = 1;
+    core::default_types::uint iStep = 1;
     VectorT xOld = x0;
     VectorT xNew(x0 - solver.solve(dy));
 

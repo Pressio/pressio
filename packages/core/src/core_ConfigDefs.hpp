@@ -54,7 +54,7 @@ struct times_{
 //--------------------------------------------
     
    
-namespace defaultTypes {
+namespace default_types {
 
   //! Default value of Scalar template parameter.
   using scalar_t = double;
@@ -79,7 +79,7 @@ namespace defaultTypes {
   using epetra_go_t2 = long long;
 #endif
 
-} // namespace defaultTypes
+} // namespace default_types
 
     
 }} // end of namespace rompp::core

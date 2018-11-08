@@ -15,15 +15,15 @@ namespace rompp{
 // }
 
 //namespace timeIntegrator{
-// namespace defaultTypes {
+// namespace default_types {
 // // namespace DefaultTypes {
 // //! Default value of Scalar template parameter.
-// using scalar_t = ::core::defaultTypes::scalar_t;
+// using scalar_t = ::core::default_types::scalar_t;
  // //! Default value of LocalOrdinal template parameter.
 // //typedef int local_ordinal_t;
 // /// \typedef global_ordinal_type
 // //typedef int global_ordinal_t;
-// } // namespace defaultTypes
+// } // namespace default_types
 //} // end of timeIntegrator namespace
 
 
