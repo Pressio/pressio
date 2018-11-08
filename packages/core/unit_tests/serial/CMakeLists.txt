@@ -1,4 +1,5 @@
 
+add_unit_test(config_defs_structs ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(meta_basic ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(meta_detect_operators ${GTESTMAINSDIR}/gTestMain_serial 1)
 add_unit_test(meta_detect_typedefs ${GTESTMAINSDIR}/gTestMain_serial 1)
