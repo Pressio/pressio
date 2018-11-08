@@ -17,13 +17,22 @@ template <typename T1,
 	  core::meta::enable_if_t<
   exprtemplates::is_admissible_vec_for_sharedmem_expression<T2>::value
 	    > * = nullptr>
-auto operator+(const T1 & u, const T2 & v) {
+auto operator+(const T1 & u, const T2 & v) 
+  -> decltype( 
+      core::exprtemplates::SharedMemVectorBinaryExp<
+      core::exprtemplates::plus_,
+      T1, T2, 
+      typename core::details::traits<T2>::scalar_t,
+      typename core::details::traits<T2>::ordinal_t>(u, v)
+    )
+{
   using sc_t = typename core::details::traits<T2>::scalar_t;
   using ord_t = typename core::details::traits<T2>::ordinal_t;
 
   return core::exprtemplates::SharedMemVectorBinaryExp<
-    core::exprtemplates::plus_,T1, T2, sc_t, ord_t>(u, v);
+    core::exprtemplates::plus_, T1, T2, sc_t, ord_t>(u, v);
 }
+
 
 //-----------------------------------------------------  
 // T1: expre, T2: expr:
@@ -34,12 +43,20 @@ template <typename T1,
   exprtemplates::is_sharedmem_vector_expression<T1>::value &&
   exprtemplates::is_sharedmem_vector_expression<T2>::value
 	    > * = nullptr>
-auto operator+(const T1 & u, const T2 & v) {
+auto operator+(const T1 & u, const T2 & v) 
+  -> decltype( 
+      core::exprtemplates::SharedMemVectorBinaryExp<
+      core::exprtemplates::plus_,
+      T1, T2, 
+      typename T2::sc_type, 
+      typename T2::ord_type>(u, v)
+    )
+{
   using sc_t = typename T2::sc_type;
   using ord_t = typename T2::ord_type;
 
   return core::exprtemplates::SharedMemVectorBinaryExp<
-    core::exprtemplates::plus_,T1, T2, sc_t, ord_t>(u, v);
+    core::exprtemplates::plus_, T1, T2, sc_t, ord_t>(u, v);
 }
   
 //-----------------------------------------------------
@@ -51,12 +68,20 @@ template <typename T1,
 exprtemplates::is_admissible_vec_for_sharedmem_expression<T1>::value &&
 exprtemplates::is_sharedmem_vector_expression<T2>::value
 	    > * = nullptr>
-auto operator+(const T1 & u, const T2 & v) {
+auto operator+(const T1 & u, const T2 & v) 
+  -> decltype( 
+      core::exprtemplates::SharedMemVectorBinaryExp<
+      core::exprtemplates::plus_,
+      T1, T2, 
+      typename T2::sc_type, 
+      typename T2::ord_type>(u, v)
+    )
+{
   using sc_t = typename T2::sc_type;
   using ord_t = typename T2::ord_type;
 
   return core::exprtemplates::SharedMemVectorBinaryExp<
-    core::exprtemplates::plus_,T1, T2, sc_t, ord_t>(u, v);
+    core::exprtemplates::plus_, T1, T2, sc_t, ord_t>(u, v);
 }
   
 

@@ -55,6 +55,8 @@
 #include <type_traits>
 #include <utility>
 
+#include "../integer_sequence.hpp"
+
 #include "../sequence.hpp"
 #include "../identity.hpp"
 #include "fill_n.hpp"
@@ -71,7 +73,7 @@ namespace detail {
 template <typename T> struct _element_at;
 
 template <std::size_t... Idxs>
-struct _element_at<std::integer_sequence<std::size_t, Idxs...>> {
+struct _element_at<::tinympl::fr::integer_sequence<std::size_t, Idxs...>> {
   template <class T>
   static identity<T> at(
     typename tinympl::ignore_value_argument<std::size_t, Idxs, void const*>::type...,
@@ -93,7 +95,7 @@ struct _at_impl
     )
 #else
   : identity<
-      std::tuple_element_t<i, std::tuple<Args...>>
+      typename std::tuple_element<i, std::tuple<Args...>>::type
     >
 #endif
 { };
@@ -124,7 +126,7 @@ struct at : public tinympl::variadic::at<WrappedSpot::value, Args...>
 
 template <typename Default, std::size_t i, typename... Args>
 struct at_or : tinympl::identity<
-  typename std::conditional_t<
+  typename std::conditional<
     i < sizeof...(Args),
     tinympl::variadic::at<i, Args...>,
     tinympl::identity<Default>

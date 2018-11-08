@@ -14,7 +14,7 @@ template <typename T1,
 	    core::meta::is_eigen_dense_matrix_wrapper<T1>::value or
 	    core::meta::is_eigen_sparse_matrix_wrapper<T1>::value
 	    > * = nullptr>
-auto operator*(const T1 & A, const T1 & B) {
+T1 operator*(const T1 & A, const T1 & B) {
   assert( A.rows() == B.rows() );
   assert( A.cols() == B.cols() );
   T1 C(A.rows(), A.cols());

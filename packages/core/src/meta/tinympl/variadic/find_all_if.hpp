@@ -57,6 +57,7 @@
 #include "../to_index_sequence.hpp"
 #include "../stl_integer_sequence.hpp"
 #include "../logical_not.hpp"
+#include "../integer_sequence.hpp"
 
 namespace tinympl {
 namespace variadic {
@@ -81,11 +82,11 @@ struct find_all_if<UnaryPredicate, Arg1, Args...> {
 
   public:
     using type = typename join<
-      typename std::conditional_t<
+      typename std::conditional<
         UnaryPredicate<Arg1>::type::value,
-        std::index_sequence<0>,
-        std::index_sequence<>
-      >,
+        ::tinympl::fr::index_sequence<0>,
+        ::tinympl::fr::index_sequence<>
+      >::type,
       typename tinympl::to_index_sequence<
         typename tinympl::transform<
           typename find_all_if<UnaryPredicate, Args...>::type,
@@ -99,7 +100,7 @@ template <
   template <class...> class UnaryPredicate
 >
 struct find_all_if<UnaryPredicate> {
-  using type = std::index_sequence<>;
+  using type = ::tinympl::fr::index_sequence<>;
 };
 
 template <

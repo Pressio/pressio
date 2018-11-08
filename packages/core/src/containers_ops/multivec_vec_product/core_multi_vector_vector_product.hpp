@@ -55,7 +55,11 @@ template <typename mvec_type,
    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value 
     > * = nullptr
   >
-auto product(const mvec_type & mvA, const vec_type & vecB){
+auto product(const mvec_type & mvA, const vec_type & vecB)
+-> core::Vector<
+    Eigen::Matrix<typename core::details::traits<mvec_type>::scalar_t,
+                  Eigen::Dynamic,1>
+>{
 
   using sc_t = typename core::details::traits<mvec_type>::scalar_t;
   core::Vector<Eigen::Matrix<sc_t,Eigen::Dynamic,1>> c(mvA.length());
@@ -124,8 +128,8 @@ template <typename mvec_type,
     )
   > * = nullptr
  >
-auto product(const mvec_type & mvA,
-	     const vec_type & vecB) {
+core::Vector<Epetra_Vector> 
+product(const mvec_type & mvA, const vec_type & vecB) {
 
   // here, mvA is distrubted, but vecB is NOT.
   // we interpret this as a linear combination of vectors
@@ -202,8 +206,14 @@ template <typename mvec_type,
     (core::meta::is_eigen_vector_wrapper<vec_type>::value)
   > * = nullptr
  >
-auto product(const mvec_type & mvA,
-	     const vec_type & vecB) {
+auto product(const mvec_type & mvA, const vec_type & vecB) 
+  -> core::Vector<
+  Tpetra::Vector<typename details::traits<mvec_type>::scalar_t, 
+                 typename details::traits<mvec_type>::local_ordinal_t, 
+                 typename details::traits<mvec_type>::global_ordinal_t, 
+                 typename details::traits<mvec_type>::node_t>
+                 >
+{
 
   // here, mvA is distrubted, but vecB is NOT.
   // we interpret this as a linear combination of vectors

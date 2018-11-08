@@ -1,10 +1,15 @@
+
 /*
 //@HEADER
 // ************************************************************************
 //
-//                      stl_integer_sequence.hpp
-//                         DARMA
-//              Copyright (C) 2017 NTESS, LLC
+//                                 integer_sequence.hpp                                
+//                         whatever
+//              Copyright (C) 2015 Sandia Corporation
+// This file was adapted from its original form in the tinympl library.
+// The original file bore the following copyright:
+//   Copyright (C) 2013, Ennio Barbaro.
+// See LEGAL.md for more information.
 //
 // Under the terms of Contract DE-NA-0003525 with NTESS, LLC,
 // the U.S. Government retains certain rights in this software.
@@ -42,24 +47,38 @@
 //@HEADER
 */
 
-#ifndef TINYMPL_STL_INTEGER_SEQUENCE_HPP
-#define TINYMPL_STL_INTEGER_SEQUENCE_HPP
 
-#include "as_sequence.hpp"
-#include "integer_sequence.hpp"
+#ifndef TINYMPL_INTEGER_SEQUENCE_HPP
+#define TINYMPL_INTEGER_SEQUENCE_HPP
 
-#include <utility>
+#include <type_traits>
 
-namespace tinympl {
+namespace tinympl { namespace fr{
 
-template <typename T, T... vals>
-struct as_sequence<::tinympl::fr::integer_sequence<T, vals...>> {
-  using type = sequence<std::integral_constant<T, vals>...>;
-  template <typename... wrapped>
-  using rebind = ::tinympl::fr::integer_sequence<T, wrapped::value...>;
+
+template<typename T, T... Ints>
+struct integer_sequence
+{
+	typedef T value_type;
+	static constexpr std::size_t size() { return sizeof...(Ints); }
 };
 
+template<std::size_t... Ints>
+using index_sequence = integer_sequence<std::size_t, Ints...>;
 
-} // end namespace tinympl
+template<typename T, std::size_t N, T... Is>
+struct make_integer_sequence : make_integer_sequence<T, N-1, N-1, Is...> {};
 
-#endif //TINYMPL_STL_INTEGER_SEQUENCE_HPP
+template<typename T, T... Is>
+struct make_integer_sequence<T, 0, Is...> : integer_sequence<T, Is...> {};
+
+template<std::size_t N>
+using make_index_sequence = make_integer_sequence<std::size_t, N>;
+
+template<typename... T>
+using index_sequence_for = make_index_sequence<sizeof...(T)>;
+
+
+}} // namespace tinympl::fr
+
+#endif // TINYMPL_INTEGER_SEQUENCE_HPP

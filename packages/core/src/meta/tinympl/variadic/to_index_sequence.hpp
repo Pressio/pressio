@@ -46,6 +46,8 @@
 #define TINYMPL_VARIADIC_TO_INDEX_SEQUENCE_HPP
 
 #include "../identity.hpp"
+#include "../integer_sequence.hpp"
+
 #include <utility> // std::index_sequence
 
 namespace tinympl {
@@ -53,7 +55,7 @@ namespace variadic {
 
 template <typename... Args>
 struct to_index_sequence
-  : tinympl::identity<std::index_sequence<Args::value...>>
+  : tinympl::identity<::tinympl::fr::index_sequence<Args::value...>>
 { };
 
 template <typename... Args>

@@ -17,7 +17,13 @@ template <typename T1, typename T2,
   std::is_scalar<T1>::value && 
   exprtemplates::is_admissible_vec_for_sharedmem_expression<T2>::value
 	      > * = nullptr>
-auto operator*(T1 u, const T2 & v) {
+auto operator*(T1 u, const T2 & v)
+  -> decltype( 
+      core::exprtemplates::SharedMemVectorBinaryExp<
+      core::exprtemplates::times_,
+      T2, T1, T1, typename core::details::traits<T2>::ordinal_t>(v,u)
+    )
+{
   using sc_t = T1;
   using vec_sc_t = typename core::details::traits<T2>::scalar_t;
   static_assert(std::is_same<sc_t, vec_sc_t>::value, "");
@@ -35,7 +41,13 @@ template <typename T1, typename T2,
   std::is_scalar<T2>::value && 
   exprtemplates::is_admissible_vec_for_sharedmem_expression<T1>::value
 	      > * = nullptr>
-auto operator*(const T1 & u, T2 v) {
+auto operator*(const T1 & u, T2 v)
+  -> decltype( 
+      core::exprtemplates::SharedMemVectorBinaryExp<
+      core::exprtemplates::times_,
+      T1, T2, T2, typename core::details::traits<T1>::ordinal_t>(u,v)
+    )
+{
   using sc_t = T2;
   using vec_sc_t = typename core::details::traits<T1>::scalar_t;
   static_assert(std::is_same<sc_t, vec_sc_t>::value, "");
@@ -54,7 +66,14 @@ template <typename T1,
   exprtemplates::is_sharedmem_vector_expression<T1>::value &&
   std::is_scalar<T2>::value
 	    > * = nullptr>
-auto operator*(const T1 & u, T2 v) {
+auto operator*(const T1 & u, T2 v) 
+  -> decltype( 
+      core::exprtemplates::SharedMemVectorBinaryExp<
+      core::exprtemplates::times_,
+      T1, typename T1::sc_type, typename T1::sc_type, 
+      typename T1::ord_type>(u,v)
+    )
+{
   using sc_t = typename T1::sc_type;
   using ord_t = typename T1::ord_type;
 
@@ -71,7 +90,14 @@ template <typename T1,
   std::is_scalar<T1>::value &&
   exprtemplates::is_sharedmem_vector_expression<T2>::value
 	    > * = nullptr>
-auto operator*(T1 u, const T2 & v) {
+auto operator*(T1 u, const T2 & v) 
+  -> decltype( 
+      core::exprtemplates::SharedMemVectorBinaryExp<
+      core::exprtemplates::times_,
+      T2, typename T2::sc_type, typename T2::sc_type, 
+      typename T2::ord_type>(v,u)
+    )
+{
   using sc_t = typename T2::sc_type;
   using ord_t = typename T2::ord_type;
 
@@ -87,7 +113,15 @@ template <typename T1, typename T2,
   exprtemplates::is_admissible_vec_for_sharedmem_expression<T1>::value and 
   exprtemplates::is_admissible_vec_for_sharedmem_expression<T2>::value
 	      > * = nullptr>
-auto operator*(const T1 & u, const T2 & v) {
+auto operator*(const T1 & u, const T2 & v) 
+  -> decltype( 
+      core::exprtemplates::SharedMemVectorBinaryExp<
+      core::exprtemplates::times_,
+      T1, T2, 
+      typename core::details::traits<T1>::scalar_t, 
+      typename core::details::traits<T1>::ordinal_t>(u,v)
+    )
+{
   using vec_u_sc_t = typename core::details::traits<T1>::scalar_t;
   using vec_v_sc_t = typename core::details::traits<T2>::scalar_t;
   static_assert(std::is_same<vec_u_sc_t, vec_v_sc_t>::value, "");
@@ -106,7 +140,14 @@ template <typename T1,
   exprtemplates::is_sharedmem_vector_expression<T1>::value &&
   exprtemplates::is_admissible_vec_for_sharedmem_expression<T2>::value
 	    > * = nullptr>
-auto operator*(const T1 & u, const T2 v) {
+auto operator*(const T1 & u, const T2 v) 
+  -> decltype( 
+      core::exprtemplates::SharedMemVectorBinaryExp<
+      core::exprtemplates::times_,
+      T1, T2, 
+      typename T1::sc_type, typename T1::ord_type>(u,v)
+    )
+{
   using sc_t = typename T1::sc_type;
   using ord_t = typename T1::ord_type;
   using vec_v_sc_t = typename core::details::traits<T2>::scalar_t;

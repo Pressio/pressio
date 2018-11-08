@@ -78,7 +78,7 @@ struct lambda
 
     template<class T>
     struct pick<T,
-      std::enable_if_t< (is_placeholder<T>::type::value > 0)>
+      typename std::enable_if< (is_placeholder<T>::type::value > 0)>::type
     > {
         typedef typename is_placeholder<T>::template cv_qualifier_rebind<
             variadic::at_t<is_placeholder<T>::value-1, Ts...>

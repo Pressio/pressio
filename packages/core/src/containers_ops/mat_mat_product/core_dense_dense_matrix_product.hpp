@@ -36,7 +36,10 @@ template <typename T1, typename T2,
        core::meta::wrapper_pair_have_same_scalar<T1,T2>::value
      > * = nullptr
     >
-auto product(const T1 & A, const T2 & B){
+auto product(const T1 & A, const T2 & B)
+-> core::Matrix<
+    Eigen::Matrix<typename core::details::traits<T1>::scalar_t, -1, -1>
+    >{
 
   using sc_t = typename core::details::traits<T1>::scalar_t;
   using nat_t = Eigen::Matrix<sc_t,-1,-1>; 

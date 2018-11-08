@@ -35,7 +35,7 @@ template <typename A_t, typename B_t,
       core::meta::wrapper_pair_have_same_scalar<A_t,B_t>::value
       > * = nullptr
     >
-auto product(const A_t & A, const B_t & B){
+A_t product(const A_t & A, const B_t & B){
   
   A_t C(A.rows(),B.cols());
   product(A, B, C);

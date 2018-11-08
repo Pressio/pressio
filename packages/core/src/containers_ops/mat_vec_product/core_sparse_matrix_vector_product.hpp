@@ -38,7 +38,10 @@ template <typename A_t, typename b_t,
     core::meta::wrapper_pair_have_same_scalar<A_t, b_t>::value
     > * = nullptr
   >
-auto product(const A_t & A, const b_t & b){
+auto product(const A_t & A, const b_t & b)
+-> core::Vector<
+    Eigen::Matrix<typename core::details::traits<A_t>::scalar_t,-1,1>
+    >{
 
   using sc_t = typename core::details::traits<A_t>::scalar_t;
   core::Vector<Eigen::Matrix<sc_t,-1,1>> c(A.rows());

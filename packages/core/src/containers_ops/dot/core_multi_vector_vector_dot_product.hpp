@@ -42,8 +42,12 @@ template <typename mvec_type,
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >
-auto dot(const mvec_type & mvA,
-	 const vec_type & vecB){
+auto dot(const mvec_type & mvA, const vec_type & vecB)
+-> core::Vector<
+  Eigen::Matrix<typename core::details::traits<mvec_type>::scalar_t, 
+                Eigen::Dynamic, 1>
+                >{
+                  
   using sc_t = typename core::details::traits<mvec_type>::scalar_t;
   core::Vector<Eigen::Matrix<sc_t, Eigen::Dynamic, 1>> c(vecB.size());
   dot(mvA,vecB,c);

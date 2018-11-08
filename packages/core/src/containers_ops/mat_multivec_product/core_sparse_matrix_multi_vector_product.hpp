@@ -90,8 +90,8 @@ template <typename mat_type,
     core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
     > * = nullptr
   >
-auto product(const mat_type & A,
-	     const mvec_type & B){
+mvec_type product(const mat_type & A, const mvec_type & B)
+{
   
   mvec_type C( A.getRangeDataMap(), B.globalNumVectors() );
   product(A,B,C);
