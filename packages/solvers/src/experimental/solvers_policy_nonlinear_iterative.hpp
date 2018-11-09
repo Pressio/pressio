@@ -31,7 +31,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
       int
     >::type* = nullptr
   >
-  static auto solve(
+  static VectorT solve(
     const SystemT& system,
     const VectorT& x0,
     core::default_types::uint maxIterations,
@@ -63,7 +63,7 @@ is not compatible with the provided nonlinear system" << std::endl;
       int
     >::type* = nullptr
   >
-  static auto solve(
+  static VectorT solve(
     const SystemT& sys,
     const VectorT& x0,
     core::default_types::uint maxIterations,

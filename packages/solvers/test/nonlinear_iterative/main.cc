@@ -12,13 +12,13 @@ struct NonLinearSystem {
   using vector_n_t = Eigen::VectorXd;
   using vector_type = rompp::core::Vector<vector_n_t>;
 
-  auto residual(const vector_type& x) const {
+  vector_type residual(const vector_type& x) const {
     vector_type res(2);
     residual(x, res);
     return res;
   }
 
-  auto jacobian(const vector_type& x) const {
+  matrix_type jacobian(const vector_type& x) const {
     matrix_type jac(2, 2);
     jacobian(x, jac);
     return jac;

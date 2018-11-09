@@ -91,11 +91,11 @@ struct find_last_if<sequence<Args...>, F>
 
   public:
 
-    using type = std::conditional_t<
+    using type = typename std::conditional<
       found_rev == sizeof...(Args),
       std::integral_constant<size_t, sizeof...(Args)>,
       std::integral_constant<size_t, sizeof...(Args) - found_rev - 1>
-    >;
+    >::type;
 
     static constexpr auto value = type::value;
 };

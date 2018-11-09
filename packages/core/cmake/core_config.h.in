@@ -3,3 +3,5 @@
 #cmakedefine HAVE_BLAZE
 #cmakedefine HAVE_MPI
 #cmakedefine HAVE_ARMADILLO
+
+#cmakedefine HAVE_CPP14

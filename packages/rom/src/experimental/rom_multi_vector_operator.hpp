@@ -17,9 +17,14 @@ class MultiVectorOperator
   : public OperatorBase<
       MultiVectorOperator<operator_type>>{
 
+private:
+  friend OperatorBase<MultiVectorOperator<operator_type> >;
+  const operator_type * op_;
+
   //----  APPLY RIGHT ----
   template<typename T>
-  auto applyRightImpl(const T & X){
+  auto applyRightImpl(const T & X)
+  -> decltype(core::ops::product(X, *op_)){
     return core::ops::product(X, *op_);
   }
   
@@ -31,7 +36,8 @@ class MultiVectorOperator
        core::meta::is_core_vector_wrapper<T>::value 
        > * = nullptr
      >
-  auto applyImpl(const T & X){
+  auto applyImpl(const T & X)
+  -> decltype(core::ops::product(*op_, X)){
     return core::ops::product(*op_, X);
   }
   //---------------------------------
@@ -58,7 +64,8 @@ class MultiVectorOperator
        core::meta::is_core_vector_wrapper<T>::value
        > * = nullptr
      >
-  auto applyTransposeImpl(const T & X){
+  auto applyTransposeImpl(const T & X)
+  -> decltype(core::ops::dot(*op_, X)){
     // multivector^T acts on vector = take dot of each row 
     // op_^T: multivector of size n,m
     // X: vector of size m,1
@@ -87,9 +94,7 @@ public:
     : op_(&opIn){}
   ~MultiVectorOperator() = default;
 
-private:
-  friend OperatorBase<MultiVectorOperator<operator_type> >;
-  const operator_type * op_;
+
 
 };//end class
 

@@ -25,7 +25,7 @@ class SolversLinearDirectWrapperArmadillo {
      * Solve the linear system
      */
     template <typename VectorT>
-    auto solve(const VectorT& b) {
+    VectorT solve(const VectorT& b) {
       return this->template _solveImpl<MatrixT>(b);
     }
 
@@ -42,7 +42,7 @@ class SolversLinearDirectWrapperArmadillo {
         core::details::traits<DMatrixT>::is_dense
       >* = nullptr
     >
-    auto _solveImpl(const VectorT& b) const {
+    VectorT _solveImpl(const VectorT& b) const {
       return b;//VectorT(arma::solve(*A.data(), *b.data()));
     }
 
@@ -57,7 +57,7 @@ class SolversLinearDirectWrapperArmadillo {
         core::details::traits<DMatrixT>::is_sparse
       >* = nullptr
     >
-    auto _solveImpl(const VectorT& b) const {
+    VectorT _solveImpl(const VectorT& b) const {
       return b; // VectorT(arma::spsolve(*A.data(), *b.data()));
     }
 

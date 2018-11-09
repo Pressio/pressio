@@ -26,10 +26,10 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
 		>::value
 	      >* = nullptr
   >
-  static auto solve(const SystemT& sys,
-		    const VectorT& x0,
-		    core::default_types::uint maxNonLinearIterations = 1000,
-		    typename core::details::traits<VectorT>::scalar_t nonLinearTolerance = 1e-10) {
+  static VectorT solve(const SystemT& sys,
+                       const VectorT& x0,
+                       core::default_types::uint maxNonLinearIterations = 1000,
+                       typename core::details::traits<VectorT>::scalar_t nonLinearTolerance = 1e-10) {
     using sc_t = typename core::details::traits<VectorT>::scalar_t;
     using eig_mat = Eigen::Matrix<sc_t,Eigen::Dynamic,Eigen::Dynamic>;
     using eig_vec = Eigen::Matrix<sc_t,Eigen::Dynamic,1>;

@@ -28,151 +28,151 @@ template<
 >
 class LinearSolverBase {
 
-  public:
+public:
+
+  /**
+   * Initialize a new linear solver.
+   *
+   * @param A matrix representing the linear system to be solved.
+   */
+  template <
+  typename CompatibleMatrixT,
+  typename std::enable_if<
+    solvers::meta::are_matrix_compatible<
+      MatrixT,
+      CompatibleMatrixT
+      >::value, MatrixT*
+    >::type = nullptr
+  >
+  void resetLinearSystem(const CompatibleMatrixT& A) {
+    solver_->resetLinearSystem(A);
+  }
 
 
-    /**
-     * Initialize a new linear solver.
-     *
-     * @param A matrix representing the linear system to be solved.
-     */
-    template <
-      typename CompatibleMatrixT,
-      typename std::enable_if<
-        solvers::meta::are_matrix_compatible<
-          MatrixT,
-          CompatibleMatrixT
+  /**
+   * Solve the linear system
+   *
+   * @param b RHS vector
+   * @return solution vector
+   */
+  template <
+    typename VectorLT,
+    typename std::enable_if<
+      solvers::meta::are_vector_matrix_compatible<
+	VectorLT,
+	MatrixT
         >::value, MatrixT*
       >::type = nullptr
     >
-    void resetLinearSystem(const CompatibleMatrixT& A) {
-      solver_->resetLinearSystem(A);
-    }
+  VectorLT solve(const VectorLT& b){
+    return this->underlying()._solve(b);
+  }
 
 
-    /**
-     * Solve the linear system
-     *
-     * @param b RHS vector
-     * @return solution vector
-     */
-    template <
-      typename VectorLT,
-      typename std::enable_if<
-        solvers::meta::are_vector_matrix_compatible<
-          VectorLT,
-          MatrixT
-        >::value, MatrixT*
-      >::type = nullptr
-    >
-    auto solve(const VectorLT& b) {
-      return this->underlying()._solve(b);
-    }
-
-
-    /**
-     * Specify and solve the linear system
-     *
-     * @param A matrix representing the linear system to be solved
-     * @param b RHS vector
-     * @return solution vector
-     */
-    template <
-      typename CompatibleMatrixT,
-      typename VectorRT,
-      typename std::enable_if<
-        solvers::meta::are_vector_matrix_compatible<
-          VectorRT,
-          CompatibleMatrixT
+  /**
+   * Specify and solve the linear system
+   *
+   * @param A matrix representing the linear system to be solved
+   * @param b RHS vector
+   * @return solution vector
+   */
+  template <
+    typename CompatibleMatrixT,
+    typename VectorRT,
+    typename std::enable_if<
+      solvers::meta::are_vector_matrix_compatible<
+	VectorRT,
+	CompatibleMatrixT
         >::value,
-        CompatibleMatrixT*
+      CompatibleMatrixT*
       >::type = nullptr
     >
-    auto solve(const CompatibleMatrixT& A, const VectorRT& b) {
-      this->resetLinearSystem(A);
-      return this->solve(b);
-    }
+  auto solve(const CompatibleMatrixT& A, const VectorRT& b)
+    -> decltype(this->solve(b)){
+    this->resetLinearSystem(A);
+    return this->solve(b);
+  }
 
 
-    /**
-     * @brief  Solve the linear system
-     *
-     * @param  b is the RHS vector
-     * @param  x is the solution vector
-     * @return void
-     */
-    template <
-      typename VectorLT,
-      typename VectorRT,
-      typename std::enable_if<
-        solvers::meta::are_vector_compatible<
-          VectorLT,
-          VectorRT
+  /**
+   * @brief  Solve the linear system
+   *
+   * @param  b is the RHS vector
+   * @param  x is the solution vector
+   * @return void
+   */
+  template <
+    typename VectorLT,
+    typename VectorRT,
+    typename std::enable_if<
+      solvers::meta::are_vector_compatible<
+	VectorLT,
+	VectorRT
         >::value,
-        VectorLT*
+      VectorLT*
       >::type = nullptr
     >
-    void solve(const VectorLT& b, VectorRT& x) {
-      x = VectorRT(*this->solve(b).data());
-    }
+  void solve(const VectorLT& b, VectorRT& x) {
+    x = VectorRT(*this->solve(b).data());
+  }
 
 
-    /**
-     * @brief  Specify and solve the linear system
-     *
-     * @param  A is the system matrix
-     * @param  b is the RHS vector
-     * @param  x is the solution vector
-     * @return void
-     */
-    template <
-      typename CompatibleMatrixT,
-      typename VectorLT,
-      typename VectorRT
+  /**
+   * @brief  Specify and solve the linear system
+   *
+   * @param  A is the system matrix
+   * @param  b is the RHS vector
+   * @param  x is the solution vector
+   * @return void
+   */
+  template <
+    typename CompatibleMatrixT,
+    typename VectorLT,
+    typename VectorRT
     >
-    void solve(const CompatibleMatrixT& A, const VectorLT& b, VectorRT& x) {
-      this->resetLinearSystem(A);
-      this->solve(b, x);
-    }
+  void solve(const CompatibleMatrixT& A, const VectorLT& b, VectorRT& x) {
+    this->resetLinearSystem(A);
+    this->solve(b, x);
+  }
 
 
-  protected:
+protected:
 
-    LinearSolverBase() : solver_(nullptr) {};
-
-
-    LinearSolverBase(std::shared_ptr<SolverT> solver) : solver_(solver) {}
+  LinearSolverBase() : solver_(nullptr) {};
 
 
-    LinearSolverBase(LinearSolverBase&& other) : solver_(std::move(other.solver_)) {}
+  LinearSolverBase(std::shared_ptr<SolverT> solver) : solver_(solver) {}
 
 
-    LinearSolverBase(const LinearSolverBase&) = delete;
+  LinearSolverBase(LinearSolverBase&& other) : solver_(std::move(other.solver_)) {}
 
 
-    virtual ~LinearSolverBase() = default;
+  LinearSolverBase(const LinearSolverBase&) = delete;
 
 
-    std::shared_ptr<SolverT> getSolver() {
-      return solver_;
-    }
+  virtual ~LinearSolverBase() = default;
 
 
-  private:
-
-    Derived& underlying() {
-      return static_cast<Derived&>(*this);
-    }
+  std::shared_ptr<SolverT> getSolver() {
+    return solver_;
+  }
 
 
-    Derived const& underlying() const {
-      return static_cast<Derived const&>(*this);
-    }
+private:
+
+  Derived& underlying() {
+    return static_cast<Derived&>(*this);
+  }
 
 
-  private:
+  Derived const& underlying() const {
+    return static_cast<Derived const&>(*this);
+  }
 
-    std::shared_ptr<SolverT> solver_;
+
+private:
+
+  std::shared_ptr<SolverT> solver_;
 };
 
 } //end namespace solvers

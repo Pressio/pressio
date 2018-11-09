@@ -24,7 +24,7 @@ struct NonLinearLeastSquareSystem {
     }
   }
 
-  auto residual(const state_w_t& x) const {
+  state_w_t residual(const state_w_t& x) const {
     state_w_t res(n);
     this->residual(x, res);
     return res;
@@ -38,7 +38,7 @@ struct NonLinearLeastSquareSystem {
     }
   }
 
-  auto jacobian(const state_w_t& x) const {
+  jacobian_w_t jacobian(const state_w_t& x) const {
     jacobian_w_t jac(n, 2);
     this->jacobian(x, jac);
     return jac;

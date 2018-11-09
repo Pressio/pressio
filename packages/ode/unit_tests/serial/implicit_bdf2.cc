@@ -23,10 +23,12 @@ TEST(ode_implicit_bdf2, traits){
     ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
 
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::ImplicitSteppersEnum::Euler, state_t, jac_t, app_t>;
+    ode::ImplicitSteppersEnum::Euler, 
+    state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
   
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitSteppersEnum::BDF2, state_t, jac_t, aux_stepper_t, app_t>;
+    ode::ImplicitSteppersEnum::BDF2,
+    state_t, res_t, jac_t, app_t, aux_stepper_t>;
 
   using impl_t = typename stepper_t::base_t;
   using traits = ode::details::traits<impl_t>;
@@ -54,7 +56,7 @@ TEST(ode_implicit_bdf2, traits){
 }
 
 
-TEST(ode_implicit_euler, numerics){
+TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using namespace rompp;
   
   using app_t = ode::testing::refAppForImpEigen;
@@ -67,21 +69,80 @@ TEST(ode_implicit_euler, numerics){
   using res_t = core::Vector<nresidual_t>;
   using jac_t = core::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
-  
-  res_t r(3);
-  appObj.residual(*y.data(), *r.data(), 0.0);
-  //std::cout << std::setprecision(14) << *r.data();
+  y[0] = 1.; y[1] = 2.; y[2] = 3.;  
+  // res_t r(3);
+  // appObj.residual(*y.data(), *r.data(), 0.0);
 
   // define auxiliary stepper
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::ImplicitSteppersEnum::Euler, state_t, jac_t, app_t>;
+    ode::ImplicitSteppersEnum::Euler, 
+    state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
   aux_stepper_t stepperAux(appObj, y);
+  
   // actual stepper
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitSteppersEnum::BDF2, state_t, jac_t, aux_stepper_t, app_t>;
+    ode::ImplicitSteppersEnum::BDF2,
+    state_t, res_t, jac_t, app_t, aux_stepper_t>;
   stepper_t stepperObj(appObj, y, stepperAux);
+  
+  // define solver
+  using namespace rompp::solvers;
+  auto solverO = NonLinearSolvers::createIterativeSolver<
+    nonlinear::NewtonRaphson,linear::Bicgstab>();
 
+  // integrate in time
+  int nSteps = 2;
+  double dt = 0.01;
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
+  std::cout << std::setprecision(14) << *y.data() << "\n";
+
+  appObj.analyticAdvanceBackEulerNSteps(dt, 1);
+  appObj.analyticAdvanceBDF2NSteps(dt, 1);
+  std::cout << std::setprecision(14) << appObj.y << "\n";
+  EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
+  EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
+  EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
+}
+
+
+TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
+  using namespace rompp;  
+  using app_t = ode::testing::refAppForImpEigen;
+  using nstate_t = typename app_t::state_type;
+  using nresidual_t = typename app_t::residual_type;
+  using njacobian_t = typename app_t::jacobian_type;
+  app_t appObj;
+  
+  using state_t = core::Vector<nstate_t>;
+  using res_t = core::Vector<nresidual_t>;
+  using jac_t = core::Matrix<njacobian_t>;
+  state_t y(3);//appObj.y0);
+  y[0] = 1.; y[1] = 2.; y[2] = 3.;  
+
+  // define auxiliary policies and stepper
+  using aux_res_pol_t
+    = ode::policy::ImplicitEulerResidualStandardPolicy<state_t, app_t, res_t>;
+  using aux_jac_pol_t
+    = ode::policy::ImplicitEulerJacobianStandardPolicy<state_t, app_t, jac_t>;
+  using aux_stepper_t = ode::ImplicitStepper<
+    ode::ImplicitSteppersEnum::Euler, 
+    state_t, res_t, jac_t, app_t, void, /*aux stepper NOT needed for backEuler*/
+    aux_res_pol_t, aux_jac_pol_t>;
+  aux_stepper_t stepperAux(appObj, aux_res_pol_t(), aux_jac_pol_t(), y);
+
+  //***************************************
+  // define policies and stepper for BDF2
+  //***************************************
+  using res_pol_t
+    = ode::policy::ImplicitBDF2ResidualStandardPolicy<state_t, app_t, res_t>;
+  using jac_pol_t
+    = ode::policy::ImplicitBDF2JacobianStandardPolicy<state_t, app_t, jac_t>;  
+  // actual stepper
+  using stepper_t = ode::ImplicitStepper<
+    ode::ImplicitSteppersEnum::BDF2,
+    state_t, res_t, jac_t, app_t, aux_stepper_t, res_pol_t, jac_pol_t>;
+  stepper_t stepperObj(appObj, res_pol_t(), jac_pol_t(), y, stepperAux);
+  
   // define solver
   using namespace rompp::solvers;
   auto solverO = NonLinearSolvers::createIterativeSolver<
@@ -99,8 +160,8 @@ TEST(ode_implicit_euler, numerics){
 
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
   appObj.analyticAdvanceBDF2NSteps(dt, 1);
-  std::cout << std::setprecision(14) << appObj.y0 << "\n";
-  EXPECT_DOUBLE_EQ(y[0], appObj.y0[0]);
-  EXPECT_DOUBLE_EQ(y[1], appObj.y0[1]);
-  EXPECT_DOUBLE_EQ(y[2], appObj.y0[2]);
+  std::cout << std::setprecision(14) << appObj.y << "\n";
+  EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
+  EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
+  EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
 }

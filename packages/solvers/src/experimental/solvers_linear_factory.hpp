@@ -16,8 +16,19 @@
 #include "../../../core/src/matrix/core_matrix_traits.hpp"
 
 
-namespace rompp{
-namespace solvers{
+namespace rompp{ namespace solvers{
+
+
+
+template <typename SolverT, typename MatrixT>
+struct createDirectSolverTypeHelper{
+  using solver_traits = linear::details::solver_traits<SolverT>;
+  using wrapped_type = typename core::details::traits<MatrixT>::wrapped_t;
+  using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type>;
+  using wrapped_solver_type 
+    = decltype( LinearDirectSolver<concrete_solver_type, MatrixT>(std::make_shared<concrete_solver_type>()) );
+};
+
 
 
 struct LinearSolvers {
@@ -35,7 +46,9 @@ struct LinearSolvers {
       MatrixT
     >::type* = nullptr
   >
-  static auto createDirectSolver() {
+  static auto createDirectSolver() 
+    -> typename createDirectSolverTypeHelper<SolverT, MatrixT>::wrapped_solver_type {
+
     using solver_traits = linear::details::solver_traits<SolverT>;
 
     static_assert(solver_traits::eigen_enabled && solver_traits::direct, "Solver not available for linear systems defined by Eigen matrices");
@@ -51,6 +64,13 @@ struct LinearSolvers {
   }
 
 
+
+template <typename SolverT, typename MatrixT>
+struct createDirectSolverTypeHelper{
+    using type = decltype( LinearSolvers::createDirectSolver<SolverT, MatrixT>() );
+};
+
+
   /**
    * Create a direct linear solver for Eigen matrices
    *
@@ -61,12 +81,26 @@ struct LinearSolvers {
     typename SolverT,
     typename MatrixT
   >
-  static auto createDirectSolver(const MatrixT& A) {
+  static auto createDirectSolver(const MatrixT& A)
+    -> typename createDirectSolverTypeHelper<SolverT, MatrixT>::type{
+
     auto solver = LinearSolvers::createDirectSolver<SolverT, MatrixT>();
     solver.resetLinearSystem(A);
     return solver;
   }
 
+
+
+template <typename SolverT, typename MatrixT, typename PrecT>
+struct createIterativeSolverTypeHelper{
+    using solver_traits = linear::details::solver_traits<SolverT>;
+    using preconditioner_traits = linear::details::preconditioner_traits<PrecT>;
+    using wrapped_type = typename core::details::traits<MatrixT>::wrapped_t;
+    using concrete_precon_type = typename preconditioner_traits::template eigen_preconditioner_type<wrapped_type>;
+    using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type, concrete_precon_type>;
+    using wrapped_solver_type 
+    = decltype( LinearIterativeSolver<concrete_solver_type, MatrixT>(std::make_shared<concrete_solver_type>()) );
+};
 
   /**
    * Create a linear iterative solver for sparse Eigen matrices
@@ -82,7 +116,8 @@ struct LinearSolvers {
       MatrixT
     >::type* = nullptr
   >
-  static auto createIterativeSolver() {
+  static auto createIterativeSolver() 
+  -> typename createIterativeSolverTypeHelper<SolverT, MatrixT, PrecT>::wrapped_solver_type {
 
     using solver_traits = linear::details::solver_traits<SolverT>;
     using preconditioner_traits = linear::details::preconditioner_traits<PrecT>;
@@ -93,13 +128,18 @@ struct LinearSolvers {
     using wrapped_type = typename core::details::traits<MatrixT>::wrapped_t;
     using concrete_precon_type = typename preconditioner_traits::template eigen_preconditioner_type<wrapped_type>;
     using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type, concrete_precon_type>;
-//    using concrete_policy_type = SolversLinearIterativeEigenPolicy<concrete_solver_type, MatrixT>;
-
     auto solver = std::make_shared<concrete_solver_type>();
     auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT>(solver);
 
     return wrapped_solver;
   }
+
+
+
+template <typename SolverT, typename MatrixT, typename PrecT>
+struct createIterativeSolverTypeHelper2{
+    using type = decltype( LinearSolvers::createIterativeSolver<SolverT, MatrixT>() );
+};
 
 
   /**
@@ -113,71 +153,76 @@ struct LinearSolvers {
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner
   >
-  static auto createIterativeSolver(const MatrixT& A) {
-    auto solver = LinearSolvers::createIterativeSolver<SolverT, MatrixT, PrecT>();
+  static auto createIterativeSolver(const MatrixT& A)
+  -> typename createIterativeSolverTypeHelper2<SolverT, MatrixT, PrecT>::type {
+
+    auto solver = LinearSolvers::createIterativeSolver<SolverT, MatrixT>();
     solver.resetLinearSystem(A);
     return solver;
   }
 
 
-  /**
-   * Create a linear iterative solver for sparse Trilinos matrices
-   *
-   * @return An iterative linear solver for sparse Trilinos matrices
-   */
-#ifdef HAVE_TRILINOS
-  template <
-    typename SolverT,
-    typename MatrixT,
-    typename PrecT = linear::DefaultPreconditioner,
-    typename std::enable_if<
-      core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos,
-      MatrixT
-    >::type* = nullptr
-  >
-  static auto createIterativeSolver() {
 
-    using solver_traits = linear::details::solver_traits<SolverT>;
-    using preconditioner_traits = linear::details::preconditioner_traits<PrecT>;
 
-    static_assert(solver_traits::trilinos_enabled && !solver_traits::direct, "Solver not available for linear systems defined by Trilinos matrices");
-    static_assert(preconditioner_traits::trilinos_enabled, "Preconditioner not available for linear systems defined by Trilinos matrices");
+//   /**
+//    * Create a linear iterative solver for sparse Trilinos matrices
+//    *
+//    * @return An iterative linear solver for sparse Trilinos matrices
+//    */
+// #ifdef HAVE_TRILINOS
+//   template <
+//     typename SolverT,
+//     typename MatrixT,
+//     typename PrecT = linear::DefaultPreconditioner,
+//     typename std::enable_if<
+//       core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Trilinos,
+//       MatrixT
+//     >::type* = nullptr
+//   >
+//   static auto createIterativeSolver() {
 
-    using concrete_solver_type = AztecOO;
-    // using concrete_policy_type = SolversLinearIterativeTrilinosPolicy<concrete_solver_type, MatrixT>;
+//     using solver_traits = linear::details::solver_traits<SolverT>;
+//     using preconditioner_traits = linear::details::preconditioner_traits<PrecT>;
 
-    auto solver_flag = solver_traits::trilinos_flag;
-    auto precon_flag = preconditioner_traits::trilinos_flag;
+//     static_assert(solver_traits::trilinos_enabled && !solver_traits::direct, "Solver not available for linear systems defined by Trilinos matrices");
+//     static_assert(preconditioner_traits::trilinos_enabled, "Preconditioner not available for linear systems defined by Trilinos matrices");
 
-    auto solver = std::make_shared<concrete_solver_type>();
-    solver->SetAztecOption(AZ_solver, solver_flag);
+//     using concrete_solver_type = AztecOO;
+//     // using concrete_policy_type = SolversLinearIterativeTrilinosPolicy<concrete_solver_type, MatrixT>;
 
-    switch (precon_flag) {
-      case AZ_ilu: {
-        solver->SetAztecOption(AZ_precond, AZ_dom_decomp);
-        solver->SetAztecOption(AZ_subdomain_solve, AZ_ilu);
-        break;
-      }
-      case AZ_ilut: {
-        solver->SetAztecOption(AZ_precond, AZ_dom_decomp);
-        solver->SetAztecOption(AZ_subdomain_solve, AZ_ilut);
-        solver->SetAztecOption(AZ_overlap, 1);
-        solver->SetAztecOption(AZ_ilut_fill, 3.0);
-        break;
-      }
-      case AZ_icc: {
-        solver->SetAztecOption(AZ_precond, AZ_dom_decomp);
-        solver->SetAztecOption(AZ_subdomain_solve, AZ_icc);
-        break;
-      }
-    }
+//     auto solver_flag = solver_traits::trilinos_flag;
+//     auto precon_flag = preconditioner_traits::trilinos_flag;
 
-    auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT>(solver);
+//     auto solver = std::make_shared<concrete_solver_type>();
+//     solver->SetAztecOption(AZ_solver, solver_flag);
 
-    return wrapped_solver;
-  }
+//     switch (precon_flag) {
+//       case AZ_ilu: {
+//         solver->SetAztecOption(AZ_precond, AZ_dom_decomp);
+//         solver->SetAztecOption(AZ_subdomain_solve, AZ_ilu);
+//         break;
+//       }
+//       case AZ_ilut: {
+//         solver->SetAztecOption(AZ_precond, AZ_dom_decomp);
+//         solver->SetAztecOption(AZ_subdomain_solve, AZ_ilut);
+//         solver->SetAztecOption(AZ_overlap, 1);
+//         solver->SetAztecOption(AZ_ilut_fill, 3.0);
+//         break;
+//       }
+//       case AZ_icc: {
+//         solver->SetAztecOption(AZ_precond, AZ_dom_decomp);
+//         solver->SetAztecOption(AZ_subdomain_solve, AZ_icc);
+//         break;
+//       }
+//     }
 
-#endif
+//     auto wrapped_solver = LinearIterativeSolver<concrete_solver_type, MatrixT>(solver);
+
+//     return wrapped_solver;
+//   }
+
+// #endif
+
 
   /**
    * Create an iterative least square linear solver for sparse Eigen matrices
@@ -192,7 +237,9 @@ struct LinearSolvers {
       MatrixT
     >::type* = nullptr
   >
-  static auto createLeastSquareIterativeSolver() {
+  static auto createLeastSquareIterativeSolver() 
+    -> decltype(LinearSolvers::createIterativeSolver<typename linear::LSCG, MatrixT, PrecT>()) {
+
     return LinearSolvers::createIterativeSolver<typename linear::LSCG, MatrixT, PrecT>();
   }
 
@@ -211,7 +258,9 @@ struct LinearSolvers {
       MatrixT
     >::type* = nullptr
   >
-  static auto createLeastSquareIterativeSolver(const MatrixT& A) {
+  static auto createLeastSquareIterativeSolver(const MatrixT& A) 
+   -> decltype(LinearSolvers::createIterativeSolver<typename linear::LSCG, MatrixT, PrecT>(A)) {
+
     return LinearSolvers::createIterativeSolver<typename linear::LSCG, MatrixT, PrecT>(A);
   }
 

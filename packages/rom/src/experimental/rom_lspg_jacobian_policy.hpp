@@ -101,7 +101,13 @@ public:
   auto operator()(const ode_state_t & odeY,
   		  const app_t & app,
   		  scalar_type t,
-  		  scalar_type dt) const{
+  		  scalar_type dt) const
+  -> decltype(
+      phi_->applyRight(
+          std::declval<core::Matrix<decltype(app.jacobian(*yFOM_.data(),t))>>()
+        )
+    )
+  {
 
     std::cout << " auto() jacobian \n";
     //   // odeY is the REDUCED state, we need to reconstruct FOM state

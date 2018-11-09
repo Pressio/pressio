@@ -108,7 +108,9 @@ public:
 		  const std::array<ode_state_t, 1> & oldYs,
 		  const app_t & app,
 		  scalar_type t,
-		  scalar_type dt) const{
+		  scalar_type dt) const
+  -> decltype(app.residual(*yFOM_.data(),0.0))
+  {
     
     // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);

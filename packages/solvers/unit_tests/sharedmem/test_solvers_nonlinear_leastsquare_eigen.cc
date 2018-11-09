@@ -38,7 +38,7 @@ struct ValidSystemLeastSquares {
     }
 
 
-    auto residual(const vector_w_t& x) const {
+    vector_w_t residual(const vector_w_t& x) const {
       vector_w_t res(5);
       this->residual(x, res);
       return res;
@@ -54,7 +54,7 @@ struct ValidSystemLeastSquares {
     }
 
 
-    auto jacobian(const vector_w_t& x) const {
+    matrix_w_t jacobian(const vector_w_t& x) const {
       matrix_w_t jac(5, 2);
       this->jacobian(x, jac);
       return jac;

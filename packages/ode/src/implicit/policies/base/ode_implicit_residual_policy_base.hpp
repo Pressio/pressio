@@ -39,7 +39,8 @@ public:
 		  const std::array<state_type, numAuxStates> & auxYs,
 		  const model_type & model,
 		  scalar_type t,
-		  scalar_type dt)const {
+		  scalar_type dt) const 
+   -> decltype(this->underlying()(y, auxYs, model, t, dt)){
     return this->underlying()(y, auxYs, model, t, dt);
   }
   //-----------------------------------------------------

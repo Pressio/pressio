@@ -84,7 +84,7 @@ the solution hint is invalid." << std::endl;
         int
       >::type* = nullptr
     >
-    auto solve(const SystemT& sys, const VectorT& x0) {
+    VectorT solve(const SystemT& sys, const VectorT& x0) {
       return this->underlying().template solve_<PrecT, NormT>(sys, x0);
     }
     //--------------------------------------------------------------
@@ -106,9 +106,9 @@ the solution hint is invalid." << std::endl;
       typename SystemT,
       typename VectorT
     >
-    auto solve(const SystemT& sys, const VectorT& x0) {
-      return this->template solve<linear::DefaultPreconditioner,
-				  L2Norm, SystemT, VectorT>(sys, x0);
+    VectorT solve(const SystemT& sys, const VectorT& x0) {
+      return this->template solve<linear::DefaultPreconditioner, 
+                                   L2Norm, SystemT, VectorT>(sys, x0);
     }
     //--------------------------------------------------------------
 

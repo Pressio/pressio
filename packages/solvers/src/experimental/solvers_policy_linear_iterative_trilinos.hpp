@@ -23,12 +23,9 @@ class SolversLinearIterativeTrilinosPolicy {
 
 
     template <typename VectorT>
-    static auto solve(
-      std::shared_ptr<SolverT> solver, 
-      const VectorT& b, 
-      int maxIters, 
-      double tolerance
-    ) {
+    static VectorT solve(std::shared_ptr<SolverT> solver, 
+                        const VectorT& b, int maxIters, 
+                        double tolerance) {
       auto x(b.data()->Map());
       solver->SetLHS(&x);
       solver->SetRHS(b.data());

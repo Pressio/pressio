@@ -29,7 +29,7 @@ struct ValidSystemA {
     }
 
 
-    auto residual(const vector_w_t& x) {
+    vector_w_t residual(const vector_w_t& x) {
       vector_w_t res(2);
       res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
       res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
@@ -45,7 +45,7 @@ struct ValidSystemA {
     }
 
 
-    auto jacobian(const vector_w_t& x) {
+    matrix_w_t jacobian(const vector_w_t& x) {
       matrix_w_t jac(2, 2);
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;

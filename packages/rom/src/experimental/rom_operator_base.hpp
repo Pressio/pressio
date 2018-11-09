@@ -14,7 +14,9 @@ public:
 
   // A (whatever that is) acts on X, return result 
   template <typename operand_type>
-  auto apply(const operand_type & X){
+  auto apply(const operand_type & X)
+  -> decltype(this->underlying().applyImpl(X))
+  {
     return this->underlying().applyImpl(X);
   }
 
@@ -30,13 +32,16 @@ public:
   // A (whatever that is) acts on X from right, return result
   // => X A 
   template <typename operand_type>
-  auto applyRight(const operand_type & X){
+  auto applyRight(const operand_type & X)
+  -> decltype(this->underlying().applyRightImpl(X))
+  {
     return this->underlying().applyRightImpl(X);
   }
   
   // A^T (whatever that is) acts on X, return result
   template <typename operand_type>
-  auto applyTranspose(const operand_type & X){
+  auto applyTranspose(const operand_type & X)
+  -> decltype(this->underlying().applyTransposeImpl(X)){
     return this->underlying().applyTransposeImpl(X);
   }
 

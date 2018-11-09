@@ -87,15 +87,41 @@ class ImplicitBDF2StepperImpl;
 }//end namespace impl
 //-----------------------------------
 
-    
-template<ExplicitSteppersEnum whichone,
-	 typename ... Args>
-class ExplicitStepper;
+#ifdef HAVE_CPP14    
+    template<ExplicitSteppersEnum whichone,
+	     typename ... Args>
+    class ExplicitStepper;
+
+    template<ImplicitSteppersEnum whichone,
+	     typename ... Args>
+    class ImplicitStepper;
+
+#else
+
+    template<ExplicitSteppersEnum whichone,
+	     typename ode_state_type,
+	     typename model_type,
+	     typename ode_residual_type,
+	     typename residual_policy_type = void,
+	     typename enable = void
+	     >
+    class ExplicitStepper;
+
+
+    template<ImplicitSteppersEnum whichone,
+	     typename ode_state_type,
+	     typename ode_residual_type,
+	     typename ode_jacobian_type,
+	     typename model_type,
+	     typename aux_stepper_type,
+	     typename residual_policy_type = void,
+	     typename jacobian_policy_type = void,
+	     typename enable = void
+	     >
+    class ImplicitStepper;
+#endif
 
     
-template<ImplicitSteppersEnum whichone,
-	 typename ... Args>
-class ImplicitStepper;
 //-----------------------------------
 
     

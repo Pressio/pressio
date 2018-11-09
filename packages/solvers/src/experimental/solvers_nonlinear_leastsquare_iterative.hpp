@@ -44,14 +44,18 @@ class NonLinearLeastSquareIterativeSolver
       typename SystemT,
       typename VectorT
     >
-    auto solve_(const SystemT& sys, const VectorT& b) {
+    auto solve_(const SystemT& sys, const VectorT& b) 
+    -> decltype(
+        PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, 1, 1, 1e-2, 1e-2, 1.)
+      ){
+
       double tolerance = this->getTolerance();
       double nonLinearTolerance = this->getNonLinearTolerance();
-
       core::default_types::uint maxIterations = this->getMaxIterations();
       core::default_types::uint maxNonLinearIterations = this->getMaxNonLinearIterations();
 
-      return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, maxIterations, maxNonLinearIterations, tolerance, nonLinearTolerance, lambda_);
+      return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, maxIterations, 
+                maxNonLinearIterations, tolerance, nonLinearTolerance, lambda_);
     }
 
 

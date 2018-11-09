@@ -35,7 +35,8 @@ public:
   auto operator()(const state_type & y,
 		  const model_type & model, 
 		  scalar_type t,
-		  scalar_type dt)const {
+		  scalar_type dt)const 
+   -> decltype(this->underlying()(y, model, t, dt)){
     return this->underlying()(y, model, t, dt);
   } 
   //------------------------------------------

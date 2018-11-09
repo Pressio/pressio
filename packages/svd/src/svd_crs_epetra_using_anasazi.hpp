@@ -59,25 +59,25 @@ private:
 	     svd_enum_value==svdType::truncated
 	     >::type * = nullptr>
   void computeImpl(matrix_type & A, int t, sc_t tol){
-    tol_ = tol;
-    //    auto m = A.globalRows();
-    auto n = A.globalCols();
-    // truncated svd cannot have more than # of cols
-    assert(t <= n);
+    // tol_ = tol;
+    // //    auto m = A.globalRows();
+    // auto n = A.globalCols();
+    // // truncated svd cannot have more than # of cols
+    // assert(t <= n);
 
-    nU_ = t;
-    nV_ = t;
+    // nU_ = t;
+    // nV_ = t;
     
-    //// comp m left-sing vec as solution of A*A^T U = lambda U
-    computeSingVectors(A, t, 'L');
-    storeSingVectors('L');
+    // //// comp m left-sing vec as solution of A*A^T U = lambda U
+    // computeSingVectors(A, t, 'L');
+    // storeSingVectors('L');
 
-    //// comp n right-sing vec as solution of A^T*A U = lambda U
-    computeSingVectors(A, t, 'R');
-    storeSingVectors('R');
+    // //// comp n right-sing vec as solution of A^T*A U = lambda U
+    // computeSingVectors(A, t, 'R');
+    // storeSingVectors('R');
 
-    computeSingValues(t);
-    storeSingValues();
+    // computeSingValues(t);
+    // storeSingValues();
     
   }//end method
   //-----------------------------------------------------
@@ -103,13 +103,13 @@ private:
   void computeSingVectors(matrix_type & A, int N, char which){
     assert(A.isFillingCompleted());
 
-    //if not already defined, create the target operator for eigensolve
-    // build A*A^T or A^T*A
-    auto Aout = buildMatForEigSolve(A, which);
-    auto Afin = Teuchos::rcpFromRef(*Aout.data() );
+    // //if not already defined, create the target operator for eigensolve
+    // // build A*A^T or A^T*A
+    // auto Aout = buildMatForEigSolve(A, which);
+    // auto Afin = Teuchos::rcpFromRef(*Aout.data() );
 
-    // solve eigenproblem
-    solveEigProblem(Afin, N);
+    // // solve eigenproblem
+    // solveEigProblem(Afin, N);
     
   }//end method
   //-----------------------------------------------------
@@ -124,24 +124,24 @@ private:
   }//end method
   //-----------------------------------------------------
 
-  auto buildMatForEigSolve(matrix_type & A, char which)
-  {
-   //  if (which == 'L'){
-   //    //auto AAT = core::mat_ops::product(A, ASWT, false, false, true);
-   //    auto AAT = core::ops::product(A, A, false, true, true); 
-   //    assert( AAT.isFillingCompleted() );
-   //    return AAT;
-   // }
-   // else{
-   //   // auto ASWT = core::transpose(A);
-   //   // auto ATA = core::mat_ops::product(ASWT, A, false, false, true);
-   //   auto ATA = core::ops::product(A, A, true, false, true);
-   //   assert( ATA.isFillingCompleted() );
-   //   return ATA;
-   //  }
+  // auto buildMatForEigSolve(matrix_type & A, char which)
+  // {
+  //  //  if (which == 'L'){
+  //  //    //auto AAT = core::mat_ops::product(A, ASWT, false, false, true);
+  //  //    auto AAT = core::ops::product(A, A, false, true, true); 
+  //  //    assert( AAT.isFillingCompleted() );
+  //  //    return AAT;
+  //  // }
+  //  // else{
+  //  //   // auto ASWT = core::transpose(A);
+  //  //   // auto ATA = core::mat_ops::product(ASWT, A, false, false, true);
+  //  //   auto ATA = core::ops::product(A, A, true, false, true);
+  //  //   assert( ATA.isFillingCompleted() );
+  //  //   return ATA;
+  //  //  }
     
-  }//end method
-  //-----------------------------------------------------
+  // }//end method
+  // //-----------------------------------------------------
 
       
   void computeSingValues(int N)

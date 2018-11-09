@@ -38,6 +38,15 @@ is not available or its name was mispelt" << std::endl;
   //--------------------------------------------------------------
 
 
+  template <typename NSolverT, typename LSolverT>
+  struct createIterativeSolverTypeHelper{
+    using solver_traits = linear::details::solver_traits<LSolverT>;
+    using policy_type = typename nonlinear::details::solver_traits<NSolverT>::solver_type;
+    using ret_type = decltype( NonLinearIterativeSolver<policy_type, LSolverT>() );
+
+  };
+
+
   /**
    * Create a nonlinear solver.
    */
@@ -49,7 +58,8 @@ is not available or its name was mispelt" << std::endl;
       void
     >::type* = nullptr
   >
-  static auto createIterativeSolver() {
+  static auto createIterativeSolver() 
+  -> typename createIterativeSolverTypeHelper<NSolverT, LSolverT>::ret_type {
 
     using solver_traits = linear::details::solver_traits<LSolverT>;
 
@@ -64,6 +74,14 @@ or is not available for linear systems defined by Eigen matrices");
   //--------------------------------------------------------------
 
 
+  template <typename NSolverT, typename LSolverT>
+  struct createNonLinIterativeLSSolverTypeHelper{
+    using solver_traits = linear::details::solver_traits<LSolverT>;
+    using policy_type = typename nonlinearleastsquare::details::solver_traits<NSolverT>::solver_type;
+    using ret_type = NonLinearLeastSquareIterativeSolver<policy_type, LSolverT>;
+
+  };
+
   /**
    * Create a nonlinear least square iterative solver
    */
@@ -74,7 +92,8 @@ or is not available for linear systems defined by Eigen matrices");
       nonlinearleastsquare::details::solver_traits<NSolverT>::enabled
     >* = nullptr
   >
-  static auto createNonLinearIterativeLeastSquareSolver() {
+  static auto createNonLinearIterativeLeastSquareSolver()
+  -> typename createNonLinIterativeLSSolverTypeHelper<NSolverT, LSolverT>::ret_type {
 
     using solver_traits = linear::details::solver_traits<LSolverT>;
 
@@ -82,8 +101,7 @@ or is not available for linear systems defined by Eigen matrices");
 		  "Error: either the linear solver is a direct one \
 or is not available for linear systems defined by Eigen matrices");
 
-    using policy_type =
-      typename nonlinearleastsquare::details::solver_traits<NSolverT>::solver_type;
+    using policy_type = typename nonlinearleastsquare::details::solver_traits<NSolverT>::solver_type;
     return NonLinearLeastSquareIterativeSolver<policy_type, LSolverT>();
   }
   //--------------------------------------------------------------
@@ -99,7 +117,8 @@ or is not available for linear systems defined by Eigen matrices");
       nonlinearleastsquare::details::solver_traits<NSolverT>::enabled
     >* = nullptr
   >
-  static auto createNonLinearIterativeLeastSquareQRBasedSolver(){
+  static SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy 
+  createNonLinearIterativeLeastSquareQRBasedSolver(){
     return SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy();
   }
   //--------------------------------------------------------------

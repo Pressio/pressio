@@ -47,13 +47,13 @@ class LinearDirectSolver
 
 
     template <typename T>
-    auto _solve(const T& b) {
-      auto solver = this->getSolver();
-      return solver->solve(b);
+    auto _solve(const T& b) 
+      -> decltype(this->getSolver()->solve(b)) {
+      return this->getSolver()->solve(b);
     }
 
 
-  protected:
+  public:
 
     LinearDirectSolver() : base_type() {};
 

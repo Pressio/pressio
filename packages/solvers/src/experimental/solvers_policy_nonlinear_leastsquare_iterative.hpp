@@ -29,7 +29,7 @@ template <
     core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen
   >* = nullptr
 >
-auto transpose(const MatrixT& A)
+MatrixT transpose(const MatrixT& A)
 {
   MatrixT res(A.data()->transpose());
   return res;
@@ -57,7 +57,7 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
       >::value
     >* = nullptr
   >
-  static auto solve(
+  static VectorT solve(
     const SystemT& sys,
     const VectorT& x0,
     core::default_types::uint maxIterations,
@@ -144,7 +144,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
       >::value
     >* = nullptr
   >
-  static auto solve(
+  static VectorT solve(
     const SystemT& sys,
     const VectorT& x0,
     core::default_types::uint maxIterations,

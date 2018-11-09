@@ -12,9 +12,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11 FATAL_ERROR)
 # this to be in the top-level CMakeLists.txt file and not an include file :-(
 SET(CMAKE_LEGACY_CYGWIN_WIN32 1 CACHE BOOL "" FORCE)
 
-set(rompp_ENABLE_CXX11 OFF)
+set(rompp_ENABLE_CXX11 ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+MESSAGE("The c++ standard is set for c++${CMAKE_CXX_STANDARD}" )
 
 #
 # A) Define your project name and set up major project options
@@ -59,18 +60,21 @@ MESSAGE("Google tests main files are in: " ${GTESTMAINSDIR})
 # if the TPL is not linked to
 
 if(TPL_ENABLE_BLAZE)
-	set(HAVE_BLAZE ON)
+  set(HAVE_BLAZE ON)
 endif()
 if(TPL_ENABLE_MPI)
-	set(HAVE_MPI ON)
+  set(HAVE_MPI ON)
 endif()
 if(TPL_ENABLE_TRILINOS)
-	set(HAVE_TRILINOS ON)
+  set(HAVE_TRILINOS ON)
 endif()
 if(TPL_ENABLE_ARMADILLO)
-	set(HAVE_ARMADILLO ON)
+  set(HAVE_ARMADILLO ON)
 endif()
 
+if (${CMAKE_CXX_STANDARD} EQUAL "14")
+  set(HAVE_CPP14 ON)
+endif()
 
 #------------------------------------------------------------
 # Do all of the processing for this Tribits project

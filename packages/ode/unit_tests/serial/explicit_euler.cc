@@ -18,9 +18,9 @@ TEST(ode_explicit_euler, traits){
     ode::meta::is_legitimate_model_for_explicit_ode<app_t>::value, "");
   static_assert(
    not ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
-  
+
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitSteppersEnum::Euler, state_t, res_t, app_t>;
+    ode::ExplicitSteppersEnum::Euler, state_t, app_t, res_t>;
 
   using impl_t = typename stepper_t::base_t;
   using traits = ode::details::traits<impl_t>;
@@ -39,9 +39,8 @@ TEST(ode_explicit_euler, traits){
 }
 
 
-TEST(ode_explicit_euler, numerics){
-  using namespace rompp;
-  
+TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
+  using namespace rompp;  
   using app_t = ode::testing::refAppEigen;
   using nstate_t = typename app_t::state_type;
   using nresidual_t = typename app_t::residual_type;
@@ -53,10 +52,50 @@ TEST(ode_explicit_euler, numerics){
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
   res_t r(3);
   appObj.residual(*y.data(), *r.data(), 0.0);
-  
+    
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitSteppersEnum::Euler, state_t, app_t>;
+    ode::ExplicitSteppersEnum::Euler, state_t, app_t, res_t>;
   stepper_t stepperObj(appObj, y, r);
+    
+  // integrate in time 
+  double dt = 0.1;
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
+  EXPECT_DOUBLE_EQ( y[0], 1.1);
+  EXPECT_DOUBLE_EQ( y[1], 2.2);
+  EXPECT_DOUBLE_EQ( y[2], 3.3);
+  std::cout << std::setprecision(14) << *y.data();
+
+  // integrate in time 
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
+  EXPECT_DOUBLE_EQ( y[0], 1.21);
+  EXPECT_DOUBLE_EQ( y[1], 2.42);
+  EXPECT_DOUBLE_EQ( y[2], 3.63);
+}
+
+
+
+TEST(ode_explicit_euler, numericsStdResidualPolPassedByUser){
+  using namespace rompp;
+  using app_t = ode::testing::refAppEigen;
+  using nstate_t = typename app_t::state_type;
+  using nresidual_t = typename app_t::residual_type;
+  app_t appObj;
+  
+  using state_t = core::Vector<nstate_t>;
+  using res_t = core::Vector<nresidual_t>;
+    
+  state_t y(3);
+  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  res_t r(3);
+  appObj.residual(*y.data(), *r.data(), 0.0);
+    
+  // the standard policy 
+  using res_std_pol_t = ode::policy::ExplicitResidualStandardPolicy<
+    state_t, app_t, res_t>;
+  res_std_pol_t polObj;
+  using stepper_t = ode::ExplicitStepper<
+    ode::ExplicitSteppersEnum::Euler, state_t, app_t, res_t, res_std_pol_t>;
+  stepper_t stepperObj(appObj, polObj, y, r);
     
   // integrate in time 
   double dt = 0.1;

@@ -44,7 +44,8 @@ class LinearIterativeSolver
 
 
     template <typename T>
-    auto _solve(const T& b) {
+    auto _solve(const T& b)
+     -> decltype(this->getSolver()->solve(b)) {
       auto solver = this->getSolver();
       solver->setMaxIterations(this->getMaxIterations());
       solver->setTolerance(this->getTolerance());

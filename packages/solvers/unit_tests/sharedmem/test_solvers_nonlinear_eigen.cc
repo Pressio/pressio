@@ -35,7 +35,7 @@ struct ValidSystem {
     }
 
 
-    auto residual(const vector_w_t& x) const {
+    vector_w_t residual(const vector_w_t& x) const {
       vector_w_t res(2);
       res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
       res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
@@ -51,7 +51,7 @@ struct ValidSystem {
     }
 
 
-    auto jacobian(const vector_w_t& x) const {
+    matrix_w_t jacobian(const vector_w_t& x) const {
       matrix_w_t jac(2, 2);
       jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
       jac.data()->coeffRef(0, 1) =  1.0;
@@ -130,17 +130,17 @@ TEST(solvers_non_linear_base, solversBaseSolveTest)
 }
 
 
-TEST(solvers_non_linear_base, solversBaseBadSolveTest)
-{
-  using namespace rompp;
-  using namespace rompp::solvers;
+// TEST(solvers_non_linear_base, solversBaseBadSolveTest)
+// {
+//   using namespace rompp;
+//   using namespace rompp::solvers;
 
-  auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
+//   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
-  double left; int right;
+//   double left; int right;
 
-  ASSERT_DEATH(solver.solve(left, right), "Error: either the nonlinear system or the solution hint is invalid.");
-}
+//   ASSERT_DEATH(solver.solve(left, right), "Error: either the nonlinear system or the solution hint is invalid.");
+// }
 
 
 TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test)

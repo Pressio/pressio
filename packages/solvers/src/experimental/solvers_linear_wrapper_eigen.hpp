@@ -41,7 +41,7 @@ class SolversLinearDirectWrapperEigen {
         core::details::traits<VectorT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen
       >* = nullptr
     >
-    auto solve(const VectorT& b) {
+    VectorT solve(const VectorT& b) {
       return VectorT(solver_.solve(*b.data()));
     }
 
