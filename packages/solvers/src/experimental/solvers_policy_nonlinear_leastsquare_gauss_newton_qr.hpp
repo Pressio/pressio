@@ -28,8 +28,8 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
   >
   static VectorT solve(const SystemT& sys,
                        const VectorT& x0,
-                       core::default_types::uint maxNonLinearIterations = 1000,
-                       typename core::details::traits<VectorT>::scalar_t nonLinearTolerance = 1e-10) {
+    core::default_types::uint maxNonLinearIterations = 1000,
+    typename core::details::traits<VectorT>::scalar_t nonLinearTolerance = 1e-14){
     using sc_t = typename core::details::traits<VectorT>::scalar_t;
     using eig_mat = Eigen::Matrix<sc_t,Eigen::Dynamic,Eigen::Dynamic>;
     using eig_vec = Eigen::Matrix<sc_t,Eigen::Dynamic,1>;
@@ -43,7 +43,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
     using jac_t = decltype(Jac);
     using R_type = rompp::core::Matrix<eig_mat>;
     rompp::qr::hack::QRSolver<jac_t, rompp::core::MultiVector, R_type> qrObj;
-    core::Vector<eig_vec> QTRes(Jac.cols());
+    core::Vector<eig_vec> QTRes;//(Jac.cols());
     
     auto x = x0;
     auto dx(x);
@@ -70,12 +70,12 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
 
       // update solution 
       x -= dx;
-      Res = sys.residual(x);
       normN = NormT::template compute_norm(dx);
       if (abs(normO - normN) < nonLinearTolerance){
 	break;
       }
       normO = normN;
+      Res = sys.residual(x);
       Jac = sys.jacobian(x);
     }
     
