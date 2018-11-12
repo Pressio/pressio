@@ -20,14 +20,22 @@ private:
   friend OperatorBase<MultiVectorOperator<operator_type>>;
   const operator_type * op_;
 
+  //-------------------------------
+  //----     APPLY RIGHT      -----
+  //-------------------------------  
   template<typename T>
   auto applyRightImpl(const T & X)
     -> decltype(core::ops::product(X, *op_)){
     return core::ops::product(X, *op_);
   }
+
+  template<typename T1, typename T2>
+  void applyRightImpl(const T1 & X, T2 & Y){
+    core::ops::product(X, *op_, Y);
+  }
   
   //-------------------------------
-  //----      APPLY AS IS      ----
+  //----     APPLY AS IS      -----
   //-------------------------------
   template <typename T, 
      core::meta::enable_if_t<
@@ -39,7 +47,6 @@ private:
 				    std::declval<T>() )){
     return core::ops::product(*op_, X);
   }
-  //---------------------------------
 
   template <typename T1,
 	    typename T2, 
@@ -54,7 +61,7 @@ private:
     // Y: vector of size m,1
     core::ops::product(*op_, X, Y);
   }
-
+  
   // //---------------------------
   // //----     TRANSPOSE     ----
   // //---------------------------

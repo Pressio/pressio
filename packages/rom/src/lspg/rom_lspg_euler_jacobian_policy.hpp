@@ -65,27 +65,20 @@ public:
   		  scalar_type dt) const
     -> decltype( phi_->applyRight(appJJ_) ){
     
-    //   // odeY is the REDUCED state, we need to reconstruct FOM state
-    phi_->apply(odeY, yFOM_);
-
-    // since we are advancing the Incremental Solution,
-    // to compute the app residual we need to add the
-    // FOM initial condition to get full state 
-    yFOM_ += (*y0FOM_);
-    //yFOM_.data()->Print(std::cout);
+    reconstructFOMState(odeY);
     
-    /// query the application for jacobian
-    *(appJJ_.data()) = app.jacobian(*yFOM_.data(), t);
+    /// query the application for the jacobian
+    app.jacobian(*yFOM_.data(), *appJJ_.data(), t);
     
     // compute time discrete residual
     ode::impl::implicit_euler_time_discrete_jacobian(appJJ_, dt);
     //    JJw.data()->Print(std::cout);
     
     auto JJphi = phi_->applyRight(appJJ_);
-    return JJphi;
-    
-    //   // /// apply weighting
-    //   // if (A_) A_->applyTranspose(appRHS_, odeR);
+
+    // need to apply final weighting if any
+    // if (A_) A_->apply.... 
+    return JJphi;    
   }
   //----------------------------------------------------------------
   
@@ -97,34 +90,36 @@ public:
   		  const app_t & app,
   		  scalar_type t,
   		  scalar_type dt) const{
-    // here y_n = odeY is reduced state
-    // need to compute: Jac of R( phi y_n) = phi y_n - phi y_n-1 - dt * f(phi y)
+    // compute: Jac of R( phi y_n) = phi y_n - phi y_n-1 - dt * f(phi y)
     // let q be full state, then we have dR/dy = dR/dq dq/dy
     // here, we have: dR/dq stored into odeJJ
+
+    reconstructFOMState(odeY);
     
+    /// query the application for the jacobian
+    app.jacobian(*yFOM_.data(), *appJJ_.data(), t);
+
+    // do time discrete jacobian, dR/dq 
+    ode::impl::implicit_euler_time_discrete_jacobian(appJJ_, dt);
+    
+    // since dq/dy = phi_op, right multiply appJJ with phi_op: odeJJ x phi
+    // this is = dR/dq dq/dy 
+    phi_->applyRight(appJJ_, odeJJ);
+
+    // need to apply final weighting if any
+    // if (A_) A_->apply....
+  }
+  //----------------------------------------------------------------
+
+ private:
+  template <typename ode_state_t>
+  void reconstructFOMState(const ode_state_t & odeY)const {
+
     // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
-
-    // // since we are advancing the Incremental Solution,
-    // // to compute the app residual we need to add the
-    // // FOM initial condition to get full state 
-    // yFOM_ += (*y0FOM_);
-    
-    // /// query the application for the jacobian
-    // app.jacobian(*yFOM_.data(), *appJJ_.data(), t);
-
-    // // do time discrete jacobian, which yields:
-    // // appJJ = dR/dq 
-    // ode::impl::implicit_euler_time_discrete_jacobian(appJJ_, dt);
-    
-    // // since dq/dy = phi_op
-    // // right multiply appJJ with phi_op: odeJJ x phi
-    // // this is = dR/dq dq/dy 
-    // odeJJ = phi_->applyRight(appJJ_);
-    
-    // /// apply weighting
-    // if (A_)
-    //   A_->applyTranspose(appRHS_, odeR);
+    // since we are advancing the Incremental Solution,
+    // need to add the FOM initial condition to get full state 
+    yFOM_ += (*y0FOM_);
   }
   //----------------------------------------------------------------
   

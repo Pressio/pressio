@@ -24,10 +24,11 @@ public:
   // result stored in Y
   template <typename operand_t1,
 	    typename operand_t2>
-  void apply(const operand_t1 & X,
-	     operand_t2 & Y){
+  void apply(const operand_t1 & X, operand_t2 & Y){
     this->underlying().applyImpl(X,Y);
   }
+  //---------------------------------------------------------
+  //---------------------------------------------------------
 
   // A (whatever that is) acts on X from right, return result
   // => X A 
@@ -37,6 +38,16 @@ public:
     std::declval<derived_t>().template applyRightImpl<operand_t>(X) ){
     return this->underlying().applyRightImpl(X);
   }
+
+  // A (whatever that is) acts on X from right, return result
+  // => X A 
+  template <typename operand_t1,
+	    typename operand_t2>
+  void applyRight(const operand_t1 & X, operand_t2 & Y){
+    this->underlying().applyRightImpl(X, Y);
+  }
+  //---------------------------------------------------------
+  //---------------------------------------------------------
   
   // // A^T (whatever that is) acts on X, return result
   // template <typename operand_type>
@@ -53,6 +64,8 @@ public:
 		      operand_t2 & Y){
     this->underlying().applyTransposeImpl(X,Y);
   }
+  //---------------------------------------------------------
+  //---------------------------------------------------------
   
 private:
   friend derived_t;

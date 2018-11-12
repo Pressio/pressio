@@ -76,7 +76,7 @@ public:
     reconstructFOMStates(odeY, oldYs[0]);
     
     /// query the application for the SPACE residual 
-    (*appRHS_.data()) = app.residual(*yFOM_.data(), t);
+    app.residual(*yFOM_.data(), *appRHS_.data(), t);
     
     /// do time discrete residual
     ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_, appRHS_, dt);
