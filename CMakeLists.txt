@@ -15,8 +15,9 @@ SET(CMAKE_LEGACY_CYGWIN_WIN32 1 CACHE BOOL "" FORCE)
 set(rompp_ENABLE_CXX11 ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+MESSAGE("****************************************************" )
 MESSAGE("The c++ standard is set for c++${CMAKE_CXX_STANDARD}" )
-
+MESSAGE("****************************************************" )
 #
 # A) Define your project name and set up major project options
 #
