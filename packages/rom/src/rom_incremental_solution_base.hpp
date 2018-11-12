@@ -2,7 +2,7 @@
 #ifndef ROM_INCREMENTAL_SOLUTION_BASE_HPP_
 #define ROM_INCREMENTAL_SOLUTION_BASE_HPP_
 
-#include "../rom_ConfigDefs.hpp"
+#include "rom_ConfigDefs.hpp"
 
 namespace rompp{ namespace rom{ namespace exp{
 

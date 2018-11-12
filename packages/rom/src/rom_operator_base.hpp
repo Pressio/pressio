@@ -2,7 +2,7 @@
 #ifndef ROM_OPERATOR_BASE_HPP_
 #define ROM_OPERATOR_BASE_HPP_
 
-#include "../rom_ConfigDefs.hpp"
+#include "rom_ConfigDefs.hpp"
 
 namespace rompp{ namespace rom{
 
@@ -12,11 +12,11 @@ class OperatorBase
 
 public:
 
-  // A (whatever that is) acts on X, return result 
-  template <typename operand_type>
-  auto apply(const operand_type & X)
-  -> decltype(this->underlying().applyImpl(X))
-  {
+  // A (whatever that is) acts on X, return result
+  template <typename operand_t>
+  auto apply(const operand_t & X)
+    -> decltype(
+    std::declval<derived_t>().template applyImpl<operand_t>(X) ){
     return this->underlying().applyImpl(X);
   }
 
@@ -31,19 +31,19 @@ public:
 
   // A (whatever that is) acts on X from right, return result
   // => X A 
-  template <typename operand_type>
-  auto applyRight(const operand_type & X)
-  -> decltype(this->underlying().applyRightImpl(X))
-  {
+  template <typename operand_t>
+  auto applyRight(const operand_t & X)
+    -> decltype(
+    std::declval<derived_t>().template applyRightImpl<operand_t>(X) ){
     return this->underlying().applyRightImpl(X);
   }
   
-  // A^T (whatever that is) acts on X, return result
-  template <typename operand_type>
-  auto applyTranspose(const operand_type & X)
-  -> decltype(this->underlying().applyTransposeImpl(X)){
-    return this->underlying().applyTransposeImpl(X);
-  }
+  // // A^T (whatever that is) acts on X, return result
+  // template <typename operand_type>
+  // auto applyTranspose(const operand_type & X)
+  // -> decltype(this->underlying().applyTransposeImpl(X)){
+  //   return this->underlying().applyTransposeImpl(X);
+  // }
 
   // A^T (whatever that is) acts on X,
   // result stored in Y

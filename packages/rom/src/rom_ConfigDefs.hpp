@@ -7,10 +7,8 @@
 #include "../../core/src/vector/core_vector_traits.hpp"
 #include "../../core/src/matrix/core_matrix_traits.hpp"
 
-namespace rompp{ namespace rom{ namespace details {
+namespace rompp{ namespace rom{ 
 
-// template<typename T, typename enable = void>
-// struct traits : core::details::traits<T> {};
   
-}}} // end namespace rompp::rom::details
+}} // end namespace rompp::rom
 #endif

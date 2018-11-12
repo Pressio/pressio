@@ -1,0 +1,14 @@
+
+#ifndef ROM_BASIC_HPP_
+#define ROM_BASIC_HPP_
+
+#include "rom/src/rom_ConfigDefs.hpp"
+#include "rom/src/rom_forward_declarations.hpp"
+
+#include "rom/src/rom_operator_base.hpp"
+#include "rom/src/rom_matrix_operator.hpp"
+#include "rom/src/rom_multi_vector_operator.hpp"
+
+#include "rom/src/rom_incremental_solution_base.hpp"
+
+#endif

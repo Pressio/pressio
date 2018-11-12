@@ -3,7 +3,7 @@
 #define ROM_MULTI_VECTOR_OPERATOR_HPP_
 
 #include "rom_operator_base.hpp"
-#include "../../../CORE_ALL"
+#include "../../CORE_ALL"
 
 namespace rompp{ namespace rom{
 
@@ -14,17 +14,15 @@ template<typename operator_type,
 	   > * = nullptr
 	 >
 class MultiVectorOperator
-  : public OperatorBase<
-      MultiVectorOperator<operator_type>>{
+  : public OperatorBase<MultiVectorOperator<operator_type>>{
 
 private:
-  friend OperatorBase<MultiVectorOperator<operator_type> >;
+  friend OperatorBase<MultiVectorOperator<operator_type>>;
   const operator_type * op_;
 
-  //----  APPLY RIGHT ----
   template<typename T>
   auto applyRightImpl(const T & X)
-  -> decltype(core::ops::product(X, *op_)){
+    -> decltype(core::ops::product(X, *op_)){
     return core::ops::product(X, *op_);
   }
   
@@ -37,7 +35,8 @@ private:
        > * = nullptr
      >
   auto applyImpl(const T & X)
-  -> decltype(core::ops::product(*op_, X)){
+    -> decltype(core::ops::product( std::declval<operator_type>(),
+				    std::declval<T>() )){
     return core::ops::product(*op_, X);
   }
   //---------------------------------
@@ -56,23 +55,23 @@ private:
     core::ops::product(*op_, X, Y);
   }
 
-  //---------------------------
-  //----     TRANSPOSE     ----
-  //---------------------------
-  template <typename T, 
-     core::meta::enable_if_t<
-       core::meta::is_core_vector_wrapper<T>::value
-       > * = nullptr
-     >
-  auto applyTransposeImpl(const T & X)
-  -> decltype(core::ops::dot(*op_, X)){
-    // multivector^T acts on vector = take dot of each row 
-    // op_^T: multivector of size n,m
-    // X: vector of size m,1
-    // Y: vector with results of all dots of size n,1
-    return core::ops::dot(*op_, X);
-  }
-  //---------------------------------
+  // //---------------------------
+  // //----     TRANSPOSE     ----
+  // //---------------------------
+  // template <typename T, 
+  //    core::meta::enable_if_t<
+  //      core::meta::is_core_vector_wrapper<T>::value
+  //      > * = nullptr
+  //    >
+  // auto applyTransposeImpl(const T & X)
+  // -> decltype(core::ops::dot(*op_, X)){
+  //   // multivector^T acts on vector = take dot of each row 
+  //   // op_^T: multivector of size n,m
+  //   // X: vector of size m,1
+  //   // Y: vector with results of all dots of size n,1
+  //   return core::ops::dot(*op_, X);
+  // }
+  // //---------------------------------
 
   template <typename T1, typename T2,
      core::meta::enable_if_t<
@@ -89,12 +88,10 @@ private:
   //---------------------------------
     
 public:
-  MultiVectorOperator() = delete;
+  //  MultiVectorOperator() = delete;
   explicit MultiVectorOperator(const operator_type & opIn)
     : op_(&opIn){}
   ~MultiVectorOperator() = default;
-
-
 
 };//end class
 

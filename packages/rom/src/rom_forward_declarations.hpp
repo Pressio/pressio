@@ -2,8 +2,8 @@
 #ifndef ROM_FORWARD_DECLARATIONS_HPP_
 #define ROM_FORWARD_DECLARATIONS_HPP_
 
-#include "../rom_ConfigDefs.hpp"
-#include "../../../ode/src/ode_enum_steppers.hpp"
+#include "rom_ConfigDefs.hpp"
+#include "../../ode/src/ode_enum_steppers.hpp"
 
 namespace rompp{ namespace rom{ namespace exp{
     

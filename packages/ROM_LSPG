@@ -1,0 +1,10 @@
+
+#ifndef ROM_LSPG_HPP_
+#define ROM_LSPG_HPP_
+
+#include "ROM_BASIC"
+
+#include "rom/src/lspg/rom_lspg_euler_jacobian_policy.hpp"
+#include "rom/src/lspg/rom_lspg_euler_residual_policy.hpp"
+
+#endif

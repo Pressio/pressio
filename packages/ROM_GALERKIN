@@ -1,0 +1,9 @@
+
+#ifndef ROM_GALERKIN_HPP_
+#define ROM_GALERKIN_HPP_
+
+#include "ROM_BASIC"
+
+#include "rom/src/galerkin/rom_galerkin_explicit_residual_policy.hpp"
+
+#endif

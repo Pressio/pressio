@@ -10,26 +10,31 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "core_config.h"
 
 FILE(GLOB rom_gen_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
-FILE(GLOB rom_exp_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/experimental/*.hpp")
+FILE(GLOB rom_galerkin_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/galerkin/*.hpp")
+FILE(GLOB rom_lspg_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/lspg/*.hpp")
 
 FILE(GLOB rom_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
-FILE(GLOB rom_exp_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/experimental/src/*.cc")
+FILE(GLOB rom_galerkin_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/galerkin/src/*.cc")
+FILE(GLOB rom_lspg_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/lspg/src/*.cc")
     
 SET(SOURCES 
   ${rom_gen_SRCS}
-  ${rom_exp_SRCS}
+  ${rom_galerkin_SRCS}
+  ${rom_lspg_SRCS}
 )
 
-
-# #--------------------------------------
-# SET(LUMPED_HEADERS
-#   ROM_ALL
-#   ROM_...
-# )
-# INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${ROM_INCDIR})
+#--------------------------------------
+SET(LUMPED_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../ROM_BASIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../ROM_GALERKIN
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../ROM_LSPG
+)
+INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 
 #--------------------------------------
 # install the actual headers
@@ -38,7 +43,8 @@ SET(ROM_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/ro
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${ROM_INCDIR})
 INSTALL(FILES ${rom_gen_HEADERS} DESTINATION ${ROM_INCDIR})
-INSTALL(FILES ${rom_exp_HEADERS} DESTINATION ${ROM_INCDIR}/experimental)
+INSTALL(FILES ${rom_galerkin_HEADERS} DESTINATION ${ROM_INCDIR}/galerkin)
+INSTALL(FILES ${rom_lspg_HEADERS} DESTINATION ${ROM_INCDIR}/lspg)
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)

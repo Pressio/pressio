@@ -2,11 +2,11 @@
 #ifndef ROM_LSPG_JACOBIAN_POLICY_HPP_
 #define ROM_LSPG_JACOBIAN_POLICY_HPP_
 
-#include "rom_forward_declarations.hpp"
+#include "../rom_forward_declarations.hpp"
 #include "../../../CORE_ALL"
 #include "../../../ode/src/implicit/ode_jacobian_impl.hpp"
 #include "../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
-#include "rom_incremental_solution_base.hpp"
+#include "../rom_incremental_solution_base.hpp"
 
 namespace rompp{ namespace rom{ namespace exp{
 
@@ -43,6 +43,7 @@ class RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
   
   using base_incr_sol_t::y0FOM_;
   using base_incr_sol_t::yFOM_;
+  using app_jac_nat_type = typename core::details::traits<app_jac_w_type>::wrapped_t;
   
 public:
   template <typename T=A_type,
@@ -54,6 +55,38 @@ public:
   
   RomLSPGJacobianPolicy() = delete;
   ~RomLSPGJacobianPolicy() = default;
+  //----------------------------------------------------------------
+
+  template <typename ode_state_t,
+	    typename app_t>
+  auto operator()(const ode_state_t & odeY,
+  		  const app_t & app,
+  		  scalar_type t,
+  		  scalar_type dt) const
+    -> decltype( phi_->applyRight(appJJ_) ){
+    
+    //   // odeY is the REDUCED state, we need to reconstruct FOM state
+    phi_->apply(odeY, yFOM_);
+
+    // since we are advancing the Incremental Solution,
+    // to compute the app residual we need to add the
+    // FOM initial condition to get full state 
+    yFOM_ += (*y0FOM_);
+    //yFOM_.data()->Print(std::cout);
+    
+    /// query the application for jacobian
+    *(appJJ_.data()) = app.jacobian(*yFOM_.data(), t);
+    
+    // compute time discrete residual
+    ode::impl::implicit_euler_time_discrete_jacobian(appJJ_, dt);
+    //    JJw.data()->Print(std::cout);
+    
+    auto JJphi = phi_->applyRight(appJJ_);
+    return JJphi;
+    
+    //   // /// apply weighting
+    //   // if (A_) A_->applyTranspose(appRHS_, odeR);
+  }
   //----------------------------------------------------------------
   
   template <typename ode_state_t,
@@ -94,49 +127,6 @@ public:
     //   A_->applyTranspose(appRHS_, odeR);
   }
   //----------------------------------------------------------------
-  
-  
-  template <typename ode_state_t,
-	    typename app_t>
-  auto operator()(const ode_state_t & odeY,
-  		  const app_t & app,
-  		  scalar_type t,
-  		  scalar_type dt) const
-  -> decltype(
-      phi_->applyRight(
-          std::declval<core::Matrix<decltype(app.jacobian(*yFOM_.data(),t))>>()
-        )
-    )
-  {
-
-    std::cout << " auto() jacobian \n";
-    //   // odeY is the REDUCED state, we need to reconstruct FOM state
-    phi_->apply(odeY, yFOM_);
-
-    // since we are advancing the Incremental Solution,
-    // to compute the app residual we need to add the
-    // FOM initial condition to get full state 
-    yFOM_ += (*y0FOM_);
-    //yFOM_.data()->Print(std::cout);
-    
-    /// query the application for jacobian
-    auto JJ = app.jacobian(*yFOM_.data(), t);
-    core::Matrix<decltype(JJ)> JJw(JJ);
-    
-    // do time discrete residual
-    ode::impl::implicit_euler_time_discrete_jacobian(JJw, dt);
-    //    JJw.data()->Print(std::cout);
-    
-    auto JJphi = phi_->applyRight(JJw);
-    //    JJphi.data()->Print(std::cout);
-    return JJphi;
-    
-    //   // /// apply weighting
-    //   // if (A_)
-    //   //   A_->applyTranspose(appRHS_, odeR);
-  }
-  //----------------------------------------------------------------
-
 
 private:
   friend base_pol_t;

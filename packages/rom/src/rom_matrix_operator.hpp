@@ -3,7 +3,7 @@
 #define ROM_MATRIX_OPERATOR_HPP_
 
 #include "rom_operator_base.hpp"
-#include "../../../CORE_OPS"
+#include "../../CORE_OPS"
 
 namespace rompp{ namespace rom{
 
@@ -14,8 +14,7 @@ template<typename operator_type,
 	   > * = nullptr
 	 >
 class MatrixOperator
-  : public OperatorBase<
-      MatrixOperator<operator_type>>{
+  : public OperatorBase<MatrixOperator<operator_type>>{
       
 public:
   MatrixOperator() = delete;
@@ -24,7 +23,7 @@ public:
   ~MatrixOperator() = default;
 
 private:
-  friend OperatorBase<MatrixOperator<operator_type> >;
+  friend OperatorBase<MatrixOperator<operator_type>>;
   operator_type * op_;
 
 };//end class
