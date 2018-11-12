@@ -21,9 +21,10 @@ cmake \
     -D BUILD_SHARED_LIBS:BOOL=ON \
     -D TPL_FIND_SHARED_LIBS=ON \
     -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-    -D MPI_EXEC_MAX_NUMPROCS:STRING=8 \
-    -D rompp_ENABLE_SHADOW_WARNINGS:BOOL=OFF \
     \
+    -D MPI_EXEC_MAX_NUMPROCS:STRING=8 \
+    -D rompp_ENABLE_CXX11:BOOL=ON \
+    -D rompp_ENABLE_SHADOW_WARNINGS:BOOL=OFF \
     -D CMAKE_CXX_FLAGS="-fopenmp" \
     \
     -D TPL_ENABLE_MPI=ON \
@@ -52,6 +53,7 @@ cmake \
     -D rompp_ENABLE_core:BOOL=ON \
     -D rompp_ENABLE_qr:BOOL=ON \
     -D rompp_ENABLE_solvers:BOOL=ON \
+    -D rompp_ENABLE_solversMinimal:BOOL=ON \
     -D rompp_ENABLE_svd:BOOL=ON \
     -D rompp_ENABLE_ode:BOOL=ON \
     -D rompp_ENABLE_rom:BOOL=ON \
