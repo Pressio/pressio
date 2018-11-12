@@ -127,7 +127,7 @@ public:
     //   A_->applyTranspose(appRHS_, odeR);
   }
   //----------------------------------------------------------------
-
+  
 private:
   friend base_pol_t;
   friend base_incr_sol_t;

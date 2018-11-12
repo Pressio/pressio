@@ -75,7 +75,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
 	break;
       }
       normO = normN;
-      Res = sys.residual(x);
+      sys.residual(x, Res);
       Jac = sys.jacobian(x);
     }
     
