@@ -4,7 +4,7 @@
 
 #include "rom_ConfigDefs.hpp"
 
-namespace rompp{ namespace rom{ namespace exp{
+namespace rompp{ namespace rom{ 
 
 template <typename derived_type, typename state_type>
 class IncrementalSolutionBase{
@@ -20,5 +20,5 @@ private:
 
 };//end class
 
-}}}//end namespace rompp::ode::polices
+}}//end namespace rompp::rom
 #endif 

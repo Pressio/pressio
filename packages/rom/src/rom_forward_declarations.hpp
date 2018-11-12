@@ -5,7 +5,7 @@
 #include "rom_ConfigDefs.hpp"
 #include "../../ode/src/ode_enum_steppers.hpp"
 
-namespace rompp{ namespace rom{ namespace exp{
+namespace rompp{ namespace rom{
     
 template<::rompp::ode::ImplicitSteppersEnum,
 	 typename app_state_w_type,
@@ -26,5 +26,5 @@ template<::rompp::ode::ImplicitSteppersEnum,
 class RomLSPGJacobianPolicy;
       
     
-}}} // end namespace rompp::rom::exp
+}} // end namespace rompp::rom
 #endif

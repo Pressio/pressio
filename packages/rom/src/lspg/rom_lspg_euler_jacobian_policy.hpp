@@ -8,7 +8,7 @@
 #include "../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "../rom_incremental_solution_base.hpp"
 
-namespace rompp{ namespace rom{ namespace exp{
+namespace rompp{ namespace rom{ 
 
 template<typename app_state_w_type,
 	 typename app_jac_w_type,
@@ -33,7 +33,7 @@ class RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
      app_state_w_type, app_jac_w_type, phi_op_type, A_type>;
 
   using base_pol_t = ::rompp::ode::policy::JacobianPolicyBase<this_t>;
-  using base_incr_sol_t = rompp::rom::exp::IncrementalSolutionBase<this_t, app_state_w_type>;
+  using base_incr_sol_t = rompp::rom::IncrementalSolutionBase<this_t, app_state_w_type>;
   using scalar_type = typename core::details::traits<app_state_w_type>::scalar_t;
   
  private:
@@ -129,5 +129,5 @@ private:
 
 };//end class
   
-}}}//end namespace rompp::rom::exp
+}}//end namespace rompp::rom
 #endif 

@@ -7,7 +7,7 @@
 #include "../../../ode/src/explicit/policies/ode_explicit_residual_policy_base.hpp"
 #include "../rom_incremental_solution_base.hpp"
 
-namespace rompp{ namespace rom{ namespace exp{
+namespace rompp{ namespace rom{ 
 
 template<typename state_type,
 	 typename space_res_type,
@@ -31,7 +31,7 @@ class RomGalerkinExplicitResidualPolicy
 						   A_type>;
   using base_pol_t = ode::policy::ExplicitResidualPolicyBase<this_t>;
   using base_incr_sol_t
-  = rompp::rom::exp::IncrementalSolutionBase<this_t,state_type>;
+  = rompp::rom::IncrementalSolutionBase<this_t,state_type>;
   
 private:
   mutable space_res_type appRHS_;
@@ -99,7 +99,7 @@ private:
 
 };//end class
   
-}}}//end namespace rompp::rom::exp
+}}//end namespace rompp::rom
 #endif 
 
 
