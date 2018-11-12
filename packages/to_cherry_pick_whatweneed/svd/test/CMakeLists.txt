@@ -1,5 +1,0 @@
-
-
-ADD_SUBDIRECTORIES(
-  test1
-)
