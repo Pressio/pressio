@@ -194,7 +194,7 @@ public:
     Qmat_ = std::make_shared<Q_t>(ArowMap, Qm.cols());
     Epetra_Import importer2(ArowMap, locMap);
     Qmat_->data()->Import(*locQ.data(), importer2, Insert);
-    Qmat_->data()->Print(std::cout);
+    //    Qmat_->data()->Print(std::cout);
 
     // store R factor
     Rmat_ = std::make_shared<R_type>(Rm);
