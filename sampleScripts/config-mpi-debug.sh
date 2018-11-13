@@ -53,14 +53,11 @@ cmake \
     -D rompp_ENABLE_core:BOOL=ON \
     -D rompp_ENABLE_qr:BOOL=ON \
     -D rompp_ENABLE_solvers:BOOL=ON \
-    -D rompp_ENABLE_solversMinimal:BOOL=ON \
     -D rompp_ENABLE_svd:BOOL=ON \
     -D rompp_ENABLE_ode:BOOL=ON \
     -D rompp_ENABLE_rom:BOOL=ON \
     \
     $EXTRA_ARGS \
     ${SRC}
-
-    #-D rompp_ENABLE_CXX11:BOOL=ON\
 
     
