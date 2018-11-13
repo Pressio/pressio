@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
+//#include <gmock/gmock.h>
 #include <mpi.h>
 
 class MPIEnvironment : public ::testing::Environment
@@ -26,7 +26,7 @@ public:
 int main(int argc, char *argv[])
 {
   ::testing::InitGoogleTest(&argc,argv);
-  ::testing::InitGoogleMock(&argc,argv);
+  //::testing::InitGoogleMock(&argc,argv);
   ::testing::AddGlobalTestEnvironment(new MPIEnvironment);
   
   return RUN_ALL_TESTS();

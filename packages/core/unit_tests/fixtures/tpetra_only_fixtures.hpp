@@ -7,18 +7,19 @@
 #include <Tpetra_Vector.hpp>
 #include <Teuchos_CommHelpers.hpp>
 #include "CORE_ALL"
+#include <Tpetra_Map_decl.hpp>
 
 struct tpetraVectorGlobSize15Fixture
   : public ::testing::Test{
 
 public:
-  using ST = double;
-  using LO = int;
-  using GO = int;
   using NT = Tpetra::Vector<>::node_type;
   using tcomm = Teuchos::Comm<int>;
-  using map_t = Tpetra::Map<LO,GO,NT>;
-  using vec_t = Tpetra::Vector<ST,LO,GO,NT>;
+  using map_t = Tpetra::Map<>;
+  using vec_t = Tpetra::Vector<>;//ST,LO,GO,NT>;
+  using ST = typename vec_t::scalar_type;
+  using LO = typename vec_t::local_ordinal_type;
+  using GO = typename vec_t::global_ordinal_type;
 
   int rank_;
   int numProc_;
@@ -36,8 +37,8 @@ public:
     assert(numProc_==3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
-    					comm_,
-    					Tpetra::GloballyDistributed));
+    					comm_));
+    //Tpetra::GloballyDistributed));
     x_ = new vec_t(contigMap_);
   }
   
@@ -52,13 +53,14 @@ struct tpetraMultiVectorGlobSize15Fixture
   : public ::testing::Test{
 
 public:
-  using ST = double;
-  using LO = int;
-  using GO = int;
   using NT = Tpetra::Vector<>::node_type;
   using tcomm = Teuchos::Comm<int>;
-  using map_t = Tpetra::Map<LO,GO,NT>;
-  using mvec_t = Tpetra::MultiVector<ST,LO,GO,NT>;
+  using mvec_t = Tpetra::MultiVector<>;
+  using map_t = Tpetra::Map<>;
+  using vec_t = Tpetra::Vector<>;//ST,LO,GO,NT>;
+  using ST = typename vec_t::scalar_type;
+  using LO = typename vec_t::local_ordinal_type;
+  using GO = typename vec_t::global_ordinal_type;
 
   int rank_;
   int numProc_;
@@ -77,8 +79,7 @@ public:
     assert(numProc_==3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
-    					comm_,
-    					Tpetra::GloballyDistributed));
+    					comm_));
     x_ = new mvec_t(contigMap_, numVecs_);
   }
   
@@ -93,13 +94,13 @@ struct tpetraMultiVectorGlobSize9Fixture
   : public ::testing::Test{
 
 public:
-  using ST = double;
-  using LO = int;
-  using GO = int;
-  using NT = Tpetra::Vector<>::node_type;
+  //  using NT = Tpetra::Vector<>::node_type;
   using tcomm = Teuchos::Comm<int>;
-  using map_t = Tpetra::Map<LO,GO,NT>;
-  using mvec_t = Tpetra::MultiVector<ST,LO,GO,NT>;
+  using map_t = Tpetra::Map<>;
+  using mvec_t = Tpetra::MultiVector<>;
+  using ST = typename mvec_t::scalar_type;
+  using LO = typename mvec_t::local_ordinal_type;
+  using GO = typename mvec_t::global_ordinal_type;
 
   int rank_;
   int numProc_;
@@ -117,9 +118,7 @@ public:
     numProc_ = comm_->getSize();
     assert(numProc_==3);
     numGlobalEntries_ = numProc_ * localSize_;
-    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
-    					comm_,
-    					Tpetra::GloballyDistributed));
+    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
     x_ = new mvec_t(contigMap_, numVecs_);
   }
   
@@ -135,14 +134,14 @@ struct tpetraMultiVectorR9C4VecS9Fixture
   : public ::testing::Test{
 
 public:
-  using ST = double;
-  using LO = int;
-  using GO = int;
-  using NT = Tpetra::Vector<>::node_type;
+  //  using NT = Tpetra::Vector<>::node_type;
   using tcomm = Teuchos::Comm<int>;
-  using map_t = Tpetra::Map<LO,GO,NT>;
-  using mvec_t = Tpetra::MultiVector<ST,LO,GO,NT>;
-  using vec_t = Tpetra::Vector<ST,LO,GO,NT>;
+  using map_t = Tpetra::Map<>;
+  using mvec_t = Tpetra::MultiVector<>;
+  using vec_t = Tpetra::Vector<>;
+  using ST = typename mvec_t::scalar_type;
+  using LO = typename mvec_t::local_ordinal_type;
+  using GO = typename mvec_t::global_ordinal_type;
 
   int rank_;
   int numProc_;
@@ -161,8 +160,7 @@ public:
     numProc_ = comm_->getSize();
     assert(numProc_==3);
     numGlobalEntries_ = numProc_ * localSize_;
-    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
-		comm_,Tpetra::GloballyDistributed));
+    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
     mv_ = new mvec_t(contigMap_, numVecs_);
     x_ = new vec_t(contigMap_);
   }

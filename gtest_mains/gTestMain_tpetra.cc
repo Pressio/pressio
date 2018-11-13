@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
+//#include <gmock/gmock.h>
 #include <mpi.h>
 #include <Tpetra_Core.hpp>
 
@@ -27,7 +27,7 @@ public:
 int main(int argc, char *argv[])
 {
   ::testing::InitGoogleTest(&argc,argv);
-  ::testing::InitGoogleMock(&argc,argv);
+  //  ::testing::InitGoogleMock(&argc,argv);
   //  ::testing::AddGlobalTestEnvironment(new MPIEnvironment);
   int ws_;
   int err;

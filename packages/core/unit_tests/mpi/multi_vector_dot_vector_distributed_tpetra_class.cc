@@ -56,23 +56,7 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
   auto vvtrilD = VV.data();
 
   vvtrilD->putScalar(static_cast<double>(1));
-  // /*--------------------------------------------
-  //  * modify the host view and then sync
-  // //--------------------------------------------*/  
-  // auto v2d1 = vvtrilD->getLocalView<Kokkos::HostSpace>();
-  // auto c01 = Kokkos::subview(v2d1, Kokkos::ALL(), 0);
-  // //we are going to change the host view
-  // vvtrilD->modify<Kokkos::HostSpace>();
-
-  // if(rank_==0){
-  //   v2d1(0,0) = 3.2; v2d1(0,1) = 1.2;
-  //   v2d1(1,0) = 1.2;
-  //   v2d1(2,1) = 4;
-  // }
-  // if(rank_==1){
-  //   v2d1(2,2) = 3;
-  // }
-  // // sync from host to device
+  // sync from host to device
   vvtrilD->sync<v_device_t>();
 
   //--------------------------------------------
