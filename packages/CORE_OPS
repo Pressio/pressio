@@ -10,6 +10,7 @@
 
 //// dot product ////
 #include "core/src/containers_ops/dot/core_multi_vector_vector_dot_product.hpp"
+#include "core/src/containers_ops/dot/core_multi_vector_multi_vector_dot_product.hpp"
 
 //// mat mat product ////
 #include "core/src/containers_ops/mat_mat_product/core_dense_dense_matrix_product.hpp"
