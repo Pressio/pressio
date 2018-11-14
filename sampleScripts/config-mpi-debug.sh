@@ -1,7 +1,6 @@
 #!/bin/bash
 
 EXTRA_ARGS=$@
-
 SRC=/Users/fnrizzi/Desktop/work/ROM/codes/sources/rompp
 PFX=/Users/fnrizzi/Desktop/work/ROM/codes/installs/rompp_install
 
@@ -9,10 +8,8 @@ MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc650
 TRILPATH=/Users/fnrizzi/tpl/trilinos/install_dyn_debug_gcc650_ompi301
 EIGENINCPATH=/Users/fnrizzi/tpl/eigen/3.3.5/install
 GTESTPATH=/Users/fnrizzi/tpl/gtest/installgcc650
-
 BLAZEINCPATH=/Users/fnrizzi/tpl/blaze/3.4/install/include
 ARMADILLOPATH=/Users/fnrizzi/tpl/armadillo/install_gcc640
-
 
 cmake \
     -D CMAKE_BUILD_TYPE:STRING=DEBUG \
