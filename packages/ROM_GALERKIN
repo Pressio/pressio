@@ -6,4 +6,7 @@
 
 #include "rom/src/galerkin/rom_galerkin_explicit_residual_policy.hpp"
 
+#include "rom/src/galerkin/rom_gelerkin_implicit_euler_jacobian_policy.hpp"
+#include "rom/src/galerkin/rom_gelerkin_implicit_euler_residual_policy.hpp"
+
 #endif

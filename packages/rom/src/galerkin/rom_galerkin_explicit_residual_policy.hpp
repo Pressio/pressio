@@ -56,6 +56,7 @@ public:
   
   RomGalerkinExplicitResidualPolicy() = delete;
   ~RomGalerkinExplicitResidualPolicy() = default;
+  //----------------------------------------------------------------
 
   // maybe sfinae here when types do not coincide
   // with those above
