@@ -104,7 +104,13 @@ private:
     data_.resize(nrows, ncols);
     this->setZero();
   }
-    
+
+  void scaleImpl(sc_t value) {
+    for (auto i=0; i<this->rows(); i++)
+      for (auto j=0; j<this->cols(); j++)
+	data_(i,j) *= value;
+  }
+  
 private:
   friend ContainerBase< derived_t, wrapped_type >;
   friend MatrixBase< derived_t >;
