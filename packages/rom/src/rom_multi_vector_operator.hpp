@@ -62,27 +62,30 @@ private:
     core::ops::product(*op_, X, Y);
   }
   
-  // //---------------------------
-  // //----     TRANSPOSE     ----
-  // //---------------------------
-  // template <typename T, 
-  //    core::meta::enable_if_t<
-  //      core::meta::is_core_vector_wrapper<T>::value
-  //      > * = nullptr
-  //    >
-  // auto applyTransposeImpl(const T & X)
-  // -> decltype(core::ops::dot(*op_, X)){
-  //   // multivector^T acts on vector = take dot of each row 
-  //   // op_^T: multivector of size n,m
-  //   // X: vector of size m,1
-  //   // Y: vector with results of all dots of size n,1
-  //   return core::ops::dot(*op_, X);
-  // }
-  // //---------------------------------
+  //---------------------------
+  //----     TRANSPOSE     ----
+  //---------------------------
+  template <typename T, 
+     core::meta::enable_if_t<
+       core::meta::is_core_vector_wrapper<T>::value or
+       core::meta::is_core_multi_vector_wrapper<T>::value
+       > * = nullptr
+     >
+  auto applyTransposeImpl(const T & X)
+    -> decltype(core::ops::dot( std::declval<operator_type>(),
+				std::declval<T>() )){
+    // multivector^T acts on vector = take dot of each row 
+    // op_^T: multivector of size n,m
+    // X: vector of size m,1
+    // Y: vector with results of all dots of size n,1
+    return core::ops::dot(*op_, X);
+  }
+  //---------------------------------
 
   template <typename T1, typename T2,
      core::meta::enable_if_t<
-       core::meta::is_core_vector_wrapper<T1>::value
+       core::meta::is_core_vector_wrapper<T1>::value or
+       core::meta::is_core_multi_vector_wrapper<T1>::value
        > * = nullptr
      >
   void applyTransposeImpl(const T1 & X, T2 & Y){
