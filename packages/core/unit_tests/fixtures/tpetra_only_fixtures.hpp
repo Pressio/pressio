@@ -28,7 +28,7 @@ public:
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
   vec_t * x_;
-  
+
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
@@ -41,7 +41,7 @@ public:
     //Tpetra::GloballyDistributed));
     x_ = new vec_t(contigMap_);
   }
-  
+
   virtual void TearDown(){
     delete x_;
   }
@@ -70,7 +70,7 @@ public:
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
   mvec_t * x_;
-  
+
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
@@ -82,7 +82,7 @@ public:
     					comm_));
     x_ = new mvec_t(contigMap_, numVecs_);
   }
-  
+
   virtual void TearDown(){
     delete x_;
   }
@@ -110,7 +110,7 @@ public:
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
   mvec_t * x_;
-  
+
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
@@ -121,7 +121,7 @@ public:
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
     x_ = new mvec_t(contigMap_, numVecs_);
   }
-  
+
   virtual void TearDown(){
     delete x_;
   }
@@ -130,7 +130,7 @@ public:
 
 
 
-struct tpetraMultiVectorR9C4VecS9Fixture 
+struct tpetraMultiVectorR9C4VecS9Fixture
   : public ::testing::Test{
 
 public:
@@ -152,7 +152,7 @@ public:
   Teuchos::RCP<const map_t> contigMap_;
   mvec_t * mv_;
   vec_t * x_;
-  
+
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
@@ -164,7 +164,7 @@ public:
     mv_ = new mvec_t(contigMap_, numVecs_);
     x_ = new vec_t(contigMap_);
   }
-  
+
   virtual void TearDown(){
     delete x_;
     delete mv_;

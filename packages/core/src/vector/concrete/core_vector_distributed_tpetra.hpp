@@ -11,7 +11,7 @@
 #include "../base/core_vector_distributed_base.hpp"
 
 namespace rompp{ namespace core{
-  
+
 template <typename wrapped_type>
 class Vector<wrapped_type,
 	     typename
@@ -22,15 +22,15 @@ class Vector<wrapped_type,
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorDistributedBase< Vector<wrapped_type> >,
-    public ContainerDistributedMpiBase< Vector<wrapped_type>, 
-     typename details::traits<Vector<wrapped_type>>::communicator_t >, 
-    public ContainerDistributedTrilinosBase< Vector<wrapped_type>, 
+    public ContainerDistributedMpiBase< Vector<wrapped_type>,
+     typename details::traits<Vector<wrapped_type>>::communicator_t >,
+    public ContainerDistributedTrilinosBase< Vector<wrapped_type>,
      typename details::traits<Vector<wrapped_type>>::data_map_t >/*,
     public ContainerResizableBase< Vector<wrapped_type>, 1>,
-    public ContainerSubscriptable1DBase< Vector<wrapped_type>, 
+    public ContainerSubscriptable1DBase< Vector<wrapped_type>,
      typename details::traits<Vector<wrapped_type>>::scalar_t,
      typename details::traits<Vector<wrapped_type>>::local_ordinal_t>*/{
-  
+
   using this_t = Vector<wrapped_type>;
   using sc_t = typename details::traits<this_t>::scalar_t;
   using LO_t = typename details::traits<this_t>::local_ordinal_t;
@@ -45,17 +45,15 @@ public:
   Vector() = delete;
 
   explicit Vector(const wrap_t & vecobj)
-    : data_(vecobj){
-  }
+    // use the deep_copy constructor
+    : data_(vecobj, Teuchos::Copy){}
 
   explicit Vector(Teuchos::RCP<const map_t> mapO)
-    : data_(mapO){
-  }
-  
+    : data_(mapO){}
+
   Vector(this_t const & other)
-    : data_(*other.data()){
-  }
-  
+    : data_(*other.data()){}
+
   ~Vector() = default;
 
 public:
@@ -68,7 +66,7 @@ public:
   //   assert(!myLocDataCView_.is_null());
   //   assert(i < this->localSize());
   //   return myLocDataCView_[i];
-  // };  
+  // };
 
   // sc_t & operator()(LO_t i){
   //   assert(!myLocDataView_.is_null());
@@ -79,35 +77,34 @@ public:
   //   assert(!myLocDataCView_.is_null());
   //   assert(i < this->localSize());
   //   return myLocDataCView_[i];
-  // };  
+  // };
 
-  // // compound assignment when type(b) = type(this)
-  // This gives a linking issue for daxpy in kokkos:blas
-  // // this += b 
-  // template <typename T,
-  // 	    core::meta::enable_if_t<
-  // 	      std::is_same<T,this_t>::value> * = nullptr>
-  // this_t & operator+=(const T & other) {
-  //   this->data_.update(1.0, *other.data(), 1.0 );
-  //   return *this;
-  // }
+  // compound assignment when type(b) = type(this)
+  // this += b
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator+=(const T & other) {
+    this->data_.update(1.0, *other.data(), 1.0 );
+    return *this;
+  }
 
-//   // compound assignment when type(b) = type(this)
-//   // this -= b 
-//   template <typename T,
-//   	    core::meta::enable_if_t<
-//   	      std::is_same<T,this_t>::value> * = nullptr>
-//   this_t & operator-=(const T & other) {
-//     this->data_.update(-1.0, *other.data(), 1.0 );
-//     return *this;
-//   }
-      
+  // compound assignment when type(b) = type(this)
+  // this -= b
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator-=(const T & other) {
+    this->data_.update(-1.0, *other.data(), 1.0 );
+    return *this;
+  }
+
 private:
 
 //   void matchLayoutWithImpl(const der_t & other){
 //     data_.ReplaceMap( other.getDataMap() );
 //   }
-  
+
 //   mpicomm_t const & commCRefImpl() const{
 //     return data_.getMap()->getComm();
 //   }
@@ -115,7 +112,7 @@ private:
   map_t const & getDataMapImpl() const{
     return *data_.getMap();
   }
-  
+
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -127,11 +124,11 @@ private:
   wrap_t dataCpImpl(){
     return data_;
   }
-  
+
   bool isDistributedGloballyImpl() const{
     return data_.isDistributed();
   }
-  
+
   void setZeroImpl(){
     data_.putScalar(static_cast<sc_t>(0));
     // putScalar doesn't sync afterwards, so we have to sync manually.
@@ -147,7 +144,7 @@ private:
     // putScalar doesn't sync afterwards, so we have to sync manually.
     this->needSync();
   }
-  
+
   GO_t globalSizeImpl() const {
     return data_.getGlobalLength();
   }
@@ -163,7 +160,7 @@ private:
     else if (data_.template need_sync<device_t>())
       data_.template sync<device_t> ();
   }
-    
+
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorDistributedBase< this_t >;
