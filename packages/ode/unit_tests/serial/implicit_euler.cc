@@ -8,7 +8,7 @@
 
 TEST(ode_implicit_euler, traits){
   using namespace rompp;
-  
+
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
   using nres_t = typename app_t::residual_type;
@@ -22,13 +22,13 @@ TEST(ode_implicit_euler, traits){
   static_assert(
     ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
 
-  // // the RESIDUAL standard policy is 
+  // // the RESIDUAL standard policy is
   // using res_pol_t = ode::policy::ImplicitEulerResidualStandardPolicy<
   //   state_t, app_t, res_t>;
-  // // the JACOBIAN standard policy is 
+  // // the JACOBIAN standard policy is
   // using jac_pol_t = ode::policy::ImplicitEulerJacobianStandardPolicy<
   //   state_t, app_t, jac_t>;
-  
+
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitSteppersEnum::Euler,
     state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
@@ -41,7 +41,7 @@ TEST(ode_implicit_euler, traits){
   // static_assert(ode::meta::is_implicit_euler_jacobian_standard_policy<
   // 		typename traits::jacobian_policy_t>::value,
   // 		"");
-  
+
   ::testing::StaticAssertTypeEq<typename
   				traits::state_t, state_t>();
   ::testing::StaticAssertTypeEq<typename
@@ -64,12 +64,12 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using nresidual_t = typename app_t::residual_type;
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
-  
+
   using state_t = core::Vector<nstate_t>;
   using res_t = core::Vector<nresidual_t>;
   using jac_t = core::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;  
+  y[0] = 1.; y[1] = 2.; y[2] = 3.;
   // res_t r(3);
   // appObj.residual(*y.data(), *r.data(), 0.0);
 
@@ -77,7 +77,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
     ode::ImplicitSteppersEnum::Euler,
     state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
   stepper_t stepperObj(appObj, y);
-  
+
   //**********************
   // define solver
   //**********************
@@ -96,7 +96,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
-  
+
   EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
   EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
   EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
@@ -112,12 +112,12 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   using nresidual_t = typename app_t::residual_type;
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
-  
+
   using state_t = core::Vector<nstate_t>;
   using res_t = core::Vector<nresidual_t>;
   using jac_t = core::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;  
+  y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
   //**********************
   // define policies and stepper
@@ -126,13 +126,13 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
     state_t, app_t, res_t>;
   using jac_pol_t = ode::policy::ImplicitEulerJacobianStandardPolicy<
     state_t, app_t, jac_t>;
-  
+
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitSteppersEnum::Euler,
     state_t, res_t, jac_t, app_t, void, /*aux stepper NOT needed for backEuler*/
     res_pol_t, jac_pol_t>;
   stepper_t stepperObj(appObj, res_pol_t(), jac_pol_t(), y);
-  
+
   //**********************
   // define solver
   //**********************
@@ -147,7 +147,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
-  
+
   EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
   EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
   EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);

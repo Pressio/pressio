@@ -5,12 +5,12 @@
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
 #include "ode_explicit_stepper_helper_info.hpp"
 
-namespace rompp{ namespace ode{ 
+namespace rompp{ namespace ode{
 
 //!!!!!!!!!!!!!!!!
 #ifdef HAVE_CPP14
 //!!!!!!!!!!!!!!!!
-    
+
     template<ExplicitSteppersEnum whichone, typename... Args>
     class ExplicitStepper
       : public impl::explicit_stepper_helper_info<whichone,
@@ -28,7 +28,7 @@ namespace rompp{ namespace ode{
       //this needs to be public, it is detected by integrators
     public:
       using base_t = base_impl_t;
-  
+
     public:
 
       // for standard policy, I need to have and pass the model
@@ -43,21 +43,21 @@ namespace rompp{ namespace ode{
 		      state_t const & y0,
 		      res_t const & r0)
 	: base_impl_t(model, policyObj, y0, r0){}
-  
+
       ExplicitStepper() = delete;
       ~ExplicitStepper() = default;
 
     private:
       // not used if policy is passed from outside
-      pol_std_t policy_; 
+      pol_std_t policy_;
     };//end class
 
-    
+
 //!!!!!!!!!!!!!!!!!
 #else
 //!!!!!!!!!!!!!!!!!
 
-   
+
     //if we have c++11 AND policy is STANDARD
     template<ExplicitSteppersEnum whichone,
 	     typename ode_state_type,
@@ -82,13 +82,13 @@ namespace rompp{ namespace ode{
 		      ode_state_type const & y0,
 		      ode_residual_type const & r0)
 	: base_impl_t(model, pol_t(), y0, r0){}
-  
+
       ExplicitStepper() = delete;
       ~ExplicitStepper() = default;
     };//end class
 
 
-    
+
     //if we have c++11 AND policy is user-defined
     template<ExplicitSteppersEnum whichone,
 	     typename ode_state_type,
@@ -116,13 +116,13 @@ namespace rompp{ namespace ode{
 		      ode_state_type const & y0,
 		      ode_residual_type const & r0)
 	: base_impl_t(model, policyObj, y0, r0){}
-  
+
       ExplicitStepper() = delete;
       ~ExplicitStepper() = default;
     };//end class
 
 
 #endif
-    
+
 }} // end namespace rompp::ode
-#endif 
+#endif

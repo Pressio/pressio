@@ -4,14 +4,11 @@
 
 #include "ode_ConfigDefs.hpp"
 
-namespace rompp{
-namespace ode{
-namespace impl{
+namespace rompp{ namespace ode{ namespace impl{
 
 template<typename state_type, typename rhs_type,
 	 int numAuxStates, int numAuxRHS = 0>
 class OdeStorage;
-
 //--------------------------------------------------
 
 template<typename state_type, typename rhs_type>
@@ -37,7 +34,7 @@ protected:
   std::array<state_type, 2> auxStates_;
 };
 //--------------------------------------------------
-  
+
 template<typename state_type, typename rhs_type>
 class OdeStorage<state_type, rhs_type, 1, 4>{
 public:
@@ -52,7 +49,7 @@ protected:
   std::array<rhs_type, 4> auxRHS_;
 };
 //--------------------------------------------------
-  
+
 template<typename state_type, typename rhs_type>
 class OdeStorage<state_type, rhs_type, 0, 1>{
 public:
@@ -65,9 +62,5 @@ protected:
 };
 //--------------------------------------------------
 
-}//end namespace impl
-}//end namespace ode  
-  
-}//end namespace rompp
+}}}//end namespace rompp::ode::impl
 #endif
-  

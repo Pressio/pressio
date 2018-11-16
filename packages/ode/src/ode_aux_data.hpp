@@ -4,9 +4,7 @@
 
 #include "ode_ConfigDefs.hpp"
 
-namespace rompp{
-namespace ode{
-namespace impl{
+namespace rompp{ namespace ode{ namespace impl{
 
 template<typename model_type,
 	 typename residual_policy_type>
@@ -19,13 +17,13 @@ public:
 
   ExpOdeAuxData(const residual_policy_type & rpolo)
     : model_(nullptr), residual_obj_(&rpolo){}
-  
+
   ~ExpOdeAuxData() = default;
 
 protected:
   const model_type * model_ = nullptr;
   const residual_policy_type * residual_obj_ = nullptr;
-  
+
 };
 //---------------------------------------------
 
@@ -49,14 +47,8 @@ protected:
   const jacobian_policy_type * jacobian_obj_ = nullptr;
   scalar_type t_;
   scalar_type dt_;
-  
 };
 
-  
-}//end namespace impl
-}//end namespace ode  
-  
-}//end namespace rompp
-#endif
 
-  
+}}}//end namespace rompp::ode::impl
+#endif
