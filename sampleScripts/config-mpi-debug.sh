@@ -56,5 +56,3 @@ cmake \
     \
     $EXTRA_ARGS \
     ${SRC}
-
-    

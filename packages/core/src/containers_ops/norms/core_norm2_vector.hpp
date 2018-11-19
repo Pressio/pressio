@@ -1,6 +1,6 @@
 
-#ifndef CORE_NORM2_VECTOR_HPP_
-#define CORE_NORM2_VECTOR_HPP_
+#ifndef CORE_CONTAINER_OPS_NORMS_NORM2_VECTOR_HPP_
+#define CORE_CONTAINER_OPS_NORMS_NORM2_VECTOR_HPP_
 
 #include "../core_ops_meta.hpp"
 #include "../../vector/core_vector_meta.hpp"

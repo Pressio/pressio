@@ -1,14 +1,15 @@
 
-#ifndef CORE_MIN_VECTOR_HPP_
-#define CORE_MIN_VECTOR_HPP_
+#ifndef CORE_CONTAINER_OPS_MINMAX_MIN_VECTOR_HPP_
+#define CORE_CONTAINER_OPS_MINMAX_MIN_VECTOR_HPP_
 
 #include "../core_ops_meta.hpp"
 #include "../../vector/core_vector_meta.hpp"
 
 namespace rompp{ namespace core{ namespace ops{
-  
+
+
 //--------------------------------------------------------
-//  eigen vector wrapper 
+//  eigen vector wrapper
 //--------------------------------------------------------
 template <typename vec_type,
   core::meta::enable_if_t<
@@ -21,12 +22,12 @@ auto min(const vec_type & a) -> typename details::traits<vec_type>::scalar_t
 }
 
 // //--------------------------------------------------------
-// //  blaze vector wrapper 
+// //  blaze vector wrapper
 // //--------------------------------------------------------
-// #ifdef HAVE_BLAZE  
+// #ifdef HAVE_BLAZE
 // template <typename vec_type,
 //   core::meta::enable_if_t<
-//     core::meta::is_blaze_dynamic_vector_wrapper<vec_type>::value or 
+//     core::meta::is_blaze_dynamic_vector_wrapper<vec_type>::value or
 //     core::meta::is_blaze_static_vector_wrapper<vec_type>::value
 //     > * = nullptr
 //   >
@@ -34,16 +35,16 @@ auto min(const vec_type & a) -> typename details::traits<vec_type>::scalar_t
 // {
 // 	return blaze::min( *a.data() );
 // }
-// #endif// HAVE_BLAZE  
+// #endif// HAVE_BLAZE
 
 // //--------------------------------------------------------
-// //  armadillo vector wrapper 
+// //  armadillo vector wrapper
 // //--------------------------------------------------------
 // #ifdef HAVE_ARMADILLO
 // template <typename vec_type,
 //   core::meta::enable_if_t<
-//     core::meta::is_armadillo_column_vector_wrapper<vec_type>::value or 
-//     core::meta::is_armadillo_row_vector_wrapper<vec_type>::value 
+//     core::meta::is_armadillo_column_vector_wrapper<vec_type>::value or
+//     core::meta::is_armadillo_row_vector_wrapper<vec_type>::value
 //     > * = nullptr
 //   >
 // auto max(const vec_type & a) -> typename details::traits<vec_type>::scalar_t
@@ -51,6 +52,6 @@ auto min(const vec_type & a) -> typename details::traits<vec_type>::scalar_t
 // 	return arma::min( *a.data() );
 // }
 // #endif// HAVE_ARMADILLO
-  
+
 }}}//end namespace rompp::core::ops
 #endif

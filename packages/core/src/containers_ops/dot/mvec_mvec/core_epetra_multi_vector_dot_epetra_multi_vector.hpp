@@ -1,15 +1,15 @@
 
-#ifndef CORE_MULTI_VECTOR_MULTI_VECTOR_DOT_PRODUCT_HPP_
-#define CORE_MULTI_VECTOR_MULTI_VECTOR_DOT_PRODUCT_HPP_
+#ifndef CORE_EPETRA_MULTI_VECTOR_DOT_EPETRA_MULTI_VECTOR_HPP_
+#define CORE_EPETRA_MULTI_VECTOR_DOT_EPETRA_MULTI_VECTOR_HPP_
 
-#include "../core_ops_meta.hpp"
-#include "../../multi_vector/core_multi_vector_meta.hpp"
+#include "../../core_ops_meta.hpp"
+#include "../../../multi_vector/core_multi_vector_meta.hpp"
 
 namespace rompp{ namespace core{ namespace ops{
 
-
-#ifdef HAVE_TRILINOS    
 // Epetra multivector dot epetra multi vector
+
+#ifdef HAVE_TRILINOS
 template <typename mvec_t,
   core::meta::enable_if_t<
     core::meta::is_epetra_multi_vector_wrapper<mvec_t>::value
