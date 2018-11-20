@@ -73,6 +73,29 @@ TEST(core_meta_basic, inheritanceVector){
 }
 
 
+TEST(core_meta_basic, isTeuchosRCP){
+  using namespace rompp;
+
+  class foo{
+    int a_ = 0;
+    public:
+      foo(int a) : a_(a) {};
+  };
+
+  using foo_t1 = foo;
+  using foo_t2 = foo *;
+  using foo_t3 = std::shared_ptr<foo>;
+  using foo_t4 = Teuchos::RCP<foo>;
+  using foo_t5 = Teuchos::RCP<const foo>;
+
+  EXPECT_EQ( core::meta::is_teuchos_rcp_ptr<foo_t1>::value, false);
+  EXPECT_EQ( core::meta::is_teuchos_rcp_ptr<foo_t2>::value, false);
+  EXPECT_EQ( core::meta::is_teuchos_rcp_ptr<foo_t3>::value, false);
+  EXPECT_EQ( core::meta::is_teuchos_rcp_ptr<foo_t4>::value, true); 
+  EXPECT_EQ( core::meta::is_teuchos_rcp_ptr<foo_t5>::value, true); 
+}
+
+
 TEST(core_meta_basic, hasSizeMethod){
   
   using namespace rompp;
