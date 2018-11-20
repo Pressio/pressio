@@ -5,8 +5,7 @@
 
 #include "../core_ConfigDefs.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
     
 template<typename derived_type, typename comm_t>
 class ContainerDistributedMpiBase
@@ -14,8 +13,21 @@ class ContainerDistributedMpiBase
   ContainerDistributedMpiBase<derived_type,comm_t> >{
   
 public:
-  comm_t const & commCRef() const{
+  template <typename T = comm_t, 
+            ::rompp::core::meta::enable_if_t<
+              !meta::is_teuchos_rcp_ptr<T>::value
+            > * = nullptr>  
+  T const & commCRef() const{
     return this->underlying().commCRefImpl();
+  }
+
+
+  template <typename T = comm_t, 
+            ::rompp::core::meta::enable_if_t<
+              meta::is_teuchos_rcp_ptr<T>::value
+            > * = nullptr>
+  T comm() const {
+    return this->underlying().commImpl();
   }
   
 private:
@@ -26,7 +38,7 @@ private:
   ~ContainerDistributedMpiBase() = default;
   
 };//end class  
-} // end namespace core
-}//end namespace rompp
+
+}}//end namespace rompp::core
 #endif
 #endif

@@ -7,6 +7,10 @@
 #include "./tinympl/variadic.hpp"
 #include "./tinympl/variadic/erase.hpp"
 #include <tuple>
+#ifdef HAVE_TRILINOS
+  #include <Teuchos_RCPDecl.hpp>
+#endif
+
 
 namespace rompp{ namespace core{ namespace meta {
 
@@ -61,16 +65,36 @@ namespace rompp{ namespace core{ namespace meta {
 
   template <typename T>
   struct is_std_complex<T, typename
-	  std::enable_if<
+	  ::rompp::core::meta::enable_if_t<
 	   std::is_same<T,
-	     std::complex<typename
-		T::value_type
-		>
-	     >::value
-	   >::type
+	     std::complex<typename T::value_type
+    		>
+      >::value
+	   >
 	 > : std::true_type{};
 
   //////////////////////////////////////////////////
+
+#ifdef HAVE_TRILINOS
+  template <typename T,
+      typename enable = void>
+  struct is_teuchos_rcp_ptr : std::false_type{};
+
+  template <typename T>
+  struct is_teuchos_rcp_ptr<T, typename
+    ::rompp::core::meta::enable_if_t<
+      std::is_same<T, 
+        Teuchos::RCP<typename T::element_type>
+      >::value or 
+      std::is_same<T, 
+        Teuchos::RCP<const typename T::element_type>
+      >::value
+     >
+   > : std::true_type{};
+#endif
+
+  //////////////////////////////////////////////////
+
 
   template<typename T, typename base_t>
   struct publicly_inherits_from : std::is_base_of<base_t,T>{};
