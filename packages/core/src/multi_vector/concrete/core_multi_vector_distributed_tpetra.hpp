@@ -42,7 +42,8 @@ public:
     : data_(mapobj, numVectors){}
 
   explicit MultiVector(const wrap_t & other)
-    : data_(other){}
+    // use the deep_copy constructor
+    : data_(other, Teuchos::Copy){}
 
   ~MultiVector() = default;
   
