@@ -8,13 +8,11 @@
 #include "../meta/core_meta_detect_operators.hpp"
 #include "../core_shared_traits.hpp"
 
-namespace rompp{
-namespace core{
-namespace details{
+namespace rompp{ namespace core{ namespace details{
 
-  
+
 //***********************************
-// eigen dense matrix 
+// eigen dense matrix
 //***********************************
 template <typename wrapped_type>
 struct traits< Matrix<
@@ -34,7 +32,7 @@ struct traits< Matrix<
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEigen;
-  
+
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
 
@@ -45,7 +43,7 @@ struct traits< Matrix<
 
 
 //***********************************
-// eigen sparse matrix 
+// eigen sparse matrix
 //***********************************
 template <typename wrapped_type>
 struct traits< Matrix<
@@ -74,16 +72,16 @@ struct traits< Matrix<
   "ordinal type for indexing eigen sparse matrix has to be signed");
 
   static constexpr bool is_row_major = wrapped_type::IsRowMajor;
-  static constexpr bool is_col_major = !is_row_major;  
+  static constexpr bool is_col_major = !is_row_major;
   static constexpr bool is_static = false;
 };
 
-  
-  
+
+
 //***********************************
-// epetra sparse distributed matrix 
+// epetra sparse distributed matrix
 //***********************************
-#ifdef HAVE_TRILINOS  
+#ifdef HAVE_TRILINOS
 template <typename wrapped_type>
 struct traits<Matrix
    <wrapped_type,
@@ -117,11 +115,11 @@ struct traits<Matrix
   static constexpr int is_static = 0;
 };
 #endif
-  
+
 //***********************************
-// epetra dense distributed matrix 
+// epetra dense distributed matrix
 //***********************************
-#ifdef HAVE_TRILINOS  
+#ifdef HAVE_TRILINOS
 template <typename wrapped_type>
 struct traits<Matrix
    <wrapped_type,
@@ -156,9 +154,59 @@ struct traits<Matrix
   static constexpr bool is_static = false;
 };
 #endif
-  
 
-  
+
+#ifdef HAVE_TRILINOS
+//*******************************
+// for tpetra crs matrix
+//*******************************
+template<typename wrapped_type>
+struct traits<Matrix<wrapped_type,
+      typename std::enable_if<
+       meta::is_matrix_sparse_distributed_tpetra<wrapped_type
+      >::value>::type>
+     >
+  : public containers_shared_traits<Matrix<wrapped_type>,
+            wrapped_type, false, true, false,
+            WrappedPackageIdentifier::Trilinos,false>,
+    public matrix_shared_traits<true>
+{
+  static constexpr WrappedMatrixIdentifier
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::SparseTpetra;
+
+  static constexpr int is_static = 0;
+
+  using scalar_t = typename wrapped_type::impl_scalar_type;
+  using local_ordinal_t = typename wrapped_type::local_ordinal_type;
+  using global_ordinal_t = typename wrapped_type::global_ordinal_type;
+  using row_map_t = typename wrapped_type::map_type;
+  using col_map_t = typename wrapped_type::map_type;
+  using range_map_t = typename wrapped_type::map_type;
+  using domain_map_t = typename wrapped_type::map_type;
+
+  /* node is a Tpetra concept, defined as:
+   * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
+   * where memory space is taken from the execution_space
+   */
+  using node_t = typename wrapped_type::node_type;
+  //using dual_view_t = typename wrapped_type::dual_view_type;
+  // device_type is just an (execution space, memory space) pair.
+  // defined as: Kokkos::Device<execution_space, memory_space>
+  // so from the device we can get the device execution and memory space
+  using device_t = typename wrapped_type::device_type;
+  using device_mem_space_t = typename device_t::memory_space;
+  using device_exec_space_t = typename device_t::execution_space;
+  // store types for host
+  using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
+  using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
+
+  using mag_t = typename wrapped_type::mag_type;
+  using communicator_t = decltype(std::declval<wrapped_type>().getComm());
+};
+#endif
+
+
+
 //***********************************
 // based on std::vector<std::vector<>>
 //***********************************
@@ -181,13 +229,13 @@ struct traits< Matrix<
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::CppStdLib;
- 
+
   using scalar_t = typename wrapped_type::value_type::value_type;
   using ordinal_t = int;
   static constexpr bool is_static = false;
 };
 
-  
+
 }//end namespace details
 }//end namespace core
 
