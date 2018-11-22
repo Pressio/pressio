@@ -1,5 +1,5 @@
 
-#ifdef HAVE_TRILINOS  
+#ifdef HAVE_TRILINOS
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_DENSE_DISTRIBUTED_EPETRA_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_DENSE_DISTRIBUTED_EPETRA_HPP_
 
@@ -22,13 +22,13 @@ class Matrix<wrapped_type,
 	     >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
     public ContainerDistributedTrilinosBase<
-      Matrix<wrapped_type>, 
-      typename details::traits<Matrix<wrapped_type>>::row_map_t >, 
+      Matrix<wrapped_type>,
+      typename details::traits<Matrix<wrapped_type>>::row_map_t >,
     public ContainerDistributedMpiBase<
-      Matrix<wrapped_type>, 
+      Matrix<wrapped_type>,
       typename details::traits<Matrix<wrapped_type>>::communicator_t >,
     public ContainerSubscriptable2DBase<
-     Matrix<wrapped_type>, 
+     Matrix<wrapped_type>,
      typename details::traits<Vector<wrapped_type>>::scalar_t,
      typename details::traits<Vector<wrapped_type>>::local_ordinal_t,
      typename details::traits<Vector<wrapped_type>>::global_ordinal_t>,
@@ -44,17 +44,17 @@ class Matrix<wrapped_type,
   using comm_t =  typename traits_t::communicator_t;
   using wrap_t = typename traits_t::wrapped_t;
   using row_map_t = typename traits_t::row_map_t;
-  
+
 public:
-  
+
   Matrix() = delete;
-  
-  explicit Matrix(const row_map_t & rowMap, GO_t ncols)
+
+  Matrix(const row_map_t & rowMap, GO_t ncols)
     : data_(rowMap, ncols){}
 
   explicit Matrix(const wrap_t & objin)
     : data_(objin){}
-  
+
   ~Matrix() = default;
 
 public:
@@ -69,7 +69,7 @@ public:
     assert(irow < this->localRows() );
     return data_[icol][irow];
   }
-  
+
 private:
   wrap_t const * dataImpl() const{
     return &data_;
@@ -91,11 +91,11 @@ private:
   bool isDistributedGloballyImpl() const{
     return data_.DistributedGlobal();
   }
-  
+
   void matchLayoutWithImpl(const this_t & other){
     data_.ReplaceMap( other.getDataMap() );
   }
-  
+
   row_map_t const & getDataMapImpl() const{
     return data_.Map();
   }
@@ -130,7 +130,7 @@ private:
     data_.ReplaceGlobalValue(globalRowIndex,globalColIndex, value);
   }
 
-  
+
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend MatrixBase< this_t >;
@@ -142,10 +142,9 @@ private:
 
 private:
   wrap_t data_;
-     
-};//end class 
-}//end namespace core 
+
+};//end class
+}//end namespace core
 }//end namespace rompp
 #endif
 #endif
-

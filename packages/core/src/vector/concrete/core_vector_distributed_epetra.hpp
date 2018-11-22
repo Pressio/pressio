@@ -11,7 +11,7 @@
 #include "../base/core_vector_distributed_base.hpp"
 
 namespace rompp{ namespace core{
-  
+
 template <typename wrapped_type>
 class Vector<wrapped_type,
 	     typename
@@ -22,15 +22,15 @@ class Vector<wrapped_type,
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorDistributedBase< Vector<wrapped_type> >,
-    public ContainerDistributedMpiBase< Vector<wrapped_type>, 
-     typename details::traits<Vector<wrapped_type>>::communicator_t >, 
-    public ContainerDistributedTrilinosBase< Vector<wrapped_type>, 
+    public ContainerDistributedMpiBase< Vector<wrapped_type>,
+     typename details::traits<Vector<wrapped_type>>::communicator_t >,
+    public ContainerDistributedTrilinosBase< Vector<wrapped_type>,
      typename details::traits<Vector<wrapped_type>>::data_map_t >,
     public ContainerResizableBase< Vector<wrapped_type>, 1>,
-    public ContainerSubscriptable1DBase< Vector<wrapped_type>, 
+    public ContainerSubscriptable1DBase< Vector<wrapped_type>,
      typename details::traits<Vector<wrapped_type>>::scalar_t,
      typename details::traits<Vector<wrapped_type>>::local_ordinal_t>{
-  
+
   using this_t = Vector<wrapped_type>;
   using sc_t = typename details::traits<this_t>::scalar_t;
   using LO_t = typename details::traits<this_t>::local_ordinal_t;
@@ -62,7 +62,7 @@ public:
       data_[i] = expr(i);
     return *this;
   }
-  
+
   ~Vector() = default;
 
 public:
@@ -73,7 +73,7 @@ public:
   sc_t const & operator [] (LO_t i) const{
     assert(i < this->localSize());
     return data_[i];
-  };  
+  };
 
   sc_t & operator()(LO_t i){
     assert(i < this->localSize());
@@ -82,8 +82,8 @@ public:
   sc_t const & operator()(LO_t i) const{
     assert(i < this->localSize());
     return data_[i];
-  };  
-  
+  };
+
 
   // compound assignment from expression template
   // this += expr
@@ -98,7 +98,7 @@ public:
   }
 
   // compound assignment when type(b) = type(this)
-  // this += b 
+  // this += b
   template <typename T,
   	    core::meta::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
@@ -121,7 +121,7 @@ public:
   }
 
   // compound assignment when type(b) = type(this)
-  // this -= b 
+  // this -= b
   template <typename T,
   	    core::meta::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
@@ -129,14 +129,13 @@ public:
     this->data_.Update(-1.0, *other.data(), 1.0 );
     return *this;
   }
-  
-    
+
 private:
 
   void matchLayoutWithImpl(const der_t & other){
     data_.ReplaceMap( other.getDataMap() );
   }
-  
+
   mpicomm_t const & commCRefImpl() const{
     return data_.Comm();
   }
@@ -152,7 +151,7 @@ private:
   bool isDistributedGloballyImpl() const{
     return data_.DistributedGlobal();
   }
-  
+
   void putScalarImpl(sc_t value) {
     data_.PutScalar(value);
   }
@@ -164,7 +163,7 @@ private:
   bool emptyImpl() const{
     return this->globalSize()==0 ? true : false;
   }
-  
+
   GO_t globalSizeImpl() const {
     return data_.GlobalLength();
   }
@@ -186,7 +185,7 @@ private:
   void replaceDataMapImpl(const map_t & mapObj){
     data_.ReplaceMap(mapObj);
   }
-  
+
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorDistributedBase< this_t >;
@@ -220,7 +219,7 @@ private:
   //     data_[i] = op_t()( a1*data_[i], a2*other[i] );
   // }
 
-  
+
   // template<typename op_t, typename T,
   // 	   core::meta::enable_if_t<
   // 	     std::is_same<T,this_t>::value
@@ -231,7 +230,7 @@ private:
   //   // this = a1*x1 op a2*x2;
   //   assert(this->globalSizeImpl() == x1.globalSizeImpl());
   //   assert(this->globalSizeImpl() == x2.globalSizeImpl());
-    
+
   //   for (LO_t i=0; i<this->localSize(); i++)
   //     data_[i] = op_t()( a1*x1[i], a2*x2[i] );
   // }
@@ -255,12 +254,12 @@ private:
   //   assert(this->globalSizeImpl() == x2.globalSizeImpl());
   //   assert(this->globalSizeImpl() == x3.globalSizeImpl());
   //   assert(this->globalSizeImpl() == x4.globalSizeImpl());
-    
+
   //   for (LO_t i=0; i<this->localSize(); i++)
   //     data_[i] = a0*data_[i] + a1*x1[i] + a2*x2[i]
   // 	+ a3*x3[i] + a4*x4[i];
   // }
-  
+
   // void minValueImpl(sc_t & result) const {
   //   data_.MinValue(&result);
   // }

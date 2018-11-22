@@ -4,6 +4,8 @@
 #define CORE_SHARED_BASE_CONTAINER_DISTRIBUTED_MPI_BASE_HPP_
 
 #include "../core_ConfigDefs.hpp"
+#include "../meta/core_meta_basic.hpp"
+
 
 namespace rompp{ namespace core{
     
@@ -13,22 +15,14 @@ class ContainerDistributedMpiBase
   ContainerDistributedMpiBase<derived_type,comm_t> >{
   
 public:
-  template <typename T = comm_t, 
-            ::rompp::core::meta::enable_if_t<
-              !meta::is_teuchos_rcp_ptr<T>::value
-            > * = nullptr>  
-  T const & commCRef() const{
+
+  comm_t const & commCRef() const{
     return this->underlying().commCRefImpl();
   }
 
-
-  template <typename T = comm_t, 
-            ::rompp::core::meta::enable_if_t<
-              meta::is_teuchos_rcp_ptr<T>::value
-            > * = nullptr>
-  T comm() const {
-    return this->underlying().commImpl();
-  }
+  // comm_t comm() const {
+  //   return this->underlying().commImpl();
+  // }
   
 private:
   friend derived_type;

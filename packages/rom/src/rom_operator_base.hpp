@@ -31,7 +31,7 @@ public:
   //---------------------------------------------------------
 
   // A (whatever that is) acts on X from right, return result
-  // => X A 
+  // => X A
   template <typename operand_t>
   auto applyRight(const operand_t & X)
     -> decltype(
@@ -40,7 +40,7 @@ public:
   }
 
   // A (whatever that is) acts on X from right, return result
-  // => X A 
+  // => X A
   template <typename operand_t1,
 	    typename operand_t2>
   void applyRight(const operand_t1 & X, operand_t2 & Y){
@@ -48,7 +48,7 @@ public:
   }
   //---------------------------------------------------------
   //---------------------------------------------------------
-  
+
   // A^T (whatever that is) acts on X, return result
   template <typename operand_t>
   auto applyTranspose(const operand_t & X)
@@ -67,7 +67,7 @@ public:
   }
   //---------------------------------------------------------
   //---------------------------------------------------------
-  
+
 private:
   friend derived_t;
   friend core::details::CrtpBase<OperatorBase<derived_t>>;

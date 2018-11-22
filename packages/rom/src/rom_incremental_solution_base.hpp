@@ -4,7 +4,7 @@
 
 #include "rom_ConfigDefs.hpp"
 
-namespace rompp{ namespace rom{ 
+namespace rompp{ namespace rom{
 
 template <typename derived_type, typename state_type>
 class IncrementalSolutionBase{
@@ -13,7 +13,7 @@ private:
   mutable state_type yFOM_;
 
 private:
-  friend derived_type; 
+  friend derived_type;
   IncrementalSolutionBase(const state_type & y0fom)
     : y0FOM_(&y0fom), yFOM_(y0fom){}
   ~IncrementalSolutionBase() = default;
@@ -21,4 +21,4 @@ private:
 };//end class
 
 }}//end namespace rompp::rom
-#endif 
+#endif

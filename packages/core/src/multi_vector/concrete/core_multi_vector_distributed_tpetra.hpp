@@ -9,7 +9,7 @@
 #include "../base/core_multi_vector_distributed_base.hpp"
 
 namespace rompp{ namespace core{
-  
+
 template <typename wrapped_type>
 class MultiVector<wrapped_type,
      typename
@@ -20,10 +20,9 @@ class MultiVector<wrapped_type,
      >
   : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
     public MultiVectorDistributedBase< MultiVector<wrapped_type> >,
-    public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>, 
-              typename details::traits<MultiVector<wrapped_type>>::data_map_t >/*,
-    public ContainerDistributedMpiBase< MultiVector<wrapped_type>, 
-    typename details::traits<MultiVector<wrapped_type>>::communicator_t >*/{
+    public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>,
+              typename details::traits<MultiVector<wrapped_type>>::data_map_t>
+{
 
 private:
   using this_t = MultiVector<wrapped_type>;
@@ -38,7 +37,7 @@ private:
 public:
   MultiVector() = delete;
 
-  explicit MultiVector(Teuchos::RCP<const map_t> mapobj, GO_t numVectors)
+  MultiVector(Teuchos::RCP<const map_t> mapobj, GO_t numVectors)
     : data_(mapobj, numVectors){}
 
   explicit MultiVector(const wrap_t & other)
@@ -46,7 +45,7 @@ public:
     : data_(other, Teuchos::Copy){}
 
   ~MultiVector() = default;
-  
+
 private:
 
   wrap_t const * dataImpl() const{
@@ -64,7 +63,7 @@ private:
   Teuchos::RCP<const map_t> getRCPDataMapImpl() const{
     return data_.getMap();
   }
-  
+
   bool emptyImpl() const{
     if (this->globalNumVectors()==0)
       return true;
@@ -81,7 +80,7 @@ private:
   bool isDistributedGloballyImpl() const{
     return data_.isDistributed();
   }
-  
+
   GO_t globalNumVectorsImpl() const{
     return data_.getNumVectors();
   }
@@ -89,7 +88,7 @@ private:
   LO_t localNumVectorsImpl() const{
     return data_.getNumVectors();
   }
-  
+
   GO_t globalLengthImpl() const {
     return data_.getGlobalLength();
   };
@@ -97,13 +96,13 @@ private:
   LO_t localLengthImpl() const {
     return data_.getLocalLength();
   };
-    
+
   // void replaceGlobalValueImpl(GO_t globalRowIndex,
   // 			      GO_t vectorIndex,
   // 			      sc_t value){
   //   data_.replaceGlobalValue(globalRowIndex, vectorIndex, value);
   // }
-  
+
   // void scaleImpl(sc_t factor){
   //   data_.scale(factor);
   // }
@@ -115,13 +114,13 @@ private:
     else if (data_.template need_sync<device_t>())
       data_.template sync<device_t> ();
   }
-  
+
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend MultiVectorDistributedBase< this_t >;
   friend ContainerDistributedTrilinosBase< this_t, map_t >;
   //  friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
-  
+
 private:
   wrap_t data_;
 
@@ -130,5 +129,4 @@ private:
 }}//end namespace rompp::core
 
 #endif
-#endif
-
+#endif /* HAVE_TRILINOS */

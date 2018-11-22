@@ -8,9 +8,8 @@
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 #include "../base/core_multi_vector_distributed_base.hpp"
 
-namespace rompp{
-namespace core{
-  
+namespace rompp{ namespace core{
+
 template <typename wrapped_type>
 class MultiVector<wrapped_type,
      typename
@@ -21,9 +20,9 @@ class MultiVector<wrapped_type,
      >
   : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
     public MultiVectorDistributedBase< MultiVector<wrapped_type> >,
-    public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>, 
-              typename details::traits<MultiVector<wrapped_type>>::data_map_t >, 
-    public ContainerDistributedMpiBase< MultiVector<wrapped_type>, 
+    public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>,
+              typename details::traits<MultiVector<wrapped_type>>::data_map_t >,
+    public ContainerDistributedMpiBase< MultiVector<wrapped_type>,
       typename details::traits<MultiVector<wrapped_type>>::communicator_t >
 {
 
@@ -39,7 +38,7 @@ private:
 public:
   MultiVector() = delete;
 
-  explicit MultiVector(const map_t & mapobj, GO_t numVectors)
+  MultiVector(const map_t & mapobj, GO_t numVectors)
     : data_(mapobj, numVectors){}
 
   explicit MultiVector(const wrap_t & other) : data_(other){}
@@ -50,15 +49,25 @@ public:
   sc_t & operator()(LO_t irow, GO_t icol){
     assert(icol < this->globalNumVectors() );
     assert(irow < this->localLength() );
-    return data_[icol][irow];//(*data_(icol))[irow];
+    return data_[icol][irow];
   }
 
   sc_t const & operator()(LO_t irow, GO_t icol)const{
     assert(icol < this->globalNumVectors() );
     assert(irow < this->localLength() );
-    return data_[icol][irow];//(*data_(icol))[irow];
+    return data_[icol][irow];
   }
-  
+
+  // compound assignment when type(b) = type(this)
+  // this += b
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator+=(const T & other) {
+    this->data_.Update(1.0, *other.data(), 1.0 );
+    return *this;
+  }
+
 private:
 
   void matchLayoutWithImpl(const this_t & other){
@@ -87,7 +96,7 @@ private:
   bool isDistributedGloballyImpl() const{
     return data_.DistributedGlobal();
   }
-  
+
   mpicomm_t const & commCRefImpl() const{
     return data_.Comm();
   }
@@ -110,7 +119,7 @@ private:
     // a part of each vector
     return data_.NumVectors();
   }
-  
+
   GO_t globalLengthImpl() const {
     return data_.GlobalLength();
   };
@@ -118,30 +127,29 @@ private:
   LO_t localLengthImpl() const {
     return data_.MyLength();
   };
-    
+
   void replaceGlobalValueImpl(GO_t globalRowIndex,
 			      GO_t vectorIndex,
 			      sc_t value){
     data_.ReplaceGlobalValue(globalRowIndex, vectorIndex, value);
   }
-  
+
   void scaleImpl(sc_t factor){
     data_.Scale(factor);
   }
-  
+
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend MultiVectorDistributedBase< this_t >;
   friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
   friend ContainerDistributedTrilinosBase< this_t, map_t >;
-  
+
 private:
   wrap_t data_;
 
 };//end class
 
-}//end namespace core
-}//end namespace rompp
-#endif
-#endif
+}}//end namespace rompp::core
 
+#endif /* CORE_MULTIVECTOR_CONCRETE_MULTIVECTOR_DISTRIBUTED_EPETRA_HPP_ */
+#endif /* HAVE_TRILINOS */

@@ -1,5 +1,5 @@
 
-#ifdef HAVE_TRILINOS 
+#ifdef HAVE_TRILINOS
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_SPARSE_DISTRIBUTED_EPETRA_HPP_
 
@@ -27,7 +27,7 @@ class Matrix<wrapped_type,
     public MatrixDistributedBase< Matrix<wrapped_type> >,
     public MatrixSparseDistributedBase< Matrix<wrapped_type> >,
     public MatrixSparseDistributedTrilinosBase< Matrix<wrapped_type> >,
-    public ContainerDistributedMpiBase< Matrix<wrapped_type>, 
+    public ContainerDistributedMpiBase< Matrix<wrapped_type>,
       typename details::traits<Matrix<wrapped_type>>::communicator_t >
 {
 
@@ -43,7 +43,7 @@ class Matrix<wrapped_type,
   using range_map_t = typename traits_t::range_map_t;
   using domain_map_t = typename traits_t::domain_map_t;
   using crs_graph_t = typename traits_t::crs_graph_t;
-  
+
 public:
   Matrix() = delete;
 
@@ -52,23 +52,23 @@ public:
 		  bool StaticProfile=false)
     : data_(Epetra_DataAccess::Copy, rowMap,
 	    NumEntriesPerRow, StaticProfile){}
-  
+
   // template <typename T,
   // 	    typename std::enable_if<
-  // 	      meta::publicly_inherits_from<T, Epetra_BlockMap>::value 
+  // 	      meta::publicly_inherits_from<T, Epetra_BlockMap>::value
   // 	      >::type * = nullptr>
   // explicit Matrix(const T & rowMap,
   // 		  LO_t NumEntriesPerRow,
   // 		  bool StaticProfile=false)
   //   : data_(Epetra_DataAccess::Copy, static_cast<const Epetra_Map &>(rowMap),
   // 	    NumEntriesPerRow, StaticProfile){}
-  
+
   explicit Matrix(const wrap_t & objin)
     : data_(objin){
     // cannot copy construct Crs matrix is filling is not completed
     assert(this->isFillingCompleted());
   }
-  
+
   ~Matrix() = default;
 
 private:
@@ -78,7 +78,7 @@ private:
   wrap_t * dataImpl(){
     return &data_;
   }
-  
+
   void matchLayoutWithImpl(const derived_t & other){
     data_.ReplaceRowMap( other.getRowDataMap() );
     if ( other.data()->HaveColMap() )
@@ -108,7 +108,7 @@ private:
   bool isDistributedGloballyImpl() const{
     return data_.DistributedGlobal();
   }
-  
+
   bool isFillingCompletedImpl() const{
     return data_.Filled();
   }
@@ -120,17 +120,17 @@ private:
   void fillingIsCompletedImpl(domain_map_t const & dmap,
 			      range_map_t const & rmap){
     // this is needed for rectangular matrices
-    /* also note that epetra crs matrix ONLY 
-       takes Epetra_Map as map type. 
-       There is no way (that I can see) 
+    /* also note that epetra crs matrix ONLY
+       takes Epetra_Map as map type.
+       There is no way (that I can see)
        to pass a Epetra_BlockMap */
     data_.FillComplete(dmap, rmap);
   }
-  
+
   row_map_t const & getRowDataMapImpl() const{
     return data_.RowMap();
   }
- 
+
   col_map_t const & getColDataMapImpl() const{
     return data_.ColMap();
   }
@@ -138,11 +138,11 @@ private:
   range_map_t const & getRangeDataMapImpl() const{
     return data_.RangeMap();
   }
- 
+
   domain_map_t const & getDomainDataMapImpl() const{
     return data_.DomainMap();
   }
-  
+
   bool hasSameRangeDataMapAsImpl(derived_t const & other) const{
     return data_.RangeMap().SameAs(other.getRangeDataMap());
   }
@@ -184,8 +184,8 @@ private:
 
   void scaleImpl(sc_t value) {
     data_.Scale(value);
-  }  
-  
+  }
+
 private:
   friend ContainerBase< derived_t, wrapped_type >;
   friend MatrixBase< derived_t >;
@@ -197,10 +197,9 @@ private:
 
 private:
   wrap_t data_;
-     
-};//end class 
-}//end namespace core 
+
+};//end class
+}//end namespace core
 }//end namespace rompp
 #endif
 #endif
-

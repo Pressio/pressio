@@ -4,12 +4,12 @@
 
 #include "ode_implicit_stepper_helper_info.hpp"
 
-namespace rompp{ namespace ode{ 
+namespace rompp{ namespace ode{
 
 //!!!!!!!!!!!!!!!!!
 #ifdef HAVE_CPP14
 //!!!!!!!!!!!!!!!!!
-    
+
     template<ImplicitSteppersEnum whichone, typename... Args>
     class ImplicitStepper
       : public impl::implicit_stepper_helper_info<whichone,
@@ -27,13 +27,13 @@ namespace rompp{ namespace ode{
       using jacobian_pol_std_t = typename info_t::jac_std_pol_type;
       using auxiliary_stepper_t = typename info_t::auxiliary_stepper_type;
       using base_impl_t = typename info_t::base_impl_type;
-  
+
       //this needs to be public, it is detected by integrators
     public:
       using base_t = base_impl_t;
-  
+
     public:
-      // some constructors need y0, and some need y0/r0 
+      // some constructors need y0, and some need y0/r0
       // because some multi-stage methods need history of RHS
       // e.g. backward Euler only needs y, y_n-1
       // e.g. BDF2 only needs y, y_n-1, y_n-2
@@ -56,8 +56,8 @@ namespace rompp{ namespace ode{
 		      T & auxStObj)
 	: base_impl_t(model, res_policy_obj_,
 		      jac_policy_obj_, auxStObj, y0){}
-  
-      // passing: model, initial state, and policies. 
+
+      // passing: model, initial state, and policies.
       ImplicitStepper(const model_t & model,
 		      const residual_pol_t & resPolicyObj,
 		      const jacobian_pol_t & jacPolicyObj,
@@ -72,8 +72,8 @@ namespace rompp{ namespace ode{
 	: base_impl_t(model, res_policy_obj_,
 		      jac_policy_obj_, y0, r0){}
 
-      // passing: model, initial state, 
-      // initial residual and policies. 
+      // passing: model, initial state,
+      // initial residual and policies.
       ImplicitStepper(const model_t & model,
 		      const residual_pol_t & resPolicyObj,
 		      const jacobian_pol_t & jacPolicyObj,
@@ -81,7 +81,7 @@ namespace rompp{ namespace ode{
 		      const res_t & r0)
 	: base_impl_t(model, resPolicyObj,
 		      jacPolicyObj, y0, r0){}
-  
+
       ImplicitStepper() = delete;
       virtual ~ImplicitStepper() = default;
 
@@ -96,7 +96,7 @@ namespace rompp{ namespace ode{
 #else
 //!!!!!!!!!!!!!!!!!
 
-    
+
     //if we have c++11 AND policy is STANDARD
     template<ImplicitSteppersEnum whichone,
 	     typename ode_state_type,
@@ -117,17 +117,17 @@ namespace rompp{ namespace ode{
 	whichone, ode_state_type, ode_residual_type,
 	ode_jacobian_type, model_type, aux_stepper_type,
 	void, void>;
-      
+
       using residual_pol_t = typename info_t::res_std_pol_type;
       using jacobian_pol_t = typename info_t::jac_std_pol_type;
       using base_impl_t = typename info_t::base_impl_type;
-  
+
     public:
       //this needs to be public, it is detected by integrators
       using base_t = base_impl_t;
-  
-    public:  
-      // passing: model, initial state, and policies. 
+
+    public:
+      // passing: model, initial state, and policies.
       ImplicitStepper(const model_type & model,
 		      const ode_state_type & y0)
 	: base_impl_t(model, residual_pol_t(), jacobian_pol_t(), y0){}
@@ -136,7 +136,7 @@ namespace rompp{ namespace ode{
 		      const ode_state_type & y0,
 		      const ode_residual_type & r0)
 	: base_impl_t(model, residual_pol_t(), jacobian_pol_t(), y0, r0){}
-      
+
       // passing: model, initial state, aux_stepper
       // policy is standard for residual and jacobian
       template <typename T = aux_stepper_type,
@@ -148,7 +148,7 @@ namespace rompp{ namespace ode{
 		      T & auxStObj)
 	: base_impl_t(model, residual_pol_t(), jacobian_pol_t(),
 		      auxStObj, y0){}
-      
+
       ImplicitStepper() = delete;
       virtual ~ImplicitStepper() = default;
     };//end class
@@ -176,23 +176,23 @@ namespace rompp{ namespace ode{
       using info_t = impl::implicit_stepper_helper_info<
     	whichone, ode_state_type, ode_residual_type,
     	ode_jacobian_type, model_type, aux_stepper_type,
-    	residual_policy_type, jacobian_policy_type>;      
+    	residual_policy_type, jacobian_policy_type>;
       using base_impl_t = typename info_t::base_impl_type;
-  
+
     public:
       //this needs to be public, it is detected by integrators
       using base_t = base_impl_t;
-  
-    public:  
-      // passing: model, initial state, and policies. 
+
+    public:
+      // passing: model, initial state, and policies.
       ImplicitStepper(const model_type & model,
     		      const residual_policy_type & resPolicyObj,
     		      const jacobian_policy_type & jacPolicyObj,
     		      const ode_state_type & y0)
     	: base_impl_t(model, resPolicyObj, jacPolicyObj, y0){}
 
-      // passing: model, initial state, 
-      // initial residual and policies. 
+      // passing: model, initial state,
+      // initial residual and policies.
       ImplicitStepper(const model_type & model,
     		      const residual_policy_type & resPolicyObj,
     		      const jacobian_policy_type & jacPolicyObj,
@@ -214,13 +214,13 @@ namespace rompp{ namespace ode{
 		      T & auxStObj)
 	: base_impl_t(model, resPolicyObj, jacPolicyObj,
 		      auxStObj, y0){}
-      
+
       ImplicitStepper() = delete;
       virtual ~ImplicitStepper() = default;
     };//end class
-    
-    
+
+
 #endif
-    
+
 }} // end namespace rompp::ode
-#endif 
+#endif

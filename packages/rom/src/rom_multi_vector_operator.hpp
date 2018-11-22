@@ -22,7 +22,7 @@ private:
 
   //-------------------------------
   //----     APPLY RIGHT      -----
-  //-------------------------------  
+  //-------------------------------
   template<typename T>
   auto applyRightImpl(const T & X)
     -> decltype(core::ops::product(X, *op_)){
@@ -33,13 +33,13 @@ private:
   void applyRightImpl(const T1 & X, T2 & Y){
     core::ops::product(X, *op_, Y);
   }
-  
+
   //-------------------------------
   //----     APPLY AS IS      -----
   //-------------------------------
-  template <typename T, 
+  template <typename T,
      core::meta::enable_if_t<
-       core::meta::is_core_vector_wrapper<T>::value 
+       core::meta::is_core_vector_wrapper<T>::value
        > * = nullptr
      >
   auto applyImpl(const T & X)
@@ -49,10 +49,10 @@ private:
   }
 
   template <typename T1,
-	    typename T2, 
+	    typename T2,
      core::meta::enable_if_t<
        core::meta::is_core_vector_wrapper<T1>::value &&
-       core::meta::is_core_vector_wrapper<T2>::value 
+       core::meta::is_core_vector_wrapper<T2>::value
        > * = nullptr
      >
   void applyImpl(const T1 & X, T2 & Y){
@@ -61,11 +61,11 @@ private:
     // Y: vector of size m,1
     core::ops::product(*op_, X, Y);
   }
-  
+
   //---------------------------
   //----     TRANSPOSE     ----
   //---------------------------
-  template <typename T, 
+  template <typename T,
      core::meta::enable_if_t<
        core::meta::is_core_vector_wrapper<T>::value or
        core::meta::is_core_multi_vector_wrapper<T>::value
@@ -74,7 +74,7 @@ private:
   auto applyTransposeImpl(const T & X)
     -> decltype(core::ops::dot( std::declval<operator_type>(),
 				std::declval<T>() )){
-    // multivector^T acts on vector = take dot of each row 
+    // multivector^T acts on vector = take dot of each row
     // op_^T: multivector of size n,m
     // X: vector of size m,1
     // Y: vector with results of all dots of size n,1
@@ -89,19 +89,23 @@ private:
        > * = nullptr
      >
   void applyTransposeImpl(const T1 & X, T2 & Y){
-    // multivector^T acts on vector = take dot of each row 
+    // multivector^T acts on vector = take dot of each row
     // op_^T: multivector of size n,m
     // X: vector of size m,1
     // Y: vector with results of all dots of size n,1
     core::ops::dot(*op_, X, Y);
   }
   //---------------------------------
-    
+
 public:
   //  MultiVectorOperator() = delete;
   explicit MultiVectorOperator(const operator_type & opIn)
     : op_(&opIn){}
   ~MultiVectorOperator() = default;
+
+  const operator_type * getOperator() const{
+    return op_;
+  }
 
 };//end class
 

@@ -5,7 +5,7 @@
 #include "../core_multi_vector_traits.hpp"
 
 namespace rompp{ namespace core{
-    
+
 template<typename derived_type>
 class MultiVectorDistributedBase
   : private core::details::CrtpBase<
@@ -20,7 +20,7 @@ private:
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using LO_t = typename details::traits<derived_type>::local_ordinal_t;
   using GO_t = typename details::traits<derived_type>::global_ordinal_t;
-    
+
 public:
   GO_t globalNumVectors() const{
     return this->underlying().globalNumVectorsImpl();
@@ -29,7 +29,7 @@ public:
   LO_t localNumVectors() const{
     return this->underlying().localNumVectorsImpl();
   }
-  
+
   GO_t globalLength() const {
     return this->underlying().globalLengthImpl();
   };
@@ -43,7 +43,7 @@ public:
 			  sc_t value){
     this->underlying().replaceGlobalValueImpl(globalRowIndex, vectorIndex, value);
   }
-  
+
 private:
   using this_t = MultiVectorDistributedBase<derived_type>;
   friend derived_type;
