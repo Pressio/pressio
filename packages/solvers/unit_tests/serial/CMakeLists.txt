@@ -1,0 +1,8 @@
+
+add_serial_unit_test(test_solvers_linear_dense_eigen)
+add_serial_unit_test(test_solvers_linear_eigen)
+add_serial_unit_test(test_system_traits)
+add_serial_unit_test(test_solvers_factory_nonlinear)
+add_serial_unit_test(test_solvers_nonlinear_eigen)
+add_serial_unit_test(test_solvers_leastsquare_linear_eigen)
+add_serial_unit_test(test_solvers_nonlinear_leastsquare_eigen)

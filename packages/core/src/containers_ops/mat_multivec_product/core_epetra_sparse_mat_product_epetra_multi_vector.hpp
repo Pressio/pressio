@@ -1,4 +1,5 @@
 
+#ifdef HAVE_TRILINOS
 #ifndef CORE_CONTAINERS_OPS_EPETRA_SPARSE_MAT_PRODUCT_EPETRA_MULTI_VECTOR_HPP_
 #define CORE_CONTAINERS_OPS_EPETRA_SPARSE_MAT_PRODUCT_EPETRA_MULTI_VECTOR_HPP_
 
@@ -59,3 +60,5 @@ mvec_type product(const mat_type & A, const mvec_type & B)
 
 }}}//end namespace rompp::core::ops
 #endif
+#endif
+

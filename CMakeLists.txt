@@ -54,6 +54,62 @@ SET(HeaderOnlyTpl_INCLUDE_DIRS
 SET(GTESTMAINSDIR "${CMAKE_CURRENT_SOURCE_DIR}/gtest_mains")
 MESSAGE("Google tests main files are in: " ${GTESTMAINSDIR})
 
+
+#------------------------------------------------------------------------
+# this function creates and adds an individual unit-test executable
+# currently it takes following arguments: 
+#
+#  (1) test_name: self-explanatory
+#
+#  (2) mainfile: the name of the main file without extention. 
+#			  	 If file is ``test1.cc'', mainfile = test1
+#
+#  (3) ARGV2: the number of ranks, 1 or more 
+#
+function(add_unit_test test_name mainfile )
+
+  SET(NUMMPI ${ARGV2})
+  if(${NUMMPI} EQUAL 1)
+    SET(COMM1 serial mpi)
+  elseif(${NUMMPI} GREATER 1)
+    SET(COMM1 mpi)
+  endif()
+  # COMM serial => only run if rompp built without MPI
+  # COMM mpi => only run if rompp built with MPI
+  # COMM serial mpi => run in both cases, for MPI # of ranks set to tribits default 4 
+  
+  TRIBITS_ADD_EXECUTABLE_AND_TEST(
+    utest_${test_name}
+    SOURCES ${test_name}.cc ${mainfile}.cc 
+    COMM ${COMM1}
+    NUM_MPI_PROCS ${NUMMPI}
+    PASS_REGULAR_EXPRESSION "PASSED"
+    FAIL_REGULAR_EXPRESSION "FAILED"
+  )
+endfunction()
+#------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------
+# this function creates and adds an individual SERIAL unit-test 
+# currently it takes following arguments: 
+#
+#  (1) test_name: self-explanatory
+#
+function(add_serial_unit_test test_name)
+  
+  TRIBITS_ADD_EXECUTABLE_AND_TEST(
+    utest_${test_name}
+    SOURCES ${test_name}.cc ${GTESTMAINSDIR}/gTestMain_serial.cc 
+    COMM serial mpi
+    NUM_MPI_PROCS 1
+    PASS_REGULAR_EXPRESSION "PASSED"
+    FAIL_REGULAR_EXPRESSION "FAILED"
+  )
+endfunction()
+#------------------------------------------------------------------------
+
+
 #------------------------------------------------------------
 # turn on cmake variables based on corresponding TPL
 # these variables are defined inside the core package and 
@@ -62,9 +118,6 @@ MESSAGE("Google tests main files are in: " ${GTESTMAINSDIR})
 
 if(TPL_ENABLE_BLAZE)
   set(HAVE_BLAZE ON)
-endif()
-if(TPL_ENABLE_MPI)
-  set(HAVE_MPI ON)
 endif()
 if(TPL_ENABLE_TRILINOS)
   set(HAVE_TRILINOS ON)

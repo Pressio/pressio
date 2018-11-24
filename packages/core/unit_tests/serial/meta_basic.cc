@@ -73,6 +73,7 @@ TEST(core_meta_basic, inheritanceVector){
 }
 
 
+#ifdef HAVE_TRILINOS
 TEST(core_meta_basic, isTeuchosRCP){
   using namespace rompp;
 
@@ -94,6 +95,7 @@ TEST(core_meta_basic, isTeuchosRCP){
   EXPECT_EQ( core::meta::is_teuchos_rcp_ptr<foo_t4>::value, true); 
   EXPECT_EQ( core::meta::is_teuchos_rcp_ptr<foo_t5>::value, true); 
 }
+#endif
 
 
 TEST(core_meta_basic, hasSizeMethod){

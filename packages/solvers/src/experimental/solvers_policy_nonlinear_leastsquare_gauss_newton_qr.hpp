@@ -72,7 +72,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
       // update solution 
       x -= dx;
       normN = NormT::template compute_norm(dx);
-      if (abs(normO - normN) < nonLinearTolerance){
+      if (std::abs(normO - normN) < nonLinearTolerance){
 	break;
       }
       normO = normN;
