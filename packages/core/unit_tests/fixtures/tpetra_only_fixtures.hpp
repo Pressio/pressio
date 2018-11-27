@@ -222,10 +222,10 @@ public:
     // 0 0 3 3 0 1 0
     // 0 0 0 3 0 1 0
 
-    using tarr_dt = Teuchos::ArrayView<double>;
-    using tarr_it = Teuchos::ArrayView<int>;
-    std::array<double,4> va;
-    std::array<int,4> ci;
+    using tarr_dt = Teuchos::ArrayView<ST>;
+    using tarr_it = Teuchos::ArrayView<GO>;
+    std::array<ST,4> va;
+    std::array<GO,4> ci;
     if (rank_==0){
       //row 0
       va = {1., 2., 3.};  ci = {0, 2, 5};

@@ -31,13 +31,13 @@ TEST(core_sparse_matrix_tpetra, Traits){
   using matTrait = core::details::traits<mymat_t>;
 
   ::testing::StaticAssertTypeEq<typename
-  				matTrait::scalar_t, double>();
+  				matTrait::scalar_t, ST>();
 
   ::testing::StaticAssertTypeEq<typename
-  				matTrait::local_ordinal_t,int>();
+  				matTrait::local_ordinal_t,LO>();
 
   ::testing::StaticAssertTypeEq<typename
-			matTrait::global_ordinal_t,int>();
+			matTrait::global_ordinal_t,GO>();
 
   ::testing::StaticAssertTypeEq<typename
   				matTrait::wrapped_t, nat_t>();
