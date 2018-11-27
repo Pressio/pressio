@@ -31,7 +31,49 @@ namespace rompp{ namespace core{ namespace meta {
 
   /////////////////////////////////////////////////
 
-    
+#ifdef HAVE_TRILINOS
+  template <typename T,
+      typename enable = void>
+  struct is_teuchos_rcp_ptr : std::false_type{};
+
+  template <typename T>
+  struct is_teuchos_rcp_ptr<
+    T, typename
+    std::enable_if<
+	 std::is_same<T,
+		      Teuchos::RCP<typename T::element_type>
+		      >::value or
+	 std::is_same<T,
+		      Teuchos::RCP<const typename T::element_type>
+		      >::value
+	 >::type
+    > : std::true_type{};
+#endif
+  /////////////////////////////////////////////////
+
+
+  template <typename T,
+      typename enable = void>
+  struct is_rcp_ptr : std::false_type{};
+
+  template <typename T>
+  struct is_rcp_ptr<
+    T, typename
+    std::enable_if<
+	#ifdef HAVE_TRILINOS
+	 is_teuchos_rcp_ptr<T>::value or
+	#endif
+	 std::is_same<T,
+		      std::shared_ptr<typename T::element_type>
+		      >::value or
+	 std::is_same<T,
+		      std::shared_ptr<const typename T::element_type>
+		      >::value
+	 >::type
+    > : std::true_type{};
+  /////////////////////////////////////////////////
+
+
   /*This allows allows for a shorter syntax:
       enable_if_t<a_condition, MyType>
     as opposed to:
@@ -39,16 +81,15 @@ namespace rompp{ namespace core{ namespace meta {
   */
   template<bool condition, typename T = void>
   using enable_if_t = typename std::enable_if<condition,T>::type;
-  
+
   /////////////////////////////////////////////////
 
-  
   template <typename... >
   using void_t = void;
 
   /////////////////////////////////////////////////
 
-  
+
   // check if a type is default constructible
   // we leave this commented out, for now.
   // we use the std method instead.
@@ -56,8 +97,8 @@ namespace rompp{ namespace core{ namespace meta {
   template<typename T>
   struct is_default_constructible
     : std::is_default_constructible<T> {};
-  
-  /////////////////////////////////////////////////  
+
+  /////////////////////////////////////////////////
 
   template <typename T,
 	    typename enable = void>
@@ -75,30 +116,9 @@ namespace rompp{ namespace core{ namespace meta {
 
   //////////////////////////////////////////////////
 
-#ifdef HAVE_TRILINOS
-  template <typename T,
-      typename enable = void>
-  struct is_teuchos_rcp_ptr : std::false_type{};
-
-  template <typename T>
-  struct is_teuchos_rcp_ptr<T, typename
-    ::rompp::core::meta::enable_if_t<
-      std::is_same<T, 
-        Teuchos::RCP<typename T::element_type>
-      >::value or 
-      std::is_same<T, 
-        Teuchos::RCP<const typename T::element_type>
-      >::value
-     >
-   > : std::true_type{};
-#endif
-
-  //////////////////////////////////////////////////
-
-
   template<typename T, typename base_t>
   struct publicly_inherits_from : std::is_base_of<base_t,T>{};
-  
+
   //////////////////////////////////////////////////
 
 
@@ -115,7 +135,7 @@ namespace rompp{ namespace core{ namespace meta {
 			    >::value
 			  >::type
 			> : std::true_type{};
-  
-   
+
+
 }}} // namespace rompp::core::meta
 #endif

@@ -16,14 +16,14 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
   // get trilinos tpetra multivector object
   auto trilD = MV.data();
   trilD->sync<Kokkos::HostSpace>();
-  
+
   /*--------------------------------------------
    * (1): modify the host view and then sync
    * most likely, host and device will be same unless we run CUDA
-   * so in theory we should not worry about syncing but it 
+   * so in theory we should not worry about syncing but it
    * does not hurt to do it anyway
   //--------------------------------------------*/
-  
+
   auto v2d = trilD->getLocalView<Kokkos::HostSpace>();
   auto c0 = Kokkos::subview(v2d, Kokkos::ALL(), 0);
   //we are going to change the host view
@@ -39,7 +39,7 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
   }
   // sync from host to device
   trilD->sync<mv_device_t> ();
-  
+
   // --------------------------------------------
   // construct and fill vector wrapper
   // --------------------------------------------
@@ -49,7 +49,7 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
 
   //check that device_t of mv and vec match
   ::testing::StaticAssertTypeEq<mv_device_t, v_device_t>();
-  
+
   vec_t VV( *x_ );
   VV.setZero();
   // get trilinos tpetra vector object

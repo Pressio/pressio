@@ -2,79 +2,98 @@
 #include <gtest/gtest.h>
 #include "CORE_ALL"
 #include "../../src/qr_hacked.hpp"
-#include "Epetra_MpiComm.h"
 
-struct epetraMultiVectorR9C4Fixture
+struct tpetraMultiVectorR9C4Fixture
   : public ::testing::Test{
 
 public:
+  using tcomm = Teuchos::Comm<int>;
+  using map_t = Tpetra::Map<>;
+  using mvec_t = Tpetra::MultiVector<>;
+  using ST = typename mvec_t::scalar_type;
+  using LO = typename mvec_t::local_ordinal_type;
+  using GO = typename mvec_t::global_ordinal_type;
+
   int rank_;
-  Epetra_MpiComm * comm_;
   int numProc_;
   const int localSize_ = 3;
-  const int numVectors_ = 4;
+  const int numVecs_ = 4;
   int numGlobalEntries_;
-  Epetra_Map * dataMap_;
-  Epetra_MultiVector * mv_;
+  Teuchos::RCP<const tcomm> comm_;
+  Teuchos::RCP<const map_t> contigMap_;
+  mvec_t * mv_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
-    rank_ = comm_->MyPID();
-    numProc_ = comm_->NumProc();
-    assert(numProc_ == 3);
-
+    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    rank_ = comm_->getRank();
+    numProc_ = comm_->getSize();
+    assert(numProc_==3);
     numGlobalEntries_ = numProc_ * localSize_;
-    dataMap_ = new Epetra_Map(numGlobalEntries_, 0, *comm_);
-    mv_ = new Epetra_MultiVector(*dataMap_, numVectors_);
+    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
+    mv_ = new mvec_t(contigMap_, numVecs_);
   }
 
   virtual void TearDown(){
-    delete comm_;
-    delete dataMap_;
     delete mv_;
   }
 };
 //-----------------------------------------------------------
 
 
-TEST_F(epetraMultiVectorR9C4Fixture,
-     EpetraMultiVectorQRFactorization){
+TEST_F(tpetraMultiVectorR9C4Fixture,
+       TpetraMultiVectorQRFactorization){
   using namespace rompp;
 
-  using nat_t = Epetra_MultiVector;
-  using mymvec_t = core::MultiVector<nat_t>;
-  STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(mymvec_t);
+  // --------------------------------------------
+  // construct and fill multivector wrapper
+  // --------------------------------------------
+  using nat_mv_t = typename tpetraMultiVectorR9C4Fixture::mvec_t;
+  using mvec_t = core::MultiVector<nat_mv_t>;
+  using mv_device_t = typename core::details::traits<mvec_t>::device_t;
 
-  // fill the matrix
-  mymvec_t A( *dataMap_, numVectors_ );
+  mvec_t MV( *mv_ );
+  MV.setZero();
+  // get trilinos tpetra multivector object
+  auto trilD = MV.data();
+  trilD->sync<Kokkos::HostSpace>();
+
+  /*--------------------------------------------
+   * (1): modify the host view and then sync
+   * most likely, host and device will be same unless we run CUDA
+   * so in theory we should not worry about syncing but it
+   * does not hurt to do it anyway
+  //--------------------------------------------*/
+  auto v2d = trilD->getLocalView<Kokkos::HostSpace>();
+  auto c0 = Kokkos::subview(v2d, Kokkos::ALL(), 0);
+  //we are going to change the host view
+  trilD->modify<Kokkos::HostSpace>();
+
   if(rank_==0){
-    A(0,0) = 3.2; A(0,1) = 1.2;  A(0,2) = 1.;
-    A(1,0) = 1.2; A(1,2) = -2.2;
-    A(2,1) = 4.0; A(2,3) = -2.;
+    v2d(0,0) = 3.2; v2d(0,1) = 1.2;  v2d(0,2) = 1.;
+    v2d(1,0) = 1.2; v2d(1,2) = -2.2;
+    v2d(2,1) = 4.0; v2d(2,3) = -2.;
   }
   if(rank_==1){
-    A(0,1) = 4.;
-    A(1,2) = -1.; A(1,3) = -4.;
-    A(2,0) = 0.2; A(2,1) = 5.;  A(2,2) = 1.;
+    v2d(0,1) = 4.;
+    v2d(1,2) = -1.; v2d(1,3) = -4.;
+    v2d(2,0) = 0.2; v2d(2,1) = 5.;  v2d(2,2) = 1.;
   }
   if(rank_==2){
-    A(0,0) = 1.; A(0,1) = 1.1; A(0,2) = 1.25; A(0,3) = -3.;
-    A(1,2) = 1.; A(1,1) = 0.1111; A(1,3) = 6.;
+    v2d(0,0) = 1.; v2d(0,1) = 1.1; v2d(0,2) = 1.25; v2d(0,3) = -3.;
+    v2d(1,2) = 1.; v2d(1,1) = 0.1111; v2d(1,3) = 6.;
   }
-  A.data()->Print(std::cout);
+  // sync from host to device
+  trilD->sync<mv_device_t>();
 
   // do QR
   using R_type = rompp::core::Matrix<Eigen::MatrixXd>;
-  rompp::qr::hack::QRSolver<mymvec_t, rompp::core::MultiVector, R_type> qrObj;
-  qrObj.compute(A);
-  //  using Q_t = rompp::core::MultiVector<Epetra_MultiVector>;
+  rompp::qr::hack::QRSolver<mvec_t, rompp::core::MultiVector, R_type> qrObj;
+  qrObj.compute(MV);
   const auto & Q = qrObj.cRefQFactor();
   const auto & R = qrObj.cRefRFactor();
-  Q.data()->Print(std::cout << std::setprecision(4));
   if (rank_==0)
     std::cout << "\n" << *R.data();
-
 
   Eigen::MatrixXd trueQ(9,9);
   trueQ << -0.897235446547271, -0.039024431200404,  0.173692309541681, -0.034843851055998,
@@ -120,8 +139,11 @@ TEST_F(epetraMultiVectorR9C4Fixture,
       EXPECT_NEAR( R(i,j), trueR(i,j), 1e-6);
 
   int shift=rank_*localSize_;
-  for (auto i=0; i<localSize_; i++)
-    for (auto j=0; j<Q.localNumVectors(); j++)
-      EXPECT_NEAR( Q(i,j), trueQ(i+shift,j), 1e-6);
+  for (auto j=0; j<Q.localNumVectors(); j++){
+    auto colData = Q.data()->getData(j);
+    for (auto i=0; i<localSize_; i++){
+      EXPECT_NEAR( colData[i], trueQ(i+shift,j), 1e-6);
+    }
+  }
 
 }

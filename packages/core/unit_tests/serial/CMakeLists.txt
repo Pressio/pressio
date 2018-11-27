@@ -1,25 +1,24 @@
 
-add_unit_test(config_defs_structs ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(meta_basic ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(meta_detect_operators ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(meta_detect_typedefs ${GTESTMAINSDIR}/gTestMain_serial 1)
+add_serial_unit_test(config_defs_structs)
+add_serial_unit_test(meta_basic)
+add_serial_unit_test(meta_detect_operators)
+add_serial_unit_test(meta_detect_typedefs)
 
-add_unit_test(vector_serial_eigen_dynamic_class ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(vector_serial_eigen_dynamic_expr_templates ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(matrix_vector_product_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(matrix_matrix_product_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(multi_vector_serial_eigen_dynamic_class ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(multi_vector_eigen_product_eigen_vector ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(sparse_matrix_product_multi_vector_eigen ${GTESTMAINSDIR}/gTestMain_serial 1)
-add_unit_test(multi_vector_eigen_dot_eigen_vector ${GTESTMAINSDIR}/gTestMain_serial 1)
-
+add_serial_unit_test(vector_serial_eigen_dynamic_class)
+add_serial_unit_test(vector_serial_eigen_dynamic_expr_templates)
+add_serial_unit_test(matrix_vector_product_eigen)
+add_serial_unit_test(matrix_matrix_product_eigen)
+add_serial_unit_test(multi_vector_serial_eigen_dynamic_class)
+add_serial_unit_test(multi_vector_eigen_product_eigen_vector)
+add_serial_unit_test(sparse_matrix_product_multi_vector_eigen)
+add_serial_unit_test(multi_vector_eigen_dot_eigen_vector)
 
 IF(HAVE_BLAZE)
-add_unit_test(vector_serial_blaze_class ${GTESTMAINSDIR}/gTestMain_serial 1)
+	add_serial_unit_test(vector_serial_blaze_class)
 ENDIF()
 
 IF(HAVE_ARMADILLO)
-add_unit_test(vector_serial_armadillo_class ${GTESTMAINSDIR}/gTestMain_serial 1)
+	add_serial_unit_test(vector_serial_armadillo_class)
 ENDIF()
 
 

@@ -21,7 +21,9 @@ class MultiVector<wrapped_type,
   : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
     public MultiVectorDistributedBase< MultiVector<wrapped_type> >,
     public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>,
-              typename details::traits<MultiVector<wrapped_type>>::data_map_t>
+     typename details::traits<MultiVector<wrapped_type>>::data_map_t>,
+  public ContainerDistributedMpiBase< MultiVector<wrapped_type>,
+     typename details::traits<MultiVector<wrapped_type>>::communicator_t>
 {
 
 private:
@@ -97,11 +99,9 @@ private:
     return data_.getLocalLength();
   };
 
-  // void replaceGlobalValueImpl(GO_t globalRowIndex,
-  // 			      GO_t vectorIndex,
-  // 			      sc_t value){
-  //   data_.replaceGlobalValue(globalRowIndex, vectorIndex, value);
-  // }
+  mpicomm_t commImpl() const{
+    return data_.getMap()->getComm();
+  }
 
   // void scaleImpl(sc_t factor){
   //   data_.scale(factor);
@@ -119,7 +119,7 @@ private:
   friend ContainerBase< this_t, wrapped_type >;
   friend MultiVectorDistributedBase< this_t >;
   friend ContainerDistributedTrilinosBase< this_t, map_t >;
-  //  friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
+  friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
 
 private:
   wrap_t data_;

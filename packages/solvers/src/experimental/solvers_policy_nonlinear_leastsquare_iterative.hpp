@@ -172,7 +172,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
       x = x - solver.solve(b);
       dy = sys.residual(x);
       normN = NormT::template compute_norm(dy);
-      if (abs(normO - normN) < nonLinearTolerance) {break;}
+      if (std::abs(normO - normN) < nonLinearTolerance) {break;}
 
       normO = normN;
       Ja = sys.jacobian(x);
