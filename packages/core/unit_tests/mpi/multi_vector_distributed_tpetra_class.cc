@@ -21,6 +21,19 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
 
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture,
+       comm){
+  using namespace rompp;
+  using native_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
+  using mymvec_t = core::MultiVector<native_t>;
+  mymvec_t v1( *x_ );
+
+  auto commRCP = v1.comm();
+  ::testing::StaticAssertTypeEq<decltype(commRCP),
+      Teuchos::RCP< const Teuchos::Comm<int>> >();
+}
+
+
+TEST_F(tpetraMultiVectorGlobSize15Fixture,
        globalSize){
   using namespace rompp;
   using mymvec_t = core::MultiVector<typename tpetraMultiVectorGlobSize15Fixture::mvec_t>;
@@ -42,11 +55,11 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
        QueryWrappedData){
   using namespace rompp;
   using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
-  
+
   using mymvec_t = core::MultiVector<nvec_t>;
   mymvec_t v1( *x_ );
   ::testing::StaticAssertTypeEq<decltype(v1.data()),
-  				nvec_t * >(); 
+  				nvec_t * >();
   const mymvec_t v2( *x_ );
   ::testing::StaticAssertTypeEq< decltype(v2.data()),
   				 const nvec_t * >();
@@ -56,7 +69,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
 TEST_F(tpetraMultiVectorGlobSize15Fixture,
        empty){
   using namespace rompp;
-  using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;  
+  using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
   using mymvec_t = core::MultiVector<nvec_t>;
   mymvec_t v1( *x_ );
   EXPECT_FALSE(v1.empty());
@@ -66,13 +79,13 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
 // TEST_F(tpetraMultiVectorGlobSize15Fixture,
 //        getMap){
 //   using namespace rompp;
-//   using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;  
+//   using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
 //   using mymvec_t = core::MultiVector<nvec_t>;
 //   mymvec_t v1( *x_ );
 //   auto const & mapO = v1.getDataMap();
 
 //   ::testing::StaticAssertTypeEq<decltype(mapO),
-//   				const typename tpetraMultiVectorGlobSize15Fixture::map_t & >(); 
+//   				const typename tpetraMultiVectorGlobSize15Fixture::map_t & >();
 //   EXPECT_TRUE(mapO.isContiguous());
 // }
 
@@ -80,7 +93,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
 TEST_F(tpetraMultiVectorGlobSize15Fixture,
        localNumVecs){
   using namespace rompp;
-  using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;  
+  using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
   using mymvec_t = core::MultiVector<nvec_t>;
   mymvec_t v1( *x_ );
   EXPECT_EQ(v1.localNumVectors(), 4);
@@ -90,7 +103,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
 TEST_F(tpetraMultiVectorGlobSize15Fixture,
        globalNumVecs){
   using namespace rompp;
-  using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;  
+  using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
   using mymvec_t = core::MultiVector<nvec_t>;
   mymvec_t v1( *x_ );
   EXPECT_EQ(v1.globalNumVectors(), 4);
@@ -121,15 +134,15 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
   using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
   using myvec_t = core::MultiVector<nvec_t>;
   myvec_t v1( *x_ );
-  auto const & mapO = v1.getDataMap();  
+  auto const & mapO = v1.getDataMap();
   ::testing::StaticAssertTypeEq<decltype(mapO),
-  				const typename tpetraMultiVectorGlobSize15Fixture::map_t & >(); 
+  				const typename tpetraMultiVectorGlobSize15Fixture::map_t & >();
   EXPECT_TRUE(mapO.isContiguous());
 
   auto mapO1 = v1.getRCPDataMap();
   ::testing::StaticAssertTypeEq<decltype(mapO1),
-  	Teuchos::RCP< const typename tpetraMultiVectorGlobSize15Fixture::map_t>>(); 
-  EXPECT_TRUE(mapO1->isContiguous());  
+  	Teuchos::RCP< const typename tpetraMultiVectorGlobSize15Fixture::map_t>>();
+  EXPECT_TRUE(mapO1->isContiguous());
 }
 
 
@@ -146,9 +159,9 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
   using LO_t = typename tpetraMultiVectorGlobSize15Fixture::LO;
   using GO_t = typename tpetraMultiVectorGlobSize15Fixture::GO;
   using NO_t = typename tpetraMultiVectorGlobSize15Fixture::NT;
-  
+
   Tpetra::Vector<sc_t,LO_t,GO_t,NO_t> vec(mapO1);
   // ::testing::StaticAssertTypeEq<decltype(mapO1),
-  // 	Teuchos::RCP< const typename tpetraMultiVectorGlobSize15Fixture::map_t>>(); 
-  // EXPECT_TRUE(mapO1->isContiguous());  
+  // 	Teuchos::RCP< const typename tpetraMultiVectorGlobSize15Fixture::map_t>>();
+  // EXPECT_TRUE(mapO1->isContiguous());
 }
