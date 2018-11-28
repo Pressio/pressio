@@ -5,7 +5,7 @@
 TEST(core_sparse_matrix_tpetra, Traits){
   using namespace rompp;
 
-  // using ST = double;
+  using ST = double;
   using LO = Tpetra::CrsMatrix<>::local_ordinal_type;
   using GO = Tpetra::CrsMatrix<>::global_ordinal_type;
   using NT = Tpetra::CrsMatrix<>::node_type;
