@@ -9,6 +9,7 @@
 #include "../../shared_base/core_container_subscriptable_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
 #include "../base/core_vector_distributed_base.hpp"
+#include <MatrixMarket_Tpetra.hpp>
 
 namespace rompp{ namespace core{
 
@@ -52,32 +53,11 @@ public:
     : data_(mapO){}
 
   Vector(this_t const & other)
-    : data_(*other.data()){}
+    : data_(*other.data(), Teuchos::Copy){}
 
   ~Vector() = default;
 
 public:
-  // sc_t & operator [] (LO_t i){
-  //   assert(!myLocDataView_.is_null());
-  //   assert(i < this->localSize());
-  //   return myLocDataView_[i];
-  // };
-  // sc_t const & operator [] (LO_t i) const{
-  //   assert(!myLocDataCView_.is_null());
-  //   assert(i < this->localSize());
-  //   return myLocDataCView_[i];
-  // };
-
-  // sc_t & operator()(LO_t i){
-  //   assert(!myLocDataView_.is_null());
-  //   assert(i < this->localSize());
-  //   return myLocDataView_[i];
-  // };
-  // sc_t const & operator()(LO_t i) const{
-  //   assert(!myLocDataCView_.is_null());
-  //   assert(i < this->localSize());
-  //   return myLocDataCView_[i];
-  // };
 
   // compound assignment when type(b) = type(this)
   // this += b
@@ -98,6 +78,13 @@ public:
     this->data_.update(-1.0, *other.data(), 1.0 );
     return *this;
   }
+
+  // void print() const{
+  //   Tpetra::MatrixMarket::Writer<wrap_t>::writeDense(std::cout,
+  // 						     data_,
+  // 						     "dsfd",
+  // 						     "dfdfd");
+  // }
 
 private:
 

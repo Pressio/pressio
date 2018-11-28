@@ -26,9 +26,8 @@ class RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
 				       app_state_w_type, jac_type,
 				       phi_op_type, A_type>, app_state_w_type>{
 
-  using this_t = RomLSPGJacobianPolicy<
-    ::rompp::ode::ImplicitSteppersEnum::Euler,
-     app_state_w_type, jac_type, phi_op_type, A_type>;
+  using this_t = RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+    app_state_w_type, jac_type, phi_op_type, A_type>;
 
   using base_pol_t = ::rompp::ode::policy::JacobianPolicyBase<this_t>;
   using base_incr_sol_t = rompp::rom::IncrementalSolutionBase<this_t, app_state_w_type>;
@@ -53,13 +52,16 @@ public:
   ~RomLSPGJacobianPolicy() = default;
   //----------------------------------------------------------------
 
+  // let q be full state, then we have dR/dy = dR/dq dq/dy
+
+
   template <typename ode_state_t,
   	    typename app_t>
   jac_type operator()(const ode_state_t & odeY,
 		      const app_t & app,
 		      scalar_type t,
-		      scalar_type dt) const{
-
+		      scalar_type dt) const
+  {
     reconstructFOMState(odeY);
 
     // compute the Jac phi product, where Jac is the spatial jacobian
@@ -71,9 +73,7 @@ public:
       app.applyJacobian(*yFOM_.data(), *basis->data(), *JJ_->data(), t);
     }
 
-    // compute time discrete residual: J phi = phi - dt df/dy phi
     ode::impl::implicit_euler_time_discrete_jacobian(*JJ_, dt, *basis);
-    //*JJ_ += *basis;
 
     // need to apply final weighting if any
     // if (A_) A_->apply....
@@ -88,39 +88,19 @@ public:
   		  ode_jac_t & odeJJ,
   		  const app_t & app,
   		  scalar_type t,
-  		  scalar_type dt) const{
-    // compute: Jac of R( phi y_n) = phi y_n - phi y_n-1 - dt * f(phi y)
-    // let q be full state, then we have dR/dy = dR/dq dq/dy
-
-    //odeJJ = (*this)(odeY,app,t,dt);
-
+  		  scalar_type dt) const
+  {
     reconstructFOMState(odeY);
-    // compute the Jac phi product, where Jac is the spatial jacobian
     auto * basis = phi_->getOperator();
     app.applyJacobian(*yFOM_.data(), *basis->data(), *odeJJ.data(), t);
-    // compute time discrete residual: J phi = phi - dt df/dy phi
     ode::impl::implicit_euler_time_discrete_jacobian(odeJJ, dt, *basis);
-
-    // /// query the application for the jacobian
-    // app.jacobian(*yFOM_.data(), *JJ_.data(), t);
-    // // do time discrete jacobian, dR/dq
-    // ode::impl::implicit_euler_time_discrete_jacobian(JJ_, dt);
-    // // since dq/dy = phi_op, right multiply appJJ with phi_op: odeJJ x phi
-    // // this is = dR/dq dq/dy
-    // phi_->applyRight(JJ_, odeJJ);
-    // need to apply final weighting if any
-    // if (A_) A_->apply....
   }
   //----------------------------------------------------------------
 
  private:
   template <typename ode_state_t>
   void reconstructFOMState(const ode_state_t & odeY)const {
-
-    // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
-    // since we are advancing the Incremental Solution,
-    // need to add the FOM initial condition to get full state
     yFOM_ += (*y0FOM_);
   }
   //----------------------------------------------------------------

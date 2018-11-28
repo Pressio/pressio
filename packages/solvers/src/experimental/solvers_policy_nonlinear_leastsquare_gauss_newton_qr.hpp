@@ -18,7 +18,24 @@ namespace rompp{ namespace solvers{
     
 struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
 
-  template <typename SystemT, typename VectorT,
+private:
+  core::default_types::uint maxNonLinearIterations_ = 500;
+  double nonLinearTolerance_ = 1e-6;
+
+
+public:
+
+  void setMaxNonLinearIterations(core::default_types::uint  maxNonLinearIterations) {
+    maxNonLinearIterations_ = maxNonLinearIterations;
+  }
+
+  void setNonLinearTolerance(double nonLinearTolerance) {
+    nonLinearTolerance_ = std::abs(nonLinearTolerance);
+  }
+
+
+  template <typename SystemT, 
+	    typename VectorT,
 	    typename core::meta::enable_if_t<
 	      core::details::traits<VectorT>::is_vector &&
 	      solvers::meta::are_vector_compatible<
@@ -27,10 +44,9 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
 		>::value
 	      >* = nullptr
   >
-  static VectorT solve(const SystemT& sys,
-                       const VectorT& x0,
-    core::default_types::uint maxNonLinearIterations = 1000,
-    typename core::details::traits<VectorT>::scalar_t nonLinearTolerance = 1e-14){
+  VectorT solve(const SystemT& sys,
+		const VectorT& x0)
+  {
     using sc_t = typename core::details::traits<VectorT>::scalar_t;
     using eig_mat = Eigen::Matrix<sc_t,Eigen::Dynamic,Eigen::Dynamic>;
     using eig_vec = Eigen::Matrix<sc_t,Eigen::Dynamic,1>;
@@ -46,13 +62,13 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
     rompp::qr::hack::QRSolver<jac_t, rompp::core::MultiVector, R_type> qrObj;
     core::Vector<eig_vec> QTRes;//(Jac.cols());
     
-    auto x = x0;
+    auto x(x0);
     auto dx(x);
     double normN = 0.0;
     double normO = NormT::template compute_norm(dx);
     core::default_types::uint iStep = 1;
-    while (iStep++ < maxNonLinearIterations)
-    {	
+    while (iStep++ < maxNonLinearIterations_)
+    { 
       // QR decomposition of Jacobian
       qrObj.compute(Jac);
       const auto & QF = qrObj.cRefQFactor();
@@ -67,19 +83,22 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
       // get the n block of RHS
       auto RHSn = QTRes.data()->block(0,0,n,1);
       *dx.data() = RFn.template triangularView<Eigen::Upper>().solve(RHSn);
-      //std::cout << *dx.data() << "\n";
 
       // update solution 
       x -= dx;
+
       normN = NormT::template compute_norm(dx);
-      if (std::abs(normO - normN) < nonLinearTolerance){
-	break;
+      // std::cout << " GN-iStep " << iStep 
+      // 		<< " norm " << normN << " "
+      // 		<< *x.data() << std::endl;
+
+      if (std::abs(normO - normN) < nonLinearTolerance_){
+      	break;
       }
       normO = normN;
       sys.residual(x, Res);
       sys.jacobian(x, Jac);
     }
-    
     return x;
   }
 };

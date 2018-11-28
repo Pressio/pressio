@@ -31,8 +31,10 @@ void implicit_euler_time_discrete_jacobian(jacobian_type & jac,
 template <typename jacobian_type, typename scalar_type,
 	  typename basis_type,
 	  core::meta::enable_if_t<
-    core::meta::is_epetra_multi_vector_wrapper<jacobian_type>::value and
-    core::meta::is_epetra_multi_vector_wrapper<basis_type>::value
+	    (core::meta::is_epetra_multi_vector_wrapper<jacobian_type>::value and
+	     core::meta::is_epetra_multi_vector_wrapper<basis_type>::value) or 
+	    (core::meta::is_tpetra_multi_vector_wrapper<jacobian_type>::value and
+	     core::meta::is_tpetra_multi_vector_wrapper<basis_type>::value)
 	    > * = nullptr
 	  >
 void implicit_euler_time_discrete_jacobian(jacobian_type & jac,

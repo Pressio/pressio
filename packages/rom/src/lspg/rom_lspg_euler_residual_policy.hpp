@@ -61,26 +61,28 @@ public:
 
   RomLSPGResidualPolicy() = delete;
   ~RomLSPGResidualPolicy() = default;
+
+  //----------------------------------------------------------------
+  // compute: R( phi y_n) = phi y_n - phi y_n-1 - dt * f(phi y)
   //----------------------------------------------------------------
 
   template <typename ode_state_t,
 	    typename app_t>
-  auto operator()(const ode_state_t & odeY,
-		  const std::array<ode_state_t, 1> & oldYs,
-		  const app_t & app,
-		  scalar_type t,
-		  scalar_type dt) const -> app_res_w_type{
-    // compute: R( phi y_n) = phi y_n - phi y_n-1 - dt * f(phi y)
-
-    // odeY is the REDUCED state, we need to reconstruct FOM state
+  app_res_w_type operator()(const ode_state_t & odeY,
+			    const std::array<ode_state_t, 1> & oldYs,
+			    const app_t & app,
+			    scalar_type t,
+			    scalar_type dt) const
+  {
+    // odeY, oldYsa are REDUCED states, reconstruct FOM states
     reconstructFOMStates(odeY, oldYs[0]);
 
     /// query the application for the SPACE residual
     app.residual(*yFOM_.data(), *appRHS_.data(), t);
 
     /// do time discrete residual
-    ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_, appRHS_, dt);
-
+    ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_,
+						     appRHS_, dt);
     // /// apply weighting:
     // if (A_) A_->applyTranspose(appRHS_, odeR);
     return appRHS_;
@@ -95,18 +97,12 @@ public:
   		  const std::array<ode_state_t, 1> & oldYs,
   		  const app_t & app,
   		  scalar_type t,
-  		  scalar_type dt) const{
-    // compute: R( phi y_n) = phi y_n - phi y_n-1 - dt * f(phi y)
-
-    /// odeY is the REDUCED state, we need to reconstruct FOM state
+  		  scalar_type dt) const
+  {
     reconstructFOMStates(odeY, oldYs[0]);
-
-    /// query the application for the SPACE residual
     app.residual(*yFOM_.data(), *odeR.data(), t);
-
-    /// do time discrete residual
-    ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_, odeR, dt);
-
+    ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_,
+						     odeR, dt);
     // /// apply weighting
     // if (A_) A_->applyTranspose(appRHS_, odeR);
   }

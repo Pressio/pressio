@@ -7,6 +7,7 @@
 #include "../../shared_base/core_container_distributed_mpi_base.hpp"
 #include "../../shared_base/core_container_distributed_trilinos_base.hpp"
 #include "../base/core_multi_vector_distributed_base.hpp"
+#include <MatrixMarket_Tpetra.hpp>
 
 namespace rompp{ namespace core{
 
@@ -46,10 +47,28 @@ public:
     // use the deep_copy constructor
     : data_(other, Teuchos::Copy){}
 
+  MultiVector(const this_t & other)
+    : data_(*other.data(), Teuchos::Copy){}
+
   ~MultiVector() = default;
 
-private:
+  // compound assignment when type(b) = type(this)
+  // this += b
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator+=(const T & other) {
+    this->data_.update(1.0, *other.data(), 1.0 );
+    return *this;
+  }
 
+  // void print() const{
+  //   Tpetra::MatrixMarket::Writer<wrap_t>::writeDense(std::cout,
+  // 						     data_, "void",
+  // 						     "dfdfd");
+  // }
+
+ private:
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -103,9 +122,9 @@ private:
     return data_.getMap()->getComm();
   }
 
-  // void scaleImpl(sc_t factor){
-  //   data_.scale(factor);
-  // }
+  void scaleImpl(sc_t factor){
+    data_.scale(factor);
+  }
 
 private:
   void needSync(){
