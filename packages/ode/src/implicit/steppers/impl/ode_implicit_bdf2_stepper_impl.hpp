@@ -11,7 +11,7 @@ template<typename state_type,
 	 typename residual_type,
 	 typename jacobian_type,
 	 typename model_type,
-	 typename aux_stepper_type, 
+	 typename aux_stepper_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
 class ImplicitBDF2StepperImpl<state_type,
@@ -34,7 +34,7 @@ class ImplicitBDF2StepperImpl<state_type,
 			  typename core::details::traits<state_type>::scalar_t,
 			  residual_policy_type,
 			  jacobian_policy_type>{
-  
+
   static_assert( meta::is_legitimate_implicit_bdf2_residual_policy<
 		 residual_policy_type>::value,
 		 "IMPLICIT BDF2 RESIDUAL_POLICY NOT ADMISSIBLE,\
@@ -63,7 +63,7 @@ public:
   // these aliases are needed by the solver
   using vector_type = state_type;
   using matrix_type = jacobian_type;
-  
+
 protected:
   using storage_base_t::auxStates_;
   using auxdata_base_t::model_;
@@ -86,10 +86,10 @@ protected:
     : storage_base_t(y0),
       auxdata_base_t(model, res_policy_obj, jac_policy_obj),
       auxStp_(&auxStepper){}
-    
+
   ImplicitBDF2StepperImpl() = delete;
   virtual ~ImplicitBDF2StepperImpl() = default;
-  
+
 public:
   template<typename solver_type, typename step_t>
   void operator()(state_type & y, scalar_type t,
@@ -107,15 +107,15 @@ public:
       auxStates_[1] = y;
       y = solver.solve(*this, y);
     }
-    // if (step >= 3){
-    //   auxStates_[0] = auxStates_[1];
-    //   auxStates_[1] = y;
-    //   y = solver.solve(*this, y);
-    // }
+    if (step >= 3){
+      auxStates_[0] = auxStates_[1];
+      auxStates_[1] = y;
+      y = solver.solve(*this, y);
+    }
   }//end doStepImpl
 
 public:
-  
+
   void residualImpl(const state_type & y, residual_type & R)const{
     (*residual_obj_)(y, R, auxStates_, *model_, t_, dt_);
   }
@@ -136,17 +136,17 @@ public:
   }
   //--------------------------------------------------------
 
-  
+
 private:
-  friend stepper_base_t;  
+  friend stepper_base_t;
   aux_stepper_type * auxStp_;
-  
+
 }; //end class
 
 }//end namespace impl
-}//end namespace ode  
+}//end namespace ode
 }//end namespace rompp
-#endif 
+#endif
 
 
 
