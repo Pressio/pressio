@@ -19,13 +19,13 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
   EXPECT_EQ( v1.localLength(), 5);
 }
 
-TEST_F(tpetraMultiVectorGlobSize15Fixture,
-       print){
-  using namespace rompp;
-  using mymvec_t = core::MultiVector<typename tpetraMultiVectorGlobSize15Fixture::mvec_t>;
-  mymvec_t v1( *x_ );
-  v1.print();
-}
+// TEST_F(tpetraMultiVectorGlobSize15Fixture,
+//        print){
+//   using namespace rompp;
+//   using mymvec_t = core::MultiVector<typename tpetraMultiVectorGlobSize15Fixture::mvec_t>;
+//   mymvec_t v1( *x_ );
+//   v1.print();
+// }
 
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture,
