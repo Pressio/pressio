@@ -77,8 +77,7 @@ void implicit_bdf2_time_discrete_residual(const state_type & yn,
   using namespace ::rompp::ode::impl::coeffs;
 
   R.data()->update(bdf2<scalar_type>::c2, *ynm2.data(), -bdf2<scalar_type>::c3*dt);
-  R.data()->update(bdf2<scalar_type>::c1, *yn.data(),
-		   -bdf2<scalar_type>::c2, *ynm1.data(), 1.0);
+  R.data()->update(1.0, *yn.data(), -bdf2<scalar_type>::c1, *ynm1.data(), 1.0);
 }
 
 
