@@ -15,7 +15,7 @@
 
 namespace rompp{ namespace solvers{
 
-    
+
 struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
 
 private:
@@ -34,7 +34,7 @@ public:
   }
 
 
-  template <typename SystemT, 
+  template <typename SystemT,
 	    typename VectorT,
 	    typename core::meta::enable_if_t<
 	      core::details::traits<VectorT>::is_vector &&
@@ -50,9 +50,15 @@ public:
     using sc_t = typename core::details::traits<VectorT>::scalar_t;
     using eig_mat = Eigen::Matrix<sc_t,Eigen::Dynamic,Eigen::Dynamic>;
     using eig_vec = Eigen::Matrix<sc_t,Eigen::Dynamic,1>;
-
     using NormT = L2Norm;
-    
+
+#ifdef DEBUG_PRINT
+    std::cout << " starting Gauss-Newton solve "
+	      << " tol = " << nonLinearTolerance_
+	      << " maxIter = " << maxNonLinearIterations_
+	      << std::endl;
+#endif
+
     auto Res = sys.residual(x0);
     auto Jac = sys.jacobian(x0);
 
@@ -60,15 +66,15 @@ public:
     using jac_t = decltype(Jac);
     using R_type = rompp::core::Matrix<eig_mat>;
     rompp::qr::hack::QRSolver<jac_t, rompp::core::MultiVector, R_type> qrObj;
-    core::Vector<eig_vec> QTRes;//(Jac.cols());
-    
+    core::Vector<eig_vec> QTRes;
+
     auto x(x0);
     auto dx(x);
     double normN = 0.0;
     double normO = NormT::template compute_norm(dx);
     core::default_types::uint iStep = 1;
     while (iStep++ < maxNonLinearIterations_)
-    { 
+    {
       // QR decomposition of Jacobian
       qrObj.compute(Jac);
       const auto & QF = qrObj.cRefQFactor();
@@ -77,22 +83,28 @@ public:
       // extract Rn block from R factor
       auto n = RF.cols();
       auto RFn = RF.data()->block(0,0,n,n);
-      
+
       // RFn dx = (Q^T Res)n
       core::ops::dot(QF, Res, QTRes); // compute: Q^T * Residual
       // get the n block of RHS
       auto RHSn = QTRes.data()->block(0,0,n,1);
       *dx.data() = RFn.template triangularView<Eigen::Upper>().solve(RHSn);
 
-      // update solution 
+      // update solution
       x -= dx;
 
       normN = NormT::template compute_norm(dx);
-      // std::cout << " GN-iStep " << iStep 
-      // 		<< " norm " << normN << " "
-      // 		<< *x.data() << std::endl;
+#ifdef DEBUG_PRINT
+      std::cout << " GN step=" << iStep
+		<< " norm(dx)= " << normN
+		<< std::endl;
+#endif
 
       if (std::abs(normO - normN) < nonLinearTolerance_){
+#ifdef DEBUG_PRINT
+	std::cout << " GN converged, final norm(dx)=" << normN
+		  << std::endl;
+#endif
       	break;
       }
       normO = normN;
