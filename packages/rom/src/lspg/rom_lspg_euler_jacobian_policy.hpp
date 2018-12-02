@@ -26,17 +26,16 @@ class RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
 				       app_state_w_type, jac_type,
 				       phi_op_type, A_type>, app_state_w_type>{
 
-  using this_t = RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
-    app_state_w_type, jac_type, phi_op_type, A_type>;
-
-  using base_pol_t = ::rompp::ode::policy::JacobianPolicyBase<this_t>;
+  using this_t 		= RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+   			  app_state_w_type, jac_type, phi_op_type, A_type>;
+  using base_pol_t 	= ::rompp::ode::policy::JacobianPolicyBase<this_t>;
   using base_incr_sol_t = rompp::rom::IncrementalSolutionBase<this_t, app_state_w_type>;
-  using scalar_type = typename core::details::traits<app_state_w_type>::scalar_t;
+  using scalar_type 	= typename core::details::traits<app_state_w_type>::scalar_t;
 
  private:
   mutable std::shared_ptr<jac_type> JJ_ = nullptr;
-  phi_op_type * phi_ = nullptr;
-  A_type * A_ = nullptr;
+  phi_op_type * phi_ 			= nullptr;
+  A_type * A_ 				= nullptr;
 
   using base_incr_sol_t::y0FOM_;
   using base_incr_sol_t::yFOM_;
@@ -97,7 +96,7 @@ public:
   }
   //----------------------------------------------------------------
 
- private:
+private:
   template <typename ode_state_t>
   void reconstructFOMState(const ode_state_t & odeY)const {
     phi_->apply(odeY, yFOM_);

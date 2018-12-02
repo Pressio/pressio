@@ -24,32 +24,30 @@ class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
 				       app_state_w_type, app_res_w_type,
 				       phi_op_type, A_type>, 1, 0>,
     private IncrementalSolutionBase<
-                RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+		RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
 				       app_state_w_type, app_res_w_type,
 				       phi_op_type, A_type>, app_state_w_type>{
 
-  using this_t = RomLSPGResidualPolicy<
-    ::rompp::ode::ImplicitSteppersEnum::Euler,
-    app_state_w_type, app_res_w_type, phi_op_type, A_type>;
-
-  using base_pol_t = ::rompp::ode::policy::ImplicitResidualPolicyBase<this_t, 1, 0>;
+  using this_t 		= RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+    			  app_state_w_type, app_res_w_type, phi_op_type, A_type>;
+  using base_pol_t 	= ::rompp::ode::policy::ImplicitResidualPolicyBase<this_t, 1, 0>;
   using base_incr_sol_t = rompp::rom::IncrementalSolutionBase<this_t, app_state_w_type>;
-  using scalar_type = typename core::details::traits<app_state_w_type>::scalar_t;
+  using scalar_type 	= typename core::details::traits<app_state_w_type>::scalar_t;
 
  private:
-  mutable app_res_w_type appRHS_;
-  phi_op_type * phi_ = nullptr;
-  A_type * A_ = nullptr;
+  mutable app_res_w_type appRHS_ = {};
+  phi_op_type * phi_ 		 = nullptr;
+  A_type * A_ 			 = nullptr;
 
   using base_incr_sol_t::y0FOM_;
   using base_incr_sol_t::yFOM_;
 
-public:
+ public:
   template <typename T=A_type,
-   core::meta::enable_if_t<std::is_void<T>::value> * = nullptr>
-  RomLSPGResidualPolicy(const app_state_w_type & y0fom,
-  			const app_res_w_type & r0fom,
-  			phi_op_type & phiOp)
+	    core::meta::enable_if_t<std::is_void<T>::value> * = nullptr>
+    RomLSPGResidualPolicy(const app_state_w_type & y0fom,
+			  const app_res_w_type & r0fom,
+			  phi_op_type & phiOp)
     : base_incr_sol_t(y0fom), appRHS_(r0fom),
     phi_(&phiOp), yFOMnm1_(y0fom){}
 
@@ -111,7 +109,7 @@ public:
  private:
   template <typename ode_state_t>
   void reconstructFOMStates(const ode_state_t & odeY,
-			    const ode_state_t & odeYm1)const {
+ 			    const ode_state_t & odeYm1)const {
     // odeY is the REDUCED state, we need to reconstruct FOM state
     phi_->apply(odeY, yFOM_);
     // reconstruct FOM state at previous step n-1
@@ -124,10 +122,10 @@ public:
   }
   //----------------------------------------------------------------
 
-private:
+ private:
   friend base_pol_t;
   friend base_incr_sol_t;
-  mutable app_state_w_type yFOMnm1_;
+  mutable app_state_w_type yFOMnm1_ = {};
 
 };//end class
 
