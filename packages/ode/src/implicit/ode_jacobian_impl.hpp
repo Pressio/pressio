@@ -59,8 +59,8 @@ template <typename jacobian_type,
 void implicit_bdf2_time_discrete_jacobian(jacobian_type & jac,
 					   scalar_type dt){
 
-  using namespace ::rompp::ode::impl::coeffs;
-  jac.scale(-bdf2<scalar_type>::c3*dt);
+  using namespace ::rompp::ode::coeffs;
+  jac.scale(-bdf2<scalar_type>::c3_*dt);
   jac.addToDiagonal(static_cast<scalar_type>(1));
 }
 //---------------------------------------------------------------
@@ -81,8 +81,8 @@ void implicit_bdf2_time_discrete_jacobian(jacobian_type & jac,
 					  scalar_type dt,
 					  const basis_type & phi){
 
-  using namespace ::rompp::ode::impl::coeffs;
-  jac.scale(-bdf2<scalar_type>::c3*dt);
+  using namespace ::rompp::ode::coeffs;
+  jac.scale(-bdf2<scalar_type>::c3_*dt);
   jac += phi;
 }
 #endif

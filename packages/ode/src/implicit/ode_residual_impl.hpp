@@ -55,10 +55,10 @@ void implicit_bdf2_time_discrete_residual(const state_type & yn,
 					  state_type & R,
 					  scalar_type dt){
   // On input: R should contain the application RHS
-  using namespace ::rompp::ode::impl::coeffs;
-  R = yn - bdf2<scalar_type>::c1*ynm1
-      + bdf2<scalar_type>::c2*ynm2
-      - bdf2<scalar_type>::c3*dt*R;
+  using namespace ::rompp::ode::coeffs;
+  R = yn - bdf2<scalar_type>::c1_*ynm1
+      + bdf2<scalar_type>::c2_*ynm2
+      - bdf2<scalar_type>::c3_*dt*R;
 }
 //-------------------------------------------------------
 
@@ -74,10 +74,10 @@ void implicit_bdf2_time_discrete_residual(const state_type & yn,
 					  state_type & R,
 					  scalar_type dt){
   // On input: R should contain the application RHS
-  using namespace ::rompp::ode::impl::coeffs;
+  using namespace ::rompp::ode::coeffs;
 
-  R.data()->update(bdf2<scalar_type>::c2, *ynm2.data(), -bdf2<scalar_type>::c3*dt);
-  R.data()->update(1.0, *yn.data(), -bdf2<scalar_type>::c1, *ynm1.data(), 1.0);
+  R.data()->update(bdf2<scalar_type>::c2_, *ynm2.data(), -bdf2<scalar_type>::c3_*dt);
+  R.data()->update(1.0, *yn.data(), -bdf2<scalar_type>::c1_, *ynm1.data(), 1.0);
 }
 
 

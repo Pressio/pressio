@@ -20,7 +20,9 @@ class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
   : public ode::policy::ImplicitResidualPolicyBase<
                 RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 				       app_state_w_type, app_res_w_type,
-				       phi_op_type, A_type>, 2, 0>,
+				       phi_op_type, A_type>,
+  			            ::rompp::ode::coeffs::bdf2_numAuxStates_,
+  				    ::rompp::ode::coeffs::bdf2_numAuxRHS_>,
     private IncrementalSolutionBase<
 		RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 				       app_state_w_type, app_res_w_type,
@@ -28,8 +30,13 @@ class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 
   using this_t 		= RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
     			  app_state_w_type, app_res_w_type, phi_op_type, A_type>;
-  using base_pol_t 	= ::rompp::ode::policy::ImplicitResidualPolicyBase<this_t, 2, 0>;
+
+  using base_pol_t 	= ::rompp::ode::policy::ImplicitResidualPolicyBase<
+                            this_t, ::rompp::ode::coeffs::bdf2_numAuxStates_,
+                            ::rompp::ode::coeffs::bdf2_numAuxRHS_>;
+
   using base_incr_sol_t = rompp::rom::IncrementalSolutionBase<this_t, app_state_w_type>;
+
   using scalar_type 	= typename core::details::traits<app_state_w_type>::scalar_t;
 
  private:
@@ -60,12 +67,14 @@ class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 
   ~RomLSPGResidualPolicy() = default;
 
+
   //----------------------------------------------------------------
 
   template <typename ode_state_t,
 	    typename app_t>
   app_res_w_type operator()(const ode_state_t & odeY,
-			    const std::array<ode_state_t, 2> & oldYs,
+			    const std::array<ode_state_t,
+	    		     ::rompp::ode::coeffs::bdf2_numAuxStates_> & oldYs,
 			    const app_t & app,
 			    scalar_type t,
 			    scalar_type dt) const
@@ -91,7 +100,8 @@ class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 	    typename app_t>
   void operator()(const ode_state_t & odeY,
   		  ode_res_t & odeR,
-  		  const std::array<ode_state_t, 2> & oldYs,
+  		  const std::array<ode_state_t,
+		  ::rompp::ode::coeffs::bdf2_numAuxStates_> & oldYs,
   		  const app_t & app,
   		  scalar_type t,
   		  scalar_type dt) const
