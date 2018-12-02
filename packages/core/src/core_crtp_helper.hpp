@@ -4,14 +4,14 @@
 
 #include <type_traits>
 
-namespace rompp{ namespace core{ namespace details {  
+namespace rompp{ namespace core{ namespace details {
 
 //---------------------------------------
 // CRTP HELPER BASE CLASS
 //---------------------------------------
 template <typename T, typename enable = void>
 struct CrtpBase;
-  
+
 template <typename T,
 	  template<typename, typename...> class crtpType,
 	  typename ... Args>
@@ -30,7 +30,9 @@ private:
 };//end class
 
 
-template <typename T, int a, int b,
+template <typename T,
+	  int a,
+	  int b,
 	  template<typename, int, int> class crtpType>
 struct CrtpBase< crtpType<T, a, b> >{
   T & underlying() {
@@ -46,8 +48,9 @@ private:
   friend crtpType<T, a, b>;
 };//end class
 
-  
-template <typename T, int a,
+
+template <typename T,
+	  int a,
 	  template<typename, int> class crtpType>
 struct CrtpBase< crtpType<T, a> >{
   T & underlying() {
@@ -63,7 +66,7 @@ private:
   friend crtpType<T, a>;
 };//end class
 
-  
+
 }}} // end namespace rompp::core::details
 
 #endif

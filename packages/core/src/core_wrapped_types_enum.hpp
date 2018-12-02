@@ -2,7 +2,7 @@
 #ifndef CORE_WRAPPED_TYPES_ENUM_HPP_
 #define CORE_WRAPPED_TYPES_ENUM_HPP_
 
-namespace rompp{ namespace core{ namespace details {  
+namespace rompp{ namespace core{ namespace details {
 
 /*--------------------------------------------
 Wrapped library name for containers
@@ -20,8 +20,8 @@ enum class WrappedPackageIdentifier{
 /*--------------------------------------------
 Identifier for wrapped vectors
 
-Within a given package, like trilinos, we can 
-have multiple types of vectors, for 
+Within a given package, like trilinos, we can
+have multiple types of vectors, for
 instance epetra, tpetra.
 Same can be true for other packages.
 --------------------------------------------*/
