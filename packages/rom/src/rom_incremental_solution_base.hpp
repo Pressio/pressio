@@ -14,8 +14,12 @@ private:
 
 private:
   friend derived_type;
+
+  IncrementalSolutionBase() = delete;
+
   IncrementalSolutionBase(const state_type & y0fom)
     : y0FOM_(&y0fom), yFOM_(y0fom){}
+
   ~IncrementalSolutionBase() = default;
 
 };//end class
