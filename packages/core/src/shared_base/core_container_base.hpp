@@ -12,7 +12,7 @@ class ContainerBase
   ContainerBase<derived_type, wrapped_t>>{
 
   using this_t 	 = ContainerBase<derived_type, wrapped_t>;
-  using scalar_t = typename core::details::traits<derived_type>::scalar_t);
+  using scalar_t = typename core::details::traits<derived_type>::scalar_t;
 
 public:
   wrapped_t const * data() const {
