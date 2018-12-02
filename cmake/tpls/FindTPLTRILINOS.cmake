@@ -1,35 +1,35 @@
 
 TRIBITS_TPL_FIND_INCLUDE_DIRS_AND_LIBRARIES( TRILINOS
   REQUIRED_LIBS_NAMES
-  kokkoskernels 
+  kokkoskernels
   kokkosalgorithms
-  kokkoscontainers 
+  kokkoscontainers
   teuchoskokkoscomm
-  teuchoskokkoscompat 
+  teuchoskokkoscompat
   kokkoscore
-  kokkostsqr 
+  kokkostsqr
   teuchoscomm
   teuchoscore
-  teuchosnumerics 
+  teuchosnumerics
   teuchosparameterlist
   teuchosparser
-  teuchosremainder 
+  teuchosremainder
   epetra
   tpetra
   tpetraclassic
   tpetraclassiclinalg
-  tpetraclassicnodeapi 
+  tpetraclassicnodeapi
   tpetraext
   tpetrainout
   epetraext
-  aztecoo 
+  aztecoo
   anasazi
   anasaziepetra
   anasazitpetra
   ifpack
   ifpack2
-  galeri-epetra
-  
+  #galeri-epetra
+
   MUST_FIND_ALL_HEADERS
   )
 

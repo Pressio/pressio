@@ -94,7 +94,6 @@ struct tpetraMultiVectorGlobSize9Fixture
   : public ::testing::Test{
 
 public:
-  //  using NT = Tpetra::Vector<>::node_type;
   using tcomm = Teuchos::Comm<int>;
   using map_t = Tpetra::Map<>;
   using mvec_t = Tpetra::MultiVector<>;

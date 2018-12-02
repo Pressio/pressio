@@ -18,9 +18,9 @@ IF(HAVE_TRILINOS)
   add_unit_test(multi_vector_dot_vector_distributed_tpetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
   add_unit_test(sparse_matrix_tpetra_class ${GTESTMAINSDIR}/gTestMain_mpi 3)
   add_unit_test(sparse_matrix_tpetra_traits ${GTESTMAINSDIR}/gTestMain_mpi 3)
+  add_unit_test(tpetra_maps_import ${GTESTMAINSDIR}/gTestMain_mpi 3)
 ENDIF()
 
 IF(HAVE_TRILINOS AND HAVE_ARMADILLO)
   add_unit_test(multi_vector_epetra_product_armadillo_vector ${GTESTMAINSDIR}/gTestMain_mpi 3)
 ENDIF()
-

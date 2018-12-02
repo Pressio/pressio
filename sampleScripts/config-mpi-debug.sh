@@ -4,20 +4,26 @@ EXTRA_ARGS=$@
 SRC=/Users/fnrizzi/Desktop/work/ROM/codes/sources/rompp
 PFX=/Users/fnrizzi/Desktop/work/ROM/codes/installs/rompp_install
 
-MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc650
-TRILPATH=/Users/fnrizzi/tpl/trilinos/install_dyn_debug_gcc650_ompi301
+MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc730
+TRILPATH=/Users/fnrizzi/tpl/trilinos/install_dyn_debug_gcc730_ompi301_static
 EIGENINCPATH=/Users/fnrizzi/tpl/eigen/3.3.5/install
-GTESTPATH=/Users/fnrizzi/tpl/gtest/installgcc650
+GTESTPATH=/Users/fnrizzi/tpl/gtest/installgcc730
 BLAZEINCPATH=/Users/fnrizzi/tpl/blaze/3.4/install/include
-ARMADILLOPATH=/Users/fnrizzi/tpl/armadillo/install_gcc640
+ARMADILLOPATH=/Users/fnrizzi/tpl/armadillo/install_gcc730
 
 cmake \
     -D CMAKE_BUILD_TYPE:STRING=DEBUG \
     -D CMAKE_INSTALL_PREFIX:PATH=${PFX} \
-    \
-    -D BUILD_SHARED_LIBS:BOOL=ON \
-    -D TPL_FIND_SHARED_LIBS=ON \
     -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    \
+    -D BUILD_SHARED_LIBS:BOOL=OFF \
+    -D TPL_FIND_SHARED_LIBS=OFF \
+    -D rompp_LINK_SEARCH_START_STATIC=ON \
+    \
+    -D BLAS_LIBRARY_NAMES:STRING="openblas" \
+    -D BLAS_LIBRARY_DIRS:PATH=/opt/local/lib \
+    -D LAPACK_LIBRARY_NAMES:STRING="openblas" \
+    -D LAPACK_LIBRARY_DIRS:PATH=/opt/local/lib \
     \
     -D MPI_EXEC_MAX_NUMPROCS:STRING=8 \
     -D rompp_ENABLE_CXX11:BOOL=ON \
