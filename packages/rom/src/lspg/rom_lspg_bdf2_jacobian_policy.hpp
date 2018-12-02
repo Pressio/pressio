@@ -1,6 +1,6 @@
 
-#ifndef ROM_LSPG_EULER_JACOBIAN_POLICY_HPP_
-#define ROM_LSPG_EULER_JACOBIAN_POLICY_HPP_
+#ifndef ROM_LSPG_BDF2_JACOBIAN_POLICY_HPP_
+#define ROM_LSPG_BDF2_JACOBIAN_POLICY_HPP_
 
 #include "../rom_forward_declarations.hpp"
 #include "../../../CORE_ALL"
@@ -14,19 +14,19 @@ template<typename app_state_w_type,
 	 typename jac_type,
 	 typename phi_op_type,
 	 typename A_type /*defailt = void*/>
-class RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+class RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 			     app_state_w_type, jac_type,
 			     phi_op_type, A_type>
   : public ode::policy::JacobianPolicyBase<
-                RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+                RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 				       app_state_w_type, jac_type,
 				       phi_op_type, A_type>>,
     private IncrementalSolutionBase<
-                RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+                RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 				       app_state_w_type, jac_type,
 				       phi_op_type, A_type>, app_state_w_type>{
 
-  using this_t 		= RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+  using this_t 		= RomLSPGJacobianPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
    			  app_state_w_type, jac_type, phi_op_type, A_type>;
   using base_pol_t 	= ::rompp::ode::policy::JacobianPolicyBase<this_t>;
   using base_incr_sol_t = rompp::rom::IncrementalSolutionBase<this_t, app_state_w_type>;
@@ -53,7 +53,6 @@ public:
 
   // let q be full state, then we have dR/dy = dR/dq dq/dy
 
-
   template <typename ode_state_t,
   	    typename app_t>
   jac_type operator()(const ode_state_t & odeY,
@@ -72,7 +71,7 @@ public:
       app.applyJacobian(*yFOM_.data(), *basis->data(), *JJ_->data(), t);
     }
 
-    ode::impl::implicit_euler_time_discrete_jacobian(*JJ_, dt, *basis);
+    ode::impl::implicit_bdf2_time_discrete_jacobian(*JJ_, dt, *basis);
 
     // need to apply final weighting if any
     // if (A_) A_->apply....
@@ -92,7 +91,7 @@ public:
     reconstructFOMState(odeY);
     auto * basis = phi_->getOperator();
     app.applyJacobian(*yFOM_.data(), *basis->data(), *odeJJ.data(), t);
-    ode::impl::implicit_euler_time_discrete_jacobian(odeJJ, dt, *basis);
+    ode::impl::implicit_bdf2_time_discrete_jacobian(odeJJ, dt, *basis);
   }
   //----------------------------------------------------------------
 
