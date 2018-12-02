@@ -4,17 +4,18 @@
 
 #include "../core_ConfigDefs.hpp"
 
-namespace rompp{
-namespace core{
-    
-  
+namespace rompp{ namespace core{
+
+
 template<typename derived_type,
 	 typename scalar_t,
 	 typename ord_t>
 class ContainerSubscriptable1DBase
   : private core::details::CrtpBase<
   ContainerSubscriptable1DBase<derived_type, scalar_t, ord_t>>{
-  
+
+  using this_t = ContainerSubscriptable1DBase<derived_type, scalar_t, ord_t>;
+
 public:
   scalar_t & operator[] (ord_t i){
     return this->underlying()[i];
@@ -31,25 +32,35 @@ public:
   scalar_t const & operator() (ord_t i) const{
     return this->underlying()(i);
   }
-  
+
 private:
   friend derived_type;
-  using this_t = ContainerSubscriptable1DBase<derived_type, scalar_t, ord_t>;
   friend core::details::CrtpBase<this_t>;
+
   ContainerSubscriptable1DBase() = default;
   ~ContainerSubscriptable1DBase() = default;
-  
-};//end class  
+
+};//end class
 //-------------------------------------------------------
 
 
-template<typename derived_type, typename scalar_t,
-	 typename ord1_t, typename ord2_t = ord1_t>
+
+template<typename derived_type,
+	 typename scalar_t,
+	 typename ord1_t,
+	 typename ord2_t = ord1_t>
 class ContainerSubscriptable2DBase
   : private core::details::CrtpBase<
-  ContainerSubscriptable2DBase<derived_type, scalar_t,
-			       ord1_t, ord2_t>>{
-  
+  ContainerSubscriptable2DBase<derived_type,
+			       scalar_t,
+			       ord1_t,
+			       ord2_t>>{
+
+  using this_t = ContainerSubscriptable2DBase<derived_type,
+					      scalar_t,
+					      ord1_t,
+					      ord2_t>;
+
 public:
   scalar_t & operator() (ord1_t i, ord2_t j){
     return this->underlying()(i,j);
@@ -58,19 +69,16 @@ public:
   scalar_t const & operator() (ord1_t i, ord2_t j) const{
     return this->underlying()(i,j);
   }
-    
+
 private:
   friend derived_type;
-  using this_t = ContainerSubscriptable2DBase<derived_type, scalar_t,
-					      ord1_t ,ord2_t>;
   friend core::details::CrtpBase<this_t>;
+
   ContainerSubscriptable2DBase() = default;
   ~ContainerSubscriptable2DBase() = default;
-  
-};//end class  
+
+};//end class
 
 
-
-} // end namespace core
-}//end namespace rompp
+}}//end namespace rompp::core
 #endif
