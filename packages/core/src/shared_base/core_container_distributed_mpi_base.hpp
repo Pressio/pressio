@@ -13,6 +13,8 @@ class ContainerDistributedMpiBase
   : private core::details::CrtpBase<
   ContainerDistributedMpiBase<derived_type,comm_t> >{
 
+  using this_t = ContainerDistributedMpiBase<derived_type,comm_t>;
+
 public:
 
   template <typename T = comm_t,
@@ -34,8 +36,8 @@ public:
 
 private:
   friend derived_type;
-  friend core::details::CrtpBase<
-    ContainerDistributedMpiBase<derived_type,comm_t>>;
+  friend core::details::CrtpBase<this_t>;
+
   ContainerDistributedMpiBase() = default;
   ~ContainerDistributedMpiBase() = default;
 

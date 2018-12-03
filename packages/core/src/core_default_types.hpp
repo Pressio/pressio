@@ -18,8 +18,6 @@ namespace rompp{ namespace core{ namespace default_types {
   // Unsigned int type
   using uint = unsigned int;
 
-  // /// default type for error codes
-  // using errcode_t = int;
 
 #ifdef HAVE_TRILINOS
   // admissible types for epetra vector
@@ -29,6 +27,6 @@ namespace rompp{ namespace core{ namespace default_types {
   using epetra_go_t2 = long long;
 #endif
 
-    
+
 }}} // end of namespace rompp::core::default_types
 #endif

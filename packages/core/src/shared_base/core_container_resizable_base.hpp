@@ -11,6 +11,8 @@ class ContainerResizableBase
   : private core::details::CrtpBase<
   ContainerResizableBase<derived_type,ndim>>{
 
+  using this_t = ContainerResizableBase<derived_type, ndim>;
+
 public:
   template <int ndim_ = ndim,
 	    typename std::enable_if<ndim_==2,int>::type * = nullptr>
@@ -27,8 +29,8 @@ public:
 
 private:
   friend derived_type;
-  using this_t = ContainerResizableBase<derived_type, ndim>;
   friend core::details::CrtpBase<this_t>;
+
   ContainerResizableBase() = default;
   ~ContainerResizableBase() = default;
 

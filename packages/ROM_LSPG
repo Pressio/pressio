@@ -6,5 +6,7 @@
 
 #include "rom/src/lspg/rom_lspg_euler_jacobian_policy.hpp"
 #include "rom/src/lspg/rom_lspg_euler_residual_policy.hpp"
+#include "rom/src/lspg/rom_lspg_bdf2_jacobian_policy.hpp"
+#include "rom/src/lspg/rom_lspg_bdf2_residual_policy.hpp"
 
 #endif

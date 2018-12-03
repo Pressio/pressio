@@ -6,7 +6,7 @@
 #include "core_wrapped_types_enum.hpp"
 
 namespace rompp{ namespace core{ namespace details {
-  
+
 //---------------------------------------
 /// common traits of core containers
 template<typename container_T,
@@ -31,7 +31,7 @@ struct containers_shared_traits{
 
 };
 
-  
+
 //---------------------------------------
 /// common traits of core matrices
 template<bool is_sparse_t>
@@ -41,7 +41,7 @@ struct matrix_shared_traits{
   static constexpr bool is_dense = !is_sparse_t;
 
 };
-  
-  
+
+
 }}} // end namespace rompp::core::details
 #endif

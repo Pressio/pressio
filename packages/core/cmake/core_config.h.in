@@ -5,3 +5,5 @@
 #cmakedefine HAVE_ARMADILLO
 
 #cmakedefine HAVE_CPP14
+
+#cmakedefine DEBUG_PRINT

@@ -1,6 +1,6 @@
 
-#ifndef ROM_LSPG_EULER_RESIDUAL_POLICY_HPP_
-#define ROM_LSPG_EULER_RESIDUAL_POLICY_HPP_
+#ifndef ROM_LSPG_BDF2_RESIDUAL_POLICY_HPP_
+#define ROM_LSPG_BDF2_RESIDUAL_POLICY_HPP_
 
 #include "../rom_forward_declarations.hpp"
 #include "../../../CORE_ALL"
@@ -14,32 +14,30 @@ template<typename app_state_w_type,
 	 typename app_res_w_type,
 	 typename phi_op_type,
 	 typename A_type>
-class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 			     app_state_w_type, app_res_w_type,
 			     phi_op_type, A_type>
   : public ode::policy::ImplicitResidualPolicyBase<
-                RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+                RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 				       app_state_w_type, app_res_w_type,
 				       phi_op_type, A_type>,
-  				  ::rompp::ode::coeffs::bdf1_numAuxStates_,
-  				  ::rompp::ode::coeffs::bdf1_numAuxRHS_>,
+  			            ::rompp::ode::coeffs::bdf2_numAuxStates_,
+  				    ::rompp::ode::coeffs::bdf2_numAuxRHS_>,
     private IncrementalSolutionBase<
-		RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+		RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
 				       app_state_w_type, app_res_w_type,
-				       phi_op_type, A_type>, app_state_w_type>
-{
+				       phi_op_type, A_type>, app_state_w_type>{
 
-  using this_t 		= RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
+  using this_t 		= RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::BDF2,
     			  app_state_w_type, app_res_w_type, phi_op_type, A_type>;
 
-  using base_pol_t 	= ::rompp::ode::policy::ImplicitResidualPolicyBase< this_t,
-			    ::rompp::ode::coeffs::bdf1_numAuxStates_,
-			    ::rompp::ode::coeffs::bdf1_numAuxRHS_>;
+  using base_pol_t 	= ::rompp::ode::policy::ImplicitResidualPolicyBase<
+                            this_t, ::rompp::ode::coeffs::bdf2_numAuxStates_,
+                            ::rompp::ode::coeffs::bdf2_numAuxRHS_>;
 
   using base_incr_sol_t = rompp::rom::IncrementalSolutionBase<this_t, app_state_w_type>;
 
   using scalar_type 	= typename core::details::traits<app_state_w_type>::scalar_t;
-
 
  private:
   mutable app_res_w_type appRHS_ = {};
@@ -56,45 +54,46 @@ class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
 			  const app_res_w_type & r0fom,
 			  phi_op_type & phiOp)
     : base_incr_sol_t(y0fom), appRHS_(r0fom),
-    phi_(&phiOp), yFOMnm1_(y0fom){}
+    phi_(&phiOp), yFOMnm1_(y0fom), yFOMnm2_(y0fom){}
 
   template <typename T=A_type,
    core::meta::enable_if_t<std::is_void<T>::value> * = nullptr>
   RomLSPGResidualPolicy(const app_state_w_type & y0fom,
   			phi_op_type & phiOp)
-    : base_incr_sol_t(y0fom), phi_(&phiOp), yFOMnm1_(y0fom){}
+    : base_incr_sol_t(y0fom), phi_(&phiOp),
+    yFOMnm1_(y0fom), yFOMnm2_(y0fom){}
 
   RomLSPGResidualPolicy() = delete;
+
   ~RomLSPGResidualPolicy() = default;
 
 
-  //----------------------------------------------------------------
-  // compute: R( phi y_n) = phi y_n - phi y_n-1 - dt * f(phi y)
   //----------------------------------------------------------------
 
   template <typename ode_state_t,
 	    typename app_t>
   app_res_w_type operator()(const ode_state_t & odeY,
 			    const std::array<ode_state_t,
-			    ::rompp::ode::coeffs::bdf1_numAuxStates_> & oldYs,
+	    		     ::rompp::ode::coeffs::bdf2_numAuxStates_> & oldYs,
 			    const app_t & app,
 			    scalar_type t,
 			    scalar_type dt) const
   {
     // odeY, oldYsa are REDUCED states, reconstruct FOM states
-    reconstructFOMStates(odeY, oldYs[0]);
+    reconstructFOMStates(odeY, oldYs[1], oldYs[0]);
 
     /// query the application for the SPACE residual
     app.residual(*yFOM_.data(), *appRHS_.data(), t);
 
     /// do time discrete residual
-    ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_,
-						     appRHS_, dt);
+    ode::impl::implicit_bdf2_time_discrete_residual(yFOM_, yFOMnm1_,
+						    yFOMnm2_, appRHS_, dt);
     // /// apply weighting:
     // if (A_) A_->applyTranspose(appRHS_, odeR);
     return appRHS_;
   }
   //----------------------------------------------------------------
+
 
   template <typename ode_state_t,
 	    typename ode_res_t,
@@ -102,15 +101,15 @@ class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
   void operator()(const ode_state_t & odeY,
   		  ode_res_t & odeR,
   		  const std::array<ode_state_t,
-		  ::rompp::ode::coeffs::bdf1_numAuxStates_> & oldYs,
+		  ::rompp::ode::coeffs::bdf2_numAuxStates_> & oldYs,
   		  const app_t & app,
   		  scalar_type t,
   		  scalar_type dt) const
   {
-    reconstructFOMStates(odeY, oldYs[0]);
+    reconstructFOMStates(odeY, oldYs[1], oldYs[0]);
     app.residual(*yFOM_.data(), *odeR.data(), t);
-    ode::impl::implicit_euler_time_discrete_residual(yFOM_, yFOMnm1_,
-						     odeR, dt);
+    ode::impl::implicit_bdf2_time_discrete_residual(yFOM_, yFOMnm1_,
+						    yFOMnm2_, odeR, dt);
     // /// apply weighting
     // if (A_) A_->applyTranspose(appRHS_, odeR);
   }
@@ -119,16 +118,14 @@ class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
  private:
   template <typename ode_state_t>
   void reconstructFOMStates(const ode_state_t & odeY,
- 			    const ode_state_t & odeYm1)const {
-    // odeY is the REDUCED state, we need to reconstruct FOM state
+ 			    const ode_state_t & odeYm1,
+			    const ode_state_t & odeYm2) const {
     phi_->apply(odeY, yFOM_);
-    // reconstruct FOM state at previous step n-1
     phi_->apply(odeYm1, yFOMnm1_);
-    // since we are advancing the Incremental Solution,
-    // to compute the app residual we need to add the
-    // FOM initial condition to get full state
+    phi_->apply(odeYm2, yFOMnm2_);
     yFOM_ += (*y0FOM_);
     yFOMnm1_ += (*y0FOM_);
+    yFOMnm2_ += (*y0FOM_);
   }
   //----------------------------------------------------------------
 
@@ -136,6 +133,7 @@ class RomLSPGResidualPolicy<::rompp::ode::ImplicitSteppersEnum::Euler,
   friend base_pol_t;
   friend base_incr_sol_t;
   mutable app_state_w_type yFOMnm1_ = {};
+  mutable app_state_w_type yFOMnm2_ = {};
 
 };//end class
 

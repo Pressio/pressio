@@ -4,14 +4,15 @@
 
 #include "../core_ConfigDefs.hpp"
 
-namespace rompp{
-namespace core{
-    
-template<typename derived_type, 
-         typename wrapped_t>
-class ContainerBase 
+namespace rompp{ namespace core{
+
+template<typename derived_type, typename wrapped_t>
+class ContainerBase
   : private core::details::CrtpBase<
   ContainerBase<derived_type, wrapped_t>>{
+
+  using this_t 	 = ContainerBase<derived_type, wrapped_t>;
+  using scalar_t = typename core::details::traits<derived_type>::scalar_t;
 
 public:
   wrapped_t const * data() const {
@@ -22,11 +23,11 @@ public:
 
   wrapped_t dataCp(){
     return this->underlying().dataCpImpl();}
-  
+
   bool empty() const {
     return this->underlying().emptyImpl();}
 
-  void scale(typename core::details::traits<derived_type>::scalar_t value) {
+  void scale(scalar_t value) {
     this->underlying().scaleImpl(value);
   }
 
@@ -50,16 +51,15 @@ public:
   bool isDistributedGlobally() const{
     return false;
   }
-    
+
 private:
   friend derived_type;
-  friend core::details::CrtpBase<
-    ContainerBase<derived_type, wrapped_t>>;
+  friend core::details::CrtpBase<this_t>;
 
   ContainerBase() = default;
   ~ContainerBase() = default;
-      
+
 };//end class
-} // end namespace core
-}//end namespace rompp
+
+}}//end namespace rompp::core
 #endif

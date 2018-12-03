@@ -5,7 +5,7 @@
 #include "core_ConfigDefs.hpp"
 
 namespace rompp{ namespace core{
-  
+
 template <typename wrapped_type,
 	  typename Enable = void>
 class Vector;
@@ -17,7 +17,7 @@ class MultiVector;
 template <typename wrapped_type,
 	  typename Enable = void>
 class Matrix;
-  
-  
+
+
 }} // end namespace rompp::core
 #endif

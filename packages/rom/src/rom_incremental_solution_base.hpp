@@ -8,14 +8,19 @@ namespace rompp{ namespace rom{
 
 template <typename derived_type, typename state_type>
 class IncrementalSolutionBase{
+
 private:
-  const state_type * y0FOM_;
-  mutable state_type yFOM_;
+  const state_type * y0FOM_ = nullptr;
+  mutable state_type yFOM_  = {};
 
 private:
   friend derived_type;
+
+  IncrementalSolutionBase() = delete;
+
   IncrementalSolutionBase(const state_type & y0fom)
     : y0FOM_(&y0fom), yFOM_(y0fom){}
+
   ~IncrementalSolutionBase() = default;
 
 };//end class

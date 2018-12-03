@@ -9,9 +9,9 @@ namespace rompp{ namespace ode{ namespace impl{
 
 template<typename state_type,
 	 typename scalar_type,
-	 typename std::enable_if<
-	   ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value == false
-	   >::type * = nullptr
+	 core::meta::enable_if_t<
+      ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value == false
+	   > * = nullptr
 	 >
 void implicit_euler_time_discrete_residual(const state_type & yn,
 					   const state_type & ynm1,
@@ -24,11 +24,12 @@ void implicit_euler_time_discrete_residual(const state_type & yn,
 }
 //-------------------------------------------------------
 
+
 template<typename state_type,
 	 typename scalar_type,
-	 typename std::enable_if<
+	 core::meta::enable_if_t<
 	   ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
-	   >::type * = nullptr
+	   > * = nullptr
 	 >
 void implicit_euler_time_discrete_residual(const state_type & yn,
 					   const state_type & ynm1,
@@ -41,17 +42,44 @@ void implicit_euler_time_discrete_residual(const state_type & yn,
 }
 //-------------------------------------------------------
 
-template<typename state_type, typename scalar_t>
+
+template<typename state_type,
+	 typename scalar_type,
+	 core::meta::enable_if_t<
+	   !::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
+	   > * = nullptr
+	 >
 void implicit_bdf2_time_discrete_residual(const state_type & yn,
 					  const state_type & ynm1,
 					  const state_type & ynm2,
 					  state_type & R,
-					  scalar_t dt){
-  using namespace ::rompp::ode::impl::coeffs;
-  R = yn - bdf2<scalar_t>::c1*ynm1 +
-      bdf2<scalar_t>::c2*ynm2 -
-      bdf2<scalar_t>::c3*dt*R;
+					  scalar_type dt){
+  // On input: R should contain the application RHS
+  using namespace ::rompp::ode::coeffs;
+  R = yn - bdf2<scalar_type>::c1_*ynm1
+      + bdf2<scalar_type>::c2_*ynm2
+      - bdf2<scalar_type>::c3_*dt*R;
 }
+//-------------------------------------------------------
+
+template<typename state_type,
+	 typename scalar_type,
+	 core::meta::enable_if_t<
+	   ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
+	   > * = nullptr
+	 >
+void implicit_bdf2_time_discrete_residual(const state_type & yn,
+					  const state_type & ynm1,
+					  const state_type & ynm2,
+					  state_type & R,
+					  scalar_type dt){
+  // On input: R should contain the application RHS
+  using namespace ::rompp::ode::coeffs;
+
+  R.data()->update(bdf2<scalar_type>::c2_, *ynm2.data(), -bdf2<scalar_type>::c3_*dt);
+  R.data()->update(1.0, *yn.data(), -bdf2<scalar_type>::c1_, *ynm1.data(), 1.0);
+}
+
 
 }}}//end namespace rompp::ode::impl
 #endif
