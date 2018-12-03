@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "CORE_ALL"
-#include "../../src/qr_hacked.hpp"
+#include "../../src/qr_tpetra_multi_vector.hpp"
 
 struct tpetraMultiVectorR9C4Fixture
   : public ::testing::Test{
@@ -88,7 +88,7 @@ TEST_F(tpetraMultiVectorR9C4Fixture,
 
   // do QR
   using R_type = rompp::core::Matrix<Eigen::MatrixXd>;
-  rompp::qr::hack::QRSolver<mvec_t, rompp::core::MultiVector, R_type> qrObj;
+  rompp::qr::QRSolver<mvec_t, rompp::core::MultiVector, R_type> qrObj;
   qrObj.compute(MV);
   const auto & Q = qrObj.cRefQFactor();
   const auto & R = qrObj.cRefRFactor();

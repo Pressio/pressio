@@ -1,8 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "CORE_ALL"
-#include "../../src/qr_hacked.hpp"
-
+#include "../../src/qr_eigen_sparse_matrix.hpp"
 
 TEST(qr_factorization,
      EigenSparseMatrixQRFactorization){
@@ -13,7 +12,7 @@ TEST(qr_factorization,
 
   std::vector<double> vals;
   std::vector<int> cind;
-   
+
   // fill the matrix
   mymat_t A(9, 4);
   vals = {3.2, 1.2, 1.0};
@@ -31,7 +30,7 @@ TEST(qr_factorization,
   vals = {4.};
   cind = {1};
   A.insertValues(3,1,vals.data(), cind.data());
-  
+
   vals = {-1, -4.};
   cind = {2,3};
   A.insertValues(4,2,vals.data(), cind.data());
@@ -53,7 +52,7 @@ TEST(qr_factorization,
 
   // do QR
   using R_type = rompp::core::Matrix<Eigen::MatrixXd>;
-  rompp::qr::hack::QRSolver<mymat_t, rompp::core::Matrix, R_type> qrObj;
+  rompp::qr::QRSolver<mymat_t, rompp::core::Matrix, R_type> qrObj;
   qrObj.compute(A);
   const auto & Q = qrObj.cRefQFactor();
   const auto & R = qrObj.cRefRFactor();
@@ -69,19 +68,19 @@ TEST(qr_factorization,
     //end row
     -0.,                 0.530332013749077, -0.155702484341873,  0.126884420222574,
     -0.42395658892426,  -0.401481903098228, -0.154500472643382,  0.560006903183078,  0.,
-    //end row  
+    //end row
     -0.,                 0.530332013749077, -0.155702484341873, -0.139879089512256,
     0.326913228407908, -0.468149250960295,  0.260689856536577, -0.530040895116606,  0.,
     //end row
     -0.,                 0.,                -0.32818521819755,   0.421198101926496,
     0.751758650006291,  0.022892491611334, -0.138183613491497,  0.360730891969511,  0.,
-    //end row  
+    //end row
     -0.056077215409204,  0.650532264978526,  0.126820727560628, -0.069095509456248,
     0.063878165111811,  0.719648521641246, -0.169043632892447, -0.04748965432464,   0.,
-    //end row  
+    //end row
     -0.280386077046022,  0.083927542741894,  0.333731413505014,  0.469211836369866,
     -0.046150317046723,  0.0767206472791,    0.746393155145893,  0.132984059523448,  0.,
-    //end row  
+    //end row
     -0.,                 0.014729971681881,  0.323860581694954, -0.691846753372529,
     0.336778411839413, -0.08020531631897,   0.229574011030821,  0.493648258802424,  0.,
     //end row
