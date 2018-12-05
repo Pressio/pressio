@@ -10,7 +10,7 @@ namespace rompp{ namespace ode{
 #ifdef HAVE_CPP14
 //!!!!!!!!!!!!!!!!!
 
-    template<ImplicitSteppersEnum whichone, typename... Args>
+    template<ImplicitEnum whichone, typename... Args>
     class ImplicitStepper
       : public impl::implicit_stepper_helper_info<whichone,
 						  Args...>::base_impl_type{
@@ -98,7 +98,7 @@ namespace rompp{ namespace ode{
 
 
     //if we have c++11 AND policy is STANDARD
-    template<ImplicitSteppersEnum whichone,
+    template<ImplicitEnum whichone,
 	     typename ode_state_type,
 	     typename ode_residual_type,
 	     typename ode_jacobian_type,
@@ -156,7 +156,7 @@ namespace rompp{ namespace ode{
 
 
     //if we have c++11 AND policy is user defined
-    template<ImplicitSteppersEnum whichone,
+    template<ImplicitEnum whichone,
     	     typename ode_state_type,
     	     typename ode_residual_type,
     	     typename ode_jacobian_type,

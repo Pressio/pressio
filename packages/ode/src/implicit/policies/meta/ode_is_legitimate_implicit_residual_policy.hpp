@@ -7,30 +7,30 @@
 namespace rompp{ namespace ode{ namespace meta {
 
     
-template<::rompp::ode::ImplicitSteppersEnum whichone,
+template<::rompp::ode::ImplicitEnum whichone,
 	  typename policy_t, typename enable = void>
 struct is_legitimate_implicit_residual_policy : std::false_type{};
   
 template <typename policy_t>
 struct is_legitimate_implicit_residual_policy<
-  ::rompp::ode::ImplicitSteppersEnum::Euler,
+  ::rompp::ode::ImplicitEnum::Euler,
   policy_t,
   typename std::enable_if<
     core::meta::publicly_inherits_from<
       policy_t,
-      ode::policy::ImplicitResidualPolicyBase<policy_t, 1, 0>
+      ode::policy::ImplicitResidualPolicyBase<policy_t>//, 1, 0>
       >::value 
     >::type
   > : std::true_type{};
 
 template <typename policy_t>
 struct is_legitimate_implicit_residual_policy<
-  ::rompp::ode::ImplicitSteppersEnum::BDF2,
+  ::rompp::ode::ImplicitEnum::BDF2,
   policy_t,
   typename std::enable_if<
     core::meta::publicly_inherits_from<
       policy_t,
-      ode::policy::ImplicitResidualPolicyBase<policy_t, 2, 0>
+      ode::policy::ImplicitResidualPolicyBase<policy_t>//, 2, 0>
       >::value 
     >::type
   > : std::true_type{};
@@ -39,12 +39,12 @@ struct is_legitimate_implicit_residual_policy<
 template<typename T>
 using is_legitimate_implicit_euler_residual_policy =
   typename is_legitimate_implicit_residual_policy<
-  ::rompp::ode::ImplicitSteppersEnum::Euler,T>::type;
+  ::rompp::ode::ImplicitEnum::Euler,T>::type;
 
 template<typename T>
 using is_legitimate_implicit_bdf2_residual_policy =
   typename is_legitimate_implicit_residual_policy<
-  ::rompp::ode::ImplicitSteppersEnum::BDF2,T>::type;
+  ::rompp::ode::ImplicitEnum::BDF2,T>::type;
   
   
   

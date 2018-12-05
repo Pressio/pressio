@@ -1,11 +1,11 @@
 #!/bin/bash
 
 EXTRA_ARGS=$@
-SRC=/Users/fnrizzi/Desktop/work/ROM/codes/sources/rompp
-PFX=/Users/fnrizzi/Desktop/work/ROM/codes/installs/rompp_install
+SRC=/Users/fnrizzi/Desktop/rompp
+PFX=/Users/fnrizzi/Desktop/rompp_install
 
 MPIPATH=/Users/fnrizzi/tpl/openmpi/301/installgcc730
-TRILPATH=/Users/fnrizzi/tpl/trilinos/install_dyn_debug_gcc730_ompi301_static
+TRILPATH=/Users/fnrizzi/tpl/trilinos/install_dyn_debug_gcc730_ompi301_shared
 EIGENINCPATH=/Users/fnrizzi/tpl/eigen/3.3.5/install
 GTESTPATH=/Users/fnrizzi/tpl/gtest/installgcc730
 BLAZEINCPATH=/Users/fnrizzi/tpl/blaze/3.4/install/include
@@ -16,9 +16,9 @@ cmake \
     -D CMAKE_INSTALL_PREFIX:PATH=${PFX} \
     -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
     \
-    -D BUILD_SHARED_LIBS:BOOL=OFF \
-    -D TPL_FIND_SHARED_LIBS=OFF \
-    -D rompp_LINK_SEARCH_START_STATIC=ON \
+    -D BUILD_SHARED_LIBS:BOOL=ON \
+    -D TPL_FIND_SHARED_LIBS=ON \
+    -D rompp_LINK_SEARCH_START_STATIC=OFF \
     \
     -D BLAS_LIBRARY_NAMES:STRING="openblas" \
     -D BLAS_LIBRARY_DIRS:PATH=/opt/local/lib \
@@ -53,6 +53,7 @@ cmake \
     -D rompp_ENABLE_ALL_PACKAGES:BOOL=OFF \
     -D rompp_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=OFF \
     \
+    -D DEBUG_PRINT:BOOL=ON \
     -D rompp_ENABLE_core:BOOL=ON \
     -D rompp_ENABLE_qr:BOOL=ON \
     -D rompp_ENABLE_solvers:BOOL=ON \

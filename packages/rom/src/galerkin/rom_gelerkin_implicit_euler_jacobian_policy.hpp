@@ -16,28 +16,28 @@ template<typename app_state_w_type,
 	 typename ode_state_w_type,
 	 typename ode_jac_w_type,
 	 typename A_type>
-class RomGalerkinImplicitJacobianPolicy<ode::ImplicitSteppersEnum::Euler,
+class RomGalerkinImplicitJacobianPolicy<ode::ImplicitEnum::Euler,
 					app_state_w_type, app_jac_w_type,
 					phi_op_type, ode_state_w_type,
 					ode_jac_w_type, A_type>
   : // inherits from jacobian policy base
     public ode::policy::JacobianPolicyBase<
 		RomGalerkinImplicitJacobianPolicy<
-		  ode::ImplicitSteppersEnum::Euler,
+		  ode::ImplicitEnum::Euler,
 		  app_state_w_type, app_jac_w_type,
 		  phi_op_type, ode_state_w_type,
 		  ode_jac_w_type, A_type>>,
     // inherits from incremental solution
     private IncrementalSolutionBase<
                 RomGalerkinImplicitJacobianPolicy<
-		  ode::ImplicitSteppersEnum::Euler,
+		  ode::ImplicitEnum::Euler,
 		  app_state_w_type, app_jac_w_type,
 		  phi_op_type, ode_state_w_type,
 		  ode_jac_w_type, A_type>, app_state_w_type>
 {
   
   using this_t = RomGalerkinImplicitJacobianPolicy<
-    ::rompp::ode::ImplicitSteppersEnum::Euler,
+    ::rompp::ode::ImplicitEnum::Euler,
     app_state_w_type, app_jac_w_type, phi_op_type,
     ode_state_w_type,  ode_jac_w_type, A_type>;
 
@@ -88,8 +88,8 @@ public:
     // A^T J phi
     ode_jac_w_type ATJJphi = A_->applyTranspose(JJphi);
     
-    // compute time discrete residual
-    ode::impl::implicit_euler_time_discrete_jacobian(ATJJphi, dt);    
+    // // compute time discrete residual
+    // ode::impl::implicit_time_discrete_jacobian(ATJJphi, dt);    
     return ATJJphi;
   }
   //----------------------------------------------------------------

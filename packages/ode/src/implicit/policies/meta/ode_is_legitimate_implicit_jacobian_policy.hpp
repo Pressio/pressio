@@ -6,13 +6,13 @@
 
 namespace rompp{ namespace ode{ namespace meta {
 
-template<::rompp::ode::ImplicitSteppersEnum whichone,
+template<::rompp::ode::ImplicitEnum whichone,
 	  typename policy_t, typename enable = void>
 struct is_legitimate_implicit_jacobian_policy : std::false_type{};
   
 template <typename policy_t>
 struct is_legitimate_implicit_jacobian_policy<
-  ::rompp::ode::ImplicitSteppersEnum::Euler,
+  ::rompp::ode::ImplicitEnum::Euler,
   policy_t,
   typename std::enable_if<
     core::meta::publicly_inherits_from<
@@ -23,7 +23,7 @@ struct is_legitimate_implicit_jacobian_policy<
 
 template <typename policy_t>
 struct is_legitimate_implicit_jacobian_policy<
-  ::rompp::ode::ImplicitSteppersEnum::BDF2,
+  ::rompp::ode::ImplicitEnum::BDF2,
   policy_t,
   typename std::enable_if<
     core::meta::publicly_inherits_from<
@@ -36,12 +36,12 @@ struct is_legitimate_implicit_jacobian_policy<
 template<typename T>
 using is_legitimate_implicit_euler_jacobian_policy =
   is_legitimate_implicit_jacobian_policy<
-  ::rompp::ode::ImplicitSteppersEnum::Euler,T>;
+  ::rompp::ode::ImplicitEnum::Euler,T>;
 
 template<typename T>
 using is_legitimate_implicit_bdf2_jacobian_policy =
   is_legitimate_implicit_jacobian_policy<
-  ::rompp::ode::ImplicitSteppersEnum::BDF2,T>;
+  ::rompp::ode::ImplicitEnum::BDF2,T>;
   
    
 }}} // namespace rompp::ode::meta

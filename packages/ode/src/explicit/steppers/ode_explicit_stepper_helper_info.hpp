@@ -51,12 +51,12 @@ namespace rompp{ namespace ode{ namespace impl{
       //--------------------------------------------
 
 
-      template <ExplicitSteppersEnum, typename...>
+      template <ExplicitEnum, typename...>
       struct explicit_stepper_helper_info;
       //--------------------------------------------
 
       template <typename... Args>
-      struct explicit_stepper_helper_info<ExplicitSteppersEnum::Euler, Args...>
+      struct explicit_stepper_helper_info<ExplicitEnum::Euler, Args...>
 	: explicit_stepper_helper_info_base<Args...>{
 
 	using base_t = explicit_stepper_helper_info_base<Args...>;
@@ -74,7 +74,7 @@ namespace rompp{ namespace ode{ namespace impl{
       //--------------------------------------------
 
       template <typename... Args>
-      struct explicit_stepper_helper_info<ExplicitSteppersEnum::RungeKutta4, Args...>
+      struct explicit_stepper_helper_info<ExplicitEnum::RungeKutta4, Args...>
 	: explicit_stepper_helper_info_base<Args...>{
 
 	using base_t = explicit_stepper_helper_info_base<Args...>;
@@ -95,7 +95,7 @@ namespace rompp{ namespace ode{ namespace impl{
 #else
 //!!!!!!!!!!!!!!!!
 
-      template <ExplicitSteppersEnum, typename ode_state_type,
+      template <ExplicitEnum, typename ode_state_type,
 		typename model_type, typename ode_residual_type,
 		typename residual_policy_type>
       struct explicit_stepper_helper_info;
@@ -105,7 +105,7 @@ namespace rompp{ namespace ode{ namespace impl{
       template<typename ode_state_type,
 	       typename model_type,
 	       typename ode_residual_type>
-      struct explicit_stepper_helper_info<ExplicitSteppersEnum::Euler,
+      struct explicit_stepper_helper_info<ExplicitEnum::Euler,
 					  ode_state_type, model_type,
 					  ode_residual_type,void>{
 	using res_std_pol_type = policy::ExplicitResidualStandardPolicy<
@@ -118,7 +118,7 @@ namespace rompp{ namespace ode{ namespace impl{
       // Euler NON standard
       template<typename ode_state_type, typename model_type,
 	       typename ode_residual_type, typename residual_policy_type>
-      struct explicit_stepper_helper_info<ExplicitSteppersEnum::Euler,
+      struct explicit_stepper_helper_info<ExplicitEnum::Euler,
 					  ode_state_type, model_type,
 					  ode_residual_type,
 					  residual_policy_type>{
@@ -132,7 +132,7 @@ namespace rompp{ namespace ode{ namespace impl{
       template<typename ode_state_type,
 	       typename model_type,
 	       typename ode_residual_type>
-      struct explicit_stepper_helper_info<ExplicitSteppersEnum::RungeKutta4,
+      struct explicit_stepper_helper_info<ExplicitEnum::RungeKutta4,
 					  ode_state_type, model_type,
 					  ode_residual_type,void>{
 	using res_std_pol_type = policy::ExplicitResidualStandardPolicy<
@@ -146,7 +146,7 @@ namespace rompp{ namespace ode{ namespace impl{
       //RK NON standard
       template<typename ode_state_type, typename model_type,
 	       typename ode_residual_type, typename residual_policy_type>
-      struct explicit_stepper_helper_info<ExplicitSteppersEnum::RungeKutta4,
+      struct explicit_stepper_helper_info<ExplicitEnum::RungeKutta4,
 					  ode_state_type, model_type,
 					  ode_residual_type,
 					  residual_policy_type>{

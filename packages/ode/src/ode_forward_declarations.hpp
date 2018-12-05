@@ -5,45 +5,69 @@
 #include "ode_ConfigDefs.hpp"
 #include "../../core/src/meta/tinympl/variadic/find_if.hpp"
 
-namespace rompp{ namespace ode{ 
+namespace rompp{ namespace ode{
 
 ///begin namespace policy
 namespace policy{
-  
+
 template<typename state_type,
 	 typename model_type,
 	 typename residual_type = state_type,
 	 typename enable = void>
 class ExplicitResidualStandardPolicy;
-  
-template<typename state_type,
-	 typename model_type,
-	 typename residual_type = state_type,
-	 typename enable = void>
-class ImplicitEulerResidualStandardPolicy;
-
-template<typename state_type,
-	 typename model_type,
-	 typename jacobian_type,
-	 typename enable = void>
-class ImplicitEulerJacobianStandardPolicy;
 
 template<typename state_type,
 	 typename model_type,
 	 typename residual_type = state_type,
 	 typename enable = void>
-class ImplicitBDF2ResidualStandardPolicy;
+class ImplicitResidualStandardPolicy;
 
 template<typename state_type,
 	 typename model_type,
 	 typename jacobian_type,
 	 typename enable = void>
-class ImplicitBDF2JacobianStandardPolicy;
-  
+class ImplicitJacobianStandardPolicy;
+
 }//end namespace policy
 //-----------------------------------
 
-  
+
+#ifdef HAVE_CPP14
+    template<ExplicitEnum whichone,
+	     typename ... Args>
+    class ExplicitStepper;
+
+    template<ImplicitEnum whichone,
+	     typename ... Args>
+    class ImplicitStepper;
+
+#else
+
+    template<ExplicitEnum whichone,
+	     typename ode_state_type,
+	     typename model_type,
+	     typename ode_residual_type,
+	     typename residual_policy_type = void,
+	     typename enable = void
+	     >
+    class ExplicitStepper;
+
+
+    template<ImplicitEnum whichone,
+	     typename ode_state_type,
+	     typename ode_residual_type,
+	     typename ode_jacobian_type,
+	     typename model_type,
+	     typename aux_stepper_type,
+	     typename residual_policy_type = void,
+	     typename jacobian_policy_type = void,
+	     typename enable = void
+	     >
+    class ImplicitStepper;
+#endif
+//-----------------------------------
+
+
 ///begin namespace impl
 namespace impl {
 
@@ -56,13 +80,13 @@ template<typename ode_state_type,
 class ExplicitEulerStepperImpl;
 
 template<typename ode_state_type,
-	 typename model_type,	
+	 typename model_type,
 	 typename ode_residual_type,
 	 typename residual_policy_type,
 	 typename enable = void
 	 >
 class ExplicitRungeKutta4StepperImpl;
-  
+
 template<typename ode_state_type,
 	 typename ode_residual_type,
 	 typename ode_jacobian_type,
@@ -87,44 +111,7 @@ class ImplicitBDF2StepperImpl;
 }//end namespace impl
 //-----------------------------------
 
-#ifdef HAVE_CPP14    
-    template<ExplicitSteppersEnum whichone,
-	     typename ... Args>
-    class ExplicitStepper;
 
-    template<ImplicitSteppersEnum whichone,
-	     typename ... Args>
-    class ImplicitStepper;
-
-#else
-
-    template<ExplicitSteppersEnum whichone,
-	     typename ode_state_type,
-	     typename model_type,
-	     typename ode_residual_type,
-	     typename residual_policy_type = void,
-	     typename enable = void
-	     >
-    class ExplicitStepper;
-
-
-    template<ImplicitSteppersEnum whichone,
-	     typename ode_state_type,
-	     typename ode_residual_type,
-	     typename ode_jacobian_type,
-	     typename model_type,
-	     typename aux_stepper_type,
-	     typename residual_policy_type = void,
-	     typename jacobian_policy_type = void,
-	     typename enable = void
-	     >
-    class ImplicitStepper;
-#endif
-
-    
-//-----------------------------------
-
-    
 }} // end namespace rompp::ode
 #endif
 

@@ -58,6 +58,7 @@ MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
   using auxdata_base_t = ImpOdeAuxData<model_type, scalar_type,
 				       residual_policy_type,
 				       jacobian_policy_type>;
+  static constexpr auto my_enum = ::rompp::ode::ImplicitEnum::BDF2;
 
 public:
   // these aliases are needed by the solver
@@ -71,6 +72,7 @@ protected:
   using auxdata_base_t::jacobian_obj_;
   using auxdata_base_t::t_;
   using auxdata_base_t::dt_;
+  aux_stepper_type * auxStp_;
 
 protected:
   template < typename M = model_type,
@@ -117,63 +119,30 @@ public:
 public:
 
   void residualImpl(const state_type & y, residual_type & R)const{
-    (*residual_obj_)(y, R, auxStates_, *model_, t_, dt_);
+    (*residual_obj_).template operator()<my_enum, 2>(y, R, auxStates_, *model_, t_, dt_);
   }
   //--------------------------------------------------------
 
   void jacobianImpl(const state_type & y, jacobian_type & J)const{
-    (*jacobian_obj_)(y, J, *model_, t_, dt_);
+    (*jacobian_obj_).template operator()<my_enum>(y, J, *model_, t_, dt_);
   }
   //--------------------------------------------------------
 
   residual_type residualImpl(const state_type & y)const{
-    return (*residual_obj_)(y, auxStates_, *model_, t_, dt_);
+    return (*residual_obj_).template operator()<my_enum, 2>( y, auxStates_, *model_, t_, dt_);
   }
   //--------------------------------------------------------
 
   jacobian_type jacobianImpl(const state_type & y)const{
-    return (*jacobian_obj_)(y, *model_, t_, dt_);
+    return (*jacobian_obj_).template operator()<my_enum>(y, *model_, t_, dt_);
   }
   //--------------------------------------------------------
 
-
 private:
   friend stepper_base_t;
-  aux_stepper_type * auxStp_;
+
 
 }; //end class
 
-}//end namespace impl
-}//end namespace ode
-}//end namespace rompp
+}}}//end namespace rompp::ode::impl
 #endif
-
-
-
-
-
-// private:
-//   void residualImplImpl(const state_type & y, residual_type & R){
-//     // first compute space residual
-//     residual_obj_->compute(y, R, *model_, t_);
-
-//     // Here, R contains the application RHS or whatever, i.e. if
-//     //           dudt = f(x,u,...), R contains f(...)
-//     // or any modifications to it provided by the policy
-//     // now compute time discrete residual
-//     for (decltype(R.size()) i=0; i < R.size(); i++){
-//       R[i] = y[i] - c1_*y_nm1_[i] + c2_*y_nm2_[i] - c3_*dt_*R[i];
-//     }
-//   }
-
-//   void jacobianImplImpl(const state_type & y, jacobian_type & J)
-//   {
-//     // compute the jacobian of the target model, however this happens
-//     jacobian_obj_->compute(y, J, *model_, t_);
-
-//     // this is bad, but for now leave it
-//     jacobian_type A( J.rows(),J.cols() );
-//     A.setIdentity();
-//     J.scale(-c3_*dt_);
-//     J += A;
-//   }

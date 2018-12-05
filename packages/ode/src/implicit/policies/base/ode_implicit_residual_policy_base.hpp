@@ -5,57 +5,59 @@
 #include "../../../ode_ConfigDefs.hpp"
 
 namespace rompp{ namespace ode{ namespace policy{
-  
-template <typename derived_t, int numAuxStates, int numAuxRHS>
+
+template <typename derived_t>
 class ImplicitResidualPolicyBase
   : private core::details::CrtpBase<
-       ImplicitResidualPolicyBase<derived_t,numAuxStates,numAuxRHS>>{
+       ImplicitResidualPolicyBase<derived_t>>{
 public:
 
-  // residual is taken by reference here and changed
-  template <typename state_type,
-  	    typename residual_type,
-  	    typename model_type,
-  	    typename scalar_type,
-	    int T = numAuxRHS,
-  	    typename std::enable_if<T==0>::type * = nullptr>
+  template <::rompp::ode::ImplicitEnum odeMethod,
+	     int numAuxStates,
+	     typename state_type,
+	     typename residual_type,
+	     typename model_type,
+	     typename scalar_type>
   void operator()(const state_type & y,
 		  residual_type & R,
 		  const std::array<state_type, numAuxStates> & auxYs,
 		  const model_type & model,
 		  scalar_type t,
-		  scalar_type dt)const {
-    this->underlying()(y, R, auxYs, model, t, dt);
+		  scalar_type dt) const
+  {
+    this->underlying().template operator()<odeMethod, numAuxStates>(y, R, auxYs,
+								    model, t, dt);
   }
   //-----------------------------------------------------
 
-  // residual is returned by the method
-  template <typename state_type,
-  	    typename model_type,
-  	    typename scalar_type,
-	    int T = numAuxRHS,
-  	    typename std::enable_if<T==0>::type * = nullptr>
+  template <::rompp::ode::ImplicitEnum odeMethod,
+	     int numAuxStates,
+	     typename state_type,
+	     typename model_type,
+	     typename scalar_type>
   auto operator()(const state_type & y,
 		  const std::array<state_type, numAuxStates> & auxYs,
 		  const model_type & model,
 		  scalar_type t,
-		  scalar_type dt) const 
-   -> decltype(this->underlying()(y, auxYs, model, t, dt)){
-    return this->underlying()(y, auxYs, model, t, dt);
+		  scalar_type dt) const
+   -> decltype(this->underlying()(y, auxYs, model, t, dt))
+  {
+    return this->underlying().template operator()<odeMethod, numAuxStates>(y, auxYs,
+									   model, t, dt);
   }
   //-----------------------------------------------------
-  
+
 private:
   friend derived_t;
-  friend core::details::CrtpBase<
-    ImplicitResidualPolicyBase<derived_t, numAuxStates, numAuxRHS>>;
-  
+  using this_t = ImplicitResidualPolicyBase<derived_t>;
+  friend core::details::CrtpBase<this_t>;
+
   ImplicitResidualPolicyBase() = default;
   ~ImplicitResidualPolicyBase() = default;
-  
+
 };//end class
 
-  
+
 }}}//end namespace rompp::ode::policy
 #endif
 
@@ -70,7 +72,7 @@ private:
 
 
 //-----------------------------------------------------
-// when computing TIME residudal but we also 
+// when computing TIME residudal but we also
 // need  previous RHS not just previous states
 //-----------------------------------------------------
 // template <typename state_type,

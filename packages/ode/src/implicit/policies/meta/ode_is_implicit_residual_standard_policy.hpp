@@ -9,14 +9,14 @@
 namespace rompp{ namespace ode{ namespace meta {
 
 
-template<::rompp::ode::ImplicitSteppersEnum whichone,
+template<::rompp::ode::ImplicitEnum whichone,
 	  typename policy_t, typename enable = void>
 struct is_implicit_residual_standard_policy : std::false_type{};
   
 
   template <template <typename...> class policy_t, typename... Args>
 struct is_implicit_residual_standard_policy<
-  ::rompp::ode::ImplicitSteppersEnum::Euler,
+  ::rompp::ode::ImplicitEnum::Euler,
   policy_t<Args...>,
   typename std::enable_if<
     std::is_same<policy_t<Args...>,
@@ -28,7 +28,7 @@ struct is_implicit_residual_standard_policy<
   
 template <template <typename...> class policy_t, typename... Args>
 struct is_implicit_residual_standard_policy<
-  ::rompp::ode::ImplicitSteppersEnum::BDF2,
+  ::rompp::ode::ImplicitEnum::BDF2,
   policy_t<Args...>,
   typename std::enable_if<
     std::is_same<policy_t<Args...>,
@@ -40,12 +40,12 @@ struct is_implicit_residual_standard_policy<
 template<template <typename...> class policy_t, typename... Args>
 using is_implicit_euler_residual_standard_policy =
   typename is_implicit_residual_standard_policy<
-  ::rompp::ode::ImplicitSteppersEnum::Euler, policy_t<Args...>>::type;
+  ::rompp::ode::ImplicitEnum::Euler, policy_t<Args...>>::type;
 
 template<template <typename...> class policy_t, typename... Args>
 using is_implicit_bdf2_residual_standard_policy =
   typename is_implicit_residual_standard_policy<
-  ::rompp::ode::ImplicitSteppersEnum::BDF2, policy_t<Args...>>::type;
+  ::rompp::ode::ImplicitEnum::BDF2, policy_t<Args...>>::type;
   
    
   

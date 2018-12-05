@@ -20,7 +20,7 @@ TEST(ode_explicit_euler, traits){
    not ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
 
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitSteppersEnum::Euler, state_t, app_t, res_t>;
+    ode::ExplicitEnum::Euler, state_t, app_t, res_t>;
 
   using impl_t = typename stepper_t::base_t;
   using traits = ode::details::traits<impl_t>;
@@ -54,7 +54,7 @@ TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
   appObj.residual(*y.data(), *r.data(), 0.0);
     
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitSteppersEnum::Euler, state_t, app_t, res_t>;
+    ode::ExplicitEnum::Euler, state_t, app_t, res_t>;
   stepper_t stepperObj(appObj, y, r);
     
   // integrate in time 
@@ -94,7 +94,7 @@ TEST(ode_explicit_euler, numericsStdResidualPolPassedByUser){
     state_t, app_t, res_t>;
   res_std_pol_t polObj;
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitSteppersEnum::Euler, state_t, app_t, res_t, res_std_pol_t>;
+    ode::ExplicitEnum::Euler, state_t, app_t, res_t, res_std_pol_t>;
   stepper_t stepperObj(appObj, polObj, y, r);
     
   // integrate in time 

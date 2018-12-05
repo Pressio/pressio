@@ -6,10 +6,10 @@
 #include "../../ode_is_legitimate_model_for_implicit_ode.hpp"
 #include "../policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
 #include "../policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
-#include "../policies/standard/ode_implicit_euler_residual_standard_policy.hpp"
-#include "../policies/standard/ode_implicit_euler_jacobian_standard_policy.hpp"
-#include "../policies/standard/ode_implicit_bdf2_residual_standard_policy.hpp"
-#include "../policies/standard/ode_implicit_bdf2_jacobian_standard_policy.hpp"
+
+#include "../policies/standard/ode_implicit_residual_standard_policy.hpp"
+#include "../policies/standard/ode_implicit_jacobian_standard_policy.hpp"
+
 #include "../../../../core/src/meta/tinympl/at.hpp"
 #include "../../../../core/src/meta/tinympl/find_if.hpp"
 
@@ -57,16 +57,16 @@ namespace rompp{ namespace ode{ namespace impl{
       };
       //--------------------------------------------
 
-      template <ImplicitSteppersEnum, typename...>
+      template <ImplicitEnum, typename...>
       struct implicit_stepper_helper_info;
 
       //--------------------------------------------
 
       template <typename... Args>
-      struct implicit_stepper_helper_info<ImplicitSteppersEnum::Euler, Args...>
+      struct implicit_stepper_helper_info<ImplicitEnum::Euler, Args...>
 	: implicit_stepper_helper_info_base<Args...>{
 
-	// static constexpr ImplicitSteppersEnum myenum = ImplicitSteppersEnum::Euler;
+	// static constexpr ImplicitEnum myenum = ImplicitEnum::Euler;
 	using base_t = implicit_stepper_helper_info_base<Args...>;
 	using state_type = typename base_t::state_type;
 	using model_type = typename base_t::model_type;
@@ -105,10 +105,10 @@ namespace rompp{ namespace ode{ namespace impl{
       //--------------------------------------------
 
       template <typename... Args>
-      struct implicit_stepper_helper_info<ImplicitSteppersEnum::BDF2, Args...>
+      struct implicit_stepper_helper_info<ImplicitEnum::BDF2, Args...>
 	: implicit_stepper_helper_info_base<Args...>{
 
-	// static constexpr ImplicitSteppersEnum myenum = ImplicitSteppersEnum::BDF2;
+	// static constexpr ImplicitEnum myenum = ImplicitEnum::BDF2;
 	using base_t = implicit_stepper_helper_info_base<Args...>;
 	using state_type = typename base_t::state_type;
 	using model_type = typename base_t::model_type;
@@ -161,7 +161,7 @@ namespace rompp{ namespace ode{ namespace impl{
 //!!!!!!!!!!!!!!!!!
 
 
-      template<ImplicitSteppersEnum whichone,
+      template<ImplicitEnum whichone,
 	       typename ode_state_type,
 	       typename ode_residual_type,
 	       typename ode_jacobian_type,
@@ -179,15 +179,19 @@ namespace rompp{ namespace ode{ namespace impl{
 		typename ode_jacobian_type,
 		typename model_type,
 		typename aux_stepper_type>
-      struct implicit_stepper_helper_info<ImplicitSteppersEnum::Euler,
+      struct implicit_stepper_helper_info<ImplicitEnum::Euler,
 					  ode_state_type, ode_residual_type,
 					  ode_jacobian_type, model_type,
 					  aux_stepper_type, void, void>{
 
-	using res_std_pol_type = policy::ImplicitEulerResidualStandardPolicy<
+	// using res_std_pol_type = policy::ImplicitEulerResidualStandardPolicy<
+	//   ode_state_type, model_type, ode_residual_type>;
+	using res_std_pol_type = policy::ImplicitResidualStandardPolicy<
 	  ode_state_type, model_type, ode_residual_type>;
-	using jac_std_pol_type = policy::ImplicitEulerJacobianStandardPolicy<
+
+	using jac_std_pol_type = policy::ImplicitJacobianStandardPolicy<
 	  ode_state_type, model_type, ode_jacobian_type>;
+
 	using base_impl_type = impl::ImplicitEulerStepperImpl<
 	  ode_state_type, ode_residual_type, ode_jacobian_type,
 	  model_type, res_std_pol_type, jac_std_pol_type>;
@@ -202,7 +206,7 @@ namespace rompp{ namespace ode{ namespace impl{
 		typename aux_stepper_type,
 		typename residual_policy_type,
 		typename jacobian_policy_type>
-      struct implicit_stepper_helper_info<ImplicitSteppersEnum::Euler,
+      struct implicit_stepper_helper_info<ImplicitEnum::Euler,
 					  ode_state_type, ode_residual_type,
 					  ode_jacobian_type, model_type,
 					  aux_stepper_type, residual_policy_type,
@@ -219,15 +223,19 @@ namespace rompp{ namespace ode{ namespace impl{
 		typename ode_jacobian_type,
 		typename model_type,
 		typename aux_stepper_type>
-      struct implicit_stepper_helper_info<ImplicitSteppersEnum::BDF2,
+      struct implicit_stepper_helper_info<ImplicitEnum::BDF2,
 					  ode_state_type, ode_residual_type,
 					  ode_jacobian_type, model_type,
 					  aux_stepper_type, void, void>{
 
-	using res_std_pol_type = policy::ImplicitBDF2ResidualStandardPolicy<
+	// using res_std_pol_type = policy::ImplicitBDF2ResidualStandardPolicy<
+	//   ode_state_type, model_type, ode_residual_type>;
+	using res_std_pol_type = policy::ImplicitResidualStandardPolicy<
 	  ode_state_type, model_type, ode_residual_type>;
-	using jac_std_pol_type = policy::ImplicitBDF2JacobianStandardPolicy<
+
+	using jac_std_pol_type = policy::ImplicitJacobianStandardPolicy<
 	  ode_state_type, model_type, ode_jacobian_type>;
+
 	using base_impl_type = impl::ImplicitBDF2StepperImpl<
 	  ode_state_type, ode_residual_type, ode_jacobian_type,
 	  model_type, aux_stepper_type, res_std_pol_type, jac_std_pol_type>;
@@ -242,7 +250,7 @@ namespace rompp{ namespace ode{ namespace impl{
 		typename aux_stepper_type,
 		typename residual_policy_type,
 		typename jacobian_policy_type>
-      struct implicit_stepper_helper_info<ImplicitSteppersEnum::BDF2,
+      struct implicit_stepper_helper_info<ImplicitEnum::BDF2,
 					  ode_state_type, ode_residual_type,
 					  ode_jacobian_type, model_type,
 					  aux_stepper_type, residual_policy_type,

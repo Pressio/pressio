@@ -16,32 +16,32 @@ template<typename app_state_w_type,
 	 typename ode_state_w_type,
 	 typename ode_res_w_type,
 	 typename A_type>
-class RomGalerkinImplicitResidualPolicy<ode::ImplicitSteppersEnum::Euler,
+class RomGalerkinImplicitResidualPolicy<ode::ImplicitEnum::Euler,
 					app_state_w_type, app_res_w_type,
 					phi_op_type, ode_state_w_type,
 					ode_res_w_type, A_type>
   : // inherits from implicit residual policy base
     public ode::policy::ImplicitResidualPolicyBase<
                 RomGalerkinImplicitResidualPolicy<
-		  ode::ImplicitSteppersEnum::Euler,
+		  ode::ImplicitEnum::Euler,
 		  app_state_w_type, app_res_w_type,
 		  phi_op_type, ode_state_w_type,
-		  ode_res_w_type, A_type>, 1, 0>,
+		  ode_res_w_type, A_type>>,
     // inherits from incremental solution
     private IncrementalSolutionBase<
                 RomGalerkinImplicitResidualPolicy<
-		  ::rompp::ode::ImplicitSteppersEnum::Euler,
+		  ::rompp::ode::ImplicitEnum::Euler,
 		  app_state_w_type, app_res_w_type,
 		  phi_op_type, ode_state_w_type,
 		  ode_res_w_type, A_type>, app_state_w_type>
 {
   
   using this_t = RomGalerkinImplicitResidualPolicy<
-    ::rompp::ode::ImplicitSteppersEnum::Euler,
+    ::rompp::ode::ImplicitEnum::Euler,
     app_state_w_type, app_res_w_type, phi_op_type,
     ode_state_w_type, ode_res_w_type, A_type>;
 
-  using base_pol_t = ode::policy::ImplicitResidualPolicyBase<this_t, 1, 0>;
+  using base_pol_t = ode::policy::ImplicitResidualPolicyBase<this_t>;
   using base_incr_sol_t = IncrementalSolutionBase<this_t, app_state_w_type>;
   using scalar_type = typename core::details::traits<app_state_w_type>::scalar_t;
   
@@ -84,8 +84,9 @@ public:
     
     ode_res_w_type modRHS(odeY);//this is just to construct it 
     modRHS.setZero();
+    // (*this)(odeY, modRHS, prevYs, app, t, dt);
 
-    (*this)(odeY, modRHS, prevYs, app, t, dt);
+
    // // odeY is the REDUCED state, we need to reconstruct FOM state
    // reconstructFOMState(odeY, prevYs[0]);
    // /// query the application for the SPACE residual 
@@ -106,17 +107,17 @@ public:
   		  scalar_type t,
   		  scalar_type dt) const{
 
-    // odeY is the REDUCED state, we need to reconstruct FOM state
-    reconstructFOMState(odeY, prevYs[0]);
+    // // odeY is the REDUCED state, we need to reconstruct FOM state
+    // reconstructFOMState(odeY, prevYs[0]);
 
-    /// query the application for the SPACE residual 
-    app.residual(*yFOM_.data(), *appRHS_.data(), t);
+    // /// query the application for the SPACE residual 
+    // app.residual(*yFOM_.data(), *appRHS_.data(), t);
 
-    /// apply operator
-    A_->applyTranspose(appRHS_, odeR);
+    // /// apply operator
+    // A_->applyTranspose(appRHS_, odeR);
 
-    /// do time discrete residual
-    ode::impl::implicit_euler_time_discrete_residual(odeY, prevYs[0], odeR, dt);
+    // /// do time discrete residual
+    // ode::impl::implicit_euler_time_discrete_residual(odeY, prevYs[0], odeR, dt);
   }
   //----------------------------------------------------------------
 
