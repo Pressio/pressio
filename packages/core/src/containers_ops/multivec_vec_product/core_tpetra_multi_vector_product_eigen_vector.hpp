@@ -36,7 +36,9 @@ void product(const mvec_type & mvA,
   auto numVecs = mvA.globalNumVectors();
   // size of vecB
   size_t vecBLen = vecB.size();
-  assert(size_t(numVecs) == vecBLen);
+  if (vecBLen != size_t(numVecs))
+    assert(size_t(numVecs) == vecBLen);
+
   // my number of rows
   auto myNrows = mvA.localLength();
 
