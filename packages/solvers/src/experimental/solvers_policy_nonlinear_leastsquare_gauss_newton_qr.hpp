@@ -11,7 +11,7 @@
 // #include "../../../CORE_BASIC"
 #include "../../../CORE_OPS"
 #include "../../../core/src/meta/core_meta_detection_idiom.hpp"
-#include "../../../qr/src/qr_hacked.hpp"
+#include "../../../QR_BASIC"
 
 namespace rompp{ namespace solvers{
 
@@ -65,7 +65,7 @@ public:
     // for QR
     using jac_t = decltype(Jac);
     using R_type = rompp::core::Matrix<eig_mat>;
-    rompp::qr::hack::QRSolver<jac_t, rompp::core::MultiVector, R_type> qrObj;
+    rompp::qr::QRSolver<jac_t, rompp::core::MultiVector, R_type> qrObj;
     core::Vector<eig_vec> QTRes;
 
     auto x(x0);
