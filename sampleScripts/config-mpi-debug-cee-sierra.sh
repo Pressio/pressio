@@ -1,22 +1,27 @@
 #!/bin/bash
 
 EXTRA_ARGS=$@
-
 SRC=/projects/rompp/sources/rompp
-PFX=/projects/rompp/installs/rompp_install
+PFX=/projects/rompp/installs/rompp_install_sierra
 
 MPIPATH=/projects/sierra/linux_rh6/SDK/mpi/openmpi/1.10.2-gcc-7.2.0-RHEL6/bin
 TRILPATH=/gpfs1/fpierce/Trilinos-repo/install
 EIGENINCPATH=/projects/rompp/tpls/eigen/3.3.5/install
-GTESTPATH=/projects/rompp/tpls/gtest/install-sierra
+GTESTPATH=/projects/rompp/tpls/gtest/install-sierra-static
 
 cmake \
     -D CMAKE_BUILD_TYPE:STRING=DEBUG \
     -D CMAKE_INSTALL_PREFIX:PATH=${PFX} \
+    -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
     \
     -D BUILD_SHARED_LIBS:BOOL=OFF \
     -D TPL_FIND_SHARED_LIBS=OFF \
-    -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    -D rompp_LINK_SEARCH_START_STATIC=ON \
+    \
+    -D BLAS_LIBRARY_NAMES:STRING="src-blas-c;src-blas-d;src-blas-s;src-blas-z" \
+    -D BLAS_LIBRARY_DIRS:PATH=/gpfs1/fpierce/Trilinos-repo/build/SierraTPLS \
+    -D LAPACK_LIBRARY_NAMES:STRING="src-lapack-c;src-lapack-d;src-lapack-s;src-lapack-z" \
+    -D LAPACK_LIBRARY_DIRS:PATH=/gpfs1/fpierce/Trilinos-repo/build/SierraTPLS \
     \
     -D MPI_EXEC_MAX_NUMPROCS:STRING=8 \
     -D rompp_ENABLE_CXX11:BOOL=ON \
