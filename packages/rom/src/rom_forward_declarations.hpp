@@ -8,17 +8,20 @@
 namespace rompp{ namespace rom{
 
 template<typename app_state_w_type,
-	  typename app_res_w_type,
-	  typename phi_op_type,
-	  typename A_type = void>
+	 typename app_res_w_type,
+	 typename phi_op_type,
+	 int maxNstates,
+	 int maxNrhs,
+	 typename A_type = void>
 class RomLSPGResidualPolicy;
 
-template<typename app_state_w_type,
-	  typename app_jac_w_type,
-	  typename phi_op_type,
-	  typename A_type = void>
-class RomLSPGJacobianPolicy;
 
+template<typename app_state_w_type,
+	 typename app_jac_w_type,
+	 typename phi_op_type,
+	 int maxNstates,
+	 typename A_type = void>
+class RomLSPGJacobianPolicy;
 
 
 template<::rompp::ode::ImplicitEnum,
@@ -29,6 +32,7 @@ template<::rompp::ode::ImplicitEnum,
 	  typename ode_res_w_type,
 	  typename A_type = phi_op_type>
 class RomGalerkinImplicitResidualPolicy;
+
 
 template<::rompp::ode::ImplicitEnum,
 	  typename app_state_w_type,

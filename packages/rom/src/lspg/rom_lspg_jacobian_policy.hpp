@@ -6,37 +6,54 @@
 #include "../../../CORE_ALL"
 #include "../../../ode/src/implicit/ode_jacobian_impl.hpp"
 #include "../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
-#include "../rom_incremental_solution_base.hpp"
+#include "../rom_data_base.hpp"
 
 namespace rompp{ namespace rom{
 
 template< typename app_state_w_type,
 	  typename jac_type,
 	  typename phi_op_type,
-	  typename A_type /*defailt = void*/>
+	  int maxNstates,
+	  typename A_type>
 class RomLSPGJacobianPolicy
   : public ode::policy::JacobianPolicyBase<
-		RomLSPGJacobianPolicy<app_state_w_type, jac_type,
-				      phi_op_type, A_type>>,
-    private IncrementalSolutionBase<
-                RomLSPGJacobianPolicy<app_state_w_type, jac_type,
-				      phi_op_type, A_type>, app_state_w_type>{
+		RomLSPGJacobianPolicy<app_state_w_type,
+				      jac_type,
+				      phi_op_type,
+				      maxNstates,
+				      A_type>>,
+    protected RomStateData<app_state_w_type, phi_op_type,  maxNstates>
+{
 
-  using this_t 		= RomLSPGJacobianPolicy<app_state_w_type, jac_type, phi_op_type, A_type>;
+  using this_t 		= RomLSPGJacobianPolicy<app_state_w_type,
+						jac_type,
+						phi_op_type,
+						maxNstates,
+						A_type>;
+
   using base_pol_t 	= ::rompp::ode::policy::JacobianPolicyBase<this_t>;
-  using base_incr_sol_t = ::rompp::rom::IncrementalSolutionBase<this_t, app_state_w_type>;
+
+  using base_state_data_t = ::rompp::rom::RomStateData<app_state_w_type, phi_op_type, maxNstates>;
+
   using scalar_type 	= typename core::details::traits<app_state_w_type>::scalar_t;
 
+  using base_state_data_t::phi_;
+  using base_state_data_t::yFOM_;
+
 public:
-  template <typename T=A_type,
-   core::meta::enable_if_t<std::is_void<T>::value> * = nullptr>
-  RomLSPGJacobianPolicy(const app_state_w_type & y0fom,
-  			phi_op_type & phiOp)
-    : base_incr_sol_t(y0fom), phi_(&phiOp){}
 
   RomLSPGJacobianPolicy() = delete;
+
   ~RomLSPGJacobianPolicy() = default;
-  //----------------------------------------------------------------
+
+  template <typename T=A_type,
+	    core::meta::enable_if_t<std::is_void<T>::value> * = nullptr>
+    RomLSPGJacobianPolicy(const app_state_w_type & y0fom,
+			  phi_op_type & phiOp)
+    : base_state_data_t(y0fom, phiOp){}
+
+
+ public:
 
   template <::rompp::ode::ImplicitEnum odeMethod,
 	     typename ode_state_t,
@@ -46,7 +63,7 @@ public:
 		      scalar_type t,
 		      scalar_type dt) const
   {
-    reconstructFOMState(odeY);
+    base_state_data_t::template reconstructCurrentFOMState(odeY);
 
     // compute the Jac phi product, where Jac is the spatial jacobian
     auto * basis = phi_->getOperator();
@@ -75,7 +92,8 @@ public:
   		  scalar_type t,
   		  scalar_type dt) const
   {
-    reconstructFOMState(odeY);
+    base_state_data_t::template reconstructCurrentFOMState(odeY);
+
     auto * basis = phi_->getOperator();
     app.applyJacobian(*yFOM_.data(), *basis->data(), *odeJJ.data(), t);
     ode::impl::implicit_time_discrete_jacobian<odeMethod>(odeJJ, dt, *basis);
@@ -83,25 +101,11 @@ public:
 
 
 private:
-  template <typename ode_state_t>
-  void reconstructFOMState(const ode_state_t & odeY)const {
-    phi_->apply(odeY, yFOM_);
-    yFOM_ += (*y0FOM_);
-  }
-
-
-private:
   friend base_pol_t;
-  friend base_incr_sol_t;
-
-  using base_incr_sol_t::y0FOM_;
-  using base_incr_sol_t::yFOM_;
 
   mutable std::shared_ptr<jac_type> JJ_ = nullptr;
-  phi_op_type * phi_ 			= nullptr;
-  A_type * A_ 				= nullptr;
 
-};//end class
+};//End class
 
 }}//end namespace rompp::rom
 #endif

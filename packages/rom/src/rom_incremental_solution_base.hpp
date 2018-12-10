@@ -25,5 +25,6 @@ private:
 
 };//end class
 
+
 }}//end namespace rompp::rom
 #endif
