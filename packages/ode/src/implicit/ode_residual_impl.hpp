@@ -7,74 +7,83 @@
 
 namespace rompp{ namespace ode{ namespace impl{
 
-template<typename state_type,
-	 typename scalar_type,
-	 core::meta::enable_if_t<
-      ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value == false
-	   > * = nullptr
-	 >
-void implicit_euler_time_discrete_residual(const state_type & yn,
-					   const state_type & ynm1,
-					   state_type & R,
-					   scalar_type dt){
+template<::rompp::ode::ImplicitEnum odeMethod,
+	  int numStates,
+	  typename state_type,
+	  typename scalar_type,
+	  core::meta::enable_if_t<
+  (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
+  ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value == false
+  > * = nullptr
+	  >
+void implicit_time_discrete_residual(const state_type & yn,
+				     const std::array<state_type,numStates> & ynm,
+				     state_type & R,
+				     scalar_type dt){
   // On input: R should contain the application RHS, i.e. if
   //           dudt = f(x,u,...), R contains f(...)
-  // so that on output, it contains the time discrete residual
-  R = yn - ynm1 - dt*R;
+  R = yn - ynm[0] - dt*R;
 }
 //-------------------------------------------------------
 
-
-template<typename state_type,
-	 typename scalar_type,
-	 core::meta::enable_if_t<
-	   ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
-	   > * = nullptr
-	 >
-void implicit_euler_time_discrete_residual(const state_type & yn,
-					   const state_type & ynm1,
-					   state_type & R,
-					   scalar_type dt){
+template<::rompp::ode::ImplicitEnum odeMethod,
+	  int numStates,
+	  typename state_type,
+	  typename scalar_type,
+	  core::meta::enable_if_t<
+  (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
+  ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
+  > * = nullptr
+	  >
+void implicit_time_discrete_residual(const state_type & yn,
+				     const std::array<state_type,numStates> & ynm,
+				     state_type & R,
+				     scalar_type dt){
   // On input: R should contain the application RHS, i.e. if
   //           dudt = f(x,u,...), R contains f(...)
-  // so that on output, it contains the time discrete residual
-  R.data()->update(1.0, *yn.data(), -1.0, *ynm1.data(), -dt);
+  R.data()->update(1.0, *yn.data(), -1.0, *ynm[0].data(), -dt);
 }
 //-------------------------------------------------------
 
-
-template<typename state_type,
-	 typename scalar_type,
-	 core::meta::enable_if_t<
-	   !::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
-	   > * = nullptr
+template<::rompp::ode::ImplicitEnum odeMethod,
+	  int numStates,
+	  typename state_type,
+	  typename scalar_type,
+	  core::meta::enable_if_t<
+  (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) and
+  !::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
+  > * = nullptr
 	 >
-void implicit_bdf2_time_discrete_residual(const state_type & yn,
-					  const state_type & ynm1,
-					  const state_type & ynm2,
-					  state_type & R,
-					  scalar_type dt){
+void implicit_time_discrete_residual(const state_type & yn,
+				     const std::array<state_type,numStates> & ynm,
+				     state_type & R,
+				     scalar_type dt){
   // On input: R should contain the application RHS
   using namespace ::rompp::ode::coeffs;
-  R = yn - bdf2<scalar_type>::c1_*ynm1
-      + bdf2<scalar_type>::c2_*ynm2
+  R = yn - bdf2<scalar_type>::c1_*ynm[1]
+      + bdf2<scalar_type>::c2_*ynm[0]
       - bdf2<scalar_type>::c3_*dt*R;
 }
 //-------------------------------------------------------
 
-template<typename state_type,
-	 typename scalar_type,
-	 core::meta::enable_if_t<
-	   ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
-	   > * = nullptr
+template< ::rompp::ode::ImplicitEnum odeMethod,
+	  int numStates,
+	  typename state_type,
+	  typename scalar_type,
+	  core::meta::enable_if_t<
+  (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) and
+  ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
+  > * = nullptr
 	 >
-void implicit_bdf2_time_discrete_residual(const state_type & yn,
-					  const state_type & ynm1,
-					  const state_type & ynm2,
-					  state_type & R,
-					  scalar_type dt){
+void implicit_time_discrete_residual(const state_type & yn,
+				     const std::array<state_type,numStates> & ynm,
+				     state_type & R,
+				     scalar_type dt){
   // On input: R should contain the application RHS
   using namespace ::rompp::ode::coeffs;
+  R.data()->update(bdf2<scalar_type>::c2_,
+		   *ynm[1].data(),
+		   -bdf2<scalar_type>::c3_*dt);
 
   const scalar_type oneSc = static_cast<scalar_type>(1);
   const scalar_type c2 = bdf2<scalar_type>::c2_;

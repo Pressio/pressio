@@ -32,8 +32,8 @@ struct traits< impl::ImplicitEulerStepperImpl<
   using residual_policy_t = residual_policy_type;
   using jacobian_policy_t = jacobian_policy_type;
 
-  static constexpr ::rompp::ode::ImplicitSteppersEnum enum_id =
-    ::rompp::ode::ImplicitSteppersEnum::Euler;
+  static constexpr ::rompp::ode::ImplicitEnum enum_id =
+    ::rompp::ode::ImplicitEnum::Euler;
   
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
@@ -76,8 +76,8 @@ struct traits< impl::ImplicitBDF2StepperImpl<
   using jacobian_policy_t = jacobian_policy_type;
   using aux_stepper_t = aux_stepper_type;
    
-  static constexpr ::rompp::ode::ImplicitSteppersEnum enum_id =
-    ::rompp::ode::ImplicitSteppersEnum::BDF2;
+  static constexpr ::rompp::ode::ImplicitEnum enum_id =
+    ::rompp::ode::ImplicitEnum::BDF2;
 
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;

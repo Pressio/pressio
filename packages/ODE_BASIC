@@ -4,7 +4,7 @@
 
 #include "ode/src/ode_ConfigDefs.hpp"
 #include "ode/src/ode_forward_declarations.hpp"
-#include "ode/src/ode_enum_steppers.hpp"
+#include "ode/src/ode_enum.hpp"
 
 #include "ode/src/ode_basic_meta.hpp"
 #include "ode/src/ode_is_legitimate_collector.hpp"

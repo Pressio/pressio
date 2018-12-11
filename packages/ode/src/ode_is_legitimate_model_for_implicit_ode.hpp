@@ -51,7 +51,7 @@ template<typename T>
 struct is_legitimate_auxiliary_stepper<T,
   typename std::enable_if<
     ::rompp::ode::details::traits<typename T::base_t>::enum_id ==
-    ::rompp::ode::ImplicitSteppersEnum::Euler
+    ::rompp::ode::ImplicitEnum::Euler
     >::type
   > : std::true_type{};
 

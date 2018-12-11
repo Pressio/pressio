@@ -10,5 +10,6 @@
 #include "rom/src/rom_multi_vector_operator.hpp"
 
 #include "rom/src/rom_incremental_solution_base.hpp"
+#include "rom/src/rom_data_base.hpp"
 
 #endif

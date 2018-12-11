@@ -11,7 +11,7 @@ namespace rompp{ namespace ode{
 #ifdef HAVE_CPP14
 //!!!!!!!!!!!!!!!!
 
-    template<ExplicitSteppersEnum whichone, typename... Args>
+    template<ExplicitEnum whichone, typename... Args>
     class ExplicitStepper
       : public impl::explicit_stepper_helper_info<whichone,
 					 Args...>::base_impl_type{
@@ -59,7 +59,7 @@ namespace rompp{ namespace ode{
 
 
     //if we have c++11 AND policy is STANDARD
-    template<ExplicitSteppersEnum whichone,
+    template<ExplicitEnum whichone,
 	     typename ode_state_type,
 	     typename model_type,
 	     typename ode_residual_type>
@@ -90,7 +90,7 @@ namespace rompp{ namespace ode{
 
 
     //if we have c++11 AND policy is user-defined
-    template<ExplicitSteppersEnum whichone,
+    template<ExplicitEnum whichone,
 	     typename ode_state_type,
 	     typename model_type,
 	     typename ode_residual_type,

@@ -12,8 +12,6 @@ class JacobianPolicyBase
   JacobianPolicyBase<derived_t>>{
 public:
 
-  //----------------------------------------
-  // jacobian is passed by reference
   template <typename state_type,
 	    typename jacobian_type,
 	    typename model_type,
@@ -22,20 +20,21 @@ public:
 		  jacobian_type & J,
 		  const model_type & model,
 		  scalar_type t,
-		  scalar_type dt)const {
+		  scalar_type dt) const
+  {
     this->underlying()(y, J, model, t, dt);
   }
   //----------------------------------------
 
-  // jacobian is returned by the method
   template <typename state_type,
 	    typename model_type,
 	    typename scalar_type>
   auto operator()(const state_type & y,
 		  const model_type & model,
 		  scalar_type t,
-		  scalar_type dt)const
-   -> decltype(this->underlying()(y, model, t, dt)){
+		  scalar_type dt) const
+   -> decltype(this->underlying()(y, model, t, dt))
+  {
     return this->underlying()(y, model, t, dt);
   }
   //------------------------------------------
