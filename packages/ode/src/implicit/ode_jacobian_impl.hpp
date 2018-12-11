@@ -36,11 +36,32 @@ template <::rompp::ode::ImplicitEnum odeMethod,
 	   typename scalar_type,
 	   typename basis_type,
 	   core::meta::enable_if_t<
-           (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
-	     (core::meta::is_epetra_multi_vector_wrapper<jacobian_type>::value and
-	      core::meta::is_epetra_multi_vector_wrapper<basis_type>::value) or
-	     (core::meta::is_tpetra_multi_vector_wrapper<jacobian_type>::value and
-	      core::meta::is_tpetra_multi_vector_wrapper<basis_type>::value)
+           odeMethod == ::rompp::ode::ImplicitEnum::Euler and
+	   core::meta::is_epetra_multi_vector_wrapper<jacobian_type>::value and
+           core::meta::is_epetra_multi_vector_wrapper<basis_type>::value 
+	     > * = nullptr
+	  >
+void implicit_time_discrete_jacobian(jacobian_type & jac,
+				     scalar_type dt,
+				     const basis_type & phi){
+
+  jac.scale(-dt);
+  jac += phi;
+}
+#endif
+//---------------------------------------------------------------
+
+
+
+#ifdef HAVE_TRILINOS
+template <::rompp::ode::ImplicitEnum odeMethod,
+	   typename jacobian_type,
+	   typename scalar_type,
+	   typename basis_type,
+	   core::meta::enable_if_t<
+           odeMethod == ::rompp::ode::ImplicitEnum::Euler and 
+           core::meta::is_tpetra_multi_vector_wrapper<jacobian_type>::value and
+           core::meta::is_tpetra_multi_vector_wrapper<basis_type>::value
 	     > * = nullptr
 	  >
 void implicit_time_discrete_jacobian(jacobian_type & jac,
