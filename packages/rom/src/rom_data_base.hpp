@@ -16,7 +16,7 @@ protected:
   RomRHSData() = delete;
 
   // non-default constructors
-  template <int _maxNrhs = maxNrhs,  
+  template <int _maxNrhs = maxNrhs,
             core::meta::enable_if_t<_maxNrhs==1> * = nullptr>
   RomRHSData(const app_res_w_type & r0fom)
     : appRHS_{r0fom}{}
@@ -42,8 +42,17 @@ protected:
   // default constructor
   RomStateData() = delete;
 
+
   // non-default constructors
-  template <int _maxNstates = maxNstates, 
+  template <int _maxNstates = maxNstates,
+            core::meta::enable_if_t<_maxNstates==0> * = nullptr>
+  RomStateData(const app_state_w_type & y0fom, phi_op_type & phiOp)
+    : y0FOM_(&y0fom),
+      yFOM_(y0fom),
+      phi_(&phiOp){}
+
+  // non-default constructors
+  template <int _maxNstates = maxNstates,
             core::meta::enable_if_t<_maxNstates==1> * = nullptr>
   RomStateData(const app_state_w_type & y0fom, phi_op_type & phiOp)
     : y0FOM_(&y0fom),
@@ -52,7 +61,7 @@ protected:
       phi_(&phiOp){}
 
   // non-default constructors
-  template <int _maxNstates = maxNstates, 
+  template <int _maxNstates = maxNstates,
             core::meta::enable_if_t<_maxNstates==2> * = nullptr>
   RomStateData(const app_state_w_type & y0fom, phi_op_type & phiOp)
     : y0FOM_(&y0fom),

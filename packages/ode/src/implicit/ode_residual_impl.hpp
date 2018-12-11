@@ -79,16 +79,15 @@ void implicit_time_discrete_residual(const state_type & yn,
 				     const std::array<state_type,numStates> & ynm,
 				     state_type & R,
 				     scalar_type dt){
-  // On input: R should contain the application RHS
+  // // On input: R should contain the application RHS
   using namespace ::rompp::ode::coeffs;
-  R.data()->update(bdf2<scalar_type>::c2_,
-		   *ynm[1].data(),
-		   -bdf2<scalar_type>::c3_*dt);
-
+  // R.data()->update(bdf2<scalar_type>::c2_,
+		//    *ynm[1].data(),
+		//    -bdf2<scalar_type>::c3_*dt);
   const scalar_type oneSc = static_cast<scalar_type>(1);
   const scalar_type c2 = bdf2<scalar_type>::c2_;
-  R.data()->update(c2, *ynm2.data(), -bdf2<scalar_type>::c3_*dt);
-  R.data()->update(oneSc, *yn.data(), -bdf2<scalar_type>::c1_, *ynm1.data(), oneSc);
+  R.data()->update(c2, *ynm[1].data(), -bdf2<scalar_type>::c3_*dt);
+  R.data()->update(oneSc, *yn.data(), -bdf2<scalar_type>::c1_, *ynm[0].data(), oneSc);
 }
 
 
