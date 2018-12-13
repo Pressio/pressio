@@ -5,6 +5,8 @@
 
 #include "qr_ConfigDefs.hpp"
 #include "qr_forward_declarations.hpp"
+#include "qr_solver_base.hpp"
+
 #include "../../CORE_ALL"
 #include <Eigen/OrderingMethods>
 #include<Eigen/SparseQR>
@@ -36,8 +38,12 @@ class QRSolver<matrix_type,
 		 core::details::traits<R_type>::is_shared_mem and
 		 core::details::traits<R_type>::is_dense
 		 >::type
-	       >{
-private:
+	       >
+  : public QRSolverBase<QRSolver<matrix_type, Q_type, R_type, ::rompp::qr::TSQR>, matrix_type>{
+
+  using this_t = QRSolver<matrix_type, Q_type, R_type, ::rompp::qr::TSQR>;
+  using base_t = QRSolverBase<this_t, matrix_type>;
+
   using MV = typename core::details::traits<matrix_type>::wrapped_t;
   using sc_t = typename core::details::traits<matrix_type>::scalar_t;
   using LO_t = typename core::details::traits<matrix_type>::local_ordinal_t;
@@ -48,8 +54,9 @@ private:
   using Q_t = Q_type<MV>;
 
   using MVTraits = Anasazi::MultiVecTraits<sc_t, MV>;
-  using OP = Tpetra::Operator<sc_t>;
-  using ortho_t = Anasazi::TsqrMatOrthoManager<sc_t, MV, OP>;
+  //  using OP = Tpetra::Operator<sc_t>;
+  //  using ortho_t = Anasazi::TsqrMatOrthoManager<sc_t, MV, OP>;
+  using ortho_t = Anasazi::TsqrOrthoManager<sc_t, MV>;
 
   using mat_type = Teuchos::SerialDenseMatrix<int, sc_t>;
   using mat_ptr = Teuchos::RCP<mat_type>;
@@ -63,10 +70,21 @@ public:
 
   ~QRSolver() = default;
 
+  const Q_t & cRefQFactor() const {
+    return *Qmat_;
+  }//end method
+  //-----------------------------------------------------
+
+  const R_type & cRefRFactor() const {
+    return *Rmat_;
+  }//end method
+  //-----------------------------------------------------
+
+private:
 
   // non-const because Anasazi::TSQR can take a non-cost matrix
   // but here we do not modify it
-  void compute(matrix_type & A){
+  void computeImpl(matrix_type & A){
     // A is a rompp:core::MultiVector<MV>
 
     // get number of cols
@@ -112,17 +130,9 @@ public:
   }//end method
   //-----------------------------------------------------
 
-  const Q_t & cRefQFactor() const {
-    return *Qmat_;
-  }//end method
-  //-----------------------------------------------------
-
-  const R_type & cRefRFactor() const {
-    return *Rmat_;
-  }//end method
-  //-----------------------------------------------------
-
 private:
+  friend base_t;
+
   std::shared_ptr<Q_t> Qmat_     = nullptr;
   std::shared_ptr<R_type> Rmat_  = nullptr;
   std::shared_ptr< ortho_t > OM_ = nullptr;
