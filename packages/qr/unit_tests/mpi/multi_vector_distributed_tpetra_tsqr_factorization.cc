@@ -35,9 +35,7 @@ public:
     mv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
   }
 
-  virtual void TearDown(){
-    //delete mv_;
-  }
+  virtual void TearDown(){}
 };
 //-----------------------------------------------------------
 
