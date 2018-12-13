@@ -16,23 +16,22 @@
 namespace rompp{ namespace solvers{
 
 
+template <typename qr_algo_tag>
 struct SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy {
 
 private:
   core::default_types::uint maxNonLinearIterations_ = 500;
   double nonLinearTolerance_ = 1e-6;
 
-
 public:
 
-  void setMaxNonLinearIterations(core::default_types::uint  maxNonLinearIterations) {
+  void setMaxNonLinearIterations(core::default_types::uint maxNonLinearIterations) {
     maxNonLinearIterations_ = maxNonLinearIterations;
   }
 
   void setNonLinearTolerance(double nonLinearTolerance) {
     nonLinearTolerance_ = std::abs(nonLinearTolerance);
   }
-
 
   template <typename SystemT,
 	    typename VectorT,
@@ -65,7 +64,7 @@ public:
     // for QR
     using jac_t = decltype(Jac);
     using R_type = rompp::core::Matrix<eig_mat>;
-    rompp::qr::QRSolver<jac_t, rompp::core::MultiVector, R_type> qrObj;
+    rompp::qr::QRSolver<jac_t, rompp::core::MultiVector, R_type, qr_algo_tag> qrObj;
     core::Vector<eig_vec> QTRes;
 
     auto x(x0);

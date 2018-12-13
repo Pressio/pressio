@@ -12,6 +12,7 @@
 #include "solvers_l2_vector_norm.hpp"
 #include "solvers_linear_traits.hpp"
 #include "../../../core/src/meta/core_meta_detection_idiom.hpp"
+#include "../../../QR_BASIC"
 
 
 namespace rompp {
@@ -58,7 +59,7 @@ is not available or its name was mispelt" << std::endl;
       void
     >::type* = nullptr
   >
-  static auto createIterativeSolver() 
+  static auto createIterativeSolver()
   -> typename createIterativeSolverTypeHelper<NSolverT, LSolverT>::ret_type {
 
     using solver_traits = linear::details::solver_traits<LSolverT>;
@@ -107,23 +108,23 @@ or is not available for linear systems defined by Eigen matrices");
   //--------------------------------------------------------------
 
   /**
-   * Create a nonlinear least square iterative solver 
+   * Create a nonlinear least square iterative solver
    * using QR for each inner linear least square solve
    */
   template <
     typename NSolverT,
+    typename qr_algo_tag = ::rompp::qr::Hacked,
     typename core::meta::enable_if_t<
-      std::is_same<NSolverT, nonlinearleastsquare::GaussNewtonQR>::value and
-      nonlinearleastsquare::details::solver_traits<NSolverT>::enabled
+      std::is_same<NSolverT, nonlinearleastsquare::GaussNewtonQR>::value
     >* = nullptr
   >
-  static SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy 
+  static SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy<qr_algo_tag> 
   createNonLinearIterativeLeastSquareQRBasedSolver(){
-    return SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy();
+    return SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy<qr_algo_tag>();
   }
   //--------------------------------------------------------------
 
-  
+
 };
 
 } // end namespace solvers

@@ -8,6 +8,8 @@ namespace solvers{
 
 class SolversNonLinearIterativeNewtonRaphsonPolicy; // Fwd declaration
 class SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy; // Fwd declaration
+
+template <typename qr_algo_tag>
 class SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy; // Fwd declaration
 
 
@@ -61,11 +63,11 @@ struct solver_traits<LevenbergMarquardt> {
   static constexpr bool enabled = true;
 };
 
-template <>
-struct solver_traits<GaussNewtonQR> {
-  using solver_type = SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy;
-  static constexpr bool enabled = true;
-};
+// template <>
+// struct solver_traits<GaussNewtonQR> {
+//   using solver_type = SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy;
+//   static constexpr bool enabled = true;
+// };
 
 
 } // end namespace details
