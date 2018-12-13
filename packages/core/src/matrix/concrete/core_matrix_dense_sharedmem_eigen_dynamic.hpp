@@ -23,41 +23,45 @@ class Matrix<wrapped_type,
     public MatrixSharedMemBase< Matrix<wrapped_type> >,
     public MatrixDenseSharedMemBase< Matrix<wrapped_type> >,
     public ContainerSubscriptable2DBase<
-     Matrix<wrapped_type>, 
+     Matrix<wrapped_type>,
      typename details::traits<Matrix<wrapped_type>>::scalar_t,
      typename details::traits<Matrix<wrapped_type>>::ordinal_t>,
     public ContainerResizableBase<Matrix<wrapped_type>, 2>
 {
 
   using derived_t = Matrix<wrapped_type>;
-  using mytraits = typename details::traits<derived_t>;  
+  using mytraits = typename details::traits<derived_t>;
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename mytraits::ordinal_t;
   using wrap_t = typename mytraits::wrapped_t;
   using der_t = typename mytraits::derived_t;
-  
+
 public:
   Matrix() = default;
 
-  explicit Matrix(ord_t nrows, ord_t ncols) {
+  Matrix(ord_t nrows, ord_t ncols) {
     this->resize(nrows,ncols);
   }
 
-  explicit Matrix(const wrap_t & other) : data_(other){}
+  explicit Matrix(const wrap_t & other)
+    : data_(other){}
+
+  explicit Matrix(const sc_t * datain)
+    : data_(datain){}
 
   ~Matrix() = default;
 
 public:
   sc_t & operator() (ord_t row, ord_t col){
-    // check if we are withinbound 
+    // check if we are withinbound
     return data_(row,col);
   }
 
   sc_t const & operator() (ord_t row, ord_t col) const{
-    // check if we are withinbound 
+    // check if we are withinbound
     return data_(row,col);
   }
-  
+
   derived_t & operator+=(const derived_t & other) {
     assert( other.rows() == this->rows() );
     assert( other.cols() == this->cols() );
@@ -72,10 +76,10 @@ public:
     return *this;
   }
 
-private:  
+private:
   wrap_t * dataImpl(){
     return &data_;
-  };  
+  };
 
   wrap_t const * dataImpl() const{
     return &data_;
@@ -87,7 +91,7 @@ private:
     for (ord_t ir=0; ir<this->rows(); ir++)
       data_(ir,ir) += value;
   };
-  
+
   ord_t rowsImpl() const{
     return data_.rows();
   }
@@ -110,7 +114,7 @@ private:
       for (auto j=0; j<this->cols(); j++)
 	data_(i,j) *= value;
   }
-  
+
 private:
   friend ContainerBase< derived_t, wrapped_type >;
   friend MatrixBase< derived_t >;
@@ -121,8 +125,8 @@ private:
 
 private:
   wrap_t data_;
-     
-};//end class 
-}//end namespace core 
+
+};//end class
+}//end namespace core
 }//end namespace rompp
 #endif
