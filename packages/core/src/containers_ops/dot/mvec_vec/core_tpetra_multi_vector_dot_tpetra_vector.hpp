@@ -1,4 +1,5 @@
 
+#ifdef HAVE_TRILINOS
 #ifndef CORE_TPETRA_MULTI_VECTOR_TPETRA_VECTOR_HPP_
 #define CORE_TPETRA_MULTI_VECTOR_TPETRA_VECTOR_HPP_
 
@@ -8,19 +9,29 @@
 
 namespace rompp{ namespace core{ namespace ops{
 
-// Tpetra multivector dot tpetra vector
-// result stored into Eigen vector passed by reference
+/*
+ * overloads for c = A dot b
+ * where:
+ * A = wrapper of Tpetra Multivector
+ * b = tpetra vector
+ * c = a shared-mem vector, like eigen or armadillo
+ */
 
-#ifdef HAVE_TRILINOS
+
+//---------------------------------------
+// c = eigen DYNAMIC vector, passed in
+//---------------------------------------
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
   core::meta::enable_if_t<
     core::meta::is_tpetra_multi_vector_wrapper<mvec_type>::value and
     core::meta::is_tpetra_vector_wrapper<vec_type>::value and
-    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     core::meta::is_eigen_vector_wrapper<result_vec_type>::value and
-    core::meta::wrapper_pair_have_same_scalar<vec_type,result_vec_type>::value
+    core::meta::wrapper_triplet_have_same_scalar<mvec_type,
+						 vec_type,
+						 result_vec_type>::value and
+    core::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
@@ -48,9 +59,42 @@ void dot(const mvec_type & mvA,
     result[i] = colI->dot(*vecB.data());
   }
 }
-#endif
-//--------------------------------------------------------
+
+//---------------------------------------
+// c = eigen STATIC vector, passed in
+//---------------------------------------
+template <typename mvec_type,
+	  typename vec_type,
+	  typename result_vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_tpetra_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_tpetra_vector_wrapper<vec_type>::value and
+    core::meta::is_eigen_vector_wrapper<result_vec_type>::value and
+    core::meta::wrapper_triplet_have_same_scalar<mvec_type,
+						 vec_type,
+						 result_vec_type>::value and
+    core::details::traits<result_vec_type>::is_static
+    > * = nullptr
+  >
+void dot(const mvec_type & mvA,
+	 const vec_type & vecB,
+	 result_vec_type & result){
+
+  ///computes dot product of each vector in mvA
+  ///with vecB storing each value in result
+  // how many vectors are in mvA
+  auto numVecs = mvA.globalNumVectors();
+  // check the result has right size
+  assert( result.size() == numVecs );
+
+  for (decltype(numVecs) i=0; i<numVecs; i++){
+    // colI is a Teuchos::RCP<Vector<...>>
+    auto colI = mvA.data()->getVector(i);
+    result[i] = colI->dot(*vecB.data());
+  }
+}
 
 
 }}} // end namespace rompp::core::ops
+#endif
 #endif
