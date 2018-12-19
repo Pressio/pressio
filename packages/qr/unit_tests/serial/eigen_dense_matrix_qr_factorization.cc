@@ -27,12 +27,15 @@ TEST(qr_factorization,
 
   // do QR
   using R_type = rompp::core::Matrix<Eigen::MatrixXd>;
-  rompp::qr::QRSolver<mymat_t, rompp::core::Matrix, R_type> qrObj;
-  qrObj.compute(A);
+  rompp::qr::QRSolver<mymat_t, rompp::core::Matrix, R_type, ::rompp::qr::Householder> qrObj;
+  qrObj.computeThin(A);
   const auto & Q = qrObj.cRefQFactor();
   const auto & R = qrObj.cRefRFactor();
   std::cout << *Q.data() << "\n";
   std::cout << *R.data() << "\n";
+
+  assert( Q.rows() == 9 );
+  assert( Q.cols() == 4 );
 
   Eigen::MatrixXd trueQ(9,9);
   trueQ << -0.897235446547271, -0.039024431200404,  0.173692309541681, -0.034843851055998,
@@ -73,7 +76,7 @@ TEST(qr_factorization,
   	    0.,  0.               ,  0.               ,  0.               ;
 
   // check R factor
-  for (auto i=0; i<9; i++)
+  for (auto i=0; i<4; i++)
     for (auto j=0; j<4; j++)
       EXPECT_NEAR( R(i,j), trueR(i,j), 1e-6);
 

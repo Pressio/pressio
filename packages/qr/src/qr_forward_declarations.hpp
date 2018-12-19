@@ -4,13 +4,15 @@
 
 #include "qr_ConfigDefs.hpp"
 #include "qr_algorithms_tags.hpp"
+#include "../../core/src/core_forward_declarations.hpp"
 
 namespace rompp{  namespace qr{
 
 template<typename matrix_type,
-	 template <typename...> class Q_type,
 	 typename R_type,
-	 typename algorithm = ::rompp::qr::Hacked,
+	 typename algorithm,
+	 template <typename...> class Q_type =
+	 ::rompp::core::MultiVector,
 	 typename enable = void>
 class QRSolver;
 

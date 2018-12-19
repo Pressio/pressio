@@ -4,6 +4,7 @@
 
 #include "qr_ConfigDefs.hpp"
 #include "qr_forward_declarations.hpp"
+#include "qr_rfactor_solve_impl.hpp"
 
 namespace rompp{ namespace qr{
 
@@ -22,23 +23,36 @@ class QRSolverBase
   friend core::details::CrtpBase<this_t>;
 
 public:
-  void compute(matrix_type & A){
-    this->underlying().computeImpl(A);
-  };
+  void computeThin(matrix_type & A){
+    this->underlying().computeThinImpl(A);
+  }
+
+  template <typename vector_in_t,
+	    typename vector_out_t>
+  void project(const vector_in_t & vecIn,
+	       vector_out_t & vecOut) const{
+    this->underlying().projectImpl(vecIn, vecOut);
+  }
+
+  template <typename vector_t>
+  void solve(const vector_t & rhs, vector_t & y){
+    this->underlying().solveImpl(rhs, y);
+  }
 
   const Q_type & cRefQFactor() const {
     return this->underlying().cRefQFactorImpl();
-    //return *Qmat_;
   }
 
   const R_type & cRefRFactor() const {
     return this->underlying().cRefRFactorImpl();
-    //return *Rmat_;
   }
 
 private:
   QRSolverBase() = default;
   ~QRSolverBase() = default;
+
+  std::shared_ptr<Q_type> Qmat_ = nullptr;
+  std::shared_ptr<R_type> Rmat_ = nullptr;
 
 };//end class
 
