@@ -16,40 +16,6 @@ FILE(GLOB GEN_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB EXP_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/*.hpp")
 
-# SET(HEADERS
-#   ${solvers_general_HEADERS}
-#   ${solvers_exp_HEADERS}
-# )
-
-# SET(GEN_HEADERS
-# solvers_ConfigDefs.hpp
-# solvers_forward_declarations.hpp
-# )
-# SET(EXP_HEADERS
-# experimental/solvers_l2_vector_norm.hpp
-# experimental/solvers_linear_base.hpp
-# experimental/solvers_linear_direct.hpp
-# experimental/solvers_linear_factory.hpp
-# experimental/solvers_linear_iterative_policies_trilinos.hpp
-# experimental/solvers_linear_iterative.hpp
-# experimental/solvers_linear_traits.hpp
-# experimental/solvers_meta_static_checks.hpp
-# experimental/solvers_nonlinear_base.hpp
-# experimental/solvers_nonlinear_factory.hpp
-# experimental/solvers_nonlinear_iterative.hpp
-# experimental/solvers_nonlinear_traits.hpp
-# experimental/solvers_nonlinear_iterative_helper.hpp
-# experimental/solvers_nonlinear_leastsquare_iterative.hpp
-# experimental/solvers_norms_fwd.hpp
-# experimental/solvers_policy_linear_dense_eigen.hpp
-# experimental/solvers_policy_linear_iterative_eigen.hpp
-# experimental/solvers_policy_linear_iterative_trilinos.hpp
-# experimental/solvers_policy_nonlinear_iterative.hpp
-# experimental/solvers_policy_nonlinear_leastsquare_iterative.hpp
-# experimental/solvers_system_traits.hpp
-# )
-
-
 #################
 #### SOURCES
 #################
@@ -58,7 +24,7 @@ FILE(GLOB solvers_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB solvers_exp_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/experimental/src/*.cc")
 
-SET(SOURCES 
+SET(SOURCES
   ${solvers_general_SRCS}
   ${solvers_exp_SRCS}
 )
@@ -68,7 +34,7 @@ SET(LUMPED_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/../../SOLVERS_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/../../SOLVERS_BASIC
   ${CMAKE_CURRENT_SOURCE_DIR}/../../SOLVERS_LINEAR
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../SOLVERS_NONLINEAR  
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../SOLVERS_NONLINEAR
 )
 INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 

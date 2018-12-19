@@ -9,9 +9,6 @@ namespace solvers{
 class SolversNonLinearIterativeNewtonRaphsonPolicy; // Fwd declaration
 class SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy; // Fwd declaration
 
-template <typename qr_algo_tag>
-class SolversNonLinearIterativeLeastSquareGaussNewtonQRPolicy; // Fwd declaration
-
 
 namespace nonlinear {
 
