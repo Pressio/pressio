@@ -9,7 +9,7 @@
 namespace rompp{ namespace core{ namespace ops{
 
 // Eigen multivector dot eigen vector
-// result stored in Eigen vector passed by reference
+// result stored in Eigen DYNAMIC vector passed by reference
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
@@ -18,7 +18,8 @@ template <typename mvec_type,
     core::meta::is_eigen_vector_wrapper<vec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     core::meta::is_eigen_vector_wrapper<result_vec_type>::value and
-    core::meta::wrapper_pair_have_same_scalar<vec_type,result_vec_type>::value
+    core::meta::wrapper_pair_have_same_scalar<vec_type,result_vec_type>::value and
+    core::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
@@ -27,6 +28,29 @@ void dot(const mvec_type & mvA,
   auto numVecs = mvA.numVectors();
   if ( result.size() != numVecs )
     result.resize(numVecs);
+  *result.data() = (*mvA.data()).transpose() * (*vecB.data());
+}
+//--------------------------------------------------------
+
+
+// Eigen multivector dot eigen vector
+// result stored in Eigen STATIC vector passed by reference
+template <typename mvec_type,
+	  typename vec_type,
+	  typename result_vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_eigen_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_eigen_vector_wrapper<vec_type>::value and
+    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+    core::meta::is_eigen_vector_wrapper<result_vec_type>::value and
+    core::meta::wrapper_pair_have_same_scalar<vec_type,result_vec_type>::value and
+    core::details::traits<result_vec_type>::is_static
+    > * = nullptr
+  >
+void dot(const mvec_type & mvA,
+	 const vec_type & vecB,
+	 result_vec_type & result){
+
   *result.data() = (*mvA.data()).transpose() * (*vecB.data());
 }
 //--------------------------------------------------------
