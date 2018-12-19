@@ -5,12 +5,14 @@
 #include "qr/src/qr_ConfigDefs.hpp"
 #include "qr/src/qr_forward_declarations.hpp"
 #include "qr/src/qr_algorithms_tags.hpp"
-#include "qr/src/qr_solver_base.hpp"
 
+#include "qr/src/qr_solver_base.hpp"
 
 #include "qr/src/qr_eigen_dense_matrix.hpp"
 #include "qr/src/qr_eigen_sparse_matrix.hpp"
-#include "qr/src/qr_epetra_multi_vector.hpp"
-#include "qr/src/qr_tpetra_multi_vector.hpp"
+#include "qr/src/qr_epetra_multi_vector_tsqr.hpp"
+#include "qr/src/qr_epetra_multi_vector_householder.hpp"
+#include "qr/src/qr_tpetra_multi_vector_householder.hpp"
+#include "qr/src/qr_tpetra_multi_vector_tsqr.hpp"
 
 #endif

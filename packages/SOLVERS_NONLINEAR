@@ -3,5 +3,6 @@
 #define SOLVERS_NONLINEAR_HPP_
 
 #include "solvers/src/experimental/solvers_nonlinear_factory.hpp"
+#include "solvers/src/solvers_leastsquares_gauss_newton_qr.hpp"
 
 #endif
