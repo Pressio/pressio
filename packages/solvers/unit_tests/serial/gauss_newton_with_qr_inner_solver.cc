@@ -52,9 +52,18 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR)
 
   using state_w_t = core::Vector<Eigen::VectorXd>;
   using sc_t = double;
+  using mat_type = typename NonLinearLeastSquareSystem::jacobian_w_t;
 
-  rompp::solvers::GaussNewtonQR<sc_t, ::rompp::qr::Householder, 2> solver;
+  // define type of QR solver
+  using qr_algo = qr::Householder;
+  using R_type = core::Matrix<Eigen::MatrixXd>;
+  using qr_type = qr::QRSolver<mat_type, R_type, qr_algo>;
 
+  // solver object
+  rompp::solvers::GaussNewtonQR<sc_t, qr_type> solver;
+  solver.setNonLinearTolerance(1e-8);
+
+  // initial state
   state_w_t x(2);
   x[0] = 2.0;
   x[1] = 0.25;
@@ -64,6 +73,6 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR)
   solver.solve(sys, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;
 
-  // EXPECT_NEAR( x(0), 2.4173449278229, 1e-9 );
-  // EXPECT_NEAR( x(1), 0.26464986197941, 1e-9 );
+  EXPECT_NEAR( x(0), 2.4173449278229, 1e-9 );
+  EXPECT_NEAR( x(1), 0.26464986197941, 1e-9 );
 }

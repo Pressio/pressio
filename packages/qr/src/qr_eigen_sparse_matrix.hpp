@@ -5,6 +5,8 @@
 #include "qr_ConfigDefs.hpp"
 #include "qr_forward_declarations.hpp"
 #include "qr_solver_base.hpp"
+#include "qr_rfactor_solve_impl.hpp"
+
 #include "../../CORE_ALL"
 #include <Eigen/OrderingMethods>
 #include<Eigen/SparseQR>
@@ -47,6 +49,22 @@ public:
 
 private:
 
+  template <typename vector_in_t,
+	    typename vector_out_t,
+	    core::meta::enable_if_t<
+	      core::meta::is_core_vector_wrapper<vector_in_t>::value and
+	      core::meta::is_core_vector_wrapper<vector_out_t>::value and
+	      // the type vector in should be from same package as Q
+	      core::details::traits<vector_in_t>::wrapped_package_identifier ==
+		core::details::traits<Q_t>::wrapped_package_identifier
+	      > * = nullptr
+	    >
+  void projectImpl(const vector_in_t & vecIn,
+		   vector_out_t & vecOut) const{
+    core::ops::dot( *Qmat_, vecIn, vecOut );
+  }
+
+
   void computeThinImpl(matrix_type & A){
     auto m = A.rows();
     auto n = A.cols();
@@ -64,6 +82,11 @@ private:
 
     auto & R1 = eQR.matrixR().template triangularView<Eigen::Upper>();
     Rmat_ = std::make_shared<R_type>(R1.block(0,0,n,n));
+  }
+
+  template <typename vector_t>
+  void solveImpl(const vector_t & rhs, vector_t & y){
+    ::rompp::qr::impl::solve(rhs, *Rmat_, y);
   }
 
   const Q_t & cRefQFactorImpl() const {
