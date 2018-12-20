@@ -24,8 +24,8 @@ class ImplicitEulerStepperImpl<state_type,
 				     model_type,
 				     residual_policy_type,
 				     jacobian_policy_type> >,
-    private OdeStorage<state_type, residual_type, 1>,
-    private ImpOdeAuxData<model_type,
+    protected OdeStorage<state_type, residual_type, 1>,
+    protected ImpOdeAuxData<model_type,
 			  typename core::details::traits<state_type>::scalar_t,
 			  residual_policy_type, jacobian_policy_type>{
 
@@ -60,14 +60,6 @@ public:
   using matrix_type = jacobian_type;
 
 protected:
-  using storage_base_t::auxStates_;
-  using auxdata_base_t::model_;
-  using auxdata_base_t::residual_obj_;
-  using auxdata_base_t::jacobian_obj_;
-  using auxdata_base_t::t_;
-  using auxdata_base_t::dt_;
-
-protected:
   template < typename M = model_type,
 	     typename U = residual_policy_type,
 	     typename T = jacobian_policy_type,
@@ -88,33 +80,46 @@ public:
 		  scalar_type dt, step_t step,
 		  solver_type & solver){
 
-    dt_ = dt;
-    t_ = t;
+    this->dt_ = dt;
+    this->t_ = t;
     // store previous state = y;
-    auxStates_[0] = y;
-    y = solver.solve(*this, y);
+    this->auxStates_[0] = y;
+    solver.solve(*this, y);
   }//end doStepImpl
   //--------------------------------------------------------
 
-protected:
-
+public:
   void residualImpl(const state_type & y, residual_type & R)const{
-    (*residual_obj_).template operator()<my_enum, 1>(y, R, auxStates_, *model_, t_, dt_);
+    (*this->residual_obj_).template operator()<my_enum, 1>(y, R,
+							   this->auxStates_,
+							   *this->model_,
+							   this->t_,
+							   this->dt_);
   }
   //--------------------------------------------------------
 
   void jacobianImpl(const state_type & y, jacobian_type & J)const{
-    (*jacobian_obj_).template operator()<my_enum>( y, J, *model_, t_, dt_);
+    (*this->jacobian_obj_).template operator()<my_enum>( y, J,
+							 *this->model_,
+							 this->t_,
+							 this->dt_);
   }
   //--------------------------------------------------------
 
   residual_type residualImpl(const state_type & y)const{
-    return (*residual_obj_).template operator()<my_enum, 1>( y, auxStates_, *model_, t_, dt_);
+    return (*this->residual_obj_).template operator()<my_enum, 1>( y,
+								   this->auxStates_,
+								   *this->model_,
+								   this->t_,
+								   this->dt_);
   }
   //--------------------------------------------------------
 
   jacobian_type jacobianImpl(const state_type & y)const{
-    return (*jacobian_obj_).template operator()<my_enum>(y, *model_, t_, dt_);
+    return (*this->jacobian_obj_).template operator()<my_enum>(y,
+							       *this->model_,
+							       this->t_,
+							       this->dt_);
   }
   //--------------------------------------------------------
 

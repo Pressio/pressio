@@ -17,17 +17,16 @@ template<typename stepper_type>
 class ImplicitStepperBase
   : private core::details::CrtpBase<ImplicitStepperBase<stepper_type>>
 {
-private:
   using traits = typename ode::details::traits<stepper_type>;
 
   using state_t = typename traits::state_t;
   using residual_t = typename traits::residual_t;
   using jacobian_t = typename traits::jacobian_t;
   using sc_t = typename traits::scalar_t;
-  using residual_policy_t = typename traits::residual_policy_t;  
-  using jacobian_policy_t = typename traits::jacobian_policy_t;  
+  using residual_policy_t = typename traits::residual_policy_t;
+  using jacobian_policy_t = typename traits::jacobian_policy_t;
 
-  using order_t = typename traits::order_t; 
+  using order_t = typename traits::order_t;
   static constexpr order_t order_value =
     ode::details::traits<stepper_type>::order_value;
 
@@ -67,13 +66,11 @@ public:
   jacobian_t jacobian(const state_t & y)const{
     return this->underlying().jacobianImpl(y);
   }
-  
+
 private:
-  
   ImplicitStepperBase() = default;
   ~ImplicitStepperBase() = default;
-  
-private:
+
   friend stepper_type;
   friend core::details::CrtpBase<ImplicitStepperBase<stepper_type>>;
 

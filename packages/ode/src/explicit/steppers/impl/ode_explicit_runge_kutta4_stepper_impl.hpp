@@ -20,8 +20,8 @@ class ExplicitRungeKutta4StepperImpl<state_type,
 				 model_type,
 				 ode_residual_type,
 				 residual_policy_type> >,
-    private OdeStorage<state_type, ode_residual_type, 1, 4>,
-    private ExpOdeAuxData<model_type, residual_policy_type>
+    protected OdeStorage<state_type, ode_residual_type, 1, 4>,
+    protected ExpOdeAuxData<model_type, residual_policy_type>
 {
 
   static_assert( meta::is_legitimate_explicit_residual_policy<
@@ -40,12 +40,6 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
   using scalar_t2  = typename core::details::traits<ode_residual_type>::scalar_t;
   static_assert(std::is_same<scalar_type, scalar_t2>::value,
 		"Not maching scalar types");
-
-protected:
-  using storage_base_t::auxStates_;
-  using storage_base_t::auxRHS_;
-  using auxdata_base_t::model_;
-  using auxdata_base_t::residual_obj_;
 
 protected:
   template < typename T1 = model_type,
@@ -89,17 +83,7 @@ public:
   void operator()(state_type & y, scalar_type t,
 		  scalar_type dt, step_t step){
 
-    auto & ytmp = auxStates_[0];
-    // if ( ytmp.empty() )
-    //   ytmp.matchLayoutWith(y);
-    // if(auxRHS_[0].empty() == 0)
-    //   auxRHS_[0].matchLayoutWith(y);
-    // if(auxRHS_[1].empty() == 0)
-    //   auxRHS_[1].matchLayoutWith(y);
-    // if(auxRHS_[2].empty() == 0)
-    //   auxRHS_[2].matchLayoutWith(y);
-    // if(auxRHS_[3].empty() == 0)
-    //   auxRHS_[3].matchLayoutWith(y);
+    auto & ytmp = this->auxStates_[0];
 
     const scalar_type dt_half = dt / static_cast< scalar_type >(2);
     const scalar_type t_phalf = t + dt_half;
@@ -109,30 +93,30 @@ public:
     // ----------
     // stage 1:
     // ----------
-    (*residual_obj_)(y, auxRHS_[0], *model_, t);
-    ytmp = y + auxRHS_[0]*dt_half;
-    //ytmp.template inPlaceOp<add_op_t>(1.0,  y, dt_half, auxRHS_[0]);
+    (*this->residual_obj_)(y, this->auxRHS_[0], *this->model_, t);
+    ytmp = y + this->auxRHS_[0]*dt_half;
+    //ytmp.template inPlaceOp<add_op_t>(1.0,  y, dt_half, this->auxRHS_[0]);
 
     // ----------
     // stage 2:
     // ----------
-    (*residual_obj_)(ytmp, auxRHS_[1], *model_, t_phalf);
-    ytmp = y + auxRHS_[1]*dt_half;
-    //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt_half, auxRHS_[1]);
+    (*this->residual_obj_)(ytmp, this->auxRHS_[1], *this->model_, t_phalf);
+    ytmp = y + this->auxRHS_[1]*dt_half;
+    //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt_half, this->auxRHS_[1]);
 
     // ----------
     // stage 3:
     // ----------
-    (*residual_obj_)(ytmp, auxRHS_[2], *model_, t_phalf);
-    ytmp = y + auxRHS_[2]*dt;
-    //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt, auxRHS_[2]);
+    (*this->residual_obj_)(ytmp, this->auxRHS_[2], *this->model_, t_phalf);
+    ytmp = y + this->auxRHS_[2]*dt;
+    //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt, this->auxRHS_[2]);
 
     // ----------
     // stage 4:
     // ----------
-    (*residual_obj_)(ytmp, auxRHS_[3], *model_, t + dt);
+    (*this->residual_obj_)(ytmp, this->auxRHS_[3], *this->model_, t + dt);
     //y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    y += dt6*auxRHS_[0] + dt3*auxRHS_[1] + dt3*auxRHS_[2] + dt6*auxRHS_[3];
+    y += dt6*this->auxRHS_[0] + dt3*this->auxRHS_[1] + dt3*this->auxRHS_[2] + dt6*this->auxRHS_[3];
     // y.template inPlaceOp<add_op_t>(1.0, dt6, auxRHS_[0],
     // 				   dt3, auxRHS_[1],
     // 				   dt3, auxRHS_[2],
@@ -144,7 +128,5 @@ private:
 
 }; //end class
 
-}//end namespace impl
-}//end namespace ode  
-}//end namespace rompp
+}}}//end namespace rompp::ode::impl
 #endif
