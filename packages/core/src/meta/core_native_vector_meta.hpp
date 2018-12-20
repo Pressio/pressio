@@ -4,9 +4,7 @@
 
 #include "core_meta_basic.hpp"
 #include "core_meta_detection_idiom.hpp"
-//std::vector 
 #include <vector>
-// Eigen dynamic and static vectors
 #include <Eigen/Dense>
 
 #ifdef HAVE_BLAZE
@@ -20,17 +18,61 @@
 #endif
 
 #ifdef HAVE_TRILINOS
-// tpetra
 #include <Tpetra_Vector.hpp>
-// epetra 
-#include "Epetra_Vector.h"
-#include "Epetra_MultiVector.h"
-// kokkos views
 #include <Kokkos_Core.hpp>
 #endif
 
 
 namespace rompp{ namespace core{ namespace meta {
+
+
+#ifdef HAVE_TRILINOS
+template <typename T, typename enable = void>
+struct is_vector_epetra : std::false_type {};
+
+template <typename T>
+struct is_vector_epetra<T,
+      typename
+      std::enable_if<
+	std::is_same<T,Epetra_Vector>::value
+	>::type
+      > : std::true_type{};
+//--------------------------------------------
+
+template <typename T, typename enable = void>
+struct is_vector_tpetra : std::false_type {};
+
+template <typename T>
+struct is_vector_tpetra<T,
+      typename
+      std::enable_if<
+	std::is_same<T,
+		     Tpetra::Vector<
+		       typename T::impl_scalar_type,
+		       typename T::local_ordinal_type,
+		       typename T::global_ordinal_type,
+		       typename T::node_type
+		       >
+		     >::value
+	>::type
+      > : std::true_type{};
+//--------------------------------------------
+
+template <typename T, typename enable = void>
+struct is_vector_kokkos : std::false_type {};
+
+template <typename T>
+struct is_vector_kokkos<T,
+	 core::meta::enable_if_t<
+	   // kokkos vector is it is a view and has rank=1
+	   Kokkos::is_view<T>::value &&
+	   T::traits::rank==1>
+      > : std::true_type{};
+
+#endif //HAVE_TRILINOS
+//----------------------------------------------
+
+
 
 template <typename T, typename enable = void>
 struct is_vector_eigen : std::false_type {};
@@ -60,7 +102,7 @@ struct is_vector_eigen< T,
 	>::type
       > : std::true_type{};
 //----------------------------------------------
-  
+
 template <typename T, typename enable = void>
 struct is_vector_stdlib : std::false_type {};
 
@@ -81,57 +123,8 @@ struct is_vector_stdlib<T,
 	>::type
       > : std::true_type{};
 //--------------------------------------------
-  
-#ifdef HAVE_TRILINOS  
-template <typename T, typename enable = void>
-struct is_vector_epetra : std::false_type {};
 
-template <typename T>
-struct is_vector_epetra<T,
-      typename
-      std::enable_if<
-	std::is_same<T,Epetra_Vector>::value 
-	>::type
-      > : std::true_type{};
-#endif 
-//--------------------------------------------
 
-#ifdef HAVE_TRILINOS  
-template <typename T, typename enable = void>
-struct is_vector_tpetra : std::false_type {};
-
-template <typename T>
-struct is_vector_tpetra<T,
-      typename
-      std::enable_if<
-	std::is_same<T,
-		     Tpetra::Vector<
-		       typename T::impl_scalar_type,
-		       typename T::local_ordinal_type,
-		       typename T::global_ordinal_type,
-		       typename T::node_type
-		       >
-		     >::value 
-	>::type
-      > : std::true_type{};
-#endif 
-//--------------------------------------------
-  
-#ifdef HAVE_TRILINOS 
-template <typename T, typename enable = void>
-struct is_vector_kokkos : std::false_type {};
-
-template <typename T>
-struct is_vector_kokkos<T,
-	 core::meta::enable_if_t<
-	   // kokkos vector is it is a view and has rank=1
-	   Kokkos::is_view<T>::value && 
-	   T::traits::rank==1>
-      > : std::true_type{};
-#endif
-//--------------------------------------------
-
-  
 #ifdef HAVE_BLAZE
 template <typename T, typename enable = void>
 struct is_static_vector_blaze : std::false_type {};
@@ -155,7 +148,7 @@ struct is_dynamic_row_vector_blaze<T,
 			>::value
 	   >
       > : std::true_type{};
-  
+
 template <typename T, typename enable = void>
 struct is_dynamic_column_vector_blaze : std::false_type {};
 
@@ -208,7 +201,7 @@ struct is_armadillo_row_vector<T,
 			>::value
 	   >
       > : std::true_type{};
-  
+
 template <typename T, typename enable = void>
 struct is_vector_armadillo : std::false_type {};
 
@@ -222,8 +215,6 @@ struct is_vector_armadillo<T,
 
 #endif
 //--------------------------------------------
-
-
 
 }}}//end namespace rompp::core::meta
 #endif
