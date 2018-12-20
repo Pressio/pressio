@@ -102,13 +102,13 @@ struct are_vector_compatible<
 
   static constexpr bool same_type =
     valid_vector &&
-    core::details::traits<T>::wrapped_package_identifier ==
-    core::details::traits<U>::wrapped_package_identifier;
+    core::details::traits<T>::wrapped_vector_identifier ==
+    core::details::traits<U>::wrapped_vector_identifier;
 
-  static constexpr bool value = same_type &&
-    (core::details::traits<T>::is_dynamic ||
-     core::details::traits<U>::is_dynamic ||
-     core::details::traits<T>::rows == core::details::traits<U>::rows);
+  static constexpr bool value = same_type;
+    // (core::details::traits<T>::is_dynamic ||
+    //  core::details::traits<U>::is_dynamic ||
+    //  core::details::traits<T>::rows == core::details::traits<U>::rows);
 };
 
 

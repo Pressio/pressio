@@ -12,7 +12,7 @@ TEST(core_vector_serial_eigen_dynamic_class,
 
   using vecTrait = rompp::core::details::traits<myvec_t>;
   ASSERT_TRUE(vecTrait::wrapped_vector_identifier 
-  == rompp::core::details::WrappedVectorIdentifier::Eigen);
+  == rompp::core::details::WrappedVectorIdentifier::EigenColDynamic);
 
   //construct by passing the size 
   myvec_t m_v2(5);

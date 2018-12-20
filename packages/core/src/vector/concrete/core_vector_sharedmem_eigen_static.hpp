@@ -12,8 +12,7 @@ namespace rompp{ namespace core{
 template <typename wrapped_type>
 class Vector<wrapped_type,
 	     core::meta::enable_if_t<
-	       core::meta::is_vector_eigen<wrapped_type>::value &&
-	       details::traits<Vector<wrapped_type>>::is_static
+	       core::meta::is_static_vector_eigen<wrapped_type>::value
 	       >
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,

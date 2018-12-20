@@ -8,12 +8,135 @@
 #include "../meta/core_meta_detect_operators.hpp"
 #include "../core_shared_traits.hpp"
 
+
 namespace rompp{ namespace core{ namespace details{
+
+//*******************************
+// Eigen STATIC ROW vector
+//*******************************
+template <typename wrapped_type>
+struct traits<Vector<wrapped_type,
+		     typename
+		     std::enable_if<
+		       core::meta::is_static_row_vector_eigen<
+			 wrapped_type
+			 >::value
+		       >::type
+		     >
+	      >
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+				    WrappedPackageIdentifier::Eigen,
+				    true>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::EigenRowStatic;
+
+  using scalar_t = typename wrapped_type::Scalar;
+  using ordinal_t = int;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic = false;
+};
 
 
 //*******************************
-// Armadillo column vector 
-//*******************************   
+// Eigen STATIC COLUMN vector
+//*******************************
+template <typename wrapped_type>
+struct traits<Vector<wrapped_type,
+		     typename
+		     std::enable_if<
+		       core::meta::is_static_column_vector_eigen<
+			 wrapped_type
+			 >::value
+		       >::type
+		     >
+	      >
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+				    WrappedPackageIdentifier::Eigen,
+				    true>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::EigenColStatic;
+
+  using scalar_t = typename wrapped_type::Scalar;
+  using ordinal_t = int;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic = false;
+};
+
+
+
+//*******************************
+// Eigen DYNAMIC ROW vector
+//*******************************
+template <typename wrapped_type>
+struct traits<Vector<wrapped_type,
+		     typename
+		     std::enable_if<
+		       core::meta::is_dynamic_row_vector_eigen<
+			 wrapped_type
+			 >::value
+		       >::type
+		     >
+	      >
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+				    WrappedPackageIdentifier::Eigen,
+				    true>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::EigenRowDynamic;
+
+  using scalar_t = typename wrapped_type::Scalar;
+  using ordinal_t = int;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = true;
+};
+
+
+//*******************************
+// Eigen DYNAMIC COLUMN vector
+//*******************************
+template <typename wrapped_type>
+struct traits<Vector<wrapped_type,
+		     typename
+		     std::enable_if<
+		       core::meta::is_dynamic_column_vector_eigen<
+			 wrapped_type
+			 >::value
+		       >::type
+		     >
+	      >
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+				    WrappedPackageIdentifier::Eigen,
+				    true>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::EigenColDynamic;
+
+  using scalar_t = typename wrapped_type::Scalar;
+  using ordinal_t = int;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = true;
+};
+
+
+
+
+//*******************************
+// Armadillo column vector
+//*******************************
 #ifdef HAVE_ARMADILLO
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
@@ -33,20 +156,19 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier =
     WrappedVectorIdentifier::ArmadilloCol;
-    
+
   using scalar_t = typename wrapped_type::elem_type;
   using ordinal_t = unsigned long;
 
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic = !is_static;
-  static constexpr int rows = -1;
 };
 #endif
 
 
 //*******************************
-// Armadillo row vector 
-//*******************************   
+// Armadillo row vector
+//*******************************
 #ifdef HAVE_ARMADILLO
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
@@ -66,21 +188,20 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier =
     WrappedVectorIdentifier::ArmadilloRow;
-    
+
   using scalar_t = typename wrapped_type::elem_type;
   using ordinal_t = unsigned long;
 
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic = !is_static;
-  static constexpr int rows = -1;
 };
 #endif
-  
 
-  
+
+
 //*******************************
-// Blaze dynamic vector 
-//*******************************   
+// Blaze dynamic vector
+//*******************************
 #ifdef HAVE_BLAZE
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
@@ -99,58 +220,22 @@ struct traits<Vector<wrapped_type,
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::BlazeDynamic;
-    
+
   using scalar_t = typename wrapped_type::ElementType;
   using ordinal_t = unsigned long;
 
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = !is_static;
-  static constexpr int rows = -1;
 };
 #endif
-  
 
-//*******************************
-// Eigen vector 
-//******************************* 
-template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
-		       core::meta::is_vector_eigen<
-			 wrapped_type>::value
-		       >::type
-		     >
-	      >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Eigen,
-				    true>
-{
 
-  static constexpr WrappedVectorIdentifier
-  wrapped_vector_identifier = WrappedVectorIdentifier::Eigen;
-    
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
 
-  static constexpr bool is_static = (
-	// if it is a row vector NON dynamic
-	( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
-	  wrapped_type::ColsAtCompileTime == 1 ) ||
-	// if it is a col vector NON dynamic
-	( wrapped_type::RowsAtCompileTime == 1 &&
-	  wrapped_type::ColsAtCompileTime != Eigen::Dynamic )
-	);
-  static constexpr bool is_dynamic = !is_static;
-  static constexpr int rows = is_dynamic ? -1 : wrapped_type::RowsAtCompileTime;
-};
 
 
 //*******************************
-// for epetra vector 
-//******************************* 
+// for epetra vector
+//*******************************
 #ifdef HAVE_TRILINOS
 template<typename wrapped_type>
 struct traits<Vector<wrapped_type,
@@ -169,7 +254,7 @@ struct traits<Vector<wrapped_type,
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Epetra;
-  
+
   using scalar_t = default_types::epetra_scalar_t;
   using local_ordinal_t = core::default_types::epetra_lo_t;
   using global_ordinal_t = core::default_types::epetra_go_t1;
@@ -177,14 +262,15 @@ struct traits<Vector<wrapped_type,
   using communicator_t = Epetra_Comm;
 
   static constexpr bool is_dynamic = true;
-  static constexpr int rows = -1;
 };
 #endif
 
-      
+
+
+
 //*******************************
-// for tpetra vector 
-//******************************* 
+// for tpetra vector
+//*******************************
 #ifdef HAVE_TRILINOS
 template<typename wrapped_type>
 struct traits<Vector<wrapped_type,
@@ -203,7 +289,7 @@ struct traits<Vector<wrapped_type,
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Tpetra;
-  
+
   using scalar_t = typename wrapped_type::impl_scalar_type;
   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
@@ -224,21 +310,21 @@ struct traits<Vector<wrapped_type,
   // store types for host
   using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
   using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
-  
+
   using dot_t = typename wrapped_type::dot_type;
   using mag_t = typename wrapped_type::mag_type;
   using communicator_t = decltype(std::declval<data_map_t>().getComm());
-  
+
   static constexpr bool is_dynamic = true;
-  static constexpr int rows = -1;
 };
 #endif
-      
+
+
 
 
 //*******************************
-// Kokkos vector 
-//******************************* 
+// Kokkos vector
+//*******************************
 #ifdef HAVE_TRILINOS
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
@@ -268,15 +354,14 @@ struct traits<Vector<wrapped_type,
   using  host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   static constexpr bool is_static = wrapped_type::traits::rank_dynamic==0;
   static constexpr bool is_dynamic = !is_static;
-  static constexpr int rows = -1; 
 };
 #endif
 
 
-  
+
 //*******************************
-// for a std vector 
-//******************************* 
+// for a std vector
+//*******************************
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
     typename
@@ -292,20 +377,15 @@ struct traits<Vector<wrapped_type,
 			       WrappedPackageIdentifier::CppStdLib,
 				    true>
 {
-  
+
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::CppStdLib;
-  
+
   using scalar_t = typename wrapped_type::value_type;
   using ordinal_t = core::default_types::local_ordinal_t;
   static constexpr bool is_dynamic = true;
-  static constexpr int rows = -1;
 };
 
 
-  
-}//end namespace details
-}//end namespace core
-
-}//end namespace rompp
+}}}//end namespace rompp::core::details
 #endif

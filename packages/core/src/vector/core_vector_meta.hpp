@@ -65,11 +65,16 @@ template <typename T>
 struct is_eigen_vector_wrapper<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_vector &&
-       core::details::traits<T>::wrapped_vector_identifier==
-       core::details::WrappedVectorIdentifier::Eigen
+       (core::details::traits<T>::wrapped_vector_identifier==
+        core::details::WrappedVectorIdentifier::EigenColStatic or 
+        core::details::traits<T>::wrapped_vector_identifier==
+        core::details::WrappedVectorIdentifier::EigenColDynamic or
+        core::details::traits<T>::wrapped_vector_identifier==
+        core::details::WrappedVectorIdentifier::EigenRowStatic or 
+        core::details::traits<T>::wrapped_vector_identifier==
+        core::details::WrappedVectorIdentifier::EigenRowDynamic)
        >
   > : std::true_type{};
-  
 //------------------------------------------------------------
 
   

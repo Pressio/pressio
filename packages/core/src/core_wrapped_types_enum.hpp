@@ -29,7 +29,11 @@ enum class WrappedVectorIdentifier{
    Undefined,
    Epetra,
    Tpetra,
-   Eigen, // maybe more specific, like static or dynamic
+   Eigen,
+   EigenRowStatic,
+   EigenColStatic,
+   EigenRowDynamic,
+   EigenColDynamic,
    BlazeStatic,
    BlazeDynamic,
    Kokkos,
