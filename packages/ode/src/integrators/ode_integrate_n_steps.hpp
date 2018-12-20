@@ -7,12 +7,10 @@
 #include "../ode_is_legitimate_collector.hpp"
 
 namespace rompp{ namespace ode{
-  
-//---------------------------------------------------
+
 //---------------------------------------------------
 //---------------------------------------------------
 //                 FOR EXPLICIT METHODS
-//---------------------------------------------------
 //---------------------------------------------------
 //---------------------------------------------------
 
@@ -39,7 +37,7 @@ void integrateNSteps(stepper_type & stepper,
   time_type time = start_time;
   // call collector/observer at starting time
   collector(0, time, yIn);
-  
+
   integral_type step = 1;
   // time loop
   for( ; step <= num_steps ; ++step)
@@ -52,7 +50,7 @@ void integrateNSteps(stepper_type & stepper,
     // call collector/observer at starting time
     collector(step, time, yIn);
   }
-}  
+}
 
 //-------------------------------------------------
 
@@ -82,15 +80,13 @@ void integrateNSteps(stepper_type & stepper,
     time = start_time
       + static_cast<time_type>(step) * dt;
   }
-}  
+}
 
 
-  
-//----------------------------------------------------
+
 //----------------------------------------------------
 //----------------------------------------------------
 //                 FOR IMPLICIT METHODS
-//----------------------------------------------------
 //----------------------------------------------------
 //----------------------------------------------------
 
@@ -119,7 +115,7 @@ void integrateNSteps(stepper_type & stepper,
   time_type time = start_time;
   // call collector/observer at starting time
   collector(0, time, yIn);
-  
+
   integral_type step = 1;
   // time loop
   for( ; step <= num_steps ; ++step)
@@ -128,11 +124,11 @@ void integrateNSteps(stepper_type & stepper,
     stepper(yIn, time, dt, step, solver);
     // advance time
     time = start_time
-      + static_cast<time_type>(step) * dt;  
-    // call collector/observer 
+      + static_cast<time_type>(step) * dt;
+    // call collector/observer
     collector(step, time, yIn);
   }
-}  
+}
 
 //-------------------------------------------------
 
@@ -162,10 +158,10 @@ void integrateNSteps(stepper_type & stepper,
     stepper(yIn, time, dt, step, solver);
     // advance time
     time = start_time
-      + static_cast<time_type>(step) * dt;  
+      + static_cast<time_type>(step) * dt;
   }
-}  
+}
 
-   
+
 }}//end namespace rompp::ode
-#endif 
+#endif
