@@ -46,6 +46,10 @@ FILE(GLOB core_containers_minmax_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DI
 
 FILE(GLOB core_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/vector/*.hpp")
+FILE(GLOB core_vector_SHMEM_EXPR_T_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/sharedmem_expr_templates/*.hpp")
+FILE(GLOB core_vector_DISTMEM_EXPR_T_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/distributed_expr_templates/*.hpp")
 FILE(GLOB core_vector_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/vector/base/*.hpp")
 FILE(GLOB core_vector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -101,6 +105,10 @@ FILE(GLOB core_containers_minmax_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 
 FILE(GLOB core_vector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/vector/src/*.cc")
+FILE(GLOB core_vector_SHMEM_EXPR_T_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/sharedmem_expr_templates/src/*.cc")
+FILE(GLOB core_vector_DISTMEM_EXPR_T_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vector/distributed_expr_templates/src/*.cc")
 FILE(GLOB core_vector_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/vector/base/src/*.cc")
 FILE(GLOB core_vector_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -138,6 +146,8 @@ SET(SOURCES
   ${core_containers_minmax_ops_SRCS}
   #
   ${core_vector_SRCS}
+  ${core_vector_SHMEM_EXPR_T_SRCS}
+  ${core_vector_DISTMEM_EXPR_T_SRCS}
   ${core_vector_base_SRCS}
   ${core_vector_concrete_SRCS}
   #
@@ -191,6 +201,8 @@ INSTALL(FILES ${core_containers_minmax_ops_HEADERS} DESTINATION ${CORE_INCDIR}/c
 
 #
 INSTALL(FILES ${core_vector_HEADERS} DESTINATION ${CORE_INCDIR}/vector)
+INSTALL(FILES ${core_vector_SHMEM_EXPR_T_HEADERS} DESTINATION ${CORE_INCDIR}/vector/sharedmem_expr_templates)
+INSTALL(FILES ${core_vector_DISTMEM_EXPR_T_HEADERS} DESTINATION ${CORE_INCDIR}/vector/distributed_expr_templates)
 INSTALL(FILES ${core_vector_base_HEADERS} DESTINATION ${CORE_INCDIR}/vector/base)
 INSTALL(FILES ${core_vector_concrete_HEADERS} DESTINATION ${CORE_INCDIR}/vector/concrete)
 #

@@ -19,5 +19,12 @@ template <typename wrapped_type,
 class Matrix;
 
 
+// template <typename der_t>
+// class SharedMemVecExpressionBase;
+
+// template <typename der_t>
+// class DistributedVecExpressionBase;
+
+
 }} // end namespace rompp::core
 #endif

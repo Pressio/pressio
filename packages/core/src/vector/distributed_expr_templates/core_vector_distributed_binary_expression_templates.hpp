@@ -2,10 +2,10 @@
 #ifndef CORE_VECTOR_VECTOR_DISTRIBUTED_BINARY_EXPRESSION_TEMPLATES_HPP_
 #define CORE_VECTOR_VECTOR_DISTRIBUTED_BINARY_EXPRESSION_TEMPLATES_HPP_
 
-#include "core_vector_meta.hpp"
+#include "../core_vector_meta.hpp"
 
 namespace rompp{ namespace core{ namespace exprtemplates{
-  
+
 template <typename der_t>
 class DistributedVecExpressionBase {
   DistributedVecExpressionBase() = default;
@@ -17,9 +17,6 @@ public:
 };
 ///-----------------------------------------------------
 
-
-///-----------------------------------------------------
-///-----------------------------------------------------
 template <typename T,
 	  typename enable = void>
 struct is_distributed_vector_expression : std::false_type{};
@@ -32,24 +29,9 @@ struct is_distributed_vector_expression<T,
 	 >::value
 	>> : std::true_type{};
 
-template <typename T,
-	  typename enable = void>
-struct is_admissible_vec_for_dist_expression : std::false_type{};
 
-template <typename T>
-struct is_admissible_vec_for_dist_expression<T,
-      core::meta::enable_if_t<
-	core::meta::is_core_vector_wrapper<T>::value &&
-	!core::details::traits<T>::is_shared_mem
-      >> : std::true_type{};
-  
-///-----------------------------------------------------
-///-----------------------------------------------------
-
-  
-  
 //----------------------------------------------------
-// default 
+// default
 template <typename OP_t, typename T1,
 	  typename T2, typename value_t,
 	  typename LO_t, typename enable = void>
@@ -65,7 +47,7 @@ class DistributedVectorBinaryExp
 
  public:
   using sc_type = value_t;
-  using LO_type = LO_t;    
+  using LO_type = LO_t;
 
   DistributedVectorBinaryExp(T1 const& a, T2 const& b)
     : a_(a), b_(b){}
@@ -78,8 +60,8 @@ class DistributedVectorBinaryExp
     return a_.localSize();}
 };
 
-  
-//----------------------------------------------------  
+
+//----------------------------------------------------
 // T1: whatever, T2: vector
 template <typename OP_t, typename T1, typename T2,
 	  typename value_t, typename LO_t>
@@ -102,7 +84,7 @@ class DistributedVectorBinaryExp<
 public:
   using sc_type = value_t;
   using LO_type = LO_t;
-    
+
   DistributedVectorBinaryExp(T1 const& a, T2 const& b)
     : a_(a), b_(b){}
   ~DistributedVectorBinaryExp() = default;
@@ -116,7 +98,7 @@ public:
 
 
 //-----------------------------------------------------
-// T1: not scalar, T2: scalar 
+// T1: not scalar, T2: scalar
 template <typename OP_t, typename T1,
 	    typename value_t, typename LO_t>
 class DistributedVectorBinaryExp<
@@ -137,7 +119,7 @@ class DistributedVectorBinaryExp<
 public:
   using sc_type = value_t;
   using LO_type = LO_t;
-    
+
   DistributedVectorBinaryExp(const T1 & a, value_t b)
     : a_(a), b_(b){}
   ~DistributedVectorBinaryExp() = default;
@@ -148,9 +130,7 @@ public:
   LO_t localSize() const{
     return a_.localSize();}
 };
-//-----------------------------------------------------
-  
-  
+
 
 }}}//end namespace rompp::core::exprtemplates
 #endif

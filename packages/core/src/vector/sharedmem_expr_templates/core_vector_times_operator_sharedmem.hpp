@@ -2,23 +2,22 @@
 #ifndef CORE_VECTOR_VECTOR_TIMES_OPERATOR_SHAREDMEM_HPP_
 #define CORE_VECTOR_VECTOR_TIMES_OPERATOR_SHAREDMEM_HPP_
 
-#include "core_vector_traits.hpp"
-#include "core_vector_meta.hpp"
-#include "core_vector_distributed_binary_expression_templates.hpp"
+#include "../core_vector_traits.hpp"
+#include "../core_vector_meta.hpp"
 #include "core_vector_sharedmem_binary_expression_templates.hpp"
 
 namespace rompp{ namespace core{
 
-    
+
 // T1: scalar, T2: vector:
 // example: 3.*a
 template <typename T1, typename T2,
 	    core::meta::enable_if_t<
-  std::is_scalar<T1>::value && 
-  exprtemplates::is_admissible_vec_for_sharedmem_expression<T2>::value
+  std::is_scalar<T1>::value &&
+  meta::is_admissible_vec_for_sharedmem_expression<T2>::value
 	      > * = nullptr>
 auto operator*(T1 u, const T2 & v)
-  -> decltype( 
+  -> decltype(
       core::exprtemplates::SharedMemVectorBinaryExp<
       core::exprtemplates::times_,
       T2, T1, T1, typename core::details::traits<T2>::ordinal_t>(v,u)
@@ -38,11 +37,11 @@ auto operator*(T1 u, const T2 & v)
 // example: a*3
 template <typename T1, typename T2,
 	    core::meta::enable_if_t<
-  std::is_scalar<T2>::value && 
-  exprtemplates::is_admissible_vec_for_sharedmem_expression<T1>::value
+  std::is_scalar<T2>::value &&
+  meta::is_admissible_vec_for_sharedmem_expression<T1>::value
 	      > * = nullptr>
 auto operator*(const T1 & u, T2 v)
-  -> decltype( 
+  -> decltype(
       core::exprtemplates::SharedMemVectorBinaryExp<
       core::exprtemplates::times_,
       T1, T2, T2, typename core::details::traits<T1>::ordinal_t>(u,v)
@@ -66,11 +65,11 @@ template <typename T1,
   exprtemplates::is_sharedmem_vector_expression<T1>::value &&
   std::is_scalar<T2>::value
 	    > * = nullptr>
-auto operator*(const T1 & u, T2 v) 
-  -> decltype( 
+auto operator*(const T1 & u, T2 v)
+  -> decltype(
       core::exprtemplates::SharedMemVectorBinaryExp<
       core::exprtemplates::times_,
-      T1, typename T1::sc_type, typename T1::sc_type, 
+      T1, typename T1::sc_type, typename T1::sc_type,
       typename T1::ord_type>(u,v)
     )
 {
@@ -90,11 +89,11 @@ template <typename T1,
   std::is_scalar<T1>::value &&
   exprtemplates::is_sharedmem_vector_expression<T2>::value
 	    > * = nullptr>
-auto operator*(T1 u, const T2 & v) 
-  -> decltype( 
+auto operator*(T1 u, const T2 & v)
+  -> decltype(
       core::exprtemplates::SharedMemVectorBinaryExp<
       core::exprtemplates::times_,
-      T2, typename T2::sc_type, typename T2::sc_type, 
+      T2, typename T2::sc_type, typename T2::sc_type,
       typename T2::ord_type>(v,u)
     )
 {
@@ -110,15 +109,15 @@ auto operator*(T1 u, const T2 & v)
 // example: u*v
 template <typename T1, typename T2,
 	    core::meta::enable_if_t<
-  exprtemplates::is_admissible_vec_for_sharedmem_expression<T1>::value and 
-  exprtemplates::is_admissible_vec_for_sharedmem_expression<T2>::value
+  meta::is_admissible_vec_for_sharedmem_expression<T1>::value and
+  meta::is_admissible_vec_for_sharedmem_expression<T2>::value
 	      > * = nullptr>
-auto operator*(const T1 & u, const T2 & v) 
-  -> decltype( 
+auto operator*(const T1 & u, const T2 & v)
+  -> decltype(
       core::exprtemplates::SharedMemVectorBinaryExp<
       core::exprtemplates::times_,
-      T1, T2, 
-      typename core::details::traits<T1>::scalar_t, 
+      T1, T2,
+      typename core::details::traits<T1>::scalar_t,
       typename core::details::traits<T1>::ordinal_t>(u,v)
     )
 {
@@ -138,13 +137,13 @@ template <typename T1,
 	  typename T2,
 	  core::meta::enable_if_t<
   exprtemplates::is_sharedmem_vector_expression<T1>::value &&
-  exprtemplates::is_admissible_vec_for_sharedmem_expression<T2>::value
+  meta::is_admissible_vec_for_sharedmem_expression<T2>::value
 	    > * = nullptr>
-auto operator*(const T1 & u, const T2 v) 
-  -> decltype( 
+auto operator*(const T1 & u, const T2 v)
+  -> decltype(
       core::exprtemplates::SharedMemVectorBinaryExp<
       core::exprtemplates::times_,
-      T1, T2, 
+      T1, T2,
       typename T1::sc_type, typename T1::ord_type>(u,v)
     )
 {
@@ -157,8 +156,7 @@ auto operator*(const T1 & u, const T2 v)
     core::exprtemplates::times_, T1, T2, sc_t, ord_t>(u, v);
 }
 //-----------------------------------------------------
-  
-  
-}}//end namespace rompp::core
 
+
+}}//end namespace rompp::core
 #endif // CORE_VECTOR_VECTOR_TIMES_OPERATOR_SHAREDMEM_HPP_

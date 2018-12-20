@@ -18,8 +18,10 @@
 #endif
 
 #ifdef HAVE_TRILINOS
-#include <Tpetra_Vector.hpp>
-#include <Kokkos_Core.hpp>
+#include "Epetra_Vector.h"
+#include "Epetra_MultiVector.h"
+#include "Tpetra_Vector.hpp"
+#include "Kokkos_Core.hpp"
 #endif
 
 

@@ -131,5 +131,34 @@ struct is_blaze_static_vector_wrapper<
   
 //------------------------------------------------------------
 
+
+template <typename T,
+    typename enable = void>
+struct is_admissible_vec_for_dist_expression : std::false_type{};
+
+template <typename T>
+struct is_admissible_vec_for_dist_expression<T,
+      core::meta::enable_if_t<
+  core::meta::is_core_vector_wrapper<T>::value &&
+  !core::details::traits<T>::is_shared_mem
+      >> : std::true_type{};
+  
+///-----------------------------------------------------
+
+template <typename T,
+    typename enable = void>
+struct is_admissible_vec_for_sharedmem_expression : std::false_type{};
+
+template <typename T>
+struct is_admissible_vec_for_sharedmem_expression<T,
+      core::meta::enable_if_t<
+  core::meta::is_core_vector_wrapper<T>::value &&
+  core::details::traits<T>::is_shared_mem
+      >> : std::true_type{};
+  
+///-----------------------------------------------------
+
+
+
 }}}//end namespace rompp::core::meta
 #endif
