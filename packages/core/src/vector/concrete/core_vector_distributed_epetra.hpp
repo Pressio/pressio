@@ -42,6 +42,7 @@ class Vector<wrapped_type,
 
 public:
   Vector() = delete;
+  ~Vector() = default;
 
   explicit Vector(const map_t & mapobj)
     : data_(mapobj){}
@@ -62,8 +63,6 @@ public:
       data_[i] = expr(i);
     return *this;
   }
-
-  ~Vector() = default;
 
 public:
   sc_t & operator [] (LO_t i){

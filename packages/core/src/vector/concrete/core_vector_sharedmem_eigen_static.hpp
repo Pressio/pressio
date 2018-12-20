@@ -8,7 +8,7 @@
 #include "../base/core_vector_sharedmem_base.hpp"
 
 namespace rompp{ namespace core{
-  
+
 template <typename wrapped_type>
 class Vector<wrapped_type,
 	     core::meta::enable_if_t<
@@ -18,28 +18,29 @@ class Vector<wrapped_type,
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public ContainerNonResizableBase<Vector<wrapped_type>, 1>,
-    public ContainerSubscriptable1DBase< Vector<wrapped_type>, 
+    public ContainerSubscriptable1DBase< Vector<wrapped_type>,
      typename details::traits<Vector<wrapped_type>>::scalar_t,
      typename details::traits<Vector<wrapped_type>>::ordinal_t>{
-  
+
   using this_t = Vector<wrapped_type>;
-  using mytraits = typename details::traits<this_t>;  
+  using mytraits = typename details::traits<this_t>;
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename  mytraits::ordinal_t;
   using wrap_t = typename mytraits::wrapped_t;
 
-public:  
+public:
   Vector() = default;
   ~Vector() = default;
- 
+
   explicit Vector(const sc_t * src)
     : data_(src){}
 
   explicit Vector(const wrap_t & src)
     : data_(src){}
 
-  explicit Vector(this_t const & other)
+  Vector(this_t const & other)
     : data_(*other.data()){}
+
 
   // assignment from any expression, force evaluation
   template <typename T,
@@ -51,7 +52,7 @@ public:
       data_[i] = expr(i);
     return *this;
   }
-  
+
 public:
   sc_t & operator [] (ord_t i){
     //assert(!this->empty());
@@ -61,14 +62,14 @@ public:
   sc_t const & operator [] (ord_t i) const{
     //assert(!this->empty());
     return data_(i);
-  };  
-  
+  };
+
   sc_t & operator()(ord_t i){
     return data_(i);
   };
   sc_t const & operator()(ord_t i) const{
     return data_(i);
-  };  
+  };
 
   // compound assignment from expression template
   // this += expr
@@ -83,7 +84,7 @@ public:
   }
 
   // compound assignment when type(b) = type(this)
-  // this += b 
+  // this += b
   template <typename T,
   	    core::meta::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
@@ -107,7 +108,7 @@ public:
   }
 
   // compound assignment when type(b) = type(this)
-  // this -= b 
+  // this -= b
   template <typename T,
   	    core::meta::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
@@ -117,9 +118,9 @@ public:
     return *this;
   }
 
-  
+
 private:
-  
+
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -143,7 +144,7 @@ private:
   ord_t sizeImpl() const {
     return (data_.rows()==1) ? data_.cols() : data_.rows();
   }
-  
+
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorSharedMemBase< this_t >;
@@ -152,8 +153,8 @@ private:
 
 private:
   wrap_t data_;
- 
-};//end class    
+
+};//end class
 }}//end namespace rompp::core
 #endif
 
@@ -210,7 +211,7 @@ private:
   //   for (ord_t i=0; i<this->size(); i++)
   //     data_(i) = op1_t()( op1_t()( op1_t()(a1*x1[i],a2*x2[i]), a3*x3[i] ), a4*x4[i] );
   // }
-  
+
   // template<typename op0_t, typename T,
   // 	   typename op1_t, typename op2_t, typename op3_t,
   // 	   core::meta::enable_if_t<
