@@ -106,17 +106,19 @@ private:
     // create B
     localR_ = Teuchos::rcp(new mat_type(n,n) );
 
-    const int initialX1Rank = OM_->normalizeOutOfPlace(*A.data(),
+    const int rankFound = OM_->normalizeOutOfPlace(*A.data(),
 						       *Qmat_->data(),
 						       localR_);
     Rmat_ = std::make_shared<R_type>(localR_->values());
 
-    auto err = OM_->orthonormError(*Qmat_->data());
-    std::cout << " Rank = "
-	      << initialX1Rank << " "
-	      <<  n << " "
-	      << " error = " << err
-	      << std::endl;
+    assert(rankFound == n);
+
+    // auto err = OM_->orthonormError(*Qmat_->data());
+    // std::cout << " Rank = "
+    // 	      << initialX1Rank << " "
+    // 	      <<  n << " "
+    // 	      << " error = " << err
+    // 	      << std::endl;
   }
 
   template <typename vector_t>
