@@ -86,9 +86,8 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   stepper_t stepperObj(appObj, y, stepperAux);
 
   // define solver
-  using namespace rompp::solvers;
-  auto solverO = NonLinearSolvers::createIterativeSolver<
-    nonlinear::NewtonRaphson,linear::Bicgstab>();
+  using lin_solver_t = solvers::EigenIterative<solvers::linear::Bicgstab, jac_t>;
+  solvers::NewtonRaphson<double, lin_solver_t> solverO;
 
   // integrate in time
   int nSteps = 4;
@@ -144,13 +143,8 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   stepper_t stepperObj(appObj, res_pol_t(), jac_pol_t(), y, stepperAux);
 
   // define solver
-  using namespace rompp::solvers;
-  auto solverO = NonLinearSolvers::createIterativeSolver<
-    nonlinear::NewtonRaphson,linear::Bicgstab>();
-  // solverO.setMaxIterations(500);
-  // solverO.setMaxNonLinearIterations(500);
-  // solverO.setTolerance(1e-6);
-  // solverO.setNonLinearTolerance(1e-6);
+  using lin_solver_t = solvers::EigenIterative<solvers::linear::Bicgstab, jac_t>;
+  solvers::NewtonRaphson<double, lin_solver_t> solverO;
 
   // integrate in time
   int nSteps = 4;

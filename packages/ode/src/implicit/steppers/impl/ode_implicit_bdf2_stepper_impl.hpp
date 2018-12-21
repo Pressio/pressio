@@ -80,7 +80,7 @@ public:
     }
     if (step == 2){
       this->auxStates_[1] = y;
-      y = solver.solve(*this, y);
+      solver.solve(*this, y);
     }
     if (step >= 3){
       this->auxStates_[0] = this->auxStates_[1];

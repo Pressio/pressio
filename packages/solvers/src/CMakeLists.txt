@@ -13,20 +13,20 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "core_config.h"
 # ###############
 FILE(GLOB GEN_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
-FILE(GLOB EXP_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/experimental/*.hpp")
+FILE(GLOB LINEAR_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/linear/*.hpp")
 
 #################
 #### SOURCES
 #################
 FILE(GLOB solvers_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
-FILE(GLOB solvers_exp_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/experimental/src/*.cc")
+FILE(GLOB solvers_linear_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/linear/src/*.cc")
 
 SET(SOURCES
   ${solvers_general_SRCS}
-  ${solvers_exp_SRCS}
+  # ${solvers_exp_SRCS}
 )
 
 #--------------------------------------
@@ -46,15 +46,13 @@ SET(SOLVERS_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${SOLVERS_INCDIR})
 INSTALL(FILES ${GEN_HEADERS} DESTINATION ${SOLVERS_INCDIR})
-INSTALL(FILES ${EXP_HEADERS} DESTINATION ${SOLVERS_INCDIR}/experimental)
-
+INSTALL(FILES ${EXP_HEADERS} DESTINATION ${SOLVERS_INCDIR}/linear)
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)
 #----------------------------------------------------------------
 TRIBITS_ADD_LIBRARY(
   solvers
-  #   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
   DEPLIBS
   )

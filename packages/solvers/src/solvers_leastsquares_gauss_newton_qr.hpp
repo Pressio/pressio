@@ -3,10 +3,10 @@
 #define SOLVERS_LEASTSQUARES_GAUSS_NEWTON_QR_HPP
 
 #include "solvers_ConfigDefs.hpp"
-#include "./experimental/solvers_meta_static_checks.hpp"
+#include "solvers_meta_static_checks.hpp"
 #include "../../CORE_OPS"
-#include "../../core/src/meta/core_meta_detection_idiom.hpp"
 #include "../../QR_BASIC"
+// #include "../../core/src/meta/core_meta_detection_idiom.hpp"
 
 namespace rompp{ namespace solvers{
 
@@ -90,9 +90,9 @@ public:
 
       if (std::abs(normO_ - normN_) < nonLinearTolerance_){
 #ifdef DEBUG_PRINT
-	std::cout << " GN converged! " <<
-		  << " final norm(dx)= " << normN_
-		  << std::endl;
+	std::cout << " GN converged! "
+      		  << " final norm(dx)= " << normN_
+      		  << std::endl;
 #endif
       	break;
       }

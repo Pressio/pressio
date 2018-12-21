@@ -69,7 +69,7 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR)
   x[1] = 0.25;
 
   NonLinearLeastSquareSystem sys;
-  static_assert( solvers::details::system_traits<NonLinearLeastSquareSystem>::is_system, "");
+  // static_assert( solvers::details::system_traits<NonLinearLeastSquareSystem>::is_system, "");
   solver.solve(sys, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;
 

@@ -2,6 +2,7 @@
 #define SOLVERS_LINEAR_WRAPPER_EIGEN_HPP
 
 #include "../solvers_ConfigDefs.hpp"
+#include <Eigen/Core>
 
 namespace rompp { namespace solvers {
 
@@ -14,7 +15,7 @@ struct SolversLinearDirectWrapperEigen {
 
   template <
     typename MatrixT,
-    typename core::meta::enable_if_t<
+    core::meta::enable_if_t<
       core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen
     >* = nullptr
   >
@@ -24,7 +25,7 @@ struct SolversLinearDirectWrapperEigen {
 
   template <
     typename VectorT,
-    typename core::meta::enable_if_t<
+    core::meta::enable_if_t<
       core::details::traits<VectorT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen
     >* = nullptr
   >
