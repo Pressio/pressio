@@ -1,0 +1,1 @@
+#include "../core_vector_sharedmem_teuchos_serial_dense.hpp"

@@ -52,6 +52,7 @@ enum class WrappedMatrixIdentifier{
    DenseEpetra,
    SparseEpetra,
    SparseTpetra,
+   TeuchosSerialDense,
    DenseEigen, // maybe more specific, like static or dynamic
    SparseEigen,
    DenseBlaze, // maybe more specific

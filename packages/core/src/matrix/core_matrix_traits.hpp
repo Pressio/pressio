@@ -95,7 +95,8 @@ struct traits<Matrix
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Trilinos,false>,
+				    WrappedPackageIdentifier::Trilinos,
+				    false>,
     public matrix_shared_traits<true>
 {
 
@@ -115,6 +116,41 @@ struct traits<Matrix
   static constexpr int is_static = 0;
 };
 #endif
+
+
+//**********************************
+// for teuchos serial dense matrix
+//**********************************
+#ifdef HAVE_TRILINOS
+template<typename wrapped_type>
+struct traits<Matrix<wrapped_type,
+	  typename
+	  std::enable_if<
+	    core::meta::is_teuchos_serial_dense_matrix<
+	      wrapped_type>::value
+	    >::type
+	  >
+	>
+  : public containers_shared_traits<Matrix<wrapped_type>,
+				    wrapped_type,
+				    false, true, false,
+				    WrappedPackageIdentifier::Trilinos,
+				    true>,
+    public matrix_shared_traits<false>
+{
+
+  static constexpr WrappedMatrixIdentifier
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::TeuchosSerialDense;
+
+  using scalar_t = typename wrapped_type::scalarType;
+  using ordinal_t = typename wrapped_type::ordinalType;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = true;
+};
+#endif
+
+
 
 //***********************************
 // epetra dense distributed matrix

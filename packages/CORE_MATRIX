@@ -27,12 +27,13 @@
 ///------------------
 #include "core/src/matrix/concrete/core_matrix_dense_sharedmem_eigen_dynamic.hpp"
 #include "core/src/matrix/concrete/core_matrix_dense_sharedmem_eigen_static.hpp"
-
 #include "core/src/matrix/concrete/core_matrix_dense_sharedmem_stdlib.hpp"
 #include "core/src/matrix/concrete/core_matrix_sparse_sharedmem_eigen.hpp"
 #include "core/src/matrix/concrete/core_matrix_sparse_distributed_epetra.hpp"
 #include "core/src/matrix/concrete/core_matrix_dense_distributed_epetra.hpp"
 #include "core/src/matrix/concrete/core_matrix_sparse_distributed_tpetra.hpp"
+#include "core/src/matrix/concrete/core_matrix_dense_sharedmem_teuchos_serial.hpp"
+
 
 #include "core/src/matrix/core_matrix_plus_operator.hpp"
 #include "core/src/matrix/core_matrix_times_operator.hpp"
