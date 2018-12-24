@@ -11,6 +11,10 @@
 #include "core_native_blaze_vector_meta.hpp"
 #include "core_native_armadillo_vector_meta.hpp"
 
+#ifdef HAVE_TRILINOS
+#include "Teuchos_SerialDenseVector.hpp"
+#endif
+
 namespace rompp{ namespace core{ namespace meta {
 
 
@@ -33,6 +37,23 @@ struct is_vector_stdlib<T,
 	 )
 	>::type
       > : std::true_type{};
+
+
+
+#ifdef HAVE_TRILINOS
+template <typename T, typename enable = void>
+struct is_teuchos_serial_dense_vector : std::false_type {};
+
+template <typename T>
+struct is_teuchos_serial_dense_vector<T,
+      core::meta::enable_if_t<
+	std::is_same<T,
+	  Teuchos::SerialDenseVector<typename T::ordinalType,
+				     typename T::scalarType>
+	  >::value
+	>
+      > : std::true_type{};
+#endif
 
 
 }}}//end namespace rompp::core::meta

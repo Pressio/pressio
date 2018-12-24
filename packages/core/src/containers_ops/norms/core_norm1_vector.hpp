@@ -6,9 +6,9 @@
 #include "../../vector/core_vector_meta.hpp"
 
 namespace rompp{ namespace core{ namespace ops{
-  
+
 //--------------------------------------------------------
-//  eigen vector wrapper 
+//  eigen vector wrapper
 //--------------------------------------------------------
 template <typename vec_type,
   core::meta::enable_if_t<
@@ -26,6 +26,22 @@ auto norm1(const vec_type & a)
 }
 //--------------------------------------------------------
 
-  
-}}}//end namespace rompp::core::ops  
+//--------------------------------------------------------
+//  teuchos serial dense vector wrapper
+//--------------------------------------------------------
+template <typename vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_teuchos_serial_dense_vector_wrapper<vec_type>::value
+    > * = nullptr
+  >
+auto norm1(const vec_type & a)
+  -> typename details::traits<vec_type>::scalar_t
+{
+  using sc_t = typename details::traits<vec_type>::scalar_t;
+  return static_cast<sc_t>(a.data()->normOne());
+}
+//--------------------------------------------------------
+
+
+}}}//end namespace rompp::core::ops
 #endif

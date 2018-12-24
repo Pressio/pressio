@@ -33,11 +33,12 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   if(rank_==1){
     MV(2,2) = 3;
   }
-  
+
   b[0] = 1.0;
   b[1] = 1.0;
   b[2] = 1.0;
 
+  // return the result
   //MV dot b = c
   auto c = core::ops::dot(MV, b);
   EXPECT_EQ((int) c.size(), 4);
@@ -46,8 +47,10 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   EXPECT_NEAR(c[2], 3., 1e-12);
   EXPECT_NEAR(c[3], 0., 1e-12);
 
+  // store into eigen dynamic vector wrapper
   //MV dot b = c2
-  core::Vector<Eigen::VectorXd> c2;
+  using natvec_t2 = Eigen::VectorXd;
+  core::Vector<natvec_t2> c2;
   c2.resize(4);
   core::ops::dot(MV, b, c2);
   EXPECT_EQ( c2.size(), 4);
@@ -55,5 +58,16 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   EXPECT_NEAR(c2[1], 5.2, 1e-12);
   EXPECT_NEAR(c2[2], 3., 1e-12);
   EXPECT_NEAR(c2[3], 0., 1e-12);
-  
+
+  // store into teuchos serial dense vector wrapper
+  //MV dot b = c3
+  using natvec_t3 = Teuchos::SerialDenseVector<int, double>;
+  core::Vector<natvec_t3> c3(4);
+  core::ops::dot(MV, b, c3);
+  EXPECT_EQ( c3.size(), 4);
+  EXPECT_NEAR(c3[0], 4.4, 1e-12);
+  EXPECT_NEAR(c3[1], 5.2, 1e-12);
+  EXPECT_NEAR(c3[2], 3., 1e-12);
+  EXPECT_NEAR(c3[3], 0., 1e-12);
+
 }

@@ -14,8 +14,58 @@ namespace rompp{ namespace core{ namespace ops{
  * where:
  * A = wrapper of Tpetra Multivector
  * b = tpetra vector
- * c = a shared-mem vector, like eigen or armadillo
+ * c = a shared-mem vector wrapper
  */
+
+//------------------------------------
+// c = scalar *, passed in
+//------------------------------------
+template <typename mvec_type,
+	  typename vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_tpetra_multi_vector_wrapper<mvec_type>::value &&
+    core::meta::is_tpetra_vector_wrapper<vec_type>::value &&
+    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    > * = nullptr
+  >
+void dot(const mvec_type & mvA,
+	 const vec_type & vecB,
+	 typename details::traits<mvec_type>::scalar_t * result){
+
+  // how many vectors are in mvA
+  auto numVecs = mvA.globalNumVectors();
+  for (auto i=0; i<numVecs; i++){
+    // colI is a Teuchos::RCP<Vector<...>>
+    auto colI = mvA.data()->getVector(i);
+    result[i] = colI->dot(*vecB.data());
+  }
+}
+
+
+//--------------------------------------------
+// c = teuchos serial dense vector, passed in
+//--------------------------------------------
+template <typename mvec_type,
+	  typename vec_type,
+	  typename result_vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_tpetra_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_tpetra_vector_wrapper<vec_type>::value and
+    core::meta::is_teuchos_serial_dense_vector_wrapper<result_vec_type>::value and
+    core::meta::wrapper_triplet_have_same_scalar<mvec_type,
+						 vec_type,
+						 result_vec_type>::value and
+    core::details::traits<result_vec_type>::is_dynamic
+    > * = nullptr
+  >
+void dot(const mvec_type & mvA,
+	 const vec_type & vecB,
+	 result_vec_type & result){
+  auto numVecs = mvA.globalNumVectors();
+  if ( result.size() != numVecs )
+    result.resize(numVecs);
+  dot(mvA, vecB, result.data()->values());
+}
 
 
 //---------------------------------------
@@ -53,11 +103,12 @@ void dot(const mvec_type & mvA,
   if ( result.size() != numVecs )
     result.resize(numVecs);
 
-  for (decltype(numVecs) i=0; i<numVecs; i++){
-    // colI is a Teuchos::RCP<Vector<...>>
-    auto colI = mvA.data()->getVector(i);
-    result[i] = colI->dot(*vecB.data());
-  }
+  dot(mvA, vecB, result.data()->data());
+  // for (decltype(numVecs) i=0; i<numVecs; i++){
+  //   // colI is a Teuchos::RCP<Vector<...>>
+  //   auto colI = mvA.data()->getVector(i);
+  //   result[i] = colI->dot(*vecB.data());
+  // }
 }
 
 //---------------------------------------
@@ -86,12 +137,13 @@ void dot(const mvec_type & mvA,
   auto numVecs = mvA.globalNumVectors();
   // check the result has right size
   assert( result.size() == numVecs );
+  dot(mvA, vecB, result.data()->data());
 
-  for (decltype(numVecs) i=0; i<numVecs; i++){
-    // colI is a Teuchos::RCP<Vector<...>>
-    auto colI = mvA.data()->getVector(i);
-    result[i] = colI->dot(*vecB.data());
-  }
+  // for (decltype(numVecs) i=0; i<numVecs; i++){
+  //   // colI is a Teuchos::RCP<Vector<...>>
+  //   auto colI = mvA.data()->getVector(i);
+  //   result[i] = colI->dot(*vecB.data());
+  // }
 }
 
 

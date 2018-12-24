@@ -232,6 +232,38 @@ struct traits<Vector<wrapped_type,
 
 
 
+//*******************************
+// for teuchos serial dense vec
+//*******************************
+#ifdef HAVE_TRILINOS
+template<typename wrapped_type>
+struct traits<Vector<wrapped_type,
+	  typename
+	  std::enable_if<
+	    core::meta::is_teuchos_serial_dense_vector<
+	      wrapped_type>::value
+	    >::type
+	  >
+	>
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+			       WrappedPackageIdentifier::Trilinos,
+				    true>{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::TeuchosSerialDense;
+
+  using scalar_t = typename wrapped_type::scalarType;
+  using ordinal_t = typename wrapped_type::ordinalType;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = true;
+};
+#endif
+
+
+
 
 //*******************************
 // for epetra vector
@@ -261,6 +293,7 @@ struct traits<Vector<wrapped_type,
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
 
+  static constexpr bool is_static = false;
   static constexpr bool is_dynamic = true;
 };
 #endif
@@ -315,6 +348,7 @@ struct traits<Vector<wrapped_type,
   using mag_t = typename wrapped_type::mag_type;
   using communicator_t = decltype(std::declval<data_map_t>().getComm());
 
+  static constexpr bool is_static = false;
   static constexpr bool is_dynamic = true;
 };
 #endif
@@ -383,6 +417,7 @@ struct traits<Vector<wrapped_type,
 
   using scalar_t = typename wrapped_type::value_type;
   using ordinal_t = core::default_types::local_ordinal_t;
+  static constexpr bool is_static = false;
   static constexpr bool is_dynamic = true;
 };
 

@@ -34,6 +34,7 @@ enum class WrappedVectorIdentifier{
    EigenColStatic,
    EigenRowDynamic,
    EigenColDynamic,
+   TeuchosSerialDense,
    BlazeStatic,
    BlazeDynamic,
    Kokkos,

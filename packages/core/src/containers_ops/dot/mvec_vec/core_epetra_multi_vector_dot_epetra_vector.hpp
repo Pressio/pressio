@@ -36,10 +36,11 @@ void dot(const mvec_type & mvA,
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
   /* Apparently, trilinos does not support this...
-     the native Dot() method of multivectors is only for
-     dot product of two multivectors of the same size.
-     So we have to extract each column vector
-     from mvA and do dot product one a time*/
+   * the native Dot() method of multivectors is only for
+   * dot product of two multivectors of the same size.
+   * So we have to extract each column vector
+   * from mvA and do dot product one at a time
+  */
 
   // how many vectors are in mvA
   auto numVecs = mvA.globalNumVectors();
@@ -50,6 +51,32 @@ void dot(const mvec_type & mvA,
   for (decltype(numVecs) i=0; i<numVecs; i++){
     (*mvNatData)(i)->Dot(*vecNatData, &result[i]);
   }
+}
+
+
+//--------------------------------------------
+// c = teuchos serial dense vector, passed in
+//--------------------------------------------
+template <typename mvec_type,
+	  typename vec_type,
+	  typename result_vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_epetra_vector_wrapper<vec_type>::value and
+    core::meta::is_teuchos_serial_dense_vector_wrapper<result_vec_type>::value and
+    core::meta::wrapper_triplet_have_same_scalar<mvec_type,
+						 vec_type,
+						 result_vec_type>::value and
+    core::details::traits<result_vec_type>::is_dynamic
+    > * = nullptr
+  >
+void dot(const mvec_type & mvA,
+	 const vec_type & vecB,
+	 result_vec_type & result){
+  auto numVecs = mvA.globalNumVectors();
+  if ( result.size() != numVecs )
+    result.resize(numVecs);
+  dot(mvA, vecB, result.data()->values());
 }
 
 

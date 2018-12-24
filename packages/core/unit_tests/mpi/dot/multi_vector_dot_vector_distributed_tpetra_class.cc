@@ -79,4 +79,16 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
   EXPECT_NEAR(c2[1], 5.2, 1e-12);
   EXPECT_NEAR(c2[2], 3., 1e-12);
   EXPECT_NEAR(c2[3], 0., 1e-12);
+
+  // store into teuchos serial dense vector wrapper
+  //MV dot b = c3
+  using natvec_t3 = Teuchos::SerialDenseVector<int, double>;
+  core::Vector<natvec_t3> c3(4);
+  core::ops::dot(MV, VV, c3);
+  EXPECT_EQ( c3.size(), 4);
+  EXPECT_NEAR(c3[0], 4.4, 1e-12);
+  EXPECT_NEAR(c3[1], 5.2, 1e-12);
+  EXPECT_NEAR(c3[2], 3., 1e-12);
+  EXPECT_NEAR(c3[3], 0., 1e-12);
+
 }
