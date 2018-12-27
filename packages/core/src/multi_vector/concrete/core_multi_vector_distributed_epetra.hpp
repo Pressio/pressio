@@ -105,6 +105,10 @@ private:
     return data_.Map();
   }
 
+  bool hasRowMapEqualToImpl(map_t const &othermap) const{
+    return data_.Map().SameAs(othermap);
+  }
+
   void replaceDataMapImpl(const map_t & mapObj){
     data_.ReplaceMap(mapObj);
   }
