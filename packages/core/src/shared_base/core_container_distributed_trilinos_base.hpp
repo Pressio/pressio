@@ -20,6 +20,10 @@ public:
     return this->underlying().getDataMapImpl();
   }
 
+  bool hasRowMapEqualTo(map_t const &othermap) const{
+    return this->underlying().hasRowMapEqualToImpl(othermap);
+  }
+
   Teuchos::RCP<const map_t> getRCPDataMap() const{
     return this->underlying().getRCPDataMapImpl();
   }
