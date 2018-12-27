@@ -43,6 +43,9 @@ public:
   MultiVector(Teuchos::RCP<const map_t> mapobj, GO_t numVectors)
     : data_(mapobj, numVectors){}
 
+  MultiVector(const map_t & mapobj, GO_t numVectors)
+    : data_( Teuchos::rcpFromRef(mapobj), numVectors ){}
+
   explicit MultiVector(const wrap_t & other)
     // use the deep_copy constructor
     : data_(other, Teuchos::Copy){}
@@ -79,6 +82,10 @@ public:
 
   map_t const & getDataMapImpl() const{
     return *data_.getMap();
+  }
+
+  bool hasRowMapEqualToImpl(map_t const &othermap) const{
+    return data_.getMap()->isSameAs(othermap);
   }
 
   Teuchos::RCP<const map_t> getRCPDataMapImpl() const{
