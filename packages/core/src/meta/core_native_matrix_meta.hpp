@@ -42,6 +42,18 @@ struct is_teuchos_serial_dense_matrix<T,
 	  >::value
 	>::type
       > : std::true_type{};
+
+
+template <typename T, typename enable = void>
+struct is_teuchos_serial_dense_matrix_rcp : std::false_type {};
+
+template <typename T>
+struct is_teuchos_serial_dense_matrix_rcp<T,
+    typename std::enable_if<
+      is_teuchos_rcp_ptr<T>::value and
+      is_teuchos_serial_dense_matrix<typename T::element_type>::value
+	>::type
+      > : std::true_type{};
 #endif
 
 

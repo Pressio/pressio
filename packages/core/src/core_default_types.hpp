@@ -18,7 +18,6 @@ namespace rompp{ namespace core{ namespace default_types {
   // Unsigned int type
   using uint = unsigned int;
 
-
 #ifdef HAVE_TRILINOS
   // admissible types for epetra vector
   using epetra_scalar_t = double;

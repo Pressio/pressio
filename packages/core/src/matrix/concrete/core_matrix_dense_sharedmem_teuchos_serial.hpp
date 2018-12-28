@@ -43,11 +43,12 @@ public:
     this->resize(nrows,ncols);
   }
 
-  explicit Matrix(const wrap_t & other)
-    : data_(other){}
+  explicit Matrix(const wrap_t & other,
+		  Teuchos::DataAccess cv = Teuchos::Copy)
+    : data_(cv, other){}
 
-  explicit Matrix(const sc_t * datain)
-    : data_(datain){}
+  // explicit Matrix(const sc_t * datain)
+  //   : data_(datain){}
 
   ~Matrix() = default;
 

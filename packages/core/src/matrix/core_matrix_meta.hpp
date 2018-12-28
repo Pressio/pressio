@@ -1,4 +1,4 @@
-
+\
 #ifndef CORE_MATRIX_META_HPP_
 #define CORE_MATRIX_META_HPP_
 
@@ -33,7 +33,7 @@ struct is_teuchos_serial_dense_matrix_wrapper<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
        core::details::traits<T>::wrapped_matrix_identifier==
-       core::details::WrappedVectorIdentifier::TeuchosSerialDense
+       core::details::WrappedMatrixIdentifier::TeuchosSerialDense
        >
   > : std::true_type{};
 #endif
