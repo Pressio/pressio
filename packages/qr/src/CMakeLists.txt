@@ -12,12 +12,16 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "qr_config.h"
 ###############
 FILE(GLOB qr_general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+FILE(GLOB qr_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/base/*.hpp")
 
 #################
 #### SOURCES
 #################
 FILE(GLOB qr_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
+FILE(GLOB qr_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/base/src/*.cc")
 
 SET(SOURCES 
   ${qr_general_SRCS}
@@ -36,6 +40,7 @@ SET(QR_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/qr/
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${QR_INCDIR})
 INSTALL(FILES ${qr_general_HEADERS} DESTINATION ${QR_INCDIR})
+INSTALL(FILES ${qr_base_HEADERS} DESTINATION ${QR_INCDIR}/base)
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)

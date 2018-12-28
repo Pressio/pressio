@@ -19,8 +19,8 @@ template<typename matrix_type,
 	 typename R_type,
  	 template <typename...> class Q_type>
 class QRSolver<matrix_type,
-	       R_type,
 	       ::rompp::qr::Householder,
+	       R_type,
 	       Q_type,
 	       typename
 	       std::enable_if<
@@ -30,9 +30,9 @@ class QRSolver<matrix_type,
 		 core::details::traits<R_type>::is_dense
 		 >::type
 	       >
-  : public QRSolverBase<QRSolver<matrix_type, R_type, ::rompp::qr::Householder, Q_type>,
-			Q_type<typename core::details::traits<matrix_type>::wrapped_t>,
+  : public QRSolverBase<QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>,
 			R_type,
+			Q_type<typename core::details::traits<matrix_type>::wrapped_t>,
 			matrix_type>{
 
 private:
@@ -40,8 +40,8 @@ private:
   using sc_t = typename core::details::traits<matrix_type>::scalar_t;
   using Q_t = Q_type<MV>;
 
-  using this_t = QRSolver<matrix_type, R_type, ::rompp::qr::Householder, Q_type>;
-  using base_t = QRSolverBase<this_t, Q_t, R_type,  matrix_type>;
+  using this_t = QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>;
+  using base_t = QRSolverBase<this_t, R_type, Q_t, matrix_type>;
   friend base_t;
 
   using base_t::Qmat_;
@@ -95,6 +95,10 @@ private:
     return *Qmat_;
   }
 
+  template <typename T = R_type,
+        core::meta::enable_if_t<
+          !std::is_void<R_type>::value
+          > * = nullptr>
   const R_type & cRefRFactorImpl() const {
     return *Rmat_;
   }

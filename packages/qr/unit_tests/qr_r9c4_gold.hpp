@@ -7,7 +7,7 @@
 namespace rompp{ namespace qr{ namespace test{
 
 template <typename T = double>
-struct qrGoldSol{
+struct qrGoldr9c4Sol{
 
   Eigen::Matrix<T, 9, 9> trueQ_;
   Eigen::Matrix<T, 4, 4> trueR_;
@@ -15,7 +15,34 @@ struct qrGoldSol{
   Eigen::Matrix<T, 9, 1> colDotOnes_;
   Eigen::Matrix<T, 4, 1> trueYForRSolve_;
 
-  qrGoldSol(){
+  qrGoldr9c4Sol(){
+    fillTrueQ();
+    fillTrueR();
+    fillTrueYForRSolve();
+    // compute dot products between each column of Q and a vector of ones
+    colDotOnes_ = trueQ_.colwise().sum();
+  }
+
+  template <typename mat_t>
+  void checkR(const mat_t & R){
+    EXPECT_EQ( R.cols(), 4 );
+    EXPECT_EQ( R.rows(), 4 );
+    for (auto i=0; i<4; i++)
+      for (auto j=0; j<4; j++)
+	EXPECT_NEAR( std::abs(R(i,j)), std::abs(trueR_(i,j)), 1e-6);
+  }
+
+  template <typename vec_t>
+  void checkYForRsolve(const vec_t & y){
+    EXPECT_EQ(y.size(), 4);
+    for (auto i=0; i<y.size(); i++)
+      EXPECT_NEAR( std::abs(trueYForRSolve_[i]),
+		   std::abs(y[i]), 1e-12 );
+  }
+
+private:
+
+  void fillTrueQ(){
     trueQ_ <<
       -0.897235446547271, -0.039024431200404,  0.173692309541681,
       -0.034843851055998,  0.06844323641866,  -0.162666577780091,
@@ -51,19 +78,25 @@ struct qrGoldSol{
       //-------------------------------------------------------
       -0., 0., 0.,-0., 0., 0., 0., 0.,  1.;
       //-------------------------------------------------------
+  }//fillQ
 
-    // compute dot products between each column of Q and a vector of ones
-    colDotOnes_ = trueQ_.colwise().sum();
+  void fillTrueR(){
+    trueR_ <<	-3.566510900025401, -1.665493297653372,
+		-0.563576014862505,  0.841158231138066,
+		//---------------------------------------------
+		0.,  7.542444914314701,
+		0.8945995630306  , -1.224066825632553,
+		//---------------------------------------------
+		0.,  0.,
+		3.047059844718702,  2.566115091128629,
+		//---------------------------------------------
+		0., 0, 0., -7.497277277495907;
+  }//fillR
 
-    trueR_ << -3.566510900025401, -1.665493297653372, -0.563576014862505,  0.841158231138066,//endrow
-			      0.,  7.542444914314701,  0.8945995630306  , -1.224066825632553,//endrow
-			      0.,  0.               ,  3.047059844718702,  2.566115091128629,//endrow
-			      0.,  0.               ,  0.               , -7.497277277495907;//endrow
-
+  void fillTrueYForRSolve(){
     trueYForRSolve_ << -0.3569028575307429, -0.249377911416946,
 			0.1687065812379429, -0.0273363044398516;
   }
-
 };
 
 }}} //end namespace

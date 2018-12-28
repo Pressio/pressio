@@ -5,8 +5,10 @@
 #include "qr_config.h"
 #include "../../core/src/core_ConfigDefs.hpp"
 
-namespace rompp{  namespace qr{
-  
+namespace rompp{ namespace qr{ namespace details {
 
-}}//end namespace rompp::qr
+template<typename T, typename enable = void> struct traits{};
+template<typename T>  struct traits<const T> : traits<T> {};
+
+}}}// end namespace rompp::qr::details
 #endif

@@ -6,34 +6,48 @@
 #include "CORE_ALL"
 #include "Epetra_MpiComm.h"
 #include "Eigen/Dense"
-#include "qr_gold.hpp"
+#include "qr_r9c4_gold.hpp"
+
+namespace rompp{ namespace qr{ namespace test{
+  static constexpr int numVectors_ = 4;
+  static constexpr int numRows_ = 9;
+}}}// end namespace rompp::qr::test
+
 
 struct epetraR9Fixture
   : public ::testing::Test{
 
-public:
+  using this_t	 = epetraR9Fixture;
   using nat_mv_t = Epetra_MultiVector;
   using mymvec_t = rompp::core::MultiVector<nat_mv_t>;
-  using nat_v_t = Epetra_Vector;
-  using myvec_t = rompp::core::Vector<nat_v_t>;
+  using nat_v_t	 = Epetra_Vector;
+  using myvec_t	 = rompp::core::Vector<nat_v_t>;
+
+  // gold solution
+  rompp::qr::test::qrGoldr9c4Sol<double> gold_;
 
   std::shared_ptr<Epetra_MpiComm> comm_;
   std::shared_ptr<Epetra_Map> rowMap_;
   std::shared_ptr<mymvec_t> A_;
   std::shared_ptr<myvec_t> v_;
 
-  int rank_;
-  int numProc_;
-  int numGlobalEntries_;
-  const int numVectors_ = 4;
+  const int numVectors_ = rompp::qr::test::numVectors_;
+  int rank_ = {};
+  int numProc_ = {};
+  int numGlobalEntries_ = {};
+  int localSize_ = {};
+  int shift_	 = {};
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
+    localSize_ = (rank_==0) ? 5 : 4;
+    shift_ = (rank_==0) ? 0 : 5;
+
     assert(numProc_ == 2);
-    numGlobalEntries_ = 9;
+    numGlobalEntries_ = rompp::qr::test::numRows_;
 
     rowMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
     A_ = std::make_shared<mymvec_t>(*rowMap_, numVectors_);
@@ -69,25 +83,28 @@ public:
 struct tpetraR9Fixture
   : public ::testing::Test{
 
-public:
-  using tcomm = Teuchos::Comm<int>;
-  using map_t = Tpetra::Map<>;
-  using nat_mvec_t = Tpetra::MultiVector<>;
-  using ST = typename nat_mvec_t::scalar_type;
-  using LO = typename nat_mvec_t::local_ordinal_type;
-  using GO = typename nat_mvec_t::global_ordinal_type;
-  using nat_vec_t = Tpetra::Vector<>;
+  using this_t	    = tpetraR9Fixture;
+  using tcomm	    = Teuchos::Comm<int>;
+  using map_t	    = Tpetra::Map<>;
+  using nat_mvec_t  = Tpetra::MultiVector<>;
+  using ST	    = typename nat_mvec_t::scalar_type;
+  using LO	    = typename nat_mvec_t::local_ordinal_type;
+  using GO	    = typename nat_mvec_t::global_ordinal_type;
+  using nat_vec_t   = Tpetra::Vector<>;
 
-  using mymvec_t = rompp::core::MultiVector<nat_mvec_t>;
+  using mymvec_t    = rompp::core::MultiVector<nat_mvec_t>;
   using mv_device_t = typename rompp::core::details::traits<mymvec_t>::device_t;
-  using myvec_t = rompp::core::Vector<nat_vec_t>;
+  using myvec_t     = rompp::core::Vector<nat_vec_t>;
 
   // gold solution
-  rompp::qr::test::qrGoldSol<double> gold;
+  rompp::qr::test::qrGoldr9c4Sol<ST> gold_;
 
-  int rank_;
-  int numProc_;
-  const int numVectors_ = 4;
+  const int numVectors_ = rompp::qr::test::numVectors_;
+  int rank_ = {};
+  int numProc_ = {};
+  int localSize_ = {};
+  int shift_	 = {};
+
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
@@ -99,12 +116,14 @@ public:
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
+    localSize_ = (rank_==0) ? 5 : 4;
+    shift_ = (rank_==0) ? 0 : 5;
 
     assert(numProc_==2);
 
-    numGlobalEntries_ = 9;
+    numGlobalEntries_ = rompp::qr::test::numRows_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
-    A_ = std::make_shared<mymvec_t>(contigMap_, numVectors_);
+    A_ = std::make_shared<mymvec_t>(contigMap_, this_t::numVectors_);
     v_ = std::make_shared<myvec_t>(contigMap_);
   }
 

@@ -4,10 +4,14 @@
 
 namespace rompp{ namespace qr{
 
-    struct Hacked{};
     struct GramSchmidt{};
     struct Householder{};
+
+    // for trilinos, this defaults to Anasazi
     struct TSQR{};
+
+    // this is only applicable to trilinos
+    struct TSQRBelos{};
 
 }} // end namespace rompp::qr
 #endif
