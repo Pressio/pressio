@@ -26,7 +26,7 @@ def createSrc(dest):
         out = open("./src/"+ccname, "w")
         out.write(incstr)
         out.close()
-  
+
 def createCCFiles(path, cwd):
     os.chdir(path)
     thisF = os.getcwd()
@@ -47,7 +47,7 @@ def createCCFiles(path, cwd):
         print ("we are in: " + root)
         createSrc(root)
     os.chdir(cwd)
-    
+
 # Check current working directory.
 cwd = os.getcwd()
 print "Current working directory %s" % cwd
@@ -58,5 +58,5 @@ for i in pn:
     path = tFolder+"/"+i+"/src"
     print ("\nProcessing package **" + i + "** in " + path)
     thisf = os.getcwd()
-    # creat 
+    # creat
     createCCFiles(path, thisf)
