@@ -3,36 +3,18 @@
 # rompp Documentation
 #----------------------
 
-WARNING: WORK IN PROGRESS!  
+THIS IS WORK IN PROGRESS!
 This code for ROM uses TriBITS. The project defines a TriBITS CMake project.
 
-To clone this repo, use NEED to use this command:
+To clone this repo, use this command:
 
    git clone --recursive repo_url
-   
-The recursive option is necessary because it has a git submodule for TriBITS. 
+
+(The recursive option is necessary because it has a git submodule for TriBITS.)
 
 
-Example configure files are under sampleScripts.
+To build ROMPP, clone the auto_build repo:
 
-Some utilities commands:
-(a) to replace string inside files 
+   git clone --recursive git@gitlab.com:fnrizzi/rompp_auto_build.git
 
-	grep -rl 'timeIntegrator' . | xargs sed -i '' 's/timeIntegrator/ode/g'
-
-
-(b) to rename files by replacing part of the string 
-
-	rename-5.26 's/timeIntegrator/ode/' *.cc
-
-
-BUILDING info: 
-- make sure that gtest is built using same compiler used to build this repo
-- make sure that on Mac, you add the rpath flag: -D CMAKE_MACOSX_RPATH:BOOL=ON 
-
-More to come 
-
-
-
-Tribits commit known to work: 
-c1665e052e90b34c89364c208ed006cc44818c15
+and follows steps in there.
