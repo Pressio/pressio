@@ -1,3 +1,3 @@
 
-add_serial_unit_test(eigen_dense_matrix_qr_factorization)
-add_serial_unit_test(eigen_sparse_matrix_qr_factorization)
+add_serial_unit_test(eigen_dense_matrix_factorization_out_of_place)
+add_serial_unit_test(eigen_dense_matrix_out_of_place_and_solve)

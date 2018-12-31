@@ -8,9 +8,11 @@
 
 namespace rompp{ namespace qr{ namespace details{
 
-template<
-  typename matrix_type, typename algo, bool in_place, int m, int n
-  >
+/*
+ * common traits to all cases
+ */
+template< typename matrix_type, typename algo,
+	  bool in_place, int m, int n >
 struct traits_shared_all{
 
   using matrix_t  = matrix_type;
@@ -24,7 +26,48 @@ struct traits_shared_all{
 };
 
 
+
+/*
+ * specialize for:
+ *	Eigen::DenseMatrixWrapper,
+ *	R_type = void
+ *	algo= Householder
+ */
+template<
+  typename matrix_type, bool in_place, int m, int n,
+  template <typename...> class Q_type
+  >
+struct traits<
+  impl::QRSolver<
+    matrix_type, qr::Householder, in_place, m, n, void, Q_type>,
+    core::meta::enable_if_t<
+      core::meta::is_eigen_dense_matrix_wrapper<matrix_type>::value
+      >
+  > : traits_shared_all<matrix_type, qr::Householder, in_place, m, n>{
+
+  using traits_all_t  = traits_shared_all<matrix_type, qr::Householder, in_place, m, n>;
+
+  using matrix_t	= typename traits_all_t::matrix_t;
+  using sc_t		= typename traits_all_t::sc_t;
+  using nat_mat_t	= typename traits_all_t::nat_mat_t;
+  using Q_t		= Q_type<nat_mat_t>;
+
+  using concrete_t	= impl::QRSolver<matrix_type, qr::Householder,
+					in_place, m, n, void, Q_type>;
+  using inplace_base_t  = QRInPlaceBase<concrete_t, matrix_type>;
+  using outplace_base_t = QROutOfPlaceBase<concrete_t, matrix_type, Q_t>;
+
+  using base_compute_t	= typename std::conditional<in_place, inplace_base_t, outplace_base_t>::type;
+  using base_solve_t	= QRSolveBase<concrete_t>;
+};
+
+
+
+
 #ifdef HAVE_TRILINOS
+/*
+ * traits_shared_trilinos_mv
+ */
 template<
   typename matrix_type, template <typename...> class Q_type,
   core::meta::enable_if_t<
@@ -58,9 +101,8 @@ struct impl_class_helper<matrix_t, qr::TSQR, Q_t, R_t, sc_t, MV_t,
 
 
 
-
 /*
- * overload for Epetra::MultiVector, R_type = void
+ * specialize for Epetra::MultiVector, R_type = void
  */
 template<
   typename matrix_type, typename algo_t, bool in_place, int m,
@@ -96,7 +138,7 @@ struct traits<
 
 
 /*
- * overload for Epetra::MultiVector, R_type != void
+ * specialize for Epetra::MultiVector, R_type != void
  */
 template<
   typename matrix_type, typename algo_t, bool in_place, int m, int n,
@@ -138,7 +180,7 @@ struct traits<
 
 
 /*
- * overload for Tpetra::MultiVector, R_type = void
+ * specialize for Tpetra::MultiVector, R_type = void
  */
 template<
   typename matrix_type, typename algo_t, bool in_place, int m,
@@ -175,7 +217,7 @@ struct traits<
 
 
 /*
- * overload for Tpetra::MultiVector, R_type != void
+ * specialize for Tpetra::MultiVector, R_type != void
  */
 template<
   typename matrix_type, typename algo_t, bool in_place, int m, int n,

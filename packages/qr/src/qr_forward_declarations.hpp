@@ -53,12 +53,9 @@ template<
         = ::rompp::core::MultiVector,
   typename enable = void
   >
-using QRSolver = impl::QRSolver<matrix_type,
-				algorithm,
-				in_place,
-				m, n,
-				void,
-				Q_type>;
+using QRSolver = impl::QRSolver<matrix_type, algorithm,
+				in_place, m, n,
+				void, Q_type>;
 
 template<
   typename matrix_type,

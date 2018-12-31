@@ -17,5 +17,6 @@
 
 #include "qr/src/qr_trilinos_multi_vector_tsqr_in_place.hpp"
 #include "qr/src/qr_trilinos_multi_vector_tsqr_out_of_place.hpp"
+#include "qr/src/qr_eigen_dense_matrix_out_of_place.hpp"
 
 #endif

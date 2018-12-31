@@ -4,9 +4,11 @@
 
 #include <gtest/gtest.h>
 #include "CORE_ALL"
+#include "qr_r9c4_gold.hpp"
+#ifdef HAVE_TRILINOS
 #include "Epetra_MpiComm.h"
 #include "Eigen/Dense"
-#include "qr_r9c4_gold.hpp"
+#endif
 
 namespace rompp{ namespace qr{ namespace test{
   static constexpr int numVectors_ = 4;
@@ -14,6 +16,56 @@ namespace rompp{ namespace qr{ namespace test{
 }}}// end namespace rompp::qr::test
 
 
+struct eigenDenseR9Fixture
+  : public ::testing::Test{
+
+  using this_t	 = eigenDenseR9Fixture;
+  using nat_mat_t = Eigen::MatrixXd;
+  using mymat_t = rompp::core::Matrix<nat_mat_t>;
+  using nat_v_t	 = Eigen::VectorXd;
+  using myvec_t	 = rompp::core::Vector<nat_v_t>;
+
+  // gold solution
+  rompp::qr::test::qrGoldr9c4Sol<double> gold_;
+
+  std::shared_ptr<mymat_t> A_;
+  std::shared_ptr<myvec_t> v_;
+
+  const int numRows_ = rompp::qr::test::numRows_;
+  const int numVectors_ = rompp::qr::test::numVectors_;
+  int numGlobalEntries_ = {};
+  int localSize_ = {};
+
+  virtual void SetUp(){
+    numGlobalEntries_ = rompp::qr::test::numRows_;
+    A_ = std::make_shared<mymat_t>(numRows_, numVectors_);
+    v_ = std::make_shared<myvec_t>(numRows_);
+  }//setup
+
+  void fillMatrix(){
+    (*A_)(0,0) = 3.2; (*A_)(0,1) = 1.2;  (*A_)(0,2) = 1.;
+    (*A_)(1,0) = 1.2; (*A_)(1,2) = -2.2;
+    (*A_)(2,1) = 4.0; (*A_)(2,3) = -2.;
+    (*A_)(3,1) = 4.;
+    (*A_)(4,2) = -1.; (*A_)(4,3) = -4.;
+    (*A_)(5,0) = 0.2; (*A_)(5,1) = 5.;  (*A_)(5,2) = 1.;
+    (*A_)(6,0) = 1.; (*A_)(6,1) = 1.1; (*A_)(6,2) = 1.25; (*A_)(6,3) = -3.;
+    (*A_)(7,2) = 1.; (*A_)(7,1) = 0.1111; (*A_)(7,3) = 6.;
+    std::cout << *(A_->data()) << std::endl;
+  }
+
+  void fillVector(){
+    v_->putScalar(1.0);
+  }
+
+  virtual void TearDown(){}
+};
+// --------------------------------------------
+
+
+
+
+#ifdef HAVE_TRILINOS
 struct epetraR9Fixture
   : public ::testing::Test{
 
@@ -165,6 +217,7 @@ struct tpetraR9Fixture
 
   virtual void TearDown(){}
 };
+#endif
 
 
 #endif /* QR_FIXTURES_HPP_ */
