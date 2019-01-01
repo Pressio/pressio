@@ -6,27 +6,27 @@
 
 namespace rompp{ namespace ode{ namespace impl{
 
-template<typename state_type,
-	 typename residual_type,
-	 typename jacobian_type,
+template<typename stateT,
+	 typename residualT,
+	 typename jacobianT,
 	 typename model_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
-class ImplicitEulerStepperImpl<state_type,
-			       residual_type,
-			       jacobian_type,
+class ImplicitEulerStepperImpl<stateT,
+			       residualT,
+			       jacobianT,
 			       model_type,
 			       residual_policy_type,
 			       jacobian_policy_type>
   : public ImplicitStepperBase<
-	    ImplicitEulerStepperImpl<state_type, residual_type,
-				     jacobian_type,
+	    ImplicitEulerStepperImpl<stateT, residualT,
+				     jacobianT,
 				     model_type,
 				     residual_policy_type,
 				     jacobian_policy_type> >,
-    protected OdeStorage<state_type, residual_type, 1>,
+    protected OdeStorage<stateT, residualT, 1>,
     protected ImpOdeAuxData<model_type,
-			  typename core::details::traits<state_type>::scalar_t,
+			  typename core::details::traits<stateT>::scalar_t,
 			  residual_policy_type, jacobian_policy_type>{
 
   static_assert( meta::is_legitimate_implicit_euler_residual_policy<
@@ -39,15 +39,15 @@ MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
 "IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
 
-  using stepper_t = ImplicitEulerStepperImpl<state_type,
-					     residual_type,
-					     jacobian_type,
+  using stepper_t = ImplicitEulerStepperImpl<stateT,
+					     residualT,
+					     jacobianT,
 					     model_type,
 					     residual_policy_type,
 					     jacobian_policy_type>;
-  using scalar_type  = typename core::details::traits<state_type>::scalar_t;
+  using scalar_type  = typename core::details::traits<stateT>::scalar_t;
   using stepper_base_t = ImplicitStepperBase<stepper_t>;
-  using storage_base_t = OdeStorage<state_type, residual_type, 1>;
+  using storage_base_t = OdeStorage<stateT, residualT, 1>;
   using auxdata_base_t = ImpOdeAuxData<model_type, scalar_type,
 				       residual_policy_type,
 				       jacobian_policy_type>;
@@ -55,9 +55,9 @@ MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
   static constexpr auto my_enum = ::rompp::ode::ImplicitEnum::Euler;
 
 public:
-  // these aliases are needed by the solver
-  using vector_type = state_type;
-  using matrix_type = jacobian_type;
+  using state_type = stateT;
+  using residual_type = residualT;
+  using jacobian_type = jacobianT;
 
 protected:
   template < typename M = model_type,
@@ -76,7 +76,7 @@ protected:
 
 public:
   template<typename solver_type, typename step_t>
-  void operator()(state_type & y, scalar_type t,
+  void operator()(stateT & y, scalar_type t,
 		  scalar_type dt, step_t step,
 		  solver_type & solver){
 
@@ -89,7 +89,7 @@ public:
   //--------------------------------------------------------
 
 public:
-  void residualImpl(const state_type & y, residual_type & R)const{
+  void residualImpl(const stateT & y, residualT & R)const{
     (*this->residual_obj_).template operator()<my_enum, 1>(y, R,
 							   this->auxStates_,
 							   *this->model_,
@@ -98,7 +98,7 @@ public:
   }
   //--------------------------------------------------------
 
-  void jacobianImpl(const state_type & y, jacobian_type & J)const{
+  void jacobianImpl(const stateT & y, jacobianT & J)const{
     (*this->jacobian_obj_).template operator()<my_enum>( y, J,
 							 *this->model_,
 							 this->t_,
@@ -106,7 +106,7 @@ public:
   }
   //--------------------------------------------------------
 
-  residual_type residualImpl(const state_type & y)const{
+  residualT residualImpl(const stateT & y)const{
     return (*this->residual_obj_).template operator()<my_enum, 1>( y,
 								   this->auxStates_,
 								   *this->model_,
@@ -115,7 +115,7 @@ public:
   }
   //--------------------------------------------------------
 
-  jacobian_type jacobianImpl(const state_type & y)const{
+  jacobianT jacobianImpl(const stateT & y)const{
     return (*this->jacobian_obj_).template operator()<my_enum>(y,
 							       *this->model_,
 							       this->t_,

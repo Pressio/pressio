@@ -3,35 +3,34 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPL_IMPLICIT_BDF2_STEPPER_IMPL_HPP_
 
 #include "../base/ode_implicit_stepper_base.hpp"
-// #include "../../policies/meta/ode_implicit_bdf2_policies_meta.hpp"
 
 namespace rompp{ namespace ode{ namespace impl{
 
-template<typename state_type,
-	 typename residual_type,
-	 typename jacobian_type,
+template<typename stateT,
+	 typename residualT,
+	 typename jacobianT,
 	 typename model_type,
 	 typename aux_stepper_type,
 	 typename residual_policy_type,
 	 typename jacobian_policy_type>
-class ImplicitBDF2StepperImpl<state_type,
-			      residual_type,
-			      jacobian_type,
+class ImplicitBDF2StepperImpl<stateT,
+			      residualT,
+			      jacobianT,
 			      model_type,
 			      aux_stepper_type,
 			      residual_policy_type,
 			      jacobian_policy_type>
   : public ImplicitStepperBase<
-             ImplicitBDF2StepperImpl<state_type,
-				     residual_type,
-				     jacobian_type,
+             ImplicitBDF2StepperImpl<stateT,
+				     residualT,
+				     jacobianT,
 				     model_type,
 				     aux_stepper_type,
 				     residual_policy_type,
 				     jacobian_policy_type> >,
-    protected OdeStorage<state_type, residual_type, 2>,
+    protected OdeStorage<stateT, residualT, 2>,
     protected ImpOdeAuxData<model_type,
-			  typename core::details::traits<state_type>::scalar_t,
+			  typename core::details::traits<stateT>::scalar_t,
 			  residual_policy_type,
 			  jacobian_policy_type>{
 
@@ -46,28 +45,28 @@ MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
 MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
 
 
-  using stepper_t = ImplicitEulerStepperImpl<state_type,
-					     residual_type,
-					     jacobian_type,
+  using stepper_t = ImplicitEulerStepperImpl<stateT,
+					     residualT,
+					     jacobianT,
 					     model_type,
 					     residual_policy_type,
 					     jacobian_policy_type>;
-  using scalar_type  = typename core::details::traits<state_type>::scalar_t;
+  using scalar_type  = typename core::details::traits<stateT>::scalar_t;
   using stepper_base_t = ImplicitStepperBase<stepper_t>;
-  using storage_base_t = OdeStorage<state_type, residual_type, 2>;
+  using storage_base_t = OdeStorage<stateT, residualT, 2>;
   using auxdata_base_t = ImpOdeAuxData<model_type, scalar_type,
 				       residual_policy_type,
 				       jacobian_policy_type>;
   static constexpr auto my_enum = ::rompp::ode::ImplicitEnum::BDF2;
 
 public:
-  // these aliases are needed by the solver
-  using vector_type = state_type;
-  using matrix_type = jacobian_type;
+  using state_type = stateT;
+  using residual_type = residualT;
+  using jacobian_type = jacobianT;
 
 public:
   template<typename solver_type, typename step_t>
-  void operator()(state_type & y, scalar_type t,
+  void operator()(stateT & y, scalar_type t,
 		  scalar_type dt, step_t step,
 		  solver_type & solver){
     this->dt_ = dt;
@@ -90,7 +89,7 @@ public:
   }//end doStepImpl
 
 public:
-  void residualImpl(const state_type & y, residual_type & R)const{
+  void residualImpl(const stateT & y, residualT & R)const{
     (*this->residual_obj_).template operator()<my_enum, 2>(y, R,
 							   this->auxStates_,
 							   *this->model_,
@@ -99,7 +98,7 @@ public:
   }
   //--------------------------------------------------------
 
-  void jacobianImpl(const state_type & y, jacobian_type & J)const{
+  void jacobianImpl(const stateT & y, jacobianT & J)const{
     (*this->jacobian_obj_).template operator()<my_enum>(y, J,
 							*this->model_,
 							this->t_,
@@ -107,7 +106,7 @@ public:
   }
   //--------------------------------------------------------
 
-  residual_type residualImpl(const state_type & y)const{
+  residualT residualImpl(const stateT & y)const{
     return (*this->residual_obj_).template operator()<my_enum, 2>(y,
 								  this->auxStates_,
 								  *this->model_,
@@ -116,7 +115,7 @@ public:
   }
   //--------------------------------------------------------
 
-  jacobian_type jacobianImpl(const state_type & y)const{
+  jacobianT jacobianImpl(const stateT & y)const{
     return (*this->jacobian_obj_).template operator()<my_enum>(y,
 							       *this->model_,
 							       this->t_,
@@ -132,7 +131,7 @@ protected:
        typename U = residual_policy_type,
        typename T = jacobian_policy_type,
        typename V = aux_stepper_type,
-       typename T3 = state_type>
+       typename T3 = stateT>
   ImplicitBDF2StepperImpl(const M & model,
         const U & res_policy_obj,
         const T & jac_policy_obj,
