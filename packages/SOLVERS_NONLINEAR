@@ -4,7 +4,7 @@
 
 #include "SOLVERS_LINEAR"
 
-#include "solvers/src/solvers_newton_raphson.hpp"
-#include "solvers/src/solvers_leastsquares_gauss_newton_qr.hpp"
+#include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
+#include "solvers/src/nonlinear/solvers_leastsquares_gauss_newton_qr.hpp"
 
 #endif

@@ -4,10 +4,10 @@
 
 #include "solvers/src/solvers_ConfigDefs.hpp"
 #include "solvers/src/solvers_forward_declarations.hpp"
-#include "solvers/src/solvers_iterative_base.hpp"
 #include "solvers/src/solvers_meta_static_checks.hpp"
 #include "solvers/src/solvers_tags.hpp"
 #include "solvers/src/solvers_system_traits.hpp"
 
+#include "solvers/src/base/solvers_iterative_base.hpp"
 
 #endif
