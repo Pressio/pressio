@@ -3,8 +3,8 @@
 #define SOLVERS_LINEAR_EIGEN_ITERATIVE_HPP
 
 #include "../solvers_ConfigDefs.hpp"
-#include "../solvers_iterative_base.hpp"
-#include "solvers_linear_base.hpp"
+#include "../base/solvers_iterative_base.hpp"
+#include "../base/solvers_linear_base.hpp"
 #include "solvers_linear_traits.hpp"
 
 namespace rompp { namespace solvers {
@@ -12,13 +12,13 @@ namespace rompp { namespace solvers {
 
 template<typename SolverT, typename MatrixT>
 class EigenIterative
-  : public LinearBase<SolverT, MatrixT, 
-                            EigenIterative<SolverT, MatrixT> >, 
+  : public LinearBase<SolverT, MatrixT,
+                            EigenIterative<SolverT, MatrixT> >,
            IterativeBase<SolverT, typename core::details::traits<MatrixT>::scalar_t>
 {
   using native_mat_t    = typename core::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename core::details::traits<MatrixT>::scalar_t;
-  
+
   using this_t          = EigenIterative<SolverT, MatrixT>;
   using base_interface  = LinearBase<SolverT, MatrixT, this_t>;
   using base_iterative  = IterativeBase<SolverT, scalar_t>;

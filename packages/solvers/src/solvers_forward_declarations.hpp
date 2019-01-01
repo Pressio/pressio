@@ -4,9 +4,17 @@
 
 #include "solvers_ConfigDefs.hpp"
 
-namespace rompp{ namespace solvers{ namespace experimental{
+namespace rompp{ namespace solvers{
+
+template <
+  typename scalar_t,
+  typename qr_type,
+  typename system_t = void,
+  typename enable = void
+  >
+class GaussNewtonQR;
 
 
-}}}//end namespace rompp::solvers::experimental
+}}//end namespace rompp::solvers
 
 #endif
