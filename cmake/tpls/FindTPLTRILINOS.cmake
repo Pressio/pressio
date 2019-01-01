@@ -29,10 +29,8 @@ TRIBITS_TPL_FIND_INCLUDE_DIRS_AND_LIBRARIES( TRILINOS
   anasaziepetra
   anasazi
   kokkosalgorithms
-  kokkoscontainers
-  kokkoscore	
   teuchosparameterlist
-
+ 
   MUST_FIND_ALL_HEADERS
   )
 
