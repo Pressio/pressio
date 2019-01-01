@@ -4,49 +4,45 @@
 #include "SOLVERS_NONLINEAR"
 
 struct ValidSystem {
+  // Matrix typedefs
+  using matrix_n_t = Eigen::SparseMatrix<double>;
+  using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
 
-    // Matrix typedefs
-    using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
+  // Vector typedefs
+  using vector_n_t = Eigen::VectorXd;
+  using vector_w_t = rompp::core::Vector<vector_n_t>;
 
-    // Vector typedefs
-    using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = rompp::core::Vector<vector_n_t>;
+  using state_type = vector_w_t;
+  using residual_type = state_type;
+  using jacobian_type = matrix_w_t;
 
-    typedef vector_w_t vector_type;
-    typedef matrix_w_t matrix_type;
+  void residual(const state_type& x, residual_type& res) const {
+    res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
+    res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
+  }
 
+  residual_type residual(const state_type& x) const {
+    residual_type res(2);
+    res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
+    res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
+    return res;
+  }
 
-    void residual(const vector_w_t& x, vector_w_t& res) const {
-      res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
-      res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-    }
+  void jacobian(const state_type& x, jacobian_type& jac) const {
+    jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
+    jac.data()->coeffRef(0, 1) =  1.0;
+    jac.data()->coeffRef(1, 0) = -1.0;
+    jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
+  }
 
-
-    vector_w_t residual(const vector_w_t& x) const {
-      vector_w_t res(2);
-      res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
-      res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-      return res;
-    }
-
-
-    void jacobian(const vector_w_t& x, matrix_w_t& jac) const {
-      jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
-      jac.data()->coeffRef(0, 1) =  1.0;
-      jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
-    }
-
-
-    matrix_w_t jacobian(const vector_w_t& x) const {
-      matrix_w_t jac(2, 2);
-      jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
-      jac.data()->coeffRef(0, 1) =  1.0;
-      jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
-      return jac;
-    }
+  jacobian_type jacobian(const state_type& x) const {
+    jacobian_type jac(2, 2);
+    jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
+    jac.data()->coeffRef(0, 1) =  1.0;
+    jac.data()->coeffRef(1, 0) = -1.0;
+    jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
+    return jac;
+  }
 };
 
 
@@ -55,19 +51,20 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
   using namespace rompp;
   using namespace rompp::solvers;
 
-  using vector_w_t = ValidSystem::vector_w_t;
-  using matrix_w_t = ValidSystem::matrix_w_t;
-  using scalar_t = double;
+  using problem_t  = ValidSystem;
+  using state_t	   = problem_t::state_type;
+  using jacobian_t = problem_t::jacobian_type;
+  using scalar_t   = double;
+
+  problem_t sys;
 
   // linear system
-  using lin_solver_t = EigenIterative<linear::LSCG, matrix_w_t>;
-
+  using lin_solver_t = EigenIterative<linear::LSCG, jacobian_t>;
+  // nonlinear system
   NewtonRaphson<scalar_t, lin_solver_t> solver;
 
   // my solution vector
-  vector_w_t y(2);
-
-  ValidSystem sys;
+  state_t y(2);
   solver.solve(sys, y);
 
   EXPECT_NEAR( y[0],  1.0, 1e-8 );

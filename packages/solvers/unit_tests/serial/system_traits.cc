@@ -4,102 +4,46 @@
 #include "SOLVERS_BASIC"
 
 struct ValidSystemA {
+  // Matrix typedefs
+  using matrix_n_t = Eigen::SparseMatrix<double>;
+  using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
 
-    // Matrix typedefs
-    using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
+  // Vector typedefs
+  using vector_n_t = Eigen::VectorXd;
+  using vector_w_t = rompp::core::Vector<vector_n_t>;
 
-    // Vector typedefs
-    using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = rompp::core::Vector<vector_n_t>;
+  using state_type = vector_w_t;
+  using residual_type = state_type;
+  using jacobian_type = matrix_w_t;
 
-    typedef vector_w_t vector_type;
-    typedef matrix_w_t matrix_type;
+  void residual(const state_type & x, residual_type & res) {
+    res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
+    res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
+  }
 
+  residual_type residual(const state_type & x) {
+    residual_type  res(2);
+    res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
+    res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
+    return res;
+  }
 
-    void residual(const vector_w_t& x, vector_w_t& res) {
-      res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
-      res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-    }
+  void jacobian(const state_type & x, jacobian_type & jac) {
+    jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
+    jac.data()->coeffRef(0, 1) =  1.0;
+    jac.data()->coeffRef(1, 0) = -1.0;
+    jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
+  }
 
-
-    vector_w_t residual(const vector_w_t& x) {
-      vector_w_t res(2);
-      res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
-      res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-      return res;
-    }
-
-    
-    void jacobian(const vector_w_t& x, matrix_w_t& jac) {
-      jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
-      jac.data()->coeffRef(0, 1) =  1.0;
-      jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
-    }
-
-
-    matrix_w_t jacobian(const vector_w_t& x) {
-      matrix_w_t jac(2, 2);
-      jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
-      jac.data()->coeffRef(0, 1) =  1.0;
-      jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
-      return jac;
-    }
+  jacobian_type jacobian(const state_type & x) {
+    jacobian_type jac(2, 2);
+    jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
+    jac.data()->coeffRef(0, 1) =  1.0;
+    jac.data()->coeffRef(1, 0) = -1.0;
+    jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
+    return jac;
+  }
 };
-
-
-struct ValidSystemB {
-
-    // Matrix typedefs
-    using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
-
-    // Vector typedefs
-    using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = rompp::core::Vector<vector_n_t>;
-
-    typedef vector_w_t vector_type;
-    typedef matrix_w_t matrix_type;
-
-
-    void residual(const vector_w_t& x, vector_w_t& res) {
-      res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
-      res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-    }
-
-    
-    void jacobian(const vector_w_t& x, matrix_w_t& jac) {
-      jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
-      jac.data()->coeffRef(0, 1) =  1.0;
-      jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
-    }
-};
-
-
-struct InvalidSystemA {
-
-    // Matrix typedefs
-    using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
-
-    // Vector typedefs
-    using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = rompp::core::Vector<vector_n_t>;
-
-    typedef vector_w_t vector_type;
-    typedef matrix_w_t matrix_type;
-    
-    void jacobian(const vector_w_t& x, matrix_w_t& jac) {
-      jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
-      jac.data()->coeffRef(0, 1) =  1.0;
-      jac.data()->coeffRef(1, 0) = -1.0;
-      jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1]; 
-    }
-};
-
 
 TEST(system_traits, systemTraitsValidSystemATest)
 {
@@ -124,7 +68,34 @@ TEST(system_traits, systemTraitsValidSystemATest)
 }
 
 
-TEST(system_traits, systemTraitsValidSystemBTest) 
+
+
+struct ValidSystemB {
+  // Matrix typedefs
+  using matrix_n_t = Eigen::SparseMatrix<double>;
+  using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
+  // Vector typedefs
+  using vector_n_t = Eigen::VectorXd;
+  using vector_w_t = rompp::core::Vector<vector_n_t>;
+
+  using state_type = vector_w_t;
+  using residual_type = state_type;
+  using jacobian_type = matrix_w_t;
+
+  void residual(const vector_w_t& x, vector_w_t& res) {
+    res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
+    res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
+  }
+
+  void jacobian(const vector_w_t& x, matrix_w_t& jac) {
+    jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
+    jac.data()->coeffRef(0, 1) =  1.0;
+    jac.data()->coeffRef(1, 0) = -1.0;
+    jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
+  }
+};
+
+TEST(system_traits, systemTraitsValidSystemBTest)
 {
   using namespace rompp;
   using namespace solvers::details;
@@ -147,7 +118,30 @@ TEST(system_traits, systemTraitsValidSystemBTest)
 }
 
 
-TEST(system_traits, systemTraitsInvalidSystemATest) 
+
+
+struct InvalidSystemA {
+  // Matrix typedefs
+  using matrix_n_t = Eigen::SparseMatrix<double>;
+  using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
+
+  // Vector typedefs
+  using vector_n_t = Eigen::VectorXd;
+  using vector_w_t = rompp::core::Vector<vector_n_t>;
+
+  using state_type = vector_w_t;
+  using residual_type = state_type;
+  using jacobian_type = matrix_w_t;
+
+  void jacobian(const state_type& x, jacobian_type& jac) {
+    jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
+    jac.data()->coeffRef(0, 1) =  1.0;
+    jac.data()->coeffRef(1, 0) = -1.0;
+    jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
+  }
+};
+
+TEST(system_traits, systemTraitsInvalidSystemATest)
 {
   using namespace rompp;
   using namespace solvers::details;
