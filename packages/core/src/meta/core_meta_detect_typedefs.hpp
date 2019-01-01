@@ -5,10 +5,8 @@
 #include <type_traits>
 
 
-namespace rompp{
-namespace core{
-namespace meta {
-  
+namespace rompp{ namespace core{ namespace meta {
+
   /////////////////////////////////////////////////
   // check type has a public typedef named: scalar_type
   /////////////////////////////////////////////////
@@ -24,7 +22,7 @@ namespace meta {
   // 					   >::value
   // 			     >::type
   // 			   > : std::true_type{};
-  
+
 
   template <typename T>
   using has_scalar_typedef = typename T::scalar_type;
@@ -56,7 +54,7 @@ namespace meta {
 					   >::value
 			     >::type
 			   > : std::true_type{};
-  
+
   /////////////////////////////////////////////////
   // type has a public typedef named: local_ordinal_type
   /////////////////////////////////////////////////
@@ -72,7 +70,7 @@ namespace meta {
 						   >::value
 				     >::type
 				 > : std::true_type{};
-  
+
   /////////////////////////////////////////////////
   // type has a public typedef named: global_ordinal_type
   /////////////////////////////////////////////////
@@ -90,7 +88,7 @@ namespace meta {
 				    >::type
 				  > : std::true_type{};
 
-  
+
   /////////////////////////////////////////////////
   // type has a public typedef named: map_type
   /////////////////////////////////////////////////
@@ -107,7 +105,7 @@ namespace meta {
 			  >::type
 			> : std::true_type{};
 
-  
+
   /////////////////////////////////////////////////
   // type has a public typedef named: comm_type
   /////////////////////////////////////////////////
@@ -124,9 +122,7 @@ namespace meta {
 					    >::value
 			      >::type
 			    > : std::true_type{};
-  
 
-} // namespace meta
-} // namespace core
-}//end namespace rompp
+
+}}}//end namespace rompp::core::meta
 #endif
