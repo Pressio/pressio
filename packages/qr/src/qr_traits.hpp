@@ -86,10 +86,12 @@ struct traits_shared_trilinos_mv{
 
 
 
+
 template <typename matrix_t, typename algo_tag, typename Q_t,
 	  typename R_t, typename sc_t, typename MV_t, typename enable = void>
 struct impl_class_helper{};
 
+#ifdef HAVE_ANASAZI_TSQR
 template <typename matrix_t, typename Q_t, typename R_t, typename sc_t, typename MV_t>
 struct impl_class_helper<matrix_t, qr::TSQR, Q_t, R_t, sc_t, MV_t,
 			 core::meta::enable_if_t<
@@ -98,7 +100,7 @@ struct impl_class_helper<matrix_t, qr::TSQR, Q_t, R_t, sc_t, MV_t,
 			   >>{
   using impl_t = impl::AnasaziMVTSQR<matrix_t, Q_t, R_t, sc_t, MV_t>;
 };
-
+#endif
 
 
 /*

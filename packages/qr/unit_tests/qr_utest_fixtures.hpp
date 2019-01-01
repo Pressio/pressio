@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include "CORE_ALL"
 #include "qr_r9c4_gold.hpp"
+
 #ifdef HAVE_TRILINOS
 #include "Epetra_MpiComm.h"
 #include "Eigen/Dense"
