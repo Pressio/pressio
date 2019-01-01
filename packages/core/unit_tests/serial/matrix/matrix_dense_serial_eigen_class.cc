@@ -10,7 +10,7 @@ TEST(core_matrix_dense_eigen_dynamic_class,
      constructor)
 {
   // STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(mymat_t);
-  using matTrait = rompp::core::details::traits<mymat_t>;
+  //using matTrait = rompp::core::details::traits<mymat_t>;
 
   mymat_t m1;
   EXPECT_EQ( m1.rows(), 0 );
