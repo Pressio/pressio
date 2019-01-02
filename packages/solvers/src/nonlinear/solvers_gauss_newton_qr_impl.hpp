@@ -39,6 +39,10 @@ namespace rompp{ namespace solvers{ namespace impl{
 	      << " maxIter = " << maxNonLIt
 	      << std::endl;
 #endif
+    // here we should set dx=x, and do normO = norm2(dx)
+    // but we can just put norm2(x) so we avoid an assignment operation
+    normO = ::rompp::core::ops::norm2(x);
+    normN = static_cast<scalar_t>(0);
 
     uint_t iStep = 1;
     while (iStep++ < maxNonLIt)

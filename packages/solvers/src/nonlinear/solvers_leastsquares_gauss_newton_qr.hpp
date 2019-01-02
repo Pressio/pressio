@@ -50,7 +50,7 @@ public:
 
     state_t QTResid_(x); // hold result of Q^T residual
     QTResid_.setZero();
-    auto dx(x);
+    state_t dx(x);
 
     ::rompp::solvers::impl::gauss_newtom_qr_solve(sys, x,
     						  Resid, Jacob,
@@ -61,7 +61,6 @@ public:
   }//solve
 
 };//class
-
 
 
 
@@ -111,13 +110,15 @@ public:
     nonLinearTolerance_ = std::abs(nonLinearTolerance);
   }
 
-  void solve(const system_t & sys, state_t & x){
+  void solve(system_t & sys, state_t & x){
+    sys.residual(x, res_);
+    sys.jacobian(x, jac_);
     ::rompp::solvers::impl::gauss_newtom_qr_solve(sys, x,
     						  res_, jac_,
     						  maxNonLinearIterations_,
     						  nonLinearTolerance_,
     						  QTResid_, delta_, qrObj,
-						  normO_, normN_);
+    						  normO_, normN_);
   }//end solve
 
 };//class
