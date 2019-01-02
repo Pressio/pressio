@@ -10,6 +10,9 @@ template <
   typename scalar_t,
   typename qr_type,
   typename system_t = void,
+  typename state_t = void,
+  typename residual_t = void,
+  typename jacobian_t = void,
   typename enable = void
   >
 class GaussNewtonQR;
