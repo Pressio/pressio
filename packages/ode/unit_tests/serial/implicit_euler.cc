@@ -33,8 +33,7 @@ TEST(ode_implicit_euler, traits){
     ode::ImplicitEnum::Euler,
     state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
 
-  using impl_t = typename stepper_t::base_t;
-  using traits = ode::details::traits<impl_t>;
+  using traits = ode::details::traits<stepper_t>;
   // static_assert(ode::meta::is_implicit_euler_residual_standard_policy<
   // 		traits::residual_policy_t>::value,
   // 		"");
@@ -75,7 +74,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
 
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::Euler,
-    state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
+    state_t, res_t, jac_t, app_t>; /*aux stepper NOT needed for backEuler*/
   stepper_t stepperObj(appObj, y);
 
   // define solver

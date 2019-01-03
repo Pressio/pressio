@@ -15,12 +15,7 @@ class ExplicitEulerStepperImpl<ode_state_type,
 			       model_type,
 			       ode_residual_type,
 			       residual_policy_type>
-  : public ExplicitStepperBase<
-  ExplicitEulerStepperImpl<ode_state_type,
-			   model_type,
-			   ode_residual_type,
-			   residual_policy_type>>,
-    private OdeStorage<ode_state_type, ode_residual_type, 0, 1>,
+  : private OdeStorage<ode_state_type, ode_residual_type, 0, 1>,
     private ExpOdeAuxData<model_type, residual_policy_type>
 {
 
@@ -31,9 +26,9 @@ class ExplicitEulerStepperImpl<ode_state_type,
 "EXPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
-  using this_t = ExplicitEulerStepperImpl<
-    ode_state_type, model_type, ode_residual_type, residual_policy_type>;
-  using stepper_base_t = ExplicitStepperBase<this_t>;
+  using this_t = ExplicitEulerStepperImpl< ode_state_type, model_type,
+					   ode_residual_type,
+					   residual_policy_type>;
   using storage_base_t = OdeStorage<ode_state_type, ode_residual_type, 0, 1>;
   using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
   using scalar_type  = typename core::details::traits<ode_state_type>::scalar_t;
@@ -41,23 +36,15 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
   static_assert(std::is_same<scalar_type, scalar_t2>::value,
 		"Not maching scalar types");
 
-protected:
   using storage_base_t::auxRHS_;
   using auxdata_base_t::model_;
   using auxdata_base_t::residual_obj_;
 
-protected:
-
-  template <typename T1 = model_type,
-  	    typename T2 = residual_policy_type,
-	    typename T3 = ode_state_type,
-	    typename T4 = ode_residual_type,
-	    typename... Args>
-  ExplicitEulerStepperImpl(const T1 & model,
-			   const T2 & res_policy_obj,
-			   const T3 & y0,
-			   const T4 & r0,
-			   Args&&... rest)
+public:
+  ExplicitEulerStepperImpl(const model_type & model,
+			   const residual_policy_type & res_policy_obj,
+			   const ode_state_type & y0,
+			   const ode_residual_type & r0)
     : storage_base_t(r0), auxdata_base_t(model, res_policy_obj)
   {
     //make sure there is something in what is passed,
@@ -66,14 +53,9 @@ protected:
     assert( !r0.empty() );
   }
 
-  template <typename T1 = residual_policy_type,
-	    typename T2 = ode_state_type,
-	    typename T3 = ode_residual_type,
-	    typename... Args>
-  ExplicitEulerStepperImpl(const T1 & res_policy_obj,
-			   const T2 & y0,
-			   const T3 & r0,
-			   Args&&... rest)
+  ExplicitEulerStepperImpl(const residual_policy_type & res_policy_obj,
+			   const ode_state_type & y0,
+			   const ode_residual_type & r0)
     : storage_base_t(r0), auxdata_base_t(res_policy_obj)
   {
     //make sure there is something in what is passed,
@@ -86,10 +68,9 @@ protected:
   ~ExplicitEulerStepperImpl() = default;
 
 public:
-
   template<typename step_t>
-  void operator()(ode_state_type & y, scalar_type t,
-		  scalar_type dt, step_t step){
+  void doStep(ode_state_type & y, scalar_type t,
+	      scalar_type dt, step_t step){
 
     // we replaced this with assertion in contructor
     // since the auxRHS are constructed before anyway
@@ -103,10 +84,8 @@ public:
     // y = y + dt * rhs
     y += dt * auxRHS_[0];
   }
-  //-------------------------------------------------------
 
-protected:
-
+private:
   template<typename T = model_type,
 	   typename std::enable_if<
 	     std::is_void<T>::value
@@ -116,7 +95,6 @@ protected:
 	       scalar_type t){
     (*residual_obj_)(y, RHS, t);
   }
-  //-------------------------------------------------------
 
   template<typename T = model_type,
 	   typename std::enable_if<
@@ -127,12 +105,7 @@ protected:
 	       scalar_type t){
     (*residual_obj_)(y, RHS, *model_, t);
   }
-  //----------------------------------------------------------------
-
-private:
-  friend stepper_base_t;
-
-}; //end class
+};
 
 }}}//end namespace rompp::ode::impl
 #endif

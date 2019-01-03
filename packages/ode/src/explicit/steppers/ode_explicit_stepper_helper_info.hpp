@@ -12,6 +12,10 @@ namespace rompp{ namespace ode{ namespace impl{
 //!!!!!!!!!!!!!!!!!
 #ifdef HAVE_CPP14
 //!!!!!!!!!!!!!!!!!
+      /*
+       * TODO: once we move to c++14, all this needs
+       * to be transfereed/adapted to the traits class
+       */
 
       template <typename... Args>
       struct explicit_stepper_helper_info_base{
@@ -36,7 +40,7 @@ namespace rompp{ namespace ode{ namespace impl{
 	static constexpr auto k3 = ic3_t::value;
 	using res_type = ::tinympl::variadic::at_or_t<state_type,k3,Args...>;
 
-	// the standard policy is 
+	// the standard policy is
 	using res_std_pol_type = policy::ExplicitResidualStandardPolicy<
 	  state_type, model_type, res_type>;
 
@@ -89,73 +93,6 @@ namespace rompp{ namespace ode{ namespace impl{
 	  state_type, model_type, res_type, residual_policy_type>;
 
       };
-
-
-//!!!!!!!!!!!!!!!!
-#else
-//!!!!!!!!!!!!!!!!
-
-      template <ExplicitEnum, typename ode_state_type,
-		typename model_type, typename ode_residual_type,
-		typename residual_policy_type>
-      struct explicit_stepper_helper_info;
-      //--------------------------------------------
-
-      // Euler standard policy
-      template<typename ode_state_type,
-	       typename model_type,
-	       typename ode_residual_type>
-      struct explicit_stepper_helper_info<ExplicitEnum::Euler,
-					  ode_state_type, model_type,
-					  ode_residual_type,void>{
-	using res_std_pol_type = policy::ExplicitResidualStandardPolicy<
-	  ode_state_type, model_type, ode_residual_type>;
-	using base_impl_type = impl::ExplicitEulerStepperImpl<
-	  ode_state_type, model_type,
-	  ode_residual_type, res_std_pol_type>;
-      };
-      //--------------------------------------------
-      // Euler NON standard
-      template<typename ode_state_type, typename model_type,
-	       typename ode_residual_type, typename residual_policy_type>
-      struct explicit_stepper_helper_info<ExplicitEnum::Euler,
-					  ode_state_type, model_type,
-					  ode_residual_type,
-					  residual_policy_type>{
-	using base_impl_type = impl::ExplicitEulerStepperImpl<
-	  ode_state_type, model_type,
-	  ode_residual_type, residual_policy_type>;
-      };
-      //--------------------------------------------
-
-      // RungeKutta standard
-      template<typename ode_state_type,
-	       typename model_type,
-	       typename ode_residual_type>
-      struct explicit_stepper_helper_info<ExplicitEnum::RungeKutta4,
-					  ode_state_type, model_type,
-					  ode_residual_type,void>{
-	using res_std_pol_type = policy::ExplicitResidualStandardPolicy<
-	  ode_state_type, model_type, ode_residual_type>;
-	using base_impl_type = impl::ExplicitRungeKutta4StepperImpl<
-	  ode_state_type, model_type,
-	  ode_residual_type, res_std_pol_type>;
-      };
-      //--------------------------------------------
-
-      //RK NON standard
-      template<typename ode_state_type, typename model_type,
-	       typename ode_residual_type, typename residual_policy_type>
-      struct explicit_stepper_helper_info<ExplicitEnum::RungeKutta4,
-					  ode_state_type, model_type,
-					  ode_residual_type,
-					  residual_policy_type>{
-	using base_impl_type = impl::ExplicitRungeKutta4StepperImpl<
-	  ode_state_type, model_type,
-	  ode_residual_type, residual_policy_type>;
-      };
-      //--------------------------------------------
-
 
 //!!!!!!!!!!!!!!!!
 #endif //HAVE_CPP14

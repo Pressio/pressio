@@ -20,6 +20,11 @@ namespace rompp{ namespace ode{ namespace impl{
 #ifdef HAVE_CPP14
 //!!!!!!!!!!!!!!!!!
 
+      /*
+       * TODO: once we move to c++14, all this needs
+       * to be transfereed/adapted to the traits class
+       */
+
       template <typename... Args>
       struct implicit_stepper_helper_info_base{
 
@@ -154,113 +159,6 @@ namespace rompp{ namespace ode{ namespace impl{
 	  jacobian_policy_type>;
 
       };
-
-
-//!!!!!!!!!!!!!!!!!
-#else
-//!!!!!!!!!!!!!!!!!
-
-
-      template<ImplicitEnum whichone,
-	       typename ode_state_type,
-	       typename ode_residual_type,
-	       typename ode_jacobian_type,
-	       typename model_type,
-	       typename aux_stepper_type,
-	       typename residual_policy_type,
-	       typename jacobian_policy_type>
-      struct implicit_stepper_helper_info;
-
-      //--------------------------------------------
-
-      // backward Euler, standard policies
-      template <typename ode_state_type,
-		typename ode_residual_type,
-		typename ode_jacobian_type,
-		typename model_type,
-		typename aux_stepper_type>
-      struct implicit_stepper_helper_info<ImplicitEnum::Euler,
-					  ode_state_type, ode_residual_type,
-					  ode_jacobian_type, model_type,
-					  aux_stepper_type, void, void>{
-
-	// using res_std_pol_type = policy::ImplicitEulerResidualStandardPolicy<
-	//   ode_state_type, model_type, ode_residual_type>;
-	using res_std_pol_type = policy::ImplicitResidualStandardPolicy<
-	  ode_state_type, model_type, ode_residual_type>;
-
-	using jac_std_pol_type = policy::ImplicitJacobianStandardPolicy<
-	  ode_state_type, model_type, ode_jacobian_type>;
-
-	using base_impl_type = impl::ImplicitEulerStepperImpl<
-	  ode_state_type, ode_residual_type, ode_jacobian_type,
-	  model_type, res_std_pol_type, jac_std_pol_type>;
-      };
-      //--------------------------------------------
-
-      // backward Euler, user-defined policies
-      template <typename ode_state_type,
-		typename ode_residual_type,
-		typename ode_jacobian_type,
-		typename model_type,
-		typename aux_stepper_type,
-		typename residual_policy_type,
-		typename jacobian_policy_type>
-      struct implicit_stepper_helper_info<ImplicitEnum::Euler,
-					  ode_state_type, ode_residual_type,
-					  ode_jacobian_type, model_type,
-					  aux_stepper_type, residual_policy_type,
-					  jacobian_policy_type>{
-	using base_impl_type = impl::ImplicitEulerStepperImpl<
-	  ode_state_type, ode_residual_type, ode_jacobian_type,
-	  model_type, residual_policy_type, jacobian_policy_type>;
-      };
-      //--------------------------------------------
-
-      // BDF2, standard policies
-      template <typename ode_state_type,
-		typename ode_residual_type,
-		typename ode_jacobian_type,
-		typename model_type,
-		typename aux_stepper_type>
-      struct implicit_stepper_helper_info<ImplicitEnum::BDF2,
-					  ode_state_type, ode_residual_type,
-					  ode_jacobian_type, model_type,
-					  aux_stepper_type, void, void>{
-
-	// using res_std_pol_type = policy::ImplicitBDF2ResidualStandardPolicy<
-	//   ode_state_type, model_type, ode_residual_type>;
-	using res_std_pol_type = policy::ImplicitResidualStandardPolicy<
-	  ode_state_type, model_type, ode_residual_type>;
-
-	using jac_std_pol_type = policy::ImplicitJacobianStandardPolicy<
-	  ode_state_type, model_type, ode_jacobian_type>;
-
-	using base_impl_type = impl::ImplicitBDF2StepperImpl<
-	  ode_state_type, ode_residual_type, ode_jacobian_type,
-	  model_type, aux_stepper_type, res_std_pol_type, jac_std_pol_type>;
-      };
-      //--------------------------------------------
-
-      // BDF2, user-defined policies
-      template <typename ode_state_type,
-		typename ode_residual_type,
-		typename ode_jacobian_type,
-		typename model_type,
-		typename aux_stepper_type,
-		typename residual_policy_type,
-		typename jacobian_policy_type>
-      struct implicit_stepper_helper_info<ImplicitEnum::BDF2,
-					  ode_state_type, ode_residual_type,
-					  ode_jacobian_type, model_type,
-					  aux_stepper_type, residual_policy_type,
-					  jacobian_policy_type>{
-	using base_impl_type = impl::ImplicitBDF2StepperImpl<
-	  ode_state_type, ode_residual_type, ode_jacobian_type,
-	  model_type, aux_stepper_type, residual_policy_type, jacobian_policy_type>;
-      };
-      //--------------------------------------------
-
 
 //!!!!!!!!!!!!!!!!!
 #endif

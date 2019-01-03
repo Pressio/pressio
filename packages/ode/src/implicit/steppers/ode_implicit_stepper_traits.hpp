@@ -5,209 +5,167 @@
 #include "../../ode_forward_declarations.hpp"
 
 namespace rompp{ namespace ode{ namespace details{
-  
-template<typename state_type,
-	 typename residual_type,
-	 typename jacobian_type,
-	 typename model_type,
-	 typename residual_policy_type,
-	 typename jacobian_policy_type>
-struct traits< impl::ImplicitEulerStepperImpl<
-		 state_type, residual_type, jacobian_type,
-		 model_type, residual_policy_type,
-		 jacobian_policy_type>>{
 
-  using stepper_t =
-    impl::ImplicitEulerStepperImpl<state_type,
-				   residual_type,
-				   jacobian_type,
-				   model_type,
-				   residual_policy_type,
-				   jacobian_policy_type>;
-  using state_t =  state_type;
-  using residual_t = residual_type;
-  using jacobian_t =  jacobian_type;
-  using scalar_t = typename core::details::traits<state_type>::scalar_t;
-  using model_t = model_type;
-  using residual_policy_t = residual_policy_type;
-  using jacobian_policy_t = jacobian_policy_type;
 
-  static constexpr ::rompp::ode::ImplicitEnum enum_id =
-    ::rompp::ode::ImplicitEnum::Euler;
-  
+// backward Euler, STANDARD policies
+template<
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
+  typename model_type
+  >
+struct traits<
+  ImplicitStepper<ImplicitEnum::Euler,
+		  state_type, residual_type, jacobian_type,
+		  model_type, void, void, void>
+  >{
+
+  static constexpr ::rompp::ode::ImplicitEnum enum_id = ImplicitEnum::Euler;
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
-  
-  using order_t = unsigned int;
+  using order_t	= unsigned int;
   static constexpr order_t order_value = 1;
   static constexpr order_t steps = 1;
+
+  using state_t		  = state_type;
+  using residual_t	  = residual_type;
+  using jacobian_t	  = jacobian_type;
+  using model_t		  = model_type;
+  using aux_stepper_t	  = void;
+  using residual_policy_t = policy::ImplicitResidualStandardPolicy<
+				state_type, model_type, residual_type>;
+  using jacobian_policy_t = policy::ImplicitJacobianStandardPolicy<
+				state_type, model_type, jacobian_type>;
+  using scalar_t	  = typename core::details::traits<state_type>::scalar_t;
+
+  using impl_t = impl::ImplicitEulerStepperImpl<state_type, residual_type,
+						jacobian_type, model_type,
+						residual_policy_t,
+						jacobian_policy_t>;
 };
 
-////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////
 
 
-template<typename state_type,
-	 typename residual_type,
-	 typename jacobian_type,
-	 typename model_type,
-	 typename aux_stepper_type, 
-	 typename residual_policy_type,
-	 typename jacobian_policy_type>
-struct traits< impl::ImplicitBDF2StepperImpl<
-		 state_type, residual_type, jacobian_type,
-		 model_type, aux_stepper_type,
-		 residual_policy_type, jacobian_policy_type>>{
+// backward Euler, user-defined policies
+template<
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
+  typename model_type,
+  typename residual_policy_type,
+  typename jacobian_policy_type
+  >
+struct traits<
+  ImplicitStepper<ImplicitEnum::Euler,
+		  state_type, residual_type, jacobian_type,
+		  model_type, void, residual_policy_type,
+		  jacobian_policy_type>
+  >{
 
-  using stepper_t =
-    impl::ImplicitEulerStepperImpl<state_type,
-				   residual_type,
-				   jacobian_type,
-				   model_type,
-				   aux_stepper_type,
-				   residual_policy_type,
-				   jacobian_policy_type>;
-  using state_t =  state_type;
-  using residual_t = residual_type;
-  using jacobian_t =  jacobian_type;
-  using scalar_t = typename core::details::traits<state_type>::scalar_t;
-  using model_t = model_type;
-  using residual_policy_t = residual_policy_type;
-  using jacobian_policy_t = jacobian_policy_type;
-  using aux_stepper_t = aux_stepper_type;
-   
-  static constexpr ::rompp::ode::ImplicitEnum enum_id =
-    ::rompp::ode::ImplicitEnum::BDF2;
-
+  static constexpr ::rompp::ode::ImplicitEnum enum_id = ImplicitEnum::Euler;
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
-  
-  using order_t = unsigned int;
-  static constexpr order_t order_value = 2;
-  static constexpr order_t steps = 2;
+  using order_t	= unsigned int;
+  static constexpr order_t order_value = 1;
+  static constexpr order_t steps = 1;
+
+  using state_t		  = state_type;
+  using residual_t	  = residual_type;
+  using jacobian_t	  = jacobian_type;
+  using model_t		  = model_type;
+  using aux_stepper_t	  = void;
+  using residual_policy_t = residual_policy_type;
+  using jacobian_policy_t = jacobian_policy_type;
+  using scalar_t	  = typename core::details::traits<state_type>::scalar_t;
+
+  using impl_t = impl::ImplicitEulerStepperImpl<state_type, residual_type,
+						jacobian_type, model_type,
+						residual_policy_t,
+						jacobian_policy_t>;
 };
 
-      
+
+
+// BDF2, STANDARD policies
+template<
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
+  typename model_type,
+  typename aux_stepper_type
+  >
+struct traits<
+  ImplicitStepper<ImplicitEnum::BDF2,
+		  state_type, residual_type, jacobian_type,
+		  model_type, aux_stepper_type, void, void>
+  >{
+
+  static constexpr ::rompp::ode::ImplicitEnum enum_id = ImplicitEnum::BDF2;
+  static constexpr bool is_implicit = true;
+  static constexpr bool is_explicit = false;
+  using order_t	= unsigned int;
+  static constexpr order_t order_value = 2;
+  static constexpr order_t steps = 2;
+
+  using state_t		  = state_type;
+  using residual_t	  = residual_type;
+  using jacobian_t	  = jacobian_type;
+  using model_t		  = model_type;
+  using aux_stepper_t	  = aux_stepper_type;
+  using residual_policy_t = policy::ImplicitResidualStandardPolicy<
+				state_type, model_type, residual_type>;
+  using jacobian_policy_t = policy::ImplicitJacobianStandardPolicy<
+				state_type, model_type, jacobian_type>;
+  using scalar_t	  = typename core::details::traits<state_type>::scalar_t;
+
+  using impl_t = impl::ImplicitBDF2StepperImpl<state_type, residual_type,
+  					       jacobian_type, model_type,
+  					       aux_stepper_t,
+  					       residual_policy_t,
+  					       jacobian_policy_t>;
+};
+
+
+// BFD2 Euler, user-defined policies
+template<
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
+  typename model_type,
+  typename aux_stepper_type,
+  typename residual_policy_type,
+  typename jacobian_policy_type
+  >
+struct traits<
+  ImplicitStepper<ImplicitEnum::BDF2,
+		  state_type, residual_type, jacobian_type,
+		  model_type, aux_stepper_type, residual_policy_type,
+		  jacobian_policy_type>
+  >{
+
+  static constexpr ::rompp::ode::ImplicitEnum enum_id = ImplicitEnum::BDF2;
+  static constexpr bool is_implicit = true;
+  static constexpr bool is_explicit = false;
+  using order_t	= unsigned int;
+  static constexpr order_t order_value = 2;
+  static constexpr order_t steps = 2;
+
+  using state_t		  = state_type;
+  using residual_t	  = residual_type;
+  using jacobian_t	  = jacobian_type;
+  using model_t		  = model_type;
+  using aux_stepper_t	  = aux_stepper_type;
+  using residual_policy_t = residual_policy_type;
+  using jacobian_policy_t = jacobian_policy_type;
+  using scalar_t	  = typename core::details::traits<state_type>::scalar_t;
+
+  using impl_t = impl::ImplicitBDF2StepperImpl<state_type, residual_type,
+					       jacobian_type, model_type,
+					       aux_stepper_t,
+					       residual_policy_t,
+					       jacobian_policy_t>;
+};
+
+
 }}}//end namespace rompp::ode::details
 #endif
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-// ////////////////////////////////////////////////////////
-// ////////////////////////////////////////////////////////
-
-
-// template<typename state_type,
-// 	 typename residual_type,
-// 	 typename jacobian_type,
-// 	 typename scalar_type,
-// 	 typename model_type,
-// 	 typename time_type,
-// 	 typename solver_policy_type,
-// 	 typename aux_start_stepper_type,
-// 	 typename residual_policy_type,
-// 	 typename jacobian_policy_type>
-// struct traits< impl::implicitBDF3StepperImpl<state_type,
-// 					     residual_type,
-// 					     jacobian_type,
-// 					     scalar_type,
-// 					     model_type,
-// 					     time_type,
-// 					     solver_policy_type,
-// 					     aux_start_stepper_type,
-// 					     residual_policy_type,
-// 					     jacobian_policy_type> >
-// {
-//   using stepper_t =
-//     impl::implicitBDF3StepperImpl<state_type,
-// 				  residual_type,
-// 				  jacobian_type,
-// 				  scalar_type,
-// 				  model_type,
-// 				  time_type,
-// 				  solver_policy_type,
-// 				  aux_start_stepper_type,
-// 				  residual_policy_type,
-// 				  jacobian_policy_type>;
-//   using state_t =  state_type;
-//   using residual_t = residual_type;
-//   using jacobian_t =  jacobian_type;
-//   using scalar_t = scalar_type;    
-//   using model_t = model_type;
-//   using time_t = time_type;
-//   using solver_policy_t = solver_policy_type;
-//   using residual_policy_t = residual_policy_type;
-//   using jacobian_policy_t = jacobian_policy_type;
-
-//   static constexpr bool advanceIncrement = residual_policy_t::advanceIncrement;
-//   static_assert(residual_policy_t::advanceIncrement ==
-//   		jacobian_policy_t::advanceIncrement,
-//   		"Residual and jacobian policies BOTH need to advance full state or just increment wrt initial condition. In this case they are not");
-
-//   using order_t = unsigned int;
-//   static constexpr order_t order_value = 3;
-//   static constexpr order_t steps = 3;
-// };  
-  
-
-
-
-// template<typename state_type,
-// 	 typename residual_type,
-// 	 typename jacobian_type,
-// 	 typename scalar_type,
-// 	 typename model_type,
-// 	 typename time_type,
-// 	 typename solver_policy_type,
-// 	 typename residual_policy_type,
-// 	 typename jacobian_policy_type>
-// struct traits< impl::implicitAdamsMoulton1StepperImpl<state_type,
-// 						      residual_type,
-// 						      jacobian_type,
-// 						      scalar_type,
-// 						      model_type,
-// 						      time_type,
-// 						      solver_policy_type,
-// 						      residual_policy_type,
-// 						      jacobian_policy_type>>
-// {
-//   using stepper_t =
-//     impl::implicitAdamsMoulton1StepperImpl<state_type,
-// 					   residual_type,
-// 					   jacobian_type,
-// 					   scalar_type,
-// 					   model_type,
-// 					   time_type,
-// 					   solver_policy_type,
-// 					   residual_policy_type,
-// 					   jacobian_policy_type>;
-//   using state_t =  state_type;
-//   using residual_t = residual_type;
-//   using jacobian_t =  jacobian_type;
-//   using scalar_t = scalar_type;    
-//   using model_t = model_type;
-//   using time_t = time_type;
-//   using solver_policy_t = solver_policy_type;
-//   using residual_policy_t = residual_policy_type;
-//   using jacobian_policy_t = jacobian_policy_type;
-
-//   static constexpr bool advanceIncrement = residual_policy_t::advanceIncrement;
-//   static_assert(residual_policy_t::advanceIncrement ==
-//   		jacobian_policy_t::advanceIncrement,
-//   		"Residual and jacobian policies BOTH need to advance full state or just increment wrt initial condition. In this case they are not");
-
-//   using order_t = unsigned int;
-//   static constexpr order_t order_value = 2;
-//   static constexpr order_t steps = 1;
-// };

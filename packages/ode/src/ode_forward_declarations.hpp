@@ -58,7 +58,7 @@ class ImplicitJacobianStandardPolicy;
 	     typename ode_residual_type,
 	     typename ode_jacobian_type,
 	     typename model_type,
-	     typename aux_stepper_type,
+	     typename aux_stepper_type = void,
 	     typename residual_policy_type = void,
 	     typename jacobian_policy_type = void,
 	     typename enable = void

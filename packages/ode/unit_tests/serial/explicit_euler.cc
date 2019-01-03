@@ -22,8 +22,7 @@ TEST(ode_explicit_euler, traits){
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::Euler, state_t, app_t, res_t>;
 
-  using impl_t = typename stepper_t::base_t;
-  using traits = ode::details::traits<impl_t>;
+  using traits = ode::details::traits<stepper_t>;
   
   static_assert(ode::meta::is_explicit_euler_residual_standard_policy<
   		typename traits::residual_policy_t>::value, "");

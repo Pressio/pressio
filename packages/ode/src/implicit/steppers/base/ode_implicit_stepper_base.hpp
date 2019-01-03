@@ -13,22 +13,21 @@
 
 namespace rompp{ namespace ode{
 
-template<typename stepper_type>
+template<typename concrete_stepper_type>
 class ImplicitStepperBase
-  : private core::details::CrtpBase<ImplicitStepperBase<stepper_type>>
+  : private core::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type>>
 {
-  using traits = typename ode::details::traits<stepper_type>;
-
-  using state_t = typename traits::state_t;
-  using residual_t = typename traits::residual_t;
-  using jacobian_t = typename traits::jacobian_t;
-  using sc_t = typename traits::scalar_t;
+  using traits		  = typename ode::details::traits<concrete_stepper_type>;
+  using sc_t		  = typename traits::scalar_t;
+  using state_t		  = typename traits::state_t;
+  using residual_t	  = typename traits::residual_t;
+  using jacobian_t	  = typename traits::jacobian_t;
   using residual_policy_t = typename traits::residual_policy_t;
   using jacobian_policy_t = typename traits::jacobian_policy_t;
 
-  using order_t = typename traits::order_t;
-  static constexpr order_t order_value =
-    ode::details::traits<stepper_type>::order_value;
+  // using order_t		  = typename traits::order_t;
+  // static constexpr order_t order_value =
+  //   ode::details::traits<concrete_stepper_type>::order_value;
 
   //do checking here that things are as supposed
   static_assert( meta::is_legitimate_implicit_state_type<state_t>::value,
@@ -39,17 +38,17 @@ class ImplicitStepperBase
        "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
 public:
-  order_t order() const{
-    return order_value;
+  typename traits::order_t order() const{
+    return traits::order_value;
   }
 
-  template <typename solver_type,
-	    typename step_t>
-  void operator()(state_t & y, sc_t t,
-		  sc_t dt, step_t step,
-		  solver_type & solver){
-    this->underlying().doStepImpl( y, t, dt, step, solver);
-  }
+  // template <typename solver_type,
+  // 	    typename step_t>
+  // void operator()(state_t & y, sc_t t,
+  // 		  sc_t dt, step_t step,
+  // 		  solver_type & solver){
+  //   this->underlying()( y, t, dt, step, solver);
+  // }
 
   void residual(const state_t & y, residual_t & R)const{
     this->underlying().residualImpl(y, R);
@@ -71,8 +70,8 @@ private:
   ImplicitStepperBase() = default;
   ~ImplicitStepperBase() = default;
 
-  friend stepper_type;
-  friend core::details::CrtpBase<ImplicitStepperBase<stepper_type>>;
+  friend concrete_stepper_type;
+  friend core::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type>>;
 
 };//end class
 

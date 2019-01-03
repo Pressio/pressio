@@ -30,8 +30,7 @@ TEST(ode_implicit_bdf2, traits){
     ode::ImplicitEnum::BDF2,
     state_t, res_t, jac_t, app_t, aux_stepper_t>;
 
-  using impl_t = typename stepper_t::base_t;
-  using traits = ode::details::traits<impl_t>;
+  using traits = ode::details::traits<stepper_t>;
 
   // static_assert(ode::meta::is_implicit_bdf2_residual_standard_policy<
   // 		typename traits::residual_policy_t>::value,
@@ -119,24 +118,22 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
   // define auxiliary policies and stepper
-  using aux_res_pol_t
-    = ode::policy::ImplicitResidualStandardPolicy<state_t, app_t, res_t>;
-  using aux_jac_pol_t
-    = ode::policy::ImplicitJacobianStandardPolicy<state_t, app_t, jac_t>;
-  using aux_stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
-    state_t, res_t, jac_t, app_t, void, /*aux stepper NOT needed for backEuler*/
-    aux_res_pol_t, aux_jac_pol_t>;
-  aux_stepper_t stepperAux(appObj, aux_res_pol_t(), aux_jac_pol_t(), y);
-
-  //***************************************
-  // define policies and stepper for BDF2
-  //***************************************
   using res_pol_t
     = ode::policy::ImplicitResidualStandardPolicy<state_t, app_t, res_t>;
   using jac_pol_t
     = ode::policy::ImplicitJacobianStandardPolicy<state_t, app_t, jac_t>;
-  // actual stepper
+
+  // using aux_res_pol_t
+  //   = ode::policy::ImplicitResidualStandardPolicy<state_t, app_t, res_t>;
+  // using aux_jac_pol_t
+  //   = ode::policy::ImplicitJacobianStandardPolicy<state_t, app_t, jac_t>;
+  using aux_stepper_t = ode::ImplicitStepper<
+    ode::ImplicitEnum::Euler,
+    state_t, res_t, jac_t, app_t, void, /*aux stepper NOT needed for backEuler*/
+    res_pol_t, jac_pol_t>;
+  aux_stepper_t stepperAux(appObj, res_pol_t(), jac_pol_t(), y);
+
+  // stepper for BDF2
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::BDF2,
     state_t, res_t, jac_t, app_t, aux_stepper_t, res_pol_t, jac_pol_t>;

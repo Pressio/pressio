@@ -15,12 +15,7 @@ class ExplicitRungeKutta4StepperImpl<state_type,
 				     model_type,
 				     ode_residual_type,
 				     residual_policy_type>
-  : public ExplicitStepperBase<
-  ExplicitRungeKutta4StepperImpl<state_type,
-				 model_type,
-				 ode_residual_type,
-				 residual_policy_type> >,
-    protected OdeStorage<state_type, ode_residual_type, 1, 4>,
+  : protected OdeStorage<state_type, ode_residual_type, 1, 4>,
     protected ExpOdeAuxData<model_type, residual_policy_type>
 {
 
@@ -33,7 +28,6 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using this_t = ExplicitRungeKutta4StepperImpl<
     state_type, model_type, ode_residual_type, residual_policy_type>;
-  using stepper_base_t = ExplicitStepperBase<this_t>;
   using storage_base_t = OdeStorage<state_type, ode_residual_type, 1, 4>;
   using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
   using scalar_type  = typename core::details::traits<state_type>::scalar_t;
@@ -41,33 +35,22 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
   static_assert(std::is_same<scalar_type, scalar_t2>::value,
 		"Not maching scalar types");
 
-protected:
-  template < typename T1 = model_type,
-  	     typename T2 = residual_policy_type,
-	     typename T3 = state_type,
-	     typename T4 = ode_residual_type,
-	     typename... Args>
-  ExplicitRungeKutta4StepperImpl(const T1 & model,
-				 const T2 & res_policy_obj,
-				 const T3 & y0,
-				 const T4 & r0,
-				 Args&&... rest)
-    : storage_base_t(y0, r0), auxdata_base_t(model, res_policy_obj)
-  {
+public:
+  ExplicitRungeKutta4StepperImpl(const model_type & model,
+				 const residual_policy_type & res_policy_obj,
+				 const state_type & y0,
+				 const ode_residual_type & r0)
+    : storage_base_t(y0, r0), auxdata_base_t(model, res_policy_obj){
     //make sure there is something in what is passed,
     //otherwise the helper data structures are emtpy
     assert( !y0.empty() );
     assert( !r0.empty() );
   }
 
-  template < typename T1 = residual_policy_type,
-	     typename T2 = state_type,
-	     typename T3 = ode_residual_type>
-  ExplicitRungeKutta4StepperImpl(const T1 & res_policy_obj,
-				 const T2 & y0,
-				 const T3 & r0)
-    : storage_base_t(y0, r0), auxdata_base_t(res_policy_obj)
-  {
+  ExplicitRungeKutta4StepperImpl(const residual_policy_type & res_policy_obj,
+				 const state_type & y0,
+				 const ode_residual_type & r0)
+    : storage_base_t(y0, r0), auxdata_base_t(res_policy_obj){
     //make sure there is something in what is passed,
     //otherwise the helper data structures are emtpy
     assert( !y0.empty() );
@@ -80,8 +63,8 @@ protected:
 public:
 
   template<typename step_t>
-  void operator()(state_type & y, scalar_type t,
-		  scalar_type dt, step_t step){
+  void doStep(state_type & y, scalar_type t,
+	      scalar_type dt, step_t step){
 
     auto & ytmp = this->auxStates_[0];
 
@@ -116,15 +99,13 @@ public:
     // ----------
     (*this->residual_obj_)(ytmp, this->auxRHS_[3], *this->model_, t + dt);
     //y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    y += dt6*this->auxRHS_[0] + dt3*this->auxRHS_[1] + dt3*this->auxRHS_[2] + dt6*this->auxRHS_[3];
+    y += dt6*this->auxRHS_[0] + dt3*this->auxRHS_[1]
+      + dt3*this->auxRHS_[2] + dt6*this->auxRHS_[3];
     // y.template inPlaceOp<add_op_t>(1.0, dt6, auxRHS_[0],
     // 				   dt3, auxRHS_[1],
     // 				   dt3, auxRHS_[2],
     // 				   dt6, auxRHS_[3]);
   }//end doStep
-
-private:
-  friend stepper_base_t;
 
 }; //end class
 

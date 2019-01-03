@@ -3,6 +3,7 @@
 #define ODE_INTEGRATORS_INTEGRATE_N_STEPS_HPP_
 
 #include "../ode_ConfigDefs.hpp"
+#include "../ode_forward_declarations.hpp"
 #include "../ode_basic_meta.hpp"
 #include "../ode_is_legitimate_collector.hpp"
 
@@ -24,8 +25,7 @@ template<typename stepper_type,
 	    collector_type, integral_type,
 	    time_type, state_type>::value &&
 	  std::is_integral<integral_type>::value &&
-	  details::traits<typename
-	    stepper_type::base_t>::is_explicit
+	  details::traits<stepper_type>::is_explicit
 	  >::type * = nullptr>
 void integrateNSteps(stepper_type & stepper,
 		     state_type & yIn,
@@ -59,8 +59,7 @@ template<typename stepper_type,
 	 typename time_type,
 	 typename integral_type,
 	 typename std::enable_if<
-	   details::traits<
-	     typename stepper_type::base_t>::is_explicit
+	   details::traits<stepper_type>::is_explicit
 	   >::type * = nullptr>
 void integrateNSteps(stepper_type & stepper,
 		     state_type & yIn,
@@ -101,8 +100,7 @@ template<typename stepper_type,
 	     collector_type, integral_type,
 	     time_type, state_type>::value &&
 	   std::is_integral<integral_type>::value &&
-	   details::traits<
-	     typename stepper_type::base_t>::is_implicit
+	   details::traits<stepper_type>::is_implicit
 	   >::type * = nullptr>
 void integrateNSteps(stepper_type & stepper,
 		     state_type & yIn,
@@ -138,8 +136,7 @@ template<typename stepper_type,
 	 typename integral_type,
 	 typename solver_type,
 	 typename std::enable_if<
-	   details::traits<
-	     typename stepper_type::base_t>::is_implicit
+	   details::traits<stepper_type>::is_implicit
 	   >::type * = nullptr>
 void integrateNSteps(stepper_type & stepper,
 		     state_type & yIn,

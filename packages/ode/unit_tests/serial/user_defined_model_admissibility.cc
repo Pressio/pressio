@@ -6,7 +6,7 @@
 
 TEST(user_defined_model, admissibleExplicitOde){
   using namespace rompp;
-  
+
   // struct fakeapp{
   //   using scalar_type = double;
   //   using state_type = std::vector<double>;
@@ -40,11 +40,11 @@ TEST(user_defined_model, admissibleExplicitOde){
   // 		typename fakeapp::state_type,
   // 		typename fakeapp::state_type,
   // 		double>::value, "");
-  
+
   static_assert(
     ode::meta::is_legitimate_model_for_explicit_ode<app_t>::value, "");
   static_assert(
     !ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
-    
+
 
 }

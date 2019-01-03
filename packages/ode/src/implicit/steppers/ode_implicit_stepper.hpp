@@ -3,12 +3,219 @@
 #define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_HPP_
 
 #include "ode_implicit_stepper_helper_info.hpp"
+#include "ode_implicit_stepper_traits.hpp"
+#include "./base/ode_implicit_stepper_base.hpp"
 
 namespace rompp{ namespace ode{
 
 //!!!!!!!!!!!!!!!!!
-#ifdef HAVE_CPP14
+#if not defined HAVE_CPP14 // if NOT c++14, then we have c++11
 //!!!!!!!!!!!!!!!!!
+
+    //if we have c++11 AND policy is STANDARD
+    template<ImplicitEnum whichone,
+	     typename ode_state_type,
+	     typename ode_residual_type,
+	     typename ode_jacobian_type,
+	     typename model_type,
+	     typename aux_stepper_type>
+    class ImplicitStepper<whichone, ode_state_type,
+			  ode_residual_type,
+			  ode_jacobian_type, model_type,
+			  aux_stepper_type, void, void>
+      : public ImplicitStepperBase<
+		 ImplicitStepper<whichone, ode_state_type, ode_residual_type,
+				 ode_jacobian_type, model_type,
+				 aux_stepper_type, void, void>
+      >{
+
+      using this_t = ImplicitStepper<whichone, ode_state_type, ode_residual_type,
+				     ode_jacobian_type, model_type,
+				     aux_stepper_type, void, void>;
+      using stepper_base_t = ImplicitStepperBase<this_t>;
+      friend stepper_base_t;
+
+      using mytraits	   = details::traits<this_t>;
+      using residual_pol_t = typename mytraits::residual_policy_t;
+      using jacobian_pol_t = typename mytraits::jacobian_policy_t;
+      using scalar_t	   = typename mytraits::scalar_t;
+
+      // this is the impl class
+      using impl_class_t = typename mytraits::impl_t;
+      impl_class_t myImpl = {};
+
+    public:
+      // these need to be here because are detected by solver
+      using state_type = ode_state_type;
+      using residual_type = ode_residual_type;
+      using jacobian_type = ode_jacobian_type;
+
+    public:
+      ImplicitStepper() = delete;
+      ~ImplicitStepper() = default;
+
+      // passing: model, initial state, and policies.
+      ImplicitStepper(const model_type & model,
+		      const ode_state_type & y0)
+	: myImpl(model, residual_pol_t(), jacobian_pol_t(), y0){}
+
+      ImplicitStepper(const model_type & model,
+		      const ode_state_type & y0,
+		      const ode_residual_type & r0)
+	: myImpl(model, residual_pol_t(), jacobian_pol_t(), y0, r0){}
+
+      // passing: model, initial state, aux_stepper
+      // policy is standard for residual and jacobian
+      template <typename T = aux_stepper_type,
+		core::meta::enable_if_t<
+		  not std::is_void<T>::value
+		  > * = nullptr>
+      ImplicitStepper(const model_type & model,
+		      const ode_state_type & y0,
+		      T & auxStObj)
+	: myImpl(model, residual_pol_t(),
+		 jacobian_pol_t(), auxStObj, y0){}
+
+    public:
+      template<typename solver_type, typename step_t>
+      void operator()(ode_state_type & y, scalar_t t,
+    		      scalar_t dt, step_t step,
+    		      solver_type & solver){
+    	myImpl.doStep(y, t, dt, step, solver, *this);
+      }
+
+    private:
+      void residualImpl(const ode_state_type & y,
+    			ode_residual_type & R) const{
+    	myImpl.computeResidual(y, R);
+      }
+
+      void jacobianImpl(const ode_state_type & y,
+    			ode_jacobian_type & J) const{
+    	myImpl.computeJacobian(y, J);
+      }
+
+      ode_residual_type residualImpl(const ode_state_type & y) const{
+    	return 	myImpl.computeResidual(y);
+      }
+
+      ode_jacobian_type jacobianImpl(const ode_state_type & y) const{
+    	return myImpl.computeJacobian(y);
+      }
+
+    };//end class
+
+
+
+    //if we have c++11 AND policy is user defined
+    template<ImplicitEnum whichone,
+    	     typename ode_state_type,
+    	     typename ode_residual_type,
+    	     typename ode_jacobian_type,
+    	     typename model_type,
+    	     typename aux_stepper_type,
+    	     typename residual_policy_type,
+    	     typename jacobian_policy_type>
+    class ImplicitStepper<whichone, ode_state_type, ode_residual_type,
+			  ode_jacobian_type, model_type, aux_stepper_type,
+			  residual_policy_type, jacobian_policy_type>
+      : public ImplicitStepperBase<
+		 ImplicitStepper<whichone, ode_state_type, ode_residual_type,
+				 ode_jacobian_type, model_type,
+				 aux_stepper_type, residual_policy_type,
+				 jacobian_policy_type>
+      >{
+
+      using this_t = ImplicitStepper<whichone, ode_state_type, ode_residual_type,
+				     ode_jacobian_type, model_type,
+				     aux_stepper_type, residual_policy_type,
+				     jacobian_policy_type>;
+      using stepper_base_t = ImplicitStepperBase<this_t>;
+      friend stepper_base_t;
+
+      using mytraits	   = details::traits<this_t>;
+      using scalar_t	   = typename mytraits::scalar_t;
+
+      // this is the impl class
+      using impl_class_t = typename mytraits::impl_t;
+      impl_class_t myImpl = {};
+
+    public:
+      // these need to be here because are detected by solver
+      using state_type = ode_state_type;
+      using residual_type = ode_residual_type;
+      using jacobian_type = ode_jacobian_type;
+
+    public:
+      ImplicitStepper() = delete;
+      ~ImplicitStepper() = default;
+
+      // passing: model, initial state, and policies
+      ImplicitStepper(const model_type & model,
+    		      const residual_policy_type & resPolicyObj,
+    		      const jacobian_policy_type & jacPolicyObj,
+    		      const ode_state_type & y0)
+    	: myImpl(model, resPolicyObj, jacPolicyObj, y0){}
+
+      // passing: model, initial state,
+      // initial residual and policies
+      ImplicitStepper(const model_type & model,
+    		      const residual_policy_type & resPolicyObj,
+    		      const jacobian_policy_type & jacPolicyObj,
+    		      const ode_state_type & y0,
+    		      const ode_residual_type & r0)
+    	: myImpl(model, resPolicyObj,
+		 jacPolicyObj, y0, r0){}
+
+      // passing: model, initial state, aux_stepper
+      // policy is standard for residual and jacobian
+      template <typename T = aux_stepper_type,
+    		core::meta::enable_if_t<
+    		  not std::is_void<T>::value
+    		  > * = nullptr>
+      ImplicitStepper(const model_type & model,
+    		      const residual_policy_type & resPolicyObj,
+    		      const jacobian_policy_type & jacPolicyObj,
+    		      const ode_state_type & y0,
+    		      T & auxStObj)
+    	: myImpl(model, resPolicyObj, jacPolicyObj,
+		 auxStObj, y0){}
+
+    public:
+      template<typename solver_type, typename step_t>
+      void operator()(ode_state_type & y, scalar_t t,
+    		      scalar_t dt, step_t step,
+    		      solver_type & solver){
+    	myImpl.doStep(y, t, dt, step, solver, *this);
+      }
+
+    private:
+      void residualImpl(const ode_state_type & y,
+    			ode_residual_type & R) const{
+    	myImpl.computeResidual(y, R);
+      }
+
+      void jacobianImpl(const ode_state_type & y,
+    			ode_jacobian_type & J) const{
+    	myImpl.computeJacobian(y, J);
+      }
+
+      ode_residual_type residualImpl(const ode_state_type & y) const{
+    	return 	myImpl.computeResidual(y);
+      }
+
+      ode_jacobian_type jacobianImpl(const ode_state_type & y) const{
+    	return myImpl.computeJacobian(y);
+      }
+
+    };//end class
+
+
+
+//!!!!!!!!!!!!!!!!!
+#else // if we have C++14
+//!!!!!!!!!!!!!!!!!
+
 
     template<ImplicitEnum whichone, typename... Args>
     class ImplicitStepper
@@ -90,135 +297,6 @@ namespace rompp{ namespace ode{
       residual_pol_std_t res_policy_obj_;
       jacobian_pol_std_t jac_policy_obj_;
     };//end class
-
-
-//!!!!!!!!!!!!!!!!!
-#else
-//!!!!!!!!!!!!!!!!!
-
-
-    //if we have c++11 AND policy is STANDARD
-    template<ImplicitEnum whichone,
-	     typename ode_state_type,
-	     typename ode_residual_type,
-	     typename ode_jacobian_type,
-	     typename model_type,
-	     typename aux_stepper_type>
-    class ImplicitStepper<whichone, ode_state_type,
-			  ode_residual_type,
-			  ode_jacobian_type, model_type,
-			  aux_stepper_type, void, void>
-      : public impl::implicit_stepper_helper_info<
-      whichone, ode_state_type, ode_residual_type,
-      ode_jacobian_type, model_type, aux_stepper_type,
-      void, void>::base_impl_type{
-
-      using info_t = impl::implicit_stepper_helper_info<
-	whichone, ode_state_type, ode_residual_type,
-	ode_jacobian_type, model_type, aux_stepper_type,
-	void, void>;
-
-      using residual_pol_t = typename info_t::res_std_pol_type;
-      using jacobian_pol_t = typename info_t::jac_std_pol_type;
-      using base_impl_t = typename info_t::base_impl_type;
-
-    public:
-      //this needs to be public, it is detected by integrators
-      using base_t = base_impl_t;
-
-    public:
-      // passing: model, initial state, and policies.
-      ImplicitStepper(const model_type & model,
-		      const ode_state_type & y0)
-	: base_impl_t(model, residual_pol_t(), jacobian_pol_t(), y0){}
-
-      ImplicitStepper(const model_type & model,
-		      const ode_state_type & y0,
-		      const ode_residual_type & r0)
-	: base_impl_t(model, residual_pol_t(), jacobian_pol_t(), y0, r0){}
-
-      // passing: model, initial state, aux_stepper
-      // policy is standard for residual and jacobian
-      template <typename T = aux_stepper_type,
-		core::meta::enable_if_t<
-		  not std::is_void<T>::value
-		  > * = nullptr>
-      ImplicitStepper(const model_type & model,
-		      const ode_state_type & y0,
-		      T & auxStObj)
-	: base_impl_t(model, residual_pol_t(), jacobian_pol_t(),
-		      auxStObj, y0){}
-
-      ImplicitStepper() = delete;
-      virtual ~ImplicitStepper() = default;
-    };//end class
-
-
-
-    //if we have c++11 AND policy is user defined
-    template<ImplicitEnum whichone,
-    	     typename ode_state_type,
-    	     typename ode_residual_type,
-    	     typename ode_jacobian_type,
-    	     typename model_type,
-    	     typename aux_stepper_type,
-    	     typename residual_policy_type,
-    	     typename jacobian_policy_type>
-    class ImplicitStepper<whichone, ode_state_type,
-    			  ode_residual_type,  ode_jacobian_type, model_type,
-    			  aux_stepper_type, residual_policy_type,
-    			  jacobian_policy_type>
-      : public impl::implicit_stepper_helper_info<
-      whichone, ode_state_type, ode_residual_type,
-      ode_jacobian_type, model_type, aux_stepper_type,
-      residual_policy_type, jacobian_policy_type>::base_impl_type{
-
-      using info_t = impl::implicit_stepper_helper_info<
-    	whichone, ode_state_type, ode_residual_type,
-    	ode_jacobian_type, model_type, aux_stepper_type,
-    	residual_policy_type, jacobian_policy_type>;
-      using base_impl_t = typename info_t::base_impl_type;
-
-    public:
-      //this needs to be public, it is detected by integrators
-      using base_t = base_impl_t;
-
-    public:
-      // passing: model, initial state, and policies.
-      ImplicitStepper(const model_type & model,
-    		      const residual_policy_type & resPolicyObj,
-    		      const jacobian_policy_type & jacPolicyObj,
-    		      const ode_state_type & y0)
-    	: base_impl_t(model, resPolicyObj, jacPolicyObj, y0){}
-
-      // passing: model, initial state,
-      // initial residual and policies.
-      ImplicitStepper(const model_type & model,
-    		      const residual_policy_type & resPolicyObj,
-    		      const jacobian_policy_type & jacPolicyObj,
-    		      const ode_state_type & y0,
-    		      const ode_residual_type & r0)
-    	: base_impl_t(model, resPolicyObj,
-    		      jacPolicyObj, y0, r0){}
-
-      // passing: model, initial state, aux_stepper
-      // policy is standard for residual and jacobian
-      template <typename T = aux_stepper_type,
-		core::meta::enable_if_t<
-		  not std::is_void<T>::value
-		  > * = nullptr>
-      ImplicitStepper(const model_type & model,
-    		      const residual_policy_type & resPolicyObj,
-    		      const jacobian_policy_type & jacPolicyObj,
-		      const ode_state_type & y0,
-		      T & auxStObj)
-	: base_impl_t(model, resPolicyObj, jacPolicyObj,
-		      auxStObj, y0){}
-
-      ImplicitStepper() = delete;
-      virtual ~ImplicitStepper() = default;
-    };//end class
-
 
 #endif
 
