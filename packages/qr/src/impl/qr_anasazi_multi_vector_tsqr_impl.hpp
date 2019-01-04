@@ -1,9 +1,10 @@
 
 #if defined HAVE_TRILINOS and defined HAVE_ANASAZI_TSQR
-#ifndef QR_ANASAZI_MULTI_VECTOR_TSQR_HPP_
-#define QR_ANASAZI_MULTI_VECTOR_TSQR_HPP_
+#ifndef QR_ANASAZI_MULTI_VECTOR_TSQR_IMPL_HPP_
+#define QR_ANASAZI_MULTI_VECTOR_TSQR_IMPL_HPP_
 
-#include "qr_rfactor_solve_impl.hpp"
+#include "../qr_rfactor_solve_impl.hpp"
+//#include "../qr_ConfigDefs.hpp"
 
 #include "AnasaziTsqrOrthoManager.hpp"
 #include "AnasaziConfigDefs.hpp"
@@ -11,27 +12,23 @@
 #include "AnasaziEpetraAdapter.hpp"
 #include "AnasaziTpetraAdapter.hpp"
 
-
 namespace rompp{ namespace qr{ namespace impl{
 
-template<typename matrix_t, typename Q_t, typename R_t,
-	 typename sc_t, typename MV>
-class AnasaziMVTSQR{
-protected:
+template<typename matrix_t, typename R_t, int n, int m,
+	 typename MV_t, template<typename...> class Q_type>
+class AnasaziMVTSQR<matrix_t, R_t, n, m, MV_t, Q_type, void>{
 
-  using this_t	     = AnasaziMVTSQR<matrix_t, Q_t, R_t, sc_t, MV>;
   using int_t	     = int;
-  using ortho_t      = Anasazi::TsqrOrthoManager<sc_t, MV>;
+  using sc_t	     = typename core::details::traits<matrix_t>::scalar_t;
+  using ortho_t      = Anasazi::TsqrOrthoManager<sc_t, MV_t>;
   using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
   using trcp_mat     = Teuchos::RCP<serden_mat_t>;
-
+  using Q_t	     = Q_type<MV_t>;
   const std::string label_ = "Anasazi";
 
-protected:
+public:
   AnasaziMVTSQR() = default;
   ~AnasaziMVTSQR() = default;
-
-protected:
 
   void computeThinOutOfPlace(matrix_t & A) {
     auto nVecs = A.globalNumVectors();
@@ -39,23 +36,29 @@ protected:
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
     computedRank_ = OM_->normalizeOutOfPlace(*A.data(),
-    					     *Qmat_->data(),
-    					     localR_);
+					     *Qmat_->data(),
+					     localR_);
     assert(computedRank_ == nVecs);
   }
 
   void computeThinInPlace(matrix_t & A) {
-    auto nVecs = A.globalNumVectors();
-    createLocalRIfNeeded(nVecs);
-    computedRank_ = OM_->normalize(*A.data(), localR_);
-    assert(computedRank_ == nVecs);
+      auto nVecs = A.globalNumVectors();
+      createLocalRIfNeeded(nVecs);
+      computedRank_ = OM_->normalize(*A.data(), localR_);
+      assert(computedRank_ == nVecs);
   }
 
-  template <typename vector_t, int n>
+  template <typename vector_t>
   void doLinSolve(const vector_t & rhs, vector_t & y)const {
-    qr::impl::solve<vector_t, trcp_mat, n>(rhs, this->localR_, y);
+      qr::impl::solve<vector_t, trcp_mat, n>(rhs, this->localR_, y);
   }
 
+
+  template < typename vector_in_t, typename vector_out_t>
+  void project(const vector_in_t & vecIn,
+  		   vector_out_t & vecOut) const{
+    core::ops::dot( *this->Qmat_, vecIn, vecOut );
+  }
 
   // if R_type != wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t,
@@ -84,20 +87,20 @@ protected:
   }
 
 private:
-  void createLocalRIfNeeded(int n){
+  void createLocalRIfNeeded(int newsize){
     if (localR_.is_null() or
-    	(localR_->numRows()!=n and localR_->numCols()!=n)){
-      localR_ = Teuchos::rcp(new serden_mat_t(n, n) );
+    	(localR_->numRows()!=newsize and localR_->numCols()!=newsize)){
+      localR_ = Teuchos::rcp(new serden_mat_t(newsize, newsize) );
     }
   }
 
   template <typename map_t>
-  void createQIfNeeded(const map_t & map, int n){
+  void createQIfNeeded(const map_t & map, int cols){
     if (!Qmat_ or !Qmat_->hasRowMapEqualTo(map) )
-      Qmat_ = std::make_shared<Q_t>(map, n);
+      Qmat_ = std::make_shared<Q_t>(map, cols);
   }
 
-protected:
+private:
   std::shared_ptr< ortho_t > OM_	= std::make_shared<ortho_t>(label_);
   trcp_mat localR_			= {};
   int computedRank_			= {};

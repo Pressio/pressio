@@ -24,8 +24,39 @@ class QRSolveBase;
 
 namespace impl{
 
-template<typename matrix_t, typename Q_t,
-	 typename R_t, typename sc_t, typename MV>
+template<
+  typename matrix_type,
+  typename R_t = void,
+  int n = core::constants::dynamic,
+  int m = core::constants::dynamic,
+  template <typename...> class Q_type
+	= core::MultiVector,
+  typename enable= void>
+class QRHouseholderDenseEigenMatrixWrapper;
+
+template<typename matrix_t,
+	 typename R_t,
+	 int n = core::constants::dynamic,
+	 int m = core::constants::dynamic,
+	 template <typename...> class Q_type
+	 = core::MultiVector>
+class EpetraMVHouseholderUsingEigen;
+
+template<typename matrix_t,
+	 typename R_t,
+	 int n = core::constants::dynamic,
+	 int m = core::constants::dynamic,
+	 template <typename...> class Q_type
+	 = core::MultiVector>
+class TpetraMVHouseholderUsingEigen;
+
+template<typename matrix_t,
+	 typename R_t,
+	 int n, int m,
+	 typename wrap_Q_type,
+	 template <typename...> class Q_type
+	 = core::MultiVector,
+	 typename enable = void>
 class AnasaziMVTSQR;
 
 
