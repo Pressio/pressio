@@ -6,56 +6,28 @@ TEST_F(epetraR9Fixture,
        HouseholderEpetraMultiVectorOutOfPlace){
   using namespace rompp;
 
-  // fill fixture matrix
-  fillMatrix();
-
+  // default: R_type == void, in_place = false
   using qr_algo = qr::Householder;
-
-  //-------------------------------------------
-  // R_type == void, in_place = false
-  //-------------------------------------------
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
 
   const auto & Q = qrObj.cRefQFactor();
   Q.data()->Print(std::cout);
-  EXPECT_EQ( Q.globalLength(), qr::test::numRows_);
-  EXPECT_EQ( Q.globalNumVectors(), qr::test::numVectors_);
-
-  for (auto i=0; i<localSize_; i++)
-    for (auto j=0; j<Q.localNumVectors(); j++){
-      EXPECT_NEAR( std::abs(Q(i,j)),
-  		   std::abs(gold_.trueQ_(i+shift_,j)), 1e-6);
-  }
+  checkQFactor(Q);
 }
-
 
 TEST_F(epetraR9Fixture,
        TSQRepetraMultiVectorOutOfPlace){
   using namespace rompp;
 
-  // fill fixture matrix
-  fillMatrix();
-
+  // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
-
-  //-------------------------------------------
-  // R_type == void, in_place = false
-  //-------------------------------------------
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
 
   const auto & Q = qrObj.cRefQFactor();
-  EXPECT_EQ( Q.globalLength(), qr::test::numRows_);
-  EXPECT_EQ( Q.globalNumVectors(), qr::test::numVectors_);
-
-  for (auto i=0; i<localSize_; i++)
-    for (auto j=0; j<Q.localNumVectors(); j++){
-      EXPECT_NEAR( std::abs(Q(i,j)),
-  		   std::abs(gold_.trueQ_(i+shift_,j)), 1e-6);
-  }
+  checkQFactor(Q);
 }
-
 
 // TEST_F(epetraR9Fixture,
 //        TSQRepetraMultiVectorOutOfPlaceWrapREigen){

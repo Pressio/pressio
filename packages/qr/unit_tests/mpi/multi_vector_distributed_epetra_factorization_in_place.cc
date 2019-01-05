@@ -6,14 +6,10 @@ TEST_F(epetraR9Fixture,
        TSQRepetraMultiVectorInPlace){
   using namespace rompp;
 
-  fillMatrix();
-
   using qr_algo = qr::TSQR;
   constexpr bool in_place = true;
 
-  //-------------------------------------------
-  // R_type == void, in_place = true
-  //-------------------------------------------
+  // default: R_type == void, in_place = true
   qr::QRSolver<mymvec_t, qr_algo, in_place> qrObj;
   qrObj.computeThin( *A_ );
 
@@ -31,15 +27,10 @@ TEST_F(epetraR9Fixture,
        TSQRepetraMultiVectorInPlaceWrapREigen){
   using namespace rompp;
 
-  fillMatrix();
-
   using qr_algo = qr::TSQR;
   constexpr bool in_place = true;
 
-  //-------------------------------------------
-  // R_type == eigen_wrapper, in_place = true
-  //-------------------------------------------
-
+  // default: R_type == eigen_wrapper, in_place = true
   using qr_algo = qr::TSQR;
   using eig_mat = Eigen::Matrix<double,
 				qr::test::numVectors_,
@@ -67,15 +58,10 @@ TEST_F(epetraR9Fixture,
        TSQRepetraMultiVectorInPlaceWrapRTeuchosMatrix){
   using namespace rompp;
 
-  fillMatrix();
-
   using qr_algo = qr::TSQR;
   constexpr bool in_place = true;
 
-  //-------------------------------------------
   // R_type == eigen_wrapper, in_place = true
-  //-------------------------------------------
-
   using qr_algo = qr::TSQR;
   using nat_r_mat = Teuchos::SerialDenseMatrix<int, double>;
   using R_type = core::Matrix<nat_r_mat>;

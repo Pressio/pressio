@@ -6,8 +6,6 @@ TEST_F(tpetraR9Fixture,
        TSQRtpetraMultiVectorInPlace){
   using namespace rompp;
 
-  fillMatrix();
-
   using qr_algo = qr::TSQR;
   constexpr bool in_place = true;
 
@@ -35,8 +33,6 @@ TEST_F(tpetraR9Fixture,
 TEST_F(tpetraR9Fixture,
        TSQRepetraMultiVectorInPlaceWrapREigen){
   using namespace rompp;
-
-  fillMatrix();
 
   using qr_algo = qr::TSQR;
   constexpr bool in_place = true;
@@ -75,8 +71,6 @@ TEST_F(tpetraR9Fixture,
 TEST_F(tpetraR9Fixture,
        TSQRepetraMultiVectorInPlaceWrapRTeuchosMatrix){
   using namespace rompp;
-
-  fillMatrix();
 
   using qr_algo = qr::TSQR;
   constexpr bool in_place = true;

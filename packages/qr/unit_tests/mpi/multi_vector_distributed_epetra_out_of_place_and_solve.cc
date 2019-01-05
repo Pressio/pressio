@@ -7,16 +7,10 @@ TEST_F(epetraR9Fixture,
        TSQRepetraMVOutOfPlaceAndSolveEigenVecDynamic){
   using namespace rompp;
 
-  // fill fixture matrix
-  fillMatrix();
-  fillVector();
-
   using nat_v = Eigen::VectorXd;
   using myv_t = core::Vector<nat_v>;
 
-  //-------------------------------------------
-  // R_type == void, in_place = false
-  //-------------------------------------------
+  // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
@@ -40,22 +34,15 @@ TEST_F(epetraR9Fixture,
 }
 
 
-
 TEST_F(epetraR9Fixture,
        TSQRepetraMVOutOfPlaceAndSolveEigenVecStatic){
   using namespace rompp;
-
-  // fill fixture matrix
-  fillMatrix();
-  fillVector();
 
   using nat_v = Eigen::Matrix<double,
 			      rompp::qr::test::numVectors_, 1>;
   using myv_t = core::Vector<nat_v>;
 
-  //-------------------------------------------
-  // R_type == void, in_place = false
-  //-------------------------------------------
+  // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
@@ -79,21 +66,14 @@ TEST_F(epetraR9Fixture,
 }
 
 
-
 TEST_F(epetraR9Fixture,
        TSQRepetraMVOutOfPlaceAndSolveTeuchosVector){
   using namespace rompp;
 
-  // fill fixture matrix
-  fillMatrix();
-  fillVector();
-
   using nat_v = Teuchos::SerialDenseVector<int,double>;
   using myv_t = core::Vector<nat_v>;
 
-  //-------------------------------------------
-  // R_type == void, in_place = false
-  //-------------------------------------------
+  //default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );

@@ -6,27 +6,13 @@ TEST_F(tpetraR9Fixture,
        HouseholderTpetraMultiVectorOutOfPlace){
   using namespace rompp;
 
-  // fill fixture matrix
-  fillMatrix();
-
-  //-------------------------------------------
-  // R_type == void, in_place = false
-  //-------------------------------------------
+  // default: R_type == void, in_place = false
   using qr_algo = qr::Householder;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
 
   const auto & Q = qrObj.cRefQFactor();
-  EXPECT_EQ( Q.globalLength(), qr::test::numRows_);
-  EXPECT_EQ( Q.globalNumVectors(), qr::test::numVectors_);
-  for (auto j=0; j<Q.localNumVectors(); j++){
-    auto colData = Q.data()->getData(j);
-    for (auto i=0; i<localSize_; i++){
-      EXPECT_NEAR( std::abs(colData[i]),
-                   std::abs(gold_.trueQ_(i+shift_,j)),
-                   1e-6);
-    }
-  }
+  checkQFactor(Q);
 }
 
 
@@ -34,36 +20,19 @@ TEST_F(tpetraR9Fixture,
        TSQRtpetraMultiVectorOutOfPlace){
   using namespace rompp;
 
-  // fill fixture matrix
-  fillMatrix();
-
-  //-------------------------------------------
-  // R_type == void, in_place = false
-  //-------------------------------------------
+  // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
 
   const auto & Q = qrObj.cRefQFactor();
-  EXPECT_EQ( Q.globalLength(), qr::test::numRows_);
-  EXPECT_EQ( Q.globalNumVectors(), qr::test::numVectors_);
-  for (auto j=0; j<Q.localNumVectors(); j++){
-    auto colData = Q.data()->getData(j);
-    for (auto i=0; i<localSize_; i++){
-      EXPECT_NEAR( std::abs(colData[i]),
-                   std::abs(gold_.trueQ_(i+shift_,j)),
-                   1e-6);
-    }
-  }
+  checkQFactor(Q);
 }
 
 
 // TEST_F(tpetraR9Fixture,
 //        TSQRtpetraMultiVectorOutOfPlaceWrapREigen){
 //   using namespace rompp;
-
-//   // fill fixture matrix
-//   fillMatrix();
 
 //   //-------------------------------------------
 //   // R_type == eigen_wrapper, in_place = false

@@ -6,16 +6,10 @@ TEST_F(tpetraR9Fixture,
        TSQRtpetraMVOutOfPlaceAndSolveEigenVecDynamic){
   using namespace rompp;
 
-  // fill fixture matrix
-  fillMatrix();
-  fillVector();
-
   using nat_v = Eigen::VectorXd;
   using myv_t = core::Vector<nat_v>;
 
-  //-------------------------------------------
-  // R_type == void, in_place = false
-  //-------------------------------------------
+  // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
@@ -44,16 +38,10 @@ TEST_F(tpetraR9Fixture,
        TSQRtpetraMVOutOfPlaceAndSolveEigenVecStatic){
   using namespace rompp;
 
-  // fill fixture matrix
-  fillMatrix();
-  fillVector();
-
   using nat_v = Eigen::Matrix<double, qr::test::numVectors_, 1>;
   using myv_t = core::Vector<nat_v>;
 
-  //-------------------------------------------
-  // R_type == void, in_place = false
-  //-------------------------------------------
+  // detault: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );

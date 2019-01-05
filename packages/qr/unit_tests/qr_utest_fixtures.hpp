@@ -41,6 +41,8 @@ struct eigenDenseR9Fixture
     numGlobalEntries_ = rompp::qr::test::numRows_;
     A_ = std::make_shared<mymat_t>(numRows_, numVectors_);
     v_ = std::make_shared<myvec_t>(numRows_);
+    fillVector();
+    fillMatrix();
   }//setup
 
   void fillMatrix(){
@@ -59,11 +61,20 @@ struct eigenDenseR9Fixture
     v_->putScalar(1.0);
   }
 
+  void checkQFactor(const nat_mat_t & Q){
+    EXPECT_EQ( Q.rows(), ::rompp::qr::test::numRows_);
+    EXPECT_EQ( Q.cols(), ::rompp::qr::test::numVectors_);
+    for (auto i=0; i<::rompp::qr::test::numRows_; i++){
+      for (auto j=0; j<::rompp::qr::test::numVectors_; j++){
+	EXPECT_NEAR( std::abs(Q(i,j)),
+		     std::abs(gold_.trueQ_(i,j)), 1e-6);
+      }
+    }
+  }
+
   virtual void TearDown(){}
 };
 // --------------------------------------------
-
-
 
 
 #ifdef HAVE_TRILINOS
@@ -98,7 +109,6 @@ struct epetraR9Fixture
     numProc_ = comm_->NumProc();
     localSize_ = (rank_==0) ? 5 : 4;
     shift_ = (rank_==0) ? 0 : 5;
-
     assert(numProc_ == 2);
     numGlobalEntries_ = rompp::qr::test::numRows_;
 
@@ -106,7 +116,9 @@ struct epetraR9Fixture
     A_ = std::make_shared<mymvec_t>(*rowMap_, numVectors_);
     v_ = std::make_shared<myvec_t>(*rowMap_);
 
-  }//setup
+    fillVector();
+    fillMatrix();
+  }
 
   void fillMatrix(){
     if(rank_==0){
@@ -126,6 +138,18 @@ struct epetraR9Fixture
 
   void fillVector(){
     v_->putScalar(1.0);
+  }
+
+  void checkQFactor(const mymvec_t & Q){
+    EXPECT_EQ( Q.globalLength(), ::rompp::qr::test::numRows_);
+    EXPECT_EQ( Q.globalNumVectors(), ::rompp::qr::test::numVectors_);
+
+    for (auto i=0; i<localSize_; i++)
+      for (auto j=0; j<Q.localNumVectors(); j++){
+	EXPECT_NEAR( std::abs(Q(i,j)),
+		     std::abs(gold_.trueQ_(i+shift_,j)),
+		     1e-6);
+      }
   }
 
   virtual void TearDown(){}
@@ -171,13 +195,14 @@ struct tpetraR9Fixture
     numProc_ = comm_->getSize();
     localSize_ = (rank_==0) ? 5 : 4;
     shift_ = (rank_==0) ? 0 : 5;
-
     assert(numProc_==2);
 
     numGlobalEntries_ = rompp::qr::test::numRows_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
     A_ = std::make_shared<mymvec_t>(contigMap_, this_t::numVectors_);
     v_ = std::make_shared<myvec_t>(contigMap_);
+    fillVector();
+    fillMatrix();
   }
 
   void fillMatrix(){
@@ -214,6 +239,19 @@ struct tpetraR9Fixture
 
   void fillVector(){
     v_->putScalar(1.0);
+  }
+
+  void checkQFactor(const mymvec_t & Q){
+    EXPECT_EQ( Q.globalLength(), ::rompp::qr::test::numRows_);
+    EXPECT_EQ( Q.globalNumVectors(), ::rompp::qr::test::numVectors_);
+    for (auto j=0; j<Q.localNumVectors(); j++){
+      auto colData = Q.data()->getData(j);
+      for (auto i=0; i<localSize_; i++){
+	EXPECT_NEAR( std::abs(colData[i]),
+		     std::abs(gold_.trueQ_(i+shift_,j)),
+		     1e-6);
+      }
+    }
   }
 
   virtual void TearDown(){}

@@ -6,12 +6,7 @@ TEST_F(eigenDenseR9Fixture,
      HouseholderEigenDenseOutOfPlaceAndSolveEigenVecDynamic){
   using namespace rompp;
 
-  fillMatrix();
-  fillVector();
-
-  //-------------------------------------------
   // R_type == void, in_place = false
-  //-------------------------------------------
   using qr_algo = qr::Householder;
   qr::QRSolver<mymat_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
