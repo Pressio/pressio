@@ -1,4 +1,5 @@
 
+#ifdef HAVE_TRILINOS
 #ifndef CORE_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_TEUCHOS_HPP_
 #define CORE_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_TEUCHOS_HPP_
 
@@ -129,4 +130,5 @@ private:
 };//end class
 
 }}//end namespace rompp::core
+#endif
 #endif
