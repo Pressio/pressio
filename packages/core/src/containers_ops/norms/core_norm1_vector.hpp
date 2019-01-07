@@ -29,6 +29,7 @@ auto norm1(const vec_type & a)
 //--------------------------------------------------------
 //  teuchos serial dense vector wrapper
 //--------------------------------------------------------
+#ifdef HAVE_TRILINOS
 template <typename vec_type,
   core::meta::enable_if_t<
     core::meta::is_teuchos_serial_dense_vector_wrapper<vec_type>::value
@@ -40,7 +41,7 @@ auto norm1(const vec_type & a)
   using sc_t = typename details::traits<vec_type>::scalar_t;
   return static_cast<sc_t>(a.data()->normOne());
 }
-//--------------------------------------------------------
+#endif 
 
 
 }}}//end namespace rompp::core::ops

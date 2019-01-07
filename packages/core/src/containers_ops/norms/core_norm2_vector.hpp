@@ -25,6 +25,7 @@ auto norm2(const vec_type & a)
 //--------------------------------------------------------
 
 
+#ifdef HAVE_TRILINOS
 //  teuchos serial dense vector wrapper
 template <typename vec_type,
   core::meta::enable_if_t<
@@ -40,6 +41,7 @@ auto norm2(const vec_type & a)
     result += a[i]*a[i];
   return std::sqrt(result);
 }
+#endif
 //--------------------------------------------------------
 
 
