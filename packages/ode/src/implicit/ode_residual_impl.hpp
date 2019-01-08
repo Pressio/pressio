@@ -13,9 +13,9 @@ template<::rompp::ode::ImplicitEnum odeMethod,
 	  typename scalar_type,
 	  core::meta::enable_if_t<
   (odeMethod == ::rompp::ode::ImplicitEnum::Euler)
-#ifdef HAVE_TRILINOS  
+#ifdef HAVE_TRILINOS
    and ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value == false
-#endif	
+#endif
   > * = nullptr
 	  >
 void implicit_time_discrete_residual(const state_type & yn,
@@ -33,10 +33,10 @@ template<::rompp::ode::ImplicitEnum odeMethod,
 	  typename state_type,
 	  typename scalar_type,
 	  core::meta::enable_if_t<
-  (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) 
+  (odeMethod == ::rompp::ode::ImplicitEnum::BDF2)
 #ifdef HAVE_TRILINOS
  and ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value == false
-#endif 
+#endif
   > * = nullptr
 	 >
 void implicit_time_discrete_residual(const state_type & yn,
@@ -53,7 +53,7 @@ void implicit_time_discrete_residual(const state_type & yn,
 
 
 
-#ifdef HAVE_TRILINOS 
+#ifdef HAVE_TRILINOS
 template<::rompp::ode::ImplicitEnum odeMethod,
 	  int numStates,
 	  typename state_type,
@@ -79,7 +79,7 @@ template< ::rompp::ode::ImplicitEnum odeMethod,
 	  typename state_type,
 	  typename scalar_type,
 	  core::meta::enable_if_t<
-  (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) 
+  (odeMethod == ::rompp::ode::ImplicitEnum::BDF2)
  and ::rompp::core::meta::is_tpetra_vector_wrapper<state_type>::value
   > * = nullptr
 	 >

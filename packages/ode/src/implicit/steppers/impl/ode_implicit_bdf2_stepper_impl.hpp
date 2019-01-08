@@ -121,7 +121,7 @@ public:
   }
 
 private:
-  aux_stepper_type * auxStp_;
+  aux_stepper_type * auxStp_ = {};
 
 
 }; //end class

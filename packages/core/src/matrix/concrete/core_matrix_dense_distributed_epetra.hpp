@@ -141,10 +141,10 @@ private:
   friend ContainerSubscriptable2DBase< this_t, sc_t, LO_t, GO_t>;
 
 private:
-  wrap_t data_;
+  wrap_t data_ = {};
 
 };//end class
-}//end namespace core
-}//end namespace rompp
+
+}}//end namespace rompp::core
 #endif
 #endif

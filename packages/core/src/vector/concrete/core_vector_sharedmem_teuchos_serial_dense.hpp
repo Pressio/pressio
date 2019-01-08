@@ -192,7 +192,7 @@ private:
   friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
 
 private:
-  wrap_t data_;
+  wrap_t data_ = {};
 
 };//end class
 

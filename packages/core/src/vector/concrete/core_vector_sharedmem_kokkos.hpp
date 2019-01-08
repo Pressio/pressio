@@ -9,7 +9,7 @@
 #include "../base/core_vector_sharedmem_base.hpp"
 
 namespace rompp{ namespace core{
-  
+
 template <typename wrapped_type>
 class Vector<wrapped_type,
 	     core::meta::enable_if_t<
@@ -31,14 +31,14 @@ class Vector<wrapped_type,
   // operator= only do shallow copies.  Thus, you can pass View
   // objects around by "value"; they won't do a deep copy unless you
   // explicitly ask for a deep copy.
-  
+
 public:
   Vector() = default;
 
   explicit Vector(const wrap_t src) // by value
     : data_(src){}
 
-  ~Vector(){}  
+  ~Vector(){}
 
 private:
 
@@ -49,19 +49,19 @@ private:
   //   return &data_;
   // }
 
-  // 
+  //
   wrap_t dataCpImpl(){
     return data_;
   }
-    
+
 private:
   friend ContainerBase< this_t, wrapped_type >;
   friend VectorSharedMemBase< this_t >;
 
 private:
-  wrap_t data_;
- 
-};//end class    
+  wrap_t data_ = {};
+
+};//end class
 
 }}//end namespace rompp::core
 #endif // CORE_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_

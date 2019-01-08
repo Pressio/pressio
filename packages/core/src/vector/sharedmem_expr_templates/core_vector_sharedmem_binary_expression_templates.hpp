@@ -40,9 +40,9 @@ class SharedMemVectorBinaryExp
   : public SharedMemVecExpressionBase<
   SharedMemVectorBinaryExp<OP_t,T1,T2,value_t,ord_t>>{
 
-  const T1 & a_;
-  const T2 & b_;
-  OP_t op_;
+  const T1 & a_ = {};
+  const T2 & b_ = {};
+  OP_t op_ = {};
   using this_t = SharedMemVectorBinaryExp<OP_t,T1,T2,value_t,ord_t>;
   friend SharedMemVecExpressionBase<this_t>;
 
@@ -76,9 +76,9 @@ class SharedMemVectorBinaryExp<
   : public SharedMemVecExpressionBase<
   SharedMemVectorBinaryExp<OP_t,T1,T2,value_t,ord_t>>{
 
-  const T1 & a_;
-  const T2 & b_;
-  OP_t op_;
+  const T1 & a_ = {};
+  const T2 & b_ = {};
+  OP_t op_ = {};
   using this_t = SharedMemVectorBinaryExp<OP_t,T1,T2,value_t,ord_t>;
   friend SharedMemVecExpressionBase<this_t>;
 
@@ -111,9 +111,9 @@ class SharedMemVectorBinaryExp<
   : public SharedMemVecExpressionBase<
   SharedMemVectorBinaryExp<OP_t,T1,value_t,value_t,ord_t>>{
 
-  const T1 & a_;
-  value_t b_;
-  OP_t op_;
+  const T1 & a_ = {};
+  value_t b_ = {};
+  OP_t op_ = {};
   using th_t = SharedMemVectorBinaryExp<OP_t,T1,value_t,value_t,ord_t>;
   friend SharedMemVecExpressionBase<th_t>;
 

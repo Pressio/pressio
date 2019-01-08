@@ -18,7 +18,7 @@ class MultiVectorOperator
 
 private:
   friend OperatorBase<MultiVectorOperator<operator_type>>;
-  const operator_type * op_;
+  const operator_type * op_ = {};
 
   //-------------------------------
   //----     APPLY RIGHT      -----

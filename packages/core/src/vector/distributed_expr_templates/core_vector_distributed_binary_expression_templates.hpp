@@ -11,11 +11,13 @@ class DistributedVecExpressionBase {
   DistributedVecExpressionBase() = default;
   ~DistributedVecExpressionBase() = default;
   friend der_t;
+
 public:
   static constexpr bool is_shared_mem = false;
   static constexpr bool is_vector_expression = true;
 };
 ///-----------------------------------------------------
+
 
 template <typename T,
 	  typename enable = void>
@@ -39,9 +41,9 @@ class DistributedVectorBinaryExp
   : public DistributedVecExpressionBase<
   DistributedVectorBinaryExp<OP_t,T1,T2,value_t,LO_t>>{
 
-  const T1 & a_;
-  const T2 & b_;
-  OP_t op_;
+  const T1 & a_ = {};
+  const T2 & b_ = {};
+  OP_t op_ = {};
   using this_t = DistributedVectorBinaryExp<OP_t,T1,T2,value_t,LO_t>;
   friend DistributedVecExpressionBase<this_t>;
 
@@ -75,9 +77,9 @@ class DistributedVectorBinaryExp<
   : public DistributedVecExpressionBase<
   DistributedVectorBinaryExp<OP_t,T1,T2,value_t,LO_t>>{
 
-  const T1 & a_;
-  const T2 & b_;
-  OP_t op_;
+  const T1 & a_ = {};
+  const T2 & b_ = {};
+  OP_t op_ = {};
   using this_t = DistributedVectorBinaryExp<OP_t,T1,T2,value_t,LO_t>;
   friend DistributedVecExpressionBase<this_t>;
 
@@ -110,9 +112,9 @@ class DistributedVectorBinaryExp<
   : public DistributedVecExpressionBase<
   DistributedVectorBinaryExp<OP_t,T1,value_t,value_t,LO_t>>{
 
-  const T1 & a_;
-  value_t b_;
-  OP_t op_;
+  const T1 & a_ = {};
+  value_t b_ = {};
+  OP_t op_ = {};
   using th_t = DistributedVectorBinaryExp<OP_t,T1,value_t,value_t,LO_t>;
   friend DistributedVecExpressionBase<th_t>;
 

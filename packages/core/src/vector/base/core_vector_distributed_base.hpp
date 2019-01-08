@@ -4,14 +4,13 @@
 
 #include "../core_vector_traits.hpp"
 
-namespace rompp{
-namespace core{
-    
+namespace rompp{ namespace core{
+
 template<typename derived_type>
 class VectorDistributedBase
   : private core::details::CrtpBase<
               VectorDistributedBase<derived_type>>
-{ 
+{
   static_assert( details::traits<derived_type>::is_shared_mem==0,
   "OOPS: non-distributed concrete vector inheriting from distributed base!");
 
@@ -19,7 +18,7 @@ class VectorDistributedBase
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using LO_t = typename details::traits<derived_type>::local_ordinal_t;
   using GO_t = typename details::traits<derived_type>::global_ordinal_t;
-    
+
 public:
   template <typename T,
   	    core::meta::enable_if_t<
@@ -27,7 +26,7 @@ public:
   void putScalar(T value) {
     this->underlying().putScalarImpl(value);
   }
-  
+
   GO_t globalSize() const {
     return this->underlying().globalSizeImpl();
   };
@@ -43,7 +42,7 @@ public:
 					       indices,
 					       values);
   }
-  
+
 private:
   friend derived_type;
   friend core::details::CrtpBase<this_t>;
@@ -52,6 +51,6 @@ private:
   ~VectorDistributedBase() = default;
 
 };//end class
-} // end namespace core
-}//end namespace rompp
+
+}}//end namespace rompp::core
 #endif

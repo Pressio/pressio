@@ -15,7 +15,7 @@ template<typename operator_type,
 	 >
 class MatrixOperator
   : public OperatorBase<MatrixOperator<operator_type>>{
-      
+
 public:
   MatrixOperator() = delete;
   explicit MatrixOperator(operator_type & opIn)
@@ -24,7 +24,7 @@ public:
 
 private:
   friend OperatorBase<MatrixOperator<operator_type>>;
-  operator_type * op_;
+  operator_type * op_ = {};
 
 };//end class
 
@@ -38,10 +38,10 @@ private:
   // //-------------------------------
   // //----      APPLY AS IS      ----
   // //-------------------------------
-  // template <typename T, 
+  // template <typename T,
   //    core::meta::enable_if_t<
   //      core::details::traits<T>::wrapped_package_identifier ==
-  //      core::details::WrappedPackageIdentifier::Eigen 
+  //      core::details::WrappedPackageIdentifier::Eigen
   //      > * = nullptr
   //    >
   // auto applyImpl(const T & X){
@@ -50,7 +50,7 @@ private:
   // //---------------------------------
 
   // template <typename T1,
-  // 	    typename T2, 
+  // 	    typename T2,
   //    core::meta::enable_if_t<
   //      (core::details::traits<T1>::wrapped_package_identifier ==
   // 	core::details::WrappedPackageIdentifier::Eigen ) and
@@ -62,14 +62,14 @@ private:
   //  core::ops::product(*op_, X, Y);
   // }
   // //---------------------------------
-  
+
   // //---------------------------
   // //----     TRANSPOSE     ----
   // //---------------------------
-  // template <typename T, 
+  // template <typename T,
   //    core::meta::enable_if_t<
   //      (core::details::traits<T>::wrapped_package_identifier ==
-  // 	core::details::WrappedPackageIdentifier::Eigen ) 
+  // 	core::details::WrappedPackageIdentifier::Eigen )
   //      > * = nullptr
   //    >
   // auto applyTransposeImpl(const T & X){

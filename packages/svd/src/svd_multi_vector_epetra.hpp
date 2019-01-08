@@ -8,7 +8,7 @@
 #include "../../CORE_ALL"
 #include <Epetra_Import.h>
 
-namespace rompp{ 
+namespace rompp{
 namespace svd{
 
 template<typename matrix_type,
@@ -20,7 +20,7 @@ class Solver<matrix_type, lsv_type, rsv_type, sval_type,
 	     std::enable_if<
 	       core::meta::is_multi_vector_epetra<
 		 typename core::details::traits<matrix_type>::wrapped_t
-		 >::value	       
+		 >::value
 	       >::type
 	     >
   : public SolverBase< Solver<matrix_type, lsv_type,
@@ -37,7 +37,7 @@ private:
 public:
   Solver() = default;
   ~Solver() = default;
-  
+
 private:
 
   template<svdType svd_enum_value,
@@ -55,7 +55,7 @@ private:
     nU_ = t;
     nV_ = t;
 
-    // convert it to replicated eptra matrix 
+    // convert it to replicated eptra matrix
     Epetra_LocalMap locMap(m, 0, A.commCRef());
     Epetra_Import importer(locMap, ArowMap);
     matrix_type A2(locMap, n);
@@ -81,42 +81,41 @@ private:
     lsv_ = std::make_shared<lsv_t>(ArowMap, t);
     Epetra_Import importer2(ArowMap, locMap);
     lsv_->data()->Import(*locU.data(), importer2, Insert);
-    
+
   }//end method
   //-----------------------------------------------------
-  
+
   const lsv_t & cRefLeftSingularVectorsImpl() const {
     return *lsv_;
   }//end method
   //-----------------------------------------------------
-  
+
   const rsv_t & cRefRightSingularVectorsImpl() const {
     return *rsv_;
   }//end method
   //-----------------------------------------------------
-  
+
   const sval_t & singularValuesImpl() const{
     return *sval_;
   }//end method
   //-----------------------------------------------------
-   
+
 private:
   friend SolverBase< Solver<matrix_type, lsv_type,
 			    rsv_type, sval_type> >;
 
 private:
-  sc_t tol_;
-  std::shared_ptr<lsv_t> lsv_;
-  std::shared_ptr<rsv_t> rsv_;
-  std::shared_ptr<sval_t> sval_;
-  std::vector<sc_t> eigVals_;
-  int nU_;
-  int nV_;
+  sc_t tol_ = {};
+  std::shared_ptr<lsv_t> lsv_ = {};
+  std::shared_ptr<rsv_t> rsv_ = {};
+  std::shared_ptr<sval_t> sval_ = {};
+  std::vector<sc_t> eigVals_ = {};
+  int nU_ = {};
+  int nV_ = {};
 
 };//end class
-  
+
 }//end namespace svd
 }//end namespace rompp
-#endif 
 #endif
-
+#endif

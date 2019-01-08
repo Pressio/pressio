@@ -124,9 +124,9 @@ private:
   friend ContainerResizableBase<derived_t, 2>;
 
 private:
-  wrap_t data_;
+  wrap_t data_ = {};
 
 };//end class
-}//end namespace core
-}//end namespace rompp
+
+}}//end namespace rompp::core
 #endif
