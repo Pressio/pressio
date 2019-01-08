@@ -2,47 +2,70 @@
 #ifndef ROM_MULTI_VECTOR_OPERATOR_HPP_
 #define ROM_MULTI_VECTOR_OPERATOR_HPP_
 
-#include "rom_operator_base.hpp"
+//#include "rom_operator_base.hpp"
+#include "rom_forward_declarations.hpp"
 #include "../../CORE_ALL"
 
 namespace rompp{ namespace rom{
 
-template<typename operator_type,
-	 core::meta::enable_if_t<
-	   core::meta::is_core_multi_vector_wrapper<
-	     operator_type>::value
-	   > * = nullptr
-	 >
-class MultiVectorOperator
-  : public OperatorBase<MultiVectorOperator<operator_type>>{
+template <typename operator_type>
+class MultiVectorOperator < operator_type, 
+			    core::meta::enable_if_t<
+			      core::meta::is_core_multi_vector_wrapper<
+				operator_type>::value
+			      >
+			    >
+{
+
+public:
+  
+  MultiVectorOperator() = delete;
+
+  explicit MultiVectorOperator(const operator_type & opIn)
+    : op_(&opIn){}
+
+  ~MultiVectorOperator() = default;
 
 private:
-  friend OperatorBase<MultiVectorOperator<operator_type>>;
-  const operator_type * op_;
+    using this_t = MultiVectorOperator<operator_type>;
+    const operator_type * op_;
+
+public:
+
+  const operator_type * getOperator() const{
+    return op_;
+  }
 
   //-------------------------------
   //----     APPLY RIGHT      -----
   //-------------------------------
   template<typename T>
-  auto applyRightImpl(const T & X)
+  auto applyRight(const T & X)
     -> decltype(core::ops::product(X, *op_)){
     return core::ops::product(X, *op_);
   }
 
   template<typename T1, typename T2>
-  void applyRightImpl(const T1 & X, T2 & Y){
+  void applyRight(const T1 & X, T2 & Y){
     core::ops::product(X, *op_, Y);
   }
+
+  template <typename T>
+  auto gigi(const T & X) -> double{
+    auto gg = core::ops::product(*op_, X);
+    return 0.0;
+  }
+
 
   //-------------------------------
   //----     APPLY AS IS      -----
   //-------------------------------
-  template <typename T,
-     core::meta::enable_if_t<
+  template <typename T
+    /*core::meta::enable_if_t<
        core::meta::is_core_vector_wrapper<T>::value
-       > * = nullptr
+       > * = nullptr */
      >
-  auto applyImpl(const T & X)
+  auto apply(const T & X)
     -> decltype(core::ops::product( std::declval<operator_type>(),
 				    std::declval<T>() )){
     return core::ops::product(*op_, X);
@@ -55,7 +78,7 @@ private:
        core::meta::is_core_vector_wrapper<T2>::value
        > * = nullptr
      >
-  void applyImpl(const T1 & X, T2 & Y){
+  void apply(const T1 & X, T2 & Y){
     // op_: multivector of size m,n
     // X: vector of size n,1
     // Y: vector of size m,1
@@ -71,7 +94,7 @@ private:
        core::meta::is_core_multi_vector_wrapper<T>::value
        > * = nullptr
      >
-  auto applyTransposeImpl(const T & X)
+  auto applyTranspose(const T & X)
     -> decltype(core::ops::dot( std::declval<operator_type>(),
 				std::declval<T>() )){
     // multivector^T acts on vector = take dot of each row
@@ -88,23 +111,12 @@ private:
        core::meta::is_core_multi_vector_wrapper<T1>::value
        > * = nullptr
      >
-  void applyTransposeImpl(const T1 & X, T2 & Y){
+  void applyTranspose(const T1 & X, T2 & Y){
     // multivector^T acts on vector = take dot of each row
     // op_^T: multivector of size n,m
     // X: vector of size m,1
     // Y: vector with results of all dots of size n,1
     core::ops::dot(*op_, X, Y);
-  }
-  //---------------------------------
-
-public:
-  //  MultiVectorOperator() = delete;
-  explicit MultiVectorOperator(const operator_type & opIn)
-    : op_(&opIn){}
-  ~MultiVectorOperator() = default;
-
-  const operator_type * getOperator() const{
-    return op_;
   }
 
 };//end class

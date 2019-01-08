@@ -24,6 +24,10 @@ template<typename app_state_w_type,
 class RomLSPGJacobianPolicy;
 
 
+template<typename operator_type, 
+	 typename enable = void>
+class MultiVectorOperator;
+
 template<::rompp::ode::ImplicitEnum,
 	  typename app_state_w_type,
 	  typename app_res_w_type,

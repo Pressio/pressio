@@ -20,7 +20,7 @@ protected:
 
   ~ExpOdeAuxData() = default;
 
-  const model_type * model_ = nullptr;
+  const model_type * model_		     = nullptr;
   const residual_policy_type * residual_obj_ = nullptr;
 
 };
@@ -40,11 +40,11 @@ protected:
     : model_(&mod), residual_obj_(&rpolo), jacobian_obj_(&jpolo){}
   ~ImpOdeAuxData() = default;
 
-  const model_type * model_ = nullptr;
+  const model_type * model_		     = nullptr;
   const residual_policy_type * residual_obj_ = nullptr;
   const jacobian_policy_type * jacobian_obj_ = nullptr;
-  scalar_type t_;
-  scalar_type dt_;
+  scalar_type t_			     = {};
+  scalar_type dt_			     = {};
 };
 
 
