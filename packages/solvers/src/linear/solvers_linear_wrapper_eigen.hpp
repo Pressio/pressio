@@ -34,7 +34,7 @@ struct SolversLinearDirectWrapperEigen {
   }
 
   protected:
-    SolverT solver_;
+  SolverT solver_ = {};
 };
 
 

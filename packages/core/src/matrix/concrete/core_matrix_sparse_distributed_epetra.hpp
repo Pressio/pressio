@@ -12,8 +12,7 @@
 #include "../base/core_matrix_sparse_distributed_base.hpp"
 #include "../base/core_matrix_sparse_distributed_trilinos_base.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
@@ -196,10 +195,10 @@ private:
   friend ContainerDistributedMpiBase< derived_t, comm_t >;
 
 private:
-  wrap_t data_;
+  wrap_t data_ = {};
 
 };//end class
-}//end namespace core
-}//end namespace rompp
+
+}}//end namespace rompp::core
 #endif
 #endif

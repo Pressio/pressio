@@ -12,8 +12,7 @@
 // WIP to finish
 // !!!!!!!!!!!!!!!!!!!!!!!!!!
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
@@ -26,7 +25,7 @@ class Matrix<wrapped_type,
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
     public MatrixDenseSharedMemBase< Matrix<wrapped_type> >,
     public ContainerSubscriptable2DBase<
-     Matrix<wrapped_type>, 
+     Matrix<wrapped_type>,
      typename details::traits<Matrix<wrapped_type>>::scalar_t,
      typename details::traits<Matrix<wrapped_type>>::ordinal_t>
 {
@@ -46,14 +45,14 @@ public:
 
 public:
   sc_t & operator() (ord_t row, ord_t col){
-    // check if we are withinbound 
+    // check if we are withinbound
     return data_(row,col);
   }
   sc_t const & operator() (ord_t row, ord_t col) const{
-    // check if we are withinbound 
+    // check if we are withinbound
     return data_(row,col);
   }
-  
+
 private:
   wrap_t const * dataImpl() const{
     return &data_;
@@ -68,7 +67,7 @@ private:
   ord_t cols() const{
     return data_.empty() ? 0 : data_[0].size();
   }
-  void resizeImpl(ord_t nrows, ord_t ncols){    
+  void resizeImpl(ord_t nrows, ord_t ncols){
     data_.resize(nrows);
     for (auto & it : data_)
       it.resize(ncols);
@@ -78,17 +77,16 @@ private:
   // WIP to finish
   // !!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  
+
 private:
   friend ContainerBase< Matrix<wrapped_type>, wrapped_type >;
   friend MatrixDenseSharedMemBase< Matrix<wrapped_type> >;
   friend ContainerSubscriptable2DBase< Matrix<wrapped_type>, sc_t, ord_t>;
-  
+
 private:
-  std::vector<std::vector<sc_t>> data_;
- 
+  std::vector<std::vector<sc_t>> data_ = {};
+
 };
-  
-}//end namespace core
-}//end namespace rompp
+
+}}//end namespace rompp::core
 #endif

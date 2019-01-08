@@ -103,7 +103,7 @@ private:
   friend ContainerResizableBase<this_t, 2>;
 
 private:
-  wrap_t data_;
+  wrap_t data_ = {};
 
 };//end class
 

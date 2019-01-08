@@ -28,7 +28,7 @@ public:
 
 private:
     using this_t = MultiVectorOperator<operator_type>;
-    const operator_type * op_;
+  const operator_type * op_ = {};
 
 public:
 

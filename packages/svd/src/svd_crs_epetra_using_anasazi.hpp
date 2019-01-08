@@ -20,7 +20,7 @@
 #include "Epetra_InvOperator.h"
 #include "Ifpack.h"
 
-namespace rompp{ 
+namespace rompp{
 namespace svd{
 
 template<typename matrix_type,
@@ -51,7 +51,7 @@ private:
 public:
   Solver() = default;
   ~Solver() = default;
-  
+
 private:
 
   template<svdType svd_enum_value,
@@ -67,7 +67,7 @@ private:
 
     // nU_ = t;
     // nV_ = t;
-    
+
     // //// comp m left-sing vec as solution of A*A^T U = lambda U
     // computeSingVectors(A, t, 'L');
     // storeSingVectors('L');
@@ -78,28 +78,28 @@ private:
 
     // computeSingValues(t);
     // storeSingValues();
-    
+
   }//end method
   //-----------------------------------------------------
-  
+
   const lsv_t & cRefLeftSingularVectorsImpl() const {
     return *lsv_;
   }//end method
   //-----------------------------------------------------
-  
+
   const rsv_t & cRefRightSingularVectorsImpl() const {
     return *rsv_;
   }//end method
   //-----------------------------------------------------
-  
+
   const sval_t & singularValuesImpl() const{
     return *sval_;
   }//end method
   //-----------------------------------------------------
 
-  
+
 private:
-  
+
   void computeSingVectors(matrix_type & A, int N, char which){
     assert(A.isFillingCompleted());
 
@@ -110,10 +110,10 @@ private:
 
     // // solve eigenproblem
     // solveEigProblem(Afin, N);
-    
+
   }//end method
   //-----------------------------------------------------
-  
+
   void storeSingVectors(char which)
   {
     const Anasazi::Eigensolution<sc_t,MV> & sol = eigP_->getSolution();
@@ -128,7 +128,7 @@ private:
   // {
   //  //  if (which == 'L'){
   //  //    //auto AAT = core::mat_ops::product(A, ASWT, false, false, true);
-  //  //    auto AAT = core::ops::product(A, A, false, true, true); 
+  //  //    auto AAT = core::ops::product(A, A, false, true, true);
   //  //    assert( AAT.isFillingCompleted() );
   //  //    return AAT;
   //  // }
@@ -139,11 +139,11 @@ private:
   //  //   assert( ATA.isFillingCompleted() );
   //  //   return ATA;
   //  //  }
-    
+
   // }//end method
   // //-----------------------------------------------------
 
-      
+
   void computeSingValues(int N)
   {
     const Anasazi::Eigensolution<sc_t,MV> & sol = eigP_->getSolution();
@@ -161,7 +161,7 @@ private:
   }//end method
   //-----------------------------------------------------
 
-  
+
   void solveEigProblem(Teuchos::RCP<Epetra_CrsMatrix> & Arcp, int nev)
   {
     //Arcp->Print(std::cout);
@@ -172,7 +172,7 @@ private:
     // create init vectors
     Teuchos::RCP<MV> ivec = Teuchos::rcp(new MV(dommap, blockSize));
     ivec->Random();
-    
+
     // // Construct the Preconditioner
     // Teuchos::RCP<Ifpack_Preconditioner> prec;
     // Teuchos::RCP<Epetra_Operator> PrecOp;
@@ -193,8 +193,8 @@ private:
     // //printer.stream(Errors) << " done." << endl;
     // // encapsulate this preconditioner into a IFPACKPrecOp class
     // PrecOp = Teuchos::rcp (new Epetra_InvOperator (&*prec));
-    
-    // Create the eigenproblem. 
+
+    // Create the eigenproblem.
     //Teuchos::RCP<Anasazi::BasicEigenproblem<sc_t, MV, OP>>
     eigP_ = Teuchos::rcp(new Anasazi::BasicEigenproblem<sc_t,MV,OP>(Arcp,ivec));
     eigP_->setNEV(nev);
@@ -202,7 +202,7 @@ private:
     //    eigP_->setPrec(PrecOp);
     ///finishing passing it information.
     assert(eigP_->setProblem());
-  
+
     // Create the solver manager and solve
     Teuchos::ParameterList PL;
     PL.set("Which", "LM"); // ordering of eigsvd_enum_values, lowest to largest
@@ -228,12 +228,12 @@ private:
 
     auto returnCode = solverMan.solve();
     assert(returnCode == Anasazi::Converged );
-    
+
   }// end method
   //-----------------------------------
 
-  
-    
+
+
   template <typename T = sval_t,
 	    typename std::enable_if<
 	      std::is_same<T,
@@ -261,12 +261,12 @@ private:
       vals[0] = 0.0;
       if (it < static_cast<GO_t>(eigVals_.size()) )
 	vals[0] = eigVals_[it];
-	
+
       inds[0] = it;
       sval_->insertGlobalValues(it, 1, vals.data(), inds.data());
     }
     sval_->fillingIsCompleted(cmap, rmap);
-    
+
   }//end method
   //-----------------------------------------------------
 
@@ -282,7 +282,7 @@ private:
     auto & comm = lsv_->commCRef();
     using GO_t = typename core::details::traits<sval_t>::global_ordinal_t;
 
-    // map 
+    // map
     Epetra_Map mymap( std::min(nU_, nV_), 0, comm);
     // vector object
     sval_ = std::make_shared<sval_t>(mymap);
@@ -297,35 +297,35 @@ private:
       inds[0] = it;
       sval_->replaceGlobalValues(1, inds.data(), vals.data());
     }
-    
+
   }//end method
   //-----------------------------------------------------
 
-   
+
 private:
   friend SolverBase< Solver<matrix_type, lsv_type,
 			    rsv_type, sval_type> >;
 
 private:
-  sc_t tol_;
+  sc_t tol_ = {};
   const int maxIters = 500;
 
   // not sure what this is... i cannot find any documentation
   const int blockSize = 5;
-  
-  std::shared_ptr<lsv_t> lsv_;
-  std::shared_ptr<rsv_t> rsv_;
 
-  std::shared_ptr<sval_t> sval_;
-  std::vector<sc_t> eigVals_;
+  std::shared_ptr<lsv_t> lsv_ = {};
+  std::shared_ptr<rsv_t> rsv_ = {};
 
-  eigprob_t eigP_;
-  int nU_;
-  int nV_;
+  std::shared_ptr<sval_t> sval_ = {};
+  std::vector<sc_t> eigVals_= {};
+
+  eigprob_t eigP_ = {};
+  int nU_ = {};
+  int nV_ = {};
 
 };//end class
-  
+
 }//end namespace svd
 }//end namespace rompp
-#endif 
+#endif
 #endif

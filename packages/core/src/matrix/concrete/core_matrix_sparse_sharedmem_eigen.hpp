@@ -11,8 +11,7 @@
 #include "../base/core_matrix_sharedmem_base.hpp"
 #include "../base/core_matrix_sparse_sharedmem_base.hpp"
 
-namespace rompp{
-namespace core{
+namespace rompp{ namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
@@ -34,8 +33,8 @@ class Matrix<wrapped_type,
   using ord_t = typename mytraits::ordinal_t;
   using wrap_t = typename mytraits::wrapped_t;
   using der_t = typename mytraits::derived_t;
-  
-public: 
+
+public:
   Matrix() = delete;
 
   explicit Matrix(ord_t nrows, ord_t ncols) {
@@ -43,7 +42,7 @@ public:
     this->compress();
   }
 
-  // row-major matrix constructor 
+  // row-major matrix constructor
   template <typename U = ord_t,
 	    typename std::enable_if<
 	      mytraits::is_row_major==1, U>::type * = nullptr>
@@ -57,7 +56,7 @@ public:
   }
 
   // col-major matrix constructor
-  template <typename U = ord_t, 
+  template <typename U = ord_t,
 	    typename std::enable_if<
 	      mytraits::is_row_major==0, U>::type * = nullptr>
   explicit Matrix(U nrows, U ncols, U nonZerosPerCol) {
@@ -74,8 +73,8 @@ public:
   }
 
   ~Matrix() = default;
-  
-public: 
+
+public:
 
   // note here that we return by copy
   sc_t operator() (ord_t row, ord_t col) const{
@@ -88,7 +87,7 @@ public:
     this->data_ += *other.data();
     return *this;
   }
-  
+
   derived_t & operator-=(const derived_t & other) {
     assert(haveCompatibleDimensions(*this, other) );
     this->data_ -= *other.data();
@@ -102,7 +101,7 @@ private:
 
   wrap_t * dataImpl(){
     return &data_;
-  };  
+  };
 
   void addToDiagonalImpl(sc_t value) {
     auto ide(data_);
@@ -110,8 +109,8 @@ private:
     ide.coeffs() *= value;
     data_ += ide;
   };
-  
-  // from sharedMem base  
+
+  // from sharedMem base
   ord_t rowsImpl() const{
     return data_.rows();
   }
@@ -135,9 +134,9 @@ private:
   void setZeroImpl(){
     data_.setZero();
   }
-  
+
   // inserting for row major storage
-  template <typename U = ord_t, 
+  template <typename U = ord_t,
 	    typename std::enable_if<
 	      mytraits::is_row_major==1,
 	      U>::type * = nullptr>
@@ -148,7 +147,7 @@ private:
   }
 
   // inserting for column major storage
-  template <typename U = ord_t, 
+  template <typename U = ord_t,
 	    typename std::enable_if<
 	      mytraits::is_row_major==0,
 	      U>::type * = nullptr>
@@ -160,7 +159,7 @@ private:
 
   void scaleImpl(sc_t & factor){
     data_.coeffs() *= factor;
-  };  
+  };
 
   void compressImpl(){
     data_.makeCompressed();
@@ -169,7 +168,7 @@ private:
   bool isCompressedImpl() const{
     return data_.isCompressed();
   }
-  
+
 private:
   bool haveCompatibleDimensions(const derived_t & m1,
 				const derived_t & m2)const{
@@ -186,9 +185,9 @@ private:
   friend ContainerResizableBase<derived_t, 2>;
 
 private:
-  wrap_t data_;
-     
-};//end class 
-}//end namespace core 
-}//end namespace rompp
+  wrap_t data_ = {};
+
+};//end class
+
+}}//end namespace rompp::core
 #endif

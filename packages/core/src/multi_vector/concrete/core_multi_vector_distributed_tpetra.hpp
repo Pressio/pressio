@@ -148,7 +148,7 @@ private:
   friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
 
 private:
-  wrap_t data_;
+  wrap_t data_ = {};
 
 };//end class
 

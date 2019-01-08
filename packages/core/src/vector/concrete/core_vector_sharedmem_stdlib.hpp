@@ -16,7 +16,7 @@ class Vector<wrapped_type,
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
-    public ContainerSubscriptable1DBase< Vector<wrapped_type>, 
+    public ContainerSubscriptable1DBase< Vector<wrapped_type>,
      typename details::traits<Vector<wrapped_type>>::scalar_t,
      typename details::traits<Vector<wrapped_type>>::ordinal_t>{
 
@@ -30,7 +30,7 @@ class Vector<wrapped_type,
 public:
   Vector() = default;
   ~Vector() = default;
-  
+
   explicit Vector(ord_t insize,
                   sc_t value = static_cast<sc_t>(0) ){
     this->resize(insize, value);
@@ -60,7 +60,7 @@ public:
       data_[i] = expr(i);
     return *this;
   }
-  
+
 public:
   sc_t & operator [] (ord_t i){
     return data_[i];
@@ -68,22 +68,22 @@ public:
 
   sc_t const & operator [] (ord_t i) const{
     return data_[i];
-  };  
+  };
 
   sc_t & operator()(ord_t i){
     return data_[i];
   };
   sc_t const & operator()(ord_t i) const{
     return data_[i];
-  };  
-  
+  };
+
   this_t & operator+=(const this_t & other) {
     std::transform(this->data_.begin(), this->data_->end(),
 		   other.data()->begin(), this->data_.begin(),
 		   std::plus<sc_t>());
     return *this;
   }
-  
+
   this_t & operator-=(const this_t & other) {
     std::transform(this->data_.begin(), this->data_->end(),
 		   other.data()->begin(), this->data_.begin(),
@@ -104,7 +104,7 @@ private:
   void putScalarImpl(sc_t value) {
     for (ord_t i=0; i<this->size(); i++)
       data_[i] = value;
-  }    
+  }
 
   void setZeroImpl() {
     this->putScalarImpl( static_cast<sc_t>(0) );
@@ -127,9 +127,9 @@ private:
   friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
 
 private:
-  std::vector<sc_t> data_;
-  
-};//end class  
+  std::vector<sc_t> data_ = {};
+
+};//end class
 }}//end namespace rompp::core
 #endif
 

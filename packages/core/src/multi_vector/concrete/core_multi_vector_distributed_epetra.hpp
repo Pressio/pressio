@@ -149,7 +149,7 @@ private:
   friend ContainerDistributedTrilinosBase< this_t, map_t >;
 
 private:
-  wrap_t data_;
+  wrap_t data_ = {};
 
 };//end class
 

@@ -157,7 +157,7 @@ private:
   // friend ContainerSubscriptable1DBase< this_t, sc_t, LO_t>;
 
 private:
-  wrap_t data_;
+  wrap_t data_ = {};
 
   // // myLocDataView_: persistent non-const view of my local data
   // Teuchos::ArrayRCP<sc_t> myLocDataView_;

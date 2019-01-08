@@ -43,7 +43,7 @@ class EigenIterative
     }
 
   friend base_interface;
-  native_solver_t mysolver_;
+  native_solver_t mysolver_ = {};
 
 };
 

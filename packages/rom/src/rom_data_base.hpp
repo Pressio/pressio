@@ -111,7 +111,7 @@ protected:
   //----------------------------------------------------------------
 
 protected:
-  const app_state_w_type * y0FOM_ 			                     = nullptr;
+  const app_state_w_type * y0FOM_ 			     = nullptr;
   mutable app_state_w_type yFOM_                             = {};
   mutable std::array<app_state_w_type, maxNstates> yFOMold_  = {};
   phi_op_type * phi_                                         = nullptr;
