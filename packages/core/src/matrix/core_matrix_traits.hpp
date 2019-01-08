@@ -26,7 +26,9 @@ struct traits< Matrix<
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Eigen,true>,
+				    WrappedPackageIdentifier::Eigen,true,
+				    ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
+				      wrapped_type::ColsAtCompileTime != Eigen::Dynamic )>,
     public matrix_shared_traits<false>
 {
 
@@ -36,9 +38,9 @@ struct traits< Matrix<
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
 
-  static constexpr bool is_static =
-    ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
-      wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
+  // static constexpr bool is_static =
+  //   ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
+  //     wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
 };
 
 
@@ -58,7 +60,7 @@ struct traits< Matrix<
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Eigen, true>,
+				    WrappedPackageIdentifier::Eigen, true, false>,
     public matrix_shared_traits<true>
 {
   static constexpr WrappedMatrixIdentifier
@@ -73,9 +75,7 @@ struct traits< Matrix<
 
   static constexpr bool is_row_major = wrapped_type::IsRowMajor;
   static constexpr bool is_col_major = !is_row_major;
-  static constexpr bool is_static = false;
 };
-
 
 
 //***********************************
@@ -96,7 +96,7 @@ struct traits<Matrix
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
 				    WrappedPackageIdentifier::Trilinos,
-				    false>,
+				    false, false>,
     public matrix_shared_traits<true>
 {
 
@@ -112,8 +112,6 @@ struct traits<Matrix
   using range_map_t = Epetra_Map;
   using domain_map_t = Epetra_Map;
   using crs_graph_t = Epetra_CrsGraph;
-
-  static constexpr int is_static = 0;
 };
 #endif
 
@@ -135,7 +133,7 @@ struct traits<Matrix<wrapped_type,
 				    wrapped_type,
 				    false, true, false,
 				    WrappedPackageIdentifier::Trilinos,
-				    true>,
+				    true, false>,
     public matrix_shared_traits<false>
 {
 
@@ -144,12 +142,8 @@ struct traits<Matrix<wrapped_type,
 
   using scalar_t = typename wrapped_type::scalarType;
   using ordinal_t = typename wrapped_type::ordinalType;
-
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic = true;
 };
 #endif
-
 
 
 //***********************************
@@ -169,7 +163,8 @@ struct traits<Matrix
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Trilinos,false>,
+				    WrappedPackageIdentifier::Trilinos,
+				    false, false>,
     public matrix_shared_traits<false>
 {
   static constexpr WrappedMatrixIdentifier
@@ -186,8 +181,6 @@ struct traits<Matrix
   // // So we set actsAsMultiVector = false, actingAsDenseMatrix = true
   // static constexpr int actingAsMultiVector = 0;
   // static constexpr int actingAsDenseMatrix = 1;
-
-  static constexpr bool is_static = false;
 };
 #endif
 
@@ -204,7 +197,7 @@ struct traits<Matrix<wrapped_type,
      >
   : public containers_shared_traits<Matrix<wrapped_type>,
             wrapped_type, false, true, false,
-            WrappedPackageIdentifier::Trilinos,false>,
+	    WrappedPackageIdentifier::Trilinos,false, false>,
     public matrix_shared_traits<true>
 {
   static constexpr WrappedMatrixIdentifier
@@ -242,7 +235,6 @@ struct traits<Matrix<wrapped_type,
 #endif
 
 
-
 //***********************************
 // based on std::vector<std::vector<>>
 //***********************************
@@ -259,7 +251,8 @@ struct traits< Matrix<
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::CppStdLib, true>,
+				    WrappedPackageIdentifier::CppStdLib,
+				    true, false>,
     public matrix_shared_traits<false>
 {
 
@@ -268,12 +261,8 @@ struct traits< Matrix<
 
   using scalar_t = typename wrapped_type::value_type::value_type;
   using ordinal_t = int;
-  static constexpr bool is_static = false;
 };
 
 
-}//end namespace details
-}//end namespace core
-
-}//end namespace rompp
+}}}//end namespace rompp::core::details
 #endif

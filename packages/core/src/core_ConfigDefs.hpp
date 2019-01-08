@@ -29,7 +29,7 @@ struct traits : public
 containers_shared_traits<void, void,
 			 false, false, false,
 			 WrappedPackageIdentifier::Undefined,
-			 false>{};
+			 false, false>{};
 
 template<typename T>
 struct traits<const T> : traits<T> {};

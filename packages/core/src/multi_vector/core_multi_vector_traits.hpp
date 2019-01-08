@@ -8,10 +8,10 @@
 
 namespace rompp{ namespace core{ namespace details{
 
-#ifdef HAVE_TRILINOS 
+#ifdef HAVE_TRILINOS
 //*******************************
-// for epetra multivector 
-//******************************* 
+// for epetra multivector
+//*******************************
 template<typename wrapped_type>
 struct traits<MultiVector<wrapped_type,
       typename std::enable_if<
@@ -22,7 +22,7 @@ struct traits<MultiVector<wrapped_type,
 				    wrapped_type,
 				    false, false, true,
 				    WrappedPackageIdentifier::Trilinos,
-				    false>
+				    false, false>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Epetra;
@@ -36,10 +36,10 @@ struct traits<MultiVector<wrapped_type,
 #endif
 
 
-#ifdef HAVE_TRILINOS 
+#ifdef HAVE_TRILINOS
 //*******************************
-// for tpetra multivector 
-//******************************* 
+// for tpetra multivector
+//*******************************
 template<typename wrapped_type>
 struct traits<MultiVector<wrapped_type,
       typename std::enable_if<
@@ -50,7 +50,7 @@ struct traits<MultiVector<wrapped_type,
 				    wrapped_type,
 				    false, false, true,
 				    WrappedPackageIdentifier::Trilinos,
-				    false>
+				    false, false>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Tpetra;
@@ -81,11 +81,11 @@ struct traits<MultiVector<wrapped_type,
   using communicator_t = decltype(std::declval<data_map_t>().getComm());
 };
 #endif
-      
+
 
 //*******************************
-// for eigen multivector 
-//******************************* 
+// for eigen multivector
+//*******************************
 template<typename wrapped_type>
 struct traits<MultiVector<wrapped_type,
       typename std::enable_if<
@@ -95,8 +95,9 @@ struct traits<MultiVector<wrapped_type,
   : public containers_shared_traits<MultiVector<wrapped_type>,
             wrapped_type,
             false, false, true,
-            WrappedPackageIdentifier::Eigen,
-            true>
+            WrappedPackageIdentifier::Eigen, true,
+	   ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
+	     wrapped_type::ColsAtCompileTime != Eigen::Dynamic )>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Eigen;
@@ -104,11 +105,11 @@ struct traits<MultiVector<wrapped_type,
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
 
-  static constexpr bool is_static =
-    ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
-      wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
-  static constexpr bool is_dynamic = !is_static;
+  // static constexpr bool is_static =
+  //   ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
+  //     wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
+  // static constexpr bool is_dynamic = !is_static;
 };
-    
+
 }}}//end namespace rompp::core::details
 #endif
