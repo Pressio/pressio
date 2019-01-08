@@ -5,7 +5,5 @@
 #include "solvers/src/base/solvers_linear_base.hpp"
 #include "solvers/src/linear/solvers_linear_eigen_iterative.hpp"
 #include "solvers/src/linear/solvers_linear_traits.hpp"
-#include "solvers/src/linear/solvers_linear_wrapper_eigen.hpp"
 
 #endif
-

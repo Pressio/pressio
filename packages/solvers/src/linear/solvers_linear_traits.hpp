@@ -31,14 +31,15 @@ template <>
 struct traits<CG> {
 
   template <
-    typename MatrixT, 
+    typename MatrixT,
     typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
   >
   using eigen_solver_type             = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
-  
+
   static constexpr bool direct        = false;
   static constexpr bool eigen_enabled = true;
 };
+
 
 template <>
 struct traits<Bicgstab> {
