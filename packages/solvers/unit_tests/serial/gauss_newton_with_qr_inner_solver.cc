@@ -64,7 +64,7 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR)
   using qr_algo = qr::Householder;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
   rompp::solvers::GaussNewtonQR<sc_t, qr_type> solver;
-  solver.setNonLinearTolerance(1e-8);
+  solver.setTolerance(1e-8);
 
   // initial state
   state_w_t x(2);
@@ -102,7 +102,7 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQRPassTypes)
   using qr_type	   = qr::QRSolver<mat_t, qr_algo>;
   using gnsolver_t = solvers::GaussNewtonQR<sc_t, qr_type, problem_t>;
   gnsolver_t GNSolver(problem, x);
-  GNSolver.setNonLinearTolerance(1e-8);
+  GNSolver.setTolerance(1e-8);
   // solve
   GNSolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;

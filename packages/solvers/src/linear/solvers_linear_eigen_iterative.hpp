@@ -14,15 +14,13 @@ template<typename SolverT, typename MatrixT>
 class EigenIterative
   : public LinearBase<SolverT, MatrixT,
                             EigenIterative<SolverT, MatrixT> >,
-           IterativeBase<SolverT, typename core::details::traits<MatrixT>::scalar_t>
+    public IterativeBase<typename core::details::traits<MatrixT>::scalar_t>
 {
   using native_mat_t    = typename core::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename core::details::traits<MatrixT>::scalar_t;
-
   using this_t          = EigenIterative<SolverT, MatrixT>;
   using base_interface  = LinearBase<SolverT, MatrixT, this_t>;
-  using base_iterative  = IterativeBase<SolverT, scalar_t>;
-
+  using base_iterative  = IterativeBase<scalar_t>;
   using solver_traits   = linear::details::traits<SolverT>;
   using native_solver_t = typename solver_traits::template eigen_solver_type<native_mat_t>;
 

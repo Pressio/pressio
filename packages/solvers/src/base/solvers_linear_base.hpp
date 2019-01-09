@@ -5,17 +5,14 @@
 #include "../solvers_ConfigDefs.hpp"
 #include "../solvers_meta_static_checks.hpp"
 
-
 namespace rompp{ namespace solvers{
 
 /**
- * Base class for linear solver 
+ * Base class for linear solver
  *
  * @section DESCRIPTION
  *
  * This class defines the public interface for a linear solver class.
- * Objects of the class cannot be created directly. To create a solver,
- * use the factory class LinearSolvers.
  */
 template<typename SolverT, typename MatrixT, typename Derived>
 struct LinearBase {
@@ -45,24 +42,15 @@ struct LinearBase {
 
 protected:
   LinearBase() = default;
-  // LinearBase(std::shared_ptr<SolverT> solver) : solver_(solver) {}
-  // LinearBase(LinearBase&& other) : solver_(std::move(other.solver_)) {}
-
   LinearBase(const LinearBase&) = delete;
-
-  virtual ~LinearBase() = default;
-
-  // std::shared_ptr<SolverT> getSolver() {
-  //   return solver_;
-  // }
+  ~LinearBase() = default;
 
 private:
-  // friend Derived;
   Derived& underlying(){ return static_cast<Derived&>(*this);  }
-  Derived const& underlying() const { return static_cast<Derived const&>(*this); }
+  Derived const& underlying() const {
+    return static_cast<Derived const&>(*this);
+  }
 
-// private:
-//   std::shared_ptr<SolverT> solver_ = nullptr;
 };
 
 }}//end namespace rompp::solvers
@@ -89,8 +77,8 @@ private:
   //   typename VectorLT,
   //   typename VectorRT
   //   >
-  // void solve(const CompatibleMatrixT& A, 
-  //            const VectorLT& b, 
+  // void solve(const CompatibleMatrixT& A,
+  //            const VectorLT& b,
   //            VectorRT& x) {
   //   this->resetLinearSystem(A);
   //   // this->solve(b, x);
@@ -123,7 +111,7 @@ private:
  //   * @param A matrix representing the linear system to be solved
  //   * @param b RHS vector
  //   * @return solution vector
-   
+
  //  template <
  //    typename CompatibleMatrixT,
  //    typename VectorRT,

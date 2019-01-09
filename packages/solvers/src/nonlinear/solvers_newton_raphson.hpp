@@ -5,9 +5,10 @@
 #include "../solvers_ConfigDefs.hpp"
 #include "../solvers_meta_static_checks.hpp"
 #include "../../../CORE_OPS"
+#include "../base/solvers_nonlinear_base.hpp"
+#include "../base/solvers_iterative_base.hpp"
 
 namespace rompp{ namespace solvers{
-
 
 template <typename scalar_t,
 	  typename linear_solver_t,
@@ -15,14 +16,15 @@ template <typename scalar_t,
 	    core::meta::is_default_constructible<linear_solver_t>::value
 	    > * = nullptr
 	  >
-class NewtonRaphson {
+class NewtonRaphson
+  : public NonLinearSolverBase<NewtonRaphson<scalar_t, linear_solver_t>>,
+    public IterativeBase<scalar_t>{
 
-  using uint_t = core::default_types::uint;
+  using this_t	= NewtonRaphson<scalar_t,linear_solver_t>;
+  using base_t  = NonLinearSolverBase<this_t>;
+  friend base_t;
 
-private:
-  uint_t maxNonLinearIterations_     = 500;
-  scalar_t nonLinearTolerance_       = 1e-6;
-  scalar_t normN_ 		               = {};
+  scalar_t normN_ = {};
   linear_solver_t linSolver_; // default construct this
 
 public:
@@ -30,51 +32,37 @@ public:
   NewtonRaphson(const NewtonRaphson &) = delete;
   ~NewtonRaphson() = default;
 
-public:
-  void setMaxNonLinearIterations(uint_t maxNonLinearIterations) {
-    maxNonLinearIterations_ = maxNonLinearIterations;
-  }
-
-  void setNonLinearTolerance(scalar_t nonLinearTolerance) {
-    nonLinearTolerance_ = std::abs(nonLinearTolerance);
-  }
-
+private:
   template <typename T>
   scalar_t normOfDifference(const T & v1, const T& v2) const{
     T dVec(v1 - v2);
     return ::rompp::core::ops::norm2(dVec);
   }
 
-
-
-  template <typename SystemT,
-	    typename VectorT,
-	    core::meta::enable_if_t<
-	      core::meta::is_core_vector_wrapper<VectorT>::value and
-	      std::is_same<VectorT, typename SystemT::state_type >::value
-	      > * =nullptr
-	    >
-  void solve(const SystemT& sys, VectorT& x)
-  {
+public:
+  template <typename system_t>
+  void solveImpl(const system_t & sys,
+		 typename system_t::state_type & x){
 #ifdef DEBUG_PRINT
     std::cout << " starting Newton-Raphson solve "
-	      << " tol = " << nonLinearTolerance_
-	      << " maxIter = " << maxNonLinearIterations_
+	      << " tol = " << this->tolerance_
+	      << " maxIter = " << this->maxIters_
 	      << std::endl;
 #endif
+    using state_t    = typename system_t::state_type;
 
     auto Residual = sys.residual(x);
     auto Jac = sys.jacobian(x);
 
     auto dx(x);
-    VectorT xOld = x;
+    state_t xOld = x;
 
     linSolver_.solve(Jac, Residual, dx);
     x -= dx;
 
     core::default_types::uint iStep = 1;
-    while (iStep++ <= maxNonLinearIterations_ &&
-           normOfDifference(xOld, x) > nonLinearTolerance_)
+    while (iStep++ <= this->maxIters_ &&
+           this->normOfDifference(xOld, x) > this->tolerance_)
     {
       xOld = x;
       sys.residual(x, Residual);
@@ -84,8 +72,7 @@ public:
       linSolver_.solve(Residual, dx);
       x -= dx;
     }
-
-  }//solve
+  }//solveImpl
 
 };//class
 
