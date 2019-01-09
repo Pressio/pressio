@@ -115,17 +115,32 @@ void integrateNSteps(stepper_type & stepper,
   collector(0, time, yIn);
 
   integral_type step = 1;
+
+#ifdef HAVE_TEUCHOS_TIMERS
+  auto timer = Teuchos::TimeMonitor::getStackedTimer();
+  timer->start("time loop");
+#endif
+
   // time loop
   for( ; step <= num_steps ; ++step)
   {
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("time step");
     // do one step
     stepper(yIn, time, dt, step, solver);
+    timer->stop("time step");
+#endif
+
     // advance time
     time = start_time
       + static_cast<time_type>(step) * dt;
+
     // call collector/observer
     collector(step, time, yIn);
   }
+#ifdef HAVE_TEUCHOS_TIMERS
+  timer->stop("time loop");
+#endif
 }
 
 //-------------------------------------------------
@@ -148,15 +163,28 @@ void integrateNSteps(stepper_type & stepper,
   time_type time = start_time;
   integral_type step = 1;
 
+#ifdef HAVE_TEUCHOS_TIMERS
+  auto timer = Teuchos::TimeMonitor::getStackedTimer();
+  timer->start("time loop");
+#endif
+
   // time loop
   for( ; step <= num_steps ; ++step)
   {
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("time step");
     // do one step
     stepper(yIn, time, dt, step, solver);
+    timer->stop("time step");
+#endif
+
     // advance time
     time = start_time
       + static_cast<time_type>(step) * dt;
   }
+#ifdef HAVE_TEUCHOS_TIMERS
+  timer->stop("time loop");
+#endif
 }
 
 

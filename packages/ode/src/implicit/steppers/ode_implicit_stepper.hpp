@@ -81,7 +81,6 @@ namespace rompp{ namespace ode{
       void operator()(ode_state_type & y, scalar_t t,
     		      scalar_t dt, step_t step,
     		      solver_type & solver){
-	std::cout << "child () " << std::endl;
 	myImpl.doStep(y, t, dt, step, solver, *this);
       }
 

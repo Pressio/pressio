@@ -78,17 +78,43 @@ public:
 			    scalar_type t,
 			    scalar_type dt) const
   {
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("lspg reconstruct FOM state");
+#endif
     // odeY, oldYsa are REDUCED states, reconstruct FOM states
     base_state_data_t::template reconstructFOMStates<numAuxStates>(odeY, oldYs);
 
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg reconstruct FOM state");
+#endif
+
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("lspg space residual");
+#endif
     /// query the application for the SPACE residual
     app.residual(*yFOM_.data(), *appRHS_[0].data(), t);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg space residual");
+#endif
 
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("lspg time discrete residual");
+#endif
     /// do time discrete residual
     ode::impl::implicit_time_discrete_residual<odeMethod, maxNstates>(yFOM_,
 							     yFOMold_,
 							     appRHS_[0],
 							     dt);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg time discrete residual");
+#endif
 
     // /// apply weighting:
     // if (A_) A_->applyTranspose(appRHS_, odeR);
@@ -109,14 +135,40 @@ public:
   		  scalar_type t,
   		  scalar_type dt) const
   {
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("lspg reconstruct FOM state");
+#endif
+    // odeY, oldYsa are REDUCED states, reconstruct FOM states
     base_state_data_t::template reconstructFOMStates<numAuxStates>(odeY, oldYs);
 
-    app.residual(*yFOM_.data(), *odeR.data(), t);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg reconstruct FOM state");
+#endif
 
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("lspg space residual");
+#endif
+    app.residual(*yFOM_.data(), *odeR.data(), t);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg space residual");
+#endif
+
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("lspg time discrete residual");
+#endif
     ode::impl::implicit_time_discrete_residual<odeMethod, maxNstates>(yFOM_,
-							     yFOMold_,
-							     odeR,
-							     dt);
+								      yFOMold_,
+								      odeR,
+								      dt);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg time discrete residual");
+#endif
 
     // /// apply weighting
     // if (A_) A_->applyTranspose(appRHS_, odeR);

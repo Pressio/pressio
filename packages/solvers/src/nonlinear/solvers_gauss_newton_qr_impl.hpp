@@ -47,17 +47,46 @@ void gauss_newtom_qr_solve(const system_t & sys,
   normO = ::rompp::core::ops::norm2(x);
   normN = static_cast<scalar_t>(0);
 
+#ifdef HAVE_TEUCHOS_TIMERS
+  auto timer = Teuchos::TimeMonitor::getStackedTimer();
+  timer->start("QR-based Gausss Newton");
+#endif
+
   iteration_t iStep = 1;
   while (iStep++ < maxNonLIt)
     {
+
+#ifdef HAVE_TEUCHOS_TIMERS
+      timer->start("QR factorization");
       // QR decomposition of Jacobian
       qrObj.computeThin(jacob);
+      timer->stop("QR factorization");
+#else
+      // QR decomposition of Jacobian
+      qrObj.computeThin(jacob);
+#endif
 
+
+#ifdef HAVE_TEUCHOS_TIMERS
+      timer->start("QR projection");
       // compute: Q^T Residual
       qrObj.project(resid, QTResid);
+      timer->stop("QR projection");
+#else
+      // compute: Q^T Residual
+      qrObj.project(resid, QTResid);
+#endif
 
+
+#ifdef HAVE_TEUCHOS_TIMERS
+      timer->start("QR solve");
       // solve R dx = Q^T Residual
       qrObj.solve(QTResid, dx);
+      timer->stop("QR solve");
+#else
+      // solve R dx = Q^T Residual
+      qrObj.solve(QTResid, dx);
+#endif
 
       // update solution
       x -= dx;
@@ -79,9 +108,27 @@ void gauss_newtom_qr_solve(const system_t & sys,
       }
 
       normO = normN;
+
+#ifdef HAVE_TEUCHOS_TIMERS
+      timer->start("residual");
       sys.residual(x, resid);
+      timer->stop("residual");
+#else
+      sys.residual(x, resid);
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+      timer->start("jacobian");
       sys.jacobian(x, jacob);
+      timer->stop("jacobian");
+#else
+      sys.jacobian(x, jacob);
+#endif
     }
+
+#ifdef HAVE_TEUCHOS_TIMERS
+  timer->stop("QR-based Gausss Newton");
+#endif
 
 }//
 

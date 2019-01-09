@@ -76,6 +76,11 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR)
   std::cout << std::setprecision(14) << *x.data() << std::endl;
   EXPECT_NEAR( x(0), 2.4173449278229, 1e-9 );
   EXPECT_NEAR( x(1), 0.26464986197941, 1e-9 );
+
+  // print summary from timers
+  #ifdef HAVE_TEUCHOS_TIMERS
+  core::TeuchosPerformanceMonitor::stackedTimersReportSerial();
+  #endif
 }
 
 
