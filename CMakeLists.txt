@@ -1,11 +1,11 @@
-################################################################################
-#                                                                              #
-#                        TribitsExampleProjectMeta                             #
-#                                                                              #
-################################################################################
+######################################################################
+#                                                                    #
+#                        TribitsExampleProjectMeta                   #
+#                                                                    #
+######################################################################
 
-# To be safe, define your minimum CMake version.  This may be newer than the
-# min required by TriBITS.
+# To be safe, define your minimum CMake version.
+# This may be newer than the min required by TriBITS.
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11 FATAL_ERROR)
 
 # Make CMake set WIN32 with CYGWIN for older CMake versions.  CMake requires
@@ -27,8 +27,8 @@ MESSAGE("The c++ standard for ROMPP is set for c++${CMAKE_CXX_STANDARD}" )
 # Get PROJECT_NAME (must be in a file for other parts of system to read)
 INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/ProjectName.cmake")
 
-# CMake requires that you declare the CMake project in the top-level file and
-# not in an include file :-(
+# CMake requires that you declare the CMake project in the
+# top-level file and not in an include file :-(
 PROJECT(${PROJECT_NAME} NONE)
 
 #
@@ -74,7 +74,8 @@ function(add_unit_test test_name mainfile )
   endif()
   # COMM serial => only run if rompp built without MPI
   # COMM mpi => only run if rompp built with MPI
-  # COMM serial mpi => run in both cases, for MPI # of ranks set to tribits default 4
+  # COMM serial mpi => run in both cases,
+  #		for MPI # of ranks set to tribits default 4
 
   TRIBITS_ADD_EXECUTABLE_AND_TEST(
     utest_${test_name}
@@ -105,7 +106,7 @@ function(add_serial_unit_test test_name)
     FAIL_REGULAR_EXPRESSION "FAILED"
   )
 endfunction()
-#------------------------------------------------------------------------
+#------------------------------------------------------------
 
 
 #------------------------------------------------------------
@@ -115,18 +116,30 @@ endfunction()
 # if the TPL is not linked to
 
 if(TPL_ENABLE_BLAZE)
+  MESSAGE("TPL_ENABLE_BLAZE=ON, so HAVE_BLAZE=ON")
   set(HAVE_BLAZE ON)
 endif()
+
 if(TPL_ENABLE_TRILINOS)
+  MESSAGE("TPL_ENABLE_TRILINOS=ON, so HAVE_TRILINOS=ON")
   set(HAVE_TRILINOS ON)
+
+  if(DEBUG_PRINT)
+    MESSAGE("TPL_ENABLE_TRILINOS=DEBUG_PRINT=ON so HAVE_TEUCHOS_TIMERS=ON")
+    set(HAVE_TEUCHOS_TIMERS ON)
+  endif()
 endif()
+
 if(TPL_ENABLE_ARMADILLO)
+  MESSAGE("TPL_ENABLE_ARMADILLO=ON, so HAVE_ARMADILLO=ON")
   set(HAVE_ARMADILLO ON)
 endif()
 
 if (${CMAKE_CXX_STANDARD} EQUAL "14")
+  MESSAGE("CXX_STANDARD=14, so HAVE_CPP14=ON")
   set(HAVE_CPP14 ON)
 endif()
+
 
 #------------------------------------------------------------
 # Do all of the processing for this Tribits project
