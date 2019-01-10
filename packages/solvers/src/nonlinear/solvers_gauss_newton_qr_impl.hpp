@@ -37,10 +37,20 @@ void gauss_newtom_qr_solve(const system_t & sys,
 {
 
 #ifdef DEBUG_PRINT
-  std::cout << " starting Gauss-Newton solve "
-	    << " tol = " << tolerance
-	    << " maxIter = " << maxNonLIt
-	    << std::endl;
+  int myRank = 0;
+
+#ifdef HAVE_MPI
+  int flag = 0;
+  MPI_Initialized( &flag );
+  if (flag==1)
+    MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+#endif
+
+  if (myRank==0)
+    std::cout << " starting Gauss-Newton solve "
+	      << " tol = " << tolerance
+	      << " maxIter = " << maxNonLIt
+	      << std::endl;
 #endif
   // here we should set dx=x, and do normO = norm2(dx)
   // but we can just put norm2(x) so we avoid an assignment operation
@@ -93,16 +103,18 @@ void gauss_newtom_qr_solve(const system_t & sys,
 
       normN = ::rompp::core::ops::norm2(dx);
 #ifdef DEBUG_PRINT
-      std::cout << " GN step=" << iStep
-		<< " norm(dx)= " << normN
-		<< std::endl;
+      if (myRank==0)
+	std::cout << " GN step=" << iStep
+		  << " norm(dx)= " << normN
+		  << std::endl;
 #endif
 
       if (std::abs(normO - normN) < tolerance){
 #ifdef DEBUG_PRINT
-	std::cout << " GN converged! "
-      		  << " final norm(dx)= " << normN
-      		  << std::endl;
+	if (myRank==0)
+	  std::cout << " GN converged! "
+		    << " final norm(dx)= " << normN
+		    << std::endl;
 #endif
       	break;
       }
