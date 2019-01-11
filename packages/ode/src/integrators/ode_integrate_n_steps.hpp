@@ -2,99 +2,62 @@
 #ifndef ODE_INTEGRATORS_INTEGRATE_N_STEPS_HPP_
 #define ODE_INTEGRATORS_INTEGRATE_N_STEPS_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-#include "../ode_forward_declarations.hpp"
+#include "ode_integrate_n_steps_impl.hpp"
 #include "../ode_basic_meta.hpp"
 #include "../ode_is_legitimate_collector.hpp"
 
 namespace rompp{ namespace ode{
 
 //---------------------------------------------------
+//          FOR EXPLICIT METHODS
 //---------------------------------------------------
-//                 FOR EXPLICIT METHODS
-//---------------------------------------------------
-//---------------------------------------------------
-
-template<typename stepper_type,
-	typename state_type,
-	typename time_type,
-	typename integral_type,
-	typename collector_type,
-	typename std::enable_if<
-	  ode::meta::is_legitimate_collector<
-	    collector_type, integral_type,
-	    time_type, state_type>::value &&
-	  std::is_integral<integral_type>::value &&
-	  details::traits<stepper_type>::is_explicit
-	  >::type * = nullptr>
-void integrateNSteps(stepper_type & stepper,
-		     state_type & yIn,
-		     time_type start_time,
-		     time_type dt,
-		     integral_type num_steps,
+template<typename stepper_type, typename state_type,
+	 typename time_type, typename integral_type,
+	 typename collector_type,
+	 typename std::enable_if<
+	   ode::meta::is_legitimate_collector<
+	     collector_type, integral_type, time_type, state_type
+	     >::value &&
+	   std::is_integral<integral_type>::value &&
+	   details::traits<stepper_type>::is_explicit
+	   >::type * = nullptr>
+void integrateNSteps(stepper_type   & stepper,
+		     state_type	    & yIn,
+		     time_type	      start_time,
+		     time_type	      dt,
+		     integral_type    num_steps,
 		     collector_type & collector)
 {
-  time_type time = start_time;
-  // call collector/observer at starting time
-  collector(0, time, yIn);
-
-  integral_type step = 1;
-  // time loop
-  for( ; step <= num_steps ; ++step)
-  {
-    // do one step
-    stepper(yIn, time, dt, step);
-    // advance time
-    time = start_time +
-      static_cast<time_type>(step) * dt;
-    // call collector/observer at starting time
-    collector(step, time, yIn);
-  }
+  impl::integrateNSteps<stepper_type, state_type, time_type,
+			integral_type, false,
+			collector_type>(stepper, yIn, start_time,
+					dt, num_steps, &collector);
 }
 
-//-------------------------------------------------
-
-template<typename stepper_type,
-	 typename state_type,
-	 typename time_type,
-	 typename integral_type,
+template<typename stepper_type, typename state_type,
+	 typename time_type, typename integral_type,
 	 typename std::enable_if<
 	   details::traits<stepper_type>::is_explicit
 	   >::type * = nullptr>
 void integrateNSteps(stepper_type & stepper,
-		     state_type & yIn,
-		     time_type start_time,
-		     time_type dt,
-		     integral_type num_steps)
-{
-  time_type time = start_time;
-  integral_type step = 1;
+		     state_type	  & yIn,
+		     time_type	    start_time,
+		     time_type	    dt,
+		     integral_type  num_steps){
 
-  // time loop
-  for( ; step <= num_steps ; ++step)
-  {
-    // do one step
-    stepper(yIn, time, dt, step);
-    // advance time
-    time = start_time
-      + static_cast<time_type>(step) * dt;
-  }
+  impl::integrateNSteps<stepper_type, state_type, time_type,
+			integral_type, false>(stepper, yIn,
+					      start_time,
+					      dt, num_steps);
 }
 
 
-
 //----------------------------------------------------
+//           FOR IMPLICIT METHODS
 //----------------------------------------------------
-//                 FOR IMPLICIT METHODS
-//----------------------------------------------------
-//----------------------------------------------------
-
-template<typename stepper_type,
-	 typename state_type,
-	 typename time_type,
-	 typename integral_type,
-	 typename collector_type,
-	 typename solver_type,
+template<typename stepper_type,   typename state_type,
+	 typename time_type,	  typename integral_type,
+	 typename collector_type, typename solver_type,
 	 typename std::enable_if<
 	   ode::meta::is_legitimate_collector<
 	     collector_type, integral_type,
@@ -102,91 +65,64 @@ template<typename stepper_type,
 	   std::is_integral<integral_type>::value &&
 	   details::traits<stepper_type>::is_implicit
 	   >::type * = nullptr>
-void integrateNSteps(stepper_type & stepper,
-		     state_type & yIn,
-		     time_type start_time,
-		     time_type dt,
-		     integral_type num_steps,
+void integrateNSteps(stepper_type   & stepper,
+		     state_type	    & yIn,
+		     time_type	      start_time,
+		     time_type	      dt,
+		     integral_type    num_steps,
 		     collector_type & collector,
-		     solver_type & solver)
-{
-  time_type time = start_time;
-  // call collector/observer at starting time
-  collector(0, time, yIn);
-
-  integral_type step = 1;
-
-#ifdef HAVE_TEUCHOS_TIMERS
-  auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("time loop");
-#endif
-
-  // time loop
-  for( ; step <= num_steps ; ++step)
-  {
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("time step");
-    // do one step
-    stepper(yIn, time, dt, step, solver);
-    timer->stop("time step");
-#endif
-
-    // advance time
-    time = start_time
-      + static_cast<time_type>(step) * dt;
-
-    // call collector/observer
-    collector(step, time, yIn);
-  }
-#ifdef HAVE_TEUCHOS_TIMERS
-  timer->stop("time loop");
-#endif
+		     solver_type    & solver){
+  impl::integrateNSteps<stepper_type, state_type, time_type, integral_type,
+			true, collector_type,
+			solver_type>(stepper, yIn, start_time,
+				     dt, num_steps, &collector, &solver);
 }
 
-//-------------------------------------------------
-
-template<typename stepper_type,
-	 typename state_type,
-	 typename time_type,
-	 typename integral_type,
+template<typename stepper_type,	 typename state_type,
+	 typename time_type,	 typename integral_type,
 	 typename solver_type,
 	 typename std::enable_if<
-	   details::traits<stepper_type>::is_implicit
+	    details::traits<stepper_type>::is_implicit
 	   >::type * = nullptr>
-void integrateNSteps(stepper_type & stepper,
-		     state_type & yIn,
-		     time_type start_time,
-		     time_type dt,
-		     integral_type num_steps,
-		     solver_type & solver)
-{
-  time_type time = start_time;
-  integral_type step = 1;
+void integrateNSteps(stepper_type   & stepper,
+		     state_type	    & yIn,
+		     time_type	      start_time,
+		     time_type	      dt,
+		     integral_type    num_steps,
+		     solver_type    & solver){
 
-#ifdef HAVE_TEUCHOS_TIMERS
-  auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("time loop");
-#endif
-
-  // time loop
-  for( ; step <= num_steps ; ++step)
-  {
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("time step");
-    // do one step
-    stepper(yIn, time, dt, step, solver);
-    timer->stop("time step");
-#endif
-
-    // advance time
-    time = start_time
-      + static_cast<time_type>(step) * dt;
-  }
-#ifdef HAVE_TEUCHOS_TIMERS
-  timer->stop("time loop");
-#endif
+  impl::integrateNSteps<stepper_type, state_type, time_type, integral_type,
+			true, impl::voidCollector,
+			solver_type>(stepper, yIn, start_time,
+				     dt, num_steps, nullptr, &solver);
 }
-
 
 }}//end namespace rompp::ode
 #endif
+
+
+
+
+
+// namespace meta{
+
+// template<typename stepper_type,  typename state_type,
+// 	 typename time_type,     typename integral_type,
+// 	 typename collector_type = void,
+// 	 typename enable = void>
+// struct are_legitimate_types_for_nsteps_integration : std::false_type{};
+
+// template<typename stepper_type,  typename state_type,
+// 	 typename time_type,	 typename integral_type,
+// 	 typename collector_type,
+// 	 typename enable = void>
+// struct are_legitimate_types_for_nsteps_integration<
+//   stepper_type, state_type, time_type, integral_type,
+//   core::meta::enable_if_t<
+//     ode::meta::is_legitimate_collector<collector_type, integral_type,
+// 				       time_type, state_type>::value &&
+//     std::is_integral<integral_type>::value &&
+//     >
+//   > : std::true_type{};
+
+// }// end namespace meta
