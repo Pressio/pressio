@@ -28,6 +28,13 @@ namespace constants{
 }//end namespace constants
 
 
+namespace impl{
+
+struct empty{};
+
+}//end namespace impl
+
+
 namespace details {
 
 template<typename T, typename enable = void>
