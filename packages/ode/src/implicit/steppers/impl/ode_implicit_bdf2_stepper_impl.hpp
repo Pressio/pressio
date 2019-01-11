@@ -110,7 +110,7 @@ public:
     // first step, use auxiliary stepper
     if (step == 1){
       this->auxStates_[0] = y;
-      (*auxStp_)(y, t, dt, step, solver);
+      (*auxStp_)(y, t, dt, step, solver, guesserCb);
     }
     if (step == 2){
       this->auxStates_[1] = y;
