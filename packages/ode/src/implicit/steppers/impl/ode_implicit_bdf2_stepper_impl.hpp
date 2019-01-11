@@ -65,12 +65,15 @@ public:
   ~ImplicitBDF2StepperImpl() = default;
 
 public:
-  template<typename solver_type, typename step_t,
-	   typename caller_t >
-  void doStep(stateT & y, scalar_type t,
-	      scalar_type dt, step_t step,
-	      solver_type & solver,
-	      caller_t & caller){
+  template<typename caller_t,
+	   typename step_t,
+	   typename solver_type>
+  void doStep(caller_t & caller,
+	      stateT & y,
+	      scalar_type t,
+	      scalar_type dt,
+	      step_t step,
+	      solver_type & solver){
     this->dt_ = dt;
     this->t_ = t;
 
@@ -89,6 +92,39 @@ public:
       solver.solve(caller, y);
     }
   }
+
+  template<typename caller_t,
+	   typename step_t,
+	   typename solver_type,
+	   typename guess_callback_t>
+  void doStep(caller_t & caller,
+	      stateT & y,
+	      scalar_type t,
+	      scalar_type dt,
+	      step_t step,
+	      solver_type & solver,
+	      guess_callback_t && guesserCb){
+    this->dt_ = dt;
+    this->t_ = t;
+
+    // first step, use auxiliary stepper
+    if (step == 1){
+      this->auxStates_[0] = y;
+      (*auxStp_)(y, t, dt, step, solver);
+    }
+    if (step == 2){
+      this->auxStates_[1] = y;
+      guesserCb(step, t, y);
+      solver.solve(caller, y);
+    }
+    if (step >= 3){
+      this->auxStates_[0] = this->auxStates_[1];
+      this->auxStates_[1] = y;
+      guesserCb(step, t, y);
+      solver.solve(caller, y);
+    }
+  }
+
 
   void computeResidual(const stateT & y, residualT & R)const{
     (*this->residual_obj_).template operator()<my_enum, 2>(y, R,

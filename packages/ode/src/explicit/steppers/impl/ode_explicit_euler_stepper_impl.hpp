@@ -48,7 +48,7 @@ public:
     : storage_base_t(r0), auxdata_base_t(model, res_policy_obj)
   {
     //make sure there is something in what is passed,
-    //otherwise the helper data structures are emtpy
+    //otherwise the helper states and rhs are emtpy
     assert( !y0.empty() );
     assert( !r0.empty() );
   }
@@ -59,7 +59,7 @@ public:
     : storage_base_t(r0), auxdata_base_t(res_policy_obj)
   {
     //make sure there is something in what is passed,
-    //otherwise the helper data structures are emtpy
+    //otherwise the helper states and rhs are emtpy
     assert( !y0.empty() );
     assert( !r0.empty() );
   }
@@ -71,16 +71,8 @@ public:
   template<typename step_t>
   void doStep(ode_state_type & y, scalar_type t,
 	      scalar_type dt, step_t step){
-
-    // we replaced this with assertion in contructor
-    // since the auxRHS are constructed before anyway
-    // so we check during construction that things are not empty
-    // if ( auxRHS_[0].empty() )
-    //   auxRHS_[0].matchLayoutWith(y);
-
     //eval RHS
     this->evalRHS(y, auxRHS_[0], t);
-
     // y = y + dt * rhs
     y += dt * auxRHS_[0];
   }

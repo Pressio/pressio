@@ -77,11 +77,16 @@ namespace rompp{ namespace ode{
 		 jacobian_pol_t(), auxStObj, y0){}
 
     public:
-      template<typename solver_type, typename step_t>
-      void operator()(ode_state_type & y, scalar_t t,
-    		      scalar_t dt, step_t step,
-    		      solver_type & solver){
-	myImpl.doStep(y, t, dt, step, solver, *this);
+      template<typename step_t, typename solver_type,
+	       typename ... Args>
+      void operator()(ode_state_type & y,
+		      scalar_t t,
+      		      scalar_t dt,
+		      step_t step,
+		      solver_type & solver,
+		      Args ... args){
+      	myImpl.doStep(*this, y, t, dt, step,
+		      solver, std::forward<Args>(args)...);
       }
 
     private:
@@ -182,11 +187,16 @@ namespace rompp{ namespace ode{
 		 auxStObj, y0){}
 
     public:
-      template<typename solver_type, typename step_t>
-      void operator()(ode_state_type & y, scalar_t t,
-    		      scalar_t dt, step_t step,
-    		      solver_type & solver){
-    	myImpl.doStep(y, t, dt, step, solver, *this);
+      template<typename step_t, typename solver_type,
+	       typename ... Args>
+      void operator()(ode_state_type & y,
+		      scalar_t t,
+      		      scalar_t dt,
+		      step_t step,
+		      solver_type & solver,
+		      Args ... args){
+      	myImpl.doStep(*this, y, t, dt, step,
+		      solver, std::forward<Args>(args)...);
       }
 
     private:

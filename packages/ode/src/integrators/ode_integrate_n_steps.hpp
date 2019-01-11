@@ -8,31 +8,31 @@
 
 namespace rompp{ namespace ode{
 
-//---------------------------------------------------
-//          FOR EXPLICIT METHODS
-//---------------------------------------------------
-template<typename stepper_type, typename state_type,
-	 typename time_type, typename integral_type,
-	 typename collector_type,
-	 typename std::enable_if<
-	   ode::meta::is_legitimate_collector<
-	     collector_type, integral_type, time_type, state_type
-	     >::value &&
-	   std::is_integral<integral_type>::value &&
-	   details::traits<stepper_type>::is_explicit
-	   >::type * = nullptr>
-void integrateNSteps(stepper_type   & stepper,
-		     state_type	    & yIn,
-		     time_type	      start_time,
-		     time_type	      dt,
-		     integral_type    num_steps,
-		     collector_type & collector)
-{
-  impl::integrateNSteps<stepper_type, state_type, time_type,
-			integral_type, false,
-			collector_type>(stepper, yIn, start_time,
-					dt, num_steps, &collector);
-}
+// //---------------------------------------------------
+// //          FOR EXPLICIT METHODS
+// //---------------------------------------------------
+// template<typename stepper_type, typename state_type,
+// 	 typename time_type, typename integral_type,
+// 	 typename collector_type,
+// 	 typename std::enable_if<
+// 	   ode::meta::is_legitimate_collector<
+// 	     collector_type, integral_type, time_type, state_type
+// 	     >::value &&
+// 	   std::is_integral<integral_type>::value &&
+// 	   details::traits<stepper_type>::is_explicit
+// 	   >::type * = nullptr>
+// void integrateNSteps(stepper_type   & stepper,
+// 		     state_type	    & yIn,
+// 		     time_type	      start_time,
+// 		     time_type	      dt,
+// 		     integral_type    num_steps,
+// 		     collector_type & collector)
+// {
+//   impl::integrateNSteps<stepper_type, state_type, time_type,
+// 			integral_type, false,
+// 			collector_type>(stepper, yIn, start_time,
+// 					dt, num_steps, &collector);
+// }
 
 template<typename stepper_type, typename state_type,
 	 typename time_type, typename integral_type,
@@ -45,38 +45,42 @@ void integrateNSteps(stepper_type & stepper,
 		     time_type	    dt,
 		     integral_type  num_steps){
 
-  impl::integrateNSteps<stepper_type, state_type, time_type,
-			integral_type, false>(stepper, yIn,
-					      start_time,
-					      dt, num_steps);
+  using one_step_impl_t = impl::DoStepMixin<core::impl::empty,
+					    core::impl::empty>;
+  using advancer_impl_t = impl::AdvancerMixin<core::impl::empty,
+					     one_step_impl_t>;
+
+  advancer_impl_t advancer;
+  advancer(num_steps, start_time, dt, yIn, stepper);
 }
+
 
 
 //----------------------------------------------------
 //           FOR IMPLICIT METHODS
 //----------------------------------------------------
-template<typename stepper_type,   typename state_type,
-	 typename time_type,	  typename integral_type,
-	 typename collector_type, typename solver_type,
-	 typename std::enable_if<
-	   ode::meta::is_legitimate_collector<
-	     collector_type, integral_type,
-	     time_type, state_type>::value &&
-	   std::is_integral<integral_type>::value &&
-	   details::traits<stepper_type>::is_implicit
-	   >::type * = nullptr>
-void integrateNSteps(stepper_type   & stepper,
-		     state_type	    & yIn,
-		     time_type	      start_time,
-		     time_type	      dt,
-		     integral_type    num_steps,
-		     collector_type & collector,
-		     solver_type    & solver){
-  impl::integrateNSteps<stepper_type, state_type, time_type, integral_type,
-			true, collector_type,
-			solver_type>(stepper, yIn, start_time,
-				     dt, num_steps, &collector, &solver);
-}
+// template<typename stepper_type,   typename state_type,
+// 	 typename time_type,	  typename integral_type,
+// 	 typename collector_type, typename solver_type,
+// 	 typename std::enable_if<
+// 	   ode::meta::is_legitimate_collector<
+// 	     collector_type, integral_type,
+// 	     time_type, state_type>::value &&
+// 	   std::is_integral<integral_type>::value &&
+// 	   details::traits<stepper_type>::is_implicit
+// 	   >::type * = nullptr>
+// void integrateNSteps(stepper_type   & stepper,
+// 		     state_type	    & yIn,
+// 		     time_type	      start_time,
+// 		     time_type	      dt,
+// 		     integral_type    num_steps,
+// 		     collector_type & collector,
+// 		     solver_type    & solver){
+//   impl::integrateNSteps<stepper_type, state_type, time_type, integral_type,
+// 			true, collector_type,
+// 			solver_type>(stepper, yIn, start_time,
+// 				     dt, num_steps, &collector, &solver);
+// }
 
 template<typename stepper_type,	 typename state_type,
 	 typename time_type,	 typename integral_type,
@@ -91,11 +95,39 @@ void integrateNSteps(stepper_type   & stepper,
 		     integral_type    num_steps,
 		     solver_type    & solver){
 
-  impl::integrateNSteps<stepper_type, state_type, time_type, integral_type,
-			true, impl::voidCollector,
-			solver_type>(stepper, yIn, start_time,
-				     dt, num_steps, nullptr, &solver);
+  using one_step_impl_t = impl::DoStepMixin<solver_type,
+					    core::impl::empty>;
+  using advancer_impl_t = impl::AdvancerMixin<core::impl::empty,
+					     one_step_impl_t>;
+
+  advancer_impl_t advancer;
+  advancer(num_steps, start_time, dt, yIn, stepper, solver);
 }
+
+
+template<typename stepper_type, typename state_type,
+	 typename time_type,	typename integral_type,
+	 typename solver_type,  typename guess_callback_t,
+	 typename std::enable_if<
+	    details::traits<stepper_type>::is_implicit
+	   >::type * = nullptr>
+void integrateNSteps(stepper_type   & stepper,
+		     state_type	    & yIn,
+		     time_type	      start_time,
+		     time_type	      dt,
+		     integral_type    num_steps,
+		     solver_type    & solver,
+		     guess_callback_t   && guessCb){
+
+  using one_step_impl_t = impl::DoStepMixin<solver_type, guess_callback_t>;
+  using advancer_impl_t = impl::AdvancerMixin<core::impl::empty,
+					     one_step_impl_t>;
+
+  advancer_impl_t advancer;
+  advancer(num_steps, start_time, dt, yIn, stepper, solver,
+	   std::forward<guess_callback_t>(guessCb));
+}
+
 
 }}//end namespace rompp::ode
 #endif

@@ -82,19 +82,26 @@ namespace rompp{ namespace ode{
       impl_class_t myImpl_ = {};
 
      public:
+      ExplicitStepper() = delete;
+
+      ~ExplicitStepper() = default;
+
       ExplicitStepper(const model_type & model,
 		      ode_state_type const & y0,
 		      ode_residual_type const & r0)
 	: myImpl_(model, pol_t(), y0, r0){}
 
-      ExplicitStepper() = delete;
-      ~ExplicitStepper() = default;
 
-      template<typename step_t>
-      void operator()(ode_state_type & y, scalar_type t,
-		      scalar_type dt, step_t step){
-	myImpl_.doStep(y, t, dt, step);
+      template<typename ... Args>
+      void operator()(Args && ... args){
+      	myImpl_.doStep( std::forward<Args>(args)... );
       }
+
+      // template<typename step_t>
+      // void operator()(ode_state_type & y, scalar_type t,
+      // 		      scalar_type dt, step_t step){
+      // 	myImpl_.doStep(y, t, dt, step);
+      // }
 
     };//end class
 

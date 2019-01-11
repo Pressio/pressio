@@ -58,16 +58,38 @@ public:
   ~ImplicitEulerStepperImpl(){};
 
 public:
-  template<typename solver_type, typename step_t,
-	   typename caller_t>
-  void doStep(stateT & y, scalar_type t,
-		scalar_type dt, step_t step,
-		solver_type & solver,
-		caller_t & caller){
+  template<typename caller_t,
+	   typename step_t,
+	   typename solver_type>
+  void doStep(caller_t & caller,
+	      stateT & y,
+	      scalar_type t,
+	      scalar_type dt,
+	      step_t step,
+	      solver_type & solver){
 
     this->dt_ = dt;
     this->t_ = t;
     this->auxStates_[0] = y;
+    solver.solve(caller, y);
+  }
+
+  template<typename caller_t,
+	   typename step_t,
+	   typename solver_type,
+	   typename guess_callback_t>
+  void doStep(caller_t & caller,
+	      stateT & y,
+	      scalar_type t,
+	      scalar_type dt,
+	      step_t step,
+	      solver_type & solver,
+	      guess_callback_t && guesserCb){
+
+    this->dt_ = dt;
+    this->t_ = t;
+    this->auxStates_[0] = y;
+    guesserCb(step, t, y);
     solver.solve(caller, y);
   }
 
