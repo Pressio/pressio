@@ -8,7 +8,7 @@
 #include "../base/solvers_nonlinear_base.hpp"
 #include "../base/solvers_iterative_base.hpp"
 
-namespace rompp{ namespace solvers{
+namespace rompp{ namespace solvers{ namespace iterative{
 
 /*
 * part-specialize for when nothing about
@@ -51,12 +51,12 @@ private:
     QTResid_.setZero();
     state_t dx(x);
 
-    ::rompp::solvers::impl::gauss_newtom_qr_solve(sys, x,
-    						  Resid, Jacob,
-    						  this->maxIters_,
-						  this->tolerance_,
-    						  QTResid_, dx, qrObj,
-						  normO_, normN_);
+    impl::gauss_newtom_qr_solve(sys, x,
+				Resid, Jacob,
+				this->maxIters_,
+				this->tolerance_,
+				QTResid_, dx, qrObj,
+				normO_, normN_);
   }//solve
 
 };//class
@@ -109,12 +109,13 @@ private:
   void solveImpl(const system_t & sys, state_t & x){
     sys.residual(x, res_);
     sys.jacobian(x, jac_);
-    ::rompp::solvers::impl::gauss_newtom_qr_solve(sys, x,
-    						  res_, jac_,
-    						  this->maxIters_,
-						  this->tolerance_,
-    						  QTResid_, delta_, qrObj,
-    						  normO_, normN_);
+
+    impl::gauss_newtom_qr_solve(sys, x,
+				res_, jac_,
+				this->maxIters_,
+				this->tolerance_,
+				QTResid_, delta_, qrObj,
+				normO_, normN_);
   }//end solve
 
 };//class
@@ -176,17 +177,16 @@ public:
   void solveImpl(const system_t & sys, state_t & x){
     sys.residual(x, res_);
     sys.jacobian(x, jac_);
-    ::rompp::solvers::impl::gauss_newtom_qr_solve(sys, x,
-    						  res_, jac_,
-    						  this->maxIters_,
-						  this->tolerance_,
-    						  QTResid_, delta_,
-						  qrObj, normO_, normN_);
+    impl::gauss_newtom_qr_solve(sys, x,
+				res_, jac_,
+				this->maxIters_,
+				this->tolerance_,
+				QTResid_, delta_,
+				qrObj, normO_, normN_);
   }//end solve
 
 };//class
 
 
-
-}} //end namespace rompp::solvers
+}}}//end namespace rompp::solvers::iterative
 #endif

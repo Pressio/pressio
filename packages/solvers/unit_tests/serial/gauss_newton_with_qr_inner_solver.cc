@@ -63,7 +63,7 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR)
   // define type of QR and GaussNewton solver
   using qr_algo = qr::Householder;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
-  rompp::solvers::GaussNewtonQR<sc_t, qr_type> solver;
+  solvers::iterative::GaussNewtonQR<sc_t, qr_type> solver;
   solver.setTolerance(1e-8);
 
   // initial state
@@ -105,7 +105,7 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQRPassTypes)
   // define type of QR solver and GaussNewton solver
   using qr_algo	   = qr::Householder;
   using qr_type	   = qr::QRSolver<mat_t, qr_algo>;
-  using gnsolver_t = solvers::GaussNewtonQR<sc_t, qr_type, problem_t>;
+  using gnsolver_t = solvers::iterative::GaussNewtonQR<sc_t, qr_type, problem_t>;
   gnsolver_t GNSolver(problem, x);
   GNSolver.setTolerance(1e-8);
   // solve

@@ -4,7 +4,7 @@
 
 #include "solvers_ConfigDefs.hpp"
 
-namespace rompp{ namespace solvers{
+namespace rompp{ namespace solvers{ namespace iterative{
 
 template <
   typename scalar_t,
@@ -18,6 +18,6 @@ template <
 class GaussNewtonQR;
 
 
-}}//end namespace rompp::solvers
+}}}//end namespace rompp::solvers::iterative
 
 #endif

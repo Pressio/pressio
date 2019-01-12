@@ -8,7 +8,7 @@
 #include "../../../CORE_OPS"
 #include "../../../QR_BASIC"
 
-namespace rompp{ namespace solvers{ namespace impl{
+namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <
   typename system_t,
@@ -145,5 +145,5 @@ void gauss_newtom_qr_solve(const system_t & sys,
 }//
 
 
-}}} //end namespace rompp::solvers::impl
+}}}} //end namespace rompp::solvers::iterative::impl
 #endif
