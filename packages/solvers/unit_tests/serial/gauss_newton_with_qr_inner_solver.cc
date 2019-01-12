@@ -7,11 +7,9 @@ struct NonLinearLeastSquareSystem {
   //using jacobian_w_t = rompp::core::Matrix<Eigen::SparseMatrix<double>>;
   using jacobian_w_t = rompp::core::Matrix<Eigen::MatrixXd>;
   using state_w_t = rompp::core::Vector<Eigen::VectorXd>;
-
   using state_type = state_w_t;
   using residual_type = state_type;
   using jacobian_type =  jacobian_w_t;
-
   static constexpr int n = 8;
   const double times_[n] = {1.,2.,3.,4.,
 			   5.,6.,7.,8};
@@ -35,7 +33,6 @@ struct NonLinearLeastSquareSystem {
       double expval = exp(x[1] * times_[i]);
       (*jac.data())(i,0) = expval; //->coeffRef(i, 0) = expval;
       (*jac.data())(i,1) = x[0]*times_[i]*expval;
-
       //jac.data()->coeffRef(i,0) = expval;
       //jac.data()->coeffRef(i, 1) = x[0]*times_[i]*expval;
     }
@@ -49,15 +46,11 @@ struct NonLinearLeastSquareSystem {
 };
 
 
-TEST(solvers_nonlinear_least_squares, gaussNewtonQR)
-{
+TEST(solvers_nonlinear_least_squares, gaussNewtonQR){
   using namespace rompp;
-
   using state_w_t = core::Vector<Eigen::VectorXd>;
   using sc_t	  = double;
   using mat_type  = typename NonLinearLeastSquareSystem::jacobian_w_t;
-
-  // my system object
   NonLinearLeastSquareSystem problem;
 
   // define type of QR and GaussNewton solver
@@ -66,12 +59,7 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR)
   solvers::iterative::GaussNewtonQR<sc_t, qr_type> solver;
   solver.setTolerance(1e-8);
 
-  // initial state
-  state_w_t x(2);
-  x[0] = 2.0;
-  x[1] = 0.25;
-
-  // solve
+  state_w_t x(2); x[0] = 2.0; x[1] = 0.25;
   solver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;
   EXPECT_NEAR( x(0), 2.4173449278229, 1e-9 );
@@ -84,31 +72,51 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR)
 }
 
 
-
-TEST(solvers_nonlinear_least_squares, gaussNewtonQRPassTypes)
-{
+TEST(solvers_nonlinear_least_squares, gaussNewtonQRDoOnly2Steps){
   using namespace rompp;
+  using state_w_t = core::Vector<Eigen::VectorXd>;
+  using sc_t	  = double;
+  using mat_type  = typename NonLinearLeastSquareSystem::jacobian_w_t;
+  NonLinearLeastSquareSystem problem;
 
+  // define type of QR and GaussNewton solver
+  using qr_algo = qr::Householder;
+  using qr_type = qr::QRSolver<mat_type, qr_algo>;
+  using converged_when_t
+    = solvers::iterative::converged_when::completingNumMaxIters;
+  solvers::iterative::GaussNewtonQR<sc_t, qr_type, converged_when_t> solver;
+  // setting 2 max iters so that in combination with the
+  // above convergence method, the solver will exit afte 2 steps
+  solver.setMaxIterations(2);
+
+  state_w_t x(2); x[0] = 2.0; x[1] = 0.25;
+  solver.solve(problem, x);
+
+  std::cout << std::setprecision(16) << *x.data() << std::endl;
+  EXPECT_NEAR( x(0), 2.415361667771343 , 1e-8);
+  EXPECT_NEAR( x(1), 0.2648293802571118 , 1e-8);
+}
+
+
+TEST(solvers_nonlinear_least_squares, gaussNewtonQRPassTypes){
+  using namespace rompp;
   using problem_t = NonLinearLeastSquareSystem;
   using state_w_t = typename problem_t::state_w_t;
   using sc_t	  = double;
   using mat_t	  = typename problem_t::jacobian_w_t;
 
-  // my system object
   problem_t problem;
-
-  // initial state
-  state_w_t x(2);
-  x[0] = 2.0;
-  x[1] = 0.25;
+  state_w_t x(2); x[0] = 2.0; x[1] = 0.25;
 
   // define type of QR solver and GaussNewton solver
-  using qr_algo	   = qr::Householder;
-  using qr_type	   = qr::QRSolver<mat_t, qr_algo>;
-  using gnsolver_t = solvers::iterative::GaussNewtonQR<sc_t, qr_type, problem_t>;
+  using qr_algo		 = qr::Householder;
+  using qr_type		 = qr::QRSolver<mat_t, qr_algo>;
+  using converged_when_t = solvers::iterative::default_convergence;
+  using gnsolver_t	 =
+    solvers::iterative::GaussNewtonQR<sc_t, qr_type,
+				      converged_when_t, problem_t>;
   gnsolver_t GNSolver(problem, x);
   GNSolver.setTolerance(1e-8);
-  // solve
   GNSolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;
   EXPECT_NEAR( x(0), 2.4173449278229, 1e-9 );

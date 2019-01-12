@@ -60,7 +60,7 @@ public:
     linSolver_.solve(Jac, Residual, dx);
     x -= dx;
 
-    core::default_types::uint iStep = 1;
+    core::default_types::uint iStep = 0;
     while (iStep++ <= this->maxIters_ &&
            this->normOfDifference(xOld, x) > this->tolerance_)
     {

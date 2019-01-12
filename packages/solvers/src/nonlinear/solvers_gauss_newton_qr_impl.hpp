@@ -10,11 +10,73 @@
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
+template <typename convergence_tag>
+struct norm_type_to_use{
+  using norm_t = L2Norm;
+};
+
+template <typename norm_type>
+struct norm_type_to_use<
+  converged_when::absoluteNormCorrectionBelowTol<norm_type>
+  >{
+  using norm_t = norm_type;
+};
+//---------------------------------------------------------
+
+template <typename norm_t>
+struct computeNormHelper;
+
+template <>
+struct computeNormHelper<::rompp::solvers::L2Norm>{
+  template <typename vec_t, typename scalar_t>
+  void operator()(const vec_t & vecIn, scalar_t & result){
+    result = ::rompp::core::ops::norm2(vecIn);
+  }
+};
+
+template <>
+struct computeNormHelper<::rompp::solvers::L1Norm>{
+  template <typename vec_t, typename scalar_t>
+  void operator()(const vec_t & vecIn, scalar_t & result){
+    result = ::rompp::core::ops::norm1(vecIn);
+  }
+};
+//---------------------------------------------------------
+
+template <typename conv_tag>
+struct isConvergedHelper;
+
+template <>
+struct isConvergedHelper<converged_when::completingNumMaxIters>{
+  template <typename state_t, typename step_t, typename scalar_t>
+  bool operator()(const state_t & x, const state_t & dx,
+		  scalar_t norm_dx, step_t step,
+		  step_t maxIters, scalar_t tol){
+    return step==maxIters;
+  }
+};
+
+template <typename norm_t>
+struct isConvergedHelper<
+  converged_when::absoluteNormCorrectionBelowTol<norm_t>
+  >{
+  template <typename state_t, typename step_t, typename scalar_t>
+  bool operator()(const state_t & x, const state_t & dx,
+		  scalar_t norm_dx, step_t step,
+		  step_t maxIters, scalar_t tol){
+    return (norm_dx<tol);
+  }
+};
+//---------------------------------------------------------
+
+
+
 template <
   typename system_t,
   typename iteration_t,
   typename scalar_t,
   typename qr_obj_t,
+  typename converged_when_tag,
   core::meta::enable_if_t<
     ::rompp::solvers::details::system_traits<system_t>::is_system and
     core::meta::is_core_vector_wrapper<
@@ -36,6 +98,18 @@ void gauss_newtom_qr_solve(const system_t & sys,
 			   scalar_t & normN)
 {
 
+  // find out which norm to use
+  using norm_t = typename norm_type_to_use<converged_when_tag>::norm_t;
+
+  // functor for evaluating the norm of a vector
+  using norm_evaluator_t = computeNormHelper<norm_t>;
+  norm_evaluator_t normEvaluator;
+
+  // functor for checking convergence
+  using is_conv_helper_t = isConvergedHelper<converged_when_tag>;
+  is_conv_helper_t isConverged;
+
+
 #ifdef DEBUG_PRINT
   int myRank = 0;
 
@@ -45,16 +119,15 @@ void gauss_newtom_qr_solve(const system_t & sys,
   if (flag==1)
     MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
 #endif
-
   if (myRank==0)
     std::cout << " starting Gauss-Newton solve "
 	      << " tol = " << tolerance
 	      << " maxIter = " << maxNonLIt
 	      << std::endl;
 #endif
-  // here we should set dx=x, and do normO = norm2(dx)
-  // but we can just put norm2(x) so we avoid an assignment operation
-  normO = ::rompp::core::ops::norm2(x);
+
+  // compute (whatever type) norm of x
+  normEvaluator(x, normO); //  normO = ::rompp::core::ops::norm2(x);
   normN = static_cast<scalar_t>(0);
 
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -62,62 +135,57 @@ void gauss_newtom_qr_solve(const system_t & sys,
   timer->start("QR-based Gausss Newton");
 #endif
 
-  iteration_t iStep = 1;
-  while (iStep++ < maxNonLIt)
+  iteration_t iStep = 0;
+  while (iStep++ <= maxNonLIt)
     {
 
 #ifdef HAVE_TEUCHOS_TIMERS
       timer->start("QR factorization");
-      // QR decomposition of Jacobian
       qrObj.computeThin(jacob);
       timer->stop("QR factorization");
 #else
-      // QR decomposition of Jacobian
       qrObj.computeThin(jacob);
 #endif
 
-
+      // compute: Q^T Residual
 #ifdef HAVE_TEUCHOS_TIMERS
       timer->start("QR projection");
-      // compute: Q^T Residual
       qrObj.project(resid, QTResid);
       timer->stop("QR projection");
 #else
-      // compute: Q^T Residual
       qrObj.project(resid, QTResid);
 #endif
 
-
+      // solve R dx = Q^T Residual
 #ifdef HAVE_TEUCHOS_TIMERS
       timer->start("QR solve");
-      // solve R dx = Q^T Residual
       qrObj.solve(QTResid, dx);
       timer->stop("QR solve");
 #else
-      // solve R dx = Q^T Residual
       qrObj.solve(QTResid, dx);
 #endif
 
       // update solution
       x -= dx;
 
-      normN = ::rompp::core::ops::norm2(dx);
+      normEvaluator(dx, normN); //normN = ::rompp::core::ops::norm2(dx);
 #ifdef DEBUG_PRINT
-      if (myRank==0)
-	std::cout << " GN step=" << iStep
-		  << " norm(dx)= " << normN
-		  << std::endl;
+      if (myRank==0) std::cout << " GN step=" << iStep
+			       << " norm(dx)= " << normN
+			       << std::endl;
 #endif
 
-      if (std::abs(normO - normN) < tolerance){
-#ifdef DEBUG_PRINT
-	if (myRank==0)
-	  std::cout << " GN converged! "
-		    << " final norm(dx)= " << normN
-		    << std::endl;
-#endif
-      	break;
-      }
+      // check convergence (based on whatever method user decided)
+      auto flag = isConverged(x, dx, normN, iStep, maxNonLIt, tolerance);
+      if (flag) break;
+//       if (std::abs(normO - normN) < tolerance){
+// #ifdef DEBUG_PRINT
+// 	if (myRank==0) std::cout << " GN converged! "
+// 				 << " final norm(dx)= " << normN
+// 				 << std::endl;
+// #endif
+//       	break;
+//       }
 
       normO = normN;
 
@@ -145,5 +213,5 @@ void gauss_newtom_qr_solve(const system_t & sys,
 }//
 
 
-}}}} //end namespace rompp::solvers::iterative::impl
+}}}} //end namespace rompp::solvers::iterative::implo
 #endif

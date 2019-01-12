@@ -9,5 +9,22 @@
 
 namespace rompp{ namespace solvers{
 
-}}//end namespace rompp::solvers
+struct L2Norm{};
+struct L1Norm{};
+
+namespace iterative{ namespace converged_when{
+
+template <typename norm_type>
+struct absoluteNormCorrectionBelowTol{
+  using norm_t = norm_type;
+};
+
+struct completingNumMaxIters{};
+
+}//end namespace rompp::solvers::convergedWhen
+
+using default_convergence
+	= converged_when::absoluteNormCorrectionBelowTol<L2Norm>;
+
+}}}//end namespace rompp::solvers::iterative
 #endif
