@@ -1,6 +1,6 @@
 
 add_serial_unit_test(config_defs_structs)
-
+add_serial_unit_test(serial_printer)
 
 # SET(TESTFILES "")
 # APPEND_SET(TESTFILES utest_vector_meta.cc)

@@ -11,127 +11,131 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "core_config.h"
 # HEADERS
 ###############
 FILE(GLOB core_general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
 FILE(GLOB core_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
+FILE(GLOB core_debug_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/debug/*.hpp")
 FILE(GLOB core_tinympl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/meta/tinympl/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/tinympl/*.hpp")
 FILE(GLOB core_tinymplvar_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/meta/tinympl/variadic/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/tinympl/variadic/*.hpp")
 
 FILE(GLOB core_shared_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/*.hpp")
 
 FILE(GLOB core_containers_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/*.hpp")
 FILE(GLOB core_containers_dot_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/*.hpp")
 FILE(GLOB core_containers_dot_mvec_mvec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_mvec/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_mvec/*.hpp")
 FILE(GLOB core_containers_dot_mvec_vec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_vec/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_vec/*.hpp")
 
 FILE(GLOB core_containers_mat_mat_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_mat_product/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_mat_product/*.hpp")
 FILE(GLOB core_containers_mat_vec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_vec_product/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_vec_product/*.hpp")
 FILE(GLOB core_containers_multivec_vec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/multivec_vec_product/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/multivec_vec_product/*.hpp")
 FILE(GLOB core_containers_mat_multivec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_multivec_product/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_multivec_product/*.hpp")
 FILE(GLOB core_containers_norms_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/norms/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/norms/*.hpp")
 FILE(GLOB core_containers_minmax_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/min_max/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/min_max/*.hpp")
 
 FILE(GLOB core_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/*.hpp")
 FILE(GLOB core_vector_SHMEM_EXPR_T_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/sharedmem_expr_templates/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/sharedmem_expr_templates/*.hpp")
 FILE(GLOB core_vector_DISTMEM_EXPR_T_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/distributed_expr_templates/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/distributed_expr_templates/*.hpp")
 FILE(GLOB core_vector_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/base/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/base/*.hpp")
 FILE(GLOB core_vector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/concrete/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/concrete/*.hpp")
 
 FILE(GLOB core_multi_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/*.hpp")
 FILE(GLOB core_multi_vector_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/base/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/base/*.hpp")
 FILE(GLOB core_multi_vector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/concrete/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/concrete/*.hpp")
 
 FILE(GLOB core_matrix_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/matrix/*.hpp")
 FILE(GLOB core_matrix_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/base/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/matrix/base/*.hpp")
 FILE(GLOB core_matrix_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/concrete/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/matrix/concrete/*.hpp")
 
 
 #################
 #### SOURCES
 #################
 FILE(GLOB core_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
 FILE(GLOB core_meta_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/meta/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/src/*.cc")
+FILE(GLOB core_debug_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/debug/src/*.cc")
 FILE(GLOB core_shared_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/src/*.cc")
 
 FILE(GLOB core_containers_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/src/*.cc")
 FILE(GLOB core_containers_dot_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/src/*.cc")
 FILE(GLOB core_containers_dot_mvec_mvec_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_mvec//src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_mvec//src/*.cc")
 FILE(GLOB core_containers_dot_mvec_vec_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_vec/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_vec/src/*.cc")
 
 FILE(GLOB core_containers_mat_mat_prod_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_mat_product/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_mat_product/src/*.cc")
 FILE(GLOB core_containers_mat_vec_prod_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_vec_product/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_vec_product/src/*.cc")
 FILE(GLOB core_containers_multivec_vec_prod_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/multivec_vec_product/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/multivec_vec_product/src/*.cc")
 FILE(GLOB core_containers_mat_multivec_prod_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_multivec_product/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_multivec_product/src/*.cc")
 FILE(GLOB core_containers_norms_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/norms/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/norms/src/*.cc")
 FILE(GLOB core_containers_minmax_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/min_max/src/*.cc")
-
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/min_max/src/*.cc")
 
 FILE(GLOB core_vector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/src/*.cc")
 FILE(GLOB core_vector_SHMEM_EXPR_T_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/sharedmem_expr_templates/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/sharedmem_expr_templates/src/*.cc")
 FILE(GLOB core_vector_DISTMEM_EXPR_T_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/distributed_expr_templates/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/distributed_expr_templates/src/*.cc")
 FILE(GLOB core_vector_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/base/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/base/src/*.cc")
 FILE(GLOB core_vector_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/vector/concrete/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/concrete/src/*.cc")
 
 FILE(GLOB core_multi_vector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/src/*.cc")
 FILE(GLOB core_multi_vector_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/base/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/base/src/*.cc")
 FILE(GLOB core_multi_vector_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/concrete/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/concrete/src/*.cc")
 
 FILE(GLOB core_matrix_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/matrix/src/*.cc")
 FILE(GLOB core_matrix_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/base/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/matrix/base/src/*.cc")
 FILE(GLOB core_matrix_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/matrix/concrete/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/matrix/concrete/src/*.cc")
 
 
 SET(SOURCES
   ${core_general_SRCS}
   ${core_meta_SRCS}
+  ${core_debug_SRCS}
   ${core_core_shared_base_SRCS}
   #
   ${core_containers_ops_SRCS}
@@ -179,6 +183,7 @@ SET(CORE_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/c
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${CORE_INCDIR})
 INSTALL(FILES ${core_general_HEADERS} DESTINATION ${CORE_INCDIR})
+INSTALL(FILES ${core_debug_HEADERS} DESTINATION ${CORE_INCDIR}/debug)
 INSTALL(FILES ${core_meta_HEADERS} DESTINATION ${CORE_INCDIR}/meta)
 INSTALL(FILES ${core_tinympl_HEADERS} DESTINATION ${CORE_INCDIR}/meta/tinympl)
 INSTALL(FILES ${core_tinymplvar_HEADERS} DESTINATION ${CORE_INCDIR}/meta/tinympl/variadic)
