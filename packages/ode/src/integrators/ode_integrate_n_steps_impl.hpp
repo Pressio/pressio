@@ -9,7 +9,6 @@ namespace rompp{ namespace ode{ namespace impl{
 
 template< typename solver_type, typename guesser_cb_t>
 struct DoStepMixin{
-
   template <typename time_type,
 	    typename integral_type,
 	    typename state_type,
@@ -20,17 +19,23 @@ struct DoStepMixin{
 		  state_type & yIn,
 		  stepper_type & stepper,
 		  solver_type & solver,
-		  guesser_cb_t && guessCb)
-  {
+		  guesser_cb_t && guessCb){
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("time step");
+#endif
+
     stepper(yIn, time, dt, step, solver,
 	    std::forward<guesser_cb_t>(guessCb));
-  }
-};
 
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("time step");
+#endif
+  }//end ()
+};
 
 template<>
 struct DoStepMixin<core::impl::empty, core::impl::empty>{
-
   template <typename time_type,
 	    typename integral_type,
 	    typename state_type,
@@ -39,16 +44,22 @@ struct DoStepMixin<core::impl::empty, core::impl::empty>{
 		  time_type dt,
 		  integral_type step,
 		  state_type & yIn,
-		  stepper_type & stepper)
-  {
+		  stepper_type & stepper){
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("time step");
+#endif
+
     stepper(yIn, time, dt, step);
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("time step");
+#endif
   }
 };
 
-
 template<typename solver_type>
 struct DoStepMixin<solver_type, core::impl::empty>{
-
   template <typename time_type,
 	    typename integral_type,
 	    typename state_type,
@@ -58,16 +69,20 @@ struct DoStepMixin<solver_type, core::impl::empty>{
 		  integral_type step,
 		  state_type & yIn,
 		  stepper_type & stepper,
-		  solver_type & solver)
-  {
+		  solver_type & solver){
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("time step");
+#endif
+
     stepper(yIn, time, dt, step, solver);
-  }
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("time step");
+#endif
+  }//end ()
 };
-
-
-
-
-
+//-------------------------------------------------------
 
 
 template <typename collector_type, typename DoStepMixin_t>
@@ -84,11 +99,13 @@ struct AdvancerMixin{
 		  collector_type & collector,
 		  Args && ... args)
   {
-
     DoStepMixin_t stepImpl;
 
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("time loop");
+#endif
     time_type time = start_time;
-    // call collector/observer at starting time
     collector(0, time, yIn);
 
     integral_type step = 1;
@@ -97,7 +114,10 @@ struct AdvancerMixin{
       time = start_time + static_cast<time_type>(step) * dt;
       collector(step, time, yIn);
     }
-  }
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("time loop");
+#endif
+  }//end ()
 };
 
 
@@ -114,13 +134,33 @@ struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
   {
     DoStepMixin_t stepImpl;
 
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("time loop");
+#endif
+
     time_type time = start_time;
     integral_type step = 1;
-    for( ; step <= num_steps ; ++step){
+
+#ifdef DEBUG_PRINT
+    ::rompp::core::debug::print("\nstarting time loop","\n");
+#endif
+    for( ; step <= num_steps ; ++step)
+    {
+#ifdef DEBUG_PRINT
+      ::rompp::core::debug::print("\n--------------------","\n");
+      ::rompp::core::debug::print("doing time step =", step, "\n");
+      ::rompp::core::debug::print("---------------------","\n");
+#endif
       stepImpl(time, dt, step, std::forward<Args>(args)...);
       time = start_time + static_cast<time_type>(step) * dt;
     }
-  }
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("time loop");
+#endif
+
+  }//end ()
 };
 
 

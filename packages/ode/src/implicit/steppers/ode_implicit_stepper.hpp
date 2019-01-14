@@ -85,6 +85,10 @@ namespace rompp{ namespace ode{
 		      step_t step,
 		      solver_type & solver,
 		      Args ... args){
+#ifdef DEBUG_PRINT
+	::rompp::core::debug::print("current ode state is:","\n");
+	::rompp::core::debug::printCoreWrapper(y, std::cout, 'n', -1);
+#endif
       	myImpl.doStep(*this, y, t, dt, step,
 		      solver, std::forward<Args>(args)...);
       }
@@ -151,9 +155,19 @@ namespace rompp{ namespace ode{
       using residual_type = ode_residual_type;
       using jacobian_type = ode_jacobian_type;
 
+#ifdef DEBUG_PRINT
+      int statePrintSize_ = -1;
+#endif
+
     public:
       ImplicitStepper() = delete;
       ~ImplicitStepper() = default;
+
+#ifdef DEBUG_PRINT
+      void setStatePrintSize(int n){
+	statePrintSize_ = n;
+      }
+#endif
 
       // passing: model, initial state, and policies
       ImplicitStepper(const model_type & model,
@@ -195,6 +209,11 @@ namespace rompp{ namespace ode{
 		      step_t step,
 		      solver_type & solver,
 		      Args ... args){
+#ifdef DEBUG_PRINT
+	::rompp::core::debug::print("\ncurrent ode state is:","\n");
+	::rompp::core::debug::printCoreWrapper(y, std::cout, 'd',
+					       statePrintSize_);
+#endif
       	myImpl.doStep(*this, y, t, dt, step,
 		      solver, std::forward<Args>(args)...);
       }

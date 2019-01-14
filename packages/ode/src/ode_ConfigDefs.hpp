@@ -11,6 +11,10 @@
 #include "../../core/src/vector/core_vector_meta.hpp"
 #include "../../core/src/multi_vector/core_multi_vector_meta.hpp"
 #include "../../core/src/matrix/core_matrix_meta.hpp"
+#ifdef DEBUG_PRINT
+#include "../../core/src/debug/core_debug_print.hpp"
+#endif
+
 #include "ode_enum.hpp"
 
 namespace rompp{ namespace ode{ namespace details {
