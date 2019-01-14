@@ -30,6 +30,13 @@ namespace constants{
 
 namespace impl{
 
+#ifdef DEBUG_PRINT
+template <typename stream_t, typename scalar_t>
+void setStreamPrecision(stream_t & ss){
+  ss << std::is_same<scalar_t, double>::value ? 15 : 6;
+}
+#endif
+
 struct empty{};
 
 }//end namespace impl

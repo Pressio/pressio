@@ -5,6 +5,7 @@
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
 #include "../../shared_base/core_container_subscriptable_base.hpp"
+#include "../../shared_base/core_container_printable_base.hpp"
 #include "../base/core_vector_sharedmem_base.hpp"
 
 namespace rompp{ namespace core{
@@ -18,9 +19,13 @@ class Vector<wrapped_type,
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
     public VectorSharedMemBase< Vector<wrapped_type> >,
     public ContainerResizableBase<Vector<wrapped_type>, 1>,
-    public ContainerSubscriptable1DBase< Vector<wrapped_type>,
-     typename details::traits<Vector<wrapped_type>>::scalar_t,
-     typename details::traits<Vector<wrapped_type>>::ordinal_t>{
+    public ContainerSubscriptable1DBase<
+	       Vector<wrapped_type>,
+	       typename details::traits<Vector<wrapped_type>>::scalar_t,
+	       typename details::traits<Vector<wrapped_type>>::ordinal_t>,
+    public ContainerPrintable1DBase<
+	       Vector<wrapped_type>,
+	       typename details::traits<Vector<wrapped_type>>::ordinal_t>{
 
   using this_t = Vector<wrapped_type>;
   using mytraits = typename details::traits<this_t>;
@@ -137,13 +142,12 @@ public:
   }
 
 public:
+
   sc_t & operator [] (ord_t i){
-    //assert(!this->empty());
     return data_(i);
   };
 
   sc_t const & operator [] (ord_t i) const{
-    //assert(!this->empty());
     return data_(i);
   };
 
@@ -155,6 +159,32 @@ public:
   };
 
 private:
+
+  template <typename stream_t>
+  void printImpl(stream_t & os, char c, ord_t nIn) const{
+    assert(nIn <= this->size());
+    auto nToPrint = (nIn==-1) ? this->size() : nIn;
+    ::rompp::core::impl::setStreamPrecision<stream_t, sc_t>(os);
+
+    if (c=='d')
+      this->printVertically(os, nToPrint);
+    if (c=='f')
+      this->printFlatten(os, nToPrint);
+  }
+
+  template <typename stream_t>
+  void printVertically(stream_t & os, ord_t nToPrint) const{
+    for (auto i=0; i<nToPrint; i++)
+      os << data_[i] << "\n";
+    os << std::endl;
+  }
+
+  template <typename stream_t>
+  void printFlatten(stream_t & os, ord_t nToPrint) const{
+    for (auto i=0; i<nToPrint; i++)
+      os << data_[i] << " ";
+    os << std::endl;
+  }
 
   void matchLayoutWithImpl(const this_t & other){
     this->resize( other.size() );
@@ -193,6 +223,7 @@ private:
   friend VectorSharedMemBase< this_t >;
   friend ContainerResizableBase<this_t, 1>;
   friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
+  friend ContainerPrintable1DBase<this_t, ord_t>;
 
 private:
   wrap_t data_ = {};

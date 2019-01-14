@@ -16,6 +16,7 @@
 #include "core/src/shared_base/core_container_distributed_trilinos_base.hpp"
 #include "core/src/shared_base/core_container_resizable_base.hpp"
 #include "core/src/shared_base/core_container_nonresizable_base.hpp"
+#include "core/src/shared_base/core_container_printable_base.hpp"
 
 #include "core/src/meta/core_meta_basic.hpp"
 #include "core/src/meta/core_meta_detect_operators.hpp"
