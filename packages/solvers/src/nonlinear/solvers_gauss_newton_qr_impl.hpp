@@ -116,19 +116,6 @@ void gauss_newtom_qr_solve(const system_t & sys,
   ::rompp::core::debug::print("starting GN solve with",
 			      "tol=",tolerance,",",
 			      "maxIter=", maxNonLIt,"\n");
-
-//   int myRank = 0;
-// #ifdef HAVE_MPI
-//   int flag = 0;
-//   MPI_Initialized( &flag );
-//   if (flag==1)
-//     MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
-// #endif
-//   if (myRank==0)
-//     std::cout << " starting Gauss-Newton solve "
-// 	      << " tol = " << tolerance
-// 	      << " maxIter = " << maxNonLIt
-// 	      << std::endl;
 #endif
 
   // compute (whatever type) norm of x
