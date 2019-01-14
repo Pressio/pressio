@@ -158,7 +158,7 @@ void integrateNSteps(stepper_type   & stepper,
 
   advancer_impl_t advancer;
   advancer(num_steps, start_time, dt, yIn, collector, stepper,
-	   collector, solver, std::forward<guess_callback_t>(guessCb));
+	   solver, std::forward<guess_callback_t>(guessCb));
 }
 
 
