@@ -7,6 +7,41 @@
 
 namespace rompp{ namespace core{ namespace ops{
 
+
+#ifdef HAVE_TRILINOS
+//  epetra vector wrapper
+template <typename vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_epetra_vector_wrapper<vec_type>::value
+    > * = nullptr
+  >
+auto norm2(const vec_type & a)
+  -> typename details::traits<vec_type>::scalar_t
+{
+  using sc_t = typename details::traits<vec_type>::scalar_t;
+  sc_t result = 0.0;
+  a.data()->Norm2(&result);
+  return result;
+}
+
+//  tpetra vector wrapper
+template <typename vec_type,
+  core::meta::enable_if_t<
+    core::meta::is_tpetra_vector_wrapper<vec_type>::value &&
+    std::is_same<typename details::traits<vec_type>::scalar_t,
+		 typename details::traits<vec_type>::mag_t>::value
+    > * = nullptr
+  >
+auto norm2(const vec_type & a)
+  -> typename details::traits<vec_type>::mag_t
+{
+  return a.data()->norm2();
+}
+
+#endif
+//--------------------------------------------------------
+
+
 //  eigen vector wrapper
 template <typename vec_type,
   core::meta::enable_if_t<
