@@ -109,25 +109,30 @@ void gauss_newtom_qr_solve(const system_t & sys,
   using is_conv_helper_t = isConvergedHelper<converged_when_tag>;
   is_conv_helper_t isConverged;
 
+  // storing residaul norm
+  scalar_t normRes = {};
 
 #ifdef DEBUG_PRINT
-  int myRank = 0;
+  ::rompp::core::debug::print("starting GN solve with",
+			      "tol=",tolerance,",",
+			      "maxIter=", maxNonLIt,"\n");
 
-#ifdef HAVE_MPI
-  int flag = 0;
-  MPI_Initialized( &flag );
-  if (flag==1)
-    MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
-#endif
-  if (myRank==0)
-    std::cout << " starting Gauss-Newton solve "
-	      << " tol = " << tolerance
-	      << " maxIter = " << maxNonLIt
-	      << std::endl;
+//   int myRank = 0;
+// #ifdef HAVE_MPI
+//   int flag = 0;
+//   MPI_Initialized( &flag );
+//   if (flag==1)
+//     MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+// #endif
+//   if (myRank==0)
+//     std::cout << " starting Gauss-Newton solve "
+// 	      << " tol = " << tolerance
+// 	      << " maxIter = " << maxNonLIt
+// 	      << std::endl;
 #endif
 
   // compute (whatever type) norm of x
-  normEvaluator(x, normO); //  normO = ::rompp::core::ops::norm2(x);
+  normEvaluator(x, normO);
   normN = static_cast<scalar_t>(0);
 
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -165,27 +170,20 @@ void gauss_newtom_qr_solve(const system_t & sys,
       qrObj.solve(QTResid, dx);
 #endif
 
+      normEvaluator(resid, normRes);
+      normEvaluator(dx, normN);
+#ifdef DEBUG_PRINT
+      ::rompp::core::debug::print("GN step", iStep, ",",
+				  "norm(dx)=", normN, ",",
+				  "norm(residual)=", normRes, "\n");
+#endif
+
       // update solution
       x -= dx;
-
-      normEvaluator(dx, normN); //normN = ::rompp::core::ops::norm2(dx);
-#ifdef DEBUG_PRINT
-      if (myRank==0) std::cout << " GN step=" << iStep
-			       << " norm(dx)= " << normN
-			       << std::endl;
-#endif
 
       // check convergence (based on whatever method user decided)
       auto flag = isConverged(x, dx, normN, iStep, maxNonLIt, tolerance);
       if (flag) break;
-//       if (std::abs(normO - normN) < tolerance){
-// #ifdef DEBUG_PRINT
-// 	if (myRank==0) std::cout << " GN converged! "
-// 				 << " final norm(dx)= " << normN
-// 				 << std::endl;
-// #endif
-//       	break;
-//       }
 
       normO = normN;
 
