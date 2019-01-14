@@ -59,28 +59,31 @@ void integrateNSteps(stepper_type & stepper,
 //----------------------------------------------------
 //           FOR IMPLICIT METHODS
 //----------------------------------------------------
-// template<typename stepper_type,   typename state_type,
-// 	 typename time_type,	  typename integral_type,
-// 	 typename collector_type, typename solver_type,
-// 	 typename std::enable_if<
-// 	   ode::meta::is_legitimate_collector<
-// 	     collector_type, integral_type,
-// 	     time_type, state_type>::value &&
-// 	   std::is_integral<integral_type>::value &&
-// 	   details::traits<stepper_type>::is_implicit
-// 	   >::type * = nullptr>
-// void integrateNSteps(stepper_type   & stepper,
-// 		     state_type	    & yIn,
-// 		     time_type	      start_time,
-// 		     time_type	      dt,
-// 		     integral_type    num_steps,
-// 		     collector_type & collector,
-// 		     solver_type    & solver){
-//   impl::integrateNSteps<stepper_type, state_type, time_type, integral_type,
-// 			true, collector_type,
-// 			solver_type>(stepper, yIn, start_time,
-// 				     dt, num_steps, &collector, &solver);
-// }
+template<typename stepper_type,   typename state_type,
+	 typename time_type,	  typename integral_type,
+	 typename collector_type, typename solver_type,
+	 typename std::enable_if<
+	   ode::meta::is_legitimate_collector<
+	     collector_type, integral_type,
+	     time_type, state_type>::value &&
+	   std::is_integral<integral_type>::value &&
+	   details::traits<stepper_type>::is_implicit
+	   >::type * = nullptr>
+void integrateNSteps(stepper_type   & stepper,
+		     state_type	    & yIn,
+		     time_type	      start_time,
+		     time_type	      dt,
+		     integral_type    num_steps,
+		     collector_type & collector,
+		     solver_type    & solver){
+  using one_step_impl_t = impl::DoStepMixin<solver_type,
+					    core::impl::empty>;
+  using advancer_impl_t = impl::AdvancerMixin<collector_type,
+					      one_step_impl_t>;
+
+  advancer_impl_t advancer;
+  advancer(num_steps, start_time, dt, yIn, collector, stepper, solver);
+}
 
 template<typename stepper_type,	 typename state_type,
 	 typename time_type,	 typename integral_type,

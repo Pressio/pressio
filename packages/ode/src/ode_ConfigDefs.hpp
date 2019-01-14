@@ -12,7 +12,7 @@
 #include "../../core/src/multi_vector/core_multi_vector_meta.hpp"
 #include "../../core/src/matrix/core_matrix_meta.hpp"
 #ifdef DEBUG_PRINT
-#include "../../core/src/debug/core_debug_print.hpp"
+#include "../../core/src/io/core_print_helper.hpp"
 #endif
 
 #include "ode_enum.hpp"

@@ -113,7 +113,7 @@ void gauss_newtom_qr_solve(const system_t & sys,
   scalar_t normRes = {};
 
 #ifdef DEBUG_PRINT
-  ::rompp::core::debug::print("starting GN solve with",
+  ::rompp::core::io::print_stdout("starting GN solve with",
 			      "tol=",tolerance,",",
 			      "maxIter=", maxNonLIt,"\n");
 #endif
@@ -160,7 +160,7 @@ void gauss_newtom_qr_solve(const system_t & sys,
       normEvaluator(resid, normRes);
       normEvaluator(dx, normN);
 #ifdef DEBUG_PRINT
-      ::rompp::core::debug::print("GN step", iStep, ",",
+      ::rompp::core::io::print_stdout("GN step", iStep, ",",
 				  "norm(dx)=", normN, ",",
 				  "norm(residual)=", normRes, "\n");
 #endif

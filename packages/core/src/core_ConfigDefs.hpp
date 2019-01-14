@@ -33,7 +33,8 @@ namespace impl{
 #ifdef DEBUG_PRINT
 template <typename stream_t, typename scalar_t>
 void setStreamPrecision(stream_t & ss){
-  constexpr auto prec = std::is_same<scalar_t, double>::value ? 15 : 6;
+  constexpr auto prec = std::is_same<scalar_t,
+				     double>::value ? 15 : 6;
   ss << std::setprecision(prec);
 }
 #endif

@@ -105,13 +105,24 @@ struct AdvancerMixin{
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("time loop");
 #endif
+
     time_type time = start_time;
     collector(0, time, yIn);
 
     integral_type step = 1;
-    for( ; step <= num_steps ; ++step){
+#ifdef DEBUG_PRINT
+    ::rompp::core::io::print_stdout("\nstarting time loop","\n");
+#endif
+    for( ; step <= num_steps ; ++step)
+    {
+#ifdef DEBUG_PRINT
+      auto fmt = core::io::bg_grey() + core::io::bold() + core::io::red();
+      auto reset = core::io::reset();
+      ::rompp::core::io::print_stdout(fmt, "doing time step =", step, reset, "\n");
+#endif
       stepImpl(time, dt, step, yIn, std::forward<Args>(args)...);
       time = start_time + static_cast<time_type>(step) * dt;
+
       collector(step, time, yIn);
     }
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -119,6 +130,7 @@ struct AdvancerMixin{
 #endif
   }//end ()
 };
+
 
 
 template <typename DoStepMixin_t>
@@ -143,14 +155,14 @@ struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
     integral_type step = 1;
 
 #ifdef DEBUG_PRINT
-    ::rompp::core::debug::print("\nstarting time loop","\n");
+    ::rompp::core::io::print_stdout("\nstarting time loop","\n");
 #endif
     for( ; step <= num_steps ; ++step)
     {
 #ifdef DEBUG_PRINT
-      ::rompp::core::debug::print("\n--------------------","\n");
-      ::rompp::core::debug::print("doing time step =", step, "\n");
-      ::rompp::core::debug::print("---------------------","\n");
+      auto fmt = core::io::bg_grey() + core::io::bold() + core::io::red();
+      auto reset = core::io::reset();
+      ::rompp::core::io::print_stdout(fmt, "doing time step =", step, reset, "\n");
 #endif
       stepImpl(time, dt, step, std::forward<Args>(args)...);
       time = start_time + static_cast<time_type>(step) * dt;

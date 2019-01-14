@@ -1,11 +1,11 @@
 
-#ifndef CORE_DEBUG_PRINT_HPP_
-#define CORE_DEBUG_PRINT_HPP_
+#ifndef CORE_PRINT_HELPER_HPP_
+#define CORE_PRINT_HELPER_HPP_
 
 #include "../core_ConfigDefs.hpp"
-#include <iostream>
+#include "core_colorize_print.hpp"
 
-namespace rompp{ namespace core{ namespace debug{
+namespace rompp{ namespace core{ namespace io{
 
 namespace impl{
 
@@ -34,7 +34,7 @@ T myRank(){
 
 
 template <typename ... Args>
-void print(Args &&... args){
+void print_stdout(Args &&... args){
   if(impl::myRank()==0)
     impl::print(std::cout, std::forward<Args>(args)... );
 }
@@ -44,7 +44,7 @@ void printCoreWrapper(const T & object, Args && ...args)
 {
   using traits = core::details::traits<T>;
 
-  if (traits::is_shared_mem == 1){
+  if (traits::is_shared_mem == true){
     if(impl::myRank()==0)
       object.print(std::forward<Args>(args)...);
   }
@@ -53,5 +53,5 @@ void printCoreWrapper(const T & object, Args && ...args)
 }
 
 
-}}}//end namespace rompp::core::debug
+}}}//end namespace rompp::core::io
 #endif

@@ -86,8 +86,8 @@ namespace rompp{ namespace ode{
 		      solver_type & solver,
 		      Args ... args){
 #ifdef DEBUG_PRINT
-	::rompp::core::debug::print("current ode state is:","\n");
-	::rompp::core::debug::printCoreWrapper(y, std::cout, 'n', -1);
+	::rompp::core::io::print_stdout("current ode state is:","\n");
+	::rompp::core::io::printCoreWrapper(y, std::cout, 'n', -1);
 #endif
       	myImpl.doStep(*this, y, t, dt, step,
 		      solver, std::forward<Args>(args)...);
@@ -210,8 +210,8 @@ namespace rompp{ namespace ode{
 		      solver_type & solver,
 		      Args ... args){
 #ifdef DEBUG_PRINT
-	::rompp::core::debug::print("\ncurrent ode state is:","\n");
-	::rompp::core::debug::printCoreWrapper(y, std::cout, 'd',
+	::rompp::core::io::print_stdout("\ncurrent ode state is:","\n");
+	::rompp::core::io::printCoreWrapper(y, std::cout, 'd',
 					       statePrintSize_);
 #endif
       	myImpl.doStep(*this, y, t, dt, step,
