@@ -39,6 +39,15 @@ void print_stdout(Args &&... args){
     impl::print(std::cout, std::forward<Args>(args)... );
 }
 
+// conditional on DEBUG_PRINT being on
+template <typename ... Args>
+void print_stdout_if_dp(Args &&... args){
+#if defined DEBUG_PRINT
+  print_stdout(std::forward<Args>(args)...);
+#endif
+}
+
+
 template <typename T, typename ... Args>
 void printCoreWrapper(const T & object, Args && ...args)
 {
