@@ -34,6 +34,7 @@ struct DoStepMixin{
   }//end ()
 };
 
+
 template<>
 struct DoStepMixin<core::impl::empty, core::impl::empty>{
   template <typename time_type,
@@ -57,6 +58,7 @@ struct DoStepMixin<core::impl::empty, core::impl::empty>{
 #endif
   }
 };
+
 
 template<typename solver_type>
 struct DoStepMixin<solver_type, core::impl::empty>{
@@ -85,6 +87,10 @@ struct DoStepMixin<solver_type, core::impl::empty>{
 //-------------------------------------------------------
 
 
+/*
+ * A valid collector object is passed by user
+ * to take snapshots
+ */
 template <typename collector_type, typename DoStepMixin_t>
 struct AdvancerMixin{
 
@@ -92,12 +98,12 @@ struct AdvancerMixin{
 	    typename time_type,
 	    typename state_type,
 	    typename ... Args>
-  void operator()(integral_type num_steps,
-		  time_type start_time,
-		  time_type dt,
-		  state_type & yIn,
+  void operator()(integral_type    num_steps,
+		  time_type	   start_time,
+		  time_type	   dt,
+		  state_type &	   yIn,
 		  collector_type & collector,
-		  Args && ... args)
+		  Args && ...	   args)
   {
     DoStepMixin_t stepImpl;
 
@@ -106,23 +112,24 @@ struct AdvancerMixin{
     timer->start("time loop");
 #endif
 
+    // time variable
     time_type time = start_time;
+    // pass initial condition to collector object
     collector(0, time, yIn);
 
     integral_type step = 1;
-#ifdef DEBUG_PRINT
     ::rompp::core::io::print_stdout("\nstarting time loop","\n");
-#endif
     for( ; step <= num_steps ; ++step)
     {
-#ifdef DEBUG_PRINT
+      #ifdef DEBUG_PRINT
       auto fmt = core::io::bg_grey() + core::io::bold() + core::io::red();
       auto reset = core::io::reset();
-      ::rompp::core::io::print_stdout(fmt, "doing time step =", step, reset, "\n");
-#endif
+      ::rompp::core::io::print_stdout(fmt, "doing time step =",
+				      step, reset, "\n");
+      #endif
+
       stepImpl(time, dt, step, yIn, std::forward<Args>(args)...);
       time = start_time + static_cast<time_type>(step) * dt;
-
       collector(step, time, yIn);
     }
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -133,6 +140,9 @@ struct AdvancerMixin{
 
 
 
+/*
+ * No collector object is passed by user
+ */
 template <typename DoStepMixin_t>
 struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
 
@@ -140,9 +150,9 @@ struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
 	    typename time_type,
 	    typename ... Args>
   void operator()(integral_type num_steps,
-		  time_type start_time,
-		  time_type dt,
-		  Args && ... args)
+		  time_type	start_time,
+		  time_type	dt,
+		  Args && ...	args)
   {
     DoStepMixin_t stepImpl;
 
@@ -154,16 +164,16 @@ struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
     time_type time = start_time;
     integral_type step = 1;
 
-#ifdef DEBUG_PRINT
     ::rompp::core::io::print_stdout("\nstarting time loop","\n");
-#endif
     for( ; step <= num_steps ; ++step)
     {
-#ifdef DEBUG_PRINT
+      #ifdef DEBUG_PRINT
       auto fmt = core::io::bg_grey() + core::io::bold() + core::io::red();
       auto reset = core::io::reset();
-      ::rompp::core::io::print_stdout(fmt, "doing time step =", step, reset, "\n");
-#endif
+      ::rompp::core::io::print_stdout(fmt, "doing time step =",
+				      step, reset, "\n");
+      #endif
+
       stepImpl(time, dt, step, std::forward<Args>(args)...);
       time = start_time + static_cast<time_type>(step) * dt;
     }
@@ -178,43 +188,3 @@ struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
 
 }}}//end namespace rompp::ode::impl
 #endif
-
-
-
-
-
-
-
-
-
-
-
-// #ifdef HAVE_TEUCHOS_TIMERS
-//   auto timer = Teuchos::TimeMonitor::getStackedTimer();
-//   timer->start("time loop");
-// #endif
-
-//   // time loop
-//   integral_type step = 1;
-//   for( ; step <= num_steps ; ++step){
-
-// #ifdef HAVE_TEUCHOS_TIMERS
-//     timer->start("time step");
-
-//     doStep<stepper_type, state_type,
-// 	   time_type, integral_type,
-// 	   is_implicit, solver_type>(stepper, yIn, time,
-// 				     dt, step, solver);
-
-//     timer->stop("time step");
-// #endif
-
-//     // advance time
-//     time = start_time + static_cast<time_type>(step) * dt;
-
-//     // call collector/observer
-//     if (collector) (*collector)(step, time, yIn);
-//   }
-// #ifdef HAVE_TEUCHOS_TIMERS
-//   timer->stop("time loop");
-// #endif

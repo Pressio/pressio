@@ -4,6 +4,8 @@
 
 #include "ODE_BASIC"
 
-#include "ode/src/integrators/ode_integrate_n_steps.hpp"
+#include "ode/src/integrators/ode_integrate_n_steps_explicit.hpp"
+#include "ode/src/integrators/ode_integrate_n_steps_implicit.hpp"
+#include "ode/src/integrators/ode_integrate_n_steps_impl.hpp"
 
 #endif
