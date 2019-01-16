@@ -194,6 +194,10 @@ private:
     return &data_;
   }
 
+  void scaleImpl(sc_t value) {
+    data_ *= value;
+  }
+
   wrap_t * dataImpl(){
     return &data_;
   }
