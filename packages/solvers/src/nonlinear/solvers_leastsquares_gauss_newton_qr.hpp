@@ -8,7 +8,7 @@
 #include "../base/solvers_nonlinear_base.hpp"
 #include "../base/solvers_iterative_base.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{
+namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
 /*
 * part-specialize for when nothing about
@@ -17,21 +17,25 @@ namespace rompp{ namespace solvers{ namespace iterative{
 template <
   typename scalar_t,
   typename qr_type,
+  typename line_search_t,
   typename converged_when_t
   >
 class GaussNewtonQR<
-  scalar_t, qr_type, converged_when_t, void, void, void, void,
+  scalar_t, qr_type, line_search_t,
+  converged_when_t, void, void, void, void,
   core::meta::enable_if_t<
     core::meta::is_default_constructible<qr_type>::value
     >
   > : public NonLinearSolverBase<GaussNewtonQR<scalar_t, qr_type,
+					       line_search_t,
 					       converged_when_t,
 					       void, void,
 					       void, void>>,
       public IterativeBase<scalar_t>{
 
-  using this_t	= GaussNewtonQR<scalar_t,qr_type,converged_when_t,
-				void,void,void,void>;
+  using this_t	= GaussNewtonQR<scalar_t, qr_type, line_search_t,
+				converged_when_t,
+				void, void, void, void>;
   using iter_base_t = IterativeBase<scalar_t>;
   using base_t  = NonLinearSolverBase<this_t>;
   friend base_t;
@@ -58,15 +62,12 @@ private:
     QTResid_.setZero();
     state_t dx(x);
 
-    impl::gauss_newtom_qr_solve< system_t,
-				 typename iter_base_t::iteration_t,
-				 scalar_t, qr_type,
-				 converged_when_t>(sys, x,
-						   Resid, Jacob,
-						   this->maxIters_,
-						   this->tolerance_,
-						   QTResid_, dx, qrObj,
-						   normO_, normN_);
+    impl::gauss_newtom_qr_solve<
+      system_t, typename iter_base_t::iteration_t,
+      scalar_t, qr_type, line_search_t, converged_when_t
+      >(sys, x,	Resid, Jacob, this->maxIters_,
+	this->tolerance_, QTResid_, dx, qrObj,
+	normO_, normN_);
   }//solve
 
 };//class
@@ -77,18 +78,22 @@ private:
  * part-specialize for when a problem/system type is passed
  */
 template <
-  typename scalar_t, typename qr_type,
+  typename scalar_t, typename qr_type, typename line_search_t,
   typename converged_when_t, typename system_t
   >
 class GaussNewtonQR<
-  scalar_t, qr_type, converged_when_t, system_t, void, void, void,
+  scalar_t, qr_type, line_search_t, converged_when_t,
+  system_t, void, void, void,
   core::meta::enable_if_t<
     ::rompp::solvers::details::system_traits<system_t>::is_system and
     core::meta::is_default_constructible<qr_type>::value and
     core::meta::is_core_vector_wrapper<typename system_t::state_type>::value
     >
-  > : public NonLinearSolverBase<GaussNewtonQR<scalar_t, qr_type, converged_when_t,
-					       system_t, void, void, void>>,
+  > : public NonLinearSolverBase<GaussNewtonQR<scalar_t, qr_type,
+					       line_search_t,
+					       converged_when_t,
+					       system_t, void,
+					       void, void>>,
       public IterativeBase<scalar_t>
 {
 
@@ -96,8 +101,9 @@ class GaussNewtonQR<
   using residual_t = typename system_t::residual_type;
   using jacobian_t = typename system_t::jacobian_type;
 
-  using this_t	   = GaussNewtonQR<scalar_t,qr_type,converged_when_t,
-				   system_t,void,void,void>;
+  using this_t	   = GaussNewtonQR<scalar_t, qr_type, line_search_t,
+				   converged_when_t, system_t,
+				   void, void, void>;
   using iter_base_t = IterativeBase<scalar_t>;
   using base_t	   = NonLinearSolverBase<this_t>;
   friend base_t;
@@ -127,7 +133,7 @@ private:
 
     impl::gauss_newtom_qr_solve< system_t,
 				 typename iter_base_t::iteration_t,
-				 scalar_t, qr_type,
+				 scalar_t, qr_type, line_search_t,
 				 converged_when_t>(sys, x,
 						   res_, jac_,
 						   this->maxIters_,
@@ -144,24 +150,29 @@ private:
  * part-specialize for when the target types are passed but not system
  */
 template <
-  typename scalar_t, typename qr_type,
+  typename scalar_t, typename qr_type, typename line_search_t,
   typename converged_when_t,
   typename state_t,
   typename residual_t, typename jacobian_t
   >
 class GaussNewtonQR<
-  scalar_t, qr_type, converged_when_t, void, state_t, residual_t, jacobian_t,
+  scalar_t, qr_type, line_search_t, converged_when_t,
+  void, state_t, residual_t, jacobian_t,
   core::meta::enable_if_t<
     core::meta::is_default_constructible<qr_type>::value and
     core::meta::is_core_vector_wrapper<state_t>::value and
     core::meta::is_core_vector_wrapper<residual_t>::value
     >
-  > : public NonLinearSolverBase<GaussNewtonQR<scalar_t, qr_type, converged_when_t,
-					       void, state_t, residual_t,
-					       jacobian_t>>,
+  >
+  : public NonLinearSolverBase<GaussNewtonQR<scalar_t, qr_type,
+					     line_search_t,
+					     converged_when_t,
+					     void, state_t, residual_t,
+					     jacobian_t>>,
       public IterativeBase<scalar_t>
 {
-  using this_t	   = GaussNewtonQR<scalar_t, qr_type, converged_when_t, void,
+  using this_t	   = GaussNewtonQR<scalar_t, qr_type, line_search_t,
+				   converged_when_t, void,
 				   state_t, residual_t, jacobian_t>;
   using iter_base_t = IterativeBase<scalar_t>;
   using base_t	   = NonLinearSolverBase<this_t>;
@@ -203,7 +214,7 @@ public:
 
     impl::gauss_newtom_qr_solve< system_t,
 				 typename iter_base_t::iteration_t,
-				 scalar_t, qr_type,
+				 scalar_t, qr_type, line_search_t,
 				 converged_when_t>(sys, x,
 						   res_, jac_,
 						   this->maxIters_,
@@ -215,5 +226,5 @@ public:
 };//class
 
 
-}}}//end namespace rompp::solvers::iterative
+}}}}//end namespace rompp::solvers::iterative::impl
 #endif

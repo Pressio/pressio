@@ -5,77 +5,18 @@
 #include "../solvers_ConfigDefs.hpp"
 #include "../solvers_system_traits.hpp"
 #include "../solvers_meta_static_checks.hpp"
-#include "../../../CORE_OPS"
-#include "../../../QR_BASIC"
+#include "solvers_impl_mixins.hpp"
+//#include "../../../CORE_OPS"
+//#include "../../../QR_BASIC"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
-
-template <typename convergence_tag>
-struct norm_type_to_use{
-  using norm_t = L2Norm;
-};
-
-template <typename norm_type>
-struct norm_type_to_use<
-  converged_when::absoluteNormCorrectionBelowTol<norm_type>
-  >{
-  using norm_t = norm_type;
-};
-//---------------------------------------------------------
-
-template <typename norm_t>
-struct computeNormHelper;
-
-template <>
-struct computeNormHelper<::rompp::solvers::L2Norm>{
-  template <typename vec_t, typename scalar_t>
-  void operator()(const vec_t & vecIn, scalar_t & result){
-    result = ::rompp::core::ops::norm2(vecIn);
-  }
-};
-
-template <>
-struct computeNormHelper<::rompp::solvers::L1Norm>{
-  template <typename vec_t, typename scalar_t>
-  void operator()(const vec_t & vecIn, scalar_t & result){
-    result = ::rompp::core::ops::norm1(vecIn);
-  }
-};
-//---------------------------------------------------------
-
-template <typename conv_tag>
-struct isConvergedHelper;
-
-template <>
-struct isConvergedHelper<converged_when::completingNumMaxIters>{
-  template <typename state_t, typename step_t, typename scalar_t>
-  bool operator()(const state_t & x, const state_t & dx,
-		  scalar_t norm_dx, step_t step,
-		  step_t maxIters, scalar_t tol){
-    return step==maxIters;
-  }
-};
-
-template <typename norm_t>
-struct isConvergedHelper<
-  converged_when::absoluteNormCorrectionBelowTol<norm_t>
-  >{
-  template <typename state_t, typename step_t, typename scalar_t>
-  bool operator()(const state_t & x, const state_t & dx,
-		  scalar_t norm_dx, step_t step,
-		  step_t maxIters, scalar_t tol){
-    return (norm_dx<tol);
-  }
-};
-//---------------------------------------------------------
-
-
 
 template <
   typename system_t,
   typename iteration_t,
   typename scalar_t,
   typename qr_obj_t,
+  typename line_search_t,
   typename converged_when_tag,
   core::meta::enable_if_t<
     ::rompp::solvers::details::system_traits<system_t>::is_system and
@@ -95,8 +36,7 @@ void gauss_newtom_qr_solve(const system_t & sys,
 			   typename system_t::state_type & dx,
 			   qr_obj_t & qrObj,
 			   scalar_t & normO,
-			   scalar_t & normN)
-{
+			   scalar_t & normN){
 
   // find out which norm to use
   using norm_t = typename norm_type_to_use<converged_when_tag>::norm_t;
@@ -109,13 +49,32 @@ void gauss_newtom_qr_solve(const system_t & sys,
   using is_conv_helper_t = isConvergedHelper<converged_when_tag>;
   is_conv_helper_t isConverged;
 
+  /* functor for computing line search factor (alpha) such that
+   * the update is done with x = x + alpha dx
+   * alpha = 1 default when user does not want line search
+   */
+  using lsearch_helper = lineSearchHelper<line_search_t>;
+  lsearch_helper lineSearchHelper;
+
+  //-------------------------------------------------------
+
+  // alpha for taking steps
+  scalar_t alpha = {};
+
   // storing residaul norm
   scalar_t normRes = {};
 
 #ifdef DEBUG_PRINT
-  ::rompp::core::io::print_stdout("starting GN solve with",
-			      "tol=",tolerance,",",
-			      "maxIter=", maxNonLIt,"\n");
+  // get precision before GN
+  auto ss = std::cout.precision();
+  // set to 14 for the GN prints
+  std::cout.precision(14);
+
+  auto reset = core::io::reset();
+  auto fmt1 = core::io::cyan() + core::io::underline();
+  const auto convString = std::string(is_conv_helper_t::description_);
+  ::rompp::core::io::print_stdout(fmt1, "GN solve:", "criterion:",
+				  convString, reset, "\n");
 #endif
 
   // compute (whatever type) norm of x
@@ -130,6 +89,13 @@ void gauss_newtom_qr_solve(const system_t & sys,
   iteration_t iStep = 0;
   while (iStep++ <= maxNonLIt)
     {
+#ifdef DEBUG_PRINT
+      auto fmt = core::io::underline();
+      ::rompp::core::io::print_stdout(fmt, "GN step", iStep,
+				      core::io::reset(), "\n");
+#endif
+      // residual norm for current state
+      normEvaluator(resid, normRes);
 
 #ifdef HAVE_TEUCHOS_TIMERS
       timer->start("QR factorization");
@@ -148,7 +114,9 @@ void gauss_newtom_qr_solve(const system_t & sys,
       qrObj.project(resid, QTResid);
 #endif
 
-      // solve R dx = Q^T Residual
+      // compute correction: dx
+      // by solving R dx = - Q^T Residual
+      QTResid.scale(static_cast<scalar_t>(-1));
 #ifdef HAVE_TEUCHOS_TIMERS
       timer->start("QR solve");
       qrObj.solve(QTResid, dx);
@@ -157,21 +125,30 @@ void gauss_newtom_qr_solve(const system_t & sys,
       qrObj.solve(QTResid, dx);
 #endif
 
-      normEvaluator(resid, normRes);
+      // norm of the correction
       normEvaluator(dx, normN);
+
 #ifdef DEBUG_PRINT
-      ::rompp::core::io::print_stdout("GN step", iStep, ",",
-				  "norm(dx)=", normN, ",",
-				  "norm(residual)=", normRes, "\n");
+      ::rompp::core::io::print_stdout("norm(residual) =",
+				      std::setprecision(14),
+				      normRes, ",",
+				      "norm(correction) =", normN,
+				      "\n");
 #endif
 
-      // update solution
-      x -= dx;
+      // after correction is computed,
+      // compute multiplicative factor if needed
+      lineSearchHelper(alpha, x, dx, resid, jacob, sys);
 
-      // check convergence (based on whatever method user decided)
-      auto flag = isConverged(x, dx, normN, iStep, maxNonLIt, tolerance);
+      // solution update
+      x = x + alpha*dx;
+
+      // check convergence (whatever method user decided)
+      auto flag = isConverged(x, dx, normN, iStep,
+			      maxNonLIt, tolerance);
       if (flag) break;
 
+      // store new norm into old variable
       normO = normN;
 
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -190,6 +167,10 @@ void gauss_newtom_qr_solve(const system_t & sys,
       sys.jacobian(x, jacob);
 #endif
     }
+
+#if defined DEBUG_PRINT
+  std::cout.precision(ss);
+#endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
   timer->stop("QR-based Gausss Newton");

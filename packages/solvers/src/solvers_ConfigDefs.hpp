@@ -12,7 +12,10 @@ namespace rompp{ namespace solvers{
 struct L2Norm{};
 struct L1Norm{};
 
-namespace iterative{ namespace converged_when{
+namespace iterative{
+
+
+namespace converged_when{
 
 template <typename norm_type>
 struct absoluteNormCorrectionBelowTol{
@@ -25,6 +28,16 @@ struct completingNumMaxIters{};
 
 using default_convergence
 	= converged_when::absoluteNormCorrectionBelowTol<L2Norm>;
+
+
+namespace gn{
+
+struct noLineSearch{};
+struct ArmijoLineSearch{};
+
+}//end namespace rompp::solvers::gn
+
+
 
 }}}//end namespace rompp::solvers::iterative
 #endif

@@ -4,6 +4,7 @@
 
 #include "../solvers_ConfigDefs.hpp"
 #include "../solvers_meta_static_checks.hpp"
+#include "../../../core/src/vector/core_vector_meta.hpp"
 
 namespace rompp{ namespace solvers{
 

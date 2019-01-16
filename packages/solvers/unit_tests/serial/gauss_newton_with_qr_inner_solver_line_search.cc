@@ -5,7 +5,7 @@
 #include "QR_BASIC"
 
 struct NonLinearLeastSquareSystem {
-  //using jacobian_w_t = rompp::core::Matrix<Eigen::SparseMatrix<double>>;
+
   using jacobian_w_t = rompp::core::Matrix<Eigen::MatrixXd>;
   using state_w_t = rompp::core::Vector<Eigen::VectorXd>;
   using state_type = state_w_t;
@@ -32,10 +32,8 @@ struct NonLinearLeastSquareSystem {
   void jacobian(const state_type & x, jacobian_type & jac) const {
     for (int i = 0; i < n; i++) {
       double expval = exp(x[1] * times_[i]);
-      (*jac.data())(i,0) = expval; //->coeffRef(i, 0) = expval;
+      (*jac.data())(i,0) = expval;
       (*jac.data())(i,1) = x[0]*times_[i]*expval;
-      //jac.data()->coeffRef(i,0) = expval;
-      //jac.data()->coeffRef(i, 1) = x[0]*times_[i]*expval;
     }
   }
 
@@ -47,7 +45,7 @@ struct NonLinearLeastSquareSystem {
 };
 
 
-TEST(solvers_nonlinear_least_squares, gaussNewtonQR){
+TEST(solvers_nonlinear_least_squares, gaussNewtonQRLineSearch){
   using namespace rompp;
   using state_w_t = core::Vector<Eigen::VectorXd>;
   using sc_t	  = double;
@@ -57,7 +55,9 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR){
   // define type of QR and GaussNewton solver
   using qr_algo = qr::Householder;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
-  solvers::iterative::GaussNewtonQR<sc_t, qr_type> solver;
+  using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
+  solvers::iterative::GaussNewtonQRLineSearch<sc_t, qr_type,
+					      lsearch_t> solver;
   solver.setTolerance(1e-8);
 
   state_w_t x(2); x[0] = 2.0; x[1] = 0.25;
@@ -65,15 +65,10 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQR){
   std::cout << std::setprecision(14) << *x.data() << std::endl;
   EXPECT_NEAR( x(0), 2.4173449278229, 1e-9 );
   EXPECT_NEAR( x(1), 0.26464986197941, 1e-9 );
-
-  // print summary from timers
-  #ifdef HAVE_TEUCHOS_TIMERS
-  core::TeuchosPerformanceMonitor::stackedTimersReportSerial();
-  #endif
 }
 
 
-TEST(solvers_nonlinear_least_squares, gaussNewtonQRDoOnly2Steps){
+TEST(solvers_nonlinear_least_squares, gaussNewtonQRLineSearchDoOnly2Steps){
   using namespace rompp;
   using state_w_t = core::Vector<Eigen::VectorXd>;
   using sc_t	  = double;
@@ -83,11 +78,13 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQRDoOnly2Steps){
   // define type of QR and GaussNewton solver
   using qr_algo = qr::Householder;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
+  using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
   using converged_when_t
     = solvers::iterative::converged_when::completingNumMaxIters;
-  solvers::iterative::GaussNewtonQR<sc_t, qr_type, converged_when_t> solver;
-  // setting 2 max iters so that in combination with the
-  // above convergence method, the solver will exit afte 2 steps
+  solvers::iterative::GaussNewtonQRLineSearch<sc_t, qr_type, lsearch_t,
+					      converged_when_t> solver;
+  // setting max iters so that in combination with the
+  // above convergence method, the solver will exit after target steps
   solver.setMaxIterations(2);
 
   state_w_t x(2); x[0] = 2.0; x[1] = 0.25;
@@ -112,10 +109,13 @@ TEST(solvers_nonlinear_least_squares, gaussNewtonQRPassTypes){
   // define type of QR solver and GaussNewton solver
   using qr_algo		 = qr::Householder;
   using qr_type		 = qr::QRSolver<mat_t, qr_algo>;
+  using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
   using converged_when_t = solvers::iterative::default_convergence;
   using gnsolver_t	 =
-    solvers::iterative::GaussNewtonQR<sc_t, qr_type,
-				      converged_when_t, problem_t>;
+    solvers::iterative::GaussNewtonQRLineSearch<sc_t, qr_type,
+						lsearch_t,
+						converged_when_t,
+						problem_t>;
   gnsolver_t GNSolver(problem, x);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
