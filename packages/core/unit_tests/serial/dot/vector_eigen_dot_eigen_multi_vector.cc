@@ -4,7 +4,7 @@
 
 
 TEST(core_ops_dot,
-     eigen_dynamic_vector_dot_eigen_multi_vector){
+     eigen_dynamic_vector_dot_eigen_multi_vector_store_dynamic){
 
   using eigdmat_t = Eigen::MatrixXd;
   using myMV_t = rompp::core::MultiVector<eigdmat_t>;
@@ -37,9 +37,8 @@ TEST(core_ops_dot,
 }
 
 
-
-TEST(core_multi_vector_serial_eigen_dynamic_class,
-     dot_WithEigenVector_static){
+TEST(core_ops_dot,
+     eigen_dynamic_vector_dot_eigen_multi_vector_store_static){
 
   using eigdmat_t = Eigen::MatrixXd;
   using myMV_t = rompp::core::MultiVector<eigdmat_t>;

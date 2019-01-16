@@ -12,6 +12,7 @@
 #include "core/src/containers_ops/dot/core_multi_vector_dot_vector.hpp"
 #include "core/src/containers_ops/dot/core_multi_vector_dot_multi_vector.hpp"
 #include "core/src/containers_ops/dot/core_vector_dot_multi_vector.hpp"
+#include "core/src/containers_ops/dot/core_vector_dot_vector.hpp"
 
 //// mat mat product ////
 #include "core/src/containers_ops/mat_mat_product/core_eigen_dense_mat_product_eigen_dense_mat.hpp"
