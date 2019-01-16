@@ -120,5 +120,20 @@ struct is_eigen_sparse_matrix_wrapper<
 //------------------------------------------------------------
 
 
+template <typename T, typename enable = void>
+struct is_eigen_matrix_wrapper : std::false_type {};
+
+template <typename T>
+struct is_eigen_matrix_wrapper<
+  T, core::meta::enable_if_t<
+       is_eigen_sparse_matrix_wrapper<T>::value or
+       is_eigen_dense_matrix_wrapper<T>::value
+       >
+  >
+  : std::true_type{};
+//------------------------------------------------------------
+
+
+
 }}}//end namespace rompp::core::meta
 #endif
