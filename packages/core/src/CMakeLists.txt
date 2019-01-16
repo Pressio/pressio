@@ -32,6 +32,8 @@ FILE(GLOB core_containers_dot_mvec_mvec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SO
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_mvec/*.hpp")
 FILE(GLOB core_containers_dot_mvec_vec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_vec/*.hpp")
+FILE(GLOB core_containers_dot_vec_mvec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/vec_mvec/*.hpp")
 
 FILE(GLOB core_containers_mat_mat_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_mat_product/*.hpp")
@@ -92,6 +94,8 @@ FILE(GLOB core_containers_dot_mvec_mvec_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURC
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_mvec//src/*.cc")
 FILE(GLOB core_containers_dot_mvec_vec_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/mvec_vec/src/*.cc")
+FILE(GLOB core_containers_dot_vec_mvec_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/vec_mvec/src/*.cc")
 
 FILE(GLOB core_containers_mat_mat_prod_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_mat_product/src/*.cc")
@@ -142,6 +146,8 @@ SET(SOURCES
   ${core_containers_dot_ops_SRCS}
   ${core_containers_dot_mvec_mvec_ops_SRCS}
   ${core_containers_dot_mvec_vec_ops_SRCS}
+  ${core_containers_dot_vec_mvec_ops_SRCS}
+  #
   ${core_containers_mat_mat_prod_ops_SRCS}
   ${core_containers_mat_vec_prod_ops_SRCS}
   ${core_containers_multivec_vec_prod_ops_SRCS}
@@ -196,6 +202,7 @@ INSTALL(FILES ${core_containers_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containe
 INSTALL(FILES ${core_containers_dot_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot)
 INSTALL(FILES ${core_containers_dot_mvec_mvec_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot/mvec_mvec)
 INSTALL(FILES ${core_containers_dot_mvec_vec_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot/mvec_vec)
+INSTALL(FILES ${core_containers_dot_vec_mvec_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot/vec_mvec)
 
 INSTALL(FILES ${core_containers_mat_mat_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/mat_mat_product)
 INSTALL(FILES ${core_containers_mat_vec_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/mat_vec_product)
