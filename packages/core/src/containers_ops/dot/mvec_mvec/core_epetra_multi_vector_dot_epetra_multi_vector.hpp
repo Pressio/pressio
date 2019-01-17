@@ -12,7 +12,7 @@ namespace rompp{ namespace core{ namespace ops{
 #ifdef HAVE_TRILINOS
 template <typename mvec_t,
   core::meta::enable_if_t<
-    core::meta::is_epetra_multi_vector_wrapper<mvec_t>::value
+    core::meta::is_multi_vector_wrapper_epetra<mvec_t>::value
     > * = nullptr
   >
 auto dot(const mvec_t & mvA, const mvec_t & mvB)

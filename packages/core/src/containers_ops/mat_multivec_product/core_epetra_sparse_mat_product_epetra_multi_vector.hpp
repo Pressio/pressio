@@ -25,8 +25,8 @@ namespace rompp{ namespace core{ namespace ops{
 template <typename mat_type,
 	  typename mvec_type,
   core::meta::enable_if_t<
-    core::meta::is_epetra_sparse_matrix_wrapper<mat_type>::value and
-    core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_sparse_matrix_wrapper_epetra<mat_type>::value and
+    core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
     > * = nullptr
   >
@@ -44,8 +44,8 @@ void product(const mat_type & A,
 template <typename mat_type,
 	  typename mvec_type,
   core::meta::enable_if_t<
-    core::meta::is_epetra_sparse_matrix_wrapper<mat_type>::value and
-    core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_sparse_matrix_wrapper_epetra<mat_type>::value and
+    core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
     > * = nullptr
   >

@@ -44,10 +44,10 @@ struct is_dense_vector_teuchos_wrapper<
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_epetra_vector_wrapper : std::false_type {};
+struct is_vector_wrapper_epetra : std::false_type {};
 
 template <typename T>
-struct is_epetra_vector_wrapper<
+struct is_vector_wrapper_epetra<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
@@ -60,10 +60,10 @@ struct is_epetra_vector_wrapper<
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_tpetra_vector_wrapper : std::false_type {};
+struct is_vector_wrapper_tpetra : std::false_type {};
 
 template <typename T>
-struct is_tpetra_vector_wrapper<
+struct is_vector_wrapper_tpetra<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
@@ -76,10 +76,10 @@ struct is_tpetra_vector_wrapper<
 
 
 template <typename T, typename enable = void>
-struct is_eigen_vector_wrapper : std::false_type {};
+struct is_vector_wrapper_eigen : std::false_type {};
 
 template <typename T>
-struct is_eigen_vector_wrapper<
+struct is_vector_wrapper_eigen<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_vector &&
        (core::details::traits<T>::wrapped_vector_identifier==
@@ -97,10 +97,10 @@ struct is_eigen_vector_wrapper<
 
 #ifdef HAVE_ARMADILLO
 template <typename T, typename enable = void>
-struct is_row_vector_armadillo_wrapper : std::false_type {};
+struct is_row_vector_wrapper_armadillo : std::false_type {};
 
 template <typename T>
-struct is_row_vector_armadillo_wrapper<
+struct is_row_vector_wrapper_armadillo<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
@@ -110,10 +110,10 @@ struct is_row_vector_armadillo_wrapper<
 
 
 template <typename T, typename enable = void>
-struct is_column_vector_armadillo_wrapper : std::false_type {};
+struct is_column_vector_wrapper_armadillo : std::false_type {};
 
 template <typename T>
-struct is_column_vector_armadillo_wrapper<
+struct is_column_vector_wrapper_armadillo<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
@@ -126,10 +126,10 @@ struct is_column_vector_armadillo_wrapper<
 
 #ifdef HAVE_BLAZE
 template <typename T, typename enable = void>
-struct is_blaze_dynamic_vector_wrapper : std::false_type {};
+struct is_dynamic_vector_wrapper_blaze : std::false_type {};
 
 template <typename T>
-struct is_blaze_dynamic_vector_wrapper<
+struct is_dynamic_vector_wrapper_blaze<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
@@ -139,10 +139,10 @@ struct is_blaze_dynamic_vector_wrapper<
 
 
 template <typename T, typename enable = void>
-struct is_blaze_static_vector_wrapper : std::false_type {};
+struct is_static_vector_wrapper_blaze : std::false_type {};
 
 template <typename T>
-struct is_blaze_static_vector_wrapper<
+struct is_static_vector_wrapper_blaze<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==

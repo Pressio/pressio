@@ -15,7 +15,7 @@ TEST(core_multi_vector_serial_eigen_dynamic_class,
   == rompp::core::details::WrappedMultiVectorIdentifier::Eigen);
 
   ASSERT_TRUE(
-  rompp::core::meta::is_eigen_multi_vector_wrapper<myMV_t>::value);
+  rompp::core::meta::is_multi_vector_wrapper_eigen<myMV_t>::value);
   
   //construct by passing the size 
   myMV_t A(6,3);

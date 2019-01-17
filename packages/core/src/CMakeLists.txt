@@ -21,7 +21,7 @@ FILE(GLOB core_tinymplvar_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 
 FILE(GLOB core_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
-FILE(GLOB core_meta_native_vec_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB core_meta_native_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_vector/*.hpp")
 FILE(GLOB core_meta_native_multi_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_multi_vector/*.hpp")
@@ -162,7 +162,7 @@ SET(SOURCES
   ${core_core_shared_base_SRCS}
   #
   ${core_meta_SRCS}
-  ${core_meta_native_vetor_SRCS}
+  ${core_meta_native_vector_SRCS}
   ${core_meta_native_multi_vector_SRCS}
   ${core_meta_native_matrix_SRCS}
   #

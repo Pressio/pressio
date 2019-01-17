@@ -23,7 +23,7 @@ class QRSolver<matrix_type,
 	       R_type,
 	       Q_type,
 	       core::meta::enable_if_t<
-		 core::meta::is_eigen_sparse_matrix_wrapper<matrix_type>::value and
+		 core::meta::is_sparse_matrix_wrapper_eigen<matrix_type>::value and
 		 core::meta::is_core_matrix_wrapper<R_type>::value and
 		 core::details::traits<R_type>::is_shared_mem and
 		 core::details::traits<R_type>::is_dense

@@ -15,9 +15,9 @@
 #include "core/src/containers_ops/dot/core_vector_dot_vector.hpp"
 
 //// mat mat product ////
-#include "core/src/containers_ops/mat_mat_product/core_eigen_dense_mat_product_eigen_dense_mat.hpp"
-#include "core/src/containers_ops/mat_mat_product/core_eigen_sparse_mat_product_eigen_dense_mat.hpp"
-#include "core/src/containers_ops/mat_mat_product/core_eigen_sparse_mat_product_eigen_sparse_mat.hpp"
+#include "core/src/containers_ops/mat_mat_product/core_eigen_mat_product_mat.hpp"
+// #include "core/src/containers_ops/mat_mat_product/core_eigen_sparse_mat_product_eigen_dense_mat.hpp"
+// #include "core/src/containers_ops/mat_mat_product/core_eigen_sparse_mat_product_eigen_sparse_mat.hpp"
 
 //// mat vec product ////
 #include "core/src/containers_ops/mat_vec_product/core_eigen_mat_product_eigen_vector.hpp"

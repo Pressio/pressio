@@ -19,10 +19,10 @@ namespace rompp{ namespace core{ namespace ops{
 template <typename mvec_type,
 	  typename vec_type,
   core::meta::enable_if_t<
-    core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    (core::meta::is_column_vector_armadillo_wrapper<vec_type>::value or
-     core::meta::is_row_vector_armadillo_wrapper<vec_type>::value)
+    (core::meta::is_column_vector_wrapper_armadillo<vec_type>::value or
+     core::meta::is_row_vector_wrapper_armadillo<vec_type>::value)
     > * = nullptr
   >
 void product(const mvec_type & mvA,
@@ -54,10 +54,10 @@ void product(const mvec_type & mvA,
 template <typename mvec_type,
 	  typename vec_type,
   core::meta::enable_if_t<
-    core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
+    core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    (core::meta::is_column_vector_armadillo_wrapper<vec_type>::value or
-     core::meta::is_row_vector_armadillo_wrapper<vec_type>::value)
+    (core::meta::is_column_vector_wrapper_armadillo<vec_type>::value or
+     core::meta::is_row_vector_wrapper_armadillo<vec_type>::value)
   > * = nullptr
  >
 core::Vector<Epetra_Vector>

@@ -14,11 +14,11 @@ template <::rompp::ode::ImplicitEnum odeMethod,
 	   typename scalar_type,
 	   core::meta::enable_if_t<
            (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
-	   core::meta::is_eigen_sparse_matrix_wrapper<jacobian_type>::value or
+	   core::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
 	 #ifdef HAVE_TRILINOS
-	   core::meta::is_epetra_sparse_matrix_wrapper<jacobian_type>::value or
+	   core::meta::is_sparse_matrix_wrapper_epetra<jacobian_type>::value or
 	 #endif
-	   core::meta::is_eigen_dense_matrix_wrapper<jacobian_type>::value
+	   core::meta::is_dense_matrix_wrapper_eigen<jacobian_type>::value
 	   > * = nullptr
 	  >
 void implicit_time_discrete_jacobian(jacobian_type & jac,
@@ -37,8 +37,8 @@ template <::rompp::ode::ImplicitEnum odeMethod,
 	   typename basis_type,
 	   core::meta::enable_if_t<
            odeMethod == ::rompp::ode::ImplicitEnum::Euler and
-	   core::meta::is_epetra_multi_vector_wrapper<jacobian_type>::value and
-           core::meta::is_epetra_multi_vector_wrapper<basis_type>::value 
+	   core::meta::is_multi_vector_wrapper_epetra<jacobian_type>::value and
+           core::meta::is_multi_vector_wrapper_epetra<basis_type>::value 
 	     > * = nullptr
 	  >
 void implicit_time_discrete_jacobian(jacobian_type & jac,
@@ -60,8 +60,8 @@ template <::rompp::ode::ImplicitEnum odeMethod,
 	   typename basis_type,
 	   core::meta::enable_if_t<
            odeMethod == ::rompp::ode::ImplicitEnum::Euler and 
-           core::meta::is_tpetra_multi_vector_wrapper<jacobian_type>::value and
-           core::meta::is_tpetra_multi_vector_wrapper<basis_type>::value
+           core::meta::is_multi_vector_wrapper_tpetra<jacobian_type>::value and
+           core::meta::is_multi_vector_wrapper_tpetra<basis_type>::value
 	     > * = nullptr
 	  >
 void implicit_time_discrete_jacobian(jacobian_type & jac,
@@ -80,7 +80,7 @@ template <::rompp::ode::ImplicitEnum odeMethod,
 	  typename scalar_type,
 	  core::meta::enable_if_t<
              (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) and
-	    core::meta::is_eigen_sparse_matrix_wrapper<jacobian_type>::value
+	    core::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
 	    > * = nullptr
 	  >
 void implicit_time_discrete_jacobian(jacobian_type & jac,
@@ -100,8 +100,8 @@ template <::rompp::ode::ImplicitEnum odeMethod,
 	   typename basis_type,
 	   core::meta::enable_if_t<
              (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) and
-	     core::meta::is_epetra_multi_vector_wrapper<jacobian_type>::value and
-	     core::meta::is_epetra_multi_vector_wrapper<basis_type>::value
+	     core::meta::is_multi_vector_wrapper_epetra<jacobian_type>::value and
+	     core::meta::is_multi_vector_wrapper_epetra<basis_type>::value
 	     > * = nullptr
 	  >
 void implicit_time_discrete_jacobian(jacobian_type & jac,
@@ -123,8 +123,8 @@ template <::rompp::ode::ImplicitEnum odeMethod,
 	   typename basis_type,
 	   core::meta::enable_if_t<
              (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) and
-	     core::meta::is_tpetra_multi_vector_wrapper<jacobian_type>::value and
-	     core::meta::is_tpetra_multi_vector_wrapper<basis_type>::value
+	     core::meta::is_multi_vector_wrapper_tpetra<jacobian_type>::value and
+	     core::meta::is_multi_vector_wrapper_tpetra<basis_type>::value
 	     > * = nullptr
 	  >
 void implicit_time_discrete_jacobian(jacobian_type & jac,

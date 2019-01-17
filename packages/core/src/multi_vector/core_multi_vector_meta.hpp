@@ -27,10 +27,10 @@ struct is_core_multi_vector_wrapper<T,
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_epetra_multi_vector_wrapper : std::false_type {};
+struct is_multi_vector_wrapper_epetra : std::false_type {};
 
 template <typename T>
-struct is_epetra_multi_vector_wrapper<
+struct is_multi_vector_wrapper_epetra<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_multi_vector &&
        core::details::traits<T>::wrapped_multi_vector_identifier==
@@ -44,10 +44,10 @@ struct is_epetra_multi_vector_wrapper<
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_tpetra_multi_vector_wrapper : std::false_type {};
+struct is_multi_vector_wrapper_tpetra : std::false_type {};
 
 template <typename T>
-struct is_tpetra_multi_vector_wrapper<
+struct is_multi_vector_wrapper_tpetra<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_multi_vector &&
        core::details::traits<T>::wrapped_multi_vector_identifier==
@@ -60,10 +60,10 @@ struct is_tpetra_multi_vector_wrapper<
 
 
 template <typename T, typename enable = void>
-struct is_eigen_multi_vector_wrapper : std::false_type {};
+struct is_multi_vector_wrapper_eigen : std::false_type {};
 
 template <typename T>
-struct is_eigen_multi_vector_wrapper<
+struct is_multi_vector_wrapper_eigen<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_multi_vector &&
        core::details::traits<T>::wrapped_multi_vector_identifier==

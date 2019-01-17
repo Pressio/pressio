@@ -15,10 +15,10 @@ template <
   typename mvec_type,
   typename result_vec_type,
   core::meta::enable_if_t<
-    core::meta::is_eigen_multi_vector_wrapper<mvec_type>::value and
-    core::meta::is_eigen_vector_wrapper<vec_type>::value and
+    core::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
+    core::meta::is_vector_wrapper_eigen<vec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    core::meta::is_eigen_vector_wrapper<result_vec_type>::value and
+    core::meta::is_vector_wrapper_eigen<result_vec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<vec_type,result_vec_type>::value and
     core::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
@@ -38,10 +38,10 @@ template <
   typename mvec_type,
   typename result_vec_type,
   core::meta::enable_if_t<
-    core::meta::is_eigen_multi_vector_wrapper<mvec_type>::value and
-    core::meta::is_eigen_vector_wrapper<vec_type>::value and
+    core::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
+    core::meta::is_vector_wrapper_eigen<vec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    core::meta::is_eigen_vector_wrapper<result_vec_type>::value and
+    core::meta::is_vector_wrapper_eigen<result_vec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<vec_type,result_vec_type>::value and
     core::details::traits<result_vec_type>::is_static
     > * = nullptr
@@ -58,8 +58,8 @@ void dot(const vec_type & vec,
 template <typename vec_type,
 	  typename mvec_type,
   core::meta::enable_if_t<
-    core::meta::is_eigen_multi_vector_wrapper<mvec_type>::value and
-    core::meta::is_eigen_vector_wrapper<vec_type>::value and
+    core::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
+    core::meta::is_vector_wrapper_eigen<vec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >

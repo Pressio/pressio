@@ -11,8 +11,8 @@ TEST_F(epetraSparseMatR7MultiVectorR9C4Fixture,
 
   using mymat_w_t = rompp::core::Matrix<Epetra_CrsMatrix>;
   using mymv_w_t = rompp::core::MultiVector<Epetra_MultiVector>;  
-  ASSERT_TRUE(rompp::core::meta::is_epetra_sparse_matrix_wrapper<mymat_w_t>::value);
-  ASSERT_TRUE(rompp::core::meta::is_epetra_multi_vector_wrapper<mymv_w_t>::value);
+  ASSERT_TRUE(rompp::core::meta::is_sparse_matrix_wrapper_epetra<mymat_w_t>::value);
+  ASSERT_TRUE(rompp::core::meta::is_multi_vector_wrapper_epetra<mymv_w_t>::value);
 
   // fill data
   fillCrsMatrix();
@@ -84,8 +84,8 @@ TEST_F(epetraSparseMatR7MultiVectorR9C4Fixture,
 
 //   using mymat_w_t = rompp::core::Matrix<Epetra_CrsMatrix>;
 //   using mymv_w_t = rompp::core::MultiVector<Epetra_MultiVector>;  
-//   ASSERT_TRUE(rompp::core::meta::is_epetra_sparse_matrix_wrapper<mymat_w_t>::value);
-//   ASSERT_TRUE(rompp::core::meta::is_epetra_multi_vector_wrapper<mymv_w_t>::value);
+//   ASSERT_TRUE(rompp::core::meta::is_sparse_matrix_wrapper_epetra<mymat_w_t>::value);
+//   ASSERT_TRUE(rompp::core::meta::is_multi_vector_wrapper_epetra<mymv_w_t>::value);
 
 //   // fill data
 //   fillCrsMatrix();

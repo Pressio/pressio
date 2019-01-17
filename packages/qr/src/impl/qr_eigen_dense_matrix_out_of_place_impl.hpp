@@ -16,7 +16,7 @@ template< typename matrix_type, typename R_t, template <typename...> class Q_typ
 class QRHouseholderDenseEigenMatrixWrapper<
   matrix_type, R_t, core::constants::dynamic, core::constants::dynamic, Q_type,
   core::meta::enable_if_t<
-    core::meta::is_eigen_dense_matrix_wrapper<matrix_type>::value
+    core::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value
     >
   >{
 
@@ -77,7 +77,7 @@ template< typename matrix_type, typename R_t,
 class QRHouseholderDenseEigenMatrixWrapper<
   matrix_type, R_t, n, m, Q_type,
   core::meta::enable_if_t<
-    core::meta::is_eigen_dense_matrix_wrapper<matrix_type>::value and n >=1 and m>=1>
+    core::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value and n >=1 and m>=1>
     >{
 
   using sc_t	     = typename core::details::traits<matrix_type>::scalar_t;

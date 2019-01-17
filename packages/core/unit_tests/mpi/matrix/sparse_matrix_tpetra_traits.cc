@@ -26,7 +26,7 @@ TEST(core_sparse_matrix_tpetra, Traits){
   STATIC_ASSERT_IS_NOT_MULTIVECTOR_TPETRA(mymat_t);
   STATIC_ASSERT_IS_CORE_MATRIX_WRAPPER(mymat_t);
 
-  static_assert(core::meta::is_tpetra_sparse_matrix_wrapper<mymat_t>::value, " ");
+  static_assert(core::meta::is_sparse_matrix_wrapper_tpetra<mymat_t>::value, " ");
 
   using matTrait = core::details::traits<mymat_t>;
 

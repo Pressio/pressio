@@ -26,10 +26,10 @@ struct is_core_matrix_wrapper< T,
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_dense_matrix_teuchos_wrapper : std::false_type {};
+struct is_dense_matrix_wrapper_teuchos : std::false_type {};
 
 template <typename T>
-struct is_dense_matrix_teuchos_wrapper<
+struct is_dense_matrix_wrapper_teuchos<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
        core::details::traits<T>::wrapped_matrix_identifier==
@@ -42,10 +42,10 @@ struct is_dense_matrix_teuchos_wrapper<
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_epetra_dense_matrix_wrapper : std::false_type {};
+struct is_dense_matrix_wrapper_epetra : std::false_type {};
 
 template <typename T>
-struct is_epetra_dense_matrix_wrapper<
+struct is_dense_matrix_wrapper_epetra<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
        core::details::traits<T>::wrapped_matrix_identifier==
@@ -59,10 +59,10 @@ struct is_epetra_dense_matrix_wrapper<
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_epetra_sparse_matrix_wrapper : std::false_type {};
+struct is_sparse_matrix_wrapper_epetra : std::false_type {};
 
 template <typename T>
-struct is_epetra_sparse_matrix_wrapper<
+struct is_sparse_matrix_wrapper_epetra<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
        (core::details::traits<T>::wrapped_matrix_identifier==
@@ -76,10 +76,10 @@ struct is_epetra_sparse_matrix_wrapper<
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_tpetra_sparse_matrix_wrapper : std::false_type {};
+struct is_sparse_matrix_wrapper_tpetra : std::false_type {};
 
 template <typename T>
-struct is_tpetra_sparse_matrix_wrapper<
+struct is_sparse_matrix_wrapper_tpetra<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
        core::details::traits<T>::wrapped_matrix_identifier==
@@ -92,10 +92,10 @@ struct is_tpetra_sparse_matrix_wrapper<
 
 
 template <typename T, typename enable = void>
-struct is_eigen_dense_matrix_wrapper : std::false_type {};
+struct is_dense_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
-struct is_eigen_dense_matrix_wrapper<
+struct is_dense_matrix_wrapper_eigen<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
        (core::details::traits<T>::wrapped_matrix_identifier==
@@ -106,10 +106,10 @@ struct is_eigen_dense_matrix_wrapper<
 //------------------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_eigen_sparse_matrix_wrapper : std::false_type {};
+struct is_sparse_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
-struct is_eigen_sparse_matrix_wrapper<
+struct is_sparse_matrix_wrapper_eigen<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
        (core::details::traits<T>::wrapped_matrix_identifier==
@@ -121,13 +121,13 @@ struct is_eigen_sparse_matrix_wrapper<
 
 
 template <typename T, typename enable = void>
-struct is_eigen_matrix_wrapper : std::false_type {};
+struct is_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
-struct is_eigen_matrix_wrapper<
+struct is_matrix_wrapper_eigen<
   T, core::meta::enable_if_t<
-       is_eigen_sparse_matrix_wrapper<T>::value or
-       is_eigen_dense_matrix_wrapper<T>::value
+       is_sparse_matrix_wrapper_eigen<T>::value or
+       is_dense_matrix_wrapper_eigen<T>::value
        >
   >
   : std::true_type{};

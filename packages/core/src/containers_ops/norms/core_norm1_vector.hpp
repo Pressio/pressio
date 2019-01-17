@@ -12,7 +12,7 @@ namespace rompp{ namespace core{ namespace ops{
 //--------------------------------------------------------
 template <typename vec_type,
   core::meta::enable_if_t<
-    core::meta::is_eigen_vector_wrapper<vec_type>::value
+    core::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
 auto norm1(const vec_type & a)

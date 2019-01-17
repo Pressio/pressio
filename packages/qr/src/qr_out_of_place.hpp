@@ -77,8 +77,8 @@ private:
 //   matrix_type, algo, false, m, n, R_type, Q_type,
 //   core::meta::enable_if_t<
 //     meta::is_legitimate_r_type<R_type>::value and
-//     (core::meta::is_epetra_multi_vector_wrapper<matrix_type>::value or
-//      core::meta::is_tpetra_multi_vector_wrapper<matrix_type>::value)
+//     (core::meta::is_multi_vector_wrapper_epetra<matrix_type>::value or
+//      core::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value)
 //     >
 //   > : public details::traits< QRSolver<matrix_type, algo,
 // 				       false, m, n, R_type, Q_type>>::base_compute_t,

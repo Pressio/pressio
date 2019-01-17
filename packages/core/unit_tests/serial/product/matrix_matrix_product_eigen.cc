@@ -19,7 +19,7 @@ TEST(core_matrix_matrix_product, eigenDenseDense){
   //  std::cout << *B.data();
 
   static_assert(
-   core::meta::is_eigen_dense_matrix_wrapper<myA_t>::value,"");
+   core::meta::is_dense_matrix_wrapper_eigen<myA_t>::value,"");
   
   auto C = core::ops::product(A,B);
   EXPECT_EQ( C.cols(), B.cols());

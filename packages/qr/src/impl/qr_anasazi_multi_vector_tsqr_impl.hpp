@@ -71,7 +71,7 @@ public:
   // if R_type != wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t,
   	    core::meta::enable_if_t<
-  	      !core::meta::is_dense_matrix_teuchos_wrapper<T>::value and
+  	      !core::meta::is_dense_matrix_wrapper_teuchos<T>::value and
 	      !std::is_void<T>::value
   	      > * = nullptr>
   const T & getCRefRFactor() const {
@@ -82,7 +82,7 @@ public:
   // if R_type == wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t,
   	    core::meta::enable_if_t<
-  	      core::meta::is_dense_matrix_teuchos_wrapper<T>::value and
+  	      core::meta::is_dense_matrix_wrapper_teuchos<T>::value and
 	      !std::is_void<T>::value
   	      > * = nullptr>
   const T & getCRefRFactor() const {

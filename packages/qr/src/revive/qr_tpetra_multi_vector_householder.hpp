@@ -26,7 +26,7 @@ class QRSolver<matrix_type,
 	       Q_type,
 	       typename
 	       std::enable_if<
-		 core::meta::is_tpetra_multi_vector_wrapper<matrix_type>::value and
+		 core::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value and
 		 core::meta::is_core_matrix_wrapper<R_type>::value and
 		 core::details::traits<R_type>::is_shared_mem and
 		 core::details::traits<R_type>::is_dense

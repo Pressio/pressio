@@ -17,8 +17,8 @@ namespace rompp{ namespace qr{ namespace impl{
 template<typename vector_type,
 	 typename R_type,
 	 ::rompp::core::meta::enable_if_t<
-	   ::rompp::core::meta::is_eigen_vector_wrapper<vector_type>::value and
-	   ::rompp::core::meta::is_eigen_dense_matrix_wrapper<R_type>::value
+	   ::rompp::core::meta::is_vector_wrapper_eigen<vector_type>::value and
+	   ::rompp::core::meta::is_dense_matrix_wrapper_eigen<R_type>::value
 	   > * = nullptr>
 void solve(const vector_type & rhs,
 	   const R_type & Rmatrix,
@@ -87,7 +87,7 @@ template<typename vector_type,
 	 typename R_type,
 	 int n,
 	 ::rompp::core::meta::enable_if_t<
-	   ::rompp::core::meta::is_eigen_vector_wrapper<vector_type>::value and
+	   ::rompp::core::meta::is_vector_wrapper_eigen<vector_type>::value and
 	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n != core::constants::dynamic and n>=1
 	   > * = nullptr>
@@ -110,7 +110,7 @@ template<typename vector_type,
 	 typename R_type,
 	 int n,
 	 ::rompp::core::meta::enable_if_t<
-	   ::rompp::core::meta::is_eigen_vector_wrapper<vector_type>::value and
+	   ::rompp::core::meta::is_vector_wrapper_eigen<vector_type>::value and
 	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n == core::constants::dynamic
 	   > * = nullptr>

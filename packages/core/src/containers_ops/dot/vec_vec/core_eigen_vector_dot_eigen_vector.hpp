@@ -11,7 +11,7 @@ namespace rompp{ namespace core{ namespace ops{
 template <
   typename vec_type,
   core::meta::enable_if_t<
-    core::meta::is_eigen_vector_wrapper<vec_type>::value
+    core::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
 void dot(const vec_type & vecA,
@@ -26,7 +26,7 @@ void dot(const vec_type & vecA,
 template <
   typename vec_type,
   core::meta::enable_if_t<
-    core::meta::is_eigen_vector_wrapper<vec_type>::value
+    core::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
 auto dot(const vec_type & vecA,

@@ -43,7 +43,7 @@ TEST(epetraMultiVectorR9C4VecS9Fixture,
   using mvec_t = core::MultiVector<Epetra_MultiVector>;
   mvec_t A(rowMap, 4);
   mvec_t B(rowMap, 2);
-  static_assert(core::meta::is_epetra_multi_vector_wrapper<mvec_t>::value,
+  static_assert(core::meta::is_multi_vector_wrapper_epetra<mvec_t>::value,
 		"");
 
   EXPECT_EQ( A.globalNumVectors(), 4 );
