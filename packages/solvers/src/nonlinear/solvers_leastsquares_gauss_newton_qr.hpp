@@ -52,21 +52,24 @@ public:
 private:
   template <typename system_t>
   void solveImpl(const system_t & sys,
-		 typename system_t::state_type & x){
+		 typename system_t::state_type & y){
     using state_t    = typename system_t::state_type;
 
-    auto Resid = sys.residual(x);
-    auto Jacob = sys.jacobian(x);
+    auto Resid = sys.residual(y);
+    auto Jacob = sys.jacobian(y);
 
-    state_t QTResid_(x); // hold result of Q^T residual
+    state_t QTResid_(y); // hold result of Q^T residual
     QTResid_.setZero();
-    state_t dx(x);
+    state_t delta(y);
+    // needed if/when doing line search: put here so that it is not
+    // constructed and destroyed at each gn step
+    state_t ytrial(y);
 
     impl::gauss_newtom_qr_solve<
       system_t, typename iter_base_t::iteration_t,
       scalar_t, qr_type, line_search_t, converged_when_t
-      >(sys, x,	Resid, Jacob, this->maxIters_,
-	this->tolerance_, QTResid_, dx, qrObj,
+      >(sys, y,	ytrial, Resid, Jacob, this->maxIters_,
+	this->tolerance_, QTResid_, delta, qrObj,
 	normO_, normN_);
   }//solve
 
@@ -116,25 +119,30 @@ class GaussNewtonQR<
   residual_t res_  = {};
   jacobian_t jac_  = {};
 
+  // ytrail needed if/when line search is used: put here
+  // so that it is constructed only once
+  state_t ytrial_  = {};
+
 public:
   GaussNewtonQR() = delete;
 
   GaussNewtonQR(const system_t & system, const state_t & y)
     : QTResid_(y), delta_(y),
-      res_(system.residual(y)), jac_(system.jacobian(y)) {}
+      res_(system.residual(y)), jac_(system.jacobian(y)),
+      ytrial_(y){}
 
   GaussNewtonQR(const GaussNewtonQR &) = delete;
   ~GaussNewtonQR() = default;
 
 private:
-  void solveImpl(const system_t & sys, state_t & x){
-    sys.residual(x, res_);
-    sys.jacobian(x, jac_);
+  void solveImpl(const system_t & sys, state_t & y){
+    sys.residual(y, res_);
+    sys.jacobian(y, jac_);
 
     impl::gauss_newtom_qr_solve< system_t,
 				 typename iter_base_t::iteration_t,
 				 scalar_t, qr_type, line_search_t,
-				 converged_when_t>(sys, x,
+				 converged_when_t>(sys, y, ytrial_,
 						   res_, jac_,
 						   this->maxIters_,
 						   this->tolerance_,
@@ -186,6 +194,10 @@ class GaussNewtonQR<
   residual_t res_   = {};
   jacobian_t jac_   = {};
 
+  // ytrail needed if/when line search is used: put here
+  // so that it is constructed only once
+  state_t ytrial_  = {};
+
 public:
   GaussNewtonQR() = delete;
 
@@ -201,21 +213,22 @@ public:
 	    >
   GaussNewtonQR(const system_t & system, const T1 & y)
     : QTResid_(y), delta_(y),
-      res_(system.residual(y)), jac_(system.jacobian(y)) {}
+      res_(system.residual(y)), jac_(system.jacobian(y)),
+      ytrial_(y){}
 
   GaussNewtonQR(const GaussNewtonQR &) = delete;
   ~GaussNewtonQR() = default;
 
 public:
   template <typename system_t>
-  void solveImpl(const system_t & sys, state_t & x){
-    sys.residual(x, res_);
-    sys.jacobian(x, jac_);
+  void solveImpl(const system_t & sys, state_t & y){
+    sys.residual(y, res_);
+    sys.jacobian(y, jac_);
 
     impl::gauss_newtom_qr_solve< system_t,
 				 typename iter_base_t::iteration_t,
 				 scalar_t, qr_type, line_search_t,
-				 converged_when_t>(sys, x,
+				 converged_when_t>(sys, y, ytrial_,
 						   res_, jac_,
 						   this->maxIters_,
 						   this->tolerance_,

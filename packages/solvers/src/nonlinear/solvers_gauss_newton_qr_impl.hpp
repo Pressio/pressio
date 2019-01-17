@@ -6,8 +6,6 @@
 #include "../solvers_system_traits.hpp"
 #include "../solvers_meta_static_checks.hpp"
 #include "solvers_impl_mixins.hpp"
-//#include "../../../CORE_OPS"
-//#include "../../../QR_BASIC"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -27,13 +25,14 @@ template <
     > * =nullptr
   >
 void gauss_newtom_qr_solve(const system_t & sys,
-			   typename system_t::state_type & x,
+			   typename system_t::state_type & y,
+			   typename system_t::state_type & ytrial,
 			   typename system_t::residual_type & resid,
 			   typename system_t::jacobian_type & jacob,
 			   iteration_t maxNonLIt,
 			   scalar_t tolerance,
 			   typename system_t::state_type & QTResid,
-			   typename system_t::state_type & dx,
+			   typename system_t::state_type & dy,
 			   qr_obj_t & qrObj,
 			   scalar_t & normO,
 			   scalar_t & normN){
@@ -50,7 +49,7 @@ void gauss_newtom_qr_solve(const system_t & sys,
   is_conv_helper_t isConverged;
 
   /* functor for computing line search factor (alpha) such that
-   * the update is done with x = x + alpha dx
+   * the update is done with y = y + alpha dy
    * alpha = 1 default when user does not want line search
    */
   using lsearch_helper = lineSearchHelper<line_search_t>;
@@ -77,8 +76,8 @@ void gauss_newtom_qr_solve(const system_t & sys,
 				  convString, reset, "\n");
 #endif
 
-  // compute (whatever type) norm of x
-  normEvaluator(x, normO);
+  // compute (whatever type) norm of y
+  normEvaluator(y, normO);
   normN = static_cast<scalar_t>(0);
 
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -88,85 +87,86 @@ void gauss_newtom_qr_solve(const system_t & sys,
 
   iteration_t iStep = 0;
   while (iStep++ <= maxNonLIt)
-    {
+  {
 #ifdef DEBUG_PRINT
-      auto fmt = core::io::underline();
-      ::rompp::core::io::print_stdout(fmt, "GN step", iStep,
-				      core::io::reset(), "\n");
+    ::rompp::core::io::print_stdout("\n");
+    auto fmt = core::io::underline();
+    ::rompp::core::io::print_stdout(fmt, "GN step", iStep,
+				    core::io::reset(), "\n");
 #endif
-      // residual norm for current state
-      normEvaluator(resid, normRes);
+    // residual norm for current state
+    normEvaluator(resid, normRes);
 
 #ifdef HAVE_TEUCHOS_TIMERS
-      timer->start("QR factorization");
-      qrObj.computeThin(jacob);
-      timer->stop("QR factorization");
+    timer->start("QR factorization");
+    qrObj.computeThin(jacob);
+    timer->stop("QR factorization");
 #else
-      qrObj.computeThin(jacob);
+    qrObj.computeThin(jacob);
 #endif
 
-      // compute: Q^T Residual
+    // compute: Q^T Residual
 #ifdef HAVE_TEUCHOS_TIMERS
-      timer->start("QR projection");
-      qrObj.project(resid, QTResid);
-      timer->stop("QR projection");
+    timer->start("QR projection");
+    qrObj.project(resid, QTResid);
+    timer->stop("QR projection");
 #else
-      qrObj.project(resid, QTResid);
+    qrObj.project(resid, QTResid);
 #endif
 
-      // compute correction: dx
-      // by solving R dx = - Q^T Residual
-      QTResid.scale(static_cast<scalar_t>(-1));
+    // compute correction: dy
+    // by solving R dy = - Q^T Residual
+    QTResid.scale(static_cast<scalar_t>(-1));
 #ifdef HAVE_TEUCHOS_TIMERS
-      timer->start("QR solve");
-      qrObj.solve(QTResid, dx);
-      timer->stop("QR solve");
+    timer->start("QR solve");
+    qrObj.solve(QTResid, dy);
+    timer->stop("QR solve");
 #else
-      qrObj.solve(QTResid, dx);
+    qrObj.solve(QTResid, dy);
 #endif
 
-      // norm of the correction
-      normEvaluator(dx, normN);
+    // norm of the correction
+    normEvaluator(dy, normN);
 
 #ifdef DEBUG_PRINT
-      ::rompp::core::io::print_stdout("norm(residual) =",
-				      std::setprecision(14),
-				      normRes, ",",
-				      "norm(correction) =", normN,
-				      "\n");
+    ::rompp::core::io::print_stdout("norm(residual) =",
+				    std::setprecision(14),
+				    normRes, ",",
+				    "norm(correction) =", normN,
+				    "\n");
 #endif
 
-      // after correction is computed,
-      // compute multiplicative factor if needed
-      lineSearchHelper(alpha, x, dx, resid, jacob, sys);
+    // after correction is computed,
+    // compute multiplicative factor if needed
+    lineSearchHelper(alpha, y, ytrial, dy, resid, jacob, sys);
 
-      // solution update
-      x = x + alpha*dx;
+    // solution update
+    y = y + alpha*dy;
 
-      // check convergence (whatever method user decided)
-      auto flag = isConverged(x, dx, normN, iStep,
-			      maxNonLIt, tolerance);
-      if (flag) break;
+    // check convergence (whatever method user decided)
+    auto flag = isConverged(y, dy, normN, iStep,
+			    maxNonLIt, tolerance);
+    if (flag) break;
 
-      // store new norm into old variable
-      normO = normN;
+    // store new norm into old variable
+    normO = normN;
 
 #ifdef HAVE_TEUCHOS_TIMERS
-      timer->start("residual");
-      sys.residual(x, resid);
-      timer->stop("residual");
+    timer->start("residual");
+    sys.residual(y, resid);
+    timer->stop("residual");
 #else
-      sys.residual(x, resid);
+    sys.residual(y, resid);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
-      timer->start("jacobian");
-      sys.jacobian(x, jacob);
-      timer->stop("jacobian");
+    timer->start("jacobian");
+    sys.jacobian(y, jacob);
+    timer->stop("jacobian");
 #else
-      sys.jacobian(x, jacob);
+    sys.jacobian(y, jacob);
 #endif
-    }
+  }
 
 #if defined DEBUG_PRINT
   std::cout.precision(ss);

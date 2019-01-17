@@ -49,8 +49,8 @@ struct isConvergedHelper<converged_when::completingNumMaxIters>{
   static constexpr char const * description_ = "complete max iters";
 
   template <typename state_t, typename step_t, typename scalar_t>
-  bool operator()(const state_t & x, const state_t & dx,
-		  scalar_t norm_dx, step_t step,
+  bool operator()(const state_t & y, const state_t & dy,
+		  scalar_t norm_dy, step_t step,
 		  step_t maxIters, scalar_t tol) const{
     return step==maxIters;
   }
@@ -63,10 +63,10 @@ struct isConvergedHelper<
   static constexpr char const * description_ = "norm(dx) < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
-  bool operator()(const state_t & x, const state_t & dx,
-		  scalar_t norm_dx, step_t step,
+  bool operator()(const state_t & y, const state_t & dy,
+		  scalar_t norm_dy, step_t step,
 		  step_t maxIters, scalar_t tol) const{
-    return (norm_dx<tol);
+    return (norm_dy<tol);
   }
 };
 //---------------------------------------------------------
@@ -76,20 +76,20 @@ struct isConvergedHelper<
 template <typename ls_tag>
 struct lineSearchHelper;
 
+
 template <>
 struct lineSearchHelper<gn::noLineSearch>{
-
   template <typename scalar_t, typename ... Args>
   void operator()(scalar_t & alpha, Args&& ... args) const{
     alpha = static_cast<scalar_t>(1);
   }
 };
 
+
 template <>
 struct lineSearchHelper<gn::ArmijoLineSearch>{
 
 private:
-
   /* evaluating J^T*resid can be done smartly
    * depending on the type of J.
    * J is a matrix wrapper: then do regular mat-vec
@@ -126,8 +126,9 @@ public:
 	    typename residual_t, typename jacobian_t,
 	    typename system_t>
   void operator()(scalar_t & alpha,
-		  const state_t & x,
-		  const state_t & dx,
+		  const state_t & y,
+		  state_t & ytrial,
+		  const state_t & dy,
 		  residual_t & resid,
 		  jacobian_t & jacob,
 		  const system_t & sys) const
@@ -135,55 +136,71 @@ public:
     scalar_t c1 = 1e-4;
     alpha = static_cast<scalar_t>(1);
 #ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout("line search: Armijo rule", "\n");
+    ::rompp::core::io::print_stdout("line search: Armijo rule,",
+				    "c1=", c1, "\n");
 #endif
 
-    // create a new state vector for doing line search
-    state_t xtrial(x);
+    ytrial.setZero();
+
+    // eval obj function for current solution: f(y)
+    auto fy  = ::rompp::core::ops::norm2(resid);
 
     // compute J^T * Residual
-    state_t jTr(x);
+    state_t jTr(y);
     jTr.setZero();
     this->jacobTprodResidual(resid, jacob, jTr);
-    //::rompp::core::ops::dot(jacob, resid, jTr);
-    //*jTr.data() = (*jacob.data()).transpose() * (*resid.data());
 
-    // compute dx^T J^T R
-    auto c2 = ::rompp::core::ops::dot(dx, jTr);
-    ::rompp::core::io::print_stdout(" dx^T J^T R =", c2, "\n");
+    // compute dy^T J^T R
+    auto c2 = ::rompp::core::ops::dot(dy, jTr);
     auto rhs = c1 * alpha * c2;
-    ::rompp::core::io::print_stdout(" c1*alfa*dx^T*J^T*R =", rhs, "\n");
 
-    // eval obj function for current solution: f(x)
-    auto fx  = ::rompp::core::ops::norm2(resid);
-    ::rompp::core::io::print_stdout(" f(x) =", fx, "\n");
+#ifdef DEBUG_PRINT
+    ::rompp::core::io::print_stdout(" f(y) =", fy, "\n");
+    ::rompp::core::io::print_stdout(" dy^T J^T R =", c2, "\n");
+    ::rompp::core::io::print_stdout(" c1*alfa*dy^T*J^T*R =", rhs, "\n");
+#endif
 
     bool done = false;
-    while (not done){
+    while (not done)
+    {
+#ifdef DEBUG_PRINT
       ::rompp::core::io::print_stdout(" backtracking: alpha =",
 				      alpha, "\n");
+#endif
+
       // update
-      xtrial = x + alpha * dx;
+      ytrial = y + alpha * dy;
 
-      // eval function for updated step solition: f(x + alpha*dx)
-      sys.residual(xtrial, resid);
-      auto fxtrial  = ::rompp::core::ops::norm2(resid);
-      ::rompp::core::io::print_stdout(" f(x+alpha*dx) =", fxtrial, "\n");
+      // eval function for updated step solition: f(y + alpha*dy)
+      sys.residual(ytrial, resid);
+      auto fytrial  = ::rompp::core::ops::norm2(resid);
+      auto lhs = fytrial-fy;
 
-      auto lhs = fxtrial-fx;
+#ifdef DEBUG_PRINT
+      ::rompp::core::io::print_stdout(" f(y+alpha*dy) =", fytrial, "\n");
+      ::rompp::core::io::print_stdout(" f(y+alpha*dy)-f(y) =", lhs,
+				      "; rhs =", rhs, "\n");
+#endif
 
-      ::rompp::core::io::print_stdout(" f(x+alpha*dx)-f(x) =", lhs,
-				      " rhs =", rhs, "\n");
       // eval Armijo
       if (lhs <= rhs){
+#ifdef DEBUG_PRINT
 	::rompp::core::io::print_stdout(" lsearch done","\n");
+#endif
 	done = true;
       }
 
-      // exit also when abs(fxtrail-fx) < eps, leave eps = 1e-14 for now
+      // exit also when abs(fytrail-fy) < eps, leave eps = 1e-14 for now
       // change later with some machine epsilon
-      if (std::abs(lhs) <= 1e-14)
+      if (std::abs(lhs) <= 1e-14){
+#ifdef DEBUG_PRINT
+	::rompp::core::io::print_stdout(" detected negligible",
+					"change in obj f:",
+					"abs(fytrail-fy) < 1e-14,",
+					"exiting linsearch","\n");
+#endif
 	done = true;
+      }
 
       /* convectional way to backtrack
        * this is equivalent to using beta^m instead of alpha
