@@ -49,7 +49,7 @@ void print_stdout_if_dp(Args &&... args){
 
 
 template <typename T, typename ... Args>
-void printCoreWrapper(const T & object, Args && ...args)
+void print_core_wrapper(const T & object, Args && ...args)
 {
   using traits = core::details::traits<T>;
 
