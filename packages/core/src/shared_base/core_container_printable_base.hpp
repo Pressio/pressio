@@ -22,7 +22,8 @@ class ContainerPrintable1DBase
 
   using this_t = ContainerPrintable1DBase<derived_type, ord_t>;
 public:
-  template <typename stream_t>
+
+  template <typename stream_t = std::ostream>
   void print(stream_t & os = std::cout,
 	     char c = 'd',
 	     ord_t numElementsToPrint = -1) const{
@@ -49,7 +50,8 @@ class ContainerPrintable2DBase
 
   using this_t = ContainerPrintable2DBase<derived_type, ord1_t, ord2_t>;
 public:
-  template <typename stream_t>
+
+  template <typename stream_t = std::ostream>
   void print(stream_t & os = std::cout,
 	     char c = 'd',
 	     ord1_t niToPrint = -1,
