@@ -9,51 +9,102 @@
 
 namespace rompp{ namespace core{ namespace meta {
 
-
-template <typename T, typename enable = void>
-struct is_dense_dynamic_matrix_eigen : std::false_type {};
-
-/* a type is a dense eigen matrix if
-   (a) it is not a eigen vector,
-   (b) its rows and cols are fully dynamic*/
-template<typename T>
-struct is_dense_dynamic_matrix_eigen<
-  T,
-  typename
-  std::enable_if<
-    !is_vector_eigen<T>::value &&
-    std::is_same<
-      T,
-      Eigen::Matrix<typename T::Scalar,Eigen::Dynamic, Eigen::Dynamic>
-      >::value
-    >::type
-  > : std::true_type{};
-
-//----------------------------------------------------------------------
-
 template <typename T, typename enable = void>
 struct is_dense_static_matrix_eigen : std::false_type {};
 
-/* a type is a dense eigen matrix if
-   (a) it is not a eigen vector,
-   (b) matches a eigen matrix sized at compile time*/
+/* T is a dense STATIC eigen matrix if
+ * T is not an eigen vector
+ * rows and cols are not = Eigen:Dynamic
+ */
 template<typename T>
 struct is_dense_static_matrix_eigen<
   T,
   typename
   std::enable_if<
     !is_vector_eigen<T>::value and
-    !is_dense_dynamic_matrix_eigen<T>::value and
     std::is_same<
       T,
       Eigen::Matrix<typename T::Scalar,
 		    T::RowsAtCompileTime,
 		    T::ColsAtCompileTime
 		    >
-      >::value
+      >::value and
+    T::RowsAtCompileTime != Eigen::Dynamic and
+    T::ColsAtCompileTime != Eigen::Dynamic
     >::type
   > : std::true_type{};
 //----------------------------------------------------------------------
+
+
+template <typename T, typename enable = void>
+struct is_dense_dynamic_matrix_eigen : std::false_type {};
+
+/* T is a dense DYNAMIC eigen matrix if
+ * is not an eigen vector
+ * is not a static dense matrix
+ * both # rows and cols are dynamic
+*/
+template<typename T>
+struct is_dense_dynamic_matrix_eigen<
+  T,
+  typename
+  std::enable_if<
+    !is_vector_eigen<T>::value and
+    !is_dense_static_matrix_eigen<T>::value and
+    std::is_same<
+      T, Eigen::Matrix<typename T::Scalar,
+		       Eigen::Dynamic, Eigen::Dynamic
+		       >
+      >::value
+    >::type
+  > : std::true_type{};
+
+
+/* T is a dense DYNAMIC eigen matrix if
+ * is not an eigen vector
+ * is not a static dense matrix
+ * # of rows is static but cols are dynamic
+*/
+template<typename T>
+struct is_dense_dynamic_matrix_eigen<
+  T,
+  typename
+  std::enable_if<
+    !is_vector_eigen<T>::value and
+    !is_dense_static_matrix_eigen<T>::value and
+    std::is_same<
+      T, Eigen::Matrix<typename T::Scalar,
+		       T::RowsAtCompileTime,
+		       Eigen::Dynamic>
+      >::value and
+    T::RowsAtCompileTime != Eigen::Dynamic
+    >::type
+  > : std::true_type{};
+
+
+/* T is a dense DYNAMIC eigen matrix if
+ * is not an eigen vector
+ * is not a static dense matrix
+ * # of rows is dynamic but cols are static
+*/
+template<typename T>
+struct is_dense_dynamic_matrix_eigen<
+  T,
+  typename
+  std::enable_if<
+    !is_vector_eigen<T>::value and
+    !is_dense_static_matrix_eigen<T>::value and
+    std::is_same<
+      T, Eigen::Matrix<typename T::Scalar,
+		       Eigen::Dynamic,
+		       T::ColsAtCompileTime>
+      >::value and
+    T::ColsAtCompileTime != Eigen::Dynamic
+    >::type
+  > : std::true_type{};
+
+//----------------------------------------------------------------------
+
 
 template <typename T, typename enable = void>
 struct is_dense_matrix_eigen : std::false_type {};
@@ -73,15 +124,15 @@ struct is_dense_matrix_eigen<
 template <typename T, typename enable = void>
 struct is_sparse_matrix_eigen : std::false_type {};
 
-/* a type is a sparse eigen matrix if
-   (a) it is not a eigen vector,
-   (b) matches a eigen sparse matrix sized at compile time
-   (c) it is not a dense matrix
+/*
+ * T is an eigen sparse matrix if is
+ * not an eigen vector
+ * is same type as sparse matrix
 */
 template<typename T>
 struct is_sparse_matrix_eigen<T, typename
-  std::enable_if< !is_vector_eigen<T>::value &&
-		  !is_dense_matrix_eigen<T>::value &&
+  std::enable_if< !is_vector_eigen<T>::value and
+		  /*!is_dense_matrix_eigen<T>::value &&*/
 		  std::is_same<T,
 			       Eigen::SparseMatrix<
 			       typename T::Scalar,

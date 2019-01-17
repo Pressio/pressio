@@ -22,6 +22,22 @@ struct is_dynamic_row_vector_eigen<T,
       > : std::true_type{};
 //----------------------------------------------
 
+template <typename T, typename enable = void>
+struct is_static_row_vector_eigen : std::false_type {};
+
+template <typename T>
+struct is_static_row_vector_eigen<T,
+	 core::meta::enable_if_t<
+	   std::is_same<T,
+			Eigen::Matrix<typename T::Scalar,
+				      1,
+				      T::ColsAtCompileTime>
+			>::value and
+	   !is_dynamic_row_vector_eigen<T>::value
+	   >
+      > : std::true_type{};
+//----------------------------------------------
+
 
 template <typename T, typename enable = void>
 struct is_dynamic_column_vector_eigen : std::false_type {};
@@ -37,23 +53,6 @@ struct is_dynamic_column_vector_eigen<T,
       > : std::true_type{};
 //----------------------------------------------
 
-
-template <typename T, typename enable = void>
-struct is_static_row_vector_eigen : std::false_type {};
-
-template <typename T>
-struct is_static_row_vector_eigen<T,
-	 core::meta::enable_if_t<
-	   std::is_same<T,
-			Eigen::Matrix<typename T::Scalar,
-				      1,
-				      T::ColsAtCompileTime>
-			>::value and
-	   T::ColsAtCompileTime != Eigen::Dynamic
-	   >
-      > : std::true_type{};
-//----------------------------------------------
-
 template <typename T, typename enable = void>
 struct is_static_column_vector_eigen : std::false_type {};
 
@@ -65,11 +64,10 @@ struct is_static_column_vector_eigen<T,
 				      T::RowsAtCompileTime,
 				      1>
 			>::value and
-	   T::RowsAtCompileTime != Eigen::Dynamic
+	   !is_dynamic_column_vector_eigen<T>::value
 	   >
       > : std::true_type{};
 //----------------------------------------------
-
 
 
 template <typename T, typename enable = void>
