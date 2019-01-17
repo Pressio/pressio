@@ -127,8 +127,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result){
   // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
-  assert(result.size() == numVecs);
+  assert(result.size() == mvA.globalNumVectors());
   dot(mvA, vecB, result.data()->data());
 }
 

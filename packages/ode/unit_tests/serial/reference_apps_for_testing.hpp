@@ -82,7 +82,7 @@ public:
 
   void residual(const state_type & y, residual_type & R,
 		scalar_type t) const{
-    auto sz = y.size(); assert(sz==3);
+    assert(y.size()==3);
     R = -10. * y;
   };
   //--------------------------------------------

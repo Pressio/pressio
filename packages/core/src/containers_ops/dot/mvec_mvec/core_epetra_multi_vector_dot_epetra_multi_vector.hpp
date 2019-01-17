@@ -26,10 +26,8 @@ auto dot(const mvec_t & mvA, const mvec_t & mvB)
 
   // how many vectors are in mvA and mvB
   auto numVecsA = mvA.globalNumVectors();
-  auto nRowsA = mvA.globalLength();
   auto numVecsB = mvB.globalNumVectors();
-  auto nRowsB = mvB.globalLength();
-  assert( nRowsA == nRowsB );
+  assert( mvA.globalLength() == mvB.globalLength());
   auto const & mvAdata = *mvA.data();
   auto const & mvBdata = *mvB.data();
 

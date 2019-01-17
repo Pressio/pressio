@@ -36,8 +36,7 @@ TEST(epetraMultiVectorR9C4VecS9Fixture,
 
   Epetra_MpiComm comm(MPI_COMM_WORLD);
   auto rank = comm.MyPID();
-  auto numProc = comm.NumProc();
-  assert(numProc == 3);
+  assert(comm.NumProc() == 3);
   Epetra_Map rowMap(6, 0, comm);
   auto localSize = 2;
 

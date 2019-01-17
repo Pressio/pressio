@@ -42,10 +42,12 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
     EXPECT_NEAR( 0.0, b(1,1), 1e-12);
 
   b.scale(2.0);
-  if(rank_==0)
+  if(rank_==0){
     EXPECT_NEAR( 86.6, b(1,1), 1e-12);
-  if (rank_==1)
+  }
+  if (rank_==1){
     EXPECT_NEAR( 26.6, b(1,2), 1e-12);
+  }
 }
 
 

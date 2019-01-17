@@ -133,10 +133,8 @@ void dot(const mvec_type & mvA,
 
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
-  // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
   // check the result has right size
-  assert( result.size() == numVecs );
+  assert( result.size() == mvA.globalNumVectors() );
   dot(mvA, vecB, result.data()->data());
 
   // for (decltype(numVecs) i=0; i<numVecs; i++){
