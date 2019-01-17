@@ -52,7 +52,7 @@ public:
 	      T::is_vector_expression> * = nullptr>
   this_t & operator=(const T & expr){
     assert(this->size() == expr.size());
-    for (size_t i = 0; i != expr.size(); ++i)
+    for (decltype(expr.size()) i = 0; i != expr.size(); ++i)
       data_[i] = expr(i);
     return *this;
   }
