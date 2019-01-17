@@ -32,7 +32,7 @@ auto norm1(const vec_type & a)
 #ifdef HAVE_TRILINOS
 template <typename vec_type,
   core::meta::enable_if_t<
-    core::meta::is_teuchos_serial_dense_vector_wrapper<vec_type>::value
+    core::meta::is_dense_vector_teuchos_wrapper<vec_type>::value
     > * = nullptr
   >
 auto norm1(const vec_type & a)

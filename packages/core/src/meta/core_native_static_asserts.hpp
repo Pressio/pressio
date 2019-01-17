@@ -97,51 +97,51 @@ namespace rompp{ namespace core{
 ///////////////////////
 
 #define STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_EIGEN(TYPE) \
-  static_assert( core::meta::is_matrix_dense_sharedmem_eigen<TYPE>::value,	\
+  static_assert( core::meta::is_dense_matrix_eigen<TYPE>::value,	\
 		 "THIS_IS_NOT_A_MATRIX_DENSE_SHAREDMEM_EIGEN")
 #define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_EIGEN(TYPE) \
-  static_assert( !core::meta::is_matrix_dense_sharedmem_eigen<TYPE>::value, \
+  static_assert( !core::meta::is_dense_matrix_eigen<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_DENSE_SHAREDMEM_EIGEN")
 
 
 #define STATIC_ASSERT_IS_MATRIX_SPARSE_SHAREDMEM_EIGEN(TYPE) \
-  static_assert( core::meta::is_matrix_sparse_sharedmem_eigen<TYPE>::value,	\
+  static_assert( core::meta::is_sparse_matrix_eigen<TYPE>::value,	\
 		 "THIS_IS_NOT_A_MATRIX_SPARSE_SHAREDMEM_EIGEN")
 #define STATIC_ASSERT_IS_NOT_MATRIX_SPARSE_SHAREDMEM_EIGEN(TYPE) \
-  static_assert( !core::meta::is_matrix_sparse_sharedmem_eigen<TYPE>::value, \
+  static_assert( !core::meta::is_sparse_matrix_eigen<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_SPARSE_SHAREDMEM_EIGEN")
 
 
 #define STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_STDLIB(TYPE)	      \
-  static_assert( core::meta::is_matrix_dense_sharedmem_stdlib<TYPE>::value, \
+  static_assert( core::meta::is_dense_matrix_stdlib<TYPE>::value, \
 		 "THIS_IS_NOT_A_MATRIX_DENSE_SHAREDMEM_STDLIB")
 #define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_STDLIB(TYPE) \
-  static_assert( !core::meta::is_matrix_dense_sharedmem_stdlib<TYPE>::value, \
+  static_assert( !core::meta::is_dense_matrix_stdlib<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_DENSE_SHAREDMEM_STDLIB")
 
 
 #ifdef HAVE_TRILINOS
 #define STATIC_ASSERT_IS_MATRIX_SPARSE_DISTRIBUTED_EPETRA(TYPE)	      \
-  static_assert( core::meta::is_matrix_sparse_distributed_epetra<TYPE>::value, \
+  static_assert( core::meta::is_sparse_matrix_epetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_MATRIX_SPARSE_DIST_EPETRA")
 #define STATIC_ASSERT_IS_NOT_MATRIX_SPARSE_DISTRIBUTED_EPETRA(TYPE) \
-  static_assert( !core::meta::is_matrix_sparse_distributed_epetra<TYPE>::value, \
+  static_assert( !core::meta::is_sparse_matrix_epetra<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_SPARSE_DIST_EPETRA")
 
 
 #define STATIC_ASSERT_IS_MATRIX_SPARSE_DISTRIBUTED_TPETRA(TYPE)     \
-  static_assert( core::meta::is_matrix_sparse_distributed_tpetra<TYPE>::value, \
+  static_assert( core::meta::is_sparse_matrix_tpetra<TYPE>::value, \
      "THIS_IS_NOT_A_MATRIX_SPARSE_DIST_TPETRA")
 #define STATIC_ASSERT_IS_NOT_MATRIX_SPARSE_DISTRIBUTED_TPETRA(TYPE) \
-  static_assert( !core::meta::is_matrix_sparse_distributed_tpetra<TYPE>::value, \
+  static_assert( !core::meta::is_sparse_matrix_tpetra<TYPE>::value, \
      "THIS_IS_A_MATRIX_SPARSE_DIST_TPETRA")
 
 
 #define STATIC_ASSERT_IS_MATRIX_DENSE_DISTRIBUTED_EPETRA(TYPE)	      \
-  static_assert( core::meta::is_matrix_dense_distributed_epetra<TYPE>::value, \
+  static_assert( core::meta::is_dense_matrix_epetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_MATRIX_DENSE_DIST_EPETRA")
 #define STATIC_ASSERT_IS_NOT_MATRIX_DENSE_DISTRIBUTED_EPETRA(TYPE) \
-  static_assert( !core::meta::is_matrix_dense_distributed_epetra<TYPE>::value, \
+  static_assert( !core::meta::is_dense_matrix_epetra<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_DENSE_DIST_EPETRA")
 #endif
 

@@ -3,20 +3,20 @@
 #ifndef CORE_NATIVE_TRILINOS_MATRIX_META_HPP_
 #define CORE_NATIVE_TRILINOS_MATRIX_META_HPP_
 
-#include "core_meta_basic.hpp"
-#include "core_native_vector_meta.hpp"
+#include "../core_meta_basic.hpp"
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_MultiVector.h>
 #include <Epetra_LocalMap.h>
 #include <Tpetra_CrsMatrix_decl.hpp>
+#include "Teuchos_SerialDenseMatrix.hpp"
 
 namespace rompp{ namespace core{ namespace meta {
 
 template <typename T, typename enable = void>
-struct is_matrix_sparse_distributed_tpetra : std::false_type {};
+struct is_sparse_matrix_tpetra : std::false_type {};
 
 template <typename T>
-struct is_matrix_sparse_distributed_tpetra<T,
+struct is_sparse_matrix_tpetra<T,
       typename
       std::enable_if<
   std::is_same<T,
@@ -32,28 +32,54 @@ struct is_matrix_sparse_distributed_tpetra<T,
 //--------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_matrix_sparse_distributed_epetra
+struct is_sparse_matrix_epetra
   : std::false_type {};
 
 template<typename T>
-struct is_matrix_sparse_distributed_epetra<T,
+struct is_sparse_matrix_epetra<T,
     typename std::enable_if<
       std::is_same<T, Epetra_CrsMatrix>::value
       >::type >
   : std::true_type{};
 
-//----------------------------------------------------------------------
+//-------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_matrix_dense_distributed_epetra
+struct is_dense_matrix_epetra
   : std::false_type {};
 
 template<typename T>
-struct is_matrix_dense_distributed_epetra<T,
+struct is_dense_matrix_epetra<T,
     typename std::enable_if<
       std::is_same<T, Epetra_MultiVector>::value
       >::type >
   : std::true_type{};
+//-------------------------------------------------
+
+template <typename T, typename enable = void>
+struct is_dense_matrix_teuchos : std::false_type {};
+
+template <typename T>
+struct is_dense_matrix_teuchos<T,
+    typename std::enable_if<
+	std::is_same<T,
+	  Teuchos::SerialDenseMatrix<typename T::ordinalType,
+				     typename T::scalarType>
+	  >::value
+	>::type
+      > : std::true_type{};
+//-------------------------------------------------
+
+template <typename T, typename enable = void>
+struct is_dense_matrix_teuchos_rcp : std::false_type {};
+
+template <typename T>
+struct is_dense_matrix_teuchos_rcp<T,
+    typename std::enable_if<
+      is_teuchos_rcp_ptr<T>::value and
+      is_dense_matrix_teuchos<typename T::element_type>::value
+	>::type
+      > : std::true_type{};
 
 
 }}}//end namespace rompp::core::meta

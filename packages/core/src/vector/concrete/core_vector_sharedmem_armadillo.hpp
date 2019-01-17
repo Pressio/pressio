@@ -13,8 +13,8 @@ namespace rompp{ namespace core{
 template <typename wrapped_type>
 class Vector<wrapped_type,
     core::meta::enable_if_t<
-      core::meta::is_armadillo_column_vector<wrapped_type>::value or
-      core::meta::is_armadillo_row_vector<wrapped_type>::value
+      core::meta::is_column_vector_armadillo<wrapped_type>::value or
+      core::meta::is_row_vector_armadillo<wrapped_type>::value
       >
     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,

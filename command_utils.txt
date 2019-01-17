@@ -2,7 +2,7 @@
 Some utilities commands:
 (a) to replace string inside files
 
-	grep -rl 'timeIntegrator' . | xargs sed -i '' 's/timeIntegrator/ode/g'
+       	grep -rl 'timeIntegrator' . | xargs sed -i '' 's/timeIntegrator/ode/g'
 
 
 (b) to rename files by replacing part of the string

@@ -43,8 +43,8 @@ auto max(const vec_type & a) -> typename details::traits<vec_type>::scalar_t
 // #ifdef HAVE_ARMADILLO
 // template <typename vec_type,
 //   core::meta::enable_if_t<
-//     core::meta::is_armadillo_column_vector_wrapper<vec_type>::value or
-//     core::meta::is_armadillo_row_vector_wrapper<vec_type>::value
+//     core::meta::is_column_vector_armadillo_wrapper<vec_type>::value or
+//     core::meta::is_row_vector_armadillo_wrapper<vec_type>::value
 //     > * = nullptr
 //   >
 // auto max(const vec_type & a) -> typename details::traits<vec_type>::scalar_t

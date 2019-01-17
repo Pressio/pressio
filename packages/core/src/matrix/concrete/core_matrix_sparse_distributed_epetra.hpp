@@ -17,7 +17,7 @@ namespace rompp{ namespace core{
 template <typename wrapped_type>
 class Matrix<wrapped_type,
 	     core::meta::enable_if_t<
-	       core::meta::is_matrix_sparse_distributed_epetra<
+	       core::meta::is_sparse_matrix_epetra<
 		 wrapped_type>::value>
 	     >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,

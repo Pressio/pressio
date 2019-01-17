@@ -3,6 +3,7 @@
 #define ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
 
 #include "ode_ConfigDefs.hpp"
+#include "../../core/src/meta/core_meta_detection_idiom.hpp"
 
 namespace rompp{ namespace ode{ namespace meta {
       

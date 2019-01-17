@@ -89,7 +89,7 @@ struct traits<MultiVector<wrapped_type,
 template<typename wrapped_type>
 struct traits<MultiVector<wrapped_type,
       typename std::enable_if<
-       meta::is_multi_vector_eigen_dynamic<wrapped_type
+       meta::is_dynamic_multi_vector_eigen<wrapped_type
       >::value>::type>
      >
   : public containers_shared_traits<MultiVector<wrapped_type>,

@@ -13,7 +13,7 @@ namespace rompp{ namespace core{
 template <typename wrapped_type>
 class Vector<wrapped_type,
 	     core::meta::enable_if_t<
-	       core::meta::is_teuchos_serial_dense_vector<wrapped_type>::value
+	       core::meta::is_dense_vector_teuchos<wrapped_type>::value
 	       >
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,

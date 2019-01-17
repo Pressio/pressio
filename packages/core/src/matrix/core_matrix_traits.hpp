@@ -19,7 +19,7 @@ struct traits< Matrix<
     wrapped_type,
     typename
     std::enable_if<
-      core::meta::is_matrix_dense_sharedmem_eigen<
+      core::meta::is_dense_matrix_eigen<
 	wrapped_type>::value
       >::type
     >
@@ -52,7 +52,7 @@ struct traits< Matrix<
     wrapped_type,
     typename
     std::enable_if<
-      core::meta::is_matrix_sparse_sharedmem_eigen<
+      core::meta::is_sparse_matrix_eigen<
 	wrapped_type
 	>::value
       >::type
@@ -87,7 +87,7 @@ struct traits<Matrix
    <wrapped_type,
     typename
     std::enable_if<
-      core::meta::is_matrix_sparse_distributed_epetra<
+      core::meta::is_sparse_matrix_epetra<
 	wrapped_type
 	>::value
       >::type
@@ -124,7 +124,7 @@ template<typename wrapped_type>
 struct traits<Matrix<wrapped_type,
 	  typename
 	  std::enable_if<
-	    core::meta::is_teuchos_serial_dense_matrix<
+	    core::meta::is_dense_matrix_teuchos<
 	      wrapped_type>::value
 	    >::type
 	  >
@@ -155,7 +155,7 @@ struct traits<Matrix
    <wrapped_type,
     typename
     std::enable_if<
-      core::meta::is_matrix_dense_distributed_epetra<
+      core::meta::is_dense_matrix_epetra<
 	wrapped_type
 	>::value
       >::type
@@ -192,7 +192,7 @@ struct traits<Matrix
 template<typename wrapped_type>
 struct traits<Matrix<wrapped_type,
       typename std::enable_if<
-       meta::is_matrix_sparse_distributed_tpetra<wrapped_type
+       meta::is_sparse_matrix_tpetra<wrapped_type
       >::value>::type>
      >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -243,7 +243,7 @@ struct traits< Matrix<
     wrapped_type,
     typename
     std::enable_if<
-      core::meta::is_matrix_dense_sharedmem_stdlib<
+      core::meta::is_dense_matrix_stdlib<
 	wrapped_type
 	>::value
       >::type

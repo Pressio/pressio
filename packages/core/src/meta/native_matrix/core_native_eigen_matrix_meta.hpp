@@ -2,8 +2,8 @@
 #ifndef CORE_NATIVE_EIGEN_MATRIX_META_HPP_
 #define CORE_NATIVE_EIGEN_MATRIX_META_HPP_
 
-#include "core_meta_basic.hpp"
-#include "core_native_eigen_vector_meta.hpp"
+#include "../core_meta_basic.hpp"
+#include "../native_vector/core_native_eigen_vector_meta.hpp"
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
 
@@ -11,13 +11,13 @@ namespace rompp{ namespace core{ namespace meta {
 
 
 template <typename T, typename enable = void>
-struct is_matrix_dense_sharedmem_eigen_dynamic : std::false_type {};
+struct is_dense_dynamic_matrix_eigen : std::false_type {};
 
 /* a type is a dense eigen matrix if
    (a) it is not a eigen vector,
    (b) its rows and cols are fully dynamic*/
 template<typename T>
-struct is_matrix_dense_sharedmem_eigen_dynamic<
+struct is_dense_dynamic_matrix_eigen<
   T,
   typename
   std::enable_if<
@@ -32,18 +32,18 @@ struct is_matrix_dense_sharedmem_eigen_dynamic<
 //----------------------------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_matrix_dense_sharedmem_eigen_static : std::false_type {};
+struct is_dense_static_matrix_eigen : std::false_type {};
 
 /* a type is a dense eigen matrix if
    (a) it is not a eigen vector,
    (b) matches a eigen matrix sized at compile time*/
 template<typename T>
-struct is_matrix_dense_sharedmem_eigen_static<
+struct is_dense_static_matrix_eigen<
   T,
   typename
   std::enable_if<
     !is_vector_eigen<T>::value and
-    !is_matrix_dense_sharedmem_eigen_dynamic<T>::value and
+    !is_dense_dynamic_matrix_eigen<T>::value and
     std::is_same<
       T,
       Eigen::Matrix<typename T::Scalar,
@@ -56,14 +56,14 @@ struct is_matrix_dense_sharedmem_eigen_static<
 //----------------------------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_matrix_dense_sharedmem_eigen : std::false_type {};
+struct is_dense_matrix_eigen : std::false_type {};
 
 template<typename T>
-struct is_matrix_dense_sharedmem_eigen<
+struct is_dense_matrix_eigen<
   T, typename
   std::enable_if<
-       is_matrix_dense_sharedmem_eigen_static<T>::value or
-       is_matrix_dense_sharedmem_eigen_dynamic<T>::value
+       is_dense_static_matrix_eigen<T>::value or
+       is_dense_dynamic_matrix_eigen<T>::value
     >::type
   > : std::true_type{};
 
@@ -71,7 +71,7 @@ struct is_matrix_dense_sharedmem_eigen<
 //----------------------------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_matrix_sparse_sharedmem_eigen : std::false_type {};
+struct is_sparse_matrix_eigen : std::false_type {};
 
 /* a type is a sparse eigen matrix if
    (a) it is not a eigen vector,
@@ -79,9 +79,9 @@ struct is_matrix_sparse_sharedmem_eigen : std::false_type {};
    (c) it is not a dense matrix
 */
 template<typename T>
-struct is_matrix_sparse_sharedmem_eigen<T, typename
+struct is_sparse_matrix_eigen<T, typename
   std::enable_if< !is_vector_eigen<T>::value &&
-		  !is_matrix_dense_sharedmem_eigen<T>::value &&
+		  !is_dense_matrix_eigen<T>::value &&
 		  std::is_same<T,
 			       Eigen::SparseMatrix<
 			       typename T::Scalar,

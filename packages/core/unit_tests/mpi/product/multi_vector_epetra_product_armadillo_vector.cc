@@ -33,7 +33,7 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   vn_t bn(4);
   using vec_t = core::Vector<vn_t>;
   STATIC_ASSERT_IS_CORE_VECTOR_WRAPPER(vec_t);
-  static_assert(core::meta::is_armadillo_column_vector_wrapper<vec_t>::value,
+  static_assert(core::meta::is_column_vector_armadillo_wrapper<vec_t>::value,
 		"");
   vec_t b(bn);
   b[0] = 1.;

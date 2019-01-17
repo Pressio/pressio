@@ -40,7 +40,7 @@ struct svd_traits<Solver<
 		    sval_type,
 		    typename
 		    std::enable_if<
-		      core::meta::is_matrix_sparse_distributed_epetra<
+		      core::meta::is_sparse_matrix_epetra<
 			typename
 			core::details::traits<matrix_type>::wrapped_t
 			>::value

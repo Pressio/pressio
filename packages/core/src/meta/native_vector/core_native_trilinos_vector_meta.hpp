@@ -3,11 +3,12 @@
 #ifndef CORE_NATIVE_TRILINOS_VECTOR_META_HPP_
 #define CORE_NATIVE_TRILINOS_VECTOR_META_HPP_
 
-#include "core_meta_basic.hpp"
+#include "../core_meta_basic.hpp"
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
 #include "Tpetra_Vector.hpp"
 #include "Kokkos_Core.hpp"
+#include "Teuchos_SerialDenseVector.hpp"
 
 namespace rompp{ namespace core{ namespace meta {
 
@@ -43,6 +44,20 @@ struct is_vector_tpetra<T,
 //--------------------------------------------
 
 template <typename T, typename enable = void>
+struct is_dense_vector_teuchos : std::false_type {};
+
+template <typename T>
+struct is_dense_vector_teuchos<T,
+      core::meta::enable_if_t<
+	std::is_same<T,
+	  Teuchos::SerialDenseVector<typename T::ordinalType,
+				     typename T::scalarType>
+	  >::value
+	>
+      > : std::true_type{};
+//--------------------------------------------
+
+template <typename T, typename enable = void>
 struct is_vector_kokkos : std::false_type {};
 
 template <typename T>
@@ -56,4 +71,3 @@ struct is_vector_kokkos<T,
 }}}//end namespace rompp::core::meta
 #endif
 #endif
-

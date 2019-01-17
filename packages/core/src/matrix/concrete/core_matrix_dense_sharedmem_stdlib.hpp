@@ -18,7 +18,7 @@ template <typename wrapped_type>
 class Matrix<wrapped_type,
        typename
        std::enable_if<
-	 core::meta::is_matrix_dense_sharedmem_stdlib<
+	 core::meta::is_dense_matrix_stdlib<
 	   wrapped_type>::value
 	 >::type
        >

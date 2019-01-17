@@ -35,8 +35,8 @@ void solve(const vector_type & rhs,
 #ifdef HAVE_TRILINOS
 template<typename vector_type, typename R_type,
 	 ::rompp::core::meta::enable_if_t<
-	   ::rompp::core::meta::is_teuchos_serial_dense_vector_wrapper<vector_type>::value and
-	   ::rompp::core::meta::is_teuchos_serial_dense_matrix_rcp<R_type>::value
+	   ::rompp::core::meta::is_dense_vector_teuchos_wrapper<vector_type>::value and
+	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
@@ -69,8 +69,8 @@ template<typename vector_type,
 	 typename R_type,
 	 int n,
 	 ::rompp::core::meta::enable_if_t<
-	   ::rompp::core::meta::is_teuchos_serial_dense_vector_wrapper<vector_type>::value and
-	   ::rompp::core::meta::is_teuchos_serial_dense_matrix_rcp<R_type>::value and
+	   ::rompp::core::meta::is_dense_vector_teuchos_wrapper<vector_type>::value and
+	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n == core::constants::dynamic
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
@@ -88,7 +88,7 @@ template<typename vector_type,
 	 int n,
 	 ::rompp::core::meta::enable_if_t<
 	   ::rompp::core::meta::is_eigen_vector_wrapper<vector_type>::value and
-	   ::rompp::core::meta::is_teuchos_serial_dense_matrix_rcp<R_type>::value and
+	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n != core::constants::dynamic and n>=1
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
@@ -111,7 +111,7 @@ template<typename vector_type,
 	 int n,
 	 ::rompp::core::meta::enable_if_t<
 	   ::rompp::core::meta::is_eigen_vector_wrapper<vector_type>::value and
-	   ::rompp::core::meta::is_teuchos_serial_dense_matrix_rcp<R_type>::value and
+	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n == core::constants::dynamic
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)

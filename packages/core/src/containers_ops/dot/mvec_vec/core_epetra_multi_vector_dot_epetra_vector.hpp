@@ -63,7 +63,7 @@ template <typename mvec_type,
   core::meta::enable_if_t<
     core::meta::is_epetra_multi_vector_wrapper<mvec_type>::value and
     core::meta::is_epetra_vector_wrapper<vec_type>::value and
-    core::meta::is_teuchos_serial_dense_vector_wrapper<result_vec_type>::value and
+    core::meta::is_dense_vector_teuchos_wrapper<result_vec_type>::value and
     core::meta::wrapper_triplet_have_same_scalar<mvec_type,
 						 vec_type,
 						 result_vec_type>::value and

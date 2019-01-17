@@ -12,14 +12,22 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "core_config.h"
 ###############
 FILE(GLOB core_general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
-FILE(GLOB core_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
 FILE(GLOB core_io_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/io/*.hpp")
 FILE(GLOB core_tinympl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/tinympl/*.hpp")
 FILE(GLOB core_tinymplvar_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/tinympl/variadic/*.hpp")
+
+FILE(GLOB core_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
+FILE(GLOB core_meta_native_vec_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_vector/*.hpp")
+FILE(GLOB core_meta_native_multi_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_multi_vector/*.hpp")
+FILE(GLOB core_meta_native_matrix_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_matrix/*.hpp")
+
 
 FILE(GLOB core_shared_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/*.hpp")
@@ -81,12 +89,20 @@ FILE(GLOB core_matrix_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 #################
 FILE(GLOB core_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
-FILE(GLOB core_meta_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/meta/src/*.cc")
 FILE(GLOB core_io_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/io/src/*.cc")
 FILE(GLOB core_shared_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/src/*.cc")
+
+FILE(GLOB core_meta_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/src/*.cc")
+FILE(GLOB core_meta_native_vector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_vector/src/*.cc")
+FILE(GLOB core_meta_native_multi_vector_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_multi_vector/src/*.cc")
+FILE(GLOB core_meta_native_matrix_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_matrix/src/*.cc")
+
 
 FILE(GLOB core_containers_ops_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/src/*.cc")
@@ -142,9 +158,13 @@ FILE(GLOB core_matrix_concrete_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 
 SET(SOURCES
   ${core_general_SRCS}
-  ${core_meta_SRCS}
   ${core_io_SRCS}
   ${core_core_shared_base_SRCS}
+  #
+  ${core_meta_SRCS}
+  ${core_meta_native_vetor_SRCS}
+  ${core_meta_native_multi_vector_SRCS}
+  ${core_meta_native_matrix_SRCS}
   #
   ${core_containers_ops_SRCS}
   ${core_containers_dot_ops_SRCS}
@@ -195,14 +215,17 @@ SET(CORE_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/c
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${CORE_INCDIR})
 INSTALL(FILES ${core_general_HEADERS} DESTINATION ${CORE_INCDIR})
 INSTALL(FILES ${core_io_HEADERS} DESTINATION ${CORE_INCDIR}/io)
-INSTALL(FILES ${core_meta_HEADERS} DESTINATION ${CORE_INCDIR}/meta)
 INSTALL(FILES ${core_tinympl_HEADERS} DESTINATION ${CORE_INCDIR}/meta/tinympl)
 INSTALL(FILES ${core_tinymplvar_HEADERS} DESTINATION ${CORE_INCDIR}/meta/tinympl/variadic)
 
-INSTALL(FILES ${core_shared_base_HEADERS} DESTINATION ${CORE_INCDIR}/shared_base)
-#
-INSTALL(FILES ${core_containers_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops)
+INSTALL(FILES ${core_meta_HEADERS} DESTINATION ${CORE_INCDIR}/meta)
+INSTALL(FILES ${core_meta_native_vector_HEADERS} DESTINATION ${CORE_INCDIR}/meta/native_vector)
+INSTALL(FILES ${core_meta_native_multi_vector_HEADERS} DESTINATION ${CORE_INCDIR}/meta/native_multi_vector)
+INSTALL(FILES ${core_meta_native_matrix_HEADERS} DESTINATION ${CORE_INCDIR}/meta/native_matrix)
 
+INSTALL(FILES ${core_shared_base_HEADERS} DESTINATION ${CORE_INCDIR}/shared_base)
+
+INSTALL(FILES ${core_containers_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops)
 INSTALL(FILES ${core_containers_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops)
 INSTALL(FILES ${core_containers_dot_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot)
 INSTALL(FILES ${core_containers_dot_mvec_mvec_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot/mvec_mvec)

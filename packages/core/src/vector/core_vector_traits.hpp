@@ -130,7 +130,7 @@ struct traits<Vector<wrapped_type,
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
 		     core::meta::enable_if_t<
-		       core::meta::is_armadillo_column_vector<
+		       core::meta::is_column_vector_armadillo<
 			 wrapped_type>::value
 		       >
 		     >
@@ -159,7 +159,7 @@ struct traits<Vector<wrapped_type,
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
 		     core::meta::enable_if_t<
-		       core::meta::is_armadillo_row_vector<
+		       core::meta::is_row_vector_armadillo<
 			 wrapped_type>::value
 		       >
 		     >
@@ -217,7 +217,7 @@ template<typename wrapped_type>
 struct traits<Vector<wrapped_type,
 	  typename
 	  std::enable_if<
-	    core::meta::is_teuchos_serial_dense_vector<
+	    core::meta::is_dense_vector_teuchos<
 	      wrapped_type>::value
 	    >::type
 	  >

@@ -26,10 +26,10 @@ struct is_core_matrix_wrapper< T,
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_teuchos_serial_dense_matrix_wrapper : std::false_type {};
+struct is_dense_matrix_teuchos_wrapper : std::false_type {};
 
 template <typename T>
-struct is_teuchos_serial_dense_matrix_wrapper<
+struct is_dense_matrix_teuchos_wrapper<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_matrix &&
        core::details::traits<T>::wrapped_matrix_identifier==
