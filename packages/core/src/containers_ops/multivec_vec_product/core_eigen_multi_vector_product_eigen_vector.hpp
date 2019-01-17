@@ -34,7 +34,7 @@ void product(const mvec_type & mvA,
   auto Alength = mvA.length();
 
   // size of vecB
-  assert(size_t(numVecs) == vecB.size());
+  assert(size_t(numVecs) == size_t(vecB.size()));
 
   // compute
   for (decltype(Alength) i=0; i<Alength; i++){

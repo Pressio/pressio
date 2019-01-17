@@ -34,7 +34,7 @@ void product(const mvec_type & mvA,
   // how many vectors are in mvA
   auto numVecs = mvA.globalNumVectors();
   // size of vecB
-  assert(size_t(numVecs) == vecB.size());
+  assert(size_t(numVecs) == size_t(vecB.size()));
   // the data map of the multivector
   auto mvMap = mvA.getDataMap();
   // my number of rows
