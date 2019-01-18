@@ -45,8 +45,12 @@ struct HessianApproxHelper<
 {
   template <typename result_t>
   void operator()(J_t & J, result_t & result) const{
-    constexpr bool transposeJ = true;
     ::rompp::core::ops::dot(J, J, result);
+  }
+
+  auto operator()(J_t & J) const
+    -> decltype(::rompp::core::ops::dot(J, J)) {
+    return ::rompp::core::ops::dot(J, J);
   }
 };
 

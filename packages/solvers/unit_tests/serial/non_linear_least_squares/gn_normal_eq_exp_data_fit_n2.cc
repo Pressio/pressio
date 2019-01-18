@@ -15,7 +15,7 @@ TEST(solvers_nonlinear_least_squares,
   problem_t problem;
   state_t x(2); x[0] = 2.0; x[1] = 0.25;
 
-  // define linear solver type and GaussNewton solver
+  // linear solver type and GaussNewton solver
   using solver_tag = solvers::linear::LSCG;
   solvers::iterative::GaussNewton<sc_t, solver_tag,
 				  solvers::EigenIterative> GNSolver;
