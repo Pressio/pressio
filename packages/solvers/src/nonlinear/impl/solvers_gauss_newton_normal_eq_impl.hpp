@@ -1,19 +1,24 @@
 
-#ifndef SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
-#define SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
+#ifndef SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
+#define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../solvers_system_traits.hpp"
-#include "../solvers_meta_static_checks.hpp"
-#include "solvers_impl_mixins.hpp"
+#include "../../solvers_ConfigDefs.hpp"
+#include "../../solvers_system_traits.hpp"
+#include "../../solvers_meta_static_checks.hpp"
+#include "../mixins/solvers_converged_criterior_mixin.hpp"
+#include "../mixins/solvers_hessian_helper_mixin.hpp"
+#include "../mixins/solvers_jacob_res_product_mixin.hpp"
+#include "../mixins/solvers_norm_helper_mixin.hpp"
+#include "../mixins/solvers_line_search_mixin.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <
   typename system_t,
+  typename hessian_t,
   typename iteration_t,
   typename scalar_t,
-  typename qr_obj_t,
+  typename lin_solver_t,
   typename line_search_t,
   typename converged_when_tag,
   core::meta::enable_if_t<
@@ -24,35 +29,46 @@ template <
       typename system_t::residual_type>::value
     > * =nullptr
   >
-void gauss_newtom_qr_solve(const system_t & sys,
-			   typename system_t::state_type & y,
-			   typename system_t::state_type & ytrial,
-			   typename system_t::residual_type & resid,
-			   typename system_t::jacobian_type & jacob,
-			   iteration_t maxNonLIt,
-			   scalar_t tolerance,
-			   typename system_t::state_type & QTResid,
-			   typename system_t::state_type & dy,
-			   qr_obj_t & qrObj,
-			   scalar_t & normO,
-			   scalar_t & normN){
+void gauss_newtom_neq_solve(const system_t & sys,
+			    typename system_t::state_type & y,
+			    typename system_t::state_type & ytrial,
+			    typename system_t::residual_type & resid,
+			    typename system_t::jacobian_type & jacob,
+			    hessian_t & H,
+			    typename system_t::state_type & JTR,
+			    iteration_t maxNonLIt,
+			    scalar_t tolerance,
+			    typename system_t::state_type & dy,
+			    lin_solver_t & linSolver,
+			    scalar_t & normO,
+			    scalar_t & normN){
+
+  using jac_t	= typename system_t::jacobian_type;
 
   // find out which norm to use
-  using norm_t = typename norm_type_to_use<converged_when_tag>::norm_t;
+  using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
 
   // functor for evaluating the norm of a vector
-  using norm_evaluator_t = computeNormHelper<norm_t>;
+  using norm_evaluator_t = ComputeNormHelper<norm_t>;
   norm_evaluator_t normEvaluator;
 
+  // functor for approximate hessian J^T*J
+  using hessian_evaluator_t = HessianApproxHelper<jac_t>;
+  hessian_evaluator_t hessEvaluator;
+
+  // functor for J^T * residual
+  using jtr_evaluator_t = JacobianTranspResProdHelper<jac_t>;
+  jtr_evaluator_t jtrEvaluator;
+
   // functor for checking convergence
-  using is_conv_helper_t = isConvergedHelper<converged_when_tag>;
+  using is_conv_helper_t = IsConvergedHelper<converged_when_tag>;
   is_conv_helper_t isConverged;
 
   /* functor for computing line search factor (alpha) such that
    * the update is done with y = y + alpha dy
    * alpha = 1 default when user does not want line search
    */
-  using lsearch_helper = lineSearchHelper<line_search_t>;
+  using lsearch_helper = LineSearchHelper<line_search_t>;
   lsearch_helper lineSearchHelper;
 
   //-------------------------------------------------------
@@ -72,7 +88,7 @@ void gauss_newtom_qr_solve(const system_t & sys,
   auto reset = core::io::reset();
   auto fmt1 = core::io::cyan() + core::io::underline();
   const auto convString = std::string(is_conv_helper_t::description_);
-  ::rompp::core::io::print_stdout(fmt1, "GN solve:", "criterion:",
+  ::rompp::core::io::print_stdout(fmt1, "GN normal eqns:", "criterion:",
 				  convString, reset, "\n");
 #endif
 
@@ -80,14 +96,10 @@ void gauss_newtom_qr_solve(const system_t & sys,
   normEvaluator(y, normO);
   normN = static_cast<scalar_t>(0);
 
-#ifdef HAVE_TEUCHOS_TIMERS
-  auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("QR-based Gausss Newton");
-#endif
-
   iteration_t iStep = 0;
   while (iStep++ <= maxNonLIt)
   {
+
 #ifdef DEBUG_PRINT
     ::rompp::core::io::print_stdout("\n");
     auto fmt = core::io::underline();
@@ -97,33 +109,15 @@ void gauss_newtom_qr_solve(const system_t & sys,
     // residual norm for current state
     normEvaluator(resid, normRes);
 
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("QR factorization");
-    qrObj.computeThin(jacob);
-    timer->stop("QR factorization");
-#else
-    qrObj.computeThin(jacob);
-#endif
+    // // compute LHS: J^T*J
+    hessEvaluator(jacob, H);
 
-    // compute: Q^T Residual
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("QR projection");
-    qrObj.project(resid, QTResid);
-    timer->stop("QR projection");
-#else
-    qrObj.project(resid, QTResid);
-#endif
+    // compute RHS: J^T*res
+    jtrEvaluator(jacob, resid, JTR);
+    JTR.scale(static_cast<scalar_t>(-1));
 
-    // compute correction: dy
-    // by solving R dy = - Q^T Residual
-    QTResid.scale(static_cast<scalar_t>(-1));
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("QR solve");
-    qrObj.solve(QTResid, dy);
-    timer->stop("QR solve");
-#else
-    qrObj.solve(QTResid, dy);
-#endif
+    // solve normal equations
+    linSolver.solve(H, JTR, dy);
 
     // norm of the correction
     normEvaluator(dy, normN);
@@ -151,29 +145,12 @@ void gauss_newtom_qr_solve(const system_t & sys,
     // store new norm into old variable
     normO = normN;
 
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("residual");
     sys.residual(y, resid);
-    timer->stop("residual");
-#else
-    sys.residual(y, resid);
-#endif
-
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("jacobian");
     sys.jacobian(y, jacob);
-    timer->stop("jacobian");
-#else
-    sys.jacobian(y, jacob);
-#endif
-  }
+  }//loop
 
 #if defined DEBUG_PRINT
   std::cout.precision(ss);
-#endif
-
-#ifdef HAVE_TEUCHOS_TIMERS
-  timer->stop("QR-based Gausss Newton");
 #endif
 
 }//
