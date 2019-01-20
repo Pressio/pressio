@@ -5,11 +5,11 @@
 #include "../../solvers_ConfigDefs.hpp"
 #include "../../solvers_system_traits.hpp"
 #include "../../solvers_meta_static_checks.hpp"
-#include "../mixins/solvers_converged_criterior_mixin.hpp"
-#include "../mixins/solvers_hessian_helper_mixin.hpp"
-#include "../mixins/solvers_jacob_res_product_mixin.hpp"
-#include "../mixins/solvers_norm_helper_mixin.hpp"
-#include "../mixins/solvers_line_search_mixin.hpp"
+#include "../helper_policies/solvers_converged_criterior_policy.hpp"
+#include "../helper_policies/solvers_hessian_helper_policy.hpp"
+#include "../helper_policies/solvers_jacob_res_product_policy.hpp"
+#include "../helper_policies/solvers_norm_helper_policy.hpp"
+#include "../helper_policies/solvers_line_search_policy.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 

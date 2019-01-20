@@ -1,10 +1,10 @@
 
-#ifndef SOLVERS_IMPL_LINE_SEARCH_MIXIN_HPP
-#define SOLVERS_IMPL_LINE_SEARCH_MIXIN_HPP
+#ifndef SOLVERS_IMPL_LINE_SEARCH_POLICY_HPP
+#define SOLVERS_IMPL_LINE_SEARCH_POLICY_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
 #include "../../../../CORE_OPS"
-#include "solvers_jacob_res_product_mixin.hpp"
+#include "solvers_jacob_res_product_policy.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 

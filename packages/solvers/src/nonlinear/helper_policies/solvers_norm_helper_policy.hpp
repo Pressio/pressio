@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_IMPL_NORM_HELPER_MIXIN_HPP
-#define SOLVERS_IMPL_NORM_HELPER_MIXIN_HPP
+#ifndef SOLVERS_IMPL_NORM_HELPER_POLICY_HPP
+#define SOLVERS_IMPL_NORM_HELPER_POLICY_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
 #include "../../../../CORE_OPS"
