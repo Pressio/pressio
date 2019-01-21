@@ -33,18 +33,16 @@ class RomLSPGResidualPolicy
 						maxNstates, maxNrhs,
 						A_type>;
 
-  using base_pol_t 	= ::rompp::ode::policy::ImplicitResidualPolicyBase<this_t>;
-
-  using base_state_data_t = ::rompp::rom::RomStateData<app_state_w_type, phi_op_type, maxNstates>;
-
-  using base_rhs_data_t = ::rompp::rom::RomRHSData<app_res_w_type, maxNrhs>;
-
-  using scalar_type 	= typename core::details::traits<app_state_w_type>::scalar_t;
-
-
- private:
+  using base_pol_t	  = ode::policy::ImplicitResidualPolicyBase<this_t>;
+  using base_state_data_t = rom::RomStateData<app_state_w_type, phi_op_type, maxNstates>;
+  using base_rhs_data_t   = rom::RomRHSData<app_res_w_type, maxNrhs>;
   friend base_pol_t;
 
+public:
+  using app_res_w_t = app_res_w_type;
+    using scalar_type	  = typename core::details::traits<app_state_w_type>::scalar_t;
+
+ private:
   using base_state_data_t::y0FOM_;
   using base_state_data_t::yFOM_;
   using base_state_data_t::yFOMold_;
@@ -65,9 +63,7 @@ public:
 			phi_op_type & phiOp)
     : base_state_data_t(y0fom, phiOp), base_rhs_data_t(r0fom){}
 
-
  public:
-
   template <::rompp::ode::ImplicitEnum odeMethod,
 	     int numAuxStates,
 	     typename ode_state_t,
