@@ -9,7 +9,7 @@
 /*
  * test taken from:
  * http://ftp.mcs.anl.gov/pub/tech_reports/reports/P153.pdf
- * section 3.5
+ * section 3.4
  * Data can be found at:
  * http://ftp.mcs.anl.gov/pub/MINPACK-2/tprobs/dedffj.f
  */
@@ -92,7 +92,7 @@ struct ExpDataFitN5
     rowMap_->MyGlobalElements(myGel_.data());
 
     R_ = std::make_shared<residual_type>(*rowMap_);
-    J_ = std::make_shared<jacobian_type>(*rowMap_, 5);
+    J_ = std::make_shared<jacobian_type>(*rowMap_, numUn_);
     tt_ = std::make_shared<nat_vec_type>(*rowMap_);
     yy_ = std::make_shared<nat_vec_type>(*rowMap_);
     storeTimes();

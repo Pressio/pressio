@@ -7,7 +7,7 @@
 /*
  * test taken from:
  * http://ftp.mcs.anl.gov/pub/tech_reports/reports/P153.pdf
- * section 3.5
+ * section 3.4
  * Data can be found at:
  * http://ftp.mcs.anl.gov/pub/MINPACK-2/tprobs/dedffj.f
  */

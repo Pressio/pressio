@@ -6,7 +6,7 @@
 /*
  * test taken from:
  * http://ftp.mcs.anl.gov/pub/tech_reports/reports/P153.pdf
- * section 3.5
+ * section 3.4
  * Data can be found at:
  * http://ftp.mcs.anl.gov/pub/MINPACK-2/tprobs/dedffj.f
  */
@@ -21,7 +21,7 @@ TEST(solvers_nonlin_lsq,
   using sc_t	    = double;
 
   problem_t problem;
-  state_t x(5);
+  state_t x(problem.numUn_);
   x[0] = 0.5;  x[1] = 1.5;
   x[2] = -1.0; x[3] = 0.01;
   x[4] = 0.02;
