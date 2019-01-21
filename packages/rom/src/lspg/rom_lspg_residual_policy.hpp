@@ -115,7 +115,7 @@ public:
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("lspg apply preconditioner");
 #endif
-    app.residual(*yFOM_.data(), *appRHS_[0].data(), t);
+    app.applyPreconditioner(*yFOM_.data(), *appRHS_[0].data(), t);
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("lspg apply preconditioner");
