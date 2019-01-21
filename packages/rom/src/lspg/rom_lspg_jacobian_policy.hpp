@@ -76,6 +76,8 @@ public:
 
     ode::impl::implicit_time_discrete_jacobian<odeMethod>(*JJ_, dt, *basis);
 
+    app.applyPreconditioner(*yFOM_.data(), *JJ_->data(), t);
+
     // need to apply final weighting if any
     // if (A_) A_->apply....
     return *JJ_;
@@ -97,6 +99,7 @@ public:
     auto * basis = phi_->getOperator();
     app.applyJacobian(*yFOM_.data(), *basis->data(), *odeJJ.data(), t);
     ode::impl::implicit_time_discrete_jacobian<odeMethod>(odeJJ, dt, *basis);
+    app.applyPreconditioner(*yFOM_.data(), *odeJJ.data(), t);
   }
 
 
