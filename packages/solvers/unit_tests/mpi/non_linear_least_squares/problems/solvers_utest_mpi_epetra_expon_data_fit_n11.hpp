@@ -88,7 +88,7 @@ struct ExpDataFitN11
     comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
-    assert(numProc_==2);
+    assert(numProc_==2 or numProc_==3);
 
     // create map
     rowMap_ = std::make_shared<Epetra_Map>(numEq_, 0, *comm_);
@@ -103,9 +103,7 @@ struct ExpDataFitN11
     yy_ = std::make_shared<nat_vec_type>(*rowMap_);
     storeTimes();
     storeYValues();
-    yy_->data()->Print(std::cout);
     std::cout << std::endl;
-    tt_->data()->Print(std::cout);
   }//setUp
 
   inline scalar_type model(const state_type & x, scalar_type t)const{

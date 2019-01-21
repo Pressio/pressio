@@ -82,7 +82,7 @@ struct ExpDataFitN5
     comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
-    assert(numProc_==2);
+    assert(numProc_==2 or numProc_==3);
 
     // create map
     rowMap_ = std::make_shared<Epetra_Map>(numEq_, 0, *comm_);
