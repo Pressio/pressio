@@ -16,6 +16,8 @@ class EigenIterative
                             EigenIterative<SolverT, MatrixT> >,
     public IterativeBase<typename core::details::traits<MatrixT>::scalar_t>
 {
+public:
+  using matrix_t	= MatrixT;
   using native_mat_t    = typename core::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename core::details::traits<MatrixT>::scalar_t;
   using this_t          = EigenIterative<SolverT, MatrixT>;

@@ -1,18 +1,18 @@
 
 #ifdef HAVE_TRILINOS
-#ifndef CORE_EPETRA_MULTI_VECTOR_DOT_EPETRA_MULTI_VECTOR_HPP_
-#define CORE_EPETRA_MULTI_VECTOR_DOT_EPETRA_MULTI_VECTOR_HPP_
+#ifndef CORE_TPETRA_MULTI_VECTOR_DOT_TPETRA_MULTI_VECTOR_HPP_
+#define CORE_TPETRA_MULTI_VECTOR_DOT_TPETRA_MULTI_VECTOR_HPP_
 
 #include "../../core_ops_meta.hpp"
 #include "../../../multi_vector/core_multi_vector_meta.hpp"
 
 namespace rompp{ namespace core{ namespace ops{
 
-// Epetra multivector dot epetra multi vector
+// Tpetra multivector dot tpetra multi vector
 
 template <typename mvec_t,
   core::meta::enable_if_t<
-    core::meta::is_multi_vector_wrapper_epetra<mvec_t>::value
+    core::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value
     > * = nullptr
   >
 void dot(const mvec_t & mvA, const mvec_t & mvB,
@@ -21,23 +21,19 @@ void dot(const mvec_t & mvA, const mvec_t & mvB,
 	 Eigen::Dynamic, Eigen::Dynamic>
 	 > & C)
 {
-  //using sc_t = typename core::details::traits<mvec_t>::scalar_t;
-  //  using eig_mat = Eigen::Matrix< sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  //using res_t = core::Matrix<eig_mat>;
-
   // how many vectors are in mvA and mvB
   auto numVecsA = mvA.globalNumVectors();
   auto numVecsB = mvB.globalNumVectors();
   assert( mvA.globalLength() == mvB.globalLength());
-  auto const & mvAdata = *mvA.data();
-  auto const & mvBdata = *mvB.data();
-
   assert(C.rows() == numVecsA);
   assert(C.cols() == numVecsB);
   // compute dot between every column of A with every col of B
   for (auto i=0; i<numVecsA; i++){
+    // colI is a Teuchos::RCP<Vector<...>>
+    auto colI = mvA.data()->getVector(i);
     for (auto j=0; j<numVecsB; j++){
-      mvAdata(i)->Dot( *(mvBdata(j)), &C(i,j) );
+      auto colJ = mvB.data()->getVector(j);
+      C(i,j) = colI->dot(*colJ);
     }
   }
 }
@@ -45,7 +41,7 @@ void dot(const mvec_t & mvA, const mvec_t & mvB,
 
 template <typename mvec_t,
   core::meta::enable_if_t<
-    core::meta::is_multi_vector_wrapper_epetra<mvec_t>::value
+    core::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value
     > * = nullptr
   >
 auto dot(const mvec_t & mvA, const mvec_t & mvB)

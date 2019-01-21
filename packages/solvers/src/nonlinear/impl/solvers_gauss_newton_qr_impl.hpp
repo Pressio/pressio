@@ -2,10 +2,13 @@
 #ifndef SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../solvers_system_traits.hpp"
-#include "../solvers_meta_static_checks.hpp"
-#include "solvers_impl_mixins.hpp"
+#include "../../solvers_ConfigDefs.hpp"
+#include "../../solvers_system_traits.hpp"
+#include "../../solvers_meta_static_checks.hpp"
+#include "../helper_policies/solvers_converged_criterior_policy.hpp"
+#include "../helper_policies/solvers_norm_helper_policy.hpp"
+#include "../helper_policies/solvers_line_search_policy.hpp"
+
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -38,21 +41,21 @@ void gauss_newtom_qr_solve(const system_t & sys,
 			   scalar_t & normN){
 
   // find out which norm to use
-  using norm_t = typename norm_type_to_use<converged_when_tag>::norm_t;
+  using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
 
   // functor for evaluating the norm of a vector
-  using norm_evaluator_t = computeNormHelper<norm_t>;
+  using norm_evaluator_t = ComputeNormHelper<norm_t>;
   norm_evaluator_t normEvaluator;
 
   // functor for checking convergence
-  using is_conv_helper_t = isConvergedHelper<converged_when_tag>;
+  using is_conv_helper_t = IsConvergedHelper<converged_when_tag>;
   is_conv_helper_t isConverged;
 
   /* functor for computing line search factor (alpha) such that
    * the update is done with y = y + alpha dy
    * alpha = 1 default when user does not want line search
    */
-  using lsearch_helper = lineSearchHelper<line_search_t>;
+  using lsearch_helper = LineSearchHelper<line_search_t>;
   lsearch_helper lineSearchHelper;
 
   //-------------------------------------------------------
@@ -72,7 +75,7 @@ void gauss_newtom_qr_solve(const system_t & sys,
   auto reset = core::io::reset();
   auto fmt1 = core::io::cyan() + core::io::underline();
   const auto convString = std::string(is_conv_helper_t::description_);
-  ::rompp::core::io::print_stdout(fmt1, "GN solve:", "criterion:",
+  ::rompp::core::io::print_stdout(fmt1, "GN with QR:", "criterion:",
 				  convString, reset, "\n");
 #endif
 

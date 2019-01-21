@@ -1,12 +1,12 @@
 
-#ifndef SOLVERS_LEASTSQUARES_GAUSS_NEWTON_QR_HPP
-#define SOLVERS_LEASTSQUARES_GAUSS_NEWTON_QR_HPP
+#ifndef SOLVERS_GAUSS_NEWTON_QR_HPP
+#define SOLVERS_GAUSS_NEWTON_QR_HPP
 
 #include "../solvers_forward_declarations.hpp"
 #include "../solvers_meta_static_checks.hpp"
-#include "solvers_gauss_newton_qr_impl.hpp"
 #include "../base/solvers_nonlinear_base.hpp"
 #include "../base/solvers_iterative_base.hpp"
+#include "./impl/solvers_gauss_newton_qr_impl.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 

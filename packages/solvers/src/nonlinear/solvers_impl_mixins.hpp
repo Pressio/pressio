@@ -72,6 +72,44 @@ struct isConvergedHelper<
 //---------------------------------------------------------
 
 
+template<typename J_t, typename enable = void>
+struct hessianApproxHelper;
+
+// when J is matrix wrapper, the hessian J^T*J
+// is computed by doing product of J^T*J
+template<typename J_t>
+struct hessianApproxHelper<
+  J_T,
+  core::meta::enable_if_t<
+    core::meta::is_core_matrix_wrapper<J_t>::value
+    > * = nullptr>{
+
+  template <typename result_t>
+  void operator()(J_T & J, result_t & result) const{
+    constexpr bool transposeJ = true;
+    ::rompp::core::ops::product<J_t, J_t, result_t,
+				transposeJ>(J, J, result);
+  }
+}
+
+// when J is multivector wrapper, the hessian J^T*J
+// is computed by doing the DOT of J*J
+template<typename J_t>
+struct hessianApproxHelper<
+  J_T,
+  core::meta::enable_if_t<
+    core::meta::is_core_multi_vector_wrapper<J_t>::value
+    > * = nullptr>{
+
+  template <typename result_t>
+  void operator()(J_T & J, result_t & result) const{
+    constexpr bool transposeJ = true;
+    ::rompp::core::ops::dot(J, J, result);
+  }
+}
+//---------------------------------------------------------
+
+
 
 template <typename ls_tag>
 struct lineSearchHelper;
