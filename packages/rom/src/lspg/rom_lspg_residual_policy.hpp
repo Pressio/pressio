@@ -99,7 +99,6 @@ public:
     timer->stop("lspg space residual");
 #endif
 
-
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("lspg time discrete residual");
 #endif
@@ -110,6 +109,16 @@ public:
 							     dt);
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("lspg time discrete residual");
+#endif
+
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("lspg apply preconditioner");
+#endif
+    app.applyPreconditioner(*yFOM_.data(), *appRHS_[0].data(), t);
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg apply preconditioner");
 #endif
 
     // /// apply weighting:
@@ -136,40 +145,49 @@ public:
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("lspg reconstruct FOM state");
+    timer->start("lspg-R reconstruct FOM state");
 #endif
     // odeY, oldYsa are REDUCED states, reconstruct FOM states
     base_state_data_t::template reconstructFOMStates<numAuxStates>(odeY, oldYs);
 
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->stop("lspg reconstruct FOM state");
+    timer->stop("lspg-R reconstruct FOM state");
 #endif
 
 
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("lspg space residual");
+    timer->start("lspg-R space residual");
 #endif
     app.residual(*yFOM_.data(), *odeR.data(), t);
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->stop("lspg space residual");
+    timer->stop("lspg-R space residual");
 #endif
 
 
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("lspg time discrete residual");
+    timer->start("lspg-R time discrete residual");
 #endif
     ode::impl::implicit_time_discrete_residual<odeMethod, maxNstates>(yFOM_,
 								      yFOMold_,
 								      odeR,
 								      dt);
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->stop("lspg time discrete residual");
+    timer->stop("lspg-R time discrete residual");
+#endif
+
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("lspg-R apply preconditioner");
+#endif
+    app.applyPreconditioner(*yFOM_.data(), *odeR.data(), t);
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg-R apply preconditioner");
 #endif
 
     // /// apply weighting
     // if (A_) A_->applyTranspose(appRHS_, odeR);
   }
-
 
 };//end class
 
