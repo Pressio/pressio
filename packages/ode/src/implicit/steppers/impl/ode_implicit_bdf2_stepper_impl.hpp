@@ -25,21 +25,22 @@ class ImplicitBDF2StepperImpl<stateT,
 			  typename core::details::traits<stateT>::scalar_t,
 			  residual_policy_type, jacobian_policy_type>{
 
+  using scalar_type  = typename core::details::traits<stateT>::scalar_t;
+
   static_assert( meta::is_legitimate_implicit_bdf2_residual_policy<
-		 residual_policy_type>::value,
-		 "IMPLICIT BDF2 RESIDUAL_POLICY NOT ADMISSIBLE,\
-MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
+		 residual_policy_type, stateT,
+		 residualT, model_type, scalar_type>::value,
+		 "IMPLICIT BDF2 RESIDUAL_POLICY NOT ADMISSIBLE");
 
   static_assert( meta::is_legitimate_implicit_bdf2_jacobian_policy<
-		 jacobian_policy_type>::value,
-		 "IMPLICIT BDF2 JACOBIAN_POLICY NOT ADMISSIBLE, \
-MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
+  		 jacobian_policy_type, stateT,
+  		 jacobianT, model_type, scalar_type>::value,
+  		 "IMPLICIT BDF2 JACOBIAN_POLICY NOT ADMISSIBLE");
 
   using this_t = ImplicitEulerStepperImpl<stateT, residualT,
 					  jacobianT, model_type,
 					  residual_policy_type,
 					  jacobian_policy_type>;
-  using scalar_type  = typename core::details::traits<stateT>::scalar_t;
   using storage_base_t = OdeStorage<stateT, residualT, 2>;
   using auxdata_base_t = ImpOdeAuxData<model_type, scalar_type,
 				       residual_policy_type,

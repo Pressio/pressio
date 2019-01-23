@@ -7,49 +7,25 @@
 namespace rompp{ namespace ode{ namespace policy{
 
 template <typename derived_t>
-class JacobianPolicyBase
+struct JacobianPolicyBase
   : private core::details::CrtpBase<
-  JacobianPolicyBase<derived_t>>{
-public:
+	JacobianPolicyBase<derived_t>>{
 
-  template <typename state_type,
-	    typename jacobian_type,
-	    typename model_type,
-	    typename scalar_type>
-  void operator()(const state_type & y,
-		  jacobian_type & J,
-		  const model_type & model,
-		  scalar_type t,
-		  scalar_type dt) const
-  {
-    this->underlying()(y, J, model, t, dt);
-  }
-  //----------------------------------------
+  using this_t = JacobianPolicyBase<derived_t>;
 
-  template <typename state_type,
-	    typename model_type,
-	    typename scalar_type>
-  auto operator()(const state_type & y,
-		  const model_type & model,
-		  scalar_type t,
-		  scalar_type dt) const
-   -> decltype(this->underlying()(y, model, t, dt))
-  {
-    return this->underlying()(y, model, t, dt);
-  }
-  //------------------------------------------
+  /* for now empty, because policies overload (),
+   * but we can fill in other methods if needed
+   * that all derived policies need to implement
+   */
 
 private:
   friend derived_t;
-  friend core::details::CrtpBase<
-    JacobianPolicyBase<derived_t>>;
+  friend core::details::CrtpBase<this_t>;
 
   JacobianPolicyBase() = default;
   ~JacobianPolicyBase() = default;
 
 };//end class
 
-}//end namespace polices
-}//end namespace ode
-}//end namespace rompp
+}}}//end namespace rompp::ode::policy
 #endif

@@ -24,21 +24,22 @@ class ImplicitEulerStepperImpl<stateT,
 			  residual_policy_type, jacobian_policy_type>
 {
 
+  using scalar_type  = typename core::details::traits<stateT>::scalar_t;
+
   static_assert( meta::is_legitimate_implicit_euler_residual_policy<
-		 residual_policy_type>::value,
-"IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, \
-MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
+		 residual_policy_type, stateT,
+		 residualT, model_type, scalar_type>::value,
+		 "IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE");
 
   static_assert( meta::is_legitimate_implicit_euler_jacobian_policy<
-		 jacobian_policy_type>::value,
-"IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE, \
-MAYBE NOT A CHILD OR DERIVING FROM WRONG BASE");
+		 jacobian_policy_type, stateT,
+		 jacobianT, model_type, scalar_type>::value,
+		 "IMPLICIT EULER JACOBIAN_POLICY NOT ADMISSIBLE");
 
   using this_t = ImplicitEulerStepperImpl<stateT, residualT,
 					  jacobianT, model_type,
 					  residual_policy_type,
 					  jacobian_policy_type>;
-  using scalar_type  = typename core::details::traits<stateT>::scalar_t;
   using storage_base_t = OdeStorage<stateT, residualT, 1>;
   using auxdata_base_t = ImpOdeAuxData<model_type, scalar_type,
 				       residual_policy_type,

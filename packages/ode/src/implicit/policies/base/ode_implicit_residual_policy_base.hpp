@@ -7,49 +7,19 @@
 namespace rompp{ namespace ode{ namespace policy{
 
 template <typename derived_t>
-class ImplicitResidualPolicyBase
+struct ImplicitResidualPolicyBase
   : private core::details::CrtpBase<
-       ImplicitResidualPolicyBase<derived_t>>{
-public:
+  ImplicitResidualPolicyBase<derived_t>>{
 
-  template <::rompp::ode::ImplicitEnum odeMethod,
-	     int numAuxStates,
-	     typename state_type,
-	     typename residual_type,
-	     typename model_type,
-	     typename scalar_type>
-  void operator()(const state_type & y,
-		  residual_type & R,
-		  const std::array<state_type, numAuxStates> & auxYs,
-		  const model_type & model,
-		  scalar_type t,
-		  scalar_type dt) const
-  {
-    this->underlying().template operator()<odeMethod, numAuxStates>(y, R, auxYs,
-								    model, t, dt);
-  }
-  //-----------------------------------------------------
+  using this_t = ImplicitResidualPolicyBase<derived_t>;
 
-  template <::rompp::ode::ImplicitEnum odeMethod,
-	     int numAuxStates,
-	     typename state_type,
-	     typename model_type,
-	     typename scalar_type>
-  auto operator()(const state_type & y,
-		  const std::array<state_type, numAuxStates> & auxYs,
-		  const model_type & model,
-		  scalar_type t,
-		  scalar_type dt) const
-   -> decltype(this->underlying()(y, auxYs, model, t, dt))
-  {
-    return this->underlying().template operator()<odeMethod, numAuxStates>(y, auxYs,
-									   model, t, dt);
-  }
-  //-----------------------------------------------------
+  /* for now empty, because policies overload (),
+   * but we can fill in other methods if needed
+   * that all derived policies need to implement
+   */
 
 private:
   friend derived_t;
-  using this_t = ImplicitResidualPolicyBase<derived_t>;
   friend core::details::CrtpBase<this_t>;
 
   ImplicitResidualPolicyBase() = default;
@@ -60,14 +30,6 @@ private:
 
 }}}//end namespace rompp::ode::policy
 #endif
-
-
-
-
-
-
-
-
 
 
 
