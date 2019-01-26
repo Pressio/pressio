@@ -8,7 +8,10 @@
 #include "rom/src/rom_matrix_operator.hpp"
 #include "rom/src/rom_multi_vector_operator.hpp"
 
-#include "rom/src/rom_incremental_solution_base.hpp"
-#include "rom/src/rom_data_base.hpp"
+#include "rom/src/rom_data_fom_rhs.hpp"
+#include "rom/src/rom_data_fom_states.hpp"
+
+#include "rom/src/decoder/rom_decoder_base.hpp"
+#include "rom/src/decoder/rom_linear_decoder.hpp"
 
 #endif

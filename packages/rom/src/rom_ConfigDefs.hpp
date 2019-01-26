@@ -7,8 +7,4 @@
 #include "../../core/src/vector/core_vector_traits.hpp"
 #include "../../core/src/matrix/core_matrix_traits.hpp"
 
-namespace rompp{ namespace rom{ 
-
-  
-}} // end namespace rompp::rom
 #endif
