@@ -27,32 +27,27 @@ public:
   ImplicitJacobianStandardPolicy() = default;
   ~ImplicitJacobianStandardPolicy() = default;
 
-private:
-  using scalar_type = typename core::details::traits<state_type>::scalar_t;
-
 public:
-
-  template <::rompp::ode::ImplicitEnum method>
+  template <ode::ImplicitEnum method, typename scalar_t>
   void operator()(const state_type & y,
 		  jacobian_type & J,
 		  const model_type & model,
-		  scalar_type t,
-		  scalar_type dt)const {
-
+		  scalar_t t,
+		  scalar_t dt)const
+  {
     model.jacobian( *y.data(), *J.data(), t);
-    ode::impl::implicit_time_discrete_jacobian<method>(J, dt);
+    ode::impl::time_discrete_jacobian<method>(J, dt);
   }
-  //----------------------------------------------------------------
 
-  template <::rompp::ode::ImplicitEnum method>
+  template <ode::ImplicitEnum method, typename scalar_t>
   jacobian_type operator()(const state_type & y,
   			   const model_type & model,
-  			   scalar_type t,
-  			   scalar_type dt)const{
-
+  			   scalar_t t,
+  			   scalar_t dt)const
+  {
     auto nJJ = model.jacobian(*y.data(), t);
     jacobian_type JJ(nJJ);
-    ode::impl::implicit_time_discrete_jacobian<method>(JJ, dt);
+    ode::impl::time_discrete_jacobian<method>(JJ, dt);
     return JJ;
   }
 

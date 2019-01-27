@@ -55,7 +55,6 @@ TEST(ode_implicit_euler, traits){
 }
 
 
-
 TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using namespace rompp;
   using app_t = ode::testing::refAppForImpEigen;
@@ -69,8 +68,6 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using jac_t = core::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
-  // res_t r(3);
-  // appObj.residual(*y.data(), *r.data(), 0.0);
 
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::Euler,
@@ -93,8 +90,6 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
   EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
 }
-
-
 
 
 TEST(ode_implicit_euler, guesserLambda){
@@ -124,25 +119,19 @@ TEST(ode_implicit_euler, guesserLambda){
   // integrate in time
 
   auto testLambda = [](size_t step, double time, state_t & y){
-  		      y[0] = -20.;
-  		      y[1] = -20.;
-  		      y[2] = -20.;
-  		    };
+  		      y[0] = -20.; y[1] = -20.; y[2] = -20.; };
 
   int nSteps = 1;
   double dt = 0.01;
   ode::integrateNSteps(stepperObj, y, 0.0, dt,
 		       nSteps, solverO, testLambda);
 
-
   std::cout << std::setprecision(14) << *y.data() << "\n";
   // appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
-
   // EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
   // EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
   // EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
 }
-
 
 
 TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){

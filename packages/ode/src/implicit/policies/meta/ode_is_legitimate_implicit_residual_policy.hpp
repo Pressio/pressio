@@ -64,9 +64,7 @@ struct is_residual_callable_with_six_args<
     std::is_void<
       decltype(std::declval<T>().template operator()<
 	       odeMethod,
-	       numAuxStates,
-	       t1, t2,
-	       t3, t4>( std::declval<const t1 &>(),
+	       numAuxStates>( std::declval<const t1 &>(),
 			std::declval<t2 &>(),
 			std::declval<const std::array<t1,numAuxStates> &>(),
 			std::declval<const t3&>(),

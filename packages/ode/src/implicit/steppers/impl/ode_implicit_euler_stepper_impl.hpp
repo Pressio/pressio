@@ -27,9 +27,9 @@ class ImplicitEulerStepperImpl<stateT,
   using scalar_type  = typename core::details::traits<stateT>::scalar_t;
 
   static_assert( meta::is_legitimate_implicit_euler_residual_policy<
-		 residual_policy_type, stateT,
-		 residualT, model_type, scalar_type>::value,
-		 "IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE");
+  		 residual_policy_type, stateT,
+  		 residualT, model_type, scalar_type>::value,
+  		 "IMPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE");
 
   static_assert( meta::is_legitimate_implicit_euler_jacobian_policy<
 		 jacobian_policy_type, stateT,

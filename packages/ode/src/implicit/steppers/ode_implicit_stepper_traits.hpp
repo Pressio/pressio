@@ -58,6 +58,7 @@ template <ImplicitEnum whicone,
 	  typename jac_pol_t, typename enable = void>
 struct implClassHelper;
 
+
 // partial specialize for euler for STANDARD policies
 template <typename state_type, typename residual_type,
 	  typename jacobian_type, typename model>
@@ -71,6 +72,7 @@ struct implClassHelper<ImplicitEnum::Euler, state_type, residual_type,
   using impl_t = impl::ImplicitEulerStepperImpl<state_type, residual_type, jacobian_type,
 						model, residual_policy_t, jacobian_policy_t>;
 };
+
 
 // partial specialize for euler for user-defined policies
 template <typename state_type, typename residual_type,
@@ -87,7 +89,8 @@ struct implClassHelper<ImplicitEnum::Euler, state_type, residual_type,
 						model,res_pol_t, jac_pol_t>;
 };
 
-// partial specialize for BDF2 for user-defined policiesb
+
+// partial specialize for BDF2 for STANDARD policies
 template <typename state_type, typename residual_type,
 	  typename jacobian_type, typename model, typename aux_step_t>
 struct implClassHelper<ImplicitEnum::BDF2, state_type, residual_type,
@@ -100,6 +103,7 @@ struct implClassHelper<ImplicitEnum::BDF2, state_type, residual_type,
   using impl_t = impl::ImplicitBDF2StepperImpl<state_type, residual_type, jacobian_type, model,
 					       aux_step_t, residual_policy_t, jacobian_policy_t>;
 };
+
 
 // partial specialize for BDF2 for user-defined policies
 template <typename state_type, typename residual_type,

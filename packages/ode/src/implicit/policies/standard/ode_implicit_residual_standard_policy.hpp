@@ -32,32 +32,30 @@ public:
 
 public:
 
-  template <::rompp::ode::ImplicitEnum method,
-	     int numAuxStates>
+  template <ode::ImplicitEnum method, int n>
   void operator()(const state_type & y,
 		  residual_type & R,
-		  const std::array<state_type, numAuxStates> & oldYs,
+		  const std::array<state_type, n> & oldYs,
 		  const model_type & model,
 		  scalar_type t,
 		  scalar_type dt) const{
 
     R.setZero();
     model.residual(*y.data(), *R.data(), t);
-    ode::impl::implicit_time_discrete_residual<method, numAuxStates>(y, oldYs, R, dt);
+    ode::impl::time_discrete_residual<method, n>(y, oldYs, R, dt);
   }
   //----------------------------------------------------------------
 
-  template <::rompp::ode::ImplicitEnum method,
-	     int numAuxStates>
+  template <ode::ImplicitEnum method, int n>
   residual_type operator()(const state_type & y,
-			   const std::array<state_type, numAuxStates> & oldYs,
+			   const std::array<state_type, n> & oldYs,
 			   const model_type & model,
 			   scalar_type t,
 			   scalar_type dt)const {
 
     auto nR = model.residual(*y.data(), t);
     residual_type R(nR);
-    ode::impl::implicit_time_discrete_residual<method, numAuxStates>(y, oldYs, R, dt);
+    ode::impl::time_discrete_residual<method, n>(y, oldYs, R, dt);
     return R;
   }
   //----------------------------------------------------------------
