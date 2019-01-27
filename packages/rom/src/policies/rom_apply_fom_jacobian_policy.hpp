@@ -7,35 +7,35 @@ namespace rompp{ namespace rom{ namespace policy{
 struct ApplyFomJacobianDefault{
 
   template <
-    typename app_t,
-    typename fom_state_t,
-    typename operand_t,
+    typename fom_t,
+    typename state_w_t,
+    typename operand_w_t,
     typename time_t
     >
-  auto evaluate(const app_t	  & app,
-		const fom_state_t & yFOM,
-		const operand_t   & B,
+  auto evaluate(const fom_t	  & fomObj,
+		const state_w_t   & yFOM,
+		const operand_w_t & B,
 		time_t		  t) const
-    -> decltype(app.applyJacobian(*yFOM.data(), *B.data(), t))
+    -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data(), t))
   {
-    return app.applyJacobian(*yFOM.data(), *B.data(), t);
+    return fomObj.applyJacobian(*yFOM.data(), *B.data(), t);
   }
 
 
   template <
-    typename app_t,
-    typename fom_state_t,
-    typename operand_t,
+    typename fom_t,
+    typename state_w_t,
+    typename operand_w_t,
     typename result_t,
     typename time_t
     >
-  void evaluate(const app_t	  & app,
-		const fom_state_t & yFOM,
-		const operand_t	  & B,
+  void evaluate(const fom_t	  & fomObj,
+		const state_w_t	  & yFOM,
+		const operand_w_t & B,
 		result_t	  & out,
 		time_t		  t) const
   {
-    app.applyJacobian(*yFOM.data(), *B.data(), *out.data(), t);
+    fomObj.applyJacobian(*yFOM.data(), *B.data(), *out.data(), t);
   }
 
 };

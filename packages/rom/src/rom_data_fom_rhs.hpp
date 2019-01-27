@@ -6,20 +6,20 @@
 
 namespace rompp{ namespace rom{
 
-template <typename fom_rhs_type>
+template <typename fom_rhs_w_type>
 struct FomRhsData{
 
-  using fom_rhs_t = fom_rhs_type;
+  using fom_rhs_w_t = fom_rhs_w_type;
 
   FomRhsData() = delete;
 
-  FomRhsData(const fom_rhs_t & fomRhs0)
+  FomRhsData(const fom_rhs_w_t & fomRhs0)
     : fomRhs_{fomRhs0}{}
 
   ~FomRhsData() = default;
 
 protected:
-  mutable fom_rhs_t fomRhs_ = {};
+  mutable fom_rhs_w_t fomRhs_ = {};
 
 };//end class
 

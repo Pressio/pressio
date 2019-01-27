@@ -9,13 +9,16 @@
 namespace rompp{ namespace rom{
 
 template <typename operator_type>
-class MultiVectorOperator < operator_type,
-			    core::meta::enable_if_t<
-			      core::meta::is_core_multi_vector_wrapper<
-				operator_type>::value
-			      >
-			    >
-{
+class MultiVectorOperator <
+  operator_type,
+  core::meta::enable_if_t<
+    core::meta::is_core_multi_vector_wrapper<
+      operator_type>::value
+    >
+  >{
+
+  using this_t = MultiVectorOperator<operator_type>;
+  const operator_type * op_ = {};
 
 public:
   MultiVectorOperator() = delete;
@@ -25,12 +28,7 @@ public:
 
   ~MultiVectorOperator() = default;
 
-private:
-  using this_t = MultiVectorOperator<operator_type>;
-  const operator_type * op_ = {};
-
 public:
-
   const operator_type * getPtrToOperator() const{
     return op_;
   }
@@ -56,11 +54,7 @@ public:
   //-------------------------------
   //----     APPLY AS IS      -----
   //-------------------------------
-  template <typename T
-    /*core::meta::enable_if_t<
-       core::meta::is_core_vector_wrapper<T>::value
-       > * = nullptr */
-     >
+  template <typename T>
   auto apply(const T & X) const
     -> decltype(core::ops::product( std::declval<operator_type>(),
 				    std::declval<T>() )){

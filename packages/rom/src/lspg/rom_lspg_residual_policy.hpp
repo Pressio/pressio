@@ -35,7 +35,7 @@ protected:
 
 public:
   static constexpr bool isResidualPolicy_ = true;
-  using typename fom_rhs_data::fom_rhs_t;
+  using typename fom_rhs_data::fom_rhs_w_t;
 
 public:
   LSPGResidualPolicy() = delete;
@@ -64,9 +64,9 @@ public:
     fom_states_data::template reconstructCurrentFomState(odeY);
     fom_states_data::template reconstructFomOldStates<n>(oldYs);
     fom_eval_rhs_policy::evaluate(app, yFom_, odeR, t);
-    ode::impl::implicit_time_discrete_residual<odeMethod,
-					       maxNstates_>(yFom_, yFomOld_,
-							    odeR, dt);
+    ode::impl::time_discrete_residual<
+      odeMethod, maxNstates_
+      >(yFom_, yFomOld_, odeR, dt);
   }
 
   template <ode::ImplicitEnum odeMethod,
@@ -74,13 +74,14 @@ public:
 	    typename ode_state_t,
 	    typename app_t,
 	    typename scalar_t>
-  fom_rhs_t operator()(const ode_state_t		   & odeY,
+  fom_rhs_w_t operator()(const ode_state_t		   & odeY,
 			 const std::array<ode_state_t,n>   & oldYs,
 			 const app_t			   & app,
 			 scalar_t			   t,
 			 scalar_t			   dt) const
   {
-    (*this).template operator()<odeMethod, n>(odeY, fomRhs_, oldYs, app, t, dt);
+    (*this).template operator()<odeMethod, n>(odeY, fomRhs_,
+					      oldYs, app, t, dt);
     return fomRhs_;
   }
 

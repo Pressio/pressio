@@ -14,7 +14,7 @@ class Preconditioned<
   core::meta::enable_if_t<preconditionable::isResidualPolicy_>
   > : public preconditionable{
 
-  using typename preconditionable::fom_rhs_t;
+  using typename preconditionable::fom_rhs_w_t;
   using preconditionable::fomRhs_;
 
 public:
@@ -25,7 +25,7 @@ public:
 public:
   template <ode::ImplicitEnum odeMethod,  int n,
 	     typename ode_state_t,  typename app_t, typename scalar_t>
-    fom_rhs_t operator()(const ode_state_t & odeY,
+    fom_rhs_w_t operator()(const ode_state_t & odeY,
 			   const std::array<ode_state_t, n> & oldYs,
 			   const app_t & app,
 			   scalar_t t,
@@ -73,7 +73,6 @@ public:
   ~Preconditioned() = default;
 
 public:
-
   template <ode::ImplicitEnum odeMethod, typename ode_state_t,
 	     typename app_t, typename scalar_t>
   apply_jac_return_t operator()(const ode_state_t & odeY,
@@ -81,7 +80,6 @@ public:
 				scalar_t t, scalar_t dt) const
   {
     preconditionable::template operator()<odeMethod>(odeY, JJ_, app, t, dt);
-
     app.applyPreconditioner(odeY, JJ_, t);
     return JJ_;
   }
@@ -92,7 +90,6 @@ public:
   		  const app_t & app, scalar_t t, scalar_t dt) const
   {
     preconditionable::template operator()<odeMethod>(odeY, odeJJ, app, t, dt);
-
     app.applyPreconditioner(odeY, odeJJ, t);
   }
 

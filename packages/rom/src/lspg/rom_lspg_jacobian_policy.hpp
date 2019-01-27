@@ -61,7 +61,7 @@ public:
     fom_states_data::template reconstructCurrentFomState(odeY);
     const auto & basis = decoderObj_.getJacobianRef();
     fom_apply_jac_policy::evaluate(app, yFom_, basis, odeJJ, t);
-    ode::impl::implicit_time_discrete_jacobian<odeMethod>(odeJJ, dt, basis);
+    ode::impl::time_discrete_jacobian<odeMethod>(odeJJ, dt, basis);
   }
 
   template <ode::ImplicitEnum odeMethod,

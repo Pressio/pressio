@@ -7,31 +7,31 @@ namespace rompp{ namespace rom{ namespace policy{
 struct EvaluateFomRhsDefault{
 
   template <
-    typename app_t,
-    typename fom_st_t,
-    typename result_t,
+    typename fom_t,
+    typename state_w_t,
+    typename rhs_w_t,
     typename time_t
     >
-  void evaluate(const app_t    & app,
-		const fom_st_t & yFOM,
-		result_t       & rhs,
-		time_t	       t) const
+  void evaluate(const fom_t	& fomObj,
+		const state_w_t & yFOM,
+		rhs_w_t		& rhs,
+		time_t		t) const
   {
-    app.residual(*yFOM.data(), *rhs.data(), t);
+    fomObj.residual(*yFOM.data(), *rhs.data(), t);
   }
 
 
   template <
-    typename app_t,
-    typename fom_st_t,
+    typename fom_t,
+    typename state_w_t,
     typename time_t
     >
-  auto evaluate(const app_t    & app,
-		const fom_st_t & yFOM,
-		time_t	       t) const
-    -> decltype(app.residual(*yFOM.data(), t))
+  auto evaluate(const fom_t	& fomObj,
+		const state_w_t & yFOM,
+		time_t		t) const
+    -> decltype(fomObj.residual(*yFOM.data(), t))
   {
-    return app.residual(*yFOM.data(), t);
+    return fomObj.residual(*yFOM.data(), t);
   }
 
 };

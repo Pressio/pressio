@@ -7,13 +7,15 @@
 
 namespace rompp{ namespace rom{
 
-template <typename matrix_type,
-	  template <typename...> class
-	  wrapper_operator_t = MultiVectorOperator>
+template <
+  typename matrix_type,
+  template <typename...> class
+  wrapper_operator_t = MultiVectorOperator
+  >
 struct LinearDecoder
   : public DecoderBase<
-  LinearDecoder<matrix_type, wrapper_operator_t>, matrix_type
-  >{
+  LinearDecoder<matrix_type, wrapper_operator_t>,
+  matrix_type>{
 
   using this_t	    = LinearDecoder<matrix_type, wrapper_operator_t>;
   using base_t	    = DecoderBase<this_t, matrix_type>;
