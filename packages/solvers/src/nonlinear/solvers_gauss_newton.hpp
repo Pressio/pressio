@@ -158,7 +158,15 @@ class GaussNewton<
 public:
   GaussNewton() = delete;
 
-  GaussNewton(const system_t & system, const state_t & y)
+  /* the system passed in does not have to be the same as the
+   * class template parameter BUT the two systems have to compatible
+   * in the sense that their return types of residual and jacobian
+   * have to be the same. maybe we should get rid of this and
+   * create an overload where residual and jacobian types are
+   * passed explicitly.
+   */
+  template <typename system_in_t = system_t>
+  GaussNewton(const system_in_t & system, const state_t & y)
     : JTResid_(y), delta_(y),
       res_(system.residual(y)), jac_(system.jacobian(y)),
       hes_(HessianApproxHelper<jacobian_t>()(jac_)),
@@ -168,11 +176,12 @@ public:
   ~GaussNewton() = default;
 
 public:
-  void solveImpl(const system_t & sys, state_t & y){
+  template <typename system_in_t = system_t>
+  void solveImpl(const system_in_t & sys, state_t & y){
     sys.residual(y, res_);
     sys.jacobian(y, jac_);
 
-    impl::gauss_newtom_neq_solve< system_t, hessian_t,
+    impl::gauss_newtom_neq_solve< system_in_t, hessian_t,
 				  typename iter_base_t::iteration_t,
 				  scalar_t, solverT, line_search_t,
 				  converged_when_t>(sys, y, ytrial_,
