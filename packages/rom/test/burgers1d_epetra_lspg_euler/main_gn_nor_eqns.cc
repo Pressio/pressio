@@ -15,7 +15,7 @@ int main(int argc, char *argv[]){
   using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using rom_state_t	= rompp::core::Vector<eig_dyn_vec>;
+  using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;
 
   //-------------------------------
   // MPI init
@@ -47,12 +47,12 @@ int main(int argc, char *argv[]){
   decoder_t decoderObj(phi);
 
   // define ROM state
-  rom_state_t yROM(romSize);
+  lspg_state_t yROM(romSize);
   // initialize to zero (this has to be done)
   yROM.putScalar(0.0);
 
   using lspg_problem_types = rompp::rom::DefaultLSPGTypeGenerator<
-    fom_t, rompp::ode::ImplicitEnum::Euler, decoder_t, rom_state_t>;
+    fom_t, rompp::ode::ImplicitEnum::Euler, decoder_t, lspg_state_t>;
 
   using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;
   rompp::rom::StepperObjectGenerator<lspg_problem_types> stGen(
