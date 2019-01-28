@@ -54,19 +54,19 @@ public:
 	    typename lspg_residual_t,
 	    typename fom_t,
 	    typename scalar_t>
-  void operator()(const lspg_state_t		   & odeY,
-		  lspg_residual_t		   & odeR,
+  void operator()(const lspg_state_t		   & romY,
+		  lspg_residual_t		   & romR,
   		  const std::array<lspg_state_t,n> & oldYs,
   		  const fom_t			   & app,
 		  scalar_t			   t,
 		  scalar_t			   dt) const
   {
-    fom_states_data::template reconstructCurrentFomState(odeY);
+    fom_states_data::template reconstructCurrentFomState(romY);
     fom_states_data::template reconstructFomOldStates<n>(oldYs);
-    fom_eval_rhs_policy::evaluate(app, yFom_, odeR, t);
+    fom_eval_rhs_policy::evaluate(app, yFom_, romR, t);
     ode::impl::time_discrete_residual<
       odeMethod, maxNstates_
-      >(yFom_, yFomOld_, odeR, dt);
+      >(yFom_, yFomOld_, romR, dt);
   }
 
   template <ode::ImplicitEnum odeMethod,
@@ -74,13 +74,13 @@ public:
 	    typename lspg_state_t,
 	    typename fom_t,
 	    typename scalar_t>
-  fom_rhs_w_t operator()(const lspg_state_t		   & odeY,
+  fom_rhs_w_t operator()(const lspg_state_t		   & romY,
 			 const std::array<lspg_state_t,n>  & oldYs,
 			 const fom_t			   & app,
 			 scalar_t			   t,
 			 scalar_t			   dt) const
   {
-    (*this).template operator()<odeMethod, n>(odeY, fomRhs_,
+    (*this).template operator()<odeMethod, n>(romY, fomRhs_,
 					      oldYs, app, t, dt);
     return fomRhs_;
   }

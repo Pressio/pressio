@@ -51,31 +51,31 @@ public:
 	    typename lspg_jac_t,
 	    typename app_t,
 	    typename scalar_t>
-  void operator()(const lspg_state_t & odeY,
-		  lspg_jac_t	     & odeJJ,
+  void operator()(const lspg_state_t & romY,
+		  lspg_jac_t	     & romJJ,
   		  const app_t	     & app,
 		  scalar_t	     t,
 		  scalar_t	     dt) const
   {
     // todo: this is not needed if jacobian is called after resiudal
     // because residual takes care of reconstructing the fom state
-    fom_states_data::template reconstructCurrentFomState(odeY);
+    fom_states_data::template reconstructCurrentFomState(romY);
 
     const auto & basis = decoderObj_.getJacobianRef();
-    fom_apply_jac_policy::evaluate(app, yFom_, basis, odeJJ, t);
-    rom::impl::time_discrete_jacobian<odeMethod>(odeJJ, dt, basis);
+    fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ, t);
+    rom::impl::time_discrete_jacobian<odeMethod>(romJJ, dt, basis);
   }
 
   template <ode::ImplicitEnum odeMethod,
 	    typename lspg_state_t,
 	    typename app_t,
 	    typename scalar_t>
-  apply_jac_return_t operator()(const lspg_state_t & odeY,
+  apply_jac_return_t operator()(const lspg_state_t & romY,
 				const app_t	   & app,
 				scalar_t	   t,
 				scalar_t	   dt) const
   {
-    (*this).template operator()<odeMethod>(odeY, JJ_, app, t, dt);
+    (*this).template operator()<odeMethod>(romY, JJ_, app, t, dt);
     return JJ_;
   }
 
