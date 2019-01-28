@@ -8,6 +8,21 @@
 #include "lspg_utils.hpp"
 #include "burgers1dEpetra.hpp"
 
+const std::vector<double> bdf1Sol =
+  { 4.9683703619639, 4.6782198130332, 3.7809092143183, 2.3410370171735,
+    1.3665227552633, 1.0998248856967, 1.0588744517773, 1.0552786290916,
+    1.0565755841731, 1.05832566338, 1.0598499804131, 1.0612950695346,
+    1.0634140889979, 1.0664875741963, 1.0701215280868, 1.0735734095262,
+    1.0764754781593, 1.0790691949921, 1.0818228048193, 1.0850683068699,
+    1.0887478932688, 1.092642408022, 1.0965446003949, 1.1004297242319,
+    1.1043922522415, 1.1085490607723, 1.1129611388185, 1.117613658291,
+    1.1224648232926, 1.1274778902247, 1.1326530965013, 1.13802239319,
+    1.1436307647296, 1.1494987675359, 1.1556064137176, 1.161941826502,
+    1.1685253861164, 1.1753816797655, 1.1825238154096, 1.1899594186277,
+    1.1976959450073, 1.205743187805, 1.2141142750508, 1.2228251947121,
+    1.2318925753159, 1.2413295315044, 1.2511467170661, 1.2613604601936,
+    1.2719910028481, 1.2830509792253};
+
 int main(int argc, char *argv[]){
 
   using fom_t		= Burgers1dEpetra;
@@ -82,15 +97,13 @@ int main(int argc, char *argv[]){
   yRf += stGen.y0Fom_;
   yRf.data()->Print(std::cout << std::setprecision(14));
 
-  // // // check against gold solution
-  // // int shift = 0;
-  // // if (rank==1)  shift = 25;
-  // // int myn = yRf_.getDataMap().NumMyElements();
-  // // for (auto i=0; i<myn; i++){
-  // //   assert(std::abs(yRf_[i] -
-  // // 	   demo_apps::test::burger1DGoldDt001step200().bdf1Sol[i+shift])
-  // // 	   < 1e-12 );
-  // //  }
+  // check against gold solution
+  int shift = 0;
+  if (rank==1)  shift = 25;
+  int myn = yRf.getDataMap().NumMyElements();
+  for (auto i=0; i<myn; i++){
+    assert(std::abs(yRf[i] - bdf1Sol[i+shift]) < 1e-12 );
+   }
 
   MPI_Finalize();
   return 0;
