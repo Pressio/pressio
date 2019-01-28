@@ -3,7 +3,6 @@
 #define ROM_LSPG_JACOBIAN_POLICY_HPP_
 
 #include "../rom_forward_declarations.hpp"
-//#include "../../../ode/src/implicit/ode_jacobian_impl.hpp"
 #include "rom_lspg_time_discrete_jacobian.hpp"
 #include "../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "../rom_data_fom_states.hpp"
@@ -46,18 +45,17 @@ public:
       fom_apply_jac_policy(applyJacFunctor),
       JJ_(applyJacObj){}
 
- public:
-
+public:
   template <ode::ImplicitEnum odeMethod,
-	    typename ode_state_t,
-	    typename ode_jac_t,
+	    typename lspg_state_t,
+	    typename lspg_jac_t,
 	    typename app_t,
 	    typename scalar_t>
-  void operator()(const ode_state_t & odeY,
-		  ode_jac_t	    & odeJJ,
-  		  const app_t	    & app,
-		  scalar_t	    t,
-		  scalar_t	    dt) const
+  void operator()(const lspg_state_t & odeY,
+		  lspg_jac_t	     & odeJJ,
+  		  const app_t	     & app,
+		  scalar_t	     t,
+		  scalar_t	     dt) const
   {
     fom_states_data::template reconstructCurrentFomState(odeY);
     const auto & basis = decoderObj_.getJacobianRef();
@@ -66,13 +64,13 @@ public:
   }
 
   template <ode::ImplicitEnum odeMethod,
-	    typename ode_state_t,
+	    typename lspg_state_t,
 	    typename app_t,
 	    typename scalar_t>
-  apply_jac_return_t operator()(const ode_state_t & odeY,
-				const app_t	     & app,
-				scalar_t	     t,
-				scalar_t	     dt) const
+  apply_jac_return_t operator()(const lspg_state_t & odeY,
+				const app_t	   & app,
+				scalar_t	   t,
+				scalar_t	   dt) const
   {
     (*this).template operator()<odeMethod>(odeY, JJ_, app, t, dt);
     return JJ_;

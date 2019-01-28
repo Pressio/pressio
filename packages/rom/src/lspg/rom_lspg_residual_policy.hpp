@@ -24,8 +24,8 @@ class LSPGResidualPolicy
 
 protected:
   using this_t = LSPGResidualPolicy<fom_states_data,
-				       fom_rhs_data,
-				       fom_eval_rhs_policy>;
+				    fom_rhs_data,
+				    fom_eval_rhs_policy>;
   friend ode::policy::ImplicitResidualPolicyBase<this_t>;
 
   using fom_states_data::yFom_;
@@ -50,16 +50,16 @@ public:
 public:
   template <ode::ImplicitEnum odeMethod,
 	    int n,
-	    typename ode_state_t,
-	    typename ode_residual_t,
-	    typename app_t,
+	    typename lspg_state_t,
+	    typename lspg_residual_t,
+	    typename fom_t,
 	    typename scalar_t>
-  void operator()(const ode_state_t		  & odeY,
-		  ode_residual_t		  & odeR,
-  		  const std::array<ode_state_t,n> & oldYs,
-  		  const app_t			  & app,
-		  scalar_t			  t,
-		  scalar_t			  dt) const
+  void operator()(const lspg_state_t		   & odeY,
+		  lspg_residual_t		   & odeR,
+  		  const std::array<lspg_state_t,n> & oldYs,
+  		  const fom_t			   & app,
+		  scalar_t			   t,
+		  scalar_t			   dt) const
   {
     fom_states_data::template reconstructCurrentFomState(odeY);
     fom_states_data::template reconstructFomOldStates<n>(oldYs);
@@ -71,12 +71,12 @@ public:
 
   template <ode::ImplicitEnum odeMethod,
 	    int n,
-	    typename ode_state_t,
-	    typename app_t,
+	    typename lspg_state_t,
+	    typename fom_t,
 	    typename scalar_t>
-  fom_rhs_w_t operator()(const ode_state_t		   & odeY,
-			 const std::array<ode_state_t,n>   & oldYs,
-			 const app_t			   & app,
+  fom_rhs_w_t operator()(const lspg_state_t		   & odeY,
+			 const std::array<lspg_state_t,n>  & oldYs,
+			 const fom_t			   & app,
 			 scalar_t			   t,
 			 scalar_t			   dt) const
   {
