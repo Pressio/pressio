@@ -57,7 +57,10 @@ public:
 		  scalar_t	     t,
 		  scalar_t	     dt) const
   {
+    // todo: this is not needed if jacobian is called after resiudal
+    // because residual takes care of reconstructing the fom state
     fom_states_data::template reconstructCurrentFomState(odeY);
+
     const auto & basis = decoderObj_.getJacobianRef();
     fom_apply_jac_policy::evaluate(app, yFom_, basis, odeJJ, t);
     rom::impl::time_discrete_jacobian<odeMethod>(odeJJ, dt, basis);
