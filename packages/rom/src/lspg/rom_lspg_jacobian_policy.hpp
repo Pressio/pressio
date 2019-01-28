@@ -79,7 +79,7 @@ public:
     return JJ_;
   }
 
-private:
+protected:
   mutable apply_jac_return_t JJ_ = {};
 };
 

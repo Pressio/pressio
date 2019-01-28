@@ -20,6 +20,11 @@ class Preconditioned<
 public:
   Preconditioned() = delete;
   Preconditioned(const preconditionable & obj) : preconditionable(obj){}
+
+  template <typename ... Args>
+  Preconditioned(Args && ... args)
+    : preconditionable(std::forward<Args>(args)...){}
+
   ~Preconditioned() = default;
 
 public:
@@ -64,12 +69,20 @@ class Preconditioned<
   core::meta::enable_if_t<preconditionable::isResidualPolicy_ == false>
   > : public preconditionable{
 
+public:
   using typename preconditionable::apply_jac_return_t;
+
+protected:
   using preconditionable::JJ_;
 
 public:
   Preconditioned() = delete;
   Preconditioned(const preconditionable & obj) : preconditionable(obj){}
+
+  template <typename ... Args>
+  Preconditioned(Args && ... args)
+    : preconditionable(std::forward<Args>(args)...){}
+
   ~Preconditioned() = default;
 
 public:
