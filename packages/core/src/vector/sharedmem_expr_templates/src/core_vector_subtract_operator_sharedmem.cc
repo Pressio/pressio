@@ -1,1 +1,0 @@
-#include "../core_vector_subtract_operator_sharedmem.hpp"

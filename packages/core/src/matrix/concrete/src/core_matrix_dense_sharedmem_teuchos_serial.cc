@@ -1,1 +1,0 @@
-#include "../core_matrix_dense_sharedmem_teuchos_serial.hpp"
