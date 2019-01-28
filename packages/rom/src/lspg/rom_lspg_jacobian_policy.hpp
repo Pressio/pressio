@@ -3,7 +3,8 @@
 #define ROM_LSPG_JACOBIAN_POLICY_HPP_
 
 #include "../rom_forward_declarations.hpp"
-#include "../../../ode/src/implicit/ode_jacobian_impl.hpp"
+//#include "../../../ode/src/implicit/ode_jacobian_impl.hpp"
+#include "rom_lspg_time_discrete_jacobian.hpp"
 #include "../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "../rom_data_fom_states.hpp"
 
@@ -61,7 +62,7 @@ public:
     fom_states_data::template reconstructCurrentFomState(odeY);
     const auto & basis = decoderObj_.getJacobianRef();
     fom_apply_jac_policy::evaluate(app, yFom_, basis, odeJJ, t);
-    ode::impl::time_discrete_jacobian<odeMethod>(odeJJ, dt, basis);
+    rom::impl::time_discrete_jacobian<odeMethod>(odeJJ, dt, basis);
   }
 
   template <ode::ImplicitEnum odeMethod,
