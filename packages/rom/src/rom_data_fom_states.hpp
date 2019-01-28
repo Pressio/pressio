@@ -1,6 +1,6 @@
 
-#ifndef ROM_FOM_STATES_DATA_HPP_
-#define ROM_FOM_STATES_DATA_HPP_
+#ifndef ROM_DATA_FOM_STATES_HPP_
+#define ROM_DATA_FOM_STATES_HPP_
 
 #include "rom_ConfigDefs.hpp"
 
