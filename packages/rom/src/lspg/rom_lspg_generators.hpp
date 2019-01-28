@@ -8,6 +8,7 @@
 #include "../rom_data_fom_states.hpp"
 #include "../policies/rom_evaluate_fom_rhs_policy.hpp"
 #include "../policies/rom_apply_fom_jacobian_policy.hpp"
+#include "../../../ode/src/ode_forward_declarations.hpp"
 
 namespace rompp{ namespace rom{
 
@@ -39,8 +40,8 @@ struct DefaultLSPGTypeGenerator{
   using fom_rhs_t		= typename fom_t::residual_type;
 
   // declare fom wrapper types
-  using fom_state_w_t		= rompp::core::Vector<fom_state_t>;
-  using fom_rhs_w_t		= rompp::core::Vector<fom_rhs_t>;
+  using fom_state_w_t		= ::rompp::core::Vector<fom_state_t>;
+  using fom_rhs_w_t		= ::rompp::core::Vector<fom_rhs_t>;
 
   // decoder types (passed in)
   using decoder_t		= decoder_type;
@@ -59,11 +60,11 @@ struct DefaultLSPGTypeGenerator{
     statesStorageCapacityHelper<odeName>::maxAuxStates_;
 
   // class type holding fom states data
-  using fom_states_data = rompp::rom::FomStatesData<
+  using fom_states_data = ::rompp::rom::FomStatesData<
 	fom_state_w_t, maxAuxStates, decoder_t>;
 
   // class type holding fom rhs data
-  using fom_rhs_data = rompp::rom::FomRhsData<fom_rhs_w_t>;
+  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_w_t>;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -78,22 +79,22 @@ struct DefaultLSPGTypeGenerator{
   using lspg_matrix_t		= decoder_jac_t;
 
   // policy for evaluating the rhs of the fom object
-  using fom_eval_rhs_policy_t	= rompp::rom::policy::EvaluateFomRhsDefault;
+  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsDefault;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above
-  using fom_apply_jac_policy_t	= rompp::rom::policy::ApplyFomJacobianDefault;
+  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault;
 
   // policy defining how to compute the LSPG time-discrete residual
-  using lspg_residual_policy_t	= rompp::rom::LSPGResidualPolicy<
+  using lspg_residual_policy_t	= ::rompp::rom::LSPGResidualPolicy<
 	fom_states_data, fom_rhs_data, fom_eval_rhs_policy_t>;
 
   // policy defining how to compute the LSPG time-discrete jacobian
-  using lspg_jacobian_policy_t	= rompp::rom::LSPGJacobianPolicy<
+  using lspg_jacobian_policy_t	= ::rompp::rom::LSPGJacobianPolicy<
 	fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t>;
 
   // declare type of stepper object
-  using rom_stepper_t		= rompp::ode::ImplicitStepper<
+  using rom_stepper_t		= ::rompp::ode::ImplicitStepper<
     odeName, lspg_state_t, lspg_residual_t, lspg_matrix_t,
     fom_t, void, lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
