@@ -6,38 +6,34 @@
 
 namespace rompp{ namespace rom{
 
-template <typename lspg_type_generator_t>
+template <typename lspg_type_generator_t, typename enable = void>
 struct StepperObjectGenerator;
 
 
-template <typename fom_type,
-	  ode::ImplicitEnum odeName,
-	  typename decoder_type,
-	  typename lspg_state_type>
+template <typename T>
 struct StepperObjectGenerator<
-  PreconditionedLSPGTypeGenerator<fom_type, odeName, decoder_type, lspg_state_type>
-  >{
+  T, core::meta::enable_if_t<
+       std::is_void<typename T::aux_stepper_t>::value
+       >
+  > : T {
 
-  using types_info = PreconditionedLSPGTypeGenerator<
-			fom_type, odeName, decoder_type, lspg_state_type>;
-  using lspg_common		= typename types_info::base_t;
+  using typename T::base_t::fom_t;
+  using typename T::base_t::scalar_t;
+  using typename T::base_t::lspg_state_t;
+  using typename T::base_t::fom_state_t;
+  using typename T::base_t::fom_state_w_t;
+  using typename T::base_t::fom_rhs_w_t;
+  using typename T::base_t::decoder_t;
+  using typename T::base_t::fom_states_data;
+  using typename T::base_t::fom_rhs_data;
 
-  using fom_t			= typename lspg_common::fom_t;
-  using scalar_t		= typename lspg_common::scalar_t;
-  using lspg_state_t		= typename lspg_common::lspg_state_t;
-  using fom_state_t		= typename lspg_common::fom_state_t;
-  using fom_state_w_t		= typename lspg_common::fom_state_w_t;
-  using fom_rhs_w_t		= typename lspg_common::fom_rhs_w_t;
-  using decoder_t		= typename lspg_common::decoder_t;
-  using fom_states_data		= typename lspg_common::fom_states_data;
-  using fom_rhs_data		= typename lspg_common::fom_rhs_data;
-
-  using lspg_matrix_t		= typename types_info::lspg_matrix_t;
-  using lspg_residual_policy_t	= typename types_info::lspg_residual_policy_t;
-  using lspg_jacobian_policy_t	= typename types_info::lspg_jacobian_policy_t;
-  using fom_eval_rhs_policy_t	= typename types_info::fom_eval_rhs_policy_t;
-  using fom_apply_jac_policy_t	= typename types_info::fom_apply_jac_policy_t;
-  using rom_stepper_t		= typename types_info::rom_stepper_t;
+  using typename T::lspg_matrix_t;
+  using typename T::fom_eval_rhs_policy_t;
+  using typename T::fom_apply_jac_policy_t;
+  using typename T::lspg_residual_policy_t;
+  using typename T::lspg_jacobian_policy_t;
+  using typename T::rom_stepper_t;
+  using typename T::aux_stepper_t;
 
   fom_state_w_t y0Fom_		 = {};
   fom_rhs_w_t r0Fom_		 = {};
@@ -69,34 +65,30 @@ struct StepperObjectGenerator<
 
 
 
-template <typename fom_type,
-	  ode::ImplicitEnum odeName,
-	  typename decoder_type,
-	  typename lspg_state_type>
+template <typename T>
 struct StepperObjectGenerator<
-  DefaultLSPGTypeGenerator<fom_type, odeName, decoder_type, lspg_state_type>
-  >{
+  T, core::meta::enable_if_t<
+       !std::is_void<typename T::aux_stepper_t>::value
+       >
+  > : T {
 
-  using types_info = DefaultLSPGTypeGenerator<
-			fom_type, odeName, decoder_type, lspg_state_type>;
-  using lspg_common		= typename types_info::base_t;
+  using typename T::base_t::fom_t;
+  using typename T::base_t::scalar_t;
+  using typename T::base_t::lspg_state_t;
+  using typename T::base_t::fom_state_t;
+  using typename T::base_t::fom_state_w_t;
+  using typename T::base_t::fom_rhs_w_t;
+  using typename T::base_t::decoder_t;
+  using typename T::base_t::fom_states_data;
+  using typename T::base_t::fom_rhs_data;
 
-  using fom_t			= typename lspg_common::fom_t;
-  using scalar_t		= typename lspg_common::scalar_t;
-  using lspg_state_t		= typename lspg_common::lspg_state_t;
-  using fom_state_t		= typename lspg_common::fom_state_t;
-  using fom_state_w_t		= typename lspg_common::fom_state_w_t;
-  using fom_rhs_w_t		= typename lspg_common::fom_rhs_w_t;
-  using decoder_t		= typename lspg_common::decoder_t;
-  using fom_states_data		= typename lspg_common::fom_states_data;
-  using fom_rhs_data		= typename lspg_common::fom_rhs_data;
-
-  using lspg_matrix_t		= typename types_info::lspg_matrix_t;
-  using lspg_residual_policy_t	= typename types_info::lspg_residual_policy_t;
-  using lspg_jacobian_policy_t	= typename types_info::lspg_jacobian_policy_t;
-  using fom_eval_rhs_policy_t	= typename types_info::fom_eval_rhs_policy_t;
-  using fom_apply_jac_policy_t	= typename types_info::fom_apply_jac_policy_t;
-  using rom_stepper_t		= typename types_info::rom_stepper_t;
+  using typename T::lspg_matrix_t;
+  using typename T::fom_eval_rhs_policy_t;
+  using typename T::fom_apply_jac_policy_t;
+  using typename T::lspg_residual_policy_t;
+  using typename T::lspg_jacobian_policy_t;
+  using typename T::rom_stepper_t;
+  using typename T::aux_stepper_t;
 
   fom_state_w_t y0Fom_		 = {};
   fom_rhs_w_t r0Fom_		 = {};
@@ -106,6 +98,7 @@ struct StepperObjectGenerator<
   lspg_matrix_t romMat_		 = {};
   lspg_residual_policy_t resObj_ = {};
   lspg_jacobian_policy_t jacObj_ = {};
+  aux_stepper_t auxStepperObj_   = {};
   rom_stepper_t stepperObj_	 = {};
 
   StepperObjectGenerator(const fom_t	   & appObj,
@@ -122,10 +115,10 @@ struct StepperObjectGenerator<
 						t0)),
       resObj_(fomStates_, fomRhs_, fom_eval_rhs_policy_t()),
       jacObj_(fomStates_, fom_apply_jac_policy_t(), romMat_),
-      stepperObj_(appObj, resObj_, jacObj_, yROM)
+      auxStepperObj_(appObj, resObj_, jacObj_, yROM),
+      stepperObj_(appObj, resObj_, jacObj_, yROM, auxStepperObj_)
   {}
 };
-
 
 }}//end namespace rompp::rom
 #endif

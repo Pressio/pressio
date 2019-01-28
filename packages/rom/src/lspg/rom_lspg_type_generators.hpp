@@ -26,6 +26,33 @@ struct statesStorageCapacityHelper<ode::ImplicitEnum::BDF2>{
 };
 //-------------------------------------------------------
 
+
+template <ode::ImplicitEnum odeName,
+	  typename lspg_state_type, typename lspg_residual_t,
+	  typename lspg_matrix_t, typename fom_type,
+	  typename lspg_residual_policy_t,
+	  typename lspg_jacobian_policy_t>
+struct auxStepperHelper{
+  using type = void;
+};
+
+template <typename lspg_state_type, typename lspg_residual_t,
+	  typename lspg_matrix_t, typename fom_type,
+	  typename lspg_residual_policy_t,
+	  typename lspg_jacobian_policy_t>
+struct auxStepperHelper<
+  ode::ImplicitEnum::BDF2, lspg_state_type, lspg_residual_t,
+  lspg_matrix_t, fom_type, lspg_residual_policy_t,
+  lspg_jacobian_policy_t
+  >{
+  using type = ode::ImplicitStepper<
+    ode::ImplicitEnum::Euler, lspg_state_type, lspg_residual_t,
+    lspg_matrix_t, fom_type, void, lspg_residual_policy_t,
+    lspg_jacobian_policy_t>;
+};
+//-------------------------------------------------------
+
+
 template <typename fom_type,
 	  ode::ImplicitEnum odeName,
 	  typename decoder_type,
@@ -63,7 +90,6 @@ struct LSPGCommonTypes{
 
   // class type holding fom rhs data
   using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_w_t>;
-
 };
 
 
@@ -76,17 +102,17 @@ struct DefaultLSPGTypeGenerator
 
   using base_t = LSPGCommonTypes<fom_type, odeName, decoder_type, lspg_state_type>;
 
-  using fom_t			= typename base_t::fom_t;
-  using scalar_t		= typename base_t::scalar_t;
-  using fom_state_t		= typename base_t::fom_state_t;
-  using fom_state_w_t		= typename base_t::fom_state_w_t;
-  using fom_rhs_w_t		= typename base_t::fom_rhs_w_t;
-  using decoder_t		= typename base_t::decoder_t;
-  using decoder_jac_t		= typename base_t::decoder_jac_t;
-  using lspg_state_t		= typename base_t::lspg_state_t;
-  using lspg_residual_t		= typename base_t::lspg_residual_t;
-  using fom_states_data		= typename base_t::fom_states_data;
-  using fom_rhs_data		= typename base_t::fom_rhs_data;
+  using typename base_t::fom_t;
+  using typename base_t::scalar_t;
+  using typename base_t::fom_state_t;
+  using typename base_t::fom_state_w_t;
+  using typename base_t::fom_rhs_w_t;
+  using typename base_t::decoder_t;
+  using typename base_t::decoder_jac_t;
+  using typename base_t::lspg_state_t;
+  using typename base_t::lspg_residual_t;
+  using typename base_t::fom_states_data;
+  using typename base_t::fom_rhs_data;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -115,10 +141,15 @@ struct DefaultLSPGTypeGenerator
   using lspg_jacobian_policy_t	= ::rompp::rom::LSPGJacobianPolicy<
 	fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t>;
 
+  using aux_stepper_t = typename auxStepperHelper<odeName, lspg_state_type,
+						  lspg_residual_t, lspg_matrix_t,
+						  fom_type, lspg_residual_policy_t,
+						  lspg_jacobian_policy_t>::type;
+
   // declare type of stepper object
   using rom_stepper_t		= ::rompp::ode::ImplicitStepper<
     odeName, lspg_state_type, lspg_residual_t, lspg_matrix_t,
-    fom_type, void, lspg_residual_policy_t, lspg_jacobian_policy_t>;
+    fom_type, aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class
 
@@ -128,20 +159,22 @@ template <typename fom_type,
 	  ode::ImplicitEnum odeName,
 	  typename decoder_type,
 	  typename lspg_state_type>
-struct PreconditionedLSPGTypeGenerator{
+struct PreconditionedLSPGTypeGenerator
+  : LSPGCommonTypes<fom_type, odeName, decoder_type, lspg_state_type>{
+
   using base_t = LSPGCommonTypes<fom_type, odeName, decoder_type, lspg_state_type>;
 
-  using fom_t			= typename base_t::fom_t;
-  using scalar_t		= typename base_t::scalar_t;
-  using fom_state_t		= typename base_t::fom_state_t;
-  using fom_state_w_t		= typename base_t::fom_state_w_t;
-  using fom_rhs_w_t		= typename base_t::fom_rhs_w_t;
-  using decoder_t		= typename base_t::decoder_t;
-  using decoder_jac_t		= typename base_t::decoder_jac_t;
-  using lspg_state_t		= typename base_t::lspg_state_t;
-  using fom_states_data		= typename base_t::fom_states_data;
-  using fom_rhs_data		= typename base_t::fom_rhs_data;
-  using lspg_residual_t		= typename base_t::lspg_residual_t;
+  using typename base_t::fom_t;
+  using typename base_t::scalar_t;
+  using typename base_t::fom_state_t;
+  using typename base_t::fom_state_w_t;
+  using typename base_t::fom_rhs_w_t;
+  using typename base_t::decoder_t;
+  using typename base_t::decoder_jac_t;
+  using typename base_t::lspg_state_t;
+  using typename base_t::lspg_residual_t;
+  using typename base_t::fom_states_data;
+  using typename base_t::fom_rhs_data;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -163,19 +196,30 @@ struct PreconditionedLSPGTypeGenerator{
   using fom_apply_jac_policy_t	= rom::policy::ApplyFomJacobianDefault;
 
   // policy defining how to compute the LSPG time-discrete residual
-  using lspg_residual_policy_in_t = rom::LSPGResidualPolicy<
-	fom_states_data, fom_rhs_data, fom_eval_rhs_policy_t>;
-  using lspg_residual_policy_t	= rom::decorator::Preconditioned<lspg_residual_policy_in_t>;
+  using lspg_residual_policy_t =
+    rom::decorator::Preconditioned<
+    rom::LSPGResidualPolicy<
+      fom_states_data, fom_rhs_data, fom_eval_rhs_policy_t
+      >
+    >;
 
   // policy defining how to compute the LSPG time-discrete jacobian
-  using lspg_jacobian_policy_in_t  = rom::LSPGJacobianPolicy<
-	fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t>;
-  using lspg_jacobian_policy_t	= rom::decorator::Preconditioned<lspg_jacobian_policy_in_t>;
+  using lspg_jacobian_policy_t	=
+    rom::decorator::Preconditioned<
+    rom::LSPGJacobianPolicy<
+      fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t
+      >
+    >;
+
+  using aux_stepper_t = typename auxStepperHelper<odeName, lspg_state_type,
+						  lspg_residual_t, lspg_matrix_t,
+						  fom_type, lspg_residual_policy_t,
+						  lspg_jacobian_policy_t>::type;
 
   // declare type of stepper object
   using rom_stepper_t		= ode::ImplicitStepper<
     odeName, lspg_state_type, lspg_residual_t, lspg_matrix_t,
-    fom_type, void, lspg_residual_policy_t, lspg_jacobian_policy_t>;
+    fom_type, aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class
 

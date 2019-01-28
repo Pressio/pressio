@@ -4,5 +4,6 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 ADD_SUBDIRECTORIES(
- burgers1d_epetra_lspg_euler
+  burgers1d_epetra_lspg_euler
+  burgers1d_epetra_lspg_bdf2
 )
