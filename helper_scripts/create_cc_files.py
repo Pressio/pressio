@@ -53,8 +53,7 @@ cwd = os.getcwd()
 print "Current working directory %s" % cwd
 
 tFolder = cwd+"/../packages"
-#pn = ['core', 'solvers', 'qr', 'svd', 'ode', 'rom']
-pn = ['rom']
+pn = ['core', 'solvers', 'qr', 'svd', 'ode', 'rom']
 for i in pn:
     path = tFolder+"/"+i+"/src"
     print ("\nProcessing package **" + i + "** in " + path)

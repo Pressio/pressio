@@ -1,0 +1,1 @@
+#include "../core_matrix_sparse_sharedmem_eigen.hpp"
