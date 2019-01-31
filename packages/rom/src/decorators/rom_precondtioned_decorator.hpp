@@ -2,6 +2,7 @@
 #ifndef ROM_PRECONDITIONED_DECORATOR_HPP_
 #define ROM_PRECONDITIONED_DECORATOR_HPP_
 
+#include "../rom_forward_declarations.hpp"
 #include "../../../ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
 #include "../../../ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
 

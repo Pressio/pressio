@@ -96,6 +96,11 @@ void gauss_newtom_neq_solve(const system_t & sys,
   normEvaluator(y, normO);
   normN = static_cast<scalar_t>(0);
 
+#ifdef HAVE_TEUCHOS_TIMERS
+  auto timer = Teuchos::TimeMonitor::getStackedTimer();
+  timer->start("NEQ-based Gausss Newton");
+#endif
+
   iteration_t iStep = 0;
   while (iStep++ <= maxNonLIt)
   {
@@ -106,18 +111,44 @@ void gauss_newtom_neq_solve(const system_t & sys,
     ::rompp::core::io::print_stdout(fmt, "GN step", iStep,
 				    core::io::reset(), "\n");
 #endif
-    // residual norm for current state
-    normEvaluator(resid, normRes);
 
-    // // compute LHS: J^T*J
+    // residual norm for current state
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("norm resid");
+    normEvaluator(resid, normRes);
+    timer->stop("norm resid");
+#else
+    normEvaluator(resid, normRes);
+#endif
+
+    // compute LHS: J^T*J
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("hessian");
     hessEvaluator(jacob, H);
+    timer->stop("hessian");
+#else
+    hessEvaluator(jacob, H);
+#endif
 
     // compute RHS: J^T*res
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("JTR");
     jtrEvaluator(jacob, resid, JTR);
     JTR.scale(static_cast<scalar_t>(-1));
+    timer->stop("JTR");
+#else
+    jtrEvaluator(jacob, resid, JTR);
+    JTR.scale(static_cast<scalar_t>(-1));
+#endif
 
     // solve normal equations
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("solve normeq");
     linSolver.solve(H, JTR, dy);
+    timer->stop("solve normeq");
+#else
+    linSolver.solve(H, JTR, dy);
+#endif
 
     // norm of the correction
     normEvaluator(dy, normN);
@@ -147,14 +178,18 @@ void gauss_newtom_neq_solve(const system_t & sys,
 
     sys.residual(y, resid);
     sys.jacobian(y, jacob);
+
   }//loop
 
 #if defined DEBUG_PRINT
   std::cout.precision(ss);
 #endif
 
-}//
+#ifdef HAVE_TEUCHOS_TIMERS
+  timer->stop("NEQ-based Gausss Newton");
+#endif
 
+}
 
 }}}} //end namespace rompp::solvers::iterative::implo
 #endif

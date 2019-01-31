@@ -61,12 +61,35 @@ public:
 		  scalar_t			   t,
 		  scalar_t			   dt) const
   {
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("lspg residual");
+#endif
+
     fom_states_data::template reconstructCurrentFomState(romY);
     fom_states_data::template reconstructFomOldStates<n>(oldYs);
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("fom eval rhs");
     fom_eval_rhs_policy::evaluate(app, yFom_, romR, t);
+    timer->stop("fom eval rhs");
+#else
+    fom_eval_rhs_policy::evaluate(app, yFom_, romR, t);
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("time discrete residual");
     ode::impl::time_discrete_residual<
-      odeMethod, maxNstates_
-      >(yFom_, yFomOld_, romR, dt);
+      odeMethod, maxNstates_ >(yFom_, yFomOld_, romR, dt);
+    timer->stop("time discrete residual");
+#else
+    ode::impl::time_discrete_residual<
+      odeMethod, maxNstates_ >(yFom_, yFomOld_, romR, dt);
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg residual");
+#endif
   }
 
   template <ode::ImplicitEnum odeMethod,

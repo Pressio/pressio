@@ -21,7 +21,6 @@ struct ApplyFomJacobianDefault{
     return fomObj.applyJacobian(*yFOM.data(), *B.data(), t);
   }
 
-
   template <
     typename fom_t,
     typename state_w_t,

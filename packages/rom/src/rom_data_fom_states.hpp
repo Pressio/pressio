@@ -32,18 +32,37 @@ struct FomStatesData{
 
 protected:
   template <typename rom_state_t>
-  void reconstructCurrentFomState(const rom_state_t & romY) const{
+  void reconstructCurrentFomState(const rom_state_t & romY) const
+  {
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("reconstruct fom state");
+#endif
+
     decoderObj_.applyMapping(romY, yFom_);
     yFom_ += yFomReference_;
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("reconstruct fom state");
+#endif
   }
 
   template <int n, typename rom_state_t>
   void reconstructFomOldStates(const std::array<rom_state_t, n> & romYprev) const
   {
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("reconstruct fom old state");
+#endif
+
     for (auto i=0; i<n; i++){
       decoderObj_.applyMapping(romYprev[i], yFomOld_[i]);
       yFomOld_[i] += yFomReference_;
     }
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("reconstruct fom old state");
+#endif
   }
 
 protected:

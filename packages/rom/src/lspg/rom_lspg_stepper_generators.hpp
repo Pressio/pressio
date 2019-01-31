@@ -35,6 +35,9 @@ struct StepperObjectGenerator<
   using typename T::rom_stepper_t;
   using typename T::aux_stepper_t;
 
+  fom_eval_rhs_policy_t rhsEv_;   //default constructed
+  fom_apply_jac_policy_t ajacEv_; //default constructed
+
   fom_state_w_t y0Fom_		 = {};
   fom_rhs_w_t r0Fom_		 = {};
   fom_states_data fomStates_	 = {};
@@ -51,14 +54,13 @@ struct StepperObjectGenerator<
 			 lspg_state_t	   & yROM,
 			 scalar_t	   t0)
     : y0Fom_(y0n),
-      r0Fom_(fom_eval_rhs_policy_t().evaluate(appObj, y0Fom_, t0)),
+      r0Fom_(rhsEv_.evaluate(appObj, y0Fom_, t0)),
       fomStates_(y0Fom_, decoder),
       fomRhs_(r0Fom_),
-      romMat_(fom_apply_jac_policy_t().evaluate(appObj, y0Fom_,
-						decoder.getJacobianRef(),
-						t0)),
-      resObj_(fomStates_, fomRhs_, fom_eval_rhs_policy_t()),
-      jacObj_(fomStates_, fom_apply_jac_policy_t(), romMat_),
+      romMat_(ajacEv_.evaluate(appObj, y0Fom_,
+			       decoder.getJacobianRef(), t0)),
+      resObj_(fomStates_, fomRhs_, rhsEv_),
+      jacObj_(fomStates_, ajacEv_, romMat_),
       stepperObj_(appObj, resObj_, jacObj_, yROM)
   {}
 };

@@ -57,13 +57,37 @@ public:
 		  scalar_t	     t,
 		  scalar_t	     dt) const
   {
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("lspg apply jac");
+#endif
+
     // todo: this is not needed if jacobian is called after resiudal
     // because residual takes care of reconstructing the fom state
+    //    timer->start("reconstruct fom state");
     fom_states_data::template reconstructCurrentFomState(romY);
 
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("fom apply jac");
     const auto & basis = decoderObj_.getJacobianRef();
     fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ, t);
+    timer->stop("fom apply jac");
+#else
+    const auto & basis = decoderObj_.getJacobianRef();
+    fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ, t);
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("time discrete jacob");
     rom::impl::time_discrete_jacobian<odeMethod>(romJJ, dt, basis);
+    timer->stop("time discrete jacob");
+#else
+    rom::impl::time_discrete_jacobian<odeMethod>(romJJ, dt, basis);
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("lspg apply jac");
+#endif
   }
 
   template <ode::ImplicitEnum odeMethod,
@@ -85,17 +109,3 @@ protected:
 
 }}//end namespace rompp::rom
 #endif
-
-
-
-
-
-// // compute the Jac phi product, where Jac is the spatial jacobian
-// auto * basis = phi_->getOperator();
-// if (!JJ_){
-//   auto res = fom_apply_jac_policy::evaluate(app, yFOM_, *basis, t);
-//   JJ_ = std::make_shared<apply_jac_return_type>(res);
-// } else{
-//   fom_apply_jac_policy::evaluate(app, yFOM_, *basis, *JJ_, t);
-//   //app.applyJacobian(*yFOM_.data(), *basis->data(), *JJ_->data(), t);
-// }

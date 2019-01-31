@@ -97,22 +97,29 @@ void gauss_newtom_qr_solve(const system_t & sys,
     ::rompp::core::io::print_stdout(fmt, "GN step", iStep,
 				    core::io::reset(), "\n");
 #endif
+
     // residual norm for current state
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("norm resid");
     normEvaluator(resid, normRes);
+    timer->stop("norm resid");
+#else
+    normEvaluator(resid, normRes);
+#endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("QR factorization");
+    timer->start("QR factorize");
     qrObj.computeThin(jacob);
-    timer->stop("QR factorization");
+    timer->stop("QR factorize");
 #else
     qrObj.computeThin(jacob);
 #endif
 
     // compute: Q^T Residual
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("QR projection");
+    timer->start("QR project");
     qrObj.project(resid, QTResid);
-    timer->stop("QR projection");
+    timer->stop("QR project");
 #else
     qrObj.project(resid, QTResid);
 #endif
@@ -121,9 +128,9 @@ void gauss_newtom_qr_solve(const system_t & sys,
     // by solving R dy = - Q^T Residual
     QTResid.scale(static_cast<scalar_t>(-1));
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("QR solve");
+    timer->start("QR R-solve");
     qrObj.solve(QTResid, dy);
-    timer->stop("QR solve");
+    timer->stop("QR R-solve");
 #else
     qrObj.solve(QTResid, dy);
 #endif
@@ -154,22 +161,10 @@ void gauss_newtom_qr_solve(const system_t & sys,
     // store new norm into old variable
     normO = normN;
 
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("residual");
     sys.residual(y, resid);
-    timer->stop("residual");
-#else
-    sys.residual(y, resid);
-#endif
+    sys.jacobian(y, jacob);
 
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->start("jacobian");
-    sys.jacobian(y, jacob);
-    timer->stop("jacobian");
-#else
-    sys.jacobian(y, jacob);
-#endif
-  }
+  }//loop
 
 #if defined DEBUG_PRINT
   std::cout.precision(ss);
@@ -179,7 +174,7 @@ void gauss_newtom_qr_solve(const system_t & sys,
   timer->stop("QR-based Gausss Newton");
 #endif
 
-}//
+}
 
 
 }}}} //end namespace rompp::solvers::iterative::implo

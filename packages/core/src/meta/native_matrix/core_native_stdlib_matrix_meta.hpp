@@ -3,6 +3,7 @@
 #define CORE_NATIVE_STDLIB_NATIVE_META_HPP_
 
 #include "../core_meta_basic.hpp"
+#include <vector>
 
 namespace rompp{ namespace core{ namespace meta {
 

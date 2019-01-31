@@ -2,6 +2,8 @@
 #ifndef ROM_DECODER_BASE_HPP_
 #define ROM_DECODER_BASE_HPP_
 
+#include "../rom_ConfigDefs.hpp"
+
 namespace rompp{ namespace rom{
 
 template <typename derived_type, typename jac_matrix_type>

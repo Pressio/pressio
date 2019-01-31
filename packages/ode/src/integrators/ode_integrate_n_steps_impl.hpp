@@ -19,21 +19,12 @@ struct DoStepMixin{
 		  state_type & yIn,
 		  stepper_type & stepper,
 		  solver_type & solver,
-		  guesser_cb_t && guessCb){
-#ifdef HAVE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("time step");
-#endif
-
+		  guesser_cb_t && guessCb)
+  {
     stepper(yIn, time, dt, step, solver,
 	    std::forward<guesser_cb_t>(guessCb));
-
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->stop("time step");
-#endif
-  }//end ()
+  }
 };
-
 
 template<>
 struct DoStepMixin<core::impl::empty, core::impl::empty>{
@@ -45,17 +36,9 @@ struct DoStepMixin<core::impl::empty, core::impl::empty>{
 		  time_type dt,
 		  integral_type step,
 		  state_type & yIn,
-		  stepper_type & stepper){
-#ifdef HAVE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("time step");
-#endif
-
+		  stepper_type & stepper)
+  {
     stepper(yIn, time, dt, step);
-
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->stop("time step");
-#endif
   }
 };
 
@@ -71,18 +54,10 @@ struct DoStepMixin<solver_type, core::impl::empty>{
 		  integral_type step,
 		  state_type & yIn,
 		  stepper_type & stepper,
-		  solver_type & solver){
-#ifdef HAVE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("time step");
-#endif
-
+		  solver_type & solver)
+  {
     stepper(yIn, time, dt, step, solver);
-
-#ifdef HAVE_TEUCHOS_TIMERS
-    timer->stop("time step");
-#endif
-  }//end ()
+  }
 };
 //-------------------------------------------------------
 
@@ -128,7 +103,14 @@ struct AdvancerMixin{
 				      step, reset, "\n");
       #endif
 
+#ifdef HAVE_TEUCHOS_TIMERS
+      timer->start("time step");
+#endif
       stepImpl(time, dt, step, yIn, std::forward<Args>(args)...);
+#ifdef HAVE_TEUCHOS_TIMERS
+      timer->stop("time step");
+#endif
+
       time = start_time + static_cast<time_type>(step) * dt;
       collector(step, time, yIn);
     }
@@ -174,7 +156,14 @@ struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
 				      step, reset, "\n");
       #endif
 
+#ifdef HAVE_TEUCHOS_TIMERS
+      timer->start("time step");
+#endif
       stepImpl(time, dt, step, std::forward<Args>(args)...);
+#ifdef HAVE_TEUCHOS_TIMERS
+      timer->stop("time step");
+#endif
+
       time = start_time + static_cast<time_type>(step) * dt;
     }
 
