@@ -30,7 +30,7 @@ struct is_legitimate_model_for_implicit_ode<
      typename model_type::state_type,
      typename model_type::residual_type,
      typename model_type::scalar_type>::value and
-   // has residual methods
+   // has jacobian methods
     model_has_needed_jacobian_methods<
      model_type,
      typename model_type::state_type,
