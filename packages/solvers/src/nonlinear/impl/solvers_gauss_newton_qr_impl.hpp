@@ -57,26 +57,25 @@ void gauss_newtom_qr_solve(const system_t & sys,
    */
   using lsearch_helper = LineSearchHelper<line_search_t>;
   lsearch_helper lineSearchHelper;
-
   //-------------------------------------------------------
 
   // alpha for taking steps
   scalar_t alpha = {};
-
-  // storing residaul norm
+  // residaul norm
   scalar_t normRes = {};
+  // initial residaul norm
+  scalar_t normRes0 = {};
 
 #ifdef DEBUG_PRINT
   // get precision before GN
   auto ss = std::cout.precision();
   // set to 14 for the GN prints
   std::cout.precision(14);
-
-  auto reset = core::io::reset();
+  // print GN is starting
   auto fmt1 = core::io::cyan() + core::io::underline();
   const auto convString = std::string(is_conv_helper_t::description_);
   ::rompp::core::io::print_stdout(fmt1, "GN with QR:", "criterion:",
-				  convString, reset, "\n");
+				  convString, core::io::reset(), "\n");
 #endif
 
   // compute (whatever type) norm of y
@@ -106,6 +105,9 @@ void gauss_newtom_qr_solve(const system_t & sys,
 #else
     normEvaluator(resid, normRes);
 #endif
+    // store initial residual norm
+    if (iStep==1) normRes0 = normRes;
+
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("QR factorize");
@@ -139,14 +141,13 @@ void gauss_newtom_qr_solve(const system_t & sys,
     normEvaluator(dy, normN);
 
 #ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout("norm(residual) =",
-				    std::setprecision(14),
-				    normRes, ",",
-				    "norm(correction) =", normN,
+    ::rompp::core::io::print_stdout(std::scientific,
+				    "||R|| =", normRes,
+				    "||R||(r) =", normRes/normRes0,
+				    "||dy|| =", normN,
 				    "\n");
 #endif
 
-    // after correction is computed,
     // compute multiplicative factor if needed
     lineSearchHelper(alpha, y, ytrial, dy, resid, jacob, sys);
 
