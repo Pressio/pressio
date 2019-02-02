@@ -1,1 +1,0 @@
-#include "../core_epetra_multi_vector_dot_epetra_multi_vector.hpp"

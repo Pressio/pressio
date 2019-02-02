@@ -1,1 +1,0 @@
-#include "../core_vector_times_operator_sharedmem.hpp"

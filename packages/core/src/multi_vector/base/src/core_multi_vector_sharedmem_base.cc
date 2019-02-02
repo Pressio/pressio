@@ -1,1 +1,0 @@
-#include "../core_multi_vector_sharedmem_base.hpp"
