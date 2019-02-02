@@ -64,7 +64,7 @@ auto norm2(const vec_type & a)
 //  teuchos serial dense vector wrapper
 template <typename vec_type,
   core::meta::enable_if_t<
-    core::meta::is_dense_vector_teuchos_wrapper<vec_type>::value
+    core::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
     > * = nullptr
   >
 auto norm2(const vec_type & a)

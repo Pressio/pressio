@@ -28,10 +28,10 @@ struct is_core_vector_wrapper<T,
 
 #ifdef HAVE_TRILINOS
 template <typename T, typename enable = void>
-struct is_dense_vector_teuchos_wrapper : std::false_type {};
+struct is_dense_vector_wrapper_teuchos : std::false_type {};
 
 template <typename T>
-struct is_dense_vector_teuchos_wrapper<
+struct is_dense_vector_wrapper_teuchos<
   T, core::meta::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==

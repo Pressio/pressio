@@ -27,6 +27,7 @@
 #include "core/src/containers_ops/multivec_vec_product/core_epetra_multi_vector_product_armadillo_vector.hpp"
 #include "core/src/containers_ops/multivec_vec_product/core_epetra_multi_vector_product_eigen_vector.hpp"
 #include "core/src/containers_ops/multivec_vec_product/core_tpetra_multi_vector_product_eigen_vector.hpp"
+#include "core/src/containers_ops/multivec_vec_product/core_epetra_multi_vector_product_teuchos_serial_vector.hpp"
 
 //// mat multivec product ////
 #include "core/src/containers_ops/mat_multivec_product/core_eigen_sparse_mat_product_eigen_multi_vector.hpp"
