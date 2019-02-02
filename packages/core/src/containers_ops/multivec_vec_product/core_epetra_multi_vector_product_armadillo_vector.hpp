@@ -1,4 +1,5 @@
 
+#if defined(HAVE_TRILINOS) && defined(HAVE_ARMADILLO)
 #ifndef CORE_CONTAINER_OPS_MVEC_VEC_PROD_EPETRA_MULTI_VECTOR_PRODUCT_ARMADILLO_VECTOR_HPP_
 #define CORE_CONTAINER_OPS_MVEC_VEC_PROD_EPETRA_MULTI_VECTOR_PRODUCT_ARMADILLO_VECTOR_HPP_
 
@@ -6,13 +7,10 @@
 #include "../../vector/core_vector_meta.hpp"
 #include "../../multi_vector/core_multi_vector_meta.hpp"
 #include "../../vector/concrete/core_vector_sharedmem_eigen_dynamic.hpp"
-#ifdef HAVE_TRILINOS
 #include "../../vector/concrete/core_vector_distributed_epetra.hpp"
-#endif
 
 namespace rompp{ namespace core{ namespace ops{
 
-#if defined(HAVE_TRILINOS) && defined(HAVE_ARMADILLO)
 //-----------------------------------------------------
 //  Epetra multivector with eigen or armadillo vector
 // we pass the result object
@@ -76,8 +74,6 @@ product(const mvec_type & mvA, const vec_type & vecB) {
 }
 //-------------------------------------------------------
 
-
-#endif //HAVE_TRILINOS && HAVE_ARMADILLO
-
 }}}//end namespace rompp::core::ops
 #endif
+#endif //HAVE_TRILINOS && HAVE_ARMADILLO
