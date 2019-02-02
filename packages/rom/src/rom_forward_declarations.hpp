@@ -6,6 +6,18 @@
 
 namespace rompp{ namespace rom{
 
+/* forward declare all decorators */
+namespace decorator{
+
+template <typename preconditionable,
+	  typename enable = void>
+class Preconditioned;
+
+}// namespace rompp::rom::decorator
+//-------------------------------------------
+
+
+/* LSPG policies */
 template <typename fom_states_data_t,
 	  typename fom_rhs_data_t,
 	  typename fom_rhs_eval_policy>
@@ -15,22 +27,22 @@ template< typename fom_states_data_t,
 	  typename jac_type,
 	  typename fom_apply_jac_policy>
 class LSPGJacobianPolicy;
-
-namespace decorator{
-
-// decorators usable to decorate policies above
-template <typename preconditionable,
-	  typename enable = void>
-class Preconditioned;
-
-}//end namespace rompp::rom::decorator
 //-------------------------------------------
 
 
-template<typename operator_type,
+/* operators */
+template<typename wrapped_type,
 	 typename enable = void>
 class MultiVectorOperator;
 
+template<typename wrapped_type,
+	 typename enable = void>
+class MatrixOperator;
+//-------------------------------------------
+
+
+template <typename lspg_type_generator_t, typename enable = void>
+struct StepperObjectGenerator;
 //-------------------------------------------
 
 template<::rompp::ode::ImplicitEnum,

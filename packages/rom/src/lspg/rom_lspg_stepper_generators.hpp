@@ -6,10 +6,6 @@
 
 namespace rompp{ namespace rom{
 
-template <typename lspg_type_generator_t, typename enable = void>
-struct StepperObjectGenerator;
-
-
 template <typename T>
 struct StepperObjectGenerator<
   T, core::meta::enable_if_t<
