@@ -1,12 +1,12 @@
 
 #ifdef HAVE_TRILINOS
-#ifndef CORE_CONTAINER_OPS_MVEC_VEC_PROD_TPETRA_MULTI_VECTOR_PRODUCT_EIGEN_VECTOR_HPP_
-#define CORE_CONTAINER_OPS_MVEC_VEC_PROD_TPETRA_MULTI_VECTOR_PRODUCT_EIGEN_VECTOR_HPP_
+#ifndef CORE_CONTAINER_OPS_MVEC_VEC_PROD_TPETRA_MULTI_VECTOR_PRODUCT_TEUCHOS_VECTOR_HPP_
+#define CORE_CONTAINER_OPS_MVEC_VEC_PROD_TPETRA_MULTI_VECTOR_PRODUCT_TEUCHOS_VECTOR_HPP_
 
 #include "../core_ops_meta.hpp"
 #include "../../vector/core_vector_meta.hpp"
 #include "../../multi_vector/core_multi_vector_meta.hpp"
-#include "../../vector/concrete/core_vector_sharedmem_eigen_dynamic.hpp"
+#include "../../vector/concrete/core_vector_sharedmem_teuchos_serial_dense.hpp"
 
 namespace rompp{ namespace core{ namespace ops{
 
@@ -18,7 +18,7 @@ template <typename mvec_type,
   core::meta::enable_if_t<
     core::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    core::meta::is_vector_wrapper_eigen<vec_type>::value and
+    core::meta::is_dense_vector_wrapper_teuchos<vec_type>::value and
     core::meta::is_vector_wrapper_tpetra<res_type>::value
     > * = nullptr
   >
@@ -66,7 +66,7 @@ template <typename mvec_type,
   core::meta::enable_if_t<
    core::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    (core::meta::is_vector_wrapper_eigen<vec_type>::value)
+    (core::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
   > * = nullptr
  >
 auto product(const mvec_type & mvA, const vec_type & vecB)
