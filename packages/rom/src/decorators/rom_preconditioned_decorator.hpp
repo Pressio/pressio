@@ -41,7 +41,7 @@ public:
     preconditionable::template operator()<
       odeMethod, n>(odeY, fomRhs_, oldYs, app, t, dt);
 
-    app.applyPreconditioner(yFom_, fomRhs_, t);
+    app.applyPreconditioner(*yFom_.data(), *fomRhs_.data(), t);
     return fomRhs_;
   }
 
@@ -58,7 +58,7 @@ public:
     preconditionable::template operator()<
       odeMethod, n>(odeY, odeR, oldYs, app, t, dt);
 
-    app.applyPreconditioner(yFom_, odeR, t);
+    app.applyPreconditioner(*yFom_.data(), *odeR.data(), t);
   }
 };//end class
 
@@ -96,7 +96,7 @@ public:
 				scalar_t t, scalar_t dt) const
   {
     preconditionable::template operator()<odeMethod>(odeY, JJ_, app, t, dt);
-    app.applyPreconditioner(yFom_, JJ_, t);
+    app.applyPreconditioner(*yFom_.data(), *JJ_.data(), t);
     return JJ_;
   }
 
@@ -106,7 +106,7 @@ public:
   		  const app_t & app, scalar_t t, scalar_t dt) const
   {
     preconditionable::template operator()<odeMethod>(odeY, odeJJ, app, t, dt);
-    app.applyPreconditioner(yFom_, odeJJ, t);
+    app.applyPreconditioner(*yFom_.data(), *odeJJ.data(), t);
   }
 
 };//end class
