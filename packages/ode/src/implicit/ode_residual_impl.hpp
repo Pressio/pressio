@@ -15,6 +15,7 @@ template<::rompp::ode::ImplicitEnum odeMethod,
   (odeMethod == ::rompp::ode::ImplicitEnum::Euler)
 #ifdef HAVE_TRILINOS
    and ::rompp::core::meta::is_vector_wrapper_tpetra<state_type>::value == false
+   and ::rompp::core::meta::is_vector_wrapper_epetra<state_type>::value == false
 #endif
   > * = nullptr
 	  >
@@ -26,6 +27,28 @@ void time_discrete_residual(const state_type & yn,
   //           dudt = f(x,u,...), R contains f(...)
   R = yn - ynm[0] - dt*R;
 }
+//-------------------------------------------------------
+
+#ifdef HAVE_TRILINOS
+template<::rompp::ode::ImplicitEnum odeMethod,
+	  int numStates,
+	  typename state_type,
+	  typename scalar_type,
+	  core::meta::enable_if_t<
+  (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
+  ::rompp::core::meta::is_vector_wrapper_epetra<state_type>::value == true
+  > * = nullptr
+	  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,numStates> & ynm,
+			    state_type & R,
+			    scalar_type dt){
+  // On input: R should contain the application RHS, i.e. if
+  //           dudt = f(x,u,...), R contains f(...)
+  R = yn - ynm[0] - dt*R;
+  // R.data()->Update(1.0, *yn.data(), -1.0, *ynm[0].data(), -dt);
+}
+#endif
 //-------------------------------------------------------
 
 template<::rompp::ode::ImplicitEnum odeMethod,
@@ -50,8 +73,6 @@ void time_discrete_residual(const state_type & yn,
       - bdf2<scalar_type>::c3_*dt*R;
 }
 //-------------------------------------------------------
-
-
 
 #ifdef HAVE_TRILINOS
 template<::rompp::ode::ImplicitEnum odeMethod,
