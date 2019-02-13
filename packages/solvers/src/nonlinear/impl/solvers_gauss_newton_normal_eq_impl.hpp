@@ -10,6 +10,7 @@
 #include "../helper_policies/solvers_jacob_res_product_policy.hpp"
 #include "../helper_policies/solvers_norm_helper_policy.hpp"
 #include "../helper_policies/solvers_line_search_policy.hpp"
+#include "solvers_get_matrix_size_helper.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -131,11 +132,12 @@ void gauss_newtom_neq_solve(const system_t & sys,
 #endif
 
 #ifdef DEBUG_PRINT
-    // print only for when hessian is a shared mem matrix
     auto fmt1 = core::io::magenta() + core::io::bold();
     ::rompp::core::io::print_stdout(fmt1, "GN_JSize =",
-				    jacob.globalLength(),
+    ::rompp::solvers::impl::MatrixGetSizeHelper<jac_t>::globalRows(jacob),
+    ::rompp::solvers::impl::MatrixGetSizeHelper<jac_t>::globalCols(jacob),
 				    "\n");
+    // this print only works when hessian is a shared mem matrix
     ::rompp::core::io::print_stdout(fmt1, "GN_HessianSize =",
 				    H.rows(), H.cols(),
 				    core::io::reset(), "\n");
@@ -203,5 +205,5 @@ void gauss_newtom_neq_solve(const system_t & sys,
 
 }
 
-}}}} //end namespace rompp::solvers::iterative::implo
+}}}} //end namespace rompp::solvers::iterative::impl
 #endif
