@@ -7,79 +7,124 @@
 
 namespace rompp{ namespace rom{ namespace impl{
 
+/* when we have hyper-reduction and we need to calculate the
+ * time-discrete residual, yn (i.e. the current state) and
+ * ynm (i.e. the states at prev steps) might have
+ * different entries/maps than R (i.e. the spatial residual)
+ * so we need to update R only picking elements corresponding
+ * elements in yn and ynm.
+ * In other words, in the functions below we do NOT assume that
+ * yn and ynm have the same distribution/sizes of R but we DO assume
+ * that yn and ynm contain at least all the elements of R (and more).
+ * THis is because to evaluate spatial residual one typically
+ * needs neighbors values, so in the hyper-red scenario the
+ * states contain more DOFs than the spatial residual.
+ * for instance, imagine the i-th cell in a uniform grid with a
+ * centered 2nd-order FD operator.
+ * To compute the spatial residual at the i-th cell, one needs the
+ * cell value y_i, as well as the left, y_i-1, and right, y_i+1,
+ * values of the state. So for a single DOF of the residual, one
+ * needs 3 DOFs of the state. Extrapolating to all cells, then we
+ * clearly see that we need more dofs for the states than for the residual.
+ *
+ * Below, we account for this potential scenario and the code below
+ * obviously also works for the case where the vectors have same
+ * the same distributions.
+*/
+
 #ifdef HAVE_TRILINOS
+
 template <
   ode::ImplicitEnum odeMethod,
-  typename jacobian_type,
+  typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
   core::meta::enable_if_t<
-    odeMethod == ode::ImplicitEnum::Euler and
-    core::meta::is_multi_vector_wrapper_epetra<jacobian_type>::value and
+    core::meta::is_multi_vector_wrapper_epetra<lspg_matrix_type>::value and
     core::meta::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
     > * = nullptr
   >
-void time_discrete_jacobian(jacobian_type & jac, scalar_type dt,
+void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
+			    scalar_type	dt,
 			    const decoder_jac_type & phi){
-  jac.scale(-dt);
-  jac += phi;
+
+  // integral type of the global indices
+  using GO_t = typename core::details::traits<lspg_matrix_type>::global_ordinal_t;
+
+  //get row map of phi
+  const auto & phi_map = phi.getDataMap();
+  // get my global elements
+  std::vector<GO_t> gIDphi( phi.localLength() );
+  phi_map.MyGlobalElements( gIDphi.data() );
+
+  // get map of jphi
+  const auto & jphi_map = jphi.getDataMap();
+  // get global elements
+  std::vector<GO_t> gIDjphi( jphi.localLength() );
+  jphi_map.MyGlobalElements( gIDjphi.data() );
+
+  // prefactor (f) multiplying f*dt*J*phi
+  auto prefactor = static_cast<scalar_type>(1);
+  if (odeMethod == ode::ImplicitEnum::BDF2)
+    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+
+  //loop over elements of jphi
+  for (auto i=0; i<jphi.localLength(); i++)
+  {
+    // ask the phi map what is the local index corresponding
+    // to the global index we are handling
+    auto lid = phi_map.LID(gIDjphi[i]);
+    for (auto j=0; j<jphi.globalNumVectors(); j++)
+      jphi(i,j) = phi(lid,j) - prefactor*dt*jphi(i,j);
+  }
 }
+
+
 
 template <
   ode::ImplicitEnum odeMethod,
-  typename jacobian_type,
+  typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
   core::meta::enable_if_t<
-    odeMethod == ode::ImplicitEnum::Euler and
-    core::meta::is_multi_vector_wrapper_tpetra<jacobian_type>::value and
+    core::meta::is_multi_vector_wrapper_tpetra<lspg_matrix_type>::value and
     core::meta::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
     > * = nullptr
   >
-  void time_discrete_jacobian(jacobian_type & jac,
-			      scalar_type dt,
-			      const decoder_jac_type & phi){
-  jac.scale(-dt);
-  jac += phi;
-}
-
-
-template <
-  ode::ImplicitEnum odeMethod,
-  typename jacobian_type,
-  typename scalar_type,
-  typename decoder_jac_type,
-  core::meta::enable_if_t<
-    (odeMethod == ode::ImplicitEnum::BDF2) and
-    core::meta::is_multi_vector_wrapper_epetra<jacobian_type>::value and
-    core::meta::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
-    > * = nullptr
-  >
-void time_discrete_jacobian(jacobian_type & jac,
-			    scalar_type dt,
+void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
+			    scalar_type	dt,
 			    const decoder_jac_type & phi){
-  jac.scale(-ode::coeffs::bdf2<scalar_type>::c3_*dt);
-  jac += phi;
+
+  //get row map of phi
+  const auto & phi_map = phi.getDataMap();
+  // get my global elements
+  auto gIDphi = phi_map.getMyGlobalIndices();
+
+  // get map of jphi
+  const auto & jphi_map = jphi.getDataMap();
+  // get global elements
+  auto gIDjphi = jphi_map.getMyGlobalIndices();
+
+  // prefactor (f) multiplying f*dt*J*phi
+  auto prefactor = static_cast<scalar_type>(1);
+  if (odeMethod == ode::ImplicitEnum::BDF2)
+    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+
+  auto jphi2dView = jphi.data()->get2dViewNonConst();
+  auto phi2dView = phi.data()->get2dViewNonConst();
+
+  //loop over elements of jphi
+  for (auto i=0; i<jphi.localLength(); i++)
+  {
+    // ask the phi map what is the local index corresponding
+    // to the global index we are handling
+    auto lid = phi_map.getLocalElement(gIDjphi[i]);
+    for (auto j=0; j<jphi.globalNumVectors(); j++)
+      jphi2dView[i][j] = phi2dView[lid][j]
+	- prefactor*dt*jphi2dView[i][j];
+  }
 }
 
-
-template <
-  ode::ImplicitEnum odeMethod,
-  typename jacobian_type,
-  typename scalar_type,
-  typename decoder_jac_type,
-  core::meta::enable_if_t<
-    (odeMethod == ode::ImplicitEnum::BDF2) and
-    core::meta::is_multi_vector_wrapper_tpetra<jacobian_type>::value and
-    core::meta::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
-    > * = nullptr
-  >
-void time_discrete_jacobian(jacobian_type & jac,
-			    scalar_type dt,
-			    const decoder_jac_type & phi){
-  jac.scale(-ode::coeffs::bdf2<scalar_type>::c3_*dt);
-  jac += phi;
-}
 #endif
 
 }}}//end namespace rompp::rom::impl
