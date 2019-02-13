@@ -165,6 +165,8 @@ void time_discrete_residual(const state_type & yn,
 			    const std::array<state_type,numStates> & ynm,
 			    state_type & R,
 			    scalar_type dt){
+  //TODO: tpetra needs testing
+
   // On input: R contains the application RHS, i.e. if
   // dudt = f(x,u,...), R contains f(...)
 

@@ -95,6 +95,8 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 			    scalar_type	dt,
 			    const decoder_jac_type & phi){
 
+  //TODO: tpetra needs testing
+
   //get row map of phi
   const auto & phi_map = phi.getDataMap();
   // get my global elements
