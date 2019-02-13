@@ -122,7 +122,7 @@ public:
   		  const app_t & app, scalar_t t, scalar_t dt) const
   {
     maskable::template operator()<odeMethod>(odeY, JJ_, app, t, dt);
-    app.applyMask(*JJ_.data(), *maskedJJ_->data(), t);
+    app.applyMask(*JJ_.data(), *odeJJ.data(), t);
   }
 
 };//end class
