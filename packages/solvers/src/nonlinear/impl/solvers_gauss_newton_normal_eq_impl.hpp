@@ -130,6 +130,17 @@ void gauss_newtom_neq_solve(const system_t & sys,
     hessEvaluator(jacob, H);
 #endif
 
+#ifdef DEBUG_PRINT
+    // print only for when hessian is a shared mem matrix
+    auto fmt1 = core::io::magenta() + core::io::bold();
+    ::rompp::core::io::print_stdout(fmt1, "GN_JSize =",
+				    jacob.globalLength(),
+				    "\n");
+    ::rompp::core::io::print_stdout(fmt1, "GN_HessianSize =",
+				    H.rows(), H.cols(),
+				    core::io::reset(), "\n");
+#endif
+
     // compute RHS: J^T*res
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("JTR");
@@ -158,6 +169,7 @@ void gauss_newtom_neq_solve(const system_t & sys,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
 				    "||dy|| =", normN,
+				    core::io::reset(),
 				    "\n");
 #endif
 
@@ -182,6 +194,7 @@ void gauss_newtom_neq_solve(const system_t & sys,
 
 #if defined DEBUG_PRINT
   std::cout.precision(ss);
+  ::rompp::core::io::print_stdout(std::fixed);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS

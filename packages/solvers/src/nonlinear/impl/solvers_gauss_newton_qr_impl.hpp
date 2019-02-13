@@ -117,6 +117,15 @@ void gauss_newtom_qr_solve(const system_t & sys,
     qrObj.computeThin(jacob);
 #endif
 
+#ifdef DEBUG_PRINT
+    // print valid only for when jacob is a multivector
+    auto fmt1 = core::io::magenta() + core::io::bold();
+    ::rompp::core::io::print_stdout(fmt1, "GN_JSize =",
+				    jacob.globalLength(),
+				    core::io::reset(),
+				    "\n");
+#endif
+
     // compute: Q^T Residual
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("QR project");
