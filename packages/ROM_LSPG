@@ -8,6 +8,7 @@
 #include "rom/src/lspg/rom_lspg_jacobian_policy.hpp"
 #include "rom/src/lspg/rom_lspg_generators.hpp"
 #include "rom/src/decorators/rom_preconditioned_decorator.hpp"
+#include "rom/src/decorators/rom_mask_decorator.hpp"
 #include "rom/src/lspg/rom_lspg_time_discrete_jacobian.hpp"
 
 #endif

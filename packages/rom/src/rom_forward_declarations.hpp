@@ -13,6 +13,10 @@ template <typename preconditionable,
 	  typename enable = void>
 class Preconditioned;
 
+template <typename maskable,
+	  typename enable = void>
+class Masked;
+
 }// namespace rompp::rom::decorator
 //-------------------------------------------
 
