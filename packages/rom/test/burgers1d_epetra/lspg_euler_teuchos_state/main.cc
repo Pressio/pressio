@@ -5,8 +5,9 @@
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
 #include "QR_BASIC"
-#include "lspg_utils.hpp"
-#include "burgers1dEpetra.hpp"
+#include "../lspg_utils.hpp"
+#include "../burgers1dEpetra.hpp"
+#include <Teuchos_SerialDenseVector.hpp>
 
 const std::vector<double> bdf1Sol =
   { 4.9683703619639, 4.6782198130332, 3.7809092143183, 2.3410370171735,
@@ -29,8 +30,9 @@ int main(int argc, char *argv[]){
   using scalar_t	= typename fom_t::scalar_type;
   using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
-  using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;
+
+  using nat_vec_t	= Teuchos::SerialDenseVector<int, scalar_t>;
+  using lspg_state_t	= rompp::core::Vector<nat_vec_t>;
 
   //-------------------------------
   // MPI init
@@ -72,17 +74,16 @@ int main(int argc, char *argv[]){
       appobj, y0n, decoderObj, yROM, t0);
 
   using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;
+  using fom_state_w_t = typename lspg_problem_types::fom_state_w_t;
+  using rom_jac_t     = typename lspg_problem_types::lspg_matrix_t;
 
   // GaussNewton solver
-  // hessian type: comes up in GN solver, it is (J phi)^T (J phi)
-  // Since the rom is solved using eigen, hessian is wrapper of eigen matrix
-  using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t	 = rompp::core::Matrix<eig_dyn_mat>;
-  using solver_tag	 = rompp::solvers::linear::LSCG;
+  using qr_algo = rompp::qr::TSQR;
+  using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
   using converged_when_t = rompp::solvers::iterative::default_convergence;
-  using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
-    scalar_t, solver_tag, rompp::solvers::EigenIterative,
-    converged_when_t, rom_stepper_t, hessian_t>;
+  using gnsolver_t	 = rompp::solvers::iterative::GaussNewtonQR<
+  				scalar_t, qr_type,
+  				converged_when_t, rom_stepper_t>;
   gnsolver_t solver(stGen.stepperObj_, yROM);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(100);
@@ -91,7 +92,6 @@ int main(int argc, char *argv[]){
   rompp::ode::integrateNSteps(stGen.stepperObj_, yROM, 0.0, dt, 200, solver);
 
   // compute the fom corresponding to our rom final state
-  using fom_state_w_t = typename lspg_problem_types::fom_state_w_t;
   fom_state_w_t yRf(y0n);
   decoderObj.applyMapping(yROM, yRf);
   yRf += stGen.y0Fom_;

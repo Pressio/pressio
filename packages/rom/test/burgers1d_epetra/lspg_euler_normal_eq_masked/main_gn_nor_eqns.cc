@@ -5,27 +5,32 @@
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
 #include "QR_BASIC"
-#include "../burgers1d_epetra_lspg_euler/lspg_utils.hpp"
-#include "../burgers1d_epetra_lspg_euler/burgers1dEpetra.hpp"
+#include "../lspg_utils.hpp"
+#include "../burgers1dEpetra_masked.hpp"
 
 const std::vector<double> bdf1Sol =
-  { 4.9683703619639, 4.6782198130332, 3.7809092143183, 2.3410370171735,
-    1.3665227552633, 1.0998248856967, 1.0588744517773, 1.0552786290916,
-    1.0565755841731, 1.05832566338, 1.0598499804131, 1.0612950695346,
-    1.0634140889979, 1.0664875741963, 1.0701215280868, 1.0735734095262,
-    1.0764754781593, 1.0790691949921, 1.0818228048193, 1.0850683068699,
-    1.0887478932688, 1.092642408022, 1.0965446003949, 1.1004297242319,
-    1.1043922522415, 1.1085490607723, 1.1129611388185, 1.117613658291,
-    1.1224648232926, 1.1274778902247, 1.1326530965013, 1.13802239319,
-    1.1436307647296, 1.1494987675359, 1.1556064137176, 1.161941826502,
-    1.1685253861164, 1.1753816797655, 1.1825238154096, 1.1899594186277,
-    1.1976959450073, 1.205743187805, 1.2141142750508, 1.2228251947121,
-    1.2318925753159, 1.2413295315044, 1.2511467170661, 1.2613604601936,
-    1.2719910028481, 1.2830509792253};
+  { 3.24554055320169, 1.89752376279213, 0.85479207280705,
+    0.95870565961978, 1.13268225876757, 1.03283349158017,
+    0.96598999130794, 0.98544746688408, 1.02979179623519,
+    1.05105185279567, 1.04418409672547, 1.02642093543265,
+    1.01506418485300, 1.01369384205116, 1.01660607396748,
+    1.01934885770231, 1.02039498889101, 1.02041119534205,
+    1.02041545687795, 1.02101238749315, 1.02209157087686,
+    1.02333339700764, 1.02448690864655, 1.02552517453871,
+    1.02653306205069, 1.0275820121412,  1.0286997136833,
+    1.0298777957326,  1.0311068539427, 1.032383410013,
+    1.0337051007736,  1.0350745588396,  1.0365026596887,
+    1.0379958487248,  1.0395492054119,  1.0411610807793,
+    1.0428391772815, 1.0445885471324, 1.0464078804562,
+    1.0482990195458, 1.0502692141258, 1.0523226595578,
+    1.0544584499389, 1.0566782919802, 1.058989288575,
+    1.0613974462878, 1.0639040643275, 1.0665110949105,
+    1.069225028814, 1.0720494917787};
+
 
 int main(int argc, char *argv[]){
 
-  using fom_t		= Burgers1dEpetra;
+  using fom_t		= Burgers1dEpetraMasked;
   using scalar_t	= typename fom_t::scalar_type;
   using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
@@ -38,7 +43,7 @@ int main(int argc, char *argv[]){
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
-  assert(Comm.NumProc() == 2);
+  //assert(Comm.NumProc() == 2);
 
   //-------------------------------
   // app object
@@ -66,30 +71,32 @@ int main(int argc, char *argv[]){
   // initialize to zero (this has to be done)
   yROM.putScalar(0.0);
 
-  using lspg_problem_types = rompp::rom::DefaultLSPGTypeGenerator<
+  using lspg_problem_types = rompp::rom::MaskedLSPGTypeGenerator<
     fom_t, rompp::ode::ImplicitEnum::Euler, decoder_t, lspg_state_t>;
   rompp::rom::StepperObjectGenerator<lspg_problem_types> stGen(
       appobj, y0n, decoderObj, yROM, t0);
 
   using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;
-  using fom_state_w_t = typename lspg_problem_types::fom_state_w_t;
-  using rom_jac_t     = typename lspg_problem_types::lspg_matrix_t;
 
   // GaussNewton solver
-  using qr_algo = rompp::qr::TSQR;
-  using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
+  // hessian type: comes up in GN solver, it is (J phi)^T (J phi)
+  // Since the rom is solved using eigen, hessian is wrapper of eigen matrix
+  using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
+  using hessian_t	 = rompp::core::Matrix<eig_dyn_mat>;
+  using solver_tag	 = rompp::solvers::linear::LSCG;
   using converged_when_t = rompp::solvers::iterative::default_convergence;
-  using gnsolver_t	 = rompp::solvers::iterative::GaussNewtonQR<
-  				scalar_t, qr_type,
-  				converged_when_t, rom_stepper_t>;
+  using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
+    scalar_t, solver_tag, rompp::solvers::EigenIterative,
+    converged_when_t, rom_stepper_t, hessian_t>;
   gnsolver_t solver(stGen.stepperObj_, yROM);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(100);
 
   // integrate in time
-  rompp::ode::integrateNSteps(stGen.stepperObj_, yROM, 0.0, dt, 200, solver);
+  rompp::ode::integrateNSteps(stGen.stepperObj_, yROM, 0.0, dt, 50, solver);
 
   // compute the fom corresponding to our rom final state
+  using fom_state_w_t = typename lspg_problem_types::fom_state_w_t;
   fom_state_w_t yRf(y0n);
   decoderObj.applyMapping(yROM, yRf);
   yRf += stGen.y0Fom_;
@@ -102,6 +109,11 @@ int main(int argc, char *argv[]){
   for (auto i=0; i<myn; i++){
     assert(std::abs(yRf[i] - bdf1Sol[i+shift]) < 1e-12 );
    }
+
+  // print summary from timers
+  #ifdef HAVE_TEUCHOS_TIMERS
+  rompp::core::TeuchosPerformanceMonitor::stackedTimersReportMPI();
+  #endif
 
   MPI_Finalize();
   return 0;

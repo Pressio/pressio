@@ -1,0 +1,13 @@
+
+IF(HAVE_TRILINOS AND HAVE_ANASAZI_TSQR)
+ADD_SUBDIRECTORIES(
+  lspg_euler_tsqr
+  lspg_euler_teuchos_state
+  )
+ENDIF()
+
+ADD_SUBDIRECTORIES(
+  lspg_euler_normal_eq
+  lspg_euler_normal_eq_masked
+  lspg_bdf2_normal_eq
+  )

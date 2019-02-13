@@ -12,12 +12,10 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
 
-
 class Burgers1dEpetra{
+protected:
   using nativeVec = Epetra_Vector;
-  template<typename T>
-  using rcp = std::shared_ptr<T>;
-
+  template<typename T> using rcp = std::shared_ptr<T>;
   using jacobian_type	= Epetra_CrsMatrix;
 
 /* these types exposed because need to be detected */
@@ -69,16 +67,6 @@ public:
     return *U0_;
   };
 
-  // void  applyPreconditioner(const state_type & ,
-  // 			    residual_type & ,
-  // 			    const scalar_type /* t */) const
-  // {}
-
-  // void  applyPreconditioner(const state_type & ,
-  // 			    Epetra_MultiVector & ,
-  // 			    const scalar_type /* t */) const
-  // {}
-
   void residual(const state_type & u,
 		residual_type & rhs,
 		const scalar_type /* t */) const;
@@ -114,12 +102,12 @@ public:
     return C;
   }
 
-private:
+protected:
   void jacobian(const state_type & u,
 		jacobian_type & jac,
 		const scalar_type /*t*/) const;
 
-private:
+protected:
   std::vector<scalar_type> mu_; // parameters
   const scalar_type xL_ = 0.0; //left side of domain
   const scalar_type xR_ = 100.0; // right side of domain
