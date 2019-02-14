@@ -10,12 +10,12 @@ TEST_F(epetraR9Fixture,
   using qr_algo = qr::Householder;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
-
   const auto & Q = qrObj.cRefQFactor();
   Q.data()->Print(std::cout);
   checkQFactor(Q);
 }
 
+#ifdef HAVE_ANASAZI_TSQR
 TEST_F(epetraR9Fixture,
        TSQRepetraMultiVectorOutOfPlace){
   using namespace rompp;
@@ -24,10 +24,23 @@ TEST_F(epetraR9Fixture,
   using qr_algo = qr::TSQR;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
-
   const auto & Q = qrObj.cRefQFactor();
   checkQFactor(Q);
 }
+#endif
+
+TEST_F(epetraR9Fixture,
+       BelosTSQRepetraMultiVectorOutOfPlace){
+  using namespace rompp;
+
+  // default: R_type == void, in_place = false
+  using qr_algo = qr::TSQRBelos;
+  qr::QRSolver<mymvec_t, qr_algo> qrObj;
+  qrObj.computeThin( *A_ );
+  const auto & Q = qrObj.cRefQFactor();
+  checkQFactor(Q);
+}
+
 
 // TEST_F(epetraR9Fixture,
 //        TSQRepetraMultiVectorOutOfPlaceWrapREigen){

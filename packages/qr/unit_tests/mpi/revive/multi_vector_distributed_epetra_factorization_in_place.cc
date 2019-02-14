@@ -12,7 +12,6 @@ TEST_F(epetraR9Fixture,
   // default: R_type == void, in_place = true
   qr::QRSolver<mymvec_t, qr_algo, in_place> qrObj;
   qrObj.computeThin( *A_ );
-
   EXPECT_EQ( A_->globalLength(), qr::test::numRows_);
   EXPECT_EQ( A_->globalNumVectors(), qr::test::numVectors_);
   for (auto i=0; i<localSize_; i++)
@@ -22,7 +21,6 @@ TEST_F(epetraR9Fixture,
   }
 }
 
-
 TEST_F(epetraR9Fixture,
        TSQRepetraMultiVectorInPlaceWrapREigen){
   using namespace rompp;
@@ -31,14 +29,12 @@ TEST_F(epetraR9Fixture,
   constexpr bool in_place = true;
 
   // default: R_type == eigen_wrapper, in_place = true
-  using qr_algo = qr::TSQR;
   using eig_mat = Eigen::Matrix<double,
 				qr::test::numVectors_,
 				qr::test::numVectors_>;
   using R_type = core::Matrix<eig_mat>;
   qr::QRSolverWrapR<mymvec_t, qr_algo, R_type, in_place> qrObj;
   qrObj.computeThin( *A_ );
-
   EXPECT_EQ( A_->globalLength(), qr::test::numRows_);
   EXPECT_EQ( A_->globalNumVectors(), qr::test::numVectors_);
   for (auto i=0; i<localSize_; i++)
@@ -62,12 +58,10 @@ TEST_F(epetraR9Fixture,
   constexpr bool in_place = true;
 
   // R_type == eigen_wrapper, in_place = true
-  using qr_algo = qr::TSQR;
   using nat_r_mat = Teuchos::SerialDenseMatrix<int, double>;
   using R_type = core::Matrix<nat_r_mat>;
   qr::QRSolverWrapR<mymvec_t, qr_algo, R_type, in_place> qrObj;
   qrObj.computeThin( *A_ );
-
   EXPECT_EQ( A_->globalLength(), qr::test::numRows_);
   EXPECT_EQ( A_->globalNumVectors(), qr::test::numVectors_);
   for (auto i=0; i<localSize_; i++)

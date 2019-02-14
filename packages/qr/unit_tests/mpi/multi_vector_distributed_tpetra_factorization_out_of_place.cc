@@ -15,13 +15,27 @@ TEST_F(tpetraR9Fixture,
   checkQFactor(Q);
 }
 
-
+#ifdef HAVE_ANASAZI_TSQR
 TEST_F(tpetraR9Fixture,
        TSQRtpetraMultiVectorOutOfPlace){
   using namespace rompp;
 
   // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
+  qr::QRSolver<mymvec_t, qr_algo> qrObj;
+  qrObj.computeThin( *A_ );
+
+  const auto & Q = qrObj.cRefQFactor();
+  checkQFactor(Q);
+}
+#endif
+
+TEST_F(tpetraR9Fixture,
+       BelosTSQRtpetraMultiVectorOutOfPlace){
+  using namespace rompp;
+
+  // default: R_type == void, in_place = false
+  using qr_algo = qr::TSQRBelos;
   qr::QRSolver<mymvec_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
 

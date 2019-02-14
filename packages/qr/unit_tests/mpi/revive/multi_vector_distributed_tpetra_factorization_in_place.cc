@@ -40,8 +40,6 @@ TEST_F(tpetraR9Fixture,
   //-------------------------------------------
   // R_type == eigen_wrapper, in_place = true
   //-------------------------------------------
-
-  using qr_algo = qr::TSQR;
   using eig_mat = Eigen::Matrix<double,
 				qr::test::numVectors_,
 				qr::test::numVectors_>;
@@ -78,8 +76,6 @@ TEST_F(tpetraR9Fixture,
   //-------------------------------------------
   // R_type == eigen_wrapper, in_place = true
   //-------------------------------------------
-
-  using qr_algo = qr::TSQR;
   using nat_r_mat = Teuchos::SerialDenseMatrix<int, double>;
   using R_type = core::Matrix<nat_r_mat>;
   qr::QRSolverWrapR<mymvec_t, qr_algo, R_type, in_place> qrObj;
