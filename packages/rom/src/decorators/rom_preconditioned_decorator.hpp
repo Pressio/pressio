@@ -38,11 +38,11 @@ public:
 			   scalar_t t,
 			   scalar_t dt) const
   {
-    preconditionable::template operator()<
-      odeMethod, n>(odeY, fomRhs_, oldYs, app, t, dt);
+    auto result = preconditionable::template operator()<
+      odeMethod, n>(odeY, oldYs, app, t, dt);
 
-    app.applyPreconditioner(*yFom_.data(), *fomRhs_.data(), t);
-    return fomRhs_;
+    app.applyPreconditioner(*yFom_.data(), *result.data(), t);
+    return result;
   }
 
   template <ode::ImplicitEnum odeMethod,  int n,
