@@ -15,14 +15,12 @@
 
 #include "qr/src/impl/qr_eigen_dense_matrix_out_of_place_impl.hpp"
 #include "qr/src/impl/qr_anasazi_multi_vector_tsqr_impl.hpp"
+#include "qr/src/impl/qr_belos_multi_vector_tsqr_impl.hpp"
 #include "qr/src/impl/qr_epetra_mv_householder_using_eigen_impl.hpp"
 #include "qr/src/impl/qr_tpetra_mv_householder_using_eigen_impl.hpp"
 #include "qr/src/qr_rfactor_solve_impl.hpp"
 
 #include "qr/src/qr_out_of_place.hpp"
 #include "qr/src/qr_in_place.hpp"
-// #include "qr/src/qr_trilinos_multi_vector_tsqr_in_place.hpp"
-// #include "qr/src/qr_trilinos_multi_vector_tsqr_out_of_place.hpp"
-// #include "qr/src/qr_eigen_dense_matrix_out_of_place.hpp"
 
 #endif

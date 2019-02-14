@@ -59,6 +59,15 @@ template<typename matrix_t,
 	 typename enable = void>
 class AnasaziMVTSQR;
 
+template<typename matrix_t,
+	 typename R_t,
+	 int n, int m,
+	 typename wrap_Q_type,
+	 template <typename...> class Q_type
+	 = core::MultiVector,
+	 typename enable = void>
+class BelosMVTSQR;
+
 
 template<
   typename matrix_type,
