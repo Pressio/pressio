@@ -125,9 +125,9 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::Euler>{
 			 int lid,
 			 const state_type& yn,
 			 const std::array<state_type,n> & ynm){
-    //R[i] = yn[lid]- ynm[0][lid] - dt*R[i];
-    R = (yn.data()->getDataNonConst())[lid]
-      - (ynm[0].data()->getDataNonConst())[lid] - dt * R;
+    // //R[i] = yn[lid]- ynm[0][lid] - dt*R[i];
+    R = (yn.data()->getData())[lid]
+      - (ynm[0].data()->getData())[lid] - dt * R;
   }
 };
 
@@ -144,9 +144,9 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
     //   - bdf2<scalar_type>::c1_*ynm[1][lid]
     //   - bdf2<scalar_type>::c2_*ynm[0][lid]
     //   - bdf2<scalar_type>::c3_*dt*R[i];
-    R = yn[lid]
-      - bdf2<T>::c1_*(ynm[1].data()->getDataNonConst())[lid]
-      - bdf2<T>::c2_*(ynm[0].data()->getDataNonConst())[lid]
+    R = (yn.data()->getData())[lid]
+      - bdf2<T>::c1_*(ynm[1].data()->getData())[lid]
+      - bdf2<T>::c2_*(ynm[0].data()->getData())[lid]
       - bdf2<T>::c3_*dt*R;
   }
 };
@@ -154,7 +154,7 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
 
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
-  int numStates,
+  int n,
   typename state_type,
   typename scalar_type,
   core::meta::enable_if_t<
@@ -162,13 +162,12 @@ template<
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
-			    const std::array<state_type,numStates> & ynm,
+			    const std::array<state_type,n> & ynm,
 			    state_type & R,
 			    scalar_type dt){
-  //TODO: tpetra needs testing
 
-  // On input: R contains the application RHS, i.e. if
-  // dudt = f(x,u,...), R contains f(...)
+  // // On input: R contains the application RHS, i.e. if
+  // // dudt = f(x,u,...), R contains f(...)
 
   // get map of yn (ynm has for sure the same map as yn)
   const auto & y_map = yn.getDataMap();
@@ -189,9 +188,8 @@ void time_discrete_residual(const state_type & yn,
     time_discrete_single_entry_tpetra<
       odeMethod
       >::template evaluate<
-      scalar_type, state_type, numStates>(dt,
-					  (R.data()->getDataNonConst())[i],
-					  lid, yn, ynm);
+      scalar_type, state_type,
+      n>(dt, (R.data()->getDataNonConst())[i], lid, yn, ynm);
   }
 }
 #endif

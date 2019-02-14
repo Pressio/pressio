@@ -69,8 +69,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
     prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
 
   //loop over elements of jphi
-  for (auto i=0; i<jphi.localLength(); i++)
-  {
+  for (auto i=0; i<jphi.localLength(); i++){
     // ask the phi map what is the local index corresponding
     // to the global index we are handling
     auto lid = phi_map.LID(gIDjphi[i]);
@@ -95,8 +94,6 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 			    scalar_type	dt,
 			    const decoder_jac_type & phi){
 
-  //TODO: tpetra needs testing
-
   //get row map of phi
   const auto & phi_map = phi.getDataMap();
   // get my global elements
@@ -113,17 +110,15 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
     prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
 
   auto jphi2dView = jphi.data()->get2dViewNonConst();
-  auto phi2dView = phi.data()->get2dViewNonConst();
+  auto phi2dView = phi.data()->get2dView();
 
   //loop over elements of jphi
-  for (auto i=0; i<jphi.localLength(); i++)
-  {
+  for (auto i=0; i<jphi.localLength(); i++){
     // ask the phi map what is the local index corresponding
     // to the global index we are handling
     auto lid = phi_map.getLocalElement(gIDjphi[i]);
     for (auto j=0; j<jphi.globalNumVectors(); j++)
-      jphi2dView[i][j] = phi2dView[lid][j]
-	- prefactor*dt*jphi2dView[i][j];
+      jphi2dView[j][i] = phi2dView[j][lid] - prefactor*dt*jphi2dView[j][i];
   }
 }
 
