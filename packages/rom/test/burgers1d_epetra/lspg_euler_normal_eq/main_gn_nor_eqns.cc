@@ -54,8 +54,8 @@ int main(int argc, char *argv[]){
   // store modes computed before from file
   decoder_jac_t phi = rompp::rom::test::getBasis(romSize, numCell, Comm,
   						 appobj.getDataMap());
-  const int numBasis = phi.globalNumVectors();
-  assert( numBasis == romSize );
+  //const int numBasis = phi.globalNumVectors();
+  //assert( numBasis == romSize );
 
   // this is my reference state
   auto & y0n = appobj.getInitialState();
