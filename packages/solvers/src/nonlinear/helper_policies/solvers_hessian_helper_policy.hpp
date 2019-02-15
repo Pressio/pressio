@@ -36,8 +36,12 @@ struct HessianApproxHelper<
 };
 
 
-// when J is multivector wrapper, the hessian J^T*J
-// is computed by doing the DOT of J*J
+/* when J is multivector wrapper, the hessian J^T*J
+ * is computed by doing the J self_dot J
+ * this ensures that we leverage symmetry of the result,
+ * since self_dot computes only half of the result matrix
+ * and fills the rest by symmetry
+ */
 template<typename J_t>
 struct HessianApproxHelper<
   J_t,
@@ -47,12 +51,12 @@ struct HessianApproxHelper<
 {
   template <typename result_t>
   void operator()(J_t & J, result_t & result) const{
-    ::rompp::core::ops::dot(J, J, result);
+    ::rompp::core::ops::dot_self(J, result);
   }
 
   auto operator()(J_t & J) const
-    -> decltype(::rompp::core::ops::dot(J, J)) {
-    return ::rompp::core::ops::dot(J, J);
+    -> decltype(::rompp::core::ops::dot_self(J)) {
+    return ::rompp::core::ops::dot_self(J);
   }
 };
 
