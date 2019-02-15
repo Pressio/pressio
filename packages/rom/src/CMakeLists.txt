@@ -27,27 +27,7 @@ FILE(GLOB rom_lspg_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 # sources
 FILE(GLOB rom_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
-
-FILE(GLOB rom_decoder_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/decoder/src/*.cc")
-FILE(GLOB rom_decorators_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/decorators/src/*.cc")
-FILE(GLOB rom_policies_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/policies/src/*.cc")
-
-FILE(GLOB rom_galerkin_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/galerkin/src/*.cc")
-FILE(GLOB rom_lspg_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/lspg/src/*.cc")
-
-SET(SOURCES
-  ${rom_gen_SRCS}
-  ${rom_decoder_SRCS}
-  ${rom_decorators_SRCS}
-  ${rom_policies_SRCS}
-  ${rom_galerkin_SRCS}
-  ${rom_lspg_SRCS}
-)
+SET(SOURCES ${rom_gen_SRCS})
 
 #--------------------------------------
 SET(LUMPED_HEADERS

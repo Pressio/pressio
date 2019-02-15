@@ -9,9 +9,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) # To include "ode_config.h"
 #----------------------------------------------------------------
 
 #######################
-#######################
-# all HEADERS
-#######################
+# HEADERS
 #######################
 
 FILE(GLOB ode_general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -19,9 +17,7 @@ FILE(GLOB ode_general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB ode_integrators_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/integrators/*.hpp")
 
-#-------------------------
-# EXPLICIT 
-#-------------------------
+# EXPLICIT
 FILE(GLOB ode_exp_policies_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/explicit/policies/*.hpp")
 FILE(GLOB ode_exp_steppers_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -31,9 +27,7 @@ FILE(GLOB ode_exp_steppers_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB ode_exp_steppers_common_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
    "${CMAKE_CURRENT_SOURCE_DIR}/explicit/steppers/*.hpp")
 
-#-------------------------
-# IMPLICIT 
-#-------------------------
+# IMPLICIT
 FILE(GLOB ode_imp_comm_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/implicit/*.hpp")
 FILE(GLOB ode_imp_policies_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -49,64 +43,10 @@ FILE(GLOB ode_imp_steppers_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB ode_imp_steppers_common_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/*.hpp")
 
-
-
-#######################
-#######################
 # all sources
-#######################
-#######################
-
 FILE(GLOB ode_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
-FILE(GLOB ode_integrators_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/integrators/src/*.cc")
-
-#-------------------------
-# EXPLICIT 
-#-------------------------
-FILE(GLOB ode_exp_policies_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/explicit/policies/src/*.cc")
-FILE(GLOB ode_exp_steppers_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-   "${CMAKE_CURRENT_SOURCE_DIR}/explicit/steppers/base/src/*.cc")
-FILE(GLOB ode_exp_steppers_impl_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-   "${CMAKE_CURRENT_SOURCE_DIR}/explicit/steppers/impl/src/*.cc")
-FILE(GLOB ode_exp_steppers_common_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-   "${CMAKE_CURRENT_SOURCE_DIR}/explicit/steppers/src/*.cc")
-
-FILE(GLOB ode_imp_comm_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/src/*.hpp")
-FILE(GLOB ode_imp_policies_base_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/base/src/*.hpp")
-FILE(GLOB ode_imp_policies_meta_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/meta/src/*.hpp")
-FILE(GLOB ode_imp_policies_std_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/standard/src/*.hpp")
-FILE(GLOB ode_imp_steppers_base_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/base/src/*.hpp")
-FILE(GLOB ode_imp_steppers_impl_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/impl/src/*.hpp")
-FILE(GLOB ode_imp_steppers_common_SRCV RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/src/*.hpp")
-
-
-SET(SOURCES
-  ${ode_general_SRCS}
-  ${ode_integrators_SRCS}
-  #
-  ${ode_exp_policies_SRCS} 
-  ${ode_exp_steppers_base_SRCS}
-  ${ode_exp_steppers_impl_SRCS}
-  ${ode_exp_steppers_common_SRCS}
-  #
-  ${ode_imp_comm_SRCS}
-  ${ode_imp_policies_base_SRCS}
-  ${ode_imp_policies_meta_SRCS}
-  ${ode_imp_policies_std_SRCS}
-  ${ode_imp_steppers_base_SRCS}
-  ${ode_imp_steppers_impl_SRCS}
-  ${ode_imp_steppers_common_SRCS}
-)
+SET(SOURCES ${ode_general_SRCS})
 
 #--------------------------------------
 SET(LUMPED_HEADERS
@@ -114,10 +54,9 @@ SET(LUMPED_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/../../ODE_BASIC
   ${CMAKE_CURRENT_SOURCE_DIR}/../../ODE_INTEGRATORS
   ${CMAKE_CURRENT_SOURCE_DIR}/../../ODE_EXPLICIT
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../ODE_IMPLICIT  
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../ODE_IMPLICIT
 )
 INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
-
 
 #--------------------------------------
 # install the actual headers
@@ -128,12 +67,12 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION $
 
 INSTALL(FILES ${ode_general_HEADERS} DESTINATION ${ODE_INCDIR})
 INSTALL(FILES ${ode_integrators_HEADERS} DESTINATION ${ODE_INCDIR}/integrators)
-#
+
 INSTALL(FILES ${ode_exp_policies_HEADERS} DESTINATION ${ODE_INCDIR}/explicit/policies)
 INSTALL(FILES ${ode_exp_steppers_base_HEADERS} DESTINATION ${ODE_INCDIR}/explicit/steppers/base)
 INSTALL(FILES ${ode_exp_steppers_impl_HEADERS} DESTINATION ${ODE_INCDIR}/explicit/steppers/impl)
 INSTALL(FILES ${ode_exp_steppers_common_HEADERS} DESTINATION ${ODE_INCDIR}/explicit/steppers)
-#
+
 INSTALL(FILES ${ode_imp_comm_HEADERS} DESTINATION ${ODE_INCDIR}/implicit)
 INSTALL(FILES ${ode_imp_policies_base_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/policies/base)
 INSTALL(FILES ${ode_imp_policies_meta_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/policies/meta)
@@ -141,7 +80,6 @@ INSTALL(FILES ${ode_imp_policies_std_HEADERS} DESTINATION ${ODE_INCDIR}/implicit
 INSTALL(FILES ${ode_imp_steppers_base_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/steppers/base)
 INSTALL(FILES ${ode_imp_steppers_impl_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/steppers/impl)
 INSTALL(FILES ${ode_imp_steppers_common_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/steppers)
-
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)
@@ -158,4 +96,3 @@ TRIBITS_ADD_LIBRARY(
 #   SOURCES  SimpleCxx_HelloWorld_Prog.cpp
 #   INSTALLABLE
 #   )
-

@@ -22,14 +22,7 @@ FILE(GLOB qr_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 #################
 FILE(GLOB qr_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
-FILE(GLOB qr_base_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/base/src/*.cc")
-FILE(GLOB qr_impl_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/impl/src/*.cc")
-
-SET(SOURCES 
-  ${qr_general_SRCS}
-)
+SET(SOURCES ${qr_general_SRCS})
 
 #--------------------------------------
 SET(LUMPED_HEADERS
