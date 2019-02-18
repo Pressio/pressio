@@ -43,6 +43,7 @@ struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
 };
 #endif
 
+#ifdef HAVE_BELOS_TSQR
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::TSQRBelos, R_t, n, m, wrap_Q_type, Q_type,
@@ -52,6 +53,7 @@ struct impl_class_helper<matrix_t, qr::TSQRBelos, R_t, n, m, wrap_Q_type, Q_type
 			   >>{
   using impl_t = impl::BelosMVTSQR<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
 };
+#endif
 
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
