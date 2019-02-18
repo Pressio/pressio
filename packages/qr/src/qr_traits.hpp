@@ -30,8 +30,7 @@ template <typename matrix_t, typename algo_tag, typename R_t,
 struct impl_class_helper{};
 
 
-#ifdef HAVE_TRILINOS
-#ifdef HAVE_ANASAZI_TSQR
+#if defined HAVE_TRILINOS and defined HAVE_ANASAZI_TSQR
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
@@ -43,7 +42,8 @@ struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
 };
 #endif
 
-#ifdef HAVE_BELOS_TSQR
+
+#if defined HAVE_TRILINOS and defined HAVE_BELOS_TSQR
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::TSQRBelos, R_t, n, m, wrap_Q_type, Q_type,
@@ -55,6 +55,7 @@ struct impl_class_helper<matrix_t, qr::TSQRBelos, R_t, n, m, wrap_Q_type, Q_type
 };
 #endif
 
+#ifdef HAVE_TRILINOS
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_type,

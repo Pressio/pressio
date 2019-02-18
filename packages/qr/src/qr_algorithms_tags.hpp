@@ -16,6 +16,5 @@ struct TSQR{};
 struct TSQRBelos{};
 #endif
 
-
 }} // end namespace rompp::qr
 #endif
