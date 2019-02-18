@@ -8,18 +8,18 @@
 namespace rompp{ namespace ode{ namespace impl{
 
 template< typename solver_type, typename guesser_cb_t>
-struct DoStepMixin{
+struct DoStepPolicy{
   template <typename time_type,
 	    typename integral_type,
 	    typename state_type,
 	    typename stepper_type>
-  void operator()(time_type time,
-		  time_type dt,
-		  integral_type step,
-		  state_type & yIn,
-		  stepper_type & stepper,
-		  solver_type & solver,
-		  guesser_cb_t && guessCb)
+  static void execute(time_type time,
+		      time_type dt,
+		      integral_type step,
+		      state_type & yIn,
+		      stepper_type & stepper,
+		      solver_type & solver,
+		      guesser_cb_t && guessCb)
   {
     stepper(yIn, time, dt, step, solver,
 	    std::forward<guesser_cb_t>(guessCb));
@@ -27,16 +27,16 @@ struct DoStepMixin{
 };
 
 template<>
-struct DoStepMixin<core::impl::empty, core::impl::empty>{
+struct DoStepPolicy<core::impl::empty, core::impl::empty>{
   template <typename time_type,
 	    typename integral_type,
 	    typename state_type,
 	    typename stepper_type>
-  void operator()(time_type time,
-		  time_type dt,
-		  integral_type step,
-		  state_type & yIn,
-		  stepper_type & stepper)
+  static void execute(time_type time,
+		      time_type dt,
+		      integral_type step,
+		      state_type & yIn,
+		      stepper_type & stepper)
   {
     stepper(yIn, time, dt, step);
   }
@@ -44,17 +44,17 @@ struct DoStepMixin<core::impl::empty, core::impl::empty>{
 
 
 template<typename solver_type>
-struct DoStepMixin<solver_type, core::impl::empty>{
+struct DoStepPolicy<solver_type, core::impl::empty>{
   template <typename time_type,
 	    typename integral_type,
 	    typename state_type,
 	    typename stepper_type>
-  void operator()(time_type time,
-		  time_type dt,
-		  integral_type step,
-		  state_type & yIn,
-		  stepper_type & stepper,
-		  solver_type & solver)
+  static void execute(time_type time,
+		      time_type dt,
+		      integral_type step,
+		      state_type & yIn,
+		      stepper_type & stepper,
+		      solver_type & solver)
   {
     stepper(yIn, time, dt, step, solver);
   }
@@ -66,8 +66,8 @@ struct DoStepMixin<solver_type, core::impl::empty>{
  * A valid collector object is passed by user
  * to take snapshots
  */
-template <typename collector_type, typename DoStepMixin_t>
-struct AdvancerMixin{
+template <typename collector_type, typename DoStepPolicy_t>
+struct AdvancerPolicy{
 
   template <typename integral_type,
 	    typename time_type,
@@ -80,8 +80,6 @@ struct AdvancerMixin{
 		  collector_type & collector,
 		  Args && ...	   args)
   {
-    DoStepMixin_t stepImpl;
-
 #ifdef HAVE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("time loop");
@@ -106,7 +104,7 @@ struct AdvancerMixin{
 #ifdef HAVE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      stepImpl(time, dt, step, yIn, std::forward<Args>(args)...);
+      DoStepPolicy_t::execute(time, dt, step, yIn, std::forward<Args>(args)...);
 #ifdef HAVE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif
@@ -125,8 +123,8 @@ struct AdvancerMixin{
 /*
  * No collector object is passed by user
  */
-template <typename DoStepMixin_t>
-struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
+template <typename DoStepPolicy_t>
+struct AdvancerPolicy<core::impl::empty, DoStepPolicy_t>{
 
   template <typename integral_type,
 	    typename time_type,
@@ -136,8 +134,6 @@ struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
 		  time_type	dt,
 		  Args && ...	args)
   {
-    DoStepMixin_t stepImpl;
-
 #ifdef HAVE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("time loop");
@@ -159,7 +155,7 @@ struct AdvancerMixin<core::impl::empty, DoStepMixin_t>{
 #ifdef HAVE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      stepImpl(time, dt, step, std::forward<Args>(args)...);
+      DoStepPolicy_t::execute(time, dt, step, std::forward<Args>(args)...);
 #ifdef HAVE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif

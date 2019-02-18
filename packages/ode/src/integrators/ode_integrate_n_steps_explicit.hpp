@@ -42,12 +42,11 @@ void integrateNSteps(stepper_type & stepper,
 		     time_type	    dt,
 		     integral_type  num_steps){
 
-  using one_step_impl_t = impl::DoStepMixin<core::impl::empty,
-					    core::impl::empty>;
-  using advancer_impl_t = impl::AdvancerMixin<core::impl::empty,
-					     one_step_impl_t>;
-
-  advancer_impl_t advancer;
+  using do_step_policy_t = impl::DoStepPolicy<core::impl::empty,
+					      core::impl::empty>;
+  using advancer_t = impl::AdvancerPolicy<core::impl::empty,
+					       do_step_policy_t>;
+  advancer_t advancer;
   advancer(num_steps, start_time, dt, yIn, stepper);
 }
 
