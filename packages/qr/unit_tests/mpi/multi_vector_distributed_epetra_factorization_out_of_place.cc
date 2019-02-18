@@ -29,6 +29,7 @@ TEST_F(epetraR9Fixture,
 }
 #endif
 
+#ifdef HAVE_BELOS_TSQR
 TEST_F(epetraR9Fixture,
        BelosTSQRepetraMultiVectorOutOfPlace){
   using namespace rompp;
@@ -40,7 +41,7 @@ TEST_F(epetraR9Fixture,
   const auto & Q = qrObj.cRefQFactor();
   checkQFactor(Q);
 }
-
+#endif
 
 // TEST_F(epetraR9Fixture,
 //        TSQRepetraMultiVectorOutOfPlaceWrapREigen){

@@ -2,7 +2,6 @@
 #include "../qr_utest_fixtures.hpp"
 #include "QR_BASIC"
 
-
 TEST_F(epetraR9Fixture,
        TSQRepetraMVOutOfPlaceAndSolveEigenVecDynamic){
   using namespace rompp;

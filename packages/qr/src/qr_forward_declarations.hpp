@@ -50,6 +50,7 @@ template<typename matrix_t,
 	 = core::MultiVector>
 class TpetraMVHouseholderUsingEigen;
 
+#if defined HAVE_TRILINOS and defined HAVE_ANASAZI_TSQR
 template<typename matrix_t,
 	 typename R_t,
 	 int n, int m,
@@ -58,7 +59,9 @@ template<typename matrix_t,
 	 = core::MultiVector,
 	 typename enable = void>
 class AnasaziMVTSQR;
+#endif
 
+#if defined HAVE_TRILINOS and defined HAVE_BELOS_TSQR
 template<typename matrix_t,
 	 typename R_t,
 	 int n, int m,
@@ -67,6 +70,7 @@ template<typename matrix_t,
 	 = core::MultiVector,
 	 typename enable = void>
 class BelosMVTSQR;
+#endif
 
 
 template<

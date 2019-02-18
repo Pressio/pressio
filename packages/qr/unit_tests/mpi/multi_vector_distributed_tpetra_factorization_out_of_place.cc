@@ -30,6 +30,7 @@ TEST_F(tpetraR9Fixture,
 }
 #endif
 
+#ifdef HAVE_BELOS_TSQR
 TEST_F(tpetraR9Fixture,
        BelosTSQRtpetraMultiVectorOutOfPlace){
   using namespace rompp;
@@ -42,7 +43,7 @@ TEST_F(tpetraR9Fixture,
   const auto & Q = qrObj.cRefQFactor();
   checkQFactor(Q);
 }
-
+#endif
 
 // TEST_F(tpetraR9Fixture,
 //        TSQRtpetraMultiVectorOutOfPlaceWrapREigen){

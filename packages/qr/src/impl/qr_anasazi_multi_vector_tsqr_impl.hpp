@@ -4,8 +4,6 @@
 #define QR_ANASAZI_MULTI_VECTOR_TSQR_IMPL_HPP_
 
 #include "../qr_rfactor_solve_impl.hpp"
-//#include "../qr_ConfigDefs.hpp"
-
 #include "AnasaziTsqrOrthoManager.hpp"
 #include "AnasaziConfigDefs.hpp"
 #include "AnasaziSolverUtils.hpp"
