@@ -20,7 +20,6 @@ class Masked;
 }// namespace rompp::rom::decorator
 //-------------------------------------------
 
-
 /* LSPG policies */
 template <typename fom_states_data_t,
 	  typename fom_rhs_data_t,
@@ -32,7 +31,6 @@ template< typename fom_states_data_t,
 	  typename fom_apply_jac_policy>
 class LSPGJacobianPolicy;
 //-------------------------------------------
-
 
 /* operators */
 template<typename wrapped_type,

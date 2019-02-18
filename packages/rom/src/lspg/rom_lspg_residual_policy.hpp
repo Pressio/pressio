@@ -3,7 +3,6 @@
 #define ROM_LSPG_RESIDUAL_POLICY_HPP_
 
 #include "../rom_forward_declarations.hpp"
-//#include "../../../ode/src/implicit/ode_residual_impl.hpp"
 #include "rom_lspg_time_discrete_residual.hpp"
 #include "../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "../rom_data_fom_rhs.hpp"

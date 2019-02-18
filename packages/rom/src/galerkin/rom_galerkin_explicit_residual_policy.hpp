@@ -2,13 +2,79 @@
 #ifndef ROM_GALERKIN_EXPLICIT_RESIDUAL_POLICY_HPP_
 #define ROM_GALERKIN_EXPLICIT_RESIDUAL_POLICY_HPP_
 
-#include "../rom_ConfigDefs.hpp"
-#include "../../../CORE_ALL"
+#include "../rom_forward_declarations.hpp"
 #include "../../../ode/src/explicit/policies/ode_explicit_residual_policy_base.hpp"
-//#include "../rom_incremental_solution_base.hpp"
-// #include "../rom_data_base.hpp"
+#include "../rom_data_fom_states.hpp"
 
 namespace rompp{ namespace rom{
+
+template <typename fom_states_data,
+	  typename decoder_jac_t>
+class GalerkinExplicitResidualPolicy
+  : public ode::policy::ExplicitResidualPolicyBase<
+       GalerkinExplicitResidualPolicy<fom_states_data,
+				      decoder_jac_t>>,
+    protected fom_states_data{
+
+protected:
+  using this_t = GalerkinExplicitResidualPolicy<fom_states_data,
+						decoder_jac_t>;
+  friend ode::policy::ImplicitResidualPolicyBase<this_t>;
+
+  decoder_jac_t & decoderJac_;
+  using fom_states_data::yFom_;
+
+public:
+  static constexpr bool isResidualPolicy_ = true;
+
+public:
+  GalerkinExplicitResidualPolicy() = delete;
+  ~GalerkinExplicitResidualPolicy() = default;
+  GalerkinExplicitResidualPolicy(const fom_states_data & fomStates,
+				 const decoder_jac_t & decoderJac)
+    : fom_states_data(fomStates),
+      decoderJac_(decoderJac){}
+
+public:
+  template <typename galerkin_state_t,
+	    typename galerkin_residual_t,
+	    typename fom_t,
+	    typename scalar_t>
+  void operator()(const galerkin_state_t	   & romY,
+		  galerkin_residual_t		   & romR,
+  		  const fom_t			   & app,
+		  scalar_t			   t) const
+  {
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("galerkin explicit residual");
+#endif
+
+    fom_states_data::template reconstructCurrentFomState(romY);
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("fom eval rhs");
+    rhsEvaluator.evaluate(app, yFom_, romR, t);
+    timer->stop("fom eval rhs");
+#else
+    rhsEvaluator.evaluate(app, yFom_, romR, t);
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("galerkin explicit residual");
+#endif
+  }
+
+};//end class
+
+
+
+
+
+
+
+
+
 
 // template<typename state_type,
 // 	 typename space_res_type,
@@ -101,6 +167,22 @@ namespace rompp{ namespace rom{
 
 }}//end namespace rompp::rom
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
