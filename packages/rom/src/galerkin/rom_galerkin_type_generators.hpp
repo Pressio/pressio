@@ -59,6 +59,8 @@ struct DefaultGalerkinExplicitTypeGenerator
 				     galerkin_state_type,
 				     galerkin_residual_type>;
 
+  static constexpr ode::ExplicitEnum odeName_ = odeName;
+
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
   using typename base_t::fom_state_t;

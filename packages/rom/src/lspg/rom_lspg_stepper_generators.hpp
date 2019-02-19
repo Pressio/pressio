@@ -7,7 +7,7 @@
 namespace rompp{ namespace rom{
 
 template <typename T>
-struct StepperObjectGenerator<
+struct LSPGStepperObjectGenerator<
   T, core::meta::enable_if_t<
        std::is_void<typename T::aux_stepper_t>::value
        >
@@ -44,7 +44,7 @@ struct StepperObjectGenerator<
   lspg_jacobian_policy_t jacObj_ = {};
   rom_stepper_t stepperObj_	 = {};
 
-  StepperObjectGenerator(const fom_t	   & appObj,
+  LSPGStepperObjectGenerator(const fom_t	   & appObj,
 			 const fom_state_t & y0n,
 			 decoder_t	   & decoder,
 			 lspg_state_t	   & yROM,
@@ -64,7 +64,7 @@ struct StepperObjectGenerator<
 
 
 template <typename T>
-struct StepperObjectGenerator<
+struct LSPGStepperObjectGenerator<
   T, core::meta::enable_if_t<
        !std::is_void<typename T::aux_stepper_t>::value
        >
@@ -99,7 +99,7 @@ struct StepperObjectGenerator<
   aux_stepper_t auxStepperObj_   = {};
   rom_stepper_t stepperObj_	 = {};
 
-  StepperObjectGenerator(const fom_t	   & appObj,
+  LSPGStepperObjectGenerator(const fom_t	   & appObj,
 			 const fom_state_t & y0n,
 			 decoder_t	   & decoder,
 			 lspg_state_t	   & yROM,

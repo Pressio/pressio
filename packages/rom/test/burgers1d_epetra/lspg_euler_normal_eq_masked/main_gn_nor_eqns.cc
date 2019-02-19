@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
 
   using lspg_problem_types = rompp::rom::MaskedLSPGTypeGenerator<
     fom_t, rompp::ode::ImplicitEnum::Euler, decoder_t, lspg_state_t>;
-  rompp::rom::StepperObjectGenerator<lspg_problem_types> stGen(
+  rompp::rom::LSPGStepperObjectGenerator<lspg_problem_types> stGen(
       appobj, y0n, decoderObj, yROM, t0);
 
   using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;

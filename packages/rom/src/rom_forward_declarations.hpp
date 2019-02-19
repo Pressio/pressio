@@ -50,10 +50,10 @@ class DefaultGalerkinExplicitResidualPolicy;
 //-------------------------------------------
 
 template <typename type_generator_t, typename enable = void>
-struct GalerkinExplicitStepperObjectGenerator;
+struct GalerkinStepperObjectGenerator;
 
 template <typename type_generator_t, typename enable = void>
-struct StepperObjectGenerator;
+struct LSPGStepperObjectGenerator;
 //-------------------------------------------
 
 }} // end namespace rompp::rom
