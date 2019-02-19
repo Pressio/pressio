@@ -64,7 +64,7 @@ const std::vector<double> bdf1Sol
   // initialize to zero (this has to be done)
   yROM.putScalar(0.0);
 
-  using galerkin_types = rompp::rom::DefaultGalerkinTypeGenerator<
+  using galerkin_types = rompp::rom::DefaultGalerkinExplicitTypeGenerator<
     fom_t, rompp::ode::ExplicitEnum::Euler, decoder_t, rom_state_t>;
   rompp::rom::GalerkinExplicitStepperObjectGenerator<galerkin_types> stGen(
       appobj, y0n, decoderObj, yROM, t0);

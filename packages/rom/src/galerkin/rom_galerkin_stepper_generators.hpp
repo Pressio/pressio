@@ -6,22 +6,23 @@
 
 namespace rompp{ namespace rom{
 
-template <typename T>
-struct GalerkinExplicitStepperObjectGenerator<T> : T {
+template <typename problem_types>
+struct GalerkinExplicitStepperObjectGenerator<problem_types>
+  : problem_types {
 
-  using typename T::base_t::fom_t;
-  using typename T::base_t::scalar_t;
-  using typename T::base_t::galerkin_state_t;
-  using typename T::base_t::galerkin_residual_t;
-  using typename T::base_t::fom_state_t;
-  using typename T::base_t::fom_state_w_t;
-  using typename T::base_t::fom_rhs_w_t;
-  using typename T::base_t::decoder_t;
-  using typename T::base_t::fom_states_data;
-  using typename T::base_t::fom_rhs_data;
+  using typename problem_types::base_t::fom_t;
+  using typename problem_types::base_t::scalar_t;
+  using typename problem_types::base_t::galerkin_state_t;
+  using typename problem_types::base_t::galerkin_residual_t;
+  using typename problem_types::base_t::fom_state_t;
+  using typename problem_types::base_t::fom_state_w_t;
+  using typename problem_types::base_t::fom_rhs_w_t;
+  using typename problem_types::base_t::decoder_t;
+  using typename problem_types::base_t::fom_states_data;
+  using typename problem_types::base_t::fom_rhs_data;
 
-  using typename T::galerkin_residual_policy_t;
-  using typename T::galerkin_stepper_t;
+  using typename problem_types::galerkin_residual_policy_t;
+  using typename problem_types::galerkin_stepper_t;
 
   fom_state_w_t y0Fom_		 = {};
   fom_rhs_w_t r0Fom_		 = {};
