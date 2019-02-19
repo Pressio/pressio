@@ -16,7 +16,6 @@ class Preconditioned<
   > : public preconditionable{
 
   using typename preconditionable::fom_rhs_w_t;
-  using preconditionable::fomRhs_;
   using preconditionable::yFom_;
 
 public:
@@ -75,7 +74,6 @@ public:
   using typename preconditionable::apply_jac_return_t;
 
 protected:
-  using preconditionable::JJ_;
   using preconditionable::yFom_;
 
 public:
@@ -95,9 +93,9 @@ public:
 				const app_t & app,
 				scalar_t t, scalar_t dt) const
   {
-    preconditionable::template operator()<odeMethod>(odeY, JJ_, app, t, dt);
-    app.applyPreconditioner(*yFom_.data(), *JJ_.data(), t);
-    return JJ_;
+    auto JJ = preconditionable::template operator()<odeMethod>(odeY, app, t, dt);
+    app.applyPreconditioner(*yFom_.data(), *JJ.data(), t);
+    return JJ;
   }
 
   template <ode::ImplicitEnum odeMethod, typename ode_state_t,

@@ -52,7 +52,6 @@ class ImplicitJacobianStandardPolicy;
 	     >
     class ExplicitStepper;
 
-
     template<ImplicitEnum whichone,
 	     typename ode_state_type,
 	     typename ode_residual_type,

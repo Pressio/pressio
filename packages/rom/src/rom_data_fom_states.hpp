@@ -15,6 +15,13 @@ struct FomStatesData{
   FomStatesData() = delete;
 
   template <int _maxNstates = maxNstates,
+            core::meta::enable_if_t<_maxNstates==0> * = nullptr>
+  FomStatesData(const fom_state_w_t & yFomIn,
+		const decoder_type & decoder)
+    : yFomReference_(yFomIn), yFom_(yFomIn),
+      decoderObj_(decoder){}
+
+  template <int _maxNstates = maxNstates,
             core::meta::enable_if_t<_maxNstates==1> * = nullptr>
   FomStatesData(const fom_state_w_t & yFomIn,
 		const decoder_type & decoder)
