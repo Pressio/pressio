@@ -40,6 +40,9 @@ struct GalerkinCommonTypes{
   // class type holding fom states data
   using fom_states_data = ::rompp::rom::FomStatesData<
 	fom_state_w_t, 0, decoder_t>;
+
+  // class type holding fom rhs data
+  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_w_t>;
 };
 
 
@@ -47,12 +50,14 @@ template <typename fom_type,
 	  ode::ExplicitEnum odeName,
 	  typename decoder_type,
 	  typename galerkin_state_type,
-	  typename galerkin_state_type>
+	  typename galerkin_residual_type = galerkin_state_type>
 struct DefaultGalerkinTypeGenerator
-  : GalerkinCommonTypes<fom_type, decoder_type, galerkin_state_type>{
+  : GalerkinCommonTypes<fom_type, decoder_type,
+			galerkin_state_type, galerkin_residual_type>{
 
   using base_t = GalerkinCommonTypes<fom_type, decoder_type,
-				     galerkin_state_type>;
+				     galerkin_state_type,
+				     galerkin_residual_type>;
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
@@ -64,14 +69,15 @@ struct DefaultGalerkinTypeGenerator
   using typename base_t::galerkin_state_t;
   using typename base_t::galerkin_residual_t;
   using typename base_t::fom_states_data;
+  using typename base_t::fom_rhs_data;
 
   // policy for evaluating the ode residual
   using galerkin_residual_policy_t =
-    ::rompp::rom::GalerkinExplicitResidualPolicy<
-	fom_states_data, decoder_jac_t>;
+    ::rompp::rom::DefaultGalerkinExplicitResidualPolicy<
+    fom_states_data, fom_rhs_data, decoder_t>;
 
   // declare type of stepper object
-  using rom_stepper_t = ::rompp::ode::ExplicitStepper<
+  using galerkin_stepper_t = ::rompp::ode::ExplicitStepper<
     odeName, galerkin_state_type, fom_type,
     galerkin_residual_t, galerkin_residual_policy_t>;
 

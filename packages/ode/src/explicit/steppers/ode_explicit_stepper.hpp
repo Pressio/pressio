@@ -137,6 +137,17 @@ namespace rompp{ namespace ode{
 		      ode_residual_type const & r0)
 	: myImpl_(model, policyObj, y0, r0){}
 
+      // when state and residual type are the same
+      template <typename s_t = ode_state_type,
+		typename r_t = ode_residual_type,
+		core::meta::enable_if_t<
+		  std::is_same<s_t, r_t>::value
+		  > * = nullptr>
+      ExplicitStepper(const model_type & model,
+		      const residual_policy_type & policyObj,
+		      s_t const & y0)
+	: myImpl_(model, policyObj, y0, y0){}
+
       ExplicitStepper() = delete;
       ~ExplicitStepper() = default;
 

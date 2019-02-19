@@ -6,9 +6,12 @@ ADD_SUBDIRECTORIES(
   )
 ENDIF()
 
+IF(HAVE_TRILINOS)
 ADD_SUBDIRECTORIES(
   lspg_euler_normal_eq
   lspg_euler_normal_eq_masked
   lspg_euler_normal_eq_reduced_no_mask
   lspg_bdf2_normal_eq
+  galerkin_explicit_euler
   )
+ENDIF()

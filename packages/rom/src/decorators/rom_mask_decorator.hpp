@@ -17,6 +17,7 @@ class Masked<
 
   using typename maskable::fom_rhs_w_t;
   using maskable::yFom_;
+  using maskable::fomRhs_;
 
   mutable std::shared_ptr<fom_rhs_w_t> maskedRhs_ = {};
 
@@ -44,10 +45,10 @@ public:
 
     if (!maskedRhs_){
       maskedRhs_ = std::make_shared<
-	fom_rhs_w_t>( app.applyMask(R1.data(), t) );
+	fom_rhs_w_t>( app.applyMask(*R1.data(), t) );
     }
     else
-      app.applyMask(R1.data(), *maskedRhs_->data(), t);
+      app.applyMask(*R1.data(), *maskedRhs_->data(), t);
 
     return *maskedRhs_;
   }

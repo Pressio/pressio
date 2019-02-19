@@ -1,6 +1,6 @@
 
-#ifndef ROM_GALERKIN_EXPLICIT_RESIDUAL_POLICY_HPP_
-#define ROM_GALERKIN_EXPLICIT_RESIDUAL_POLICY_HPP_
+#ifndef ROM_DEFAULT_GALERKIN_EXPLICIT_RESIDUAL_POLICY_HPP_
+#define ROM_DEFAULT_GALERKIN_EXPLICIT_RESIDUAL_POLICY_HPP_
 
 #include "../rom_forward_declarations.hpp"
 #include "../../../ode/src/explicit/policies/ode_explicit_residual_policy_base.hpp"
@@ -9,41 +9,47 @@
 namespace rompp{ namespace rom{
 
 template <typename fom_states_data,
-	  typename decoder_jac_t>
-class GalerkinExplicitResidualPolicy
+	  typename fom_rhs_data,
+	  typename decoder_t>
+class DefaultGalerkinExplicitResidualPolicy
   : public ode::policy::ExplicitResidualPolicyBase<
-       GalerkinExplicitResidualPolicy<fom_states_data,
-				      decoder_jac_t>>,
-    protected fom_states_data{
+       DefaultGalerkinExplicitResidualPolicy<fom_states_data,
+					     fom_rhs_data,
+					     decoder_t>>,
+    protected fom_states_data,
+    protected fom_rhs_data{
 
 protected:
-  using this_t = GalerkinExplicitResidualPolicy<fom_states_data,
-						decoder_jac_t>;
+  using this_t = DefaultGalerkinExplicitResidualPolicy<
+		      fom_states_data, fom_rhs_data, decoder_t>;
   friend ode::policy::ImplicitResidualPolicyBase<this_t>;
 
-  decoder_jac_t & decoderJac_;
+  const decoder_t & decoder_;
   using fom_states_data::yFom_;
+  using fom_rhs_data::fomRhs_;
 
 public:
   static constexpr bool isResidualPolicy_ = true;
 
 public:
-  GalerkinExplicitResidualPolicy() = delete;
-  ~GalerkinExplicitResidualPolicy() = default;
-  GalerkinExplicitResidualPolicy(const fom_states_data & fomStates,
-				 const decoder_jac_t & decoderJac)
+  DefaultGalerkinExplicitResidualPolicy() = delete;
+  ~DefaultGalerkinExplicitResidualPolicy() = default;
+  DefaultGalerkinExplicitResidualPolicy(const fom_states_data & fomStates,
+					const fom_rhs_data & fomResids,
+					const decoder_t & decoder)
     : fom_states_data(fomStates),
-      decoderJac_(decoderJac){}
+      fom_rhs_data(fomResids),
+      decoder_(decoder){}
 
 public:
   template <typename galerkin_state_t,
 	    typename galerkin_residual_t,
 	    typename fom_t,
 	    typename scalar_t>
-  void operator()(const galerkin_state_t	   & romY,
-		  galerkin_residual_t		   & romR,
-  		  const fom_t			   & app,
-		  scalar_t			   t) const
+  void operator()(const galerkin_state_t  & romY,
+		  galerkin_residual_t	  & romR,
+  		  const fom_t		  & app,
+		  scalar_t		  t) const
   {
 #ifdef HAVE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -54,10 +60,18 @@ public:
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
-    rhsEvaluator.evaluate(app, yFom_, romR, t);
+    app.residual(*yFom_.data(), *fomRhs_.data(), t);
     timer->stop("fom eval rhs");
 #else
-    rhsEvaluator.evaluate(app, yFom_, romR, t);
+    app.residual(*yFom_.data(), *fomRhs_.data(), t);
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("phi^T*fom_rhs");
+    core::ops::dot(decoder_.getJacobianRef(), fomRhs_, romR);
+    timer->stop("phi^T*fom_rhs");
+#else
+    core::ops::dot(decoder_.getJacobianRef(), fomRhs_, romR);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
