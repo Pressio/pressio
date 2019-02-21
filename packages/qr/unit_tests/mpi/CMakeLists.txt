@@ -14,6 +14,9 @@ IF(HAVE_TRILINOS AND HAVE_ANSAZI_TSQR)
   add_unit_test(multi_vector_distributed_tpetra_anasazi_tsqr_out_of_place_and_solve ${GTESTMAINSDIR}/gTestMain_mpi 2)
 ENDIF()
 
+
+
+
 #add_unit_test(multi_vector_distributed_tpetra_factorization_in_place ${GTESTMAINSDIR}/gTestMain_mpi 2)
 #add_unit_test(multi_vector_distributed_epetra_factorization_in_place ${GTESTMAINSDIR}/gTestMain_mpi 2)
 #add_unit_test(multi_vector_distributed_epetra_project ${GTESTMAINSDIR}/gTestMain_mpi 2)

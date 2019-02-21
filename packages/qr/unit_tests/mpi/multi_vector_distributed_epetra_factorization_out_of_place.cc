@@ -43,6 +43,27 @@ TEST_F(epetraR9Fixture,
 }
 #endif
 
+TEST_F(epetraR9Fixture,
+       ModGrShEpetraMultiVectorOutOfPlace){
+  using namespace rompp;
+
+  // default: R_type == void, in_place = false
+  using qr_algo = qr::ModifiedGramSchmidt;
+  qr::QRSolver<mymvec_t, qr_algo> qrObj;
+  qrObj.computeThin( *A_ );
+  const auto & Q = qrObj.cRefQFactor();
+  Q.data()->Print(std::cout);
+  checkQFactor(Q);
+}
+
+
+
+
+
+
+
+
+
 // TEST_F(epetraR9Fixture,
 //        TSQRepetraMultiVectorOutOfPlaceWrapREigen){
 //   using namespace rompp;
