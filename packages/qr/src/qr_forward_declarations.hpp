@@ -34,6 +34,7 @@ template<
   typename enable= void>
 class QRHouseholderDenseEigenMatrixWrapper;
 
+#if defined HAVE_TRILINOS
 template<typename matrix_t,
 	 typename R_t,
 	 int n = core::constants::dynamic,
@@ -50,7 +51,7 @@ template<typename matrix_t,
 	 = core::MultiVector>
 class TpetraMVHouseholderUsingEigen;
 
-#if defined HAVE_TRILINOS and defined HAVE_ANASAZI_TSQR
+#if defined HAVE_ANASAZI_TSQR
 template<typename matrix_t,
 	 typename R_t,
 	 int n, int m,
@@ -61,7 +62,7 @@ template<typename matrix_t,
 class AnasaziMVTSQR;
 #endif
 
-#if defined HAVE_TRILINOS and defined HAVE_BELOS_TSQR
+#if defined HAVE_BELOS_TSQR
 template<typename matrix_t,
 	 typename R_t,
 	 int n, int m,
@@ -71,6 +72,28 @@ template<typename matrix_t,
 	 typename enable = void>
 class BelosMVTSQR;
 #endif
+
+template<typename matrix_t,
+	 typename R_t,
+	 int n = core::constants::dynamic,
+	 int m = core::constants::dynamic,
+	 typename wrap_Q_type = void,
+	 template <typename...> class Q_type
+	 = core::MultiVector,
+	 typename enable = void>
+class ModGramSchmidtMVEpetra;
+
+template<typename matrix_t,
+	 typename R_t,
+	 int n = core::constants::dynamic,
+	 int m = core::constants::dynamic,
+	 typename wrap_Q_type = void,
+	 template <typename...> class Q_type
+	 = core::MultiVector,
+	 typename enable = void>
+class ModGramSchmidtMVTpetra;
+
+#endif //HAVE_TRILINOS
 
 
 template<

@@ -7,7 +7,7 @@
 
 namespace rompp{ namespace qr{ namespace details{
 
-/* common traits to all cases */
+/* common to all cases */
 template< typename matrix_type, typename algo,
 	  bool in_place, int m, int n >
 struct traits_shared_all{
@@ -23,7 +23,7 @@ struct traits_shared_all{
 };
 
 
-/* helper for defining the type of the implementation class to use */
+/* helpers to define the type of the implementation class to use */
 template <typename matrix_t, typename algo_tag, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type,
 	  typename enable = void>
@@ -55,7 +55,27 @@ struct impl_class_helper<matrix_t, qr::TSQRBelos, R_t, n, m, wrap_Q_type, Q_type
 };
 #endif
 
-#ifdef HAVE_TRILINOS
+
+#if defined HAVE_TRILINOS
+template <typename matrix_t, typename R_t,
+	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
+struct impl_class_helper<matrix_t, qr::ModifiedGramSchmidt, R_t, n, m, wrap_Q_type, Q_type,
+			 core::meta::enable_if_t<
+			   core::meta::is_multi_vector_wrapper_epetra<matrix_t>::value
+			   >>{
+  using impl_t = impl::ModGramSchmidtMVEpetra<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
+};
+
+template <typename matrix_t, typename R_t,
+	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
+struct impl_class_helper<matrix_t, qr::ModifiedGramSchmidt, R_t, n, m, wrap_Q_type, Q_type,
+			 core::meta::enable_if_t<
+			   core::meta::is_multi_vector_wrapper_tpetra<matrix_t>::value
+			   >>{
+  using impl_t = impl::ModGramSchmidtMVTpetra<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
+};
+
+
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_type,
@@ -64,6 +84,7 @@ struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_ty
 			   >>{
   using impl_t = impl::EpetraMVHouseholderUsingEigen<matrix_t, R_t, n, m, Q_type>;
 };
+
 
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>

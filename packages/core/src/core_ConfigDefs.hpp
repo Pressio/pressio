@@ -8,6 +8,7 @@
 #include "core_shared_traits.hpp"
 #include "meta/core_meta_basic.hpp"
 #include "core_default_types.hpp"
+#include "core_static_constants.hpp"
 
 #ifdef HAVE_TEUCHOS_TIMERS
 #include <Teuchos_DefaultSerialComm.hpp>
@@ -16,17 +17,6 @@
 #endif
 
 namespace rompp{ namespace core{
-
-namespace constants{
-
-  // this is typically used as a template parameter
-  // a positive quantity (e.g., a size of a vector)
-  // is not known at compile-time, and the value
-  // is defined at runtime
-  constexpr int dynamic = -1;
-
-}//end namespace constants
-
 
 namespace impl{
 

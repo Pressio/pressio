@@ -4,7 +4,7 @@
 
 namespace rompp{ namespace qr{
 
-struct GramSchmidt{};
+struct ModifiedGramSchmidt{};
 struct Householder{};
 
 #if defined HAVE_TRILINOS and defined HAVE_ANASAZI_TSQR
