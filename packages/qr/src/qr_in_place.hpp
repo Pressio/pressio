@@ -33,7 +33,7 @@ class QRSolver<
   using base_solve_t	= typename traits_t::base_solve_t;
 
   using impl_t	       = typename traits_t::impl_t;
-  impl_t myImpl_       = {};
+  impl_t myImpl_;
 
   void computeThinImpl(matrix_type & A){
     myImpl_.computeThinInPlace(A);

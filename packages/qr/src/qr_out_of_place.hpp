@@ -33,7 +33,7 @@ class QRSolver<
   using Q_t	       = typename traits_t::Q_t;
 
   using impl_t	       = typename traits_t::impl_t;
-  impl_t myImpl_       = {};
+  impl_t myImpl_;
 
 public:
   QRSolver() = default;
