@@ -5,7 +5,7 @@
 #include "../core_vector_traits.hpp"
 #include "../core_vector_meta.hpp"
 #include "core_vector_distributed_binary_expression_templates.hpp"
-
+#include "../../core_expression_templates_operators.hpp"
 
 namespace rompp{ namespace core{
 
