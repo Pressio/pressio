@@ -30,33 +30,25 @@ template <typename matrix_t, typename algo_tag, typename R_t,
 struct impl_class_helper{};
 
 
-#if defined HAVE_TRILINOS and defined HAVE_ANASAZI_TSQR
+#if defined HAVE_TRILINOS
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
 			 core::meta::enable_if_t<
-			   core::meta::is_multi_vector_wrapper_epetra<matrix_t>::value or
-			   core::meta::is_multi_vector_wrapper_tpetra<matrix_t>::value
+			   core::meta::is_multi_vector_wrapper_epetra<matrix_t>::value
 			   >>{
-  using impl_t = impl::AnasaziMVTSQR<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
+  using impl_t = impl::EpetraMVTSQR<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
 };
-#endif
 
-
-#if defined HAVE_TRILINOS and defined HAVE_BELOS_TSQR
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
-struct impl_class_helper<matrix_t, qr::TSQRBelos, R_t, n, m, wrap_Q_type, Q_type,
+struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
 			 core::meta::enable_if_t<
-			   core::meta::is_multi_vector_wrapper_epetra<matrix_t>::value or
 			   core::meta::is_multi_vector_wrapper_tpetra<matrix_t>::value
 			   >>{
-  using impl_t = impl::BelosMVTSQR<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
+  using impl_t = impl::TpetraMVTSQR<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
 };
-#endif
 
-
-#if defined HAVE_TRILINOS
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::ModifiedGramSchmidt, R_t, n, m, wrap_Q_type, Q_type,

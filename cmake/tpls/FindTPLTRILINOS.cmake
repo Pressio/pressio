@@ -3,7 +3,7 @@ TRIBITS_TPL_FIND_INCLUDE_DIRS_AND_LIBRARIES( TRILINOS
   REQUIRED_LIBS_NAMES
   kokkosalgorithms
   kokkoscontainers
-  kokkoscore	
+  kokkoscore
   teuchoskokkoscomm
   teuchoskokkoscompat
   teuchosremainder
@@ -25,21 +25,11 @@ TRIBITS_TPL_FIND_INCLUDE_DIRS_AND_LIBRARIES( TRILINOS
   tpetraclassic
   kokkoskernels
   ifpack2
-  anasazitpetra
-  anasaziepetra
-  anasazi
+  #anasazitpetra
+  #anasaziepetra
+  #anasazi
   kokkosalgorithms
   teuchosparameterlist
- 
+
   MUST_FIND_ALL_HEADERS
   )
-
-
-
-  #libgaleri-xpetra.dylib
-  #libml.dylib
-  #libbelos.dylib libbelosepetra.dylib libbelostpetra.dylib libbelosxpetra.dylib #belos
-  #libamesos2.dylib
-  #libnox.dylib libnoxepetra.dylib libnoxlapack.dylib
-  #libmuelu-adapters.dylib libmuelu-interface.dylib  libmuelu.dylib
-  #librol.dylib
