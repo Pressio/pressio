@@ -63,7 +63,7 @@ public:
 
   template <typename vector_t>
   void doLinSolve(const vector_t & rhs, vector_t & y)const {
-    auto vecSize = y.size();
+    //auto vecSize = y.size();
     auto & Rm = localR_.data()->template triangularView<Eigen::Upper>();
     *y.data() = Rm.solve(*rhs.data());
   }
