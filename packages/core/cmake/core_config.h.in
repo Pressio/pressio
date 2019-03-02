@@ -1,7 +1,5 @@
 
 #cmakedefine HAVE_TRILINOS
-#cmakedefine HAVE_ANASAZI_TSQR
-#cmakedefine HAVE_BELOS_TSQR
 
 #cmakedefine HAVE_BLAZE
 #cmakedefine HAVE_MPI

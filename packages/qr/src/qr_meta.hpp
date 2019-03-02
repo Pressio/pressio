@@ -47,12 +47,7 @@ template <typename algo_t>
 struct is_legitimate_algo_for_epetra_mv<algo_t,
 	 core::meta::enable_if_t<
 	   std::is_same<algo_t, ::rompp::qr::Householder>::value
-#if defined HAVE_ANASAZI_TSQR
 	   or std::is_same<algo_t, ::rompp::qr::TSQR>::value
-#endif
-#if defined HAVE_BELOS_TSQR
-	   or std::is_same<algo_t, ::rompp::qr::TSQRBelos>::value
-#endif
 	 >
       > : std::true_type{};
 #endif
@@ -66,12 +61,7 @@ template <typename algo_t>
 struct is_legitimate_algo_for_tpetra_mv<algo_t,
 	 core::meta::enable_if_t<
 	   std::is_same<algo_t, ::rompp::qr::Householder>::value
-#if defined HAVE_ANASAZI_TSQR
 	   or std::is_same<algo_t, ::rompp::qr::TSQR>::value
-#endif
-#if defined HAVE_BELOS_TSQR
-	   or std::is_same<algo_t, ::rompp::qr::TSQRBelos>::value
-#endif
 	   >
         > : std::true_type{};
 #endif

@@ -3,7 +3,7 @@
 #include "QR_BASIC"
 
 TEST_F(tpetraR9Fixture,
-       TSQRtpetraMVOutOfPlaceAndSolveEigenVecDynamic){
+       TSQRTpetraMVOutOfPlaceAndSolveEigenVecDynamic){
   using namespace rompp;
 
   using nat_v = Eigen::VectorXd;
@@ -35,7 +35,7 @@ TEST_F(tpetraR9Fixture,
 
 
 TEST_F(tpetraR9Fixture,
-       TSQRtpetraMVOutOfPlaceAndSolveEigenVecStatic){
+       TSQRTpetraMVOutOfPlaceAndSolveEigenVecStatic){
   using namespace rompp;
 
   using nat_v = Eigen::Matrix<double, qr::test::numVectors_, 1>;

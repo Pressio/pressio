@@ -3,7 +3,7 @@
 #include "QR_BASIC"
 
 TEST_F(epetraR9Fixture,
-       TSQRepetraMVOutOfPlaceAndSolveEigenVecDynamic){
+       TSQREpetraMVOutOfPlaceAndSolveEigenVecDynamic){
   using namespace rompp;
 
   using nat_v = Eigen::VectorXd;
@@ -34,7 +34,7 @@ TEST_F(epetraR9Fixture,
 
 
 TEST_F(epetraR9Fixture,
-       TSQRepetraMVOutOfPlaceAndSolveEigenVecStatic){
+       TSQREpetraMVOutOfPlaceAndSolveEigenVecStatic){
   using namespace rompp;
 
   using nat_v = Eigen::Matrix<double,
@@ -66,7 +66,7 @@ TEST_F(epetraR9Fixture,
 
 
 TEST_F(epetraR9Fixture,
-       TSQRepetraMVOutOfPlaceAndSolveTeuchosVector){
+       TSQREpetraMVOutOfPlaceAndSolveTeuchosVector){
   using namespace rompp;
 
   using nat_v = Teuchos::SerialDenseVector<int,double>;

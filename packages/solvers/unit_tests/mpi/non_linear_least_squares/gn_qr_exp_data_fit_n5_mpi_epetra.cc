@@ -12,7 +12,7 @@
  * http://ftp.mcs.anl.gov/pub/MINPACK-2/tprobs/dedffj.f
  */
 
-#ifdef HAVE_ANASAZI_TSQR
+#ifdef HAVE_TRILINOS
 TEST(solvers_nonlin_lsq,
      gn_qr_tsqr_exp_data_fit_n5_mpi_epetra){
   using namespace rompp;

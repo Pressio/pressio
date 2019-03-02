@@ -7,13 +7,8 @@ namespace rompp{ namespace qr{
 struct ModifiedGramSchmidt{};
 struct Householder{};
 
-#if defined HAVE_TRILINOS and defined HAVE_ANASAZI_TSQR
-//this defaults to Anasazi
+#if defined HAVE_TRILINOS
 struct TSQR{};
-#endif
-
-#if defined HAVE_TRILINOS and defined HAVE_BELOS_TSQR
-struct TSQRBelos{};
 #endif
 
 }} // end namespace rompp::qr

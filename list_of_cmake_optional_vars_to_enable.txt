@@ -8,12 +8,6 @@ at compile time since these are pre-processor directives.
 default = ON if TPL_ENABLE_TRILINOS = ON, OFF otherwise
 description: self-explanatory
 
-- HAVE_ANASAZI_TSQR
-default = OFF
-can be turned on with: -D HAVE_ANASAZI_TSQR:BOOL=ON
-description: enables the use of the Anasazi TSQR classes
-prerequisites: HAVE_TRILINOS must be on
-
 - HAVE_BLAZE
 default = ON if TPL_ENABLE_BLAZE = ON, OFF otherwise
 description: self-explanatory

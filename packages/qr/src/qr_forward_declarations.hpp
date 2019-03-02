@@ -51,7 +51,6 @@ template<typename matrix_t,
 	 = core::MultiVector>
 class TpetraMVHouseholderUsingEigen;
 
-#if defined HAVE_ANASAZI_TSQR
 template<typename matrix_t,
 	 typename R_t,
 	 int n, int m,
@@ -59,10 +58,8 @@ template<typename matrix_t,
 	 template <typename...> class Q_type
 	 = core::MultiVector,
 	 typename enable = void>
-class AnasaziMVTSQR;
-#endif
+class EpetraMVTSQR;
 
-#if defined HAVE_BELOS_TSQR
 template<typename matrix_t,
 	 typename R_t,
 	 int n, int m,
@@ -70,8 +67,7 @@ template<typename matrix_t,
 	 template <typename...> class Q_type
 	 = core::MultiVector,
 	 typename enable = void>
-class BelosMVTSQR;
-#endif
+class TpetraMVTSQR;
 
 template<typename matrix_t,
 	 typename R_t,
