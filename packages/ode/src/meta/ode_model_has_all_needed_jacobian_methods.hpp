@@ -2,11 +2,11 @@
 #ifndef ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
 #define ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
 
-#include "ode_ConfigDefs.hpp"
-#include "../../core/src/meta/core_meta_detection_idiom.hpp"
+#include "../ode_ConfigDefs.hpp"
+#include "../../../core/src/meta/core_meta_detection_idiom.hpp"
 
 namespace rompp{ namespace ode{ namespace meta {
-      
+
 template <typename T, typename a_t, typename b_t>
 using has_jacobian_method_callable_with_two_args =
   decltype(std::declval<T>().jacobian(std::declval<a_t const&>(),
@@ -20,10 +20,10 @@ using has_jacobian_method_callable_with_three_args =
 				      std::declval<b_t &>(),
 				      std::declval<c_t>())
 	   );
-      
+
 //-------------------------------------------------------
 
-      
+
 template<typename model_type,
 	 typename state_type,
 	 typename jacobian_type,
@@ -42,7 +42,7 @@ struct model_has_needed_jacobian_methods<
    core::meta::is_detected<
      has_jacobian_method_callable_with_three_args,
      model_type, state_type, jacobian_type, scalar_type
-     >::value and 
+     >::value and
    // has jacobian method with 2 arguments,
    core::meta::is_detected<
     has_jacobian_method_callable_with_two_args,
@@ -54,11 +54,11 @@ struct model_has_needed_jacobian_methods<
       has_jacobian_method_callable_with_two_args,
       model_type, state_type, scalar_type>,
      jacobian_type
-    >::value    
+    >::value
   >::type
   > : std::true_type{};
 
 //------------------------------------------------------
-       
+
 }}} // namespace rompp::ode::meta
 #endif

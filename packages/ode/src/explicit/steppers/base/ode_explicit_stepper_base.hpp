@@ -6,7 +6,7 @@
 #include "../../policies/ode_explicit_policies_meta.hpp"
 #include "../../../ode_storage.hpp"
 #include "../../../ode_aux_data.hpp"
-#include "../../../ode_basic_meta.hpp"
+#include "../../../meta/ode_basic_meta.hpp"
 
 namespace rompp{ namespace ode{
 

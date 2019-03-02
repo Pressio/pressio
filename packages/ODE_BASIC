@@ -6,12 +6,12 @@
 #include "ode/src/ode_forward_declarations.hpp"
 #include "ode/src/ode_enum.hpp"
 
-#include "ode/src/ode_basic_meta.hpp"
-#include "ode/src/ode_is_legitimate_collector.hpp"
-#include "ode/src/ode_is_legitimate_model_for_explicit_ode.hpp"
-#include "ode/src/ode_is_legitimate_model_for_implicit_ode.hpp"
-#include "ode/src/ode_model_has_all_needed_jacobian_methods.hpp"
-#include "ode/src/ode_model_has_all_needed_residual_methods.hpp"
+#include "ode/src/meta/ode_basic_meta.hpp"
+#include "ode/src/meta/ode_is_legitimate_collector.hpp"
+#include "ode/src/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
+#include "ode/src/meta/ode_is_legitimate_model_for_implicit_ode.hpp"
+#include "ode/src/meta/ode_model_has_all_needed_jacobian_methods.hpp"
+#include "ode/src/meta/ode_model_has_all_needed_residual_methods.hpp"
 
 #include "ode/src/ode_aux_data.hpp"
 #include "ode/src/ode_storage.hpp"

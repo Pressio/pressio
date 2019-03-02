@@ -4,15 +4,11 @@
 
 namespace rompp{ namespace ode{
 
-enum class ExplicitEnum{Undefined,
-			Euler,
-			RungeKutta4
-};
+enum class ExplicitEnum
+  {Undefined, Euler, RungeKutta4};
 
-enum class ImplicitEnum{Undefined,
-			Euler,
-			BDF2
-};
+enum class ImplicitEnum
+  {Undefined, Euler, BDF2};
 
 }}//end namespace rompp::ode
 #endif

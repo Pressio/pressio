@@ -5,7 +5,7 @@
 #include "../../../ode_forward_declarations.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
 #include "../../ode_jacobian_impl.hpp"
-#include "../../../ode_basic_meta.hpp"
+#include "../../../meta/ode_basic_meta.hpp"
 
 namespace rompp{ namespace ode{ namespace policy{
 

@@ -3,7 +3,7 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
 #include "../ode_implicit_stepper_traits.hpp"
-#include "../../../ode_basic_meta.hpp"
+#include "../../../meta/ode_basic_meta.hpp"
 #include "../../policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
 #include "../../policies/meta/ode_is_implicit_residual_standard_policy.hpp"
 #include "../../policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
