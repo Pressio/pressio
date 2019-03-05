@@ -47,8 +47,6 @@ class GaussNewtonQR;
 }//end namespace rompp::solvers::iterative::impl
 
 
-
-
 /* alias: GN solvers without line search */
 template <
   typename scalar_t,
@@ -67,7 +65,6 @@ using GaussNewton = impl::GaussNewton<
   gn::noLineSearch,
   when_converged_t, system_t, state_t,
   residual_t, jacobian_t, hessian_t >;
-
 
 
 /* alias: GN solvers with line search */
@@ -90,7 +87,6 @@ using GaussNewtonLineSearch = impl::GaussNewton<
   state_t, residual_t, jacobian_t, hessian_t >;
 
 
-
 /* alias: QR-based GN solvers without line search */
 template <
   typename scalar_t,
@@ -106,7 +102,6 @@ using GaussNewtonQR = impl::GaussNewtonQR<
   scalar_t, qr_type, gn::noLineSearch,
   when_converged_t, system_t, state_t,
   residual_t, jacobian_t >;
-
 
 
 /* alias: QR-based GN solvers with line search */
@@ -125,6 +120,29 @@ using GaussNewtonQRLineSearch = impl::GaussNewtonQR<
   scalar_t, qr_type, line_search_t,
   when_converged_t, system_t, state_t,
   residual_t, jacobian_t >;
+
+
+namespace hacked{
+
+/*
+ * solver for conservative ROM
+ */
+template <
+  typename scalar_t,
+  typename lin_solver_tag,
+  template <typename, typename> class lin_solver_t,
+  typename line_search_t,
+  typename when_converged_t = default_convergence,
+  typename system_t = void,
+  typename state_t = void,
+  typename residual_t = void,
+  typename jacobian_t = void,
+  typename cbar_t = void,
+  typename enable = void
+  >
+class GaussNewtonConservative;
+
+}//end namespace rompp::solvers::iterative::hacked
 
 }}}//end namespace rompp::solvers::iterative
 
