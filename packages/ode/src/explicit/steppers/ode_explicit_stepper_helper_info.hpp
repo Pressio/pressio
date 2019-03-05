@@ -2,8 +2,8 @@
 #ifndef ODE_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_HELPER_INFO_HPP_
 #define ODE_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_HELPER_INFO_HPP_
 
-#include "../../ode_basic_meta.hpp"
-#include "../../ode_is_legitimate_model_for_explicit_ode.hpp"
+#include "../../meta/ode_basic_meta.hpp"
+#include "../../meta/ode_is_legitimate_model_for_explicit_ode.hpp"
 #include "../policies/ode_explicit_policies_meta.hpp"
 #include "../policies/ode_explicit_residual_standard_policy.hpp"
 

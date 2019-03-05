@@ -3,8 +3,8 @@
 #define ODE_INTEGRATORS_INTEGRATE_N_STEPS_EXPLICIT_HPP_
 
 #include "ode_integrate_n_steps_impl.hpp"
-#include "../ode_basic_meta.hpp"
-#include "../ode_is_legitimate_collector.hpp"
+#include "../meta/ode_basic_meta.hpp"
+#include "../meta/ode_is_legitimate_collector.hpp"
 
 namespace rompp{ namespace ode{
 

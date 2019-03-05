@@ -2,11 +2,11 @@
 #ifndef ODE_MODEL_HAS_ALL_NEEDED_RESIDUAL_METHODS_HPP_
 #define ODE_MODEL_HAS_ALL_NEEDED_RESIDUAL_METHODS_HPP_
 
-#include "ode_ConfigDefs.hpp"
-#include "../../core/src/meta/core_meta_detection_idiom.hpp"
+#include "../ode_ConfigDefs.hpp"
+#include "../../../core/src/meta/core_meta_detection_idiom.hpp"
 
 namespace rompp{ namespace ode{ namespace meta {
-      
+
 template <typename T, typename a_t, typename b_t>
 using has_residual_method_callable_with_two_args =
   decltype(std::declval<T>().residual(std::declval<a_t const&>(),
@@ -20,7 +20,7 @@ using has_residual_method_callable_with_three_args =
 				      std::declval<b_t &>(),
 				      std::declval<c_t>())
 	   );
-      
+
 //-------------------------------------------------------
 
 template<typename model_type,
@@ -41,7 +41,7 @@ struct model_has_needed_residual_methods<
    core::meta::is_detected<
      has_residual_method_callable_with_three_args,
      model_type, state_type, residual_type, scalar_type
-     >::value and 
+     >::value and
    // has residual method with 2 arguments,
    core::meta::is_detected<
     has_residual_method_callable_with_two_args,
@@ -53,11 +53,11 @@ struct model_has_needed_residual_methods<
       has_residual_method_callable_with_two_args,
       model_type, state_type, scalar_type>,
      residual_type
-    >::value    
+    >::value
   >::type
   > : std::true_type{};
 
 //------------------------------------------------------
-       
+
 }}} // namespace rompp::ode::meta
 #endif
