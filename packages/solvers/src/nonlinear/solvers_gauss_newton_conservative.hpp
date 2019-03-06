@@ -110,9 +110,13 @@ public:
     A_.resize( jac_.globalNumVectors()+nlambda, jac_.globalNumVectors()+nlambda);
     b_.resize(y.size() + nlambda);
     lambda_.resize(nlambda);
+    lambda_.putScalar( static_cast<scalar_t>(1) );
     y2_.resize(y.size() + nlambda);
     ytrial_.resize(y2_.size());
     delta_.resize(y2_.size());
+
+    y2_.data()->block(0, 0, y.size(), 1) = *y.data();
+    y2_.data()->block(y.size(), 0, lambda_.size(), 1) = *lambda_.data();
   }
 
   GaussNewtonConservative(const GaussNewtonConservative &) = delete;
