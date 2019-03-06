@@ -43,20 +43,20 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    scalar_t & normO,
 				    scalar_t & normN,
 				    const cbar_t & cbarT,
-				    mat_t & jTj_,
-				    mat_t & jTcbarT_,
-				    mat_t & cbarJ_,
-				    mat_t & zero_,
-				    typename system_t::state_type & cbarTlambda_,
-				    typename system_t::state_type & jTr2_,
-				    typename system_t::state_type & cbarR_,
-				    mat_t & A_,
-				    typename system_t::state_type & b_,
-				    typename system_t::state_type & lambda_,
-				    typename system_t::state_type & y2_)
+				    mat_t & jTj,
+				    mat_t & jTcbarT,
+				    mat_t & cbarJ,
+				    mat_t & zero,
+				    typename system_t::residual_type & cbarTlambda,
+				    typename system_t::state_type & jTr2,
+				    typename system_t::state_type & cbarR,
+				    mat_t & A,
+				    typename system_t::state_type & b,
+				    typename system_t::state_type & lambda,
+				    typename system_t::state_type & y2)
 {
 
-  using jac_t	= typename system_t::jacobian_type;
+  //using jac_t	= typename system_t::jacobian_type;
 
   // find out which norm to use
   using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
@@ -77,12 +77,12 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   using is_conv_helper_t = IsConvergedHelper<converged_when_tag>;
   is_conv_helper_t isConverged;
 
-  /* functor for computing line search factor (alpha) such that
-   * the update is done with y = y + alpha dy
-   * alpha = 1 default when user does not want line search
-   */
-  using lsearch_helper = LineSearchHelper<line_search_t>;
-  lsearch_helper lineSearchHelper;
+  // /* functor for computing line search factor (alpha) such that
+  //  * the update is done with y = y + alpha dy
+  //  * alpha = 1 default when user does not want line search
+  //  */
+  // using lsearch_helper = LineSearchHelper<line_search_t>;
+  // lsearch_helper lineSearchHelper;
   //-------------------------------------------------------
 
   // alpha for taking steps
@@ -140,15 +140,15 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("lhs");
 #endif
-    ::rompp::core::ops::dot_self(jacob, jTj_);
-    ::rompp::core::ops::dot(jacob, cbarT, jTcbarT_);
-    ::rompp::core::ops::dot(cbarT, jacob, cbarJ_);
+    ::rompp::core::ops::dot_self(jacob, jTj);
+    ::rompp::core::ops::dot(jacob, cbarT, jTcbarT);
+    ::rompp::core::ops::dot(cbarT, jacob, cbarJ);
 
-    A_.block(0, 0, jTj_.rows(), jTj_.cols()) = jTj_;
-    A_.block(0, jTj_.cols(), jTcbarT_.rows(), jTcbarT_.cols()) = jTcbarT_;
+    A.data()->block(0, 0, jTj.rows(), jTj.cols()) = *jTj.data();
+    A.data()->block(0, jTj.cols(), jTcbarT.rows(), jTcbarT.cols()) = *jTcbarT.data();
 
-    A_.block(jTj_.rows(), 0, cbarJ_.rows(), cbarJ_.cols()) = cbarJ_;
-    A_.block(jTj_.rows(), jTj_.cols(), zero_.rows(), zero_.cols()) = zero_;
+    A.data()->block(jTj.rows(), 0, cbarJ.rows(), cbarJ.cols()) = *cbarJ.data();
+    A.data()->block(jTj.rows(), jTj.cols(), zero.rows(), zero.cols()) = *zero.data();
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("lhs");
@@ -170,13 +170,16 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("rhs");
 #endif
-    ::rompp::core::ops::dot(cbarT_, resid, jTr2_);
-    ::rompp::core::ops::product(cbarT, lambda_, cbarTlambda_);
-    resid += cbarTlambda_;
-    ::rompp::core::ops::dot(jacob_, resid, jTr2_);
+    ::rompp::core::ops::dot(cbarT, resid, jTr2);
+    ::rompp::core::ops::product(cbarT, lambda, cbarTlambda);
+    resid += cbarTlambda;
+    ::rompp::core::ops::dot(jacob, resid, jTr2);
 
-    b_.block(0, 0, jTr2_.rows(), 1) = -jTr2_;
-    b_.block(jTr2_.rows(), 0, cbarR_.rows(), 1) = -cbarR_;
+    auto negOne = static_cast<scalar_t>(1);
+    jTr2.scale(negOne);
+    cbarR.scale(negOne);
+    b.data()->block(0, 0, jTr2.size(), 1) = *jTr2.data();
+    b.data()->block(jTr2.size(), 0, cbarR.size(), 1) = *cbarR.data();
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("rhs");
@@ -187,10 +190,10 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("solve normeq");
 #endif
-    y2_.data()->block(0, 0, y.size(), 1) = *y.data();
-    y2_.data()->block(y.size(), 0, lambda.size(), 1) = *lambda.data();
+    y2.data()->block(0, 0, y.size(), 1) = *y.data();
+    y2.data()->block(y.size(), 0, lambda.size(), 1) = *lambda.data();
 
-    linSolver.solve(A_, b_, dy);
+    linSolver.solve(A, b, dy);
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("solve normeq");
@@ -212,8 +215,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // lineSearchHelper(alpha, y, ytrial, dy, resid, jacob, sys);
 
     // solution update
-    y = y + alpha*dy.data()->block(0, 0, y.size(), 1);
-    lambda = lambda + alpha*dy.data()->block(y.size(), 0, lambda.size(), 1);
+    *y.data() = *y.data() + alpha*dy.data()->block(0, 0, y.size(), 1);
+    *lambda.data() = *lambda.data() + alpha*dy.data()->block(y.size(), 0, lambda.size(), 1);
 
     // check convergence (whatever method user decided)
     auto flag = isConverged(y, dy, normN, iStep,

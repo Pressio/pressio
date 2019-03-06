@@ -134,9 +134,6 @@ template <
   typename line_search_t,
   typename when_converged_t = default_convergence,
   typename system_t = void,
-  typename state_t = void,
-  typename residual_t = void,
-  typename jacobian_t = void,
   typename cbar_t = void,
   typename enable = void
   >

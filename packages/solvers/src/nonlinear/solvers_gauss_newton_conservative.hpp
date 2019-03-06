@@ -21,7 +21,7 @@ template <
   >
 class GaussNewtonConservative<
   scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
-  converged_when_t, system_t, void, void, void, cbar_t,
+  converged_when_t, system_t, cbar_t,
   core::meta::enable_if_t<
     core::meta::is_vector_wrapper_eigen<typename system_t::state_type>::value and
     core::meta::is_core_vector_wrapper<typename system_t::residual_type>::value
@@ -35,7 +35,7 @@ class GaussNewtonConservative<
   : public NonLinearSolverBase<
   GaussNewtonConservative<
     scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
-    converged_when_t, system_t, void, void, void, cbar_t>>,
+    converged_when_t, system_t, cbar_t>>,
     public IterativeBase<scalar_t>
 {
 
@@ -47,29 +47,26 @@ class GaussNewtonConservative<
   using solverT    = lin_solver_t<lin_solver_tag, mat_t>;
 
   using this_t	   = GaussNewtonConservative<scalar_t, lin_solver_tag, lin_solver_t,
-					     line_search_t, converged_when_t, system_t,
-					     void, void, void, cbar_t>;
+					     line_search_t, converged_when_t, system_t, cbar_t>;
   using iter_base_t = IterativeBase<scalar_t>;
   using base_t	   = NonLinearSolverBase<this_t>;
   friend base_t;
 
+  residual_t res_    = {};
+  jacobian_t jac_    = {};
+  residual_t cbarTlambda_ = {};
+  const cbar_t & cbarT_	= {};
+
   solverT linSolver_ = {};
   scalar_t normO_    = {};
   scalar_t normN_    = {};
-
   state_t delta_     = {};
-  residual_t res_    = {};
-  jacobian_t jac_    = {};
-  const cbar_t & cbarT_	= {};
-
   mat_t jTj_     = {};
   mat_t jTcbarT_   = {};
   mat_t cbarJ_     = {};
   mat_t zero_	     = {};
-  residual_t cbarTlambda_ = {};
   state_t jTr2_ = {};
   state_t cbarR_ = {};
-
   mat_t A_ = {};
   state_t b_ = {};
   state_t lambda_ = {};
@@ -114,8 +111,8 @@ public:
     b_.resize(y.size() + nlambda);
     lambda_.resize(nlambda);
     y2_.resize(y.size() + nlambda);
-    ytrial_.resize(y2.size());
-    delta_.resize(y2.size());
+    ytrial_.resize(y2_.size());
+    delta_.resize(y2_.size());
   }
 
   GaussNewtonConservative(const GaussNewtonConservative &) = delete;

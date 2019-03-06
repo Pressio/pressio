@@ -7,5 +7,6 @@
 #include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
 #include "solvers/src/nonlinear/solvers_gauss_newton_qr.hpp"
 #include "solvers/src/nonlinear/solvers_gauss_newton.hpp"
+#include "solvers/src/nonlinear/solvers_gauss_newton_conservative.hpp"
 
 #endif
