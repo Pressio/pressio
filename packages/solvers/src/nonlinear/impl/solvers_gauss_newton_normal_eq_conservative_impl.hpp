@@ -187,7 +187,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
     ::rompp::core::ops::dot(jacob, cbarTlambda, jTr2);
 
-    auto negOne = static_cast<scalar_t>(1);
+    auto negOne = static_cast<scalar_t>(-1);
     jTr2.scale(negOne);
     cbarR.scale(negOne);
     b.data()->block(0, 0, jTr2.size(), 1) = *jTr2.data();
@@ -248,7 +248,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // ::rompp::core::io::print_stdout(*y2.data(), "\n");
     // ::rompp::core::io::print_stdout("--------------\n");
 
-    y2 = y2 - alpha * dy;
+    y2 = y2 + alpha * dy;
 
     // solution update
     *y.data() = y2.data()->block(0, 0, y.size(), 1);
