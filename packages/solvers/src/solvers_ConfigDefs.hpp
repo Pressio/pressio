@@ -22,6 +22,16 @@ struct absoluteNormCorrectionBelowTol{
   using norm_t = norm_type;
 };
 
+template <typename norm_type>
+struct absoluteNormResidualBelowTol{
+  using norm_t = norm_type;
+};
+
+template <typename norm_type>
+struct relativeNormResidualBelowTol{
+  using norm_t = norm_type;
+};
+
 struct completingNumMaxIters{};
 
 }//end namespace rompp::solvers::convergedWhen

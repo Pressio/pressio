@@ -182,7 +182,7 @@ void gauss_newtom_neq_solve(const system_t & sys,
     y = y + alpha*dy;
 
     // check convergence (whatever method user decided)
-    auto flag = isConverged(y, dy, normN, iStep,
+    auto flag = isConverged(y, dy, normN, normRes, normRes0, iStep,
 			    maxNonLIt, tolerance);
     if (flag) break;
 

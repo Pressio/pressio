@@ -16,7 +16,8 @@ struct IsConvergedHelper<converged_when::completingNumMaxIters>{
 
   template <typename state_t, typename step_t, typename scalar_t>
   bool operator()(const state_t & y, const state_t & dy,
-		  scalar_t norm_dy, step_t step,
+		  scalar_t norm_dy, scalar_t norm_r,
+		  scalar_t norm_r0, step_t step,
 		  step_t maxIters, scalar_t tol) const{
     return step==maxIters;
   }
@@ -30,9 +31,40 @@ struct IsConvergedHelper<
 
   template <typename state_t, typename step_t, typename scalar_t>
   bool operator()(const state_t & y, const state_t & dy,
-		  scalar_t norm_dy, step_t step,
+		  scalar_t norm_dy, scalar_t norm_r,
+		  scalar_t norm_r0, step_t step,
 		  step_t maxIters, scalar_t tol) const{
     return (norm_dy<tol);
+  }
+};
+
+template <typename norm_t>
+struct IsConvergedHelper<
+  converged_when::absoluteNormResidualBelowTol<norm_t>>{
+
+  static constexpr char const * description_ = "norm(r) < tol";
+
+  template <typename state_t, typename step_t, typename scalar_t>
+  bool operator()(const state_t & y, const state_t & dy,
+		  scalar_t norm_dy, scalar_t norm_r,
+		  scalar_t norm_r0, step_t step,
+		  step_t maxIters, scalar_t tol) const{
+    return (norm_r<tol);
+  }
+};
+
+template <typename norm_t>
+struct IsConvergedHelper<
+  converged_when::relativeNormResidualBelowTol<norm_t>>{
+
+  static constexpr char const * description_ = "norm(r) < tol";
+
+  template <typename state_t, typename step_t, typename scalar_t>
+  bool operator()(const state_t & y, const state_t & dy,
+		  scalar_t norm_dy, scalar_t norm_r,
+		  scalar_t norm_r0, step_t step,
+		  step_t maxIters, scalar_t tol) const{
+    return (norm_r/norm_r0<tol);
   }
 };
 
