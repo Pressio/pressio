@@ -27,7 +27,7 @@ template <typename norm_t>
 struct IsConvergedHelper<
   converged_when::absoluteNormCorrectionBelowTol<norm_t>>{
 
-  static constexpr char const * description_ = "norm(dx) < tol";
+  static constexpr char const * description_ = "||dy|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
   bool operator()(const state_t & y, const state_t & dy,
@@ -42,7 +42,7 @@ template <typename norm_t>
 struct IsConvergedHelper<
   converged_when::absoluteNormResidualBelowTol<norm_t>>{
 
-  static constexpr char const * description_ = "norm(r) < tol";
+  static constexpr char const * description_ = "||R|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
   bool operator()(const state_t & y, const state_t & dy,
@@ -57,7 +57,7 @@ template <typename norm_t>
 struct IsConvergedHelper<
   converged_when::relativeNormResidualBelowTol<norm_t>>{
 
-  static constexpr char const * description_ = "norm(r) < tol";
+  static constexpr char const * description_ = "||R||(r) < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
   bool operator()(const state_t & y, const state_t & dy,
