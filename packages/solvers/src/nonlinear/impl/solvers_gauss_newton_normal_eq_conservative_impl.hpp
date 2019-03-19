@@ -185,7 +185,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
     ::rompp::core::ops::product(cbarT, lambda, cbarTlambda);
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
-    ::rompp::core::ops::dot(jacob, cbarTlambda, jTr2);
+    ::rompp::core::ops::dot(jacob, resid, jTr2);
 
     auto negOne = static_cast<scalar_t>(-1);
     jTr2.scale(negOne);

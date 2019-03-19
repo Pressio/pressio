@@ -110,7 +110,7 @@ public:
     A_.resize( jac_.globalNumVectors()+nlambda, jac_.globalNumVectors()+nlambda);
     b_.resize(y.size() + nlambda);
     lambda_.resize(nlambda);
-    lambda_.putScalar( static_cast<scalar_t>(1) );
+    lambda_.putScalar( static_cast<scalar_t>(0) );
     y2_.resize(y.size() + nlambda);
     ytrial_.resize(y2_.size());
     delta_.resize(y2_.size());
