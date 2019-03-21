@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.11)
 
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   laplace1d_epetra_fom
