@@ -6,7 +6,7 @@
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
 
-namespace rompp{ namespace apps{ 
+namespace rompp{ namespace apps{
 
 class Burgers1dEigen{
 
@@ -14,12 +14,11 @@ class Burgers1dEigen{
   using ui_t = unsigned int;
 
 public:
-  using scalar_type = double;
-  using state_type = Eigen::VectorXd;
-  using residual_type = Eigen::VectorXd;
-  using jacobian_type = Eigen::SparseMatrix<scalar_type,
-			Eigen::RowMajor,
-			int>;
+  using scalar_type	= double;
+  using state_type	= eigVec;
+  using residual_type	= eigVec;
+  using jacobian_type	= Eigen::SparseMatrix<
+    scalar_type, Eigen::RowMajor, int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;
 
