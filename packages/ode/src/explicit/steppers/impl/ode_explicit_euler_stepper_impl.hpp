@@ -2,7 +2,7 @@
 #ifndef ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_EULER_STEPPER_IMPL_HPP_
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_EULER_STEPPER_IMPL_HPP_
 
-#include "../base/ode_explicit_stepper_base.hpp"
+#include "../ode_explicit_stepper_base.hpp"
 
 namespace rompp{ namespace ode{ namespace impl{
 

@@ -3,7 +3,7 @@
 #define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_HPP_
 
 #include "ode_implicit_stepper_traits.hpp"
-#include "./base/ode_implicit_stepper_base.hpp"
+#include "ode_implicit_stepper_base.hpp"
 
 namespace rompp{ namespace ode{
 
