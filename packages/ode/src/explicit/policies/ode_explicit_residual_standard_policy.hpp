@@ -35,8 +35,6 @@ public:
 		  state_type & R,
 		  const model_type & model,
 		  scalar_type t) const{
-    if (R.empty())
-      R.matchLayoutWith(y);
 
     R.setZero();
     model.residual(*y.data(), *R.data(), t);    

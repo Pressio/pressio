@@ -180,6 +180,18 @@ struct is_admissible_vec_for_sharedmem_expression<T,
 
 ///-----------------------------------------------------
 
+// /* for now, only tpetra wrappers do not support expression templates */
+// template <typename T,
+//     typename enable = void>
+// struct supports_vector_expression_templates : std::false_type{};
+
+// template <typename T>
+// struct supports_vector_expression_templates
+// <T,
+//  core::meta::enable_if_t<
+//    is_vector_wrapper_tpetra<T>::value == false
+//    >
+//  > : std::true_type{};
 
 
 }}}//end namespace rompp::core::meta

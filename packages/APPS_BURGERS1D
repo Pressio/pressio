@@ -1,0 +1,13 @@
+
+#ifndef APPS_BURGERS1D_EIGEN_HPP_
+#define APPS_BURGERS1D_EIGEN_HPP_
+
+#include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
+
+#include "apps/src/burgers1d/apps_burgers1d_epetra.hpp"
+#include "apps/src/burgers1d/apps_burgers1d_epetra_masked.hpp"
+#include "apps/src/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
+
+#include "apps/src/burgers1d/apps_burgers1d_tpetra.hpp"
+
+#endif

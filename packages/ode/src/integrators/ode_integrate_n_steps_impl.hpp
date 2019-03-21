@@ -97,7 +97,7 @@ struct AdvancerPolicy{
       #ifdef DEBUG_PRINT
       auto fmt = core::io::bg_grey() + core::io::bold() + core::io::red();
       auto reset = core::io::reset();
-      ::rompp::core::io::print_stdout(fmt, "doing time step =",
+      ::rompp::core::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
       #endif
 
@@ -148,7 +148,7 @@ struct AdvancerPolicy<core::impl::empty, DoStepPolicy_t>{
       #ifdef DEBUG_PRINT
       auto fmt = core::io::bg_grey() + core::io::bold() + core::io::red();
       auto reset = core::io::reset();
-      ::rompp::core::io::print_stdout(fmt, "doing time step =",
+      ::rompp::core::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
       #endif
 

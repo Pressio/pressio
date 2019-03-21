@@ -1,0 +1,8 @@
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  burgers1d_epetra_explicit_euler
+  SOURCES main.cc
+  NUM_MPI_PROCS 4
+  #STANDARD_PASS_OUTPUT
+  #PASS_REGULAR_EXPRESSION "Hello World"
+  )
