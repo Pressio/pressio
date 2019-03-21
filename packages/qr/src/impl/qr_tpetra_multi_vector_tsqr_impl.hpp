@@ -33,6 +33,9 @@ public:
 				*Qmat_->data(),
 				*localR_.get(),
 				false);
+
+    //::rompp::core::io::print_stdout(*localR_.get());
+
 // #ifdef DEBUG_PRINT
 //     int myrank{};
 //     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);

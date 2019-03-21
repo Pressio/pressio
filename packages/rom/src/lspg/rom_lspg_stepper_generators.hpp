@@ -31,18 +31,17 @@ struct LSPGStepperObjectGenerator<
   using typename T::rom_stepper_t;
   using typename T::aux_stepper_t;
 
-  fom_eval_rhs_policy_t rhsEv_;   //default constructed
-  fom_apply_jac_policy_t ajacEv_; //default constructed
+  fom_eval_rhs_policy_t rhsEv_;
+  fom_apply_jac_policy_t ajacEv_;
 
-  fom_state_w_t y0Fom_		 = {};
-  fom_rhs_w_t r0Fom_		 = {};
-  fom_states_data fomStates_	 = {};
-  fom_rhs_data fomRhs_		 = {};
-
-  lspg_matrix_t romMat_		 = {};
-  lspg_residual_policy_t resObj_ = {};
-  lspg_jacobian_policy_t jacObj_ = {};
-  rom_stepper_t stepperObj_	 = {};
+  fom_state_w_t y0Fom_;
+  fom_rhs_w_t r0Fom_;
+  fom_states_data fomStates_;
+  fom_rhs_data fomRhs_;
+  lspg_matrix_t romMat_;
+  lspg_residual_policy_t resObj_;
+  lspg_jacobian_policy_t jacObj_;
+  rom_stepper_t stepperObj_;
 
   LSPGStepperObjectGenerator(const fom_t	   & appObj,
 			 const fom_state_t & y0n,
@@ -57,8 +56,8 @@ struct LSPGStepperObjectGenerator<
 			       decoder.getJacobianRef(), t0)),
       resObj_(fomStates_, fomRhs_, rhsEv_),
       jacObj_(fomStates_, ajacEv_, romMat_),
-      stepperObj_(appObj, resObj_, jacObj_, yROM)
-  {}
+      stepperObj_(appObj, resObj_, jacObj_, yROM){}
+
 };
 
 
@@ -88,22 +87,21 @@ struct LSPGStepperObjectGenerator<
   using typename T::rom_stepper_t;
   using typename T::aux_stepper_t;
 
-  fom_state_w_t y0Fom_		 = {};
-  fom_rhs_w_t r0Fom_		 = {};
-  fom_states_data fomStates_	 = {};
-  fom_rhs_data fomRhs_		 = {};
+  fom_state_w_t y0Fom_;
+  fom_rhs_w_t r0Fom_;
+  fom_states_data fomStates_;
+  fom_rhs_data fomRhs_;
+  lspg_matrix_t romMat_;
+  lspg_residual_policy_t resObj_;
+  lspg_jacobian_policy_t jacObj_;
+  aux_stepper_t auxStepperObj_;
+  rom_stepper_t stepperObj_;
 
-  lspg_matrix_t romMat_		 = {};
-  lspg_residual_policy_t resObj_ = {};
-  lspg_jacobian_policy_t jacObj_ = {};
-  aux_stepper_t auxStepperObj_   = {};
-  rom_stepper_t stepperObj_	 = {};
-
-  LSPGStepperObjectGenerator(const fom_t	   & appObj,
-			 const fom_state_t & y0n,
-			 decoder_t	   & decoder,
-			 lspg_state_t	   & yROM,
-			 scalar_t	   t0)
+  LSPGStepperObjectGenerator(const fom_t	& appObj,
+			     const fom_state_t  & y0n,
+			     decoder_t		& decoder,
+			     lspg_state_t	& yROM,
+			     scalar_t		t0)
     : y0Fom_(y0n),
       r0Fom_(fom_eval_rhs_policy_t().evaluate(appObj, y0Fom_, t0)),
       fomStates_(y0Fom_, decoder),

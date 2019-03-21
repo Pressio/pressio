@@ -137,6 +137,10 @@ void gauss_newtom_qr_solve(const system_t & sys,
     qrObj.project(resid, QTResid);
 #endif
 
+    jacob.print("jacob");
+    std::cout << std::endl;
+    ::rompp::core::io::print_stdout(*QTResid.data());
+
     // compute correction: dy
     // by solving R dy = - Q^T Residual
     QTResid.scale(static_cast<scalar_t>(-1));

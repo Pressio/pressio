@@ -59,7 +59,7 @@ void Burgers1dEpetra::jacobian(const state_type & u,
       int thisGID = myGel_[i]; // global ID
       if (thisGID==0){
 	Indices[0] = 0;
-	Values[0] = -dxInv_;// * u[0]*u[0];
+	Values[0] = -dxInv_;
 	if (jac.Filled())
 	  jac.ReplaceGlobalValues(thisGID, 1, Values.data(), Indices.data() );
 	else

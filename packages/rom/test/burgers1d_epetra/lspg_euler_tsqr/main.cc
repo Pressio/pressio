@@ -75,19 +75,32 @@ int main(int argc, char *argv[]){
   using fom_state_w_t = typename lspg_problem_types::fom_state_w_t;
   using rom_jac_t     = typename lspg_problem_types::lspg_matrix_t;
 
-  // GaussNewton solver
-  using qr_algo = rompp::qr::TSQR;
-  using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
+  // // GaussNewton solver
+  // using qr_algo = rompp::qr::TSQR;
+  // using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
+  // using converged_when_t = rompp::solvers::iterative::default_convergence;
+  // using gnsolver_t	 = rompp::solvers::iterative::GaussNewtonQR<
+  // 				scalar_t, qr_type,
+  // 				converged_when_t, rom_stepper_t>;
+  // gnsolver_t solver(stGen.stepperObj_, yROM);
+  // solver.setTolerance(1e-14);
+  // solver.setMaxIterations(100);
+
+  // hessian type: comes up in GN solver, it is (J phi)^T (J phi)
+  // Since the rom is solved using eigen, hessian is wrapper of eigen matrix
+  using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
+  using hessian_t	 = rompp::core::Matrix<eig_dyn_mat>;
+  using solver_tag	 = rompp::solvers::linear::LSCG;
   using converged_when_t = rompp::solvers::iterative::default_convergence;
-  using gnsolver_t	 = rompp::solvers::iterative::GaussNewtonQR<
-  				scalar_t, qr_type,
-  				converged_when_t, rom_stepper_t>;
+  using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
+    scalar_t, solver_tag, rompp::solvers::EigenIterative,
+    converged_when_t, rom_stepper_t, hessian_t>;
   gnsolver_t solver(stGen.stepperObj_, yROM);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(100);
 
   // integrate in time
-  rompp::ode::integrateNSteps(stGen.stepperObj_, yROM, 0.0, dt, 200, solver);
+  rompp::ode::integrateNSteps(stGen.stepperObj_, yROM, 0.0, dt, 2, solver);
 
   // compute the fom corresponding to our rom final state
   fom_state_w_t yRf(y0n);

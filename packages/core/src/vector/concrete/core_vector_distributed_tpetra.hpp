@@ -59,6 +59,16 @@ public:
 
 public:
 
+  // copy assignment
+  template <typename T,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator=(const T & other){
+    assert(this->localSize() == other.localSize());
+    data_.assign( *other.data() );
+    return *this;
+  }
+
   // compound assignment when type(b) = type(this)
   // this += b
   template <typename T,
@@ -79,12 +89,10 @@ public:
     return *this;
   }
 
-  // void print() const{
-  //   Tpetra::MatrixMarket::Writer<wrap_t>::writeDense(std::cout,
-  // 						     data_,
-  // 						     "dsfd",
-  // 						     "dfdfd");
-  // }
+  void print(std::string tag) const{
+    Tpetra::MatrixMarket::Writer<wrap_t>::writeDense
+      (std::cout << std::setprecision(15), data_, tag, tag);
+  }
 
 private:
 

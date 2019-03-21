@@ -131,6 +131,9 @@ void gauss_newtom_neq_solve(const system_t & sys,
     hessEvaluator(jacob, H);
 #endif
 
+    ::rompp::core::io::print_stdout( *H.data() , "\n");
+    //resid.print("resid");
+
 #ifdef DEBUG_PRINT
     auto fmt1 = core::io::magenta() + core::io::bold();
     ::rompp::core::io::print_stdout(fmt1, "GN_JSize =",
@@ -162,6 +165,8 @@ void gauss_newtom_neq_solve(const system_t & sys,
 #else
     linSolver.solve(H, JTR, dy);
 #endif
+
+    ::rompp::core::io::print_stdout(*dy.data());
 
     // norm of the correction
     normEvaluator(dy, normN);

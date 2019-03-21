@@ -68,6 +68,11 @@ public:
     return *this;
   }
 
+  void print(std::string tag) const{
+    ::rompp::core::io::print_stdout(tag, core::io::reset());
+    data_.Print(std::cout);
+  }
+
 private:
 
   void matchLayoutWithImpl(const this_t & other){

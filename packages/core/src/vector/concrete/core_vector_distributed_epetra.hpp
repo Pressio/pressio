@@ -129,6 +129,12 @@ public:
     return *this;
   }
 
+
+  void print(std::string tag) const{
+    ::rompp::core::io::print_stdout(tag);
+    data_.Print(std::cout);
+  }
+
 private:
 
   void matchLayoutWithImpl(const der_t & other){
