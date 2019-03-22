@@ -42,7 +42,11 @@ public:
   rcp<nativeVec> calculateForcingTerm();
   rcp<nativeVec> createStates();
   void solveForStates(rcp<nativeMatrix> A, rcp<nativeVec> u, rcp<nativeVec> f);
-  
+  rcp<nativeVec> calcManufacturedForcing();
+  void printStates(rcp<nativeVec> u);
+  void compare2manufacturedStates(rcp<nativeVec> uapprox);
+  double verifyImplementation(rcp<nativeMatrix> A);
+
 protected:
   Epetra_MpiComm * comm_;
   rcp<Epetra_Map> contigMap;

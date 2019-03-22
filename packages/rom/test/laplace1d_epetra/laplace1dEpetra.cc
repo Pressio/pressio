@@ -30,8 +30,8 @@ std::shared_ptr<Epetra_CrsMatrix> Laplace1dEpetra::calculateLinearSystem(){
   two = (-mu_[0]*2.0)/(domain_[2]*domain_[2]); //Main diagonal  
   Values = new double[2];             //Off diagonal values   
   Indices = new int[2];
-  Values[0] = (mu_[0]*1.0)/(domain_[2]*domain_[2])+(mu_[1]*1)/(2*domain_[2]);
-  Values[1] = (mu_[0]*1.0)/(domain_[2]*domain_[2])-(mu_[1]*1)/(2*domain_[2]);
+  Values[0] = (mu_[0]*1.0)/(domain_[2]*domain_[2])-(mu_[1]*1)/(2*domain_[2]);
+  Values[1] = (mu_[0]*1.0)/(domain_[2]*domain_[2])+(mu_[1]*1)/(2*domain_[2]);
   
   //Create A and fill it in
   A = std::make_shared<nativeMatrix>(Copy, *contigMap, NumNz);
@@ -101,18 +101,75 @@ void Laplace1dEpetra::solveForStates(rcp<nativeMatrix> A, rcp<nativeVec> u,
   Epetra_LinearProblem Problem(A.get(), u.get(), f.get());
   //Create AztecOO object                                        
   AztecOO Solver(Problem);
-  AZ_defaults(options, params);
-  Solver.SetAllAztecOptions(options);
-  Solver.SetAllAztecParams(params);
-  Solver.Iterate(1000, 1E-6);
+  //AZ_defaults(options, params);
+  //  Solver.SetAztecOption(AZ_precond, AZ_lu);
+  //Solver.SetAllAztecParams(params);
+  Solver.Iterate(100, 1E-6);
   Solver.NumIters();
   Solver.TrueResidual();
+}
+
+
+void Laplace1dEpetra::printStates(rcp<nativeVec> u){
   //---------------------------------------------------------------------------
-  // Print x and states                                            
+  // Print x and states                                                     
   //---------------------------------------------------------------------------
-  for (int i = 0; i<nodesPerProc; i++){
-    x_i = domain_[0]+domain_[2]*MyGlobalNodes[i];
-    std::cout<<"x("<<MyGlobalNodes[i]<<"):\t" << x_i <<"\t"
-	     <<"u("<<MyGlobalNodes[i]<<"):\t" << (*u)[i] <<std::endl;
+  for (int i = 0; i<nodesPerProc; i++){                            
+    x_i = domain_[0]+domain_[2]*MyGlobalNodes[i];                        
+    std::cout<<"x("<<MyGlobalNodes[i]<<"):\t" << x_i <<"\t"                    
+             <<"u("<<MyGlobalNodes[i]<<"):\t" << (*u)[i] <<std::endl;
   }
+}
+
+std::shared_ptr<Epetra_Vector> Laplace1dEpetra::calcManufacturedForcing(){
+  //---------------------------------------------------------------------------
+  //Create Epetra Vector for the forcing term
+  //---------------------------------------------------------------------------
+  f = std::make_shared<nativeVec>(*contigMap);
+  double dLen = domain_[1]-domain_[0];
+  //Iterate through all the nodes for each processor
+  for (int i = 0; i<nodesPerProc; i++){
+    if (MyGlobalNodes[i]> 0 && MyGlobalNodes[i]<numGlobalNodes-1){
+      x_i = domain_[0]+domain_[2]*MyGlobalNodes[i]; //calculate x_i;
+      (*f)[i] = 
+	mu_[0]*4*pow(M_PI,2)/pow(dLen,2)*cos(2*M_PI*(x_i-domain_[0])/dLen)+
+	mu_[1]*2.0*M_PI/dLen*sin(2*M_PI*(x_i-domain_[0])/dLen);
+    }else if (MyGlobalNodes[i]==0){
+      (*f)[i] = 0;                           //boundary condiitons Left
+    }else if (MyGlobalNodes[i]==numGlobalNodes-1){
+      (*f)[i] = 0;                           //boundary conditions Right
+    }
+  }
+  return f;
+}
+
+void Laplace1dEpetra::compare2manufacturedStates(rcp<nativeVec> uapprox){
+  //---------------------------------------------------------------------------
+  //Compare the manufactured solution to the discretized manufactured solution
+  //---------------------------------------------------------------------------
+  double uManu_i;
+  for(int i=0; i<nodesPerProc; i++){
+    x_i = domain_[0]+domain_[2]*MyGlobalNodes[i]; //calculate x_i;
+    uManu_i = 1-cos(2*M_PI*(x_i-domain_[0])/(domain_[1]-domain_[0]));
+    if (x_i> domain_[0] && x_i < domain_[1]){
+      (*uapprox)[i] = fabs((*uapprox)[i]-uManu_i)/uManu_i; 
+    }else{
+      (*uapprox)[i] = 0;
+    }
+  }
+}
+
+double Laplace1dEpetra::verifyImplementation(rcp<nativeMatrix> A){
+  double norm = 0;
+  std::shared_ptr<Epetra_Vector> fManu;
+  std::shared_ptr<Epetra_Vector> uManuApprox;
+  fManu = Laplace1dEpetra::calcManufacturedForcing(); 
+  uManuApprox = Laplace1dEpetra::createStates();
+  solveForStates(A, uManuApprox, fManu);
+  Laplace1dEpetra::compare2manufacturedStates(uManuApprox);
+  //---------------------------------------------------------------------------
+  // Print the error between calculated states and manufactured solutions
+  //---------------------------------------------------------------------------
+  (void) (*uManuApprox).Norm2(&norm);
+  return norm;
 }

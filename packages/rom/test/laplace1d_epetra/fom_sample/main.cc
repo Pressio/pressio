@@ -32,26 +32,38 @@ int main(int argc, char *argv[]){
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
   //Sets the number of required processors
-  assert(Comm.NumProc() == 2);
+  assert(Comm.NumProc() == 1);
   //---------------------------------------------------------------------------
   // Initialize Epetra Types
   //---------------------------------------------------------------------------
   shared_ptr<Epetra_Vector> f;
   shared_ptr<Epetra_Vector> u;
+  shared_ptr<Epetra_CrsMatrix> Atest;
   shared_ptr<Epetra_CrsMatrix> A;
   //---------------------------------------------------------------------------
   // Parameters, Setup, and Boundary Conditions
   //---------------------------------------------------------------------------
-  vector<double> mu({-1.5, -0.1, 1}); //Parameters: diffusion, advection, expf
-  vector<double> domain({0, 2, 0.1}); //1D spatial domain
-  vector<double> bc1D({0,0});        //Left and right boundary conditions
+  vector<double> mu({-1, 1, 1}); //Parameters: diffusion, advection, expf
+  vector<double> domain({0, 2, 0.05}); //1D spatial domain, xL, xR, dx
+  vector<double> bc1D({0,1});        //Left and right boundary conditions
   fom_t  appObj(&Comm, mu, domain, bc1D); //Create object
-  //Create the linear system
-  A = appObj.calculateLinearSystem();  
+  //---------------------------------------------------------------------------
+  //Solve for the states
+  A = appObj.calculateLinearSystem();
   f = appObj.calculateForcingTerm();
   u = appObj.createStates();           //states
   //Use AztecOO to solve for the steady states
   appObj.solveForStates(A, u, f);
+  appObj.printStates(u);
+  //---------------------------------------------------------------------------
+  // Verify Discretization with Manufactured Solution
+  //---------------------------------------------------------------------------
+  domain[2] = 0.0001;
+  fom_t  manuFactured(&Comm, mu, domain, bc1D); //Create object
+  Atest = manuFactured.calculateLinearSystem();
+  //Verify that implementation of system is correct
+  double error = manuFactured.verifyImplementation(Atest);
+  std::cout << "L2 Error Manufactured Solution :" << error <<std::endl;
   //---------------------------------------------------------------------------
   //End and free
   //---------------------------------------------------------------------------
