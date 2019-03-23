@@ -50,6 +50,9 @@ public:
     : data_(*other.data()){
   }
 
+
+public:
+
   // constructor from any expression, force evaluation
   template <typename T,
   	    core::meta::enable_if_t<
@@ -59,8 +62,6 @@ public:
     for (ord_t i = 0; i != expr.size(); ++i)
       data_[i] = expr(i);
   }
-
-public:
 
   // assignment from any expression, force evaluation
   template <typename T,
@@ -79,6 +80,8 @@ public:
   	    core::meta::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator=(const T & other){
+    if(this->size() != other.size())
+       this->resize( other.size() );
     data_ = *other.data();
     return *this;
   }
