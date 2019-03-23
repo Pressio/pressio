@@ -1,6 +1,3 @@
 
-ADD_SUBDIRECTORIES(burgers1d_eigen_explicit_euler)
-ADD_SUBDIRECTORIES(burgers1d_epetra_explicit_euler)
-ADD_SUBDIRECTORIES(burgers1d_tpetra_explicit_euler)
-
-ADD_SUBDIRECTORIES(burgers1d_eigen_implicit_euler)
+ADD_SUBDIRECTORIES(fom)
+ADD_SUBDIRECTORIES(rom)
