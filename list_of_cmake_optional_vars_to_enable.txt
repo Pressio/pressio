@@ -5,26 +5,26 @@ at compile time since these are pre-processor directives.
 
 
 - HAVE_TRILINOS
-default = ON if TPL_ENABLE_TRILINOS = ON, OFF otherwise
+ON if TPL_ENABLE_TRILINOS = ON, OFF otherwise
 description: self-explanatory
 
 - HAVE_BLAZE
-default = ON if TPL_ENABLE_BLAZE = ON, OFF otherwise
+ON if TPL_ENABLE_BLAZE = ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have blaze installed if you want this on
 
 - HAVE_MPI
-default = ON if TPL_ENABLE_MPI = ON, OFF otherwise
+ON if TPL_ENABLE_MPI = ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have mpi installed if you want this on
 
 - HAVE_ARMADILLO
-default = ON if TPL_ENABLE_ARMADILLO = ON, OFF otherwise
+ON if TPL_ENABLE_ARMADILLO = ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have armadillo installed if you want this on
 
 - HAVE_CPP14
-default = ON if ${CMAKE_CXX_STANDARD} EQUAL "14", OFF otherwise
+ON if ${CMAKE_CXX_STANDARD} EQUAL "14", OFF otherwise
 description: if compiler supports C++14 standard
 prerequisites: a compiler with support for c++14
 
@@ -34,6 +34,6 @@ description: to turn on/off print statemetns for debugging
 prerequisites: none
 
 - HAVE_TEUCHOS_TIMERS
-default = OFF; set ON if TPL_ENABLE_TRILINOS=ON and DEBUG_PRINT=ON
+ON if TPL_ENABLE_TRILINOS=ON and DEBUG_PRINT=ON
 description: to turn on/off print statemetns for debugging
 prerequisites: HAVE_TRILINOS=ON
