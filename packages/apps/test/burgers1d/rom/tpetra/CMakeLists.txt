@@ -1,2 +1,3 @@
 
 ADD_SUBDIRECTORIES(lspg_euler_normal_eq)
+ADD_SUBDIRECTORIES(lspg_bdf2_normal_eq)
