@@ -1,0 +1,9 @@
+
+ADD_SUBDIRECTORIES(eigen_explicit_euler)
+ADD_SUBDIRECTORIES(epetra_explicit_euler)
+ADD_SUBDIRECTORIES(tpetra_explicit_euler)
+
+ADD_SUBDIRECTORIES(eigen_implicit_euler)
+ADD_SUBDIRECTORIES(eigen_implicit_euler_observer)
+ADD_SUBDIRECTORIES(eigen_implicit_bdf2)
+ADD_SUBDIRECTORIES(eigen_implicit_bdf2_observer)

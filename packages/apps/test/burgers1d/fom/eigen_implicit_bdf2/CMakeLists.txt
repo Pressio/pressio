@@ -1,0 +1,13 @@
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  burgers1d_fom_eigen_implicit_bdf2
+  SOURCES main.cc
+  NUM_MPI_PROCS 1
+  #STANDARD_PASS_OUTPUT
+  )
+
+# TRIBITS_ADD_TEST(simplecxx-helloworld  NOEXEPREFIX  NOEXESUFFIX
+#   NAME HelloWorldProg
+#   DIRECTORY ${PACKAGE_BINARY_DIR}/src
+#   NUM_MPI_PROCS 1
+#   PASS_REGULAR_EXPRESSION "Hello World"
+#   )
