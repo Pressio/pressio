@@ -63,5 +63,21 @@ struct MatrixGetSizeHelper<
   }
 };
 
+template <typename T>
+struct MatrixGetSizeHelper<
+  T,
+  core::meta::enable_if_t<
+    core::meta::is_core_multi_vector_wrapper<T>::value and
+    core::details::traits<T>::is_shared_mem == true
+    >
+  >{
+  static auto globalRows(const T & A) -> decltype(A.length()){
+    return A.length();
+  }
+  static auto globalCols(const T & A) -> decltype(A.numVectors()){
+    return A.numVectors();
+  }
+};
+
 }}} //end namespace rompp::solvers::impl
 #endif
