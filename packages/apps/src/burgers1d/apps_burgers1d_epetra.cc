@@ -1,7 +1,7 @@
 
 #include "apps_burgers1d_epetra.hpp"
 
-namespace rompp{ namespace apps{ 
+namespace rompp{ namespace apps{
 
 void Burgers1dEpetra::residual(const state_type & u,
 			       residual_type & rhs,
@@ -43,14 +43,14 @@ void Burgers1dEpetra::jacobian(const state_type & u,
 
   // to populate the jacobian each process needs the last grid
   // point solution from the previous process
-  double buffin = 0.0;
+  double buffin {0.0};
+  MPI_Status st{};
   MPI_Comm mpiComm = comm_->Comm();
   if (myRank_ < totRanks_-1){
     double tosend = u[NumMyElem_-1];
     MPI_Send(&tosend, 1, MPI_DOUBLE, myRank_+1, 1, mpiComm);
   }
   if (myRank_ >= 1){
-    MPI_Status st;
     MPI_Recv(&buffin, 1, MPI_DOUBLE, myRank_-1, 1, mpiComm, &st);
   }
 
@@ -61,25 +61,32 @@ void Burgers1dEpetra::jacobian(const state_type & u,
       int thisGID = myGel_[i]; // global ID
       if (thisGID==0){
 	Indices[0] = 0;
-	Values[0] = -dxInv_;
+	Values[0] = -dxInv_ * u[0];
 	if (jac.Filled())
-	  jac.ReplaceGlobalValues(thisGID, 1, Values.data(), Indices.data() );
+	  jac.ReplaceGlobalValues(thisGID, 1,
+				  Values.data(), Indices.data() );
 	else
-	  jac.InsertGlobalValues(thisGID, 1, Values.data(), Indices.data() );
+	  jac.InsertGlobalValues(thisGID, 1,
+				 Values.data(), Indices.data() );
       }
       else{
 	Indices[0] = thisGID-1;
 	Indices[1] = thisGID;
-	if (i==0)
-	  Values[0] = dxInv_ * buffin*buffin;
-	if (i>0)
-	  Values[0] = dxInv_ * u[i-1]*u[i-1];
+	if (i==0){
+	  Values[0] = dxInv_ * buffin;
+	  Values[1] = -dxInv_ * u[i];
+	}
+	if (i>0){
+	  Values[0] = dxInv_ * u[i-1];
+	  Values[1] = -dxInv_ * u[i];
+	}
 
-	Values[1] = -Values[0];
 	if (jac.Filled())
-	  jac.ReplaceGlobalValues(thisGID, 2, Values.data(), Indices.data() );
+	  jac.ReplaceGlobalValues(thisGID, 2,
+				  Values.data(), Indices.data() );
 	else
-	  jac.InsertGlobalValues(thisGID, 2, Values.data(), Indices.data() );
+	  jac.InsertGlobalValues(thisGID, 2,
+				 Values.data(), Indices.data() );
       }
     }
   if (!jac.Filled())
@@ -88,4 +95,3 @@ void Burgers1dEpetra::jacobian(const state_type & u,
 //-------------------------------------------------------
 
 }} //namespace rompp::apps
-

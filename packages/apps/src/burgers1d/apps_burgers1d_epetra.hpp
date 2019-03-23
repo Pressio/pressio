@@ -12,7 +12,7 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
 
-namespace rompp{ namespace apps{ 
+namespace rompp{ namespace apps{
 
 class Burgers1dEpetra{
 protected:
@@ -31,11 +31,15 @@ public:
 		  int Ncell, Epetra_MpiComm * comm)
     : mu_(params), Ncell_(Ncell), comm_(comm){}
 
+  Burgers1dEpetra() = delete;
   ~Burgers1dEpetra() = default;
 
-  Epetra_Map const & getDataMap(){ return *dataMap_; };
-
 public:
+
+  Epetra_Map const & getDataMap(){
+    return *dataMap_;
+  };
+
   void setup(){
     // distribute cells
     dataMap_ = std::make_shared<Epetra_Map>(Ncell_,0,*comm_);
@@ -90,6 +94,7 @@ public:
     assert( A.NumVectors() == B.NumVectors() );
     // compute jacobian
     jacobian(y, *Jac_, t);
+    Jac_->Print(std::cout);
     // multiply
     Jac_->Multiply(false, B, A);
     //A.Print(std::cout);

@@ -12,16 +12,16 @@ namespace rompp{ namespace apps{
 
 class Burgers1dTpetra{
 protected:
-  using map_t = Tpetra::Map<>;
-  using nativeVec = Tpetra::Vector<>;
-  using nativeMVec = Tpetra::MultiVector<>;
+  using map_t		= Tpetra::Map<>;
+  using nativeVec	= Tpetra::Vector<>;
+  using nativeMVec	= Tpetra::MultiVector<>;
   using jacobian_type	= Tpetra::CrsMatrix<>;
-  using go_t = typename map_t::global_ordinal_type;
-  using lo_t = typename map_t::local_ordinal_type;
+  using go_t		= typename map_t::global_ordinal_type;
+  using lo_t		= typename map_t::local_ordinal_type;
 
-  using tcomm_t = Teuchos::MpiComm<int>;
-  using rcpcomm_t = Teuchos::RCP<const tcomm_t>;
-  using rcpmap_t = Teuchos::RCP<const map_t>;
+  using tcomm_t		= Teuchos::MpiComm<int>;
+  using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
+  using rcpmap_t	= Teuchos::RCP<const map_t>;
 
   template<typename T> using stdrcp = std::shared_ptr<T>;
 
@@ -37,10 +37,13 @@ public:
 		  rcpcomm_t comm)
     : mu_{params}, Ncell_{Ncell}, comm_{comm}{}
 
+  Burgers1dTpetra() = delete;
   ~Burgers1dTpetra() = default;
 
 public:
-  rcpmap_t getDataMap(){ return dataMap_; };
+  rcpmap_t getDataMap(){
+    return dataMap_;
+  };
 
   void setup(){
     using Teuchos::rcpFromRef;
@@ -85,7 +88,7 @@ public:
     U_->putScalar(1.0);
 
     Jac_ = std::make_shared<jacobian_type>(dataMap_, nonZrPerRow_);
-    //Jac_->fillComplete();
+    this->computeJacobianInsert(*U_, *Jac_, 0.0);
   };
 
   state_type const & getInitialState() const{
@@ -111,8 +114,7 @@ public:
     // assert( Jac_->NumGlobalCols() == B.GlobalLength() );
     // assert( A.GlobalLength() == Jac_->NumGlobalRows() );
     // assert( A.NumVectors() == B.NumVectors() );
-
-    jacobian(y, *Jac_, t);
+    computeJacobianReplace(y, *Jac_, t);
     Jac_->apply(B, A);
     //A.Print(std::cout);
   }
@@ -127,9 +129,15 @@ public:
   }
 
 protected:
-  void jacobian(const state_type & u,
-		jacobian_type & jac,
-		const scalar_type /*t*/) const;
+  void computeJacobianReplace(const state_type & u,
+			      jacobian_type & jac,
+			      const scalar_type /*t*/) const;
+
+  void computeJacobianInsert(const state_type & u,
+			    jacobian_type & jac,
+			    const scalar_type /*t*/) const;
+
+  scalar_type exchangeFlux(const state_type & u) const;
 
 protected:
   std::vector<scalar_type> mu_; // parameters
