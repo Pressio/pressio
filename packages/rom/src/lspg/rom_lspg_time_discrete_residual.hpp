@@ -125,7 +125,7 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::Euler>{
 			 int lid,
 			 const state_type& yn,
 			 const std::array<state_type,n> & ynm){
-    // //R[i] = yn[lid]- ynm[0][lid] - dt*R[i];
+    //R[i] = yn[lid]- ynm[0][lid] - dt*R[i];
     R = (yn.data()->getData())[lid]
       - (ynm[0].data()->getData())[lid] - dt * R;
   }
@@ -150,7 +150,6 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
       - bdf2<T>::c3_*dt*R;
   }
 };
-
 
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
@@ -193,6 +192,57 @@ void time_discrete_residual(const state_type & yn,
   }
 }
 #endif
+
+
+
+
+template<
+  ::rompp::ode::ImplicitEnum method,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  core::meta::enable_if_t<
+    core::meta::is_vector_wrapper_eigen<state_type>::value == true and
+    method == ::rompp::ode::ImplicitEnum::Euler
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
+			    state_type & R,
+			    scalar_type dt){
+
+  // // On input: R contains the application RHS, i.e. if
+  // // dudt = f(x,u,...), R contains f(...)
+  *R.data() = *yn.data() - *ynm[0].data() - dt * (*R.data());
+}
+
+
+template<
+  ::rompp::ode::ImplicitEnum method,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  core::meta::enable_if_t<
+    core::meta::is_vector_wrapper_eigen<state_type>::value == true and
+    method == ::rompp::ode::ImplicitEnum::BDF2
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
+			    state_type & R,
+			    scalar_type dt){
+
+  using namespace ::rompp::ode::coeffs;
+
+  // // On input: R contains the application RHS, i.e. if
+  // // dudt = f(x,u,...), R contains f(...)
+
+  R = yn
+    - bdf2<scalar_type>::c1_*ynm[1]
+    - bdf2<scalar_type>::c2_*ynm[0]
+    - bdf2<scalar_type>::c3_*dt*R;
+}
+
 
 }}}//end namespace rompp::rom::impl
 #endif

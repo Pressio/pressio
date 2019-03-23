@@ -32,6 +32,36 @@ namespace rompp{ namespace rom{ namespace impl{
  * the same distributions.
 */
 
+
+
+template <
+  ode::ImplicitEnum odeMethod,
+  typename lspg_matrix_type,
+  typename scalar_type,
+  typename decoder_jac_type,
+  core::meta::enable_if_t<
+    core::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
+    core::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value
+    > * = nullptr
+  >
+void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+			    scalar_type	dt,
+			    const decoder_jac_type & phi){
+
+  // prefactor (f) multiplying f*dt*J*phi
+  auto prefactor = static_cast<scalar_type>(1);
+  if (odeMethod == ode::ImplicitEnum::BDF2)
+    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+
+  //loop over elements of jphi
+  for (auto i=0; i<jphi.length(); i++){
+    for (auto j=0; j<jphi.numVectors(); j++)
+      jphi(i,j) = phi(i,j) - prefactor*dt*jphi(i,j);
+  }
+}
+
+
+
 #ifdef HAVE_TRILINOS
 
 template <
@@ -79,7 +109,6 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 }
 
 
-
 template <
   ode::ImplicitEnum odeMethod,
   typename lspg_matrix_type,
@@ -121,7 +150,6 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
       jphi2dView[j][i] = phi2dView[j][lid] - prefactor*dt*jphi2dView[j][i];
   }
 }
-
 #endif
 
 }}}//end namespace rompp::rom::impl
