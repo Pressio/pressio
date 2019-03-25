@@ -57,20 +57,20 @@ int main(int argc, char *argv[]){
   auto & y0n = appobj.getInitialState();
   auto r0n = appobj.residual(y0n, static_cast<scalar_t>(0));
 
-  using ode_state_t = core::Vector<app_state_t>;
-  using ode_res_t   = core::Vector<app_residual_t>;
+  using ode_state_t = rompp::core::Vector<app_state_t>;
+  using ode_res_t   = rompp::core::Vector<app_residual_t>;
   ode_state_t y(y0n);
   ode_res_t r(r0n);
 
-  using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitEnum::Euler, ode_state_t, app_t, ode_res_t>;
+  using stepper_t = rompp::ode::ExplicitStepper<
+    rompp::ode::ExplicitEnum::Euler, ode_state_t, app_t, ode_res_t>;
   stepper_t stepperObj(appobj, y, r);
 
   // integrate in time
   scalar_t fint = 35;
   scalar_t dt = 0.01;
   auto Nsteps = static_cast<unsigned int>(fint/dt);
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
+  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
   y.data()->Print(std::cout << std::setprecision(14));
   checkSol(rank, y, rompp::apps::test::Burg1DtrueExpEulerN20t35);
 

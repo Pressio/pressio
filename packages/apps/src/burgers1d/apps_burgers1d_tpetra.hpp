@@ -7,6 +7,7 @@
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 #include <Teuchos_FancyOStream.hpp>
+#include <Tpetra_Core.hpp>
 
 namespace rompp{ namespace apps{
 

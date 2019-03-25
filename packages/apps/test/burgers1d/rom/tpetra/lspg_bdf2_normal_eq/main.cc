@@ -42,8 +42,6 @@ int main(int argc, char *argv[]){
     decoder_jac_t phi =
       rompp::apps::test::tpetra::readBasis("basis.txt", romSize, numCell,
 					   Comm, appobj.getDataMap());
-    const int numBasis = phi.globalNumVectors();
-    assert( numBasis == romSize );
 
     // this is my reference state
     auto & y0n = appobj.getInitialState();
@@ -90,8 +88,10 @@ int main(int argc, char *argv[]){
     int shift = (rank==0) ? 0 : 10;
     const int myn = yRf.getDataMap().getNodeNumElements();
     const auto trueY = rompp::apps::test::Burg1DtrueImpBDF2N20t010;
-    for (auto i=0; i<myn; i++)
+    for (auto i=0; i<myn; i++){
+      std::cout << yRf_v[i] << " " << trueY[i+shift] << std::endl;
       assert(std::abs(yRf_v[i] - trueY[i+shift]) < 1e-10 );
+    }
 
   }//tpetra scope
 
