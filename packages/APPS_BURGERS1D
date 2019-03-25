@@ -1,6 +1,6 @@
 
-#ifndef APPS_BURGERS1D_EIGEN_HPP_
-#define APPS_BURGERS1D_EIGEN_HPP_
+#ifndef APPS_BURGERS1D_HPP_
+#define APPS_BURGERS1D_HPP_
 
 #include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
 

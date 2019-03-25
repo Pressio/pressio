@@ -39,7 +39,6 @@ void checkSol(int rank, const T & y,
 }
 
 int main(int argc, char *argv[]){
-  using namespace rompp;
   using app_t		= rompp::apps::Burgers1dEpetra;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
