@@ -158,15 +158,7 @@ class GaussNewton<
 public:
   GaussNewton() = delete;
 
-  /* the system passed in does not have to be the same as the
-   * class template parameter BUT the two systems have to compatible
-   * in the sense that their return types of residual and jacobian
-   * have to be the same. maybe we should get rid of this and
-   * create an overload where residual and jacobian types are
-   * passed explicitly.
-   */
-  template <typename system_in_t = system_t>
-  GaussNewton(const system_in_t & system, const state_t & y)
+  GaussNewton(const system_t & system, const state_t & y)
     : JTResid_(y), delta_(y),
       res_(system.residual(y)), jac_(system.jacobian(y)),
       hes_(HessianApproxHelper<jacobian_t>()(jac_)),
@@ -176,12 +168,11 @@ public:
   ~GaussNewton() = default;
 
 public:
-  template <typename system_in_t = system_t>
-  void solveImpl(const system_in_t & sys, state_t & y){
+  void solveImpl(const system_t & sys, state_t & y){
     sys.residual(y, res_);
     sys.jacobian(y, jac_);
 
-    impl::gauss_newtom_neq_solve< system_in_t, hessian_t,
+    impl::gauss_newtom_neq_solve< system_t, hessian_t,
 				  typename iter_base_t::iteration_t,
 				  scalar_t, solverT, line_search_t,
 				  converged_when_t>(sys, y, ytrial_,
@@ -194,6 +185,111 @@ public:
   }//end solve
 
 };//class
+
+
+
+
+/*
+ * part-specialize for when the target types are passed but not system
+ */
+template <
+  typename scalar_t, typename lin_solver_tag,
+  template <typename,typename> class lin_solver_t,
+  typename line_search_t, typename converged_when_t,
+  typename state_t, typename residual_t,
+  typename jacobian_t, typename hessian_t
+  >
+class GaussNewton<
+  scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
+  converged_when_t, void, state_t, residual_t, jacobian_t, hessian_t,
+  core::meta::enable_if_t<
+    core::meta::is_core_vector_wrapper<state_t>::value and
+    core::meta::is_core_vector_wrapper<residual_t>::value
+    and
+    (core::meta::is_core_matrix_wrapper<jacobian_t>::value or
+     core::meta::is_core_multi_vector_wrapper<jacobian_t>::value)
+    and
+    (core::meta::is_core_matrix_wrapper<hessian_t>::value or
+     core::meta::is_core_multi_vector_wrapper<hessian_t>::value)
+    >
+  >
+  : public NonLinearSolverBase<GaussNewton<scalar_t, lin_solver_tag,
+					   lin_solver_t,
+					   line_search_t,
+					   converged_when_t,
+					   void, state_t, residual_t,
+					   jacobian_t, hessian_t>>,
+      public IterativeBase<scalar_t>
+{
+
+  // using state_t    = typename system_t::state_type;
+  // using residual_t = typename system_t::residual_type;
+  // using jacobian_t = typename system_t::jacobian_type;
+  using solverT   = lin_solver_t<lin_solver_tag, hessian_t>;
+
+  using this_t	   = GaussNewton<scalar_t, lin_solver_tag, lin_solver_t,
+				 line_search_t, converged_when_t, void,
+				 state_t, residual_t,
+				 jacobian_t, hessian_t>;
+  using iter_base_t = IterativeBase<scalar_t>;
+  using base_t	   = NonLinearSolverBase<this_t>;
+  friend base_t;
+
+  solverT linSolver_ = {};
+  scalar_t normO_    = {};
+  scalar_t normN_    = {};
+  state_t JTResid_   = {};
+  state_t delta_     = {};
+  residual_t res_    = {};
+  jacobian_t jac_    = {};
+  hessian_t hes_     = {};
+
+  // ytrail needed if/when line search is used: put here
+  // so that it is constructed only once
+  state_t ytrial_  = {};
+
+public:
+  GaussNewton() = delete;
+
+  template <typename system_t,
+	    typename T1 = state_t,
+	    typename T2 = residual_t,
+	    typename T3 = jacobian_t,
+	    core::meta::enable_if_t<
+	      std::is_same<T1, typename system_t::state_type>::value and
+	      std::is_same<T2, typename system_t::residual_type>::value and
+	      std::is_same<T3, typename system_t::jacobian_type>::value
+	      > * = nullptr
+	    >
+  GaussNewton(const system_t & system, const state_t & y)
+    : JTResid_(y), delta_(y),
+      res_(system.residual(y)), jac_(system.jacobian(y)),
+      hes_(HessianApproxHelper<jacobian_t>()(jac_)),
+      ytrial_(y){}
+
+  GaussNewton(const GaussNewton &) = delete;
+  ~GaussNewton() = default;
+
+public:
+  template <typename system_t>
+  void solveImpl(const system_t & sys, state_t & y){
+    sys.residual(y, res_);
+    sys.jacobian(y, jac_);
+
+    impl::gauss_newtom_neq_solve< system_t, hessian_t,
+				  typename iter_base_t::iteration_t,
+				  scalar_t, solverT, line_search_t,
+				  converged_when_t>(sys, y, ytrial_,
+						    res_, jac_, hes_,
+						    JTResid_,
+						    this->maxIters_,
+						    this->tolerance_,
+						    delta_, linSolver_,
+						    normO_, normN_);
+  }//end solve
+
+};//class
+
 
 
 }}}}//end namespace rompp::solvers::iterative::impl
