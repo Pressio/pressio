@@ -1,6 +1,0 @@
-
-IF(HAVE_TRILINOS)
-ADD_SUBDIRECTORIES(
-  fom_sample
-  )
-ENDIF()
