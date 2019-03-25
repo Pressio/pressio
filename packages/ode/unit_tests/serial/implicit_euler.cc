@@ -180,3 +180,51 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
   EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
 }
+
+
+TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
+  using namespace rompp;
+  using app_t		= ode::testing::refAppForImpEigen;
+  using nstate_t	= typename app_t::state_type;
+  using nresidual_t	= typename app_t::residual_type;
+  using njacobian_t	= typename app_t::jacobian_type;
+  app_t appObj;
+
+  using state_t = core::Vector<nstate_t>;
+  using res_t = core::Vector<nresidual_t>;
+  using jac_t = core::Matrix<njacobian_t>;
+  state_t y(3);
+  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+
+  //**********************
+  // residual policy is user-defined (even if it is standard)
+  // jacobian_policy is standard and default-constructed
+  //**********************
+  using res_pol_t = ode::policy::ImplicitResidualStandardPolicy<
+    state_t, app_t, res_t>;
+
+  using stepper_t = ode::ImplicitStepper<
+    ode::ImplicitEnum::Euler,
+    state_t, res_t, jac_t, app_t,
+    void, /*because aux stepper NOT needed for backEuler*/
+    res_pol_t>;
+  stepper_t stepperObj(appObj, res_pol_t(), y);
+
+  //**********************
+  // define solver
+  //**********************
+  using lin_solver_t = solvers::EigenIterative<solvers::linear::Bicgstab, jac_t>;
+  solvers::NewtonRaphson<double, lin_solver_t> solverO;
+
+  // integrate in time
+  int nSteps = 2;
+  double dt = 0.01;
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
+  std::cout << std::setprecision(14) << *y.data() << "\n";
+
+  appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
+
+  EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
+  EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
+  EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
+}
