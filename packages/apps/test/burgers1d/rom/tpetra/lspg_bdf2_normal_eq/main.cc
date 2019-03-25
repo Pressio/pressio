@@ -57,7 +57,8 @@ int main(int argc, char *argv[]){
     rompp::rom::LSPGStepperObjectGenerator<lspg_problem_types> lspgGener
       (appobj, y0n, decoderObj, yROM, t0);
 
-    using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;
+  using rom_residual_t = typename lspg_problem_types::lspg_residual_t;
+  using rom_jac_t      = typename lspg_problem_types::lspg_matrix_t;
 
     // GaussNewton solver
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]){
     using converged_when_t = rompp::solvers::iterative::default_convergence;
     using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
       scalar_t, solver_tag, rompp::solvers::EigenIterative,
-      converged_when_t, rom_stepper_t, hessian_t>;
+      converged_when_t, void, hessian_t, lspg_state_t, rom_residual_t, rom_jac_t>;
     gnsolver_t solver(lspgGener.stepperObj_, yROM);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(200);
