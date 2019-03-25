@@ -1,0 +1,8 @@
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  steadyAdvDiff1d_fom_epetra
+  SOURCES main.cc
+  NUM_MPI_PROCS 1
+  #STANDARD_PASS_OUTPUT
+  #PASS_REGULAR_EXPRESSION "Hello World"
+  )

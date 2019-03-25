@@ -1,0 +1,7 @@
+
+#ifndef APPS_STEADYADVDIFF1D_HPP_
+#define APPS_STEADYADVDIFF1D_HPP_
+
+#include "apps/src/steady_adv_diff1d/apps_steady_adv_diff_1d_epetra.hpp"
+
+#endif
