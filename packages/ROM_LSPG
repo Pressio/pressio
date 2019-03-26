@@ -6,9 +6,14 @@
 
 #include "rom/src/lspg/rom_lspg_residual_policy.hpp"
 #include "rom/src/lspg/rom_lspg_jacobian_policy.hpp"
-#include "rom/src/lspg/rom_lspg_generators.hpp"
+
+#include "rom/src/lspg/rom_lspg_type_generators.hpp"
+#include "rom/src/lspg/rom_lspg_stepper_generators.hpp"
+
 #include "rom/src/decorators/rom_preconditioned_decorator.hpp"
 #include "rom/src/decorators/rom_mask_decorator.hpp"
+
+#include "rom/src/lspg/rom_lspg_time_discrete_residual.hpp"
 #include "rom/src/lspg/rom_lspg_time_discrete_jacobian.hpp"
 
 #endif
