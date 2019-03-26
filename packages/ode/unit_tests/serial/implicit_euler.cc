@@ -72,7 +72,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::Euler,
     state_t, res_t, jac_t, app_t>; /*aux stepper NOT needed for backEuler*/
-  stepper_t stepperObj(appObj, y);
+  stepper_t stepperObj(y, appObj);
 
   // define solver
   using lin_solver_t = solvers::EigenIterative<solvers::linear::Bicgstab, jac_t>;
@@ -109,7 +109,7 @@ TEST(ode_implicit_euler, guesserLambda){
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::Euler,
     state_t, res_t, jac_t, app_t>; /*aux stepper NOT needed for backEuler*/
-  stepper_t stepperObj(appObj, y);
+  stepper_t stepperObj(y, appObj);
 
   // define solver
   using lin_algo_t = solvers::linear::Bicgstab;
@@ -160,7 +160,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
     ode::ImplicitEnum::Euler,
     state_t, res_t, jac_t, app_t, void, /*aux stepper NOT needed for backEuler*/
     res_pol_t, jac_pol_t>;
-  stepper_t stepperObj(appObj, res_pol_t(), jac_pol_t(), y);
+  stepper_t stepperObj(y, appObj, res_pol_t(), jac_pol_t());
 
   //**********************
   // define solver
@@ -208,7 +208,7 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
     state_t, res_t, jac_t, app_t,
     void, /*because aux stepper NOT needed for backEuler*/
     res_pol_t>;
-  stepper_t stepperObj(appObj, res_pol_t(), y);
+  stepper_t stepperObj(y, appObj, res_pol_t());
 
   //**********************
   // define solver

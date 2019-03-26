@@ -71,13 +71,13 @@ int main(int argc, char *argv[]){
   using aux_stepper_t = rompp::ode::ImplicitStepper<
     rompp::ode::ImplicitEnum::Euler,
     ode_state_t, ode_res_t, ode_jac_t, app_t>;
-  aux_stepper_t stepperAux(appObj, y);
+  aux_stepper_t stepperAux(y, appObj);
 
   // nonimal stepper
   using stepper_t = rompp::ode::ImplicitStepper<
     rompp::ode::ImplicitEnum::BDF2,
     ode_state_t, ode_res_t, ode_jac_t, app_t, aux_stepper_t>;
-  stepper_t stepperObj(appObj, y, stepperAux);
+  stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver
   using lin_solver_t = rompp::solvers::EigenIterative<

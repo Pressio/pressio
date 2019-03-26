@@ -50,13 +50,13 @@ public:
   ~ImplicitStepper() = default;
 
   // passing: model, initial state, and policies.
-  ImplicitStepper(const model_type & model,
-		  const ode_state_type & y0)
+  ImplicitStepper(const ode_state_type & y0,
+		  const model_type & model)
     : myImpl(model, residual_pol_t(), jacobian_pol_t(), y0){}
 
-  ImplicitStepper(const model_type & model,
-		  const ode_state_type & y0,
-		  const ode_residual_type & r0)
+  ImplicitStepper(const ode_state_type & y0,
+		  const ode_residual_type & r0,
+		  const model_type & model)
     : myImpl(model, residual_pol_t(), jacobian_pol_t(), y0, r0){}
 
   // passing: model, initial state, aux_stepper
@@ -65,8 +65,8 @@ public:
 	    core::meta::enable_if_t<
 	      not std::is_void<T>::value
 	      > * = nullptr>
-  ImplicitStepper(const model_type & model,
-		  const ode_state_type & y0,
+  ImplicitStepper(const ode_state_type & y0,
+		  const model_type & model,
 		  T & auxStObj)
     : myImpl(model, residual_pol_t(),
 	     jacobian_pol_t(), auxStObj, y0){}
@@ -155,17 +155,17 @@ public:
   ~ImplicitStepper() = default;
 
   // passing: model, initial state, and policies
-  ImplicitStepper(const model_type & model,
-		  const residual_policy_type & resPolicyObj,
-		  const ode_state_type & y0)
+  ImplicitStepper(const ode_state_type & y0,
+		  const model_type & model,
+		  const residual_policy_type & resPolicyObj)
     : myImpl(model, resPolicyObj, jacobian_pol_t(), y0){}
 
   // passing: model, initial state,
   // initial residual and policies
-  ImplicitStepper(const model_type & model,
-		  const residual_policy_type & resPolicyObj,
-		  const ode_state_type & y0,
-		  const ode_residual_type & r0)
+  ImplicitStepper(const ode_state_type & y0,
+		  const ode_residual_type & r0,
+		  const model_type & model,
+		  const residual_policy_type & resPolicyObj)
     : myImpl(model, resPolicyObj,
 	     jacobian_pol_t(), y0, r0){}
 
@@ -174,9 +174,9 @@ public:
 	    core::meta::enable_if_t<
 	      not std::is_void<T>::value
 	      > * = nullptr>
-  ImplicitStepper(const model_type & model,
+  ImplicitStepper(const ode_state_type & y0,
+		  const model_type & model,
 		  const residual_policy_type & resPolicyObj,
-		  const ode_state_type & y0,
 		  T & auxStObj)
     : myImpl(model, resPolicyObj,
 	     jacobian_pol_t(),
@@ -270,19 +270,19 @@ public:
   ~ImplicitStepper() = default;
 
   // passing: model, initial state, and policies
-  ImplicitStepper(const model_type & model,
+  ImplicitStepper(const ode_state_type & y0,
+		  const model_type & model,
 		  const residual_policy_type & resPolicyObj,
-		  const jacobian_policy_type & jacPolicyObj,
-		  const ode_state_type & y0)
+		  const jacobian_policy_type & jacPolicyObj)
     : myImpl(model, resPolicyObj, jacPolicyObj, y0){}
 
   // passing: model, initial state,
   // initial residual and policies
-  ImplicitStepper(const model_type & model,
+  ImplicitStepper(const ode_state_type & y0,
+		  const ode_residual_type & r0,
+		  const model_type & model,
 		  const residual_policy_type & resPolicyObj,
-		  const jacobian_policy_type & jacPolicyObj,
-		  const ode_state_type & y0,
-		  const ode_residual_type & r0)
+		  const jacobian_policy_type & jacPolicyObj)
     : myImpl(model, resPolicyObj,
 	     jacPolicyObj, y0, r0){}
 
@@ -292,10 +292,10 @@ public:
 	    core::meta::enable_if_t<
 	      not std::is_void<T>::value
 	      > * = nullptr>
-  ImplicitStepper(const model_type & model,
+  ImplicitStepper(const ode_state_type & y0,
+		  const model_type & model,
 		  const residual_policy_type & resPolicyObj,
 		  const jacobian_policy_type & jacPolicyObj,
-		  const ode_state_type & y0,
 		  T & auxStObj)
     : myImpl(model, resPolicyObj, jacPolicyObj,
 	     auxStObj, y0){}

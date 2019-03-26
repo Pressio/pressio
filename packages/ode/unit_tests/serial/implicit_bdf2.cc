@@ -76,13 +76,13 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using aux_stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::Euler,
     state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
-  aux_stepper_t stepperAux(appObj, y);
+  aux_stepper_t stepperAux(y, appObj);
 
   // actual stepper
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::BDF2,
     state_t, res_t, jac_t, app_t, aux_stepper_t>;
-  stepper_t stepperObj(appObj, y, stepperAux);
+  stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver
   using lin_solver_t = solvers::EigenIterative<solvers::linear::Bicgstab, jac_t>;
@@ -131,13 +131,13 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
     ode::ImplicitEnum::Euler,
     state_t, res_t, jac_t, app_t, void, /*aux stepper NOT needed for backEuler*/
     res_pol_t, jac_pol_t>;
-  aux_stepper_t stepperAux(appObj, res_pol_t(), jac_pol_t(), y);
+  aux_stepper_t stepperAux(y, appObj, res_pol_t(), jac_pol_t());
 
   // stepper for BDF2
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::BDF2,
     state_t, res_t, jac_t, app_t, aux_stepper_t, res_pol_t, jac_pol_t>;
-  stepper_t stepperObj(appObj, res_pol_t(), jac_pol_t(), y, stepperAux);
+  stepper_t stepperObj(y, appObj, res_pol_t(), jac_pol_t(), stepperAux);
 
   // define solver
   using lin_solver_t = solvers::EigenIterative<solvers::linear::Bicgstab, jac_t>;
@@ -185,13 +185,13 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
     state_t, res_t, jac_t, app_t,
     void, /*aux stepper NOT needed for backEuler*/
     res_pol_t>;
-  aux_stepper_t stepperAux(appObj, res_pol_t(), y);
+  aux_stepper_t stepperAux(y, appObj, res_pol_t());
 
   // stepper for BDF2
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::BDF2,
     state_t, res_t, jac_t, app_t, aux_stepper_t, res_pol_t>;
-  stepper_t stepperObj(appObj, res_pol_t(), y, stepperAux);
+  stepper_t stepperObj(y, appObj, res_pol_t(), stepperAux);
 
   // define solver
   using lin_solver_t = solvers::EigenIterative<solvers::linear::Bicgstab, jac_t>;

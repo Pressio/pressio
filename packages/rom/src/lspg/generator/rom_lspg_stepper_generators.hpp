@@ -59,7 +59,7 @@ struct LSPGStepperObjectGenerator<
 			       decoder.getJacobianRef(), t0)),
       resObj_(fomStates_, fomRhs_, rhsEv_),
       jacObj_(fomStates_, ajacEv_, romMat_),
-      stepperObj_(appObj, resObj_, jacObj_, yROM){}
+      stepperObj_(yROM, appObj, resObj_, jacObj_){}
 
 };
 
@@ -116,8 +116,8 @@ struct LSPGStepperObjectGenerator<
 			       decoder.getJacobianRef(), t0)),
       resObj_(fomStates_, fomRhs_, rhsEv_),
       jacObj_(fomStates_, ajacEv_, romMat_),
-      auxStepperObj_(appObj, resObj_, jacObj_, yROM),
-      stepperObj_(appObj, resObj_, jacObj_, yROM, auxStepperObj_)
+      auxStepperObj_(yROM, appObj, resObj_, jacObj_),
+      stepperObj_(yROM, appObj, resObj_, jacObj_, auxStepperObj_)
   {}
 };
 

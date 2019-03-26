@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
   using stepper_t = rompp::ode::ImplicitStepper<
     rompp::ode::ImplicitEnum::Euler,
     ode_state_t, ode_res_t, ode_jac_t, app_t>;
-  stepper_t stepperObj(appObj, y);
+  stepper_t stepperObj(y, appObj);
 
   // define solver
   using lin_solver_t = rompp::solvers::EigenIterative<
