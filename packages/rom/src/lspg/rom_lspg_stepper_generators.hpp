@@ -6,30 +6,31 @@
 
 namespace rompp{ namespace rom{
 
-template <typename T>
+template <typename lspg_problem>
 struct LSPGStepperObjectGenerator<
-  T, core::meta::enable_if_t<
-       std::is_void<typename T::aux_stepper_t>::value
-       >
-  > : T {
+  lspg_problem,
+  core::meta::enable_if_t<
+    std::is_void<typename lspg_problem::aux_stepper_t>::value
+    >
+  > : lspg_problem {
 
-  using typename T::base_t::fom_t;
-  using typename T::base_t::scalar_t;
-  using typename T::base_t::lspg_state_t;
-  using typename T::base_t::fom_state_t;
-  using typename T::base_t::fom_state_w_t;
-  using typename T::base_t::fom_rhs_w_t;
-  using typename T::base_t::decoder_t;
-  using typename T::base_t::fom_states_data;
-  using typename T::base_t::fom_rhs_data;
+  using typename lspg_problem::fom_t;
+  using typename lspg_problem::scalar_t;
+  using typename lspg_problem::lspg_state_t;
+  using typename lspg_problem::fom_state_t;
+  using typename lspg_problem::fom_state_w_t;
+  using typename lspg_problem::fom_rhs_w_t;
+  using typename lspg_problem::decoder_t;
+  using typename lspg_problem::fom_states_data;
+  using typename lspg_problem::fom_rhs_data;
 
-  using typename T::lspg_matrix_t;
-  using typename T::fom_eval_rhs_policy_t;
-  using typename T::fom_apply_jac_policy_t;
-  using typename T::lspg_residual_policy_t;
-  using typename T::lspg_jacobian_policy_t;
-  using typename T::rom_stepper_t;
-  using typename T::aux_stepper_t;
+  using typename lspg_problem::lspg_matrix_t;
+  using typename lspg_problem::fom_eval_rhs_policy_t;
+  using typename lspg_problem::fom_apply_jac_policy_t;
+  using typename lspg_problem::lspg_residual_policy_t;
+  using typename lspg_problem::lspg_jacobian_policy_t;
+  using typename lspg_problem::rom_stepper_t;
+  using typename lspg_problem::aux_stepper_t;
 
   fom_eval_rhs_policy_t rhsEv_;
   fom_apply_jac_policy_t ajacEv_;
@@ -43,11 +44,11 @@ struct LSPGStepperObjectGenerator<
   lspg_jacobian_policy_t jacObj_;
   rom_stepper_t stepperObj_;
 
-  LSPGStepperObjectGenerator(const fom_t	   & appObj,
-			 const fom_state_t & y0n,
-			 decoder_t	   & decoder,
-			 lspg_state_t	   & yROM,
-			 scalar_t	   t0)
+  LSPGStepperObjectGenerator(const fom_t	& appObj,
+			     const fom_state_t	& y0n,
+			     decoder_t		& decoder,
+			     lspg_state_t	& yROM,
+			     scalar_t		t0)
     : y0Fom_(y0n),
       r0Fom_(rhsEv_.evaluate(appObj, y0Fom_, t0)),
       fomStates_(y0Fom_, decoder),
@@ -62,30 +63,33 @@ struct LSPGStepperObjectGenerator<
 
 
 
-template <typename T>
+template <typename lspg_problem>
 struct LSPGStepperObjectGenerator<
-  T, core::meta::enable_if_t<
-       !std::is_void<typename T::aux_stepper_t>::value
+  lspg_problem, core::meta::enable_if_t<
+       !std::is_void<typename lspg_problem::aux_stepper_t>::value
        >
-  > : T {
+  > : lspg_problem {
 
-  using typename T::base_t::fom_t;
-  using typename T::base_t::scalar_t;
-  using typename T::base_t::lspg_state_t;
-  using typename T::base_t::fom_state_t;
-  using typename T::base_t::fom_state_w_t;
-  using typename T::base_t::fom_rhs_w_t;
-  using typename T::base_t::decoder_t;
-  using typename T::base_t::fom_states_data;
-  using typename T::base_t::fom_rhs_data;
+  using typename lspg_problem::fom_t;
+  using typename lspg_problem::scalar_t;
+  using typename lspg_problem::lspg_state_t;
+  using typename lspg_problem::fom_state_t;
+  using typename lspg_problem::fom_state_w_t;
+  using typename lspg_problem::fom_rhs_w_t;
+  using typename lspg_problem::decoder_t;
+  using typename lspg_problem::fom_states_data;
+  using typename lspg_problem::fom_rhs_data;
 
-  using typename T::lspg_matrix_t;
-  using typename T::fom_eval_rhs_policy_t;
-  using typename T::fom_apply_jac_policy_t;
-  using typename T::lspg_residual_policy_t;
-  using typename T::lspg_jacobian_policy_t;
-  using typename T::rom_stepper_t;
-  using typename T::aux_stepper_t;
+  using typename lspg_problem::lspg_matrix_t;
+  using typename lspg_problem::fom_eval_rhs_policy_t;
+  using typename lspg_problem::fom_apply_jac_policy_t;
+  using typename lspg_problem::lspg_residual_policy_t;
+  using typename lspg_problem::lspg_jacobian_policy_t;
+  using typename lspg_problem::rom_stepper_t;
+  using typename lspg_problem::aux_stepper_t;
+
+  fom_eval_rhs_policy_t rhsEv_;
+  fom_apply_jac_policy_t ajacEv_;
 
   fom_state_w_t y0Fom_;
   fom_rhs_w_t r0Fom_;
@@ -103,14 +107,13 @@ struct LSPGStepperObjectGenerator<
 			     lspg_state_t	& yROM,
 			     scalar_t		t0)
     : y0Fom_(y0n),
-      r0Fom_(fom_eval_rhs_policy_t().evaluate(appObj, y0Fom_, t0)),
+      r0Fom_(rhsEv_.evaluate(appObj, y0Fom_, t0)),
       fomStates_(y0Fom_, decoder),
       fomRhs_(r0Fom_),
-      romMat_(fom_apply_jac_policy_t().evaluate(appObj, y0Fom_,
-						decoder.getJacobianRef(),
-						t0)),
-      resObj_(fomStates_, fomRhs_, fom_eval_rhs_policy_t()),
-      jacObj_(fomStates_, fom_apply_jac_policy_t(), romMat_),
+      romMat_(ajacEv_.evaluate(appObj, y0Fom_,
+			       decoder.getJacobianRef(), t0)),
+      resObj_(fomStates_, fomRhs_, rhsEv_),
+      jacObj_(fomStates_, ajacEv_, romMat_),
       auxStepperObj_(appObj, resObj_, jacObj_, yROM),
       stepperObj_(appObj, resObj_, jacObj_, yROM, auxStepperObj_)
   {}
