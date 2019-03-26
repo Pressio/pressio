@@ -54,7 +54,7 @@ TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
     
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::Euler, state_t, app_t, res_t>;
-  stepper_t stepperObj(appObj, y, r);
+  stepper_t stepperObj(y, appObj, r);
     
   // integrate in time 
   double dt = 0.1;
@@ -94,7 +94,7 @@ TEST(ode_explicit_euler, numericsStdResidualPolPassedByUser){
   res_std_pol_t polObj;
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::Euler, state_t, app_t, res_t, res_std_pol_t>;
-  stepper_t stepperObj(appObj, polObj, y, r);
+  stepper_t stepperObj(y, appObj, polObj, r);
     
   // integrate in time 
   double dt = 0.1;

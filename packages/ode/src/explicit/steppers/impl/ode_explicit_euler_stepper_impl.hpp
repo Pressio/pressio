@@ -53,6 +53,20 @@ public:
     assert( !r0.empty() );
   }
 
+  /* leave this out for now, it is for when residual construction is
+   * called directly from the app object */
+  // ExplicitEulerStepperImpl(const model_type & model,
+  // 			   const residual_policy_type & res_policy_obj,
+  // 			   const ode_state_type & y0)
+  //   : storage_base_t( model.residual(*y0.data(),
+  // 				     core::constants::zero<scalar_type>() )),
+  //     auxdata_base_t(model, res_policy_obj)
+  // {
+  //   //make sure there is something in what is passed,
+  //   //otherwise the helper states and rhs are emtpy
+  //   assert( !y0.empty() );
+  // }
+
   ExplicitEulerStepperImpl(const residual_policy_type & res_policy_obj,
 			   const ode_state_type & y0,
 			   const ode_residual_type & r0)
@@ -63,6 +77,7 @@ public:
     assert( !y0.empty() );
     assert( !r0.empty() );
   }
+
 
   ExplicitEulerStepperImpl() = delete;
   ~ExplicitEulerStepperImpl() = default;

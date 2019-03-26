@@ -14,8 +14,9 @@ class OdeStorage;
 template<typename state_type, typename rhs_type>
 class OdeStorage<state_type, rhs_type, 1, 0>{
 public:
-  OdeStorage(state_type const & y0)
-    : auxStates_{y0}{}
+  OdeStorage(state_type const & y)
+    : auxStates_{y}{}
+
   ~OdeStorage() = default;
 
 protected:
@@ -26,8 +27,9 @@ protected:
 template<typename state_type, typename rhs_type>
 class OdeStorage<state_type, rhs_type, 2, 0>{
 public:
-  OdeStorage(state_type const & y0)
-    : auxStates_{y0, y0}{}
+  OdeStorage(state_type const & y)
+    : auxStates_{y, y}{}
+
   ~OdeStorage() = default;
 
 protected:
@@ -35,13 +37,18 @@ protected:
 };
 //--------------------------------------------------
 
+
 template<typename state_type, typename rhs_type>
 class OdeStorage<state_type, rhs_type, 1, 4>{
+  using rhs_wrapped_t = typename core::details::traits<rhs_type>::wrapped_t;
+
 public:
-  OdeStorage(state_type const & y0,
-	     rhs_type const & r0)
-    : auxStates_{y0},
-      auxRHS_{r0, r0, r0, r0}{}
+  OdeStorage(state_type const & y,
+	     rhs_type const & r)
+    : auxStates_{y},
+      auxRHS_{r, r, r, r}
+  {}
+
   ~OdeStorage() = default;
 
 protected:
@@ -50,11 +57,17 @@ protected:
 };
 //--------------------------------------------------
 
+
 template<typename state_type, typename rhs_type>
 class OdeStorage<state_type, rhs_type, 0, 1>{
+  using rhs_wrapped_t = typename core::details::traits<rhs_type>::wrapped_t;
+
 public:
-  OdeStorage(rhs_type const & r0)
-    :  auxRHS_{r0}{}
+  OdeStorage(rhs_type const & r) : auxRHS_{r}{}
+
+  // OdeStorage(rhs_wrapped_t const & rNative)
+  //   : auxRHS_{rhs_type{rNative}}{}
+
   ~OdeStorage() = default;
 
 protected:

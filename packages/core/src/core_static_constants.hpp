@@ -14,12 +14,12 @@ struct constants{
   // is defined at runtime
   static constexpr int dynamic = -1;
 
-  template <typename scalar_t>
+  template <typename scalar_t = double>
   static constexpr scalar_t one(){
     return static_cast<scalar_t>(1);
   }
 
-  template <typename scalar_t>
+  template <typename scalar_t = double>
   static constexpr scalar_t zero(){
     return static_cast<scalar_t>(0);
   }

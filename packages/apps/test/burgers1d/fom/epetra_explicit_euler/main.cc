@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
 
   using stepper_t = rompp::ode::ExplicitStepper<
     rompp::ode::ExplicitEnum::Euler, ode_state_t, app_t, ode_res_t>;
-  stepper_t stepperObj(appobj, y, r);
+  stepper_t stepperObj(y, appobj, r);
 
   // integrate in time
   scalar_t fint = 35;
