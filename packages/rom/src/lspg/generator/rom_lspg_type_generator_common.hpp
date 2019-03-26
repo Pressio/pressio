@@ -2,13 +2,13 @@
 #ifndef ROM_LSPG_TYPE_GENERATOR_COMMON_HPP_
 #define ROM_LSPG_TYPE_GENERATOR_COMMON_HPP_
 
-#include "../rom_ConfigDefs.hpp"
-#include "../rom_forward_declarations.hpp"
-#include "../rom_data_fom_rhs.hpp"
-#include "../rom_data_fom_states.hpp"
-#include "../policies/rom_evaluate_fom_rhs_policy.hpp"
-#include "../policies/rom_apply_fom_jacobian_policy.hpp"
-#include "../../../ode/src/ode_forward_declarations.hpp"
+#include "../../rom_ConfigDefs.hpp"
+#include "../../rom_forward_declarations.hpp"
+#include "../../rom_data_fom_rhs.hpp"
+#include "../../rom_data_fom_states.hpp"
+#include "../../policies/rom_evaluate_fom_rhs_policy.hpp"
+#include "../../policies/rom_apply_fom_jacobian_policy.hpp"
+#include "../../../../ode/src/ode_forward_declarations.hpp"
 
 namespace rompp{ namespace rom{
 

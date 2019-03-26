@@ -22,7 +22,8 @@ FILE(GLOB rom_galerkin_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/galerkin/*.hpp")
 FILE(GLOB rom_lspg_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/lspg/*.hpp")
-
+FILE(GLOB rom_lspg_generator_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/lspg/generator/*.hpp")
 
 # sources
 FILE(GLOB rom_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -51,6 +52,7 @@ INSTALL(FILES ${rom_policies_HEADERS} DESTINATION ${ROM_INCDIR}/policies)
 
 INSTALL(FILES ${rom_galerkin_HEADERS} DESTINATION ${ROM_INCDIR}/galerkin)
 INSTALL(FILES ${rom_lspg_HEADERS} DESTINATION ${ROM_INCDIR}/lspg)
+INSTALL(FILES ${rom_lspg_generator_HEADERS} DESTINATION ${ROM_INCDIR}/lspg/generator)
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)

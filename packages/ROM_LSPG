@@ -7,10 +7,10 @@
 #include "rom/src/lspg/rom_lspg_residual_policy.hpp"
 #include "rom/src/lspg/rom_lspg_jacobian_policy.hpp"
 
-#include "rom/src/lspg/rom_lspg_type_generator_default.hpp"
-#include "rom/src/lspg/rom_lspg_type_generator_preconditioned.hpp"
-#include "rom/src/lspg/rom_lspg_type_generator_masked.hpp"
-#include "rom/src/lspg/rom_lspg_stepper_generators.hpp"
+#include "rom/src/lspg/generator/rom_lspg_type_generator_default.hpp"
+#include "rom/src/lspg/generator/rom_lspg_type_generator_preconditioned.hpp"
+#include "rom/src/lspg/generator/rom_lspg_type_generator_masked.hpp"
+#include "rom/src/lspg/generator/rom_lspg_stepper_generators.hpp"
 
 #include "rom/src/decorators/rom_preconditioned_decorator.hpp"
 #include "rom/src/decorators/rom_mask_decorator.hpp"
