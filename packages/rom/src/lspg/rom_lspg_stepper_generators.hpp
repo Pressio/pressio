@@ -2,7 +2,9 @@
 #ifndef ROM_LSPG_STEPPER_GENERATORS_HPP_
 #define ROM_LSPG_STEPPER_GENERATORS_HPP_
 
-#include "rom_lspg_type_generators.hpp"
+#include "rom_lspg_type_generator_default.hpp"
+#include "rom_lspg_type_generator_preconditioned.hpp"
+#include "rom_lspg_type_generator_masked.hpp"
 
 namespace rompp{ namespace rom{
 
