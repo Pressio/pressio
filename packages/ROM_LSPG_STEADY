@@ -1,0 +1,17 @@
+
+#ifndef ROM_LSPG_STEADY_HPP_
+#define ROM_LSPG_STEADY_HPP_
+
+#include "ROM_BASIC"
+
+#include "rom/src/lspg_steady/rom_lspg_steady_jacobian_policy.hpp"
+#include "rom/src/lspg_steady/rom_lspg_steady_residual_policy.hpp"
+#include "rom/src/lspg_steady/rom_lspg_steady_system.hpp"
+
+#include "rom/src/lspg_steady/generator/rom_lspg_type_generator_default.hpp"
+#include "rom/src/lspg_steady/generator/rom_lspg_steady_problem_generators.hpp"
+
+#include "rom/src/decorators/rom_preconditioned_decorator.hpp"
+#include "rom/src/decorators/rom_mask_decorator.hpp"
+
+#endif

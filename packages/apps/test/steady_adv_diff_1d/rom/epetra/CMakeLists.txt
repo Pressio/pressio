@@ -1,2 +1,2 @@
 
-#ADD_SUBDIRECTORIES(...)
+ADD_SUBDIRECTORIES(lspg_normal_eq)

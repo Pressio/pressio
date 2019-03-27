@@ -100,12 +100,15 @@ void SteadyAdvDiff1dEpetra::calculateForcingTerm(){
   }
 }
 
+int SteadyAdvDiff1dEpetra::getNumGlobalNodes() const{
+  return numGlobalNodes_;
+}
 
-std::shared_ptr<Epetra_Vector> SteadyAdvDiff1dEpetra::getState(){
+std::shared_ptr<Epetra_Vector> SteadyAdvDiff1dEpetra::getState() const {
   return u_;
 }
 
-std::shared_ptr<Epetra_Vector> SteadyAdvDiff1dEpetra::getGrid(){
+std::shared_ptr<Epetra_Vector> SteadyAdvDiff1dEpetra::getGrid() const{
   return x_;
 }
 
@@ -121,7 +124,7 @@ void SteadyAdvDiff1dEpetra::solve(){
   Solver.TrueResidual();
 }
 
-void SteadyAdvDiff1dEpetra::printState(){
+void SteadyAdvDiff1dEpetra::printState() const{
   //-----------------------------------------------------------------------
   // Print x and states
   //-----------------------------------------------------------------------
@@ -130,11 +133,12 @@ void SteadyAdvDiff1dEpetra::printState(){
    * You can use print methods already implemented in objects like Epetra_Vector
    * where they already made sure prints to work with MPI */
 
-  u_->Print(std::cout);
   // for (int i = 0; i<nodesPerProc_; i++){
   //   std::cout<<"x("<<MyGlobalNodes_[i]<<"):\t" << (*x_)[i] <<"\t"
   // 	     <<"u("<<MyGlobalNodes_[i]<<"):\t" << (*u_)[i] <<std::endl;
   // }
+
+  u_->Print( std::cout << std::setprecision(10) );
 }
 
 }} //namespace rompp::apps

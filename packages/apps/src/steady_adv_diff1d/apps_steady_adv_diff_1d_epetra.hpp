@@ -1,6 +1,6 @@
 
-#ifndef ROM_APPS_STEADY_ADV_DIFF_1D_EPETRA_HPP_
-#define ROM_APPS_STEADY_ADV_DIFF_1D_EPETRA_HPP_
+#ifndef ROMPP_APPS_STEADY_ADV_DIFF_1D_EPETRA_HPP_
+#define ROMPP_APPS_STEADY_ADV_DIFF_1D_EPETRA_HPP_
 
 #include "../../../CORE_ALL"
 #include "Epetra_MpiComm.h"
@@ -39,16 +39,50 @@ public:
   ~SteadyAdvDiff1dEpetra() = default;
 
 public:
-
   void createMap();
   Epetra_Map const & getDataMap(){ return *contigMap_; };
   void setup();
   void calculateLinearSystem();
   void calculateForcingTerm();
-  rcp<nativeVec> getState();
-  rcp<nativeVec> getGrid();
+  int getNumGlobalNodes() const;
+  rcp<nativeVec> getState() const;
+  rcp<nativeVec> getGrid() const;
   void solve();
-  void printState();
+  void printState() const;
+
+public:
+  void residual(const state_type & u,
+		residual_type & rhs) const{
+    // compute residual and store into rhs
+  }
+
+  residual_type residual(const state_type & u) const{
+    /* this should create a vector, compure residual and return it */
+
+    Epetra_Vector R(*contigMap_);
+    // residual(u,R,t);
+    return R;
+  }
+
+  // computes: A = Jac B where B is a multivector
+  void applyJacobian(const state_type & y,
+		     const Epetra_MultiVector & B,
+		     Epetra_MultiVector & A) const{
+    // assert( Jac_->NumGlobalCols() == B.GlobalLength() );
+    // assert( A.GlobalLength() == Jac_->NumGlobalRows() );
+    // assert( A.NumVectors() == B.NumVectors() );
+    // // compute jacobian
+    // jacobian(y, *Jac_, t);
+    // Jac_->Multiply(false, B, A);
+  }
+
+  // computes: A = Jac B where B is a multivector
+  Epetra_MultiVector applyJacobian(const state_type & y,
+  				   const Epetra_MultiVector & B) const{
+    Epetra_MultiVector C( *contigMap_, B.NumVectors() );
+    // applyJacobian(y, B, C, t);
+    return C;
+  }
 
 protected:
   Epetra_MpiComm & comm_;

@@ -25,6 +25,11 @@ FILE(GLOB rom_lspg_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB rom_lspg_generator_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/lspg/generator/*.hpp")
 
+FILE(GLOB rom_lspg_steady_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/lspg_steady/*.hpp")
+FILE(GLOB rom_lspg_steady_generator_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/lspg_steady/generator/*.hpp")
+
 # sources
 FILE(GLOB rom_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
@@ -35,6 +40,7 @@ SET(LUMPED_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/../../ROM_BASIC
   ${CMAKE_CURRENT_SOURCE_DIR}/../../ROM_GALERKIN
   ${CMAKE_CURRENT_SOURCE_DIR}/../../ROM_LSPG
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../ROM_LSPG_STEADY
 )
 INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 
@@ -51,8 +57,13 @@ INSTALL(FILES ${rom_decorators_HEADERS} DESTINATION ${ROM_INCDIR}/decorators)
 INSTALL(FILES ${rom_policies_HEADERS} DESTINATION ${ROM_INCDIR}/policies)
 
 INSTALL(FILES ${rom_galerkin_HEADERS} DESTINATION ${ROM_INCDIR}/galerkin)
+
 INSTALL(FILES ${rom_lspg_HEADERS} DESTINATION ${ROM_INCDIR}/lspg)
 INSTALL(FILES ${rom_lspg_generator_HEADERS} DESTINATION ${ROM_INCDIR}/lspg/generator)
+
+INSTALL(FILES ${rom_lspg_steady_HEADERS} DESTINATION ${ROM_INCDIR}/lspg_steady)
+INSTALL(FILES ${rom_lspg_steady_generator_HEADERS} DESTINATION ${ROM_INCDIR}/lspg_steady/generator)
+
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)

@@ -20,7 +20,6 @@ struct EvaluateFomRhsDefault{
     fomObj.residual(*yFOM.data(), *rhs.data(), t);
   }
 
-
   template <
     typename fom_t,
     typename state_w_t,
@@ -32,6 +31,33 @@ struct EvaluateFomRhsDefault{
     -> decltype(fomObj.residual(*yFOM.data(), t))
   {
     return fomObj.residual(*yFOM.data(), t);
+  }
+};
+
+
+struct EvaluateFomRhsSteadyDefault{
+
+  template <
+    typename fom_t,
+    typename state_w_t,
+    typename rhs_w_t
+    >
+  void evaluate(const fom_t	& fomObj,
+		const state_w_t & yFOM,
+		rhs_w_t		& rhs) const
+  {
+    fomObj.residual(*yFOM.data(), *rhs.data());
+  }
+
+  template <
+    typename fom_t,
+    typename state_w_t
+    >
+  auto evaluate(const fom_t	& fomObj,
+		const state_w_t & yFOM) const
+    -> decltype(fomObj.residual(*yFOM.data()))
+  {
+    return fomObj.residual(*yFOM.data());
   }
 
 };

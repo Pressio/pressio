@@ -5,7 +5,7 @@
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
 #include "APPS_BURGERS1D"
-#include "../lspg_utils.hpp"
+#include "utils_tpetra.hpp"
 #include "../../../fom/fom_gold_states.hpp"
 
 int main(int argc, char *argv[]){

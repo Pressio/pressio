@@ -36,6 +36,37 @@ struct ApplyFomJacobianDefault{
   {
     fomObj.applyJacobian(*yFOM.data(), *B.data(), *out.data(), t);
   }
+};
+
+
+struct ApplyFomJacobianSteadyDefault{
+
+  template <
+    typename fom_t,
+    typename state_w_t,
+    typename operand_w_t
+    >
+  auto evaluate(const fom_t	  & fomObj,
+		const state_w_t   & yFOM,
+		const operand_w_t & B) const
+    -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data()))
+  {
+    return fomObj.applyJacobian(*yFOM.data(), *B.data());
+  }
+
+  template <
+    typename fom_t,
+    typename state_w_t,
+    typename operand_w_t,
+    typename result_t
+    >
+  void evaluate(const fom_t	  & fomObj,
+		const state_w_t	  & yFOM,
+		const operand_w_t & B,
+		result_t	  & out) const
+  {
+    fomObj.applyJacobian(*yFOM.data(), *B.data(), *out.data());
+  }
 
 };
 

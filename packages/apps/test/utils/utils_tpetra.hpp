@@ -1,6 +1,6 @@
 
-#if not defined APPS_LSPG_UTILS_TPETRA_HPP_
-#define APPS_LSPG_UTILS_TPETRA_HPP_
+#if not defined APPS_UTILS_TPETRA_HPP_
+#define APPS_UTILS_TPETRA_HPP_
 
 #include "CORE_ALL"
 #include "SVD_BASIC"
