@@ -49,13 +49,6 @@ int main(int argc, char *argv[]){
   assert(Comm.NumProc() == 2);
 
   //--------------------------------------------------
-  // Initialize Epetra Types
-  //--------------------------------------------------
-  std::shared_ptr<Epetra_Vector> f;
-  std::shared_ptr<Epetra_Vector> u;
-  std::shared_ptr<Epetra_CrsMatrix> A;
-
-  //--------------------------------------------------
   // Parameters, Setup, and Boundary Conditions
   //--------------------------------------------------
   //Parameters: diffusion, advection, expf
