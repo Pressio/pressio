@@ -26,9 +26,9 @@ int main(int argc, char *argv[]){
   //Parameters: diffusion, advection, expf
   std::vector<scalar_t> mu{-1, 1, 1};
   //1D spatial domain, xL, xR
-  std::vector<scalar_t> domain{0, 2.0, 0.1};
+  std::vector<scalar_t> domain{0, 2.0, 0.01};
   //Left and right boundary conditions
-  std::vector<scalar_t> bc1D{0,1};
+  std::vector<scalar_t> bc1D{0,0.25};
   //Create object
   fom_t  appObj(Comm, mu, domain, bc1D);
   appObj.setup();
@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
   // number of degrees of freedom
   const int numDof = appObj.getNumGlobalNodes();
   // 21 because the app also accounts for left and right BC as unknown
-  assert(numDof == 21);
+  //assert(numDof == 21);
 
   // read the jacobian of the decoder
   constexpr int romSize = 5;
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]){
   decoder_jac_t phi =
     rompp::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
   					 Comm, appObj.getDataMap());
-  // print to terminal the basis
-  //phi.data()->Print(std::cout);
+  //print to terminal the basis
+  phi.data()->Print(std::cout);
 
   // this is my reference state
   auto y0n = appObj.getState();

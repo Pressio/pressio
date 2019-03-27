@@ -7,4 +7,4 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   #PASS_REGULAR_EXPRESSION "Hello World"
   )
 
-configure_file(../../basis/fake_basis_row20_col5.txt basis.txt COPYONLY)
+configure_file(../../basis/basis_row199_col5.txt basis.txt COPYONLY)
