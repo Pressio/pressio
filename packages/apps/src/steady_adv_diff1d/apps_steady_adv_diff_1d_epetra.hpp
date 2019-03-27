@@ -37,43 +37,34 @@ public:
 
   ~SteadyAdvDiff1dEpetra() = default;
 
-  Epetra_Map const & getDataMap(){ return *contigMap; };
+  Epetra_Map const & getDataMap(){ return *contigMap_; };
 
 public:
+  void createMap();
+  void setup();
   rcp<nativeMatrix> calculateLinearSystem();
   rcp<nativeVec> calculateForcingTerm();
-  rcp<nativeVec> createStates();
-  void solveForStates(rcp<nativeMatrix> A, rcp<nativeVec> u, rcp<nativeVec> f);
-  rcp<nativeVec> calcManufacturedForcing();
+  rcp<nativeVec> getStates();
+  void calculateStates(rcp<nativeMatrix> A, rcp<nativeVec> u, 
+		       rcp<nativeVec> f);
+  rcp<nativeVec> calculateManufacturedForcing();
   void printStates(rcp<nativeVec> u);
   void compare2manufacturedStates(rcp<nativeVec> uapprox);
   double verifyImplementation(rcp<nativeMatrix> A);
 
 protected:
   Epetra_MpiComm * comm_;
-  rcp<Epetra_Map> contigMap;
-  std::vector<scalar_type> domain_;
   std::vector<scalar_type> mu_;
+  std::vector<scalar_type> domain_;
   std::vector<scalar_type> bc1D_;
-
-  /* please use underscore _ to append to each data member of a class.
-   * this allows one to immediately see if a variable is a data member or not.
-   * there are different conventions, but in rompp we use underscore.
-   */
-
-  rcp<nativeMatrix> A;
-  int numGlobalNodes;
-  int *MyGlobalNodes;
-  int nodesPerProc;
-  int *NumNz;
-  double *Values;
-  int *Indices;
-  double x_i;
-  double two;
-  double one;
-  int NumEntries;
-  rcp<nativeVec> state_u;
-  rcp<nativeVec> f;
+  rcp<Epetra_Map> contigMap_;
+  rcp<nativeMatrix> A_;
+  int numGlobalNodes_;
+  int *MyGlobalNodes_;
+  int nodesPerProc_;
+  double x_i_;
+  rcp<nativeVec> u_;
+  rcp<nativeVec> f_;
 };
 
 }} //namespace rompp::apps
