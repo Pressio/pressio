@@ -32,6 +32,10 @@ void SteadyAdvDiff1dEpetra::setup(){
   //-----------------------------------------------------------------------
   // Create the matrix and vectors to later fill
   //-----------------------------------------------------------------------
+  x_ = std::make_shared<nativeVec>(*contigMap_);
+  for (int i = 0; i<nodesPerProc_; i++)
+    (*x_)[i] = domain_[0]+domain_[2]*MyGlobalNodes_[i];
+
   //Create forcing term
   f_ = std::make_shared<nativeVec>(*contigMap_);
   //Create A
@@ -40,8 +44,8 @@ void SteadyAdvDiff1dEpetra::setup(){
   u_ = std::make_shared<nativeVec>(*contigMap_);
 }
 
-std::shared_ptr<Epetra_CrsMatrix>
-SteadyAdvDiff1dEpetra::calculateLinearSystem(){
+
+void SteadyAdvDiff1dEpetra::calculateLinearSystem(){
   //-----------------------------------------------------------------------
   //Calculate the components of A
   //-----------------------------------------------------------------------
@@ -77,121 +81,60 @@ SteadyAdvDiff1dEpetra::calculateLinearSystem(){
   }
   //Finalize A Matrix Structure
   A_->FillComplete();
-
-  return A_;
 }
 
-std::shared_ptr<Epetra_Vector>
-SteadyAdvDiff1dEpetra::calculateForcingTerm(){
-  //-----------------------------------------------------------------------
-  //Create Epetra Vector for the forcing term
-  //-----------------------------------------------------------------------
-  //Iterate through all the nodes for each processor
+
+void SteadyAdvDiff1dEpetra::calculateForcingTerm(){
+  /* forcing (3x + x^2) * exp(gamma * x) */
   for (int i = 0; i<nodesPerProc_; i++){
+    auto x = (*x_)[i];
     if (MyGlobalNodes_[i]> 0 && MyGlobalNodes_[i]<numGlobalNodes_-1){
-      x_i_ = domain_[0]+domain_[2]*MyGlobalNodes_[i]; //calculate x_i;
-      (*f_)[i] = exp(mu_[2]*x_i_)*(3*x_i_+x_i_*x_i_); //has third parameter
-    }else if (MyGlobalNodes_[i]==0){
-      (*f_)[i] = bc1D_[0];                      //boundary condiitons Left
-    }else if (MyGlobalNodes_[i]==numGlobalNodes_-1){
-      (*f_)[i] = bc1D_[1];                      //boundary conditions Right
+      (*f_)[i] = std::exp(domain_[2]*x)*(3.*x + x*x);
+    }
+    else if (MyGlobalNodes_[i]==0){
+      (*f_)[i] = bc1D_[0];
+    }
+    else if (MyGlobalNodes_[i]==numGlobalNodes_-1){
+      (*f_)[i] = bc1D_[1];
     }
   }
-
-  return f_;
 }
 
-std::shared_ptr<Epetra_Vector> SteadyAdvDiff1dEpetra::getStates(){
-  //-----------------------------------------------------------------------
-  // Empty state Epetra_Vector for solver
-  //-----------------------------------------------------------------------
+
+std::shared_ptr<Epetra_Vector> SteadyAdvDiff1dEpetra::getState(){
   return u_;
 }
 
-void SteadyAdvDiff1dEpetra::calculateStates(rcp<nativeMatrix> A,
-					    rcp<nativeVec> u,
-					    rcp<nativeVec> f){
+std::shared_ptr<Epetra_Vector> SteadyAdvDiff1dEpetra::getGrid(){
+  return x_;
+}
+
+void SteadyAdvDiff1dEpetra::solve(){
   //-----------------------------------------------------------------------
   // Set, Create, and Solve Linear System
   //-----------------------------------------------------------------------
-  Epetra_LinearProblem Problem(A.get(), u.get(), f.get());
+  Epetra_LinearProblem Problem(A_.get(), u_.get(), f_.get());
   //Create AztecOO object
   AztecOO Solver(Problem);
-  Solver.Iterate(100, 1E-6);
+  Solver.Iterate(200, 1e-12);
   Solver.NumIters();
   Solver.TrueResidual();
 }
 
-void SteadyAdvDiff1dEpetra::printStates(rcp<nativeVec> u){
+void SteadyAdvDiff1dEpetra::printState(){
   //-----------------------------------------------------------------------
   // Print x and states
   //-----------------------------------------------------------------------
-  for (int i = 0; i<nodesPerProc_; i++){
-    x_i_ = domain_[0]+domain_[2]*MyGlobalNodes_[i];
-    std::cout<<"x("<<MyGlobalNodes_[i]<<"):\t" << x_i_ <<"\t"
-	     <<"u("<<MyGlobalNodes_[i]<<"):\t" << (*u)[i] <<std::endl;
-  }
-}
+  /* FR: careful with prints, because with MPI things can get messy and
+   * prints are not assured to be in order that you think.
+   * You can use print methods already implemented in objects like Epetra_Vector
+   * where they already made sure prints to work with MPI */
 
-std::shared_ptr<Epetra_Vector>
-SteadyAdvDiff1dEpetra::calculateManufacturedForcing(){
-  //-----------------------------------------------------------------------
-  //Create Epetra Vector for the forcing term
-  //-----------------------------------------------------------------------
-  f_ = std::make_shared<nativeVec>(*contigMap_);
-  double dLen = domain_[1]-domain_[0];
-  //Iterate through all the nodes for each processor
-  for (int i = 0; i<nodesPerProc_; i++){
-    if (MyGlobalNodes_[i]> 0 && MyGlobalNodes_[i]<numGlobalNodes_-1){
-      x_i_ = domain_[0]+domain_[2]*MyGlobalNodes_[i]; //calculate x_i;
-      (*f_)[i] = mu_[0]*4*pow(M_PI,2)/pow(dLen,2)*
-	cos(2*M_PI*(x_i_-domain_[0])/dLen)+
-	mu_[1]*2.0*M_PI/dLen*sin(2*M_PI*(x_i_-domain_[0])/dLen);
-    }else if (MyGlobalNodes_[i]==0){
-      (*f_)[i] = 0;                           //boundary condiitons Left
-    }else if (MyGlobalNodes_[i]==numGlobalNodes_-1){
-      (*f_)[i] = 0;                           //boundary conditions Right
-    }
-  }
-  return f_;
-}
-
-void
-SteadyAdvDiff1dEpetra::compare2manufacturedStates(rcp<nativeVec> uapprox){
-  //-----------------------------------------------------------------------
-  //Compare the manufactured state to the discretized manufactured solution
-  //-----------------------------------------------------------------------
-  scalar_type uManu_i;
-  for(int i=0; i<nodesPerProc_; i++){
-    x_i_ = domain_[0]+domain_[2]*MyGlobalNodes_[i]; //calculate x_i;
-    uManu_i = 1-cos(2*M_PI*(x_i_-domain_[0])/(domain_[1]-domain_[0]));
-    if (x_i_> domain_[0] && x_i_ < domain_[1]){
-      (*uapprox)[i] = fabs((*uapprox)[i]-uManu_i)/uManu_i;
-    }else{
-      (*uapprox)[i] = 0;
-    }
-  }
-}
-
-double SteadyAdvDiff1dEpetra::verifyImplementation(rcp<nativeMatrix> A){
-  //-----------------------------------------------------------------------
-  // Verify that approximate states match with the manufactured solution
-  //-----------------------------------------------------------------------
-  scalar_type norm = 0.;
-  std::shared_ptr<Epetra_Vector> fManu;
-  std::shared_ptr<Epetra_Vector> uManuApprox;
-
-  fManu = calculateManufacturedForcing();  //Calculate manu forcing term
-  uManuApprox = getStates();               //Get empty states
-  calculateStates(A, uManuApprox, fManu);  //Solve for the manu states
-  compare2manufacturedStates(uManuApprox); //Compare approx states to manu
-
-  //-----------------------------------------------------------------------
-  // Compare error between calculated states and manufactured solutions
-  //-----------------------------------------------------------------------
-  (*uManuApprox).Norm2(&norm);             // L2 norm of the error
-
-  return norm;
+  u_->Print(std::cout);
+  // for (int i = 0; i<nodesPerProc_; i++){
+  //   std::cout<<"x("<<MyGlobalNodes_[i]<<"):\t" << (*x_)[i] <<"\t"
+  // 	     <<"u("<<MyGlobalNodes_[i]<<"):\t" << (*u_)[i] <<std::endl;
+  // }
 }
 
 }} //namespace rompp::apps

@@ -13,6 +13,7 @@
 #include "Epetra_Time.h"
 #include "AztecOO_config.h"
 #include "AztecOO.h"
+#include <cmath>
 
 namespace rompp{ namespace apps{
 
@@ -22,8 +23,8 @@ protected:
   template<typename T> using rcp = std::shared_ptr<T>;
   using nativeMatrix	= Epetra_CrsMatrix;
 
-  /* these types exposed because need to be detected */
 public:
+  /* these types exposed because need to be detected */
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
   using residual_type	= state_type;
@@ -37,33 +38,30 @@ public:
 
   ~SteadyAdvDiff1dEpetra() = default;
 
-  Epetra_Map const & getDataMap(){ return *contigMap_; };
-
 public:
+
   void createMap();
+  Epetra_Map const & getDataMap(){ return *contigMap_; };
   void setup();
-  rcp<nativeMatrix> calculateLinearSystem();
-  rcp<nativeVec> calculateForcingTerm();
-  rcp<nativeVec> getStates();
-  void calculateStates(rcp<nativeMatrix> A,
-		       rcp<nativeVec> u,
-		       rcp<nativeVec> f);
-  rcp<nativeVec> calculateManufacturedForcing();
-  void printStates(rcp<nativeVec> u);
-  void compare2manufacturedStates(rcp<nativeVec> uapprox);
-  double verifyImplementation(rcp<nativeMatrix> A);
+  void calculateLinearSystem();
+  void calculateForcingTerm();
+  rcp<nativeVec> getState();
+  rcp<nativeVec> getGrid();
+  void solve();
+  void printState();
 
 protected:
   Epetra_MpiComm & comm_;
   std::vector<scalar_type> mu_;
   std::vector<scalar_type> domain_;
   std::vector<scalar_type> bc1D_;
+
   rcp<Epetra_Map> contigMap_;
   rcp<nativeMatrix> A_;
   int numGlobalNodes_;
   int *MyGlobalNodes_;
   int nodesPerProc_;
-  double x_i_;
+  rcp<nativeVec> x_;
   rcp<nativeVec> u_;
   rcp<nativeVec> f_;
 };
