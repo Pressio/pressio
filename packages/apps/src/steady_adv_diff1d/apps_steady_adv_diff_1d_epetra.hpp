@@ -29,10 +29,10 @@ public:
   using residual_type	= state_type;
 
 public:
-  SteadyAdvDiff1dEpetra(Epetra_MpiComm * comm,
-			std::vector<scalar_type> mu,
-			std::vector<scalar_type> domain,
-			std::vector<scalar_type> bc1D)
+  SteadyAdvDiff1dEpetra(Epetra_MpiComm & comm,
+			std::vector<scalar_type> & mu,
+			std::vector<scalar_type> & domain,
+			std::vector<scalar_type> & bc1D)
     : comm_(comm), mu_(mu), domain_(domain), bc1D_(bc1D){}
 
   ~SteadyAdvDiff1dEpetra() = default;
@@ -45,7 +45,8 @@ public:
   rcp<nativeMatrix> calculateLinearSystem();
   rcp<nativeVec> calculateForcingTerm();
   rcp<nativeVec> getStates();
-  void calculateStates(rcp<nativeMatrix> A, rcp<nativeVec> u, 
+  void calculateStates(rcp<nativeMatrix> A,
+		       rcp<nativeVec> u,
 		       rcp<nativeVec> f);
   rcp<nativeVec> calculateManufacturedForcing();
   void printStates(rcp<nativeVec> u);
@@ -53,7 +54,7 @@ public:
   double verifyImplementation(rcp<nativeMatrix> A);
 
 protected:
-  Epetra_MpiComm * comm_;
+  Epetra_MpiComm & comm_;
   std::vector<scalar_type> mu_;
   std::vector<scalar_type> domain_;
   std::vector<scalar_type> bc1D_;

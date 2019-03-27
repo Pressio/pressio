@@ -3,9 +3,8 @@
 
 int main(int argc, char *argv[]){
   using fom_t		= rompp::apps::SteadyAdvDiff1dEpetra;
-  //using scalar_t	= typename fom_t::scalar_type;
-  //using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  //using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;
+  using scalar_t	= typename fom_t::scalar_type;
+
   //---------------------------------------------------------------------------
   // MPI init
   //---------------------------------------------------------------------------
@@ -24,10 +23,10 @@ int main(int argc, char *argv[]){
   //---------------------------------------------------------------------------
   // Parameters, Setup, and Boundary Conditions
   //---------------------------------------------------------------------------
-  std::vector<double> mu({-1, 1, 1}); //Parameters: diffusion, advection, expf
-  std::vector<double> domain({0, 2, 0.05}); //1D spatial domain, xL, xR, dx
-  std::vector<double> bc1D({0,1});        //Left and right boundary conditions
-  fom_t  appObj(&Comm, mu, domain, bc1D); //Create object
+  std::vector<scalar_t> mu({-1, 1, 1}); //Parameters: diffusion, advection, expf
+  std::vector<scalar_t> domain({0, 2, 0.05}); //1D spatial domain, xL, xR, dx
+  std::vector<scalar_t> bc1D({0,1});        //Left and right boundary conditions
+  fom_t  appObj(Comm, mu, domain, bc1D); //Create object
 
   //---------------------------------------------------------------------------
   //Solve for the states
@@ -43,12 +42,12 @@ int main(int argc, char *argv[]){
   //---------------------------------------------------------------------------
   // Verify Discretization with Manufactured Solution
   //---------------------------------------------------------------------------
-  domain[2] = 0.0001;
-  fom_t  manuFactured(&Comm, mu, domain, bc1D); //Create object
+  domain[2] = static_cast<scalar_t>(0.0001);
+  fom_t  manuFactured(Comm, mu, domain, bc1D); //Create object
   manuFactured.setup();
   A = manuFactured.calculateLinearSystem();
   //Verify that implementation of system is correct
-  double error = manuFactured.verifyImplementation(A);
+  auto error = manuFactured.verifyImplementation(A);
   assert(error <domain[2]); //Compare to the spatial step size
   std::cout << "L2 Error Manufactured Solution :" << error <<std::endl;
 
