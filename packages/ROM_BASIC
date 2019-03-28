@@ -10,6 +10,7 @@
 
 #include "rom/src/rom_data_fom_rhs.hpp"
 #include "rom/src/rom_data_fom_states.hpp"
+#include "rom/src/rom_reconstructor_fom_state.hpp"
 
 #include "rom/src/decoder/rom_decoder_base.hpp"
 #include "rom/src/decoder/rom_linear_decoder.hpp"
