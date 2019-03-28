@@ -80,7 +80,7 @@ struct GalerkinStepperObjectGenerator;
 template <
   typename type_generator_t,
   typename enable = void>
-struct LSPGStepperObjectGenerator;
+struct LSPGUnsteadyProblemGenerator;
 
 template <
   typename type_generator_t,

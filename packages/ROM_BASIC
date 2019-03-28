@@ -15,4 +15,7 @@
 #include "rom/src/decoder/rom_decoder_base.hpp"
 #include "rom/src/decoder/rom_linear_decoder.hpp"
 
+#include "rom/src/decorators/rom_preconditioned_decorator.hpp"
+#include "rom/src/decorators/rom_mask_decorator.hpp"
+
 #endif

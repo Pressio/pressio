@@ -1,24 +1,24 @@
 
-#ifndef ROM_LSPG_STEADY_TYPE_GENERATOR_DEFAULT_HPP_
-#define ROM_LSPG_STEADY_TYPE_GENERATOR_DEFAULT_HPP_
+#ifndef ROM_LSPG_TYPE_GENERATOR_DEFAULT_HPP_
+#define ROM_LSPG_TYPE_GENERATOR_DEFAULT_HPP_
 
-#include "rom_lspg_type_generator_common.hpp"
-//#include "../rom_lspg_steady_system.hpp"
+#include "../../rom_lspg_type_generator_common.hpp"
 
 namespace rompp{ namespace rom{
 
 template <
   typename fom_type,
+  ode::ImplicitEnum odeName,
   typename decoder_type,
   typename lspg_state_type
   >
-struct DefaultLSPGSteadyTypeGenerator
-  : LSPGSteadyCommonTypes<
-  fom_type, decoder_type, lspg_state_type
+struct DefaultLSPGTypeGenerator
+  : LSPGCommonTypes<
+  fom_type, decoder_type, lspg_state_type, odeName
   >{
 
-  using base_t = LSPGSteadyCommonTypes
-    <fom_type, decoder_type, lspg_state_type>;
+  using base_t = LSPGCommonTypes
+    <fom_type, decoder_type, lspg_state_type, odeName>;
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
@@ -41,28 +41,36 @@ struct DefaultLSPGSteadyTypeGenerator
    * For now, set lspg_matrix_t to be of same type as decoder_jac_t
    * if phi is MV<>, then lspg_matrix_t = core::MV<>
    * if phi is Matrix<>, then we have core::Matrix<>
-   * not a bad assumption since all matrices are left-applied to decoder_jac_t
+   * not bad assumption since all matrices are left-applied to decoder_jac_t
    */
   using lspg_matrix_t		= decoder_jac_t;
 
   // policy for evaluating the rhs of the fom object
-  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsSteadyDefault;
+  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsDefault;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above
-  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianSteadyDefault;
+  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault;
 
-  // policy defining how to compute the LSPG residual
-  using lspg_residual_policy_t	= ::rompp::rom::LSPGSteadyResidualPolicy<
+  // policy defining how to compute the LSPG time-discrete residual
+  using lspg_residual_policy_t	= ::rompp::rom::LSPGResidualPolicy<
 	fom_states_data, fom_rhs_data, fom_eval_rhs_policy_t>;
 
-  // policy defining how to compute the LSPG jacobian
-  using lspg_jacobian_policy_t	= ::rompp::rom::LSPGSteadyJacobianPolicy<
+  // policy defining how to compute the LSPG time-discrete jacobian
+  using lspg_jacobian_policy_t	= ::rompp::rom::LSPGJacobianPolicy<
     fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t>;
 
-  // declare type of system
-  using lspg_system_t		= ::rompp::rom::LSPGSteadySystem<
-    fom_t, lspg_state_type, lspg_residual_t, lspg_matrix_t,
+  using aux_stepper_t = typename auxStepperHelper<
+    odeName, lspg_state_type,
+    lspg_residual_t, lspg_matrix_t,
+    fom_type, lspg_residual_policy_t,
+    lspg_jacobian_policy_t>::type;
+
+  // declare type of stepper object
+  using rom_stepper_t		= ::rompp::ode::ImplicitStepper<
+    odeName, lspg_state_type,
+    lspg_residual_t, lspg_matrix_t,
+    fom_type, aux_stepper_t,
     lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class

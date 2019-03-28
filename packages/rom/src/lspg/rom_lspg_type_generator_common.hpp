@@ -2,19 +2,21 @@
 #ifndef ROM_LSPG_TYPE_GENERATOR_COMMON_HPP_
 #define ROM_LSPG_TYPE_GENERATOR_COMMON_HPP_
 
-#include "../../rom_ConfigDefs.hpp"
-#include "../../rom_forward_declarations.hpp"
-#include "../../rom_data_fom_rhs.hpp"
-#include "../../rom_data_fom_states.hpp"
-#include "../../rom_reconstructor_fom_state.hpp"
-#include "../../policies/rom_evaluate_fom_rhs_policy.hpp"
-#include "../../policies/rom_apply_fom_jacobian_policy.hpp"
-#include "../../../../ode/src/ode_forward_declarations.hpp"
+#include "../rom_ConfigDefs.hpp"
+#include "../rom_forward_declarations.hpp"
+#include "../rom_data_fom_rhs.hpp"
+#include "../rom_data_fom_states.hpp"
+#include "../rom_reconstructor_fom_state.hpp"
+#include "../policies/rom_evaluate_fom_rhs_policy.hpp"
+#include "../policies/rom_apply_fom_jacobian_policy.hpp"
+#include "../../../ode/src/ode_forward_declarations.hpp"
 
 namespace rompp{ namespace rom{
 
 template <ode::ImplicitEnum odeName>
-struct statesStorageCapacityHelper;
+struct statesStorageCapacityHelper{
+  static constexpr int maxAuxStates_ = 1;
+};
 
 template <>
 struct statesStorageCapacityHelper<ode::ImplicitEnum::Euler>{
@@ -60,9 +62,9 @@ struct auxStepperHelper<
 
 template <
   typename fom_type,
-  ode::ImplicitEnum odeName,
   typename decoder_type,
-  typename lspg_state_type
+  typename lspg_state_type,
+  ode::ImplicitEnum odeName = ode::ImplicitEnum::Undefined
   >
 struct LSPGCommonTypes{
   // these are native types of the full-order model (fom)

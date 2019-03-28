@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
     // define LSPG type
     using lspg_problem_types = rompp::rom::DefaultLSPGTypeGenerator<
       fom_t, rompp::ode::ImplicitEnum::Euler, decoder_t, lspg_state_t>;
-    rompp::rom::LSPGStepperObjectGenerator<lspg_problem_types> lspgProblem
+    rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem
       (appobj, yRef, decoderObj, yROM, t0);
 
     using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;

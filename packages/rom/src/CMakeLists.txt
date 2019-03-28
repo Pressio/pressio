@@ -20,15 +20,17 @@ FILE(GLOB rom_policies_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 
 FILE(GLOB rom_galerkin_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/galerkin/*.hpp")
+
 FILE(GLOB rom_lspg_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/lspg/*.hpp")
-FILE(GLOB rom_lspg_generator_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/lspg/generator/*.hpp")
-
+FILE(GLOB rom_lspg_unsteady_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/lspg/unsteady/*.hpp")
+FILE(GLOB rom_lspg_unsteady_generator_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/lspg/unsteady/generator/*.hpp")
 FILE(GLOB rom_lspg_steady_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/lspg_steady/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/lspg/steady/*.hpp")
 FILE(GLOB rom_lspg_steady_generator_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/lspg_steady/generator/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/lspg/steady/generator/*.hpp")
 
 # sources
 FILE(GLOB rom_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -59,10 +61,10 @@ INSTALL(FILES ${rom_policies_HEADERS} DESTINATION ${ROM_INCDIR}/policies)
 INSTALL(FILES ${rom_galerkin_HEADERS} DESTINATION ${ROM_INCDIR}/galerkin)
 
 INSTALL(FILES ${rom_lspg_HEADERS} DESTINATION ${ROM_INCDIR}/lspg)
-INSTALL(FILES ${rom_lspg_generator_HEADERS} DESTINATION ${ROM_INCDIR}/lspg/generator)
-
-INSTALL(FILES ${rom_lspg_steady_HEADERS} DESTINATION ${ROM_INCDIR}/lspg_steady)
-INSTALL(FILES ${rom_lspg_steady_generator_HEADERS} DESTINATION ${ROM_INCDIR}/lspg_steady/generator)
+INSTALL(FILES ${rom_lspg_unsteady_HEADERS} DESTINATION ${ROM_INCDIR}/lspg/unsteady)
+INSTALL(FILES ${rom_lspg_unsteady_generator_HEADERS} DESTINATION ${ROM_INCDIR}/lspg/unsteady/generator)
+INSTALL(FILES ${rom_lspg_steady_HEADERS} DESTINATION ${ROM_INCDIR}/lspg/steady)
+INSTALL(FILES ${rom_lspg_steady_generator_HEADERS} DESTINATION ${ROM_INCDIR}/lspg/steady/generator)
 
 
 #----------------------------------------------------------------

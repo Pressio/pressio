@@ -2,7 +2,7 @@
 #ifndef ROM_LSPG_TYPE_GENERATOR_MASKED_HPP_
 #define ROM_LSPG_TYPE_GENERATOR_MASKED_HPP_
 
-#include "rom_lspg_type_generator_common.hpp"
+#include "../../rom_lspg_type_generator_common.hpp"
 
 namespace rompp{ namespace rom{
 
@@ -12,11 +12,11 @@ template <typename fom_type,
 	  typename lspg_state_type>
 struct MaskedLSPGTypeGenerator
   : LSPGCommonTypes<
-  fom_type, odeName, decoder_type, lspg_state_type
+  fom_type, decoder_type, lspg_state_type, odeName
   >{
 
   using base_t = LSPGCommonTypes<
-    fom_type, odeName, decoder_type, lspg_state_type>;
+    fom_type, decoder_type, lspg_state_type, odeName>;
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;

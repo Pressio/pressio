@@ -1,6 +1,6 @@
 
-#ifndef ROM_LSPG_STEPPER_GENERATORS_HPP_
-#define ROM_LSPG_STEPPER_GENERATORS_HPP_
+#ifndef ROMPP_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+#define ROMPP_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
 
 #include "rom_lspg_type_generator_default.hpp"
 #include "rom_lspg_type_generator_preconditioned.hpp"
@@ -9,7 +9,7 @@
 namespace rompp{ namespace rom{
 
 template <typename lspg_problem>
-struct LSPGStepperObjectGenerator<
+struct LSPGUnsteadyProblemGenerator<
   lspg_problem> : lspg_problem {
 
   using typename lspg_problem::fom_t;
@@ -65,7 +65,7 @@ public:
      std::is_same<_fom_t, fom_t>::value
      > * = nullptr
   >
-  LSPGStepperObjectGenerator(const _fom_t	& appObj,
+  LSPGUnsteadyProblemGenerator(const _fom_t	& appObj,
 			     const fom_state_t	& yFomRefNative,
 			     decoder_t		& decoder,
 			     lspg_state_t	& yROM,
@@ -95,7 +95,7 @@ public:
       std::is_same<_fom_t, fom_t>::value
       > * = nullptr
     >
-  LSPGStepperObjectGenerator(const _fom_t	& appObj,
+  LSPGUnsteadyProblemGenerator(const _fom_t	& appObj,
   			     const fom_state_t	& yFomRefNative,
   			     decoder_t		& decoder,
   			     lspg_state_t	& yROM,
