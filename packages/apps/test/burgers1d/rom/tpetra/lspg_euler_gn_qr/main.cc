@@ -45,10 +45,11 @@ int main(int argc, char *argv[]){
 					   Comm, appobj.getDataMap());
     const int numBasis = phi.globalNumVectors();
     assert( numBasis == romSize );
-
-    // this is my reference state
-    auto & y0n = appobj.getInitialState();
+    // create decoder obj
     decoder_t decoderObj(phi);
+
+    // for this problem, my reference state = initial state
+    auto & yRef = appobj.getInitialState();
 
     // define ROM state and initialize to zero (this has to be done)
     lspg_state_t yROM(romSize);
@@ -57,8 +58,8 @@ int main(int argc, char *argv[]){
     // define LSPG type
     using lspg_problem_types = rompp::rom::DefaultLSPGTypeGenerator<
       fom_t, rompp::ode::ImplicitEnum::Euler, decoder_t, lspg_state_t>;
-    rompp::rom::LSPGStepperObjectGenerator<lspg_problem_types> lspgGener
-      (appobj, y0n, decoderObj, yROM, t0);
+    rompp::rom::LSPGStepperObjectGenerator<lspg_problem_types> lspgProblem
+      (appobj, yRef, decoderObj, yROM, t0);
 
     using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;
     using rom_jac_t      = typename lspg_problem_types::lspg_matrix_t;
@@ -69,27 +70,24 @@ int main(int argc, char *argv[]){
     using converged_when_t = rompp::solvers::iterative::default_convergence;
     using gnsolver_t  = rompp::solvers::iterative::GaussNewtonQR<
            scalar_t, qr_type, converged_when_t, rom_stepper_t>;
-    gnsolver_t solver(lspgGener.stepperObj_, yROM);
+    gnsolver_t solver(lspgProblem.stepperObj_, yROM);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(200);
 
     // integrate in time
-    rompp::ode::integrateNSteps(lspgGener.stepperObj_, yROM, 0.0, dt, 10, solver);
+    rompp::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    using fom_state_w_t = typename lspg_problem_types::fom_state_w_t;
-    fom_state_w_t yRf(y0n);
-    decoderObj.applyMapping(yROM, yRf);
-    yRf += lspgGener.y0Fom_;
-    auto yRf_v = yRf.data()->getData();
+    auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
+    auto yFF_v = yFomFinal.data()->getData();
 
     // this is a reproducing ROM test, so the final reconstructed state
     // has to match the FOM solution obtained with euler, same time-step, for 10 steps
     int shift = (rank==0) ? 0 : 10;
-    const int myn = yRf.getDataMap().getNodeNumElements();
+    const int myn = yFomFinal.getDataMap().getNodeNumElements();
     const auto trueY = rompp::apps::test::Burg1DtrueImpEulerN20t010;
     for (auto i=0; i<myn; i++)
-      assert(std::abs(yRf_v[i] - trueY[i+shift]) < 1e-10 );
+      assert(std::abs(yFF_v[i] - trueY[i+shift]) < 1e-10 );
 
   }//tpetra scope
 

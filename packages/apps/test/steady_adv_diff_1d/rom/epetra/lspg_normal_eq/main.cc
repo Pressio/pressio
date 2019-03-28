@@ -46,10 +46,11 @@ int main(int argc, char *argv[]){
   					 Comm, appObj.getDataMap());
   //print to terminal the basis
   phi.data()->Print(std::cout);
-
-  // this is my reference state
-  auto y0n = appObj.getState();
+  // decoder object
   decoder_t decoderObj(phi);
+
+  // my reference state
+  auto yRef = appObj.getState();
 
   // define ROM state
   lspg_state_t yROM(romSize);
@@ -60,10 +61,7 @@ int main(int argc, char *argv[]){
   using lspg_problem_type = rompp::rom::DefaultLSPGSteadyTypeGenerator<
     fom_t, decoder_t, lspg_state_t>;
   rompp::rom::LSPGSteadyProblemGenerator<lspg_problem_type> lspgProblem(
-      appObj, *y0n, decoderObj, yROM);
-
-  // get the type of the rom system
-  using rom_system_t = typename lspg_problem_type::rom_system_t;
+      appObj, *yRef, decoderObj, yROM);
 
   // GaussNewton solver
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
@@ -72,6 +70,7 @@ int main(int argc, char *argv[]){
   using hessian_t	 = rompp::core::Matrix<eig_dyn_mat>;
   using solver_tag	 = rompp::solvers::linear::LSCG;
   using converged_when_t = rompp::solvers::iterative::default_convergence;
+  using rom_system_t = typename lspg_problem_type::lspg_system_t;
   using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
     scalar_t, solver_tag, rompp::solvers::EigenIterative,
     converged_when_t, rom_system_t, hessian_t>;
@@ -81,11 +80,13 @@ int main(int argc, char *argv[]){
   solver.solve(lspgProblem.systemObj_, yROM);
 
   // compute the fom corresponding to our rom final state
-  using fom_state_w_t = typename lspg_problem_type::fom_state_w_t;
-  fom_state_w_t yRf(*y0n);
-  decoderObj.applyMapping(yROM, yRf);
-  yRf += lspgProblem.y0Fom_;
-  yRf.data()->Print(std::cout << std::setprecision(14));
+  auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
+  yFomFinal.data()->Print(std::cout << std::setprecision(14));
+  // using fom_state_w_t = typename lspg_problem_type::fom_state_w_t;
+  // fom_state_w_t yRf(*y0n);
+  // decoderObj.applyMapping(yROM, yRf);
+  // yRf += lspgProblem.y0Fom_;
+
 
   // /* if there is a reproducing test we can do, let's do it and we can
   //  * compare with the FOM solution.

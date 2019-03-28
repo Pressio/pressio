@@ -34,10 +34,11 @@ int main(int argc, char *argv[]){
     rompp::apps::test::eigen::readBasis("basis.txt", romSize, numCell);
   const int numBasis = phi.numVectors();
   assert( numBasis == romSize );
-
-  // this is my reference state
-  auto & y0n = appobj.getInitialState();
+  // create decoder obj
   decoder_t decoderObj(phi);
+
+  // for this problem, my reference state = initial state
+  auto & yRef = appobj.getInitialState();
 
   // define ROM state
   lspg_state_t yROM(romSize);
@@ -47,8 +48,8 @@ int main(int argc, char *argv[]){
   // define LSPG type
   using lspg_problem_types = rompp::rom::DefaultLSPGTypeGenerator<
     fom_t, rompp::ode::ImplicitEnum::BDF2, decoder_t, lspg_state_t>;
-  rompp::rom::LSPGStepperObjectGenerator<lspg_problem_types> lspgGener(
-      appobj, y0n, decoderObj, yROM, t0);
+  rompp::rom::LSPGStepperObjectGenerator<lspg_problem_types> lspgProblem(
+      appobj, yRef, decoderObj, yROM, t0);
 
   using rom_residual_t = typename lspg_problem_types::lspg_residual_t;
   using rom_jac_t      = typename lspg_problem_types::lspg_matrix_t;
@@ -63,25 +64,21 @@ int main(int argc, char *argv[]){
   using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
     scalar_t, solver_tag, rompp::solvers::EigenIterative,
     converged_when_t, void, hessian_t, lspg_state_t, rom_residual_t, rom_jac_t>;
-  gnsolver_t solver(lspgGener.stepperObj_, yROM);
+  gnsolver_t solver(lspgProblem.stepperObj_, yROM);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(200);
 
   // integrate in time
-  rompp::ode::integrateNSteps(lspgGener.stepperObj_, yROM, 0.0, dt, 10, solver);
+  rompp::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
-  using fom_state_w_t = typename lspg_problem_types::fom_state_w_t;
-  fom_state_w_t yRf(y0n);
-  decoderObj.applyMapping(yROM, yRf);
-  yRf += lspgGener.y0Fom_;
-  std::cout << *yRf.data() << std::endl;
+  auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
 
   // this is a reproducing ROM test, so the final reconstructed state
   // has to match the FOM solution obtained with bdf2, same time-step, for 10 steps
   const auto trueY = rompp::apps::test::Burg1DtrueImpBDF2N20t010;
-  for (auto i=0; i<yRf.size(); i++)
-    assert(std::abs(yRf[i] - trueY[i]) < 1e-10 );
+  for (auto i=0; i<yFomFinal.size(); i++)
+    assert(std::abs(yFomFinal[i] - trueY[i]) < 1e-10 );
 
   return 0;
 }
