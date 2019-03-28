@@ -23,10 +23,11 @@ struct MaskedLSPGTypeGenerator
   using typename base_t::fom_state_t;
   using typename base_t::fom_state_w_t;
   using typename base_t::fom_rhs_w_t;
-  using typename base_t::decoder_t;
-  using typename base_t::decoder_jac_t;
   using typename base_t::lspg_state_t;
   using typename base_t::lspg_residual_t;
+  using typename base_t::decoder_t;
+  using typename base_t::decoder_jac_t;
+  using typename base_t::fom_state_reconstr_t;
   using typename base_t::fom_states_data;
   using typename base_t::fom_rhs_data;
 
@@ -38,7 +39,7 @@ struct MaskedLSPGTypeGenerator
    * For now, set lspg_matrix_t to be of same type as decoder_jac_t
    * if phi is MV<>, then lspg_matrix_t = core::MV<>
    * if phi is Matrix<>, then we have core::Matrix<>
-   * not a bad assumption since all matrices are left-applied to decoder_jac_t
+   * not bad assumption since all matrices are left-applied to decoder_jac_t
    */
   using lspg_matrix_t		= decoder_jac_t;
 
@@ -61,7 +62,7 @@ struct MaskedLSPGTypeGenerator
   using lspg_jacobian_policy_t	=
     rom::decorator::Masked<
     rom::LSPGJacobianPolicy<
-      fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t
+      fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t
       >
     >;
 

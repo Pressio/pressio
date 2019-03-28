@@ -22,6 +22,10 @@ struct LinearDecoder
   using matrix_op_t = wrapper_operator_t<matrix_type>;
   using jacobian_t  = matrix_type;
 
+private:
+  friend base_t;
+  matrix_op_t phi_ = {};
+
 public:
   LinearDecoder() = delete;
   LinearDecoder(jacobian_t & matIn) : phi_(matIn){}
@@ -34,13 +38,9 @@ protected:
     phi_.apply(operandObj, resultObj);
   }
 
-  const jacobian_t & getJacobianRefImpl() const{
+  const jacobian_t & getReferenceToJacobianImpl() const{
     return phi_.getRefToOperator();
   }
-
-private:
-  friend base_t;
-  matrix_op_t phi_ = {};
 
 };//end class
 

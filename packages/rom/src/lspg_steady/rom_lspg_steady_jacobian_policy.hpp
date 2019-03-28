@@ -7,20 +7,22 @@
 
 namespace rompp{ namespace rom{
 
-template< typename fom_states_data,
-	  typename apply_jac_return_type,
-	  typename fom_apply_jac_policy>
+template<
+  typename fom_states_data,
+  typename apply_jac_return_type,
+  typename fom_apply_jac_policy,
+  typename decoder_type
+  >
 class LSPGSteadyJacobianPolicy
   : protected fom_states_data,
     protected fom_apply_jac_policy{
 
 protected:
-  using this_t = LSPGSteadyJacobianPolicy<fom_states_data,
-				    apply_jac_return_type,
-				    fom_apply_jac_policy>;
+  using this_t = LSPGSteadyJacobianPolicy<
+  fom_states_data, apply_jac_return_type,
+  fom_apply_jac_policy, decoder_type>;
 
   using fom_states_data::yFom_;
-  using fom_states_data::decoderObj_;
 
 public:
   static constexpr bool isResidualPolicy_ = false;
@@ -28,15 +30,20 @@ public:
 
 public:
   LSPGSteadyJacobianPolicy() = delete;
+
   ~LSPGSteadyJacobianPolicy() = default;
-  LSPGSteadyJacobianPolicy(const fom_states_data & fomStates,
-			   const fom_apply_jac_policy & applyJacFunctor,
-			   const apply_jac_return_type & applyJacObj)
+
+  LSPGSteadyJacobianPolicy(const fom_states_data	& fomStates,
+			   const fom_apply_jac_policy	& applyJacFunctor,
+			   const apply_jac_return_type	& applyJacObj,
+			   const decoder_type		& decoder)
     : fom_states_data(fomStates),
       fom_apply_jac_policy(applyJacFunctor),
-      JJ_(applyJacObj){}
+      JJ_(applyJacObj),
+      decoderObj_(decoder){}
 
 public:
+
   template <typename lspg_state_t,
 	    typename lspg_jac_t,
 	    typename app_t>
@@ -56,11 +63,11 @@ public:
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
-    const auto & basis = decoderObj_.getJacobianRef();
+    const auto & basis = decoderObj_.getReferenceToJacobian();
     fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ);
     timer->stop("fom apply jac");
 #else
-    const auto & basis = decoderObj_.getJacobianRef();
+    const auto & basis = decoderObj_.getReferenceToJacobian();
     fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ);
 #endif
 
@@ -78,7 +85,9 @@ public:
   }
 
 protected:
-  mutable apply_jac_return_t JJ_ = {};
+  mutable apply_jac_return_t JJ_   = {};
+  const decoder_type & decoderObj_ = {};
+
 };
 
 }}//end namespace rompp::rom

@@ -31,9 +31,9 @@ public:
 public:
   LSPGSteadyResidualPolicy() = delete;
   ~LSPGSteadyResidualPolicy() = default;
-  LSPGSteadyResidualPolicy(const fom_states_data & fomStates,
-			   const fom_rhs_data & fomResids,
-			   const fom_eval_rhs_policy & fomEvalRhsFunctor)
+  LSPGSteadyResidualPolicy(const fom_states_data	& fomStates,
+			   const fom_rhs_data		& fomResids,
+			   const fom_eval_rhs_policy	& fomEvalRhsFunctor)
     : fom_states_data(fomStates),
       fom_rhs_data(fomResids),
       fom_eval_rhs_policy(fomEvalRhsFunctor){}
@@ -42,9 +42,9 @@ public:
   template <typename lspg_state_t,
 	    typename lspg_residual_t,
 	    typename fom_t>
-  void operator()(const lspg_state_t		   & romY,
-		  lspg_residual_t		   & romR,
-  		  const fom_t			   & app) const
+  void operator()(const lspg_state_t	& romY,
+		  lspg_residual_t	& romR,
+  		  const fom_t		& app) const
   {
 #ifdef HAVE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -68,8 +68,8 @@ public:
 
   template <typename lspg_state_t,
 	    typename fom_t>
-  fom_rhs_w_t operator()(const lspg_state_t		   & romY,
-			 const fom_t			   & app) const
+  fom_rhs_w_t operator()(const lspg_state_t & romY,
+			 const fom_t	    & app) const
   {
     (*this).template operator()(romY, fomRhs_, app);
     return fomRhs_;

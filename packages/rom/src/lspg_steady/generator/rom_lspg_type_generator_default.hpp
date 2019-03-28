@@ -3,7 +3,7 @@
 #define ROM_LSPG_STEADY_TYPE_GENERATOR_DEFAULT_HPP_
 
 #include "rom_lspg_type_generator_common.hpp"
-#include "../rom_lspg_steady_system.hpp"
+//#include "../rom_lspg_steady_system.hpp"
 
 namespace rompp{ namespace rom{
 
@@ -25,10 +25,11 @@ struct DefaultLSPGSteadyTypeGenerator
   using typename base_t::fom_state_t;
   using typename base_t::fom_state_w_t;
   using typename base_t::fom_rhs_w_t;
-  using typename base_t::decoder_t;
-  using typename base_t::decoder_jac_t;
   using typename base_t::lspg_state_t;
   using typename base_t::lspg_residual_t;
+  using typename base_t::decoder_t;
+  using typename base_t::decoder_jac_t;
+  using typename base_t::fom_state_reconstr_t;
   using typename base_t::fom_states_data;
   using typename base_t::fom_rhs_data;
 
@@ -57,10 +58,10 @@ struct DefaultLSPGSteadyTypeGenerator
 
   // policy defining how to compute the LSPG jacobian
   using lspg_jacobian_policy_t	= ::rompp::rom::LSPGSteadyJacobianPolicy<
-	fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t>;
+    fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t>;
 
   // declare type of system
-  using rom_system_t		= ::rompp::rom::LSPGSteadySystem<
+  using lspg_system_t		= ::rompp::rom::LSPGSteadySystem<
     fom_t, lspg_state_type, lspg_residual_t, lspg_matrix_t,
     lspg_residual_policy_t, lspg_jacobian_policy_t>;
 

@@ -10,18 +10,21 @@
 #include "Epetra_Time.h"
 
 using namespace rompp;
-using matrix_w_t  = core::MultiVector<Epetra_MultiVector>;
-using decoder_t = rom::LinearDecoder<matrix_w_t>;
-using fom_state_w_t = core::Vector<Epetra_Vector>;
-using fom_states = rom::FomStatesData<fom_state_w_t, 1, decoder_t>;
-using rom_state_t = core::Vector<Eigen::VectorXd>;
+using rom_state_t	= core::Vector<Eigen::VectorXd>;
+using matrix_w_t	= core::MultiVector<Epetra_MultiVector>;
+using decoder_t		= rom::LinearDecoder<matrix_w_t>;
+using fom_state_w_t	= core::Vector<Epetra_Vector>;
+using fom_state_rec_t	= rom::FomStateReconstructor<fom_state_w_t,decoder_t>;
+using fom_states	= rom::FomStatesData<
+  fom_state_w_t, 1, fom_state_rec_t>;
 
-struct mytest : rompp::rom::FomStatesData<fom_state_w_t, 1, decoder_t>{
-  using base_t = rompp::rom::FomStatesData<fom_state_w_t, 1, decoder_t>;
+struct mytest : fom_states{
+  using base_t = fom_states;
 
-  mytest(const fom_state_w_t & y0Fom, const decoder_t & decObj)
-    : base_t(y0Fom, decObj){
-    fom_states MyStates(y0Fom, decObj);
+  mytest(const fom_state_w_t & y0Fom, const fom_state_rec_t & recObj)
+    : base_t(y0Fom, recObj)
+  {
+    fom_states MyStates(y0Fom, recObj);
     rom_state_t rY(2);
     rY.putScalar(1.2);
     this->reconstructCurrentFomState(rY);
@@ -43,6 +46,8 @@ TEST(rom_data, fom_states_data){
 
   fom_state_w_t y0Fom(rowMap);
 
-  mytest Ob(y0Fom, decObj);
+  fom_state_rec_t recStr(y0Fom, decObj);
+
+  mytest Ob(y0Fom, recStr);
   Ob.check();
 }

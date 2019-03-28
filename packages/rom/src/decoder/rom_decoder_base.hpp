@@ -15,12 +15,14 @@ struct DecoderBase
 
   template <typename operand_t, typename result_t>
   void applyMapping(const operand_t & operandObj,
-		    result_t & result) const{
+		    result_t & result) const
+  {
     this->underlying().applyMappingImpl(operandObj, result);
   }
 
-  const jac_matrix_type & getJacobianRef() const{
-    return this->underlying().getJacobianRefImpl();
+  const jac_matrix_type & getReferenceToJacobian() const
+  {
+    return this->underlying().getReferenceToJacobianImpl();
   }
 
 private:

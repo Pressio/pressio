@@ -14,7 +14,10 @@ struct FomRhsData{
   FomRhsData() = delete;
 
   FomRhsData(const fom_rhs_w_t & fomRhs0)
-    : fomRhs_{fomRhs0}{}
+    : fomRhs_{fomRhs0}
+  {
+    fomRhs_.setZero();
+  }
 
   ~FomRhsData() = default;
 
