@@ -28,7 +28,7 @@ public:
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
   using residual_type	= state_type;
-
+  using jacobian_type   = nativeMatrix;
 public:
   SteadyAdvDiff1dEpetra(Epetra_MpiComm & comm,
 			std::vector<scalar_type> & mu,
@@ -47,43 +47,37 @@ public:
   int getNumGlobalNodes() const;
   rcp<nativeVec> getState() const;
   rcp<nativeVec> getGrid() const;
+  rcp<nativeVec> getforcing() const;
   void solve();
   void printState() const;
 
-public:
-  void residual(const state_type & u,
-		residual_type & rhs) const{
-    // compute residual and store into rhs
-  }
+  void residual(const state_type & u, residual_type & rhs) const;  // compute residual and store into rhs
 
-  residual_type residual(const state_type & u) const{
-    /* this should create a vector, compure residual and return it */
-
+  residual_type residual(const state_type & u){
     Epetra_Vector R(*contigMap_);
-    // residual(u,R,t);
+    residual(u,R);
     return R;
-  }
+  };
 
   // computes: A = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
 		     const Epetra_MultiVector & B,
 		     Epetra_MultiVector & A) const{
-    // assert( Jac_->NumGlobalCols() == B.GlobalLength() );
-    // assert( A.GlobalLength() == Jac_->NumGlobalRows() );
-    // assert( A.NumVectors() == B.NumVectors() );
-    // // compute jacobian
-    // jacobian(y, *Jac_, t);
-    // Jac_->Multiply(false, B, A);
-  }
+    assert(A_->NumGlobalCols() == B.GlobalLength());
+    assert(A.GlobalLength() == A_->NumGlobalRows());
+    assert(A.NumVectors() == B.NumVectors());
 
-  // computes: A = Jac B where B is a multivector
+    A_->Multiply(false, B, A);
+}
+
+//   // computes: A = Jac B where B is a multivector
   Epetra_MultiVector applyJacobian(const state_type & y,
-  				   const Epetra_MultiVector & B) const{
-    Epetra_MultiVector C( *contigMap_, B.NumVectors() );
-    // applyJacobian(y, B, C, t);
+  				   const Epetra_MultiVector & B){
+    Epetra_MultiVector C(A_->RangeMap(), B.NumVectors());
+    applyJacobian(y, B, C);
     return C;
-  }
 
+  };
 protected:
   Epetra_MpiComm & comm_;
   std::vector<scalar_type> mu_;
