@@ -4,8 +4,8 @@
 
 namespace rompp { namespace apps{ namespace test{
 
-const std::vector<double> steadyAdvDiff_N20 =
-  {0., 0.44477957722906,
+const std::vector<double> steadyAdvDiff_N19 =
+  {0.44477957722906,
    0.93277171011798, 1.4639030384139,
    2.0368759779042, 2.6488052100903,
    3.2947768643621, 3.9673163074115,
@@ -14,7 +14,7 @@ const std::vector<double> steadyAdvDiff_N20 =
    7.1955254194447, 7.6284618027391,
    7.8910612961488, 7.918355138383,
    7.6300862142758, 6.927743522962,
-   5.6910822361426, 3.774046560263, 1};
+   5.6910822361426, 3.774046560263};
 
 }}}//end namespace rompp::apps::test
 #endif
