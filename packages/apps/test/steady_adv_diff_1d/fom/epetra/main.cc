@@ -18,19 +18,17 @@ void checkSol(int rank, const T & y,
     assert(std::abs(y[7] - trueS[7]) < eps);
     assert(std::abs(y[8] - trueS[8]) < eps);
     assert(std::abs(y[9] - trueS[9]) < eps);
-    assert(std::abs(y[10] - trueS[10]) < eps);
   }
   if (rank==1){
-    assert(std::abs(y[0] - trueS[11]) < eps);
-    assert(std::abs(y[1] - trueS[12]) < eps);
-    assert(std::abs(y[2] - trueS[13]) < eps);
-    assert(std::abs(y[3] - trueS[14]) < eps);
-    assert(std::abs(y[4] - trueS[15]) < eps);
-    assert(std::abs(y[5] - trueS[16]) < eps);
-    assert(std::abs(y[6] - trueS[17]) < eps);
-    assert(std::abs(y[7] - trueS[18]) < eps);
-    assert(std::abs(y[8] - trueS[19]) < eps);
-    assert(std::abs(y[9] - trueS[20]) < eps);
+    assert(std::abs(y[0] - trueS[10]) < eps);
+    assert(std::abs(y[1] - trueS[11]) < eps);
+    assert(std::abs(y[2] - trueS[12]) < eps);
+    assert(std::abs(y[3] - trueS[13]) < eps);
+    assert(std::abs(y[4] - trueS[14]) < eps);
+    assert(std::abs(y[5] - trueS[15]) < eps);
+    assert(std::abs(y[6] - trueS[16]) < eps);
+    assert(std::abs(y[7] - trueS[17]) < eps);
+    assert(std::abs(y[8] - trueS[18]) < eps);
   }
 }
 
@@ -56,7 +54,7 @@ int main(int argc, char *argv[]){
   //1D spatial domain, xL, xR
   std::vector<scalar_t> domain{0, 2.0, 0.1};
   //Left and right boundary conditions
-  std::vector<scalar_t> bc1D{0,1};
+  std::vector<scalar_t> bc1D{0, 1.};
   //Create object
   fom_t  appObj(Comm, mu, domain, bc1D);
 
@@ -72,7 +70,7 @@ int main(int argc, char *argv[]){
   auto y = appObj.getState();
   auto x = appObj.getGrid();
   y->Print(std::cout << std::setprecision(14));
-  checkSol(rank, *y, rompp::apps::test::steadyAdvDiff_N20);
+  checkSol(rank, *y, rompp::apps::test::steadyAdvDiff_N19);
 
   //--------------------------------------------------
   //End and free
