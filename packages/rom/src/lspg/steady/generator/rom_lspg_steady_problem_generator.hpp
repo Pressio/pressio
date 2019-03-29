@@ -43,7 +43,7 @@ struct LSPGSteadyProblemGenerator<
 
   LSPGSteadyProblemGenerator(const fom_t	& appObj,
 			     const fom_state_t	& yFomRefNative,
-			     decoder_t		& decoder,
+			     const decoder_t	& decoder,
 			     lspg_state_t	& yROM)
     : rhsEv_{},
       ajacEv_{},

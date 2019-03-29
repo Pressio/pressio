@@ -65,11 +65,11 @@ public:
      std::is_same<_fom_t, fom_t>::value
      > * = nullptr
   >
-  LSPGUnsteadyProblemGenerator(const _fom_t	& appObj,
-			     const fom_state_t	& yFomRefNative,
-			     decoder_t		& decoder,
-			     lspg_state_t	& yROM,
-			     scalar_t		t0)
+  LSPGUnsteadyProblemGenerator(const _fom_t	 & appObj,
+			       const fom_state_t & yFomRefNative,
+			       decoder_t	 & decoder,
+			       lspg_state_t	 & yROM,
+			       scalar_t		 t0)
     : rhsEv_{},
       ajacEv_{},
       yFomRef_(yFomRefNative),
@@ -95,11 +95,11 @@ public:
       std::is_same<_fom_t, fom_t>::value
       > * = nullptr
     >
-  LSPGUnsteadyProblemGenerator(const _fom_t	& appObj,
-  			     const fom_state_t	& yFomRefNative,
-  			     decoder_t		& decoder,
-  			     lspg_state_t	& yROM,
-  			     scalar_t		t0)
+  LSPGUnsteadyProblemGenerator(const _fom_t	 & appObj,
+			       const fom_state_t & yFomRefNative,
+			       const decoder_t	 & decoder,
+			       lspg_state_t	 & yROM,
+			       scalar_t		 t0)
     : rhsEv_{},
       ajacEv_{},
       yFomRef_(yFomRefNative),
