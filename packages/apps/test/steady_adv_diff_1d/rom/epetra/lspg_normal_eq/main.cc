@@ -49,6 +49,7 @@ int main(int argc, char *argv[]){
 
   // my reference state
   auto yRef = appObj.getState();
+  yRef->PutScalar( static_cast<scalar_t>(0) );
 
   // define ROM state
   lspg_state_t yROM(romSize);
