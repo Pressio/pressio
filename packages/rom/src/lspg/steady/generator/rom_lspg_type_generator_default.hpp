@@ -44,14 +44,14 @@ struct DefaultLSPGSteadyTypeGenerator
    */
   using lspg_matrix_t		= decoder_jac_t;
 
-  // policy for evaluating the rhs of the fom object
-  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsSteadyDefault;
+  // policy for evaluating the rhs of the fom object (<true> for steady overload)
+  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsDefault<true>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
-  // possibly involving other stuff like explained above
-  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianSteadyDefault;
+  // possibly involving other stuff like explained above (<true> for steady overload
+  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault<true>;
 
-  // policy defining how to compute the LSPG residual
+  // Policy defining how to compute the LSPG residual
   using lspg_residual_policy_t	= ::rompp::rom::LSPGSteadyResidualPolicy<
 	fom_states_data, fom_rhs_data, fom_eval_rhs_policy_t>;
 

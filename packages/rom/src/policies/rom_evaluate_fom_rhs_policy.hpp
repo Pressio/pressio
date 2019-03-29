@@ -4,7 +4,9 @@
 
 namespace rompp{ namespace rom{ namespace policy{
 
-struct EvaluateFomRhsDefault{
+/* overload when unsteady */
+template <>
+struct EvaluateFomRhsDefault<false>{
 
   template <
     typename fom_t,
@@ -35,7 +37,9 @@ struct EvaluateFomRhsDefault{
 };
 
 
-struct EvaluateFomRhsSteadyDefault{
+/* overload when steady */
+template <>
+struct EvaluateFomRhsDefault<true>{
 
   template <
     typename fom_t,

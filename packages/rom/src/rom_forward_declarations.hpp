@@ -22,6 +22,17 @@ class Masked;
 }// namespace rompp::rom::decorator
 //-------------------------------------------
 
+namespace policy{
+
+template <bool is_steady_problem>
+struct EvaluateFomRhsDefault;
+
+template <bool is_steady_problem>
+struct ApplyFomJacobianDefault;
+
+}// namespace rompp::rom::policy
+//-------------------------------------------
+
 /* operators */
 template<
   typename wrapped_type,

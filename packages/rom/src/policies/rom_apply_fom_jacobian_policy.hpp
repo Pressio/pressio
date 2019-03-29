@@ -4,7 +4,9 @@
 
 namespace rompp{ namespace rom{ namespace policy{
 
-struct ApplyFomJacobianDefault{
+/* overload when unsteady */
+template <>
+struct ApplyFomJacobianDefault<false>{
 
   template <
     typename fom_t,
@@ -39,7 +41,9 @@ struct ApplyFomJacobianDefault{
 };
 
 
-struct ApplyFomJacobianSteadyDefault{
+/* overload when steady */
+template <>
+struct ApplyFomJacobianDefault<true>{
 
   template <
     typename fom_t,

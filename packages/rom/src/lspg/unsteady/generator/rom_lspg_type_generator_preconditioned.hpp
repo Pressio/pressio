@@ -43,12 +43,12 @@ struct PreconditionedLSPGTypeGenerator
    */
   using lspg_matrix_t		= decoder_jac_t;
 
-  // policy for evaluating the rhs of the fom object
-  using fom_eval_rhs_policy_t	= rom::policy::EvaluateFomRhsDefault;
+  // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
+  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsDefault<false>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
-  // possibly involving other stuff like explained above
-  using fom_apply_jac_policy_t	= rom::policy::ApplyFomJacobianDefault;
+  // possibly involving other stuff like explained above (<false> for unsteady overload)
+  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault<false>;
 
   // policy defining how to compute the LSPG time-discrete residual
   using lspg_residual_policy_t =
