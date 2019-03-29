@@ -1,24 +1,17 @@
 
-TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  steadyAdvDiff2d_fom_epetra_1
+TRIBITS_ADD_EXECUTABLE(
+  steadyAdvDiff2d_fom_epetra
   SOURCES main.cc
-  NUM_MPI_PROCS 1
-  #STANDARD_PASS_OUTPUT
-  #PASS_REGULAR_EXPRESSION "Hello World"
   )
 
-TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  steadyAdvDiff2d_fom_epetra_2
-  SOURCES main.cc
-  NUM_MPI_PROCS 2
-  #STANDARD_PASS_OUTPUT
-  #PASS_REGULAR_EXPRESSION "Hello World"
+TRIBITS_ADD_TEST(
+  steadyAdvDiff2d_fom_epetra  NUM_MPI_PROCS 1
   )
 
-TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  steadyAdvDiff2d_fom_epetra_3
-  SOURCES main.cc
-  NUM_MPI_PROCS 3
-  #STANDARD_PASS_OUTPUT
-  #PASS_REGULAR_EXPRESSION "Hello World"
+TRIBITS_ADD_TEST(
+  steadyAdvDiff2d_fom_epetra  NUM_MPI_PROCS 2
+  )
+
+TRIBITS_ADD_TEST(
+  steadyAdvDiff2d_fom_epetra  NUM_MPI_PROCS 3
   )
