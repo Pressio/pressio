@@ -57,10 +57,10 @@ public:
 public:
   void residual(const state_type & u,
 		residual_type & rhs) const{
-    // compute residual and store into rhs
     calculateLinearSystem();
     calculateForcingTerm();
     A_->Multiply(false, u, rhs);
+    // now, rhs = A*u so we just subtract f to obtain residual
     rhs.Update(-1., (*f_), 1.0);
   }
 
