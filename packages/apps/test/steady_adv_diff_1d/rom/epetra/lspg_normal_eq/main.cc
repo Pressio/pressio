@@ -35,8 +35,6 @@ int main(int argc, char *argv[]){
 
   // number of degrees of freedom
   const int numDof = appObj.getNumGlobalNodes();
-  // 21 because the app also accounts for left and right BC as unknown
-  //assert(numDof == 21);
 
   // read the jacobian of the decoder
   constexpr int romSize = 5;
