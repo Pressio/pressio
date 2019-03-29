@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
 
   //-------------------------------
   //Parameters: diffusion, advection, expf
-  std::vector<scalar_t> mu{-1, 1, 1};
+  std::vector<scalar_t> mu{-7, 1, 1};
   //1D spatial domain, xL, xR
   std::vector<scalar_t> domain{0, 2.0, 0.01};
   //Left and right boundary conditions
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
     rompp::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
   					 Comm, appObj.getDataMap());
   //print to terminal the basis
-  phi.data()->Print(std::cout);
+  //phi.data()->Print(std::cout);
   // decoder object
   decoder_t decoderObj(phi);
 
@@ -82,11 +82,6 @@ int main(int argc, char *argv[]){
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
   yFomFinal.data()->Print(std::cout << std::setprecision(14));
-  // using fom_state_w_t = typename lspg_problem_type::fom_state_w_t;
-  // fom_state_w_t yRf(*y0n);
-  // decoderObj.applyMapping(yROM, yRf);
-  // yRf += lspgProblem.y0Fom_;
-
 
   // /* if there is a reproducing test we can do, let's do it and we can
   //  * compare with the FOM solution.
