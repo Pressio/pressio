@@ -89,7 +89,7 @@ void SteadyAdvDiff1dEpetra::calculateForcingTerm(){
   for (int i = 0; i<nodesPerProc_; i++){
     auto x = (*x_)[i];
     if (MyGlobalNodes_[i]> 0 && MyGlobalNodes_[i]<numGlobalNodes_-1){
-      (*f_)[i] = std::exp(domain_[2]*x)*(3.*x + x*x);
+      (*f_)[i] = std::exp(mu_[2]*x)*(3.*x + x*x);
     }
     else if (MyGlobalNodes_[i]==0){
       (*f_)[i] = bc1D_[0];
