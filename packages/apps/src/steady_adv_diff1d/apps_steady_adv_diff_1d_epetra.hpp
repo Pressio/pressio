@@ -34,7 +34,11 @@ public:
 			std::vector<scalar_type> & mu,
 			std::vector<scalar_type> & domain,
 			std::vector<scalar_type> & bc1D)
-    : comm_(comm), mu_(mu), domain_(domain), bc1D_(bc1D){}
+    : comm_(comm), mu_(mu), domain_(domain), bc1D_(bc1D),
+      dx_{domain_[2]}, alpha_{mu_[0]}, beta_{mu_[1]},
+      alphaOvDxSq_{alpha_/(dx_*dx_)},
+      betaOvDx2_{beta_/(2.0*dx_)}
+  {}
 
   ~SteadyAdvDiff1dEpetra() = default;
 
@@ -42,8 +46,8 @@ public:
   void createMap();
   Epetra_Map const & getDataMap(){ return *contigMap_; };
   void setup();
-  void calculateLinearSystem();
-  void calculateForcingTerm();
+  void calculateLinearSystem() const;
+  void calculateForcingTerm() const;
   int getNumGlobalNodes() const;
   rcp<nativeVec> getState() const;
   rcp<nativeVec> getGrid() const;
@@ -54,33 +58,35 @@ public:
   void residual(const state_type & u,
 		residual_type & rhs) const{
     // compute residual and store into rhs
+    calculateLinearSystem();
+    calculateForcingTerm();
+    A_->Multiply(false, u, rhs);
+    rhs.Update(-1., (*f_), 1.0);
   }
 
   residual_type residual(const state_type & u) const{
-    /* this should create a vector, compure residual and return it */
-
     Epetra_Vector R(*contigMap_);
-    // residual(u,R,t);
+    residual(u,R);
     return R;
   }
 
-  // computes: A = Jac B where B is a multivector
+  // computes: C = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
 		     const Epetra_MultiVector & B,
-		     Epetra_MultiVector & A) const{
-    // assert( Jac_->NumGlobalCols() == B.GlobalLength() );
-    // assert( A.GlobalLength() == Jac_->NumGlobalRows() );
-    // assert( A.NumVectors() == B.NumVectors() );
-    // // compute jacobian
-    // jacobian(y, *Jac_, t);
-    // Jac_->Multiply(false, B, A);
+		     Epetra_MultiVector & C) const
+  {
+    assert( A_->NumGlobalCols() == B.GlobalLength() );
+    assert( C.GlobalLength() == A_->NumGlobalRows() );
+    assert( C.NumVectors() == B.NumVectors() );
+    calculateLinearSystem();
+    A_->Multiply(false, B, C);
   }
 
   // computes: A = Jac B where B is a multivector
   Epetra_MultiVector applyJacobian(const state_type & y,
   				   const Epetra_MultiVector & B) const{
     Epetra_MultiVector C( *contigMap_, B.NumVectors() );
-    // applyJacobian(y, B, C, t);
+    applyJacobian(y, B, C);
     return C;
   }
 
@@ -89,15 +95,20 @@ protected:
   std::vector<scalar_type> mu_;
   std::vector<scalar_type> domain_;
   std::vector<scalar_type> bc1D_;
+  scalar_type dx_{};
+  scalar_type alpha_{};
+  scalar_type beta_{};
+  scalar_type alphaOvDxSq_{};
+  scalar_type betaOvDx2_{};
 
   rcp<Epetra_Map> contigMap_;
-  rcp<nativeMatrix> A_;
+  mutable rcp<nativeMatrix> A_;
   int numGlobalNodes_;
   int *MyGlobalNodes_;
   int nodesPerProc_;
   rcp<nativeVec> x_;
-  rcp<nativeVec> u_;
-  rcp<nativeVec> f_;
+  mutable rcp<nativeVec> u_;
+  mutable rcp<nativeVec> f_;
 };
 
 }} //namespace rompp::apps
