@@ -28,7 +28,10 @@ private:
 
 public:
   LinearDecoder() = delete;
-  LinearDecoder(jacobian_t & matIn) : phi_(matIn){}
+
+  LinearDecoder(const jacobian_t & matIn)
+    : phi_(matIn){}
+
   ~LinearDecoder() = default;
 
 protected:
