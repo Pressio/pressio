@@ -119,12 +119,12 @@ public:
     return numGlobalDof_;
   }
 
-  std::shared_ptr<Epetra_Vector> getState() const {
+  std::shared_ptr<nativeVec>
+  getState() const {
     return T_;
   }
 
 protected:
-  //  constexpr scalar_type PI = 3.14159265358979323846;
   const int maxNonZeroPerRow_ = 5;
   const scalar_type solveTolerance_ = 1e-12;
   scalar_type Lx_ = 1.0;

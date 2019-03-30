@@ -1,2 +1,3 @@
 
-ADD_SUBDIRECTORIES(epetra)
+ADD_SUBDIRECTORY(epetra)
+ADD_SUBDIRECTORY(generate_basis_epetra_example)

@@ -13,7 +13,7 @@ template <typename T = int>
 void readMatrixFromFile(std::string filename,
 			std::vector<std::vector<double>> & A0,
 			T ncols){
-
+  assert( A0.empty() );
   std::ifstream source;
   source.open( filename, std::ios_base::in);
   std::string line, colv;
