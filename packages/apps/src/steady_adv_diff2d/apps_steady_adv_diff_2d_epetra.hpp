@@ -54,15 +54,16 @@ http://demonstrations.wolfram.com/SteadyStateTwoDimensionalConvectionDiffusionEq
 
 class SteadyAdvDiff2dEpetra{
 protected:
-  using nativeVec = Epetra_Vector;
+  using nativeVec	= Epetra_Vector;
   template<typename T> using rcp = std::shared_ptr<T>;
   using nativeMatrix	= Epetra_CrsMatrix;
-
-public:
-  /* these types exposed because need to be detected */
   using scalar_type	= double;
-  using state_type	= Epetra_Vector;
-  using residual_type	= state_type;
+
+// public:
+//   /* these types exposed because need to be detected */
+//   using scalar_type	= double;
+//   using state_type	= Epetra_Vector;
+//   using residual_type	= state_type;
 
 public:
   SteadyAdvDiff2dEpetra(Epetra_MpiComm & comm,
@@ -81,9 +82,7 @@ public:
       dySqInv_{1.0/(dy_*dy_)},
       dx2Inv_{1./dx_},
       dy2Inv_{1./dy_}
-  {
-    std::cout << dx_ << " " << dy_ << std::endl;
-  }
+  {}
 
 private:
   void localIDToLiLj(int ID, int & li, int & lj) const{
@@ -98,7 +97,7 @@ private:
 
 public:
   void createMap();
-  Epetra_Map const & getDataMap(){ return *myMap_; };
+  Epetra_Map const & getDataMap()const { return *myMap_; };
   void setup();
   void assembleMatrix() const;
   void fillRhs() const;
@@ -115,14 +114,16 @@ public:
     file.close();
   }
 
-  int getNumGlobalDofs() const{
-    return numGlobalDof_;
-  }
+  int getNumGlobalDofs() const{ return numGlobalDof_; }
 
   std::shared_ptr<nativeVec>
-  getState() const {
-    return T_;
-  }
+  getState() const { return T_; }
+
+  std::shared_ptr<nativeMatrix>
+  getMatrix() const { return A_; }
+
+  std::shared_ptr<nativeVec>
+  getForcing() const { return f_; }
 
 protected:
   const int maxNonZeroPerRow_ = 5;
@@ -172,43 +173,3 @@ protected:
 
 }} //namespace rompp::apps
 #endif
-
-
-
-
-
-// public:
-//   void residual(const state_type & u,
-// 		residual_type & rhs) const{
-//     calculateLinearSystem();
-//     calculateForcingTerm();
-//     A_->Multiply(false, u, rhs);
-//     // now, rhs = A*u so we just subtract f to obtain residual
-//     rhs.Update(-1., (*f_), 1.0);
-//   }
-
-//   residual_type residual(const state_type & u) const{
-//     Epetra_Vector R(*contigMap_);
-//     residual(u,R);
-//     return R;
-//   }
-
-//   // computes: C = Jac B where B is a multivector
-//   void applyJacobian(const state_type & y,
-// 		     const Epetra_MultiVector & B,
-// 		     Epetra_MultiVector & C) const
-//   {
-//     assert( A_->NumGlobalCols() == B.GlobalLength() );
-//     assert( C.GlobalLength() == A_->NumGlobalRows() );
-//     assert( C.NumVectors() == B.NumVectors() );
-//     calculateLinearSystem();
-//     A_->Multiply(false, B, C);
-//   }
-
-//   // computes: A = Jac B where B is a multivector
-//   Epetra_MultiVector applyJacobian(const state_type & y,
-//   				   const Epetra_MultiVector & B) const{
-//     Epetra_MultiVector C( *contigMap_, B.NumVectors() );
-//     applyJacobian(y, B, C);
-//     return C;
-//   }
