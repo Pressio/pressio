@@ -61,8 +61,13 @@ public:
 public:
   void residual(const state_type & u,
     residual_type & rhs) const{
+    /* compute jacobian and forcing term
+     * (even though for this prob we do not need to
+     * recompute every time, for sake of generality,
+     * we keep it this way */
     calculateLinearSystem();
     calculateForcingTerm();
+
     A_->Multiply(false, u, rhs);
     // now, rhs = A*u so we just subtract f to obtain residual
     rhs.Update(-1., (*f_), 1.0);
@@ -82,6 +87,9 @@ public:
     assert( A_->NumGlobalCols() == B.GlobalLength() );
     assert( C.GlobalLength() == A_->NumGlobalRows() );
     assert( C.NumVectors() == B.NumVectors() );
+    /* compute jacobian (even though for this prob
+     * we do not need to recompute every time,
+     * for sake of generality, we keep it this way */
     calculateLinearSystem();
     A_->Multiply(false, B, C);
   }

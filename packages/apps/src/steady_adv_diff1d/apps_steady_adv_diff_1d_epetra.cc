@@ -2,7 +2,7 @@
 #include "apps_steady_adv_diff_1d_epetra.hpp"
 
 namespace rompp{ namespace apps{
-    
+
 void SteadyAdvDiff1dEpetra::createMap(){
   //-----------------------------------------------------------------------
   //Create map to be used for the matrices and vectors
@@ -109,8 +109,8 @@ void SteadyAdvDiff1dEpetra::calculateForcingTerm() const{
     }
     if (GID==numGlobalNodes_-1){
       (*f_)[i] -= uRf;
-    }    
-  } 
+    }
+  }
 }
 
 int SteadyAdvDiff1dEpetra::getNumGlobalNodes() const{
