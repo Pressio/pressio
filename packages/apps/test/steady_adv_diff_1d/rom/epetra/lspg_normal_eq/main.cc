@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
     rompp::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
   					 Comm, appObj.getDataMap());
   //print to terminal the basis
-  //phi.data()->Print(std::cout);
+  // phi.data()->Print(std::cout);
   // decoder object
   decoder_t decoderObj(phi);
 
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]){
     converged_when_t, rom_system_t, hessian_t>;
   gnsolver_t solver(lspgProblem.systemObj_, yROM);
   solver.setTolerance(1e-6);
-  solver.setMaxIterations(200);
+  solver.setMaxIterations(5);
   solver.solve(lspgProblem.systemObj_, yROM);
 
   // compute the fom corresponding to our rom final state

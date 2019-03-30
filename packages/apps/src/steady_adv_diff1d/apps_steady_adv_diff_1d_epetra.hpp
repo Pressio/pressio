@@ -21,19 +21,19 @@ class SteadyAdvDiff1dEpetra{
 protected:
   using nativeVec = Epetra_Vector;
   template<typename T> using rcp = std::shared_ptr<T>;
-  using nativeMatrix	= Epetra_CrsMatrix;
+  using nativeMatrix  = Epetra_CrsMatrix;
 
 public:
   /* these types exposed because need to be detected */
-  using scalar_type	= double;
-  using state_type	= Epetra_Vector;
-  using residual_type	= state_type;
-
+  using scalar_type = double;
+  using state_type  = Epetra_Vector;
+  using residual_type = state_type;
+  using jacobian_type   = nativeMatrix;
 public:
   SteadyAdvDiff1dEpetra(Epetra_MpiComm & comm,
-			std::vector<scalar_type> & mu,
-			std::vector<scalar_type> & domain,
-			std::vector<scalar_type> & bc1D)
+      std::vector<scalar_type> & mu,
+      std::vector<scalar_type> & domain,
+      std::vector<scalar_type> & bc1D)
     : comm_(comm), mu_(mu), domain_(domain), bc1D_(bc1D),
       dx_{domain_[2]}, alpha_{mu_[0]}, beta_{mu_[1]},
       alphaOvDxSq_{alpha_/(dx_*dx_)},
@@ -51,12 +51,16 @@ public:
   int getNumGlobalNodes() const;
   rcp<nativeVec> getState() const;
   rcp<nativeVec> getGrid() const;
+  rcp<nativeVec> getforcing() const;
   void solve();
-  void printState() const;
+
+  void printState() const{
+    u_->Print( std::cout << std::setprecision(10) );
+  }
 
 public:
   void residual(const state_type & u,
-		residual_type & rhs) const{
+    residual_type & rhs) const{
     calculateLinearSystem();
     calculateForcingTerm();
     A_->Multiply(false, u, rhs);
@@ -68,12 +72,12 @@ public:
     Epetra_Vector R(*contigMap_);
     residual(u,R);
     return R;
-  }
+  };
 
   // computes: C = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
-		     const Epetra_MultiVector & B,
-		     Epetra_MultiVector & C) const
+         const Epetra_MultiVector & B,
+         Epetra_MultiVector & C) const
   {
     assert( A_->NumGlobalCols() == B.GlobalLength() );
     assert( C.GlobalLength() == A_->NumGlobalRows() );
@@ -82,13 +86,13 @@ public:
     A_->Multiply(false, B, C);
   }
 
-  // computes: A = Jac B where B is a multivector
+//   // computes: A = Jac B where B is a multivector
   Epetra_MultiVector applyJacobian(const state_type & y,
-  				   const Epetra_MultiVector & B) const{
+             const Epetra_MultiVector & B) const{
     Epetra_MultiVector C( *contigMap_, B.NumVectors() );
     applyJacobian(y, B, C);
     return C;
-  }
+  };
 
 protected:
   Epetra_MpiComm & comm_;

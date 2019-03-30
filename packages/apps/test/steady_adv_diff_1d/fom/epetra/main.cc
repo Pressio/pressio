@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
   auto y = appObj.getState();
   auto x = appObj.getGrid();
   y->Print(std::cout << std::setprecision(14));
-  checkSol(rank, *y, rompp::apps::test::steadyAdvDiff_N19);
+  checkSol(rank, *y, rompp::apps::test::steadyAdvDiff1d_N21);
 
   //--------------------------------------------------
   //End and free
