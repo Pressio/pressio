@@ -34,7 +34,6 @@ int main(int argc, char *argv[]){
   appObj.assembleMatrix();
   appObj.fillRhs();
   appObj.solve();
-
   rompp::core::Vector<native_state> yFom(*appObj.getState());
 
   // -------------------------
@@ -87,10 +86,10 @@ int main(int argc, char *argv[]){
   solver.setMaxIterations(200);
   solver.solve(lspgProblem.systemObj_, yROM);
 
-  // reconstruct the fom corresponding to our rom final state
-  auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
   /* the ROM is run for a parameter point that was used to generate
    * the basis, so we should recover the FOM solution exactly */
+  // reconstruct the fom corresponding to our rom final state
+  auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
   auto errorVec(yFom); errorVec = yFom - yFomApprox;
   const auto norm2err = rompp::core::ops::norm2(errorVec);
   assert( norm2err < 1e-12 );

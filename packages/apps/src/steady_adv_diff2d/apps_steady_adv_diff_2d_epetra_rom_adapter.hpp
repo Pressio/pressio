@@ -28,6 +28,22 @@ public:
     return appObj_.getDataMap();
   };
 
+  void printStateToFile(std::string fileName,
+			state_type & T){
+    auto x = appObj_.getX();
+    auto y = appObj_.getY();
+    auto dofPerProc = appObj_.getNumLocalDofs();
+
+    std::ofstream file;
+    file.open( fileName );
+    for(auto i=0; i < dofPerProc; i++){
+      file << std::fixed << std::setprecision(14) <<
+	(*x)[i] << " " << (*y)[i] << " " << T[i];
+      file << std::endl;
+    }
+    file.close();
+  }
+
   std::shared_ptr<state_type>
   getState() const {
     return appObj_.getState();

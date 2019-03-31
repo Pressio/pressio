@@ -28,6 +28,9 @@ http://demonstrations.wolfram.com/SteadyStateTwoDimensionalConvectionDiffusionEq
   Tleft = 0 , Tright = 1
   homogeneous Neumann on top and bottom
 
+  u = - sin(pi x) cos(pi y)
+  v = cos(pi x) sin(pi y)
+
   Use 2nd order FD, with following grid:
 
   o x x x x o
@@ -115,6 +118,13 @@ public:
   }
 
   int getNumGlobalDofs() const{ return numGlobalDof_; }
+  int getNumLocalDofs() const{ return dofPerProc_; }
+
+  std::shared_ptr<nativeVec>
+  getX() const { return x_; }
+
+  std::shared_ptr<nativeVec>
+  getY() const { return y_; }
 
   std::shared_ptr<nativeVec>
   getState() const { return T_; }
