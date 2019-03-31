@@ -1,2 +1,3 @@
 
-ADD_SUBDIRECTORY(lspg_normal_eq)
+ADD_SUBDIRECTORY(lspg_normal_eq_reproducing)
+ADD_SUBDIRECTORY(lspg_normal_eq_predictive)
