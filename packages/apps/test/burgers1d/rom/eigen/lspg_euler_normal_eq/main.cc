@@ -5,7 +5,7 @@
 #include "ROM_LSPG"
 #include "APPS_BURGERS1D"
 #include "utils_eigen.hpp"
-#include "../../../fom/fom_gold_states.hpp"
+#include "../../../fom/gold_states_implicit.hpp"
 
 int main(int argc, char *argv[]){
   using fom_t		= rompp::apps::Burgers1dEigen;
@@ -46,8 +46,9 @@ int main(int argc, char *argv[]){
   yROM.putScalar(0.0);
 
   // define LSPG type
+  constexpr auto ode_case  = rompp::ode::ImplicitEnum::Euler;
   using lspg_problem_types = rompp::rom::DefaultLSPGTypeGenerator<
-    fom_t, rompp::ode::ImplicitEnum::Euler, decoder_t, lspg_state_t>;
+    fom_t, ode_case, decoder_t, lspg_state_t>;
   rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
       appobj, yRef, decoderObj, yROM, t0);
 
@@ -75,7 +76,8 @@ int main(int argc, char *argv[]){
 
   // this is a reproducing ROM test, so the final reconstructed state
   // has to match the FOM solution obtained with euler, same time-step, for 10 steps
-  const auto trueY = rompp::apps::test::Burg1DtrueImpEulerN20t010;
+  // const auto trueY = rompp::apps::test::Burg1DtrueImpEulerN20t010;
+  const auto trueY = rompp::apps::test::Burgers1dImpGoldStates<ode_case>::get(numCell, dt, 0.10);
   for (auto i=0; i<yFomFinal.size(); i++)
     assert(std::abs(yFomFinal[i] - trueY[i]) < 1e-10 );
 

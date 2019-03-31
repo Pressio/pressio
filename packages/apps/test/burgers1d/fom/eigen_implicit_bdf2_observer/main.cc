@@ -3,7 +3,7 @@
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "APPS_BURGERS1D"
-#include "../fom_gold_states.hpp"
+#include "../gold_states_implicit.hpp"
 
 constexpr double eps = 1e-12;
 
@@ -74,9 +74,9 @@ int main(int argc, char *argv[]){
   aux_stepper_t stepperAux(y, appObj);
 
   // nonimal stepper
+  constexpr auto ode_case = rompp::ode::ImplicitEnum::BDF2;
   using stepper_t = rompp::ode::ImplicitStepper<
-    rompp::ode::ImplicitEnum::BDF2,
-    ode_state_t, ode_res_t, ode_jac_t, app_t, aux_stepper_t>;
+    ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t, aux_stepper_t>;
   stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver
@@ -96,9 +96,10 @@ int main(int argc, char *argv[]){
 
   rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, Obs, solverO);
   Obs.printAll();
-
-  checkSol(y, rompp::apps::test::Burg1DtrueImpBDF2N20t010);
-  std::cout << std::setprecision(14) << *y.data();
+  {
+    using namespace rompp::apps::test;
+    checkSol(y, Burgers1dImpGoldStates<ode_case>::get(Ncell, dt, fint));
+  }
 
   return 0;
 }

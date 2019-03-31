@@ -3,7 +3,7 @@
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "APPS_BURGERS1D"
-#include "../fom_gold_states.hpp"
+#include "../gold_states_implicit.hpp"
 
 constexpr double eps = 1e-12;
 
@@ -23,7 +23,8 @@ int main(int argc, char *argv[]){
   //-------------------------------
   // create app object
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
-  app_t appObj(mu, 20);
+  constexpr int Ncell = 20;
+  app_t appObj(mu, Ncell);
   appObj.setup();
   auto & y0n = appObj.getInitialState();
   auto r0n = appObj.residual(y0n, static_cast<scalar_t>(0));
@@ -34,9 +35,9 @@ int main(int argc, char *argv[]){
   using ode_jac_t   = rompp::core::Matrix<app_jacob_t>;
 
   ode_state_t y(y0n);
+  constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
   using stepper_t = rompp::ode::ImplicitStepper<
-    rompp::ode::ImplicitEnum::Euler,
-    ode_state_t, ode_res_t, ode_jac_t, app_t>;
+    ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
   // define solver
@@ -49,9 +50,11 @@ int main(int argc, char *argv[]){
   scalar_t dt = 0.01;
   auto Nsteps = static_cast<unsigned int>(fint/dt);
   rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, solverO);
-
-  checkSol(y, rompp::apps::test::Burg1DtrueImpEulerN20t35);
   std::cout << std::setprecision(14) << *y.data();
+  {
+    using namespace rompp::apps::test;
+    checkSol(y, Burgers1dImpGoldStates<ode_case>::get(Ncell, dt, fint));
+  }
 
   return 0;
 }

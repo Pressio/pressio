@@ -1,0 +1,12 @@
+
+du/dt  + 1/2 du^2/dx = a exp(b x ) 
+
+over x in (0,100)
+
+BC: u(0,t) = c 
+IC: u(x,0) = 1.0
+
+So we have three parameters, a,b,c
+c = mu(0)
+a = mu(1)
+b = mu(2)

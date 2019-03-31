@@ -2,7 +2,7 @@
 #include "CORE_ALL"
 #include "ODE_ALL"
 #include "APPS_BURGERS1D"
-#include "../fom_gold_states.hpp"
+#include "../gold_states_explicit.hpp"
 
 constexpr double eps = 1e-12;
 
@@ -21,7 +21,8 @@ int main(int argc, char *argv[]){
   //-------------------------------
   // create app object
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
-  app_t appObj(mu, 20);
+  const int Ncell = 20;
+  app_t appObj(mu, Ncell);
   appObj.setup();
   auto & y0n = appObj.getInitialState();
   auto r0n = appObj.residual(y0n, static_cast<scalar_t>(0));
@@ -32,8 +33,9 @@ int main(int argc, char *argv[]){
 
   ode_state_t y(y0n);
   ode_res_t r(r0n);
+  constexpr auto ode_case = rompp::ode::ExplicitEnum::Euler;
   using stepper_t = rompp::ode::ExplicitStepper
-    <rompp::ode::ExplicitEnum::Euler, ode_state_t, app_t, ode_res_t>;
+    <ode_case, ode_state_t, app_t, ode_res_t>;
   stepper_t stepperObj(y, appObj, r);
 
   // integrate in time
@@ -41,8 +43,10 @@ int main(int argc, char *argv[]){
   scalar_t dt = 0.01;
   auto Nsteps = static_cast<unsigned int>(fint/dt);
   rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
-  checkSol(y, rompp::apps::test::Burg1DtrueExpEulerN20t35);
-  std::cout << std::setprecision(13) << *y.data();
+  {
+    using namespace rompp::apps::test;
+    checkSol(y, Burgers1dExpGoldStates<ode_case>::get(Ncell, dt, fint));
+  }
 
   return 0;
 }

@@ -2,7 +2,7 @@
 #include "CORE_ALL"
 #include "ODE_ALL"
 #include "APPS_BURGERS1D"
-#include "../fom_gold_states.hpp"
+#include "../gold_states_explicit.hpp"
 
 constexpr double eps = 1e-12;
 
@@ -52,7 +52,8 @@ int main(int argc, char *argv[]){
 
   //-------------------------------
   std::vector<double> mu({5.0, 0.02, 0.02});
-  app_t appobj(mu, 20, &Comm);
+  const int Ncells = 20;
+  app_t appobj(mu, Ncells, &Comm);
   appobj.setup();
   auto & y0n = appobj.getInitialState();
   auto r0n = appobj.residual(y0n, static_cast<scalar_t>(0));
@@ -62,8 +63,9 @@ int main(int argc, char *argv[]){
   ode_state_t y(y0n);
   ode_res_t r(r0n);
 
+  constexpr auto ode_case = rompp::ode::ExplicitEnum::Euler;
   using stepper_t = rompp::ode::ExplicitStepper<
-    rompp::ode::ExplicitEnum::Euler, ode_state_t, app_t, ode_res_t>;
+    ode_case, ode_state_t, app_t, ode_res_t>;
   stepper_t stepperObj(y, appobj, r);
 
   // integrate in time
@@ -72,7 +74,11 @@ int main(int argc, char *argv[]){
   auto Nsteps = static_cast<unsigned int>(fint/dt);
   rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
   y.data()->Print(std::cout << std::setprecision(14));
-  checkSol(rank, y, rompp::apps::test::Burg1DtrueExpEulerN20t35);
+  {
+    using namespace rompp::apps::test;
+    checkSol(rank, y, 
+             Burgers1dExpGoldStates<ode_case>::get(Ncells, dt, fint));
+  }
 
   MPI_Finalize();
   return 0;
