@@ -18,33 +18,46 @@ template <
   typename lin_solver_tag,
   template <typename, typename> class lin_solver_t,
   typename line_search_t,
-  typename converged_when_t
+  typename converged_when_t,
+  typename observer_t
   >
 class GaussNewton<
   scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
-  converged_when_t, void, void, void, void, void>
+  converged_when_t, void, void, void, void, void, observer_t>
   : public NonLinearSolverBase<GaussNewton<scalar_t, lin_solver_tag,
 					   lin_solver_t,
 					   line_search_t,
 					   converged_when_t,
 					   void, void,
-					   void, void, void>>,
+					   void, void, void,
+					   observer_t>>,
       public IterativeBase<scalar_t>{
 
   using this_t	= GaussNewton<scalar_t, lin_solver_tag, lin_solver_t,
 			      line_search_t, converged_when_t,
-			      void, void, void, void, void>;
+			      void, void, void, void, void, observer_t>;
   using iter_base_t = IterativeBase<scalar_t>;
   using base_t  = NonLinearSolverBase<this_t>;
   friend base_t;
 
-  scalar_t normO_	  = {};
-  scalar_t normN_	  = {};
-  //  lin_solver_t linSolver_ = {};
+  scalar_t normO_		= {};
+  scalar_t normN_		= {};
+  const observer_t * const obs_ = nullptr;
 
 public:
   GaussNewton() = default;
+
+  template <
+    typename T = observer_t,
+    core::meta::enable_if_t<
+      !std::is_void<T>::value
+      > * = nullptr
+    >
+  GaussNewton(const T & obs)
+    : obs_(&obs){}
+
   GaussNewton(const GaussNewton &) = delete;
+
   ~GaussNewton() = default;
 
 private:
@@ -56,6 +69,10 @@ private:
     using state_t = typename system_t::state_type;
     using res_t	  = typename system_t::residual_type;
     using jac_t   = typename system_t::jacobian_type;
+
+    static_assert(std::is_void<observer_t>::value or
+		  has_method_observe_residual_when_solver_converged<observer_t, res_t>::value,
+		  "invalid observer");
 
     // since I know the type of jacobian, I can declare the
     // functor that knows how to approximate the hessian: J^T*J
@@ -86,10 +103,11 @@ private:
 
     impl::gauss_newtom_neq_solve<
       system_t, hessian_t, typename iter_base_t::iteration_t,
-      scalar_t, solver_t, line_search_t, converged_when_t
+      scalar_t, solver_t, line_search_t,
+      converged_when_t, observer_t
       >(sys, y,	ytrial, Resid, Jacob, H, JTR,
 	this->maxIters_, this->tolerance_,
-	delta, linSolver_, normO_, normN_);
+	delta, linSolver_, normO_, normN_, obs_);
 
   }//solveImpl
 
@@ -105,11 +123,12 @@ template <
   typename scalar_t, typename lin_solver_tag,
   template <typename,typename> class lin_solver_t,
   typename line_search_t, typename converged_when_t,
-  typename system_t, typename hessian_t
+  typename system_t, typename hessian_t, typename observer_t
   >
 class GaussNewton<
   scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
-  converged_when_t, system_t, void, void, void, hessian_t,
+  converged_when_t, system_t, void, void, void,
+  hessian_t, observer_t,
   core::meta::enable_if_t<
     core::meta::is_core_vector_wrapper<typename system_t::state_type>::value and
     core::meta::is_core_vector_wrapper<typename system_t::residual_type>::value
@@ -126,7 +145,8 @@ class GaussNewton<
 					   line_search_t,
 					   converged_when_t,
 					   system_t, void, void,
-					   void, hessian_t>>,
+					   void, hessian_t,
+					   observer_t>>,
       public IterativeBase<scalar_t>
 {
 
@@ -135,9 +155,13 @@ class GaussNewton<
   using jacobian_t = typename system_t::jacobian_type;
   using solverT   = lin_solver_t<lin_solver_tag, hessian_t>;
 
+  static_assert(std::is_void<observer_t>::value or
+		has_method_observe_residual_when_solver_converged<observer_t, residual_t>::value,
+		"invalid residual observer, likely not having correct method syntax");
+
   using this_t	   = GaussNewton<scalar_t, lin_solver_tag, lin_solver_t,
 				 line_search_t, converged_when_t, system_t,
-				 void, void, void, hessian_t>;
+				 void, void, void, hessian_t, observer_t>;
   using iter_base_t = IterativeBase<scalar_t>;
   using base_t	   = NonLinearSolverBase<this_t>;
   friend base_t;
@@ -155,6 +179,8 @@ class GaussNewton<
   // so that it is constructed only once
   state_t ytrial_  = {};
 
+  const observer_t * const obs_ = nullptr;
+
 public:
   GaussNewton() = delete;
 
@@ -164,7 +190,21 @@ public:
       hes_(HessianApproxHelper<jacobian_t>()(jac_)),
       ytrial_(y){}
 
+  template <typename T = observer_t,
+  	    core::meta::enable_if_t<
+  	      !std::is_void<T>::value
+  	      > * = nullptr
+  	    >
+  GaussNewton(const system_t & system,
+  	      const state_t & y,
+  	      const T & obs)
+    : JTResid_(y), delta_(y),
+      res_(system.residual(y)), jac_(system.jacobian(y)),
+      hes_(HessianApproxHelper<jacobian_t>()(jac_)),
+      ytrial_(y), obs_{&obs}{}
+
   GaussNewton(const GaussNewton &) = delete;
+
   ~GaussNewton() = default;
 
 public:
@@ -172,16 +212,18 @@ public:
     sys.residual(y, res_);
     sys.jacobian(y, jac_);
 
-    impl::gauss_newtom_neq_solve< system_t, hessian_t,
-				  typename iter_base_t::iteration_t,
-				  scalar_t, solverT, line_search_t,
-				  converged_when_t>(sys, y, ytrial_,
-						    res_, jac_, hes_,
-						    JTResid_,
-						    this->maxIters_,
-						    this->tolerance_,
-						    delta_, linSolver_,
-						    normO_, normN_);
+    impl::gauss_newtom_neq_solve<
+      system_t, hessian_t,
+      typename iter_base_t::iteration_t,
+      scalar_t, solverT, line_search_t,
+      converged_when_t, observer_t>(sys, y, ytrial_,
+    				    res_, jac_, hes_,
+    				    JTResid_,
+    				    this->maxIters_,
+    				    this->tolerance_,
+    				    delta_, linSolver_,
+    				    normO_, normN_,
+    				    obs_);
   }//end solve
 
 };//class
@@ -197,11 +239,13 @@ template <
   template <typename,typename> class lin_solver_t,
   typename line_search_t, typename converged_when_t,
   typename state_t, typename residual_t,
-  typename jacobian_t, typename hessian_t
+  typename jacobian_t, typename hessian_t,
+  typename observer_t
   >
 class GaussNewton<
   scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
-  converged_when_t, void, state_t, residual_t, jacobian_t, hessian_t,
+  converged_when_t, void, state_t, residual_t,
+  jacobian_t, hessian_t, observer_t,
   core::meta::enable_if_t<
     core::meta::is_core_vector_wrapper<state_t>::value and
     core::meta::is_core_vector_wrapper<residual_t>::value
@@ -218,19 +262,21 @@ class GaussNewton<
 					   line_search_t,
 					   converged_when_t,
 					   void, state_t, residual_t,
-					   jacobian_t, hessian_t>>,
+					   jacobian_t, hessian_t,
+					   observer_t>>,
       public IterativeBase<scalar_t>
 {
 
-  // using state_t    = typename system_t::state_type;
-  // using residual_t = typename system_t::residual_type;
-  // using jacobian_t = typename system_t::jacobian_type;
+  static_assert(std::is_void<observer_t>::value or
+		has_method_observe_residual_when_solver_converged<observer_t, residual_t>::value,
+		"invalid residual observer, likely not having correct method syntax");
+
   using solverT   = lin_solver_t<lin_solver_tag, hessian_t>;
 
   using this_t	   = GaussNewton<scalar_t, lin_solver_tag, lin_solver_t,
 				 line_search_t, converged_when_t, void,
-				 state_t, residual_t,
-				 jacobian_t, hessian_t>;
+				 state_t, residual_t, jacobian_t,
+				 hessian_t, observer_t>;
   using iter_base_t = IterativeBase<scalar_t>;
   using base_t	   = NonLinearSolverBase<this_t>;
   friend base_t;
@@ -248,6 +294,8 @@ class GaussNewton<
   // so that it is constructed only once
   state_t ytrial_  = {};
 
+  const observer_t * const obs_ = nullptr;
+
 public:
   GaussNewton() = delete;
 
@@ -261,13 +309,36 @@ public:
 	      std::is_same<T3, typename system_t::jacobian_type>::value
 	      > * = nullptr
 	    >
-  GaussNewton(const system_t & system, const state_t & y)
+  GaussNewton(const system_t & system,
+	      const T1 & y)
     : JTResid_(y), delta_(y),
       res_(system.residual(y)), jac_(system.jacobian(y)),
       hes_(HessianApproxHelper<jacobian_t>()(jac_)),
       ytrial_(y){}
 
+  template <typename system_t,
+  	    typename T1 = state_t,
+  	    typename T2 = residual_t,
+  	    typename T3 = jacobian_t,
+  	    typename T4 = observer_t,
+  	    core::meta::enable_if_t<
+  	      std::is_same<T1, typename system_t::state_type>::value and
+  	      std::is_same<T2, typename system_t::residual_type>::value and
+  	      std::is_same<T3, typename system_t::jacobian_type>::value and
+  	      !std::is_void<T4>::value
+  	      > * = nullptr
+  	    >
+  GaussNewton(const system_t & system,
+  	      const T1 & y,
+  	      const T4 & obs)
+    : JTResid_(y), delta_(y),
+      res_(system.residual(y)), jac_(system.jacobian(y)),
+      hes_(HessianApproxHelper<jacobian_t>()(jac_)),
+      ytrial_(y), obs_{&obs}
+  {}
+
   GaussNewton(const GaussNewton &) = delete;
+
   ~GaussNewton() = default;
 
 public:
@@ -276,20 +347,22 @@ public:
     sys.residual(y, res_);
     sys.jacobian(y, jac_);
 
-    impl::gauss_newtom_neq_solve< system_t, hessian_t,
-				  typename iter_base_t::iteration_t,
-				  scalar_t, solverT, line_search_t,
-				  converged_when_t>(sys, y, ytrial_,
-						    res_, jac_, hes_,
-						    JTResid_,
-						    this->maxIters_,
-						    this->tolerance_,
-						    delta_, linSolver_,
-						    normO_, normN_);
+    impl::gauss_newtom_neq_solve
+      < system_t, hessian_t,
+	typename iter_base_t::iteration_t,
+	scalar_t, solverT, line_search_t,
+	converged_when_t, observer_t
+	>(sys, y, ytrial_,
+	  res_, jac_, hes_,
+	  JTResid_,
+	  this->maxIters_,
+	  this->tolerance_,
+	  delta_, linSolver_,
+	  normO_, normN_, obs_);
+
   }//end solve
 
 };//class
-
 
 
 }}}}//end namespace rompp::solvers::iterative::impl

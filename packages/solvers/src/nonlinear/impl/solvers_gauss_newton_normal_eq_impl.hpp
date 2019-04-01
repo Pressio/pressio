@@ -10,6 +10,7 @@
 #include "../helper_policies/solvers_jacob_res_product_policy.hpp"
 #include "../helper_policies/solvers_norm_helper_policy.hpp"
 #include "../helper_policies/solvers_line_search_policy.hpp"
+#include "../helper_policies/solvers_residual_observer_when_solver_converged.hpp"
 #include "solvers_get_matrix_size_helper.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
@@ -22,6 +23,7 @@ template <
   typename lin_solver_t,
   typename line_search_t,
   typename converged_when_tag,
+  typename observer_t,
   core::meta::enable_if_t<
     ::rompp::solvers::details::system_traits<system_t>::is_system and
     core::meta::is_core_vector_wrapper<
@@ -42,7 +44,8 @@ void gauss_newtom_neq_solve(const system_t & sys,
 			    typename system_t::state_type & dy,
 			    lin_solver_t & linSolver,
 			    scalar_t & normO,
-			    scalar_t & normN){
+			    scalar_t & normN,
+			    const observer_t * observer){
 
   using jac_t	= typename system_t::jacobian_type;
 
@@ -64,6 +67,11 @@ void gauss_newtom_neq_solve(const system_t & sys,
   // functor for checking convergence
   using is_conv_helper_t = IsConvergedHelper<converged_when_tag>;
   is_conv_helper_t isConverged;
+
+  // functor for observing residual when converged before exiting
+  using residual_observer_when_conv = ResidualObserverWhenSolverConverged<
+    observer_t, typename system_t::residual_type>;
+  residual_observer_when_conv residObs;
 
   /* functor for computing line search factor (alpha) such that
    * the update is done with y = y + alpha dy
@@ -189,7 +197,13 @@ void gauss_newtom_neq_solve(const system_t & sys,
     // check convergence (whatever method user decided)
     auto flag = isConverged(y, dy, normN, normRes, normRes0, iStep,
 			    maxNonLIt, tolerance);
-    if (flag) break;
+
+    // if we have converged, query the observer
+    if (flag) {
+      // observe residual (no op for dummy case)
+      residObs(observer, resid);
+      break;
+    }
 
     // store new norm into old variable
     normO = normN;
