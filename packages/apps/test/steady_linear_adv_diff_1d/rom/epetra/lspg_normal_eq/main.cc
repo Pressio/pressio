@@ -81,6 +81,13 @@ int main(int argc, char *argv[]){
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
   yFomFinal.data()->Print(std::cout << std::setprecision(14));
+  appObj.printStateToFile("rom.txt", *yFomFinal.data();
+
+  auto errorVec(yFom);
+  errorVec = yFom-yFomFinal;
+  const auto norm2error = rompp::core::ops::norm2(errorVec);
+  assert(norm2err < 1e-12);
+  std::cout << std::setprecision(15) << norm2err << std::endl;
 
   // /* if there is a reproducing test we can do, let's do it and we can
   //  * compare with the FOM solution.
