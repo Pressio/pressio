@@ -1,0 +1,10 @@
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  steady_lin_adv_diff2d_rom_epetra_lspg_gn_normal_eqns_reproducing_with_observer
+  SOURCES main.cc
+  NUM_MPI_PROCS 1
+  #STANDARD_PASS_OUTPUT
+  #PASS_REGULAR_EXPRESSION "Hello World"
+  )
+
+configure_file(../../basis/basis_row189_col5.txt basis.txt COPYONLY)
