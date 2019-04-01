@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
 
   using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
-
+  using native_state    = typename fom_t::state_type;
   //-------------------------------
   // MPI init
   MPI_Init(&argc,&argv);
@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
 
   //-------------------------------
   //Parameters: diffusion, advection, expf
-  std::vector<scalar_t> mu{-7, 1, 1};
+  std::vector<scalar_t> mu{-1, 1, 1};
   //1D spatial domain, xL, xR
   std::vector<scalar_t> domain{0, 2.0, 0.01};
   //Left and right boundary conditions
@@ -32,6 +32,13 @@ int main(int argc, char *argv[]){
   //Create object
   fom_t  appObj(Comm, mu, domain, bc1D);
   appObj.setup();
+
+  // run FOM model
+  appObj.setup();
+  appObj.calculateLinearSystem();
+  appObj.calculateForcingTerm();
+  appObj.solve();
+  rompp::core::Vector<native_state> yFom(*appObj.getState());
 
   // number of degrees of freedom
   const int numDof = appObj.getNumGlobalNodes();
@@ -77,15 +84,19 @@ int main(int argc, char *argv[]){
   solver.setTolerance(1e-6);
   solver.setMaxIterations(5);
   solver.solve(lspgProblem.systemObj_, yROM);
+  std::cout << "u_r: " << yROM[0] << std::endl;
+
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
   yFomFinal.data()->Print(std::cout << std::setprecision(14));
-  appObj.printStateToFile("rom.txt", *yFomFinal.data();
 
   auto errorVec(yFom);
   errorVec = yFom-yFomFinal;
-  const auto norm2error = rompp::core::ops::norm2(errorVec);
+  std::cout << "fom: " << yFom[0] << "rom: "<< yFomFinal[0] <<std::endl;
+  const auto norm2err = rompp::core::ops::norm2(errorVec);
+  std::cout <<  norm2err << std::endl;
+
   assert(norm2err < 1e-12);
   std::cout << std::setprecision(15) << norm2err << std::endl;
 
