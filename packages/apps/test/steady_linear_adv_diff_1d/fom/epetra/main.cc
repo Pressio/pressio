@@ -1,5 +1,5 @@
 #include "CORE_ALL"
-#include "APPS_STEADYADVDIFF1D"
+#include "APPS_STEADYLINADVDIFF1D"
 #include "../fom_gold_states.hpp"
 
 constexpr double eps = 1e-12;
@@ -34,7 +34,7 @@ void checkSol(int rank, const T & y,
 
 
 int main(int argc, char *argv[]){
-  using fom_t		= rompp::apps::SteadyAdvDiff1dEpetra;
+  using fom_t		= rompp::apps::SteadyLinAdvDiff1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
 
   //--------------------------------------------------

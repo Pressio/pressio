@@ -11,33 +11,33 @@ FILE(GLOB apps_gen_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
 FILE(GLOB apps_burgers1d_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/burgers1d/*.hpp")
-FILE(GLOB apps_steadyAdvDiff1d_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/steady_adv_diff1d/*.hpp")
-FILE(GLOB apps_steadyAdvDiff2d_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/steady_adv_diff2d/*.hpp")
+FILE(GLOB apps_steadyLinearAdvDiff1d_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/steady_linear_adv_diff1d/*.hpp")
+FILE(GLOB apps_steadyLinearAdvDiff2d_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/steady_linear_adv_diff2d/*.hpp")
 
 # sources
 FILE(GLOB apps_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
 FILE(GLOB apps_burgers1d_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/burgers1d/*.cc")
-FILE(GLOB apps_steadyAdvDiff1d_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/steady_adv_diff1d/*.cc")
-FILE(GLOB apps_steadyAdvDiff2d_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/steady_adv_diff2d/*.cc")
+FILE(GLOB apps_steadyLinearAdvDiff1d_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/steady_linear_adv_diff1d/*.cc")
+FILE(GLOB apps_steadyLinearAdvDiff2d_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/steady_linear_adv_diff2d/*.cc")
 
 SET(SOURCES
   ${apps_gen_SRCS}
   ${apps_burgers1d_SRCS}
-  ${apps_steadyAdvDiff1d_SRCS}
-  ${apps_steadyAdvDiff2d_SRCS}
+  ${apps_steadyLinearAdvDiff1d_SRCS}
+  ${apps_steadyLinearAdvDiff2d_SRCS}
 )
 
 #--------------------------------------
 SET(LUMPED_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/../../APPS_BURGERS1D
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../APPS_STEADYADVDIFF1D
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../APPS_STEADYADVDIFF2D
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../APPS_STEADYLINADVDIFF1D
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../APPS_STEADYLINADVDIFF2D
 )
 INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 
@@ -49,8 +49,8 @@ SET(APPS_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/a
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${APPS_INCDIR})
 INSTALL(FILES ${apps_gen_HEADERS} DESTINATION ${APPS_INCDIR})
 INSTALL(FILES ${apps_burgers1d_HEADERS} DESTINATION ${APPS_INCDIR}/burgers1d)
-INSTALL(FILES ${apps_steadyAdvDiff1d_HEADERS} DESTINATION ${APPS_INCDIR}/steady_adv_diff1d)
-INSTALL(FILES ${apps_steadyAdvDiff2d_HEADERS} DESTINATION ${APPS_INCDIR}/steady_adv_diff2d)
+INSTALL(FILES ${apps_steadyLinearAdvDiff1d_HEADERS} DESTINATION ${APPS_INCDIR}/steady_linear_adv_diff1d)
+INSTALL(FILES ${apps_steadyLinearAdvDiff2d_HEADERS} DESTINATION ${APPS_INCDIR}/steady_linear_adv_diff2d)
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)

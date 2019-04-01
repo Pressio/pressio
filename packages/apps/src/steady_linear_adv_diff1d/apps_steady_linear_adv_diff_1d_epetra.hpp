@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_STEADY_ADV_DIFF_1D_EPETRA_HPP_
-#define ROMPP_APPS_STEADY_ADV_DIFF_1D_EPETRA_HPP_
+#ifndef ROMPP_APPS_STEADY_LIN_ADV_DIFF_1D_EPETRA_HPP_
+#define ROMPP_APPS_STEADY_LIN_ADV_DIFF_1D_EPETRA_HPP_
 
 #include "../../../CORE_ALL"
 #include "Epetra_MpiComm.h"
@@ -17,7 +17,7 @@
 
 namespace rompp{ namespace apps{
 
-class SteadyAdvDiff1dEpetra{
+class SteadyLinAdvDiff1dEpetra{
 protected:
   using nativeVec = Epetra_Vector;
   template<typename T> using rcp = std::shared_ptr<T>;
@@ -30,7 +30,7 @@ public:
   using residual_type = state_type;
   using jacobian_type   = nativeMatrix;
 public:
-  SteadyAdvDiff1dEpetra(Epetra_MpiComm & comm,
+  SteadyLinAdvDiff1dEpetra(Epetra_MpiComm & comm,
       std::vector<scalar_type> & mu,
       std::vector<scalar_type> & domain,
       std::vector<scalar_type> & bc1D)
@@ -40,7 +40,7 @@ public:
       betaOvDx2_{beta_/(2.0*dx_)}
   {}
 
-  ~SteadyAdvDiff1dEpetra() = default;
+  ~SteadyLinAdvDiff1dEpetra() = default;
 
 public:
   void createMap();

@@ -2,12 +2,12 @@
 #include "CORE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG_STEADY"
-#include "APPS_STEADYADVDIFF2D"
+#include "APPS_STEADYLINADVDIFF2D"
 #include "utils_epetra.hpp"
 
 int main(int argc, char *argv[]){
-  using true_fom_t	= rompp::apps::SteadyAdvDiff2dEpetra;
-  using fom_adapter_t	= rompp::apps::SteadyAdvDiff2dEpetraRomAdapter;
+  using true_fom_t	= rompp::apps::SteadyLinAdvDiff2dEpetra;
+  using fom_adapter_t	= rompp::apps::SteadyLinAdvDiff2dEpetraRomAdapter;
   using scalar_t	= typename fom_adapter_t::scalar_type;
   using native_state	= typename fom_adapter_t::state_type;
 

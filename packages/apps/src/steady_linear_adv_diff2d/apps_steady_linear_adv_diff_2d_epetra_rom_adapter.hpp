@@ -1,12 +1,12 @@
 
-#ifndef ROMPP_APPS_STEADY_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
-#define ROMPP_APPS_STEADY_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
+#ifndef ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
+#define ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
 
-#include "apps_steady_adv_diff_2d_epetra.hpp"
+#include "apps_steady_linear_adv_diff_2d_epetra.hpp"
 
 namespace rompp{ namespace apps{
 
-class SteadyAdvDiff2dEpetraRomAdapter{
+class SteadyLinAdvDiff2dEpetraRomAdapter{
   using mv_t = Epetra_MultiVector;
 
 public:
@@ -17,7 +17,7 @@ public:
 
 public:
   template <typename ... Args>
-  SteadyAdvDiff2dEpetraRomAdapter(Args&& ... args)
+  SteadyLinAdvDiff2dEpetraRomAdapter(Args&& ... args)
     : appObj_{std::forward<Args>(args)...}
   {
     appObj_.setup();
@@ -88,7 +88,7 @@ public:
   };
 
 private:
-  SteadyAdvDiff2dEpetra appObj_;
+  SteadyLinAdvDiff2dEpetra appObj_;
 
 };
 

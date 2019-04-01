@@ -1,15 +1,15 @@
 
-#include "apps_steady_adv_diff_2d_epetra.hpp"
+#include "apps_steady_linear_adv_diff_2d_epetra.hpp"
 
 namespace rompp{ namespace apps{
 
-void SteadyAdvDiff2dEpetra::createMap(){
+void SteadyLinAdvDiff2dEpetra::createMap(){
   // total number of dof (we only consider the interior points)
   numGlobalDof_ = NxDof_ * NyDof_;
   myMap_ = std::make_shared<Epetra_Map>(numGlobalDof_, 0, comm_);
 }
 
-void SteadyAdvDiff2dEpetra::setup(){
+void SteadyLinAdvDiff2dEpetra::setup(){
   createMap();
   dofPerProc_= myMap_->NumMyElements();
   MyGlobalDof_ = myMap_->MyGlobalElements();
@@ -36,7 +36,7 @@ void SteadyAdvDiff2dEpetra::setup(){
 }
 
 
-void SteadyAdvDiff2dEpetra::assembleMatrix() const{
+void SteadyLinAdvDiff2dEpetra::assembleMatrix() const{
 
   int gi{}; int gj{};
   int k{};
@@ -127,7 +127,7 @@ void SteadyAdvDiff2dEpetra::assembleMatrix() const{
 }
 
 
-void SteadyAdvDiff2dEpetra::fillRhs() const{
+void SteadyLinAdvDiff2dEpetra::fillRhs() const{
   f_->PutScalar( static_cast<scalar_type>(0) );
 
   int gi{}; int gj{};
@@ -151,7 +151,7 @@ void SteadyAdvDiff2dEpetra::fillRhs() const{
 }
 
 
-void SteadyAdvDiff2dEpetra::solve(){
+void SteadyLinAdvDiff2dEpetra::solve(){
   Epetra_LinearProblem Problem(A_.get(), T_.get(), f_.get());
   AztecOO Solver(Problem);
   Solver.Iterate(500, solveTolerance_);
