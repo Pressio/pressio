@@ -18,8 +18,8 @@ int main(int argc, char *argv[]){
   //assert(Comm.NumProc() == 2);
 
   // we run the FOM and LSPG for same values of parameters
-  constexpr scalar_t Pr = 6.;
-  constexpr scalar_t Re = 55.;
+  constexpr scalar_t Pr = 4.;
+  constexpr scalar_t Re = 95.;
 
   // the discretization to use for solver
   const int Nx = 11, Ny = Nx*2-1;
@@ -34,6 +34,7 @@ int main(int argc, char *argv[]){
   appObj.assembleMatrix();
   appObj.fillRhs();
   appObj.solve();
+  appObj.printStateToFile("fom.txt");
 
   rompp::core::Vector<native_state> yFom(*appObj.getState());
 
@@ -45,11 +46,11 @@ int main(int argc, char *argv[]){
   using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
+  constexpr int romSize = 5;
+
   // app object for running rom
   fom_adapter_t  appObjROM(Comm, Nx, Ny, Pr, Re);
 
-  // read the jacobian of the decoder
-  constexpr int romSize = 5;
   // store modes computed before from file
   const decoder_jac_t phi =
     rompp::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
@@ -89,6 +90,8 @@ int main(int argc, char *argv[]){
 
   // reconstruct the fom corresponding to our rom final state
   auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
+  appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
+
   /* this is a predictive run, so we should recover FOM
    * solution only approximately */
   auto normFomY = rompp::core::ops::norm2(yFom);

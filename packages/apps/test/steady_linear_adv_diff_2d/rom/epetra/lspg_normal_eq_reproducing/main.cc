@@ -34,6 +34,7 @@ int main(int argc, char *argv[]){
   appObj.assembleMatrix();
   appObj.fillRhs();
   appObj.solve();
+  appObj.printStateToFile("fom.txt");  
   rompp::core::Vector<native_state> yFom(*appObj.getState());
 
   // -------------------------
@@ -44,11 +45,11 @@ int main(int argc, char *argv[]){
   using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
+  constexpr int romSize = 5;
+
   // app object for running rom
   fom_adapter_t  appObjROM(Comm, Nx, Ny, Pr, Re);
 
-  // read the jacobian of the decoder
-  constexpr int romSize = 5;
   // store modes computed before from file
   const decoder_jac_t phi =
     rompp::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
@@ -82,7 +83,7 @@ int main(int argc, char *argv[]){
     scalar_t, solver_tag, rompp::solvers::EigenIterative,
     converged_when_t, rom_system_t, hessian_t>;
   gnsolver_t solver(lspgProblem.systemObj_, yROM);
-  solver.setTolerance(1e-13);
+  solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
   solver.solve(lspgProblem.systemObj_, yROM);
 
@@ -90,6 +91,7 @@ int main(int argc, char *argv[]){
    * the basis, so we should recover the FOM solution exactly */
   // reconstruct the fom corresponding to our rom final state
   auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
+  appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
   auto errorVec(yFom); errorVec = yFom - yFomApprox;
   const auto norm2err = rompp::core::ops::norm2(errorVec);
   assert( norm2err < 1e-12 );

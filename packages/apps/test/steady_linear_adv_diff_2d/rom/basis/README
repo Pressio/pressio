@@ -3,6 +3,8 @@ File: basis_row189_col5.txt
 
 Grid used: Nx = 11, Ny = 21
 MPi ranks = 1
+Pr_range{1.0, 5.0};
+Re_range{10., 100.0};
 Contains basis obtained using following (Pr, Re) parameters:
 
 4.50859460741055 27.8948853107565
