@@ -2,12 +2,12 @@
 #include "CORE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG_STEADY"
-#include "APPS_STEADYADVDIFF2D"
+#include "APPS_STEADYLINADVDIFF2D"
 #include "utils_epetra.hpp"
 
 int main(int argc, char *argv[]){
-  using true_fom_t	= rompp::apps::SteadyAdvDiff2dEpetra;
-  using fom_adapter_t	= rompp::apps::SteadyAdvDiff2dEpetraRomAdapter;
+  using true_fom_t	= rompp::apps::SteadyLinAdvDiff2dEpetra;
+  using fom_adapter_t	= rompp::apps::SteadyLinAdvDiff2dEpetraRomAdapter;
   using scalar_t	= typename fom_adapter_t::scalar_type;
   using native_state	= typename fom_adapter_t::state_type;
 
@@ -18,8 +18,8 @@ int main(int argc, char *argv[]){
   //assert(Comm.NumProc() == 2);
 
   // we run the FOM and LSPG for same values of parameters
-  constexpr scalar_t Pr = 2.48875378592597;
-  constexpr scalar_t Re = 41.7029840887032;
+  constexpr scalar_t Pr = 6.;
+  constexpr scalar_t Re = 55.;
 
   // the discretization to use for solver
   const int Nx = 11, Ny = Nx*2-1;
@@ -83,18 +83,21 @@ int main(int argc, char *argv[]){
     scalar_t, solver_tag, rompp::solvers::EigenIterative,
     converged_when_t, rom_system_t, hessian_t>;
   gnsolver_t solver(lspgProblem.systemObj_, yROM);
-  solver.setTolerance(1e-13);
+  solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
   solver.solve(lspgProblem.systemObj_, yROM);
 
   // reconstruct the fom corresponding to our rom final state
   auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
-  /* the ROM is run for a parameter point that was used to generate
-   * the basis, so we should recover the FOM solution exactly */
+  /* this is a predictive run, so we should recover FOM
+   * solution only approximately */
+  auto normFomY = rompp::core::ops::norm2(yFom);
   auto errorVec(yFom); errorVec = yFom - yFomApprox;
   const auto norm2err = rompp::core::ops::norm2(errorVec);
-  assert( norm2err < 1e-12 );
-  std::cout << std::setprecision(15) << norm2err << std::endl;
+  assert( (norm2err/normFomY)*100 < 0.1 ); // less than 0.1 %
+  std::cout << std::setprecision(15) <<
+    "% relative error (L2-norm) " << " " <<
+    norm2err/normFomY*100. << std::endl;
 
   MPI_Finalize();
   return 0;

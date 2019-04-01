@@ -1,5 +1,5 @@
 #include "CORE_ALL"
-#include "APPS_STEADYADVDIFF2D"
+#include "APPS_STEADYLINADVDIFF2D"
 #include "../fom_gold_states.hpp"
 
 constexpr double eps = 1e-7;
@@ -15,7 +15,7 @@ void checkSol(const T & y,
 }
 
 int main(int argc, char *argv[]){
-  using fom_t	 = ::rompp::apps::SteadyAdvDiff2dEpetra;
+  using fom_t	 = ::rompp::apps::SteadyLinAdvDiff2dEpetra;
 
   int rank;
   MPI_Init(&argc,&argv);

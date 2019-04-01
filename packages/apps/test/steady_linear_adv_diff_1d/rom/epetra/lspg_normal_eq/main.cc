@@ -2,12 +2,12 @@
 #include "CORE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG_STEADY"
-#include "APPS_STEADYADVDIFF1D"
+#include "APPS_STEADYLINADVDIFF1D"
 #include "utils_epetra.hpp"
 #include "../../../fom/fom_gold_states.hpp"
 
 int main(int argc, char *argv[]){
-  using fom_t		= rompp::apps::SteadyAdvDiff1dEpetra;
+  using fom_t		= rompp::apps::SteadyLinAdvDiff1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;

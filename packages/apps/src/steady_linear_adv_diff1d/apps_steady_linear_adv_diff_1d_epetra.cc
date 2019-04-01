@@ -1,9 +1,9 @@
 
-#include "apps_steady_adv_diff_1d_epetra.hpp"
+#include "apps_steady_linear_adv_diff_1d_epetra.hpp"
 
 namespace rompp{ namespace apps{
 
-void SteadyAdvDiff1dEpetra::createMap(){
+void SteadyLinAdvDiff1dEpetra::createMap(){
   //-----------------------------------------------------------------------
   //Create map to be used for the matrices and vectors
   //-----------------------------------------------------------------------
@@ -16,7 +16,7 @@ void SteadyAdvDiff1dEpetra::createMap(){
     throw std::logic_error("The supposedly contiguous map isn't so.\n");
 }
 
-void SteadyAdvDiff1dEpetra::setup(){
+void SteadyLinAdvDiff1dEpetra::setup(){
   //-----------------------------------------------------------------------
   // Create Map and define indices of nonzero regions for linear system
   //-----------------------------------------------------------------------
@@ -47,7 +47,7 @@ void SteadyAdvDiff1dEpetra::setup(){
 }
 
 
-void SteadyAdvDiff1dEpetra::calculateLinearSystem() const{
+void SteadyLinAdvDiff1dEpetra::calculateLinearSystem() const{
   //-----------------------------------------------------------------------
   //Calculate the components of A
   //-----------------------------------------------------------------------
@@ -91,7 +91,7 @@ void SteadyAdvDiff1dEpetra::calculateLinearSystem() const{
 }
 
 
-void SteadyAdvDiff1dEpetra::calculateForcingTerm() const{
+void SteadyLinAdvDiff1dEpetra::calculateForcingTerm() const{
   auto uL = bc1D_[0];
   auto uR = bc1D_[1];
   const scalar_type uRf = (alphaOvDxSq_ + betaOvDx2_) * uR;
@@ -113,19 +113,19 @@ void SteadyAdvDiff1dEpetra::calculateForcingTerm() const{
   }
 }
 
-int SteadyAdvDiff1dEpetra::getNumGlobalNodes() const{
+int SteadyLinAdvDiff1dEpetra::getNumGlobalNodes() const{
   return numGlobalNodes_;
 }
 
-std::shared_ptr<Epetra_Vector> SteadyAdvDiff1dEpetra::getState() const {
+std::shared_ptr<Epetra_Vector> SteadyLinAdvDiff1dEpetra::getState() const {
   return u_;
 }
 
-std::shared_ptr<Epetra_Vector> SteadyAdvDiff1dEpetra::getGrid() const{
+std::shared_ptr<Epetra_Vector> SteadyLinAdvDiff1dEpetra::getGrid() const{
       return x_;
 }
 
-void SteadyAdvDiff1dEpetra::solve(){
+void SteadyLinAdvDiff1dEpetra::solve(){
   //-----------------------------------------------------------------------
   // Set, Create, and Solve Linear System
   //-----------------------------------------------------------------------

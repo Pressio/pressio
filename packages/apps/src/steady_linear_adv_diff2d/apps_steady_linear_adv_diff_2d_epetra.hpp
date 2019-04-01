@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_STEADY_ADV_DIFF_2D_EPETRA_HPP_
-#define ROMPP_APPS_STEADY_ADV_DIFF_2D_EPETRA_HPP_
+#ifndef ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
+#define ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
 
 #include "../../../CORE_ALL"
 #include "Epetra_MpiComm.h"
@@ -52,7 +52,7 @@ http://demonstrations.wolfram.com/SteadyStateTwoDimensionalConvectionDiffusionEq
   vertically, and ranks go from 0 to n_ranks-1 starting from bottom.
  */
 
-class SteadyAdvDiff2dEpetra{
+class SteadyLinAdvDiff2dEpetra{
 protected:
   using nativeVec	= Epetra_Vector;
   template<typename T> using rcp = std::shared_ptr<T>;
@@ -66,7 +66,7 @@ protected:
 //   using residual_type	= state_type;
 
 public:
-  SteadyAdvDiff2dEpetra(Epetra_MpiComm & comm,
+  SteadyLinAdvDiff2dEpetra(Epetra_MpiComm & comm,
 			int Nx, int Ny,
 			scalar_type Pr = 2.,
 			scalar_type Re = 30.,
