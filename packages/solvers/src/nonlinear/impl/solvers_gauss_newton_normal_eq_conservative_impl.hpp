@@ -108,6 +108,11 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   // compute (whatever type) norm of y
   normEvaluator(y, normO);
   normN = static_cast<scalar_t>(0);
+  auto normLambda = static_cast<scalar_t>(0);
+  auto normCbarR = static_cast<scalar_t>(0);
+
+  typename system_t::state_type dy_y(y.size());
+  typename system_t::state_type dy_lambda(lambda.size());
 
 #ifdef HAVE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -182,6 +187,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     ::rompp::core::ops::dot(cbarT, resid, cbarR);
+    normEvaluator(cbarR, normCbarR);
 
     ::rompp::core::ops::product(cbarT, lambda, cbarTlambda);
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
@@ -221,16 +227,21 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     timer->stop("solve normeq");
 #endif
 
+    *dy_y.data() = dy.data()->block(0, 0, y.size(), 1);
+    *dy_lambda.data() = dy.data()->block(y.size(), 0, lambda.size(), 1);
+
     // norm of the correction
-    normEvaluator(dy, normN);
+    normEvaluator(dy_y, normN);
+    normEvaluator(dy_lambda, normLambda);
 
 #ifdef DEBUG_PRINT
     ::rompp::core::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
+				    "||cbar_R|| = ", normCbarR,
 				    "||dy|| =", normN,
-				    core::io::reset(),
-				    "\n");
+				    "||dlambda|| =", normLambda,
+				    core::io::reset(), "\n");
 #endif
 
     // // compute multiplicative factor if needed

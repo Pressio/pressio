@@ -11,6 +11,7 @@
 #include "../helper_policies/solvers_norm_helper_policy.hpp"
 #include "../helper_policies/solvers_line_search_policy.hpp"
 #include "../helper_policies/solvers_residual_observer_when_solver_converged.hpp"
+#include "../helper_policies/solvers_residual_observer_each_solver_step.hpp"
 #include "solvers_get_matrix_size_helper.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
@@ -73,13 +74,20 @@ void gauss_newtom_neq_solve(const system_t & sys,
     observer_t, typename system_t::residual_type>;
   residual_observer_when_conv residObs;
 
+  // functor for observing residual at each GN step
+  using residual_observer_each_step = ResidualObserverEachSolverStep<
+    observer_t, typename system_t::residual_type>;
+  residual_observer_each_step residObsStep;
+
   /* functor for computing line search factor (alpha) such that
    * the update is done with y = y + alpha dy
    * alpha = 1 default when user does not want line search
    */
   using lsearch_helper = LineSearchHelper<line_search_t>;
   lsearch_helper lineSearchHelper;
+
   //-------------------------------------------------------
+
   // alpha for taking steps
   scalar_t alpha = {};
   // storing residaul norm
@@ -129,6 +137,9 @@ void gauss_newtom_neq_solve(const system_t & sys,
 #endif
     // store initial residual norm
     if (iStep==1) normRes0 = normRes;
+
+    // observe residual (no op for dummy case)
+    residObsStep(observer, resid, iStep);
 
     // compute LHS: J^T*J
 #ifdef HAVE_TEUCHOS_TIMERS

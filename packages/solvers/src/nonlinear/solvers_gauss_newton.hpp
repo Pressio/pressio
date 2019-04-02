@@ -42,7 +42,7 @@ class GaussNewton<
 
   scalar_t normO_		= {};
   scalar_t normN_		= {};
-  const observer_t * const obs_ = nullptr;
+  const observer_t * const observer_ = nullptr;
 
 public:
   GaussNewton() = default;
@@ -54,7 +54,7 @@ public:
       > * = nullptr
     >
   GaussNewton(const T & obs)
-    : obs_(&obs){}
+    : observer_(&obs){}
 
   GaussNewton(const GaussNewton &) = delete;
 
@@ -71,8 +71,9 @@ private:
     using jac_t   = typename system_t::jacobian_type;
 
     static_assert(std::is_void<observer_t>::value or
-		  has_method_observe_residual_when_solver_converged<observer_t, res_t>::value,
-		  "invalid observer");
+		  has_method_observe_residual_when_solver_converged<observer_t, res_t>::value or
+		  has_method_observe_residual_each_step<observer_t, res_t>::value,
+		  "invalid observer, likely not having correct methods");
 
     // since I know the type of jacobian, I can declare the
     // functor that knows how to approximate the hessian: J^T*J
@@ -107,7 +108,7 @@ private:
       converged_when_t, observer_t
       >(sys, y,	ytrial, Resid, Jacob, H, JTR,
 	this->maxIters_, this->tolerance_,
-	delta, linSolver_, normO_, normN_, obs_);
+	delta, linSolver_, normO_, normN_, observer_);
 
   }//solveImpl
 
@@ -156,8 +157,9 @@ class GaussNewton<
   using solverT   = lin_solver_t<lin_solver_tag, hessian_t>;
 
   static_assert(std::is_void<observer_t>::value or
-		has_method_observe_residual_when_solver_converged<observer_t, residual_t>::value,
-		"invalid residual observer, likely not having correct method syntax");
+		has_method_observe_residual_when_solver_converged<observer_t, residual_t>::value or
+		has_method_observe_residual_each_step<observer_t, residual_t>::value,
+		"invalid residual observer, likely not having correct methods");
 
   using this_t	   = GaussNewton<scalar_t, lin_solver_tag, lin_solver_t,
 				 line_search_t, converged_when_t, system_t,
@@ -179,7 +181,7 @@ class GaussNewton<
   // so that it is constructed only once
   state_t ytrial_  = {};
 
-  const observer_t * const obs_ = nullptr;
+  const observer_t * const observer_ = nullptr;
 
 public:
   GaussNewton() = delete;
@@ -201,7 +203,7 @@ public:
     : JTResid_(y), delta_(y),
       res_(system.residual(y)), jac_(system.jacobian(y)),
       hes_(HessianApproxHelper<jacobian_t>()(jac_)),
-      ytrial_(y), obs_{&obs}{}
+      ytrial_(y), observer_{&obs}{}
 
   GaussNewton(const GaussNewton &) = delete;
 
@@ -223,7 +225,7 @@ public:
     				    this->tolerance_,
     				    delta_, linSolver_,
     				    normO_, normN_,
-    				    obs_);
+    				    observer_);
   }//end solve
 
 };//class
@@ -268,8 +270,9 @@ class GaussNewton<
 {
 
   static_assert(std::is_void<observer_t>::value or
-		has_method_observe_residual_when_solver_converged<observer_t, residual_t>::value,
-		"invalid residual observer, likely not having correct method syntax");
+		has_method_observe_residual_when_solver_converged<observer_t, residual_t>::value or
+		has_method_observe_residual_each_step<observer_t, residual_t>::value,
+		"invalid observer, likely not having correct methods");
 
   using solverT   = lin_solver_t<lin_solver_tag, hessian_t>;
 
@@ -294,7 +297,7 @@ class GaussNewton<
   // so that it is constructed only once
   state_t ytrial_  = {};
 
-  const observer_t * const obs_ = nullptr;
+  const observer_t * const observer_ = nullptr;
 
 public:
   GaussNewton() = delete;
@@ -334,7 +337,7 @@ public:
     : JTResid_(y), delta_(y),
       res_(system.residual(y)), jac_(system.jacobian(y)),
       hes_(HessianApproxHelper<jacobian_t>()(jac_)),
-      ytrial_(y), obs_{&obs}
+      ytrial_(y), observer_{&obs}
   {}
 
   GaussNewton(const GaussNewton &) = delete;
@@ -358,7 +361,7 @@ public:
 	  this->maxIters_,
 	  this->tolerance_,
 	  delta_, linSolver_,
-	  normO_, normN_, obs_);
+	  normO_, normN_, observer_);
 
   }//end solve
 
