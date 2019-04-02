@@ -218,12 +218,15 @@ int main(int argc, char *argv[]){
 	  file_features << std::endl;
 
 
-	  //  // ROM quantity of interest
-	  //
-	  //
-	  //  // FOM quantity of interest
-	  //
-	  //
+	  // ROM quantity of interest
+	  auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
+	  const auto energyROM = rompp::core::ops::norm2(yFomApprox);
+	  file_qoi_rom << energyROM << std::endl;
+
+	  // FOM quantity of interest
+	  const auto energyFOM = rompp::core::ops::norm2(yFom);
+      file_qoi_fom << energyFOM << std::endl;
+
 
   }
   // Loop Over Parameters
