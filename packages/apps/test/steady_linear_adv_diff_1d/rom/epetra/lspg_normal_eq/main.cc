@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
 
   //-------------------------------
   //Parameters: diffusion, advection, expf
-  std::vector<scalar_t> mu{-1, 1, 1};
+  std::vector<scalar_t> mu{-2.194214766762222, 0.984182281940700, 2.729726020165052};
   //1D spatial domain, xL, xR
   std::vector<scalar_t> domain{0, 2.0, 0.01};
   //Left and right boundary conditions
@@ -44,13 +44,13 @@ int main(int argc, char *argv[]){
   const int numDof = appObj.getNumGlobalNodes();
 
   // read the jacobian of the decoder
-  constexpr int romSize = 5;
+  constexpr int romSize = 15;
   // store modes computed before from file
   decoder_jac_t phi =
     rompp::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
   					 Comm, appObj.getDataMap());
   //print to terminal the basis
-  // phi.data()->Print(std::cout);
+  phi.data()->Print(std::cout);
   // decoder object
   decoder_t decoderObj(phi);
 
@@ -81,11 +81,9 @@ int main(int argc, char *argv[]){
     scalar_t, solver_tag, rompp::solvers::EigenIterative,
     converged_when_t, rom_system_t, hessian_t>;
   gnsolver_t solver(lspgProblem.systemObj_, yROM);
-  solver.setTolerance(1e-6);
-  solver.setMaxIterations(5);
+  solver.setTolerance(1e-15);
+  solver.setMaxIterations(30);
   solver.solve(lspgProblem.systemObj_, yROM);
-  std::cout << "u_r: " << yROM[0] << std::endl;
-
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
@@ -93,11 +91,9 @@ int main(int argc, char *argv[]){
 
   auto errorVec(yFom);
   errorVec = yFom-yFomFinal;
-  std::cout << "fom: " << yFom[0] << "rom: "<< yFomFinal[0] <<std::endl;
   const auto norm2err = rompp::core::ops::norm2(errorVec);
-  std::cout <<  norm2err << std::endl;
 
-  assert(norm2err < 1e-12);
+  assert(norm2err < 1e-6);
   std::cout << std::setprecision(15) << norm2err << std::endl;
 
   // /* if there is a reproducing test we can do, let's do it and we can
