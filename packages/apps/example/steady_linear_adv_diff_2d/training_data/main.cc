@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
 	     };
 
   // number of sample to take
-  constexpr int nSamples = 5;
+  constexpr int nSamples = 30;
 
   // fill for Prandtl
   std::vector<double> PrS(nSamples);
