@@ -1,6 +1,6 @@
 
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  steady_adv_diff2d_rom_epetra_lspg_gn_normal_eqns_predictive
+  steady_lin_adv_diff2d_rom_epetra_lspg_gn_normal_eqns_predictive
   SOURCES main.cc
   NUM_MPI_PROCS 3
   #STANDARD_PASS_OUTPUT
