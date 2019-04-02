@@ -1,6 +1,8 @@
 
 # #include the lumped headers to access classes of solvers
-# INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../lumped_include_headers)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
-ADD_SUBDIRECTORIES(
-)
+#include the utilities in utils
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../test/utils)
+
+ADD_SUBDIRECTORIES(steady_linear_adv_diff_2d)
