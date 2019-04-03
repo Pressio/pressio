@@ -36,7 +36,7 @@ TEST(solvers_nonlin_lsq,
 
   /* NOTE: this problem with GN only works with line search */
 
-  using solver_tag = solvers::linear::LSCG;
+  using solver_tag = solvers::linear::iterative::LSCG;
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
   using gn_t = solvers::iterative::GaussNewtonLineSearch<
     sc_t, solver_tag, solvers::EigenIterative, lsearch_t>;
