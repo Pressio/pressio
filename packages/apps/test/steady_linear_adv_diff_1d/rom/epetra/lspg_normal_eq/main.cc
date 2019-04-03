@@ -108,7 +108,7 @@ int main(int argc, char *argv[]){
   errorVec = yFom-yFomFinal;
   const auto norm2err = rompp::core::ops::norm2(errorVec);
 
-  assert(norm2err < 1e-6);
+  assert(norm2err < 1e-10);
   std::cout << std::setprecision(15) << norm2err << std::endl;
 
   MPI_Finalize();
