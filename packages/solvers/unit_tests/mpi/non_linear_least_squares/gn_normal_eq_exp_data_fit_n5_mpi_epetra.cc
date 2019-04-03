@@ -27,7 +27,7 @@ TEST(solvers_nonlin_lsq,
   x[4] = 0.02;
 
   // linear solver type and GaussNewton solver
-  using solver_tag = solvers::linear::LSCG;
+  using solver_tag = solvers::linear::iterative::LSCG;
   solvers::iterative::GaussNewton<sc_t, solver_tag,
   				  solvers::EigenIterative> GNSolver;
   GNSolver.setTolerance(1e-8);
@@ -55,7 +55,7 @@ TEST(solvers_nonlin_lsq,
   x[4] = 0.02;
 
   // linear solver type and GaussNewton solver
-  using solver_tag = solvers::linear::LSCG;
+  using solver_tag = solvers::linear::iterative::LSCG;
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
   using gn_t = solvers::iterative::GaussNewtonLineSearch<
     sc_t, solver_tag, solvers::EigenIterative, lsearch_t>;
@@ -87,7 +87,7 @@ TEST(solvers_nonlin_lsq,
   x[4] = 0.02;
 
   // linear solver type and GaussNewton solver
-  using solver_tag = solvers::linear::LSCG;
+  using solver_tag = solvers::linear::iterative::LSCG;
   using converged_when_t = solvers::iterative::default_convergence;
   using gn_t = solvers::iterative::GaussNewton<sc_t, solver_tag,
   				  solvers::EigenIterative,

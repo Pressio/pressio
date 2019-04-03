@@ -4,8 +4,7 @@
 #include "CORE_VECTOR"
 #include "SOLVERS_LINEAR"
 
-TEST(solvers_linear_iterative, BicgstabSparseEigen)
-{
+TEST(solvers_linear_iterative, LSCGSparseEigen){
   // Namespaces
   using namespace rompp;
   using namespace rompp::solvers;
@@ -31,7 +30,7 @@ TEST(solvers_linear_iterative, BicgstabSparseEigen)
   vector_w_t y(2);
 
   // Solve linear system
-  using solver_t = EigenIterative<linear::LSCG, matrix_w_t>;
+  using solver_t = EigenIterative<linear::iterative::LSCG, matrix_w_t>;
   solver_t solver;
   solver.solve(A,b,y);
 

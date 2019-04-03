@@ -5,22 +5,23 @@
 
 namespace rompp{ namespace solvers{ namespace linear {
 
-// // Linear dense solvers types
-// struct ColPivHouseholderQR {};
-// struct CompleteOrthogonalDecomposition {};
+namespace iterative{
+  struct CG {};
+  struct LSCG {};
+  struct Bicgstab {};
+}//end iterative
 
-// Linear iterative solvers types
-struct CG {};
-struct LSCG {};
-struct Bicgstab {};
-// struct Gmres {};
+
+namespace direct{
+  struct ColPivHouseholderQR {};
+  //struct CompleteOrthogonalDecomposition {};
+}//end direct
+
 
 // // Preconditioner types
 // struct Jacobi {};
 // struct DefaultPreconditioner {};
 
 }}}//end namespace rompp::solvers::linear
-
-
 
 #endif

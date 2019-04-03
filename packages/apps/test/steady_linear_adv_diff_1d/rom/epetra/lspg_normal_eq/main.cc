@@ -1,6 +1,7 @@
 
 #include "CORE_ALL"
 #include "SOLVERS_NONLINEAR"
+#include "QR_BASIC"
 #include "ROM_LSPG_STEADY"
 #include "APPS_STEADYLINADVDIFF1D"
 #include "utils_epetra.hpp"
@@ -14,7 +15,7 @@ int main(int argc, char *argv[]){
 
   using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
-
+  using native_state    = typename fom_t::state_type;
   //-------------------------------
   // MPI init
   MPI_Init(&argc,&argv);
@@ -24,7 +25,7 @@ int main(int argc, char *argv[]){
 
   //-------------------------------
   //Parameters: diffusion, advection, expf
-  std::vector<scalar_t> mu{-7, 1, 1};
+  std::vector<scalar_t> mu{-2.194214766762222, 0.984182281940700, 2.729726020165052};
   //1D spatial domain, xL, xR
   std::vector<scalar_t> domain{0, 2.0, 0.01};
   //Left and right boundary conditions
@@ -33,17 +34,24 @@ int main(int argc, char *argv[]){
   fom_t  appObj(Comm, mu, domain, bc1D);
   appObj.setup();
 
+  // run FOM model
+  appObj.setup();
+  appObj.calculateLinearSystem();
+  appObj.calculateForcingTerm();
+  appObj.solve();
+  rompp::core::Vector<native_state> yFom(*appObj.getState());
+
   // number of degrees of freedom
   const int numDof = appObj.getNumGlobalNodes();
 
   // read the jacobian of the decoder
-  constexpr int romSize = 5;
+  constexpr int romSize = 15;
   // store modes computed before from file
   decoder_jac_t phi =
     rompp::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
   					 Comm, appObj.getDataMap());
   //print to terminal the basis
-  // phi.data()->Print(std::cout);
+  phi.data()->Print(std::cout);
   // decoder object
   decoder_t decoderObj(phi);
 
@@ -62,25 +70,44 @@ int main(int argc, char *argv[]){
   rompp::rom::LSPGSteadyProblemGenerator<lspg_problem_type> lspgProblem(
       appObj, *yRef, decoderObj, yROM);
 
+  // // GaussNewton solver
+  // using rom_jac_t     = typename lspg_problem_type::lspg_matrix_t;
+  // using qr_algo = rompp::qr::TSQR;
+  // using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
+  // using converged_when_t = rompp::solvers::iterative::default_convergence;
+  // using gnsolver_t  = rompp::solvers::iterative::GaussNewtonQR<
+  //        scalar_t, qr_type, converged_when_t>;
+  // gnsolver_t solver;//lspgProblem.stepperObj_, yROM);
+  // solver.setTolerance(1e-11);
+  // solver.setMaxIterations(200);
+  // solver.solve(lspgProblem.systemObj_, yROM);
+
   // GaussNewton solver
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
   // rom is solved using eigen, hessian is wrapper of eigen matrix
   using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
   using hessian_t	 = rompp::core::Matrix<eig_dyn_mat>;
-  using solver_tag	 = rompp::solvers::linear::LSCG;
+  using solver_tag	 = rompp::solvers::linear::direct::ColPivHouseholderQR;
   using converged_when_t = rompp::solvers::iterative::default_convergence;
   using rom_system_t = typename lspg_problem_type::lspg_system_t;
   using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
-    scalar_t, solver_tag, rompp::solvers::EigenIterative,
+    scalar_t, solver_tag, rompp::solvers::EigenDirect,
     converged_when_t, rom_system_t, hessian_t>;
   gnsolver_t solver(lspgProblem.systemObj_, yROM);
-  solver.setTolerance(1e-6);
-  solver.setMaxIterations(5);
+  solver.setTolerance(1e-11);
+  solver.setMaxIterations(30);
   solver.solve(lspgProblem.systemObj_, yROM);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
   yFomFinal.data()->Print(std::cout << std::setprecision(14));
+
+  auto errorVec(yFom);
+  errorVec = yFom-yFomFinal;
+  const auto norm2err = rompp::core::ops::norm2(errorVec);
+
+  assert(norm2err < 1e-6);
+  std::cout << std::setprecision(15) << norm2err << std::endl;
 
   // /* if there is a reproducing test we can do, let's do it and we can
   //  * compare with the FOM solution.

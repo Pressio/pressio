@@ -1,6 +1,5 @@
 #include "CORE_ALL"
 #include "APPS_STEADYLINADVDIFF2D"
-#include "../fom_gold_states.hpp"
 #include <random>
 #include <Eigen/SVD>
 
