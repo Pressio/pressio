@@ -16,7 +16,7 @@ TEST(solvers_nonlinear_least_squares,
   state_t x(2); x[0] = 2.0; x[1] = 0.25;
 
   // linear solver type and GaussNewton solver
-  using solver_tag = solvers::linear::LSCG;
+  using solver_tag = solvers::linear::iterative::LSCG;
   solvers::iterative::GaussNewton<sc_t, solver_tag,
 				  solvers::EigenIterative> GNSolver;
   GNSolver.setTolerance(1e-8);
@@ -45,7 +45,7 @@ TEST(solvers_nonlinear_least_squares,
   state_t x(2); x[0] = 2.0; x[1] = 0.25;
 
   // define linear solver type and GaussNewton solver
-  using solver_tag = solvers::linear::LSCG;
+  using solver_tag = solvers::linear::iterative::LSCG;
   using converged_when_t = solvers::iterative::default_convergence;
   using gn_t = solvers::iterative::GaussNewton<sc_t, solver_tag,
 					       solvers::EigenIterative,

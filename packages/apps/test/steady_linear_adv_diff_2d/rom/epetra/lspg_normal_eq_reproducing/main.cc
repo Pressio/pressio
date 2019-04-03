@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
   // rom is solved using eigen, hessian is wrapper of eigen matrix
   using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
   using hessian_t	 = rompp::core::Matrix<eig_dyn_mat>;
-  using solver_tag	 = rompp::solvers::linear::LSCG;
+  using solver_tag	 = rompp::solvers::linear::iterative::LSCG;
   using converged_when_t = rompp::solvers::iterative::default_convergence;
   using rom_system_t	 = typename lspg_problem_type::lspg_system_t;
   using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<

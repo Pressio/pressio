@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
 
   // define solver
   using lin_solver_t = rompp::solvers::EigenIterative<
-    rompp::solvers::linear::Bicgstab, ode_jac_t>;
+    rompp::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   rompp::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
 
   // integrate in time

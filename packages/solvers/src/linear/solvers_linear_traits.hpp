@@ -28,13 +28,13 @@ struct traits {
 
 
 template <>
-struct traits<CG> {
+struct traits<::rompp::solvers::linear::iterative::CG> {
 
   template <
     typename MatrixT,
     typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
   >
-  using eigen_solver_type             = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
+  using eigen_solver_type = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
 
   static constexpr bool direct        = false;
   static constexpr bool eigen_enabled = true;
@@ -42,13 +42,13 @@ struct traits<CG> {
 
 
 template <>
-struct traits<Bicgstab> {
+struct traits<::rompp::solvers::linear::iterative::Bicgstab> {
 
   template <
     typename MatrixT,
     typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
   >
-  using eigen_solver_type             = Eigen::BiCGSTAB<MatrixT, PrecT>;
+  using eigen_solver_type = Eigen::BiCGSTAB<MatrixT, PrecT>;
 
   static constexpr bool direct        = false;
   static constexpr bool eigen_enabled = true;
@@ -56,7 +56,7 @@ struct traits<Bicgstab> {
 
 
 template <>
-struct traits<LSCG> {
+struct traits<::rompp::solvers::linear::iterative::LSCG> {
 
   template <
     typename MatrixT,
@@ -69,39 +69,26 @@ struct traits<LSCG> {
 };
 
 
+template <>
+struct traits<::rompp::solvers::linear::direct::ColPivHouseholderQR> {
 
-// template <>
-// struct traits<ColPivHouseholderQR> {
+  template <typename MatrixT>
+  using eigen_solver_type = Eigen::ColPivHouseholderQR<MatrixT>;
 
-//   template <typename MatrixT>
-//   using eigen_solver_type = Eigen::ColPivHouseholderQR<MatrixT>;
-
-//   static constexpr bool direct = true;
-//   static constexpr bool eigen_enabled = true;
-// };
-
-
-// template <>
-// struct traits<Gmres> {
-
-//   static constexpr bool direct = false;
-//   static constexpr bool eigen_enabled = false;
-// };
+  static constexpr bool direct = true;
+  static constexpr bool eigen_enabled = true;
+};
 
 
 // template <>
 // struct traits<CompleteOrthogonalDecomposition> {
 
-//   template <
-//     typename MatrixT
-//   >
-//   using eigen_solver_type = SolversLinearDirectWrapperEigen<Eigen::CompleteOrthogonalDecomposition<MatrixT>>;
+//   template <typename MatrixT>
+//   using eigen_solver_type = Eigen::CompleteOrthogonalDecomposition<MatrixT>;
 
 //   static constexpr bool direct = true;
 //   static constexpr bool eigen_enabled = true;
 // };
-
-
 
 
 }}}}//end namespace rompp::solvers::linear::details

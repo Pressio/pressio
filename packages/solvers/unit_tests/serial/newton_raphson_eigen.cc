@@ -59,7 +59,7 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
   problem_t sys;
 
   // linear system
-  using lin_solver_t = EigenIterative<linear::LSCG, jacobian_t>;
+  using lin_solver_t = EigenIterative<linear::iterative::LSCG, jacobian_t>;
   // nonlinear system
   NewtonRaphson<scalar_t, lin_solver_t> solver;
 
