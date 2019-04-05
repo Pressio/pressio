@@ -114,12 +114,10 @@ int main(int argc, char *argv[]){
   std::ofstream file_qoi_norm_rom;
   std::ofstream file_qoi_point_value_fom;
   std::ofstream file_qoi_point_value_rom;
-  if (caseString.compare("train") == 0) {
-    file_qoi_norm_fom.open( caseString + "_qoi_norm_fom.dat" );
-    file_qoi_norm_rom.open( caseString + "_qoi_norm_rom.dat" );
-    file_qoi_point_value_fom.open( caseString + "_qoi_point_value_fom.dat" );
-    file_qoi_point_value_rom.open( caseString + "_qoi_point_value_rom.dat" );
-  }
+  file_qoi_norm_fom.open( caseString + "_qoi_norm_fom.dat" );
+  file_qoi_norm_rom.open( caseString + "_qoi_norm_rom.dat" );
+  file_qoi_point_value_fom.open( caseString + "_qoi_point_value_fom.dat" );
+  file_qoi_point_value_rom.open( caseString + "_qoi_point_value_rom.dat" );
 
   //---------------------------------------
   // generate random samples of Parameters
@@ -222,7 +220,7 @@ int main(int argc, char *argv[]){
     // rom is solved using eigen, hessian is wrapper of eigen matrix
     using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
     using hessian_t	 = rompp::core::Matrix<eig_dyn_mat>;
-    using solver_tag	 = rompp::solvers::linear::LSCG;
+    using solver_tag	 = rompp::solvers::linear::iterative::LSCG;
     using converged_when_t = rompp::solvers::iterative::default_convergence;
     using rom_system_t	 = typename lspg_problem_type::lspg_system_t;
     using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
@@ -244,18 +242,16 @@ int main(int argc, char *argv[]){
     }
     file_features << std::endl;
 
-    if (caseString.compare("train") == 0) {
-      // ROM quantities of interest
-      auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
-      const auto energyROM = rompp::core::ops::norm2(yFomApprox);
-      file_qoi_norm_rom	     << std::setprecision(13) << energyROM << std::endl;
-      file_qoi_point_value_rom << std::setprecision(13) << yFomApprox[indexQoI] << std::endl;
+    // ROM quantities of interest
+    auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
+    const auto energyROM = rompp::core::ops::norm2(yFomApprox);
+    file_qoi_norm_rom	     << std::setprecision(13) << energyROM << std::endl;
+    file_qoi_point_value_rom << std::setprecision(13) << yFomApprox[indexQoI] << std::endl;
 
-      // FOM quantities of interest
-      const auto energyFOM = rompp::core::ops::norm2(yFom);
-      file_qoi_norm_fom	     << std::setprecision(13) << energyFOM << std::endl;
-      file_qoi_point_value_fom << std::setprecision(13) << yFom[indexQoI] << std::endl;
-    }
+    // FOM quantities of interest
+    const auto energyFOM = rompp::core::ops::norm2(yFom);
+    file_qoi_norm_fom	     << std::setprecision(13) << energyFOM << std::endl;
+    file_qoi_point_value_fom << std::setprecision(13) << yFom[indexQoI] << std::endl;
 
     // zero out elements of residual container
     myResidSampler.setContainerElementsZero();
@@ -264,12 +260,10 @@ int main(int argc, char *argv[]){
 
   // close files
   file_features.close();
-  if (caseString.compare("train") == 0) {
-    file_qoi_norm_fom.close();
-    file_qoi_norm_rom.close();
-    file_qoi_point_value_fom.close();
-    file_qoi_point_value_rom.close();
-  }
+  file_qoi_norm_fom.close();
+  file_qoi_norm_rom.close();
+  file_qoi_point_value_fom.close();
+  file_qoi_point_value_rom.close();
 
   MPI_Finalize();
   return 0;
