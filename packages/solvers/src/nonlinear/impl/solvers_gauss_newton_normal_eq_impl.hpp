@@ -150,7 +150,7 @@ void gauss_newtom_neq_solve(const system_t & sys,
     hessEvaluator(jacob, H);
 #endif
 
-    ::rompp::core::io::print_stdout( *H.data() , "\n");
+    //::rompp::core::io::print_stdout( *H.data() , "\n");
     //resid.print("resid");
 
 #ifdef DEBUG_PRINT
@@ -185,7 +185,7 @@ void gauss_newtom_neq_solve(const system_t & sys,
     linSolver.solve(H, JTR, dy);
 #endif
 
-    ::rompp::core::io::print_stdout(*dy.data());
+    //::rompp::core::io::print_stdout(*dy.data());
 
     // norm of the correction
     normEvaluator(dy, normN);
