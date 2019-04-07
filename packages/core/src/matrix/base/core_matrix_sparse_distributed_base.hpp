@@ -6,7 +6,7 @@
 
 namespace rompp{
 namespace core{
-    
+
 template<typename derived_type>
 class MatrixSparseDistributedBase
   : private core::details::CrtpBase<
@@ -19,7 +19,7 @@ class MatrixSparseDistributedBase
   using sc_t = typename traits_t::scalar_t;
   using LO_t = typename traits_t::local_ordinal_t;
   using GO_t = typename traits_t::global_ordinal_t;
-  
+
 public:
   void insertGlobalValues(GO_t row,
 			  LO_t numEntries,
@@ -30,15 +30,18 @@ public:
 					      values, indices);
   }
 
-private:  
-  friend derived_type;
+private:
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_type>::type;
+
   friend core::details::CrtpBase<
     MatrixSparseDistributedBase<derived_type>>;
 
   MatrixSparseDistributedBase() = default;
-  ~MatrixSparseDistributedBase() = default; 
+  ~MatrixSparseDistributedBase() = default;
 
-};//end class  
+};//end class
 } // end namespace core
 }//end namespace rompp
 #endif

@@ -6,7 +6,7 @@
 
 namespace rompp{
 namespace core{
-    
+
 template<typename derived_type>
 class MatrixDistributedBase
   : private core::details::CrtpBase<
@@ -31,14 +31,17 @@ public:
 
   GO_t globalCols() const{
     return this->underlying().globalColsImpl();}
-  
+
 private:
-  friend derived_type;
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_type>::type;
+
   friend core::details::CrtpBase<MatrixDistributedBase<derived_type>>;
   MatrixDistributedBase() = default;
   ~MatrixDistributedBase() = default;
-  
-};//end class  
+
+};//end class
 } // end namespace core
 }//end namespace rompp
 #endif

@@ -5,7 +5,7 @@
 #include "../core_matrix_traits.hpp"
 
 namespace rompp{ namespace core{
-    
+
 template<typename derived_type>
 class MatrixBase
   : private core::details::CrtpBase<
@@ -22,7 +22,7 @@ public:
   bool isLowerTriangular(){
     return this->underlying().isLowerTriangularImpl();
   }
-  
+
   bool isUpperTriangular(){
     return this->underlying().isUpperTriangularImpl();
   }
@@ -34,14 +34,17 @@ public:
   void addToDiagonal(T value) {
     return this->underlying().addToDiagonalImpl(value);
   }
-    
-private:  
-  friend derived_type;
+
+private:
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_type>::type;
+
   friend core::details::CrtpBase<MatrixBase<derived_type>>;
   MatrixBase() = default;
-  ~MatrixBase() = default; 
+  ~MatrixBase() = default;
 };//end class
-  
+
 
 }}//end namespace rompp::core
 #endif

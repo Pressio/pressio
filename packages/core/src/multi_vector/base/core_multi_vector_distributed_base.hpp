@@ -45,8 +45,11 @@ public:
   }
 
 private:
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_type>::type;
+
   using this_t = MultiVectorDistributedBase<derived_type>;
-  friend derived_type;
   friend core::details::CrtpBase<this_t>;
 
   MultiVectorDistributedBase() = default;

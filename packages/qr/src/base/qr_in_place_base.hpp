@@ -13,7 +13,11 @@ class QRInPlaceBase
   QRInPlaceBase<derived_t, matrix_t>>{
 
   using this_t = QRInPlaceBase<derived_t, matrix_t>;
-  friend derived_t;
+
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_t>::type;
+
   friend core::details::CrtpBase<this_t>;
 
 public:

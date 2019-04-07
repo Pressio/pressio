@@ -58,7 +58,10 @@ private:
   ImplicitStepperBase() = default;
   ~ImplicitStepperBase() = default;
 
-  friend concrete_stepper_type;
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<concrete_stepper_type>::type;
+
   friend core::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type>>;
 
 };//end class

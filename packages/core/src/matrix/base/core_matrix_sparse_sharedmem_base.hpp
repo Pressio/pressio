@@ -6,7 +6,7 @@
 
 namespace rompp{
 namespace core{
-    
+
 template<typename derived_type>
 class MatrixSparseSharedMemBase
   : private core::details::CrtpBase<
@@ -17,10 +17,10 @@ class MatrixSparseSharedMemBase
 
   using traits_t = details::traits<derived_type>;
   using ord_t = typename traits_t::ordinal_t;
-  using sc_t = typename traits_t::scalar_t;    
+  using sc_t = typename traits_t::scalar_t;
 
 public:
-  
+
   bool isCompressed() const{
     return this->underlying().isCompressedImpl();
   }
@@ -44,22 +44,24 @@ public:
 					values,
 					indices);
   }
-  
+
   // NOTE: we return by copy. We do not enable reference []
   // because it makes little sense for a sparse matrix
   sc_t operator() (ord_t row, ord_t col) const;
 
+private:
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_type>::type;
 
-private:  
-  friend derived_type;
   friend core::details::CrtpBase<
     MatrixSparseSharedMemBase<derived_type>>;
 
   MatrixSparseSharedMemBase() = default;
-  ~MatrixSparseSharedMemBase() = default; 
+  ~MatrixSparseSharedMemBase() = default;
 
 };//end class
-  
+
 } // end namespace core
 }//end namespace rompp
 #endif
