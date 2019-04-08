@@ -26,6 +26,8 @@ namespace rompp{ namespace apps{
 
       }
 
+      ~UnsteadyLinAdvDiff1dEpetra() = default;
+    public:
       void unsteadySetup();
       rcp<nativeVec> getInitialState() const;
       
@@ -36,7 +38,7 @@ namespace rompp{ namespace apps{
 	  rhs[i] = -rhs[i];
 	}
       }
-
+      
       residual_type residual(const state_type & u, const scalar_type t) const{
 	Epetra_Vector R(*contigMap_);
 	residual(u, R, t);
