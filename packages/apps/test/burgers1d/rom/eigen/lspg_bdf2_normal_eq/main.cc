@@ -52,20 +52,22 @@ int main(int argc, char *argv[]){
   rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
       appobj, yRef, decoderObj, yROM, t0);
 
-  using rom_residual_t = typename lspg_problem_types::lspg_residual_t;
-  using rom_jac_t      = typename lspg_problem_types::lspg_matrix_t;
+  using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;
+
+  // linear solver
+  using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
+  using hessian_t  = rompp::core::Matrix<eig_dyn_mat>;
+  using solver_tag   = rompp::solvers::linear::iterative::LSCG;
+  using linear_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  linear_solver_t linSolverObj;
 
   // GaussNewton solver
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
   // rom is solved using eigen, hessian is wrapper of eigen matrix
-  using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t	 = rompp::core::Matrix<eig_dyn_mat>;
-  using solver_tag	 = rompp::solvers::linear::iterative::LSCG;
-  using converged_when_t = rompp::solvers::iterative::default_convergence;
-  using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
-    scalar_t, solver_tag, rompp::solvers::EigenIterative,
-    converged_when_t, void, hessian_t, lspg_state_t, rom_residual_t, rom_jac_t>;
-  gnsolver_t solver(lspgProblem.stepperObj_, yROM);
+  using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
+  using gnsolver_t   = rompp::solvers::iterative::GaussNewton<
+    rom_stepper_t, linear_solver_t>;
+  gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(200);
 

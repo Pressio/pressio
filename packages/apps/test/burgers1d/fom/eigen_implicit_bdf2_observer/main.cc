@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
   stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver
-  using lin_solver_t = rompp::solvers::EigenIterative<
+  using lin_solver_t = rompp::solvers::iterative::EigenIterative<
     rompp::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   rompp::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
   solverO.setTolerance(1e-13);

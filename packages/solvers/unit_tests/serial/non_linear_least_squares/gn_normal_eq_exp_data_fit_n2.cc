@@ -11,14 +11,19 @@ TEST(solvers_nonlinear_least_squares,
 
   using problem_t   = solvers::test::ExpDataFitN2;
   using state_t	    = typename problem_t::state_type;
-  using sc_t	    = double;
   problem_t problem;
   state_t x(2); x[0] = 2.0; x[1] = 0.25;
 
-  // linear solver type and GaussNewton solver
-  using solver_tag = solvers::linear::iterative::LSCG;
-  solvers::iterative::GaussNewton<sc_t, solver_tag,
-				  solvers::EigenIterative> GNSolver;
+  using hessian_t = core::Matrix<Eigen::MatrixXd>;
+
+  // linear solver type
+  using solver_tag	= solvers::linear::iterative::LSCG;
+  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  linear_solver_t linSolver;
+
+  // GaussNewton solver
+  using gn_t = solvers::iterative::GaussNewton<linear_solver_t, problem_t, hessian_t>;
+  gn_t GNSolver(problem, x, linSolver);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
 
@@ -36,22 +41,22 @@ TEST(solvers_nonlinear_least_squares,
   using problem_t   = solvers::test::ExpDataFitN2;
   using vec_t	  = typename problem_t::state_type;
   using mat_t	  = typename problem_t::jacobian_type;
-
   using state_t	  = vec_t;
   using hessian_t = mat_t;
-  using sc_t	  = double;
 
   problem_t problem;
   state_t x(2); x[0] = 2.0; x[1] = 0.25;
 
-  // define linear solver type and GaussNewton solver
-  using solver_tag = solvers::linear::iterative::LSCG;
+  // linear solver type
+  using solver_tag	= solvers::linear::iterative::LSCG;
+  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  linear_solver_t linSolver;
+
+  // GaussNewton solver
   using converged_when_t = solvers::iterative::default_convergence;
-  using gn_t = solvers::iterative::GaussNewton<sc_t, solver_tag,
-					       solvers::EigenIterative,
-					       converged_when_t, problem_t,
-					       hessian_t>;
-  gn_t GNSolver(problem, x);
+  using gn_t = solvers::iterative::GaussNewton
+    <linear_solver_t, converged_when_t, problem_t, hessian_t>;
+  gn_t GNSolver(problem, x, linSolver);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
 

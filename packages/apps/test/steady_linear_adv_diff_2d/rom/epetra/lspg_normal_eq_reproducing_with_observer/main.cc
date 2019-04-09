@@ -7,19 +7,19 @@
 
 struct ResidualSampler{
   using vec_t = rompp::core::Vector<Epetra_Vector>;
-
   mutable std::vector<double> myR_;
 
   std::vector<double> getR() const{
     return myR_;
   };
 
+  // void observeResidualEachGNStep(const vec_t & R, int step) const{
+  // }
+
   void observeResidualWhenSolverConverged(const vec_t & R) const{
     auto map = R.data()->Map();
     auto N = map.NumMyElements();
-    if (myR_.size() != (size_t) N)
-      myR_.resize(N);
-
+    if (myR_.size() != (size_t) N) myR_.resize(N);
     for (auto i=0; i<N; i++)
       myR_[i] = R[i];
   }
@@ -97,23 +97,28 @@ int main(int argc, char *argv[]){
     fom_adapter_t, decoder_t, lspg_state_t>;
   rompp::rom::LSPGSteadyProblemGenerator<lspg_problem_type> lspgProblem(
       appObjROM, *yRef, decoderObj, yROM);
+  using rom_system_t = typename lspg_problem_type::lspg_system_t;
 
   // create sampler for residual (this is passed to solver)
   using observer_t	 = ResidualSampler;
   observer_t myResidSampler;
 
+  // linear solver
+  using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
+  using hessian_t  = rompp::core::Matrix<eig_dyn_mat>;
+  using solver_tag   = rompp::solvers::linear::iterative::LSCG;
+  using linear_solver_t = rompp::solvers::iterative::EigenIterative<
+    solver_tag, hessian_t>;
+  linear_solver_t linSolverObj;
+
   // GaussNewton solver
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
   // rom is solved using eigen, hessian is wrapper of eigen matrix
-  using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t	 = rompp::core::Matrix<eig_dyn_mat>;
-  using solver_tag	 = rompp::solvers::linear::iterative::LSCG;
+  using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
   using converged_when_t = rompp::solvers::iterative::default_convergence;
-  using rom_system_t	 = typename lspg_problem_type::lspg_system_t;
-  using gnsolver_t	 = rompp::solvers::iterative::GaussNewton<
-    scalar_t, solver_tag, rompp::solvers::EigenIterative,
-    converged_when_t, rom_system_t, hessian_t, void, void, void, observer_t>;
-  gnsolver_t solver(lspgProblem.systemObj_, yROM, myResidSampler);
+  using gnsolver_t   = rompp::solvers::iterative::GaussNewton<
+    rom_system_t, converged_when_t, linear_solver_t, observer_t>;
+  gnsolver_t solver(lspgProblem.systemObj_, yROM, linSolverObj, myResidSampler);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
   solver.solve(lspgProblem.systemObj_, yROM);

@@ -5,7 +5,6 @@
 #include "SOLVERS_NONLINEAR"
 #include "reference_apps_for_testing.hpp"
 
-
 TEST(ode_implicit_euler, traits){
   using namespace rompp;
 
@@ -75,7 +74,8 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   stepper_t stepperObj(y, appObj);
 
   // define solver
-  using lin_solver_t = solvers::EigenIterative<solvers::linear::iterative::Bicgstab, jac_t>;
+  using lin_solver_t = solvers::iterative::EigenIterative<
+      solvers::linear::iterative::Bicgstab, jac_t>;
   solvers::NewtonRaphson<double, lin_solver_t> solverO;
 
   // integrate in time
@@ -113,7 +113,7 @@ TEST(ode_implicit_euler, guesserLambda){
 
   // define solver
   using lin_algo_t = solvers::linear::iterative::Bicgstab;
-  using lin_solver_t = solvers::EigenIterative<lin_algo_t, jac_t>;
+  using lin_solver_t = solvers::iterative::EigenIterative<lin_algo_t, jac_t>;
   solvers::NewtonRaphson<double, lin_solver_t> solverO;
 
   // integrate in time
@@ -165,7 +165,8 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   //**********************
   // define solver
   //**********************
-  using lin_solver_t = solvers::EigenIterative<solvers::linear::iterative::Bicgstab, jac_t>;
+  using lin_solver_t = solvers::iterative::EigenIterative<
+      solvers::linear::iterative::Bicgstab, jac_t>;
   solvers::NewtonRaphson<double, lin_solver_t> solverO;
 
   // integrate in time
@@ -213,7 +214,8 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
   //**********************
   // define solver
   //**********************
-  using lin_solver_t = solvers::EigenIterative<solvers::linear::iterative::Bicgstab, jac_t>;
+  using lin_solver_t = solvers::iterative::EigenIterative<
+      solvers::linear::iterative::Bicgstab, jac_t>;
   solvers::NewtonRaphson<double, lin_solver_t> solverO;
 
   // integrate in time

@@ -27,7 +27,7 @@ struct ComputeNormHelper;
 template <>
 struct ComputeNormHelper<::rompp::solvers::L2Norm>{
   template <typename vec_t, typename scalar_t>
-  void operator()(const vec_t & vecIn, scalar_t & result) const{
+  static void evaluate(const vec_t & vecIn, scalar_t & result) {
     result = ::rompp::core::ops::norm2(vecIn);
   }
 };
@@ -35,7 +35,7 @@ struct ComputeNormHelper<::rompp::solvers::L2Norm>{
 template <>
 struct ComputeNormHelper<::rompp::solvers::L1Norm>{
   template <typename vec_t, typename scalar_t>
-  void operator()(const vec_t & vecIn, scalar_t & result) const{
+  static void evaluate(const vec_t & vecIn, scalar_t & result) {
     result = ::rompp::core::ops::norm1(vecIn);
   }
 };

@@ -31,7 +31,7 @@ TEST(solvers_linear_iterative, LSCGDenseEigen){
   vector_w_t y(2);
 
   // Solve linear system
-  using solver_t = EigenIterative<linear::iterative::LSCG, matrix_w_t>;
+  using solver_t = iterative::EigenIterative<linear::iterative::LSCG, matrix_w_t>;
   solver_t solver;
   solver.solve(A,b,y);
 
@@ -70,7 +70,7 @@ TEST(solvers_linear_iterative, ColPivHSQRDenseEigen)
   vector_w_t y(2);
 
   // Solve linear system
-  using solver_t = EigenDirect<linear::direct::ColPivHouseholderQR, matrix_w_t>;
+  using solver_t = direct::EigenDirect<linear::direct::ColPivHouseholderQR, matrix_w_t>;
   solver_t solver;
   solver.solve(A,b,y);
 

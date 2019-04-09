@@ -3,12 +3,11 @@
 #define SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
-#include "../../solvers_system_traits.hpp"
 #include "../../solvers_meta_static_checks.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_norm_helper_policy.hpp"
 #include "../helper_policies/solvers_line_search_policy.hpp"
-#include "solvers_get_matrix_size_helper.hpp"
+#include "../helper_policies/solvers_get_matrix_size_helper.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -20,7 +19,7 @@ template <
   typename line_search_t,
   typename converged_when_tag,
   core::meta::enable_if_t<
-    ::rompp::solvers::details::system_traits<system_t>::is_system and
+    //::rompp::solvers::details::system_traits<system_t>::is_system and
     core::meta::is_core_vector_wrapper<
       typename system_t::state_type>::value and
     core::meta::is_core_vector_wrapper<
@@ -47,18 +46,15 @@ void gauss_newtom_qr_solve(const system_t & sys,
 
   // functor for evaluating the norm of a vector
   using norm_evaluator_t = ComputeNormHelper<norm_t>;
-  norm_evaluator_t normEvaluator;
 
   // functor for checking convergence
-  using is_conv_helper_t = IsConvergedHelper<converged_when_tag>;
-  is_conv_helper_t isConverged;
+  using is_converged_t = IsConvergedHelper<converged_when_tag>;
 
   /* functor for computing line search factor (alpha) such that
    * the update is done with y = y + alpha dy
    * alpha = 1 default when user does not want line search
    */
   using lsearch_helper = LineSearchHelper<line_search_t>;
-  lsearch_helper lineSearchHelper;
   //-------------------------------------------------------
 
   // alpha for taking steps
@@ -75,13 +71,13 @@ void gauss_newtom_qr_solve(const system_t & sys,
   std::cout.precision(14);
   // print GN is starting
   auto fmt1 = core::io::cyan() + core::io::underline();
-  const auto convString = std::string(is_conv_helper_t::description_);
+  const auto convString = std::string(is_converged_t::description_);
   ::rompp::core::io::print_stdout(fmt1, "GN with QR:", "criterion:",
 				  convString, core::io::reset(), "\n");
 #endif
 
   // compute (whatever type) norm of y
-  normEvaluator(y, normO);
+  norm_evaluator_t::evaluate(y, normO);
   normN = static_cast<scalar_t>(0);
 
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -102,10 +98,10 @@ void gauss_newtom_qr_solve(const system_t & sys,
     // residual norm for current state
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("norm resid");
-    normEvaluator(resid, normRes);
+    norm_evaluator_t::evaluate(resid, normRes);
     timer->stop("norm resid");
 #else
-    normEvaluator(resid, normRes);
+    norm_evaluator_t::evaluate(resid, normRes);
 #endif
     // store initial residual norm
     if (iStep==1) normRes0 = normRes;
@@ -149,7 +145,7 @@ void gauss_newtom_qr_solve(const system_t & sys,
 #endif
 
     // norm of the correction
-    normEvaluator(dy, normN);
+    norm_evaluator_t::evaluate(dy, normN);
 
 #ifdef DEBUG_PRINT
     ::rompp::core::io::print_stdout(std::scientific,
@@ -160,13 +156,13 @@ void gauss_newtom_qr_solve(const system_t & sys,
 #endif
 
     // compute multiplicative factor if needed
-    lineSearchHelper(alpha, y, ytrial, dy, resid, jacob, sys);
+    lsearch_helper::evaluate(alpha, y, ytrial, dy, resid, jacob, sys);
 
     // solution update
     y = y + alpha*dy;
 
     // check convergence (whatever method user decided)
-    auto flag = isConverged(y, dy, normN, normRes, normRes0, iStep,
+    auto flag = is_converged_t::evaluate(y, dy, normN, normRes, normRes0, iStep,
 			    maxNonLIt, tolerance);
     if (flag) break;
 

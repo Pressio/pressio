@@ -21,7 +21,7 @@ struct JacobianTranspResProdHelper<
     >>{
 
   template <typename resid_t, typename result_t>
-  void operator()(J_t & J, resid_t & R, result_t & result) const
+  static void evaluate(J_t & J, resid_t & R, result_t & result)
   {
     constexpr bool transposeJ = true;
     ::rompp::core::ops::product<J_t, resid_t, result_t,
@@ -40,7 +40,7 @@ struct JacobianTranspResProdHelper<
     >>{
 
   template <typename resid_t, typename result_t>
-  void operator()(J_t & J, resid_t & R, result_t & result) const{
+  static void evaluate(J_t & J, resid_t & R, result_t & result) {
     ::rompp::core::ops::dot(J, R, result);
   }
 };

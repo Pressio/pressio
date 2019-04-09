@@ -41,6 +41,7 @@ class ImplicitStepper<whichone, ode_state_type,
 
 public:
   // these need to be here because are detected by solver
+  using scalar_type = scalar_t;
   using state_type = ode_state_type;
   using residual_type = ode_residual_type;
   using jacobian_type = ode_jacobian_type;
@@ -146,6 +147,7 @@ class ImplicitStepper<whichone, ode_state_type, ode_residual_type,
 
 public:
   // these need to be here because are detected by solver
+  using scalar_type = scalar_t;
   using state_type = ode_state_type;
   using residual_type = ode_residual_type;
   using jacobian_type = ode_jacobian_type;
@@ -261,6 +263,7 @@ class ImplicitStepper<whichone, ode_state_type, ode_residual_type,
 
 public:
   // these need to be here because are detected by solver
+  using scalar_type = scalar_t;
   using state_type = ode_state_type;
   using residual_type = ode_residual_type;
   using jacobian_type = ode_jacobian_type;

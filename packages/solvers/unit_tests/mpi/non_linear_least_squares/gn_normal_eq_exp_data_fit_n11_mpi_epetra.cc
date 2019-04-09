@@ -18,7 +18,6 @@ TEST(solvers_nonlin_lsq,
 
   using problem_t   = solvers::test::ExpDataFitN11;
   using state_t	    = typename problem_t::state_type;
-  using sc_t	    = double;
 
   problem_t problem;
   state_t x(problem.numUn_);
@@ -36,12 +35,18 @@ TEST(solvers_nonlin_lsq,
 
   /* NOTE: this problem with GN only works with line search */
 
-  using solver_tag = solvers::linear::iterative::LSCG;
-  using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
-  using gn_t = solvers::iterative::GaussNewtonLineSearch<
-    sc_t, solver_tag, solvers::EigenIterative, lsearch_t>;
+  using hessian_t = core::Matrix<Eigen::MatrixXd>;
 
-  gn_t GNSolver;
+  // linear solver type
+  using solver_tag  = solvers::linear::iterative::LSCG;
+  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  linear_solver_t linSolver;
+
+  using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
+  using gn_t = solvers::iterative::GaussNewton<
+  linear_solver_t, problem_t, hessian_t, lsearch_t>;
+  gn_t GNSolver(problem, x, linSolver);
+
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << " ";

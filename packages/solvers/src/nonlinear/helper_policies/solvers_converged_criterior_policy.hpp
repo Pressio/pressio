@@ -15,10 +15,10 @@ struct IsConvergedHelper<converged_when::completingNumMaxIters>{
   static constexpr char const * description_ = "complete max iters";
 
   template <typename state_t, typename step_t, typename scalar_t>
-  bool operator()(const state_t & y, const state_t & dy,
-		  scalar_t norm_dy, scalar_t norm_r,
-		  scalar_t norm_r0, step_t step,
-		  step_t maxIters, scalar_t tol) const{
+  static bool evaluate(const state_t & y, const state_t & dy,
+		       scalar_t norm_dy, scalar_t norm_r,
+		       scalar_t norm_r0, step_t step,
+		       step_t maxIters, scalar_t tol) {
     return step==maxIters;
   }
 };
@@ -30,10 +30,10 @@ struct IsConvergedHelper<
   static constexpr char const * description_ = "||dy|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
-  bool operator()(const state_t & y, const state_t & dy,
-		  scalar_t norm_dy, scalar_t norm_r,
-		  scalar_t norm_r0, step_t step,
-		  step_t maxIters, scalar_t tol) const{
+  static bool evaluate(const state_t & y, const state_t & dy,
+		       scalar_t norm_dy, scalar_t norm_r,
+		       scalar_t norm_r0, step_t step,
+		       step_t maxIters, scalar_t tol) {
     return (norm_dy<tol);
   }
 };
@@ -45,10 +45,10 @@ struct IsConvergedHelper<
   static constexpr char const * description_ = "||R|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
-  bool operator()(const state_t & y, const state_t & dy,
-		  scalar_t norm_dy, scalar_t norm_r,
-		  scalar_t norm_r0, step_t step,
-		  step_t maxIters, scalar_t tol) const{
+  static bool evaluate(const state_t & y, const state_t & dy,
+		       scalar_t norm_dy, scalar_t norm_r,
+		       scalar_t norm_r0, step_t step,
+		       step_t maxIters, scalar_t tol) {
     return (norm_r<tol);
   }
 };
@@ -60,10 +60,10 @@ struct IsConvergedHelper<
   static constexpr char const * description_ = "||R||(r) < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
-  bool operator()(const state_t & y, const state_t & dy,
-		  scalar_t norm_dy, scalar_t norm_r,
-		  scalar_t norm_r0, step_t step,
-		  step_t maxIters, scalar_t tol) const{
+  static bool evaluate(const state_t & y, const state_t & dy,
+		       scalar_t norm_dy, scalar_t norm_r,
+		       scalar_t norm_r0, step_t step,
+		       step_t maxIters, scalar_t tol) {
     return (norm_r/norm_r0<tol);
   }
 };

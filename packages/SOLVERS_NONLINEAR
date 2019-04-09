@@ -4,9 +4,17 @@
 
 #include "SOLVERS_LINEAR"
 
+#include "solvers/src/meta/solvers_basic_meta.hpp"
+#include "solvers/src/meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
+
+
+#include "solvers/src/nonlinear/gn_normal_equations/solvers_gauss_newton.hpp"
+#include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_impl_picker.hpp"
+
+
 #include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
 #include "solvers/src/nonlinear/solvers_gauss_newton_qr.hpp"
-#include "solvers/src/nonlinear/solvers_gauss_newton.hpp"
 #include "solvers/src/nonlinear/solvers_gauss_newton_conservative.hpp"
+
 
 #endif

@@ -1,0 +1,4 @@
+
+add_serial_unit_test(admissible_system_for_nonlinear_solve)
+add_serial_unit_test(nonadmissible_system_for_nonlinear_solve)
+add_serial_unit_test(gn_normal_eq)

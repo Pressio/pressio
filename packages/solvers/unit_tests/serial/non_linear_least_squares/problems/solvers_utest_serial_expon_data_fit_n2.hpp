@@ -8,9 +8,11 @@
 namespace rompp{ namespace solvers{ namespace test{
 
 struct ExpDataFitN2 {
-  using state_type = rompp::core::Vector<Eigen::VectorXd>;
-  using residual_type = state_type;
-  using jacobian_type = rompp::core::Matrix<Eigen::MatrixXd>;
+  using scalar_type = double;
+  using state_type	= rompp::core::Vector<Eigen::VectorXd>;
+  using residual_type	= state_type;
+  using jacobian_type	= rompp::core::Matrix<Eigen::MatrixXd>;
+
   static constexpr int n = 8;
   const double times_[n] = {1.,2.,3.,4.,
 			   5.,6.,7.,8};

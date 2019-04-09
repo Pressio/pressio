@@ -4,6 +4,8 @@
 #include "../solvers_ConfigDefs.hpp"
 #include "../solvers_tags.hpp"
 #include "../../../core/src/matrix/core_matrix_traits.hpp"
+#include "../../../core/src/matrix/core_matrix_meta.hpp"
+#include "../../../core/src/multi_vector/core_multi_vector_meta.hpp"
 
 #include <Eigen/IterativeLinearSolvers>
 #include <Eigen/Core>

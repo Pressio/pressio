@@ -3,8 +3,6 @@
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
-#include "../../solvers_system_traits.hpp"
-#include "../../solvers_meta_static_checks.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_hessian_helper_policy.hpp"
 #include "../helper_policies/solvers_jacob_res_product_policy.hpp"
@@ -12,79 +10,67 @@
 #include "../helper_policies/solvers_line_search_policy.hpp"
 #include "../helper_policies/solvers_residual_observer_when_solver_converged.hpp"
 #include "../helper_policies/solvers_residual_observer_each_solver_step.hpp"
-#include "solvers_get_matrix_size_helper.hpp"
+#include "../helper_policies/solvers_get_matrix_size_helper.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
+
 template <
-  typename system_t,
-  typename hessian_t,
-  typename iteration_t,
-  typename scalar_t,
-  typename lin_solver_t,
   typename line_search_t,
   typename converged_when_tag,
-  typename observer_t,
-  core::meta::enable_if_t<
-    ::rompp::solvers::details::system_traits<system_t>::is_system and
-    core::meta::is_core_vector_wrapper<
-      typename system_t::state_type>::value and
-    core::meta::is_core_vector_wrapper<
-      typename system_t::residual_type>::value
-    > * =nullptr
+  typename system_t,
+  typename hessian_t,
+  typename lin_solver_t,
+  typename iteration_t,
+  typename scalar_t,
+  typename observer_t = core::impl::empty
   >
-void gauss_newtom_neq_solve(const system_t & sys,
+void gauss_newton_neq_solve(const system_t & sys,
 			    typename system_t::state_type & y,
 			    typename system_t::state_type & ytrial,
 			    typename system_t::residual_type & resid,
 			    typename system_t::jacobian_type & jacob,
-			    hessian_t & H,
+			    typename system_t::state_type & dy,
 			    typename system_t::state_type & JTR,
+			    hessian_t & H,
+			    lin_solver_t & linSolver,
 			    iteration_t maxNonLIt,
 			    scalar_t tolerance,
-			    typename system_t::state_type & dy,
-			    lin_solver_t & linSolver,
 			    scalar_t & normO,
 			    scalar_t & normN,
-			    const observer_t * observer){
-
-  using jac_t	= typename system_t::jacobian_type;
+			    const observer_t * observer)
+{
+  using residual_t	= typename system_t::residual_type;
+  using jacobian_t	= typename system_t::jacobian_type;
 
   // find out which norm to use
   using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
 
-  // functor for evaluating the norm of a vector
+  // policy for evaluating the norm of a vector
   using norm_evaluator_t = ComputeNormHelper<norm_t>;
-  norm_evaluator_t normEvaluator;
 
-  // functor for approximate hessian J^T*J
-  using hessian_evaluator_t = HessianApproxHelper<jac_t>;
-  hessian_evaluator_t hessEvaluator;
+  // policy to approximate hessian J^T*J
+  using hessian_evaluator_t = HessianApproxHelper<jacobian_t>;
 
-  // functor for J^T * residual
-  using jtr_evaluator_t = JacobianTranspResProdHelper<jac_t>;
-  jtr_evaluator_t jtrEvaluator;
+  // policy to J^T * residual
+  using jtr_evaluator_t = JacobianTranspResProdHelper<jacobian_t>;
 
-  // functor for checking convergence
-  using is_conv_helper_t = IsConvergedHelper<converged_when_tag>;
-  is_conv_helper_t isConverged;
+  // policy to checking convergence
+  using is_converged_t = IsConvergedHelper<converged_when_tag>;
 
-  // functor for observing residual when converged before exiting
-  using residual_observer_when_conv = ResidualObserverWhenSolverConverged<
-    observer_t, typename system_t::residual_type>;
-  residual_observer_when_conv residObs;
-
-  // functor for observing residual at each GN step
+  // policy to observing residual at each GN step
   using residual_observer_each_step = ResidualObserverEachSolverStep<
-    observer_t, typename system_t::residual_type>;
-  residual_observer_each_step residObsStep;
+    observer_t, residual_t>;
+
+  // policy to observing residual when converged before exiting
+  using residual_observer_when_conv = ResidualObserverWhenSolverConverged<
+    observer_t, residual_t>;
 
   /* functor for computing line search factor (alpha) such that
    * the update is done with y = y + alpha dy
    * alpha = 1 default when user does not want line search
    */
-  using lsearch_helper = LineSearchHelper<line_search_t>;
-  lsearch_helper lineSearchHelper;
+  using lsearch_helper_t = LineSearchHelper<line_search_t>;
 
   //-------------------------------------------------------
 
@@ -99,17 +85,16 @@ void gauss_newtom_neq_solve(const system_t & sys,
   auto ss = std::cout.precision();
   // set to 14 for the GN prints
   std::cout.precision(14);
-
   auto reset = core::io::reset();
   auto fmt1 = core::io::cyan() + core::io::underline();
-  const auto convString = std::string(is_conv_helper_t::description_);
+  const auto convString = std::string(is_converged_t::description_);
   ::rompp::core::io::print_stdout(fmt1, "GN normal eqns:", "criterion:",
 				  convString, reset, "\n");
 #endif
 
-  // compute (whatever type) norm of y
-  normEvaluator(y, normO);
-  normN = static_cast<scalar_t>(0);
+  // compute the initial norm of y (the state)
+  norm_evaluator_t::evaluate(y, normO);
+  normN = {0};
 
 #ifdef HAVE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -119,6 +104,9 @@ void gauss_newtom_neq_solve(const system_t & sys,
   iteration_t iStep = 0;
   while (iStep++ <= maxNonLIt)
   {
+
+    // call residual observer at each gauss step (no op for dummy case)
+    residual_observer_each_step::evaluate(observer, resid, iStep);
 
 #ifdef DEBUG_PRINT
     ::rompp::core::io::print_stdout("\n");
@@ -130,34 +118,32 @@ void gauss_newtom_neq_solve(const system_t & sys,
     // residual norm for current state
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("norm resid");
-    normEvaluator(resid, normRes);
-    timer->stop("norm resid");
-#else
-    normEvaluator(resid, normRes);
 #endif
+    norm_evaluator_t::evaluate(resid, normRes);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("norm resid");
+#endif
+
     // store initial residual norm
     if (iStep==1) normRes0 = normRes;
-
-    // observe residual (no op for dummy case)
-    residObsStep(observer, resid, iStep);
 
     // compute LHS: J^T*J
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("hessian");
-    hessEvaluator(jacob, H);
+#endif
+    hessian_evaluator_t::evaluate(jacob, H);
+#ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("hessian");
-#else
-    hessEvaluator(jacob, H);
 #endif
 
-    ::rompp::core::io::print_stdout( *H.data() , "\n");
+    //::rompp::core::io::print_stdout( *H.data() , "\n");
     //resid.print("resid");
 
 #ifdef DEBUG_PRINT
     auto fmt1 = core::io::magenta() + core::io::bold();
     ::rompp::core::io::print_stdout(fmt1, "GN_JSize =",
-    ::rompp::solvers::impl::MatrixGetSizeHelper<jac_t>::globalRows(jacob),
-    ::rompp::solvers::impl::MatrixGetSizeHelper<jac_t>::globalCols(jacob),
+    ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
+    ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
 				    "\n");
     // this print only works when hessian is a shared mem matrix
     ::rompp::core::io::print_stdout(fmt1, "GN_HessianSize =",
@@ -168,27 +154,27 @@ void gauss_newtom_neq_solve(const system_t & sys,
     // compute RHS: J^T*res
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("JTR");
-    jtrEvaluator(jacob, resid, JTR);
+#endif
+    jtr_evaluator_t::evaluate(jacob, resid, JTR);
     JTR.scale(static_cast<scalar_t>(-1));
+#ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("JTR");
-#else
-    jtrEvaluator(jacob, resid, JTR);
-    JTR.scale(static_cast<scalar_t>(-1));
 #endif
 
     // solve normal equations
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("solve normeq");
+#endif
     linSolver.solve(H, JTR, dy);
+#ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("solve normeq");
-#else
-    linSolver.solve(H, JTR, dy);
 #endif
 
-    ::rompp::core::io::print_stdout(*dy.data());
+    // print the correction
+    //::rompp::core::io::print_stdout(*dy.data());
 
-    // norm of the correction
-    normEvaluator(dy, normN);
+    // compute norm of the correction
+    norm_evaluator_t::evaluate(dy, normN);
 
 #ifdef DEBUG_PRINT
     ::rompp::core::io::print_stdout(std::scientific,
@@ -200,25 +186,26 @@ void gauss_newtom_neq_solve(const system_t & sys,
 #endif
 
     // compute multiplicative factor if needed
-    lineSearchHelper(alpha, y, ytrial, dy, resid, jacob, sys);
+    lsearch_helper_t::evaluate(alpha, y, ytrial, dy, resid, jacob, sys);
 
     // solution update
     y = y + alpha*dy;
 
     // check convergence (whatever method user decided)
-    auto flag = isConverged(y, dy, normN, normRes, normRes0, iStep,
-			    maxNonLIt, tolerance);
+    auto flag = is_converged_t::evaluate(y, dy, normN, normRes, normRes0,
+					 iStep, maxNonLIt, tolerance);
 
     // if we have converged, query the observer
     if (flag) {
       // observe residual (no op for dummy case)
-      residObs(observer, resid);
+      residual_observer_when_conv::evaluate(observer, resid);
       break;
     }
 
     // store new norm into old variable
     normO = normN;
 
+    // compute residual and jacobian
     sys.residual(y, resid);
     sys.jacobian(y, jacob);
 
@@ -233,7 +220,7 @@ void gauss_newtom_neq_solve(const system_t & sys,
   timer->stop("NEQ-based Gausss Newton");
 #endif
 
-}
+}// end
 
 }}}} //end namespace rompp::solvers::iterative::impl
 #endif

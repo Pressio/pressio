@@ -22,6 +22,7 @@ class LSPGSteadySystem<
 
 public:
   // these need to be public because are detected by solver
+  using scalar_type = typename app_type::scalar_type;
   using state_type	= lspg_state_type;
   using residual_type	= lspg_residual_type;
   using jacobian_type	= lspg_jacobian_type;

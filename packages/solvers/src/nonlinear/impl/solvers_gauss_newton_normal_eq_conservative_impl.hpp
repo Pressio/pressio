@@ -3,14 +3,14 @@
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_CONSERVATIVE_IMPL_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
-#include "../../solvers_system_traits.hpp"
+//#include "../../solvers_system_traits.hpp"
 #include "../../solvers_meta_static_checks.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_hessian_helper_policy.hpp"
 #include "../helper_policies/solvers_jacob_res_product_policy.hpp"
 #include "../helper_policies/solvers_norm_helper_policy.hpp"
 #include "../helper_policies/solvers_line_search_policy.hpp"
-#include "solvers_get_matrix_size_helper.hpp"
+#include "../helper_policies/solvers_get_matrix_size_helper.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -24,7 +24,7 @@ template <
   typename cbar_t,
   typename mat_t,
   core::meta::enable_if_t<
-    ::rompp::solvers::details::system_traits<system_t>::is_system and
+    //::rompp::solvers::details::system_traits<system_t>::is_system and
     core::meta::is_vector_wrapper_eigen<
       typename system_t::state_type>::value and
     core::meta::is_core_vector_wrapper<

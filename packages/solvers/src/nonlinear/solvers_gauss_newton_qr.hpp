@@ -88,7 +88,7 @@ class GaussNewtonQR<
   scalar_t, qr_type, line_search_t, converged_when_t,
   system_t, void, void, void,
   core::meta::enable_if_t<
-    ::rompp::solvers::details::system_traits<system_t>::is_system and
+    //::rompp::solvers::details::system_traits<system_t>::is_system and
     core::meta::is_default_constructible<qr_type>::value and
     core::meta::is_core_vector_wrapper<typename system_t::state_type>::value
     >

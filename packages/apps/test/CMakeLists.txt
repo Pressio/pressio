@@ -6,6 +6,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 #include the utilities in utils
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/utils)
 
-ADD_SUBDIRECTORIES(burgers1d)
-ADD_SUBDIRECTORIES(steady_linear_adv_diff_1d)
-ADD_SUBDIRECTORIES(steady_linear_adv_diff_2d)
+ADD_SUBDIRECTORY(burgers1d)
+ADD_SUBDIRECTORY(steady_linear_adv_diff_1d)
+ADD_SUBDIRECTORY(steady_linear_adv_diff_2d)

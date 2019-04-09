@@ -4,8 +4,8 @@
 
 #include <type_traits>
 #include <complex>
+#include <memory>
 #include "./tinympl/variadic.hpp"
-#include "./tinympl/variadic/erase.hpp"
 #include <tuple>
 #ifdef HAVE_TRILINOS
   #include <Teuchos_RCPDecl.hpp>

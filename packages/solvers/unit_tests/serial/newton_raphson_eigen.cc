@@ -15,6 +15,7 @@ struct ValidSystem {
   using state_type = vector_w_t;
   using residual_type = state_type;
   using jacobian_type = matrix_w_t;
+  using scalar_type = double;
 
   void residual(const state_type& x, residual_type& res) const {
     res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
@@ -59,7 +60,7 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
   problem_t sys;
 
   // linear system
-  using lin_solver_t = EigenIterative<linear::iterative::LSCG, jacobian_t>;
+  using lin_solver_t = iterative::EigenIterative<linear::iterative::LSCG, jacobian_t>;
   // nonlinear system
   NewtonRaphson<scalar_t, lin_solver_t> solver;
 
