@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_GN_IMPL_PICKER_HPP_
-#define SOLVERS_GN_IMPL_PICKER_HPP_
+#ifndef SOLVERS_GN_NEQ_SPECIALIZATION_PICKER_HPP_
+#define SOLVERS_GN_NEQ_SPECIALIZATION_PICKER_HPP_
 
 #include "../../solvers_forward_declarations.hpp"
 #include "../../meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
@@ -45,7 +45,7 @@ struct ObserverTypesSupported<T, T>{
 
 
 template <typename ... Args>
-struct GNPicker{
+struct GNNEQSpecializationPicker{
 
   // verify the sequence contains a valid system type
   using ic1 = ::tinympl::variadic::find_if_unary_pred_t<

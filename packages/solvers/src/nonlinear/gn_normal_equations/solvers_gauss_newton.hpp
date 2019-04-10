@@ -138,6 +138,7 @@ public:
     :  gn_mixin_t(system, yState, linearSolverIn),
        obsObj_{}{}
 
+private:
   template <typename system_t>
   void solveImpl(const system_t & sys, state_t & yState)
   {

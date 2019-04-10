@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
     using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
     using converged_when_t = rompp::solvers::iterative::default_convergence;
     using gnsolver_t  = rompp::solvers::iterative::GaussNewtonQR<
-           scalar_t, qr_type, converged_when_t, rom_stepper_t>;
+           qr_type, converged_when_t, rom_stepper_t>;
     gnsolver_t solver(lspgProblem.stepperObj_, yROM);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(200);

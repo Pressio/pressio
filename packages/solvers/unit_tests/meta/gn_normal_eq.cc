@@ -63,25 +63,25 @@ TEST(solvers_meta, gn_normal_equations){
 
   // define types, then rotate, it should not matter
   {
-    using picker_t = solvers::iterative::impl::GNPicker<sys_t, lin_solver_t, hessian_type>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<sys_t, lin_solver_t, hessian_type>;
     using gn_solver_t = solvers::iterative::GaussNewton<sys_t, lin_solver_t, hessian_type>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNPicker<sys_t, hessian_type, lin_solver_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<sys_t, hessian_type, lin_solver_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<sys_t, hessian_type, lin_solver_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNPicker<hessian_type, sys_t, lin_solver_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<hessian_type, sys_t, lin_solver_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<hessian_type, sys_t, lin_solver_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNPicker<hessian_type, lin_solver_t, sys_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<hessian_type, lin_solver_t, sys_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<hessian_type, lin_solver_t, sys_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
@@ -103,25 +103,25 @@ TEST(solvers_meta, gn_normal_equations_noHess){
 
   // define types, then rotate, it should not matter
   {
-    using picker_t = solvers::iterative::impl::GNPicker<sys_t, lin_solver_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<sys_t, lin_solver_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<sys_t, lin_solver_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNPicker<sys_t, lin_solver_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<sys_t, lin_solver_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<sys_t, lin_solver_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNPicker<sys_t, lin_solver_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<sys_t, lin_solver_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<sys_t, lin_solver_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNPicker<lin_solver_t, sys_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<lin_solver_t, sys_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<lin_solver_t, sys_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
@@ -147,25 +147,25 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
 
   // define types, then rotate, it should not matter
   {
-    using picker_t = solvers::iterative::impl::GNPicker<sys_t, lin_solver_t, hessian_type, ls_t, conv_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<sys_t, lin_solver_t, hessian_type, ls_t, conv_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<sys_t, lin_solver_t, hessian_type, ls_t, conv_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type, ls_t, conv_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNPicker<sys_t, hessian_type, ls_t, conv_t, lin_solver_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<sys_t, hessian_type, ls_t, conv_t, lin_solver_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<sys_t, hessian_type, ls_t, conv_t, lin_solver_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type, ls_t, conv_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNPicker<hessian_type, conv_t, ls_t, sys_t, lin_solver_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<hessian_type, conv_t, ls_t, sys_t, lin_solver_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<hessian_type, conv_t, ls_t, sys_t, lin_solver_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type, ls_t, conv_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNPicker<ls_t, conv_t, hessian_type, lin_solver_t, sys_t>;
+    using picker_t = solvers::iterative::impl::GNNEQSpecializationPicker<ls_t, conv_t, hessian_type, lin_solver_t, sys_t>;
     using gn_solver_t = solvers::iterative::GaussNewton<ls_t, conv_t, hessian_type, lin_solver_t, sys_t>;
     static_assert( checkTypes<picker_t, sys_t, lin_solver_t, hessian_type, ls_t, conv_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");

@@ -66,7 +66,7 @@ void gauss_newton_neq_solve(const system_t & sys,
   using residual_observer_when_conv = ResidualObserverWhenSolverConverged<
     observer_t, residual_t>;
 
-  /* functor for computing line search factor (alpha) such that
+  /* policy for computing line search factor (alpha) such that
    * the update is done with y = y + alpha dy
    * alpha = 1 default when user does not want line search
    */

@@ -3,7 +3,6 @@
 #define SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
-#include "../../solvers_meta_static_checks.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_norm_helper_policy.hpp"
 #include "../helper_policies/solvers_line_search_policy.hpp"
@@ -12,45 +11,38 @@
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <
-  typename system_t,
-  typename iteration_t,
-  typename scalar_t,
-  typename qr_obj_t,
   typename line_search_t,
   typename converged_when_tag,
-  core::meta::enable_if_t<
-    //::rompp::solvers::details::system_traits<system_t>::is_system and
-    core::meta::is_core_vector_wrapper<
-      typename system_t::state_type>::value and
-    core::meta::is_core_vector_wrapper<
-      typename system_t::residual_type>::value
-    > * =nullptr
+  typename system_t,
+  typename qr_solver_t,
+  typename iteration_t,
+  typename scalar_t
   >
-void gauss_newtom_qr_solve(const system_t & sys,
+void gauss_newton_qr_solve(const system_t & sys,
 			   typename system_t::state_type & y,
 			   typename system_t::state_type & ytrial,
 			   typename system_t::residual_type & resid,
 			   typename system_t::jacobian_type & jacob,
+			   typename system_t::state_type & dy,
+			   typename system_t::state_type & QTResid,
+			   qr_solver_t & qrObj,
 			   iteration_t maxNonLIt,
 			   scalar_t tolerance,
-			   typename system_t::state_type & QTResid,
-			   typename system_t::state_type & dy,
-			   qr_obj_t & qrObj,
 			   scalar_t & normO,
 			   scalar_t & normN){
 
-  using jac_t	= typename system_t::jacobian_type;
+  using jacobian_t	= typename system_t::jacobian_type;
 
   // find out which norm to use
   using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
 
-  // functor for evaluating the norm of a vector
+  // policy for  evaluating the norm of a vector
   using norm_evaluator_t = ComputeNormHelper<norm_t>;
 
-  // functor for checking convergence
+  // policy for checking convergence
   using is_converged_t = IsConvergedHelper<converged_when_tag>;
 
-  /* functor for computing line search factor (alpha) such that
+  /* policy for computing line search factor (alpha) such that
    * the update is done with y = y + alpha dy
    * alpha = 1 default when user does not want line search
    */
@@ -78,7 +70,7 @@ void gauss_newtom_qr_solve(const system_t & sys,
 
   // compute (whatever type) norm of y
   norm_evaluator_t::evaluate(y, normO);
-  normN = static_cast<scalar_t>(0);
+  normN = {};
 
 #ifdef HAVE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -118,8 +110,8 @@ void gauss_newtom_qr_solve(const system_t & sys,
 #ifdef DEBUG_PRINT
     auto fmt1 = core::io::magenta() + core::io::bold();
     ::rompp::core::io::print_stdout(fmt1, "GN_JSize =",
-    ::rompp::solvers::impl::MatrixGetSizeHelper<jac_t>::globalRows(jacob),
-    ::rompp::solvers::impl::MatrixGetSizeHelper<jac_t>::globalCols(jacob),
+    ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
+    ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
 				    core::io::reset(),
 				    "\n");
 #endif

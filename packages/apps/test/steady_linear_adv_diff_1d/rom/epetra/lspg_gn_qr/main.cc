@@ -70,6 +70,7 @@ int main(int argc, char *argv[]){
   rompp::rom::LSPGSteadyProblemGenerator<lspg_problem_type> lspgProblem(
       appObj, *yRef, decoderObj, yROM);
 
+  using rom_sys_t     = typename lspg_problem_type::lspg_system_t;
   using rom_jac_t     = typename lspg_problem_type::lspg_matrix_t;
 
   // GaussNewton solver
@@ -78,8 +79,8 @@ int main(int argc, char *argv[]){
   using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
   using converged_when_t = rompp::solvers::iterative::default_convergence;
   using gnsolver_t  = rompp::solvers::iterative::GaussNewtonQR<
-         scalar_t, qr_type, converged_when_t>;
-  gnsolver_t solver;
+         rom_sys_t, qr_type, converged_when_t>;
+  gnsolver_t solver(lspgProblem.systemObj_, yROM);
   solver.setTolerance(1e-11);
   solver.setMaxIterations(2);
   solver.solve(lspgProblem.systemObj_, yROM);

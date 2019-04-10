@@ -19,7 +19,6 @@ TEST(solvers_nonlin_lsq,
 
   using problem_t   = solvers::test::ExpDataFitN5;
   using state_t	    = typename problem_t::state_type;
-  using sc_t	    = double;
   using mat_type    = typename problem_t::jacobian_type;
 
   problem_t problem;
@@ -32,8 +31,8 @@ TEST(solvers_nonlin_lsq,
   // define type of QR and GaussNewton solver
   using qr_algo = qr::TSQR;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
-  using gn_t    = solvers::iterative::GaussNewtonQR<sc_t, qr_type>;
-  gn_t GNSolver;
+  using gn_t    = solvers::iterative::GaussNewtonQR<problem_t, qr_type>;
+  gn_t GNSolver(problem, x);
 
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
@@ -51,7 +50,6 @@ TEST(solvers_nonlin_lsq,
 
   using problem_t   = solvers::test::ExpDataFitN5;
   using state_t	    = typename problem_t::state_type;
-  using sc_t	    = double;
   using mat_type    = typename problem_t::jacobian_type;
 
   problem_t problem;
@@ -63,8 +61,8 @@ TEST(solvers_nonlin_lsq,
   // GaussNewton solver
   using qr_algo = qr::Householder;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
-  using gn_t    = solvers::iterative::GaussNewtonQR<sc_t, qr_type>;
-  gn_t GNSolver;
+  using gn_t    = solvers::iterative::GaussNewtonQR<problem_t, qr_type>;
+  gn_t GNSolver(problem, x);
 
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);

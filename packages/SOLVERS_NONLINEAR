@@ -7,14 +7,18 @@
 #include "solvers/src/meta/solvers_basic_meta.hpp"
 #include "solvers/src/meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
 
-
+// GN with normal equations
 #include "solvers/src/nonlinear/gn_normal_equations/solvers_gauss_newton.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_impl_picker.hpp"
+#include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_neq_specialization_picker.hpp"
 
+// GN with QR-solver
+#include "solvers/src/nonlinear/gn_qr_based/solvers_gauss_newton_qr.hpp"
+#include "solvers/src/nonlinear/gn_qr_based/solvers_gn_qr_specialization_picker.hpp"
 
+// Newton-Raphson
 #include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
-#include "solvers/src/nonlinear/solvers_gauss_newton_qr.hpp"
-#include "solvers/src/nonlinear/solvers_gauss_newton_conservative.hpp"
 
+// the hacked solver for conservative ROM
+#include "solvers/src/nonlinear/gn_conservative_rom/solvers_gauss_newton_conservative.hpp"
 
 #endif
