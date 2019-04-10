@@ -16,7 +16,7 @@ FILE(GLOB apps_steadyLinearAdvDiff1d_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DI
 FILE(GLOB apps_steadyLinearAdvDiff2d_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/steady_linear_adv_diff2d/*.hpp")
 FILE(GLOB apps_unsteadyLinearAdvDiff1d_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/unsteady_linear_adv_diff2d/*.hpp")
+  "${CMAKE_CURRENT_SOURCE_DIR}/unsteady_linear_adv_diff1d/*.hpp")
 
 # sources
 FILE(GLOB apps_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
