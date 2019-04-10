@@ -41,7 +41,7 @@ TEST(lspg, epetra_types)
   using lspg_problem_types = rompp::rom::DefaultLSPGTypeGenerator<
     fom_t, rompp::ode::ImplicitEnum::Euler, decoder_t, lspg_state_t>;
 
-  using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;
+  using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;
 
-  static_assert(!std::is_void<rom_stepper_t>::value, "");
+  static_assert(!std::is_void<lspg_stepper_t>::value, "");
 }

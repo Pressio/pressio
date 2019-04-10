@@ -59,8 +59,7 @@ int main(int argc, char *argv[]){
   rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
       appobj, yRef, decoderObj, yROM, t0);
 
-  using rom_stepper_t = typename lspg_problem_types::rom_stepper_t;
-  using rom_residual_t = typename lspg_problem_types::lspg_residual_t;
+  using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;
   using rom_jac_t      = typename lspg_problem_types::lspg_matrix_t;
 
   // GaussNewton solver
@@ -68,7 +67,7 @@ int main(int argc, char *argv[]){
   using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
   using converged_when_t = rompp::solvers::iterative::default_convergence;
   using gnsolver_t  = rompp::solvers::iterative::GaussNewtonQR<
-         rom_stepper_t, qr_type, converged_when_t>;
+         lspg_stepper_t, qr_type, converged_when_t>;
   gnsolver_t solver(lspgProblem.stepperObj_, yROM);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(200);

@@ -215,7 +215,7 @@ int main(int argc, char *argv[]){
     using lspg_generator_t = rompp::rom::LSPGSteadyProblemGenerator<lspg_problem_type>;
     lspg_generator_t lspgProblem(appObjROM, *yRef, decoderObj, yROM);
 
-    using rom_stepper_t = typename lspg_problem_type::lspg_system_t;
+    using lspg_stepper_t = typename lspg_problem_type::lspg_system_t;
 
     // linear solver
     using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
@@ -228,7 +228,7 @@ int main(int argc, char *argv[]){
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
     // rom is solved using eigen, hessian is wrapper of eigen matrix
     using gnsolver_t   = rompp::solvers::iterative::GaussNewton<
-      rom_stepper_t, linear_solver_t, observer_t>;
+      lspg_stepper_t, linear_solver_t, observer_t>;
     gnsolver_t solver(lspgProblem.systemObj_, yROM, linSolverObj, myResidSampler);
     solver.setTolerance(1e-14);
     solver.setMaxIterations(200);

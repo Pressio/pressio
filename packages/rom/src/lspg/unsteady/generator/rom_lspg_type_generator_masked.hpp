@@ -74,7 +74,7 @@ struct MaskedLSPGTypeGenerator
     lspg_jacobian_policy_t>::type;
 
   // stepper object type
-  using rom_stepper_t		= ode::ImplicitStepper<
+  using lspg_stepper_t		= ode::ImplicitStepper<
     odeName, lspg_state_type,
     lspg_residual_t, lspg_matrix_t,
     fom_type, aux_stepper_t,

@@ -31,7 +31,7 @@ struct LSPGUnsteadyProblemGenerator<
   using typename lspg_problem::lspg_jacobian_policy_t;
 
   using typename lspg_problem::aux_stepper_t;
-  using typename lspg_problem::rom_stepper_t;
+  using typename lspg_problem::lspg_stepper_t;
 
   fom_eval_rhs_policy_t		rhsEv_;
   fom_apply_jac_policy_t	ajacEv_;
@@ -51,7 +51,7 @@ struct LSPGUnsteadyProblemGenerator<
     core::impl::empty, aux_stepper_t>::type auxStepperObj_;
 
   // actual stepper object
-  rom_stepper_t			stepperObj_;
+  lspg_stepper_t			stepperObj_;
 
 
 public:
