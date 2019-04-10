@@ -1,10 +1,10 @@
-#ifndef TINYMPL_VARIADIC_FIND_IF_HPP
-#define TINYMPL_VARIADIC_FIND_IF_HPP
+#ifndef ROMPP_MPL_VARIADIC_FIND_IF_HPP
+#define ROMPP_MPL_VARIADIC_FIND_IF_HPP
 
 #include <type_traits>
 #include <cstddef>
 
-namespace tinympl { namespace variadic {
+namespace rompp{ namespace mpl{ namespace variadic {
 
 /**
  * \ingroup VarNonModAlgs
@@ -44,6 +44,6 @@ struct find_if_unary_pred<UnaryPredicate, Head, Tail...>
 template <template <class... T> class UnaryPredicate, class... Args>
 using find_if_unary_pred_t = typename find_if_unary_pred<UnaryPredicate, Args...>::type;
 
-}} // namespace variadic::tinympl
+}}} // namespace 
 
-#endif // TINYMPL_VARIADIC_FIND_IF_HPP
+#endif // ROMPP_MPL_VARIADIC_FIND_IF_HPP

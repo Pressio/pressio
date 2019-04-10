@@ -1,10 +1,10 @@
 
-#ifndef TINYMPL_VARIADIC_ANY_OF_HPP
-#define TINYMPL_VARIADIC_ANY_OF_HPP
+#ifndef ROMPP_MPL_VARIADIC_ANY_OF_HPP
+#define ROMPP_MPL_VARIADIC_ANY_OF_HPP
 
 #include <type_traits>
 
-namespace tinympl { namespace variadic {
+namespace rompp{ namespace mpl{ namespace variadic {
 
 /**
  * \ingroup VarNonModAlgs
@@ -33,6 +33,6 @@ struct any_of<Predicate>
   : std::integral_constant<bool, false>{};
 
 
-}} // namespace tinympl::variadic
+}}} // namespace 
 
-#endif // TINYMPL_VARIADIC_ANY_OF_HPP
+#endif // ROMPP_MPL_VARIADIC_ANY_OF_HPP

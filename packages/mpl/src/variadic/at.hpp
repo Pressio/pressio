@@ -1,11 +1,11 @@
-#ifndef TINYMPL_VARIADIC_AT_HPP
-#define TINYMPL_VARIADIC_AT_HPP
+#ifndef ROMPP_MPL_VARIADIC_AT_HPP
+#define ROMPP_MPL_VARIADIC_AT_HPP
 
 #include <cstddef>
 #include "../identity.hpp"
 #include <tuple>
 
-namespace tinympl { namespace variadic {
+namespace rompp{ namespace mpl{ namespace variadic {
 
 /**
  * \ingroup VarBasics
@@ -37,9 +37,9 @@ struct at_or
 template<typename Default, std::size_t i, typename ... Args>
 using at_or_t = typename at_or<Default, i, Args...>::type;
 
-}} // namespace tinympl::variadic
+}}} // namespace 
 
-#endif // TINYMPL_VARIADIC_AT_HPP
+#endif // ROMPP_MPL_VARIADIC_AT_HPP
 
 
 

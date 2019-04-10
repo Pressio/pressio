@@ -1,13 +1,12 @@
 
-#ifndef TINYMPL_VARIADIC_NONE_OF_HPP
-#define TINYMPL_VARIADIC_NONE_OF_HPP
+#ifndef ROMPP_MPL_VARIADIC_NONE_OF_HPP
+#define ROMPP_MPL_VARIADIC_NONE_OF_HPP
 
 #include <type_traits>
 
-namespace tinympl { namespace variadic {
+namespace rompp{ namespace mpl{ namespace variadic {
 
 /**
- * \ingroup VarNonModAlgs
  * \class none_of
  * \brief Determines whether none of the elements in the sequence satisfy the given predicate
  * \param Predicate the predicate, `Predicate<T>::type::value` must be convertible to bool
@@ -33,6 +32,6 @@ struct none_of<Predicate>
   : std::integral_constant<bool, true>{};
 
 
-}} // namespace tinympl::variadic
+}}} // namespace rompp::mpl::variadic
 
-#endif // TINYMPL_VARIADIC_NONE_OF_HPP
+#endif // ROMPP_MPL_VARIADIC_NONE_OF_HPP

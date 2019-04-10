@@ -1,10 +1,10 @@
-#ifndef TINYMPL_VARIADIC_FIND_IF_BINARY_HPP
-#define TINYMPL_VARIADIC_FIND_IF_BINARY_HPP
+#ifndef ROMPP_MPL_VARIADIC_FIND_IF_BINARY_HPP
+#define ROMPP_MPL_VARIADIC_FIND_IF_BINARY_HPP
 
 #include <type_traits>
 #include <cstddef>
 
-namespace tinympl { namespace variadic {
+namespace rompp{ namespace mpl{ namespace variadic {
 
 /**
  * \ingroup VarNonModAlgs
@@ -54,6 +54,6 @@ using find_if_binary_pred_t = typename find_if_binary_pred<attribute_t,
 						 Predicate,
 						 Args...>::type;
 
-}} // namespace variadic::tinympl
+}}} // namespace 
 
-#endif // TINYMPL_VARIADIC_FIND_IF_HPP
+#endif // ROMPP_MPL_VARIADIC_FIND_IF_HPP
