@@ -14,7 +14,7 @@ struct LineSearchHelper;
 template <>
 struct LineSearchHelper<gn::noLineSearch>{
   template <typename scalar_t, typename ... Args>
-  void operator()(scalar_t & alpha, Args&& ... args) const{
+  static void evaluate(scalar_t & alpha, Args&& ... args) {
     alpha = static_cast<scalar_t>(1);
   }
 };
@@ -26,13 +26,13 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
   template <typename scalar_t,   typename state_t,
 	    typename residual_t, typename jacobian_t,
 	    typename system_t>
-  void operator()(scalar_t & alpha,
+  static void evaluate(scalar_t & alpha,
 		  const state_t & y,
 		  state_t & ytrial,
 		  const state_t & dy,
 		  residual_t & resid,
 		  jacobian_t & jacob,
-		  const system_t & sys) const
+		  const system_t & sys)
   {
     scalar_t c1 = 1e-4;
     alpha = static_cast<scalar_t>(1);
@@ -50,7 +50,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     state_t jTr(y);  jTr.setZero();
     using jtr_prod_helper_t = JacobianTranspResProdHelper<jacobian_t>;
     // evaluate
-    jtr_prod_helper_t()(jacob, resid, jTr);
+    jtr_prod_helper_t::evaluate(jacob, resid, jTr);
 
     // compute dy^T J^T R (this is always a dot product)
     auto c2 = ::rompp::core::ops::dot(dy, jTr);
@@ -125,40 +125,3 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 
 }}}} //end namespace rompp::solvers::iterative::impl
 #endif
-
-
-
-
-
-
-// private:
-//   /* evaluating J^T*resid can be done smartly
-//    * depending on the type of J.
-//    * J is a matrix wrapper: then do regular mat-vec
-//    * J is a multivec wrapper: use dot product
-//    */
-//   template <typename resid_t,
-// 	    typename J_type,
-// 	    typename result_t,
-// 	    core::meta::enable_if_t<
-// 	      core::meta::is_core_matrix_wrapper<J_type>::value
-// 	      > * = nullptr>
-//   void jacobTprodResidual(const resid_t & R,
-// 			  const J_type & J,
-// 			  result_t & result) const{
-//     constexpr bool transposeJ = true;
-//     ::rompp::core::ops::product<J_type, resid_t, result_t,
-// 				transposeJ>(J, R, result);
-//   }
-
-//   template <typename resid_t,
-// 	    typename J_type,
-// 	    typename result_t,
-// 	    core::meta::enable_if_t<
-// 	      core::meta::is_core_multi_vector_wrapper<J_type>::value
-// 	      > * = nullptr>
-//   void jacobTprodResidual(const resid_t & R,
-// 			  const J_type & J,
-// 			  result_t & result) const{
-//     ::rompp::core::ops::dot(J, R, result);
-//   }

@@ -85,7 +85,8 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver
-  using lin_solver_t = solvers::EigenIterative<solvers::linear::iterative::Bicgstab, jac_t>;
+  using lin_solver_t = solvers::iterative::EigenIterative<
+    solvers::linear::iterative::Bicgstab, jac_t>;
   solvers::NewtonRaphson<double, lin_solver_t> solverO;
 
   // integrate in time
@@ -140,7 +141,8 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   stepper_t stepperObj(y, appObj, res_pol_t(), jac_pol_t(), stepperAux);
 
   // define solver
-  using lin_solver_t = solvers::EigenIterative<solvers::linear::iterative::Bicgstab, jac_t>;
+  using lin_solver_t = solvers::iterative::EigenIterative<
+    solvers::linear::iterative::Bicgstab, jac_t>;
   solvers::NewtonRaphson<double, lin_solver_t> solverO;
 
   // integrate in time
@@ -194,7 +196,8 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
   stepper_t stepperObj(y, appObj, res_pol_t(), stepperAux);
 
   // define solver
-  using lin_solver_t = solvers::EigenIterative<solvers::linear::iterative::Bicgstab, jac_t>;
+  using lin_solver_t = solvers::iterative::EigenIterative<
+    solvers::linear::iterative::Bicgstab, jac_t>;
   solvers::NewtonRaphson<double, lin_solver_t> solverO;
 
   // integrate in time

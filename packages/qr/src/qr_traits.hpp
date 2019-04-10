@@ -116,6 +116,10 @@ struct traits<
       >
   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>{
 
+  static_assert( std::is_same<algo_t, ModifiedGramSchmidt>::value or
+		 std::is_same<algo_t, Householder>::value,
+  "Currently, only ModifiedGramSchmidt and Householder are available for Eigen matrices.");
+
   using traits_all_t	= traits_shared_all<matrix_type, algo_t, in_place, m, n>;
   using typename traits_all_t::matrix_t;
   using typename traits_all_t::sc_t;
@@ -175,6 +179,11 @@ struct traits<
   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>,
   traits_shared_trilinos_mv<matrix_type, Q_type>{
 
+  static_assert( std::is_same<algo_t, ModifiedGramSchmidt>::value or
+		 std::is_same<algo_t, Householder>::value or
+		 std::is_same<algo_t, TSQR>::value,
+		 "Currently, only TSQR, ModifiedGramSchmidt and Householder are available for Epetra dense matrices. Use TSQR because it is fast and accurate. ModifiedGramSchmidt and Householder are just here for testing purposes. ");
+
   using traits_all_t  = traits_shared_all<matrix_type, algo_t, in_place, m, n>;
   using traits_tril_t = traits_shared_trilinos_mv<matrix_type, Q_type>;
   using typename traits_all_t::matrix_t;
@@ -210,6 +219,12 @@ struct traits<
       >
   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>,
   traits_shared_trilinos_mv<matrix_type, Q_type>{
+
+
+  static_assert( std::is_same<algo_t, ModifiedGramSchmidt>::value or
+		 std::is_same<algo_t, Householder>::value or
+		 std::is_same<algo_t, TSQR>::value,
+		 "Currently, only TSQR, ModifiedGramSchmidt and Householder are available for Tpetra dense matrices. Use TSQR because it is fast and accurate. ModifiedGramSchmidt and Householder are just here for testing purposes. ");
 
   using traits_all_t  = traits_shared_all<matrix_type, algo_t, in_place, m, n>;
   using traits_tril_t = traits_shared_trilinos_mv<matrix_type, Q_type>;

@@ -13,6 +13,8 @@ struct Rosenbrock3 {
   using eig_dyn_vec	= Eigen::VectorXd;
   using jacobian_w_t	= rompp::core::Matrix<eig_dyn_mat>;
   using state_w_t	= rompp::core::Vector<eig_dyn_vec>;
+
+  using scalar_type = double;
   using state_type	= state_w_t;
   using residual_type	= state_type;
   using jacobian_type	= jacobian_w_t;

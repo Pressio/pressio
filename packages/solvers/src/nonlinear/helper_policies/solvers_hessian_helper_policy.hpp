@@ -21,14 +21,14 @@ struct HessianApproxHelper<
     >>{
 
   template <typename result_t>
-  void operator()(J_t & J, result_t & result) const
+  static void evaluate(J_t & J, result_t & result)
   {
     constexpr bool transposeJ = true;
     ::rompp::core::ops::product<J_t, J_t, result_t,
 				transposeJ>(J, J, result);
   }
 
-  auto operator()(J_t & J) const
+  static auto evaluate(J_t & J)
     -> decltype(::rompp::core::ops::product<J_t, J_t, true>(J, J))
   {
     return ::rompp::core::ops::product<J_t, J_t, true>(J, J);
@@ -50,11 +50,11 @@ struct HessianApproxHelper<
     >>
 {
   template <typename result_t>
-  void operator()(J_t & J, result_t & result) const{
+  static void evaluate(J_t & J, result_t & result) {
     ::rompp::core::ops::dot_self(J, result);
   }
 
-  auto operator()(J_t & J) const
+  static auto evaluate(J_t & J)
     -> decltype(::rompp::core::ops::dot_self(J)) {
     return ::rompp::core::ops::dot_self(J);
   }

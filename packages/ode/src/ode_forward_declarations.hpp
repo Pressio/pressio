@@ -3,7 +3,7 @@
 #define ODE_FORWARD_DECLARATIONS_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#include "../../core/src/meta/tinympl/variadic/find_if.hpp"
+// #include "../../core/src/meta/tinympl/variadic/find_if.hpp"
 
 namespace rompp{ namespace ode{
 
@@ -113,26 +113,3 @@ class ImplicitBDF2StepperImpl;
 
 }} // end namespace rompp::ode
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-// template<typename state_type,
-//          typename residual_type,
-//          typename jacobian_type,
-//          typename scalar_type,
-//          typename model_type,
-// 	 typename solver_policy_type,
-//          typename residual_policy_type,
-//          typename jacobian_policy_type,
-// 	 typename enable = void
-//          >
-// class implicitAdamsMoulton1StepperImpl;

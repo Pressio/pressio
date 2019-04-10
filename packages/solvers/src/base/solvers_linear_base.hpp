@@ -17,15 +17,12 @@ namespace rompp{ namespace solvers{
 template<typename SolverT, typename MatrixT, typename Derived>
 struct LinearBase {
 
-  template <typename CompatibleMatrixT,
-            typename std::enable_if<
-              solvers::meta::are_matrix_compatible<
-                MatrixT,
-                CompatibleMatrixT
-                >::value, MatrixT*
-              >::type = nullptr
-  >
+  template <typename CompatibleMatrixT>
   void resetLinearSystem(const CompatibleMatrixT& A) {
+    static_assert(solvers::meta::are_matrix_compatible<
+		  MatrixT, CompatibleMatrixT>::value,
+		  "Matrix types not compatible");
+
     this->underlying().resetLinearSystemImpl(A);
   }
 

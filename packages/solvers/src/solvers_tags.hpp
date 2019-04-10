@@ -1,8 +1,6 @@
 #ifndef SOLVERS_LINEAR_TAGS_HPP
 #define SOLVERS_LINEAR_TAGS_HPP
 
-#include "solvers_ConfigDefs.hpp"
-
 namespace rompp{ namespace solvers{ namespace linear {
 
 namespace iterative{

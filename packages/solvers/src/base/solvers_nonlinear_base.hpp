@@ -3,7 +3,7 @@
 #define SOLVERS_NONLINEAR_BASE_HPP
 
 #include "../solvers_ConfigDefs.hpp"
-#include "../solvers_meta_static_checks.hpp"
+#include "../meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
 #include "../../../core/src/vector/core_vector_meta.hpp"
 
 namespace rompp{ namespace solvers{
@@ -18,14 +18,12 @@ namespace rompp{ namespace solvers{
 template <typename Derived>
 struct NonLinearSolverBase {
 
-  template <
-    typename system_t,
-    core::meta::enable_if_t<
-      core::meta::is_core_vector_wrapper<
-	typename system_t::state_type>::value
-      > * =nullptr
-    >
+  template <typename system_t>
   void solve(const system_t & sys, typename system_t::state_type & x){
+    static_assert( ::rompp::solvers::meta::is_legitimate_system_for_nonlinear_solver<
+      system_t>::value,
+		   "The system obj type is not valid for non-linear solver");
+
     this->underlying().solveImpl(sys, x);
   }
 

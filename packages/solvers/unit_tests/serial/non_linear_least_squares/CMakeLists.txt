@@ -1,5 +1,4 @@
 
-
 add_serial_unit_test(gn_normal_eq_exp_data_fit_n2)
 add_serial_unit_test(gn_qr_exp_data_fit_n2)
 add_serial_unit_test(gn_qr_line_search_exp_data_fit_n2)
