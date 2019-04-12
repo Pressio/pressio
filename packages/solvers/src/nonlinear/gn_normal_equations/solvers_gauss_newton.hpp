@@ -107,7 +107,7 @@ class GaussNewton<
   using gn_mixin_t = GNHelperMixin<system_type, hessian_type,
 				   linear_solver_type, scalar_type>;
 
-  using iterative_base_t::iteration_t;
+  using typename iterative_base_t::iteration_t;
   using typename gn_mixin_t::state_t;
   using typename gn_mixin_t::residual_t;
   using typename gn_mixin_t::jacobian_t;
@@ -197,7 +197,7 @@ class GaussNewton<
   using gn_mixin_t = GNHelperMixin<system_type, hessian_type,
 				   linear_solver_type, scalar_type>;
 
-  using iterative_base_t::iteration_t;
+  using typename iterative_base_t::iteration_t;
   using typename gn_mixin_t::state_t;
   using typename gn_mixin_t::residual_t;
   using typename gn_mixin_t::jacobian_t;
