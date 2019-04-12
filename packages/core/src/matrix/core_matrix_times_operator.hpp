@@ -10,7 +10,7 @@ namespace core{
 
   
 template <typename T1, 
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 	    core::meta::is_dense_matrix_wrapper_eigen<T1>::value or
 	    core::meta::is_sparse_matrix_wrapper_eigen<T1>::value
 	    > * = nullptr>

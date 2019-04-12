@@ -120,7 +120,7 @@ template <
 struct implClassHelper<
   ImplicitEnum::Euler, state_type, residual_type,
   jacobian_type, model, void, res_pol_t, void,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     !std::is_void<res_pol_t>::value
     >
   > : standardPolHelper<state_type, void, jacobian_type, model>
@@ -145,7 +145,7 @@ template <
 struct implClassHelper<
   ImplicitEnum::Euler, state_type, residual_type,
   jacobian_type, model, void, res_pol_t, jac_pol_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     !std::is_void<res_pol_t>::value and !std::is_void<jac_pol_t>::value
     >
   >
@@ -193,7 +193,7 @@ template <
 struct implClassHelper<
   ImplicitEnum::BDF2, state_type, residual_type,
   jacobian_type, model, aux_step_t, res_pol_t, void,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     !std::is_void<res_pol_t>::value
     >
   > : standardPolHelper<state_type, void, jacobian_type, model>
@@ -218,7 +218,7 @@ template <
 struct implClassHelper<
   ImplicitEnum::BDF2, state_type, residual_type,
   jacobian_type, model, aux_step_t, res_pol_t, jac_pol_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     !std::is_void<res_pol_t>::value and
     !std::is_void<jac_pol_t>::value
     >

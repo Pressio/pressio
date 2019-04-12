@@ -2,6 +2,8 @@
 #ifndef MPL_ALL_HPP_
 #define MPL_ALL_HPP_
 
-//#include "CORE_BASIC"
+#include "./mpl/src/mpl_non_variadic.hpp"
+#include "./mpl/src/mpl_variadic.hpp"
+
 
 #endif

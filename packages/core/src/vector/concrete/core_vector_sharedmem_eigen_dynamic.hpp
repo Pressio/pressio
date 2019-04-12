@@ -12,7 +12,7 @@ namespace rompp{ namespace core{
 
 template <typename wrapped_type>
 class Vector<wrapped_type,
-	     core::meta::enable_if_t<
+	     ::rompp::mpl::enable_if_t<
 	       core::meta::is_dynamic_vector_eigen<wrapped_type>::value
 	       >
 	     >
@@ -55,7 +55,7 @@ public:
 
   // constructor from any expression, force evaluation
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   explicit Vector(const T & expr){
     this->resize(expr.size());
@@ -65,7 +65,7 @@ public:
 
   // assignment from any expression, force evaluation
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator=(const T & expr){
     if(this->size() != expr.size())
@@ -77,7 +77,7 @@ public:
 
   // assignment with other vector of same type
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator=(const T & other){
     if(this->size() != other.size())
@@ -88,7 +88,7 @@ public:
 
   // assignment with value
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
 	      std::is_same<T, sc_t>::value> * = nullptr>
   this_t & operator=(const T value){
     for (ord_t i = 0; i != data_.size(); ++i)
@@ -100,7 +100,7 @@ public:
   // compound assignment from expression template
   // this += expr
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator+=(const T & expr) {
     assert( expr.size() == this->size() );
@@ -112,7 +112,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this += b
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator+=(const T & other) {
     assert( other.size() == this->size() );
@@ -124,7 +124,7 @@ public:
   // compound assignment from expression template
   // this -= expr
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator-=(const T & expr) {
     assert( expr.size() == this->size() );
@@ -136,7 +136,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this -= b
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator-=(const T & other) {
     assert( other.size() == this->size() );

@@ -15,7 +15,7 @@ struct is_static_vector_blaze : std::false_type {};
 
 template <typename T>
 struct is_static_vector_blaze<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   blaze::IsStatic<typename T::This>::value
 	   >
       > : std::true_type{};
@@ -25,7 +25,7 @@ struct is_dynamic_row_vector_blaze : std::false_type {};
 
 template <typename T>
 struct is_dynamic_row_vector_blaze<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   std::is_same<T, blaze::DynamicVector<
 				typename T::ElementType,
 				blaze::rowVector>
@@ -38,7 +38,7 @@ struct is_dynamic_column_vector_blaze : std::false_type {};
 
 template <typename T>
 struct is_dynamic_column_vector_blaze<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   std::is_same<T, blaze::DynamicVector<
 				typename T::ElementType,
 				blaze::columnVector>
@@ -51,7 +51,7 @@ struct is_dynamic_vector_blaze : std::false_type {};
 
 template <typename T>
 struct is_dynamic_vector_blaze<T,
-	   core::meta::enable_if_t<
+	   ::rompp::mpl::enable_if_t<
 	     is_dynamic_row_vector_blaze<T>::value ||
 	     is_dynamic_column_vector_blaze<T>::value
 	   >

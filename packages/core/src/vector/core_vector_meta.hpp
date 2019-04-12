@@ -32,7 +32,7 @@ struct is_dense_vector_wrapper_teuchos : std::false_type {};
 
 template <typename T>
 struct is_dense_vector_wrapper_teuchos<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
        core::details::WrappedVectorIdentifier::TeuchosSerialDense
@@ -48,7 +48,7 @@ struct is_vector_wrapper_epetra : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper_epetra<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
        core::details::WrappedVectorIdentifier::Epetra
@@ -64,7 +64,7 @@ struct is_vector_wrapper_tpetra : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper_tpetra<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
        core::details::WrappedVectorIdentifier::Tpetra
@@ -80,7 +80,7 @@ struct is_vector_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper_eigen<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_vector &&
        (core::details::traits<T>::wrapped_vector_identifier==
         core::details::WrappedVectorIdentifier::EigenColStatic or
@@ -101,7 +101,7 @@ struct is_row_vector_wrapper_armadillo : std::false_type {};
 
 template <typename T>
 struct is_row_vector_wrapper_armadillo<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
        core::details::WrappedVectorIdentifier::ArmadilloRow
@@ -114,7 +114,7 @@ struct is_column_vector_wrapper_armadillo : std::false_type {};
 
 template <typename T>
 struct is_column_vector_wrapper_armadillo<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
        core::details::WrappedVectorIdentifier::ArmadilloCol
@@ -130,7 +130,7 @@ struct is_dynamic_vector_wrapper_blaze : std::false_type {};
 
 template <typename T>
 struct is_dynamic_vector_wrapper_blaze<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
        core::details::WrappedVectorIdentifier::BlazeDynamic
@@ -143,7 +143,7 @@ struct is_static_vector_wrapper_blaze : std::false_type {};
 
 template <typename T>
 struct is_static_vector_wrapper_blaze<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_vector &&
        core::details::traits<T>::wrapped_vector_identifier==
        core::details::WrappedVectorIdentifier::BlazeStatic
@@ -160,7 +160,7 @@ struct is_admissible_vec_for_dist_expression : std::false_type{};
 
 template <typename T>
 struct is_admissible_vec_for_dist_expression<T,
-      core::meta::enable_if_t<
+      ::rompp::mpl::enable_if_t<
   core::meta::is_core_vector_wrapper<T>::value &&
   !core::details::traits<T>::is_shared_mem
       >> : std::true_type{};
@@ -173,7 +173,7 @@ struct is_admissible_vec_for_sharedmem_expression : std::false_type{};
 
 template <typename T>
 struct is_admissible_vec_for_sharedmem_expression<T,
-      core::meta::enable_if_t<
+      ::rompp::mpl::enable_if_t<
   core::meta::is_core_vector_wrapper<T>::value &&
   core::details::traits<T>::is_shared_mem
       >> : std::true_type{};
@@ -188,7 +188,7 @@ struct is_admissible_vec_for_sharedmem_expression<T,
 // template <typename T>
 // struct supports_vector_expression_templates
 // <T,
-//  core::meta::enable_if_t<
+//  ::rompp::mpl::enable_if_t<
 //    is_vector_wrapper_tpetra<T>::value == false
 //    >
 //  > : std::true_type{};

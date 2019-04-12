@@ -17,7 +17,7 @@ namespace rompp{ namespace core{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
-	     core::meta::enable_if_t<
+	     ::rompp::mpl::enable_if_t<
 	       core::meta::is_sparse_matrix_tpetra<
 		 wrapped_type>::value>
 	     >

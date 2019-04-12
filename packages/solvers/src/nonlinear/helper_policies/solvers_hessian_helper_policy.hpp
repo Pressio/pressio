@@ -16,7 +16,7 @@ struct HessianApproxHelper;
 template<typename J_t>
 struct HessianApproxHelper<
   J_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_core_matrix_wrapper<J_t>::value
     >>{
 
@@ -45,7 +45,7 @@ struct HessianApproxHelper<
 template<typename J_t>
 struct HessianApproxHelper<
   J_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_core_multi_vector_wrapper<J_t>::value
     >>
 {

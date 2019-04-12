@@ -21,9 +21,6 @@
 #include "core/src/shared_base/core_container_printable_base.hpp"
 
 #include "core/src/meta/core_meta_basic.hpp"
-#include "core/src/meta/core_meta_detect_operators.hpp"
-#include "core/src/meta/core_meta_detect_typedefs.hpp"
-#include "core/src/meta/core_meta_detection_idiom.hpp"
 #include "core/src/meta/core_native_vector_meta.hpp"
 #include "core/src/meta/core_native_multi_vector_meta.hpp"
 #include "core/src/meta/core_native_matrix_meta.hpp"

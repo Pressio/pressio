@@ -25,7 +25,7 @@ template<typename collector_type,
 	 typename state_type>
 struct is_legitimate_collector<
   collector_type, int_type, time_type, state_type,
-  core::meta::void_t<
+  ::rompp::mpl::void_t<
     decltype(std::declval<collector_type>()(std::declval<int_type>(),
 					    std::declval<time_type>(),
 					    std::declval<const state_type &>()

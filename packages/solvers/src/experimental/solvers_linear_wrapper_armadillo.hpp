@@ -38,7 +38,7 @@ class SolversLinearDirectWrapperArmadillo {
     template <
       typename DMatrixT,
       typename VectorT,
-      typename core::meta::enable_if_t<
+      typename ::rompp::mpl::enable_if_t<
         core::details::traits<DMatrixT>::is_dense
       >* = nullptr
     >
@@ -53,7 +53,7 @@ class SolversLinearDirectWrapperArmadillo {
     template <
       typename DMatrixT,
       typename VectorT,
-      typename core::meta::enable_if_t<
+      typename ::rompp::mpl::enable_if_t<
         core::details::traits<DMatrixT>::is_sparse
       >* = nullptr
     >

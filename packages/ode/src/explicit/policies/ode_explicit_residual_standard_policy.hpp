@@ -14,7 +14,7 @@ template<typename state_type,
 	 typename model_type>
 class ExplicitResidualStandardPolicy<
   state_type,model_type, state_type,
-    core::meta::enable_if_t<
+    ::rompp::mpl::enable_if_t<
       // enable when state and residual are vector wrappers
       // what about the case when they are multivector wrappers?
       // think if this works right away

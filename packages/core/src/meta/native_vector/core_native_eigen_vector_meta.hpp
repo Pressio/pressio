@@ -13,7 +13,7 @@ struct is_dynamic_row_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_dynamic_row_vector_eigen<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   std::is_same<T,
 			Eigen::Matrix<typename T::Scalar,
 				      1, Eigen::Dynamic>
@@ -27,7 +27,7 @@ struct is_static_row_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_static_row_vector_eigen<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   std::is_same<T,
 			Eigen::Matrix<typename T::Scalar,
 				      1,
@@ -44,7 +44,7 @@ struct is_dynamic_column_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_dynamic_column_vector_eigen<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   std::is_same<T,
 			Eigen::Matrix<typename T::Scalar,
 				      Eigen::Dynamic, 1>
@@ -58,7 +58,7 @@ struct is_static_column_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_static_column_vector_eigen<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   std::is_same<T,
 			Eigen::Matrix<typename T::Scalar,
 				      T::RowsAtCompileTime,
@@ -75,7 +75,7 @@ struct is_static_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_static_vector_eigen<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   is_static_row_vector_eigen<T>::value ||
 	   is_static_column_vector_eigen<T>::value
 	   >
@@ -88,7 +88,7 @@ struct is_dynamic_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_dynamic_vector_eigen<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   is_dynamic_row_vector_eigen<T>::value or
 	   is_dynamic_column_vector_eigen<T>::value
 	   >
@@ -101,7 +101,7 @@ struct is_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_vector_eigen< T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   is_dynamic_vector_eigen<T>::value or
 	   is_static_vector_eigen<T>::value
 	   >

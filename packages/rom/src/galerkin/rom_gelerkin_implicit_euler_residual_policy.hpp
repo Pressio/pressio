@@ -62,7 +62,7 @@ namespace rompp{ namespace rom{
 //   ~RomGalerkinImplicitResidualPolicy() = default;
 
 //   template <typename T=A_type,
-//    core::meta::enable_if_t<std::is_same<T,phi_op_type>::value> * = nullptr>
+//    ::rompp::mpl::enable_if_t<std::is_same<T,phi_op_type>::value> * = nullptr>
 //   RomGalerkinImplicitResidualPolicy(const app_state_w_type & y0fom,
 // 				    const app_res_w_type & r0fom,
 // 				    phi_op_type & phiOp)

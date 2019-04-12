@@ -6,11 +6,11 @@
 
 namespace rompp{ namespace mpl{
 
-template<typename T, typename U, typename enable = void>
-struct has_add_op : std::false_type { };
+template<typename T, typename U=T, typename enable = void>
+struct has_addition_op : std::false_type { };
 
 template<typename T, typename U>
-struct has_add_op<
+struct has_addition_op<
   T,U,
   typename
   std::enable_if<

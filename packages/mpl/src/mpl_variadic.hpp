@@ -1,6 +1,6 @@
 
-#ifndef TINYMPL_VARIADIC_HPP
-#define TINYMPL_VARIADIC_HPP
+#ifndef ROMPP_MPL_VARIADIC_HPP
+#define ROMPP_MPL_VARIADIC_HPP
 
 #include "variadic/size.hpp"
 #include "variadic/at.hpp"
@@ -9,4 +9,4 @@
 #include "variadic/any_of.hpp"
 #include "variadic/none_of.hpp"
 
-#endif // TINYMPL_VARIADIC_HPP
+#endif 

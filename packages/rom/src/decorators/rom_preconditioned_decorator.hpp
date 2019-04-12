@@ -12,7 +12,7 @@ namespace rompp{ namespace rom{ namespace decorator{
 template <typename preconditionable>
 class Preconditioned<
   preconditionable,
-  core::meta::enable_if_t<preconditionable::isResidualPolicy_>
+  ::rompp::mpl::enable_if_t<preconditionable::isResidualPolicy_>
   > : public preconditionable{
 
   using typename preconditionable::fom_rhs_w_t;
@@ -67,7 +67,7 @@ public:
 template <typename preconditionable>
 class Preconditioned<
   preconditionable,
-  core::meta::enable_if_t<preconditionable::isResidualPolicy_ == false>
+  ::rompp::mpl::enable_if_t<preconditionable::isResidualPolicy_ == false>
   > : public preconditionable{
 
 public:

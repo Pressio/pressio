@@ -22,7 +22,7 @@ struct is_vector_stdlib<T,
 	// scalar type or integral type or complex
 	(std::is_floating_point<typename T::value_type>::value ||
 	 std::is_integral<typename T::value_type>::value ||
-	 is_std_complex<typename T::value_type>::value
+	 ::rompp::mpl::is_std_complex<typename T::value_type>::value
 	 )
 	>::type
       > : std::true_type{};

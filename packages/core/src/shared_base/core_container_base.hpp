@@ -35,7 +35,7 @@ public:
     this->underlying().setZeroImpl();}
 
   template <typename T= derived_type,
-	    core::meta::enable_if_t<
+	    ::rompp::mpl::enable_if_t<
   	      core::details::traits<T>::is_shared_mem==0,
   	      int> = 0
   	    >
@@ -44,7 +44,7 @@ public:
   }
 
   template <typename T= derived_type,
-	    core::meta::enable_if_t<
+	    ::rompp::mpl::enable_if_t<
   	      core::details::traits<T>::is_shared_mem==1,
 	      int> = 0
   	    >

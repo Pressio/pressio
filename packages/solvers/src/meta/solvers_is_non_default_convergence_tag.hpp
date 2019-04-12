@@ -14,7 +14,7 @@ struct is_non_default_convergence_tag
 template <typename T>
 struct is_non_default_convergence_tag<
   T,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     std::is_same<
       T,
       iterative::converged_when::absoluteNormCorrectionBelowTol<L2Norm>>::value or

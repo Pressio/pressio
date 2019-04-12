@@ -3,7 +3,7 @@
 #define SOLVERS_SYSTEM_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
 
 #include "../solvers_ConfigDefs.hpp"
-#include "../../../core/src/meta/core_meta_detection_idiom.hpp"
+#include "../../../mpl/src/detection_idiom.hpp"
 
 namespace rompp{ namespace solvers{ namespace meta {
 
@@ -31,20 +31,20 @@ template<
   >
 struct system_has_needed_jacobian_methods
 < system_type, state_type, jacobian_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
    // has method with 1 arguments,
-    core::meta::is_detected<
+    ::rompp::mpl::is_detected<
       has_jacobian_method_callable_with_one_arg,
       system_type, state_type
       >::value and
    // has method with 2 arguments,
-    core::meta::is_detected<
+    ::rompp::mpl::is_detected<
       has_jacobian_method_callable_with_two_args,
       system_type, state_type, jacobian_type
       >::value and
     // method with 1 argument returns a jacobian_type
     std::is_same<
-      core::meta::detected_t<
+      ::rompp::mpl::detected_t<
 	has_jacobian_method_callable_with_one_arg,
 	system_type, state_type>,
       jacobian_type

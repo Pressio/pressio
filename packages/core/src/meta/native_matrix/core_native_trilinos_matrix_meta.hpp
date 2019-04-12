@@ -76,7 +76,7 @@ struct is_dense_matrix_teuchos_rcp : std::false_type {};
 template <typename T>
 struct is_dense_matrix_teuchos_rcp<T,
     typename std::enable_if<
-      is_teuchos_rcp_ptr<T>::value and
+      is_teuchos_rcp<T>::value and
       is_dense_matrix_teuchos<typename T::element_type>::value
 	>::type
       > : std::true_type{};

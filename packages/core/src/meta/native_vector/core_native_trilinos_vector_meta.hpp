@@ -48,7 +48,7 @@ struct is_dense_vector_teuchos : std::false_type {};
 
 template <typename T>
 struct is_dense_vector_teuchos<T,
-      core::meta::enable_if_t<
+      ::rompp::mpl::enable_if_t<
 	std::is_same<T,
 	  Teuchos::SerialDenseVector<typename T::ordinalType,
 				     typename T::scalarType>
@@ -62,7 +62,7 @@ struct is_vector_kokkos : std::false_type {};
 
 template <typename T>
 struct is_vector_kokkos<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   // kokkos vector is it is a view and has rank=1
 	   Kokkos::is_view<T>::value &&
 	   T::traits::rank==1>

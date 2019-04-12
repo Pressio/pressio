@@ -4,10 +4,9 @@
 
 #include "../core_forward_declarations.hpp"
 #include "../meta/core_native_vector_meta.hpp"
-#include "../meta/core_meta_detect_typedefs.hpp"
-#include "../meta/core_meta_detect_operators.hpp"
+// #include "../meta/core_meta_detect_typedefs.hpp"
+// #include "../meta/core_meta_detect_operators.hpp"
 #include "../core_shared_traits.hpp"
-
 
 namespace rompp{ namespace core{ namespace details{
 
@@ -129,7 +128,7 @@ struct traits<Vector<wrapped_type,
 #ifdef HAVE_ARMADILLO
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     core::meta::enable_if_t<
+		     ::rompp::mpl::enable_if_t<
 		       core::meta::is_column_vector_armadillo<
 			 wrapped_type>::value
 		       >
@@ -158,7 +157,7 @@ struct traits<Vector<wrapped_type,
 #ifdef HAVE_ARMADILLO
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     core::meta::enable_if_t<
+		     ::rompp::mpl::enable_if_t<
 		       core::meta::is_row_vector_armadillo<
 			 wrapped_type>::value
 		       >
@@ -187,7 +186,7 @@ struct traits<Vector<wrapped_type,
 #ifdef HAVE_BLAZE
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     core::meta::enable_if_t<
+		     ::rompp::mpl::enable_if_t<
 		       core::meta::is_dynamic_vector_blaze<
 			 wrapped_type>::value
 		       >
@@ -324,7 +323,7 @@ struct traits<Vector<wrapped_type,
 #ifdef HAVE_TRILINOS
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 	    core::meta::is_vector_kokkos<
 	      wrapped_type>::value
 	    >

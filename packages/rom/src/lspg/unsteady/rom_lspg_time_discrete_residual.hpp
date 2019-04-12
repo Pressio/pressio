@@ -74,7 +74,7 @@ template<
   int numStates,
   typename state_type,
   typename scalar_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_vector_wrapper_epetra<state_type>::value == true
     > * = nullptr
   >
@@ -156,7 +156,7 @@ template<
   int n,
   typename state_type,
   typename scalar_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_vector_wrapper_tpetra<state_type>::value == true
     > * = nullptr
   >
@@ -201,7 +201,7 @@ template<
   int n,
   typename state_type,
   typename scalar_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_vector_wrapper_eigen<state_type>::value == true and
     method == ::rompp::ode::ImplicitEnum::Euler
     > * = nullptr
@@ -222,7 +222,7 @@ template<
   int n,
   typename state_type,
   typename scalar_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_vector_wrapper_eigen<state_type>::value == true and
     method == ::rompp::ode::ImplicitEnum::BDF2
     > * = nullptr

@@ -88,7 +88,7 @@ or is not available for linear systems defined by Eigen matrices");
   template <
     typename NSolverT,
     typename LSolverT,
-    typename core::meta::enable_if_t<
+    typename ::rompp::mpl::enable_if_t<
       nonlinearleastsquare::details::solver_traits<NSolverT>::enabled
     >* = nullptr
   >
@@ -113,7 +113,7 @@ or is not available for linear systems defined by Eigen matrices");
   // template <
   //   typename NSolverT,
   //   typename qr_algo_tag = ::rompp::qr::Hacked,
-  //   typename core::meta::enable_if_t<
+  //   typename ::rompp::mpl::enable_if_t<
   //     std::is_same<NSolverT, nonlinearleastsquare::GaussNewtonQR>::value
   //   >* = nullptr
   // >

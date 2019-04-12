@@ -10,7 +10,7 @@ namespace rompp{ namespace rom{
 template<typename wrapped_type>
 class MatrixOperator<
   wrapped_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_core_matrix_wrapper<
       wrapped_type>::value
     >

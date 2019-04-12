@@ -63,7 +63,7 @@ public:
   // passing: model, initial state, aux_stepper
   // policy is standard for residual and jacobian
   template <typename T = aux_stepper_type,
-	    core::meta::enable_if_t<
+	    ::rompp::mpl::enable_if_t<
 	      not std::is_void<T>::value
 	      > * = nullptr>
   ImplicitStepper(const ode_state_type & y0,
@@ -173,7 +173,7 @@ public:
 
   // passing: model, initial state, aux_stepper
   template <typename T = aux_stepper_type,
-	    core::meta::enable_if_t<
+	    ::rompp::mpl::enable_if_t<
 	      not std::is_void<T>::value
 	      > * = nullptr>
   ImplicitStepper(const ode_state_type & y0,
@@ -292,7 +292,7 @@ public:
   // passing: model, initial state, aux_stepper
   // policy is standard for residual and jacobian
   template <typename T = aux_stepper_type,
-	    core::meta::enable_if_t<
+	    ::rompp::mpl::enable_if_t<
 	      not std::is_void<T>::value
 	      > * = nullptr>
   ImplicitStepper(const ode_state_type & y0,

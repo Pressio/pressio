@@ -9,7 +9,7 @@ namespace rompp{ namespace rom{
 template <typename problem_types>
 struct GalerkinStepperObjectGenerator<
   problem_types,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     problem_types::odeName_ == ode::ExplicitEnum::Euler or
     problem_types::odeName_ == ode::ExplicitEnum::RungeKutta4
     >

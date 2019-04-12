@@ -15,7 +15,7 @@ struct eigenMatMatProdRetTypeHelper;
 template <typename TA>
 struct eigenMatMatProdRetTypeHelper<
   TA, TA,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_dense_matrix_wrapper_eigen<TA>::value
     >
   >{
@@ -26,7 +26,7 @@ struct eigenMatMatProdRetTypeHelper<
 template <typename TA>
 struct eigenMatMatProdRetTypeHelper<
   TA, TA,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_sparse_matrix_wrapper_eigen<TA>::value
     >
   >{
@@ -37,7 +37,7 @@ struct eigenMatMatProdRetTypeHelper<
 template <typename TA, typename TB>
 struct eigenMatMatProdRetTypeHelper<
   TA, TB,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_sparse_matrix_wrapper_eigen<TA>::value and
     core::meta::is_dense_matrix_wrapper_eigen<TB>::value
     >
@@ -49,7 +49,7 @@ struct eigenMatMatProdRetTypeHelper<
 template <typename TA, typename TB>
 struct eigenMatMatProdRetTypeHelper<
   TA, TB,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_dense_matrix_wrapper_eigen<TA>::value and
     core::meta::is_sparse_matrix_wrapper_eigen<TB>::value
     >

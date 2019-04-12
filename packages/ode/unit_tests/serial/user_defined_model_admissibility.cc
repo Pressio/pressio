@@ -25,7 +25,7 @@ TEST(user_defined_model, admissibleExplicitOde){
   // };
 
   using app_t = ::rompp::ode::testing::fakeAppForTraitsForExp;
-  static_assert(core::meta::is_detected<
+  static_assert(::rompp::mpl::is_detected<
 		ode::meta::has_scalar_typedef,
 		app_t>::value, " ");
 

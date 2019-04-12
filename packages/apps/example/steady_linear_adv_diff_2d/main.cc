@@ -151,7 +151,7 @@ int main(int argc, char *argv[]){
   if(rank==0){
     auto it1 = PrS.begin();
     auto it2 = ReS.begin();
-    for( ;it1<PrS.end(), it2<ReS.end(); it1++, it2++)
+    for( ;it2<ReS.end(); it1++, it2++)
       std::cout << std::setprecision(15)
 		<< *it1 << " " << *it2
 		<< "\n";

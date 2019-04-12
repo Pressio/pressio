@@ -12,7 +12,7 @@ namespace rompp{ namespace rom{ namespace decorator{
 template <typename maskable>
 class Masked<
   maskable,
-  core::meta::enable_if_t<maskable::isResidualPolicy_>
+  ::rompp::mpl::enable_if_t<maskable::isResidualPolicy_>
   > : public maskable{
 
   using typename maskable::fom_rhs_w_t;
@@ -76,7 +76,7 @@ public:
 template <typename maskable>
 class Masked<
   maskable,
-  core::meta::enable_if_t<maskable::isResidualPolicy_ == false>
+  ::rompp::mpl::enable_if_t<maskable::isResidualPolicy_ == false>
   > : public maskable{
 
 public:

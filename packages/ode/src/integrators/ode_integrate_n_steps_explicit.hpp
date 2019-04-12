@@ -69,7 +69,7 @@ void integrateNSteps(stepper_type & stepper,
 // 	 typename enable = void>
 // struct are_legitimate_types_for_nsteps_integration<
 //   stepper_type, state_type, time_type, integral_type,
-//   core::meta::enable_if_t<
+//   ::rompp::mpl::enable_if_t<
 //     ode::meta::is_legitimate_collector<collector_type, integral_type,
 // 				       time_type, state_type>::value &&
 //     std::is_integral<integral_type>::value &&

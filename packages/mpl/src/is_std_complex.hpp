@@ -13,7 +13,7 @@ struct is_std_complex : std::false_type{};
 
 template <typename T>
 struct is_std_complex<T, typename
-		      ::rompp::core::meta::enable_if_t<
+		      ::rompp::mpl::enable_if_t<
 			   std::is_same<T,
 					std::complex<typename T::value_type
 						     >

@@ -13,7 +13,7 @@ namespace mat_ops{
   EIGEN DENSE DYNAMIC
 ----------------------------------------------------- */
 template <typename mat_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
 	    details::traits<mat_type>::is_dense &&
 	    details::traits<mat_type>::is_static==0
@@ -29,7 +29,7 @@ auto transpose(const mat_type & A)
   EIGEN DENSE STATIC
 ----------------------------------------------------- */
 template <typename mat_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
 	    details::traits<mat_type>::is_dense &&
 	    details::traits<mat_type>::is_static

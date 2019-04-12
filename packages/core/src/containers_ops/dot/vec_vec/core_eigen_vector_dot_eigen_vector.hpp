@@ -10,7 +10,7 @@ namespace rompp{ namespace core{ namespace ops{
 // Eigen vector dot eigen vector
 template <
   typename vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
@@ -25,7 +25,7 @@ void dot(const vec_type & vecA,
 // Eigen vector dot eigen vector, return value
 template <
   typename vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >

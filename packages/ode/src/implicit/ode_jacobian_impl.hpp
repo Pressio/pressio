@@ -13,13 +13,13 @@ template <
   ode::ImplicitEnum odeMethod,
   typename jacobian_type,
   typename scalar_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
-    core::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
+    (core::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
 #ifdef HAVE_TRILINOS
     core::meta::is_sparse_matrix_wrapper_epetra<jacobian_type>::value or
 #endif
-    core::meta::is_dense_matrix_wrapper_eigen<jacobian_type>::value
+    core::meta::is_dense_matrix_wrapper_eigen<jacobian_type>::value)
     > * = nullptr
   >
   void time_discrete_jacobian(jacobian_type & jac,
@@ -32,7 +32,7 @@ template <
   ode::ImplicitEnum odeMethod,
   typename jacobian_type,
   typename scalar_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) and
     core::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
     > * = nullptr

@@ -13,7 +13,7 @@ struct is_non_default_line_search_tag
 template <typename T>
 struct is_non_default_line_search_tag<
   T,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     std::is_same<
       T,
       ::rompp::solvers::iterative::gn::ArmijoLineSearch>::value

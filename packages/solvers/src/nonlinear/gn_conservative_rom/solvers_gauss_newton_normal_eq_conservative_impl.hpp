@@ -23,7 +23,7 @@ template <
   typename converged_when_tag,
   typename cbar_t,
   typename mat_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     //::rompp::solvers::details::system_traits<system_t>::is_system and
     core::meta::is_vector_wrapper_eigen<
       typename system_t::state_type>::value and

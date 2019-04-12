@@ -25,7 +25,7 @@ namespace todeprecate{
  **/
 template <
   typename MatrixT,
-  typename core::meta::enable_if_t<
+  typename ::rompp::mpl::enable_if_t<
     core::details::traits<MatrixT>::wrapped_package_identifier == core::details::WrappedPackageIdentifier::Eigen
   >* = nullptr
 >
@@ -49,7 +49,7 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
     typename NormT,
     typename SystemT,
     typename VectorT,
-    typename core::meta::enable_if_t<
+    typename ::rompp::mpl::enable_if_t<
       core::details::traits<VectorT>::is_vector &&
       solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,
@@ -136,7 +136,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
     typename NormT,
     typename SystemT,
     typename VectorT,
-    typename core::meta::enable_if_t<
+    typename ::rompp::mpl::enable_if_t<
       core::details::traits<VectorT>::is_vector &&
       solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,

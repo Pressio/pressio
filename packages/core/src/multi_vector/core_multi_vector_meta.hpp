@@ -31,7 +31,7 @@ struct is_multi_vector_wrapper_epetra : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_epetra<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_multi_vector &&
        core::details::traits<T>::wrapped_multi_vector_identifier==
        core::details::WrappedMultiVectorIdentifier::Epetra
@@ -48,7 +48,7 @@ struct is_multi_vector_wrapper_tpetra : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_tpetra<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_multi_vector &&
        core::details::traits<T>::wrapped_multi_vector_identifier==
        core::details::WrappedMultiVectorIdentifier::Tpetra
@@ -64,7 +64,7 @@ struct is_multi_vector_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_eigen<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_multi_vector &&
        core::details::traits<T>::wrapped_multi_vector_identifier==
        core::details::WrappedMultiVectorIdentifier::Eigen

@@ -18,7 +18,7 @@ class QRSolveBase
 public:
   template <
     typename vec_t,
-    core::meta::enable_if_t<
+    ::rompp::mpl::enable_if_t<
       core::meta::is_core_vector_wrapper<vec_t>::value
       >* = nullptr
     >

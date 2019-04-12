@@ -7,10 +7,10 @@
 namespace rompp{ namespace mpl{
 
 template<typename T, typename U=T, typename enable = void>
-struct has_comp_assign_plus_op : std::false_type { };
+struct has_addition_assign_op : std::false_type { };
 
 template<typename T, typename U>
-struct has_comp_assign_plus_op<
+struct has_addition_assign_op<
   T,U,
   typename
   std::enable_if<

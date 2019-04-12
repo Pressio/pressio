@@ -11,6 +11,10 @@
 #include "core_static_constants.hpp"
 #include "core_teuchos_performance_monitor.hpp"
 
+#include "../../mpl/src/mpl_non_variadic.hpp"
+#include "../../mpl/src/mpl_variadic.hpp"
+
 #include "meta/core_meta_basic.hpp"
+
 
 #endif

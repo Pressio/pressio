@@ -3,7 +3,7 @@
 #define ODE_META_BASIC_META_HPP_
 
 #include "../ode_ConfigDefs.hpp"
-#include "../../../core/src/meta/core_meta_detection_idiom.hpp"
+#include "../../../mpl/src/detection_idiom.hpp"
 #include "../../../core/src/vector/core_vector_meta.hpp"
 #include "../../../core/src/multi_vector/core_multi_vector_meta.hpp"
 #include "../../../core/src/matrix/core_matrix_meta.hpp"

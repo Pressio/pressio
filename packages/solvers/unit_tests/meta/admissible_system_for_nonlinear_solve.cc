@@ -43,21 +43,21 @@ TEST(solvers_meta, detect_residual_methods){
 		typename system_t::residual_type
 		>::value, "");
 
-  static_assert(core::meta::is_detected<
+  static_assert(::rompp::mpl::is_detected<
 		solvers::meta::has_residual_method_callable_with_one_arg,
 		system_t,
 		typename system_t::state_type
 		>::value,
 		"system does not have residual with one arg");
 
-  static_assert(core::meta::is_detected<
+  static_assert(::rompp::mpl::is_detected<
 		solvers::meta::has_residual_method_callable_with_one_arg,
 		system_t,
 		double
 		>::value == false,
 		"system has residual method with one arg with wrong type");
 
-  static_assert(core::meta::is_detected<
+  static_assert(::rompp::mpl::is_detected<
 		solvers::meta::has_residual_method_callable_with_two_args,
 		system_t,
 		typename system_t::state_type,
@@ -65,7 +65,7 @@ TEST(solvers_meta, detect_residual_methods){
 		>::value,
 		"system does not have residual with two args");
 
-  static_assert(core::meta::is_detected<
+  static_assert(::rompp::mpl::is_detected<
 		solvers::meta::has_residual_method_callable_with_two_args,
 		system_t,
 		typename system_t::state_type,
@@ -80,14 +80,14 @@ TEST(solvers_meta, detect_jacobian_methods){
   using namespace rompp;
   using system_t   = ValidSystemA;
 
-  static_assert(core::meta::is_detected<
+  static_assert(::rompp::mpl::is_detected<
 		solvers::meta::has_jacobian_method_callable_with_one_arg,
 		system_t,
 		typename system_t::state_type
 		>::value,
 		"system does not have jacobian with one arg");
 
-  static_assert(core::meta::is_detected<
+  static_assert(::rompp::mpl::is_detected<
 		solvers::meta::has_jacobian_method_callable_with_two_args,
 		system_t,
 		typename system_t::state_type,

@@ -30,7 +30,7 @@ struct is_dense_matrix_wrapper_teuchos : std::false_type {};
 
 template <typename T>
 struct is_dense_matrix_wrapper_teuchos<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_matrix &&
        core::details::traits<T>::wrapped_matrix_identifier==
        core::details::WrappedMatrixIdentifier::TeuchosSerialDense
@@ -46,7 +46,7 @@ struct is_dense_matrix_wrapper_epetra : std::false_type {};
 
 template <typename T>
 struct is_dense_matrix_wrapper_epetra<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_matrix &&
        core::details::traits<T>::wrapped_matrix_identifier==
        core::details::WrappedMatrixIdentifier::DenseEpetra
@@ -63,7 +63,7 @@ struct is_sparse_matrix_wrapper_epetra : std::false_type {};
 
 template <typename T>
 struct is_sparse_matrix_wrapper_epetra<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_matrix &&
        (core::details::traits<T>::wrapped_matrix_identifier==
 	core::details::WrappedMatrixIdentifier::CrsEpetra)
@@ -80,7 +80,7 @@ struct is_sparse_matrix_wrapper_tpetra : std::false_type {};
 
 template <typename T>
 struct is_sparse_matrix_wrapper_tpetra<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_matrix &&
        core::details::traits<T>::wrapped_matrix_identifier==
        core::details::WrappedMatrixIdentifier::SparseTpetra
@@ -96,7 +96,7 @@ struct is_dense_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_dense_matrix_wrapper_eigen<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_matrix &&
        (core::details::traits<T>::wrapped_matrix_identifier==
 	core::details::WrappedMatrixIdentifier::DenseEigen)
@@ -110,7 +110,7 @@ struct is_sparse_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_sparse_matrix_wrapper_eigen<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        core::details::traits<T>::is_matrix &&
        (core::details::traits<T>::wrapped_matrix_identifier==
        core::details::WrappedMatrixIdentifier::SparseEigen)
@@ -125,7 +125,7 @@ struct is_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_matrix_wrapper_eigen<
-  T, core::meta::enable_if_t<
+  T, ::rompp::mpl::enable_if_t<
        is_sparse_matrix_wrapper_eigen<T>::value or
        is_dense_matrix_wrapper_eigen<T>::value
        >

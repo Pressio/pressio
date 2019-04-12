@@ -24,7 +24,7 @@ template<typename observer_t,
 	 typename residual_t>
 struct ResidualObserverEachSolverStep<
   observer_t, residual_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     ::rompp::solvers::meta::is_legitimate_residual_observer_each_solver_step<
       observer_t, residual_t
      >::value

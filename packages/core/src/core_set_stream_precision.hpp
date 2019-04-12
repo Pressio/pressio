@@ -3,7 +3,6 @@
 #ifndef CORE_SET_STREAM_PRECISION_HPP_
 #define CORE_SET_STREAM_PRECISION_HPP_
 
-#include "core_config.h"
 #include <iomanip>
 
 namespace rompp{ namespace core{ namespace impl{

@@ -60,7 +60,7 @@ public:
    * note that we need to use trick _fom_t for sfinea to work */
   template <
    typename _fom_t,
-   typename core::meta::enable_if_t<
+   typename ::rompp::mpl::enable_if_t<
      std::is_void<aux_stepper_t>::value and
      std::is_same<_fom_t, fom_t>::value
      > * = nullptr
@@ -90,7 +90,7 @@ public:
    * note that we need to use trick _fom_t for sfinea to work */
   template <
     typename _fom_t,
-    typename core::meta::enable_if_t<
+    typename ::rompp::mpl::enable_if_t<
       std::is_void<aux_stepper_t>::value == false and
       std::is_same<_fom_t, fom_t>::value
       > * = nullptr

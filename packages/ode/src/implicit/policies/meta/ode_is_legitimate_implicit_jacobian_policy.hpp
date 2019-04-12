@@ -32,7 +32,7 @@ template <typename T, ::rompp::ode::ImplicitEnum odeMethod,
 	  typename t1, typename t2, typename t3>
 struct is_jacobian_callable_with_four_args<
   T, odeMethod, t1, t2, t3,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     !std::is_void<
       decltype(std::declval<T>().template operator()<
 	       odeMethod>( std::declval<const t1 &>(),
@@ -57,7 +57,7 @@ template <typename T, ::rompp::ode::ImplicitEnum odeMethod,
 	  typename t1, typename t2, typename t3, typename t4>
 struct is_jacobian_callable_with_five_args<
   T, odeMethod, t1, t2, t3, t4,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     std::is_void<
       decltype(std::declval<T>().template operator()<
 	       odeMethod>( std::declval<const t1 &>(),
@@ -85,7 +85,7 @@ template<ImplicitEnum name, typename T,
 	 typename model_t, typename scalar_t>
 struct is_legitimate_implicit_jacobian_policy
 <name, T, state_t, jacobian_t, model_t, scalar_t,
- core::meta::enable_if_t<
+ ::rompp::mpl::enable_if_t<
    /*inherits_from_jacobian_pol_base<T>::value and*/
    is_jacobian_callable_with_four_args<
      T, name, state_t, model_t, scalar_t>::value and

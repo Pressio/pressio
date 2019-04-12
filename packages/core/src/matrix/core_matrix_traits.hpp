@@ -4,8 +4,8 @@
 
 #include "../core_forward_declarations.hpp"
 #include "../meta/core_native_matrix_meta.hpp"
-#include "../meta/core_meta_detect_typedefs.hpp"
-#include "../meta/core_meta_detect_operators.hpp"
+// #include "../meta/core_meta_detect_typedefs.hpp"
+// #include "../meta/core_meta_detect_operators.hpp"
 #include "../core_shared_traits.hpp"
 
 namespace rompp{ namespace core{ namespace details{

@@ -58,7 +58,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this += b
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator+=(const T & other) {
     this->data_.update(1.0, *other.data(), 1.0 );
@@ -67,7 +67,7 @@ public:
 
   // copy assignment
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator=(const T & other){
     assert(this->localSize() == other.localSize());

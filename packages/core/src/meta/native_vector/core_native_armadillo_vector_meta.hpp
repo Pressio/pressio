@@ -13,7 +13,7 @@ struct is_column_vector_armadillo : std::false_type {};
 
 template <typename T>
 struct is_column_vector_armadillo<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   std::is_same<T,
      	    arma::Col<typename T::elem_type>
 			>::value
@@ -25,7 +25,7 @@ struct is_row_vector_armadillo : std::false_type {};
 
 template <typename T>
 struct is_row_vector_armadillo<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   std::is_same<T,
      	    arma::Row<typename T::elem_type>
 			>::value
@@ -37,7 +37,7 @@ struct is_vector_armadillo : std::false_type {};
 
 template <typename T>
 struct is_vector_armadillo<T,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   is_row_vector_armadillo<T>::value or
 	   is_column_vector_armadillo<T>::valu
 	   >

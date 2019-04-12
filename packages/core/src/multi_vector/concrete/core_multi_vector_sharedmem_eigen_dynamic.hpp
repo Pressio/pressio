@@ -13,7 +13,7 @@ namespace rompp{ namespace core{
 
 template <typename wrapped_type>
 class MultiVector<wrapped_type,
-		  meta::enable_if_t<
+		  ::rompp::mpl::enable_if_t<
 		    meta::is_dynamic_multi_vector_eigen<
 		      wrapped_type>::value>
 		  >

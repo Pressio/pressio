@@ -13,7 +13,7 @@ namespace rompp{ namespace core{
 // example: a*3 + b
 template <typename T1,
 	  typename T2,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
   meta::is_admissible_vec_for_sharedmem_expression<T2>::value
 	    > * = nullptr>
 auto operator+(const T1 & u, const T2 & v)
@@ -37,7 +37,7 @@ auto operator+(const T1 & u, const T2 & v)
 // example: a*3 + b*21
 template <typename T1,
 	  typename T2,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
   exprtemplates::is_sharedmem_vector_expression<T1>::value &&
   exprtemplates::is_sharedmem_vector_expression<T2>::value
 	    > * = nullptr>
@@ -62,7 +62,7 @@ auto operator+(const T1 & u, const T2 & v)
 // example: a + b*21
 template <typename T1,
 	  typename T2,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 meta::is_admissible_vec_for_sharedmem_expression<T1>::value &&
 exprtemplates::is_sharedmem_vector_expression<T2>::value
 	    > * = nullptr>

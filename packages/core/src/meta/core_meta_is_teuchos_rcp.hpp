@@ -10,10 +10,10 @@ namespace rompp{ namespace core{ namespace meta {
 
 template <typename T,
 	  typename enable = void>
-struct is_teuchos_rcp_ptr : std::false_type{};
+struct is_teuchos_rcp : std::false_type{};
 
 template <typename T>
-struct is_teuchos_rcp_ptr<
+struct is_teuchos_rcp<
   T, typename
   std::enable_if<
        std::is_same<T,
