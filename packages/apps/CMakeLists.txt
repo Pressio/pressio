@@ -20,9 +20,9 @@ TRIBITS_ADD_SHOW_DEPRECATED_WARNINGS_OPTION()
 # D) Add the libraries, tests, and examples
 #----------------------------------------------------------------
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(unit_tests)
+TRIBITS_ADD_TEST_DIRECTORIES(unit_tests)
 TRIBITS_ADD_TEST_DIRECTORIES(test)
-ADD_SUBDIRECTORY(example)
+TRIBITS_ADD_EXAMPLE_DIRECTORIES(example)
 
 #----------------------------------------------------------------
 # E) Do standard post processing
