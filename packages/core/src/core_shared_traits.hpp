@@ -2,7 +2,6 @@
 #ifndef CORE_SHARED_TRAITS_HPP_
 #define CORE_SHARED_TRAITS_HPP_
 
-#include <type_traits>
 #include "core_wrapped_types_enum.hpp"
 
 namespace rompp{ namespace core{ namespace details {

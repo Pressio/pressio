@@ -1,14 +1,11 @@
 
-#ifndef CORE_META_META_DETECTION_IDIOM_HPP 
-#define CORE_META_META_DETECTION_IDIOM_HPP
+#ifndef ROMPP_MPL_DETECTION_IDIOM_HPP 
+#define ROMPP_MPL_DETECTION_IDIOM_HPP
 
-#include "core_meta_basic.hpp"
+#include <type_traits>
+#include "void_t.hpp"
 
-namespace rompp{
-namespace core {
-namespace meta {
-
-// Source: cppreference. 
+namespace rompp{ namespace mpl{
   
 struct nonesuch {
   nonesuch() = delete;
@@ -26,22 +23,23 @@ template <class Default,
 	  template <class...> class Op,
 	  class...>
 struct detector {
-  using value_t = std::false_type;
+  constexpr static auto value = false;  
   using type = Default;
 };
 
 template <class Default,
 	  template <class...> class Op,
 	  class... Args>
-struct detector<Default, void_t<Op<Args...>>, Op, Args...> {
-  using value_t = std::true_type;
+struct detector<Default, 
+                ::rompp::mpl::void_t<Op<Args...>>, Op, Args...> {
+  constexpr static auto value = true;
   using type = Op<Args...>;
 };
 
 //================================================
   
 template <template <class...> class Op, class... Args>
-using is_detected = typename detector<nonesuch, void, Op, Args...>::value_t;
+using is_detected = detector<nonesuch, void, Op, Args...>;
 
 template <template <class...> class Op, class... Args>
 using detected_t = typename detector<nonesuch, void, Op, Args...>::type;
@@ -55,8 +53,6 @@ using detected_or_t = typename detected_or<T, Op, Args...>::type;
 template <class T, template<class...> class Op, class... Args>
 using is_detected_exact = std::is_same<T, detected_t<Op, Args...>>;
   
-} // end namespace meta
-} // end namespace core
 
-}//end namespace rompp
+}}//end namespace rompp::mpl
 #endif

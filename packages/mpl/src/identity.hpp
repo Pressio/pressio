@@ -1,6 +1,6 @@
 
-#ifndef MPL_IDENTITY_HPP
-#define MPL_IDENTITY_HPP
+#ifndef ROMPP_MPL_IDENTITY_HPP
+#define ROMPP_MPL_IDENTITY_HPP
 
 namespace rompp{ namespace mpl {
 
