@@ -21,9 +21,9 @@
 #include "core/src/shared_base/core_container_printable_base.hpp"
 
 #include "core/src/meta/core_meta_basic.hpp"
-#include "core/src/meta/core_native_vector_meta.hpp"
 #include "core/src/meta/core_native_multi_vector_meta.hpp"
 #include "core/src/meta/core_native_matrix_meta.hpp"
 #include "core/src/meta/core_native_static_asserts.hpp"
+#include "core/src/vector/meta/core_native_vector_static_asserts.hpp"
 
 #endif

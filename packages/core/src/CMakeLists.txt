@@ -14,27 +14,18 @@ FILE(GLOB core_general_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
 FILE(GLOB core_io_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/io/*.hpp")
-FILE(GLOB core_tinympl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/meta/tinympl/*.hpp")
-FILE(GLOB core_tinymplvar_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/meta/tinympl/variadic/*.hpp")
+FILE(GLOB core_shared_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/*.hpp")
 
 FILE(GLOB core_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
-FILE(GLOB core_meta_native_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_vector/*.hpp")
 FILE(GLOB core_meta_native_multi_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_multi_vector/*.hpp")
 FILE(GLOB core_meta_native_matrix_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_matrix/*.hpp")
 
-
-FILE(GLOB core_shared_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/shared_base/*.hpp")
-
 FILE(GLOB core_containers_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/*.hpp")
-
 FILE(GLOB core_containers_dot_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/*.hpp")
 FILE(GLOB core_containers_dot_mvec_mvec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -45,12 +36,10 @@ FILE(GLOB core_containers_dot_vec_mvec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOU
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/vec_mvec/*.hpp")
 FILE(GLOB core_containers_dot_vec_vec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot/vec_vec/*.hpp")
-
 FILE(GLOB core_containers_dot_self_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot_self/*.hpp")
 FILE(GLOB core_containers_dot_self_mvec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/dot_self/mvec/*.hpp")
-
 FILE(GLOB core_containers_mat_mat_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/mat_mat_product/*.hpp")
 FILE(GLOB core_containers_mat_vec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -66,6 +55,8 @@ FILE(GLOB core_containers_minmax_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DI
 
 FILE(GLOB core_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/vector/*.hpp")
+FILE(GLOB core_vector_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/vector/meta/*.hpp")
 FILE(GLOB core_vector_SHMEM_EXPR_T_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/vector/sharedmem_expr_templates/*.hpp")
 FILE(GLOB core_vector_DISTMEM_EXPR_T_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -115,27 +106,20 @@ SET(CORE_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/c
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${CORE_INCDIR})
 INSTALL(FILES ${core_general_HEADERS} DESTINATION ${CORE_INCDIR})
 INSTALL(FILES ${core_io_HEADERS} DESTINATION ${CORE_INCDIR}/io)
-INSTALL(FILES ${core_tinympl_HEADERS} DESTINATION ${CORE_INCDIR}/meta/tinympl)
-INSTALL(FILES ${core_tinymplvar_HEADERS} DESTINATION ${CORE_INCDIR}/meta/tinympl/variadic)
+INSTALL(FILES ${core_shared_base_HEADERS} DESTINATION ${CORE_INCDIR}/shared_base)
 
 INSTALL(FILES ${core_meta_HEADERS} DESTINATION ${CORE_INCDIR}/meta)
-INSTALL(FILES ${core_meta_native_vector_HEADERS} DESTINATION ${CORE_INCDIR}/meta/native_vector)
 INSTALL(FILES ${core_meta_native_multi_vector_HEADERS} DESTINATION ${CORE_INCDIR}/meta/native_multi_vector)
 INSTALL(FILES ${core_meta_native_matrix_HEADERS} DESTINATION ${CORE_INCDIR}/meta/native_matrix)
 
-INSTALL(FILES ${core_shared_base_HEADERS} DESTINATION ${CORE_INCDIR}/shared_base)
-
 INSTALL(FILES ${core_containers_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops)
-
 INSTALL(FILES ${core_containers_dot_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot)
 INSTALL(FILES ${core_containers_dot_mvec_mvec_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot/mvec_mvec)
 INSTALL(FILES ${core_containers_dot_mvec_vec_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot/mvec_vec)
 INSTALL(FILES ${core_containers_dot_vec_mvec_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot/vec_mvec)
 INSTALL(FILES ${core_containers_dot_vec_vec_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot/vec_vec)
-
 INSTALL(FILES ${core_containers_dot_self_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot_self)
 INSTALL(FILES ${core_containers_dot_self_mvec_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot_self/mvec)
-
 INSTALL(FILES ${core_containers_mat_mat_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/mat_mat_product)
 INSTALL(FILES ${core_containers_mat_vec_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/mat_vec_product)
 INSTALL(FILES ${core_containers_multivec_vec_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/multivec_vec_product)
@@ -144,6 +128,7 @@ INSTALL(FILES ${core_containers_norms_ops_HEADERS} DESTINATION ${CORE_INCDIR}/co
 INSTALL(FILES ${core_containers_minmax_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/min_max)
 
 INSTALL(FILES ${core_vector_HEADERS} DESTINATION ${CORE_INCDIR}/vector)
+INSTALL(FILES ${core_vector_meta_HEADERS} DESTINATION ${CORE_INCDIR}/vector/meta)
 INSTALL(FILES ${core_vector_SHMEM_EXPR_T_HEADERS} DESTINATION ${CORE_INCDIR}/vector/sharedmem_expr_templates)
 INSTALL(FILES ${core_vector_DISTMEM_EXPR_T_HEADERS} DESTINATION ${CORE_INCDIR}/vector/distributed_expr_templates)
 INSTALL(FILES ${core_vector_base_HEADERS} DESTINATION ${CORE_INCDIR}/vector/base)

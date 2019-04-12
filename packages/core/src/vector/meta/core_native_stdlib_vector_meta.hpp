@@ -2,7 +2,7 @@
 #ifndef CORE_NATIVE_STDLIB_VECTOR_META_HPP_
 #define CORE_NATIVE_STDLIB_VECTOR_META_HPP_
 
-#include "../core_meta_basic.hpp"
+#include "../../meta/core_meta_basic.hpp"
 #include <vector>
 
 namespace rompp{ namespace core{ namespace meta {

@@ -3,10 +3,13 @@
 #define CORE_VECTOR_VECTOR_TRAITS_HPP_
 
 #include "../core_forward_declarations.hpp"
-#include "../meta/core_native_vector_meta.hpp"
-// #include "../meta/core_meta_detect_typedefs.hpp"
-// #include "../meta/core_meta_detect_operators.hpp"
 #include "../core_shared_traits.hpp"
+#include "./meta/core_native_armadillo_vector_meta.hpp"
+#include "./meta/core_native_blaze_vector_meta.hpp"
+#include "./meta/core_native_eigen_vector_meta.hpp"
+#include "./meta/core_native_stdlib_vector_meta.hpp"
+#include "./meta/core_native_trilinos_vector_meta.hpp"
+
 
 namespace rompp{ namespace core{ namespace details{
 
