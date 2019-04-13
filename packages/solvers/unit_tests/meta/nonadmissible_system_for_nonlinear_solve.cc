@@ -68,15 +68,13 @@ TEST(solvers_meta, system_nonadmissibleB){
 		typename system_t::residual_type
 		>::value == false, "");
 
-  static_assert(::rompp::mpl::is_detected<
-		solvers::meta::has_residual_method_callable_with_one_arg,
+  static_assert(solvers::meta::has_residual_method_callable_with_one_arg<
 		system_t,
 		typename system_t::state_type
 		>::value,
 		"system does not have residual with one arg");
 
-  static_assert(::rompp::mpl::is_detected<
-		solvers::meta::has_residual_method_callable_with_one_arg,
+  static_assert(solvers::meta::has_residual_method_callable_with_one_arg<
 		system_t,
 		double
 		>::value == false,

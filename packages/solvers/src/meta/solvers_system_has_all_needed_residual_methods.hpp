@@ -7,14 +7,37 @@
 
 namespace rompp{ namespace solvers{ namespace meta {
 
+template <typename T, typename Arg, typename enable = void>
+struct has_residual_method_callable_with_one_arg{
+  using type = void;
+  static constexpr bool value = false;
+};
+
 template <typename T, typename Arg>
-using has_residual_method_callable_with_one_arg =
-  decltype(std::declval<T>().residual(std::declval<Arg const&>()));
+struct has_residual_method_callable_with_one_arg<
+  T, Arg,
+  ::rompp::mpl::void_t<
+    decltype(std::declval<T>().residual(std::declval<Arg const&>()))
+    >
+  >{
+  using type = decltype(std::declval<T>().residual(std::declval<Arg const&>()));
+  static constexpr bool value = true;
+};
+
+
+template <typename T, typename FirstArg, typename SecondArg, typename = void>
+struct has_residual_method_callable_with_two_args : std::false_type{};
 
 template <typename T, typename FirstArg, typename SecondArg>
-using has_residual_method_callable_with_two_args =
-  decltype(std::declval<T>().residual(std::declval<FirstArg const&>(),
-				      std::declval<SecondArg&>()));
+struct has_residual_method_callable_with_two_args<
+  T, FirstArg, SecondArg,
+  ::rompp::mpl::void_t<
+    decltype(std::declval<T>().residual(std::declval<FirstArg const&>(),
+					std::declval<SecondArg&>()))
+    >
+  > : std::true_type{};
+
+
 
 template<
   typename system_type,
@@ -32,21 +55,16 @@ template<
 struct system_has_needed_residual_methods
 < system_type, state_type, residual_type,
   ::rompp::mpl::enable_if_t<
-    // has residual method with 1 arguments,
-    ::rompp::mpl::is_detected<
-      has_residual_method_callable_with_one_arg,
-      system_type, state_type
+      has_residual_method_callable_with_one_arg<
+	system_type, state_type
       >::value and
-    // has residual method with 2 arguments,
-    ::rompp::mpl::is_detected<
-      has_residual_method_callable_with_two_args,
-      system_type, state_type, residual_type
+      has_residual_method_callable_with_two_args<
+	system_type, state_type, residual_type
       >::value and
     // residual method with 1 argument returns a residual_type
     std::is_same<
-      ::rompp::mpl::detected_t<
-	has_residual_method_callable_with_one_arg,
-	system_type, state_type>,
+	typename has_residual_method_callable_with_one_arg<
+	  system_type, state_type>::type,
       residual_type
       >::value
   >
