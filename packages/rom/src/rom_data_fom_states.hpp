@@ -19,7 +19,7 @@ struct FomStatesData{
 
   template <
     int _maxNstates = maxNstates,
-    core::meta::enable_if_t<_maxNstates==0> * = nullptr
+    ::rompp::mpl::enable_if_t<_maxNstates==0> * = nullptr
     >
   FomStatesData(const fom_state_w_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
@@ -31,7 +31,7 @@ struct FomStatesData{
 
   template <
     int _maxNstates = maxNstates,
-    core::meta::enable_if_t<_maxNstates==1> * = nullptr
+    ::rompp::mpl::enable_if_t<_maxNstates==1> * = nullptr
     >
   FomStatesData(const fom_state_w_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
@@ -44,7 +44,7 @@ struct FomStatesData{
 
   template <
     int _maxNstates = maxNstates,
-    core::meta::enable_if_t<_maxNstates==2> * = nullptr
+    ::rompp::mpl::enable_if_t<_maxNstates==2> * = nullptr
     >
   FomStatesData(const fom_state_w_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)

@@ -32,7 +32,7 @@ template <typename T, ::rompp::ode::ImplicitEnum odeMethod,
 	  int numAuxStates, typename t1, typename t2, typename t3>
 struct is_residual_callable_with_five_args<
   T, odeMethod, numAuxStates, t1, t2, t3,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     !std::is_void<
       decltype(std::declval<T>().template operator()<
 	   odeMethod,
@@ -60,7 +60,7 @@ template <typename T, ::rompp::ode::ImplicitEnum odeMethod,
 	  typename t3, typename t4>
 struct is_residual_callable_with_six_args<
   T, odeMethod, numAuxStates, t1, t2, t3, t4,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     std::is_void<
       decltype(std::declval<T>().template operator()<
 	       odeMethod,
@@ -89,7 +89,7 @@ template<ImplicitEnum name, int nstates,
 	 typename model_t, typename scalar_t>
 struct is_legitimate_implicit_residual_policy
 <name, nstates, T, state_t, residual_t, model_t, scalar_t,
- core::meta::enable_if_t<
+ ::rompp::mpl::enable_if_t<
    // inherits from base
    /*inherits_from_implicit_residual_pol_base<T>::value and*/
    // is callable with 6 args

@@ -31,7 +31,7 @@ struct LSPGUnsteadyProblemGenerator<
   using typename lspg_problem::lspg_jacobian_policy_t;
 
   using typename lspg_problem::aux_stepper_t;
-  using typename lspg_problem::rom_stepper_t;
+  using typename lspg_problem::lspg_stepper_t;
 
   fom_eval_rhs_policy_t		rhsEv_;
   fom_apply_jac_policy_t	ajacEv_;
@@ -51,7 +51,7 @@ struct LSPGUnsteadyProblemGenerator<
     core::impl::empty, aux_stepper_t>::type auxStepperObj_;
 
   // actual stepper object
-  rom_stepper_t			stepperObj_;
+  lspg_stepper_t			stepperObj_;
 
 
 public:
@@ -60,7 +60,7 @@ public:
    * note that we need to use trick _fom_t for sfinea to work */
   template <
    typename _fom_t,
-   typename core::meta::enable_if_t<
+   typename ::rompp::mpl::enable_if_t<
      std::is_void<aux_stepper_t>::value and
      std::is_same<_fom_t, fom_t>::value
      > * = nullptr
@@ -90,7 +90,7 @@ public:
    * note that we need to use trick _fom_t for sfinea to work */
   template <
     typename _fom_t,
-    typename core::meta::enable_if_t<
+    typename ::rompp::mpl::enable_if_t<
       std::is_void<aux_stepper_t>::value == false and
       std::is_same<_fom_t, fom_t>::value
       > * = nullptr

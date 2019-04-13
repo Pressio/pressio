@@ -5,6 +5,7 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
   # sense in terms of dependencies.
   # Dependencies should be read from top to bottom.
   # Packages listed lower should depend on those lister higher.
+  mpl packages/mpl PT
   core packages/core PT
   qr packages/qr PT
   solvers packages/solvers PT

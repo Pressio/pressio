@@ -35,7 +35,7 @@ protected:
 	    typename T1 = state_t,
 	    typename T2 = residual_t,
 	    typename T3 = jacobian_t,
-	    core::meta::enable_if_t<
+	    ::rompp::mpl::enable_if_t<
 	      std::is_same<T1, typename system_in_t::state_type>::value and
 	      std::is_same<T2, typename system_in_t::residual_type>::value and
 	      std::is_same<T3, typename system_in_t::jacobian_type>::value

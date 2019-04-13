@@ -60,7 +60,7 @@ void product(const matrix_type & A,
   
 template <typename matrix_type,
 	  typename vector_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 	    core::details::traits<matrix_type>::is_matrix==1 &&
 	    core::details::traits<matrix_type>::isEpetra==1 &&
 	    core::details::traits<matrix_type>::is_dense==1 &&

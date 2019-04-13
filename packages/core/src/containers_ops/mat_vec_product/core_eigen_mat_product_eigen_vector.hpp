@@ -17,7 +17,7 @@ c = A b
 ---------------------------------------------------------*/
 
 template <typename A_t, typename b_t, typename c_t,
- core::meta::enable_if_t<
+ ::rompp::mpl::enable_if_t<
    core::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
    core::meta::is_vector_wrapper_eigen<b_t>::value &&
    core::meta::is_vector_wrapper_eigen<c_t>::value &&
@@ -33,7 +33,7 @@ void product(const A_t & A, const b_t & b, c_t & c){
 
 
 template <typename A_t, typename b_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
     core::meta::is_vector_wrapper_eigen<b_t>::value &&
     core::meta::wrapper_pair_have_same_scalar<A_t, b_t>::value
@@ -60,7 +60,7 @@ c = A b
 template <
   typename A_t, typename b_t, typename c_t,
   bool transposeA = false,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
     core::meta::is_vector_wrapper_eigen<b_t>::value and
     core::meta::is_vector_wrapper_eigen<c_t>::value and
@@ -79,7 +79,7 @@ void product(const A_t & A, const b_t & b, c_t & c){
 template <
   typename A_t, typename b_t, typename c_t,
   bool transposeA = false,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
     core::meta::is_vector_wrapper_eigen<b_t>::value and
     core::meta::is_vector_wrapper_eigen<c_t>::value and
@@ -96,7 +96,7 @@ void product(const A_t & A, const b_t & b, c_t & c){
 
 
 template <typename A_t, typename b_t,
-    core::meta::enable_if_t<
+    ::rompp::mpl::enable_if_t<
       core::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
       core::meta::is_vector_wrapper_eigen<b_t>::value and
       core::meta::wrapper_pair_have_same_scalar<A_t,b_t>::value

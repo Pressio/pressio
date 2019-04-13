@@ -14,7 +14,7 @@ template<typename state_type,
 	 typename jacobian_type>
 class ImplicitJacobianStandardPolicy<
   state_type, model_type, jacobian_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::rompp::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value
     >

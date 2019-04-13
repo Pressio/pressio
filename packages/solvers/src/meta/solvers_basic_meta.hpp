@@ -3,7 +3,7 @@
 #define SOLVERS_META_BASIC_META_HPP_
 
 #include "../solvers_ConfigDefs.hpp"
-#include "../../../core/src/meta/core_meta_detection_idiom.hpp"
+#include "../../../mpl/src/detection_idiom.hpp"
 
 namespace rompp{ namespace solvers{ namespace meta {
 

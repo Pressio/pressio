@@ -12,8 +12,8 @@ namespace rompp{ namespace solvers{
 
 template <typename scalar_t,
 	  typename linear_solver_t,
-	  core::meta::enable_if_t<
-	    core::meta::is_default_constructible<linear_solver_t>::value
+	  ::rompp::mpl::enable_if_t<
+	    ::rompp::mpl::is_default_constructible<linear_solver_t>::value
 	    > * = nullptr
 	  >
 class NewtonRaphson

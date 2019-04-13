@@ -19,7 +19,8 @@ public:
 
   template <typename T = comm_t,
 	    typename std::enable_if<
-	      meta::is_rcp_ptr<T>::value == false
+	      !meta::is_teuchos_rcp<T>::value and 
+        !::rompp::mpl::is_std_shared_ptr<T>::value 
 	      >::type * = nullptr
 	    >
   T const & commCRef() const{
@@ -28,7 +29,8 @@ public:
 
   template <typename T= comm_t,
   	    typename std::enable_if<
-  	      meta::is_rcp_ptr<T>::value
+        meta::is_teuchos_rcp<T>::value or 
+        ::rompp::mpl::is_std_shared_ptr<T>::value 
   	      >::type * = nullptr>
   T comm() const{
     return this->underlying().commImpl();

@@ -14,7 +14,7 @@ struct is_legitimate_hessian_for_gn_normeq
 template <typename T>
 struct is_legitimate_hessian_for_gn_normeq<
   T,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_core_matrix_wrapper<T>::value or
     core::meta::is_core_multi_vector_wrapper<T>::value
     >

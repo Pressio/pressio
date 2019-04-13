@@ -85,7 +85,7 @@ public:
 public:
   template<typename _ode_state_type = ode_state_type,
 	   typename step_t,
-	   core::meta::enable_if_t<
+	   ::rompp::mpl::enable_if_t<
 	     !core::meta::is_vector_wrapper_tpetra<_ode_state_type>::value
 	     > * = nullptr>
   void doStep(ode_state_type & y, scalar_type t,
@@ -98,7 +98,7 @@ public:
 
   template<typename _ode_state_type = ode_state_type,
 	   typename step_t,
-	   core::meta::enable_if_t<
+	   ::rompp::mpl::enable_if_t<
 	     core::meta::is_vector_wrapper_tpetra<_ode_state_type>::value
 	     > * = nullptr>
   void doStep(ode_state_type & y, scalar_type t,

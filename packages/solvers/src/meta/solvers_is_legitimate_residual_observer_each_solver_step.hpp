@@ -13,7 +13,7 @@ struct is_legitimate_residual_observer_each_solver_step
 template <typename observer_t, typename residual_t>
 struct is_legitimate_residual_observer_each_solver_step<
   observer_t, residual_t,
-  core::meta::void_t<
+  ::rompp::mpl::void_t<
     decltype
     (
      std::declval<observer_t>().observeResidualEachGNStep

@@ -23,7 +23,7 @@ namespace rompp{ namespace core{ namespace ops{
 //------------------------------------
 template <typename mvec_type,
 	  typename vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value &&
     core::meta::is_vector_wrapper_epetra<vec_type>::value &&
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
@@ -60,7 +60,7 @@ void dot(const mvec_type & mvA,
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     core::meta::is_vector_wrapper_epetra<vec_type>::value and
     core::meta::is_dense_vector_wrapper_teuchos<result_vec_type>::value and
@@ -86,7 +86,7 @@ void dot(const mvec_type & mvA,
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     core::meta::is_vector_wrapper_epetra<vec_type>::value and
     core::meta::is_vector_wrapper_eigen<result_vec_type>::value and
@@ -113,7 +113,7 @@ void dot(const mvec_type & mvA,
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     core::meta::is_vector_wrapper_epetra<vec_type>::value and
     core::meta::is_vector_wrapper_eigen<result_vec_type>::value and
@@ -137,7 +137,7 @@ void dot(const mvec_type & mvA,
 //--------------------------------------
 template <typename mvec_type,
 	  typename vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value &&
     core::meta::is_vector_wrapper_epetra<vec_type>::value &&
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
@@ -160,7 +160,7 @@ void dot(const mvec_type & mvA,
 //--------------------------------------
 template <typename mvec_type,
 	  typename vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value &&
     core::meta::is_vector_wrapper_epetra<vec_type>::value &&
     core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value

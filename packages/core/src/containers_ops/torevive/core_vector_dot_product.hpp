@@ -12,7 +12,7 @@ namespace vec_ops{
 template <typename vec_a_type,
 	  typename vec_b_type,
 	  typename res_t,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 	   details::traits<vec_a_type>::is_vector &&
 	   details::traits<vec_a_type>::isEigen && 
 	   details::traits<vec_b_type>::is_vector &&

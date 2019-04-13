@@ -39,7 +39,7 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
     core::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value
     > * = nullptr
@@ -69,7 +69,7 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_epetra<lspg_matrix_type>::value and
     core::meta::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
     > * = nullptr
@@ -114,7 +114,7 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_tpetra<lspg_matrix_type>::value and
     core::meta::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
     > * = nullptr

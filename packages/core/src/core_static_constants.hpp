@@ -2,10 +2,8 @@
 #ifndef CORE_STATIC_CONSTANTS_HPP_
 #define CORE_STATIC_CONSTANTS_HPP_
 
-
 namespace rompp{ namespace core{
 
-//template <typename T = void>
 struct constants{
 
   // this is typically used as a template parameter

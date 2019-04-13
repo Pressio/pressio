@@ -22,7 +22,7 @@ template <
 class GaussNewtonConservative<
   scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
   converged_when_t, system_t, cbar_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_vector_wrapper_eigen<typename system_t::state_type>::value and
     core::meta::is_core_vector_wrapper<typename system_t::residual_type>::value
     and

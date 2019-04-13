@@ -16,11 +16,11 @@ template<typename system_type>
 struct is_legitimate_system_for_nonlinear_solver
 <
   system_type,
-  core::meta::enable_if_t<
-    core::meta::is_detected<has_scalar_typedef, system_type>::value   and
-    core::meta::is_detected<has_state_typedef, system_type>::value    and
-    core::meta::is_detected<has_residual_typedef, system_type>::value and
-    core::meta::is_detected<has_jacobian_typedef, system_type>::value and
+  ::rompp::mpl::enable_if_t<
+    ::rompp::mpl::is_detected<has_scalar_typedef, system_type>::value   and
+    ::rompp::mpl::is_detected<has_state_typedef, system_type>::value    and
+    ::rompp::mpl::is_detected<has_residual_typedef, system_type>::value and
+    ::rompp::mpl::is_detected<has_jacobian_typedef, system_type>::value and
     // core::meta::is_core_vector_wrapper<
     //   typename system_type::state_type
     //   >::value and

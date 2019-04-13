@@ -6,9 +6,6 @@
 
 namespace rompp{ namespace core{ namespace details {
 
-//---------------------------------------
-// CRTP HELPER BASE CLASS
-//---------------------------------------
 template <typename T, typename enable = void>
 struct CrtpBase;
 

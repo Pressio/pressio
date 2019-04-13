@@ -67,7 +67,7 @@ struct DefaultLSPGTypeGenerator
     lspg_jacobian_policy_t>::type;
 
   // declare type of stepper object
-  using rom_stepper_t		= ::rompp::ode::ImplicitStepper<
+  using lspg_stepper_t		= ::rompp::ode::ImplicitStepper<
     odeName, lspg_state_type,
     lspg_residual_t, lspg_matrix_t,
     fom_type, aux_stepper_t,

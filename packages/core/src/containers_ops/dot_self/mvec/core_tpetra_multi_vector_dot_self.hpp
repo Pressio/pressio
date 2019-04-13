@@ -12,7 +12,7 @@ namespace rompp{ namespace core{ namespace ops{
 // this is equivalent to doing A^T * A
 
 template <typename mvec_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value
     > * = nullptr
   >
@@ -42,7 +42,7 @@ void dot_self(const mvec_t & mvA,
 
 
 template <typename mvec_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value
     > * = nullptr
   >

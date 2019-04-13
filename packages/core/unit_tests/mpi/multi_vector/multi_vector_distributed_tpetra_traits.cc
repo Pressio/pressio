@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_MultiVector.hpp>
+#include "CORE_VECTOR"
 #include "CORE_MULTI_VECTOR"
 
 TEST(core_multi_vector_distributed_tpetra, Traits){

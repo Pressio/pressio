@@ -30,7 +30,7 @@ public:
   template <
     typename vec_in_t,
     typename vec_out_t,
-    core::meta::enable_if_t<
+    ::rompp::mpl::enable_if_t<
       core::meta::is_core_vector_wrapper<vec_in_t>::value and
       core::meta::is_core_vector_wrapper<vec_out_t>::value and
       meta::is_legitimate_vector_type_for_qr_project<vec_in_t,

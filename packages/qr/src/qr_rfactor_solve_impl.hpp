@@ -16,7 +16,7 @@ namespace rompp{ namespace qr{ namespace impl{
 
 template<typename vector_type,
 	 typename R_type,
-	 ::rompp::core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   ::rompp::core::meta::is_vector_wrapper_eigen<vector_type>::value and
 	   ::rompp::core::meta::is_dense_matrix_wrapper_eigen<R_type>::value
 	   > * = nullptr>
@@ -34,7 +34,7 @@ void solve(const vector_type & rhs,
 
 #ifdef HAVE_TRILINOS
 template<typename vector_type, typename R_type,
-	 ::rompp::core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   ::rompp::core::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
 	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value
 	   > * = nullptr>
@@ -68,7 +68,7 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 template<typename vector_type,
 	 typename R_type,
 	 int n,
-	 ::rompp::core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   ::rompp::core::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
 	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n == core::constants::dynamic
@@ -86,7 +86,7 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 template<typename vector_type,
 	 typename R_type,
 	 int n,
-	 ::rompp::core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   ::rompp::core::meta::is_vector_wrapper_eigen<vector_type>::value and
 	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n != core::constants::dynamic and n>=1
@@ -109,7 +109,7 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 template<typename vector_type,
 	 typename R_type,
 	 int n,
-	 ::rompp::core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   ::rompp::core::meta::is_vector_wrapper_eigen<vector_type>::value and
 	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n == core::constants::dynamic

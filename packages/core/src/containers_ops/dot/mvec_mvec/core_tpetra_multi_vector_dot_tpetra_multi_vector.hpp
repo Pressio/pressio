@@ -11,7 +11,7 @@ namespace rompp{ namespace core{ namespace ops{
 // Tpetra multivector dot tpetra multi vector
 
 template <typename mvec_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value
     > * = nullptr
   >
@@ -40,7 +40,7 @@ void dot(const mvec_t & mvA, const mvec_t & mvB,
 
 
 template <typename mvec_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value
     > * = nullptr
   >

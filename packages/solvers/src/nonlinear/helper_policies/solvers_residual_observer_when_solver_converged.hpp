@@ -23,7 +23,7 @@ template<typename observer_t,
 	 typename residual_t>
 struct ResidualObserverWhenSolverConverged<
   observer_t, residual_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     ::rompp::solvers::meta::is_legitimate_residual_observer_when_solver_converged<
       observer_t, residual_t
      >::value

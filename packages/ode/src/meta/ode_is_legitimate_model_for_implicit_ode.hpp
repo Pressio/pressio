@@ -17,13 +17,13 @@ struct is_legitimate_model_for_implicit_ode<
   model_type,
   typename std::enable_if<
    // has to have scalar typedef
-   core::meta::is_detected<has_scalar_typedef, model_type>::value and
+   ::rompp::mpl::is_detected<has_scalar_typedef, model_type>::value and
    // has to have state typedef
-   core::meta::is_detected<has_state_typedef, model_type>::value and
+   ::rompp::mpl::is_detected<has_state_typedef, model_type>::value and
    // has to have residual typedef
-   core::meta::is_detected<has_residual_typedef, model_type>::value and
+   ::rompp::mpl::is_detected<has_residual_typedef, model_type>::value and
    // has to have jacobian typedef
-   core::meta::is_detected<has_jacobian_typedef, model_type>::value and
+   ::rompp::mpl::is_detected<has_jacobian_typedef, model_type>::value and
    // has residual methods
     model_has_needed_residual_methods<
      model_type,

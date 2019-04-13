@@ -17,7 +17,7 @@ struct MatrixGetSizeHelper;
 template <typename T>
 struct MatrixGetSizeHelper<
   T,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_core_multi_vector_wrapper<T>::value and
     core::details::traits<T>::is_shared_mem == false
     >
@@ -34,7 +34,7 @@ struct MatrixGetSizeHelper<
 template <typename T>
 struct MatrixGetSizeHelper<
   T,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_core_matrix_wrapper<T>::value and
     core::details::traits<T>::is_shared_mem == false
     >
@@ -50,7 +50,7 @@ struct MatrixGetSizeHelper<
 template <typename T>
 struct MatrixGetSizeHelper<
   T,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_core_matrix_wrapper<T>::value and
     core::details::traits<T>::is_shared_mem == true
     >
@@ -66,7 +66,7 @@ struct MatrixGetSizeHelper<
 template <typename T>
 struct MatrixGetSizeHelper<
   T,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_core_multi_vector_wrapper<T>::value and
     core::details::traits<T>::is_shared_mem == true
     >

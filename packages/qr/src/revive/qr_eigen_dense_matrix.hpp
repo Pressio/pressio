@@ -19,7 +19,7 @@ class QRSolver<matrix_type,
 	       ::rompp::qr::Householder,
 	       R_type,
 	       Q_type,
-	       core::meta::enable_if_t<
+	       ::rompp::mpl::enable_if_t<
 		 core::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value and
 		 core::meta::is_core_matrix_wrapper<R_type>::value and
 		 core::details::traits<R_type>::is_shared_mem and

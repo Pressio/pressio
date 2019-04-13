@@ -25,8 +25,8 @@ struct is_distributed_vector_expression : std::false_type{};
 
 template <typename T>
 struct is_distributed_vector_expression<T,
-      core::meta::enable_if_t<
-       core::meta::publicly_inherits_from<
+      ::rompp::mpl::enable_if_t<
+       ::rompp::mpl::publicly_inherits_from<
 	T,DistributedVecExpressionBase<T>
 	 >::value
 	>> : std::true_type{};
@@ -69,7 +69,7 @@ template <typename OP_t, typename T1, typename T2,
 	  typename value_t, typename LO_t>
 class DistributedVectorBinaryExp<
          OP_t, T1, T2, value_t, LO_t,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   !std::is_scalar<T1>::value &&
 	   core::meta::is_core_vector_wrapper<T2>::value &&
 	   !core::details::traits<T2>::is_shared_mem>
@@ -105,7 +105,7 @@ template <typename OP_t, typename T1,
 	    typename value_t, typename LO_t>
 class DistributedVectorBinaryExp<
          OP_t, T1, value_t, value_t, LO_t,
-	 core::meta::enable_if_t<
+	 ::rompp::mpl::enable_if_t<
 	   !std::is_scalar<T1>::value &&
 	   std::is_scalar<value_t>::value
 	   > >

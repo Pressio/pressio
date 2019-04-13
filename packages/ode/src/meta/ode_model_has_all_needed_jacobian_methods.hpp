@@ -3,7 +3,7 @@
 #define ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
 
 #include "../ode_ConfigDefs.hpp"
-#include "../../../core/src/meta/core_meta_detection_idiom.hpp"
+#include "../../../mpl/src/detection_idiom.hpp"
 
 namespace rompp{ namespace ode{ namespace meta {
 
@@ -39,18 +39,18 @@ struct model_has_needed_jacobian_methods<
   model_type, state_type, jacobian_type, scalar_type,
   typename std::enable_if<
    // has jacobian method with 3 arguments
-   core::meta::is_detected<
+   ::rompp::mpl::is_detected<
      has_jacobian_method_callable_with_three_args,
      model_type, state_type, jacobian_type, scalar_type
      >::value and
    // has jacobian method with 2 arguments,
-   core::meta::is_detected<
+   ::rompp::mpl::is_detected<
     has_jacobian_method_callable_with_two_args,
      model_type, state_type, scalar_type
    >::value and
    // jacobian method with 2 arguments returns a residual_type
    std::is_same<
-    core::meta::detected_t<
+    ::rompp::mpl::detected_t<
       has_jacobian_method_callable_with_two_args,
       model_type, state_type, scalar_type>,
      jacobian_type

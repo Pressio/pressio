@@ -16,7 +16,7 @@ namespace rompp{ namespace core{ namespace ops{
 // Eigen multivector product with eigen vector
 template <typename mvec_type,
 	  typename vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
    core::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
    core::meta::is_vector_wrapper_eigen<vec_type>::value and
    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
@@ -48,7 +48,7 @@ void product(const mvec_type & mvA,
 // result is constructed and returned
 template <typename mvec_type,
 	  typename vec_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
    core::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
    core::meta::is_vector_wrapper_eigen<vec_type>::value and
    core::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value

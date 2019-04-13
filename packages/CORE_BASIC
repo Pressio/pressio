@@ -5,10 +5,14 @@
 #include "core/src/core_crtp_helper.hpp"
 #include "core/src/core_default_types.hpp"
 #include "core/src/core_ConfigDefs.hpp"
+#include "core/src/core_empty.hpp"
 #include "core/src/core_forward_declarations.hpp"
 #include "core/src/core_shared_traits.hpp"
 #include "core/src/core_wrapped_types_enum.hpp"
 #include "core/src/core_expression_templates_operators.hpp"
+#include "core/src/core_static_constants.hpp"
+#include "core/src/core_teuchos_performance_monitor.hpp"
+
 #include "core/src/io/core_print_helper.hpp"
 #include "core/src/io/core_colorize_print.hpp"
 
@@ -21,12 +25,5 @@
 #include "core/src/shared_base/core_container_printable_base.hpp"
 
 #include "core/src/meta/core_meta_basic.hpp"
-#include "core/src/meta/core_meta_detect_operators.hpp"
-#include "core/src/meta/core_meta_detect_typedefs.hpp"
-#include "core/src/meta/core_meta_detection_idiom.hpp"
-#include "core/src/meta/core_native_vector_meta.hpp"
-#include "core/src/meta/core_native_multi_vector_meta.hpp"
-#include "core/src/meta/core_native_matrix_meta.hpp"
-#include "core/src/meta/core_native_static_asserts.hpp"
 
 #endif

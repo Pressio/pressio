@@ -4,12 +4,11 @@
 
 #include "CORE_VECTOR"
 
+#include "core/src/matrix/meta/core_native_matrix_static_asserts.hpp"
 #include "core/src/matrix/core_matrix_traits.hpp"
 #include "core/src/matrix/core_matrix_meta.hpp"
 
-///------------------
 ///base classes
-///------------------
 #include "core/src/matrix/base/core_matrix_base.hpp"
 #include "core/src/matrix/base/core_matrix_sparse_base.hpp"
 #include "core/src/matrix/base/core_matrix_sharedmem_base.hpp"
@@ -22,9 +21,7 @@
 #include "core/src/matrix/base/core_matrix_sparse_distributed_base.hpp"
 #include "core/src/matrix/base/core_matrix_sparse_distributed_trilinos_base.hpp"
 
-///------------------
 ///concrete classes
-///------------------
 #include "core/src/matrix/concrete/core_matrix_dense_sharedmem_eigen_dynamic.hpp"
 #include "core/src/matrix/concrete/core_matrix_dense_sharedmem_eigen_static.hpp"
 #include "core/src/matrix/concrete/core_matrix_dense_sharedmem_stdlib.hpp"
@@ -33,7 +30,6 @@
 #include "core/src/matrix/concrete/core_matrix_dense_distributed_epetra.hpp"
 #include "core/src/matrix/concrete/core_matrix_sparse_distributed_tpetra.hpp"
 #include "core/src/matrix/concrete/core_matrix_dense_sharedmem_teuchos_serial.hpp"
-
 
 #include "core/src/matrix/core_matrix_plus_operator.hpp"
 #include "core/src/matrix/core_matrix_times_operator.hpp"

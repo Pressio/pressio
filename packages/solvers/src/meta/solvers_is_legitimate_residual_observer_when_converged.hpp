@@ -13,7 +13,7 @@ struct is_legitimate_residual_observer_when_solver_converged
 template <typename observer_t, typename residual_t>
 struct is_legitimate_residual_observer_when_solver_converged<
   observer_t, residual_t,
-  core::meta::void_t<
+  ::rompp::mpl::void_t<
     decltype
     (
      std::declval<observer_t>().observeResidualWhenSolverConverged

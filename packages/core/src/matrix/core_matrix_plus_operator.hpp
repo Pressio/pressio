@@ -5,12 +5,10 @@
 #include "core_matrix_traits.hpp"
 #include "core_matrix_meta.hpp"
 
-namespace rompp{
-namespace core{
-
+namespace rompp{ namespace core{
   
 template <typename T1, 
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 	    core::meta::is_dense_matrix_wrapper_eigen<T1>::value or 
 	    core::meta::is_sparse_matrix_wrapper_eigen<T1>::value
 	    > * = nullptr>
@@ -22,7 +20,5 @@ T1 operator+(const T1 & A, const T1 & B) {
   return C;
 }
   
-
-}//end namespace core
-}//end namespace rompp
+}}//end namespace core::rompp
 #endif

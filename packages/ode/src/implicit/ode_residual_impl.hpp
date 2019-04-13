@@ -11,7 +11,7 @@ template<::rompp::ode::ImplicitEnum odeMethod,
 	  int numStates,
 	  typename state_type,
 	  typename scalar_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
   (odeMethod == ::rompp::ode::ImplicitEnum::Euler)
 #ifdef HAVE_TRILINOS
    and ::rompp::core::meta::is_vector_wrapper_tpetra<state_type>::value == false
@@ -34,7 +34,7 @@ template<::rompp::ode::ImplicitEnum odeMethod,
 	  int numStates,
 	  typename state_type,
 	  typename scalar_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
   (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
   ::rompp::core::meta::is_vector_wrapper_epetra<state_type>::value == true
   > * = nullptr
@@ -55,7 +55,7 @@ template<::rompp::ode::ImplicitEnum odeMethod,
 	  int numStates,
 	  typename state_type,
 	  typename scalar_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
   (odeMethod == ::rompp::ode::ImplicitEnum::BDF2)
 #ifdef HAVE_TRILINOS
  and ::rompp::core::meta::is_vector_wrapper_tpetra<state_type>::value == false
@@ -79,7 +79,7 @@ template<::rompp::ode::ImplicitEnum odeMethod,
 	  int numStates,
 	  typename state_type,
 	  typename scalar_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
   (odeMethod == ::rompp::ode::ImplicitEnum::Euler)
   and ::rompp::core::meta::is_vector_wrapper_tpetra<state_type>::value
   > * = nullptr
@@ -99,7 +99,7 @@ template< ::rompp::ode::ImplicitEnum odeMethod,
 	  int numStates,
 	  typename state_type,
 	  typename scalar_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
   (odeMethod == ::rompp::ode::ImplicitEnum::BDF2)
  and ::rompp::core::meta::is_vector_wrapper_tpetra<state_type>::value
   > * = nullptr

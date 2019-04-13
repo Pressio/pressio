@@ -14,20 +14,20 @@ template <typename ... Args>
 struct GNQRSpecializationPicker{
 
   // verify the sequence contains a valid system type
-  using ic1 = ::tinympl::variadic::find_if_unary_pred_t<
+  using ic1 = ::rompp::mpl::variadic::find_if_unary_pred_t<
     ::rompp::solvers::meta::is_legitimate_system_for_nonlinear_solver, Args...>;
   // store the type
-  using system_t = ::tinympl::variadic::at_or_t<void, ic1::value, Args...>;
+  using system_t = ::rompp::mpl::variadic::at_or_t<void, ic1::value, Args...>;
   static_assert(!std::is_void<system_t>::value and
 		ic1::value < sizeof... (Args),
 		"A valid system type must be passed to GN templates");
 
 
   // verify the sequence contains a valid QR solver type
-  using ic2 = ::tinympl::variadic::find_if_unary_pred_t<
+  using ic2 = ::rompp::mpl::variadic::find_if_unary_pred_t<
     ::rompp::solvers::meta::is_legitimate_qr_solver_for_gn_qr, Args...>;
   // store the type
-  using qr_solver_t = ::tinympl::variadic::at_or_t<void, ic2::value, Args...>;
+  using qr_solver_t = ::rompp::mpl::variadic::at_or_t<void, ic2::value, Args...>;
   static_assert(!std::is_void<qr_solver_t>::value and
 		ic2::value < sizeof... (Args),
   		"A valid QR solver type must be passed to GN templates");
@@ -36,21 +36,21 @@ struct GNQRSpecializationPicker{
 
 
   // check if sequence contains a non default line search tag
-  using ic4 = ::tinympl::variadic::find_if_unary_pred_t<
+  using ic4 = ::rompp::mpl::variadic::find_if_unary_pred_t<
     ::rompp::solvers::meta::is_non_default_line_search_tag, Args...>;
   // store the type
   using default_no_ls = ::rompp::solvers::iterative::gn::noLineSearch;
-  using line_search_t = ::tinympl::variadic::at_or_t<default_no_ls, ic4::value, Args...>;
+  using line_search_t = ::rompp::mpl::variadic::at_or_t<default_no_ls, ic4::value, Args...>;
   static_assert(!std::is_void<line_search_t>::value,
   		"The line search type for GN cannot be void");
 
 
   // check if sequence contains a non default convergence
-  using ic5 = ::tinympl::variadic::find_if_unary_pred_t<
+  using ic5 = ::rompp::mpl::variadic::find_if_unary_pred_t<
     ::rompp::solvers::meta::is_non_default_convergence_tag, Args...>;
   // store the type
   using default_conv = ::rompp::solvers::iterative::default_convergence;
-  using convergence_t = ::tinympl::variadic::at_or_t<default_conv, ic5::value, Args...>;
+  using convergence_t = ::rompp::mpl::variadic::at_or_t<default_conv, ic5::value, Args...>;
   static_assert(!std::is_void<convergence_t>::value,
   		"The convergence type for GN cannot be void");
 

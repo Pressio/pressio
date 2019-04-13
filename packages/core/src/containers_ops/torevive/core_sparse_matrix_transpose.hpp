@@ -15,7 +15,7 @@ namespace mat_ops{
   EPETRA CRSMATRIX
 ----------------------------------------------------- */
 template <typename mat_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 	    details::traits<mat_type>::isEpetra &&
 	    details::traits<mat_type>::is_sparse 
 	    > * = nullptr>
@@ -51,7 +51,7 @@ auto transpose(mat_type & A
   EIGEN SPARSE
 ----------------------------------------------------- */
 template <typename mat_type,
-	  core::meta::enable_if_t<
+	  ::rompp::mpl::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
 	    details::traits<mat_type>::is_sparse 
 	    > * = nullptr>

@@ -12,7 +12,7 @@ namespace rompp{ namespace core{
 
 template <typename wrapped_type>
 class Vector<wrapped_type,
-	     core::meta::enable_if_t<
+	     ::rompp::mpl::enable_if_t<
 	       core::meta::is_static_vector_eigen<wrapped_type>::value
 	       >
 	     >
@@ -48,7 +48,7 @@ public:
 
   // assignment from any expression, force evaluation
   template <typename T,
-	    core::meta::enable_if_t<
+	    ::rompp::mpl::enable_if_t<
 	      T::is_vector_expression> * = nullptr>
   this_t & operator=(const T & expr){
     assert(this->size() == expr.size());
@@ -76,7 +76,7 @@ public:
   // compound assignment from expression template
   // this += expr
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator+=(const T & expr) {
     assert( expr.size() == this->size() );
@@ -88,7 +88,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this += b
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator+=(const T & other) {
     assert( other.size() == this->size() );
@@ -100,7 +100,7 @@ public:
   // compound assignment from expression template
   // this -= expr
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator-=(const T & expr) {
     assert( expr.size() == this->size() );
@@ -112,7 +112,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this -= b
   template <typename T,
-  	    core::meta::enable_if_t<
+  	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator-=(const T & other) {
     assert( other.size() == this->size() );
@@ -198,7 +198,7 @@ private:
 
 
   // template<typename op_t, typename T,
-  // 	   core::meta::enable_if_t<
+  // 	   ::rompp::mpl::enable_if_t<
   // 	     std::is_same<T,this_t>::value
   // 	     > * = nullptr
   // 	   >
@@ -209,7 +209,7 @@ private:
   // }
 
   // template<typename op_t, typename T,
-  // 	   core::meta::enable_if_t<
+  // 	   ::rompp::mpl::enable_if_t<
   // 	     std::is_same<T,this_t>::value
   // 	     > * = nullptr
   // 	   >
@@ -224,7 +224,7 @@ private:
 
   // template<typename T,
   // 	   typename op1_t, typename op2_t, typename op3_t,
-  // 	   core::meta::enable_if_t<
+  // 	   ::rompp::mpl::enable_if_t<
   // 	     std::is_same<T,this_t>::value &&
   // 	     std::is_same<op1_t, std::plus<sc_t>>::value &&
   // 	     std::is_same<op2_t,op1_t>::value &&
@@ -247,7 +247,7 @@ private:
 
   // template<typename op0_t, typename T,
   // 	   typename op1_t, typename op2_t, typename op3_t,
-  // 	   core::meta::enable_if_t<
+  // 	   ::rompp::mpl::enable_if_t<
   // 	     std::is_same<T,this_t>::value &&
   // 	     std::is_same<op0_t, std::plus<sc_t>>::value &&
   // 	     std::is_same<op1_t, op0_t>::value &&

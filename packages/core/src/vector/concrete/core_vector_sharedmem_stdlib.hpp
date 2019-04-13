@@ -41,7 +41,7 @@ public:
 
   // constructor from any expression, force evaluation
   template <typename T,
-	    core::meta::enable_if_t<
+	    ::rompp::mpl::enable_if_t<
 	      T::is_vector_expression> * = nullptr>
   Vector(const T & expr){
     this->resize(expr.size());
@@ -51,7 +51,7 @@ public:
 
   // assignment from any expression, force evaluation
   template <typename T,
-	    core::meta::enable_if_t<
+	    ::rompp::mpl::enable_if_t<
 	      T::is_vector_expression> * = nullptr>
   this_t & operator=(const T & expr){
     if(this->size() != expr.size())

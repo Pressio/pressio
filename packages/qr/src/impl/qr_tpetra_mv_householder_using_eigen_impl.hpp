@@ -110,7 +110,7 @@ public:
 private:
 
   // template <typename T = R_type,
-  //       core::meta::enable_if_t<
+  //       ::rompp::mpl::enable_if_t<
   //         !std::is_void<R_type>::value
   //         > * = nullptr>
   // const R_type & cRefRFactorImpl() const {

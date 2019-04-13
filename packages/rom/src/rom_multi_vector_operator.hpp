@@ -10,7 +10,7 @@ namespace rompp{ namespace rom{
 template <typename wrapped_type>
 class MultiVectorOperator <
   wrapped_type,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     core::meta::is_core_multi_vector_wrapper<
       wrapped_type>::value
     >
@@ -61,7 +61,7 @@ public:
   /* Y = op_ * X : pass Y */
   template <typename T1,
 	    typename T2,
-     core::meta::enable_if_t<
+     ::rompp::mpl::enable_if_t<
        core::meta::is_core_vector_wrapper<T1>::value &&
        core::meta::is_core_vector_wrapper<T2>::value
        > * = nullptr
@@ -76,7 +76,7 @@ public:
 
   /* Y = op^T * X: return Y */
   template <typename T,
-     core::meta::enable_if_t<
+     ::rompp::mpl::enable_if_t<
        core::meta::is_core_vector_wrapper<T>::value or
        core::meta::is_core_multi_vector_wrapper<T>::value
        > * = nullptr
@@ -93,7 +93,7 @@ public:
 
   /* Y = op^T * X: pass Y */
   template <typename T1, typename T2,
-     core::meta::enable_if_t<
+     ::rompp::mpl::enable_if_t<
        core::meta::is_core_vector_wrapper<T1>::value or
        core::meta::is_core_multi_vector_wrapper<T1>::value
        > * = nullptr
