@@ -14,7 +14,7 @@ struct has_residual_method_callable_with_two_args : std::false_type{};
 template <typename T, typename a_t, typename b_t>
 struct has_residual_method_callable_with_two_args<
   T, a_t, b_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     !std::is_void<
       decltype(
 	       std::declval<T>().residual(std::declval<a_t const&>(),
@@ -33,7 +33,7 @@ struct has_residual_method_callable_with_three_args : std::false_type{};
 template <typename T, typename a_t, typename b_t, typename c_t>
 struct has_residual_method_callable_with_three_args<
   T, a_t, b_t, c_t,
-  core::meta::enable_if_t<
+  ::rompp::mpl::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T>().residual(

@@ -13,7 +13,7 @@ struct has_jacobian_method_callable_with_two_args : std::false_type{};
 template <typename T, typename a_t, typename b_t>
 struct has_jacobian_method_callable_with_two_args<
   T, a_t, b_t,
-  core::meta::void_t<
+  ::rompp::mpl::void_t<
   decltype(
 	   std::declval<T>().jacobian
 	   (std::declval<a_t const&>(),
@@ -32,7 +32,7 @@ template <typename T,
 	  typename a_t, typename b_t, typename c_t>
 struct has_jacobian_method_callable_with_three_args<
   T, a_t, b_t, c_t,
-  core::meta::void_t<
+  ::rompp::mpl::void_t<
   decltype(
 	   std::declval<T>().jacobian
 	   (std::declval<a_t const&>(),

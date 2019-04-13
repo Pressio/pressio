@@ -137,7 +137,7 @@ INSTALL(FILES ${core_multi_vector_base_HEADERS} DESTINATION ${CORE_INCDIR}/multi
 INSTALL(FILES ${core_multi_vector_concrete_HEADERS} DESTINATION ${CORE_INCDIR}/multi_vector/concrete)
 
 INSTALL(FILES ${core_matrix_HEADERS} DESTINATION ${CORE_INCDIR}/matrix)
-INSTALL(FILES ${core_matrxi_meta_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/meta)
+INSTALL(FILES ${core_matrix_meta_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/meta)
 INSTALL(FILES ${core_matrix_base_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/base)
 INSTALL(FILES ${core_matrix_concrete_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/concrete)
 
