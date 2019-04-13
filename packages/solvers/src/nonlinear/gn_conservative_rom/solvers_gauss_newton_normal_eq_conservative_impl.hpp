@@ -3,7 +3,6 @@
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_CONSERVATIVE_IMPL_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
-//#include "../../solvers_system_traits.hpp"
 #include "../../solvers_meta_static_checks.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_hessian_helper_policy.hpp"
@@ -55,27 +54,14 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    typename system_t::state_type & lambda,
 				    typename system_t::state_type & y2)
 {
-
-  //using jac_t	= typename system_t::jacobian_type;
-
   // find out which norm to use
   using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
 
   // functor for evaluating the norm of a vector
   using norm_evaluator_t = ComputeNormHelper<norm_t>;
-  norm_evaluator_t normEvaluator;
-
-  // // functor for approximate hessian J^T*J
-  // using hessian_evaluator_t = HessianApproxHelper<jac_t>;
-  // hessian_evaluator_t hessEvaluator;
-
-  // // functor for J^T * residual
-  // using jtr_evaluator_t = JacobianTranspResProdHelper<jac_t>;
-  // jtr_evaluator_t jtrEvaluator;
 
   // functor for checking convergence
   using is_conv_helper_t = IsConvergedHelper<converged_when_tag>;
-  is_conv_helper_t isConverged;
 
   // /* functor for computing line search factor (alpha) such that
   //  * the update is done with y = y + alpha dy
@@ -106,7 +92,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
   // compute (whatever type) norm of y
-  normEvaluator(y, normO);
+  norm_evaluator_t::evaluate(y, normO);
   normN = static_cast<scalar_t>(0);
   auto normLambda = static_cast<scalar_t>(0);
   auto normCbarR = static_cast<scalar_t>(0);
@@ -133,10 +119,10 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // residual norm for current state
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("norm resid");
-    normEvaluator(resid, normRes);
+    norm_evaluator_t::evaluate(resid, normRes);
     timer->stop("norm resid");
 #else
-    normEvaluator(resid, normRes);
+    norm_evaluator_t::evaluate(resid, normRes);
 #endif
     // store initial residual norm
     if (iStep==1) normRes0 = normRes;
@@ -187,7 +173,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     ::rompp::core::ops::dot(cbarT, resid, cbarR);
-    normEvaluator(cbarR, normCbarR);
+    norm_evaluator_t::evaluate(cbarR, normCbarR);
 
     ::rompp::core::ops::product(cbarT, lambda, cbarTlambda);
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
@@ -231,8 +217,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     *dy_lambda.data() = dy.data()->block(y.size(), 0, lambda.size(), 1);
 
     // norm of the correction
-    normEvaluator(dy_y, normN);
-    normEvaluator(dy_lambda, normLambda);
+    norm_evaluator_t::evaluate(dy_y, normN);
+    norm_evaluator_t::evaluate(dy_lambda, normLambda);
 
 #ifdef DEBUG_PRINT
     ::rompp::core::io::print_stdout(std::scientific,
@@ -274,8 +260,9 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // ::rompp::core::io::print_stdout("--------------\n");
 
     // check convergence (whatever method user decided)
-    auto flag = isConverged(y, dy, normN, normRes, normRes0, iStep,
-			    maxNonLIt, tolerance);
+    auto flag = is_conv_helper_t::evaluate(y, dy, normN, normRes,
+					   normRes0, iStep,
+					   maxNonLIt, tolerance);
     if (flag) break;
 
     // store new norm into old variable
