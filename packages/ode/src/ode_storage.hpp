@@ -15,7 +15,7 @@ template<typename state_type, typename rhs_type>
 class OdeStorage<state_type, rhs_type, 1, 0>{
 public:
   OdeStorage(state_type const & y)
-    : auxStates_{y}{}
+    : auxStates_{{y}}{}
 
   ~OdeStorage() = default;
 
@@ -28,7 +28,7 @@ template<typename state_type, typename rhs_type>
 class OdeStorage<state_type, rhs_type, 2, 0>{
 public:
   OdeStorage(state_type const & y)
-    : auxStates_{y, y}{}
+    : auxStates_{{y, y}}{}
 
   ~OdeStorage() = default;
 
@@ -45,8 +45,8 @@ class OdeStorage<state_type, rhs_type, 1, 4>{
 public:
   OdeStorage(state_type const & y,
 	     rhs_type const & r)
-    : auxStates_{y},
-      auxRHS_{r, r, r, r}
+    : auxStates_{{y}},
+      auxRHS_{{r, r, r, r}}
   {}
 
   ~OdeStorage() = default;

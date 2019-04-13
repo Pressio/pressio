@@ -36,7 +36,7 @@ struct FomStatesData{
   FomStatesData(const fom_state_w_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
     : yFom_(yFomIn),
-      yFomOld_{yFomIn},
+      yFomOld_{{yFomIn}},
       fomStateReconstrObj_(fomStateReconstr)
   {
     this->resetContainersToZero();
@@ -49,7 +49,7 @@ struct FomStatesData{
   FomStatesData(const fom_state_w_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
     : yFom_(yFomIn),
-      yFomOld_{yFomIn, yFomIn},
+      yFomOld_{{yFomIn, yFomIn}},
       fomStateReconstrObj_(fomStateReconstr)
   {
     this->resetContainersToZero();
