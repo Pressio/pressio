@@ -2,8 +2,8 @@
 #ifndef CORE_NATIVE_EIGEN_MULTIVECTOR_META_HPP_
 #define CORE_NATIVE_EIGEN_MULTIVECTOR_META_HPP_
 
-#include "../core_meta_basic.hpp"
-#include "../native_matrix/core_native_eigen_matrix_meta.hpp"
+#include "../../meta/core_meta_basic.hpp"
+#include "../../matrix/meta/core_native_eigen_matrix_meta.hpp"
 
 namespace rompp{ namespace core{ namespace meta {
 

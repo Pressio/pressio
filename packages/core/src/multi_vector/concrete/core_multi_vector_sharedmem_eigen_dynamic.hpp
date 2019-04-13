@@ -3,8 +3,7 @@
 #define CORE_MULTIVECTOR_CONCRETE_MULTIVECTOR_SHAREDMEM_EIGEN_DYNAMIC_HPP_
 
 #include "../base/core_multi_vector_sharedmem_base.hpp"
-
-#include "../../meta/core_native_multi_vector_meta.hpp"
+// #include "../../meta/core_native_multi_vector_meta.hpp"
 #include "../../shared_base/core_container_base.hpp"
 #include "../../shared_base/core_container_resizable_base.hpp"
 #include "../../shared_base/core_container_subscriptable_base.hpp"

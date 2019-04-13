@@ -19,10 +19,6 @@ FILE(GLOB core_shared_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 
 FILE(GLOB core_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
-FILE(GLOB core_meta_native_multi_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_multi_vector/*.hpp")
-FILE(GLOB core_meta_native_matrix_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/meta/native_matrix/*.hpp")
 
 FILE(GLOB core_containers_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/*.hpp")
@@ -68,6 +64,8 @@ FILE(GLOB core_vector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 
 FILE(GLOB core_multi_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/*.hpp")
+FILE(GLOB core_multi_vector_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/meta/*.hpp")
 FILE(GLOB core_multi_vector_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/multi_vector/base/*.hpp")
 FILE(GLOB core_multi_vector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -75,6 +73,8 @@ FILE(GLOB core_multi_vector_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DI
 
 FILE(GLOB core_matrix_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/matrix/*.hpp")
+FILE(GLOB core_matrix_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/matrix/meta/*.hpp")
 FILE(GLOB core_matrix_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/matrix/base/*.hpp")
 FILE(GLOB core_matrix_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -107,10 +107,7 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION $
 INSTALL(FILES ${core_general_HEADERS} DESTINATION ${CORE_INCDIR})
 INSTALL(FILES ${core_io_HEADERS} DESTINATION ${CORE_INCDIR}/io)
 INSTALL(FILES ${core_shared_base_HEADERS} DESTINATION ${CORE_INCDIR}/shared_base)
-
 INSTALL(FILES ${core_meta_HEADERS} DESTINATION ${CORE_INCDIR}/meta)
-INSTALL(FILES ${core_meta_native_multi_vector_HEADERS} DESTINATION ${CORE_INCDIR}/meta/native_multi_vector)
-INSTALL(FILES ${core_meta_native_matrix_HEADERS} DESTINATION ${CORE_INCDIR}/meta/native_matrix)
 
 INSTALL(FILES ${core_containers_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops)
 INSTALL(FILES ${core_containers_dot_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/dot)
@@ -135,10 +132,12 @@ INSTALL(FILES ${core_vector_base_HEADERS} DESTINATION ${CORE_INCDIR}/vector/base
 INSTALL(FILES ${core_vector_concrete_HEADERS} DESTINATION ${CORE_INCDIR}/vector/concrete)
 
 INSTALL(FILES ${core_multi_vector_HEADERS} DESTINATION ${CORE_INCDIR}/multi_vector)
+INSTALL(FILES ${core_multi_vector_meta_HEADERS} DESTINATION ${CORE_INCDIR}/multi_vector/meta)
 INSTALL(FILES ${core_multi_vector_base_HEADERS} DESTINATION ${CORE_INCDIR}/multi_vector/base)
 INSTALL(FILES ${core_multi_vector_concrete_HEADERS} DESTINATION ${CORE_INCDIR}/multi_vector/concrete)
 
 INSTALL(FILES ${core_matrix_HEADERS} DESTINATION ${CORE_INCDIR}/matrix)
+INSTALL(FILES ${core_matrxi_meta_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/meta)
 INSTALL(FILES ${core_matrix_base_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/base)
 INSTALL(FILES ${core_matrix_concrete_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/concrete)
 

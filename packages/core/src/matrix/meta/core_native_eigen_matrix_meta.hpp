@@ -2,7 +2,7 @@
 #ifndef CORE_NATIVE_EIGEN_MATRIX_META_HPP_
 #define CORE_NATIVE_EIGEN_MATRIX_META_HPP_
 
-#include "../core_meta_basic.hpp"
+#include "../../meta/core_meta_basic.hpp"
 #include "../../vector/meta/core_native_eigen_vector_meta.hpp"
 #include "Eigen/Dense"
 #include "Eigen/Sparse"

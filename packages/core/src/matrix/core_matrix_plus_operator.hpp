@@ -5,9 +5,7 @@
 #include "core_matrix_traits.hpp"
 #include "core_matrix_meta.hpp"
 
-namespace rompp{
-namespace core{
-
+namespace rompp{ namespace core{
   
 template <typename T1, 
 	  ::rompp::mpl::enable_if_t<
@@ -22,7 +20,5 @@ T1 operator+(const T1 & A, const T1 & B) {
   return C;
 }
   
-
-}//end namespace core
-}//end namespace rompp
+}}//end namespace core::rompp
 #endif

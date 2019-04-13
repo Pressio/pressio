@@ -3,7 +3,7 @@
 #ifndef CORE_NATIVE_TRILINOS_MULTI_VECTOR_META_HPP_
 #define CORE_NATIVE_TRILINOS_MULTI_VECTOR_META_HPP_
 
-#include "../core_meta_basic.hpp"
+#include "../../meta/core_meta_basic.hpp"
 #include "Epetra_MultiVector.h"
 #include <Tpetra_MultiVector_decl.hpp>
 

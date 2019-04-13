@@ -1,36 +1,12 @@
 
-#ifndef CORE_UTILS_STATIC_ASSERT_DEFINITIONS_HPP_
-#define CORE_UTILS_STATIC_ASSERT_DEFINITIONS_HPP_
+#ifndef CORE_NATIVE_MATRIX_STATIC_ASSERTS_HPP_
+#define CORE_NATIVE_MATRIX_STATIC_ASSERTS_HPP_
 
-#include "../meta/core_native_multi_vector_meta.hpp"
-#include "../meta/core_native_matrix_meta.hpp"
+#include "core_native_eigen_matrix_meta.hpp"
+#include "core_native_stdlib_matrix_meta.hpp"
+#include "core_native_trilinos_matrix_meta.hpp"
 
 namespace rompp{ namespace core{
-
-////////////////////////
-// MULTI VECTOR
-///////////////////////
-
-#ifdef HAVE_TRILINOS
-#define STATIC_ASSERT_IS_MULTIVECTOR_EPETRA(TYPE) \
-  static_assert( core::meta::is_multi_vector_epetra<TYPE>::value, \
-		 "THIS_IS_NOT_A_MULTIVECTOR_EPETRA")
-#define STATIC_ASSERT_IS_NOT_MULTIVECTOR_EPETRA(TYPE) \
-  static_assert( !core::meta::is_multi_vector_epetra<TYPE>::value, \
-		 "THIS_IS_A_MULTIVECTOR_EPETRA")
-
-#define STATIC_ASSERT_IS_MULTIVECTOR_TPETRA(TYPE)		  \
-  static_assert( core::meta::is_multi_vector_tpetra<TYPE>::value, \
-		 "THIS_IS_NOT_A_MULTIVECTOR_TPETRA")
-#define STATIC_ASSERT_IS_NOT_MULTIVECTOR_TPETRA(TYPE) \
-  static_assert( !core::meta::is_multi_vector_tpetra<TYPE>::value, \
-		 "THIS_IS_A_MULTIVECTOR_TPETRA")
-#endif
-
-
-////////////////////////
-// MATRIX
-///////////////////////
 
 #define STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_EIGEN(TYPE) \
   static_assert( core::meta::is_dense_matrix_eigen<TYPE>::value,	\

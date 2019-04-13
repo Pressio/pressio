@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 // #include <Tpetra_Map.hpp>
+#include "CORE_VECTOR"
+#include "CORE_MULTI_VECTOR"
 #include "CORE_MATRIX"
 
 TEST(core_sparse_matrix_tpetra, Traits){

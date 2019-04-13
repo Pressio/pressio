@@ -9,10 +9,6 @@
 
 namespace rompp{ namespace core{
 
-//////////////////////
-// VECTOR
-/////////////////////
-
 #define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \
   static_assert( core::meta::is_vector_eigen<TYPE>::value, \
 		 "THIS_IS_NOT_A_VECTOR_FROM_EIGEN")

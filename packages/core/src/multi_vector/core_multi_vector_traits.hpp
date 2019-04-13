@@ -3,8 +3,9 @@
 #define CORE_MULTIVECTOR_MULTIVECTOR_TRAITS_HPP_
 
 #include "../core_forward_declarations.hpp"
-#include "../meta/core_native_multi_vector_meta.hpp"
 #include "../core_shared_traits.hpp"
+#include "./meta/core_native_eigen_multi_vector_meta.hpp"
+#include "./meta/core_native_trilinos_multi_vector_meta.hpp"
 
 namespace rompp{ namespace core{ namespace details{
 
