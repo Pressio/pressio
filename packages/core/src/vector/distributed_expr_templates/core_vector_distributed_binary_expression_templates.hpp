@@ -10,7 +10,10 @@ template <typename der_t>
 class DistributedVecExpressionBase {
   DistributedVecExpressionBase() = default;
   ~DistributedVecExpressionBase() = default;
-  friend der_t;
+
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<der_t>::type;
 
 public:
   static constexpr bool is_shared_mem = false;

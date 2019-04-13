@@ -1,10 +1,12 @@
 TRIBITS_REPOSITORY_DEFINE_TPLS(
   GTEST           "cmake/tpls/"  PT
   EIGEN           "cmake/tpls/"  PT
+  MKL             "cmake/tpls/"  EX
+  BinUtils	  "TriBITS/tribits/common_tpls/"   ST
   BLAS            "TriBITS/tribits/common_tpls/"   PT
   LAPACK          "TriBITS/tribits/common_tpls/"   PT
   MPI             "cmake/tpls/"  ST
-  TRILINOS        "cmake/tpls/"  ST  
+  TRILINOS        "cmake/tpls/"  ST
   BLAZE           "cmake/tpls/"  ST
   ARMADILLO       "cmake/tpls/"  ST
   MKL 		  "cmake/tpls/"  EX
@@ -15,6 +17,6 @@ TRIBITS_REPOSITORY_DEFINE_TPLS(
   #KOKKOS         "cmake/tpls/"  PT
   )
 
-# PT means required 
-# ST optional 
+# PT means required
+# ST optional
 #MPI            "${${PROJECT_NAME}_TRIBITS_DIR}/core/std_tpls/FindTPLMPI.cmake"   PT

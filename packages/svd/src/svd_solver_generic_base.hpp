@@ -4,9 +4,9 @@
 
 #include "svd_solver_traits.hpp"
 
-namespace rompp{ 
+namespace rompp{
 namespace svd{
-    
+
 template<typename derived_type>
 class SolverBase
   : private core::details::CrtpBase<SolverBase<derived_type>>
@@ -36,19 +36,22 @@ public:
   const rightSvec_t & cRefRightSingularVectors() const {
     return this->underlying().cRefRightSingularVectorsImpl();
   };
-  
+
   const sval_t & singularValues() const{
     return this->underlying().singularValuesImpl();
   };
-    
-private:    
+
+private:
   SolverBase() = default;
   ~SolverBase() = default;
 
 private:
-  friend derived_type;
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_type>::type;
+
   friend core::details::CrtpBase<SolverBase<derived_type>>;
-  
+
 };//end class
 
 } // end namespace svd

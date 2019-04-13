@@ -6,7 +6,7 @@
 
 namespace rompp{
 namespace core{
-    
+
 template<typename derived_type>
 class MatrixSparseBase
   : private core::details::CrtpBase<
@@ -20,17 +20,19 @@ class MatrixSparseBase
 public:
   size_t nonZerosCount()const{
     return this->underlying().nonZerosCountImpl();}
-    
-private:  
-  friend derived_type;
+
+private:
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_type>::type;
+
   friend core::details::CrtpBase<
     MatrixSparseBase<derived_type>>;
-
   MatrixSparseBase() = default;
   ~MatrixSparseBase() = default;
- 
+
 };//end class
-  
+
 } // end namespace core
 }//end namespace rompp
 #endif

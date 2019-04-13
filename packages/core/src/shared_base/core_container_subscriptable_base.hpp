@@ -34,7 +34,10 @@ public:
   }
 
 private:
-  friend derived_type;
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_type>::type;
+
   friend core::details::CrtpBase<this_t>;
 
   ContainerSubscriptable1DBase() = default;
@@ -71,7 +74,10 @@ public:
   }
 
 private:
-  friend derived_type;
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_type>::type;
+
   friend core::details::CrtpBase<this_t>;
 
   ContainerSubscriptable2DBase() = default;
