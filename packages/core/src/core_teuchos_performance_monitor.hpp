@@ -1,8 +1,12 @@
 
+
 #ifdef HAVE_TEUCHOS_TIMERS
 #ifndef CORE_TEUCHOS_PERFORMANCE_MONITOR_HPP_
 #define CORE_TEUCHOS_PERFORMANCE_MONITOR_HPP_
 
+#include <Teuchos_Comm.hpp>
+#include <Teuchos_DefaultComm.hpp>
+#include <Teuchos_DefaultMpiComm.hpp>
 #include <Teuchos_DefaultSerialComm.hpp>
 #include <Teuchos_TimeMonitor.hpp>
 #include "Teuchos_StackedTimer.hpp"
@@ -26,7 +30,7 @@ struct TeuchosPerformanceMonitor{
     options.output_minmax=true;
 
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->report(outp);
+    timer->report(outp, Teuchos::rcp(new ser_comm_t()), options);
   }
 
   static
