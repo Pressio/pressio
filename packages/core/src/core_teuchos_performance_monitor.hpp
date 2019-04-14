@@ -26,7 +26,7 @@ struct TeuchosPerformanceMonitor{
     options.output_minmax=true;
 
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->report(outp, Teuchos::rcp(new ser_comm_t()), options);
+    timer->report(outp);
   }
 
   static
