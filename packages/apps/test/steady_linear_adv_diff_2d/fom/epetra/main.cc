@@ -34,5 +34,6 @@ int main(int argc, char *argv[]){
   checkSol(*T, rompp::apps::test::steadyAdvDiff2d_nx11ny21);
 
   MPI_Finalize();
+  std::cout << "PASSED" << std::endl;
   return 0;
 }

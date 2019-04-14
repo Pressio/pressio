@@ -76,6 +76,6 @@ int main(int argc, char *argv[]){
   //End and free
   //--------------------------------------------------
   MPI_Finalize();
-
+  std::cout << "PASSED" << std::endl;
   return 0;
 }

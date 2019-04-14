@@ -107,5 +107,6 @@ int main(int argc, char *argv[]){
     norm2err/normFomY*100. << std::endl;
 
   MPI_Finalize();
+  std::cout << "PASSED" << std::endl;
   return 0;
 }

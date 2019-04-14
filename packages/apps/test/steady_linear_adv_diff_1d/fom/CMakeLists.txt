@@ -1,2 +1,2 @@
 
-ADD_SUBDIRECTORIES(epetra)
+ADD_SUBDIRECTORY(epetra)

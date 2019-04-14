@@ -130,5 +130,7 @@ int main(int argc, char *argv[]){
       assert( std::abs(goldU[i][j] - U(i,j)) < eps );
 
   MPI_Finalize();
+  std::cout << "PASSED" << std::endl;
+  
   return 0;
 }

@@ -97,5 +97,6 @@ int main(int argc, char *argv[]){
   }//tpetra scope
 
   MPI_Finalize();
+  std::cout << "PASSED" << std::endl;
   return 0;
 }

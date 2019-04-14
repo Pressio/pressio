@@ -84,5 +84,6 @@ int main(int argc, char *argv[]){
   for (auto i=0; i<yFomFinal.size(); i++)
     assert(std::abs(yFomFinal[i] - trueY[i]) < 1e-10 );
 
+  std::cout << "PASSED" << std::endl;
   return 0;
 }

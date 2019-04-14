@@ -92,5 +92,6 @@ int main(int argc, char *argv[]){
   }
 
   MPI_Finalize();
+  std::cout << "PASSED" << std::endl;
   return 0;
 }

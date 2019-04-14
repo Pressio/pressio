@@ -102,5 +102,6 @@ int main(int argc, char *argv[]){
   std::cout << std::setprecision(15) << norm2err << std::endl;
 
   MPI_Finalize();
+  std::cout << "PASSED" << std::endl;
   return 0;
 }

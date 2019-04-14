@@ -63,5 +63,6 @@ int main(int argc, char *argv[]){
     checkSol(y, Burgers1dImpGoldStates<ode_case>::get(Ncell, dt, fint));
   }
 
+  std::cout << "PASSED" << std::endl;
   return 0;
 }
