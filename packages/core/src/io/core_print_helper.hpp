@@ -4,6 +4,9 @@
 
 #include "../core_ConfigDefs.hpp"
 #include "core_colorize_print.hpp"
+#ifdef HAVE_MPI
+#include <mpi.h>
+#endif
 
 namespace rompp{ namespace core{ namespace io{
 
