@@ -27,7 +27,7 @@ public:
     Comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
     MyPID_ = Comm_->MyPID();
     NumProc_ = Comm_->NumProc();
-    assert( NumProc_ == 3 );
+    EXPECT_EQ( NumProc_, 3 );
 
     nRowsSM_ = 9;
     smMap_ = new Epetra_Map(nRowsSM_, 0, *Comm_);

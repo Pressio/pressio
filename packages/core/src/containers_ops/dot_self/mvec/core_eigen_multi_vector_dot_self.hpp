@@ -22,11 +22,11 @@ void dot_self(const mvec_t & A,
 	      Eigen::Dynamic, Eigen::Dynamic>
 	      > & C)
 {
-  // how many vectors are in A
-  auto numVecsA = A.numVectors();
-  // auto const & Adata = *A.data();
-  assert(C.rows() == numVecsA);
-  assert(C.cols() == numVecsA);
+  // // how many vectors are in A
+  // auto numVecsA = A.numVectors();
+  // // auto const & Adata = *A.data();
+  // assert(C.rows() == numVecsA);
+  // assert(C.cols() == numVecsA);
 
   *C.data() = A.data()->transpose() * (*A.data());
 }

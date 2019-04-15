@@ -11,6 +11,8 @@ int main(int argc, char *argv[]){
   using scalar_t	= typename fom_adapter_t::scalar_type;
   using native_state	= typename fom_adapter_t::state_type;
 
+  std::string checkStr {"PASSED"};
+
   // MPI
   MPI_Init(&argc,&argv);
   int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -99,10 +101,11 @@ int main(int argc, char *argv[]){
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
   auto errorVec(yFom); errorVec = yFom - yFomApprox;
   const auto norm2err = rompp::core::ops::norm2(errorVec);
-  assert( norm2err < 1e-12 );
+  if( norm2err > 1e-12 ) checkStr = "FAILED";
+
   std::cout << std::setprecision(15) << norm2err << std::endl;
 
   MPI_Finalize();
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr <<  std::endl;
   return 0;
 }

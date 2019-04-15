@@ -24,7 +24,7 @@ public:
     comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
-    assert(numProc_==3);
+    EXPECT_EQ(numProc_,3);
 
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = new Epetra_Map(numGlobalEntries_, 0, *comm_);
@@ -59,7 +59,7 @@ public:
     comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
-    assert(numProc_ == 3);
+    EXPECT_EQ(numProc_,3);
 
     numGlobalEntries_ = numProc_ * localSize_;
     dataMap_ = new Epetra_Map(numGlobalEntries_, 0, *comm_);
@@ -104,7 +104,7 @@ public:
     comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
-    assert(numProc_ == 3);
+    EXPECT_EQ(numProc_,3);
 
     dataMapSM_ = new Epetra_Map(nRowsSM_, 0, *comm_);
     sm_ = new mymat_w_t(*dataMapSM_, 3);

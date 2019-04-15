@@ -20,6 +20,8 @@ int main(int argc, char *argv[]){
   using tcomm_t		= Teuchos::MpiComm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
 
+  std::string checkStr {"PASSED"};
+
   //-------------------------------
   // MPI init
   MPI_Init(&argc,&argv);
@@ -44,7 +46,7 @@ int main(int argc, char *argv[]){
       rompp::apps::test::tpetra::readBasis("basis.txt", romSize, numCell,
 					   Comm, appobj.getDataMap());
     const int numBasis = phi.globalNumVectors();
-    assert( numBasis == romSize );
+    if( numBasis != romSize ) return 0;
     // create decoder obj
     decoder_t decoderObj(phi);
 
@@ -88,11 +90,11 @@ int main(int argc, char *argv[]){
     const int myn = yFomFinal.getDataMap().getNodeNumElements();
     const auto trueY = rompp::apps::test::Burgers1dImpGoldStates<ode_case>::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++)
-      assert(std::abs(yFF_v[i] - trueY[i+shift]) < 1e-10 );
+      if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
 
   }//tpetra scope
 
   MPI_Finalize();
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr <<  std::endl;
   return 0;
 }

@@ -16,12 +16,14 @@ int main(int argc, char *argv[]){
   using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
+  std::string checkStr {"PASSED"};
+
   //-------------------------------
   // MPI init
   MPI_Init(&argc,&argv);
   int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
-  assert(Comm.NumProc() == 2);
+  if(Comm.NumProc() != 2) return 0;
 
   //-------------------------------
   // app object
@@ -37,7 +39,7 @@ int main(int argc, char *argv[]){
   decoder_jac_t phi =
     rompp::apps::test::epetra::readBasis("basis.txt", romSize, numCell,
 					 Comm, appobj.getDataMap());
-  assert( romSize == phi.globalNumVectors() );
+  if( phi.globalNumVectors() != romSize ) return 0;
   // create decoder obj
   decoder_t decoderObj(phi);
 
@@ -88,10 +90,10 @@ int main(int argc, char *argv[]){
     const int myn = yFomFinal.getDataMap().NumMyElements();
     const auto trueY = rompp::apps::test::Burgers1dImpGoldStates<ode_case>::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++)
-      assert(std::abs(yFomFinal[i] - trueY[i+shift]) < 1e-10 );
+      if (std::abs(yFomFinal[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
   }
 
   MPI_Finalize();
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr <<  std::endl;
   return 0;
 }

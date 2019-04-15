@@ -16,6 +16,9 @@ int main(int argc, char *argv[]){
   using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
   using native_state    = typename fom_t::state_type;
+
+  std::string checkStr {"PASSED"};
+
   //-------------------------------
   // MPI init
   MPI_Init(&argc,&argv);
@@ -98,10 +101,10 @@ int main(int argc, char *argv[]){
   errorVec = yFom-yFomFinal;
   const auto norm2err = rompp::core::ops::norm2(errorVec);
 
-  assert(norm2err < 1e-10);
+  if (norm2err > 1e-10) checkStr = "FAILED";
   std::cout << std::setprecision(15) << norm2err << std::endl;
 
   MPI_Finalize();
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr << std::endl;
   return 0;
 }
