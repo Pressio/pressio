@@ -1,8 +1,11 @@
 
 # A) Package-specific configuration options
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "rom_config.h"
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "core_config.h"
+# Set the base directory in order to find rompp_version.h
+ASSERT_DEFINED(PROJECT_SOURCE_DIR)
+INCLUDE_DIRECTORIES(${PROJECT_NAME}_BINARY_DIR})
 
 #----------------------------------------------------------------
 # B) Define the header and source files (and include directories)
@@ -34,7 +37,7 @@ FILE(GLOB rom_lspg_steady_generator_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR
 
 # sources
 FILE(GLOB rom_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
 SET(SOURCES ${rom_gen_SRCS})
 
 #--------------------------------------

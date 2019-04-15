@@ -1,27 +1,24 @@
 
 # A) Package-specific configuration options
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "mpl_config.h"
+
+# Set the base directory in order to find rompp_version.h
+ASSERT_DEFINED(PROJECT_SOURCE_DIR)
+INCLUDE_DIRECTORIES(${PROJECT_NAME}_BINARY_DIR})
+
 
 #----------------------------------------------------------------
 # B) Define the header and source files (and include directories)
 #----------------------------------------------------------------
-# To include optimization_config.h
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-
 SET(HEADERS
   ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h
-  optimization_ConfigDefs.hpp
-  dummy.hpp
-  #
-  #least_squares/algebra_leastsquares.hpp
-  #algebra_newtonraphson.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/optimization_ConfigDefs.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/optimization_version.hpp
 )
 
 SET(SOURCES
-  dummy.cc
-  #least_squares/src/algebra_leastsquares.cc
-  #src/algebra_newtonraphson.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/optimization_version.cc
 )
 
 #----------------------------------------------------------------
@@ -29,7 +26,7 @@ SET(SOURCES
 #----------------------------------------------------------------
 TRIBITS_ADD_LIBRARY(
   optimization
-  HEADERS ${HEADERS}
+  # HEADERS ${HEADERS}
   SOURCES ${SOURCES}
   )
 
