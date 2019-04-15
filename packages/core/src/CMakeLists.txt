@@ -3,6 +3,10 @@
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "core_config.h"
 
+# Set the base directory in order to find rompp_version.h
+ASSERT_DEFINED(PROJECT_SOURCE_DIR)
+INCLUDE_DIRECTORIES(${PROJECT_NAME}_BINARY_DIR})
+
 #----------------------------------------------------------------
 # B) Define the header and source files (and include directories)
 #----------------------------------------------------------------
@@ -83,8 +87,8 @@ FILE(GLOB core_matrix_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 #################
 #### SOURCES
 #################
-FILE(GLOB core_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
+FILE(GLOB core_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
 SET(SOURCES ${core_general_SRCS})
 
 #--------------------------------------
@@ -140,7 +144,6 @@ INSTALL(FILES ${core_matrix_HEADERS} DESTINATION ${CORE_INCDIR}/matrix)
 INSTALL(FILES ${core_matrix_meta_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/meta)
 INSTALL(FILES ${core_matrix_base_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/base)
 INSTALL(FILES ${core_matrix_concrete_HEADERS} DESTINATION ${CORE_INCDIR}/matrix/concrete)
-
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)

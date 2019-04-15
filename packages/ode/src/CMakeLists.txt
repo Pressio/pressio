@@ -44,7 +44,7 @@ FILE(GLOB ode_imp_steppers_common_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 
 # all sources
 FILE(GLOB ode_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
 SET(SOURCES ${ode_general_SRCS})
 
 #--------------------------------------

@@ -32,6 +32,8 @@ int main(int argc, char *argv[]){
   using scalar_t	= typename fom_adapter_t::scalar_type;
   using native_state	= typename fom_adapter_t::state_type;
 
+  std::string checkStr {"PASSED"};
+
   // MPI
   MPI_Init(&argc,&argv);
   int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -128,7 +130,7 @@ int main(int argc, char *argv[]){
   auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
   auto errorVec(yFom); errorVec = yFom - yFomApprox;
   const auto norm2err = rompp::core::ops::norm2(errorVec);
-  assert( norm2err < 1e-12 );
+  if( norm2err > 1e-12 ) checkStr = "FAILED";
 
   // now calculate the residual using the final yROM
   auto fomResidFromFOMState = lspgProblem.systemObj_.residual(yROM);
@@ -136,10 +138,11 @@ int main(int argc, char *argv[]){
   auto storedR = myResidSampler.getR();
   // the two should match exactly
   for (size_t i=0; i<storedR.size(); i++){
-    assert( std::abs(storedR[i] - fomResidFromFOMState[i]) < 1e-14);
+    if( std::abs(storedR[i] - fomResidFromFOMState[i]) > 1e-14)
+      checkStr = "FAILED";
   }
 
   MPI_Finalize();
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr <<  std::endl;
   return 0;
 }

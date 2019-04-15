@@ -92,7 +92,7 @@ TEST_F(core_matrix_vec_product_distributed_epetraFix, CRSMatTimesVector){
   auto c = core::mat_ops::product(*A_, *b_);
   c.data()->Print(std::cout);
 
-  assert( c.globalSize() == 9);
+  EXPECT_EQ( c.globalSize(), 9);
   static_assert( std::is_same<decltype(c),
 		 core::Vector<Epetra_Vector>>::value, "" );
   if (MyPID_ == 0)

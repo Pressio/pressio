@@ -17,8 +17,6 @@ FILE(GLOB apps_steadyLinearAdvDiff2d_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DI
   "${CMAKE_CURRENT_SOURCE_DIR}/steady_linear_adv_diff2d/*.hpp")
 
 # sources
-FILE(GLOB apps_gen_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
 FILE(GLOB apps_burgers1d_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/burgers1d/*.cc")
 FILE(GLOB apps_steadyLinearAdvDiff1d_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -27,7 +25,6 @@ FILE(GLOB apps_steadyLinearAdvDiff2d_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/steady_linear_adv_diff2d/*.cc")
 
 SET(SOURCES
-  ${apps_gen_SRCS}
   ${apps_burgers1d_SRCS}
   ${apps_steadyLinearAdvDiff1d_SRCS}
   ${apps_steadyLinearAdvDiff2d_SRCS}

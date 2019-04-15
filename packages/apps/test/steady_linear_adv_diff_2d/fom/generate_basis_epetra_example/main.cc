@@ -7,6 +7,7 @@ using gen_t	   = std::mt19937;
 using rand_distr_t = std::uniform_real_distribution<double>;
 
 constexpr double eps = 1e-7;
+std::string checkStr {"PASSED"};
 
 // range of Prandtl number
 constexpr std::array<double,2> Pr_range{1.0, 5.0};
@@ -127,10 +128,10 @@ int main(int argc, char *argv[]){
   assert( (size_t) goldU.size() == (size_t) U.rows() );
   for (auto i=0; i<U.rows(); i++)
     for (auto j=0; j<nSamples; j++)
-      assert( std::abs(goldU[i][j] - U(i,j)) < eps );
+      if ( std::abs(goldU[i][j] - U(i,j)) > eps ) checkStr = "FAILED";
 
   MPI_Finalize();
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr <<  std::endl;
   
   return 0;
 }

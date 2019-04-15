@@ -6,6 +6,7 @@
 #include "../gold_states_implicit.hpp"
 
 constexpr double eps = 1e-12;
+std::string checkStr {"PASSED"};
 
 template <typename state_t>
 struct observer{
@@ -42,7 +43,7 @@ struct observer{
 template <typename T>
 void checkSol(const T & y, const std::vector<double> & trueS){
   for (size_t i=0; i< trueS.size(); i++)
-    assert(std::abs(y[i] - trueS[i]) < eps);
+    if (std::abs(y[i] - trueS[i]) > eps) checkStr = "FAILED";
 }
 
 int main(int argc, char *argv[]){
@@ -101,6 +102,6 @@ int main(int argc, char *argv[]){
     checkSol(y, Burgers1dImpGoldStates<ode_case>::get(Ncell, dt, fint));
   }
 
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr << std::endl;
   return 0;
 }

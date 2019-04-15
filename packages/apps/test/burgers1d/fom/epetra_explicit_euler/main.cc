@@ -5,37 +5,20 @@
 #include "../gold_states_explicit.hpp"
 
 constexpr double eps = 1e-12;
+std::string checkStr {"PASSED"};
 
 template <typename T>
 void checkSol(int rank, const T & y,
 	      const std::vector<double> & trueS){
-  if (rank==0){
-    assert(std::abs(y[0] - trueS[0]) < eps);
-    assert(std::abs(y[1] - trueS[1]) < eps);
-    assert(std::abs(y[2] - trueS[2]) < eps);
-    assert(std::abs(y[3] - trueS[3]) < eps);
-    assert(std::abs(y[4] - trueS[4]) < eps);}
 
-  if (rank==1){
-    assert(std::abs(y[0] - trueS[5]) < eps);
-    assert(std::abs(y[1] - trueS[6]) < eps);
-    assert(std::abs(y[2] - trueS[7]) < eps);
-    assert(std::abs(y[3] - trueS[8]) < eps);
-    assert(std::abs(y[4] - trueS[9]) < eps);}
+  int shift = 0;
+  if (rank==1) shift = 5;
+  else if (rank==2) shift = 10;
+  else if (rank==3) shift = 15;
 
-  if (rank==2){
-    assert(std::abs(y[0] - trueS[10]) < eps);
-    assert(std::abs(y[1] - trueS[11]) < eps);
-    assert(std::abs(y[2] - trueS[12]) < eps);
-    assert(std::abs(y[3] - trueS[13]) < eps);
-    assert(std::abs(y[4] - trueS[14]) < eps);}
-
-  if (rank==3){
-    assert(std::abs(y[0] - trueS[15]) < eps);
-    assert(std::abs(y[1] - trueS[16]) < eps);
-    assert(std::abs(y[2] - trueS[17]) < eps);
-    assert(std::abs(y[3] - trueS[18]) < eps);
-    assert(std::abs(y[4] - trueS[19]) < eps);}
+  for (auto i=0; i<5; i++){
+    if (std::abs(y[i] - trueS[i+shift]) > eps) checkStr = "FAILED";
+  }
 }
 
 int main(int argc, char *argv[]){
@@ -81,6 +64,6 @@ int main(int argc, char *argv[]){
   }
 
   MPI_Finalize();
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr << std::endl;
   return 0;
 }

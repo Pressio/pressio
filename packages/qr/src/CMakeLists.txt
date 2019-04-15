@@ -3,6 +3,10 @@
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "qr_config.h"
 
+# Set the base directory in order to find rompp_version.h
+ASSERT_DEFINED(PROJECT_SOURCE_DIR)
+INCLUDE_DIRECTORIES(${PROJECT_NAME}_BINARY_DIR})
+
 #----------------------------------------------------------------
 # B) Define the header and source files (and include directories)
 #----------------------------------------------------------------
@@ -21,7 +25,7 @@ FILE(GLOB qr_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 #### SOURCES
 #################
 FILE(GLOB qr_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
 SET(SOURCES ${qr_general_SRCS})
 
 #--------------------------------------

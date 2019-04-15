@@ -34,7 +34,7 @@ public:
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    assert(numProc_==3);
+    EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
     					comm_));
@@ -76,7 +76,7 @@ public:
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    assert(numProc_==3);
+    EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
     					comm_));
@@ -115,7 +115,7 @@ public:
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    assert(numProc_==3);
+    EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
     x_ = new mvec_t(contigMap_, numVecs_);
@@ -155,7 +155,7 @@ public:
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    assert(numProc_==3);
+    EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
     mv_ = new mvec_t(contigMap_, numVecs_);
@@ -201,7 +201,7 @@ public:
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    assert(numProc_==3);
+    EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
 

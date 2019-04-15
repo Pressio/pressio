@@ -18,6 +18,8 @@ int main(int argc, char *argv[]){
   using decoder_jac_t	= rompp::core::MultiVector<eig_dyn_mat>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
+  std::string checkStr {"PASSED"};
+
   //-------------------------------
   // app object
   constexpr int numCell = 20;
@@ -33,7 +35,8 @@ int main(int argc, char *argv[]){
   decoder_jac_t phi =
     rompp::apps::test::eigen::readBasis("basis.txt", romSize, numCell);
   const int numBasis = phi.numVectors();
-  assert( numBasis == romSize );
+  if( numBasis != romSize ) return 0;
+
   // create decoder obj
   decoder_t decoderObj(phi);
 
@@ -82,8 +85,8 @@ int main(int argc, char *argv[]){
   // const auto trueY = rompp::apps::test::Burg1DtrueImpEulerN20t010;
   const auto trueY = rompp::apps::test::Burgers1dImpGoldStates<ode_case>::get(numCell, dt, 0.10);
   for (auto i=0; i<yFomFinal.size(); i++)
-    assert(std::abs(yFomFinal[i] - trueY[i]) < 1e-10 );
+    if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10) checkStr = "FAILED";
 
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr <<  std::endl;
   return 0;
 }

@@ -3,6 +3,7 @@
 #include "../fom_gold_states.hpp"
 
 constexpr double eps = 1e-7;
+std::string checkStr {"PASSED"};
 
 template <typename T>
 void checkSol(const T & y,
@@ -10,8 +11,9 @@ void checkSol(const T & y,
   const auto map = y.Map();
   auto * globID = map.MyGlobalElements();
   const auto myN = map.NumMyElements();
-  for(auto i=0; i<myN; i++)
-    assert(std::abs(y[i] - trueS.at(globID[i])) < eps);
+  for(auto i=0; i<myN; i++){
+    if (std::abs(y[i] - trueS.at(globID[i])) > eps) checkStr = "FAILED";
+  }
 }
 
 int main(int argc, char *argv[]){
@@ -34,6 +36,6 @@ int main(int argc, char *argv[]){
   checkSol(*T, rompp::apps::test::steadyAdvDiff2d_nx11ny21);
 
   MPI_Finalize();
-  std::cout << "PASSED" << std::endl;
+  std::cout << checkStr <<  std::endl;
   return 0;
 }
