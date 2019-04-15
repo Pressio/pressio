@@ -63,7 +63,8 @@ class OdeStorage<state_type, rhs_type, 0, 1>{
   using rhs_wrapped_t = typename core::details::traits<rhs_type>::wrapped_t;
 
 public:
-  OdeStorage(rhs_type const & r) : auxRHS_{r}{}
+  OdeStorage(rhs_type const & r)
+    : auxRHS_{{r}}{}
 
   // OdeStorage(rhs_wrapped_t const & rNative)
   //   : auxRHS_{rhs_type{rNative}}{}
