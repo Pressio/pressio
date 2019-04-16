@@ -35,7 +35,7 @@ TEST(core_ops, TpetraMultiVectorDotSelf){
 	Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
   auto rank = comm_->getRank();
   auto numProc_ = comm_->getSize();
-  assert(numProc_==3);
+  EXPECT_EQ(numProc_,3);
 
   Teuchos::RCP<const map_t> contigMap_ =
     Teuchos::rcp(new map_t(6, 0, comm_));
