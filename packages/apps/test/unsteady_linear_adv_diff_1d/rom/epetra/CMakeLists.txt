@@ -1,0 +1,2 @@
+
+ADD_SUBDIRECTORY(lspg_euler_normal_eq)
