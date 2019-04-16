@@ -3,22 +3,22 @@
 //#include <gmock/gmock.h>
 #include <Kokkos_Core.hpp>
 
-class KokkosEnvironment : public ::testing::Environment
-{
-public:
-  int rank_;
-  
+struct KokkosEnv : public ::testing::Environment{
+  int argc_;
+  char ** argv_;
+
+  KokkosEnv(int argc, char **argv)
+    : argc_(argc), argv_(argv){}
+
   virtual void SetUp() {
-    char**argv;
-    int argc = 0;
-    Kokkos::initialize (argc, argv);
+    Kokkos::initialize (argc_, argv_);
   }
-  
+
   virtual void TearDown() {
     Kokkos::finalize();
   }
 
-  virtual ~KokkosEnvironment() {}
+  virtual ~KokkosEnv() {}
 };
 
 
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 {
   ::testing::InitGoogleTest(&argc,argv);
   //  ::testing::InitGoogleMock(&argc,argv);
-  ::testing::AddGlobalTestEnvironment(new KokkosEnvironment);
-  
+  ::testing::AddGlobalTestEnvironment(new KokkosEnv(argc, argv));
+
   return RUN_ALL_TESTS();
 }
