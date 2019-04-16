@@ -9,6 +9,14 @@
 #include "CORE_ALL"
 #include <Tpetra_Map_decl.hpp>
 
+/* the tpetra data structures below are
+ * left without templates such that it picks
+ * up the default. So if kokkos is built with
+ * CUDA, then tpetra vector, matrices operate on CUDA.
+ * IF kokkos is built for openmp, then on-node parallelim
+ * in tpetra operations is handled via openmp
+ */
+
 struct tpetraVectorGlobSize15Fixture
   : public ::testing::Test{
 
@@ -16,7 +24,8 @@ public:
   using NT = Tpetra::Vector<>::node_type;
   using tcomm = Teuchos::Comm<int>;
   using map_t = Tpetra::Map<>;
-  using vec_t = Tpetra::Vector<>;//ST,LO,GO,NT>;
+  using vec_t = Tpetra::Vector<>;
+
   using ST = typename vec_t::scalar_type;
   using LO = typename vec_t::local_ordinal_type;
   using GO = typename vec_t::global_ordinal_type;
@@ -27,7 +36,7 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
-  vec_t * x_;
+  std::shared_ptr<vec_t> x_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -38,13 +47,10 @@ public:
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
     					comm_));
-    //Tpetra::GloballyDistributed));
-    x_ = new vec_t(contigMap_);
+    x_ = std::make_shared<vec_t>(contigMap_);
   }
 
-  virtual void TearDown(){
-    delete x_;
-  }
+  virtual void TearDown(){}
 };
 //-----------------------------------------------------------
 
@@ -57,7 +63,7 @@ public:
   using tcomm = Teuchos::Comm<int>;
   using mvec_t = Tpetra::MultiVector<>;
   using map_t = Tpetra::Map<>;
-  using vec_t = Tpetra::Vector<>;//ST,LO,GO,NT>;
+  using vec_t = Tpetra::Vector<>;
   using ST = typename vec_t::scalar_type;
   using LO = typename vec_t::local_ordinal_type;
   using GO = typename vec_t::global_ordinal_type;
@@ -69,7 +75,7 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
-  mvec_t * x_;
+  std::shared_ptr<mvec_t> x_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -80,12 +86,10 @@ public:
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
     					comm_));
-    x_ = new mvec_t(contigMap_, numVecs_);
+    x_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
   }
 
-  virtual void TearDown(){
-    delete x_;
-  }
+  virtual void TearDown(){}
 };
 //-----------------------------------------------------------
 
@@ -108,7 +112,7 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
-  mvec_t * x_;
+  std::shared_ptr<mvec_t> x_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -118,12 +122,10 @@ public:
     EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
-    x_ = new mvec_t(contigMap_, numVecs_);
+    x_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
   }
 
-  virtual void TearDown(){
-    delete x_;
-  }
+  virtual void TearDown(){}
 };
 //-----------------------------------------------------------
 
@@ -147,8 +149,8 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
-  mvec_t * mv_;
-  vec_t * x_;
+  std::shared_ptr<mvec_t> mv_;
+  std::shared_ptr<vec_t> x_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -158,14 +160,11 @@ public:
     EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
-    mv_ = new mvec_t(contigMap_, numVecs_);
-    x_ = new vec_t(contigMap_);
+    mv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
+    x_ = std::make_shared<vec_t>(contigMap_);
   }
 
-  virtual void TearDown(){
-    delete x_;
-    delete mv_;
-  }
+  virtual void TearDown(){}
 };
 //-----------------------------------------------------------
 
@@ -258,7 +257,6 @@ public:
 
   virtual void TearDown(){}
 };
-//-----------------------------------------------------------
 
 
-#endif /* CORE_FIXTURES_EPETRA_ONLY_FIXTURES_HPP_ */
+#endif

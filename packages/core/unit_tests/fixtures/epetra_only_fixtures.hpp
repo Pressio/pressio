@@ -11,31 +11,27 @@ struct epetraVectorGlobSize15Fixture
   : public ::testing::Test{
 
 public:
-  Epetra_MpiComm * comm_;
+  std::shared_ptr<Epetra_MpiComm> comm_;
   int rank_;
   int numProc_;
   const int localSize_ = 5;
   int numGlobalEntries_;
-  Epetra_Map * contigMap_;
-  Epetra_Vector * x_;
+  std::shared_ptr<Epetra_Map> contigMap_;
+  std::shared_ptr<Epetra_Vector> x_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
+    comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
     EXPECT_EQ(numProc_,3);
 
     numGlobalEntries_ = numProc_ * localSize_;
-    contigMap_ = new Epetra_Map(numGlobalEntries_, 0, *comm_);
-    x_ = new Epetra_Vector(*contigMap_);
+    contigMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
+    x_ = std::make_shared<Epetra_Vector>(*contigMap_);
   }
 
-  virtual void TearDown(){
-    delete comm_;
-    delete contigMap_;
-    delete x_;
-  }
+  virtual void TearDown(){}
 };
 //-----------------------------------------------------------
 
@@ -45,34 +41,29 @@ struct epetraMultiVectorR9C4VecS9Fixture
 
 public:
   int rank_;
-  Epetra_MpiComm * comm_;
+  std::shared_ptr<Epetra_MpiComm> comm_;
   int numProc_;
   const int localSize_ = 3;
   const int numVectors_ = 4;
   int numGlobalEntries_;
-  Epetra_Map * dataMap_;
-  Epetra_MultiVector * mv_;
-  Epetra_Vector * x_;
+  std::shared_ptr<Epetra_Map> dataMap_;
+  std::shared_ptr<Epetra_MultiVector> mv_;
+  std::shared_ptr<Epetra_Vector> x_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
+    comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
     EXPECT_EQ(numProc_,3);
 
     numGlobalEntries_ = numProc_ * localSize_;
-    dataMap_ = new Epetra_Map(numGlobalEntries_, 0, *comm_);
-    mv_ = new Epetra_MultiVector(*dataMap_, numVectors_);
-    x_ = new Epetra_Vector(*dataMap_);
+    dataMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
+    mv_ = std::make_shared<Epetra_MultiVector>(*dataMap_, numVectors_);
+    x_ = std::make_shared<Epetra_Vector>(*dataMap_);
   }
 
-  virtual void TearDown(){
-    delete comm_;
-    delete dataMap_;
-    delete mv_;
-    delete x_;
-  }
+  virtual void TearDown(){}
 };
 //-----------------------------------------------------------
 
@@ -82,34 +73,34 @@ struct epetraSparseMatR7MultiVectorR9C4Fixture
 
 public:
   int rank_;
-  Epetra_MpiComm * comm_;
+  std::shared_ptr<Epetra_MpiComm> comm_;
   int numProc_;
 
   // for crs matrix
   using mymat_w_t = rompp::core::Matrix<Epetra_CrsMatrix>;
-  Epetra_Map * dataMapSM_;
+  std::shared_ptr<Epetra_Map> dataMapSM_;
   int nRowsSM_ = 7;
-  mymat_w_t * sm_;
+  std::shared_ptr<mymat_w_t> sm_;
 
   // multivector
   using mymv_w_t =
     rompp::core::MultiVector<Epetra_MultiVector>;
   const int numVectors_ = 4;
   int nRowsMV_ = 9;
-  Epetra_Map * dataMapMV_;
-  mymv_w_t * mv_;
+  std::shared_ptr<Epetra_Map> dataMapMV_;
+  std::shared_ptr<mymv_w_t> mv_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
+    comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
     EXPECT_EQ(numProc_,3);
 
-    dataMapSM_ = new Epetra_Map(nRowsSM_, 0, *comm_);
-    sm_ = new mymat_w_t(*dataMapSM_, 3);
-    dataMapMV_ = new Epetra_Map(nRowsMV_, 0, *comm_);
-    mv_ = new mymv_w_t(*dataMapMV_, numVectors_);
+    dataMapSM_ = std::make_shared<Epetra_Map>(nRowsSM_, 0, *comm_);
+    sm_ = std::make_shared<mymat_w_t>(*dataMapSM_, 3);
+    dataMapMV_ = std::make_shared<Epetra_Map>(nRowsMV_, 0, *comm_);
+    mv_ = std::make_shared<mymv_w_t>(*dataMapMV_, numVectors_);
   }
 
   void fillMultiVector(){
@@ -177,14 +168,7 @@ public:
     }
   }//end fill
 
-
-  virtual void TearDown(){
-    delete comm_;
-    delete dataMapSM_;
-    delete sm_;
-    delete dataMapMV_;
-    delete mv_;
-  }
+  virtual void TearDown(){}
 };
 //-----------------------------------------------------------
 

@@ -54,9 +54,6 @@ TEST(core_ops, TpetraMultiVectorDotSelf){
 
     /*--------------------------------------------
      * (1): modify the host view and then sync
-     * most likely, host and device will be same unless we run CUDA
-     * so in theory we should not worry about syncing but it
-     * does not hurt to do it anyway
      //--------------------------------------------*/
     auto v2d = trilD->getLocalView<Kokkos::HostSpace>();
     auto c0 = Kokkos::subview(v2d, Kokkos::ALL(), 0);

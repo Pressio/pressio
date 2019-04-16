@@ -19,14 +19,11 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
   // get trilinos tpetra multivector object
   auto trilD = MV.data();
   trilD->sync<Kokkos::HostSpace>();
-  
+
   /*--------------------------------------------
    * (1): modify the host view and then sync
-   * most likely, host and device will be same unless we run CUDA
-   * so in theory we should not worry about syncing but it 
-   * does not hurt to do it anyway
   //--------------------------------------------*/
-  
+
   auto v2d = trilD->getLocalView<Kokkos::HostSpace>();
   auto c0 = Kokkos::subview(v2d, Kokkos::ALL(), 0);
   //we are going to change the host view
@@ -43,7 +40,7 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
   // sync from host to device
   trilD->sync<device_t> ();
 
-// MyPID    GID    
+// MyPID    GID
 //     0     0      3.2     1.2     0      0
 //     0     1      1.2      0      0      0
 //     0     2       0       4      0      0
@@ -53,7 +50,7 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
 //     2     6       0       0      0      0
 //     2     7       0       0      0      0
 //     2     8       0       0      0      0
-  
+
   EXPECT_EQ( MV.globalNumVectors(), 4 );
   EXPECT_EQ( MV.localNumVectors(), 4 );
   EXPECT_EQ( MV.globalLength(), 9 );
@@ -70,7 +67,7 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
   b[2] = 3.;
   b[3] = 4.;
 
-  auto res = core::ops::product(MV, b); 
+  auto res = core::ops::product(MV, b);
   auto cc2 = res.data()->getLocalView<Kokkos::HostSpace>();
   auto cc = Kokkos::subview (cc2, Kokkos::ALL (), 0);
   // if(rank_==0){
@@ -97,15 +94,3 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
     EXPECT_DOUBLE_EQ( cc(2), 0.);
   }
 }
-
-
-
-  // // Now compute the inf-norms of the columns of X.
-  // Kokkos::DualView<mag_type*, device_t> norms ("norms", 4);
-  // norms.template modify<device_t>();
-  // trilD->norm1(norms.template view<device_t>());
-  // norms.template sync<Kokkos::HostSpace>();
-  // // check on host
-  // for (size_t k = 0; k < 4; ++k) {
-  //   std::cout << norms.h_view(k) << std::endl;
-  // }

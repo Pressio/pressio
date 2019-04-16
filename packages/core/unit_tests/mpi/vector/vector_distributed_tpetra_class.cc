@@ -1,49 +1,48 @@
 
 #include "tpetra_only_fixtures.hpp"
 
+using native_t = typename tpetraVectorGlobSize15Fixture::vec_t;
+
+
 TEST_F(tpetraVectorGlobSize15Fixture, Constructor){
   using namespace rompp;
 
   std::cout << rank_ << std::endl;
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t a( *x_ );
   myvec_t a3( a );
 }
 
-
 TEST_F(tpetraVectorGlobSize15Fixture,
        localSize){
   using namespace rompp;
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   EXPECT_EQ( v1.localSize(), 5);
 }
 
-
 TEST_F(tpetraVectorGlobSize15Fixture,
        globalSize){
   using namespace rompp;
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   EXPECT_EQ( v1.globalSize(), 15);
 }
 
-
 TEST_F(tpetraVectorGlobSize15Fixture,
        isGloballyDist){
   using namespace rompp;
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   EXPECT_TRUE( v1.isDistributedGlobally() );
 }
-
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        SetScalar){
   using namespace rompp;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   v1.putScalar(43.3);
 
@@ -53,14 +52,12 @@ TEST_F(tpetraVectorGlobSize15Fixture,
   }
 }
 
-
-
 TEST_F(tpetraVectorGlobSize15Fixture,
        CompoundAssignAdd_deep_copy_cstr){
   using namespace rompp;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   v1.putScalar(1.2);
   myvec_t v2( *x_ );
@@ -72,13 +69,12 @@ TEST_F(tpetraVectorGlobSize15Fixture,
   }
 }
 
-
 TEST_F(tpetraVectorGlobSize15Fixture,
        CompoundAssignAdd_mapConstr){
   using namespace rompp;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( contigMap_ );
   v1.putScalar(1.2);
   myvec_t v2( contigMap_ );
@@ -95,7 +91,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
   using namespace rompp;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   v1.putScalar(1.2);
   myvec_t v2( *x_ );
@@ -107,13 +103,12 @@ TEST_F(tpetraVectorGlobSize15Fixture,
   }
 }
 
-
 TEST_F(tpetraVectorGlobSize15Fixture,
        CompoundAssignSubtract_mapConstr){
   using namespace rompp;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( contigMap_ );
   v1.putScalar(1.2);
   myvec_t v2( contigMap_ );
@@ -125,15 +120,12 @@ TEST_F(tpetraVectorGlobSize15Fixture,
   }
 }
 
-
-
-
 TEST_F(tpetraVectorGlobSize15Fixture,
        SetZero){
   using namespace rompp;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = core::Vector<typename tpetraVectorGlobSize15Fixture::vec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   v1.setZero();
 
@@ -143,37 +135,31 @@ TEST_F(tpetraVectorGlobSize15Fixture,
   }
 }
 
-
 TEST_F(tpetraVectorGlobSize15Fixture,
        QueryWrappedData){
   using namespace rompp;
-  using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;
 
-  using myvec_t = core::Vector<nvec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   ::testing::StaticAssertTypeEq<decltype(v1.data()),
-  				nvec_t * >();
+  				native_t * >();
   const myvec_t v2( *x_ );
   ::testing::StaticAssertTypeEq< decltype(v2.data()),
-  				 const nvec_t * >();
+  				 const native_t * >();
 }
-
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        empty){
   using namespace rompp;
-  using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;
-  using myvec_t = core::Vector<nvec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   EXPECT_FALSE(v1.empty());
 }
 
-
 TEST_F(tpetraVectorGlobSize15Fixture,
        getMap){
   using namespace rompp;
-  using nvec_t = typename tpetraVectorGlobSize15Fixture::vec_t;
-  using myvec_t = core::Vector<nvec_t>;
+  using myvec_t = core::Vector<native_t>;
   myvec_t v1( *x_ );
   auto const & mapO = v1.getDataMap();
 

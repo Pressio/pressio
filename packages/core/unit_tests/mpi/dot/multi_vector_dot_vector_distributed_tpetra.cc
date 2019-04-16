@@ -19,13 +19,9 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
 
   /*--------------------------------------------
    * (1): modify the host view and then sync
-   * most likely, host and device will be same unless we run CUDA
-   * so in theory we should not worry about syncing but it
-   * does not hurt to do it anyway
   //--------------------------------------------*/
 
   auto v2d = trilD->getLocalView<Kokkos::HostSpace>();
-  auto c0 = Kokkos::subview(v2d, Kokkos::ALL(), 0);
   //we are going to change the host view
   trilD->modify<Kokkos::HostSpace>();
 
@@ -54,12 +50,10 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
   VV.setZero();
   // get trilinos tpetra vector object
   auto vvtrilD = VV.data();
-
   vvtrilD->putScalar(static_cast<double>(1));
   // sync from host to device
   vvtrilD->sync<v_device_t>();
 
-  //--------------------------------------------
   //--------------------------------------------
 
   //MV dot b = c
