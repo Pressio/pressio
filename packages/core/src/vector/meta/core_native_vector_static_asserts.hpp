@@ -5,7 +5,10 @@
 #include "core_native_blaze_vector_meta.hpp"
 #include "core_native_eigen_vector_meta.hpp"
 #include "core_native_stdlib_vector_meta.hpp"
-#include "core_native_trilinos_vector_meta.hpp"
+#include "core_native_epetra_vector_meta.hpp"
+#include "core_native_tpetra_vector_meta.hpp"
+#include "core_native_teuchos_vector_meta.hpp"
+#include "core_native_kokkos_vector_meta.hpp"
 
 namespace rompp{ namespace core{
 
