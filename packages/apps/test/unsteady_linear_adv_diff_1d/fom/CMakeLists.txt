@@ -1,2 +1,2 @@
 
-ADD_SUBDIRECTORIES(epetra_explicit_euler)
+ADD_SUBDIRECTORY(epetra_explicit_euler)

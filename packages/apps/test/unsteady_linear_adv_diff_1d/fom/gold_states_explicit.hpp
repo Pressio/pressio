@@ -2,15 +2,13 @@
 #ifndef ROMPP_DEMO_APPS_TEST_UNSTEADYLINADVDIFF1D_GOLD_EXPLICIT_HPP_
 #define ROMPP_DEMO_APPS_TEST_UNTSEADYLINADVDIFF1D_GOLD_EXPLICIT_HPP_
 
-#include "ODE_ALL" 
+#include "ODE_ALL"
 #include "APPS_UNSTEADYLINADVDIFF1D"
 
-namespace rompp {namespace apps{namespace test{
-  
+namespace rompp { namespace apps{ namespace test{
+
 template <ode::ExplicitEnum>
 struct UnsteadyLinAdvDiff1dExpGoldStates;
-
-
 
 template <>
 struct UnsteadyLinAdvDiff1dExpGoldStates<ode::ExplicitEnum::Euler>{
@@ -33,10 +31,9 @@ struct UnsteadyLinAdvDiff1dExpGoldStates<ode::ExplicitEnum::Euler>{
 	  4.721667431335943};
     }else
       return{};
-    
-  } //end get  
-}; //end struct
-      
-    }}} //end namespace rompp:apps::test
 
+  } //end get
+}; //end struct
+
+}}} //end namespace rompp:apps::test
 #endif
