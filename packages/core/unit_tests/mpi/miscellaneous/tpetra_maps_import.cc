@@ -1,11 +1,6 @@
 
 #include "tpetra_only_fixtures.hpp"
 
-
-
-
-
-
 TEST_F(tpetraMultiVectorGlobSize9Fixture,
        nonContigMapsMimicCollocation){
   using namespace rompp;

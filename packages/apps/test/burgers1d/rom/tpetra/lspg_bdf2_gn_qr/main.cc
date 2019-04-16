@@ -22,16 +22,12 @@ int main(int argc, char *argv[]){
 
   std::string checkStr {"PASSED"};
 
-  //-------------------------------
-  // MPI init
-  MPI_Init(&argc,&argv);
-  int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
-  //assert(Comm->getSize() == 2);
-
   // scope guard needed for tpetra
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);
   {
+    int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
+
     // app object
     constexpr int numCell = 20;
     fom_t appobj( {5.0, 0.02, 0.02}, numCell, Comm);
@@ -93,7 +89,6 @@ int main(int argc, char *argv[]){
 
   }//tpetra scope
 
-  MPI_Finalize();
   std::cout << checkStr <<  std::endl;
   return 0;
 }

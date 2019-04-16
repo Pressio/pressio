@@ -19,5 +19,3 @@ TEST_F(tpetraSparseMatR7MultiVectorR7C4Fixture,
   // //  A_->fillingIsCompleted();
   mymat_w_t Aw(contigMap_, 4);
 }
-
-// WIP

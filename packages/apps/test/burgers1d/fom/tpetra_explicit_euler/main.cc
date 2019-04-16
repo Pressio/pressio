@@ -32,16 +32,14 @@ int main(int argc, char *argv[]){
   using tcomm_t		= Teuchos::MpiComm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
 
-  // MPI init
-  MPI_Init(&argc,&argv);
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
-  assert( Comm->getSize() == 4);
-
-  // scope guard needed for tpetra
+  // scope guard needed (MPI init within trilinos)
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);
   {
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
+    assert( Comm->getSize() == 4);
+
     std::vector<double> mu({5.0, 0.02, 0.02});
     const int Ncells = 20;
     app_t appobj(mu, Ncells, Comm);
@@ -70,7 +68,6 @@ int main(int argc, char *argv[]){
     }
   }
 
-  MPI_Finalize();
   std::cout << checkStr << std::endl;
   return 0;
 }
