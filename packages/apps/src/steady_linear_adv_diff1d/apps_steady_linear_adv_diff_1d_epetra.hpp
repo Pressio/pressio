@@ -29,11 +29,12 @@ public:
   using state_type  = Epetra_Vector;
   using residual_type = state_type;
   using jacobian_type   = nativeMatrix;
+
 public:
-  SteadyLinAdvDiff1dEpetra(Epetra_MpiComm & comm,
-      std::vector<scalar_type> & mu,
-      std::vector<scalar_type> & domain,
-      std::vector<scalar_type> & bc1D)
+  SteadyLinAdvDiff1dEpetra(const Epetra_MpiComm & comm,
+			   const std::vector<scalar_type> & mu,
+			   const std::vector<scalar_type> & domain,
+			   const std::vector<scalar_type> & bc1D)
     : comm_(comm), mu_(mu), domain_(domain), bc1D_(bc1D),
       dx_{domain_[2]}, alpha_{mu_[0]}, beta_{mu_[1]},
       alphaOvDxSq_{alpha_/(dx_*dx_)},
@@ -103,7 +104,7 @@ public:
   };
 
 protected:
-  Epetra_MpiComm & comm_;
+  const Epetra_MpiComm & comm_;
   std::vector<scalar_type> mu_;
   std::vector<scalar_type> domain_;
   std::vector<scalar_type> bc1D_;

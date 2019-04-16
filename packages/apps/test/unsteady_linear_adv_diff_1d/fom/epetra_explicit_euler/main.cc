@@ -11,7 +11,7 @@ template <typename T>
 void checkSol(int rank, const T & y,
 	      const std::vector<double> & trueS){
   int shift = (rank==0) ? 0 : 5;
-  for (auto i-0; i<trueS.size(); i++){
+  for (auto i=0; i< y.localSize(); i++){
     if (std::abs(y[i] - trueS[i+shift]) > eps) checkStr = "FAILED";
   }
 }

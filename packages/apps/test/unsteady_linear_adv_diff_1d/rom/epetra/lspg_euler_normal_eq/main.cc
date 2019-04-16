@@ -1,11 +1,11 @@
 
 #include "CORE_ALL"
-#include "ODE_IMPLICIT"
+#include "ODE_ALL"
 #include "ROM_LSPG"
 #include "SOLVERS_NONLINEAR"
 #include "APPS_UNSTEADYLINADVDIFF1D"
 #include "utils_epetra.hpp"
-#include "../../../fom/gold_states_implicit_euler.hpp"
+#include "../../../fom/gold_states_implicit.hpp"
 
 constexpr double eps = 1e-7;
 std::string checkStr = "PASSED";
@@ -14,7 +14,7 @@ template <typename T>
 void checkSol(int rank, const T &y,
 	      const std::vector<double> & trueS){
   int shift = (rank==0) ? 0 : 20;
-  for (auto i-0; i<trueS.size(); i++){
+  for (size_t i=0; i<y.localSize(); i++){
     if (std::abs(y[i] - trueS[i+shift]) > eps) checkStr = "FAILED";
   }
 }
@@ -89,29 +89,24 @@ int main(int argc, char *argv[]){
   rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types>
     lspgProblem(appObj, yRef, decoderObj, yROM, t0);
 
-  //----------------------------------------------------------------------
-  // LSPG Solver
-  //----------------------------------------------------------------------
-  //Set solver parameters
-  using rom_residual_t = typename lspg_problem_types::lspg_residual_t;
-  using rom_jac_t = typename lspg_problem_types::lspg_matrix_t;
+  using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;
+
   using eig_dyn_mat = Eigen::Matrix<scalar_t, -1, -1>;
   using hessian_t = rompp::core::Matrix<eig_dyn_mat>;
   using solver_tag = rompp::solvers::linear::iterative::LSCG;
-  using converged_when_t = rompp::solvers::iterative::default_convergence;
+  using lin_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  lin_solver_t linSolverObj;
 
-  //gauss-newton solver normal equations
+  // GN solver
+  using converged_when_t = rompp::solvers::iterative::default_convergence;
   using gnsolver_t       = rompp::solvers::iterative::GaussNewton<
-    scalar_t, solver_tag, rompp::solvers::EigenIterative,
-    converged_when_t, void, hessian_t, lspg_state_t, rom_residual_t,
-    rom_jac_t>;
-  gnsolver_t solver(lspgProblem.stepperObj_, yROM);
+    lspg_stepper_t, converged_when_t, lin_solver_t>;
+  gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(200);
 
   // integrate in time
-  rompp::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt,
-			      Nsteps, solver);
+  rompp::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, Nsteps, solver);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);

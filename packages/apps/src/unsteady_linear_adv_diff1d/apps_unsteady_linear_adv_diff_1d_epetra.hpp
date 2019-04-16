@@ -14,31 +14,35 @@ class UnsteadyLinAdvDiff1dEpetra: public SteadyLinAdvDiff1dEpetra{
 protected:
   using nativeVec = Epetra_Vector;
   using nativeMatrix  = Epetra_CrsMatrix;
+
 public:
-  //Cosntructor
-  UnsteadyLinAdvDiff1dEpetra(Epetra_MpiComm & comm,
-			     std::vector<scalar_type> & mu,
-			     std::vector<scalar_type> & domain,
-			     std::vector<scalar_type> & bc1D)
-    :SteadyLinAdvDiff1dEpetra(comm, mu, domain, bc1D){}
-  //Deconstructor
+  UnsteadyLinAdvDiff1dEpetra(const Epetra_MpiComm & comm,
+			     const std::vector<scalar_type> & mu,
+			     const std::vector<scalar_type> & domain,
+			     const std::vector<scalar_type> & bc1D)
+    : SteadyLinAdvDiff1dEpetra(comm, mu, domain, bc1D){}
   ~UnsteadyLinAdvDiff1dEpetra() = default;
+
 public:
   void unsteadySetup();
 
   rcp<nativeVec> getInitialState() const;
 
-  void residual(const state_type & u, residual_type & rhs,
+  void residual(const state_type & u,
+		residual_type & rhs,
 		const scalar_type /* t*/) const;
 
-  residual_type residual(const state_type & u, const scalar_type t) const{
+  residual_type residual(const state_type & u,
+			 const scalar_type t) const{
     Epetra_Vector R(*contigMap_);
     residual(u, R, t);
     return R;
   }
 
-  void applyJacobian(const state_type & y, const Epetra_MultiVector & B,
-		     Epetra_MultiVector &A, scalar_type /*t*/) const{
+  void applyJacobian(const state_type & y,
+		     const Epetra_MultiVector & B,
+		     Epetra_MultiVector &A,
+		     scalar_type /*t*/) const{
     SteadyLinAdvDiff1dEpetra::applyJacobian(y, B, A);
     A.Scale(-1.0);
   }
