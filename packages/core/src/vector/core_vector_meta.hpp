@@ -11,5 +11,6 @@
 #include "./meta/core_is_vector_wrapper_eigen.hpp"
 #include "./meta/core_is_vector_wrapper_epetra.hpp"
 #include "./meta/core_is_vector_wrapper_tpetra.hpp"
+#include "./meta/core_is_vector_wrapper_tpetra_block.hpp"
 
 #endif

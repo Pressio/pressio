@@ -4,12 +4,13 @@
 
 #include "CORE_BASIC"
 
-#include "core/src/vector/meta/core_native_vector_static_asserts.hpp"
+#include "core/src/vector/core_native_vector_static_asserts.hpp"
 #include "core/src/vector/core_vector_traits.hpp"
 #include "core/src/vector/core_vector_meta.hpp"
 
 // concrete classes (these in turn include bases)
 #include "core/src/vector/concrete/core_vector_distributed_tpetra.hpp"
+#include "core/src/vector/concrete/core_vector_distributed_tpetra_block.hpp"
 #include "core/src/vector/concrete/core_vector_distributed_epetra.hpp"
 #include "core/src/vector/concrete/core_vector_sharedmem_eigen_dynamic.hpp"
 #include "core/src/vector/concrete/core_vector_sharedmem_eigen_static.hpp"

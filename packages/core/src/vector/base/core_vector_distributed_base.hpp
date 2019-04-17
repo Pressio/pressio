@@ -35,6 +35,11 @@ public:
     return this->underlying().localSizeImpl();
   };
 
+  void replaceGlobalValues(GO_t rowGlobalIndex,
+			   const sc_t * values){
+    this->underlying().replaceGlobalValuesImpl(rowGlobalIndex, values);
+  }
+
   void replaceGlobalValues(GO_t numentries,
 			   const GO_t * indices,
 			   const sc_t * values){
@@ -43,8 +48,13 @@ public:
 					       values);
   }
 
+  void replaceGlobalValue(const GO_t rowGlobalIndex, const sc_t value){
+    this->underlying().replaceGlobalValueImpl(rowGlobalIndex, value);
+  }
+
 private:
-  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  /* workaround for nvcc issue with templates, see
+  https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 

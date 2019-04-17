@@ -29,6 +29,7 @@ enum class WrappedVectorIdentifier{
    Undefined,
    Epetra,
    Tpetra,
+   TpetraBlock,
    Eigen,
    EigenRowStatic,
    EigenColStatic,

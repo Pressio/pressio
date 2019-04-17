@@ -2,13 +2,14 @@
 #ifndef CORE_NATIVE_VECTOR_STATIC_ASSERTS_HPP_
 #define CORE_NATIVE_VECTOR_STATIC_ASSERTS_HPP_
 
-#include "core_native_blaze_vector_meta.hpp"
-#include "core_native_eigen_vector_meta.hpp"
-#include "core_native_stdlib_vector_meta.hpp"
-#include "core_native_epetra_vector_meta.hpp"
-#include "core_native_tpetra_vector_meta.hpp"
-#include "core_native_teuchos_vector_meta.hpp"
-#include "core_native_kokkos_vector_meta.hpp"
+#include "./meta/core_native_blaze_vector_meta.hpp"
+#include "./meta/core_native_eigen_vector_meta.hpp"
+#include "./meta/core_native_stdlib_vector_meta.hpp"
+#include "./meta/core_native_epetra_vector_meta.hpp"
+#include "./meta/core_native_tpetra_vector_meta.hpp"
+#include "./meta/core_native_teuchos_vector_meta.hpp"
+#include "./meta/core_native_kokkos_vector_meta.hpp"
+#include "./meta/core_native_tpetra_block_vector_meta.hpp"
 
 namespace rompp{ namespace core{
 
@@ -40,6 +41,13 @@ namespace rompp{ namespace core{
 #define STATIC_ASSERT_IS_NOT_VECTOR_TPETRA(TYPE) \
   static_assert( !core::meta::is_vector_tpetra<TYPE>::value, \
 		 "THIS_IS_A_VECTOR_TPETRA")
+
+#define STATIC_ASSERT_IS_VECTOR_TPETRA_BLOCK(TYPE) \
+  static_assert( core::meta::is_vector_tpetra_block<TYPE>::value, \
+		 "THIS_IS_NOT_A_VECTOR_TPETRA_BLOCK")
+#define STATIC_ASSERT_IS_NOT_VECTOR_TPETRA_BLOCK(TYPE) \
+  static_assert( !core::meta::is_vector_tpetra_block<TYPE>::value, \
+		 "THIS_IS_A_VECTOR_TPETRA_BLOCK")
 
 #define STATIC_ASSERT_IS_VECTOR_KOKKOS(TYPE) \
   static_assert( core::meta::is_vector_kokkos<TYPE>::value, \
