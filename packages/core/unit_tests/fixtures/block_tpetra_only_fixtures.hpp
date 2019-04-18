@@ -4,10 +4,10 @@
 
 #include <gtest/gtest.h>
 #include "CORE_ALL"
-#include <Tpetra_Experimental_BlockVector_decl.hpp>
-#include <Tpetra_Experimental_BlockMultiVector_decl.hpp>
-#include <Tpetra_Experimental_BlockVector_def.hpp>
+
 #include <Tpetra_Experimental_BlockVector.hpp>
+#include <Tpetra_Experimental_BlockMultiVector.hpp>
+
 #include <Tpetra_Map.hpp>
 #include <Teuchos_CommHelpers.hpp>
 #include <Tpetra_Map_decl.hpp>
@@ -56,5 +56,43 @@ public:
 
   virtual void TearDown(){}
 };
+
+
+struct tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture
+  : public ::testing::Test{
+
+public:
+
+  using tcomm = Teuchos::Comm<int>;
+  using map_t = Tpetra::Map<>;
+  using mvec_t = Tpetra::Experimental::BlockMultiVector<>;
+  using ST = typename mvec_t::scalar_type;
+  using LO = typename mvec_t::local_ordinal_type;
+  using GO = typename mvec_t::global_ordinal_type;
+  using NT = typename mvec_t::node_type;
+
+  int rank_;
+  int numProc_;
+  const int blockSize_ = 4;
+  const int numVecs_ = 3;
+  int numGlobalEntries_;
+  Teuchos::RCP<const tcomm> comm_;
+  Teuchos::RCP<const map_t> contigMap_;
+  std::shared_ptr<mvec_t> mv_;
+
+  virtual void SetUp(){
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
+    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    rank_ = comm_->getRank();
+    numProc_ = comm_->getSize();
+
+    numGlobalEntries_ = 15;
+    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
+    mv_ = std::make_shared<mvec_t>(*contigMap_, blockSize_, numVecs_);
+  }
+
+  virtual void TearDown(){}
+};
+
 
 #endif

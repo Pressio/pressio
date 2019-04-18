@@ -39,9 +39,10 @@ class Vector<
 public:
   Vector() = delete;
 
-  explicit Vector(Teuchos::RCP<const map_t> mapO,
-		  const LO_t blockSize)
-    : data_(mapO, blockSize){}
+  // explicit Vector(const map_t & mapO,
+  // 		  const LO_t blockSize)
+  //   : data_(mapO, blockSize){}
+
 
   /* Block MV/V still missing a copy constructor,
    * see https://github.com/trilinos/Trilinos/issues/4627
@@ -49,44 +50,18 @@ public:
 
   explicit Vector(const wrap_t & vecobj)
     : data_( *vecobj.getMap(),
-	     vecobj.getBlockSize()){}
+  	     vecobj.getBlockSize()){
+    // just a trick to copy data
+    data_.update(constants::one<sc_t>(),
+		 vecobj,
+		 constants::zero<sc_t>());
+  }
 
+  // delegate (for now) to the one above
   Vector(this_t const & other)
-    : data_( *other.data()->getMap(),
-	     other.data()->getBlockSize()){}
+    : Vector(*other.data()){}
 
   ~Vector() = default;
-
-public:
-
-  // template <typename T,
-  // 	    ::rompp::mpl::enable_if_t<
-  // 	      std::is_same<T,this_t>::value> * = nullptr>
-  // this_t & operator=(const T & other){
-  //   assert(this->localSize() == other.localSize());
-  //   data_.assign( *other.data() );
-  //   return *this;
-  // }
-
-  // // compound assignment when type(b) = type(this)
-  // // this += b
-  // template <typename T,
-  // 	    ::rompp::mpl::enable_if_t<
-  // 	      std::is_same<T,this_t>::value> * = nullptr>
-  // this_t & operator+=(const T & other) {
-  //   this->data_.update(1.0, *other.data(), 1.0 );
-  //   return *this;
-  // }
-
-  // // compound assignment when type(b) = type(this)
-  // // this -= b
-  // template <typename T,
-  // 	    ::rompp::mpl::enable_if_t<
-  // 	      std::is_same<T,this_t>::value> * = nullptr>
-  // this_t & operator-=(const T & other) {
-  //   this->data_.update(-1.0, *other.data(), 1.0 );
-  //   return *this;
-  // }
 
 private:
 

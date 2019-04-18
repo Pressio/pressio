@@ -69,6 +69,7 @@ enum class WrappedMultiVectorIdentifier{
    Undefined,
    Epetra,
    Tpetra,
+   TpetraBlock,
    Eigen
 };
 
