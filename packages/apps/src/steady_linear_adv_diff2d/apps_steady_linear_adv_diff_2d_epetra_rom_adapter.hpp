@@ -55,7 +55,8 @@ public:
     appObj_.fillRhs();
     auto A = appObj_.getMatrix();
     A->Multiply(false, yState, rhs);
-    // now, rhs = A*u so we just subtract f to obtain residual
+    // now, rhs = A*u, subtract forcing term because forcing
+    // was calculated by moving the terms to the rhs
     auto f = appObj_.getForcing();
     rhs.Update(-1., (*f), 1.0);
   }
