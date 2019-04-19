@@ -585,7 +585,9 @@ struct LinAdvDiffReac2dExpGoldStates<ode::ExplicitEnum::RungeKutta4>{
                      0,
                      0,
                      0};
-   };
+   }
+   else 
+      return {};
  }
 };//end struct
 

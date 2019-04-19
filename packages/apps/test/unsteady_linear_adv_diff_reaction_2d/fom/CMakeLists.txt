@@ -1,2 +1,3 @@
 
-ADD_SUBDIRECTORY(epetra_explicit_euler)
+ADD_SUBDIRECTORY(epetra_explicit_rk4)
+ADD_SUBDIRECTORY(block_tpetra_explicit_rk4)

@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
-#define ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
+#ifndef ROMPP_APPS_LIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
+#define ROMPP_APPS_LIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
 
 #include "../../../CORE_ALL"
 #include "Epetra_MpiComm.h"
@@ -11,9 +11,10 @@
 #include "Epetra_Vector.h"
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
-#include "AztecOO_config.h"
-#include "AztecOO.h"
 #include <cmath>
+//#include "Tpetra_Experimental_BlockCrsMatrix_Helpers_def.hpp"
+#include "Tpetra_Experimental_BlockCrsMatrix_Helpers_decl.hpp"
+
 
 namespace rompp{ namespace apps{
 

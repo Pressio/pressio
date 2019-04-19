@@ -80,8 +80,8 @@ void UnsteadyLinAdvDiffReac2dEpetra::assembleMatrix() const
 
   int gi{}; int gj{};
   int k{};
-  std::array<int, 7> colInd{};
-  std::array<scalar_type, 7> values{};
+  std::array<int, 5> colInd{};
+  std::array<scalar_type, 5> values{};
   scalar_type a_ip1{};
   scalar_type a_im1{};
   scalar_type a_ij {};
@@ -185,14 +185,15 @@ void UnsteadyLinAdvDiffReac2dEpetra::assembleMatrix() const
 	A_->InsertGlobalValues(dofGID, k,
 			       values.data(), colInd.data());
 
+      // update counter
       l++;
     }//over dof
-
   }//loop over grid pts
 
   if(!A_->Filled())
     A_->FillComplete();
 
+  A_->Print(std::cout);
 }// end method
 
 
@@ -206,7 +207,7 @@ void UnsteadyLinAdvDiffReac2dEpetra::computeChem
     // for a given grid point, loop over local dofs
     for (auto iDof=0; iDof<numFields_; iDof++){
       if (iDof == 0)
-  	(*chemForcing_)[k] = -K_ * C[k] * C[k+1] + (*s1_)[i];
+  	(*chemForcing_)[k] = -K_*C[k] * C[k+1] + (*s1_)[i];
       else if (iDof == 1)
   	(*chemForcing_)[k] = -K_ * C[k-1] * C[k] + (*s2_)[i];
       else if (iDof == 2)

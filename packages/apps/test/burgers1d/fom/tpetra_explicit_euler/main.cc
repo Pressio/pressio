@@ -38,7 +38,10 @@ int main(int argc, char *argv[]){
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
-    assert( Comm->getSize() == 4);
+    if (Comm->getSize() != 4){
+      checkStr == "FAILED";
+      return;
+    }
 
     std::vector<double> mu({5.0, 0.02, 0.02});
     const int Ncells = 20;
