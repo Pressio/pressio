@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
     if (Comm->getSize() != 4){
       checkStr == "FAILED";
-      return;
+      return 0;
     }
 
     std::vector<double> mu({5.0, 0.02, 0.02});
