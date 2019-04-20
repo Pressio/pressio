@@ -101,6 +101,11 @@ private:
     return this->getDataMap().getNodeNumElements();
   }
 
+  bool emptyImpl() const{
+    // TODO: not sure this is great way to check
+    return this->globalSize()==0 ? true : false;
+  }
+
 private:
   void needSync(){
     if (data_.template need_sync<Kokkos::HostSpace>())
