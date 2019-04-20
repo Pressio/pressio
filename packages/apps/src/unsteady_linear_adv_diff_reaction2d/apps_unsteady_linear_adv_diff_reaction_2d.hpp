@@ -12,9 +12,6 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
 #include <cmath>
-//#include "Tpetra_Experimental_BlockCrsMatrix_Helpers_def.hpp"
-#include "Tpetra_Experimental_BlockCrsMatrix_Helpers_decl.hpp"
-
 
 namespace rompp{ namespace apps{
 
@@ -23,6 +20,7 @@ protected:
   using nativeVec	= Epetra_Vector;
   template<typename T> using rcp = std::shared_ptr<T>;
   using nativeMatrix	= Epetra_CrsMatrix;
+  using this_t = UnsteadyLinAdvDiffReac2dEpetra;
 
 public:
   /* these types exposed because need to be detected */
@@ -46,16 +44,6 @@ public:
       dy2Inv_{1./dy_}
   {}
 
-private:
-  void localIDToLiLj(int ID, int & li, int & lj) const{
-    lj = ID/Nx_;
-    li = ID % Nx_;
-  }
-  void globalIDToGiGj(int ID, int & gi, int & gj) const{
-    gj = ID/Nx_;
-    gi = ID % Nx_;
-  }
-
 public:
   state_type const & getInitialState() const{
     return *state_;
@@ -68,18 +56,8 @@ public:
   void setup();
   void assembleMatrix() const;
   void computeChem(const state_type &) const;
-
-  int getNumGlobalDofs() const{ return numGlobalDof_; }
-  int getNumLocalDofs() const{ return dofPerProc_; }
-
-  std::shared_ptr<nativeVec>
-  getX() const { return x_; }
-
-  std::shared_ptr<nativeVec>
-  getY() const { return y_; }
-
-  std::shared_ptr<nativeMatrix>
-  getMatrix() const { return A_; }
+  std::shared_ptr<nativeVec> getX() const { return x_; }
+  std::shared_ptr<nativeVec> getY() const { return y_; }
 
 public:
   void residual(const state_type & yState,
@@ -95,7 +73,19 @@ public:
     return R;
   };
 
-protected:
+private:
+  void localIDToLiLj(int ID, int & li, int & lj) const{
+    lj = ID/Nx_;
+    li = ID % Nx_;
+  }
+  void globalIDToGiGj(int ID, int & gi, int & gj) const{
+    gj = ID/Nx_;
+    gi = ID % Nx_;
+  }
+  void fillSource1();
+  void fillSource2();
+  void fillSource3();
+
   void residual_impl(const state_type & yState,
 		     residual_type & R) const
   {
@@ -105,32 +95,6 @@ protected:
     /* here we have R = A*state, where A = -conv+diffusion
      * so we need to sum the reaction part */
     R.Update(1., (*chemForcing_), 1.0);
-  }
-
-  void fillSource1(){
-    for (auto i=0; i<gptPerProc_; i++){
-	const scalar_type xij = (*x_)[i];
-	const scalar_type yij = (*y_)[i];
-	const scalar_type dx = (xij - oPtS1[0]);
-	const scalar_type dy = (yij - oPtS1[1]);
-	const scalar_type distance = dx*dx + dy*dy;
-	(*s1_)[i] = ( std::sqrt(distance) <= rS1) ? 0.1 : 0.0;
-    }
-  }
-
-  void fillSource2(){
-    for (auto i=0; i<gptPerProc_; i++){
-	const scalar_type xij = (*x_)[i];
-	const scalar_type yij = (*y_)[i];
-	const scalar_type dx = (xij - oPtS2[0]);
-	const scalar_type dy = (yij - oPtS2[1]);
-	const scalar_type distance = dx*dx + dy*dy;
-	(*s2_)[i] = ( std::sqrt(distance) <= rS2) ? 0.1 : 0.0;
-    }
-  }
-
-  void fillSource3(){
-    s3_->PutScalar(0);
   }
 
 protected:
@@ -143,33 +107,36 @@ protected:
   // center of the S2 source
   const std::array<scalar_type,2> oPtS2 = {{0.75, 1.}};
 
-  const int numFields_ = 3;
-  const int maxNonZeroPerRow_ = 7;
-  scalar_type Lx_ = 1.0;
-  scalar_type Ly_ = 2.0;
-  std::array<scalar_type,2> xAxis_{0., 1.};
-  std::array<scalar_type,2> yAxis_{0., 2.};
+  static constexpr int numSpecies_ = 3;
+  static constexpr int maxNonZeroPerRow_ = 5;
+  const scalar_type Lx_ = 1.0;
+  const scalar_type Ly_ = 2.0;
+  const std::array<scalar_type,2> xAxis_{0., 1.};
+  const std::array<scalar_type,2> yAxis_{0., 2.};
 
-  Epetra_MpiComm & comm_;
+  // communicator
+  const Epetra_MpiComm & comm_;
+
   // physical grid points
-  int NxPhys_{};
-  int NyPhys_{};
+  const int NxPhys_{};
+  const int NyPhys_{};
+
   // we consider only inner grid along x, but
   // the full grid along y because of neumann BC
   // so actual grid points involved in calculations
   // is NOT same as physical grid
-  int Nx_{};
-  int Ny_{};
+  const int Nx_{};
+  const int Ny_{};
 
-  scalar_type K_{};
-  scalar_type eps_{};
+  const scalar_type K_{};
+  const scalar_type eps_{};
 
-  scalar_type dx_{};
-  scalar_type dy_{};
-  scalar_type dxSqInv_{};
-  scalar_type dySqInv_{};
-  scalar_type dx2Inv_{};
-  scalar_type dy2Inv_{};
+  const scalar_type dx_{};
+  const scalar_type dy_{};
+  const scalar_type dxSqInv_{};
+  const scalar_type dySqInv_{};
+  const scalar_type dx2Inv_{};
+  const scalar_type dy2Inv_{};
 
   // we need a map for the grid
   rcp<Epetra_Map> gridMap_;

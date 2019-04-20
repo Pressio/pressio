@@ -34,11 +34,12 @@ void UnsteadyLinAdvDiffReac2dEpetra::setupPhysicalGrid(){
 void UnsteadyLinAdvDiffReac2dEpetra::createSolutionMap(){
   // total number of dof (we only consider the interior points)
   // we need to account for the fact that we have 3 fields per grid
-  numGlobalDof_ = numFields_ * Nx_ * Ny_;
+  numGlobalDof_ = this_t::numSpecies_ * Nx_ * Ny_;
   dofMap_ = std::make_shared<Epetra_Map>(numGlobalDof_, 0, comm_);
 }
 
 void UnsteadyLinAdvDiffReac2dEpetra::setupFields(){
+  constexpr auto maxNonZ = this_t::maxNonZeroPerRow_;
 
   dofPerProc_= dofMap_->NumMyElements();
   MyGlobalDof_ = dofMap_->MyGlobalElements();
@@ -47,13 +48,41 @@ void UnsteadyLinAdvDiffReac2dEpetra::setupFields(){
   s2_ = std::make_shared<nativeVec>(*gridMap_);
   s3_ = std::make_shared<nativeVec>(*gridMap_);
 
-  A_ = std::make_shared<nativeMatrix>(Copy, *dofMap_, maxNonZeroPerRow_);
+  A_ = std::make_shared<nativeMatrix>(Copy, *dofMap_, maxNonZ);
   chemForcing_ = std::make_shared<nativeVec>(*dofMap_);
   state_ = std::make_shared<nativeVec>(*dofMap_);
   A_->PutScalar(0);
   chemForcing_->PutScalar(0);
   state_->PutScalar(0);
 }
+
+
+void UnsteadyLinAdvDiffReac2dEpetra::fillSource1(){
+  for (auto i=0; i<gptPerProc_; i++){
+    const scalar_type xij = (*x_)[i];
+    const scalar_type yij = (*y_)[i];
+    const scalar_type dx = (xij - oPtS1[0]);
+    const scalar_type dy = (yij - oPtS1[1]);
+    const scalar_type distance = dx*dx + dy*dy;
+    (*s1_)[i] = ( std::sqrt(distance) <= rS1) ? 0.1 : 0.0;
+  }
+}
+
+void UnsteadyLinAdvDiffReac2dEpetra::fillSource2(){
+  for (auto i=0; i<gptPerProc_; i++){
+    const scalar_type xij = (*x_)[i];
+    const scalar_type yij = (*y_)[i];
+    const scalar_type dx = (xij - oPtS2[0]);
+    const scalar_type dy = (yij - oPtS2[1]);
+    const scalar_type distance = dx*dx + dy*dy;
+    (*s2_)[i] = ( std::sqrt(distance) <= rS2) ? 0.1 : 0.0;
+  }
+}
+
+void UnsteadyLinAdvDiffReac2dEpetra::fillSource3(){
+  s3_->PutScalar(0);
+}
+
 
 void UnsteadyLinAdvDiffReac2dEpetra::setup(){
   createGridMap();
@@ -77,20 +106,11 @@ void UnsteadyLinAdvDiffReac2dEpetra::assembleMatrix() const
    This assembles the FD matrix for the -conv + diffusion
    */
 
-
+  constexpr auto maxNonZ = UnsteadyLinAdvDiffReac2dEpetra::maxNonZeroPerRow_;
   int gi{}; int gj{};
   int k{};
-  std::array<int, 5> colInd{};
-  std::array<scalar_type, 5> values{};
-  scalar_type a_ip1{};
-  scalar_type a_im1{};
-  scalar_type a_ij {};
-  scalar_type a_jp1{};
-  scalar_type a_jm1{};
-  int gid_ip1{};
-  int gid_im1{};
-  int gid_jp1{};
-  int gid_jm1{};
+  std::array<int, maxNonZ> colInd{};
+  std::array<scalar_type, maxNonZ> values{};
 
   int l = {0};
 
@@ -106,17 +126,8 @@ void UnsteadyLinAdvDiffReac2dEpetra::assembleMatrix() const
     auto vij = (*v_)[i];
 
     // for a given grid point, loop over local dofs
-    for (auto iDof=0; iDof<numFields_; iDof++)
+    for (auto iDof=0; iDof<numSpecies_; iDof++)
     {
-      a_ip1={};
-      a_im1={};
-      a_ij ={};
-      a_jp1={};
-      a_jm1={};
-      gid_ip1 = {};
-      gid_im1 = {};
-      gid_jp1 = {};
-      gid_jm1 = {};
       values = {};
       colInd = {};
 
@@ -126,55 +137,48 @@ void UnsteadyLinAdvDiffReac2dEpetra::assembleMatrix() const
       // get the diffusivity for current species
       auto D = eps_;
 
+      // add diagonal
       k = 0;
-      a_ij    = -D * dxSqInv_ - D * dySqInv_;
-      values[k] = 2.0*a_ij;
+      values[k] = 2.0*(-D * dxSqInv_ - D * dySqInv_);
       colInd[k] = dofGID;
       k++;
 
+      // i-1, j
       if (gi>=1){
-      	a_im1 = D*dxSqInv_ + uij*dx2Inv_;
-      	gid_im1 = dofGID - numFields_;
-      	values[k] = a_im1;
-      	colInd[k] = gid_im1;
+      	values[k] = D*dxSqInv_ + uij*dx2Inv_;
+      	colInd[k] = dofGID - numSpecies_;
       	k++;
       }
 
+      // i+1, j
       if (gi<Nx_-1){
-      	a_ip1 = D*dxSqInv_ - uij*dx2Inv_;
-      	gid_ip1 = dofGID + numFields_;
-      	values[k] = a_ip1;
-      	colInd[k] = gid_ip1;
+      	values[k] = D*dxSqInv_ - uij*dx2Inv_;
+      	colInd[k] = dofGID + numSpecies_;
       	k++;
       }
 
+      // i, j-1 and i, j+1
       if (gj>=1 and gj<Ny_-1){
-      	a_jm1 = D*dySqInv_ + vij*dy2Inv_;
-      	gid_jm1 = dofGID - Nx_*numFields_;
-      	values[k] = a_jm1;
-      	colInd[k] = gid_jm1;
+      	values[k] = D*dySqInv_ + vij*dy2Inv_;
+      	colInd[k] = dofGID - Nx_*numSpecies_;
       	k++;
 
-      	a_jp1 = D*dySqInv_ - vij*dy2Inv_;
-      	gid_jp1 = dofGID + Nx_*numFields_;
-      	values[k] = a_jp1;
-      	colInd[k] = gid_jp1;
+      	values[k] = D*dySqInv_ - vij*dy2Inv_;
+      	colInd[k] = dofGID + Nx_*numSpecies_;
       	k++;
       }
 
+      // bottom wall we have homog Neumann BC
       if (gj==0){
-      	a_jp1 = 2.0*D*dySqInv_;
-      	gid_jp1 = dofGID + Nx_*numFields_;
-      	values[k] = a_jp1;
-      	colInd[k] = gid_jp1;
+      	values[k] = 2.0*D*dySqInv_;
+      	colInd[k] = dofGID + Nx_*numSpecies_;
       	k++;
       }
 
+      // top wall we have homog Neumann BC
       if (gj==Ny_-1){
-      	a_jm1 = 2.0*D*dySqInv_;
-      	gid_jm1 = dofGID - Nx_*numFields_;
-      	values[k] = a_jm1;
-      	colInd[k] = gid_jm1;
+      	values[k] = 2.0*D*dySqInv_;
+      	colInd[k] = dofGID - Nx_*numSpecies_;
       	k++;
       }
 
@@ -192,8 +196,6 @@ void UnsteadyLinAdvDiffReac2dEpetra::assembleMatrix() const
 
   if(!A_->Filled())
     A_->FillComplete();
-
-  A_->Print(std::cout);
 }// end method
 
 
@@ -205,7 +207,7 @@ void UnsteadyLinAdvDiffReac2dEpetra::computeChem
   // loop over grid points
   for (auto i=0; i<gptPerProc_; i++){
     // for a given grid point, loop over local dofs
-    for (auto iDof=0; iDof<numFields_; iDof++){
+    for (auto iDof=0; iDof<numSpecies_; iDof++){
       if (iDof == 0)
   	(*chemForcing_)[k] = -K_*C[k] * C[k+1] + (*s1_)[i];
       else if (iDof == 1)
