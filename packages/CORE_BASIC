@@ -25,5 +25,6 @@
 #include "core/src/shared_base/core_container_printable_base.hpp"
 
 #include "core/src/meta/core_meta_basic.hpp"
+#include "core/src/meta/core_has_expression_templates_support.hpp"
 
 #endif

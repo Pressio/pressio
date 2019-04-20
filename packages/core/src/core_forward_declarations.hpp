@@ -18,5 +18,9 @@ template <typename wrapped_type,
 	  typename Enable = void>
 class Matrix;
 
+template<typename T,
+	 typename enable = void>
+struct traits;
+
 }} // end namespace rompp::core
 #endif
