@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
     if (Comm->getSize() != 4){
-      checkStr == "FAILED";
+      checkStr = "FAILED";
       return 0;
     }
 

@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
-#define ROMPP_APPS_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
+#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
+#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
 
 #include "../../../CORE_ALL"
 #include <Tpetra_Map.hpp>
@@ -12,7 +12,7 @@
 
 namespace rompp{ namespace apps{
 
-class UnsteadyLinAdvDiffReac2dBlockTpetra{
+class UnsteadyNonLinAdvDiffReac2dBlockTpetra{
 protected:
   template<typename T> using stdrcp = std::shared_ptr<T>;
 
@@ -57,7 +57,7 @@ public:
   using residual_type	= state_type;
 
 public:
-  UnsteadyLinAdvDiffReac2dBlockTpetra(rcpcomm_t comm,
+  UnsteadyNonLinAdvDiffReac2dBlockTpetra(rcpcomm_t comm,
 				      int Nx, int Ny,
 				      scalar_type K	  = 5.0,
 				      scalar_type eps = 0.01)
@@ -93,12 +93,6 @@ public:
   void assembleMatrix(const state_type & yState) const;
   void computeChem(const state_type &) const;
 
-  // int getNumGlobalDofs() const{ return numGlobalDof_; }
-  // int getNumLocalDofs() const{ return dofPerProc_; }
-  // stdrcp<tpetVec> getX() const { return x_; }
-  // stdrcp<tpetVec> getY() const { return y_; }
-  // stdrcp<nativeMatrix> getMatrix() const { return A_; }
-
 public:
   void residual(const state_type & yState,
 		residual_type & rhs,
@@ -109,7 +103,7 @@ public:
   residual_type residual(const state_type & yState,
 			 scalar_type t) const{
     residual_type R( *map_,
-		     UnsteadyLinAdvDiffReac2dBlockTpetra::numSpecies_ );
+		     UnsteadyNonLinAdvDiffReac2dBlockTpetra::numSpecies_ );
     residual_impl(yState, R);
     return R;
   };

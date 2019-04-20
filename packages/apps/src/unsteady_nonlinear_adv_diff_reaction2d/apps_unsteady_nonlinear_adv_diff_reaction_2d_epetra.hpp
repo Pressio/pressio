@@ -1,13 +1,11 @@
 
-#ifndef ROMPP_APPS_LIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
-#define ROMPP_APPS_LIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
+#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
+#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
 
 #include "../../../CORE_ALL"
 #include "Epetra_MpiComm.h"
 #include <Epetra_config.h>
 #include "Epetra_Map.h"
-#include "Epetra_IntVector.h"
-#include "Epetra_SerialDenseVector.h"
 #include "Epetra_Vector.h"
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
@@ -15,12 +13,12 @@
 
 namespace rompp{ namespace apps{
 
-class UnsteadyLinAdvDiffReac2dEpetra{
+class UnsteadyNonLinAdvDiffReac2dEpetra{
 protected:
   using nativeVec	= Epetra_Vector;
   template<typename T> using rcp = std::shared_ptr<T>;
   using nativeMatrix	= Epetra_CrsMatrix;
-  using this_t = UnsteadyLinAdvDiffReac2dEpetra;
+  using this_t = UnsteadyNonLinAdvDiffReac2dEpetra;
 
 public:
   /* these types exposed because need to be detected */
@@ -29,10 +27,10 @@ public:
   using residual_type	= state_type;
 
 public:
-  UnsteadyLinAdvDiffReac2dEpetra(Epetra_MpiComm & comm,
-				 int Nx, int Ny,
-				 scalar_type K	  = 5.0,
-				 scalar_type eps = 0.01)
+  UnsteadyNonLinAdvDiffReac2dEpetra(Epetra_MpiComm & comm,
+				    int Nx, int Ny,
+				    scalar_type K   = 5.0,
+				    scalar_type eps = 0.01)
     : comm_(comm), NxPhys_{Nx}, NyPhys_{Ny},
       Nx_{NxPhys_-2}, Ny_{NyPhys_}, // because Dirichlet in x, Neumann in y
       K_{K}, eps_{eps},

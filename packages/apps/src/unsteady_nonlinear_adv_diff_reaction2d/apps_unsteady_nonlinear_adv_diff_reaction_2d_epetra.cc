@@ -1,15 +1,15 @@
 
-#include "apps_unsteady_linear_adv_diff_reaction_2d.hpp"
+#include "apps_unsteady_nonlinear_adv_diff_reaction_2d_epetra.hpp"
 
 namespace rompp{ namespace apps{
 
-void UnsteadyLinAdvDiffReac2dEpetra::createGridMap(){
+void UnsteadyNonLinAdvDiffReac2dEpetra::createGridMap(){
   // total number of unknown grid points (we only consider the interior points)
   numGlobalUnkGpt_ = Nx_ * Ny_;
   gridMap_ = std::make_shared<Epetra_Map>(numGlobalUnkGpt_, 0, comm_);
 }
 
-void UnsteadyLinAdvDiffReac2dEpetra::setupPhysicalGrid(){
+void UnsteadyNonLinAdvDiffReac2dEpetra::setupPhysicalGrid(){
   gptPerProc_	  = gridMap_->NumMyElements();
   MyGlobalUnkGpt_ = gridMap_->MyGlobalElements();
 
@@ -31,14 +31,14 @@ void UnsteadyLinAdvDiffReac2dEpetra::setupPhysicalGrid(){
   }
 }
 
-void UnsteadyLinAdvDiffReac2dEpetra::createSolutionMap(){
+void UnsteadyNonLinAdvDiffReac2dEpetra::createSolutionMap(){
   // total number of dof (we only consider the interior points)
   // we need to account for the fact that we have 3 fields per grid
   numGlobalDof_ = this_t::numSpecies_ * Nx_ * Ny_;
   dofMap_ = std::make_shared<Epetra_Map>(numGlobalDof_, 0, comm_);
 }
 
-void UnsteadyLinAdvDiffReac2dEpetra::setupFields(){
+void UnsteadyNonLinAdvDiffReac2dEpetra::setupFields(){
   constexpr auto maxNonZ = this_t::maxNonZeroPerRow_;
 
   dofPerProc_= dofMap_->NumMyElements();
@@ -57,7 +57,7 @@ void UnsteadyLinAdvDiffReac2dEpetra::setupFields(){
 }
 
 
-void UnsteadyLinAdvDiffReac2dEpetra::fillSource1(){
+void UnsteadyNonLinAdvDiffReac2dEpetra::fillSource1(){
   for (auto i=0; i<gptPerProc_; i++){
     const scalar_type xij = (*x_)[i];
     const scalar_type yij = (*y_)[i];
@@ -68,7 +68,7 @@ void UnsteadyLinAdvDiffReac2dEpetra::fillSource1(){
   }
 }
 
-void UnsteadyLinAdvDiffReac2dEpetra::fillSource2(){
+void UnsteadyNonLinAdvDiffReac2dEpetra::fillSource2(){
   for (auto i=0; i<gptPerProc_; i++){
     const scalar_type xij = (*x_)[i];
     const scalar_type yij = (*y_)[i];
@@ -79,12 +79,12 @@ void UnsteadyLinAdvDiffReac2dEpetra::fillSource2(){
   }
 }
 
-void UnsteadyLinAdvDiffReac2dEpetra::fillSource3(){
+void UnsteadyNonLinAdvDiffReac2dEpetra::fillSource3(){
   s3_->PutScalar(0);
 }
 
 
-void UnsteadyLinAdvDiffReac2dEpetra::setup(){
+void UnsteadyNonLinAdvDiffReac2dEpetra::setup(){
   createGridMap();
   createSolutionMap();
   setupPhysicalGrid();
@@ -93,7 +93,7 @@ void UnsteadyLinAdvDiffReac2dEpetra::setup(){
   fillSource2();
 }
 
-void UnsteadyLinAdvDiffReac2dEpetra::assembleMatrix() const
+void UnsteadyNonLinAdvDiffReac2dEpetra::assembleMatrix() const
 {
   /* note that R is the residual vector, which has
    * a dofMap_ because it contains all dofs.
@@ -106,7 +106,7 @@ void UnsteadyLinAdvDiffReac2dEpetra::assembleMatrix() const
    This assembles the FD matrix for the -conv + diffusion
    */
 
-  constexpr auto maxNonZ = UnsteadyLinAdvDiffReac2dEpetra::maxNonZeroPerRow_;
+  constexpr auto maxNonZ = UnsteadyNonLinAdvDiffReac2dEpetra::maxNonZeroPerRow_;
   int gi{}; int gj{};
   int k{};
   std::array<int, maxNonZ> colInd{};
@@ -199,7 +199,7 @@ void UnsteadyLinAdvDiffReac2dEpetra::assembleMatrix() const
 }// end method
 
 
-void UnsteadyLinAdvDiffReac2dEpetra::computeChem
+void UnsteadyNonLinAdvDiffReac2dEpetra::computeChem
 ( const state_type & C ) const{
 
   chemForcing_->PutScalar( static_cast<scalar_type>(0) );

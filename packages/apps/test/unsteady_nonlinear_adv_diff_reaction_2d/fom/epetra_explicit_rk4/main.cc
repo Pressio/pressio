@@ -1,7 +1,7 @@
 
 #include "CORE_ALL"
 #include "ODE_ALL"
-#include "APPS_UNSTEADYLINADVDIFFREACTION2D"
+#include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
 #include "../gold_states_explicit.hpp"
 
 constexpr double eps = 1e-12;
@@ -45,7 +45,7 @@ struct Observer{
 };
 
 int main(int argc, char *argv[]){
-  using app_t		= rompp::apps::UnsteadyLinAdvDiffReac2dEpetra;
+  using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEpetra;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
   using app_residual_t	= typename app_t::residual_type;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]){
   {
     using namespace rompp::apps::test;
     checkSol(y,
-      LinAdvDiffReac2dExpGoldStates<ode_case>::get(Nx, Ny, dt, fint));
+	     NonLinAdvDiffReac2dExpGoldStates<ode_case>::get(Nx, Ny, dt, fint));
   }
 
   MPI_Finalize();

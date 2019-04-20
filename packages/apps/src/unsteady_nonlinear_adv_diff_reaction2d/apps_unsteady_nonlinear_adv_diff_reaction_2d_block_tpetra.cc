@@ -1,9 +1,9 @@
 
-#include "apps_unsteady_linear_adv_diff_reaction_2d_block_tpetra.hpp"
+#include "apps_unsteady_nonlinear_adv_diff_reaction_2d_block_tpetra.hpp"
 
 namespace rompp{ namespace apps{
 
-void UnsteadyLinAdvDiffReac2dBlockTpetra::createMap(){
+void UnsteadyNonLinAdvDiffReac2dBlockTpetra::createMap(){
   // total number of unknown grid points (we only consider the interior points)
   numGlobalGpt_ = Nx_ * Ny_;
   map_ = Teuchos::rcp(new map_t(numGlobalGpt_, 0, comm_));
@@ -16,7 +16,7 @@ void UnsteadyLinAdvDiffReac2dBlockTpetra::createMap(){
 }
 
 
-void UnsteadyLinAdvDiffReac2dBlockTpetra::initGridAndVel(){
+void UnsteadyNonLinAdvDiffReac2dBlockTpetra::initGridAndVel(){
   x_ = std::make_shared<tpetVec>(map_);
   y_ = std::make_shared<tpetVec>(map_);
   u_ = std::make_shared<tpetVec>(map_);
@@ -40,8 +40,8 @@ void UnsteadyLinAdvDiffReac2dBlockTpetra::initGridAndVel(){
 }
 
 
-void UnsteadyLinAdvDiffReac2dBlockTpetra::createGraph(){
-  constexpr auto nnZ = UnsteadyLinAdvDiffReac2dBlockTpetra::maxNonZeroPerRow_;
+void UnsteadyNonLinAdvDiffReac2dBlockTpetra::createGraph(){
+  constexpr auto nnZ = UnsteadyNonLinAdvDiffReac2dBlockTpetra::maxNonZeroPerRow_;
 
   // this is the graph of the grid
   graph_ = std::make_shared<graph_t>(map_, nnZ);
@@ -90,8 +90,8 @@ void UnsteadyLinAdvDiffReac2dBlockTpetra::createGraph(){
 }
 
 
-void UnsteadyLinAdvDiffReac2dBlockTpetra::initFields(){
-  constexpr auto nDof = UnsteadyLinAdvDiffReac2dBlockTpetra::numSpecies_;
+void UnsteadyNonLinAdvDiffReac2dBlockTpetra::initFields(){
+  constexpr auto nDof = UnsteadyNonLinAdvDiffReac2dBlockTpetra::numSpecies_;
   constexpr auto zero = static_cast<ST>(0);
 
   A_ = std::make_shared<nativeMatrix>( *graph_, nDof);
@@ -106,9 +106,9 @@ void UnsteadyLinAdvDiffReac2dBlockTpetra::initFields(){
 }
 
 
-void UnsteadyLinAdvDiffReac2dBlockTpetra::computeSource(){
+void UnsteadyNonLinAdvDiffReac2dBlockTpetra::computeSource(){
 
-  std::array<ST, UnsteadyLinAdvDiffReac2dBlockTpetra::numSpecies_> values{};
+  std::array<ST, UnsteadyNonLinAdvDiffReac2dBlockTpetra::numSpecies_> values{};
   const auto xta = x_->getData();
   const auto yta = y_->getData();
 
@@ -137,7 +137,7 @@ void UnsteadyLinAdvDiffReac2dBlockTpetra::computeSource(){
   }
 }
 
-void UnsteadyLinAdvDiffReac2dBlockTpetra::setup(){
+void UnsteadyNonLinAdvDiffReac2dBlockTpetra::setup(){
   createMap();
   initGridAndVel();
   createGraph();
@@ -145,7 +145,7 @@ void UnsteadyLinAdvDiffReac2dBlockTpetra::setup(){
   computeSource();
 }
 
-void UnsteadyLinAdvDiffReac2dBlockTpetra::assembleMatrix
+void UnsteadyNonLinAdvDiffReac2dBlockTpetra::assembleMatrix
 (const state_type & yState) const
 {
    /*
@@ -245,7 +245,7 @@ void UnsteadyLinAdvDiffReac2dBlockTpetra::assembleMatrix
   //A_->describe(*out, Teuchos::VERB_EXTREME);
 }
 
-void UnsteadyLinAdvDiffReac2dBlockTpetra::computeChem( const state_type & C ) const{
+void UnsteadyNonLinAdvDiffReac2dBlockTpetra::computeChem( const state_type & C ) const{
 
   chemReac_->putScalar( static_cast<scalar_type>(0) );
   std::array<ST,3> vals = {};

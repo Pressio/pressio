@@ -1,8 +1,0 @@
-
-#ifndef APPS_UNSTEADYLINADVDIFFREACTION2D_HPP_
-#define APPS_UNSTEADYLINADVDIFFREACTION2D_HPP_
-
-#include "apps/src/unsteady_linear_adv_diff_reaction2d/apps_unsteady_linear_adv_diff_reaction_2d.hpp"
-#include "apps/src/unsteady_linear_adv_diff_reaction2d/apps_unsteady_linear_adv_diff_reaction_2d_block_tpetra.hpp"
-
-#endif

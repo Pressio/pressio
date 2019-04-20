@@ -1,16 +1,16 @@
 
-#ifndef ROMPP_APPS_TEST_UNSTEADYADVDIFFREACTION2D_GOLD_EXPLICIT_HPP_
-#define ROMPP_APPS_TEST_UNSTEADYADVDIFFREACTION2D_GOLD_EXPLICIT_HPP_
+#ifndef ROMPP_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION2D_GOLD_EXPLICIT_HPP_
+#define ROMPP_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION2D_GOLD_EXPLICIT_HPP_
 
 #include "ODE_ALL"
 
 namespace rompp { namespace apps{ namespace test{
 
 template <ode::ExplicitEnum>
-struct LinAdvDiffReac2dExpGoldStates;
+struct NonLinAdvDiffReac2dExpGoldStates;
 
 template <>
-struct LinAdvDiffReac2dExpGoldStates<ode::ExplicitEnum::RungeKutta4>{
+struct NonLinAdvDiffReac2dExpGoldStates<ode::ExplicitEnum::RungeKutta4>{
   using result_t = std::vector<double>;
 
   static result_t get(int Nx, int Ny,
