@@ -62,9 +62,19 @@ public:
 
 public:
 
-  template<typename step_t>
-  void doStep(state_type & y, scalar_type t,
-	      scalar_type dt, step_t step){
+  // if state supports expression templates
+  template<typename _state_type = state_type,
+	   typename step_t,
+	   ::rompp::mpl::enable_if_t<
+	     core::meta::has_expression_templates_support<
+	       _state_type
+	       >::value
+	     > * = nullptr
+  >
+  void doStep(_state_type & y,
+	      scalar_type t,
+	      scalar_type dt,
+	      step_t step){
 
     auto & ytmp = this->auxStates_[0];
 
@@ -73,38 +83,74 @@ public:
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
 
-    // ----------
     // stage 1:
-    // ----------
     (*this->residual_obj_)(y, this->auxRHS_[0], *this->model_, t);
     ytmp = y + this->auxRHS_[0]*dt_half;
-    //ytmp.template inPlaceOp<add_op_t>(1.0,  y, dt_half, this->auxRHS_[0]);
 
-    // ----------
     // stage 2:
-    // ----------
     (*this->residual_obj_)(ytmp, this->auxRHS_[1], *this->model_, t_phalf);
     ytmp = y + this->auxRHS_[1]*dt_half;
-    //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt_half, this->auxRHS_[1]);
 
-    // ----------
     // stage 3:
-    // ----------
     (*this->residual_obj_)(ytmp, this->auxRHS_[2], *this->model_, t_phalf);
     ytmp = y + this->auxRHS_[2]*dt;
-    //ytmp.template inPlaceOp<add_op_t>(1.0, y, dt, this->auxRHS_[2]);
 
-    // ----------
     // stage 4:
-    // ----------
     (*this->residual_obj_)(ytmp, this->auxRHS_[3], *this->model_, t + dt);
     //y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     y += dt6*this->auxRHS_[0] + dt3*this->auxRHS_[1]
       + dt3*this->auxRHS_[2] + dt6*this->auxRHS_[3];
-    // y.template inPlaceOp<add_op_t>(1.0, dt6, auxRHS_[0],
-    // 				   dt3, auxRHS_[1],
-    // 				   dt3, auxRHS_[2],
-    // 				   dt6, auxRHS_[3]);
+
+  }//end doStep
+
+
+  // some types, like tpetra, DO not (for now) support expression templates
+  // so we sfinae out for this specific case
+  template<
+    typename _state_type = state_type,
+    typename step_t,
+    ::rompp::mpl::enable_if_t<
+      core::meta::is_vector_wrapper_tpetra<_state_type>::value or
+      core::meta::is_vector_wrapper_tpetra_block<_state_type>::value
+      > * = nullptr
+    >
+  void doStep(_state_type & y,
+	      scalar_type t,
+	      scalar_type dt,
+	      step_t step){
+
+    auto & ytmp = this->auxStates_[0];
+
+    const scalar_type dt_half = dt / static_cast< scalar_type >(2);
+    const scalar_type t_phalf = t + dt_half;
+    const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
+    const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
+
+    constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
+    constexpr auto zero = ::rompp::core::constants::zero<scalar_type>();
+
+    // stage 1:
+    (*this->residual_obj_)(y, this->auxRHS_[0], *this->model_, t);
+    ytmp.data()->update(one, *y.data(), zero);
+    ytmp.data()->update(dt_half, *(this->auxRHS_[0].data()), one);
+
+    // stage 2:
+    (*this->residual_obj_)(ytmp, this->auxRHS_[1], *this->model_, t_phalf);
+    ytmp.data()->update(one, *y.data(), zero);
+    ytmp.data()->update(dt_half, *(this->auxRHS_[1].data()), one);
+
+    // stage 3:
+    (*this->residual_obj_)(ytmp, this->auxRHS_[2], *this->model_, t_phalf);
+    ytmp.data()->update(one, *y.data(), zero);
+    ytmp.data()->update(dt, *(this->auxRHS_[2].data()), one);
+
+    // stage 4:
+    (*this->residual_obj_)(ytmp, this->auxRHS_[3], *this->model_, t + dt);
+    //y_n+1 = y_n + dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
+    y.data()->update(dt6, *(this->auxRHS_[0].data()), one); // y = y + dt/6 * k1
+    y.data()->update(dt3, *(this->auxRHS_[1].data()), one); // add dt/3*k2
+    y.data()->update(dt3, *(this->auxRHS_[2].data()), one); // add dt/3*k2
+    y.data()->update(dt6, *(this->auxRHS_[3].data()), one); // add dt/6 * k4
   }//end doStep
 
 }; //end class

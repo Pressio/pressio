@@ -83,26 +83,40 @@ public:
   ~ExplicitEulerStepperImpl() = default;
 
 public:
+
+  // if state supports expression templates
   template<typename _ode_state_type = ode_state_type,
 	   typename step_t,
 	   ::rompp::mpl::enable_if_t<
-	     !core::meta::is_vector_wrapper_tpetra<_ode_state_type>::value
-	     > * = nullptr>
-  void doStep(ode_state_type & y, scalar_type t,
-	      scalar_type dt, step_t step){
+	     core::meta::has_expression_templates_support<
+	       _ode_state_type
+	       >::value
+	     > * = nullptr
+  >
+  void doStep(_ode_state_type & y,
+	      scalar_type t,
+	      scalar_type dt,
+	      step_t step){
     //eval RHS
     this->evalRHS(y, auxRHS_[0], t);
     // y = y + dt * rhs
     y += dt * auxRHS_[0];
   }
 
-  template<typename _ode_state_type = ode_state_type,
-	   typename step_t,
-	   ::rompp::mpl::enable_if_t<
-	     core::meta::is_vector_wrapper_tpetra<_ode_state_type>::value
-	     > * = nullptr>
-  void doStep(ode_state_type & y, scalar_type t,
-	      scalar_type dt, step_t step){
+  // some types, like tpetra, DO not (for now) allow expression templates
+  // so we sfinae out for this specific case
+  template<
+    typename _ode_state_type = ode_state_type,
+    typename step_t,
+    ::rompp::mpl::enable_if_t<
+      core::meta::is_vector_wrapper_tpetra<_ode_state_type>::value or
+      core::meta::is_vector_wrapper_tpetra_block<_ode_state_type>::value
+      > * = nullptr
+    >
+  void doStep(_ode_state_type & y,
+	      scalar_type t,
+	      scalar_type dt,
+	      step_t step){
     //eval RHS
     this->evalRHS(y, auxRHS_[0], t);
     // y = y + dt * rhs
