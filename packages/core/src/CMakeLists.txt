@@ -52,6 +52,8 @@ FILE(GLOB core_containers_norms_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/norms/*.hpp")
 FILE(GLOB core_containers_minmax_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/min_max/*.hpp")
+FILE(GLOB core_containers_update_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/containers_ops/do_update/*.hpp")
 
 FILE(GLOB core_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/vector/*.hpp")
@@ -87,7 +89,7 @@ FILE(GLOB core_matrix_concrete_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 #################
 #### SOURCES
 #################
-FILE(GLOB core_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
+FILE(GLOB core_general_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
 SET(SOURCES ${core_general_SRCS})
 
@@ -127,6 +129,7 @@ INSTALL(FILES ${core_containers_multivec_vec_prod_ops_HEADERS} DESTINATION ${COR
 INSTALL(FILES ${core_containers_mat_multivec_prod_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/mat_multivec_product)
 INSTALL(FILES ${core_containers_norms_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/norms)
 INSTALL(FILES ${core_containers_minmax_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/min_max)
+INSTALL(FILES ${core_containers_update_ops_HEADERS} DESTINATION ${CORE_INCDIR}/containers_ops/do_update)
 
 INSTALL(FILES ${core_vector_HEADERS} DESTINATION ${CORE_INCDIR}/vector)
 INSTALL(FILES ${core_vector_meta_HEADERS} DESTINATION ${CORE_INCDIR}/vector/meta)
