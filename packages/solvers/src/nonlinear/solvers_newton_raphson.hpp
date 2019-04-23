@@ -51,26 +51,30 @@ public:
 #endif
     using state_t    = typename system_t::state_type;
 
-    auto Residual = sys.residual(x);
-    auto Jac = sys.jacobian(x);
-
     auto dx(x);
     state_t xOld = x;
-
-    linSolver_.solve(Jac, Residual, dx);
-    x -= dx;
-
+    normN_ = {0};
     core::default_types::uint iStep = 0;
-    while (iStep++ <= this->maxIters_ &&
-           this->normOfDifference(xOld, x) > this->tolerance_)
+    while (iStep++ <= this->maxIters_)
     {
-      xOld = x;
-      sys.residual(x, Residual);
-      sys.jacobian(x, Jac);
+#ifdef DEBUG_PRINT
+      ::rompp::core::io::print_stdout("\n");
+      auto fmt = core::io::underline();
+      ::rompp::core::io::print_stdout(fmt, "NewRaph step", iStep,
+				      core::io::reset(), "\n");
+#endif
 
-      linSolver_.resetLinearSystem(Jac);
-      linSolver_.solve(Residual, dx);
+      xOld = x;
+      auto Residual = sys.residual(x);
+      auto Jac = sys.jacobian(x);
+
+      //linSolver_.resetLinearSystem(Jac);
+      linSolver_.solve(Jac, Residual, dx);
       x -= dx;
+      normN_ =::rompp::core::ops::norm2(dx);
+      ::rompp::core::io::print_stdout("norm(dx) =", normN_, "\n");
+      if (normN_ < this->tolerance_)
+	break;
     }
   }//solveImpl
 
@@ -78,16 +82,3 @@ public:
 
 }} //end namespace rompp::solvers
 #endif
-
-
-// #ifdef DEBUG_PRINT
-//       std::cout << " GN step=" << iStep
-//    << " norm(dx)= " << normN_
-//    << std::endl;
-// #endif
-
-// #ifdef DEBUG_PRINT
-//  std::cout << " GN converged! " <<
-//      << " final norm(dx)= " << normN_
-//      << std::endl;
-// #endif
