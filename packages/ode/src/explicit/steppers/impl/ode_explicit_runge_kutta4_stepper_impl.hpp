@@ -76,7 +76,6 @@ public:
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
 
     constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
-    constexpr auto zero = ::rompp::core::constants::zero<scalar_type>();
 
     // stage 1:
     (*this->residual_obj_)(y, this->auxRHS_[0], *this->model_, t);
