@@ -7,12 +7,12 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::createGridMap(){
   // total number of unknown grid points (we only consider the interior points)
   numGlobalUnkGpt_ = Nx_ * Ny_;
   gridMap_ = std::make_shared<Epetra_Map>(numGlobalUnkGpt_, 0, comm_);
+  gptPerProc_	  = gridMap_->NumMyElements();
+  MyGlobalUnkGpt_ = gridMap_->MyGlobalElements();
+  //gridMap_->Print(std::cout);
 }
 
 void UnsteadyNonLinAdvDiffReac2dEpetra::setupPhysicalGrid(){
-  gptPerProc_	  = gridMap_->NumMyElements();
-  MyGlobalUnkGpt_ = gridMap_->MyGlobalElements();
-
   x_ = std::make_shared<nativeVec>(*gridMap_);
   y_ = std::make_shared<nativeVec>(*gridMap_);
   u_ = std::make_shared<nativeVec>(*gridMap_);
@@ -34,28 +34,41 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::setupPhysicalGrid(){
 void UnsteadyNonLinAdvDiffReac2dEpetra::createSolutionMap(){
   // total number of dof (we only consider the interior points)
   // we need to account for the fact that we have 3 fields per grid
+  // also, we do not want to break dofs, so if a rank owns
+  // a specific grid point, then it owns all dofs associated
+  // with that grid point
+
+  // get the minimum GID of grid points I own
+  const auto myMinGid = gridMap_->MinMyGID();
+
+  // find the min GID of the dof map
+  auto myMinDofGID = myMinGid * this_t::numSpecies_;
+
   numGlobalDof_ = this_t::numSpecies_ * Nx_ * Ny_;
-  dofMap_ = std::make_shared<Epetra_Map>(numGlobalDof_, 0, comm_);
+  const auto int dofPerProc_ = gptPerProc_*this_t::numSpecies_;
+
+  std::vector<int> myGDofs(dofPerProc_);
+  std::iota( myGDofs.begin(), myGDofs.end(), myMinDofGID);
+  dofMap_ = std::make_shared<Epetra_Map>
+    (numGlobalDof_, dofPerProc_, myGDofs.data(), 0, comm_);
+  MyGlobalDof_ = dofMap_->MyGlobalElements();
+  //dofMap_->Print(std::cout);
 }
 
 void UnsteadyNonLinAdvDiffReac2dEpetra::setupFields(){
   constexpr auto maxNonZ = this_t::maxNonZeroPerRow_;
 
-  dofPerProc_= dofMap_->NumMyElements();
-  MyGlobalDof_ = dofMap_->MyGlobalElements();
-
   s1_ = std::make_shared<nativeVec>(*gridMap_);
   s2_ = std::make_shared<nativeVec>(*gridMap_);
   s3_ = std::make_shared<nativeVec>(*gridMap_);
 
-  A_ = std::make_shared<nativeMatrix>(Copy, *dofMap_, maxNonZ);
+  FDMat_ = std::make_shared<nativeMatrix>(Copy, *dofMap_, maxNonZ);
   chemForcing_ = std::make_shared<nativeVec>(*dofMap_);
   state_ = std::make_shared<nativeVec>(*dofMap_);
-  A_->PutScalar(0);
+  FDMat_->PutScalar(0);
   chemForcing_->PutScalar(0);
   state_->PutScalar(0);
 }
-
 
 void UnsteadyNonLinAdvDiffReac2dEpetra::fillSource1(){
   for (auto i=0; i<gptPerProc_; i++){
@@ -83,7 +96,6 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::fillSource3(){
   s3_->PutScalar(0);
 }
 
-
 void UnsteadyNonLinAdvDiffReac2dEpetra::setup(){
   createGridMap();
   createSolutionMap();
@@ -93,7 +105,7 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::setup(){
   fillSource2();
 }
 
-void UnsteadyNonLinAdvDiffReac2dEpetra::assembleMatrix() const
+void UnsteadyNonLinAdvDiffReac2dEpetra::assembleFDMatrix() const
 {
   /* note that R is the residual vector, which has
    * a dofMap_ because it contains all dofs.
@@ -107,11 +119,9 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::assembleMatrix() const
    */
 
   constexpr auto maxNonZ = UnsteadyNonLinAdvDiffReac2dEpetra::maxNonZeroPerRow_;
-  int gi{}; int gj{};
-  int k{};
+  int gi{}; int gj{}; int k{};
   std::array<int, maxNonZ> colInd{};
   std::array<scalar_type, maxNonZ> values{};
-
   int l = {0};
 
   // loop over grid points
@@ -128,65 +138,80 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::assembleMatrix() const
     // for a given grid point, loop over local dofs
     for (auto iDof=0; iDof<numSpecies_; iDof++)
     {
-      values = {};
-      colInd = {};
-
       // global ID of current UNKNOWN
       auto dofGID = MyGlobalDof_[l];
 
-      // get the diffusivity for current species
-      auto D = eps_;
-
       // add diagonal
       k = 0;
-      values[k] = 2.0*(-D * dxSqInv_ - D * dySqInv_);
+      values[k] = 2.0*(-eps_ * dxSqInv_ - eps_ * dySqInv_);
       colInd[k] = dofGID;
       k++;
 
       // i-1, j
       if (gi>=1){
-      	values[k] = D*dxSqInv_ + uij*dx2Inv_;
+      	values[k] = eps_*dxSqInv_ + uij*dx2Inv_;
       	colInd[k] = dofGID - numSpecies_;
       	k++;
       }
 
       // i+1, j
       if (gi<Nx_-1){
-      	values[k] = D*dxSqInv_ - uij*dx2Inv_;
+      	values[k] = eps_*dxSqInv_ - uij*dx2Inv_;
       	colInd[k] = dofGID + numSpecies_;
       	k++;
       }
 
       // i, j-1 and i, j+1
       if (gj>=1 and gj<Ny_-1){
-      	values[k] = D*dySqInv_ + vij*dy2Inv_;
+      	values[k] = eps_*dySqInv_ + vij*dy2Inv_;
       	colInd[k] = dofGID - Nx_*numSpecies_;
       	k++;
 
-      	values[k] = D*dySqInv_ - vij*dy2Inv_;
+      	values[k] = eps_*dySqInv_ - vij*dy2Inv_;
       	colInd[k] = dofGID + Nx_*numSpecies_;
       	k++;
       }
 
       // bottom wall we have homog Neumann BC
       if (gj==0){
-      	values[k] = 2.0*D*dySqInv_;
+      	values[k] = 2.0*eps_*dySqInv_;
       	colInd[k] = dofGID + Nx_*numSpecies_;
       	k++;
       }
 
       // top wall we have homog Neumann BC
       if (gj==Ny_-1){
-      	values[k] = 2.0*D*dySqInv_;
+      	values[k] = 2.0*eps_*dySqInv_;
       	colInd[k] = dofGID - Nx_*numSpecies_;
       	k++;
       }
 
-      if (A_->Filled())
-	A_->ReplaceGlobalValues(dofGID, k,
+      // the following 3 terms are the ones for chemistry but
+      // are set to zero here because are only used later
+      // to compute jacobian, they are not used for FD matrix
+      if (iDof == 0){
+      	values[k] = 0.0;
+      	colInd[k] = dofGID+1;
+      	k++;
+      }
+
+      if (iDof == 1){
+      	values[k] = 0.0;
+      	colInd[k] = dofGID-1;
+      	k++;
+      }
+
+      if (iDof == 2){
+      	values[k] = 0.0; colInd[k] = dofGID-2; k++;
+      	values[k] = 0.0; colInd[k] = dofGID-1; k++;
+      	k++;
+      }
+
+      if (FDMat_->Filled())
+	FDMat_->ReplaceGlobalValues(dofGID, k,
 				values.data(), colInd.data());
       else
-	A_->InsertGlobalValues(dofGID, k,
+	FDMat_->InsertGlobalValues(dofGID, k,
 			       values.data(), colInd.data());
 
       // update counter
@@ -194,8 +219,8 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::assembleMatrix() const
     }//over dof
   }//loop over grid pts
 
-  if(!A_->Filled())
-    A_->FillComplete();
+  if(!FDMat_->Filled())
+    FDMat_->FillComplete();
 }// end method
 
 
@@ -208,17 +233,94 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::computeChem
   for (auto i=0; i<gptPerProc_; i++){
     // for a given grid point, loop over local dofs
     for (auto iDof=0; iDof<numSpecies_; iDof++){
-      if (iDof == 0)
+      if (iDof == 0){
   	(*chemForcing_)[k] = -K_*C[k] * C[k+1] + (*s1_)[i];
-      else if (iDof == 1)
+      }
+      else if (iDof == 1){
   	(*chemForcing_)[k] = -K_ * C[k-1] * C[k] + (*s2_)[i];
-      else if (iDof == 2)
-  	(*chemForcing_)[k] = K_*C[k-2]*C[k-1] - K_ * C[k] + (*s3_)[i];
+      }
+      else if (iDof == 2){
+  	(*chemForcing_)[k] = K_*C[k-2]*C[k-1] - K_*C[k] + (*s3_)[i];
+      }
 
       // update indexer
       k++;
     }
   }
 }
+
+
+// void UnsteadyNonLinAdvDiffReac2dEpetra::computeJacobian( const state_type & yState ) const
+// {
+//   /* the jacobian for this problem can be obtained by
+//    * computing the FD matrix and then adding the
+//    * contributions from the chemistry */
+
+//   // this is the FD matrix
+//   assembleMatrix();
+
+//   std::array<int, 3> colInd{};
+//   std::array<scalar_type, 3> values{};
+//   int l = {0};
+//   int numEntries = {0};
+//   scalar_type c0 = {}, c1 = {}, c2 = {};
+
+//   for (auto i=0; i<gptPerProc_; i++)
+//   {
+//     for (auto iDof=0; iDof<numSpecies_; iDof++)
+//     {
+//       numEntries = 0;
+
+//       // global ID of current UNKNOWN
+//       auto dofGID = MyGlobalDof_[l];
+
+//       // store the conc values of the species at this point
+//       if (iDof == 0){
+//        	c0 = yState[l];
+// 	c1 = yState[l+1];
+// 	c2 = yState[l+2];
+//       }
+//       if (iDof == 1){
+//       	c0 = yState[l-1];
+//       	c1 = yState[l];
+//       	c2 = yState[l+1];
+//       }
+//       if (iDof == 2){
+//       	c0 = yState[l-2];
+//       	c1 = yState[l-1];
+//       	c2 = yState[l];
+//       }
+
+//       // for c_0 we have a -K*c0*c1, so two more terms in jacobian
+//       if (iDof == 0){
+//       	values[0] = -K_*c1; colInd[0] = dofGID;
+//       	values[1] = -K_*c0; colInd[1] = dofGID+1;
+//       	numEntries = 2;
+//       }
+
+//       // for c_1, we have -K*c0*c1, so two more terms in jacobian
+//       if (iDof == 1){
+//       	values[0] = -K_*c0; colInd[0] = dofGID;
+//       	values[1] = -K_*c1; colInd[1] = dofGID-1;
+//       	numEntries = 2;
+//       }
+
+//       // for c_2, we have K*c0*c1 - K*c3, so three more terms in jacobian
+//       if (iDof == 2){
+//       	values[0] = -K_;   colInd[0] = dofGID;
+//       	values[1] = K_*c1; colInd[1] = dofGID-2;
+//       	values[2] = K_*c0; colInd[2] = dofGID-1;
+//       	numEntries = 3;
+//       }
+
+//       A_->SumIntoGlobalValues(dofGID, numEntries,
+//       			      values.data(), colInd.data());
+
+//       // update counter
+//       l++;
+//     }
+//   }
+
+// }//computeJacobian
 
 }} //namespace rompp::apps

@@ -15,10 +15,11 @@ namespace rompp{ namespace apps{
 
 class UnsteadyNonLinAdvDiffReac2dEpetra{
 protected:
-  using nativeVec	= Epetra_Vector;
   template<typename T> using rcp = std::shared_ptr<T>;
+  using nativeVec	= Epetra_Vector;
   using nativeMatrix	= Epetra_CrsMatrix;
-  using this_t = UnsteadyNonLinAdvDiffReac2dEpetra;
+  using this_t		= UnsteadyNonLinAdvDiffReac2dEpetra;
+  using mv_t		= Epetra_MultiVector;
 
 public:
   /* these types exposed because need to be detected */
@@ -27,7 +28,7 @@ public:
   using residual_type	= state_type;
 
 public:
-  UnsteadyNonLinAdvDiffReac2dEpetra(Epetra_MpiComm & comm,
+  UnsteadyNonLinAdvDiffReac2dEpetra(const Epetra_MpiComm & comm,
 				    int Nx, int Ny,
 				    scalar_type K   = 5.0,
 				    scalar_type eps = 0.01)
@@ -38,8 +39,8 @@ public:
       dy_{Ly_/(Ny-1)},
       dxSqInv_{1.0/(dx_*dx_)},
       dySqInv_{1.0/(dy_*dy_)},
-      dx2Inv_{1./dx_},
-      dy2Inv_{1./dy_}
+      dx2Inv_{1./(2.*dx_)},
+      dy2Inv_{1./(2.*dy_)}
   {}
 
 public:
@@ -52,10 +53,14 @@ public:
   void setupPhysicalGrid();
   void setupFields();
   void setup();
-  void assembleMatrix() const;
+  void assembleFDMatrix() const;
   void computeChem(const state_type &) const;
+  void computeJacobian(const state_type &) const;
+
   std::shared_ptr<nativeVec> getX() const { return x_; }
   std::shared_ptr<nativeVec> getY() const { return y_; }
+  int getUnknownCount() const{ return this_t::numSpecies_*Nx_*Ny_; }
+  Epetra_Map getDataMap() const { return *dofMap_; }
 
 public:
   void residual(const state_type & yState,
@@ -69,6 +74,22 @@ public:
     residual_type R( *dofMap_ );
     residual_impl(yState, R);
     return R;
+  };
+
+  // computes: C = Jac B where B is a multivector
+  void applyJacobian(const state_type & yState,
+  		     const mv_t & B,
+  		     mv_t & C,
+		     scalar_type t) const{
+    applyJacobian_impl(yState, B, C);
+  }
+
+  mv_t applyJacobian(const state_type & yState,
+		     const mv_t & B,
+		     scalar_type t) const{
+    mv_t C( *dofMap_, B.NumVectors() );
+    applyJacobian_impl(yState, B, C);
+    return C;
   };
 
 private:
@@ -87,12 +108,25 @@ private:
   void residual_impl(const state_type & yState,
 		     residual_type & R) const
   {
-    this->assembleMatrix();
+    if (FDMatrixIsComputed_ == false)
+      this->assembleFDMatrix();
+
+    // the chemistry part is needed because it depends on the state
     this->computeChem(yState);
-    A_->Multiply(false, yState, R);
-    /* here we have R = A*state, where A = -conv+diffusion
+
+    // do product of FDMatrix with state
+    FDMat_->Multiply(false, yState, R);
+
+    /* here we have R = FDMat*state, where FDMat = -conv+diffusion
      * so we need to sum the reaction part */
     R.Update(1., (*chemForcing_), 1.0);
+  }
+
+  void applyJacobian_impl(const state_type & yState,
+			  const mv_t & B,
+			  mv_t & C) const{
+    computeJacobian(yState);
+    //A_->Multiply(false, B, C);
   }
 
 protected:
@@ -106,7 +140,7 @@ protected:
   const std::array<scalar_type,2> oPtS2 = {{0.75, 1.}};
 
   static constexpr int numSpecies_ = 3;
-  static constexpr int maxNonZeroPerRow_ = 5;
+  static constexpr int maxNonZeroPerRow_ = 8;
   const scalar_type Lx_ = 1.0;
   const scalar_type Ly_ = 2.0;
   const std::array<scalar_type,2> xAxis_{0., 1.};
@@ -158,13 +192,17 @@ protected:
   rcp<nativeVec> y_;
   rcp<nativeVec> u_;
   rcp<nativeVec> v_;
-  mutable rcp<nativeMatrix> A_;
+  mutable rcp<nativeMatrix> FDMat_;
   mutable rcp<nativeVec> chemForcing_;
   mutable rcp<nativeVec> state_;
-
   mutable rcp<nativeVec> s1_;
   mutable rcp<nativeVec> s2_;
   mutable rcp<nativeVec> s3_;
+
+  // the FDMat should/can only be computed once
+  // since it is independent of the concentrations fields
+  bool FDMatrixIsComputed_ = false;
+
 };
 
 }} //namespace rompp::apps

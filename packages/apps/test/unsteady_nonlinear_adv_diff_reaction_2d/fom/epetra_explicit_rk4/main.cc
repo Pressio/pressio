@@ -15,34 +15,10 @@ void checkSol(const T & y,
     checkStr = "FAILED";
   }
   for (size_t i=0; i<trueS.size(); i++){
-    if (std::abs(y[i] - trueS[i]) > eps) checkStr = "FAILED";
+    if (std::abs(y[i] - trueS[i]) > eps or
+	std::isnan(y[i])) checkStr = "FAILED";
   }
 }
-
-constexpr bool do_print = false;
-
-struct Observer{
-  Observer() = default;
-
-  template <typename T>
-  void operator()(size_t step,
-  		  double t,
-  		  const T & y)
-  {
-    if (do_print){
-      if (step % 5 == 0){
-	assert( y.localSize() == y.globalSize() );
-	std::ofstream file;
-	file.open( "sol_" + std::to_string(step) + ".txt" );
-	for(auto i=0; i < y.localSize(); i++){
-	  file << std::fixed << std::setprecision(14) << y[i] ;
-	  file << std::endl;
-	}
-	file.close();
-      }
-    }
-  }
-};
 
 int main(int argc, char *argv[]){
   using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEpetra;
@@ -55,24 +31,16 @@ int main(int argc, char *argv[]){
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
-  assert(Comm.NumProc() == 1);
+  if(Comm.NumProc() != 1){
+    checkStr = "FAIL";
+    return 0;
+  }
 
   constexpr int Nx = 11, Ny = Nx*2-1;
   app_t appobj(Comm, Nx, Ny);
   appobj.setup();
   const auto y0n = appobj.getInitialState();
   const auto r0n = appobj.residual(y0n, zero);
-
-  if (do_print){
-    auto X = appobj.getX(); auto Y = appobj.getY();
-    std::ofstream file; file.open( "xy.txt" );
-    for(auto i=0; i < (Nx-2)*Ny; i++){
-      file << std::fixed << std::setprecision(14)
-  	   << (*X)[i] << " " << (*Y)[i];
-      file << std::endl;
-    }
-    file.close();
-  }
 
   using ode_state_t = rompp::core::Vector<app_state_t>;
   using ode_res_t   = rompp::core::Vector<app_residual_t>;
@@ -88,13 +56,12 @@ int main(int argc, char *argv[]){
   constexpr scalar_t dt = 0.001;
   constexpr scalar_t fint = 0.5;
   constexpr auto Nsteps = static_cast<unsigned int>(fint/dt);
-  Observer obs;
-  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs);
+  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
   y.data()->Print(std::cout << std::setprecision(14));
   {
     using namespace rompp::apps::test;
-    checkSol(y,
-	     NonLinAdvDiffReac2dExpGoldStates<ode_case>::get(Nx, Ny, dt, fint));
+    checkSol
+      (y, NonLinAdvDiffReac2dExpGoldStates<ode_case>::get(Nx, Ny, dt, fint));
   }
 
   MPI_Finalize();
