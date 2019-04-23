@@ -81,10 +81,10 @@ public:
 		  step_t step,
 		  solver_type & solver,
 		  Args ... args){
-#ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout("current ode state is:","\n");
-    ::rompp::core::io::print_core_wrapper(y, std::cout, 'd', -1);
-#endif
+// #ifdef DEBUG_PRINT
+//     ::rompp::core::io::print_stdout("current ode state is:","\n");
+//     ::rompp::core::io::print_core_wrapper(y, std::cout, 'd', -1);
+// #endif
     myImpl.doStep(*this, y, t, dt, step,
 		  solver, std::forward<Args>(args)...);
   }
