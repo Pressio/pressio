@@ -13,8 +13,8 @@ namespace rompp{ namespace apps{ namespace test{ namespace epetra{
 template <typename T = int>
 auto convertFromVVecToMultiVec(
       const std::vector<std::vector<double>> & A0,
-      T nrows, T ncols,
-      Epetra_MpiComm & Comm,
+      const T nrows, const T ncols,
+      const Epetra_MpiComm & Comm,
       const Epetra_Map & rowMap)
   -> rompp::core::MultiVector<Epetra_MultiVector>{
 
@@ -36,7 +36,7 @@ template <typename T = int>
 auto readBasis(
   std::string filename,
   T romSize, T numCell,
-  Epetra_MpiComm & Comm,
+  const Epetra_MpiComm & Comm,
   const Epetra_Map & rowMap)
   ->rompp::core::MultiVector<Epetra_MultiVector>
 {
