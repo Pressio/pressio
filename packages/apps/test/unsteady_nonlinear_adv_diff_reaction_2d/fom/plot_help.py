@@ -12,7 +12,9 @@ from matplotlib import cm
 # this is a helper script to plot results (if needed)
 # just provided but some parameters need to be changed
 
-nx = 11
+# nx should be equal to Nx-2 where Nx is the value set in main.cc
+# this is becuase of the convention we use to discretize
+nx = 9
 ny = (nx+2)*2-1
 
 def getXY():
@@ -40,16 +42,16 @@ for i in range(0,200,10):
     ax2 = fig.add_subplot(132)
     ax3 = fig.add_subplot(133)
 
-    lev1 = np.linspace(np.min(c0), np.max(c0), nLevs)
-    ax1.contourf(x,y,c0, lev1, cmap=cm.jet)
+    #lev1 = np.linspace(np.min(c0), np.max(c0), nLevs)
+    ax1.contourf(x,y,c0, cmap=cm.jet)
     ax1.set_aspect(aspect=1)
 
-    lev2 = np.linspace(np.min(c1), np.max(c1), nLevs)
-    ax2.contourf(x,y,c1, lev2, cmap=cm.jet)
+    #lev2 = np.linspace(np.min(c1), np.max(c1), nLevs)
+    ax2.contourf(x,y,c1, cmap=cm.jet)
     ax2.set_aspect(aspect=1)
 
-    lev3 = np.linspace(np.min(c2), np.max(c2), nLevs)
-    ax3.contourf(x,y,c2, lev3, cmap=cm.jet)
+    #lev3 = np.linspace(np.min(c2), np.max(c2), nLevs)
+    ax3.contourf(x,y,c2, cmap=cm.jet)
     ax3.set_aspect(aspect=1)
 
     plt.pause(0.01)

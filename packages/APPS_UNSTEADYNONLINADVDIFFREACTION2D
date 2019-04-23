@@ -2,6 +2,7 @@
 #ifndef APPS_UNSTEADYNONLINADVDIFFREACTION2D_HPP_
 #define APPS_UNSTEADYNONLINADVDIFFREACTION2D_HPP_
 
+#include "apps/src/unsteady_nonlinear_adv_diff_reaction2d/apps_unsteady_nonlinear_adv_diff_reaction_2d_eigen.hpp"
 #include "apps/src/unsteady_nonlinear_adv_diff_reaction2d/apps_unsteady_nonlinear_adv_diff_reaction_2d_epetra.hpp"
 #include "apps/src/unsteady_nonlinear_adv_diff_reaction2d/apps_unsteady_nonlinear_adv_diff_reaction_2d_block_tpetra.hpp"
 
