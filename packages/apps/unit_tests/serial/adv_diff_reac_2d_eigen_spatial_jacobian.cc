@@ -11,7 +11,6 @@ TEST(adv_diff_reaction_2d_eigen, spatial_jacobian){
 
   static_assert(std::is_same<scalar_t, double>::value, "");
 
-  constexpr auto one = ::rompp::core::constants::one<scalar_t>();
   constexpr auto zero = ::rompp::core::constants::zero<scalar_t>();
 
   constexpr int Nx = 5, Ny = 5;
@@ -64,8 +63,6 @@ TEST(adv_diff_reaction_2d_eigen, spatial_jacobian){
     const auto F = +u(iGPt)/(2.*dx) + eps/(dx*dx);
     const auto D = -v(iGPt)/(2.*dy) + eps/(dy*dy);
     const auto E = +v(iGPt)/(2.*dy) + eps/(dy*dy);
-
-    scalar_t trueValue{};
 
     // i=0,1,2 cover the dofs at grid point 0
     if (i==0){
