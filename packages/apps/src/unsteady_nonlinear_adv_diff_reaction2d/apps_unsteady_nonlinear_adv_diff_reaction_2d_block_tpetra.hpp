@@ -59,7 +59,7 @@ public:
 public:
   UnsteadyNonLinAdvDiffReac2dBlockTpetra(rcpcomm_t comm,
 				      int Nx, int Ny,
-				      scalar_type K	  = 5.0,
+				      scalar_type K   = 5.0,
 				      scalar_type eps = 0.01)
     : K_{K}, eps_{eps},
       comm_(comm), rank_{comm_->getRank()},
@@ -70,8 +70,8 @@ public:
       dy_{Ly_/(Ny-1)},
       dxSqInv_{1.0/(dx_*dx_)},
       dySqInv_{1.0/(dy_*dy_)},
-      dx2Inv_{1./dx_},
-      dy2Inv_{1./dy_}
+      dx2Inv_{1./(2.*dx_)},
+      dy2Inv_{1./(2.*dy_)}
   {}
 
 public:
@@ -85,10 +85,6 @@ public:
   void createGraph();
   void computeSource();
   void setup();
-
-  void getCoeff(ST uij, ST vij,
-		GO GID, GO neighborGID,
-		LO whichDof);
 
   void assembleMatrix(const state_type & yState) const;
   void computeChem(const state_type &) const;

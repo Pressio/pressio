@@ -230,15 +230,6 @@ void UnsteadyNonLinAdvDiffReac2dBlockTpetra::assembleMatrix
 	curBlock[4] = 2.0*eps_*dySqInv_;
 	curBlock[8] = 2.0*eps_*dySqInv_;
       }
-      /* for (LO j = 0; j < numSpecies_; ++j) */
-      /* { */
-      /* 	const ST newEntry = getCoeff(uij, vij, GID, neighborGID, i); */
-
-      /* 	/\*for (LO i = 0; i < numSpecies_; ++i) {*\/ */
-      /* 	LO i = j; */
-      /* 	curBlock[i + j * numSpecies_] = newEntry; */
-      /* 	/\*}*\/ */
-      /* } */
     }
   }//for
 

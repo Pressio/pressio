@@ -12,16 +12,23 @@ void checkSol(T & y, //non Const because we need getVectorView
 	      const std::vector<double> & trueS){
   auto y_tpv = y.data()->getVectorView();
   const auto arrrcp = y_tpv.getData();
-
   if (trueS.empty()) {
     std::cout << " true solution not found, empty " << std::endl;
     checkStr = "FAILED";
   }
+
   for (size_t i=0; i<trueS.size(); i++){
-    std::cout << i << " " << arrrcp[i] << " " << trueS[i] << std::endl;
-    if (std::abs( arrrcp[i] - trueS[i]) > eps) checkStr = "FAILED";
+    std::cout << i << " "
+	      << std::setprecision(14)
+	      << arrrcp[i] << " " << trueS[i]
+	      << std::endl;
+
+    if (std::abs( arrrcp[i] - trueS[i]) > eps or
+	std::isnan(arrrcp[i]) )
+      checkStr = "FAILED";
   }
 }
+
 
 int main(int argc, char *argv[]){
   using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dBlockTpetra;
@@ -63,8 +70,11 @@ int main(int argc, char *argv[]){
     rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
     {
       using namespace rompp::apps::test;
-      checkSol(y,
-    	       NonLinAdvDiffReac2dExpGoldStates<ode_case>::get(Nx, Ny, dt, fint));
+      checkSol
+	(y, NonLinAdvDiffReac2dExpGoldStates<ode_case>::get(Nx,
+							    Ny,
+							    dt,
+							    fint));
     }
   }
 
