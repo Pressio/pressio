@@ -56,8 +56,8 @@ struct LSPGUnsteadyProblemGenerator<
 
 public:
 
-  /* sfinea here for when we do NOT need aux stepper
-   * note that we need to use trick _fom_t for sfinea to work */
+  /* sfinae here for when we do NOT need aux stepper
+   * note that we need to use trick _fom_t for sfinae to work */
   template <
    typename _fom_t,
    typename ::rompp::mpl::enable_if_t<
@@ -85,9 +85,8 @@ public:
       stepperObj_(yROM, appObj, resObj_, jacObj_)
   {}
 
-
-  /* sfinea here for when we need aux stepper
-   * note that we need to use trick _fom_t for sfinea to work */
+  /* sfinae here for when we need aux stepper
+   * note that we need to use trick _fom_t for sfinae to work */
   template <
     typename _fom_t,
     typename ::rompp::mpl::enable_if_t<
