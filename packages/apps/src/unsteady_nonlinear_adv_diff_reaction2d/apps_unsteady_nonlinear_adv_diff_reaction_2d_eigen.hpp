@@ -92,21 +92,21 @@ public:
     return JJ;
   }
 
-  // // computes: C = Jac B where B is a multivector
-  // void applyJacobian(const state_type & yState,
-  // 		     const mv_t & B,
-  // 		     mv_t & C,
-  // 		     scalar_type t) const{
-  //   applyJacobian_impl(yState, B, C);
-  // }
+  // computes: C = Jac B where B is a multivector
+  void applyJacobian(const state_type & yState,
+  		     const mv_t & B,
+  		     mv_t & C,
+  		     scalar_type t) const{
+    applyJacobian_impl(yState, B, C);
+  }
 
-  // mv_t applyJacobian(const state_type & yState,
-  // 		     const mv_t & B,
-  // 		     scalar_type t) const{
-  //   mv_t A( y.size(), B.cols() );
-  //   applyJacobian_impl(yState, B, C);
-  //   return C;
-  // };
+  mv_t applyJacobian(const state_type & yState,
+  		     const mv_t & B,
+  		     scalar_type t) const{
+    mv_t A( yState.size(), B.cols() );
+    applyJacobian_impl(yState, B, A);
+    return A;
+  };
 
 private:
   void localIDToLiLj(int ID, int & li, int & lj) const{
@@ -127,12 +127,13 @@ private:
   void jacobian_impl(const state_type & yState,
 		     jacobian_type & J) const;
 
-  // void applyJacobian_impl(const state_type & yState,
-  // 			  const mv_t & B,
-  // 			  mv_t & C) const{
-  //   //computeJacobian(yState);
-  //   //A_->Multiply(false, B, C);
-  // }
+  void applyJacobian_impl(const state_type & yState,
+  			  const mv_t & B,
+  			  mv_t & C) const{
+    jacobian_type JJ(yState.size(), yState.size());
+    this->jacobian_impl(yState, JJ);
+    C = JJ * B;
+  }
 
 protected:
   // radius where source 1 is active
