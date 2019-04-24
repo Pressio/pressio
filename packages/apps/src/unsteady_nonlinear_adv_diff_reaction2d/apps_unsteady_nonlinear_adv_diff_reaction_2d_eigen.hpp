@@ -19,8 +19,7 @@ public:
   using scalar_type	= double;
   using state_type	= nativeVec;
   using residual_type	= state_type;
-  using jacobian_type	=
-    Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
+  using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;
   static constexpr auto one = ::rompp::core::constants::one<scalar_type>();

@@ -143,7 +143,7 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::assembleFDMatrix() const
 
       // add diagonal
       k = 0;
-      values[k] = 2.0*(-eps_ * dxSqInv_ - eps_ * dySqInv_);
+      values[k] = -2.0*(eps_*dxSqInv_ + eps_*dySqInv_);
       colInd[k] = dofGID;
       k++;
 
@@ -187,8 +187,11 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::assembleFDMatrix() const
       }
 
       // the following 3 terms are the ones for chemistry but
-      // are set to zero here because are only used later
-      // to compute jacobian, they are not used for FD matrix
+      // are set to zero here because are used later
+      // to compute jacobian, they are not used for FD matrix.
+      // However, we need to insert them here so that we can
+      // replace their values in the matrix later
+      // without epetra complaining.
       if (iDof == 0){
       	values[k] = 0.0;
       	colInd[k] = dofGID+1;
@@ -202,9 +205,13 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::assembleFDMatrix() const
       }
 
       if (iDof == 2){
-      	values[k] = 0.0; colInd[k] = dofGID-2; k++;
-      	values[k] = 0.0; colInd[k] = dofGID-1; k++;
-      	k++;
+      	values[k] = 0.0;
+	colInd[k] = dofGID-2;
+	k++;
+
+      	values[k] = 0.0;
+	colInd[k] = dofGID-1;
+	k++;
       }
 
       if (FDMat_->Filled())
@@ -250,77 +257,73 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::computeChem
 }
 
 
-// void UnsteadyNonLinAdvDiffReac2dEpetra::computeJacobian( const state_type & yState ) const
-// {
-//   /* the jacobian for this problem can be obtained by
-//    * computing the FD matrix and then adding the
-//    * contributions from the chemistry */
+void UnsteadyNonLinAdvDiffReac2dEpetra::computeJacobian( const state_type & yState ) const
+{
+  /* the jacobian for this problem can be obtained by
+   * computing the FD matrix and then adding the
+   * contributions from the chemistry */
 
-//   // this is the FD matrix
-//   assembleMatrix();
+  // we need to computes the FD matrix all the time because
+  // we use SumIntoGlobalValues below
+  this->assembleFDMatrix();
 
-//   std::array<int, 3> colInd{};
-//   std::array<scalar_type, 3> values{};
-//   int l = {0};
-//   int numEntries = {0};
-//   scalar_type c0 = {}, c1 = {}, c2 = {};
+  std::array<int, 3> colInd{};
+  std::array<scalar_type, 3> values{};
+  int l = {0};
+  int numEntries = {0};
+  scalar_type c0 = {}, c1 = {}, c2 = {};
 
-//   for (auto i=0; i<gptPerProc_; i++)
-//   {
-//     for (auto iDof=0; iDof<numSpecies_; iDof++)
-//     {
-//       numEntries = 0;
+  for (auto i=0; i<gptPerProc_; i++)
+  {
+    for (auto iDof=0; iDof<numSpecies_; iDof++)
+    {
+      numEntries = 0;
 
-//       // global ID of current UNKNOWN
-//       auto dofGID = MyGlobalDof_[l];
+      // global ID of current UNKNOWN
+      auto dofGID = MyGlobalDof_[l];
 
-//       // store the conc values of the species at this point
-//       if (iDof == 0){
-//        	c0 = yState[l];
-// 	c1 = yState[l+1];
-// 	c2 = yState[l+2];
-//       }
-//       if (iDof == 1){
-//       	c0 = yState[l-1];
-//       	c1 = yState[l];
-//       	c2 = yState[l+1];
-//       }
-//       if (iDof == 2){
-//       	c0 = yState[l-2];
-//       	c1 = yState[l-1];
-//       	c2 = yState[l];
-//       }
+      // store the conc values of the species at this point
+      if (iDof == 0){
+       	c0 = yState[l];	  c1 = yState[l+1]; c2 = yState[l+2];
+      }
+      if (iDof == 1){
+      	c0 = yState[l-1]; c1 = yState[l];   c2 = yState[l+1];
+      }
+      if (iDof == 2){
+      	c0 = yState[l-2]; c1 = yState[l-1]; c2 = yState[l];
+      }
 
-//       // for c_0 we have a -K*c0*c1, so two more terms in jacobian
-//       if (iDof == 0){
-//       	values[0] = -K_*c1; colInd[0] = dofGID;
-//       	values[1] = -K_*c0; colInd[1] = dofGID+1;
-//       	numEntries = 2;
-//       }
+      // for c_0 we have a -K*c0*c1
+      if (iDof == 0){
+      	values[0] = -K_*c1; colInd[0] = dofGID;
+      	values[1] = -K_*c0; colInd[1] = dofGID+1;
+      	numEntries = 2;
+      }
 
-//       // for c_1, we have -K*c0*c1, so two more terms in jacobian
-//       if (iDof == 1){
-//       	values[0] = -K_*c0; colInd[0] = dofGID;
-//       	values[1] = -K_*c1; colInd[1] = dofGID-1;
-//       	numEntries = 2;
-//       }
+      // for c_1, we have -K*c0*c1
+      if (iDof == 1){
+      	values[0] = -K_*c0; colInd[0] = dofGID;
+      	values[1] = -K_*c1; colInd[1] = dofGID-1;
+      	numEntries = 2;
+      }
 
-//       // for c_2, we have K*c0*c1 - K*c3, so three more terms in jacobian
-//       if (iDof == 2){
-//       	values[0] = -K_;   colInd[0] = dofGID;
-//       	values[1] = K_*c1; colInd[1] = dofGID-2;
-//       	values[2] = K_*c0; colInd[2] = dofGID-1;
-//       	numEntries = 3;
-//       }
+      // for c_2, we have K*c0*c1 - K*c3, so three more terms in jacobian
+      if (iDof == 2){
+      	values[0] = -K_;   colInd[0] = dofGID;
+      	values[1] = K_*c1; colInd[1] = dofGID-2;
+      	values[2] = K_*c0; colInd[2] = dofGID-1;
+      	numEntries = 3;
+      }
 
-//       A_->SumIntoGlobalValues(dofGID, numEntries,
-//       			      values.data(), colInd.data());
+      FDMat_->SumIntoGlobalValues(dofGID, numEntries,
+				  values.data(),
+				  colInd.data());
 
-//       // update counter
-//       l++;
-//     }
-//   }
+      // update counter
+      l++;
+    }
+  }
 
-// }//computeJacobian
+}//computeJacobian
 
 }} //namespace rompp::apps

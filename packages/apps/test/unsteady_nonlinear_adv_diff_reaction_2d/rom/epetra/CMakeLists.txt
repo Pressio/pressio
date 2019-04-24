@@ -1,2 +1,2 @@
 
-ADD_SUBDIRECTORY(collect_snapshots_and_lspg_normal_eq)
+ADD_SUBDIRECTORY(lspg_euler_normal_eq)

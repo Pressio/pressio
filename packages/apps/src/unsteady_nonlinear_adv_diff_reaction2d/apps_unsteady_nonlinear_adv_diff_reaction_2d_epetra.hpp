@@ -126,7 +126,7 @@ private:
 			  const mv_t & B,
 			  mv_t & C) const{
     computeJacobian(yState);
-    //A_->Multiply(false, B, C);
+    FDMat_->Multiply(false, B, C);
   }
 
 protected:
@@ -140,7 +140,7 @@ protected:
   const std::array<scalar_type,2> oPtS2 = {{0.75, 1.}};
 
   static constexpr int numSpecies_ = 3;
-  static constexpr int maxNonZeroPerRow_ = 8;
+  static constexpr int maxNonZeroPerRow_ = 7;
   const scalar_type Lx_ = 1.0;
   const scalar_type Ly_ = 2.0;
   const std::array<scalar_type,2> xAxis_{0., 1.};
@@ -199,8 +199,9 @@ protected:
   mutable rcp<nativeVec> s2_;
   mutable rcp<nativeVec> s3_;
 
-  // the FDMat should/can only be computed once
-  // since it is independent of the concentrations fields
+  // NOTE: within the residual only, the FDMat can
+  // be computed once since it is independent
+  // of the concentrations fields
   bool FDMatrixIsComputed_ = false;
 
 };

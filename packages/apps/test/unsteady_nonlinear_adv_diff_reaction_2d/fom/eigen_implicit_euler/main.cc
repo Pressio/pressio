@@ -90,11 +90,11 @@ int main(int argc, char *argv[]){
 
   // integrate in time
   constexpr scalar_t dt = 0.1;
-  constexpr scalar_t fint = dt*10;
+  constexpr scalar_t fint = 1.0;
   constexpr auto Nsteps = static_cast<unsigned int>(fint/dt);
   Observer obs;
   rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs, solverO);
-  std::cout << std::setprecision(14) << *y.data() << std::endl;
+  std::cout << std::fixed << std::setprecision(14) << *y.data() << std::endl;
   {
     using namespace rompp::apps::test;
     checkSol(y,

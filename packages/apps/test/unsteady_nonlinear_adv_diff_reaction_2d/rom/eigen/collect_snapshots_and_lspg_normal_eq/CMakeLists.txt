@@ -5,3 +5,5 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   NUM_MPI_PROCS 1
   PASS_REGULAR_EXPRESSION "PASSED"
   )
+
+configure_file(../../basis/basis_nx11_ny21_col11.txt gold_basis.txt COPYONLY)
