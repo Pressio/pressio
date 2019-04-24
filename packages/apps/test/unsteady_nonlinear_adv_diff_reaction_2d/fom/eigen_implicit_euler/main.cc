@@ -17,7 +17,10 @@ void checkSol(const T & y,
   }
   for (size_t i=0; i<trueS.size(); i++){
     if (std::abs(y[i] - trueS[i]) > eps or
-	std::isnan(y[i])) checkStr = "FAILED";
+	std::isnan(y[i])){
+      checkStr = "FAILED";
+      break;
+    }
   }
 }
 
@@ -86,7 +89,7 @@ int main(int argc, char *argv[]){
   solverO.setMaxIterations(200);
 
   // integrate in time
-  constexpr scalar_t dt = 0.005;
+  constexpr scalar_t dt = 0.1;
   constexpr scalar_t fint = dt*10;
   constexpr auto Nsteps = static_cast<unsigned int>(fint/dt);
   Observer obs;
