@@ -60,7 +60,7 @@ void do_update(T & v, const scalar_t & a,
 {
   constexpr auto one  = ::rompp::core::constants::one<scalar_t>();
 
-  v.data()->update(b, *v1.data(), one); // v = v + b * v1
+  v.data()->update(b, *v1.data(), a); // v = a*v + b*v1
   v.data()->update(c, *v2.data(), one); // add c*v2
   v.data()->update(d, *v3.data(), one); // add d*v3
 }

@@ -38,7 +38,6 @@ void do_update(T & v, const T & v1, const scalar_t & b)
   v = b*v1;
 }
 
-
 // enable for tpetra and tpetra block vectors NOT supporting expr templates
 template<
   typename T,
@@ -51,8 +50,7 @@ template<
 void do_update(T & v, const scalar_t & a,
 	       const T & v1, const scalar_t & b)
 {
-  constexpr auto one  = ::rompp::core::constants::one<scalar_t>();
-  v.data()->update(b, *v1.data(), one); // v = v + b * v1
+  v.data()->update(b, *v1.data(), a); // v = a*v + b * v1
 }
 
 template<

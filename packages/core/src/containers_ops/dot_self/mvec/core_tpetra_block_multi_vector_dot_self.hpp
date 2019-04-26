@@ -30,10 +30,24 @@ void dot_self(const mvec_t & mvA,
 	      > & C)
 {
   // get a tpetra multivector that views the data
-  const auto mvView = mvA.getMultiVectorView();
+  const auto mvView = mvA.data()->getMultiVectorView();
 
-  // use the dot_self already implemented for tpetra MV
-  ::rompp::core::ops::dot_self(mvView, C);
+  // how many vectors are in mvA and mvB
+  const auto numVecsA = mvA.globalNumVectors();
+
+  // A dot A = A^T*A, which yields a symmetric matrix
+  // only need to compute half and fill remaining entries accordingly
+  for (auto i=0; i<numVecsA; i++)
+  {
+    // colI is a Teuchos::RCP<Vector<...>>
+    const auto colI = mvView.getVector(i);
+    for (auto j=i; j<numVecsA; j++)
+    {
+      const auto colJ = mvView.getVector(j);
+      C(i,j) = colI->dot(*colJ);
+      C(j,i) = C(i,j);
+    }
+  }
 }
 
 

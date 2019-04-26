@@ -38,6 +38,23 @@ auto norm2(const vec_type & a)
   return a.data()->norm2();
 }
 
+//  block tpetra vector wrapper
+template <typename vec_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_vector_wrapper_tpetra_block<vec_type>::value &&
+    std::is_same<typename details::traits<vec_type>::scalar_t,
+		 typename details::traits<vec_type>::mag_t>::value
+    > * = nullptr
+  >
+auto norm2(const vec_type & a)
+  -> typename details::traits<vec_type>::mag_t
+{
+  /* workaround the non-constness of getVectorView,
+   * which is supposed to be const but it is not */
+  using mv_t = Tpetra::Experimental::BlockVector<>;
+  return const_cast<mv_t*>(a.data())->getVectorView().norm2();
+}
+
 #endif
 //--------------------------------------------------------
 

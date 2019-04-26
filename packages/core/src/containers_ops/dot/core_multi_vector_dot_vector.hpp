@@ -5,5 +5,6 @@
 #include "mvec_vec/core_eigen_multi_vector_dot_eigen_vector.hpp"
 #include "mvec_vec/core_epetra_multi_vector_dot_epetra_vector.hpp"
 #include "mvec_vec/core_tpetra_multi_vector_dot_tpetra_vector.hpp"
+#include "mvec_vec/core_tpetra_block_multi_vector_dot_tpetra_block_vector.hpp"
 
 #endif
