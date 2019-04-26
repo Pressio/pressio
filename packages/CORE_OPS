@@ -32,6 +32,7 @@
 #include "core/src/containers_ops/multivec_vec_product/core_tpetra_multi_vector_product_eigen_vector.hpp"
 #include "core/src/containers_ops/multivec_vec_product/core_epetra_multi_vector_product_teuchos_serial_vector.hpp"
 #include "core/src/containers_ops/multivec_vec_product/core_tpetra_multi_vector_product_teuchos_serial_vector.hpp"
+#include "core/src/containers_ops/multivec_vec_product/core_tpetra_block_multi_vector_product_eigen_vector.hpp"
 
 /// update function to do operations on containers
 #include "core/src/containers_ops/do_update/core_vector_one_term_update.hpp"
