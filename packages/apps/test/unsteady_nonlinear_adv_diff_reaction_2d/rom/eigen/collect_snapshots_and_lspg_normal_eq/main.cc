@@ -5,6 +5,7 @@
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
+#include "../../../fom/gold_states_implicit.hpp"
 
 using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEigen;
 using scalar_t		= typename app_t::scalar_type;
@@ -20,6 +21,7 @@ using eig_dyn_mat	= Eigen::MatrixXd;
 using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
 using uint_t		= unsigned int;
 
+constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
 constexpr auto zero	= ::rompp::core::constants::zero<scalar_t>();
 constexpr auto t0	= static_cast<scalar_t>(0);
 
@@ -54,24 +56,11 @@ struct FomObserver{
   void operator()(size_t step,
 		  scalar_t t,
 		  const T & y){
-    // if (t == 0 or
-    // 	t == 0.2 or
-    // 	t == 0.4 or
-    // 	t == 0.6 or
-    // 	t == 0.8 or
-    // 	t == 1.0 or
-    // 	t == 1.2 or
-    // 	t == 1.4 or
-    // 	t == 1.6 or
-    // 	t == 1.8 or
-    // 	t == 2.0)
-    // {
-      A_.conservativeResize(Eigen::NoChange,
-			    A_.cols()+1);
-      for (auto i=0; i<A_.rows(); i++)
-	A_(i,colInd_) = y[i];
-      colInd_++;
-      //}
+    A_.conservativeResize(Eigen::NoChange,
+			  A_.cols()+1);
+    for (auto i=0; i<A_.rows(); i++)
+      A_(i,colInd_) = y[i];
+    colInd_++;
   }
 };
 
@@ -132,9 +121,8 @@ struct LSPGRunner{
   ode_state_t run(scalar_t dt, uint_t Nsteps)
   {
     using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;
-    using decoder_jac_t	= rompp::core::Matrix<eig_dyn_mat>;
-    using decoder_t	= rompp::rom::LinearDecoder<
-      decoder_jac_t, rompp::core::Matrix>;
+    using decoder_jac_t	= rompp::core::MultiVector<eig_dyn_mat>;
+    using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
     // app object
     app_t appobj(Nx_, Ny_);
@@ -153,7 +141,6 @@ struct LSPGRunner{
     yROM.putScalar(0.0);
 
     // define LSPG problem
-    constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
     using lspg_problem_type = rompp::rom::DefaultLSPGTypeGenerator<
       app_t, ode_case, decoder_t, lspg_state_t>;
     using lspg_generator = rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_type>;
@@ -173,20 +160,8 @@ struct LSPGRunner{
     using gnsolver_t   = rompp::solvers::iterative::GaussNewton<
       lspg_stepper_t, lin_solver_t>;
     gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
-    solver.setTolerance(1e-15);
+    solver.setTolerance(1e-13);
     solver.setMaxIterations(500);
-
-    // using lspg_stepper_t = typename lspg_problem_type::lspg_stepper_t;
-    // using rom_jac_t     = typename lspg_problem_type::lspg_matrix_t;
-    // // GaussNewton solver
-    // using qr_algo = rompp::qr::Householder;
-    // using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
-    // using converged_when_t = rompp::solvers::iterative::default_convergence;
-    // using gnsolver_t  = rompp::solvers::iterative::GaussNewtonQR<
-    //   qr_type, converged_when_t, lspg_stepper_t>;
-    // gnsolver_t solver(lspgProblem.stepperObj_, yROM);
-    // solver.setTolerance(1e-13);
-    // solver.setMaxIterations(200);
 
     // integrate in time
     rompp::ode::integrateNSteps(lspgProblem.stepperObj_, yROM,
@@ -210,22 +185,22 @@ int main(int argc, char *argv[]){
 
   // set parameters to use for runs
   constexpr int Nx = 11, Ny = Nx*2-1;
-  constexpr scalar_t dt = 0.05;
-  constexpr scalar_t fint = dt*3;
+  constexpr scalar_t dt = 0.1;
+  constexpr scalar_t fint = 1.0;
   constexpr auto Nsteps = static_cast<uint_t>(fint/dt);
 
-  // run FOM and collect snapshots
-  FomRunner fom(Nx, Ny);
-  const auto fomY = fom.run(dt, Nsteps);
+  // // run FOM and collect snapshots
+  // FomRunner fom(Nx, Ny);
+  // const auto fomY = fom.run(dt, Nsteps);
 
-  // get snapshots
-  const auto & S = fom.getSnapshots();
-  // do SVD and compute basis
-  Eigen::JacobiSVD<eig_dyn_mat> svd(S, Eigen::ComputeThinU);
-  const auto U = svd.matrixU();
-  //std::cout << std::setprecision(15) << U << std::endl;
-  std::cout << S << std::endl;
-  std::cout << "Done with snapshots" << std::endl;
+  // // get snapshots
+  // const auto & S = fom.getSnapshots();
+  // // do SVD and compute basis
+  // Eigen::JacobiSVD<eig_dyn_mat> svd(S, Eigen::ComputeThinU);
+  // const auto U = svd.matrixU();
+  // //std::cout << std::setprecision(15) << U << std::endl;
+  // std::cout << S << std::endl;
+  // std::cout << "Done with snapshots" << std::endl;
 
   // std::ofstream file;
   // file.open( "phi.txt" );
@@ -235,43 +210,49 @@ int main(int argc, char *argv[]){
   //      << std::endl;
   // file.close();
 
-  // // read gold basis from file
-  // std::vector<std::vector<double>> U0;
-  // readMatrixFromFile("gold_basis.txt", U0, Nsteps+1);
-  // Eigen::MatrixXd U(U0.size(), U0[0].size());
-  // for (auto i=0; i<U0.size(); i++)
-  //   for (auto j=0; j<U0[i].size(); j++)
-  //     U(i,j) = U0[i][j];
+  constexpr int romSize = Nsteps+1;
+
+  // read gold basis from file
+  std::vector<std::vector<double>> U0;
+  readMatrixFromFile("basis.txt", U0, romSize);
+  Eigen::MatrixXd U(U0.size(), U0[0].size());
+  for (size_t i=0; i<U0.size(); i++)
+    for (size_t j=0; j<U0[i].size(); j++)
+      U(i,j) = U0[i][j];
 
   // ROM
-  const int romSize = U.cols();
   LSPGRunner rom(U, Nx, Ny, romSize);
   const auto romY = rom.run(dt, Nsteps);
 
-  // // check error, should be small but not too small
-  // // because we are only taking some samples
-  // scalar_t maxErr={-1.0};
-  // scalar_t err ={0};
-  // scalar_t errtmp ={0};
-  // for (auto i=0; i<fomY.size(); i++){
-  //   errtmp = (fomY[i] - romY[i]);
-  //   err += errtmp*errtmp;
-  //   if (std::abs(errtmp) > maxErr)
-  //     maxErr = std::abs(errtmp);
+  {
+    // check that solution is right
+    using namespace rompp::apps::test;
+    const auto trueY
+      = NonLinAdvDiffReac2dImpGoldStates<ode_case>::get(Nx, Ny, dt, fint);
 
-  //   std::cout << std::setprecision(14)
-  // 	      << "fom= " << fomY[i]
-  // 	      << " romY= " << romY[i]
-  // 	      << std::endl;
-  // }
-  // const auto rmsErr = std::sqrt(err/(scalar_t) fomY.size());
-  // std::cout << std::setprecision(14)
-  // 	    << " RMSerror= " << rmsErr
-  // 	    << " LInferror= " << maxErr << std::endl;
-  // if ( rmsErr > 1e-2 or maxErr > 1e-2){
-  //   checkStr = "FAILED";
-  //   exit(EXIT_FAILURE);
-  // }
+    scalar_t maxErr={-1.0};
+    scalar_t err ={0};
+    scalar_t errtmp ={0};
+    for (size_t i=0; i<trueY.size(); i++){
+      errtmp = (trueY[i] - romY[i]);
+      err += errtmp*errtmp;
+
+      if (std::abs(errtmp) > maxErr)
+	maxErr = std::abs(errtmp);
+
+      std::cout << std::setprecision(14)
+		<< "fom= " << trueY[i]
+		<< " romY= " << romY[i]
+		<< std::endl;
+    }
+    const auto rmsErr = std::sqrt(err/(scalar_t) trueY.size());
+    std::cout << std::setprecision(14)
+	      << " RMSerror= " << rmsErr
+	      << " LInferror= " << maxErr << std::endl;
+    if ( rmsErr > 1e-6 or maxErr > 1e-6){
+      checkStr = "FAILED";
+    }
+  }
 
   std::cout << checkStr << std::endl;
   return 0;

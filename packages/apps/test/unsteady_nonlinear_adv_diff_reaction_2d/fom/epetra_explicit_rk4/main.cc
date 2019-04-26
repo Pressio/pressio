@@ -15,8 +15,13 @@ void checkSol(const T & y,
     checkStr = "FAILED";
   }
   for (size_t i=0; i<trueS.size(); i++){
-    if (std::abs(y[i] - trueS[i]) > eps or
-	std::isnan(y[i])) checkStr = "FAILED";
+    const auto err = std::abs(y[i] - trueS[i]);
+    std::cout << std::fixed << std::setprecision(15)
+	      << " true = " << trueS[i]
+	      << " y = " << y[i]
+	      << " err = " << err
+	      << std::endl;
+    if ( err > eps or std::isnan(y[i])) checkStr = "FAILED";
   }
 }
 
