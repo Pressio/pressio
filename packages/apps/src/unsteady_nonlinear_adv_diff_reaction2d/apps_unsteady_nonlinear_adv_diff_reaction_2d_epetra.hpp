@@ -16,9 +16,9 @@ namespace rompp{ namespace apps{
 class UnsteadyNonLinAdvDiffReac2dEpetra{
 protected:
   template<typename T> using rcp = std::shared_ptr<T>;
+  using this_t		= UnsteadyNonLinAdvDiffReac2dEpetra;
   using nativeVec	= Epetra_Vector;
   using nativeMatrix	= Epetra_CrsMatrix;
-  using this_t		= UnsteadyNonLinAdvDiffReac2dEpetra;
   using mv_t		= Epetra_MultiVector;
 
 public:
@@ -93,10 +93,6 @@ public:
   };
 
 private:
-  void localIDToLiLj(int ID, int & li, int & lj) const{
-    lj = ID/Nx_;
-    li = ID % Nx_;
-  }
   void globalIDToGiGj(int ID, int & gi, int & gj) const{
     gj = ID/Nx_;
     gi = ID % Nx_;
@@ -108,10 +104,9 @@ private:
   void residual_impl(const state_type & yState,
 		     residual_type & R) const
   {
-    if (FDMatrixIsComputed_ == false)
-      this->assembleFDMatrix();
+    R.PutScalar(0.0);
 
-    // the chemistry part is needed because it depends on the state
+    this->assembleFDMatrix();
     this->computeChem(yState);
 
     // do product of FDMatrix with state
@@ -198,11 +193,6 @@ protected:
   mutable rcp<nativeVec> s1_;
   mutable rcp<nativeVec> s2_;
   mutable rcp<nativeVec> s3_;
-
-  // NOTE: within the residual only, the FDMat can
-  // be computed once since it is independent
-  // of the concentrations fields
-  bool FDMatrixIsComputed_ = false;
 
 };
 

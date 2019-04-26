@@ -45,7 +45,7 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::createSolutionMap(){
   auto myMinDofGID = myMinGid * this_t::numSpecies_;
 
   numGlobalDof_ = this_t::numSpecies_ * Nx_ * Ny_;
-  const auto int dofPerProc_ = gptPerProc_*this_t::numSpecies_;
+  const auto dofPerProc_ = gptPerProc_*this_t::numSpecies_;
 
   std::vector<int> myGDofs(dofPerProc_);
   std::iota( myGDofs.begin(), myGDofs.end(), myMinDofGID);
@@ -241,13 +241,13 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::computeChem
     // for a given grid point, loop over local dofs
     for (auto iDof=0; iDof<numSpecies_; iDof++){
       if (iDof == 0){
-  	(*chemForcing_)[k] = -K_*C[k] * C[k+1] + (*s1_)[i];
+  	(*chemForcing_)[k] = -K_*C[k]*C[k+1] + (*s1_)[i];
       }
       else if (iDof == 1){
-  	(*chemForcing_)[k] = -K_ * C[k-1] * C[k] + (*s2_)[i];
+  	(*chemForcing_)[k] = -K_*C[k-1]*C[k] + (*s2_)[i];
       }
       else if (iDof == 2){
-  	(*chemForcing_)[k] = K_*C[k-2]*C[k-1] - K_*C[k] + (*s3_)[i];
+  	(*chemForcing_)[k] = K_*C[k-2]*C[k-1] -K_*C[k] + (*s3_)[i];
       }
 
       // update indexer
@@ -271,7 +271,7 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::computeJacobian( const state_type & ySta
   std::array<scalar_type, 3> values{};
   int l = {0};
   int numEntries = {0};
-  scalar_type c0 = {}, c1 = {}, c2 = {};
+  scalar_type c0 = {}, c1 = {};
 
   for (auto i=0; i<gptPerProc_; i++)
   {
@@ -284,13 +284,13 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::computeJacobian( const state_type & ySta
 
       // store the conc values of the species at this point
       if (iDof == 0){
-       	c0 = yState[l];	  c1 = yState[l+1]; c2 = yState[l+2];
+       	c0 = yState[l];	  c1 = yState[l+1];
       }
       if (iDof == 1){
-      	c0 = yState[l-1]; c1 = yState[l];   c2 = yState[l+1];
+      	c0 = yState[l-1]; c1 = yState[l];
       }
       if (iDof == 2){
-      	c0 = yState[l-2]; c1 = yState[l-1]; c2 = yState[l];
+      	c0 = yState[l-2]; c1 = yState[l-1];
       }
 
       // for c_0 we have a -K*c0*c1
@@ -323,6 +323,8 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::computeJacobian( const state_type & ySta
       l++;
     }
   }
+
+  //FDMat_->Print(std::cout);
 
 }//computeJacobian
 

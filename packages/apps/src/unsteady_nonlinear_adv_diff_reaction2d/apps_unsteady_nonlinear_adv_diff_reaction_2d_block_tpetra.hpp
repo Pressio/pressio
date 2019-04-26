@@ -16,9 +16,11 @@ class UnsteadyNonLinAdvDiffReac2dBlockTpetra{
 protected:
   template<typename T> using stdrcp = std::shared_ptr<T>;
 
+  using this_t		= UnsteadyNonLinAdvDiffReac2dBlockTpetra;
+
   // use default types: associated with whatever
   // config was used to build trilinos/kokkos,
-  // CUDA, OpenMP, threads, Serial.
+  // i.e. CUDA, OpenMP, threads, Serial.
   using map_t		= Tpetra::Map<>;
   using tpetVec		= Tpetra::Vector<>;
   using nativeVec	= Tpetra::Experimental::BlockVector<>;
@@ -26,6 +28,7 @@ protected:
   using nativeMatrix	= Tpetra::Experimental::BlockCrsMatrix<>;
   using graph_t		= typename nativeMatrix::crs_graph_type;
 
+  // typedefs for communicators
   using tcomm		= Teuchos::Comm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm>;
   using rcpmap_t	= Teuchos::RCP<const map_t>;
@@ -51,16 +54,21 @@ protected:
    typename Tpetra::Details::DefaultTypes::execution_space,
    exec_space_t>::value, "");
 
+  static constexpr auto one = ::rompp::core::constants::one<ST>();
+  static constexpr auto two = ::rompp::core::constants::two<ST>();
+
 public:
+  // public typedefs exposed to be detected by ROMPP
   using scalar_type	= ST;
   using state_type	= nativeVec;
   using residual_type	= state_type;
 
 public:
-  UnsteadyNonLinAdvDiffReac2dBlockTpetra(rcpcomm_t comm,
-				      int Nx, int Ny,
-				      scalar_type K   = 5.0,
-				      scalar_type eps = 0.01)
+  UnsteadyNonLinAdvDiffReac2dBlockTpetra
+  (rcpcomm_t comm,
+   GO Nx, GO Ny,
+   scalar_type K   = static_cast<scalar_type>(5),
+   scalar_type eps = static_cast<scalar_type>(0.01))
     : K_{K}, eps_{eps},
       comm_(comm), rank_{comm_->getRank()},
       NxPhys_{Nx}, NyPhys_{Ny},
@@ -68,10 +76,10 @@ public:
       Nx_{NxPhys_-2}, Ny_{NyPhys_},
       dx_{Lx_/(Nx-1)},
       dy_{Ly_/(Ny-1)},
-      dxSqInv_{1.0/(dx_*dx_)},
-      dySqInv_{1.0/(dy_*dy_)},
-      dx2Inv_{1./(2.*dx_)},
-      dy2Inv_{1./(2.*dy_)}
+      dxSqInv_{one/(dx_*dx_)},
+      dySqInv_{one/(dy_*dy_)},
+      dx2Inv_{one/(two*dx_)},
+      dy2Inv_{one/(two*dy_)}
   {}
 
 public:
@@ -85,9 +93,16 @@ public:
   void createGraph();
   void computeSource();
   void setup();
-
-  void assembleMatrix(const state_type & yState) const;
+  void assembleFDMatrix() const;
   void computeChem(const state_type &) const;
+  void computeJacobian(const state_type & yState) const;
+  GO getUnknownCount() const{ return this_t::numSpecies_*Nx_*Ny_; }
+  int getNumSpecies() const{ return this_t::numSpecies_; }
+  rcpmap_t getDataMap() const { return map_; }
+  rcpmap_t getPointMap() const {
+    map_t pmap = state_->getPointMap();
+    return Teuchos::rcp(new map_t(pmap));
+  }
 
 public:
   void residual(const state_type & yState,
@@ -104,25 +119,44 @@ public:
     return R;
   };
 
-private:
-  void localIDToLiLj(int ID, int & li, int & lj) const{
-    lj = ID/Nx_;
-    li = ID % Nx_;
+  // computes: C = Jac B where B is a multivector
+  void applyJacobian(const state_type & yState,
+  		     const nativeMV & B,
+  		     nativeMV & C,
+		     scalar_type t) const{
+    applyJacobian_impl(yState, B, C);
   }
-  void globalIDToGiGj(int ID, int & gi, int & gj) const{
+
+  nativeMV applyJacobian(const state_type & yState,
+			 const nativeMV & B,
+			 scalar_type t) const{
+    nativeMV C( *map_, B.getBlockSize(), B.getNumVectors() );
+    applyJacobian_impl(yState, B, C);
+    return C;
+  };
+
+private:
+  void globalIDToGiGj(GO ID, GO & gi, GO & gj) const{
     gj = ID/Nx_;
     gi = ID % Nx_;
   }
 
   void residual_impl(const state_type & yState,
-		     residual_type & R) const
-  {
-    this->assembleMatrix(yState);
+		     residual_type & R) const{
+    R.putScalar(0.0);
+    this->assembleFDMatrix();
     this->computeChem(yState);
     A_->applyBlock(yState, R);
     /* here we have R = A*state, where A = -conv+diffusion
      * so we need to sum the reaction part */
     R.update(1., (*chemReac_), 1.0);
+  }
+
+  void applyJacobian_impl(const state_type & yState,
+			  const nativeMV & B,
+			  nativeMV & C) const{
+    computeJacobian(yState);
+    A_->applyBlock(B, C);
   }
 
 private:
