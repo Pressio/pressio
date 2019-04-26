@@ -136,8 +136,9 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("hessian");
 #endif
 
-    //::rompp::core::io::print_stdout( *H.data() , "\n");
-    //resid.print("resid");
+    // ::rompp::core::io::print_stdout("HESSIAN" , "\n");
+    // ::rompp::core::io::print_stdout(std::fixed,
+    // 				    *H.data() , "\n");
 
 #ifdef DEBUG_PRINT
     auto fmt1 = core::io::magenta() + core::io::bold();
@@ -161,6 +162,10 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("JTR");
 #endif
 
+    // ::rompp::core::io::print_stdout("J^T R \n");
+    // ::rompp::core::io::print_stdout( std::fixed,
+    // 				     *JTR.data() , "\n");
+
     // solve normal equations
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("solve normeq");
@@ -170,8 +175,10 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("solve normeq");
 #endif
 
-    // print the correction
-    //::rompp::core::io::print_stdout(*dy.data());
+    // // // print the correction
+    // ::rompp::core::io::print_stdout("Correction dy \n");
+    // ::rompp::core::io::print_stdout(std::fixed,
+    // 				    *dy.data());
 
     // compute norm of the correction
     norm_evaluator_t::evaluate(dy, normN);
