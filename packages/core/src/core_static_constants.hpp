@@ -13,6 +13,11 @@ struct constants{
   static constexpr int dynamic = -1;
 
   template <typename scalar_t = double>
+  static constexpr scalar_t negOne(){
+    return static_cast<scalar_t>(-1);
+  }
+
+  template <typename scalar_t = double>
   static constexpr scalar_t zero(){
     return static_cast<scalar_t>(0);
   }
