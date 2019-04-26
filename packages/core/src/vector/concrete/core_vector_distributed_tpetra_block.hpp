@@ -63,6 +63,43 @@ public:
 
   ~Vector() = default;
 
+public:
+
+  // copy assignment
+  template <typename T,
+  	    ::rompp::mpl::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator=(const T & other){
+    this->data_.update(constants::one<sc_t>(),
+		       *other.data(),
+		       constants::zero<sc_t>() );
+    return *this;
+  }
+
+  // compound add assignment when type(b) = type(this)
+  // this += b
+  template <typename T,
+  	    ::rompp::mpl::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator+=(const T & other) {
+    this->data_.update(constants::one<sc_t>(),
+		       *other.data(),
+		       constants::one<sc_t>() );
+    return *this;
+  }
+
+  // compound add assignment when type(b) = type(this)
+  // this -= b
+  template <typename T,
+  	    ::rompp::mpl::enable_if_t<
+  	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator-=(const T & other) {
+    this->data_.update(constants::negOne<sc_t>(),
+		       *other.data(),
+		       constants::one<sc_t>() );
+    return *this;
+  }
+
 private:
 
   map_t const & getDataMapImpl() const{

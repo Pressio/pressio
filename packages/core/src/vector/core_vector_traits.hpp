@@ -396,6 +396,8 @@ struct traits<
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
   using data_map_t = typename wrapped_type::map_type;
 
+  using mag_t = scalar_t;
+
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
    * where memory space is taken from the execution_space
