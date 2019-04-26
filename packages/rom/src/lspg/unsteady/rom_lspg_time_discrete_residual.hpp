@@ -7,6 +7,83 @@
 
 namespace rompp{ namespace rom{ namespace impl{
 
+#ifdef HAVE_TRILINOS
+/* For block:Tpetra, for time being, just implement Euler also assuming that
+ * there are no gaps in the residual and states, so basically
+ * assuming that states and residual have same distributions.
+ * Tis has to be fixed later similarly to what we do for regular-tpetra and epetra*/
+template<
+  ::rompp::ode::ImplicitEnum odeMethod,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_vector_wrapper_tpetra_block<state_type>::value and
+    odeMethod == ::rompp::ode::ImplicitEnum::Euler
+    > * = nullptr
+  >
+void time_discrete_residual(state_type & yn, // there is a const missing
+			    std::array<state_type,n> & ynm,// there is a const missing
+			    state_type & R,
+			    scalar_type dt){
+  constexpr auto one = ::rompp::core::constants::one<scalar_type>();
+  constexpr auto negOne = ::rompp::core::constants::negOne<scalar_type>();
+  const scalar_type negDt = -dt;
+  // R.data()->update( 1.0, *yn.data(), negDt);
+  // R.data()->update( -1.0, *ynm[0].data(), one);
+  ::rompp::core::ops::do_update(R, negDt, yn, one, ynm[0], negOne);
+}
+#endif
+
+template<
+  ::rompp::ode::ImplicitEnum method,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_vector_wrapper_eigen<state_type>::value == true and
+    method == ::rompp::ode::ImplicitEnum::Euler
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
+			    state_type & R,
+			    scalar_type dt){
+
+  // // On input: R contains the application RHS, i.e. if
+  // // dudt = f(x,u,...), R contains f(...)
+  *R.data() = *yn.data() - *ynm[0].data() - dt * (*R.data());
+}
+
+
+template<
+  ::rompp::ode::ImplicitEnum method,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_vector_wrapper_eigen<state_type>::value == true and
+    method == ::rompp::ode::ImplicitEnum::BDF2
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
+			    state_type & R,
+			    scalar_type dt){
+
+  using namespace ::rompp::ode::coeffs;
+
+  // // On input: R contains the application RHS, i.e. if
+  // // dudt = f(x,u,...), R contains f(...)
+  R = yn
+    - bdf2<scalar_type>::c1_*ynm[1]
+    + bdf2<scalar_type>::c2_*ynm[0]
+    - bdf2<scalar_type>::c3_*dt*R;
+}
+
+
+
+
 /* when we have hyper-reduction and we need to calculate the
  * time-discrete residual, yn (i.e. the current state) and
  * ynm (i.e. the states at prev steps) might have
@@ -32,6 +109,7 @@ namespace rompp{ namespace rom{ namespace impl{
  * the same distributions.
 */
 
+#ifdef HAVE_TRILINOS
 template <::rompp::ode::ImplicitEnum odeMethod>
 struct time_discrete_single_entry_epetra;
 
@@ -68,7 +146,6 @@ struct time_discrete_single_entry_epetra<::rompp::ode::ImplicitEnum::BDF2>{
 };
 
 
-#ifdef HAVE_TRILINOS
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int numStates,
@@ -191,56 +268,8 @@ void time_discrete_residual(const state_type & yn,
       n>(dt, (R.data()->getDataNonConst())[i], lid, yn, ynm);
   }
 }
+
 #endif
-
-
-
-
-template<
-  ::rompp::ode::ImplicitEnum method,
-  int n,
-  typename state_type,
-  typename scalar_type,
-  ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_eigen<state_type>::value == true and
-    method == ::rompp::ode::ImplicitEnum::Euler
-    > * = nullptr
-  >
-void time_discrete_residual(const state_type & yn,
-			    const std::array<state_type,n> & ynm,
-			    state_type & R,
-			    scalar_type dt){
-
-  // // On input: R contains the application RHS, i.e. if
-  // // dudt = f(x,u,...), R contains f(...)
-  *R.data() = *yn.data() - *ynm[0].data() - dt * (*R.data());
-}
-
-
-template<
-  ::rompp::ode::ImplicitEnum method,
-  int n,
-  typename state_type,
-  typename scalar_type,
-  ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_eigen<state_type>::value == true and
-    method == ::rompp::ode::ImplicitEnum::BDF2
-    > * = nullptr
-  >
-void time_discrete_residual(const state_type & yn,
-			    const std::array<state_type,n> & ynm,
-			    state_type & R,
-			    scalar_type dt){
-
-  using namespace ::rompp::ode::coeffs;
-
-  // // On input: R contains the application RHS, i.e. if
-  // // dudt = f(x,u,...), R contains f(...)
-  R = yn
-    - bdf2<scalar_type>::c1_*ynm[1]
-    + bdf2<scalar_type>::c2_*ynm[0]
-    - bdf2<scalar_type>::c3_*dt*R;
-}
 
 }}}//end namespace rompp::rom::impl
 #endif

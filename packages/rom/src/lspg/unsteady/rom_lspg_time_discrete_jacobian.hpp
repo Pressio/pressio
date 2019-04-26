@@ -7,32 +7,26 @@
 
 namespace rompp{ namespace rom{ namespace impl{
 
-/* when we have hyper-reduction and we need to calculate the
- * time-discrete residual, yn (i.e. the current state) and
- * ynm (i.e. the states at prev steps) might have
- * different entries/maps than R (i.e. the spatial residual)
- * so we need to update R only picking elements corresponding
- * elements in yn and ynm.
- * In other words, in the functions below we do NOT assume that
- * yn and ynm have the same distribution/sizes of R but we DO assume
- * that yn and ynm contain at least all the elements of R (and more).
- * THis is because to evaluate spatial residual one typically
- * needs neighbors values, so in the hyper-red scenario the
- * states contain more DOFs than the spatial residual.
- * for instance, imagine the i-th cell in a uniform grid with a
- * centered 2nd-order FD operator.
- * To compute the spatial residual at the i-th cell, one needs the
- * cell value y_i, as well as the left, y_i-1, and right, y_i+1,
- * values of the state. So for a single DOF of the residual, one
- * needs 3 DOFs of the state. Extrapolating to all cells, then we
- * clearly see that we need more dofs for the states than for the residual.
- *
- * Below, we account for this potential scenario and the code below
- * obviously also works for the case where the vectors have same
- * the same distributions.
-*/
-
-
+#ifdef HAVE_TRILINOS
+template <
+  ode::ImplicitEnum odeMethod,
+  typename lspg_matrix_type,
+  typename scalar_type,
+  typename decoder_jac_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
+    core::meta::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value and
+    odeMethod == ::rompp::ode::ImplicitEnum::Euler
+    > * = nullptr
+  >
+void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
+			    scalar_type	dt,
+			    const decoder_jac_type & phi){
+  constexpr auto one = ::rompp::core::constants::one<scalar_type>();
+  const auto coeff = -dt;
+  jphi.data()->update( one, *phi.data(), coeff);
+}
+#endif
 
 template <
   ode::ImplicitEnum odeMethod,
@@ -61,6 +55,31 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 }
 
 
+
+/* when we have hyper-reduction and we need to calculate the
+ * time-discrete residual, yn (i.e. the current state) and
+ * ynm (i.e. the states at prev steps) might have
+ * different entries/maps than R (i.e. the spatial residual)
+ * so we need to update R only picking elements corresponding
+ * elements in yn and ynm.
+ * In other words, in the functions below we do NOT assume that
+ * yn and ynm have the same distribution/sizes of R but we DO assume
+ * that yn and ynm contain at least all the elements of R (and more).
+ * THis is because to evaluate spatial residual one typically
+ * needs neighbors values, so in the hyper-red scenario the
+ * states contain more DOFs than the spatial residual.
+ * for instance, imagine the i-th cell in a uniform grid with a
+ * centered 2nd-order FD operator.
+ * To compute the spatial residual at the i-th cell, one needs the
+ * cell value y_i, as well as the left, y_i-1, and right, y_i+1,
+ * values of the state. So for a single DOF of the residual, one
+ * needs 3 DOFs of the state. Extrapolating to all cells, then we
+ * clearly see that we need more dofs for the states than for the residual.
+ *
+ * Below, we account for this potential scenario and the code below
+ * obviously also works for the case where the vectors have same
+ * the same distributions.
+*/
 
 #ifdef HAVE_TRILINOS
 
