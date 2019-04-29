@@ -5,6 +5,7 @@
 #include "CORE_ALL"
 #include "SVD_BASIC"
 #include "utils_read_ascii_matrix_std_vec_vec.hpp"
+#include <Tpetra_Core.hpp>
 
 namespace rompp{ namespace apps{ namespace test{ namespace tpetra{
 

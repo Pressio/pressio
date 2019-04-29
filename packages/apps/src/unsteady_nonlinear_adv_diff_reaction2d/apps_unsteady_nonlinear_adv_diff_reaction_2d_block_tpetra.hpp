@@ -3,12 +3,14 @@
 #define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
 
 #include "../../../CORE_ALL"
+
+#include <Teuchos_DefaultMpiComm.hpp>
 #include <Tpetra_Map.hpp>
-#include <Tpetra_BlockVector.hpp>
-#include <Tpetra_BlockMultiVector.hpp>
+#include <Tpetra_CrsGraph.hpp>
+#include <Tpetra_Experimental_BlockVector.hpp>
+#include <Tpetra_Experimental_BlockMultiVector.hpp>
 #include <Tpetra_Details_DefaultTypes.hpp>
-#include <Tpetra_Experimental_BlockCrsMatrix_def.hpp>
-#include <cmath>
+#include <Tpetra_Experimental_BlockCrsMatrix.hpp>
 
 namespace rompp{ namespace apps{
 

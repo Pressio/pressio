@@ -19,7 +19,7 @@ using eig_dyn_mat	= Eigen::MatrixXd;
 using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
 using uint_t		= unsigned int;
 
-constexpr double eps = 1e-10;
+constexpr double eps = 1e-8;
 constexpr auto t0	= static_cast<scalar_t>(0);
 
 struct FomObserver{

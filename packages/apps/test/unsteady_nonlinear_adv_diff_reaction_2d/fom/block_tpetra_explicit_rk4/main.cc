@@ -3,6 +3,7 @@
 #include "ODE_ALL"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
 #include "../gold_states_explicit.hpp"
+#include <Tpetra_Core.hpp>
 
 constexpr double eps = 1e-12;
 std::string checkStr {"PASSED"};
