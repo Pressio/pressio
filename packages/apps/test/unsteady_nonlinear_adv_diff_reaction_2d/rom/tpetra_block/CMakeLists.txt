@@ -1,2 +1,3 @@
 
 ADD_SUBDIRECTORY(lspg_euler_normal_eq)
+ADD_SUBDIRECTORY(lspg_euler_tsqr)

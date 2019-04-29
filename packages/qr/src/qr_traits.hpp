@@ -51,6 +51,15 @@ struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
 
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
+struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
+			 ::rompp::mpl::enable_if_t<
+			   core::meta::is_multi_vector_wrapper_tpetra_block<matrix_t>::value
+			   >>{
+  using impl_t = impl::TpetraBlockMVTSQR<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
+};
+
+template <typename matrix_t, typename R_t,
+	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::ModifiedGramSchmidt, R_t, n, m, wrap_Q_type, Q_type,
 			 ::rompp::mpl::enable_if_t<
 			   core::meta::is_multi_vector_wrapper_epetra<matrix_t>::value
@@ -150,7 +159,8 @@ template<
   typename matrix_type, template <typename...> class Q_type,
   ::rompp::mpl::enable_if_t<
     core::meta::is_multi_vector_wrapper_epetra<matrix_type>::value or
-    core::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value
+    core::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value or
+    core::meta::is_multi_vector_wrapper_tpetra_block<matrix_type>::value
     > * = nullptr
   >
 struct traits_shared_trilinos_mv{
@@ -248,6 +258,53 @@ struct traits<
   using impl_t		= typename impl_class_helper<matrix_t, algo_t, void,
 						     n, m, MV_t, Q_type>::impl_t;
 };
+
+
+/*
+ * specialize for Tpetra::BlockMultiVector, R_type = void
+ */
+template<
+  typename matrix_type,
+  typename algo_t,
+  bool in_place,
+  int m, int n,
+  template <typename...> class Q_type
+  >
+struct traits<
+  impl::QRSolver<
+    matrix_type, algo_t, in_place, m, n, void, Q_type>,
+    ::rompp::mpl::enable_if_t<
+      core::meta::is_multi_vector_wrapper_tpetra_block<matrix_type>::value
+      >
+  > : traits_shared_all<matrix_type, algo_t, in_place, m, n>,
+  traits_shared_trilinos_mv<matrix_type, Q_type>{
+
+  static_assert( std::is_same<algo_t, TSQR>::value,
+		 "Currently, only TSQR is available for BlockTpetra dense matrices.");
+
+  using traits_all_t  = traits_shared_all<matrix_type, algo_t, in_place, m, n>;
+  using traits_tril_t = traits_shared_trilinos_mv<matrix_type, Q_type>;
+
+  using typename traits_all_t::matrix_t;
+  using typename traits_all_t::sc_t;
+  using typename traits_tril_t::Q_t;
+  using typename traits_tril_t::MV_t;
+  using node_t = typename core::details::traits<matrix_type>::node_t;
+  using hexsp  = typename core::details::traits<matrix_type>::host_exec_space_t;
+
+  using concrete_t	= impl::QRSolver<matrix_type, algo_t,
+					in_place, m, n, void, Q_type>;
+  using inplace_base_t  = QRInPlaceBase<concrete_t, matrix_type>;
+  using outplace_base_t = QROutOfPlaceBase<concrete_t, matrix_type, Q_t>;
+
+  using base_compute_t	= typename std::conditional<in_place,
+						    inplace_base_t,
+						    outplace_base_t>::type;
+  using base_solve_t	= QRSolveBase<concrete_t>;
+  using impl_t		= typename impl_class_helper<matrix_t, algo_t, void,
+						     n, m, MV_t, Q_type>::impl_t;
+};
+
 
 #endif //HAVE_TRILINOS
 

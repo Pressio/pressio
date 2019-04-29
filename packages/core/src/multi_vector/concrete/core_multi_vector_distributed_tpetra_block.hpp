@@ -58,6 +58,9 @@ public:
   MultiVector(const this_t & other)
     : MultiVector(*other.data()){}
 
+  MultiVector(const map_t & map, LO_t blockSize, LO_t numVectors)
+    : data_(map, blockSize, numVectors){}
+
   ~MultiVector() = default;
 
 private:

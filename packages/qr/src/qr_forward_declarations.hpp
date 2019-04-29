@@ -71,6 +71,15 @@ class TpetraMVTSQR;
 
 template<typename matrix_t,
 	 typename R_t,
+	 int n, int m,
+	 typename wrap_Q_type,
+	 template <typename...> class Q_type
+	 = core::MultiVector,
+	 typename enable = void>
+class TpetraBlockMVTSQR;
+
+template<typename matrix_t,
+	 typename R_t,
 	 int n = core::constants::dynamic,
 	 int m = core::constants::dynamic,
 	 typename wrap_Q_type = void,
