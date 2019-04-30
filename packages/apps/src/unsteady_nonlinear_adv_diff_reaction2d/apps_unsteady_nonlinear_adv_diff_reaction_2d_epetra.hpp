@@ -27,6 +27,9 @@ public:
   using state_type	= nativeVec;
   using residual_type	= state_type;
 
+  static constexpr auto zero = ::rompp::core::constants::zero<scalar_type>();
+  static constexpr auto one = ::rompp::core::constants::one<scalar_type>();
+
 public:
   UnsteadyNonLinAdvDiffReac2dEpetra(const Epetra_MpiComm & comm,
 				    int Nx, int Ny,
@@ -114,12 +117,13 @@ private:
 
     /* here we have R = FDMat*state, where FDMat = -conv+diffusion
      * so we need to sum the reaction part */
-    R.Update(1., (*chemForcing_), 1.0);
+    R.Update(one, (*chemForcing_), one);
   }
 
   void applyJacobian_impl(const state_type & yState,
 			  const mv_t & B,
 			  mv_t & C) const{
+    C.PutScalar(zero);
     computeJacobian(yState);
     FDMat_->Multiply(false, B, C);
   }
@@ -138,8 +142,8 @@ protected:
   static constexpr int maxNonZeroPerRow_ = 7;
   const scalar_type Lx_ = 1.0;
   const scalar_type Ly_ = 2.0;
-  const std::array<scalar_type,2> xAxis_{0., 1.};
-  const std::array<scalar_type,2> yAxis_{0., 2.};
+  const std::array<scalar_type,2> xAxis_{{0., 1.}};
+  const std::array<scalar_type,2> yAxis_{{0., 2.}};
 
   // communicator
   const Epetra_MpiComm & comm_;

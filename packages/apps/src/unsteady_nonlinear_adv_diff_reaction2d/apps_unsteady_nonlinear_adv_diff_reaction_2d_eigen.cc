@@ -74,6 +74,9 @@ void UnsteadyNonLinAdvDiffReac2dEigen::residual_impl
    * a dofMap_ because it contains all dofs.
    * Once again, the dofs are the numFields * numOfUnkownGridPoints
    */
+
+  R.setZero();
+
   int gi{}; int gj{};
 
   scalar_type c_ip1={}, c_im1={};

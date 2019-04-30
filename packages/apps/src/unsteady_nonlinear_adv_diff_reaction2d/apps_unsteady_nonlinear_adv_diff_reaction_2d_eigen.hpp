@@ -22,6 +22,7 @@ public:
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;
+  static constexpr auto zero = ::rompp::core::constants::zero<scalar_type>();
   static constexpr auto one = ::rompp::core::constants::one<scalar_type>();
   static constexpr auto two = ::rompp::core::constants::two<scalar_type>();
 
@@ -130,6 +131,7 @@ private:
   			  const mv_t & B,
   			  mv_t & C) const{
     jacobian_type JJ(yState.size(), yState.size());
+    JJ.setZero();
     this->jacobian_impl(yState, JJ);
     C = JJ * B;
   }
@@ -147,8 +149,8 @@ protected:
   static constexpr int numSpecies_{3};
   const scalar_type Lx_{1.0};
   const scalar_type Ly_{2.0};
-  const std::array<scalar_type,2> xAxis_{0., 1.};
-  const std::array<scalar_type,2> yAxis_{0., 2.};
+  const std::array<scalar_type,2> xAxis_{{0., 1.}};
+  const std::array<scalar_type,2> yAxis_{{0., 2.}};
 
   // physical grid points
   const int NxPhys_{};

@@ -56,6 +56,7 @@ protected:
    typename Tpetra::Details::DefaultTypes::execution_space,
    exec_space_t>::value, "");
 
+  static constexpr auto zero = ::rompp::core::constants::zero<ST>();
   static constexpr auto one = ::rompp::core::constants::one<ST>();
   static constexpr auto two = ::rompp::core::constants::two<ST>();
 
@@ -145,18 +146,19 @@ private:
 
   void residual_impl(const state_type & yState,
 		     residual_type & R) const{
-    R.putScalar(0.0);
+    R.putScalar(zero);
     this->assembleFDMatrix();
     this->computeChem(yState);
     A_->applyBlock(yState, R);
     /* here we have R = A*state, where A = -conv+diffusion
      * so we need to sum the reaction part */
-    R.update(1., (*chemReac_), 1.0);
+    R.update(one, (*chemReac_), one);
   }
 
   void applyJacobian_impl(const state_type & yState,
 			  const nativeMV & B,
 			  nativeMV & C) const{
+    C.putScalar(zero);
     computeJacobian(yState);
     A_->applyBlock(B, C);
   }
@@ -182,8 +184,8 @@ private:
   // domain size
   const scalar_type Lx_ = 1.0;
   const scalar_type Ly_ = 2.0;
-  const std::array<scalar_type,2> xAxis_{0., 1.};
-  const std::array<scalar_type,2> yAxis_{0., 2.};
+  const std::array<scalar_type,2> xAxis_{{0., 1.}};
+  const std::array<scalar_type,2> yAxis_{{0., 2.}};
 
   // communicator
   rcpcomm_t comm_{};
