@@ -6,4 +6,4 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   PASS_REGULAR_EXPRESSION "PASSED"
   )
 
-configure_file(../../rom/basis/basis_nx11_ny21_col11.txt gold_basis.txt COPYONLY)
+configure_file(../../rom/basis/basis_nx11_ny21_col11_bdf1.txt gold_basis.txt COPYONLY)
