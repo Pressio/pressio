@@ -139,31 +139,31 @@ public:
     std::array<int,4> ci;
     if (rank_==0){
       //row 0
-      va = {1., 2., 3.};  ci = {0, 2, 5};
+      va = {{1., 2., 3.}};  ci = {{0, 2, 5}};
       sm_->insertGlobalValues(0, 3, va.data(), ci.data());
       //row 1
-      va = {1.,1.,1.,1.};  ci = {0,2,4,5};
+      va = {{1.,1.,1.,1.}};  ci = {{0,2,4,5}};
       sm_->insertGlobalValues(1, 4, va.data(), ci.data());
       //row 2
-      va = {1.,2.,1.};  ci = {2,3,4};
+      va = {{1.,2.,1.}};  ci = {{2,3,4}};
       sm_->insertGlobalValues(2, 3, va.data(), ci.data());
     }
 
     if (rank_==1){
       //row 3
-      va = {1.,2.,1,3.};  ci = {0,4,5,6};
+      va = {{1.,2.,1,3.}};  ci = {{0,4,5,6}};
       sm_->insertGlobalValues(3, 4, va.data(), ci.data());
       //row 4
-      va = {1.,1.};  ci = {2,3};
+      va = {{1.,1.}};  ci = {{2,3}};
       sm_->insertGlobalValues(4, 2, va.data(), ci.data());
     }
 
     if (rank_==2){
       //row 5
-      va = {3.,3.,1};  ci = {2,3,5};
+      va = {{3.,3.,1}};  ci = {{2,3,5}};
       sm_->insertGlobalValues(5, 3, va.data(), ci.data());
       //row 6
-      va = {3,1.};  ci = {3,5};
+      va = {{3,1.}};  ci = {{3,5}};
       sm_->insertGlobalValues(6, 2, va.data(), ci.data());
     }
   }//end fill

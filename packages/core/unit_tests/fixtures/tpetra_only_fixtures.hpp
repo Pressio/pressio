@@ -226,37 +226,36 @@ public:
     std::array<GO,4> ci;
     if (rank_==0){
       //row 0
-      va = {1., 2., 3.};  ci = {0, 2, 5};
+      va = {{1., 2., 3.}};  ci = {{0, 2, 5}};
       A_->insertGlobalValues( 0, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
       //row 1
-      va = {1.,1.,1.,1.};  ci = {0,2,4,5};
+      va = {{1.,1.,1.,1.}};  ci = {{0,2,4,5}};
       A_->insertGlobalValues(1, tarr_it(ci.data(), 4), tarr_dt(va.data(), 4) );
       //row 2
-      va = {1.,2.,1.};  ci = {2,3,4};
+      va = {{1.,2.,1.}};  ci = {{2,3,4}};
       A_->insertGlobalValues(2, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
     }
 
     if (rank_==1){
       //row 3
-      va = {1.,2.,1,3.};  ci = {0,4,5,6};
+      va = {{1.,2.,1,3.}};  ci = {{0,4,5,6}};
       A_->insertGlobalValues(3, tarr_it(ci.data(), 4), tarr_dt(va.data(), 4) );
       //row 4
-      va = {1.,1.};  ci = {2,3};
+      va = {{1.,1.}};  ci = {{2,3}};
       A_->insertGlobalValues(4, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
     }
 
     if (rank_==2){
       //row 5
-      va = {3.,3.,1};  ci = {2,3,5};
+      va = {{3.,3.,1}};  ci = {{2,3,5}};
       A_->insertGlobalValues(5, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
       //row 6
-      va = {3,1.};  ci = {3,5};
+      va = {{3,1.}};  ci = {{3,5}};
       A_->insertGlobalValues(6, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
     }
   }//end fill
 
   virtual void TearDown(){}
 };
-
 
 #endif

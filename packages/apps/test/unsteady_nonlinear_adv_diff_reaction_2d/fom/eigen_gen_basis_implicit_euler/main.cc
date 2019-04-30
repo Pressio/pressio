@@ -112,7 +112,7 @@ int main(int argc, char *argv[]){
   constexpr int Nx = 11, Ny = Nx*2-1;
   constexpr scalar_t dt = 0.1;
   constexpr auto Nsteps = static_cast<unsigned int>(10);
-  constexpr scalar_t fint = Nsteps*dt;
+  //constexpr scalar_t fint = Nsteps*dt;
 
   // run FOM and collect snapshots
   FomRunner fom(Nx, Ny);
