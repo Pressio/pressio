@@ -63,9 +63,9 @@ int main(int argc, char *argv[]){
   stepper_t stepperObj(y, appObj, r);
 
   //Integrate in time
-  scalar_t fint = 1;
   scalar_t dt = 0.01;
-  auto Nsteps = static_cast<unsigned int>(fint/dt);
+  auto Nsteps = 100;//static_cast<unsigned int>(fint/dt);
+  scalar_t fint = Nsteps*dt;
   rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
 
   //----------------------------------------------------------------------

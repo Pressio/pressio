@@ -24,34 +24,17 @@ void checkSol(const T & y,
   }
 }
 
-constexpr bool do_print = false;
-
-struct Observer{
-  Observer() = default;
-
-  template <typename T>
-  void operator()(size_t step, double t, const T & y)
-  {
-    if (do_print){
-      if (step % 5 == 0){
-    	std::ofstream file;
-    	file.open( "sol_" + std::to_string(step) + ".txt" );
-    	for(auto i=0; i < y.size(); i++){
-    	  file << std::fixed << std::setprecision(14) << y[i] ;
-    	  file << std::endl;
-    	}
-    	file.close();
-      }
-    }
-  }
-};
-
 int main(int argc, char *argv[]){
   using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
   using app_residual_t	= typename app_t::residual_type;
   using app_jacob_t	= typename app_t::jacobian_type;
+
+  using ode_state_t = rompp::core::Vector<app_state_t>;
+  using ode_res_t   = rompp::core::Vector<app_residual_t>;
+  using ode_jac_t   = rompp::core::Matrix<app_jacob_t>;
+
   constexpr auto zero = ::rompp::core::constants::zero<scalar_t>();
 
   constexpr int Nx = 11, Ny = Nx*2-1;
@@ -60,26 +43,19 @@ int main(int argc, char *argv[]){
   const auto y0n = appobj.getInitialState();
   const auto r0n = appobj.residual(y0n, zero);
 
-  if (do_print){
-    auto X = appobj.getX(); auto Y = appobj.getY();
-    std::ofstream file; file.open( "xy.txt" );
-    for(auto i=0; i < X.size(); i++){
-      file << std::setprecision(14)
-	   << X[i] << " " << Y[i];
-      file << std::endl;
-    }
-    file.close();
-  }
-
-  using ode_state_t = rompp::core::Vector<app_state_t>;
-  using ode_res_t   = rompp::core::Vector<app_residual_t>;
-  using ode_jac_t   = rompp::core::Matrix<app_jacob_t>;
-
   ode_state_t y(y0n);
-  constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
+
+  // define auxiliary stepper
+  using aux_stepper_t = rompp::ode::ImplicitStepper<
+    rompp::ode::ImplicitEnum::Euler,
+    ode_state_t, ode_res_t, ode_jac_t, app_t>;
+  aux_stepper_t stepperAux(y, appobj);
+
+  // the target BDF2 stepper
+  constexpr auto ode_case = rompp::ode::ImplicitEnum::BDF2;
   using stepper_t = rompp::ode::ImplicitStepper<
-    ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t>;
-  stepper_t stepperObj(y, appobj);
+    ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t, aux_stepper_t>;
+  stepper_t stepperObj(y, appobj, stepperAux);
 
   // define solver
   using lin_solver_t = rompp::solvers::iterative::EigenIterative<
@@ -92,8 +68,7 @@ int main(int argc, char *argv[]){
   constexpr scalar_t dt = 0.1;
   constexpr auto Nsteps = static_cast<unsigned int>(10);
   constexpr scalar_t fint = Nsteps*dt;
-  Observer obs;
-  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs, solverO);
+  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, solverO);
   std::cout << std::fixed << std::setprecision(14) << *y.data() << std::endl;
   {
     using namespace rompp::apps::test;

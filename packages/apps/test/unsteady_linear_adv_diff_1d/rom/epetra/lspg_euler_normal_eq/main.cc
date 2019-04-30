@@ -44,7 +44,9 @@ int main(int argc, char *argv[]){
   // Designate the paramerters and problem
   //----------------------------------------------------------------------
   const scalar_t dt = 0.1;
-  const scalar_t fint = 5.0;
+  const auto Nsteps = 50;//static_cast<unsigned int>(fint/dt);
+  const scalar_t fint = dt*Nsteps;
+
   // Actual parameter inputs that were used to formulate the basis
   const std::vector<scalar_t> mu{-0.857241631161166, 0.104833925269630,
       -0.713183149274631};
@@ -54,7 +56,6 @@ int main(int argc, char *argv[]){
   //----------------------------------------------------------------------
   // App for UnsteadyLinAdvDiff1dEpetra Object
   //----------------------------------------------------------------------
-  auto Nsteps = static_cast<unsigned int>(fint/dt);
   fom_t appObj(Comm, mu, domain, bc1D);
   appObj.unsteadySetup();
 

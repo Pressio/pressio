@@ -63,10 +63,17 @@ struct FomRunner{
     const auto y0n = appobj.getInitialState();
     ode_state_t y(y0n);
 
-    constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
+    // define auxiliary stepper
+    using aux_stepper_t = rompp::ode::ImplicitStepper<
+      rompp::ode::ImplicitEnum::Euler,
+      ode_state_t, ode_res_t, ode_jac_t, app_t>;
+    aux_stepper_t stepperAux(y, appobj);
+
+    // the target BDF2 stepper
+    constexpr auto ode_case = rompp::ode::ImplicitEnum::BDF2;
     using stepper_t = rompp::ode::ImplicitStepper<
-      ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t>;
-    stepper_t stepperObj(y, appobj);
+      ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t, aux_stepper_t>;
+    stepper_t stepperObj(y, appobj, stepperAux);
 
     // define solver
     using lin_solver_t = rompp::solvers::iterative::EigenIterative<

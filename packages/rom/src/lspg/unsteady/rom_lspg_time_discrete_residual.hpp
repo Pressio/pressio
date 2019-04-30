@@ -8,10 +8,10 @@
 namespace rompp{ namespace rom{ namespace impl{
 
 #ifdef HAVE_TRILINOS
-/* For block:Tpetra, for time being, just implement Euler also assuming that
+/* For block:Tpetra, for time being, just implement assuming that
  * there are no gaps in the residual and states, so basically
  * assuming that states and residual have same distributions.
- * Tis has to be fixed later similarly to what we do for regular-tpetra and epetra*/
+ * This has to be fixed later similarly to what we do for regular-tpetra and epetra*/
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int n,
@@ -22,19 +22,46 @@ template<
     odeMethod == ::rompp::ode::ImplicitEnum::Euler
     > * = nullptr
   >
-void time_discrete_residual(state_type & yn, // there is a const missing
-			    std::array<state_type,n> & ynm,// there is a const missing
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
 			    state_type & R,
 			    scalar_type dt){
   constexpr auto one = ::rompp::core::constants::one<scalar_type>();
   constexpr auto negOne = ::rompp::core::constants::negOne<scalar_type>();
   const scalar_type negDt = -dt;
-  // R.data()->update( 1.0, *yn.data(), negDt);
-  // R.data()->update( -1.0, *ynm[0].data(), one);
   ::rompp::core::ops::do_update(R, negDt, yn, one, ynm[0], negOne);
+}
+
+template<
+  ::rompp::ode::ImplicitEnum odeMethod,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_vector_wrapper_tpetra_block<state_type>::value and
+    odeMethod == ::rompp::ode::ImplicitEnum::BDF2
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
+			    state_type & R,
+			    scalar_type dt){
+
+  constexpr auto one = ::rompp::core::constants::one<scalar_type>();
+  constexpr auto negOne = ::rompp::core::constants::negOne<scalar_type>();
+
+  constexpr auto a = ::rompp::ode::coeffs::bdf2<scalar_type>::c1_*negOne;
+  constexpr auto b = ::rompp::ode::coeffs::bdf2<scalar_type>::c2_;
+  const auto c = ::rompp::ode::coeffs::bdf2<scalar_type>::c3_*dt*negOne;
+
+  ::rompp::core::ops::do_update(R, c, yn, one, ynm[1], a, ynm[0], b);
 }
 #endif
 
+
+/*
+ * for EIGEN
+*/
 template<
   ::rompp::ode::ImplicitEnum method,
   int n,

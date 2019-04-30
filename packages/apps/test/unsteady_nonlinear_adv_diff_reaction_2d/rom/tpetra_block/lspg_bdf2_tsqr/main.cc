@@ -17,7 +17,7 @@ using eig_dyn_mat	= Eigen::MatrixXd;
 using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
 
 constexpr double eps	= 1e-12;
-constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
+constexpr auto ode_case = rompp::ode::ImplicitEnum::BDF2;
 constexpr auto zero	= ::rompp::core::constants::zero<scalar_t>();
 constexpr auto t0	= zero;
 
