@@ -4,5 +4,6 @@
 
 #include "mvec_mvec/core_epetra_multi_vector_dot_epetra_multi_vector.hpp"
 #include "mvec_mvec/core_tpetra_multi_vector_dot_tpetra_multi_vector.hpp"
+#include "mvec_mvec/core_tpetra_block_multi_vector_dot_tpetra_block_multi_vector.hpp"
 
 #endif
