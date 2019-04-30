@@ -66,8 +66,8 @@ int main(int argc, char *argv[]){
 
   // integrate in time
   constexpr scalar_t dt = 0.1;
-  constexpr scalar_t fint = 1.0;
-  constexpr auto Nsteps = static_cast<unsigned int>(fint/dt);
+  constexpr auto Nsteps = static_cast<unsigned int>(10);
+  constexpr scalar_t fint = Nsteps*dt;
   rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, solverO);
   std::cout << std::fixed << std::setprecision(14) << *y.data() << std::endl;
   {

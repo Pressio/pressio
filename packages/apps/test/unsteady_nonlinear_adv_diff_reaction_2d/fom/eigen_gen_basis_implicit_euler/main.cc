@@ -111,8 +111,8 @@ int main(int argc, char *argv[]){
   // set parameters to use for runs
   constexpr int Nx = 11, Ny = Nx*2-1;
   constexpr scalar_t dt = 0.1;
-  constexpr scalar_t fint = 1.0;
-  constexpr auto Nsteps = static_cast<uint_t>(fint/dt);
+  constexpr auto Nsteps = static_cast<unsigned int>(10);
+  constexpr scalar_t fint = Nsteps*dt;
 
   // run FOM and collect snapshots
   FomRunner fom(Nx, Ny);
