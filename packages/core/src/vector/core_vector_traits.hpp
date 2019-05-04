@@ -7,15 +7,57 @@
 #include "./meta/core_native_armadillo_vector_meta.hpp"
 #include "./meta/core_native_blaze_vector_meta.hpp"
 #include "./meta/core_native_eigen_vector_meta.hpp"
-#include "./meta/core_native_stdlib_vector_meta.hpp"
 #include "./meta/core_native_epetra_vector_meta.hpp"
 #include "./meta/core_native_tpetra_vector_meta.hpp"
 #include "./meta/core_native_teuchos_vector_meta.hpp"
 #include "./meta/core_native_kokkos_vector_meta.hpp"
 #include "./meta/core_native_tpetra_block_vector_meta.hpp"
 
-
 namespace rompp{ namespace core{ namespace details{
+
+/********************************
+an arbitrary vector is one
+for which a user must provide ops
+*******************************/
+template <typename wrapped_type>
+struct traits<
+  Vector<
+    wrapped_type,
+    mpl::enable_if_t<
+#ifdef HAVE_ARMADILLO
+      !core::meta::is_vector_armadillo<wrapped_type>::value and
+#endif
+#ifdef HAVE_BLAZE
+      !core::meta::is_dynamic_vector_blaze<wrapped_type>::value and
+#endif
+      !core::meta::is_vector_kokkos<wrapped_type>::value and
+      !core::meta::is_vector_eigen<wrapped_type>::value and
+      !core::meta::is_vector_epetra<wrapped_type>::value and
+      !core::meta::is_dense_vector_teuchos<wrapped_type>::value and
+      !core::meta::is_vector_tpetra_block<wrapped_type>::value and
+      !core::meta::is_vector_tpetra<wrapped_type>::value
+      >
+    >
+  > {
+
+  using wrapped_t = wrapped_type;
+  using derived_t = Vector<wrapped_t>;
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::Arbitrary;
+
+  static constexpr WrappedPackageIdentifier
+  wrapped_package_identifier = WrappedPackageIdentifier::Arbitrary;
+
+  static constexpr bool is_vector = true;
+  static constexpr bool is_matrix = false;
+  static constexpr bool is_multi_vector = false;
+
+  // by default, any container is not admissible to expr templates
+  // the ones that are, will overwrite this
+  static constexpr bool is_admissible_for_expression_templates = false;
+};
+
 
 //*******************************
 // Eigen STATIC ROW vector
@@ -417,34 +459,6 @@ struct traits<
   using communicator_t = decltype(std::declval<data_map_t>().getComm());
 };
 #endif
-
-
-
-//*******************************
-// for a std vector
-//*******************************
-template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-    typename
-    std::enable_if<
-      core::meta::is_vector_stdlib<
-	wrapped_type>::value
-      >::type
-    >
-  >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-			       WrappedPackageIdentifier::CppStdLib,
-				    true, false>
-{
-
-  static constexpr WrappedVectorIdentifier
-  wrapped_vector_identifier = WrappedVectorIdentifier::CppStdLib;
-
-  using scalar_t = typename wrapped_type::value_type;
-  using ordinal_t = core::default_types::local_ordinal_t;
-};
 
 
 }}}//end namespace rompp::core::details

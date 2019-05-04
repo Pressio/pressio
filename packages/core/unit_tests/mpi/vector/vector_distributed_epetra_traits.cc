@@ -11,12 +11,10 @@ TEST(core_vector_distributed_epetra, EpetraVectorTraits)
 
   using natV_t = Epetra_Vector;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(natV_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(natV_t);
   STATIC_ASSERT_IS_VECTOR_EPETRA(natV_t);
 
   using myvec_t = core::Vector<natV_t>;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(myvec_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(myvec_t);
 
   using vecTrait = core::details::traits<myvec_t>;

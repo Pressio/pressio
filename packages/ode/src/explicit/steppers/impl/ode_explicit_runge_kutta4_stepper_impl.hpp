@@ -6,12 +6,15 @@
 
 namespace rompp{ namespace ode{ namespace impl{
 
-template<typename state_type,
-	 typename model_type,
-	 typename ode_residual_type,
-	 typename residual_policy_type
-	 >
-class ExplicitRungeKutta4StepperImpl<state_type,
+template<
+  typename scalar_type,
+  typename state_type,
+  typename model_type,
+  typename ode_residual_type,
+  typename residual_policy_type
+  >
+class ExplicitRungeKutta4StepperImpl<scalar_type,
+				     state_type,
 				     model_type,
 				     ode_residual_type,
 				     residual_policy_type>
@@ -27,13 +30,11 @@ class ExplicitRungeKutta4StepperImpl<state_type,
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using this_t = ExplicitRungeKutta4StepperImpl<
-    state_type, model_type, ode_residual_type, residual_policy_type>;
+    scalar_type, state_type, model_type,
+    ode_residual_type, residual_policy_type>;
+
   using storage_base_t = OdeStorage<state_type, ode_residual_type, 1, 4>;
   using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
-  using scalar_type  = typename core::details::traits<state_type>::scalar_t;
-  using scalar_t2  = typename core::details::traits<ode_residual_type>::scalar_t;
-  static_assert(std::is_same<scalar_type, scalar_t2>::value,
-		"Not maching scalar types");
 
 public:
   ExplicitRungeKutta4StepperImpl(const model_type & model,

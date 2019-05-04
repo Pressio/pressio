@@ -42,18 +42,18 @@ struct is_legitimate_model_for_implicit_ode<
 
 //------------------------------------------------------
 
-// for now, just leave Backward Euler as the legitimate stepper
-template<typename T,
-	 typename enable = void>
-struct is_legitimate_auxiliary_stepper : std::false_type{};
+// // for now, just leave Backward Euler as the legitimate stepper
+// template<typename T,
+// 	 typename enable = void>
+// struct is_legitimate_auxiliary_stepper : std::false_type{};
 
-template<typename T>
-struct is_legitimate_auxiliary_stepper<T,
-  typename std::enable_if<
-    ::rompp::ode::details::traits<typename T::base_t>::enum_id ==
-    ::rompp::ode::ImplicitEnum::Euler
-    >::type
-  > : std::true_type{};
+// template<typename T>
+// struct is_legitimate_auxiliary_stepper<T,
+//   typename std::enable_if<
+//     ::rompp::ode::details::traits<typename T::base_t>::enum_id ==
+//     ::rompp::ode::ImplicitEnum::Euler
+//     >::type
+//   > : std::true_type{};
 
 
 

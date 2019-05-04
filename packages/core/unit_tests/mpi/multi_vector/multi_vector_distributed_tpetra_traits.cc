@@ -16,13 +16,11 @@ TEST(core_multi_vector_distributed_tpetra, Traits){
   using nat_t = Tpetra::MultiVector<ST, LO, GO, NT>;
   STATIC_ASSERT_IS_MULTIVECTOR_TPETRA(nat_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(nat_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(nat_t);
   STATIC_ASSERT_IS_NOT_MULTIVECTOR_EPETRA(nat_t);
   STATIC_ASSERT_IS_NOT_VECTOR_TPETRA(nat_t);
 
   using mymvec_t = core::MultiVector<nat_t>;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(mymvec_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(mymvec_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(mymvec_t);
   STATIC_ASSERT_IS_NOT_MULTIVECTOR_EPETRA(mymvec_t);
   STATIC_ASSERT_IS_NOT_MULTIVECTOR_TPETRA(mymvec_t);

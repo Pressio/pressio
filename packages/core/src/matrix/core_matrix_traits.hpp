@@ -234,33 +234,33 @@ struct traits<Matrix<wrapped_type,
 #endif
 
 
-//***********************************
-// based on std::vector<std::vector<>>
-//***********************************
-template <typename wrapped_type>
-struct traits< Matrix<
-    wrapped_type,
-    typename
-    std::enable_if<
-      core::meta::is_dense_matrix_stdlib<
-	wrapped_type
-	>::value
-      >::type
-    >
-  >
-  : public containers_shared_traits<Matrix<wrapped_type>,
-				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::CppStdLib,
-				    true, false>,
-    public matrix_shared_traits<false>
-{
+// //***********************************
+// // based on std::vector<std::vector<>>
+// //***********************************
+// template <typename wrapped_type>
+// struct traits< Matrix<
+//     wrapped_type,
+//     typename
+//     std::enable_if<
+//       core::meta::is_dense_matrix_stdlib<
+// 	wrapped_type
+// 	>::value
+//       >::type
+//     >
+//   >
+//   : public containers_shared_traits<Matrix<wrapped_type>,
+// 				    wrapped_type, false, true, false,
+// 				    WrappedPackageIdentifier::CppStdLib,
+// 				    true, false>,
+//     public matrix_shared_traits<false>
+// {
 
-  static constexpr WrappedMatrixIdentifier
-  wrapped_matrix_identifier = WrappedMatrixIdentifier::CppStdLib;
+//   static constexpr WrappedMatrixIdentifier
+//   wrapped_matrix_identifier = WrappedMatrixIdentifier::CppStdLib;
 
-  using scalar_t = typename wrapped_type::value_type::value_type;
-  using ordinal_t = int;
-};
+//   using scalar_t = typename wrapped_type::value_type::value_type;
+//   using ordinal_t = int;
+// };
 
 
 }}}//end namespace rompp::core::details

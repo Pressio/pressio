@@ -34,7 +34,7 @@ class ImplicitStepperBase
        "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
 public:
-  typename traits::order_t order() const{
+  decltype(traits::order_value) order() const{
     return traits::order_value;
   }
 

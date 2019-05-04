@@ -10,14 +10,12 @@ TEST(core_multivector_distributed_epetra,
 
   using natV_t = Epetra_MultiVector;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(natV_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(natV_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(natV_t);
   STATIC_ASSERT_IS_MULTIVECTOR_EPETRA(natV_t);
 
   using myvec_t = core::MultiVector<natV_t>;
   STATIC_ASSERT_IS_CORE_MULTI_VECTOR_WRAPPER(myvec_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(myvec_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(myvec_t);
   STATIC_ASSERT_IS_NOT_MULTIVECTOR_EPETRA(myvec_t);
 

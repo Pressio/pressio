@@ -7,7 +7,6 @@
 
 namespace rompp{ namespace ode{ namespace policy{
 
-  
 // state and residual have same type and are
 // wrappers from core
 template<typename state_type,
@@ -26,21 +25,21 @@ class ExplicitResidualStandardPolicy<
 
 public:
   ExplicitResidualStandardPolicy() = default;
-  ~ExplicitResidualStandardPolicy() = default;  
-  
-  using scalar_type =
-    typename core::details::traits<state_type>::scalar_t;
-  
+  ~ExplicitResidualStandardPolicy() = default;
+
+  // using scalar_type =
+  //   typename core::details::traits<state_type>::scalar_t;
+
+  template <typename scalar_type>
   void operator()(const state_type & y,
 		  state_type & R,
 		  const model_type & model,
 		  scalar_type t) const{
 
-    R.setZero();
-    model.residual(*y.data(), *R.data(), t);    
+    // R.setZero();
+    model.residual(*y.data(), *R.data(), t);
   }
-  //----------------------------------------------
-  
+
 private:
   friend ExplicitResidualPolicyBase<
   ExplicitResidualStandardPolicy<
@@ -49,4 +48,4 @@ private:
 };//end class
 
 }}}//end namespace rompp::ode::policy
-#endif 
+#endif
