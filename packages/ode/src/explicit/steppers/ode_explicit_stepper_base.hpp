@@ -6,7 +6,6 @@
 #include "../policies/ode_is_legitimate_explicit_residual_policy.hpp"
 #include "../../ode_storage.hpp"
 #include "../../ode_aux_data.hpp"
-#include "../../meta/ode_basic_meta.hpp"
 
 namespace rompp{ namespace ode{
 

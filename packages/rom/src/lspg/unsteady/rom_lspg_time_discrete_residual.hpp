@@ -15,6 +15,7 @@ namespace rompp{ namespace rom{ namespace impl{
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int n,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
@@ -35,6 +36,7 @@ void time_discrete_residual(const state_type & yn,
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int n,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
@@ -65,6 +67,7 @@ void time_discrete_residual(const state_type & yn,
 template<
   ::rompp::ode::ImplicitEnum method,
   int n,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
@@ -86,6 +89,7 @@ void time_discrete_residual(const state_type & yn,
 template<
   ::rompp::ode::ImplicitEnum method,
   int n,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
@@ -176,6 +180,7 @@ struct time_discrete_single_entry_epetra<::rompp::ode::ImplicitEnum::BDF2>{
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int numStates,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
@@ -258,6 +263,7 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int n,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<

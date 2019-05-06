@@ -2,7 +2,7 @@
 #ifndef ODE_IS_LEGITIMATE_AUXILIARY_STEPPER_HPP_
 #define ODE_IS_LEGITIMATE_AUXILIARY_STEPPER_HPP_
 
-#include "ode_basic_meta.hpp"
+#include <type_traits>
 
 namespace rompp{ namespace ode{ namespace meta {
 

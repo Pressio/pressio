@@ -2,8 +2,9 @@
 #ifndef ODE_IS_LEGITIMATE_COLLECTOR_HPP_
 #define ODE_IS_LEGITIMATE_COLLECTOR_HPP_
 
-#include "ode_basic_meta.hpp"
-#include "ode_model_has_all_needed_residual_methods.hpp"
+// #include "ode_basic_meta.hpp"
+// #include "ode_model_has_all_needed_residual_methods.hpp"
+#include <type_traits>
 
 namespace rompp{ namespace ode{ namespace meta {
 

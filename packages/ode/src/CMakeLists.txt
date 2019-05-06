@@ -37,8 +37,6 @@ FILE(GLOB ode_imp_policies_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/meta/*.hpp")
 FILE(GLOB ode_imp_policies_std_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/implicit/policies/standard/*.hpp")
-FILE(GLOB ode_imp_steppers_impl_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-   "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/impl/*.hpp")
 FILE(GLOB ode_imp_steppers_common_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
    "${CMAKE_CURRENT_SOURCE_DIR}/implicit/steppers/*.hpp")
 
@@ -76,7 +74,6 @@ INSTALL(FILES ${ode_imp_comm_HEADERS} DESTINATION ${ODE_INCDIR}/implicit)
 INSTALL(FILES ${ode_imp_policies_base_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/policies/base)
 INSTALL(FILES ${ode_imp_policies_meta_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/policies/meta)
 INSTALL(FILES ${ode_imp_policies_std_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/policies/standard)
-INSTALL(FILES ${ode_imp_steppers_impl_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/steppers/impl)
 INSTALL(FILES ${ode_imp_steppers_common_HEADERS} DESTINATION ${ODE_INCDIR}/implicit/steppers)
 
 #----------------------------------------------------------------

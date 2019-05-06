@@ -5,7 +5,6 @@
 #include "../../../ode_forward_declarations.hpp"
 #include "../base/ode_implicit_residual_policy_base.hpp"
 #include "../../ode_residual_impl.hpp"
-#include "../../../meta/ode_basic_meta.hpp"
 
 namespace rompp{ namespace ode{ namespace policy{
 
@@ -24,7 +23,7 @@ class ImplicitResidualStandardPolicy<
 {
 
   using this_t = ImplicitResidualStandardPolicy<state_type, model_type, residual_type>;
-  using scalar_type = typename core::details::traits<state_type>::scalar_t;
+  friend ImplicitResidualPolicyBase<this_t>;
 
 public:
   ImplicitResidualStandardPolicy() = default;
@@ -32,7 +31,10 @@ public:
 
 public:
 
-  template <ode::ImplicitEnum method, int n>
+  template <ode::ImplicitEnum method,
+	    int n,
+      typename ops_t,
+	    typename scalar_type>
   void operator()(const state_type & y,
 		  residual_type & R,
 		  const std::array<state_type, n> & oldYs,
@@ -40,28 +42,25 @@ public:
 		  scalar_type t,
 		  scalar_type dt) const{
 
-    R.setZero();
     model.residual(*y.data(), *R.data(), t);
-    ode::impl::time_discrete_residual<method, n>(y, oldYs, R, dt);
+    ::rompp::ode::impl::time_discrete_residual<method, n, ops_t>(y, R, oldYs, dt);
   }
-  //----------------------------------------------------------------
 
-  template <ode::ImplicitEnum method, int n>
+  template <ode::ImplicitEnum method,
+	    int n,
+      typename ops_t,
+	    typename scalar_type>
   residual_type operator()(const state_type & y,
-			   const std::array<state_type, n> & oldYs,
-			   const model_type & model,
-			   scalar_type t,
-			   scalar_type dt)const {
+  			   const std::array<state_type, n> & oldYs,
+  			   const model_type & model,
+  			   scalar_type t,
+  			   scalar_type dt)const {
 
     auto nR = model.residual(*y.data(), t);
     residual_type R(nR);
-    ode::impl::time_discrete_residual<method, n>(y, oldYs, R, dt);
+    ::rompp::ode::impl::time_discrete_residual<method, n, ops_t>(y, R, oldYs, dt);
     return R;
   }
-  //----------------------------------------------------------------
-
-private:
-  friend ImplicitResidualPolicyBase<this_t>;
 
 };//end class
 

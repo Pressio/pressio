@@ -4,26 +4,26 @@
 
 #include "ODE_BASIC"
 
-#include "ode/src/implicit/ode_jacobian_impl.hpp"
 #include "ode/src/implicit/ode_residual_impl.hpp"
+#include "ode/src/implicit/ode_jacobian_impl.hpp"
 
 #include "ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
+#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy.hpp"
+#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy.hpp"
 
 #include "ode/src/implicit/policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
 #include "ode/src/implicit/policies/meta/ode_is_implicit_residual_standard_policy.hpp"
 #include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
 #include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
+#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_residual_policy.hpp"
+#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_jacobian_policy.hpp"
 
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy.hpp"
 
 #include "ode/src/implicit/steppers/ode_implicit_stepper_traits.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper.hpp"
-
-#include "ode/src/implicit/steppers/impl/ode_implicit_euler_stepper_impl.hpp"
-#include "ode/src/implicit/steppers/impl/ode_implicit_bdf2_stepper_impl.hpp"
 #include "ode/src/implicit/steppers/ode_implicit_stepper_base.hpp"
+#include "ode/src/implicit/steppers/ode_implicit_stepper_euler.hpp"
+#include "ode/src/implicit/steppers/ode_implicit_stepper_bdf2.hpp"
 
 
 #endif

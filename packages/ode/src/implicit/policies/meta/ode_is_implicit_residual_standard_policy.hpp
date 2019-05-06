@@ -4,7 +4,6 @@
 
 #include "../base/ode_implicit_residual_policy_base.hpp"
 #include "../standard/ode_implicit_residual_standard_policy.hpp"
-//#include "../standard/ode_implicit_bdf2_residual_standard_policy.hpp"
 
 namespace rompp{ namespace ode{ namespace meta {
 

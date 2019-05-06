@@ -1,7 +1,7 @@
 
-add_serial_unit_test(user_defined_model_admissibility)
-add_serial_unit_test(explicit_euler)
-add_serial_unit_test(explicit_rk4)
+#add_serial_unit_test(user_defined_model_admissibility)
+#add_serial_unit_test(explicit_euler)
+#add_serial_unit_test(explicit_rk4)
+#add_serial_unit_test(explicit_euler_user_defined_ops)
 add_serial_unit_test(implicit_euler)
 add_serial_unit_test(implicit_bdf2)
-add_serial_unit_test(explicit_euler_user_defined_ops)
