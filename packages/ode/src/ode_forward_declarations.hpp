@@ -63,6 +63,7 @@ template<typename scalar_type,
 	 typename model_type,
 	 typename ode_residual_type,
 	 typename residual_policy_type,
+	 typename ops,
 	 typename enable = void
 	 >
 class ExplicitRungeKutta4StepperImpl;

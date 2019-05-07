@@ -48,38 +48,12 @@ public:
 			   const residual_policy_type & res_policy_obj,
 			   const ode_state_type & y0,
 			   const ode_residual_type & r0)
-    : storage_base_t(r0), auxdata_base_t(model, res_policy_obj)
-  {
-    // //make sure there is something in what is passed,
-    // //otherwise the helper states and rhs are emtpy
-    // assert( !y0.empty() );
-    // assert( !r0.empty() );
-  }
-
-  /* leave this out for now, it is for when residual construction is
-   * called directly from the app object */
-  // ExplicitEulerStepperImpl(const model_type & model,
-  // 			   const residual_policy_type & res_policy_obj,
-  // 			   const ode_state_type & y0)
-  //   : storage_base_t( model.residual(*y0.data(),
-  // 				     core::constants::zero<scalar_type>() )),
-  //     auxdata_base_t(model, res_policy_obj)
-  // {
-  //   //make sure there is something in what is passed,
-  //   //otherwise the helper states and rhs are emtpy
-  //   assert( !y0.empty() );
-  // }
+    : storage_base_t(r0), auxdata_base_t(model, res_policy_obj){}
 
   ExplicitEulerStepperImpl(const residual_policy_type & res_policy_obj,
 			   const ode_state_type & y0,
 			   const ode_residual_type & r0)
-    : storage_base_t(r0), auxdata_base_t(res_policy_obj)
-  {
-    // //make sure there is something in what is passed,
-    // //otherwise the helper states and rhs are emtpy
-    // assert( !y0.empty() );
-    // assert( !r0.empty() );
-  }
+    : storage_base_t(r0), auxdata_base_t(res_policy_obj){}
 
   ExplicitEulerStepperImpl() = delete;
   ~ExplicitEulerStepperImpl() = default;
@@ -99,12 +73,12 @@ public:
 	      step_t step){
     //eval RHS
     this->evalRHS(y, auxRHS_[0], t);
-
     // y = y + dt * rhs
     constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
     ::rompp::core::ops::do_update(y, one, auxRHS_[0], dt);
   }
 
+  // if user provides ops, then use them
   template<typename step_t,
 	   typename T = ops_t,
 	   mpl::enable_if_t<
@@ -116,10 +90,8 @@ public:
 	      scalar_type dt,
 	      step_t step){
     using op = typename ops_t::update_op;
-
     //eval RHS
     this->evalRHS(y, auxRHS_[0], t);
-
     // y = y + dt * rhs
     constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
     op::do_update(*y.data(), one, *auxRHS_[0].data(), dt);

@@ -5,10 +5,48 @@
 #include "../core_forward_declarations.hpp"
 #include "../core_shared_traits.hpp"
 #include "./meta/core_native_eigen_matrix_meta.hpp"
-#include "./meta/core_native_stdlib_matrix_meta.hpp"
 #include "./meta/core_native_trilinos_matrix_meta.hpp"
 
 namespace rompp{ namespace core{ namespace details{
+
+/********************************
+an arbitrary matrix is one
+for which a user must provide ops
+*******************************/
+template <typename wrapped_type>
+struct traits<
+  Matrix<
+    wrapped_type,
+    mpl::enable_if_t<
+      !core::meta::is_dense_matrix_eigen<wrapped_type>::value and
+      !core::meta::is_sparse_matrix_eigen<wrapped_type>::value and
+      !core::meta::is_sparse_matrix_epetra<wrapped_type>::value and
+      !core::meta::is_dense_matrix_epetra<wrapped_type>::value and
+      !core::meta::is_dense_matrix_teuchos<wrapped_type>::value and
+      !core::meta::is_dense_matrix_teuchos_rcp<wrapped_type>::value and
+      !core::meta::is_sparse_matrix_tpetra<wrapped_type>::value
+      >
+    >
+  > {
+
+  using wrapped_t = wrapped_type;
+  using derived_t = Matrix<wrapped_t>;
+
+  static constexpr WrappedMatrixIdentifier
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::Arbitrary;
+
+  static constexpr WrappedPackageIdentifier
+  wrapped_package_identifier = WrappedPackageIdentifier::Arbitrary;
+
+  static constexpr bool is_vector = false;
+  static constexpr bool is_matrix = true;
+  static constexpr bool is_multi_vector = false;
+
+  // by default, any container is not admissible to expr templates
+  // the ones that are, will overwrite this
+  static constexpr bool is_admissible_for_expression_templates = false;
+};
+
 
 //***********************************
 // eigen dense matrix
@@ -232,36 +270,6 @@ struct traits<Matrix<wrapped_type,
   using communicator_t = decltype(std::declval<wrapped_type>().getComm());
 };
 #endif
-
-
-// //***********************************
-// // based on std::vector<std::vector<>>
-// //***********************************
-// template <typename wrapped_type>
-// struct traits< Matrix<
-//     wrapped_type,
-//     typename
-//     std::enable_if<
-//       core::meta::is_dense_matrix_stdlib<
-// 	wrapped_type
-// 	>::value
-//       >::type
-//     >
-//   >
-//   : public containers_shared_traits<Matrix<wrapped_type>,
-// 				    wrapped_type, false, true, false,
-// 				    WrappedPackageIdentifier::CppStdLib,
-// 				    true, false>,
-//     public matrix_shared_traits<false>
-// {
-
-//   static constexpr WrappedMatrixIdentifier
-//   wrapped_matrix_identifier = WrappedMatrixIdentifier::CppStdLib;
-
-//   using scalar_t = typename wrapped_type::value_type::value_type;
-//   using ordinal_t = int;
-// };
-
 
 }}}//end namespace rompp::core::details
 #endif

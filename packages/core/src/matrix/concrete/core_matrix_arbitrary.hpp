@@ -1,36 +1,36 @@
 
-#ifndef CORE_VECTOR_CONCRETE_VECTOR_ARBITRARY_HPP_
-#define CORE_VECTOR_CONCRETE_VECTOR_ARBITRARY_HPP_
+#ifndef CORE_MATRIX_CONCRETE_MATRIX_ARBITRARY_HPP_
+#define CORE_MATRIX_CONCRETE_MATRIX_ARBITRARY_HPP_
 
 #include "../../shared_base/core_container_base.hpp"
-#include <utility>
 
 namespace rompp{ namespace core{
 
 template <typename wrapped_type>
-class Vector<
+class Matrix<
   wrapped_type,
   mpl::enable_if_t<
-    details::traits<Vector<wrapped_type>>::wrapped_vector_identifier
-    == details::WrappedVectorIdentifier::Arbitrary
+    details::traits<Matrix<wrapped_type>>::wrapped_matrix_identifier
+    == details::WrappedMatrixIdentifier::Arbitrary
     >
   >
-  : public ContainerBase< Vector<wrapped_type>, wrapped_type >
+  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >
 {
-  using this_t = Vector<wrapped_type>;
+
+  using this_t = Matrix<wrapped_type>;
 
 public:
-  Vector() = delete;
-  ~Vector() = default;
+  Matrix() = delete;
+  ~Matrix() = delete;
 
   template <typename ...Args>
-  Vector(Args && ... args)
+  Matrix(Args && ... args)
     : data_( std::forward<Args>(args)... ){}
 
-  explicit Vector(const wrapped_type & vecobj)
+  explicit Matrix(const wrap_t & vecobj)
     : data_(vecobj){}
 
-  Vector(this_t const & other)
+  Matrix(this_t const & other)
     : data_(*other.data()){}
 
 private:
@@ -45,10 +45,10 @@ private:
 private:
   friend ContainerBase< this_t, wrapped_type >;
 
-private:
-  wrapped_type data_ = {};
+  wrap_t data_ = {};
 
 };//end class
 
 }}//end namespace rompp::core
+
 #endif

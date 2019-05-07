@@ -32,7 +32,6 @@ struct traits<
   // check if scalar is provided in Args
   using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<
     std::is_floating_point, Args...>;
-  // store the type
   using scalar_t = ::rompp::mpl::variadic::at_or_t<
     void, ic0::value, Args...>;
   static_assert( std::is_void<scalar_t>::value == false,
@@ -46,15 +45,13 @@ struct traits<
   // check Args if a user-defined residual policy is passed
   using ic1 = ::rompp::mpl::variadic::find_if_unary_pred_t<
     ::rompp::ode::meta::is_legitimate_explicit_residual_policy, Args...>;
-  // store the type
   using residual_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
   // check if user passed an ops
   using ic2 = ::rompp::mpl::variadic::find_if_quaternary_pred_t<
     scalar_t, state_t, residual_t,
-    ::rompp::ode::meta::is_valid_user_defined_ops_for_explicit_ode, Args...>;
-  // store the type
+    ::rompp::ode::meta::is_valid_user_defined_ops_for_explicit_euler, Args...>;
   using ops_t = ::rompp::mpl::variadic::at_or_t<void, ic2::value, Args...>;
 
   using impl_t = impl::ExplicitEulerStepperImpl
@@ -88,7 +85,6 @@ struct traits<
   // check if scalar is provided in Args
   using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<
     std::is_floating_point, Args...>;
-  // store the type
   using scalar_t = ::rompp::mpl::variadic::at_or_t<
     void, ic0::value, Args...>;
   static_assert( std::is_void<scalar_t>::value == false,
@@ -102,12 +98,17 @@ struct traits<
   // check Args if a user-defined residual policy is passed
   using ic1 = ::rompp::mpl::variadic::find_if_unary_pred_t<
     ::rompp::ode::meta::is_legitimate_explicit_residual_policy, Args...>;
-  // store the type
   using residual_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
+  // check if user passed an ops
+  using ic2 = ::rompp::mpl::variadic::find_if_quaternary_pred_t<
+    scalar_t, state_t, residual_t,
+    ::rompp::ode::meta::is_valid_user_defined_ops_for_explicit_rk4, Args...>;
+  using ops_t = ::rompp::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+
   using impl_t = impl::ExplicitRungeKutta4StepperImpl
-    <scalar_t, state_t, model_t, residual_t, residual_policy_t>;
+    <scalar_t, state_t, model_t, residual_t, residual_policy_t, ops_t>;
 };
 
 
