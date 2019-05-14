@@ -7,58 +7,6 @@
 
 namespace rompp{ namespace rom{ namespace impl{
 
-#ifdef HAVE_TRILINOS
-/* For block:Tpetra, for time being, just implement assuming that
- * there are no gaps in the residual and states, so basically
- * assuming that states and residual have same distributions.
- * This has to be fixed later similarly to what we do for regular-tpetra and epetra*/
-template<
-  ::rompp::ode::ImplicitEnum odeMethod,
-  int n,
-  typename state_type,
-  typename scalar_type,
-  ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_tpetra_block<state_type>::value and
-    odeMethod == ::rompp::ode::ImplicitEnum::Euler
-    > * = nullptr
-  >
-void time_discrete_residual(const state_type & yn,
-			    const std::array<state_type,n> & ynm,
-			    state_type & R,
-			    scalar_type dt){
-  constexpr auto one = ::rompp::core::constants::one<scalar_type>();
-  constexpr auto negOne = ::rompp::core::constants::negOne<scalar_type>();
-  const scalar_type negDt = -dt;
-  ::rompp::core::ops::do_update(R, negDt, yn, one, ynm[0], negOne);
-}
-
-template<
-  ::rompp::ode::ImplicitEnum odeMethod,
-  int n,
-  typename state_type,
-  typename scalar_type,
-  ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_tpetra_block<state_type>::value and
-    odeMethod == ::rompp::ode::ImplicitEnum::BDF2
-    > * = nullptr
-  >
-void time_discrete_residual(const state_type & yn,
-			    const std::array<state_type,n> & ynm,
-			    state_type & R,
-			    scalar_type dt){
-
-  constexpr auto one = ::rompp::core::constants::one<scalar_type>();
-  constexpr auto negOne = ::rompp::core::constants::negOne<scalar_type>();
-
-  constexpr auto a = ::rompp::ode::coeffs::bdf2<scalar_type>::c1_*negOne;
-  constexpr auto b = ::rompp::ode::coeffs::bdf2<scalar_type>::c2_;
-  const auto c = ::rompp::ode::coeffs::bdf2<scalar_type>::c3_*dt*negOne;
-
-  ::rompp::core::ops::do_update(R, c, yn, one, ynm[1], a, ynm[0], b);
-}
-#endif
-
-
 /*
  * for EIGEN
 */
@@ -143,11 +91,11 @@ struct time_discrete_single_entry_epetra;
 template <>
 struct time_discrete_single_entry_epetra<::rompp::ode::ImplicitEnum::Euler>{
   template <typename T, typename state_type, int n>
-    static void evaluate(const T& dt, T & R,
+    static void evaluate(const T& dt,
+			 T & R,
 			 int lid,
 			 const state_type& yn,
 			 const std::array<state_type,n> & ynm){
-    //R[i] = yn[lid]- ynm[0][lid] - dt*R[i];
     R = yn[lid] - ynm[0][lid] - dt * R;
   }
 };
@@ -218,7 +166,9 @@ void time_discrete_residual(const state_type & yn,
 }
 
 
-
+/*
+	tpetra
+*/
 template <::rompp::ode::ImplicitEnum odeMethod>
 struct time_discrete_single_entry_tpetra;
 
@@ -230,17 +180,27 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::Euler>{
 			 const state_type& yn,
 			 const std::array<state_type,n> & ynm){
     //R[i] = yn[lid]- ynm[0][lid] - dt*R[i];
-    R = (yn.data()->getData())[lid]
-      - (ynm[0].data()->getData())[lid] - dt * R;
+    R = (yn.getData())[lid]
+      - (ynm[0].getData())[lid] - dt * R;
+  }
+
+  template <typename T, typename state_type>
+    static void evaluate(const T& dt, T & R,
+			 int lid,
+			 const state_type& yn,
+			 const state_type & ynm0){
+    R = (yn.getData())[lid]
+      - (ynm0.getData())[lid] - dt * R;
   }
 };
 
 template <>
 struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
   template <typename T, typename state_type, int n>
-    static void evaluate(const T& dt, T & R,
+    static void evaluate(const T& dt,
+			 T & R,
 			 int lid,
-			 const state_type& yn,
+			 const state_type & yn,
 			 const std::array<state_type,n> & ynm){
     using namespace ::rompp::ode::coeffs;
 
@@ -248,12 +208,72 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
     //   - bdf2<scalar_type>::c1_*ynm[1][lid]
     //   - bdf2<scalar_type>::c2_*ynm[0][lid]
     //   - bdf2<scalar_type>::c3_*dt*R[i];
-    R = (yn.data()->getData())[lid]
-      - bdf2<T>::c1_*(ynm[1].data()->getData())[lid]
-      + bdf2<T>::c2_*(ynm[0].data()->getData())[lid]
+    R = (yn.getData())[lid]
+      - bdf2<T>::c1_*(ynm[1].getData())[lid]
+      + bdf2<T>::c2_*(ynm[0].getData())[lid]
+      - bdf2<T>::c3_*dt*R;
+  }
+
+  template <typename T, typename state_type>
+    static void evaluate(const T& dt,
+			 T & R,
+			 int lid,
+			 const state_type& yn,
+			 const state_type & ynm0,
+			 const state_type & ynm1){
+    using namespace ::rompp::ode::coeffs;
+    R = (yn.getData())[lid]
+      - bdf2<T>::c1_*(ynm1.getData())[lid]
+      + bdf2<T>::c2_*(ynm0.getData())[lid]
       - bdf2<T>::c3_*dt*R;
   }
 };
+
+
+template<
+  ::rompp::ode::ImplicitEnum odeMethod,
+  typename state_type,
+  typename scalar_type,
+  typename ... Args,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_vector_tpetra<state_type>::value == true
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    state_type & R,
+			    scalar_type dt,
+			    Args && ... args)/*
+			    const state_type & ynm0,
+			    const state_type & ynm1,)*/
+{
+  // // On input: R contains the application RHS, i.e. if
+  // // dudt = f(x,u,...), R contains f(...)
+
+  // get map of yn (ynm has for sure the same map as yn)
+  const auto y_map = yn.getMap();
+  // get my global elements
+  const auto gIDy = y_map->getMyGlobalIndices();
+
+  // get map of R
+  const auto R_map = R.getMap();
+  // get global elements
+  const auto gIDr = R_map->getMyGlobalIndices();
+
+  //loop over elements of R
+  for (size_t i=0; i<R.getLocalLength(); i++){
+    // ask the state map what is the local index corresponding
+    // to the global index we are handling
+    const auto lid = y_map->getLocalElement(gIDr[i]);
+    // compute the time-discrete entry
+    time_discrete_single_entry_tpetra<
+      odeMethod
+      >::template evaluate<
+      scalar_type, state_type
+      >(dt, R.getDataNonConst()[i], lid, yn,
+	std::forward<Args>(args)...);//ynm0, ynm1);
+  }
+}
+
 
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
@@ -261,7 +281,8 @@ template<
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_tpetra<state_type>::value == true
+    core::meta::is_vector_wrapper_tpetra<state_type>::value == true and
+    odeMethod == ::rompp::ode::ImplicitEnum::Euler
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
@@ -269,31 +290,72 @@ void time_discrete_residual(const state_type & yn,
 			    state_type & R,
 			    scalar_type dt){
 
-  // // On input: R contains the application RHS, i.e. if
-  // // dudt = f(x,u,...), R contains f(...)
+  time_discrete_residual<odeMethod>(*yn.data(),
+				    *R.data(), dt,
+				    *ynm[0].data());
 
-  // get map of yn (ynm has for sure the same map as yn)
-  const auto & y_map = yn.getDataMap();
-  // get my global elements
-  auto gIDy = y_map.getMyGlobalIndices();
+}
 
-  // get map of R
-  const auto & R_map = R.getDataMap();
-  // get global elements
-  auto gIDr = R_map.getMyGlobalIndices();
+template<
+  ::rompp::ode::ImplicitEnum odeMethod,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_vector_wrapper_tpetra<state_type>::value == true and
+    odeMethod == ::rompp::ode::ImplicitEnum::BDF2
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
+			    state_type & R,
+			    scalar_type dt){
 
-  //loop over elements of R
-  for (auto i=0; i<R.localSize(); i++){
-    // ask the state map what is the local index corresponding
-    // to the global index we are handling
-    auto lid = y_map.getLocalElement(gIDr[i]);
-    // compute the time-discrete entry
-    time_discrete_single_entry_tpetra<
-      odeMethod
-      >::template evaluate<
-      scalar_type, state_type,
-      n>(dt, (R.data()->getDataNonConst())[i], lid, yn, ynm);
-  }
+  time_discrete_residual<odeMethod>(*yn.data(),
+				    *R.data(), dt,
+				    *ynm[0].data(),
+				    *ynm[1].data());
+}
+
+template<
+  ::rompp::ode::ImplicitEnum odeMethod,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_vector_wrapper_tpetra_block<state_type>::value and
+    odeMethod == ::rompp::ode::ImplicitEnum::Euler
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
+			    state_type & R,
+			    scalar_type dt){
+  auto yn_vv = const_cast<state_type &>(yn).data()->getVectorView();
+  auto ynm0_vv = const_cast<state_type &>(ynm[0]).data()->getVectorView();
+  auto R_vv = R.data()->getVectorView();
+  time_discrete_residual<odeMethod>(yn_vv, R_vv, dt, ynm0_vv);
+}
+
+template<
+  ::rompp::ode::ImplicitEnum odeMethod,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_vector_wrapper_tpetra_block<state_type>::value and
+    odeMethod == ::rompp::ode::ImplicitEnum::BDF2
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
+			    state_type & R,
+			    scalar_type dt){
+  auto yn_vv = const_cast<state_type &>(yn).data()->getVectorView();
+  auto ynm0_vv = const_cast<state_type &>(ynm[0]).data()->getVectorView();
+  auto ynm1_vv = const_cast<state_type &>(ynm[1]).data()->getVectorView();
+  auto R_vv = R.data()->getVectorView();
+  time_discrete_residual<odeMethod>(yn_vv, R_vv, dt, ynm0_vv, ynm1_vv);
 }
 
 #endif

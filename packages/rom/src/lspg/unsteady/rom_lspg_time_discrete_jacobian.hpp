@@ -7,30 +7,30 @@
 
 namespace rompp{ namespace rom{ namespace impl{
 
-#ifdef HAVE_TRILINOS
-template <
-  ode::ImplicitEnum odeMethod,
-  typename lspg_matrix_type,
-  typename scalar_type,
-  typename decoder_jac_type,
-  ::rompp::mpl::enable_if_t<
-    core::meta::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
-    core::meta::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
-    > * = nullptr
-  >
-void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
-			    scalar_type	dt,
-			    const decoder_jac_type & phi){
+//#ifdef HAVE_TRILINOS
+// template <
+//   ode::ImplicitEnum odeMethod,
+//   typename lspg_matrix_type,
+//   typename scalar_type,
+//   typename decoder_jac_type,
+//   ::rompp::mpl::enable_if_t<
+//     core::meta::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
+//     core::meta::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
+//     > * = nullptr
+//   >
+// void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
+// 			    scalar_type	dt,
+// 			    const decoder_jac_type & phi){
 
-  constexpr auto one = ::rompp::core::constants::one<scalar_type>();
-  constexpr auto negOne = ::rompp::core::constants::negOne<scalar_type>();
-  auto coeff = negOne*dt;
-  if (odeMethod == ::rompp::ode::ImplicitEnum::BDF2)
-    coeff *= ::rompp::ode::coeffs::bdf2<scalar_type>::c3_;
+//   constexpr auto one = ::rompp::core::constants::one<scalar_type>();
+//   constexpr auto negOne = ::rompp::core::constants::negOne<scalar_type>();
+//   auto coeff = negOne*dt;
+//   if (odeMethod == ::rompp::ode::ImplicitEnum::BDF2)
+//     coeff *= ::rompp::ode::coeffs::bdf2<scalar_type>::c3_;
 
-  jphi.data()->update( one, *phi.data(), coeff);
-}
-#endif
+//   jphi.data()->update( one, *phi.data(), coeff);
+// }
+// #endif
 
 
 template <
@@ -132,6 +132,47 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
   }
 }
 
+template <
+  ode::ImplicitEnum odeMethod,
+  typename lspg_matrix_type,
+  typename scalar_type,
+  typename decoder_jac_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_multi_vector_tpetra<lspg_matrix_type>::value and
+    core::meta::is_multi_vector_tpetra<decoder_jac_type>::value
+    > * = nullptr
+  >
+void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+			    scalar_type	dt,
+			    const decoder_jac_type & phi){
+
+  //get row map of phi
+  const auto phi_map = phi.getMap();
+  // get my global elements
+  const auto gIDphi = phi_map->getMyGlobalIndices();
+
+  // get map of jphi
+  const auto jphi_map = jphi.getMap();
+  // get global elements
+  const auto gIDjphi = jphi_map->getMyGlobalIndices();
+
+  // prefactor (f) multiplying f*dt*J*phi
+  auto prefactor = static_cast<scalar_type>(1);
+  if (odeMethod == ode::ImplicitEnum::BDF2)
+    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+
+  auto jphi2dView = jphi.get2dViewNonConst();
+  auto phi2dView = phi.get2dView();
+
+  //loop over elements of jphi
+  for (size_t i=0; i<jphi.getLocalLength(); i++){
+    // ask the phi map what is the local index corresponding
+    // to the global index we are handling
+    const auto lid = phi_map->getLocalElement(gIDjphi[i]);
+    for (size_t j=0; j<jphi.getNumVectors(); j++)
+      jphi2dView[j][i] = phi2dView[j][lid] - prefactor*dt*jphi2dView[j][i];
+  }
+}
 
 template <
   ode::ImplicitEnum odeMethod,
@@ -143,37 +184,32 @@ template <
     core::meta::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
     > * = nullptr
   >
-void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
+void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    scalar_type	dt,
 			    const decoder_jac_type & phi){
 
-  //get row map of phi
-  const auto & phi_map = phi.getDataMap();
-  // get my global elements
-  auto gIDphi = phi_map.getMyGlobalIndices();
-
-  // get map of jphi
-  const auto & jphi_map = jphi.getDataMap();
-  // get global elements
-  auto gIDjphi = jphi_map.getMyGlobalIndices();
-
-  // prefactor (f) multiplying f*dt*J*phi
-  auto prefactor = static_cast<scalar_type>(1);
-  if (odeMethod == ode::ImplicitEnum::BDF2)
-    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
-
-  auto jphi2dView = jphi.data()->get2dViewNonConst();
-  auto phi2dView = phi.data()->get2dView();
-
-  //loop over elements of jphi
-  for (auto i=0; i<jphi.localLength(); i++){
-    // ask the phi map what is the local index corresponding
-    // to the global index we are handling
-    auto lid = phi_map.getLocalElement(gIDjphi[i]);
-    for (auto j=0; j<jphi.globalNumVectors(); j++)
-      jphi2dView[j][i] = phi2dView[j][lid] - prefactor*dt*jphi2dView[j][i];
-  }
+  //time_discrete_jacobian<odeMethod>(*jphi.data(), dt, *phi.data());
 }
+
+
+template <
+  ode::ImplicitEnum odeMethod,
+  typename lspg_matrix_type,
+  typename scalar_type,
+  typename decoder_jac_type,
+  ::rompp::mpl::enable_if_t<
+    core::meta::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
+    core::meta::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
+    > * = nullptr
+  >
+void time_discrete_jacobian(lspg_matrix_type & jphi,
+			    scalar_type	dt,
+			    const decoder_jac_type & phi){
+  // auto jphi_mvv = jphi.data()->getMultiVectorView();
+  // auto phi_mvv  = phi.data()->getMultiVectorView();
+  // time_discrete_jacobian<odeMethod>(jphi_mvv, dt, phi_mvv);
+}
+
 #endif
 
 }}}//end namespace rompp::rom::impl
