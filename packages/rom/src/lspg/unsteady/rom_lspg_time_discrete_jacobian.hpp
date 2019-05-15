@@ -7,32 +7,6 @@
 
 namespace rompp{ namespace rom{ namespace impl{
 
-//#ifdef HAVE_TRILINOS
-// template <
-//   ode::ImplicitEnum odeMethod,
-//   typename lspg_matrix_type,
-//   typename scalar_type,
-//   typename decoder_jac_type,
-//   ::rompp::mpl::enable_if_t<
-//     core::meta::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
-//     core::meta::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
-//     > * = nullptr
-//   >
-// void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
-// 			    scalar_type	dt,
-// 			    const decoder_jac_type & phi){
-
-//   constexpr auto one = ::rompp::core::constants::one<scalar_type>();
-//   constexpr auto negOne = ::rompp::core::constants::negOne<scalar_type>();
-//   auto coeff = negOne*dt;
-//   if (odeMethod == ::rompp::ode::ImplicitEnum::BDF2)
-//     coeff *= ::rompp::ode::coeffs::bdf2<scalar_type>::c3_;
-
-//   jphi.data()->update( one, *phi.data(), coeff);
-// }
-// #endif
-
-
 template <
   ode::ImplicitEnum odeMethod,
   typename lspg_matrix_type,
@@ -188,7 +162,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    scalar_type	dt,
 			    const decoder_jac_type & phi){
 
-  //time_discrete_jacobian<odeMethod>(*jphi.data(), dt, *phi.data());
+  time_discrete_jacobian<odeMethod>(*jphi.data(), dt, *phi.data());
 }
 
 
@@ -205,9 +179,9 @@ template <
 void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    scalar_type	dt,
 			    const decoder_jac_type & phi){
-  // auto jphi_mvv = jphi.data()->getMultiVectorView();
-  // auto phi_mvv  = phi.data()->getMultiVectorView();
-  // time_discrete_jacobian<odeMethod>(jphi_mvv, dt, phi_mvv);
+  auto jphi_mvv = jphi.data()->getMultiVectorView();
+  auto phi_mvv  = phi.data()->getMultiVectorView();
+  time_discrete_jacobian<odeMethod>(jphi_mvv, dt, phi_mvv);
 }
 
 #endif
