@@ -79,7 +79,7 @@ INSTALL(FILES ${apps_steadyLinearAdvDiff1d_HEADERS} DESTINATION ${APPS_INCDIR}/s
 INSTALL(FILES ${apps_steadyLinearAdvDiff2d_HEADERS} DESTINATION ${APPS_INCDIR}/steady_linear_adv_diff2d)
 INSTALL(FILES ${apps_unsteadyLinearAdvDiff1d_HEADERS} DESTINATION ${APPS_INCDIR}/unsteady_linear_adv_diff1d)
 INSTALL(FILES ${apps_unsteadyNonLinearAdvDiffReaction2d_HEADERS} DESTINATION ${APPS_INCDIR}/unsteady_nonlinear_adv_diff_reaction2d)
-INSTALL(FILES ${apps_unsteadyNonLinearAdvDiffReactionFlame2d_HEADERS} DESTINATION ${APPS_INCDIR}/unsteady_nonlinear_adv_diff_reactionFlame2d)
+INSTALL(FILES ${apps_unsteadyNonLinearAdvDiffReactionFlame2d_HEADERS} DESTINATION ${APPS_INCDIR}/unsteady_nonlinear_adv_diff_reaction_flame2d)
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)
