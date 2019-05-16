@@ -9,6 +9,7 @@ namespace rompp{ namespace rom{ namespace impl{
 
 template <
   ode::ImplicitEnum odeMethod,
+  typename ops_t,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -64,6 +65,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 template <
   ode::ImplicitEnum odeMethod,
+  typename ops_t,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -108,6 +110,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 
 template <
   ode::ImplicitEnum odeMethod,
+  typename ops_t,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,

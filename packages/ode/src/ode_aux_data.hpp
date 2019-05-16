@@ -26,25 +26,21 @@ protected:
 };
 //---------------------------------------------
 
-template<typename model_type,
-	 typename scalar_type,
-	 typename residual_policy_type,
-	 typename jacobian_policy_type>
-class ImpOdeAuxData
-{
+template<
+  typename model_type,
+  typename scalar_type
+  >
+struct ImpOdeAuxData{
 
-protected:
-  ImpOdeAuxData(const model_type & mod,
-		const residual_policy_type & rpolo,
-		const jacobian_policy_type & jpolo)
-    : model_(&mod), residual_obj_(&rpolo), jacobian_obj_(&jpolo){}
+  const model_type & model_;
+  scalar_type t_	= {};
+  scalar_type dt_	= {};
+
+  ImpOdeAuxData(const model_type & model)
+    : model_(model){}
+
   ~ImpOdeAuxData() = default;
 
-  const model_type * model_		     = nullptr;
-  const residual_policy_type * residual_obj_ = nullptr;
-  const jacobian_policy_type * jacobian_obj_ = nullptr;
-  scalar_type t_			     = {};
-  scalar_type dt_			     = {};
 };
 
 

@@ -14,7 +14,7 @@ enum class WrappedPackageIdentifier{
    Trilinos,
    Kokkos,
    Armadillo,
-   CppStdLib
+   Arbitrary
 };
 
 /*--------------------------------------------
@@ -41,7 +41,7 @@ enum class WrappedVectorIdentifier{
    Kokkos,
    ArmadilloCol,
    ArmadilloRow,
-   CppStdLib
+   Arbitrary
 };
 
 /*--------------------------------------------
@@ -58,7 +58,7 @@ enum class WrappedMatrixIdentifier{
    SparseEigen,
    DenseBlaze, // maybe more specific
    SparseBlaze,
-   CppStdLib
+   Arbitrary
 };
 
 
@@ -70,7 +70,8 @@ enum class WrappedMultiVectorIdentifier{
    Epetra,
    Tpetra,
    TpetraBlock,
-   Eigen
+   Eigen,
+   Arbitrary
 };
 
 

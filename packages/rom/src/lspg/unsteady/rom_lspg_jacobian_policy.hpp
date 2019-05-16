@@ -53,6 +53,7 @@ public:
 
 public:
   template <ode::ImplicitEnum odeMethod,
+      typename ops_t,
 	    typename lspg_state_t,
 	    typename lspg_jac_t,
 	    typename app_t,
@@ -75,20 +76,20 @@ public:
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
-    const auto & basis = decoderObj_.getReferenceToJacobian();
-    fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ, t);
-    timer->stop("fom apply jac");
-#else
-    const auto & basis = decoderObj_.getReferenceToJacobian();
-    fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ, t);
 #endif
+    const auto & basis = decoderObj_.getReferenceToJacobian();
+    fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ, t);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("fom apply jac");
+#endif
+
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("time discrete jacob");
-    rom::impl::time_discrete_jacobian<odeMethod>(romJJ, dt, basis);
+#endif
+    rom::impl::time_discrete_jacobian<odeMethod, ops_t>(romJJ, dt, basis);
+#ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("time discrete jacob");
-#else
-    rom::impl::time_discrete_jacobian<odeMethod>(romJJ, dt, basis);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -96,7 +97,9 @@ public:
 #endif
   }
 
+
   template <ode::ImplicitEnum odeMethod,
+      typename ops_t,
 	    typename lspg_state_t,
 	    typename app_t,
 	    typename scalar_t>
@@ -105,7 +108,7 @@ public:
 				scalar_t	   t,
 				scalar_t	   dt) const
   {
-    (*this).template operator()<odeMethod>(romY, JJ_, app, t, dt);
+    (*this).template operator()<odeMethod, ops_t>(romY, JJ_, app, t, dt);
     return JJ_;
   }
 

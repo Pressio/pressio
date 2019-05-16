@@ -11,20 +11,20 @@ TEST(core_meta_detect_typedefs, scalarTypedefDetect)
     using scalar_type = double;
     scalar_type x;
   };
-  static_assert( ::rompp::mpl::is_detected<core::meta::has_scalar_typedef, A>::value, "");
+  static_assert( ::rompp::core::meta::has_scalar_typedef<A>::value, "");
 
   class B{
   public:
     using scalar_t = double;
     scalar_t x;
   };
-  static_assert( ::rompp::mpl::is_detected<core::meta::has_scalar_typedef, B>::value == false, "");
+  static_assert( ::rompp::core::meta::has_scalar_typedef<B>::value == false, "");
 
   struct C{
     using scalar_type = double;
     scalar_type x;
   };
-  static_assert( ::rompp::mpl::is_detected<core::meta::has_scalar_typedef, C>::value, "");
+  static_assert( ::rompp::core::meta::has_scalar_typedef<C>::value, "");
 }
 
 

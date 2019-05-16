@@ -1,0 +1,8 @@
+
+ADD_SUBDIRECTORY(eigen_explicit_rk4)
+# ADD_SUBDIRECTORY(epetra_explicit_rk4)
+# ADD_SUBDIRECTORY(block_tpetra_explicit_rk4)
+ADD_SUBDIRECTORY(eigen_implicit_euler)
+ADD_SUBDIRECTORY(eigen_implicit_bdf2)
+# ADD_SUBDIRECTORY(eigen_gen_basis_implicit_euler)
+# ADD_SUBDIRECTORY(eigen_gen_basis_implicit_bdf2)

@@ -17,5 +17,7 @@
 #include "mpl_ConfigDefs.hpp"
 #include "publicly_inherits_from.hpp"
 #include "void_t.hpp"
+#include "is_same.hpp"
+#include "not_same.hpp"
 
-#endif 
+#endif

@@ -13,6 +13,41 @@ namespace rompp{ namespace core{ namespace details{
 
 #ifdef HAVE_TRILINOS
 
+/********************************
+an arbitrary multi vector is one
+for which a user must provide ops
+*******************************/
+template <typename wrapped_type>
+struct traits<
+  MultiVector<
+    wrapped_type,
+    mpl::enable_if_t<
+      !core::meta::is_dynamic_multi_vector_eigen<wrapped_type>::value and
+      !core::meta::is_multi_vector_epetra<wrapped_type>::value and
+      !core::meta::is_multi_vector_tpetra_block<wrapped_type>::value and
+      !core::meta::is_multi_vector_tpetra<wrapped_type>::value
+      >
+    >
+  > {
+
+  using wrapped_t = wrapped_type;
+  using derived_t = MultiVector<wrapped_t>;
+
+  static constexpr WrappedMultiVectorIdentifier
+  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Arbitrary;
+
+  static constexpr WrappedPackageIdentifier
+  wrapped_package_identifier = WrappedPackageIdentifier::Arbitrary;
+
+  static constexpr bool is_vector = false;
+  static constexpr bool is_matrix = false;
+  static constexpr bool is_multi_vector = true;
+
+  // by default, any container is not admissible to expr templates
+  // the ones that are, will overwrite this
+  static constexpr bool is_admissible_for_expression_templates = false;
+};
+
 //*******************************
 // for epetra multivector
 //*******************************

@@ -50,6 +50,7 @@ public:
 public:
   template <ode::ImplicitEnum odeMethod,
 	    int n,
+      typename ops_t,
 	    typename lspg_state_t,
 	    typename lspg_residual_t,
 	    typename fom_t,
@@ -71,20 +72,20 @@ public:
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
-    fom_eval_rhs_policy::evaluate(app, yFom_, romR, t);
-    timer->stop("fom eval rhs");
-#else
-    fom_eval_rhs_policy::evaluate(app, yFom_, romR, t);
 #endif
+    fom_eval_rhs_policy::evaluate(app, yFom_, romR, t);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("fom eval rhs");
+#endif
+
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("time discrete residual");
+#endif
     rom::impl::time_discrete_residual<
-      odeMethod, maxNstates_ >(yFom_, yFomOld_, romR, dt);
+      odeMethod, maxNstates_, ops_t>(yFom_, yFomOld_, romR, dt);
+#ifdef HAVE_TEUCHOS_TIMERS      
     timer->stop("time discrete residual");
-#else
-    rom::impl::time_discrete_residual<
-      odeMethod, maxNstates_ >(yFom_, yFomOld_, romR, dt);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -92,8 +93,10 @@ public:
 #endif
   }
 
+
   template <ode::ImplicitEnum odeMethod,
 	    int n,
+      typename ops_t,
 	    typename lspg_state_t,
 	    typename fom_t,
 	    typename scalar_t>
@@ -103,7 +106,7 @@ public:
 			 scalar_t			   t,
 			 scalar_t			   dt) const
   {
-    (*this).template operator()<odeMethod, n>(romY, fomRhs_,
+    (*this).template operator()<odeMethod, n, ops_t>(romY, fomRhs_,
 					      oldYs, app, t, dt);
     return fomRhs_;
   }

@@ -5,7 +5,6 @@
 #include "../../../ode_forward_declarations.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
 #include "../../ode_jacobian_impl.hpp"
-#include "../../../meta/ode_basic_meta.hpp"
 
 namespace rompp{ namespace ode{ namespace policy{
 
@@ -22,13 +21,16 @@ class ImplicitJacobianStandardPolicy<
     state_type, model_type, jacobian_type> >{
 
   using this_t = ImplicitJacobianStandardPolicy<state_type, model_type, jacobian_type>;
+  friend JacobianPolicyBase<this_t>;
 
 public:
   ImplicitJacobianStandardPolicy() = default;
   ~ImplicitJacobianStandardPolicy() = default;
 
 public:
-  template <ode::ImplicitEnum method, typename scalar_t>
+  template <ode::ImplicitEnum method,
+      typename ops_t,
+	    typename scalar_t>
   void operator()(const state_type & y,
 		  jacobian_type & J,
 		  const model_type & model,
@@ -36,10 +38,12 @@ public:
 		  scalar_t dt)const
   {
     model.jacobian( *y.data(), *J.data(), t);
-    ode::impl::time_discrete_jacobian<method>(J, dt);
+    ode::impl::time_discrete_jacobian<method, ops_t>(J, dt);
   }
 
-  template <ode::ImplicitEnum method, typename scalar_t>
+  template <ode::ImplicitEnum method,
+      typename ops_t,
+	    typename scalar_t>
   jacobian_type operator()(const state_type & y,
   			   const model_type & model,
   			   scalar_t t,
@@ -47,12 +51,9 @@ public:
   {
     auto nJJ = model.jacobian(*y.data(), t);
     jacobian_type JJ(nJJ);
-    ode::impl::time_discrete_jacobian<method>(JJ, dt);
+    ode::impl::time_discrete_jacobian<method, ops_t>(JJ, dt);
     return JJ;
   }
-
-private:
-  friend JacobianPolicyBase<this_t>;
 
 };//end class
 

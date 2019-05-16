@@ -16,12 +16,10 @@ TEST(core_vector_distributed_tpetra_block, Traits){
   STATIC_ASSERT_IS_VECTOR_TPETRA_BLOCK(natV_t);
   STATIC_ASSERT_IS_NOT_VECTOR_TPETRA(natV_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(natV_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(natV_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(natV_t);
 
   using myvec_t = core::Vector<natV_t>;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_STDLIB(myvec_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(myvec_t);
 
   using vecTrait = core::details::traits<myvec_t>;

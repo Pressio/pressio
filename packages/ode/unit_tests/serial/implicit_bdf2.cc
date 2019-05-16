@@ -55,7 +55,7 @@ TEST(ode_implicit_bdf2, traits){
 }
 
 
-TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
+TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   using namespace rompp;
 
   using app_t = ode::testing::refAppForImpEigen;
@@ -104,7 +104,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
 }
 
 
-TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
+TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   using namespace rompp;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -161,7 +161,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
 
 
 
-TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
+TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
   using namespace rompp;
   using app_t		= ode::testing::refAppForImpEigen;
   using nstate_t	= typename app_t::state_type;

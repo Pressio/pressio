@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
 
     constexpr auto ode_case = rompp::ode::ExplicitEnum::Euler;
     using stepper_t = rompp::ode::ExplicitStepper<
-      ode_case, ode_state_t, app_t, ode_res_t>;
+      ode_case, ode_state_t, app_t, ode_res_t, scalar_t>;
     stepper_t stepperObj(y, appobj, r);
 
     // integrate in time
