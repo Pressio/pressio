@@ -4,20 +4,26 @@
 #include "APPS_UNSTEADYNONLINADVDIFFREACTIONFLAME2D"
 #include "../gold_states_explicit.hpp"
 
-constexpr double eps = 1e-12;
+constexpr double eps = 1e-10;
 std::string checkStr {"PASSED"};
 
-// template <typename T>
-// void checkSol(const T & y,
-// 	      const std::vector<double> & trueS){
-//   if (trueS.empty()) {
-//     std::cout << " true solution not found, empty " << std::endl;
-//     checkStr = "FAILED";
-//   }
-//   for (size_t i=0; i<trueS.size(); i++){
-//     if (std::abs(y[i] - trueS[i]) > eps) checkStr = "FAILED";
-//   }
-// }
+template <typename T>
+void checkSol(const T & y,
+	      const std::vector<double> & trueS){
+  if (trueS.empty()) {
+    std::cout << " true solution not found, empty " << std::endl;
+    checkStr = "FAILED";
+  }
+  for (size_t i=0; i<trueS.size(); i++){
+    const auto err = std::abs(y[i] - trueS[i]);
+    std::cout << std::fixed << std::setprecision(15)
+	      << " true = " << trueS[i]
+	      << " y = " << y[i]
+	      << " err = " << err
+	      << std::endl;
+    if ( err > eps or std::isnan(y[i])) checkStr = "FAILED";
+  }
+}
 
 constexpr bool do_print = true;
 
@@ -30,7 +36,7 @@ struct Observer{
   		  const T & y)
   {
     if (do_print){
-      if (step % 5 == 0){
+      if (step % 50 == 0){
     	std::ofstream file;
     	file.open( "sol_" + std::to_string(step) + ".txt" );
     	for(auto i=0; i < y.size(); i++){
@@ -51,7 +57,7 @@ int main(int argc, char *argv[]){
   using app_residual_t	= typename app_t::residual_type;
   constexpr auto zero = ::rompp::core::constants::zero<scalar_t>();
 
-  constexpr int Nx = 65, Ny = 31;
+  constexpr int Nx = 12, Ny = 6;
   app_t appobj(Nx, Ny);
   appobj.setup();
   auto y0n = appobj.getInitialState();
@@ -79,17 +85,20 @@ int main(int argc, char *argv[]){
   stepper_t stepperObj(y, appobj, r);
 
   // integrate in time
-  constexpr scalar_t dt = 0.0001;
-  constexpr auto Nsteps = static_cast<unsigned int>(60);
+  constexpr scalar_t dt = 0.00001;
+  constexpr auto Nsteps = 1100;
   constexpr scalar_t fint = Nsteps*dt;
   Observer obs;
   rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs);
-  std::cout << std::setprecision(14) << *y.data() << std::endl;
-  // {
-  //   using namespace rompp::apps::test;
-  //   checkSol(y,
-  // 	     NonLinAdvDiffReac2dExpGoldStates<ode_case>::get(Nx, Ny, dt, fint));
-  // }
+  std::cout << std::fixed << std::setprecision(15) << *y.data() << std::endl;
+  {
+    using namespace rompp::apps::test;
+    checkSol(y,
+  	     NonLinAdvDiffReacFlame2dExpGoldStates<ode_case>::get(Nx,
+								  Ny,
+								  dt,
+								  fint));
+  }
 
   std::cout << checkStr << std::endl;
   return 0;

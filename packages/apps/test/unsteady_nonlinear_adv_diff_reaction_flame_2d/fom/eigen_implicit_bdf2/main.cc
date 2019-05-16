@@ -2,10 +2,10 @@
 #include "CORE_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
-#include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
+#include "APPS_UNSTEADYNONLINADVDIFFREACTIONFLAME2D"
 #include "../gold_states_implicit.hpp"
 
-constexpr double eps = 1e-12;
+constexpr double eps = 1e-10;
 std::string checkStr {"PASSED"};
 
 template <typename T>
@@ -16,16 +16,18 @@ void checkSol(const T & y,
     checkStr = "FAILED";
   }
   for (size_t i=0; i<trueS.size(); i++){
-    if (std::abs(y[i] - trueS[i]) > eps or
-	std::isnan(y[i])){
-      checkStr = "FAILED";
-      break;
-    }
+    const auto err = std::abs(y[i] - trueS[i]);
+    std::cout << std::fixed << std::setprecision(15)
+	      << " true = " << trueS[i]
+	      << " y = " << y[i]
+	      << " err = " << err
+	      << std::endl;
+    if ( err > eps or std::isnan(y[i])) checkStr = "FAILED";
   }
 }
 
 int main(int argc, char *argv[]){
-  using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEigen;
+  using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReacFlame2dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
   using app_residual_t	= typename app_t::residual_type;
@@ -37,7 +39,7 @@ int main(int argc, char *argv[]){
 
   constexpr auto zero = ::rompp::core::constants::zero<scalar_t>();
 
-  constexpr int Nx = 11, Ny = Nx*2-1;
+  constexpr int Nx = 12, Ny = 6;
   app_t appobj(Nx, Ny);
   appobj.setup();
   const auto y0n = appobj.getInitialState();
@@ -61,19 +63,22 @@ int main(int argc, char *argv[]){
   using lin_solver_t = rompp::solvers::iterative::EigenIterative<
     rompp::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   rompp::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
-  solverO.setTolerance(1e-14);
+  solverO.setTolerance(1e-6);
   solverO.setMaxIterations(200);
 
   // integrate in time
-  constexpr scalar_t dt = 0.1;
-  constexpr auto Nsteps = static_cast<unsigned int>(10);
+  constexpr scalar_t dt = 0.0001;
+  constexpr auto Nsteps = 10;
   constexpr scalar_t fint = Nsteps*dt;
   rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, solverO);
   std::cout << std::fixed << std::setprecision(14) << *y.data() << std::endl;
   {
     using namespace rompp::apps::test;
     checkSol(y,
-  	     NonLinAdvDiffReac2dImpGoldStates<ode_case>::get(Nx, Ny, dt, fint));
+  	     NonLinAdvDiffReacFlame2dImpGoldStates<ode_case>::get(Nx,
+								  Ny,
+								  dt,
+								  fint));
   }
 
   std::cout << checkStr << std::endl;

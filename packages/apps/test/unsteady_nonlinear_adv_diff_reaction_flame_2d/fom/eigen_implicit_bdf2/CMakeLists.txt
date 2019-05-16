@@ -1,6 +1,6 @@
 
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  advDiffReac2d_fom_eigen_implicit_bdf2
+  advDiffReacFlame2d_fom_eigen_implicit_bdf2
   SOURCES main.cc
   NUM_MPI_PROCS 1
   PASS_REGULAR_EXPRESSION "PASSED"

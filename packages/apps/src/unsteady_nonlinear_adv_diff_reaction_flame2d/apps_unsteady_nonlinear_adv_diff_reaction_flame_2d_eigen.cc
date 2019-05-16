@@ -10,12 +10,16 @@ void UnsteadyNonLinAdvDiffReacFlame2dEigen::setupPhysicalGrid(){
   v_.resize(numGpt_);
   regionLabel_.resize(numGpt_);
 
+  // the grid point at the lower left
+  const auto Ox = 0.5*dx_;
+  const auto Oy = 0.5*dy_;
+
   int gi{}; int gj{};
   for (auto i = 0; i<numGpt_; i++){
     auto GID = i;
     globalIDToGiGj(GID, gi, gj);
-    x_[i] = dx_ + gi * dx_;
-    y_[i] = gj * dy_;
+    x_[i] = Ox + gi * dx_;
+    y_[i] = Oy + gj * dy_;
     u_[i] = 50.0;
     v_[i] = 0.0;
 
@@ -159,10 +163,16 @@ void UnsteadyNonLinAdvDiffReacFlame2dEigen::residual_impl
       // near left wall
       if (gi==0){
 
-	scalar_type leftBC = (myLabel != 0) ?
-	  leftBC = bcLeftGamma13_[iDof] : leftBC = bcLeftGamma2_[iDof];
+	const auto leftBC = (myLabel != 0) ?
+	  bcLeftGamma13_[iDof] : bcLeftGamma2_[iDof];
 
-	R[dofGID] += (D*dxSqInv_ + uij*dx2Inv_)*leftBC;
+	// R[dofGID] += (D*dxSqInv_ + uij*dx2Inv_)*leftBC;
+      	// c_ip1 = yState[dofGID+numSpecies_];
+      	// R[dofGID] += (D*dxSqInv_ - uij*dx2Inv_)*c_ip1;
+
+	R[dofGID] += -2.0*(D*dxSqInv_ + uij*dx2Inv_)*yState[dofGID];
+	R[dofGID] += (1./3.)*(D*dxSqInv_ + uij*dx2Inv_)*yState[dofGID+numSpecies_];
+	R[dofGID] += (8./3.)*(D*dxSqInv_ + uij*dx2Inv_)*leftBC;
 
       	c_ip1 = yState[dofGID+numSpecies_];
       	R[dofGID] += (D*dxSqInv_ - uij*dx2Inv_)*c_ip1;
@@ -251,7 +261,17 @@ void UnsteadyNonLinAdvDiffReacFlame2dEigen::jacobian_impl
     {
       // diagonal
       auto value1 = -2.0*(D * dxSqInv_ + D * dySqInv_);
-      tripletList.push_back( Tr( dofGID, dofGID, value1+ dsdw_(iDof,iDof)) );
+      auto diagVal = value1 + dsdw_(iDof,iDof);
+
+      if (gi==0){
+	diagVal -= 2.0*(D*dxSqInv_ + uij*dx2Inv_);
+
+      	value = (D*dxSqInv_ + uij*dx2Inv_)*(1./3.);
+      	auto ip1_col = dofGID+numSpecies_;
+      	tripletList.push_back( Tr( dofGID, ip1_col, value) );
+      }
+      tripletList.push_back( Tr( dofGID, dofGID, diagVal) );
+
 
       // i-1, j and i+1, j
       if (gi>=1 and gi<Nx_-1){

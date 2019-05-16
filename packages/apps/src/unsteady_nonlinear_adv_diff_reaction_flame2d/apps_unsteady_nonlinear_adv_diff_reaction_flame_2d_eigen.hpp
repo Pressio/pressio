@@ -44,20 +44,15 @@ public:
       WH2ovRho{W_[0]/rho_},
       WO2ovRho{W_[1]/rho_},
       WH2OovRho{W_[2]/rho_},
-      NxPhys_{Nx}, NyPhys_{Ny},
-      Nx_{NxPhys_-1},	// because Dirichlet on left boundary
-      Ny_{NyPhys_},	// because Neumann for bottom, right and top
-      dx_{Lx_/(Nx-1)},
-      dy_{Ly_/(Ny-1)},
+      Nx_{Nx},
+      Ny_{Ny},
+      dx_{Lx_/(Nx)},
+      dy_{Ly_/(Ny)},
       dxSqInv_{one/(dx_*dx_)},
       dySqInv_{one/(dy_*dy_)},
       dx2Inv_{one/(two*dx_)},
       dy2Inv_{one/(two*dy_)}
-  {
-    // this is to ensure each segment on left boundary
-    // has same number of cells
-    //assert( (Ny_-1) % 3 == 0 );
-  }
+  {}
 
 public:
   state_type const & getInitialState() const{
@@ -66,13 +61,9 @@ public:
 
   void setupPhysicalGrid();
   void setupFields();
-  // void fillSources();
   void setup();
 
-  //void computeJacobian(const state_type &) const;
   int getUnknownCount() const{ return this_t::numSpecies_*Nx_*Ny_; }
-  // scalar_type getDiffusivity() const { return eps_; };
-  // scalar_type getReactionRate() const { return K_; };
   scalar_type getDx() const { return dx_; };
   scalar_type getDy() const { return dy_; };
   nativeVec getX() const { return x_; }
@@ -174,13 +165,7 @@ protected:
   const std::array<scalar_type,numSpecies_> bcLeftGamma13_{{300, 0, 0, 0}};
   const std::array<scalar_type,numSpecies_> bcLeftGamma2_{{950, 0.0282, 0.2259, 0}};
 
-  // physical grid points
-  const int NxPhys_{};
-  const int NyPhys_{};
-
-  // the actual grid points involved in calculations
-  // is NOT same as physical grid, because we have
-  // Neumann BC on all walls except for left
+  // grid points (cell centered)
   const int Nx_{};
   const int Ny_{};
 
