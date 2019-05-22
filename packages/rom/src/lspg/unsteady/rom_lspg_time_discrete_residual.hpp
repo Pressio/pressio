@@ -169,9 +169,11 @@ void time_discrete_residual(const state_type & yn,
 }
 
 
-/*
-	tpetra
-*/
+
+
+/*************************************
+	             tpetra
+*************************************/
 template <::rompp::ode::ImplicitEnum odeMethod>
 struct time_discrete_single_entry_tpetra;
 
@@ -235,11 +237,6 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
 
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
-<<<<<<< HEAD
-=======
-  int n,
-  typename ops_t,
->>>>>>> adrFlamePDE
   typename state_type,
   typename scalar_type,
   typename ... Args,
@@ -247,7 +244,7 @@ template<
     core::meta::is_vector_tpetra<state_type>::value == true
     > * = nullptr
   >
-void time_discrete_residual(const state_type & yn,
+void time_discrete_residual_tpetra_impl(const state_type & yn,
 			    state_type & R,
 			    scalar_type dt,
 			    Args && ... args)/*
@@ -286,6 +283,7 @@ void time_discrete_residual(const state_type & yn,
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int n,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
@@ -298,7 +296,8 @@ void time_discrete_residual(const state_type & yn,
 			    state_type & R,
 			    scalar_type dt){
 
-  time_discrete_residual<odeMethod>(*yn.data(),
+  time_discrete_residual_tpetra_impl<odeMethod>(
+            *yn.data(),
 				    *R.data(), dt,
 				    *ynm[0].data());
 
@@ -307,6 +306,7 @@ void time_discrete_residual(const state_type & yn,
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int n,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
@@ -319,15 +319,23 @@ void time_discrete_residual(const state_type & yn,
 			    state_type & R,
 			    scalar_type dt){
 
-  time_discrete_residual<odeMethod>(*yn.data(),
+  time_discrete_residual_tpetra_impl<odeMethod>(
+            *yn.data(),
 				    *R.data(), dt,
 				    *ynm[0].data(),
 				    *ynm[1].data());
 }
 
+
+
+
+/*************************************
+            tpetra block
+*************************************/
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int n,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
@@ -342,12 +350,14 @@ void time_discrete_residual(const state_type & yn,
   auto yn_vv = const_cast<state_type &>(yn).data()->getVectorView();
   auto ynm0_vv = const_cast<state_type &>(ynm[0]).data()->getVectorView();
   auto R_vv = R.data()->getVectorView();
-  time_discrete_residual<odeMethod>(yn_vv, R_vv, dt, ynm0_vv);
+  time_discrete_residual_tpetra_impl<odeMethod>(
+      yn_vv, R_vv, dt, ynm0_vv);
 }
 
 template<
   ::rompp::ode::ImplicitEnum odeMethod,
   int n,
+  typename ops_t,
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
@@ -363,7 +373,8 @@ void time_discrete_residual(const state_type & yn,
   auto ynm0_vv = const_cast<state_type &>(ynm[0]).data()->getVectorView();
   auto ynm1_vv = const_cast<state_type &>(ynm[1]).data()->getVectorView();
   auto R_vv = R.data()->getVectorView();
-  time_discrete_residual<odeMethod>(yn_vv, R_vv, dt, ynm0_vv, ynm1_vv);
+  time_discrete_residual_tpetra_impl<odeMethod>(
+    yn_vv, R_vv, dt, ynm0_vv, ynm1_vv);
 }
 
 #endif

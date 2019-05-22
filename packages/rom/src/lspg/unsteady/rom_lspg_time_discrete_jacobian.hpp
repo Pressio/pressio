@@ -63,6 +63,10 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 #ifdef HAVE_TRILINOS
 
+
+/*************************************
+            epetra 
+*************************************/
 template <
   ode::ImplicitEnum odeMethod,
   typename ops_t,
@@ -108,6 +112,9 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
   }
 }
 
+/*************************************
+            tpetra 
+*************************************/
 template <
   ode::ImplicitEnum odeMethod,
   typename ops_t,
@@ -151,8 +158,12 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   }
 }
 
+/*************************************
+            tpetra block
+*************************************/
 template <
   ode::ImplicitEnum odeMethod,
+  typename ops_t,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -165,11 +176,12 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    scalar_type	dt,
 			    const decoder_jac_type & phi){
 
-  time_discrete_jacobian<odeMethod>(*jphi.data(), dt, *phi.data());
+  time_discrete_jacobian<odeMethod, ops_t>(*jphi.data(), dt, *phi.data());
 }
 
 template <
   ode::ImplicitEnum odeMethod,
+  typename ops_t,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -183,7 +195,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    const decoder_jac_type & phi){
   auto jphi_mvv = jphi.data()->getMultiVectorView();
   auto phi_mvv  = phi.data()->getMultiVectorView();
-  time_discrete_jacobian<odeMethod>(jphi_mvv, dt, phi_mvv);
+  time_discrete_jacobian<odeMethod, ops_t>(jphi_mvv, dt, phi_mvv);
 }
 
 #endif
