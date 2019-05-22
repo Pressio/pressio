@@ -63,18 +63,18 @@ void SteadyLinAdvDiff1dEpetra::calculateLinearSystem() const{
 
     if (GID == 0){
       numEntries = 2;
-      Values = {diagVal, ip1, 0.0};
-      Indices = {GID, GID+1, 0};
+      Values = {{diagVal, ip1, 0.0}};
+      Indices = {{GID, GID+1, 0}};
     }
     else if (GID >= 1 && GID <= numGlobalNodes_-2){
       numEntries = 3;
-      Values = {im1, diagVal, ip1};
-      Indices = {GID-1, GID, GID+1};
+      Values = {{im1, diagVal, ip1}};
+      Indices = {{GID-1, GID, GID+1}};
     }
     else /*if (GID == numGlobalNodes_-1)*/{
       numEntries = 2;
-      Values = {im1, diagVal, 0.0};
-      Indices = {GID-1, GID, 0};
+      Values = {{im1, diagVal, 0.0}};
+      Indices = {{GID-1, GID, 0}};
     }
 
     if (A_->Filled())

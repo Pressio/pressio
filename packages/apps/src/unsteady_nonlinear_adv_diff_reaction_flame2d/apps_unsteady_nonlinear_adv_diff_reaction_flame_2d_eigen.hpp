@@ -34,11 +34,11 @@ public:
    scalar_type K	= static_cast<scalar_type>(2), // cm^2/s
    scalar_type preExp	= static_cast<scalar_type>(5.5*1e12),
    scalar_type E	= static_cast<scalar_type>(8.0*1000.),
-   std::array<scalar_type,3> W = {2.016, 31.9, 18})
+   std::array<scalar_type,3> W = {{2.016, 31.9, 18}})
     : K_{K},
       preExp_{preExp},
       negE_{-E},
-      W_{W},
+      W_(W),
       rhoOvWH2{rho_/W_[0]},
       rhoOvWO2{rho_/W_[1]},
       WH2ovRho{W_[0]/rho_},

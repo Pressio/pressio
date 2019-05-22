@@ -140,8 +140,8 @@ protected:
   const scalar_type solveTolerance_ = 1e-12;
   scalar_type Lx_ = 1.0;
   scalar_type Ly_ = 2.0;
-  std::array<scalar_type,2> xAxis_{0., 1.};
-  std::array<scalar_type,2> yAxis_{0., 2.};
+  std::array<scalar_type,2> xAxis_{{0., 1.}};
+  std::array<scalar_type,2> yAxis_{{0., 2.}};
 
   Epetra_MpiComm & comm_;
   // physical grid points
