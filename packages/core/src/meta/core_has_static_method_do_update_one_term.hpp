@@ -38,16 +38,7 @@ struct has_static_method_do_update_one_term<
 	)
        )
       >::value
-    >
-  > : std::true_type{};
-
-template <typename T,
-	  typename sc_t,
-	  typename T1,
-	  typename T2 >
-struct has_static_method_do_update_one_term<
-  T, sc_t, T1, T2,
-  mpl::enable_if_t<
+    and
     std::is_void<
       decltype
       (
@@ -61,6 +52,27 @@ struct has_static_method_do_update_one_term<
       >::value
     >
   > : std::true_type{};
+
+// template <typename T,
+// 	  typename sc_t,
+// 	  typename T1,
+// 	  typename T2 >
+// struct has_static_method_do_update_one_term<
+//   T, sc_t, T1, T2,
+//   mpl::enable_if_t<
+//     std::is_void<
+//       decltype
+//       (
+//        T::do_update
+//        (
+// 	std::declval< T1 & >(),
+// 	std::declval<const T2 &>(),
+// 	std::declval<const sc_t>()
+// 	)
+//        )
+//       >::value
+//     >
+//   > : std::true_type{};
 
 }}} // namespace rompp::core::meta
 #endif

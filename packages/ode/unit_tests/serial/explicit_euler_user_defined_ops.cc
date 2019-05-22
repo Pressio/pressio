@@ -32,6 +32,12 @@ public:
 struct updateOps{
   using v_t = std::vector<double>;
 
+    static void do_update(v_t & v,
+			  const v_t & v1, const double b){
+    for (size_t i=0; i<v.size(); ++i)
+      v[i] = b*v1[i];
+  }
+
   static void do_update(v_t & v, const double a,
 			const v_t & v1, const double b){
     for (size_t i=0; i<v.size(); ++i)
