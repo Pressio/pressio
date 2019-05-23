@@ -95,6 +95,19 @@ public:
     return C;
   };
 
+  void applyPreconditioner(const state_type & yState,
+			   mv_t & C,
+			   scalar_type t) const {
+    // do nothing, preconditioner is identity
+    std::cout << "identiy precond" << std::endl;
+  }
+  void applyPreconditioner(const state_type & yState,
+			   residual_type & rhs,
+			   scalar_type t) const {
+    // do nothing, preconditioner is identity
+    std::cout << "identiy precond" << std::endl;
+  }
+
 private:
   void globalIDToGiGj(int ID, int & gi, int & gj) const{
     gj = ID/Nx_;
