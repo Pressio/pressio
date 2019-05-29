@@ -32,6 +32,16 @@ struct constants{
     return static_cast<scalar_t>(2);
   }
 
+  template <typename scalar_t = double>
+  static constexpr scalar_t three(){
+    return static_cast<scalar_t>(3);
+  }
+
+  template <typename scalar_t = double>
+  static constexpr scalar_t four(){
+    return static_cast<scalar_t>(4);
+  }
+
 };
 
 }} // end of namespace rompp::core
