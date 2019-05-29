@@ -32,6 +32,12 @@ public:
   static constexpr auto zero = ::rompp::core::constants::zero<scalar_type>();
   static constexpr auto one = ::rompp::core::constants::one<scalar_type>();
   static constexpr auto two = ::rompp::core::constants::two<scalar_type>();
+  static constexpr auto three = ::rompp::core::constants::three<scalar_type>();
+  static constexpr auto four = ::rompp::core::constants::four<scalar_type>();
+  static constexpr auto oneHalf = one/two;
+  static constexpr auto oneThird = one/three;
+  static constexpr auto eight = two*four;
+  static constexpr auto eightOvThree = eight/three;
 
 public:
   UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen
@@ -89,23 +95,25 @@ public:
 
   residual_type residual(const state_type & yState,
 			 scalar_type t) const{
-    residual_type R(numDof_);
+    // the residual has size equal to the dofs of the cells where
+    // we want residual
+    residual_type R(numDof_r_);
     residual_impl(yState, R);
     return R;
   };
 
-  // void jacobian(const state_type & u,
-  // 		jacobian_type & jac,
-  // 		const scalar_type /*t*/) const{
-  //   this->jacobian_impl(u, jac);
-  // }
+  void jacobian(const state_type & u,
+  		jacobian_type & jac,
+  		const scalar_type t) const{
+    this->jacobian_impl(u, jac);
+  }
 
-  // jacobian_type jacobian(const state_type & u,
-  // 			 const scalar_type t) const{
-  //   jacobian_type JJ(u.size(), u.size());
-  //   this->jacobian_impl(u, JJ);
-  //   return JJ;
-  // }
+  jacobian_type jacobian(const state_type & u,
+  			 const scalar_type t) const{
+    jacobian_type JJ(numDof_r_, numDof_r_);
+    this->jacobian_impl(u, JJ);
+    return JJ;
+  }
 
   // // computes: C = Jac B where B is a multivector
   // void applyJacobian(const state_type & yState,
@@ -129,10 +137,15 @@ private:
     gi = ID % Nx_;
   }
 
-  void compute_dsdw(scalar_type wT, scalar_type wH2,
-		    scalar_type wO2, scalar_type wH2O)const;
-  void compute_sources(scalar_type wT, scalar_type wH2,
-		       scalar_type wO2, scalar_type wH2O)const;
+  void compute_dsdw(scalar_type wT,
+		    scalar_type wH2,
+		    scalar_type wO2,
+		    scalar_type wH2O) const;
+
+  void compute_sources(scalar_type wT,
+		       scalar_type wH2,
+		       scalar_type wO2,
+		       scalar_type wH2O) const;
 
   void residual_impl(const state_type & yState,
 		     residual_type & R) const;
@@ -174,7 +187,24 @@ protected:
   const std::array<scalar_type,numSpecies_> bcLeftGamma13_{{300, 0, 0, 0}};
   const std::array<scalar_type,numSpecies_> bcLeftGamma2_{{950, 0.0282, 0.2259, 0}};
 
+  /*
+    graph: contains a list such that
+    1 0 3 2 -1
+
+    first col: contains GIDs of cells where we want residual
+    1,2,3,4 col: contains GIDs of neighboring cells needed for stencil
+		 the order of the neighbors is: east, north, west, south
+
+    if a neighbor GID is = -1, it means that neighbor is outside of the domain boundary
+    so if west GID is -1, it means that this residual cell is near the left bundary
+   */
   const graph_t & graph_;
+
+  /*
+    two columns list where:
+    first col: GID of each cell enumerated according to the sample mesh
+    second col: corresponding GID enumerated according to the full mesh
+   */
   const gids_map_t & gidsMap_;
 
   // Nx_ and Ny_ contain the # of grid points for the FULL mesh
@@ -186,6 +216,13 @@ protected:
   const scalar_type dySqInv_{};
   const scalar_type dx2Inv_{};
   const scalar_type dy2Inv_{};
+
+  // auxiliary vars used in implementation
+  mutable int gi_{};
+  mutable int gj_{};
+
+  mutable int cellGIDinFullMesh_{};
+  mutable int cellGID_{};
 
   // note that dof refers to the degress of freedom,
   // which is NOT same as grid points. for this problem,
@@ -204,8 +241,12 @@ protected:
   mutable jacobian_type J_;
   mutable nativeVec state_;
 
+  // source term at each cell
   mutable std::array<scalar_type, numSpecies_> s_;
+
+  // jacobian of source term: del s/del w
   mutable mat4_t dsdw_;
+
   // to label a grid point based on whether it belongs
   //to lower, mid or upper region of the flow, see diagram in paper
   mutable nativeVec regionLabel_;
