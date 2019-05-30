@@ -8,8 +8,33 @@
 namespace rompp{ namespace rom{ namespace impl{
 
 template <
-  ode::ImplicitEnum odeMethod,
   typename ops_t,
+  ode::ImplicitEnum odeMethod,
+  typename lspg_matrix_type,
+  typename scalar_type,
+  typename decoder_jac_type
+  >
+void time_discrete_jacobian(const ops_t & tdOps,
+			    lspg_matrix_type & jphi, //jphi holds J * phi
+			    scalar_type	dt,
+			    const decoder_jac_type & phi){
+
+  // // prefactor (f) multiplying f*dt*J*phi
+  // auto prefactor = static_cast<scalar_type>(1);
+  // if (odeMethod == ode::ImplicitEnum::BDF2)
+  //   prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+
+  // //loop over elements of jphi
+  // for (auto i=0; i<jphi.length(); i++){
+  //   for (auto j=0; j<jphi.numVectors(); j++)
+  //     jphi(i,j) = phi(i,j) - prefactor*dt*jphi(i,j);
+  // }
+}
+
+
+
+template <
+  ode::ImplicitEnum odeMethod,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -65,11 +90,10 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 
 /*************************************
-            epetra 
+            epetra
 *************************************/
 template <
   ode::ImplicitEnum odeMethod,
-  typename ops_t,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -113,11 +137,10 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 }
 
 /*************************************
-            tpetra 
+            tpetra
 *************************************/
 template <
   ode::ImplicitEnum odeMethod,
-  typename ops_t,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -163,7 +186,6 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 *************************************/
 template <
   ode::ImplicitEnum odeMethod,
-  typename ops_t,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -176,12 +198,11 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    scalar_type	dt,
 			    const decoder_jac_type & phi){
 
-  time_discrete_jacobian<odeMethod, ops_t>(*jphi.data(), dt, *phi.data());
+  time_discrete_jacobian<odeMethod>(*jphi.data(), dt, *phi.data());
 }
 
 template <
   ode::ImplicitEnum odeMethod,
-  typename ops_t,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -195,7 +216,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    const decoder_jac_type & phi){
   auto jphi_mvv = jphi.data()->getMultiVectorView();
   auto phi_mvv  = phi.data()->getMultiVectorView();
-  time_discrete_jacobian<odeMethod, ops_t>(jphi_mvv, dt, phi_mvv);
+  time_discrete_jacobian<odeMethod>(jphi_mvv, dt, phi_mvv);
 }
 
 #endif

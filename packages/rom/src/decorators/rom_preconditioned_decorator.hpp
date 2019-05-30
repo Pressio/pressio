@@ -29,34 +29,35 @@ public:
   ~Preconditioned() = default;
 
 public:
+
   template <
-        ode::ImplicitEnum odeMethod,  
-        int n,
-        typename ops_t,
-	      typename ode_state_t, 
-        typename app_t, 
-        typename scalar_t>
-    fom_rhs_w_t operator()(const ode_state_t & odeY,
-			   const std::array<ode_state_t, n> & oldYs,
-			   const app_t & app,
-			   scalar_t t,
-			   scalar_t dt) const
+    ode::ImplicitEnum odeMethod,
+    int n,
+    typename ode_state_t,
+    typename app_t,
+    typename scalar_t
+  >
+  fom_rhs_w_t operator()(const ode_state_t & odeY,
+			 const std::array<ode_state_t, n> & oldYs,
+			 const app_t & app,
+			 scalar_t t,
+			 scalar_t dt) const
   {
     auto result = preconditionable::template operator()<
-      odeMethod, n, ops_t>(odeY, oldYs, app, t, dt);
+      odeMethod, n>(odeY, oldYs, app, t, dt);
 
     app.applyPreconditioner(*yFom_.data(), *result.data(), t);
     return result;
   }
 
   template <
-      ode::ImplicitEnum odeMethod,  
-      int n,
-      typename ops_t,
-      typename ode_state_t, 
-      typename ode_res_t,
-      typename app_t, 
-      typename scalar_t>
+    ode::ImplicitEnum odeMethod,
+    int n,
+    typename ode_state_t,
+    typename ode_res_t,
+    typename app_t,
+    typename scalar_t
+    >
   void operator()(const ode_state_t & odeY,
   		  ode_res_t & odeR,
   		  const std::array<ode_state_t, n> & oldYs,
@@ -65,7 +66,7 @@ public:
 		  scalar_t dt) const
   {
     preconditionable::template operator()<
-      odeMethod, n, ops_t>(odeY, odeR, oldYs, app, t, dt);
+      odeMethod, n>(odeY, odeR, oldYs, app, t, dt);
 
     app.applyPreconditioner(*yFom_.data(), *odeR.data(), t);
   }
@@ -98,31 +99,30 @@ public:
 
 public:
   template <
-        ode::ImplicitEnum odeMethod, 
-        typename ops_t,
-        typename ode_state_t,
-	      typename app_t, 
-        typename scalar_t>
+    ode::ImplicitEnum odeMethod,
+    typename ode_state_t,
+    typename app_t,
+    typename scalar_t
+  >
   apply_jac_return_t operator()(const ode_state_t & odeY,
 				const app_t & app,
 				scalar_t t, scalar_t dt) const
   {
-    auto JJ = preconditionable::template operator()<odeMethod, ops_t>(odeY, app, t, dt);
+    auto JJ = preconditionable::template operator()<odeMethod>(odeY, app, t, dt);
     app.applyPreconditioner(*yFom_.data(), *JJ.data(), t);
     return JJ;
   }
 
   template <
-      ode::ImplicitEnum odeMethod, 
-      typename ops_t,
+      ode::ImplicitEnum odeMethod,
       typename ode_state_t,
-      typename ode_jac_t, 
-      typename app_t, 
+      typename ode_jac_t,
+      typename app_t,
       typename scalar_t>
   void operator()(const ode_state_t & odeY, ode_jac_t & odeJJ,
   		  const app_t & app, scalar_t t, scalar_t dt) const
   {
-    preconditionable::template operator()<odeMethod, ops_t>(odeY, odeJJ, app, t, dt);
+    preconditionable::template operator()<odeMethod>(odeY, odeJJ, app, t, dt);
     app.applyPreconditioner(*yFom_.data(), *odeJJ.data(), t);
   }
 

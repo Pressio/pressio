@@ -13,14 +13,16 @@ template<
   typename fom_states_data,
   typename apply_jac_return_type,
   typename fom_apply_jac_policy,
-  typename decoder_type
+  typename decoder_type,
+  typename td_ud_ops
   >
 class LSPGJacobianPolicy
   : public ode::policy::JacobianPolicyBase<
 	LSPGJacobianPolicy<fom_states_data,
 			   apply_jac_return_type,
 			   fom_apply_jac_policy,
-			   decoder_type>>,
+			   decoder_type,
+			   td_ud_ops>>,
     protected fom_states_data,
     protected fom_apply_jac_policy{
 
@@ -28,11 +30,14 @@ protected:
   using this_t = LSPGJacobianPolicy<fom_states_data,
 				    apply_jac_return_type,
 				    fom_apply_jac_policy,
-				    decoder_type>;
+				    decoder_type,
+				    td_ud_ops>;
 
   friend ode::policy::JacobianPolicyBase<this_t>;
   using fom_states_data::yFom_;
   using fom_states_data::yFomOld_;
+
+  const td_ud_ops & tdOps_;
 
 public:
   static constexpr bool isResidualPolicy_ = false;
@@ -51,9 +56,52 @@ public:
       JJ_(applyJacObj),
       decoderObj_(decoder){}
 
+
+  LSPGJacobianPolicy(const fom_states_data	 & fomStates,
+		     const fom_apply_jac_policy  & applyJacFunctor,
+		     const apply_jac_return_type & applyJacObj,
+		     const decoder_type		 & decoder,
+		     const td_ud_ops & tdOps)
+    : fom_states_data(fomStates),
+      fom_apply_jac_policy(applyJacFunctor),
+      JJ_(applyJacObj),
+      decoderObj_(decoder),
+      tdOps_(tdOps){}
+
+  // user-defined ops is void
+  template <
+    ode::ImplicitEnum odeMethod,
+    typename T = td_ud_ops,
+    rompp::mpl::enable_if_t<
+      std::is_void<T>::value == true
+      > * = nullptr
+    >
+  struct td_dispatcher{
+    template <typename ... Args>
+    static void evaluate(Args && ... args){
+      rom::impl::time_discrete_jacobian
+	<odeMethod>(std::forward<Args>(args)...);
+    }
+  };
+
+  // user defined ops is non-trivial
+  template <
+    ode::ImplicitEnum odeMethod,
+    typename T = td_ud_ops,
+    rompp::mpl::enable_if_t<
+      std::is_void<T>::value == false
+      > * = nullptr
+    >
+  struct td_dispatcher{
+    template <typename ... Args>
+    static void evaluate(Args && ... args){
+      rom::impl::time_discrete_jacobian
+	<odeMethod>(tdOps_, std::forward<Args>(args)...);
+    }
+  };
+
 public:
   template <ode::ImplicitEnum odeMethod,
-      typename ops_t,
 	    typename lspg_state_t,
 	    typename lspg_jac_t,
 	    typename app_t,
@@ -83,11 +131,11 @@ public:
     timer->stop("fom apply jac");
 #endif
 
-
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("time discrete jacob");
 #endif
-    rom::impl::time_discrete_jacobian<odeMethod, ops_t>(romJJ, dt, basis);
+    this->td_dispatcher<odeMethod>(romJJ, dt, basis);
+    //rom::impl::time_discrete_jacobian<odeMethod>(romJJ, dt, basis);
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("time discrete jacob");
 #endif
@@ -99,7 +147,6 @@ public:
 
 
   template <ode::ImplicitEnum odeMethod,
-      typename ops_t,
 	    typename lspg_state_t,
 	    typename app_t,
 	    typename scalar_t>
@@ -108,7 +155,7 @@ public:
 				scalar_t	   t,
 				scalar_t	   dt) const
   {
-    (*this).template operator()<odeMethod, ops_t>(romY, JJ_, app, t, dt);
+    (*this).template operator()<odeMethod>(romY, JJ_, app, t, dt);
     return JJ_;
   }
 

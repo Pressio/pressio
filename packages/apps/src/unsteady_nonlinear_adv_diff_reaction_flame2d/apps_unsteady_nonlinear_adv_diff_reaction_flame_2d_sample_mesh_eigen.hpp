@@ -115,21 +115,21 @@ public:
     return JJ;
   }
 
-  // // computes: C = Jac B where B is a multivector
-  // void applyJacobian(const state_type & yState,
-  // 		     const mv_t & B,
-  // 		     mv_t & C,
-  // 		     scalar_type t) const{
-  //   applyJacobian_impl(yState, B, C);
-  // }
+  // computes: C = Jac B where B is a multivector
+  void applyJacobian(const state_type & yState,
+  		     const mv_t & B,
+  		     mv_t & C,
+  		     scalar_type t) const{
+    applyJacobian_impl(yState, B, C);
+  }
 
-  // mv_t applyJacobian(const state_type & yState,
-  // 		     const mv_t & B,
-  // 		     scalar_type t) const{
-  //   mv_t A( yState.size(), B.cols() );
-  //   applyJacobian_impl(yState, B, A);
-  //   return A;
-  // };
+  mv_t applyJacobian(const state_type & yState,
+  		     const mv_t & B,
+  		     scalar_type t) const{
+    mv_t A( yState.size(), B.cols() );
+    applyJacobian_impl(yState, B, A);
+    return A;
+  };
 
 private:
   void globalIDToGiGj(int ID, int & gi, int & gj) const{
@@ -153,14 +153,14 @@ private:
   void jacobian_impl(const state_type & yState,
   		     jacobian_type & J) const;
 
-  // void applyJacobian_impl(const state_type & yState,
-  // 			  const mv_t & B,
-  // 			  mv_t & C) const{
-  //   jacobian_type JJ(yState.size(), yState.size());
-  //   JJ.setZero();
-  //   this->jacobian_impl(yState, JJ);
-  //   C = JJ * B;
-  // }
+  void applyJacobian_impl(const state_type & yState,
+  			  const mv_t & B,
+  			  mv_t & C) const{
+    jacobian_type JJ(numDof_r_, numDof_r_);
+    JJ.setZero();
+    this->jacobian_impl(yState, JJ);
+    C = JJ * B;
+  }
 
 protected:
   // T, H2, O2, H2O

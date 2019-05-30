@@ -56,7 +56,8 @@ int main(int argc, char *argv[]){
   using app_jacob_t	= typename app_t::jacobian_type;
   constexpr auto zero = ::rompp::core::constants::zero<scalar_t>();
 
-  constexpr int Nx = 12, Ny = 6;
+  //constexpr int Nx = 12, Ny = 6;
+  constexpr int Nx = 20, Ny = 10;
   app_t appobj(Nx, Ny);
   appobj.setup();
   const auto y0n = appobj.getInitialState();

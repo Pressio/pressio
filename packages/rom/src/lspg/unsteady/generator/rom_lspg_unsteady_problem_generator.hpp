@@ -23,6 +23,7 @@ struct LSPGUnsteadyProblemGenerator<
   using typename lspg_problem::fom_state_reconstr_t;
   using typename lspg_problem::fom_states_data;
   using typename lspg_problem::fom_rhs_data;
+  using typename lspg_problem::td_ud_ops;
 
   using typename lspg_problem::lspg_matrix_t;
   using typename lspg_problem::fom_eval_rhs_policy_t;
@@ -41,6 +42,7 @@ struct LSPGUnsteadyProblemGenerator<
   fom_states_data		fomStates_;
   fom_rhs_data			fomRhs_;
   lspg_matrix_t			romMat_;
+  const td_ud_ops	      & tdOps_;
   lspg_residual_policy_t	resObj_;
   lspg_jacobian_policy_t	jacObj_;
 
@@ -53,9 +55,7 @@ struct LSPGUnsteadyProblemGenerator<
   // actual stepper object
   lspg_stepper_t			stepperObj_;
 
-
 public:
-
   /* sfinae here for when we do NOT need aux stepper
    * note that we need to use trick _fom_t for sfinae to work */
   template <
@@ -69,7 +69,8 @@ public:
 			       const fom_state_t & yFomRefNative,
 			       decoder_t	 & decoder,
 			       lspg_state_t	 & yROM,
-			       scalar_t		 t0)
+			       scalar_t		 t0,
+			       const td_ud_ops & tdOps)
     : rhsEv_{},
       ajacEv_{},
       yFomRef_(yFomRefNative),
@@ -79,8 +80,9 @@ public:
       fomRhs_(rFomRef_),
       romMat_(ajacEv_.evaluate(appObj, yFomRef_,
 			       decoder.getReferenceToJacobian(), t0)),
-      resObj_(fomStates_, fomRhs_, rhsEv_),
-      jacObj_(fomStates_, ajacEv_, romMat_, decoder),
+      tdOps_{tdOps},
+      resObj_(fomStates_, fomRhs_, rhsEv_, tdOps_),
+      jacObj_(fomStates_, ajacEv_, romMat_, decoder, tdOps_),
       auxStepperObj_{},
       stepperObj_(yROM, appObj, resObj_, jacObj_)
   {}

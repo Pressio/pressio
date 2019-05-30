@@ -56,7 +56,13 @@ public:
     return traits::order_value;
   }
 
-  void residual(const state_t & y,
+  template <
+    typename T = state_t,
+    rompp::mpl::enable_if_t<
+      !std::is_void<typename traits::update_op>::value
+      > * = nullptr
+    >
+  void residual(const T & y,
 		residual_t & R) const{
     this->residual_obj_.template operator()<
       traits::enum_id,
@@ -65,7 +71,28 @@ public:
       >(y, R, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
-  void jacobian(const state_t & y,
+  template <
+    typename T = state_t,
+    rompp::mpl::enable_if_t<
+      std::is_void<typename traits::update_op>::value
+      > * = nullptr
+    >
+  void residual(const T & y,
+		residual_t & R) const{
+    this->residual_obj_.template operator()<
+      traits::enum_id,
+      traits::steps
+      >(y, R, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
+  }
+
+
+  template <
+    typename T = state_t,
+    rompp::mpl::enable_if_t<
+      !std::is_void<typename traits::update_op>::value
+      > * = nullptr
+    >
+  void jacobian(const T & y,
 		jacobian_t & J) const{
     this->jacobian_obj_.template operator()<
       traits::enum_id,
@@ -73,7 +100,27 @@ public:
       >(y, J, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
-  residual_t residual(const state_t & y) const{
+  template <
+    typename T = state_t,
+    rompp::mpl::enable_if_t<
+      std::is_void<typename traits::update_op>::value
+      > * = nullptr
+    >
+  void jacobian(const T & y,
+		jacobian_t & J) const{
+    this->jacobian_obj_.template operator()<
+      traits::enum_id
+      >(y, J, auxData_.model_, auxData_.t_, auxData_.dt_);
+  }
+
+
+  template <
+    typename T = state_t,
+    rompp::mpl::enable_if_t<
+      !std::is_void<typename traits::update_op>::value
+      > * = nullptr
+    >
+  residual_t residual(const T & y) const{
     return this->residual_obj_.template operator()<
       traits::enum_id,
       traits::steps,
@@ -81,12 +128,45 @@ public:
       >(y, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
-  jacobian_t jacobian(const state_t & y) const{
+  template <
+    typename T = state_t,
+    rompp::mpl::enable_if_t<
+      std::is_void<typename traits::update_op>::value
+      > * = nullptr
+    >
+  residual_t residual(const T & y) const{
+    return this->residual_obj_.template operator()<
+      traits::enum_id,
+      traits::steps
+      >(y, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
+  }
+
+
+  template <
+    typename T = state_t,
+    rompp::mpl::enable_if_t<
+      !std::is_void<typename traits::update_op>::value
+      > * = nullptr
+    >
+  jacobian_t jacobian(const T & y) const{
     return this->jacobian_obj_.template operator()<
       traits::enum_id,
       typename traits::update_op
       >(y, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
+
+  template <
+    typename T = state_t,
+    rompp::mpl::enable_if_t<
+      std::is_void<typename traits::update_op>::value
+      > * = nullptr
+    >
+  jacobian_t jacobian(const state_t & y) const{
+    return this->jacobian_obj_.template operator()<
+      traits::enum_id
+      >(y, auxData_.model_, auxData_.t_, auxData_.dt_);
+  }
+
 
 private:
   ImplicitStepperBase(const state_t & y0,

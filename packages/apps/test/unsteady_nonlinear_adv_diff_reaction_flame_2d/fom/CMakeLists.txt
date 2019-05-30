@@ -1,5 +1,4 @@
 
-ADD_SUBDIRECTORY(eigen_sample_mesh_explicit_rk4)
 ADD_SUBDIRECTORY(eigen_explicit_rk4)
 ADD_SUBDIRECTORY(eigen_implicit_euler)
 ADD_SUBDIRECTORY(eigen_implicit_bdf2)

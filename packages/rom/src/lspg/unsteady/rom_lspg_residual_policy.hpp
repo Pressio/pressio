@@ -10,14 +10,18 @@
 
 namespace rompp{ namespace rom{
 
-template <typename fom_states_data,
-	  typename fom_rhs_data,
-	  typename fom_eval_rhs_policy>
+template <
+  typename fom_states_data,
+  typename fom_rhs_data,
+  typename fom_eval_rhs_policy,
+  typename td_ud_ops
+  >
 class LSPGResidualPolicy
   : public ode::policy::ImplicitResidualPolicyBase<
       LSPGResidualPolicy<fom_states_data,
 			 fom_rhs_data,
-			 fom_eval_rhs_policy>>,
+			 fom_eval_rhs_policy,
+			 td_ud_ops>>,
     protected fom_states_data,
     protected fom_rhs_data,
     protected fom_eval_rhs_policy{
@@ -25,7 +29,8 @@ class LSPGResidualPolicy
 protected:
   using this_t = LSPGResidualPolicy<fom_states_data,
 				    fom_rhs_data,
-				    fom_eval_rhs_policy>;
+				    fom_eval_rhs_policy,
+				    td_ud_ops>;
   friend ode::policy::ImplicitResidualPolicyBase<this_t>;
 
   using fom_states_data::yFom_;
@@ -33,9 +38,12 @@ protected:
   using fom_states_data::maxNstates_;
   using fom_rhs_data::fomRhs_;
 
+  const td_ud_ops & tdOps_;
+
 public:
   static constexpr bool isResidualPolicy_ = true;
   using typename fom_rhs_data::fom_rhs_w_t;
+
 
 public:
   LSPGResidualPolicy() = delete;
@@ -47,10 +55,51 @@ public:
       fom_rhs_data(fomResids),
       fom_eval_rhs_policy(fomEvalRhsFunctor){}
 
+  LSPGResidualPolicy(const fom_states_data & fomStates,
+		     const fom_rhs_data & fomResids,
+		     const fom_eval_rhs_policy & fomEvalRhsFunctor,
+		     const td_ud_ops & tdOps)
+    : fom_states_data(fomStates),
+      fom_rhs_data(fomResids),
+      fom_eval_rhs_policy(fomEvalRhsFunctor),
+      tdOps_(tdOps){}
+
+  // user-defined ops is void
+  template <
+    ode::ImplicitEnum odeMethod,
+    typename T = td_ud_ops,
+    rompp::mpl::enable_if_t<
+      std::is_void<T>::value == true
+      > * = nullptr
+    >
+  void td_dispatcher{
+    template <typename ... Args>
+    static void evaluate(Args && ... args){
+      rom::impl::time_discrete_residual
+	<odeMethod, maxNstates_>(std::forward<Args>(args)...);
+    }
+  };
+
+  // user defined ops is non-trivial
+  template <
+    ode::ImplicitEnum odeMethod,
+    typename T = td_ud_ops,
+    rompp::mpl::enable_if_t<
+      std::is_void<T>::value == false
+      > * = nullptr
+    >
+  struct td_dispatcher{
+    template <typename ... Args>
+    static void evaluate(Args && ... args){
+      rom::impl::time_discrete_residual
+	<odeMethod, maxNstates_>(tdOps_, std::forward<Args>(args)...);
+    }
+  };
+
+
 public:
   template <ode::ImplicitEnum odeMethod,
 	    int n,
-      typename ops_t,
 	    typename lspg_state_t,
 	    typename lspg_residual_t,
 	    typename fom_t,
@@ -78,13 +127,13 @@ public:
     timer->stop("fom eval rhs");
 #endif
 
-
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("time discrete residual");
 #endif
-    rom::impl::time_discrete_residual<
-      odeMethod, maxNstates_, ops_t>(yFom_, yFomOld_, romR, dt);
-#ifdef HAVE_TEUCHOS_TIMERS      
+    this->td_dispatcher<odeMethod>(yFom_, yFomOld_, romR, dt);
+    // rom::impl::time_discrete_residual
+    //<odeMethod, maxNstates_>(yFom_, yFomOld_, romR, dt);
+#ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");
 #endif
 
@@ -96,7 +145,6 @@ public:
 
   template <ode::ImplicitEnum odeMethod,
 	    int n,
-      typename ops_t,
 	    typename lspg_state_t,
 	    typename fom_t,
 	    typename scalar_t>
@@ -106,8 +154,9 @@ public:
 			 scalar_t			   t,
 			 scalar_t			   dt) const
   {
-    (*this).template operator()<odeMethod, n, ops_t>(romY, fomRhs_,
-					      oldYs, app, t, dt);
+    (*this).template operator()<odeMethod, n>(romY, fomRhs_,
+					      oldYs, app,
+					      t, dt);
     return fomRhs_;
   }
 
