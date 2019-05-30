@@ -29,6 +29,10 @@ public:
   ~Preconditioned() = default;
 
 public:
+
+  //-------------------------------
+  // for unsteady LSPG
+  //-------------------------------
   template <
         ode::ImplicitEnum odeMethod,  
         int n,
@@ -69,6 +73,34 @@ public:
 
     app.applyPreconditioner(*yFom_.data(), *odeR.data(), t);
   }
+
+
+  //-------------------------------
+  // for steady LSPG 
+  //-------------------------------
+  template <
+      typename lspg_state_t,
+      typename fom_t>
+  fom_rhs_w_t operator()(const lspg_state_t  & romY,
+                         const fom_t   & app) const
+  {
+    auto result = preconditionable::template operator()(romY, app);
+    app.applyPreconditioner(*yFom_.data(), *result.data());
+    return result;
+  }
+
+  template <
+      typename lspg_state_t,
+      typename lspg_residual_t,
+      typename fom_t>
+  void operator()(const lspg_state_t  & romY,
+                  lspg_residual_t & romR,
+                  const fom_t   & app) const
+  {
+    preconditionable::template operator()(romY, romR, app);
+    app.applyPreconditioner(*yFom_.data(), *romR.data());
+  }
+
 };//end class
 
 
@@ -97,6 +129,10 @@ public:
   ~Preconditioned() = default;
 
 public:
+
+  //-------------------------------
+  // for unsteady LSPG
+  //-------------------------------
   template <
         ode::ImplicitEnum odeMethod, 
         typename ops_t,
@@ -124,6 +160,33 @@ public:
   {
     preconditionable::template operator()<odeMethod, ops_t>(odeY, odeJJ, app, t, dt);
     app.applyPreconditioner(*yFom_.data(), *odeJJ.data(), t);
+  }
+
+
+  //-------------------------------
+  // for steady LSPG
+  //-------------------------------
+  template <
+      typename lspg_state_t, 
+      typename app_t>
+  apply_jac_return_t operator()(const lspg_state_t & romY,
+                                const app_t & app) const
+  {
+    auto JJ = preconditionable::template operator()(romY, app);
+    app.applyPreconditioner(*yFom_.data(), *JJ.data());
+    return JJ;    
+  }
+
+  template <
+      typename lspg_state_t,
+      typename lspg_jac_t,
+      typename app_t>
+  void operator()(const lspg_state_t & romY,
+                  lspg_jac_t & romJJ,
+                  const app_t & app) const
+  {
+    preconditionable::template operator()(romY, romJJ, app);
+    app.applyPreconditioner(*yFom_.data(), *romJJ.data());
   }
 
 };//end class

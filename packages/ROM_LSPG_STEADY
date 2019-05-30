@@ -9,6 +9,7 @@
 #include "rom/src/lspg/steady/rom_lspg_steady_system.hpp"
 
 #include "rom/src/lspg/steady/generator/rom_lspg_type_generator_default.hpp"
+#include "rom/src/lspg/steady/generator/rom_lspg_type_generator_preconditioned.hpp"
 #include "rom/src/lspg/steady/generator/rom_lspg_steady_problem_generator.hpp"
 
 #endif
