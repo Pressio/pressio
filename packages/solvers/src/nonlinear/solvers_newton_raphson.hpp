@@ -55,6 +55,7 @@ public:
     state_t xOld = x;
     normN_ = {0};
     core::default_types::uint iStep = 0;
+    std::cout.precision(15);
     while (iStep++ <= this->maxIters_)
     {
 #ifdef DEBUG_PRINT
