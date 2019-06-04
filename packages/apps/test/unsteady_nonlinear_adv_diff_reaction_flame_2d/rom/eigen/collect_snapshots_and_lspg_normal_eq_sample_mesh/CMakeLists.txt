@@ -7,5 +7,5 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   )
 
 #configure_file(../plot_help.py plot_help.py COPYONLY)
-#configure_file(./mesh.dat mesh.dat COPYONLY)
-#configure_file(./gappy_to_full_gid_map.dat gappy_to_full_gid_map.dat COPYONLY)
+configure_file(./mesh.dat mesh.dat COPYONLY)
+configure_file(./gappy_to_full_gid_map.dat gappy_to_full_gid_map.dat COPYONLY)

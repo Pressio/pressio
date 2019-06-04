@@ -49,7 +49,7 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::setupPhysicalGrid(){
 
 void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::setupFields(){
   //create Jacobian and state
-  J_.resize(numDof_r_, numDof_r_);
+  J_.resize(numDof_r_, numDof_);
   state_.resize(numDof_);
 
   // init to zero
@@ -155,6 +155,9 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
 (const state_type & yState, residual_type & R) const
 {
   R.setZero();
+  // std::cout << "resImpl " << yState.size() << " " << R.size() << std::endl;
+  // std::cout << "resImpl yState " << std::endl;
+  // std::cout << yState << std::endl;
 
   scalar_type c_ip1={}, c_im1={};
   scalar_type c_jp1={}, c_jm1={};
@@ -162,7 +165,6 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
 
   // loop over cells where residual needs to be computed
   for (size_t rPt=0; rPt < graph_.size(); ++rPt){
-
     // global ID of this cell
     const auto cellGID_  = graph_[rPt][0];
 
@@ -173,8 +175,14 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
     globalIDToGiGj(cellGIDinFullMesh_, gi_, gj_);
 
     // the velocity at this cell
-    auto uij = u_[cellGID_];
-    auto vij = v_[cellGID_];
+    auto uij = u_[rPt];
+    auto vij = v_[rPt];
+    // std::cout << rPt << " "
+    // 	      << cellGID_ << " "
+    // 	      << cellGIDinFullMesh_ << " "
+    // 	      << gi_ << " " << gj_ << " "
+    // 	      << uij << " " << vij << " "
+    // 	      << std::endl;
 
     // label to help with BC on left boundary
     const auto thisCellLabel = regionLabel_[cellGID_];
@@ -186,7 +194,6 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
     const auto wH2O = yState[cellGID_*numSpecies_+3];
     // compute source terms at this location
     compute_sources(wT, wH2, wO2, wH2O);
-
 
     // get ID of the first state dof (temperature) for the cell on the left
     const auto firstDofID_westCell  = graph_[rPt][1]*numSpecies_;
@@ -201,50 +208,48 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
     // for the third state dof (fraction of O2 ) just add 2 to any of the above
     // for the fourth state dof (fraction of H2O ) just add 3 to any of the above
 
-
     // loop over local dofs and compute residual
     for (auto iDof=0; iDof<numSpecies_; iDof++)
     {
       // this is the global ID of the currrent DOF at the current cell
-      dofID = cellGID_ * numSpecies_ + iDof;
+      dofID = rPt * numSpecies_ + iDof;
+      auto dofID_s = cellGID_ * numSpecies_ + iDof;
 
       // add diagonal
-      R[dofID] = -this_t::two*(K_ * dxSqInv_ + K_ * dySqInv_) * yState[dofID];
+      R[dofID] = -this_t::two*(K_ * dxSqInv_ + K_ * dySqInv_) * yState[dofID_s];
 
       //---------------
       // x-direction
       //---------------
       // near left wall
       if (gi_==0){
+      	c_ip1 = yState[firstDofID_eastCell + iDof];
 
-	c_ip1 = yState[firstDofID_eastCell + iDof];
-
-	// contribution due to stencil at BC
+      	// contribution due to stencil at BC
       	const auto leftBC = (thisCellLabel != 0) ?
       	  bcLeftGamma13_[iDof] : bcLeftGamma2_[iDof];
-      	R[dofID] += -this_t::two*(K_*dxSqInv_ + uij*dx2Inv_)*yState[dofID];
+      	R[dofID] += -this_t::two*(K_*dxSqInv_ + uij*dx2Inv_)*yState[dofID_s];
       	R[dofID] += this_t::oneThird*(K_*dxSqInv_ + uij*dx2Inv_)*c_ip1;
       	R[dofID] += this_t::eightOvThree*(K_*dxSqInv_ + uij*dx2Inv_)*leftBC;
 
-	// contribution from adjecent cell on the right at i+1,j
+      	// contribution from adjecent cell on the right at i+1,j
       	R[dofID] += (K_*dxSqInv_ - uij*dx2Inv_)*c_ip1;
       }
 
       // i-1,j and i+1,j (interior points, regular stencil)
       if (gi_>=1 and gi_<Nx_-1){
-
-	// contribution from left cell
+      	// contribution from left cell
       	c_im1 = yState[firstDofID_westCell + iDof];
       	R[dofID] += (K_*dxSqInv_ + uij*dx2Inv_)*c_im1;
 
-	// contribution from right cell
-	c_ip1 = yState[firstDofID_eastCell + iDof];
+      	// contribution from right cell
+      	c_ip1 = yState[firstDofID_eastCell + iDof];
       	R[dofID] += (K_*dxSqInv_ - uij*dx2Inv_)*c_ip1;
       }
 
       // right wall we have homog Neumann BC
       if (gi_==Nx_-1){
-	c_im1 = yState[firstDofID_westCell + iDof];
+      	c_im1 = yState[firstDofID_westCell + iDof];
       	R[dofID] += this_t::two*K_*dxSqInv_ * c_im1;
       }
 
@@ -253,11 +258,11 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
       //---------------
       // i, j-1 and i, j+1
       if (gj_>=1 and gj_<Ny_-1){
-	// contribution from cell below
+      	// contribution from cell below
       	c_jm1 = yState[firstDofID_southCell + iDof];
       	R[dofID] += (K_*dySqInv_ + vij*dy2Inv_)*c_jm1;
 
-	// contribution from cell above
+      	// contribution from cell above
       	c_jp1 = yState[firstDofID_northCell + iDof];
       	R[dofID] += (K_*dySqInv_ - vij*dy2Inv_)*c_jp1;
       }
@@ -274,11 +279,15 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
       	R[dofID] += this_t::two*K_*dySqInv_ * c_jm1;
       }
 
-      // account for sources
+      //account for sources
       R[dofID] += s_[iDof];
 
-    }//loop over dof
-  }//loop over grid pts
+     }//loop over dof
+
+   }//loop over grid pts
+  // std::cout << "resImpl R " << std::endl;
+  // std::cout << R << std::endl;
+
 }// end method
 
 
@@ -287,7 +296,7 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::jacobian_impl
 (const state_type & yState, jacobian_type & jac)const{
 
   if (jac.rows() == 0 || jac.cols()==0 )
-    jac.resize(numDof_r_, numDof_r_);
+    jac.resize(numDof_r_, numDof_);
 
   // triplets is used to store a series of (row, col, value)
   // has to be cleared becuase we append to it while computing
@@ -309,8 +318,8 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::jacobian_impl
     globalIDToGiGj(cellGIDinFullMesh_, gi_, gj_);
 
     // the velocity at this cell
-    auto uij = u_[cellGID_];
-    auto vij = v_[cellGID_];
+    auto uij = u_[rPt];
+    auto vij = v_[rPt];
 
     // the state at current grid point
     // the state values at current grid point
@@ -333,12 +342,12 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::jacobian_impl
     // for the third state dof (fraction of O2 ) just add 2 to any of the above
     // for the fourth state dof (fraction of H2O ) just add 3 to any of the above
 
-
     // loop over local dofs
     for (auto iDof=0; iDof<numSpecies_; iDof++)
     {
       // this is the global ID of the currrent DOF at the current cell
-      dofID = cellGID_ * numSpecies_ + iDof;
+      dofID = rPt * numSpecies_ + iDof;
+      auto dofID_s = cellGID_ * numSpecies_ + iDof;
 
       // diagonal
       auto diagVal = -this_t::two*(K_ * dxSqInv_ + K_ * dySqInv_) + dsdw_(iDof,iDof);
@@ -346,39 +355,39 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::jacobian_impl
       // if we are near the left wall we need to account from contributions
       // stemming from how we treat the BC
       if (gi_==0){
-	// contributions coming from how to treat left BC
-	diagVal += -this_t::two*(K_*dxSqInv_ + uij*dx2Inv_);
+      	// contributions coming from how to treat left BC
+      	diagVal += -this_t::two*(K_*dxSqInv_ + uij*dx2Inv_);
 
       	value = this_t::oneThird*(K_*dxSqInv_ + uij*dx2Inv_);
-	// jacobian contribution from left BC treatment relative to cell on the right
+      	// jacobian contribution from left BC treatment relative to cell on the right
       	tripletList.push_back( Tr( dofID, firstDofID_eastCell+iDof, value) );
       }
-      tripletList.push_back( Tr( dofID, dofID, diagVal) );
+      tripletList.push_back( Tr( dofID, dofID_s, diagVal) );
 
       // i-1, j and i+1, j
       if (gi_>=1 and gi_<Nx_-1){
-	// jacob wrt left cell
-	value = (K_*dxSqInv_ + uij*dx2Inv_);
-	tripletList.push_back( Tr( dofID, firstDofID_westCell + iDof, value) );
+      	// jacob wrt left cell
+      	value = (K_*dxSqInv_ + uij*dx2Inv_);
+      	tripletList.push_back( Tr( dofID, firstDofID_westCell + iDof, value) );
 
-	// jacob wrt right cell
-	value = (K_*dxSqInv_ - uij*dx2Inv_);
-	tripletList.push_back( Tr( dofID, firstDofID_eastCell + iDof, value) );
+      	// jacob wrt right cell
+      	value = (K_*dxSqInv_ - uij*dx2Inv_);
+      	tripletList.push_back( Tr( dofID, firstDofID_eastCell + iDof, value) );
       }
 
       // right wall we have homog Neumann BC
       if (gi_==Nx_-1){
       	value = this_t::two*K_*dxSqInv_;
-	tripletList.push_back( Tr( dofID, firstDofID_westCell + iDof, value) );
+      	tripletList.push_back( Tr( dofID, firstDofID_westCell + iDof, value) );
       }
 
       // i, j-1 and i, j+1
       if (gj_>=1 and gj_<Ny_-1){
-	value = (K_*dySqInv_ + vij*dy2Inv_);
-	tripletList.push_back( Tr( dofID, firstDofID_southCell + iDof, value) );
+      	value = (K_*dySqInv_ + vij*dy2Inv_);
+      	tripletList.push_back( Tr( dofID, firstDofID_southCell + iDof, value) );
 
-	value = (K_*dySqInv_ - vij*dy2Inv_);
-	tripletList.push_back( Tr( dofID, firstDofID_northCell + iDof, value) );
+      	value = (K_*dySqInv_ - vij*dy2Inv_);
+      	tripletList.push_back( Tr( dofID, firstDofID_northCell + iDof, value) );
       }
 
       // bottom wall we have homog Neumann BC
@@ -395,24 +404,24 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::jacobian_impl
 
       // sources contribution
       if (iDof==0){
-	tripletList.push_back( Tr( dofID, dofID+1, dsdw_(iDof,1)) );
-	tripletList.push_back( Tr( dofID, dofID+2, dsdw_(iDof,2)) );
-	tripletList.push_back( Tr( dofID, dofID+3, dsdw_(iDof,3)) );
+      	tripletList.push_back( Tr( dofID, dofID_s+1, dsdw_(iDof,1)) );
+      	tripletList.push_back( Tr( dofID, dofID_s+2, dsdw_(iDof,2)) );
+      	tripletList.push_back( Tr( dofID, dofID_s+3, dsdw_(iDof,3)) );
       }
       if (iDof==1){
-	tripletList.push_back( Tr( dofID, dofID-1, dsdw_(iDof,0)) );
-	tripletList.push_back( Tr( dofID, dofID+1, dsdw_(iDof,2)) );
-	tripletList.push_back( Tr( dofID, dofID+2, dsdw_(iDof,3)) );
+      	tripletList.push_back( Tr( dofID, dofID_s-1, dsdw_(iDof,0)) );
+      	tripletList.push_back( Tr( dofID, dofID_s+1, dsdw_(iDof,2)) );
+      	tripletList.push_back( Tr( dofID, dofID_s+2, dsdw_(iDof,3)) );
       }
       if (iDof == 2){
-	tripletList.push_back( Tr( dofID, dofID-2, dsdw_(iDof,0)) );
-	tripletList.push_back( Tr( dofID, dofID-1, dsdw_(iDof,1)) );
-	tripletList.push_back( Tr( dofID, dofID+1, dsdw_(iDof,3)) );
+      	tripletList.push_back( Tr( dofID, dofID_s-2, dsdw_(iDof,0)) );
+      	tripletList.push_back( Tr( dofID, dofID_s-1, dsdw_(iDof,1)) );
+      	tripletList.push_back( Tr( dofID, dofID_s, dsdw_(iDof,3)) );
       }
       if (iDof == 3){
-	tripletList.push_back( Tr( dofID, dofID-3, dsdw_(iDof,0)) );
-	tripletList.push_back( Tr( dofID, dofID-2, dsdw_(iDof,1)) );
-	tripletList.push_back( Tr( dofID, dofID-1, dsdw_(iDof,2)) );
+      	tripletList.push_back( Tr( dofID, dofID_s-3, dsdw_(iDof,0)) );
+      	tripletList.push_back( Tr( dofID, dofID_s-2, dsdw_(iDof,1)) );
+      	tripletList.push_back( Tr( dofID, dofID_s-1, dsdw_(iDof,2)) );
       }
 
     }// dof loop

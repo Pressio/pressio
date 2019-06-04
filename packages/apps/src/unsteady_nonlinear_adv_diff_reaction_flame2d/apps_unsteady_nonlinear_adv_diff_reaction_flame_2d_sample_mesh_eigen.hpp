@@ -13,7 +13,6 @@ class UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen{
 protected:
   using this_t		= UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen;
   using nativeVec	= Eigen::VectorXd;
-  using mv_t		= Eigen::MatrixXd;
 
   using arr5_t		= std::array<int,5>;
   using arr2_t		= std::array<int,2>;
@@ -23,6 +22,7 @@ public:
   using state_type	= nativeVec;
   using residual_type	= state_type;
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
+  using mv_t		= Eigen::MatrixXd;
 
   using graph_t		= std::vector<arr5_t>;
   using gids_map_t	= std::vector<arr2_t>;
@@ -110,12 +110,11 @@ public:
 
   jacobian_type jacobian(const state_type & u,
   			 const scalar_type t) const{
-    jacobian_type JJ(numDof_r_, numDof_r_);
+    jacobian_type JJ(numDof_r_, numDof_);
     this->jacobian_impl(u, JJ);
     return JJ;
   }
 
-  // computes: C = Jac B where B is a multivector
   void applyJacobian(const state_type & yState,
   		     const mv_t & B,
   		     mv_t & C,
@@ -126,7 +125,8 @@ public:
   mv_t applyJacobian(const state_type & yState,
   		     const mv_t & B,
   		     scalar_type t) const{
-    mv_t A( yState.size(), B.cols() );
+    mv_t A( numDof_r_, B.cols() );
+    A.setZero();
     applyJacobian_impl(yState, B, A);
     return A;
   };
@@ -156,7 +156,7 @@ private:
   void applyJacobian_impl(const state_type & yState,
   			  const mv_t & B,
   			  mv_t & C) const{
-    jacobian_type JJ(numDof_r_, numDof_r_);
+    jacobian_type JJ(numDof_r_, numDof_);
     JJ.setZero();
     this->jacobian_impl(yState, JJ);
     C = JJ * B;
