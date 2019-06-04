@@ -30,11 +30,9 @@ public:
   ~ImplicitResidualStandardPolicy() = default;
 
 public:
-
-  template <ode::ImplicitEnum method,
-	    int n,
-      typename ops_t,
-	    typename scalar_type>
+  template <
+    ode::ImplicitEnum method, int n, typename scalar_type
+  >
   void operator()(const state_type & y,
 		  residual_type & R,
 		  const std::array<state_type, n> & oldYs,
@@ -43,13 +41,12 @@ public:
 		  scalar_type dt) const{
 
     model.residual(*y.data(), *R.data(), t);
-    ::rompp::ode::impl::time_discrete_residual<method, n, ops_t>(y, R, oldYs, dt);
+    ::rompp::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
   }
 
-  template <ode::ImplicitEnum method,
-	    int n,
-      typename ops_t,
-	    typename scalar_type>
+  template <
+    ode::ImplicitEnum method, int n, typename scalar_type
+    >
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, n> & oldYs,
   			   const model_type & model,
@@ -58,7 +55,7 @@ public:
 
     auto nR = model.residual(*y.data(), t);
     residual_type R(nR);
-    ::rompp::ode::impl::time_discrete_residual<method, n, ops_t>(y, R, oldYs, dt);
+    ::rompp::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
     return R;
   }
 

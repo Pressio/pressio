@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_EIGEN_HPP_
-#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_EIGEN_HPP_
+#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_SAMPLE_MESH_EIGEN_HPP_
+#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_SAMPLE_MESH_EIGEN_HPP_
 
 #include "../../../CORE_ALL"
 #include "Eigen/Dense"
@@ -9,27 +9,41 @@
 
 namespace rompp{ namespace apps{
 
-class UnsteadyNonLinAdvDiffReacFlame2dEigen{
+class UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen{
 protected:
-  using this_t		= UnsteadyNonLinAdvDiffReacFlame2dEigen;
+  using this_t		= UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen;
   using nativeVec	= Eigen::VectorXd;
+
+  using arr5_t		= std::array<int,5>;
+  using arr2_t		= std::array<int,2>;
 
 public:
   using scalar_type	= double;
   using state_type	= nativeVec;
   using residual_type	= state_type;
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
-
   using mv_t		= Eigen::MatrixXd;
+
+  using graph_t		= std::vector<arr5_t>;
+  using gids_map_t	= std::vector<arr2_t>;
+
   typedef Eigen::Triplet<scalar_type> Tr;
   using mat4_t		= Eigen::Matrix<scalar_type, 4, 4>;
   static constexpr auto zero = ::rompp::core::constants::zero<scalar_type>();
   static constexpr auto one = ::rompp::core::constants::one<scalar_type>();
   static constexpr auto two = ::rompp::core::constants::two<scalar_type>();
+  static constexpr auto three = ::rompp::core::constants::three<scalar_type>();
+  static constexpr auto four = ::rompp::core::constants::four<scalar_type>();
+  static constexpr auto oneHalf = one/two;
+  static constexpr auto oneThird = one/three;
+  static constexpr auto eight = two*four;
+  static constexpr auto eightOvThree = eight/three;
 
 public:
-  UnsteadyNonLinAdvDiffReacFlame2dEigen
+  UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen
   (int Nx, int Ny,
+   const graph_t & graph,
+   const gids_map_t & gidsMap,
    scalar_type K	= static_cast<scalar_type>(2), // cm^2/s
    scalar_type preExp	= static_cast<scalar_type>(5.5*1e12),
    scalar_type E	= static_cast<scalar_type>(8.0*1000.),
@@ -45,6 +59,8 @@ public:
       WH2OovRho{W_[2]/rho_},
       Nx_{Nx},
       Ny_{Ny},
+      graph_{graph},
+      gidsMap_{gidsMap},
       dx_{Lx_/(Nx)},
       dy_{Ly_/(Ny)},
       dxSqInv_{one/(dx_*dx_)},
@@ -52,34 +68,6 @@ public:
       dx2Inv_{one/(two*dx_)},
       dy2Inv_{one/(two*dy_)}
   {}
-
-UnsteadyNonLinAdvDiffReacFlame2dEigen
-  (int Nx, int Ny,
-   const std::vector<int> maskGIDs,
-   scalar_type K	= static_cast<scalar_type>(2), // cm^2/s
-   scalar_type preExp	= static_cast<scalar_type>(5.5*1e12),
-   scalar_type E	= static_cast<scalar_type>(8.0*1000.),
-   std::array<scalar_type,3> W = {{2.016, 31.9, 18}})
-    : K_{K},
-      preExp_{preExp},
-      negE_{-E},
-      W_(W),
-      rhoOvWH2{rho_/W_[0]},
-      rhoOvWO2{rho_/W_[1]},
-      WH2ovRho{W_[0]/rho_},
-      WO2ovRho{W_[1]/rho_},
-      WH2OovRho{W_[2]/rho_},
-      Nx_{Nx},
-      Ny_{Ny},
-      dx_{Lx_/(Nx)},
-      dy_{Ly_/(Ny)},
-      dxSqInv_{one/(dx_*dx_)},
-      dySqInv_{one/(dy_*dy_)},
-      dx2Inv_{one/(two*dx_)},
-      dy2Inv_{one/(two*dy_)},
-      maskGIDs_{maskGIDs}
-  {}
-
 
 public:
   state_type const & getInitialState() const{
@@ -90,13 +78,13 @@ public:
   void setupFields();
   void setup();
 
-  int getUnknownCount() const{ return this_t::numSpecies_*Nx_*Ny_; }
+  // int getUnknownCount() const{ return this_t::numSpecies_*Nx_*Ny_; }
   scalar_type getDx() const { return dx_; };
   scalar_type getDy() const { return dy_; };
   nativeVec getX() const { return x_; }
   nativeVec getY() const { return y_; }
-  nativeVec getU() const { return u_; }
-  nativeVec getV() const { return v_; }
+  // nativeVec getU() const { return u_; }
+  // nativeVec getV() const { return v_; }
 
 public:
   void residual(const state_type & yState,
@@ -107,20 +95,22 @@ public:
 
   residual_type residual(const state_type & yState,
 			 scalar_type t) const{
-    residual_type R(numDof_);
+    // the residual has size equal to the dofs of the cells where
+    // we want residual
+    residual_type R(numDof_r_);
     residual_impl(yState, R);
     return R;
   };
 
   void jacobian(const state_type & u,
   		jacobian_type & jac,
-  		const scalar_type /*t*/) const{
+  		const scalar_type t) const{
     this->jacobian_impl(u, jac);
   }
 
   jacobian_type jacobian(const state_type & u,
   			 const scalar_type t) const{
-    jacobian_type JJ(u.size(), u.size());
+    jacobian_type JJ(numDof_r_, numDof_);
     this->jacobian_impl(u, JJ);
     return JJ;
   }
@@ -135,27 +125,10 @@ public:
   mv_t applyJacobian(const state_type & yState,
   		     const mv_t & B,
   		     scalar_type t) const{
-    mv_t C( yState.size(), B.cols() );
-    C.setZero();
-    applyJacobian_impl(yState, B, C);
-    // std::cout << "appJacImpl" << std::endl;
-    // std::cout << B << std::endl;
-    // std::cout << std::endl;
-    return C;
-  };
-
-  template <typename T>
-  void applyMask(const T & A,
-		 T & B,
-		 scalar_type t) const{
-    applyMask_impl(A, B, t);
-  }
-
-  template <typename T>
-  T applyMask(const T & A, scalar_type t) const{
-    T B( maskGIDs_.size()*this_t::numSpecies_, A.cols() );
-    applyMask_impl(A, B, t);
-    return B;
+    mv_t A( numDof_r_, B.cols() );
+    A.setZero();
+    applyJacobian_impl(yState, B, A);
+    return A;
   };
 
 private:
@@ -164,10 +137,15 @@ private:
     gi = ID % Nx_;
   }
 
-  void compute_dsdw(scalar_type wT, scalar_type wH2,
-		    scalar_type wO2, scalar_type wH2O)const;
-  void compute_sources(scalar_type wT, scalar_type wH2,
-		       scalar_type wO2, scalar_type wH2O)const;
+  void compute_dsdw(scalar_type wT,
+		    scalar_type wH2,
+		    scalar_type wO2,
+		    scalar_type wH2O) const;
+
+  void compute_sources(scalar_type wT,
+		       scalar_type wH2,
+		       scalar_type wO2,
+		       scalar_type wH2O) const;
 
   void residual_impl(const state_type & yState,
 		     residual_type & R) const;
@@ -178,36 +156,10 @@ private:
   void applyJacobian_impl(const state_type & yState,
   			  const mv_t & B,
   			  mv_t & C) const{
-    jacobian_type JJ(yState.size(), yState.size());
+    jacobian_type JJ(numDof_r_, numDof_);
     JJ.setZero();
     this->jacobian_impl(yState, JJ);
     C = JJ * B;
-  }
-
-  template <typename T>
-  void applyMask_impl(const T & A,
-		      T & B,
-		      scalar_type t) const{
-    std::cout << "appMask" << std::endl;
-    B.setZero();
-    auto iRow = 0;
-    for (size_t i=0; i<maskGIDs_.size(); ++i)
-    {
-      auto rGID = maskGIDs_[i];
-      //std::cout << i << " " << rGID << " \n";
-      for (auto iDof=0; iDof<this_t::numSpecies_; ++iDof){
-	auto dof = rGID * this_t::numSpecies_ + iDof;
-	// std::cout << " "
-	// 	  << iDof << " "
-	// 	  << dof << " ";
-	  for (int j=0; j<A.cols(); ++j){
-	    //std::cout << A(dof,j) << " ";
-	    B(iRow,j) = A(dof,j);
-	  }
-	  //std::cout << "\n";
-	iRow++;
-      }
-    }
   }
 
 protected:
@@ -235,10 +187,29 @@ protected:
   const std::array<scalar_type,numSpecies_> bcLeftGamma13_{{300, 0, 0, 0}};
   const std::array<scalar_type,numSpecies_> bcLeftGamma2_{{950, 0.0282, 0.2259, 0}};
 
-  // grid points (cell centered)
+  /*
+    graph: contains a list such that
+    1 0 3 2 -1
+
+    first col: contains GIDs of cells where we want residual
+    1,2,3,4 col: contains GIDs of neighboring cells needed for stencil
+		 the order of the neighbors is: east, north, west, south
+
+    if a neighbor GID is = -1, it means that neighbor is outside of the domain boundary
+    so if west GID is -1, it means that this residual cell is near the left bundary
+   */
+  const graph_t & graph_;
+
+  /*
+    two columns list where:
+    first col: GID of each cell enumerated according to the sample mesh
+    second col: corresponding GID enumerated according to the full mesh
+   */
+  const gids_map_t & gidsMap_;
+
+  // Nx_ and Ny_ contain the # of grid points for the FULL mesh
   const int Nx_{};
   const int Ny_{};
-
   const scalar_type dx_{};
   const scalar_type dy_{};
   const scalar_type dxSqInv_{};
@@ -246,14 +217,21 @@ protected:
   const scalar_type dx2Inv_{};
   const scalar_type dy2Inv_{};
 
-  // list of GIDs for the mask
-  const std::vector<int> maskGIDs_ = {};
+  // auxiliary vars used in implementation
+  mutable int gi_{};
+  mutable int gj_{};
+
+  mutable int cellGIDinFullMesh_{};
+  mutable int cellGID_{};
 
   // note that dof refers to the degress of freedom,
   // which is NOT same as grid points. for this problem,
   // the dof = numSpecies_ * number_of_unknown_grid_points
+  // _r_ stands for residual
   int numGpt_;
   int numDof_;
+  int numGpt_r_;
+  int numDof_r_;
 
   nativeVec x_;
   nativeVec y_;
@@ -263,8 +241,12 @@ protected:
   mutable jacobian_type J_;
   mutable nativeVec state_;
 
+  // source term at each cell
   mutable std::array<scalar_type, numSpecies_> s_;
+
+  // jacobian of source term: del s/del w
   mutable mat4_t dsdw_;
+
   // to label a grid point based on whether it belongs
   //to lower, mid or upper region of the flow, see diagram in paper
   mutable nativeVec regionLabel_;

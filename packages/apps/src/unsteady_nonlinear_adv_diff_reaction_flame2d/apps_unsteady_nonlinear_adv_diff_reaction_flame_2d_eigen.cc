@@ -34,6 +34,7 @@ void UnsteadyNonLinAdvDiffReacFlame2dEigen::setupFields(){
   J_.resize(numDof_, numDof_);
   J_.setZero();
   state_.resize(numDof_);
+  state_.setZero();
   // the init condition is zero everywhere, but 300 Kelvin for temperature
   for (auto i=0; i<numDof_; i+=4)
     state_[i] = initTemp_;
@@ -222,6 +223,11 @@ void UnsteadyNonLinAdvDiffReacFlame2dEigen::residual_impl
 
     }//loop over dof
   }//loop over grid pts
+
+  // std::cout << "resImpl R " << std::endl;
+  // for (auto i=0; i<R.size(); ++i)
+  //   std::cout << i << " " << R[i] << std::endl;
+
 }// end method
 
 
@@ -264,7 +270,7 @@ void UnsteadyNonLinAdvDiffReacFlame2dEigen::jacobian_impl
       auto diagVal = value1 + dsdw_(iDof,iDof);
 
       if (gi==0){
-	diagVal -= 2.0*(D*dxSqInv_ + uij*dx2Inv_);
+      	diagVal += -2.0*(D*dxSqInv_ + uij*dx2Inv_);
 
       	value = (D*dxSqInv_ + uij*dx2Inv_)*(1./3.);
       	auto ip1_col = dofGID+numSpecies_;
@@ -275,31 +281,31 @@ void UnsteadyNonLinAdvDiffReacFlame2dEigen::jacobian_impl
 
       // i-1, j and i+1, j
       if (gi>=1 and gi<Nx_-1){
-	value = (D*dxSqInv_ + uij*dx2Inv_);
-	auto im1_col = dofGID-numSpecies_;
-	tripletList.push_back( Tr( dofGID, im1_col, value) );
+      	value = (D*dxSqInv_ + uij*dx2Inv_);
+      	auto im1_col = dofGID-numSpecies_;
+      	tripletList.push_back( Tr( dofGID, im1_col, value) );
 
-	value = (D*dxSqInv_ - uij*dx2Inv_);
-	auto ip1_col = dofGID+numSpecies_;
-	tripletList.push_back( Tr( dofGID, ip1_col, value) );
+      	value = (D*dxSqInv_ - uij*dx2Inv_);
+      	auto ip1_col = dofGID+numSpecies_;
+      	tripletList.push_back( Tr( dofGID, ip1_col, value) );
       }
 
       // right wall
       if (gi==Nx_-1){
       	value = 2*D*dxSqInv_;
-	auto im1_col = dofGID-numSpecies_;
-	tripletList.push_back( Tr( dofGID, im1_col, value) );
+      	auto im1_col = dofGID-numSpecies_;
+      	tripletList.push_back( Tr( dofGID, im1_col, value) );
       }
 
       // i, j-1 and i, j+1
       if (gj>=1 and gj<Ny_-1){
-	value = (D*dySqInv_ + vij*dy2Inv_);
-	auto jm1_col = dofGID - Nx_*numSpecies_;
-	tripletList.push_back( Tr( dofGID, jm1_col, value) );
+      	value = (D*dySqInv_ + vij*dy2Inv_);
+      	auto jm1_col = dofGID - Nx_*numSpecies_;
+      	tripletList.push_back( Tr( dofGID, jm1_col, value) );
 
-	value = (D*dySqInv_ - vij*dy2Inv_);
-	auto jp1_col = dofGID + Nx_*numSpecies_;
-	tripletList.push_back( Tr( dofGID, jp1_col, value) );
+      	value = (D*dySqInv_ - vij*dy2Inv_);
+      	auto jp1_col = dofGID + Nx_*numSpecies_;
+      	tripletList.push_back( Tr( dofGID, jp1_col, value) );
       }
 
       // bottom wall we have homog Neumann BC
@@ -318,24 +324,24 @@ void UnsteadyNonLinAdvDiffReacFlame2dEigen::jacobian_impl
 
       // sources contribution
       if (iDof==0){
-	tripletList.push_back( Tr( dofGID, dofGID+1, dsdw_(iDof,1)) );
-	tripletList.push_back( Tr( dofGID, dofGID+2, dsdw_(iDof,2)) );
-	tripletList.push_back( Tr( dofGID, dofGID+3, dsdw_(iDof,3)) );
+      	tripletList.push_back( Tr( dofGID, dofGID+1, dsdw_(iDof,1)) );
+      	tripletList.push_back( Tr( dofGID, dofGID+2, dsdw_(iDof,2)) );
+      	tripletList.push_back( Tr( dofGID, dofGID+3, dsdw_(iDof,3)) );
       }
       if (iDof==1){
-	tripletList.push_back( Tr( dofGID, dofGID-1, dsdw_(iDof,0)) );
-	tripletList.push_back( Tr( dofGID, dofGID+1, dsdw_(iDof,2)) );
-	tripletList.push_back( Tr( dofGID, dofGID+2, dsdw_(iDof,3)) );
+      	tripletList.push_back( Tr( dofGID, dofGID-1, dsdw_(iDof,0)) );
+      	tripletList.push_back( Tr( dofGID, dofGID+1, dsdw_(iDof,2)) );
+      	tripletList.push_back( Tr( dofGID, dofGID+2, dsdw_(iDof,3)) );
       }
       if (iDof == 2){
-	tripletList.push_back( Tr( dofGID, dofGID-2, dsdw_(iDof,0)) );
-	tripletList.push_back( Tr( dofGID, dofGID-1, dsdw_(iDof,1)) );
-	tripletList.push_back( Tr( dofGID, dofGID+1, dsdw_(iDof,3)) );
+      	tripletList.push_back( Tr( dofGID, dofGID-2, dsdw_(iDof,0)) );
+      	tripletList.push_back( Tr( dofGID, dofGID-1, dsdw_(iDof,1)) );
+      	tripletList.push_back( Tr( dofGID, dofGID+1, dsdw_(iDof,3)) );
       }
       if (iDof == 3){
-	tripletList.push_back( Tr( dofGID, dofGID-3, dsdw_(iDof,0)) );
-	tripletList.push_back( Tr( dofGID, dofGID-2, dsdw_(iDof,1)) );
-	tripletList.push_back( Tr( dofGID, dofGID-1, dsdw_(iDof,2)) );
+      	tripletList.push_back( Tr( dofGID, dofGID-3, dsdw_(iDof,0)) );
+      	tripletList.push_back( Tr( dofGID, dofGID-2, dsdw_(iDof,1)) );
+      	tripletList.push_back( Tr( dofGID, dofGID-1, dsdw_(iDof,2)) );
       }
 
       dofGID++;

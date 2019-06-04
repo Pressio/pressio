@@ -30,9 +30,7 @@ class ImplicitStepper<
     ode_jacobian_type,
     model_type, Args...>, 2 //num of aux states needed
   >
-/*protected impl::OdeStorage<ode_state_type, ode_residual_type, 2>*/
 {
-
   using this_t	       = ImplicitStepper<ImplicitEnum::BDF2,
 					 ode_state_type,
 					 ode_residual_type,

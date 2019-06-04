@@ -11,12 +11,9 @@ namespace rompp{ namespace ode{ namespace impl{
 
 template <
   ode::ImplicitEnum odeMethod,
-  typename ops_t,
   typename jacobian_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    // if ops_t == void, we use the core::ops
-     std::is_void<ops_t>::value and
     (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
     (core::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
 #ifdef HAVE_TRILINOS
@@ -33,12 +30,9 @@ template <
 
 template <
   ode::ImplicitEnum odeMethod,
-  typename ops_t,
   typename jacobian_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    // if ops_t == void, we use the core::ops
-     std::is_void<ops_t>::value and
     (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) and
     core::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
     > * = nullptr

@@ -28,7 +28,6 @@ class ImplicitStepper<ImplicitEnum::Euler,
 				 model_type, Args...>,
 			       1 //num aux states
 			       >
-/*protected impl::OdeStorage<ode_state_type, ode_residual_type, 1>*/
 {
 
   using this_t	       = ImplicitStepper<ImplicitEnum::Euler,

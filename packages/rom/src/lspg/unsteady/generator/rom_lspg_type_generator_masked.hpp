@@ -6,17 +6,20 @@
 
 namespace rompp{ namespace rom{
 
-template <typename fom_type,
-	  ode::ImplicitEnum odeName,
-	  typename decoder_type,
-	  typename lspg_state_type>
+template <
+  typename fom_type,
+  ode::ImplicitEnum odeName,
+  typename decoder_type,
+  typename lspg_state_type,
+  typename ud_ops = void
+  >
 struct MaskedLSPGTypeGenerator
   : LSPGCommonTypes<
-  fom_type, decoder_type, lspg_state_type, odeName
+  fom_type, decoder_type, lspg_state_type, odeName, ud_ops
   >{
 
   using base_t = LSPGCommonTypes<
-    fom_type, decoder_type, lspg_state_type, odeName>;
+    fom_type, decoder_type, lspg_state_type, odeName, ud_ops>;
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
@@ -30,6 +33,7 @@ struct MaskedLSPGTypeGenerator
   using typename base_t::fom_state_reconstr_t;
   using typename base_t::fom_states_data;
   using typename base_t::fom_rhs_data;
+  using typename base_t::ud_ops_t;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -54,7 +58,7 @@ struct MaskedLSPGTypeGenerator
   using lspg_residual_policy_t =
     rom::decorator::Masked<
     rom::LSPGResidualPolicy<
-      fom_states_data, fom_rhs_data, fom_eval_rhs_policy_t
+      fom_states_data, fom_rhs_data, fom_eval_rhs_policy_t, ud_ops
       >
     >;
 
@@ -62,7 +66,8 @@ struct MaskedLSPGTypeGenerator
   using lspg_jacobian_policy_t	=
     rom::decorator::Masked<
     rom::LSPGJacobianPolicy<
-      fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t
+      fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t,
+      decoder_t, ud_ops
       >
     >;
 

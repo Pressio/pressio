@@ -64,7 +64,8 @@ template <
   typename fom_type,
   typename decoder_type,
   typename lspg_state_type,
-  ode::ImplicitEnum odeName = ode::ImplicitEnum::Undefined
+  ode::ImplicitEnum odeName = ode::ImplicitEnum::Undefined,
+  typename ud_ops = void
   >
 struct LSPGCommonTypes{
   // these are native types of the full-order model (fom)
@@ -103,6 +104,9 @@ struct LSPGCommonTypes{
 
   // class type holding fom rhs data
   using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_w_t>;
+
+  // if we have a non-trivial user-defined ops
+  using ud_ops_t = ud_ops;
 };
 
 }}//end  namespace rompp::rom
