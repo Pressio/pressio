@@ -9,11 +9,10 @@ namespace rompp{ namespace ode{ namespace meta {
 template<
   typename T,
   ImplicitEnum name,
-  typename state_t, 
+  typename state_t,
   typename jacobian_t,
-  typename model_t, 
+  typename model_t,
   typename scalar_t,
-  typename update_op_t,
   typename enable = void
   >
 struct is_legitimate_implicit_jacobian_policy : std::false_type
@@ -23,14 +22,13 @@ struct is_legitimate_implicit_jacobian_policy : std::false_type
 template<
   typename T,
   ImplicitEnum name,
-  typename state_t, 
+  typename state_t,
   typename jacobian_t,
-  typename model_t, 
-  typename scalar_t,
-  typename update_op_t
+  typename model_t,
+  typename scalar_t
   >
 struct is_legitimate_implicit_jacobian_policy
-<T, name, state_t, jacobian_t, model_t, scalar_t, update_op_t,
+<T, name, state_t, jacobian_t, model_t, scalar_t,
  ::rompp::mpl::enable_if_t<
    std::is_same<
      jacobian_t,
@@ -38,8 +36,7 @@ struct is_legitimate_implicit_jacobian_policy
      (
       std::declval<T>().template operator()
       <
-      name, 
-      update_op_t
+      name
       >( std::declval<const state_t &>(),
 	 std::declval<const model_t&>(),
 	 std::declval<scalar_t>(),
@@ -53,8 +50,7 @@ struct is_legitimate_implicit_jacobian_policy
      (
       std::declval<T>().template operator()
       <
-      name,
-      update_op_t
+      name
       >( std::declval<const state_t &>(),
 	 std::declval<jacobian_t &>(),
 	 std::declval<const model_t&>(),

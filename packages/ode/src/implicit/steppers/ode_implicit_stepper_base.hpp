@@ -56,28 +56,7 @@ public:
     return traits::order_value;
   }
 
-  template <
-    typename T = state_t,
-    rompp::mpl::enable_if_t<
-      !std::is_void<typename traits::update_op>::value
-      > * = nullptr
-    >
-  void residual(const T & y,
-		residual_t & R) const{
-    this->residual_obj_.template operator()<
-      traits::enum_id,
-      traits::steps,
-      typename traits::update_op
-      >(y, R, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
-  }
-
-  template <
-    typename T = state_t,
-    rompp::mpl::enable_if_t<
-      std::is_void<typename traits::update_op>::value
-      > * = nullptr
-    >
-  void residual(const T & y,
+  void residual(const state_t & y,
 		residual_t & R) const{
     this->residual_obj_.template operator()<
       traits::enum_id,
@@ -85,82 +64,20 @@ public:
       >(y, R, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
-
-  template <
-    typename T = state_t,
-    rompp::mpl::enable_if_t<
-      !std::is_void<typename traits::update_op>::value
-      > * = nullptr
-    >
-  void jacobian(const T & y,
-		jacobian_t & J) const{
-    this->jacobian_obj_.template operator()<
-      traits::enum_id,
-      typename traits::update_op
-      >(y, J, auxData_.model_, auxData_.t_, auxData_.dt_);
-  }
-
-  template <
-    typename T = state_t,
-    rompp::mpl::enable_if_t<
-      std::is_void<typename traits::update_op>::value
-      > * = nullptr
-    >
-  void jacobian(const T & y,
+  void jacobian(const state_t & y,
 		jacobian_t & J) const{
     this->jacobian_obj_.template operator()<
       traits::enum_id
       >(y, J, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
-
-  template <
-    typename T = state_t,
-    rompp::mpl::enable_if_t<
-      !std::is_void<typename traits::update_op>::value
-      > * = nullptr
-    >
-  residual_t residual(const T & y) const{
-    return this->residual_obj_.template operator()<
-      traits::enum_id,
-      traits::steps,
-      typename traits::update_op
-      >(y, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
-  }
-
-  template <
-    typename T = state_t,
-    rompp::mpl::enable_if_t<
-      std::is_void<typename traits::update_op>::value
-      > * = nullptr
-    >
-  residual_t residual(const T & y) const{
+  residual_t residual(const state_t & y) const{
     return this->residual_obj_.template operator()<
       traits::enum_id,
       traits::steps
       >(y, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
-
-  template <
-    typename T = state_t,
-    rompp::mpl::enable_if_t<
-      !std::is_void<typename traits::update_op>::value
-      > * = nullptr
-    >
-  jacobian_t jacobian(const T & y) const{
-    return this->jacobian_obj_.template operator()<
-      traits::enum_id,
-      typename traits::update_op
-      >(y, auxData_.model_, auxData_.t_, auxData_.dt_);
-  }
-
-  template <
-    typename T = state_t,
-    rompp::mpl::enable_if_t<
-      std::is_void<typename traits::update_op>::value
-      > * = nullptr
-    >
   jacobian_t jacobian(const state_t & y) const{
     return this->jacobian_obj_.template operator()<
       traits::enum_id

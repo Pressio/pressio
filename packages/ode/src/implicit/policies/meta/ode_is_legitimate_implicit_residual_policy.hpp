@@ -8,29 +8,28 @@ namespace rompp{ namespace ode{ namespace meta {
 
 template<
   typename T,
-  ImplicitEnum name, 
+  ImplicitEnum name,
   int nstates,
-  typename state_t, 
+  typename state_t,
   typename residual_t,
-  typename model_t, 
+  typename model_t,
   typename scalar_t,
-  typename update_op_t,
   typename enable = void
   >
 struct is_legitimate_implicit_residual_policy : std::false_type{};
 
+
 template<
   typename T,
-  ImplicitEnum name, 
+  ImplicitEnum name,
   int nstates,
-  typename state_t, 
+  typename state_t,
   typename residual_t,
-  typename model_t, 
-  typename scalar_t,
-  typename update_op_t
+  typename model_t,
+  typename scalar_t
   >
 struct is_legitimate_implicit_residual_policy<
-  T, name, nstates, state_t, residual_t, model_t, scalar_t, update_op_t,
+  T, name, nstates, state_t, residual_t, model_t, scalar_t,
   ::rompp::mpl::enable_if_t<
     // is callable with five args
     std::is_same<
@@ -40,8 +39,7 @@ struct is_legitimate_implicit_residual_policy<
        std::declval<T>().template operator()
        <
        name,
-       nstates,
-       update_op_t
+       nstates
        >( std::declval<const state_t &>(),
 	  std::declval<const std::array<state_t, nstates> &>(),
 	  std::declval<const model_t&>(),
@@ -58,8 +56,7 @@ struct is_legitimate_implicit_residual_policy<
        std::declval<T>().template operator()
        <
        name,
-       nstates,
-       update_op_t
+       nstates
        >( std::declval<const state_t &>(),
 	  std::declval<residual_t &>(),
 	  std::declval<const std::array<state_t, nstates> &>(),
@@ -72,6 +69,7 @@ struct is_legitimate_implicit_residual_policy<
     >
   > : std::true_type{};
 //------------------------------------------------------------------
+
 
 template<typename T, typename ... args>
 using is_legitimate_implicit_euler_residual_policy =

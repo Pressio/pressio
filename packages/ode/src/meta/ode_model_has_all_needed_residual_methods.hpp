@@ -46,15 +46,6 @@ struct has_residual_method_callable_with_three_args<
     >
   > : std::true_type{};
 
-
-// template <typename T,
-// 	  typename a_t, typename b_t, typename c_t>
-// using has_residual_method_callable_with_three_args =
-//   decltype(std::declval<T>().residual(std::declval<a_t const&>(),
-// 				      std::declval<b_t &>(),
-// 				      std::declval<c_t>())
-// 	   );
-
 //---------------------------------------------------------------
 
 

@@ -14,7 +14,6 @@ namespace rompp{ namespace ode{ namespace impl{
 
 template < typename ode::ImplicitEnum method,
 	   int n,
-	   typename ops_t,
 	   typename state_type,
 	   typename residual_type,
 	   typename scalar_type,
@@ -35,7 +34,6 @@ void time_discrete_residual(const state_type & y,
 
 template < typename ode::ImplicitEnum method,
 	   int n,
-	   typename ops_t,
 	   typename state_type,
 	   typename residual_type,
 	   typename scalar_type,
