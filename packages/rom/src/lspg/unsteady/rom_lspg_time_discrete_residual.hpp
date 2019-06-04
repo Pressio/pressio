@@ -9,52 +9,27 @@ namespace rompp{ namespace rom{ namespace impl{
 
 
 template<
-  typename ops_t,
   ::rompp::ode::ImplicitEnum method,
   int n,
   typename state_type,
   typename scalar_type,
+  typename ud_ops,
   ::rompp::mpl::enable_if_t<
-    std::is_void<ops_t>::value == false and
     method == ::rompp::ode::ImplicitEnum::Euler
     > * = nullptr
   >
-void time_discrete_residual(const ops_t & tdOps,
-			    const state_type & yn,
+void time_discrete_residual(const state_type & yn,
 			    const std::array<state_type,n> & ynm,
 			    state_type & R,
-			    scalar_type dt){
+			    scalar_type dt,
+			    const ud_ops * udOps){
 
-  //tdOps.time_discrete_residual(*R.data(), *yn.data(), *ynm[0].data(), dt);
+  udOps->time_discrete_euler(*R.data(), *yn.data(),
+			     *ynm[0].data(), dt);
 }
 
 
-template<
-  typename ops_t,
-  ::rompp::ode::ImplicitEnum method,
-  int n,
-  typename state_type,
-  typename scalar_type,
-  ::rompp::mpl::enable_if_t<
-    std::is_void<ops_t>::value == false and
-    method == ::rompp::ode::ImplicitEnum::BDF2
-    > * = nullptr
-  >
-void time_discrete_residual(const ops_t & tdOps,
-			    const state_type & yn,
-			    const std::array<state_type,n> & ynm,
-			    state_type & R,
-			    scalar_type dt){
 
-  using namespace ::rompp::ode::coeffs;
-
-  // tdOps.time_discrete_residual(*R.data(), *yn.data(),
-  // 			       *ynm[1].data(), *ynm[0].data(),
-  // 			       bdf2<scalar_type>::c1_,
-  // 			       bdf2<scalar_type>::c2_,
-  // 			       bdf2<scalar_type>::c3_,
-  // 			       dt);
-}
 
 
 /*

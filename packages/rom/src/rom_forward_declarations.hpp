@@ -52,7 +52,7 @@ template <
   typename fom_states_data_t,
   typename fom_rhs_data_t,
   typename fom_rhs_eval_policy,
-  typename td_ud_ops = void
+  typename ud_ops = void
   >
 class LSPGResidualPolicy;
 
@@ -61,7 +61,7 @@ template<
   typename jac_type,
   typename fom_apply_jac_policy,
   typename decoder_t,
-  typename td_ud_ops = void
+  typename ud_ops = void
   >
 class LSPGJacobianPolicy;
 //-------------------------------------------

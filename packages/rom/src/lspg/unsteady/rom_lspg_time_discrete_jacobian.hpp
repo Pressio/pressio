@@ -8,27 +8,23 @@
 namespace rompp{ namespace rom{ namespace impl{
 
 template <
-  typename ops_t,
   ode::ImplicitEnum odeMethod,
   typename lspg_matrix_type,
   typename scalar_type,
-  typename decoder_jac_type
+  typename decoder_jac_type,
+  typename ud_ops
   >
-void time_discrete_jacobian(const ops_t & tdOps,
-			    lspg_matrix_type & jphi, //jphi holds J * phi
+void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    scalar_type	dt,
-			    const decoder_jac_type & phi){
+			    const decoder_jac_type & phi,
+			    const ud_ops * udOps){
 
-  // // prefactor (f) multiplying f*dt*J*phi
-  // auto prefactor = static_cast<scalar_type>(1);
-  // if (odeMethod == ode::ImplicitEnum::BDF2)
-  //   prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+  // prefactor (f) multiplying f*dt*J*phi
+  auto prefactor = static_cast<scalar_type>(1);
+  if (odeMethod == ode::ImplicitEnum::BDF2)
+    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
 
-  // //loop over elements of jphi
-  // for (auto i=0; i<jphi.length(); i++){
-  //   for (auto j=0; j<jphi.numVectors(); j++)
-  //     jphi(i,j) = phi(i,j) - prefactor*dt*jphi(i,j);
-  // }
+  udOps->time_discrete_jacobian(*jphi.data(), *phi.data(), prefactor, dt);
 }
 
 
