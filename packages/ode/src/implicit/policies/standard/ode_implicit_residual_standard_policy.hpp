@@ -30,8 +30,11 @@ public:
   ~ImplicitResidualStandardPolicy() = default;
 
 public:
+
   template <
-    ode::ImplicitEnum method, int n, typename scalar_type
+    ode::ImplicitEnum method,
+    int n,
+    typename scalar_type
   >
   void operator()(const state_type & y,
 		  residual_type & R,
@@ -45,7 +48,9 @@ public:
   }
 
   template <
-    ode::ImplicitEnum method, int n, typename scalar_type
+    ode::ImplicitEnum method,
+    int n,
+    typename scalar_type
     >
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, n> & oldYs,

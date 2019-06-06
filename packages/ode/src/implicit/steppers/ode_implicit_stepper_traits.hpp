@@ -68,23 +68,16 @@ struct traits<
   using standard_jac_policy_t = policy::ImplicitJacobianStandardPolicy<
     state_t, model_t, jacobian_t>;
 
-  // // check if args contains a template argument for custom ops valid for implicit Euler
-  // using ic3 = ::rompp::mpl::variadic::find_if_quinary_pred_t<
-  //   scalar_t, state_t, residual_t, jacobian_t,
-  //   ::rompp::ode::meta::is_valid_user_defined_ops_for_implicit_euler, Args...>;
-  // using ops_t = ::rompp::mpl::variadic::at_or_t<void, ic3::value, Args...>;
-  // using update_op = typename ::rompp::core::meta::has_update_op_typedef<ops_t>::type;
-
   // check Args for a user-defined admissible residual policy
   using ic1 = ::rompp::ode::meta::find_if_legitimate_implicit_residual_policy_t<
-    this_t::enum_id, this_t::steps, state_t, residual_t, model_t, scalar_t, 
+    this_t::enum_id, this_t::steps, state_t, residual_t, model_t, scalar_t,
     Args...>;
   using residual_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
   // check Args for a user-defined admissible jacobian policy
   using ic2 = ::rompp::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
-    this_t::enum_id, state_t, jacobian_t, model_t, scalar_t, 
+    this_t::enum_id, state_t, jacobian_t, model_t, scalar_t,
     Args...>;
   using jacobian_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic2::value, Args...>;
@@ -143,18 +136,10 @@ struct traits<
   static_assert( std::is_floating_point<scalar_t>::value,
   		 "You need to provide a scalar_type in the ImplicitStepper templates");
 
-
   // for BDF2 the user has to pass an auxiliary stepper
   using ic0 = ::rompp::mpl::variadic::find_if_binary_pred_t<
     stepper_t, ::rompp::ode::meta::is_legitimate_auxiliary_stepper, Args...>;
   using aux_stepper_t = ::rompp::mpl::variadic::at_or_t<void, ic0::value, Args...>;
-
-  // // check if args contains a template argument for custom ops valid for BDF2
-  // using ic4 = ::rompp::mpl::variadic::find_if_quinary_pred_t<
-  //   scalar_t, state_t, residual_t, jacobian_t,
-  //   ::rompp::ode::meta::is_valid_user_defined_ops_for_implicit_bdf2, Args...>;
-  // using ops_t = ::rompp::mpl::variadic::at_or_t<void, ic4::value, Args...>;
-  // using update_op = typename ::rompp::core::meta::has_update_op_typedef<ops_t>::type;
 
   // standard policies (only used if user-defined policies not passed)
   using standard_res_policy_t = policy::ImplicitResidualStandardPolicy<
@@ -164,14 +149,14 @@ struct traits<
 
   // check Args if a user-defined admissible residual policy is passed
   using ic1 = ::rompp::ode::meta::find_if_legitimate_implicit_residual_policy_t<
-    this_t::enum_id, this_t::steps, state_t, residual_t, model_t, scalar_t, 
+    this_t::enum_id, this_t::steps, state_t, residual_t, model_t, scalar_t,
     Args...>;
   using residual_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
   // check Args if a user-defined admissible jacobian policy is passed
   using ic2 = ::rompp::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
-    this_t::enum_id, state_t, jacobian_t, model_t, scalar_t, 
+    this_t::enum_id, state_t, jacobian_t, model_t, scalar_t,
     Args...>;
   using jacobian_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic2::value, Args...>;

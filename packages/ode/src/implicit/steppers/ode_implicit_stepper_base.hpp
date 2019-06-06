@@ -36,15 +36,22 @@ class ImplicitStepperBase
        "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
 protected:
+  // procted because these are accessed only by children classes
   impl::OdeStorage<state_t, residual_t, nAuxStates> odeStorage_;
   impl::ImplicitOdeAuxData<model_t, sc_t> auxData_;
 
+  // conditionally set the type of the object knowing how to compute residual
+  // if we have a standard policy, then it takes a copy
+  // if we have a user-defined policy, we take a const & to it
   typename std::conditional<
     mpl::is_same<standard_res_policy_t, residual_pol_t>::value,
     const residual_pol_t,
     const residual_pol_t &
     >::type residual_obj_;
 
+  // conditionally set the type of the object knowing how to compute jacobian
+  // if we have a standard policy, then it takes a copy
+  // if we have a user-defined policy, we take a const & to it
   typename std::conditional<
     mpl::is_same<standard_jac_policy_t, jacobian_pol_t>::value,
     const jacobian_pol_t,
@@ -84,8 +91,10 @@ public:
       >(y, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
-
 private:
+  ImplicitStepperBase() = delete;
+  ~ImplicitStepperBase() = default;
+
   ImplicitStepperBase(const state_t & y0,
 		      const model_t & model,
 		      const residual_pol_t & resPolicyObj,
@@ -126,8 +135,6 @@ private:
       residual_obj_{resPolicyObj},
       jacobian_obj_{}{}
 
-  ImplicitStepperBase() = delete;
-  ~ImplicitStepperBase() = default;
 
   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};

@@ -38,7 +38,7 @@ public:
 		  scalar_t dt)const
   {
     model.jacobian( *y.data(), *J.data(), t);
-    ode::impl::time_discrete_jacobian<method>(J, dt);
+    ::rompp::ode::impl::time_discrete_jacobian<method>(J, dt);
   }
 
   template <
@@ -51,7 +51,7 @@ public:
   {
     auto nJJ = model.jacobian(*y.data(), t);
     jacobian_type JJ(nJJ);
-    ode::impl::time_discrete_jacobian<method>(JJ, dt);
+    ::rompp::ode::impl::time_discrete_jacobian<method>(JJ, dt);
     return JJ;
   }
 

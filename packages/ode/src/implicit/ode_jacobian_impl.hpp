@@ -24,8 +24,9 @@ template <
   >
   void time_discrete_jacobian(jacobian_type & jac,
 			      scalar_type dt){
+  constexpr auto one = ::rompp::core::constants::one<scalar_type>();
   jac.scale(-dt);
-  jac.addToDiagonal(static_cast<scalar_type>(1));
+  jac.addToDiagonal(one);
 }
 
 template <
@@ -40,8 +41,9 @@ template <
 void time_discrete_jacobian(jacobian_type & jac,
 			    scalar_type dt){
   using namespace ::rompp::ode::coeffs;
+  constexpr auto one = ::rompp::core::constants::one<scalar_type>();
   jac.scale(-bdf2<scalar_type>::c3_*dt);
-  jac.addToDiagonal(static_cast<scalar_type>(1));
+  jac.addToDiagonal(one);
 }
 
 }}}//end namespace rompp::ode::impl
