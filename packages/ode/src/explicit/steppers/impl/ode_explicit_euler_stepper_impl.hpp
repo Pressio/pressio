@@ -21,7 +21,7 @@ class ExplicitEulerStepperImpl<scalar_type,
 			       residual_policy_type,
 			       ops_t>
   : private OdeStorage<ode_state_type, ode_residual_type, 0, 1>,
-    private ExpOdeAuxData<model_type, residual_policy_type>
+    private ExplicitOdeAuxData<model_type, residual_policy_type>
 {
 
   static_assert( meta::is_legitimate_explicit_residual_policy<
@@ -37,7 +37,7 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					   residual_policy_type,
 					   ops_t>;
   using storage_base_t = OdeStorage<ode_state_type, ode_residual_type, 0, 1>;
-  using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
+  using auxdata_base_t = ExplicitOdeAuxData<model_type, residual_policy_type>;
 
   using storage_base_t::auxRHS_;
   using auxdata_base_t::model_;

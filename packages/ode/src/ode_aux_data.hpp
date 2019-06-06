@@ -6,19 +6,21 @@
 
 namespace rompp{ namespace ode{ namespace impl{
 
-template<typename model_type,
-	 typename residual_policy_type>
-class ExpOdeAuxData
+template<
+  typename model_type,
+  typename residual_policy_type
+  >
+class ExplicitOdeAuxData
 {
 protected:
-  ExpOdeAuxData(const model_type & mod,
+  ExplicitOdeAuxData(const model_type & mod,
 		const residual_policy_type & rpolo)
     : model_(&mod), residual_obj_(&rpolo){}
 
-  ExpOdeAuxData(const residual_policy_type & rpolo)
+  ExplicitOdeAuxData(const residual_policy_type & rpolo)
     : model_(nullptr), residual_obj_(&rpolo){}
 
-  ~ExpOdeAuxData() = default;
+  ~ExplicitOdeAuxData() = default;
 
   const model_type * model_		     = nullptr;
   const residual_policy_type * residual_obj_ = nullptr;
@@ -30,16 +32,16 @@ template<
   typename model_type,
   typename scalar_type
   >
-struct ImpOdeAuxData{
+struct ImplicitOdeAuxData{
 
   const model_type & model_;
   scalar_type t_	= {};
   scalar_type dt_	= {};
 
-  ImpOdeAuxData(const model_type & model)
+  ImplicitOdeAuxData(const model_type & model)
     : model_(model){}
 
-  ~ImpOdeAuxData() = default;
+  ~ImplicitOdeAuxData() = default;
 
 };
 

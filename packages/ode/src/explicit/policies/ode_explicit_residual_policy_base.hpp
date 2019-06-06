@@ -32,30 +32,3 @@ private:
 
 }}}//end namespace rompp::ode::policy
 #endif
-
-
-
-
-  // // model object is passed
-  // template <typename state_type,
-  // 	    typename space_residual_type,
-  // 	    typename model_type,
-  // 	    typename scalar_type>
-  // void operator()(const state_type & y,
-  // 		  space_residual_type & R,
-  // 		  const model_type & model,
-  // 		  scalar_type t) const{
-  //   this->underlying()(y, R, model, t);
-  // }
-
-  // // no model object is passed, it is assumed
-  // // that the model info is contained within policy
-  // template <typename state_type,
-  // 	    typename space_residual_type,
-  // 	    typename scalar_type>
-  // void operator()(const state_type & y,
-  // 		  space_residual_type & R,
-  // 		  scalar_type t) const{
-  //   this->underlying()(y, R, t);
-  // }
-  // //--------------------------------------------------

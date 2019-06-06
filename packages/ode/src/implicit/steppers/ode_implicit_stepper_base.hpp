@@ -37,7 +37,7 @@ class ImplicitStepperBase
 
 protected:
   impl::OdeStorage<state_t, residual_t, nAuxStates> odeStorage_;
-  impl::ImpOdeAuxData<model_t, sc_t> auxData_;
+  impl::ImplicitOdeAuxData<model_t, sc_t> auxData_;
 
   typename std::conditional<
     mpl::is_same<standard_res_policy_t, residual_pol_t>::value,

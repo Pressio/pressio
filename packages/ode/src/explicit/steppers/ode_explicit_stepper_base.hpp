@@ -22,7 +22,6 @@ private:
   using model_t		  = typename step_traits::model_t;
   using residual_policy_t = typename step_traits::residual_policy_t;
 
-  // check that things are as supposed
   static_assert( meta::is_legitimate_explicit_state_type<state_t>::value,
   "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
 
@@ -43,7 +42,7 @@ public:
 		  scalar_t t,
 		  scalar_t dt,
 		  step_t step){
-    this->underlying()(yinout, t, dt, step);
+    this->underlying().compute(yinout, t, dt, step);
   }
 
 private:

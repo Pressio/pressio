@@ -21,7 +21,7 @@ class ExplicitRungeKutta4StepperImpl<scalar_type,
 				     residual_policy_type,
 				     ops_t>
   : protected OdeStorage<state_type, ode_residual_type, 1, 4>,
-    protected ExpOdeAuxData<model_type, residual_policy_type>
+    protected ExplicitOdeAuxData<model_type, residual_policy_type>
 {
 
   static_assert( meta::is_legitimate_explicit_residual_policy<
@@ -38,7 +38,7 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 						 ops_t>;
 
   using storage_base_t = OdeStorage<state_type, ode_residual_type, 1, 4>;
-  using auxdata_base_t = ExpOdeAuxData<model_type, residual_policy_type>;
+  using auxdata_base_t = ExplicitOdeAuxData<model_type, residual_policy_type>;
 
   using storage_base_t::auxRHS_;
   using storage_base_t::auxStates_;

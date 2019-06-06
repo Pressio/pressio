@@ -6,8 +6,12 @@
 
 namespace rompp{ namespace ode{ namespace impl{
 
-template<typename state_type, typename rhs_type,
-	 int numAuxStates, int numAuxRHS = 0>
+template<
+  typename state_type,
+  typename rhs_type,
+  int numAuxStates,
+  int numAuxRHS = 0
+  >
 struct OdeStorage;
 //--------------------------------------------------
 
@@ -36,13 +40,10 @@ struct OdeStorage<state_type, rhs_type, 2, 0>{
 
 template<typename state_type, typename rhs_type>
 struct OdeStorage<state_type, rhs_type, 1, 4>{
-  using rhs_wrapped_t = typename core::details::traits<rhs_type>::wrapped_t;
-
   OdeStorage(state_type const & y,
 	     rhs_type const & r)
     : auxStates_{{y}},
-      auxRHS_{{r, r, r, r}}
-  {}
+      auxRHS_{{r, r, r, r}}{}
 
   ~OdeStorage() = default;
 
@@ -53,8 +54,6 @@ struct OdeStorage<state_type, rhs_type, 1, 4>{
 
 template<typename state_type, typename rhs_type>
 struct OdeStorage<state_type, rhs_type, 0, 1>{
-  using rhs_wrapped_t = typename core::details::traits<rhs_type>::wrapped_t;
-
   OdeStorage(rhs_type const & r)
     : auxRHS_{{r}}{}
 

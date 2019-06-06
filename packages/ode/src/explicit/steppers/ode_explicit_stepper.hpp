@@ -17,8 +17,10 @@ template<
 class ExplicitStepper
   : public ExplicitStepperBase<
   ExplicitStepper<
-    whichone, ode_state_type,
-    model_type, ode_residual_type,
+    whichone,
+    ode_state_type,
+    model_type,
+    ode_residual_type,
     Args...
     >
   >
@@ -27,32 +29,21 @@ class ExplicitStepper
   using this_t		= ExplicitStepper
     <whichone, ode_state_type, model_type, ode_residual_type, Args...>;
   using base_t		= ExplicitStepperBase<this_t>;
+  // need to friend base to allow it to access the () operator below
   friend base_t;
 
   using mytraits	= details::traits<this_t>;
   using scalar_type	= typename mytraits::scalar_t;
   using standard_res_policy_t = typename mytraits::standard_res_policy_t;
   using res_policy_t	= typename mytraits::residual_policy_t;
-  using impl_class_t	= typename mytraits::impl_t;
 
+  // this is the impl class type which holds all the implement details
+  using impl_class_t	= typename mytraits::impl_t;
   impl_class_t myImpl_ = {};
 
 public:
   ExplicitStepper()  = delete;
   ~ExplicitStepper() = default;
-
-  // only enable if the residual policy is standard
-  template <typename T = ode_state_type,
-	    ::rompp::mpl::enable_if_t<
-	      mpl::is_same<
-		standard_res_policy_t, res_policy_t
-		>::value
-	      > * = nullptr>
-  ExplicitStepper(T const		  & y0,
-		  const model_type	  & model,
-		  ode_residual_type const & r0)
-    : myImpl_(model, res_policy_t(), y0, r0){}
-
 
   // this is enabled all the time
   ExplicitStepper(ode_state_type const	  & y0,
@@ -61,9 +52,24 @@ public:
 		  ode_residual_type const & r0)
     : myImpl_(model, policyObj, y0, r0){}
 
+  // only enable if the residual policy is standard
+  template <
+    typename T = ode_state_type,
+    ::rompp::mpl::enable_if_t<
+      mpl::is_same<
+	standard_res_policy_t, res_policy_t
+	>::value
+      > * = nullptr>
+  ExplicitStepper(T const		  & y0,
+		  const model_type	  & model,
+		  ode_residual_type const & r0)
+    : myImpl_(model, res_policy_t(), y0, r0){}
 
+private:
+  // the compute method is private because we want users to use
+  // the () operator in the base, which in turn calls compute here
   template<typename ... Args2>
-  void operator()(Args2 && ... args){
+  void compute(Args2 && ... args){
     myImpl_.doStep( std::forward<Args2>(args)... );
   }
 
