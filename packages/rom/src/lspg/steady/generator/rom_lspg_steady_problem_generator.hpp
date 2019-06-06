@@ -12,9 +12,9 @@ struct LSPGSteadyProblemGenerator<
 
   using typename lspg_problem::fom_t;
   using typename lspg_problem::scalar_t;
+  using typename lspg_problem::fom_native_state_t;
   using typename lspg_problem::fom_state_t;
-  using typename lspg_problem::fom_state_w_t;
-  using typename lspg_problem::fom_rhs_w_t;
+  using typename lspg_problem::fom_rhs_t;
 
   using typename lspg_problem::lspg_state_t;
   using typename lspg_problem::decoder_t;
@@ -31,9 +31,9 @@ struct LSPGSteadyProblemGenerator<
 
   fom_eval_rhs_policy_t		rhsEv_;
   fom_apply_jac_policy_t	ajacEv_;
-  fom_state_w_t			yFomRef_;
+  fom_state_t		  yFomRef_;
   fom_state_reconstr_t		yFomReconstructor_;
-  fom_rhs_w_t			rFomRef_;
+  fom_rhs_t		   rFomRef_;
   fom_states_data		fomStates_;
   fom_rhs_data			fomRhs_;
   lspg_matrix_t			romMat_;
@@ -42,7 +42,7 @@ struct LSPGSteadyProblemGenerator<
   lspg_system_t			systemObj_;
 
   LSPGSteadyProblemGenerator(const fom_t	& appObj,
-			     const fom_state_t	& yFomRefNative,
+			     const fom_native_state_t & yFomRefNative,
 			     const decoder_t	& decoder,
 			     lspg_state_t	& yROM)
     : rhsEv_{},

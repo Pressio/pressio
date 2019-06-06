@@ -4,16 +4,18 @@
 
 namespace rompp{ namespace rom{
 
-template<typename app_type,
-	 typename lspg_state_type,
-	 typename lspg_residual_type,
-	 typename lspg_jacobian_type,
-	 typename residual_policy_type,
-	 typename jacobian_policy_type>
+template<
+  typename app_type,
+  typename lspg_state_type,
+  typename lspg_residual_type,
+  typename lspg_jacobian_type,
+  typename residual_policy_type,
+  typename jacobian_policy_type
+  >
 class LSPGSteadySystem<
   app_type, lspg_state_type, lspg_residual_type,
-  lspg_jacobian_type,
-  residual_policy_type, jacobian_policy_type
+  lspg_jacobian_type, residual_policy_type,
+  jacobian_policy_type
   >{
 
   const app_type & app_;

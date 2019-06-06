@@ -6,13 +6,13 @@
 
 namespace rompp{ namespace rom{
 
-template <typename fom_state_w_type,
+template <typename fom_state_type,
 	  int maxNstates,
 	  typename reconstuctor_type>
 struct FomStatesData{
 
   static constexpr int maxNstates_ = maxNstates;
-  using fom_state_w_t = fom_state_w_type;
+  using fom_state_t = fom_state_type;
 
   FomStatesData() = delete;
   ~FomStatesData() = default;
@@ -21,7 +21,7 @@ struct FomStatesData{
     int _maxNstates = maxNstates,
     ::rompp::mpl::enable_if_t<_maxNstates==0> * = nullptr
     >
-  FomStatesData(const fom_state_w_t & yFomIn,
+  FomStatesData(const fom_state_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
     : yFom_(yFomIn),
       fomStateReconstrObj_(fomStateReconstr)
@@ -33,7 +33,7 @@ struct FomStatesData{
     int _maxNstates = maxNstates,
     ::rompp::mpl::enable_if_t<_maxNstates==1> * = nullptr
     >
-  FomStatesData(const fom_state_w_t & yFomIn,
+  FomStatesData(const fom_state_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
     : yFom_(yFomIn),
       yFomOld_{{yFomIn}},
@@ -46,7 +46,7 @@ struct FomStatesData{
     int _maxNstates = maxNstates,
     ::rompp::mpl::enable_if_t<_maxNstates==2> * = nullptr
     >
-  FomStatesData(const fom_state_w_t & yFomIn,
+  FomStatesData(const fom_state_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
     : yFom_(yFomIn),
       yFomOld_{{yFomIn, yFomIn}},
@@ -101,9 +101,9 @@ private:
   }
 
 protected:
-  mutable fom_state_w_t yFom_                             = {};
-  mutable std::array<fom_state_w_t, maxNstates> yFomOld_  = {};
-  const reconstuctor_type & fomStateReconstrObj_	  = {};
+  mutable fom_state_t yFom_                             = {};
+  mutable std::array<fom_state_t, maxNstates> yFomOld_  = {};
+  const reconstuctor_type & fomStateReconstrObj_	= {};
 
 };//end class
 

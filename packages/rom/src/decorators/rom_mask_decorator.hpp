@@ -15,11 +15,11 @@ class Masked<
   ::rompp::mpl::enable_if_t<maskable::isResidualPolicy_>
   > : public maskable{
 
-  using typename maskable::fom_rhs_w_t;
+  using typename maskable::fom_rhs_t;
   using maskable::yFom_;
   using maskable::fomRhs_;
 
-  mutable std::shared_ptr<fom_rhs_w_t> maskedRhs_ = {};
+  mutable std::shared_ptr<fom_rhs_t> maskedRhs_ = {};
 
 public:
   Masked() = delete;
@@ -34,7 +34,7 @@ public:
 public:
   template <ode::ImplicitEnum odeMethod,  int n,
 	     typename ode_state_t,  typename app_t, typename scalar_t>
-    fom_rhs_w_t operator()(const ode_state_t & odeY,
+    fom_rhs_t operator()(const ode_state_t & odeY,
 			   const std::array<ode_state_t, n> & oldYs,
 			   const app_t & app,
 			   scalar_t t,
@@ -45,7 +45,7 @@ public:
 
     if (!maskedRhs_){
       maskedRhs_ = std::make_shared<
-	fom_rhs_w_t>( app.applyMask(*R1.data(), t) );
+	fom_rhs_t>( app.applyMask(*R1.data(), t) );
     }
     else
       app.applyMask(*R1.data(), *maskedRhs_->data(), t);

@@ -71,19 +71,19 @@ struct LSPGCommonTypes{
   // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
   using scalar_t		= typename fom_t::scalar_type;
-  using fom_state_t		= typename fom_t::state_type;
-  using fom_rhs_t		= typename fom_t::residual_type;
+  using fom_native_state_t	= typename fom_t::state_type;
+  using fom_native_rhs_t	= typename fom_t::residual_type;
 
   // fom wrapper types
-  using fom_state_w_t		= ::rompp::core::Vector<fom_state_t>;
-  using fom_rhs_w_t		= ::rompp::core::Vector<fom_rhs_t>;
+  using fom_state_t	= ::rompp::core::Vector<fom_native_state_t>;
+  using fom_rhs_t	= ::rompp::core::Vector<fom_native_rhs_t>;
 
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
 
   // for LSPG, the rom residual type = core::wrapper of application rhs
   // i.e. the wrapped fom rhs type
-  using lspg_residual_t		= fom_rhs_w_t;
+  using lspg_residual_t		= fom_rhs_t;
 
   // decoder types (passed in)
   using decoder_t		= decoder_type;
@@ -91,7 +91,7 @@ struct LSPGCommonTypes{
 
   // fom state reconstructor type
   using fom_state_reconstr_t	= FomStateReconstructor<
-    fom_state_w_t, decoder_t>;
+    fom_state_t, decoder_t>;
 
   // max num of states needed for time integration.
   // this is deduced based on the integrator, i.e. odeName
@@ -100,10 +100,10 @@ struct LSPGCommonTypes{
 
   // class type holding fom states data
   using fom_states_data = ::rompp::rom::FomStatesData<
-	fom_state_w_t, maxAuxStates, fom_state_reconstr_t>;
+	fom_state_t, maxAuxStates, fom_state_reconstr_t>;
 
   // class type holding fom rhs data
-  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_w_t>;
+  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_t>;
 
   // if we have a non-trivial user-defined ops
   using ud_ops_t = ud_ops;

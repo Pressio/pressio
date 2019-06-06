@@ -16,17 +16,17 @@ struct DefaultLSPGSteadyTypeGenerator
   fom_type, decoder_type, lspg_state_type
   >{
 
-  using base_t = LSPGCommonTypes
+  using this_t = DefaultLSPGSteadyTypeGenerator
     <fom_type, decoder_type, lspg_state_type>;
 
-  using this_t = DefaultLSPGSteadyTypeGenerator
+  using base_t = LSPGCommonTypes
     <fom_type, decoder_type, lspg_state_type>;
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
+  using typename base_t::fom_native_state_t;
   using typename base_t::fom_state_t;
-  using typename base_t::fom_state_w_t;
-  using typename base_t::fom_rhs_w_t;
+  using typename base_t::fom_rhs_t;
   using typename base_t::lspg_state_t;
   using typename base_t::lspg_residual_t;
   using typename base_t::decoder_t;
@@ -35,7 +35,7 @@ struct DefaultLSPGSteadyTypeGenerator
   using typename base_t::fom_states_data;
   using typename base_t::fom_rhs_data;
 
-  static constexpr bool steady_on = true;
+  static constexpr bool is_steady = true;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -50,11 +50,11 @@ struct DefaultLSPGSteadyTypeGenerator
   using lspg_matrix_t		= decoder_jac_t;
 
   // policy for evaluating the rhs of the fom object (<true> for steady overload)
-  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsDefault<this_t::steady_on>;
+  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsDefault<this_t::is_steady>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above (<true> for steady overload
-  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault<this_t::steady_on>;
+  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault<this_t::is_steady>;
 
   // Policy defining how to compute the LSPG residual
   using lspg_residual_policy_t	= ::rompp::rom::LSPGSteadyResidualPolicy<
@@ -64,7 +64,7 @@ struct DefaultLSPGSteadyTypeGenerator
   using lspg_jacobian_policy_t	= ::rompp::rom::LSPGSteadyJacobianPolicy<
     fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t>;
 
-  // declare type of system
+  // system's type
   using lspg_system_t		= ::rompp::rom::LSPGSteadySystem<
     fom_t, lspg_state_type, lspg_residual_t, lspg_matrix_t,
     lspg_residual_policy_t, lspg_jacobian_policy_t>;

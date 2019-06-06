@@ -8,15 +8,18 @@
 
 namespace rompp{ namespace rom{
 
-template <typename fom_states_data,
-	  typename fom_rhs_data,
-	  typename fom_eval_rhs_policy>
+template <
+  typename fom_states_data,
+  typename fom_rhs_data,
+  typename fom_eval_rhs_policy
+  >
 class LSPGSteadyResidualPolicy
   : protected fom_states_data,
     protected fom_rhs_data,
     protected fom_eval_rhs_policy{
 
 protected:
+  // protected because we might have decorators of this class
   using this_t = LSPGSteadyResidualPolicy<fom_states_data,
 					  fom_rhs_data,
 					  fom_eval_rhs_policy>;
@@ -26,14 +29,15 @@ protected:
 
 public:
   static constexpr bool isResidualPolicy_ = true;
-  using typename fom_rhs_data::fom_rhs_w_t;
+  using typename fom_rhs_data::fom_rhs_t;
 
 public:
   LSPGSteadyResidualPolicy() = delete;
   ~LSPGSteadyResidualPolicy() = default;
-  LSPGSteadyResidualPolicy(const fom_states_data	& fomStates,
-			   const fom_rhs_data		& fomResids,
-			   const fom_eval_rhs_policy	& fomEvalRhsFunctor)
+
+  LSPGSteadyResidualPolicy(const fom_states_data     & fomStates,
+			   const fom_rhs_data	     & fomResids,
+			   const fom_eval_rhs_policy & fomEvalRhsFunctor)
     : fom_states_data(fomStates),
       fom_rhs_data(fomResids),
       fom_eval_rhs_policy(fomEvalRhsFunctor){}
@@ -66,9 +70,8 @@ public:
 #endif
   }
 
-  template <typename lspg_state_t,
-	    typename fom_t>
-  fom_rhs_w_t operator()(const lspg_state_t & romY,
+  template <typename lspg_state_t, typename fom_t>
+  fom_rhs_t operator()(const lspg_state_t & romY,
 			 const fom_t	    & app) const
   {
     (*this).template operator()(romY, fomRhs_, app);

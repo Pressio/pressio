@@ -15,7 +15,7 @@ class Preconditioned<
   ::rompp::mpl::enable_if_t<preconditionable::isResidualPolicy_>
   > : public preconditionable{
 
-  using typename preconditionable::fom_rhs_w_t;
+  using typename preconditionable::fom_rhs_t;
   using preconditionable::yFom_;
 
 public:
@@ -40,7 +40,7 @@ public:
     typename app_t,
     typename scalar_t
   >
-  fom_rhs_w_t operator()(const ode_state_t & odeY,
+  fom_rhs_t operator()(const ode_state_t & odeY,
 			 const std::array<ode_state_t, n> & oldYs,
 			 const app_t & app,
 			 scalar_t t,
@@ -81,7 +81,7 @@ public:
   template <
       typename lspg_state_t,
       typename fom_t>
-  fom_rhs_w_t operator()(const lspg_state_t  & romY,
+  fom_rhs_t operator()(const lspg_state_t  & romY,
                          const fom_t   & app) const
   {
     auto result = preconditionable::template operator()(romY, app);

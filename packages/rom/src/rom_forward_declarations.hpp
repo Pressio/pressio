@@ -6,7 +6,7 @@
 
 namespace rompp{ namespace rom{
 
-/* forward declare all decorators */
+/* decorators */
 namespace decorator{
 
 template <
@@ -20,7 +20,7 @@ template <
 class Masked;
 
 }// namespace rompp::rom::decorator
-//-------------------------------------------
+//---------------------------------
 
 namespace policy{
 
@@ -31,7 +31,7 @@ template <bool is_steady_problem>
 struct ApplyFomJacobianDefault;
 
 }// namespace rompp::rom::policy
-//-------------------------------------------
+//---------------------------------
 
 /* operators */
 template<
@@ -45,9 +45,54 @@ template<
   typename enable = void
   >
 class MatrixOperator;
-//-------------------------------------------
 
-/* LSPG policies */
+
+
+/* ------------------
+ * steady LSPG
+ ------------------ */
+
+/* policies */
+template <
+  typename fom_states_data_t,
+  typename fom_rhs_data_t,
+  typename fom_rhs_eval_policy
+  >
+class LSPGSteadyResidualPolicy;
+
+template<
+  typename fom_states_data_t,
+  typename jac_type,
+  typename fom_apply_jac_policy,
+  typename decoder_t
+  >
+class LSPGSteadyJacobianPolicy;
+
+/* problem */
+template<
+  typename app_type,
+  typename lspg_state_type,
+  typename lspg_residual_type,
+  typename lspg_jacobian_type,
+  typename residual_policy_type,
+  typename jacobian_policy_type,
+  typename enable = void
+  >
+class LSPGSteadySystem;
+
+template <
+  typename type_generator_t,
+  typename enable = void
+  >
+struct LSPGSteadyProblemGenerator;
+
+
+
+/* ------------------
+ * UNsteady LSPG
+ ------------------ */
+
+/* policies */
 template <
   typename fom_states_data_t,
   typename fom_rhs_data_t,
@@ -64,24 +109,14 @@ template<
   typename ud_ops = void
   >
 class LSPGJacobianPolicy;
-//-------------------------------------------
 
-/* steady LSPG policies */
 template <
-  typename fom_states_data_t,
-  typename fom_rhs_data_t,
-  typename fom_rhs_eval_policy
+  typename type_generator_t,
+  typename enable = void
   >
-class LSPGSteadyResidualPolicy;
+struct LSPGUnsteadyProblemGenerator;
+//-----------------------------------
 
-template<
-  typename fom_states_data_t,
-  typename jac_type,
-  typename fom_apply_jac_policy,
-  typename decoder_t
-  >
-class LSPGSteadyJacobianPolicy;
-//-------------------------------------------
 
 /* Explicit Galerkin policies */
 template <
@@ -90,7 +125,6 @@ template <
   typename decoder_jac_t
   >
 class DefaultGalerkinExplicitResidualPolicy;
-//-------------------------------------------
 
 template <
   typename type_generator_t,
@@ -98,29 +132,6 @@ template <
   >
 struct GalerkinStepperObjectGenerator;
 
-template <
-  typename type_generator_t,
-  typename enable = void
-  >
-struct LSPGUnsteadyProblemGenerator;
-
-template <
-  typename type_generator_t,
-  typename enable = void
-  >
-struct LSPGSteadyProblemGenerator;
-//-------------------------------------------
-
-template<
-  typename app_type,
-  typename lspg_state_type,
-  typename lspg_residual_type,
-  typename lspg_jacobian_type,
-  typename residual_policy_type,
-  typename jacobian_policy_type,
-  typename enable = void
-  >
-class LSPGSteadySystem;
 
 }} // end namespace rompp::rom
 #endif

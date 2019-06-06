@@ -40,7 +40,7 @@ protected:
 
 public:
   static constexpr bool isResidualPolicy_ = true;
-  using typename fom_rhs_data::fom_rhs_w_t;
+  using typename fom_rhs_data::fom_rhs_t;
 
   const ud_ops * udOps_ = nullptr;
 
@@ -104,7 +104,7 @@ public:
 	    typename lspg_state_t,
 	    typename fom_t,
 	    typename scalar_t>
-  fom_rhs_w_t operator()(const lspg_state_t		   & romY,
+  fom_rhs_t operator()(const lspg_state_t		   & romY,
 			 const std::array<lspg_state_t,n>  & oldYs,
 			 const fom_t			   & app,
 			 scalar_t			   t,

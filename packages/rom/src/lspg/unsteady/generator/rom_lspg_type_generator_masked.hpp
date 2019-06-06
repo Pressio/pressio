@@ -23,9 +23,9 @@ struct MaskedLSPGTypeGenerator
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
+  using typename base_t::fom_native_state_t;
   using typename base_t::fom_state_t;
-  using typename base_t::fom_state_w_t;
-  using typename base_t::fom_rhs_w_t;
+  using typename base_t::fom_rhs_t;
   using typename base_t::lspg_state_t;
   using typename base_t::lspg_residual_t;
   using typename base_t::decoder_t;
@@ -66,8 +66,7 @@ struct MaskedLSPGTypeGenerator
   using lspg_jacobian_policy_t	=
     rom::decorator::Masked<
     rom::LSPGJacobianPolicy<
-      fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t,
-      decoder_t, ud_ops
+      fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops
       >
     >;
 

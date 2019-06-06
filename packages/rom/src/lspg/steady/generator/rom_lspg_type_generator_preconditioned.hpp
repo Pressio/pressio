@@ -23,9 +23,9 @@ struct PreconditionedLSPGSteadyTypeGenerator
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
+  using typename base_t::fom_native_state_t;
   using typename base_t::fom_state_t;
-  using typename base_t::fom_state_w_t;
-  using typename base_t::fom_rhs_w_t;
+  using typename base_t::fom_rhs_t;
   using typename base_t::lspg_state_t;
   using typename base_t::lspg_residual_t;
   using typename base_t::decoder_t;
