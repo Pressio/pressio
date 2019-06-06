@@ -73,12 +73,12 @@ struct AdvancerPolicy{
 	    typename time_type,
 	    typename state_type,
 	    typename ... Args>
-  void operator()(integral_type    num_steps,
-		  time_type	   start_time,
-		  time_type	   dt,
-		  state_type &	   yIn,
-		  collector_type & collector,
-		  Args && ...	   args)
+  static void execute(integral_type    num_steps,
+		      time_type	   start_time,
+		      time_type	   dt,
+		      state_type &	   yIn,
+		      collector_type & collector,
+		      Args && ...	   args)
   {
 #ifdef HAVE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -129,10 +129,10 @@ struct AdvancerPolicy<core::impl::empty, DoStepPolicy_t>{
   template <typename integral_type,
 	    typename time_type,
 	    typename ... Args>
-  void operator()(integral_type num_steps,
-		  time_type	start_time,
-		  time_type	dt,
-		  Args && ...	args)
+  static void execute(integral_type num_steps,
+		      time_type	start_time,
+		      time_type	dt,
+		      Args && ... args)
   {
 #ifdef HAVE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();

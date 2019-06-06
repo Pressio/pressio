@@ -28,13 +28,10 @@ void integrateNSteps(stepper_type   & stepper,
 		     integral_type    num_steps,
 		     collector_type & collector)
 {
-  using do_step_policy_t = impl::DoStepPolicy<core::impl::empty,
-					      core::impl::empty>;
-  using advancer_t = impl::AdvancerPolicy<collector_type,
-					  do_step_policy_t>;
-  advancer_t advancer;
-  advancer(num_steps, start_time, dt, yIn, collector, stepper);
-
+  using empty_t = core::impl::empty;
+  using do_step_policy_t = impl::DoStepPolicy<empty_t, empty_t>;
+  using advancer_t = impl::AdvancerPolicy<collector_type, do_step_policy_t>;
+  advancer_t::execute(num_steps, start_time, dt, yIn, collector, stepper);
 }
 
 template<
@@ -52,38 +49,11 @@ void integrateNSteps(stepper_type & stepper,
 		     time_type	    dt,
 		     integral_type  num_steps){
 
-  using do_step_policy_t = impl::DoStepPolicy<core::impl::empty,
-					      core::impl::empty>;
-  using advancer_t = impl::AdvancerPolicy<core::impl::empty,
-					       do_step_policy_t>;
-  advancer_t advancer;
-  advancer(num_steps, start_time, dt, yIn, stepper);
+  using empty_t = core::impl::empty;
+  using do_step_policy_t = impl::DoStepPolicy<empty_t, empty_t>;
+  using advancer_t = impl::AdvancerPolicy<empty_t, do_step_policy_t>;
+  advancer_t::execute(num_steps, start_time, dt, yIn, stepper);
 }
 
 }}//end namespace rompp::ode
 #endif
-
-
-
-// namespace meta{
-
-// template<typename stepper_type,  typename state_type,
-// 	 typename time_type,     typename integral_type,
-// 	 typename collector_type = void,
-// 	 typename enable = void>
-// struct are_legitimate_types_for_nsteps_integration : std::false_type{};
-
-// template<typename stepper_type,  typename state_type,
-// 	 typename time_type,	 typename integral_type,
-// 	 typename collector_type,
-// 	 typename enable = void>
-// struct are_legitimate_types_for_nsteps_integration<
-//   stepper_type, state_type, time_type, integral_type,
-//   ::rompp::mpl::enable_if_t<
-//     ode::meta::is_legitimate_collector<collector_type, integral_type,
-// 				       time_type, state_type>::value &&
-//     std::is_integral<integral_type>::value &&
-//     >
-//   > : std::true_type{};
-
-// }// end namespace meta
