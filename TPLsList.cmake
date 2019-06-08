@@ -1,6 +1,7 @@
 TRIBITS_REPOSITORY_DEFINE_TPLS(
   GTEST           "cmake/tpls/"  PT
   EIGEN           "cmake/tpls/"  PT
+  PYBIND11	  "cmake/tpls/"  ST
   MKL             "cmake/tpls/"  EX
   quadmath        "cmake/tpls/"  EX
   BinUtils	  "TriBITS/tribits/common_tpls/"   ST
