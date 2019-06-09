@@ -1,0 +1,7 @@
+
+#ifndef APPS_KS1D_HPP_
+#define APPS_KS1D_HPP_
+
+#include "apps/src/ks1d/apps_ks1d_epetra.hpp"
+
+#endif
