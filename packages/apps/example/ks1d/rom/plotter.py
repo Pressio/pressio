@@ -6,7 +6,16 @@ dt = 0.1
 t0 = 0.0
 L = 128.0
 
-data = np.loadtxt("fom.dat")
+gcs = np.loadtxt("gen_coords.dat")
+
+basis = np.loadtxt("basis.txt")
+ic = np.loadtxt("restart.txt")
+
+
+data = np.dot(basis,gcs) + ic[:,np.newaxis] 
+
+print(data.shape)
+
 
 nnode = data.shape[0]
 nt = data.shape[1]

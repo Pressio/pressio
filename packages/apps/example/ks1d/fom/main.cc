@@ -41,7 +41,7 @@ struct observer{
   void printAll() const
   {
 	  std::ofstream myfile;
-	  myfile.open("primal.dat");
+	  myfile.open("fom.dat");
 	  myfile << A_ << std::endl;
 	  myfile.close();
   }
@@ -49,7 +49,7 @@ struct observer{
   void printFinal() const
   {
 	  std::ofstream myfile;
-	  myfile.open("primal_final.dat");
+	  myfile.open("fom_final.dat");
 
 	  for (auto i=0; i<y0_.size(); i++)
 	  {

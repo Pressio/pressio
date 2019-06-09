@@ -8,7 +8,7 @@ L = 128.0
 
 ss_rate = 1 
 
-snapshots = np.loadtxt("primal.dat")
+snapshots = np.loadtxt("fom.dat")
 
 nnode = snapshots.shape[0]
 Nsamp = snapshots.shape[1]
@@ -29,7 +29,7 @@ energy = np.cumsum(sigma**2)/np.sum(sigma**2)
 
 
 # save to file
-np.savetxt("restart.inp",ic)
+np.savetxt("restart.txt",ic)
 np.savetxt("basis.txt",U)
 
 plt.figure()

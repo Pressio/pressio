@@ -47,7 +47,7 @@ public:
     U_.resize(Nnode_);
 
     // Read restart if file exists
-    std::ifstream icfile("restart.inp");
+    std::ifstream icfile("restart.txt");
     if (icfile.is_open()) {
       std::vector<scalar_type> u0;
       scalar_type u0i = 0.0;
