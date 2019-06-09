@@ -4,7 +4,7 @@
 
 #include "CORE_ALL"
 #include "SVD_BASIC"
-#include "Epetra_MpiComm.h"
+#include <fstream>
 
 namespace rompp{ namespace apps{ namespace test{ 
 

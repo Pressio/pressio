@@ -3,6 +3,7 @@
 #define ODE_STORAGE_HPP_
 
 #include "ode_ConfigDefs.hpp"
+#include <array>
 
 namespace rompp{ namespace ode{ namespace impl{
 

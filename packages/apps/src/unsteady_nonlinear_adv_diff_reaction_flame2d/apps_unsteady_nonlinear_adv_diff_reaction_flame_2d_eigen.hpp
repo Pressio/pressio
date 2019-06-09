@@ -6,6 +6,7 @@
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
 #include <cmath>
+#include <array>
 
 namespace rompp{ namespace apps{
 

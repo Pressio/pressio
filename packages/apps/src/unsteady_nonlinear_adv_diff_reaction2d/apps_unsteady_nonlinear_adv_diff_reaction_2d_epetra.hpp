@@ -1,4 +1,5 @@
 
+#if HAVE_TRILINOS
 #ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
 #define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
 
@@ -214,4 +215,5 @@ protected:
 };
 
 }} //namespace rompp::apps
+#endif
 #endif

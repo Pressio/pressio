@@ -5,6 +5,7 @@
 #include "../../../CORE_ALL"
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
+#include <array>
 
 namespace rompp{ namespace apps{
 

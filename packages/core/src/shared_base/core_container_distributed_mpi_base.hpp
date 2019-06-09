@@ -19,7 +19,9 @@ public:
 
   template <typename T = comm_t,
 	    typename std::enable_if<
+      #if HAVE_TRILINOS
 	      !meta::is_teuchos_rcp<T>::value and 
+      #endif
         !::rompp::mpl::is_std_shared_ptr<T>::value 
 	      >::type * = nullptr
 	    >
@@ -29,7 +31,9 @@ public:
 
   template <typename T= comm_t,
   	    typename std::enable_if<
+      #if HAVE_TRILINOS
         meta::is_teuchos_rcp<T>::value or 
+      #endif
         ::rompp::mpl::is_std_shared_ptr<T>::value 
   	      >::type * = nullptr>
   T comm() const{

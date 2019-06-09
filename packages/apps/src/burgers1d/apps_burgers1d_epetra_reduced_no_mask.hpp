@@ -1,11 +1,12 @@
 
+#if HAVE_TRILINOS
 #ifndef ROMPPAPPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
 #define ROMPPAPPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
 
 #include "apps_burgers1d_epetra.hpp"
 #include <Epetra_Import.h>
 
-namespace rompp{ namespace apps{ 
+namespace rompp{ namespace apps{
 
 class Burgers1dEpetraReducedNoMask : public Burgers1dEpetra{
   using base_t	   = Burgers1dEpetra;
@@ -93,4 +94,5 @@ private:
 };
 
 }} //namespace rompp::apps
+#endif
 #endif

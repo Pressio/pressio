@@ -1,4 +1,5 @@
 
+#if HAVE_TRILINOS
 #ifndef ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
 #define ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
 
@@ -182,4 +183,5 @@ protected:
 };
 
 }} //namespace rompp::apps
+#endif
 #endif

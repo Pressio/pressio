@@ -4,6 +4,7 @@
 #include "SOLVERS_NONLINEAR"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
 #include "../gold_states_implicit.hpp"
+#include <fstream>
 
 constexpr double eps = 1e-12;
 std::string checkStr {"PASSED"};

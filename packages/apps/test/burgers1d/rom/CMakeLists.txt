@@ -1,2 +1,5 @@
 
-ADD_SUBDIRECTORIES(eigen epetra tpetra)
+ADD_SUBDIRECTORY(eigen)
+IF(HAVE_TRILINOS)
+ADD_SUBDIRECTORIES(epetra tpetra)
+ENDIF()

@@ -1,4 +1,5 @@
 
+#if HAVE_TRILINOS
 #ifndef ROMPPAPPS_BURGERS1D_TPETRA_HPP_
 #define ROMPPAPPS_BURGERS1D_TPETRA_HPP_
 
@@ -166,4 +167,5 @@ protected:
 };//end class
 
 }} //namespace rompp::apps
+#endif
 #endif

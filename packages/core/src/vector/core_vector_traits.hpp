@@ -30,12 +30,14 @@ struct traits<
 #ifdef HAVE_BLAZE
       !core::meta::is_dynamic_vector_blaze<wrapped_type>::value and
 #endif
+#ifdef HAVE_TRILINOS
       !core::meta::is_vector_kokkos<wrapped_type>::value and
-      !core::meta::is_vector_eigen<wrapped_type>::value and
       !core::meta::is_vector_epetra<wrapped_type>::value and
       !core::meta::is_dense_vector_teuchos<wrapped_type>::value and
       !core::meta::is_vector_tpetra_block<wrapped_type>::value and
-      !core::meta::is_vector_tpetra<wrapped_type>::value
+      !core::meta::is_vector_tpetra<wrapped_type>::value and
+#endif
+      !core::meta::is_vector_eigen<wrapped_type>::value
       >
     >
   > {

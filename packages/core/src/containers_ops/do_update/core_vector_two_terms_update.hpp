@@ -44,6 +44,7 @@ void do_update(T & v,
 
 
 // enable for tpetra and tpetra block vectors NOT supporting expr templates
+#if HAVE_TRILINOS
 template<
   typename T,
   typename scalar_t,
@@ -80,7 +81,7 @@ void do_update(T & v,
   v.data()->update(b, *v1.data(), zero); // v = b * v1
   v.data()->update(c, *v2.data(), one); // add c*v2
 }
-
+#endif
 
 }}}//end namespace rompp::core::ops
 #endif

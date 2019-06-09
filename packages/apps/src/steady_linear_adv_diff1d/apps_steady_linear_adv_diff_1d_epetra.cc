@@ -1,4 +1,5 @@
 
+#if HAVE_TRILINOS
 #include "apps_steady_linear_adv_diff_1d_epetra.hpp"
 
 namespace rompp{ namespace apps{
@@ -138,3 +139,4 @@ void SteadyLinAdvDiff1dEpetra::solve(){
 }
 
 }} //namespace rompp::apps
+#endif

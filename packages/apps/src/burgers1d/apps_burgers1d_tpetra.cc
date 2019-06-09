@@ -1,4 +1,5 @@
 
+#if HAVE_TRILINOS
 #include "apps_burgers1d_tpetra.hpp"
 
 namespace rompp{ namespace apps{
@@ -147,3 +148,4 @@ void Burgers1dTpetra::computeJacobianReplace(const state_type & u,
 
 
 }} //namespace rompp::apps
+#endif

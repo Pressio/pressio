@@ -1,4 +1,5 @@
 
+#if HAVE_TRILINOS
 #ifndef ROMPP_APPS_UNSTEADY_LINEAR_ADV_DIFF_1D_EPETRA_HPP_
 #define ROMPP_APPS_UNSTEADY_LINEAR_ADV_DIFF_1D_EPETRA_HPP_
 
@@ -60,4 +61,5 @@ protected:
 };
 
 }}
+#endif
 #endif

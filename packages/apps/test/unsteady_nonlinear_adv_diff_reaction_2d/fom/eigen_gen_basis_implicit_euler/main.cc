@@ -4,6 +4,7 @@
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
+#include <fstream>
 
 using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEigen;
 using scalar_t		= typename app_t::scalar_type;

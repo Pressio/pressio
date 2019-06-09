@@ -3,6 +3,7 @@
 #include "ODE_ALL"
 #include "APPS_BURGERS1D"
 #include "../gold_states_explicit.hpp"
+#include <array>
 
 constexpr double eps = 1e-12;
 std::string checkStr {"PASSED"};

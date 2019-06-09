@@ -1,4 +1,5 @@
 
+#if HAVE_TRILINOS
 #include "apps_unsteady_nonlinear_adv_diff_reaction_2d_block_tpetra.hpp"
 
 namespace rompp{ namespace apps{
@@ -340,3 +341,4 @@ void UnsteadyNonLinAdvDiffReac2dBlockTpetra::computeJacobian( const state_type &
 }//jacobian
 
 }} //namespace rompp::apps
+#endif

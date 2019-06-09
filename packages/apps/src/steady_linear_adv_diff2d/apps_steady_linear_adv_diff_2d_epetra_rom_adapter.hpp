@@ -1,4 +1,5 @@
 
+#if HAVE_TRILINOS
 #ifndef ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
 #define ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
 
@@ -106,4 +107,5 @@ private:
 };
 
 }} //namespace rompp::apps
+#endif
 #endif

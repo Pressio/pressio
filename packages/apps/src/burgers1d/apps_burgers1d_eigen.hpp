@@ -5,6 +5,7 @@
 #include "../apps_ConfigDefs.hpp"
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
+#include <iostream>
 
 namespace rompp{ namespace apps{
 

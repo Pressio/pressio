@@ -1,4 +1,5 @@
 
+#if HAVE_TRILINOS
 #include "apps_burgers1d_epetra.hpp"
 
 namespace rompp{ namespace apps{
@@ -95,3 +96,4 @@ void Burgers1dEpetra::jacobian(const state_type & u,
 //-------------------------------------------------------
 
 }} //namespace rompp::apps
+#endif
