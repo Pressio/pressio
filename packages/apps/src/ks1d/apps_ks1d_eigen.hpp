@@ -34,6 +34,7 @@ public:
 
 public:
   void setup(){
+	xR_ = mu_(1);
     dx_ = (xR_ - xL_)/static_cast<scalar_type>(Nnode_+1);
     dxInv_ = 1.0/dx_;
 
@@ -88,7 +89,7 @@ public:
 		     mv_t & A,
 		     scalar_type t) const{
     auto JJ = jacobian(y, t);
-    std::cout << JJ << std::endl;
+//    std::cout << JJ << std::endl;
     // multiply
     A = JJ * B;
   }
@@ -117,7 +118,7 @@ public:
 private:
   eigVec mu_; // parameters
   const scalar_type xL_ = 0.0; //left side of domain
-  const scalar_type xR_ = 128.0; // right side of domain
+  scalar_type xR_ = 128.0; // right side of domain
   ui_t Nnode_; // # of nodes
   scalar_type dx_; // cell size
   scalar_type dxInv_; // inv of cell size
