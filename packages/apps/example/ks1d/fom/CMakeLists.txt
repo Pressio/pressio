@@ -1,5 +1,5 @@
 
 TRIBITS_ADD_EXECUTABLE(
-  ks1d_fom_epetra_explicit_euler
+  ks1d_fom_eigen_implicit_bdf2
   SOURCES main.cc
   )
