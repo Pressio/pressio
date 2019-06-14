@@ -1,10 +1,11 @@
 
-#if HAVE_TRILINOS
 #ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
 #define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
 
-#include "../../../CORE_ALL"
+#include "../apps_ConfigDefs.hpp"
 
+#ifdef HAVE_TRILINOS
+#include "../../../CORE_ALL"
 #include <Teuchos_DefaultMpiComm.hpp>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_CrsGraph.hpp>

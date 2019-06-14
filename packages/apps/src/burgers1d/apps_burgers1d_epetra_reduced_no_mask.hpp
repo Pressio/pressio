@@ -1,9 +1,10 @@
 
-#if HAVE_TRILINOS
 #ifndef ROMPPAPPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
 #define ROMPPAPPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
 
 #include "apps_burgers1d_epetra.hpp"
+
+#ifdef HAVE_TRILINOS
 #include <Epetra_Import.h>
 
 namespace rompp{ namespace apps{

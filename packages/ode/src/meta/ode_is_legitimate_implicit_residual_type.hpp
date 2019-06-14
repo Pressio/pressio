@@ -14,6 +14,9 @@ template<typename residual_type>
 struct is_legitimate_implicit_residual_type<residual_type,
  typename std::enable_if<
    core::meta::is_core_vector_wrapper<residual_type>::value
+#ifdef HAVE_PYBIND11
+   or core::meta::is_cstyle_array_pybind11<residual_type>::value
+#endif
    >::type
   > : std::true_type{};
 

@@ -54,7 +54,7 @@ TEST(ode_explicit_rk4,
 
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::RungeKutta4, state_t, app_t, res_t, double>;
-  stepper_t stepperObj(y, appObj, r);
+  stepper_t stepperObj(y, appObj);
 
   // // integrate in time
   double dt = 0.1;
@@ -93,7 +93,7 @@ TEST(ode_explicit_rk4,
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::RungeKutta4, state_t,
     app_t, res_t, res_std_pol_t, double>;
-  stepper_t stepperObj(y, appObj, polObj, r);
+  stepper_t stepperObj(y, appObj, polObj);
 
   // integrate in time
   double dt = 0.1;

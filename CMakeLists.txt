@@ -115,6 +115,11 @@ endfunction()
 # are needed as preprocessor directives to turn on/off code
 # if the TPL is not linked to
 
+if(TPL_ENABLE_PYBIND11)
+  MESSAGE("TPL_ENABLE_PYBIND11=ON, so HAVE_PYBIND11=ON")
+  set(HAVE_PYBIND11 ON)
+endif()
+
 if(TPL_ENABLE_BLAZE)
   MESSAGE("TPL_ENABLE_BLAZE=ON, so HAVE_BLAZE=ON")
   set(HAVE_BLAZE ON)
@@ -139,7 +144,6 @@ if (${CMAKE_CXX_STANDARD} EQUAL "14")
   MESSAGE("CXX_STANDARD=14, so HAVE_CPP14=ON")
   set(HAVE_CPP14 ON)
 endif()
-
 
 #------------------------------------------------------------
 # Do all of the processing for this Tribits project

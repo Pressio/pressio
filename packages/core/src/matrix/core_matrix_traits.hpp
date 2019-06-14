@@ -20,7 +20,7 @@ struct traits<
     mpl::enable_if_t<
       !core::meta::is_dense_matrix_eigen<wrapped_type>::value and
       !core::meta::is_sparse_matrix_eigen<wrapped_type>::value
-    #if HAVE_TRILINOS
+    #ifdef HAVE_TRILINOS
       and 
       !core::meta::is_sparse_matrix_epetra<wrapped_type>::value and
       !core::meta::is_dense_matrix_epetra<wrapped_type>::value and

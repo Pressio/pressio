@@ -8,14 +8,22 @@
 
 namespace rompp{ namespace ode{ namespace policy{
 
-template<typename state_type,
-	 typename model_type,
-	 typename residual_type>
+/*
+ * state and residual_types are core wrappers
+ * both are wrappers from core
+ */
+template<
+  typename state_type,
+  typename model_type,
+  typename residual_type
+  >
 class ImplicitResidualStandardPolicy<
   state_type, model_type, residual_type,
   ::rompp::mpl::enable_if_t<
     ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
-    ::rompp::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value
+    ::rompp::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
+    core::meta::is_core_wrapper<state_type>::value and
+    core::meta::is_core_wrapper<residual_type>::value
     >
   >
   : public ImplicitResidualPolicyBase<
@@ -30,11 +38,8 @@ public:
   ~ImplicitResidualStandardPolicy() = default;
 
 public:
-
   template <
-    ode::ImplicitEnum method,
-    int n,
-    typename scalar_type
+    ode::ImplicitEnum method, int n, typename scalar_type
   >
   void operator()(const state_type & y,
 		  residual_type & R,
@@ -48,9 +53,7 @@ public:
   }
 
   template <
-    ode::ImplicitEnum method,
-    int n,
-    typename scalar_type
+    ode::ImplicitEnum method, int n, typename scalar_type
     >
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, n> & oldYs,

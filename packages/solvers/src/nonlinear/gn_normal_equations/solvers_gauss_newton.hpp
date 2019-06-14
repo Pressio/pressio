@@ -247,6 +247,5 @@ public:
   }//end solveImpl
 };
 
-
 }}}}//end namespace rompp::solvers::iterative::impl
 #endif

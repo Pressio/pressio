@@ -68,7 +68,8 @@ public:
 		     mv_t & A,
 		     scalar_type t) const{
     auto JJ = jacobian(y, t);
-    std::cout << JJ << std::endl;
+    // std::cout << "ApplyJacobian" << std::endl;
+    // std::cout << JJ << std::endl;
     // multiply
     A = JJ * B;
   }

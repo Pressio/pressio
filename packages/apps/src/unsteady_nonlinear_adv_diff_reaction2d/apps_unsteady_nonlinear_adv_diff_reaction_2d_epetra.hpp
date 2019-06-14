@@ -1,8 +1,10 @@
 
-#if HAVE_TRILINOS
 #ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
 #define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
 
+#include "../apps_ConfigDefs.hpp"
+
+#ifdef HAVE_TRILINOS
 #include "../../../CORE_ALL"
 #include "Epetra_MpiComm.h"
 #include <Epetra_config.h>

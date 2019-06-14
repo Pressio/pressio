@@ -12,7 +12,7 @@ namespace rompp{ namespace core{ namespace ops{
 //  epetra vector wrapper
 template <typename vec_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_epetra<vec_type>::value
+    ::rompp::core::meta::is_vector_wrapper_epetra<vec_type>::value
     > * = nullptr
   >
 auto norm2(const vec_type & a)
@@ -27,7 +27,7 @@ auto norm2(const vec_type & a)
 //  tpetra vector wrapper
 template <typename vec_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_tpetra<vec_type>::value &&
+    ::rompp::core::meta::is_vector_wrapper_tpetra<vec_type>::value &&
     std::is_same<typename details::traits<vec_type>::scalar_t,
 		 typename details::traits<vec_type>::mag_t>::value
     > * = nullptr
@@ -41,7 +41,7 @@ auto norm2(const vec_type & a)
 //  block tpetra vector wrapper
 template <typename vec_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_tpetra_block<vec_type>::value &&
+    ::rompp::core::meta::is_vector_wrapper_tpetra_block<vec_type>::value &&
     std::is_same<typename details::traits<vec_type>::scalar_t,
 		 typename details::traits<vec_type>::mag_t>::value
     > * = nullptr
@@ -62,7 +62,7 @@ auto norm2(const vec_type & a)
 //  eigen vector wrapper
 template <typename vec_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_eigen<vec_type>::value
+    ::rompp::core::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
 auto norm2(const vec_type & a)
@@ -76,12 +76,37 @@ auto norm2(const vec_type & a)
 }
 //--------------------------------------------------------
 
+#ifdef HAVE_PYBIND11
+// pybind11::array
+template <typename vec_type,
+  ::rompp::mpl::enable_if_t<
+    ::rompp::core::meta::is_array_pybind11<vec_type>::value
+    > * = nullptr
+  >
+auto norm2(const vec_type & a)
+  -> typename vec_type::value_type
+{
+  using sc_t = typename vec_type::value_type;
+  sc_t result = 0.0;
+
+  // make sure this is a vector
+  if (a.ndim() > 1){
+    throw std::runtime_error("a.ndims()!=1, this norm op is for pybind11 vectors");
+  }
+
+  for (decltype(a.size()) i=0; i<a.size(); i++)
+    result += a.at(i)*a.at(i);
+  return std::sqrt(result);
+}
+#endif
+//--------------------------------------------------------
+
 
 #ifdef HAVE_TRILINOS
 //  teuchos serial dense vector wrapper
 template <typename vec_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
+    ::rompp::core::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
     > * = nullptr
   >
 auto norm2(const vec_type & a)

@@ -17,18 +17,22 @@ namespace rompp{ namespace solvers{
 template<typename SolverT, typename MatrixT, typename Derived>
 struct LinearBase {
 
+  LinearBase() = default;
+  LinearBase(const LinearBase&) = delete;
+  ~LinearBase() = default;
+
   template <typename CompatibleMatrixT>
   void resetLinearSystem(const CompatibleMatrixT& A) {
     static_assert(solvers::meta::are_matrix_compatible<
 		  MatrixT, CompatibleMatrixT>::value,
 		  "Matrix types not compatible");
 
-    this->underlying().resetLinearSystemImpl(A);
+    static_cast<Derived&>(*this).resetLinearSystemImpl(A);
   }
 
   template <typename VectorT>
   void solve(const VectorT & b, VectorT& x) {
-    this->underlying().solveImpl(b, x);
+    static_cast<Derived&>(*this).solveImpl(b, x);
   }
 
   template <typename VectorT>
@@ -36,18 +40,6 @@ struct LinearBase {
     this->resetLinearSystem(A);
     this->solve(b, x);
   }
-
-protected:
-  LinearBase() = default;
-  LinearBase(const LinearBase&) = delete;
-  ~LinearBase() = default;
-
-private:
-  Derived& underlying(){ return static_cast<Derived&>(*this);  }
-  Derived const& underlying() const {
-    return static_cast<Derived const&>(*this);
-  }
-
 };
 
 }}//end namespace rompp::solvers

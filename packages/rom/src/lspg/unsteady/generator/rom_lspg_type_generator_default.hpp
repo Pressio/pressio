@@ -18,6 +18,9 @@ struct DefaultLSPGTypeGenerator
   fom_type, decoder_type, lspg_state_type, odeName, ud_ops
   >{
 
+  DefaultLSPGTypeGenerator() = default;
+  ~DefaultLSPGTypeGenerator() = default;
+
   using base_t = LSPGCommonTypes<fom_type, decoder_type,
 				 lspg_state_type,
 				 odeName, ud_ops>;
@@ -67,14 +70,14 @@ struct DefaultLSPGTypeGenerator
     odeName, lspg_state_type,
     lspg_residual_t, lspg_matrix_t,
     fom_type, lspg_residual_policy_t,
-    lspg_jacobian_policy_t>::type;
+    lspg_jacobian_policy_t, scalar_t>::type;
 
   // declare type of stepper object
   using lspg_stepper_t		= ::rompp::ode::ImplicitStepper<
     odeName, lspg_state_type,
     lspg_residual_t, lspg_matrix_t,
     fom_type, aux_stepper_t,
-    lspg_residual_policy_t, lspg_jacobian_policy_t>;
+    lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>;
 
 };//end class
 

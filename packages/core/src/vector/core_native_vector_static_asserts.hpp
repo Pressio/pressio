@@ -10,6 +10,7 @@
 #include "./meta/core_native_kokkos_vector_meta.hpp"
 #include "./meta/core_native_tpetra_block_vector_meta.hpp"
 
+
 namespace rompp{ namespace core{
 
 #define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \

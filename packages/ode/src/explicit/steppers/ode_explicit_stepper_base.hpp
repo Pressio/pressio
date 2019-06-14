@@ -5,14 +5,17 @@
 #include "ode_explicit_stepper_traits.hpp"
 #include "../policies/ode_is_legitimate_explicit_residual_policy.hpp"
 #include "../../ode_storage.hpp"
-#include "../../ode_aux_data.hpp"
+#include "../../ode_explicit_aux_data.hpp"
 
 namespace rompp{ namespace ode{
 
+/*
+ * (1) constructors here should be private but we need
+ * them public to enable interfacing with pybind11
+ */
+
 template<typename stepper_type>
 class ExplicitStepperBase
-  : private core::details::CrtpBase<
-  ExplicitStepperBase<stepper_type>>
 {
 private:
   using step_traits	  = ode::details::traits<stepper_type>;
@@ -33,6 +36,10 @@ private:
   "RESIDUAL_POLICY NOT ADMISSIBLE: MAYBE NOT INHERITING FROM EXPLICIT POLICY BASE");
 
 public:
+  ExplicitStepperBase() = default;
+  ~ExplicitStepperBase() = default;
+
+public:
   typename step_traits::order_t order() const{
     return step_traits::order_value;
   }
@@ -42,19 +49,8 @@ public:
 		  scalar_t t,
 		  scalar_t dt,
 		  step_t step){
-    this->underlying().compute(yinout, t, dt, step);
+    static_cast<stepper_type&>(*this).compute(yinout, t, dt, step);
   }
-
-private:
-  ExplicitStepperBase() = default;
-  ~ExplicitStepperBase() = default;
-
-private:
-  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<stepper_type>::type;
-
-  friend core::details::CrtpBase<ExplicitStepperBase<stepper_type>>;
 
 };//end class
 

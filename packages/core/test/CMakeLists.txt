@@ -4,6 +4,7 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 ADD_SUBDIRECTORIES(
+  playground
   #braceTest
   # kokkos_works
   #vector

@@ -46,9 +46,26 @@ struct GNQRSpecializationPicker;
 template <typename ... Args>
 using GaussNewton = typename impl::GNNEQSpecializationPicker<Args...>::type;
 
+
 /* alias: QR-based GN solvers */
 template <typename ... Args>
 using GaussNewtonQR = typename impl::GNQRSpecializationPicker<Args...>::type;
+
+/* class to interface with python */
+#ifdef HAVE_PYBIND11
+template <
+  typename system_t,
+  typename state_t,
+  typename residual_t,
+  typename jacobian_t,
+  typename hessian_t,
+  typename linear_solver_t,
+  typename scalar_t,
+  typename when_converged_t = default_convergence,
+  typename enable = void
+  >
+struct PyGaussNewton;
+#endif
 
 
 namespace hacked{

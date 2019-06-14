@@ -18,26 +18,21 @@ namespace rompp{ namespace solvers{
 template <typename Derived>
 struct NonLinearSolverBase {
 
-  template <typename system_t>
-  void solve(const system_t & sys, typename system_t::state_type & x){
-    static_assert( ::rompp::solvers::meta::is_legitimate_system_for_nonlinear_solver<
-      system_t>::value,
-		   "The system obj type is not valid for non-linear solver");
-
-    this->underlying().solveImpl(sys, x);
-  }
-
-protected:
   NonLinearSolverBase()	 = default;
   ~NonLinearSolverBase() = default;
   NonLinearSolverBase(const NonLinearSolverBase &) = delete;
 
-private:
-  Derived& underlying(){ return static_cast<Derived&>(*this);}
-  Derived const& underlying() const {
-    return static_cast<Derived const&>(*this);
-  }
+  template <
+    typename system_t,
+    typename state_t
+    >
+  void solve(const system_t & sys, state_t & x){
+    // static_assert( ::rompp::solvers::meta::is_legitimate_system_for_nonlinear_solver<
+    //   system_t>::value,
+    // 		   "The system obj type is not valid for non-linear solver");
 
+    static_cast<Derived&>(*this).solveImpl(sys, x);
+  }
 };
 
 }}//end namespace rompp::solvers

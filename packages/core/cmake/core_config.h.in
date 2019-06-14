@@ -1,5 +1,6 @@
 
 #cmakedefine HAVE_TRILINOS
+#cmakedefine HAVE_PYBIND11
 
 #cmakedefine HAVE_BLAZE
 #cmakedefine HAVE_MPI

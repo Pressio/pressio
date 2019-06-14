@@ -9,6 +9,10 @@ namespace rompp { namespace solvers {
 template<typename scalar_t>
 struct IterativeBase
 {
+  IterativeBase() = default;
+  IterativeBase(const IterativeBase &) = delete;
+  ~IterativeBase() = default;
+
   using iteration_t = core::default_types::uint;
 
   /** Get the maximum number of iterations. */
@@ -38,11 +42,6 @@ struct IterativeBase
   void setTolerance(scalar_t tolerance) {
     tolerance_ = tolerance;
   }
-
-protected:
-  IterativeBase() = default;
-  IterativeBase(const IterativeBase &) = delete;
-  ~IterativeBase() = default;
 
 protected:
   iteration_t maxIters_ = static_cast<iteration_t>(100);

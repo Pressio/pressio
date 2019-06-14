@@ -1,7 +1,8 @@
 
-#if HAVE_TRILINOS
+
 #include "apps_burgers1d_epetra.hpp"
 
+#ifdef HAVE_TRILINOS
 namespace rompp{ namespace apps{
 
 void Burgers1dEpetra::residual(const state_type & u,

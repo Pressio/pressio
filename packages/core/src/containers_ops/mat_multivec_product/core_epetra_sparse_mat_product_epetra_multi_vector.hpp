@@ -25,9 +25,9 @@ namespace rompp{ namespace core{ namespace ops{
 template <typename mat_type,
 	  typename mvec_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_sparse_matrix_wrapper_epetra<mat_type>::value and
-    core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+    ::rompp::core::meta::is_sparse_matrix_wrapper_epetra<mat_type>::value and
+    ::rompp::core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
+    ::rompp::core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
     > * = nullptr
   >
 void product(const mat_type & A,
@@ -44,9 +44,9 @@ void product(const mat_type & A,
 template <typename mat_type,
 	  typename mvec_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_sparse_matrix_wrapper_epetra<mat_type>::value and
-    core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+    ::rompp::core::meta::is_sparse_matrix_wrapper_epetra<mat_type>::value and
+    ::rompp::core::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
+    ::rompp::core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
     > * = nullptr
   >
 mvec_type product(const mat_type & A, const mvec_type & B)
@@ -58,7 +58,7 @@ mvec_type product(const mat_type & A, const mvec_type & B)
 }
 
 
-}}}//end namespace rompp::core::ops
+}}}//end namespace rompp::ops
 #endif
 #endif
 

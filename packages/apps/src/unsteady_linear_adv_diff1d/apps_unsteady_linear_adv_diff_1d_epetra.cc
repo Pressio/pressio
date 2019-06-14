@@ -1,7 +1,7 @@
 
-#if HAVE_TRILINOS
 #include "apps_unsteady_linear_adv_diff_1d_epetra.hpp"
 
+#ifdef HAVE_TRILINOS
 namespace rompp { namespace apps {
 //------------------------------------------------------------------------
 // Unsteady setup: Calls the steady setup call before adding initial con

@@ -2,7 +2,6 @@
 #ifndef ODE_IS_LEGITIMATE_MODEL_FOR_EXPLICIT_ODE_HPP_
 #define ODE_IS_LEGITIMATE_MODEL_FOR_EXPLICIT_ODE_HPP_
 
-// #include "../../../mpl/src/detection_idiom.hpp"
 #include "../../../core/src/meta/core_meta_has_scalar_typedef.hpp"
 #include "ode_has_state_typedef.hpp"
 #include "ode_has_residual_typedef.hpp"

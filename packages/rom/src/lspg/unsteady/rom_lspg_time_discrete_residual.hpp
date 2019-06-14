@@ -15,8 +15,11 @@ template<
   typename scalar_type,
   typename ud_ops,
   ::rompp::mpl::enable_if_t<
-    method == ::rompp::ode::ImplicitEnum::Euler
-    > * = nullptr
+    method == ::rompp::ode::ImplicitEnum::Euler 
+#ifdef HAVE_PYBIND11 
+    and mpl::not_same< ud_ops, pybind11::object>::value
+#endif    
+   > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
 			    const std::array<state_type,n> & ynm,
@@ -28,6 +31,27 @@ void time_discrete_residual(const state_type & yn,
 			     *ynm[0].data(), dt);
 }
 
+#ifdef HAVE_PYBIND11
+template<
+  ::rompp::ode::ImplicitEnum method,
+  int n,
+  typename state_type,
+  typename scalar_type,
+  typename ud_ops,
+  ::rompp::mpl::enable_if_t<
+    method == ::rompp::ode::ImplicitEnum::Euler and
+    mpl::is_same< ud_ops, pybind11::object>::value
+    > * = nullptr
+  >
+void time_discrete_residual(const state_type & yn,
+			    const std::array<state_type,n> & ynm,
+			    state_type & R,
+			    scalar_type dt,
+			    const ud_ops & udOps){
+
+  udOps.attr("time_discrete_euler")(R, yn, ynm[0], dt);
+}
+#endif    
 
 
 
@@ -49,12 +73,11 @@ void time_discrete_residual(const state_type & yn,
 			    const std::array<state_type,n> & ynm,
 			    state_type & R,
 			    scalar_type dt){
-
-  // // On input: R contains the application RHS, i.e. if
-  // // dudt = f(x,u,...), R contains f(...)
+  // On input: R contains the application RHS, i.e. if
+  // dudt = f(x,u,...), R contains f(...)
   *R.data() = *yn.data() - *ynm[0].data() - dt * (*R.data());
-}
 
+}
 
 template<
   ::rompp::ode::ImplicitEnum method,

@@ -1,11 +1,14 @@
 
 #include "apps_burgers1d_eigen.hpp"
 
-namespace rompp{ namespace apps{ 
+namespace rompp{ namespace apps{
 
 void Burgers1dEigen::residual(const state_type & u,
             residual_type & rhs,
             const scalar_type /* t */) const{
+
+  // std::cout << "Residual" << std::endl;
+  // std::cout << rhs << std::endl;
 
   rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
   for (ui_t i=1; i<Ncell_; ++i){

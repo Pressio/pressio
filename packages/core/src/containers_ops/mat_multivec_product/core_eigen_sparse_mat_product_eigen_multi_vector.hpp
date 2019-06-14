@@ -21,14 +21,14 @@ namespace rompp{ namespace core{ namespace ops{
 template <typename mat_type,
 	  typename mvec_type,
   ::rompp::mpl::enable_if_t<
-   core::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
-   core::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
-    core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+   ::rompp::core::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
+   ::rompp::core::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
+    ::rompp::core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
     > * = nullptr
   >
 void product(const mat_type & A,
 	     const mvec_type & mv,
-	     core::Matrix<Eigen::MatrixXd> & C){
+	     ::rompp::core::Matrix<Eigen::MatrixXd> & C){
 
   assert( C.rows() == A.rows() );
   assert( mv.length() == A.cols() );
@@ -40,15 +40,15 @@ void product(const mat_type & A,
 template <typename mat_type,
 	  typename mvec_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
-    core::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
-    core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+    ::rompp::core::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
+    ::rompp::core::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
+    ::rompp::core::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
     > * = nullptr
   >
 auto product(const mat_type & A, const mvec_type & mv)
-  -> core::Matrix<Eigen::MatrixXd>
+  -> ::rompp::core::Matrix<Eigen::MatrixXd>
 {
-  core::Matrix<Eigen::MatrixXd> C(A.rows(), mv.numVectors());
+  ::rompp::core::Matrix<Eigen::MatrixXd> C(A.rows(), mv.numVectors());
   product(A,mv,C);
   return C;
 }//end function

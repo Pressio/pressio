@@ -1,7 +1,8 @@
 
-#if HAVE_TRILINOS
+
 #include "apps_steady_linear_adv_diff_1d_epetra.hpp"
 
+#ifdef HAVE_TRILINOS
 namespace rompp{ namespace apps{
 
 void SteadyLinAdvDiff1dEpetra::createMap(){

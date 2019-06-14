@@ -11,6 +11,8 @@
 #include "../../core/src/vector/core_vector_meta.hpp"
 #include "../../core/src/multi_vector/core_multi_vector_meta.hpp"
 #include "../../core/src/matrix/core_matrix_meta.hpp"
+#include "../../core/src/core_is_core_wrapper.hpp"
+
 #ifdef DEBUG_PRINT
 #include "../../core/src/io/core_print_helper.hpp"
 #endif

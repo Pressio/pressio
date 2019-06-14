@@ -7,8 +7,10 @@
 #include "../rom_data_fom_rhs.hpp"
 #include "../rom_data_fom_states.hpp"
 #include "../rom_reconstructor_fom_state.hpp"
-#include "../policies/rom_evaluate_fom_rhs_policy.hpp"
-#include "../policies/rom_apply_fom_jacobian_policy.hpp"
+#include "../policies/rom_evaluate_fom_rhs_steady_policy.hpp"
+#include "../policies/rom_evaluate_fom_rhs_unsteady_policy.hpp"
+#include "../policies/rom_apply_fom_jacobian_steady_policy.hpp"
+#include "../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
 #include "../../../ode/src/ode_forward_declarations.hpp"
 
 namespace rompp{ namespace rom{
@@ -36,38 +38,53 @@ struct auxStepperHelper{
 };
 
 template <
-  typename lspg_state_type,
-  typename lspg_residual_t,
-  typename lspg_matrix_t,
-  typename fom_type,
-  typename lspg_residual_policy_t,
-  typename lspg_jacobian_policy_t
-  >
+typename ... Rest
+>
 struct auxStepperHelper<
-  ode::ImplicitEnum::BDF2,
-  lspg_state_type,
-  lspg_residual_t,
-  lspg_matrix_t,
-  fom_type,
-  lspg_residual_policy_t,
-  lspg_jacobian_policy_t
+  ode::ImplicitEnum::BDF2, Rest...
   >{
   using type = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler, lspg_state_type, lspg_residual_t,
-    lspg_matrix_t, fom_type, void, lspg_residual_policy_t,
-    lspg_jacobian_policy_t>;
+    ode::ImplicitEnum::Euler, Rest...>;
 };
-//-------------------------------------------------------
 
+
+//-------------------------------------------------------
 
 template <
   typename fom_type,
   typename decoder_type,
   typename lspg_state_type,
   ode::ImplicitEnum odeName = ode::ImplicitEnum::Undefined,
-  typename ud_ops = void
+  typename ud_ops = void,
+  typename enable = void
   >
-struct LSPGCommonTypes{
+struct LSPGCommonTypes;
+
+
+//-------------------------------------------------------
+// partial specialize for when we are native C++
+//-------------------------------------------------------
+template <
+  typename fom_type,
+  typename decoder_type,
+  typename lspg_state_type,
+  ode::ImplicitEnum odeName,
+  typename ud_ops
+  >
+struct LSPGCommonTypes<
+  fom_type, decoder_type, lspg_state_type,
+  odeName, ud_ops,
+  mpl::enable_if_t<
+    ::rompp::core::meta::is_core_vector_wrapper<lspg_state_type>::value
+#ifdef HAVE_PYBIND11
+    and mpl::not_same<fom_type, pybind11::object>::value
+#endif
+    >
+  >
+{
+  LSPGCommonTypes() = default;
+  ~LSPGCommonTypes() = default;
+
   // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
   using scalar_t		= typename fom_t::scalar_type;
@@ -108,6 +125,77 @@ struct LSPGCommonTypes{
   // if we have a non-trivial user-defined ops
   using ud_ops_t = ud_ops;
 };
+
+
+
+#ifdef HAVE_PYBIND11
+//-------------------------------------------------------
+// partial specialize for pybind11
+//-------------------------------------------------------
+template <
+  typename fom_type,
+  typename decoder_type,
+  typename lspg_state_type,
+  ode::ImplicitEnum odeName,
+  typename ud_ops
+  >
+struct LSPGCommonTypes<
+  fom_type, decoder_type, lspg_state_type,
+  odeName, ud_ops,
+  mpl::enable_if_t<
+    ::rompp::core::meta::is_cstyle_array_pybind11<lspg_state_type>::value and
+    mpl::is_same<fom_type, pybind11::object>::value
+    >
+  >
+{
+  // in this case there is no difference between types because
+  // they all are pybind11::array_t so basically wrappers of numpy arrays
+  // Since this is used to interface to python, EVERYTHING is done using numpy arrays
+
+  LSPGCommonTypes() = default;
+  ~LSPGCommonTypes() = default;
+
+  // these are native types of the full-order model (fom)
+  using fom_t			= fom_type;
+  using scalar_t		= typename decoder_type::scalar_t;
+  using fom_native_state_t	= lspg_state_type;
+  using fom_native_rhs_t	= lspg_state_type;
+
+  // fom types
+  using fom_state_t	= lspg_state_type;
+  using fom_rhs_t	= lspg_state_type;
+
+  // rom state type (passed in)
+  using lspg_state_t		= lspg_state_type;
+
+  // for LSPG, the rom residual
+  using lspg_residual_t		= fom_rhs_t;
+
+  // decoder types (passed in)
+  using decoder_t		= decoder_type;
+  using decoder_jac_t		= typename decoder_t::jacobian_t;
+
+  // fom state reconstructor type
+  using fom_state_reconstr_t	= FomStateReconstructor<
+    fom_state_t, decoder_t>;
+
+  // max num of states needed for time integration.
+  // this is deduced based on the integrator, i.e. odeName
+  static constexpr auto maxAuxStates =
+    statesStorageCapacityHelper<odeName>::maxAuxStates_;
+
+  // class type holding fom states data
+  using fom_states_data = ::rompp::rom::FomStatesData<
+	fom_state_t, maxAuxStates, fom_state_reconstr_t>;
+
+  // class type holding fom rhs data
+  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_t>;
+
+  // if we have a non-trivial user-defined ops
+  using ud_ops_t = ud_ops;
+};
+#endif
+
 
 }}//end  namespace rompp::rom
 #endif

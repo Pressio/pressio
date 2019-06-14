@@ -91,8 +91,11 @@ public:
     : stepper_base_t{y0, model, resPolicyObj}{}
 
 public:
-  template<typename step_t,
-	   typename solver_type>
+
+  template<
+    typename step_t,
+    typename solver_type
+  >
   void operator()(ode_state_type & y,
 		  scalar_t t,
 		  scalar_t dt,
@@ -101,13 +104,16 @@ public:
 
     this->auxData_.dt_ = dt;
     this->auxData_.t_ = t;
-    this->odeStorage_.auxStates_[0] = y;
+    // copy from y to storage
+    ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
     solver.solve(*this, y);
   }
 
-  template<typename step_t,
-	   typename solver_type,
-	   typename guess_callback_t>
+  template<
+    typename step_t,
+    typename solver_type,
+    typename guess_callback_t
+    >
   void operator()(ode_state_type & y,
 		  scalar_t t,
 		  scalar_t dt,
@@ -116,7 +122,8 @@ public:
 		  guess_callback_t && guesserCb){
     this->auxData_.dt_ = dt;
     this->auxData_.t_ = t;
-    this->odeStorage_.auxStates_[0] = y;
+    // copy from y to storage
+    ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
     guesserCb(step, t, y);
     solver.solve(*this, y);
   }

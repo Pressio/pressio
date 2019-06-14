@@ -76,7 +76,7 @@ struct GNNEQSpecializationPicker{
   using hessian_t = ::rompp::mpl::variadic::at_or_t<linear_solver_matrix_t, ic3::value, Args...>;
   // in every scenario, the hesssian type must match the matrix type of linear solver
   static_assert( std::is_same<hessian_t, linear_solver_matrix_t>::value,
-		 "Hessian type passed to GN must  match the matrix type in the linear solver");
+		 "Hessian type passed to GN must match the matrix type in the linear solver");
   static_assert(!std::is_void<hessian_t>::value,
   		"The hessian type cannot be void");
 

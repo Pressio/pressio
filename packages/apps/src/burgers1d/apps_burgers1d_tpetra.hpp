@@ -1,10 +1,11 @@
 
-#if HAVE_TRILINOS
 #ifndef ROMPPAPPS_BURGERS1D_TPETRA_HPP_
 #define ROMPPAPPS_BURGERS1D_TPETRA_HPP_
 
-#include "../../../CORE_ALL"
 #include "../apps_ConfigDefs.hpp"
+
+#ifdef HAVE_TRILINOS
+#include "../../../CORE_ALL"
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 #include <Teuchos_FancyOStream.hpp>

@@ -10,6 +10,7 @@
 
 namespace rompp{ namespace rom{
 
+
 template <
   typename fom_states_data,
   typename fom_rhs_data,
@@ -42,7 +43,16 @@ public:
   static constexpr bool isResidualPolicy_ = true;
   using typename fom_rhs_data::fom_rhs_t;
 
-  const ud_ops * udOps_ = nullptr;
+#ifdef HAVE_PYBIND11
+  typename std::conditional<
+    mpl::is_same<ud_ops, pybind11::object>::value,
+    ud_ops,
+    const ud_ops *
+    >::type udOps_ = {};
+#else 
+    const ud_ops * udOps_ = {};
+#endif
+
 
 public:
   LSPGResidualPolicy() = delete;
@@ -64,11 +74,14 @@ public:
     static_assert( std::is_void<_ud_ops>::value, "");
   }
 
-  // this cnstr only enabled when udOps is non-void
+  // this cnstr only enabled when udOps is non-void and not python
   template <
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value
+      !std::is_void<_ud_ops>::value 
+#ifdef HAVE_PYBIND11
+      and mpl::not_same<_ud_ops, pybind11::object>::value
+#endif      
       > * = nullptr
     >
   LSPGResidualPolicy(const fom_states_data & fomStates,
@@ -81,6 +94,26 @@ public:
       udOps_{&udOps}{
     static_assert( !std::is_void<_ud_ops>::value, "");
   }
+
+#ifdef HAVE_PYBIND11
+  // this cnstr only enabled when udOps is non-void and python
+  template <
+    typename _ud_ops = ud_ops,
+    mpl::enable_if_t<
+      mpl::is_same<_ud_ops, pybind11::object>::value
+      > * = nullptr
+    >
+  LSPGResidualPolicy(const fom_states_data & fomStates,
+  		     const fom_rhs_data & fomResids,
+  		     const fom_eval_rhs_policy & fomEvalRhsFunctor,
+  		     const _ud_ops & udOps)
+    : fom_states_data(fomStates),
+      fom_rhs_data(fomResids),
+      fom_eval_rhs_policy(fomEvalRhsFunctor),
+      udOps_{udOps}
+  {}
+#endif
+  
 
 public:
   template <ode::ImplicitEnum odeMethod,
@@ -154,7 +187,6 @@ private:
       <odeMethod, maxNstates_>(yFom, yFomOld, romR, dt, udOps_);
   }
 
-
   template <ode::ImplicitEnum odeMethod,
 	    int n,
 	    typename lspg_state_t,
@@ -180,7 +212,6 @@ private:
     timer->start("fom eval rhs");
 #endif
     fom_eval_rhs_policy::evaluate(app, yFom_, romR, t);
-    auto RHS = *romR.data();
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

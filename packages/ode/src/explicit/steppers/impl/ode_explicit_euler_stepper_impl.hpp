@@ -50,73 +50,88 @@ public:
 			   const ode_residual_type & r0)
     : storage_base_t(r0), auxdata_base_t(model, res_policy_obj){}
 
-  ExplicitEulerStepperImpl(const residual_policy_type & res_policy_obj,
-			   const ode_state_type & y0,
-			   const ode_residual_type & r0)
-    : storage_base_t(r0), auxdata_base_t(res_policy_obj){}
-
   ExplicitEulerStepperImpl() = delete;
   ~ExplicitEulerStepperImpl() = default;
 
 public:
 
-  // if user does NOT provide ops, then user wrapper ops
-  template<typename step_t,
-	   typename T = ops_t,
-	   mpl::enable_if_t<
-	     std::is_void<T>::value
-	     > * = nullptr
-	   >
-  void doStep(ode_state_type & y,
+  /*
+   * user does NOT provide custom ops, so we use core::ops
+   * just C++
+   */
+  template<
+    typename step_t,
+    typename T = ops_t,
+    typename _ode_state_type = ode_state_type,
+    mpl::enable_if_t<
+      std::is_void<T>::value
+      > * = nullptr
+  >
+  void doStep(_ode_state_type & y,
 	      scalar_type t,
 	      scalar_type dt,
 	      step_t step){
     //eval RHS
-    this->evalRHS(y, auxRHS_[0], t);
+    (*residual_obj_)(y, auxRHS_[0], model_, t);
     // y = y + dt * rhs
     constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
     ::rompp::core::ops::do_update(y, one, auxRHS_[0], dt);
   }
 
-  // if user provides ops, then use them
-  template<typename step_t,
-	   typename T = ops_t,
-	   mpl::enable_if_t<
-	     std::is_void<T>::value == false
-	     > * = nullptr
-	   >
-  void doStep(ode_state_type & y,
-	      scalar_type t,
-	      scalar_type dt,
-	      step_t step){
+  /*
+   * user does provide custom ops
+   * just C++
+   */
+  template<
+    typename step_t,
+    typename T = ops_t,
+    typename _ode_state_type = ode_state_type,
+    mpl::enable_if_t<
+      std::is_void<T>::value == false and
+      core::meta::is_core_wrapper<_ode_state_type>::value
+      > * = nullptr
+    >
+  void doStep(_ode_state_type & y,
+  	      scalar_type t,
+  	      scalar_type dt,
+  	      step_t step){
     using op = typename ops_t::update_op;
     //eval RHS
-    this->evalRHS(y, auxRHS_[0], t);
+    (*residual_obj_)(y, auxRHS_[0], model_, t);
     // y = y + dt * rhs
     constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
     op::do_update(*y.data(), one, *auxRHS_[0].data(), dt);
   }
 
-private:
-  template<typename T = model_type,
-	   typename std::enable_if<
-	     std::is_void<T>::value
-	     >::type * = nullptr>
-  void evalRHS(const ode_state_type & y,
-	       ode_residual_type & RHS,
-	       scalar_type t){
-    (*residual_obj_)(y, RHS, t);
-  }
+#ifdef HAVE_PYBIND11
+  /*
+   * user does provide custom ops
+   * interface with python
+   */
+  template<
+    typename step_t,
+    typename T = ops_t,
+    typename _ode_state_type = ode_state_type,
+    mpl::enable_if_t<
+      std::is_void<T>::value == false and
+      core::meta::is_cstyle_array_pybind11<_ode_state_type>::value
+      > * = nullptr
+    >
+  void doStep(_ode_state_type & y,
+  	      scalar_type t,
+  	      scalar_type dt,
+  	      step_t step){
 
-  template<typename T = model_type,
-	   typename std::enable_if<
-	     !std::is_void<T>::value
-	     >::type * = nullptr>
-  void evalRHS(const ode_state_type & y,
-	       ode_residual_type & RHS,
-	       scalar_type t){
-    (*residual_obj_)(y, RHS, *model_, t);
+    using op = typename ops_t::update_op;
+
+    //eval RHS
+    (*residual_obj_)(y, auxRHS_[0], model_, t);
+    // y = y + dt * rhs
+    constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
+    op::do_update(y, one, auxRHS_[0], dt);
   }
+#endif
+
 };
 
 }}}//end namespace rompp::ode::impl

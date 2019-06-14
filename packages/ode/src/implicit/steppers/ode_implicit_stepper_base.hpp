@@ -8,13 +8,18 @@
 #include "../policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
 #include "../policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
 #include "../../ode_storage.hpp"
-#include "../../ode_aux_data.hpp"
+#include "../../ode_implicit_aux_data.hpp"
 
 namespace rompp{ namespace ode{
 
+/*
+ * (1) constructors here should be private but we need
+ * them public to enable interfacing with pybind11
+ */
+
 template<typename concrete_stepper_type, int nAuxStates>
 class ImplicitStepperBase
-  : private core::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>
+//: private core::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>
 {
   using traits		  = typename details::traits<concrete_stepper_type>;
   using sc_t		  = typename traits::scalar_t;
@@ -64,25 +69,26 @@ public:
   }
 
   void residual(const state_t & y,
-		residual_t & R) const{
+  		residual_t & R) const{
     this->residual_obj_.template operator()<
       traits::enum_id,
       traits::steps
       >(y, R, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
-  void jacobian(const state_t & y,
-		jacobian_t & J) const{
-    this->jacobian_obj_.template operator()<
-      traits::enum_id
-      >(y, J, auxData_.model_, auxData_.t_, auxData_.dt_);
-  }
-
   residual_t residual(const state_t & y) const{
+    std::cout << " residual_impl_st_base" << std::endl;
     return this->residual_obj_.template operator()<
       traits::enum_id,
       traits::steps
       >(y, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
+  }
+
+  void jacobian(const state_t & y,
+  		jacobian_t & J) const{
+    this->jacobian_obj_.template operator()<
+      traits::enum_id
+      >(y, J, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
   jacobian_t jacobian(const state_t & y) const{
@@ -91,7 +97,7 @@ public:
       >(y, auxData_.model_, auxData_.t_, auxData_.dt_);
   }
 
-private:
+public:
   ImplicitStepperBase() = delete;
   ~ImplicitStepperBase() = default;
 
@@ -118,7 +124,9 @@ private:
     : odeStorage_{y0},
       auxData_{model},
       residual_obj_{},
-      jacobian_obj_{}{}
+      jacobian_obj_{}{
+	std::cout << "base stepper cnstr" << std::endl;
+      }
 
   // cstr for standard jacob policies
   template <
@@ -135,12 +143,10 @@ private:
       residual_obj_{resPolicyObj},
       jacobian_obj_{}{}
 
-
-  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<concrete_stepper_type>::type;
-
-  friend core::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>;
+  // /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  // template<typename DummyType> struct dummy{using type = DummyType;};
+  // friend typename dummy<concrete_stepper_type>::type;
+  // friend core::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>;
 
 };//end class
 

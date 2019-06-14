@@ -22,7 +22,8 @@
 #include "ode/src/meta/ode_model_has_all_needed_residual_methods.hpp"
 #include "ode/src/meta/ode_is_valid_user_defined_ops_for_explicit_ode.hpp"
 
-#include "ode/src/ode_aux_data.hpp"
+#include "ode/src/ode_explicit_aux_data.hpp"
+#include "ode/src/ode_implicit_aux_data.hpp"
 #include "ode/src/ode_storage.hpp"
 
 #endif

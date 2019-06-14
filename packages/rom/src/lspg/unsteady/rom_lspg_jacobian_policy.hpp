@@ -42,7 +42,16 @@ public:
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
 
-  const ud_ops * udOps_ = nullptr;
+#ifdef HAVE_PYBIND11
+  typename std::conditional<
+    mpl::is_same<ud_ops, pybind11::object>::value,
+    ud_ops,
+    const ud_ops *
+    >::type udOps_ = {};
+#else
+    const ud_ops * udOps_ = {};
+#endif
+
 
 public:
   LSPGJacobianPolicy() = delete;
@@ -70,7 +79,10 @@ public:
   template <
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value
+      !std::is_void<_ud_ops>::value 
+#ifdef HAVE_PYBIND11      
+      and mpl::not_same<_ud_ops, pybind11::object>::value
+#endif      
       > * = nullptr
     >
   LSPGJacobianPolicy(const fom_states_data	 & fomStates,
@@ -85,6 +97,29 @@ public:
       udOps_{&udOps}{
     static_assert( !std::is_void<_ud_ops>::value, "");
   }
+
+#ifdef HAVE_PYBIND11
+  // this cnstr only enabled when udOps is non-void and python
+  template <
+    typename _ud_ops = ud_ops,
+    mpl::enable_if_t<
+      !std::is_void<_ud_ops>::value and
+      mpl::is_same<_ud_ops, pybind11::object>::value
+      > * = nullptr
+    >
+  LSPGJacobianPolicy(const fom_states_data	 & fomStates,
+		     const fom_apply_jac_policy  & applyJacFunctor,
+		     const apply_jac_return_type & applyJacObj,
+		     const decoder_type		 & decoder,
+		     const _ud_ops & udOps)
+    : fom_states_data(fomStates),
+      fom_apply_jac_policy(applyJacFunctor),
+      JJ_(applyJacObj),
+      decoderObj_(decoder),
+      udOps_{udOps}
+  {}
+#endif
+  
 
 public:
   template <ode::ImplicitEnum odeMethod,
@@ -111,7 +146,6 @@ public:
 				scalar_t	   t,
 				scalar_t	   dt) const
   {
-    //(*this).template operator()<odeMethod>(romY, JJ_, app, t, dt);
     this->compute_impl<odeMethod>(romY, JJ_, app, t, dt);
     return JJ_;
   }

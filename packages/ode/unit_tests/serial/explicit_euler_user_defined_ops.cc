@@ -63,13 +63,11 @@ TEST(ode_explicit_euler, userDefinedOps){
 
   auto yptr = y.data();
   (*yptr)[0] = 1.; (*yptr)[1] = 2.; (*yptr)[2] = 3.;
-  res_t r(3);
-  appObj.residual(*y.data(), *r.data(), 0.0);
 
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::Euler, state_t, app_t, res_t,
     double, myops>;
-  stepper_t stepperObj(y, appObj, r);
+  stepper_t stepperObj(y, appObj);
 
   // integrate in time
   double dt = 0.1;

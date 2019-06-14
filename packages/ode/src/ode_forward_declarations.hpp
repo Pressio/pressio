@@ -48,10 +48,41 @@ template<
   typename enable = void>
 class ImplicitJacobianStandardPolicy;
 
+#ifdef HAVE_PYBIND11
+template<
+  typename state_type,
+  typename model_type,
+  typename residual_type = state_type,
+  typename enable = void>
+class ImplicitResidualStandardPolicyPybind11;
+
+template<
+  typename state_type,
+  typename model_type,
+  typename jacobian_type,
+  typename enable = void>
+class ImplicitJacobianStandardPolicyPybind11;
+#endif
+
 }//end namespace policy
 //-----------------------------------
 
 namespace impl {
+
+template<
+  typename model_type,
+  typename residual_policy_type,
+  typename enable = void
+  >
+class ExplicitOdeAuxData;
+
+template<
+  typename model_type,
+  typename scalar_type,
+  typename enable = void
+  >
+class ImplicitOdeAuxData;
+
 
 template<
   typename scalar_type,

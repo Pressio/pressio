@@ -13,6 +13,11 @@ template <
   typename scalar_type,
   typename decoder_jac_type,
   typename ud_ops
+#ifdef HAVE_PYBIND11
+  , mpl::enable_if_t<
+    mpl::not_same< ud_ops, pybind11::object>::value
+    > * = nullptr
+#endif
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    scalar_type	dt,
@@ -28,7 +33,37 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 }
 
 
+#ifdef HAVE_PYBIND11
+template <
+  ode::ImplicitEnum odeMethod,
+  typename lspg_matrix_type,
+  typename scalar_type,
+  typename decoder_jac_type,
+  typename ud_ops,
+  mpl::enable_if_t<
+    mpl::is_same< ud_ops, pybind11::object>::value
+    > * = nullptr
+  >
+void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+			    scalar_type	dt,
+			    const decoder_jac_type & phi,
+			    const ud_ops & udOps){
 
+  // prefactor (f) multiplying f*dt*J*phi
+  auto prefactor = static_cast<scalar_type>(1);
+  if (odeMethod == ode::ImplicitEnum::BDF2)
+    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+
+  udOps.attr("time_discrete_jacobian")(jphi, phi, prefactor, dt);
+}
+#endif
+
+
+
+
+/*
+ * for EIGEN
+*/
 template <
   ode::ImplicitEnum odeMethod,
   typename lspg_matrix_type,

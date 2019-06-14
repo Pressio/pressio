@@ -41,6 +41,8 @@ class ExplicitStepper
   using impl_class_t	= typename mytraits::impl_t;
   impl_class_t myImpl_ = {};
 
+  static constexpr auto zero = ::rompp::core::constants::zero<scalar_type>();
+
 public:
   ExplicitStepper()  = delete;
   ~ExplicitStepper() = default;
@@ -48,22 +50,30 @@ public:
   // this is enabled all the time
   ExplicitStepper(ode_state_type const	  & y0,
 		  const model_type	  & model,
-		  const res_policy_t	  & policyObj,
-		  ode_residual_type const & r0)
-    : myImpl_(model, policyObj, y0, r0){}
+		  const res_policy_t	  & policyObj)
+    : myImpl_(model,
+	      policyObj,
+	      y0,
+	      policyObj(y0, model, this_t::zero)
+	      )
+  {}
 
   // only enable if the residual policy is standard
   template <
     typename T = ode_state_type,
     ::rompp::mpl::enable_if_t<
       mpl::is_same<
-	standard_res_policy_t, res_policy_t
-	>::value
+  	standard_res_policy_t, res_policy_t
+  	>::value
       > * = nullptr>
   ExplicitStepper(T const		  & y0,
-		  const model_type	  & model,
-		  ode_residual_type const & r0)
-    : myImpl_(model, res_policy_t(), y0, r0){}
+  		  const model_type	  & model)
+    : myImpl_(model,
+	      res_policy_t(),
+	      y0,
+  	      res_policy_t()(y0, model, this_t::zero)
+	      )
+  {}
 
 private:
   // the compute method is private because we want users to use

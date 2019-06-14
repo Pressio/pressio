@@ -55,36 +55,11 @@ struct LSPGUnsteadyProblemGenerator<
   lspg_stepper_t			stepperObj_;
 
 public:
-  /* - aux stepper NOT needed
-   * - ud_ops_t = void
-  */
-  template <
-    typename T = aux_stepper_t,
-    typename T2 = ud_ops_t,
-  typename ::rompp::mpl::enable_if_t<
-      std::is_void<T>::value and
-      std::is_void<T2>::value
-      > * = nullptr
-  >
-  LSPGUnsteadyProblemGenerator(const fom_t	 & appObj,
-			       const fom_native_state_t & yFomRefNative,
-			       decoder_t	 & decoder,
-			       lspg_state_t	 & yROM,
-			       scalar_t		 t0)
-    : rhsEv_{},
-      ajacEv_{},
-      yFomRef_(yFomRefNative),
-      yFomReconstructor_(yFomRef_, decoder),
-      rFomRef_( rhsEv_.evaluate(appObj, yFomRef_, t0) ),
-      fomStates_(yFomRef_, yFomReconstructor_),
-      fomRhs_(rFomRef_),
-      romMat_(ajacEv_.evaluate(appObj, yFomRef_,
-			       decoder.getReferenceToJacobian(), t0)),
-      resObj_(fomStates_, fomRhs_, rhsEv_),
-      jacObj_(fomStates_, ajacEv_, romMat_, decoder),
-      auxStepperObj_{},
-      stepperObj_(yROM, appObj, resObj_, jacObj_)
-  {}
+  lspg_stepper_t & getStepperRef(){
+    return stepperObj_;
+  }
+
+public:
 
   /* - aux stepper NOT needed
    * - ud_ops_t != void
@@ -111,9 +86,49 @@ public:
       fomStates_(yFomRef_, yFomReconstructor_),
       fomRhs_(rFomRef_),
       romMat_(ajacEv_.evaluate(appObj, yFomRef_,
-			       decoder.getReferenceToJacobian(), t0)),
+      			       decoder.getReferenceToJacobian(), t0)),
       resObj_(fomStates_, fomRhs_, rhsEv_, udOps),
       jacObj_(fomStates_, ajacEv_, romMat_, decoder, udOps),
+      auxStepperObj_{},
+      stepperObj_(yROM, appObj, resObj_, jacObj_)
+  {
+    std::cout << std::endl;
+    std::cout << "LSPGProbGen" << std::endl;
+    std::cout << "yFomRef_ " << yFomRef_.data() << std::endl;
+    std::cout << "rFomRef_ " << rFomRef_.data() << std::endl;
+    std::cout << "romMat_ " << romMat_.data() << std::endl;
+    std::cout << std::endl;
+  }
+
+
+  /*
+   * - aux stepper NOT needed
+   * - ud_ops_t = void
+  */
+  template <
+    typename T = aux_stepper_t,
+    typename T2 = ud_ops_t,
+  typename ::rompp::mpl::enable_if_t<
+      std::is_void<T>::value and
+      std::is_void<T2>::value
+      > * = nullptr
+  >
+  LSPGUnsteadyProblemGenerator(const fom_t	 & appObj,
+  			       const fom_native_state_t & yFomRefNative,
+  			       decoder_t	 & decoder,
+  			       lspg_state_t	 & yROM,
+  			       scalar_t		 t0)
+    : rhsEv_{},
+      ajacEv_{},
+      yFomRef_(yFomRefNative),
+      yFomReconstructor_(yFomRef_, decoder),
+      rFomRef_( rhsEv_.evaluate(appObj, yFomRef_, t0) ),
+      fomStates_(yFomRef_, yFomReconstructor_),
+      fomRhs_(rFomRef_),
+      romMat_(ajacEv_.evaluate(appObj, yFomRef_,
+  			       decoder.getReferenceToJacobian(), t0)),
+      resObj_(fomStates_, fomRhs_, rhsEv_),
+      jacObj_(fomStates_, ajacEv_, romMat_, decoder),
       auxStepperObj_{},
       stepperObj_(yROM, appObj, resObj_, jacObj_)
   {}
@@ -127,10 +142,10 @@ public:
       > * = nullptr
     >
   LSPGUnsteadyProblemGenerator(const fom_t	 & appObj,
-			       const fom_native_state_t & yFomRefNative,
-			       const decoder_t	 & decoder,
-			       lspg_state_t	 & yROM,
-			       scalar_t		 t0)
+  			       const fom_native_state_t & yFomRefNative,
+  			       const decoder_t	 & decoder,
+  			       lspg_state_t	 & yROM,
+  			       scalar_t		 t0)
     : rhsEv_{},
       ajacEv_{},
       yFomRef_(yFomRefNative),
@@ -139,7 +154,7 @@ public:
       fomStates_(yFomRef_, yFomReconstructor_),
       fomRhs_(rFomRef_),
       romMat_(ajacEv_.evaluate(appObj, yFomRef_,
-			       decoder.getReferenceToJacobian(), t0)),
+  			       decoder.getReferenceToJacobian(), t0)),
       resObj_(fomStates_, fomRhs_, rhsEv_),
       jacObj_(fomStates_, ajacEv_, romMat_, decoder),
       auxStepperObj_(yROM, appObj, resObj_, jacObj_),

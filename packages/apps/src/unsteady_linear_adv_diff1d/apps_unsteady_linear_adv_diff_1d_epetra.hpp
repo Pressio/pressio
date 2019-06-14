@@ -1,10 +1,11 @@
 
-#if HAVE_TRILINOS
 #ifndef ROMPP_APPS_UNSTEADY_LINEAR_ADV_DIFF_1D_EPETRA_HPP_
 #define ROMPP_APPS_UNSTEADY_LINEAR_ADV_DIFF_1D_EPETRA_HPP_
 
-#include "../../../CORE_ALL"
 #include "../apps_ConfigDefs.hpp"
+
+#ifdef HAVE_TRILINOS
+#include "../../../CORE_ALL"
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
 #include <cmath>

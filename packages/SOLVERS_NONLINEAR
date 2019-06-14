@@ -10,6 +10,7 @@
 // GN with normal equations
 #include "solvers/src/nonlinear/gn_normal_equations/solvers_gauss_newton.hpp"
 #include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_neq_specialization_picker.hpp"
+#include "solvers/src/nonlinear/gn_normal_equations/solvers_py_gauss_newton.hpp"
 
 // GN with QR-solver
 #include "solvers/src/nonlinear/gn_qr_based/solvers_gauss_newton_qr.hpp"

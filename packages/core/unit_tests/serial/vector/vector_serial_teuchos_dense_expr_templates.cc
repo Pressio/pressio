@@ -4,7 +4,7 @@
 #include "CORE_OPS"
 
 using natvec_t = Teuchos::SerialDenseVector<int, double>;
-using myvec_t = rompp::core::Vector<natvec_t>;
+using myvec_t = ::rompp::core::Vector<natvec_t>;
 
 TEST(core_vector_teuchos_serial_dense_class,
      additionOperator){

@@ -45,20 +45,20 @@ struct updateOps{
   }
 
   static void do_update(v_t & v,
-			const v_t & v1, const double & b,
-			const v_t & v2, const double & c,
-			const v_t & v3, const double & d,
-			const v_t & v4, const double & e)
+			const v_t & v1, const double b,
+			const v_t & v2, const double c,
+			const v_t & v3, const double d,
+			const v_t & v4, const double e)
   {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
   }
 
-  static void do_update(v_t & v, const double & a,
-			const v_t & v1, const double & b,
-			const v_t & v2, const double & c,
-			const v_t & v3, const double & d,
-			const v_t & v4, const double & e)
+  static void do_update(v_t & v, const double a,
+			const v_t & v1, const double b,
+			const v_t & v2, const double c,
+			const v_t & v3, const double d,
+			const v_t & v4, const double e)
   {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
@@ -83,13 +83,11 @@ TEST(ode_explicit_rk4, userDefinedOps){
 
   auto yptr = y.data();
   (*yptr)[0] = 1.; (*yptr)[1] = 2.; (*yptr)[2] = 3.;
-  res_t r(3);
-  appObj.residual(*y.data(), *r.data(), 0.0);
 
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::RungeKutta4, state_t, app_t, res_t,
     double, myops>;
-  stepper_t stepperObj(y, appObj, r);
+  stepper_t stepperObj(y, appObj);
 
   // integrate in time
   double dt = 0.1;

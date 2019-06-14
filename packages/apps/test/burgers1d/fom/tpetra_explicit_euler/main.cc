@@ -53,12 +53,11 @@ int main(int argc, char *argv[]){
     using ode_state_t = rompp::core::Vector<app_state_t>;
     using ode_res_t   = rompp::core::Vector<app_residual_t>;
     ode_state_t y(y0n);
-    ode_res_t r(r0n);
 
     constexpr auto ode_case = rompp::ode::ExplicitEnum::Euler;
     using stepper_t = rompp::ode::ExplicitStepper<
       ode_case, ode_state_t, app_t, ode_res_t, scalar_t>;
-    stepper_t stepperObj(y, appobj, r);
+    stepper_t stepperObj(y, appobj);
 
     // integrate in time
     scalar_t fint = 35;

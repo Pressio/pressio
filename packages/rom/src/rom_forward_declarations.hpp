@@ -33,6 +33,14 @@ struct ApplyFomJacobianDefault;
 }// namespace rompp::rom::policy
 //---------------------------------
 
+template <
+  typename matrix_type,
+  typename ops_t,
+  typename enable = void
+  >
+struct PyLinearDecoder;
+
+
 /* operators */
 template<
   typename wrapped_type,
@@ -45,7 +53,6 @@ template<
   typename enable = void
   >
 class MatrixOperator;
-
 
 
 /* ------------------
@@ -87,7 +94,6 @@ template <
 struct LSPGSteadyProblemGenerator;
 
 
-
 /* ------------------
  * UNsteady LSPG
  ------------------ */
@@ -116,7 +122,6 @@ template <
   >
 struct LSPGUnsteadyProblemGenerator;
 //-----------------------------------
-
 
 /* Explicit Galerkin policies */
 template <

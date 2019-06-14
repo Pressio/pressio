@@ -28,18 +28,22 @@ int main(int argc, char *argv[]){
   app_t appObj(mu, Ncell);
   appObj.setup();
   auto & y0n = appObj.getInitialState();
-  auto r0n = appObj.residual(y0n, static_cast<scalar_t>(0));
+
+  auto j0n = appObj.jacobian(y0n, static_cast<scalar_t>(0));
+  std::cout << std::fixed << std::setprecision(15) << y0n << std::endl;
+  std::cout << " --- " << std::endl;
+  std::cout << std::fixed << std::setprecision(15) << j0n << std::endl;
+  std::cout << " --- " << std::endl;
 
   // types for ode
   using ode_state_t = rompp::core::Vector<app_state_t>;
   using ode_res_t   = rompp::core::Vector<app_rhs_t>;
 
   ode_state_t y(y0n);
-  ode_res_t r(r0n);
   constexpr auto ode_case = rompp::ode::ExplicitEnum::Euler;
   using stepper_t = rompp::ode::ExplicitStepper
     <ode_case, ode_state_t, app_t, ode_res_t, scalar_t>;
-  stepper_t stepperObj(y, appObj, r);
+  stepper_t stepperObj(y, appObj);
 
   // integrate in time
   scalar_t fint = 35;
@@ -50,7 +54,7 @@ int main(int argc, char *argv[]){
     using namespace rompp::apps::test;
     checkSol(y, Burgers1dExpGoldStates<ode_case>::get(Ncell, dt, fint));
   }
-
-  std::cout << checkStr << std::endl;  
+  std::cout << std::fixed << std::setprecision(15) << *y.data() << std::endl;
+  std::cout << checkStr << std::endl;
   return 0;
 }

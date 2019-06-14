@@ -13,7 +13,7 @@ namespace rompp{ namespace core{ namespace ops{
 //--------------------------------------------------------
 template <typename vec_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_eigen<vec_type>::value
+    ::rompp::core::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
 auto min(const vec_type & a) -> typename details::traits<vec_type>::scalar_t

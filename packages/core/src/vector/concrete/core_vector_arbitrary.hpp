@@ -24,7 +24,7 @@ public:
   ~Vector() = default;
 
   template <typename ...Args>
-  Vector(Args && ... args)
+  explicit Vector(Args && ... args)
     : data_( std::forward<Args>(args)... ){}
 
   explicit Vector(const wrapped_type & vecobj)
