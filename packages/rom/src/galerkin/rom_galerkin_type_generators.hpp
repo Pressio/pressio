@@ -6,30 +6,28 @@
 #include "../rom_forward_declarations.hpp"
 #include "../rom_data_fom_rhs.hpp"
 #include "../rom_data_fom_states.hpp"
-#include "../policies/rom_evaluate_fom_rhs_policy.hpp"
-#include "../policies/rom_apply_fom_jacobian_policy.hpp"
+#include "../policies/rom_evaluate_fom_rhs_unsteady_policy.hpp"
+#include "../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
 #include "../../../ode/src/ode_forward_declarations.hpp"
 
 namespace rompp{ namespace rom{
 
-template <typename fom_type,
-	  typename decoder_type,
-	  typename galerkin_state_type,
-	  typename galerkin_residual_type>
+template <
+  typename fom_type,
+  typename decoder_type,
+  typename galerkin_state_type,
+  typename galerkin_residual_type
+  >
 struct GalerkinCommonTypes{
   // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
   using scalar_t		= typename fom_t::scalar_type;
-  using fom_state_t		= typename fom_t::state_type;
-  using fom_rhs_t		= typename fom_t::residual_type;
+  using fom_native_state_t	= typename fom_t::state_type;
+  using fom_native_rhs_t	= typename fom_t::residual_type;
 
   // declare fom wrapper types
-  using fom_state_w_t		= ::rompp::core::Vector<fom_state_t>;
-  using fom_rhs_w_t		= ::rompp::core::Vector<fom_rhs_t>;
-
-  // decoder types (passed in)
-  using decoder_t		= decoder_type;
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
+  using fom_state_t		= ::rompp::core::Vector<fom_native_state_t>;
+  using fom_rhs_t		= ::rompp::core::Vector<fom_native_rhs_t>;
 
   // rom state type (passed in)
   using galerkin_state_t	= galerkin_state_type;
@@ -37,23 +35,39 @@ struct GalerkinCommonTypes{
   // the GALERKIN residual type (passed in)
   using galerkin_residual_t	= galerkin_residual_type;
 
+  // decoder types (passed in)
+  using decoder_t		= decoder_type;
+  using decoder_jac_t		= typename decoder_t::jacobian_t;
+
+  // fom state reconstructor type
+  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+
   // class type holding fom states data
   using fom_states_data = ::rompp::rom::FomStatesData<
-	fom_state_w_t, 0, decoder_t>;
+	fom_state_t, 0, fom_state_reconstr_t>;
 
   // class type holding fom rhs data
-  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_w_t>;
+  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_t>;
 };
 
 
-template <typename fom_type,
-	  ode::ExplicitEnum odeName,
-	  typename decoder_type,
-	  typename galerkin_state_type,
-	  typename galerkin_residual_type = galerkin_state_type>
+template <
+  typename fom_type,
+  ode::ExplicitEnum odeName,
+  typename decoder_type,
+  typename galerkin_state_type,
+  typename galerkin_residual_type = galerkin_state_type
+  >
 struct DefaultGalerkinExplicitTypeGenerator
   : GalerkinCommonTypes<fom_type, decoder_type,
-			galerkin_state_type, galerkin_residual_type>{
+			galerkin_state_type,
+			galerkin_residual_type>
+{
+
+  static_assert( rompp::mpl::is_same<galerkin_state_type,
+		 galerkin_residual_type>::value,
+		 "ExplicitGalerkin: the residual type has to be the same as state");
+
 
   using base_t = GalerkinCommonTypes<fom_type, decoder_type,
 				     galerkin_state_type,
@@ -63,13 +77,14 @@ struct DefaultGalerkinExplicitTypeGenerator
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
+  using typename base_t::fom_native_state_t;
   using typename base_t::fom_state_t;
-  using typename base_t::fom_state_w_t;
-  using typename base_t::fom_rhs_w_t;
-  using typename base_t::decoder_t;
-  using typename base_t::decoder_jac_t;
+  using typename base_t::fom_rhs_t;
   using typename base_t::galerkin_state_t;
   using typename base_t::galerkin_residual_t;
+  using typename base_t::decoder_t;
+  using typename base_t::decoder_jac_t;
+  using typename base_t::fom_state_reconstr_t;
   using typename base_t::fom_states_data;
   using typename base_t::fom_rhs_data;
 
@@ -81,7 +96,7 @@ struct DefaultGalerkinExplicitTypeGenerator
   // declare type of stepper object
   using galerkin_stepper_t = ::rompp::ode::ExplicitStepper<
     odeName, galerkin_state_type, fom_type,
-    galerkin_residual_t, galerkin_residual_policy_t>;
+    galerkin_residual_t, galerkin_residual_policy_t, scalar_t>;
 
 };//end class
 

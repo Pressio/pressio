@@ -60,19 +60,20 @@ public:
 
   // only enable if the residual policy is standard
   template <
-    typename T = ode_state_type,
+    typename T = standard_res_policy_t,
     ::rompp::mpl::enable_if_t<
       mpl::is_same<
-  	standard_res_policy_t, res_policy_t
+  	T, res_policy_t
   	>::value
-      > * = nullptr>
-  ExplicitStepper(T const		  & y0,
-  		  const model_type	  & model)
+      > * = nullptr
+    >
+  ExplicitStepper(const	ode_state_type & y0,
+  		  const model_type & model)
     : myImpl_(model,
-	      res_policy_t(),
-	      y0,
+  	      res_policy_t(),
+  	      y0,
   	      res_policy_t()(y0, model, this_t::zero)
-	      )
+  	      )
   {}
 
 private:

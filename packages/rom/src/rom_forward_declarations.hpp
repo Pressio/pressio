@@ -135,7 +135,7 @@ template <
   typename type_generator_t,
   typename enable = void
   >
-struct GalerkinStepperObjectGenerator;
+struct GalerkinProblemGenerator;
 
 
 }} // end namespace rompp::rom

@@ -8,9 +8,11 @@
 
 namespace rompp{ namespace rom{
 
-template <typename fom_states_data,
-	  typename fom_rhs_data,
-	  typename decoder_t>
+template <
+  typename fom_states_data,
+  typename fom_rhs_data,
+  typename decoder_t
+  >
 class DefaultGalerkinExplicitResidualPolicy
   : public ode::policy::ExplicitResidualPolicyBase<
        DefaultGalerkinExplicitResidualPolicy<fom_states_data,
@@ -42,12 +44,15 @@ public:
       decoder_(decoder){}
 
 public:
-  template <typename galerkin_state_t,
-	    typename galerkin_residual_t,
-	    typename fom_t,
-	    typename scalar_t>
+  /* for now, the state and residual must be of the same type */
+
+  template <
+    typename galerkin_state_t,
+    typename fom_t,
+    typename scalar_t
+  >
   void operator()(const galerkin_state_t  & romY,
-		  galerkin_residual_t	  & romR,
+		  galerkin_state_t	  & romR,
   		  const fom_t		  & app,
 		  scalar_t		  t) const
   {
@@ -60,23 +65,67 @@ public:
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
+#endif
     app.residual(*yFom_.data(), *fomRhs_.data(), t);
+#ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
-#else
-    app.residual(*yFom_.data(), *fomRhs_.data(), t);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("phiT*fomRhs");
-    core::ops::dot(decoder_.getJacobianRef(), fomRhs_, romR);
+#endif
+    core::ops::dot(decoder_.getReferenceToJacobian(), fomRhs_, romR);
+#ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
-#else
-    core::ops::dot(decoder_.getJacobianRef(), fomRhs_, romR);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("galerkin explicit residual");
 #endif
+  }
+
+
+  template <
+    typename galerkin_state_t,
+    typename fom_t,
+    typename scalar_t
+    >
+  galerkin_state_t operator()(const galerkin_state_t  & romY,
+			      const fom_t		 & app,
+			      scalar_t		 t) const
+  {
+    // for now, make it better later
+    galerkin_state_t result(romY);
+    result.setZero();
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("galerkin explicit residual");
+#endif
+
+    fom_states_data::template reconstructCurrentFomState(romY);
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("fom eval rhs");
+#endif
+    typename fom_rhs_data::fom_rhs_t fomR(app.residual(*yFom_.data(), t));
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("fom eval rhs");
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("phiT*fomRhs");
+#endif
+    core::ops::dot(decoder_.getReferenceToJacobian(), fomR, result);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("phiT*fomRhs");
+#endif
+
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("galerkin explicit residual");
+#endif
+
+    return result;
   }
 
 };//end class

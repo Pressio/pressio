@@ -6,47 +6,45 @@
 
 namespace rompp{ namespace rom{
 
-template <typename problem_types>
-struct GalerkinStepperObjectGenerator<
-  problem_types,
-  ::rompp::mpl::enable_if_t<
-    problem_types::odeName_ == ode::ExplicitEnum::Euler or
-    problem_types::odeName_ == ode::ExplicitEnum::RungeKutta4
-    >
-  > : problem_types {
+template <typename problem_t>
+struct GalerkinProblemGenerator<problem_t>
+  : problem_t {
 
-  using typename problem_types::base_t::fom_t;
-  using typename problem_types::base_t::scalar_t;
-  using typename problem_types::base_t::galerkin_state_t;
-  using typename problem_types::base_t::galerkin_residual_t;
-  using typename problem_types::base_t::fom_state_t;
-  using typename problem_types::base_t::fom_state_w_t;
-  using typename problem_types::base_t::fom_rhs_w_t;
-  using typename problem_types::base_t::decoder_t;
-  using typename problem_types::base_t::fom_states_data;
-  using typename problem_types::base_t::fom_rhs_data;
+  using typename problem_t::fom_t;
+  using typename problem_t::scalar_t;
+  using typename problem_t::fom_native_state_t;
+  using typename problem_t::fom_state_t;
+  using typename problem_t::fom_rhs_t;
 
-  using typename problem_types::galerkin_residual_policy_t;
-  using typename problem_types::galerkin_stepper_t;
+  using typename problem_t::galerkin_state_t;
+  using typename problem_t::decoder_t;
+  using typename problem_t::fom_state_reconstr_t;
+  using typename problem_t::fom_states_data;
+  using typename problem_t::fom_rhs_data;
 
-  fom_state_w_t y0Fom_			= {};
-  fom_rhs_w_t r0Fom_			= {};
-  fom_states_data fomStates_		= {};
-  fom_rhs_data fomRhs_			= {};
-  galerkin_residual_policy_t resObj_	= {};
-  galerkin_stepper_t stepperObj_	= {};
+  using typename problem_t::galerkin_residual_policy_t;
+  using typename problem_t::galerkin_stepper_t;
 
-  GalerkinStepperObjectGenerator(const fom_t	   & appObj,
-				 const fom_state_t & y0n,
-				 decoder_t	   & decoder,
-				 galerkin_state_t  & yROM,
-				 scalar_t	   t0)
-    : y0Fom_(y0n),
-      r0Fom_(appObj.residual(y0n, t0)),
-      fomStates_(y0Fom_, decoder),
-      fomRhs_(r0Fom_),
+  fom_state_t			yFomRef_;
+  fom_state_reconstr_t		yFomReconstructor_;
+  fom_rhs_t			rFomRef_;
+  fom_states_data		fomStates_;
+  fom_rhs_data			fomRhs_;
+  galerkin_residual_policy_t	resObj_;
+  galerkin_stepper_t		stepperObj_;
+
+  GalerkinProblemGenerator(const fom_t		    & appObj,
+  			   const fom_native_state_t & yFomRefNative,
+  			   decoder_t		    & decoder,
+  			   galerkin_state_t	    & yROM,
+  			   scalar_t		    t0)
+    : yFomRef_(yFomRefNative),
+      yFomReconstructor_(yFomRef_, decoder),
+      rFomRef_( appObj.residual(*yFomRef_.data(), t0) ),
+      fomStates_(yFomRef_, yFomReconstructor_),
+      fomRhs_(rFomRef_),
       resObj_(fomStates_, fomRhs_, decoder),
-      stepperObj_(appObj, resObj_, yROM)
+      stepperObj_(yROM, appObj, resObj_)
   {}
 
 };
