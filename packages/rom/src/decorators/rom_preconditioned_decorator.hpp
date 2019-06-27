@@ -76,7 +76,7 @@ public:
 
 
   //-------------------------------
-  // for steady LSPG 
+  // for steady LSPG
   //-------------------------------
   template <
       typename lspg_state_t,
@@ -84,7 +84,8 @@ public:
   fom_rhs_t operator()(const lspg_state_t  & romY,
                          const fom_t   & app) const
   {
-    auto result = preconditionable::template operator()(romY, app);
+    auto result = preconditionable::template operator()<
+      lspg_state_t, fom_t>(romY, app);
     app.applyPreconditioner(*yFom_.data(), *result.data());
     return result;
   }
@@ -97,7 +98,8 @@ public:
                   lspg_residual_t & romR,
                   const fom_t   & app) const
   {
-    preconditionable::template operator()(romY, romR, app);
+    preconditionable::template operator()<
+      lspg_state_t, lspg_residual_t, fom_t>(romY, romR, app);
     app.applyPreconditioner(*yFom_.data(), *romR.data());
   }
 
@@ -166,14 +168,15 @@ public:
   // for steady LSPG
   //-------------------------------
   template <
-      typename lspg_state_t, 
+      typename lspg_state_t,
       typename app_t>
   apply_jac_return_t operator()(const lspg_state_t & romY,
                                 const app_t & app) const
   {
-    auto JJ = preconditionable::template operator()(romY, app);
+    auto JJ = preconditionable::template operator()<
+      lspg_state_t, app_t>(romY, app);
     app.applyPreconditioner(*yFom_.data(), *JJ.data());
-    return JJ;    
+    return JJ;
   }
 
   template <
@@ -184,7 +187,8 @@ public:
                   lspg_jac_t & romJJ,
                   const app_t & app) const
   {
-    preconditionable::template operator()(romY, romJJ, app);
+    preconditionable::template operator()<
+      lspg_state_t, lspg_jac_t, app_t>(romY, romJJ, app);
     app.applyPreconditioner(*yFom_.data(), *romJJ.data());
   }
 
