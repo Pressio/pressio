@@ -4,7 +4,7 @@
 
 #include "solvers_basic_meta.hpp"
 #include "../base/solvers_linear_base.hpp"
-#include "../../../qr/src/qr_forward_declarations.hpp"
+#include "../../../qr/src/qr_fwd.hpp"
 #include "../../../qr/src/qr_traits.hpp"
 
 namespace rompp{ namespace solvers{ namespace meta {

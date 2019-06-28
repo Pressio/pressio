@@ -2,7 +2,7 @@
 #ifndef SVD_SOLVER_TRAITS_HPP_
 #define SVD_SOLVER_TRAITS_HPP_
 
-#include "svd_forward_declarations.hpp"
+#include "svd_fwd.hpp"
 #include "../../algebra/src/matrix/algebra_matrix_meta.hpp"
 #include "../../algebra/src/multi_vector/algebra_multi_vector_meta.hpp"
 

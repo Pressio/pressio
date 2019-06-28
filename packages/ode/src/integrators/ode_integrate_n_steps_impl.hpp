@@ -3,7 +3,7 @@
 #define ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPL_HPP_
 
 #include "../ode_ConfigDefs.hpp"
-#include "../ode_forward_declarations.hpp"
+#include "../ode_fwd.hpp"
 
 namespace rompp{ namespace ode{ namespace impl{
 

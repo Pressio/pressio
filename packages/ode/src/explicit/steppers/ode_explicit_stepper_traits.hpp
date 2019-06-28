@@ -2,7 +2,7 @@
 #ifndef ODE_STEPPERS_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_TRAITS_HPP_
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_TRAITS_HPP_
 
-#include "../../ode_forward_declarations.hpp"
+#include "../../ode_fwd.hpp"
 
 namespace rompp{ namespace ode{ namespace details{
 

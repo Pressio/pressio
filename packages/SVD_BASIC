@@ -3,7 +3,7 @@
 #define SVD_BASIC_HPP_
 
 #include "svd/src/svd_ConfigDefs.hpp"
-#include "svd/src/svd_forward_declarations.hpp"
+#include "svd/src/svd_fwd.hpp"
 
 #include "svd/src/svd_solver_traits.hpp"
 #include "svd/src/svd_solver_generic_base.hpp"

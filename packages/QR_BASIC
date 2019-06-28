@@ -3,7 +3,7 @@
 #define QR_BASIC_HPP_
 
 #include "qr/src/qr_ConfigDefs.hpp"
-#include "qr/src/qr_forward_declarations.hpp"
+#include "qr/src/qr_fwd.hpp"
 #include "qr/src/qr_algorithms_tags.hpp"
 
 #include "qr/src/qr_traits.hpp"

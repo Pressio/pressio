@@ -3,7 +3,7 @@
 #define QR_EIGEN_SPARSE_MATRIX_HPP_
 
 #include "qr_ConfigDefs.hpp"
-#include "qr_forward_declarations.hpp"
+#include "qr_fwd.hpp"
 #include "qr_solver_base.hpp"
 #include "qr_rfactor_solve_impl.hpp"
 

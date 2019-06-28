@@ -4,7 +4,7 @@
 #define QR_TPETRA_MULTI_VECTOR_HOUSEHOLDER_HPP_
 
 #include "qr_ConfigDefs.hpp"
-#include "qr_forward_declarations.hpp"
+#include "qr_fwd.hpp"
 #include "qr_solver_base.hpp"
 
 #include "../../ALGEBRA_ALL"

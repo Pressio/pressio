@@ -2,7 +2,7 @@
 #ifndef ALGEBRA_VECTOR_VECTOR_TRAITS_HPP_
 #define ALGEBRA_VECTOR_VECTOR_TRAITS_HPP_
 
-#include "../algebra_forward_declarations.hpp"
+#include "../algebra_fwd.hpp"
 #include "../algebra_shared_traits.hpp"
 #include "./meta/algebra_native_armadillo_vector_meta.hpp"
 #include "./meta/algebra_native_blaze_vector_meta.hpp"

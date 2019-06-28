@@ -4,7 +4,7 @@
 
 #include "algebra/src/algebra_default_types.hpp"
 #include "algebra/src/algebra_ConfigDefs.hpp"
-#include "algebra/src/algebra_forward_declarations.hpp"
+#include "algebra/src/algebra_fwd.hpp"
 #include "algebra/src/algebra_shared_traits.hpp"
 #include "algebra/src/algebra_wrapped_types_enum.hpp"
 #include "algebra/src/algebra_expression_templates_operators.hpp"

@@ -3,7 +3,7 @@
 #define QR_FORWARD_DECLARATIONS_HPP_
 
 #include "qr_ConfigDefs.hpp"
-#include "../../algebra/src/algebra_forward_declarations.hpp"
+#include "../../algebra/src/algebra_fwd.hpp"
 
 namespace rompp{  namespace qr{
 

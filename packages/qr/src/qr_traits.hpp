@@ -2,7 +2,7 @@
 #ifndef QR_TRAITS_HPP_
 #define QR_TRAITS_HPP_
 
-#include "qr_forward_declarations.hpp"
+#include "qr_fwd.hpp"
 #include "qr_meta.hpp"
 
 namespace rompp{ namespace qr{ namespace details{

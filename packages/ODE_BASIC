@@ -3,7 +3,7 @@
 #define ODE_BASIC_HPP_
 
 #include "ode/src/ode_ConfigDefs.hpp"
-#include "ode/src/ode_forward_declarations.hpp"
+#include "ode/src/ode_fwd.hpp"
 #include "ode/src/ode_enum.hpp"
 
 #include "ode/src/meta/ode_has_state_typedef.hpp"

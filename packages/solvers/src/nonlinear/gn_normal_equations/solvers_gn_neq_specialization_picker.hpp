@@ -2,7 +2,7 @@
 #ifndef SOLVERS_GN_NEQ_SPECIALIZATION_PICKER_HPP_
 #define SOLVERS_GN_NEQ_SPECIALIZATION_PICKER_HPP_
 
-#include "../../solvers_forward_declarations.hpp"
+#include "../../solvers_fwd.hpp"
 #include "../../meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
 #include "../../meta/solvers_is_legitimate_linear_solver_for_gn_normeq.hpp"
 #include "../../meta/solvers_is_legitimate_hessian_for_gn_normeq.hpp"

@@ -2,7 +2,7 @@
 #ifndef ROM_LSPG_JACOBIAN_POLICY_HPP_
 #define ROM_LSPG_JACOBIAN_POLICY_HPP_
 
-#include "../../rom_forward_declarations.hpp"
+#include "../../rom_fwd.hpp"
 #include "rom_lspg_time_discrete_jacobian.hpp"
 #include "../../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "../../rom_data_fom_states.hpp"

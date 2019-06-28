@@ -3,12 +3,12 @@
 #define ROM_GALERKIN_TYPE_GENERATORS_HPP_
 
 #include "../rom_ConfigDefs.hpp"
-#include "../rom_forward_declarations.hpp"
+#include "../rom_fwd.hpp"
 #include "../rom_data_fom_rhs.hpp"
 #include "../rom_data_fom_states.hpp"
 #include "../policies/rom_evaluate_fom_rhs_unsteady_policy.hpp"
 #include "../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
-#include "../../../ode/src/ode_forward_declarations.hpp"
+#include "../../../ode/src/ode_fwd.hpp"
 
 namespace rompp{ namespace rom{
 

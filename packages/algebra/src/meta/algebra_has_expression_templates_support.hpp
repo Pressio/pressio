@@ -2,7 +2,7 @@
 #ifndef ALGEBRA_HAS_EXPRESSION_TEMPLATES_SUPPORT_HPP_
 #define ALGEBRA_HAS_EXPRESSION_TEMPLATES_SUPPORT_HPP_
 
-#include "../algebra_forward_declarations.hpp"
+#include "../algebra_fwd.hpp"
 
 namespace rompp{ namespace algebra{ namespace meta {
 

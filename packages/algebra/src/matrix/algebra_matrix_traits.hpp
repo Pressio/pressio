@@ -2,7 +2,7 @@
 #ifndef ALGEBRA_MATRIX_MATRIX_TRAITS_HPP_
 #define ALGEBRA_MATRIX_MATRIX_TRAITS_HPP_
 
-#include "../algebra_forward_declarations.hpp"
+#include "../algebra_fwd.hpp"
 #include "../algebra_shared_traits.hpp"
 #include "./meta/algebra_native_eigen_matrix_meta.hpp"
 #include "./meta/algebra_native_trilinos_matrix_meta.hpp"

@@ -2,7 +2,7 @@
 #ifndef ODE_POLICIES_BASE_EXPLICIT_RESIDUAL_POLICY_BASE_HPP_
 #define ODE_POLICIES_BASE_EXPLICIT_RESIDUAL_POLICY_BASE_HPP_
 
-#include "../../ode_forward_declarations.hpp"
+#include "../../ode_fwd.hpp"
 
 namespace rompp{ namespace ode{ namespace policy{
 

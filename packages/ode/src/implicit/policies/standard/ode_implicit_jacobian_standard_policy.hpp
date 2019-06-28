@@ -2,7 +2,7 @@
 #ifndef ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
 #define ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
 
-#include "../../../ode_forward_declarations.hpp"
+#include "../../../ode_fwd.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
 #include "../../ode_jacobian_impl.hpp"
 

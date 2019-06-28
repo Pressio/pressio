@@ -2,7 +2,7 @@
 #ifndef ROM_MATRIX_OPERATOR_HPP_
 #define ROM_MATRIX_OPERATOR_HPP_
 
-#include "rom_forward_declarations.hpp"
+#include "rom_fwd.hpp"
 #include "../../ALGEBRA_OPS"
 
 namespace rompp{ namespace rom{

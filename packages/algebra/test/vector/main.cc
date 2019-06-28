@@ -5,7 +5,7 @@
 
 #include "algebra_ConfigDefs.hpp"
 #include "algebra_meta.hpp"
-#include "algebra_forward_declarations.hpp"
+#include "algebra_fwd.hpp"
 #include "algebra_static_assert.hpp"
 
 #include "vector/algebra_vector_traits.hpp"

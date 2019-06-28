@@ -2,7 +2,7 @@
 #ifndef ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
 #define ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
 
-#include "../../rom_forward_declarations.hpp"
+#include "../../rom_fwd.hpp"
 #include "../../rom_data_fom_states.hpp"
 
 namespace rompp{ namespace rom{

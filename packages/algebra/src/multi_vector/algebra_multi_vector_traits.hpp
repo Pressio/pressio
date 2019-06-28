@@ -2,7 +2,7 @@
 #ifndef ALGEBRA_MULTIVECTOR_MULTIVECTOR_TRAITS_HPP_
 #define ALGEBRA_MULTIVECTOR_MULTIVECTOR_TRAITS_HPP_
 
-#include "../algebra_forward_declarations.hpp"
+#include "../algebra_fwd.hpp"
 #include "../algebra_shared_traits.hpp"
 #include "./meta/algebra_native_eigen_multi_vector_meta.hpp"
 #include "./meta/algebra_native_epetra_multi_vector_meta.hpp"

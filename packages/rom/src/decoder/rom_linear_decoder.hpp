@@ -3,7 +3,7 @@
 #define ROM_LINEAR_DECODER_HPP_
 
 #include "rom_decoder_base.hpp"
-#include "../rom_forward_declarations.hpp"
+#include "../rom_fwd.hpp"
 
 namespace rompp{ namespace rom{
 
