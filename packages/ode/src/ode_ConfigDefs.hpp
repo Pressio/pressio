@@ -14,7 +14,7 @@
 #include "../../algebra/src/algebra_is_algebra_wrapper.hpp"
 
 #ifdef DEBUG_PRINT
-#include "../../algebra/src/io/algebra_print_helper.hpp"
+#include "../../utils/src/io/utils_print_helper.hpp"
 #endif
 
 #include "ode_enum.hpp"
