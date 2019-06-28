@@ -105,7 +105,7 @@ std::string bg_cyan(){ return impl::is_colorized(std::cout) ? "\033[46m" : ""; }
 inline
 std::string bg_white(){ return impl::is_colorized(std::cout) ? "\033[47m" : ""; }
 
-}}} // namespace rompp::core::io
+}}} // namespace rompp::utils::io
 
 #endif
 

@@ -33,7 +33,7 @@ SET(LUMPED_HEADERS
 INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 
 #--------------------------------------
-# install the actual core headers
+# install the actual headers
 #--------------------------------------
 SET(UTILS_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/utils/src)
 

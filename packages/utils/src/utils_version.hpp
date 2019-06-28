@@ -5,9 +5,9 @@
 #include "rompp_version.h"
 #include <string>
 
-namespace rompp{ namespace core{
+namespace rompp{ namespace utils{
 
 inline std::string version();
 
-}}//end namespace rompp::core
+}}//end namespace rompp::utils
 #endif
