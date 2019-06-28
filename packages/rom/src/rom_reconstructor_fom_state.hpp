@@ -21,7 +21,7 @@ template <
 struct FomStateReconstructor<
   fom_state_t, decoder_type,
   mpl::enable_if_t<
-    ::rompp::algebra::meta::is_algebra_wrapper<fom_state_t>::value
+    ::rompp::algebra::meta::is_wrapper<fom_state_t>::value
     >
   >
 {

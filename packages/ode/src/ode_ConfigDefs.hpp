@@ -11,7 +11,7 @@
 #include "../../algebra/src/vector/algebra_vector_meta.hpp"
 #include "../../algebra/src/multi_vector/algebra_multi_vector_meta.hpp"
 #include "../../algebra/src/matrix/algebra_matrix_meta.hpp"
-#include "../../algebra/src/algebra_is_algebra_wrapper.hpp"
+#include "../../algebra/src/algebra_is_wrapper.hpp"
 
 #ifdef DEBUG_PRINT
 #include "../../utils/src/io/utils_print_helper.hpp"

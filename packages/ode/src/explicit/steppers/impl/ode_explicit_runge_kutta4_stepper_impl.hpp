@@ -161,7 +161,7 @@ public:
     typename _state_type = state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      algebra::meta::is_algebra_wrapper<_state_type>::value
+      algebra::meta::is_wrapper<_state_type>::value
       > * = nullptr
     >
   void doStep(_state_type & y,

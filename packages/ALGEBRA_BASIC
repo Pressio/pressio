@@ -21,7 +21,7 @@
 #include "algebra/src/meta/algebra_meta_basic.hpp"
 #include "algebra/src/meta/algebra_has_expression_templates_support.hpp"
 #include "algebra/src/algebra_native_pybind_array_meta.hpp"
-#include "algebra/src/algebra_is_algebra_wrapper.hpp"
+#include "algebra/src/algebra_is_wrapper.hpp"
 
 #include "algebra/src/meta/algebra_has_update_op_typedef.hpp"
 #include "algebra/src/meta/algebra_has_static_method_do_update_one_term.hpp"

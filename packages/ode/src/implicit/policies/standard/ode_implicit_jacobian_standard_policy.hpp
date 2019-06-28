@@ -20,8 +20,8 @@ class ImplicitJacobianStandardPolicy<
   ::rompp::mpl::enable_if_t<
     ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::rompp::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
-    algebra::meta::is_algebra_wrapper<state_type>::value and
-    algebra::meta::is_algebra_wrapper<jacobian_type>::value
+    algebra::meta::is_wrapper<state_type>::value and
+    algebra::meta::is_wrapper<jacobian_type>::value
     >
   > : public JacobianPolicyBase<ImplicitJacobianStandardPolicy<
     state_type, model_type, jacobian_type> >{

@@ -92,7 +92,7 @@ public:
   typename system_t,
   typename state_t,
   mpl::enable_if_t<
-    algebra::meta::is_algebra_wrapper<state_t>::value
+    algebra::meta::is_wrapper<state_t>::value
     > * = nullptr
   >
   void solveImpl(const system_t & sys,

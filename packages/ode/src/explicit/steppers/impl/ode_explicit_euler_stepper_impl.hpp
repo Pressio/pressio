@@ -88,7 +88,7 @@ public:
     typename _ode_state_type = ode_state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      algebra::meta::is_algebra_wrapper<_ode_state_type>::value
+      algebra::meta::is_wrapper<_ode_state_type>::value
       > * = nullptr
     >
   void doStep(_ode_state_type & y,

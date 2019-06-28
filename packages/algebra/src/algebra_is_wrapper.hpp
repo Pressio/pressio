@@ -9,10 +9,10 @@
 namespace rompp{ namespace algebra{ namespace meta {
 
 template <typename T, typename enable = void>
-struct is_algebra_wrapper : std::false_type {};
+struct is_wrapper : std::false_type {};
 
 template <typename T>
-struct is_algebra_wrapper<
+struct is_wrapper<
   T,
   typename
   std::enable_if<

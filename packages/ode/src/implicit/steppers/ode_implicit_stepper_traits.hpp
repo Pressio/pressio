@@ -19,7 +19,7 @@ template <typename T>
 struct ScalarHelper<
   T,
   mpl::enable_if_t<
-    ::rompp::algebra::meta::is_algebra_wrapper<T>::value and
+    ::rompp::algebra::meta::is_wrapper<T>::value and
     ::rompp::algebra::details::traits<T>::wrapped_package_identifier
     != ::rompp::algebra::details::WrappedPackageIdentifier::Arbitrary
     >
@@ -32,7 +32,7 @@ template <typename T>
 struct ScalarHelper<
   T,
   mpl::enable_if_t<
-    ::rompp::algebra::meta::is_algebra_wrapper<T>::value and
+    ::rompp::algebra::meta::is_wrapper<T>::value and
     ::rompp::algebra::details::traits<T>::wrapped_package_identifier
     == ::rompp::algebra::details::WrappedPackageIdentifier::Arbitrary
     >
