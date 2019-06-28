@@ -24,7 +24,7 @@ template <
   >
   void time_discrete_jacobian(jacobian_type & jac,
 			      scalar_type dt){
-  constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
+  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
   jac.scale(-dt);
   jac.addToDiagonal(one);
 }
@@ -42,7 +42,7 @@ template <
 void time_discrete_jacobian(jacobian_type & jac,
 			    scalar_type dt){
   using namespace ::rompp::ode::coeffs;
-  constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
+  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
 
   if (jac.ndim() != 2)
     throw std::runtime_error("Tensors with dim>2 not supported");
@@ -76,7 +76,7 @@ template <
 void time_discrete_jacobian(jacobian_type & jac,
 			    scalar_type dt){
   using namespace ::rompp::ode::coeffs;
-  constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
+  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
   jac.scale(-bdf2<scalar_type>::c3_*dt);
   jac.addToDiagonal(one);
 }

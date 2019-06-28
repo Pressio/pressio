@@ -74,7 +74,7 @@ public:
     //eval RHS
     (*residual_obj_)(y, auxRHS_[0], model_, t);
     // y = y + dt * rhs
-    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
     ::rompp::algebra::ops::do_update(y, one, auxRHS_[0], dt);
   }
 
@@ -99,7 +99,7 @@ public:
     //eval RHS
     (*residual_obj_)(y, auxRHS_[0], model_, t);
     // y = y + dt * rhs
-    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
     op::do_update(*y.data(), one, *auxRHS_[0].data(), dt);
   }
 
@@ -127,7 +127,7 @@ public:
     //eval RHS
     (*residual_obj_)(y, auxRHS_[0], model_, t);
     // y = y + dt * rhs
-    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
     op::do_update(y, one, auxRHS_[0], dt);
   }
 #endif

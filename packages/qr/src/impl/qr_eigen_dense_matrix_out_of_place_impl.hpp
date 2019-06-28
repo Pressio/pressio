@@ -14,7 +14,7 @@ namespace rompp{ namespace qr{ namespace impl{
 */
 template< typename matrix_type, typename R_t, template <typename...> class Q_type>
 class QRHouseholderDenseEigenMatrixWrapper<
-  matrix_type, R_t, algebra::constants::dynamic, algebra::constants::dynamic, Q_type,
+  matrix_type, R_t, utils::constants::dynamic, utils::constants::dynamic, Q_type,
   ::rompp::mpl::enable_if_t<
     algebra::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value
     >

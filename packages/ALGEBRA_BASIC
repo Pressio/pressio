@@ -8,7 +8,6 @@
 #include "algebra/src/algebra_shared_traits.hpp"
 #include "algebra/src/algebra_wrapped_types_enum.hpp"
 #include "algebra/src/algebra_expression_templates_operators.hpp"
-#include "algebra/src/algebra_static_constants.hpp"
 
 #include "algebra/src/shared_base/algebra_container_base.hpp"
 #include "algebra/src/shared_base/algebra_container_distributed_mpi_base.hpp"

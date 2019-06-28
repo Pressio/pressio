@@ -77,10 +77,10 @@ public:
       Nx_{NxPhys_-2}, Ny_{NyPhys_},
       dx_{Lx_/(Nx-1)},
       dy_{Ly_/(Ny-1)},
-      dxSqInv_{algebra::constants::one<ST>()/(dx_*dx_)},
-      dySqInv_{algebra::constants::one<ST>()/(dy_*dy_)},
-      dx2Inv_{algebra::constants::one<ST>()/(algebra::constants::two<ST>()*dx_)},
-      dy2Inv_{algebra::constants::one<ST>()/(algebra::constants::two<ST>()*dy_)}
+      dxSqInv_{utils::constants::one<ST>()/(dx_*dx_)},
+      dySqInv_{utils::constants::one<ST>()/(dy_*dy_)},
+      dx2Inv_{utils::constants::one<ST>()/(utils::constants::two<ST>()*dx_)},
+      dy2Inv_{utils::constants::one<ST>()/(utils::constants::two<ST>()*dy_)}
   {}
 
 public:
@@ -144,8 +144,8 @@ private:
 
   void residual_impl(const state_type & yState,
 		     residual_type & R) const{
-    static constexpr auto zero = ::rompp::algebra::constants::zero<ST>();
-    static constexpr auto one = ::rompp::algebra::constants::one<ST>();
+    static constexpr auto zero = ::rompp::utils::constants::zero<ST>();
+    static constexpr auto one = ::rompp::utils::constants::one<ST>();
 
     R.putScalar(zero);
     this->assembleFDMatrix();
@@ -159,7 +159,7 @@ private:
   void applyJacobian_impl(const state_type & yState,
 			  const nativeMV & B,
 			  nativeMV & C) const{
-    static constexpr auto zero = ::rompp::algebra::constants::zero<ST>();
+    static constexpr auto zero = ::rompp::utils::constants::zero<ST>();
     C.putScalar(zero);
     computeJacobian(yState);
     A_->applyBlock(B, C);

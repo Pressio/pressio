@@ -83,7 +83,7 @@ public:
     const scalar_type t_phalf = t + dt_half;
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
 
     // stage 1: ytmp = y + auxRHS_[0]*dt_half;
     (*residual_obj_)(y, auxRHS_[0], model_, t);
@@ -129,7 +129,7 @@ public:
     const scalar_type t_phalf = t + dt_half;
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
 
     // stage 1: ytmp = y + auxRHS_[0]*dt_half;
     (*this->residual_obj_)(y, this->auxRHS_[0], this->model_, t);
@@ -176,7 +176,7 @@ public:
     const scalar_type t_phalf = t + dt_half;
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
 
     // stage 1: ytmp = y + auxRHS_[0]*dt_half;
     (*residual_obj_)(y, auxRHS_[0], model_, t);

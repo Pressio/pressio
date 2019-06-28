@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
   using ode_res_t   = rompp::algebra::Vector<app_residual_t>;
   using ode_jac_t   = rompp::algebra::Matrix<app_jacob_t>;
 
-  constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
+  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 11, Ny = Nx*2-1;
   app_t appobj(Nx, Ny);

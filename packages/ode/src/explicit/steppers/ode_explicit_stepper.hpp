@@ -41,7 +41,7 @@ class ExplicitStepper
   using impl_class_t	= typename mytraits::impl_t;
   impl_class_t myImpl_ = {};
 
-  static constexpr auto zero = ::rompp::algebra::constants::zero<scalar_type>();
+  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
 
 public:
   ExplicitStepper()  = delete;

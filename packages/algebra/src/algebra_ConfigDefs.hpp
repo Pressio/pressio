@@ -6,11 +6,11 @@
 #include "algebra_config.h"
 #include "algebra_traits.hpp"
 #include "algebra_default_types.hpp"
-#include "algebra_static_constants.hpp"
 
 #include "../../mpl/src/mpl_non_variadic.hpp"
 #include "../../mpl/src/mpl_variadic.hpp"
 
+#include "../../utils/src/utils_static_constants.hpp"
 #include "../../utils/src/utils_crtp_helper.hpp"
 #include "../../utils/src/utils_empty.hpp"
 #include "../../utils/src/utils_teuchos_performance_monitor.hpp"

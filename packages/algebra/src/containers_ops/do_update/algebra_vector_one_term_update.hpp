@@ -128,7 +128,7 @@ template<
   >
 void do_update(T & v, const T & v1, const scalar_t b)
 {
-  constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
+  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
   v.data()->update(b, *v1.data(), zero); // v = b * v1
 }
 #endif

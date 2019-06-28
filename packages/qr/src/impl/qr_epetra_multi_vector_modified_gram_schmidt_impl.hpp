@@ -13,8 +13,8 @@ namespace rompp{ namespace qr{ namespace impl{
 template<typename matrix_t, typename R_t,
 	 typename MV_t, template<typename...> class Q_type>
 class ModGramSchmidtMVEpetra<
-  matrix_t, R_t, algebra::constants::dynamic,
-  algebra::constants::dynamic, MV_t, Q_type, void>{
+  matrix_t, R_t, utils::constants::dynamic,
+  utils::constants::dynamic, MV_t, Q_type, void>{
 
   using int_t	     = int;
   using sc_t	     = typename algebra::details::traits<matrix_t>::scalar_t;

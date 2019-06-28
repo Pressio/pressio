@@ -25,8 +25,8 @@ void time_discrete_residual(const state_type & y,
 			    residual_type & R,
 			    const std::array<state_type, n> & oldYs,
 			    scalar_type dt) {
-  constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
-  constexpr auto negOne = ::rompp::algebra::constants::negOne<scalar_type>();
+  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
+  constexpr auto negOne = ::rompp::utils::constants::negOne<scalar_type>();
   const scalar_type negDt = -dt;
   ::rompp::algebra::ops::do_update(R, negDt, y, one, oldYs[0], negOne);
 }
@@ -46,8 +46,8 @@ void time_discrete_residual(const state_type & y,
 			    const std::array<state_type, n> & oldYs,
 			    scalar_type dt) {
 
-  constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
-  constexpr auto negOne = ::rompp::algebra::constants::negOne<scalar_type>();
+  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
+  constexpr auto negOne = ::rompp::utils::constants::negOne<scalar_type>();
 
   constexpr auto a = ::rompp::ode::coeffs::bdf2<scalar_type>::c1_*negOne;
   constexpr auto b = ::rompp::ode::coeffs::bdf2<scalar_type>::c2_;

@@ -23,9 +23,9 @@ public:
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;
-  static constexpr auto zero = ::rompp::algebra::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
-  static constexpr auto two = ::rompp::algebra::constants::two<scalar_type>();
+  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
+  static constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
+  static constexpr auto two = ::rompp::utils::constants::two<scalar_type>();
 
 public:
   UnsteadyNonLinAdvDiffReac2dEigen

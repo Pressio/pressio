@@ -30,11 +30,11 @@ public:
 
   typedef Eigen::Triplet<scalar_type> Tr;
   using mat4_t		= Eigen::Matrix<scalar_type, 4, 4>;
-  static constexpr auto zero = ::rompp::algebra::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
-  static constexpr auto two = ::rompp::algebra::constants::two<scalar_type>();
-  static constexpr auto three = ::rompp::algebra::constants::three<scalar_type>();
-  static constexpr auto four = ::rompp::algebra::constants::four<scalar_type>();
+  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
+  static constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
+  static constexpr auto two = ::rompp::utils::constants::two<scalar_type>();
+  static constexpr auto three = ::rompp::utils::constants::three<scalar_type>();
+  static constexpr auto four = ::rompp::utils::constants::four<scalar_type>();
   static constexpr auto oneHalf = one/two;
   static constexpr auto oneThird = one/three;
   static constexpr auto eight = two*four;

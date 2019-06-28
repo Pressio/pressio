@@ -1,8 +1,8 @@
 
-#ifndef ALGEBRA_STATIC_CONSTANTS_HPP_
-#define ALGEBRA_STATIC_CONSTANTS_HPP_
+#ifndef UTILS_STATIC_CONSTANTS_HPP_
+#define UTILS_STATIC_CONSTANTS_HPP_
 
-namespace rompp{ namespace algebra{
+namespace rompp{ namespace utils{
 
 struct constants{
 
@@ -44,5 +44,5 @@ struct constants{
 
 };
 
-}} // end of namespace rompp::algebra
+}} // end of namespace rompp::utils
 #endif

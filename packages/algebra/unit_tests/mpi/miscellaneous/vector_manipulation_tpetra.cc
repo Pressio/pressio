@@ -73,7 +73,7 @@ TEST(tpetraVectors, loopedVectorManipulation){
   using myvec_dev_t = typename rompp::algebra::details::traits<myvec_t>::device_t;
   // algebra::Vector<> constr does a deep-copy (for now)
   myvec_t myx(x);
-  myx.putScalar( rompp::algebra::constants::zero() );
+  myx.putScalar( rompp::utils::constants::zero() );
 
   // modify the host (and then sync)
   myx.data()->modify<Kokkos::HostSpace>();

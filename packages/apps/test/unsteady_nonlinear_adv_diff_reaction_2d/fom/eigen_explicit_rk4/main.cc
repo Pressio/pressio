@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
   using app_residual_t	= typename app_t::residual_type;
-  constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
+  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 11, Ny = Nx*2-1;
   app_t appobj(Nx, Ny);
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]){
   constexpr auto Nsteps = static_cast<unsigned int>(500);
   constexpr scalar_t fint = Nsteps*dt;
   Observer obs;
-  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs);
+  rompp::ode::integrateNSteps(stepperObj, y, zero, dt, Nsteps, obs);
   std::cout << std::setprecision(14) << *y.data() << std::endl;
   {
     using namespace rompp::apps::test;

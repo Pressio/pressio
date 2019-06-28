@@ -11,7 +11,7 @@ TEST(adv_diff_reaction_2d_eigen, spatial_residual){
 
   static_assert(std::is_same<scalar_t, double>::value, "");
 
-  constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
+  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 5, Ny = 5;
   app_t appobj(Nx, Ny);

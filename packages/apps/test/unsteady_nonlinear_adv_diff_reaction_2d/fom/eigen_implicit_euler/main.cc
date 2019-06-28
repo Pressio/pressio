@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
   using app_state_t	= typename app_t::state_type;
   using app_residual_t	= typename app_t::residual_type;
   using app_jacob_t	= typename app_t::jacobian_type;
-  constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
+  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 11, Ny = Nx*2-1;
   app_t appobj(Nx, Ny);

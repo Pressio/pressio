@@ -13,12 +13,12 @@ namespace rompp{ namespace qr{ namespace impl{
 template<typename matrix_t, typename R_t,
 	 typename MV_t, template<typename...> class Q_type>
 class ModGramSchmidtMVTpetra<
-  matrix_t, R_t, algebra::constants::dynamic,
-  algebra::constants::dynamic, MV_t, Q_type, void>{
+  matrix_t, R_t, utils::constants::dynamic,
+  utils::constants::dynamic, MV_t, Q_type, void>{
 
   using this_t	     = ModGramSchmidtMVTpetra<matrix_t, R_t,
-					      algebra::constants::dynamic,
-					      algebra::constants::dynamic,
+					      utils::constants::dynamic,
+					      utils::constants::dynamic,
 					      MV_t, Q_type, void>;
   using int_t	     = int;
   using sc_t	     = typename algebra::details::traits<matrix_t>::scalar_t;
@@ -41,15 +41,15 @@ public:
     {
       auto ak = A.data()->getVector(k);
       localR_(k,k) = ak->norm2();
-      rkkInv = algebra::constants::one<sc_t>()/localR_(k,k);
+      rkkInv = utils::constants::one<sc_t>()/localR_(k,k);
 
       auto qk = Qmat_->data()->getVectorNonConst(k);
-      qk->update( rkkInv, *ak, algebra::constants::zero<sc_t>() );
+      qk->update( rkkInv, *ak, utils::constants::zero<sc_t>() );
 
       for (auto j=k+1; j<A.globalNumVectors(); j++){
       	auto aj = A.data()->getVectorNonConst(j);
       	localR_(k,j) = qk->dot(*aj);
-      	aj->update(-localR_(k,j), *qk, algebra::constants::one<sc_t>());
+      	aj->update(-localR_(k,j), *qk, utils::constants::one<sc_t>());
       }
     }
   }

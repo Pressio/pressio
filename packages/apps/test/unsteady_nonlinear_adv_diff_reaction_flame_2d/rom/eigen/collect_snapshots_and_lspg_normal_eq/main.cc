@@ -10,7 +10,7 @@ using scalar_t		= double;
 using uint_t		= unsigned int;
 using eig_dyn_mat	= Eigen::MatrixXd;
 using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-constexpr auto zero	= ::rompp::algebra::constants::zero<scalar_t>();
+constexpr auto zero	= ::rompp::utils::constants::zero<scalar_t>();
 constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
 constexpr auto t0	= zero;
 

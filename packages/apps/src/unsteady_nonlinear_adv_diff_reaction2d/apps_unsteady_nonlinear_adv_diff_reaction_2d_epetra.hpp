@@ -30,8 +30,8 @@ public:
   using state_type	= nativeVec;
   using residual_type	= state_type;
 
-  static constexpr auto zero = ::rompp::algebra::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
+  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
+  static constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
 
 public:
   UnsteadyNonLinAdvDiffReac2dEpetra(const Epetra_MpiComm & comm,

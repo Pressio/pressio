@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
   using app_residual_t	= typename app_t::residual_type;
   using tcomm_t		= Teuchos::MpiComm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
-  // constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
+  // constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
 
   // scope guard needed (MPI init within trilinos)
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);

@@ -49,9 +49,9 @@ public:
 	     other.getBlockSize(),
 	     other.getNumVectors()){
     // just a trick to copy data
-    data_.update(constants::one<sc_t>(),
+    data_.update(::rompp::utils::constants::one<sc_t>(),
 		 other,
-		 constants::zero<sc_t>());
+		 ::rompp::utils::constants::zero<sc_t>());
   }
 
   // delegate (for now) to the one above
@@ -85,7 +85,7 @@ private:
   }
 
   void setZeroImpl() {
-    data_.putScalar( ::rompp::algebra::constants::zero<sc_t>() );
+    data_.putScalar( ::rompp::utils::constants::zero<sc_t>() );
     // putScalar doesn't sync afterwards, so we have to sync manually.
     this->needSync();
   }

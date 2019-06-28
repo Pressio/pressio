@@ -129,8 +129,8 @@ private:
     scalar_t normRes = {};
     scalar_t normRes0 = {};
 
-    constexpr auto one = ::rompp::algebra::constants::one<scalar_t>();
-    constexpr auto negOne = ::rompp::algebra::constants::negOne<scalar_t>();
+    constexpr auto one = ::rompp::utils::constants::one<scalar_t>();
+    constexpr auto negOne = ::rompp::utils::constants::negOne<scalar_t>();
 
 #ifdef DEBUG_PRINT
     auto ss = std::cout.precision();

@@ -12,7 +12,7 @@ using scalar_t		= typename app_t::scalar_type;
 using uint_t		= unsigned int;
 constexpr double eps	= 1e-12;
 constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
-constexpr auto zero	= ::rompp::algebra::constants::zero<scalar_t>();
+constexpr auto zero	= ::rompp::utils::constants::zero<scalar_t>();
 constexpr auto t0	= zero;
 
 

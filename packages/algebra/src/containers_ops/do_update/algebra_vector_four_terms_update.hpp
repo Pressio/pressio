@@ -133,7 +133,7 @@ void do_update(T & v, const scalar_t a,
 	       const T & v3, const scalar_t d,
 	       const T & v4, const scalar_t e)
 {
-  constexpr auto one  = ::rompp::algebra::constants::one<scalar_t>();
+  constexpr auto one  = ::rompp::utils::constants::one<scalar_t>();
 
   v.data()->update(b, *v1.data(), a); // v = a*v + b*v1
   v.data()->update(c, *v2.data(), one); // add c*v2
@@ -155,8 +155,8 @@ void do_update(T & v,
 	       const T & v3, const scalar_t d,
 	       const T & v4, const scalar_t e)
 {
-  constexpr auto one  = ::rompp::algebra::constants::one<scalar_t>();
-  constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
+  constexpr auto one  = ::rompp::utils::constants::one<scalar_t>();
+  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
 
   v.data()->update(b, *v1.data(), zero); // v = b * v1
   v.data()->update(c, *v2.data(), one); // add c*v2

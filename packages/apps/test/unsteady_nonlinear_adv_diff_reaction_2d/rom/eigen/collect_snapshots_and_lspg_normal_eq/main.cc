@@ -22,7 +22,7 @@ using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
 using uint_t		= unsigned int;
 
 constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
-constexpr auto zero	= ::rompp::algebra::constants::zero<scalar_t>();
+constexpr auto zero	= ::rompp::utils::constants::zero<scalar_t>();
 constexpr auto t0	= static_cast<scalar_t>(0);
 
 void readMatrixFromFile(std::string filename,

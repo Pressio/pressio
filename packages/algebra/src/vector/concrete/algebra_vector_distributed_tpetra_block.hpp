@@ -52,9 +52,9 @@ public:
     : data_( *vecobj.getMap(),
   	     vecobj.getBlockSize()){
     // just a trick to copy data
-    data_.update(constants::one<sc_t>(),
+    data_.update(::rompp::utils::constants::one<sc_t>(),
 		 vecobj,
-		 constants::zero<sc_t>());
+		 ::rompp::utils::constants::zero<sc_t>());
   }
 
   // delegate (for now) to the one above
@@ -70,9 +70,9 @@ public:
   	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator=(const T & other){
-    this->data_.update(constants::one<sc_t>(),
+    this->data_.update(::rompp::utils::constants::one<sc_t>(),
 		       *other.data(),
-		       constants::zero<sc_t>() );
+		       ::rompp::utils::constants::zero<sc_t>() );
     return *this;
   }
 
@@ -82,9 +82,9 @@ public:
   	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator+=(const T & other) {
-    this->data_.update(constants::one<sc_t>(),
+    this->data_.update(::rompp::utils::constants::one<sc_t>(),
 		       *other.data(),
-		       constants::one<sc_t>() );
+		       ::rompp::utils::constants::one<sc_t>() );
     return *this;
   }
 
@@ -94,9 +94,9 @@ public:
   	    ::rompp::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator-=(const T & other) {
-    this->data_.update(constants::negOne<sc_t>(),
+    this->data_.update(::rompp::utils::constants::negOne<sc_t>(),
 		       *other.data(),
-		       constants::one<sc_t>() );
+		       ::rompp::utils::constants::one<sc_t>() );
     return *this;
   }
 
@@ -119,7 +119,7 @@ private:
   }
 
   void setZeroImpl(){
-    data_.putScalar( ::rompp::algebra::constants::zero<sc_t>() );
+    data_.putScalar( ::rompp::utils::constants::zero<sc_t>() );
     // putScalar doesn't sync afterwards, so we have to sync manually.
     this->needSync();
   }

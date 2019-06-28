@@ -27,8 +27,8 @@ namespace impl{
 template<
   typename matrix_type,
   typename R_t = void,
-  int n = algebra::constants::dynamic,
-  int m = algebra::constants::dynamic,
+  int n = utils::constants::dynamic,
+  int m = utils::constants::dynamic,
   template <typename...> class Q_type
 	= algebra::MultiVector,
   typename enable= void>
@@ -37,16 +37,16 @@ class QRHouseholderDenseEigenMatrixWrapper;
 #if defined HAVE_TRILINOS
 template<typename matrix_t,
 	 typename R_t,
-	 int n = algebra::constants::dynamic,
-	 int m = algebra::constants::dynamic,
+	 int n = utils::constants::dynamic,
+	 int m = utils::constants::dynamic,
 	 template <typename...> class Q_type
 	 = algebra::MultiVector>
 class EpetraMVHouseholderUsingEigen;
 
 template<typename matrix_t,
 	 typename R_t,
-	 int n = algebra::constants::dynamic,
-	 int m = algebra::constants::dynamic,
+	 int n = utils::constants::dynamic,
+	 int m = utils::constants::dynamic,
 	 template <typename...> class Q_type
 	 = algebra::MultiVector>
 class TpetraMVHouseholderUsingEigen;
@@ -80,8 +80,8 @@ class TpetraBlockMVTSQR;
 
 template<typename matrix_t,
 	 typename R_t,
-	 int n = algebra::constants::dynamic,
-	 int m = algebra::constants::dynamic,
+	 int n = utils::constants::dynamic,
+	 int m = utils::constants::dynamic,
 	 typename wrap_Q_type = void,
 	 template <typename...> class Q_type
 	 = algebra::MultiVector,
@@ -90,8 +90,8 @@ class ModGramSchmidtMVEpetra;
 
 template<typename matrix_t,
 	 typename R_t,
-	 int n = algebra::constants::dynamic,
-	 int m = algebra::constants::dynamic,
+	 int n = utils::constants::dynamic,
+	 int m = utils::constants::dynamic,
 	 typename wrap_Q_type = void,
 	 template <typename...> class Q_type
 	 = algebra::MultiVector,
@@ -119,8 +119,8 @@ template<
   typename matrix_type,
   typename algorithm,
   bool in_place = false,
-  int n = algebra::constants::dynamic,
-  int m = algebra::constants::dynamic,
+  int n = utils::constants::dynamic,
+  int m = utils::constants::dynamic,
   template <typename...> class Q_type
         = ::rompp::algebra::MultiVector,
   typename enable = void
@@ -134,8 +134,8 @@ template<
   typename algorithm,
   typename R_type,
   bool in_place = false,
-  int n = algebra::constants::dynamic,
-  int m = algebra::constants::dynamic,
+  int n = utils::constants::dynamic,
+  int m = utils::constants::dynamic,
   template <typename...> class Q_type
         = ::rompp::algebra::MultiVector,
   typename enable = void

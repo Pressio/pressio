@@ -100,7 +100,7 @@ public:
 		  fom_state_t		& yOut) const {
     decoderObj_.applyMapping(romY, yOut);
 
-    constexpr auto one = ::rompp::algebra::constants::one<scalar_t>();
+    constexpr auto one = ::rompp::utils::constants::one<scalar_t>();
     ::rompp::algebra::ops::do_update(yOut, one, yFomReference_, one);
     //yOut += yFomReference_;
   }

@@ -71,7 +71,7 @@ template<typename vector_type,
 	 ::rompp::mpl::enable_if_t<
 	   ::rompp::algebra::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
 	   ::rompp::algebra::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
-	   n == algebra::constants::dynamic
+	   n == utils::constants::dynamic
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
@@ -89,7 +89,7 @@ template<typename vector_type,
 	 ::rompp::mpl::enable_if_t<
 	   ::rompp::algebra::meta::is_vector_wrapper_eigen<vector_type>::value and
 	   ::rompp::algebra::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
-	   n != algebra::constants::dynamic and n>=1
+	   n != utils::constants::dynamic and n>=1
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
@@ -112,7 +112,7 @@ template<typename vector_type,
 	 ::rompp::mpl::enable_if_t<
 	   ::rompp::algebra::meta::is_vector_wrapper_eigen<vector_type>::value and
 	   ::rompp::algebra::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
-	   n == algebra::constants::dynamic
+	   n == utils::constants::dynamic
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {

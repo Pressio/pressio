@@ -33,7 +33,7 @@ void set_zero(T & v){
 
   using scalar_t = typename T::value_type;
   for (decltype(v.size()) i=0; i<v.size(); ++i){
-    v.mutable_at(i) = ::rompp::algebra::constants::zero<scalar_t>();
+    v.mutable_at(i) = ::rompp::utils::constants::zero<scalar_t>();
   }
 }
 #endif
