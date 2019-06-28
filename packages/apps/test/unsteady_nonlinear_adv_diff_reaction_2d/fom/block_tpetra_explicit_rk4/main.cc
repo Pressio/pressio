@@ -1,5 +1,5 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "ODE_ALL"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
 #include "../gold_states_explicit.hpp"
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
   using app_residual_t	= typename app_t::residual_type;
   using tcomm_t		= Teuchos::MpiComm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
-  // constexpr auto zero = ::rompp::core::constants::zero<scalar_t>();
+  // constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
 
   // scope guard needed (MPI init within trilinos)
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);
@@ -53,8 +53,8 @@ int main(int argc, char *argv[]){
     appobj.setup();
     const auto y0n = appobj.getInitialState();
 
-    using ode_state_t = rompp::core::Vector<app_state_t>;
-    using ode_res_t   = rompp::core::Vector<app_residual_t>;
+    using ode_state_t = rompp::algebra::Vector<app_state_t>;
+    using ode_res_t   = rompp::algebra::Vector<app_residual_t>;
     ode_state_t y(y0n);
 
     constexpr auto ode_case = rompp::ode::ExplicitEnum::RungeKutta4;

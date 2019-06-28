@@ -13,17 +13,17 @@ namespace rompp{ namespace qr{ namespace impl{
 template<typename matrix_t, typename R_t,
 	 typename MV_t, template<typename...> class Q_type>
 class ModGramSchmidtMVTpetra<
-  matrix_t, R_t, core::constants::dynamic,
-  core::constants::dynamic, MV_t, Q_type, void>{
+  matrix_t, R_t, algebra::constants::dynamic,
+  algebra::constants::dynamic, MV_t, Q_type, void>{
 
   using this_t	     = ModGramSchmidtMVTpetra<matrix_t, R_t,
-					      core::constants::dynamic,
-					      core::constants::dynamic,
+					      algebra::constants::dynamic,
+					      algebra::constants::dynamic,
 					      MV_t, Q_type, void>;
   using int_t	     = int;
-  using sc_t	     = typename core::details::traits<matrix_t>::scalar_t;
+  using sc_t	     = typename algebra::details::traits<matrix_t>::scalar_t;
   using eig_dyn_mat  =  Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using R_nat_t	     = core::Matrix<eig_dyn_mat>;
+  using R_nat_t	     = algebra::Matrix<eig_dyn_mat>;
   using Q_t	     = Q_type<MV_t>;
 
 public:
@@ -41,15 +41,15 @@ public:
     {
       auto ak = A.data()->getVector(k);
       localR_(k,k) = ak->norm2();
-      rkkInv = core::constants::one<sc_t>()/localR_(k,k);
+      rkkInv = algebra::constants::one<sc_t>()/localR_(k,k);
 
       auto qk = Qmat_->data()->getVectorNonConst(k);
-      qk->update( rkkInv, *ak, core::constants::zero<sc_t>() );
+      qk->update( rkkInv, *ak, algebra::constants::zero<sc_t>() );
 
       for (auto j=k+1; j<A.globalNumVectors(); j++){
       	auto aj = A.data()->getVectorNonConst(j);
       	localR_(k,j) = qk->dot(*aj);
-      	aj->update(-localR_(k,j), *qk, core::constants::one<sc_t>());
+      	aj->update(-localR_(k,j), *qk, algebra::constants::one<sc_t>());
       }
     }
   }
@@ -71,7 +71,7 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void project(const vector_in_t & vecIn,
 	       vector_out_t & vecOut) const{
-    core::ops::dot( *this->Qmat_, vecIn, vecOut );
+    algebra::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 
   const Q_t & getCRefQFactor() const {

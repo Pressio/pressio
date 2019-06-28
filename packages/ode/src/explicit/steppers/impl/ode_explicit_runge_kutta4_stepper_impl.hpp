@@ -68,7 +68,7 @@ public:
     typename _state_type = state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      core::meta::is_cstyle_array_pybind11<_state_type>::value
+      algebra::meta::is_cstyle_array_pybind11<_state_type>::value
       > * = nullptr
     >
   void doStep(_state_type & y,
@@ -83,7 +83,7 @@ public:
     const scalar_type t_phalf = t + dt_half;
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-    constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
 
     // stage 1: ytmp = y + auxRHS_[0]*dt_half;
     (*residual_obj_)(y, auxRHS_[0], model_, t);
@@ -129,23 +129,23 @@ public:
     const scalar_type t_phalf = t + dt_half;
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-    constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
 
     // stage 1: ytmp = y + auxRHS_[0]*dt_half;
     (*this->residual_obj_)(y, this->auxRHS_[0], this->model_, t);
-    ::rompp::core::ops::do_update(ytmp, y, one, this->auxRHS_[0], dt_half);
+    ::rompp::algebra::ops::do_update(ytmp, y, one, this->auxRHS_[0], dt_half);
 
     // stage 2: ytmp = y + auxRHS_[1]*dt_half;
     (*this->residual_obj_)(ytmp, this->auxRHS_[1], this->model_, t_phalf);
-    ::rompp::core::ops::do_update(ytmp, y, one, this->auxRHS_[1], dt_half);
+    ::rompp::algebra::ops::do_update(ytmp, y, one, this->auxRHS_[1], dt_half);
 
     // stage 3: ytmp = y + auxRHS_[2]*dt;
     (*this->residual_obj_)(ytmp, this->auxRHS_[2], this->model_, t_phalf);
-    ::rompp::core::ops::do_update(ytmp, y, one, this->auxRHS_[2], dt);
+    ::rompp::algebra::ops::do_update(ytmp, y, one, this->auxRHS_[2], dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     (*this->residual_obj_)(ytmp, this->auxRHS_[3], this->model_, t + dt);
-    ::rompp::core::ops::do_update(y, one,
+    ::rompp::algebra::ops::do_update(y, one,
     				  this->auxRHS_[0], dt6,
     				  this->auxRHS_[1], dt3,
     				  this->auxRHS_[2], dt3,
@@ -154,14 +154,14 @@ public:
 
 
 
-  //  user-defined ops, with core wrappers
+  //  user-defined ops, with algebra wrappers
   template<
     typename step_t,
     typename T = ops_t,
     typename _state_type = state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      core::meta::is_core_wrapper<_state_type>::value
+      algebra::meta::is_algebra_wrapper<_state_type>::value
       > * = nullptr
     >
   void doStep(_state_type & y,
@@ -176,7 +176,7 @@ public:
     const scalar_type t_phalf = t + dt_half;
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-    constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
 
     // stage 1: ytmp = y + auxRHS_[0]*dt_half;
     (*residual_obj_)(y, auxRHS_[0], model_, t);

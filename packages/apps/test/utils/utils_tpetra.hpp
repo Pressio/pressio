@@ -2,7 +2,7 @@
 #if not defined APPS_UTILS_TPETRA_HPP_
 #define APPS_UTILS_TPETRA_HPP_
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "SVD_BASIC"
 #include "utils_read_ascii_matrix_std_vec_vec.hpp"
 #include <Tpetra_Core.hpp>
@@ -14,7 +14,7 @@ auto convertFromVVecToMultiVec(const std::vector<std::vector<double>> & A0,
 			       int nrows, int ncols,
 			       rcpcomm_t Comm,
 			       rcpmap_t rowMap)
-  -> rompp::core::MultiVector<Tpetra::MultiVector<>>{
+  -> rompp::algebra::MultiVector<Tpetra::MultiVector<>>{
 
   Tpetra::MultiVector<> AD(rowMap, ncols);
 
@@ -31,7 +31,7 @@ auto convertFromVVecToMultiVec(const std::vector<std::vector<double>> & A0,
       AD.replaceGlobalValue(gi, j, A0[gi][j]);
   }
 
-  rompp::core::MultiVector<Tpetra::MultiVector<>> ADW(AD);
+  rompp::algebra::MultiVector<Tpetra::MultiVector<>> ADW(AD);
   return ADW;
 }
 
@@ -42,7 +42,7 @@ auto readBasis(
   int romSize, int numCell,
   comm_t Comm,
   const map_t rowMap)
-  ->rompp::core::MultiVector<Tpetra::MultiVector<>>
+  ->rompp::algebra::MultiVector<Tpetra::MultiVector<>>
 {
   std::vector<std::vector<double>> A0;
   ::rompp::apps::test::readAsciiMatrixStdVecVec(filename, A0, romSize);

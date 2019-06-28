@@ -56,7 +56,7 @@ public:
 public:
 
   /*
-   * user does NOT provide custom ops, so we use core::ops
+   * user does NOT provide custom ops, so we use algebra::ops
    * just C++
    */
   template<
@@ -74,8 +74,8 @@ public:
     //eval RHS
     (*residual_obj_)(y, auxRHS_[0], model_, t);
     // y = y + dt * rhs
-    constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
-    ::rompp::core::ops::do_update(y, one, auxRHS_[0], dt);
+    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
+    ::rompp::algebra::ops::do_update(y, one, auxRHS_[0], dt);
   }
 
   /*
@@ -88,7 +88,7 @@ public:
     typename _ode_state_type = ode_state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      core::meta::is_core_wrapper<_ode_state_type>::value
+      algebra::meta::is_algebra_wrapper<_ode_state_type>::value
       > * = nullptr
     >
   void doStep(_ode_state_type & y,
@@ -99,7 +99,7 @@ public:
     //eval RHS
     (*residual_obj_)(y, auxRHS_[0], model_, t);
     // y = y + dt * rhs
-    constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
     op::do_update(*y.data(), one, *auxRHS_[0].data(), dt);
   }
 
@@ -114,7 +114,7 @@ public:
     typename _ode_state_type = ode_state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      core::meta::is_cstyle_array_pybind11<_ode_state_type>::value
+      algebra::meta::is_cstyle_array_pybind11<_ode_state_type>::value
       > * = nullptr
     >
   void doStep(_ode_state_type & y,
@@ -127,7 +127,7 @@ public:
     //eval RHS
     (*residual_obj_)(y, auxRHS_[0], model_, t);
     // y = y + dt * rhs
-    constexpr auto one  = ::rompp::core::constants::one<scalar_type>();
+    constexpr auto one  = ::rompp::algebra::constants::one<scalar_type>();
     op::do_update(y, one, auxRHS_[0], dt);
   }
 #endif

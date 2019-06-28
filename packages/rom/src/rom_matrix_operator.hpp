@@ -3,7 +3,7 @@
 #define ROM_MATRIX_OPERATOR_HPP_
 
 #include "rom_forward_declarations.hpp"
-#include "../../CORE_OPS"
+#include "../../ALGEBRA_OPS"
 
 namespace rompp{ namespace rom{
 
@@ -11,7 +11,7 @@ template<typename wrapped_type>
 class MatrixOperator<
   wrapped_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_core_matrix_wrapper<
+    algebra::meta::is_algebra_matrix_wrapper<
       wrapped_type>::value
     >
   >{

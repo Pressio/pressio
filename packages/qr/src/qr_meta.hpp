@@ -4,9 +4,9 @@
 
 #include "qr_ConfigDefs.hpp"
 #include "qr_algorithms_tags.hpp"
-#include "../../core/src/multi_vector/core_multi_vector_meta.hpp"
-#include "../../core/src/vector/core_vector_meta.hpp"
-#include "../../core/src/matrix/core_matrix_meta.hpp"
+#include "../../algebra/src/multi_vector/algebra_multi_vector_meta.hpp"
+#include "../../algebra/src/vector/algebra_vector_meta.hpp"
+#include "../../algebra/src/matrix/algebra_matrix_meta.hpp"
 
 
 namespace rompp{ namespace qr{ namespace meta {
@@ -17,9 +17,9 @@ struct is_legitimate_r_type : std::false_type {};
 template <typename T>
 struct is_legitimate_r_type<T,
 	 ::rompp::mpl::enable_if_t<
-	   core::meta::is_core_matrix_wrapper<T>::value and
-	   core::details::traits<T>::is_shared_mem and
-	   core::details::traits<T>::is_dense
+	   algebra::meta::is_algebra_matrix_wrapper<T>::value and
+	   algebra::details::traits<T>::is_shared_mem and
+	   algebra::details::traits<T>::is_dense
 	   >
       > : std::true_type{};
 
@@ -31,10 +31,10 @@ struct is_legitimate_vector_type_for_qr_project : std::false_type {};
 template <typename T, typename Q_t>
 struct is_legitimate_vector_type_for_qr_project<T, Q_t,
 	 ::rompp::mpl::enable_if_t<
-	   core::meta::is_core_vector_wrapper<T>::value and
+	   algebra::meta::is_algebra_vector_wrapper<T>::value and
 	   // the vector type should be from same package as Q
-	   core::details::traits<T>::wrapped_package_identifier ==
-	   core::details::traits<Q_t>::wrapped_package_identifier
+	   algebra::details::traits<T>::wrapped_package_identifier ==
+	   algebra::details::traits<Q_t>::wrapped_package_identifier
 	 >
       > : std::true_type{};
 

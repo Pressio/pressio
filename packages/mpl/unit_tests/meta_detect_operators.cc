@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include "MPL_ALL"
 
-TEST(core_meta_detect_operators, operatorAddDetecting)
+TEST(algebra_meta_detect_operators, operatorAddDetecting)
 {
   using namespace rompp;
 
@@ -35,7 +35,7 @@ TEST(core_meta_detect_operators, operatorAddDetecting)
 }
 
 
-TEST(core_meta_detect_operators, operatorSubtractDetecting)
+TEST(algebra_meta_detect_operators, operatorSubtractDetecting)
 {
   using namespace rompp;
 
@@ -68,7 +68,7 @@ TEST(core_meta_detect_operators, operatorSubtractDetecting)
 }
 
 
-TEST(core_meta_detect_operators, operatorStarDetecting)
+TEST(algebra_meta_detect_operators, operatorStarDetecting)
 {
   using namespace rompp;
 
@@ -102,7 +102,7 @@ TEST(core_meta_detect_operators, operatorStarDetecting)
 
 
 
-TEST(core_meta_detect_operators, operatorCompAssignDetecting)
+TEST(algebra_meta_detect_operators, operatorCompAssignDetecting)
 {
   using namespace rompp;
 
@@ -130,7 +130,7 @@ TEST(core_meta_detect_operators, operatorCompAssignDetecting)
 
 
 
-TEST(core_meta_detect_operators, operatorCompAssignMinusDetecting)
+TEST(algebra_meta_detect_operators, operatorCompAssignMinusDetecting)
 {
   using namespace rompp;
 

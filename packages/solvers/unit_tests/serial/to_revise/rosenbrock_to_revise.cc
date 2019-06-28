@@ -1,13 +1,13 @@
 
 #include <gtest/gtest.h>
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "QR_BASIC"
 
 struct NonLinearLeastSquareSystem {
 
-  using jacobian_w_t = rompp::core::Matrix<Eigen::MatrixXd>;
-  using state_w_t = rompp::core::Vector<Eigen::VectorXd>;
+  using jacobian_w_t = rompp::algebra::Matrix<Eigen::MatrixXd>;
+  using state_w_t = rompp::algebra::Vector<Eigen::VectorXd>;
   using state_type = state_w_t;
   using residual_type = state_type;
   using jacobian_type =  jacobian_w_t;
@@ -47,7 +47,7 @@ struct NonLinearLeastSquareSystem {
 
 TEST(solvers_nonlinear_least_squares, rosenbrockGNQRLineSearch){
   using namespace rompp;
-  using state_w_t = core::Vector<Eigen::VectorXd>;
+  using state_w_t = algebra::Vector<Eigen::VectorXd>;
   using sc_t	  = double;
   using mat_type  = typename NonLinearLeastSquareSystem::jacobian_w_t;
   NonLinearLeastSquareSystem problem;
@@ -70,7 +70,7 @@ TEST(solvers_nonlinear_least_squares, rosenbrockGNQRLineSearch){
 
 // TEST(solvers_nonlinear_least_squares, gaussNewtonQRLineSearchDoOnly2Steps){
 //   using namespace rompp;
-//   using state_w_t = core::Vector<Eigen::VectorXd>;
+//   using state_w_t = algebra::Vector<Eigen::VectorXd>;
 //   using sc_t	  = double;
 //   using mat_type  = typename NonLinearLeastSquareSystem::jacobian_w_t;
 //   NonLinearLeastSquareSystem problem;

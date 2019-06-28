@@ -1,5 +1,5 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "ODE_ALL"
 #include "APPS_BURGERS1D"
 #include "../gold_states_explicit.hpp"
@@ -36,8 +36,8 @@ int main(int argc, char *argv[]){
   std::cout << " --- " << std::endl;
 
   // types for ode
-  using ode_state_t = rompp::core::Vector<app_state_t>;
-  using ode_res_t   = rompp::core::Vector<app_rhs_t>;
+  using ode_state_t = rompp::algebra::Vector<app_state_t>;
+  using ode_res_t   = rompp::algebra::Vector<app_rhs_t>;
 
   ode_state_t y(y0n);
   constexpr auto ode_case = rompp::ode::ExplicitEnum::Euler;

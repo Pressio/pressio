@@ -3,7 +3,7 @@
 #define QR_HOUSEHOLDER_EIGEN_DENSE_MATRIX_OUT_OF_PLACE_IMPL_HPP_
 
 #include <Eigen/QR>
-#include "../../../CORE_OPS"
+#include "../../../ALGEBRA_OPS"
 #include "../qr_rfactor_solve_impl.hpp"
 
 namespace rompp{ namespace qr{ namespace impl{
@@ -14,14 +14,14 @@ namespace rompp{ namespace qr{ namespace impl{
 */
 template< typename matrix_type, typename R_t, template <typename...> class Q_type>
 class QRHouseholderDenseEigenMatrixWrapper<
-  matrix_type, R_t, core::constants::dynamic, core::constants::dynamic, Q_type,
+  matrix_type, R_t, algebra::constants::dynamic, algebra::constants::dynamic, Q_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value
+    algebra::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value
     >
   >{
 
-  using sc_t	     = typename core::details::traits<matrix_type>::scalar_t;
-  using nat_mat_t    = typename core::details::traits<matrix_type>::wrapped_t;
+  using sc_t	     = typename algebra::details::traits<matrix_type>::scalar_t;
+  using nat_mat_t    = typename algebra::details::traits<matrix_type>::wrapped_t;
   using factorizer_t = Eigen::HouseholderQR<nat_mat_t>;
   using Q_nat_t	     = Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
   using Q_t	     = Q_type<Q_nat_t>;
@@ -47,7 +47,7 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void project(const vector_in_t & vecIn,
   	       vector_out_t & vecOut) const{
-    core::ops::dot( *this->Qmat_, vecIn, vecOut );
+    algebra::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 
   // non-type template n not used here
@@ -77,11 +77,11 @@ template< typename matrix_type, typename R_t,
 class QRHouseholderDenseEigenMatrixWrapper<
   matrix_type, R_t, n, m, Q_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value and n >=1 and m>=1>
+    algebra::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value and n >=1 and m>=1>
     >{
 
-  using sc_t	     = typename core::details::traits<matrix_type>::scalar_t;
-  using nat_mat_t    = typename core::details::traits<matrix_type>::wrapped_t;
+  using sc_t	     = typename algebra::details::traits<matrix_type>::scalar_t;
+  using nat_mat_t    = typename algebra::details::traits<matrix_type>::wrapped_t;
   using factorizer_t = Eigen::HouseholderQR<nat_mat_t>;
   using Q_nat_t	     = Eigen::Matrix<sc_t, m, n>;
   using Q_t	     = Q_type<Q_nat_t>;
@@ -115,7 +115,7 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void project(const vector_in_t & vecIn,
   	       vector_out_t & vecOut) const{
-    core::ops::dot( *this->Qmat_, vecIn, vecOut );
+    algebra::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 
   // non-type template n not used here

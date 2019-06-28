@@ -1,0 +1,5 @@
+
+add_serial_unit_test(matrix_vector_product_eigen)
+add_serial_unit_test(matrix_matrix_product_eigen)
+add_serial_unit_test(multi_vector_eigen_product_eigen_vector)
+add_serial_unit_test(sparse_matrix_product_multi_vector_eigen)

@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-#include "CORE_ALL"
-// #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
-// #include "vector/concrete/core_vector_serial_eigen.hpp"
+#include "ALGEBRA_ALL"
+// #include "matrix/concrete/algebra_matrix_sparse_serial_eigen.hpp"
+// #include "vector/concrete/algebra_vector_serial_eigen.hpp"
 
 #include <iostream>
 #include "experimental/solvers_l2_vector_norm.hpp"
@@ -21,11 +21,11 @@ struct ValidSystemLeastSquares {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
+    using matrix_w_t = rompp::algebra::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = rompp::core::Vector<vector_n_t>;
+    using vector_w_t = rompp::algebra::Vector<vector_n_t>;
 
     typedef vector_w_t vector_type;
     typedef matrix_w_t matrix_type;
@@ -71,7 +71,7 @@ TEST(solvers_non_linear_least_square_base, solversBaseSolveTest)
   using namespace rompp::solvers;
 
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = core::Vector<vector_n_t>;
+  using vector_w_t = algebra::Vector<vector_n_t>;
 
   auto solver = NonLinearSolvers::createNonLinearIterativeLeastSquareSolver<nonlinearleastsquare::LevenbergMarquardt, linear::Bicgstab>();
 
@@ -106,7 +106,7 @@ TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test)
   using namespace rompp::solvers;
 
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = core::Vector<vector_n_t>;
+  using vector_w_t = algebra::Vector<vector_n_t>;
 
   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
@@ -141,11 +141,11 @@ struct NonLinearSystem {
     // Matrix typedefs
 
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = core::Matrix<matrix_n_t>;
+    using matrix_w_t = algebra::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = core::Vector<vector_n_t>;
+    using vector_w_t = algebra::Vector<vector_n_t>;
 
     typedef vector_w_t state_type;
     typedef matrix_w_t matrix_type;
@@ -191,7 +191,7 @@ TEST(solvers_nonlinear_iterative_eigen, solversTestNonLinearIterativeEigenRungeK
 
   // Define a system to solve
   NonLinearSystem system;
-  core::Vector<Eigen::VectorXd> b(2);
+  algebra::Vector<Eigen::VectorXd> b(2);
 
   // Initialize b
   b[0] = 0.15;
@@ -213,8 +213,8 @@ TEST(solvers_nonlinear, simpleTest)
 {
   using native_state_t = Eigen::VectorXd;
   using native_jac_t = Eigen::Matrix<double,-1,-1>;
-  using state_t = core::Vector<native_state_t>;
-  using jac_t = core::Matrix<native_jac_t>;
+  using state_t = algebra::Vector<native_state_t>;
+  using jac_t = algebra::Matrix<native_jac_t>;
   using scalar_t = double;
 
   struct app{

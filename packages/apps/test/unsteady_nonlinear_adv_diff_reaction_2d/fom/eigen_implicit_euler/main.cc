@@ -1,5 +1,5 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
   using app_state_t	= typename app_t::state_type;
   using app_residual_t	= typename app_t::residual_type;
   using app_jacob_t	= typename app_t::jacobian_type;
-  constexpr auto zero = ::rompp::core::constants::zero<scalar_t>();
+  constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
 
   constexpr int Nx = 11, Ny = Nx*2-1;
   app_t appobj(Nx, Ny);
@@ -72,9 +72,9 @@ int main(int argc, char *argv[]){
     file.close();
   }
 
-  using ode_state_t = rompp::core::Vector<app_state_t>;
-  using ode_res_t   = rompp::core::Vector<app_residual_t>;
-  using ode_jac_t   = rompp::core::Matrix<app_jacob_t>;
+  using ode_state_t = rompp::algebra::Vector<app_state_t>;
+  using ode_res_t   = rompp::algebra::Vector<app_residual_t>;
+  using ode_jac_t   = rompp::algebra::Matrix<app_jacob_t>;
 
   ode_state_t y(y0n);
   constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;

@@ -5,7 +5,7 @@
 
 #include <memory>
 #include "svd_solver_generic_base.hpp"
-#include "../../CORE_ALL"
+#include "../../ALGEBRA_ALL"
 #include <Epetra_Import.h>
 
 namespace rompp{
@@ -18,8 +18,8 @@ template<typename matrix_type,
 class Solver<matrix_type, lsv_type, rsv_type, sval_type,
 	     typename
 	     std::enable_if<
-	       core::meta::is_multi_vector_epetra<
-		 typename core::details::traits<matrix_type>::wrapped_t
+	       algebra::meta::is_multi_vector_epetra<
+		 typename algebra::details::traits<matrix_type>::wrapped_t
 		 >::value
 	       >::type
 	     >
@@ -29,7 +29,7 @@ class Solver<matrix_type, lsv_type, rsv_type, sval_type,
 
 private:
   using MV = Epetra_MultiVector;
-  using sc_t = typename core::details::traits<matrix_type>::scalar_t;
+  using sc_t = typename algebra::details::traits<matrix_type>::scalar_t;
   using lsv_t = lsv_type<MV>;
   using rsv_t = rsv_type<MV>;
   using sval_t = sval_type;
@@ -62,7 +62,7 @@ private:
     A2.data()->Import(*A.data(), importer, Insert);
 
     // store it into an Eigen matrix
-    core::Matrix<Eigen::MatrixXd> eA2W(m,n);
+    algebra::Matrix<Eigen::MatrixXd> eA2W(m,n);
     for (int i=0;i<m;i++)
       for (int j=0;j<n;j++)
     	eA2W(i,j) = A2(i,j);

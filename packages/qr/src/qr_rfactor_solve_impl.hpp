@@ -3,8 +3,8 @@
 #define QR_RFACTOR_SOLVE_HPP_
 
 #include "qr_ConfigDefs.hpp"
-#include "../../core/src/vector/core_vector_meta.hpp"
-#include "../../core/src/matrix/core_matrix_meta.hpp"
+#include "../../algebra/src/vector/algebra_vector_meta.hpp"
+#include "../../algebra/src/matrix/algebra_matrix_meta.hpp"
 #ifdef HAVE_TRILINOS
 #include "Teuchos_SerialDenseMatrix.hpp"
 #include "Teuchos_SerialDenseSolver.hpp"
@@ -17,8 +17,8 @@ namespace rompp{ namespace qr{ namespace impl{
 template<typename vector_type,
 	 typename R_type,
 	 ::rompp::mpl::enable_if_t<
-	   ::rompp::core::meta::is_vector_wrapper_eigen<vector_type>::value and
-	   ::rompp::core::meta::is_dense_matrix_wrapper_eigen<R_type>::value
+	   ::rompp::algebra::meta::is_vector_wrapper_eigen<vector_type>::value and
+	   ::rompp::algebra::meta::is_dense_matrix_wrapper_eigen<R_type>::value
 	   > * = nullptr>
 void solve(const vector_type & rhs,
 	   const R_type & Rmatrix,
@@ -35,14 +35,14 @@ void solve(const vector_type & rhs,
 #ifdef HAVE_TRILINOS
 template<typename vector_type, typename R_type,
 	 ::rompp::mpl::enable_if_t<
-	   ::rompp::core::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
-	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value
+	   ::rompp::algebra::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
+	   ::rompp::algebra::meta::is_dense_matrix_teuchos_rcp<R_type>::value
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
   using ord_t	 = typename R_type::element_type::ordinalType;
   using sc_t	 = typename R_type::element_type::scalarType;
-  using wrapv_t	 = typename core::details::traits<vector_type>::wrapped_t;
+  using wrapv_t	 = typename algebra::details::traits<vector_type>::wrapped_t;
   using solver_t = Teuchos::SerialDenseSolver<ord_t, sc_t>;
 
   solver_t My_Solver;
@@ -69,9 +69,9 @@ template<typename vector_type,
 	 typename R_type,
 	 int n,
 	 ::rompp::mpl::enable_if_t<
-	   ::rompp::core::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
-	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
-	   n == core::constants::dynamic
+	   ::rompp::algebra::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
+	   ::rompp::algebra::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
+	   n == algebra::constants::dynamic
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
@@ -87,9 +87,9 @@ template<typename vector_type,
 	 typename R_type,
 	 int n,
 	 ::rompp::mpl::enable_if_t<
-	   ::rompp::core::meta::is_vector_wrapper_eigen<vector_type>::value and
-	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
-	   n != core::constants::dynamic and n>=1
+	   ::rompp::algebra::meta::is_vector_wrapper_eigen<vector_type>::value and
+	   ::rompp::algebra::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
+	   n != algebra::constants::dynamic and n>=1
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
@@ -98,7 +98,7 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 
   //  auto vecSize = rhs.size();
   using eigMat = Eigen::Matrix<sc_t, n, n>;
-  core::Matrix<eigMat> eigR( Rmatrix->values() );
+  algebra::Matrix<eigMat> eigR( Rmatrix->values() );
   solve(rhs, eigR, y);
 }
 #endif
@@ -110,9 +110,9 @@ template<typename vector_type,
 	 typename R_type,
 	 int n,
 	 ::rompp::mpl::enable_if_t<
-	   ::rompp::core::meta::is_vector_wrapper_eigen<vector_type>::value and
-	   ::rompp::core::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
-	   n == core::constants::dynamic
+	   ::rompp::algebra::meta::is_vector_wrapper_eigen<vector_type>::value and
+	   ::rompp::algebra::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
+	   n == algebra::constants::dynamic
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {

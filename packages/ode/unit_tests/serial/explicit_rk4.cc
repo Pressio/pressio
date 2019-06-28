@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "ODE_ALL"
 #include "reference_apps_for_testing.hpp"
 
@@ -11,8 +11,8 @@ TEST(ode_explicit_rk4, traits){
   using app_t = ode::testing::fakeAppForTraitsForExp;
   using nstate_t = typename app_t::state_type;
   using nres_t = typename app_t::residual_type;
-  using state_t = core::Vector<nstate_t>;
-  using res_t = core::Vector<nres_t>;
+  using state_t = algebra::Vector<nstate_t>;
+  using res_t = algebra::Vector<nres_t>;
 
   static_assert(
     ode::meta::is_legitimate_model_for_explicit_ode<app_t>::value, "");
@@ -45,8 +45,8 @@ TEST(ode_explicit_rk4,
   using nresidual_t = typename app_t::residual_type;
   app_t appObj;
 
-  using state_t = core::Vector<nstate_t>;
-  using res_t = core::Vector<nresidual_t>;
+  using state_t = algebra::Vector<nstate_t>;
+  using res_t = algebra::Vector<nresidual_t>;
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
   res_t r(3);
@@ -78,8 +78,8 @@ TEST(ode_explicit_rk4,
   using nresidual_t = typename app_t::residual_type;
   app_t appObj;
 
-  using state_t = core::Vector<nstate_t>;
-  using res_t = core::Vector<nresidual_t>;
+  using state_t = algebra::Vector<nstate_t>;
+  using res_t = algebra::Vector<nresidual_t>;
 
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;

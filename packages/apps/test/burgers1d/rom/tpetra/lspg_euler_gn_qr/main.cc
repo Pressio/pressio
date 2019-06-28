@@ -1,5 +1,5 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "ODE_ALL"
 #include "QR_BASIC"
 #include "SOLVERS_NONLINEAR"
@@ -12,9 +12,9 @@ int main(int argc, char *argv[]){
   using fom_t		= rompp::apps::Burgers1dTpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;
+  using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
 
-  using decoder_jac_t	= rompp::core::MultiVector<Tpetra::MultiVector<>>;
+  using decoder_jac_t	= rompp::algebra::MultiVector<Tpetra::MultiVector<>>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
   using tcomm_t		= Teuchos::MpiComm<int>;

@@ -51,8 +51,8 @@ class NonLinearLeastSquareIterativeSolver
 
       double tolerance = this->getTolerance();
       double nonLinearTolerance = this->getNonLinearTolerance();
-      core::default_types::uint maxIterations = this->getMaxIterations();
-      core::default_types::uint maxNonLinearIterations = this->getMaxNonLinearIterations();
+      algebra::default_types::uint maxIterations = this->getMaxIterations();
+      algebra::default_types::uint maxNonLinearIterations = this->getMaxNonLinearIterations();
 
       return PolicyT::template solve<LSolverT, PrecT, NormT>(sys, b, maxIterations, 
                 maxNonLinearIterations, tolerance, nonLinearTolerance, lambda_);

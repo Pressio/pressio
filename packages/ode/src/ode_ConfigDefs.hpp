@@ -3,18 +3,18 @@
 #define ODE_CONFIGDEFS_HPP_
 
 #include "ode_config.h"
-#include "../../core/src/core_ConfigDefs.hpp"
-#include "../../core/src/meta/core_meta_basic.hpp"
-#include "../../core/src/vector/core_vector_traits.hpp"
-#include "../../core/src/matrix/core_matrix_traits.hpp"
-#include "../../core/src/multi_vector/core_multi_vector_traits.hpp"
-#include "../../core/src/vector/core_vector_meta.hpp"
-#include "../../core/src/multi_vector/core_multi_vector_meta.hpp"
-#include "../../core/src/matrix/core_matrix_meta.hpp"
-#include "../../core/src/core_is_core_wrapper.hpp"
+#include "../../algebra/src/algebra_ConfigDefs.hpp"
+#include "../../algebra/src/meta/algebra_meta_basic.hpp"
+#include "../../algebra/src/vector/algebra_vector_traits.hpp"
+#include "../../algebra/src/matrix/algebra_matrix_traits.hpp"
+#include "../../algebra/src/multi_vector/algebra_multi_vector_traits.hpp"
+#include "../../algebra/src/vector/algebra_vector_meta.hpp"
+#include "../../algebra/src/multi_vector/algebra_multi_vector_meta.hpp"
+#include "../../algebra/src/matrix/algebra_matrix_meta.hpp"
+#include "../../algebra/src/algebra_is_algebra_wrapper.hpp"
 
 #ifdef DEBUG_PRINT
-#include "../../core/src/io/core_print_helper.hpp"
+#include "../../algebra/src/io/algebra_print_helper.hpp"
 #endif
 
 #include "ode_enum.hpp"

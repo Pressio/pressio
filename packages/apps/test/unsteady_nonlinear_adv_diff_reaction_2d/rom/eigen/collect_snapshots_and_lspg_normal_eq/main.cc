@@ -1,5 +1,5 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "ODE_ALL"
 #include "QR_BASIC"
 #include "SOLVERS_NONLINEAR"
@@ -13,16 +13,16 @@ using app_state_t	= typename app_t::state_type;
 using app_residual_t	= typename app_t::residual_type;
 using app_jacobian_t	= typename app_t::jacobian_type;
 
-using ode_state_t = rompp::core::Vector<app_state_t>;
-using ode_res_t   = rompp::core::Vector<app_residual_t>;
-using ode_jac_t   = rompp::core::Matrix<app_jacobian_t>;
+using ode_state_t = rompp::algebra::Vector<app_state_t>;
+using ode_res_t   = rompp::algebra::Vector<app_residual_t>;
+using ode_jac_t   = rompp::algebra::Matrix<app_jacobian_t>;
 
 using eig_dyn_mat	= Eigen::MatrixXd;
 using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
 using uint_t		= unsigned int;
 
 constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
-constexpr auto zero	= ::rompp::core::constants::zero<scalar_t>();
+constexpr auto zero	= ::rompp::algebra::constants::zero<scalar_t>();
 constexpr auto t0	= static_cast<scalar_t>(0);
 
 void readMatrixFromFile(std::string filename,
@@ -120,8 +120,8 @@ struct LSPGRunner{
 
   ode_state_t run(scalar_t dt, uint_t Nsteps)
   {
-    using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;
-    using decoder_jac_t	= rompp::core::MultiVector<eig_dyn_mat>;
+    using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
+    using decoder_jac_t	= rompp::algebra::MultiVector<eig_dyn_mat>;
     using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
     // app object
@@ -148,7 +148,7 @@ struct LSPGRunner{
 
     // linear solver
     using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-    using hessian_t  = rompp::core::Matrix<eig_dyn_mat>;
+    using hessian_t  = rompp::algebra::Matrix<eig_dyn_mat>;
     using solver_tag   = rompp::solvers::linear::iterative::Bicgstab;
     using lin_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
     lin_solver_t linSolverObj;

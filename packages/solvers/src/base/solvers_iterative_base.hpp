@@ -13,7 +13,7 @@ struct IterativeBase
   IterativeBase(const IterativeBase &) = delete;
   ~IterativeBase() = default;
 
-  using iteration_t = core::default_types::uint;
+  using iteration_t = algebra::default_types::uint;
 
   /** Get the maximum number of iterations. */
   inline iteration_t getMaxIterations() {

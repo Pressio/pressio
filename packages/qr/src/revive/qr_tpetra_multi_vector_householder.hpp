@@ -7,7 +7,7 @@
 #include "qr_forward_declarations.hpp"
 #include "qr_solver_base.hpp"
 
-#include "../../CORE_ALL"
+#include "../../ALGEBRA_ALL"
 #include <Eigen/OrderingMethods>
 #include<Eigen/SparseQR>
 #include <Tpetra_Map.hpp>
@@ -26,24 +26,24 @@ class QRSolver<matrix_type,
 	       Q_type,
 	       typename
 	       std::enable_if<
-		 core::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value and
-		 core::meta::is_core_matrix_wrapper<R_type>::value and
-		 core::details::traits<R_type>::is_shared_mem and
-		 core::details::traits<R_type>::is_dense
+		 algebra::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value and
+		 algebra::meta::is_algebra_matrix_wrapper<R_type>::value and
+		 algebra::details::traits<R_type>::is_shared_mem and
+		 algebra::details::traits<R_type>::is_dense
 		 >::type
 	       >
   : public QRSolverBase<QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>,
 			R_type,
-			Q_type<typename core::details::traits<matrix_type>::wrapped_t>,
+			Q_type<typename algebra::details::traits<matrix_type>::wrapped_t>,
 			matrix_type>{
 
-  using MV = typename core::details::traits<matrix_type>::wrapped_t;
-  using sc_t = typename core::details::traits<matrix_type>::scalar_t;
-  using LO_t = typename core::details::traits<matrix_type>::local_ordinal_t;
-  using GO_t = typename core::details::traits<matrix_type>::global_ordinal_t;
-  using map_t = typename core::details::traits<matrix_type>::data_map_t;
-  using node_t = typename core::details::traits<matrix_type>::node_t;
-  using hexsp = typename core::details::traits<matrix_type>::host_exec_space_t;
+  using MV = typename algebra::details::traits<matrix_type>::wrapped_t;
+  using sc_t = typename algebra::details::traits<matrix_type>::scalar_t;
+  using LO_t = typename algebra::details::traits<matrix_type>::local_ordinal_t;
+  using GO_t = typename algebra::details::traits<matrix_type>::global_ordinal_t;
+  using map_t = typename algebra::details::traits<matrix_type>::data_map_t;
+  using node_t = typename algebra::details::traits<matrix_type>::node_t;
+  using hexsp = typename algebra::details::traits<matrix_type>::host_exec_space_t;
   using Q_t = Q_type<MV>;
 
   using this_t = QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>;
@@ -77,7 +77,7 @@ private:
     A2.data()->doImport(*A.data(), importer, Tpetra::INSERT);
 
     // store it into an Eigen matrix
-    core::Matrix<Eigen::MatrixXd> eA2W(m,n);
+    algebra::Matrix<Eigen::MatrixXd> eA2W(m,n);
     for (int j=0;j<n;j++){
       auto colData = A2.data()->getData(j);
       for (int i=0;i<m;i++)

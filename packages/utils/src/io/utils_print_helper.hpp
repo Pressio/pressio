@@ -52,9 +52,9 @@ void print_stdout_if_dp(Args &&... args){
 
 
 // template <typename T, typename ... Args>
-// void print_core_wrapper(const T & object, Args && ...args)
+// void print_algebra_wrapper(const T & object, Args && ...args)
 // {
-//   using traits = core::details::traits<T>;
+//   using traits = algebra::details::traits<T>;
 
 //   if (traits::is_shared_mem == true){
 //     if(impl::myRank()==0)

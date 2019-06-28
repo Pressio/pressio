@@ -2,16 +2,16 @@
 #if not defined SOLVERS_UTEST_SERIAL_EXPONENTIAL_DATA_FIT_N2_HPP_
 #define SOLVERS_UTEST_SERIAL_EXPONENTIAL_DATA_FIT_N2_HPP_
 
-#include "CORE_VECTOR"
-#include "CORE_MATRIX"
+#include "ALGEBRA_VECTOR"
+#include "ALGEBRA_MATRIX"
 
 namespace rompp{ namespace solvers{ namespace test{
 
 struct ExpDataFitN2 {
   using scalar_type = double;
-  using state_type	= rompp::core::Vector<Eigen::VectorXd>;
+  using state_type	= rompp::algebra::Vector<Eigen::VectorXd>;
   using residual_type	= state_type;
-  using jacobian_type	= rompp::core::Matrix<Eigen::MatrixXd>;
+  using jacobian_type	= rompp::algebra::Matrix<Eigen::MatrixXd>;
 
   static constexpr int n = 8;
   const double times_[n] = {1.,2.,3.,4.,

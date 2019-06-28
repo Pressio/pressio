@@ -1,13 +1,13 @@
 
 #include <gtest/gtest.h>
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "SOLVERS_NONLINEAR"
 
 struct ValidSystemA {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
+  using matrix_w_t = rompp::algebra::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::core::Vector<vector_n_t>;
+  using vector_w_t = rompp::algebra::Vector<vector_n_t>;
 
   using scalar_type     = double;
   using state_type	= vector_w_t;

@@ -23,7 +23,7 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
     typename SystemT,
     typename VectorT,
     typename std::enable_if<
-      !core::details::traits<VectorT>::is_vector ||
+      !algebra::details::traits<VectorT>::is_vector ||
       !solvers::meta::are_vector_compatible<
           typename details::system_traits<SystemT>::vector_type,
           VectorT
@@ -34,8 +34,8 @@ struct SolversNonLinearIterativeNewtonRaphsonPolicy {
   static VectorT solve(
     const SystemT& system,
     const VectorT& x0,
-    core::default_types::uint maxIterations,
-    core::default_types::uint maxNonLinearIterations,
+    algebra::default_types::uint maxIterations,
+    algebra::default_types::uint maxNonLinearIterations,
     double tolerance,
     double nonLinearTolerance
   ) {
@@ -55,7 +55,7 @@ is not compatible with the provided nonlinear system" << std::endl;
     typename SystemT,
     typename VectorT,
     typename std::enable_if<
-      core::details::traits<VectorT>::is_vector &&
+      algebra::details::traits<VectorT>::is_vector &&
       solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,
         VectorT
@@ -66,8 +66,8 @@ is not compatible with the provided nonlinear system" << std::endl;
   static VectorT solve(
     const SystemT& sys,
     const VectorT& x0,
-    core::default_types::uint maxIterations,
-    core::default_types::uint maxNonLinearIterations,
+    algebra::default_types::uint maxIterations,
+    algebra::default_types::uint maxNonLinearIterations,
     double tolerance,
     double nonLinearTolerance
   ) {
@@ -80,7 +80,7 @@ is not compatible with the provided nonlinear system" << std::endl;
     solver.setMaxIterations(maxIterations);
     solver.setTolerance(tolerance);
 
-    core::default_types::uint iStep = 1;
+    algebra::default_types::uint iStep = 1;
     VectorT xOld = x0;
     VectorT xNew(x0 - solver.solve(dy));
 

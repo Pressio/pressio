@@ -22,5 +22,5 @@ struct is_explicit_runge_kutta4_residual_standard_policy<
     >::type
   > : std::true_type{};
 
-}}}//end namespace rompp::core::meta
+}}}//end namespace rompp::algebra::meta
 #endif

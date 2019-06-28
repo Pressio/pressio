@@ -4,7 +4,7 @@
 
 #include "../solvers_ConfigDefs.hpp"
 #include "../meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
-#include "../../../core/src/vector/core_vector_meta.hpp"
+#include "../../../algebra/src/vector/algebra_vector_meta.hpp"
 
 namespace rompp{ namespace solvers{
 

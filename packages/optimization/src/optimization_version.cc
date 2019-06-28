@@ -7,4 +7,4 @@ inline std::string version(){
 	return("optimization in ROMPP " ROMPP_VERSION_STRING); 
 }
 
-}}//end namespace rompp::core
+}}//end namespace rompp::algebra

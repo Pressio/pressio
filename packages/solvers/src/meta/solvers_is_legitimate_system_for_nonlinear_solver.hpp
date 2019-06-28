@@ -5,7 +5,7 @@
 #include "solvers_basic_meta.hpp"
 #include "solvers_system_has_all_needed_jacobian_methods.hpp"
 #include "solvers_system_has_all_needed_residual_methods.hpp"
-#include "../../../core/src/vector/core_vector_meta.hpp"
+#include "../../../algebra/src/vector/algebra_vector_meta.hpp"
 
 namespace rompp{ namespace solvers{ namespace meta {
 
@@ -21,10 +21,10 @@ struct is_legitimate_system_for_nonlinear_solver
     ::rompp::mpl::is_detected<has_state_typedef, system_type>::value    and
     ::rompp::mpl::is_detected<has_residual_typedef, system_type>::value and
     ::rompp::mpl::is_detected<has_jacobian_typedef, system_type>::value and
-    // core::meta::is_core_vector_wrapper<
+    // algebra::meta::is_algebra_vector_wrapper<
     //   typename system_type::state_type
     //   >::value and
-    // core::meta::is_core_vector_wrapper<
+    // algebra::meta::is_algebra_vector_wrapper<
     //   typename system_type::residual_type
     //   >::value and
     system_has_needed_residual_methods<

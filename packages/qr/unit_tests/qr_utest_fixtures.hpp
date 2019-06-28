@@ -3,7 +3,7 @@
 #define QR_UTEST_FIXTURES_HPP_
 
 #include <gtest/gtest.h>
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "qr_r9c4_gold.hpp"
 
 #ifdef HAVE_TRILINOS
@@ -22,9 +22,9 @@ struct eigenDenseR9Fixture
 
   using this_t	 = eigenDenseR9Fixture;
   using nat_mat_t = Eigen::MatrixXd;
-  using mymat_t = rompp::core::Matrix<nat_mat_t>;
+  using mymat_t = rompp::algebra::Matrix<nat_mat_t>;
   using nat_v_t	 = Eigen::VectorXd;
-  using myvec_t	 = rompp::core::Vector<nat_v_t>;
+  using myvec_t	 = rompp::algebra::Vector<nat_v_t>;
 
   // gold solution
   rompp::qr::test::qrGoldr9c4Sol<double> gold_;
@@ -83,9 +83,9 @@ struct epetraR9Fixture
 
   using this_t	 = epetraR9Fixture;
   using nat_mv_t = Epetra_MultiVector;
-  using mymvec_t = rompp::core::MultiVector<nat_mv_t>;
+  using mymvec_t = rompp::algebra::MultiVector<nat_mv_t>;
   using nat_v_t	 = Epetra_Vector;
-  using myvec_t	 = rompp::core::Vector<nat_v_t>;
+  using myvec_t	 = rompp::algebra::Vector<nat_v_t>;
 
   // gold solution
   rompp::qr::test::qrGoldr9c4Sol<double> gold_;
@@ -169,9 +169,9 @@ struct tpetraR9Fixture
   using GO	    = typename nat_mvec_t::global_ordinal_type;
   using nat_vec_t   = Tpetra::Vector<>;
 
-  using mymvec_t    = rompp::core::MultiVector<nat_mvec_t>;
-  using mv_device_t = typename rompp::core::details::traits<mymvec_t>::device_t;
-  using myvec_t     = rompp::core::Vector<nat_vec_t>;
+  using mymvec_t    = rompp::algebra::MultiVector<nat_mvec_t>;
+  using mv_device_t = typename rompp::algebra::details::traits<mymvec_t>::device_t;
+  using myvec_t     = rompp::algebra::Vector<nat_vec_t>;
 
   // gold solution
   rompp::qr::test::qrGoldr9c4Sol<ST> gold_;

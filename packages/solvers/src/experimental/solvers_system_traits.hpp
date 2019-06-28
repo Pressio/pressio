@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-#include "../../../core/src/meta/core_meta_detection_idiom.hpp"
+#include "../../../algebra/src/meta/algebra_meta_detection_idiom.hpp"
 
 
 namespace rompp{
@@ -58,28 +58,28 @@ using has_jacobian_callable_with_two_args =
 
 template <typename T>
 struct system_traits {
-  typedef typename core::meta::detected_t<has_public_vector_type, T> vector_type;
-  typedef typename core::meta::detected_t<has_public_matrix_type, T> matrix_type;
+  typedef typename algebra::meta::detected_t<has_public_vector_type, T> vector_type;
+  typedef typename algebra::meta::detected_t<has_public_matrix_type, T> matrix_type;
 
   static constexpr bool has_public_vector_type =
-    core::meta::is_detected<has_public_vector_type, T>::value;
+    algebra::meta::is_detected<has_public_vector_type, T>::value;
   static constexpr bool has_public_matrix_type =
-    core::meta::is_detected<has_public_matrix_type, T>::value;
+    algebra::meta::is_detected<has_public_matrix_type, T>::value;
 
   static constexpr bool has_residual_callable_with_one_arg =
-    core::meta::is_detected<has_residual_callable_with_one_arg,
+    algebra::meta::is_detected<has_residual_callable_with_one_arg,
 			    T, vector_type>::value;
   static constexpr bool has_residual_callable_with_two_args =
-    core::meta::is_detected<has_residual_callable_with_two_args,
+    algebra::meta::is_detected<has_residual_callable_with_two_args,
 			    T, vector_type, vector_type>::value;
   static constexpr bool has_residual_methods =
     has_residual_callable_with_one_arg || has_residual_callable_with_two_args;
 
   static constexpr bool has_jacobian_callable_with_one_arg =
-    core::meta::is_detected<has_jacobian_callable_with_one_arg,
+    algebra::meta::is_detected<has_jacobian_callable_with_one_arg,
 			    T, vector_type>::value;
   static constexpr bool has_jacobian_callable_with_two_args =
-    core::meta::is_detected<has_jacobian_callable_with_two_args,
+    algebra::meta::is_detected<has_jacobian_callable_with_two_args,
 			    T, vector_type, matrix_type>::value;
   static constexpr bool has_jacobian_methods =
     has_jacobian_callable_with_one_arg || has_jacobian_callable_with_two_args;

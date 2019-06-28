@@ -2,7 +2,7 @@
 #if not defined APPS_UTILS_EPETRA_HPP_
 #define APPS_UTILS_EPETRA_HPP_
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "SVD_BASIC"
 #include "Epetra_MpiComm.h"
 #include "utils_read_ascii_matrix_std_vec_vec.hpp"
@@ -16,9 +16,9 @@ auto convertFromVVecToMultiVec(
       const T nrows, const T ncols,
       const Epetra_MpiComm & Comm,
       const Epetra_Map & rowMap)
-  -> rompp::core::MultiVector<Epetra_MultiVector>{
+  -> rompp::algebra::MultiVector<Epetra_MultiVector>{
 
-  rompp::core::MultiVector<Epetra_MultiVector> ADW(rowMap, ncols);
+  rompp::algebra::MultiVector<Epetra_MultiVector> ADW(rowMap, ncols);
   // each process stores just its elements from A0
   int nMyElem = rowMap.NumMyElements();
   std::vector<int> myGel(nMyElem);
@@ -38,7 +38,7 @@ auto readBasis(
   T romSize, T numCell,
   const Epetra_MpiComm & Comm,
   const Epetra_Map & rowMap)
-  ->rompp::core::MultiVector<Epetra_MultiVector>
+  ->rompp::algebra::MultiVector<Epetra_MultiVector>
 {
   std::vector<std::vector<double>> A0;
   ::rompp::apps::test::readAsciiMatrixStdVecVec(filename, A0, romSize);

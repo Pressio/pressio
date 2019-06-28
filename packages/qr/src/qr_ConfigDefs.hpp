@@ -3,7 +3,7 @@
 #define QR_CONFIGDEFS_HPP
 
 #include "qr_config.h"
-#include "../../core/src/core_ConfigDefs.hpp"
+#include "../../algebra/src/algebra_ConfigDefs.hpp"
 
 namespace rompp{ namespace qr{ namespace details {
 

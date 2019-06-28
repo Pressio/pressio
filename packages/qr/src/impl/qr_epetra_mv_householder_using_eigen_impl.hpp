@@ -17,11 +17,11 @@ template<typename matrix_t, typename R_t, int n, int m,
 class EpetraMVHouseholderUsingEigen{
 
   using MV = Epetra_MultiVector;
-  using sc_t = typename core::details::traits<matrix_t>::scalar_t;
+  using sc_t = typename algebra::details::traits<matrix_t>::scalar_t;
   using Q_t = Q_type<MV>;
 
   using eig_dyn_mat	= Eigen::MatrixXd;
-  using eig_mat_w	= core::Matrix<eig_dyn_mat>;
+  using eig_mat_w	= algebra::Matrix<eig_dyn_mat>;
   using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<
 				eig_mat_w, R_t, n, m, Q_type>;
   help_impl_t myImpl_	= {};
@@ -33,7 +33,7 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void project(const vector_in_t & vecIn,
   	       vector_out_t & vecOut) const{
-    core::ops::dot( *this->Qmat_, vecIn, vecOut );
+    algebra::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 
   template <typename vector_t>

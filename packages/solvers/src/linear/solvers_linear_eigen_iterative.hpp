@@ -13,18 +13,18 @@ template<typename SolverT, typename MatrixT>
 class EigenIterative
   : public LinearBase<SolverT, MatrixT,
 		      EigenIterative<SolverT, MatrixT> >,
-    public IterativeBase<typename core::details::traits<MatrixT>::scalar_t>
+    public IterativeBase<typename algebra::details::traits<MatrixT>::scalar_t>
 {
 public:
 
-  static_assert( ::rompp::core::meta::is_matrix_wrapper_eigen<MatrixT>::value or
-  		 ::rompp::core::meta::is_multi_vector_wrapper_eigen<MatrixT>::value,
+  static_assert( ::rompp::algebra::meta::is_matrix_wrapper_eigen<MatrixT>::value or
+  		 ::rompp::algebra::meta::is_multi_vector_wrapper_eigen<MatrixT>::value,
   		 "Eigen iterative solver needs a matrix type = wrapper of an eigen matrix");
 
   using solver_t	= SolverT;
   using matrix_type	= MatrixT;
-  using native_mat_t    = typename core::details::traits<MatrixT>::wrapped_t;
-  using scalar_t        = typename core::details::traits<MatrixT>::scalar_t;
+  using native_mat_t    = typename algebra::details::traits<MatrixT>::wrapped_t;
+  using scalar_t        = typename algebra::details::traits<MatrixT>::scalar_t;
   using this_t          = EigenIterative<SolverT, MatrixT>;
   using base_interface  = LinearBase<SolverT, MatrixT, this_t>;
   using base_iterative  = IterativeBase<scalar_t>;

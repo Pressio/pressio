@@ -2,7 +2,7 @@
 #ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_EIGEN_HPP_
 #define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_EIGEN_HPP_
 
-#include "../../../CORE_ALL"
+#include "../../../ALGEBRA_ALL"
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
 #include <cmath>
@@ -24,9 +24,9 @@ public:
   using mv_t		= Eigen::MatrixXd;
   typedef Eigen::Triplet<scalar_type> Tr;
   using mat4_t		= Eigen::Matrix<scalar_type, 4, 4>;
-  static constexpr auto zero = ::rompp::core::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::core::constants::one<scalar_type>();
-  static constexpr auto two = ::rompp::core::constants::two<scalar_type>();
+  static constexpr auto zero = ::rompp::algebra::constants::zero<scalar_type>();
+  static constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
+  static constexpr auto two = ::rompp::algebra::constants::two<scalar_type>();
 
 public:
   UnsteadyNonLinAdvDiffReacFlame2dEigen

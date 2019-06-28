@@ -23,13 +23,13 @@ class GaussNewtonConservative<
   scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
   converged_when_t, system_t, cbar_t,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_vector_wrapper_eigen<typename system_t::state_type>::value and
-    core::meta::is_core_vector_wrapper<typename system_t::residual_type>::value
+    algebra::meta::is_vector_wrapper_eigen<typename system_t::state_type>::value and
+    algebra::meta::is_algebra_vector_wrapper<typename system_t::residual_type>::value
     and
-    (core::meta::is_core_matrix_wrapper<typename system_t::jacobian_type>::value or
-     core::meta::is_core_multi_vector_wrapper<typename system_t::jacobian_type>::value)
+    (algebra::meta::is_algebra_matrix_wrapper<typename system_t::jacobian_type>::value or
+     algebra::meta::is_algebra_multi_vector_wrapper<typename system_t::jacobian_type>::value)
     and
-     core::meta::is_core_multi_vector_wrapper<cbar_t>::value
+     algebra::meta::is_algebra_multi_vector_wrapper<cbar_t>::value
     >
   >
   : public NonLinearSolverBase<
@@ -40,7 +40,7 @@ class GaussNewtonConservative<
 {
 
   using eig_dyn_mat= Eigen::Matrix<scalar_t, -1, -1>;
-  using mat_t= rompp::core::Matrix<eig_dyn_mat>;
+  using mat_t= rompp::algebra::Matrix<eig_dyn_mat>;
   using state_t    = typename system_t::state_type;
   using residual_t = typename system_t::residual_type;
   using jacobian_t = typename system_t::jacobian_type;

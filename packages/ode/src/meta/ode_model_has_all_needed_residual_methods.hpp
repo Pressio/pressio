@@ -67,12 +67,12 @@ struct model_has_needed_residual_methods<
     has_residual_method_callable_with_two_args<
      model_type, state_type, scalar_type
      >::value and
-    // core::meta::is_detected<
+    // algebra::meta::is_detected<
     // has_residual_method_callable_with_two_args,
     //  model_type, state_type, scalar_type
     //  >::value and
    // has residual method with 3 arguments
-    /*core::meta::is_detected<*/
+    /*algebra::meta::is_detected<*/
      has_residual_method_callable_with_three_args<
      model_type, state_type, residual_type, scalar_type
      >::value and

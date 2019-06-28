@@ -1,5 +1,5 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "QR_BASIC"
 #include "ROM_LSPG_STEADY"
@@ -11,9 +11,9 @@ int main(int argc, char *argv[]){
   using fom_t		= rompp::apps::SteadyLinAdvDiff1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;
+  using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
 
-  using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
+  using decoder_jac_t	= rompp::algebra::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
   using native_state    = typename fom_t::state_type;
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
   appObj.calculateLinearSystem();
   appObj.calculateForcingTerm();
   appObj.solve();
-  rompp::core::Vector<native_state> yFom(*appObj.getState());
+  rompp::algebra::Vector<native_state> yFom(*appObj.getState());
 
   // number of degrees of freedom
   const int numDof = appObj.getNumGlobalNodes();
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t  = rompp::core::Matrix<eig_dyn_mat>;
+  using hessian_t  = rompp::algebra::Matrix<eig_dyn_mat>;
   using solver_tag   = rompp::solvers::linear::direct::ColPivHouseholderQR;
   using linear_solver_t = rompp::solvers::direct::EigenDirect<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
 
   auto errorVec(yFom);
   errorVec = yFom-yFomFinal;
-  const auto norm2err = rompp::core::ops::norm2(errorVec);
+  const auto norm2err = rompp::algebra::ops::norm2(errorVec);
 
   if (norm2err > 1e-10) checkStr = "FAILED";
   std::cout << std::setprecision(15) << norm2err << std::endl;

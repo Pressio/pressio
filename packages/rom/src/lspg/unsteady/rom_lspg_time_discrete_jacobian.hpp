@@ -70,8 +70,8 @@ template <
   typename scalar_type,
   typename decoder_jac_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
-    core::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value
+    algebra::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
+    algebra::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
@@ -129,8 +129,8 @@ template <
   typename scalar_type,
   typename decoder_jac_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_multi_vector_wrapper_epetra<lspg_matrix_type>::value and
-    core::meta::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
+    algebra::meta::is_multi_vector_wrapper_epetra<lspg_matrix_type>::value and
+    algebra::meta::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
@@ -138,7 +138,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 			    const decoder_jac_type & phi){
 
   // integral type of the global indices
-  using GO_t = typename core::details::traits<lspg_matrix_type>::global_ordinal_t;
+  using GO_t = typename algebra::details::traits<lspg_matrix_type>::global_ordinal_t;
 
   //get row map of phi
   const auto & phi_map = phi.getDataMap();
@@ -176,8 +176,8 @@ template <
   typename scalar_type,
   typename decoder_jac_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_multi_vector_tpetra<lspg_matrix_type>::value and
-    core::meta::is_multi_vector_tpetra<decoder_jac_type>::value
+    algebra::meta::is_multi_vector_tpetra<lspg_matrix_type>::value and
+    algebra::meta::is_multi_vector_tpetra<decoder_jac_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
@@ -221,8 +221,8 @@ template <
   typename scalar_type,
   typename decoder_jac_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_multi_vector_wrapper_tpetra<lspg_matrix_type>::value and
-    core::meta::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
+    algebra::meta::is_multi_vector_wrapper_tpetra<lspg_matrix_type>::value and
+    algebra::meta::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi,
@@ -238,8 +238,8 @@ template <
   typename scalar_type,
   typename decoder_jac_type,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
-    core::meta::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
+    algebra::meta::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
+    algebra::meta::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi,

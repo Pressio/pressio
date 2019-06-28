@@ -5,7 +5,7 @@
 #include "../apps_ConfigDefs.hpp"
 
 #ifdef HAVE_TRILINOS
-#include "../../../CORE_ALL"
+#include "../../../ALGEBRA_ALL"
 #include "Epetra_MpiComm.h"
 #include <Epetra_config.h>
 #include "Epetra_Map.h"
@@ -30,8 +30,8 @@ public:
   using state_type	= nativeVec;
   using residual_type	= state_type;
 
-  static constexpr auto zero = ::rompp::core::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::core::constants::one<scalar_type>();
+  static constexpr auto zero = ::rompp::algebra::constants::zero<scalar_type>();
+  static constexpr auto one = ::rompp::algebra::constants::one<scalar_type>();
 
 public:
   UnsteadyNonLinAdvDiffReac2dEpetra(const Epetra_MpiComm & comm,

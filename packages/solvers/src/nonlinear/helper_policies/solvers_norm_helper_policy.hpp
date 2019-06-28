@@ -3,7 +3,7 @@
 #define SOLVERS_IMPL_NORM_HELPER_POLICY_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
-#include "../../../../CORE_OPS"
+#include "../../../../ALGEBRA_OPS"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -28,7 +28,7 @@ template <>
 struct ComputeNormHelper<::rompp::solvers::L2Norm>{
   template <typename vec_t, typename scalar_t>
   static void evaluate(const vec_t & vecIn, scalar_t & result) {
-    result = ::rompp::core::ops::norm2(vecIn);
+    result = ::rompp::algebra::ops::norm2(vecIn);
   }
 };
 
@@ -36,7 +36,7 @@ template <>
 struct ComputeNormHelper<::rompp::solvers::L1Norm>{
   template <typename vec_t, typename scalar_t>
   static void evaluate(const vec_t & vecIn, scalar_t & result) {
-    result = ::rompp::core::ops::norm1(vecIn);
+    result = ::rompp::algebra::ops::norm1(vecIn);
   }
 };
 //---------------------------------------------------------

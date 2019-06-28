@@ -7,7 +7,7 @@
 #include "qr_solver_base.hpp"
 #include "qr_rfactor_solve_impl.hpp"
 
-#include "../../CORE_ALL"
+#include "../../ALGEBRA_ALL"
 #include <Eigen/OrderingMethods>
 #include<Eigen/SparseQR>
 
@@ -23,16 +23,16 @@ class QRSolver<matrix_type,
 	       R_type,
 	       Q_type,
 	       ::rompp::mpl::enable_if_t<
-		 core::meta::is_sparse_matrix_wrapper_eigen<matrix_type>::value and
-		 core::meta::is_core_matrix_wrapper<R_type>::value and
-		 core::details::traits<R_type>::is_shared_mem and
-		 core::details::traits<R_type>::is_dense
+		 algebra::meta::is_sparse_matrix_wrapper_eigen<matrix_type>::value and
+		 algebra::meta::is_algebra_matrix_wrapper<R_type>::value and
+		 algebra::details::traits<R_type>::is_shared_mem and
+		 algebra::details::traits<R_type>::is_dense
 		 >
 	       >
   : public QRSolverBase<QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>,
 			R_type, Q_type<Eigen::MatrixXd>, matrix_type>{
 
-  using sc_t = typename core::details::traits<matrix_type>::scalar_t;
+  using sc_t = typename algebra::details::traits<matrix_type>::scalar_t;
   using Q_t = Q_type<Eigen::MatrixXd>;
 
   using this_t = QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>;
@@ -50,16 +50,16 @@ private:
   template <typename vector_in_t,
 	    typename vector_out_t,
 	    ::rompp::mpl::enable_if_t<
-	      core::meta::is_core_vector_wrapper<vector_in_t>::value and
-	      core::meta::is_core_vector_wrapper<vector_out_t>::value and
+	      algebra::meta::is_algebra_vector_wrapper<vector_in_t>::value and
+	      algebra::meta::is_algebra_vector_wrapper<vector_out_t>::value and
 	      // the type vector in should be from same package as Q
-	      core::details::traits<vector_in_t>::wrapped_package_identifier ==
-		core::details::traits<Q_t>::wrapped_package_identifier
+	      algebra::details::traits<vector_in_t>::wrapped_package_identifier ==
+		algebra::details::traits<Q_t>::wrapped_package_identifier
 	      > * = nullptr
 	    >
   void projectImpl(const vector_in_t & vecIn,
 		   vector_out_t & vecOut) const{
-    core::ops::dot( *Qmat_, vecIn, vecOut );
+    algebra::ops::dot( *Qmat_, vecIn, vecOut );
   }
 
 
@@ -67,8 +67,8 @@ private:
     auto m = A.rows();
     auto n = A.cols();
 
-    using native_mat_type = typename core::details::traits<matrix_type>::wrapped_t;
-    using ord_type = typename core::details::traits<matrix_type>::ordinal_t;
+    using native_mat_type = typename algebra::details::traits<matrix_type>::wrapped_t;
+    using ord_type = typename algebra::details::traits<matrix_type>::ordinal_t;
     if (!A.isCompressed())
       A.compress();
 

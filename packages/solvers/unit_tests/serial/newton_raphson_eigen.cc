@@ -1,16 +1,16 @@
 
 #include <gtest/gtest.h>
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "SOLVERS_NONLINEAR"
 
 struct ValidSystem {
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
+  using matrix_w_t = rompp::algebra::Matrix<matrix_n_t>;
 
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::core::Vector<vector_n_t>;
+  using vector_w_t = rompp::algebra::Vector<vector_n_t>;
 
   using state_type = vector_w_t;
   using residual_type = state_type;
@@ -129,7 +129,7 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
 //   using namespace rompp::solvers;
 
 //   using vector_n_t = Eigen::VectorXd;
-//   using vector_w_t = core::Vector<vector_n_t>;
+//   using vector_w_t = algebra::Vector<vector_n_t>;
 
 //   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 

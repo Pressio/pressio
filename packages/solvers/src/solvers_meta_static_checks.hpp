@@ -4,8 +4,8 @@
 
 #include <type_traits>
 
-#include "../../core/src/matrix/core_matrix_traits.hpp"
-#include "../../core/src/vector/core_vector_traits.hpp"
+#include "../../algebra/src/matrix/algebra_matrix_traits.hpp"
+#include "../../algebra/src/vector/algebra_vector_traits.hpp"
 
 
 namespace rompp{ namespace solvers{ namespace meta {
@@ -22,8 +22,8 @@ namespace rompp{ namespace solvers{ namespace meta {
  */
 template <typename T, typename U>
 struct are_matrix_compatible {
-  static constexpr bool valid_matrix = core::details::traits<T>::wrapped_package_identifier != core::details::WrappedPackageIdentifier::Undefined;
-  static constexpr bool value = valid_matrix && (core::details::traits<T>::wrapped_matrix_identifier == core::details::traits<U>::wrapped_matrix_identifier);
+  static constexpr bool valid_matrix = algebra::details::traits<T>::wrapped_package_identifier != algebra::details::WrappedPackageIdentifier::Undefined;
+  static constexpr bool value = valid_matrix && (algebra::details::traits<T>::wrapped_matrix_identifier == algebra::details::traits<U>::wrapped_matrix_identifier);
 };
 
 
@@ -37,9 +37,9 @@ struct are_matrix_compatible {
  */
 template <typename T, typename U>
 struct are_vector_matrix_compatible {
-  static constexpr bool valid_vector = core::details::traits<T>::wrapped_package_identifier != core::details::WrappedPackageIdentifier::Undefined;
-  static constexpr bool valid_matrix = core::details::traits<U>::wrapped_package_identifier != core::details::WrappedPackageIdentifier::Undefined;
-  static constexpr bool value = valid_vector && valid_matrix && (core::details::traits<T>::wrapped_package_identifier == core::details::traits<U>::wrapped_package_identifier);
+  static constexpr bool valid_vector = algebra::details::traits<T>::wrapped_package_identifier != algebra::details::WrappedPackageIdentifier::Undefined;
+  static constexpr bool valid_matrix = algebra::details::traits<U>::wrapped_package_identifier != algebra::details::WrappedPackageIdentifier::Undefined;
+  static constexpr bool value = valid_vector && valid_matrix && (algebra::details::traits<T>::wrapped_package_identifier == algebra::details::traits<U>::wrapped_package_identifier);
 };
 
 
@@ -70,7 +70,7 @@ struct are_vector_compatible<
   T,
   U,
   typename std::enable_if<
-    !core::details::traits<T>::is_vector || !core::details::traits<U>::is_vector,
+    !algebra::details::traits<T>::is_vector || !algebra::details::traits<U>::is_vector,
     void
   >::type
 > {
@@ -89,24 +89,24 @@ struct are_vector_compatible<
   T,
   U,
   typename std::enable_if<
-    core::details::traits<T>::is_vector && core::details::traits<U>::is_vector,
+    algebra::details::traits<T>::is_vector && algebra::details::traits<U>::is_vector,
     void
   >::type
 > {
 
   static constexpr bool valid_vector =
-    core::details::traits<T>::wrapped_package_identifier !=
-    core::details::WrappedPackageIdentifier::Undefined;
+    algebra::details::traits<T>::wrapped_package_identifier !=
+    algebra::details::WrappedPackageIdentifier::Undefined;
 
   static constexpr bool same_type =
     valid_vector &&
-    core::details::traits<T>::wrapped_vector_identifier ==
-    core::details::traits<U>::wrapped_vector_identifier;
+    algebra::details::traits<T>::wrapped_vector_identifier ==
+    algebra::details::traits<U>::wrapped_vector_identifier;
 
   static constexpr bool value = same_type;
-    // (core::details::traits<T>::is_dynamic ||
-    //  core::details::traits<U>::is_dynamic ||
-    //  core::details::traits<T>::rows == core::details::traits<U>::rows);
+    // (algebra::details::traits<T>::is_dynamic ||
+    //  algebra::details::traits<U>::is_dynamic ||
+    //  algebra::details::traits<T>::rows == algebra::details::traits<U>::rows);
 };
 
 

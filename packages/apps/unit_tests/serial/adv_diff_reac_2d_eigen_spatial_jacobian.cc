@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
 
 TEST(adv_diff_reaction_2d_eigen, spatial_jacobian){
@@ -11,7 +11,7 @@ TEST(adv_diff_reaction_2d_eigen, spatial_jacobian){
 
   static_assert(std::is_same<scalar_t, double>::value, "");
 
-  constexpr auto zero = ::rompp::core::constants::zero<scalar_t>();
+  constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
 
   constexpr int Nx = 5, Ny = 5;
   app_t appobj(Nx, Ny);
@@ -24,7 +24,7 @@ TEST(adv_diff_reaction_2d_eigen, spatial_jacobian){
   // it is important to set state to be something
   // different at every dof otherwise we might be tricked
   app_state_t yTest(totUnk);
-  ::rompp::core::Vector<app_state_t> y(yTest);
+  ::rompp::algebra::Vector<app_state_t> y(yTest);
   for (auto i=0; i<y.size(); ++i)
     y[i] = i*0.1;
 

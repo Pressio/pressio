@@ -15,7 +15,7 @@ template <
 struct PyLinearDecoder<
   matrix_type, ops_t,
   mpl::enable_if_t<
-    ::rompp::core::meta::is_cstyle_array_pybind11<matrix_type>::value
+    ::rompp::algebra::meta::is_cstyle_array_pybind11<matrix_type>::value
     >
   >
   : public DecoderBase<

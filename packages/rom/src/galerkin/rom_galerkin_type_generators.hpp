@@ -26,8 +26,8 @@ struct GalerkinCommonTypes{
   using fom_native_rhs_t	= typename fom_t::residual_type;
 
   // declare fom wrapper types
-  using fom_state_t		= ::rompp::core::Vector<fom_native_state_t>;
-  using fom_rhs_t		= ::rompp::core::Vector<fom_native_rhs_t>;
+  using fom_state_t		= ::rompp::algebra::Vector<fom_native_state_t>;
+  using fom_rhs_t		= ::rompp::algebra::Vector<fom_native_rhs_t>;
 
   // rom state type (passed in)
   using galerkin_state_t	= galerkin_state_type;

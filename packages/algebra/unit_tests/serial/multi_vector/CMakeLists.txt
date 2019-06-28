@@ -1,0 +1,2 @@
+
+add_serial_unit_test(multi_vector_serial_eigen_dynamic_class)

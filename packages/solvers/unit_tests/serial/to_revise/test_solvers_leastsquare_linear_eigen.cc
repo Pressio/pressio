@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "experimental/solvers_linear_factory.hpp"
-#include "CORE_MATRIX"
+#include "ALGEBRA_MATRIX"
 
 
 TEST(solvers_linear_least_square_factory_eigen, solversTestLinearLeastSquareFactoryEigen)
@@ -12,7 +12,7 @@ TEST(solvers_linear_least_square_factory_eigen, solversTestLinearLeastSquareFact
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::Matrix<matrix_n_t>;
+  using matrix_w_t = algebra::Matrix<matrix_n_t>;
 
   // Define matrix
   matrix_w_t A(3, 2);
@@ -30,11 +30,11 @@ TEST(solvers_linear_least_square_eigen, solversTestLinearLeastSquareEigenCreateW
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::Matrix<matrix_n_t>;
+  using matrix_w_t = algebra::Matrix<matrix_n_t>;
 
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = core::Vector<vector_n_t>;
+  using vector_w_t = algebra::Vector<vector_n_t>;
 
   // Define linear system
   vector_w_t b(3);

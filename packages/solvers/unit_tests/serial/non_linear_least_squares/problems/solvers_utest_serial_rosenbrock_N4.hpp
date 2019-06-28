@@ -2,8 +2,8 @@
 #if not defined SOLVERS_UTEST_SERIAL_ROSENBROCK_N4_HPP_
 #define SOLVERS_UTEST_SERIAL_ROSENBROCK_N4_HPP_
 
-#include "CORE_VECTOR"
-#include "CORE_MATRIX"
+#include "ALGEBRA_VECTOR"
+#include "ALGEBRA_MATRIX"
 
 namespace rompp{ namespace solvers{ namespace test{
 
@@ -11,8 +11,8 @@ struct Rosenbrock4 {
 
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_dyn_vec	= Eigen::VectorXd;
-  using jacobian_w_t	= rompp::core::Matrix<eig_dyn_mat>;
-  using state_w_t	= rompp::core::Vector<eig_dyn_vec>;
+  using jacobian_w_t	= rompp::algebra::Matrix<eig_dyn_mat>;
+  using state_w_t	= rompp::algebra::Vector<eig_dyn_vec>;
 
   using scalar_type = double;
   using state_type	= state_w_t;

@@ -1,10 +1,10 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "SVD_BASIC"
 #include "Epetra_MpiComm.h"
 
 using sc_t = double;
-using datamat_t = rompp::core::MultiVector<Epetra_MultiVector>;
+using datamat_t = rompp::algebra::MultiVector<Epetra_MultiVector>;
 using vd_t = std::vector<sc_t>;
 using vvd_t = std::vector<vd_t>;
 
@@ -68,8 +68,8 @@ void doSVDNonSqMat(int rank, Epetra_MpiComm & Comm){
   ///-----------------------
   /// create svd solver
   rompp::svd::Solver<datamat_t,
-  		     rompp::core::MultiVector,
-  		     rompp::core::MultiVector,
+  		     rompp::algebra::MultiVector,
+  		     rompp::algebra::MultiVector,
   		     std::vector<double>> svdO;
   svdO.compute<rompp::svd::svdType::truncated>(ADW, 10);
 
@@ -122,16 +122,16 @@ int main(int argc, char *argv[])
 
   //-------------------------
   // dense -> CRS conversion
-  //auto ASW = rompp::core::denseToSparse(ADW);
+  //auto ASW = rompp::algebra::denseToSparse(ADW);
   //  ASW.data()->Print(std::cout);
   
   // //-----------------------
   // // create svd solver
-  // using mat_type = core::Matrix<Epetra_CrsMatrix>;
+  // using mat_type = algebra::Matrix<Epetra_CrsMatrix>;
   // svd::Solver<mat_type,
-  // 	      core::MultiVector,
-  // 	      core::MultiVector,
-  // 	      core::Matrix<Epetra_CrsMatrix> > svdO;
+  // 	      algebra::MultiVector,
+  // 	      algebra::MultiVector,
+  // 	      algebra::Matrix<Epetra_CrsMatrix> > svdO;
   // svdO.compute<svd::svdType::truncated>(ASW, 1e-8, 10);
 
   // /////------------
@@ -215,10 +215,10 @@ int main(int argc, char *argv[])
 //     A.InsertGlobalValues(3, 4, Values.data(), Indices.data());    
 //   }
 //   A.FillComplete();
-//   core::Matrix<Epetra_CrsMatrix> ASW(A);
+//   algebra::Matrix<Epetra_CrsMatrix> ASW(A);
 //   ASW.data()->Print(std::cout);
   
-//   svd::Solver<core::Matrix<Epetra_CrsMatrix>> svdO;
+//   svd::Solver<algebra::Matrix<Epetra_CrsMatrix>> svdO;
 //   svdO.compute(ASW, 2, 2);
 //   auto & lsv = svdO.cRefLeftSingularVectors();
 //   lsv.data()->Print(std::cout);
@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
   
 //   // /* AW is a DENSE matrix to do svd on
 //   //    To do this, we need to convert to sparse */
-//   auto ASW = core::denseToSparse(ADW);
+//   auto ASW = algebra::denseToSparse(ADW);
 //   ADW.data()->Print(std::cout);
 
 //   int numVec = 6;

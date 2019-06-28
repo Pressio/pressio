@@ -3,7 +3,7 @@
 #define QR_FORWARD_DECLARATIONS_HPP_
 
 #include "qr_ConfigDefs.hpp"
-#include "../../core/src/core_forward_declarations.hpp"
+#include "../../algebra/src/algebra_forward_declarations.hpp"
 
 namespace rompp{  namespace qr{
 
@@ -27,28 +27,28 @@ namespace impl{
 template<
   typename matrix_type,
   typename R_t = void,
-  int n = core::constants::dynamic,
-  int m = core::constants::dynamic,
+  int n = algebra::constants::dynamic,
+  int m = algebra::constants::dynamic,
   template <typename...> class Q_type
-	= core::MultiVector,
+	= algebra::MultiVector,
   typename enable= void>
 class QRHouseholderDenseEigenMatrixWrapper;
 
 #if defined HAVE_TRILINOS
 template<typename matrix_t,
 	 typename R_t,
-	 int n = core::constants::dynamic,
-	 int m = core::constants::dynamic,
+	 int n = algebra::constants::dynamic,
+	 int m = algebra::constants::dynamic,
 	 template <typename...> class Q_type
-	 = core::MultiVector>
+	 = algebra::MultiVector>
 class EpetraMVHouseholderUsingEigen;
 
 template<typename matrix_t,
 	 typename R_t,
-	 int n = core::constants::dynamic,
-	 int m = core::constants::dynamic,
+	 int n = algebra::constants::dynamic,
+	 int m = algebra::constants::dynamic,
 	 template <typename...> class Q_type
-	 = core::MultiVector>
+	 = algebra::MultiVector>
 class TpetraMVHouseholderUsingEigen;
 
 template<typename matrix_t,
@@ -56,7 +56,7 @@ template<typename matrix_t,
 	 int n, int m,
 	 typename wrap_Q_type,
 	 template <typename...> class Q_type
-	 = core::MultiVector,
+	 = algebra::MultiVector,
 	 typename enable = void>
 class EpetraMVTSQR;
 
@@ -65,7 +65,7 @@ template<typename matrix_t,
 	 int n, int m,
 	 typename wrap_Q_type,
 	 template <typename...> class Q_type
-	 = core::MultiVector,
+	 = algebra::MultiVector,
 	 typename enable = void>
 class TpetraMVTSQR;
 
@@ -74,27 +74,27 @@ template<typename matrix_t,
 	 int n, int m,
 	 typename wrap_Q_type,
 	 template <typename...> class Q_type
-	 = core::MultiVector,
+	 = algebra::MultiVector,
 	 typename enable = void>
 class TpetraBlockMVTSQR;
 
 template<typename matrix_t,
 	 typename R_t,
-	 int n = core::constants::dynamic,
-	 int m = core::constants::dynamic,
+	 int n = algebra::constants::dynamic,
+	 int m = algebra::constants::dynamic,
 	 typename wrap_Q_type = void,
 	 template <typename...> class Q_type
-	 = core::MultiVector,
+	 = algebra::MultiVector,
 	 typename enable = void>
 class ModGramSchmidtMVEpetra;
 
 template<typename matrix_t,
 	 typename R_t,
-	 int n = core::constants::dynamic,
-	 int m = core::constants::dynamic,
+	 int n = algebra::constants::dynamic,
+	 int m = algebra::constants::dynamic,
 	 typename wrap_Q_type = void,
 	 template <typename...> class Q_type
-	 = core::MultiVector,
+	 = algebra::MultiVector,
 	 typename enable = void>
 class ModGramSchmidtMVTpetra;
 
@@ -119,10 +119,10 @@ template<
   typename matrix_type,
   typename algorithm,
   bool in_place = false,
-  int n = core::constants::dynamic,
-  int m = core::constants::dynamic,
+  int n = algebra::constants::dynamic,
+  int m = algebra::constants::dynamic,
   template <typename...> class Q_type
-        = ::rompp::core::MultiVector,
+        = ::rompp::algebra::MultiVector,
   typename enable = void
   >
 using QRSolver = impl::QRSolver<matrix_type, algorithm,
@@ -134,10 +134,10 @@ template<
   typename algorithm,
   typename R_type,
   bool in_place = false,
-  int n = core::constants::dynamic,
-  int m = core::constants::dynamic,
+  int n = algebra::constants::dynamic,
+  int m = algebra::constants::dynamic,
   template <typename...> class Q_type
-        = ::rompp::core::MultiVector,
+        = ::rompp::algebra::MultiVector,
   typename enable = void
   >
 using QRSolverWrapR = impl::QRSolver<matrix_type,

@@ -3,10 +3,10 @@
 
 #include <iostream>
 
-#include "CORE_ALL"
-// #include "matrix/concrete/core_matrix_dense_serial_eigen.hpp"
-// #include "matrix/concrete/core_matrix_sparse_serial_eigen.hpp"
-// #include "vector/concrete/core_vector_serial_eigen.hpp"
+#include "ALGEBRA_ALL"
+// #include "matrix/concrete/algebra_matrix_dense_serial_eigen.hpp"
+// #include "matrix/concrete/algebra_matrix_sparse_serial_eigen.hpp"
+// #include "vector/concrete/algebra_vector_serial_eigen.hpp"
 
 #include "experimental/solvers_l2_vector_norm.hpp"
 #include "experimental/solvers_linear_traits.hpp"
@@ -17,11 +17,11 @@ struct ValidSystemPolicyTest {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
+    using matrix_w_t = rompp::algebra::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = rompp::core::Vector<vector_n_t>;
+    using vector_w_t = rompp::algebra::Vector<vector_n_t>;
 
     typedef vector_w_t vector_type;
     typedef matrix_w_t matrix_type;
@@ -65,7 +65,7 @@ TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newt
   using namespace rompp;
   using namespace solvers;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = core::Vector<vector_n_t>;
+  using vector_w_t = algebra::Vector<vector_n_t>;
 
   vector_w_t b(2);
   b[0] = 0.15;

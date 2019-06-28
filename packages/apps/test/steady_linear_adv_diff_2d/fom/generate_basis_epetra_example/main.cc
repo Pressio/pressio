@@ -1,4 +1,4 @@
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "APPS_STEADYLINADVDIFF2D"
 #include <random>
 #include <Eigen/SVD>

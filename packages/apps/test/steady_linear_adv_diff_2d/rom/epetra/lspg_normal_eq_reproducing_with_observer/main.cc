@@ -1,12 +1,12 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG_STEADY"
 #include "APPS_STEADYLINADVDIFF2D"
 #include "utils_epetra.hpp"
 
 struct ResidualSampler{
-  using vec_t = rompp::core::Vector<Epetra_Vector>;
+  using vec_t = rompp::algebra::Vector<Epetra_Vector>;
   mutable std::vector<double> myR_;
 
   std::vector<double> getR() const{
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
   appObj.fillRhs();
   appObj.solve();
   appObj.printStateToFile("fom.txt");
-  rompp::core::Vector<native_state> yFom(*appObj.getState());
+  rompp::algebra::Vector<native_state> yFom(*appObj.getState());
 
   // -------------------------
   // -------------------------
@@ -70,8 +70,8 @@ int main(int argc, char *argv[]){
   // -------------------------
   using native_state	= typename fom_adapter_t::state_type;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;
-  using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
+  using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
+  using decoder_jac_t	= rompp::algebra::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
   constexpr int romSize = 5;
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]){
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t  = rompp::core::Matrix<eig_dyn_mat>;
+  using hessian_t  = rompp::algebra::Matrix<eig_dyn_mat>;
   using solver_tag   = rompp::solvers::linear::iterative::LSCG;
   using linear_solver_t = rompp::solvers::iterative::EigenIterative<
     solver_tag, hessian_t>;
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]){
    * the basis, so we should recover the FOM solution exactly */
   auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
   auto errorVec(yFom); errorVec = yFom - yFomApprox;
-  const auto norm2err = rompp::core::ops::norm2(errorVec);
+  const auto norm2err = rompp::algebra::ops::norm2(errorVec);
   if( norm2err > 1e-12 ) checkStr = "FAILED";
 
   // now calculate the residual using the final yROM

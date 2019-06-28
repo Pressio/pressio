@@ -1,5 +1,5 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTIONFLAME2D"
@@ -33,11 +33,11 @@ int main(int argc, char *argv[]){
   using app_residual_t	= typename app_t::residual_type;
   using app_jacob_t	= typename app_t::jacobian_type;
 
-  using ode_state_t = rompp::core::Vector<app_state_t>;
-  using ode_res_t   = rompp::core::Vector<app_residual_t>;
-  using ode_jac_t   = rompp::core::Matrix<app_jacob_t>;
+  using ode_state_t = rompp::algebra::Vector<app_state_t>;
+  using ode_res_t   = rompp::algebra::Vector<app_residual_t>;
+  using ode_jac_t   = rompp::algebra::Matrix<app_jacob_t>;
 
-  constexpr auto zero = ::rompp::core::constants::zero<scalar_t>();
+  constexpr auto zero = ::rompp::algebra::constants::zero<scalar_t>();
 
   constexpr int Nx = 12, Ny = 6;
   app_t appobj(Nx, Ny);

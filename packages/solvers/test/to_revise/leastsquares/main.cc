@@ -4,14 +4,14 @@
 #include <cstdlib>
 #include <cmath>
 
-// #include "core_ConfigDefs.hpp"
-// #include "core_meta.hpp"
-// #include "core_forward_declarations.hpp"
-// #include "core_static_assert.hpp"
+// #include "algebra_ConfigDefs.hpp"
+// #include "algebra_meta.hpp"
+// #include "algebra_forward_declarations.hpp"
+// #include "algebra_static_assert.hpp"
 
-#include "vector/core_vector_eigen.hpp"
-#include "matrix/core_matrix_traits.hpp"
-#include "matrix/core_matrix_eigen.hpp"
+#include "vector/algebra_vector_eigen.hpp"
+#include "matrix/algebra_matrix_traits.hpp"
+#include "matrix/algebra_matrix_eigen.hpp"
 #include <Eigen/Dense>
 #include "least_squares/algebra_leastsquares.hpp"
 
@@ -82,8 +82,8 @@ struct app
   
 int main()
 {     
-  // using myvec_t = core::Vector<app::state_type>;
-  // using mymat_t = core::Matrix<app::jacobian_type>;
+  // using myvec_t = algebra::Vector<app::state_type>;
+  // using mymat_t = algebra::Matrix<app::jacobian_type>;
 
   // app::myvec_t sol;
   // sol.resize(2);

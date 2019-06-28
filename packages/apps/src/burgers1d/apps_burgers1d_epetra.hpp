@@ -7,7 +7,7 @@
 // this has to be here because HAVE_TRILINOS is seen after we include configDefs
 #ifdef HAVE_TRILINOS
 
-#include "../../../CORE_ALL"
+#include "../../../ALGEBRA_ALL"
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
 #include "Epetra_IntVector.h"

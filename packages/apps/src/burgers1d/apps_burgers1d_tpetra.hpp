@@ -5,7 +5,7 @@
 #include "../apps_ConfigDefs.hpp"
 
 #ifdef HAVE_TRILINOS
-#include "../../../CORE_ALL"
+#include "../../../ALGEBRA_ALL"
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 #include <Teuchos_FancyOStream.hpp>

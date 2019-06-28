@@ -1,5 +1,5 @@
 
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG_STEADY"
 #include "APPS_STEADYLINADVDIFF2D"
@@ -37,14 +37,14 @@ int main(int argc, char *argv[]){
   appObj.fillRhs();
   appObj.solve();
   appObj.printStateToFile("fom.txt");  
-  rompp::core::Vector<native_state> yFom(*appObj.getState());
+  rompp::algebra::Vector<native_state> yFom(*appObj.getState());
 
   // -------------------------
   // LSPG ROM
   using native_state	= typename fom_adapter_t::state_type;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::core::Vector<eig_dyn_vec>;
-  using decoder_jac_t	= rompp::core::MultiVector<Epetra_MultiVector>;
+  using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
+  using decoder_jac_t	= rompp::algebra::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
   constexpr int romSize = 5;
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]){
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t  = rompp::core::Matrix<eig_dyn_mat>;
+  using hessian_t  = rompp::algebra::Matrix<eig_dyn_mat>;
   using solver_tag   = rompp::solvers::linear::iterative::LSCG;
   using linear_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]){
   auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
   auto errorVec(yFom); errorVec = yFom - yFomApprox;
-  const auto norm2err = rompp::core::ops::norm2(errorVec);
+  const auto norm2err = rompp::algebra::ops::norm2(errorVec);
   if( norm2err > 1e-12 ) checkStr = "FAILED";
 
   std::cout << std::setprecision(15) << norm2err << std::endl;

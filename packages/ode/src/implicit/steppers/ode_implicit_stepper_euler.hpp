@@ -105,7 +105,7 @@ public:
     this->auxData_.dt_ = dt;
     this->auxData_.t_ = t;
     // copy from y to storage
-    ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+    ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
     solver.solve(*this, y);
   }
 
@@ -123,7 +123,7 @@ public:
     this->auxData_.dt_ = dt;
     this->auxData_.t_ = t;
     // copy from y to storage
-    ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+    ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
     guesserCb(step, t, y);
     solver.solve(*this, y);
   }

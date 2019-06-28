@@ -1,16 +1,16 @@
 #include <iostream>
-#include "CORE_MATRIX"
+#include "ALGEBRA_MATRIX"
 #include "SOLVERS_NONLINEAR"
 
 struct NonLinearLeastSquareSystem {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = rompp::core::Matrix<matrix_n_t>;
+    using matrix_w_t = rompp::algebra::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = rompp::core::Vector<vector_n_t>;
+    using vector_w_t = rompp::algebra::Vector<vector_n_t>;
 
     typedef vector_w_t vector_type;
     typedef matrix_w_t matrix_type;
@@ -56,7 +56,7 @@ int main() {
   using namespace rompp::solvers;
 
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = core::Vector<vector_n_t>;
+  using vector_w_t = algebra::Vector<vector_n_t>;
 
   auto solver = NonLinearSolvers::createNonLinearIterativeLeastSquareSolver<nonlinearleastsquare::LevenbergMarquardt, linear::Bicgstab>();
 

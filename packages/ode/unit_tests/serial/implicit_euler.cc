@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "reference_apps_for_testing.hpp"
@@ -12,9 +12,9 @@ TEST(ode_implicit_euler, traits){
   using nstate_t = typename app_t::state_type;
   using nres_t = typename app_t::residual_type;
   using njac_t = typename app_t::jacobian_type;
-  using state_t = core::Vector<nstate_t>;
-  using res_t = core::Vector<nres_t>;
-  using jac_t = core::Matrix<njac_t>;
+  using state_t = algebra::Vector<nstate_t>;
+  using res_t = algebra::Vector<nres_t>;
+  using jac_t = algebra::Matrix<njac_t>;
 
   static_assert(
     ode::meta::is_legitimate_model_for_explicit_ode<app_t>::value, "");
@@ -62,9 +62,9 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
 
-  using state_t = core::Vector<nstate_t>;
-  using res_t = core::Vector<nresidual_t>;
-  using jac_t = core::Matrix<njacobian_t>;
+  using state_t = algebra::Vector<nstate_t>;
+  using res_t = algebra::Vector<nresidual_t>;
+  using jac_t = algebra::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
@@ -100,9 +100,9 @@ TEST(ode_implicit_euler, guesserLambda){
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
 
-  using state_t = core::Vector<nstate_t>;
-  using res_t = core::Vector<nresidual_t>;
-  using jac_t = core::Matrix<njacobian_t>;
+  using state_t = algebra::Vector<nstate_t>;
+  using res_t = algebra::Vector<nresidual_t>;
+  using jac_t = algebra::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
@@ -142,9 +142,9 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
 
-  using state_t = core::Vector<nstate_t>;
-  using res_t = core::Vector<nresidual_t>;
-  using jac_t = core::Matrix<njacobian_t>;
+  using state_t = algebra::Vector<nstate_t>;
+  using res_t = algebra::Vector<nresidual_t>;
+  using jac_t = algebra::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
@@ -191,9 +191,9 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
   using njacobian_t	= typename app_t::jacobian_type;
   app_t appObj;
 
-  using state_t = core::Vector<nstate_t>;
-  using res_t = core::Vector<nresidual_t>;
-  using jac_t = core::Matrix<njacobian_t>;
+  using state_t = algebra::Vector<nstate_t>;
+  using res_t = algebra::Vector<nresidual_t>;
+  using jac_t = algebra::Matrix<njacobian_t>;
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 

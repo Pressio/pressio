@@ -19,22 +19,22 @@ template <typename T>
 struct ScalarHelper<
   T,
   mpl::enable_if_t<
-    ::rompp::core::meta::is_core_wrapper<T>::value and
-    ::rompp::core::details::traits<T>::wrapped_package_identifier
-    != ::rompp::core::details::WrappedPackageIdentifier::Arbitrary
+    ::rompp::algebra::meta::is_algebra_wrapper<T>::value and
+    ::rompp::algebra::details::traits<T>::wrapped_package_identifier
+    != ::rompp::algebra::details::WrappedPackageIdentifier::Arbitrary
     >
   >{
   static constexpr bool value = true;
-  using type = typename ::rompp::core::details::traits<T>::scalar_t;
+  using type = typename ::rompp::algebra::details::traits<T>::scalar_t;
 };
 
 template <typename T>
 struct ScalarHelper<
   T,
   mpl::enable_if_t<
-    ::rompp::core::meta::is_core_wrapper<T>::value and
-    ::rompp::core::details::traits<T>::wrapped_package_identifier
-    == ::rompp::core::details::WrappedPackageIdentifier::Arbitrary
+    ::rompp::algebra::meta::is_algebra_wrapper<T>::value and
+    ::rompp::algebra::details::traits<T>::wrapped_package_identifier
+    == ::rompp::algebra::details::WrappedPackageIdentifier::Arbitrary
     >
   >{
   static constexpr bool value = false;
@@ -133,7 +133,7 @@ struct traits<
   // check if scalar is provided in Args
   using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
   using scalar_from_args = ::rompp::mpl::variadic::at_or_t<void, ic0::value, Args...>;
-  // check if state is a core wrapper, and if so get its scalar_type
+  // check if state is a algebra wrapper, and if so get its scalar_type
   using scalar_type_from_traits = typename ScalarHelper<state_type>::type;
   // decide which to pick
   using scalar_t = typename std::conditional<
@@ -141,7 +141,7 @@ struct traits<
     scalar_type_from_traits, scalar_from_args>::type;
 
   static_assert( std::is_floating_point<scalar_t>::value,
-  		 "I cannot guess the scalar_type because it is not found in templates and the state_type used is not a core wrapper. If you are using custom data structures that do not have wrappers in the core, pass scalar as a template.");
+  		 "I cannot guess the scalar_type because it is not found in templates and the state_type used is not a algebra wrapper. If you are using custom data structures that do not have wrappers in the algebra, pass scalar as a template.");
 
 
   // standard policies (only used if not passed a user-defined policy)
@@ -201,7 +201,7 @@ struct traits<
   // check if scalar is provided in Args
   using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
   using scalar_from_args = ::rompp::mpl::variadic::at_or_t<void, ic0::value, Args...>;
-  // check if state is a core wrapper, and if so get its scalar_type
+  // check if state is a algebra wrapper, and if so get its scalar_type
   using scalar_type_from_traits = typename ScalarHelper<state_type>::type;
   // decide which to pick
   using scalar_t = typename std::conditional<
@@ -209,7 +209,7 @@ struct traits<
     scalar_type_from_traits, scalar_from_args>::type;
 
   static_assert( std::is_floating_point<scalar_t>::value,
-  		 "I cannot guess the scalar_type because it is not found in templates and the state_type used is not a core wrapper. If you are using custom data structures that do not have wrappers in the core, pass scalar as a template.");
+  		 "I cannot guess the scalar_type because it is not found in templates and the state_type used is not a algebra wrapper. If you are using custom data structures that do not have wrappers in the algebra, pass scalar as a template.");
 
 
   // for BDF2 the user has to pass an auxiliary stepper

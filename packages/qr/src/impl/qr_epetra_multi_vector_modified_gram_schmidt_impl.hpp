@@ -13,13 +13,13 @@ namespace rompp{ namespace qr{ namespace impl{
 template<typename matrix_t, typename R_t,
 	 typename MV_t, template<typename...> class Q_type>
 class ModGramSchmidtMVEpetra<
-  matrix_t, R_t, core::constants::dynamic,
-  core::constants::dynamic, MV_t, Q_type, void>{
+  matrix_t, R_t, algebra::constants::dynamic,
+  algebra::constants::dynamic, MV_t, Q_type, void>{
 
   using int_t	     = int;
-  using sc_t	     = typename core::details::traits<matrix_t>::scalar_t;
+  using sc_t	     = typename algebra::details::traits<matrix_t>::scalar_t;
   using eig_dyn_mat  =  Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using R_nat_t	     = core::Matrix<eig_dyn_mat>;
+  using R_nat_t	     = algebra::Matrix<eig_dyn_mat>;
   using Q_t	     = Q_type<MV_t>;
   static constexpr sc_t one_ = static_cast<sc_t>(1);
   static constexpr sc_t zero_ = static_cast<sc_t>(0);
@@ -69,7 +69,7 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void project(const vector_in_t & vecIn,
 	       vector_out_t & vecOut) const{
-    core::ops::dot( *this->Qmat_, vecIn, vecOut );
+    algebra::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 
   const Q_t & getCRefQFactor() const {

@@ -2,7 +2,7 @@
 #ifndef OPTIMIZATION_CONFIGDEFS_HPP_
 #define OPTIMIZATION_CONFIGDEFS_HPP_
 
-#include "core_ConfigDefs.hpp"
+#include "algebra_ConfigDefs.hpp"
 
 namespace rompp{
 

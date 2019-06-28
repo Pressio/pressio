@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
-#include "CORE_MATRIX"
-#include "CORE_VECTOR"
+#include "ALGEBRA_MATRIX"
+#include "ALGEBRA_VECTOR"
 #include "SOLVERS_LINEAR"
 
 TEST(solvers_linear_iterative, LSCGSparseEigen){
@@ -11,11 +11,11 @@ TEST(solvers_linear_iterative, LSCGSparseEigen){
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = core::Matrix<matrix_n_t>;
+  using matrix_w_t = algebra::Matrix<matrix_n_t>;
 
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = core::Vector<vector_n_t>;
+  using vector_w_t = algebra::Vector<vector_n_t>;
 
   // Define linear system
   vector_w_t b(2);

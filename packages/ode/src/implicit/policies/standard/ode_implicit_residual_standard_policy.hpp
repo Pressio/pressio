@@ -9,8 +9,8 @@
 namespace rompp{ namespace ode{ namespace policy{
 
 /*
- * state and residual_types are core wrappers
- * both are wrappers from core
+ * state and residual_types are algebra wrappers
+ * both are wrappers from algebra
  */
 template<
   typename state_type,
@@ -22,8 +22,8 @@ class ImplicitResidualStandardPolicy<
   ::rompp::mpl::enable_if_t<
     ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::rompp::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
-    core::meta::is_core_wrapper<state_type>::value and
-    core::meta::is_core_wrapper<residual_type>::value
+    algebra::meta::is_algebra_wrapper<state_type>::value and
+    algebra::meta::is_algebra_wrapper<residual_type>::value
     >
   >
   : public ImplicitResidualPolicyBase<

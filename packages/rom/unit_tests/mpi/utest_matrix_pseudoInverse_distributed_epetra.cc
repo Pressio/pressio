@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "Epetra_MpiComm.h"
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "experimental/rom_matrix_pseudo_inverse.hpp"
 
 struct rom_matrix_pseudo_inverse_distributed_epetraFix
@@ -14,7 +14,7 @@ public:
   const int localSize_ = 5;
   int numGlobalEntries_;
   Epetra_Map * contigMap_;
-  core::Matrix<Epetra_CrsMatrix> * A_;
+  algebra::Matrix<Epetra_CrsMatrix> * A_;
   
   virtual void SetUp()
   {
@@ -24,7 +24,7 @@ public:
     NumProc_ = Comm_->NumProc();
     numGlobalEntries_ = Comm_->NumProc() * localSize_;
     contigMap_ = new Epetra_Map(numGlobalEntries_, 0, *Comm_);
-    A_ = new core::Matrix<Epetra_CrsMatrix>(*contigMap_, 3);
+    A_ = new algebra::Matrix<Epetra_CrsMatrix>(*contigMap_, 3);
   }
   
   virtual void TearDown(){

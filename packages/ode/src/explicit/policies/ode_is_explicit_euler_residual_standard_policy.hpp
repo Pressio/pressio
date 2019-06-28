@@ -24,5 +24,5 @@ struct is_explicit_euler_residual_standard_policy<
   > : std::true_type{};
 
 
-}}}//end namespace rompp::core::meta
+}}}//end namespace rompp::algebra::meta
 #endif

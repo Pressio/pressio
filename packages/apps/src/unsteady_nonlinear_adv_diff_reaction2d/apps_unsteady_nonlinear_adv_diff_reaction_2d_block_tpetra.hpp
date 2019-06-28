@@ -5,7 +5,7 @@
 #include "../apps_ConfigDefs.hpp"
 
 #ifdef HAVE_TRILINOS
-#include "../../../CORE_ALL"
+#include "../../../ALGEBRA_ALL"
 #include <Teuchos_DefaultMpiComm.hpp>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_CrsGraph.hpp>
@@ -77,10 +77,10 @@ public:
       Nx_{NxPhys_-2}, Ny_{NyPhys_},
       dx_{Lx_/(Nx-1)},
       dy_{Ly_/(Ny-1)},
-      dxSqInv_{core::constants::one<ST>()/(dx_*dx_)},
-      dySqInv_{core::constants::one<ST>()/(dy_*dy_)},
-      dx2Inv_{core::constants::one<ST>()/(core::constants::two<ST>()*dx_)},
-      dy2Inv_{core::constants::one<ST>()/(core::constants::two<ST>()*dy_)}
+      dxSqInv_{algebra::constants::one<ST>()/(dx_*dx_)},
+      dySqInv_{algebra::constants::one<ST>()/(dy_*dy_)},
+      dx2Inv_{algebra::constants::one<ST>()/(algebra::constants::two<ST>()*dx_)},
+      dy2Inv_{algebra::constants::one<ST>()/(algebra::constants::two<ST>()*dy_)}
   {}
 
 public:
@@ -144,8 +144,8 @@ private:
 
   void residual_impl(const state_type & yState,
 		     residual_type & R) const{
-    static constexpr auto zero = ::rompp::core::constants::zero<ST>();
-    static constexpr auto one = ::rompp::core::constants::one<ST>();
+    static constexpr auto zero = ::rompp::algebra::constants::zero<ST>();
+    static constexpr auto one = ::rompp::algebra::constants::one<ST>();
 
     R.putScalar(zero);
     this->assembleFDMatrix();
@@ -159,7 +159,7 @@ private:
   void applyJacobian_impl(const state_type & yState,
 			  const nativeMV & B,
 			  nativeMV & C) const{
-    static constexpr auto zero = ::rompp::core::constants::zero<ST>();
+    static constexpr auto zero = ::rompp::algebra::constants::zero<ST>();
     C.putScalar(zero);
     computeJacobian(yState);
     A_->applyBlock(B, C);

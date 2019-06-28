@@ -114,17 +114,17 @@ public:
 
     // first step, use auxiliary stepper
     if (step == 1){
-      ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+      ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
       auxStepper_(y, t, dt, step, solver);
     }
     if (step == 2){
-      ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
+      ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
       solver.solve(*this, y);
     }
     if (step >= 3){
-      ::rompp::core::ops::deep_copy(this->odeStorage_.auxStates_[1], this->odeStorage_.auxStates_[0]);
+      ::rompp::algebra::ops::deep_copy(this->odeStorage_.auxStates_[1], this->odeStorage_.auxStates_[0]);
       //this->odeStorage_.auxStates_[0] = this->odeStorage_.auxStates_[1];
-      ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
+      ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
       //this->odeStorage_.auxStates_[1] = y;
       solver.solve(*this, y);
     }
@@ -145,18 +145,18 @@ public:
 
    // first step, use auxiliary stepper
    if (step == 1){
-     ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+     ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
      auxStepper_(y, t, dt, step, solver);
    }
    if (step == 2){
-     ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
+     ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
      guesserCb(step, t, y);
      solver.solve(*this, y);
    }
    if (step >= 3){
-     ::rompp::core::ops::deep_copy(this->odeStorage_.auxStates_[1], this->odeStorage_.auxStates_[0]);
+     ::rompp::algebra::ops::deep_copy(this->odeStorage_.auxStates_[1], this->odeStorage_.auxStates_[0]);
      //this->odeStorage_.auxStates_[0] = this->odeStorage_.auxStates_[1];
-     ::rompp::core::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
+     ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
      //this->odeStorage_.auxStates_[1] = y;
      guesserCb(step, t, y);
      solver.solve(*this, y);

@@ -1,4 +1,4 @@
-#include "CORE_ALL"
+#include "ALGEBRA_ALL"
 #include "APPS_STEADYLINADVDIFF1D"
 #include "../fom_gold_states.hpp"
 

@@ -19,8 +19,8 @@ TRIBITS_ADD_SHOW_DEPRECATED_WARNINGS_OPTION()
 #----------------------------------------------------------------
 # D) Add the libraries, tests, and examples
 #----------------------------------------------------------------
-# needs headers from core, solvers, ode, apps, optimization
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../core/lumped_include_headers)
+# needs headers from algebra, solvers, ode, apps, optimization
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../algebra/lumped_include_headers)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../solvers/lumped_include_headers)
 
 ADD_SUBDIRECTORY(src)

@@ -3,8 +3,8 @@
 #define SOLVERS_UTEST_MPI_EPETRA_EXPONENTIAL_DATA_FIT_N11_HPP_
 
 #include "Epetra_MpiComm.h"
-#include "CORE_VECTOR"
-#include "CORE_MULTI_VECTOR"
+#include "ALGEBRA_VECTOR"
+#include "ALGEBRA_MULTI_VECTOR"
 
 /*
  * test taken from:
@@ -24,10 +24,10 @@ struct ExpDataFitN11
   template <typename T>
   using shptr = std::shared_ptr<T>;
 
-  using state_type    = rompp::core::Vector<Eigen::VectorXd>;
-  using residual_type = rompp::core::Vector<Epetra_Vector>;
-  using nat_vec_type  = rompp::core::Vector<Epetra_Vector>;
-  using jacobian_type = rompp::core::MultiVector<Epetra_MultiVector>;
+  using state_type    = rompp::algebra::Vector<Eigen::VectorXd>;
+  using residual_type = rompp::algebra::Vector<Epetra_Vector>;
+  using nat_vec_type  = rompp::algebra::Vector<Epetra_Vector>;
+  using jacobian_type = rompp::algebra::MultiVector<Epetra_MultiVector>;
   using scalar_type   = double;
 
   shptr<Epetra_MpiComm> comm_ = {};

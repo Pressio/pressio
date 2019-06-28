@@ -1,0 +1,11 @@
+
+#ifndef ALGEBRA_ALL_HPP_
+#define ALGEBRA_ALL_HPP_
+
+#include "ALGEBRA_BASIC"
+#include "ALGEBRA_VECTOR"
+#include "ALGEBRA_MULTI_VECTOR"
+#include "ALGEBRA_MATRIX"
+#include "ALGEBRA_OPS"
+
+#endif

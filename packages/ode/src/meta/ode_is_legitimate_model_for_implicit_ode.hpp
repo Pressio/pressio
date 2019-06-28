@@ -2,7 +2,7 @@
 #ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
 #define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
 
-#include "../../../core/src/meta/core_meta_has_scalar_typedef.hpp"
+#include "../../../algebra/src/meta/algebra_meta_has_scalar_typedef.hpp"
 #include "ode_has_state_typedef.hpp"
 #include "ode_has_residual_typedef.hpp"
 #include "ode_has_jacobian_typedef.hpp"
@@ -19,7 +19,7 @@ template<typename model_type>
 struct is_legitimate_model_for_implicit_ode<
   model_type,
   typename std::enable_if<
-    ::rompp::core::meta::has_scalar_typedef<model_type>::value and
+    ::rompp::algebra::meta::has_scalar_typedef<model_type>::value and
     has_state_typedef<model_type>::value and
     has_residual_typedef<model_type>::value and
     has_jacobian_typedef<model_type>::value and

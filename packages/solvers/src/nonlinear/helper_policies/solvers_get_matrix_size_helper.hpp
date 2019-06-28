@@ -18,8 +18,8 @@ template <typename T>
 struct MatrixGetSizeHelper<
   T,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_core_multi_vector_wrapper<T>::value and
-    core::details::traits<T>::is_shared_mem == false
+    algebra::meta::is_algebra_multi_vector_wrapper<T>::value and
+    algebra::details::traits<T>::is_shared_mem == false
     >
   >{
   static auto globalRows(const T & A) -> decltype(A.globalLength()){
@@ -35,8 +35,8 @@ template <typename T>
 struct MatrixGetSizeHelper<
   T,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_core_matrix_wrapper<T>::value and
-    core::details::traits<T>::is_shared_mem == false
+    algebra::meta::is_algebra_matrix_wrapper<T>::value and
+    algebra::details::traits<T>::is_shared_mem == false
     >
   >{
   static auto globalRows(const T & A) -> decltype(A.globalRows()){
@@ -51,8 +51,8 @@ template <typename T>
 struct MatrixGetSizeHelper<
   T,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_core_matrix_wrapper<T>::value and
-    core::details::traits<T>::is_shared_mem == true
+    algebra::meta::is_algebra_matrix_wrapper<T>::value and
+    algebra::details::traits<T>::is_shared_mem == true
     >
   >{
   static auto globalRows(const T & A) -> decltype(A.rows()){
@@ -67,8 +67,8 @@ template <typename T>
 struct MatrixGetSizeHelper<
   T,
   ::rompp::mpl::enable_if_t<
-    core::meta::is_core_multi_vector_wrapper<T>::value and
-    core::details::traits<T>::is_shared_mem == true
+    algebra::meta::is_algebra_multi_vector_wrapper<T>::value and
+    algebra::details::traits<T>::is_shared_mem == true
     >
   >{
   static auto globalRows(const T & A) -> decltype(A.length()){

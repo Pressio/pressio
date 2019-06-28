@@ -28,10 +28,10 @@ class PyGaussNewton<
   system_t, state_t, residual_t, jacobian_t,
   hessian_t, linear_solver_t, scalar_t, when_converged_t,
   mpl::enable_if_t<
-    ::rompp::core::meta::is_array_pybind11<state_t>::value and
-    ::rompp::core::meta::is_array_pybind11<residual_t>::value and
-    ::rompp::core::meta::is_array_pybind11<jacobian_t>::value and
-    ::rompp::core::meta::is_array_pybind11<hessian_t>::value
+    ::rompp::algebra::meta::is_array_pybind11<state_t>::value and
+    ::rompp::algebra::meta::is_array_pybind11<residual_t>::value and
+    ::rompp::algebra::meta::is_array_pybind11<jacobian_t>::value and
+    ::rompp::algebra::meta::is_array_pybind11<hessian_t>::value
     >
   >
   : public NonLinearSolverBase<
@@ -129,8 +129,8 @@ private:
     scalar_t normRes = {};
     scalar_t normRes0 = {};
 
-    constexpr auto one = ::rompp::core::constants::one<scalar_t>();
-    constexpr auto negOne = ::rompp::core::constants::negOne<scalar_t>();
+    constexpr auto one = ::rompp::algebra::constants::one<scalar_t>();
+    constexpr auto negOne = ::rompp::algebra::constants::negOne<scalar_t>();
 
 #ifdef DEBUG_PRINT
     auto ss = std::cout.precision();
@@ -206,7 +206,7 @@ private:
       lsearch_helper_t::evaluate(alpha, y, ytrial_, dy_, res_, jac_, sys);
 
       // solution update: y = y + alpha*dy;
-      ::rompp::core::ops::do_update(y, one, dy_, alpha);
+      ::rompp::algebra::ops::do_update(y, one, dy_, alpha);
       // std::cout << "PyGN PrintUpdateSol" << std::endl;
       // pythonOps_.attr("myprint")(dy_);
       // pythonOps_.attr("myprint")(y);

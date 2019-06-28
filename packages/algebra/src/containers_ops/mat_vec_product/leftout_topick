@@ -1,0 +1,117 @@
+
+
+// /*--------------------------------------------------------
+//   EPETRA 
+//   c = A b , 
+//   - A = DENSE matrix 
+//   - b = SINGLE vector
+// -----------------------------------------------------------*/
+  
+// template <typename matrix_type,
+// 	  typename vector_type,
+// 	  ::rompp::mpl::enable_if_t<
+// 	    algebra::details::traits<matrix_type>::is_matrix==1 &&
+// 	    algebra::details::traits<matrix_type>::isEpetra==1 &&
+// 	    algebra::details::traits<matrix_type>::is_dense==1 &&
+// 	    algebra::details::traits<vector_type>::is_vector==1 &&
+// 	    algebra::details::traits<vector_type>::isEpetra==1
+// 	    > * = nullptr>
+// auto product(const matrix_type & A,
+// 	     const vector_type & b)
+// {
+
+//    // I tried here to use the Multiply method of MultiVectors 
+//    //   but it does not seem to work as expected. 
+//    //   When A,b are all distributed, I don't get 
+//    //   the right result. So we need to figure out why. 
+
+//    //   Only solution that worked is to do this trick: 
+//    //      b is distributed -> import into b replicated -> do multiply
+
+//    //   Here we are doing matrix-vector product, where vector
+//    //   is a single vector. So for now we replicate the
+//    //   distributed vector across all processes.  
+//    //   This is not too bad, but we should find out why not working 
+//    //   for fully distributed case
+    
+
+//   const auto bGSize = b.globalSize();
+//   assert( A.globalCols() == bGSize );
+//   vector_type c( A.getDataMap() );
+  
+//   if ( b.isDistributedGlobally() ){
+//     // define local map
+//     Epetra_LocalMap locMap( bGSize, 0, b.commCRef() );
+//     // define replicated vector
+//     Epetra_Vector bRep(locMap);    
+//     // get distributed map
+//     auto & srcMap = b.getDataMap();
+//     // define importer: Epetra_Import(targetMap, sourceMap)
+//     Epetra_Import globToLocalImporter(locMap, srcMap);
+//     // import global -> local
+//     bRep.Import(*b.data(), globToLocalImporter, Insert);  
+//     c.data()->Multiply( 'N','N', 1.0,  *A.data(), bRep, 0.0 );
+//   }
+//   else{
+//     c.data()->Multiply( 'N','N', 1.0,  *A.data(), *b.data(), 0.0 );
+//   }
+
+//   return c;
+// }
+
+
+
+
+
+
+
+
+// /*---------------------------------------------------------
+//   EPETRA 
+//   c = A b , 
+//   - A = crs matrix 
+//   - b = SINGLE vector
+//   - c is epetra vector
+// -----------------------------------------------------------*/
+
+// template <typename matrix_type,
+// 	  typename vector_type,
+// 	  ::rompp::mpl::enable_if_t<
+// 	    details::traits<matrix_type>::is_matrix==1 &&
+// 	    details::traits<matrix_type>::isEpetra==1 &&
+// 	    details::traits<matrix_type>::is_sparse==1 &&
+// 	    details::traits<vector_type>::is_vector==1 &&
+// 	    details::traits<vector_type>::isEpetra==1
+// 	    > * = nullptr
+// 	  >
+// auto product(const matrix_type & A,
+// 	     const vector_type & b,
+// 	     bool transposeA = false){
+
+//   assert( A.isFillingCompleted() );
+//   assert( A.globalCols() == b.globalSize() );
+//   vector_type c( A.getRangeDataMap() );
+//   A.data()->Multiply(transposeA, *b.data(), *c.data());
+//   return c;
+// }
+
+
+// template <typename matrix_type,
+// 	  typename vector_type,
+// 	  ::rompp::mpl::enable_if_t<
+// 	    details::traits<matrix_type>::is_matrix==1 &&
+// 	    details::traits<matrix_type>::isEpetra==1 &&
+// 	    details::traits<matrix_type>::is_sparse==1 &&
+// 	    details::traits<vector_type>::is_vector==1 &&
+// 	    details::traits<vector_type>::isEpetra==1
+// 	    > * = nullptr
+// 	  >
+// void product(const matrix_type & A,
+// 	     const vector_type & b,
+// 	     vector_type & c,
+// 	     bool transposeA = false){
+
+//   assert( A.isFillingCompleted() );
+//   assert( A.globalCols() == b.globalSize() );
+//   A.data()->Multiply(transposeA, *b.data(), *c.data());
+// }

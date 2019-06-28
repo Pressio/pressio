@@ -3,9 +3,9 @@
 
 #include "../solvers_ConfigDefs.hpp"
 #include "../solvers_tags.hpp"
-#include "../../../core/src/matrix/core_matrix_traits.hpp"
-#include "../../../core/src/matrix/core_matrix_meta.hpp"
-#include "../../../core/src/multi_vector/core_multi_vector_meta.hpp"
+#include "../../../algebra/src/matrix/algebra_matrix_traits.hpp"
+#include "../../../algebra/src/matrix/algebra_matrix_meta.hpp"
+#include "../../../algebra/src/multi_vector/algebra_multi_vector_meta.hpp"
 
 #include <Eigen/IterativeLinearSolvers>
 #include <Eigen/Core>
