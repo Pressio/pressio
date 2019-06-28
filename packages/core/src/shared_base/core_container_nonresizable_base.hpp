@@ -9,7 +9,7 @@ namespace core{
 
 template<typename derived_type, int ndim>
 class ContainerNonResizableBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   ContainerNonResizableBase<derived_type,ndim>>{
 
   using this_t = ContainerNonResizableBase<derived_type, ndim>;
@@ -18,7 +18,7 @@ class ContainerNonResizableBase
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ContainerNonResizableBase() = default;
   ~ContainerNonResizableBase() = default;

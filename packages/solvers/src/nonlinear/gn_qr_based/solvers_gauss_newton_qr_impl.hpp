@@ -62,10 +62,10 @@ void gauss_newton_qr_solve(const system_t & sys,
   // set to 14 for the GN prints
   std::cout.precision(14);
   // print GN is starting
-  auto fmt1 = core::io::cyan() + core::io::underline();
+  auto fmt1 = utils::io::cyan() + utils::io::underline();
   const auto convString = std::string(is_converged_t::description_);
-  ::rompp::core::io::print_stdout(fmt1, "GN with QR:", "criterion:",
-				  convString, core::io::reset(), "\n");
+  ::rompp::utils::io::print_stdout(fmt1, "GN with QR:", "criterion:",
+				  convString, utils::io::reset(), "\n");
 #endif
 
   // compute (whatever type) norm of y
@@ -81,10 +81,10 @@ void gauss_newton_qr_solve(const system_t & sys,
   while (iStep++ <= maxNonLIt)
   {
 #ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout("\n");
-    auto fmt = core::io::underline();
-    ::rompp::core::io::print_stdout(fmt, "GN step", iStep,
-				    core::io::reset(), "\n");
+    ::rompp::utils::io::print_stdout("\n");
+    auto fmt = utils::io::underline();
+    ::rompp::utils::io::print_stdout(fmt, "GN step", iStep,
+				    utils::io::reset(), "\n");
 #endif
 
     // residual norm for current state
@@ -108,11 +108,11 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
 #ifdef DEBUG_PRINT
-    auto fmt1 = core::io::magenta() + core::io::bold();
-    ::rompp::core::io::print_stdout(fmt1, "GN_JSize =",
+    auto fmt1 = utils::io::magenta() + utils::io::bold();
+    ::rompp::utils::io::print_stdout(fmt1, "GN_JSize =",
     ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
     ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
-				    core::io::reset(),
+				    utils::io::reset(),
 				    "\n");
 #endif
 
@@ -140,7 +140,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     norm_evaluator_t::evaluate(dy, normN);
 
 #ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout(std::scientific,
+    ::rompp::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
 				    "||dy|| =", normN,

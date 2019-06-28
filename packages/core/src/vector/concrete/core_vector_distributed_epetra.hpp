@@ -131,7 +131,7 @@ public:
 
 
   void print(std::string tag) const{
-    ::rompp::core::io::print_stdout(tag);
+    ::rompp::utils::io::print_stdout(tag);
     data_.Print(std::cout);
   }
 

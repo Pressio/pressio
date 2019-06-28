@@ -8,7 +8,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type>
 class MultiVectorSharedMemBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   MultiVectorSharedMemBase<derived_type>>
 {
   static_assert(details::traits<derived_type>::is_shared_mem==1,
@@ -33,7 +33,7 @@ private:
   friend typename dummy<derived_type>::type;
 
   using this_t = MultiVectorSharedMemBase<derived_type>;
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   MultiVectorSharedMemBase() = default;
   ~MultiVectorSharedMemBase() = default;

@@ -9,7 +9,7 @@ namespace core{
 
 template<typename derived_type>
 class MatrixSparseDistributedTrilinosBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   MatrixSparseDistributedTrilinosBase<derived_type>>{
 
   static_assert( details::traits<derived_type>::is_shared_mem==0,
@@ -64,7 +64,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<
+  friend utils::details::CrtpBase<
     MatrixSparseDistributedTrilinosBase<derived_type>>;
 
   MatrixSparseDistributedTrilinosBase() = default;

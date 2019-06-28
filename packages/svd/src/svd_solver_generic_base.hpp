@@ -9,7 +9,7 @@ namespace svd{
 
 template<typename derived_type>
 class SolverBase
-  : private core::details::CrtpBase<SolverBase<derived_type>>
+  : private utils::details::CrtpBase<SolverBase<derived_type>>
 {
 
 private:
@@ -50,7 +50,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<SolverBase<derived_type>>;
+  friend utils::details::CrtpBase<SolverBase<derived_type>>;
 
 };//end class
 

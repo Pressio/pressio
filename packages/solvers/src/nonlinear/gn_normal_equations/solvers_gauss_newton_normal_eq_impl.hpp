@@ -23,7 +23,7 @@ template <
   typename lin_solver_t,
   typename iteration_t,
   typename scalar_t,
-  typename observer_t = core::impl::empty
+  typename observer_t = utils::impl::empty
   >
 void gauss_newton_neq_solve(const system_t & sys,
 			    typename system_t::state_type & y,
@@ -85,10 +85,10 @@ void gauss_newton_neq_solve(const system_t & sys,
   auto ss = std::cout.precision();
   // set to 14 for the GN prints
   std::cout.precision(14);
-  auto reset = core::io::reset();
-  auto fmt1 = core::io::cyan() + core::io::underline();
+  auto reset = utils::io::reset();
+  auto fmt1 = utils::io::cyan() + utils::io::underline();
   const auto convString = std::string(is_converged_t::description_);
-  ::rompp::core::io::print_stdout(fmt1, "GN normal eqns:", "criterion:",
+  ::rompp::utils::io::print_stdout(fmt1, "GN normal eqns:", "criterion:",
 				  convString, reset, "\n");
 #endif
 
@@ -109,10 +109,10 @@ void gauss_newton_neq_solve(const system_t & sys,
     residual_observer_each_step::evaluate(observer, resid, iStep);
 
 #ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout("\n");
-    auto fmt = core::io::underline();
-    ::rompp::core::io::print_stdout(fmt, "GN step", iStep,
-				    core::io::reset(), "\n");
+    ::rompp::utils::io::print_stdout("\n");
+    auto fmt = utils::io::underline();
+    ::rompp::utils::io::print_stdout(fmt, "GN step", iStep,
+				    utils::io::reset(), "\n");
 #endif
 
     // residual norm for current state
@@ -136,20 +136,20 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("hessian");
 #endif
 
-    // ::rompp::core::io::print_stdout("HESSIAN" , "\n");
-    // ::rompp::core::io::print_stdout(std::fixed,
+    // ::rompp::utils::io::print_stdout("HESSIAN" , "\n");
+    // ::rompp::utils::io::print_stdout(std::fixed,
     // 				    *H.data() , "\n");
 
 #ifdef DEBUG_PRINT
-    auto fmt1 = core::io::magenta() + core::io::bold();
-    ::rompp::core::io::print_stdout(fmt1, "GN_JSize =",
+    auto fmt1 = utils::io::magenta() + utils::io::bold();
+    ::rompp::utils::io::print_stdout(fmt1, "GN_JSize =",
     ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
     ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
 				    "\n");
     // this print only works when hessian is a shared mem matrix
-    ::rompp::core::io::print_stdout(fmt1, "GN_HessianSize =",
+    ::rompp::utils::io::print_stdout(fmt1, "GN_HessianSize =",
 				    H.rows(), H.cols(),
-				    core::io::reset(), "\n");
+				    utils::io::reset(), "\n");
 #endif
 
     // compute RHS: J^T*res
@@ -162,8 +162,8 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("JTR");
 #endif
 
-    // ::rompp::core::io::print_stdout("J^T R \n");
-    // ::rompp::core::io::print_stdout( std::fixed,
+    // ::rompp::utils::io::print_stdout("J^T R \n");
+    // ::rompp::utils::io::print_stdout( std::fixed,
     // 				     *JTR.data() , "\n");
 
     // solve normal equations
@@ -176,19 +176,19 @@ void gauss_newton_neq_solve(const system_t & sys,
 #endif
 
     // // // print the correction
-    // ::rompp::core::io::print_stdout("Correction dy \n");
-    // ::rompp::core::io::print_stdout(std::fixed,
+    // ::rompp::utils::io::print_stdout("Correction dy \n");
+    // ::rompp::utils::io::print_stdout(std::fixed,
     // 				    *dy.data());
 
     // compute norm of the correction
     norm_evaluator_t::evaluate(dy, normN);
 
 #ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout(std::scientific,
+    ::rompp::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
 				    "||dy|| =", normN,
-				    core::io::reset(),
+				    utils::io::reset(),
 				    "\n");
 #endif
 
@@ -220,7 +220,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 
 #if defined DEBUG_PRINT
   std::cout.precision(ss);
-  ::rompp::core::io::print_stdout(std::fixed);
+  ::rompp::utils::io::print_stdout(std::fixed);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS

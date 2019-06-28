@@ -17,7 +17,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type, typename ord_t>
 class ContainerPrintable1DBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
 	ContainerPrintable1DBase<derived_type, ord_t>>{
 
   using this_t = ContainerPrintable1DBase<derived_type, ord_t>;
@@ -39,7 +39,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ContainerPrintable1DBase() = default;
   ~ContainerPrintable1DBase() = default;
@@ -49,7 +49,7 @@ private:
 
 template<typename derived_type, typename ord1_t, typename ord2_t = ord1_t>
 class ContainerPrintable2DBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   ContainerPrintable2DBase<derived_type, ord1_t, ord2_t>>{
 
   using this_t = ContainerPrintable2DBase<derived_type, ord1_t, ord2_t>;
@@ -74,7 +74,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ContainerPrintable2DBase() = default;
   ~ContainerPrintable2DBase() = default;

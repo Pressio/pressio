@@ -10,7 +10,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type, typename map_t>
 class ContainerDistributedTrilinosBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   ContainerDistributedTrilinosBase<derived_type, map_t> >{
 
   using this_t = ContainerDistributedTrilinosBase<derived_type,map_t>;
@@ -37,7 +37,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ContainerDistributedTrilinosBase() = default;
   ~ContainerDistributedTrilinosBase() = default;

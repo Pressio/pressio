@@ -9,7 +9,7 @@ namespace rompp{ namespace qr{
 template<typename derived_t,
 	 typename R_t>
 class RFactorBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   RFactorBase<derived_t, R_t>>{
 
   using this_t = RFactorBase<derived_t, R_t>;
@@ -18,7 +18,7 @@ class RFactorBase
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_t>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
 public:
   const R_t & cRefRFactor() const {

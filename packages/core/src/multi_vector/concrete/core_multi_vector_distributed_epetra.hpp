@@ -69,7 +69,7 @@ public:
   }
 
   void print(std::string tag) const{
-    ::rompp::core::io::print_stdout(tag, core::io::reset());
+    ::rompp::utils::io::print_stdout(tag, utils::io::reset());
     data_.Print(std::cout);
   }
 

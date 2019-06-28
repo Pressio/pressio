@@ -11,7 +11,7 @@ template<typename derived_type,
 	 typename scalar_t,
 	 typename ord_t>
 class ContainerSubscriptable1DBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   ContainerSubscriptable1DBase<derived_type, scalar_t, ord_t>>{
 
   using this_t = ContainerSubscriptable1DBase<derived_type, scalar_t, ord_t>;
@@ -38,7 +38,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ContainerSubscriptable1DBase() = default;
   ~ContainerSubscriptable1DBase() = default;
@@ -53,7 +53,7 @@ template<typename derived_type,
 	 typename ord1_t,
 	 typename ord2_t = ord1_t>
 class ContainerSubscriptable2DBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   ContainerSubscriptable2DBase<derived_type,
 			       scalar_t,
 			       ord1_t,
@@ -78,7 +78,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ContainerSubscriptable2DBase() = default;
   ~ContainerSubscriptable2DBase() = default;

@@ -34,7 +34,7 @@ public:
 				*localR_.get(),
 				false);
 
-    //::rompp::core::io::print_stdout(*localR_.get());
+    //::rompp::utils::io::print_stdout(*localR_.get());
 
 // #ifdef DEBUG_PRINT
 //     int myrank{};

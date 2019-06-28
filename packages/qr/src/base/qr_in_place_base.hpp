@@ -9,7 +9,7 @@ namespace rompp{ namespace qr{
 template<typename derived_t,
 	 typename matrix_t>
 class QRInPlaceBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   QRInPlaceBase<derived_t, matrix_t>>{
 
   using this_t = QRInPlaceBase<derived_t, matrix_t>;
@@ -18,7 +18,7 @@ class QRInPlaceBase
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_t>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
 public:
   void computeThin(matrix_t & A){

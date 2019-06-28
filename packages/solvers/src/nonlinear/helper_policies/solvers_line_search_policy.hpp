@@ -37,7 +37,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     scalar_t c1 = 1e-4;
     alpha = static_cast<scalar_t>(1);
 #ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout("line search: Armijo rule,",
+    ::rompp::utils::io::print_stdout("line search: Armijo rule,",
 				    "c1=", c1, "\n");
 #endif
 
@@ -57,16 +57,16 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     auto rhs = c1 * alpha * c2;
 
 #ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout(" f(y) =", fy, "\n");
-    ::rompp::core::io::print_stdout(" dy^T J^T R =", c2, "\n");
-    ::rompp::core::io::print_stdout(" c1*alfa*dy^T*J^T*R =", rhs, "\n");
+    ::rompp::utils::io::print_stdout(" f(y) =", fy, "\n");
+    ::rompp::utils::io::print_stdout(" dy^T J^T R =", c2, "\n");
+    ::rompp::utils::io::print_stdout(" c1*alfa*dy^T*J^T*R =", rhs, "\n");
 #endif
 
     bool done = false;
     while (not done)
     {
 #ifdef DEBUG_PRINT
-      ::rompp::core::io::print_stdout(" backtracking: alpha =",
+      ::rompp::utils::io::print_stdout(" backtracking: alpha =",
 				      alpha, "\n");
 #endif
 
@@ -79,15 +79,15 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
       auto lhs = fytrial-fy;
 
 #ifdef DEBUG_PRINT
-      ::rompp::core::io::print_stdout(" f(y+alpha*dy) =", fytrial, "\n");
-      ::rompp::core::io::print_stdout(" f(y+alpha*dy)-f(y) =", lhs,
+      ::rompp::utils::io::print_stdout(" f(y+alpha*dy) =", fytrial, "\n");
+      ::rompp::utils::io::print_stdout(" f(y+alpha*dy)-f(y) =", lhs,
 				      "; rhs =", rhs, "\n");
 #endif
 
       // eval Armijo
       if (lhs <= rhs){
 #ifdef DEBUG_PRINT
-	::rompp::core::io::print_stdout(" lsearch done","\n");
+	::rompp::utils::io::print_stdout(" lsearch done","\n");
 #endif
 	done = true;
       }
@@ -96,7 +96,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
       // change later with some machine epsilon
       if (std::abs(lhs) <= 1e-14){
 #ifdef DEBUG_PRINT
-	::rompp::core::io::print_stdout(" detected negligible",
+	::rompp::utils::io::print_stdout(" detected negligible",
 					"change in obj f:",
 					"abs(fytrail-fy) < 1e-14,",
 					"exiting linsearch","\n");
@@ -115,7 +115,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     }//while
 
 #ifdef DEBUG_PRINT
-    ::rompp::core::io::print_stdout("after line search:",
+    ::rompp::utils::io::print_stdout("after line search:",
 				    "alpha =", alpha, "\n");
 #endif
   }//()

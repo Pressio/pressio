@@ -9,7 +9,7 @@ namespace core{
 
 template<typename derived_type>
 class MatrixSparseBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   MatrixSparseBase<derived_type>>{
 
   static_assert( details::traits<derived_type>::is_sparse==1,
@@ -26,7 +26,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<
+  friend utils::details::CrtpBase<
     MatrixSparseBase<derived_type>>;
   MatrixSparseBase() = default;
   ~MatrixSparseBase() = default;

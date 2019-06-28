@@ -28,7 +28,7 @@ void integrateNSteps(stepper_type   & stepper,
 		     integral_type    num_steps,
 		     collector_type & collector)
 {
-  using empty_t = core::impl::empty;
+  using empty_t = utils::impl::empty;
   using do_step_policy_t = impl::DoStepPolicy<empty_t, empty_t>;
   using advancer_t = impl::AdvancerPolicy<collector_type, do_step_policy_t>;
   advancer_t::execute(num_steps, start_time, dt, yIn, collector, stepper);
@@ -49,7 +49,7 @@ void integrateNSteps(stepper_type & stepper,
 		     time_type	    dt,
 		     integral_type  num_steps){
 
-  using empty_t = core::impl::empty;
+  using empty_t = utils::impl::empty;
   using do_step_policy_t = impl::DoStepPolicy<empty_t, empty_t>;
   using advancer_t = impl::AdvancerPolicy<empty_t, do_step_policy_t>;
   advancer_t::execute(num_steps, start_time, dt, yIn, stepper);

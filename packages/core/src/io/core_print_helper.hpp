@@ -65,5 +65,5 @@ void print_core_wrapper(const T & object, Args && ...args)
 }
 
 
-}}}//end namespace rompp::core::io
+}}}//end namespace rompp::utils::io
 #endif

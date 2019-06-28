@@ -8,7 +8,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type, typename wrapped_t>
 class ContainerBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   ContainerBase<derived_type, wrapped_t>>{
 
   using this_t 	 = ContainerBase<derived_type, wrapped_t>;
@@ -58,7 +58,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ContainerBase() = default;
   ~ContainerBase() = default;

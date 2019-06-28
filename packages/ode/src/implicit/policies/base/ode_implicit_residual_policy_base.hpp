@@ -8,7 +8,7 @@ namespace rompp{ namespace ode{ namespace policy{
 
 template <typename derived_t>
 struct ImplicitResidualPolicyBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   ImplicitResidualPolicyBase<derived_t>>{
 
   using this_t = ImplicitResidualPolicyBase<derived_t>;
@@ -23,7 +23,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_t>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ImplicitResidualPolicyBase() = default;
   ~ImplicitResidualPolicyBase() = default;

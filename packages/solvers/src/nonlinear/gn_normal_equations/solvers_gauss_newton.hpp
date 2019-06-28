@@ -124,7 +124,7 @@ class GaussNewton<
   using gn_mixin_t::normN_;
 
   // dummy observer
-  core::impl::empty obsObj_ = {};
+  utils::impl::empty obsObj_ = {};
 
 public:
   GaussNewton() = delete;

@@ -8,7 +8,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type, int ndim>
 class ContainerResizableBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   ContainerResizableBase<derived_type,ndim>>{
 
   using this_t = ContainerResizableBase<derived_type, ndim>;
@@ -32,7 +32,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ContainerResizableBase() = default;
   ~ContainerResizableBase() = default;

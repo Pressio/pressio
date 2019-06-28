@@ -77,7 +77,7 @@ class PyGaussNewton<
   scalar_t normN_    = {};
 
   // dummy observer
-  core::impl::empty obsObj_ = {};
+  utils::impl::empty obsObj_ = {};
 
 public:
   PyGaussNewton() = delete;
@@ -135,10 +135,10 @@ private:
 #ifdef DEBUG_PRINT
     auto ss = std::cout.precision();
     std::cout.precision(14);
-    auto reset = core::io::reset();
-    auto fmt1 = core::io::cyan() + core::io::underline();
+    auto reset = utils::io::reset();
+    auto fmt1 = utils::io::cyan() + utils::io::underline();
     const auto convString = std::string(is_converged_t::description_);
-    ::rompp::core::io::print_stdout(fmt1, "PyGN normal eqns:", "criterion:",
+    ::rompp::utils::io::print_stdout(fmt1, "PyGN normal eqns:", "criterion:",
 				    convString, reset, "\n");
 #endif
 
@@ -150,10 +150,10 @@ private:
     while (iStep++ <= iterative_base_t::maxIters_)
     {
 #ifdef DEBUG_PRINT
-      ::rompp::core::io::print_stdout("\n");
-      auto fmt = core::io::underline();
-      ::rompp::core::io::print_stdout(fmt, "PyGN step", iStep,
-				      core::io::reset(), "\n");
+      ::rompp::utils::io::print_stdout("\n");
+      auto fmt = utils::io::underline();
+      ::rompp::utils::io::print_stdout(fmt, "PyGN step", iStep,
+				      utils::io::reset(), "\n");
 #endif
 
       // residual norm for current state
@@ -174,13 +174,13 @@ private:
       // pythonOps_.attr("myprint")(hess_);
 
 #ifdef DEBUG_PRINT
-      auto fmt1 = core::io::magenta() + core::io::bold();
-      ::rompp::core::io::print_stdout(fmt1, "GN_JSize =",
+      auto fmt1 = utils::io::magenta() + utils::io::bold();
+      ::rompp::utils::io::print_stdout(fmt1, "GN_JSize =",
 				      jac_.shape()[0], jac_.shape()[1],
 				      "\n");
-      ::rompp::core::io::print_stdout(fmt1, "GN_HessianSize =",
+      ::rompp::utils::io::print_stdout(fmt1, "GN_HessianSize =",
 				    hess_.shape()[0], hess_.shape()[1],
-				    core::io::reset(), "\n");
+				    utils::io::reset(), "\n");
 #endif
 
       // compute RHS: J^T*res
@@ -194,11 +194,11 @@ private:
       norm_evaluator_t::evaluate(dy_, normN_);
 
 #ifdef DEBUG_PRINT
-      ::rompp::core::io::print_stdout(std::scientific,
+      ::rompp::utils::io::print_stdout(std::scientific,
 				      "||R|| =", normRes,
 				      "||R||(r) =", normRes/normRes0,
 				      "||dy|| =", normN_,
-				      core::io::reset(),
+				      utils::io::reset(),
 				      "\n");
 #endif
 
@@ -235,7 +235,7 @@ private:
 
 #if defined DEBUG_PRINT
     std::cout.precision(ss);
-    ::rompp::core::io::print_stdout(std::fixed);
+    ::rompp::utils::io::print_stdout(std::fixed);
 #endif
 
   }//end solveImpl

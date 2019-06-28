@@ -8,7 +8,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type>
 class MultiVectorDistributedBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   MultiVectorDistributedBase<derived_type>>
 {
 
@@ -50,7 +50,7 @@ private:
   friend typename dummy<derived_type>::type;
 
   using this_t = MultiVectorDistributedBase<derived_type>;
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   MultiVectorDistributedBase() = default;
   ~MultiVectorDistributedBase() = default;

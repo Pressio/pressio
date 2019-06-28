@@ -32,7 +32,7 @@ inline bool is_colorized(std::ostream& stream){
   return is_atty(stream);
 }
 
-}//end namepsace core::io::impl
+}//end namepsace utils::io::impl
 
 
 
@@ -105,7 +105,7 @@ std::string bg_cyan(){ return impl::is_colorized(std::cout) ? "\033[46m" : ""; }
 inline
 std::string bg_white(){ return impl::is_colorized(std::cout) ? "\033[47m" : ""; }
 
-}}} // namespace rompp::core::io
+}}} // namespace rompp::utils::io
 
 #endif
 

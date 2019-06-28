@@ -11,7 +11,7 @@ template<typename derived_t,
 	 typename matrix_t,
 	 typename Q_t>
 class QROutOfPlaceBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   QROutOfPlaceBase<derived_t, matrix_t, Q_t>>{
 
   using this_t = QROutOfPlaceBase<derived_t, matrix_t, Q_t>;
@@ -20,7 +20,7 @@ class QROutOfPlaceBase
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_t>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
 public:
   void computeThin(matrix_t & A){

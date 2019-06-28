@@ -8,7 +8,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type>
 class MatrixBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   MatrixBase<derived_type>>{
 
   using traits_t = details::traits<derived_type>;
@@ -40,7 +40,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<MatrixBase<derived_type>>;
+  friend utils::details::CrtpBase<MatrixBase<derived_type>>;
   MatrixBase() = default;
   ~MatrixBase() = default;
 };//end class

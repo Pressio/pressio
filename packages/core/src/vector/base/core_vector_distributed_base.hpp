@@ -8,7 +8,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type>
 class VectorDistributedBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
               VectorDistributedBase<derived_type>>
 {
   static_assert( details::traits<derived_type>::is_shared_mem==0,
@@ -58,7 +58,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   VectorDistributedBase() = default;
   ~VectorDistributedBase() = default;

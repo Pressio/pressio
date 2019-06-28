@@ -112,10 +112,10 @@ public:
     while (iStep++ <= this->maxIters_)
     {
 #ifdef DEBUG_PRINT
-      ::rompp::core::io::print_stdout("\n");
-      auto fmt = core::io::underline();
-      ::rompp::core::io::print_stdout(fmt, "NewRaph step", iStep,
-				      core::io::reset(), "\n");
+      ::rompp::utils::io::print_stdout("\n");
+      auto fmt = utils::io::underline();
+      ::rompp::utils::io::print_stdout(fmt, "NewRaph step", iStep,
+				      utils::io::reset(), "\n");
 #endif
 
       xOld = x;
@@ -125,7 +125,7 @@ public:
       linSolver_.solve(Jac, Residual, dx);
       x -= dx;
       normN_ =::rompp::core::ops::norm2(dx);
-      ::rompp::core::io::print_stdout("norm(dx) =", normN_, "\n");
+      ::rompp::utils::io::print_stdout("norm(dx) =", normN_, "\n");
       if (normN_ < this->tolerance_)
       	break;
     }
@@ -161,10 +161,10 @@ public:
     while (iStep++ <= this->maxIters_)
     {
 #ifdef DEBUG_PRINT
-      ::rompp::core::io::print_stdout("\n");
-      auto fmt = core::io::underline();
-      ::rompp::core::io::print_stdout(fmt, "NewRaph step", iStep,
-				      core::io::reset(), "\n");
+      ::rompp::utils::io::print_stdout("\n");
+      auto fmt = utils::io::underline();
+      ::rompp::utils::io::print_stdout(fmt, "NewRaph step", iStep,
+				      utils::io::reset(), "\n");
 #endif
 
       xOld = x;
@@ -176,7 +176,7 @@ public:
 	x.mutable_at(i) -= dx.at(i);
 
       normN_ =::rompp::core::ops::norm2(dx);
-      ::rompp::core::io::print_stdout("norm(dx) =", normN_, "\n");
+      ::rompp::utils::io::print_stdout("norm(dx) =", normN_, "\n");
       if (normN_ < this->tolerance_)
       	break;
     }

@@ -19,7 +19,7 @@ namespace rompp{ namespace ode{
 
 template<typename concrete_stepper_type, int nAuxStates>
 class ImplicitStepperBase
-//: private core::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>
+//: private utils::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>
 {
   using traits		  = typename details::traits<concrete_stepper_type>;
   using sc_t		  = typename traits::scalar_t;
@@ -146,7 +146,7 @@ public:
   // /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   // template<typename DummyType> struct dummy{using type = DummyType;};
   // friend typename dummy<concrete_stepper_type>::type;
-  // friend core::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>;
+  // friend utils::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>;
 
 };//end class
 

@@ -127,7 +127,7 @@ private:
   void printImpl(stream_t & os, char c, ord_t nIn) const{
     assert(nIn <= this->size());
     auto nToPrint = (nIn==-1) ? this->size() : nIn;
-    ::rompp::core::impl::setStreamPrecision<stream_t, sc_t>(os);
+    ::rompp::utils::impl::setStreamPrecision<stream_t, sc_t>(os);
 
     if (c=='d')
       this->printVertically(os, nToPrint);

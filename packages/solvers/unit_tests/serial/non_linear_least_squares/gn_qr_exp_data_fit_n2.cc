@@ -28,7 +28,7 @@ TEST(solvers_nonlinear_least_squares, gn_qr_exp_data_fit_n2){
 
   // print summary from timers
   #ifdef HAVE_TEUCHOS_TIMERS
-  core::TeuchosPerformanceMonitor::stackedTimersReportSerial();
+  utils::TeuchosPerformanceMonitor::stackedTimersReportSerial();
   #endif
 }
 

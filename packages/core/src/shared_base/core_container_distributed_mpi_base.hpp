@@ -10,7 +10,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type, typename comm_t>
 class ContainerDistributedMpiBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   ContainerDistributedMpiBase<derived_type,comm_t> >{
 
   using this_t = ContainerDistributedMpiBase<derived_type,comm_t>;
@@ -45,7 +45,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   ContainerDistributedMpiBase() = default;
   ~ContainerDistributedMpiBase() = default;

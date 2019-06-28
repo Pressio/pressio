@@ -8,7 +8,7 @@ namespace rompp{ namespace rom{
 
 template <typename derived_type, typename jac_matrix_type>
 struct DecoderBase
-  // : private core::details::CrtpBase<
+  // : private utils::details::CrtpBase<
   // DecoderBase<derived_type, jac_matrix_type>>
 {
   using this_t = DecoderBase<derived_type, jac_matrix_type>;
@@ -30,7 +30,7 @@ struct DecoderBase
 //   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
 //   template<typename DummyType> struct dummy{using type = DummyType;};
 //   friend typename dummy<derived_type>::type;
-//   friend core::details::CrtpBase<this_t>;
+//   friend utils::details::CrtpBase<this_t>;
 };//end class
 
 }}//end namespace rompp::rom

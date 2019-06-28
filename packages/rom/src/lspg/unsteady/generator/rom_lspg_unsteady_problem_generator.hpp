@@ -49,7 +49,7 @@ struct LSPGUnsteadyProblemGenerator<
    * otherwise we set it to a dummy type and we dont construct it */
   typename std::conditional<
     std::is_void<aux_stepper_t>::value,
-    core::impl::empty, aux_stepper_t>::type auxStepperObj_;
+    utils::impl::empty, aux_stepper_t>::type auxStepperObj_;
 
   // actual stepper object
   lspg_stepper_t			stepperObj_;

@@ -8,7 +8,7 @@ namespace rompp{ namespace qr{
 
 template<typename derived_t>
 class QRSolveBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   QRSolveBase<derived_t> >{
 
   using this_t = QRSolveBase<derived_t>;
@@ -17,7 +17,7 @@ class QRSolveBase
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_t>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
 public:
   template <

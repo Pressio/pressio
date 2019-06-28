@@ -9,7 +9,7 @@ namespace core{
 
 template<typename derived_type>
 class MatrixSharedMemBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
   MatrixSharedMemBase<derived_type>>{
 
   static_assert( details::traits<derived_type>::is_shared_mem==1,
@@ -30,7 +30,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<MatrixSharedMemBase<derived_type>>;
+  friend utils::details::CrtpBase<MatrixSharedMemBase<derived_type>>;
   MatrixSharedMemBase() = default;
   ~MatrixSharedMemBase() = default;
 

@@ -8,7 +8,7 @@ namespace rompp{ namespace rom{
 
 template <typename derived_t>
 class OperatorBase
-  : private core::details::CrtpBase<OperatorBase<derived_t>>{
+  : private utils::details::CrtpBase<OperatorBase<derived_t>>{
 
 public:
 
@@ -70,7 +70,7 @@ public:
 
 private:
   friend derived_t;
-  friend core::details::CrtpBase<OperatorBase<derived_t>>;
+  friend utils::details::CrtpBase<OperatorBase<derived_t>>;
   OperatorBase() = default;
   ~OperatorBase() = default;
 

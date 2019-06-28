@@ -27,7 +27,7 @@ struct DoStepPolicy{
 };
 
 template<>
-struct DoStepPolicy<core::impl::empty, core::impl::empty>{
+struct DoStepPolicy<utils::impl::empty, utils::impl::empty>{
   template <typename time_type,
 	    typename integral_type,
 	    typename state_type,
@@ -44,7 +44,7 @@ struct DoStepPolicy<core::impl::empty, core::impl::empty>{
 
 
 template<typename solver_type>
-struct DoStepPolicy<solver_type, core::impl::empty>{
+struct DoStepPolicy<solver_type, utils::impl::empty>{
   template <typename time_type,
 	    typename integral_type,
 	    typename state_type,
@@ -91,13 +91,13 @@ struct AdvancerPolicy{
     collector(0, time, yIn);
 
     integral_type step = 1;
-    ::rompp::core::io::print_stdout("\nstarting time loop","\n");
+    ::rompp::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
     {
       #ifdef DEBUG_PRINT
-      auto fmt = core::io::bg_grey() + core::io::bold() + core::io::red();
-      auto reset = core::io::reset();
-      ::rompp::core::io::print_stdout(fmt, "time step =",
+      auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
+      auto reset = utils::io::reset();
+      ::rompp::utils::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
       #endif
 
@@ -124,7 +124,7 @@ struct AdvancerPolicy{
  * No collector object is passed by user
  */
 template <typename DoStepPolicy_t>
-struct AdvancerPolicy<core::impl::empty, DoStepPolicy_t>{
+struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
 
   template <typename integral_type,
 	    typename time_type,
@@ -142,13 +142,13 @@ struct AdvancerPolicy<core::impl::empty, DoStepPolicy_t>{
     time_type time = start_time;
     integral_type step = 1;
 
-    ::rompp::core::io::print_stdout("\nstarting time loop","\n");
+    ::rompp::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
     {
       #ifdef DEBUG_PRINT
-      auto fmt = core::io::bg_grey() + core::io::bold() + core::io::red();
-      auto reset = core::io::reset();
-      ::rompp::core::io::print_stdout(fmt, "time step =",
+      auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
+      auto reset = utils::io::reset();
+      ::rompp::utils::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
       #endif
 

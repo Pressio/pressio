@@ -9,7 +9,7 @@ namespace core{
 
 template<typename derived_type>
 class MatrixDenseSharedMemBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
      MatrixDenseSharedMemBase<derived_type>>{
   using this_t = MatrixDenseSharedMemBase<derived_type>;
 
@@ -21,7 +21,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
 
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using ord_t = typename details::traits<derived_type>::ordinal_t;

@@ -8,7 +8,7 @@ namespace rompp{ namespace core{
 
 template<typename derived_type>
 class VectorSharedMemBase
-  : private core::details::CrtpBase<
+  : private utils::details::CrtpBase<
      VectorSharedMemBase<derived_type>>
 {
 
@@ -35,7 +35,7 @@ private:
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
-  friend core::details::CrtpBase<this_t>;
+  friend utils::details::CrtpBase<this_t>;
   VectorSharedMemBase() = default;
   ~VectorSharedMemBase() = default;
 
