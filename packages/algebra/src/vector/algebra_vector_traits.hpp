@@ -318,7 +318,7 @@ struct traits<Vector<wrapped_type,
   wrapped_vector_identifier = WrappedVectorIdentifier::Epetra;
 
   static constexpr bool is_admissible_for_expression_templates = true;
-  using scalar_t = default_types::epetra_scalar_t;
+  using scalar_t = algebra::default_types::epetra_scalar_t;
   using local_ordinal_t = algebra::default_types::epetra_lo_t;
   using global_ordinal_t = algebra::default_types::epetra_go_t1;
   using data_map_t = Epetra_BlockMap;

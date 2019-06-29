@@ -4,8 +4,12 @@
 
 #include <fstream>
 #include "algebra_config.h"
-#include "algebra_traits.hpp"
+#include "../../utils/src/utils_ConfigDefs.hpp"
+#include "../../mpl/src/mpl_ConfigDefs.hpp"
+
+
 #include "algebra_default_types.hpp"
+#include "algebra_traits.hpp"
 
 #include "../../mpl/src/mpl_non_variadic.hpp"
 #include "../../mpl/src/mpl_variadic.hpp"

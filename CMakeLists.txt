@@ -115,6 +115,10 @@ endfunction()
 # are needed as preprocessor directives to turn on/off code
 # if the TPL is not linked to
 
+if(DEBUG_PRINT)
+  MESSAGE("DEBUG_PRINT is ON")
+endif()
+
 if(TPL_ENABLE_PYBIND11)
   MESSAGE("TPL_ENABLE_PYBIND11=ON, so HAVE_PYBIND11=ON")
   set(HAVE_PYBIND11 ON)

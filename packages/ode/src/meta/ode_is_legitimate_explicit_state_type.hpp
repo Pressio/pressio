@@ -4,7 +4,7 @@
 
 #include "../ode_ConfigDefs.hpp"
 #include "../../../algebra/src/vector/algebra_vector_meta.hpp"
-#include "../../../algebra/src/algebra_native_pybind_array_meta.hpp"
+#include "../../../algebra/src/meta/algebra_native_pybind_array_meta.hpp"
 
 namespace rompp{ namespace ode{ namespace meta {
 

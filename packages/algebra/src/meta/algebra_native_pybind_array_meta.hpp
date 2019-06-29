@@ -3,7 +3,7 @@
 #ifndef ALGEBRA_NATIVE_PYBIND11_ARRAY_HPP_
 #define ALGEBRA_NATIVE_PYBIND11_ARRAY_HPP_
 
-#include "./meta/algebra_meta_basic.hpp"
+#include "algebra_meta_basic.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/numpy.h>

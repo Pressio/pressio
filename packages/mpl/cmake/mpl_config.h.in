@@ -1,3 +1,2 @@
 
-//#cmakedefine HAVE_COMMONBASE_DEBUG
-//#cmakedefine HAVE_COMMONBASE_SIMPLETPL
+#cmakedefine DEBUG_PRINT

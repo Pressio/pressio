@@ -123,9 +123,7 @@ public:
     }
     if (step >= 3){
       ::rompp::algebra::ops::deep_copy(this->odeStorage_.auxStates_[1], this->odeStorage_.auxStates_[0]);
-      //this->odeStorage_.auxStates_[0] = this->odeStorage_.auxStates_[1];
       ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
-      //this->odeStorage_.auxStates_[1] = y;
       solver.solve(*this, y);
     }
   }
@@ -155,9 +153,7 @@ public:
    }
    if (step >= 3){
      ::rompp::algebra::ops::deep_copy(this->odeStorage_.auxStates_[1], this->odeStorage_.auxStates_[0]);
-     //this->odeStorage_.auxStates_[0] = this->odeStorage_.auxStates_[1];
      ::rompp::algebra::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
-     //this->odeStorage_.auxStates_[1] = y;
      guesserCb(step, t, y);
      solver.solve(*this, y);
    }

@@ -3,6 +3,7 @@
 #define ALGEBRA_DEFAULT_TYPES_HPP_
 
 #include "algebra_config.h"
+#include "../../utils/src/utils_ConfigDefs.hpp"
 
 namespace rompp{ namespace algebra{ namespace default_types {
 

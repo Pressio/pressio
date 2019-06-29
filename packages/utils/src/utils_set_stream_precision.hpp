@@ -1,5 +1,5 @@
 
-#ifdef DEBUG_PRINT
+// #ifdef DEBUG_PRINT
 #ifndef UTILS_SET_STREAM_PRECISION_HPP_
 #define UTILS_SET_STREAM_PRECISION_HPP_
 
@@ -15,6 +15,6 @@ void setStreamPrecision(stream_t & ss){
 }
 
 }}} // end of namespace rompp::utils::impl
-#endif
+// #endif
 #endif
 
