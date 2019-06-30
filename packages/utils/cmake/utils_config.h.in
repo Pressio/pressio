@@ -1,0 +1,4 @@
+
+#cmakedefine HAVE_MPI
+#cmakedefine HAVE_TRILINOS
+#cmakedefine HAVE_TEUCHOS_TIMERS

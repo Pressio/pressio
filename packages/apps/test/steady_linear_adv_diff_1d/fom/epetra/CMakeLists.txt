@@ -1,0 +1,7 @@
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  steadyAdvDiff1d_fom_epetra
+  SOURCES main.cc
+  NUM_MPI_PROCS 2
+  PASS_REGULAR_EXPRESSION "PASSED"
+  )

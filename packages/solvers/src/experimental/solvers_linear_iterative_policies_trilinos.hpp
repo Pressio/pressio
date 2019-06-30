@@ -1,11 +1,12 @@
 
+#ifdef HAVE_TRILINOS
 #ifndef SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_POLICIES_TRILINOS_HPP_
 #define SOLVERS_EXPERIMENTAL_LINEAR_ITERATIVE_POLICIES_TRILINOS_HPP_
 
 #include "AztecOO.h"
 
-
-namespace solvers {
+namespace rompp{
+namespace solvers{
 namespace trilinos_policies {
 
 
@@ -74,5 +75,6 @@ struct Jacobi {
 
 } // end namespace trilinos_policies
 } // end namespace solvers
-
+}//end namespace rompp
+#endif
 #endif

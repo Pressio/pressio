@@ -1,0 +1,8 @@
+
+#ifndef APPS_UNSTEADYNONLINADVDIFFREACTIONFLAME2D_HPP_
+#define APPS_UNSTEADYNONLINADVDIFFREACTIONFLAME2D_HPP_
+
+#include "apps/src/unsteady_nonlinear_adv_diff_reaction_flame2d/apps_unsteady_nonlinear_adv_diff_reaction_flame_2d_eigen.hpp"
+#include "apps/src/unsteady_nonlinear_adv_diff_reaction_flame2d/apps_unsteady_nonlinear_adv_diff_reaction_flame_2d_sample_mesh_eigen.hpp"
+
+#endif

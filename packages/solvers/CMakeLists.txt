@@ -19,11 +19,10 @@ TRIBITS_ADD_SHOW_DEPRECATED_WARNINGS_OPTION()
 #----------------------------------------------------------------
 # D) Add the libraries, tests, and examples
 #----------------------------------------------------------------
-# solver needs headers from core
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../core/lumped_include_headers)
 
 ADD_SUBDIRECTORY(src)
 TRIBITS_ADD_TEST_DIRECTORIES(unit_tests)
+TRIBITS_ADD_TEST_DIRECTORIES(test)
 #TRIBITS_ADD_EXAMPLE_DIRECTORIES(example)
 
 

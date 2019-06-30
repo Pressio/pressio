@@ -1,0 +1,13 @@
+
+#ifndef UTILS_ALL_HPP_
+#define UTILS_ALL_HPP_
+
+#include "utils/src/utils_ConfigDefs.hpp"
+#include "utils/src/utils_crtp_helper.hpp"
+#include "utils/src/utils_empty.hpp"
+#include "utils/src/utils_teuchos_performance_monitor.hpp"
+#include "utils/src/io/utils_print_helper.hpp"
+#include "utils/src/io/utils_colorize_print.hpp"
+#include "utils/src/utils_static_constants.hpp"
+
+#endif

@@ -1,0 +1,7 @@
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  burgers1d_fom_epetra_explicit_euler
+  SOURCES main.cc
+  NUM_MPI_PROCS 4
+  PASS_REGULAR_EXPRESSION "PASSED"
+  )

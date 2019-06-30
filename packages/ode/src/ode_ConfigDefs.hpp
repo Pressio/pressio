@@ -3,35 +3,26 @@
 #define ODE_CONFIGDEFS_HPP_
 
 #include "ode_config.h"
-#include "core_ConfigDefs.hpp"
-#include "meta/core_meta_basic.hpp"
-#include "vector/core_vector_traits.hpp"
-#include "matrix/core_matrix_traits.hpp"
+#include "../../containers/src/containers_ConfigDefs.hpp"
+#include "../../containers/src/meta/containers_meta_basic.hpp"
+#include "../../containers/src/vector/containers_vector_traits.hpp"
+#include "../../containers/src/matrix/containers_matrix_traits.hpp"
+#include "../../containers/src/multi_vector/containers_multi_vector_traits.hpp"
+#include "../../containers/src/vector/containers_vector_meta.hpp"
+#include "../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
+#include "../../containers/src/matrix/containers_matrix_meta.hpp"
+#include "../../containers/src/meta/containers_is_wrapper.hpp"
 
-namespace ode{
-namespace details {
+#ifdef DEBUG_PRINT
+#include "../../utils/src/io/utils_print_helper.hpp"
+#endif
 
-template<typename T, typename enable = void>
-struct traits : core::details::traits<T> {};
+#include "ode_enum.hpp"
 
-// default type for time
-using time_type = double;
+namespace rompp{ namespace ode{ namespace details {
 
-  
-} // end namespace details
-} // end ode
+template<typename T, typename enable = void> struct traits{};
+template<typename T>  struct traits<const T> : traits<T> {};
 
-//namespace timeIntegrator{
-// namespace defaultTypes {
-// // namespace DefaultTypes {
-// //! Default value of Scalar template parameter.
-// using scalar_t = ::core::defaultTypes::scalar_t;
- // //! Default value of LocalOrdinal template parameter.
-// //typedef int local_ordinal_t;
-// /// \typedef global_ordinal_type
-// //typedef int global_ordinal_t;
-// } // namespace defaultTypes
-//} // end of timeIntegrator namespace
-
-
+}}}// end namespace rompp::ode::details
 #endif

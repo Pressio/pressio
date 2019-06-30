@@ -1,42 +1,87 @@
 
 # A) Package-specific configuration options
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "solvers_config.h"
+
+# Set the base directory in order to find rompp_version.h
+ASSERT_DEFINED(PROJECT_SOURCE_DIR)
+INCLUDE_DIRECTORIES(${PROJECT_NAME}_BINARY_DIR})
 
 #----------------------------------------------------------------
 # B) Define the header and source files (and include directories)
 #----------------------------------------------------------------
-# To include solvers_config.h
-# INCLUDE_DIRECTORIES()
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-APPEND_SET(HEADERS
-  solvers_ConfigDefs.hpp
-  solvers_forward_declarations.hpp
+###############
+# HEADERS
+###############
+FILE(GLOB SOLVERS_GEN_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+
+FILE(GLOB SOLVERS_BASE_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/base/*.hpp")
+
+FILE(GLOB SOLVERS_META_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
+
+FILE(GLOB SOLVERS_LINEAR_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/linear/*.hpp")
+
+FILE(GLOB SOLVERS_NONLINEAR_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/nonlinear/*.hpp")
+FILE(GLOB SOLVERS_NONLINEAR_GNNEQ_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/nonlinear/gn_normal_equations/*.hpp")
+FILE(GLOB SOLVERS_NONLINEAR_GNQR_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/nonlinear/gn_qr_based/*.hpp")
+FILE(GLOB SOLVERS_NONLINEAR_GN_CONSERV_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/nonlinear/gn_conservative_rom/*.hpp")
+
+FILE(GLOB SOLVERS_NONLINEAR_HELPER_POLICIES_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/nonlinear/helper_policies/*.hpp")
+FILE(GLOB SOLVERS_NONLINEAR_IMPL_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/nonlinear/impl/*.hpp")
+
+#############
+# SOURCES
+#############
+FILE(GLOB SOLVERS_GEN_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
+SET(SOURCES ${SOLVERS_GEN_SRCS})
+
+#--------------------------------------
+SET(LUMPED_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../SOLVERS_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../SOLVERS_BASIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../SOLVERS_LINEAR
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../SOLVERS_NONLINEAR
 )
-SET(SOURCES
-  src/solvers_forward_declarations.cc
-)
+INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 
-# experimental/hacked stuff 
-APPEND_SET(HEADERS
-  experimental/solvers_linear_iterative.hpp
-  experimental/solvers_linear_factory.hpp
-  )
+#--------------------------------------
+# install the actual containers headers
+#--------------------------------------
+SET(SOLVERS_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/solvers/src)
 
-APPEND_SET(SOURCES
-  experimental/src/solvers_linear_iterative.cc
-  experimental/src/solvers_linear_factory.cc
-)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h DESTINATION ${SOLVERS_INCDIR})
+INSTALL(FILES ${SOLVERS_GEN_HEADERS} DESTINATION ${SOLVERS_INCDIR})
+INSTALL(FILES ${SOLVERS_BASE_HEADERS} DESTINATION ${SOLVERS_INCDIR}/base)
+INSTALL(FILES ${SOLVERS_META_HEADERS} DESTINATION ${SOLVERS_INCDIR}/meta)
 
+INSTALL(FILES ${SOLVERS_LINEAR_HEADERS} DESTINATION ${SOLVERS_INCDIR}/linear)
+
+INSTALL(FILES ${SOLVERS_NONLINEAR_HEADERS} DESTINATION ${SOLVERS_INCDIR}/nonlinear)
+INSTALL(FILES ${SOLVERS_NONLINEAR_GNNEQ_HEADERS} DESTINATION ${SOLVERS_INCDIR}/nonlinear/gn_normal_equations)
+INSTALL(FILES ${SOLVERS_NONLINEAR_GNQR_HEADERS} DESTINATION ${SOLVERS_INCDIR}/nonlinear/gn_qr_based)
+INSTALL(FILES ${SOLVERS_NONLINEAR_GN_CONSERV_HEADERS} DESTINATION ${SOLVERS_INCDIR}/nonlinear/gn_conservative_rom)
+INSTALL(FILES ${SOLVERS_NONLINEAR_HELPER_POLICIES_HEADERS} DESTINATION ${SOLVERS_INCDIR}/nonlinear/helper_policies)
+INSTALL(FILES ${SOLVERS_NONLINEAR_IMPL_HEADERS} DESTINATION ${SOLVERS_INCDIR}/nonlinear/impl)
 
 #----------------------------------------------------------------
 # C) Define the targets for package's library(s)
 #----------------------------------------------------------------
 TRIBITS_ADD_LIBRARY(
   solvers
-  HEADERS ${HEADERS}
   SOURCES ${SOURCES}
+  DEPLIBS
   )
 
 # #

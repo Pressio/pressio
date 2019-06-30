@@ -1,0 +1,4 @@
+
+IF(HAVE_TRILINOS)
+ADD_SUBDIRECTORY(epetra_explicit_euler)
+ENDIF()

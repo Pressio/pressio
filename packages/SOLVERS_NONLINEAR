@@ -1,0 +1,25 @@
+
+#ifndef SOLVERS_NONLINEAR_HPP_
+#define SOLVERS_NONLINEAR_HPP_
+
+#include "SOLVERS_LINEAR"
+
+#include "solvers/src/meta/solvers_basic_meta.hpp"
+#include "solvers/src/meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
+
+// GN with normal equations
+#include "solvers/src/nonlinear/gn_normal_equations/solvers_gauss_newton.hpp"
+#include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_neq_specialization_picker.hpp"
+#include "solvers/src/nonlinear/gn_normal_equations/solvers_py_gauss_newton.hpp"
+
+// GN with QR-solver
+#include "solvers/src/nonlinear/gn_qr_based/solvers_gauss_newton_qr.hpp"
+#include "solvers/src/nonlinear/gn_qr_based/solvers_gn_qr_specialization_picker.hpp"
+
+// Newton-Raphson
+#include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
+
+// the hacked solver for conservative ROM
+#include "solvers/src/nonlinear/gn_conservative_rom/solvers_gauss_newton_conservative.hpp"
+
+#endif

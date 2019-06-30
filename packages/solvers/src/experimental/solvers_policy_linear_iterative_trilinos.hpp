@@ -1,11 +1,13 @@
 
+#ifdef HAVE_TRILINOS
 #ifndef SOLVERS_EXPERIMENTAL_POLICY_LINEAR_ITERATIVE_TRILINOS_HPP
 #define SOLVERS_EXPERIMENTAL_POLICY_LINEAR_ITERATIVE_TRILINOS_HPP
 
 #include "AztecOO.h"
+#include <memory>
 
-
-namespace solvers {
+namespace rompp{
+namespace solvers{
 
 template <
   typename SolverT, 
@@ -21,12 +23,9 @@ class SolversLinearIterativeTrilinosPolicy {
 
 
     template <typename VectorT>
-    static auto solve(
-      std::shared_ptr<SolverT> solver, 
-      const VectorT& b, 
-      int maxIters, 
-      double tolerance
-    ) {
+    static VectorT solve(std::shared_ptr<SolverT> solver, 
+                        const VectorT& b, int maxIters, 
+                        double tolerance) {
       auto x(b.data()->Map());
       solver->SetLHS(&x);
       solver->SetRHS(b.data());
@@ -38,4 +37,6 @@ class SolversLinearIterativeTrilinosPolicy {
 
 } // end namespace solvers
 
+}//end namespace rompp
+#endif
 #endif

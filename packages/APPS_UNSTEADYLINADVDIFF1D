@@ -1,0 +1,7 @@
+
+#ifndef APPS_UNSTEADYLINADVDIFF1D_HPP_
+#define APPS_UNSTEADYLINADVDIFF1D_HPP_
+
+#include "apps/src/unsteady_linear_adv_diff1d/apps_unsteady_linear_adv_diff_1d_epetra.hpp"
+#include "apps/src/steady_linear_adv_diff1d/apps_steady_linear_adv_diff_1d_epetra.hpp"
+#endif

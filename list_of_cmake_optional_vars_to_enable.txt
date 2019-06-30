@@ -1,0 +1,39 @@
+
+This file contains a list of cmake variables (and their description)
+that can be turned on/off by the user to enable/disable certain features
+at compile time since these are pre-processor directives.
+
+
+- HAVE_TRILINOS
+ON if TPL_ENABLE_TRILINOS = ON, OFF otherwise
+description: self-explanatory
+
+- HAVE_BLAZE
+ON if TPL_ENABLE_BLAZE = ON, OFF otherwise
+description: self-explanatory
+prerequisites: need to have blaze installed if you want this on
+
+- HAVE_MPI
+ON if TPL_ENABLE_MPI = ON, OFF otherwise
+description: self-explanatory
+prerequisites: need to have mpi installed if you want this on
+
+- HAVE_ARMADILLO
+ON if TPL_ENABLE_ARMADILLO = ON, OFF otherwise
+description: self-explanatory
+prerequisites: need to have armadillo installed if you want this on
+
+- HAVE_CPP14
+ON if ${CMAKE_CXX_STANDARD} EQUAL "14", OFF otherwise
+description: if compiler supports C++14 standard
+prerequisites: a compiler with support for c++14
+
+- DEBUG_PRINT
+default = OFF
+description: to turn on/off print statemetns for debugging
+prerequisites: none
+
+- HAVE_TEUCHOS_TIMERS
+ON if TPL_ENABLE_TRILINOS=ON and DEBUG_PRINT=ON
+description: to turn on/off print statemetns for debugging
+prerequisites: HAVE_TRILINOS=ON

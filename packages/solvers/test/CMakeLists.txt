@@ -1,7 +1,11 @@
 
 #include the lumped headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../lumped_include_headers)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 ADD_SUBDIRECTORIES(
-   # leastsquares
+   #linear_direct
+   #linear_iterative
+   #linear_leastsquares
+   #nonlinear_iterative
+   #nonlinear_leastsquares
 )

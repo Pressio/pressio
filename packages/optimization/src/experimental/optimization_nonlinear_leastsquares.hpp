@@ -2,20 +2,21 @@
 #ifndef optimization_nonlinear_leastsquares_HPP_
 #define optimization_nonlinear_leastsquares_HPP_
 
-// #include "vector/core_vector_traits.hpp"
-// #include "matrix/core_matrix_traits.hpp"
+// #include "vector/containers_vector_traits.hpp"
+// #include "matrix/containers_matrix_traits.hpp"
 
 // #include <Eigen/Core>
 // #include <unsupported/Eigen/NonLinearOptimization>
 // #include <iomanip>
 
+namespace rompp{
 namespace optimization{
 
 
 // template <typename matrix_type,
 // 	  typename vector_type>
-// typename std::enable_if< core::details::traits<matrix_type>::isEigen==1 &&
-// 			 core::details::traits<vector_type>::isEigen==1
+// typename std::enable_if< containers::details::traits<matrix_type>::isEigen==1 &&
+// 			 containers::details::traits<vector_type>::isEigen==1
 // 			 >::type
 // linearLstsq(const matrix_type & A,
 // 	    const vector_type & b,
@@ -53,7 +54,7 @@ namespace optimization{
 //   // state_type res;
 //   // state_type dy; dy.resize(y.size());  
 //   // jacobian_type jac;
-//   // //  jac.getNonConstRefToData() = core::details::traits<jacobian_type>::wrapped_t::Zero(jRows, jCols);
+//   // //  jac.getNonConstRefToData() = containers::details::traits<jacobian_type>::wrapped_t::Zero(jRows, jCols);
 //   // int maxIter = 10;
 //   // // get residual and jacobian at initial guess
 //   // F(y, res, jac);
@@ -82,5 +83,6 @@ namespace optimization{
 
   
 }//end namespace   
+}//end namespace rompp
 #endif
 

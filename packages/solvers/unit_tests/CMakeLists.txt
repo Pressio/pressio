@@ -1,6 +1,10 @@
 
-#include the lumped headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../lumped_include_headers)
 
+#to include the lumped headers
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
+
+ADD_SUBDIRECTORY(meta)
 ADD_SUBDIRECTORY(serial)
-#ADD_SUBDIRECTORY(parallel)
+IF(HAVE_MPI) 
+	ADD_SUBDIRECTORY(mpi) 
+ENDIF()

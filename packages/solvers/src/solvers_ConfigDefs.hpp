@@ -3,7 +3,6 @@
 #define SOLVERS_CONFIGDEFS_HPP_
 
 #include "solvers_config.h"
-#include "core_ConfigDefs.hpp"
-
+#include "../../containers/src/containers_ConfigDefs.hpp"
 
 #endif

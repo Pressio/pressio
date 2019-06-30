@@ -1,7 +1,0 @@
-
-#ifndef APPS_BASIC_HPP_
-#define APPS_BASIC_HPP_
-
-#include "../src/apps_ConfigDefs.hpp"
-
-#endif

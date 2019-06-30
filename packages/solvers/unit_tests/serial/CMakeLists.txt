@@ -1,21 +1,6 @@
 
+add_serial_unit_test(linear_dense_eigen)
+add_serial_unit_test(linear_sparse_eigen)
+add_serial_unit_test(newton_raphson_eigen)
 
-SET(TESTFILES "")
-
-APPEND_SET(TESTFILES test_solvers_linear_eigen.cc)
-## APPEND_SET(TESTFILES test_solvers_nonlinear_eigen.cc)
-
-# append here tests to be grouped into a single executable
-# APPEND_SET(...)
-# ...
-
-
-# we create a single executable to run all the tests above
-TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  solvers_unitTest_serial_grouped
-  SOURCES ${TESTFILES} gTestMain.cc
-  COMM serial mpi
-  NUM_MPI_PROCS 1
-  PASS_REGULAR_EXPRESSION "PASSED"
-  FAIL_REGULAR_EXPRESSION "FAILED"
-)
+ADD_SUBDIRECTORY(non_linear_least_squares)

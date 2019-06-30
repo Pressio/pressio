@@ -1,0 +1,18 @@
+
+#ifndef ROM_LSPG_HPP_
+#define ROM_LSPG_HPP_
+
+#include "ROM_BASIC"
+
+#include "rom/src/lspg/unsteady/rom_lspg_residual_policy.hpp"
+#include "rom/src/lspg/unsteady/rom_lspg_jacobian_policy.hpp"
+
+#include "rom/src/lspg/unsteady/generator/rom_lspg_type_generator_default.hpp"
+#include "rom/src/lspg/unsteady/generator/rom_lspg_type_generator_preconditioned.hpp"
+#include "rom/src/lspg/unsteady/generator/rom_lspg_type_generator_masked.hpp"
+#include "rom/src/lspg/unsteady/generator/rom_lspg_unsteady_problem_generator.hpp"
+
+#include "rom/src/lspg/unsteady/rom_lspg_time_discrete_residual.hpp"
+#include "rom/src/lspg/unsteady/rom_lspg_time_discrete_jacobian.hpp"
+
+#endif
