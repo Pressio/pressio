@@ -53,12 +53,12 @@ class LinearIterativeSolver
     }
 
 
-    inline algebra::default_types::uint getMaxIterations() {
+    inline containers::default_types::uint getMaxIterations() {
       return maxIters_;
     }
 
 
-    void setMaxIterations(algebra::default_types::uint maxIters) {
+    void setMaxIterations(containers::default_types::uint maxIters) {
       maxIters_ = maxIters;
     }
 
@@ -85,7 +85,7 @@ class LinearIterativeSolver
 
   private:
 
-    algebra::default_types::uint maxIters_;
+    containers::default_types::uint maxIters_;
     double tolerance_;
 };
 

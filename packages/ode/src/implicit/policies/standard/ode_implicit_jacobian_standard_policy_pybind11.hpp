@@ -18,8 +18,8 @@ class ImplicitJacobianStandardPolicyPybind11<
     ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::rompp::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
     mpl::is_same<model_type, pybind11::object >::value and
-    algebra::meta::is_cstyle_array_pybind11<state_type>::value and
-    algebra::meta::is_cstyle_array_pybind11<jacobian_type>::value
+    containers::meta::is_cstyle_array_pybind11<state_type>::value and
+    containers::meta::is_cstyle_array_pybind11<jacobian_type>::value
     >
   > : public JacobianPolicyBase<ImplicitJacobianStandardPolicyPybind11<
     state_type, model_type, jacobian_type> >{

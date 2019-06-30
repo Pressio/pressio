@@ -7,7 +7,7 @@ TEST_F(epetraR9Fixture,
   using namespace rompp;
 
   using nat_v = Eigen::VectorXd;
-  using myv_t = algebra::Vector<nat_v>;
+  using myv_t = containers::Vector<nat_v>;
 
   // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
@@ -39,7 +39,7 @@ TEST_F(epetraR9Fixture,
 
   using nat_v = Eigen::Matrix<double,
 			      rompp::qr::test::numVectors_, 1>;
-  using myv_t = algebra::Vector<nat_v>;
+  using myv_t = containers::Vector<nat_v>;
 
   // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
@@ -70,7 +70,7 @@ TEST_F(epetraR9Fixture,
   using namespace rompp;
 
   using nat_v = Teuchos::SerialDenseVector<int,double>;
-  using myv_t = algebra::Vector<nat_v>;
+  using myv_t = containers::Vector<nat_v>;
 
   //default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;

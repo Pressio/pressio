@@ -13,7 +13,7 @@
   #include "AztecOO.h"
 #endif
 
-#include "../../../algebra/src/matrix/algebra_matrix_traits.hpp"
+#include "../../../containers/src/matrix/containers_matrix_traits.hpp"
 
 
 namespace rompp{

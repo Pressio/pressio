@@ -24,9 +24,9 @@ template <
   typename mat_t,
   ::rompp::mpl::enable_if_t<
     //::rompp::solvers::details::system_traits<system_t>::is_system and
-    algebra::meta::is_vector_wrapper_eigen<
+    containers::meta::is_vector_wrapper_eigen<
       typename system_t::state_type>::value and
-    algebra::meta::is_algebra_vector_wrapper<
+    containers::meta::is_vector_wrapper<
       typename system_t::residual_type>::value
     > * =nullptr
   >
@@ -131,15 +131,15 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("lhs");
 #endif
-    ::rompp::algebra::ops::dot_self(jacob, jTj);
+    ::rompp::containers::ops::dot_self(jacob, jTj);
     // ::rompp::utils::io::print_stdout(*jTj.data(), "\n");
     // ::rompp::utils::io::print_stdout("--------------\n");
 
-    ::rompp::algebra::ops::dot(jacob, cbarT, jTcbarT);
+    ::rompp::containers::ops::dot(jacob, cbarT, jTcbarT);
     // ::rompp::utils::io::print_stdout(*jTcbarT.data(), "\n");
     // ::rompp::utils::io::print_stdout("--------------\n");
 
-    ::rompp::algebra::ops::dot(cbarT, jacob, cbarJ);
+    ::rompp::containers::ops::dot(cbarT, jacob, cbarJ);
     // ::rompp::utils::io::print_stdout(*cbarJ.data(), "\n");
     // ::rompp::utils::io::print_stdout("--------------\n");
 
@@ -172,12 +172,12 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     timer->start("rhs");
 #endif
 
-    ::rompp::algebra::ops::dot(cbarT, resid, cbarR);
+    ::rompp::containers::ops::dot(cbarT, resid, cbarR);
     norm_evaluator_t::evaluate(cbarR, normCbarR);
 
-    ::rompp::algebra::ops::product(cbarT, lambda, cbarTlambda);
+    ::rompp::containers::ops::product(cbarT, lambda, cbarTlambda);
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
-    ::rompp::algebra::ops::dot(jacob, resid, jTr2);
+    ::rompp::containers::ops::dot(jacob, resid, jTr2);
 
     auto negOne = static_cast<scalar_t>(-1);
     jTr2.scale(negOne);

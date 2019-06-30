@@ -9,5 +9,5 @@ namespace rompp{ namespace optimization{
 
 inline std::string version();
 
-}}//end namespace rompp::algebra
+}}//end namespace rompp::containers
 #endif

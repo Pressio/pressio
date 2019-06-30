@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
 
 TEST(adv_diff_reaction_2d_eigen, spatial_residual){
@@ -24,7 +24,7 @@ TEST(adv_diff_reaction_2d_eigen, spatial_residual){
   // it is important to set state to be something
   // different at every dof otherwise we might be tricked
   app_state_t yTest(totUnk);
-  ::rompp::algebra::Vector<app_state_t> y(yTest);
+  ::rompp::containers::Vector<app_state_t> y(yTest);
   for (auto i=0; i<y.size(); ++i)
     y[i] = i*0.1;
 

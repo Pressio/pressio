@@ -1,16 +1,16 @@
 
 #include <iostream>
-#include "ALGEBRA_MATRIX"
+#include "CONTAINERS_MATRIX"
 #include "SOLVERS_NONLINEAR"
 
 struct NonLinearSystem {
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_type = rompp::algebra::Matrix<matrix_n_t>;
+  using matrix_type = rompp::containers::Matrix<matrix_n_t>;
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_type = rompp::algebra::Vector<vector_n_t>;
+  using vector_type = rompp::containers::Vector<vector_n_t>;
 
   vector_type residual(const vector_type& x) const {
     vector_type res(2);
@@ -45,7 +45,7 @@ int main() {
   using namespace rompp::solvers;
 
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = algebra::Vector<vector_n_t>;
+  using vector_w_t = containers::Vector<vector_n_t>;
 
   auto solver = NonLinearSolvers::createIterativeSolver<
     nonlinear::NewtonRaphson, linear::Bicgstab>();

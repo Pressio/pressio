@@ -44,7 +44,7 @@ struct OdeStorage<state_type, rhs_type, 1, 0>{
     typename _state_type = state_type
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
-      !algebra::meta::is_array_pybind11<_state_type>::value
+      !containers::meta::is_array_pybind11<_state_type>::value
       > * = nullptr
 #endif
     >
@@ -55,7 +55,7 @@ struct OdeStorage<state_type, rhs_type, 1, 0>{
   template <
     typename _state_type = state_type,
     mpl::enable_if_t<
-      algebra::meta::is_array_pybind11<_state_type>::value
+      containers::meta::is_array_pybind11<_state_type>::value
       > * = nullptr
     >
   OdeStorage(_state_type const & y)
@@ -80,7 +80,7 @@ struct OdeStorage<state_type, rhs_type, 2, 0>{
     typename _state_type = state_type
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
-      !algebra::meta::is_array_pybind11<_state_type>::value
+      !containers::meta::is_array_pybind11<_state_type>::value
       > * = nullptr
 #endif
     >
@@ -91,7 +91,7 @@ struct OdeStorage<state_type, rhs_type, 2, 0>{
   template <
     typename _state_type = state_type,
     mpl::enable_if_t<
-      algebra::meta::is_array_pybind11<_state_type>::value
+      containers::meta::is_array_pybind11<_state_type>::value
       > * = nullptr
     >
   OdeStorage(_state_type const & y)
@@ -118,8 +118,8 @@ struct OdeStorage<state_type, rhs_type, 1, 4>{
     typename _rhs_type = rhs_type
 #ifdef HAVE_PYBIND11
     ,mpl::enable_if_t<
-       !algebra::meta::is_array_pybind11<_state_type>::value and
-       !algebra::meta::is_array_pybind11<_rhs_type>::value
+       !containers::meta::is_array_pybind11<_state_type>::value and
+       !containers::meta::is_array_pybind11<_rhs_type>::value
        > * = nullptr
 #endif
     >
@@ -133,8 +133,8 @@ struct OdeStorage<state_type, rhs_type, 1, 4>{
     typename _state_type = state_type,
     typename _rhs_type = rhs_type,
     mpl::enable_if_t<
-      algebra::meta::is_array_pybind11<_state_type>::value and
-      algebra::meta::is_array_pybind11<_rhs_type>::value
+      containers::meta::is_array_pybind11<_state_type>::value and
+      containers::meta::is_array_pybind11<_rhs_type>::value
       > * = nullptr
     >
     OdeStorage(_state_type const & y, _rhs_type r)
@@ -172,7 +172,7 @@ struct OdeStorage<state_type, rhs_type, 0, 1>{
     typename _rhs_type = rhs_type
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
-	!algebra::meta::is_array_pybind11<_rhs_type>::value
+	!containers::meta::is_array_pybind11<_rhs_type>::value
       > * = nullptr
 #endif
     >
@@ -183,7 +183,7 @@ struct OdeStorage<state_type, rhs_type, 0, 1>{
   template <
     typename _rhs_type = rhs_type,
     mpl::enable_if_t<
-      algebra::meta::is_array_pybind11<_rhs_type>::value
+      containers::meta::is_array_pybind11<_rhs_type>::value
       > * = nullptr
     >
   OdeStorage(_rhs_type const & r)

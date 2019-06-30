@@ -22,5 +22,5 @@ struct is_legitimate_explicit_residual_policy<
   > : std::true_type{};
 
 
-}}}//end namespace rompp::algebra::meta
+}}}//end namespace rompp::containers::meta
 #endif

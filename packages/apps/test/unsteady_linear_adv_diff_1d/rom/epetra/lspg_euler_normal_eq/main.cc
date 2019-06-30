@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "ROM_LSPG"
 #include "SOLVERS_NONLINEAR"
@@ -23,8 +23,8 @@ int main(int argc, char *argv[]){
   using fom_t          = rompp::apps::UnsteadyLinAdvDiff1dEpetra;
   using scalar_t       =typename fom_t::scalar_type;
   using  eig_dyn_vec   = Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t   = rompp::algebra::Vector<eig_dyn_vec>;
-  using decoder_jac_t  = rompp::algebra::MultiVector<Epetra_MultiVector>;
+  using lspg_state_t   = rompp::containers::Vector<eig_dyn_vec>;
+  using decoder_jac_t  = rompp::containers::MultiVector<Epetra_MultiVector>;
   using decoder_t      = rompp::rom::LinearDecoder<decoder_jac_t>;
   using native_state    = typename fom_t::state_type;
   using app_state_t     = typename fom_t::state_type;
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
   using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;
 
   using eig_dyn_mat = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t = rompp::algebra::Matrix<eig_dyn_mat>;
+  using hessian_t = rompp::containers::Matrix<eig_dyn_mat>;
   using solver_tag = rompp::solvers::linear::iterative::LSCG;
   using lin_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
   lin_solver_t linSolverObj;

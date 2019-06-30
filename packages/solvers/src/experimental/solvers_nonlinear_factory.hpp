@@ -10,7 +10,7 @@
 #include "solvers_policy_nonlinear_leastsquare_iterative.hpp"
 #include "solvers_l2_vector_norm.hpp"
 #include "solvers_linear_traits.hpp"
-#include "../../../algebra/src/meta/algebra_meta_detection_idiom.hpp"
+#include "../../../containers/src/meta/containers_meta_detection_idiom.hpp"
 #include "../../../QR_BASIC"
 
 

@@ -20,8 +20,8 @@ class ImplicitResidualStandardPolicyPybind11<
     ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::rompp::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
     mpl::is_same<model_type, pybind11::object >::value and
-    algebra::meta::is_cstyle_array_pybind11<state_type>::value and
-    algebra::meta::is_cstyle_array_pybind11<residual_type>::value
+    containers::meta::is_cstyle_array_pybind11<state_type>::value and
+    containers::meta::is_cstyle_array_pybind11<residual_type>::value
     >
   >
   : public ImplicitResidualPolicyBase<

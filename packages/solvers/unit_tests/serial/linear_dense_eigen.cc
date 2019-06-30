@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ALGEBRA_MATRIX"
+#include "CONTAINERS_MATRIX"
 #include "SOLVERS_LINEAR"
 
 TEST(solvers_linear_iterative, LSCGDenseEigen){
@@ -10,11 +10,11 @@ TEST(solvers_linear_iterative, LSCGDenseEigen){
 
   // Matrix typedefs
   using matrix_n_t = Eigen::MatrixXd;
-  using matrix_w_t = algebra::Matrix<matrix_n_t>;
+  using matrix_w_t = containers::Matrix<matrix_n_t>;
 
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = algebra::Vector<vector_n_t>;
+  using vector_w_t = containers::Vector<vector_n_t>;
 
   // Define linear system
   vector_w_t b(3);
@@ -49,11 +49,11 @@ TEST(solvers_linear_iterative, ColPivHSQRDenseEigen)
 
   // Matrix typedefs
   using matrix_n_t = Eigen::MatrixXd;
-  using matrix_w_t = algebra::Matrix<matrix_n_t>;
+  using matrix_w_t = containers::Matrix<matrix_n_t>;
 
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = algebra::Vector<vector_n_t>;
+  using vector_w_t = containers::Vector<vector_n_t>;
 
   // Define linear system
   vector_w_t b(3);

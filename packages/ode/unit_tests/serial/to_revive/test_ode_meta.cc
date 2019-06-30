@@ -1,18 +1,18 @@
 
 #include <gtest/gtest.h>
 #include "ode_meta.hpp"
-#include "vector/algebra_vector_distributed_epetra.hpp"
-#include "vector/algebra_vector_serial_eigen.hpp"
-#include "vector/algebra_vector_serial_stdlib.hpp"
+#include "vector/containers_vector_distributed_epetra.hpp"
+#include "vector/containers_vector_serial_eigen.hpp"
+#include "vector/containers_vector_serial_stdlib.hpp"
 
 TEST(ode_meta, checkStateType)
 {
   using st_t1 = std::vector<double>;
   using st_t2 = double;
   using st_t3 = std::map<int,int>;
-  static_assert( algebra::meta::is_vector_stdlib<st_t1>::value, "");
+  static_assert( containers::meta::is_vector_stdlib<st_t1>::value, "");
   static_assert( ode::meta::is_legitimate_explicit_state_type<st_t1>::value,"");
-  using myt = algebra::Vector<st_t1>;
+  using myt = containers::Vector<st_t1>;
   static_assert( ode::meta::is_legitimate_explicit_state_type<myt>::value,"");  
   static_assert( !ode::meta::is_legitimate_explicit_state_type<st_t2>::value,"");
   static_assert( !ode::meta::is_legitimate_explicit_state_type<st_t3>::value,"");

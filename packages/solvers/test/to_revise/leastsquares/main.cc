@@ -4,16 +4,16 @@
 #include <cstdlib>
 #include <cmath>
 
-// #include "algebra_ConfigDefs.hpp"
-// #include "algebra_meta.hpp"
-// #include "algebra_fwd.hpp"
-// #include "algebra_static_assert.hpp"
+// #include "containers_ConfigDefs.hpp"
+// #include "containers_meta.hpp"
+// #include "containers_fwd.hpp"
+// #include "containers_static_assert.hpp"
 
-#include "vector/algebra_vector_eigen.hpp"
-#include "matrix/algebra_matrix_traits.hpp"
-#include "matrix/algebra_matrix_eigen.hpp"
+#include "vector/containers_vector_eigen.hpp"
+#include "matrix/containers_matrix_traits.hpp"
+#include "matrix/containers_matrix_eigen.hpp"
 #include <Eigen/Dense>
-#include "least_squares/algebra_leastsquares.hpp"
+#include "least_squares/containers_leastsquares.hpp"
 
 
 double g(double x, const Eigen::VectorXd & a){
@@ -82,8 +82,8 @@ struct app
   
 int main()
 {     
-  // using myvec_t = algebra::Vector<app::state_type>;
-  // using mymat_t = algebra::Matrix<app::jacobian_type>;
+  // using myvec_t = containers::Vector<app::state_type>;
+  // using mymat_t = containers::Matrix<app::jacobian_type>;
 
   // app::myvec_t sol;
   // sol.resize(2);
@@ -92,7 +92,7 @@ int main()
   
   // app F;
   // F.init();
-  // algebra::nonLinearLstsq<app,app::myvec_t,app::mymat_t>(F, sol);
+  // containers::nonLinearLstsq<app,app::myvec_t,app::mymat_t>(F, sol);
   // std::cout << sol[0] << " "
   // 	    << sol[1]
   // 	    << std::endl;
@@ -122,6 +122,6 @@ int main()
   // std::cout << "Here is the vec b:\n" << *myb.view() << std::endl;
   // app::myvec_t myx;
   // myx.resize(myA.cols());
-  // algebra::linearLstsq(myA, myb, myx);
+  // containers::linearLstsq(myA, myb, myx);
   // std::cout << myx[0] << " " << myx[1] << std::endl;
   

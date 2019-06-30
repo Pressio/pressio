@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
@@ -50,9 +50,9 @@ struct FomRunner{
   using app_state_t	= typename app_t::state_type;
   using app_residual_t	= typename app_t::residual_type;
   using app_jacobian_t	= typename app_t::jacobian_type;
-  using ode_state_t = rompp::algebra::Vector<app_state_t>;
-  using ode_res_t   = rompp::algebra::Vector<app_residual_t>;
-  using ode_jac_t   = rompp::algebra::Matrix<app_jacobian_t>;
+  using ode_state_t = rompp::containers::Vector<app_state_t>;
+  using ode_res_t   = rompp::containers::Vector<app_residual_t>;
+  using ode_jac_t   = rompp::containers::Matrix<app_jacobian_t>;
 
   const int Nx_ = {};
   const int Ny_ = {};
@@ -139,8 +139,8 @@ int main(int argc, char *argv[]){
     appobj.setup();
 
     // typedefs used for rom
-    using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
-    using decoder_jac_t	= rompp::algebra::MultiVector<eig_dyn_mat>;
+    using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
+    using decoder_jac_t	= rompp::containers::MultiVector<eig_dyn_mat>;
     using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
     // create decoder
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]){
     // solvers (linear and GN)
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
     // rom is solved using eigen, hessian is wrapper of eigen matrix
-    using hessian_t  = rompp::algebra::Matrix<eig_dyn_mat>;
+    using hessian_t  = rompp::containers::Matrix<eig_dyn_mat>;
 
     // linear solver
     using solver_tag   = rompp::solvers::linear::iterative::Bicgstab;

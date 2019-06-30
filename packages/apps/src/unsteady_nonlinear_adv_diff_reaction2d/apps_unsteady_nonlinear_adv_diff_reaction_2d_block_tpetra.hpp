@@ -5,7 +5,7 @@
 #include "../apps_ConfigDefs.hpp"
 
 #ifdef HAVE_TRILINOS
-#include "../../../ALGEBRA_ALL"
+#include "../../../CONTAINERS_ALL"
 #include <Teuchos_DefaultMpiComm.hpp>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_CrsGraph.hpp>

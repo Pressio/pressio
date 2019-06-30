@@ -15,7 +15,7 @@ struct SolversLinearDirectWrapperEigen {
   template <
     typename MatrixT,
     typename ::rompp::mpl::enable_if_t<
-      algebra::details::traits<MatrixT>::wrapped_package_identifier == algebra::details::WrappedPackageIdentifier::Eigen
+      containers::details::traits<MatrixT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen
     >* = nullptr
   >
   void resetLinearSystem(const MatrixT& A) {
@@ -25,7 +25,7 @@ struct SolversLinearDirectWrapperEigen {
   template <
     typename VectorT,
     typename ::rompp::mpl::enable_if_t<
-      algebra::details::traits<VectorT>::wrapped_package_identifier == algebra::details::WrappedPackageIdentifier::Eigen
+      containers::details::traits<VectorT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen
     >* = nullptr
   >
   VectorT solve(const VectorT& b) {

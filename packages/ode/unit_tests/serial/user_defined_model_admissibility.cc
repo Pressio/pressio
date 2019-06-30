@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "reference_apps_for_testing.hpp"
 
@@ -29,12 +29,12 @@ TEST(user_defined_model, admissibleExplicitOde){
 		// ode::meta::has_scalar_typedef,
 		// app_t>::value, " ");
 
-  // static_assert(algebra::meta::is_detected<
+  // static_assert(containers::meta::is_detected<
   // 		ode::meta::has_residual_method_callable_with_two_args,
   // 		app_t, typename fakeapp::state_type,
   // 		typename fakeapp::state_type>::value, "");
 
-  // static_assert(algebra::meta::is_detected<
+  // static_assert(containers::meta::is_detected<
   // 		ode::meta::has_residual_method_callable_with_three_args,
   // 		app_t,
   // 		typename fakeapp::state_type,

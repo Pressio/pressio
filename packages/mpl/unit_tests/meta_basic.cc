@@ -2,7 +2,7 @@
 #include "MPL_ALL"
 
 
-TEST(algebra_meta_basic, isDefaultConstructible){
+TEST(containers_meta_basic, isDefaultConstructible){
   using namespace rompp;
 
   class A{
@@ -24,7 +24,7 @@ TEST(algebra_meta_basic, isDefaultConstructible){
   EXPECT_EQ( mpl::is_default_constructible<C>::value, false);
 }
 
-TEST(algebra_meta_basic, isComplexNumber){
+TEST(containers_meta_basic, isComplexNumber){
   using namespace rompp;
 
   using t1 = std::complex<float>;

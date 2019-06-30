@@ -15,8 +15,8 @@ template <typename T>
 struct is_legitimate_hessian_for_gn_normeq<
   T,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_algebra_matrix_wrapper<T>::value or
-    algebra::meta::is_algebra_multi_vector_wrapper<T>::value
+    containers::meta::is_matrix_wrapper<T>::value or
+    containers::meta::is_multi_vector_wrapper<T>::value
     >
   > : std::true_type{};
 

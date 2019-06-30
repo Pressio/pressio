@@ -14,7 +14,7 @@ TEST(solvers_nonlinear_least_squares,
   problem_t problem;
   state_t x(2); x[0] = 2.0; x[1] = 0.25;
 
-  using hessian_t = algebra::Matrix<Eigen::MatrixXd>;
+  using hessian_t = containers::Matrix<Eigen::MatrixXd>;
 
   // linear solver type
   using solver_tag	= solvers::linear::iterative::LSCG;

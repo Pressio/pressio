@@ -4,11 +4,11 @@
 #include "../epetra_skeleton.hpp"
 
 // using namespace rompp;
-// using matrix_w_t  = algebra::MultiVector<Epetra_MultiVector>;
+// using matrix_w_t  = containers::MultiVector<Epetra_MultiVector>;
 // using decoder_t = rom::LinearDecoder<matrix_w_t>;
-// using fom_state_w_t = algebra::Vector<Epetra_Vector>;
+// using fom_state_w_t = containers::Vector<Epetra_Vector>;
 // using fom_states = rom::FomStatesData<fom_state_w_t, 1, decoder_t>;
-// using rom_state_t = algebra::Vector<Eigen::VectorXd>;
+// using rom_state_t = containers::Vector<Eigen::VectorXd>;
 
 // struct mytest : rompp::rom::FomStatesData<fom_state_w_t, 1, decoder_t>{
 //   using base_t = rompp::rom::FomStatesData<fom_state_w_t, 1, decoder_t>;
@@ -32,9 +32,9 @@ TEST(lspg, epetra_types)
   using fom_t		= rompp::rom::test::EpetraSkeleton;
   using scalar_t	= typename fom_t::scalar_type;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
+  using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
 
-  using decoder_jac_t	= rompp::algebra::MultiVector<Epetra_MultiVector>;
+  using decoder_jac_t	= rompp::containers::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
   // define LSPG type

@@ -3,7 +3,7 @@
 #define SVD_CONFIGDEFS_HPP
 
 #include "svd_config.h"
-#include "../../algebra/src/algebra_ConfigDefs.hpp"
+#include "../../containers/src/containers_ConfigDefs.hpp"
 
 namespace rompp{ 
 namespace svd{

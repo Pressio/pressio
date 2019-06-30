@@ -16,17 +16,17 @@ template<typename matrix_t, typename R_t, int n, int m,
 	 template <typename...> class Q_type>
 class TpetraMVHouseholderUsingEigen{
 
-  using MV = typename algebra::details::traits<matrix_t>::wrapped_t;
-  using sc_t = typename algebra::details::traits<matrix_t>::scalar_t;
-  using LO_t = typename algebra::details::traits<matrix_t>::local_ordinal_t;
-  using GO_t = typename algebra::details::traits<matrix_t>::global_ordinal_t;
-  using map_t = typename algebra::details::traits<matrix_t>::data_map_t;
-  using node_t = typename algebra::details::traits<matrix_t>::node_t;
-  using hexsp = typename algebra::details::traits<matrix_t>::host_exec_space_t;
+  using MV = typename containers::details::traits<matrix_t>::wrapped_t;
+  using sc_t = typename containers::details::traits<matrix_t>::scalar_t;
+  using LO_t = typename containers::details::traits<matrix_t>::local_ordinal_t;
+  using GO_t = typename containers::details::traits<matrix_t>::global_ordinal_t;
+  using map_t = typename containers::details::traits<matrix_t>::data_map_t;
+  using node_t = typename containers::details::traits<matrix_t>::node_t;
+  using hexsp = typename containers::details::traits<matrix_t>::host_exec_space_t;
 
   using Q_t = Q_type<MV>;
   using eig_dyn_mat	= Eigen::MatrixXd;
-  using eig_mat_w	= algebra::Matrix<eig_dyn_mat>;
+  using eig_mat_w	= containers::Matrix<eig_dyn_mat>;
   using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<
 				eig_mat_w, R_t, n, m, Q_type>;
   help_impl_t myImpl_	= {};
@@ -38,7 +38,7 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void project(const vector_in_t & vecIn,
   	       vector_out_t & vecOut) const{
-    algebra::ops::dot( *this->Qmat_, vecIn, vecOut );
+    containers::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 
   template <typename vector_t>
@@ -69,7 +69,7 @@ public:
     A2.data()->doImport(*A.data(), importer, Tpetra::INSERT);
 
     // store it into an Eigen matrix
-    algebra::Matrix<Eigen::MatrixXd> eA2W(rows,cols);
+    containers::Matrix<Eigen::MatrixXd> eA2W(rows,cols);
     for (int j=0;j<cols;j++){
       auto colData = A2.data()->getData(j);
       for (int i=0;i<rows;i++)

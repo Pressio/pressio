@@ -3,15 +3,15 @@
 #define ODE_CONFIGDEFS_HPP_
 
 #include "ode_config.h"
-#include "../../algebra/src/algebra_ConfigDefs.hpp"
-#include "../../algebra/src/meta/algebra_meta_basic.hpp"
-#include "../../algebra/src/vector/algebra_vector_traits.hpp"
-#include "../../algebra/src/matrix/algebra_matrix_traits.hpp"
-#include "../../algebra/src/multi_vector/algebra_multi_vector_traits.hpp"
-#include "../../algebra/src/vector/algebra_vector_meta.hpp"
-#include "../../algebra/src/multi_vector/algebra_multi_vector_meta.hpp"
-#include "../../algebra/src/matrix/algebra_matrix_meta.hpp"
-#include "../../algebra/src/meta/algebra_is_wrapper.hpp"
+#include "../../containers/src/containers_ConfigDefs.hpp"
+#include "../../containers/src/meta/containers_meta_basic.hpp"
+#include "../../containers/src/vector/containers_vector_traits.hpp"
+#include "../../containers/src/matrix/containers_matrix_traits.hpp"
+#include "../../containers/src/multi_vector/containers_multi_vector_traits.hpp"
+#include "../../containers/src/vector/containers_vector_meta.hpp"
+#include "../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
+#include "../../containers/src/matrix/containers_matrix_meta.hpp"
+#include "../../containers/src/meta/containers_is_wrapper.hpp"
 
 #ifdef DEBUG_PRINT
 #include "../../utils/src/io/utils_print_helper.hpp"

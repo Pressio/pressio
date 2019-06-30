@@ -16,8 +16,8 @@ struct EvaluateFomRhsDefault<false>{
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
-      !::rompp::algebra::meta::is_array_pybind11<state_t>::value and
-      !::rompp::algebra::meta::is_array_pybind11<rhs_t>::value
+      !::rompp::containers::meta::is_array_pybind11<state_t>::value and
+      !::rompp::containers::meta::is_array_pybind11<rhs_t>::value
       > * = nullptr
 #endif
     >
@@ -33,7 +33,7 @@ struct EvaluateFomRhsDefault<false>{
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
 	mpl::not_same<fom_t, pybind11::object>::value and
-	!::rompp::algebra::meta::is_array_pybind11<state_t>::value
+	!::rompp::containers::meta::is_array_pybind11<state_t>::value
 	> * = nullptr
 #endif
     >
@@ -55,8 +55,8 @@ struct EvaluateFomRhsDefault<false>{
     typename rhs_t, typename time_t,
     mpl::enable_if_t<
       mpl::is_same<fom_t, pybind11::object>::value and
-      ::rompp::algebra::meta::is_cstyle_array_pybind11<state_t>::value and
-      ::rompp::algebra::meta::is_cstyle_array_pybind11<rhs_t>::value and
+      ::rompp::containers::meta::is_cstyle_array_pybind11<state_t>::value and
+      ::rompp::containers::meta::is_cstyle_array_pybind11<rhs_t>::value and
       // because we should have all = pybind11::array_t
       mpl::is_same<state_t, rhs_t>::value
       > * = nullptr
@@ -72,7 +72,7 @@ struct EvaluateFomRhsDefault<false>{
     typename fom_t, typename state_t, typename time_t,
     mpl::enable_if_t<
       mpl::is_same<fom_t, pybind11::object>::value and
-      ::rompp::algebra::meta::is_cstyle_array_pybind11<state_t>::value
+      ::rompp::containers::meta::is_cstyle_array_pybind11<state_t>::value
       > * = nullptr
     >
   state_t evaluate(const fom_t	& fomObj,

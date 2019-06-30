@@ -20,7 +20,7 @@ class NonLinearIterativeSolverHelper {
     /**
      * Get the maximum number of iterations of the underlying linear iterative solver.
      */
-    algebra::default_types::uint getMaxIterations() {
+    containers::default_types::uint getMaxIterations() {
       return maxIterations_;
     }
 
@@ -38,7 +38,7 @@ class NonLinearIterativeSolverHelper {
      *
      * @param maxIterations maximum number of iterations of the underlying linear iterative solver.
      */
-    void setMaxIterations(algebra::default_types::uint maxIterations) {
+    void setMaxIterations(containers::default_types::uint maxIterations) {
       maxIterations_ = maxIterations;
     }
 
@@ -55,7 +55,7 @@ class NonLinearIterativeSolverHelper {
   private:
 
     double tolerance_;
-    algebra::default_types::uint maxIterations_;
+    containers::default_types::uint maxIterations_;
 };
 
 } // end namespace solvers

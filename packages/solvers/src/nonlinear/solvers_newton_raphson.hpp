@@ -4,8 +4,8 @@
 
 #include "../solvers_ConfigDefs.hpp"
 #include "../solvers_meta_static_checks.hpp"
-#include "../../../ALGEBRA_BASIC"
-#include "../../../ALGEBRA_OPS"
+#include "../../../CONTAINERS_BASIC"
+#include "../../../CONTAINERS_OPS"
 #include "../base/solvers_nonlinear_base.hpp"
 #include "../base/solvers_iterative_base.hpp"
 
@@ -84,7 +84,7 @@ private:
   template <typename T>
   scalar_t normOfDifference(const T & v1, const T& v2) const{
     T dVec(v1 - v2);
-    return ::rompp::algebra::ops::norm2(dVec);
+    return ::rompp::containers::ops::norm2(dVec);
   }
 
 public:
@@ -92,7 +92,7 @@ public:
   typename system_t,
   typename state_t,
   mpl::enable_if_t<
-    algebra::meta::is_wrapper<state_t>::value
+    containers::meta::is_wrapper<state_t>::value
     > * = nullptr
   >
   void solveImpl(const system_t & sys,
@@ -107,7 +107,7 @@ public:
     auto dx(x);
     state_t xOld = x;
     normN_ = {0};
-    algebra::default_types::uint iStep = 0;
+    containers::default_types::uint iStep = 0;
     std::cout.precision(15);
     while (iStep++ <= this->maxIters_)
     {
@@ -124,7 +124,7 @@ public:
 
       linSolver_.solve(Jac, Residual, dx);
       x -= dx;
-      normN_ =::rompp::algebra::ops::norm2(dx);
+      normN_ =::rompp::containers::ops::norm2(dx);
       ::rompp::utils::io::print_stdout("norm(dx) =", normN_, "\n");
       if (normN_ < this->tolerance_)
       	break;
@@ -137,7 +137,7 @@ public:
     typename system_t,
     typename state_t,
     mpl::enable_if_t<
-      algebra::meta::is_cstyle_array_pybind11<state_t>::value and
+      containers::meta::is_cstyle_array_pybind11<state_t>::value and
       mpl::is_same<system_t, pybind11::object>::value and
       mpl::is_same<linear_solver_t, pybind11::object>::value
       > * = nullptr
@@ -156,7 +156,7 @@ public:
     auto Residual = sys.attr("residual1")(x);
     auto Jac = sys.attr("jacobian1")(x);
     normN_ = {0};
-    algebra::default_types::uint iStep = 0;
+    containers::default_types::uint iStep = 0;
     std::cout.precision(15);
     while (iStep++ <= this->maxIters_)
     {
@@ -175,7 +175,7 @@ public:
       for (auto i=0; i<x.size(); ++i)
 	x.mutable_at(i) -= dx.at(i);
 
-      normN_ =::rompp::algebra::ops::norm2(dx);
+      normN_ =::rompp::containers::ops::norm2(dx);
       ::rompp::utils::io::print_stdout("norm(dx) =", normN_, "\n");
       if (normN_ < this->tolerance_)
       	break;

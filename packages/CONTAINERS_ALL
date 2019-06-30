@@ -1,0 +1,11 @@
+
+#ifndef CONTAINERS_ALL_HPP_
+#define CONTAINERS_ALL_HPP_
+
+#include "CONTAINERS_BASIC"
+#include "CONTAINERS_VECTOR"
+#include "CONTAINERS_MULTI_VECTOR"
+#include "CONTAINERS_MATRIX"
+#include "CONTAINERS_OPS"
+
+#endif

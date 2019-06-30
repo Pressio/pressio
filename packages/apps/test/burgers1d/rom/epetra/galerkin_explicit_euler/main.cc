@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SVD_BASIC"
 #include "ROM_GALERKIN"
@@ -26,11 +26,11 @@ const std::vector<double> bdf1Sol
   using fom_t		= rompp::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
 
-  using decoder_jac_t	= rompp::algebra::MultiVector<Epetra_MultiVector>;
+  using decoder_jac_t	= rompp::containers::MultiVector<Epetra_MultiVector>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using rom_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
+  using rom_state_t	= rompp::containers::Vector<eig_dyn_vec>;
 
   std::string checkStr {"PASSED"};
 

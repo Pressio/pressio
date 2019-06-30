@@ -57,7 +57,7 @@ SET(LUMPED_HEADERS
 INSTALL(FILES ${LUMPED_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR})
 
 #--------------------------------------
-# install the actual algebra headers
+# install the actual containers headers
 #--------------------------------------
 SET(SOLVERS_INCDIR ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}/solvers/src)
 

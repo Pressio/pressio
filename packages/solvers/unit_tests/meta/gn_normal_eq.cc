@@ -1,13 +1,13 @@
 
 #include <gtest/gtest.h>
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "SOLVERS_NONLINEAR"
 
 struct System {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::algebra::Matrix<matrix_n_t>;
+  using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::algebra::Vector<vector_n_t>;
+  using vector_w_t = rompp::containers::Vector<vector_n_t>;
 
   using scalar_type     = double;
   using state_type	= vector_w_t;
@@ -57,7 +57,7 @@ TEST(solvers_meta, gn_normal_equations){
     (solvers::meta::is_legitimate_system_for_nonlinear_solver
      <sys_t>::value, "");
 
-  using hessian_type = algebra::Matrix<Eigen::MatrixXd>;
+  using hessian_type = containers::Matrix<Eigen::MatrixXd>;
   using tag = solvers::linear::iterative::LSCG;
   using lin_solver_t = solvers::iterative::EigenIterative<tag, hessian_type>;
 
@@ -97,7 +97,7 @@ TEST(solvers_meta, gn_normal_equations_noHess){
     (solvers::meta::is_legitimate_system_for_nonlinear_solver
      <sys_t>::value, "");
 
-  using hessian_type = algebra::Matrix<Eigen::MatrixXd>;
+  using hessian_type = containers::Matrix<Eigen::MatrixXd>;
   using tag = solvers::linear::iterative::LSCG;
   using lin_solver_t = solvers::iterative::EigenIterative<tag, hessian_type>;
 
@@ -137,7 +137,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
     (solvers::meta::is_legitimate_system_for_nonlinear_solver
      <sys_t>::value, "");
 
-  using hessian_type = algebra::Matrix<Eigen::MatrixXd>;
+  using hessian_type = containers::Matrix<Eigen::MatrixXd>;
   using tag = solvers::linear::iterative::LSCG;
   using lin_solver_t = solvers::iterative::EigenIterative<tag, hessian_type>;
 

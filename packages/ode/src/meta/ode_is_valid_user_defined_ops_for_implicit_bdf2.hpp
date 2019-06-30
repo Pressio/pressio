@@ -2,10 +2,10 @@
 #ifndef ODE_IS_VALID_USER_DEFINED_OPS_IMPLICIT_BDF2_HPP_
 #define ODE_IS_VALID_USER_DEFINED_OPS_IMPLICIT_BDF2_HPP_
 
-#include "../../../algebra/src/meta/algebra_has_update_op_typedef.hpp"
-#include "../../../algebra/src/meta/algebra_has_static_method_scale.hpp"
-#include "../../../algebra/src/meta/algebra_has_static_method_add_to_diagonal.hpp"
-#include "../../../algebra/src/meta/algebra_has_static_method_do_update_two_terms.hpp"
+#include "../../../containers/src/meta/containers_has_update_op_typedef.hpp"
+#include "../../../containers/src/meta/containers_has_static_method_scale.hpp"
+#include "../../../containers/src/meta/containers_has_static_method_add_to_diagonal.hpp"
+#include "../../../containers/src/meta/containers_has_static_method_do_update_two_terms.hpp"
 
 namespace rompp{ namespace ode{ namespace meta {
 
@@ -29,26 +29,26 @@ template<
 struct is_valid_user_defined_ops_for_implicit_bdf2<
   T, scalar_t, state_t, residual_t, jacobian_t,
     mpl::enable_if_t<
-      ::rompp::algebra::meta::has_update_op_typedef<T>::value
+      ::rompp::containers::meta::has_update_op_typedef<T>::value
       and
-      ::rompp::algebra::meta::has_static_method_do_update_three_terms<
+      ::rompp::containers::meta::has_static_method_do_update_three_terms<
 	typename T::update_op,
 	scalar_t,
-	typename algebra::details::traits<residual_t>::wrapped_t,
-	typename algebra::details::traits<state_t>::wrapped_t,
-	typename algebra::details::traits<state_t>::wrapped_t,
-	typename algebra::details::traits<state_t>::wrapped_t
+	typename containers::details::traits<residual_t>::wrapped_t,
+	typename containers::details::traits<state_t>::wrapped_t,
+	typename containers::details::traits<state_t>::wrapped_t,
+	typename containers::details::traits<state_t>::wrapped_t
 	>::value
       and
-      ::rompp::algebra::meta::has_static_method_scale<
+      ::rompp::containers::meta::has_static_method_scale<
 	typename T::update_op,
-	typename algebra::details::traits<jacobian_t>::wrapped_t,
+	typename containers::details::traits<jacobian_t>::wrapped_t,
 	scalar_t
 	>::value
       and
-      ::rompp::algebra::meta::has_static_method_add_to_diagonal<
+      ::rompp::containers::meta::has_static_method_add_to_diagonal<
 	typename T::update_op,
-	typename algebra::details::traits<jacobian_t>::wrapped_t,
+	typename containers::details::traits<jacobian_t>::wrapped_t,
 	scalar_t
 	>::value
       >

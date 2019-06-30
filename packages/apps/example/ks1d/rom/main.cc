@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
@@ -115,10 +115,10 @@ int main(int argc, char *argv[]){
   using scalar_t	= typename fom_t::scalar_type;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
+  using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
 
   using eig_dyn_mat	= Eigen::Matrix<scalar_t, -1, -1>;
-  using decoder_jac_t	= rompp::algebra::MultiVector<eig_dyn_mat>;
+  using decoder_jac_t	= rompp::containers::MultiVector<eig_dyn_mat>;
   using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
   //-------------------------------
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]){
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t  = rompp::algebra::Matrix<eig_dyn_mat>;
+  using hessian_t  = rompp::containers::Matrix<eig_dyn_mat>;
   using solver_tag   = rompp::solvers::linear::iterative::LSCG;
   using linear_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;

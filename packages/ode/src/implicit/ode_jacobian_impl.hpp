@@ -3,8 +3,8 @@
 #define ODE_JACOBIAN_IMPL_HPP_
 
 #include "../ode_ConfigDefs.hpp"
-#include "../../../algebra/src/matrix/algebra_matrix_meta.hpp"
-#include "../../../algebra/src/multi_vector/algebra_multi_vector_meta.hpp"
+#include "../../../containers/src/matrix/containers_matrix_meta.hpp"
+#include "../../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
 #include "ode_implicit_constants.hpp"
 
 namespace rompp{ namespace ode{ namespace impl{
@@ -15,11 +15,11 @@ template <
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
     (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
-    (algebra::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
+    (containers::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
 #ifdef HAVE_TRILINOS
-     algebra::meta::is_sparse_matrix_wrapper_epetra<jacobian_type>::value or
+     containers::meta::is_sparse_matrix_wrapper_epetra<jacobian_type>::value or
 #endif
-    algebra::meta::is_dense_matrix_wrapper_eigen<jacobian_type>::value)
+    containers::meta::is_dense_matrix_wrapper_eigen<jacobian_type>::value)
     > * = nullptr
   >
   void time_discrete_jacobian(jacobian_type & jac,
@@ -36,7 +36,7 @@ template <
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
     (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
-    algebra::meta::is_cstyle_array_pybind11<jacobian_type>::value
+    containers::meta::is_cstyle_array_pybind11<jacobian_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(jacobian_type & jac,
@@ -70,7 +70,7 @@ template <
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
     (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) and
-    algebra::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
+    containers::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(jacobian_type & jac,

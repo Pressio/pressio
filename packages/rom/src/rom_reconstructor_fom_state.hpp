@@ -21,7 +21,7 @@ template <
 struct FomStateReconstructor<
   fom_state_t, decoder_type,
   mpl::enable_if_t<
-    ::rompp::algebra::meta::is_wrapper<fom_state_t>::value
+    ::rompp::containers::meta::is_wrapper<fom_state_t>::value
     >
   >
 {
@@ -70,7 +70,7 @@ template <
 class FomStateReconstructor<
   fom_state_t, decoder_type,
   mpl::enable_if_t<
-    ::rompp::algebra::meta::is_cstyle_array_pybind11<fom_state_t>::value
+    ::rompp::containers::meta::is_cstyle_array_pybind11<fom_state_t>::value
     >
   >
 {
@@ -101,14 +101,14 @@ public:
     decoderObj_.applyMapping(romY, yOut);
 
     constexpr auto one = ::rompp::utils::constants::one<scalar_t>();
-    ::rompp::algebra::ops::do_update(yOut, one, yFomReference_, one);
+    ::rompp::containers::ops::do_update(yOut, one, yFomReference_, one);
     //yOut += yFomReference_;
   }
 
   template <typename rom_state_t>
   fom_state_t operator()(const rom_state_t & romY) const{
     fom_state_t yOut{ fom_state_t(yFomReference_.request()) };
-    ::rompp::algebra::ops::set_zero(yOut);
+    ::rompp::containers::ops::set_zero(yOut);
     this->template operator()(romY,yOut);
     return yOut;
   }

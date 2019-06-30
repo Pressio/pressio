@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
@@ -24,8 +24,8 @@ constexpr auto t0	= zero;
 struct LSPGRunner{
   using app_state_t	= typename app_t::state_type;
   using app_residual_t	= typename app_t::residual_type;
-  using fom_state_w_t	= rompp::algebra::Vector<app_state_t>;
-  using fom_res_w_t	= rompp::algebra::Vector<app_residual_t>;
+  using fom_state_w_t	= rompp::containers::Vector<app_state_t>;
+  using fom_res_w_t	= rompp::containers::Vector<app_residual_t>;
 
   rcpcomm_t comm_;
   const int Nx_ = {};
@@ -41,9 +41,9 @@ struct LSPGRunner{
 
   fom_state_w_t run(scalar_t dt, uint_t Nsteps)
   {
-    using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
+    using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
     using mv_t		= Tpetra::Experimental::BlockMultiVector<>;
-    using decoder_jac_t	= rompp::algebra::MultiVector<mv_t>;
+    using decoder_jac_t	= rompp::containers::MultiVector<mv_t>;
     using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
     // app object
@@ -68,7 +68,7 @@ struct LSPGRunner{
     // we now convert this MV into a Tpetra::BlockMultiVector
     mv_t phi1(*phi0.data(), *gridMap, numSpecies);
     // wrap into our MV class
-    ::rompp::algebra::MultiVector<mv_t> phi(phi1);
+    ::rompp::containers::MultiVector<mv_t> phi(phi1);
 
     // decoder object
     decoder_t decoderObj(phi);
@@ -89,7 +89,7 @@ struct LSPGRunner{
 
     // linear solver
     using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-    using hessian_t  = rompp::algebra::Matrix<eig_dyn_mat>;
+    using hessian_t  = rompp::containers::Matrix<eig_dyn_mat>;
     using solver_tag   = rompp::solvers::linear::iterative::Bicgstab;
     using linear_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;

@@ -11,7 +11,7 @@ TEST_F(eigenDenseR9Fixture,
   qr::QRSolver<mymat_t, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
 
-  // Q is a algebra::MultiVector<...> by default
+  // Q is a containers::MultiVector<...> by default
   const auto & Q = qrObj.cRefQFactor();
   checkQFactor(*Q.data());
 }
@@ -23,10 +23,10 @@ TEST_F(eigenDenseR9Fixture,
 
   // R_type == void, in_place = false
   using qr_algo = qr::Householder;
-  qr::QRSolver<mymat_t, qr_algo, false, 4, 9, algebra::Matrix> qrObj;
+  qr::QRSolver<mymat_t, qr_algo, false, 4, 9, containers::Matrix> qrObj;
   qrObj.computeThin( *A_ );
 
-  // Q is a algebra::MultiVector<...> by default
+  // Q is a containers::MultiVector<...> by default
   const auto & Q = qrObj.cRefQFactor();
   checkQFactor(*Q.data());
 }

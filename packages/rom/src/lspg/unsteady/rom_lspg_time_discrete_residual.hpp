@@ -65,7 +65,7 @@ template<
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_vector_wrapper_eigen<state_type>::value == true and
+    containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
     method == ::rompp::ode::ImplicitEnum::Euler
     > * = nullptr
   >
@@ -85,7 +85,7 @@ template<
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_vector_wrapper_eigen<state_type>::value == true and
+    containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
     method == ::rompp::ode::ImplicitEnum::BDF2
     > * = nullptr
   >
@@ -175,7 +175,7 @@ template<
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_vector_wrapper_epetra<state_type>::value == true
+    containers::meta::is_vector_wrapper_epetra<state_type>::value == true
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
@@ -186,7 +186,7 @@ void time_discrete_residual(const state_type & yn,
   // dudt = f(x,u,...), R contains f(...)
 
   // the integral type of the global indices
-  using GO_t = typename algebra::details::traits<state_type>::global_ordinal_t;
+  using GO_t = typename containers::details::traits<state_type>::global_ordinal_t;
 
   // get map of yn (ynm has for sure the same map as yn)
   const auto & y_map = yn.getDataMap();
@@ -286,7 +286,7 @@ template<
   typename scalar_type,
   typename ... Args,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_vector_tpetra<state_type>::value == true
+    containers::meta::is_vector_tpetra<state_type>::value == true
     > * = nullptr
   >
 void time_discrete_residual_tpetra_impl(const state_type & yn,
@@ -331,7 +331,7 @@ template<
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_vector_wrapper_tpetra<state_type>::value == true and
+    containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
     odeMethod == ::rompp::ode::ImplicitEnum::Euler
     > * = nullptr
   >
@@ -353,7 +353,7 @@ template<
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_vector_wrapper_tpetra<state_type>::value == true and
+    containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
     odeMethod == ::rompp::ode::ImplicitEnum::BDF2
     > * = nullptr
   >
@@ -381,7 +381,7 @@ template<
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_vector_wrapper_tpetra_block<state_type>::value and
+    containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
     odeMethod == ::rompp::ode::ImplicitEnum::Euler
     > * = nullptr
   >
@@ -402,7 +402,7 @@ template<
   typename state_type,
   typename scalar_type,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_vector_wrapper_tpetra_block<state_type>::value and
+    containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
     odeMethod == ::rompp::ode::ImplicitEnum::BDF2
     > * = nullptr
   >

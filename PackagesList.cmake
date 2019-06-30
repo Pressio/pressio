@@ -6,7 +6,7 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
   # Packages listed lower should depend on those lister higher.
   mpl		packages/mpl PT
   utils		packages/utils PT
-  algebra	packages/algebra PT
+  containers	packages/containers PT
   qr		packages/qr PT
   solvers	packages/solvers PT
   svd		packages/svd PT

@@ -1,0 +1,10 @@
+
+#ifndef CONTAINERS_MULTI_VECTOR_DOT_VECTOR_HPP_
+#define CONTAINERS_MULTI_VECTOR_DOT_VECTOR_HPP_
+
+#include "mvec_vec/containers_eigen_multi_vector_dot_eigen_vector.hpp"
+#include "mvec_vec/containers_epetra_multi_vector_dot_epetra_vector.hpp"
+#include "mvec_vec/containers_tpetra_multi_vector_dot_tpetra_vector.hpp"
+#include "mvec_vec/containers_tpetra_block_multi_vector_dot_tpetra_block_vector.hpp"
+
+#endif

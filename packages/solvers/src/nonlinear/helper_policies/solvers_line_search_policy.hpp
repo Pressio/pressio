@@ -3,7 +3,7 @@
 #define SOLVERS_IMPL_LINE_SEARCH_POLICY_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
-#include "../../../../ALGEBRA_OPS"
+#include "../../../../CONTAINERS_OPS"
 #include "solvers_jacob_res_product_policy.hpp"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
@@ -44,7 +44,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     ytrial.setZero();
 
     // eval obj function for current solution: f(y)
-    auto fy  = ::rompp::algebra::ops::norm2(resid);
+    auto fy  = ::rompp::containers::ops::norm2(resid);
 
     // compute J^T * Residual
     state_t jTr(y);  jTr.setZero();
@@ -53,7 +53,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     jtr_prod_helper_t::evaluate(jacob, resid, jTr);
 
     // compute dy^T J^T R (this is always a dot product)
-    auto c2 = ::rompp::algebra::ops::dot(dy, jTr);
+    auto c2 = ::rompp::containers::ops::dot(dy, jTr);
     auto rhs = c1 * alpha * c2;
 
 #ifdef DEBUG_PRINT
@@ -75,7 +75,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 
       // eval function for updated step solition: f(y + alpha*dy)
       sys.residual(ytrial, resid);
-      auto fytrial  = ::rompp::algebra::ops::norm2(resid);
+      auto fytrial  = ::rompp::containers::ops::norm2(resid);
       auto lhs = fytrial-fy;
 
 #ifdef DEBUG_PRINT

@@ -25,7 +25,7 @@ TEST(solvers_nonlin_lsq,
   x[2] = -1.0; x[3] = 0.01;
   x[4] = 0.02;
 
-  using hessian_t = algebra::Matrix<Eigen::MatrixXd>;
+  using hessian_t = containers::Matrix<Eigen::MatrixXd>;
 
   // linear solver type
   using solver_tag  = solvers::linear::iterative::LSCG;
@@ -59,7 +59,7 @@ TEST(solvers_nonlin_lsq,
   x[2] = -1.0; x[3] = 0.01;
   x[4] = 0.02;
 
-  using hessian_t = algebra::Matrix<Eigen::MatrixXd>;
+  using hessian_t = containers::Matrix<Eigen::MatrixXd>;
 
   // linear solver type
   using solver_tag  = solvers::linear::iterative::LSCG;
@@ -86,7 +86,7 @@ TEST(solvers_nonlin_lsq,
 
   using problem_t   = solvers::test::ExpDataFitN5;
   using state_t	    = typename problem_t::state_type;
-  using hessian_t   = algebra::Matrix<Eigen::MatrixXd>;
+  using hessian_t   = containers::Matrix<Eigen::MatrixXd>;
 
   problem_t problem;
   state_t x(5);
@@ -94,7 +94,7 @@ TEST(solvers_nonlin_lsq,
   x[2] = -1.0; x[3] = 0.01;
   x[4] = 0.02;
 
-  using hessian_t = algebra::Matrix<Eigen::MatrixXd>;
+  using hessian_t = containers::Matrix<Eigen::MatrixXd>;
 
   // linear solver type
   using solver_tag  = solvers::linear::iterative::LSCG;

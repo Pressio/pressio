@@ -11,8 +11,8 @@
 #include "solvers_l2_vector_norm.hpp"
 #include "solvers_meta_static_checks.hpp"
 #include "../solvers_ConfigDefs.hpp"
-#include "../../../ALGEBRA_OPS"
-#include "../../../algebra/src/meta/algebra_meta_detection_idiom.hpp"
+#include "../../../CONTAINERS_OPS"
+#include "../../../containers/src/meta/containers_meta_detection_idiom.hpp"
 
 
 namespace rompp{
@@ -21,12 +21,12 @@ namespace solvers{
 namespace todeprecate{
 
 /**
- * Return the transpose of a matrix. To deprecate and implement in algebra
+ * Return the transpose of a matrix. To deprecate and implement in containers
  **/
 template <
   typename MatrixT,
   typename ::rompp::mpl::enable_if_t<
-    algebra::details::traits<MatrixT>::wrapped_package_identifier == algebra::details::WrappedPackageIdentifier::Eigen
+    containers::details::traits<MatrixT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen
   >* = nullptr
 >
 MatrixT transpose(const MatrixT& A)
@@ -50,7 +50,7 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
     typename SystemT,
     typename VectorT,
     typename ::rompp::mpl::enable_if_t<
-      algebra::details::traits<VectorT>::is_vector &&
+      containers::details::traits<VectorT>::is_vector &&
       solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,
         VectorT
@@ -60,8 +60,8 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
   static VectorT solve(
     const SystemT& sys,
     const VectorT& x0,
-    algebra::default_types::uint maxIterations,
-    algebra::default_types::uint maxNonLinearIterations,
+    containers::default_types::uint maxIterations,
+    containers::default_types::uint maxNonLinearIterations,
     double tolerance,
     double nonLinearTolerance,
     double lambda
@@ -74,8 +74,8 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
     lId.setIdentity();
     lId.addToDiagonal(lambda-1.0);
 
-    auto b = algebra::ops::product(JaT, dy);
-    auto A = algebra::ops::product(JaT, Ja) + lId;
+    auto b = containers::ops::product(JaT, dy);
+    auto A = containers::ops::product(JaT, Ja) + lId;
 
     auto solver = LinearSolvers::createIterativeSolver<SolverT, typename SystemT::matrix_type, PrecT>(A);
     solver.setMaxIterations(maxIterations);
@@ -86,7 +86,7 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
 
     double normO = 0.0;
     double normN = 0.0;
-    algebra::default_types::uint iStep = 1;
+    containers::default_types::uint iStep = 1;
 
     while (iStep++ < maxNonLinearIterations) {
       xNew = xOld - solver.solve(b);
@@ -101,7 +101,7 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
         lId.setIdentity();
         lId.addToDiagonal(lambda-1.0);
 
-        A = algebra::ops::product(JaT, Ja) + lId;
+        A = containers::ops::product(JaT, Ja) + lId;
         solver.resetLinearSystem(A);
       } else {
         // Step accepted
@@ -115,8 +115,8 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
         lId.setIdentity();
         lId.addToDiagonal(lambda);
 
-        b = algebra::ops::product(JaT, dy);
-        A = algebra::ops::product(JaT, Ja) + lId;
+        b = containers::ops::product(JaT, dy);
+        A = containers::ops::product(JaT, Ja) + lId;
         solver.resetLinearSystem(A);
       }
     }
@@ -137,7 +137,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
     typename SystemT,
     typename VectorT,
     typename ::rompp::mpl::enable_if_t<
-      algebra::details::traits<VectorT>::is_vector &&
+      containers::details::traits<VectorT>::is_vector &&
       solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,
         VectorT
@@ -147,8 +147,8 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
   static VectorT solve(
     const SystemT& sys,
     const VectorT& x0,
-    algebra::default_types::uint maxIterations,
-    algebra::default_types::uint maxNonLinearIterations,
+    containers::default_types::uint maxIterations,
+    containers::default_types::uint maxNonLinearIterations,
     double tolerance,
     double nonLinearTolerance
   ) {
@@ -157,8 +157,8 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
     auto JaT = todeprecate::transpose(Ja);
 
     auto x = x0;
-    auto b = algebra::ops::product(JaT, dy);
-    auto A = algebra::ops::product(JaT, Ja);
+    auto b = containers::ops::product(JaT, dy);
+    auto A = containers::ops::product(JaT, Ja);
 
     auto solver = LinearSolvers::createIterativeSolver<SolverT, typename SystemT::matrix_type, PrecT>(A);
     solver.setMaxIterations(maxIterations);
@@ -167,7 +167,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
     double normN = 0.0;
     double normO = NormT::template compute_norm(dy);
 
-    algebra::default_types::uint iStep = 1;
+    containers::default_types::uint iStep = 1;
     while (iStep++ < maxNonLinearIterations) {
       x = x - solver.solve(b);
       dy = sys.residual(x);
@@ -178,8 +178,8 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
       Ja = sys.jacobian(x);
       JaT = todeprecate::transpose(Ja);
 
-      b = algebra::ops::product(JaT, dy);
-      A = algebra::ops::product(JaT, Ja);
+      b = containers::ops::product(JaT, dy);
+      A = containers::ops::product(JaT, Ja);
       solver.resetLinearSystem(A);
     }
     return x;

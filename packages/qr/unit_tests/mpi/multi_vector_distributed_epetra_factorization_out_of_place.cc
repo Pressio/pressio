@@ -77,7 +77,7 @@ TEST_F(epetraR9Fixture,
 //   using eig_mat = Eigen::Matrix<double,
 // 				qr::test::numVectors_,
 // 				qr::test::numVectors_>;
-//   using R_type = algebra::Matrix<eig_mat>;
+//   using R_type = containers::Matrix<eig_mat>;
 //   qr::QRSolverWrapR<mymvec_t, qr_algo, R_type> qrObj;
 //   qrObj.computeThin( *A_ );
 

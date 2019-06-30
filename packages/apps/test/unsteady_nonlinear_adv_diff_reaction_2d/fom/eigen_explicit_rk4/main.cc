@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
 #include "../gold_states_explicit.hpp"
@@ -68,8 +68,8 @@ int main(int argc, char *argv[]){
     file.close();
   }
 
-  using ode_state_t = rompp::algebra::Vector<app_state_t>;
-  using ode_res_t   = rompp::algebra::Vector<app_residual_t>;
+  using ode_state_t = rompp::containers::Vector<app_state_t>;
+  using ode_res_t   = rompp::containers::Vector<app_residual_t>;
   ode_state_t y(y0n);
 
   constexpr auto ode_case = rompp::ode::ExplicitEnum::RungeKutta4;

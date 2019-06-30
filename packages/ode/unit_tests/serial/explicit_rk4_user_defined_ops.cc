@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "reference_apps_for_testing.hpp"
 
@@ -77,8 +77,8 @@ TEST(ode_explicit_rk4, userDefinedOps){
   using nresidual_t = typename app_t::residual_type;
   app_t appObj;
 
-  using state_t = algebra::Vector<nstate_t>;
-  using res_t = algebra::Vector<nresidual_t>;
+  using state_t = containers::Vector<nstate_t>;
+  using res_t = containers::Vector<nresidual_t>;
   state_t y(3);
 
   auto yptr = y.data();

@@ -1,0 +1,18 @@
+
+#INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/packages/containers/src)
+#MESSAGE( "${CMAKE_CURRENT_SOURCE_DIR}/../../src" )
+
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
+  vector_test1
+  SOURCES
+    main.cc
+  NUM_MPI_PROCS 1
+  STANDARD_PASS_OUTPUT
+  )
+
+# TRIBITS_ADD_TEST(simplecxx-helloworld  NOEXEPREFIX  NOEXESUFFIX
+#   NAME HelloWorldProg
+#   DIRECTORY ${PACKAGE_BINARY_DIR}/src
+#   NUM_MPI_PROCS 1
+#   PASS_REGULAR_EXPRESSION "Hello World"
+#   )

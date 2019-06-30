@@ -23,7 +23,7 @@ public:
   template <
     typename vec_t,
     ::rompp::mpl::enable_if_t<
-      algebra::meta::is_algebra_vector_wrapper<vec_t>::value
+      containers::meta::is_vector_wrapper<vec_t>::value
       >* = nullptr
     >
   void solve(const vec_t & rhs, vec_t & y)const {

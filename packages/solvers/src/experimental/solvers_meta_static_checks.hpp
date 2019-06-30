@@ -4,8 +4,8 @@
 
 #include <type_traits>
 
-#include "../../../algebra/src/matrix/algebra_matrix_traits.hpp"
-#include "../../../algebra/src/vector/algebra_vector_traits.hpp"
+#include "../../../containers/src/matrix/containers_matrix_traits.hpp"
+#include "../../../containers/src/vector/containers_vector_traits.hpp"
 
 
 namespace rompp{
@@ -19,13 +19,13 @@ namespace meta {
  *
  * Two matrices are compatible iff the following two conditions are satisfied:
  *   1. the underlying matrix representation is the same; this implies that the
- *      underlying linear algebra library is also the same;
+ *      underlying linear containers library is also the same;
  *   2. the matrices have the same structure (sparse or dense).
  */
 template <typename T, typename U>
 struct are_matrix_compatible {
-  static constexpr bool valid_matrix = algebra::details::traits<T>::wrapped_package_identifier != algebra::details::WrappedPackageIdentifier::Undefined;
-  static constexpr bool value = valid_matrix && (algebra::details::traits<T>::wrapped_matrix_identifier == algebra::details::traits<U>::wrapped_matrix_identifier);
+  static constexpr bool valid_matrix = containers::details::traits<T>::wrapped_package_identifier != containers::details::WrappedPackageIdentifier::Undefined;
+  static constexpr bool value = valid_matrix && (containers::details::traits<T>::wrapped_matrix_identifier == containers::details::traits<U>::wrapped_matrix_identifier);
 };
 
 
@@ -34,14 +34,14 @@ struct are_matrix_compatible {
  *
  * @section DESCRIPTION
  *
- * A vector and a matrix are compatible iff the underlying linear algebra package
+ * A vector and a matrix are compatible iff the underlying linear containers package
  * used to represent them is the same.
  */
 template <typename T, typename U>
 struct are_vector_matrix_compatible {
-  static constexpr bool valid_vector = algebra::details::traits<T>::wrapped_package_identifier != algebra::details::WrappedPackageIdentifier::Undefined;
-  static constexpr bool valid_matrix = algebra::details::traits<U>::wrapped_package_identifier != algebra::details::WrappedPackageIdentifier::Undefined;
-  static constexpr bool value = valid_vector && valid_matrix && (algebra::details::traits<T>::wrapped_package_identifier == algebra::details::traits<U>::wrapped_package_identifier);
+  static constexpr bool valid_vector = containers::details::traits<T>::wrapped_package_identifier != containers::details::WrappedPackageIdentifier::Undefined;
+  static constexpr bool valid_matrix = containers::details::traits<U>::wrapped_package_identifier != containers::details::WrappedPackageIdentifier::Undefined;
+  static constexpr bool value = valid_vector && valid_matrix && (containers::details::traits<T>::wrapped_package_identifier == containers::details::traits<U>::wrapped_package_identifier);
 };
 
 
@@ -51,7 +51,7 @@ struct are_vector_matrix_compatible {
  * @section DESCRIPTION
  *
  * Two vectors are compatible iff their underlying structure is the same and they
- * are represented using the same underlying linear algebra package.
+ * are represented using the same underlying linear containers package.
  */
 template <
   typename T,
@@ -72,7 +72,7 @@ struct are_vector_compatible<
   T,
   U,
   typename std::enable_if<
-    !algebra::details::traits<T>::is_vector || !algebra::details::traits<U>::is_vector,
+    !containers::details::traits<T>::is_vector || !containers::details::traits<U>::is_vector,
     void
   >::type
 > {
@@ -91,24 +91,24 @@ struct are_vector_compatible<
   T,
   U,
   typename std::enable_if<
-    algebra::details::traits<T>::is_vector && algebra::details::traits<U>::is_vector,
+    containers::details::traits<T>::is_vector && containers::details::traits<U>::is_vector,
     void
   >::type
 > {
 
   static constexpr bool valid_vector =
-    algebra::details::traits<T>::wrapped_package_identifier !=
-    algebra::details::WrappedPackageIdentifier::Undefined;
+    containers::details::traits<T>::wrapped_package_identifier !=
+    containers::details::WrappedPackageIdentifier::Undefined;
 
   static constexpr bool same_type =
     valid_vector &&
-    algebra::details::traits<T>::wrapped_vector_identifier ==
-    algebra::details::traits<U>::wrapped_vector_identifier;
+    containers::details::traits<T>::wrapped_vector_identifier ==
+    containers::details::traits<U>::wrapped_vector_identifier;
 
   static constexpr bool value = same_type;
-    // (algebra::details::traits<T>::is_dynamic ||
-    //  algebra::details::traits<U>::is_dynamic ||
-    //  algebra::details::traits<T>::rows == algebra::details::traits<U>::rows);
+    // (containers::details::traits<T>::is_dynamic ||
+    //  containers::details::traits<U>::is_dynamic ||
+    //  containers::details::traits<T>::rows == containers::details::traits<U>::rows);
 };
 
 

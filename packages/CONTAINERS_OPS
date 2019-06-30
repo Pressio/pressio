@@ -1,0 +1,59 @@
+
+#ifndef CONTAINERS_OPS_HPP_
+#define CONTAINERS_OPS_HPP_
+
+#include "CONTAINERS_VECTOR"
+#include "CONTAINERS_MULTI_VECTOR"
+#include "CONTAINERS_MATRIX"
+
+#include "containers/src/ops/containers_ops_meta.hpp"
+
+//// dot product ////
+#include "containers/src/ops/dot/containers_multi_vector_dot_vector.hpp"
+#include "containers/src/ops/dot/containers_multi_vector_dot_multi_vector.hpp"
+#include "containers/src/ops/dot/containers_vector_dot_multi_vector.hpp"
+#include "containers/src/ops/dot/containers_vector_dot_vector.hpp"
+
+//// dot self ////
+#include "containers/src/ops/dot_self/containers_multi_vector_dot_self.hpp"
+
+//// mat mat product ////
+#include "containers/src/ops/mat_mat_product/containers_eigen_mat_product_mat.hpp"
+// #include "containers/src/ops/mat_mat_product/containers_eigen_sparse_mat_product_eigen_dense_mat.hpp"
+// #include "containers/src/ops/mat_mat_product/containers_eigen_sparse_mat_product_eigen_sparse_mat.hpp"
+
+//// mat vec product ////
+#include "containers/src/ops/mat_vec_product/containers_eigen_mat_product_eigen_vector.hpp"
+
+//// multivec vec product ////
+#include "containers/src/ops/multivec_vec_product/containers_eigen_multi_vector_product_eigen_vector.hpp"
+#include "containers/src/ops/multivec_vec_product/containers_epetra_multi_vector_product_armadillo_vector.hpp"
+#include "containers/src/ops/multivec_vec_product/containers_epetra_multi_vector_product_eigen_vector.hpp"
+#include "containers/src/ops/multivec_vec_product/containers_tpetra_multi_vector_product_eigen_vector.hpp"
+#include "containers/src/ops/multivec_vec_product/containers_epetra_multi_vector_product_teuchos_serial_vector.hpp"
+#include "containers/src/ops/multivec_vec_product/containers_tpetra_multi_vector_product_teuchos_serial_vector.hpp"
+#include "containers/src/ops/multivec_vec_product/containers_tpetra_block_multi_vector_product_eigen_vector.hpp"
+
+#include "containers/src/ops/containers_vector_set_zero.hpp"
+#include "containers/src/ops/containers_vector_deep_copy.hpp"
+
+/// update function to do operations on containers
+#include "containers/src/ops/do_update/containers_vector_one_term_update.hpp"
+#include "containers/src/ops/do_update/containers_vector_two_terms_update.hpp"
+#include "containers/src/ops/do_update/containers_vector_three_terms_update.hpp"
+#include "containers/src/ops/do_update/containers_vector_four_terms_update.hpp"
+
+//// mat multivec product ////
+#include "containers/src/ops/mat_multivec_product/containers_eigen_sparse_mat_product_eigen_multi_vector.hpp"
+#include "containers/src/ops/mat_multivec_product/containers_epetra_sparse_mat_product_epetra_multi_vector.hpp"
+
+//// norms ////
+#include "containers/src/ops/norms/containers_norm1_vector.hpp"
+#include "containers/src/ops/norms/containers_norm2_vector.hpp"
+
+//// min ////
+#include "containers/src/ops/min_max/containers_min_vector.hpp"
+//// max ////
+#include "containers/src/ops/min_max/containers_max_vector.hpp"
+
+#endif

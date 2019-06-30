@@ -56,7 +56,7 @@ public:
 public:
 
   /*
-   * user does NOT provide custom ops, so we use algebra::ops
+   * user does NOT provide custom ops, so we use containers::ops
    * just C++
    */
   template<
@@ -75,7 +75,7 @@ public:
     (*residual_obj_)(y, auxRHS_[0], model_, t);
     // y = y + dt * rhs
     constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
-    ::rompp::algebra::ops::do_update(y, one, auxRHS_[0], dt);
+    ::rompp::containers::ops::do_update(y, one, auxRHS_[0], dt);
   }
 
   /*
@@ -88,7 +88,7 @@ public:
     typename _ode_state_type = ode_state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      algebra::meta::is_wrapper<_ode_state_type>::value
+      containers::meta::is_wrapper<_ode_state_type>::value
       > * = nullptr
     >
   void doStep(_ode_state_type & y,
@@ -114,7 +114,7 @@ public:
     typename _ode_state_type = ode_state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      algebra::meta::is_cstyle_array_pybind11<_ode_state_type>::value
+      containers::meta::is_cstyle_array_pybind11<_ode_state_type>::value
       > * = nullptr
     >
   void doStep(_ode_state_type & y,

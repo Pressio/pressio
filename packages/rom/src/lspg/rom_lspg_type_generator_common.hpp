@@ -75,7 +75,7 @@ struct LSPGCommonTypes<
   fom_type, decoder_type, lspg_state_type,
   odeName, ud_ops,
   mpl::enable_if_t<
-    ::rompp::algebra::meta::is_algebra_vector_wrapper<lspg_state_type>::value
+    ::rompp::containers::meta::is_vector_wrapper<lspg_state_type>::value
 #ifdef HAVE_PYBIND11
     and mpl::not_same<fom_type, pybind11::object>::value
 #endif
@@ -92,13 +92,13 @@ struct LSPGCommonTypes<
   using fom_native_rhs_t	= typename fom_t::residual_type;
 
   // fom wrapper types
-  using fom_state_t	= ::rompp::algebra::Vector<fom_native_state_t>;
-  using fom_rhs_t	= ::rompp::algebra::Vector<fom_native_rhs_t>;
+  using fom_state_t	= ::rompp::containers::Vector<fom_native_state_t>;
+  using fom_rhs_t	= ::rompp::containers::Vector<fom_native_rhs_t>;
 
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
 
-  // for LSPG, the rom residual type = algebra::wrapper of application rhs
+  // for LSPG, the rom residual type = containers::wrapper of application rhs
   // i.e. the wrapped fom rhs type
   using lspg_residual_t		= fom_rhs_t;
 
@@ -143,7 +143,7 @@ struct LSPGCommonTypes<
   fom_type, decoder_type, lspg_state_type,
   odeName, ud_ops,
   mpl::enable_if_t<
-    ::rompp::algebra::meta::is_cstyle_array_pybind11<lspg_state_type>::value and
+    ::rompp::containers::meta::is_cstyle_array_pybind11<lspg_state_type>::value and
     mpl::is_same<fom_type, pybind11::object>::value
     >
   >

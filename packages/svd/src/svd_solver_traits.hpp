@@ -3,8 +3,8 @@
 #define SVD_SOLVER_TRAITS_HPP_
 
 #include "svd_fwd.hpp"
-#include "../../algebra/src/matrix/algebra_matrix_meta.hpp"
-#include "../../algebra/src/multi_vector/algebra_multi_vector_meta.hpp"
+#include "../../containers/src/matrix/containers_matrix_meta.hpp"
+#include "../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
 
 namespace rompp{ 
 namespace svd{
@@ -40,9 +40,9 @@ struct svd_traits<Solver<
 		    sval_type,
 		    typename
 		    std::enable_if<
-		      algebra::meta::is_sparse_matrix_epetra<
+		      containers::meta::is_sparse_matrix_epetra<
 			typename
-			algebra::details::traits<matrix_type>::wrapped_t
+			containers::details::traits<matrix_type>::wrapped_t
 			>::value
 		      >::type
 		    >
@@ -52,9 +52,9 @@ struct svd_traits<Solver<
 
   using matrix_t = matrix_type;
   using native_matrix_t =
-    typename algebra::details::traits<matrix_type>::wrapped_t;
+    typename containers::details::traits<matrix_type>::wrapped_t;
   using scalar_t =
-    typename algebra::details::traits<matrix_type>::scalar_t;
+    typename containers::details::traits<matrix_type>::scalar_t;
   using lsv_t = lsv_type<Epetra_MultiVector>;
   using rsv_t = rsv_type<Epetra_MultiVector>;
   using sval_t = sval_type;
@@ -76,8 +76,8 @@ struct svd_traits<Solver<
 		    sval_type,
 		    typename
 		    std::enable_if<
-		      algebra::meta::is_multi_vector_epetra<
-			typename algebra::details::traits<matrix_type>::wrapped_t
+		      containers::meta::is_multi_vector_epetra<
+			typename containers::details::traits<matrix_type>::wrapped_t
 			>::value
 		      >::type
 		    >
@@ -87,9 +87,9 @@ struct svd_traits<Solver<
 
   using matrix_t = matrix_type;
   using native_matrix_t =
-    typename algebra::details::traits<matrix_type>::wrapped_t;
+    typename containers::details::traits<matrix_type>::wrapped_t;
   using scalar_t =
-    typename algebra::details::traits<matrix_type>::scalar_t;
+    typename containers::details::traits<matrix_type>::scalar_t;
   using lsv_t = lsv_type<Epetra_MultiVector>;
   using rsv_t = rsv_type<Epetra_MultiVector>;
   using sval_t = sval_type;

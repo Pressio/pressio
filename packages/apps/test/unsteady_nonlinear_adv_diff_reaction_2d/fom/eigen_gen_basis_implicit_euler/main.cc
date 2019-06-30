@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
@@ -12,9 +12,9 @@ using app_state_t	= typename app_t::state_type;
 using app_residual_t	= typename app_t::residual_type;
 using app_jacobian_t	= typename app_t::jacobian_type;
 
-using ode_state_t = rompp::algebra::Vector<app_state_t>;
-using ode_res_t   = rompp::algebra::Vector<app_residual_t>;
-using ode_jac_t   = rompp::algebra::Matrix<app_jacobian_t>;
+using ode_state_t = rompp::containers::Vector<app_state_t>;
+using ode_res_t   = rompp::containers::Vector<app_residual_t>;
+using ode_jac_t   = rompp::containers::Matrix<app_jacobian_t>;
 
 using eig_dyn_mat	= Eigen::MatrixXd;
 using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;

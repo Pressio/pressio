@@ -17,12 +17,12 @@ TEST_F(tpetraR9Fixture,
   constexpr int nC = 4;
   assert(nC == numVectors_);
   using qr_algo = qr::TSQR;
-  using R_type = algebra::Matrix<Eigen::Matrix<double, nC, nC>>;
+  using R_type = containers::Matrix<Eigen::Matrix<double, nC, nC>>;
   qr::QRSolver<mymvec_t, R_type, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
 
   //  do Q^T * v_ = y, i.e. project v_ onto Q
-  algebra::Vector<eig_col_vec> rhs;
+  containers::Vector<eig_col_vec> rhs;
   qrObj.project(*v_, rhs);
   if (rank_==0)
     std::cout << std::setprecision(14) << *rhs.data() << std::endl;
@@ -31,7 +31,7 @@ TEST_F(tpetraR9Fixture,
   rompp::qr::test::qrGoldSol<double> gold;
 
   // solve
-  algebra::Vector<eig_col_vec> y;
+  containers::Vector<eig_col_vec> y;
   qrObj.solve(rhs, y);
   if (rank_==0)
     std::cout << std::setprecision(14) << *y.data() << std::endl;
@@ -56,12 +56,12 @@ TEST_F(tpetraR9Fixture,
   constexpr int nC = 4;
   assert(nC == numVectors_);
   using qr_algo = qr::TSQR;
-  using R_type = algebra::Matrix<Eigen::Matrix<double, nC, nC>>;
+  using R_type = containers::Matrix<Eigen::Matrix<double, nC, nC>>;
   qr::QRSolver<mymvec_t, R_type, qr_algo> qrObj;
   qrObj.computeThin( *A_ );
 
   //  do Q^T * v_ = y, i.e. project v_ onto Q
-  algebra::Vector<eig_col_vec> rhs;
+  containers::Vector<eig_col_vec> rhs;
   qrObj.project(*v_, rhs);
   if (rank_==0)
     std::cout << std::setprecision(14) << *rhs.data() << std::endl;
@@ -70,7 +70,7 @@ TEST_F(tpetraR9Fixture,
   rompp::qr::test::qrGoldSol<double> gold;
 
   // solve
-  algebra::Vector<eig_col_vec> y;
+  containers::Vector<eig_col_vec> y;
   qrObj.solve(rhs, y);
   if (rank_==0)
     std::cout << std::setprecision(14) << *y.data() << std::endl;

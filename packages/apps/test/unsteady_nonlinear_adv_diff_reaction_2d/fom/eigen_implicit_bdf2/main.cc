@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
@@ -31,9 +31,9 @@ int main(int argc, char *argv[]){
   using app_residual_t	= typename app_t::residual_type;
   using app_jacob_t	= typename app_t::jacobian_type;
 
-  using ode_state_t = rompp::algebra::Vector<app_state_t>;
-  using ode_res_t   = rompp::algebra::Vector<app_residual_t>;
-  using ode_jac_t   = rompp::algebra::Matrix<app_jacob_t>;
+  using ode_state_t = rompp::containers::Vector<app_state_t>;
+  using ode_res_t   = rompp::containers::Vector<app_residual_t>;
+  using ode_jac_t   = rompp::containers::Matrix<app_jacob_t>;
 
   constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
 

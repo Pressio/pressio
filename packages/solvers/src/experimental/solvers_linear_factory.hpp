@@ -13,7 +13,7 @@
 #include "solvers_policy_linear_iterative_trilinos.hpp"
 
 #include "../solvers_ConfigDefs.hpp"
-#include "../../../algebra/src/matrix/algebra_matrix_traits.hpp"
+#include "../../../containers/src/matrix/containers_matrix_traits.hpp"
 
 
 namespace rompp{ namespace solvers{
@@ -23,7 +23,7 @@ namespace rompp{ namespace solvers{
 template <typename SolverT, typename MatrixT>
 struct createDirectSolverTypeHelper{
   using solver_traits = linear::details::solver_traits<SolverT>;
-  using wrapped_type = typename algebra::details::traits<MatrixT>::wrapped_t;
+  using wrapped_type = typename containers::details::traits<MatrixT>::wrapped_t;
   using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type>;
   using wrapped_solver_type 
     = decltype( LinearDirectSolver<concrete_solver_type, MatrixT>(std::make_shared<concrete_solver_type>()) );
@@ -42,7 +42,7 @@ struct LinearSolvers {
     typename SolverT,
     typename MatrixT,
     typename std::enable_if<
-      algebra::details::traits<MatrixT>::wrapped_package_identifier == algebra::details::WrappedPackageIdentifier::Eigen,
+      containers::details::traits<MatrixT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen,
       MatrixT
     >::type* = nullptr
   >
@@ -53,7 +53,7 @@ struct LinearSolvers {
 
     static_assert(solver_traits::eigen_enabled && solver_traits::direct, "Solver not available for linear systems defined by Eigen matrices");
 
-    using wrapped_type = typename algebra::details::traits<MatrixT>::wrapped_t;
+    using wrapped_type = typename containers::details::traits<MatrixT>::wrapped_t;
     using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type>;
     //using concrete_policy_type = SolversLinearDenseEigenPolicy<concrete_solver_type, MatrixT>;
 
@@ -95,7 +95,7 @@ template <typename SolverT, typename MatrixT, typename PrecT>
 struct createIterativeSolverTypeHelper{
     using solver_traits = linear::details::solver_traits<SolverT>;
     using preconditioner_traits = linear::details::preconditioner_traits<PrecT>;
-    using wrapped_type = typename algebra::details::traits<MatrixT>::wrapped_t;
+    using wrapped_type = typename containers::details::traits<MatrixT>::wrapped_t;
     using concrete_precon_type = typename preconditioner_traits::template eigen_preconditioner_type<wrapped_type>;
     using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type, concrete_precon_type>;
     using wrapped_solver_type 
@@ -112,7 +112,7 @@ struct createIterativeSolverTypeHelper{
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner,
     typename std::enable_if<
-      algebra::details::traits<MatrixT>::wrapped_package_identifier == algebra::details::WrappedPackageIdentifier::Eigen,
+      containers::details::traits<MatrixT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen,
       MatrixT
     >::type* = nullptr
   >
@@ -125,7 +125,7 @@ struct createIterativeSolverTypeHelper{
     static_assert(solver_traits::eigen_enabled && !solver_traits::direct, "Solver not available for linear systems defined by Eigen matrices");
     static_assert(preconditioner_traits::eigen_enabled, "Preconditioner not available for linear systems defined by Eigen matrices");
 
-    using wrapped_type = typename algebra::details::traits<MatrixT>::wrapped_t;
+    using wrapped_type = typename containers::details::traits<MatrixT>::wrapped_t;
     using concrete_precon_type = typename preconditioner_traits::template eigen_preconditioner_type<wrapped_type>;
     using concrete_solver_type = typename solver_traits::template eigen_solver_type<wrapped_type, concrete_precon_type>;
     auto solver = std::make_shared<concrete_solver_type>();
@@ -175,7 +175,7 @@ struct createIterativeSolverTypeHelper2{
 //     typename MatrixT,
 //     typename PrecT = linear::DefaultPreconditioner,
 //     typename std::enable_if<
-//       algebra::details::traits<MatrixT>::wrapped_package_identifier == algebra::details::WrappedPackageIdentifier::Trilinos,
+//       containers::details::traits<MatrixT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Trilinos,
 //       MatrixT
 //     >::type* = nullptr
 //   >
@@ -233,7 +233,7 @@ struct createIterativeSolverTypeHelper2{
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner,
     typename std::enable_if<
-      algebra::details::traits<MatrixT>::wrapped_package_identifier == algebra::details::WrappedPackageIdentifier::Eigen,
+      containers::details::traits<MatrixT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen,
       MatrixT
     >::type* = nullptr
   >
@@ -254,7 +254,7 @@ struct createIterativeSolverTypeHelper2{
     typename MatrixT,
     typename PrecT = linear::DefaultPreconditioner,
     typename std::enable_if<
-      algebra::details::traits<MatrixT>::wrapped_package_identifier == algebra::details::WrappedPackageIdentifier::Eigen,
+      containers::details::traits<MatrixT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen,
       MatrixT
     >::type* = nullptr
   >

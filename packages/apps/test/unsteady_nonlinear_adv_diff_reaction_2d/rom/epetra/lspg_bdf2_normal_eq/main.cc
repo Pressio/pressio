@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "ROM_LSPG"
@@ -19,8 +19,8 @@ constexpr auto t0	= zero;
 struct LSPGRunner{
   using app_state_t	= typename app_t::state_type;
   using app_residual_t	= typename app_t::residual_type;
-  using ode_state_t	= rompp::algebra::Vector<app_state_t>;
-  using ode_res_t		= rompp::algebra::Vector<app_residual_t>;
+  using ode_state_t	= rompp::containers::Vector<app_state_t>;
+  using ode_res_t		= rompp::containers::Vector<app_residual_t>;
   using eig_dyn_mat	= Eigen::MatrixXd;
 
   const Epetra_MpiComm & comm_;
@@ -38,8 +38,8 @@ struct LSPGRunner{
   ode_state_t run(scalar_t dt, uint_t Nsteps)
   {
     using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-    using lspg_state_t	= rompp::algebra::Vector<eig_dyn_vec>;
-    using decoder_jac_t	= rompp::algebra::MultiVector<Epetra_MultiVector>;
+    using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
+    using decoder_jac_t	= rompp::containers::MultiVector<Epetra_MultiVector>;
     using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
 
     // app object
@@ -73,7 +73,7 @@ struct LSPGRunner{
 
     // linear solver
     using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-    using hessian_t  = rompp::algebra::Matrix<eig_dyn_mat>;
+    using hessian_t  = rompp::containers::Matrix<eig_dyn_mat>;
     using solver_tag   = rompp::solvers::linear::iterative::Bicgstab;//LSCG;
     using linear_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;

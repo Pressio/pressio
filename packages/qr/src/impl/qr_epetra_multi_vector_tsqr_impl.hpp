@@ -18,7 +18,7 @@ template<typename matrix_t, typename R_t, int n, int m,
 class EpetraMVTSQR<matrix_t, R_t, n, m, MV_t, Q_type, void>{
 
   using int_t	     = int;
-  using sc_t	     = typename algebra::details::traits<matrix_t>::scalar_t;
+  using sc_t	     = typename containers::details::traits<matrix_t>::scalar_t;
   using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
   using trcp_mat     = Teuchos::RCP<serden_mat_t>;
   using Q_t	     = Q_type<MV_t>;
@@ -62,13 +62,13 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void project(const vector_in_t & vecIn,
   		   vector_out_t & vecOut) const{
-    algebra::ops::dot( *this->Qmat_, vecIn, vecOut );
+    containers::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 
   // if R_type != wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t,
   	    ::rompp::mpl::enable_if_t<
-  	      !algebra::meta::is_dense_matrix_wrapper_teuchos<T>::value and
+  	      !containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
 	      !std::is_void<T>::value
   	      > * = nullptr>
   const T & getCRefRFactor() const {
@@ -79,7 +79,7 @@ public:
   // if R_type == wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t,
   	    ::rompp::mpl::enable_if_t<
-  	      algebra::meta::is_dense_matrix_wrapper_teuchos<T>::value and
+  	      containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
 	      !std::is_void<T>::value
   	      > * = nullptr>
   const T & getCRefRFactor() const {

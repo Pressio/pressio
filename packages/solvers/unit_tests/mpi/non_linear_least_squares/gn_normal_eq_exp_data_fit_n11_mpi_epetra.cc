@@ -35,7 +35,7 @@ TEST(solvers_nonlin_lsq,
 
   /* NOTE: this problem with GN only works with line search */
 
-  using hessian_t = algebra::Matrix<Eigen::MatrixXd>;
+  using hessian_t = containers::Matrix<Eigen::MatrixXd>;
 
   // linear solver type
   using solver_tag  = solvers::linear::iterative::LSCG;

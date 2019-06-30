@@ -74,7 +74,7 @@ public:
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("phiT*fomRhs");
 #endif
-    algebra::ops::dot(decoder_.getReferenceToJacobian(), fomRhs_, romR);
+    containers::ops::dot(decoder_.getReferenceToJacobian(), fomRhs_, romR);
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
 #endif
@@ -116,7 +116,7 @@ public:
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("phiT*fomRhs");
 #endif
-    algebra::ops::dot(decoder_.getReferenceToJacobian(), fomR, result);
+    containers::ops::dot(decoder_.getReferenceToJacobian(), fomR, result);
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
 #endif

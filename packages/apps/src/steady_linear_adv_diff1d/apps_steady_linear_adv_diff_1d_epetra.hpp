@@ -6,7 +6,7 @@
 
 #ifdef HAVE_TRILINOS
 
-#include "../../../ALGEBRA_ALL"
+#include "../../../CONTAINERS_ALL"
 #include "Epetra_MpiComm.h"
 #include <Epetra_config.h>
 #include "Epetra_Map.h"

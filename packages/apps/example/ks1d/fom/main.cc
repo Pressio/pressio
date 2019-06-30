@@ -1,5 +1,5 @@
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "APPS_KS1D"
@@ -150,9 +150,9 @@ int main(int argc, char *argv[]){
   auto & y0n = appObj.getInitialState();
 
   // types for ode
-  using ode_state_t = rompp::algebra::Vector<app_state_t>;
-  using ode_res_t   = rompp::algebra::Vector<app_rhs_t>;
-  using ode_jac_t   = rompp::algebra::Matrix<app_jacob_t>;
+  using ode_state_t = rompp::containers::Vector<app_state_t>;
+  using ode_res_t   = rompp::containers::Vector<app_rhs_t>;
+  using ode_jac_t   = rompp::containers::Matrix<app_jacob_t>;
 
   ode_state_t y(y0n);
 

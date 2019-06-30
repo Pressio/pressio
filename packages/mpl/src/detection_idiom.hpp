@@ -14,7 +14,7 @@ struct nonesuch {
   void operator=(nonesuch const&) = delete;
 };
 
-// already defined in algebra_meta_basic
+// already defined in containers_meta_basic
 // template <typename...>
 // using my_void_t = void;
 

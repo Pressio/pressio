@@ -2,7 +2,7 @@
 #define SOLVERS_LINEAR_WRAPPER_ARMADILLO_HPP
 
 #include "../solvers_ConfigDefs.hpp"
-#include "../../../algebra/src/meta/algebra_meta_detection_idiom.hpp"
+#include "../../../containers/src/meta/containers_meta_detection_idiom.hpp"
 
 
 namespace rompp {
@@ -39,7 +39,7 @@ class SolversLinearDirectWrapperArmadillo {
       typename DMatrixT,
       typename VectorT,
       typename ::rompp::mpl::enable_if_t<
-        algebra::details::traits<DMatrixT>::is_dense
+        containers::details::traits<DMatrixT>::is_dense
       >* = nullptr
     >
     VectorT _solveImpl(const VectorT& b) const {
@@ -54,7 +54,7 @@ class SolversLinearDirectWrapperArmadillo {
       typename DMatrixT,
       typename VectorT,
       typename ::rompp::mpl::enable_if_t<
-        algebra::details::traits<DMatrixT>::is_sparse
+        containers::details::traits<DMatrixT>::is_sparse
       >* = nullptr
     >
     VectorT _solveImpl(const VectorT& b) const {

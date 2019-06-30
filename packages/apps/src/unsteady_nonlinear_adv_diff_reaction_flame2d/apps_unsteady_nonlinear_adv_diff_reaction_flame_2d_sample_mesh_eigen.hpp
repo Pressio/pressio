@@ -2,7 +2,7 @@
 #ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_SAMPLE_MESH_EIGEN_HPP_
 #define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_SAMPLE_MESH_EIGEN_HPP_
 
-#include "../../../ALGEBRA_ALL"
+#include "../../../CONTAINERS_ALL"
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
 #include <cmath>

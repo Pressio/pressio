@@ -68,7 +68,7 @@ public:
     typename _state_type = state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      algebra::meta::is_cstyle_array_pybind11<_state_type>::value
+      containers::meta::is_cstyle_array_pybind11<_state_type>::value
       > * = nullptr
     >
   void doStep(_state_type & y,
@@ -133,19 +133,19 @@ public:
 
     // stage 1: ytmp = y + auxRHS_[0]*dt_half;
     (*this->residual_obj_)(y, this->auxRHS_[0], this->model_, t);
-    ::rompp::algebra::ops::do_update(ytmp, y, one, this->auxRHS_[0], dt_half);
+    ::rompp::containers::ops::do_update(ytmp, y, one, this->auxRHS_[0], dt_half);
 
     // stage 2: ytmp = y + auxRHS_[1]*dt_half;
     (*this->residual_obj_)(ytmp, this->auxRHS_[1], this->model_, t_phalf);
-    ::rompp::algebra::ops::do_update(ytmp, y, one, this->auxRHS_[1], dt_half);
+    ::rompp::containers::ops::do_update(ytmp, y, one, this->auxRHS_[1], dt_half);
 
     // stage 3: ytmp = y + auxRHS_[2]*dt;
     (*this->residual_obj_)(ytmp, this->auxRHS_[2], this->model_, t_phalf);
-    ::rompp::algebra::ops::do_update(ytmp, y, one, this->auxRHS_[2], dt);
+    ::rompp::containers::ops::do_update(ytmp, y, one, this->auxRHS_[2], dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     (*this->residual_obj_)(ytmp, this->auxRHS_[3], this->model_, t + dt);
-    ::rompp::algebra::ops::do_update(y, one,
+    ::rompp::containers::ops::do_update(y, one,
     				  this->auxRHS_[0], dt6,
     				  this->auxRHS_[1], dt3,
     				  this->auxRHS_[2], dt3,
@@ -154,14 +154,14 @@ public:
 
 
 
-  //  user-defined ops, with algebra wrappers
+  //  user-defined ops, with containers wrappers
   template<
     typename step_t,
     typename T = ops_t,
     typename _state_type = state_type,
     mpl::enable_if_t<
       std::is_void<T>::value == false and
-      algebra::meta::is_wrapper<_state_type>::value
+      containers::meta::is_wrapper<_state_type>::value
       > * = nullptr
     >
   void doStep(_state_type & y,

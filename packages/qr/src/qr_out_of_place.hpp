@@ -17,8 +17,8 @@ template<
 class QRSolver<
   matrix_type, algo, false, m, n, void, Q_type,
   ::rompp::mpl::enable_if_t<
-    algebra::meta::is_algebra_multi_vector_wrapper<matrix_type>::value or
-    algebra::meta::is_algebra_matrix_wrapper<matrix_type>::value
+    containers::meta::is_multi_vector_wrapper<matrix_type>::value or
+    containers::meta::is_matrix_wrapper<matrix_type>::value
     >
   > : public details::traits< QRSolver<matrix_type, algo,
 				       false, m, n, void, Q_type>>::base_compute_t,
@@ -77,8 +77,8 @@ private:
 //   matrix_type, algo, false, m, n, R_type, Q_type,
 //   ::rompp::mpl::enable_if_t<
 //     meta::is_legitimate_r_type<R_type>::value and
-//     (algebra::meta::is_multi_vector_wrapper_epetra<matrix_type>::value or
-//      algebra::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value)
+//     (containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value or
+//      containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value)
 //     >
 //   > : public details::traits< QRSolver<matrix_type, algo,
 // 				       false, m, n, R_type, Q_type>>::base_compute_t,

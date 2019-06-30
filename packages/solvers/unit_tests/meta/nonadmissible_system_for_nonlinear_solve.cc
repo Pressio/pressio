@@ -1,13 +1,13 @@
 
 #include <gtest/gtest.h>
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "SOLVERS_NONLINEAR"
 
 struct NonValidSystemA {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::algebra::Matrix<matrix_n_t>;
+  using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::algebra::Vector<vector_n_t>;
+  using vector_w_t = rompp::containers::Vector<vector_n_t>;
 
   using scalar_type     = double;
   using state_type      = vector_w_t;
@@ -42,9 +42,9 @@ TEST(solvers_meta, system_nonadmissible1){
 
 struct NonValidSystemB {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::algebra::Matrix<matrix_n_t>;
+  using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::algebra::Vector<vector_n_t>;
+  using vector_w_t = rompp::containers::Vector<vector_n_t>;
 
   using scalar_type     = double;
   using state_type      = vector_w_t;

@@ -2,7 +2,7 @@
 #if not defined APPS_UTILS_EIGEN_HPP_
 #define APPS_UTILS_EIGEN_HPP_
 
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "SVD_BASIC"
 #include "utils_read_ascii_matrix_std_vec_vec.hpp"
 
@@ -13,9 +13,9 @@ template <typename T = int>
 auto convertFromVVecToMultiVec(
       const std::vector<std::vector<double>> & A0,
       T nrows, T ncols)
-  -> rompp::algebra::MultiVector<Eigen::MatrixXd>{
+  -> rompp::containers::MultiVector<Eigen::MatrixXd>{
 
-  rompp::algebra::MultiVector<Eigen::MatrixXd> ADW(nrows, ncols);
+  rompp::containers::MultiVector<Eigen::MatrixXd> ADW(nrows, ncols);
 
   for (int i=0; i<nrows; i++){
     for (int j=0; j<ncols; j++)
@@ -29,7 +29,7 @@ template <typename T = int>
 auto readBasis(
   std::string filename,
   T romSize, T numCell)
-  ->rompp::algebra::MultiVector<Eigen::MatrixXd>
+  ->rompp::containers::MultiVector<Eigen::MatrixXd>
 {
   std::vector<std::vector<double>> A0;
   ::rompp::apps::test::readAsciiMatrixStdVecVec(filename, A0, romSize);

@@ -28,7 +28,7 @@ void time_discrete_residual(const state_type & y,
   constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
   constexpr auto negOne = ::rompp::utils::constants::negOne<scalar_type>();
   const scalar_type negDt = -dt;
-  ::rompp::algebra::ops::do_update(R, negDt, y, one, oldYs[0], negOne);
+  ::rompp::containers::ops::do_update(R, negDt, y, one, oldYs[0], negOne);
 }
 
 
@@ -53,7 +53,7 @@ void time_discrete_residual(const state_type & y,
   constexpr auto b = ::rompp::ode::coeffs::bdf2<scalar_type>::c2_;
   const auto c = ::rompp::ode::coeffs::bdf2<scalar_type>::c3_*dt*negOne;
 
-  ::rompp::algebra::ops::do_update(R, c, y, one, oldYs[1], a, oldYs[0], b);
+  ::rompp::containers::ops::do_update(R, c, y, one, oldYs[1], a, oldYs[0], b);
 }
 
 }}}//end namespace rompp::ode::impl

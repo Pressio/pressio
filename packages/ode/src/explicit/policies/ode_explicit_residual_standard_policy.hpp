@@ -14,7 +14,7 @@ namespace rompp{ namespace ode{ namespace policy{
 
 /*
  * state_type = residual_type
- * both are wrappers from algebra
+ * both are wrappers from containers
  */
 template<
   typename state_type,
@@ -23,7 +23,7 @@ template<
 class ExplicitResidualStandardPolicy<
   state_type,model_type, state_type,
   mpl::enable_if_t<
-    algebra::meta::is_algebra_vector_wrapper<state_type>::value
+    containers::meta::is_vector_wrapper<state_type>::value
 #ifdef HAVE_PYBIND11
     and mpl::not_same<model_type, pybind11::object >::value
 #endif
@@ -71,7 +71,7 @@ class ExplicitResidualStandardPolicy<
   state_type,model_type, state_type,
   mpl::enable_if_t<
     mpl::is_same<model_type, pybind11::object >::value and
-    algebra::meta::is_cstyle_array_pybind11<state_type>::value
+    containers::meta::is_cstyle_array_pybind11<state_type>::value
     >
   >
   : public ExplicitResidualPolicyBase<

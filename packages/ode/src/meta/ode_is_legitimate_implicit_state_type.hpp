@@ -3,7 +3,7 @@
 #define ODE_IS_LEGITIMATE_IMPLICIT_STATE_TYPE_HPP_
 
 #include "../ode_ConfigDefs.hpp"
-#include "../../../algebra/src/vector/algebra_vector_meta.hpp"
+#include "../../../containers/src/vector/containers_vector_meta.hpp"
 
 namespace rompp{ namespace ode{ namespace meta {
 
@@ -14,9 +14,9 @@ template<typename state_type>
 struct is_legitimate_implicit_state_type<
   state_type,
   typename std::enable_if<
-    algebra::meta::is_algebra_vector_wrapper<state_type>::value
+    containers::meta::is_vector_wrapper<state_type>::value
 #ifdef HAVE_PYBIND11
-    or algebra::meta::is_cstyle_array_pybind11<state_type>::value
+    or containers::meta::is_cstyle_array_pybind11<state_type>::value
 #endif
     >::type > : std::true_type{};
 

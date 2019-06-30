@@ -3,7 +3,7 @@
 #define SOLVERS_IMPL_CONVERGE_CRITERION_POLICY_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
-#include "../../../../ALGEBRA_OPS"
+#include "../../../../CONTAINERS_OPS"
 
 namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
 

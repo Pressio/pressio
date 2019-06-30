@@ -21,9 +21,9 @@ class ModGramSchmidtMVTpetra<
 					      utils::constants::dynamic,
 					      MV_t, Q_type, void>;
   using int_t	     = int;
-  using sc_t	     = typename algebra::details::traits<matrix_t>::scalar_t;
+  using sc_t	     = typename containers::details::traits<matrix_t>::scalar_t;
   using eig_dyn_mat  =  Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using R_nat_t	     = algebra::Matrix<eig_dyn_mat>;
+  using R_nat_t	     = containers::Matrix<eig_dyn_mat>;
   using Q_t	     = Q_type<MV_t>;
 
 public:
@@ -71,7 +71,7 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void project(const vector_in_t & vecIn,
 	       vector_out_t & vecOut) const{
-    algebra::ops::dot( *this->Qmat_, vecIn, vecOut );
+    containers::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 
   const Q_t & getCRefQFactor() const {

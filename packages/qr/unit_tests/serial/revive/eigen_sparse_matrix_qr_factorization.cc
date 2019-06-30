@@ -1,14 +1,14 @@
 
 #include <gtest/gtest.h>
-#include "ALGEBRA_ALL"
+#include "CONTAINERS_ALL"
 #include "../../src/qr_eigen_sparse_matrix.hpp"
 
 TEST(qr_factorization,
      EigenSparseMatrixQRFactorization){
   using namespace rompp;
 
-  using mymat_t = algebra::Matrix<Eigen::SparseMatrix<double,Eigen::RowMajor>>;
-  STATIC_ASSERT_IS_ALGEBRA_MATRIX_WRAPPER(mymat_t);
+  using mymat_t = containers::Matrix<Eigen::SparseMatrix<double,Eigen::RowMajor>>;
+  STATIC_ASSERT_IS_CONTAINERS_MATRIX_WRAPPER(mymat_t);
 
   std::vector<double> vals;
   std::vector<int> cind;
@@ -51,8 +51,8 @@ TEST(qr_factorization,
   std::cout << *A.data() << std::endl;
 
   // do QR
-  using R_type = rompp::algebra::Matrix<Eigen::MatrixXd>;
-  rompp::qr::QRSolver<mymat_t, rompp::algebra::Matrix, R_type, ::rompp::qr::Householder> qrObj;
+  using R_type = rompp::containers::Matrix<Eigen::MatrixXd>;
+  rompp::qr::QRSolver<mymat_t, rompp::containers::Matrix, R_type, ::rompp::qr::Householder> qrObj;
   qrObj.computeThin(A);
   const auto & Q = qrObj.cRefQFactor();
   const auto & R = qrObj.cRefRFactor();
