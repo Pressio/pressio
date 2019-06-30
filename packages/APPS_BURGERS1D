@@ -3,6 +3,7 @@
 #define APPS_BURGERS1D_HPP_
 
 #include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
+#include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
 
 #include "apps/src/burgers1d/apps_burgers1d_epetra.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_epetra_masked.hpp"

@@ -4,8 +4,6 @@
 #define ALGEBRA_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 
 #include "../../shared_base/algebra_container_base.hpp"
-//#include "../../shared_base/algebra_container_resizable_base.hpp"
-//#include "../../shared_base/algebra_container_nonresizable_base.hpp"
 #include "../base/algebra_vector_sharedmem_base.hpp"
 
 namespace rompp{ namespace algebra{
@@ -26,30 +24,41 @@ class Vector<wrapped_type,
   using ord_t = typename  mytraits::ordinal_t;
   using wrap_t = typename mytraits::wrapped_t;
 
-  // Views have "view semantics."  This means that they behave like
-  // pointers, not like std::vector.  Their copy constructor and
-  // operator= only do shallow copies.  Thus, you can pass View
-  // objects around by "value"; they won't do a deep copy unless you
-  // explicitly ask for a deep copy.
+  // Views have "view semantics." copy constructor and
+  // operator= only do shallow copies.
+  // Here, for the time being, we construct wrapper
+  // of a view WITHOUT doing shallow copy.
+  // We create a new object and deep_copy original.
 
 public:
   Vector() = default;
 
-  explicit Vector(const wrap_t src) // by value
-    : data_(src){}
+  explicit Vector(const wrap_t src)
+    : data_{src.label(), src.extent(0)}
+  {
+    Kokkos::deep_copy(data_, src);
+    // std::cout << "Kokkos wrapper" << std::endl;
+    // std::cout << data_.label() << std::endl;
+  }
+
+  Vector(const this_t & other)
+    : data_{other.data_.label(), other.data_.extent(0)}
+  {
+    Kokkos::deep_copy(data_, other.data_);
+    // std::cout << "Kokkos copy cstr" << std::endl;
+    // std::cout << data_.label() << std::endl;
+  }
 
   ~Vector(){}
 
 private:
+  wrap_t const * dataImpl() const{
+    return &data_;
+  }
+  wrap_t * dataImpl(){
+    return &data_;
+  }
 
-  // wrap_t const * dataImpl() const{
-  //   return &data_;
-  // }
-  // wrap_t * dataImpl(){
-  //   return &data_;
-  // }
-
-  //
   wrap_t dataCpImpl(){
     return data_;
   }

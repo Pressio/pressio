@@ -11,6 +11,7 @@
 #include "./meta/algebra_is_vector_wrapper_eigen.hpp"
 #include "./meta/algebra_is_vector_wrapper_epetra.hpp"
 #include "./meta/algebra_is_vector_wrapper_tpetra.hpp"
+#include "./meta/algebra_is_vector_wrapper_kokkos.hpp"
 #include "./meta/algebra_is_vector_wrapper_tpetra_block.hpp"
 
 #endif

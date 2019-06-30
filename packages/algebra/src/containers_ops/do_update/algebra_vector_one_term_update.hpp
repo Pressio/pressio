@@ -8,6 +8,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #endif
+#ifdef HAVE_TRILINOS
+#include<KokkosBlas1_axpby.hpp>
+#endif
 
 //----------------------------------------------------------------------
 //  overloads for computing:
@@ -17,9 +20,9 @@
 namespace rompp{ namespace algebra{ namespace ops{
 
 
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------
 // enable for vectors supporting expression templates
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------
 template<
   typename T,
   typename scalar_t,
@@ -48,10 +51,9 @@ void do_update(T & v, const T & v1, const scalar_t  b)
 }
 
 
-
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------
 // enable for pybind11::array_t
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------
 #ifdef HAVE_PYBIND11
 template<
   typename T,
@@ -100,9 +102,9 @@ void do_update(T & v, const T & v1, const scalar_t b){
 #endif
 
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------
 // enable for tpetra and tpetra block vectors NOT supporting expr templates
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------
 #ifdef HAVE_TRILINOS
 template<
   typename T,
@@ -132,6 +134,41 @@ void do_update(T & v, const T & v1, const scalar_t b)
   v.data()->update(b, *v1.data(), zero); // v = b * v1
 }
 #endif
+
+
+//---------------------------------------------------------------------
+// enable for kokkos wrapper
+//---------------------------------------------------------------------
+#ifdef HAVE_TRILINOS
+template<
+  typename T,
+  typename scalar_t,
+  ::rompp::mpl::enable_if_t<
+    ::rompp::algebra::meta::is_vector_wrapper_kokkos<T>::value
+    > * = nullptr
+  >
+void do_update(T & v, const scalar_t a,
+	       const T & v1, const scalar_t b)
+{
+  // v = a*v + b * v1
+  KokkosBlas::axpby(b, *v1.data(), a, *v.data());
+}
+
+template<
+  typename T,
+  typename scalar_t,
+  ::rompp::mpl::enable_if_t<
+    ::rompp::algebra::meta::is_vector_wrapper_kokkos<T>::value
+    > * = nullptr
+  >
+void do_update(T & v, const T & v1, const scalar_t b)
+{
+  // v = b*v1
+  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
+  KokkosBlas::axpby(b, *v1.data(), zero, *v.data());
+}
+#endif
+
 
 }}}//end namespace rompp::algebra::ops
 #endif

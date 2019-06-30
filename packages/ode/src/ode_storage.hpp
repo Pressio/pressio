@@ -12,7 +12,7 @@ namespace rompp{ namespace ode{ namespace impl{
 
 /*
  * note that these are auxiliary objects for storing data.
- * it is fundamental that these DO not view the same memory
+ * it is fundamental that these DO not point to the same memory
  * locations of the objects passed in.
  * In other words, the y,r arguments to constructors are
  * only needed so that we copy-construct them since
@@ -22,7 +22,7 @@ namespace rompp{ namespace ode{ namespace impl{
  *
  * However, if copy-constructing implements shallow copy, then
  * we need to do something else because the storage objects
- * need to take different memory locations.
+ * need to be new allocations.
  */
 
 template<
@@ -110,7 +110,6 @@ struct OdeStorage<state_type, rhs_type, 2, 0>{
 //--------------------------------------------------
 // num_aux_states = 1, num_aux_rhs = 4
 //--------------------------------------------------
-
 template<typename state_type, typename rhs_type>
 struct OdeStorage<state_type, rhs_type, 1, 4>{
 
@@ -166,7 +165,6 @@ struct OdeStorage<state_type, rhs_type, 1, 4>{
 //--------------------------------------------------
 // num_aux_states = 0, num_aux_rhs = 1
 //--------------------------------------------------
-
 template<typename state_type, typename rhs_type>
 struct OdeStorage<state_type, rhs_type, 0, 1>{
 
