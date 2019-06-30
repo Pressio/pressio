@@ -35,4 +35,4 @@ struct any_of<Predicate>
 
 }}} // namespace 
 
-#endif // ROMPP_MPL_VARIADIC_ANY_OF_HPP
+#endif 

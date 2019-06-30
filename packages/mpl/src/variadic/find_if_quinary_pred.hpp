@@ -40,4 +40,4 @@ using find_if_quinary_pred_t = typename find_if_quinary_pred<T1, T2, T3, T4,
 
 }}} // namespace
 
-#endif // ROMPP_MPL_VARIADIC_FIND_IF_HPP
+#endif 

@@ -8,7 +8,6 @@
 namespace rompp{ namespace mpl{ namespace variadic {
 
 /**
- * \ingroup VariadicBasic
  * \class size
  * \brief Compute the size of a variadic template
  * \return `size<Args...>::value` is equivalent to `sizeof ... (Args)`
@@ -25,4 +24,4 @@ struct size : std::integral_constant<std::size_t,sizeof...(Args)>
 
 }}} // namespace rompp::mpl::variadic
 
-#endif // ROMPP_MPL_VARIADIC_SIZE_HPP
+#endif 

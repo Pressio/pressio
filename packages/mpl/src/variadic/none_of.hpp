@@ -34,4 +34,4 @@ struct none_of<Predicate>
 
 }}} // namespace rompp::mpl::variadic
 
-#endif // ROMPP_MPL_VARIADIC_NONE_OF_HPP
+#endif 

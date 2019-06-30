@@ -5,7 +5,6 @@
 namespace rompp{ namespace mpl {
 
 /**
- * \class identity
  * \brief Returns the argument passed
  */
 template<class T> struct identity{

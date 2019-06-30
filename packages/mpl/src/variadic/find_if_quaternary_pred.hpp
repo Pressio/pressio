@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_MPL_VARIADIC_FIND_IF_QUATER_HPP
-#define ROMPP_MPL_VARIADIC_FIND_IF_QUATER_HPP
+#ifndef ROMPP_MPL_VARIADIC_FIND_IF_QUATERNARY_HPP
+#define ROMPP_MPL_VARIADIC_FIND_IF_QUATERNARY_HPP
 
 #include <type_traits>
 #include <cstddef>
@@ -40,4 +40,4 @@ using find_if_quaternary_pred_t = typename find_if_quaternary_pred<T1, T2, T3,
 
 }}} // namespace
 
-#endif // ROMPP_MPL_VARIADIC_FIND_IF_HPP
+#endif 

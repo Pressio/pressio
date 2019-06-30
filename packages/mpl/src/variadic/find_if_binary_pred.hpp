@@ -8,21 +8,7 @@
 namespace rompp{ namespace mpl{ namespace variadic {
 
 /**
- * \ingroup VarNonModAlgs
- * \class find_if_binary_pred Compute the index of the first element in the sequence Args...
- which satisfies a given binary predicate
-
- * \param Predicate The test predicate - `F<T, attribute_t>::type::value` shall be convertible to bool
-
- * \param attribute_t the second template parameter for the binary predicate
-
- * \param Args... the input sequence to test
-
- * \return `find_if<...>::type` is `std::integral_constant<std::size_t,v>` where
-`v` is the 0-based index of the first element which satisfy `F`. If no such
-element exists, `v` is `size<Sequence>::value`.
-
- * \sa tinympl::find_if_binary_pred
+ * \param Predicate The test predicate - `F<T, attribute_t>::type::value`
  */
 template<typename attribute_t,
 	 template<class ...> class Predicate,
@@ -57,4 +43,4 @@ using find_if_binary_pred_t = typename find_if_binary_pred<attribute_t,
 
 }}} // namespace 
 
-#endif // ROMPP_MPL_VARIADIC_FIND_IF_HPP
+#endif
