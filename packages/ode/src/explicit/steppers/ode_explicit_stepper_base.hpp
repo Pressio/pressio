@@ -3,7 +3,7 @@
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_BASE_EXPLICIT_STEPPER_BASE_HPP_
 
 #include "ode_explicit_stepper_traits.hpp"
-#include "../policies/ode_is_legitimate_explicit_residual_policy.hpp"
+#include "../policies/ode_is_legitimate_explicit_velocity_policy.hpp"
 #include "../../ode_storage.hpp"
 #include "../../ode_system_wrapper.hpp"
 
@@ -21,19 +21,19 @@ private:
   using step_traits	= ode::details::traits<stepper_type>;
   using scalar_t	= typename step_traits::scalar_t;
   using state_t		= typename step_traits::state_t;
-  using velocity_t	= typename step_traits::residual_t;
+  using velocity_t	= typename step_traits::velocity_t;
   using model_t		= typename step_traits::model_t;
-  using policy_t	= typename step_traits::residual_policy_t;
+  using policy_t	= typename step_traits::velocity_policy_t;
 
   static_assert( meta::is_legitimate_explicit_state_type<state_t>::value,
   "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
 
-  static_assert( meta::is_legitimate_explicit_residual_type<velocity_t>::value,
-  "OOPS: RESIDUAL_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
+  static_assert( meta::is_legitimate_explicit_velocity_type<velocity_t>::value,
+  "OOPS: VELOCITY_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
 
-  static_assert( meta::is_legitimate_explicit_residual_policy<
+  static_assert( meta::is_legitimate_explicit_velocity_policy<
   		 policy_t>::value,
-  "RESIDUAL_POLICY NOT ADMISSIBLE: MAYBE NOT INHERITING FROM EXPLICIT POLICY BASE");
+  "VELOCITY_POLICY NOT ADMISSIBLE: MAYBE NOT INHERITING FROM EXPLICIT POLICY BASE");
 
 public:
   ExplicitStepperBase() = default;

@@ -44,7 +44,7 @@ struct ScalarHelper<
 
 
 template <
-  typename model_t,
+  typename system_t,
   typename state_t,
   typename residual_t,
   typename jacobian_t,
@@ -53,44 +53,44 @@ template <
 struct StdPoliciesPicker;
 
 template <
-  typename model_t,
+  typename system_t,
   typename state_t,
   typename residual_t,
   typename jacobian_t
   >
 struct StdPoliciesPicker<
-  model_t, state_t, residual_t, jacobian_t
+  system_t, state_t, residual_t, jacobian_t
 #ifdef HAVE_PYBIND11  
   , mpl::enable_if_t<
-    mpl::not_same<model_t, pybind11::object>::value
+    mpl::not_same<system_t, pybind11::object>::value
     >
 #endif    
   >
 {
   using standard_res_policy_t = policy::ImplicitResidualStandardPolicy<
-    state_t, model_t, residual_t>;
+    state_t, system_t, residual_t>;
   using standard_jac_policy_t = policy::ImplicitJacobianStandardPolicy<
-    state_t, model_t, jacobian_t>;
+    state_t, system_t, jacobian_t>;
 };
 
 #ifdef HAVE_PYBIND11  
 template <
-  typename model_t,
+  typename system_t,
   typename state_t,
   typename residual_t,
   typename jacobian_t
   >
 struct StdPoliciesPicker<
-  model_t, state_t, residual_t, jacobian_t,
+  system_t, state_t, residual_t, jacobian_t,
   mpl::enable_if_t<
-    mpl::is_same<model_t, pybind11::object>::value
+    mpl::is_same<system_t, pybind11::object>::value
     >
   >
 {
   using standard_res_policy_t = policy::ImplicitResidualStandardPolicyPybind11<
-    state_t, model_t, residual_t>;
+    state_t, system_t, residual_t>;
   using standard_jac_policy_t = policy::ImplicitJacobianStandardPolicyPybind11<
-    state_t, model_t, jacobian_t>;
+    state_t, system_t, jacobian_t>;
 };
 #endif
 //------------------------------------------------------------------
@@ -100,20 +100,20 @@ template<
   typename state_type,
   typename residual_type,
   typename jacobian_type,
-  typename model_type,
+  typename system_type,
   typename ...Args
   >
 struct traits<
   ImplicitStepper<
     ImplicitEnum::Euler,
     state_type, residual_type,
-    jacobian_type, model_type,
+    jacobian_type, system_type,
     Args...>
   > {
 
   using stepper_t =   ImplicitStepper< ImplicitEnum::Euler,
 				       state_type, residual_type,
-				       jacobian_type, model_type,
+				       jacobian_type, system_type,
 				       Args...>;
   using this_t = traits<stepper_t>;
 
@@ -124,7 +124,7 @@ struct traits<
   using state_t		  = state_type;
   using residual_t	  = residual_type;
   using jacobian_t	  = jacobian_type;
-  using model_t		  = model_type;
+  using system_t		  = system_type;
   using aux_stepper_t	  = void;
 
   static constexpr unsigned int order_value = 1;
@@ -145,20 +145,20 @@ struct traits<
 
 
   // standard policies (only used if not passed a user-defined policy)
-  using policy_picker = StdPoliciesPicker<model_t, state_t, residual_t, jacobian_t>;
+  using policy_picker = StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
   using standard_res_policy_t = typename policy_picker::standard_res_policy_t;
   using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
 
   // check Args for a user-defined admissible residual policy
   using ic1 = ::rompp::ode::meta::find_if_legitimate_implicit_residual_policy_t<
-    this_t::enum_id, this_t::steps, state_t, residual_t, model_t, scalar_t,
+    this_t::enum_id, this_t::steps, state_t, residual_t, system_t, scalar_t,
     Args...>;
   using residual_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
   // check Args for a user-defined admissible jacobian policy
   using ic2 = ::rompp::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
-    this_t::enum_id, state_t, jacobian_t, model_t, scalar_t,
+    this_t::enum_id, state_t, jacobian_t, system_t, scalar_t,
     Args...>;
   using jacobian_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic2::value, Args...>;
@@ -169,20 +169,20 @@ template<
   typename state_type,
   typename residual_type,
   typename jacobian_type,
-  typename model_type,
+  typename system_type,
   typename ...Args
   >
 struct traits<
   ImplicitStepper<
     ImplicitEnum::BDF2,
     state_type, residual_type,
-    jacobian_type, model_type,
+    jacobian_type, system_type,
     Args...>
   > {
 
   using stepper_t =   ImplicitStepper< ImplicitEnum::BDF2,
 				       state_type, residual_type,
-				       jacobian_type, model_type,
+				       jacobian_type, system_type,
 				       Args...>;
   using this_t = traits<stepper_t>;
 
@@ -193,7 +193,7 @@ struct traits<
   using state_t		  = state_type;
   using residual_t	  = residual_type;
   using jacobian_t	  = jacobian_type;
-  using model_t		  = model_type;
+  using system_t		  = system_type;
 
   static constexpr unsigned int order_value = 2;
   static constexpr unsigned int steps = 2;
@@ -218,20 +218,20 @@ struct traits<
   using aux_stepper_t = ::rompp::mpl::variadic::at_or_t<void, ic1::value, Args...>;
 
   // // standard policies (only used if user-defined policies not passed)
-  using policy_picker = StdPoliciesPicker<model_t, state_t, residual_t, jacobian_t>;
+  using policy_picker = StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
   using standard_res_policy_t = typename policy_picker::standard_res_policy_t;
   using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
 
   // check Args if a user-defined admissible residual policy is passed
   using ic2 = ::rompp::ode::meta::find_if_legitimate_implicit_residual_policy_t<
-    this_t::enum_id, this_t::steps, state_t, residual_t, model_t, scalar_t,
+    this_t::enum_id, this_t::steps, state_t, residual_t, system_t, scalar_t,
     Args...>;
   using residual_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_res_policy_t, ic2::value, Args...>;
 
   // check Args if a user-defined admissible jacobian policy is passed
   using ic3 = ::rompp::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
-    this_t::enum_id, state_t, jacobian_t, model_t, scalar_t,
+    this_t::enum_id, state_t, jacobian_t, system_t, scalar_t,
     Args...>;
   using jacobian_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic3::value, Args...>;

@@ -24,9 +24,9 @@ constexpr auto t0	= zero;
 
 struct LSPGRunner{
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
+  using app_rhs_t	= typename app_t::velocity_type;
   using fom_state_w_t	= rompp::containers::Vector<app_state_t>;
-  using fom_res_w_t	= rompp::containers::Vector<app_residual_t>;
+  using fom_res_w_t	= rompp::containers::Vector<app_rhs_t>;
 
   rcpcomm_t comm_;
   const int Nx_ = {};

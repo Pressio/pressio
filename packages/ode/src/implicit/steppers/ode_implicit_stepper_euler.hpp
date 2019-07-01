@@ -11,7 +11,7 @@ template<
   typename ode_state_type,
   typename ode_residual_type,
   typename ode_jacobian_type,
-  typename model_type,
+  typename system_type,
   typename ... Args
   >
 class ImplicitStepper<
@@ -19,7 +19,7 @@ class ImplicitStepper<
   ode_state_type,
   ode_residual_type,
   ode_jacobian_type,
-  model_type,
+  system_type,
   Args...
   >
   : public ImplicitStepperBase<
@@ -28,7 +28,7 @@ class ImplicitStepper<
     ode_state_type,
     ode_residual_type,
     ode_jacobian_type,
-    model_type, Args...>,
+    system_type, Args...>,
   1 //num aux states
   >
 {
@@ -37,7 +37,7 @@ class ImplicitStepper<
 					 ode_state_type,
 					 ode_residual_type,
 					 ode_jacobian_type,
-					 model_type,
+					 system_type,
 					 Args...>;
   using stepper_base_t = ImplicitStepperBase<this_t, 1>;
   friend stepper_base_t;
@@ -62,7 +62,7 @@ public:
   ~ImplicitStepper() = default;
 
   ImplicitStepper(const ode_state_type & y0,
-  		  const model_type & model,
+  		  const system_type & model,
   		  const residual_pol_t & resPolicyObj,
   		  const jacobian_pol_t & jacPolicyObj)
     : stepper_base_t{y0, model, resPolicyObj, jacPolicyObj}{}
@@ -77,7 +77,7 @@ public:
       > * = nullptr
     >
   ImplicitStepper(const ode_state_type & y0,
-		  const model_type & model)
+		  const system_type & model)
     : stepper_base_t{y0, model}{}
 
   // cstr for standard jacob policies
@@ -88,7 +88,7 @@ public:
       > * = nullptr
     >
   ImplicitStepper(const ode_state_type & y0,
-  		  const model_type & model,
+  		  const system_type & model,
   		  const residual_pol_t & resPolicyObj)
     : stepper_base_t{y0, model, resPolicyObj}{}
 

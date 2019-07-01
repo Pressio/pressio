@@ -3,8 +3,8 @@
 
 namespace rompp{ namespace apps{ 
 
-void KS1dEigen::residual(const state_type & u,
-            residual_type & rhs,
+void KS1dEigen::velocity(const state_type & u,
+            velocity_type & rhs,
             const scalar_type /* t */) const{
 
 

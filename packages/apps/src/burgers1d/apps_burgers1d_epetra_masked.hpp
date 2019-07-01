@@ -34,8 +34,8 @@ public:
     dest.Import(src, *importer_, Insert);
   }
 
-  residual_type applyMask(const residual_type & src, double t) const{
-    residual_type dest(*maskMap_);
+  velocity_type applyMask(const velocity_type & src, double t) const{
+    velocity_type dest(*maskMap_);
     dest.Import(src, *importer_, Insert);
     return dest;
   }

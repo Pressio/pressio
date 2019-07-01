@@ -1,11 +1,11 @@
 
-#ifndef ROM_EVALUATE_FOM_RHS_UNSTEADY_HPP_
-#define ROM_EVALUATE_FOM_RHS_UNSTEADY_HPP_
+#ifndef ROM_EVALUATE_FOM_VELOCITY_UNSTEADY_HPP_
+#define ROM_EVALUATE_FOM_VELOCITY_UNSTEADY_HPP_
 
 namespace rompp{ namespace rom{ namespace policy{
 
 template <>
-struct EvaluateFomRhsDefault<false>{
+struct EvaluateFomVelocityDefault<false>{
 
   //------------------------------------------
   // enabled for native c++
@@ -25,7 +25,7 @@ struct EvaluateFomRhsDefault<false>{
 		const state_t & yFOM,
 		rhs_t		& rhs,
 		time_t		t) const{
-    fomObj.residual(*yFOM.data(), *rhs.data(), t);
+    fomObj.velocity(*yFOM.data(), *rhs.data(), t);
   }
 
   template <
@@ -40,9 +40,9 @@ struct EvaluateFomRhsDefault<false>{
   auto evaluate(const fom_t	& fomObj,
 		const state_t & yFOM,
 		time_t		t) const
-    -> decltype(fomObj.residual(*yFOM.data(), t))
+    -> decltype(fomObj.velocity(*yFOM.data(), t))
   {
-    return fomObj.residual(*yFOM.data(), t);
+    return fomObj.velocity(*yFOM.data(), t);
   }
 
 

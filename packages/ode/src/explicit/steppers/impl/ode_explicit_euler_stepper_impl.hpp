@@ -9,40 +9,40 @@ namespace rompp{ namespace ode{ namespace impl{
 template<
   typename scalar_type,
   typename state_type,
-  typename model_type,
+  typename system_type,
   typename velocity_type,
   typename residual_policy_type,
   typename ops_t
   >
 class ExplicitEulerStepperImpl<scalar_type,
 			       state_type,
-			       model_type,
+			       system_type,
 			       velocity_type,
 			       residual_policy_type,
 			       ops_t>
 {
 
-  static_assert( meta::is_legitimate_explicit_residual_policy<
+  static_assert( meta::is_legitimate_explicit_velocity_policy<
 		 residual_policy_type>::value ||
-		 meta::is_explicit_euler_residual_standard_policy<
+		 meta::is_explicit_euler_velocity_standard_policy<
 		 residual_policy_type>::value,
-"EXPLICIT EULER RESIDUAL_POLICY NOT ADMISSIBLE, \
+"EXPLICIT EULER VELOCITY_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using this_t = ExplicitEulerStepperImpl< scalar_type,
-					   state_type, model_type,
+					   state_type, system_type,
 					   velocity_type,
 					   residual_policy_type,
 					   ops_t>;
   using resid_storage_t = OdeStorage<velocity_type, 1>;
-  using system_wrapper_t = OdeSystemWrapper<model_type>;
+  using system_wrapper_t = OdeSystemWrapper<system_type>;
 
   resid_storage_t residAuxStorage_;
   system_wrapper_t sys_;
   const residual_policy_type & policy_;
 
 public:
-  ExplicitEulerStepperImpl(const model_type & model,
+  ExplicitEulerStepperImpl(const system_type & model,
 			   const residual_policy_type & res_policy_obj,
 			   const state_type & y0,
 			   const velocity_type & r0)

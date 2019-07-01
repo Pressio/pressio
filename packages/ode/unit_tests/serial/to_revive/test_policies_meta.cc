@@ -18,7 +18,7 @@ struct testResWrong{
 
 template<class T1, class T2, class T3, class T4, class T5>
 struct testResRight :
-  public ode::policy::ExplicitResidualPolicyBase<
+  public ode::policy::ExplicitVelocityPolicyBase<
   testResRight,T1,T2,T3,T4,T5>
 {};
 
@@ -29,24 +29,24 @@ TEST(policies_meta, checkInheritance)
   using veci = std::vector<int>;
   using model_t = model<int,double>;
 
-  static_assert( !ode::meta::derivesFromExplicitResidualPolicyBase
+  static_assert( !ode::meta::derivesFromExplicitVelocityPolicyBase
   		 <testResWrong<vecd, vecd>>::value, "");
 
-  static_assert( ode::meta::derivesFromExplicitResidualPolicyBase
+  static_assert( ode::meta::derivesFromExplicitVelocityPolicyBase
    		 <testResRight<vecd,vecd,veci,double,int>>::value, "");
   
-  static_assert( ode::meta::derivesFromExplicitResidualPolicyBase<
+  static_assert( ode::meta::derivesFromExplicitVelocityPolicyBase<
   		 ode::policy::explicitEulerStandardResidual<vecd, vecd,
 		 model_t, double>
   		 >::value, "");
 
-  static_assert( !ode::meta::is_explicit_euler_residual_standard_policy
+  static_assert( !ode::meta::is_explicit_euler_velocity_standard_policy
   		 <testResWrong<vecd, vecd>>::value, "");
 
-  static_assert( !ode::meta::is_explicit_euler_residual_standard_policy
+  static_assert( !ode::meta::is_explicit_euler_velocity_standard_policy
    		 <testResRight<vecd,vecd,veci,double,int>>::value, "");
   
-  static_assert( ode::meta::is_explicit_euler_residual_standard_policy<
+  static_assert( ode::meta::is_explicit_euler_velocity_standard_policy<
   		 ode::policy::explicitEulerStandardResidual<vecd, vecd,
 		 model_t, double>
   		 >::value, "");

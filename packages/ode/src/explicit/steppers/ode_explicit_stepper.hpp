@@ -10,7 +10,7 @@ namespace rompp{ namespace ode{
 template<
   ExplicitEnum whichone,
   typename state_type,
-  typename model_type,
+  typename system_type,
   typename velocity_type,
   typename ...Args
   >
@@ -19,7 +19,7 @@ class ExplicitStepper
   ExplicitStepper<
     whichone,
     state_type,
-    model_type,
+    system_type,
     velocity_type,
     Args...
     >
@@ -27,7 +27,7 @@ class ExplicitStepper
 {
 
   using this_t		= ExplicitStepper
-    <whichone, state_type, model_type, velocity_type, Args...>;
+    <whichone, state_type, system_type, velocity_type, Args...>;
   using base_t		= ExplicitStepperBase<this_t>;
   // need to friend base to allow it to access the () operator below
   friend base_t;
@@ -35,7 +35,7 @@ class ExplicitStepper
   using mytraits	= details::traits<this_t>;
   using scalar_type	= typename mytraits::scalar_t;
   using standard_res_policy_t = typename mytraits::standard_res_policy_t;
-  using res_policy_t	= typename mytraits::residual_policy_t;
+  using policy_t	= typename mytraits::velocity_policy_t;
 
   // this is the impl class type which holds all the implement details
   using impl_class_t	= typename mytraits::impl_t;
@@ -49,8 +49,8 @@ public:
 
   // this is enabled all the time
   ExplicitStepper(state_type const	  & y0,
-		  const model_type	  & model,
-		  const res_policy_t	  & policyObj)
+		  const system_type	  & model,
+		  const policy_t	  & policyObj)
     : myImpl_(model,
 	      policyObj,
 	      y0,
@@ -60,15 +60,15 @@ public:
 
   // only enable if the residual policy is standard
   template <
-    typename T = res_policy_t,
+    typename T = policy_t,
     ::rompp::mpl::enable_if_t<
       mpl::is_same<
-  	T, res_policy_t
+  	T, policy_t
   	>::value
       > * = nullptr
     >
   ExplicitStepper(const	state_type & y0,
-  		  const model_type & model)
+  		  const system_type & model)
     : myImpl_(model,
   	      T(),
   	      y0,

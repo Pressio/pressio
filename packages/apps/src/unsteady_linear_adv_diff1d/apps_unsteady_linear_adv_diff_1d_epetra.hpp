@@ -30,14 +30,14 @@ public:
 
   rcp<nativeVec> getInitialState() const;
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t*/) const;
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
     Epetra_Vector R(*contigMap_);
-    residual(u, R, t);
+    velocity(u, R, t);
     return R;
   }
 

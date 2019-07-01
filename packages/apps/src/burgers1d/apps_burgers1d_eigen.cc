@@ -3,11 +3,11 @@
 
 namespace rompp{ namespace apps{
 
-void Burgers1dEigen::residual(const state_type & u,
-            residual_type & rhs,
+void Burgers1dEigen::velocity(const state_type & u,
+            velocity_type & rhs,
             const scalar_type /* t */) const{
 
-  // std::cout << "Residual" << std::endl;
+  // std::cout << "velocity" << std::endl;
   // std::cout << rhs << std::endl;
 
   rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));

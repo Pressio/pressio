@@ -18,9 +18,9 @@ constexpr auto t0	= zero;
 
 struct LSPGRunner{
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
+  using app_rhs_t	= typename app_t::velocity_type;
   using ode_state_t	= rompp::containers::Vector<app_state_t>;
-  using ode_res_t		= rompp::containers::Vector<app_residual_t>;
+  using ode_res_t		= rompp::containers::Vector<app_rhs_t>;
   using eig_dyn_mat	= Eigen::MatrixXd;
 
   const Epetra_MpiComm & comm_;

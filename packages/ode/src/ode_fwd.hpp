@@ -32,7 +32,7 @@ template<
   typename model_type,
   typename velocity_type = state_type,
   typename enable = void>
-class ExplicitResidualStandardPolicy;
+class ExplicitVelocityStandardPolicy;
 
 template<
   typename state_type,

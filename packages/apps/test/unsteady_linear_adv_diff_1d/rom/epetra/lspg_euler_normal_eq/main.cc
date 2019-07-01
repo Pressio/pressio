@@ -26,10 +26,6 @@ int main(int argc, char *argv[]){
   using lspg_state_t   = rompp::containers::Vector<eig_dyn_vec>;
   using decoder_jac_t  = rompp::containers::MultiVector<Epetra_MultiVector>;
   using decoder_t      = rompp::rom::LinearDecoder<decoder_jac_t>;
-  using native_state    = typename fom_t::state_type;
-  using app_state_t     = typename fom_t::state_type;
-  using app_residual_t = typename fom_t::residual_type;
-  using app_jacobian_t = typename fom_t::jacobian_type;
 
   //----------------------------------------------------------------------
   // MPI initialization

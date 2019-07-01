@@ -7,7 +7,7 @@ TEST(adv_diff_reaction_2d_eigen, spatial_jacobian){
   using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
+  using app_velocity_t	= typename app_t::velocity_type;
 
   static_assert(std::is_same<scalar_t, double>::value, "");
 
@@ -46,7 +46,7 @@ TEST(adv_diff_reaction_2d_eigen, spatial_jacobian){
   EXPECT_DOUBLE_EQ( dy, 0.5);
 
   // remember that u,v,s1,s2,s3
-  // have values at grid points, while state and residual
+  // have values at grid points, while state and velocity
   // have more values because of the dofs
   const auto u = appobj.getU();
   const auto v = appobj.getV();

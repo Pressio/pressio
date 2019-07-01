@@ -21,7 +21,7 @@ protected:
 public:
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
 public:
   EpetraSkeleton() = default;
@@ -30,11 +30,11 @@ public:
 public:
   state_type const & getInitialState() const;
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t */) const;
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const;
 
   // computes: A = Jac B where B is a multivector

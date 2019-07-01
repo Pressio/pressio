@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
     using app_t			= rompp::apps::Burgers1dKokkos;
     using scalar_t		= typename app_t::scalar_type;
     using app_state_t		= typename app_t::state_type;
-    using app_rhs_t		= typename app_t::residual_type;
+    using app_rhs_t		= typename app_t::velocity_type;
 
     //-------------------------------
     // create app object

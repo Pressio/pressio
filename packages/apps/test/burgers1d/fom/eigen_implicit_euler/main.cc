@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
   using app_t		= rompp::apps::Burgers1dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_rhs_t	= typename app_t::residual_type;
+  using app_rhs_t	= typename app_t::velocity_type;
   using app_jacob_t	= typename app_t::jacobian_type;
 
   //-------------------------------
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]){
   app_t appObj(mu, Ncell);
   appObj.setup();
   auto & y0n = appObj.getInitialState();
-  auto r0n = appObj.residual(y0n, static_cast<scalar_t>(0));
+  auto r0n = appObj.velocity(y0n, static_cast<scalar_t>(0));
 
   // types for ode
   using ode_state_t = rompp::containers::Vector<app_state_t>;

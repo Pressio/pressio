@@ -108,7 +108,7 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::setup(){
 
 void UnsteadyNonLinAdvDiffReac2dEpetra::assembleFDMatrix() const
 {
-  /* note that R is the residual vector, which has
+  /* note that R is the velocity vector, which has
    * a dofMap_ because it contains all dofs.
    * Once again, the dofs are the numFields * numOfUnkownGridPoints
 

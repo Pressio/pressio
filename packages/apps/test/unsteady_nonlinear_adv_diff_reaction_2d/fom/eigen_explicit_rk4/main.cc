@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
   using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
+  using app_rhs_t	= typename app_t::velocity_type;
   constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 11, Ny = Nx*2-1;
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
   }
 
   using ode_state_t = rompp::containers::Vector<app_state_t>;
-  using ode_res_t   = rompp::containers::Vector<app_residual_t>;
+  using ode_res_t   = rompp::containers::Vector<app_rhs_t>;
   ode_state_t y(y0n);
 
   constexpr auto ode_case = rompp::ode::ExplicitEnum::RungeKutta4;

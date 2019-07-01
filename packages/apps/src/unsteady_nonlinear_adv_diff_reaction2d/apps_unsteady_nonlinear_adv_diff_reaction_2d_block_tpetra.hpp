@@ -62,7 +62,7 @@ public:
   // public typedefs exposed to be detected by ROMPP
   using scalar_type	= ST;
   using state_type	= nativeVec;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
 public:
   UnsteadyNonLinAdvDiffReac2dBlockTpetra
@@ -106,17 +106,17 @@ public:
   }
 
 public:
-  void residual(const state_type & yState,
-		residual_type & rhs,
+  void velocity(const state_type & yState,
+		velocity_type & rhs,
 		scalar_type t) const{
-    residual_impl(yState, rhs);
+    velocity_impl(yState, rhs);
   }
 
-  residual_type residual(const state_type & yState,
+  velocity_type velocity(const state_type & yState,
 			 scalar_type t) const{
-    residual_type R( *map_,
+    velocity_type R( *map_,
 		     UnsteadyNonLinAdvDiffReac2dBlockTpetra::numSpecies_ );
-    residual_impl(yState, R);
+    velocity_impl(yState, R);
     return R;
   };
 
@@ -142,8 +142,8 @@ private:
     gi = ID % Nx_;
   }
 
-  void residual_impl(const state_type & yState,
-		     residual_type & R) const{
+  void velocity_impl(const state_type & yState,
+		     velocity_type & R) const{
     static constexpr auto zero = ::rompp::utils::constants::zero<ST>();
     static constexpr auto one = ::rompp::utils::constants::one<ST>();
 

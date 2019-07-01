@@ -26,14 +26,14 @@ struct DefaultLSPGSteadyTypeGenerator
   using typename base_t::scalar_t;
   using typename base_t::fom_native_state_t;
   using typename base_t::fom_state_t;
-  using typename base_t::fom_rhs_t;
+  using typename base_t::fom_velocity_t;
   using typename base_t::lspg_state_t;
   using typename base_t::lspg_residual_t;
   using typename base_t::decoder_t;
   using typename base_t::decoder_jac_t;
   using typename base_t::fom_state_reconstr_t;
   using typename base_t::fom_states_data;
-  using typename base_t::fom_rhs_data;
+  using typename base_t::fom_velocity_data;
 
   static constexpr bool is_steady = true;
 
@@ -50,7 +50,7 @@ struct DefaultLSPGSteadyTypeGenerator
   using lspg_matrix_t		= decoder_jac_t;
 
   // policy for evaluating the rhs of the fom object (<true> for steady overload)
-  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsDefault<this_t::is_steady>;
+  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomVelocityDefault<this_t::is_steady>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above (<true> for steady overload
@@ -58,7 +58,7 @@ struct DefaultLSPGSteadyTypeGenerator
 
   // Policy defining how to compute the LSPG residual
   using lspg_residual_policy_t	= ::rompp::rom::LSPGSteadyResidualPolicy<
-	fom_states_data, fom_rhs_data, fom_eval_rhs_policy_t>;
+	fom_states_data, fom_velocity_data, fom_eval_rhs_policy_t>;
 
   // policy defining how to compute the LSPG jacobian
   using lspg_jacobian_policy_t	= ::rompp::rom::LSPGSteadyJacobianPolicy<

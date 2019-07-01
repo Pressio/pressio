@@ -10,10 +10,10 @@ TEST(ode_implicit_euler, traits){
 
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
-  using nres_t = typename app_t::residual_type;
+  using nvel_t = typename app_t::velocity_type;
   using njac_t = typename app_t::jacobian_type;
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nres_t>;
+  using res_t = containers::Vector<nvel_t>;
   using jac_t = containers::Matrix<njac_t>;
 
   static_assert(
@@ -49,7 +49,7 @@ TEST(ode_implicit_euler, traits){
   ::testing::StaticAssertTypeEq<typename
   				traits::scalar_t,double>();
   ::testing::StaticAssertTypeEq<typename
-  				traits::model_t,app_t>();
+  				traits::system_t,app_t>();
   static_assert( traits::order_value == 1, "");
 }
 
@@ -58,12 +58,12 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using namespace rompp;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
-  using nresidual_t = typename app_t::residual_type;
+  using nveloc_t = typename app_t::velocity_type;
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nresidual_t>;
+  using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
@@ -96,12 +96,12 @@ TEST(ode_implicit_euler, guesserLambda){
   using namespace rompp;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
-  using nresidual_t = typename app_t::residual_type;
+  using nveloc_t = typename app_t::velocity_type;
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nresidual_t>;
+  using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
@@ -138,12 +138,12 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   using namespace rompp;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
-  using nresidual_t = typename app_t::residual_type;
+  using nveloc_t = typename app_t::velocity_type;
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nresidual_t>;
+  using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
@@ -187,12 +187,12 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
   using namespace rompp;
   using app_t		= ode::testing::refAppForImpEigen;
   using nstate_t	= typename app_t::state_type;
-  using nresidual_t	= typename app_t::residual_type;
+  using nveloc_t	= typename app_t::velocity_type;
   using njacobian_t	= typename app_t::jacobian_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nresidual_t>;
+  using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;

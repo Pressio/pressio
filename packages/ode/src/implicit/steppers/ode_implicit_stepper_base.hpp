@@ -31,8 +31,8 @@ class ImplicitStepperBase
   using standard_jac_policy_t = typename traits::standard_jac_policy_t;
   using residual_pol_t = typename traits::residual_policy_t;
   using jacobian_pol_t = typename traits::jacobian_policy_t;
-  using model_t		  = typename traits::model_t;
-  using system_wrapper_t = impl::OdeSystemWrapper<model_t>;
+  using system_t		  = typename traits::system_t;
+  using system_wrapper_t = impl::OdeSystemWrapper<system_t>;
 
   //do checking here that things are as supposed
   static_assert( meta::is_legitimate_implicit_state_type<state_t>::value,
@@ -106,7 +106,7 @@ public:
   ~ImplicitStepperBase() = default;
 
   ImplicitStepperBase(const state_t & y0,
-		      const model_t & model,
+		      const system_t & model,
 		      const residual_pol_t & resPolicyObj,
 		      const jacobian_pol_t & jacPolicyObj)
     : stateAuxStorage_{y0},
@@ -124,7 +124,7 @@ public:
       > * = nullptr
     >
   ImplicitStepperBase(const state_t & y0,
-  		      const model_t & model)
+  		      const system_t & model)
     : stateAuxStorage_{y0},
       sys_{model},
       residual_obj_{},
@@ -140,7 +140,7 @@ public:
       > * = nullptr
     >
   ImplicitStepperBase(const state_t & y0,
-  		      const model_t & model,
+  		      const system_t & model,
   		      const residual_pol_t & resPolicyObj)
     : stateAuxStorage_{y0},
       sys_{model},

@@ -10,21 +10,21 @@
 namespace rompp{ namespace ode{ namespace policy{
 
 template<typename state_type,
-	 typename model_type,
+	 typename system_type,
 	 typename jacobian_type>
 class ImplicitJacobianStandardPolicyPybind11<
-  state_type, model_type, jacobian_type,
+  state_type, system_type, jacobian_type,
   ::rompp::mpl::enable_if_t<
     ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::rompp::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
-    mpl::is_same<model_type, pybind11::object >::value and
+    mpl::is_same<system_type, pybind11::object >::value and
     containers::meta::is_cstyle_array_pybind11<state_type>::value and
     containers::meta::is_cstyle_array_pybind11<jacobian_type>::value
     >
   > : public JacobianPolicyBase<ImplicitJacobianStandardPolicyPybind11<
-    state_type, model_type, jacobian_type> >{
+    state_type, system_type, jacobian_type> >{
 
-  using this_t = ImplicitJacobianStandardPolicyPybind11<state_type, model_type, jacobian_type>;
+  using this_t = ImplicitJacobianStandardPolicyPybind11<state_type, system_type, jacobian_type>;
   friend JacobianPolicyBase<this_t>;
 
 public:
@@ -37,7 +37,7 @@ public:
   >
   void operator()(const state_type & y,
 		  jacobian_type & J,
-		  const model_type & model,
+		  const system_type & model,
 		  scalar_t t,
 		  scalar_t dt)const
   {
@@ -50,7 +50,7 @@ public:
     ode::ImplicitEnum method, typename scalar_t
     >
   jacobian_type operator()(const state_type & y,
-  			   const model_type & model,
+  			   const system_type & model,
   			   scalar_t t,
   			   scalar_t dt)const
   {

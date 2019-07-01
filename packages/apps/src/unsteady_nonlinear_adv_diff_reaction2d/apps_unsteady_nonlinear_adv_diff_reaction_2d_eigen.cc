@@ -67,10 +67,10 @@ void UnsteadyNonLinAdvDiffReac2dEigen::setup(){
   fillSource2();
 }
 
-void UnsteadyNonLinAdvDiffReac2dEigen::residual_impl
-(const state_type & yState, residual_type & R) const
+void UnsteadyNonLinAdvDiffReac2dEigen::velocity_impl
+(const state_type & yState, velocity_type & R) const
 {
-  /* note that R is the residual vector, which has
+  /* note that R is the velocity vector, which has
    * a dofMap_ because it contains all dofs.
    * Once again, the dofs are the numFields * numOfUnkownGridPoints
    */

@@ -40,7 +40,7 @@ struct GalerkinProblemGenerator<problem_t>
   			   scalar_t		    t0)
     : yFomRef_(yFomRefNative),
       yFomReconstructor_(yFomRef_, decoder),
-      rFomRef_( appObj.residual(*yFomRef_.data(), t0) ),
+      rFomRef_( appObj.velocity(*yFomRef_.data(), t0) ),
       fomStates_(yFomRef_, yFomReconstructor_),
       fomRhs_(rFomRef_),
       resObj_(fomStates_, fomRhs_, decoder),

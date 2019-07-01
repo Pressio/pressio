@@ -69,7 +69,7 @@ protected:
 //   /* these types exposed because need to be detected */
 //   using scalar_type	= double;
 //   using state_type	= Epetra_Vector;
-//   using residual_type	= state_type;
+//   using velocity_type	= state_type;
 
 public:
   SteadyLinAdvDiff2dEpetra(Epetra_MpiComm & comm,

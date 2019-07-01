@@ -6,7 +6,7 @@
 #include "../rom_fwd.hpp"
 #include "../rom_data_fom_rhs.hpp"
 #include "../rom_data_fom_states.hpp"
-#include "../policies/rom_evaluate_fom_rhs_unsteady_policy.hpp"
+#include "../policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
 #include "../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
 #include "../../../ode/src/ode_fwd.hpp"
 
@@ -23,7 +23,7 @@ struct GalerkinCommonTypes{
   using fom_t			= fom_type;
   using scalar_t		= typename fom_t::scalar_type;
   using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_rhs_t	= typename fom_t::residual_type;
+  using fom_native_rhs_t	= typename fom_t::velocity_type;
 
   // declare fom wrapper types
   using fom_state_t		= ::rompp::containers::Vector<fom_native_state_t>;

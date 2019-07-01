@@ -7,8 +7,8 @@
 #include "../rom_data_fom_rhs.hpp"
 #include "../rom_data_fom_states.hpp"
 #include "../rom_reconstructor_fom_state.hpp"
-#include "../policies/rom_evaluate_fom_rhs_steady_policy.hpp"
-#include "../policies/rom_evaluate_fom_rhs_unsteady_policy.hpp"
+#include "../policies/rom_evaluate_fom_velocity_steady_policy.hpp"
+#include "../policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
 #include "../policies/rom_apply_fom_jacobian_steady_policy.hpp"
 #include "../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
 #include "../../../ode/src/ode_fwd.hpp"
@@ -89,18 +89,18 @@ struct LSPGCommonTypes<
   using fom_t			= fom_type;
   using scalar_t		= typename fom_t::scalar_type;
   using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_rhs_t	= typename fom_t::residual_type;
+  using fom_native_velocity_t	= typename fom_t::velocity_type;
 
   // fom wrapper types
   using fom_state_t	= ::rompp::containers::Vector<fom_native_state_t>;
-  using fom_rhs_t	= ::rompp::containers::Vector<fom_native_rhs_t>;
+  using fom_velocity_t	= ::rompp::containers::Vector<fom_native_velocity_t>;
 
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
 
   // for LSPG, the rom residual type = containers::wrapper of application rhs
   // i.e. the wrapped fom rhs type
-  using lspg_residual_t		= fom_rhs_t;
+  using lspg_residual_t		= fom_velocity_t;
 
   // decoder types (passed in)
   using decoder_t		= decoder_type;
@@ -120,7 +120,7 @@ struct LSPGCommonTypes<
 	fom_state_t, maxAuxStates, fom_state_reconstr_t>;
 
   // class type holding fom rhs data
-  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_t>;
+  using fom_velocity_data = ::rompp::rom::FomRhsData<fom_velocity_t>;
 
   // if we have a non-trivial user-defined ops
   using ud_ops_t = ud_ops;
@@ -159,17 +159,17 @@ struct LSPGCommonTypes<
   using fom_t			= fom_type;
   using scalar_t		= typename decoder_type::scalar_t;
   using fom_native_state_t	= lspg_state_type;
-  using fom_native_rhs_t	= lspg_state_type;
+  using fom_native_velocity_t	= lspg_state_type;
 
   // fom types
   using fom_state_t	= lspg_state_type;
-  using fom_rhs_t	= lspg_state_type;
+  using fom_velocity_t	= lspg_state_type;
 
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
 
   // for LSPG, the rom residual
-  using lspg_residual_t		= fom_rhs_t;
+  using lspg_residual_t		= fom_velocity_t;
 
   // decoder types (passed in)
   using decoder_t		= decoder_type;
@@ -189,7 +189,7 @@ struct LSPGCommonTypes<
 	fom_state_t, maxAuxStates, fom_state_reconstr_t>;
 
   // class type holding fom rhs data
-  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_t>;
+  using fom_velocity_data = ::rompp::rom::FomRhsData<fom_velocity_t>;
 
   // if we have a non-trivial user-defined ops
   using ud_ops_t = ud_ops;

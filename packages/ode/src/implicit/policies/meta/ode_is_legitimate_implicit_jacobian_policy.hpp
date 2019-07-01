@@ -11,7 +11,7 @@ template<
   ImplicitEnum name,
   typename state_t,
   typename jacobian_t,
-  typename model_t,
+  typename system_t,
   typename scalar_t,
   typename enable = void
   >
@@ -24,11 +24,11 @@ template<
   ImplicitEnum name,
   typename state_t,
   typename jacobian_t,
-  typename model_t,
+  typename system_t,
   typename scalar_t
   >
 struct is_legitimate_implicit_jacobian_policy
-<T, name, state_t, jacobian_t, model_t, scalar_t,
+<T, name, state_t, jacobian_t, system_t, scalar_t,
  ::rompp::mpl::enable_if_t<
    std::is_same<
      jacobian_t,
@@ -38,7 +38,7 @@ struct is_legitimate_implicit_jacobian_policy
       <
       name
       >( std::declval<const state_t &>(),
-	 std::declval<const model_t&>(),
+	 std::declval<const system_t&>(),
 	 std::declval<scalar_t>(),
 	 std::declval<scalar_t>()
 	 )
@@ -53,7 +53,7 @@ struct is_legitimate_implicit_jacobian_policy
       name
       >( std::declval<const state_t &>(),
 	 std::declval<jacobian_t &>(),
-	 std::declval<const model_t&>(),
+	 std::declval<const system_t&>(),
 	 std::declval<scalar_t>(),
 	 std::declval<scalar_t>()
 	 )

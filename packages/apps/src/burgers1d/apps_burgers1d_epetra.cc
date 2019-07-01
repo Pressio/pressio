@@ -5,8 +5,8 @@
 #ifdef HAVE_TRILINOS
 namespace rompp{ namespace apps{
 
-void Burgers1dEpetra::residual(const state_type & u,
-			       residual_type & rhs,
+void Burgers1dEpetra::velocity(const state_type & u,
+			       velocity_type & rhs,
 			       const scalar_type /* t */) const
 {
   double valueFromLeft = 0.0;
@@ -36,7 +36,7 @@ void Burgers1dEpetra::residual(const state_type & u,
   for (i=0; i<NumMyElem_; ++i){
     rhs[i] += mu_[1]*exp(mu_[2] * (*xGrid_)[i]);
   }
-}//end residual
+}//end velocity
 //-------------------------------------------------------
 
 void Burgers1dEpetra::jacobian(const state_type & u,

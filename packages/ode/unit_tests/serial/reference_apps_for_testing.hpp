@@ -8,14 +8,14 @@ namespace rompp{ namespace ode{ namespace testing{
 struct fakeAppForTraitsForExp{
   using scalar_type = double;
   using state_type = std::vector<double>;
-  using residual_type = std::vector<double>;
+  using velocity_type = std::vector<double>;
 
-  void residual(const state_type & y,
-		residual_type & R,
+  void velocity(const state_type & y,
+		velocity_type & R,
 		scalar_type t) const{
   };
-  residual_type residual(const state_type & y, scalar_type t )const{
-    residual_type R;
+  velocity_type velocity(const state_type & y, scalar_type t )const{
+    velocity_type R;
     return R;
   };
 };
@@ -25,20 +25,20 @@ struct fakeAppForTraitsForExp{
 struct refAppEigen{
   using scalar_type = double;
   using state_type = Eigen::VectorXd;
-  using residual_type = state_type;
+  using velocity_type = state_type;
 
-  void residual(const state_type & y,
-		residual_type & R,
+  void velocity(const state_type & y,
+		velocity_type & R,
 		scalar_type t) const{
     auto sz = y.size();
     for (decltype(sz) i=0; i<sz; i++)
       R[i] = y[i];
   };
 
-  residual_type residual(const state_type & y,
+  velocity_type velocity(const state_type & y,
 			 scalar_type t) const{
-    residual_type R(y);
-    residual(y, R, t);
+    velocity_type R(y);
+    velocity(y, R, t);
     return R;
   };
 
@@ -68,7 +68,7 @@ struct refAppForImpEigen{
    */
   using scalar_type = double;
   using state_type    = Eigen::VectorXd;
-  using residual_type = state_type;
+  using velocity_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
   state_type y;
@@ -80,18 +80,18 @@ public:
     y << 1., 2., 3.;
   }
 
-  void residual(const state_type & y, residual_type & R,
+  void velocity(const state_type & y, velocity_type & R,
 		scalar_type t) const{
     assert(y.size()==3);
     R = -10. * y;
   };
   //--------------------------------------------
 
-  residual_type residual(const state_type & y,
+  velocity_type velocity(const state_type & y,
 			 scalar_type t) const{
-    residual_type R(y);
+    velocity_type R(y);
     assert(R.size()==3);
-    residual(y, R, t);
+    velocity(y, R, t);
     return R;
   };
   //--------------------------------------------
@@ -146,7 +146,7 @@ public:
   void analyticAdvanceRK4(double dt)
   {
     assert(dt==0.1);
-    residual_type k1(3), k2(3), k3(3), k4(3);
+    velocity_type k1(3), k2(3), k3(3), k4(3);
     //I did the math...
     k1 << -1., -2, -3.;
     k2 << -0.5, -1, -1.5;

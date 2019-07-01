@@ -32,7 +32,7 @@ public:
   /* these types exposed because need to be detected */
   using scalar_type	= double;
   using state_type	= nativeVec;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
 public:
   Burgers1dTpetra(std::vector<scalar_type> params,
@@ -98,14 +98,14 @@ public:
     return *U0_;
   };
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t */) const;
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
-    residual_type R(dataMap_);
-    residual(u,R,t);
+    velocity_type R(dataMap_);
+    velocity(u,R,t);
     return R;
   }
 

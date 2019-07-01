@@ -11,24 +11,24 @@ namespace rompp{ namespace ode{ namespace policy{
 
 template<
   typename state_type,
-  typename model_type,
+  typename system_type,
   typename residual_type
   >
 class ImplicitResidualStandardPolicyPybind11<
-  state_type, model_type, residual_type,
+  state_type, system_type, residual_type,
   ::rompp::mpl::enable_if_t<
     ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::rompp::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
-    mpl::is_same<model_type, pybind11::object >::value and
+    mpl::is_same<system_type, pybind11::object >::value and
     containers::meta::is_cstyle_array_pybind11<state_type>::value and
     containers::meta::is_cstyle_array_pybind11<residual_type>::value
     >
   >
   : public ImplicitResidualPolicyBase<
-  ImplicitResidualStandardPolicyPybind11<state_type, model_type, residual_type>>
+  ImplicitResidualStandardPolicyPybind11<state_type, system_type, residual_type>>
 {
 
-  using this_t = ImplicitResidualStandardPolicyPybind11<state_type, model_type, residual_type>;
+  using this_t = ImplicitResidualStandardPolicyPybind11<state_type, system_type, residual_type>;
   friend ImplicitResidualPolicyBase<this_t>;
 
 public:
@@ -42,7 +42,7 @@ public:
   void operator()(const state_type & y,
 		  residual_type & R,
 		  const std::array<state_type, n> & oldYs,
-		  const model_type & model,
+		  const system_type & model,
 		  scalar_type t,
 		  scalar_type dt) const{
     
@@ -58,7 +58,7 @@ public:
     >
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, n> & oldYs,
-  			   const model_type & model,
+  			   const system_type & model,
   			   scalar_type t,
   			   scalar_type dt) const {
 

@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
   using app_t          =rompp::apps::UnsteadyLinAdvDiff1dEpetra;
   using scalar_t       =typename app_t::scalar_type;
   using app_state_t    =typename app_t::state_type;
-  using app_residual_t =typename app_t::residual_type;
+  using app_rhs_t =typename app_t::velocity_type;
   using native_state   =typename app_t:: state_type;
 
   //----------------------------------------------------------------------
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
   // Rompp time integrator
   //----------------------------------------------------------------------
   using ode_state_t = rompp::containers::Vector<app_state_t>;
-  using ode_res_t  = rompp::containers::Vector<app_residual_t>;
+  using ode_res_t  = rompp::containers::Vector<app_rhs_t>;
   ode_state_t y(y0n);
   y.data()->Print(std::cout <<std::setprecision(14));
 

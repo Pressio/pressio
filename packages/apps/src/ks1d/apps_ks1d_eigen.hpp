@@ -19,7 +19,7 @@ class KS1dEigen{
 public:
   using scalar_type	= double;
   using state_type	= eigVec;
-  using residual_type	= eigVec;
+  using velocity_type	= eigVec;
   using jacobian_type	= Eigen::SparseMatrix
     <scalar_type, Eigen::RowMajor, int>;
 
@@ -72,14 +72,14 @@ public:
     return U0_;
   };
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t */) const;
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
-    residual_type RR(Nnode_);
-    this->residual(u, RR, t);
+    velocity_type RR(Nnode_);
+    this->velocity(u, RR, t);
     return RR;
   }
 

@@ -12,7 +12,7 @@ template<
   int nstates,
   typename state_t,
   typename residual_t,
-  typename model_t,
+  typename system_t,
   typename scalar_t,
   typename enable = void
   >
@@ -25,11 +25,11 @@ template<
   int nstates,
   typename state_t,
   typename residual_t,
-  typename model_t,
+  typename system_t,
   typename scalar_t
   >
 struct is_legitimate_implicit_residual_policy<
-  T, name, nstates, state_t, residual_t, model_t, scalar_t,
+  T, name, nstates, state_t, residual_t, system_t, scalar_t,
   ::rompp::mpl::enable_if_t<
     // is callable with five args
     std::is_same<
@@ -42,7 +42,7 @@ struct is_legitimate_implicit_residual_policy<
        nstates
        >( std::declval<const state_t &>(),
 	  std::declval<const std::array<state_t, nstates> &>(),
-	  std::declval<const model_t&>(),
+	  std::declval<const system_t&>(),
 	  std::declval<scalar_t>(),
 	  std::declval<scalar_t>()
 	  )
@@ -60,7 +60,7 @@ struct is_legitimate_implicit_residual_policy<
        >( std::declval<const state_t &>(),
 	  std::declval<residual_t &>(),
 	  std::declval<const std::array<state_t, nstates> &>(),
-	  std::declval<const model_t&>(),
+	  std::declval<const system_t&>(),
 	  std::declval<scalar_t>(),
 	  std::declval<scalar_t>()
 	  )

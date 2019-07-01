@@ -118,10 +118,10 @@ void UnsteadyNonLinAdvDiffReacFlame2dEigen::setup(){
   setupFields();
 }
 
-void UnsteadyNonLinAdvDiffReacFlame2dEigen::residual_impl
-(const state_type & yState, residual_type & R) const
+void UnsteadyNonLinAdvDiffReacFlame2dEigen::velocity_impl
+(const state_type & yState, velocity_type & R) const
 {
-  /* note that R is the residual vector, which has
+  /* note that R is the velocity vector, which has
    * a dofMap_ because it contains all dofs.
    * Once again, the dofs are the numFields * numOfUnkownGridPoints
    */

@@ -6,8 +6,7 @@
 #include "APPS_KS1D"
 #include "utils_eigen.hpp"
 
-
-constexpr double eps = 1e-12;
+// constexpr double eps = 1e-12;
 
 template <typename state_t>
 struct observer{

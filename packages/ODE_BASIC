@@ -7,9 +7,9 @@
 #include "ode/src/ode_enum.hpp"
 
 #include "ode/src/meta/ode_has_state_typedef.hpp"
-#include "ode/src/meta/ode_has_residual_typedef.hpp"
+#include "ode/src/meta/ode_has_velocity_typedef.hpp"
 #include "ode/src/meta/ode_has_jacobian_typedef.hpp"
-#include "ode/src/meta/ode_is_legitimate_explicit_residual_type.hpp"
+#include "ode/src/meta/ode_is_legitimate_explicit_velocity_type.hpp"
 #include "ode/src/meta/ode_is_legitimate_explicit_state_type.hpp"
 #include "ode/src/meta/ode_is_legitimate_implicit_jacobian_type.hpp"
 #include "ode/src/meta/ode_is_legitimate_implicit_residual_type.hpp"
@@ -19,7 +19,7 @@
 #include "ode/src/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
 #include "ode/src/meta/ode_is_legitimate_model_for_implicit_ode.hpp"
 #include "ode/src/meta/ode_model_has_all_needed_jacobian_methods.hpp"
-#include "ode/src/meta/ode_model_has_all_needed_residual_methods.hpp"
+#include "ode/src/meta/ode_model_has_all_needed_velocity_methods.hpp"
 #include "ode/src/meta/ode_is_valid_user_defined_ops_for_explicit_ode.hpp"
 
 #include "ode/src/ode_system_wrapper.hpp"

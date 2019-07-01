@@ -4,8 +4,8 @@
 #ifdef HAVE_TRILINOS
 namespace rompp{ namespace apps{
 
-void Burgers1dTpetra::residual(const state_type & u,
-			       residual_type & rhs,
+void Burgers1dTpetra::velocity(const state_type & u,
+			       velocity_type & rhs,
 			       const scalar_type /* t */) const
 {
   auto u_v = u.getData();

@@ -3,7 +3,7 @@
 #define ROM_DEFAULT_GALERKIN_EXPLICIT_RESIDUAL_POLICY_HPP_
 
 #include "../rom_fwd.hpp"
-#include "../../../ode/src/explicit/policies/ode_explicit_residual_policy_base.hpp"
+#include "../../../ode/src/explicit/policies/ode_explicit_velocity_policy_base.hpp"
 #include "../rom_data_fom_states.hpp"
 
 namespace rompp{ namespace rom{
@@ -14,7 +14,7 @@ template <
   typename decoder_t
   >
 class DefaultGalerkinExplicitResidualPolicy
-  : public ode::policy::ExplicitResidualPolicyBase<
+  : public ode::policy::ExplicitVelocityPolicyBase<
        DefaultGalerkinExplicitResidualPolicy<fom_states_data,
 					     fom_rhs_data,
 					     decoder_t>>,
@@ -66,7 +66,7 @@ public:
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    app.residual(*yFom_.data(), *fomRhs_.data(), t);
+    app.velocity(*yFom_.data(), *fomRhs_.data(), t);
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
 #endif
@@ -108,7 +108,7 @@ public:
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    typename fom_rhs_data::fom_rhs_t fomR(app.residual(*yFom_.data(), t));
+    typename fom_rhs_data::fom_rhs_t fomR(app.velocity(*yFom_.data(), t));
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
 #endif

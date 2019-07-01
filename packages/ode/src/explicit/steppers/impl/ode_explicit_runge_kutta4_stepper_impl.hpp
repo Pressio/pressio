@@ -9,35 +9,35 @@ namespace rompp{ namespace ode{ namespace impl{
 template<
   typename scalar_type,
   typename state_type,
-  typename model_type,
+  typename system_type,
   typename ode_residual_type,
   typename residual_policy_type,
   typename ops_t
   >
 class ExplicitRungeKutta4StepperImpl<scalar_type,
 				     state_type,
-				     model_type,
+				     system_type,
 				     ode_residual_type,
 				     residual_policy_type,
 				     ops_t>
 {
 
-  static_assert( meta::is_legitimate_explicit_residual_policy<
+  static_assert( meta::is_legitimate_explicit_velocity_policy<
 		 residual_policy_type>::value ||
-		 meta::is_explicit_runge_kutta4_residual_standard_policy<
+		 meta::is_explicit_runge_kutta4_velocity_standard_policy<
 		 residual_policy_type>::value,
-"EXPLICIT RUNGEKUTTA4 RESIDUAL_POLICY NOT ADMISSIBLE, \
+"EXPLICIT RUNGEKUTTA4 VELOCITY_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using this_t = ExplicitRungeKutta4StepperImpl< scalar_type,
-						 state_type, model_type,
+						 state_type, system_type,
 						 ode_residual_type,
 						 residual_policy_type,
 						 ops_t>;
 
   using state_storage_t = OdeStorage<state_type, 1>;
   using resid_storage_t = OdeStorage<ode_residual_type, 4>;
-  using system_wrapper_t = OdeSystemWrapper<model_type>;
+  using system_wrapper_t = OdeSystemWrapper<system_type>;
 
   state_storage_t stateAuxStorage_;
   resid_storage_t residAuxStorage_;
@@ -45,7 +45,7 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
   const residual_policy_type & policy_;
 
 public:
-  ExplicitRungeKutta4StepperImpl(const model_type & model,
+  ExplicitRungeKutta4StepperImpl(const system_type & model,
   				 const residual_policy_type & res_policy_obj,
   				 const state_type & y0,
   				 const ode_residual_type & r0)

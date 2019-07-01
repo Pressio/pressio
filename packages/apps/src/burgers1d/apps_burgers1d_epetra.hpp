@@ -28,7 +28,7 @@ protected:
 public:
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
 public:
   Burgers1dEpetra(std::vector<scalar_type> params,
@@ -77,14 +77,14 @@ public:
     return *U0_;
   };
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t */) const;
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
     Epetra_Vector R(*dataMap_);
-    residual(u,R,t);
+    velocity(u,R,t);
     return R;
   }//end residual
 

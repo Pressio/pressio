@@ -30,19 +30,19 @@ public:
     importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
   };
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type t ) const{
-    residual_type R(*dataMap_);
-    base_t::residual(u, R, t);
+    velocity_type R(*dataMap_);
+    base_t::velocity(u, R, t);
     rhs.Import(R, *importer_, Insert);
   }
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
-    residual_type R(*dataMap_);
-    base_t::residual(u, R, t);
-    residual_type dest(*maskMap_);
+    velocity_type R(*dataMap_);
+    base_t::velocity(u, R, t);
+    velocity_type dest(*maskMap_);
     dest.Import(R, *importer_, Insert);
     return dest;
   }

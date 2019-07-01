@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
   using app_t		= rompp::apps::Burgers1dTpetra;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
+  using app_velocity_t	= typename app_t::velocity_type;
 
   using tcomm_t		= Teuchos::MpiComm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
@@ -48,10 +48,9 @@ int main(int argc, char *argv[]){
     app_t appobj(mu, Ncells, Comm);
     appobj.setup();
     auto & y0n = appobj.getInitialState();
-    auto r0n = appobj.residual(y0n, static_cast<scalar_t>(0));
 
     using ode_state_t = rompp::containers::Vector<app_state_t>;
-    using ode_res_t   = rompp::containers::Vector<app_residual_t>;
+    using ode_res_t   = rompp::containers::Vector<app_velocity_t>;
     ode_state_t y(y0n);
 
     constexpr auto ode_case = rompp::ode::ExplicitEnum::Euler;

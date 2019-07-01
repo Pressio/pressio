@@ -18,7 +18,7 @@ protected:
 public:
   using scalar_type	= double;
   using state_type	= nativeVec;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
 
   using mv_t		= Eigen::MatrixXd;
@@ -100,16 +100,16 @@ public:
   nativeVec getV() const { return v_; }
 
 public:
-  void residual(const state_type & yState,
-		residual_type & rhs,
+  void velocity(const state_type & yState,
+		velocity_type & rhs,
 		scalar_type t) const{
-    residual_impl(yState, rhs);
+    velocity_impl(yState, rhs);
   }
 
-  residual_type residual(const state_type & yState,
+  velocity_type velocity(const state_type & yState,
 			 scalar_type t) const{
-    residual_type R(numDof_);
-    residual_impl(yState, R);
+    velocity_type R(numDof_);
+    velocity_impl(yState, R);
     return R;
   };
 
@@ -170,8 +170,8 @@ private:
   void compute_sources(scalar_type wT, scalar_type wH2,
 		       scalar_type wO2, scalar_type wH2O)const;
 
-  void residual_impl(const state_type & yState,
-		     residual_type & R) const;
+  void velocity_impl(const state_type & yState,
+		     velocity_type & R) const;
 
   void jacobian_impl(const state_type & yState,
   		     jacobian_type & J) const;

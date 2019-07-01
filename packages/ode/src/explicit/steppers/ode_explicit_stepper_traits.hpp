@@ -11,13 +11,13 @@ namespace rompp{ namespace ode{ namespace details{
  */
 template<
   typename state_type,
-  typename model_type,
+  typename system_type,
   typename velocity_type,
   typename ...Args
   >
 struct traits<
   ExplicitStepper<ExplicitEnum::Euler, state_type,
-		  model_type, velocity_type, Args...>
+		  system_type, velocity_type, Args...>
   >{
 
   static constexpr bool is_implicit = false;
@@ -26,8 +26,8 @@ struct traits<
   static constexpr order_t order_value = 1;
 
   using state_t	   = state_type;
-  using residual_t = velocity_type;
-  using model_t    = model_type;
+  using velocity_t = velocity_type;
+  using model_t    = system_type;
 
   // check if scalar is provided in Args
   using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<
@@ -37,25 +37,25 @@ struct traits<
   static_assert( std::is_void<scalar_t>::value == false,
 		 "You need a scalar_type in the ExplicitStepper templates");
 
-  // this is the standard residual policy (just typedef, it is only used
+  // this is the standard velocity policy (just typedef, it is only used
   // if the user does not pass a user-defined policy)
-  using standard_res_policy_t = policy::ExplicitResidualStandardPolicy<
-    state_t, model_t, residual_t>;
+  using standard_res_policy_t = policy::ExplicitVelocityStandardPolicy<
+    state_t, model_t, velocity_t>;
 
-  // check Args if a user-defined residual policy is passed
+  // check Args if a user-defined velocity policy is passed
   using ic1 = ::rompp::mpl::variadic::find_if_unary_pred_t<
-    ::rompp::ode::meta::is_legitimate_explicit_residual_policy, Args...>;
-  using residual_policy_t = ::rompp::mpl::variadic::at_or_t
+    ::rompp::ode::meta::is_legitimate_explicit_velocity_policy, Args...>;
+  using velocity_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
   // check if user passed an ops
   using ic2 = ::rompp::mpl::variadic::find_if_quaternary_pred_t<
-    scalar_t, state_t, residual_t,
+    scalar_t, state_t, velocity_t,
     ::rompp::ode::meta::is_valid_user_defined_ops_for_explicit_euler, Args...>;
   using ops_t = ::rompp::mpl::variadic::at_or_t<void, ic2::value, Args...>;
 
   using impl_t = impl::ExplicitEulerStepperImpl
-    <scalar_t, state_t, model_t, residual_t, residual_policy_t, ops_t>;
+    <scalar_t, state_t, model_t, velocity_t, velocity_policy_t, ops_t>;
 };
 
 
@@ -64,13 +64,13 @@ struct traits<
  */
 template<
   typename state_type,
-  typename model_type,
+  typename system_type,
   typename velocity_type,
   typename ...Args
   >
 struct traits<
   ExplicitStepper<ExplicitEnum::RungeKutta4, state_type,
-		  model_type, velocity_type, Args...>
+		  system_type, velocity_type, Args...>
   >{
 
   static constexpr bool is_implicit = false;
@@ -79,8 +79,8 @@ struct traits<
   static constexpr order_t order_value = 4;
 
   using state_t	   = state_type;
-  using residual_t = velocity_type;
-  using model_t    = model_type;
+  using velocity_t = velocity_type;
+  using model_t    = system_type;
 
   // check if scalar is provided in Args
   using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<
@@ -90,25 +90,25 @@ struct traits<
   static_assert( std::is_void<scalar_t>::value == false,
 		 "You need a scalar_type in the ExplicitStepper templates");
 
-  // this is the standard residual policy (just typedef, it is only used
+  // this is the standard velocity policy (just typedef, it is only used
   // if the user does not pass a user-defined policy)
-  using standard_res_policy_t = policy::ExplicitResidualStandardPolicy<
-    state_t, model_t, residual_t>;
+  using standard_res_policy_t = policy::ExplicitVelocityStandardPolicy<
+    state_t, model_t, velocity_t>;
 
-  // check Args if a user-defined residual policy is passed
+  // check Args if a user-defined velocity policy is passed
   using ic1 = ::rompp::mpl::variadic::find_if_unary_pred_t<
-    ::rompp::ode::meta::is_legitimate_explicit_residual_policy, Args...>;
-  using residual_policy_t = ::rompp::mpl::variadic::at_or_t
+    ::rompp::ode::meta::is_legitimate_explicit_velocity_policy, Args...>;
+  using velocity_policy_t = ::rompp::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
   // check if user passed an ops
   using ic2 = ::rompp::mpl::variadic::find_if_quaternary_pred_t<
-    scalar_t, state_t, residual_t,
+    scalar_t, state_t, velocity_t,
     ::rompp::ode::meta::is_valid_user_defined_ops_for_explicit_rk4, Args...>;
   using ops_t = ::rompp::mpl::variadic::at_or_t<void, ic2::value, Args...>;
 
   using impl_t = impl::ExplicitRungeKutta4StepperImpl
-    <scalar_t, state_t, model_t, residual_t, residual_policy_t, ops_t>;
+    <scalar_t, state_t, model_t, velocity_t, velocity_policy_t, ops_t>;
 };
 
 

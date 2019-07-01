@@ -14,7 +14,7 @@ public:
   /* these types exposed because need to be detected */
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
 public:
   template <typename ... Args>
@@ -50,8 +50,8 @@ public:
     return appObj_.getState();
   }
 
-  void residual(const state_type & yState,
-		residual_type & rhs) const{
+  void velocity(const state_type & yState,
+		velocity_type & rhs) const{
     appObj_.assembleMatrix();
     appObj_.fillRhs();
     auto A = appObj_.getMatrix();
@@ -62,9 +62,9 @@ public:
     rhs.Update(-1., (*f), 1.0);
   }
 
-  residual_type residual(const state_type & yState) const{
-    residual_type R( appObj_.getDataMap() );
-    residual(yState, R);
+  velocity_type velocity(const state_type & yState) const{
+    velocity_type R( appObj_.getDataMap() );
+    velocity(yState, R);
     return R;
   };
 
@@ -96,7 +96,7 @@ public:
     std::cout << "identiy precond" << std::endl;
   }
   void applyPreconditioner(const state_type & yState,
-                           residual_type & rhs) const {
+                           velocity_type & rhs) const {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }

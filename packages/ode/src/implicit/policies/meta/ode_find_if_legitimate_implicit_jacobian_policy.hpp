@@ -10,7 +10,7 @@ template<
   ImplicitEnum name,
   typename state_t,
   typename jacobian_t,
-  typename model_t,
+  typename system_t,
   typename scalar_t,
   class ... Args2
   >
@@ -20,11 +20,11 @@ template<
   ImplicitEnum name,
   typename state_t,
   typename jacobian_t,
-  typename model_t,
+  typename system_t,
   typename scalar_t
   >
 struct find_if_legitimate_implicit_jacobian_policy<
-  name, state_t, jacobian_t, model_t, scalar_t
+  name, state_t, jacobian_t, system_t, scalar_t
   > : std::integral_constant<std::size_t, 0>{};
 
 
@@ -32,25 +32,25 @@ template<
   ImplicitEnum name,
   typename state_t,
   typename jacobian_t,
-  typename model_t,
+  typename system_t,
   typename scalar_t,
   class Head, class ... Tail
   >
 struct find_if_legitimate_implicit_jacobian_policy<
-  name, state_t, jacobian_t, model_t, scalar_t,
+  name, state_t, jacobian_t, system_t, scalar_t,
   Head, Tail...
   >
   : std::conditional <
   is_legitimate_implicit_jacobian_policy
 	  <Head, name,
 	   state_t, jacobian_t,
-	   model_t, scalar_t
+	   system_t, scalar_t
            >::type::value,
   std::integral_constant<std::size_t, 0>,
   std::integral_constant <
     std::size_t, 1 +
     find_if_legitimate_implicit_jacobian_policy
-    <name, state_t, jacobian_t, model_t, scalar_t, Tail...>::type::value
+    <name, state_t, jacobian_t, system_t, scalar_t, Tail...>::type::value
     >
   >::type
 {};
@@ -58,12 +58,12 @@ struct find_if_legitimate_implicit_jacobian_policy<
 template <ImplicitEnum name,
 	  typename state_t,
 	  typename jacobian_t,
-	  typename model_t,
+	  typename system_t,
 	  typename scalar_t,
 	  class... Args>
 using find_if_legitimate_implicit_jacobian_policy_t =
   typename find_if_legitimate_implicit_jacobian_policy<
-  name, state_t, jacobian_t, model_t, scalar_t,
+  name, state_t, jacobian_t, system_t, scalar_t,
   Args...>::type;
 
 

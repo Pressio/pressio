@@ -30,11 +30,11 @@ int main(int argc, char *argv[]){
   using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReacFlame2dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
+  using app_rhs_t	= typename app_t::velocity_type;
   using app_jacob_t	= typename app_t::jacobian_type;
 
   using ode_state_t = rompp::containers::Vector<app_state_t>;
-  using ode_res_t   = rompp::containers::Vector<app_residual_t>;
+  using ode_res_t   = rompp::containers::Vector<app_rhs_t>;
   using ode_jac_t   = rompp::containers::Matrix<app_jacob_t>;
 
   constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
@@ -43,7 +43,6 @@ int main(int argc, char *argv[]){
   app_t appobj(Nx, Ny);
   appobj.setup();
   const auto y0n = appobj.getInitialState();
-  const auto r0n = appobj.residual(y0n, zero);
 
   ode_state_t y(y0n);
 

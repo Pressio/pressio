@@ -21,7 +21,7 @@ protected:
 public:
   using scalar_type	= double;
   using state_type	= nativeVec;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
   using mv_t		= Eigen::MatrixXd;
 
@@ -88,18 +88,18 @@ public:
   // nativeVec getV() const { return v_; }
 
 public:
-  void residual(const state_type & yState,
-		residual_type & rhs,
+  void velocity(const state_type & yState,
+		velocity_type & rhs,
 		scalar_type t) const{
-    residual_impl(yState, rhs);
+    velocity_impl(yState, rhs);
   }
 
-  residual_type residual(const state_type & yState,
+  velocity_type velocity(const state_type & yState,
 			 scalar_type t) const{
-    // the residual has size equal to the dofs of the cells where
-    // we want residual
-    residual_type R(numDof_r_);
-    residual_impl(yState, R);
+    // the velocity has size equal to the dofs of the cells where
+    // we want velocity
+    velocity_type R(numDof_r_);
+    velocity_impl(yState, R);
     return R;
   };
 
@@ -148,8 +148,8 @@ private:
 		       scalar_type wO2,
 		       scalar_type wH2O) const;
 
-  void residual_impl(const state_type & yState,
-		     residual_type & R) const;
+  void velocity_impl(const state_type & yState,
+		     velocity_type & R) const;
 
   void jacobian_impl(const state_type & yState,
   		     jacobian_type & J) const;
@@ -192,12 +192,12 @@ protected:
     graph: contains a list such that
     1 0 3 2 -1
 
-    first col: contains GIDs of cells where we want residual
+    first col: contains GIDs of cells where we want velocity
     1,2,3,4 col: contains GIDs of neighboring cells needed for stencil
 		 the order of the neighbors is: east, north, west, south
 
     if a neighbor GID is = -1, it means that neighbor is outside of the domain boundary
-    so if west GID is -1, it means that this residual cell is near the left bundary
+    so if west GID is -1, it means that this velocity cell is near the left bundary
    */
   const graph_t & graph_;
 
@@ -228,7 +228,7 @@ protected:
   // note that dof refers to the degress of freedom,
   // which is NOT same as grid points. for this problem,
   // the dof = numSpecies_ * number_of_unknown_grid_points
-  // _r_ stands for residual
+  // _r_ stands for velocity
   int numGpt_;
   int numDof_;
   int numGpt_r_;

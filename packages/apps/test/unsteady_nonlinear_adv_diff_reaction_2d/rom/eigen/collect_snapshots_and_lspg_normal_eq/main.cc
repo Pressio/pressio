@@ -10,11 +10,11 @@
 using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEigen;
 using scalar_t		= typename app_t::scalar_type;
 using app_state_t	= typename app_t::state_type;
-using app_residual_t	= typename app_t::residual_type;
+using app_rhs_t	= typename app_t::velocity_type;
 using app_jacobian_t	= typename app_t::jacobian_type;
 
 using ode_state_t = rompp::containers::Vector<app_state_t>;
-using ode_res_t   = rompp::containers::Vector<app_residual_t>;
+using ode_res_t   = rompp::containers::Vector<app_rhs_t>;
 using ode_jac_t   = rompp::containers::Matrix<app_jacobian_t>;
 
 using eig_dyn_mat	= Eigen::MatrixXd;

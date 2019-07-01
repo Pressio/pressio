@@ -6,11 +6,11 @@ namespace rompp{ namespace apps{
 void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::setupPhysicalGrid(){
 
   // x,y for every mesh cell, this is the set of all cells not just those
-  // where we compute residual
+  // where we compute velocity
   x_.resize(numGpt_);
   y_.resize(numGpt_);
 
-  // u,v are only needed where we compute residual
+  // u,v are only needed where we compute velocity
   u_.resize(numGpt_r_);
   v_.resize(numGpt_r_);
   u_.setConstant(50.0);
@@ -137,13 +137,13 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::compute_dsdw(scalar_type w
 
 void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::setup(){
   // recall that numGPt_ is the total number of STATE cells,
-  // of which those we have residual is a subset
+  // of which those we have velocity is a subset
   numGpt_ = gidsMap_.size();
   numDof_ = this_t::numSpecies_ * numGpt_;
 
-  // numGPt_r_ is the number of cells where we want the residual
+  // numGPt_r_ is the number of cells where we want the velocity
   // which we can extract from the graph since the graph contains only
-  // points where want residual
+  // points where want velocity
   numGpt_r_ = graph_.size();
   numDof_r_ = this_t::numSpecies_ * numGpt_r_;
 
@@ -151,8 +151,8 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::setup(){
   setupFields();
 }
 
-void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
-(const state_type & yState, residual_type & R) const
+void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::velocity_impl
+(const state_type & yState, velocity_type & R) const
 {
   R.setZero();
   // std::cout << "resImpl " << yState.size() << " " << R.size() << std::endl;
@@ -163,12 +163,12 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
   scalar_type c_jp1={}, c_jm1={};
   int dofID = 0;
 
-  // loop over cells where residual needs to be computed
+  // loop over cells where velocity needs to be computed
   for (size_t rPt=0; rPt < graph_.size(); ++rPt){
     // global ID of this cell
     const auto cellGID_  = graph_[rPt][0];
 
-    // the gid of this residual grid point seen within the full mesh
+    // the gid of this velocity grid point seen within the full mesh
     cellGIDinFullMesh_ = gidsMap_[cellGID_][1];
 
     // find global i,j of this point as if it was in the full mesh
@@ -208,7 +208,7 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::residual_impl
     // for the third state dof (fraction of O2 ) just add 2 to any of the above
     // for the fourth state dof (fraction of H2O ) just add 3 to any of the above
 
-    // loop over local dofs and compute residual
+    // loop over local dofs and compute velocity
     for (auto iDof=0; iDof<numSpecies_; iDof++)
     {
       // this is the global ID of the currrent DOF at the current cell
@@ -305,13 +305,13 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::jacobian_impl
   scalar_type value = {0};
   int dofID = 0;
 
-  // loop over cells where residual needs to be computed
+  // loop over cells where velocity needs to be computed
   for (size_t rPt=0; rPt < graph_.size(); ++rPt){
 
     // global ID of this cell
     const auto cellGID_  = graph_[rPt][0];
 
-    // the gid of this residual grid point seen within the full mesh
+    // the gid of this velocity grid point seen within the full mesh
     cellGIDinFullMesh_ = gidsMap_[cellGID_][1];
 
     // find global i,j of this point as if it was in the full mesh
