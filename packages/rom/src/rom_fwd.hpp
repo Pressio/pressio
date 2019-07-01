@@ -33,13 +33,14 @@ struct ApplyFomJacobianDefault;
 }// namespace rompp::rom::policy
 //---------------------------------
 
+#ifdef HAVE_PYBIND11
 template <
   typename matrix_type,
   typename ops_t,
   typename enable = void
   >
 struct PyLinearDecoder;
-
+#endif
 
 /* operators */
 template<
