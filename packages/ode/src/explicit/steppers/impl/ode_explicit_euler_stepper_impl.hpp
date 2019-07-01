@@ -20,8 +20,6 @@ class ExplicitEulerStepperImpl<scalar_type,
 			       ode_residual_type,
 			       residual_policy_type,
 			       ops_t>
-  : private OdeStorage<ode_state_type, ode_residual_type, 0, 1>,
-    private ExplicitOdeAuxData<model_type, residual_policy_type>
 {
 
   static_assert( meta::is_legitimate_explicit_residual_policy<
@@ -36,19 +34,21 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					   ode_residual_type,
 					   residual_policy_type,
 					   ops_t>;
-  using storage_base_t = OdeStorage<ode_state_type, ode_residual_type, 0, 1>;
-  using auxdata_base_t = ExplicitOdeAuxData<model_type, residual_policy_type>;
+  using resid_storage_t = OdeStorage<ode_residual_type, 1>;
+  using system_wrapper_t = OdeSystemWrapper<model_type>;
 
-  using storage_base_t::auxRHS_;
-  using auxdata_base_t::model_;
-  using auxdata_base_t::residual_obj_;
+  resid_storage_t residAuxStorage_;
+  system_wrapper_t sys_;
+  const residual_policy_type & policy_;
 
 public:
   ExplicitEulerStepperImpl(const model_type & model,
 			   const residual_policy_type & res_policy_obj,
 			   const ode_state_type & y0,
 			   const ode_residual_type & r0)
-    : storage_base_t(r0), auxdata_base_t(model, res_policy_obj){}
+    : residAuxStorage_(r0),
+      sys_(model),
+      policy_(res_policy_obj){}
 
   ExplicitEulerStepperImpl() = delete;
   ~ExplicitEulerStepperImpl() = default;
@@ -71,11 +71,12 @@ public:
 	      scalar_type t,
 	      scalar_type dt,
 	      step_t step){
+    auto & auxRhs0 = residAuxStorage_.data_[0];
     //eval RHS
-    (*residual_obj_)(y, auxRHS_[0], model_, t);
+    policy_(y, auxRhs0, sys_.get(), t);
     // y = y + dt * rhs
     constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
-    ::rompp::containers::ops::do_update(y, one, auxRHS_[0], dt);
+    ::rompp::containers::ops::do_update(y, one, auxRhs0, dt);
   }
 
   /*
@@ -96,11 +97,13 @@ public:
   	      scalar_type dt,
   	      step_t step){
     using op = typename ops_t::update_op;
+    auto & auxRhs0 = residAuxStorage_.data_[0];
+
     //eval RHS
-    (*residual_obj_)(y, auxRHS_[0], model_, t);
+    policy_(y, auxRhs0, sys_.get(), t);
     // y = y + dt * rhs
     constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
-    op::do_update(*y.data(), one, *auxRHS_[0].data(), dt);
+    op::do_update(*y.data(), one, *auxRhs0.data(), dt);
   }
 
 #ifdef HAVE_PYBIND11
@@ -123,12 +126,12 @@ public:
   	      step_t step){
 
     using op = typename ops_t::update_op;
+    auto & auxRhs0 = residAuxStorage_.data_[0];
 
-    //eval RHS
-    (*residual_obj_)(y, auxRHS_[0], model_, t);
+    policy_(y, auxRhs0, sys_.get(), t);
     // y = y + dt * rhs
     constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
-    op::do_update(y, one, auxRHS_[0], dt);
+    op::do_update(y, one, auxRhs0, dt);
   }
 #endif
 

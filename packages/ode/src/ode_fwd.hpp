@@ -71,10 +71,9 @@ namespace impl {
 
 template<
   typename model_type,
-  typename residual_policy_type,
   typename enable = void
   >
-class ExplicitOdeAuxData;
+class OdeSystemWrapper;
 
 template<
   typename model_type,

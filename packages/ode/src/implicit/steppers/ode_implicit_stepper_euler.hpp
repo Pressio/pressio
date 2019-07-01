@@ -14,20 +14,23 @@ template<
   typename model_type,
   typename ... Args
   >
-class ImplicitStepper<ImplicitEnum::Euler,
-		      ode_state_type,
-		      ode_residual_type,
-		      ode_jacobian_type,
-		      model_type,
-		      Args...>
-  : public ImplicitStepperBase<ImplicitStepper<
-				 ImplicitEnum::Euler,
-				 ode_state_type,
-				 ode_residual_type,
-				 ode_jacobian_type,
-				 model_type, Args...>,
-			       1 //num aux states
-			       >
+class ImplicitStepper<
+  ImplicitEnum::Euler,
+  ode_state_type,
+  ode_residual_type,
+  ode_jacobian_type,
+  model_type,
+  Args...
+  >
+  : public ImplicitStepperBase<
+  ImplicitStepper<
+    ImplicitEnum::Euler,
+    ode_state_type,
+    ode_residual_type,
+    ode_jacobian_type,
+    model_type, Args...>,
+  1 //num aux states
+  >
 {
 
   using this_t	       = ImplicitStepper<ImplicitEnum::Euler,
@@ -38,7 +41,6 @@ class ImplicitStepper<ImplicitEnum::Euler,
 					 Args...>;
   using stepper_base_t = ImplicitStepperBase<this_t, 1>;
   friend stepper_base_t;
-  using storage_base_t = impl::OdeStorage<ode_state_type, ode_residual_type, 1>;
 
   using mytraits       = details::traits<this_t>;
   using standard_res_policy_t = typename mytraits::standard_res_policy_t;
@@ -102,10 +104,10 @@ public:
 		  step_t step,
 		  solver_type & solver){
 
-    this->auxData_.dt_ = dt;
-    this->auxData_.t_ = t;
-    // copy from y to storage
-    ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+    auto & auxY0 = this->stateAuxStorage_.data_[0];
+    this->dt_ = dt;
+    this->t_ = t;
+    ::rompp::containers::ops::deep_copy(y, auxY0);
     solver.solve(*this, y);
   }
 
@@ -120,10 +122,10 @@ public:
 		  step_t step,
 		  solver_type & solver,
 		  guess_callback_t && guesserCb){
-    this->auxData_.dt_ = dt;
-    this->auxData_.t_ = t;
-    // copy from y to storage
-    ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+    auto & auxY0 = this->stateAuxStorage_.data_[0];
+    this->dt_ = dt;
+    this->t_ = t;
+    ::rompp::containers::ops::deep_copy(y, auxY0);
     guesserCb(step, t, y);
     solver.solve(*this, y);
   }

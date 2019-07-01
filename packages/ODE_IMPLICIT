@@ -21,11 +21,9 @@
 #include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_residual_policy.hpp"
 #include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_jacobian_policy.hpp"
 
-
 #include "ode/src/implicit/steppers/ode_implicit_stepper_traits.hpp"
 #include "ode/src/implicit/steppers/ode_implicit_stepper_base.hpp"
 #include "ode/src/implicit/steppers/ode_implicit_stepper_euler.hpp"
 #include "ode/src/implicit/steppers/ode_implicit_stepper_bdf2.hpp"
-
 
 #endif

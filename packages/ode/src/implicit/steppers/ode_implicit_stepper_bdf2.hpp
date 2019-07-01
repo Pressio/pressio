@@ -21,14 +21,15 @@ class ImplicitStepper<
   ode_jacobian_type,
   model_type,
   Args...
-  > :
-    public ImplicitStepperBase<
+  >
+  : public ImplicitStepperBase<
   ImplicitStepper<
     ImplicitEnum::BDF2,
     ode_state_type,
     ode_residual_type,
     ode_jacobian_type,
-    model_type, Args...>, 2 //num of aux states needed
+    model_type, Args...>,
+  2 //num of aux states needed
   >
 {
   using this_t	       = ImplicitStepper<ImplicitEnum::BDF2,
@@ -39,7 +40,6 @@ class ImplicitStepper<
 					 Args...>;
   using stepper_base_t = ImplicitStepperBase<this_t, 2>;
   friend stepper_base_t;
-  //using storage_base_t = impl::OdeStorage<ode_state_type, ode_residual_type, 2>;
 
   using mytraits       = details::traits<this_t>;
   using standard_res_policy_t = typename mytraits::standard_res_policy_t;
@@ -109,21 +109,24 @@ public:
 		  step_t step,
 		  solver_type & solver){
 
-    this->auxData_.dt_ = dt;
-    this->auxData_.t_ = t;
+    auto & auxY0 = this->stateAuxStorage_.data_[0];
+    auto & auxY1 = this->stateAuxStorage_.data_[1];
+
+    this->dt_ = dt;
+    this->t_ = t;
 
     // first step, use auxiliary stepper
     if (step == 1){
-      ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+      ::rompp::containers::ops::deep_copy(y, auxY0);
       auxStepper_(y, t, dt, step, solver);
     }
     if (step == 2){
-      ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
+      ::rompp::containers::ops::deep_copy(y, auxY1);
       solver.solve(*this, y);
     }
     if (step >= 3){
-      ::rompp::containers::ops::deep_copy(this->odeStorage_.auxStates_[1], this->odeStorage_.auxStates_[0]);
-      ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
+      ::rompp::containers::ops::deep_copy(auxY1, auxY0);
+      ::rompp::containers::ops::deep_copy(y, auxY1);
       solver.solve(*this, y);
     }
   }
@@ -138,22 +141,25 @@ public:
 		  solver_type & solver,
 		  guess_callback_t && guesserCb){
 
-   this->auxData_.dt_ = dt;
-   this->auxData_.t_ = t;
+   auto & auxY0 = this->stateAuxStorage_.data_[0];
+   auto & auxY1 = this->stateAuxStorage_.data_[1];
+
+   this->dt_ = dt;
+   this->t_ = t;
 
    // first step, use auxiliary stepper
    if (step == 1){
-     ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+     ::rompp::containers::ops::deep_copy(y, auxY0);
      auxStepper_(y, t, dt, step, solver);
    }
    if (step == 2){
-     ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
+     ::rompp::containers::ops::deep_copy(y, auxY1);
      guesserCb(step, t, y);
      solver.solve(*this, y);
    }
    if (step >= 3){
-     ::rompp::containers::ops::deep_copy(this->odeStorage_.auxStates_[1], this->odeStorage_.auxStates_[0]);
-     ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[1]);
+     ::rompp::containers::ops::deep_copy(auxY1, auxY0);
+     ::rompp::containers::ops::deep_copy(y, auxY1);
      guesserCb(step, t, y);
      solver.solve(*this, y);
    }

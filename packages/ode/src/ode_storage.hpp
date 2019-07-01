@@ -25,177 +25,150 @@ namespace rompp{ namespace ode{ namespace impl{
  * need to be new allocations.
  */
 
-template<
-  typename state_type,
-  typename rhs_type,
-  int numAuxStates,
-  int numAuxRHS = 0
-  >
+template<typename T, int n>
 struct OdeStorage;
 
 
-//--------------------------------------------------
-// num_aux_states = 1, num_aux_rhs = 0
-//--------------------------------------------------
-template<typename state_type, typename rhs_type>
-struct OdeStorage<state_type, rhs_type, 1, 0>{
+/* n = 1 */
+template<typename T>
+struct OdeStorage<T, 1>{
 
   template <
-    typename _state_type = state_type
+    typename _T = T
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
-      !containers::meta::is_array_pybind11<_state_type>::value
+      !containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
 #endif
     >
-  OdeStorage(_state_type const & y)
-    : auxStates_{{y}}{}
+  OdeStorage(_T const & y)
+    : data_{{y}}{}
 
 #ifdef HAVE_PYBIND11
   template <
-    typename _state_type = state_type,
+    typename _T = T,
     mpl::enable_if_t<
-      containers::meta::is_array_pybind11<_state_type>::value
+      containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
-  OdeStorage(_state_type const & y)
-    : auxStates_{{_state_type(const_cast<_state_type &>(y).request())}}
+  OdeStorage(_T const & y)
+    : data_{{_T(const_cast<_T &>(y).request())}}
   {}
 #endif
 
+  OdeStorage() = delete;
   ~OdeStorage() = default;
 
-  std::array<state_type, 1> auxStates_;
+  std::array<T, 1> data_;
 };
 
 
-
-//--------------------------------------------------
-// num_aux_states = 2, num_aux_rhs = 0
-//--------------------------------------------------
-template<typename state_type, typename rhs_type>
-struct OdeStorage<state_type, rhs_type, 2, 0>{
+/* n = 2 */
+template<typename T>
+struct OdeStorage<T, 2>{
 
   template <
-    typename _state_type = state_type
+    typename _T = T
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
-      !containers::meta::is_array_pybind11<_state_type>::value
+      !containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
 #endif
     >
-  OdeStorage(_state_type const & y)
-    : auxStates_{{y,y}}{}
+  OdeStorage(_T const & y)
+    : data_{{y,y}}{}
 
 #ifdef HAVE_PYBIND11
   template <
-    typename _state_type = state_type,
+    typename _T = T,
     mpl::enable_if_t<
-      containers::meta::is_array_pybind11<_state_type>::value
+      containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
-  OdeStorage(_state_type const & y)
-    : auxStates_{{_state_type(const_cast<_state_type &>(y).request()),
-		  _state_type(const_cast<_state_type &>(y).request())}}
+  OdeStorage(_T const & y)
+    : data_{{_T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request())}}
   {}
 #endif
 
+  OdeStorage() = delete;
   ~OdeStorage() = default;
 
-  std::array<state_type, 2> auxStates_;
+  std::array<T, 2> data_;
 };
 
 
-
-//--------------------------------------------------
-// num_aux_states = 1, num_aux_rhs = 4
-//--------------------------------------------------
-template<typename state_type, typename rhs_type>
-struct OdeStorage<state_type, rhs_type, 1, 4>{
+/* n = 3 */
+template<typename T>
+struct OdeStorage<T, 3>{
 
   template <
-    typename _state_type = state_type,
-    typename _rhs_type = rhs_type
-#ifdef HAVE_PYBIND11
-    ,mpl::enable_if_t<
-       !containers::meta::is_array_pybind11<_state_type>::value and
-       !containers::meta::is_array_pybind11<_rhs_type>::value
-       > * = nullptr
-#endif
-    >
-  OdeStorage(_state_type const & y,
-	     _rhs_type const & r)
-    : auxStates_{{y}},
-      auxRHS_{{r, r, r, r}}{}
-
-#ifdef HAVE_PYBIND11
-  template <
-    typename _state_type = state_type,
-    typename _rhs_type = rhs_type,
-    mpl::enable_if_t<
-      containers::meta::is_array_pybind11<_state_type>::value and
-      containers::meta::is_array_pybind11<_rhs_type>::value
-      > * = nullptr
-    >
-    OdeStorage(_state_type const & y, _rhs_type r)
-      // this syntax bascially creates new object and copies values
-      // because we DO not want to do shallow copies
-      : auxStates_{_state_type(const_cast<_state_type &>(y).request())},
-	auxRHS_{{_rhs_type(const_cast<_rhs_type &>(r).request()),
-		 _rhs_type(const_cast<_rhs_type &>(r).request()),
-		 _rhs_type(const_cast<_rhs_type &>(r).request()),
-		 _rhs_type(const_cast<_rhs_type &>(r).request())}}
-  {
-    printf("OdeStorage14 y          addr: %p\n", y.data());
-    printf("OdeStorage14 r          addr: %p\n", r.data());
-    printf("OdeStorage14 auxRHS_[0] addr: %p\n", auxRHS_[0].data());
-    printf("OdeStorage14 auxRHS_[1] addr: %p\n", auxRHS_[1].data());
-    printf("OdeStorage14 auxRHS_[2] addr: %p\n", auxRHS_[2].data());
-    printf("OdeStorage14 auxRHS_[3] addr: %p\n", auxRHS_[3].data());
-  }
-#endif
-
-  ~OdeStorage() = default;
-
-  std::array<state_type, 1> auxStates_;
-  std::array<rhs_type, 4> auxRHS_;
-};
-
-
-//--------------------------------------------------
-// num_aux_states = 0, num_aux_rhs = 1
-//--------------------------------------------------
-template<typename state_type, typename rhs_type>
-struct OdeStorage<state_type, rhs_type, 0, 1>{
-
-  template <
-    typename _rhs_type = rhs_type
+    typename _T = T
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
-	!containers::meta::is_array_pybind11<_rhs_type>::value
+      !containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
 #endif
     >
-  OdeStorage(_rhs_type const & r)
-    : auxRHS_{{r}}{}
+  OdeStorage(_T const & y)
+    : data_{{y,y,y}}{}
 
 #ifdef HAVE_PYBIND11
   template <
-    typename _rhs_type = rhs_type,
+    typename _T = T,
     mpl::enable_if_t<
-      containers::meta::is_array_pybind11<_rhs_type>::value
+      containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
-  OdeStorage(_rhs_type const & r)
-    : auxRHS_{{_rhs_type(const_cast<_rhs_type &>(r).request())}}
+  OdeStorage(_T const & y)
+    : data_{{_T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request())}}
   {}
 #endif
 
+  OdeStorage() = delete;
   ~OdeStorage() = default;
 
-  std::array<rhs_type, 1> auxRHS_;
+  std::array<T, 3> data_;
 };
-//--------------------------------------------------
+
+
+/* n = 4 */
+template<typename T>
+struct OdeStorage<T, 4>{
+
+  template <
+    typename _T = T
+#ifdef HAVE_PYBIND11
+    , mpl::enable_if_t<
+      !containers::meta::is_array_pybind11<_T>::value
+      > * = nullptr
+#endif
+    >
+  OdeStorage(_T const & y)
+    : data_{{y,y,y,y}}{}
+
+#ifdef HAVE_PYBIND11
+  template <
+    typename _T = T,
+    mpl::enable_if_t<
+      containers::meta::is_array_pybind11<_T>::value
+      > * = nullptr
+    >
+  OdeStorage(_T const & y)
+    : data_{{_T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request())}}
+  {}
+#endif
+
+  OdeStorage() = delete;
+  ~OdeStorage() = default;
+
+  std::array<T, 4> data_;
+};
 
 }}}//end namespace rompp::ode::impl
 #endif

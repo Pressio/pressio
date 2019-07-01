@@ -10,7 +10,6 @@
 #include "ode/src/explicit/policies/ode_is_explicit_runge_kutta4_residual_standard_policy.hpp"
 #include "ode/src/explicit/policies/ode_is_legitimate_explicit_residual_policy.hpp"
 
-
 #include "ode/src/explicit/steppers/ode_explicit_stepper_base.hpp"
 #include "ode/src/explicit/steppers/impl/ode_explicit_euler_stepper_impl.hpp"
 #include "ode/src/explicit/steppers/impl/ode_explicit_runge_kutta4_stepper_impl.hpp"

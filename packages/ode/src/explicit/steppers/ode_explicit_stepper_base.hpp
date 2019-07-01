@@ -5,7 +5,7 @@
 #include "ode_explicit_stepper_traits.hpp"
 #include "../policies/ode_is_legitimate_explicit_residual_policy.hpp"
 #include "../../ode_storage.hpp"
-#include "../../ode_explicit_aux_data.hpp"
+#include "../../ode_system_wrapper.hpp"
 
 namespace rompp{ namespace ode{
 
