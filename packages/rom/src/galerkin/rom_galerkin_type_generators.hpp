@@ -23,11 +23,11 @@ struct GalerkinCommonTypes{
   using fom_t			= fom_type;
   using scalar_t		= typename fom_t::scalar_type;
   using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_rhs_t	= typename fom_t::velocity_type;
+  using fom_native_velocity_t	= typename fom_t::velocity_type;
 
   // declare fom wrapper types
   using fom_state_t		= ::rompp::containers::Vector<fom_native_state_t>;
-  using fom_rhs_t		= ::rompp::containers::Vector<fom_native_rhs_t>;
+  using fom_velocity_t		= ::rompp::containers::Vector<fom_native_velocity_t>;
 
   // rom state type (passed in)
   using galerkin_state_t	= galerkin_state_type;
@@ -47,7 +47,7 @@ struct GalerkinCommonTypes{
 	fom_state_t, 0, fom_state_reconstr_t>;
 
   // class type holding fom rhs data
-  using fom_rhs_data = ::rompp::rom::FomRhsData<fom_rhs_t>;
+  using fom_velocity_data = ::rompp::rom::FomRhsData<fom_velocity_t>;
 };
 
 
@@ -79,19 +79,19 @@ struct DefaultGalerkinExplicitTypeGenerator
   using typename base_t::scalar_t;
   using typename base_t::fom_native_state_t;
   using typename base_t::fom_state_t;
-  using typename base_t::fom_rhs_t;
+  using typename base_t::fom_velocity_t;
   using typename base_t::galerkin_state_t;
   using typename base_t::galerkin_residual_t;
   using typename base_t::decoder_t;
   using typename base_t::decoder_jac_t;
   using typename base_t::fom_state_reconstr_t;
   using typename base_t::fom_states_data;
-  using typename base_t::fom_rhs_data;
+  using typename base_t::fom_velocity_data;
 
   // policy for evaluating the ode residual
   using galerkin_residual_policy_t =
-    ::rompp::rom::DefaultGalerkinExplicitResidualPolicy<
-    fom_states_data, fom_rhs_data, decoder_t>;
+    ::rompp::rom::DefaultGalerkinExplicitVelocityPolicy<
+    fom_states_data, fom_velocity_data, decoder_t>;
 
   // declare type of stepper object
   using galerkin_stepper_t = ::rompp::ode::ExplicitStepper<

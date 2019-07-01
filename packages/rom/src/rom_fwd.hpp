@@ -129,7 +129,7 @@ template <
   typename fom_rhs_data_t,
   typename decoder_jac_t
   >
-class DefaultGalerkinExplicitResidualPolicy;
+class DefaultGalerkinExplicitVelocityPolicy;
 
 template <
   typename type_generator_t,
