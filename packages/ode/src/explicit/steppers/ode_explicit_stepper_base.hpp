@@ -18,21 +18,21 @@ template<typename stepper_type>
 class ExplicitStepperBase
 {
 private:
-  using step_traits	  = ode::details::traits<stepper_type>;
-  using scalar_t	  = typename step_traits::scalar_t;
-  using state_t		  = typename step_traits::state_t;
-  using residual_t	  = typename step_traits::residual_t;
-  using model_t		  = typename step_traits::model_t;
-  using residual_policy_t = typename step_traits::residual_policy_t;
+  using step_traits	= ode::details::traits<stepper_type>;
+  using scalar_t	= typename step_traits::scalar_t;
+  using state_t		= typename step_traits::state_t;
+  using velocity_t	= typename step_traits::residual_t;
+  using model_t		= typename step_traits::model_t;
+  using policy_t	= typename step_traits::residual_policy_t;
 
   static_assert( meta::is_legitimate_explicit_state_type<state_t>::value,
   "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
 
-  static_assert( meta::is_legitimate_explicit_residual_type<residual_t>::value,
+  static_assert( meta::is_legitimate_explicit_residual_type<velocity_t>::value,
   "OOPS: RESIDUAL_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
 
   static_assert( meta::is_legitimate_explicit_residual_policy<
-  		 residual_policy_t>::value,
+  		 policy_t>::value,
   "RESIDUAL_POLICY NOT ADMISSIBLE: MAYBE NOT INHERITING FROM EXPLICIT POLICY BASE");
 
 public:

@@ -13,7 +13,7 @@
 namespace rompp{ namespace ode{ namespace policy{
 
 /*
- * state_type = residual_type
+ * state_type = velocity_type
  * both are wrappers from containers
  */
 template<
@@ -21,7 +21,7 @@ template<
   typename model_type
   >
 class ExplicitResidualStandardPolicy<
-  state_type,model_type, state_type,
+  state_type, model_type, state_type,
   mpl::enable_if_t<
     containers::meta::is_vector_wrapper<state_type>::value
 #ifdef HAVE_PYBIND11
@@ -68,7 +68,7 @@ template<
   typename model_type
   >
 class ExplicitResidualStandardPolicy<
-  state_type,model_type, state_type,
+  state_type, model_type, state_type,
   mpl::enable_if_t<
     mpl::is_same<model_type, pybind11::object >::value and
     containers::meta::is_cstyle_array_pybind11<state_type>::value

@@ -14,6 +14,7 @@ template <typename policy_t>
 struct is_legitimate_explicit_residual_policy<
   policy_t,
   typename std::enable_if<
+    // TODO: detect operator ()
     ::rompp::mpl::publicly_inherits_from<
       policy_t,
       ode::policy::ExplicitResidualPolicyBase<policy_t>

@@ -9,25 +9,25 @@ namespace rompp{ namespace ode{
 
 template<
   ExplicitEnum whichone,
-  typename ode_state_type,
+  typename state_type,
   typename model_type,
-  typename ode_residual_type,
+  typename velocity_type,
   typename ...Args
   >
 class ExplicitStepper
   : public ExplicitStepperBase<
   ExplicitStepper<
     whichone,
-    ode_state_type,
+    state_type,
     model_type,
-    ode_residual_type,
+    velocity_type,
     Args...
     >
   >
 {
 
   using this_t		= ExplicitStepper
-    <whichone, ode_state_type, model_type, ode_residual_type, Args...>;
+    <whichone, state_type, model_type, velocity_type, Args...>;
   using base_t		= ExplicitStepperBase<this_t>;
   // need to friend base to allow it to access the () operator below
   friend base_t;
@@ -48,7 +48,7 @@ public:
   ~ExplicitStepper() = default;
 
   // this is enabled all the time
-  ExplicitStepper(ode_state_type const	  & y0,
+  ExplicitStepper(state_type const	  & y0,
 		  const model_type	  & model,
 		  const res_policy_t	  & policyObj)
     : myImpl_(model,
@@ -67,7 +67,7 @@ public:
   	>::value
       > * = nullptr
     >
-  ExplicitStepper(const	ode_state_type & y0,
+  ExplicitStepper(const	state_type & y0,
   		  const model_type & model)
     : myImpl_(model,
   	      T(),

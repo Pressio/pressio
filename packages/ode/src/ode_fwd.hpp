@@ -7,19 +7,19 @@
 namespace rompp{ namespace ode{
 
 template<
-  ExplicitEnum whichone,
-  typename ode_state_type,
+  ExplicitEnum name,
+  typename state_type,
   typename model_type,
-  typename ode_residual_type,
+  typename velocity_type,
   typename ...Args
   >
 class ExplicitStepper;
 
 template<
-  ImplicitEnum whichone,
-  typename ode_state_type,
-  typename ode_residual_type,
-  typename ode_jacobian_type,
+  ImplicitEnum name,
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
   typename model_type,
   typename ...Args>
 class ImplicitStepper;
@@ -30,7 +30,7 @@ namespace policy{
 template<
   typename state_type,
   typename model_type,
-  typename residual_type = state_type,
+  typename velocity_type = state_type,
   typename enable = void>
 class ExplicitResidualStandardPolicy;
 
@@ -76,19 +76,11 @@ template<
 class OdeSystemWrapper;
 
 template<
-  typename model_type,
   typename scalar_type,
-  typename enable = void
-  >
-class ImplicitOdeAuxData;
-
-
-template<
-  typename scalar_type,
-  typename ode_state_type,
+  typename state_type,
   typename model_type,
-  typename ode_residual_type,
-  typename residual_policy_type,
+  typename velocity_type,
+  typename policy_type,
   typename ops,
   typename enable = void
   >
@@ -96,10 +88,10 @@ class ExplicitEulerStepperImpl;
 
 template<
   typename scalar_type,
-  typename ode_state_type,
+  typename state_type,
   typename model_type,
-  typename ode_residual_type,
-  typename residual_policy_type,
+  typename velocity_type,
+  typename policy_type,
   typename ops,
   typename enable = void
   >

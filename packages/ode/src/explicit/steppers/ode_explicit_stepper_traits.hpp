@@ -10,14 +10,14 @@ namespace rompp{ namespace ode{ namespace details{
  * Euler
  */
 template<
-  typename ode_state_type,
+  typename state_type,
   typename model_type,
-  typename ode_residual_type,
+  typename velocity_type,
   typename ...Args
   >
 struct traits<
-  ExplicitStepper<ExplicitEnum::Euler, ode_state_type,
-		  model_type, ode_residual_type, Args...>
+  ExplicitStepper<ExplicitEnum::Euler, state_type,
+		  model_type, velocity_type, Args...>
   >{
 
   static constexpr bool is_implicit = false;
@@ -25,8 +25,8 @@ struct traits<
   using order_t = unsigned int;
   static constexpr order_t order_value = 1;
 
-  using state_t	   = ode_state_type;
-  using residual_t = ode_residual_type;
+  using state_t	   = state_type;
+  using residual_t = velocity_type;
   using model_t    = model_type;
 
   // check if scalar is provided in Args
@@ -63,14 +63,14 @@ struct traits<
  * RK4
  */
 template<
-  typename ode_state_type,
+  typename state_type,
   typename model_type,
-  typename ode_residual_type,
+  typename velocity_type,
   typename ...Args
   >
 struct traits<
-  ExplicitStepper<ExplicitEnum::RungeKutta4, ode_state_type,
-		  model_type, ode_residual_type, Args...>
+  ExplicitStepper<ExplicitEnum::RungeKutta4, state_type,
+		  model_type, velocity_type, Args...>
   >{
 
   static constexpr bool is_implicit = false;
@@ -78,8 +78,8 @@ struct traits<
   using order_t = unsigned int;
   static constexpr order_t order_value = 4;
 
-  using state_t	   = ode_state_type;
-  using residual_t = ode_residual_type;
+  using state_t	   = state_type;
+  using residual_t = velocity_type;
   using model_t    = model_type;
 
   // check if scalar is provided in Args
