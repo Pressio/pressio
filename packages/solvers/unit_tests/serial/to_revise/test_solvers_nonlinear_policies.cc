@@ -17,11 +17,11 @@ struct ValidSystemPolicyTest {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
+    using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = rompp::containers::Vector<vector_n_t>;
+    using vector_w_t = pressio::containers::Vector<vector_n_t>;
 
     typedef vector_w_t vector_type;
     typedef matrix_w_t matrix_type;
@@ -62,7 +62,7 @@ struct ValidSystemPolicyTest {
 
 TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newtonraphsonPolicyCompatibleSystemVector)
 {
-  using namespace rompp;
+  using namespace pressio;
   using namespace solvers;
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = containers::Vector<vector_n_t>;
@@ -82,7 +82,7 @@ TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newt
 
 // TEST(solvers_nonlinear_iterative_newtonraphson, solvers_nonlinear_iterative_newtonraphsonPolicyIncompatibleSystemVector)
 // {
-//   using namespace rompp;
+//   using namespace pressio;
 //   using namespace solvers;
 
 //   int b;

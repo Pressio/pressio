@@ -7,7 +7,7 @@
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_dense_static_matrix_eigen : std::false_type {};
@@ -158,5 +158,5 @@ struct sparse_sharedmem_eigen_same_storage<
 
 //----------------------------------------------------------------------
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif

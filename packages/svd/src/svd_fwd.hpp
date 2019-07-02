@@ -4,7 +4,7 @@
 
 #include "svd_ConfigDefs.hpp"
 
-namespace rompp{ 
+namespace pressio{ 
 namespace svd {
     
 template <typename matrix_type,
@@ -15,5 +15,5 @@ template <typename matrix_type,
 class Solver;  
   
 } // end namespace svd
-}//end namespace rompp
+}//end namespace pressio
 #endif

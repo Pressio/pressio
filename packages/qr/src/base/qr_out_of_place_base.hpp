@@ -4,7 +4,7 @@
 
 #include "../qr_meta.hpp"
 
-namespace rompp{ namespace qr{
+namespace pressio{ namespace qr{
 
 
 template<typename derived_t,
@@ -34,7 +34,7 @@ public:
   template <
     typename vec_in_t,
     typename vec_out_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_vector_wrapper<vec_in_t>::value and
       containers::meta::is_vector_wrapper<vec_out_t>::value and
       meta::is_legitimate_vector_type_for_qr_project<vec_in_t,
@@ -52,5 +52,5 @@ private:
 
 };
 
-}}//end namespace rompp::qr
+}}//end namespace pressio::qr
 #endif

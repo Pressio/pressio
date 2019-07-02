@@ -1,10 +1,10 @@
 
-#ifndef ROMPP_MPL_VARIADIC_ANY_OF_HPP
-#define ROMPP_MPL_VARIADIC_ANY_OF_HPP
+#ifndef PRESSIO_MPL_VARIADIC_ANY_OF_HPP
+#define PRESSIO_MPL_VARIADIC_ANY_OF_HPP
 
 #include <type_traits>
 
-namespace rompp{ namespace mpl{ namespace variadic {
+namespace pressio{ namespace mpl{ namespace variadic {
 
 /**
  * \ingroup VarNonModAlgs

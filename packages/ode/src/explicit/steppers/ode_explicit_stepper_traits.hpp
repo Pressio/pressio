@@ -4,7 +4,7 @@
 
 #include "../../ode_fwd.hpp"
 
-namespace rompp{ namespace ode{ namespace details{
+namespace pressio{ namespace ode{ namespace details{
 
 /*
  * Euler
@@ -30,9 +30,9 @@ struct traits<
   using model_t    = system_type;
 
   // check if scalar is provided in Args
-  using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<
+  using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     std::is_floating_point, Args...>;
-  using scalar_t = ::rompp::mpl::variadic::at_or_t<
+  using scalar_t = ::pressio::mpl::variadic::at_or_t<
     void, ic0::value, Args...>;
   static_assert( std::is_void<scalar_t>::value == false,
 		 "You need a scalar_type in the ExplicitStepper templates");
@@ -43,16 +43,16 @@ struct traits<
     state_t, model_t, velocity_t>;
 
   // check Args if a user-defined velocity policy is passed
-  using ic1 = ::rompp::mpl::variadic::find_if_unary_pred_t<
-    ::rompp::ode::meta::is_legitimate_explicit_velocity_policy, Args...>;
-  using velocity_policy_t = ::rompp::mpl::variadic::at_or_t
+  using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
+    ::pressio::ode::meta::is_legitimate_explicit_velocity_policy, Args...>;
+  using velocity_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
   // check if user passed an ops
-  using ic2 = ::rompp::mpl::variadic::find_if_quaternary_pred_t<
+  using ic2 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     scalar_t, state_t, velocity_t,
-    ::rompp::ode::meta::is_valid_user_defined_ops_for_explicit_euler, Args...>;
-  using ops_t = ::rompp::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+    ::pressio::ode::meta::is_valid_user_defined_ops_for_explicit_euler, Args...>;
+  using ops_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
 
   using impl_t = impl::ExplicitEulerStepperImpl
     <scalar_t, state_t, model_t, velocity_t, velocity_policy_t, ops_t>;
@@ -83,9 +83,9 @@ struct traits<
   using model_t    = system_type;
 
   // check if scalar is provided in Args
-  using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<
+  using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     std::is_floating_point, Args...>;
-  using scalar_t = ::rompp::mpl::variadic::at_or_t<
+  using scalar_t = ::pressio::mpl::variadic::at_or_t<
     void, ic0::value, Args...>;
   static_assert( std::is_void<scalar_t>::value == false,
 		 "You need a scalar_type in the ExplicitStepper templates");
@@ -96,21 +96,21 @@ struct traits<
     state_t, model_t, velocity_t>;
 
   // check Args if a user-defined velocity policy is passed
-  using ic1 = ::rompp::mpl::variadic::find_if_unary_pred_t<
-    ::rompp::ode::meta::is_legitimate_explicit_velocity_policy, Args...>;
-  using velocity_policy_t = ::rompp::mpl::variadic::at_or_t
+  using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
+    ::pressio::ode::meta::is_legitimate_explicit_velocity_policy, Args...>;
+  using velocity_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
   // check if user passed an ops
-  using ic2 = ::rompp::mpl::variadic::find_if_quaternary_pred_t<
+  using ic2 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     scalar_t, state_t, velocity_t,
-    ::rompp::ode::meta::is_valid_user_defined_ops_for_explicit_rk4, Args...>;
-  using ops_t = ::rompp::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+    ::pressio::ode::meta::is_valid_user_defined_ops_for_explicit_rk4, Args...>;
+  using ops_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
 
   using impl_t = impl::ExplicitRungeKutta4StepperImpl
     <scalar_t, state_t, model_t, velocity_t, velocity_policy_t, ops_t>;
 };
 
 
-}}}//end namespace rompp::ode::details
+}}}//end namespace pressio::ode::details
 #endif

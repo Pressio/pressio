@@ -6,7 +6,7 @@
 #include "../../../../CONTAINERS_OPS"
 #include "solvers_jacob_res_product_policy.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <typename ls_tag>
 struct LineSearchHelper;
@@ -37,14 +37,14 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     scalar_t c1 = 1e-4;
     alpha = static_cast<scalar_t>(1);
 #ifdef DEBUG_PRINT
-    ::rompp::utils::io::print_stdout("line search: Armijo rule,",
+    ::pressio::utils::io::print_stdout("line search: Armijo rule,",
 				    "c1=", c1, "\n");
 #endif
 
     ytrial.setZero();
 
     // eval obj function for current solution: f(y)
-    auto fy  = ::rompp::containers::ops::norm2(resid);
+    auto fy  = ::pressio::containers::ops::norm2(resid);
 
     // compute J^T * Residual
     state_t jTr(y);  jTr.setZero();
@@ -53,20 +53,20 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     jtr_prod_helper_t::evaluate(jacob, resid, jTr);
 
     // compute dy^T J^T R (this is always a dot product)
-    auto c2 = ::rompp::containers::ops::dot(dy, jTr);
+    auto c2 = ::pressio::containers::ops::dot(dy, jTr);
     auto rhs = c1 * alpha * c2;
 
 #ifdef DEBUG_PRINT
-    ::rompp::utils::io::print_stdout(" f(y) =", fy, "\n");
-    ::rompp::utils::io::print_stdout(" dy^T J^T R =", c2, "\n");
-    ::rompp::utils::io::print_stdout(" c1*alfa*dy^T*J^T*R =", rhs, "\n");
+    ::pressio::utils::io::print_stdout(" f(y) =", fy, "\n");
+    ::pressio::utils::io::print_stdout(" dy^T J^T R =", c2, "\n");
+    ::pressio::utils::io::print_stdout(" c1*alfa*dy^T*J^T*R =", rhs, "\n");
 #endif
 
     bool done = false;
     while (not done)
     {
 #ifdef DEBUG_PRINT
-      ::rompp::utils::io::print_stdout(" backtracking: alpha =",
+      ::pressio::utils::io::print_stdout(" backtracking: alpha =",
 				      alpha, "\n");
 #endif
 
@@ -75,19 +75,19 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 
       // eval function for updated step solition: f(y + alpha*dy)
       sys.residual(ytrial, resid);
-      auto fytrial  = ::rompp::containers::ops::norm2(resid);
+      auto fytrial  = ::pressio::containers::ops::norm2(resid);
       auto lhs = fytrial-fy;
 
 #ifdef DEBUG_PRINT
-      ::rompp::utils::io::print_stdout(" f(y+alpha*dy) =", fytrial, "\n");
-      ::rompp::utils::io::print_stdout(" f(y+alpha*dy)-f(y) =", lhs,
+      ::pressio::utils::io::print_stdout(" f(y+alpha*dy) =", fytrial, "\n");
+      ::pressio::utils::io::print_stdout(" f(y+alpha*dy)-f(y) =", lhs,
 				      "; rhs =", rhs, "\n");
 #endif
 
       // eval Armijo
       if (lhs <= rhs){
 #ifdef DEBUG_PRINT
-	::rompp::utils::io::print_stdout(" lsearch done","\n");
+	::pressio::utils::io::print_stdout(" lsearch done","\n");
 #endif
 	done = true;
       }
@@ -96,7 +96,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
       // change later with some machine epsilon
       if (std::abs(lhs) <= 1e-14){
 #ifdef DEBUG_PRINT
-	::rompp::utils::io::print_stdout(" detected negligible",
+	::pressio::utils::io::print_stdout(" detected negligible",
 					"change in obj f:",
 					"abs(fytrail-fy) < 1e-14,",
 					"exiting linsearch","\n");
@@ -115,7 +115,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     }//while
 
 #ifdef DEBUG_PRINT
-    ::rompp::utils::io::print_stdout("after line search:",
+    ::pressio::utils::io::print_stdout("after line search:",
 				    "alpha =", alpha, "\n");
 #endif
   }//()
@@ -123,5 +123,5 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 };
 
 
-}}}} //end namespace rompp::solvers::iterative::impl
+}}}} //end namespace pressio::solvers::iterative::impl
 #endif

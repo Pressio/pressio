@@ -7,7 +7,7 @@
 #include "./base/qr_r_factor_base.hpp"
 #include "qr_traits.hpp"
 
-namespace rompp{ namespace qr{ namespace impl{
+namespace pressio{ namespace qr{ namespace impl{
 
 /* overload for R_type == void, in_place = false */
 template<
@@ -16,7 +16,7 @@ template<
   >
 class QRSolver<
   matrix_type, algo, false, m, n, void, Q_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper<matrix_type>::value or
     containers::meta::is_matrix_wrapper<matrix_type>::value
     >
@@ -75,7 +75,7 @@ private:
 //   >
 // class QRSolver<
 //   matrix_type, algo, false, m, n, R_type, Q_type,
-//   ::rompp::mpl::enable_if_t<
+//   ::pressio::mpl::enable_if_t<
 //     meta::is_legitimate_r_type<R_type>::value and
 //     (containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value or
 //      containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value)
@@ -134,5 +134,5 @@ private:
 // };
 
 
-}}} // end namespace rompp::qr::impl
+}}} // end namespace pressio::qr::impl
 #endif

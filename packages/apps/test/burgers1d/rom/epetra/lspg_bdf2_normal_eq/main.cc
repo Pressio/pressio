@@ -8,13 +8,13 @@
 #include "../../../fom/gold_states_implicit.hpp"
 
 int main(int argc, char *argv[]){
-  using fom_t		= rompp::apps::Burgers1dEpetra;
+  using fom_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
+  using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
-  using decoder_jac_t	= rompp::containers::MultiVector<Epetra_MultiVector>;
-  using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
 
   std::string checkStr {"PASSED"};
 
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
   constexpr int romSize = 11;
   // store modes computed before from file
   decoder_jac_t phi =
-    rompp::apps::test::epetra::readBasis("basis.txt", romSize, numCell,
+    pressio::apps::test::epetra::readBasis("basis.txt", romSize, numCell,
 					 Comm, appobj.getDataMap());
   const int numBasis = phi.globalNumVectors();
   if ( numBasis != romSize ) return 0;
@@ -52,33 +52,33 @@ int main(int argc, char *argv[]){
   yROM.putScalar(0.0);
 
   // define LSPG type
-  constexpr auto ode_case = rompp::ode::ImplicitEnum::BDF2;
-  using lspg_problem_types = rompp::rom::DefaultLSPGTypeGenerator<
+  constexpr auto ode_case = pressio::ode::ImplicitEnum::BDF2;
+  using lspg_problem_types = pressio::rom::DefaultLSPGTypeGenerator<
     fom_t, ode_case, decoder_t, lspg_state_t>;
-  rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
+  pressio::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
       appobj, yRef, decoderObj, yROM, t0);
 
   using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t  = rompp::containers::Matrix<eig_dyn_mat>;
-  using solver_tag   = rompp::solvers::linear::iterative::LSCG;
-  using linear_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
+  using solver_tag   = pressio::solvers::linear::iterative::LSCG;
+  using linear_solver_t = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
   // rom is solved using eigen, hessian is wrapper of eigen matrix
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using gnsolver_t   = rompp::solvers::iterative::GaussNewton<
+  using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
     lspg_stepper_t, linear_solver_t>;
   gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(200);
 
   // integrate in time
-  rompp::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, 10, solver);
+  pressio::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]){
   {
     int shift = (rank==0) ? 0 : 10;
     const int myn = yFomFinal.getDataMap().NumMyElements();
-    const auto trueY = rompp::apps::test::Burgers1dImpGoldStates<ode_case>::get(numCell, dt, 0.10);
+    const auto trueY = pressio::apps::test::Burgers1dImpGoldStates<ode_case>::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++)
       if (std::abs(yFomFinal[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
   }

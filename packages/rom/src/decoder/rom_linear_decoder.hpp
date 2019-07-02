@@ -5,7 +5,7 @@
 #include "rom_decoder_base.hpp"
 #include "../rom_fwd.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <
   typename matrix_type,
@@ -47,5 +47,5 @@ protected:
 
 };//end class
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

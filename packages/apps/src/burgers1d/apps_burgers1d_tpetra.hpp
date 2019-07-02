@@ -1,6 +1,6 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_TPETRA_HPP_
-#define ROMPPAPPS_BURGERS1D_TPETRA_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_TPETRA_HPP_
+#define PRESSIOAPPS_BURGERS1D_TPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -11,7 +11,7 @@
 #include <Teuchos_FancyOStream.hpp>
 #include <Tpetra_Core.hpp>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class Burgers1dTpetra{
 protected:
@@ -167,6 +167,6 @@ protected:
 
 };//end class
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

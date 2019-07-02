@@ -9,7 +9,7 @@
 // #include <unsupported/Eigen/NonLinearOptimization>
 // #include <iomanip>
 
-namespace rompp{
+namespace pressio{
 namespace optimization{
 
 
@@ -83,6 +83,6 @@ namespace optimization{
 
   
 }//end namespace   
-}//end namespace rompp
+}//end namespace pressio
 #endif
 

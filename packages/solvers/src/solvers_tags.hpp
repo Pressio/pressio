@@ -1,7 +1,7 @@
 #ifndef SOLVERS_LINEAR_TAGS_HPP
 #define SOLVERS_LINEAR_TAGS_HPP
 
-namespace rompp{ namespace solvers{ namespace linear {
+namespace pressio{ namespace solvers{ namespace linear {
 
 namespace iterative{
   struct CG {};
@@ -20,6 +20,6 @@ namespace direct{
 // struct Jacobi {};
 // struct DefaultPreconditioner {};
 
-}}}//end namespace rompp::solvers::linear
+}}}//end namespace pressio::solvers::linear
 
 #endif

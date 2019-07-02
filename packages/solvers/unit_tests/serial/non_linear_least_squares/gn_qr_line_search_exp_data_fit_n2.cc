@@ -7,7 +7,7 @@
 TEST(solvers_nonlinear_least_squares,
      gn_qr_line_search_armijo_exp_data_fit_n2){
 
-  using namespace rompp;
+  using namespace pressio;
   using problem_t   = solvers::test::ExpDataFitN2;
   using state_w_t = typename problem_t::state_type;
   using mat_type  = typename problem_t::jacobian_type;
@@ -31,7 +31,7 @@ TEST(solvers_nonlinear_least_squares,
 TEST(solvers_nonlinear_least_squares,
      gn_qr_line_search_armijo_only_2steps_exp_data_fit_n2){
 
-  using namespace rompp;
+  using namespace pressio;
   using problem_t   = solvers::test::ExpDataFitN2;
   using state_w_t = typename problem_t::state_type;
   using mat_type  = typename problem_t::jacobian_type;
@@ -61,7 +61,7 @@ TEST(solvers_nonlinear_least_squares,
 TEST(solvers_nonlinear_least_squares,
      gn_qr_line_search_armijo_pass_sys_type_exp_data_fit_n2){
 
-  using namespace rompp;
+  using namespace pressio;
   using problem_t   = solvers::test::ExpDataFitN2;
   using state_w_t = typename problem_t::state_type;
   using mat_t  = typename problem_t::jacobian_type;

@@ -5,17 +5,17 @@
 #include "../../../../ode/src/ode_ConfigDefs.hpp"
 #include "../../../../ode/src/implicit/ode_implicit_constants.hpp"
 
-namespace rompp{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace impl{
 
 
 template<
-  ::rompp::ode::ImplicitEnum method,
+  ::pressio::ode::ImplicitEnum method,
   int n,
   typename state_type,
   typename scalar_type,
   typename ud_ops,
-  ::rompp::mpl::enable_if_t<
-    method == ::rompp::ode::ImplicitEnum::Euler 
+  ::pressio::mpl::enable_if_t<
+    method == ::pressio::ode::ImplicitEnum::Euler 
 #ifdef HAVE_PYBIND11 
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif    
@@ -33,13 +33,13 @@ void time_discrete_residual(const state_type & yn,
 
 #ifdef HAVE_PYBIND11
 template<
-  ::rompp::ode::ImplicitEnum method,
+  ::pressio::ode::ImplicitEnum method,
   int n,
   typename state_type,
   typename scalar_type,
   typename ud_ops,
-  ::rompp::mpl::enable_if_t<
-    method == ::rompp::ode::ImplicitEnum::Euler and
+  ::pressio::mpl::enable_if_t<
+    method == ::pressio::ode::ImplicitEnum::Euler and
     mpl::is_same< ud_ops, pybind11::object>::value
     > * = nullptr
   >
@@ -60,13 +60,13 @@ void time_discrete_residual(const state_type & yn,
  * for EIGEN
 */
 template<
-  ::rompp::ode::ImplicitEnum method,
+  ::pressio::ode::ImplicitEnum method,
   int n,
   typename state_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
-    method == ::rompp::ode::ImplicitEnum::Euler
+    method == ::pressio::ode::ImplicitEnum::Euler
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
@@ -80,13 +80,13 @@ void time_discrete_residual(const state_type & yn,
 }
 
 template<
-  ::rompp::ode::ImplicitEnum method,
+  ::pressio::ode::ImplicitEnum method,
   int n,
   typename state_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
-    method == ::rompp::ode::ImplicitEnum::BDF2
+    method == ::pressio::ode::ImplicitEnum::BDF2
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
@@ -94,7 +94,7 @@ void time_discrete_residual(const state_type & yn,
 			    state_type & R,
 			    scalar_type dt){
 
-  using namespace ::rompp::ode::coeffs;
+  using namespace ::pressio::ode::coeffs;
 
   // // On input: R contains the application RHS, i.e. if
   // // dudt = f(x,u,...), R contains f(...)
@@ -133,11 +133,11 @@ void time_discrete_residual(const state_type & yn,
 */
 
 #ifdef HAVE_TRILINOS
-template <::rompp::ode::ImplicitEnum odeMethod>
+template <::pressio::ode::ImplicitEnum odeMethod>
 struct time_discrete_single_entry_epetra;
 
 template <>
-struct time_discrete_single_entry_epetra<::rompp::ode::ImplicitEnum::Euler>{
+struct time_discrete_single_entry_epetra<::pressio::ode::ImplicitEnum::Euler>{
   template <typename T, typename state_type, int n>
     static void evaluate(const T& dt,
 			 T & R,
@@ -149,13 +149,13 @@ struct time_discrete_single_entry_epetra<::rompp::ode::ImplicitEnum::Euler>{
 };
 
 template <>
-struct time_discrete_single_entry_epetra<::rompp::ode::ImplicitEnum::BDF2>{
+struct time_discrete_single_entry_epetra<::pressio::ode::ImplicitEnum::BDF2>{
   template <typename T, typename state_type, int n>
     static void evaluate(const T& dt, T & R,
 			 int lid,
 			 const state_type& yn,
 			 const std::array<state_type,n> & ynm){
-    using namespace ::rompp::ode::coeffs;
+    using namespace ::pressio::ode::coeffs;
 
     // R[i] = yn[lid]
     //   - bdf2<scalar_type>::c1_*ynm[1][lid]
@@ -170,11 +170,11 @@ struct time_discrete_single_entry_epetra<::rompp::ode::ImplicitEnum::BDF2>{
 
 
 template<
-  ::rompp::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeMethod,
   int numStates,
   typename state_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_epetra<state_type>::value == true
     > * = nullptr
   >
@@ -219,11 +219,11 @@ void time_discrete_residual(const state_type & yn,
 /*************************************
 	             tpetra
 *************************************/
-template <::rompp::ode::ImplicitEnum odeMethod>
+template <::pressio::ode::ImplicitEnum odeMethod>
 struct time_discrete_single_entry_tpetra;
 
 template <>
-struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::Euler>{
+struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::Euler>{
   template <typename T, typename state_type, int n>
     static void evaluate(const T& dt, T & R,
 			 int lid,
@@ -245,14 +245,14 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::Euler>{
 };
 
 template <>
-struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
+struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::BDF2>{
   template <typename T, typename state_type, int n>
     static void evaluate(const T& dt,
 			 T & R,
 			 int lid,
 			 const state_type & yn,
 			 const std::array<state_type,n> & ynm){
-    using namespace ::rompp::ode::coeffs;
+    using namespace ::pressio::ode::coeffs;
 
     // R[i] = yn[lid]
     //   - bdf2<scalar_type>::c1_*ynm[1][lid]
@@ -271,7 +271,7 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
 			 const state_type& yn,
 			 const state_type & ynm0,
 			 const state_type & ynm1){
-    using namespace ::rompp::ode::coeffs;
+    using namespace ::pressio::ode::coeffs;
     R = (yn.getData())[lid]
       - bdf2<T>::c1_*(ynm1.getData())[lid]
       + bdf2<T>::c2_*(ynm0.getData())[lid]
@@ -281,11 +281,11 @@ struct time_discrete_single_entry_tpetra<::rompp::ode::ImplicitEnum::BDF2>{
 
 
 template<
-  ::rompp::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeMethod,
   typename state_type,
   typename scalar_type,
   typename ... Args,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_tpetra<state_type>::value == true
     > * = nullptr
   >
@@ -326,13 +326,13 @@ void time_discrete_residual_tpetra_impl(const state_type & yn,
 
 
 template<
-  ::rompp::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeMethod,
   int n,
   typename state_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
-    odeMethod == ::rompp::ode::ImplicitEnum::Euler
+    odeMethod == ::pressio::ode::ImplicitEnum::Euler
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
@@ -348,13 +348,13 @@ void time_discrete_residual(const state_type & yn,
 }
 
 template<
-  ::rompp::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeMethod,
   int n,
   typename state_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
-    odeMethod == ::rompp::ode::ImplicitEnum::BDF2
+    odeMethod == ::pressio::ode::ImplicitEnum::BDF2
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
@@ -376,13 +376,13 @@ void time_discrete_residual(const state_type & yn,
             tpetra block
 *************************************/
 template<
-  ::rompp::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeMethod,
   int n,
   typename state_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
-    odeMethod == ::rompp::ode::ImplicitEnum::Euler
+    odeMethod == ::pressio::ode::ImplicitEnum::Euler
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
@@ -397,13 +397,13 @@ void time_discrete_residual(const state_type & yn,
 }
 
 template<
-  ::rompp::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeMethod,
   int n,
   typename state_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
-    odeMethod == ::rompp::ode::ImplicitEnum::BDF2
+    odeMethod == ::pressio::ode::ImplicitEnum::BDF2
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
@@ -420,5 +420,5 @@ void time_discrete_residual(const state_type & yn,
 
 #endif
 
-}}}//end namespace rompp::rom::impl
+}}}//end namespace pressio::rom::impl
 #endif

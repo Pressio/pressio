@@ -5,9 +5,9 @@
 
 struct System {
   using matrix_n_t = Eigen::MatrixXd;
-  using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
+  using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::containers::Vector<vector_n_t>;
+  using vector_w_t = pressio::containers::Vector<vector_n_t>;
 
   using scalar_type     = double;
   using state_type	= vector_w_t;
@@ -23,8 +23,8 @@ struct System {
 
 template <typename pick_t,
 	  typename T1, typename T2,
-	  typename T3=::rompp::solvers::iterative::gn::noLineSearch,
-	  typename T4=::rompp::solvers::iterative::default_convergence>
+	  typename T3=::pressio::solvers::iterative::gn::noLineSearch,
+	  typename T4=::pressio::solvers::iterative::default_convergence>
 struct checkTypes{
 
   using scalar_t		= typename pick_t::scalar_t;
@@ -42,7 +42,7 @@ struct checkTypes{
 };
 
 TEST(solvers_meta, gn_with_qr){
-  using namespace rompp;
+  using namespace pressio;
   using sys_t   = System;
 
   static_assert
@@ -55,7 +55,7 @@ TEST(solvers_meta, gn_with_qr){
 
   // define types, then rotate, it should not matter
   {
-    static_assert(::rompp::solvers::meta::is_legitimate_qr_solver_for_gn_qr<qr_solver_t>::value, "" );
+    static_assert(::pressio::solvers::meta::is_legitimate_qr_solver_for_gn_qr<qr_solver_t>::value, "" );
 
     using picker_t = solvers::iterative::impl::GNQRSpecializationPicker<sys_t, qr_solver_t>;
     using gn_solver_t = solvers::iterative::GaussNewtonQR<sys_t, qr_solver_t>;
@@ -72,7 +72,7 @@ TEST(solvers_meta, gn_with_qr){
 
 
 TEST(solvers_meta, gn_normal_equations_nondef_conv){
-  using namespace rompp;
+  using namespace pressio;
   using sys_t   = System;
 
   static_assert

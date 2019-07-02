@@ -6,13 +6,13 @@
 #include "../../../ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
 #include "../../../ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
 
-namespace rompp{ namespace rom{ namespace decorator{
+namespace pressio{ namespace rom{ namespace decorator{
 
 /* overload when decorating a residual policy */
 template <typename maskable>
 class Masked<
   maskable,
-  ::rompp::mpl::enable_if_t<maskable::isResidualPolicy_>
+  ::pressio::mpl::enable_if_t<maskable::isResidualPolicy_>
   > : public maskable{
 
   using typename maskable::fom_rhs_t;
@@ -76,7 +76,7 @@ public:
 template <typename maskable>
 class Masked<
   maskable,
-  ::rompp::mpl::enable_if_t<maskable::isResidualPolicy_ == false>
+  ::pressio::mpl::enable_if_t<maskable::isResidualPolicy_ == false>
   > : public maskable{
 
 public:
@@ -127,6 +127,6 @@ public:
 
 };//end class
 
-}}} //end namespace rompp::rom::decorator
+}}} //end namespace pressio::rom::decorator
 
 #endif

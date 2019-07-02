@@ -4,7 +4,7 @@
 
 #include "../../ode/src/ode_enum.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 /* decorators */
 namespace decorator{
@@ -19,7 +19,7 @@ template <
   typename enable = void>
 class Masked;
 
-}// namespace rompp::rom::decorator
+}// namespace pressio::rom::decorator
 //---------------------------------
 
 namespace policy{
@@ -30,7 +30,7 @@ struct EvaluateFomVelocityDefault;
 template <bool is_steady_problem>
 struct ApplyFomJacobianDefault;
 
-}// namespace rompp::rom::policy
+}// namespace pressio::rom::policy
 //---------------------------------
 
 #ifdef HAVE_PYBIND11
@@ -139,5 +139,5 @@ template <
 struct GalerkinProblemGenerator;
 
 
-}} // end namespace rompp::rom
+}} // end namespace pressio::rom
 #endif

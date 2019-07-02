@@ -5,7 +5,7 @@
 #include "ode_implicit_stepper_traits.hpp"
 #include "ode_implicit_stepper_base.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 template<
   typename ode_state_type,
@@ -71,7 +71,7 @@ public:
   template <
     typename T1 = standard_res_policy_t,
     typename T2 = standard_jac_policy_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, residual_pol_t>::value and
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
@@ -83,7 +83,7 @@ public:
   // cstr for standard jacob policies
   template <
     typename T1 = standard_jac_policy_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, jacobian_pol_t>::value
       > * = nullptr
     >
@@ -107,7 +107,7 @@ public:
     auto & auxY0 = this->stateAuxStorage_.data_[0];
     this->dt_ = dt;
     this->t_ = t;
-    ::rompp::containers::ops::deep_copy(y, auxY0);
+    ::pressio::containers::ops::deep_copy(y, auxY0);
     solver.solve(*this, y);
   }
 
@@ -125,12 +125,12 @@ public:
     auto & auxY0 = this->stateAuxStorage_.data_[0];
     this->dt_ = dt;
     this->t_ = t;
-    ::rompp::containers::ops::deep_copy(y, auxY0);
+    ::pressio::containers::ops::deep_copy(y, auxY0);
     guesserCb(step, t, y);
     solver.solve(*this, y);
   }
 
 };//end class
 
-}} // end namespace rompp::ode
+}} // end namespace pressio::ode
 #endif

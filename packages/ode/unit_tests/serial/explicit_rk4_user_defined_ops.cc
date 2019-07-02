@@ -71,7 +71,7 @@ struct myops{
 
 
 TEST(ode_explicit_rk4, userDefinedOps){
-  using namespace rompp;
+  using namespace pressio;
   using app_t	    = MyApp;
   using nstate_t    = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;

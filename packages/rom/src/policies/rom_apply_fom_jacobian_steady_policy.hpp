@@ -2,7 +2,7 @@
 #ifndef ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
 #define ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
 
-namespace rompp{ namespace rom{ namespace policy{
+namespace pressio{ namespace rom{ namespace policy{
 
 template <>
 struct ApplyFomJacobianDefault<true>{
@@ -36,5 +36,5 @@ struct ApplyFomJacobianDefault<true>{
 
 };
 
-}}} //end namespace rompp::rom::policy
+}}} //end namespace pressio::rom::policy
 #endif

@@ -6,7 +6,7 @@
 #include "solvers_linear_base.hpp"
 
 
-namespace rompp {
+namespace pressio {
 namespace solvers {
 
 // Forward declarations
@@ -90,6 +90,6 @@ class LinearIterativeSolver
 };
 
 } //end namespace solvers
-} //end namespace rompp
+} //end namespace pressio
 
 #endif

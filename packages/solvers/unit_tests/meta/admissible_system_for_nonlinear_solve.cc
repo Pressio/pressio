@@ -5,9 +5,9 @@
 
 struct ValidSystemA {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
+  using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::containers::Vector<vector_n_t>;
+  using vector_w_t = pressio::containers::Vector<vector_n_t>;
 
   using scalar_type     = double;
   using state_type	= vector_w_t;
@@ -23,7 +23,7 @@ struct ValidSystemA {
 
 
 TEST(solvers_meta, system_admissible){
-  using namespace rompp;
+  using namespace pressio;
   using system_t   = ValidSystemA;
 
   static_assert
@@ -33,7 +33,7 @@ TEST(solvers_meta, system_admissible){
 
 
 TEST(solvers_meta, detect_residual_methods){
-  using namespace rompp;
+  using namespace pressio;
 
   using system_t   = ValidSystemA;
 
@@ -68,7 +68,7 @@ TEST(solvers_meta, detect_residual_methods){
 
 
 TEST(solvers_meta, detect_jacobian_methods){
-  using namespace rompp;
+  using namespace pressio;
   using system_t   = ValidSystemA;
 
   static_assert(solvers::meta::has_jacobian_method_callable_with_one_arg<

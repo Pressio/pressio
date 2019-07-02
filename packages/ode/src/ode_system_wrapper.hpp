@@ -8,14 +8,14 @@
 #include <pybind11/functional.h>
 #endif
 
-namespace rompp{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<typename model_type>
 struct OdeSystemWrapper<
   model_type
 #ifdef HAVE_PYBIND11
   , mpl::enable_if_t<
-      ::rompp::mpl::not_same<model_type, pybind11::object >::value
+      ::pressio::mpl::not_same<model_type, pybind11::object >::value
       >
 #endif
   >
@@ -43,7 +43,7 @@ template<typename model_type>
 class OdeSystemWrapper<
   model_type,
   mpl::enable_if_t<
-    ::rompp::mpl::is_same<model_type, pybind11::object >::value
+    ::pressio::mpl::is_same<model_type, pybind11::object >::value
     >
   >
 {
@@ -62,5 +62,5 @@ private:
 };
 #endif
 
-}}}//end namespace rompp::ode::impl
+}}}//end namespace pressio::ode::impl
 #endif

@@ -4,7 +4,7 @@
 #include "Epetra_MpiComm.h"
 
 using sc_t = double;
-using datamat_t = rompp::containers::MultiVector<Epetra_MultiVector>;
+using datamat_t = pressio::containers::MultiVector<Epetra_MultiVector>;
 using vd_t = std::vector<sc_t>;
 using vvd_t = std::vector<vd_t>;
 
@@ -67,11 +67,11 @@ void doSVDNonSqMat(int rank, Epetra_MpiComm & Comm){
   
   ///-----------------------
   /// create svd solver
-  rompp::svd::Solver<datamat_t,
-  		     rompp::containers::MultiVector,
-  		     rompp::containers::MultiVector,
+  pressio::svd::Solver<datamat_t,
+  		     pressio::containers::MultiVector,
+  		     pressio::containers::MultiVector,
   		     std::vector<double>> svdO;
-  svdO.compute<rompp::svd::svdType::truncated>(ADW, 10);
+  svdO.compute<pressio::svd::svdType::truncated>(ADW, 10);
 
   /// get result
   auto & lsv = svdO.cRefLeftSingularVectors();
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
 
   //-------------------------
   // dense -> CRS conversion
-  //auto ASW = rompp::containers::denseToSparse(ADW);
+  //auto ASW = pressio::containers::denseToSparse(ADW);
   //  ASW.data()->Print(std::cout);
   
   // //-----------------------

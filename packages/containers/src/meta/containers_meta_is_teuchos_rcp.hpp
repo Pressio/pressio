@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <Teuchos_RCPDecl.hpp>
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T,
 	  typename enable = void>
@@ -25,6 +25,6 @@ struct is_teuchos_rcp<
        >::type
   > : std::true_type{};
 
-}}} // namespace rompp::containers::meta
+}}} // namespace pressio::containers::meta
 #endif
 #endif

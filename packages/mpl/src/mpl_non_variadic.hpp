@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_MPL_NON_VARIADIC_HPP
-#define ROMPP_MPL_NON_VARIADIC_HPP
+#ifndef PRESSIO_MPL_NON_VARIADIC_HPP
+#define PRESSIO_MPL_NON_VARIADIC_HPP
 
 #include "detection_idiom.hpp"
 #include "enable_if_t.hpp"

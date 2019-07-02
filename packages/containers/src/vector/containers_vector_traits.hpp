@@ -13,7 +13,7 @@
 #include "./meta/containers_native_kokkos_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_block_vector_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace details{
+namespace pressio{ namespace containers{ namespace details{
 
 /********************************
 an arbitrary vector is one
@@ -183,7 +183,7 @@ struct traits<Vector<wrapped_type,
 #ifdef HAVE_ARMADILLO
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     ::rompp::mpl::enable_if_t<
+		     ::pressio::mpl::enable_if_t<
 		       containers::meta::is_column_vector_armadillo<
 			 wrapped_type>::value
 		       >
@@ -213,7 +213,7 @@ struct traits<Vector<wrapped_type,
 #ifdef HAVE_ARMADILLO
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     ::rompp::mpl::enable_if_t<
+		     ::pressio::mpl::enable_if_t<
 		       containers::meta::is_row_vector_armadillo<
 			 wrapped_type>::value
 		       >
@@ -243,7 +243,7 @@ struct traits<Vector<wrapped_type,
 #ifdef HAVE_BLAZE
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-		     ::rompp::mpl::enable_if_t<
+		     ::pressio::mpl::enable_if_t<
 		       containers::meta::is_dynamic_vector_blaze<
 			 wrapped_type>::value
 		       >
@@ -383,7 +383,7 @@ struct traits<Vector<wrapped_type,
 #ifdef HAVE_TRILINOS
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
 	    containers::meta::is_vector_kokkos<
 	      wrapped_type>::value
 	    >
@@ -463,5 +463,5 @@ struct traits<
 #endif
 
 
-}}}//end namespace rompp::containers::details
+}}}//end namespace pressio::containers::details
 #endif

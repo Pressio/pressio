@@ -1,10 +1,10 @@
 
-#ifndef ROMPP_MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
-#define ROMPP_MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
+#ifndef PRESSIO_MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
+#define PRESSIO_MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
 
 #include <type_traits>
 
-namespace rompp{ namespace mpl{
+namespace pressio{ namespace mpl{
 
 template<typename T,
 	 typename ord_t,

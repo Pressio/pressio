@@ -4,15 +4,15 @@
 #include "CONTAINERS_OPS"
 
 using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-using myvec_t = rompp::containers::Vector<eigvec_t>;
+using myvec_t = pressio::containers::Vector<eigvec_t>;
 
 
 TEST(containers_vector_serial_eigen_dynamic_class,
      constructor){
 
-  using vecTrait = rompp::containers::details::traits<myvec_t>;
+  using vecTrait = pressio::containers::details::traits<myvec_t>;
   ASSERT_TRUE(vecTrait::wrapped_vector_identifier 
-  == rompp::containers::details::WrappedVectorIdentifier::EigenColDynamic);
+  == pressio::containers::details::WrappedVectorIdentifier::EigenColDynamic);
 
   //construct by passing the size 
   myvec_t m_v2(5);
@@ -232,7 +232,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
   myvec_t a(4);
   a(0) = 1.; a(1) = 2.;
   a(2) = -1.; a(3) = 3.;
-  auto res = rompp::containers::ops::norm1(a);
+  auto res = pressio::containers::ops::norm1(a);
   EXPECT_DOUBLE_EQ( res, 7.0);
 }
 
@@ -241,7 +241,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 
   myvec_t a(3);
   a(0) = 1.; a(1) = 2.; a(2) = -2.;
-  auto res = rompp::containers::ops::norm2(a);
+  auto res = pressio::containers::ops::norm2(a);
   EXPECT_DOUBLE_EQ( res, 3.0);
 }
 
@@ -250,7 +250,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 
   myvec_t a(3);
   a(0) = 1.; a(1) = 2.; a(2) = -2.;
-  auto res = rompp::containers::ops::min(a);
+  auto res = pressio::containers::ops::min(a);
   EXPECT_DOUBLE_EQ( res, -2.0);
 }
 
@@ -259,7 +259,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 
   myvec_t a(3);
   a(0) = 1.; a(1) = 2.; a(2) = -2.;
-  auto res = rompp::containers::ops::max(a);
+  auto res = pressio::containers::ops::max(a);
   EXPECT_DOUBLE_EQ( res, 2.0);
 }
 

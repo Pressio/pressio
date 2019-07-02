@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
-#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
+#ifndef PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
+#define PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -14,7 +14,7 @@
 #include "Epetra_Time.h"
 #include <cmath>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class UnsteadyNonLinAdvDiffReac2dEpetra{
 protected:
@@ -30,8 +30,8 @@ public:
   using state_type	= nativeVec;
   using velocity_type	= state_type;
 
-  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
+  static constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  static constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
 
 public:
   UnsteadyNonLinAdvDiffReac2dEpetra(const Epetra_MpiComm & comm,
@@ -216,6 +216,6 @@ protected:
 
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

@@ -16,7 +16,7 @@
 #include "../../../containers/src/matrix/containers_matrix_traits.hpp"
 
 
-namespace rompp{
+namespace pressio{
 namespace solvers{
 namespace linear {
 
@@ -181,5 +181,5 @@ struct preconditioner_traits<Jacobi> {
 } // end namespace details
 } // end namespace linear
 } // end namespace solvers
-}//end namespace rompp
+}//end namespace pressio
 #endif

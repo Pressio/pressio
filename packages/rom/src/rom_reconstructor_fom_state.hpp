@@ -4,7 +4,7 @@
 
 #include "rom_ConfigDefs.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <
   typename fom_state_t,
@@ -21,7 +21,7 @@ template <
 struct FomStateReconstructor<
   fom_state_t, decoder_type,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_wrapper<fom_state_t>::value
+    ::pressio::containers::meta::is_wrapper<fom_state_t>::value
     >
   >
 {
@@ -70,7 +70,7 @@ template <
 class FomStateReconstructor<
   fom_state_t, decoder_type,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_cstyle_array_pybind11<fom_state_t>::value
+    ::pressio::containers::meta::is_cstyle_array_pybind11<fom_state_t>::value
     >
   >
 {
@@ -100,15 +100,15 @@ public:
 		  fom_state_t		& yOut) const {
     decoderObj_.applyMapping(romY, yOut);
 
-    constexpr auto one = ::rompp::utils::constants::one<scalar_t>();
-    ::rompp::containers::ops::do_update(yOut, one, yFomReference_, one);
+    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+    ::pressio::containers::ops::do_update(yOut, one, yFomReference_, one);
     //yOut += yFomReference_;
   }
 
   template <typename rom_state_t>
   fom_state_t operator()(const rom_state_t & romY) const{
     fom_state_t yOut{ fom_state_t(yFomReference_.request()) };
-    ::rompp::containers::ops::set_zero(yOut);
+    ::pressio::containers::ops::set_zero(yOut);
     this->template operator()(romY,yOut);
     return yOut;
   }
@@ -120,5 +120,5 @@ private:
 };//end class
 #endif
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

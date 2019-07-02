@@ -1,13 +1,13 @@
 
-#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EIGEN_HPP_
-#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EIGEN_HPP_
+#ifndef PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_2D_EIGEN_HPP_
+#define PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_2D_EIGEN_HPP_
 
 #include "../../../CONTAINERS_ALL"
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
 #include <array>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class UnsteadyNonLinAdvDiffReac2dEigen{
 protected:
@@ -23,9 +23,9 @@ public:
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;
-  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
-  static constexpr auto two = ::rompp::utils::constants::two<scalar_type>();
+  static constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  static constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  static constexpr auto two = ::pressio::utils::constants::two<scalar_type>();
 
 public:
   UnsteadyNonLinAdvDiffReac2dEigen
@@ -197,5 +197,5 @@ protected:
   mutable nativeVec s3_;
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

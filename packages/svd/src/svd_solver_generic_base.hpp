@@ -4,7 +4,7 @@
 
 #include "svd_solver_traits.hpp"
 
-namespace rompp{
+namespace pressio{
 namespace svd{
 
 template<typename derived_type>
@@ -55,5 +55,5 @@ private:
 };//end class
 
 } // end namespace svd
-}//end namespace rompp
+}//end namespace pressio
 #endif

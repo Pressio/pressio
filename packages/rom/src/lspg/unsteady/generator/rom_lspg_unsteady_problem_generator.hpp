@@ -1,12 +1,12 @@
 
-#ifndef ROMPP_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
-#define ROMPP_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
 
 #include "rom_lspg_type_generator_default.hpp"
 #include "rom_lspg_type_generator_preconditioned.hpp"
 #include "rom_lspg_type_generator_masked.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <typename lspg_problem>
 struct LSPGUnsteadyProblemGenerator<
@@ -67,7 +67,7 @@ public:
   template <
     typename T = aux_stepper_t,
     typename T2 = ud_ops_t,
-    typename ::rompp::mpl::enable_if_t<
+    typename ::pressio::mpl::enable_if_t<
       std::is_void<T>::value and
       !std::is_void<T2>::value
       > * = nullptr
@@ -108,7 +108,7 @@ public:
   template <
     typename T = aux_stepper_t,
     typename T2 = ud_ops_t,
-  typename ::rompp::mpl::enable_if_t<
+  typename ::pressio::mpl::enable_if_t<
       std::is_void<T>::value and
       std::is_void<T2>::value
       > * = nullptr
@@ -137,7 +137,7 @@ public:
   /* sfinae here for when we need aux stepper */
   template <
     typename T = aux_stepper_t,
-    typename ::rompp::mpl::enable_if_t<
+    typename ::pressio::mpl::enable_if_t<
       std::is_void<T>::value == false
       > * = nullptr
     >
@@ -163,5 +163,5 @@ public:
 
 };
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

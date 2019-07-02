@@ -8,7 +8,7 @@
 #include "../helper_policies/solvers_line_search_policy.hpp"
 #include "../helper_policies/solvers_get_matrix_size_helper.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <
   typename line_search_t,
@@ -64,7 +64,7 @@ void gauss_newton_qr_solve(const system_t & sys,
   // print GN is starting
   auto fmt1 = utils::io::cyan() + utils::io::underline();
   const auto convString = std::string(is_converged_t::description_);
-  ::rompp::utils::io::print_stdout(fmt1, "GN with QR:", "criterion:",
+  ::pressio::utils::io::print_stdout(fmt1, "GN with QR:", "criterion:",
 				  convString, utils::io::reset(), "\n");
 #endif
 
@@ -81,9 +81,9 @@ void gauss_newton_qr_solve(const system_t & sys,
   while (iStep++ <= maxNonLIt)
   {
 #ifdef DEBUG_PRINT
-    ::rompp::utils::io::print_stdout("\n");
+    ::pressio::utils::io::print_stdout("\n");
     auto fmt = utils::io::underline();
-    ::rompp::utils::io::print_stdout(fmt, "GN step", iStep,
+    ::pressio::utils::io::print_stdout(fmt, "GN step", iStep,
 				    utils::io::reset(), "\n");
 #endif
 
@@ -109,9 +109,9 @@ void gauss_newton_qr_solve(const system_t & sys,
 
 #ifdef DEBUG_PRINT
     auto fmt1 = utils::io::magenta() + utils::io::bold();
-    ::rompp::utils::io::print_stdout(fmt1, "GN_JSize =",
-    ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
-    ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
+    ::pressio::utils::io::print_stdout(fmt1, "GN_JSize =",
+    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
+    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
 				    utils::io::reset(),
 				    "\n");
 #endif
@@ -140,7 +140,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     norm_evaluator_t::evaluate(dy, normN);
 
 #ifdef DEBUG_PRINT
-    ::rompp::utils::io::print_stdout(std::scientific,
+    ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
 				    "||dy|| =", normN,
@@ -177,5 +177,5 @@ void gauss_newton_qr_solve(const system_t & sys,
 }
 
 
-}}}} //end namespace rompp::solvers::iterative::implo
+}}}} //end namespace pressio::solvers::iterative::implo
 #endif

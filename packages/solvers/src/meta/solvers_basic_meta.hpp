@@ -5,7 +5,7 @@
 #include "../solvers_ConfigDefs.hpp"
 #include "../../../mpl/src/detection_idiom.hpp"
 
-namespace rompp{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T>
 using has_state_typedef = typename T::state_type;
@@ -23,5 +23,5 @@ template <typename T>
 using has_matrix_typedef = typename T::matrix_type;
 
 
-}}} // namespace rompp::solvers::meta
+}}} // namespace pressio::solvers::meta
 #endif

@@ -4,7 +4,7 @@
 
 #include "containers_wrapped_types_enum.hpp"
 
-namespace rompp{ namespace containers{ namespace details {
+namespace pressio{ namespace containers{ namespace details {
 
 //---------------------------------------
 /// common traits of containers containers
@@ -48,5 +48,5 @@ struct matrix_shared_traits{
 };
 
 
-}}} // end namespace rompp::containers::details
+}}} // end namespace pressio::containers::details
 #endif

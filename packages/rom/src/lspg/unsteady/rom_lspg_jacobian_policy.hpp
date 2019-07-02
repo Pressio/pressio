@@ -7,7 +7,7 @@
 #include "../../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "../../rom_data_fom_states.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template<
   typename fom_states_data,
@@ -232,5 +232,5 @@ protected:
 
 };
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

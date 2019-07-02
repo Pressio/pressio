@@ -2,7 +2,7 @@
 #include "tpetra_only_fixtures.hpp"
 
 TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
-  using namespace rompp;
+  using namespace pressio;
 
   // --------------------------------------------
   // construct and fill multivector wrapper

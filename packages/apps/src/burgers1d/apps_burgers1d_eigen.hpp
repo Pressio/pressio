@@ -1,13 +1,13 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_EIGEN_HPP_
-#define ROMPPAPPS_BURGERS1D_EIGEN_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_EIGEN_HPP_
+#define PRESSIOAPPS_BURGERS1D_EIGEN_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
 #include <iostream>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class Burgers1dEigen{
   using eigVec = Eigen::VectorXd;
@@ -109,5 +109,5 @@ private:
 
 };//end class
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

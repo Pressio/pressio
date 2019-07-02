@@ -11,7 +11,7 @@
 #include "../../ode_system_wrapper.hpp"
 //#include "../ode_implicit_aux_data.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 /*
  * (1) constructors here should be private but we need
@@ -118,7 +118,7 @@ public:
   template <
     typename T1 = standard_res_policy_t,
     typename T2 = standard_jac_policy_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, residual_pol_t>::value and
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
@@ -135,7 +135,7 @@ public:
   // cstr for standard jacob policies
   template <
     typename T2 = standard_jac_policy_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
@@ -154,5 +154,5 @@ public:
 
 };//end class
 
-}}//end namespace rompp::ode
+}}//end namespace pressio::ode
 #endif

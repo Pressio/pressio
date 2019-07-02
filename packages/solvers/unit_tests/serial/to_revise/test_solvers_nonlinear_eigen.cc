@@ -19,11 +19,11 @@ struct ValidSystem {
 
     // Matrix typedefs
     using matrix_n_t = Eigen::SparseMatrix<double>;
-    using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
+    using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
 
     // Vector typedefs
     using vector_n_t = Eigen::VectorXd;
-    using vector_w_t = rompp::containers::Vector<vector_n_t>;
+    using vector_w_t = pressio::containers::Vector<vector_n_t>;
 
     typedef vector_w_t vector_type;
     typedef matrix_w_t matrix_type;
@@ -64,8 +64,8 @@ struct ValidSystem {
 
 TEST(solvers_nonlinear_base, solversBaseGettersTest)
 {
-  using namespace rompp;
-  using namespace rompp::solvers;
+  using namespace pressio;
+  using namespace pressio::solvers;
 
   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
@@ -84,8 +84,8 @@ TEST(solvers_nonlinear_base, solversBaseGettersTest)
 
 TEST(solvers_non_linear_base, solversBaseSettersTest)
 {
-  using namespace rompp;
-  using namespace rompp::solvers;
+  using namespace pressio;
+  using namespace pressio::solvers;
 
   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
@@ -110,8 +110,8 @@ TEST(solvers_non_linear_base, solversBaseSettersTest)
 
 TEST(solvers_non_linear_base, solversBaseSolveTest)
 {
-  using namespace rompp;
-  using namespace rompp::solvers;
+  using namespace pressio;
+  using namespace pressio::solvers;
 
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = containers::Vector<vector_n_t>;
@@ -132,8 +132,8 @@ TEST(solvers_non_linear_base, solversBaseSolveTest)
 
 // TEST(solvers_non_linear_base, solversBaseBadSolveTest)
 // {
-//   using namespace rompp;
-//   using namespace rompp::solvers;
+//   using namespace pressio;
+//   using namespace pressio::solvers;
 
 //   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
@@ -145,8 +145,8 @@ TEST(solvers_non_linear_base, solversBaseSolveTest)
 
 TEST(solvers_non_linear_base, solversNewtonRaphsonSolve_Test)
 {
-  using namespace rompp;
-  using namespace rompp::solvers;
+  using namespace pressio;
+  using namespace pressio::solvers;
 
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = containers::Vector<vector_n_t>;

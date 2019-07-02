@@ -4,7 +4,7 @@
 
 #include "../ode_ConfigDefs.hpp"
 
-namespace rompp{ namespace ode{ namespace coeffs{
+namespace pressio{ namespace ode{ namespace coeffs{
 
 // bdf1 needs states: y_n and y_n-1
 static constexpr std::size_t bdf1_numAuxStates_ = 1;
@@ -24,5 +24,5 @@ struct bdf2{
 };
 
 
-}}}// end namespace rompp::ode::coeffs
+}}}// end namespace pressio::ode::coeffs
 #endif

@@ -5,7 +5,7 @@
 #include "containers_config.h"
 #include "../../utils/src/utils_ConfigDefs.hpp"
 
-namespace rompp{ namespace containers{ namespace default_types {
+namespace pressio{ namespace containers{ namespace default_types {
 
   //! Default value of Scalar template parameter.
   using scalar_t = double;
@@ -28,5 +28,5 @@ namespace rompp{ namespace containers{ namespace default_types {
 #endif
 
 
-}}} // end of namespace rompp::containers::default_types
+}}} // end of namespace pressio::containers::default_types
 #endif

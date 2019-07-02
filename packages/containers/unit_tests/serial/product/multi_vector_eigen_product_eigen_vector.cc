@@ -3,7 +3,7 @@
 #include "CONTAINERS_ALL"
 
 using eigdmat_t = Eigen::MatrixXd;
-using myMV_t = rompp::containers::MultiVector<eigdmat_t>;
+using myMV_t = pressio::containers::MultiVector<eigdmat_t>;
 
 
 TEST(containers_multi_vector_serial_eigen_dynamic_class,
@@ -19,10 +19,10 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   A(5,0) = 0.; A(5,1) = 1.; A(5,2) = 1.;
   
   // eigen vector
-  rompp::containers::Vector<Eigen::VectorXd> b(3);
+  pressio::containers::Vector<Eigen::VectorXd> b(3);
   b(0) = 1.; b(1) = 1.; b(2) = 1.;
 
-  auto c1 = rompp::containers::ops::product(A,b);
+  auto c1 = pressio::containers::ops::product(A,b);
   ASSERT_EQ( c1.size(), 6 );
   EXPECT_DOUBLE_EQ( c1(0), 6.);
   EXPECT_DOUBLE_EQ( c1(1), 6.);
@@ -31,8 +31,8 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   EXPECT_DOUBLE_EQ( c1(4), 1.);
   EXPECT_DOUBLE_EQ( c1(5), 2.);
   
-  rompp::containers::Vector<Eigen::VectorXd> c(6);  
-  rompp::containers::ops::product(A,b,c);
+  pressio::containers::Vector<Eigen::VectorXd> c(6);  
+  pressio::containers::ops::product(A,b,c);
   for (auto i=0; i<c1.size(); i++)
     EXPECT_DOUBLE_EQ( c(i), c(i));
 }

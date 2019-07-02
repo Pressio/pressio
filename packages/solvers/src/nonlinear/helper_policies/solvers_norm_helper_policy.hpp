@@ -5,7 +5,7 @@
 #include "../../solvers_ConfigDefs.hpp"
 #include "../../../../CONTAINERS_OPS"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <typename convergence_tag>
 struct NormSelectorHelper{
@@ -25,22 +25,22 @@ template <typename norm_t>
 struct ComputeNormHelper;
 
 template <>
-struct ComputeNormHelper<::rompp::solvers::L2Norm>{
+struct ComputeNormHelper<::pressio::solvers::L2Norm>{
   template <typename vec_t, typename scalar_t>
   static void evaluate(const vec_t & vecIn, scalar_t & result) {
-    result = ::rompp::containers::ops::norm2(vecIn);
+    result = ::pressio::containers::ops::norm2(vecIn);
   }
 };
 
 template <>
-struct ComputeNormHelper<::rompp::solvers::L1Norm>{
+struct ComputeNormHelper<::pressio::solvers::L1Norm>{
   template <typename vec_t, typename scalar_t>
   static void evaluate(const vec_t & vecIn, scalar_t & result) {
-    result = ::rompp::containers::ops::norm1(vecIn);
+    result = ::pressio::containers::ops::norm1(vecIn);
   }
 };
 //---------------------------------------------------------
 
 
-}}}} //end namespace rompp::solvers::iterative::impl
+}}}} //end namespace pressio::solvers::iterative::impl
 #endif

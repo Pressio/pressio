@@ -4,7 +4,7 @@
 
 #include "containers_shared_traits.hpp"
 
-namespace rompp{ namespace containers{ namespace details {
+namespace pressio{ namespace containers{ namespace details {
 
 template<typename T, typename enable = void>
 struct traits : public

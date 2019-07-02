@@ -4,7 +4,7 @@
 
 TEST_F(tpetraR9Fixture,
        HouseholderTpetraMultiVectorOutOfPlace){
-  using namespace rompp;
+  using namespace pressio;
 
   // default: R_type == void, in_place = false
   using qr_algo = qr::Householder;
@@ -17,7 +17,7 @@ TEST_F(tpetraR9Fixture,
 
 TEST_F(tpetraR9Fixture,
        TSQRtpetraMultiVectorOutOfPlace){
-  using namespace rompp;
+  using namespace pressio;
 
   // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
@@ -30,7 +30,7 @@ TEST_F(tpetraR9Fixture,
 
 TEST_F(tpetraR9Fixture,
        ModGrShTpetraMultiVectorOutOfPlace){
-  using namespace rompp;
+  using namespace pressio;
 
   // default: R_type == void, in_place = false
   using qr_algo = qr::ModifiedGramSchmidt;
@@ -49,7 +49,7 @@ TEST_F(tpetraR9Fixture,
 
 // TEST_F(tpetraR9Fixture,
 //        TSQRtpetraMultiVectorOutOfPlaceWrapREigen){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   //-------------------------------------------
 //   // R_type == eigen_wrapper, in_place = false

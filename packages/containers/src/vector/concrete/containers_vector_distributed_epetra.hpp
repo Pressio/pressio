@@ -10,7 +10,7 @@
 #include "../../shared_base/containers_container_resizable_base.hpp"
 #include "../base/containers_vector_distributed_base.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class Vector<wrapped_type,
@@ -55,7 +55,7 @@ public:
 
   // assignment from any expression, force evaluation
   template <typename T,
-	    ::rompp::mpl::enable_if_t<
+	    ::pressio::mpl::enable_if_t<
 	      T::is_vector_expression> * = nullptr>
   this_t & operator=(const T & expr){
     assert(this->localSize() == expr.localSize());
@@ -87,7 +87,7 @@ public:
   // compound assignment from expression template
   // this += expr
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator+=(const T & expr) {
     assert(this->localSize() == expr.localSize());
@@ -99,7 +99,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this += b
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator+=(const T & other) {
     this->data_.Update(1.0, *other.data(), 1.0 );
@@ -110,7 +110,7 @@ public:
   // compound assignment from expression template
   // this -= expr
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator-=(const T & expr) {
     assert(this->localSize() == expr.localSize());
@@ -122,7 +122,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this -= b
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator-=(const T & other) {
     this->data_.Update(-1.0, *other.data(), 1.0 );
@@ -131,7 +131,7 @@ public:
 
 
   void print(std::string tag) const{
-    ::rompp::utils::io::print_stdout(tag);
+    ::pressio::utils::io::print_stdout(tag);
     data_.Print(std::cout);
   }
 
@@ -204,7 +204,7 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif
 #endif
 
@@ -214,7 +214,7 @@ private:
 
 
   // template<typename op_t, typename T,
-  // 	   ::rompp::mpl::enable_if_t<
+  // 	   ::pressio::mpl::enable_if_t<
   // 	     std::is_same<T,this_t>::value
   // 	     > * = nullptr
   // 	   >
@@ -226,7 +226,7 @@ private:
 
 
   // template<typename op_t, typename T,
-  // 	   ::rompp::mpl::enable_if_t<
+  // 	   ::pressio::mpl::enable_if_t<
   // 	     std::is_same<T,this_t>::value
   // 	     > * = nullptr
   // 	   >
@@ -242,7 +242,7 @@ private:
 
   // template<typename op0_t, typename T,
   // 	   typename op1_t, typename op2_t, typename op3_t,
-  // 	   ::rompp::mpl::enable_if_t<
+  // 	   ::pressio::mpl::enable_if_t<
   // 	     std::is_same<T,this_t>::value &&
   // 	     std::is_same<op0_t, std::plus<sc_t>>::value &&
   // 	     std::is_same<op1_t, op0_t>::value &&

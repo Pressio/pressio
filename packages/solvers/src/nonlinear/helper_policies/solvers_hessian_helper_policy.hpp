@@ -5,7 +5,7 @@
 #include "../../solvers_ConfigDefs.hpp"
 #include "../../../../CONTAINERS_OPS"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template<typename J_t, typename enable = void>
 struct HessianApproxHelper;
@@ -16,7 +16,7 @@ struct HessianApproxHelper;
 template<typename J_t>
 struct HessianApproxHelper<
   J_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_matrix_wrapper<J_t>::value
     >>{
 
@@ -24,14 +24,14 @@ struct HessianApproxHelper<
   static void evaluate(J_t & J, result_t & result)
   {
     constexpr bool transposeJ = true;
-    ::rompp::containers::ops::product<J_t, J_t, result_t,
+    ::pressio::containers::ops::product<J_t, J_t, result_t,
 				transposeJ>(J, J, result);
   }
 
   static auto evaluate(J_t & J)
-    -> decltype(::rompp::containers::ops::product<J_t, J_t, true>(J, J))
+    -> decltype(::pressio::containers::ops::product<J_t, J_t, true>(J, J))
   {
-    return ::rompp::containers::ops::product<J_t, J_t, true>(J, J);
+    return ::pressio::containers::ops::product<J_t, J_t, true>(J, J);
   }
 };
 
@@ -45,21 +45,21 @@ struct HessianApproxHelper<
 template<typename J_t>
 struct HessianApproxHelper<
   J_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper<J_t>::value
     >>
 {
   template <typename result_t>
   static void evaluate(J_t & J, result_t & result) {
-    ::rompp::containers::ops::dot_self(J, result);
+    ::pressio::containers::ops::dot_self(J, result);
   }
 
   static auto evaluate(J_t & J)
-    -> decltype(::rompp::containers::ops::dot_self(J)) {
-    return ::rompp::containers::ops::dot_self(J);
+    -> decltype(::pressio::containers::ops::dot_self(J)) {
+    return ::pressio::containers::ops::dot_self(J);
   }
 };
 
 
-}}}} //end namespace rompp::solvers::iterative::impl
+}}}} //end namespace pressio::solvers::iterative::impl
 #endif

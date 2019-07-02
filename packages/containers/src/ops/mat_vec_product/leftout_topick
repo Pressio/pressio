@@ -9,7 +9,7 @@
   
 // template <typename matrix_type,
 // 	  typename vector_type,
-// 	  ::rompp::mpl::enable_if_t<
+// 	  ::pressio::mpl::enable_if_t<
 // 	    containers::details::traits<matrix_type>::is_matrix==1 &&
 // 	    containers::details::traits<matrix_type>::isEpetra==1 &&
 // 	    containers::details::traits<matrix_type>::is_dense==1 &&
@@ -76,7 +76,7 @@
 
 // template <typename matrix_type,
 // 	  typename vector_type,
-// 	  ::rompp::mpl::enable_if_t<
+// 	  ::pressio::mpl::enable_if_t<
 // 	    details::traits<matrix_type>::is_matrix==1 &&
 // 	    details::traits<matrix_type>::isEpetra==1 &&
 // 	    details::traits<matrix_type>::is_sparse==1 &&
@@ -98,7 +98,7 @@
 
 // template <typename matrix_type,
 // 	  typename vector_type,
-// 	  ::rompp::mpl::enable_if_t<
+// 	  ::pressio::mpl::enable_if_t<
 // 	    details::traits<matrix_type>::is_matrix==1 &&
 // 	    details::traits<matrix_type>::isEpetra==1 &&
 // 	    details::traits<matrix_type>::is_sparse==1 &&

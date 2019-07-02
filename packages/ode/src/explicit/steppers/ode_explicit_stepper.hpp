@@ -5,7 +5,7 @@
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
 #include "ode_explicit_stepper_traits.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 template<
   ExplicitEnum whichone,
@@ -41,7 +41,7 @@ class ExplicitStepper
   using impl_class_t	= typename mytraits::impl_t;
   impl_class_t myImpl_ = {};
 
-  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
+  static constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
 
 public:
   ExplicitStepper()  = delete;
@@ -61,7 +61,7 @@ public:
   // only enable if the residual policy is standard
   template <
     typename T = policy_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<
   	T, policy_t
   	>::value
@@ -86,5 +86,5 @@ private:
 
 };//end class
 
-}} // end namespace rompp::ode
+}} // end namespace pressio::ode
 #endif

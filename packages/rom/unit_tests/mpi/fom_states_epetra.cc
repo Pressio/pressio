@@ -9,7 +9,7 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
 
-using namespace rompp;
+using namespace pressio;
 using rom_state_t	= containers::Vector<Eigen::VectorXd>;
 using matrix_w_t	= containers::MultiVector<Epetra_MultiVector>;
 using decoder_t		= rom::LinearDecoder<matrix_w_t>;

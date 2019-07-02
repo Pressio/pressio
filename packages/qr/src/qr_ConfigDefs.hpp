@@ -5,10 +5,10 @@
 #include "qr_config.h"
 #include "../../containers/src/containers_ConfigDefs.hpp"
 
-namespace rompp{ namespace qr{ namespace details {
+namespace pressio{ namespace qr{ namespace details {
 
 template<typename T, typename enable = void> struct traits{};
 template<typename T>  struct traits<const T> : traits<T> {};
 
-}}}// end namespace rompp::qr::details
+}}}// end namespace pressio::qr::details
 #endif

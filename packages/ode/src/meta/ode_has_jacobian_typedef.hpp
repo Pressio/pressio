@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template <typename T, typename enable = void>
 struct has_jacobian_typedef : std::false_type{};
@@ -19,5 +19,5 @@ struct has_jacobian_typedef<
     >
   > : std::true_type{};
 
-}}}//end namespace rompp::ode::meta
+}}}//end namespace pressio::ode::meta
 #endif

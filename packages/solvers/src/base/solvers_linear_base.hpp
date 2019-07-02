@@ -5,7 +5,7 @@
 #include "../solvers_ConfigDefs.hpp"
 #include "../solvers_meta_static_checks.hpp"
 
-namespace rompp{ namespace solvers{
+namespace pressio{ namespace solvers{
 
 /**
  * Base class for linear solver
@@ -42,7 +42,7 @@ struct LinearBase {
   }
 };
 
-}}//end namespace rompp::solvers
+}}//end namespace pressio::solvers
 #endif
 
 

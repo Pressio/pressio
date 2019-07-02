@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_UNSTEADY_LINEAR_ADV_DIFF_1D_EPETRA_HPP_
-#define ROMPP_APPS_UNSTEADY_LINEAR_ADV_DIFF_1D_EPETRA_HPP_
+#ifndef PRESSIO_APPS_UNSTEADY_LINEAR_ADV_DIFF_1D_EPETRA_HPP_
+#define PRESSIO_APPS_UNSTEADY_LINEAR_ADV_DIFF_1D_EPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -11,7 +11,7 @@
 #include <cmath>
 #include "../steady_linear_adv_diff1d/apps_steady_linear_adv_diff_1d_epetra.hpp"
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 class UnsteadyLinAdvDiff1dEpetra: public SteadyLinAdvDiff1dEpetra{
 protected:
   using nativeVec = Epetra_Vector;

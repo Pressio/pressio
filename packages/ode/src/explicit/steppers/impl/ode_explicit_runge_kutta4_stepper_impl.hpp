@@ -4,7 +4,7 @@
 
 #include "../ode_explicit_stepper_base.hpp"
 
-namespace rompp{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<
   typename scalar_type,
@@ -81,23 +81,23 @@ public:
     const scalar_type t_phalf = t + dt_half;
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
 
     // stage 1: ytmp = y + auxRhs0*dt_half;
     policy_(y, auxRhs0, sys_.get(), t);
-    ::rompp::containers::ops::do_update(ytmp, y, one, auxRhs0, dt_half);
+    ::pressio::containers::ops::do_update(ytmp, y, one, auxRhs0, dt_half);
 
     // stage 2: ytmp = y + auxRhs1*dt_half;
     policy_(ytmp, auxRhs1, sys_.get(), t_phalf);
-    ::rompp::containers::ops::do_update(ytmp, y, one, auxRhs1, dt_half);
+    ::pressio::containers::ops::do_update(ytmp, y, one, auxRhs1, dt_half);
 
     // stage 3: ytmp = y + auxRhs2*dt;
     policy_(ytmp, auxRhs2, sys_.get(), t_phalf);
-    ::rompp::containers::ops::do_update(ytmp, y, one, auxRhs2, dt);
+    ::pressio::containers::ops::do_update(ytmp, y, one, auxRhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     policy_(ytmp, auxRhs3, sys_.get(), t + dt);
-    ::rompp::containers::ops::do_update(y, one,
+    ::pressio::containers::ops::do_update(y, one,
 					auxRhs0, dt6,
 					auxRhs1, dt3,
 					auxRhs2, dt3,
@@ -132,7 +132,7 @@ public:
     const scalar_type t_phalf = t + dt_half;
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
 
     // stage 1: ytmp = y + auxRhs0*dt_half;
     policy_(y, auxRhs0, sys_.get(), t);
@@ -186,7 +186,7 @@ public:
     const scalar_type t_phalf = t + dt_half;
     const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
     const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
-    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
 
     // stage 1: ytmp = y + auxRhs0*dt_half;
     policy_(y, auxRhs0, sys_.get(), t);
@@ -212,5 +212,5 @@ public:
 
 }; //end class
 
-}}}//end namespace rompp::ode::impl
+}}}//end namespace pressio::ode::impl
 #endif

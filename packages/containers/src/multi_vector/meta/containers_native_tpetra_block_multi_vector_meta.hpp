@@ -6,7 +6,7 @@
 #include "../../meta/containers_meta_basic.hpp"
 #include <Tpetra_Experimental_BlockMultiVector_decl.hpp>
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_multi_vector_tpetra_block : std::false_type {};
@@ -14,7 +14,7 @@ struct is_multi_vector_tpetra_block : std::false_type {};
 template <typename T>
 struct is_multi_vector_tpetra_block<
   T,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     std::is_same<T,
 		 Tpetra::Experimental::BlockMultiVector<
 		   typename T::impl_scalar_type,
@@ -27,6 +27,6 @@ struct is_multi_vector_tpetra_block<
   > : std::true_type{};
 
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif
 #endif

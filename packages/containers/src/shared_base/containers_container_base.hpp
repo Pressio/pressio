@@ -4,7 +4,7 @@
 
 #include "../containers_ConfigDefs.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template<typename derived_type, typename wrapped_t>
 class ContainerBase
@@ -36,7 +36,7 @@ public:
     this->underlying().setZeroImpl();}
 
   template <typename T= derived_type,
-	    ::rompp::mpl::enable_if_t<
+	    ::pressio::mpl::enable_if_t<
   	      containers::details::traits<T>::is_shared_mem==0,
   	      int> = 0
   	    >
@@ -45,7 +45,7 @@ public:
   }
 
   template <typename T= derived_type,
-	    ::rompp::mpl::enable_if_t<
+	    ::pressio::mpl::enable_if_t<
   	      containers::details::traits<T>::is_shared_mem==1,
 	      int> = 0
   	    >
@@ -65,5 +65,5 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

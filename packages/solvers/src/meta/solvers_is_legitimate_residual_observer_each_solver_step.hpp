@@ -4,7 +4,7 @@
 
 #include "../solvers_ConfigDefs.hpp"
 
-namespace rompp{ namespace solvers{ namespace meta{
+namespace pressio{ namespace solvers{ namespace meta{
 
 template <typename observer_t, typename residual_t, typename = void>
 struct is_legitimate_residual_observer_each_solver_step
@@ -13,7 +13,7 @@ struct is_legitimate_residual_observer_each_solver_step
 template <typename observer_t, typename residual_t>
 struct is_legitimate_residual_observer_each_solver_step<
   observer_t, residual_t,
-  ::rompp::mpl::void_t<
+  ::pressio::mpl::void_t<
     decltype
     (
      std::declval<observer_t>().observeResidualEachGNStep
@@ -25,5 +25,5 @@ struct is_legitimate_residual_observer_each_solver_step<
     >
   > : std::true_type{};
 
-}}} //end namespace rompp::solvers::meta
+}}} //end namespace pressio::solvers::meta
 #endif

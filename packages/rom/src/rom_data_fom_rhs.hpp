@@ -4,7 +4,7 @@
 
 #include "rom_ConfigDefs.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 
 template <
@@ -17,7 +17,7 @@ template <typename fom_rhs_type>
 struct FomRhsData<
   fom_rhs_type,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_vector_wrapper<fom_rhs_type>::value
+    ::pressio::containers::meta::is_vector_wrapper<fom_rhs_type>::value
     >
   >
 {
@@ -45,7 +45,7 @@ template <typename fom_rhs_type>
 struct FomRhsData<
   fom_rhs_type,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_cstyle_array_pybind11<fom_rhs_type>::value
+    ::pressio::containers::meta::is_cstyle_array_pybind11<fom_rhs_type>::value
     >
   >
 {
@@ -56,7 +56,7 @@ struct FomRhsData<
     : fomRhs_{{fom_rhs_type(const_cast<fom_rhs_type &>(fomRhs0).request())}}
   {
     // reset to zero to be safe
-    ::rompp::containers::ops::set_zero(fomRhs_);
+    ::pressio::containers::ops::set_zero(fomRhs_);
     std::cout << "FomRhsData:: fomRhs_" << fomRhs_.data() << std::endl;
   }
 
@@ -68,5 +68,5 @@ protected:
 #endif
 
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

@@ -4,7 +4,7 @@
 #include "CONTAINERS_VECTOR"
 
 TEST(containers_vector_distributed_tpetra, Traits){
-  using namespace rompp;
+  using namespace pressio;
 
   using ST = double;
   using LO = int;

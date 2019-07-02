@@ -3,7 +3,7 @@
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) #To include "solvers_config.h"
 
-# Set the base directory in order to find rompp_version.h
+# Set the base directory in order to find pressio_version.h
 ASSERT_DEFINED(PROJECT_SOURCE_DIR)
 INCLUDE_DIRECTORIES(${PROJECT_NAME}_BINARY_DIR})
 

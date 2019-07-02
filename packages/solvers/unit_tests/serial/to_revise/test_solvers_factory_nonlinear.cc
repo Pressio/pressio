@@ -10,7 +10,7 @@
 TEST(solvers_factory_nonlinear, solversFactoryTestValidSolver)
 {
   // Namespaces
-  using namespace rompp;
+  using namespace pressio;
   using namespace solvers;
 
   // Create linear solver using a valid solver type

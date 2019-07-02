@@ -15,7 +15,7 @@
 #include <pybind11/numpy.h>
 #endif
 
-namespace rompp{ namespace solvers{
+namespace pressio{ namespace solvers{
 
 
 // template <typename T, typename enable = void>
@@ -56,8 +56,8 @@ namespace rompp{ namespace solvers{
 template <
   typename scalar_t,
   typename linear_solver_t,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::mpl::is_default_constructible<linear_solver_t>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::is_default_constructible<linear_solver_t>::value
 #ifdef HAVE_PYBIND11
     or std::is_same<linear_solver_t, pybind11::object>::value
 #endif
@@ -84,7 +84,7 @@ private:
   template <typename T>
   scalar_t normOfDifference(const T & v1, const T& v2) const{
     T dVec(v1 - v2);
-    return ::rompp::containers::ops::norm2(dVec);
+    return ::pressio::containers::ops::norm2(dVec);
   }
 
 public:
@@ -112,9 +112,9 @@ public:
     while (iStep++ <= this->maxIters_)
     {
 #ifdef DEBUG_PRINT
-      ::rompp::utils::io::print_stdout("\n");
+      ::pressio::utils::io::print_stdout("\n");
       auto fmt = utils::io::underline();
-      ::rompp::utils::io::print_stdout(fmt, "NewRaph step", iStep,
+      ::pressio::utils::io::print_stdout(fmt, "NewRaph step", iStep,
 				      utils::io::reset(), "\n");
 #endif
 
@@ -124,8 +124,8 @@ public:
 
       linSolver_.solve(Jac, Residual, dx);
       x -= dx;
-      normN_ =::rompp::containers::ops::norm2(dx);
-      ::rompp::utils::io::print_stdout("norm(dx) =", normN_, "\n");
+      normN_ =::pressio::containers::ops::norm2(dx);
+      ::pressio::utils::io::print_stdout("norm(dx) =", normN_, "\n");
       if (normN_ < this->tolerance_)
       	break;
     }
@@ -161,9 +161,9 @@ public:
     while (iStep++ <= this->maxIters_)
     {
 #ifdef DEBUG_PRINT
-      ::rompp::utils::io::print_stdout("\n");
+      ::pressio::utils::io::print_stdout("\n");
       auto fmt = utils::io::underline();
-      ::rompp::utils::io::print_stdout(fmt, "NewRaph step", iStep,
+      ::pressio::utils::io::print_stdout(fmt, "NewRaph step", iStep,
 				      utils::io::reset(), "\n");
 #endif
 
@@ -175,8 +175,8 @@ public:
       for (auto i=0; i<x.size(); ++i)
 	x.mutable_at(i) -= dx.at(i);
 
-      normN_ =::rompp::containers::ops::norm2(dx);
-      ::rompp::utils::io::print_stdout("norm(dx) =", normN_, "\n");
+      normN_ =::pressio::containers::ops::norm2(dx);
+      ::pressio::utils::io::print_stdout("norm(dx) =", normN_, "\n");
       if (normN_ < this->tolerance_)
       	break;
     }
@@ -186,5 +186,5 @@ public:
 
 };//class
 
-}} //end namespace rompp::solvers
+}} //end namespace pressio::solvers
 #endif

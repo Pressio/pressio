@@ -5,7 +5,7 @@
 #include <type_traits>
 
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
   template <typename T, typename enable = void>
   struct has_communicator_typedef : std::false_type{};
@@ -20,5 +20,5 @@ namespace rompp{ namespace containers{ namespace meta {
             >::type
           > : std::true_type{};
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif

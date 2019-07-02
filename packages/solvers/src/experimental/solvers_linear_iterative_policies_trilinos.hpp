@@ -5,7 +5,7 @@
 
 #include "AztecOO.h"
 
-namespace rompp{
+namespace pressio{
 namespace solvers{
 namespace trilinos_policies {
 
@@ -75,6 +75,6 @@ struct Jacobi {
 
 } // end namespace trilinos_policies
 } // end namespace solvers
-}//end namespace rompp
+}//end namespace pressio
 #endif
 #endif

@@ -5,14 +5,14 @@
 #include "CONTAINERS_VECTOR"
 #include "CONTAINERS_MATRIX"
 
-namespace rompp{ namespace solvers{ namespace test{
+namespace pressio{ namespace solvers{ namespace test{
 
 struct Rosenbrock4 {
 
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_dyn_vec	= Eigen::VectorXd;
-  using jacobian_w_t	= rompp::containers::Matrix<eig_dyn_mat>;
-  using state_w_t	= rompp::containers::Vector<eig_dyn_vec>;
+  using jacobian_w_t	= pressio::containers::Matrix<eig_dyn_mat>;
+  using state_w_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using scalar_type = double;
   using state_type	= state_w_t;
@@ -67,5 +67,5 @@ struct Rosenbrock4 {
   }
 };
 
-}}} //end namespace rompp::solvers::test
+}}} //end namespace pressio::solvers::test
 #endif

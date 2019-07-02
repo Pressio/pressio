@@ -4,7 +4,7 @@
 #include "CONTAINERS_OPS"
 
 using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-using myvec_t = rompp::containers::Vector<eigvec_t>;
+using myvec_t = pressio::containers::Vector<eigvec_t>;
 
 TEST(containers_vector_serial_eigen_dynamic_class,
      additionOperator){

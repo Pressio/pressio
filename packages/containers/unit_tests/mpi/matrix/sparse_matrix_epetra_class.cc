@@ -8,7 +8,7 @@ TEST_F(epetraSparseMatR7MultiVectorR9C4Fixture,
       CrsMatrixWrapperConstructor){
   
   sm_->fillingIsCompleted();
-  using mymat_w_t = rompp::containers::Matrix<Epetra_CrsMatrix>;
+  using mymat_w_t = pressio::containers::Matrix<Epetra_CrsMatrix>;
   mymat_w_t Bw(*sm_);
 }
 

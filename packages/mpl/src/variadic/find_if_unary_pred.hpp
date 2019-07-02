@@ -1,11 +1,11 @@
 
-#ifndef ROMPP_MPL_VARIADIC_FIND_IF_UNARY_HPP
-#define ROMPP_MPL_VARIADIC_FIND_IF_UNARY_HPP
+#ifndef PRESSIO_MPL_VARIADIC_FIND_IF_UNARY_HPP
+#define PRESSIO_MPL_VARIADIC_FIND_IF_UNARY_HPP
 
 #include <type_traits>
 #include <cstddef>
 
-namespace rompp{ namespace mpl{ namespace variadic {
+namespace pressio{ namespace mpl{ namespace variadic {
 
 /**
  * \class find_if_unary_pred Compute the index of the first element in the sequence which satisfies a given predicate
@@ -41,4 +41,4 @@ using find_if_unary_pred_t = typename find_if_unary_pred<UnaryPredicate, Args...
 
 }}} // namespace 
 
-#endif // ROMPP_MPL_VARIADIC_FIND_IF_UNARY_HPP
+#endif // PRESSIO_MPL_VARIADIC_FIND_IF_UNARY_HPP

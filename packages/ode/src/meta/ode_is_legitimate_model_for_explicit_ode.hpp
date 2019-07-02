@@ -7,7 +7,7 @@
 #include "ode_has_velocity_typedef.hpp"
 #include "ode_model_has_all_needed_velocity_methods.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<typename model_type,
 	 typename enable = void>
@@ -17,7 +17,7 @@ template<typename model_type>
 struct is_legitimate_model_for_explicit_ode<
   model_type,
   typename std::enable_if<
-    ::rompp::containers::meta::has_scalar_typedef<model_type>::value and
+    ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
     has_state_typedef<model_type>::value and
     has_velocity_typedef<model_type>::value and
     model_has_needed_velocity_methods<
@@ -30,5 +30,5 @@ struct is_legitimate_model_for_explicit_ode<
 
 //-------------------------------------------------------
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

@@ -7,7 +7,7 @@
 #include "Epetra_MpiComm.h"
 #include "utils_read_ascii_matrix_std_vec_vec.hpp"
 
-namespace rompp{ namespace apps{ namespace test{ namespace epetra{
+namespace pressio{ namespace apps{ namespace test{ namespace epetra{
 
 // template just to avoid having a cc file
 template <typename T = int>
@@ -16,9 +16,9 @@ auto convertFromVVecToMultiVec(
       const T nrows, const T ncols,
       const Epetra_MpiComm & Comm,
       const Epetra_Map & rowMap)
-  -> rompp::containers::MultiVector<Epetra_MultiVector>{
+  -> pressio::containers::MultiVector<Epetra_MultiVector>{
 
-  rompp::containers::MultiVector<Epetra_MultiVector> ADW(rowMap, ncols);
+  pressio::containers::MultiVector<Epetra_MultiVector> ADW(rowMap, ncols);
   // each process stores just its elements from A0
   int nMyElem = rowMap.NumMyElements();
   std::vector<int> myGel(nMyElem);
@@ -38,16 +38,16 @@ auto readBasis(
   T romSize, T numCell,
   const Epetra_MpiComm & Comm,
   const Epetra_Map & rowMap)
-  ->rompp::containers::MultiVector<Epetra_MultiVector>
+  ->pressio::containers::MultiVector<Epetra_MultiVector>
 {
   std::vector<std::vector<double>> A0;
-  ::rompp::apps::test::readAsciiMatrixStdVecVec(filename, A0, romSize);
+  ::pressio::apps::test::readAsciiMatrixStdVecVec(filename, A0, romSize);
   // read basis into a MultiVector
   auto phi = convertFromVVecToMultiVec(A0, numCell, romSize, Comm, rowMap);
   //  phi.data()->Print(std::cout);
   return phi;
 }
 
-}}}}// end namespace rompp::apps::test::epetra
+}}}}// end namespace pressio::apps::test::epetra
 
 #endif

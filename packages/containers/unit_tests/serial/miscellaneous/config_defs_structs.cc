@@ -2,7 +2,7 @@
 #include "CONTAINERS_BASIC"
 
 TEST(containers_basic, plusOpStructForExpTemplates){
-  using namespace rompp::containers;
+  using namespace pressio::containers;
 
   exprtemplates::plus_ OP;
   double a = 1.0;
@@ -16,7 +16,7 @@ TEST(containers_basic, plusOpStructForExpTemplates){
 
 
 TEST(containers_basic, subtractOpStructForExpTemplates){
-  using namespace rompp::containers;
+  using namespace pressio::containers;
 
   exprtemplates::subtract_ OP;
   double a = 1.1;
@@ -30,7 +30,7 @@ TEST(containers_basic, subtractOpStructForExpTemplates){
 
 
 TEST(containers_basic, prodOpStructForExpTemplates){
-  using namespace rompp::containers;
+  using namespace pressio::containers;
 
   exprtemplates::times_ OP;
   double a = 1.1;

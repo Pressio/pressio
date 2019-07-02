@@ -11,7 +11,7 @@
 // #include "AnasaziEpetraAdapter.hpp"
 // #include "AnasaziTpetraAdapter.hpp"
 
-namespace rompp{ namespace qr{ namespace impl{
+namespace pressio{ namespace qr{ namespace impl{
 
 template<typename matrix_t, typename R_t, int n, int m,
 	 typename MV_t, template<typename...> class Q_type>
@@ -38,7 +38,7 @@ public:
 				*Qmat_->data(),
 				*localR_.get(),
 				false);
-    //::rompp::utils::io::print_stdout(*localR_.get());
+    //::pressio::utils::io::print_stdout(*localR_.get());
 
 // #ifdef DEBUG_PRINT
 //     int myrank{};
@@ -67,7 +67,7 @@ public:
 
   // if R_type != wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      !containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
 	      !std::is_void<T>::value
   	      > * = nullptr>
@@ -78,7 +78,7 @@ public:
 
   // if R_type == wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
 	      !std::is_void<T>::value
   	      > * = nullptr>
@@ -113,6 +113,6 @@ private:
   mutable std::shared_ptr<R_t> Rmat_	= nullptr;
 };
 
-}}} // end namespace rompp::qr::impl
+}}} // end namespace pressio::qr::impl
 #endif
 #endif

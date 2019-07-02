@@ -11,7 +11,7 @@
 #include <Epetra_Export.h>
 #include <Epetra_Import.h>
 
-namespace rompp{
+namespace pressio{
 namespace containers{
 namespace mat_ops{
   
@@ -60,7 +60,7 @@ void product(const matrix_type & A,
   
 template <typename matrix_type,
 	  typename vector_type,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
 	    containers::details::traits<matrix_type>::is_matrix==1 &&
 	    containers::details::traits<matrix_type>::isEpetra==1 &&
 	    containers::details::traits<matrix_type>::is_dense==1 &&
@@ -113,5 +113,5 @@ auto product(const matrix_type & A,
 
 } // end namespace mat_ops
 } // end namespace containers
-}//end namespace rompp
+}//end namespace pressio
 #endif

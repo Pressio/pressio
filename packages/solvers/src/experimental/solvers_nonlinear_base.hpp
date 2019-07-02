@@ -13,7 +13,7 @@
 #include "solvers_meta_static_checks.hpp"
 
 
-namespace rompp{
+namespace pressio{
 namespace solvers{
 
 
@@ -176,5 +176,5 @@ the solution hint is invalid." << std::endl;
 };
 
 } //end namespace solvers
-}//end namespace rompp
+}//end namespace pressio
 #endif

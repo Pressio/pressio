@@ -5,7 +5,7 @@
 #include "reference_apps_for_testing.hpp"
 
 TEST(user_defined_model, admissibleExplicitOde){
-  using namespace rompp;
+  using namespace pressio;
 
   // struct fakeapp{
   //   using scalar_type = double;
@@ -24,8 +24,8 @@ TEST(user_defined_model, admissibleExplicitOde){
   //   };
   // };
 
-  using app_t = ::rompp::ode::testing::fakeAppForTraitsForExp;
-  // static_assert(::rompp::mpl::is_detected<
+  using app_t = ::pressio::ode::testing::fakeAppForTraitsForExp;
+  // static_assert(::pressio::mpl::is_detected<
 		// ode::meta::has_scalar_typedef,
 		// app_t>::value, " ");
 

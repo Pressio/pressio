@@ -4,7 +4,7 @@
 
 #include "containers_ConfigDefs.hpp"
 
-namespace rompp{
+namespace pressio{
 
-}//end namespace rompp
+}//end namespace pressio
 #endif

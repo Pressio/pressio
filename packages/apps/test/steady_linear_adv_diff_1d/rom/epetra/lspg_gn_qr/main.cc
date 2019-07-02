@@ -8,13 +8,13 @@
 #include "../../../fom/fom_gold_states.hpp"
 
 int main(int argc, char *argv[]){
-  using fom_t		= rompp::apps::SteadyLinAdvDiff1dEpetra;
+  using fom_t		= pressio::apps::SteadyLinAdvDiff1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
+  using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
-  using decoder_jac_t	= rompp::containers::MultiVector<Epetra_MultiVector>;
-  using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
   using native_state    = typename fom_t::state_type;
 
   std::string checkStr {"PASSED"};
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
   appObj.calculateLinearSystem();
   appObj.calculateForcingTerm();
   appObj.solve();
-  rompp::containers::Vector<native_state> yFom(*appObj.getState());
+  pressio::containers::Vector<native_state> yFom(*appObj.getState());
 
   // number of degrees of freedom
   const int numDof = appObj.getNumGlobalNodes();
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]){
   constexpr int romSize = 15;
   // store modes computed before from file
   decoder_jac_t phi =
-    rompp::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
+    pressio::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
   					 Comm, appObj.getDataMap());
   //print to terminal the basis
   phi.data()->Print(std::cout);
@@ -68,9 +68,9 @@ int main(int argc, char *argv[]){
   yROM.putScalar(0.0);
 
   // define LSPG type
-  using lspg_problem_type = rompp::rom::DefaultLSPGSteadyTypeGenerator<
+  using lspg_problem_type = pressio::rom::DefaultLSPGSteadyTypeGenerator<
     fom_t, decoder_t, lspg_state_t>;
-  rompp::rom::LSPGSteadyProblemGenerator<lspg_problem_type> lspgProblem(
+  pressio::rom::LSPGSteadyProblemGenerator<lspg_problem_type> lspgProblem(
       appObj, *yRef, decoderObj, yROM);
 
   using rom_sys_t     = typename lspg_problem_type::lspg_system_t;
@@ -78,10 +78,10 @@ int main(int argc, char *argv[]){
 
   // GaussNewton solver
   using rom_jac_t     = typename lspg_problem_type::lspg_matrix_t;
-  using qr_algo = rompp::qr::TSQR;
-  using qr_type = rompp::qr::QRSolver<rom_jac_t, qr_algo>;
-  using converged_when_t = rompp::solvers::iterative::default_convergence;
-  using gnsolver_t  = rompp::solvers::iterative::GaussNewtonQR<
+  using qr_algo = pressio::qr::TSQR;
+  using qr_type = pressio::qr::QRSolver<rom_jac_t, qr_algo>;
+  using converged_when_t = pressio::solvers::iterative::default_convergence;
+  using gnsolver_t  = pressio::solvers::iterative::GaussNewtonQR<
          rom_sys_t, qr_type, converged_when_t>;
   gnsolver_t solver(lspgProblem.systemObj_, yROM);
   solver.setTolerance(1e-11);
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]){
 
   auto errorVec(yFom);
   errorVec = yFom-yFomFinal;
-  const auto norm2err = rompp::containers::ops::norm2(errorVec);
+  const auto norm2err = pressio::containers::ops::norm2(errorVec);
 
   if (norm2err > 1e-10) checkStr = "FAILED";
   std::cout << std::setprecision(15) << norm2err << std::endl;

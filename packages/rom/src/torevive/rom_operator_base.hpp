@@ -4,7 +4,7 @@
 
 #include "rom_ConfigDefs.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <typename derived_t>
 class OperatorBase
@@ -76,5 +76,5 @@ private:
 
 };//end class
 
-}} // end namespace rompp::rom
+}} // end namespace pressio::rom
 #endif

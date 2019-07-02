@@ -6,7 +6,7 @@
 #include "../containers_ConfigDefs.hpp"
 #include "../meta/containers_meta_basic.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template<typename derived_type, typename comm_t>
 class ContainerDistributedMpiBase
@@ -22,7 +22,7 @@ public:
       #ifdef HAVE_TRILINOS
 	      !meta::is_teuchos_rcp<T>::value and 
       #endif
-        !::rompp::mpl::is_std_shared_ptr<T>::value 
+        !::pressio::mpl::is_std_shared_ptr<T>::value 
 	      >::type * = nullptr
 	    >
   T const & commCRef() const{
@@ -34,7 +34,7 @@ public:
       #ifdef HAVE_TRILINOS
         meta::is_teuchos_rcp<T>::value or 
       #endif
-        ::rompp::mpl::is_std_shared_ptr<T>::value 
+        ::pressio::mpl::is_std_shared_ptr<T>::value 
   	      >::type * = nullptr>
   T comm() const{
     return this->underlying().commImpl();
@@ -52,6 +52,6 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif
 #endif

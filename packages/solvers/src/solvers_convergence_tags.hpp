@@ -4,7 +4,7 @@
 
 #include "solvers_norm_tags.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{
+namespace pressio{ namespace solvers{ namespace iterative{
 
 namespace converged_when{
 
@@ -25,10 +25,10 @@ struct relativeNormResidualBelowTol{
 
 struct completingNumMaxIters{};
 
-}//end namespace rompp::solvers::convergedWhen
+}//end namespace pressio::solvers::convergedWhen
 
 using default_convergence
 	= converged_when::absoluteNormCorrectionBelowTol<L2Norm>;
 
-}}}//end namespace rompp::solvers::iterative
+}}}//end namespace pressio::solvers::iterative
 #endif

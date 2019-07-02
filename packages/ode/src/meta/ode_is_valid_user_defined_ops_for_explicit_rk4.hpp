@@ -6,7 +6,7 @@
 #include "../../../containers/src/meta/containers_has_static_method_do_update_two_terms.hpp"
 #include "../../../containers/src/meta/containers_has_static_method_do_update_four_terms.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<typename T,
 	 typename scalar_t,
@@ -23,11 +23,11 @@ template<typename T,
 struct is_valid_user_defined_ops_for_explicit_rk4<
   T, scalar_t, state_t, residual_t,
     mpl::enable_if_t<
-      ::rompp::containers::meta::is_vector_wrapper<state_t>::value
+      ::pressio::containers::meta::is_vector_wrapper<state_t>::value
       and
-      ::rompp::containers::meta::has_update_op_typedef<T>::value
+      ::pressio::containers::meta::has_update_op_typedef<T>::value
       and
-      ::rompp::containers::meta::has_static_method_do_update_two_terms<
+      ::pressio::containers::meta::has_static_method_do_update_two_terms<
 	typename T::update_op,
 	scalar_t,
 	typename containers::details::traits<state_t>::wrapped_t,
@@ -35,7 +35,7 @@ struct is_valid_user_defined_ops_for_explicit_rk4<
 	typename containers::details::traits<residual_t>::wrapped_t
 	>::value
       and
-      ::rompp::containers::meta::has_static_method_do_update_four_terms<
+      ::pressio::containers::meta::has_static_method_do_update_four_terms<
 	typename T::update_op,
 	scalar_t,
 	typename containers::details::traits<state_t>::wrapped_t,
@@ -56,18 +56,18 @@ template<typename T,
 struct is_valid_user_defined_ops_for_explicit_rk4<
   T, scalar_t, state_t, residual_t,
     mpl::enable_if_t<
-      ::rompp::containers::meta::is_array_pybind11<state_t>::value
+      ::pressio::containers::meta::is_array_pybind11<state_t>::value
       and
-      ::rompp::containers::meta::is_array_pybind11<residual_t>::value
+      ::pressio::containers::meta::is_array_pybind11<residual_t>::value
       and
-      ::rompp::containers::meta::has_update_op_typedef<T>::value
+      ::pressio::containers::meta::has_update_op_typedef<T>::value
       and
-      ::rompp::containers::meta::has_static_method_do_update_two_terms<
+      ::pressio::containers::meta::has_static_method_do_update_two_terms<
 	typename T::update_op,
 	scalar_t, state_t, residual_t, residual_t
 	>::value
       and
-      ::rompp::containers::meta::has_static_method_do_update_four_terms<
+      ::pressio::containers::meta::has_static_method_do_update_four_terms<
 	typename T::update_op,
 	scalar_t, state_t, residual_t, residual_t, residual_t, residual_t
 	>::value
@@ -76,5 +76,5 @@ struct is_valid_user_defined_ops_for_explicit_rk4<
 #endif
 
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

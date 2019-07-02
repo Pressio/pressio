@@ -7,14 +7,14 @@
 #include "../../../multi_vector/containers_multi_vector_meta.hpp"
 #include "containers_tpetra_multi_vector_dot_self.hpp"
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 // Tpetra multivector (A) dot self
 // this is equivalent to doing A^T * A
 
 template <
   typename mvec_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<
       mvec_t
       >::value
@@ -53,7 +53,7 @@ void dot_self(const mvec_t & mvA,
 
 template <
   typename mvec_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<
       mvec_t
       >::value
@@ -75,6 +75,6 @@ auto dot_self(const mvec_t & mvA)
 }
 
 
-}}} // end namespace rompp::containers::ops
+}}} // end namespace pressio::containers::ops
 #endif
 #endif

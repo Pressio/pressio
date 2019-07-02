@@ -1,10 +1,10 @@
 
-#ifndef ROMPP_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
-#define ROMPP_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
+#ifndef PRESSIO_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
+#define PRESSIO_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
 
 #include "rom_lspg_type_generator_default.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <typename lspg_problem>
 struct LSPGSteadyProblemGenerator<
@@ -61,5 +61,5 @@ struct LSPGSteadyProblemGenerator<
 
 };
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

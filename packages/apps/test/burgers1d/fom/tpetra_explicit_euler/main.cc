@@ -24,7 +24,7 @@ void checkSol(int rank, const T & y,
 }
 
 int main(int argc, char *argv[]){
-  using app_t		= rompp::apps::Burgers1dTpetra;
+  using app_t		= pressio::apps::Burgers1dTpetra;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
   using app_velocity_t	= typename app_t::velocity_type;
@@ -49,12 +49,12 @@ int main(int argc, char *argv[]){
     appobj.setup();
     auto & y0n = appobj.getInitialState();
 
-    using ode_state_t = rompp::containers::Vector<app_state_t>;
-    using ode_res_t   = rompp::containers::Vector<app_velocity_t>;
+    using ode_state_t = pressio::containers::Vector<app_state_t>;
+    using ode_res_t   = pressio::containers::Vector<app_velocity_t>;
     ode_state_t y(y0n);
 
-    constexpr auto ode_case = rompp::ode::ExplicitEnum::Euler;
-    using stepper_t = rompp::ode::ExplicitStepper<
+    constexpr auto ode_case = pressio::ode::ExplicitEnum::Euler;
+    using stepper_t = pressio::ode::ExplicitStepper<
       ode_case, ode_state_t, app_t, ode_res_t, scalar_t>;
     stepper_t stepperObj(y, appobj);
 
@@ -62,9 +62,9 @@ int main(int argc, char *argv[]){
     scalar_t fint = 35;
     scalar_t dt = 0.01;
     auto Nsteps = static_cast<unsigned int>(fint/dt);
-    rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
+    pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
     {
-      using namespace rompp::apps::test;
+      using namespace pressio::apps::test;
       checkSol(rank, y, Burgers1dExpGoldStates<ode_case>::get(Ncells, dt, fint));
     }
   }

@@ -1,11 +1,11 @@
 
-#ifndef ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
-#define ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
+#ifndef PRESSIO_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
+#define PRESSIO_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_rom_adapter_HPP_
 
 #include "apps_steady_linear_adv_diff_2d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class SteadyLinAdvDiff2dEpetraRomAdapter{
   using mv_t = Epetra_MultiVector;
@@ -106,6 +106,6 @@ private:
 
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

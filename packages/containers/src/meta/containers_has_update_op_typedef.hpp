@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 /*
  * detect is a type T has a typedef named update_op
@@ -28,5 +28,5 @@ struct has_update_op_typedef<
 	using type = typename T::update_op;
 };
 
-}}} // namespace rompp::containers::meta
+}}} // namespace pressio::containers::meta
 #endif

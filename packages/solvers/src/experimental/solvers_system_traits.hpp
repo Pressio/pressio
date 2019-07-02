@@ -7,7 +7,7 @@
 #include "../../../containers/src/meta/containers_meta_detection_idiom.hpp"
 
 
-namespace rompp{
+namespace pressio{
 namespace solvers{
 namespace details {
 
@@ -90,5 +90,5 @@ struct system_traits {
 } // end namespace details
 } // end namespace solvers
 
-}//end namespace rompp
+}//end namespace pressio
 #endif

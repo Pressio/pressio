@@ -5,7 +5,7 @@
 #include "../ode_ConfigDefs.hpp"
 #include "../../../mpl/src/detection_idiom.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 
 template <typename T, typename a_t, typename b_t, typename = void>
@@ -14,7 +14,7 @@ struct has_velocity_method_callable_with_two_args : std::false_type{};
 template <typename T, typename a_t, typename b_t>
 struct has_velocity_method_callable_with_two_args<
   T, a_t, b_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     !std::is_void<
       decltype(
 	       std::declval<T>().velocity(
@@ -34,7 +34,7 @@ struct has_velocity_method_callable_with_three_args : std::false_type{};
 template <typename T, typename a_t, typename b_t, typename c_t>
 struct has_velocity_method_callable_with_three_args<
   T, a_t, b_t, c_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T>().velocity(
@@ -90,5 +90,5 @@ struct model_has_needed_velocity_methods<
   > : std::true_type{};
 
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

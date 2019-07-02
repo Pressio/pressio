@@ -5,12 +5,12 @@
 #include "rom_fwd.hpp"
 #include "../../CONTAINERS_OPS"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <typename wrapped_type>
 class MultiVectorOperator <
   wrapped_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper<
       wrapped_type>::value
     >
@@ -61,7 +61,7 @@ public:
   /* Y = op_ * X : pass Y */
   template <typename T1,
 	    typename T2,
-     ::rompp::mpl::enable_if_t<
+     ::pressio::mpl::enable_if_t<
        containers::meta::is_vector_wrapper<T1>::value &&
        containers::meta::is_vector_wrapper<T2>::value
        > * = nullptr
@@ -76,7 +76,7 @@ public:
 
   /* Y = op^T * X: return Y */
   template <typename T,
-     ::rompp::mpl::enable_if_t<
+     ::pressio::mpl::enable_if_t<
        containers::meta::is_vector_wrapper<T>::value or
        containers::meta::is_multi_vector_wrapper<T>::value
        > * = nullptr
@@ -93,7 +93,7 @@ public:
 
   /* Y = op^T * X: pass Y */
   template <typename T1, typename T2,
-     ::rompp::mpl::enable_if_t<
+     ::pressio::mpl::enable_if_t<
        containers::meta::is_vector_wrapper<T1>::value or
        containers::meta::is_multi_vector_wrapper<T1>::value
        > * = nullptr
@@ -108,5 +108,5 @@ public:
 
 };//end class
 
-}} // end namespace rompp::rom
+}} // end namespace pressio::rom
 #endif

@@ -5,7 +5,7 @@
 #include "./problems/solvers_utest_serial_expon_data_fit_n2.hpp"
 
 TEST(solvers_nonlinear_least_squares, gn_qr_exp_data_fit_n2){
-  using namespace rompp;
+  using namespace pressio;
 
   using problem_t   = solvers::test::ExpDataFitN2;
 
@@ -34,7 +34,7 @@ TEST(solvers_nonlinear_least_squares, gn_qr_exp_data_fit_n2){
 
 
 TEST(solvers_nonlinear_least_squares, gn_qr_only_2_steps_exp_data_fit_n2){
-  using namespace rompp;
+  using namespace pressio;
 
   using problem_t   = solvers::test::ExpDataFitN2;
   using state_w_t = typename problem_t::state_type;
@@ -63,7 +63,7 @@ TEST(solvers_nonlinear_least_squares, gn_qr_only_2_steps_exp_data_fit_n2){
 TEST(solvers_nonlinear_least_squares,
      gn_qr_only_pass_sys_type_exp_data_fit_n2){
 
-  using namespace rompp;
+  using namespace pressio;
 
   using problem_t   = solvers::test::ExpDataFitN2;
   using state_w_t = typename problem_t::state_type;

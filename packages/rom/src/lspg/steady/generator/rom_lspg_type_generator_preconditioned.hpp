@@ -4,7 +4,7 @@
 
 #include "../../rom_lspg_type_generator_common.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <
     typename fom_type,
@@ -49,11 +49,11 @@ struct PreconditionedLSPGSteadyTypeGenerator
   using lspg_matrix_t		= decoder_jac_t;
 
   // policy for evaluating the rhs of the fom object (<true> for unsteady overload)
-  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomVelocityDefault<this_t::steady_on>;
+  using fom_eval_rhs_policy_t	= ::pressio::rom::policy::EvaluateFomVelocityDefault<this_t::steady_on>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above (<true> for unsteady overload)
-  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault<this_t::steady_on>;
+  using fom_apply_jac_policy_t	= ::pressio::rom::policy::ApplyFomJacobianDefault<this_t::steady_on>;
 
   // policy defining how to compute the LSPG residual
   using lspg_residual_policy_t =
@@ -72,11 +72,11 @@ struct PreconditionedLSPGSteadyTypeGenerator
     >;
 
   // declare type of system
-  using lspg_system_t   = ::rompp::rom::LSPGSteadySystem<
+  using lspg_system_t   = ::pressio::rom::LSPGSteadySystem<
     fom_t, lspg_state_type, lspg_residual_t, lspg_matrix_t,
     lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class
 
-}}//end  namespace rompp::rom
+}}//end  namespace pressio::rom
 #endif

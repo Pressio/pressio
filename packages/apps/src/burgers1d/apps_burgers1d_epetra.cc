@@ -3,7 +3,7 @@
 #include "apps_burgers1d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 void Burgers1dEpetra::velocity(const state_type & u,
 			       velocity_type & rhs,
@@ -96,5 +96,5 @@ void Burgers1dEpetra::jacobian(const state_type & u,
 }//end jacobian
 //-------------------------------------------------------
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

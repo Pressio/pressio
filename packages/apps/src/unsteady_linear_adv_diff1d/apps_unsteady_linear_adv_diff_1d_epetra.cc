@@ -2,7 +2,7 @@
 #include "apps_unsteady_linear_adv_diff_1d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
-namespace rompp { namespace apps {
+namespace pressio { namespace apps {
 //------------------------------------------------------------------------
 // Unsteady setup: Calls the steady setup call before adding initial con
 //------------------------------------------------------------------------
@@ -35,5 +35,5 @@ void UnsteadyLinAdvDiff1dEpetra::velocity(const state_type & u,
     rhs[i] = -rhs[i];
 }
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

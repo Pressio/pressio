@@ -11,7 +11,7 @@
 #include "../helper_policies/solvers_line_search_policy.hpp"
 #include "../helper_policies/solvers_get_matrix_size_helper.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <
   typename system_t,
@@ -22,8 +22,8 @@ template <
   typename converged_when_tag,
   typename cbar_t,
   typename mat_t,
-  ::rompp::mpl::enable_if_t<
-    //::rompp::solvers::details::system_traits<system_t>::is_system and
+  ::pressio::mpl::enable_if_t<
+    //::pressio::solvers::details::system_traits<system_t>::is_system and
     containers::meta::is_vector_wrapper_eigen<
       typename system_t::state_type>::value and
     containers::meta::is_vector_wrapper<
@@ -86,7 +86,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   auto reset = utils::io::reset();
   auto fmt1 = utils::io::cyan() + utils::io::underline();
   const auto convString = std::string(is_conv_helper_t::description_);
-  ::rompp::utils::io::print_stdout(fmt1, "GN normal eqns conserv:",
+  ::pressio::utils::io::print_stdout(fmt1, "GN normal eqns conserv:",
 				  "criterion:",
 				  convString, reset, "\n");
 #endif
@@ -110,9 +110,9 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   {
 
 #ifdef DEBUG_PRINT
-    ::rompp::utils::io::print_stdout("\n");
+    ::pressio::utils::io::print_stdout("\n");
     auto fmt = utils::io::underline();
-    ::rompp::utils::io::print_stdout(fmt, "step", iStep,
+    ::pressio::utils::io::print_stdout(fmt, "step", iStep,
 				    utils::io::reset(), "\n");
 #endif
 
@@ -131,25 +131,25 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("lhs");
 #endif
-    ::rompp::containers::ops::dot_self(jacob, jTj);
-    // ::rompp::utils::io::print_stdout(*jTj.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    ::pressio::containers::ops::dot_self(jacob, jTj);
+    // ::pressio::utils::io::print_stdout(*jTj.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
-    ::rompp::containers::ops::dot(jacob, cbarT, jTcbarT);
-    // ::rompp::utils::io::print_stdout(*jTcbarT.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    ::pressio::containers::ops::dot(jacob, cbarT, jTcbarT);
+    // ::pressio::utils::io::print_stdout(*jTcbarT.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
-    ::rompp::containers::ops::dot(cbarT, jacob, cbarJ);
-    // ::rompp::utils::io::print_stdout(*cbarJ.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    ::pressio::containers::ops::dot(cbarT, jacob, cbarJ);
+    // ::pressio::utils::io::print_stdout(*cbarJ.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
     A.data()->block(0, 0, jTj.rows(), jTj.cols()) = *jTj.data();
     A.data()->block(0, jTj.cols(), jTcbarT.rows(), jTcbarT.cols()) = *jTcbarT.data();
     A.data()->block(jTj.rows(), 0, cbarJ.rows(), cbarJ.cols()) = *cbarJ.data();
     A.data()->block(jTj.rows(), jTj.cols(), zero.rows(), zero.cols()) = *zero.data();
 
-    // ::rompp::utils::io::print_stdout(*A.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout(*A.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("lhs");
@@ -157,12 +157,12 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
 #ifdef DEBUG_PRINT
     // auto fmt1 = utils::io::magenta() + utils::io::bold();
-    // ::rompp::utils::io::print_stdout(fmt1, "GN_JSize =",
-    // ::rompp::solvers::impl::MatrixGetSizeHelper<jac_t>::globalRows(jacob),
-    // ::rompp::solvers::impl::MatrixGetSizeHelper<jac_t>::globalCols(jacob),
+    // ::pressio::utils::io::print_stdout(fmt1, "GN_JSize =",
+    // ::pressio::solvers::impl::MatrixGetSizeHelper<jac_t>::globalRows(jacob),
+    // ::pressio::solvers::impl::MatrixGetSizeHelper<jac_t>::globalCols(jacob),
     // 				    "\n");
     // // this print only works when hessian is a shared mem matrix
-    // ::rompp::utils::io::print_stdout(fmt1, "GN_HessianSize =",
+    // ::pressio::utils::io::print_stdout(fmt1, "GN_HessianSize =",
     // 				    H.rows(), H.cols(),
     // 				    utils::io::reset(), "\n");
 #endif
@@ -172,12 +172,12 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     timer->start("rhs");
 #endif
 
-    ::rompp::containers::ops::dot(cbarT, resid, cbarR);
+    ::pressio::containers::ops::dot(cbarT, resid, cbarR);
     norm_evaluator_t::evaluate(cbarR, normCbarR);
 
-    ::rompp::containers::ops::product(cbarT, lambda, cbarTlambda);
+    ::pressio::containers::ops::product(cbarT, lambda, cbarTlambda);
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
-    ::rompp::containers::ops::dot(jacob, resid, jTr2);
+    ::pressio::containers::ops::dot(jacob, resid, jTr2);
 
     auto negOne = static_cast<scalar_t>(-1);
     jTr2.scale(negOne);
@@ -185,18 +185,18 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     b.data()->block(0, 0, jTr2.size(), 1) = *jTr2.data();
     b.data()->block(jTr2.size(), 0, cbarR.size(), 1) = *cbarR.data();
 
-    // ::rompp::utils::io::print_stdout("-----cbarTlambda-----\n");
-    // ::rompp::utils::io::print_stdout(*cbarTlambda.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout("-----cbarTlambda-----\n");
+    // ::pressio::utils::io::print_stdout(*cbarTlambda.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
-    // ::rompp::utils::io::print_stdout("-----jTr2-----\n");
-    // ::rompp::utils::io::print_stdout(*jTr2.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout("-----jTr2-----\n");
+    // ::pressio::utils::io::print_stdout(*jTr2.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
-    // ::rompp::utils::io::print_stdout(*cbarR.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
-    // ::rompp::utils::io::print_stdout(*b.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout(*cbarR.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout(*b.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("rhs");
@@ -221,7 +221,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     norm_evaluator_t::evaluate(dy_lambda, normLambda);
 
 #ifdef DEBUG_PRINT
-    ::rompp::utils::io::print_stdout(std::scientific,
+    ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
 				    "||cbar_R|| = ", normCbarR,
@@ -233,17 +233,17 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // // compute multiplicative factor if needed
     // lineSearchHelper(alpha, y, ytrial, dy, resid, jacob, sys);
 
-    // ::rompp::utils::io::print_stdout("-----dy-----\n");
-    // ::rompp::utils::io::print_stdout(*dy.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout("-----dy-----\n");
+    // ::pressio::utils::io::print_stdout(*dy.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
-    // ::rompp::utils::io::print_stdout("-----y-----\n");
-    // ::rompp::utils::io::print_stdout(*y.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout("-----y-----\n");
+    // ::pressio::utils::io::print_stdout(*y.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
-    // ::rompp::utils::io::print_stdout("-----y2-----\n");
-    // ::rompp::utils::io::print_stdout(*y2.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout("-----y2-----\n");
+    // ::pressio::utils::io::print_stdout(*y2.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
     y2 = y2 + alpha * dy;
 
@@ -251,13 +251,13 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     *y.data() = y2.data()->block(0, 0, y.size(), 1);
     *lambda.data() = y2.data()->block(y.size(), 0, lambda.size(), 1);
 
-    // ::rompp::utils::io::print_stdout("-----ynew-----\n");
-    // ::rompp::utils::io::print_stdout(*y.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout("-----ynew-----\n");
+    // ::pressio::utils::io::print_stdout(*y.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
-    // ::rompp::utils::io::print_stdout("-----y2new-----\n");
-    // ::rompp::utils::io::print_stdout(*y2.data(), "\n");
-    // ::rompp::utils::io::print_stdout("--------------\n");
+    // ::pressio::utils::io::print_stdout("-----y2new-----\n");
+    // ::pressio::utils::io::print_stdout(*y2.data(), "\n");
+    // ::pressio::utils::io::print_stdout("--------------\n");
 
     // check convergence (whatever method user decided)
     auto flag = is_conv_helper_t::evaluate(y, dy, normN, normRes,
@@ -275,7 +275,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
 #if defined DEBUG_PRINT
   std::cout.precision(ss);
-  ::rompp::utils::io::print_stdout(std::fixed);
+  ::pressio::utils::io::print_stdout(std::fixed);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -284,5 +284,5 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
 }
 
-}}}} //end namespace rompp::solvers::iterative::impl
+}}}} //end namespace pressio::solvers::iterative::impl
 #endif

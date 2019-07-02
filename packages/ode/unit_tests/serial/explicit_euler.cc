@@ -6,7 +6,7 @@
 
 
 TEST(ode_explicit_euler, traits){
-  using namespace rompp;
+  using namespace pressio;
 
   using app_t = ode::testing::fakeAppForTraitsForExp;
   using nstate_t = typename app_t::state_type;
@@ -39,7 +39,7 @@ TEST(ode_explicit_euler, traits){
 
 
 TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
-  using namespace rompp;
+  using namespace pressio;
   using app_t = ode::testing::refAppEigen;
   using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;
@@ -74,7 +74,7 @@ TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
 
 
 TEST(ode_explicit_euler, numericsStdResidualPolPassedByUser){
-  using namespace rompp;
+  using namespace pressio;
   using app_t = ode::testing::refAppEigen;
   using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;

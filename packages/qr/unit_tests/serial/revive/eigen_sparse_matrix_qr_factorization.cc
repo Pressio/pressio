@@ -5,7 +5,7 @@
 
 TEST(qr_factorization,
      EigenSparseMatrixQRFactorization){
-  using namespace rompp;
+  using namespace pressio;
 
   using mymat_t = containers::Matrix<Eigen::SparseMatrix<double,Eigen::RowMajor>>;
   STATIC_ASSERT_IS_CONTAINERS_MATRIX_WRAPPER(mymat_t);
@@ -51,8 +51,8 @@ TEST(qr_factorization,
   std::cout << *A.data() << std::endl;
 
   // do QR
-  using R_type = rompp::containers::Matrix<Eigen::MatrixXd>;
-  rompp::qr::QRSolver<mymat_t, rompp::containers::Matrix, R_type, ::rompp::qr::Householder> qrObj;
+  using R_type = pressio::containers::Matrix<Eigen::MatrixXd>;
+  pressio::qr::QRSolver<mymat_t, pressio::containers::Matrix, R_type, ::pressio::qr::Householder> qrObj;
   qrObj.computeThin(A);
   const auto & Q = qrObj.cRefQFactor();
   const auto & R = qrObj.cRefRFactor();

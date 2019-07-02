@@ -6,7 +6,7 @@
 #include "../qr_rfactor_solve_impl.hpp"
 #include "Tpetra_TsqrAdaptor.hpp"
 
-namespace rompp{ namespace qr{ namespace impl{
+namespace pressio{ namespace qr{ namespace impl{
 
 template<
   typename matrix_t, typename R_t,
@@ -63,7 +63,7 @@ public:
 
   // if R_type != wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      !containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
 	      !std::is_void<T>::value
   	      > * = nullptr>
@@ -74,7 +74,7 @@ public:
 
   // if R_type == wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
 	      !std::is_void<T>::value
   	      > * = nullptr>
@@ -110,6 +110,6 @@ private:
   mutable std::shared_ptr<R_t> Rmat_	= nullptr;
 };
 
-}}} // end namespace rompp::qr::impl
+}}} // end namespace pressio::qr::impl
 #endif
 #endif

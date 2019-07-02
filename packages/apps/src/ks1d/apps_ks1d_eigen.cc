@@ -1,7 +1,7 @@
 
 #include "apps_ks1d_eigen.hpp"
 
-namespace rompp{ namespace apps{ 
+namespace pressio{ namespace apps{ 
 
 void KS1dEigen::velocity(const state_type & u,
             velocity_type & rhs,
@@ -112,4 +112,4 @@ void KS1dEigen::jacobian(const state_type & u,
   jac.setFromTriplets(tripletList.begin(), tripletList.end());
 }
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps

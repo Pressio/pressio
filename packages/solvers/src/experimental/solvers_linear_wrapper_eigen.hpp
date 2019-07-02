@@ -3,7 +3,7 @@
 
 #include "../solvers_ConfigDefs.hpp"
 
-namespace rompp { namespace solvers {
+namespace pressio { namespace solvers {
 
 
 template <typename SolverT>
@@ -14,7 +14,7 @@ struct SolversLinearDirectWrapperEigen {
 
   template <
     typename MatrixT,
-    typename ::rompp::mpl::enable_if_t<
+    typename ::pressio::mpl::enable_if_t<
       containers::details::traits<MatrixT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen
     >* = nullptr
   >
@@ -24,7 +24,7 @@ struct SolversLinearDirectWrapperEigen {
 
   template <
     typename VectorT,
-    typename ::rompp::mpl::enable_if_t<
+    typename ::pressio::mpl::enable_if_t<
       containers::details::traits<VectorT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen
     >* = nullptr
   >
@@ -54,6 +54,6 @@ struct SolversLinearIterativeWrapperEigen : public SolversLinearDirectWrapperEig
 };
 
 
-}} // end namespace rompp::solvers
+}} // end namespace pressio::solvers
 
 #endif

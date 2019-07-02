@@ -4,7 +4,7 @@
 
 #include "ode_ConfigDefs.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 template<
   ExplicitEnum name,
@@ -99,5 +99,5 @@ class ExplicitRungeKutta4StepperImpl;
 
 }//end namespace impl
 
-}} // end namespace rompp::ode
+}} // end namespace pressio::ode
 #endif

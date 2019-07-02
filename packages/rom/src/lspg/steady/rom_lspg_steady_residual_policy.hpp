@@ -6,7 +6,7 @@
 #include "../../rom_data_fom_rhs.hpp"
 #include "../../rom_data_fom_states.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <
   typename fom_states_data,
@@ -80,5 +80,5 @@ public:
 
 };//end class
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

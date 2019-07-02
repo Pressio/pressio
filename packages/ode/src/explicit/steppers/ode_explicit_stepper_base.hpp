@@ -7,7 +7,7 @@
 #include "../../ode_storage.hpp"
 #include "../../ode_system_wrapper.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 /*
  * (1) constructors here should be private but we need
@@ -54,5 +54,5 @@ public:
 
 };//end class
 
-}}//end namespace rompp::ode
+}}//end namespace pressio::ode
 #endif

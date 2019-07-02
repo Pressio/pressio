@@ -17,7 +17,7 @@ void checkSol(const T & y,
 }
 
 int main(int argc, char *argv[]){
-  using fom_t	 = ::rompp::apps::SteadyLinAdvDiff2dEpetra;
+  using fom_t	 = ::pressio::apps::SteadyLinAdvDiff2dEpetra;
 
   int rank;
   MPI_Init(&argc,&argv);
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
   //appObj.printStateToFile("out.txt");
   auto T = appObj.getState();
   T->Print(std::cout << std::setprecision(15));
-  checkSol(*T, rompp::apps::test::steadyAdvDiff2d_nx11ny21);
+  checkSol(*T, pressio::apps::test::steadyAdvDiff2d_nx11ny21);
 
   MPI_Finalize();
   std::cout << checkStr <<  std::endl;

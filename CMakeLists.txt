@@ -1,9 +1,3 @@
-######################################################################
-#                                                                    #
-#                        TribitsExampleProjectMeta                   #
-#                                                                    #
-######################################################################
-
 # To be safe, define your minimum CMake version.
 # This may be newer than the min required by TriBITS.
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11 FATAL_ERROR)
@@ -12,10 +6,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11 FATAL_ERROR)
 # this to be in the top-level CMakeLists.txt file and not an include file :-(
 SET(CMAKE_LEGACY_CYGWIN_WIN32 1 CACHE BOOL "" FORCE)
 
-set(rompp_ENABLE_CXX11 ON)
+set(pressio_ENABLE_CXX11 ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-MESSAGE("The c++ standard for ROMPP is set for c++${CMAKE_CXX_STANDARD}" )
+MESSAGE("The c++ standard for PRESSIO is set for c++${CMAKE_CXX_STANDARD}" )
 #
 # A) Define your project name and set up major project options
 #
@@ -72,8 +66,8 @@ function(add_unit_test test_name mainfile )
   elseif(${NUMMPI} GREATER 1)
     SET(COMM1 mpi)
   endif()
-  # COMM serial => only run if rompp built without MPI
-  # COMM mpi => only run if rompp built with MPI
+  # COMM serial => only run if pressio built without MPI
+  # COMM mpi => only run if pressio built with MPI
   # COMM serial mpi => run in both cases,
   #		for MPI # of ranks set to tribits default 4
 

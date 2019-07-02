@@ -5,12 +5,12 @@
 #include "rom_fwd.hpp"
 #include "../../CONTAINERS_OPS"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template<typename wrapped_type>
 class MatrixOperator<
   wrapped_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_matrix_wrapper<
       wrapped_type>::value
     >
@@ -29,5 +29,5 @@ private:
 
 };//end class
 
-}} // end namespace rompp::rom
+}} // end namespace pressio::rom
 #endif

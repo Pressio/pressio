@@ -110,15 +110,15 @@ void read_inputs(scalar_t & c, scalar_t & dt , scalar_t & T, scalar_t & L, int &
 
 
 int main(int argc, char *argv[]){
-  using fom_t		= rompp::apps::KS1dEigen;
+  using fom_t		= pressio::apps::KS1dEigen;
   using scalar_t	= typename fom_t::scalar_type;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
+  using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using eig_dyn_mat	= Eigen::Matrix<scalar_t, -1, -1>;
-  using decoder_jac_t	= rompp::containers::MultiVector<eig_dyn_mat>;
-  using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_jac_t	= pressio::containers::MultiVector<eig_dyn_mat>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
 
   //-------------------------------
 
@@ -143,7 +143,7 @@ int main(int argc, char *argv[]){
 
   // store modes computed before from file
   decoder_jac_t phi =
-    rompp::apps::test::eigen::readBasis("basis.txt", romSize, numNode);
+    pressio::apps::test::eigen::readBasis("basis.txt", romSize, numNode);
   const int numBasis = phi.numVectors();
   if( numBasis != romSize ) return 0;
 
@@ -159,26 +159,26 @@ int main(int argc, char *argv[]){
   yROM.putScalar(0.0);
 
   // define LSPG type
-  constexpr auto ode_case  = rompp::ode::ImplicitEnum::BDF2;
-  using lspg_problem_types = rompp::rom::DefaultLSPGTypeGenerator<
+  constexpr auto ode_case  = pressio::ode::ImplicitEnum::BDF2;
+  using lspg_problem_types = pressio::rom::DefaultLSPGTypeGenerator<
     fom_t, ode_case, decoder_t, lspg_state_t>;
-  rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
+  pressio::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
       appobj, yRef, decoderObj, yROM, t0);
 
   using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t  = rompp::containers::Matrix<eig_dyn_mat>;
-  using solver_tag   = rompp::solvers::linear::iterative::LSCG;
-  using linear_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
+  using solver_tag   = pressio::solvers::linear::iterative::LSCG;
+  using linear_solver_t = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
   // rom is solved using eigen, hessian is wrapper of eigen matrix
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using gnsolver_t   = rompp::solvers::iterative::GaussNewton<
+  using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
     lspg_stepper_t, linear_solver_t>;
   gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
   solver.setTolerance(1e-13);
@@ -190,7 +190,7 @@ int main(int argc, char *argv[]){
   // define observer
   observer<lspg_state_t> Obs(Nsteps, romSize, yROM);
 
-  rompp::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, Nsteps, Obs, solver);
+  pressio::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, Nsteps, Obs, solver);
 
   Obs.printAll();
 

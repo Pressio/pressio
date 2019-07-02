@@ -9,15 +9,15 @@
 #include <pybind11/numpy.h>
 #endif
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 //--------------------------------------------------------------------------
 // enable for wrappers
 //--------------------------------------------------------------------------
 template<
   typename T,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_vector_wrapper<T>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper<T>::value
     > * = nullptr
   >
 void deep_copy(const T & src, T & dest){
@@ -30,8 +30,8 @@ void deep_copy(const T & src, T & dest){
 #ifdef HAVE_PYBIND11
 template<
   typename T,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_cstyle_array_pybind11<T>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
     > * = nullptr
   >
 void deep_copy(const T & src, T & dest){
@@ -50,5 +50,5 @@ void deep_copy(const T & src, T & dest){
 #endif
 
 
-}}}//end namespace rompp::containers::ops
+}}}//end namespace pressio::containers::ops
 #endif

@@ -13,7 +13,7 @@ Transform a dense matrix to sparse
 ===================================*/
 
 
-namespace rompp{
+namespace pressio{
 namespace containers{
   
 /*---------------------------------------------------
@@ -95,5 +95,5 @@ auto denseToSparse(const mat_type & A)
 
   
 } // end namespace containers
-}//end namespace rompp
+}//end namespace pressio
 #endif

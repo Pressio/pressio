@@ -7,7 +7,7 @@
 #include "EpetraExt_Transpose_RowMatrix.h"
 //#include <Epetra_RowMatrixTransposer.h>
 
-namespace rompp{
+namespace pressio{
 namespace containers{
 namespace mat_ops{
   
@@ -15,7 +15,7 @@ namespace mat_ops{
   EPETRA CRSMATRIX
 ----------------------------------------------------- */
 template <typename mat_type,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
 	    details::traits<mat_type>::isEpetra &&
 	    details::traits<mat_type>::is_sparse 
 	    > * = nullptr>
@@ -51,7 +51,7 @@ auto transpose(mat_type & A
   EIGEN SPARSE
 ----------------------------------------------------- */
 template <typename mat_type,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
 	    details::traits<mat_type>::is_sparse 
 	    > * = nullptr>
@@ -65,5 +65,5 @@ auto transpose(const mat_type & A)
   
 } // end namespace mat_ops  
 } // end namespace containers
-}//end namespace rompp
+}//end namespace pressio
 #endif

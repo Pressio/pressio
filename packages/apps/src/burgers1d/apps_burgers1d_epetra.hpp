@@ -1,6 +1,6 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_EPETRA_HPP_
-#define ROMPPAPPS_BURGERS1D_EPETRA_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_EPETRA_HPP_
+#define PRESSIOAPPS_BURGERS1D_EPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -16,7 +16,7 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class Burgers1dEpetra{
 protected:
@@ -141,7 +141,7 @@ protected:
   std::shared_ptr<Epetra_CrsMatrix> Jac_;
 };//end class
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 
 #endif
 #endif

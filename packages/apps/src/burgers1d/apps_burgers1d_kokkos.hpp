@@ -1,11 +1,11 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_KOKKOS_HPP_
-#define ROMPPAPPS_BURGERS1D_KOKKOS_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_KOKKOS_HPP_
+#define PRESSIOAPPS_BURGERS1D_KOKKOS_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 #include <Kokkos_Core.hpp>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 template <
   typename x_t,
@@ -128,5 +128,5 @@ private:
   mutable state_type_h U_h_; // state on host
 };//end class
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

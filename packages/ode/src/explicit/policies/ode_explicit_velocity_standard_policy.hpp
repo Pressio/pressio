@@ -10,7 +10,7 @@
 #include <pybind11/functional.h>
 #endif
 
-namespace rompp{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace policy{
 
 /*
  * state_type = velocity_type
@@ -105,5 +105,5 @@ public:
 #endif
 
 
-}}}//end namespace rompp::ode::policy
+}}}//end namespace pressio::ode::policy
 #endif

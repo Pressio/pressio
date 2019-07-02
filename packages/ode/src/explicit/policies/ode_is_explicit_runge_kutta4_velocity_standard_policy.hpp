@@ -4,7 +4,7 @@
 
 #include "ode_explicit_velocity_standard_policy.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<typename policy_t, typename enable = void>
 struct is_explicit_runge_kutta4_velocity_standard_policy
@@ -22,5 +22,5 @@ struct is_explicit_runge_kutta4_velocity_standard_policy<
     >::type
   > : std::true_type{};
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif

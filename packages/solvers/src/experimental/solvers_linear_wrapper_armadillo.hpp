@@ -5,7 +5,7 @@
 #include "../../../containers/src/meta/containers_meta_detection_idiom.hpp"
 
 
-namespace rompp {
+namespace pressio {
 namespace solvers {
 
 template <typename MatrixT>
@@ -38,7 +38,7 @@ class SolversLinearDirectWrapperArmadillo {
     template <
       typename DMatrixT,
       typename VectorT,
-      typename ::rompp::mpl::enable_if_t<
+      typename ::pressio::mpl::enable_if_t<
         containers::details::traits<DMatrixT>::is_dense
       >* = nullptr
     >
@@ -53,7 +53,7 @@ class SolversLinearDirectWrapperArmadillo {
     template <
       typename DMatrixT,
       typename VectorT,
-      typename ::rompp::mpl::enable_if_t<
+      typename ::pressio::mpl::enable_if_t<
         containers::details::traits<DMatrixT>::is_sparse
       >* = nullptr
     >
@@ -68,6 +68,6 @@ class SolversLinearDirectWrapperArmadillo {
 
 
 } // end namespace solvers
-} // end namespace rompp
+} // end namespace pressio
 
 #endif

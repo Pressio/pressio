@@ -4,7 +4,7 @@
 
 #include "../containers_multi_vector_traits.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template<typename derived_type>
 class MultiVectorDistributedBase
@@ -57,5 +57,5 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

@@ -1,7 +1,7 @@
 
 #include "apps_unsteady_nonlinear_adv_diff_reaction_2d_eigen.hpp"
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 void UnsteadyNonLinAdvDiffReac2dEigen::setupPhysicalGrid(){
   x_.resize(numGpt_);
@@ -255,4 +255,4 @@ void UnsteadyNonLinAdvDiffReac2dEigen::jacobian_impl
 
 }//end jacob
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps

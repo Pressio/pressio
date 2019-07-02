@@ -4,7 +4,7 @@
 
 #include "../../ode_fwd.hpp"
 
-namespace rompp{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace policy{
 
 template <typename derived_t>
 class ExplicitVelocityPolicyBase
@@ -23,5 +23,5 @@ public:
 
 };//end class
 
-}}}//end namespace rompp::ode::policy
+}}}//end namespace pressio::ode::policy
 #endif

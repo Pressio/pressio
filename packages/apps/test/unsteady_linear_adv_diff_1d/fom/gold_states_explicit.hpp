@@ -1,11 +1,11 @@
 
-#ifndef ROMPP_DEMO_APPS_TEST_UNSTEADYLINADVDIFF1D_GOLD_EXPLICIT_HPP_
-#define ROMPP_DEMO_APPS_TEST_UNSTEADYLINADVDIFF1D_GOLD_EXPLICIT_HPP_
+#ifndef PRESSIO_DEMO_APPS_TEST_UNSTEADYLINADVDIFF1D_GOLD_EXPLICIT_HPP_
+#define PRESSIO_DEMO_APPS_TEST_UNSTEADYLINADVDIFF1D_GOLD_EXPLICIT_HPP_
 
 #include "ODE_ALL"
 #include "APPS_UNSTEADYLINADVDIFF1D"
 
-namespace rompp { namespace apps{ namespace test{
+namespace pressio { namespace apps{ namespace test{
 
 template <ode::ExplicitEnum>
 struct UnsteadyLinAdvDiff1dExpGoldStates;
@@ -13,7 +13,7 @@ struct UnsteadyLinAdvDiff1dExpGoldStates;
 template <>
 struct UnsteadyLinAdvDiff1dExpGoldStates<ode::ExplicitEnum::Euler>{
   using result_t = std::vector<double>;
-  using scalar_t = rompp::apps::UnsteadyLinAdvDiff1dEpetra::scalar_type;
+  using scalar_t = pressio::apps::UnsteadyLinAdvDiff1dEpetra::scalar_type;
   static result_t get(std::vector<scalar_t> mu, std::vector<scalar_t> domain,
 		      std::vector<scalar_t> bc1D, double dt, double final_t){
     if (mu[0] == -1 && mu[1] == 1 && mu[2] == 1 && domain[0] ==0 &&
@@ -35,5 +35,5 @@ struct UnsteadyLinAdvDiff1dExpGoldStates<ode::ExplicitEnum::Euler>{
   } //end get
 }; //end struct
 
-}}} //end namespace rompp:apps::test
+}}} //end namespace pressio:apps::test
 #endif

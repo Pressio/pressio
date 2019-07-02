@@ -17,6 +17,6 @@ The original files contained the following header:
 //
 ```
 
-The copyright needs to be incorporated into the new header for ROMPP. 
+The copyright needs to be incorporated into the new header for PRESSIO. 
 All of this is legal under the terms of the original tinympl license, 
 which is included in  `ORIGINAL_TINYMPL_LICENSE.txt`.

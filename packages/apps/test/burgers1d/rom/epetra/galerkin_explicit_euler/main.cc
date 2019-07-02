@@ -23,14 +23,14 @@ const std::vector<double> bdf1Sol
 
  int main(int argc, char *argv[]){
 
-  using fom_t		= rompp::apps::Burgers1dEpetra;
+  using fom_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
 
-  using decoder_jac_t	= rompp::containers::MultiVector<Epetra_MultiVector>;
-  using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using rom_state_t	= rompp::containers::Vector<eig_dyn_vec>;
+  using rom_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   std::string checkStr {"PASSED"};
 
@@ -52,7 +52,7 @@ const std::vector<double> bdf1Sol
   // store (whichever way you want) the jacobian of the decoder
   constexpr int romSize = 20;
   decoder_jac_t phi =
-    rompp::apps::test::epetra::readBasis("basis.txt", romSize, numCell,
+    pressio::apps::test::epetra::readBasis("basis.txt", romSize, numCell,
 					 Comm, appobj.getDataMap());
   decoder_t decoderObj(phi);
 
@@ -64,15 +64,15 @@ const std::vector<double> bdf1Sol
   // initialize to zero (this has to be done)
   yROM.putScalar(0.0);
 
-  constexpr auto odeName = rompp::ode::ExplicitEnum::Euler;
-  using galerkin_t = rompp::rom::DefaultGalerkinExplicitTypeGenerator<
+  constexpr auto odeName = pressio::ode::ExplicitEnum::Euler;
+  using galerkin_t = pressio::rom::DefaultGalerkinExplicitTypeGenerator<
     fom_t, odeName, decoder_t, rom_state_t>;
-  rompp::rom::GalerkinProblemGenerator<galerkin_t> galerkinProb(
+  pressio::rom::GalerkinProblemGenerator<galerkin_t> galerkinProb(
       appobj, y0n, decoderObj, yROM, t0);
 
   scalar_t fint = 35;
   auto nSteps = static_cast<unsigned int>(fint/dt);
-  rompp::ode::integrateNSteps(galerkinProb.stepperObj_, yROM, 0.0, dt, nSteps);
+  pressio::ode::integrateNSteps(galerkinProb.stepperObj_, yROM, 0.0, dt, nSteps);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = galerkinProb.yFomReconstructor_(yROM);

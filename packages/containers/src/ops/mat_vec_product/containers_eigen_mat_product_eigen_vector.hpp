@@ -7,7 +7,7 @@
 #include "../../matrix/containers_matrix_meta.hpp"
 #include "../containers_eigen_ops_helper_impl.hpp"
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 /*---------------------------------------------------------
 c = A b
@@ -17,7 +17,7 @@ c = A b
 ---------------------------------------------------------*/
 
 template <typename A_t, typename b_t, typename c_t,
- ::rompp::mpl::enable_if_t<
+ ::pressio::mpl::enable_if_t<
    containers::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
    containers::meta::is_vector_wrapper_eigen<b_t>::value &&
    containers::meta::is_vector_wrapper_eigen<c_t>::value &&
@@ -33,7 +33,7 @@ void product(const A_t & A, const b_t & b, c_t & c){
 
 
 template <typename A_t, typename b_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
     containers::meta::is_vector_wrapper_eigen<b_t>::value &&
     containers::meta::wrapper_pair_have_same_scalar<A_t, b_t>::value
@@ -60,7 +60,7 @@ c = A b
 template <
   typename A_t, typename b_t, typename c_t,
   bool transposeA = false,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
     containers::meta::is_vector_wrapper_eigen<b_t>::value and
     containers::meta::is_vector_wrapper_eigen<c_t>::value and
@@ -79,7 +79,7 @@ void product(const A_t & A, const b_t & b, c_t & c){
 template <
   typename A_t, typename b_t, typename c_t,
   bool transposeA = false,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
     containers::meta::is_vector_wrapper_eigen<b_t>::value and
     containers::meta::is_vector_wrapper_eigen<c_t>::value and
@@ -96,7 +96,7 @@ void product(const A_t & A, const b_t & b, c_t & c){
 
 
 template <typename A_t, typename b_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
       containers::meta::is_vector_wrapper_eigen<b_t>::value and
       containers::meta::wrapper_pair_have_same_scalar<A_t,b_t>::value
@@ -114,5 +114,5 @@ auto product(const A_t & A, const b_t & b)
 }
 
 
-}}}//end namespace rompp::containers;:ops
+}}}//end namespace pressio::containers;:ops
 #endif

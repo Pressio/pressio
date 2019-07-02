@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_ROM_EPETRA_SKELETON_HPP_
-#define ROMPP_ROM_EPETRA_SKELETON_HPP_
+#ifndef PRESSIO_ROM_EPETRA_SKELETON_HPP_
+#define PRESSIO_ROM_EPETRA_SKELETON_HPP_
 
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
@@ -10,7 +10,7 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
 
-namespace rompp{ namespace rom{ namespace test{
+namespace pressio{ namespace rom{ namespace test{
 
 class EpetraSkeleton{
 protected:
@@ -50,5 +50,5 @@ public:
 
 };//end class
 
-}}} //namespace rompp::rom::test
+}}} //namespace pressio::rom::test
 #endif

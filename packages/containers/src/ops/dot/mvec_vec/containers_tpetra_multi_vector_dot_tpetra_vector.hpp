@@ -7,7 +7,7 @@
 #include "../../../vector/containers_vector_meta.hpp"
 #include "../../../multi_vector/containers_multi_vector_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 /*
  * overloads for c = A dot b
@@ -22,7 +22,7 @@ namespace rompp{ namespace containers{ namespace ops{
 //------------------------------------
 template <typename mvec_type,
 	  typename vec_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value &&
     containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
@@ -48,7 +48,7 @@ void dot(const mvec_type & mvA,
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<vec_type>::value and
     containers::meta::is_dense_vector_wrapper_teuchos<result_vec_type>::value and
@@ -74,7 +74,7 @@ void dot(const mvec_type & mvA,
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
@@ -117,7 +117,7 @@ void dot(const mvec_type & mvA,
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
@@ -145,6 +145,6 @@ void dot(const mvec_type & mvA,
 }
 
 
-}}} // end namespace rompp::containers::ops
+}}} // end namespace pressio::containers::ops
 #endif
 #endif

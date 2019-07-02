@@ -6,7 +6,7 @@
 #include "../../containers/src/matrix/containers_matrix_meta.hpp"
 #include "../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
 
-namespace rompp{ 
+namespace pressio{ 
 namespace svd{
 namespace details{
 
@@ -99,5 +99,5 @@ struct svd_traits<Solver<
   
 }//end namespace details
 }//end namespace svd 
-}//end namespace rompp
+}//end namespace pressio
 #endif

@@ -4,7 +4,7 @@
 
 #include <utility>
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 /*
   detect if type T has a static method of the form:
@@ -56,5 +56,5 @@ struct has_static_method_do_update_three_terms<
     >
   > : std::true_type{};
 
-}}} // namespace rompp::containers::meta
+}}} // namespace pressio::containers::meta
 #endif

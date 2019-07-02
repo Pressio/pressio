@@ -4,7 +4,7 @@
 
 #include "../containers_matrix_traits.hpp"
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_matrix_wrapper : std::false_type {};
@@ -22,5 +22,5 @@ struct is_matrix_wrapper< T,
   static_assert( containers::meta::is_matrix_wrapper<TYPE>::value, \
 		 "THIS_IS_NOT_A_CONTAINERS_MATRIX_WRAPPER")
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif

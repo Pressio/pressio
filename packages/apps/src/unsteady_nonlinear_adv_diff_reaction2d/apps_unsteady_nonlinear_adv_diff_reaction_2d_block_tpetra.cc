@@ -2,7 +2,7 @@
 #include "apps_unsteady_nonlinear_adv_diff_reaction_2d_block_tpetra.hpp"
 
 #ifdef HAVE_TRILINOS
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 void UnsteadyNonLinAdvDiffReac2dBlockTpetra::createMap(){
   // total number of unknown grid points (we only consider the interior points)
@@ -340,5 +340,5 @@ void UnsteadyNonLinAdvDiffReac2dBlockTpetra::computeJacobian( const state_type &
 
 }//jacobian
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

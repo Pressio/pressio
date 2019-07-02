@@ -7,7 +7,7 @@
 #include "../policies/meta/ode_find_if_legitimate_implicit_jacobian_policy.hpp"
 #include "../../meta/ode_is_valid_user_defined_ops_for_implicit_ode.hpp"
 
-namespace rompp{ namespace ode{ namespace details{
+namespace pressio{ namespace ode{ namespace details{
 
 template <typename T, typename = void>
 struct ScalarHelper{
@@ -19,22 +19,22 @@ template <typename T>
 struct ScalarHelper<
   T,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_wrapper<T>::value and
-    ::rompp::containers::details::traits<T>::wrapped_package_identifier
-    != ::rompp::containers::details::WrappedPackageIdentifier::Arbitrary
+    ::pressio::containers::meta::is_wrapper<T>::value and
+    ::pressio::containers::details::traits<T>::wrapped_package_identifier
+    != ::pressio::containers::details::WrappedPackageIdentifier::Arbitrary
     >
   >{
   static constexpr bool value = true;
-  using type = typename ::rompp::containers::details::traits<T>::scalar_t;
+  using type = typename ::pressio::containers::details::traits<T>::scalar_t;
 };
 
 template <typename T>
 struct ScalarHelper<
   T,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_wrapper<T>::value and
-    ::rompp::containers::details::traits<T>::wrapped_package_identifier
-    == ::rompp::containers::details::WrappedPackageIdentifier::Arbitrary
+    ::pressio::containers::meta::is_wrapper<T>::value and
+    ::pressio::containers::details::traits<T>::wrapped_package_identifier
+    == ::pressio::containers::details::WrappedPackageIdentifier::Arbitrary
     >
   >{
   static constexpr bool value = false;
@@ -131,8 +131,8 @@ struct traits<
   static constexpr unsigned int steps = 1;
 
   // check if scalar is provided in Args
-  using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
-  using scalar_from_args = ::rompp::mpl::variadic::at_or_t<void, ic0::value, Args...>;
+  using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
+  using scalar_from_args = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
   // check if state is a containers wrapper, and if so get its scalar_type
   using scalar_type_from_traits = typename ScalarHelper<state_type>::type;
   // decide which to pick
@@ -150,17 +150,17 @@ struct traits<
   using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
 
   // check Args for a user-defined admissible residual policy
-  using ic1 = ::rompp::ode::meta::find_if_legitimate_implicit_residual_policy_t<
+  using ic1 = ::pressio::ode::meta::find_if_legitimate_implicit_residual_policy_t<
     this_t::enum_id, this_t::steps, state_t, residual_t, system_t, scalar_t,
     Args...>;
-  using residual_policy_t = ::rompp::mpl::variadic::at_or_t
+  using residual_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
 
   // check Args for a user-defined admissible jacobian policy
-  using ic2 = ::rompp::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
+  using ic2 = ::pressio::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
     this_t::enum_id, state_t, jacobian_t, system_t, scalar_t,
     Args...>;
-  using jacobian_policy_t = ::rompp::mpl::variadic::at_or_t
+  using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic2::value, Args...>;
 };
 
@@ -199,8 +199,8 @@ struct traits<
   static constexpr unsigned int steps = 2;
 
   // check if scalar is provided in Args
-  using ic0 = ::rompp::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
-  using scalar_from_args = ::rompp::mpl::variadic::at_or_t<void, ic0::value, Args...>;
+  using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
+  using scalar_from_args = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
   // check if state is a containers wrapper, and if so get its scalar_type
   using scalar_type_from_traits = typename ScalarHelper<state_type>::type;
   // decide which to pick
@@ -213,9 +213,9 @@ struct traits<
 
 
   // for BDF2 the user has to pass an auxiliary stepper
-  using ic1 = ::rompp::mpl::variadic::find_if_binary_pred_t<
-    stepper_t, ::rompp::ode::meta::is_legitimate_auxiliary_stepper, Args...>;
-  using aux_stepper_t = ::rompp::mpl::variadic::at_or_t<void, ic1::value, Args...>;
+  using ic1 = ::pressio::mpl::variadic::find_if_binary_pred_t<
+    stepper_t, ::pressio::ode::meta::is_legitimate_auxiliary_stepper, Args...>;
+  using aux_stepper_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
 
   // // standard policies (only used if user-defined policies not passed)
   using policy_picker = StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
@@ -223,19 +223,19 @@ struct traits<
   using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
 
   // check Args if a user-defined admissible residual policy is passed
-  using ic2 = ::rompp::ode::meta::find_if_legitimate_implicit_residual_policy_t<
+  using ic2 = ::pressio::ode::meta::find_if_legitimate_implicit_residual_policy_t<
     this_t::enum_id, this_t::steps, state_t, residual_t, system_t, scalar_t,
     Args...>;
-  using residual_policy_t = ::rompp::mpl::variadic::at_or_t
+  using residual_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_res_policy_t, ic2::value, Args...>;
 
   // check Args if a user-defined admissible jacobian policy is passed
-  using ic3 = ::rompp::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
+  using ic3 = ::pressio::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
     this_t::enum_id, state_t, jacobian_t, system_t, scalar_t,
     Args...>;
-  using jacobian_policy_t = ::rompp::mpl::variadic::at_or_t
+  using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic3::value, Args...>;
 };
 
-}}}//end namespace rompp::ode::details
+}}}//end namespace pressio::ode::details
 #endif

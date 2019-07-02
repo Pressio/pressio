@@ -1,6 +1,6 @@
 
-#ifndef ROMPPAPPS_KS1D_EIGEN_HPP_
-#define ROMPPAPPS_KS1D_EIGEN_HPP_
+#ifndef PRESSIOAPPS_KS1D_EIGEN_HPP_
+#define PRESSIOAPPS_KS1D_EIGEN_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 #include "Eigen/Dense"
@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class KS1dEigen{
   using eigVec = Eigen::VectorXd;
@@ -129,5 +129,5 @@ private:
 
 };//end class
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

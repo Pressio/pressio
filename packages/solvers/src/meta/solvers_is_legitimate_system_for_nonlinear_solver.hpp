@@ -7,7 +7,7 @@
 #include "solvers_system_has_all_needed_residual_methods.hpp"
 // #include "../../../containers/src/vector/containers_vector_meta.hpp"
 
-namespace rompp{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace meta {
 
 template<typename system_type, typename enable = void>
 struct is_legitimate_system_for_nonlinear_solver : std::false_type{};
@@ -16,11 +16,11 @@ template<typename system_type>
 struct is_legitimate_system_for_nonlinear_solver
 <
   system_type,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::mpl::is_detected<has_scalar_typedef, system_type>::value   and
-    ::rompp::mpl::is_detected<has_state_typedef, system_type>::value    and
-    ::rompp::mpl::is_detected<has_residual_typedef, system_type>::value and
-    ::rompp::mpl::is_detected<has_jacobian_typedef, system_type>::value and
+  ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::is_detected<has_scalar_typedef, system_type>::value   and
+    ::pressio::mpl::is_detected<has_state_typedef, system_type>::value    and
+    ::pressio::mpl::is_detected<has_residual_typedef, system_type>::value and
+    ::pressio::mpl::is_detected<has_jacobian_typedef, system_type>::value and
     // containers::meta::is_vector_wrapper<
     //   typename system_type::state_type
     //   >::value and
@@ -41,5 +41,5 @@ struct is_legitimate_system_for_nonlinear_solver
   > : std::true_type{};
 
 
-}}} // namespace rompp::solvers::meta
+}}} // namespace pressio::solvers::meta
 #endif

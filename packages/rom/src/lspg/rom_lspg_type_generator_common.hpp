@@ -13,7 +13,7 @@
 #include "../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
 #include "../../../ode/src/ode_fwd.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <ode::ImplicitEnum odeName>
 struct statesStorageCapacityHelper{
@@ -75,7 +75,7 @@ struct LSPGCommonTypes<
   fom_type, decoder_type, lspg_state_type,
   odeName, ud_ops,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_vector_wrapper<lspg_state_type>::value
+    ::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
 #ifdef HAVE_PYBIND11
     and mpl::not_same<fom_type, pybind11::object>::value
 #endif
@@ -92,8 +92,8 @@ struct LSPGCommonTypes<
   using fom_native_velocity_t	= typename fom_t::velocity_type;
 
   // fom wrapper types
-  using fom_state_t	= ::rompp::containers::Vector<fom_native_state_t>;
-  using fom_velocity_t	= ::rompp::containers::Vector<fom_native_velocity_t>;
+  using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;
+  using fom_velocity_t	= ::pressio::containers::Vector<fom_native_velocity_t>;
 
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
@@ -116,11 +116,11 @@ struct LSPGCommonTypes<
     statesStorageCapacityHelper<odeName>::maxAuxStates_;
 
   // class type holding fom states data
-  using fom_states_data = ::rompp::rom::FomStatesData<
+  using fom_states_data = ::pressio::rom::FomStatesData<
 	fom_state_t, maxAuxStates, fom_state_reconstr_t>;
 
   // class type holding fom rhs data
-  using fom_velocity_data = ::rompp::rom::FomRhsData<fom_velocity_t>;
+  using fom_velocity_data = ::pressio::rom::FomRhsData<fom_velocity_t>;
 
   // if we have a non-trivial user-defined ops
   using ud_ops_t = ud_ops;
@@ -143,7 +143,7 @@ struct LSPGCommonTypes<
   fom_type, decoder_type, lspg_state_type,
   odeName, ud_ops,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_cstyle_array_pybind11<lspg_state_type>::value and
+    ::pressio::containers::meta::is_cstyle_array_pybind11<lspg_state_type>::value and
     mpl::is_same<fom_type, pybind11::object>::value
     >
   >
@@ -185,11 +185,11 @@ struct LSPGCommonTypes<
     statesStorageCapacityHelper<odeName>::maxAuxStates_;
 
   // class type holding fom states data
-  using fom_states_data = ::rompp::rom::FomStatesData<
+  using fom_states_data = ::pressio::rom::FomStatesData<
 	fom_state_t, maxAuxStates, fom_state_reconstr_t>;
 
   // class type holding fom rhs data
-  using fom_velocity_data = ::rompp::rom::FomRhsData<fom_velocity_t>;
+  using fom_velocity_data = ::pressio::rom::FomRhsData<fom_velocity_t>;
 
   // if we have a non-trivial user-defined ops
   using ud_ops_t = ud_ops;
@@ -197,5 +197,5 @@ struct LSPGCommonTypes<
 #endif
 
 
-}}//end  namespace rompp::rom
+}}//end  namespace pressio::rom
 #endif

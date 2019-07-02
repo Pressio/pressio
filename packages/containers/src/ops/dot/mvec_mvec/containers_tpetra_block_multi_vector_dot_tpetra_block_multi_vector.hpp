@@ -6,10 +6,10 @@
 #include "../../containers_ops_meta.hpp"
 #include "../../../multi_vector/containers_multi_vector_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 template <typename mvec_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value
     > * = nullptr
   >
@@ -42,7 +42,7 @@ void dot(const mvec_t & mvA,
 
 
 template <typename mvec_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value
     > * = nullptr
   >
@@ -65,6 +65,6 @@ auto dot(const mvec_t & mvA, const mvec_t & mvB)
 //--------------------------------------------------------
 
 
-}}} // end namespace rompp::containers::ops
+}}} // end namespace pressio::containers::ops
 #endif
 #endif

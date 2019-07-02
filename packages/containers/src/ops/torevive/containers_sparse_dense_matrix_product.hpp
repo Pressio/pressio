@@ -11,7 +11,7 @@
 #include <Epetra_Export.h>
 #include <Epetra_Import.h>
 
-namespace rompp{
+namespace pressio{
 namespace containers{
 namespace mat_ops{
 
@@ -49,5 +49,5 @@ namespace mat_ops{
   
 } // end namespace mat_ops
 } // end namespace containers
-}//end namespace rompp
+}//end namespace pressio
 #endif

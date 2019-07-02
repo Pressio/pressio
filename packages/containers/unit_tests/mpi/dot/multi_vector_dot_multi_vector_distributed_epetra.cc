@@ -32,7 +32,7 @@ TEST(epetraMultiVectorR9C4VecS9Fixture,
 	     5 6
    */
 
-  using namespace rompp;
+  using namespace pressio;
 
   Epetra_MpiComm comm(MPI_COMM_WORLD);
   auto rank = comm.MyPID();

@@ -5,7 +5,7 @@
 #include "../solvers_ConfigDefs.hpp"
 #include "../../../mpl/src/detection_idiom.hpp"
 
-namespace rompp{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T, typename Arg, typename enable = void>
 struct has_jacobian_method_callable_with_one_arg{
@@ -16,7 +16,7 @@ struct has_jacobian_method_callable_with_one_arg{
 template <typename T, typename Arg>
 struct has_jacobian_method_callable_with_one_arg<
   T, Arg,
-  ::rompp::mpl::void_t<
+  ::pressio::mpl::void_t<
     decltype(std::declval<T>().jacobian(std::declval<Arg const&>()))
     >
   >{
@@ -31,7 +31,7 @@ struct has_jacobian_method_callable_with_two_args : std::false_type{};
 template <typename T, typename FirstArg, typename SecondArg>
 struct has_jacobian_method_callable_with_two_args<
   T, FirstArg, SecondArg,
-  ::rompp::mpl::void_t<
+  ::pressio::mpl::void_t<
     decltype(std::declval<T>().jacobian(std::declval<FirstArg const&>(),
 					std::declval<SecondArg&>()))
     >
@@ -54,7 +54,7 @@ template<
   >
 struct system_has_needed_jacobian_methods
 < system_type, state_type, jacobian_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
       has_jacobian_method_callable_with_one_arg<
 	system_type, state_type
       >::value and
@@ -71,5 +71,5 @@ struct system_has_needed_jacobian_methods
   >
   > : std::true_type{};
 
-}}} // namespace rompp::solvers::meta
+}}} // namespace pressio::solvers::meta
 #endif

@@ -4,18 +4,18 @@
 #include "CONTAINERS_OPS"
 
 using eigdmat_t = Eigen::MatrixXd;
-using myMV_t = rompp::containers::MultiVector<eigdmat_t>;
+using myMV_t = pressio::containers::MultiVector<eigdmat_t>;
 
 
 TEST(containers_multi_vector_serial_eigen_dynamic_class,
      constructor){
 
-  using MVTrait = rompp::containers::details::traits<myMV_t>;
+  using MVTrait = pressio::containers::details::traits<myMV_t>;
   ASSERT_TRUE(MVTrait::wrapped_multi_vector_identifier
-  == rompp::containers::details::WrappedMultiVectorIdentifier::Eigen);
+  == pressio::containers::details::WrappedMultiVectorIdentifier::Eigen);
 
   ASSERT_TRUE(
-  rompp::containers::meta::is_multi_vector_wrapper_eigen<myMV_t>::value);
+  pressio::containers::meta::is_multi_vector_wrapper_eigen<myMV_t>::value);
   
   //construct by passing the size 
   myMV_t A(6,3);

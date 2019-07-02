@@ -11,7 +11,7 @@
 #include "./meta/containers_native_tpetra_block_vector_meta.hpp"
 
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 #define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \
   static_assert( containers::meta::is_vector_eigen<TYPE>::value, \
@@ -78,5 +78,5 @@ namespace rompp{ namespace containers{
 		 "THIS_IS_A_VECTOR_ARMADILLO")
 #endif
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

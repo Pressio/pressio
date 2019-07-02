@@ -1,8 +1,8 @@
 
-#ifndef ROMPP_MPL_IDENTITY_HPP
-#define ROMPP_MPL_IDENTITY_HPP
+#ifndef PRESSIO_MPL_IDENTITY_HPP
+#define PRESSIO_MPL_IDENTITY_HPP
 
-namespace rompp{ namespace mpl {
+namespace pressio{ namespace mpl {
 
 /**
  * \brief Returns the argument passed
@@ -11,5 +11,5 @@ template<class T> struct identity{
   using type = T;
 };
 
-}} // namespace rompp::mpl
+}} // namespace pressio::mpl
 #endif 

@@ -2,7 +2,7 @@
 #ifndef CONTAINERS_EXPRESSION_TEMPLATES_OPERATORS_HPP_
 #define CONTAINERS_EXPRESSION_TEMPLATES_OPERATORS_HPP_
 
-namespace rompp{ namespace containers{ namespace exprtemplates{
+namespace pressio{ namespace containers{ namespace exprtemplates{
 
 struct plus_{
   template <typename a_t, typename b_t>
@@ -28,5 +28,5 @@ struct times_{
   }
 };
 
-}}} // end of namespace rompp::containers::exprtemplates
+}}} // end of namespace pressio::containers::exprtemplates
 #endif

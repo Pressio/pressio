@@ -10,7 +10,7 @@
 #include "../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
 #include "../../../ode/src/ode_fwd.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <
   typename fom_type,
@@ -26,8 +26,8 @@ struct GalerkinCommonTypes{
   using fom_native_velocity_t	= typename fom_t::velocity_type;
 
   // declare fom wrapper types
-  using fom_state_t		= ::rompp::containers::Vector<fom_native_state_t>;
-  using fom_velocity_t		= ::rompp::containers::Vector<fom_native_velocity_t>;
+  using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
+  using fom_velocity_t		= ::pressio::containers::Vector<fom_native_velocity_t>;
 
   // rom state type (passed in)
   using galerkin_state_t	= galerkin_state_type;
@@ -43,11 +43,11 @@ struct GalerkinCommonTypes{
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
   // class type holding fom states data
-  using fom_states_data = ::rompp::rom::FomStatesData<
+  using fom_states_data = ::pressio::rom::FomStatesData<
 	fom_state_t, 0, fom_state_reconstr_t>;
 
   // class type holding fom rhs data
-  using fom_velocity_data = ::rompp::rom::FomRhsData<fom_velocity_t>;
+  using fom_velocity_data = ::pressio::rom::FomRhsData<fom_velocity_t>;
 };
 
 
@@ -64,7 +64,7 @@ struct DefaultGalerkinExplicitTypeGenerator
 			galerkin_residual_type>
 {
 
-  static_assert( rompp::mpl::is_same<galerkin_state_type,
+  static_assert( pressio::mpl::is_same<galerkin_state_type,
 		 galerkin_residual_type>::value,
 		 "ExplicitGalerkin: the residual type has to be the same as state");
 
@@ -90,15 +90,15 @@ struct DefaultGalerkinExplicitTypeGenerator
 
   // policy for evaluating the ode residual
   using galerkin_residual_policy_t =
-    ::rompp::rom::DefaultGalerkinExplicitVelocityPolicy<
+    ::pressio::rom::DefaultGalerkinExplicitVelocityPolicy<
     fom_states_data, fom_velocity_data, decoder_t>;
 
   // declare type of stepper object
-  using galerkin_stepper_t = ::rompp::ode::ExplicitStepper<
+  using galerkin_stepper_t = ::pressio::ode::ExplicitStepper<
     odeName, galerkin_state_type, fom_type,
     galerkin_residual_t, galerkin_residual_policy_t, scalar_t>;
 
 };//end class
 
-}}//end  namespace rompp::rom
+}}//end  namespace pressio::rom
 #endif

@@ -5,7 +5,7 @@
 #include "../../../../ode/src/ode_ConfigDefs.hpp"
 #include "../../../../ode/src/implicit/ode_implicit_constants.hpp"
 
-namespace rompp{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace impl{
 
 template <
   ode::ImplicitEnum odeMethod,
@@ -69,7 +69,7 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
     containers::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value
     > * = nullptr
@@ -128,7 +128,7 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<lspg_matrix_type>::value and
     containers::meta::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
     > * = nullptr
@@ -175,7 +175,7 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_tpetra<lspg_matrix_type>::value and
     containers::meta::is_multi_vector_tpetra<decoder_jac_type>::value
     > * = nullptr
@@ -220,7 +220,7 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<lspg_matrix_type>::value and
     containers::meta::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
     > * = nullptr
@@ -237,7 +237,7 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
     containers::meta::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
     > * = nullptr
@@ -252,5 +252,5 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 
 #endif
 
-}}}//end namespace rompp::rom::impl
+}}}//end namespace pressio::rom::impl
 #endif

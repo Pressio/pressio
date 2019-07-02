@@ -2,7 +2,7 @@
 #ifndef ODE_REF_APPS_FOR_TESTING_HPP_
 #define ODE_REF_APPS_FOR_TESTING_HPP_
 
-namespace rompp{ namespace ode{ namespace testing{
+namespace pressio{ namespace ode{ namespace testing{
 
 //************************************************
 struct fakeAppForTraitsForExp{
@@ -160,5 +160,5 @@ public:
 //************************************************
 //************************************************
 
-}}} // namespace rompp::ode::testing
+}}} // namespace pressio::ode::testing
 #endif

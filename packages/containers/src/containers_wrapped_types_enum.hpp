@@ -2,7 +2,7 @@
 #ifndef CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
 #define CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
 
-namespace rompp{ namespace containers{ namespace details {
+namespace pressio{ namespace containers{ namespace details {
 
 /*--------------------------------------------
 Wrapped library name for containers
@@ -75,5 +75,5 @@ enum class WrappedMultiVectorIdentifier{
 };
 
 
-}}} // end namespace rompp::containers::details
+}}} // end namespace pressio::containers::details
 #endif

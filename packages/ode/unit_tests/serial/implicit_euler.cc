@@ -6,7 +6,7 @@
 #include "reference_apps_for_testing.hpp"
 
 TEST(ode_implicit_euler, traits){
-  using namespace rompp;
+  using namespace pressio;
 
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -55,7 +55,7 @@ TEST(ode_implicit_euler, traits){
 
 
 TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
-  using namespace rompp;
+  using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;
@@ -93,7 +93,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
 
 
 TEST(ode_implicit_euler, guesserLambda){
-  using namespace rompp;
+  using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;
@@ -135,7 +135,7 @@ TEST(ode_implicit_euler, guesserLambda){
 
 
 TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
-  using namespace rompp;
+  using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;
@@ -184,7 +184,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
 
 
 TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
-  using namespace rompp;
+  using namespace pressio;
   using app_t		= ode::testing::refAppForImpEigen;
   using nstate_t	= typename app_t::state_type;
   using nveloc_t	= typename app_t::velocity_type;

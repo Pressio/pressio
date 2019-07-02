@@ -69,11 +69,11 @@ TEST(tpetraVectors, loopedVectorManipulation){
   nat_v_t x(contigMap);
 
   // create wrapper vector
-  using myvec_t = rompp::containers::Vector<nat_v_t>;
-  using myvec_dev_t = typename rompp::containers::details::traits<myvec_t>::device_t;
+  using myvec_t = pressio::containers::Vector<nat_v_t>;
+  using myvec_dev_t = typename pressio::containers::details::traits<myvec_t>::device_t;
   // containers::Vector<> constr does a deep-copy (for now)
   myvec_t myx(x);
-  myx.putScalar( rompp::utils::constants::zero() );
+  myx.putScalar( pressio::utils::constants::zero() );
 
   // modify the host (and then sync)
   myx.data()->modify<Kokkos::HostSpace>();

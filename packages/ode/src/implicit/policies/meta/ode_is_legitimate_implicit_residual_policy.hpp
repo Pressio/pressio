@@ -4,7 +4,7 @@
 
 #include "../base/ode_implicit_residual_policy_base.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<
   typename T,
@@ -30,7 +30,7 @@ template<
   >
 struct is_legitimate_implicit_residual_policy<
   T, name, nstates, state_t, residual_t, system_t, scalar_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     // is callable with five args
     std::is_same<
       residual_t,
@@ -82,5 +82,5 @@ using is_legitimate_implicit_bdf2_residual_policy =
   T, ImplicitEnum::BDF2, 2, args...>;
 //------------------------------------------------------------------
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

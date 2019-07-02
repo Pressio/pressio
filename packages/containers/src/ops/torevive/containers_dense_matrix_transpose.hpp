@@ -5,7 +5,7 @@
 #include "../../meta/containers_matrix_meta.hpp"
 #include "../concrete/containers_matrix_dense_sharedmem_eigen.hpp"
 
-namespace rompp{
+namespace pressio{
 namespace containers{
 namespace mat_ops{
 
@@ -13,7 +13,7 @@ namespace mat_ops{
   EIGEN DENSE DYNAMIC
 ----------------------------------------------------- */
 template <typename mat_type,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
 	    details::traits<mat_type>::is_dense &&
 	    details::traits<mat_type>::is_static==0
@@ -29,7 +29,7 @@ auto transpose(const mat_type & A)
   EIGEN DENSE STATIC
 ----------------------------------------------------- */
 template <typename mat_type,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
 	    details::traits<mat_type>::isEigen &&
 	    details::traits<mat_type>::is_dense &&
 	    details::traits<mat_type>::is_static
@@ -83,5 +83,5 @@ auto transpose(const mat_type & A)
   
 } // end namespace mat_ops
 } // end namespace containers
-}//end namespace rompp
+}//end namespace pressio
 #endif

@@ -6,7 +6,7 @@
 #include "../containers_ConfigDefs.hpp"
 #include "Teuchos_RCPDecl.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template<typename derived_type, typename map_t>
 class ContainerDistributedTrilinosBase
@@ -44,6 +44,6 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif
 #endif

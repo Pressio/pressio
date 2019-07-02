@@ -14,7 +14,7 @@
  * http://ftp.mcs.anl.gov/pub/MINPACK-2/tprobs/dgdffj.f
  */
 
-namespace rompp{ namespace solvers{ namespace test{
+namespace pressio{ namespace solvers{ namespace test{
 
 struct ExpDataFitN11
 {
@@ -24,10 +24,10 @@ struct ExpDataFitN11
   template <typename T>
   using shptr = std::shared_ptr<T>;
 
-  using state_type    = rompp::containers::Vector<Eigen::VectorXd>;
-  using residual_type = rompp::containers::Vector<Epetra_Vector>;
-  using nat_vec_type  = rompp::containers::Vector<Epetra_Vector>;
-  using jacobian_type = rompp::containers::MultiVector<Epetra_MultiVector>;
+  using state_type    = pressio::containers::Vector<Eigen::VectorXd>;
+  using residual_type = pressio::containers::Vector<Epetra_Vector>;
+  using nat_vec_type  = pressio::containers::Vector<Epetra_Vector>;
+  using jacobian_type = pressio::containers::MultiVector<Epetra_MultiVector>;
   using scalar_type   = double;
 
   shptr<Epetra_MpiComm> comm_ = {};
@@ -156,5 +156,5 @@ struct ExpDataFitN11
 
 };
 
-}}} //end namespace rompp::solvers::test
+}}} //end namespace pressio::solvers::test
 #endif

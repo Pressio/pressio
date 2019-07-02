@@ -3,7 +3,7 @@
 #define SOLVERS_EXPERIMENTAL_NONLINEAR_TRAITS_HPP
 
 
-namespace rompp{
+namespace pressio{
 namespace solvers{
 
 class SolversNonLinearIterativeNewtonRaphsonPolicy; // Fwd declaration
@@ -71,6 +71,6 @@ struct solver_traits<LevenbergMarquardt> {
 } // end namespace nonlinearleastsquare
 
 } // end namespace solvers
-} // end namespace rompp
+} // end namespace pressio
 
 #endif

@@ -8,7 +8,7 @@
 #include "../../../containers/src/vector/containers_vector_traits.hpp"
 
 
-namespace rompp{
+namespace pressio{
 namespace solvers{
 namespace meta {
 
@@ -114,5 +114,5 @@ struct are_vector_compatible<
 
 } // end namespace meta
 } // end namespace solvers
-}//end namespace rompp
+}//end namespace pressio
 #endif

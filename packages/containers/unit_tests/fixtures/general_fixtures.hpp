@@ -8,7 +8,7 @@
 // struct containers_general_fixture
 //   : public ::testing::Test{
 // public:
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   int rank_;
 //   Epetra_MpiComm * Comm_;

@@ -3,14 +3,14 @@
 #include "CONTAINERS_MATRIX"
 
 using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-using mymat_t = rompp::containers::Matrix<nat_t>;
+using mymat_t = pressio::containers::Matrix<nat_t>;
 
 
 TEST(containers_matrix_dense_eigen_dynamic_class,
      constructor)
 {
   // STATIC_ASSERT_IS_CONTAINERS_MATRIX_WRAPPER(mymat_t);
-  //using matTrait = rompp::containers::details::traits<mymat_t>;
+  //using matTrait = pressio::containers::details::traits<mymat_t>;
 
   mymat_t m1;
   EXPECT_EQ( m1.rows(), 0 );

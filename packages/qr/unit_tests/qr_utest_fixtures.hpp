@@ -11,10 +11,10 @@
 #include "Eigen/Dense"
 #endif
 
-namespace rompp{ namespace qr{ namespace test{
+namespace pressio{ namespace qr{ namespace test{
   static constexpr int numVectors_ = 4;
   static constexpr int numRows_ = 9;
-}}}// end namespace rompp::qr::test
+}}}// end namespace pressio::qr::test
 
 
 struct eigenDenseR9Fixture
@@ -22,23 +22,23 @@ struct eigenDenseR9Fixture
 
   using this_t	 = eigenDenseR9Fixture;
   using nat_mat_t = Eigen::MatrixXd;
-  using mymat_t = rompp::containers::Matrix<nat_mat_t>;
+  using mymat_t = pressio::containers::Matrix<nat_mat_t>;
   using nat_v_t	 = Eigen::VectorXd;
-  using myvec_t	 = rompp::containers::Vector<nat_v_t>;
+  using myvec_t	 = pressio::containers::Vector<nat_v_t>;
 
   // gold solution
-  rompp::qr::test::qrGoldr9c4Sol<double> gold_;
+  pressio::qr::test::qrGoldr9c4Sol<double> gold_;
 
   std::shared_ptr<mymat_t> A_;
   std::shared_ptr<myvec_t> v_;
 
-  const int numRows_ = rompp::qr::test::numRows_;
-  const int numVectors_ = rompp::qr::test::numVectors_;
+  const int numRows_ = pressio::qr::test::numRows_;
+  const int numVectors_ = pressio::qr::test::numVectors_;
   int numGlobalEntries_ = {};
   int localSize_ = {};
 
   virtual void SetUp(){
-    numGlobalEntries_ = rompp::qr::test::numRows_;
+    numGlobalEntries_ = pressio::qr::test::numRows_;
     A_ = std::make_shared<mymat_t>(numRows_, numVectors_);
     v_ = std::make_shared<myvec_t>(numRows_);
     fillVector();
@@ -62,10 +62,10 @@ struct eigenDenseR9Fixture
   }
 
   void checkQFactor(const nat_mat_t & Q){
-    EXPECT_EQ( Q.rows(), ::rompp::qr::test::numRows_);
-    EXPECT_EQ( Q.cols(), ::rompp::qr::test::numVectors_);
-    for (auto i=0; i<::rompp::qr::test::numRows_; i++){
-      for (auto j=0; j<::rompp::qr::test::numVectors_; j++){
+    EXPECT_EQ( Q.rows(), ::pressio::qr::test::numRows_);
+    EXPECT_EQ( Q.cols(), ::pressio::qr::test::numVectors_);
+    for (auto i=0; i<::pressio::qr::test::numRows_; i++){
+      for (auto j=0; j<::pressio::qr::test::numVectors_; j++){
 	EXPECT_NEAR( std::abs(Q(i,j)),
 		     std::abs(gold_.trueQ_(i,j)), 1e-6);
       }
@@ -83,19 +83,19 @@ struct epetraR9Fixture
 
   using this_t	 = epetraR9Fixture;
   using nat_mv_t = Epetra_MultiVector;
-  using mymvec_t = rompp::containers::MultiVector<nat_mv_t>;
+  using mymvec_t = pressio::containers::MultiVector<nat_mv_t>;
   using nat_v_t	 = Epetra_Vector;
-  using myvec_t	 = rompp::containers::Vector<nat_v_t>;
+  using myvec_t	 = pressio::containers::Vector<nat_v_t>;
 
   // gold solution
-  rompp::qr::test::qrGoldr9c4Sol<double> gold_;
+  pressio::qr::test::qrGoldr9c4Sol<double> gold_;
 
   std::shared_ptr<Epetra_MpiComm> comm_;
   std::shared_ptr<Epetra_Map> rowMap_;
   std::shared_ptr<mymvec_t> A_;
   std::shared_ptr<myvec_t> v_;
 
-  const int numVectors_ = rompp::qr::test::numVectors_;
+  const int numVectors_ = pressio::qr::test::numVectors_;
   int rank_ = {};
   int numProc_ = {};
   int numGlobalEntries_ = {};
@@ -110,7 +110,7 @@ struct epetraR9Fixture
     localSize_ = (rank_==0) ? 5 : 4;
     shift_ = (rank_==0) ? 0 : 5;
     assert(numProc_ == 2);
-    numGlobalEntries_ = rompp::qr::test::numRows_;
+    numGlobalEntries_ = pressio::qr::test::numRows_;
 
     rowMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
     A_ = std::make_shared<mymvec_t>(*rowMap_, numVectors_);
@@ -141,8 +141,8 @@ struct epetraR9Fixture
   }
 
   void checkQFactor(const mymvec_t & Q){
-    EXPECT_EQ( Q.globalLength(), ::rompp::qr::test::numRows_);
-    EXPECT_EQ( Q.globalNumVectors(), ::rompp::qr::test::numVectors_);
+    EXPECT_EQ( Q.globalLength(), ::pressio::qr::test::numRows_);
+    EXPECT_EQ( Q.globalNumVectors(), ::pressio::qr::test::numVectors_);
 
     for (auto i=0; i<localSize_; i++)
       for (auto j=0; j<Q.localNumVectors(); j++){
@@ -169,14 +169,14 @@ struct tpetraR9Fixture
   using GO	    = typename nat_mvec_t::global_ordinal_type;
   using nat_vec_t   = Tpetra::Vector<>;
 
-  using mymvec_t    = rompp::containers::MultiVector<nat_mvec_t>;
-  using mv_device_t = typename rompp::containers::details::traits<mymvec_t>::device_t;
-  using myvec_t     = rompp::containers::Vector<nat_vec_t>;
+  using mymvec_t    = pressio::containers::MultiVector<nat_mvec_t>;
+  using mv_device_t = typename pressio::containers::details::traits<mymvec_t>::device_t;
+  using myvec_t     = pressio::containers::Vector<nat_vec_t>;
 
   // gold solution
-  rompp::qr::test::qrGoldr9c4Sol<ST> gold_;
+  pressio::qr::test::qrGoldr9c4Sol<ST> gold_;
 
-  const int numVectors_ = rompp::qr::test::numVectors_;
+  const int numVectors_ = pressio::qr::test::numVectors_;
   int rank_ = {};
   int numProc_ = {};
   int localSize_ = {};
@@ -197,7 +197,7 @@ struct tpetraR9Fixture
     shift_ = (rank_==0) ? 0 : 5;
     assert(numProc_==2);
 
-    numGlobalEntries_ = rompp::qr::test::numRows_;
+    numGlobalEntries_ = pressio::qr::test::numRows_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
     A_ = std::make_shared<mymvec_t>(contigMap_, this_t::numVectors_);
     v_ = std::make_shared<myvec_t>(contigMap_);
@@ -242,8 +242,8 @@ struct tpetraR9Fixture
   }
 
   void checkQFactor(const mymvec_t & Q){
-    EXPECT_EQ( Q.globalLength(), ::rompp::qr::test::numRows_);
-    EXPECT_EQ( Q.globalNumVectors(), ::rompp::qr::test::numVectors_);
+    EXPECT_EQ( Q.globalLength(), ::pressio::qr::test::numRows_);
+    EXPECT_EQ( Q.globalNumVectors(), ::pressio::qr::test::numVectors_);
     for (auto j=0; j<Q.localNumVectors(); j++){
       auto colData = Q.data()->getData(j);
       for (auto i=0; i<localSize_; i++){

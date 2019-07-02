@@ -12,7 +12,7 @@ struct typesEig{
 
 template <typename T>
 class VectorEigenMetaTest : public ::testing::Test {
-	using namespace rompp;
+	using namespace pressio;
 
 	public:
   using native_t = Eigen::Matrix<typename T::sc_t, T::nr, T::nc>;
@@ -56,7 +56,7 @@ TYPED_TEST(VectorEigenMetaTest, meta)
 
 TEST(containers_vector_meta, vectorMetasStdlib)
 {
-	using namespace rompp;
+	using namespace pressio;
 
   using native_t = std::vector<double>;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);
@@ -66,7 +66,7 @@ TEST(containers_vector_meta, vectorMetasStdlib)
 
 TEST(containers_vector_meta, vectorMetasEpetra)
 {
-	using namespace rompp;
+	using namespace pressio;
 
   using native_t = Epetra_Vector;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(native_t);

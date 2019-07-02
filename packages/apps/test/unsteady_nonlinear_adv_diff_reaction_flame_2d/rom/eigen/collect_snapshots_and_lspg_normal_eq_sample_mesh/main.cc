@@ -10,8 +10,8 @@ using scalar_t		= double;
 using uint_t		= unsigned int;
 using eig_dyn_mat	= Eigen::MatrixXd;
 using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-constexpr auto zero	= ::rompp::utils::constants::zero<scalar_t>();
-constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
+constexpr auto zero	= ::pressio::utils::constants::zero<scalar_t>();
+constexpr auto ode_case = pressio::ode::ImplicitEnum::Euler;
 constexpr auto t0	= zero;
 
 struct FomObserver{
@@ -46,13 +46,13 @@ struct FomObserver{
 
 
 struct FomRunner{
-  using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReacFlame2dEigen;
+  using app_t		= pressio::apps::UnsteadyNonLinAdvDiffReacFlame2dEigen;
   using app_state_t	= typename app_t::state_type;
   using app_rhs_t	= typename app_t::velocity_type;
   using app_jacobian_t	= typename app_t::jacobian_type;
-  using ode_state_t = rompp::containers::Vector<app_state_t>;
-  using ode_res_t   = rompp::containers::Vector<app_rhs_t>;
-  using ode_jac_t   = rompp::containers::Matrix<app_jacobian_t>;
+  using ode_state_t = pressio::containers::Vector<app_state_t>;
+  using ode_res_t   = pressio::containers::Vector<app_rhs_t>;
+  using ode_jac_t   = pressio::containers::Matrix<app_jacobian_t>;
 
   const int Nx_ = {};
   const int Ny_ = {};
@@ -73,14 +73,14 @@ struct FomRunner{
     const auto y0n = appobj.getInitialState();
     ode_state_t y(y0n);
 
-    using stepper_t = rompp::ode::ImplicitStepper<
+    using stepper_t = pressio::ode::ImplicitStepper<
       ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t>;
     stepper_t stepperObj(y, appobj);
 
     // define solver
-    using lin_solver_t = rompp::solvers::iterative::EigenIterative<
-      rompp::solvers::linear::iterative::Bicgstab, ode_jac_t>;
-    rompp::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
+    using lin_solver_t = pressio::solvers::iterative::EigenIterative<
+      pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
+    pressio::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
     solverO.setTolerance(1e-6);
     solverO.setMaxIterations(100);
 
@@ -88,7 +88,7 @@ struct FomRunner{
     observer_.resizeRows(totDofs);
 
     // integrate in time
-    rompp::ode::integrateNSteps(stepperObj, y, t0, dt,
+    pressio::ode::integrateNSteps(stepperObj, y, t0, dt,
 				Nsteps, observer_, solverO);
 
     return y;
@@ -149,7 +149,7 @@ void readMappingGIDs(std::string filename,
 
 // TODO: fix the types, this is not the best way to pass things
 struct time_discrete_ops{
-  using app_sm_t   = rompp::apps::UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen;
+  using app_sm_t   = pressio::apps::UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen;
   using graph_t	   = typename app_sm_t::graph_t;
   using gids_map_t = typename app_sm_t::gids_map_t;
   using state_t	   = typename app_sm_t::state_type;
@@ -268,7 +268,7 @@ int main(int argc, char *argv[]){
     constexpr int romSize = Nsteps;
 
     // app type
-    using app_sm_t = rompp::apps::UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen;
+    using app_sm_t = pressio::apps::UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen;
 
     // read sample mesh
     typename app_sm_t::graph_t meshGraph;
@@ -281,9 +281,9 @@ int main(int argc, char *argv[]){
     appobj.setup();
 
     // typedefs used for rom
-    using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
-    using decoder_jac_t	= rompp::containers::MultiVector<eig_dyn_mat>;
-    using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
+    using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
+    using decoder_jac_t	= pressio::containers::MultiVector<eig_dyn_mat>;
+    using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
 
     // use sample mesh to extract only taget rows from basis
     constexpr int numSpecies = 4;
@@ -330,31 +330,31 @@ int main(int argc, char *argv[]){
     time_discrete_ops_t tdOps(meshGraph, smGidsToFGidsMap);
 
     // define LSPG problem
-    using lspg_problem_type = rompp::rom::DefaultLSPGTypeGenerator<
+    using lspg_problem_type = pressio::rom::DefaultLSPGTypeGenerator<
       app_sm_t, ode_case, decoder_t, lspg_state_t, time_discrete_ops_t>;
-    using lspg_generator = rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_type>;
+    using lspg_generator = pressio::rom::LSPGUnsteadyProblemGenerator<lspg_problem_type>;
     lspg_generator lspgProblem(appobj, yRef, decoderObj, yROM, t0, tdOps);
 
     // solvers (linear and GN)
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
     // rom is solved using eigen, hessian is wrapper of eigen matrix
-    using hessian_t  = rompp::containers::Matrix<eig_dyn_mat>;
+    using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
 
     // linear solver
-    using solver_tag   = rompp::solvers::linear::iterative::Bicgstab;
-    using lin_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+    using solver_tag   = pressio::solvers::linear::iterative::Bicgstab;
+    using lin_solver_t = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
     lin_solver_t linSolverObj;
 
     // GN solver
     using lspg_stepper_t = typename lspg_problem_type::lspg_stepper_t;
-    using gnsolver_t   = rompp::solvers::iterative::GaussNewton<
+    using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
       lspg_stepper_t, lin_solver_t>;
     gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
     solver.setTolerance(1e-6);
     solver.setMaxIterations(30);
 
     // integrate in time
-    rompp::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, t0, dt, 3, solver);
+    pressio::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, t0, dt, 3, solver);
 
     // compute the fom corresponding to our rom final state
     const auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);

@@ -14,7 +14,7 @@
 
 TEST(solvers_nonlin_lsq,
      gn_normal_eq_lscg_exp_data_fit_n11_mpi_epetra){
-  using namespace rompp;
+  using namespace pressio;
 
   using problem_t   = solvers::test::ExpDataFitN11;
   using state_t	    = typename problem_t::state_type;

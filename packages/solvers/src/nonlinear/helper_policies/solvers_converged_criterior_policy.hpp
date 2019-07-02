@@ -5,7 +5,7 @@
 #include "../../solvers_ConfigDefs.hpp"
 #include "../../../../CONTAINERS_OPS"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <typename conv_tag>
 struct IsConvergedHelper;
@@ -69,5 +69,5 @@ struct IsConvergedHelper<
 };
 
 
-}}}} //end namespace rompp::solvers::iterative::impl
+}}}} //end namespace pressio::solvers::iterative::impl
 #endif

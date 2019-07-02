@@ -4,7 +4,7 @@
 
 #include "rom_galerkin_type_generators.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <typename problem_t>
 struct GalerkinProblemGenerator<problem_t>
@@ -49,5 +49,5 @@ struct GalerkinProblemGenerator<problem_t>
 
 };
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

@@ -1,11 +1,11 @@
 
-#ifndef ROMPP_MPL_IS_STD_SHARED_PTR_HPP_
-#define ROMPP_MPL_IS_STD_SHARED_PTR_HPP_
+#ifndef PRESSIO_MPL_IS_STD_SHARED_PTR_HPP_
+#define PRESSIO_MPL_IS_STD_SHARED_PTR_HPP_
 
 #include <type_traits>
 #include <memory>
 
-namespace rompp{ namespace mpl{ 
+namespace pressio{ namespace mpl{ 
 
 template <typename T,
 	  typename enable = void>
@@ -24,5 +24,5 @@ struct is_std_shared_ptr<
        >::type
   > : std::true_type{};
 
-}} // namespace rompp::mpl
+}} // namespace pressio::mpl
 #endif

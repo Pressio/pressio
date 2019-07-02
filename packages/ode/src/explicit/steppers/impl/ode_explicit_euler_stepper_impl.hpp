@@ -4,7 +4,7 @@
 
 #include "../ode_explicit_stepper_base.hpp"
 
-namespace rompp{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<
   typename scalar_type,
@@ -75,8 +75,8 @@ public:
     //eval RHS
     policy_(y, auxRhs0, sys_.get(), t);
     // y = y + dt * rhs
-    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
-    ::rompp::containers::ops::do_update(y, one, auxRhs0, dt);
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+    ::pressio::containers::ops::do_update(y, one, auxRhs0, dt);
   }
 
   /*
@@ -102,7 +102,7 @@ public:
     //eval RHS
     policy_(y, auxRhs0, sys_.get(), t);
     // y = y + dt * rhs
-    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
     op::do_update(*y.data(), one, *auxRhs0.data(), dt);
   }
 
@@ -130,12 +130,12 @@ public:
 
     policy_(y, auxRhs0, sys_.get(), t);
     // y = y + dt * rhs
-    constexpr auto one  = ::rompp::utils::constants::one<scalar_type>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
     op::do_update(y, one, auxRhs0, dt);
   }
 #endif
 
 };
 
-}}}//end namespace rompp::ode::impl
+}}}//end namespace pressio::ode::impl
 #endif

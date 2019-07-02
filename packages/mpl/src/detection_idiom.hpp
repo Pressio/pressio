@@ -1,11 +1,11 @@
 
-#ifndef ROMPP_MPL_DETECTION_IDIOM_HPP 
-#define ROMPP_MPL_DETECTION_IDIOM_HPP
+#ifndef PRESSIO_MPL_DETECTION_IDIOM_HPP 
+#define PRESSIO_MPL_DETECTION_IDIOM_HPP
 
 #include <type_traits>
 #include "void_t.hpp"
 
-namespace rompp{ namespace mpl{
+namespace pressio{ namespace mpl{
   
 struct nonesuch {
   nonesuch() = delete;
@@ -31,7 +31,7 @@ template <class Default,
 	  template <class...> class Op,
 	  class... Args>
 struct detector<Default, 
-                ::rompp::mpl::void_t<Op<Args...>>, Op, Args...> {
+                ::pressio::mpl::void_t<Op<Args...>>, Op, Args...> {
   constexpr static auto value = true;
   using type = Op<Args...>;
 };
@@ -54,5 +54,5 @@ template <class T, template<class...> class Op, class... Args>
 using is_detected_exact = std::is_same<T, detected_t<Op, Args...>>;
   
 
-}}//end namespace rompp::mpl
+}}//end namespace pressio::mpl
 #endif

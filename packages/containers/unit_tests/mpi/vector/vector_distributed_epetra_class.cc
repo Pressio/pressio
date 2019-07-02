@@ -2,7 +2,7 @@
 #include "epetra_only_fixtures.hpp"
 
 TEST_F(epetraVectorGlobSize15Fixture, Constructor){
-  using namespace rompp;
+  using namespace pressio;
 
   using myvec_t = containers::Vector<Epetra_Vector>;
   myvec_t a( *contigMap_ );
@@ -20,7 +20,7 @@ TEST_F(epetraVectorGlobSize15Fixture, Constructor){
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        QueryWrappedData)
 // {
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -35,7 +35,7 @@ TEST_F(epetraVectorGlobSize15Fixture, Constructor){
 TEST_F(epetraVectorGlobSize15Fixture,
        SubscriptOperator)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   using myvec_t = containers::Vector<Epetra_Vector>;
 
@@ -54,7 +54,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        SetScalar){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -67,7 +67,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        AdditionOperator){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -87,7 +87,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 TEST_F(epetraVectorGlobSize15Fixture,
        expreTempPlus){
-  using namespace rompp;
+  using namespace pressio;
 
   using myvec_t = containers::Vector<Epetra_Vector>;
   myvec_t v1( *contigMap_ );
@@ -142,7 +142,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        SubtractOperator){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -162,7 +162,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        StarOperator){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -187,7 +187,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        CompoundAssignAddOperator){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -206,7 +206,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        CompoundAssignSubtractOperator){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -225,7 +225,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        SetZero){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -239,7 +239,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        Empty){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -250,7 +250,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        replaceGlobalData){
 
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -272,7 +272,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        InPlaceOp){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
@@ -293,7 +293,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        Scale){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );

@@ -6,14 +6,14 @@
 #include "../../../vector/containers_vector_meta.hpp"
 #include "../../../multi_vector/containers_multi_vector_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 // Eigen multivector dot eigen vector
 // result stored in Eigen DYNAMIC vector passed by reference
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
@@ -38,7 +38,7 @@ void dot(const mvec_type & mvA,
 template <typename mvec_type,
 	  typename vec_type,
 	  typename result_vec_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
@@ -60,7 +60,7 @@ void dot(const mvec_type & mvA,
 // result is built and returned
 template <typename mvec_type,
 	  typename vec_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
@@ -79,5 +79,5 @@ auto dot(const mvec_type & mvA, const vec_type & vecB)
 }
 //--------------------------------------------------------
 
-}}} // end namespace rompp::containers::ops
+}}} // end namespace pressio::containers::ops
 #endif

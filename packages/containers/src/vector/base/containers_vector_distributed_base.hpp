@@ -4,7 +4,7 @@
 
 #include "../containers_vector_traits.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template<typename derived_type>
 class VectorDistributedBase
@@ -21,7 +21,7 @@ class VectorDistributedBase
 
 public:
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
 	      std::is_same<T, sc_t>::value> * = nullptr>
   void putScalar(T value) {
     this->underlying().putScalarImpl(value);
@@ -65,5 +65,5 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

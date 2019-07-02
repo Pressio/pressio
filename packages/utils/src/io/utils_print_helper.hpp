@@ -8,7 +8,7 @@
 #include <mpi.h>
 #endif
 
-namespace rompp{ namespace utils{ namespace io{
+namespace pressio{ namespace utils{ namespace io{
 
 namespace impl{
 
@@ -65,5 +65,5 @@ void print_stdout_if_dp(Args &&... args){
 // }
 
 
-}}}//end namespace rompp::utils::io
+}}}//end namespace pressio::utils::io
 #endif

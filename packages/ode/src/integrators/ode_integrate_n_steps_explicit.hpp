@@ -5,7 +5,7 @@
 #include "ode_integrate_n_steps_impl.hpp"
 #include "../meta/ode_is_legitimate_collector.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 template<
   typename stepper_type,
@@ -55,5 +55,5 @@ void integrateNSteps(stepper_type & stepper,
   advancer_t::execute(num_steps, start_time, dt, yIn, stepper);
 }
 
-}}//end namespace rompp::ode
+}}//end namespace pressio::ode
 #endif

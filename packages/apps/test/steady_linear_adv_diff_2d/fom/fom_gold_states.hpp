@@ -1,8 +1,8 @@
 
-#ifndef ROMPP_APPS_TEST_STEADY_ADV_DIFF_2D_GOLD_HPP_
-#define ROMPP_APPS_TEST_STEADY_ADV_DIFF_2D_GOLD_HPP_
+#ifndef PRESSIO_APPS_TEST_STEADY_ADV_DIFF_2D_GOLD_HPP_
+#define PRESSIO_APPS_TEST_STEADY_ADV_DIFF_2D_GOLD_HPP_
 
-namespace rompp { namespace apps{ namespace test{
+namespace pressio { namespace apps{ namespace test{
 
 const std::map<int, double> steadyAdvDiff2d_nx11ny21 =
   { {  0,  0.891273974928453},
@@ -197,5 +197,5 @@ const std::map<int, double> steadyAdvDiff2d_nx11ny21 =
   };
 
 
-}}}//end namespace rompp::apps::test
+}}}//end namespace pressio::apps::test
 #endif

@@ -11,11 +11,11 @@
 #include "../base/containers_matrix_sharedmem_base.hpp"
 #include "../base/containers_matrix_dense_sharedmem_base.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
-	     ::rompp::mpl::enable_if_t<
+	     ::pressio::mpl::enable_if_t<
 	       containers::meta::is_dense_matrix_teuchos<
 		 wrapped_type>::value>
 	     >
@@ -129,6 +129,6 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif
 #endif

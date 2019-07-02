@@ -5,9 +5,9 @@
 
 struct System {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
+  using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::containers::Vector<vector_n_t>;
+  using vector_w_t = pressio::containers::Vector<vector_n_t>;
 
   using scalar_type     = double;
   using state_type	= vector_w_t;
@@ -23,8 +23,8 @@ struct System {
 
 template <typename pick_t,
 	  typename T1, typename T2, typename T3,
-	  typename T4=::rompp::solvers::iterative::gn::noLineSearch,
-	  typename T5=::rompp::solvers::iterative::default_convergence,
+	  typename T4=::pressio::solvers::iterative::gn::noLineSearch,
+	  typename T5=::pressio::solvers::iterative::default_convergence,
 	  typename T6=void>
 struct checkTypes{
 
@@ -50,7 +50,7 @@ struct checkTypes{
 
 
 TEST(solvers_meta, gn_normal_equations){
-  using namespace rompp;
+  using namespace pressio;
   using sys_t   = System;
 
   static_assert
@@ -90,7 +90,7 @@ TEST(solvers_meta, gn_normal_equations){
 
 
 TEST(solvers_meta, gn_normal_equations_noHess){
-  using namespace rompp;
+  using namespace pressio;
   using sys_t   = System;
 
   static_assert
@@ -130,7 +130,7 @@ TEST(solvers_meta, gn_normal_equations_noHess){
 
 
 TEST(solvers_meta, gn_normal_equations_nondef_conv){
-  using namespace rompp;
+  using namespace pressio;
   using sys_t   = System;
 
   static_assert

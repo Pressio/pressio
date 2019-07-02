@@ -4,7 +4,7 @@
 #include "../solvers_ConfigDefs.hpp"
 
 
-namespace rompp {
+namespace pressio {
 namespace solvers {
 
 class NonLinearIterativeSolverHelper {
@@ -59,6 +59,6 @@ class NonLinearIterativeSolverHelper {
 };
 
 } // end namespace solvers
-} // end namespace rompp
+} // end namespace pressio
 
 #endif

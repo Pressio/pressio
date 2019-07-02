@@ -4,7 +4,7 @@
 
 #include "../../rom_lspg_type_generator_common.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <
   typename fom_type,
@@ -52,18 +52,18 @@ struct DefaultLSPGTypeGenerator
   using lspg_matrix_t		= decoder_jac_t;
 
   // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
-  using fom_eval_velocity_policy_t	= ::rompp::rom::policy::EvaluateFomVelocityDefault<false>;
+  using fom_eval_velocity_policy_t	= ::pressio::rom::policy::EvaluateFomVelocityDefault<false>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above (<false> for unsteady overload)
-  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault<false>;
+  using fom_apply_jac_policy_t	= ::pressio::rom::policy::ApplyFomJacobianDefault<false>;
 
   // policy defining how to compute the LSPG time-discrete residual
-  using lspg_residual_policy_t	= ::rompp::rom::LSPGResidualPolicy<
+  using lspg_residual_policy_t	= ::pressio::rom::LSPGResidualPolicy<
     fom_states_data, fom_velocity_data, fom_eval_velocity_policy_t, ud_ops>;
 
   // policy defining how to compute the LSPG time-discrete jacobian
-  using lspg_jacobian_policy_t	= ::rompp::rom::LSPGJacobianPolicy<
+  using lspg_jacobian_policy_t	= ::pressio::rom::LSPGJacobianPolicy<
     fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops>;
 
   using aux_stepper_t = typename auxStepperHelper<
@@ -73,7 +73,7 @@ struct DefaultLSPGTypeGenerator
     lspg_jacobian_policy_t, scalar_t>::type;
 
   // declare type of stepper object
-  using lspg_stepper_t		= ::rompp::ode::ImplicitStepper<
+  using lspg_stepper_t		= ::pressio::ode::ImplicitStepper<
     odeName, lspg_state_type,
     lspg_residual_t, lspg_matrix_t,
     fom_type, aux_stepper_t,
@@ -81,5 +81,5 @@ struct DefaultLSPGTypeGenerator
 
 };//end class
 
-}}//end  namespace rompp::rom
+}}//end  namespace pressio::rom
 #endif

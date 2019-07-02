@@ -5,7 +5,7 @@
 #include "../ode_ConfigDefs.hpp"
 #include "../ode_fwd.hpp"
 
-namespace rompp{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template< typename solver_type, typename guesser_cb_t>
 struct DoStepPolicy{
@@ -91,13 +91,13 @@ struct AdvancerPolicy{
     collector(0, time, yIn);
 
     integral_type step = 1;
-    ::rompp::utils::io::print_stdout("\nstarting time loop","\n");
+    ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
     {
       #ifdef DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
-      ::rompp::utils::io::print_stdout(fmt, "time step =",
+      ::pressio::utils::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
       #endif
 
@@ -142,13 +142,13 @@ struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
     time_type time = start_time;
     integral_type step = 1;
 
-    ::rompp::utils::io::print_stdout("\nstarting time loop","\n");
+    ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
     {
       #ifdef DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
-      ::rompp::utils::io::print_stdout(fmt, "time step =",
+      ::pressio::utils::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
       #endif
 
@@ -171,5 +171,5 @@ struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
 };
 
 
-}}}//end namespace rompp::ode::impl
+}}}//end namespace pressio::ode::impl
 #endif

@@ -1,13 +1,13 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_EPETRA_MASKED_HPP_
-#define ROMPPAPPS_BURGERS1D_EPETRA_MASKED_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_EPETRA_MASKED_HPP_
+#define PRESSIOAPPS_BURGERS1D_EPETRA_MASKED_HPP_
 
 #include "apps_burgers1d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
 #include <Epetra_Import.h>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class Burgers1dEpetraMasked : public Burgers1dEpetra{
   using base_t = Burgers1dEpetra;
@@ -73,6 +73,6 @@ private:
   rcp<importer_t> importer_;
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

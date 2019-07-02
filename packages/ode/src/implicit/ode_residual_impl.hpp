@@ -5,7 +5,7 @@
 #include "../ode_ConfigDefs.hpp"
 #include "ode_implicit_constants.hpp"
 
-namespace rompp{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 // in all functions below, on input R should contain
 // the target application RHS, i.e. if the system is
@@ -25,10 +25,10 @@ void time_discrete_residual(const state_type & y,
 			    residual_type & R,
 			    const std::array<state_type, n> & oldYs,
 			    scalar_type dt) {
-  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
-  constexpr auto negOne = ::rompp::utils::constants::negOne<scalar_type>();
+  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
   const scalar_type negDt = -dt;
-  ::rompp::containers::ops::do_update(R, negDt, y, one, oldYs[0], negOne);
+  ::pressio::containers::ops::do_update(R, negDt, y, one, oldYs[0], negOne);
 }
 
 
@@ -46,15 +46,15 @@ void time_discrete_residual(const state_type & y,
 			    const std::array<state_type, n> & oldYs,
 			    scalar_type dt) {
 
-  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
-  constexpr auto negOne = ::rompp::utils::constants::negOne<scalar_type>();
+  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
 
-  constexpr auto a = ::rompp::ode::coeffs::bdf2<scalar_type>::c1_*negOne;
-  constexpr auto b = ::rompp::ode::coeffs::bdf2<scalar_type>::c2_;
-  const auto c = ::rompp::ode::coeffs::bdf2<scalar_type>::c3_*dt*negOne;
+  constexpr auto a = ::pressio::ode::coeffs::bdf2<scalar_type>::c1_*negOne;
+  constexpr auto b = ::pressio::ode::coeffs::bdf2<scalar_type>::c2_;
+  const auto c = ::pressio::ode::coeffs::bdf2<scalar_type>::c3_*dt*negOne;
 
-  ::rompp::containers::ops::do_update(R, c, y, one, oldYs[1], a, oldYs[0], b);
+  ::pressio::containers::ops::do_update(R, c, y, one, oldYs[1], a, oldYs[0], b);
 }
 
-}}}//end namespace rompp::ode::impl
+}}}//end namespace pressio::ode::impl
 #endif

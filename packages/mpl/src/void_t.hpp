@@ -1,8 +1,8 @@
 
-#ifndef ROMPP_MPL_VOID_T_HPP_
-#define ROMPP_MPL_VOID_T_HPP_
+#ifndef PRESSIO_MPL_VOID_T_HPP_
+#define PRESSIO_MPL_VOID_T_HPP_
 
-namespace rompp { namespace mpl{
+namespace pressio { namespace mpl{
 
 // A void_t implementation that works with gcc-4.9 (workaround for bug 64395
 // From: http://stackoverflow.com/questions/35753920/why-does-the-void-t-detection-idiom-not-work-with-gcc-4-9

@@ -11,7 +11,7 @@
 #include "containers_meta_has_size_method.hpp"
 #include "containers_meta_is_teuchos_rcp.hpp"
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 // template<typename T>
 // struct remove_const: std::remove_const<T>{};
@@ -28,5 +28,5 @@ struct is_arithmetic : std::is_arithmetic<T>{};
 template<typename T>
 struct is_integral: std::is_integral<T>{};
 
-}}} // namespace rompp::containers::meta
+}}} // namespace pressio::containers::meta
 #endif

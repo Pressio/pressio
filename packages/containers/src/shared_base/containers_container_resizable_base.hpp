@@ -4,7 +4,7 @@
 
 #include "../containers_ConfigDefs.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template<typename derived_type, int ndim>
 class ContainerResizableBase
@@ -39,5 +39,5 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

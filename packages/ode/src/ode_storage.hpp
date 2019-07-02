@@ -8,7 +8,7 @@
 #include <pybind11/pybind11.h>
 #endif
 
-namespace rompp{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 /*
  * note that these are auxiliary objects for storing data.
@@ -170,5 +170,5 @@ struct OdeStorage<T, 4>{
   std::array<T, 4> data_;
 };
 
-}}}//end namespace rompp::ode::impl
+}}}//end namespace pressio::ode::impl
 #endif

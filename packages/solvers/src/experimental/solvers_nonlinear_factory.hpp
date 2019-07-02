@@ -14,7 +14,7 @@
 #include "../../../QR_BASIC"
 
 
-namespace rompp {
+namespace pressio {
 namespace solvers {
 
 struct NonLinearSolvers {
@@ -88,7 +88,7 @@ or is not available for linear systems defined by Eigen matrices");
   template <
     typename NSolverT,
     typename LSolverT,
-    typename ::rompp::mpl::enable_if_t<
+    typename ::pressio::mpl::enable_if_t<
       nonlinearleastsquare::details::solver_traits<NSolverT>::enabled
     >* = nullptr
   >
@@ -112,8 +112,8 @@ or is not available for linear systems defined by Eigen matrices");
   //  */
   // template <
   //   typename NSolverT,
-  //   typename qr_algo_tag = ::rompp::qr::Hacked,
-  //   typename ::rompp::mpl::enable_if_t<
+  //   typename qr_algo_tag = ::pressio::qr::Hacked,
+  //   typename ::pressio::mpl::enable_if_t<
   //     std::is_same<NSolverT, nonlinearleastsquare::GaussNewtonQR>::value
   //   >* = nullptr
   // >
@@ -127,5 +127,5 @@ or is not available for linear systems defined by Eigen matrices");
 };
 
 } // end namespace solvers
-} // end namespace rompp
+} // end namespace pressio
 #endif

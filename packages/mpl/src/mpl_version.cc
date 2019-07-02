@@ -1,10 +1,10 @@
 
 #include "mpl_version.hpp"
 
-namespace rompp{ namespace mpl{
+namespace pressio{ namespace mpl{
 
 inline std::string version(){ 
-	return("mpl in ROMPP " ROMPP_VERSION_STRING); 
+	return("mpl in PRESSIO " PRESSIO_VERSION_STRING); 
 }
 
 }}//end namespace 

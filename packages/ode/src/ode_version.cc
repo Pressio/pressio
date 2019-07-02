@@ -1,10 +1,10 @@
 
 #include "ode_version.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 inline std::string version(){ 
-	return("ode in ROMPP " ROMPP_VERSION_STRING); 
+	return("ode in PRESSIO " PRESSIO_VERSION_STRING); 
 }
 
 }}//end namespace 

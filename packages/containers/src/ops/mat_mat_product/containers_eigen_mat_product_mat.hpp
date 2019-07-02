@@ -6,7 +6,7 @@
 #include "../../matrix/containers_matrix_meta.hpp"
 #include "../containers_eigen_ops_helper_impl.hpp"
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 /*---------------------------------------------------------
  *
@@ -20,7 +20,7 @@ namespace rompp{ namespace containers{ namespace ops{
 template <
   typename TA, typename TB, typename TC,
   bool transposeA = false, bool transposeB = false,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_matrix_wrapper_eigen<TA>::value and
     containers::meta::is_matrix_wrapper_eigen<TB>::value and
     containers::meta::is_matrix_wrapper_eigen<TC>::value and
@@ -38,7 +38,7 @@ void product(const TA & A, const TB & B, TC & C){
 template <
   typename T1, typename T2,
     bool transposeA = false, bool transposeB = false,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
       containers::meta::is_dense_matrix_wrapper_eigen<T2>::value and
       containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value
@@ -56,7 +56,7 @@ auto product(const T1 & A, const T2 & B)
 template <
   typename T1, typename T2,
     bool transposeA = false, bool transposeB = false,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value and
       containers::meta::is_dense_matrix_wrapper_eigen<T2>::value and
       containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value
@@ -74,7 +74,7 @@ auto product(const T1 & A, const T2 & B)
 template <
   typename T1, typename T2,
     bool transposeA = false, bool transposeB = false,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
       containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value and
       containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value
@@ -93,7 +93,7 @@ auto product(const T1 & A, const T2 & B)
 template <
   typename T1, typename T2,
     bool transposeA = false, bool transposeB = false,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value and
       containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value and
       containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value
@@ -108,5 +108,5 @@ auto product(const T1 & A, const T2 & B)
 }
 
 
-}}} // end namespace rompp::containers::ops
+}}} // end namespace pressio::containers::ops
 #endif

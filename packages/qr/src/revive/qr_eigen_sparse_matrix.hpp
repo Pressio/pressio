@@ -12,30 +12,30 @@
 #include<Eigen/SparseQR>
 
 
-namespace rompp{ namespace qr{
+namespace pressio{ namespace qr{
 
 // the input data is a wrapper for eigen SPARSE matrix
 template<typename matrix_type,
 	 typename R_type,
 	 template <typename...> class Q_type>
 class QRSolver<matrix_type,
-	       ::rompp::qr::Householder,
+	       ::pressio::qr::Householder,
 	       R_type,
 	       Q_type,
-	       ::rompp::mpl::enable_if_t<
+	       ::pressio::mpl::enable_if_t<
 		 containers::meta::is_sparse_matrix_wrapper_eigen<matrix_type>::value and
 		 containers::meta::is_matrix_wrapper<R_type>::value and
 		 containers::details::traits<R_type>::is_shared_mem and
 		 containers::details::traits<R_type>::is_dense
 		 >
 	       >
-  : public QRSolverBase<QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>,
+  : public QRSolverBase<QRSolver<matrix_type, ::pressio::qr::Householder, R_type, Q_type>,
 			R_type, Q_type<Eigen::MatrixXd>, matrix_type>{
 
   using sc_t = typename containers::details::traits<matrix_type>::scalar_t;
   using Q_t = Q_type<Eigen::MatrixXd>;
 
-  using this_t = QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>;
+  using this_t = QRSolver<matrix_type, ::pressio::qr::Householder, R_type, Q_type>;
   using base_t = QRSolverBase<this_t, R_type, Q_t, matrix_type>;
   friend base_t;
   using base_t::Qmat_;
@@ -49,7 +49,7 @@ private:
 
   template <typename vector_in_t,
 	    typename vector_out_t,
-	    ::rompp::mpl::enable_if_t<
+	    ::pressio::mpl::enable_if_t<
 	      containers::meta::is_vector_wrapper<vector_in_t>::value and
 	      containers::meta::is_vector_wrapper<vector_out_t>::value and
 	      // the type vector in should be from same package as Q
@@ -84,7 +84,7 @@ private:
 
   template <typename vector_t>
   void solveImpl(const vector_t & rhs, vector_t & y){
-    ::rompp::qr::impl::solve(rhs, *Rmat_, y);
+    ::pressio::qr::impl::solve(rhs, *Rmat_, y);
   }
 
   const Q_t & cRefQFactorImpl() const {
@@ -97,5 +97,5 @@ private:
 
 };//end class
 
-}} // end namespace rompp::qr
+}} // end namespace pressio::qr
 #endif

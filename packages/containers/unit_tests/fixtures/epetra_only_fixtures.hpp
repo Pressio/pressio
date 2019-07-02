@@ -77,14 +77,14 @@ public:
   int numProc_;
 
   // for crs matrix
-  using mymat_w_t = rompp::containers::Matrix<Epetra_CrsMatrix>;
+  using mymat_w_t = pressio::containers::Matrix<Epetra_CrsMatrix>;
   std::shared_ptr<Epetra_Map> dataMapSM_;
   int nRowsSM_ = 7;
   std::shared_ptr<mymat_w_t> sm_;
 
   // multivector
   using mymv_w_t =
-    rompp::containers::MultiVector<Epetra_MultiVector>;
+    pressio::containers::MultiVector<Epetra_MultiVector>;
   const int numVectors_ = 4;
   int nRowsMV_ = 9;
   std::shared_ptr<Epetra_Map> dataMapMV_;

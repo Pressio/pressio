@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template<typename T,
 	 typename = void>
@@ -22,5 +22,5 @@ struct has_size_method<
   > : std::true_type{};
 
 
-}}} // namespace rompp::containers::meta
+}}} // namespace pressio::containers::meta
 #endif

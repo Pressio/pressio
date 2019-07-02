@@ -7,7 +7,7 @@
 #include "../multi_vector/containers_multi_vector_meta.hpp"
 
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 
 template <typename T1, typename T2, typename enable = void>
@@ -15,7 +15,7 @@ struct wrapper_pair_have_same_scalar : std::false_type {};
 
 template <typename T1, typename T2>
 struct wrapper_pair_have_same_scalar<T1,T2,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     std::is_same<typename
 		 containers::details::traits<T1>::scalar_t,
 		 typename
@@ -32,7 +32,7 @@ struct wrapper_triplet_have_same_scalar : std::false_type {};
 
 template <typename T1, typename T2, typename T3>
 struct wrapper_triplet_have_same_scalar<T1,T2,T3,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     wrapper_pair_have_same_scalar<T1,T2>::value &&
     wrapper_pair_have_same_scalar<T2,T3>::value
     >
@@ -40,5 +40,5 @@ struct wrapper_triplet_have_same_scalar<T1,T2,T3,
 //--------------------------------------------  
 
  
-}}} // namespace rompp::containers::meta
+}}} // namespace pressio::containers::meta
 #endif

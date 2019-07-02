@@ -6,7 +6,7 @@
 
 
 TEST(ode_explicit_rk4, traits){
-  using namespace rompp;
+  using namespace pressio;
 
   using app_t = ode::testing::fakeAppForTraitsForExp;
   using nstate_t = typename app_t::state_type;
@@ -39,7 +39,7 @@ TEST(ode_explicit_rk4, traits){
 
 TEST(ode_explicit_rk4,
      numericsStdResidualPolDefaultCreated){
-  using namespace rompp;
+  using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;
@@ -72,7 +72,7 @@ TEST(ode_explicit_rk4,
 
 TEST(ode_explicit_rk4,
      numericsStdResidualPolPassedByUser){
-  using namespace rompp;
+  using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;

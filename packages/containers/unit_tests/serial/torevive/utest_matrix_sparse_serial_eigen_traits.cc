@@ -15,7 +15,7 @@ template<typename T>
 struct containers_matrix_sparse_serial_eigen_traitsTest
   : public ::testing::Test{
 public:
-	using namespace rompp;
+	using namespace pressio;
 
   using native_t = typename T::mat_t;
   STATIC_ASSERT_IS_NOT_MATRIX_DENSE_SHAREDMEM_EIGEN(native_t);
@@ -74,7 +74,7 @@ TYPED_TEST_CASE(containers_matrix_sparse_serial_eigen_traitsTest, MyTypes);
 
 TYPED_TEST(containers_matrix_sparse_serial_eigen_traitsTest, traits)
 {
-	using namespace rompp;
+	using namespace pressio;
 
   //this runs all types, no need to put anything
   this->check();

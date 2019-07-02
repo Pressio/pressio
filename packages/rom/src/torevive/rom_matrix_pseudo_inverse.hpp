@@ -6,7 +6,7 @@
 #include "../../../CONTAINERS_MATRIX"
 #include "../../../SVD_BASIC"
 
-namespace rompp{
+namespace pressio{
 namespace rom{
 namespace exp{
 
@@ -32,5 +32,5 @@ auto pseudoInverse(const mat_type & A)
   
 }//end namespace exp
 }//end namespace rom
-}//end namespace rompp
+}//end namespace pressio
 #endif 

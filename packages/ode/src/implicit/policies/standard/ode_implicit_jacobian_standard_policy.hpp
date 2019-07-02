@@ -6,7 +6,7 @@
 #include "../base/ode_jacobian_policy_base.hpp"
 #include "../../ode_jacobian_impl.hpp"
 
-namespace rompp{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace policy{
 
 /*
  * state and jacobian types are containers wrappers
@@ -17,9 +17,9 @@ template<typename state_type,
 	 typename jacobian_type>
 class ImplicitJacobianStandardPolicy<
   state_type, system_type, jacobian_type,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
-    ::rompp::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
+  ::pressio::mpl::enable_if_t<
+    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
+    ::pressio::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
     containers::meta::is_wrapper<state_type>::value and
     containers::meta::is_wrapper<jacobian_type>::value
     >
@@ -44,7 +44,7 @@ public:
 		  scalar_t dt)const
   {
     model.jacobian( *y.data(), *J.data(), t);
-    ::rompp::ode::impl::time_discrete_jacobian<method>(J, dt);
+    ::pressio::ode::impl::time_discrete_jacobian<method>(J, dt);
   }
 
   template <
@@ -57,7 +57,7 @@ public:
   {
     auto nJJ = model.jacobian(*y.data(), t);
     jacobian_type JJ(nJJ);
-    ::rompp::ode::impl::time_discrete_jacobian<method>(JJ, dt);
+    ::pressio::ode::impl::time_discrete_jacobian<method>(JJ, dt);
     return JJ;
   }
 
@@ -74,9 +74,9 @@ template<typename state_type,
 	 typename jacobian_type>
 class ImplicitJacobianStandardPolicy<
   state_type, system_type, jacobian_type,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
-    ::rompp::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
+  ::pressio::mpl::enable_if_t<
+    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
+    ::pressio::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
     mpl::is_same<system_type, pybind11::object >::value and
     containers::meta::is_array_pybind11<state_type>::value and
     containers::meta::is_array_pybind11<jacobian_type>::value
@@ -103,7 +103,7 @@ public:
   {
     throw std::runtime_error(" ImplicitJacobianStandardPolicy for pybind11 missing ");
     // model.jacobian( *y.data(), *J.data(), t);
-    // ::rompp::ode::impl::time_discrete_jacobian<method>(J, dt);
+    // ::pressio::ode::impl::time_discrete_jacobian<method>(J, dt);
   }
 
   template <
@@ -119,12 +119,12 @@ public:
 
     // auto nJJ = model.jacobian(*y.data(), t);
     // jacobian_type JJ(nJJ);
-    // ::rompp::ode::impl::time_discrete_jacobian<method>(JJ, dt);
+    // ::pressio::ode::impl::time_discrete_jacobian<method>(JJ, dt);
     return nJJ;
   }
 };//end class
 #endif
 
 
-}}}//end namespace rompp::ode::policy
+}}}//end namespace pressio::ode::policy
 #endif

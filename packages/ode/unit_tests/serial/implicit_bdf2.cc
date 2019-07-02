@@ -7,7 +7,7 @@
 
 
 TEST(ode_implicit_bdf2, traits){
-  using namespace rompp;
+  using namespace pressio;
 
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -56,7 +56,7 @@ TEST(ode_implicit_bdf2, traits){
 
 
 TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
-  using namespace rompp;
+  using namespace pressio;
 
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -105,7 +105,7 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
 
 
 TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
-  using namespace rompp;
+  using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;
@@ -162,7 +162,7 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
 
 
 TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
-  using namespace rompp;
+  using namespace pressio;
   using app_t		= ode::testing::refAppForImpEigen;
   using nstate_t	= typename app_t::state_type;
   using nveloc_t	= typename app_t::velocity_type;

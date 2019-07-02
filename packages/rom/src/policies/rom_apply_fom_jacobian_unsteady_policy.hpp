@@ -2,7 +2,7 @@
 #ifndef ROM_APPLY_FOM_JACOBIAN_UNSTEADY_HPP_
 #define ROM_APPLY_FOM_JACOBIAN_UNSTEADY_HPP_
 
-namespace rompp{ namespace rom{ namespace policy{
+namespace pressio{ namespace rom{ namespace policy{
 
 template <>
 struct ApplyFomJacobianDefault<false>{
@@ -16,8 +16,8 @@ struct ApplyFomJacobianDefault<false>{
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
-      !::rompp::containers::meta::is_array_pybind11<state_t>::value and
-      !::rompp::containers::meta::is_array_pybind11<operand_t>::value
+      !::pressio::containers::meta::is_array_pybind11<state_t>::value and
+      !::pressio::containers::meta::is_array_pybind11<operand_t>::value
       > * = nullptr
 #endif
     >
@@ -36,8 +36,8 @@ struct ApplyFomJacobianDefault<false>{
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
-      !::rompp::containers::meta::is_array_pybind11<state_t>::value and
-      !::rompp::containers::meta::is_array_pybind11<operand_t>::value
+      !::pressio::containers::meta::is_array_pybind11<state_t>::value and
+      !::pressio::containers::meta::is_array_pybind11<operand_t>::value
       > * = nullptr
 #endif
     >
@@ -59,8 +59,8 @@ struct ApplyFomJacobianDefault<false>{
     typename operand_t, typename time_t
     , mpl::enable_if_t<
       mpl::is_same<fom_t, pybind11::object>::value and
-      ::rompp::containers::meta::is_array_pybind11<state_t>::value and
-      ::rompp::containers::meta::is_array_pybind11<operand_t>::value and
+      ::pressio::containers::meta::is_array_pybind11<state_t>::value and
+      ::pressio::containers::meta::is_array_pybind11<operand_t>::value and
       // because we should have all = pybind11::array_t
       mpl::is_same<state_t, operand_t>::value
       > * = nullptr
@@ -77,8 +77,8 @@ struct ApplyFomJacobianDefault<false>{
     typename result_t, typename time_t
     , mpl::enable_if_t<
       mpl::is_same<fom_t, pybind11::object>::value and
-      ::rompp::containers::meta::is_array_pybind11<state_t>::value and
-      ::rompp::containers::meta::is_array_pybind11<operand_t>::value and
+      ::pressio::containers::meta::is_array_pybind11<state_t>::value and
+      ::pressio::containers::meta::is_array_pybind11<operand_t>::value and
       // because we should have all = pybind11::array_t
       mpl::is_same<state_t, operand_t>::value
       > * = nullptr
@@ -94,5 +94,5 @@ struct ApplyFomJacobianDefault<false>{
   
 };
 
-}}} //end namespace rompp::rom::policy
+}}} //end namespace pressio::rom::policy
 #endif

@@ -9,7 +9,7 @@
 #include "./meta/containers_native_tpetra_multi_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_block_multi_vector_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace details{
+namespace pressio{ namespace containers{ namespace details{
 
 #ifdef HAVE_TRILINOS
 
@@ -130,7 +130,7 @@ template<typename wrapped_type>
 struct traits<
   MultiVector<
     wrapped_type,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       meta::is_multi_vector_tpetra_block<
 	wrapped_type
 	>::value
@@ -200,5 +200,5 @@ struct traits<MultiVector<wrapped_type,
   // static constexpr bool is_dynamic = !is_static;
 };
 
-}}}//end namespace rompp::containers::details
+}}}//end namespace pressio::containers::details
 #endif

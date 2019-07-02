@@ -4,7 +4,7 @@
 
 #include "./ode_is_legitimate_implicit_residual_policy.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<
   ImplicitEnum name,
@@ -74,5 +74,5 @@ using find_if_legitimate_implicit_residual_policy_t =
    Args...>::type;
 
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

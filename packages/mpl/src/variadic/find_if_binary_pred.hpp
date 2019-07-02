@@ -1,11 +1,11 @@
 
-#ifndef ROMPP_MPL_VARIADIC_FIND_IF_BINARY_HPP
-#define ROMPP_MPL_VARIADIC_FIND_IF_BINARY_HPP
+#ifndef PRESSIO_MPL_VARIADIC_FIND_IF_BINARY_HPP
+#define PRESSIO_MPL_VARIADIC_FIND_IF_BINARY_HPP
 
 #include <type_traits>
 #include <cstddef>
 
-namespace rompp{ namespace mpl{ namespace variadic {
+namespace pressio{ namespace mpl{ namespace variadic {
 
 /**
  * \param Predicate The test predicate - `F<T, attribute_t>::type::value`

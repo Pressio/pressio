@@ -6,7 +6,7 @@
 #include <iostream>
 #include <cstdio>
 
-namespace rompp{ namespace utils{ namespace io{
+namespace pressio{ namespace utils{ namespace io{
 
 namespace impl{
 
@@ -105,7 +105,7 @@ std::string bg_cyan(){ return impl::is_colorized(std::cout) ? "\033[46m" : ""; }
 inline
 std::string bg_white(){ return impl::is_colorized(std::cout) ? "\033[47m" : ""; }
 
-}}} // namespace rompp::utils::io
+}}} // namespace pressio::utils::io
 
 #endif
 

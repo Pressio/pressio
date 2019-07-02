@@ -5,7 +5,7 @@
 #include "../../meta/containers_meta_basic.hpp"
 #include "../../matrix/meta/containers_native_eigen_matrix_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_dynamic_multi_vector_eigen : std::false_type {};
@@ -19,5 +19,5 @@ struct is_dynamic_multi_vector_eigen<T,
   > : std::true_type{};
 
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif

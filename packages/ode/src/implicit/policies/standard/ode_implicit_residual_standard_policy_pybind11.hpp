@@ -7,7 +7,7 @@
 #include "../base/ode_implicit_residual_policy_base.hpp"
 #include "../../ode_residual_impl.hpp"
 
-namespace rompp{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace policy{
 
 template<
   typename state_type,
@@ -16,9 +16,9 @@ template<
   >
 class ImplicitResidualStandardPolicyPybind11<
   state_type, system_type, residual_type,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
-    ::rompp::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
+  ::pressio::mpl::enable_if_t<
+    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
+    ::pressio::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
     mpl::is_same<system_type, pybind11::object >::value and
     containers::meta::is_cstyle_array_pybind11<state_type>::value and
     containers::meta::is_cstyle_array_pybind11<residual_type>::value
@@ -50,7 +50,7 @@ public:
 
     // printf("C++ R address: %p\n", R.data());
     // model.attr("residual2")(y, R, t);
-    // ::rompp::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
+    // ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
   }
 
   template <
@@ -65,11 +65,11 @@ public:
     throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
 
     residual_type nR;// = model.attr("residual1")(y, t);
-    // ::rompp::ode::impl::time_discrete_residual<method, n>(y, nR, oldYs, dt);
+    // ::pressio::ode::impl::time_discrete_residual<method, n>(y, nR, oldYs, dt);
     return nR;
   }
 };//end class
 
-}}}//end namespace rompp::ode::policy
+}}}//end namespace pressio::ode::policy
 #endif
 #endif

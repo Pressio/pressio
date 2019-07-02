@@ -2,7 +2,7 @@
 #ifndef ROM_EVALUATE_FOM_VELOCITY_STEADY_HPP_
 #define ROM_EVALUATE_FOM_VELOCITY_STEADY_HPP_
 
-namespace rompp{ namespace rom{ namespace policy{
+namespace pressio{ namespace rom{ namespace policy{
 
 template <>
 struct EvaluateFomVelocityDefault<true>{
@@ -30,5 +30,5 @@ struct EvaluateFomVelocityDefault<true>{
 
 };
 
-}}} //end namespace rompp::rom::policy
+}}} //end namespace pressio::rom::policy
 #endif

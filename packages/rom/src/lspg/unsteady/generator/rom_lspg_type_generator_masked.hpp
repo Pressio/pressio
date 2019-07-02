@@ -4,7 +4,7 @@
 
 #include "../../rom_lspg_type_generator_common.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <
   typename fom_type,
@@ -48,11 +48,11 @@ struct MaskedLSPGTypeGenerator
   using lspg_matrix_t		= decoder_jac_t;
 
   // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
-  using fom_eval_velocity_policy_t	= ::rompp::rom::policy::EvaluateFomVelocityDefault<false>;
+  using fom_eval_velocity_policy_t	= ::pressio::rom::policy::EvaluateFomVelocityDefault<false>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above (<false> for unsteady overload)
-  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault<false>;
+  using fom_apply_jac_policy_t	= ::pressio::rom::policy::ApplyFomJacobianDefault<false>;
 
   // policy defining how to compute the LSPG time-discrete residual
   using lspg_residual_policy_t =
@@ -87,5 +87,5 @@ struct MaskedLSPGTypeGenerator
 };//end class
 
 
-}}//end  namespace rompp::rom
+}}//end  namespace pressio::rom
 #endif
