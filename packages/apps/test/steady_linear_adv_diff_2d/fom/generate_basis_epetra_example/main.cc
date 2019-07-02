@@ -35,7 +35,7 @@ void readMatrixFromFile(std::string filename,
 }
 
 int main(int argc, char *argv[]){
-  using fom_t	 = ::rompp::apps::SteadyLinAdvDiff2dEpetra;
+  using fom_t	 = ::pressio::apps::SteadyLinAdvDiff2dEpetra;
 
   int rank;
   MPI_Init(&argc,&argv);

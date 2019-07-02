@@ -4,7 +4,7 @@
 
 #include "../../../ode_ConfigDefs.hpp"
 
-namespace rompp{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace policy{
 
 template <typename derived_t>
 struct ImplicitResidualPolicyBase
@@ -30,30 +30,5 @@ private:
 
 };//end class
 
-
-}}}//end namespace rompp::ode::policy
+}}}//end namespace pressio::ode::policy
 #endif
-
-
-
-//-----------------------------------------------------
-// when computing TIME residudal but we also
-// need  previous RHS not just previous states
-//-----------------------------------------------------
-// template <typename state_type,
-// 	    typename residual_type,
-// 	    typename model_type,
-// 	    typename scalar_type,
-// 	    int T = numAuxRHS,
-// 	    typename std::enable_if<T!=0>::type * = nullptr>
-// void operator()(const state_type & y,
-// 	       residual_type & R,
-// 	       const std::array<state_type, numAuxStates> & auxYs,
-// 	       const std::array<residual_type, T> & auxRHSs,
-// 	       model_type & model,
-// 	       scalar_type t,
-// 	       scalar_type dt)
-// {
-//   this->underlying()(y, R, auxYs, auxRHSs, model, t, dt);
-// }
-//-----------------------------------------------------

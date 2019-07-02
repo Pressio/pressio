@@ -6,7 +6,7 @@
 #include "../meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
 #include "../../../containers/src/vector/containers_vector_meta.hpp"
 
-namespace rompp{ namespace solvers{
+namespace pressio{ namespace solvers{
 
 /**
  * @brief Base class for nonlinear solver
@@ -27,7 +27,7 @@ struct NonLinearSolverBase {
     typename state_t
     >
   void solve(const system_t & sys, state_t & x){
-    // static_assert( ::rompp::solvers::meta::is_legitimate_system_for_nonlinear_solver<
+    // static_assert( ::pressio::solvers::meta::is_legitimate_system_for_nonlinear_solver<
     //   system_t>::value,
     // 		   "The system obj type is not valid for non-linear solver");
 
@@ -35,5 +35,5 @@ struct NonLinearSolverBase {
   }
 };
 
-}}//end namespace rompp::solvers
+}}//end namespace pressio::solvers
 #endif

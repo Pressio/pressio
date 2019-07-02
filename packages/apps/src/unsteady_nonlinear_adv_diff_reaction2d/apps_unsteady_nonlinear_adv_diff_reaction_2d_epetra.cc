@@ -2,7 +2,7 @@
 #include "apps_unsteady_nonlinear_adv_diff_reaction_2d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 void UnsteadyNonLinAdvDiffReac2dEpetra::createGridMap(){
   // total number of unknown grid points (we only consider the interior points)
@@ -108,7 +108,7 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::setup(){
 
 void UnsteadyNonLinAdvDiffReac2dEpetra::assembleFDMatrix() const
 {
-  /* note that R is the residual vector, which has
+  /* note that R is the velocity vector, which has
    * a dofMap_ because it contains all dofs.
    * Once again, the dofs are the numFields * numOfUnkownGridPoints
 
@@ -329,5 +329,5 @@ void UnsteadyNonLinAdvDiffReac2dEpetra::computeJacobian( const state_type & ySta
 
 }//computeJacobian
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

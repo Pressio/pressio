@@ -7,14 +7,14 @@
 
 
 TEST(ode_implicit_bdf2, traits){
-  using namespace rompp;
+  using namespace pressio;
 
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
-  using nres_t = typename app_t::residual_type;
+  using nveloc_t = typename app_t::velocity_type;
   using njac_t = typename app_t::jacobian_type;
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nres_t>;
+  using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njac_t>;
 
   static_assert(
@@ -50,22 +50,22 @@ TEST(ode_implicit_bdf2, traits){
   ::testing::StaticAssertTypeEq<typename
   				traits::scalar_t,double>();
   ::testing::StaticAssertTypeEq<typename
-  				traits::model_t,app_t>();
+  				traits::system_t,app_t>();
   static_assert( traits::order_value == 2, "");
 }
 
 
 TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
-  using namespace rompp;
+  using namespace pressio;
 
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
-  using nresidual_t = typename app_t::residual_type;
+  using nveloc_t = typename app_t::velocity_type;
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nresidual_t>;
+  using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
@@ -105,15 +105,15 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
 
 
 TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
-  using namespace rompp;
+  using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
-  using nresidual_t = typename app_t::residual_type;
+  using nveloc_t = typename app_t::velocity_type;
   using njacobian_t = typename app_t::jacobian_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nresidual_t>;
+  using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
@@ -162,15 +162,15 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
 
 
 TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
-  using namespace rompp;
+  using namespace pressio;
   using app_t		= ode::testing::refAppForImpEigen;
   using nstate_t	= typename app_t::state_type;
-  using nresidual_t	= typename app_t::residual_type;
+  using nveloc_t	= typename app_t::velocity_type;
   using njacobian_t	= typename app_t::jacobian_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nresidual_t>;
+  using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;

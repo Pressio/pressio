@@ -4,7 +4,7 @@
 
 #include "../containers_vector_traits.hpp"
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_vector_wrapper : std::false_type {};
@@ -21,5 +21,5 @@ struct is_vector_wrapper<T,
   static_assert( containers::meta::is_vector_wrapper<TYPE>::value, \
 		 "THIS_IS_NOT_A_CONTAINERS_VECTOR_WRAPPER")
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif

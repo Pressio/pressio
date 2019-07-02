@@ -7,7 +7,7 @@
 #include "../../../containers/src/meta/containers_has_static_method_add_to_diagonal.hpp"
 #include "../../../containers/src/meta/containers_has_static_method_do_update_two_terms.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<
   typename T,
@@ -29,9 +29,9 @@ template<
 struct is_valid_user_defined_ops_for_implicit_bdf2<
   T, scalar_t, state_t, residual_t, jacobian_t,
     mpl::enable_if_t<
-      ::rompp::containers::meta::has_update_op_typedef<T>::value
+      ::pressio::containers::meta::has_update_op_typedef<T>::value
       and
-      ::rompp::containers::meta::has_static_method_do_update_three_terms<
+      ::pressio::containers::meta::has_static_method_do_update_three_terms<
 	typename T::update_op,
 	scalar_t,
 	typename containers::details::traits<residual_t>::wrapped_t,
@@ -40,13 +40,13 @@ struct is_valid_user_defined_ops_for_implicit_bdf2<
 	typename containers::details::traits<state_t>::wrapped_t
 	>::value
       and
-      ::rompp::containers::meta::has_static_method_scale<
+      ::pressio::containers::meta::has_static_method_scale<
 	typename T::update_op,
 	typename containers::details::traits<jacobian_t>::wrapped_t,
 	scalar_t
 	>::value
       and
-      ::rompp::containers::meta::has_static_method_add_to_diagonal<
+      ::pressio::containers::meta::has_static_method_add_to_diagonal<
 	typename T::update_op,
 	typename containers::details::traits<jacobian_t>::wrapped_t,
 	scalar_t
@@ -54,5 +54,5 @@ struct is_valid_user_defined_ops_for_implicit_bdf2<
       >
   > : std::true_type{};
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

@@ -1,10 +1,10 @@
 
 #include "utils_version.hpp"
 
-namespace rompp{ namespace utils{
+namespace pressio{ namespace utils{
 
 inline std::string version(){
-  return("utils in ROMPP " ROMPP_VERSION_STRING);
+  return("utils in PRESSIO " PRESSIO_VERSION_STRING);
 }
 
-}}//end namespace rompp::utils
+}}//end namespace pressio::utils

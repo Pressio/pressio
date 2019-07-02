@@ -5,14 +5,14 @@
 #include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 //--------------------------------------------------------
 //  eigen vector wrapper
 //--------------------------------------------------------
 template <typename vec_type,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_vector_wrapper_eigen<vec_type>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
 auto norm1(const vec_type & a)
@@ -28,8 +28,8 @@ auto norm1(const vec_type & a)
 #ifdef HAVE_PYBIND11
 // pybind11::array
 template <typename vec_type,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_array_pybind11<vec_type>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_array_pybind11<vec_type>::value
     > * = nullptr
   >
 auto norm1(const vec_type & a)
@@ -55,8 +55,8 @@ auto norm1(const vec_type & a)
 //--------------------------------------------------------
 #ifdef HAVE_TRILINOS
 template <typename vec_type,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
     > * = nullptr
   >
 auto norm1(const vec_type & a)
@@ -68,5 +68,5 @@ auto norm1(const vec_type & a)
 #endif 
 
 
-}}}//end namespace rompp::containers::ops
+}}}//end namespace pressio::containers::ops
 #endif

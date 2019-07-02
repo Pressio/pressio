@@ -22,10 +22,10 @@ void checkSol(int rank, const T & y,
 }
 
 int main(int argc, char *argv[]){
-  using app_t		= rompp::apps::Burgers1dEpetra;
+  using app_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
+  using app_velocity_t	= typename app_t::velocity_type;
 
   MPI_Init(&argc,&argv);
   int rank; // My process ID
@@ -39,14 +39,13 @@ int main(int argc, char *argv[]){
   app_t appobj(mu, Ncells, &Comm);
   appobj.setup();
   auto & y0n = appobj.getInitialState();
-  auto r0n = appobj.residual(y0n, static_cast<scalar_t>(0));
 
-  using ode_state_t = rompp::containers::Vector<app_state_t>;
-  using ode_res_t   = rompp::containers::Vector<app_residual_t>;
+  using ode_state_t = pressio::containers::Vector<app_state_t>;
+  using ode_res_t   = pressio::containers::Vector<app_velocity_t>;
   ode_state_t y(y0n);
 
-  constexpr auto ode_case = rompp::ode::ExplicitEnum::Euler;
-  using stepper_t = rompp::ode::ExplicitStepper<
+  constexpr auto ode_case = pressio::ode::ExplicitEnum::Euler;
+  using stepper_t = pressio::ode::ExplicitStepper<
     ode_case, ode_state_t, app_t, ode_res_t, scalar_t>;
   stepper_t stepperObj(y, appobj);
 
@@ -54,10 +53,10 @@ int main(int argc, char *argv[]){
   scalar_t fint = 35;
   scalar_t dt = 0.01;
   auto Nsteps = static_cast<unsigned int>(fint/dt);
-  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
+  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
   y.data()->Print(std::cout << std::setprecision(14));
   {
-    using namespace rompp::apps::test;
+    using namespace pressio::apps::test;
     checkSol(rank, y, 
              Burgers1dExpGoldStates<ode_case>::get(Ncells, dt, fint));
   }

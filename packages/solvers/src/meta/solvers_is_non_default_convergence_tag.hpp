@@ -5,7 +5,7 @@
 #include "../solvers_convergence_tags.hpp"
 #include "../solvers_norm_tags.hpp"
 
-namespace rompp{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_non_default_convergence_tag
@@ -14,7 +14,7 @@ struct is_non_default_convergence_tag
 template <typename T>
 struct is_non_default_convergence_tag<
   T,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     std::is_same<
       T,
       iterative::converged_when::absoluteNormCorrectionBelowTol<L2Norm>>::value or
@@ -39,5 +39,5 @@ struct is_non_default_convergence_tag<
     >
   > : std::true_type{};
 
-}}} // namespace rompp::solvers::meta
+}}} // namespace pressio::solvers::meta
 #endif

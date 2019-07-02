@@ -1,12 +1,12 @@
 
-#ifndef ROMPP_MPL_VARIADIC_AT_HPP
-#define ROMPP_MPL_VARIADIC_AT_HPP
+#ifndef PRESSIO_MPL_VARIADIC_AT_HPP
+#define PRESSIO_MPL_VARIADIC_AT_HPP
 
 #include <cstddef>
 #include "../identity.hpp"
 #include <tuple>
 
-namespace rompp{ namespace mpl{ namespace variadic {
+namespace pressio{ namespace mpl{ namespace variadic {
 
 /**
  * \class at

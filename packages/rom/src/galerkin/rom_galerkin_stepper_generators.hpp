@@ -4,7 +4,7 @@
 
 #include "rom_galerkin_type_generators.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <typename problem_t>
 struct GalerkinProblemGenerator<problem_t>
@@ -14,22 +14,22 @@ struct GalerkinProblemGenerator<problem_t>
   using typename problem_t::scalar_t;
   using typename problem_t::fom_native_state_t;
   using typename problem_t::fom_state_t;
-  using typename problem_t::fom_rhs_t;
+  using typename problem_t::fom_velocity_t;
 
   using typename problem_t::galerkin_state_t;
   using typename problem_t::decoder_t;
   using typename problem_t::fom_state_reconstr_t;
   using typename problem_t::fom_states_data;
-  using typename problem_t::fom_rhs_data;
+  using typename problem_t::fom_velocity_data;
 
   using typename problem_t::galerkin_residual_policy_t;
   using typename problem_t::galerkin_stepper_t;
 
   fom_state_t			yFomRef_;
   fom_state_reconstr_t		yFomReconstructor_;
-  fom_rhs_t			rFomRef_;
+  fom_velocity_t			rFomRef_;
   fom_states_data		fomStates_;
-  fom_rhs_data			fomRhs_;
+  fom_velocity_data			fomRhs_;
   galerkin_residual_policy_t	resObj_;
   galerkin_stepper_t		stepperObj_;
 
@@ -40,7 +40,7 @@ struct GalerkinProblemGenerator<problem_t>
   			   scalar_t		    t0)
     : yFomRef_(yFomRefNative),
       yFomReconstructor_(yFomRef_, decoder),
-      rFomRef_( appObj.residual(*yFomRef_.data(), t0) ),
+      rFomRef_( appObj.velocity(*yFomRef_.data(), t0) ),
       fomStates_(yFomRef_, yFomReconstructor_),
       fomRhs_(rFomRef_),
       resObj_(fomStates_, fomRhs_, decoder),
@@ -49,5 +49,5 @@ struct GalerkinProblemGenerator<problem_t>
 
 };
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

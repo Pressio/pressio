@@ -3,7 +3,7 @@
 #include "CONTAINERS_ALL"
 
 TEST(containers_matrix_matrix_product, eigenDenseDense){
-  using namespace rompp;
+  using namespace pressio;
 
   using nat_t = Eigen::MatrixXd;
   using myA_t = containers::Matrix<nat_t>;
@@ -36,7 +36,7 @@ TEST(containers_matrix_matrix_product, eigenDenseDense){
 
 
 TEST(containers_matrix_matrix_product, eigenSparseSparse){  
-  using namespace rompp;  
+  using namespace pressio;  
   // create sparse matrix
   using mymat_t = containers::Matrix<
     Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;
@@ -100,7 +100,7 @@ TEST(containers_matrix_matrix_product, eigenSparseSparse){
 
 
 TEST(containers_matrix_matrix_product, eigenSparseDense){
-  using namespace rompp;  
+  using namespace pressio;  
   // create sparse matrix
   using mymat_t = containers::Matrix<
     Eigen::SparseMatrix<double,Eigen::RowMajor,int>>;

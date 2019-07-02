@@ -6,7 +6,7 @@
 #include "../../meta/containers_meta_basic.hpp"
 #include <Tpetra_MultiVector_decl.hpp>
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_multi_vector_tpetra : std::false_type {};
@@ -27,6 +27,6 @@ struct is_multi_vector_tpetra<T,
       > : std::true_type{};
 
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif
 #endif

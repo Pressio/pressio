@@ -12,11 +12,11 @@
 #include "../base/containers_matrix_sparse_distributed_base.hpp"
 #include "../base/containers_matrix_sparse_distributed_trilinos_base.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class Matrix<wrapped_type,
-	     ::rompp::mpl::enable_if_t<
+	     ::pressio::mpl::enable_if_t<
 	       containers::meta::is_sparse_matrix_epetra<
 		 wrapped_type>::value>
 	     >
@@ -199,6 +199,6 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif
 #endif

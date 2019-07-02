@@ -5,7 +5,7 @@
 #include "containers_ops_meta.hpp"
 #include "../matrix/containers_matrix_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace ops{ namespace impl{
+namespace pressio{ namespace containers{ namespace ops{ namespace impl{
 
 
 template <typename TA, typename TB, typename enable = void>
@@ -15,7 +15,7 @@ struct eigenMatMatProdRetTypeHelper;
 template <typename TA>
 struct eigenMatMatProdRetTypeHelper<
   TA, TA,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_dense_matrix_wrapper_eigen<TA>::value
     >
   >{
@@ -26,7 +26,7 @@ struct eigenMatMatProdRetTypeHelper<
 template <typename TA>
 struct eigenMatMatProdRetTypeHelper<
   TA, TA,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_sparse_matrix_wrapper_eigen<TA>::value
     >
   >{
@@ -37,7 +37,7 @@ struct eigenMatMatProdRetTypeHelper<
 template <typename TA, typename TB>
 struct eigenMatMatProdRetTypeHelper<
   TA, TB,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_sparse_matrix_wrapper_eigen<TA>::value and
     containers::meta::is_dense_matrix_wrapper_eigen<TB>::value
     >
@@ -49,7 +49,7 @@ struct eigenMatMatProdRetTypeHelper<
 template <typename TA, typename TB>
 struct eigenMatMatProdRetTypeHelper<
   TA, TB,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_dense_matrix_wrapper_eigen<TA>::value and
     containers::meta::is_sparse_matrix_wrapper_eigen<TB>::value
     >
@@ -135,5 +135,5 @@ struct eig_mat_mat_product<false, true>{
 };
 
 
-}}}}//end namespace rompp::containers::ops::impl
+}}}}//end namespace pressio::containers::ops::impl
 #endif

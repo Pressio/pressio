@@ -8,7 +8,7 @@
 #include "../../base/solvers_iterative_base.hpp"
 #include "./solvers_gauss_newton_normal_eq_conservative_impl.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace hacked{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace hacked{
 
 /*
  * part-specialize when system type is passed
@@ -22,7 +22,7 @@ template <
 class GaussNewtonConservative<
   scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
   converged_when_t, system_t, cbar_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_eigen<typename system_t::state_type>::value and
     containers::meta::is_vector_wrapper<typename system_t::residual_type>::value
     and
@@ -40,7 +40,7 @@ class GaussNewtonConservative<
 {
 
   using eig_dyn_mat= Eigen::Matrix<scalar_t, -1, -1>;
-  using mat_t= rompp::containers::Matrix<eig_dyn_mat>;
+  using mat_t= pressio::containers::Matrix<eig_dyn_mat>;
   using state_t    = typename system_t::state_type;
   using residual_t = typename system_t::residual_type;
   using jacobian_t = typename system_t::jacobian_type;
@@ -154,5 +154,5 @@ public:
 };//class
 
 
-}}}}//end namespace rompp::solvers::iterative::hacked
+}}}}//end namespace pressio::solvers::iterative::hacked
 #endif

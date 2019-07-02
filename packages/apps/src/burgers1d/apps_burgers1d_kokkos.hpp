@@ -1,11 +1,11 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_KOKKOS_HPP_
-#define ROMPPAPPS_BURGERS1D_KOKKOS_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_KOKKOS_HPP_
+#define PRESSIOAPPS_BURGERS1D_KOKKOS_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 #include <Kokkos_Core.hpp>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 template <
   typename x_t,
@@ -56,8 +56,8 @@ class Burgers1dKokkos{
 
   using state_type_d	= k1dLl_d;
   using state_type_h	= k1dLl_h;
-  using residual_type_d	= state_type_d;
-  using residual_type_h	= state_type_h;
+  using velocity_type_d	= state_type_d;
+  using velocity_type_h	= state_type_h;
 
   using params_t = std::array<sc_t, 3>;
   using ui_t = unsigned int;
@@ -65,7 +65,7 @@ class Burgers1dKokkos{
 public:
   using scalar_type	= sc_t;
   using state_type	= state_type_d;
-  using residual_type	= state_type_d;
+  using velocity_type	= state_type_d;
 
 public:
   explicit Burgers1dKokkos(params_t params,
@@ -97,19 +97,19 @@ public:
     return U_d_;
   };
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t */) const
   {
-    using func_t = VelocityFunctor<k1dLr_d, state_type, residual_type, sc_t>;
+    using func_t = VelocityFunctor<k1dLr_d, state_type, velocity_type, sc_t>;
     func_t F(mu_[0], mu_[1], mu_[2], Ncell_, dxInv_, x_d_, u, rhs);
     Kokkos::parallel_for(Ncell_, F);
   }
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
-    residual_type RR("RR", Ncell_);
-    this->residual(u, RR, t);
+    velocity_type RR("RR", Ncell_);
+    this->velocity(u, RR, t);
     return RR;
   }
 
@@ -128,5 +128,5 @@ private:
   mutable state_type_h U_h_; // state on host
 };//end class
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

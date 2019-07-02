@@ -10,7 +10,7 @@
 #include "solvers_meta_static_checks.hpp"
 
 
-namespace rompp {
+namespace pressio {
 namespace solvers {
 
 
@@ -101,6 +101,6 @@ is not compatible with the provided nonlinear system" << std::endl;
 };
 
 } // end namespace solvers
-} //end namespace rompp
+} //end namespace pressio
 
 #endif

@@ -5,14 +5,14 @@
 #include "../../meta/containers_vector_meta.hpp"
 #include "../concrete/containers_vector_sharedmem_eigen.hpp"
 
-namespace rompp{
+namespace pressio{
 namespace containers{
 namespace vec_ops{
 
 template <typename vec_a_type,
 	  typename vec_b_type,
 	  typename res_t,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
 	   details::traits<vec_a_type>::is_vector &&
 	   details::traits<vec_a_type>::isEigen && 
 	   details::traits<vec_b_type>::is_vector &&
@@ -37,5 +37,5 @@ void dot(const vec_a_type & vecA,
 
 } // end namespace vec_ops
 } // end namespace containers
-}//end namespace rompp
+}//end namespace pressio
 #endif

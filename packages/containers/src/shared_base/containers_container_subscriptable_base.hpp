@@ -4,7 +4,7 @@
 
 #include "../containers_ConfigDefs.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 
 template<typename derived_type,
@@ -86,5 +86,5 @@ private:
 };//end class
 
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

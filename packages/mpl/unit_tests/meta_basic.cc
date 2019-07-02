@@ -3,7 +3,7 @@
 
 
 TEST(containers_meta_basic, isDefaultConstructible){
-  using namespace rompp;
+  using namespace pressio;
 
   class A{
   public:
@@ -25,7 +25,7 @@ TEST(containers_meta_basic, isDefaultConstructible){
 }
 
 TEST(containers_meta_basic, isComplexNumber){
-  using namespace rompp;
+  using namespace pressio;
 
   using t1 = std::complex<float>;
   static_assert( mpl::is_std_complex<t1>::value, "should be complex" );

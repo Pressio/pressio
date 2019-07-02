@@ -18,7 +18,7 @@ constexpr std::array<double,2> Re_range{10., 100.0};
 
 
 struct ResidualSampler{
-  using vec_t = rompp::containers::Vector<Epetra_Vector>;
+  using vec_t = pressio::containers::Vector<Epetra_Vector>;
 
   // max value of the index for sampling residual vector
   const int maxIndex_ = {};
@@ -71,8 +71,8 @@ struct ResidualSampler{
 
 
 int main(int argc, char *argv[]){
-  using true_fom_t	= rompp::apps::SteadyLinAdvDiff2dEpetra;
-  using fom_adapter_t	= rompp::apps::SteadyLinAdvDiff2dEpetraRomAdapter;
+  using true_fom_t	= pressio::apps::SteadyLinAdvDiff2dEpetra;
+  using fom_adapter_t	= pressio::apps::SteadyLinAdvDiff2dEpetraRomAdapter;
   using scalar_t	= typename fom_adapter_t::scalar_type;
   using native_state	= typename fom_adapter_t::state_type;
 
@@ -178,16 +178,16 @@ int main(int argc, char *argv[]){
     appObj.fillRhs();
     appObj.solve();
     //appObj.printStateToFile("fom.txt");
-    rompp::containers::Vector<native_state> yFom(*appObj.getState());
+    pressio::containers::Vector<native_state> yFom(*appObj.getState());
 
     // -------------------------
     // do LSPG ROM
     // -------------------------
     //using native_state	= typename fom_adapter_t::state_type;
     using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-    using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
-    using decoder_jac_t	= rompp::containers::MultiVector<Epetra_MultiVector>;
-    using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
+    using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
+    using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
+    using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
 
     constexpr int romSize = 5;
 
@@ -196,7 +196,7 @@ int main(int argc, char *argv[]){
 
     // store modes from file
     const decoder_jac_t phi =
-      rompp::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
+      pressio::apps::test::epetra::readBasis("basis.txt", romSize, numDof,
 					   Comm, appObjROM.getDataMap());
     // decoder object
     decoder_t decoderObj(phi);
@@ -210,24 +210,24 @@ int main(int argc, char *argv[]){
     yROM.putScalar(0.0);
 
     // define LSPG type
-    using lspg_problem_type = rompp::rom::DefaultLSPGSteadyTypeGenerator<
+    using lspg_problem_type = pressio::rom::DefaultLSPGSteadyTypeGenerator<
       fom_adapter_t, decoder_t, lspg_state_t>;
-    using lspg_generator_t = rompp::rom::LSPGSteadyProblemGenerator<lspg_problem_type>;
+    using lspg_generator_t = pressio::rom::LSPGSteadyProblemGenerator<lspg_problem_type>;
     lspg_generator_t lspgProblem(appObjROM, *yRef, decoderObj, yROM);
 
     using lspg_stepper_t = typename lspg_problem_type::lspg_system_t;
 
     // linear solver
     using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-    using hessian_t  = rompp::containers::Matrix<eig_dyn_mat>;
-    using solver_tag   = rompp::solvers::linear::iterative::LSCG;
-    using linear_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+    using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
+    using solver_tag   = pressio::solvers::linear::iterative::LSCG;
+    using linear_solver_t = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
     // rom is solved using eigen, hessian is wrapper of eigen matrix
-    using gnsolver_t   = rompp::solvers::iterative::GaussNewton<
+    using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
       lspg_stepper_t, linear_solver_t, observer_t>;
     gnsolver_t solver(lspgProblem.systemObj_, yROM, linSolverObj, myResidSampler);
     solver.setTolerance(1e-14);
@@ -247,12 +247,12 @@ int main(int argc, char *argv[]){
 
     // ROM quantities of interest
     auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
-    const auto energyROM = rompp::containers::ops::norm2(yFomApprox);
+    const auto energyROM = pressio::containers::ops::norm2(yFomApprox);
     file_qoi_norm_rom	     << std::setprecision(13) << energyROM << std::endl;
     file_qoi_point_value_rom << std::setprecision(13) << yFomApprox[indexQoI] << std::endl;
 
     // FOM quantities of interest
-    const auto energyFOM = rompp::containers::ops::norm2(yFom);
+    const auto energyFOM = pressio::containers::ops::norm2(yFom);
     file_qoi_norm_fom	     << std::setprecision(13) << energyFOM << std::endl;
     file_qoi_point_value_fom << std::setprecision(13) << yFom[indexQoI] << std::endl;
 

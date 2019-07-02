@@ -1,12 +1,12 @@
 
-#ifndef ROMPP_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
-#define ROMPP_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
 
 #include "rom_lspg_type_generator_default.hpp"
 #include "rom_lspg_type_generator_preconditioned.hpp"
 #include "rom_lspg_type_generator_masked.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <typename lspg_problem>
 struct LSPGUnsteadyProblemGenerator<
@@ -16,17 +16,17 @@ struct LSPGUnsteadyProblemGenerator<
   using typename lspg_problem::scalar_t;
   using typename lspg_problem::fom_native_state_t;
   using typename lspg_problem::fom_state_t;
-  using typename lspg_problem::fom_rhs_t;
+  using typename lspg_problem::fom_velocity_t;
 
   using typename lspg_problem::lspg_state_t;
   using typename lspg_problem::decoder_t;
   using typename lspg_problem::fom_state_reconstr_t;
   using typename lspg_problem::fom_states_data;
-  using typename lspg_problem::fom_rhs_data;
+  using typename lspg_problem::fom_velocity_data;
   using typename lspg_problem::ud_ops_t;
 
   using typename lspg_problem::lspg_matrix_t;
-  using typename lspg_problem::fom_eval_rhs_policy_t;
+  using typename lspg_problem::fom_eval_velocity_policy_t;
   using typename lspg_problem::fom_apply_jac_policy_t;
   using typename lspg_problem::lspg_residual_policy_t;
   using typename lspg_problem::lspg_jacobian_policy_t;
@@ -34,13 +34,13 @@ struct LSPGUnsteadyProblemGenerator<
   using typename lspg_problem::aux_stepper_t;
   using typename lspg_problem::lspg_stepper_t;
 
-  fom_eval_rhs_policy_t		rhsEv_;
+  fom_eval_velocity_policy_t		rhsEv_;
   fom_apply_jac_policy_t	ajacEv_;
   fom_state_t			yFomRef_;
   fom_state_reconstr_t		yFomReconstructor_;
-  fom_rhs_t			rFomRef_;
+  fom_velocity_t			rFomRef_;
   fom_states_data		fomStates_;
-  fom_rhs_data			fomRhs_;
+  fom_velocity_data			fomRhs_;
   lspg_matrix_t			romMat_;
   lspg_residual_policy_t	resObj_;
   lspg_jacobian_policy_t	jacObj_;
@@ -67,7 +67,7 @@ public:
   template <
     typename T = aux_stepper_t,
     typename T2 = ud_ops_t,
-    typename ::rompp::mpl::enable_if_t<
+    typename ::pressio::mpl::enable_if_t<
       std::is_void<T>::value and
       !std::is_void<T2>::value
       > * = nullptr
@@ -108,7 +108,7 @@ public:
   template <
     typename T = aux_stepper_t,
     typename T2 = ud_ops_t,
-  typename ::rompp::mpl::enable_if_t<
+  typename ::pressio::mpl::enable_if_t<
       std::is_void<T>::value and
       std::is_void<T2>::value
       > * = nullptr
@@ -137,7 +137,7 @@ public:
   /* sfinae here for when we need aux stepper */
   template <
     typename T = aux_stepper_t,
-    typename ::rompp::mpl::enable_if_t<
+    typename ::pressio::mpl::enable_if_t<
       std::is_void<T>::value == false
       > * = nullptr
     >
@@ -163,5 +163,5 @@ public:
 
 };
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

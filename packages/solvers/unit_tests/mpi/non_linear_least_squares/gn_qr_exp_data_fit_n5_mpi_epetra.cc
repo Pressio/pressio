@@ -15,7 +15,7 @@
 #ifdef HAVE_TRILINOS
 TEST(solvers_nonlin_lsq,
      gn_qr_tsqr_exp_data_fit_n5_mpi_epetra){
-  using namespace rompp;
+  using namespace pressio;
 
   using problem_t   = solvers::test::ExpDataFitN5;
   using state_t	    = typename problem_t::state_type;
@@ -46,7 +46,7 @@ TEST(solvers_nonlin_lsq,
 
 TEST(solvers_nonlin_lsq,
      gn_qr_householder_exp_data_fit_n5_mpi_epetra){
-  using namespace rompp;
+  using namespace pressio;
 
   using problem_t   = solvers::test::ExpDataFitN5;
   using state_t	    = typename problem_t::state_type;

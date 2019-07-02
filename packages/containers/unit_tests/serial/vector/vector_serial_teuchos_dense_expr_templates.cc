@@ -4,7 +4,7 @@
 #include "CONTAINERS_OPS"
 
 using natvec_t = Teuchos::SerialDenseVector<int, double>;
-using myvec_t = ::rompp::containers::Vector<natvec_t>;
+using myvec_t = ::pressio::containers::Vector<natvec_t>;
 
 TEST(containers_vector_teuchos_serial_dense_class,
      additionOperator){

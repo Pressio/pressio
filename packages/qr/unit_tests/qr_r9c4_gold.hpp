@@ -4,7 +4,7 @@
 
 #include "Eigen/Dense"
 
-namespace rompp{ namespace qr{ namespace test{
+namespace pressio{ namespace qr{ namespace test{
 
 template <typename T = double>
 struct qrGoldr9c4Sol{

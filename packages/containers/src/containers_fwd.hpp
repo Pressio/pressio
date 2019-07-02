@@ -4,7 +4,7 @@
 
 #include "containers_ConfigDefs.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type,
 	  typename Enable = void>
@@ -22,5 +22,5 @@ template<typename T,
 	 typename enable = void>
 struct traits;
 
-}} // end namespace rompp::containers
+}} // end namespace pressio::containers
 #endif

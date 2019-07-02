@@ -36,7 +36,7 @@
 
 
 TEST(containers_ops, TpetraMultiVectorDotMultiVector){
-  using namespace rompp;
+  using namespace pressio;
 
   using tcomm = Teuchos::Comm<int>;
   using map_t = Tpetra::Map<>;

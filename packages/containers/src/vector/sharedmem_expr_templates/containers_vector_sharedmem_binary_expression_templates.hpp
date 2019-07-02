@@ -4,7 +4,7 @@
 
 #include "../containers_vector_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace exprtemplates{
+namespace pressio{ namespace containers{ namespace exprtemplates{
 
 
 template <typename der_t>
@@ -28,8 +28,8 @@ struct is_sharedmem_vector_expression : std::false_type{};
 
 template <typename T>
 struct is_sharedmem_vector_expression<T,
-      ::rompp::mpl::enable_if_t<
-       ::rompp::mpl::publicly_inherits_from<
+      ::pressio::mpl::enable_if_t<
+       ::pressio::mpl::publicly_inherits_from<
 	T,SharedMemVecExpressionBase<T>
 	 >::value
 	>> : std::true_type{};
@@ -72,7 +72,7 @@ template <typename OP_t, typename T1, typename T2,
 	  typename value_t, typename ord_t>
 class SharedMemVectorBinaryExp<
          OP_t, T1, T2, value_t, ord_t,
-	 ::rompp::mpl::enable_if_t<
+	 ::pressio::mpl::enable_if_t<
 	   !std::is_scalar<T1>::value &&
 	   containers::meta::is_vector_wrapper<T2>::value &&
 	   containers::details::traits<T2>::is_shared_mem>
@@ -108,7 +108,7 @@ template <typename OP_t, typename T1,
 	    typename value_t, typename ord_t>
 class SharedMemVectorBinaryExp<
          OP_t, T1, value_t, value_t, ord_t,
-	 ::rompp::mpl::enable_if_t<
+	 ::pressio::mpl::enable_if_t<
 	   !std::is_scalar<T1>::value &&
 	   std::is_scalar<value_t>::value
 	   > >
@@ -137,5 +137,5 @@ public:
 };
 
 
-}}}//end namespace rompp::containers::exprtemplates
+}}}//end namespace pressio::containers::exprtemplates
 #endif

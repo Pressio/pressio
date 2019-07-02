@@ -4,7 +4,7 @@
 
 #include "../qr_meta.hpp"
 
-namespace rompp{ namespace qr{
+namespace pressio{ namespace qr{
 
 template<typename derived_t,
 	 typename R_t>
@@ -34,5 +34,5 @@ private:
 };
 
 
-}}//end namespace rompp::qr
+}}//end namespace pressio::qr
 #endif

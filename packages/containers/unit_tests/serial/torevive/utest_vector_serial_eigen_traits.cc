@@ -78,7 +78,7 @@ public:
 
 TEST_F(containers_vector_serial_eigen_traits_Fixture, traits)
 {
-	using namespace rompp;
+	using namespace pressio;
 
 	a.check(); b.check(); c.check(); d.check(); e.check();
 	a1.check(); b1.check(); c1.check(); d1.check(); e1.check();

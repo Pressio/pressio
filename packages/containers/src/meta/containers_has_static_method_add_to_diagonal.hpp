@@ -4,7 +4,7 @@
 
 #include <utility>
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <
   typename T,
@@ -35,5 +35,5 @@ struct has_static_method_add_to_diagonal<
     >
   > : std::true_type{};
 
-}}} //rompp::containers::meta
+}}} //pressio::containers::meta
 #endif

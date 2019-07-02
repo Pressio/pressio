@@ -2,10 +2,10 @@
 #include "apps_burgers1d_tpetra.hpp"
 
 #ifdef HAVE_TRILINOS
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
-void Burgers1dTpetra::residual(const state_type & u,
-			       residual_type & rhs,
+void Burgers1dTpetra::velocity(const state_type & u,
+			       velocity_type & rhs,
 			       const scalar_type /* t */) const
 {
   auto u_v = u.getData();
@@ -147,5 +147,5 @@ void Burgers1dTpetra::computeJacobianReplace(const state_type & u,
 }//end jacobian replace
 
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

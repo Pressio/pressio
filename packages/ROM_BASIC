@@ -21,7 +21,7 @@
 
 #include "rom/src/policies/rom_apply_fom_jacobian_steady_policy.hpp"
 #include "rom/src/policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
-#include "rom/src/policies/rom_evaluate_fom_rhs_steady_policy.hpp"
-#include "rom/src/policies/rom_evaluate_fom_rhs_unsteady_policy.hpp"
+#include "rom/src/policies/rom_evaluate_fom_velocity_steady_policy.hpp"
+#include "rom/src/policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
 
 #endif

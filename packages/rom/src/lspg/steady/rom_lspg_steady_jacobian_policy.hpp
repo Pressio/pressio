@@ -5,7 +5,7 @@
 #include "../../rom_fwd.hpp"
 #include "../../rom_data_fom_states.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template<
   typename fom_states_data,
@@ -90,5 +90,5 @@ protected:
 
 };
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

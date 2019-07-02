@@ -8,7 +8,7 @@
 #include "../../CONTAINERS_ALL"
 #include <Epetra_Import.h>
 
-namespace rompp{
+namespace pressio{
 namespace svd{
 
 template<typename matrix_type,
@@ -116,6 +116,6 @@ private:
 };//end class
 
 }//end namespace svd
-}//end namespace rompp
+}//end namespace pressio
 #endif
 #endif

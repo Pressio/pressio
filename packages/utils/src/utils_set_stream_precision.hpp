@@ -5,7 +5,7 @@
 
 #include <iomanip>
 
-namespace rompp{ namespace utils{ namespace impl{
+namespace pressio{ namespace utils{ namespace impl{
 
 template <typename stream_t, typename scalar_t>
 void setStreamPrecision(stream_t & ss){
@@ -14,7 +14,7 @@ void setStreamPrecision(stream_t & ss){
   ss << std::setprecision(prec);
 }
 
-}}} // end of namespace rompp::utils::impl
+}}} // end of namespace pressio::utils::impl
 // #endif
 #endif
 

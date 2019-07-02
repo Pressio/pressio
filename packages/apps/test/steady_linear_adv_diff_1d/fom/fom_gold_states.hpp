@@ -1,8 +1,8 @@
 
-#ifndef ROMPP_APPS_TEST_STEADY_ADV_DIFF_GOLD_HPP_
-#define ROMPP_APPS_TEST_STEADY_ADV_DIFF_GOLD_HPP_
+#ifndef PRESSIO_APPS_TEST_STEADY_ADV_DIFF_GOLD_HPP_
+#define PRESSIO_APPS_TEST_STEADY_ADV_DIFF_GOLD_HPP_
 
-namespace rompp { namespace apps{ namespace test{
+namespace pressio { namespace apps{ namespace test{
 
 const std::vector<double> steadyAdvDiff1d_N21 =
   {//0,
@@ -27,5 +27,5 @@ const std::vector<double> steadyAdvDiff1d_N21 =
    3.774046560262979
    //1.000000000000000
   };
-}}}//end namespace rompp::apps::test
+}}}//end namespace pressio::apps::test
 #endif

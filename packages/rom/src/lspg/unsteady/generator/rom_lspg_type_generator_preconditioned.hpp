@@ -4,7 +4,7 @@
 
 #include "../../rom_lspg_type_generator_common.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <typename fom_type,
 	  ode::ImplicitEnum odeName,
@@ -22,14 +22,14 @@ struct PreconditionedLSPGTypeGenerator
   using typename base_t::scalar_t;
   using typename base_t::fom_native_state_t;
   using typename base_t::fom_state_t;
-  using typename base_t::fom_rhs_t;
+  using typename base_t::fom_velocity_t;
   using typename base_t::lspg_state_t;
   using typename base_t::lspg_residual_t;
   using typename base_t::decoder_t;
   using typename base_t::decoder_jac_t;
   using typename base_t::fom_state_reconstr_t;
   using typename base_t::fom_states_data;
-  using typename base_t::fom_rhs_data;
+  using typename base_t::fom_velocity_data;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -44,17 +44,17 @@ struct PreconditionedLSPGTypeGenerator
   using lspg_matrix_t		= decoder_jac_t;
 
   // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
-  using fom_eval_rhs_policy_t	= ::rompp::rom::policy::EvaluateFomRhsDefault<false>;
+  using fom_eval_velocity_policy_t	= ::pressio::rom::policy::EvaluateFomVelocityDefault<false>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above (<false> for unsteady overload)
-  using fom_apply_jac_policy_t	= ::rompp::rom::policy::ApplyFomJacobianDefault<false>;
+  using fom_apply_jac_policy_t	= ::pressio::rom::policy::ApplyFomJacobianDefault<false>;
 
   // policy defining how to compute the LSPG time-discrete residual
   using lspg_residual_policy_t =
     rom::decorator::Preconditioned<
     rom::LSPGResidualPolicy<
-      fom_states_data, fom_rhs_data, fom_eval_rhs_policy_t
+      fom_states_data, fom_velocity_data, fom_eval_velocity_policy_t
       >
     >;
 
@@ -82,5 +82,5 @@ struct PreconditionedLSPGTypeGenerator
 
 };//end class
 
-}}//end  namespace rompp::rom
+}}//end  namespace pressio::rom
 #endif

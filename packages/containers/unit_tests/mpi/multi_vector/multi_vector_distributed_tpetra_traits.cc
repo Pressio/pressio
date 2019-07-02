@@ -5,7 +5,7 @@
 #include "CONTAINERS_MULTI_VECTOR"
 
 TEST(containers_multi_vector_distributed_tpetra, Traits){
-  using namespace rompp;
+  using namespace pressio;
 
   using ST = double;
   using LO = int;

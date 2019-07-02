@@ -8,11 +8,11 @@
 #include "../../shared_base/containers_container_subscriptable_base.hpp"
 #include "../base/containers_vector_sharedmem_base.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class Vector<wrapped_type,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_dynamic_vector_blaze<wrapped_type>::value
       >
     >
@@ -49,7 +49,7 @@ public:
 
   // constructor from any expression, force evaluation
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   explicit Vector(const T & expr){
     this->resize(expr.size());
@@ -59,7 +59,7 @@ public:
 
   // assignment from any expression, force evaluation
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator=(const T & expr){
     if(this->size() != expr.size())
@@ -71,7 +71,7 @@ public:
 
   // assignment
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator=(const T & other){
     data_ = *other.data();
@@ -98,7 +98,7 @@ public:
   // compound assignment from expression template
   // this += expr
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator+=(const T & expr) {
     assert( expr.size() == this->size() );
@@ -110,7 +110,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this += b
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator+=(const T & other) {
     assert( other.size() == this->size() );
@@ -122,7 +122,7 @@ public:
   // compound assignment from expression template
   // this -= expr
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
   this_t & operator-=(const T & expr) {
     assert( expr.size() == this->size() );
@@ -134,7 +134,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this -= b
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator-=(const T & other) {
     assert( other.size() == this->size() );
@@ -188,7 +188,7 @@ private:
   wrap_t data_ = {};
 
 };//end class
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 
 #endif /* CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_ */
 #endif //HAVE_BLAZE

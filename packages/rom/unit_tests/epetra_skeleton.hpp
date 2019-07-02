@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_ROM_EPETRA_SKELETON_HPP_
-#define ROMPP_ROM_EPETRA_SKELETON_HPP_
+#ifndef PRESSIO_ROM_EPETRA_SKELETON_HPP_
+#define PRESSIO_ROM_EPETRA_SKELETON_HPP_
 
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
@@ -10,7 +10,7 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
 
-namespace rompp{ namespace rom{ namespace test{
+namespace pressio{ namespace rom{ namespace test{
 
 class EpetraSkeleton{
 protected:
@@ -21,7 +21,7 @@ protected:
 public:
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
 public:
   EpetraSkeleton() = default;
@@ -30,11 +30,11 @@ public:
 public:
   state_type const & getInitialState() const;
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t */) const;
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const;
 
   // computes: A = Jac B where B is a multivector
@@ -50,5 +50,5 @@ public:
 
 };//end class
 
-}}} //namespace rompp::rom::test
+}}} //namespace pressio::rom::test
 #endif

@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_STEADY_LIN_ADV_DIFF_1D_EPETRA_HPP_
-#define ROMPP_APPS_STEADY_LIN_ADV_DIFF_1D_EPETRA_HPP_
+#ifndef PRESSIO_APPS_STEADY_LIN_ADV_DIFF_1D_EPETRA_HPP_
+#define PRESSIO_APPS_STEADY_LIN_ADV_DIFF_1D_EPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -19,7 +19,7 @@
 #include "AztecOO.h"
 #include <cmath>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class SteadyLinAdvDiff1dEpetra{
 protected:
@@ -31,7 +31,7 @@ public:
   /* these types exposed because need to be detected */
   using scalar_type = double;
   using state_type  = Epetra_Vector;
-  using residual_type = state_type;
+  using velocity_type = state_type;
   using jacobian_type   = nativeMatrix;
 
 public:
@@ -64,8 +64,8 @@ public:
   }
 
 public:
-  void residual(const state_type & u,
-    residual_type & rhs) const{
+  void velocity(const state_type & u,
+    velocity_type & rhs) const{
     /* compute jacobian and forcing term
      * (even though for this prob we do not need to
      * recompute every time, for sake of generality,
@@ -74,13 +74,13 @@ public:
     calculateForcingTerm();
 
     A_->Multiply(false, u, rhs);
-    // now, rhs = A*u so we just subtract f to obtain residual
+    // now, rhs = A*u so we just subtract f to obtain velocity
     rhs.Update(-1., (*f_), 1.0);
   }
 
-  residual_type residual(const state_type & u) const{
+  velocity_type velocity(const state_type & u) const{
     Epetra_Vector R(*contigMap_);
-    residual(u,R);
+    velocity(u,R);
     return R;
   };
 
@@ -128,6 +128,6 @@ protected:
   mutable rcp<nativeVec> f_;
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

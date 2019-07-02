@@ -1,13 +1,13 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
-#define ROMPPAPPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
+#define PRESSIOAPPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
 
 #include "apps_burgers1d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
 #include <Epetra_Import.h>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class Burgers1dEpetraReducedNoMask : public Burgers1dEpetra{
   using base_t	   = Burgers1dEpetra;
@@ -30,19 +30,19 @@ public:
     importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
   };
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type t ) const{
-    residual_type R(*dataMap_);
-    base_t::residual(u, R, t);
+    velocity_type R(*dataMap_);
+    base_t::velocity(u, R, t);
     rhs.Import(R, *importer_, Insert);
   }
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
-    residual_type R(*dataMap_);
-    base_t::residual(u, R, t);
-    residual_type dest(*maskMap_);
+    velocity_type R(*dataMap_);
+    base_t::velocity(u, R, t);
+    velocity_type dest(*maskMap_);
     dest.Import(R, *importer_, Insert);
     return dest;
   }
@@ -94,6 +94,6 @@ private:
   rcp<importer_t> importer_;
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

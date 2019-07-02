@@ -7,14 +7,14 @@
 #include "utils_read_ascii_matrix_std_vec_vec.hpp"
 #include <Tpetra_Core.hpp>
 
-namespace rompp{ namespace apps{ namespace test{ namespace tpetra{
+namespace pressio{ namespace apps{ namespace test{ namespace tpetra{
 
 template <typename rcpcomm_t, typename rcpmap_t>
 auto convertFromVVecToMultiVec(const std::vector<std::vector<double>> & A0,
 			       int nrows, int ncols,
 			       rcpcomm_t Comm,
 			       rcpmap_t rowMap)
-  -> rompp::containers::MultiVector<Tpetra::MultiVector<>>{
+  -> pressio::containers::MultiVector<Tpetra::MultiVector<>>{
 
   Tpetra::MultiVector<> AD(rowMap, ncols);
 
@@ -31,7 +31,7 @@ auto convertFromVVecToMultiVec(const std::vector<std::vector<double>> & A0,
       AD.replaceGlobalValue(gi, j, A0[gi][j]);
   }
 
-  rompp::containers::MultiVector<Tpetra::MultiVector<>> ADW(AD);
+  pressio::containers::MultiVector<Tpetra::MultiVector<>> ADW(AD);
   return ADW;
 }
 
@@ -42,14 +42,14 @@ auto readBasis(
   int romSize, int numCell,
   comm_t Comm,
   const map_t rowMap)
-  ->rompp::containers::MultiVector<Tpetra::MultiVector<>>
+  ->pressio::containers::MultiVector<Tpetra::MultiVector<>>
 {
   std::vector<std::vector<double>> A0;
-  ::rompp::apps::test::readAsciiMatrixStdVecVec(filename, A0, romSize);
+  ::pressio::apps::test::readAsciiMatrixStdVecVec(filename, A0, romSize);
   // read basis into a MultiVector
   return convertFromVVecToMultiVec(A0, numCell, romSize, Comm, rowMap);
 }
 
-}}}}// end namespace rompp::apps::test::tpetra
+}}}}// end namespace pressio::apps::test::tpetra
 
 #endif

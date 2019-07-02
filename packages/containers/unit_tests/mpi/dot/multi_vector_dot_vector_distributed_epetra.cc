@@ -4,7 +4,7 @@
 TEST_F(epetraMultiVectorR9C4VecS9Fixture,
        MVVecDotProduct){
 
-  using namespace rompp;
+  using namespace pressio;
 
   assert(numProc_ == 3);
   using mvec_t = containers::MultiVector<Epetra_MultiVector>;

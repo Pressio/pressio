@@ -5,8 +5,8 @@
 
 TEST(solvers_linear_iterative, LSCGDenseEigen){
   // Namespaces
-  using namespace rompp;
-  using namespace rompp::solvers;
+  using namespace pressio;
+  using namespace pressio::solvers;
 
   // Matrix typedefs
   using matrix_n_t = Eigen::MatrixXd;
@@ -44,8 +44,8 @@ TEST(solvers_linear_iterative, LSCGDenseEigen){
 TEST(solvers_linear_iterative, ColPivHSQRDenseEigen)
 {
   // Namespaces
-  using namespace rompp;
-  using namespace rompp::solvers;
+  using namespace pressio;
+  using namespace pressio::solvers;
 
   // Matrix typedefs
   using matrix_n_t = Eigen::MatrixXd;

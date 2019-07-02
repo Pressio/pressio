@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
-#define ROMPP_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
+#ifndef PRESSIO_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
+#define PRESSIO_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -18,7 +18,7 @@
 #include "AztecOO.h"
 #include <cmath>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 /*
   See this:
 http://demonstrations.wolfram.com/SteadyStateTwoDimensionalConvectionDiffusionEquation/
@@ -69,7 +69,7 @@ protected:
 //   /* these types exposed because need to be detected */
 //   using scalar_type	= double;
 //   using state_type	= Epetra_Vector;
-//   using residual_type	= state_type;
+//   using velocity_type	= state_type;
 
 public:
   SteadyLinAdvDiff2dEpetra(Epetra_MpiComm & comm,
@@ -184,6 +184,6 @@ protected:
 
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

@@ -6,7 +6,7 @@
 int main() {
 
   // Namespaces
-  using namespace rompp;
+  using namespace pressio;
   using namespace solvers;
 
   // Matrix typedefs

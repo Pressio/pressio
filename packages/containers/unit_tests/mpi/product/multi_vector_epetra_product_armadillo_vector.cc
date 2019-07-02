@@ -4,7 +4,7 @@
 TEST_F(epetraMultiVectorR9C4VecS9Fixture,
        MVecEpetraProductArmadilloVector){
 
-  using namespace rompp;
+  using namespace pressio;
 
   using mvec_t = containers::MultiVector<Epetra_MultiVector>;
   STATIC_ASSERT_IS_CONTAINERS_MULTI_VECTOR_WRAPPER(mvec_t);

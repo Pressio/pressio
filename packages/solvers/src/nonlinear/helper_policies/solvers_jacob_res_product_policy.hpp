@@ -5,7 +5,7 @@
 #include "../../solvers_ConfigDefs.hpp"
 #include "../../../../CONTAINERS_OPS"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template<typename J_t, typename enable = void>
 struct JacobianTranspResProdHelper;
@@ -16,7 +16,7 @@ struct JacobianTranspResProdHelper;
 template<typename J_t>
 struct JacobianTranspResProdHelper<
   J_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_matrix_wrapper<J_t>::value
     >>{
 
@@ -24,7 +24,7 @@ struct JacobianTranspResProdHelper<
   static void evaluate(J_t & J, resid_t & R, result_t & result)
   {
     constexpr bool transposeJ = true;
-    ::rompp::containers::ops::product<J_t, resid_t, result_t,
+    ::pressio::containers::ops::product<J_t, resid_t, result_t,
 				transposeJ>(J, R, result);
   }
 };
@@ -35,16 +35,16 @@ struct JacobianTranspResProdHelper<
 template<typename J_t>
 struct JacobianTranspResProdHelper<
   J_t,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper<J_t>::value
     >>{
 
   template <typename resid_t, typename result_t>
   static void evaluate(J_t & J, resid_t & R, result_t & result) {
-    ::rompp::containers::ops::dot(J, R, result);
+    ::pressio::containers::ops::dot(J, R, result);
   }
 };
 
 
-}}}} //end namespace rompp::solvers::iterative::impl
+}}}} //end namespace pressio::solvers::iterative::impl
 #endif

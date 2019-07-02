@@ -126,10 +126,10 @@ void read_inputs(scalar_t & c, scalar_t & dt , scalar_t & T, scalar_t & L, int &
 
 
 int main(int argc, char *argv[]){
-  using app_t		= rompp::apps::KS1dEigen;
+  using app_t		= pressio::apps::KS1dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_rhs_t	= typename app_t::residual_type;
+  using app_rhs_t	= typename app_t::velocity_type;
   using app_jacob_t	= typename app_t::jacobian_type;
 
   //-------------------------------
@@ -150,28 +150,28 @@ int main(int argc, char *argv[]){
   auto & y0n = appObj.getInitialState();
 
   // types for ode
-  using ode_state_t = rompp::containers::Vector<app_state_t>;
-  using ode_res_t   = rompp::containers::Vector<app_rhs_t>;
-  using ode_jac_t   = rompp::containers::Matrix<app_jacob_t>;
+  using ode_state_t = pressio::containers::Vector<app_state_t>;
+  using ode_res_t   = pressio::containers::Vector<app_rhs_t>;
+  using ode_jac_t   = pressio::containers::Matrix<app_jacob_t>;
 
   ode_state_t y(y0n);
 
   // define auxiliary stepper
-  using aux_stepper_t = rompp::ode::ImplicitStepper<
-    rompp::ode::ImplicitEnum::Euler,
+  using aux_stepper_t = pressio::ode::ImplicitStepper<
+    pressio::ode::ImplicitEnum::Euler,
     ode_state_t, ode_res_t, ode_jac_t, app_t>;
   aux_stepper_t stepperAux(y, appObj);
 
   // nonimal stepper
-  constexpr auto ode_case = rompp::ode::ImplicitEnum::BDF2;
-  using stepper_t = rompp::ode::ImplicitStepper<
+  constexpr auto ode_case = pressio::ode::ImplicitEnum::BDF2;
+  using stepper_t = pressio::ode::ImplicitStepper<
     ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t, aux_stepper_t>;
   stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver
-  using lin_solver_t = rompp::solvers::iterative::EigenIterative<
-    rompp::solvers::linear::iterative::Bicgstab, ode_jac_t>;
-  rompp::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
+  using lin_solver_t = pressio::solvers::iterative::EigenIterative<
+    pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
+  pressio::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
   solverO.setTolerance(1e-13);
   solverO.setMaxIterations(200);
 
@@ -183,7 +183,7 @@ int main(int argc, char *argv[]){
   // define observer
   observer<ode_state_t> Obs(Nsteps, Nnodes, y);
 
-  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, Obs, solverO);
+  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, Obs, solverO);
   Obs.printAll();
   Obs.printFinal();
 

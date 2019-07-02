@@ -8,19 +8,19 @@ TEST(containers_ops_dot,
 
   using nat_t = Eigen::VectorXd;
 
-  rompp::containers::Vector<nat_t> a(6);
+  pressio::containers::Vector<nat_t> a(6);
   a(0) = 1.; a(1) = 1.; a(2) = 1.;
   a(3) = 1.; a(4) = 2.; a(5) = 1.;
 
-  rompp::containers::Vector<nat_t> b(6);
+  pressio::containers::Vector<nat_t> b(6);
   b(0) = 1.; b(1) = 1.; b(2) = 1.;
   b(3) = 1.; b(4) = 2.; b(5) = 1.;
 
-  auto res = rompp::containers::ops::dot(a,b);
+  auto res = pressio::containers::ops::dot(a,b);
   EXPECT_DOUBLE_EQ( res, 9.);
 
   double res2 = {};
-  rompp::containers::ops::dot(a,b,res2);
+  pressio::containers::ops::dot(a,b,res2);
   EXPECT_DOUBLE_EQ( res2, 9.);
 }
 
@@ -31,18 +31,18 @@ TEST(containers_ops_dot,
 
   using nat_t = Eigen::Matrix<double, 6, 1>;
 
-  rompp::containers::Vector<nat_t> a;
+  pressio::containers::Vector<nat_t> a;
   a(0) = 1.; a(1) = 1.; a(2) = 1.;
   a(3) = 1.; a(4) = 2.; a(5) = 1.;
 
-  rompp::containers::Vector<nat_t> b;
+  pressio::containers::Vector<nat_t> b;
   b(0) = 1.; b(1) = 1.; b(2) = 1.;
   b(3) = 1.; b(4) = 2.; b(5) = 1.;
 
-  auto res = rompp::containers::ops::dot(a,b);
+  auto res = pressio::containers::ops::dot(a,b);
   EXPECT_DOUBLE_EQ( res, 9.);
 
   double res2 = {};
-  rompp::containers::ops::dot(a,b,res2);
+  pressio::containers::ops::dot(a,b,res2);
   EXPECT_DOUBLE_EQ( res2, 9.);
 }

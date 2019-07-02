@@ -7,13 +7,13 @@
 #include "containers_vector_distributed_binary_expression_templates.hpp"
 #include "../../containers_expression_templates_operators.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 // T1: expre, T2: vector:
 // example: a*3 + b
 template <typename T1,
 	  typename T2,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
   meta::is_admissible_vec_for_dist_expression<T2>::value
 	    > * = nullptr>
 auto operator+(const T1 & u, const T2 & v)
@@ -37,7 +37,7 @@ auto operator+(const T1 & u, const T2 & v)
 // example: a*3 + b*21
 template <typename T1,
 	  typename T2,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
   exprtemplates::is_distributed_vector_expression<T1>::value &&
   exprtemplates::is_distributed_vector_expression<T2>::value
 	    > * = nullptr>
@@ -62,7 +62,7 @@ auto operator+(const T1 & u, const T2 & v)
 // example: a + b*21
 template <typename T1,
 	  typename T2,
-	  ::rompp::mpl::enable_if_t<
+	  ::pressio::mpl::enable_if_t<
   meta::is_admissible_vec_for_dist_expression<T1>::value &&
   exprtemplates::is_distributed_vector_expression<T2>::value
 	    > * = nullptr>
@@ -82,5 +82,5 @@ auto operator+(const T1 & u, const T2 & v)
     containers::exprtemplates::plus_, T1, T2, sc_t, LO_t>(u, v);
 }
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

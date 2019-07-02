@@ -5,7 +5,7 @@
 TEST_F(tpetraSparseMatR7MultiVectorR7C4Fixture,
       CrsMatrixWrapperConstructor){
 
-  using namespace rompp;
+  using namespace pressio;
 
   using mat_t = typename tpetraSparseMatR7MultiVectorR7C4Fixture::mat_t;
   STATIC_ASSERT_IS_MATRIX_SPARSE_DISTRIBUTED_TPETRA(mat_t);

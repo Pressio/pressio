@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_MPL_VARIADIC_HPP
-#define ROMPP_MPL_VARIADIC_HPP
+#ifndef PRESSIO_MPL_VARIADIC_HPP
+#define PRESSIO_MPL_VARIADIC_HPP
 
 #include "variadic/size.hpp"
 #include "variadic/at.hpp"

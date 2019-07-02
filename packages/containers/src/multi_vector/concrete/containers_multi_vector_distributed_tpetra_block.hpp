@@ -8,12 +8,12 @@
 #include "../../shared_base/containers_container_distributed_trilinos_base.hpp"
 #include "../base/containers_multi_vector_distributed_base.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     meta::is_multi_vector_tpetra_block<
       wrapped_type
       >::value
@@ -49,9 +49,9 @@ public:
 	     other.getBlockSize(),
 	     other.getNumVectors()){
     // just a trick to copy data
-    data_.update(::rompp::utils::constants::one<sc_t>(),
+    data_.update(::pressio::utils::constants::one<sc_t>(),
 		 other,
-		 ::rompp::utils::constants::zero<sc_t>());
+		 ::pressio::utils::constants::zero<sc_t>());
   }
 
   // delegate (for now) to the one above
@@ -85,7 +85,7 @@ private:
   }
 
   void setZeroImpl() {
-    data_.putScalar( ::rompp::utils::constants::zero<sc_t>() );
+    data_.putScalar( ::pressio::utils::constants::zero<sc_t>() );
     // putScalar doesn't sync afterwards, so we have to sync manually.
     this->needSync();
   }
@@ -132,7 +132,7 @@ private:
   wrap_t data_ = {};
 
 };//end class
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 
 #endif
 #endif /* HAVE_TRILINOS */

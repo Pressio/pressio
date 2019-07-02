@@ -2,7 +2,7 @@
 #ifndef UTILS_STATIC_CONSTANTS_HPP_
 #define UTILS_STATIC_CONSTANTS_HPP_
 
-namespace rompp{ namespace utils{
+namespace pressio{ namespace utils{
 
 struct constants{
 
@@ -44,5 +44,5 @@ struct constants{
 
 };
 
-}} // end of namespace rompp::utils
+}} // end of namespace pressio::utils
 #endif

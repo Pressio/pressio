@@ -7,7 +7,7 @@
 #include "../base/solvers_linear_base.hpp"
 #include "solvers_linear_traits.hpp"
 
-namespace rompp { namespace solvers { namespace iterative{
+namespace pressio { namespace solvers { namespace iterative{
 
 template<typename SolverT, typename MatrixT>
 class EigenIterative
@@ -17,8 +17,8 @@ class EigenIterative
 {
 public:
 
-  static_assert( ::rompp::containers::meta::is_matrix_wrapper_eigen<MatrixT>::value or
-  		 ::rompp::containers::meta::is_multi_vector_wrapper_eigen<MatrixT>::value,
+  static_assert( ::pressio::containers::meta::is_matrix_wrapper_eigen<MatrixT>::value or
+  		 ::pressio::containers::meta::is_multi_vector_wrapper_eigen<MatrixT>::value,
   		 "Eigen iterative solver needs a matrix type = wrapper of an eigen matrix");
 
   using solver_t	= SolverT;
@@ -57,5 +57,5 @@ public:
   native_solver_t mysolver_ = {};
 };
 
-}}} // end namespace rompp::solvers::iterative
+}}} // end namespace pressio::solvers::iterative
 #endif

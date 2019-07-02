@@ -1,13 +1,13 @@
 
 #include "apps_burgers1d_eigen.hpp"
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
-void Burgers1dEigen::residual(const state_type & u,
-            residual_type & rhs,
+void Burgers1dEigen::velocity(const state_type & u,
+            velocity_type & rhs,
             const scalar_type /* t */) const{
 
-  // std::cout << "Residual" << std::endl;
+  // std::cout << "velocity" << std::endl;
   // std::cout << rhs << std::endl;
 
   rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
@@ -36,4 +36,4 @@ void Burgers1dEigen::jacobian(const state_type & u,
   jac.setFromTriplets(tripletList.begin(), tripletList.end());
 }
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps

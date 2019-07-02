@@ -6,7 +6,7 @@
 
 TEST_F(tpetraR9Fixture,
        TpetraMultiVectorTSQRprojectDynamicEigenVecResult){
-  using namespace rompp;
+  using namespace pressio;
 
   using eig_col_vec = Eigen::Matrix<double, Eigen::Dynamic, 1>;
 
@@ -28,7 +28,7 @@ TEST_F(tpetraR9Fixture,
     std::cout << std::setprecision(14) << *rhs.data() << std::endl;
 
   // gold solution
-  rompp::qr::test::qrGoldSol<double> gold;
+  pressio::qr::test::qrGoldSol<double> gold;
 
   // solve
   containers::Vector<eig_col_vec> y;
@@ -45,7 +45,7 @@ TEST_F(tpetraR9Fixture,
 
 TEST_F(tpetraR9Fixture,
        TpetraMultiVectorTSQRprojectStaticEigenVecResult){
-  using namespace rompp;
+  using namespace pressio;
 
   using eig_col_vec = Eigen::Matrix<double, 4, 1>;
 
@@ -67,7 +67,7 @@ TEST_F(tpetraR9Fixture,
     std::cout << std::setprecision(14) << *rhs.data() << std::endl;
 
   // gold solution
-  rompp::qr::test::qrGoldSol<double> gold;
+  pressio::qr::test::qrGoldSol<double> gold;
 
   // solve
   containers::Vector<eig_col_vec> y;

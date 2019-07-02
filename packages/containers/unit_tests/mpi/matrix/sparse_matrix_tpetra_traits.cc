@@ -5,7 +5,7 @@
 #include "CONTAINERS_MATRIX"
 
 TEST(containers_sparse_matrix_tpetra, Traits){
-  using namespace rompp;
+  using namespace pressio;
 
   using ST = double;
   using LO = Tpetra::CrsMatrix<>::local_ordinal_type;

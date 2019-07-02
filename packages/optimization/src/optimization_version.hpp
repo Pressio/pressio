@@ -2,12 +2,12 @@
 #ifndef OPTIMIZ_VERSION_HPP
 #define OPTIMIZ_VERSION_HPP
 
-#include "rompp_version.h"
+#include "pressio_version.h"
 #include <string>
 
-namespace rompp{ namespace optimization{
+namespace pressio{ namespace optimization{
 
 inline std::string version();
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

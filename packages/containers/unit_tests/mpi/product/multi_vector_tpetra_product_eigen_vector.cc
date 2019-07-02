@@ -3,7 +3,7 @@
 
 TEST_F(tpetraMultiVectorGlobSize9Fixture,
        MVecTpetraProductEigenVector){
-  using namespace rompp;
+  using namespace pressio;
 
   // aliases
   using nat_mv_t = typename tpetraMultiVectorGlobSize9Fixture::mvec_t;

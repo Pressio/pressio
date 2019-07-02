@@ -51,11 +51,11 @@ struct Observer{
 
 
 int main(int argc, char *argv[]){
-  using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReacFlame2dEigen;
+  using app_t		= pressio::apps::UnsteadyNonLinAdvDiffReacFlame2dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
-  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
+  using app_rhs_t	= typename app_t::velocity_type;
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 12, Ny = 6;
   app_t appobj(Nx, Ny);
@@ -73,12 +73,12 @@ int main(int argc, char *argv[]){
     file.close();
   }
 
-  using ode_state_t = rompp::containers::Vector<app_state_t>;
-  using ode_res_t   = rompp::containers::Vector<app_residual_t>;
+  using ode_state_t = pressio::containers::Vector<app_state_t>;
+  using ode_res_t   = pressio::containers::Vector<app_rhs_t>;
   ode_state_t y(y0n);
 
-  constexpr auto ode_case = rompp::ode::ExplicitEnum::RungeKutta4;
-  using stepper_t = rompp::ode::ExplicitStepper<
+  constexpr auto ode_case = pressio::ode::ExplicitEnum::RungeKutta4;
+  using stepper_t = pressio::ode::ExplicitStepper<
     ode_case, ode_state_t, app_t, ode_res_t, scalar_t>;
   stepper_t stepperObj(y, appobj);
 
@@ -87,10 +87,10 @@ int main(int argc, char *argv[]){
   constexpr auto Nsteps = 1100;
   constexpr scalar_t fint = Nsteps*dt;
   Observer obs;
-  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs);
+  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs);
   std::cout << std::fixed << std::setprecision(15) << *y.data() << std::endl;
   {
-    using namespace rompp::apps::test;
+    using namespace pressio::apps::test;
     checkSol(y,
   	     NonLinAdvDiffReacFlame2dExpGoldStates<ode_case>::get(Nx,
 								  Ny,

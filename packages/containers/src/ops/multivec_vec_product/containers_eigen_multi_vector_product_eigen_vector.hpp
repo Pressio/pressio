@@ -10,13 +10,13 @@
 #include "../../vector/concrete/containers_vector_distributed_epetra.hpp"
 #endif
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 //-----------------------------------------------------
 // Eigen multivector product with eigen vector
 template <typename mvec_type,
 	  typename vec_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
    containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
    containers::meta::is_vector_wrapper_eigen<vec_type>::value and
    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
@@ -48,7 +48,7 @@ void product(const mvec_type & mvA,
 // result is constructed and returned
 template <typename mvec_type,
 	  typename vec_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
    containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
    containers::meta::is_vector_wrapper_eigen<vec_type>::value and
    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
@@ -69,5 +69,5 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
 //-------------------------------------------------------
 
 
-}}}//end namespace rompp::containers::ops
+}}}//end namespace pressio::containers::ops
 #endif

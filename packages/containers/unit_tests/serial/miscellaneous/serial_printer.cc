@@ -5,11 +5,11 @@ TEST(containers_basic, serialPrint){
   auto a1 = "fr";
   int b1 = 2;
   double b2 = 44.4;
-  rompp::utils::io::print_stdout(a1,b1,b2);
+  pressio::utils::io::print_stdout(a1,b1,b2);
 }
 
 TEST(containers_basic, serialPrintColor){
-  using namespace rompp;
+  using namespace pressio;
 
   auto a1 = "fr";
   int b1 = 2;

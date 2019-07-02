@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct has_local_ordinal_typedef : std::false_type{};
@@ -18,5 +18,5 @@ struct has_local_ordinal_typedef<T,
 		     >::type
 		   > : std::true_type{};
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif

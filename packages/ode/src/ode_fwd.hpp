@@ -4,22 +4,22 @@
 
 #include "ode_ConfigDefs.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 template<
-  ExplicitEnum whichone,
-  typename ode_state_type,
+  ExplicitEnum name,
+  typename state_type,
   typename model_type,
-  typename ode_residual_type,
+  typename velocity_type,
   typename ...Args
   >
 class ExplicitStepper;
 
 template<
-  ImplicitEnum whichone,
-  typename ode_state_type,
-  typename ode_residual_type,
-  typename ode_jacobian_type,
+  ImplicitEnum name,
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
   typename model_type,
   typename ...Args>
 class ImplicitStepper;
@@ -30,9 +30,9 @@ namespace policy{
 template<
   typename state_type,
   typename model_type,
-  typename residual_type = state_type,
+  typename velocity_type = state_type,
   typename enable = void>
-class ExplicitResidualStandardPolicy;
+class ExplicitVelocityStandardPolicy;
 
 template<
   typename state_type,
@@ -71,25 +71,16 @@ namespace impl {
 
 template<
   typename model_type,
-  typename residual_policy_type,
   typename enable = void
   >
-class ExplicitOdeAuxData;
-
-template<
-  typename model_type,
-  typename scalar_type,
-  typename enable = void
-  >
-class ImplicitOdeAuxData;
-
+class OdeSystemWrapper;
 
 template<
   typename scalar_type,
-  typename ode_state_type,
+  typename state_type,
   typename model_type,
-  typename ode_residual_type,
-  typename residual_policy_type,
+  typename velocity_type,
+  typename policy_type,
   typename ops,
   typename enable = void
   >
@@ -97,10 +88,10 @@ class ExplicitEulerStepperImpl;
 
 template<
   typename scalar_type,
-  typename ode_state_type,
+  typename state_type,
   typename model_type,
-  typename ode_residual_type,
-  typename residual_policy_type,
+  typename velocity_type,
+  typename policy_type,
   typename ops,
   typename enable = void
   >
@@ -108,5 +99,5 @@ class ExplicitRungeKutta4StepperImpl;
 
 }//end namespace impl
 
-}} // end namespace rompp::ode
+}} // end namespace pressio::ode
 #endif

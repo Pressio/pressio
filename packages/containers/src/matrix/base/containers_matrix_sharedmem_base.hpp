@@ -4,7 +4,7 @@
 
 #include "../containers_matrix_traits.hpp"
 
-namespace rompp{
+namespace pressio{
 namespace containers{
 
 template<typename derived_type>
@@ -37,5 +37,5 @@ private:
 };//end class
 
 } // end namespace containers
-}//end namespace rompp
+}//end namespace pressio
 #endif

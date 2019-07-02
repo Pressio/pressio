@@ -6,7 +6,7 @@
 #include "../../../containers/src/vector/containers_vector_meta.hpp"
 #include "../../../containers/src/meta/containers_native_pybind_array_meta.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 /*
  * for now, we enable if a vector is wrapped into containers::Vector
@@ -25,5 +25,5 @@ struct is_legitimate_explicit_state_type<state_type,
    >::type
   > : std::true_type{};
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

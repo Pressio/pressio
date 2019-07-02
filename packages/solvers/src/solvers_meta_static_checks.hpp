@@ -8,7 +8,7 @@
 #include "../../containers/src/vector/containers_vector_traits.hpp"
 
 
-namespace rompp{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace meta {
 
 /**
  * @brief Check whether two matrices are compatible.
@@ -110,5 +110,5 @@ struct are_vector_compatible<
 };
 
 
-}}}//end namespace rompp::solvers::meta
+}}}//end namespace pressio::solvers::meta
 #endif

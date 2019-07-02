@@ -1,10 +1,10 @@
 
-#ifndef ROMPP_MPL_VARIADIC_NONE_OF_HPP
-#define ROMPP_MPL_VARIADIC_NONE_OF_HPP
+#ifndef PRESSIO_MPL_VARIADIC_NONE_OF_HPP
+#define PRESSIO_MPL_VARIADIC_NONE_OF_HPP
 
 #include <type_traits>
 
-namespace rompp{ namespace mpl{ namespace variadic {
+namespace pressio{ namespace mpl{ namespace variadic {
 
 /**
  * \class none_of
@@ -32,6 +32,6 @@ struct none_of<Predicate>
   : std::integral_constant<bool, true>{};
 
 
-}}} // namespace rompp::mpl::variadic
+}}} // namespace pressio::mpl::variadic
 
 #endif 

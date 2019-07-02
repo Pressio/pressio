@@ -1,7 +1,7 @@
 
 #include "apps_unsteady_nonlinear_adv_diff_reaction_2d_eigen.hpp"
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 void UnsteadyNonLinAdvDiffReac2dEigen::setupPhysicalGrid(){
   x_.resize(numGpt_);
@@ -67,10 +67,10 @@ void UnsteadyNonLinAdvDiffReac2dEigen::setup(){
   fillSource2();
 }
 
-void UnsteadyNonLinAdvDiffReac2dEigen::residual_impl
-(const state_type & yState, residual_type & R) const
+void UnsteadyNonLinAdvDiffReac2dEigen::velocity_impl
+(const state_type & yState, velocity_type & R) const
 {
-  /* note that R is the residual vector, which has
+  /* note that R is the velocity vector, which has
    * a dofMap_ because it contains all dofs.
    * Once again, the dofs are the numFields * numOfUnkownGridPoints
    */
@@ -255,4 +255,4 @@ void UnsteadyNonLinAdvDiffReac2dEigen::jacobian_impl
 
 }//end jacob
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps

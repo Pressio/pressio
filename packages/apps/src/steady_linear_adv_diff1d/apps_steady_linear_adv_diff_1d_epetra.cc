@@ -3,7 +3,7 @@
 #include "apps_steady_linear_adv_diff_1d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 void SteadyLinAdvDiff1dEpetra::createMap(){
   //-----------------------------------------------------------------------
@@ -139,5 +139,5 @@ void SteadyLinAdvDiff1dEpetra::solve(){
   Solver.TrueResidual();
 }
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

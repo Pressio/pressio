@@ -4,7 +4,7 @@
 
 #include "../rom_ConfigDefs.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <typename derived_type, typename jac_matrix_type>
 struct DecoderBase
@@ -33,5 +33,5 @@ struct DecoderBase
 //   friend utils::details::CrtpBase<this_t>;
 };//end class
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

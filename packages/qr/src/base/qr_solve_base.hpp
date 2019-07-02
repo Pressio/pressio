@@ -4,7 +4,7 @@
 
 #include "../qr_meta.hpp"
 
-namespace rompp{ namespace qr{
+namespace pressio{ namespace qr{
 
 template<typename derived_t>
 class QRSolveBase
@@ -22,7 +22,7 @@ class QRSolveBase
 public:
   template <
     typename vec_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_vector_wrapper<vec_t>::value
       >* = nullptr
     >
@@ -36,5 +36,5 @@ private:
 
 };
 
-}}//end namespace rompp::qr
+}}//end namespace pressio::qr
 #endif

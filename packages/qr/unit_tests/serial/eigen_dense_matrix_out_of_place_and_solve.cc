@@ -4,7 +4,7 @@
 
 TEST_F(eigenDenseR9Fixture,
      HouseholderEigenDenseOutOfPlaceAndSolveEigenVecDynamic){
-  using namespace rompp;
+  using namespace pressio;
 
   // R_type == void, in_place = false
   using qr_algo = qr::Householder;
@@ -12,12 +12,12 @@ TEST_F(eigenDenseR9Fixture,
   qrObj.computeThin( *A_ );
 
   //  do Q^T * v_, i.e. project v_ onto Q
-  myvec_t rhs(rompp::qr::test::numVectors_);
+  myvec_t rhs(pressio::qr::test::numVectors_);
   qrObj.project(*v_, rhs);
   std::cout << " RHS" << std::setprecision(14)
   	    << *rhs.data() << std::endl;
 
-  myvec_t y(rompp::qr::test::numVectors_);
+  myvec_t y(pressio::qr::test::numVectors_);
   qrObj.solve(rhs, y);
   std::cout << std::setprecision(14)
   	    << " Y: "

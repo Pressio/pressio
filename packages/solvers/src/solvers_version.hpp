@@ -2,10 +2,10 @@
 #ifndef SOLVERS_VERSION_HPP
 #define SOLVERS_VERSION_HPP
 
-#include "rompp_version.h"
+#include "pressio_version.h"
 #include <string>
 
-namespace rompp{ namespace solvers{
+namespace pressio{ namespace solvers{
 
 inline std::string version();
 

@@ -5,9 +5,9 @@
 
 struct NonValidSystemA {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
+  using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::containers::Vector<vector_n_t>;
+  using vector_w_t = pressio::containers::Vector<vector_n_t>;
 
   using scalar_type     = double;
   using state_type      = vector_w_t;
@@ -22,7 +22,7 @@ struct NonValidSystemA {
 };
 
 TEST(solvers_meta, system_nonadmissible1){
-  using namespace rompp;
+  using namespace pressio;
   using system_t   = NonValidSystemA;
 
   static_assert(solvers::meta::system_has_needed_residual_methods
@@ -42,9 +42,9 @@ TEST(solvers_meta, system_nonadmissible1){
 
 struct NonValidSystemB {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
+  using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::containers::Vector<vector_n_t>;
+  using vector_w_t = pressio::containers::Vector<vector_n_t>;
 
   using scalar_type     = double;
   using state_type      = vector_w_t;
@@ -59,7 +59,7 @@ struct NonValidSystemB {
 };
 
 TEST(solvers_meta, system_nonadmissibleB){
-  using namespace rompp;
+  using namespace pressio;
   using system_t   = NonValidSystemB;
 
   static_assert(solvers::meta::system_has_needed_residual_methods

@@ -11,14 +11,14 @@
 #include <Teuchos_SerialQRDenseSolver.hpp>
 #endif
 
-namespace rompp{ namespace qr{ namespace impl{
+namespace pressio{ namespace qr{ namespace impl{
 
 
 template<typename vector_type,
 	 typename R_type,
-	 ::rompp::mpl::enable_if_t<
-	   ::rompp::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
-	   ::rompp::containers::meta::is_dense_matrix_wrapper_eigen<R_type>::value
+	 ::pressio::mpl::enable_if_t<
+	   ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
+	   ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<R_type>::value
 	   > * = nullptr>
 void solve(const vector_type & rhs,
 	   const R_type & Rmatrix,
@@ -34,9 +34,9 @@ void solve(const vector_type & rhs,
 
 #ifdef HAVE_TRILINOS
 template<typename vector_type, typename R_type,
-	 ::rompp::mpl::enable_if_t<
-	   ::rompp::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
-	   ::rompp::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
+	 ::pressio::mpl::enable_if_t<
+	   ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
+	   ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
@@ -68,9 +68,9 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 template<typename vector_type,
 	 typename R_type,
 	 int n,
-	 ::rompp::mpl::enable_if_t<
-	   ::rompp::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
-	   ::rompp::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
+	 ::pressio::mpl::enable_if_t<
+	   ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
+	   ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n == utils::constants::dynamic
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
@@ -86,9 +86,9 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 template<typename vector_type,
 	 typename R_type,
 	 int n,
-	 ::rompp::mpl::enable_if_t<
-	   ::rompp::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
-	   ::rompp::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
+	 ::pressio::mpl::enable_if_t<
+	   ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
+	   ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n != utils::constants::dynamic and n>=1
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
@@ -109,9 +109,9 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 template<typename vector_type,
 	 typename R_type,
 	 int n,
-	 ::rompp::mpl::enable_if_t<
-	   ::rompp::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
-	   ::rompp::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
+	 ::pressio::mpl::enable_if_t<
+	   ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
+	   ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
 	   n == utils::constants::dynamic
 	   > * = nullptr>
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
@@ -144,5 +144,5 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 
 
 
-}}}//end namespace rompp::qr::impl
+}}}//end namespace pressio::qr::impl
 #endif

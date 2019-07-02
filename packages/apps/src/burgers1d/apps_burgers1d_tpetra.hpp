@@ -1,6 +1,6 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_TPETRA_HPP_
-#define ROMPPAPPS_BURGERS1D_TPETRA_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_TPETRA_HPP_
+#define PRESSIOAPPS_BURGERS1D_TPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -11,7 +11,7 @@
 #include <Teuchos_FancyOStream.hpp>
 #include <Tpetra_Core.hpp>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class Burgers1dTpetra{
 protected:
@@ -32,7 +32,7 @@ public:
   /* these types exposed because need to be detected */
   using scalar_type	= double;
   using state_type	= nativeVec;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
 public:
   Burgers1dTpetra(std::vector<scalar_type> params,
@@ -98,14 +98,14 @@ public:
     return *U0_;
   };
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t */) const;
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
-    residual_type R(dataMap_);
-    residual(u,R,t);
+    velocity_type R(dataMap_);
+    velocity(u,R,t);
     return R;
   }
 
@@ -167,6 +167,6 @@ protected:
 
 };//end class
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

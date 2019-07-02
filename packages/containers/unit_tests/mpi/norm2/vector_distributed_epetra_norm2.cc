@@ -2,7 +2,7 @@
 #include "epetra_only_fixtures.hpp"
 
 TEST_F(epetraVectorGlobSize15Fixture, norm2){
-  using namespace rompp;
+  using namespace pressio;
 
   using myvec_t = containers::Vector<Epetra_Vector>;
   myvec_t a( *contigMap_ );

@@ -19,10 +19,10 @@
 
 #include "ode_enum.hpp"
 
-namespace rompp{ namespace ode{ namespace details {
+namespace pressio{ namespace ode{ namespace details {
 
 template<typename T, typename enable = void> struct traits{};
 template<typename T>  struct traits<const T> : traits<T> {};
 
-}}}// end namespace rompp::ode::details
+}}}// end namespace pressio::ode::details
 #endif

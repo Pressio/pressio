@@ -7,7 +7,7 @@
 #include "../solvers_ConfigDefs.hpp"
 
 
-namespace rompp {
+namespace pressio {
 namespace solvers {
 
 class NonLinearSolvers; // Fwd declaration
@@ -78,6 +78,6 @@ class NonLinearLeastSquareIterativeSolver
 };
 
 } // end namespace solvers
-} // end namespace rompp
+} // end namespace pressio
 
 #endif

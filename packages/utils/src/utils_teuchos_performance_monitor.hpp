@@ -10,7 +10,7 @@
 #include <Teuchos_TimeMonitor.hpp>
 #include "Teuchos_StackedTimer.hpp"
 
-namespace rompp{ namespace utils{
+namespace pressio{ namespace utils{
 
 struct TeuchosPerformanceMonitor{
 
@@ -52,6 +52,6 @@ struct TeuchosPerformanceMonitor{
   }
 };
 
-}} // end of namespace rompp::utils
+}} // end of namespace pressio::utils
 #endif
 #endif

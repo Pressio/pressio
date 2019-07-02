@@ -5,7 +5,7 @@
 
 #include "../qr_rfactor_solve_impl.hpp"
 
-namespace rompp{ namespace qr{ namespace impl{
+namespace pressio{ namespace qr{ namespace impl{
 
 /* partially specialize for when n and m are dynamic.
  * This just means that the R matrix is dynamic
@@ -98,6 +98,6 @@ private:
   mutable std::shared_ptr<R_t> Rmat_	= nullptr;
 };
 
-}}} // end namespace rompp::qr::impl
+}}} // end namespace pressio::qr::impl
 #endif
 #endif

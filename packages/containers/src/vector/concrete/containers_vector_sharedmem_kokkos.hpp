@@ -6,11 +6,11 @@
 #include "../../shared_base/containers_container_base.hpp"
 #include "../base/containers_vector_sharedmem_base.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class Vector<wrapped_type,
-	     ::rompp::mpl::enable_if_t<
+	     ::pressio::mpl::enable_if_t<
 	       containers::meta::is_vector_kokkos<wrapped_type>::value
 	       >
 	     >
@@ -72,6 +72,6 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif // CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 #endif // HAVE_TRILINOS

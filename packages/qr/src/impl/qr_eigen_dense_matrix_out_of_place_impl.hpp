@@ -6,7 +6,7 @@
 #include "../../../CONTAINERS_OPS"
 #include "../qr_rfactor_solve_impl.hpp"
 
-namespace rompp{ namespace qr{ namespace impl{
+namespace pressio{ namespace qr{ namespace impl{
 
 /* partially specialize for when n and m are dynamic.
  * This does not mean that the wrapped matrix is dynamic, this just means
@@ -15,7 +15,7 @@ namespace rompp{ namespace qr{ namespace impl{
 template< typename matrix_type, typename R_t, template <typename...> class Q_type>
 class QRHouseholderDenseEigenMatrixWrapper<
   matrix_type, R_t, utils::constants::dynamic, utils::constants::dynamic, Q_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value
     >
   >{
@@ -76,7 +76,7 @@ template< typename matrix_type, typename R_t,
 	  int n, int m, template <typename...> class Q_type>
 class QRHouseholderDenseEigenMatrixWrapper<
   matrix_type, R_t, n, m, Q_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value and n >=1 and m>=1>
     >{
 
@@ -134,5 +134,5 @@ public:
 
 
 
-}}} // end namespace rompp::qr::impl
+}}} // end namespace pressio::qr::impl
 #endif

@@ -5,7 +5,7 @@
 #include "../../solvers_ConfigDefs.hpp"
 #include "../../meta/solvers_is_legitimate_residual_observer_when_converged.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template<typename observer_t,
 	 typename residual_t,
@@ -23,8 +23,8 @@ template<typename observer_t,
 	 typename residual_t>
 struct ResidualObserverWhenSolverConverged<
   observer_t, residual_t,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::solvers::meta::is_legitimate_residual_observer_when_solver_converged<
+  ::pressio::mpl::enable_if_t<
+    ::pressio::solvers::meta::is_legitimate_residual_observer_when_solver_converged<
       observer_t, residual_t
      >::value
     >
@@ -37,5 +37,5 @@ struct ResidualObserverWhenSolverConverged<
 };
 
 
-}}}} //end namespace rompp::solvers::iterative::impl
+}}}} //end namespace pressio::solvers::iterative::impl
 #endif

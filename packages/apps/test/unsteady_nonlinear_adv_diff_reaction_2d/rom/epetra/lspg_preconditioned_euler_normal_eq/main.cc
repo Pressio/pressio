@@ -7,20 +7,20 @@
 #include "utils_epetra.hpp"
 #include "../../../fom/gold_states_implicit.hpp"
 
-using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEpetra;
+using app_t		= pressio::apps::UnsteadyNonLinAdvDiffReac2dEpetra;
 using scalar_t		= typename app_t::scalar_type;
 using uint_t		= unsigned int;
 constexpr double eps	= 1e-12;
-constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
-constexpr auto zero	= ::rompp::utils::constants::zero<scalar_t>();
+constexpr auto ode_case = pressio::ode::ImplicitEnum::Euler;
+constexpr auto zero	= ::pressio::utils::constants::zero<scalar_t>();
 constexpr auto t0	= zero;
 
 
 struct LSPGRunner{
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
-  using ode_state_t	= rompp::containers::Vector<app_state_t>;
-  using ode_res_t		= rompp::containers::Vector<app_residual_t>;
+  using app_rhs_t	= typename app_t::velocity_type;
+  using ode_state_t	= pressio::containers::Vector<app_state_t>;
+  using ode_res_t		= pressio::containers::Vector<app_rhs_t>;
   using eig_dyn_mat	= Eigen::MatrixXd;
 
   const Epetra_MpiComm & comm_;
@@ -38,9 +38,9 @@ struct LSPGRunner{
   ode_state_t run(scalar_t dt, uint_t Nsteps)
   {
     using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-    using lspg_state_t	= rompp::containers::Vector<eig_dyn_vec>;
-    using decoder_jac_t	= rompp::containers::MultiVector<Epetra_MultiVector>;
-    using decoder_t	= rompp::rom::LinearDecoder<decoder_jac_t>;
+    using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
+    using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
+    using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
 
     // app object
     app_t appobj(comm_, Nx_, Ny_);
@@ -49,7 +49,7 @@ struct LSPGRunner{
 
     // store modes computed before from file
     const decoder_jac_t phi =
-      rompp::apps::test::epetra::readBasis("basis.txt", romSize_,
+      pressio::apps::test::epetra::readBasis("basis.txt", romSize_,
 					   totDofs,
 					   comm_,
 					   appobj.getDataMap());
@@ -66,30 +66,30 @@ struct LSPGRunner{
     yROM.putScalar(0.0);
 
     // define LSPG type
-    using lspg_problem_type = rompp::rom::PreconditionedLSPGTypeGenerator<
+    using lspg_problem_type = pressio::rom::PreconditionedLSPGTypeGenerator<
       app_t, ode_case, decoder_t, lspg_state_t>;
-    using lspg_generator = rompp::rom::LSPGUnsteadyProblemGenerator<lspg_problem_type>;
+    using lspg_generator = pressio::rom::LSPGUnsteadyProblemGenerator<lspg_problem_type>;
     lspg_generator lspgProblem(appobj, yRef, decoderObj, yROM, t0);
 
     // linear solver
     using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-    using hessian_t  = rompp::containers::Matrix<eig_dyn_mat>;
-    using solver_tag   = rompp::solvers::linear::iterative::Bicgstab;//LSCG;
-    using linear_solver_t = rompp::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+    using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
+    using solver_tag   = pressio::solvers::linear::iterative::Bicgstab;//LSCG;
+    using linear_solver_t = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
     // rom is solved using eigen, hessian is wrapper of eigen matrix
     using lspg_stepper_t = typename lspg_problem_type::lspg_stepper_t;
-    using gnsolver_t   = rompp::solvers::iterative::GaussNewton<
+    using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
       lspg_stepper_t, linear_solver_t>;
     gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(100);
 
     // integrate in time
-    rompp::ode::integrateNSteps(lspgProblem.stepperObj_, yROM,
+    pressio::ode::integrateNSteps(lspgProblem.stepperObj_, yROM,
 				t0, dt, Nsteps, solver);
 
     // compute the fom corresponding to our rom final state
@@ -128,7 +128,7 @@ int main(int argc, char *argv[]){
 
   {
     // check that solution is right
-    using namespace rompp::apps::test;
+    using namespace pressio::apps::test;
     const auto trueY
       = NonLinAdvDiffReac2dImpGoldStates<ode_case>::get(Nx, Ny, dt, fint);
 

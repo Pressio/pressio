@@ -5,7 +5,7 @@
 #include "ode_is_valid_user_defined_ops_for_explicit_euler.hpp"
 #include "ode_is_valid_user_defined_ops_for_explicit_rk4.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<typename T,
 	 typename scalar_t,
@@ -30,5 +30,5 @@ struct is_valid_user_defined_ops_for_explicit_ode<
       >
   > : std::true_type{};
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

@@ -1,11 +1,11 @@
 
-#ifndef ROMPP_MPL_VARIADIC_FIND_IF_QUATERNARY_HPP
-#define ROMPP_MPL_VARIADIC_FIND_IF_QUATERNARY_HPP
+#ifndef PRESSIO_MPL_VARIADIC_FIND_IF_QUATERNARY_HPP
+#define PRESSIO_MPL_VARIADIC_FIND_IF_QUATERNARY_HPP
 
 #include <type_traits>
 #include <cstddef>
 
-namespace rompp{ namespace mpl{ namespace variadic {
+namespace pressio{ namespace mpl{ namespace variadic {
 
 template<typename T1, typename T2, typename T3,
 	 template<class ...> class Predicate,

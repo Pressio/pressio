@@ -3,15 +3,15 @@
 #include "CONTAINERS_ALL"
 #include "APPS_UNSTEADYNONLINADVDIFFREACTION2D"
 
-TEST(adv_diff_reaction_2d_eigen, spatial_residual){
-  using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEigen;
+TEST(adv_diff_reaction_2d_eigen, velocity){
+  using app_t		= pressio::apps::UnsteadyNonLinAdvDiffReac2dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
+  using app_velocity_t	= typename app_t::velocity_type;
 
   static_assert(std::is_same<scalar_t, double>::value, "");
 
-  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 5, Ny = 5;
   app_t appobj(Nx, Ny);
@@ -24,12 +24,12 @@ TEST(adv_diff_reaction_2d_eigen, spatial_residual){
   // it is important to set state to be something
   // different at every dof otherwise we might be tricked
   app_state_t yTest(totUnk);
-  ::rompp::containers::Vector<app_state_t> y(yTest);
+  ::pressio::containers::Vector<app_state_t> y(yTest);
   for (auto i=0; i<y.size(); ++i)
     y[i] = i*0.1;
 
-  //compute residual
-  const auto r0n = appobj.residual(*y.data(), zero);
+  //compute velocity
+  const auto r0n = appobj.velocity(*y.data(), zero);
 
   const auto eps = appobj.getDiffusivity();
   const auto K = appobj.getReactionRate();
@@ -39,7 +39,7 @@ TEST(adv_diff_reaction_2d_eigen, spatial_residual){
   EXPECT_DOUBLE_EQ( dy, 0.5);
 
   // remember that u,v,s1,s2,s3
-  // have values at grid points, while state and residual
+  // have values at grid points, while state and velocity
   // have more values because of the dofs
   const auto u = appobj.getU();
   const auto v = appobj.getV();

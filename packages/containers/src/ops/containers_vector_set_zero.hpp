@@ -13,7 +13,7 @@
 //  overloads for setting all entries of vector to zero
 //----------------------------------------------------------------------
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 //--------------------------------------------------------------------------
 // enable for pybind11::array_t
@@ -21,8 +21,8 @@ namespace rompp{ namespace containers{ namespace ops{
 #ifdef HAVE_PYBIND11
 template<
   typename T,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_cstyle_array_pybind11<T>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
     > * = nullptr
   >
 void set_zero(T & v){
@@ -33,10 +33,10 @@ void set_zero(T & v){
 
   using scalar_t = typename T::value_type;
   for (decltype(v.size()) i=0; i<v.size(); ++i){
-    v.mutable_at(i) = ::rompp::utils::constants::zero<scalar_t>();
+    v.mutable_at(i) = ::pressio::utils::constants::zero<scalar_t>();
   }
 }
 #endif
 
-}}}//end namespace rompp::containers::ops
+}}}//end namespace pressio::containers::ops
 #endif

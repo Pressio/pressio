@@ -6,7 +6,7 @@
 #include "../base/solvers_linear_base.hpp"
 #include "solvers_linear_traits.hpp"
 
-namespace rompp { namespace solvers { namespace direct{
+namespace pressio { namespace solvers { namespace direct{
 
 template<typename SolverT, typename MatrixT>
 class EigenDirect
@@ -14,8 +14,8 @@ class EigenDirect
 		      EigenDirect<SolverT, MatrixT> >
 {
 public:
-  static_assert( ::rompp::containers::meta::is_matrix_wrapper_eigen<MatrixT>::value or
-  		 ::rompp::containers::meta::is_multi_vector_wrapper_eigen<MatrixT>::value,
+  static_assert( ::pressio::containers::meta::is_matrix_wrapper_eigen<MatrixT>::value or
+  		 ::pressio::containers::meta::is_multi_vector_wrapper_eigen<MatrixT>::value,
   		 "Eigen direct solver needs a matrix type = wrapper of an eigen matrix");
 
   using solver_t	= SolverT;
@@ -52,5 +52,5 @@ private:
   native_solver_t mysolver_ = {};
 };
 
-}}} // end namespace rompp::solvers::direct
+}}} // end namespace pressio::solvers::direct
 #endif

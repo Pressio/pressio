@@ -4,7 +4,7 @@
 
 TEST(containers_meta_detect_operators, operatorAddDetecting)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   class A{
    public:
@@ -37,7 +37,7 @@ TEST(containers_meta_detect_operators, operatorAddDetecting)
 
 TEST(containers_meta_detect_operators, operatorSubtractDetecting)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   class A{
    public:
@@ -70,7 +70,7 @@ TEST(containers_meta_detect_operators, operatorSubtractDetecting)
 
 TEST(containers_meta_detect_operators, operatorStarDetecting)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   class A{
    public:
@@ -104,7 +104,7 @@ TEST(containers_meta_detect_operators, operatorStarDetecting)
 
 TEST(containers_meta_detect_operators, operatorCompAssignDetecting)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   class A{
    public:
@@ -132,7 +132,7 @@ TEST(containers_meta_detect_operators, operatorCompAssignDetecting)
 
 TEST(containers_meta_detect_operators, operatorCompAssignMinusDetecting)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   class A{
    public:

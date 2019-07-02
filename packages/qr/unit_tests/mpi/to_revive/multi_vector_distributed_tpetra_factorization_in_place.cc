@@ -4,7 +4,7 @@
 
 TEST_F(tpetraR9Fixture,
        TSQRtpetraMultiVectorInPlace){
-  using namespace rompp;
+  using namespace pressio;
 
   using qr_algo = qr::TSQR;
   constexpr bool in_place = true;
@@ -32,7 +32,7 @@ TEST_F(tpetraR9Fixture,
 
 TEST_F(tpetraR9Fixture,
        TSQRepetraMultiVectorInPlaceWrapREigen){
-  using namespace rompp;
+  using namespace pressio;
 
   using qr_algo = qr::TSQR;
   constexpr bool in_place = true;
@@ -68,7 +68,7 @@ TEST_F(tpetraR9Fixture,
 
 TEST_F(tpetraR9Fixture,
        TSQRepetraMultiVectorInPlaceWrapRTeuchosMatrix){
-  using namespace rompp;
+  using namespace pressio;
 
   using qr_algo = qr::TSQR;
   constexpr bool in_place = true;
@@ -114,7 +114,7 @@ TEST_F(tpetraR9Fixture,
 
 // TEST_F(epetraR9Fixture,
 //        QRepetraMultiVectorTSQRStoreTeuchosRmat){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   // fill matrix inside fixture
 //   fillMatrix();
@@ -136,7 +136,7 @@ TEST_F(tpetraR9Fixture,
 //   EXPECT_EQ( Q.globalNumVectors(), 4);
 
 //   // gold solution
-//   rompp::qr::test::qrGoldSol<double> gold;
+//   pressio::qr::test::qrGoldSol<double> gold;
 
 //   int localSize = (rank_==0) ? 5 : 4;
 //   int shift = (rank_==0) ? 0 : 5;

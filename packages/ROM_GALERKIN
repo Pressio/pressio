@@ -4,7 +4,7 @@
 
 #include "ROM_BASIC"
 
-#include "rom/src/galerkin/rom_galerkin_explicit_residual_policy.hpp"
+#include "rom/src/galerkin/rom_galerkin_explicit_velocity_policy.hpp"
 #include "rom/src/galerkin/rom_galerkin_type_generators.hpp"
 #include "rom/src/galerkin/rom_galerkin_stepper_generators.hpp"
 

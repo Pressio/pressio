@@ -7,7 +7,7 @@
 #include "./meta/containers_native_tpetra_multi_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_block_multi_vector_meta.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 #ifdef HAVE_TRILINOS
 #define STATIC_ASSERT_IS_MULTIVECTOR_EPETRA(TYPE) \
@@ -33,5 +33,5 @@ namespace rompp{ namespace containers{
 
 #endif
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

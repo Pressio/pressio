@@ -6,7 +6,7 @@
 #include "../base/ode_implicit_residual_policy_base.hpp"
 #include "../../ode_residual_impl.hpp"
 
-namespace rompp{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace policy{
 
 /*
  * state and residual_types are containers wrappers
@@ -14,23 +14,23 @@ namespace rompp{ namespace ode{ namespace policy{
  */
 template<
   typename state_type,
-  typename model_type,
+  typename system_type,
   typename residual_type
   >
 class ImplicitResidualStandardPolicy<
-  state_type, model_type, residual_type,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
-    ::rompp::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
+  state_type, system_type, residual_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
+    ::pressio::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
     containers::meta::is_wrapper<state_type>::value and
     containers::meta::is_wrapper<residual_type>::value
     >
   >
   : public ImplicitResidualPolicyBase<
-  ImplicitResidualStandardPolicy<state_type, model_type, residual_type>>
+  ImplicitResidualStandardPolicy<state_type, system_type, residual_type>>
 {
 
-  using this_t = ImplicitResidualStandardPolicy<state_type, model_type, residual_type>;
+  using this_t = ImplicitResidualStandardPolicy<state_type, system_type, residual_type>;
   friend ImplicitResidualPolicyBase<this_t>;
 
 public:
@@ -44,12 +44,12 @@ public:
   void operator()(const state_type & y,
 		  residual_type & R,
 		  const std::array<state_type, n> & oldYs,
-		  const model_type & model,
+		  const system_type & model,
 		  scalar_type t,
 		  scalar_type dt) const{
 
-    model.residual(*y.data(), *R.data(), t);
-    ::rompp::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
+    model.velocity(*y.data(), *R.data(), t);
+    ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
   }
 
   template <
@@ -57,17 +57,17 @@ public:
     >
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, n> & oldYs,
-  			   const model_type & model,
+  			   const system_type & model,
   			   scalar_type t,
   			   scalar_type dt)const {
 
-    auto nR = model.residual(*y.data(), t);
+    auto nR = model.velocity(*y.data(), t);
     residual_type R(nR);
-    ::rompp::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
+    ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
     return R;
   }
 
 };//end class
 
-}}}//end namespace rompp::ode::policy
+}}}//end namespace pressio::ode::policy
 #endif

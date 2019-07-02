@@ -15,7 +15,7 @@
 #include "../../../containers/src/meta/containers_meta_detection_idiom.hpp"
 
 
-namespace rompp{
+namespace pressio{
 namespace solvers{
 
 namespace todeprecate{
@@ -25,7 +25,7 @@ namespace todeprecate{
  **/
 template <
   typename MatrixT,
-  typename ::rompp::mpl::enable_if_t<
+  typename ::pressio::mpl::enable_if_t<
     containers::details::traits<MatrixT>::wrapped_package_identifier == containers::details::WrappedPackageIdentifier::Eigen
   >* = nullptr
 >
@@ -49,7 +49,7 @@ struct SolversNonLinearIterativeLeastSquareLevenbergMarquardtPolicy {
     typename NormT,
     typename SystemT,
     typename VectorT,
-    typename ::rompp::mpl::enable_if_t<
+    typename ::pressio::mpl::enable_if_t<
       containers::details::traits<VectorT>::is_vector &&
       solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,
@@ -136,7 +136,7 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
     typename NormT,
     typename SystemT,
     typename VectorT,
-    typename ::rompp::mpl::enable_if_t<
+    typename ::pressio::mpl::enable_if_t<
       containers::details::traits<VectorT>::is_vector &&
       solvers::meta::are_vector_compatible<
         typename details::system_traits<SystemT>::vector_type,
@@ -188,6 +188,6 @@ struct SolversNonLinearIterativeLeastSquareGaussNewtonPolicy {
 
 
 } // end namespace solvers
-} // end namespace rompp
+} // end namespace pressio
 
 #endif

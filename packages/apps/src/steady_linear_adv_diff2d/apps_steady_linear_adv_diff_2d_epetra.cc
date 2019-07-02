@@ -2,7 +2,7 @@
 #include "apps_steady_linear_adv_diff_2d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 void SteadyLinAdvDiff2dEpetra::createMap(){
   // total number of dof (we only consider the interior points)
@@ -160,5 +160,5 @@ void SteadyLinAdvDiff2dEpetra::solve(){
   Solver.TrueResidual();
 }
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-namespace rompp{ namespace utils{ namespace details {
+namespace pressio{ namespace utils{ namespace details {
 
 template <typename T, typename enable = void>
 struct CrtpBase;
@@ -64,6 +64,6 @@ private:
 };//end class
 
 
-}}} // end namespace rompp::utils::details
+}}} // end namespace pressio::utils::details
 
 #endif

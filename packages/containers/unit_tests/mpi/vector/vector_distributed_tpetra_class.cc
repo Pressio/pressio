@@ -5,7 +5,7 @@ using native_t = typename tpetraVectorGlobSize15Fixture::vec_t;
 
 
 TEST_F(tpetraVectorGlobSize15Fixture, Constructor){
-  using namespace rompp;
+  using namespace pressio;
 
   std::cout << rank_ << std::endl;
   using myvec_t = containers::Vector<native_t>;
@@ -15,7 +15,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, Constructor){
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        localSize){
-  using namespace rompp;
+  using namespace pressio;
   using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
   EXPECT_EQ( v1.localSize(), 5);
@@ -23,7 +23,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        globalSize){
-  using namespace rompp;
+  using namespace pressio;
   using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
   EXPECT_EQ( v1.globalSize(), 15);
@@ -31,7 +31,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        isGloballyDist){
-  using namespace rompp;
+  using namespace pressio;
   using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
   EXPECT_TRUE( v1.isDistributedGlobally() );
@@ -39,7 +39,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        SetScalar){
-  using namespace rompp;
+  using namespace pressio;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
   using myvec_t = containers::Vector<native_t>;
@@ -54,7 +54,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        CompoundAssignAdd_deep_copy_cstr){
-  using namespace rompp;
+  using namespace pressio;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
   using myvec_t = containers::Vector<native_t>;
@@ -71,7 +71,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        CompoundAssignAdd_mapConstr){
-  using namespace rompp;
+  using namespace pressio;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
   using myvec_t = containers::Vector<native_t>;
@@ -88,7 +88,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        CompoundAssignSubtract_deep_copy_cstr){
-  using namespace rompp;
+  using namespace pressio;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
   using myvec_t = containers::Vector<native_t>;
@@ -105,7 +105,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        CompoundAssignSubtract_mapConstr){
-  using namespace rompp;
+  using namespace pressio;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
   using myvec_t = containers::Vector<native_t>;
@@ -122,7 +122,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        SetZero){
-  using namespace rompp;
+  using namespace pressio;
   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
   using myvec_t = containers::Vector<native_t>;
@@ -137,7 +137,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        QueryWrappedData){
-  using namespace rompp;
+  using namespace pressio;
 
   using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
@@ -150,7 +150,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        empty){
-  using namespace rompp;
+  using namespace pressio;
   using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
   EXPECT_FALSE(v1.empty());
@@ -158,7 +158,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
 TEST_F(tpetraVectorGlobSize15Fixture,
        getMap){
-  using namespace rompp;
+  using namespace pressio;
   using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
   auto const & mapO = v1.getDataMap();

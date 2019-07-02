@@ -4,7 +4,7 @@
 
 #include "rom_ConfigDefs.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <
   typename fom_state_type,
@@ -23,7 +23,7 @@ template <
 struct FomStatesData<
   fom_state_type, maxNstates, reconstuctor_type,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_vector_wrapper<fom_state_type>::value
+    ::pressio::containers::meta::is_vector_wrapper<fom_state_type>::value
     >
   >
 {
@@ -36,7 +36,7 @@ struct FomStatesData<
 
   template <
     int _maxNstates = maxNstates,
-    ::rompp::mpl::enable_if_t<_maxNstates==0> * = nullptr
+    ::pressio::mpl::enable_if_t<_maxNstates==0> * = nullptr
     >
   FomStatesData(const fom_state_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
@@ -48,7 +48,7 @@ struct FomStatesData<
 
   template <
     int _maxNstates = maxNstates,
-    ::rompp::mpl::enable_if_t<_maxNstates==1> * = nullptr
+    ::pressio::mpl::enable_if_t<_maxNstates==1> * = nullptr
     >
   FomStatesData(const fom_state_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
@@ -61,7 +61,7 @@ struct FomStatesData<
 
   template <
     int _maxNstates = maxNstates,
-    ::rompp::mpl::enable_if_t<_maxNstates==2> * = nullptr
+    ::pressio::mpl::enable_if_t<_maxNstates==2> * = nullptr
     >
   FomStatesData(const fom_state_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
@@ -145,7 +145,7 @@ template <
 struct FomStatesData<
   fom_state_type, maxNstates, reconstuctor_type,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_array_pybind11<fom_state_type>::value
+    ::pressio::containers::meta::is_array_pybind11<fom_state_type>::value
     >
   >
 {
@@ -157,7 +157,7 @@ struct FomStatesData<
 
   template <
     int _maxNstates = maxNstates,
-    ::rompp::mpl::enable_if_t<_maxNstates==0> * = nullptr
+    ::pressio::mpl::enable_if_t<_maxNstates==0> * = nullptr
     >
   FomStatesData(const fom_state_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
@@ -169,7 +169,7 @@ struct FomStatesData<
 
   template <
     int _maxNstates = maxNstates,
-    ::rompp::mpl::enable_if_t<_maxNstates==1> * = nullptr
+    ::pressio::mpl::enable_if_t<_maxNstates==1> * = nullptr
     >
   FomStatesData(const fom_state_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
@@ -187,7 +187,7 @@ struct FomStatesData<
 
   template <
     int _maxNstates = maxNstates,
-    ::rompp::mpl::enable_if_t<_maxNstates==2> * = nullptr
+    ::pressio::mpl::enable_if_t<_maxNstates==2> * = nullptr
     >
   FomStatesData(const fom_state_t & yFomIn,
 		const reconstuctor_type & fomStateReconstr)
@@ -218,9 +218,9 @@ protected:
 private:
   /* set all entries to zero for all members */
   void resetContainersToZero(){
-    ::rompp::containers::ops::set_zero(yFom_);
+    ::pressio::containers::ops::set_zero(yFom_);
     for (size_t i=0; i<yFomOld_.size(); i++)
-      ::rompp::containers::ops::set_zero(yFomOld_[i]);
+      ::pressio::containers::ops::set_zero(yFomOld_[i]);
   }
 
 protected:
@@ -232,5 +232,5 @@ protected:
 #endif
 
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

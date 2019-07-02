@@ -48,7 +48,7 @@ struct InitView {
 
 TEST(containers_vector_sharedmem_kokkos_class, Constructor)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   // kokkos initialize and finalize already set from environment, see CMakeList
   const int N = 10;

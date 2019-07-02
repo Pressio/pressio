@@ -6,7 +6,7 @@
 
 TEST_F(tpetraR9Fixture,
        TpetraMultiVectorTSQRprojectDynamicEigenVecResult){
-  using namespace rompp;
+  using namespace pressio;
 
   // fill matrix inside fixture
   fillMatrix();
@@ -25,7 +25,7 @@ TEST_F(tpetraR9Fixture,
   qrObj.project(*v_, y);
 
   // gold solution
-  rompp::qr::test::qrGoldSol<double> gold;
+  pressio::qr::test::qrGoldSol<double> gold;
 
   EXPECT_EQ(y.size(), 4);
   for (auto i=0; i<y.size(); i++)
@@ -36,7 +36,7 @@ TEST_F(tpetraR9Fixture,
 
 TEST_F(tpetraR9Fixture,
        TpetraMultiVectorTSQRprojectStaticEigenVecResult){
-  using namespace rompp;
+  using namespace pressio;
 
   // fill matrix inside fixture
   fillMatrix();
@@ -55,7 +55,7 @@ TEST_F(tpetraR9Fixture,
   qrObj.project(*v_, y);
 
   // gold solution
-  rompp::qr::test::qrGoldSol<double> gold;
+  pressio::qr::test::qrGoldSol<double> gold;
 
   for (auto i=0; i<y.size(); i++)
     EXPECT_NEAR( std::abs(gold.colDotOnes_[i]),

@@ -1,6 +1,6 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_EPETRA_HPP_
-#define ROMPPAPPS_BURGERS1D_EPETRA_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_EPETRA_HPP_
+#define PRESSIOAPPS_BURGERS1D_EPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -16,7 +16,7 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class Burgers1dEpetra{
 protected:
@@ -28,7 +28,7 @@ protected:
 public:
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
 public:
   Burgers1dEpetra(std::vector<scalar_type> params,
@@ -77,14 +77,14 @@ public:
     return *U0_;
   };
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t */) const;
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
     Epetra_Vector R(*dataMap_);
-    residual(u,R,t);
+    velocity(u,R,t);
     return R;
   }//end residual
 
@@ -141,7 +141,7 @@ protected:
   std::shared_ptr<Epetra_CrsMatrix> Jac_;
 };//end class
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 
 #endif
 #endif

@@ -1,11 +1,11 @@
 
-#ifndef ROM_EVALUATE_FOM_RHS_UNSTEADY_HPP_
-#define ROM_EVALUATE_FOM_RHS_UNSTEADY_HPP_
+#ifndef ROM_EVALUATE_FOM_VELOCITY_UNSTEADY_HPP_
+#define ROM_EVALUATE_FOM_VELOCITY_UNSTEADY_HPP_
 
-namespace rompp{ namespace rom{ namespace policy{
+namespace pressio{ namespace rom{ namespace policy{
 
 template <>
-struct EvaluateFomRhsDefault<false>{
+struct EvaluateFomVelocityDefault<false>{
 
   //------------------------------------------
   // enabled for native c++
@@ -16,8 +16,8 @@ struct EvaluateFomRhsDefault<false>{
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
-      !::rompp::containers::meta::is_array_pybind11<state_t>::value and
-      !::rompp::containers::meta::is_array_pybind11<rhs_t>::value
+      !::pressio::containers::meta::is_array_pybind11<state_t>::value and
+      !::pressio::containers::meta::is_array_pybind11<rhs_t>::value
       > * = nullptr
 #endif
     >
@@ -25,7 +25,7 @@ struct EvaluateFomRhsDefault<false>{
 		const state_t & yFOM,
 		rhs_t		& rhs,
 		time_t		t) const{
-    fomObj.residual(*yFOM.data(), *rhs.data(), t);
+    fomObj.velocity(*yFOM.data(), *rhs.data(), t);
   }
 
   template <
@@ -33,16 +33,16 @@ struct EvaluateFomRhsDefault<false>{
 #ifdef HAVE_PYBIND11
     , mpl::enable_if_t<
 	mpl::not_same<fom_t, pybind11::object>::value and
-	!::rompp::containers::meta::is_array_pybind11<state_t>::value
+	!::pressio::containers::meta::is_array_pybind11<state_t>::value
 	> * = nullptr
 #endif
     >
   auto evaluate(const fom_t	& fomObj,
 		const state_t & yFOM,
 		time_t		t) const
-    -> decltype(fomObj.residual(*yFOM.data(), t))
+    -> decltype(fomObj.velocity(*yFOM.data(), t))
   {
-    return fomObj.residual(*yFOM.data(), t);
+    return fomObj.velocity(*yFOM.data(), t);
   }
 
 
@@ -55,8 +55,8 @@ struct EvaluateFomRhsDefault<false>{
     typename rhs_t, typename time_t,
     mpl::enable_if_t<
       mpl::is_same<fom_t, pybind11::object>::value and
-      ::rompp::containers::meta::is_cstyle_array_pybind11<state_t>::value and
-      ::rompp::containers::meta::is_cstyle_array_pybind11<rhs_t>::value and
+      ::pressio::containers::meta::is_cstyle_array_pybind11<state_t>::value and
+      ::pressio::containers::meta::is_cstyle_array_pybind11<rhs_t>::value and
       // because we should have all = pybind11::array_t
       mpl::is_same<state_t, rhs_t>::value
       > * = nullptr
@@ -72,7 +72,7 @@ struct EvaluateFomRhsDefault<false>{
     typename fom_t, typename state_t, typename time_t,
     mpl::enable_if_t<
       mpl::is_same<fom_t, pybind11::object>::value and
-      ::rompp::containers::meta::is_cstyle_array_pybind11<state_t>::value
+      ::pressio::containers::meta::is_cstyle_array_pybind11<state_t>::value
       > * = nullptr
     >
   state_t evaluate(const fom_t	& fomObj,
@@ -83,5 +83,5 @@ struct EvaluateFomRhsDefault<false>{
 #endif
 };
 
-}}} //end namespace rompp::rom::policy
+}}} //end namespace pressio::rom::policy
 #endif

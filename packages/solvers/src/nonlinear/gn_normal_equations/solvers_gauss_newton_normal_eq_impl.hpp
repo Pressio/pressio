@@ -12,7 +12,7 @@
 #include "../helper_policies/solvers_residual_observer_each_solver_step.hpp"
 #include "../helper_policies/solvers_get_matrix_size_helper.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 
 template <
@@ -88,7 +88,7 @@ void gauss_newton_neq_solve(const system_t & sys,
   auto reset = utils::io::reset();
   auto fmt1 = utils::io::cyan() + utils::io::underline();
   const auto convString = std::string(is_converged_t::description_);
-  ::rompp::utils::io::print_stdout(fmt1, "GN normal eqns:", "criterion:",
+  ::pressio::utils::io::print_stdout(fmt1, "GN normal eqns:", "criterion:",
 				  convString, reset, "\n");
 #endif
 
@@ -109,9 +109,9 @@ void gauss_newton_neq_solve(const system_t & sys,
     residual_observer_each_step::evaluate(observer, resid, iStep);
 
 #ifdef DEBUG_PRINT
-    ::rompp::utils::io::print_stdout("\n");
+    ::pressio::utils::io::print_stdout("\n");
     auto fmt = utils::io::underline();
-    ::rompp::utils::io::print_stdout(fmt, "GN step", iStep,
+    ::pressio::utils::io::print_stdout(fmt, "GN step", iStep,
 				    utils::io::reset(), "\n");
 #endif
 
@@ -136,18 +136,18 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("hessian");
 #endif
 
-    // ::rompp::utils::io::print_stdout("HESSIAN" , "\n");
-    // ::rompp::utils::io::print_stdout(std::fixed,
+    // ::pressio::utils::io::print_stdout("HESSIAN" , "\n");
+    // ::pressio::utils::io::print_stdout(std::fixed,
     // 				    *H.data() , "\n");
 
 #ifdef DEBUG_PRINT
     auto fmt1 = utils::io::magenta() + utils::io::bold();
-    ::rompp::utils::io::print_stdout(fmt1, "GN_JSize =",
-    ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
-    ::rompp::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
+    ::pressio::utils::io::print_stdout(fmt1, "GN_JSize =",
+    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
+    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
 				    "\n");
     // this print only works when hessian is a shared mem matrix
-    ::rompp::utils::io::print_stdout(fmt1, "GN_HessianSize =",
+    ::pressio::utils::io::print_stdout(fmt1, "GN_HessianSize =",
 				    H.rows(), H.cols(),
 				    utils::io::reset(), "\n");
 #endif
@@ -162,8 +162,8 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("JTR");
 #endif
 
-    // ::rompp::utils::io::print_stdout("J^T R \n");
-    // ::rompp::utils::io::print_stdout( std::fixed,
+    // ::pressio::utils::io::print_stdout("J^T R \n");
+    // ::pressio::utils::io::print_stdout( std::fixed,
     // 				     *JTR.data() , "\n");
 
     // solve normal equations
@@ -176,15 +176,15 @@ void gauss_newton_neq_solve(const system_t & sys,
 #endif
 
     // // // print the correction
-    // ::rompp::utils::io::print_stdout("Correction dy \n");
-    // ::rompp::utils::io::print_stdout(std::fixed,
+    // ::pressio::utils::io::print_stdout("Correction dy \n");
+    // ::pressio::utils::io::print_stdout(std::fixed,
     // 				    *dy.data());
 
     // compute norm of the correction
     norm_evaluator_t::evaluate(dy, normN);
 
 #ifdef DEBUG_PRINT
-    ::rompp::utils::io::print_stdout(std::scientific,
+    ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
 				    "||dy|| =", normN,
@@ -220,7 +220,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 
 #if defined DEBUG_PRINT
   std::cout.precision(ss);
-  ::rompp::utils::io::print_stdout(std::fixed);
+  ::pressio::utils::io::print_stdout(std::fixed);
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
@@ -229,5 +229,5 @@ void gauss_newton_neq_solve(const system_t & sys,
 
 }// end
 
-}}}} //end namespace rompp::solvers::iterative::impl
+}}}} //end namespace pressio::solvers::iterative::impl
 #endif

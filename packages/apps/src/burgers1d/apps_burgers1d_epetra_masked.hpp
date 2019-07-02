@@ -1,13 +1,13 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_EPETRA_MASKED_HPP_
-#define ROMPPAPPS_BURGERS1D_EPETRA_MASKED_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_EPETRA_MASKED_HPP_
+#define PRESSIOAPPS_BURGERS1D_EPETRA_MASKED_HPP_
 
 #include "apps_burgers1d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
 #include <Epetra_Import.h>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class Burgers1dEpetraMasked : public Burgers1dEpetra{
   using base_t = Burgers1dEpetra;
@@ -34,8 +34,8 @@ public:
     dest.Import(src, *importer_, Insert);
   }
 
-  residual_type applyMask(const residual_type & src, double t) const{
-    residual_type dest(*maskMap_);
+  velocity_type applyMask(const velocity_type & src, double t) const{
+    velocity_type dest(*maskMap_);
     dest.Import(src, *importer_, Insert);
     return dest;
   }
@@ -73,6 +73,6 @@ private:
   rcp<importer_t> importer_;
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

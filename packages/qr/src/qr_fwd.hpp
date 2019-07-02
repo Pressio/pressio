@@ -5,7 +5,7 @@
 #include "qr_ConfigDefs.hpp"
 #include "../../containers/src/containers_fwd.hpp"
 
-namespace rompp{  namespace qr{
+namespace pressio{  namespace qr{
 
 // all fwd decl of mixin base classes
 template<typename derived, typename matrix_t>
@@ -112,7 +112,7 @@ template<
   typename enable = void>
 class QRSolver;
 
-}//end namespace rompp::qr::impl
+}//end namespace pressio::qr::impl
 
 
 template<
@@ -122,7 +122,7 @@ template<
   int n = utils::constants::dynamic,
   int m = utils::constants::dynamic,
   template <typename...> class Q_type
-        = ::rompp::containers::MultiVector,
+        = ::pressio::containers::MultiVector,
   typename enable = void
   >
 using QRSolver = impl::QRSolver<matrix_type, algorithm,
@@ -137,7 +137,7 @@ template<
   int n = utils::constants::dynamic,
   int m = utils::constants::dynamic,
   template <typename...> class Q_type
-        = ::rompp::containers::MultiVector,
+        = ::pressio::containers::MultiVector,
   typename enable = void
   >
 using QRSolverWrapR = impl::QRSolver<matrix_type,
@@ -148,5 +148,5 @@ using QRSolverWrapR = impl::QRSolver<matrix_type,
 				     Q_type>;
 
 
-}}//end namespace rompp::qr
+}}//end namespace pressio::qr
 #endif

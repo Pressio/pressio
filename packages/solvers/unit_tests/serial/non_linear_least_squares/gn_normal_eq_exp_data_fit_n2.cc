@@ -7,7 +7,7 @@
 TEST(solvers_nonlinear_least_squares,
      gn_normal_eq_lscg_exp_data_fit_n2){
 
-  using namespace rompp;
+  using namespace pressio;
 
   using problem_t   = solvers::test::ExpDataFitN2;
   using state_t	    = typename problem_t::state_type;
@@ -36,7 +36,7 @@ TEST(solvers_nonlinear_least_squares,
 TEST(solvers_nonlinear_least_squares,
      gn_normal_eq_pass_sys_type_lscg_exp_data_fit_n2){
 
-  using namespace rompp;
+  using namespace pressio;
 
   using problem_t   = solvers::test::ExpDataFitN2;
   using vec_t	  = typename problem_t::state_type;

@@ -9,10 +9,10 @@
 TEST_F(epetraSparseMatR7MultiVectorR9C4Fixture,
        CrsMatrixMVecEpetraProduct){
 
-  using mymat_w_t = rompp::containers::Matrix<Epetra_CrsMatrix>;
-  using mymv_w_t = rompp::containers::MultiVector<Epetra_MultiVector>;  
-  ASSERT_TRUE(rompp::containers::meta::is_sparse_matrix_wrapper_epetra<mymat_w_t>::value);
-  ASSERT_TRUE(rompp::containers::meta::is_multi_vector_wrapper_epetra<mymv_w_t>::value);
+  using mymat_w_t = pressio::containers::Matrix<Epetra_CrsMatrix>;
+  using mymv_w_t = pressio::containers::MultiVector<Epetra_MultiVector>;  
+  ASSERT_TRUE(pressio::containers::meta::is_sparse_matrix_wrapper_epetra<mymat_w_t>::value);
+  ASSERT_TRUE(pressio::containers::meta::is_multi_vector_wrapper_epetra<mymv_w_t>::value);
 
   // fill data
   fillCrsMatrix();
@@ -28,7 +28,7 @@ TEST_F(epetraSparseMatR7MultiVectorR9C4Fixture,
   //  sm_->data()->Print(std::cout);
 
   // compute prod
-  auto C = rompp::containers::ops::product(*sm_, *mv_);
+  auto C = pressio::containers::ops::product(*sm_, *mv_);
   C.data()->Print(std::cout);
   
   if (rank_==0){
@@ -82,10 +82,10 @@ TEST_F(epetraSparseMatR7MultiVectorR9C4Fixture,
 // TEST_F(epetraSparseMatR7MultiVectorR9C4Fixture,
 //        CrsMatrixTransposeMVecEpetraProduct){
 
-//   using mymat_w_t = rompp::containers::Matrix<Epetra_CrsMatrix>;
-//   using mymv_w_t = rompp::containers::MultiVector<Epetra_MultiVector>;  
-//   ASSERT_TRUE(rompp::containers::meta::is_sparse_matrix_wrapper_epetra<mymat_w_t>::value);
-//   ASSERT_TRUE(rompp::containers::meta::is_multi_vector_wrapper_epetra<mymv_w_t>::value);
+//   using mymat_w_t = pressio::containers::Matrix<Epetra_CrsMatrix>;
+//   using mymv_w_t = pressio::containers::MultiVector<Epetra_MultiVector>;  
+//   ASSERT_TRUE(pressio::containers::meta::is_sparse_matrix_wrapper_epetra<mymat_w_t>::value);
+//   ASSERT_TRUE(pressio::containers::meta::is_multi_vector_wrapper_epetra<mymv_w_t>::value);
 
 //   // fill data
 //   fillCrsMatrix();
@@ -101,6 +101,6 @@ TEST_F(epetraSparseMatR7MultiVectorR9C4Fixture,
 //   // mymv_w_t C( rangeMap, mv_->globalNumVectors() );
 //   // sm_->data()->Multiply(true, *mv_->data(), *C.data()); 
 //   // // compute prduct
-//   auto C = rompp::containers::ops::product(*sm_, *mv_, true);
+//   auto C = pressio::containers::ops::product(*sm_, *mv_, true);
 //   C.data()->Print(std::cout);
 // }

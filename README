@@ -1,6 +1,6 @@
 
 #----------------------
-# rompp Documentation
+# pressio Documentation
 #----------------------
 
 THIS IS WORK IN PROGRESS!
@@ -13,8 +13,8 @@ To clone this repo, use this command:
 (The recursive option is necessary because it has a git submodule for TriBITS.)
 
 
-To build ROMPP, clone the auto_build repo:
+To build PRESSIO, clone the auto_build repo:
 
-   git clone --recursive git@gitlab.com:fnrizzi/rompp_auto_build.git
+   git clone --recursive git@gitlab.com:fnrizzi/pressio_auto_build.git
 
 and follows steps in there.

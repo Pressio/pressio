@@ -5,7 +5,7 @@
 #include "../ode_ConfigDefs.hpp"
 #include "../../../containers/src/vector/containers_vector_meta.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<typename state_type, typename enable = void>
 struct is_legitimate_implicit_state_type : std::false_type{};
@@ -20,5 +20,5 @@ struct is_legitimate_implicit_state_type<
 #endif
     >::type > : std::true_type{};
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

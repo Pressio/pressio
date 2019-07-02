@@ -1,10 +1,10 @@
 
-#ifndef ROMPP_DEMO_APPS_TEST_BURGERS1D_GOLD_EXPLICIT_HPP_
-#define ROMPP_DEMO_APPS_TEST_BURGERS1D_GOLD_EXPLICIT_HPP_
+#ifndef PRESSIO_DEMO_APPS_TEST_BURGERS1D_GOLD_EXPLICIT_HPP_
+#define PRESSIO_DEMO_APPS_TEST_BURGERS1D_GOLD_EXPLICIT_HPP_
 
 #include "ODE_ALL"
 
-namespace rompp { namespace apps{ namespace test{
+namespace pressio { namespace apps{ namespace test{
 
 template <ode::ExplicitEnum>
 struct Burgers1dExpGoldStates;
@@ -62,5 +62,5 @@ struct Burgers1dExpGoldStates<ode::ExplicitEnum::Euler>{
   }//end get
 };//end struct
 
-}}}//end namespace rompp::apps::test
+}}}//end namespace pressio::apps::test
 #endif

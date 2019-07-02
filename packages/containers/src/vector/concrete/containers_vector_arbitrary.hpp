@@ -5,7 +5,7 @@
 #include "../../shared_base/containers_container_base.hpp"
 #include <utility>
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class Vector<
@@ -50,5 +50,5 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

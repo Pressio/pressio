@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<typename T,
 	 typename aux_t,
@@ -19,20 +19,20 @@ struct is_legitimate_auxiliary_stepper<
 	typename ode::details::traits<T>::state_t,
 	typename ode::details::traits<aux_t>::state_t
 	>::value and
-      ::rompp::mpl::is_same<
+      ::pressio::mpl::is_same<
 	typename ode::details::traits<T>::residual_t,
 	typename ode::details::traits<aux_t>::residual_t
 	>::value and
-      ::rompp::mpl::is_same<
+      ::pressio::mpl::is_same<
 	typename ode::details::traits<T>::jacobian_t,
 	typename ode::details::traits<aux_t>::jacobian_t
 	>::value and
-      ::rompp::mpl::is_same<
+      ::pressio::mpl::is_same<
 	typename ode::details::traits<T>::scalar_t,
 	typename ode::details::traits<aux_t>::scalar_t
 	>::value
       >
   > : std::true_type{};
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

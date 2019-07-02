@@ -14,14 +14,14 @@
 #include <Tpetra_Vector.hpp>
 
 
-namespace rompp{ namespace qr{
+namespace pressio{ namespace qr{
 
 // Tpetra multivector, householder
 template<typename matrix_type,
 	 typename R_type,
 	 template <typename...> class Q_type>
 class QRSolver<matrix_type,
-	       ::rompp::qr::Householder,
+	       ::pressio::qr::Householder,
 	       R_type,
 	       Q_type,
 	       typename
@@ -32,7 +32,7 @@ class QRSolver<matrix_type,
 		 containers::details::traits<R_type>::is_dense
 		 >::type
 	       >
-  : public QRSolverBase<QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>,
+  : public QRSolverBase<QRSolver<matrix_type, ::pressio::qr::Householder, R_type, Q_type>,
 			R_type,
 			Q_type<typename containers::details::traits<matrix_type>::wrapped_t>,
 			matrix_type>{
@@ -46,7 +46,7 @@ class QRSolver<matrix_type,
   using hexsp = typename containers::details::traits<matrix_type>::host_exec_space_t;
   using Q_t = Q_type<MV>;
 
-  using this_t = QRSolver<matrix_type, ::rompp::qr::Householder, R_type, Q_type>;
+  using this_t = QRSolver<matrix_type, ::pressio::qr::Householder, R_type, Q_type>;
   using base_t = QRSolverBase<this_t, R_type, Q_t, matrix_type>;
 
   using base_t::Qmat_;
@@ -125,6 +125,6 @@ private:
 
 };//end class
 
-}} // end namespace rompp::qr
+}} // end namespace pressio::qr
 #endif
 #endif

@@ -3,11 +3,11 @@
 
 using fix_t = tpetraBlockVectorGlobSize15BlockSize5Fixture;
 using native_t = typename fix_t::vec_t;
-using myvec_t = rompp::containers::Vector<native_t>;
+using myvec_t = pressio::containers::Vector<native_t>;
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        QueryWrappedData){
-  using namespace rompp;
+  using namespace pressio;
 
   using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
@@ -20,7 +20,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        getMap){
-  using namespace rompp;
+  using namespace pressio;
   using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
   auto const & mapO = v1.getDataMap();
@@ -32,7 +32,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        ConstructorFromNative){
-  using namespace rompp;
+  using namespace pressio;
   STATIC_ASSERT_IS_VECTOR_TPETRA_BLOCK(native_t);
   static_assert
     ( containers::meta::is_vector_wrapper_tpetra_block<myvec_t>::value, "");
@@ -52,7 +52,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        CopyConstructor){
-  using namespace rompp;
+  using namespace pressio;
   STATIC_ASSERT_IS_VECTOR_TPETRA_BLOCK(native_t);
   static_assert
     ( containers::meta::is_vector_wrapper_tpetra_block<myvec_t>::value, "");
@@ -74,7 +74,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        localSize){
-  using namespace rompp;
+  using namespace pressio;
   myvec_t v1( *x_ );
   EXPECT_EQ( numProc_, 3);
   EXPECT_EQ( v1.localSize(), 5);
@@ -82,7 +82,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        globalSize){
-  using namespace rompp;
+  using namespace pressio;
   myvec_t v1( *x_ );
   EXPECT_EQ( numProc_, 3);
   EXPECT_EQ( v1.globalSize(), 15);
@@ -90,14 +90,14 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        blockSize){
-  using namespace rompp;
+  using namespace pressio;
   myvec_t v1( *x_ );
   EXPECT_EQ( v1.data()->getBlockSize(), 4);
 }
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        SetScalar){
-  using namespace rompp;
+  using namespace pressio;
   using sc_t = typename fix_t::ST;
 
   myvec_t v1( *x_ );
@@ -115,7 +115,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        SetZero){
-  using namespace rompp;
+  using namespace pressio;
   using sc_t = typename fix_t::ST;
 
   using myvec_t = containers::Vector<native_t>;

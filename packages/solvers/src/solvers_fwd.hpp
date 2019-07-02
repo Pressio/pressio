@@ -6,7 +6,7 @@
 #include "solvers_convergence_tags.hpp"
 #include "solvers_line_search_tags.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{
+namespace pressio{ namespace solvers{ namespace iterative{
 
 /* impl should not be called by the user */
 namespace impl{
@@ -39,7 +39,7 @@ struct GNNEQSpecializationPicker;
 template <typename ... Args>
 struct GNQRSpecializationPicker;
 
-}//end namespace rompp::solvers::iterative::impl
+}//end namespace pressio::solvers::iterative::impl
 
 
 /* alias: GN solvers normal equations */
@@ -83,8 +83,8 @@ template <
   >
 class GaussNewtonConservative;
 
-}//end namespace rompp::solvers::iterative::hacked
+}//end namespace pressio::solvers::iterative::hacked
 
-}}}//end namespace rompp::solvers::iterative
+}}}//end namespace pressio::solvers::iterative
 
 #endif

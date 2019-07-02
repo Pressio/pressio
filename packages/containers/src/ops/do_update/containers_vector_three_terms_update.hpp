@@ -14,7 +14,7 @@
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 
 //-----------------------------------------------------------------------------
@@ -23,9 +23,9 @@ namespace rompp{ namespace containers{ namespace ops{
 template<
   typename T,
   typename scalar_t,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_vector_wrapper<T>::value and
-    ::rompp::containers::meta::has_expression_templates_support<T>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper<T>::value and
+    ::pressio::containers::meta::has_expression_templates_support<T>::value
     > * = nullptr
   >
 void do_update(T & v, const scalar_t a,
@@ -38,9 +38,9 @@ void do_update(T & v, const scalar_t a,
 template<
   typename T,
   typename scalar_t,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_vector_wrapper<T>::value and
-    ::rompp::containers::meta::has_expression_templates_support<T>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper<T>::value and
+    ::pressio::containers::meta::has_expression_templates_support<T>::value
     > * = nullptr
   >
 void do_update(T & v,
@@ -59,8 +59,8 @@ void do_update(T & v,
 template<
   typename T,
   typename scalar_t,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_cstyle_array_pybind11<T>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v, const scalar_t a,
@@ -84,8 +84,8 @@ void do_update(T & v, const scalar_t a,
 template<
   typename T,
   typename scalar_t,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_cstyle_array_pybind11<T>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v,
@@ -116,9 +116,9 @@ void do_update(T & v,
 template<
   typename T,
   typename scalar_t,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_vector_wrapper_tpetra<T>::value or
-    ::rompp::containers::meta::is_vector_wrapper_tpetra_block<T>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_tpetra<T>::value or
+    ::pressio::containers::meta::is_vector_wrapper_tpetra_block<T>::value
     > * = nullptr
   >
 void do_update(T & v, const scalar_t a,
@@ -126,7 +126,7 @@ void do_update(T & v, const scalar_t a,
 	       const T & v2, const scalar_t c,
 	       const T & v3, const scalar_t d)
 {
-  constexpr auto one  = ::rompp::utils::constants::one<scalar_t>();
+  constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
 
   v.data()->update(b, *v1.data(), a); // v = a*v + b*v1
   v.data()->update(c, *v2.data(), one); // add c*v2
@@ -136,9 +136,9 @@ void do_update(T & v, const scalar_t a,
 template<
   typename T,
   typename scalar_t,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_vector_wrapper_tpetra<T>::value or
-    ::rompp::containers::meta::is_vector_wrapper_tpetra_block<T>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_tpetra<T>::value or
+    ::pressio::containers::meta::is_vector_wrapper_tpetra_block<T>::value
     > * = nullptr
   >
 void do_update(T & v,
@@ -146,8 +146,8 @@ void do_update(T & v,
 	       const T & v2, const scalar_t c,
 	       const T & v3, const scalar_t d)
 {
-  constexpr auto one  = ::rompp::utils::constants::one<scalar_t>();
-  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
+  constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
 
   v.data()->update(b, *v1.data(), zero); // v = b * v1
   v.data()->update(c, *v2.data(), one); // add c*v2
@@ -155,5 +155,5 @@ void do_update(T & v,
 }
 #endif
 
-}}}//end namespace rompp::containers::ops
+}}}//end namespace pressio::containers::ops
 #endif

@@ -1,10 +1,10 @@
 
-#ifndef ROMPP_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION2D_GOLD_EXPLICIT_HPP_
-#define ROMPP_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION2D_GOLD_EXPLICIT_HPP_
+#ifndef PRESSIO_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION2D_GOLD_EXPLICIT_HPP_
+#define PRESSIO_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION2D_GOLD_EXPLICIT_HPP_
 
 #include "ODE_ALL"
 
-namespace rompp { namespace apps{ namespace test{
+namespace pressio { namespace apps{ namespace test{
 
 template <ode::ExplicitEnum>
 struct NonLinAdvDiffReac2dExpGoldStates;
@@ -592,5 +592,5 @@ struct NonLinAdvDiffReac2dExpGoldStates<ode::ExplicitEnum::RungeKutta4>{
   }//get
 };//struct
 
-}}}//end namespace rompp::apps::test
+}}}//end namespace pressio::apps::test
 #endif

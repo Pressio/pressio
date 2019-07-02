@@ -9,7 +9,7 @@
 #include <pybind11/numpy.h>
 
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 /*
  * this metafunction is here because a pybind11::array_t
@@ -24,7 +24,7 @@ struct is_cstyle_array_pybind11 : std::false_type {};
 template <typename T>
 struct is_cstyle_array_pybind11<
   T,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     mpl::is_same<
       T,
       pybind11::array_t<
@@ -42,12 +42,12 @@ struct is_array_pybind11 : std::false_type {};
 template <typename T>
 struct is_array_pybind11<
   T,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     is_cstyle_array_pybind11<T>::value
     >
   > : std::true_type{};
 
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif
 #endif

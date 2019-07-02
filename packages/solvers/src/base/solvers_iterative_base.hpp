@@ -4,7 +4,7 @@
 
 #include "../solvers_ConfigDefs.hpp"
 
-namespace rompp { namespace solvers {
+namespace pressio { namespace solvers {
 
 template<typename scalar_t>
 struct IterativeBase
@@ -49,6 +49,6 @@ protected:
 };
 
 
-}} //end namespace rompp::solvers
+}} //end namespace pressio::solvers
 
 #endif

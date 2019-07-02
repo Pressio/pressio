@@ -8,14 +8,14 @@
 #include <blaze/math/StaticVector.h>
 
 
-namespace rompp{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_static_vector_blaze : std::false_type {};
 
 template <typename T>
 struct is_static_vector_blaze<T,
-	 ::rompp::mpl::enable_if_t<
+	 ::pressio::mpl::enable_if_t<
 	   blaze::IsStatic<typename T::This>::value
 	   >
       > : std::true_type{};
@@ -25,7 +25,7 @@ struct is_dynamic_row_vector_blaze : std::false_type {};
 
 template <typename T>
 struct is_dynamic_row_vector_blaze<T,
-	 ::rompp::mpl::enable_if_t<
+	 ::pressio::mpl::enable_if_t<
 	   std::is_same<T, blaze::DynamicVector<
 				typename T::ElementType,
 				blaze::rowVector>
@@ -38,7 +38,7 @@ struct is_dynamic_column_vector_blaze : std::false_type {};
 
 template <typename T>
 struct is_dynamic_column_vector_blaze<T,
-	 ::rompp::mpl::enable_if_t<
+	 ::pressio::mpl::enable_if_t<
 	   std::is_same<T, blaze::DynamicVector<
 				typename T::ElementType,
 				blaze::columnVector>
@@ -51,12 +51,12 @@ struct is_dynamic_vector_blaze : std::false_type {};
 
 template <typename T>
 struct is_dynamic_vector_blaze<T,
-	   ::rompp::mpl::enable_if_t<
+	   ::pressio::mpl::enable_if_t<
 	     is_dynamic_row_vector_blaze<T>::value ||
 	     is_dynamic_column_vector_blaze<T>::value
 	   >
       > : std::true_type{};
 
-}}}//end namespace rompp::containers::meta
+}}}//end namespace pressio::containers::meta
 #endif
 #endif

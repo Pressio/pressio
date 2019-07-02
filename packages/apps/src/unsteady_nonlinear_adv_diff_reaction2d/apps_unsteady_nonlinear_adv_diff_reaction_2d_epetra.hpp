@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
-#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
+#ifndef PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
+#define PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_2D_EPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -14,7 +14,7 @@
 #include "Epetra_Time.h"
 #include <cmath>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class UnsteadyNonLinAdvDiffReac2dEpetra{
 protected:
@@ -28,10 +28,10 @@ public:
   /* these types exposed because need to be detected */
   using scalar_type	= double;
   using state_type	= nativeVec;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
-  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
+  static constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  static constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
 
 public:
   UnsteadyNonLinAdvDiffReac2dEpetra(const Epetra_MpiComm & comm,
@@ -69,16 +69,16 @@ public:
   Epetra_Map getDataMap() const { return *dofMap_; }
 
 public:
-  void residual(const state_type & yState,
-		residual_type & rhs,
+  void velocity(const state_type & yState,
+		velocity_type & rhs,
 		scalar_type t) const{
-    residual_impl(yState, rhs);
+    velocity_impl(yState, rhs);
   }
 
-  residual_type residual(const state_type & yState,
+  velocity_type velocity(const state_type & yState,
 			 scalar_type t) const{
-    residual_type R( *dofMap_ );
-    residual_impl(yState, R);
+    velocity_type R( *dofMap_ );
+    velocity_impl(yState, R);
     return R;
   };
 
@@ -105,7 +105,7 @@ public:
     std::cout << "identiy precond" << std::endl;
   }
   void applyPreconditioner(const state_type & yState,
-			   residual_type & rhs,
+			   velocity_type & rhs,
 			   scalar_type t) const {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
@@ -120,8 +120,8 @@ private:
   void fillSource2();
   void fillSource3();
 
-  void residual_impl(const state_type & yState,
-		     residual_type & R) const
+  void velocity_impl(const state_type & yState,
+		     velocity_type & R) const
   {
     R.PutScalar(0.0);
 
@@ -216,6 +216,6 @@ protected:
 
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

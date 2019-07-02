@@ -10,7 +10,7 @@
 #include <Epetra_Import.h>
 
 
-namespace rompp{ namespace qr{ namespace impl{
+namespace pressio{ namespace qr{ namespace impl{
 
 template<typename matrix_t, typename R_t, int n, int m,
 	 template <typename...> class Q_type>
@@ -88,7 +88,7 @@ public:
 private:
 
   // template <typename T = R_type,
-  //       ::rompp::mpl::enable_if_t<
+  //       ::pressio::mpl::enable_if_t<
   //         !std::is_void<R_type>::value
   //         > * = nullptr>
   // const R_type & cRefRFactorImpl() const {
@@ -102,6 +102,6 @@ private:
 };//end class
 
 
-}}} // end namespace rompp::qr::impl
+}}} // end namespace pressio::qr::impl
 #endif
 #endif

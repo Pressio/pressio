@@ -6,13 +6,13 @@
 #include "../../../ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
 #include "../../../ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
 
-namespace rompp{ namespace rom{ namespace decorator{
+namespace pressio{ namespace rom{ namespace decorator{
 
 /* overload when decorating a residual policy */
 template <typename preconditionable>
 class Preconditioned<
   preconditionable,
-  ::rompp::mpl::enable_if_t<preconditionable::isResidualPolicy_>
+  ::pressio::mpl::enable_if_t<preconditionable::isResidualPolicy_>
   > : public preconditionable{
 
   using typename preconditionable::fom_rhs_t;
@@ -111,7 +111,7 @@ public:
 template <typename preconditionable>
 class Preconditioned<
   preconditionable,
-  ::rompp::mpl::enable_if_t<preconditionable::isResidualPolicy_ == false>
+  ::pressio::mpl::enable_if_t<preconditionable::isResidualPolicy_ == false>
   > : public preconditionable{
 
 public:
@@ -194,6 +194,6 @@ public:
 
 };//end class
 
-}}} //end namespace rompp::rom::decorator
+}}} //end namespace pressio::rom::decorator
 
 #endif

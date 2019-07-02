@@ -9,7 +9,7 @@
 // #include "../helper_policies/solvers_norm_helper_policy.hpp"
 // #include "../helper_policies/solvers_line_search_policy.hpp"
 
-namespace rompp{ namespace solvers{ namespace impl{
+namespace pressio{ namespace solvers{ namespace impl{
 
 template <typename T, typename enable = void>
 struct MatrixGetSizeHelper;
@@ -17,7 +17,7 @@ struct MatrixGetSizeHelper;
 template <typename T>
 struct MatrixGetSizeHelper<
   T,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper<T>::value and
     containers::details::traits<T>::is_shared_mem == false
     >
@@ -34,7 +34,7 @@ struct MatrixGetSizeHelper<
 template <typename T>
 struct MatrixGetSizeHelper<
   T,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_matrix_wrapper<T>::value and
     containers::details::traits<T>::is_shared_mem == false
     >
@@ -50,7 +50,7 @@ struct MatrixGetSizeHelper<
 template <typename T>
 struct MatrixGetSizeHelper<
   T,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_matrix_wrapper<T>::value and
     containers::details::traits<T>::is_shared_mem == true
     >
@@ -66,7 +66,7 @@ struct MatrixGetSizeHelper<
 template <typename T>
 struct MatrixGetSizeHelper<
   T,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper<T>::value and
     containers::details::traits<T>::is_shared_mem == true
     >
@@ -79,5 +79,5 @@ struct MatrixGetSizeHelper<
   }
 };
 
-}}} //end namespace rompp::solvers::impl
+}}} //end namespace pressio::solvers::impl
 #endif

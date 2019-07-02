@@ -4,7 +4,7 @@
 
 TEST(containers_meta_basic, inheritanceVector){
   
-  using namespace rompp;
+  using namespace pressio;
 
   using eigV_t = containers::Vector<Eigen::Matrix<double,4,1>>;
   using base_t1 = containers::VectorSharedMemBase<eigV_t>;
@@ -27,7 +27,7 @@ TEST(containers_meta_basic, inheritanceVector){
 
 #ifdef HAVE_TRILINOS
 TEST(containers_meta_basic, isTeuchosRCP){
-  using namespace rompp;
+  using namespace pressio;
 
   class foo{
     int a_ = 0;
@@ -52,7 +52,7 @@ TEST(containers_meta_basic, isTeuchosRCP){
 
 TEST(containers_meta_basic, hasSizeMethod){
   
-  using namespace rompp;
+  using namespace pressio;
 
   struct foo{
     int size() const{

@@ -10,7 +10,7 @@
 #include "../../matrix/concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
 #include "../../multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
 
-namespace rompp{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace ops{
 
 /*---------------------------------------------
  * C = A * B
@@ -20,15 +20,15 @@ namespace rompp{ namespace containers{ namespace ops{
  *-----------------------------------------------*/
 template <typename mat_type,
 	  typename mvec_type,
-  ::rompp::mpl::enable_if_t<
-   ::rompp::containers::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
-   ::rompp::containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
-    ::rompp::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+  ::pressio::mpl::enable_if_t<
+   ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
     > * = nullptr
   >
 void product(const mat_type & A,
 	     const mvec_type & mv,
-	     ::rompp::containers::Matrix<Eigen::MatrixXd> & C){
+	     ::pressio::containers::Matrix<Eigen::MatrixXd> & C){
 
   assert( C.rows() == A.rows() );
   assert( mv.length() == A.cols() );
@@ -39,20 +39,20 @@ void product(const mat_type & A,
 // construct and return result
 template <typename mat_type,
 	  typename mvec_type,
-  ::rompp::mpl::enable_if_t<
-    ::rompp::containers::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
-    ::rompp::containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
-    ::rompp::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
+    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
     > * = nullptr
   >
 auto product(const mat_type & A, const mvec_type & mv)
-  -> ::rompp::containers::Matrix<Eigen::MatrixXd>
+  -> ::pressio::containers::Matrix<Eigen::MatrixXd>
 {
-  ::rompp::containers::Matrix<Eigen::MatrixXd> C(A.rows(), mv.numVectors());
+  ::pressio::containers::Matrix<Eigen::MatrixXd> C(A.rows(), mv.numVectors());
   product(A,mv,C);
   return C;
 }//end function
 
 
-}}}//end namespace rompp::containers::ops
+}}}//end namespace pressio::containers::ops
 #endif

@@ -1,10 +1,10 @@
 
-#ifndef ROMPP_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION_FLAME_2D_GOLD_IMPLICIT_HPP_
-#define ROMPP_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION_FLAME_2D_GOLD_IMPLICIT_HPP_
+#ifndef PRESSIO_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION_FLAME_2D_GOLD_IMPLICIT_HPP_
+#define PRESSIO_APPS_TEST_UNSTEADY_NONLIN_ADVDIFFREACTION_FLAME_2D_GOLD_IMPLICIT_HPP_
 
 #include "ODE_ALL"
 
-namespace rompp { namespace apps{ namespace test{
+namespace pressio { namespace apps{ namespace test{
 
 template <ode::ImplicitEnum>
 struct NonLinAdvDiffReacFlame2dImpGoldStates;
@@ -624,5 +624,5 @@ struct NonLinAdvDiffReacFlame2dImpGoldStates<ode::ImplicitEnum::BDF2>{
   }//get
 };//struct
 
-}}}//end namespace rompp::apps::test
+}}}//end namespace pressio::apps::test
 #endif

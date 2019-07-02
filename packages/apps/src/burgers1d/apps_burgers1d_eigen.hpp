@@ -1,13 +1,13 @@
 
-#ifndef ROMPPAPPS_BURGERS1D_EIGEN_HPP_
-#define ROMPPAPPS_BURGERS1D_EIGEN_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_EIGEN_HPP_
+#define PRESSIOAPPS_BURGERS1D_EIGEN_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
 #include <iostream>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class Burgers1dEigen{
   using eigVec = Eigen::VectorXd;
@@ -17,7 +17,7 @@ class Burgers1dEigen{
 public:
   using scalar_type	= double;
   using state_type	= eigVec;
-  using residual_type	= eigVec;
+  using velocity_type	= eigVec;
   using jacobian_type	= Eigen::SparseMatrix
     <scalar_type, Eigen::RowMajor, int>;
 
@@ -51,14 +51,14 @@ public:
     return U0_;
   };
 
-  void residual(const state_type & u,
-		residual_type & rhs,
+  void velocity(const state_type & u,
+		velocity_type & rhs,
 		const scalar_type /* t */) const;
 
-  residual_type residual(const state_type & u,
+  velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
-    residual_type RR(Ncell_);
-    this->residual(u, RR, t);
+    velocity_type RR(Ncell_);
+    this->velocity(u, RR, t);
     return RR;
   }
 
@@ -109,5 +109,5 @@ private:
 
 };//end class
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

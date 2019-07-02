@@ -7,7 +7,7 @@
 #include "../../base/solvers_iterative_base.hpp"
 #include "./solvers_gauss_newton_qr_impl.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 
 /* partial specialize for no observer type in templates parameters */
@@ -67,7 +67,7 @@ public:
 	    typename T1 = state_t,
 	    typename T2 = residual_t,
 	    typename T3 = jacobian_t,
-	    ::rompp::mpl::enable_if_t<
+	    ::pressio::mpl::enable_if_t<
 	      std::is_same<T1, typename system_in_t::state_type>::value and
 	      std::is_same<T2, typename system_in_t::residual_type>::value and
 	      std::is_same<T3, typename system_in_t::jacobian_type>::value
@@ -102,5 +102,5 @@ private:
 
 };//class
 
-}}}}//end namespace rompp::solvers::iterative::impl
+}}}}//end namespace pressio::solvers::iterative::impl
 #endif

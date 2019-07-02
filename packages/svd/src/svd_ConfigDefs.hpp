@@ -5,7 +5,7 @@
 #include "svd_config.h"
 #include "../../containers/src/containers_ConfigDefs.hpp"
 
-namespace rompp{ 
+namespace pressio{ 
 namespace svd{
   
 // put here definitions
@@ -43,5 +43,5 @@ enum class svdType{
 
 
 } // end namespace svd
-}//end namespace rompp
+}//end namespace pressio
 #endif

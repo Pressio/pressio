@@ -9,7 +9,7 @@
 // #include "solvers_nonlinear_factory.hpp"
 
 
-namespace rompp{
+namespace pressio{
 namespace solvers{
 
 
@@ -71,5 +71,5 @@ protected:
 };
 
 } // end namespace solvers
-}//end namespace rompp
+}//end namespace pressio
 #endif

@@ -1,11 +1,11 @@
 
-#ifndef ROMPP_MPL_VARIADIC_SIZE_HPP
-#define ROMPP_MPL_VARIADIC_SIZE_HPP
+#ifndef PRESSIO_MPL_VARIADIC_SIZE_HPP
+#define PRESSIO_MPL_VARIADIC_SIZE_HPP
 
 #include <type_traits>
 #include <cstddef>
 
-namespace rompp{ namespace mpl{ namespace variadic {
+namespace pressio{ namespace mpl{ namespace variadic {
 
 /**
  * \class size
@@ -22,6 +22,6 @@ template<class ... Args>
 struct size : std::integral_constant<std::size_t,sizeof...(Args)>
 {};
 
-}}} // namespace rompp::mpl::variadic
+}}} // namespace pressio::mpl::variadic
 
 #endif 

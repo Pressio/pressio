@@ -7,7 +7,7 @@
 #include "./meta/containers_native_eigen_matrix_meta.hpp"
 #include "./meta/containers_native_trilinos_matrix_meta.hpp"
 
-namespace rompp{ namespace containers{ namespace details{
+namespace pressio{ namespace containers{ namespace details{
 
 /********************************
 an arbitrary matrix is one
@@ -274,5 +274,5 @@ struct traits<Matrix<wrapped_type,
 };
 #endif
 
-}}}//end namespace rompp::containers::details
+}}}//end namespace pressio::containers::details
 #endif

@@ -5,29 +5,29 @@
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
 #include "ode_explicit_stepper_traits.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 template<
   ExplicitEnum whichone,
-  typename ode_state_type,
-  typename model_type,
-  typename ode_residual_type,
+  typename state_type,
+  typename system_type,
+  typename velocity_type,
   typename ...Args
   >
 class ExplicitStepper
   : public ExplicitStepperBase<
   ExplicitStepper<
     whichone,
-    ode_state_type,
-    model_type,
-    ode_residual_type,
+    state_type,
+    system_type,
+    velocity_type,
     Args...
     >
   >
 {
 
   using this_t		= ExplicitStepper
-    <whichone, ode_state_type, model_type, ode_residual_type, Args...>;
+    <whichone, state_type, system_type, velocity_type, Args...>;
   using base_t		= ExplicitStepperBase<this_t>;
   // need to friend base to allow it to access the () operator below
   friend base_t;
@@ -35,22 +35,22 @@ class ExplicitStepper
   using mytraits	= details::traits<this_t>;
   using scalar_type	= typename mytraits::scalar_t;
   using standard_res_policy_t = typename mytraits::standard_res_policy_t;
-  using res_policy_t	= typename mytraits::residual_policy_t;
+  using policy_t	= typename mytraits::velocity_policy_t;
 
   // this is the impl class type which holds all the implement details
   using impl_class_t	= typename mytraits::impl_t;
   impl_class_t myImpl_ = {};
 
-  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
+  static constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
 
 public:
   ExplicitStepper()  = delete;
   ~ExplicitStepper() = default;
 
   // this is enabled all the time
-  ExplicitStepper(ode_state_type const	  & y0,
-		  const model_type	  & model,
-		  const res_policy_t	  & policyObj)
+  ExplicitStepper(state_type const	  & y0,
+		  const system_type	  & model,
+		  const policy_t	  & policyObj)
     : myImpl_(model,
 	      policyObj,
 	      y0,
@@ -60,19 +60,19 @@ public:
 
   // only enable if the residual policy is standard
   template <
-    typename T = standard_res_policy_t,
-    ::rompp::mpl::enable_if_t<
+    typename T = policy_t,
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<
-  	T, res_policy_t
+  	T, policy_t
   	>::value
       > * = nullptr
     >
-  ExplicitStepper(const	ode_state_type & y0,
-  		  const model_type & model)
+  ExplicitStepper(const	state_type & y0,
+  		  const system_type & model)
     : myImpl_(model,
-  	      res_policy_t(),
+  	      T(),
   	      y0,
-  	      res_policy_t()(y0, model, this_t::zero)
+  	      T()(y0, model, this_t::zero)
   	      )
   {}
 
@@ -86,5 +86,5 @@ private:
 
 };//end class
 
-}} // end namespace rompp::ode
+}} // end namespace pressio::ode
 #endif

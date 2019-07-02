@@ -1,10 +1,10 @@
 
 #include "rom_version.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 inline std::string version(){ 
-	return("rom in ROMPP " ROMPP_VERSION_STRING); 
+	return("rom in PRESSIO " PRESSIO_VERSION_STRING); 
 }
 
 }}//end namespace 

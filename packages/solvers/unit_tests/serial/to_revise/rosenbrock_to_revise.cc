@@ -6,8 +6,8 @@
 
 struct NonLinearLeastSquareSystem {
 
-  using jacobian_w_t = rompp::containers::Matrix<Eigen::MatrixXd>;
-  using state_w_t = rompp::containers::Vector<Eigen::VectorXd>;
+  using jacobian_w_t = pressio::containers::Matrix<Eigen::MatrixXd>;
+  using state_w_t = pressio::containers::Vector<Eigen::VectorXd>;
   using state_type = state_w_t;
   using residual_type = state_type;
   using jacobian_type =  jacobian_w_t;
@@ -46,7 +46,7 @@ struct NonLinearLeastSquareSystem {
 
 
 TEST(solvers_nonlinear_least_squares, rosenbrockGNQRLineSearch){
-  using namespace rompp;
+  using namespace pressio;
   using state_w_t = containers::Vector<Eigen::VectorXd>;
   using sc_t	  = double;
   using mat_type  = typename NonLinearLeastSquareSystem::jacobian_w_t;
@@ -69,7 +69,7 @@ TEST(solvers_nonlinear_least_squares, rosenbrockGNQRLineSearch){
 
 
 // TEST(solvers_nonlinear_least_squares, gaussNewtonQRLineSearchDoOnly2Steps){
-//   using namespace rompp;
+//   using namespace pressio;
 //   using state_w_t = containers::Vector<Eigen::VectorXd>;
 //   using sc_t	  = double;
 //   using mat_type  = typename NonLinearLeastSquareSystem::jacobian_w_t;
@@ -97,7 +97,7 @@ TEST(solvers_nonlinear_least_squares, rosenbrockGNQRLineSearch){
 
 
 // TEST(solvers_nonlinear_least_squares, gaussNewtonQRPassTypes){
-//   using namespace rompp;
+//   using namespace pressio;
 //   using problem_t = NonLinearLeastSquareSystem;
 //   using state_w_t = typename problem_t::state_w_t;
 //   using sc_t	  = double;

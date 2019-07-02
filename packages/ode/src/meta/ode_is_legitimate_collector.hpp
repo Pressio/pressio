@@ -6,7 +6,7 @@
 // #include "ode_model_has_all_needed_residual_methods.hpp"
 #include <type_traits>
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 /*-------------------------------------------------------
  * when providing a collector functor for the integrator,
@@ -26,7 +26,7 @@ template<typename collector_type,
 	 typename state_type>
 struct is_legitimate_collector<
   collector_type, int_type, time_type, state_type,
-  ::rompp::mpl::void_t<
+  ::pressio::mpl::void_t<
     decltype(std::declval<collector_type>()(std::declval<int_type>(),
 					    std::declval<time_type>(),
 					    std::declval<const state_type &>()
@@ -36,5 +36,5 @@ struct is_legitimate_collector<
   > : std::true_type{};
 
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

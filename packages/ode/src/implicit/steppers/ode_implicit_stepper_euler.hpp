@@ -5,40 +5,42 @@
 #include "ode_implicit_stepper_traits.hpp"
 #include "ode_implicit_stepper_base.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 template<
   typename ode_state_type,
   typename ode_residual_type,
   typename ode_jacobian_type,
-  typename model_type,
+  typename system_type,
   typename ... Args
   >
-class ImplicitStepper<ImplicitEnum::Euler,
-		      ode_state_type,
-		      ode_residual_type,
-		      ode_jacobian_type,
-		      model_type,
-		      Args...>
-  : public ImplicitStepperBase<ImplicitStepper<
-				 ImplicitEnum::Euler,
-				 ode_state_type,
-				 ode_residual_type,
-				 ode_jacobian_type,
-				 model_type, Args...>,
-			       1 //num aux states
-			       >
+class ImplicitStepper<
+  ImplicitEnum::Euler,
+  ode_state_type,
+  ode_residual_type,
+  ode_jacobian_type,
+  system_type,
+  Args...
+  >
+  : public ImplicitStepperBase<
+  ImplicitStepper<
+    ImplicitEnum::Euler,
+    ode_state_type,
+    ode_residual_type,
+    ode_jacobian_type,
+    system_type, Args...>,
+  1 //num aux states
+  >
 {
 
   using this_t	       = ImplicitStepper<ImplicitEnum::Euler,
 					 ode_state_type,
 					 ode_residual_type,
 					 ode_jacobian_type,
-					 model_type,
+					 system_type,
 					 Args...>;
   using stepper_base_t = ImplicitStepperBase<this_t, 1>;
   friend stepper_base_t;
-  using storage_base_t = impl::OdeStorage<ode_state_type, ode_residual_type, 1>;
 
   using mytraits       = details::traits<this_t>;
   using standard_res_policy_t = typename mytraits::standard_res_policy_t;
@@ -60,7 +62,7 @@ public:
   ~ImplicitStepper() = default;
 
   ImplicitStepper(const ode_state_type & y0,
-  		  const model_type & model,
+  		  const system_type & model,
   		  const residual_pol_t & resPolicyObj,
   		  const jacobian_pol_t & jacPolicyObj)
     : stepper_base_t{y0, model, resPolicyObj, jacPolicyObj}{}
@@ -69,24 +71,24 @@ public:
   template <
     typename T1 = standard_res_policy_t,
     typename T2 = standard_jac_policy_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, residual_pol_t>::value and
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
   ImplicitStepper(const ode_state_type & y0,
-		  const model_type & model)
+		  const system_type & model)
     : stepper_base_t{y0, model}{}
 
   // cstr for standard jacob policies
   template <
     typename T1 = standard_jac_policy_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, jacobian_pol_t>::value
       > * = nullptr
     >
   ImplicitStepper(const ode_state_type & y0,
-  		  const model_type & model,
+  		  const system_type & model,
   		  const residual_pol_t & resPolicyObj)
     : stepper_base_t{y0, model, resPolicyObj}{}
 
@@ -102,10 +104,10 @@ public:
 		  step_t step,
 		  solver_type & solver){
 
-    this->auxData_.dt_ = dt;
-    this->auxData_.t_ = t;
-    // copy from y to storage
-    ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+    auto & auxY0 = this->stateAuxStorage_.data_[0];
+    this->dt_ = dt;
+    this->t_ = t;
+    ::pressio::containers::ops::deep_copy(y, auxY0);
     solver.solve(*this, y);
   }
 
@@ -120,15 +122,15 @@ public:
 		  step_t step,
 		  solver_type & solver,
 		  guess_callback_t && guesserCb){
-    this->auxData_.dt_ = dt;
-    this->auxData_.t_ = t;
-    // copy from y to storage
-    ::rompp::containers::ops::deep_copy(y, this->odeStorage_.auxStates_[0]);
+    auto & auxY0 = this->stateAuxStorage_.data_[0];
+    this->dt_ = dt;
+    this->t_ = t;
+    ::pressio::containers::ops::deep_copy(y, auxY0);
     guesserCb(step, t, y);
     solver.solve(*this, y);
   }
 
 };//end class
 
-}} // end namespace rompp::ode
+}} // end namespace pressio::ode
 #endif

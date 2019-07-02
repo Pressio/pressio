@@ -7,7 +7,7 @@
 
 TEST(containers_vector_distributed_epetra, EpetraVectorTraits)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   using natV_t = Epetra_Vector;
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(natV_t);

@@ -3,7 +3,7 @@
 #include "CONTAINERS_ALL"
 
 TEST(containers_matrix_vector_product, eigenVectorDenseMatrix){
-  using namespace rompp;
+  using namespace pressio;
 
   using natV_t = Eigen::Matrix<double,3,1>;
   natV_t a; a << 4.,2.,6;
@@ -29,7 +29,7 @@ TEST(containers_matrix_vector_product, eigenVectorDenseMatrix){
 
 
 TEST(containers_matrix_vector_product, eigenVectorSparseMatrix){
-  using namespace rompp;
+  using namespace pressio;
   // create vector
   using natV_t = Eigen::Matrix<double,3,1>;
   natV_t a; a << 4.,2.,6;

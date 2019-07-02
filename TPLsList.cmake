@@ -12,12 +12,14 @@ TRIBITS_REPOSITORY_DEFINE_TPLS(
   BLAZE           "cmake/tpls/"  ST
   ARMADILLO       "cmake/tpls/"  ST
   MKL 		  "cmake/tpls/"  EX
-  # we need to strip kokkos from trilinos but for now leave it
-  # later on we would like to possibly build rompp wihtout
-  # trilinos if needed but kokkos. So we need to have kokkos libs
-  # separate from trilinos libraries
-  #KOKKOS         "cmake/tpls/"  PT
+
   )
+
+# we need to strip kokkos from trilinos but for now leave it
+# later on we would like to possibly build without
+# trilinos if needed but kokkos. So we need to have kokkos libs
+# separate from trilinos libraries
+#KOKKOS         "cmake/tpls/"  PT
 
 # PT means required
 # ST optional

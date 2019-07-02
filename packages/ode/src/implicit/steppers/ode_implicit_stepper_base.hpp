@@ -8,9 +8,10 @@
 #include "../policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
 #include "../policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
 #include "../../ode_storage.hpp"
-#include "../../ode_implicit_aux_data.hpp"
+#include "../../ode_system_wrapper.hpp"
+//#include "../ode_implicit_aux_data.hpp"
 
-namespace rompp{ namespace ode{
+namespace pressio{ namespace ode{
 
 /*
  * (1) constructors here should be private but we need
@@ -30,7 +31,8 @@ class ImplicitStepperBase
   using standard_jac_policy_t = typename traits::standard_jac_policy_t;
   using residual_pol_t = typename traits::residual_policy_t;
   using jacobian_pol_t = typename traits::jacobian_policy_t;
-  using model_t		  = typename traits::model_t;
+  using system_t		  = typename traits::system_t;
+  using system_wrapper_t = impl::OdeSystemWrapper<system_t>;
 
   //do checking here that things are as supposed
   static_assert( meta::is_legitimate_implicit_state_type<state_t>::value,
@@ -42,8 +44,10 @@ class ImplicitStepperBase
 
 protected:
   // procted because these are accessed only by children classes
-  impl::OdeStorage<state_t, residual_t, nAuxStates> odeStorage_;
-  impl::ImplicitOdeAuxData<model_t, sc_t> auxData_;
+  sc_t t_  = {};
+  sc_t dt_ = {};
+  system_wrapper_t sys_;
+  impl::OdeStorage<state_t, nAuxStates> stateAuxStorage_;
 
   // conditionally set the type of the object knowing how to compute residual
   // if we have a standard policy, then it takes a copy
@@ -73,7 +77,7 @@ public:
     this->residual_obj_.template operator()<
       traits::enum_id,
       traits::steps
-      >(y, R, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
+      >(y, R, stateAuxStorage_.data_, sys_.get(), this->t_, this->dt_);
   }
 
   residual_t residual(const state_t & y) const{
@@ -81,20 +85,20 @@ public:
     return this->residual_obj_.template operator()<
       traits::enum_id,
       traits::steps
-      >(y, odeStorage_.auxStates_, auxData_.model_, auxData_.t_, auxData_.dt_);
+      >(y, stateAuxStorage_.data_, sys_.get(), this->t_, this->dt_);
   }
 
   void jacobian(const state_t & y,
   		jacobian_t & J) const{
     this->jacobian_obj_.template operator()<
       traits::enum_id
-      >(y, J, auxData_.model_, auxData_.t_, auxData_.dt_);
+      >(y, J, sys_.get(), this->t_, this->dt_);
   }
 
   jacobian_t jacobian(const state_t & y) const{
     return this->jacobian_obj_.template operator()<
       traits::enum_id
-      >(y, auxData_.model_, auxData_.t_, auxData_.dt_);
+      >(y, sys_.get(), this->t_, this->dt_);
   }
 
 public:
@@ -102,11 +106,11 @@ public:
   ~ImplicitStepperBase() = default;
 
   ImplicitStepperBase(const state_t & y0,
-		      const model_t & model,
+		      const system_t & model,
 		      const residual_pol_t & resPolicyObj,
 		      const jacobian_pol_t & jacPolicyObj)
-    : odeStorage_{y0},
-      auxData_{model},
+    : stateAuxStorage_{y0},
+      sys_{model},
       residual_obj_{resPolicyObj},
       jacobian_obj_{jacPolicyObj}{}
 
@@ -114,15 +118,15 @@ public:
   template <
     typename T1 = standard_res_policy_t,
     typename T2 = standard_jac_policy_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, residual_pol_t>::value and
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
   ImplicitStepperBase(const state_t & y0,
-  		      const model_t & model)
-    : odeStorage_{y0},
-      auxData_{model},
+  		      const system_t & model)
+    : stateAuxStorage_{y0},
+      sys_{model},
       residual_obj_{},
       jacobian_obj_{}{
 	std::cout << "base stepper cnstr" << std::endl;
@@ -131,15 +135,15 @@ public:
   // cstr for standard jacob policies
   template <
     typename T2 = standard_jac_policy_t,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
   ImplicitStepperBase(const state_t & y0,
-  		      const model_t & model,
+  		      const system_t & model,
   		      const residual_pol_t & resPolicyObj)
-    : odeStorage_{y0},
-      auxData_{model},
+    : stateAuxStorage_{y0},
+      sys_{model},
       residual_obj_{resPolicyObj},
       jacobian_obj_{}{}
 
@@ -150,5 +154,5 @@ public:
 
 };//end class
 
-}}//end namespace rompp::ode
+}}//end namespace pressio::ode
 #endif

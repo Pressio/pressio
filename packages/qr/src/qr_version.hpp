@@ -2,12 +2,12 @@
 #ifndef QR_VERSION_HPP
 #define QR_VERSION_HPP
 
-#include "rompp_version.h"
+#include "pressio_version.h"
 #include <string>
 
-namespace rompp{ namespace qr{
+namespace pressio{ namespace qr{
 
 inline std::string version();
 
-}}//end namespace rompp::qr
+}}//end namespace pressio::qr
 #endif

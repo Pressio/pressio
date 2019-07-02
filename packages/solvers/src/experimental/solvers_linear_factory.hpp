@@ -16,7 +16,7 @@
 #include "../../../containers/src/matrix/containers_matrix_traits.hpp"
 
 
-namespace rompp{ namespace solvers{
+namespace pressio{ namespace solvers{
 
 
 
@@ -268,6 +268,6 @@ struct createIterativeSolverTypeHelper2{
 };
 
 } // end namespace solvers
-} //end namespace rompp
+} //end namespace pressio
 
 #endif

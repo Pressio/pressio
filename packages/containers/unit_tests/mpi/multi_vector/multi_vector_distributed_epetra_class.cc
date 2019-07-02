@@ -5,7 +5,7 @@
 TEST_F(epetraMultiVectorR9C4VecS9Fixture,
        EpetraMultiVectorConstructor){
   
-  using namespace rompp;
+  using namespace pressio;
 
   using nat_t = Epetra_MultiVector;
   using mymvec_t = containers::MultiVector<nat_t>;

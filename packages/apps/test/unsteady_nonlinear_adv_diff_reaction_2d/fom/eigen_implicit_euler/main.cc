@@ -48,18 +48,17 @@ struct Observer{
 };
 
 int main(int argc, char *argv[]){
-  using app_t		= rompp::apps::UnsteadyNonLinAdvDiffReac2dEigen;
+  using app_t		= pressio::apps::UnsteadyNonLinAdvDiffReac2dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_residual_t	= typename app_t::residual_type;
+  using app_rhs_t	= typename app_t::velocity_type;
   using app_jacob_t	= typename app_t::jacobian_type;
-  constexpr auto zero = ::rompp::utils::constants::zero<scalar_t>();
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 11, Ny = Nx*2-1;
   app_t appobj(Nx, Ny);
   appobj.setup();
   const auto y0n = appobj.getInitialState();
-  const auto r0n = appobj.residual(y0n, zero);
 
   if (do_print){
     auto X = appobj.getX(); auto Y = appobj.getY();
@@ -72,20 +71,20 @@ int main(int argc, char *argv[]){
     file.close();
   }
 
-  using ode_state_t = rompp::containers::Vector<app_state_t>;
-  using ode_res_t   = rompp::containers::Vector<app_residual_t>;
-  using ode_jac_t   = rompp::containers::Matrix<app_jacob_t>;
+  using ode_state_t = pressio::containers::Vector<app_state_t>;
+  using ode_res_t   = pressio::containers::Vector<app_rhs_t>;
+  using ode_jac_t   = pressio::containers::Matrix<app_jacob_t>;
 
   ode_state_t y(y0n);
-  constexpr auto ode_case = rompp::ode::ImplicitEnum::Euler;
-  using stepper_t = rompp::ode::ImplicitStepper<
+  constexpr auto ode_case = pressio::ode::ImplicitEnum::Euler;
+  using stepper_t = pressio::ode::ImplicitStepper<
     ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t>;
   stepper_t stepperObj(y, appobj);
 
   // define solver
-  using lin_solver_t = rompp::solvers::iterative::EigenIterative<
-    rompp::solvers::linear::iterative::Bicgstab, ode_jac_t>;
-  rompp::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
+  using lin_solver_t = pressio::solvers::iterative::EigenIterative<
+    pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
+  pressio::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
   solverO.setTolerance(1e-14);
   solverO.setMaxIterations(200);
 
@@ -94,10 +93,10 @@ int main(int argc, char *argv[]){
   constexpr auto Nsteps = static_cast<unsigned int>(10);
   constexpr scalar_t fint = Nsteps*dt;
   Observer obs;
-  rompp::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs, solverO);
+  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs, solverO);
   std::cout << std::fixed << std::setprecision(14) << *y.data() << std::endl;
   {
-    using namespace rompp::apps::test;
+    using namespace pressio::apps::test;
     checkSol(y,
   	     NonLinAdvDiffReac2dImpGoldStates<ode_case>::get(Nx, Ny, dt, fint));
   }

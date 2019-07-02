@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
-#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
+#ifndef PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
+#define PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_2D_BLOCK_TPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
 
@@ -14,7 +14,7 @@
 #include <Tpetra_Details_DefaultTypes.hpp>
 #include <Tpetra_Experimental_BlockCrsMatrix.hpp>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class UnsteadyNonLinAdvDiffReac2dBlockTpetra{
 protected:
@@ -59,10 +59,10 @@ protected:
    exec_space_t>::value, "");
 
 public:
-  // public typedefs exposed to be detected by ROMPP
+  // public typedefs exposed to be detected by PRESSIO
   using scalar_type	= ST;
   using state_type	= nativeVec;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
 
 public:
   UnsteadyNonLinAdvDiffReac2dBlockTpetra
@@ -106,17 +106,17 @@ public:
   }
 
 public:
-  void residual(const state_type & yState,
-		residual_type & rhs,
+  void velocity(const state_type & yState,
+		velocity_type & rhs,
 		scalar_type t) const{
-    residual_impl(yState, rhs);
+    velocity_impl(yState, rhs);
   }
 
-  residual_type residual(const state_type & yState,
+  velocity_type velocity(const state_type & yState,
 			 scalar_type t) const{
-    residual_type R( *map_,
+    velocity_type R( *map_,
 		     UnsteadyNonLinAdvDiffReac2dBlockTpetra::numSpecies_ );
-    residual_impl(yState, R);
+    velocity_impl(yState, R);
     return R;
   };
 
@@ -142,10 +142,10 @@ private:
     gi = ID % Nx_;
   }
 
-  void residual_impl(const state_type & yState,
-		     residual_type & R) const{
-    static constexpr auto zero = ::rompp::utils::constants::zero<ST>();
-    static constexpr auto one = ::rompp::utils::constants::one<ST>();
+  void velocity_impl(const state_type & yState,
+		     velocity_type & R) const{
+    static constexpr auto zero = ::pressio::utils::constants::zero<ST>();
+    static constexpr auto one = ::pressio::utils::constants::one<ST>();
 
     R.putScalar(zero);
     this->assembleFDMatrix();
@@ -159,7 +159,7 @@ private:
   void applyJacobian_impl(const state_type & yState,
 			  const nativeMV & B,
 			  nativeMV & C) const{
-    static constexpr auto zero = ::rompp::utils::constants::zero<ST>();
+    static constexpr auto zero = ::pressio::utils::constants::zero<ST>();
     C.putScalar(zero);
     computeJacobian(yState);
     A_->applyBlock(B, C);
@@ -235,6 +235,6 @@ private:
   mutable stdrcp<nativeVec> source_{};
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif
 #endif

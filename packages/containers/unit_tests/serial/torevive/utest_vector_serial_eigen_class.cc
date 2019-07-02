@@ -5,7 +5,7 @@
 
 TEST(containers_vector_serial_eigen_class, EigenVectorConstructor)
 {
-	using namespace rompp;
+	using namespace pressio;
 
   // using eigvec_t1 = Eigen::Matrix<double, 4, 1>;
   // using myvec_t1 = containers::Vector<eigvec_t1>;
@@ -30,7 +30,7 @@ TEST(containers_vector_serial_eigen_class, EigenVectorConstructor)
 
 TEST(containers_vector_serial_eigen_class, queryWrappedData)
 {
-	using namespace rompp;
+	using namespace pressio;
 
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = containers::Vector<eigvec_t>;
@@ -46,7 +46,7 @@ TEST(containers_vector_serial_eigen_class, queryWrappedData)
 
 TEST(containers_vector_serial_eigen_class, sizeResize)
 {
-	using namespace rompp;
+	using namespace pressio;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = containers::Vector<eigvec_t>;
  
@@ -65,7 +65,7 @@ TEST(containers_vector_serial_eigen_class, sizeResize)
 
 TEST(containers_vector_serial_eigen_class, subscriptOperator)
 {
-	using namespace rompp;
+	using namespace pressio;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = containers::Vector<eigvec_t>;
 
@@ -88,7 +88,7 @@ TEST(containers_vector_serial_eigen_class, subscriptOperator)
 
 TEST(containers_vector_serial_eigen_class, additionOperator)
 {
-	using namespace rompp;
+	using namespace pressio;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = containers::Vector<eigvec_t>;
   
@@ -108,7 +108,7 @@ TEST(containers_vector_serial_eigen_class, additionOperator)
 
 TEST(containers_vector_serial_eigen_class, substractOperator)
 {
-	using namespace rompp;
+	using namespace pressio;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = containers::Vector<eigvec_t>;
 
@@ -128,7 +128,7 @@ TEST(containers_vector_serial_eigen_class, substractOperator)
 
 TEST(containers_vector_serial_eigen_class, starOperator)
 {
-	using namespace rompp;
+	using namespace pressio;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = containers::Vector<eigvec_t>;
 
@@ -148,7 +148,7 @@ TEST(containers_vector_serial_eigen_class, starOperator)
 
 TEST(containers_vector_serial_eigen_class, CompoundAssignAddOperator)
 {
-	using namespace rompp;
+	using namespace pressio;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = containers::Vector<eigvec_t>;
 
@@ -169,7 +169,7 @@ TEST(containers_vector_serial_eigen_class, CompoundAssignAddOperator)
 
 TEST(containers_vector_serial_eigen_class, CompoundAssignSubtractOperator)
 {
-	using namespace rompp;
+	using namespace pressio;
   using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
   using myvec_t = containers::Vector<eigvec_t>;
 

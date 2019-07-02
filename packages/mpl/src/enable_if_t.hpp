@@ -1,10 +1,10 @@
 
-#ifndef ROMPP_MPL_ENABLE_IF_T_HPP_
-#define ROMPP_MPL_ENABLE_IF_T_HPP_
+#ifndef PRESSIO_MPL_ENABLE_IF_T_HPP_
+#define PRESSIO_MPL_ENABLE_IF_T_HPP_
 
 #include <type_traits>
 
-namespace rompp{ namespace mpl{
+namespace pressio{ namespace mpl{
 
 /*This allows allows for a shorter syntax:
     enable_if_t<a_condition, MyType>
@@ -14,5 +14,5 @@ namespace rompp{ namespace mpl{
 template<bool condition, typename T = void>
 using enable_if_t = typename std::enable_if<condition,T>::type;
 
-}} // namespace rompp::mpl
+}} // namespace pressio::mpl
 #endif

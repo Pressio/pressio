@@ -1,8 +1,8 @@
 
-#ifndef ROMPP_APPS_TEST_UNSTEADY_LIN_ADV_DIFF1D_GOLD_IMPLICIT_HPP_
-#define ROMPP_APPS_TEST_UNSTEADY_LIN_ADV_DIFF1D_GOLD_IMPLICIT_HPP_
+#ifndef PRESSIO_APPS_TEST_UNSTEADY_LIN_ADV_DIFF1D_GOLD_IMPLICIT_HPP_
+#define PRESSIO_APPS_TEST_UNSTEADY_LIN_ADV_DIFF1D_GOLD_IMPLICIT_HPP_
 
-namespace rompp { namespace apps{ namespace test{
+namespace pressio { namespace apps{ namespace test{
 
 template <ode::ImplicitEnum>
 struct UnsteadyLinAdvDiff1dImplicitGoldStates;
@@ -10,7 +10,7 @@ struct UnsteadyLinAdvDiff1dImplicitGoldStates;
 template<>
 struct UnsteadyLinAdvDiff1dImplicitGoldStates<ode::ImplicitEnum::Euler>{
   using result_t = std::vector<double>;
-  using scalar_t = rompp::apps::UnsteadyLinAdvDiff1dEpetra::scalar_type;
+  using scalar_t = pressio::apps::UnsteadyLinAdvDiff1dEpetra::scalar_type;
   static result_t get(std::vector<scalar_t> mu, std::vector<scalar_t>
 		      domain, std::vector<scalar_t> bc1D, double dt,
 		      double final_t){

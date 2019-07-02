@@ -3,11 +3,11 @@
 
 using fix_t	= tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture;
 using native_t  = typename fix_t::mvec_t;
-using mymvec_t	= rompp::containers::MultiVector<native_t>;
+using mymvec_t	= pressio::containers::MultiVector<native_t>;
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        QueryWrappedData){
-  using namespace rompp;
+  using namespace pressio;
 
   mymvec_t A( *mv_ );
   ::testing::StaticAssertTypeEq<decltype(A.data()),
@@ -19,14 +19,14 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        Constructor){
-  using namespace rompp;
+  using namespace pressio;
   mymvec_t a( *mv_ );
 }
 
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        ConstructorFromNative){
-  using namespace rompp;
+  using namespace pressio;
 
   using sc_t = typename fix_t::ST;
 
@@ -53,7 +53,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        CopyConstructor){
-  using namespace rompp;
+  using namespace pressio;
 
   using sc_t = typename fix_t::ST;
 
@@ -82,7 +82,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        localSize){
-  using namespace rompp;
+  using namespace pressio;
   mymvec_t A( *mv_ );
 
   // 5 is local length only if this is run with 3 proc
@@ -92,7 +92,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        globalSize){
-  using namespace rompp;
+  using namespace pressio;
   mymvec_t A( *mv_ );
   // 5 is local length only if this is run with 3 proc
   EXPECT_EQ( numProc_, 3);
@@ -101,14 +101,14 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        localNumVecs){
-  using namespace rompp;
+  using namespace pressio;
   mymvec_t v1( *mv_ );
   EXPECT_EQ(v1.localNumVectors(), 3);
 }
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        globalNumVecs){
-  using namespace rompp;
+  using namespace pressio;
   mymvec_t v1( *mv_ );
   EXPECT_EQ(v1.globalNumVectors(), 3);
 }
@@ -116,7 +116,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        getMap){
-  using namespace rompp;
+  using namespace pressio;
   mymvec_t v1( *mv_ );
   auto const & mapO = v1.getDataMap();
   EXPECT_TRUE( mapO.isSameAs(*mv_->getMap()) );
@@ -130,7 +130,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
 
 TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
        setZero){
-  using namespace rompp;
+  using namespace pressio;
 
   // create a wrapper
   mymvec_t B( *mv_ );

@@ -4,7 +4,7 @@
 
 TEST_F(epetraR9Fixture,
        HouseholderEpetraMultiVectorOutOfPlace){
-  using namespace rompp;
+  using namespace pressio;
 
   // default: R_type == void, in_place = false
   using qr_algo = qr::Householder;
@@ -17,7 +17,7 @@ TEST_F(epetraR9Fixture,
 
 TEST_F(epetraR9Fixture,
        ModGrShEpetraMultiVectorOutOfPlace){
-  using namespace rompp;
+  using namespace pressio;
 
   // default: R_type == void, in_place = false
   using qr_algo = qr::ModifiedGramSchmidt;
@@ -30,7 +30,7 @@ TEST_F(epetraR9Fixture,
 
 TEST_F(epetraR9Fixture,
        TSQRepetraMultiVectorOutOfPlace){
-  using namespace rompp;
+  using namespace pressio;
 
   // default: R_type == void, in_place = false
   using qr_algo = qr::TSQR;
@@ -43,7 +43,7 @@ TEST_F(epetraR9Fixture,
 // #ifdef HAVE_BELOS_TSQR
 // TEST_F(epetraR9Fixture,
 //        BelosTSQRepetraMultiVectorOutOfPlace){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   // default: R_type == void, in_place = false
 //   using qr_algo = qr::TSQRBelos;
@@ -65,7 +65,7 @@ TEST_F(epetraR9Fixture,
 
 // TEST_F(epetraR9Fixture,
 //        TSQRepetraMultiVectorOutOfPlaceWrapREigen){
-//   using namespace rompp;
+//   using namespace pressio;
 
 //   // fill fixture matrix
 //   fillMatrix();

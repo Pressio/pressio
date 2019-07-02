@@ -4,7 +4,7 @@
 
 TEST_F(eigenDenseR9Fixture,
      HouseholderEigenDenseOutOfPlace){
-  using namespace rompp;
+  using namespace pressio;
 
   // R_type == void, in_place = false
   using qr_algo = qr::Householder;
@@ -19,7 +19,7 @@ TEST_F(eigenDenseR9Fixture,
 
 TEST_F(eigenDenseR9Fixture,
        HouseholderEigenDenseOutOfPlaceStaticQMatrix){
-  using namespace rompp;
+  using namespace pressio;
 
   // R_type == void, in_place = false
   using qr_algo = qr::Householder;

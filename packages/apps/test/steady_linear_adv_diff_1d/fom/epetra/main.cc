@@ -18,7 +18,7 @@ void checkSol(int rank, const T & y,
 
 
 int main(int argc, char *argv[]){
-  using fom_t		= rompp::apps::SteadyLinAdvDiff1dEpetra;
+  using fom_t		= pressio::apps::SteadyLinAdvDiff1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
 
   //--------------------------------------------------
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
   auto y = appObj.getState();
   auto x = appObj.getGrid();
   y->Print(std::cout << std::setprecision(14));
-  checkSol(rank, *y, rompp::apps::test::steadyAdvDiff1d_N21);
+  checkSol(rank, *y, pressio::apps::test::steadyAdvDiff1d_N21);
 
   //--------------------------------------------------
   //End and free

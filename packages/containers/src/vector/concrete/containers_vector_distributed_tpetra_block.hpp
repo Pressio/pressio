@@ -9,12 +9,12 @@
 #include "../../shared_base/containers_container_resizable_base.hpp"
 #include "../base/containers_vector_distributed_base.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class Vector<
   wrapped_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     meta::is_vector_tpetra_block<
       wrapped_type
       >::value
@@ -52,9 +52,9 @@ public:
     : data_( *vecobj.getMap(),
   	     vecobj.getBlockSize()){
     // just a trick to copy data
-    data_.update(::rompp::utils::constants::one<sc_t>(),
+    data_.update(::pressio::utils::constants::one<sc_t>(),
 		 vecobj,
-		 ::rompp::utils::constants::zero<sc_t>());
+		 ::pressio::utils::constants::zero<sc_t>());
   }
 
   // delegate (for now) to the one above
@@ -67,36 +67,36 @@ public:
 
   // copy assignment
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator=(const T & other){
-    this->data_.update(::rompp::utils::constants::one<sc_t>(),
+    this->data_.update(::pressio::utils::constants::one<sc_t>(),
 		       *other.data(),
-		       ::rompp::utils::constants::zero<sc_t>() );
+		       ::pressio::utils::constants::zero<sc_t>() );
     return *this;
   }
 
   // compound add assignment when type(b) = type(this)
   // this += b
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator+=(const T & other) {
-    this->data_.update(::rompp::utils::constants::one<sc_t>(),
+    this->data_.update(::pressio::utils::constants::one<sc_t>(),
 		       *other.data(),
-		       ::rompp::utils::constants::one<sc_t>() );
+		       ::pressio::utils::constants::one<sc_t>() );
     return *this;
   }
 
   // compound add assignment when type(b) = type(this)
   // this -= b
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator-=(const T & other) {
-    this->data_.update(::rompp::utils::constants::negOne<sc_t>(),
+    this->data_.update(::pressio::utils::constants::negOne<sc_t>(),
 		       *other.data(),
-		       ::rompp::utils::constants::one<sc_t>() );
+		       ::pressio::utils::constants::one<sc_t>() );
     return *this;
   }
 
@@ -119,7 +119,7 @@ private:
   }
 
   void setZeroImpl(){
-    data_.putScalar( ::rompp::utils::constants::zero<sc_t>() );
+    data_.putScalar( ::pressio::utils::constants::zero<sc_t>() );
     // putScalar doesn't sync afterwards, so we have to sync manually.
     this->needSync();
   }
@@ -161,6 +161,6 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif
 #endif

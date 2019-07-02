@@ -5,7 +5,7 @@
 #include "qr_fwd.hpp"
 #include "qr_meta.hpp"
 
-namespace rompp{ namespace qr{ namespace details{
+namespace pressio{ namespace qr{ namespace details{
 
 /* common to all cases */
 template< typename matrix_type, typename algo,
@@ -34,7 +34,7 @@ struct impl_class_helper{};
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
-			 ::rompp::mpl::enable_if_t<
+			 ::pressio::mpl::enable_if_t<
 			   containers::meta::is_multi_vector_wrapper_epetra<matrix_t>::value
 			   >>{
   using impl_t = impl::EpetraMVTSQR<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
@@ -43,7 +43,7 @@ struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
-			 ::rompp::mpl::enable_if_t<
+			 ::pressio::mpl::enable_if_t<
 			   containers::meta::is_multi_vector_wrapper_tpetra<matrix_t>::value
 			   >>{
   using impl_t = impl::TpetraMVTSQR<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
@@ -52,7 +52,7 @@ struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
-			 ::rompp::mpl::enable_if_t<
+			 ::pressio::mpl::enable_if_t<
 			   containers::meta::is_multi_vector_wrapper_tpetra_block<matrix_t>::value
 			   >>{
   using impl_t = impl::TpetraBlockMVTSQR<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
@@ -61,7 +61,7 @@ struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::ModifiedGramSchmidt, R_t, n, m, wrap_Q_type, Q_type,
-			 ::rompp::mpl::enable_if_t<
+			 ::pressio::mpl::enable_if_t<
 			   containers::meta::is_multi_vector_wrapper_epetra<matrix_t>::value
 			   >>{
   using impl_t = impl::ModGramSchmidtMVEpetra<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
@@ -70,7 +70,7 @@ struct impl_class_helper<matrix_t, qr::ModifiedGramSchmidt, R_t, n, m, wrap_Q_ty
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::ModifiedGramSchmidt, R_t, n, m, wrap_Q_type, Q_type,
-			 ::rompp::mpl::enable_if_t<
+			 ::pressio::mpl::enable_if_t<
 			   containers::meta::is_multi_vector_wrapper_tpetra<matrix_t>::value
 			   >>{
   using impl_t = impl::ModGramSchmidtMVTpetra<matrix_t, R_t, n, m, wrap_Q_type, Q_type>;
@@ -80,7 +80,7 @@ struct impl_class_helper<matrix_t, qr::ModifiedGramSchmidt, R_t, n, m, wrap_Q_ty
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_type,
-			 ::rompp::mpl::enable_if_t<
+			 ::pressio::mpl::enable_if_t<
 			   containers::meta::is_multi_vector_wrapper_epetra<matrix_t>::value
 			   >>{
   using impl_t = impl::EpetraMVHouseholderUsingEigen<matrix_t, R_t, n, m, Q_type>;
@@ -90,7 +90,7 @@ struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_ty
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_type,
-			 ::rompp::mpl::enable_if_t<
+			 ::pressio::mpl::enable_if_t<
 			   containers::meta::is_multi_vector_wrapper_tpetra<matrix_t>::value
 			   >>{
   using impl_t = impl::TpetraMVHouseholderUsingEigen<matrix_t, R_t, n, m, Q_type>;
@@ -101,7 +101,7 @@ struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_ty
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_type,
-			 ::rompp::mpl::enable_if_t<
+			 ::pressio::mpl::enable_if_t<
 			   containers::meta::is_dense_matrix_wrapper_eigen<matrix_t>::value
 			   >>{
   using impl_t = impl::QRHouseholderDenseEigenMatrixWrapper<matrix_t, R_t, n, m, Q_type>;
@@ -120,7 +120,7 @@ template<
 struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, m, n, void, Q_type>,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>{
@@ -157,7 +157,7 @@ struct traits<
  */
 template<
   typename matrix_type, template <typename...> class Q_type,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value or
     containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value or
     containers::meta::is_multi_vector_wrapper_tpetra_block<matrix_type>::value
@@ -183,7 +183,7 @@ template<
 struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, m, n, void, Q_type>,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>,
@@ -224,7 +224,7 @@ template<
 struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, m, n, void, Q_type>,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>,
@@ -273,7 +273,7 @@ template<
 struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, m, n, void, Q_type>,
-    ::rompp::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       containers::meta::is_multi_vector_wrapper_tpetra_block<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>,
@@ -308,7 +308,7 @@ struct traits<
 
 #endif //HAVE_TRILINOS
 
-}}}//end namespace rompp::qr::details
+}}}//end namespace pressio::qr::details
 #endif
 
 
@@ -326,7 +326,7 @@ struct traits<
 // struct traits<
 //   impl::QRSolver<
 //     matrix_type, algo_t, in_place, m, n, R_type, Q_type>,
-//     ::rompp::mpl::enable_if_t<
+//     ::pressio::mpl::enable_if_t<
 //       containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value and
 //       meta::is_legitimate_r_type<R_type>::value
 //       >
@@ -368,7 +368,7 @@ struct traits<
 // struct traits<
 //   impl::QRSolver<
 //     matrix_type, algo_t, in_place, m, n, R_type, Q_type>,
-//     ::rompp::mpl::enable_if_t<
+//     ::pressio::mpl::enable_if_t<
 //       containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value and
 //       meta::is_legitimate_r_type<R_type>::value
 //       >

@@ -18,7 +18,7 @@
 // #endif
 
 
-namespace rompp{ namespace solvers{ namespace linear { namespace details {
+namespace pressio{ namespace solvers{ namespace linear { namespace details {
 
 // Solvers traits
 template <typename T>
@@ -30,7 +30,7 @@ struct traits {
 
 
 template <>
-struct traits<::rompp::solvers::linear::iterative::CG> {
+struct traits<::pressio::solvers::linear::iterative::CG> {
 
   template <
     typename MatrixT,
@@ -44,7 +44,7 @@ struct traits<::rompp::solvers::linear::iterative::CG> {
 
 
 template <>
-struct traits<::rompp::solvers::linear::iterative::Bicgstab> {
+struct traits<::pressio::solvers::linear::iterative::Bicgstab> {
 
   template <
     typename MatrixT,
@@ -58,7 +58,7 @@ struct traits<::rompp::solvers::linear::iterative::Bicgstab> {
 
 
 template <>
-struct traits<::rompp::solvers::linear::iterative::LSCG> {
+struct traits<::pressio::solvers::linear::iterative::LSCG> {
 
   template <
     typename MatrixT,
@@ -72,7 +72,7 @@ struct traits<::rompp::solvers::linear::iterative::LSCG> {
 
 
 template <>
-struct traits<::rompp::solvers::linear::direct::ColPivHouseholderQR> {
+struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
 
   template <typename MatrixT>
   using eigen_solver_type = Eigen::ColPivHouseholderQR<MatrixT>;
@@ -93,5 +93,5 @@ struct traits<::rompp::solvers::linear::direct::ColPivHouseholderQR> {
 // };
 
 
-}}}}//end namespace rompp::solvers::linear::details
+}}}}//end namespace pressio::solvers::linear::details
 #endif

@@ -7,10 +7,10 @@ struct NonLinearSystem {
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_type = rompp::containers::Matrix<matrix_n_t>;
+  using matrix_type = pressio::containers::Matrix<matrix_n_t>;
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_type = rompp::containers::Vector<vector_n_t>;
+  using vector_type = pressio::containers::Vector<vector_n_t>;
 
   vector_type residual(const vector_type& x) const {
     vector_type res(2);
@@ -41,8 +41,8 @@ struct NonLinearSystem {
 int main() {
 
   // Namespaces
-  using namespace rompp;
-  using namespace rompp::solvers;
+  using namespace pressio;
+  using namespace pressio::solvers;
 
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = containers::Vector<vector_n_t>;

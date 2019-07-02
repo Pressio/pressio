@@ -2,7 +2,7 @@
 #include "apps_unsteady_linear_adv_diff_1d_epetra.hpp"
 
 #ifdef HAVE_TRILINOS
-namespace rompp { namespace apps {
+namespace pressio { namespace apps {
 //------------------------------------------------------------------------
 // Unsteady setup: Calls the steady setup call before adding initial con
 //------------------------------------------------------------------------
@@ -25,15 +25,15 @@ UnsteadyLinAdvDiff1dEpetra::getInitialState() const{
 }
 
 //------------------------------------------------------------------------
-// Returns the residuals for the unsteady case: signs
+// Returns the velocitys for the unsteady case: signs
 //------------------------------------------------------------------------
-void UnsteadyLinAdvDiff1dEpetra::residual(const state_type & u,
-					  residual_type & rhs,
+void UnsteadyLinAdvDiff1dEpetra::velocity(const state_type & u,
+					  velocity_type & rhs,
 					  const scalar_type /* t*/) const{
-  SteadyLinAdvDiff1dEpetra::residual(u, rhs);
+  SteadyLinAdvDiff1dEpetra::velocity(u, rhs);
   for (int i = 0; i<nodesPerProc_; i++)
     rhs[i] = -rhs[i];
 }
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

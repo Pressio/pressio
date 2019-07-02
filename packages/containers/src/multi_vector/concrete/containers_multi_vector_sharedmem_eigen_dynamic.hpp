@@ -8,11 +8,11 @@
 #include "../../shared_base/containers_container_resizable_base.hpp"
 #include "../../shared_base/containers_container_subscriptable_base.hpp"
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class MultiVector<wrapped_type,
-		  ::rompp::mpl::enable_if_t<
+		  ::pressio::mpl::enable_if_t<
 		    meta::is_dynamic_multi_vector_eigen<
 		      wrapped_type>::value>
 		  >
@@ -106,5 +106,5 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif

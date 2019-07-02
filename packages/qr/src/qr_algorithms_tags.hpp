@@ -2,7 +2,7 @@
 #ifndef QR_ALGORITHMS_TAGS_HPP_
 #define QR_ALGORITHMS_TAGS_HPP_
 
-namespace rompp{ namespace qr{
+namespace pressio{ namespace qr{
 
 /* Note to devs: if you add a method here, and code it
  * remember to update the corresponding static_assert
@@ -15,5 +15,5 @@ struct Householder{};
 struct TSQR{};
 #endif
 
-}} // end namespace rompp::qr
+}} // end namespace pressio::qr
 #endif

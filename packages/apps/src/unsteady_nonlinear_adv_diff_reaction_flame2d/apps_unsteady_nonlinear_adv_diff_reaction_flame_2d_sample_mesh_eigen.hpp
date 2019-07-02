@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_SAMPLE_MESH_EIGEN_HPP_
-#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_SAMPLE_MESH_EIGEN_HPP_
+#ifndef PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_SAMPLE_MESH_EIGEN_HPP_
+#define PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_SAMPLE_MESH_EIGEN_HPP_
 
 #include "../../../CONTAINERS_ALL"
 #include "Eigen/Dense"
@@ -8,7 +8,7 @@
 #include <cmath>
 #include <array>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen{
 protected:
@@ -21,7 +21,7 @@ protected:
 public:
   using scalar_type	= double;
   using state_type	= nativeVec;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
   using mv_t		= Eigen::MatrixXd;
 
@@ -30,11 +30,11 @@ public:
 
   typedef Eigen::Triplet<scalar_type> Tr;
   using mat4_t		= Eigen::Matrix<scalar_type, 4, 4>;
-  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
-  static constexpr auto two = ::rompp::utils::constants::two<scalar_type>();
-  static constexpr auto three = ::rompp::utils::constants::three<scalar_type>();
-  static constexpr auto four = ::rompp::utils::constants::four<scalar_type>();
+  static constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  static constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  static constexpr auto two = ::pressio::utils::constants::two<scalar_type>();
+  static constexpr auto three = ::pressio::utils::constants::three<scalar_type>();
+  static constexpr auto four = ::pressio::utils::constants::four<scalar_type>();
   static constexpr auto oneHalf = one/two;
   static constexpr auto oneThird = one/three;
   static constexpr auto eight = two*four;
@@ -88,18 +88,18 @@ public:
   // nativeVec getV() const { return v_; }
 
 public:
-  void residual(const state_type & yState,
-		residual_type & rhs,
+  void velocity(const state_type & yState,
+		velocity_type & rhs,
 		scalar_type t) const{
-    residual_impl(yState, rhs);
+    velocity_impl(yState, rhs);
   }
 
-  residual_type residual(const state_type & yState,
+  velocity_type velocity(const state_type & yState,
 			 scalar_type t) const{
-    // the residual has size equal to the dofs of the cells where
-    // we want residual
-    residual_type R(numDof_r_);
-    residual_impl(yState, R);
+    // the velocity has size equal to the dofs of the cells where
+    // we want velocity
+    velocity_type R(numDof_r_);
+    velocity_impl(yState, R);
     return R;
   };
 
@@ -148,8 +148,8 @@ private:
 		       scalar_type wO2,
 		       scalar_type wH2O) const;
 
-  void residual_impl(const state_type & yState,
-		     residual_type & R) const;
+  void velocity_impl(const state_type & yState,
+		     velocity_type & R) const;
 
   void jacobian_impl(const state_type & yState,
   		     jacobian_type & J) const;
@@ -192,12 +192,12 @@ protected:
     graph: contains a list such that
     1 0 3 2 -1
 
-    first col: contains GIDs of cells where we want residual
+    first col: contains GIDs of cells where we want velocity
     1,2,3,4 col: contains GIDs of neighboring cells needed for stencil
 		 the order of the neighbors is: east, north, west, south
 
     if a neighbor GID is = -1, it means that neighbor is outside of the domain boundary
-    so if west GID is -1, it means that this residual cell is near the left bundary
+    so if west GID is -1, it means that this velocity cell is near the left bundary
    */
   const graph_t & graph_;
 
@@ -228,7 +228,7 @@ protected:
   // note that dof refers to the degress of freedom,
   // which is NOT same as grid points. for this problem,
   // the dof = numSpecies_ * number_of_unknown_grid_points
-  // _r_ stands for residual
+  // _r_ stands for velocity
   int numGpt_;
   int numDof_;
   int numGpt_r_;
@@ -253,5 +253,5 @@ protected:
   mutable nativeVec regionLabel_;
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

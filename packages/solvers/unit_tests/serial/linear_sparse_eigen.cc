@@ -6,8 +6,8 @@
 
 TEST(solvers_linear_iterative, LSCGSparseEigen){
   // Namespaces
-  using namespace rompp;
-  using namespace rompp::solvers;
+  using namespace pressio;
+  using namespace pressio::solvers;
 
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;

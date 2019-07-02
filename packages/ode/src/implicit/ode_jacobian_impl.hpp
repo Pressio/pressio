@@ -7,14 +7,14 @@
 #include "../../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
 #include "ode_implicit_constants.hpp"
 
-namespace rompp{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template <
   ode::ImplicitEnum odeMethod,
   typename jacobian_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
-    (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
+  ::pressio::mpl::enable_if_t<
+    (odeMethod == ::pressio::ode::ImplicitEnum::Euler) and
     (containers::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
 #ifdef HAVE_TRILINOS
      containers::meta::is_sparse_matrix_wrapper_epetra<jacobian_type>::value or
@@ -24,7 +24,7 @@ template <
   >
   void time_discrete_jacobian(jacobian_type & jac,
 			      scalar_type dt){
-  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
+  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
   jac.scale(-dt);
   jac.addToDiagonal(one);
 }
@@ -34,15 +34,15 @@ template <
   ode::ImplicitEnum odeMethod,
   typename jacobian_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
-    (odeMethod == ::rompp::ode::ImplicitEnum::Euler) and
+  ::pressio::mpl::enable_if_t<
+    (odeMethod == ::pressio::ode::ImplicitEnum::Euler) and
     containers::meta::is_cstyle_array_pybind11<jacobian_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(jacobian_type & jac,
 			    scalar_type dt){
-  using namespace ::rompp::ode::coeffs;
-  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
+  using namespace ::pressio::ode::coeffs;
+  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
 
   if (jac.ndim() != 2)
     throw std::runtime_error("Tensors with dim>2 not supported");
@@ -68,19 +68,19 @@ template <
   ode::ImplicitEnum odeMethod,
   typename jacobian_type,
   typename scalar_type,
-  ::rompp::mpl::enable_if_t<
-    (odeMethod == ::rompp::ode::ImplicitEnum::BDF2) and
+  ::pressio::mpl::enable_if_t<
+    (odeMethod == ::pressio::ode::ImplicitEnum::BDF2) and
     containers::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(jacobian_type & jac,
 			    scalar_type dt){
-  using namespace ::rompp::ode::coeffs;
-  constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
+  using namespace ::pressio::ode::coeffs;
+  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
   jac.scale(-bdf2<scalar_type>::c3_*dt);
   jac.addToDiagonal(one);
 }
 
 
-}}}//end namespace rompp::ode::impl
+}}}//end namespace pressio::ode::impl
 #endif

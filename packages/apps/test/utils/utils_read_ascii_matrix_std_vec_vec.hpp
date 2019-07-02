@@ -6,7 +6,7 @@
 #include "SVD_BASIC"
 #include <fstream>
 
-namespace rompp{ namespace apps{ namespace test{ 
+namespace pressio{ namespace apps{ namespace test{ 
 
 // template just to avoid having a cc file
 template <typename T = int>
@@ -30,6 +30,6 @@ void readAsciiMatrixStdVecVec(std::string filename,
   source.close();
 }
 
-}}}// end namespace rompp::apps::test
+}}}// end namespace pressio::apps::test
 
 #endif

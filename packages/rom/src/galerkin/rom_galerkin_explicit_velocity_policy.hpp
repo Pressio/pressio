@@ -1,50 +1,51 @@
 
-#ifndef ROM_DEFAULT_GALERKIN_EXPLICIT_RESIDUAL_POLICY_HPP_
-#define ROM_DEFAULT_GALERKIN_EXPLICIT_RESIDUAL_POLICY_HPP_
+#ifndef ROM_DEFAULT_GALERKIN_EXPLICIT_VELOCITY_POLICY_HPP_
+#define ROM_DEFAULT_GALERKIN_EXPLICIT_VELOCITY_POLICY_HPP_
 
 #include "../rom_fwd.hpp"
-#include "../../../ode/src/explicit/policies/ode_explicit_residual_policy_base.hpp"
+#include "../../../ode/src/explicit/policies/ode_explicit_velocity_policy_base.hpp"
 #include "../rom_data_fom_states.hpp"
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template <
   typename fom_states_data,
-  typename fom_rhs_data,
+  typename fom_velocity_data,
   typename decoder_t
   >
-class DefaultGalerkinExplicitResidualPolicy
-  : public ode::policy::ExplicitResidualPolicyBase<
-       DefaultGalerkinExplicitResidualPolicy<fom_states_data,
-					     fom_rhs_data,
+class DefaultGalerkinExplicitVelocityPolicy
+  : public ode::policy::ExplicitVelocityPolicyBase<
+       DefaultGalerkinExplicitVelocityPolicy<fom_states_data,
+					     fom_velocity_data,
 					     decoder_t>>,
     protected fom_states_data,
-    protected fom_rhs_data{
+    protected fom_velocity_data{
 
 protected:
-  using this_t = DefaultGalerkinExplicitResidualPolicy<
-		      fom_states_data, fom_rhs_data, decoder_t>;
-  friend ode::policy::ImplicitResidualPolicyBase<this_t>;
+  using this_t = DefaultGalerkinExplicitVelocityPolicy<
+		      fom_states_data, fom_velocity_data, decoder_t>;
+  using base_t = ode::policy::ExplicitVelocityPolicyBase<this_t>;
+  friend base_t;
 
   const decoder_t & decoder_;
   using fom_states_data::yFom_;
-  using fom_rhs_data::fomRhs_;
+  using fom_velocity_data::fomRhs_;
 
 public:
   static constexpr bool isResidualPolicy_ = true;
 
 public:
-  DefaultGalerkinExplicitResidualPolicy() = delete;
-  ~DefaultGalerkinExplicitResidualPolicy() = default;
-  DefaultGalerkinExplicitResidualPolicy(const fom_states_data & fomStates,
-					const fom_rhs_data & fomResids,
+  DefaultGalerkinExplicitVelocityPolicy() = delete;
+  ~DefaultGalerkinExplicitVelocityPolicy() = default;
+  DefaultGalerkinExplicitVelocityPolicy(const fom_states_data & fomStates,
+					const fom_velocity_data & fomResids,
 					const decoder_t & decoder)
     : fom_states_data(fomStates),
-      fom_rhs_data(fomResids),
+      fom_velocity_data(fomResids),
       decoder_(decoder){}
 
 public:
-  /* for now, the state and residual must be of the same type */
+  /* for now, the state and velocity must be of the same type */
 
   template <
     typename galerkin_state_t,
@@ -58,7 +59,7 @@ public:
   {
 #ifdef HAVE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("galerkin explicit residual");
+    timer->start("galerkin explicit velocity");
 #endif
 
     fom_states_data::template reconstructCurrentFomState(romY);
@@ -66,7 +67,7 @@ public:
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    app.residual(*yFom_.data(), *fomRhs_.data(), t);
+    app.velocity(*yFom_.data(), *fomRhs_.data(), t);
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
 #endif
@@ -80,7 +81,7 @@ public:
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->stop("galerkin explicit residual");
+    timer->stop("galerkin explicit velocity");
 #endif
   }
 
@@ -100,7 +101,7 @@ public:
 
 #ifdef HAVE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("galerkin explicit residual");
+    timer->start("galerkin explicit velocity");
 #endif
 
     fom_states_data::template reconstructCurrentFomState(romY);
@@ -108,7 +109,7 @@ public:
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    typename fom_rhs_data::fom_rhs_t fomR(app.residual(*yFom_.data(), t));
+    typename fom_velocity_data::fom_rhs_t fomR(app.velocity(*yFom_.data(), t));
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
 #endif
@@ -122,7 +123,7 @@ public:
 #endif
 
 #ifdef HAVE_TEUCHOS_TIMERS
-    timer->stop("galerkin explicit residual");
+    timer->stop("galerkin explicit velocity");
 #endif
 
     return result;
@@ -130,5 +131,5 @@ public:
 
 };//end class
 
-}}//end namespace rompp::rom
+}}//end namespace pressio::rom
 #endif

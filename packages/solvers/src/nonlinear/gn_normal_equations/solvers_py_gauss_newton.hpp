@@ -8,7 +8,7 @@
 #include "../../base/solvers_iterative_base.hpp"
 #include "./solvers_gauss_newton_normal_eq_impl.hpp"
 
-namespace rompp{ namespace solvers{ namespace iterative{
+namespace pressio{ namespace solvers{ namespace iterative{
 
 /*
  * for interfacing with python
@@ -28,10 +28,10 @@ class PyGaussNewton<
   system_t, state_t, residual_t, jacobian_t,
   hessian_t, linear_solver_t, scalar_t, when_converged_t,
   mpl::enable_if_t<
-    ::rompp::containers::meta::is_array_pybind11<state_t>::value and
-    ::rompp::containers::meta::is_array_pybind11<residual_t>::value and
-    ::rompp::containers::meta::is_array_pybind11<jacobian_t>::value and
-    ::rompp::containers::meta::is_array_pybind11<hessian_t>::value
+    ::pressio::containers::meta::is_array_pybind11<state_t>::value and
+    ::pressio::containers::meta::is_array_pybind11<residual_t>::value and
+    ::pressio::containers::meta::is_array_pybind11<jacobian_t>::value and
+    ::pressio::containers::meta::is_array_pybind11<hessian_t>::value
     >
   >
   : public NonLinearSolverBase<
@@ -120,7 +120,7 @@ private:
      * the update is done with y = y + alpha dy
      * alpha = 1 default when user does not want line search
      */
-    using line_search_tag  = ::rompp::solvers::iterative::gn::noLineSearch;
+    using line_search_tag  = ::pressio::solvers::iterative::gn::noLineSearch;
     using lsearch_helper_t = impl::LineSearchHelper<line_search_tag>;
 
     // alpha for taking steps
@@ -129,8 +129,8 @@ private:
     scalar_t normRes = {};
     scalar_t normRes0 = {};
 
-    constexpr auto one = ::rompp::utils::constants::one<scalar_t>();
-    constexpr auto negOne = ::rompp::utils::constants::negOne<scalar_t>();
+    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
 
 #ifdef DEBUG_PRINT
     auto ss = std::cout.precision();
@@ -138,7 +138,7 @@ private:
     auto reset = utils::io::reset();
     auto fmt1 = utils::io::cyan() + utils::io::underline();
     const auto convString = std::string(is_converged_t::description_);
-    ::rompp::utils::io::print_stdout(fmt1, "PyGN normal eqns:", "criterion:",
+    ::pressio::utils::io::print_stdout(fmt1, "PyGN normal eqns:", "criterion:",
 				    convString, reset, "\n");
 #endif
 
@@ -150,9 +150,9 @@ private:
     while (iStep++ <= iterative_base_t::maxIters_)
     {
 #ifdef DEBUG_PRINT
-      ::rompp::utils::io::print_stdout("\n");
+      ::pressio::utils::io::print_stdout("\n");
       auto fmt = utils::io::underline();
-      ::rompp::utils::io::print_stdout(fmt, "PyGN step", iStep,
+      ::pressio::utils::io::print_stdout(fmt, "PyGN step", iStep,
 				      utils::io::reset(), "\n");
 #endif
 
@@ -175,10 +175,10 @@ private:
 
 #ifdef DEBUG_PRINT
       auto fmt1 = utils::io::magenta() + utils::io::bold();
-      ::rompp::utils::io::print_stdout(fmt1, "GN_JSize =",
+      ::pressio::utils::io::print_stdout(fmt1, "GN_JSize =",
 				      jac_.shape()[0], jac_.shape()[1],
 				      "\n");
-      ::rompp::utils::io::print_stdout(fmt1, "GN_HessianSize =",
+      ::pressio::utils::io::print_stdout(fmt1, "GN_HessianSize =",
 				    hess_.shape()[0], hess_.shape()[1],
 				    utils::io::reset(), "\n");
 #endif
@@ -194,7 +194,7 @@ private:
       norm_evaluator_t::evaluate(dy_, normN_);
 
 #ifdef DEBUG_PRINT
-      ::rompp::utils::io::print_stdout(std::scientific,
+      ::pressio::utils::io::print_stdout(std::scientific,
 				      "||R|| =", normRes,
 				      "||R||(r) =", normRes/normRes0,
 				      "||dy|| =", normN_,
@@ -206,7 +206,7 @@ private:
       lsearch_helper_t::evaluate(alpha, y, ytrial_, dy_, res_, jac_, sys);
 
       // solution update: y = y + alpha*dy;
-      ::rompp::containers::ops::do_update(y, one, dy_, alpha);
+      ::pressio::containers::ops::do_update(y, one, dy_, alpha);
       // std::cout << "PyGN PrintUpdateSol" << std::endl;
       // pythonOps_.attr("myprint")(dy_);
       // pythonOps_.attr("myprint")(y);
@@ -235,13 +235,13 @@ private:
 
 #if defined DEBUG_PRINT
     std::cout.precision(ss);
-    ::rompp::utils::io::print_stdout(std::fixed);
+    ::pressio::utils::io::print_stdout(std::fixed);
 #endif
 
   }//end solveImpl
 };
 
 
-}}}//end namespace rompp::solvers::iterative
+}}}//end namespace pressio::solvers::iterative
 #endif
 #endif

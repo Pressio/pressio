@@ -1,6 +1,6 @@
 
-#ifndef ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_EIGEN_HPP_
-#define ROMPP_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_EIGEN_HPP_
+#ifndef PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_EIGEN_HPP_
+#define PRESSIO_APPS_NONLIN_ADV_DIFF_REACTION_FLAME_2D_EIGEN_HPP_
 
 #include "../../../CONTAINERS_ALL"
 #include "Eigen/Dense"
@@ -8,7 +8,7 @@
 #include <cmath>
 #include <array>
 
-namespace rompp{ namespace apps{
+namespace pressio{ namespace apps{
 
 class UnsteadyNonLinAdvDiffReacFlame2dEigen{
 protected:
@@ -18,15 +18,15 @@ protected:
 public:
   using scalar_type	= double;
   using state_type	= nativeVec;
-  using residual_type	= state_type;
+  using velocity_type	= state_type;
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
 
   using mv_t		= Eigen::MatrixXd;
   typedef Eigen::Triplet<scalar_type> Tr;
   using mat4_t		= Eigen::Matrix<scalar_type, 4, 4>;
-  static constexpr auto zero = ::rompp::utils::constants::zero<scalar_type>();
-  static constexpr auto one = ::rompp::utils::constants::one<scalar_type>();
-  static constexpr auto two = ::rompp::utils::constants::two<scalar_type>();
+  static constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  static constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  static constexpr auto two = ::pressio::utils::constants::two<scalar_type>();
 
 public:
   UnsteadyNonLinAdvDiffReacFlame2dEigen
@@ -100,16 +100,16 @@ public:
   nativeVec getV() const { return v_; }
 
 public:
-  void residual(const state_type & yState,
-		residual_type & rhs,
+  void velocity(const state_type & yState,
+		velocity_type & rhs,
 		scalar_type t) const{
-    residual_impl(yState, rhs);
+    velocity_impl(yState, rhs);
   }
 
-  residual_type residual(const state_type & yState,
+  velocity_type velocity(const state_type & yState,
 			 scalar_type t) const{
-    residual_type R(numDof_);
-    residual_impl(yState, R);
+    velocity_type R(numDof_);
+    velocity_impl(yState, R);
     return R;
   };
 
@@ -170,8 +170,8 @@ private:
   void compute_sources(scalar_type wT, scalar_type wH2,
 		       scalar_type wO2, scalar_type wH2O)const;
 
-  void residual_impl(const state_type & yState,
-		     residual_type & R) const;
+  void velocity_impl(const state_type & yState,
+		     velocity_type & R) const;
 
   void jacobian_impl(const state_type & yState,
   		     jacobian_type & J) const;
@@ -271,5 +271,5 @@ protected:
   mutable nativeVec regionLabel_;
 };
 
-}} //namespace rompp::apps
+}} //namespace pressio::apps
 #endif

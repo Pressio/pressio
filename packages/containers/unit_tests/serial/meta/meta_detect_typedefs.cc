@@ -4,33 +4,33 @@
 
 TEST(containers_meta_detect_typedefs, scalarTypedefDetect)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   class A{
   public:
     using scalar_type = double;
     scalar_type x;
   };
-  static_assert( ::rompp::containers::meta::has_scalar_typedef<A>::value, "");
+  static_assert( ::pressio::containers::meta::has_scalar_typedef<A>::value, "");
 
   class B{
   public:
     using scalar_t = double;
     scalar_t x;
   };
-  static_assert( ::rompp::containers::meta::has_scalar_typedef<B>::value == false, "");
+  static_assert( ::pressio::containers::meta::has_scalar_typedef<B>::value == false, "");
 
   struct C{
     using scalar_type = double;
     scalar_type x;
   };
-  static_assert( ::rompp::containers::meta::has_scalar_typedef<C>::value, "");
+  static_assert( ::pressio::containers::meta::has_scalar_typedef<C>::value, "");
 }
 
 
 TEST(containers_meta_detect_typedefs, ordinalTypedefDetect)
 {
-  using namespace rompp;
+  using namespace pressio;
   class A{
   public:
     using ordinal_type = int;
@@ -55,7 +55,7 @@ TEST(containers_meta_detect_typedefs, ordinalTypedefDetect)
 
 TEST(containers_meta_detect_typedefs, localglobalOrdinalTypedefDetect)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   class A{
   public:
@@ -90,7 +90,7 @@ TEST(containers_meta_detect_typedefs, localglobalOrdinalTypedefDetect)
 
 TEST(containers_meta_detect_typedefs, mapCommTypedefDetect)
 {
-  using namespace rompp;
+  using namespace pressio;
 
   class A{
   public:

@@ -11,7 +11,7 @@
 #include "../base/containers_vector_distributed_base.hpp"
 #include <MatrixMarket_Tpetra.hpp>
 
-namespace rompp{ namespace containers{
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class Vector<wrapped_type,
@@ -61,7 +61,7 @@ public:
 
   // copy assignment
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator=(const T & other){
     assert(this->localSize() == other.localSize());
@@ -72,7 +72,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this += b
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator+=(const T & other) {
     this->data_.update(1.0, *other.data(), 1.0 );
@@ -82,7 +82,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this -= b
   template <typename T,
-  	    ::rompp::mpl::enable_if_t<
+  	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator-=(const T & other) {
     this->data_.update(-1.0, *other.data(), 1.0 );
@@ -174,6 +174,6 @@ private:
 
 };//end class
 
-}}//end namespace rompp::containers
+}}//end namespace pressio::containers
 #endif
 #endif

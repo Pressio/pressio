@@ -6,7 +6,7 @@
 #include "AztecOO.h"
 #include <memory>
 
-namespace rompp{
+namespace pressio{
 namespace solvers{
 
 template <
@@ -37,6 +37,6 @@ class SolversLinearIterativeTrilinosPolicy {
 
 } // end namespace solvers
 
-}//end namespace rompp
+}//end namespace pressio
 #endif
 #endif

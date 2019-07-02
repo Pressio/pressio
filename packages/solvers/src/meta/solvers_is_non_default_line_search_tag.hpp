@@ -4,7 +4,7 @@
 
 #include "../solvers_line_search_tags.hpp"
 
-namespace rompp{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T, typename enable = void>
 struct is_non_default_line_search_tag
@@ -13,12 +13,12 @@ struct is_non_default_line_search_tag
 template <typename T>
 struct is_non_default_line_search_tag<
   T,
-  ::rompp::mpl::enable_if_t<
+  ::pressio::mpl::enable_if_t<
     std::is_same<
       T,
-      ::rompp::solvers::iterative::gn::ArmijoLineSearch>::value
+      ::pressio::solvers::iterative::gn::ArmijoLineSearch>::value
     >
   > : std::true_type{};
 
-}}} // namespace rompp::solvers::meta
+}}} // namespace pressio::solvers::meta
 #endif

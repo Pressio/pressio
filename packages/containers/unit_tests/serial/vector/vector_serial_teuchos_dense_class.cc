@@ -4,14 +4,14 @@
 #include "CONTAINERS_OPS"
 
 using natvec_t = Teuchos::SerialDenseVector<int, double>;
-using myvec_t = rompp::containers::Vector<natvec_t>;
+using myvec_t = pressio::containers::Vector<natvec_t>;
 
 TEST(containers_vector_teuchos_serial_dense_class,
      constructor){
 
-  using vecTrait = rompp::containers::details::traits<myvec_t>;
+  using vecTrait = pressio::containers::details::traits<myvec_t>;
   ASSERT_TRUE(vecTrait::wrapped_vector_identifier
-  == rompp::containers::details::WrappedVectorIdentifier::TeuchosSerialDense);
+  == pressio::containers::details::WrappedVectorIdentifier::TeuchosSerialDense);
 
   myvec_t v0;
 
@@ -224,7 +224,7 @@ TEST(containers_vector_teuchos_serial_dense_class,
   myvec_t a(4);
   a(0) = 1.; a(1) = 2.;
   a(2) = -1.; a(3) = 3.;
-  auto res = rompp::containers::ops::norm1(a);
+  auto res = pressio::containers::ops::norm1(a);
   EXPECT_DOUBLE_EQ( res, 7.0);
 }
 
@@ -233,7 +233,7 @@ TEST(containers_vector_teuchos_serial_dense_class,
 
   myvec_t a(3);
   a(0) = 1.; a(1) = 2.; a(2) = -2.;
-  auto res = rompp::containers::ops::norm2(a);
+  auto res = pressio::containers::ops::norm2(a);
   EXPECT_DOUBLE_EQ( res, 3.0);
 }
 
@@ -279,7 +279,7 @@ TEST(containers_vector_teuchos_serial_dense_class,
 
 //   myvec_t a(3);
 //   a(0) = 1.; a(1) = 2.; a(2) = -2.;
-//   auto res = rompp::containers::ops::min(a);
+//   auto res = pressio::containers::ops::min(a);
 //   EXPECT_DOUBLE_EQ( res, -2.0);
 // }
 
@@ -288,6 +288,6 @@ TEST(containers_vector_teuchos_serial_dense_class,
 
 //   myvec_t a(3);
 //   a(0) = 1.; a(1) = 2.; a(2) = -2.;
-//   auto res = rompp::containers::ops::max(a);
+//   auto res = pressio::containers::ops::max(a);
 //   EXPECT_DOUBLE_EQ( res, 2.0);
 // }

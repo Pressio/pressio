@@ -6,11 +6,11 @@
 struct ValidSystem {
   // Matrix typedefs
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = rompp::containers::Matrix<matrix_n_t>;
+  using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
 
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = rompp::containers::Vector<vector_n_t>;
+  using vector_w_t = pressio::containers::Vector<vector_n_t>;
 
   using state_type = vector_w_t;
   using residual_type = state_type;
@@ -49,8 +49,8 @@ struct ValidSystem {
 
 TEST(solvers_nonlinear, NewtonRaphsonEigen)
 {
-  using namespace rompp;
-  using namespace rompp::solvers;
+  using namespace pressio;
+  using namespace pressio::solvers;
 
   using problem_t  = ValidSystem;
   using state_t	   = problem_t::state_type;
@@ -79,8 +79,8 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
 
 // TEST(solvers_nonlinear_base, solversBaseGettersTest)
 // {
-//   using namespace rompp;
-//   using namespace rompp::solvers;
+//   using namespace pressio;
+//   using namespace pressio::solvers;
 
 //   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
@@ -99,8 +99,8 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
 
 // TEST(solvers_non_linear_base, solversBaseSettersTest)
 // {
-//   using namespace rompp;
-//   using namespace rompp::solvers;
+//   using namespace pressio;
+//   using namespace pressio::solvers;
 
 //   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 
@@ -125,8 +125,8 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
 
 // TEST(solvers_non_linear_base, solversBaseSolveTest)
 // {
-//   using namespace rompp;
-//   using namespace rompp::solvers;
+//   using namespace pressio;
+//   using namespace pressio::solvers;
 
 //   using vector_n_t = Eigen::VectorXd;
 //   using vector_w_t = containers::Vector<vector_n_t>;
@@ -147,8 +147,8 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
 
 // TEST(solvers_non_linear_base, solversBaseBadSolveTest)
 // {
-//   using namespace rompp;
-//   using namespace rompp::solvers;
+//   using namespace pressio;
+//   using namespace pressio::solvers;
 
 //   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
 

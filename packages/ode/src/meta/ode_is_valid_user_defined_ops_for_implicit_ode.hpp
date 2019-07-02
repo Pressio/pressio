@@ -5,7 +5,7 @@
 #include "ode_is_valid_user_defined_ops_for_implicit_euler.hpp"
 #include "ode_is_valid_user_defined_ops_for_implicit_bdf2.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<
   typename T,
@@ -37,5 +37,5 @@ struct is_valid_user_defined_ops_for_implicit_ode<
     >
   > : std::true_type{};
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

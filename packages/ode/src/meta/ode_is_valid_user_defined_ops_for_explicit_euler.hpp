@@ -5,7 +5,7 @@
 #include "../../../containers/src/meta/containers_has_update_op_typedef.hpp"
 #include "../../../containers/src/meta/containers_has_static_method_do_update_one_term.hpp"
 
-namespace rompp{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template<typename T,
 	 typename scalar_t,
@@ -23,9 +23,9 @@ template<typename T,
 struct is_valid_user_defined_ops_for_explicit_euler<
   T, scalar_t, state_t, residual_t,
     mpl::enable_if_t<
-      ::rompp::containers::meta::has_update_op_typedef<T>::value and
-      ::rompp::containers::meta::is_vector_wrapper<state_t>::value and
-      ::rompp::containers::meta::has_static_method_do_update_one_term<
+      ::pressio::containers::meta::has_update_op_typedef<T>::value and
+      ::pressio::containers::meta::is_vector_wrapper<state_t>::value and
+      ::pressio::containers::meta::has_static_method_do_update_one_term<
 	typename T::update_op,
 	scalar_t,
 	typename containers::details::traits<state_t>::wrapped_t,
@@ -43,10 +43,10 @@ template<typename T,
 struct is_valid_user_defined_ops_for_explicit_euler<
   T, scalar_t, state_t, residual_t,
     mpl::enable_if_t<
-      ::rompp::containers::meta::is_cstyle_array_pybind11<state_t>::value and
-      ::rompp::containers::meta::is_cstyle_array_pybind11<residual_t>::value and
-      ::rompp::containers::meta::has_update_op_typedef<T>::value and
-      ::rompp::containers::meta::has_static_method_do_update_one_term<
+      ::pressio::containers::meta::is_cstyle_array_pybind11<state_t>::value and
+      ::pressio::containers::meta::is_cstyle_array_pybind11<residual_t>::value and
+      ::pressio::containers::meta::has_update_op_typedef<T>::value and
+      ::pressio::containers::meta::has_static_method_do_update_one_term<
 	typename T::update_op,
 	scalar_t, state_t, residual_t
 	>::value
@@ -54,5 +54,5 @@ struct is_valid_user_defined_ops_for_explicit_euler<
   > : std::true_type{};
 #endif
 
-}}} // namespace rompp::ode::meta
+}}} // namespace pressio::ode::meta
 #endif

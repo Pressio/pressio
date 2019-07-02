@@ -2,7 +2,7 @@
 #ifndef ROM_LSPG_STEADY_SYSTEM_HPP_
 #define ROM_LSPG_STEADY_SYSTEM_HPP_
 
-namespace rompp{ namespace rom{
+namespace pressio{ namespace rom{
 
 template<
   typename app_type,
@@ -60,5 +60,5 @@ public:
   }
 };//end class
 
-}} // end namespace rompp::ode
+}} // end namespace pressio::ode
 #endif

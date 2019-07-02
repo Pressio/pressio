@@ -9,21 +9,21 @@ struct MyApp{
 
   using scalar_type   = double;
   using state_type    = std::vector<scalar_type>;
-  using residual_type = state_type;
+  using velocity_type = state_type;
 
 public:
-  void residual(const state_type & y,
-		residual_type & R,
+  void velocity(const state_type & y,
+		velocity_type & R,
 		scalar_type t) const{
     R[0] = 10. * y[0];
     R[1] = 10. * y[1];
     R[2] = 10. * y[2];
   };
 
-  residual_type residual(const state_type & y,
+  velocity_type velocity(const state_type & y,
 			 scalar_type t) const{
-    residual_type R(y);
-    residual(y, R, t);
+    velocity_type R(y);
+    velocity(y, R, t);
     return R;
   };
 };
@@ -51,14 +51,14 @@ struct myops{
 
 
 TEST(ode_explicit_euler, userDefinedOps){
-  using namespace rompp;
+  using namespace pressio;
   using app_t	    = MyApp;
   using nstate_t    = typename app_t::state_type;
-  using nresidual_t = typename app_t::residual_type;
+  using nveloc_t = typename app_t::velocity_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nresidual_t>;
+  using res_t = containers::Vector<nveloc_t>;
   state_t y(3);
 
   auto yptr = y.data();
