@@ -92,6 +92,49 @@ struct IsConvergedHelper<
   }
 };
 
+template <typename norm_t>
+struct IsConvergedHelper<
+  converged_when::absoluteNormProjectedResidualBelowTol<norm_t>>{
+
+  static constexpr char const * description_ = "||P^T R|| < tol";
+
+  template <typename state_t, typename step_t, typename scalar_t>
+  static bool evaluate(const state_t & y,
+		       const state_t & dy,
+		       const scalar_t & norm_dy,
+		       const scalar_t & norm_r,
+		       const scalar_t & norm_r0,
+		       const scalar_t & norm_proj_r,
+		       const scalar_t & norm_proj_r0,
+		       const step_t & step,
+		       const step_t & maxIters,
+		       const scalar_t & tol) {
+    return (norm_proj_r<tol);
+  }
+};
+
+template <typename norm_t>
+struct IsConvergedHelper<
+  converged_when::relativeNormProjectedResidualBelowTol<norm_t>>{
+
+  static constexpr char const * description_ = "||P^T R||(r) < tol";
+
+  template <typename state_t, typename step_t, typename scalar_t>
+  static bool evaluate(const state_t & y,
+		       const state_t & dy,
+		       const scalar_t & norm_dy,
+		       const scalar_t & norm_r,
+		       const scalar_t & norm_r0,
+		       const scalar_t & norm_proj_r,
+		       const scalar_t & norm_proj_r0,
+		       const step_t & step,
+		       const step_t & maxIters,
+		       const scalar_t & tol) {
+    return (norm_proj_r/norm_proj_r0<tol);
+  }
+};
+
+
 
 }}}} //end namespace pressio::solvers::iterative::impl
 #endif
