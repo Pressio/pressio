@@ -37,7 +37,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 			    iteration_t maxNonLIt,
 			    scalar_t tolerance,
 			    scalar_t & normO,
-			    scalar_t & normN,
+			    scalar_t & norm_dy,
 			    const observer_t * observer)
 {
   using residual_t	= typename system_t::residual_type;
@@ -76,9 +76,13 @@ void gauss_newton_neq_solve(const system_t & sys,
 
   // alpha for taking steps
   scalar_t alpha = {};
-  // storing residaul norm
+  // storing residual norm
   scalar_t normRes = {};
   scalar_t normRes0 = {};
+  // storing projected residual norm
+  scalar_t normJTRes = {};
+  scalar_t normJTRes0 = {};
+
 
 #ifdef DEBUG_PRINT
   // get precision before GN
@@ -94,7 +98,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 
   // compute the initial norm of y (the state)
   norm_evaluator_t::evaluate(y, normO);
-  normN = {0};
+  norm_dy = {0};
 
 #ifdef HAVE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -162,6 +166,18 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("JTR");
 #endif
 
+    // projected residual norm for current state
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("norm JTR");
+#endif
+    norm_evaluator_t::evaluate(JTR, normJTRes);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("norm JTR");
+#endif
+
+    // store initial residual norm
+    if (iStep==1) normJTRes0 = normJTRes;
+
     // ::pressio::utils::io::print_stdout("J^T R \n");
     // ::pressio::utils::io::print_stdout( std::fixed,
     // 				     *JTR.data() , "\n");
@@ -181,13 +197,15 @@ void gauss_newton_neq_solve(const system_t & sys,
     // 				    *dy.data());
 
     // compute norm of the correction
-    norm_evaluator_t::evaluate(dy, normN);
+    norm_evaluator_t::evaluate(dy, norm_dy);
 
 #ifdef DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
-				    "||dy|| =", normN,
+				    "||J^T R|| =", normJTRes,
+				    "||J^T R||(r) =", normJTRes/normJTRes0,
+				    "||dy|| =", norm_dy,
 				    utils::io::reset(),
 				    "\n");
 #endif
@@ -199,8 +217,10 @@ void gauss_newton_neq_solve(const system_t & sys,
     y = y + alpha*dy;
 
     // check convergence (whatever method user decided)
-    auto flag = is_converged_t::evaluate(y, dy, normN, normRes, normRes0,
-					 iStep, maxNonLIt, tolerance);
+    const auto flag = is_converged_t::evaluate(y, dy,
+					       norm_dy, normRes, normRes0,
+					       normJTRes, normJTRes0,
+					       iStep, maxNonLIt, tolerance);
 
     // if we have converged, query the observer
     if (flag) {
@@ -210,7 +230,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     }
 
     // store new norm into old variable
-    normO = normN;
+    normO = norm_dy;
 
     // compute residual and jacobian
     sys.residual(y, resid);

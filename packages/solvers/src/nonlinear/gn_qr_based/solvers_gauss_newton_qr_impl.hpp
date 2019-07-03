@@ -29,7 +29,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 			   iteration_t maxNonLIt,
 			   scalar_t tolerance,
 			   scalar_t & normO,
-			   scalar_t & normN){
+			   scalar_t & norm_dy){
 
   using jacobian_t	= typename system_t::jacobian_type;
 
@@ -51,10 +51,15 @@ void gauss_newton_qr_solve(const system_t & sys,
 
   // alpha for taking steps
   scalar_t alpha = {};
-  // residaul norm
+  // residual norm
   scalar_t normRes = {};
-  // initial residaul norm
+  // initial residual norm
   scalar_t normRes0 = {};
+  // residual norm
+  scalar_t normQTRes = {};
+  // initial residual norm
+  scalar_t normQTRes0 = {};
+
 
 #ifdef DEBUG_PRINT
   // get precision before GN
@@ -70,7 +75,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 
   // compute (whatever type) norm of y
   norm_evaluator_t::evaluate(y, normO);
-  normN = {};
+  norm_dy = {};
 
 #ifdef HAVE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -125,6 +130,18 @@ void gauss_newton_qr_solve(const system_t & sys,
     qrObj.project(resid, QTResid);
 #endif
 
+    // projected residual norm for current state
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("norm QTResid");
+#endif
+    norm_evaluator_t::evaluate(QTResid, normQTRes);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("norm QTResid");
+#endif
+
+    // store initial residual norm
+    if (iStep==1) normQTRes0 = normQTRes;
+
     // compute correction: dy
     // by solving R dy = - Q^T Residual
     QTResid.scale(static_cast<scalar_t>(-1));
@@ -137,13 +154,15 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
     // norm of the correction
-    norm_evaluator_t::evaluate(dy, normN);
+    norm_evaluator_t::evaluate(dy, norm_dy);
 
 #ifdef DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
-				    "||dy|| =", normN,
+				    "||Q^T R|| =", normQTRes,
+				    "||Q^T R||(r) =", normQTRes/normQTRes0,
+				    "||dy|| =", norm_dy,
 				    "\n");
 #endif
 
@@ -154,12 +173,14 @@ void gauss_newton_qr_solve(const system_t & sys,
     y = y + alpha*dy;
 
     // check convergence (whatever method user decided)
-    auto flag = is_converged_t::evaluate(y, dy, normN, normRes, normRes0, iStep,
-			    maxNonLIt, tolerance);
+    const auto flag = is_converged_t::evaluate(y, dy,
+					       norm_dy, normRes, normRes0,
+					       normQTRes, normQTRes0,
+					       iStep, maxNonLIt, tolerance);
     if (flag) break;
 
     // store new norm into old variable
-    normO = normN;
+    normO = norm_dy;
 
     sys.residual(y, resid);
     sys.jacobian(y, jacob);

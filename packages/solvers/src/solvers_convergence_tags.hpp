@@ -11,16 +11,31 @@ namespace converged_when{
 template <typename norm_type>
 struct absoluteNormCorrectionBelowTol{
   using norm_t = norm_type;
+  static_assert(mpl::is_same<norm_t,
+		 pressio::solvers::L1Norm>::value or
+		mpl::is_same<norm_t,
+		pressio::solvers::L2Norm>::value,
+		"Invalid template for absoluteNormCorrectionBelowTol, it must be L1Norm or L2Norm");
 };
 
 template <typename norm_type>
 struct absoluteNormResidualBelowTol{
   using norm_t = norm_type;
+  static_assert(mpl::is_same<norm_t,
+		 pressio::solvers::L1Norm>::value or
+		mpl::is_same<norm_t,
+		pressio::solvers::L2Norm>::value,
+		"Invalid template for absoluteNormCorrectionBelowTol, it must be L1Norm or L2Norm");
 };
 
 template <typename norm_type>
 struct relativeNormResidualBelowTol{
   using norm_t = norm_type;
+  static_assert(mpl::is_same<norm_t,
+		 pressio::solvers::L1Norm>::value or
+		mpl::is_same<norm_t,
+		pressio::solvers::L2Norm>::value,
+		"Invalid template for absoluteNormCorrectionBelowTol, it must be L1Norm or L2Norm");
 };
 
 struct completingNumMaxIters{};
