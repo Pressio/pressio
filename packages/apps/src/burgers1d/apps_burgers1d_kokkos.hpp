@@ -45,9 +45,12 @@ struct VelocityFunctor{
 
 class Burgers1dKokkos{
   using exe_space = Kokkos::DefaultExecutionSpace;
+  using krr = Kokkos::LayoutRight;
   using kll = Kokkos::LayoutLeft;
 
   using sc_t	= double;
+  using k1dLr_d = Kokkos::View<sc_t*, krr, exe_space>;
+  using k1dLr_h = k1dLr_d::HostMirror;
   using k1dLl_d = Kokkos::View<sc_t*, kll, exe_space>;
   using k1dLl_h = k1dLl_d::HostMirror;
 
