@@ -51,10 +51,15 @@ void gauss_newton_qr_solve(const system_t & sys,
 
   // alpha for taking steps
   scalar_t alpha = {};
-  // residaul norm
+  // residual norm
   scalar_t normRes = {};
-  // initial residaul norm
+  // initial residual norm
   scalar_t normRes0 = {};
+  // residual norm
+  scalar_t normQTRes = {};
+  // initial residual norm
+  scalar_t normQTRes0 = {};
+
 
 #ifdef DEBUG_PRINT
   // get precision before GN
@@ -125,6 +130,18 @@ void gauss_newton_qr_solve(const system_t & sys,
     qrObj.project(resid, QTResid);
 #endif
 
+    // projected residual norm for current state
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("norm QTResid");
+#endif
+    norm_evaluator_t::evaluate(QTResid, normQTRes);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("norm QTResid");
+#endif
+
+    // store initial residual norm
+    if (iStep==1) normQTRes0 = normQTRes;
+
     // compute correction: dy
     // by solving R dy = - Q^T Residual
     QTResid.scale(static_cast<scalar_t>(-1));
@@ -143,6 +160,8 @@ void gauss_newton_qr_solve(const system_t & sys,
     ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
+				    "||Q^T R|| =", normQTRes,
+				    "||Q^T R||(r) =", normQTRes/normQTRes0,
 				    "||dy|| =", normN,
 				    "\n");
 #endif
@@ -154,7 +173,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     y = y + alpha*dy;
 
     // check convergence (whatever method user decided)
-    auto flag = is_converged_t::evaluate(y, dy, normN, normRes, normRes0, iStep,
+    auto flag = is_converged_t::evaluate(y, dy, normN, normQTRes, normQTRes0, iStep,
 			    maxNonLIt, tolerance);
     if (flag) break;
 

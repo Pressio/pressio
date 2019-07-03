@@ -73,9 +73,13 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
   // alpha for taking steps
   scalar_t alpha = static_cast<scalar_t>(1);
-  // storing residaul norm
+  // storing residual norm
   scalar_t normRes = {};
   scalar_t normRes0 = {};
+  // storing projected residual norm
+  scalar_t normJTRes = {};
+  scalar_t normJTRes0 = {};
+
 
 #ifdef DEBUG_PRINT
   // get precision
@@ -202,6 +206,18 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     timer->stop("rhs");
 #endif
 
+    // projected residual norm for current state
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("norm JTR");
+#endif
+    norm_evaluator_t::evaluate(jTr2, normJTRes);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("norm JTR");
+#endif
+
+    // store initial residual norm
+    if (iStep==1) normJTRes0 = normJTRes;
+
     // solve normal equations
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("solve normeq");
@@ -224,6 +240,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
+				    "||J^T R|| =", normJTRes,
+				    "||J^T R||(r) =", normJTRes/normJTRes0,
 				    "||cbar_R|| = ", normCbarR,
 				    "||dy|| =", normN,
 				    "||dlambda|| =", normLambda,
@@ -260,8 +278,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // ::pressio::utils::io::print_stdout("--------------\n");
 
     // check convergence (whatever method user decided)
-    auto flag = is_conv_helper_t::evaluate(y, dy, normN, normRes,
-					   normRes0, iStep,
+    auto flag = is_conv_helper_t::evaluate(y, dy, normN, normJTRes,
+    		               normJTRes0, iStep,
 					   maxNonLIt, tolerance);
     if (flag) break;
 
