@@ -40,7 +40,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    typename system_t::state_type & dy,
 				    lin_solver_t & linSolver,
 				    scalar_t & normO,
-				    scalar_t & normN,
+				    scalar_t & norm_dy,
 				    const cbar_t & cbarT,
 				    mat_t & jTj,
 				    mat_t & jTcbarT,
@@ -97,7 +97,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
   // compute (whatever type) norm of y
   norm_evaluator_t::evaluate(y, normO);
-  normN = static_cast<scalar_t>(0);
+  norm_dy = static_cast<scalar_t>(0);
   auto normLambda = static_cast<scalar_t>(0);
   auto normCbarR = static_cast<scalar_t>(0);
 
@@ -233,7 +233,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     *dy_lambda.data() = dy.data()->block(y.size(), 0, lambda.size(), 1);
 
     // norm of the correction
-    norm_evaluator_t::evaluate(dy_y, normN);
+    norm_evaluator_t::evaluate(dy_y, norm_dy);
     norm_evaluator_t::evaluate(dy_lambda, normLambda);
 
 #ifdef DEBUG_PRINT
@@ -243,7 +243,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    "||J^T R|| =", normJTRes,
 				    "||J^T R||(r) =", normJTRes/normJTRes0,
 				    "||cbar_R|| = ", normCbarR,
-				    "||dy|| =", normN,
+				    "||dy|| =", norm_dy,
 				    "||dlambda|| =", normLambda,
 				    utils::io::reset(), "\n");
 #endif
@@ -278,13 +278,14 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // ::pressio::utils::io::print_stdout("--------------\n");
 
     // check convergence (whatever method user decided)
-    auto flag = is_conv_helper_t::evaluate(y, dy, normN, normJTRes,
-    		               normJTRes0, iStep,
-					   maxNonLIt, tolerance);
+    const auto flag = is_conv_helper_t::evaluate(y, dy,
+						 norm_dy, normRes, normRes0,
+						 normJTRes, normJTRes0,
+						 iStep, maxNonLIt, tolerance);
     if (flag) break;
 
     // store new norm into old variable
-    normO = normN;
+    normO = norm_dy;
 
     sys.residual(y, resid);
     sys.jacobian(y, jacob);

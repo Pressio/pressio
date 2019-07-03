@@ -29,7 +29,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 			   iteration_t maxNonLIt,
 			   scalar_t tolerance,
 			   scalar_t & normO,
-			   scalar_t & normN){
+			   scalar_t & norm_dy){
 
   using jacobian_t	= typename system_t::jacobian_type;
 
@@ -75,7 +75,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 
   // compute (whatever type) norm of y
   norm_evaluator_t::evaluate(y, normO);
-  normN = {};
+  norm_dy = {};
 
 #ifdef HAVE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -154,7 +154,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
     // norm of the correction
-    norm_evaluator_t::evaluate(dy, normN);
+    norm_evaluator_t::evaluate(dy, norm_dy);
 
 #ifdef DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
@@ -162,7 +162,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 				    "||R||(r) =", normRes/normRes0,
 				    "||Q^T R|| =", normQTRes,
 				    "||Q^T R||(r) =", normQTRes/normQTRes0,
-				    "||dy|| =", normN,
+				    "||dy|| =", norm_dy,
 				    "\n");
 #endif
 
@@ -173,12 +173,14 @@ void gauss_newton_qr_solve(const system_t & sys,
     y = y + alpha*dy;
 
     // check convergence (whatever method user decided)
-    auto flag = is_converged_t::evaluate(y, dy, normN, normQTRes, normQTRes0, iStep,
-			    maxNonLIt, tolerance);
+    const auto flag = is_converged_t::evaluate(y, dy,
+					       norm_dy, normRes, normRes0,
+					       normQTRes, normQTRes0,
+					       iStep, maxNonLIt, tolerance);
     if (flag) break;
 
     // store new norm into old variable
-    normO = normN;
+    normO = norm_dy;
 
     sys.residual(y, resid);
     sys.jacobian(y, jacob);
