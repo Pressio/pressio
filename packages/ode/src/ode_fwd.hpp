@@ -73,7 +73,7 @@ template<
   typename model_type,
   typename enable = void
   >
-class OdeSystemWrapper;
+struct OdeSystemWrapper;
 
 template<
   typename scalar_type,
