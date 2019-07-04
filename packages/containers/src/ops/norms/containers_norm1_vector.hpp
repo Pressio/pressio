@@ -4,6 +4,9 @@
 
 #include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
+#ifdef HAVE_TRILINOS
+#include "KokkosBlas1_nrm1.hpp"
+#endif
 
 namespace pressio{ namespace containers{ namespace ops{
 
@@ -54,6 +57,7 @@ auto norm1(const vec_type & a)
 //  teuchos serial dense vector wrapper
 //--------------------------------------------------------
 #ifdef HAVE_TRILINOS
+
 template <typename vec_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
@@ -65,7 +69,20 @@ auto norm1(const vec_type & a)
   using sc_t = typename details::traits<vec_type>::scalar_t;
   return static_cast<sc_t>(a.data()->normOne());
 }
-#endif 
+
+//  kokkos vector wrapper
+template <typename vec_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<vec_type>::value
+    > * = nullptr
+  >
+auto norm1(const vec_type & a)
+  -> typename details::traits<vec_type>::scalar_t
+{
+  return KokkosBlas::nrm1(*a.data());
+}
+
+#endif
 
 
 }}}//end namespace pressio::containers::ops
