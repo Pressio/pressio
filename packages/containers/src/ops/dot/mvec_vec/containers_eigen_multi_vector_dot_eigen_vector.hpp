@@ -73,7 +73,7 @@ auto dot(const mvec_type & mvA, const vec_type & vecB)
                 >{
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
-  containers::Vector<Eigen::Matrix<sc_t, Eigen::Dynamic, 1>> c(vecB.size());
+  containers::Vector<Eigen::Matrix<sc_t, Eigen::Dynamic, 1>> c(mvA.data()->cols());
   dot(mvA,vecB,c);
   return c;
 }
