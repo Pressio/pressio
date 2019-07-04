@@ -33,6 +33,7 @@
 #include "containers/src/ops/multivec_vec_product/containers_epetra_multi_vector_product_teuchos_serial_vector.hpp"
 #include "containers/src/ops/multivec_vec_product/containers_tpetra_multi_vector_product_teuchos_serial_vector.hpp"
 #include "containers/src/ops/multivec_vec_product/containers_tpetra_block_multi_vector_product_eigen_vector.hpp"
+#include "containers/src/ops/multivec_vec_product/containers_kokkos_multi_vector_product_kokkos_vector.hpp"
 
 #include "containers/src/ops/containers_vector_set_zero.hpp"
 #include "containers/src/ops/containers_vector_deep_copy.hpp"
