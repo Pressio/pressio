@@ -7,11 +7,13 @@
 #include "./meta/containers_native_armadillo_vector_meta.hpp"
 #include "./meta/containers_native_blaze_vector_meta.hpp"
 #include "./meta/containers_native_eigen_vector_meta.hpp"
+#ifdef HAVE_TRILINOS
 #include "./meta/containers_native_epetra_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_vector_meta.hpp"
 #include "./meta/containers_native_teuchos_vector_meta.hpp"
 #include "./meta/containers_native_kokkos_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_block_vector_meta.hpp"
+#endif
 
 namespace pressio{ namespace containers{ namespace details{
 
@@ -389,24 +391,26 @@ struct traits<Vector<wrapped_type,
 	    >
 	  >
 	>
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Kokkos,
-				    true, wrapped_type::traits::rank_dynamic==0>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Kokkos,
+  true, //true because kokkos is for shared mem
+  // static view if the number of runtime determined dimensions == 0
+  wrapped_type::traits::rank_dynamic==0>
 {
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Kokkos;
 
-  using scalar_t = typename wrapped_type::traits::value_type;
-  using ordinal_t = int;
-
-  using  execution_space = typename wrapped_type::traits::execution_space;
-  using  memory_space = typename wrapped_type::traits::memory_space;
-  using  device_type = typename wrapped_type::traits::device_type;
-  using  memory_traits = typename wrapped_type::traits::memory_traits;
-  using  host_mirror_space = typename wrapped_type::traits::host_mirror_space;
+  using scalar_t	   = typename wrapped_type::traits::value_type;
+  using ordinal_t	   = typename wrapped_type::traits::size_type;
+  using execution_space    = typename wrapped_type::traits::execution_space;
+  using memory_space	   = typename wrapped_type::traits::memory_space;
+  using device_type	   = typename wrapped_type::traits::device_type;
+  using memory_traits	   = typename wrapped_type::traits::memory_traits;
+  using host_mirror_space  = typename wrapped_type::traits::host_mirror_space;
 };
 #endif
 
