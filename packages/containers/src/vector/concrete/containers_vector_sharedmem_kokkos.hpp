@@ -5,6 +5,7 @@
 
 #include "../../shared_base/containers_container_base.hpp"
 #include "../base/containers_vector_sharedmem_base.hpp"
+#include<KokkosBlas1_fill.hpp>
 
 namespace pressio{ namespace containers{
 
@@ -41,6 +42,10 @@ public:
     // std::cout << data_.label() << std::endl;
   }
 
+  Vector(const std::string & label, size_t e1)
+    : data_{label, e1}
+  {}
+
   Vector(const this_t & other)
     : data_{other.data_.label(), other.data_.extent(0)}
   {
@@ -57,6 +62,11 @@ private:
   }
   wrap_t * dataImpl(){
     return &data_;
+  }
+
+  void setZeroImpl() {
+    constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+    KokkosBlas::fill(data_, zero);
   }
 
   wrap_t dataCpImpl(){

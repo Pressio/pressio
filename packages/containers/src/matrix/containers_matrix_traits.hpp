@@ -29,7 +29,9 @@ struct traits<
       !containers::meta::is_dense_matrix_epetra<wrapped_type>::value and
       !containers::meta::is_dense_matrix_teuchos<wrapped_type>::value and
       !containers::meta::is_dense_matrix_teuchos_rcp<wrapped_type>::value and
-      !containers::meta::is_sparse_matrix_tpetra<wrapped_type>::value
+      !containers::meta::is_sparse_matrix_tpetra<wrapped_type>::value and
+      !containers::meta::is_sparse_matrix_kokkos<wrapped_type>::value and
+      !containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
 #endif
       >
     >
@@ -317,6 +319,51 @@ struct traits<
   using size_type	= typename wrapped_type::size_type;
 };
 #endif
+
+
+
+
+//*******************************
+// Kokkos dense matrix
+//*******************************
+#ifdef HAVE_TRILINOS
+template <typename wrapped_type>
+struct traits<
+  Matrix<
+    wrapped_type,
+    ::pressio::mpl::enable_if_t<
+      containers::meta::is_dense_matrix_kokkos<
+	wrapped_type
+	>::value
+      >
+    >
+  >
+  : public containers_shared_traits<
+  Matrix<wrapped_type>,
+  wrapped_type,
+  false, true, false,
+  WrappedPackageIdentifier::Kokkos,
+  true, //true because kokkos is for shared mem
+  // static view if the number of runtime determined dimensions == 0
+  wrapped_type::traits::rank_dynamic==0
+  >
+{
+
+  static constexpr WrappedMatrixIdentifier
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
+
+  using scalar_t	  = typename wrapped_type::traits::value_type;
+  using layout		  = typename wrapped_type::traits::array_layout;
+  using ordinal_t	  = typename wrapped_type::traits::size_type;
+  using execution_space   = typename wrapped_type::traits::execution_space;
+  using memory_space	  = typename wrapped_type::traits::memory_space;
+  using device_type	  = typename wrapped_type::traits::device_type;
+  using memory_traits	  = typename wrapped_type::traits::memory_traits;
+  using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
+  using host_mirror_t     = typename wrapped_type::host_mirror_type;
+};
+#endif
+
 
 }}}//end namespace pressio::containers::details
 #endif

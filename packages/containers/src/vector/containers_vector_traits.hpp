@@ -405,12 +405,14 @@ struct traits<Vector<wrapped_type,
   wrapped_vector_identifier = WrappedVectorIdentifier::Kokkos;
 
   using scalar_t	   = typename wrapped_type::traits::value_type;
+  using layout		   = typename wrapped_type::traits::array_layout;
   using ordinal_t	   = typename wrapped_type::traits::size_type;
   using execution_space    = typename wrapped_type::traits::execution_space;
   using memory_space	   = typename wrapped_type::traits::memory_space;
   using device_type	   = typename wrapped_type::traits::device_type;
   using memory_traits	   = typename wrapped_type::traits::memory_traits;
   using host_mirror_space  = typename wrapped_type::traits::host_mirror_space;
+  using host_mirror_t      = typename wrapped_type::host_mirror_type;
 };
 #endif
 
