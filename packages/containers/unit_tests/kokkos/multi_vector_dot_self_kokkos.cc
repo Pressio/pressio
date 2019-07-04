@@ -12,17 +12,17 @@ struct RunTest{
   const int Nc = 4;
 
   using exe_space = Kokkos::DefaultExecutionSpace;
-  using k2dLr_d = Kokkos::View<double**, d_layout, exe_space>;
-  using k2dLr_h = typename k2dLr_d::HostMirror;
+  using k2d_d = Kokkos::View<double**, d_layout, exe_space>;
+  using k2d_h = typename k2d_d::HostMirror;
 
-  using wmv = ::pressio::containers::MultiVector<k2dLr_d>;
+  using wmv = ::pressio::containers::MultiVector<k2d_d>;
   static_assert( ::pressio::containers::details::traits<wmv>::is_static == 0, "" );
   static_assert( ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<wmv>::value, "" );
   static_assert( !::pressio::containers::meta::is_vector_wrapper_kokkos<wmv>::value, "" );
 
   RunTest(){
     // create host matrix
-    k2dLr_h A_h("Ah", Nr, Nc);
+    k2d_h A_h("Ah", Nr, Nc);
     // fill host matrix
     A_h(0,0)=0.; A_h(0,1)=1.; A_h(0,2)=2.; A_h(0,3)=3.;
     A_h(1,0)=1.; A_h(1,1)=0.; A_h(1,2)=1.; A_h(1,3)=2.;
@@ -32,7 +32,7 @@ struct RunTest{
     A_h(5,0)=4.; A_h(5,1)=0.; A_h(5,2)=1.; A_h(5,3)=0.;
 
     // create device matrix
-    k2dLr_d A_d("Ad", Nr, Nc);
+    k2d_d A_d("Ad", Nr, Nc);
     // copy host -> device
     Kokkos::deep_copy(A_d, A_h);
 
@@ -41,7 +41,7 @@ struct RunTest{
 
     // self-dot
     auto C_d = ::pressio::containers::ops::dot_self(mvA_d);
-    using expected_ret_t = ::pressio::containers::Matrix<k2dLr_d>;
+    using expected_ret_t = ::pressio::containers::Matrix<k2d_d>;
     static_assert( std::is_same< decltype(C_d), expected_ret_t>::value, "");
 
     // create host mirror of C_d
