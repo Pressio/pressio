@@ -1,5 +1,5 @@
 
 ADD_SUBDIRECTORY(eigen)
 IF(HAVE_TRILINOS)
-ADD_SUBDIRECTORIES(epetra tpetra)
+  ADD_SUBDIRECTORIES(epetra tpetra kokkos)
 ENDIF()

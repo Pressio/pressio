@@ -3,69 +3,69 @@
 #define PRESSIOAPPS_BURGERS1D_KOKKOS_HPP_
 
 #include "../apps_ConfigDefs.hpp"
+
+// this has to be here because HAVE_TRILINOS is seen after we include configDefs
+#ifdef HAVE_TRILINOS
+
 #include <Kokkos_Core.hpp>
+#include <KokkosSparse_CrsMatrix.hpp>
+#include "apps_burgers1d_kokkos_functors.hpp"
+#include "KokkosSparse_spmv.hpp"
+#include <array>
 
 namespace pressio{ namespace apps{
 
-template <
-  typename x_t,
-  typename y_t,
-  typename rhs_t,
-  typename sc_t
-  >
-struct VelocityFunctor{
-  sc_t mu0_;
-  sc_t mu1_;
-  sc_t mu2_;
-  int Ncell_;
-  sc_t dxInv_;
-  x_t x_;
-  y_t y_;
-  rhs_t r_;
-
-  VelocityFunctor(sc_t mu0, sc_t mu1, sc_t mu2,
-		  int Ncell, sc_t dxInv,
-		  x_t x, y_t y, rhs_t r)
-    : mu0_{mu0}, mu1_{mu1}, mu2_{mu2},
-      Ncell_{Ncell}, dxInv_{dxInv},
-      x_{x}, y_{y}, r_{r}{}
-
-  KOKKOS_INLINE_FUNCTION
-  void operator() (const int & i) const {
-    if (i==0)
-      r_(i) = 0.5 * dxInv_ * (mu0_*mu0_ - y_(i)*y_(i));
-
-    if (i>=1 and i<Ncell_)
-      r_(i) = 0.5 * dxInv_ * (y_(i-1)*y_(i-1) - y_(i)*y_(i));
-
-    r_(i) += mu1_*std::exp(mu2_*x_(i));
-  }
-};
-
-
-class Burgers1dKokkos{
-  using exe_space = Kokkos::DefaultExecutionSpace;
-  using krr = Kokkos::LayoutRight;
-  using kll = Kokkos::LayoutLeft;
+struct Burgers1dKokkos{
 
   using sc_t	= double;
-  using k1dLr_d = Kokkos::View<sc_t*, krr, exe_space>;
-  using k1dLr_h = k1dLr_d::HostMirror;
-  using k1dLl_d = Kokkos::View<sc_t*, kll, exe_space>;
-  using k1dLl_h = k1dLl_d::HostMirror;
+  using params_t = std::array<sc_t, 3>;
+  using ui_t = unsigned int;
+
+  using klr = Kokkos::LayoutRight;
+  using kll = Kokkos::LayoutLeft;
+
+  // using k1dLr_d = Kokkos::View<sc_t*, klr, execution_space>;
+  // using k1dLr_h = k1dLr_d::host_mirror_type;
+  // {
+  //   // host and device have same layout
+  //   using h_layout = typename k1dLr_h::traits::array_layout;
+  //   using d_layout = typename k1dLr_d::traits::array_layout;
+  //   static_assert( std::is_same<h_layout, d_layout>::value,
+  // 		   "Layout for d and h (mirrorw) view is not the same");
+  // }
+  using execution_space = Kokkos::DefaultExecutionSpace;
+
+  using k1dLl_d = Kokkos::View<sc_t*, kll, execution_space>;
+  using k1dLl_h = k1dLl_d::host_mirror_type;
+  // host and device should have same layout
+  using h_layout1 = typename k1dLl_h::traits::array_layout;
+  using d_layout1 = typename k1dLl_d::traits::array_layout;
+  static_assert( std::is_same<h_layout1, d_layout1>::value,
+		 "Layout for d and h (mirrorw) 1d view is not the same");
+
+  using k2dLl_d = Kokkos::View<sc_t**, kll, execution_space>;
+  using k2dLl_h = k2dLl_d::host_mirror_type;
+  // host and device have same layout
+  using h_layout2 = typename k2dLl_h::traits::array_layout;
+  using d_layout2 = typename k2dLl_d::traits::array_layout;
+  static_assert( std::is_same<h_layout2, d_layout2>::value,
+		 "Layout for d and h (mirrorw) 2d view is not the same");
+
+  using ord_t = int;
+  using crs_mat = KokkosSparse::CrsMatrix<sc_t, ord_t, execution_space, void, int>;
 
   using state_type_d	= k1dLl_d;
   using state_type_h	= k1dLl_h;
   using velocity_type_d	= state_type_d;
   using velocity_type_h	= state_type_h;
+  using mv_d = k2dLl_d;
+  using mv_h = k2dLl_h;
 
-  using params_t = std::array<sc_t, 3>;
-  using ui_t = unsigned int;
-
-public:
   using scalar_type	= sc_t;
   using state_type	= state_type_d;
   using velocity_type	= state_type_d;
+  using jacobian_type   = crs_mat;
+  using mvec_t	= mv_d;
 
 public:
   explicit Burgers1dKokkos(params_t params,
@@ -80,18 +80,7 @@ public:
   ~Burgers1dKokkos() = default;
 
 public:
-  void setup(){
-    dx_ = (xR_ - xL_)/static_cast<sc_t>(Ncell_);
-    dxInv_ = 1.0/dx_;
-
-    // grid
-    for (ui_t i=0; i<Ncell_; ++i){
-      x_h_(i) = dx_*i + dx_*0.5;
-      U_h_(i) = 1.0;
-    }
-    Kokkos::deep_copy(x_d_, x_h_);
-    Kokkos::deep_copy(U_d_, U_h_);
-  };
+  void setup();
 
   state_type const getInitialState() const {
     return U_d_;
@@ -99,34 +88,55 @@ public:
 
   void velocity(const state_type & u,
 		velocity_type & rhs,
-		const scalar_type /* t */) const
-  {
-    using func_t = VelocityFunctor<k1dLr_d, state_type, velocity_type, sc_t>;
-    func_t F(mu_[0], mu_[1], mu_[2], Ncell_, dxInv_, x_d_, u, rhs);
-    Kokkos::parallel_for(Ncell_, F);
-  }
+		const scalar_type /* t */) const;
 
   velocity_type velocity(const state_type & u,
-			 const scalar_type t) const{
-    velocity_type RR("RR", Ncell_);
-    this->velocity(u, RR, t);
-    return RR;
-  }
+			 const scalar_type t) const;
+
+  void applyJacobian(const state_type & y,
+		     const mvec_t & B,
+		     mvec_t & A,
+		     scalar_type t) const;
+
+  mvec_t applyJacobian(const state_type & y,
+		       const mvec_t & B,
+		       scalar_type t) const;
+
+  void jacobian(const state_type & u,
+		jacobian_type & jac,
+		const scalar_type t) const;
+
+  jacobian_type jacobian(const state_type & u,
+			 const scalar_type t) const;
 
 private:
-  params_t mu_; // parameters
-  const sc_t xL_ = 0.0; //left side of domain
-  const sc_t xR_ = 100.0; // right side of domain
-  ui_t Ncell_; // # of cells
-  sc_t dx_; // cell size
-  sc_t dxInv_; // inv of cell size
+  // parameters
+  params_t mu_;
 
-  k1dLr_d x_d_; // mesh on device
-  k1dLr_h x_h_; // mesh on host
+  //x coord of left side of domain
+  const sc_t xL_ = 0.0;
+  //x coord of right side of domain
+  const sc_t xR_ = 100.0;
 
-  mutable state_type U_d_; // state on device
-  mutable state_type_h U_h_; // state on host
+  // # of cells
+  ui_t Ncell_;
+  // cell size
+  sc_t dx_;
+  // 1/dx
+  sc_t dxInv_;
+
+  // mesh on device
+  k1dLl_d x_d_;
+  // mesh on host
+  k1dLl_h x_h_;
+
+  // state on device
+  mutable state_type U_d_;
+  // state on host
+  mutable state_type_h U_h_;
+
 };//end class
 
 }} //namespace pressio::apps
+#endif
 #endif
