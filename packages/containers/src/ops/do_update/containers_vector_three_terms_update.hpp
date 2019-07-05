@@ -28,10 +28,10 @@ template<
     ::pressio::containers::meta::has_expression_templates_support<T>::value
     > * = nullptr
   >
-void do_update(T & v, const scalar_t a,
-	       const T & v1, const scalar_t b,
-	       const T & v2, const scalar_t c,
-	       const T & v3, const scalar_t d){
+void do_update(T & v, const scalar_t &a,
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d){
   v = a*v + b*v1 + c*v2 + d*v3;
 }
 
@@ -44,9 +44,9 @@ template<
     > * = nullptr
   >
 void do_update(T & v,
-	       const T & v1, const scalar_t b,
-	       const T & v2, const scalar_t c,
-	       const T & v3, const scalar_t d){
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d){
   v = b*v1 + c*v2 + d*v3;
 }
 
@@ -63,10 +63,10 @@ template<
     ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
     > * = nullptr
   >
-void do_update(T & v, const scalar_t a,
-	       const T & v1, const scalar_t b,
-	       const T & v2, const scalar_t c,
-	       const T & v3, const scalar_t d){
+void do_update(T & v, const scalar_t &a,
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d){
   // make sure this is a vector
   if (v.ndim() > 1){
     throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
@@ -89,9 +89,9 @@ template<
     > * = nullptr
   >
 void do_update(T & v,
-	       const T & v1, const scalar_t b,
-	       const T & v2, const scalar_t c,
-	       const T & v3, const scalar_t d){
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d){
   // make sure this is a vector
   if (v.ndim() > 1){
     throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
@@ -121,10 +121,10 @@ template<
     ::pressio::containers::meta::is_vector_wrapper_tpetra_block<T>::value
     > * = nullptr
   >
-void do_update(T & v, const scalar_t a,
-	       const T & v1, const scalar_t b,
-	       const T & v2, const scalar_t c,
-	       const T & v3, const scalar_t d)
+void do_update(T & v, const scalar_t &a,
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d)
 {
   constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
 
@@ -142,9 +142,9 @@ template<
     > * = nullptr
   >
 void do_update(T & v,
-	       const T & v1, const scalar_t b,
-	       const T & v2, const scalar_t c,
-	       const T & v3, const scalar_t d)
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d)
 {
   constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();

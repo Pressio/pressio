@@ -147,8 +147,8 @@ template<
     ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
     > * = nullptr
   >
-void do_update(T & v, const scalar_t a,
-	       const T & v1, const scalar_t b)
+void do_update(T & v, const scalar_t & a,
+	       const T & v1, const scalar_t & b)
 {
   // v = a*v + b * v1
   KokkosBlas::axpby(b, *v1.data(), a, *v.data());
@@ -161,7 +161,7 @@ template<
     ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
     > * = nullptr
   >
-void do_update(T & v, const T & v1, const scalar_t b)
+void do_update(T & v, const T & v1, const scalar_t & b)
 {
   // v = b*v1
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
