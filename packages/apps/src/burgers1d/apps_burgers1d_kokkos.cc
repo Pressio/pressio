@@ -63,12 +63,35 @@ void Burgers1dKokkos::jacobian(const state_type & u,
 			       jacobian_type & jac,
 			       const scalar_type t) const
 {
+  // here the Jacobian is passed in as an argument.
+  // to recompute it, use parallel for
+
+  // state_type_h u_h = Kokkos::create_mirror_view(u);
+  // jacobian_type JJ2("JJ2", numRows, numCols, numEnt, val, ptr, ind);
+  // jac = JJ2;
+  //Kokkos::deep_copy(jac.values, JJ2.values);
+
+  using exe_space = typename Burgers1dKokkos::execution_space;
+
+  using policy_type = Kokkos::RangePolicy<exe_space, int>;
+
+  using func_t = JacobianFunctor<state_type, jacobian_type, sc_t>;
+  func_t F(Ncell_, dxInv_, u, jac);
+  Kokkos::parallel_for( policy_type(0, Ncell_), F);
+  //Kokkos::parallel_for(Ncell_, F);
+}
+
+
+typename Burgers1dKokkos::jacobian_type
+Burgers1dKokkos::jacobian(const state_type & u,
+			  const scalar_type t) const
+{
   const int numRows = Ncell_;
   const int numCols = Ncell_;
   const int numEnt = (Ncell_-1)*2 + 1;
-  // TODO: this should only be used once to create jacobian at beginning
-  // we need to replace this with a Kokkos for_loop over rows to replace values
-  // every time we need to recompute it
+
+  // here we need to create a Jacobian, so use the following.
+  // The data is filled on the host, then copied to device
 
   state_type_h u_h = Kokkos::create_mirror_view(u);
 
@@ -106,23 +129,7 @@ void Burgers1dKokkos::jacobian(const state_type & u,
     }
     Kokkos::deep_copy (val, val_h);
   }
-  jacobian_type JJ2("JJ2", numRows, numCols, numEnt, val, ptr, ind);
-  jac = JJ2;
-  //Kokkos::deep_copy(jac.values, JJ2.values);
-}
 
-
-typename Burgers1dKokkos::jacobian_type
-Burgers1dKokkos::jacobian(const state_type & u,
-			  const scalar_type t) const
-{
-  const int numRows = Ncell_;
-  const int numCols = Ncell_;
-  const int numEnt = (Ncell_-1)*2 + 1;
-
-  typename jacobian_type::row_map_type::non_const_type ptr ("ptr", numRows+1);
-  typename jacobian_type::index_type::non_const_type ind ("ind", numEnt);
-  typename jacobian_type::values_type val ("val", numEnt);
   jacobian_type JJ("JJ", numRows, numCols, numEnt, val, ptr, ind);
   this->jacobian(u, JJ, t);
   return JJ;
