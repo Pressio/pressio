@@ -22,6 +22,10 @@ struct NonLinearSolverBase {
   ~NonLinearSolverBase() = default;
   NonLinearSolverBase(const NonLinearSolverBase &) = delete;
 
+  std::string getConvergenceConditionDescription() const{
+    return convergenceConditionDescription_;
+  }
+
   template <
     typename system_t,
     typename state_t
@@ -33,6 +37,10 @@ struct NonLinearSolverBase {
 
     static_cast<Derived&>(*this).solveImpl(sys, x);
   }
+
+private:
+  std::string convergenceConditionDescription_ = "none";
+  friend Derived;
 };
 
 }}//end namespace pressio::solvers

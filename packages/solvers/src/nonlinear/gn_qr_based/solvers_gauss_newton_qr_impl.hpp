@@ -29,7 +29,8 @@ void gauss_newton_qr_solve(const system_t & sys,
 			   iteration_t maxNonLIt,
 			   scalar_t tolerance,
 			   scalar_t & normO,
-			   scalar_t & norm_dy){
+			   scalar_t & norm_dy,
+			   std::string & convCondDescr){
 
   using jacobian_t	= typename system_t::jacobian_type;
 
@@ -61,6 +62,7 @@ void gauss_newton_qr_solve(const system_t & sys,
   scalar_t normQTRes0 = {};
 
   constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+  convCondDescr = std::string(is_converged_t::description_);
 
 #ifdef DEBUG_PRINT
   // get precision before GN
@@ -69,9 +71,8 @@ void gauss_newton_qr_solve(const system_t & sys,
   std::cout.precision(14);
   // print GN is starting
   auto fmt1 = utils::io::cyan() + utils::io::underline();
-  const auto convString = std::string(is_converged_t::description_);
   ::pressio::utils::io::print_stdout(fmt1, "GN with QR:", "criterion:",
-				  convString, utils::io::reset(), "\n");
+				     convCondDescr, utils::io::reset(), "\n");
 #endif
 
   // compute (whatever type) norm of y

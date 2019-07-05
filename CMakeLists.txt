@@ -109,6 +109,11 @@ endfunction()
 # are needed as preprocessor directives to turn on/off code
 # if the TPL is not linked to
 
+if( CMAKE_BUILD_TYPE STREQUAL "DEBUG" )
+  message( "CMAKE_BUILD_TYPE==DEBUG so DEBUG_PRINT=ON" )
+  set(DEBUG_PRINT ON)
+endif()
+
 if(DEBUG_PRINT)
   MESSAGE("DEBUG_PRINT is ON")
 endif()
