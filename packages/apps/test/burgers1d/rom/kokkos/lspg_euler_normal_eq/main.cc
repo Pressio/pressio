@@ -21,8 +21,6 @@ int main(int argc, char *argv[]){
 
   // device lspg state type
   using lspg_state_d_t	= pressio::containers::Vector<native_state_t_d>;
-  // // host lspg state type
-  // using lspg_state_h_t	= pressio::containers::Vector<>;
 
   // device decoder jacobian type
   using decoder_jac_d_t	= pressio::containers::MultiVector<native_mv_t_d>;
@@ -31,8 +29,6 @@ int main(int argc, char *argv[]){
 
   // device decoder type
   using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t>;
-  // // host decoder type
-  // using decoder_h_t	= pressio::rom::LinearDecoder<decoder_jac_h_t>;
 
   std::string checkStr {"PASSED"};
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
