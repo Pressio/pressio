@@ -46,12 +46,20 @@ public:
   MultiVector(const this_t & other)
     : data_{other.data_.label(),
 	    other.data_.extent(0),
-	    other.data_.extent(1)}
-  {
+	    other.data_.extent(1)}{
     Kokkos::deep_copy(data_, other.data_);
   }
 
   ~MultiVector(){}
+
+public:
+  // copy assign implments copy semantics not view (for time being)
+  this_t & operator=(const this_t & other){
+    assert(this->length() == other.length());
+    assert(this->numVectors() == other.numVectors());
+    Kokkos::deep_copy(data_, *other.data());
+    return *this;
+  }
 
 private:
   wrap_t const * dataImpl() const{

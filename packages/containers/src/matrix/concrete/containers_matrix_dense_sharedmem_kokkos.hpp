@@ -4,6 +4,7 @@
 #define CONTAINERS_DENSE_MATRIX_SHAREDMEM_KOKKOS_HPP_
 
 #include "../../shared_base/containers_container_base.hpp"
+#include "../base/containers_matrix_sharedmem_base.hpp"
 
 namespace pressio{ namespace containers{
 
@@ -14,7 +15,8 @@ class Matrix<
     containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
     >
   >
-  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >
+  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
+    public MatrixSharedMemBase< Matrix<wrapped_type> >
 {
 
   using this_t = Matrix<wrapped_type>;
@@ -48,6 +50,15 @@ public:
 
   ~Matrix(){}
 
+public:
+  // copy assign implments copy semantics not view (for time being)
+  this_t & operator=(const this_t & other){
+    assert(this->rows() == other.rows());
+    assert(this->cols() == other.cols());
+    Kokkos::deep_copy(data_, *other.data());
+    return *this;
+  }
+
 private:
   wrap_t const * dataImpl() const{
     return &data_;
@@ -60,8 +71,17 @@ private:
     return data_;
   }
 
+  ord_t rowsImpl() const{
+    return data_.extent(0);
+  }
+
+  ord_t colsImpl() const{
+    return data_.extent(1);
+  }
+
 private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend MatrixSharedMemBase< this_t >;
 
 private:
   wrap_t data_ = {};

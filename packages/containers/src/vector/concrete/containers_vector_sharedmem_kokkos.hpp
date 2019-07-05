@@ -5,7 +5,8 @@
 
 #include "../../shared_base/containers_container_base.hpp"
 #include "../base/containers_vector_sharedmem_base.hpp"
-#include<KokkosBlas1_fill.hpp>
+#include <KokkosBlas1_fill.hpp>
+#include <KokkosBlas1_scal.hpp>
 
 namespace pressio{ namespace containers{
 
@@ -56,12 +57,24 @@ public:
 
   ~Vector(){}
 
+public:
+  // copy assign implments copy semantics not view (for time being)
+  this_t & operator=(const this_t & other){
+    assert(this->size() == other.size());
+    Kokkos::deep_copy(data_, *other.data());
+    return *this;
+  }
+
 private:
   wrap_t const * dataImpl() const{
     return &data_;
   }
   wrap_t * dataImpl(){
     return &data_;
+  }
+
+  void scaleImpl(sc_t value) {
+    KokkosBlas::scal(data_, value, data_);
   }
 
   void setZeroImpl() {
@@ -71,6 +84,10 @@ private:
 
   wrap_t dataCpImpl(){
     return data_;
+  }
+
+  ord_t sizeImpl() const {
+    return data_.extent(0);
   }
 
 private:

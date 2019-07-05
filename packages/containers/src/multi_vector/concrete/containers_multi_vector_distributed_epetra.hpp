@@ -60,10 +60,7 @@ public:
 
   // compound assignment when type(b) = type(this)
   // this += b
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator+=(const T & other) {
+  this_t & operator+=(const this_t & other) {
     this->data_.Update(1.0, *other.data(), 1.0 );
     return *this;
   }
