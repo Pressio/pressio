@@ -32,8 +32,9 @@ void set_zero(T & v){
   }
 
   using scalar_t = typename T::value_type;
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
   for (decltype(v.size()) i=0; i<v.size(); ++i){
-    v.mutable_at(i) = ::pressio::utils::constants::zero<scalar_t>();
+    v.mutable_at(i) = zero;
   }
 }
 #endif
