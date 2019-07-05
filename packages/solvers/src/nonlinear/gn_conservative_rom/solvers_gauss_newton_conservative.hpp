@@ -147,7 +147,9 @@ public:
 	cbarTlambda_, jTr2_,
 	cbarR_,	A_,
 	b_, lambda_,
-	y2_);
+	y2_,
+	base_t::convergenceConditionDescription_
+	);
 
   }//end solve
 

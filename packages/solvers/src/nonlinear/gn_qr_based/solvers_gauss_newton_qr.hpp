@@ -32,7 +32,8 @@ class GaussNewtonQR<
      scalar_type, line_search_type, convergence_when_t>;
 
   // need to be friend of base (crpt)
-  friend NonLinearSolverBase<this_t>;
+  using non_lin_sol_base_t = NonLinearSolverBase<this_t>;
+  friend non_lin_sol_base_t;
 
   // the type of the iterative base
   using iterative_base_t = IterativeBase<scalar_type>;
@@ -97,7 +98,8 @@ private:
        qrSolver_,
        iterative_base_t::maxIters_,
        iterative_base_t::tolerance_,
-       normO_, normN_);
+       normO_, normN_,
+       non_lin_sol_base_t::convergenceConditionDescription_);
   }//end solve
 
 };//class

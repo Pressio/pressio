@@ -16,26 +16,52 @@ struct is_non_default_convergence_tag<
   T,
   ::pressio::mpl::enable_if_t<
     std::is_same<
-      T,
-      iterative::converged_when::absoluteNormCorrectionBelowTol<L2Norm>>::value or
+      T, iterative::converged_when::absoluteNormCorrectionBelowTol<L2Norm>
+      >::value
+    or
     std::is_same<
-      T,
-      iterative::converged_when::absoluteNormCorrectionBelowTol<L1Norm>>::value or
+      T, iterative::converged_when::absoluteNormCorrectionBelowTol<L1Norm>
+      >::value
+    //---------------------------------
+    or
     std::is_same<
-      T,
-      iterative::converged_when::absoluteNormResidualBelowTol<L2Norm>>::value or
+      T, iterative::converged_when::absoluteNormResidualBelowTol<L2Norm>
+      >::value
+    or
     std::is_same<
-      T,
-      iterative::converged_when::absoluteNormResidualBelowTol<L1Norm>>::value or
+      T, iterative::converged_when::absoluteNormResidualBelowTol<L1Norm>
+      >::value
+    //---------------------------------
+    or
     std::is_same<
-      T,
-      iterative::converged_when::relativeNormResidualBelowTol<L2Norm>>::value or
+      T, iterative::converged_when::relativeNormResidualBelowTol<L2Norm>
+      >::value
+    or
     std::is_same<
-      T,
-    iterative::converged_when::relativeNormResidualBelowTol<L1Norm>>::value or
+      T, iterative::converged_when::relativeNormResidualBelowTol<L1Norm>
+      >::value
+    //---------------------------------
+    or
     std::is_same<
-    T,
-    iterative::converged_when::completingNumMaxIters>::value
+      T, iterative::converged_when::absoluteNormProjectedResidualBelowTol<L1Norm>
+      >::value
+    or
+    std::is_same<
+      T, iterative::converged_when::absoluteNormProjectedResidualBelowTol<L2Norm>
+      >::value
+    //---------------------------------
+    or
+    std::is_same<
+      T, iterative::converged_when::relativeNormProjectedResidualBelowTol<L1Norm>
+      >::value
+    or
+    std::is_same<
+      T, iterative::converged_when::relativeNormProjectedResidualBelowTol<L2Norm>
+      >::value
+    //---------------------------------
+    or
+    std::is_same<
+      T, iterative::converged_when::completingNumMaxIters>::value
     >
   > : std::true_type{};
 

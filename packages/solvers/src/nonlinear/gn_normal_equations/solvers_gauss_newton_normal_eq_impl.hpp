@@ -38,8 +38,10 @@ void gauss_newton_neq_solve(const system_t & sys,
 			    scalar_t tolerance,
 			    scalar_t & normO,
 			    scalar_t & norm_dy,
-			    const observer_t * observer)
+			    const observer_t * observer,
+			    std::string & convCondDescr)
 {
+
   using residual_t	= typename system_t::residual_type;
   using jacobian_t	= typename system_t::jacobian_type;
 
@@ -83,6 +85,7 @@ void gauss_newton_neq_solve(const system_t & sys,
   scalar_t normJTRes = {};
   scalar_t normJTRes0 = {};
 
+  convCondDescr = std::string(is_converged_t::description_);
 
 #ifdef DEBUG_PRINT
   // get precision before GN
@@ -91,9 +94,8 @@ void gauss_newton_neq_solve(const system_t & sys,
   std::cout.precision(14);
   auto reset = utils::io::reset();
   auto fmt1 = utils::io::cyan() + utils::io::underline();
-  const auto convString = std::string(is_converged_t::description_);
   ::pressio::utils::io::print_stdout(fmt1, "GN normal eqns:", "criterion:",
-				  convString, reset, "\n");
+				     convCondDescr, reset, "\n");
 #endif
 
   // compute the initial norm of y (the state)

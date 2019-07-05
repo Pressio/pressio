@@ -52,8 +52,10 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    mat_t & A,
 				    typename system_t::state_type & b,
 				    typename system_t::state_type & lambda,
-				    typename system_t::state_type & y2)
+				    typename system_t::state_type & y2,
+				    std::string & convCondDescr)
 {
+
   // find out which norm to use
   using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
 
@@ -80,6 +82,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   scalar_t normJTRes = {};
   scalar_t normJTRes0 = {};
 
+  convCondDescr = std::string(is_conv_helper_t::description_);
 
 #ifdef DEBUG_PRINT
   // get precision
@@ -89,10 +92,9 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
   auto reset = utils::io::reset();
   auto fmt1 = utils::io::cyan() + utils::io::underline();
-  const auto convString = std::string(is_conv_helper_t::description_);
   ::pressio::utils::io::print_stdout(fmt1, "GN normal eqns conserv:",
-				  "criterion:",
-				  convString, reset, "\n");
+				     "criterion:",
+				     convCondDescr, reset, "\n");
 #endif
 
   // compute (whatever type) norm of y
