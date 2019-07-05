@@ -150,7 +150,7 @@ private:
     norm_dy_ = {0};
 
     iteration_t iStep = 0;
-    while (iStep++ <= iterative_base_t::maxIters_)
+    while (++iStep <= iterative_base_t::maxIters_)
     {
 #ifdef DEBUG_PRINT
       ::pressio::utils::io::print_stdout("\n");

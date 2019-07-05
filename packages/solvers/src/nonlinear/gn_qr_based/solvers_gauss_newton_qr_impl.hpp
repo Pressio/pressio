@@ -85,7 +85,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
   iteration_t iStep = 0;
-  while (iStep++ <= maxNonLIt)
+  while (++iStep <= maxNonLIt)
   {
 #ifdef DEBUG_PRINT
     ::pressio::utils::io::print_stdout("\n");

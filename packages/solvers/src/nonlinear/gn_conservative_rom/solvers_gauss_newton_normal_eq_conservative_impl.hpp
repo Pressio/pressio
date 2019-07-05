@@ -112,7 +112,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
   iteration_t iStep = 0;
-  while (iStep++ <= maxNonLIt)
+  while (++iStep <= maxNonLIt)
   {
 
 #ifdef DEBUG_PRINT

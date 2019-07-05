@@ -109,7 +109,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 #endif
 
   iteration_t iStep = 0;
-  while (iStep++ <= maxNonLIt)
+  while (++iStep <= maxNonLIt)
   {
 
     // call residual observer at each gauss step (no op for dummy case)
