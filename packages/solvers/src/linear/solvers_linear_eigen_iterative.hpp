@@ -37,21 +37,33 @@ public:
   static_assert( solver_traits::direct == false,
 		 "The native eigen solver must be iterative to use in EigenIterative");
 
-  public:
-    EigenIterative() = default;
-    EigenIterative(const EigenIterative &) = delete;
-    ~EigenIterative() = default;
+public:
+  EigenIterative() = default;
+  EigenIterative(const EigenIterative &) = delete;
+  ~EigenIterative() = default;
 
-  private:
-    void resetLinearSystemImpl(const MatrixT& A) {
-      mysolver_.compute(*A.data());
-    }
+private:
+  void resetLinearSystemImpl(const MatrixT& A) {
+    mysolver_.compute(*A.data());
+  }
 
-    template <typename T>
-    void solveImpl(const T& b, T & y)
-    {
-      *y.data() = mysolver_.solve(*b.data());
-    }
+  template <typename T>
+  void solveImpl(const T& b, T & y)
+  {
+    *y.data() = mysolver_.solve(*b.data());
+  }
+
+  template <typename T>
+  void solveImpl(const MatrixT & A, const T& b, T & y) {
+    this->resetLinearSystem(A);
+    this->solve(b, y);
+  }
+
+  template <typename T>
+  void solveAllowMatOverwriteImpl(MatrixT & A, const T& b, T & y) {
+    this->resetLinearSystem(A);
+    this->solve(b, y);
+  }
 
   friend base_interface;
   native_solver_t mysolver_ = {};

@@ -26,6 +26,7 @@ struct traits {
   static constexpr bool direct        = false;
   static constexpr bool iterative     = false;
   static constexpr bool eigen_enabled = false;
+  static constexpr bool kokkos_enabled = false;
 };
 
 
@@ -80,6 +81,17 @@ struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
 };
+
+#ifdef HAVE_TRILINOS
+template <>
+struct traits<::pressio::solvers::linear::direct::getrs> {
+
+  static constexpr bool direct = true;
+  // for now, disable eigen, enable it later
+  static constexpr bool eigen_enabled = false;
+  static constexpr bool kokkos_enabled = true;
+};
+#endif
 
 
 // template <>
