@@ -60,6 +60,7 @@ void gauss_newton_qr_solve(const system_t & sys,
   // initial residual norm
   scalar_t normQTRes0 = {};
 
+  constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
 
 #ifdef DEBUG_PRINT
   // get precision before GN
@@ -169,8 +170,8 @@ void gauss_newton_qr_solve(const system_t & sys,
     // compute multiplicative factor if needed
     lsearch_helper::evaluate(alpha, y, ytrial, dy, resid, jacob, sys);
 
-    // solution update
-    y = y + alpha*dy;
+    // solution update: y = y + alpha*dy
+    ::pressio::containers::ops::do_update(y, one, dy, alpha);
 
     // check convergence (whatever method user decided)
     const auto flag = is_converged_t::evaluate(y, dy,

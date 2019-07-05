@@ -83,6 +83,7 @@ void gauss_newton_neq_solve(const system_t & sys,
   scalar_t normJTRes = {};
   scalar_t normJTRes0 = {};
 
+  constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
 
 #ifdef DEBUG_PRINT
   // get precision before GN
@@ -186,7 +187,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("solve normeq");
 #endif
-    linSolver.solve(H, JTR, dy);
+    linSolver.solveAllowMatOverwrite(H, JTR, dy);
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("solve normeq");
 #endif
@@ -213,8 +214,8 @@ void gauss_newton_neq_solve(const system_t & sys,
     // compute multiplicative factor if needed
     lsearch_helper_t::evaluate(alpha, y, ytrial, dy, resid, jacob, sys);
 
-    // solution update
-    y = y + alpha*dy;
+    // solution update: y = y + alpha*dy
+    ::pressio::containers::ops::do_update(y, one, dy, alpha);
 
     // check convergence (whatever method user decided)
     const auto flag = is_converged_t::evaluate(y, dy,
