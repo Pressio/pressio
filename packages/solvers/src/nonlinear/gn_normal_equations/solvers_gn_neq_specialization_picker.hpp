@@ -6,8 +6,8 @@
 #include "../../meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
 #include "../../meta/solvers_is_legitimate_linear_solver_for_gn_normeq.hpp"
 #include "../../meta/solvers_is_legitimate_hessian_for_gn_normeq.hpp"
-#include "../../meta/solvers_is_non_default_line_search_tag.hpp"
-#include "../../meta/solvers_is_non_default_convergence_tag.hpp"
+#include "../../meta/solvers_is_legitimate_line_search_tag.hpp"
+#include "../../meta/solvers_is_legitimate_convergence_tag.hpp"
 #include "../../meta/solvers_is_legitimate_residual_observer_when_converged.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
@@ -81,9 +81,9 @@ struct GNNEQSpecializationPicker{
   		"The hessian type cannot be void");
 
 
-  // check if sequence contains a non default line search tag
+  // check if sequence contains a line search tag
   using ic4 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::solvers::meta::is_non_default_line_search_tag, Args...>;
+    ::pressio::solvers::meta::is_legitimate_line_search_tag, Args...>;
   // store the type
   using default_no_ls = ::pressio::solvers::iterative::gn::noLineSearch;
   using line_search_t = ::pressio::mpl::variadic::at_or_t<default_no_ls, ic4::value, Args...>;
@@ -91,10 +91,9 @@ struct GNNEQSpecializationPicker{
 		"The line search type for GN cannot be void");
 
 
-  // check if sequence contains a non default convergence
+  // check if sequence contains a valid default convergence
   using ic5 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::solvers::meta::is_non_default_convergence_tag, Args...>;
-  // store the type
+    ::pressio::solvers::meta::is_legitimate_convergence_tag, Args...>;
   using default_conv = ::pressio::solvers::iterative::default_convergence;
   using convergence_t = ::pressio::mpl::variadic::at_or_t<default_conv, ic5::value, Args...>;
   static_assert(!std::is_void<convergence_t>::value,

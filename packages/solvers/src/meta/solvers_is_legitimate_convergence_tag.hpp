@@ -1,6 +1,6 @@
 
-#ifndef SOLVERS_IS_NON_DEFAULT_CONVERGENCE_TAG_HPP_
-#define SOLVERS_IS_NON_DEFAULT_CONVERGENCE_TAG_HPP_
+#ifndef SOLVERS_IS_LEGITIMATE_CONVERGENCE_TAG_HPP_
+#define SOLVERS_IS_LEGITIMATE_CONVERGENCE_TAG_HPP_
 
 #include "../solvers_convergence_tags.hpp"
 #include "../solvers_norm_tags.hpp"
@@ -8,11 +8,11 @@
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T, typename enable = void>
-struct is_non_default_convergence_tag
+struct is_legitimate_convergence_tag
   : std::false_type{};
 
 template <typename T>
-struct is_non_default_convergence_tag<
+struct is_legitimate_convergence_tag<
   T,
   ::pressio::mpl::enable_if_t<
     std::is_same<
