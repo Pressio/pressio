@@ -51,8 +51,18 @@ int main(int argc, char *argv[]){
   appObj.solve();
   //  appObj.printState();
 
-  auto y = appObj.getState();
+  // print LHS matrix
+  auto A = appObj.getLHSmatrix();
+  A->Print(std::cout << std::setprecision(14));
+  std::cout << std::endl;
+
+  // print RHS force vector
+  auto f = appObj.getRHSforce();
+  f->Print(std::cout << std::setprecision(14));
+  std::cout << std::endl;
+
   auto x = appObj.getGrid();
+  auto y = appObj.getState();
   y->Print(std::cout << std::setprecision(14));
   checkSol(rank, *y, pressio::apps::test::steadyAdvDiff1d_N21);
 

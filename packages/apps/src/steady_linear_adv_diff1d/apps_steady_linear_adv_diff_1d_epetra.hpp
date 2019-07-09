@@ -56,7 +56,8 @@ public:
   int getNumGlobalNodes() const;
   rcp<nativeVec> getState() const;
   rcp<nativeVec> getGrid() const;
-  rcp<nativeVec> getforcing() const;
+  rcp<nativeVec> getRHSforce() const;
+  rcp<nativeMatrix> getLHSmatrix() const;
   void solve();
 
   void printState() const{
