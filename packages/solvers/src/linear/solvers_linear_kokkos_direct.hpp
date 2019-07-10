@@ -7,6 +7,10 @@
 #include "solvers_linear_traits.hpp"
 #include <Teuchos_LAPACK.hpp>
 #include <Teuchos_SerialDenseSolver.hpp>
+#ifdef KOKKOS_ENABLE_CUDA
+#include <cuda_runtime.h>
+#include <cusolverDn.h>
+#endif
 
 namespace pressio { namespace solvers { namespace direct{
 
@@ -44,9 +48,21 @@ public:
   		 "the native solver must be direct to use in KokkosDirect");
 
 public:
-  KokkosDirect() = default;
+  KokkosDirect(){
+#ifdef KOKKOS_ENABLE_CUDA
+    auto cusolverStatus = cusolverDnCreate(&cuDnHandle_);
+    assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
+#endif
+  }
+
   KokkosDirect(const KokkosDirect &) = delete;
-  ~KokkosDirect() = default;
+
+  ~KokkosDirect(){
+#ifdef KOKKOS_ENABLE_CUDA
+    auto cusolverStatus = cusolverDnDestroy(cuDnHandle_);
+    assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
+#endif
+  }
 
 private:
 
@@ -93,42 +109,135 @@ private:
   void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
     assert(A.rows() == b.size() );
     assert(A.cols() == y.size() );
-
     // gerts is for square matrices
     assert(A.rows() == A.cols() );
 
-    const auto nRows = A.rows();
-    const auto nCols = A.cols();
+    // only one rhs because this is only enabled if T is a vector wrapper
+    constexpr int nRhs = 1;
+
+    // just use n, since rows == cols
+    const auto n = A.rows();
 
     int info = 0;
-    const int ipivSz = std::min(nRows, nCols);
+    const int ipivSz = n;
     int ipiv[ipivSz];
 
     // LU factorize using GETRF
-    lpk_.GETRF(nRows, nCols, A.data()->data(),
-	      nRows, // leading dim is nRows because it is col-major
-	      ipiv,
-	      &info);
+    lpk_.GETRF(n, n, A.data()->data(), n, ipiv, &info);
     assert(info == 0);
 
+    // we need to deep copy b into y and pass y
+    // because getrs
+    // overwrite the RHS in place with the solution
     Kokkos::deep_copy(*y.data(), *b.data());
 
     const char ct = 'N';
-    const int nrhs = 1; // only solving for a single vector b
-    lpk_.GETRS(ct,
-	      nCols,
-    	      nrhs,
-    	      A.data()->data(),
-    	      nCols,
-	      ipiv,
-    	      y.data()->data(),
-    	      y.size(),
-    	      &info);
+    lpk_.GETRS(ct, n, nRhs,
+	       A.data()->data(),
+	       n, ipiv,
+	       y.data()->data(),
+	       y.size(),
+	       &info);
     assert(info == 0);
   }
 
+
+#ifdef KOKKOS_ENABLE_CUDA
+  /*
+   * enable if:
+   * the matrix has layout left (i.e. column major)
+   * T is a kokkos vector wrapper
+   * has CUDA execution space
+   * T and MatrixT have same execution space
+   */
+  template <
+    typename _MatrixT = MatrixT,
+    typename _SolverT = SolverT,
+    typename T,
+    mpl::enable_if_t<
+      mpl::is_same<
+	typename ::pressio::containers::details::traits<_MatrixT>::layout,
+	Kokkos::LayoutLeft
+	>::value
+      and
+      ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
+      and
+      mpl::is_same<
+	typename containers::details::traits<T>::execution_space,
+	Kokkos::Cuda
+	>::value
+      and
+      mpl::is_same<
+	typename containers::details::traits<T>::execution_space,
+	typename containers::details::traits<_MatrixT>::execution_space
+      >::value
+      > * = nullptr
+  >
+  void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
+    assert(A.rows() == b.size() );
+    assert(A.cols() == y.size() );
+    // gerts is for square matrices
+    assert(A.rows() == A.cols() );
+
+    // only one rhs because this is only enabled if T is a vector wrapper
+    constexpr int nRhs = 1;
+
+    // n = nRows = nCols: because it is square matrix
+    const auto n = A.rows();
+
+    cusolverStatus_t cusolverStatus;
+    //cusolverDnHandle_t handle;
+    cudaError cudaStatus;
+    int Lwork = 0;
+
+    // cuDnHandle already created in constructor
+
+    // compute buffer size and prep.memory
+    cusolverStatus = cusolverDnDgetrf_bufferSize(cuDnHandle_, n, n,
+						 A.data()->data(),
+						 n, &Lwork);
+    assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
+
+    // for now, working buffers are stored as Kokkos arrays but
+    // maybe later we can use directly cuda allocations
+    using k1d_d = Kokkos::View<scalar_t*, Kokkos::LayoutLeft, exe_space>;
+    using k1di_d = Kokkos::View<int*, Kokkos::LayoutLeft, exe_space>;
+    ::pressio::containers::Vector<k1d_d> work_d("d_work", Lwork);
+    ::pressio::containers::Vector<k1di_d> pivot_d("d_pivot", n);
+    ::pressio::containers::Vector<k1di_d> info_d("d_info", 1);
+
+    cusolverStatus = cusolverDnDgetrf(cuDnHandle_, n, n,
+    				      A.data()->data(),
+    				      n,
+    				      work_d.data()->data(),
+    				      pivot_d.data()->data(),
+    				      info_d.data()->data());
+    assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
+
+    // we need to deep copy b into y and pass y
+    // because getrs
+    // overwrite the RHS in place with the solution
+    Kokkos::deep_copy(*y.data(), *b.data());
+
+    cusolverStatus = cusolverDnDgetrs(cuDnHandle_, CUBLAS_OP_N,
+    				      n, nRhs,
+    				      A.data()->data(), n,
+    				      pivot_d.data()->data(),
+    				      y.data()->data(), n,
+    				      info_d.data()->data());
+    assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
+
+    // make sure the solver kernel is done before exiting
+    cudaStatus = cudaDeviceSynchronize();
+  }
+#endif
+
   friend base_t;
   Teuchos::LAPACK<int, scalar_t> lpk_;
+
+#ifdef KOKKOS_ENABLE_CUDA
+  cusolverDnHandle_t cuDnHandle_;
+#endif
 };
 
 }}} // end namespace pressio::solvers::direct
