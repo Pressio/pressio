@@ -63,9 +63,9 @@ int main(int argc, char *argv[]){
     using lspg_problem_t = pressio::rom::DefaultLSPGTypeGenerator<
       fom_t, ode_case, decoder_d_t, lspg_state_d_t>;
     pressio::rom::LSPGUnsteadyProblemGenerator<lspg_problem_t> lspgProblem(appobj,
-									   yRef,
-									   decoderObj,
-									   yROM, t0);
+    									   yRef,
+    									   decoderObj,
+    									   yROM, t0);
     using lspg_stepper_t = typename lspg_problem_t::lspg_stepper_t;
 
     // linear solver
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
     // rom is solved using eigen, hessian is wrapper of eigen matrix
     using gnsolver_t   = pressio::solvers::iterative::GaussNewton<lspg_stepper_t,
-								  linear_solver_t>;
+    								  linear_solver_t>;
     gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
     solver.setTolerance(1e-14);
     // I know this should converge in few iters at every step
@@ -107,5 +107,6 @@ int main(int argc, char *argv[]){
 
     std::cout << checkStr <<  std::endl;
   }
+  Kokkos::finalize();
   return 0;
 }
