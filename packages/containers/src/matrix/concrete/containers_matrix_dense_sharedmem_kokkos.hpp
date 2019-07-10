@@ -44,7 +44,9 @@ public:
   {}
 
   Matrix(const this_t & other)
-    : data_{other.data_.label(), other.data_.extent(0)}{
+    : data_{other.data_.label(),
+	    other.data_.extent(0),
+	    other.data_.extent(1)}{
     Kokkos::deep_copy(data_, other.data_);
   }
 
