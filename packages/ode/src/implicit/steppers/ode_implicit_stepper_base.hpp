@@ -81,7 +81,6 @@ public:
   }
 
   residual_t residual(const state_t & y) const{
-    std::cout << " residual_impl_st_base" << std::endl;
     return this->residual_obj_.template operator()<
       traits::enum_id,
       traits::steps
