@@ -35,7 +35,9 @@ public:
   Matrix() = default;
 
   explicit Matrix(const wrap_t src)
-    : data_{src.label(), src.extent(0)}{
+    : data_{src.label(),
+	    src.extent(0),
+	    src.extent(1)}{
     Kokkos::deep_copy(data_, src);
   }
 
