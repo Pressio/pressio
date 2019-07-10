@@ -10,8 +10,17 @@
 
 namespace pressio { namespace solvers { namespace direct{
 
+template<typename SolverT, typename MatrixT, typename enable = void>
+class KokkosDirect;
+
+/* GETRS */
 template<typename SolverT, typename MatrixT>
-class KokkosDirect
+class KokkosDirect<
+  SolverT, MatrixT,
+  mpl::enable_if_t<
+    mpl::is_same<SolverT, ::pressio::solvers::linear::direct::getrs>::value
+    >
+  >
   : public LinearBase<SolverT, MatrixT, KokkosDirect<SolverT, MatrixT>>
 {
 public:
@@ -42,7 +51,7 @@ public:
 private:
 
   /*
-   * enable this if:
+   * enable if:
    * the matrix has layout left (i.e. column major)
    * T is a kokkos vector wrapper
    * has host execution space
@@ -50,6 +59,7 @@ private:
    */
   template <
     typename _MatrixT = MatrixT,
+    typename _SolverT = SolverT,
     typename T,
     mpl::enable_if_t<
       mpl::is_same<
@@ -81,11 +91,14 @@ private:
       > * = nullptr
   >
   void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
-    assert(A.cols() == b.size() );
-    assert(b.size() == y.size() );
+    assert(A.rows() == b.size() );
+    assert(A.cols() == y.size() );
 
-    const auto nRows = A.data()->extent(0);
-    const auto nCols = A.data()->extent(1);
+    // gerts is for square matrices
+    assert(A.rows() == A.cols() );
+
+    const auto nRows = A.rows();
+    const auto nCols = A.cols();
 
     int info = 0;
     const int ipivSz = std::min(nRows, nCols);
