@@ -44,8 +44,6 @@ TEST(solvers_linear_direct, getrs){
   A_h(1,0)=2.; A_h(1,1)=4.; A_h(1,2)=1.; A_h(1,3)=2.;
   A_h(2,0)=1.; A_h(2,1)=6.; A_h(2,2)=3.; A_h(2,3)=1.;
   A_h(3,0)=0.; A_h(3,1)=2.; A_h(3,2)=2.; A_h(3,3)=1.;
-  // A_h(4,0)=0.; A_h(4,1)=3.; A_h(4,2)=0.; A_h(4,3)=0.;
-  // A_h(5,0)=4.; A_h(5,1)=0.; A_h(5,2)=1.; A_h(5,3)=0.;
 
   // create device matrix
   k2d_d A_d("Ad", Nr, Nc);
@@ -63,8 +61,6 @@ TEST(solvers_linear_direct, getrs){
   b_h(1) = 1.;
   b_h(2) = 3.0;
   b_h(3) = 2.;
-  // b_h(4) = -2.;
-  // b_h(5) = 1.;
 
   // create device
   k1d_d b_d("bd", Nr);
