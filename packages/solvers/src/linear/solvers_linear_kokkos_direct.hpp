@@ -14,6 +14,42 @@
 
 namespace pressio { namespace solvers { namespace direct{
 
+namespace impl{
+
+template <typename T, typename enable = void>
+struct has_host_execution_space : std::false_type{};
+
+#ifdef KOKKOS_ENABLE_SERIAL
+template <typename T>
+struct has_host_execution_space<
+  T,
+  mpl::enable_if_t<
+    mpl::is_same<
+      typename containers::details::traits<T>::execution_space,
+      Kokkos::Serial
+      >::value
+    >
+  > : std::true_type{};
+#endif
+
+#ifdef KOKKOS_ENABLE_OPENMP
+template <typename T>
+struct has_host_execution_space<
+  T,
+  mpl::enable_if_t<
+    mpl::is_same<
+      typename containers::details::traits<T>::execution_space,
+      Kokkos::OpenMP
+      >::value
+    >
+  > : std::true_type{};
+#endif
+
+}
+
+
+
+
 template<typename SolverT, typename MatrixT, typename enable = void>
 class KokkosDirect;
 
@@ -85,25 +121,12 @@ private:
       and
       ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
       and
-#ifdef KOKKOS_ENABLE_OPENMP
-      (
-#endif
-       mpl::is_same<
-       typename containers::details::traits<T>::execution_space,
-       Kokkos::Serial
-       >::value
-#ifdef KOKKOS_ENABLE_OPENMP
-       or
-       mpl::is_same<
-       typename containers::details::traits<T>::execution_space,
-       Kokkos::OpenMP
-       >::value)
-#endif
-	and
-	mpl::is_same<
+      ::pressio::solvers::direct::impl::has_host_execution_space<T>::value
+      and
+      mpl::is_same<
 	typename containers::details::traits<T>::execution_space,
-      typename containers::details::traits<_MatrixT>::execution_space
-      >::value
+	typename containers::details::traits<_MatrixT>::execution_space
+	>::value
       > * = nullptr
   >
   void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
