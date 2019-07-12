@@ -16,33 +16,17 @@ namespace pressio { namespace solvers { namespace direct{
 
 namespace impl{
 
-template <typename T, typename enable = void>
-struct has_host_execution_space : std::false_type{};
+template <typename T>
+struct is_host_execution_space : std::false_type{};
 
 #ifdef KOKKOS_ENABLE_SERIAL
-template <typename T>
-struct has_host_execution_space<
-  T,
-  mpl::enable_if_t<
-    mpl::is_same<
-      typename containers::details::traits<T>::execution_space,
-      Kokkos::Serial
-      >::value
-    >
-  > : std::true_type{};
+template <>
+struct is_host_execution_space<Kokkos::Serial> : std::true_type{};
 #endif
 
 #ifdef KOKKOS_ENABLE_OPENMP
 template <typename T>
-struct has_host_execution_space<
-  T,
-  mpl::enable_if_t<
-    mpl::is_same<
-      typename containers::details::traits<T>::execution_space,
-      Kokkos::OpenMP
-      >::value
-    >
-  > : std::true_type{};
+struct is_host_execution_space<Kokkos::OpenMP> : std::true_type{};
 #endif
 
 }
@@ -121,7 +105,9 @@ private:
       and
       ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
       and
-      ::pressio::solvers::direct::impl::has_host_execution_space<T>::value
+      ::pressio::solvers::direct::impl::is_host_execution_space<
+	typename containers::details::traits<T>::execution_space
+	>::value
       and
       mpl::is_same<
 	typename containers::details::traits<T>::execution_space,
