@@ -26,10 +26,7 @@ struct NonLinearSolverBase {
     return convergenceConditionDescription_;
   }
 
-  template <
-    typename system_t,
-    typename state_t
-    >
+  template <typename system_t, typename state_t >
   void solve(const system_t & sys, state_t & x){
     // static_assert( ::pressio::solvers::meta::is_legitimate_system_for_nonlinear_solver<
     //   system_t>::value,
@@ -40,7 +37,10 @@ struct NonLinearSolverBase {
 
 private:
   std::string convergenceConditionDescription_ = "none";
-  friend Derived;
+
+  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<Derived>::type;
 };
 
 }}//end namespace pressio::solvers
