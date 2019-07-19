@@ -7,16 +7,16 @@
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<typename state_type, typename enable = void>
+template<typename T, typename enable = void>
 struct is_legitimate_implicit_state_type : std::false_type{};
 
-template<typename state_type>
+template<typename T>
 struct is_legitimate_implicit_state_type<
-  state_type,
+  T,
   typename std::enable_if<
-    containers::meta::is_vector_wrapper<state_type>::value
+    containers::meta::is_vector_wrapper<T>::value
 #ifdef HAVE_PYBIND11
-    or containers::meta::is_cstyle_array_pybind11<state_type>::value
+    or containers::meta::is_cstyle_array_pybind11<T>::value
 #endif
     >::type > : std::true_type{};
 

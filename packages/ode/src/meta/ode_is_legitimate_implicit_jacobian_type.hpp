@@ -7,16 +7,16 @@
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<typename jacobian_type, typename enable = void>
+template<typename T, typename enable = void>
 struct is_legitimate_jacobian_type : std::false_type{};
 
-template<typename jacobian_type>
-struct is_legitimate_jacobian_type<jacobian_type,
+template<typename T>
+struct is_legitimate_jacobian_type<T,
        typename std::enable_if<
-	 containers::meta::is_matrix_wrapper<jacobian_type>::value or
-	 containers::meta::is_multi_vector_wrapper<jacobian_type>::value
+	 containers::meta::is_matrix_wrapper<T>::value or
+	 containers::meta::is_multi_vector_wrapper<T>::value
 #ifdef HAVE_PYBIND11
-	 or containers::meta::is_cstyle_array_pybind11<jacobian_type>::value
+	 or containers::meta::is_cstyle_array_pybind11<T>::value
 #endif
 	 >::type
        > : std::true_type{};
