@@ -20,8 +20,8 @@ struct is_legitimate_model_for_explicit_ode<
   model_type,
   mpl::enable_if_t<
     ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
-    ::pressio::containers::meta::has_state_typedef<model_type>::value and
-    ::pressio::containers::meta::has_velocity_typedef<model_type>::value and
+    has_state_typedef<model_type>::value and
+    has_velocity_typedef<model_type>::value and
     model_has_needed_velocity_methods<
       model_type,
       typename model_type::state_type,
