@@ -121,6 +121,8 @@ endif()
 if(TPL_ENABLE_PYBIND11)
   MESSAGE("TPL_ENABLE_PYBIND11=ON, so HAVE_PYBIND11=ON")
   set(HAVE_PYBIND11 ON)
+  # if pybind11 is on, add include for python
+  INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 endif()
 
 if(TPL_ENABLE_BLAZE)
