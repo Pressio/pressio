@@ -40,7 +40,7 @@ private:
  */
 #ifdef HAVE_PYBIND11
 template<typename model_type>
-class OdeSystemWrapper<
+struct OdeSystemWrapper<
   model_type,
   mpl::enable_if_t<
     ::pressio::mpl::is_same<model_type, pybind11::object >::value
