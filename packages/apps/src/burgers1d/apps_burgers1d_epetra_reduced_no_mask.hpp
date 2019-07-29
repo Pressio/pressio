@@ -31,17 +31,18 @@ public:
   };
 
   void velocity(const state_type & u,
-		velocity_type & rhs,
-		const scalar_type t ) const{
+		const scalar_type t, 
+    velocity_type & rhs) const
+  {
     velocity_type R(*dataMap_);
-    base_t::velocity(u, R, t);
+    base_t::velocity(u, t, R);
     rhs.Import(R, *importer_, Insert);
   }
 
   velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
     velocity_type R(*dataMap_);
-    base_t::velocity(u, R, t);
+    base_t::velocity(u, t, R);
     velocity_type dest(*maskMap_);
     dest.Import(R, *importer_, Insert);
     return dest;
@@ -50,10 +51,10 @@ public:
   // A = Jac * B
   void applyJacobian(const state_type & y,
 		     const MV_t & B,
-		     MV_t & A,
-		     scalar_type t) const{
+		     scalar_type t,
+         MV_t & A) const{
     MV_t Cfull( Jac_->RangeMap(), B.NumVectors() );
-    base_t::applyJacobian(y, B, Cfull, t);
+    base_t::applyJacobian(y, B, t, Cfull);
     A.Import(Cfull, *importer_, Insert);
   }
 
@@ -62,7 +63,7 @@ public:
 		     const MV_t & B,
 		     scalar_type t) const{
     MV_t Cfull( Jac_->RangeMap(), B.NumVectors() );
-    base_t::applyJacobian(y, B, Cfull, t);
+    base_t::applyJacobian(y, B, t, Cfull);
     MV_t C(*maskMap_, B.NumVectors());
     C.Import(Cfull, *importer_, Insert);
     return C;

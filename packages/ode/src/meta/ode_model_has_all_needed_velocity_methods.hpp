@@ -8,18 +8,18 @@
 namespace pressio{ namespace ode{ namespace meta {
 
 
-template <typename T, typename a_t, typename b_t, typename = void>
+template <typename T, typename state_t, typename sc_t, typename = void>
 struct has_velocity_method_callable_with_two_args : std::false_type{};
 
-template <typename T, typename a_t, typename b_t>
+template <typename T, typename state_t, typename sc_t>
 struct has_velocity_method_callable_with_two_args<
-  T, a_t, b_t,
+  T, state_t, sc_t,
   ::pressio::mpl::enable_if_t<
     !std::is_void<
       decltype(
 	       std::declval<T>().velocity(
-					  std::declval<a_t const&>(),
-					  std::declval<b_t>()
+					  std::declval<state_t const&>(),
+					  std::declval<sc_t>()
 					  )
 	       )
       >::value
@@ -28,20 +28,26 @@ struct has_velocity_method_callable_with_two_args<
 
 
 
-template <typename T, typename a_t,
-	  typename b_t, typename c_t, typename = void>
+template <typename T,
+	  typename state_t,
+	  typename sc_t,
+	  typename velo_t,
+	  typename = void>
 struct has_velocity_method_callable_with_three_args : std::false_type{};
 
-template <typename T, typename a_t, typename b_t, typename c_t>
+template <typename T,
+	  typename state_t,
+	  typename sc_t,
+	  typename velo_t>
 struct has_velocity_method_callable_with_three_args<
-  T, a_t, b_t, c_t,
+  T, state_t, sc_t, velo_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T>().velocity(
-					  std::declval<a_t const&>(),
-					  std::declval<b_t &>(),
-					  std::declval<c_t>()
+					  std::declval<state_t const&>(),
+					  std::declval<sc_t>(),
+					  std::declval<velo_t &>()
 					  )
 	   )
       >::value
@@ -75,7 +81,7 @@ struct model_has_needed_velocity_methods<
       >::value and
     // has velocity method with 3 arguments
     has_velocity_method_callable_with_three_args<
-      model_type, state_type, velocity_type, scalar_type
+      model_type, state_type, scalar_type, velocity_type
       >::value and
     // method with 2 arguments returns a velocity_type
     mpl::is_same<

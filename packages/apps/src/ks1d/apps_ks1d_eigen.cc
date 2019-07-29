@@ -3,10 +3,9 @@
 
 namespace pressio{ namespace apps{ 
 
-void KS1dEigen::velocity(const state_type & u,
-            velocity_type & rhs,
-            const scalar_type /* t */) const{
-
+void KS1dEigen::velocity(const state_type & u,          
+            const scalar_type /* t */,
+	velocity_type & rhs) const{
 
 	scalar_type dxInv2 = dxInv_ * dxInv_;
 
@@ -33,17 +32,12 @@ void KS1dEigen::velocity(const state_type & u,
         scalar_type uxxxx = dxInv2 * (uxxp + uxxm - 2 * uxx);
 
 		rhs(i) = -1.0 * mu_(0) * ux - 0.5 * u2x - uxx - uxxxx;
-
 	}
-
-
-
-
 }
 
 void KS1dEigen::jacobian(const state_type & u,
-            jacobian_type & jac,
-            const scalar_type /*t*/)const{
+    const scalar_type /*t*/,
+	jacobian_type & jac)const{
 
   //evaluate jacobian
   if (jac.rows() == 0 || jac.cols()==0 ){

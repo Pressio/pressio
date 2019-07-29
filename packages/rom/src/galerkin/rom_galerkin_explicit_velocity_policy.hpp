@@ -67,7 +67,7 @@ public:
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    app.velocity(*yFom_.data(), *fomRhs_.data(), t);
+    app.velocity(*yFom_.data(), t, *fomRhs_.data());
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
 #endif

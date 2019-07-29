@@ -69,9 +69,9 @@ public:
   Epetra_Map getDataMap() const { return *dofMap_; }
 
 public:
-  void velocity(const state_type & yState,
-		velocity_type & rhs,
-		scalar_type t) const{
+  void velocity(const state_type & yState,		
+		scalar_type t,
+    velocity_type & rhs) const{
     velocity_impl(yState, rhs);
   }
 
@@ -84,9 +84,9 @@ public:
 
   // computes: C = Jac B where B is a multivector
   void applyJacobian(const state_type & yState,
-  		     const mv_t & B,
-  		     mv_t & C,
-		     scalar_type t) const{
+                    const mv_t & B,
+                    scalar_type t,
+                    mv_t & C) const{
     applyJacobian_impl(yState, B, C);
   }
 

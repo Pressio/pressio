@@ -21,7 +21,7 @@ struct ApplyFomJacobianDefault<false>{
       > * = nullptr
 #endif
     >
-  auto evaluate(const fom_t	  & fomObj,
+  auto evaluate(const fom_t	& fomObj,
 		const state_t   & yFOM,
 		const operand_t & B,
 		time_t		  t) const
@@ -46,7 +46,7 @@ struct ApplyFomJacobianDefault<false>{
 		const operand_t & B,
 		result_t	  & out,
 		time_t		  t) const{
-    fomObj.applyJacobian(*yFOM.data(), *B.data(), *out.data(), t);
+    fomObj.applyJacobian(*yFOM.data(), *B.data(), t, *out.data());
   }
 
 
@@ -61,15 +61,15 @@ struct ApplyFomJacobianDefault<false>{
       mpl::is_same<fom_t, pybind11::object>::value and
       ::pressio::containers::meta::is_array_pybind11<state_t>::value and
       ::pressio::containers::meta::is_array_pybind11<operand_t>::value and
-      // because we should have all = pybind11::array_t
+      // we should have all data struct to be = pybind11::array_t
       mpl::is_same<state_t, operand_t>::value
       > * = nullptr
     >
-  state_t evaluate(const fom_t	  & fomObj,
+  state_t evaluate(const fom_t	   & fomObj,
 		   const state_t   & yFOM,
 		   const operand_t & B,
-		   time_t		  t) const{
-    return fomObj.attr("applyJacobian1")(yFOM, B, t);
+		   time_t	     t) const{
+    return fomObj.attr("applyJacobian")(yFOM, B, t);
   }
 
   template <
@@ -79,7 +79,7 @@ struct ApplyFomJacobianDefault<false>{
       mpl::is_same<fom_t, pybind11::object>::value and
       ::pressio::containers::meta::is_array_pybind11<state_t>::value and
       ::pressio::containers::meta::is_array_pybind11<operand_t>::value and
-      // because we should have all = pybind11::array_t
+      // because we should have all data struct to be = pybind11::array_t
       mpl::is_same<state_t, operand_t>::value
       > * = nullptr
     >
@@ -88,10 +88,10 @@ struct ApplyFomJacobianDefault<false>{
 		const operand_t & B,
 		result_t	  & out,
 		time_t		  t) const{
-    fomObj.attr("applyJacobian2")(yFOM, B, out, t);
+    fomObj.attr("applyJacobian")(yFOM, B, t, out);
   }
 #endif
-  
+
 };
 
 }}} //end namespace pressio::rom::policy

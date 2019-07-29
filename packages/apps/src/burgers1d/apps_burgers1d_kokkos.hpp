@@ -87,24 +87,24 @@ public:
   };
 
   void velocity(const state_type & u,
-		velocity_type & rhs,
-		const scalar_type /* t */) const;
+		const scalar_type /* t */, 
+    velocity_type & rhs) const;
 
   velocity_type velocity(const state_type & u,
 			 const scalar_type t) const;
 
   void applyJacobian(const state_type & y,
 		     const mvec_t & B,
-		     mvec_t & A,
-		     scalar_type t) const;
+		     scalar_type t, 
+         mvec_t & A) const;
 
   mvec_t applyJacobian(const state_type & y,
 		       const mvec_t & B,
 		       scalar_type t) const;
 
   void jacobian(const state_type & u,
-		jacobian_type & jac,
-		const scalar_type t) const;
+		const scalar_type t, 
+    jacobian_type & jac) const;
 
   jacobian_type jacobian(const state_type & u,
 			 const scalar_type t) const;

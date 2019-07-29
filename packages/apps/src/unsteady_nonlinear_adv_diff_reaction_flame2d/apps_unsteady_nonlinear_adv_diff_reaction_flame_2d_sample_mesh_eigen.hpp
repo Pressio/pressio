@@ -89,8 +89,9 @@ public:
 
 public:
   void velocity(const state_type & yState,
-		velocity_type & rhs,
-		scalar_type t) const{
+		scalar_type t, 
+    velocity_type & rhs) const
+  {
     velocity_impl(yState, rhs);
   }
 
@@ -103,9 +104,9 @@ public:
     return R;
   };
 
-  void jacobian(const state_type & u,
-  		jacobian_type & jac,
-  		const scalar_type t) const{
+  void jacobian(const state_type & u,  		
+  		const scalar_type t,
+      jacobian_type & jac) const{
     this->jacobian_impl(u, jac);
   }
 
@@ -117,9 +118,9 @@ public:
   }
 
   void applyJacobian(const state_type & yState,
-  		     const mv_t & B,
-  		     mv_t & C,
-  		     scalar_type t) const{
+  		     const mv_t & B,  		     
+  		     scalar_type t, 
+           mv_t & C) const{
     applyJacobian_impl(yState, B, C);
   }
 

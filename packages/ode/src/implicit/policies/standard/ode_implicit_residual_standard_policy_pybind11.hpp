@@ -44,10 +44,9 @@ public:
 		  const std::array<state_type, n> & oldYs,
 		  const system_type & model,
 		  scalar_type t,
-		  scalar_type dt) const{
-    
+		  scalar_type dt) const
+  {
     throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
-
     // printf("C++ R address: %p\n", R.data());
     // model.attr("residual2")(y, R, t);
     // ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
@@ -60,10 +59,9 @@ public:
   			   const std::array<state_type, n> & oldYs,
   			   const system_type & model,
   			   scalar_type t,
-  			   scalar_type dt) const {
-
+  			   scalar_type dt) const
+  {
     throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
-
     residual_type nR;// = model.attr("residual1")(y, t);
     // ::pressio::ode::impl::time_discrete_residual<method, n>(y, nR, oldYs, dt);
     return nR;

@@ -19,8 +19,8 @@ void Burgers1dKokkos::setup(){
 
 
 void Burgers1dKokkos::velocity(const state_type & u,
-			       velocity_type & rhs,
-			       const scalar_type /* t */) const
+  const scalar_type /* t */, 
+  velocity_type & rhs) const
 {
   using func_t = VelocityFunctor<k1dLl_d, state_type, velocity_type, sc_t>;
   func_t F(mu_[0], mu_[1], mu_[2], Ncell_, dxInv_, x_d_, u, rhs);
@@ -32,15 +32,15 @@ typename Burgers1dKokkos::velocity_type
 Burgers1dKokkos::velocity(const state_type & u,
 			  const scalar_type t) const{
   velocity_type RR("RR", Ncell_);
-  this->velocity(u, RR, t);
+  this->velocity(u, t, RR);
   return RR;
 }
 
 
 void Burgers1dKokkos::applyJacobian(const state_type & y,
 				    const mvec_t & B,
-				    mvec_t & A,
-				    scalar_type t) const{
+				    scalar_type t,
+            mvec_t & A) const{
   auto JJ = jacobian(y, t);
   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
   constexpr auto one = ::pressio::utils::constants::one<sc_t>();
@@ -55,13 +55,13 @@ Burgers1dKokkos::applyJacobian(const state_type & y,
 			       const mvec_t & B,
 			       scalar_type t) const{
   mvec_t A("AA", Ncell_, B.extent(1) );
-  applyJacobian(y, B, A, t);
+  applyJacobian(y, B, t, A);
   return A;
 }
 
 void Burgers1dKokkos::jacobian(const state_type & u,
-			       jacobian_type & jac,
-			       const scalar_type t) const
+			       const scalar_type t, 
+             jacobian_type & jac) const
 {
   // here the Jacobian is passed in as an argument.
   // to recompute it, use parallel for
@@ -131,7 +131,7 @@ Burgers1dKokkos::jacobian(const state_type & u,
   }
 
   jacobian_type JJ("JJ", numRows, numCols, numEnt, val, ptr, ind);
-  this->jacobian(u, JJ, t);
+  this->jacobian(u, t, JJ);
   return JJ;
 }
 

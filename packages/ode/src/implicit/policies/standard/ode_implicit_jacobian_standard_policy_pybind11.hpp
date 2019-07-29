@@ -9,9 +9,11 @@
 
 namespace pressio{ namespace ode{ namespace policy{
 
-template<typename state_type,
-	 typename system_type,
-	 typename jacobian_type>
+template<
+  typename state_type,
+  typename system_type,
+  typename jacobian_type
+  >
 class ImplicitJacobianStandardPolicyPybind11<
   state_type, system_type, jacobian_type,
   ::pressio::mpl::enable_if_t<
@@ -22,7 +24,8 @@ class ImplicitJacobianStandardPolicyPybind11<
     containers::meta::is_cstyle_array_pybind11<jacobian_type>::value
     >
   > : public JacobianPolicyBase<ImplicitJacobianStandardPolicyPybind11<
-    state_type, system_type, jacobian_type> >{
+    state_type, system_type, jacobian_type> >
+{
 
   using this_t = ImplicitJacobianStandardPolicyPybind11<state_type, system_type, jacobian_type>;
   friend JacobianPolicyBase<this_t>;
@@ -41,7 +44,7 @@ public:
 		  scalar_t t,
 		  scalar_t dt)const
   {
-    throw std::runtime_error("ImplicitJacobianStandardPolicyPybind11 is missing");    
+    throw std::runtime_error("ImplicitJacobianStandardPolicyPybind11 is missing");
     // model.attr("jacobian2")(y, J, t);
     // ::pressio::ode::impl::time_discrete_jacobian<method>(J, dt);
   }
@@ -54,7 +57,7 @@ public:
   			   scalar_t t,
   			   scalar_t dt)const
   {
-    throw std::runtime_error("ImplicitJacobianStandardPolicyPybind11 is missing");    
+    throw std::runtime_error("ImplicitJacobianStandardPolicyPybind11 is missing");
     jacobian_type nJJ;// = model.attr("jacobian1")(y, t);
     // ::pressio::ode::impl::time_discrete_jacobian<method>(nJJ, dt);
     return nJJ;
