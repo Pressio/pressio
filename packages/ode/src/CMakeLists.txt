@@ -1,7 +1,6 @@
 
 # A) Package-specific configuration options
 TRIBITS_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
-
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}) # To include "ode_config.h"
 
 #----------------------------------------------------------------
