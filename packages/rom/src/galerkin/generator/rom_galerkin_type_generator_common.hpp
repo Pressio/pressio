@@ -9,7 +9,7 @@
 #include "../../policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
 #include "../../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
 #include "../../../../ode/src/ode_fwd.hpp"
-#include "../../../../ode/src/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
+#include "../../meta/rom_is_legitimate_model_for_galerkin.hpp"
 #include "../../meta/rom_is_legitimate_decoder_type.hpp"
 
 namespace pressio{ namespace rom{
@@ -17,10 +17,9 @@ namespace pressio{ namespace rom{
 template < typename galerkin_state_type, typename ...Args >
 struct GalerkinCommonTypes{
 
-  // verify that args contains a valid fom/adapter type
-  // a valid fom/adapter type is one that is valid for explicit ode
+  // verify that args contains a valid fom/adapter type for Galerkin
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::ode::meta::is_legitimate_model_for_explicit_ode, Args...>;
+    ::pressio::rom::meta::is_legitimate_model_for_galerkin, Args...>;
   using fom_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
   static_assert(!std::is_void<fom_t>::value and ic1::value < sizeof... (Args),
 		"A valid adapter/fom type must be passed to define a ROM Galerkin problem");
