@@ -66,7 +66,7 @@ const std::vector<double> bdf1Sol
 
   constexpr auto odeName = pressio::ode::ExplicitEnum::Euler;
   using galerkin_t = pressio::rom::DefaultGalerkinExplicitTypeGenerator<
-    fom_t, odeName, decoder_t, rom_state_t>;
+    odeName, rom_state_t, fom_t, decoder_t>;
   pressio::rom::GalerkinProblemGenerator<galerkin_t> galerkinProb(
       appobj, y0n, decoderObj, yROM, t0);
 

@@ -1,8 +1,8 @@
 
-#ifndef ROM_GALERKIN_STEPPER_GENERATORS_HPP_
-#define ROM_GALERKIN_STEPPER_GENERATORS_HPP_
+#ifndef ROM_GALERKIN_PROBLEM_GENERATOR_HPP_
+#define ROM_GALERKIN_PROBLEM_GENERATOR_HPP_
 
-#include "rom_galerkin_type_generators.hpp"
+#include "rom_galerkin_problem_type_generator_default.hpp"
 
 namespace pressio{ namespace rom{
 
@@ -27,9 +27,9 @@ struct GalerkinProblemGenerator<problem_t>
 
   fom_state_t			yFomRef_;
   fom_state_reconstr_t		yFomReconstructor_;
-  fom_velocity_t			rFomRef_;
+  fom_velocity_t		rFomRef_;
   fom_states_data		fomStates_;
-  fom_velocity_data			fomRhs_;
+  fom_velocity_data		fomRhs_;
   galerkin_residual_policy_t	resObj_;
   galerkin_stepper_t		stepperObj_;
 

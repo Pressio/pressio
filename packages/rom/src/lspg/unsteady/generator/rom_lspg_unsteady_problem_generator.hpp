@@ -2,9 +2,9 @@
 #ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
 #define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
 
-#include "rom_lspg_type_generator_default.hpp"
-#include "rom_lspg_type_generator_preconditioned.hpp"
-#include "rom_lspg_type_generator_masked.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_default.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_masked.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_preconditioned.hpp"
 
 namespace pressio{ namespace rom{
 
