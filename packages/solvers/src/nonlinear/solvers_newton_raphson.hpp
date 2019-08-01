@@ -125,7 +125,9 @@ public:
       linSolver_.solve(Jac, Residual, dx);
       x -= dx;
       normN_ =::pressio::containers::ops::norm2(dx);
+#ifdef DEBUG_PRINT
       ::pressio::utils::io::print_stdout("norm(dx) =", normN_, "\n");
+#endif
       if (normN_ < this->tolerance_)
       	break;
     }
