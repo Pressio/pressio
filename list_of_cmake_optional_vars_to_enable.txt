@@ -3,6 +3,9 @@ This file contains a list of cmake variables (and their description)
 that can be turned on/off by the user to enable/disable certain features
 at compile time since these are pre-processor directives.
 
+- HAVE_GTEST
+ON if TPL_ENABLE_GTEST = ON, OFF otherwise
+description: self-explanatory
 
 - HAVE_TRILINOS
 ON if TPL_ENABLE_TRILINOS = ON, OFF otherwise

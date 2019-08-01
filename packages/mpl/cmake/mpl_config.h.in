@@ -1,2 +1,3 @@
 
-#cmakedefine DEBUG_PRINT
+#cmakedefine DEBUG_PRIN
+#cmakedefine HAVE_GTEST

@@ -1,4 +1,5 @@
 
+#ifdef HAVE_GTEST
 #include <gtest/gtest.h>
 //#include <gmock/gmock.h>
 #include <Kokkos_Core.hpp>
@@ -30,3 +31,5 @@ int main(int argc, char *argv[])
 
   return RUN_ALL_TESTS();
 }
+
+#endif
