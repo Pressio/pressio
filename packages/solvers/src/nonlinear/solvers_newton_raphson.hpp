@@ -95,8 +95,8 @@ public:
     containers::meta::is_wrapper<state_t>::value
     > * = nullptr
   >
-  void solveImpl(const system_t & sys,
-		 state_t & x){
+  void solveImpl(const system_t & sys, state_t & x)
+  {
 #ifdef DEBUG_PRINT
     std::cout << " starting Newton-Raphson solve "
 	      << " tol = " << this->tolerance_
@@ -109,7 +109,7 @@ public:
     normN_ = {0};
     containers::default_types::uint iStep = 0;
     std::cout.precision(15);
-    while (iStep++ <= this->maxIters_)
+    while (++iStep <= this->maxIters_)
     {
 #ifdef DEBUG_PRINT
       ::pressio::utils::io::print_stdout("\n");
@@ -142,8 +142,8 @@ public:
       mpl::is_same<linear_solver_t, pybind11::object>::value
       > * = nullptr
     >
-  void solveImpl(const system_t & sys,
-		 state_t & x){
+  void solveImpl(const system_t & sys, state_t & x)
+  {
 #ifdef DEBUG_PRINT
     std::cout << " starting Newton-Raphson solve "
 	      << " tol = " << this->tolerance_
@@ -158,7 +158,7 @@ public:
     normN_ = {0};
     containers::default_types::uint iStep = 0;
     std::cout.precision(15);
-    while (iStep++ <= this->maxIters_)
+    while (++iStep <= this->maxIters_)
     {
 #ifdef DEBUG_PRINT
       ::pressio::utils::io::print_stdout("\n");
