@@ -179,10 +179,12 @@ struct FomStatesData<
   {
     this->resetContainersToZero();
 
+#ifdef DEBUG_PRINT
     std::cout << "inside fom states" << std::endl;
     std::cout << "FomStatesData: yFom_ " << yFom_.data() << std::endl;
     std::cout << "FomStatesData: yFomOld[0]_ " << yFomOld_[0].data() << std::endl;
     std::cout << std::endl;
+#endif
   }
 
   template <

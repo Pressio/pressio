@@ -57,7 +57,6 @@ struct FomRhsData<
   {
     // reset to zero to be safe
     ::pressio::containers::ops::set_zero(fomRhs_);
-    std::cout << "FomRhsData:: fomRhs_" << fomRhs_.data() << std::endl;
   }
 
   ~FomRhsData() = default;

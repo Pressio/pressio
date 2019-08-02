@@ -39,7 +39,7 @@ struct FomStateReconstructor<
 
   template <typename rom_state_t>
   void operator()(const rom_state_t	& romY,
-		  fom_state_t		& yOut) const 
+		  fom_state_t		& yOut) const
   {
     // map current romY to FOM state
     decoderObj_.applyMapping(romY, yOut);
@@ -94,10 +94,12 @@ public:
       yFomReference_(yFomIn),
       decoderObj_(decoder)
   {
+#ifdef DEBUG_PRINT
     std::cout << std::endl;
     std::cout << "Inside FomStateReconstructor " << std::endl;
     std::cout << "yFomReference_ " << yFomReference_.data() << std::endl;
     std::cout << std::endl;
+#endif
   }
 
 public:

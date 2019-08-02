@@ -92,12 +92,14 @@ public:
       auxStepperObj_{},
       stepperObj_(yROM, appObj, resObj_, jacObj_)
   {
+#ifdef DEBUG_PRINT
     std::cout << std::endl;
     std::cout << "LSPGProbGen" << std::endl;
     std::cout << "yFomRef_ " << yFomRef_.data() << std::endl;
     std::cout << "rFomRef_ " << rFomRef_.data() << std::endl;
     std::cout << "romMat_ " << romMat_.data() << std::endl;
     std::cout << std::endl;
+#endif
   }
 
 
@@ -152,7 +154,7 @@ public:
       rFomRef_( rhsEv_.evaluate(appObj, yFomRef_, t0) ),
       fomStates_(yFomRef_, yFomReconstructor_),
       fomRhs_(rFomRef_),
-      romMat_(ajacEv_.evaluate(appObj, yFomRef_,
+p      romMat_(ajacEv_.evaluate(appObj, yFomRef_,
   			       decoder.getReferenceToJacobian(), t0)),
       resObj_(fomStates_, fomRhs_, rhsEv_),
       jacObj_(fomStates_, ajacEv_, romMat_, decoder),
