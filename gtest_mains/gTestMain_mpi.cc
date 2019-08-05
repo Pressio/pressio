@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 //#include <gmock/gmock.h>
 #include <mpi.h>
+#include <memory>
 
 struct MPIEnv : public ::testing::Environment{
 
@@ -32,8 +33,12 @@ int main(int argc, char **argv)
 {
   ::testing::InitGoogleTest(&argc,argv);
   //::testing::InitGoogleMock(&argc,argv);
-  ::testing::AddGlobalTestEnvironment(new MPIEnv(argc, argv));
-
-  return RUN_ALL_TESTS();
+  int err = 0;
+  {
+    std::unique_ptr<MPIEnv> envPtr(new MPIEnv(argc, argv));
+    ::testing::AddGlobalTestEnvironment(envPtr.get());
+    auto err = RUN_ALL_TESTS();
+  }
+  return err;
 }
 #endif
