@@ -30,7 +30,16 @@ struct is_legitimate_model_for_explicit_ode<
     >
   > : std::true_type{};
 
-//-------------------------------------------------------
+#ifdef HAVE_PYBIND11
+template<typename model_type>
+struct is_legitimate_model_for_explicit_ode<
+  model_type,
+  mpl::enable_if_t<
+    ::pressio::mpl::is_same<
+      model_type, pybind11::object>::value
+    >
+  > : std::true_type{};
+#endif
 
 }}} // namespace pressio::ode::meta
 #endif

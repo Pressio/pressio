@@ -128,7 +128,8 @@ struct LSPGUnsteadyProblemGenerator;
 template <
   typename fom_states_data_t,
   typename fom_rhs_data_t,
-  typename decoder_jac_t
+  typename decoder_jac_t,
+  typename ud_ops = void
   >
 class DefaultGalerkinExplicitVelocityPolicy;
 

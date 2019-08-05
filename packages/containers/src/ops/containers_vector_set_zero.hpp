@@ -16,6 +16,19 @@
 namespace pressio{ namespace containers{ namespace ops{
 
 //--------------------------------------------------------------------------
+// enable for wrappers
+//--------------------------------------------------------------------------
+template<
+  typename T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper<T>::value
+    > * = nullptr
+  >
+void set_zero(T & v){
+  v.setZero();
+}
+
+//--------------------------------------------------------------------------
 // enable for pybind11::array_t
 //--------------------------------------------------------------------------
 #ifdef HAVE_PYBIND11
