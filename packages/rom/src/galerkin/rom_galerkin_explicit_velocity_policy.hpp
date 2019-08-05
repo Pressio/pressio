@@ -194,7 +194,7 @@ private:
 #endif
     const auto & phi = decoder_.getReferenceToJacobian();
     auto constexpr transposePhi = true;
-    udOps_.attr("multiply1")(phi, fomRhs_, romR, transposePhi);
+    udOps_.attr("multiply2")(phi, fomRhs_, romR, transposePhi);
 
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
