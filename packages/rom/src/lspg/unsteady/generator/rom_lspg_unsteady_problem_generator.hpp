@@ -9,8 +9,9 @@
 namespace pressio{ namespace rom{
 
 template <typename lspg_problem>
-struct LSPGUnsteadyProblemGenerator<
-  lspg_problem> : lspg_problem {
+struct LSPGUnsteadyProblemGenerator<lspg_problem>
+  : public lspg_problem
+{
 
   using typename lspg_problem::fom_t;
   using typename lspg_problem::scalar_t;
