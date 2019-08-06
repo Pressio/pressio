@@ -1,5 +1,4 @@
 
-#ifdef HAVE_GTEST
 #include <gtest/gtest.h>
 //#include <gmock/gmock.h>
 
@@ -10,4 +9,3 @@ int main(int argc, char *argv[])
 
   return RUN_ALL_TESTS();
 }
-#endif

@@ -1,5 +1,4 @@
 
-#ifdef HAVE_GTEST
 #include <gtest/gtest.h>
 //#include <gmock/gmock.h>
 #include <Kokkos_Core.hpp>
@@ -32,9 +31,7 @@ int main(int argc, char *argv[])
   {
     std::unique_ptr<KokkosEnv> envPtr(new KokkosEnv(argc, argv));
     ::testing::AddGlobalTestEnvironment(envPtr.get());
-    auto err = RUN_ALL_TESTS();
+    err = RUN_ALL_TESTS();
   }
   return err;
 }
-
-#endif
