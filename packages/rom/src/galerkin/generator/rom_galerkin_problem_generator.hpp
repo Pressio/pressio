@@ -84,7 +84,7 @@ public:
   			   decoder_t		    & decoder,
   			   galerkin_state_t	    & yROM,
   			   scalar_t		    t0,
-			   const T2		    & udOps)
+			   const _ud_ops_t	    & udOps)
     : yFomRef_(yFomRefNative),
       yFomReconstructor_(yFomRef_, decoder),
       rFomRef_( appObj.attr("velocity")(yFomRef_, t0) ),
