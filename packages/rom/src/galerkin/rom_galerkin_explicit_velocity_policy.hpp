@@ -100,15 +100,18 @@ public:
 			      const fom_t	      & app,
 			      scalar_t		 t) const
   {
+#ifdef HAVE_PYBIND11
     // TODO: make this better, maybe initialized somewhere else
     galerkin_state_t result( const_cast<galerkin_state_t &>(romY).request() );
+#else
+    galerkin_state_t result(romY);
+#endif
     ::pressio::containers::ops::set_zero(result);
     this->compute_impl(romY, result, app, t);
     return result;
   }
 
 private:
-
   template <
   typename galerkin_state_t,
   typename fom_t,
