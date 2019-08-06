@@ -57,7 +57,6 @@ public:
 
   /*
    * user does NOT provide custom ops, so we use containers::ops
-   * just C++
    */
   template<
     typename step_t,
@@ -81,7 +80,6 @@ public:
 
   /*
    * user does provide custom ops
-   * just C++
    */
   template<
     typename step_t,
@@ -109,7 +107,6 @@ public:
 #ifdef HAVE_PYBIND11
   /*
    * user does provide custom ops
-   * interface with python
    */
   template<
     typename step_t,
