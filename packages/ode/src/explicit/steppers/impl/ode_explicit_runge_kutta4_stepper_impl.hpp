@@ -109,7 +109,6 @@ private:
     typename _state_type = state_type,
     typename _ops_t = ops_t,
     mpl::enable_if_t<
-      ::pressio::containers::meta::is_wrapper<_state_type>::value and
       std::is_void<_ops_t>::value
       > * = nullptr
   >
@@ -146,7 +145,6 @@ private:
     typename _state_type = state_type,
     typename _ops_t = ops_t,
     mpl::enable_if_t<
-      ::pressio::containers::meta::is_wrapper<_state_type>::value and
       std::is_void<_ops_t>::value
       > * = nullptr
   >
