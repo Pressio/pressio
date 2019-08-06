@@ -14,6 +14,10 @@ template <
   >
 struct FomStatesData;
 
+template <
+  typename fom_rhs_type,
+  typename enable = void>
+struct FomRhsData;
 
 
 /* decorators */

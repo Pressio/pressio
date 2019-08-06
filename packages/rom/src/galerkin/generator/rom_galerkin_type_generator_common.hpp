@@ -73,8 +73,6 @@ struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::rom::meta::is_legitimate_model_for_galerkin, Args...>;
   using fom_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
-  static_assert(!std::is_void<fom_t>::value and ic1::value < sizeof... (Args),
-		"A valid adapter/fom type must be passed to define a ROM Galerkin problem");
   static_assert(mpl::is_same<fom_t, pybind11::object>::value,
 		"The adapter/fom type must be a pybind11::object to be valid for interfacing to Python");
 
@@ -96,7 +94,7 @@ struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
 		"A valid decoder type must be passed to define a ROM Galerkin problem");
   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
-  // get the native types from the full-order model (fom)
+  // the native types
   using scalar_t		= typename decoder_t::scalar_t;
   using fom_native_state_t	= galerkin_state_t;
   using fom_native_velocity_t	= galerkin_state_t;

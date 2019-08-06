@@ -79,22 +79,17 @@ public:
 public:
   /* for now, the ROM state and ROM velocity must be of the same type */
   template <
-    typename galerkin_state_t,
-    typename fom_t,
-    typename scalar_t
+    typename galerkin_state_t, typename fom_t, typename scalar_t
   >
   void operator()(const galerkin_state_t  & romY,
 		  galerkin_state_t	  & romR,
   		  const fom_t		  & app,
-		  scalar_t		  t) const
-  {
+		  scalar_t		  t) const{
     this->compute_impl(romY, romR, app, t);
   }
 
   template <
-    typename galerkin_state_t,
-    typename fom_t,
-    typename scalar_t
+    typename galerkin_state_t, typename fom_t, typename scalar_t
     >
   galerkin_state_t operator()(const galerkin_state_t  & romY,
 			      const fom_t	      & app,
@@ -111,7 +106,9 @@ public:
     return result;
   }
 
+
 private:
+
   template <
   typename galerkin_state_t,
   typename fom_t,

@@ -40,15 +40,43 @@ public:
     return stepperObj_;
   }
 
+  /*
+   * ud_ops_t == void and state_type is a wrapper
+  */
+  template <
+    typename _ud_ops_t = ud_ops_t,
+    typename ::pressio::mpl::enable_if_t<
+      std::is_void<_ud_ops_t>::value and
+      ::pressio::containers::meta::is_wrapper<galerkin_state_t>::value
+#ifdef HAVE_PYBIND11
+      and
+      !::pressio::containers::meta::is_cstyle_array_pybind11<galerkin_state_t>::value
+#endif
+      > * = nullptr
+  >
+  GalerkinProblemGenerator(const fom_t		    & appObj,
+  			   const fom_native_state_t & yFomRefNative,
+  			   decoder_t		    & decoder,
+  			   galerkin_state_t	    & yROM,
+  			   scalar_t		    t0)
+    : yFomRef_(yFomRefNative),
+      yFomReconstructor_(yFomRef_, decoder),
+      rFomRef_( appObj.velocity(*yFomRef_.data(), t0) ),
+      fomStates_(yFomRef_, yFomReconstructor_),
+      fomRhs_(rFomRef_),
+      resObj_(fomStates_, fomRhs_, decoder),
+      stepperObj_(yROM, appObj, resObj_)
+  {}
 
 #ifdef HAVE_PYBIND11
   /*
-   * ud_ops_t != void
+   * ud_ops_t == pybind11::object and state_type is pybind11::array
   */
   template <
-    typename T2 = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
-      !std::is_void<T2>::value
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t<
+      ::pressio::mpl::is_same<_ud_ops_t, pybind11::object>::value and
+      ::pressio::containers::meta::is_cstyle_array_pybind11<galerkin_state_t>::value
       > * = nullptr
   >
   GalerkinProblemGenerator(const fom_t		    & appObj,
@@ -67,28 +95,6 @@ public:
   {}
 #endif
 
-  /*
-   * ud_ops_t == void
-  */
-  template <
-    typename T2 = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
-      std::is_void<T2>::value
-      > * = nullptr
-  >
-  GalerkinProblemGenerator(const fom_t		    & appObj,
-  			   const fom_native_state_t & yFomRefNative,
-  			   decoder_t		    & decoder,
-  			   galerkin_state_t	    & yROM,
-  			   scalar_t		    t0)
-    : yFomRef_(yFomRefNative),
-      yFomReconstructor_(yFomRef_, decoder),
-      rFomRef_( appObj.velocity(*yFomRef_.data(), t0) ),
-      fomStates_(yFomRef_, yFomReconstructor_),
-      fomRhs_(rFomRef_),
-      resObj_(fomStates_, fomRhs_, decoder),
-      stepperObj_(yROM, appObj, resObj_)
-  {}
 
 };
 
