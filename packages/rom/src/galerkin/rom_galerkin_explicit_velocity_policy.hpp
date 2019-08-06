@@ -100,8 +100,8 @@ public:
 			      const fom_t	      & app,
 			      scalar_t		 t) const
   {
-    // for now, make it better later
-    galerkin_state_t result(romY);
+    // TODO: make this better, maybe initialized somewhere else
+    galerkin_state_t result( const_cast<galerkin_state_t &>(romY).request() );
     ::pressio::containers::ops::set_zero(result);
     this->compute_impl(romY, result, app, t);
     return result;
