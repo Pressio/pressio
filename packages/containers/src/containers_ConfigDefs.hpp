@@ -4,9 +4,8 @@
 
 #include <fstream>
 #include "containers_config.h"
-#include "../../utils/src/utils_ConfigDefs.hpp"
 #include "../../mpl/src/mpl_ConfigDefs.hpp"
-
+#include "../../utils/src/utils_ConfigDefs.hpp"
 
 #include "containers_default_types.hpp"
 #include "containers_traits.hpp"
