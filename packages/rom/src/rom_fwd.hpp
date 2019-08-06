@@ -6,6 +6,16 @@
 
 namespace pressio{ namespace rom{
 
+template <
+  typename fom_state_type,
+  int maxNstates,
+  typename reconstuctor_type,
+  typename enable = void
+  >
+struct FomStatesData;
+
+
+
 /* decorators */
 namespace decorator{
 
