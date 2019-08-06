@@ -70,7 +70,6 @@ public:
   	      scalar_type t,
   	      scalar_type dt,
   	      step_t step){
-
     auto & ytmp	   = stateAuxStorage_.data_[0];
     auto & auxRhs0 = residAuxStorage_.data_[0];
     auto & auxRhs1 = residAuxStorage_.data_[1];
