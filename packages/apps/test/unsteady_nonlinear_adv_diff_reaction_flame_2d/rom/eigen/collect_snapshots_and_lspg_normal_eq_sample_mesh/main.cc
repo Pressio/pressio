@@ -364,7 +364,7 @@ int main(int argc, char *argv[]){
 
     scalar_t rmsErr = zero;
     auto nSM = smGidsToFGidsMap.size();
-    for (auto i=0; i<nSM; ++i){
+    for (decltype(nSM) i=0; i<nSM; ++i){
       auto SMgid = smGidsToFGidsMap[i][0];
       auto FMgid = smGidsToFGidsMap[i][1];
       for (auto iDof=0; iDof<4; iDof++){

@@ -4,7 +4,7 @@
 
 #include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 #include "KokkosBlas1_nrm1.hpp"
 #endif
 
@@ -69,7 +69,10 @@ auto norm1(const vec_type & a)
   using sc_t = typename details::traits<vec_type>::scalar_t;
   return static_cast<sc_t>(a.data()->normOne());
 }
+#endif
 
+
+#ifdef HAVE_KOKKOS
 //  kokkos vector wrapper
 template <typename vec_type,
   ::pressio::mpl::enable_if_t<
@@ -81,7 +84,6 @@ auto norm1(const vec_type & a)
 {
   return KokkosBlas::nrm1(*a.data());
 }
-
 #endif
 
 

@@ -1,3 +1,4 @@
+
 #ifndef SOLVERS_EXPERIMENTAL_LINEAR_TRAITS_HPP
 #define SOLVERS_EXPERIMENTAL_LINEAR_TRAITS_HPP
 
@@ -82,7 +83,7 @@ struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
   static constexpr bool eigen_enabled = true;
 };
 
-#ifdef HAVE_TRILINOS
+#if defined HAVE_TRILINOS or defined HAVE_KOKKOS
 template <>
 struct traits<::pressio::solvers::linear::direct::getrs> {
 

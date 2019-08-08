@@ -72,7 +72,7 @@ template <
   ::pressio::mpl::enable_if_t<
     (containers::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
      containers::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value)
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
     or
     (containers::meta::is_multi_vector_wrapper_kokkos<lspg_matrix_type>::value and
      containers::meta::is_multi_vector_wrapper_kokkos<decoder_jac_type>::value)

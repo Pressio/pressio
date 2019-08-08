@@ -8,7 +8,7 @@
 
 namespace pressio{ namespace containers{ namespace meta {
 
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 template <typename T1, typename T2, typename enable = void>
 struct kokkos_wrapper_pair_have_same_exe_space : std::false_type {};
 

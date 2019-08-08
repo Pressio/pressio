@@ -4,7 +4,7 @@
 
 #include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 #include "KokkosBlas1_nrm2.hpp"
 #endif
 
@@ -72,8 +72,10 @@ auto norm2(const vec_type & a)
     result += a[i]*a[i];
   return std::sqrt(result);
 }
+#endif
 
 
+#ifdef HAVE_KOKKOS
 //  kokkos vector wrapper
 template <typename vec_type,
   ::pressio::mpl::enable_if_t<
@@ -85,7 +87,6 @@ auto norm2(const vec_type & a)
 {
   return KokkosBlas::nrm2(*a.data());
 }
-
 #endif
 //--------------------------------------------------------
 

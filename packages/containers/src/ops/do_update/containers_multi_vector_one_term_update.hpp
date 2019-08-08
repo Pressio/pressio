@@ -4,7 +4,7 @@
 
 #include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 #include<KokkosBlas1_axpby.hpp>
 #endif
 
@@ -57,7 +57,7 @@ void do_update(T & mv, const T & mv1, const scalar_t & b)
 //---------------------------------------------------------------------
 // enable for kokkos wrapper
 //---------------------------------------------------------------------
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 template<
   typename T,
   typename scalar_t,

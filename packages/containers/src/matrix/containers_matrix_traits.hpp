@@ -7,6 +7,8 @@
 #include "./meta/containers_native_eigen_matrix_meta.hpp"
 #ifdef HAVE_TRILINOS
 #include "./meta/containers_native_trilinos_matrix_meta.hpp"
+#endif
+#ifdef HAVE_KOKKOS
 #include "./meta/containers_native_kokkos_matrix_meta.hpp"
 #endif
 
@@ -29,7 +31,10 @@ struct traits<
       !containers::meta::is_dense_matrix_epetra<wrapped_type>::value and
       !containers::meta::is_dense_matrix_teuchos<wrapped_type>::value and
       !containers::meta::is_dense_matrix_teuchos_rcp<wrapped_type>::value and
-      !containers::meta::is_sparse_matrix_tpetra<wrapped_type>::value and
+      !containers::meta::is_sparse_matrix_tpetra<wrapped_type>::value
+#endif
+#ifdef HAVE_KOKKOS
+      and
       !containers::meta::is_sparse_matrix_kokkos<wrapped_type>::value and
       !containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
 #endif
@@ -283,7 +288,7 @@ struct traits<Matrix<wrapped_type,
 //*******************************
 // Kokkos crs matrix
 //*******************************
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 template <typename wrapped_type>
 struct traits<
   Matrix<
@@ -321,12 +326,10 @@ struct traits<
 #endif
 
 
-
-
 //*******************************
 // Kokkos dense matrix
 //*******************************
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 template <typename wrapped_type>
 struct traits<
   Matrix<

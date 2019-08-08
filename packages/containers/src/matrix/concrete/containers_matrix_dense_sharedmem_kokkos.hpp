@@ -1,5 +1,5 @@
 
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 #ifndef CONTAINERS_DENSE_MATRIX_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_DENSE_MATRIX_SHAREDMEM_KOKKOS_HPP_
 
@@ -94,4 +94,4 @@ private:
 
 }}//end namespace pressio::containers
 #endif
-#endif // HAVE_TRILINOS
+#endif

@@ -1,7 +1,7 @@
 
 #include "apps_burgers1d_kokkos.hpp"
 
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 namespace pressio{ namespace apps{
 
 void Burgers1dKokkos::setup(){

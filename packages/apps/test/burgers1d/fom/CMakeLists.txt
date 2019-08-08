@@ -5,8 +5,11 @@ ADD_SUBDIRECTORY(eigen_implicit_euler_observer)
 ADD_SUBDIRECTORY(eigen_implicit_bdf2)
 ADD_SUBDIRECTORY(eigen_implicit_bdf2_observer)
 
-IF(HAVE_TRILINOS)
+IF(HAVE_KOKKOS)
   ADD_SUBDIRECTORY(kokkos_explicit_euler)
+ENDIF()
+
+IF(HAVE_TRILINOS)
   ADD_SUBDIRECTORY(epetra_explicit_euler)
   ADD_SUBDIRECTORY(tpetra_explicit_euler)
 ENDIF()

@@ -1,13 +1,17 @@
-#ifdef HAVE_TRILINOS
+
+#ifdef HAVE_KOKKOS
 #ifndef SOLVERS_LINEAR_KOKKOS_DIRECT_HPP
 #define SOLVERS_LINEAR_KOKKOS_DIRECT_HPP
 
 #include "../solvers_ConfigDefs.hpp"
 #include "../base/solvers_linear_base.hpp"
 #include "solvers_linear_traits.hpp"
+#ifdef HAVE_TRILINOS
 #include <Teuchos_LAPACK.hpp>
 #include <Teuchos_SerialDenseSolver.hpp>
-#ifdef KOKKOS_ENABLE_CUDA
+#endif
+
+#if defined HAVE_KOKKOS and defined KOKKOS_ENABLE_CUDA
 #include <cuda_runtime.h>
 #include <cusolverDn.h>
 #endif
@@ -30,8 +34,6 @@ struct is_host_execution_space<Kokkos::OpenMP> : std::true_type{};
 #endif
 
 }
-
-
 
 
 template<typename SolverT, typename MatrixT, typename enable = void>
@@ -86,6 +88,9 @@ public:
 
 private:
 
+
+// because this uses teuchos lapack wrapper
+#ifdef HAVE_TRILINOS
   /*
    * enable if:
    * the matrix has layout left (i.e. column major)
@@ -149,9 +154,10 @@ private:
 	       &info);
     assert(info == 0);
   }
+#endif
 
 
-#ifdef KOKKOS_ENABLE_CUDA
+#if defined HAVE_KOKKOS and defined KOKKOS_ENABLE_CUDA
   /*
    * enable if:
    * the matrix has layout left (i.e. column major)
@@ -242,9 +248,12 @@ private:
 #endif
 
   friend base_t;
-  Teuchos::LAPACK<int, scalar_t> lpk_;
 
-#ifdef KOKKOS_ENABLE_CUDA
+#ifdef HAVE_TRILINOS
+  Teuchos::LAPACK<int, scalar_t> lpk_;
+#endif
+
+#if defined HAVE_KOKKOS and defined KOKKOS_ENABLE_CUDA
   cusolverDnHandle_t cuDnHandle_;
 #endif
 };

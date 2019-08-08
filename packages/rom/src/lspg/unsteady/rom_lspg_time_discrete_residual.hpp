@@ -66,12 +66,12 @@ template<
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     method == ::pressio::ode::ImplicitEnum::Euler and
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
     (containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
      or
 #endif
      containers::meta::is_vector_wrapper_eigen<state_type>::value == true
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
      )
 #endif
     > * = nullptr
@@ -98,12 +98,12 @@ template<
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     method == ::pressio::ode::ImplicitEnum::BDF2 and
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
     (containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
      or
 #endif
      containers::meta::is_vector_wrapper_eigen<state_type>::value == true
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
      )
 #endif
     > * = nullptr

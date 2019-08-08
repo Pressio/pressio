@@ -9,6 +9,8 @@
 #include "./meta/containers_native_epetra_multi_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_multi_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_block_multi_vector_meta.hpp"
+#endif
+#ifdef HAVE_KOKKOS
 #include "./meta/containers_native_kokkos_multi_vector_meta.hpp"
 #endif
 
@@ -25,9 +27,13 @@ struct traits<
     mpl::enable_if_t<
       !containers::meta::is_dynamic_multi_vector_eigen<wrapped_type>::value
 #ifdef HAVE_TRILINOS
-      and !containers::meta::is_multi_vector_epetra<wrapped_type>::value and
+      and 
+      !containers::meta::is_multi_vector_epetra<wrapped_type>::value and
       !containers::meta::is_multi_vector_tpetra_block<wrapped_type>::value and
-      !containers::meta::is_multi_vector_tpetra<wrapped_type>::value and
+      !containers::meta::is_multi_vector_tpetra<wrapped_type>::value
+#endif
+#ifdef HAVE_KOKKOS
+      and      
       !containers::meta::is_multi_vector_kokkos<wrapped_type>::value
 #endif
       >
@@ -206,7 +212,7 @@ struct traits<MultiVector<wrapped_type,
 //*******************************
 // Kokkos multi vector
 //*******************************
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 template <typename wrapped_type>
 struct traits<
   MultiVector<

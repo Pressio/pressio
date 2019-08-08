@@ -5,7 +5,7 @@
 #include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
 
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 #include "containers_vector_do_update_kokkos_functors.hpp"
 #endif
 
@@ -152,8 +152,7 @@ void do_update(T & v,
 //--------------------------------------------------------------------------
 // enable for Kokkos wrappers
 //--------------------------------------------------------------------------
-#ifdef HAVE_TRILINOS
-
+#ifdef HAVE_KOKKOS
 template<
   typename T,
   typename scalar_t,
@@ -187,7 +186,6 @@ void do_update(T & v,
   fnctr_t F(*v.data(), *v1.data(), *v2.data(), b, c);
   Kokkos::parallel_for(v.size(), F);
 }
-
 #endif
 
 }}}//end namespace pressio::containers::ops

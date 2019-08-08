@@ -1,10 +1,10 @@
 
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 #ifndef CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_META_HPP_
 #define CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_META_HPP_
 
 #include "../../meta/containers_meta_basic.hpp"
-#include <Tpetra_MultiVector_decl.hpp>
+// #include <Tpetra_MultiVector_decl.hpp>
 
 namespace pressio{ namespace containers{ namespace meta {
 

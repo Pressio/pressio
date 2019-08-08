@@ -4,8 +4,8 @@
 
 #include "../apps_ConfigDefs.hpp"
 
-// this has to be here because HAVE_TRILINOS is seen after we include configDefs
-#ifdef HAVE_TRILINOS
+// this has to be here because it is seen after we include configDefs
+#ifdef HAVE_KOKKOS
 
 #include <Kokkos_Core.hpp>
 #include <KokkosSparse_CrsMatrix.hpp>
