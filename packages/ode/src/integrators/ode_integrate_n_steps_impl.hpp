@@ -61,6 +61,58 @@ struct DoStepPolicy<solver_type, utils::impl::empty>{
 };
 //-------------------------------------------------------
 
+template <
+  typename collector_type, typename int_type,
+  typename time_type, typename state_type,
+  typename enable = void
+  >
+struct CallCollectorDispatch;
+
+
+template <
+  typename collector_type, typename int_type,
+  typename time_type, typename state_type
+  >
+struct CallCollectorDispatch<
+  collector_type, int_type, time_type, state_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_wrapper<state_type>::value and
+    ::pressio::ode::meta::collector_accepts_native_container
+    <collector_type, int_type, time_type, state_type>::value
+    >
+  >
+{
+  static void execute(collector_type & collector,
+		      const int_type & step,
+		      const time_type & time,
+		      const state_type & yIn){
+    collector(step, time, *yIn.data());
+  }
+};
+
+
+template <
+  typename collector_type, typename int_type,
+  typename time_type, typename state_type
+  >
+struct CallCollectorDispatch<
+  collector_type, int_type, time_type, state_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_wrapper<state_type>::value and
+    ::pressio::ode::meta::collector_accepts_pressio_container
+    <collector_type, int_type, time_type, state_type>::value
+    >
+  >
+{
+  static void execute(collector_type & collector,
+		      const int_type & step,
+		      const time_type & time,
+		      const state_type & yIn){
+    collector(step, time, yIn);
+  }
+};
+
+
 
 /*
  * A valid collector object is passed by user
@@ -85,10 +137,15 @@ struct AdvancerPolicy{
     timer->start("time loop");
 #endif
 
+    using collector_dispatch = CallCollectorDispatch<collector_type, integral_type,
+						     time_type, state_type>;
+    constexpr auto zero = ::pressio::utils::constants::zero<integral_type>();
+
     // time variable
     time_type time = start_time;
     // pass initial condition to collector object
-    collector(0, time, yIn);
+    collector_dispatch::execute(collector, zero, time, yIn);
+    //collector(0, time, yIn);
 
     integral_type step = 1;
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
@@ -110,7 +167,8 @@ struct AdvancerPolicy{
 #endif
 
       time = start_time + static_cast<time_type>(step) * dt;
-      collector(step, time, yIn);
+      collector_dispatch::execute(collector, step, time, yIn);
+      //collector(step, time, yIn);
     }
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->stop("time loop");

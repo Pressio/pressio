@@ -44,6 +44,7 @@ void readMatrixFromFile(std::string filename,
   source.close();
 }
 
+template <typename T>
 struct FomObserver{
   int colInd_{0};
   eig_dyn_mat A_;
@@ -52,7 +53,6 @@ struct FomObserver{
     A_.resize(nRows, 0);
   }
 
-  template <typename T>
   void operator()(size_t step,
 		  scalar_t t,
 		  const T & y){
@@ -68,7 +68,7 @@ struct FomObserver{
 struct FomRunner{
   const int Nx_ = {};
   const int Ny_ = {};
-  FomObserver observer_;
+  FomObserver<app_state_t> observer_;
 
   FomRunner(int Nx, int Ny)
     : Nx_{Nx}, Ny_{Ny}, observer_{}{}
