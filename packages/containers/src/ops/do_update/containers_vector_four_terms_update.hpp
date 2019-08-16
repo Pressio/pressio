@@ -4,6 +4,11 @@
 
 #include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
+
+#ifdef HAVE_KOKKOS
+#include "containers_vector_do_update_kokkos_functors.hpp"
+#endif
+
 #ifdef HAVE_PYBIND11
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -162,6 +167,50 @@ void do_update(T & v,
   v.data()->update(c, *v2.data(), one); // add c*v2
   v.data()->update(d, *v3.data(), one); // add d*v3
   v.data()->update(e, *v4.data(), one); // add e*v4
+}
+#endif
+
+
+//--------------------------------------------------------------------------
+// enable for Kokkos wrappers
+//--------------------------------------------------------------------------
+#ifdef HAVE_KOKKOS
+template<
+  typename T,
+  typename scalar_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
+    > * = nullptr
+  >
+void do_update(T & v, const scalar_t &a,
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d,
+	       const T & v4, const scalar_t &e)
+{
+  using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
+  using fnctr_t = ::pressio::containers::ops::impl::DoUpdateFourTermsFunctor<view_t, scalar_t>;
+  fnctr_t F(*v.data(), *v1.data(), *v2.data(), *v3.data(), *v4.data(), a, b, c, d, e);
+  Kokkos::parallel_for(v.size(), F);
+}
+
+template<
+  typename T,
+  typename scalar_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
+    > * = nullptr
+  >
+void do_update(T & v,
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d,
+	       const T & v4, const scalar_t &e)
+{
+  using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
+  using fnctr_t = ::pressio::containers::ops::impl::DoUpdateFourTermsFunctor<view_t, scalar_t>;
+  fnctr_t F(*v.data(), *v1.data(), *v2.data(), *v3.data(), *v4.data(), b, c, d, e);
+  Kokkos::parallel_for(v.size(), F);
 }
 #endif
 

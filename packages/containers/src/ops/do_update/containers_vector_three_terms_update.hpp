@@ -4,6 +4,11 @@
 
 #include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
+
+#ifdef HAVE_KOKKOS
+#include "containers_vector_do_update_kokkos_functors.hpp"
+#endif
+
 #ifdef HAVE_PYBIND11
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -49,8 +54,6 @@ void do_update(T & v,
 	       const T & v3, const scalar_t &d){
   v = b*v1 + c*v2 + d*v3;
 }
-
-
 
 //--------------------------------------------------------------------------
 // enable for pybind11::array_t
@@ -110,7 +113,7 @@ void do_update(T & v,
 
 
 //-----------------------------------------------------------------------------
-// enable for tpetra and tpetra block vectors NOT supporting expr templates
+// enable for tpetra and tpetra block vectors
 //-----------------------------------------------------------------------------
 #ifdef HAVE_TRILINOS
 template<
@@ -154,6 +157,48 @@ void do_update(T & v,
   v.data()->update(d, *v3.data(), one); // add d*v3
 }
 #endif
+
+//--------------------------------------------------------------------------
+// enable for Kokkos wrappers
+//--------------------------------------------------------------------------
+#ifdef HAVE_KOKKOS
+template<
+  typename T,
+  typename scalar_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
+    > * = nullptr
+  >
+void do_update(T & v, const scalar_t &a,
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d)
+{
+  using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
+  using fnctr_t = ::pressio::containers::ops::impl::DoUpdateThreeTermsFunctor<view_t, scalar_t>;
+  fnctr_t F(*v.data(), *v1.data(), *v2.data(), *v3.data(), a, b, c, d);
+  Kokkos::parallel_for(v.size(), F);
+}
+
+template<
+  typename T,
+  typename scalar_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
+    > * = nullptr
+  >
+void do_update(T & v,
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c,
+	       const T & v3, const scalar_t &d)
+{
+  using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
+  using fnctr_t = ::pressio::containers::ops::impl::DoUpdateThreeTermsFunctor<view_t, scalar_t>;
+  fnctr_t F(*v.data(), *v1.data(), *v2.data(), *v3.data(), b, c, d);
+  Kokkos::parallel_for(v.size(), F);
+}
+#endif
+
 
 }}}//end namespace pressio::containers::ops
 #endif
