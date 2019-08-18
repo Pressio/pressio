@@ -92,12 +92,12 @@ struct observer{
   {
 	  std::ofstream myfile;
 	  myfile.open("gen_coords.dat");
-	  myfile << A_ << std::endl;
+	  myfile << std::setprecision(14)  << A_ << std::endl;
 	  myfile.close();
 
 	  std::ofstream myQoIfile;
 	  myQoIfile.open("QoI.dat");
-	  myQoIfile << J_ << std::endl;
+	  myQoIfile << std::setprecision(14) << J_ << std::endl;
 	  myQoIfile.close();
 
 
@@ -120,7 +120,7 @@ struct observer{
 
 	  for (auto i=0; i<yFomFinal.size(); i++)
 	  {
-		  myfile << yFomFinal(i) << std::endl;
+		  myfile << std::setprecision(14) << yFomFinal(i) << std::endl;
 	  }
 
 	  myfile.close();
@@ -129,7 +129,7 @@ struct observer{
 	  myQoIfile.open("QoI_avg.dat");
 	  for (auto i=0; i<Jbar_.size(); i++)
 	  {
-	      myQoIfile << Jbar_(i) << std::endl;
+	      myQoIfile << std::setprecision(14) << Jbar_(i) << std::endl;
 	  }
 	  myQoIfile.close();
   }
