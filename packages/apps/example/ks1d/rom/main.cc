@@ -138,7 +138,7 @@ struct observer{
 };
 
 template <typename scalar_t>
-void read_inputs(scalar_t & c, scalar_t & dt , scalar_t & T, scalar_t & L, int & nx , int & romSize )
+void read_inputs(scalar_t & c, scalar_t & nu, scalar_t & dt , scalar_t & T, scalar_t & L, int & nx , int & romSize )
 {
 	// Read in parameters and grid size
 
@@ -164,6 +164,10 @@ void read_inputs(scalar_t & c, scalar_t & dt , scalar_t & T, scalar_t & L, int &
 			if (name.compare("c:")==0)
 			{
 				c = num;
+			}
+			else if (name.compare("nu:")==0)
+			{
+				nu = num;
 			}
 			else if (name.compare("T:")==0)
 			{
@@ -217,17 +221,18 @@ int main(int argc, char *argv[]){
 
   // Read inputs
   scalar_t c = 0.0;
+  scalar_t nu = 1.0;
   scalar_t dt = -1.0;
   scalar_t fint = -1.0;
   scalar_t L = -1.0;
   int nx;
   int romSize;
 
-  read_inputs( c,  dt , fint, L, nx, romSize );
+  read_inputs( c, nu, dt, fint, L, nx, romSize );
 
   // create app object
   int numNode = nx;
-  Eigen::Vector3d mu(c, L, 0.0);
+  Eigen::Vector3d mu(c, nu, L);
   fom_t appobj( mu, numNode);
   appobj.setup();
   auto t0 = static_cast<scalar_t>(0);

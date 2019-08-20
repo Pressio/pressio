@@ -32,7 +32,7 @@ void KS1dEigen::velocity(const state_type & u,
         scalar_type uxxm = dxInv2 * (umm + u(i) - 2 * um);
         scalar_type uxxxx = dxInv2 * (uxxp + uxxm - 2 * uxx);
 
-		rhs(i) = -1.0 * mu_(0) * ux - 0.5 * u2x - uxx - uxxxx;
+		rhs(i) = -1.0 * mu_(0) * ux - 0.5 * u2x - uxx - mu_(1) * uxxxx;
 
 	}
 
@@ -85,21 +85,21 @@ void KS1dEigen::jacobian(const state_type & u,
 
 	  //d4u/dx4
 	  // -1 * dxInv_^4 * (upp - 4*up + 6 * u(i) -4* um + umm) ;
-	  if (i > 1) Jmm += -dxInv4;
-	  Jm += 4.0 * dxInv4;
+	  if (i > 1) Jmm += - mu_(1) *dxInv4;
+	  Jm += 4.0 *  mu_(1) * dxInv4;
 
 	  // If statements to set boundary conditions
 	  if ((i<2) || ( i>Nnode_-3))
 	  {
-		  Jc += -7 * dxInv4;
+		  Jc += -7 *  mu_(1) * dxInv4;
 	  }
 	  else
 	  {
-		  Jc += -6 * dxInv4;
+		  Jc += -6 *  mu_(1) * dxInv4;
 	  }
 
 	  Jp += 4.0 * dxInv4;
-	  if (i < Nnode_ - 2) Jpp += -dxInv4;
+	  if (i < Nnode_ - 2) Jpp += - mu_(1) *dxInv4;
 
 	  // Store in triplet list
 	  if (i > 1) tripletList.push_back( Tr( i, i-2, Jmm) );
