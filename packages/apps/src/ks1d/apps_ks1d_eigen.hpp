@@ -34,7 +34,7 @@ public:
 
 public:
   void setup(){
-	xR_ = mu_(1);
+	xR_ = mu_(2);
     dx_ = (xR_ - xL_)/static_cast<scalar_type>(Nnode_+1);
     dxInv_ = 1.0/dx_;
 

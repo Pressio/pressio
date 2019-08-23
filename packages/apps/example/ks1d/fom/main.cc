@@ -15,21 +15,29 @@ struct observer{
 
   size_t state_size_ {};
   matrix_t A_;
+  matrix_t J_;
   size_t count_ {};
   state_t y0_;
   state_t yIncr_;
+  state_t Jbar_;
+  int Nsamp_;
 
   observer(int N, int state_size, const state_t & y0)
     : state_size_(state_size),
       A_(state_size, N+1), //+1 to store also init cond
+	  J_(4, N+1),
       y0_(y0),
-      yIncr_(state_size){}
+      yIncr_(state_size),
+	  Jbar_(4),
+	  Nsamp_(N){}
 
   void operator()(size_t step,
   		  double t,
   		  const state_t & y){
     yIncr_ = y; // - y0_; // Just want to plot state for now
     this->storeInColumn(yIncr_, count_);
+    this->computeQoI(y);
+
     count_++;
   }
 
@@ -38,12 +46,44 @@ struct observer{
       A_(i,j) = y(i);
   }
 
+  void computeQoI(const state_t & y)
+  {
+	double qoi_array[4];
+
+	// point quantities
+	qoi_array[0] = y[state_size_/4];
+	qoi_array[1] = y[state_size_/4] * y[state_size_/4];
+
+	// Spatial averages
+	qoi_array[2] = 0.0;
+	qoi_array[3] = 0.0;
+	for (size_t i=0; i < state_size_; i++)
+	{
+	  qoi_array[2] += y[i] / (state_size_ + 2); // +2 for boundary nodes
+	  qoi_array[3] += y[i] * y[i] / (state_size_ + 2);
+	}
+
+	for (int i=0; i < 4; i++)
+	{
+	  // save quantities of interest
+	  J_(i, count_) = qoi_array[i];
+	  // accumulate time average quantity of interest
+	  Jbar_(i) += (1.0/(Nsamp_+1.0)) * qoi_array[i];
+	}
+  }
+
   void printAll() const
   {
 	  std::ofstream myfile;
 	  myfile.open("fom.dat");
-	  myfile << A_ << std::endl;
+	  myfile << std::setprecision(14) << A_ << std::endl;
 	  myfile.close();
+
+	  std::ofstream myQoIfile;
+	  myQoIfile.open("QoI.dat");
+	  myQoIfile << std::setprecision(14) << J_ << std::endl;
+	  myQoIfile.close();
+
   }
 
   void printFinal() const
@@ -53,15 +93,23 @@ struct observer{
 
 	  for (auto i=0; i<y0_.size(); i++)
 	  {
-		  myfile << A_(i,count_-1) << std::endl;
+		  myfile << std::setprecision(14) << A_(i,count_-1) << std::endl;
 	  }
 	  myfile.close();
+
+	  std::ofstream myQoIfile;
+	  myQoIfile.open("QoI_avg.dat");
+	  for (auto i=0; i<Jbar_.size(); i++)
+	  {
+	      myQoIfile << std::setprecision(14) << Jbar_(i) << std::endl;
+	  }
+	  myQoIfile.close();
   }
 
 };
 
 template <typename scalar_t>
-void read_inputs(scalar_t & c, scalar_t & dt , scalar_t & T, scalar_t & L, int & nx )
+void read_inputs(scalar_t & c, scalar_t & nu, scalar_t & dt , scalar_t & T, scalar_t & L, int & nx )
 {
 	// Read in parameters and grid size
 
@@ -87,6 +135,10 @@ void read_inputs(scalar_t & c, scalar_t & dt , scalar_t & T, scalar_t & L, int &
 			if (name.compare("c:")==0)
 			{
 				c = num;
+			}
+			else if (name.compare("nu:")==0)
+			{
+				nu = num;
 			}
 			else if (name.compare("T:")==0)
 			{
@@ -135,16 +187,17 @@ int main(int argc, char *argv[]){
   //-------------------------------
   // Read inputs
   scalar_t c = 0.0;
+  scalar_t nu = 1.0;
   scalar_t dt = -1.0;
   scalar_t fint = -1.0;
   scalar_t L = -1.0;
   int nx;
 
-  read_inputs( c,  dt , fint, L, nx );
+  read_inputs( c, nu, dt, fint, L, nx );
 
   // create app object
   int Nnodes = nx;
-  Eigen::Vector3d mu(c, L, 0.0);
+  Eigen::Vector3d mu(c, nu, L);
   app_t appObj(mu, Nnodes);
   appObj.setup();
   auto & y0n = appObj.getInitialState();
@@ -184,8 +237,8 @@ int main(int argc, char *argv[]){
   observer<ode_state_t> Obs(Nsteps, Nnodes, y);
 
   pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, Obs, solverO);
-  Obs.printAll();
-  Obs.printFinal();
+  Obs.printAll(); // print all states and QoIs
+  Obs.printFinal(); // print final state and time-averaged QoIs
 
   return 0;
 }
