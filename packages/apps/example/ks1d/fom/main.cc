@@ -25,11 +25,11 @@ struct observer{
   observer(int N, int state_size, const state_t & y0)
     : state_size_(state_size),
       A_(state_size, N+1), //+1 to store also init cond
-	  J_(4, N+1),
+      J_(4, N+1),
       y0_(y0),
       yIncr_(state_size),
-	  Jbar_(4),
-	  Nsamp_(N){}
+      Jbar_(4),
+      Nsamp_(N){}
 
   void operator()(size_t step,
   		  double t,
@@ -48,132 +48,115 @@ struct observer{
 
   void computeQoI(const state_t & y)
   {
-	double qoi_array[4];
+    double qoi_array[4];
 
-	// point quantities
-	qoi_array[0] = y[state_size_/4];
-	qoi_array[1] = y[state_size_/4] * y[state_size_/4];
+    // point quantities
+    qoi_array[0] = y[state_size_/4];
+    qoi_array[1] = y[state_size_/4] * y[state_size_/4];
 
-	// Spatial averages
-	qoi_array[2] = 0.0;
-	qoi_array[3] = 0.0;
-	for (size_t i=0; i < state_size_; i++)
-	{
-	  qoi_array[2] += y[i] / (state_size_ + 2); // +2 for boundary nodes
-	  qoi_array[3] += y[i] * y[i] / (state_size_ + 2);
-	}
+    // Spatial averages
+    qoi_array[2] = 0.0;
+    qoi_array[3] = 0.0;
+    for (size_t i=0; i < state_size_; i++)
+      {
+	qoi_array[2] += y[i] / (state_size_ + 2); // +2 for boundary nodes
+	qoi_array[3] += y[i] * y[i] / (state_size_ + 2);
+      }
 
-	for (int i=0; i < 4; i++)
-	{
-	  // save quantities of interest
-	  J_(i, count_) = qoi_array[i];
-	  // accumulate time average quantity of interest
-	  Jbar_(i) += (1.0/(Nsamp_+1.0)) * qoi_array[i];
-	}
+    for (int i=0; i < 4; i++)
+      {
+	// save quantities of interest
+	J_(i, count_) = qoi_array[i];
+	// accumulate time average quantity of interest
+	Jbar_(i) += (1.0/(Nsamp_+1.0)) * qoi_array[i];
+      }
   }
 
   void printAll() const
   {
-	  std::ofstream myfile;
-	  myfile.open("fom.dat");
-	  myfile << std::setprecision(14) << A_ << std::endl;
-	  myfile.close();
+    std::ofstream myfile;
+    myfile.open("fom.dat");
+    myfile << std::setprecision(14) << A_ << std::endl;
+    myfile.close();
 
-	  std::ofstream myQoIfile;
-	  myQoIfile.open("QoI.dat");
-	  myQoIfile << std::setprecision(14) << J_ << std::endl;
-	  myQoIfile.close();
-
+    std::ofstream myQoIfile;
+    myQoIfile.open("QoI.dat");
+    myQoIfile << std::setprecision(14) << J_ << std::endl;
+    myQoIfile.close();
   }
 
   void printFinal() const
   {
-	  std::ofstream myfile;
-	  myfile.open("fom_final.dat");
+    std::ofstream myfile;
+    myfile.open("fom_final.dat");
 
-	  for (auto i=0; i<y0_.size(); i++)
-	  {
-		  myfile << std::setprecision(14) << A_(i,count_-1) << std::endl;
-	  }
-	  myfile.close();
+    for (auto i=0; i<y0_.size(); i++){
+      myfile << std::setprecision(14) << A_(i,count_-1) << std::endl;
+    }
+    myfile.close();
 
-	  std::ofstream myQoIfile;
-	  myQoIfile.open("QoI_avg.dat");
-	  for (auto i=0; i<Jbar_.size(); i++)
-	  {
-	      myQoIfile << std::setprecision(14) << Jbar_(i) << std::endl;
-	  }
-	  myQoIfile.close();
+    std::ofstream myQoIfile;
+    myQoIfile.open("QoI_avg.dat");
+    for (auto i=0; i<Jbar_.size(); i++){
+      myQoIfile << std::setprecision(14) << Jbar_(i) << std::endl;
+    }
+    myQoIfile.close();
   }
-
 };
 
 template <typename scalar_t>
 void read_inputs(scalar_t & c, scalar_t & nu, scalar_t & dt , scalar_t & T, scalar_t & L, int & nx )
 {
-	// Read in parameters and grid size
+  // Read in parameters and grid size
+  std::cout << "Reading Inputs" << std::endl;
+  std::ifstream infile("inputs.txt");
+  std::string line;
+  while (std::getline(infile, line)){
+    std::istringstream iss(line);
+    std::string name;
+    scalar_t num;
+    if (!(iss >> name >> num)) { break; } // error
 
-
-	std::cout << "Reading Inputs" << std::endl;
-
-	std::ifstream infile("inputs.txt");
-
-	std::string line;
-
-
-	while (std::getline(infile, line))
+    std::cout << name << " " << num << std::endl;
+    try{
+      if (name.compare("c:")==0)
 	{
-		std::istringstream iss(line);
-		std::string name;
-		scalar_t num;
-		if (!(iss >> name >> num)) { break; } // error
-
-		std::cout << name << " " << num << std::endl;
-
-		try
-		{
-			if (name.compare("c:")==0)
-			{
-				c = num;
-			}
-			else if (name.compare("nu:")==0)
-			{
-				nu = num;
-			}
-			else if (name.compare("T:")==0)
-			{
-				T = num;
-			}
-			else if (name.compare("dt:")==0)
-			{
-				dt = num;
-			}
-			else if (name.compare("L:")==0)
-			{
-				L = num;
-			}
-			else if (name.compare("nx:")==0)
-			{
-				nx = (int) num;
-			}
-			else if (name.compare("romSize:")==0)
-			{
-				// Do nothing
-			}
-			else
-			{
-				throw 20;
-			}
-		}
-		catch (int e)
-		{
-			std::cout << "Do not recognize the input name " << name << std::endl;
-		}
-
+	  c = num;
 	}
-
-	infile.close();
-
+      else if (name.compare("nu:")==0)
+	{
+	  nu = num;
+	}
+      else if (name.compare("T:")==0)
+	{
+	  T = num;
+	}
+      else if (name.compare("dt:")==0)
+	{
+	  dt = num;
+	}
+      else if (name.compare("L:")==0)
+	{
+	  L = num;
+	}
+      else if (name.compare("nx:")==0)
+	{
+	  nx = (int) num;
+	}
+      else if (name.compare("romSize:")==0)
+	{
+	  // Do nothing
+	}
+      else
+	{
+	  throw 20;
+	}
+    }
+    catch (int e){
+      std::cout << "Do not recognize the input name " << name << std::endl;
+    }
+  }
+  infile.close();
 }
 
 
@@ -229,8 +212,8 @@ int main(int argc, char *argv[]){
   solverO.setMaxIterations(200);
 
   // integrate in time
-//  scalar_t fint = 1000.0;
-//  scalar_t dt = 0.1;
+  //  scalar_t fint = 1000.0;
+  //  scalar_t dt = 0.1;
   auto Nsteps = static_cast<unsigned int>(fint/dt);
 
   // define observer
