@@ -3,13 +3,40 @@ This file contains a list of cmake variables (and their description)
 that can be turned on/off by the user to enable/disable certain features
 at compile time since these are pre-processor directives.
 
+- HAVE_CPP14
+ON if ${CMAKE_CXX_STANDARD} EQUAL "14", OFF otherwise
+description: if compiler supports C++14 standard
+prerequisites: a compiler with support for c++14
+
+- DEBUG_PRINT
+default = OFF
+description: to turn on/off print statemetns for debugging
+prerequisites: none
+
 - HAVE_GTEST
 ON if TPL_ENABLE_GTEST = ON, OFF otherwise
 description: self-explanatory
+prerequisites: need to have gtest installed if you want this on
 
 - HAVE_TRILINOS
 ON if TPL_ENABLE_TRILINOS = ON, OFF otherwise
 description: self-explanatory
+prerequisites: need to have Trilinos installed if you want this on
+
+- HAVE_KOKKOS
+ON if TPL_ENABLE_TRILINOS = ON or if Kokkos is used alone, OFF otherwise
+description: self-explanatory
+prerequisites: need to have Kokkos alone or Trilinos installed if you want this on
+
+- HAVE_LAPACK
+ON if TPL_ENABLE_LAPACK = ON, OFF otherwise
+description: self-explanatory
+prerequisites: need to have lapack installed if you want this on
+
+- HAVE_PYBIND11
+ON if TPL_ENABLE_PYBIND11 = ON, OFF otherwise
+description: self-explanatory
+prerequisites: need to have pybind11 installed if you want this on
 
 - HAVE_BLAZE
 ON if TPL_ENABLE_BLAZE = ON, OFF otherwise
@@ -25,16 +52,6 @@ prerequisites: need to have mpi installed if you want this on
 ON if TPL_ENABLE_ARMADILLO = ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have armadillo installed if you want this on
-
-- HAVE_CPP14
-ON if ${CMAKE_CXX_STANDARD} EQUAL "14", OFF otherwise
-description: if compiler supports C++14 standard
-prerequisites: a compiler with support for c++14
-
-- DEBUG_PRINT
-default = OFF
-description: to turn on/off print statemetns for debugging
-prerequisites: none
 
 - HAVE_TEUCHOS_TIMERS
 ON if TPL_ENABLE_TRILINOS=ON and DEBUG_PRINT=ON
