@@ -11,9 +11,9 @@ namespace pressio { namespace solvers { namespace iterative{
 
 template<typename SolverT, typename MatrixT>
 class EigenIterative
-  : public LinearBase<SolverT, MatrixT,
-		      EigenIterative<SolverT, MatrixT> >,
-    public IterativeBase<typename containers::details::traits<MatrixT>::scalar_t>
+  : public LinearBase<SolverT, MatrixT, EigenIterative<SolverT, MatrixT> >,
+    public IterativeBase< EigenIterative<SolverT, MatrixT>,
+			  typename containers::details::traits<MatrixT>::scalar_t>
 {
 public:
 
@@ -27,9 +27,10 @@ public:
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
   using this_t          = EigenIterative<SolverT, MatrixT>;
   using base_interface  = LinearBase<SolverT, MatrixT, this_t>;
-  using base_iterative  = IterativeBase<scalar_t>;
+  using base_iterative  = IterativeBase<this_t, scalar_t>;
   using solver_traits   = linear::details::traits<SolverT>;
   using native_solver_t = typename solver_traits::template eigen_solver_type<native_mat_t>;
+  using iteration_t	= typename base_iterative::iteration_t;
 
   static_assert( solver_traits::eigen_enabled == true,
 		 "the native solver must be from Eigen to use in EigenIterative");
@@ -43,6 +44,15 @@ public:
   ~EigenIterative() = default;
 
 private:
+
+  iteration_t getNumIterationsExecutedImpl() const {
+    return mysolver_.iterations();
+  }
+
+  scalar_t getFinalErrorImpl() const {
+    return mysolver_.error();
+  }
+
   void resetLinearSystemImpl(const MatrixT& A) {
     mysolver_.compute(*A.data());
   }
@@ -65,6 +75,7 @@ private:
     this->solve(b, y);
   }
 
+  friend base_iterative;
   friend base_interface;
   native_solver_t mysolver_ = {};
 };
