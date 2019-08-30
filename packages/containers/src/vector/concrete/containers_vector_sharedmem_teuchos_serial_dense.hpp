@@ -72,10 +72,7 @@ public:
   }
 
   // assignment with other vector of same type
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator=(const T & other){
+  this_t & operator=(const this_t & other){
     data_ = *other.data();
     return *this;
   }
@@ -104,10 +101,7 @@ public:
 
   // compound assignment when type(b) = type(this)
   // this += b
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator+=(const T & other) {
+  this_t & operator+=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ += *other.data();
     return *this;
@@ -128,10 +122,7 @@ public:
 
   // compound assignment when type(b) = type(this)
   // this -= b
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator-=(const T & other) {
+  this_t & operator-=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ -= *other.data();
     return *this;

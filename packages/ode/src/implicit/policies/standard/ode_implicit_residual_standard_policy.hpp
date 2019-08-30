@@ -48,7 +48,7 @@ public:
 		  scalar_type t,
 		  scalar_type dt) const{
 
-    model.velocity(*y.data(), *R.data(), t);
+    model.velocity(*y.data(), t, *R.data());
     ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
   }
 

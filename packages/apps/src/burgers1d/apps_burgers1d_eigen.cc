@@ -4,11 +4,8 @@
 namespace pressio{ namespace apps{
 
 void Burgers1dEigen::velocity(const state_type & u,
-            velocity_type & rhs,
-            const scalar_type /* t */) const{
-
-  // std::cout << "velocity" << std::endl;
-  // std::cout << rhs << std::endl;
+  const scalar_type /* t */,
+  velocity_type & rhs) const{
 
   rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
   for (ui_t i=1; i<Ncell_; ++i){
@@ -20,8 +17,8 @@ void Burgers1dEigen::velocity(const state_type & u,
 }
 
 void Burgers1dEigen::jacobian(const state_type & u,
-            jacobian_type & jac,
-            const scalar_type /*t*/)const{
+            const scalar_type /*t*/,
+            jacobian_type & jac)const{
 
   //evaluate jacobian
   if (jac.rows() == 0 || jac.cols()==0 ){

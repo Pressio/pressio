@@ -16,16 +16,20 @@ class ContainerBase
 
 public:
   wrapped_t const * data() const {
-    return this->underlying().dataImpl();}
+    return this->underlying().dataImpl();
+  }
 
   wrapped_t * data(){
-    return this->underlying().dataImpl();}
+    return this->underlying().dataImpl();
+  }
 
   wrapped_t dataCp(){
-    return this->underlying().dataCpImpl();}
+    return this->underlying().dataCpImpl();
+  }
 
   bool empty() const {
-    return this->underlying().emptyImpl();}
+    return this->underlying().emptyImpl();
+  }
 
   template <typename T>
   void scale(T value) {
@@ -33,7 +37,8 @@ public:
   }
 
   void setZero() {
-    this->underlying().setZeroImpl();}
+    this->underlying().setZeroImpl();
+  }
 
   template <typename T= derived_type,
 	    ::pressio::mpl::enable_if_t<

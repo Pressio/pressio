@@ -57,15 +57,12 @@ public:
 
   /*
    * user does NOT provide custom ops, so we use containers::ops
-   * just C++
    */
   template<
     typename step_t,
-    typename T = ops_t,
+    typename _ops_t = ops_t,
     typename _state_type = state_type,
-    mpl::enable_if_t<
-      std::is_void<T>::value
-      > * = nullptr
+    mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr
   >
   void doStep(_state_type & y,
 	      scalar_type t,
@@ -80,15 +77,14 @@ public:
   }
 
   /*
-   * user does provide custom ops
-   * just C++
+   * user does provide custom ops, and they need raw data not wrappers
    */
   template<
     typename step_t,
-    typename T = ops_t,
+    typename _ops_t = ops_t,
     typename _state_type = state_type,
     mpl::enable_if_t<
-      std::is_void<T>::value == false and
+      !std::is_void<_ops_t>::value and
       containers::meta::is_wrapper<_state_type>::value
       > * = nullptr
     >
@@ -105,36 +101,6 @@ public:
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
     op::do_update(*y.data(), one, *auxRhs0.data(), dt);
   }
-
-#ifdef HAVE_PYBIND11
-  /*
-   * user does provide custom ops
-   * interface with python
-   */
-  template<
-    typename step_t,
-    typename T = ops_t,
-    typename _state_type = state_type,
-    mpl::enable_if_t<
-      std::is_void<T>::value == false and
-      containers::meta::is_cstyle_array_pybind11<_state_type>::value
-      > * = nullptr
-    >
-  void doStep(_state_type & y,
-  	      scalar_type t,
-  	      scalar_type dt,
-  	      step_t step){
-
-    using op = typename ops_t::update_op;
-    auto & auxRhs0 = residAuxStorage_.data_[0];
-
-    policy_(y, auxRhs0, sys_.get(), t);
-    // y = y + dt * rhs
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    op::do_update(y, one, auxRhs0, dt);
-  }
-#endif
-
 };
 
 }}}//end namespace pressio::ode::impl

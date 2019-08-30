@@ -16,6 +16,19 @@
 namespace pressio{ namespace containers{ namespace ops{
 
 //--------------------------------------------------------------------------
+// enable for wrappers
+//--------------------------------------------------------------------------
+template<
+  typename T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper<T>::value
+    > * = nullptr
+  >
+void set_zero(T & v){
+  v.setZero();
+}
+
+//--------------------------------------------------------------------------
 // enable for pybind11::array_t
 //--------------------------------------------------------------------------
 #ifdef HAVE_PYBIND11
@@ -32,8 +45,9 @@ void set_zero(T & v){
   }
 
   using scalar_t = typename T::value_type;
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
   for (decltype(v.size()) i=0; i<v.size(); ++i){
-    v.mutable_at(i) = ::pressio::utils::constants::zero<scalar_t>();
+    v.mutable_at(i) = zero;
   }
 }
 #endif

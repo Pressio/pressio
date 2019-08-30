@@ -60,9 +60,9 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 
 
-
 /*
  * for EIGEN
+ * only if jphi, phi are of same size
 */
 template <
   ode::ImplicitEnum odeMethod,
@@ -70,24 +70,37 @@ template <
   typename scalar_type,
   typename decoder_jac_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
-    containers::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value
+    (containers::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
+     containers::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value)
+#ifdef HAVE_KOKKOS
+    or
+    (containers::meta::is_multi_vector_wrapper_kokkos<lspg_matrix_type>::value and
+     containers::meta::is_multi_vector_wrapper_kokkos<decoder_jac_type>::value)
+#endif
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    scalar_type	dt,
 			    const decoder_jac_type & phi){
 
+  assert( jphi.numVectors() == phi.numVectors() );
+  assert( jphi.length() == phi.length() );
+
   // prefactor (f) multiplying f*dt*J*phi
-  auto prefactor = static_cast<scalar_type>(1);
+  auto prefactor = ::pressio::utils::constants::one<scalar_type>();
   if (odeMethod == ode::ImplicitEnum::BDF2)
     prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
 
+  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  constexpr auto negone = ::pressio::utils::constants::negOne<scalar_type>();
+  const auto a = negone*prefactor*dt;
+
   //loop over elements of jphi
-  for (auto i=0; i<jphi.length(); i++){
-    for (auto j=0; j<jphi.numVectors(); j++)
-      jphi(i,j) = phi(i,j) - prefactor*dt*jphi(i,j);
-  }
+  ::pressio::containers::ops::do_update(jphi, a, phi, one);
+  // for (auto i=0; i<jphi.length(); i++){
+  //   for (auto j=0; j<jphi.numVectors(); j++)
+  //     jphi(i,j) = phi(i,j) - prefactor*dt*jphi(i,j);
+  // }
 }
 
 

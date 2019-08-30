@@ -1,10 +1,12 @@
 
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 #ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 
 #include "../../shared_base/containers_container_base.hpp"
 #include "../base/containers_vector_sharedmem_base.hpp"
+#include <KokkosBlas1_fill.hpp>
+#include <KokkosBlas1_scal.hpp>
 
 namespace pressio{ namespace containers{
 
@@ -41,6 +43,10 @@ public:
     // std::cout << data_.label() << std::endl;
   }
 
+  Vector(const std::string & label, size_t e1)
+    : data_{label, e1}
+  {}
+
   Vector(const this_t & other)
     : data_{other.data_.label(), other.data_.extent(0)}
   {
@@ -51,6 +57,14 @@ public:
 
   ~Vector(){}
 
+public:
+  // copy assign implments copy semantics not view (for time being)
+  this_t & operator=(const this_t & other){
+    assert(this->size() == other.size());
+    Kokkos::deep_copy(data_, *other.data());
+    return *this;
+  }
+
 private:
   wrap_t const * dataImpl() const{
     return &data_;
@@ -59,8 +73,21 @@ private:
     return &data_;
   }
 
+  void scaleImpl(sc_t value) {
+    KokkosBlas::scal(data_, value, data_);
+  }
+
+  void setZeroImpl() {
+    constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+    KokkosBlas::fill(data_, zero);
+  }
+
   wrap_t dataCpImpl(){
     return data_;
+  }
+
+  ord_t sizeImpl() const {
+    return data_.extent(0);
   }
 
 private:

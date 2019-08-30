@@ -12,15 +12,15 @@ namespace pressio{ namespace ode{ namespace meta {
  * for now, we enable if a vector is wrapped into containers::Vector
  * or if it is pybind::array
  */
-template<typename state_type, typename enable = void>
+template<typename T, typename enable = void>
 struct is_legitimate_explicit_state_type : std::false_type{};
 
-template<typename state_type>
-struct is_legitimate_explicit_state_type<state_type,
+template<typename T>
+struct is_legitimate_explicit_state_type<T,
  typename std::enable_if<
-   containers::meta::is_vector_wrapper<state_type>::value
+   containers::meta::is_vector_wrapper<T>::value
 #ifdef HAVE_PYBIND11
-   or containers::meta::is_cstyle_array_pybind11<state_type>::value
+   or containers::meta::is_cstyle_array_pybind11<T>::value
 #endif
    >::type
   > : std::true_type{};

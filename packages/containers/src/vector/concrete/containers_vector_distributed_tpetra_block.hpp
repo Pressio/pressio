@@ -66,10 +66,7 @@ public:
 public:
 
   // copy assignment
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator=(const T & other){
+  this_t & operator=(const this_t & other){
     this->data_.update(::pressio::utils::constants::one<sc_t>(),
 		       *other.data(),
 		       ::pressio::utils::constants::zero<sc_t>() );
@@ -78,10 +75,7 @@ public:
 
   // compound add assignment when type(b) = type(this)
   // this += b
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator+=(const T & other) {
+  this_t & operator+=(const this_t & other) {
     this->data_.update(::pressio::utils::constants::one<sc_t>(),
 		       *other.data(),
 		       ::pressio::utils::constants::one<sc_t>() );
@@ -90,10 +84,7 @@ public:
 
   // compound add assignment when type(b) = type(this)
   // this -= b
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator-=(const T & other) {
+  this_t & operator-=(const this_t & other) {
     this->data_.update(::pressio::utils::constants::negOne<sc_t>(),
 		       *other.data(),
 		       ::pressio::utils::constants::one<sc_t>() );

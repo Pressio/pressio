@@ -8,10 +8,10 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
   utils		packages/utils PT
   containers	packages/containers PT
   qr		packages/qr PT
-  solvers	packages/solvers PT
   svd		packages/svd PT
-  ode		packages/ode PT
   optimization	packages/optimization PT
+  solvers	packages/solvers PT
+  ode		packages/ode PT
   rom		packages/rom PT
   apps		packages/apps PT
   )

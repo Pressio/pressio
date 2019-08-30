@@ -81,7 +81,6 @@ public:
   }
 
   residual_t residual(const state_t & y) const{
-    std::cout << " residual_impl_st_base" << std::endl;
     return this->residual_obj_.template operator()<
       traits::enum_id,
       traits::steps
@@ -109,8 +108,8 @@ public:
 		      const system_t & model,
 		      const residual_pol_t & resPolicyObj,
 		      const jacobian_pol_t & jacPolicyObj)
-    : stateAuxStorage_{y0},
-      sys_{model},
+    : sys_{model},
+      stateAuxStorage_{y0},
       residual_obj_{resPolicyObj},
       jacobian_obj_{jacPolicyObj}{}
 
@@ -125,8 +124,8 @@ public:
     >
   ImplicitStepperBase(const state_t & y0,
   		      const system_t & model)
-    : stateAuxStorage_{y0},
-      sys_{model},
+    : sys_{model},
+      stateAuxStorage_{y0},
       residual_obj_{},
       jacobian_obj_{}{
 	std::cout << "base stepper cnstr" << std::endl;
@@ -142,8 +141,8 @@ public:
   ImplicitStepperBase(const state_t & y0,
   		      const system_t & model,
   		      const residual_pol_t & resPolicyObj)
-    : stateAuxStorage_{y0},
-      sys_{model},
+    : sys_{model},
+      stateAuxStorage_{y0},
       residual_obj_{resPolicyObj},
       jacobian_obj_{}{}
 

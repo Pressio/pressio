@@ -49,10 +49,12 @@ public:
 		  const ops_t ops)
     : phi_(matIn), ops_{ops}
   {
+#ifdef DEBUG_PRINT
     std::cout << std::endl;
     std::cout << "Inside PyLinearDecoder " << std::endl;
     std::cout << "phi_ " << phi_.data() << std::endl;
     std::cout << std::endl;
+#endif
   }
 
   ~PyLinearDecoder() = default;

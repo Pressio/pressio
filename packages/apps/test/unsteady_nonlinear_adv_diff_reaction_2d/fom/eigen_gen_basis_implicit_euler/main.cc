@@ -23,6 +23,7 @@ using uint_t		= unsigned int;
 constexpr double eps = 1e-8;
 constexpr auto t0	= static_cast<scalar_t>(0);
 
+template <typename T>
 struct FomObserver{
   int colInd_{0};
   eig_dyn_mat A_;
@@ -31,7 +32,6 @@ struct FomObserver{
     A_.resize(nRows, 0);
   }
 
-  template <typename T>
   void operator()(size_t step,
 		  scalar_t t,
 		  const T & y){
@@ -47,7 +47,7 @@ struct FomObserver{
 struct FomRunner{
   const int Nx_ = {};
   const int Ny_ = {};
-  FomObserver observer_;
+  FomObserver<app_state_t> observer_;
 
   FomRunner(int Nx, int Ny)
     : Nx_{Nx}, Ny_{Ny}, observer_{}{}

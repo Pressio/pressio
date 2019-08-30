@@ -33,12 +33,14 @@
 #include "containers/src/ops/multivec_vec_product/containers_epetra_multi_vector_product_teuchos_serial_vector.hpp"
 #include "containers/src/ops/multivec_vec_product/containers_tpetra_multi_vector_product_teuchos_serial_vector.hpp"
 #include "containers/src/ops/multivec_vec_product/containers_tpetra_block_multi_vector_product_eigen_vector.hpp"
+#include "containers/src/ops/multivec_vec_product/containers_kokkos_multi_vector_product_kokkos_vector.hpp"
 
 #include "containers/src/ops/containers_vector_set_zero.hpp"
 #include "containers/src/ops/containers_vector_deep_copy.hpp"
 
 /// update function to do operations on containers
 #include "containers/src/ops/do_update/containers_vector_one_term_update.hpp"
+#include "containers/src/ops/do_update/containers_multi_vector_one_term_update.hpp"
 #include "containers/src/ops/do_update/containers_vector_two_terms_update.hpp"
 #include "containers/src/ops/do_update/containers_vector_three_terms_update.hpp"
 #include "containers/src/ops/do_update/containers_vector_four_terms_update.hpp"

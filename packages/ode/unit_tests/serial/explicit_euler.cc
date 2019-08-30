@@ -49,8 +49,6 @@ TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
   using res_t = containers::Vector<nveloc_t>;
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
-  res_t r(3);
-  appObj.velocity(*y.data(), *r.data(), 0.0);
 
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::Euler, state_t, app_t, res_t, double>;
@@ -85,8 +83,6 @@ TEST(ode_explicit_euler, numericsStdResidualPolPassedByUser){
 
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
-  res_t r(3);
-  appObj.velocity(*y.data(), *r.data(), 0.0);
 
   // the standard policy
   using res_std_pol_t = ode::policy::ExplicitVelocityStandardPolicy<

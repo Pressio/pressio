@@ -70,12 +70,13 @@ int main(int argc, char *argv[]){
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
   using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
     lspg_stepper_t, linear_solver_t>;
-  gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
+  gnsolver_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);
-  solver.setMaxIterations(200);
+  // I know this should converge in few iters every step
+  solver.setMaxIterations(2);
 
   // integrate in time
-  pressio::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, 10, solver);
+  pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
@@ -86,6 +87,9 @@ int main(int argc, char *argv[]){
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStates<ode_case>::get(numCell, dt, 0.10);
   for (auto i=0; i<yFomFinal.size(); i++)
     if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10) checkStr = "FAILED";
+
+    auto n1 = ::pressio::containers::ops::norm2(yFomFinal);
+    std::cout << n1 << std::endl;
 
   std::cout << checkStr <<  std::endl;
   return 0;

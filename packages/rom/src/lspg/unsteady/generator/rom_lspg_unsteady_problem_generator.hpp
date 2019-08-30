@@ -2,15 +2,16 @@
 #ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
 #define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
 
-#include "rom_lspg_type_generator_default.hpp"
-#include "rom_lspg_type_generator_preconditioned.hpp"
-#include "rom_lspg_type_generator_masked.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_default.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_masked.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_preconditioned.hpp"
 
 namespace pressio{ namespace rom{
 
 template <typename lspg_problem>
-struct LSPGUnsteadyProblemGenerator<
-  lspg_problem> : lspg_problem {
+struct LSPGUnsteadyProblemGenerator<lspg_problem>
+  : public lspg_problem
+{
 
   using typename lspg_problem::fom_t;
   using typename lspg_problem::scalar_t;
@@ -92,12 +93,14 @@ public:
       auxStepperObj_{},
       stepperObj_(yROM, appObj, resObj_, jacObj_)
   {
+#ifdef DEBUG_PRINT
     std::cout << std::endl;
     std::cout << "LSPGProbGen" << std::endl;
     std::cout << "yFomRef_ " << yFomRef_.data() << std::endl;
     std::cout << "rFomRef_ " << rFomRef_.data() << std::endl;
     std::cout << "romMat_ " << romMat_.data() << std::endl;
     std::cout << std::endl;
+#endif
   }
 
 
@@ -125,8 +128,7 @@ public:
       rFomRef_( rhsEv_.evaluate(appObj, yFomRef_, t0) ),
       fomStates_(yFomRef_, yFomReconstructor_),
       fomRhs_(rFomRef_),
-      romMat_(ajacEv_.evaluate(appObj, yFomRef_,
-  			       decoder.getReferenceToJacobian(), t0)),
+      romMat_(ajacEv_.evaluate(appObj, yFomRef_, decoder.getReferenceToJacobian(), t0)),
       resObj_(fomStates_, fomRhs_, rhsEv_),
       jacObj_(fomStates_, ajacEv_, romMat_, decoder),
       auxStepperObj_{},

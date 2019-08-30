@@ -28,8 +28,8 @@ UnsteadyLinAdvDiff1dEpetra::getInitialState() const{
 // Returns the velocitys for the unsteady case: signs
 //------------------------------------------------------------------------
 void UnsteadyLinAdvDiff1dEpetra::velocity(const state_type & u,
-					  velocity_type & rhs,
-					  const scalar_type /* t*/) const{
+					  const scalar_type /* t*/,
+            velocity_type & rhs) const{
   SteadyLinAdvDiff1dEpetra::velocity(u, rhs);
   for (int i = 0; i<nodesPerProc_; i++)
     rhs[i] = -rhs[i];

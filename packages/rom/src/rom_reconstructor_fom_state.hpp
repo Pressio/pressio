@@ -25,6 +25,7 @@ struct FomStateReconstructor<
     >
   >
 {
+  using scalar_t = typename containers::details::traits<fom_state_t>::scalar_t;
 
   FomStateReconstructor() = delete;
 
@@ -38,15 +39,20 @@ struct FomStateReconstructor<
 
   template <typename rom_state_t>
   void operator()(const rom_state_t	& romY,
-		  fom_state_t		& yOut) const {
+		  fom_state_t		& yOut) const
+  {
+    // map current romY to FOM state
     decoderObj_.applyMapping(romY, yOut);
-    yOut += yFomReference_;
+
+    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+    // yOut = yOut + yFomReference_;
+    containers::ops::do_update(yOut, one, yFomReference_, one);
   }
 
   template <typename rom_state_t>
   fom_state_t operator()(const rom_state_t & romY) const{
     auto yOut(yFomReference_);
-    yOut.setZero();
+    ::pressio::containers::ops::set_zero(yOut);
     this->template operator()(romY,yOut);
     return yOut;
   }
@@ -88,10 +94,12 @@ public:
       yFomReference_(yFomIn),
       decoderObj_(decoder)
   {
+#ifdef DEBUG_PRINT
     std::cout << std::endl;
     std::cout << "Inside FomStateReconstructor " << std::endl;
     std::cout << "yFomReference_ " << yFomReference_.data() << std::endl;
     std::cout << std::endl;
+#endif
   }
 
 public:

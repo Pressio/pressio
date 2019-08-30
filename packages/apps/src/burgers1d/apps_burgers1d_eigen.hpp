@@ -52,21 +52,21 @@ public:
   };
 
   void velocity(const state_type & u,
-		velocity_type & rhs,
-		const scalar_type /* t */) const;
+		const scalar_type /* t */,
+    velocity_type & rhs) const;
 
   velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
     velocity_type RR(Ncell_);
-    this->velocity(u, RR, t);
+    this->velocity(u, t, RR);
     return RR;
   }
 
   // computes: A = Jac B where B is a Eigen::MatrixXd
   void applyJacobian(const state_type & y,
 		     const mv_t & B,
-		     mv_t & A,
-		     scalar_type t) const{
+		     scalar_type t,
+         mv_t & A) const{
     auto JJ = jacobian(y, t);
     // std::cout << "ApplyJacobian" << std::endl;
     // std::cout << JJ << std::endl;
@@ -79,19 +79,19 @@ public:
 		     const mv_t & B,
 		     scalar_type t) const{
     mv_t A( y.size(), B.cols() );
-    applyJacobian(y, B, A, t);
+    applyJacobian(y, B, t, A);
     return A;
   }
 
   void jacobian(const state_type & u,
-		jacobian_type & jac,
-		const scalar_type /*t*/) const;
+		const scalar_type /*t*/,
+    jacobian_type & jac) const;
 
   jacobian_type jacobian(const state_type & u,
 			 const scalar_type t) const{
 
     jacobian_type JJ(u.size(), u.size());
-    this->jacobian(u, JJ, t);
+    this->jacobian(u, t, JJ);
     return JJ;
   }
 

@@ -37,9 +37,15 @@ struct LinearBase {
 
   template <typename VectorT>
   void solve(const MatrixT & A, const VectorT & b, VectorT& x) {
-    this->resetLinearSystem(A);
-    this->solve(b, x);
+    static_cast<Derived&>(*this).solveImpl(A, b, x);
   }
+
+  // this method allows solver to overwrite matrix
+  template <typename VectorT>
+  void solveAllowMatOverwrite(MatrixT & A, const VectorT & b, VectorT& x) {
+    static_cast<Derived&>(*this).solveAllowMatOverwriteImpl(A, b, x);
+  }
+
 };
 
 }}//end namespace pressio::solvers

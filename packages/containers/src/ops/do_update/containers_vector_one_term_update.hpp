@@ -8,7 +8,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #endif
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 #include<KokkosBlas1_axpby.hpp>
 #endif
 
@@ -139,7 +139,7 @@ void do_update(T & v, const T & v1, const scalar_t b)
 //---------------------------------------------------------------------
 // enable for kokkos wrapper
 //---------------------------------------------------------------------
-#ifdef HAVE_TRILINOS
+#ifdef HAVE_KOKKOS
 template<
   typename T,
   typename scalar_t,
@@ -147,8 +147,8 @@ template<
     ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
     > * = nullptr
   >
-void do_update(T & v, const scalar_t a,
-	       const T & v1, const scalar_t b)
+void do_update(T & v, const scalar_t & a,
+	       const T & v1, const scalar_t & b)
 {
   // v = a*v + b * v1
   KokkosBlas::axpby(b, *v1.data(), a, *v.data());
@@ -161,7 +161,7 @@ template<
     ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
     > * = nullptr
   >
-void do_update(T & v, const T & v1, const scalar_t b)
+void do_update(T & v, const T & v1, const scalar_t & b)
 {
   // v = b*v1
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();

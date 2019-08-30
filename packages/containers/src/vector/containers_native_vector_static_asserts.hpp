@@ -48,7 +48,10 @@ namespace pressio{ namespace containers{
 #define STATIC_ASSERT_IS_NOT_VECTOR_TPETRA_BLOCK(TYPE) \
   static_assert( !containers::meta::is_vector_tpetra_block<TYPE>::value, \
 		 "THIS_IS_A_VECTOR_TPETRA_BLOCK")
+#endif
 
+
+#ifdef HAVE_KOKKOS  
 #define STATIC_ASSERT_IS_VECTOR_KOKKOS(TYPE) \
   static_assert( containers::meta::is_vector_kokkos<TYPE>::value, \
 		 "THIS_IS_NOT_A_VECTOR_KOKKOS")

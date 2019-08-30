@@ -78,26 +78,26 @@ public:
   };
 
   void velocity(const state_type & u,
-		velocity_type & rhs,
-		const scalar_type /* t */) const;
+		const scalar_type /* t */,
+    velocity_type & rhs) const;
 
   velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
     Epetra_Vector R(*dataMap_);
-    velocity(u,R,t);
+    velocity(u,t,R);
     return R;
   }//end residual
 
   // computes: A = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
 		     const Epetra_MultiVector & B,
-		     Epetra_MultiVector & A,
-		     scalar_type t) const{
+		     scalar_type t,
+         Epetra_MultiVector & A) const{
     assert( Jac_->NumGlobalCols() == B.GlobalLength() );
     assert( A.GlobalLength() == Jac_->NumGlobalRows() );
     assert( A.NumVectors() == B.NumVectors() );
     // compute jacobian
-    jacobian(y, *Jac_, t);
+    jacobian(y, t, *Jac_);
     Jac_->Print(std::cout);
     // multiply
     Jac_->Multiply(false, B, A);
@@ -109,14 +109,14 @@ public:
   				   const Epetra_MultiVector & B,
   				   scalar_type t) const{
     Epetra_MultiVector C( Jac_->RangeMap(), B.NumVectors() );
-    applyJacobian(y, B, C, t);
+    applyJacobian(y, B, t, C);
     return C;
   }
 
 protected:
-  void jacobian(const state_type & u,
-		jacobian_type & jac,
-		const scalar_type /*t*/) const;
+  void jacobian(const state_type & u,		
+		const scalar_type /*t*/,
+    jacobian_type & jac) const;
 
 protected:
   std::vector<scalar_type> mu_; // parameters

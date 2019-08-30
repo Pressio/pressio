@@ -90,7 +90,10 @@ class GaussNewton<
        system_type, hessian_type, linear_solver_type, scalar_type,
        line_search_type, convergence_when_t, void>
      >,
-    public IterativeBase<scalar_type>,
+    public IterativeBase< GaussNewton<system_type, hessian_type,
+				      linear_solver_type, scalar_type,
+				      line_search_type, convergence_when_t,
+				      void>, scalar_type>,
     protected GNHelperMixin<system_type, hessian_type,
 			   linear_solver_type, scalar_type>
 {
@@ -98,10 +101,11 @@ class GaussNewton<
      scalar_type, line_search_type, convergence_when_t, void>;
 
   // need to be friend of base (crpt)
-  friend NonLinearSolverBase<this_t>;
+  using non_lin_sol_base_t = NonLinearSolverBase<this_t>;
+  friend non_lin_sol_base_t;
 
   // the type of the iterative base
-  using iterative_base_t = IterativeBase<scalar_type>;
+  using iterative_base_t = IterativeBase<this_t, scalar_type>;
 
   // mixin helper
   using gn_mixin_t = GNHelperMixin<system_type, hessian_type,
@@ -152,7 +156,8 @@ private:
        hess_, linSolver_,
        iterative_base_t::maxIters_,
        iterative_base_t::tolerance_,
-       normO_, normN_, &obsObj_);
+       normO_, normN_, &obsObj_,
+       non_lin_sol_base_t::convergenceConditionDescription_);
 
   }//end solveImpl
 };
@@ -174,12 +179,14 @@ template <
 class GaussNewton<
   system_type, hessian_type, linear_solver_type,
   scalar_type, line_search_type, convergence_when_t, observer_t>
-  : public NonLinearSolverBase<
-     GaussNewton<
-       system_type, hessian_type, linear_solver_type, scalar_type,
-       line_search_type, convergence_when_t, observer_t>
-     >,
-    public IterativeBase<scalar_type>,
+  : public NonLinearSolverBase< GaussNewton<system_type, hessian_type,
+					    linear_solver_type, scalar_type,
+					    line_search_type, convergence_when_t,
+					    observer_t>>,
+    public IterativeBase< GaussNewton<system_type, hessian_type,
+				      linear_solver_type, scalar_type,
+				      line_search_type, convergence_when_t,
+				      observer_t>, scalar_type>,
     protected GNHelperMixin<system_type, hessian_type,
 			    linear_solver_type, scalar_type>
 {
@@ -188,10 +195,11 @@ class GaussNewton<
     line_search_type, convergence_when_t, observer_t>;
 
   // need to be friend of base (crpt)
-  friend NonLinearSolverBase<this_t>;
+  using non_lin_sol_base_t = NonLinearSolverBase<this_t>;
+  friend non_lin_sol_base_t;
 
   // iterative base
-  using iterative_base_t = IterativeBase<scalar_type>;
+  using iterative_base_t = IterativeBase<this_t, scalar_type>;
 
   // mixin helper
   using gn_mixin_t = GNHelperMixin<system_type, hessian_type,
@@ -242,7 +250,8 @@ public:
        hess_, linSolver_,
        iterative_base_t::maxIters_,
        iterative_base_t::tolerance_,
-       normO_, normN_, &obsObj_);
+       normO_, normN_, &obsObj_,
+       non_lin_sol_base_t::convergenceConditionDescription_);
 
   }//end solveImpl
 };

@@ -14,6 +14,7 @@ constexpr auto zero	= ::pressio::utils::constants::zero<scalar_t>();
 constexpr auto ode_case = pressio::ode::ImplicitEnum::Euler;
 constexpr auto t0	= zero;
 
+template <typename T>
 struct FomObserver{
   int snapId_{0};
   eig_dyn_mat A_;
@@ -25,7 +26,6 @@ struct FomObserver{
     y0_.resize(nRows,1);
   }
 
-  template <typename T>
   void operator()(size_t step,
 		  scalar_t t,
 		  const T & y){
@@ -56,7 +56,7 @@ struct FomRunner{
 
   const int Nx_ = {};
   const int Ny_ = {};
-  FomObserver observer_;
+  FomObserver<app_state_t> observer_;
 
   FomRunner(int Nx, int Ny)
     : Nx_{Nx}, Ny_{Ny}, observer_{}{}

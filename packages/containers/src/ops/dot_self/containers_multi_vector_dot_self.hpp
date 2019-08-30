@@ -6,5 +6,6 @@
 #include "mvec/containers_epetra_multi_vector_dot_self.hpp"
 #include "mvec/containers_tpetra_multi_vector_dot_self.hpp"
 #include "mvec/containers_tpetra_block_multi_vector_dot_self.hpp"
+#include "mvec/containers_kokkos_multi_vector_dot_self.hpp"
 
 #endif

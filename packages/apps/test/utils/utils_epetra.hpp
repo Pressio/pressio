@@ -1,4 +1,5 @@
 
+#ifdef HAVE_TRILINOS
 #if not defined APPS_UTILS_EPETRA_HPP_
 #define APPS_UTILS_EPETRA_HPP_
 
@@ -51,3 +52,5 @@ auto readBasis(
 }}}}// end namespace pressio::apps::test::epetra
 
 #endif
+#endif
+

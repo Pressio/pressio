@@ -26,9 +26,7 @@ TRIBITS_TPL_FIND_INCLUDE_DIRS_AND_LIBRARIES( TRILINOS
   kokkoskernels
   ifpack2
   triutils
-  #anasazitpetra
-  #anasaziepetra
-  #anasazi
+  # repeat to solve issue we have on linux
   kokkosalgorithms
   teuchosparameterlist
 

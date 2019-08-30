@@ -111,7 +111,7 @@ void integrateNSteps(stepper_type   & stepper,
 		     collector_type & collector,
 		     solver_type    & solver,
 		     guess_callback_t && guessCb){
-  using empty_t = utils::impl::empty;
+  //using empty_t = utils::impl::empty;
   using do_step_policy_t = impl::DoStepPolicy<solver_type, guess_callback_t>;
   using advancer_t = impl::AdvancerPolicy<collector_type, do_step_policy_t>;
   advancer_t::execute(num_steps, start_time, dt, yIn, collector, stepper,

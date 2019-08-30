@@ -5,13 +5,16 @@
 #include "../containers_fwd.hpp"
 #include "../containers_shared_traits.hpp"
 #include "./meta/containers_native_eigen_multi_vector_meta.hpp"
+#ifdef HAVE_TRILINOS
 #include "./meta/containers_native_epetra_multi_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_multi_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_block_multi_vector_meta.hpp"
+#endif
+#ifdef HAVE_KOKKOS
+#include "./meta/containers_native_kokkos_multi_vector_meta.hpp"
+#endif
 
 namespace pressio{ namespace containers{ namespace details{
-
-#ifdef HAVE_TRILINOS
 
 /********************************
 an arbitrary multi vector is one
@@ -22,10 +25,17 @@ struct traits<
   MultiVector<
     wrapped_type,
     mpl::enable_if_t<
-      !containers::meta::is_dynamic_multi_vector_eigen<wrapped_type>::value and
+      !containers::meta::is_dynamic_multi_vector_eigen<wrapped_type>::value
+#ifdef HAVE_TRILINOS
+      and 
       !containers::meta::is_multi_vector_epetra<wrapped_type>::value and
       !containers::meta::is_multi_vector_tpetra_block<wrapped_type>::value and
       !containers::meta::is_multi_vector_tpetra<wrapped_type>::value
+#endif
+#ifdef HAVE_KOKKOS
+      and      
+      !containers::meta::is_multi_vector_kokkos<wrapped_type>::value
+#endif
       >
     >
   > {
@@ -48,6 +58,8 @@ struct traits<
   static constexpr bool is_admissible_for_expression_templates = false;
 };
 
+
+#ifdef HAVE_TRILINOS
 //*******************************
 // for epetra multivector
 //*******************************
@@ -72,10 +84,8 @@ struct traits<MultiVector<wrapped_type,
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
 };
-#endif
 
 
-#ifdef HAVE_TRILINOS
 //*******************************
 // for tpetra multivector
 //*******************************
@@ -119,10 +129,8 @@ struct traits<MultiVector<wrapped_type,
   using mag_t = typename wrapped_type::mag_type;
   using communicator_t = decltype(std::declval<data_map_t>().getComm());
 };
-#endif
 
 
-#ifdef HAVE_TRILINOS
 //*******************************
 // for block tpetra multivector
 //*******************************
@@ -199,6 +207,48 @@ struct traits<MultiVector<wrapped_type,
   //     wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
   // static constexpr bool is_dynamic = !is_static;
 };
+
+
+//*******************************
+// Kokkos multi vector
+//*******************************
+#ifdef HAVE_KOKKOS
+template <typename wrapped_type>
+struct traits<
+  MultiVector<
+    wrapped_type,
+    ::pressio::mpl::enable_if_t<
+      containers::meta::is_multi_vector_kokkos<
+	wrapped_type
+	>::value
+      >
+    >
+  >
+  : public containers_shared_traits<
+  MultiVector<wrapped_type>,
+  wrapped_type,
+  false, false, true,
+  WrappedPackageIdentifier::Kokkos,
+  true, //true because kokkos is for shared mem
+  // static view if the number of runtime determined dimensions == 0
+  wrapped_type::traits::rank_dynamic==0
+  >
+{
+
+  static constexpr WrappedMultiVectorIdentifier
+  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Kokkos;
+
+  using scalar_t	  = typename wrapped_type::traits::value_type;
+  using layout		  = typename wrapped_type::traits::array_layout;
+  using ordinal_t	  = typename wrapped_type::traits::size_type;
+  using execution_space	  = typename wrapped_type::traits::execution_space;
+  using memory_space	  = typename wrapped_type::traits::memory_space;
+  using device_type	  = typename wrapped_type::traits::device_type;
+  using memory_traits	  = typename wrapped_type::traits::memory_traits;
+  using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
+  using host_mirror_t     = typename wrapped_type::host_mirror_type;
+};
+#endif
 
 }}}//end namespace pressio::containers::details
 #endif

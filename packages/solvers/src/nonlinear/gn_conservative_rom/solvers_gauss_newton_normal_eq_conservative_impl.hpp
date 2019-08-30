@@ -40,7 +40,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    typename system_t::state_type & dy,
 				    lin_solver_t & linSolver,
 				    scalar_t & normO,
-				    scalar_t & normN,
+				    scalar_t & norm_dy,
 				    const cbar_t & cbarT,
 				    mat_t & jTj,
 				    mat_t & jTcbarT,
@@ -52,8 +52,10 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    mat_t & A,
 				    typename system_t::state_type & b,
 				    typename system_t::state_type & lambda,
-				    typename system_t::state_type & y2)
+				    typename system_t::state_type & y2,
+				    std::string & convCondDescr)
 {
+
   // find out which norm to use
   using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
 
@@ -73,9 +75,14 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
   // alpha for taking steps
   scalar_t alpha = static_cast<scalar_t>(1);
-  // storing residaul norm
+  // storing residual norm
   scalar_t normRes = {};
   scalar_t normRes0 = {};
+  // storing projected residual norm
+  scalar_t normJTRes = {};
+  scalar_t normJTRes0 = {};
+
+  convCondDescr = std::string(is_conv_helper_t::description_);
 
 #ifdef DEBUG_PRINT
   // get precision
@@ -85,15 +92,14 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
   auto reset = utils::io::reset();
   auto fmt1 = utils::io::cyan() + utils::io::underline();
-  const auto convString = std::string(is_conv_helper_t::description_);
   ::pressio::utils::io::print_stdout(fmt1, "GN normal eqns conserv:",
-				  "criterion:",
-				  convString, reset, "\n");
+				     "criterion:",
+				     convCondDescr, reset, "\n");
 #endif
 
   // compute (whatever type) norm of y
   norm_evaluator_t::evaluate(y, normO);
-  normN = static_cast<scalar_t>(0);
+  norm_dy = static_cast<scalar_t>(0);
   auto normLambda = static_cast<scalar_t>(0);
   auto normCbarR = static_cast<scalar_t>(0);
 
@@ -106,7 +112,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
   iteration_t iStep = 0;
-  while (iStep++ <= maxNonLIt)
+  while (++iStep <= maxNonLIt)
   {
 
 #ifdef DEBUG_PRINT
@@ -202,6 +208,18 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     timer->stop("rhs");
 #endif
 
+    // projected residual norm for current state
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->start("norm JTR");
+#endif
+    norm_evaluator_t::evaluate(jTr2, normJTRes);
+#ifdef HAVE_TEUCHOS_TIMERS
+    timer->stop("norm JTR");
+#endif
+
+    // store initial residual norm
+    if (iStep==1) normJTRes0 = normJTRes;
+
     // solve normal equations
 #ifdef HAVE_TEUCHOS_TIMERS
     timer->start("solve normeq");
@@ -217,15 +235,17 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     *dy_lambda.data() = dy.data()->block(y.size(), 0, lambda.size(), 1);
 
     // norm of the correction
-    norm_evaluator_t::evaluate(dy_y, normN);
+    norm_evaluator_t::evaluate(dy_y, norm_dy);
     norm_evaluator_t::evaluate(dy_lambda, normLambda);
 
 #ifdef DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
+				    "||J^T R|| =", normJTRes,
+				    "||J^T R||(r) =", normJTRes/normJTRes0,
 				    "||cbar_R|| = ", normCbarR,
-				    "||dy|| =", normN,
+				    "||dy|| =", norm_dy,
 				    "||dlambda|| =", normLambda,
 				    utils::io::reset(), "\n");
 #endif
@@ -260,13 +280,14 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // ::pressio::utils::io::print_stdout("--------------\n");
 
     // check convergence (whatever method user decided)
-    auto flag = is_conv_helper_t::evaluate(y, dy, normN, normRes,
-					   normRes0, iStep,
-					   maxNonLIt, tolerance);
+    const auto flag = is_conv_helper_t::evaluate(y, dy,
+						 norm_dy, normRes, normRes0,
+						 normJTRes, normJTRes0,
+						 iStep, maxNonLIt, tolerance);
     if (flag) break;
 
     // store new norm into old variable
-    normO = normN;
+    normO = norm_dy;
 
     sys.residual(y, resid);
     sys.jacobian(y, jacob);

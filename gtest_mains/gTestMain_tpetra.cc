@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
 {
   ::testing::InitGoogleTest(&argc,argv);
   //  ::testing::InitGoogleMock(&argc,argv);
-  int ws_;
-  int err;
+  int ws_ = 0;
+  int err = 0;
 
 /* from web:
  * https://trilinos.org/docs/dev/packages/tpetra/doc/html/Tpetra_Lesson01.htmlneeded

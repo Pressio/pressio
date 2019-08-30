@@ -1,4 +1,5 @@
 
+#ifdef HAVE_TRILINOS
 #if not defined APPS_UTILS_TPETRA_HPP_
 #define APPS_UTILS_TPETRA_HPP_
 
@@ -53,3 +54,5 @@ auto readBasis(
 }}}}// end namespace pressio::apps::test::tpetra
 
 #endif
+#endif
+
