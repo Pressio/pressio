@@ -6,8 +6,8 @@
 namespace pressio{ namespace apps{
 
 void Burgers1dEpetra::velocity(const state_type & u,
-			       velocity_type & rhs,
-			       const scalar_type /* t */) const
+			       const scalar_type /* t */,
+    velocity_type & rhs) const
 {
   double valueFromLeft = 0.0;
   constexpr int tag_ = 1;
@@ -40,8 +40,8 @@ void Burgers1dEpetra::velocity(const state_type & u,
 //-------------------------------------------------------
 
 void Burgers1dEpetra::jacobian(const state_type & u,
-			       jacobian_type & jac,
-			       const scalar_type /*t*/) const{
+			       const scalar_type /*t*/, 
+            jacobian_type & jac) const{
 
   // to populate the jacobian each process needs the last grid
   // point solution from the previous process

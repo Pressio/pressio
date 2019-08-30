@@ -9,12 +9,15 @@ namespace iterative{
   struct Bicgstab {};
 }//end iterative
 
-
 namespace direct{
   struct ColPivHouseholderQR {};
+
+  #if defined HAVE_TRILINOS or defined HAVE_KOKKOS
+  struct getrs{};
+  #endif
+
   //struct CompleteOrthogonalDecomposition {};
 }//end direct
-
 
 // // Preconditioner types
 // struct Jacobi {};

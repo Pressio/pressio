@@ -5,7 +5,12 @@
 #include "../containers_fwd.hpp"
 #include "../containers_shared_traits.hpp"
 #include "./meta/containers_native_eigen_matrix_meta.hpp"
+#ifdef HAVE_TRILINOS
 #include "./meta/containers_native_trilinos_matrix_meta.hpp"
+#endif
+#ifdef HAVE_KOKKOS
+#include "./meta/containers_native_kokkos_matrix_meta.hpp"
+#endif
 
 namespace pressio{ namespace containers{ namespace details{
 
@@ -20,14 +25,19 @@ struct traits<
     mpl::enable_if_t<
       !containers::meta::is_dense_matrix_eigen<wrapped_type>::value and
       !containers::meta::is_sparse_matrix_eigen<wrapped_type>::value
-    #ifdef HAVE_TRILINOS
-      and 
+#ifdef HAVE_TRILINOS
+      and
       !containers::meta::is_sparse_matrix_epetra<wrapped_type>::value and
       !containers::meta::is_dense_matrix_epetra<wrapped_type>::value and
       !containers::meta::is_dense_matrix_teuchos<wrapped_type>::value and
       !containers::meta::is_dense_matrix_teuchos_rcp<wrapped_type>::value and
       !containers::meta::is_sparse_matrix_tpetra<wrapped_type>::value
-    #endif
+#endif
+#ifdef HAVE_KOKKOS
+      and
+      !containers::meta::is_sparse_matrix_kokkos<wrapped_type>::value and
+      !containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
+#endif
       >
     >
   > {
@@ -273,6 +283,90 @@ struct traits<Matrix<wrapped_type,
   using communicator_t = decltype(std::declval<wrapped_type>().getComm());
 };
 #endif
+
+
+//*******************************
+// Kokkos crs matrix
+//*******************************
+#ifdef HAVE_KOKKOS
+template <typename wrapped_type>
+struct traits<
+  Matrix<
+    wrapped_type,
+    ::pressio::mpl::enable_if_t<
+      containers::meta::is_sparse_matrix_kokkos<
+	wrapped_type
+	>::value
+      >
+    >
+  >
+  : public containers_shared_traits<
+  Matrix<wrapped_type>,
+  wrapped_type,
+  false, true, false,
+  WrappedPackageIdentifier::Kokkos,
+  true, //true because kokkos is for shared mem
+  // the values of the crs matrix are stored in a 1d dynamic view,
+  // so set crs kokkos matrix to be dynamic, but maybe we should decide in
+  // a different way
+  false
+  >
+{
+
+  static constexpr WrappedMatrixIdentifier
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::CrsKokkos;
+
+  using scalar_t	= typename wrapped_type::value_type;
+  using ordinal_t	= typename wrapped_type::ordinal_type;
+  using execution_space = typename wrapped_type::execution_space;
+  using device_type	= typename wrapped_type::device_type;
+  using memory_traits	= typename wrapped_type::memory_traits;
+  using size_type	= typename wrapped_type::size_type;
+};
+#endif
+
+
+//*******************************
+// Kokkos dense matrix
+//*******************************
+#ifdef HAVE_KOKKOS
+template <typename wrapped_type>
+struct traits<
+  Matrix<
+    wrapped_type,
+    ::pressio::mpl::enable_if_t<
+      containers::meta::is_dense_matrix_kokkos<
+	wrapped_type
+	>::value
+      >
+    >
+  >
+  : public containers_shared_traits<
+  Matrix<wrapped_type>,
+  wrapped_type,
+  false, true, false,
+  WrappedPackageIdentifier::Kokkos,
+  true, //true because kokkos is for shared mem
+  // static view if the number of runtime determined dimensions == 0
+  wrapped_type::traits::rank_dynamic==0
+  >
+{
+
+  static constexpr WrappedMatrixIdentifier
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
+
+  using scalar_t	  = typename wrapped_type::traits::value_type;
+  using layout		  = typename wrapped_type::traits::array_layout;
+  using ordinal_t	  = typename wrapped_type::traits::size_type;
+  using execution_space   = typename wrapped_type::traits::execution_space;
+  using memory_space	  = typename wrapped_type::traits::memory_space;
+  using device_type	  = typename wrapped_type::traits::device_type;
+  using memory_traits	  = typename wrapped_type::traits::memory_traits;
+  using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
+  using host_mirror_t     = typename wrapped_type::host_mirror_type;
+};
+#endif
+
 
 }}}//end namespace pressio::containers::details
 #endif

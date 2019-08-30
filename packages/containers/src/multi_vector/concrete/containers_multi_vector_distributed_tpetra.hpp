@@ -57,19 +57,13 @@ public:
 
   // compound assignment when type(b) = type(this)
   // this += b
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator+=(const T & other) {
+  this_t & operator+=(const this_t & other) {
     this->data_.update(1.0, *other.data(), 1.0 );
     return *this;
   }
 
   // copy assignment
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator=(const T & other){
+  this_t & operator=(const this_t & other){
     assert(this->localSize() == other.localSize());
     data_.assign( *other.data() );
     return *this;

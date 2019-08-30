@@ -9,8 +9,6 @@ namespace pressio{ namespace ode{
 template<
   ExplicitEnum name,
   typename state_type,
-  typename model_type,
-  typename velocity_type,
   typename ...Args
   >
 class ExplicitStepper;
@@ -73,7 +71,7 @@ template<
   typename model_type,
   typename enable = void
   >
-class OdeSystemWrapper;
+struct OdeSystemWrapper;
 
 template<
   typename scalar_type,

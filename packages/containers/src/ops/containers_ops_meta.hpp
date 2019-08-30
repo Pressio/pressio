@@ -6,8 +6,23 @@
 #include "../matrix/containers_matrix_meta.hpp"
 #include "../multi_vector/containers_multi_vector_meta.hpp"
 
-
 namespace pressio{ namespace containers{ namespace meta {
+
+#ifdef HAVE_KOKKOS
+template <typename T1, typename T2, typename enable = void>
+struct kokkos_wrapper_pair_have_same_exe_space : std::false_type {};
+
+template <typename T1, typename T2>
+struct kokkos_wrapper_pair_have_same_exe_space<
+  T1,T2,
+  ::pressio::mpl::enable_if_t<
+    std::is_same<
+      typename containers::details::traits<T1>::execution_space,
+      typename containers::details::traits<T2>::execution_space
+      >::value
+    >
+  > : std::true_type{};
+#endif
 
 
 template <typename T1, typename T2, typename enable = void>
@@ -23,7 +38,7 @@ struct wrapper_pair_have_same_scalar<T1,T2,
 		 >::value
     >
   > : std::true_type{};
-//--------------------------------------------  
+
 
 
 template <typename T1, typename T2,
@@ -37,8 +52,6 @@ struct wrapper_triplet_have_same_scalar<T1,T2,T3,
     wrapper_pair_have_same_scalar<T2,T3>::value
     >
   > : std::true_type{};
-//--------------------------------------------  
 
- 
 }}} // namespace pressio::containers::meta
 #endif

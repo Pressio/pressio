@@ -48,6 +48,18 @@ private:
     *y.data() = mysolver_.solve(*b.data());
   }
 
+  template <typename T>
+  void solveImpl(const MatrixT & A, const T& b, T & y) {
+    this->resetLinearSystem(A);
+    this->solve(b, y);
+  }
+
+  template <typename T>
+  void solveAllowMatOverwriteImpl(MatrixT & A, const T& b, T & y) {
+    this->resetLinearSystem(A);
+    this->solve(b, y);
+  }
+
   friend base_interface;
   native_solver_t mysolver_ = {};
 };

@@ -99,21 +99,20 @@ public:
   };
 
   void velocity(const state_type & u,
-		velocity_type & rhs,
-		const scalar_type /* t */) const;
+		const scalar_type  /*t */, velocity_type & rhs) const;
 
   velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
     velocity_type R(dataMap_);
-    velocity(u,R,t);
+    velocity(u,t,R);
     return R;
   }
 
   // computes: A = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
 		     const nativeMVec & B,
-		     nativeMVec & A,
-		     scalar_type t) const{
+		     scalar_type t, 
+         nativeMVec & A) const{
     // assert( Jac_->NumGlobalCols() == B.GlobalLength() );
     // assert( A.GlobalLength() == Jac_->NumGlobalRows() );
     // assert( A.NumVectors() == B.NumVectors() );
@@ -127,7 +126,7 @@ public:
 			   const nativeMVec & B,
 			   scalar_type t) const{
     nativeMVec C( dataMap_, B.getNumVectors() );
-    applyJacobian(y, B, C, t);
+    applyJacobian(y, B, t, C);
     return C;
   }
 

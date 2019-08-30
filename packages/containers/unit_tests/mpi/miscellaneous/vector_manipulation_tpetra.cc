@@ -4,11 +4,8 @@
 
 using uint_t = unsigned int;
 
-template <typename T, typename exe_space_t>
-struct RedFunctor;
-
 template <typename T>
-struct RedFunctor<T, Kokkos::Serial>{
+struct RedFunctor{
   T a_;
   double val_ = {};
 
@@ -88,7 +85,7 @@ TEST(tpetraVectors, loopedVectorManipulation){
 
   // do first check, all entries should be 1.1
   using view_t = decltype(vd);
-  using check_ftor_t = RedFunctor<view_t, def_exe_space>;
+  using check_ftor_t = RedFunctor<view_t>;
   check_ftor_t FF1(vd, 1.1);
   uint_t sum = {0};
   Kokkos::parallel_reduce("checkData1", myN, FF1, sum);

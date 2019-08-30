@@ -78,17 +78,17 @@ TEST(solvers_nonlinear_least_squares,
   using qr_algo = qr::Householder;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
-  using converged_when_t = solvers::iterative::converged_when::relativeNormResidualBelowTol<double>;
+  using converged_when_t = solvers::iterative::converged_when::relativeNormResidualBelowTol<solvers::L2Norm>;
   using gnsolver_t = solvers::iterative::GaussNewtonQR<
     qr_type, lsearch_t, converged_when_t, problem_t>;
   gnsolver_t solver(problem, x);
 
-  solver.setTolerance(1e-8);
+  solver.setTolerance(1e-1);
   solver.solve(problem, x);
 
-  std::cout << std::setprecision(14) << *x.data() << std::endl;
-  EXPECT_NEAR( x(0), 1., 1e-6 );
-  EXPECT_NEAR( x(1), 1., 1e-6 );
-  EXPECT_NEAR( x(2), 1., 1e-6 );
+  std::cout << std::setprecision(15) << *x.data() << std::endl;
+  EXPECT_NEAR( x(0), 1.000013952382433e00, 1e-8 );
+  EXPECT_NEAR( x(1), 9.999930648811413e-01, 1e-8 );
+  EXPECT_NEAR( x(2), 9.999749135015502e-01, 1e-8 );
 }
 

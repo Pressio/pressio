@@ -7,7 +7,6 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-
 template<
   ::pressio::ode::ImplicitEnum method,
   int n,
@@ -15,10 +14,10 @@ template<
   typename scalar_type,
   typename ud_ops,
   ::pressio::mpl::enable_if_t<
-    method == ::pressio::ode::ImplicitEnum::Euler 
-#ifdef HAVE_PYBIND11 
+    method == ::pressio::ode::ImplicitEnum::Euler
+#ifdef HAVE_PYBIND11
     and mpl::not_same< ud_ops, pybind11::object>::value
-#endif    
+#endif
    > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
@@ -49,15 +48,16 @@ void time_discrete_residual(const state_type & yn,
 			    scalar_type dt,
 			    const ud_ops & udOps){
 
+  //TODO: this function name will need to be changed to something better
   udOps.attr("time_discrete_euler")(R, yn, ynm[0], dt);
 }
-#endif    
-
+#endif
 
 
 
 /*
- * for EIGEN
+ * for Kokkos and eigen wrappers (this is not suitable for sample mesh)
+ * only works when structures are of same size
 */
 template<
   ::pressio::ode::ImplicitEnum method,
@@ -65,19 +65,31 @@ template<
   typename state_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
-    method == ::pressio::ode::ImplicitEnum::Euler
+    method == ::pressio::ode::ImplicitEnum::Euler and
+#ifdef HAVE_KOKKOS
+    (containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
+     or
+#endif
+     containers::meta::is_vector_wrapper_eigen<state_type>::value == true
+#ifdef HAVE_KOKKOS
+     )
+#endif
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
 			    const std::array<state_type,n> & ynm,
 			    state_type & R,
 			    scalar_type dt){
-  // On input: R contains the application RHS, i.e. if
-  // dudt = f(x,u,...), R contains f(...)
-  *R.data() = *yn.data() - *ynm[0].data() - dt * (*R.data());
 
+  assert( R.size() == yn.size() );
+  assert( yn.size() == ynm[0].size() );
+  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
+  const auto negDt = negOne*dt;
+  //R = yn - ynm[0] - dt * R;
+  ::pressio::containers::ops::do_update(R, negDt, yn, one, ynm[0], negOne);
 }
+
 
 template<
   ::pressio::ode::ImplicitEnum method,
@@ -85,24 +97,95 @@ template<
   typename state_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
-    method == ::pressio::ode::ImplicitEnum::BDF2
+    method == ::pressio::ode::ImplicitEnum::BDF2 and
+#ifdef HAVE_KOKKOS
+    (containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
+     or
+#endif
+     containers::meta::is_vector_wrapper_eigen<state_type>::value == true
+#ifdef HAVE_KOKKOS
+     )
+#endif
     > * = nullptr
   >
 void time_discrete_residual(const state_type & yn,
 			    const std::array<state_type,n> & ynm,
 			    state_type & R,
 			    scalar_type dt){
+  assert( R.size() == yn.size() );
+  assert( yn.size() == ynm[0].size() );
+  assert( ynm[0].size() == ynm[1].size());
 
   using namespace ::pressio::ode::coeffs;
 
-  // // On input: R contains the application RHS, i.e. if
-  // // dudt = f(x,u,...), R contains f(...)
-  R = yn
-    - bdf2<scalar_type>::c1_*ynm[1]
-    + bdf2<scalar_type>::c2_*ynm[0]
-    - bdf2<scalar_type>::c3_*dt*R;
+  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
+  const auto a = negOne * bdf2<scalar_type>::c3_*dt;
+  const auto b = bdf2<scalar_type>::c2_;
+  const auto c = negOne * bdf2<scalar_type>::c1_;
+
+  ::pressio::containers::ops::do_update(R, a, yn, one, ynm[0], b, ynm[1], c);
+  //   R = yn
+  //     - bdf2<scalar_type>::c1_*ynm[1]
+  //     + bdf2<scalar_type>::c2_*ynm[0]
+  //     - bdf2<scalar_type>::c3_*dt*R;
 }
+
+
+// /*
+//  * for EIGEN (this is not suitable for sample mesh)
+//  * only works when structures are of same size
+// */
+// template<
+//   ::pressio::ode::ImplicitEnum method,
+//   int n,
+//   typename state_type,
+//   typename scalar_type,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
+//     method == ::pressio::ode::ImplicitEnum::Euler
+//     > * = nullptr
+//   >
+// void time_discrete_residual(const state_type & yn,
+// 			    const std::array<state_type,n> & ynm,
+// 			    state_type & R,
+// 			    scalar_type dt){
+
+//   assert( R.size() == yn.size() );
+//   assert( yn.size() == ynm[0].size() );
+//   // On input: R contains the application RHS, i.e. if
+//   // dudt = f(x,u,...), R contains f(...)
+//   *R.data() = *yn.data() - *ynm[0].data() - dt * (*R.data());
+// }
+
+// template<
+//   ::pressio::ode::ImplicitEnum method,
+//   int n,
+//   typename state_type,
+//   typename scalar_type,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
+//     method == ::pressio::ode::ImplicitEnum::BDF2
+//     > * = nullptr
+//   >
+// void time_discrete_residual(const state_type & yn,
+// 			    const std::array<state_type,n> & ynm,
+// 			    state_type & R,
+// 			    scalar_type dt){
+
+//   using namespace ::pressio::ode::coeffs;
+
+//   assert( R.size() == yn.size() );
+//   assert( yn.size() == ynm[0].size() );
+//   assert( ynm[0].size() == ynm[1].size());
+
+//   // // On input: R contains the application RHS, i.e. if
+//   // // dudt = f(x,u,...), R contains f(...)
+//   R = yn
+//     - bdf2<scalar_type>::c1_*ynm[1]
+//     + bdf2<scalar_type>::c2_*ynm[0]
+//     - bdf2<scalar_type>::c3_*dt*R;
+// }
 
 
 

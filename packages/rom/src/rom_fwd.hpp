@@ -6,6 +6,20 @@
 
 namespace pressio{ namespace rom{
 
+template <
+  typename fom_state_type,
+  int maxNstates,
+  typename reconstuctor_type,
+  typename enable = void
+  >
+struct FomStatesData;
+
+template <
+  typename fom_rhs_type,
+  typename enable = void>
+struct FomRhsData;
+
+
 /* decorators */
 namespace decorator{
 
@@ -128,7 +142,8 @@ struct LSPGUnsteadyProblemGenerator;
 template <
   typename fom_states_data_t,
   typename fom_rhs_data_t,
-  typename decoder_jac_t
+  typename decoder_jac_t,
+  typename ud_ops = void
   >
 class DefaultGalerkinExplicitVelocityPolicy;
 

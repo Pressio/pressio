@@ -9,14 +9,16 @@
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<typename model_type,
-	 typename enable = void>
+template<
+  typename model_type,
+  typename enable = void
+  >
 struct is_legitimate_model_for_explicit_ode : std::false_type{};
 
 template<typename model_type>
 struct is_legitimate_model_for_explicit_ode<
   model_type,
-  typename std::enable_if<
+  mpl::enable_if_t<
     ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
     has_state_typedef<model_type>::value and
     has_velocity_typedef<model_type>::value and
@@ -25,10 +27,19 @@ struct is_legitimate_model_for_explicit_ode<
       typename model_type::state_type,
       typename model_type::velocity_type,
       typename model_type::scalar_type>::value
-    >::type
+    >
   > : std::true_type{};
 
-//-------------------------------------------------------
+#ifdef HAVE_PYBIND11
+template<typename model_type>
+struct is_legitimate_model_for_explicit_ode<
+  model_type,
+  mpl::enable_if_t<
+    ::pressio::mpl::is_same<
+      model_type, pybind11::object>::value
+    >
+  > : std::true_type{};
+#endif
 
 }}} // namespace pressio::ode::meta
 #endif

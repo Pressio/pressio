@@ -42,10 +42,10 @@ public:
 
   template < typename scalar_type >
   void operator()(const state_type & y,
-		  state_type & R,
+		  state_type & f,
 		  const system_type & model,
 		  scalar_type t) const{
-    model.velocity(*y.data(), *R.data(), t);
+    model.velocity(*y.data(), t, *f.data());
   }
 
   template < typename scalar_type >
@@ -87,18 +87,18 @@ public:
 
   template <typename scalar_type>
   void operator()(const state_type & y,
-		  state_type & R,
+		  state_type & f,
 		  const system_type & model,
 		  scalar_type t) const{
-    //printf("C++ R address: %p\n", R.data());
-    model.attr("velocity2")(y, R, t);
+    //printf("C++ f address: %p\n", f.data());
+    model.attr("velocity")(y, t, f);
   }
 
   template <typename scalar_type>
   state_type operator()(const state_type & y,
   			const system_type & model,
   			scalar_type t) const{
-    return model.attr("velocity1")(y, t);
+    return model.attr("velocity")(y, t);
   }
 
 };//end class

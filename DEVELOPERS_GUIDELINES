@@ -5,6 +5,12 @@ SOME GENERAL GUIDELINES for developers
 
 
 *****************
+indentation
+*****************
+2 tabs
+
+
+*****************
 Formatting style
 *****************
 - text inside files should not be too wide, maximum 90 character
@@ -42,15 +48,6 @@ Classes
 - methods should beging with lowercase letter
 
 
-********************************
-Every hpp files has a .cc file
-********************************
-This library is intended to be a header-only library, but for now we cannot do that 
-because Tribits does not support this format.
-So every .hpp file has a corresponding .cc file that is EMPTY and only includes the associated .hpp.
-This makes things easier later on, when we remove all cc files. 
-
-
 *******************
 The #define Guard
 *******************
@@ -73,17 +70,15 @@ Namespaces
 Place code in a namespace. Namespaces should have unique names.
 Do not use using-directives (e.g. using namespace blabla), unless it is confined
 within a well-defined scope that is not going to pollute the overall project.
-Namespaces shoudl be lowercase
-
+Namespaces shoudl be lowercase.
 
 
 *****************
 FIle organization
 *****************
-The src directory of a package should not have 
-a bunch of files all dumped there. Things should be separated logically 
-basedo on functionality. Best practice is to create subfolders to contain things 
-that go together. Follow examples in core or ode packages. 
+The src directory of a package should not have a bunch of files all dumped there. 
+Things should be separated logically basedo on functionality. 
+Best practice is to create subfolders to contain classes that go together. 
 Also, the CMakeList inside the src folder should preferably be written using 
 globs to make the process of adding headers much easier and less prone to forgetting files. 
 

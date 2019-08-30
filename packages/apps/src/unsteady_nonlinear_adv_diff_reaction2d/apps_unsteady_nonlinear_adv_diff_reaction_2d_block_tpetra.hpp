@@ -106,9 +106,9 @@ public:
   }
 
 public:
-  void velocity(const state_type & yState,
-		velocity_type & rhs,
-		scalar_type t) const{
+  void velocity(const state_type & yState,		
+		scalar_type t, 
+    velocity_type & rhs) const{
     velocity_impl(yState, rhs);
   }
 
@@ -122,9 +122,9 @@ public:
 
   // computes: C = Jac B where B is a multivector
   void applyJacobian(const state_type & yState,
-  		     const nativeMV & B,
-  		     nativeMV & C,
-		     scalar_type t) const{
+  		   const nativeMV & B,  		     
+		     scalar_type t,
+         nativeMV & C) const{
     applyJacobian_impl(yState, B, C);
   }
 

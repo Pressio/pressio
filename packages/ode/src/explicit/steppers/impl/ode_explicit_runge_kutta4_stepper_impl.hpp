@@ -56,160 +56,135 @@ public:
   ~ExplicitRungeKutta4StepperImpl() = default;
 
 public:
+  template< typename step_t >
+  void doStep(state_type & y,
+  	      scalar_type t,
+  	      scalar_type dt,
+  	      step_t step)
+  {
+    auto & ytmp	   = stateAuxStorage_.data_[0];
+    auto & auxRhs0 = residAuxStorage_.data_[0];
+    auto & auxRhs1 = residAuxStorage_.data_[1];
+    auto & auxRhs2 = residAuxStorage_.data_[2];
+    auto & auxRhs3 = residAuxStorage_.data_[3];
 
-  // if user does NOT provide ops, then user wrapper ops
+    constexpr auto two  = ::pressio::utils::constants::two<scalar_type>();
+    constexpr auto three  = ::pressio::utils::constants::three<scalar_type>();
+    constexpr auto six  = two * three;
+
+    const scalar_type dt_half = dt / two;
+    const scalar_type t_phalf = t + dt_half;
+    const scalar_type dt6 = dt / six;
+    const scalar_type dt3 = dt / three;
+
+    // stage 1: ytmp = y + auxRhs0*dt_half;
+    policy_(y, auxRhs0, sys_.get(), t);
+    this->stage_update_impl(ytmp, y, auxRhs0, dt_half);
+    //::pressio::containers::ops::do_update(ytmp, y, one, auxRhs0, dt_half);
+
+    // stage 2: ytmp = y + auxRhs1*dt_half;
+    policy_(ytmp, auxRhs1, sys_.get(), t_phalf);
+    this->stage_update_impl(ytmp, y, auxRhs1, dt_half);
+    //::pressio::containers::ops::do_update(ytmp, y, one, auxRhs1, dt_half);
+
+    // stage 3: ytmp = y + auxRhs2*dt;
+    policy_(ytmp, auxRhs2, sys_.get(), t_phalf);
+    this->stage_update_impl(ytmp, y, auxRhs2, dt);
+    //::pressio::containers::ops::do_update(ytmp, y, one, auxRhs2, dt);
+
+    // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
+    policy_(ytmp, auxRhs3, sys_.get(), t + dt);
+    this->stage_update_impl(y, auxRhs0, auxRhs1, auxRhs2, auxRhs3, dt6, dt3);
+    //::pressio::containers::ops::do_update(y, one,
+					// auxRhs0, dt6,
+					// auxRhs1, dt3,
+					// auxRhs2, dt3,
+					// auxRhs3, dt6);
+  }//end doStep
+
+private:
+  /* user defined ops are void, use those from containers */
   template<
-    typename step_t,
-    typename T = ops_t,
+    typename rhs_t,
     typename _state_type = state_type,
+    typename _ops_t = ops_t,
     mpl::enable_if_t<
-      std::is_void<T>::value
+      std::is_void<_ops_t>::value
       > * = nullptr
   >
-  void doStep(_state_type & y,
-  	      scalar_type t,
-  	      scalar_type dt,
-  	      step_t step){
-
-    auto & ytmp	   = stateAuxStorage_.data_[0];
-    auto & auxRhs0 = residAuxStorage_.data_[0];
-    auto & auxRhs1 = residAuxStorage_.data_[1];
-    auto & auxRhs2 = residAuxStorage_.data_[2];
-    auto & auxRhs3 = residAuxStorage_.data_[3];
-
-    const scalar_type dt_half = dt / static_cast< scalar_type >(2);
-    const scalar_type t_phalf = t + dt_half;
-    const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
-    const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
+  void stage_update_impl(_state_type & yIn,
+			 const _state_type & y,
+			 const rhs_t & rhsIn,
+			 scalar_type dtValue){
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+    ::pressio::containers::ops::do_update(yIn, y, one, rhsIn, dtValue);
+  }
 
-    // stage 1: ytmp = y + auxRhs0*dt_half;
-    policy_(y, auxRhs0, sys_.get(), t);
-    ::pressio::containers::ops::do_update(ytmp, y, one, auxRhs0, dt_half);
-
-    // stage 2: ytmp = y + auxRhs1*dt_half;
-    policy_(ytmp, auxRhs1, sys_.get(), t_phalf);
-    ::pressio::containers::ops::do_update(ytmp, y, one, auxRhs1, dt_half);
-
-    // stage 3: ytmp = y + auxRhs2*dt;
-    policy_(ytmp, auxRhs2, sys_.get(), t_phalf);
-    ::pressio::containers::ops::do_update(ytmp, y, one, auxRhs2, dt);
-
-    // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    policy_(ytmp, auxRhs3, sys_.get(), t + dt);
-    ::pressio::containers::ops::do_update(y, one,
-					auxRhs0, dt6,
-					auxRhs1, dt3,
-					auxRhs2, dt3,
-					auxRhs3, dt6);
-  }//end doStep
-
-
-
-  //  user-defined ops, with containers wrappers
+  /* with user defined ops */
   template<
-    typename step_t,
-    typename T = ops_t,
+    typename rhs_t,
     typename _state_type = state_type,
+    typename _ops_t = ops_t,
     mpl::enable_if_t<
-      std::is_void<T>::value == false and
-      containers::meta::is_wrapper<_state_type>::value
+      ::pressio::containers::meta::is_wrapper<_state_type>::value and
+      !std::is_void<_ops_t>::value
       > * = nullptr
-    >
-  void doStep(_state_type & y,
-  	      scalar_type t,
-  	      scalar_type dt,
-  	      step_t step){
-    using op = typename ops_t::update_op;
-
-    auto & ytmp	   = stateAuxStorage_.data_[0];
-    auto & auxRhs0 = residAuxStorage_.data_[0];
-    auto & auxRhs1 = residAuxStorage_.data_[1];
-    auto & auxRhs2 = residAuxStorage_.data_[2];
-    auto & auxRhs3 = residAuxStorage_.data_[3];
-
-    const scalar_type dt_half = dt / static_cast< scalar_type >(2);
-    const scalar_type t_phalf = t + dt_half;
-    const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
-    const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
+  >
+  void stage_update_impl(_state_type & yIn,
+			 const _state_type & y,
+			 const rhs_t & rhsIn,
+			 scalar_type dtValue){
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+    using op = typename ops_t::update_op;
+    op::do_update(*yIn.data(), *y.data(), one, *rhsIn.data(), dtValue);
+  }
 
-    // stage 1: ytmp = y + auxRhs0*dt_half;
-    policy_(y, auxRhs0, sys_.get(), t);
-    op::do_update(*ytmp.data(), *y.data(), one, *auxRhs0.data(), dt_half);
-
-    // stage 2: ytmp = y + auxRhs1*dt_half;
-    policy_(ytmp, auxRhs1, sys_.get(), t_phalf);
-    op::do_update(*ytmp.data(), *y.data(), one, *auxRhs1.data(), dt_half);
-
-    // stage 3: ytmp = y + auxRhs2*dt;
-    policy_(ytmp, auxRhs2, sys_.get(), t_phalf);
-    op::do_update(*ytmp.data(), *y.data(), one, *auxRhs2.data(), dt);
-
-    // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    policy_(ytmp, auxRhs3, sys_.get(), t + dt);
-    op::do_update(*y.data(), one,
-    		  *auxRhs0.data(), dt6,
-    		  *auxRhs1.data(), dt3,
-    		  *auxRhs2.data(), dt3,
-    		  *auxRhs3.data(), dt6);
-  }//end doStep
-
-
-#ifdef HAVE_PYBIND11
-  /*
-   * user does provide custom ops
-   * interface with python
-   */
+  /* user defined ops are void, use those from containers */
   template<
-    typename step_t,
-    typename T = ops_t,
+    typename rhs_t,
     typename _state_type = state_type,
+    typename _ops_t = ops_t,
     mpl::enable_if_t<
-      std::is_void<T>::value == false and
-      containers::meta::is_cstyle_array_pybind11<_state_type>::value
+      std::is_void<_ops_t>::value
       > * = nullptr
-    >
-  void doStep(_state_type & y,
-	      scalar_type t,
-	      scalar_type dt,
-	      step_t step){
-    using op = typename ops_t::update_op;
-
-    auto & ytmp	   = stateAuxStorage_.data_[0];
-    auto & auxRhs0 = residAuxStorage_.data_[0];
-    auto & auxRhs1 = residAuxStorage_.data_[1];
-    auto & auxRhs2 = residAuxStorage_.data_[2];
-    auto & auxRhs3 = residAuxStorage_.data_[3];
-
-    const scalar_type dt_half = dt / static_cast< scalar_type >(2);
-    const scalar_type t_phalf = t + dt_half;
-    const scalar_type dt6 = dt / static_cast< scalar_type >( 6 );
-    const scalar_type dt3 = dt / static_cast< scalar_type >( 3 );
+  >
+  void stage_update_impl(_state_type & y,
+			 const rhs_t & rhsIn0,
+			 const rhs_t & rhsIn1,
+			 const rhs_t & rhsIn2,
+			 const rhs_t & rhsIn3,
+			 scalar_type dt6,
+			 scalar_type dt3){
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+    ::pressio::containers::ops::do_update(y, one, rhsIn0, dt6,
+					  rhsIn1, dt3, rhsIn2, dt3,
+					  rhsIn3, dt6);
+  }
 
-    // stage 1: ytmp = y + auxRhs0*dt_half;
-    policy_(y, auxRhs0, sys_.get(), t);
-    op::do_update(ytmp, y, one, auxRhs0, dt_half);
-
-    // stage 2: ytmp = y + auxRhs1*dt_half;
-    policy_(ytmp, auxRhs1, sys_.get(), t_phalf);
-    op::do_update(ytmp, y, one, auxRhs1, dt_half);
-
-    // stage 3: ytmp = y + auxRhs2*dt;
-    policy_(ytmp, auxRhs2, sys_.get(), t_phalf);
-    op::do_update(ytmp, y, one, auxRhs2, dt);
-
-    // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    policy_(ytmp, auxRhs3, sys_.get(), t + dt);
-    op::do_update(y, one,
-    		  auxRhs0, dt6,
-    		  auxRhs1, dt3,
-    		  auxRhs2, dt3,
-    		  auxRhs3, dt6);
-  }//end doStep
-#endif
-
+  /* user defined ops */
+  template<
+    typename rhs_t,
+    typename _state_type = state_type,
+    typename _ops_t = ops_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_wrapper<_state_type>::value and
+      !std::is_void<_ops_t>::value
+      > * = nullptr
+  >
+  void stage_update_impl(_state_type & y,
+			 const rhs_t & rhsIn0,
+			 const rhs_t & rhsIn1,
+			 const rhs_t & rhsIn2,
+			 const rhs_t & rhsIn3,
+			 scalar_type dt6,
+			 scalar_type dt3){
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+    using op = typename ops_t::update_op;
+    op::do_update(*y.data(), one, *rhsIn0.data(),
+		  dt6, *rhsIn1.data(),
+		  dt3, *rhsIn2.data(),
+		  dt3, *rhsIn3.data(), dt6);
+  }
 }; //end class
 
 }}}//end namespace pressio::ode::impl

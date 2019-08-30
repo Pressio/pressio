@@ -36,7 +36,10 @@ class GaussNewtonConservative<
   GaussNewtonConservative<
     scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
     converged_when_t, system_t, cbar_t>>,
-    public IterativeBase<scalar_t>
+    public IterativeBase<
+  GaussNewtonConservative<
+    scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
+    converged_when_t, system_t, cbar_t>, scalar_t>
 {
 
   using eig_dyn_mat= Eigen::Matrix<scalar_t, -1, -1>;
@@ -48,7 +51,7 @@ class GaussNewtonConservative<
 
   using this_t	   = GaussNewtonConservative<scalar_t, lin_solver_tag, lin_solver_t,
 					     line_search_t, converged_when_t, system_t, cbar_t>;
-  using iter_base_t = IterativeBase<scalar_t>;
+  using iter_base_t = IterativeBase<this_t, scalar_t>;
   using base_t	   = NonLinearSolverBase<this_t>;
   friend base_t;
 
@@ -147,7 +150,9 @@ public:
 	cbarTlambda_, jTr2_,
 	cbarR_,	A_,
 	b_, lambda_,
-	y2_);
+	y2_,
+	base_t::convergenceConditionDescription_
+	);
 
   }//end solve
 

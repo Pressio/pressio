@@ -5,8 +5,8 @@
 namespace pressio{ namespace apps{
 
 void Burgers1dTpetra::velocity(const state_type & u,
-			       velocity_type & rhs,
-			       const scalar_type /* t */) const
+			       const scalar_type /* t */,
+  velocity_type & rhs) const
 {
   auto u_v = u.getData();
   auto rhs_v = rhs.getDataNonConst();

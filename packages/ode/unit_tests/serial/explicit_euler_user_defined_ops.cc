@@ -13,8 +13,7 @@ struct MyApp{
 
 public:
   void velocity(const state_type & y,
-		velocity_type & R,
-		scalar_type t) const{
+		scalar_type t, velocity_type & R) const{
     R[0] = 10. * y[0];
     R[1] = 10. * y[1];
     R[2] = 10. * y[2];
@@ -23,7 +22,7 @@ public:
   velocity_type velocity(const state_type & y,
 			 scalar_type t) const{
     velocity_type R(y);
-    velocity(y, R, t);
+    velocity(y, t, R);
     return R;
   };
 };

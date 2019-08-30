@@ -25,7 +25,7 @@ struct EvaluateFomVelocityDefault<false>{
 		const state_t & yFOM,
 		rhs_t		& rhs,
 		time_t		t) const{
-    fomObj.velocity(*yFOM.data(), *rhs.data(), t);
+    fomObj.velocity(*yFOM.data(), t, *rhs.data());
   }
 
   template <
@@ -65,7 +65,7 @@ struct EvaluateFomVelocityDefault<false>{
 		const state_t & yFOM,
 		rhs_t		& rhs,
 		time_t		t) const{
-    fomObj.attr("residual2")(yFOM, rhs, t);
+    fomObj.attr("velocity")(yFOM, t, rhs);
   }
 
   template <
@@ -78,7 +78,7 @@ struct EvaluateFomVelocityDefault<false>{
   state_t evaluate(const fom_t	& fomObj,
 		   const state_t & yFOM,
 		   time_t t) const {
-    return fomObj.attr("residual1")(yFOM, t);
+    return fomObj.attr("velocity")(yFOM, t);
   }
 #endif
 };

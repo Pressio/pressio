@@ -4,7 +4,7 @@
 #----------------------
 
 THIS IS WORK IN PROGRESS!
-This code for ROM uses TriBITS. The project defines a TriBITS CMake project.
+This code for ROM uses TriBITS. 
 
 To clone this repo, use this command:
 
@@ -13,7 +13,7 @@ To clone this repo, use this command:
 (The recursive option is necessary because it has a git submodule for TriBITS.)
 
 
-To build PRESSIO, clone the auto_build repo:
+To build PRESSIO, use the auto_build repo:
 
    git clone --recursive git@gitlab.com:fnrizzi/pressio_auto_build.git
 

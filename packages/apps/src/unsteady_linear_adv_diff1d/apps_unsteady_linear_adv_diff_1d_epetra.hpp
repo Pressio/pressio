@@ -31,20 +31,20 @@ public:
   rcp<nativeVec> getInitialState() const;
 
   void velocity(const state_type & u,
-		velocity_type & rhs,
-		const scalar_type /* t*/) const;
+		const scalar_type /* t*/,
+    velocity_type & rhs) const;
 
   velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
     Epetra_Vector R(*contigMap_);
-    velocity(u, R, t);
+    velocity(u, t, R);
     return R;
   }
 
   void applyJacobian(const state_type & y,
 		     const Epetra_MultiVector & B,
-		     Epetra_MultiVector &A,
-		     scalar_type /*t*/) const{
+		     scalar_type /*t*/,
+         Epetra_MultiVector &A) const{
     SteadyLinAdvDiff1dEpetra::applyJacobian(y, B, A);
     A.Scale(-1.0);
   }
@@ -53,7 +53,7 @@ public:
 				   const Epetra_MultiVector &B,
 				   scalar_type t) const{
     Epetra_MultiVector C( *contigMap_, B.NumVectors());
-    applyJacobian(y, B, C, t);
+    applyJacobian(y, B, t, C);
     return C;
   }
 

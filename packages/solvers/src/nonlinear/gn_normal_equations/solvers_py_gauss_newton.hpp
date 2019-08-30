@@ -74,7 +74,7 @@ class PyGaussNewton<
 
   // norms
   scalar_t normO_    = {};
-  scalar_t normN_    = {};
+  scalar_t norm_dy_    = {};
 
   // dummy observer
   utils::impl::empty obsObj_ = {};
@@ -96,7 +96,7 @@ public:
       JTR_{ state_t(const_cast<state_t &>(yState).request()) },
       dy_{ state_t(const_cast<state_t &>(yState).request()) },
       ytrial_{ state_t(const_cast<state_t &>(yState).request()) },
-      normO_{0}, normN_{0},
+      normO_{0}, norm_dy_{0},
       obsObj_{}
   {}
 
@@ -128,6 +128,9 @@ private:
     // storing residaul norm
     scalar_t normRes = {};
     scalar_t normRes0 = {};
+    // storing projected residual norm
+    scalar_t normJTRes = {};
+    scalar_t normJTRes0 = {};
 
     constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
     constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
@@ -144,10 +147,10 @@ private:
 
     // compute the initial norm of y (the state)
     norm_evaluator_t::evaluate(y, normO_);
-    normN_ = {0};
+    norm_dy_ = {0};
 
     iteration_t iStep = 0;
-    while (iStep++ <= iterative_base_t::maxIters_)
+    while (++iStep <= iterative_base_t::maxIters_)
     {
 #ifdef DEBUG_PRINT
       ::pressio::utils::io::print_stdout("\n");
@@ -187,17 +190,22 @@ private:
       pythonOps_.attr("multiply2")(jac_, res_, JTR_, true);
       pythonOps_.attr("scale")(JTR_, negOne);
 
+      // norm of projected residual
+      norm_evaluator_t::evaluate(JTR_, normJTRes);
+      // store initial residual norm
+      if (iStep==1) normJTRes0 = normJTRes;
+
       // solve normal equations
       linSolver_.attr("solve")(hess_, JTR_, dy_);
 
       // compute norm of the correction
-      norm_evaluator_t::evaluate(dy_, normN_);
+      norm_evaluator_t::evaluate(dy_, norm_dy_);
 
 #ifdef DEBUG_PRINT
       ::pressio::utils::io::print_stdout(std::scientific,
 				      "||R|| =", normRes,
 				      "||R||(r) =", normRes/normRes0,
-				      "||dy|| =", normN_,
+				      "||dy|| =", norm_dy_,
 				      utils::io::reset(),
 				      "\n");
 #endif
@@ -213,11 +221,12 @@ private:
       // std::cout << std::endl;
 
       // check convergence (whatever method user decided)
-      auto flag = is_converged_t::evaluate(y, dy_, normN_,
-					   normRes, normRes0,
-					   iStep,
-					   iterative_base_t::maxIters_,
-					   iterative_base_t::tolerance_);
+      const auto flag = is_converged_t::evaluate(y, dy_, norm_dy_,
+						 normRes, normRes0,
+						 normJTRes, normJTRes0,
+						 iStep,
+						 iterative_base_t::maxIters_,
+						 iterative_base_t::tolerance_);
 
       // if we have converged, exit
       if (flag) {
@@ -225,7 +234,7 @@ private:
       }
 
       // store new norm into old variable
-      normO_ = normN_;
+      normO_ = norm_dy_;
 
       // compute residual and jacobian
       sys.residual(y, res_);

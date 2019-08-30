@@ -53,6 +53,8 @@ enum class WrappedMatrixIdentifier{
    DenseEpetra,
    SparseEpetra,
    SparseTpetra,
+   CrsKokkos,
+   DenseKokkos,
    TeuchosSerialDense,
    DenseEigen, // maybe more specific, like static or dynamic
    SparseEigen,
@@ -70,6 +72,7 @@ enum class WrappedMultiVectorIdentifier{
    Epetra,
    Tpetra,
    TpetraBlock,
+   Kokkos,
    Eigen,
    Arbitrary
 };

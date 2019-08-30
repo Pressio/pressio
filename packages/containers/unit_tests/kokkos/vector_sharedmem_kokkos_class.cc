@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "CONTAINERS_VECTOR"
+#include "CONTAINERS_MULTI_VECTOR"
 
 template <typename T>
 struct InitView {
@@ -56,11 +57,14 @@ TEST(containers_vector_sharedmem_kokkos_class, Constructor)
   using view_type = Kokkos::View<double*>;
   view_type a ("A", N);
   //Kokkos::parallel_for ("HelloWorld",15, hello_world());
-  
+
   using myvec_t = containers::Vector<view_type>;
   static_assert( containers::details::traits<myvec_t>::is_static == 0, "" );
+  static_assert( containers::meta::is_vector_wrapper_kokkos<myvec_t>::value, "" );
+  static_assert( !containers::meta::is_multi_vector_wrapper_kokkos<myvec_t>::value, "" );
+
   myvec_t g(a);
-  
+
   Kokkos::parallel_for (N, InitView<view_type>( g.dataCp() ));
   // double sum = 0;
   // Kokkos::parallel_reduce (N, ReduceFunctor<view_type>(a), sum);
@@ -69,5 +73,5 @@ TEST(containers_vector_sharedmem_kokkos_class, Constructor)
   using view_type2 = Kokkos::View<double[11]>;
   using myvec_t2 = containers::Vector<view_type2>;
   static_assert( containers::details::traits<myvec_t2>::is_static == 1, "" );
-  
+
 }

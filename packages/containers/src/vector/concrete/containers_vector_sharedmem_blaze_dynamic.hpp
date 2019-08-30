@@ -70,10 +70,7 @@ public:
   }
 
   // assignment
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator=(const T & other){
+  this_t & operator=(const this_t & other){
     data_ = *other.data();
     return *this;
   }

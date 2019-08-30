@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 //#include <gmock/gmock.h>
 #include <Kokkos_Core.hpp>
+#include <memory>
 
 struct KokkosEnv : public ::testing::Environment{
   int argc_;
@@ -26,7 +27,11 @@ int main(int argc, char *argv[])
 {
   ::testing::InitGoogleTest(&argc,argv);
   //  ::testing::InitGoogleMock(&argc,argv);
-  ::testing::AddGlobalTestEnvironment(new KokkosEnv(argc, argv));
-
-  return RUN_ALL_TESTS();
+  int err = 0;
+  {
+    std::unique_ptr<KokkosEnv> envPtr(new KokkosEnv(argc, argv));
+    ::testing::AddGlobalTestEnvironment(envPtr.get());
+    err = RUN_ALL_TESTS();
+  }
+  return err;
 }

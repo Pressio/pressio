@@ -7,15 +7,15 @@
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<typename residual_type, typename enable = void>
+template<typename T, typename enable = void>
 struct is_legitimate_implicit_residual_type : std::false_type{};
 
-template<typename residual_type>
-struct is_legitimate_implicit_residual_type<residual_type,
+template<typename T>
+struct is_legitimate_implicit_residual_type<T,
  typename std::enable_if<
-   containers::meta::is_vector_wrapper<residual_type>::value
+   containers::meta::is_vector_wrapper<T>::value
 #ifdef HAVE_PYBIND11
-   or containers::meta::is_cstyle_array_pybind11<residual_type>::value
+   or containers::meta::is_cstyle_array_pybind11<T>::value
 #endif
    >::type
   > : std::true_type{};

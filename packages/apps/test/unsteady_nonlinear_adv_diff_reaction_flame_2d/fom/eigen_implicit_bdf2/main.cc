@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
   using ode_res_t   = pressio::containers::Vector<app_rhs_t>;
   using ode_jac_t   = pressio::containers::Matrix<app_jacob_t>;
 
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+  // constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 12, Ny = 6;
   app_t appobj(Nx, Ny);

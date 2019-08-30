@@ -6,7 +6,7 @@
 
 namespace pressio { namespace solvers {
 
-template<typename scalar_t>
+template<typename derived_t, typename scalar_t>
 struct IterativeBase
 {
   IterativeBase() = default;
@@ -15,8 +15,18 @@ struct IterativeBase
 
   using iteration_t = containers::default_types::uint;
 
+  /** Get the number of iterations performed. */
+  iteration_t getNumIterationsExecuted() const {
+    return static_cast<const derived_t &>(*this).getNumIterationsExecutedImpl();
+  }
+
+  /** Get the error after last step is executed */
+  scalar_t getFinalError() const {
+    return static_cast<const derived_t &>(*this).getFinalErrorImpl();
+  }
+
   /** Get the maximum number of iterations. */
-  inline iteration_t getMaxIterations() {
+  iteration_t getMaxIterations() const {
     return maxIters_;
   }
 
@@ -30,7 +40,7 @@ struct IterativeBase
   }
 
   /** Get the tolerance. */
-  inline scalar_t getTolerance() {
+  scalar_t getTolerance() const {
     return tolerance_;
   }
 

@@ -27,10 +27,10 @@ void checkSol(const T & y,
 
 constexpr bool do_print = false;
 
+template <typename T>
 struct Observer{
   Observer() = default;
 
-  template <typename T>
   void operator()(size_t step, double t, const T & y)
   {
     if (do_print){
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
   constexpr scalar_t dt = 0.1;
   constexpr auto Nsteps = static_cast<unsigned int>(10);
   constexpr scalar_t fint = Nsteps*dt;
-  Observer obs;
+  Observer<app_state_t> obs;
   pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, obs, solverO);
   std::cout << std::fixed << std::setprecision(14) << *y.data() << std::endl;
   {

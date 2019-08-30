@@ -10,32 +10,25 @@ namespace pressio{ namespace ode{
 template<
   ExplicitEnum whichone,
   typename state_type,
-  typename system_type,
-  typename velocity_type,
   typename ...Args
   >
 class ExplicitStepper
   : public ExplicitStepperBase<
-  ExplicitStepper<
-    whichone,
-    state_type,
-    system_type,
-    velocity_type,
-    Args...
-    >
+  ExplicitStepper<whichone, state_type, Args...>
   >
 {
 
-  using this_t		= ExplicitStepper
-    <whichone, state_type, system_type, velocity_type, Args...>;
+  using this_t		= ExplicitStepper<whichone, state_type, Args...>;
   using base_t		= ExplicitStepperBase<this_t>;
   // need to friend base to allow it to access the () operator below
   friend base_t;
 
-  using mytraits	= details::traits<this_t>;
-  using scalar_type	= typename mytraits::scalar_t;
-  using standard_res_policy_t = typename mytraits::standard_res_policy_t;
-  using policy_t	= typename mytraits::velocity_policy_t;
+  using mytraits		= details::traits<this_t>;
+  using scalar_type		= typename mytraits::scalar_t;
+  using system_type		= typename mytraits::model_t;
+  using velocity_type		= typename mytraits::velocity_t;
+  using standard_res_policy_t	= typename mytraits::standard_res_policy_t;
+  using policy_t		= typename mytraits::velocity_policy_t;
 
   // this is the impl class type which holds all the implement details
   using impl_class_t	= typename mytraits::impl_t;

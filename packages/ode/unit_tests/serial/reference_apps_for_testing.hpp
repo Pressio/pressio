@@ -10,9 +10,8 @@ struct fakeAppForTraitsForExp{
   using state_type = std::vector<double>;
   using velocity_type = std::vector<double>;
 
-  void velocity(const state_type & y,
-		velocity_type & R,
-		scalar_type t) const{
+  void velocity(const state_type & y, 
+    scalar_type t, velocity_type & R) const{
   };
   velocity_type velocity(const state_type & y, scalar_type t )const{
     velocity_type R;
@@ -28,8 +27,7 @@ struct refAppEigen{
   using velocity_type = state_type;
 
   void velocity(const state_type & y,
-		velocity_type & R,
-		scalar_type t) const{
+		scalar_type t, velocity_type & R) const{
     auto sz = y.size();
     for (decltype(sz) i=0; i<sz; i++)
       R[i] = y[i];
@@ -38,7 +36,7 @@ struct refAppEigen{
   velocity_type velocity(const state_type & y,
 			 scalar_type t) const{
     velocity_type R(y);
-    velocity(y, R, t);
+    velocity(y, t, R);
     return R;
   };
 
@@ -80,8 +78,8 @@ public:
     y << 1., 2., 3.;
   }
 
-  void velocity(const state_type & y, velocity_type & R,
-		scalar_type t) const{
+  void velocity(const state_type & y, 
+    scalar_type t, velocity_type & R) const{
     assert(y.size()==3);
     R = -10. * y;
   };
@@ -91,14 +89,13 @@ public:
 			 scalar_type t) const{
     velocity_type R(y);
     assert(R.size()==3);
-    velocity(y, R, t);
+    velocity(y, t, R);
     return R;
   };
   //--------------------------------------------
 
   void jacobian(const state_type & y,
-		jacobian_type & JJ,
-		scalar_type t) const{
+		scalar_type t, jacobian_type & JJ) const{
     assert( JJ.rows() == 3 ); assert( JJ.cols() == 3 );
 
     typedef Eigen::Triplet<scalar_type> Tr;
@@ -113,7 +110,7 @@ public:
   jacobian_type jacobian(const state_type & y,
 			 scalar_type t) const{
     jacobian_type JJ(3,3);
-    jacobian(y, JJ, t);
+    jacobian(y, t, JJ);
     return JJ;
   };
   //--------------------------------------------
