@@ -1,18 +1,17 @@
 
 ## Pressio Documentation
 
-THIS IS WORK IN PROGRESS!
-This code for ROM uses TriBITS. 
-
+### Cloning
 To clone this repo, use this command:
+```
+   git clone --recursive https://github.com/Pressio/pressio.git
+```
+The recursive option is necessary because it has a git submodule for TriBITS.
+TriBITS (https://tribits.org/) provides the the building framework for Pressio.
 
-   git clone --recursive repo_url
-
-(The recursive option is necessary because it has a git submodule for TriBITS.)
-
-
-To build PRESSIO, use the auto_build repo:
-
-   git clone --recursive git@gitlab.com:fnrizzi/pressio_auto_build.git
-
+### Building
+To build PRESSIO, clone the associated repo:
+```
+git clone https://github.com/Pressio/pressio-builder.git
+```
 and follows steps in there.
