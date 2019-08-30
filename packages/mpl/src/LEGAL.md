@@ -1,5 +1,6 @@
-The content of this mpl directory has been adapted/extended/forked 
-the tinympl project, forked from http://sbabbi.github.io/tinympl.  
+
+Some parts of this mpl directory have been adapted/extended/forked 
+from the tinympl project, forked from http://sbabbi.github.io/tinympl.  
 The tinympl project appears to be no longer maintained. 
 The original files contained the following header:
 
@@ -17,6 +18,9 @@ The original files contained the following header:
 //
 ```
 
-The copyright needs to be incorporated into the new header for PRESSIO. 
+The above copyright is incorporated into all headers inside Pressio/mpl 
+that have been used from tinympl. 
+
 All of this is legal under the terms of the original tinympl license, 
-which is included in  `ORIGINAL_TINYMPL_LICENSE.txt`.
+which is included in  `tinympl.txt` under pressio/licences-tpls.
+
