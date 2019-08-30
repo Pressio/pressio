@@ -1,4 +1,7 @@
 
+//FRizzi: @Chi, please fix all this 
+
+
 /* 2 big questions:
 	a. what data do you need?
 	b. what methods/operations do you need to handle this data?

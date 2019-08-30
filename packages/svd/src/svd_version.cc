@@ -3,8 +3,8 @@
 
 namespace pressio{ namespace svd{
 
-inline std::string version(){ 
-	return("svd in PRESSIO " PRESSIO_VERSION_STRING); 
+inline std::string version(){
+  return("svd in PRESSIO ");
 }
 
-}}//end namespace 
+}}//end namespace

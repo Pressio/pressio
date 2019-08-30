@@ -3,8 +3,8 @@
 
 namespace pressio{ namespace ode{
 
-inline std::string version(){ 
-	return("ode in PRESSIO " PRESSIO_VERSION_STRING); 
+inline std::string version(){
+  return("ode in PRESSIO " );
 }
 
-}}//end namespace 
+}}//end namespace

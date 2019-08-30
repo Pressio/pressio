@@ -3,8 +3,8 @@
 
 namespace pressio{ namespace rom{
 
-inline std::string version(){ 
-	return("rom in PRESSIO " PRESSIO_VERSION_STRING); 
+inline std::string version(){
+  return("rom in PRESSIO ");
 }
 
-}}//end namespace 
+}}//end namespace

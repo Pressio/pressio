@@ -3,8 +3,8 @@
 
 namespace pressio{ namespace mpl{
 
-inline std::string version(){ 
-	return("mpl in PRESSIO " PRESSIO_VERSION_STRING); 
+inline std::string version(){
+  return("mpl in PRESSIO ");
 }
 
-}}//end namespace 
+}}//end namespace

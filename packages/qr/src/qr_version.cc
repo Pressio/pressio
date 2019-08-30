@@ -3,8 +3,8 @@
 
 namespace pressio{ namespace qr{
 
-inline std::string version(){ 
-	return("qr in PRESSIO " PRESSIO_VERSION_STRING); 
+inline std::string version(){
+  return("qr in PRESSIO ");
 }
 
-}}//end namespace 
+}}//end namespace
