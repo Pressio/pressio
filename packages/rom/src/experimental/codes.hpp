@@ -1,3 +1,7 @@
+
+//FRizzi: @Chi, please fix all this 
+
+
 /* assume that the bases is arranged as follows:
 [basis_1__timeStep_1, basis_2__timeStep_1, ...,basis_nst__timeStep_1,   basis_1__timeStep_2, basis_2__timeStep_2, ...,basis_nst__timeStep_2, ... ... basis_1__timeStep_Nt, basis_2__timeStep_Nt, ...,basis_nst__timeStep_Nt ]
 */
