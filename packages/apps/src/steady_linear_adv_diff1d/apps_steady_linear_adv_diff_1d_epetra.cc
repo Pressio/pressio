@@ -127,6 +127,14 @@ std::shared_ptr<Epetra_Vector> SteadyLinAdvDiff1dEpetra::getGrid() const{
       return x_;
 }
 
+std::shared_ptr<Epetra_Vector> SteadyLinAdvDiff1dEpetra::getRHSforce() const {
+  return f_;
+}
+
+std::shared_ptr<Epetra_CrsMatrix> SteadyLinAdvDiff1dEpetra::getLHSmatrix() const {
+  return A_;
+}
+
 void SteadyLinAdvDiff1dEpetra::solve(){
   //-----------------------------------------------------------------------
   // Set, Create, and Solve Linear System
