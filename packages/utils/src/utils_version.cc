@@ -4,7 +4,7 @@
 namespace pressio{ namespace utils{
 
 inline std::string version(){
-  return("utils in PRESSIO " PRESSIO_VERSION_STRING);
+  return("utils in PRESSIO ");
 }
 
 }}//end namespace pressio::utils

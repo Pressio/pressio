@@ -3,8 +3,8 @@
 
 namespace pressio{ namespace solvers{
 
-inline std::string version(){ 
-	return("solvers in PRESSIO " PRESSIO_VERSION_STRING); 
+inline std::string version(){
+  return("solvers in PRESSIO ");
 }
 
-}}//end namespace 
+}}//end namespace

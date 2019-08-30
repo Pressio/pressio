@@ -3,8 +3,8 @@
 
 namespace pressio{ namespace optimization{
 
-inline std::string version(){ 
-	return("optimization in PRESSIO " PRESSIO_VERSION_STRING); 
+inline std::string version(){
+  return("optimization in PRESSIO " );
 }
 
 }}//end namespace pressio::containers

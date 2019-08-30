@@ -2,7 +2,6 @@
 #ifndef QR_VERSION_HPP
 #define QR_VERSION_HPP
 
-#include "pressio_version.h"
 #include <string>
 
 namespace pressio{ namespace qr{
