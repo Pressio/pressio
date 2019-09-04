@@ -1,6 +1,8 @@
 
 ## Pressio Documentation
 
+Pressio is released with the following license [LICENSE](./LICENSE).
+
 ### Cloning
 To clone this repo, use this command:
 ```
