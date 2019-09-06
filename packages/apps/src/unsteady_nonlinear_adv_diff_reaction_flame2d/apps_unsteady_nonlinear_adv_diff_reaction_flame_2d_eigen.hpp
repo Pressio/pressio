@@ -205,7 +205,7 @@ public:
     T B( maskGIDs_.size()*this_t::numSpecies_, A.cols() );
     applyMask_impl(A, B, t);
     return B;
-  };
+  }
 
 private:
   void globalIDToGiGj(int ID, int & gi, int & gj) const{

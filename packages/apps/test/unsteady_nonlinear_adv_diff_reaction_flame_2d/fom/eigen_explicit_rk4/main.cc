@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
   using app_rhs_t	= typename app_t::velocity_type;
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+  // constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
 
   constexpr int Nx = 12, Ny = 6;
   app_t appobj(Nx, Ny);
