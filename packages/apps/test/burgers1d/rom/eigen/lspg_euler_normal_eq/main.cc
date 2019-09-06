@@ -85,11 +85,13 @@ int main(int argc, char *argv[]){
   // has to match the FOM solution obtained with euler, same time-step, for 10 steps
   // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStates<ode_case>::get(numCell, dt, 0.10);
-  for (auto i=0; i<yFomFinal.size(); i++)
-    if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10) checkStr = "FAILED";
+  for (auto i=0; i<yFomFinal.size(); i++){
+    if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10) 
+      checkStr = "FAILED";
+  }
 
-    auto n1 = ::pressio::containers::ops::norm2(yFomFinal);
-    std::cout << n1 << std::endl;
+  auto n1 = ::pressio::containers::ops::norm2(yFomFinal);
+  std::cout << n1 << std::endl;
 
   std::cout << checkStr <<  std::endl;
   return 0;

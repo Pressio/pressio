@@ -89,17 +89,6 @@ public:
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
 
-#ifdef HAVE_PYBIND11
-  typename std::conditional<
-    mpl::is_same<ud_ops, pybind11::object>::value,
-    ud_ops,
-    const ud_ops *
-    >::type udOps_ = {};
-#else
-    const ud_ops * udOps_ = {};
-#endif
-
-
 public:
   LSPGJacobianPolicy() = delete;
   ~LSPGJacobianPolicy() = default;
@@ -139,9 +128,9 @@ public:
 		     const _ud_ops & udOps)
     : fom_states_data(fomStates),
       fom_apply_jac_policy(applyJacFunctor),
+      udOps_{&udOps},
       JJ_(applyJacObj),
-      decoderObj_(decoder),
-      udOps_{&udOps}{
+      decoderObj_(decoder){
     static_assert( !std::is_void<_ud_ops>::value, "");
   }
 
@@ -161,9 +150,9 @@ public:
 		     const _ud_ops & udOps)
     : fom_states_data(fomStates),
       fom_apply_jac_policy(applyJacFunctor),
+      udOps_{udOps},
       JJ_(applyJacObj),
-      decoderObj_(decoder),
-      udOps_{udOps}
+      decoderObj_(decoder)
   {}
 #endif
   
@@ -274,7 +263,18 @@ private:
   }
 
 protected:
+#ifdef HAVE_PYBIND11
+  typename std::conditional<
+    mpl::is_same<ud_ops, pybind11::object>::value,
+    ud_ops,
+    const ud_ops *
+    >::type udOps_ = {};
+#else
+    const ud_ops * udOps_ = {};
+#endif
+
   mutable apply_jac_return_t JJ_	= {};
+
   const decoder_type & decoderObj_	= {};
 
 };
