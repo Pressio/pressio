@@ -26,7 +26,7 @@ void UnsteadyNonLinAdvDiffReacFlame2dSampleMeshEigen::setupPhysicalGrid(){
   const auto Oy = this_t::oneHalf*dy_;
 
   // loop over all cells
-  for ((int) i=0; i<gidsMap_.size(); i++){
+  for (int i=0; i<gidsMap_.size(); i++){
     // get the GID of this cell wrt sample mesh
     cellGID_ = gidsMap_[i][0];
 
