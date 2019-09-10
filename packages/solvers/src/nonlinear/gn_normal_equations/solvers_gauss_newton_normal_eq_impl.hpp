@@ -195,13 +195,13 @@ void gauss_newton_neq_solve(const system_t & sys,
     // 				    *H.data() , "\n");
 
 #ifdef DEBUG_PRINT
-    auto fmt1 = utils::io::magenta() + utils::io::bold();
-    ::pressio::utils::io::print_stdout(fmt1, "GN_JSize =",
+    auto fmt2 = utils::io::magenta() + utils::io::bold();
+    ::pressio::utils::io::print_stdout(fmt2, "GN_JSize =",
     ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
     ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
 				    "\n");
     // this print only works when hessian is a shared mem matrix
-    ::pressio::utils::io::print_stdout(fmt1, "GN_HessianSize =",
+    ::pressio::utils::io::print_stdout(fmt2, "GN_HessianSize =",
 				    H.rows(), H.cols(),
 				    utils::io::reset(), "\n");
 #endif
