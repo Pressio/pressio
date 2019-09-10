@@ -11,11 +11,11 @@ int main(int argc, char *argv[]){
   using fom_t		= pressio::apps::Burgers1dKokkos;
   using scalar_t	= typename fom_t::scalar_type;
 
-  using exe_space = typename fom_t::execution_space;
+  // using exe_space = typename fom_t::execution_space;
   using native_state_t_d = typename fom_t::state_type_d;
   using native_state_t_h = typename fom_t::state_type_h;
   using native_mv_t_d = typename fom_t::mv_d;
-  using native_mv_t_h = typename fom_t::mv_h;
+  // using native_mv_t_h = typename fom_t::mv_h;
 
   // device lspg state type
   using lspg_state_d_t	= pressio::containers::Vector<native_state_t_d>;
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]){
   // device decoder jacobian type
   using decoder_jac_d_t	= pressio::containers::MultiVector<native_mv_t_d>;
   // host decoder jacobian type
-  using decoder_jac_h_t	= pressio::containers::MultiVector<native_mv_t_h>;
+  // using decoder_jac_h_t	= pressio::containers::MultiVector<native_mv_t_h>;
 
   // device decoder type
   using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t>;
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
   {
     // app object
     constexpr int numCell = 20;
-    fom_t appobj({5.0, 0.02, 0.02}, numCell);
+    fom_t appobj({{5.0, 0.02, 0.02}}, numCell);
     appobj.setup();
     const scalar_t dt = 0.01;
     constexpr auto t0 = zero;
