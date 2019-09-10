@@ -1,5 +1,5 @@
 TRIBITS_PACKAGE_DEFINE_DEPENDENCIES(
-  LIB_REQUIRED_PACKAGES mpl utils containers qr solvers svd ode rom
+  LIB_REQUIRED_PACKAGES mpl utils containers
   LIB_OPTIONAL_PACKAGES
   #
   LIB_REQUIRED_TPLS EIGEN

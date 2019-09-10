@@ -1,4 +1,0 @@
-
-ADD_SUBDIRECTORY(collect_snapshots_and_lspg_normal_eq)
-ADD_SUBDIRECTORY(collect_snapshots_and_lspg_normal_eq_mask)
-ADD_SUBDIRECTORY(collect_snapshots_and_lspg_normal_eq_sample_mesh)

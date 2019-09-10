@@ -181,10 +181,10 @@ private:
 
     int info = 0;
     const int ipivSz = n;
-    int ipiv[ipivSz];
+    std::vector<int> ipiv(ipivSz);
 
     // LU factorize using GETRF
-    lpk_.GETRF(n, n, A.data()->data(), n, ipiv, &info);
+    lpk_.GETRF(n, n, A.data()->data(), n, ipiv.data(), &info);
     assert(info == 0);
 
     // we need to deep copy b into y and pass y
@@ -195,7 +195,7 @@ private:
     const char ct = 'N';
     lpk_.GETRS(ct, n, nRhs,
 	       A.data()->data(),
-	       n, ipiv,
+	       n, ipiv.data(),
 	       y.data()->data(),
 	       y.size(),
 	       &info);

@@ -1,2 +1,0 @@
-
-ADD_SUBDIRECTORIES(fom rom)

@@ -1,3 +1,0 @@
-
-ADD_SUBDIRECTORY(lspg_euler_normal_eq lspg_bdf2_normal_eq)
-ADD_SUBDIRECTORY(lspg_preconditioned_euler_normal_eq)

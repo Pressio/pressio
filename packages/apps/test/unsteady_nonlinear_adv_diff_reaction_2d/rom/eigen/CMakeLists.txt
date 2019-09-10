@@ -1,2 +1,0 @@
-
-ADD_SUBDIRECTORY(collect_snapshots_and_lspg_normal_eq)

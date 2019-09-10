@@ -1,6 +1,10 @@
 
 #------------------------------------------------------------------------
-# to include the lumped headers to have access to containers classes
+# to include the lumped headers
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
-#ADD_SUBDIRECTORIES(...)
+# include the utilities in utils (adding this here means
+# all children cmakelists will inherit this include )
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/utils)
+
+ADD_SUBDIRECTORIES(burgers1d steady_linear_adv_diff_2d)

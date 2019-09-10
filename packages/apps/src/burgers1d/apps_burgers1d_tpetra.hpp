@@ -50,9 +50,10 @@
 #define PRESSIOAPPS_BURGERS1D_TPETRA_HPP_
 
 #include "../apps_ConfigDefs.hpp"
+#include <numeric>
 
 #ifdef HAVE_TRILINOS
-#include "../../../CONTAINERS_ALL"
+#include <Tpetra_CrsMatrix.hpp>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 #include <Teuchos_FancyOStream.hpp>

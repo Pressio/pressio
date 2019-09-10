@@ -24,7 +24,6 @@ IF(HAVE_GTEST)
   TRIBITS_ADD_TEST_DIRECTORIES(unit_tests)
 ENDIF()
 TRIBITS_ADD_TEST_DIRECTORIES(test)
-TRIBITS_ADD_EXAMPLE_DIRECTORIES(example)
 
 #----------------------------------------------------------------
 # E) Do standard post processing
