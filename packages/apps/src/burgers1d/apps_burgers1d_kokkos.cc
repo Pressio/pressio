@@ -15,7 +15,7 @@ void Burgers1dKokkos::setup(){
   }
   Kokkos::deep_copy(x_d_, x_h_);
   Kokkos::deep_copy(U_d_, U_h_);
-};
+}
 
 
 void Burgers1dKokkos::velocity(const state_type & u,
