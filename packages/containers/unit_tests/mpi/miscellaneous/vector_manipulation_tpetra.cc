@@ -42,13 +42,13 @@ TEST(tpetraVectors, loopedVectorManipulation){
 
   // some types (use default, whatever that is)
   using tcomm		= Teuchos::Comm<int>;
-  using node_t		= typename Tpetra::Vector<>::node_type;
+  // using node_t		= typename Tpetra::Vector<>::node_type;
   using map_t		= Tpetra::Map<>;
   using nat_v_t		= Tpetra::Vector<>;
 
   using ST = typename nat_v_t::scalar_type;
-  using LO = typename nat_v_t::local_ordinal_type;
-  using GO = typename nat_v_t::global_ordinal_type;
+  // using LO = typename nat_v_t::local_ordinal_type;
+  // using GO = typename nat_v_t::global_ordinal_type;
 
   // create a teuchos comm
   uint_t rank;
@@ -67,10 +67,10 @@ TEST(tpetraVectors, loopedVectorManipulation){
 
   // create wrapper vector
   using myvec_t = pressio::containers::Vector<nat_v_t>;
-  using myvec_dev_t = typename pressio::containers::details::traits<myvec_t>::device_t;
+  // using myvec_dev_t = typename pressio::containers::details::traits<myvec_t>::device_t;
   // containers::Vector<> constr does a deep-copy (for now)
   myvec_t myx(x);
-  myx.putScalar( pressio::utils::constants::zero() );
+  myx.putScalar( pressio::utils::constants::zero<ST>() );
 
   // modify the host (and then sync)
   myx.data()->modify<Kokkos::HostSpace>();

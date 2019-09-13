@@ -55,8 +55,10 @@
 #include "../../../containers/src/matrix/containers_matrix_meta.hpp"
 #include "../../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
 
-#include <Eigen/IterativeLinearSolvers>
 #include <Eigen/Core>
+#include <Eigen/IterativeLinearSolvers>
+#include <Eigen/Householder>
+#include <Eigen/QR>
 
 // #ifdef HAVE_ARMADILLO
 //   #include "solvers_linear_wrapper_armadillo.hpp"
@@ -77,7 +79,6 @@ struct traits {
   static constexpr bool kokkos_enabled = false;
 };
 
-
 template <>
 struct traits<::pressio::solvers::linear::iterative::CG> {
 
@@ -90,7 +91,6 @@ struct traits<::pressio::solvers::linear::iterative::CG> {
   static constexpr bool direct        = false;
   static constexpr bool eigen_enabled = true;
 };
-
 
 template <>
 struct traits<::pressio::solvers::linear::iterative::Bicgstab> {
@@ -105,7 +105,6 @@ struct traits<::pressio::solvers::linear::iterative::Bicgstab> {
   static constexpr bool eigen_enabled = true;
 };
 
-
 template <>
 struct traits<::pressio::solvers::linear::iterative::LSCG> {
 
@@ -119,12 +118,21 @@ struct traits<::pressio::solvers::linear::iterative::LSCG> {
   static constexpr bool eigen_enabled = true;
 };
 
-
 template <>
 struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
 
   template <typename MatrixT>
   using eigen_solver_type = Eigen::ColPivHouseholderQR<MatrixT>;
+
+  static constexpr bool direct = true;
+  static constexpr bool eigen_enabled = true;
+};
+
+template <>
+struct traits<::pressio::solvers::linear::direct::HouseholderQR> {
+
+  template <typename MatrixT>
+  using eigen_solver_type = Eigen::HouseholderQR<MatrixT>;
 
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;

@@ -43,7 +43,8 @@ int main(int argc, char *argv[]){
   // define solver
   using lin_solver_t = pressio::solvers::iterative::EigenIterative<
     pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
-  pressio::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO;
+  lin_solver_t linSolverObj;
+  pressio::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
   scalar_t fint = 35;

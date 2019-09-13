@@ -49,11 +49,9 @@
 #if not defined UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
 #define UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
 
-#include "CONTAINERS_ALL"
-#include "SVD_BASIC"
 #include <fstream>
 
-namespace pressio{ namespace utils{ 
+namespace pressio{ namespace utils{
 
 // template just to avoid having a cc file
 template <typename T = int>

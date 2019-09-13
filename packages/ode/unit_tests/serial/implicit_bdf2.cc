@@ -87,7 +87,8 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   // define solver
   using lin_solver_t = solvers::iterative::EigenIterative<
     solvers::linear::iterative::Bicgstab, jac_t>;
-  solvers::NewtonRaphson<double, lin_solver_t> solverO;
+  lin_solver_t linSolverObj;
+  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
   int nSteps = 4;
@@ -143,7 +144,8 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   // define solver
   using lin_solver_t = solvers::iterative::EigenIterative<
     solvers::linear::iterative::Bicgstab, jac_t>;
-  solvers::NewtonRaphson<double, lin_solver_t> solverO;
+  lin_solver_t linSolverObj;
+  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
   int nSteps = 4;
@@ -198,7 +200,8 @@ TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
   // define solver
   using lin_solver_t = solvers::iterative::EigenIterative<
     solvers::linear::iterative::Bicgstab, jac_t>;
-  solvers::NewtonRaphson<double, lin_solver_t> solverO;
+  lin_solver_t linSolverObj;
+  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
   int nSteps = 4;

@@ -127,7 +127,7 @@ int main(int argc, char *argv[]){
   // check that computed matches gold
   assert( (size_t) goldU.size() == (size_t) U.rows() );
   for (auto i=0; i<U.rows(); i++)
-    for (auto j=0; j<nSamples; j++)
+    for (j=0; j<nSamples; j++)
       if ( std::abs(goldU[i][j] - U(i,j)) > eps ) checkStr = "FAILED";
 
   MPI_Finalize();

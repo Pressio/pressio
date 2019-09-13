@@ -95,12 +95,12 @@ class NewtonRaphson
   scalar_t normRes_ = {};
   scalar_t normRes0_ = {};
 
-  // linear solver object
-  linear_solver_t linSolver_;
+  // reference to a linear solver object
+  linear_solver_t & linSolver_;
 
 public:
   NewtonRaphson() = default;
-  NewtonRaphson(linear_solver_t & lsO) : linSolver_{lsO}{}
+  NewtonRaphson(linear_solver_t & lsIn) : linSolver_{lsIn}{}
   NewtonRaphson(const NewtonRaphson &) = delete;
   ~NewtonRaphson() = default;
 
