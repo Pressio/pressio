@@ -135,7 +135,7 @@ struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
   */
   template <typename MatrixT>
   using eigen_solver_type =
-    std::conditional<
+    typename std::conditional<
       pressio::containers::meta::is_sparse_matrix_eigen<MatrixT>::value &&
       MatrixT::IsRowMajor==0,
       Eigen::SparseQR<MatrixT, Eigen::COLAMDOrdering<typename MatrixT::StorageIndex>>,
