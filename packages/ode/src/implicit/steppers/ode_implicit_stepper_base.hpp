@@ -158,7 +158,8 @@ public:
     : sys_{model},
       stateAuxStorage_{y0},
       residual_obj_{resPolicyObj},
-      jacobian_obj_{jacPolicyObj}{}
+      jacobian_obj_{jacPolicyObj}
+  {}
 
   // cstr for standard residual and jacob policies
   template <
@@ -174,9 +175,8 @@ public:
     : sys_{model},
       stateAuxStorage_{y0},
       residual_obj_{},
-      jacobian_obj_{}{
-	std::cout << "base stepper cnstr" << std::endl;
-      }
+      jacobian_obj_{}
+  {}
 
   // cstr for standard jacob policies
   template <
@@ -191,7 +191,8 @@ public:
     : sys_{model},
       stateAuxStorage_{y0},
       residual_obj_{resPolicyObj},
-      jacobian_obj_{}{}
+      jacobian_obj_{}
+  {}
 
   // /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   // template<typename DummyType> struct dummy{using type = DummyType;};
