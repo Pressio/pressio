@@ -79,7 +79,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 			   scalar_t & norm_dy,
 			   std::string & convCondDescr){
 
-  // using jacobian_t	= typename system_t::jacobian_type;
+  using jacobian_t	= typename system_t::jacobian_type;
 
   // find out which norm to use
   using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
