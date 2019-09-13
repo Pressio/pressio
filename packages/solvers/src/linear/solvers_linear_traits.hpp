@@ -59,6 +59,8 @@
 #include <Eigen/IterativeLinearSolvers>
 #include <Eigen/Householder>
 #include <Eigen/QR>
+#include <Eigen/Sparse>
+#include <Eigen/SparseQR>
 
 // #ifdef HAVE_ARMADILLO
 //   #include "solvers_linear_wrapper_armadillo.hpp"
@@ -121,8 +123,16 @@ struct traits<::pressio::solvers::linear::iterative::LSCG> {
 template <>
 struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
 
+  // if the native matrix is sparse, then use Eigen::SparseQR
+  // if matrix is dense, use Eigen::ColPivHouseholderQR.
+  // the SparseQR does the same thing as ColPivHouseholderQR for sparse matrices
   template <typename MatrixT>
-  using eigen_solver_type = Eigen::ColPivHouseholderQR<MatrixT>;
+  using eigen_solver_type =
+    std::conditional<
+      pressio::containers::meta::is_sparse_matrix_eigen<MatrixT>::value,
+      Eigen::SparseQR<MatrixT>,
+      Eigen::ColPivHouseholderQR<MatrixT>
+      >::type;
 
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
