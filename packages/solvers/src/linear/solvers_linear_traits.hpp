@@ -61,6 +61,7 @@
 #include <Eigen/QR>
 #include <Eigen/Sparse>
 #include <Eigen/SparseQR>
+#include <Eigen/OrderingMethods>
 
 // #ifdef HAVE_ARMADILLO
 //   #include "solvers_linear_wrapper_armadillo.hpp"
@@ -123,14 +124,21 @@ struct traits<::pressio::solvers::linear::iterative::LSCG> {
 template <>
 struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
 
-  // if the native matrix is sparse, then use Eigen::SparseQR
-  // if matrix is dense, use Eigen::ColPivHouseholderQR.
-  // the SparseQR does the same thing as ColPivHouseholderQR for sparse matrices
+  /* if matrix is dense, use Eigen::ColPivHouseholderQR.
+   * if the native matrix is sparse, then use Eigen::SparseQR.
+   * to use SparseQR, the matrix has to be:
+   * (a) sparse
+   * (b) column-major
+   * (c) compressed mode to use COLAMDOrdering
+	Note that by default, pressio::container::Matrix wrapper of Eigen::SparseMatrix
+	always compresses the matrix.
+  */
   template <typename MatrixT>
   using eigen_solver_type =
     std::conditional<
-      pressio::containers::meta::is_sparse_matrix_eigen<MatrixT>::value,
-      Eigen::SparseQR<MatrixT>,
+      pressio::containers::meta::is_sparse_matrix_eigen<MatrixT>::value &&
+      MatrixT::IsRowMajor==0,
+      Eigen::SparseQR<MatrixT, Eigen::COLAMDOrdering<typename MatrixT::StorageIndex>>,
       Eigen::ColPivHouseholderQR<MatrixT>
       >::type;
 
