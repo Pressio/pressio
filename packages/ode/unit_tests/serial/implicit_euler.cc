@@ -119,8 +119,8 @@ TEST(ode_implicit_euler, guesserLambda){
   pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
-  auto testLambda = [](size_t step, double time, state_t & y){
-  		      y[0] = -20.; y[1] = -20.; y[2] = -20.; };
+  auto testLambda = [](size_t step, double time, state_t & yIn){
+  		      yIn[0] = -20.; yIn[1] = -20.; yIn[2] = -20.; };
 
   int nSteps = 1;
   double dt = 0.01;

@@ -78,23 +78,23 @@ public:
     y << 1., 2., 3.;
   }
 
-  void velocity(const state_type & y, 
+  void velocity(const state_type & yIn, 
     scalar_type t, velocity_type & R) const{
-    assert(y.size()==3);
-    R = -10. * y;
+    assert(yIn.size()==3);
+    R = -10. * yIn;
   };
   //--------------------------------------------
 
-  velocity_type velocity(const state_type & y,
+  velocity_type velocity(const state_type & yIn,
 			 scalar_type t) const{
-    velocity_type R(y);
+    velocity_type R(yIn);
     assert(R.size()==3);
-    velocity(y, t, R);
+    velocity(yIn, t, R);
     return R;
   };
   //--------------------------------------------
 
-  void jacobian(const state_type & y,
+  void jacobian(const state_type & yIn,
 		scalar_type t, jacobian_type & JJ) const{
     assert( JJ.rows() == 3 ); assert( JJ.cols() == 3 );
 
@@ -107,17 +107,18 @@ public:
   };
   //--------------------------------------------
 
-  jacobian_type jacobian(const state_type & y,
+  jacobian_type jacobian(const state_type & yIn,
 			 scalar_type t) const{
     jacobian_type JJ(3,3);
-    jacobian(y, t, JJ);
+    jacobian(yIn, t, JJ);
     return JJ;
   };
   //--------------------------------------------
 
   void analyticAdvanceBackEulerNSteps(double dt, int n){
     double den = 1.0 + 10.*dt;
-    for (int i=1; i!=n+1; i++){
+    for (int i=1; i!=n+1; i++)
+    {
       y_nm1 = y;
       y[0] = y[0]/den;
       y[1] = y[1]/den;
