@@ -61,8 +61,9 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
 
   // linear system
   using lin_solver_t = iterative::EigenIterative<linear::iterative::LSCG, jacobian_t>;
+  lin_solver_t linearSolverObj;
   // nonlinear system
-  NewtonRaphson<scalar_t, lin_solver_t> solver;
+  NewtonRaphson<scalar_t, lin_solver_t> solver(linearSolverObj);
 
   // my solution vector
   state_t y(2);
