@@ -50,6 +50,8 @@
 #define UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
 
 #include <fstream>
+#include <vector>
+#include <cassert>
 
 namespace pressio{ namespace utils{
 
