@@ -5,7 +5,7 @@ set -e
 source bash_colors.sh
 
 # check cmd line args
-if [ "$#" -ne 2 ]; then
+if [ "$#" -lt 2 ]; then
   echo "usage: $0 <target-dir> <license-template-file> [extension]"
   exit 1
 fi
@@ -16,7 +16,8 @@ licensefile=$2
 
 if [ "$#" -gt 2 ];
 then
-  pattern=$3
+  ext=$3
+  pattern="*.${ext}"
 else
   pattern='*.hpp'
 fi
