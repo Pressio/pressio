@@ -168,7 +168,8 @@ struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, m, n, void, Q_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value
+      containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value or
+      containers::meta::is_multi_vector_wrapper_eigen<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>{
 
