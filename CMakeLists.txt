@@ -57,8 +57,8 @@ if (${CMAKE_CXX_STANDARD} EQUAL "14")
   set(HAVE_CPP14 ON)
 endif()
 
-if( CMAKE_BUILD_TYPE STREQUAL "DEBUG" )
-  message( "CMAKE_BUILD_TYPE==DEBUG so DEBUG_PRINT=ON" )
+if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+  message( "CMAKE_BUILD_TYPE==Debug so DEBUG_PRINT=ON" )
   set(DEBUG_PRINT ON)
 endif()
 
