@@ -94,10 +94,10 @@ public:
   typename std::conditional<
     mpl::is_same<ud_ops, pybind11::object>::value,
     ud_ops,
-    const ud_ops &
+    const ud_ops *
     >::type udOps_ = {};
 #else
-    const ud_ops & udOps_ = {};
+    const ud_ops * udOps_ = {};
 #endif
 
 
@@ -138,7 +138,7 @@ public:
     : fom_states_data(fomStates),
       fom_rhs_data(fomResids),
       fom_eval_rhs_policy(fomEvalRhsFunctor),
-      udOps_{udOps}{
+      udOps_{&udOps}{
     static_assert( !std::is_void<_ud_ops>::value, "");
   }
 

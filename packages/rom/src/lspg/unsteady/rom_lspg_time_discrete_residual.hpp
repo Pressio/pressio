@@ -71,9 +71,9 @@ void time_discrete_residual(const state_type & yn,
 			    const std::array<state_type,n> & ynm,
 			    state_type & R,
 			    scalar_type dt,
-			    const ud_ops & udOps){
+			    const ud_ops * udOps){
 
-  udOps.time_discrete_euler(*R.data(), *yn.data(), *ynm[0].data(), dt);
+  udOps->time_discrete_euler(*R.data(), *yn.data(), *ynm[0].data(), dt);
 }
 
 #ifdef HAVE_PYBIND11
