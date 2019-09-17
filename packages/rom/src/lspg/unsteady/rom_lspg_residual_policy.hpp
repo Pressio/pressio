@@ -94,10 +94,10 @@ public:
   typename std::conditional<
     mpl::is_same<ud_ops, pybind11::object>::value,
     ud_ops,
-    const ud_ops *
+    const ud_ops &
     >::type udOps_ = {};
-#else 
-    const ud_ops * udOps_ = {};
+#else
+    const ud_ops & udOps_ = {};
 #endif
 
 
@@ -105,7 +105,7 @@ public:
   LSPGResidualPolicy() = delete;
   ~LSPGResidualPolicy() = default;
 
-  // this cnstr only enabled when udOps is void
+  // cnstr enabled when udOps is void
   template <
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
@@ -121,14 +121,14 @@ public:
     static_assert( std::is_void<_ud_ops>::value, "");
   }
 
-  // this cnstr only enabled when udOps is non-void and not python
+  // cnstr enabled when udOps is non-void and not python
   template <
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value 
+      !std::is_void<_ud_ops>::value
 #ifdef HAVE_PYBIND11
       and mpl::not_same<_ud_ops, pybind11::object>::value
-#endif      
+#endif
       > * = nullptr
     >
   LSPGResidualPolicy(const fom_states_data & fomStates,
@@ -138,12 +138,12 @@ public:
     : fom_states_data(fomStates),
       fom_rhs_data(fomResids),
       fom_eval_rhs_policy(fomEvalRhsFunctor),
-      udOps_{&udOps}{
+      udOps_{udOps}{
     static_assert( !std::is_void<_ud_ops>::value, "");
   }
 
 #ifdef HAVE_PYBIND11
-  // this cnstr only enabled when udOps is non-void and python
+  // cnstr enabled when udOps is non-void and python
   template <
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
@@ -160,7 +160,7 @@ public:
       udOps_{udOps}
   {}
 #endif
-  
+
 
 public:
   template <ode::ImplicitEnum odeMethod,
@@ -194,8 +194,8 @@ public:
     return fomRhs_;
   }
 
-private:
 
+private:
   template <
     ode::ImplicitEnum odeMethod,
     int n,
@@ -211,8 +211,8 @@ private:
 				const std::array<state_t,n>	& yFomOld,
 				residual_t			& romR,
 				scalar_t			dt) const{
-    rom::impl::time_discrete_residual
-    <odeMethod, maxNstates_>(yFom, yFomOld, romR, dt);
+    using namespace ::pressio::rom::impl;
+    time_discrete_residual<odeMethod, maxNstates_>(yFom, yFomOld, romR, dt);
   }
 
   template <
@@ -230,8 +230,8 @@ private:
 				const std::array<state_t,n>	& yFomOld,
 				residual_t			& romR,
 				scalar_t			dt) const{
-    rom::impl::time_discrete_residual
-      <odeMethod, maxNstates_>(yFom, yFomOld, romR, dt, udOps_);
+    using namespace ::pressio::rom::impl;
+    time_discrete_residual<odeMethod, maxNstates_>(yFom, yFomOld, romR, dt, udOps_);
   }
 
   template <ode::ImplicitEnum odeMethod,
