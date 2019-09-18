@@ -92,7 +92,7 @@ struct GNQRSpecializationPicker{
   		"The line search type for GN cannot be void");
 
 
-  // check if sequence contains a valid default convergence
+  // check if sequence contains a valid convergence method
   using ic5 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::solvers::meta::is_legitimate_convergence_tag, Args...>;
   // store the type

@@ -154,6 +154,15 @@ struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_ty
   using impl_t = impl::QRHouseholderDenseEigenMatrixWrapper<matrix_t, R_t, n, m, Q_type>;
 };
 
+template <typename matrix_t, typename R_t,
+	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
+struct impl_class_helper<matrix_t, qr::Householder, R_t, n, m, wrap_Q_type, Q_type,
+			 ::pressio::mpl::enable_if_t<
+			   containers::meta::is_multi_vector_wrapper_eigen<matrix_t>::value
+			   >>{
+  using impl_t = impl::QRHouseholderEigenMultiVectorWrapper<matrix_t, R_t, n, m, Q_type>;
+};
+
 
 /*
  * specialize for:
@@ -168,7 +177,8 @@ struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, m, n, void, Q_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value
+      containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value or
+      containers::meta::is_multi_vector_wrapper_eigen<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>{
 

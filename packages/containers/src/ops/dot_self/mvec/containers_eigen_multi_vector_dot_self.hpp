@@ -71,9 +71,20 @@ void dot_self(const mvec_t & A,
 {
   // // how many vectors are in A
   // auto numVecsA = A.numVectors();
-  // // auto const & Adata = *A.data();
+  // auto const & Adata = *A.data();
   // assert(C.rows() == numVecsA);
   // assert(C.cols() == numVecsA);
+
+  // // A dot A = A^T*A, which yields a symmetric matrix
+  // // only need to compute half and fill remaining entries accordingly
+  // for (auto i=0; i<numVecsA; i++){
+  //   for (auto j=i; j<numVecsA; j++)
+  //   {
+  //     C(i,j) = A.data()->col(i).dot(A.data()->col(j));
+  //     // fill the lower triangular part
+  //     C(j,i) = C(i,j);
+  //   }
+  // }
 
   *C.data() = A.data()->transpose() * (*A.data());
 }

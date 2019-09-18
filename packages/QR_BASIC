@@ -69,6 +69,7 @@
 #include "qr/src/impl/qr_tpetra_block_multi_vector_tsqr_impl.hpp"
 
 #include "qr/src/impl/qr_eigen_dense_matrix_out_of_place_impl.hpp"
+#include "qr/src/impl/qr_eigen_multi_vector_out_of_place_impl.hpp"
 #include "qr/src/qr_rfactor_solve_impl.hpp"
 
 #include "qr/src/qr_out_of_place.hpp"

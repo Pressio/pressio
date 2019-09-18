@@ -81,6 +81,16 @@ template<
   typename enable= void>
 class QRHouseholderDenseEigenMatrixWrapper;
 
+template<
+  typename matrix_type,
+  typename R_t = void,
+  int n = utils::constants::dynamic,
+  int m = utils::constants::dynamic,
+  template <typename...> class Q_type
+	= containers::MultiVector,
+  typename enable= void>
+class QRHouseholderEigenMultiVectorWrapper;
+
 #if defined HAVE_TRILINOS
 template<typename matrix_t,
 	 typename R_t,
