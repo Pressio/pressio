@@ -7,7 +7,7 @@ Pressio is a collection of projects providing reduced-order models (ROMs) capabi
 Pressio is released with the following [LICENSE](./LICENSE).
 
 ## Cloning
-To clone this repo, use this command:
+To clone `pressio`, use this command:
 ```
 git clone --recursive https://github.com/Pressio/pressio.git
 ```
