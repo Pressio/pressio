@@ -14,10 +14,7 @@ TriBITS (https://tribits.org/) provides the building framework for Pressio.
 ### Configuring and Building
 Configuring and building Pressio can be done in two ways: 
 
-* by clonig and using the following helper repo:
-```
-git clone https://github.com/Pressio/pressio-builder.git
-```
+* by clonig and using the following helper repo: `git clone https://github.com/Pressio/pressio-builder.git`
 
 * since Pressio uses CMake, you can use typical a CMake configure/build/install process. 
 
