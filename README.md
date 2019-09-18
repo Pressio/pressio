@@ -12,7 +12,7 @@ To clone this repo, use this command:
 git clone --recursive https://github.com/Pressio/pressio.git
 ```
 The recursive option is necessary to clone a git submodule for TriBITS.
-TriBITS (https://tribits.org/) provides the building framework for Pressio.
+TriBITS (https://tribits.org/) provides the development framework for Pressio.
 
 ## Configuring and Building
 Configuring and building Pressio can be done in two ways: 
