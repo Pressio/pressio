@@ -77,7 +77,7 @@ struct traits<
   Vector<
     wrapped_type,
     mpl::enable_if_t<
-      !containers::meta::is_vector_eigen<wrapped_type>::value      
+      !containers::meta::is_vector_eigen<wrapped_type>::value
 #ifdef HAVE_ARMADILLO
       and !containers::meta::is_vector_armadillo<wrapped_type>::value
 #endif
@@ -85,11 +85,11 @@ struct traits<
       and !containers::meta::is_dynamic_vector_blaze<wrapped_type>::value
 #endif
 #ifdef HAVE_KOKKOS
-      and !containers::meta::is_vector_kokkos<wrapped_type>::value 
-#endif     
+      and !containers::meta::is_vector_kokkos<wrapped_type>::value
+#endif
 #ifdef HAVE_TRILINOS
-      and !containers::meta::is_vector_epetra<wrapped_type>::value 
-      and !containers::meta::is_dense_vector_teuchos<wrapped_type>::value 
+      and !containers::meta::is_vector_epetra<wrapped_type>::value
+      and !containers::meta::is_dense_vector_teuchos<wrapped_type>::value
       and !containers::meta::is_vector_tpetra_block<wrapped_type>::value
       and !containers::meta::is_vector_tpetra<wrapped_type>::value
 #endif
@@ -466,6 +466,13 @@ struct traits<Vector<wrapped_type,
   using memory_traits	   = typename wrapped_type::traits::memory_traits;
   using host_mirror_space  = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t      = typename wrapped_type::host_mirror_type;
+
+  static constexpr bool has_host_execution_space =
+    (std::is_same<execution_space, Kokkos::Serial>::value
+     #ifdef KOKKOS_ENABLE_OPENMP
+     || std::is_same<execution_space, Kokkos::OpenMP>::value
+     #endif
+     );
 };
 #endif
 
