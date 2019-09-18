@@ -1,7 +1,7 @@
 
 # Pressio
 
-Pressio is a library providing reduced-order models (ROMs) capabilties.
+Pressio is a collection of projects providing reduced-order models (ROMs) capabilties.
 
 ## License
 Pressio is released with the following [LICENSE](./LICENSE).
