@@ -165,6 +165,15 @@ struct traits<::pressio::solvers::linear::direct::getrs> {
   static constexpr bool eigen_enabled = false;
   static constexpr bool kokkos_enabled = true;
 };
+
+template <>
+struct traits<::pressio::solvers::linear::direct::geqrf> {
+
+  static constexpr bool direct = true;
+  // for now, disable eigen, enable it later
+  static constexpr bool eigen_enabled = false;
+  static constexpr bool kokkos_enabled = true;
+};
 #endif
 
 

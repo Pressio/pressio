@@ -53,10 +53,17 @@
 #include "solvers_convergence_tags.hpp"
 #include "solvers_line_search_tags.hpp"
 
-namespace pressio{ namespace solvers{ namespace iterative{
+namespace pressio{ namespace solvers{
 
-/* impl should not be called by the user */
-namespace impl{
+namespace direct{
+
+template<typename SolverT, typename MatrixT, typename enable = void>
+class KokkosDirect;
+
+}//end namespace pressio::solvers::direct
+
+
+namespace iterative{ namespace impl{
 
 template <
   typename system_t,
@@ -114,7 +121,6 @@ template <
 struct PyGaussNewton;
 #endif
 
-
 namespace hacked{
 
 /* solver for conservative ROM */
@@ -132,6 +138,8 @@ class GaussNewtonConservative;
 
 }//end namespace pressio::solvers::iterative::hacked
 
-}}}//end namespace pressio::solvers::iterative
+}//end namespace pressio::solvers::iterative
+
+}}//end namespace pressio::solvers
 
 #endif
