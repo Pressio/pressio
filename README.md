@@ -23,4 +23,4 @@ Configuring and building Pressio can be done in two ways:
 
 The advantage of using the helper repo is that it automates the installation of TPLs. 
 
-
+This document is in progress, more detailed info to come soon.
