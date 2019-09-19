@@ -67,7 +67,7 @@ The advantage of using the helper repo is that it automates the installation of 
 This wiki will be updated over time, but to get started, we provide here basic references 
 to configure `pressio` and build its tests for target scenarios. 
 
-* For a serial build using only Gtest, Eigen: [here](./wiki/serial_build.md)
+* For a serial build using only Gtest, Eigen: [here](./wiki/build_serial.md)
 
 
 
