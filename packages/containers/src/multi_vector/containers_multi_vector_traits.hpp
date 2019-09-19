@@ -74,13 +74,13 @@ struct traits<
     mpl::enable_if_t<
       !containers::meta::is_dynamic_multi_vector_eigen<wrapped_type>::value
 #ifdef HAVE_TRILINOS
-      and 
+      and
       !containers::meta::is_multi_vector_epetra<wrapped_type>::value and
       !containers::meta::is_multi_vector_tpetra_block<wrapped_type>::value and
       !containers::meta::is_multi_vector_tpetra<wrapped_type>::value
 #endif
 #ifdef HAVE_KOKKOS
-      and      
+      and
       !containers::meta::is_multi_vector_kokkos<wrapped_type>::value
 #endif
       >
@@ -294,6 +294,14 @@ struct traits<
   using memory_traits	  = typename wrapped_type::traits::memory_traits;
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
+
+  static constexpr bool has_host_execution_space =
+    (std::is_same<execution_space, Kokkos::Serial>::value
+     #ifdef KOKKOS_ENABLE_OPENMP
+     || std::is_same<execution_space, Kokkos::OpenMP>::value
+     #endif
+     );
+
 };
 #endif
 

@@ -62,6 +62,7 @@ namespace direct{
 
   #if defined HAVE_TRILINOS or defined HAVE_KOKKOS
   struct getrs{};
+  struct geqrf{};
   #endif
 
   //struct CompleteOrthogonalDecomposition {};

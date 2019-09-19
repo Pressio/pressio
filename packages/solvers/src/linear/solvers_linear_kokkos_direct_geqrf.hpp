@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_linear_kokkos_direct.hpp
+// solvers_linear_kokkos_direct_geqrf.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -47,8 +47,8 @@
 */
 
 #ifdef HAVE_KOKKOS
-#ifndef SOLVERS_LINEAR_KOKKOS_DIRECT_HPP
-#define SOLVERS_LINEAR_KOKKOS_DIRECT_HPP
+#ifndef SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_HPP
+#define SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_HPP
 
 #include "../solvers_ConfigDefs.hpp"
 #include "../base/solvers_linear_base.hpp"
@@ -56,6 +56,7 @@
 #ifdef HAVE_TRILINOS
 #include <Teuchos_LAPACK.hpp>
 #include <Teuchos_SerialDenseSolver.hpp>
+#include <Teuchos_BLAS.hpp>
 #endif
 
 #if defined HAVE_KOKKOS and defined KOKKOS_ENABLE_CUDA
@@ -65,51 +66,29 @@
 
 namespace pressio { namespace solvers { namespace direct{
 
-namespace impl{
-
-template <typename T>
-struct is_host_execution_space : std::false_type{};
-
-#ifdef KOKKOS_ENABLE_SERIAL
-template <>
-struct is_host_execution_space<Kokkos::Serial> : std::true_type{};
-#endif
-
-#ifdef KOKKOS_ENABLE_OPENMP
-template <typename T>
-struct is_host_execution_space<Kokkos::OpenMP> : std::true_type{};
-#endif
-
-}
-
-
-template<typename SolverT, typename MatrixT, typename enable = void>
-class KokkosDirect;
-
-/* GETRS */
-template<typename SolverT, typename MatrixT>
-class KokkosDirect<
-  SolverT, MatrixT,
-  mpl::enable_if_t<
-    mpl::is_same<SolverT, ::pressio::solvers::linear::direct::getrs>::value
-    >
+template<typename MatrixT>
+class KokkosDirect<::pressio::solvers::linear::direct::geqrf, MatrixT>
+  : public LinearBase<
+  ::pressio::solvers::linear::direct::geqrf,
+  MatrixT,
+  KokkosDirect<::pressio::solvers::linear::direct::geqrf, MatrixT>
   >
-  : public LinearBase<SolverT, MatrixT, KokkosDirect<SolverT, MatrixT>>
 {
 public:
   static_assert( ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
   		 ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<MatrixT>::value,
   		 "Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
 
-  using this_t          = KokkosDirect<SolverT, MatrixT>;
-  using solver_t	= SolverT;
+  using solver_t	= ::pressio::solvers::linear::direct::geqrf;
+  using this_t          = KokkosDirect<solver_t, MatrixT>;
   using matrix_type	= MatrixT;
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
   using exe_space       = typename containers::details::traits<MatrixT>::execution_space;
 
-  using base_t  = LinearBase<SolverT, MatrixT, this_t>;
-  using solver_traits   = linear::details::traits<SolverT>;
+  using base_t  = LinearBase<solver_t, MatrixT, this_t>;
+  friend base_t;
+  using solver_traits   = linear::details::traits<solver_t>;
 
   static_assert( solver_traits::kokkos_enabled == true,
   		 "the native solver must suppport kokkos to use in KokkosDirect");
@@ -117,6 +96,7 @@ public:
   		 "the native solver must be direct to use in KokkosDirect");
 
 public:
+
   KokkosDirect(){
 #ifdef KOKKOS_ENABLE_CUDA
     auto cusolverStatus = cusolverDnCreate(&cuDnHandle_);
@@ -133,21 +113,19 @@ public:
 #endif
   }
 
+
 private:
 
-
-// because this uses teuchos lapack wrapper
 #ifdef HAVE_TRILINOS
   /*
    * enable if:
    * the matrix has layout left (i.e. column major)
    * T is a kokkos vector wrapper
-   * has host execution space
+   * T has host execution space
    * T and MatrixT have same execution space
    */
   template <
     typename _MatrixT = MatrixT,
-    typename _SolverT = SolverT,
     typename T,
     mpl::enable_if_t<
       mpl::is_same<
@@ -157,9 +135,7 @@ private:
       and
       ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
       and
-      ::pressio::solvers::direct::impl::is_host_execution_space<
-	typename containers::details::traits<T>::execution_space
-	>::value
+      ::pressio::containers::details::traits<T>::has_host_execution_space
       and
       mpl::is_same<
 	typename containers::details::traits<T>::execution_space,
@@ -167,7 +143,8 @@ private:
 	>::value
       > * = nullptr
   >
-  void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
+  void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y)
+  {
     assert(A.rows() == b.size() );
     assert(A.cols() == y.size() );
     // gerts is for square matrices
@@ -179,125 +156,73 @@ private:
     // just use n, since rows == cols
     const auto n = A.rows();
 
+    // to store the return code of the function
     int info = 0;
-    const int ipivSz = n;
-    std::vector<int> ipiv(ipivSz);
 
-    // LU factorize using GETRF
-    lpk_.GETRF(n, n, A.data()->data(), n, ipiv.data(), &info);
+    if (tau_.size() != n)
+      tau_.resize(n);
+
+    if (lwork_ == -1){
+      // this means we need to query what lwork should be
+      // and resize the work array "work_" properly
+      lpk_.GEQRF(n, n, A.data()->data(), n, tau_.data(), work_.data(), lwork_, &info);
+      work_.resize(work_[0]);
+      lwork_ = work_[0];
+    }
+    // do QR
+    lpk_.GEQRF(n, n, A.data()->data(), n, tau_.data(), work_.data(), lwork_, &info);
     assert(info == 0);
+    // std::cout << " info " << info
+    // 	      << " lwork " << lwork_
+    // 	      << " workSz " << work_.size() << std::endl;
 
-    // we need to deep copy b into y and pass y
-    // because getrs
-    // overwrite the RHS in place with the solution
+    // Note that A is overwritten starting from here!
+
+    // we need to deep copy b into y and pass y to ormqr
+    // because it is overwritten with Q^T b
     Kokkos::deep_copy(*y.data(), *b.data());
 
-    const char ct = 'N';
-    lpk_.GETRS(ct, n, nRhs,
-	       A.data()->data(),
-	       n, ipiv.data(),
-	       y.data()->data(),
-	       y.size(),
-	       &info);
-    assert(info == 0);
+    // compute Q^T b
+    const char side = 'L';
+    const char trans = 'T';
+    lpk_.ORMQR(side, trans, n, nRhs, n,
+    	       A.data()->data(),
+    	       n,
+    	       tau_.data(),
+    	       y.data()->data(),
+    	       n,
+    	       work_.data(),
+    	       lwork_,
+    	       &info);
+    //std::cout << " info-ormqr " << info << std::endl;
+
+    // solver R y = Q^T b
+    const char uplo = 'U';
+    const char diag = 'N';
+    constexpr scalar_t alpha = ::pressio::utils::constants::one<scalar_t>();
+    blas_.TRSM(Teuchos::ESide::LEFT_SIDE,
+    	       Teuchos::EUplo::UPPER_TRI,
+    	       Teuchos::ETransp::NO_TRANS,
+    	       Teuchos::EDiag::NON_UNIT_DIAG,
+    	       n, nRhs, alpha,
+    	       A.data()->data(), n, y.data()->data(), n);
   }
 #endif
 
 
-#if defined HAVE_KOKKOS and defined KOKKOS_ENABLE_CUDA
-  /*
-   * enable if:
-   * the matrix has layout left (i.e. column major)
-   * T is a kokkos vector wrapper
-   * has CUDA execution space
-   * T and MatrixT have same execution space
-   */
-  template <
-    typename _MatrixT = MatrixT,
-    typename _SolverT = SolverT,
-    typename T,
-    mpl::enable_if_t<
-      mpl::is_same<
-	typename ::pressio::containers::details::traits<_MatrixT>::layout,
-	Kokkos::LayoutLeft
-	>::value
-      and
-      ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
-      and
-      mpl::is_same<
-	typename containers::details::traits<T>::execution_space,
-	Kokkos::Cuda
-	>::value
-      and
-      mpl::is_same<
-	typename containers::details::traits<T>::execution_space,
-	typename containers::details::traits<_MatrixT>::execution_space
-      >::value
-      > * = nullptr
-  >
-  void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
-    assert(A.rows() == b.size() );
-    assert(A.cols() == y.size() );
-    // gerts is for square matrices
-    assert(A.rows() == A.cols() );
-
-    // only one rhs because this is only enabled if T is a vector wrapper
-    constexpr int nRhs = 1;
-
-    // n = nRows = nCols: because it is square matrix
-    const auto n = A.rows();
-
-    cusolverStatus_t cusolverStatus;
-    //cusolverDnHandle_t handle;
-    cudaError cudaStatus;
-    int Lwork = 0;
-
-    // cuDnHandle already created in constructor
-
-    // compute buffer size and prep.memory
-    cusolverStatus = cusolverDnDgetrf_bufferSize(cuDnHandle_, n, n,
-						 A.data()->data(),
-						 n, &Lwork);
-    assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
-
-    // for now, working buffers are stored as Kokkos arrays but
-    // maybe later we can use directly cuda allocations
-    using k1d_d = Kokkos::View<scalar_t*, Kokkos::LayoutLeft, exe_space>;
-    using k1di_d = Kokkos::View<int*, Kokkos::LayoutLeft, exe_space>;
-    ::pressio::containers::Vector<k1d_d> work_d("d_work", Lwork);
-    ::pressio::containers::Vector<k1di_d> pivot_d("d_pivot", n);
-    ::pressio::containers::Vector<k1di_d> info_d("d_info", 1);
-
-    cusolverStatus = cusolverDnDgetrf(cuDnHandle_, n, n,
-    				      A.data()->data(),
-    				      n,
-    				      work_d.data()->data(),
-    				      pivot_d.data()->data(),
-    				      info_d.data()->data());
-    assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
-
-    // we need to deep copy b into y and pass y
-    // because getrs
-    // overwrite the RHS in place with the solution
-    Kokkos::deep_copy(*y.data(), *b.data());
-
-    cusolverStatus = cusolverDnDgetrs(cuDnHandle_, CUBLAS_OP_N,
-    				      n, nRhs,
-    				      A.data()->data(), n,
-    				      pivot_d.data()->data(),
-    				      y.data()->data(), n,
-    				      info_d.data()->data());
-    assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
-
-    // make sure the solver kernel is done before exiting
-    cudaStatus = cudaDeviceSynchronize();
-  }
-#endif
-
-  friend base_t;
+private:
 
 #ifdef HAVE_TRILINOS
   Teuchos::LAPACK<int, scalar_t> lpk_;
+  Teuchos::BLAS<int, scalar_t> blas_;
+
+  // lwork is used for the geqrf, but if you read the doc,
+  // if lwork == -1, then geqrf does a query of what is needed.
+  // more details are shown in the code above on how we use lwork
+  int lwork_ = -1;
+
+  std::vector<scalar_t> work_ = {0};
+  std::vector<scalar_t> tau_ = {};
 #endif
 
 #if defined HAVE_KOKKOS and defined KOKKOS_ENABLE_CUDA
