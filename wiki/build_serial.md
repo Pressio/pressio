@@ -70,3 +70,13 @@ From the same directory, i.e. `${PRESSIO_REPOS}/pressio-builder`, run the comman
 ```
 To learn more about the script's command line args, type `./main_pressio.sh -h`.
 
+<!---------------------------------------------------->
+## 5. Running the tests in `pressio`
+To run the tests, you can follow this: 
+```bash
+${PRESSIO_BUILDS}/pressio/build
+ctest 
+```
+
+
+
