@@ -1,5 +1,5 @@
 
-# Serial Building and Running of `pressio`'s Tests 
+# Building and Running Serially `pressio`'s Tests 
 This step-by-step page explains how to build the ROM tests in `pressio` from scratch on Unix.
 
 *Disclaimer*: the guide below does **not** assume you are a Unix/CS/coding ninja, rather the opposite. It is written with the goal to provide a complete and detailed guide without taking any step for granted. As such, if you are a Unix/CS/coding ninja, some steps will be obvious to you, so please do not get offended!
