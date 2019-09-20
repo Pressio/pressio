@@ -11,7 +11,7 @@ struct MyApp{
 
 public:
   void velocity(const state_type & y,
-		scalar_type t, 
+		scalar_type t,
     velocity_type & R) const{
     R[0] = -10. * y[0];
     R[1] = -10. * y[1];
@@ -93,9 +93,9 @@ TEST(ode_explicit_rk4, userDefinedOps){
   double dt = 0.1;
   ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
   {
-    auto yptr = y.data();
-    EXPECT_DOUBLE_EQ( (*yptr)[0], 0.375);
-    EXPECT_DOUBLE_EQ( (*yptr)[1], 0.75);
-    EXPECT_DOUBLE_EQ( (*yptr)[2], 1.125);
+    auto yptr2 = y.data();
+    EXPECT_DOUBLE_EQ( (*yptr2)[0], 0.375);
+    EXPECT_DOUBLE_EQ( (*yptr2)[1], 0.75);
+    EXPECT_DOUBLE_EQ( (*yptr2)[2], 1.125);
   }
 }
