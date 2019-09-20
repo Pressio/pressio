@@ -10,7 +10,7 @@ In order for the steps below to be successful, you need:
 * C/C++ compilers: either Clang or GNU.
 The current version of the tutorials does NOT need MPI. But if you have MPI compiler wrappers, you can use those to build.
 
-* CMake, minimun version 2.8.12.
+* CMake, minimun version 3.11.0
 
 
 ## 1. Prep
