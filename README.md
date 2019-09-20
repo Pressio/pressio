@@ -10,11 +10,12 @@ Specifically, the whole Pressio framework currently includes the following repos
 
 * `pressio-builder`: an auxiliary repo with bash helper scripts for configuring/building/installing `pressio`, and `pressio-tutorials`.
 
-
+==================================================================
 ## License
 Pressio is released with the following [LICENSE](./LICENSE).
 
 
+==================================================================
 ## Cloning
 To clone `pressio` (provided you have Git) use:
 ```
@@ -24,6 +25,7 @@ The recursive option is necessary to clone a git submodule for TriBITS.
 TriBITS (https://tribits.org/) provides the development framework for Pressio.
 
 
+==================================================================
 ## Structure 
 
 `pressio` is the main code repository and currently includes the following packages: 
@@ -52,10 +54,12 @@ The top-down order used above is informative of the packages' dependency structu
 * Selective usability: This modular framework allows users, if needed, to leverage invidual packages (similarly to Trilinos). For instance, if a user needs/wants just the QR methods, they simply use that package, and all the dependencies are enabled automatically.
 
 
+==================================================================
 ## TPLs
 At the time of this writing, `pressio` has only one required dependency, namely Eigen, and a few **optional** ones, namely Gtest, Pybind11, Trilinos, Kokkos, Armadillo, Blas, Lapack, Blaze. This set of TPLs will liekly increase over time as we add support for more external packages, e.g. Petsc. However, one of the key çhoices is that we will keep most dependencies optional.
 
 
+==================================================================
 ## Configuring and Building
 Configuring and building `pressio` can be done in two ways: 
 
@@ -71,6 +75,7 @@ This wiki will be updated over time, but to get started, we provide here basic r
 * For a *serial* build using only Gtest, Eigen please read [here](./wiki/build_serial.md)
 
 
+==================================================================
 ## Disclaimer
 
 * Pressio is work-in-progress. At the time of this writing, it is a fairly young project and things are obviously evolving. Several package would benefit from substantial work on testing and documentation, and this is ongoing. However, `pressio` is functional and has been already tested/deployed on large-scale applications.
