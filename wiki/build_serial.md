@@ -7,7 +7,7 @@ This step-by-step page explains how to build a few of the ROM tests in `pressio`
 ## Prerequisites
 In order for the steps below to be successful, you need:
 
-* C/C++ compilers: either Clang or GNU.
+* C and C++11 compilers: either Clang or GNU.
 The current version of the tutorials does NOT need MPI. But if you have MPI compiler wrappers, you can use those to build;
 
 * CMake >= 3.11.0 (this is known to work, soon we will provide a detailed list of verified versions);
