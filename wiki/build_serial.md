@@ -1,6 +1,6 @@
 
-# Building andr unning serially some target tests in `pressio`
-This step-by-step page explains how to build the ROM tests in `pressio` from scratch on Unix.
+# Build/run serially some target tests in `pressio`
+This step-by-step page explains how to build a few of the ROM tests in `pressio` from scratch on Unix.
 
 *Disclaimer*: the guide below does **not** assume you are a Unix/CS/coding ninja, rather the opposite. It is written with the goal to provide a complete and detailed guide without taking any step for granted. As such, if you are a Unix/CS/coding ninja, some steps will be obvious to you, so please do not get offended!
 
@@ -8,9 +8,11 @@ This step-by-step page explains how to build the ROM tests in `pressio` from scr
 In order for the steps below to be successful, you need:
 
 * C/C++ compilers: either Clang or GNU.
-The current version of the tutorials does NOT need MPI. But if you have MPI compiler wrappers, you can use those to build.
+The current version of the tutorials does NOT need MPI. But if you have MPI compiler wrappers, you can use those to build;
 
-* CMake, minimun version 2.8.12.
+* CMake >= 3.11.0 (this is known to work, soon we will provide a detailed list of verified versions);
+
+* Bash >= 3.2.57 (this is known to work, soon we will provide a detailed list of verified versions).
 
 
 ## 1. Prep
@@ -51,7 +53,7 @@ git clone --recursive git@github.com:Pressio/pressio.git
 We only need Eigen and Gtest (for now), so you can simply run the command:
 ```bash
 cd ${PRESSIO_REPOS}/pressio-builder
-./main_tpls.sh -dryrun=0 -tpls=eigen,gtest -target-dir=${PRESSIO_BUILDS}
+./main_tpls.sh -dryrun=no -tpls=eigen,gtest -target-dir=${PRESSIO_BUILDS}
 ```
 To learn more about the script's command line args, type `./main_tpls.sh -h`.
 
@@ -60,7 +62,7 @@ To learn more about the script's command line args, type `./main_tpls.sh -h`.
 From the same directory, i.e. `${PRESSIO_REPOS}/pressio-builder`, run the command:
 ```bash
 ./main_pressio.sh \
-	-dryrun=0 \
+	-dryrun=no \
 	-pressio-src=${PRESSIO_REPOS}/pressio \
 	-target-dir=${PRESSIO_BUILDS} \
 	-gtest-path=${PRESSIO_BUILDS}/gtest/install \
@@ -74,7 +76,7 @@ To learn more about the script's command line args, type `./main_pressio.sh -h`.
 ## 5. Running the tests in `pressio`
 To run the tests, you can follow this: 
 ```bash
-${PRESSIO_BUILDS}/pressio/build
+cd ${PRESSIO_BUILDS}/pressio/build
 ctest 
 ```
 
