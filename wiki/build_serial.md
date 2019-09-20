@@ -51,7 +51,7 @@ git clone --recursive git@github.com:Pressio/pressio.git
 We only need Eigen and Gtest (for now), so you can simply run the command:
 ```bash
 cd ${PRESSIO_REPOS}/pressio-builder
-./main_tpls.sh -dryrun=0 -tpls=eigen,gtest -target-dir=${PRESSIO_BUILDS}
+./main_tpls.sh -dryrun=no -tpls=eigen,gtest -target-dir=${PRESSIO_BUILDS}
 ```
 To learn more about the script's command line args, type `./main_tpls.sh -h`.
 
@@ -60,7 +60,7 @@ To learn more about the script's command line args, type `./main_tpls.sh -h`.
 From the same directory, i.e. `${PRESSIO_REPOS}/pressio-builder`, run the command:
 ```bash
 ./main_pressio.sh \
-	-dryrun=0 \
+	-dryrun=no \
 	-pressio-src=${PRESSIO_REPOS}/pressio \
 	-target-dir=${PRESSIO_BUILDS} \
 	-gtest-path=${PRESSIO_BUILDS}/gtest/install \
