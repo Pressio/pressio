@@ -1,6 +1,6 @@
 
 # Building andr unning serially some target tests in `pressio`
-This step-by-step page explains how to build the ROM tests in `pressio` from scratch on Unix.
+This step-by-step page explains how to build a few of the ROM tests in `pressio` from scratch on Unix.
 
 *Disclaimer*: the guide below does **not** assume you are a Unix/CS/coding ninja, rather the opposite. It is written with the goal to provide a complete and detailed guide without taking any step for granted. As such, if you are a Unix/CS/coding ninja, some steps will be obvious to you, so please do not get offended!
 
@@ -8,9 +8,11 @@ This step-by-step page explains how to build the ROM tests in `pressio` from scr
 In order for the steps below to be successful, you need:
 
 * C/C++ compilers: either Clang or GNU.
-The current version of the tutorials does NOT need MPI. But if you have MPI compiler wrappers, you can use those to build.
+The current version of the tutorials does NOT need MPI. But if you have MPI compiler wrappers, you can use those to build;
 
-* CMake, minimun version 3.11.0
+* CMake >= 3.11.0 (this is known to work, soon we will provide a detailed list of verified versions);
+
+* Bash >= 3.2.57 (this is known to work, soon we will provide a detailed list of verified versions).
 
 
 ## 1. Prep
@@ -74,7 +76,7 @@ To learn more about the script's command line args, type `./main_pressio.sh -h`.
 ## 5. Running the tests in `pressio`
 To run the tests, you can follow this: 
 ```bash
-${PRESSIO_BUILDS}/pressio/build
+cd ${PRESSIO_BUILDS}/pressio/build
 ctest 
 ```
 
