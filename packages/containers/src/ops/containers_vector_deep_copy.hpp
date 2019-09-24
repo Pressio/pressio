@@ -59,7 +59,8 @@
 namespace pressio{ namespace containers{ namespace ops{
 
 //--------------------------------------------------------------------------
-// enable for wrappers
+// for wrappers, because we overload the = operator
+// and for now we do NOT have view semantics
 //--------------------------------------------------------------------------
 template<
   typename T,

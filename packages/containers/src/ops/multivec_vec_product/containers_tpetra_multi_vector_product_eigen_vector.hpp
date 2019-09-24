@@ -76,14 +76,14 @@ void product(const mvec_type & mvA,
   //zero out result
   C.setZero();
   // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
   // size of vecB
   size_t vecBLen = vecB.size();
   if (vecBLen != size_t(numVecs))
     assert(size_t(numVecs) == vecBLen);
 
   // my number of rows
-  auto myNrows = mvA.localLength();
+  const auto myNrows = mvA.localLength();
 
   // get the wrapped trilinos tpetra multivector
   auto trilD = mvA.data();
@@ -96,8 +96,8 @@ void product(const mvec_type & mvA,
   C.data()->template modify<Kokkos::HostSpace>();
 
   // loop
-  for (decltype(myNrows) i=0; i<myNrows; i++){
-    for (decltype(numVecs) j=0; j<numVecs; j++){
+  for (size_t i=0; i<(size_t)myNrows; i++){
+    for (size_t j=0; j<(size_t)numVecs; j++){
      C2[i] += mv2d(i,j) * vecB[j];
     }
   }

@@ -76,14 +76,14 @@ void product(const mvec_type & mvA,
   //zero out result
   C.setZero();
   // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
   // size of vecB
   size_t vecBLen = vecB.size();
   if (vecBLen != size_t(numVecs))
     assert(size_t(numVecs) == vecBLen);
 
   // my number of rows
-  auto myNrows = mvA.localLength();
+  const auto myNrows = mvA.localLength();
 
   // get the wrapped trilinos tpetra multivector
   auto trilD = mvA.data();

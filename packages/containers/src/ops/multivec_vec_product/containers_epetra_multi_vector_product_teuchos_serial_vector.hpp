@@ -74,13 +74,13 @@ void product(const mvec_type & mvA,
   //zero out result
   C.setZero();
   // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
   // size of vecB
   assert(size_t(numVecs) == size_t(vecB.size()));
   // the data map of the multivector
-  auto mvMap = mvA.getDataMap();
+  const auto mvMap = mvA.getDataMap();
   // my number of rows
-  auto myNrows = mvMap.NumMyElements();
+  const auto myNrows = mvMap.NumMyElements();
 
   // loop
   for (decltype(myNrows) i=0; i<myNrows; i++){
@@ -107,7 +107,7 @@ product(const mvec_type & mvA, const vec_type & vecB) {
   // we interpret this as a linear combination of vectors
 
   // the data map of the multivector
-  auto mvMap = mvA.getDataMap();
+  const auto mvMap = mvA.getDataMap();
   // result is an Epetra Vector with same distribution of mvA
   using res_t = containers::Vector<Epetra_Vector>;
   res_t c(mvMap);

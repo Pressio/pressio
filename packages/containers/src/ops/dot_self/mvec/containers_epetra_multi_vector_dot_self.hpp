@@ -58,16 +58,16 @@ namespace pressio{ namespace containers{ namespace ops{
 // Epetra multivector (A) dot self
 // this is equivalent to doing A^T * A
 
-template <typename mvec_t,
+template <
+  typename mvec_t,
+  typename result_t,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_epetra<mvec_t>::value
+    ::pressio::containers::meta::is_multi_vector_wrapper_epetra<mvec_t>::value and
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
     > * = nullptr
   >
-void dot_self(const mvec_t & A,
-	      containers::Matrix<
-	      Eigen::Matrix<typename containers::details::traits<mvec_t>::scalar_t,
-	      Eigen::Dynamic, Eigen::Dynamic>
-	      > & C)
+void dot_self(const mvec_t & A, result_t & C)
 {
   // how many vectors are in A
   auto numVecsA = A.globalNumVectors();
@@ -87,22 +87,19 @@ void dot_self(const mvec_t & A,
 }
 
 
-template <typename mvec_t,
+template <
+  typename mvec_t,
+  typename result_t,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_epetra<mvec_t>::value
+    containers::meta::is_multi_vector_wrapper_epetra<mvec_t>::value and
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
     > * = nullptr
   >
-auto dot_self(const mvec_t & mvA)
-  -> containers::Matrix<
-  Eigen::Matrix<typename containers::details::traits<mvec_t>::scalar_t,
-  Eigen::Dynamic, Eigen::Dynamic>>{
-
-  using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
-  using eig_mat = Eigen::Matrix< sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using res_t = containers::Matrix<eig_mat>;
-
+result_t dot_self(const mvec_t & mvA)
+{
   auto numVecsA = mvA.globalNumVectors();
-  res_t C(numVecsA, numVecsA);
+  result_t C(numVecsA, numVecsA);
   dot_self(mvA, C);
   return C;
 }

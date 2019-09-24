@@ -94,7 +94,7 @@ protected:
     : linSolver_(linearSolverIn),
       res_(system.residual(yState)),
       jac_(system.jacobian(yState)),
-      hess_(hessian_evaluator_t::evaluate(jac_)),
+      hess_(hessian_evaluator_t::template evaluate<hessian_type>(jac_)),
       JTResid_(yState),
       delta_(yState),
       ytrial_(yState),

@@ -61,31 +61,30 @@ namespace pressio{ namespace containers{ namespace ops{
 
 //-----------------------------------------------------
 // Eigen multivector product with eigen vector
-template <typename mvec_type,
-	  typename vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
   ::pressio::mpl::enable_if_t<
    containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
    containers::meta::is_vector_wrapper_eigen<vec_type>::value and
    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >
-void product(const mvec_type & mvA,
-	     const vec_type & vecB,
-	     containers::Vector<Eigen::VectorXd> & C){
+void product(const mvec_type & mvA, const vec_type & vecB, vec_type & C){
 
   assert( C.size() == mvA.length() );
   //zero out result
   C.setZero();
   // sizes of mvA
-  auto numVecs = mvA.numVectors();
-  auto Alength = mvA.length();
+  const auto numVecs = mvA.numVectors();
+  const auto Alength = mvA.length();
 
   // size of vecB
   assert(size_t(numVecs) == size_t(vecB.size()));
 
   // compute
-  for (decltype(Alength) i=0; i<Alength; i++){
-    for (decltype(numVecs) j=0; j<numVecs; j++){
+  for (size_t i=0; i<(size_t)Alength; i++){
+    for (size_t j=0; j<(size_t)numVecs; j++){
       C[i] += mvA(i,j) * vecB[j];
     }
   }
@@ -93,22 +92,18 @@ void product(const mvec_type & mvA,
 
 
 // result is constructed and returned
-template <typename mvec_type,
-	  typename vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
   ::pressio::mpl::enable_if_t<
    containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
    containers::meta::is_vector_wrapper_eigen<vec_type>::value and
    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >
-auto product(const mvec_type & mvA, const vec_type & vecB)
--> containers::Vector<
-    Eigen::Matrix<typename containers::details::traits<mvec_type>::scalar_t,
-                  Eigen::Dynamic,1>
->{
+vec_type product(const mvec_type & mvA, const vec_type & vecB){
 
-  using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
-  containers::Vector<Eigen::Matrix<sc_t,Eigen::Dynamic,1>> c(mvA.length());
+  vec_type c(mvA.length());
   product(mvA, vecB, c);
   return c;
 }

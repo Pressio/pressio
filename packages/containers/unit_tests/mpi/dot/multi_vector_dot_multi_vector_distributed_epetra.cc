@@ -78,13 +78,15 @@ TEST(epetraMultiVectorR9C4VecS9Fixture,
   }
 
   using eig_mat = Eigen::Matrix< double, Eigen::Dynamic, Eigen::Dynamic>;
+  using eig_mat_w = ::pressio::containers::Matrix<eig_mat>;
+
   eig_mat TT(4,2);
   TT(0,0) = 0.0; TT(0,1) = 4.0;
   TT(1,0) = 5.0; TT(1,1) = 8.0;
   TT(2,0) = 4.0; TT(2,1) = 5.0;
   TT(3,0) = 5.0; TT(3,1) = 6.0;
 
-  auto C = containers::ops::dot(A,B);
+  auto C = containers::ops::dot<mvec_t, eig_mat_w>(A,B);
   for (auto i=0; i<4; i++){
     for (auto j=0; j<2; j++){
       EXPECT_NEAR( TT(i,j), C(i,j), 1e-12);

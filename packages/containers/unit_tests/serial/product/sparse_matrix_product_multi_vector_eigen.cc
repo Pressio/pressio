@@ -37,7 +37,7 @@ TEST(containers_ops_eigen, sparseMatProdMultivector){
   mv(2,0) = 0.; mv(2,1) = 0.; mv(2,2) = 1.;
   mv(3,0) = 0.; mv(3,1) = 1.; mv(3,2) = 0.;
   
-  auto c1 = pressio::containers::ops::product(A,mv);
+  auto c1 = pressio::containers::ops::product<mymat_t, myMV_t, myMV_t>(A,mv);
   EXPECT_DOUBLE_EQ( c1(0,0), 7.);
   EXPECT_DOUBLE_EQ( c1(0,1), 6.);
   EXPECT_DOUBLE_EQ( c1(0,2), 8.);
@@ -64,7 +64,7 @@ TEST(containers_ops_eigen, sparseMatProdMultivector){
   
   pressio::containers::Matrix<Eigen::MatrixXd> c(6,3);
   pressio::containers::ops::product(A,mv,c);
-  for (auto i=0; i<c1.rows(); i++)
-    for (auto j=0; j<c1.cols(); j++)
+  for (auto i=0; i<c1.data()->rows(); i++)
+    for (auto j=0; j<c1.data()->cols(); j++)
       EXPECT_DOUBLE_EQ( c(i,j), c1(i,j));
 }

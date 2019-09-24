@@ -59,55 +59,32 @@ namespace pressio{ namespace containers{ namespace ops{
 
 template <
   typename mvec_t,
+  typename result_t,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value
+    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value and
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
     > * = nullptr
   >
-void dot_self(const mvec_t & A,
-	      containers::Matrix<
-	      Eigen::Matrix<typename containers::details::traits<mvec_t>::scalar_t,
-	      Eigen::Dynamic, Eigen::Dynamic>
-	      > & C)
+void dot_self(const mvec_t & A, result_t & C)
 {
-  // // how many vectors are in A
-  // auto numVecsA = A.numVectors();
-  // auto const & Adata = *A.data();
-  // assert(C.rows() == numVecsA);
-  // assert(C.cols() == numVecsA);
-
-  // // A dot A = A^T*A, which yields a symmetric matrix
-  // // only need to compute half and fill remaining entries accordingly
-  // for (auto i=0; i<numVecsA; i++){
-  //   for (auto j=i; j<numVecsA; j++)
-  //   {
-  //     C(i,j) = A.data()->col(i).dot(A.data()->col(j));
-  //     // fill the lower triangular part
-  //     C(j,i) = C(i,j);
-  //   }
-  // }
-
   *C.data() = A.data()->transpose() * (*A.data());
 }
 
 
 template <
   typename mvec_t,
+  typename result_t,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value
+    containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value and
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
     > * = nullptr
   >
-auto dot_self(const mvec_t & mvA)
-  -> containers::Matrix<
-    Eigen::Matrix<typename containers::details::traits<mvec_t>::scalar_t,
-		  Eigen::Dynamic, Eigen::Dynamic>
-    >{
-
-  using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
-  using eig_mat = Eigen::Matrix< sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using res_t = containers::Matrix<eig_mat>;
-
+result_t dot_self(const mvec_t & mvA)
+{
   auto numVecsA = mvA.numVectors();
-  res_t C(numVecsA, numVecsA);
+  result_t C(numVecsA, numVecsA);
   dot_self(mvA, C);
   return C;
 }

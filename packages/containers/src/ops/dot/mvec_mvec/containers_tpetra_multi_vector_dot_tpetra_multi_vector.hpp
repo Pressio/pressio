@@ -57,69 +57,54 @@ namespace pressio{ namespace containers{ namespace ops{
 
 // Tpetra multivector dot tpetra multi vector
 
-template <typename mvec_t,
+template <
+  typename mvec_t,
+  typename result_t,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value
+    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
     > * = nullptr
   >
-void dot(const mvec_t & mvA, const mvec_t & mvB,
-	 containers::Matrix<
-	 Eigen::Matrix<typename containers::details::traits<mvec_t>::scalar_t,
-	 Eigen::Dynamic, Eigen::Dynamic>
-	 > & C)
+void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
 {
   // how many vectors are in mvA and mvB
-  auto numVecsA = mvA.globalNumVectors();
-  auto numVecsB = mvB.globalNumVectors();
+  const auto numVecsA = mvA.globalNumVectors();
+  const auto numVecsB = mvB.globalNumVectors();
   assert( mvA.globalLength() == mvB.globalLength());
   assert(C.rows() == numVecsA);
   assert(C.cols() == numVecsB);
   // compute dot between every column of A with every col of B
-  for (auto i=0; i<numVecsA; i++){
+  for (size_t i=0; i<(size_t)numVecsA; i++){
     // colI is a Teuchos::RCP<Vector<...>>
-    auto colI = mvA.data()->getVector(i);
-    for (auto j=0; j<numVecsB; j++){
-      auto colJ = mvB.data()->getVector(j);
+    const auto colI = mvA.data()->getVector(i);
+    for (size_t j=0; j< (size_t)numVecsB; j++)
+    {
+      const auto colJ = mvB.data()->getVector(j);
       C(i,j) = colI->dot(*colJ);
     }
   }
 }
 
 
-template <typename mvec_t,
+template <
+  typename mvec_t,
+  typename result_t,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value
+    containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
     > * = nullptr
   >
-auto dot(const mvec_t & mvA, const mvec_t & mvB)
-  -> containers::Matrix<
-  Eigen::Matrix<typename containers::details::traits<mvec_t>::scalar_t,
-  Eigen::Dynamic, Eigen::Dynamic>>{
+result_t dot(const mvec_t & mvA, const mvec_t & mvB){
+  // using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
+  // using eig_mat = Eigen::Matrix< sc_t, Eigen::Dynamic, Eigen::Dynamic>;
+  // using res_t = containers::Matrix<eig_mat>;
 
-  using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
-  using eig_mat = Eigen::Matrix< sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using res_t = containers::Matrix<eig_mat>;
-
-  auto numVecsA = mvA.globalNumVectors();
-  auto numVecsB = mvB.globalNumVectors();
-  res_t C(numVecsA, numVecsB);
+  const auto numVecsA = mvA.globalNumVectors();
+  const auto numVecsB = mvB.globalNumVectors();
+  result_t C(numVecsA, numVecsB);
   dot(mvA, mvB, C);
-
-  // // how many vectors are in mvA and mvB
-  // auto numVecsA = mvA.globalNumVectors();
-  // auto numVecsB = mvB.globalNumVectors();
-  // assert( mvA.globalLength() == mvB.globalLength());
-  // auto const & mvAdata = *mvA.data();
-  // auto const & mvBdata = *mvB.data();
-
-  // // result
-  // res_t C(numVecsA, numVecsB);
-  // // compute dot between every column of A with every col of B
-  // for (auto i=0; i<numVecsA; i++){
-  //   for (auto j=0; j<numVecsB; j++){
-  //     mvAdata(i)->Dot( *(mvBdata(j)), &C(i,j) );
-  //   }
-  // }
   return C;
 }
 //--------------------------------------------------------

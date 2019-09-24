@@ -67,8 +67,9 @@ namespace pressio{ namespace containers{ namespace ops{
 //------------------------------------
 // c = scalar *, passed in
 //------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value &&
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value &&
@@ -83,10 +84,7 @@ void dot(const mvec_type & mvA,
    * which is supposed to be const but it is not */
   using mv_tmp_t = Tpetra::Experimental::BlockVector<>;
   const auto vecB_vv = const_cast<mv_tmp_t*>(vecB.data())->getVectorView();
-
   const auto mvA_mvv = mvA.data()->getMultiVectorView();
-
-  // how many vectors are in mvA
   const auto numVecs = mvA.globalNumVectors();
   for (auto i=0; i<numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
@@ -99,16 +97,17 @@ void dot(const mvec_type & mvA,
 //--------------------------------------------
 // c = teuchos serial dense vector, passed in
 //--------------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
-	  typename result_vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
     containers::meta::is_dense_vector_wrapper_teuchos<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						 vec_type,
-						 result_vec_type>::value and
+						       vec_type,
+						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
@@ -127,16 +126,17 @@ void dot(const mvec_type & mvA,
 //---------------------------------------
 // c = eigen DYNAMIC vector, passed in
 //---------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
-	  typename result_vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						 vec_type,
-						 result_vec_type>::value and
+						       vec_type,
+						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
@@ -153,8 +153,7 @@ void dot(const mvec_type & mvA,
      So we have to extract each column vector
      from mvA and do dot product one a time*/
 
-  // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
 
   // check the result has right size
   if ( result.size() != numVecs )
@@ -167,16 +166,17 @@ void dot(const mvec_type & mvA,
 //---------------------------------------
 // c = eigen STATIC vector, passed in
 //---------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
-	  typename result_vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						 vec_type,
-						 result_vec_type>::value and
+						       vec_type,
+						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_static
     > * = nullptr
   >

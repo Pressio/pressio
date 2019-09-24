@@ -26,7 +26,7 @@ public:
   };
 };
 
-<template scalar_t>
+template <typename scalar_t>
 struct updateOps{
   using v_t = std::vector<scalar_t>;
 
@@ -42,12 +42,12 @@ struct updateOps{
   }
 };
 
-<template scalar_t>
+template <typename scalar_t>
 struct myops{
   // update_op is all you need to provide for explicit
   // time integration. This type that pressio will detect for doing
   // operations like vector additions.
-  using update_op = updateOps<scalar_r>;
+  using update_op = updateOps<scalar_t>;
 
   // ... this might contains other types defining how to do
   // other operations different in nature.
@@ -58,8 +58,9 @@ struct myops{
 
 TEST(ode_explicit_euler, userDefinedOps){
   using namespace pressio;
-  using app_t	    = MyApp;
-  using nstate_t    = typename app_t::state_type;
+  using app_t	   = MyApp;
+  using scalar_t = typename app_t::scalar_type;
+  using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;
   app_t appObj;
 
@@ -72,7 +73,7 @@ TEST(ode_explicit_euler, userDefinedOps){
 
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::Euler, state_t, app_t, res_t,
-    double, myops>;
+    double, myops<scalar_t>>;
   stepper_t stepperObj(y, appObj);
 
   // integrate in time

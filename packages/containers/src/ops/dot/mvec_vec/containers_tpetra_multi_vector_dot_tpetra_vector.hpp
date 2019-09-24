@@ -67,8 +67,9 @@ namespace pressio{ namespace containers{ namespace ops{
 //------------------------------------
 // c = scalar *, passed in
 //------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value &&
     containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
@@ -79,8 +80,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 typename details::traits<mvec_type>::scalar_t * result){
 
-  // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
   for (auto i=0; i<numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     auto colI = mvA.data()->getVector(i);
@@ -92,23 +92,24 @@ void dot(const mvec_type & mvA,
 //--------------------------------------------
 // c = teuchos serial dense vector, passed in
 //--------------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
-	  typename result_vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<vec_type>::value and
     containers::meta::is_dense_vector_wrapper_teuchos<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						 vec_type,
-						 result_vec_type>::value and
+						       vec_type,
+						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result){
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
   if ( result.size() != numVecs )
     result.resize(numVecs);
   dot(mvA, vecB, result.data()->values());
@@ -118,16 +119,17 @@ void dot(const mvec_type & mvA,
 //---------------------------------------
 // c = eigen DYNAMIC vector, passed in
 //---------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
-	  typename result_vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						 vec_type,
-						 result_vec_type>::value and
+						       vec_type,
+						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
@@ -145,7 +147,7 @@ void dot(const mvec_type & mvA,
      from mvA and do dot product one a time*/
 
   // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
   // check the result has right size
   if ( result.size() != numVecs )
     result.resize(numVecs);
@@ -161,16 +163,17 @@ void dot(const mvec_type & mvA,
 //---------------------------------------
 // c = eigen STATIC vector, passed in
 //---------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
-	  typename result_vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						 vec_type,
-						 result_vec_type>::value and
+						       vec_type,
+						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_static
     > * = nullptr
   >

@@ -37,13 +37,13 @@ int main(int argc, char **argv)
     // ::testing::AddGlobalTestEnvironment(envPtr.get());
 
     int rank = {};
-    int mpiError = MPI_Init(&argc, &argv);
+    MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    //ASSERT_FALSE(mpiError);
+    // ASSERT_FALSE(mpiError);
 
     err = RUN_ALL_TESTS();
 
-    mpiError = MPI_Finalize();
+    MPI_Finalize();
     //ASSERT_FALSE(mpiError);
   }
   return err;

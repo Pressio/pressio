@@ -61,8 +61,9 @@ namespace pressio{ namespace containers{ namespace ops{
 //-----------------------------------------------------
 //  Epetra multivector with eigen or armadillo vector
 // we pass the result object
-template <typename mvec_type,
-	  typename vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
@@ -77,14 +78,14 @@ void product(const mvec_type & mvA,
   //zero out result
   C.setZero();
   // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
   // size of vecB
-  size_t vecBLen = vecB.size();
+  const size_t vecBLen = vecB.size();
   assert(size_t(numVecs) == vecBLen);
   // the data map of the multivector
-  auto mvMap = mvA.getDataMap();
+  const auto mvMap = mvA.getDataMap();
   // my number of rows
-  auto myNrows = mvMap.NumMyElements();
+  const auto myNrows = mvMap.NumMyElements();
 
   // loop
   for (decltype(myNrows) i=0; i<myNrows; i++){
@@ -112,7 +113,7 @@ product(const mvec_type & mvA, const vec_type & vecB) {
   // we interpret this as a linear combination of vectors
 
   // the data map of the multivector
-  auto mvMap = mvA.getDataMap();
+  const auto mvMap = mvA.getDataMap();
   // result is an Epetra Vector with same distribution of mvA
   using res_t = containers::Vector<Epetra_Vector>;
   res_t c(mvMap);

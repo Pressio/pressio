@@ -86,29 +86,37 @@ void dot_self(const mvec_t & A,
 }
 
 
-template <typename mvec_t,
+template <
+  typename mvec_t,
+  typename result_t,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_kokkos<mvec_t>::value
+    containers::meta::is_multi_vector_wrapper_kokkos<mvec_t>::value and 
+    containers::meta::is_matrix_wrapper_kokkos<result_t>::value and 
+    std::is_same<
+      typename containers::details::traits<result_t>::execution_space,
+      typename containers::details::traits<mvec_t>::execution_space
+    >::value and 
+    std::is_same<
+      typename containers::details::traits<result_t>::layout,
+      typename containers::details::traits<mvec_t>::layout
+    >::value and 
+    std::is_same<
+      typename containers::details::traits<result_t>::scalar_t,
+      typename containers::details::traits<mvec_t>::scalar_t
+    >::value
     > * = nullptr
   >
-auto dot_self(const mvec_t & mvA)
-  -> containers::Matrix<
-    Kokkos::View<
-      typename containers::details::traits<mvec_t>::scalar_t **,
-      typename containers::details::traits<mvec_t>::layout,
-      typename containers::details::traits<mvec_t>::execution_space
-      >
-    >{
+result_t dot_self(const mvec_t & mvA)
+{
+  // using sc_t	  = typename containers::details::traits<mvec_t>::scalar_t;
+  // using layout    = typename containers::details::traits<mvec_t>::layout;
+  // using exe_space = typename containers::details::traits<mvec_t>::execution_space;
 
-  using sc_t	  = typename containers::details::traits<mvec_t>::scalar_t;
-  using layout    = typename containers::details::traits<mvec_t>::layout;
-  using exe_space = typename containers::details::traits<mvec_t>::execution_space;
-
-  using dm_t = Kokkos::View<sc_t**, layout, exe_space>;
-  using res_t = containers::Matrix<dm_t>;
+  // using dm_t = Kokkos::View<sc_t**, layout, exe_space>;
+  // using res_t = containers::Matrix<dm_t>;
 
   const auto numVecsA = mvA.numVectors();
-  res_t C("dot_self_mat_res", numVecsA, numVecsA);
+  result_t C("dot_self_mat_res", numVecsA, numVecsA);
   dot_self(mvA, C);
   return C;
 }

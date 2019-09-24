@@ -80,7 +80,7 @@ void product(const mvec_type & mvA,
   C.setZero();
 
   // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
 
   // size of vecB
   const size_t vecBLen = vecB.size();
@@ -97,7 +97,7 @@ void product(const mvec_type & mvA,
   C_vv.template modify<Kokkos::HostSpace>();
 
   // my number of rows
-  auto myNrows = mvA_mvv.getLocalLength();
+  const auto myNrows = mvA_mvv.getLocalLength();
   // loop
   for (decltype(myNrows) i=0; i<myNrows; i++){
     for (decltype(numVecs) j=0; j<numVecs; j++){

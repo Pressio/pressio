@@ -102,20 +102,17 @@ void dot(const vec_type & vec,
 
 // Eigen vector dot multivector
 // result is built and returned
-template <typename vec_type,
-	  typename mvec_type,
+template <
+  typename vec_type,
+  typename mvec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >
-auto dot(const vec_type & vec, const mvec_type & mv)
--> containers::Vector<
-  Eigen::Matrix<typename containers::details::traits<mvec_type>::scalar_t,
-                Eigen::Dynamic, 1>
-                >{
-
+vec_type dot(const vec_type & vec, const mvec_type & mv)
+{
   return dot(mv, vec);
 }
 

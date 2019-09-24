@@ -65,37 +65,45 @@ namespace pressio{ namespace containers{ namespace ops{
  * B: eigen multivector wrapper
  * C: eigen dense matrix wrapper
  *-----------------------------------------------*/
-template <typename mat_type,
-	  typename mvec_type,
+template <
+  typename mat_type,
+  typename mvec_type,
+  typename result_t,
   ::pressio::mpl::enable_if_t<
    ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_type, result_t>::value and 
+    (::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value or 
+     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<result_t>::value)
     > * = nullptr
   >
-void product(const mat_type & A,
-	     const mvec_type & mv,
-	     ::pressio::containers::Matrix<Eigen::MatrixXd> & C){
-
-  assert( C.rows() == A.rows() );
+void product(const mat_type & A, const mvec_type & mv, result_t & C)
+{
+  assert( C.data()->rows() == A.data()->rows() );
   assert( mv.length() == A.cols() );
-  assert( C.cols() == mv.numVectors() );
+  assert( C.data()->cols() == mv.numVectors() );
   (*C.data()) = (*A.data()) * (*mv.data());
 }//end function
 
+
 // construct and return result
-template <typename mat_type,
-	  typename mvec_type,
+template <
+  typename mat_type,
+  typename mvec_type,
+  typename result_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<mat_type>::value and
     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_type, result_t>::value and
+    (::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value or 
+     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<result_t>::value)
     > * = nullptr
   >
-auto product(const mat_type & A, const mvec_type & mv)
-  -> ::pressio::containers::Matrix<Eigen::MatrixXd>
+result_t product(const mat_type & A, const mvec_type & mv)
 {
-  ::pressio::containers::Matrix<Eigen::MatrixXd> C(A.rows(), mv.numVectors());
+  result_t C(A.rows(), mv.numVectors());
   product(A,mv,C);
   return C;
 }//end function

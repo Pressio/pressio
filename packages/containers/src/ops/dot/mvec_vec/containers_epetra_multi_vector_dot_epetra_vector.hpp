@@ -68,8 +68,9 @@ namespace pressio{ namespace containers{ namespace ops{
 //------------------------------------
 // c = scalar *, passed in
 //------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value &&
     containers::meta::is_vector_wrapper_epetra<vec_type>::value &&
@@ -90,12 +91,10 @@ void dot(const mvec_type & mvA,
   */
 
   // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
-  // if ( result.size() != (size_t)numVecs )
-  //   result.resize(numVecs);
+  const auto numVecs = mvA.globalNumVectors();
   auto * mvNatData = mvA.data();
   const auto * vecNatData = vecB.data();
-  for (decltype(numVecs) i=0; i<numVecs; i++){
+  for (size_t i=0; i<(size_t)numVecs; i++){
     (*mvNatData)(i)->Dot(*vecNatData, &result[i]);
   }
 }
@@ -104,23 +103,25 @@ void dot(const mvec_type & mvA,
 //--------------------------------------------
 // c = teuchos serial dense vector, passed in
 //--------------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
-	  typename result_vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_epetra<vec_type>::value and
     containers::meta::is_dense_vector_wrapper_teuchos<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						 vec_type,
-						 result_vec_type>::value and
+						       vec_type,
+						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
-	 result_vec_type & result){
-  auto numVecs = mvA.globalNumVectors();
+	 result_vec_type & result)
+{
+  const auto numVecs = mvA.globalNumVectors();
   if ( result.size() != numVecs )
     result.resize(numVecs);
   dot(mvA, vecB, result.data()->values());
@@ -130,24 +131,25 @@ void dot(const mvec_type & mvA,
 //--------------------------------------
 // c = Eigen DYNAMIC vector, passed in
 //--------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
-	  typename result_vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_epetra<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						 vec_type,
-						 result_vec_type>::value and
+						       vec_type,
+						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
-	 result_vec_type & result){
-  // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+	 result_vec_type & result)
+{
+  const auto numVecs = mvA.globalNumVectors();
   if ( result.size() != numVecs )
     result.resize(numVecs);
   dot(mvA, vecB, result.data()->data());
@@ -157,23 +159,24 @@ void dot(const mvec_type & mvA,
 //--------------------------------------
 // c = Eigen STATIC vector, passed in
 //--------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
-	  typename result_vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_epetra<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						 vec_type,
-						 result_vec_type>::value and
+						       vec_type,
+						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_static
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
-	 result_vec_type & result){
-  // how many vectors are in mvA
+	 result_vec_type & result)
+{
   assert(result.size() == mvA.globalNumVectors());
   dot(mvA, vecB, result.data()->data());
 }
@@ -182,8 +185,9 @@ void dot(const mvec_type & mvA,
 //--------------------------------------
 // c = std::vector, passed in
 //--------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value &&
     containers::meta::is_vector_wrapper_epetra<vec_type>::value &&
@@ -194,8 +198,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 std::vector<typename
 	 details::traits<mvec_type>::scalar_t> & result){
-  // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
   if ( result.size() != (size_t)numVecs )
     result.resize(numVecs);
   dot(mvA, vecB, result.data());
@@ -205,8 +208,9 @@ void dot(const mvec_type & mvA,
 //--------------------------------------
 // returns a std::vector
 //--------------------------------------
-template <typename mvec_type,
-	  typename vec_type,
+template <
+  typename mvec_type,
+  typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value &&
     containers::meta::is_vector_wrapper_epetra<vec_type>::value &&
@@ -218,7 +222,7 @@ dot(const mvec_type & mvA, const vec_type & vecB){
 
   using sc_t = typename details::traits<mvec_type>::scalar_t;
   // how many vectors are in mvA
-  auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.globalNumVectors();
   using res_t = std::vector<sc_t>;
   res_t res(numVecs);
   dot(mvA, vecB, res);

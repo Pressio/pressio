@@ -83,6 +83,25 @@ void product(const TA & A, const TB & B, TC & C){
 
 // DENSE times DENSE
 template <
+  typename T1, typename T2, typename T3,
+    bool transposeA = false, bool transposeB = false,
+    ::pressio::mpl::enable_if_t<
+      containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
+      containers::meta::is_dense_matrix_wrapper_eigen<T2>::value and
+      containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value and
+      containers::meta::is_dense_matrix_wrapper_eigen<T3>::value and
+      containers::meta::wrapper_pair_have_same_scalar<T1,T3>::value 
+      > * = nullptr
+    >
+T3 product(const T1 & A, const T2 & B)
+{
+  using implClass_t = impl::eig_mat_mat_product<transposeA, transposeB>;
+  return implClass_t()(A,B);
+}
+
+
+// DENSE times DENSE
+template <
   typename T1, typename T2,
     bool transposeA = false, bool transposeB = false,
     ::pressio::mpl::enable_if_t<
