@@ -73,7 +73,8 @@ struct is_dense_static_matrix_eigen<
       T,
       Eigen::Matrix<typename T::Scalar,
 		    T::RowsAtCompileTime,
-		    T::ColsAtCompileTime
+		    T::ColsAtCompileTime,
+		    T::Options
 		    >
       >::value and
     T::RowsAtCompileTime != Eigen::Dynamic and
@@ -100,7 +101,8 @@ struct is_dense_dynamic_matrix_eigen<
     !is_dense_static_matrix_eigen<T>::value and
     std::is_same<
       T, Eigen::Matrix<typename T::Scalar,
-		       Eigen::Dynamic, Eigen::Dynamic
+		       Eigen::Dynamic, Eigen::Dynamic,
+		       T::Options
 		       >
       >::value
     >::type
@@ -122,7 +124,7 @@ struct is_dense_dynamic_matrix_eigen<
     std::is_same<
       T, Eigen::Matrix<typename T::Scalar,
 		       T::RowsAtCompileTime,
-		       Eigen::Dynamic>
+		       Eigen::Dynamic, T::Options>
       >::value and
     T::RowsAtCompileTime != Eigen::Dynamic
     >::type
@@ -144,7 +146,8 @@ struct is_dense_dynamic_matrix_eigen<
     std::is_same<
       T, Eigen::Matrix<typename T::Scalar,
 		       Eigen::Dynamic,
-		       T::ColsAtCompileTime>
+		       T::ColsAtCompileTime,
+		       T::Options>
       >::value and
     T::ColsAtCompileTime != Eigen::Dynamic
     >::type
