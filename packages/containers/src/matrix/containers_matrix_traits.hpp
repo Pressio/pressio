@@ -134,10 +134,6 @@ struct traits< Matrix<
 
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
-
-  // static constexpr bool is_static =
-  //   ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
-  //     wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
 };
 
 

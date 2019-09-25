@@ -29,6 +29,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
   using namespace pressio;
 
   using sc_t = typename fix_t::ST;
+  static_assert( std::is_same<sc_t, double>::value, "");
 
   // set all values to 1.22
   mv_->putScalar(1.22);
@@ -56,6 +57,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
   using namespace pressio;
 
   using sc_t = typename fix_t::ST;
+  static_assert( std::is_same<sc_t, double>::value, "");
 
   // create a wrapper
   mymvec_t A( *mv_ );

@@ -54,55 +54,65 @@
 #include "CONTAINERS_MATRIX"
 
 #include "containers/src/ops/containers_ops_meta.hpp"
-
-//// dot product ////
-#include "containers/src/ops/dot/containers_multi_vector_dot_vector.hpp"
-#include "containers/src/ops/dot/containers_multi_vector_dot_multi_vector.hpp"
-#include "containers/src/ops/dot/containers_vector_dot_multi_vector.hpp"
-#include "containers/src/ops/dot/containers_vector_dot_vector.hpp"
-
-//// dot self ////
-#include "containers/src/ops/dot_self/containers_multi_vector_dot_self.hpp"
-
-//// mat mat product ////
-#include "containers/src/ops/mat_mat_product/containers_eigen_mat_product_mat.hpp"
-// #include "containers/src/ops/mat_mat_product/containers_eigen_sparse_mat_product_eigen_dense_mat.hpp"
-// #include "containers/src/ops/mat_mat_product/containers_eigen_sparse_mat_product_eigen_sparse_mat.hpp"
-
-//// mat vec product ////
-#include "containers/src/ops/mat_vec_product/containers_eigen_mat_product_eigen_vector.hpp"
-
-//// multivec vec product ////
-#include "containers/src/ops/multivec_vec_product/containers_eigen_multi_vector_product_eigen_vector.hpp"
-#include "containers/src/ops/multivec_vec_product/containers_epetra_multi_vector_product_armadillo_vector.hpp"
-#include "containers/src/ops/multivec_vec_product/containers_epetra_multi_vector_product_eigen_vector.hpp"
-#include "containers/src/ops/multivec_vec_product/containers_tpetra_multi_vector_product_eigen_vector.hpp"
-#include "containers/src/ops/multivec_vec_product/containers_epetra_multi_vector_product_teuchos_serial_vector.hpp"
-#include "containers/src/ops/multivec_vec_product/containers_tpetra_multi_vector_product_teuchos_serial_vector.hpp"
-#include "containers/src/ops/multivec_vec_product/containers_tpetra_block_multi_vector_product_eigen_vector.hpp"
-#include "containers/src/ops/multivec_vec_product/containers_kokkos_multi_vector_product_kokkos_vector.hpp"
-
-#include "containers/src/ops/containers_vector_set_zero.hpp"
 #include "containers/src/ops/containers_vector_deep_copy.hpp"
+#include "containers/src/ops/containers_vector_set_zero.hpp"
 
-/// update function to do operations on containers
-#include "containers/src/ops/do_update/containers_vector_one_term_update.hpp"
-#include "containers/src/ops/do_update/containers_multi_vector_one_term_update.hpp"
-#include "containers/src/ops/do_update/containers_vector_two_terms_update.hpp"
-#include "containers/src/ops/do_update/containers_vector_three_terms_update.hpp"
-#include "containers/src/ops/do_update/containers_vector_four_terms_update.hpp"
+// Eigen
+#include "containers/src/ops/eigen/containers_eigen_ops_helper_impl.hpp"
+#include "containers/src/ops/eigen/containers_mat_prod_mat.hpp"
+#include "containers/src/ops/eigen/containers_mat_prod_mvec.hpp"
+#include "containers/src/ops/eigen/containers_mat_prod_vec.hpp"
+#include "containers/src/ops/eigen/containers_min_max_vector.hpp"
+#include "containers/src/ops/eigen/containers_multi_vector_do_update.hpp"
+#include "containers/src/ops/eigen/containers_mvec_dot_self.hpp"
+#include "containers/src/ops/eigen/containers_mvec_dot_vec.hpp"
+#include "containers/src/ops/eigen/containers_mvec_prod_vec.hpp"
+#include "containers/src/ops/eigen/containers_norms_vector.hpp"
+#include "containers/src/ops/eigen/containers_vec_dot_vec.hpp"
+#include "containers/src/ops/eigen/containers_vector_do_update.hpp"
 
-//// mat multivec product ////
-#include "containers/src/ops/mat_multivec_product/containers_eigen_sparse_mat_product_eigen_multi_vector.hpp"
-#include "containers/src/ops/mat_multivec_product/containers_epetra_sparse_mat_product_epetra_multi_vector.hpp"
+// Epetra
+#include "containers/src/ops/epetra/containers_mat_prod_mvec.hpp"
+#include "containers/src/ops/epetra/containers_min_max_vector.hpp"
+#include "containers/src/ops/epetra/containers_mvec_dot_mvec.hpp"
+#include "containers/src/ops/epetra/containers_mvec_dot_self.hpp"
+#include "containers/src/ops/epetra/containers_mvec_dot_vec.hpp"
+#include "containers/src/ops/epetra/containers_mvec_prod_vec.hpp"
+#include "containers/src/ops/epetra/containers_norms_vector.hpp"
+#include "containers/src/ops/epetra/containers_vector_do_update.hpp"
 
-//// norms ////
-#include "containers/src/ops/norms/containers_norm1_vector.hpp"
-#include "containers/src/ops/norms/containers_norm2_vector.hpp"
+// Tpetra
+#include "containers/src/ops/tpetra/containers_mvec_dot_mvec.hpp"
+#include "containers/src/ops/tpetra/containers_mvec_dot_self.hpp"
+#include "containers/src/ops/tpetra/containers_mvec_dot_vec.hpp"
+#include "containers/src/ops/tpetra/containers_mvec_prod_vec.hpp"
+#include "containers/src/ops/tpetra/containers_norms_vector.hpp"
+#include "containers/src/ops/tpetra/containers_vector_do_update.hpp"
 
-//// min ////
-#include "containers/src/ops/min_max/containers_min_vector.hpp"
-//// max ////
-#include "containers/src/ops/min_max/containers_max_vector.hpp"
+// Tpetra block
+#include "containers/src/ops/tpetra_block/containers_mvec_dot_mvec.hpp"
+#include "containers/src/ops/tpetra_block/containers_mvec_dot_self.hpp"
+#include "containers/src/ops/tpetra_block/containers_mvec_dot_vec.hpp"
+#include "containers/src/ops/tpetra_block/containers_mvec_prod_vec.hpp"
+#include "containers/src/ops/tpetra_block/containers_norms_vector.hpp"
+#include "containers/src/ops/tpetra_block/containers_vector_do_update.hpp"
+
+// teuchos
+#include "containers/src/ops/teuchos/containers_norms_vector.hpp"
+#include "containers/src/ops/teuchos/containers_vector_do_update.hpp"
+
+// Kokkos
+#include "containers/src/ops/kokkos/containers_mvec_dot_self.hpp"
+#include "containers/src/ops/kokkos/containers_mvec_dot_vec.hpp"
+#include "containers/src/ops/kokkos/containers_mvec_prod_vec.hpp"
+#include "containers/src/ops/kokkos/containers_norms_vector.hpp"
+#include "containers/src/ops/kokkos/containers_vector_do_update.hpp"
+#include "containers/src/ops/kokkos/containers_multi_vector_do_update.hpp"
+
+
+// pybind11
+#include "containers/src/ops/pybind11/containers_norms_vector.hpp"
+#include "containers/src/ops/pybind11/containers_vector_do_update.hpp"
+
 
 #endif

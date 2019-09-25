@@ -1,4 +1,4 @@
 
 add_serial_unit_test(multi_vector_eigen_dot_eigen_vector)
-add_serial_unit_test(vector_eigen_dot_eigen_multi_vector)
-add_serial_unit_test(vector_eigen_dot_eigen_vector)
+# add_serial_unit_test(vector_eigen_dot_eigen_multi_vector)
+# add_serial_unit_test(vector_eigen_dot_eigen_vector)
