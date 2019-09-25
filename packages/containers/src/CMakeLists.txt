@@ -22,22 +22,22 @@ FILE(GLOB containers_shared_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB containers_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
 
-FILE(GLOB containers_containers_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB containers_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/ops/*.hpp")
 
-FILE(GLOB containers_containers_eigen_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB containers_eigen_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/ops/eigen/*.hpp")
-FILE(GLOB containers_containers_epetra_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB containers_epetra_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/ops/epetra/*.hpp")
-FILE(GLOB containers_containers_tpetra_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB containers_tpetra_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/ops/tpetra/*.hpp")
-FILE(GLOB containers_containers_tpetra_block_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB containers_tpetra_block_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/ops/tpetra_block/*.hpp")
-FILE(GLOB containers_containers_teuchos_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB containers_teuchos_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/ops/teuchos/*.hpp")
-FILE(GLOB containers_containers_kokkos_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB containers_kokkos_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/ops/kokkos/*.hpp")
-FILE(GLOB containers_containers_pybind11_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB containers_pybind11_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/ops/pybind11/*.hpp")
 
 FILE(GLOB containers_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -99,14 +99,14 @@ INSTALL(FILES ${containers_general_HEADERS} DESTINATION ${CONTAINERS_INCDIR})
 INSTALL(FILES ${containers_shared_base_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/shared_base)
 INSTALL(FILES ${containers_meta_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/meta)
 
-INSTALL(FILES ${containers_containers_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops)
-INSTALL(FILES ${containers_containers_eigen_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/eigen)
-INSTALL(FILES ${containers_containers_epetra_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/epetra)
-INSTALL(FILES ${containers_containers_tpetra_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/tpetra)
-INSTALL(FILES ${containers_containers_tpetra_block_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/tpetra_block)
-INSTALL(FILES ${containers_containers_teuchos_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/teuchos)
-INSTALL(FILES ${containers_containers_kokkos_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/kokkos)
-INSTALL(FILES ${containers_containers_pybind11_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/pybind11)
+INSTALL(FILES ${containers_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops)
+INSTALL(FILES ${containers_eigen_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/eigen)
+INSTALL(FILES ${containers_epetra_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/epetra)
+INSTALL(FILES ${containers_tpetra_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/tpetra)
+INSTALL(FILES ${containers_tpetra_block_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/tpetra_block)
+INSTALL(FILES ${containers_teuchos_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/teuchos)
+INSTALL(FILES ${containers_kokkos_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/kokkos)
+INSTALL(FILES ${containers_pybind11_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/pybind11)
 
 INSTALL(FILES ${containers_vector_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/vector)
 INSTALL(FILES ${containers_vector_meta_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/vector/meta)
