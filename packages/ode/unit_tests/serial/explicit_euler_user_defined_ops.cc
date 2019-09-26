@@ -6,7 +6,6 @@
 
 
 struct MyApp{
-
   using scalar_type   = double;
   using state_type    = std::vector<scalar_type>;
   using velocity_type = state_type;
@@ -27,32 +26,41 @@ public:
   };
 };
 
-
+template <typename scalar_t>
 struct updateOps{
-  using v_t = std::vector<double>;
+  using v_t = std::vector<scalar_t>;
 
-    static void do_update(v_t & v,
-			  const v_t & v1, const double b){
+  static void do_update(v_t & v, const v_t & v1, const scalar_t b){
     for (size_t i=0; i<v.size(); ++i)
       v[i] = b*v1[i];
   }
 
-  static void do_update(v_t & v, const double a,
-			const v_t & v1, const double b){
+  static void do_update(v_t & v, const scalar_t a,
+			const v_t & v1, const scalar_t b){
     for (size_t i=0; i<v.size(); ++i)
       v[i] = a*v[i] + b*v1[i];
   }
 };
 
+template <typename scalar_t>
 struct myops{
-  using update_op = updateOps;
+  // update_op is all you need to provide for explicit
+  // time integration. This type that pressio will detect for doing
+  // operations like vector additions.
+  using update_op = updateOps<scalar_t>;
+
+  // ... this might contains other types defining how to do
+  // other operations different in nature.
+  // for example how to do mat-vec products.
+  // this will be addressed in a later tutorial.
 };
 
 
 TEST(ode_explicit_euler, userDefinedOps){
   using namespace pressio;
-  using app_t	    = MyApp;
-  using nstate_t    = typename app_t::state_type;
+  using app_t	   = MyApp;
+  using scalar_t = typename app_t::scalar_type;
+  using nstate_t = typename app_t::state_type;
   using nveloc_t = typename app_t::velocity_type;
   app_t appObj;
 
@@ -65,7 +73,7 @@ TEST(ode_explicit_euler, userDefinedOps){
 
   using stepper_t = ode::ExplicitStepper<
     ode::ExplicitEnum::Euler, state_t, app_t, res_t,
-    double, myops>;
+    double, myops<scalar_t>>;
   stepper_t stepperObj(y, appObj);
 
   // integrate in time

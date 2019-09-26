@@ -19,12 +19,6 @@ TEST(containers_matrix_vector_product, eigenVectorDenseMatrix){
   EXPECT_DOUBLE_EQ( myR[0], 16.0);
   EXPECT_DOUBLE_EQ( myR[1], 28.0);
   EXPECT_DOUBLE_EQ( myR[2], 6.0);
-
-  auto YY = containers::ops::product(myM, myV);
-  EXPECT_DOUBLE_EQ( YY[0], 16.0);
-  EXPECT_DOUBLE_EQ( YY[1], 28.0);
-  EXPECT_DOUBLE_EQ( YY[2], 6.0);
-  
 }//end TEST
 
 
@@ -59,11 +53,4 @@ TEST(containers_matrix_vector_product, eigenVectorSparseMatrix){
   EXPECT_DOUBLE_EQ( myR[1], 26.0);
   EXPECT_DOUBLE_EQ( myR[2], 6.0);
   EXPECT_DOUBLE_EQ( myR[3], 2.0);
-
-  auto YY = containers::ops::product(myM, myV);
-  EXPECT_DOUBLE_EQ( YY[0], 16.0);
-  EXPECT_DOUBLE_EQ( YY[1], 26.0);
-  EXPECT_DOUBLE_EQ( YY[2], 6.0);
-  EXPECT_DOUBLE_EQ( YY[3], 2.0);
-
 }//end TEST

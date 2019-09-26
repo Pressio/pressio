@@ -9,7 +9,6 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        QueryWrappedData){
   using namespace pressio;
 
-  using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
   ::testing::StaticAssertTypeEq<decltype(v1.data()),
   				native_t * >();
@@ -21,7 +20,6 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        getMap){
   using namespace pressio;
-  using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
   auto const & mapO = v1.getDataMap();
   ::testing::StaticAssertTypeEq
@@ -99,6 +97,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        SetScalar){
   using namespace pressio;
   using sc_t = typename fix_t::ST;
+  static_assert( std::is_same<sc_t, double>::value, "");
 
   myvec_t v1( *x_ );
   v1.putScalar(43.3);
@@ -118,7 +117,6 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   using namespace pressio;
   using sc_t = typename fix_t::ST;
 
-  using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
   v1.setZero();
 

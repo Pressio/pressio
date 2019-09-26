@@ -22,36 +22,23 @@ FILE(GLOB containers_shared_base_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 FILE(GLOB containers_meta_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/meta/*.hpp")
 
-FILE(GLOB containers_containers_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+FILE(GLOB containers_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/ops/*.hpp")
-FILE(GLOB containers_containers_dot_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/dot/*.hpp")
-FILE(GLOB containers_containers_dot_mvec_mvec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/dot/mvec_mvec/*.hpp")
-FILE(GLOB containers_containers_dot_mvec_vec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/dot/mvec_vec/*.hpp")
-FILE(GLOB containers_containers_dot_vec_mvec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/dot/vec_mvec/*.hpp")
-FILE(GLOB containers_containers_dot_vec_vec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/dot/vec_vec/*.hpp")
-FILE(GLOB containers_containers_dot_self_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/dot_self/*.hpp")
-FILE(GLOB containers_containers_dot_self_mvec_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/dot_self/mvec/*.hpp")
-FILE(GLOB containers_containers_mat_mat_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/mat_mat_product/*.hpp")
-FILE(GLOB containers_containers_mat_vec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/mat_vec_product/*.hpp")
-FILE(GLOB containers_containers_multivec_vec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/multivec_vec_product/*.hpp")
-FILE(GLOB containers_containers_mat_multivec_prod_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/mat_multivec_product/*.hpp")
-FILE(GLOB containers_containers_norms_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/norms/*.hpp")
-FILE(GLOB containers_containers_minmax_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/min_max/*.hpp")
-FILE(GLOB containers_containers_update_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/ops/do_update/*.hpp")
+
+FILE(GLOB containers_eigen_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ops/eigen/*.hpp")
+FILE(GLOB containers_epetra_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ops/epetra/*.hpp")
+FILE(GLOB containers_tpetra_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ops/tpetra/*.hpp")
+FILE(GLOB containers_tpetra_block_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ops/tpetra_block/*.hpp")
+FILE(GLOB containers_teuchos_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ops/teuchos/*.hpp")
+FILE(GLOB containers_kokkos_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ops/kokkos/*.hpp")
+FILE(GLOB containers_pybind11_ops_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/ops/pybind11/*.hpp")
 
 FILE(GLOB containers_vector_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/vector/*.hpp")
@@ -112,21 +99,14 @@ INSTALL(FILES ${containers_general_HEADERS} DESTINATION ${CONTAINERS_INCDIR})
 INSTALL(FILES ${containers_shared_base_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/shared_base)
 INSTALL(FILES ${containers_meta_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/meta)
 
-INSTALL(FILES ${containers_containers_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops)
-INSTALL(FILES ${containers_containers_dot_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/dot)
-INSTALL(FILES ${containers_containers_dot_mvec_mvec_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/dot/mvec_mvec)
-INSTALL(FILES ${containers_containers_dot_mvec_vec_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/dot/mvec_vec)
-INSTALL(FILES ${containers_containers_dot_vec_mvec_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/dot/vec_mvec)
-INSTALL(FILES ${containers_containers_dot_vec_vec_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/dot/vec_vec)
-INSTALL(FILES ${containers_containers_dot_self_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/dot_self)
-INSTALL(FILES ${containers_containers_dot_self_mvec_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/dot_self/mvec)
-INSTALL(FILES ${containers_containers_mat_mat_prod_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/mat_mat_product)
-INSTALL(FILES ${containers_containers_mat_vec_prod_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/mat_vec_product)
-INSTALL(FILES ${containers_containers_multivec_vec_prod_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/multivec_vec_product)
-INSTALL(FILES ${containers_containers_mat_multivec_prod_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/mat_multivec_product)
-INSTALL(FILES ${containers_containers_norms_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/norms)
-INSTALL(FILES ${containers_containers_minmax_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/min_max)
-INSTALL(FILES ${containers_containers_update_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/do_update)
+INSTALL(FILES ${containers_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops)
+INSTALL(FILES ${containers_eigen_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/eigen)
+INSTALL(FILES ${containers_epetra_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/epetra)
+INSTALL(FILES ${containers_tpetra_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/tpetra)
+INSTALL(FILES ${containers_tpetra_block_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/tpetra_block)
+INSTALL(FILES ${containers_teuchos_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/teuchos)
+INSTALL(FILES ${containers_kokkos_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/kokkos)
+INSTALL(FILES ${containers_pybind11_ops_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/ops/pybind11)
 
 INSTALL(FILES ${containers_vector_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/vector)
 INSTALL(FILES ${containers_vector_meta_HEADERS} DESTINATION ${CONTAINERS_INCDIR}/vector/meta)

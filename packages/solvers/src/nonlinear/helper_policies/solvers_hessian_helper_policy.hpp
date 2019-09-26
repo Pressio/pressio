@@ -62,9 +62,9 @@ struct HessianApproxHelper;
 // is computed by doing product of J^T*J
 template<typename J_t>
 struct HessianApproxHelper<
-  J_t,
+  J_t, 
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_matrix_wrapper<J_t>::value
+    ::pressio::containers::meta::is_matrix_wrapper<J_t>::value
     >>{
 
   template <typename result_t>
@@ -75,11 +75,16 @@ struct HessianApproxHelper<
 				transposeJ>(J, J, result);
   }
 
-  static auto evaluate(J_t & J)
-    -> decltype(::pressio::containers::ops::product<J_t, J_t, true>(J, J))
+  template <typename result_t>
+  static result_t evaluate(J_t & J)
   {
-    return ::pressio::containers::ops::product<J_t, J_t, true>(J, J);
+    return ::pressio::containers::ops::product<J_t, J_t, result_t, true>(J, J);
   }
+  // static auto evaluate(J_t & J)
+  //   -> decltype(::pressio::containers::ops::product<J_t, J_t, true>(J, J))
+  // {
+  //   return ::pressio::containers::ops::product<J_t, J_t, true>(J, J);
+  // }
 };
 
 
@@ -101,10 +106,15 @@ struct HessianApproxHelper<
     ::pressio::containers::ops::dot_self(J, result);
   }
 
-  static auto evaluate(J_t & J)
-    -> decltype(::pressio::containers::ops::dot_self(J)) {
-    return ::pressio::containers::ops::dot_self(J);
+  template <typename result_t>
+  static result_t evaluate(J_t & J){
+    return ::pressio::containers::ops::dot_self<J_t, result_t>(J);
   }
+
+  // static auto evaluate(J_t & J)
+  //   -> decltype(::pressio::containers::ops::dot_self(J)) {
+  //   return ::pressio::containers::ops::dot_self(J);
+  // }
 };
 
 

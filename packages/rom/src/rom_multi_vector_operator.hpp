@@ -83,18 +83,18 @@ public:
     return op_;
   }
 
-  /* Y = X * op: return Y */
-  template<typename T>
-  auto applyRight(const T & X) const
-    -> decltype(containers::ops::product(X, op_)){
-    return containers::ops::product(X, op_);
-  }
+  // /* Y = X * op: return Y */
+  // template<typename T>
+  // auto applyRight(const T & X) const
+  //   -> decltype(containers::ops::product(X, op_)){
+  //   return containers::ops::product(X, op_);
+  // }
 
-  /* Y = X * op: Y passed */
-  template<typename T1, typename T2>
-  void applyRight(const T1 & X, T2 & Y)  const{
-    containers::ops::product(X, op_, Y);
-  }
+  // /* Y = X * op: Y passed */
+  // template<typename T1, typename T2>
+  // void applyRight(const T1 & X, T2 & Y)  const{
+  //   containers::ops::product(X, op_, Y);
+  // }
 
 
   /* Y = op_ * X : return Y */
@@ -121,37 +121,37 @@ public:
   }
 
 
-  /* Y = op^T * X: return Y */
-  template <typename T,
-     ::pressio::mpl::enable_if_t<
-       containers::meta::is_vector_wrapper<T>::value or
-       containers::meta::is_multi_vector_wrapper<T>::value
-       > * = nullptr
-     >
-  auto applyTranspose(const T & X) const
-    -> decltype(containers::ops::dot( std::declval<wrapped_type>(),
-				std::declval<T>() )){
-    // multivector^T acts on vector = take dot of each row
-    // op_^T: multivector of size n,m
-    // X: vector of size m,1
-    // Y: vector with results of all dots of size n,1
-    return containers::ops::dot(op_, X);
-  }
+  // /* Y = op^T * X: return Y */
+  // template <typename T,
+  //    ::pressio::mpl::enable_if_t<
+  //      containers::meta::is_vector_wrapper<T>::value or
+  //      containers::meta::is_multi_vector_wrapper<T>::value
+  //      > * = nullptr
+  //    >
+  // auto applyTranspose(const T & X) const
+  //   -> decltype(containers::ops::dot( std::declval<wrapped_type>(),
+  // 				std::declval<T>() )){
+  //   // multivector^T acts on vector = take dot of each row
+  //   // op_^T: multivector of size n,m
+  //   // X: vector of size m,1
+  //   // Y: vector with results of all dots of size n,1
+  //   return containers::ops::dot(op_, X);
+  // }
 
-  /* Y = op^T * X: pass Y */
-  template <typename T1, typename T2,
-     ::pressio::mpl::enable_if_t<
-       containers::meta::is_vector_wrapper<T1>::value or
-       containers::meta::is_multi_vector_wrapper<T1>::value
-       > * = nullptr
-     >
-  void applyTranspose(const T1 & X, T2 & Y) const{
-    // multivector^T acts on vector = take dot of each row
-    // op_^T: multivector of size n,m
-    // X: vector of size m,1
-    // Y: vector with results of all dots of size n,1
-    containers::ops::dot(op_, X, Y);
-  }
+  // /* Y = op^T * X: pass Y */
+  // template <typename T1, typename T2,
+  //    ::pressio::mpl::enable_if_t<
+  //      containers::meta::is_vector_wrapper<T1>::value or
+  //      containers::meta::is_multi_vector_wrapper<T1>::value
+  //      > * = nullptr
+  //    >
+  // void applyTranspose(const T1 & X, T2 & Y) const{
+  //   // multivector^T acts on vector = take dot of each row
+  //   // op_^T: multivector of size n,m
+  //   // X: vector of size m,1
+  //   // Y: vector with results of all dots of size n,1
+  //   containers::ops::dot(op_, X, Y);
+  // }
 
 };//end class
 

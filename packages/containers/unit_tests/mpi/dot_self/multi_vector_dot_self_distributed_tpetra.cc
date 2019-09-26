@@ -77,20 +77,22 @@ TEST(containers_ops, TpetraMultiVectorDotSelf){
   }
 
   using eig_mat = Eigen::Matrix< double, Eigen::Dynamic, Eigen::Dynamic>;
+  using eig_mat_w = containers::Matrix<eig_mat>;
+
   eig_mat TT(4,4);
   TT(0,0)=17.; TT(0,1)=0.; TT(0,2)=5.; TT(0,3)=2.;
   TT(1,0)=0.; TT(1,1)=18.; TT(1,2)=6.; TT(1,3)=7.;
   TT(2,0)=5.; TT(2,1)=6.; TT(2,2)=10.; TT(2,3)=10.;
   TT(3,0)=2.; TT(3,1)=7.; TT(3,2)=10.; TT(3,3)=15.;
 
-  auto C = containers::ops::dot_self(A);
+  auto C = containers::ops::dot_self<mvec_t, eig_mat_w>(A);
   for (auto i=0; i<4; i++){
     for (auto j=0; j<2; j++){
       EXPECT_NEAR( TT(i,j), C(i,j), 1e-12);
     }
   }
 
-  containers::Matrix<eig_mat> C2(4,4);
+  eig_mat_w C2(4,4);
   containers::ops::dot_self(A, C2);
   for (auto i=0; i<4; i++){
     for (auto j=0; j<4; j++){

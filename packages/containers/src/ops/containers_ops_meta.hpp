@@ -45,7 +45,6 @@
 // ************************************************************************
 //@HEADER
 */
-
 #ifndef CONTAINERS_OPS_META_HPP_
 #define CONTAINERS_OPS_META_HPP_
 
