@@ -87,7 +87,11 @@ class PyGaussNewton<
     hessian_t, linear_solver_t, scalar_t, when_converged_t
     >
   >,
-    public IterativeBase<scalar_t>
+    public IterativeBase<
+  PyGaussNewton<
+    system_t, state_t, residual_t, jacobian_t,
+    hessian_t, linear_solver_t, scalar_t, when_converged_t
+    >, scalar_t>
 {
   static_assert( mpl::not_same<system_t, pybind11::object>::value,
 		 "The PyGaussNewton is supposed to have state/res/jac = pybind11::array_t, but the system_t should NOT be a pybind11::object to contain a Python object. If you need to use a GaussNewton solver on numpy strucrtures, just use one ready off the shelf. This PyGaussNewton is tailored so that you can use an Application class written in Python and use the time-integrators within Pressio as well as the ROMs methods inside Pressio.");
@@ -100,7 +104,7 @@ class PyGaussNewton<
   friend NonLinearSolverBase<this_t>;
 
   // the type of the iterative base
-  using iterative_base_t = IterativeBase<scalar_t>;
+  using iterative_base_t = IterativeBase<this_t, scalar_t>;
 
   using typename iterative_base_t::iteration_t;
 
