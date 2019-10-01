@@ -76,7 +76,7 @@ struct FomRhsData<fom_rhs_type>
   template <
     typename _fom_rhs_type = fom_rhs_type,
     mpl::enable_if_t<
-      ::pressio::containers::meta::is_cstyle_array_pybind11<_fom_rhs_type>::value
+      ::pressio::containers::meta::is_array_pybind11<_fom_rhs_type>::value
       > * = nullptr
     >
   FomRhsData(const _fom_rhs_type & fomRhsIn)

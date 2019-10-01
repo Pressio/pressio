@@ -79,7 +79,7 @@ void deep_copy(const T & src, T & dest){
 template<
   typename T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
+    ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
 void deep_copy(const T & src, T & dest){

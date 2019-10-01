@@ -97,7 +97,7 @@ public:
       ::pressio::containers::meta::is_wrapper<galerkin_state_t>::value
 #ifdef HAVE_PYBIND11
       and
-      !::pressio::containers::meta::is_cstyle_array_pybind11<galerkin_state_t>::value
+      !::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
 #endif
       > * = nullptr
   >
@@ -123,7 +123,7 @@ public:
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       ::pressio::mpl::is_same<_ud_ops_t, pybind11::object>::value and
-      ::pressio::containers::meta::is_cstyle_array_pybind11<galerkin_state_t>::value
+      ::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
       > * = nullptr
   >
   GalerkinProblemGenerator(const fom_t		    & appObj,

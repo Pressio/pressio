@@ -65,7 +65,7 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
+    ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v, scalar_t a,
@@ -89,7 +89,7 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
+    ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v, const T & v1, const scalar_t b){
@@ -116,7 +116,7 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
+    ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v, const scalar_t &a,
@@ -141,7 +141,7 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
+    ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v,
@@ -171,7 +171,7 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
+    ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v, const scalar_t &a,
@@ -197,7 +197,7 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
+    ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v,
@@ -228,7 +228,7 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
+    ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v, const scalar_t &a,
@@ -256,7 +256,7 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<T>::value
+    ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
 void do_update(T & v,

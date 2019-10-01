@@ -165,7 +165,7 @@ private:
     std::is_void<_ud_ops>::value and
     ::pressio::containers::meta::is_vector_wrapper<galerkin_state_t>::value
 #ifdef HAVE_PYBIND11
-    and !::pressio::containers::meta::is_cstyle_array_pybind11<galerkin_state_t>::value
+    and !::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
 #endif
     > * = nullptr
   >
@@ -213,7 +213,7 @@ private:
   typename _ud_ops = ud_ops,
   mpl::enable_if_t<
     ::pressio::mpl::is_same<_ud_ops, pybind11::object>::value and
-    ::pressio::containers::meta::is_cstyle_array_pybind11<galerkin_state_t>::value
+    ::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
     > * = nullptr
   >
   void compute_impl(const galerkin_state_t  & romY,

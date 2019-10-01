@@ -190,7 +190,7 @@ struct LSPGCommonTypes<
   fom_type, decoder_type, lspg_state_type,
   odeName, ud_ops,
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<lspg_state_type>::value and
+    ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value and
     mpl::is_same<fom_type, pybind11::object>::value
     >
   >

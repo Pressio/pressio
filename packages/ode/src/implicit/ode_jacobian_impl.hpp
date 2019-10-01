@@ -83,7 +83,7 @@ template <
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     (odeMethod == ::pressio::ode::ImplicitEnum::Euler) and
-    containers::meta::is_cstyle_array_pybind11<jacobian_type>::value
+    containers::meta::is_array_pybind11<jacobian_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(jacobian_type & jac,

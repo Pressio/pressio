@@ -167,7 +167,7 @@ struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
 template <typename galerkin_state_type, typename ...Args>
 using GalerkinCommonTypes = impl::GalerkinCommonTypes<
 #ifdef HAVE_PYBIND11
-  ::pressio::containers::meta::is_cstyle_array_pybind11<galerkin_state_type>::value,
+  ::pressio::containers::meta::is_array_pybind11<galerkin_state_type>::value,
 #else
   false,
 #endif
