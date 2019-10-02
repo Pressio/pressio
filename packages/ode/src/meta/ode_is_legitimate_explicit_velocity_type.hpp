@@ -67,7 +67,7 @@ struct is_legitimate_explicit_velocity_type<T,
  typename std::enable_if<
    containers::meta::is_vector_wrapper<T>::value
 #ifdef HAVE_PYBIND11
-   or containers::meta::is_cstyle_array_pybind11<T>::value
+   or containers::meta::is_array_pybind11<T>::value
 #endif
    >::type
   > : std::true_type{};

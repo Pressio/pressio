@@ -62,7 +62,7 @@ template <
 struct PyLinearDecoder<
   matrix_type, ops_t,
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<matrix_type>::value
+    ::pressio::containers::meta::is_array_pybind11<matrix_type>::value
     >
   >
   : public DecoderBase<

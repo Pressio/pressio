@@ -123,7 +123,7 @@ template <
 class FomStateReconstructor<
   fom_state_t, decoder_type,
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_cstyle_array_pybind11<fom_state_t>::value
+    ::pressio::containers::meta::is_array_pybind11<fom_state_t>::value
     >
   >
 {

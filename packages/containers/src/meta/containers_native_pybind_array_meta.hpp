@@ -60,7 +60,7 @@ namespace pressio{ namespace containers{ namespace meta {
 
 /*
  * this metafunction is here because a pybind11::array_t
- * can have arbitrary size sine it maps to numpy.
+ * can have arbitrary size since it maps to numpy.
  * And I don't know yet if a pybind11::array_t can be
  * checked at compile time to be a vector or matrix
  */
@@ -84,13 +84,33 @@ struct is_cstyle_array_pybind11<
 //----------------------------------------------
 
 template <typename T, typename enable = void>
+struct is_fstyle_array_pybind11 : std::false_type {};
+
+template <typename T>
+struct is_fstyle_array_pybind11<
+  T,
+  ::pressio::mpl::enable_if_t<
+    mpl::is_same<
+      T,
+      pybind11::array_t<
+	typename T::value_type,
+	pybind11::array::f_style
+	>
+      >::value
+    >
+  > : std::true_type{};
+//----------------------------------------------
+
+
+template <typename T, typename enable = void>
 struct is_array_pybind11 : std::false_type {};
 
 template <typename T>
 struct is_array_pybind11<
   T,
   ::pressio::mpl::enable_if_t<
-    is_cstyle_array_pybind11<T>::value
+    is_cstyle_array_pybind11<T>::value or
+    is_fstyle_array_pybind11<T>::value
     >
   > : std::true_type{};
 

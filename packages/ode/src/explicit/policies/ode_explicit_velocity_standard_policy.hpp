@@ -118,7 +118,7 @@ class ExplicitVelocityStandardPolicy<
   state_type, system_type, state_type,
   mpl::enable_if_t<
     mpl::is_same<system_type, pybind11::object >::value and
-    containers::meta::is_cstyle_array_pybind11<state_type>::value
+    containers::meta::is_array_pybind11<state_type>::value
     >
   >
   : public ExplicitVelocityPolicyBase<
