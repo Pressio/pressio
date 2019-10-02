@@ -59,6 +59,7 @@ namespace iterative{
 namespace direct{
   struct HouseholderQR {};
   struct ColPivHouseholderQR {};
+  struct PartialPivLU {};
 
   #if defined HAVE_TRILINOS or defined HAVE_KOKKOS
   struct getrs{};

@@ -156,6 +156,16 @@ struct traits<::pressio::solvers::linear::direct::HouseholderQR> {
   static constexpr bool eigen_enabled = true;
 };
 
+template <>
+struct traits<::pressio::solvers::linear::direct::PartialPivLU> {
+
+  template <typename MatrixT>
+  using eigen_solver_type = Eigen::PartialPivLU<MatrixT>;
+
+  static constexpr bool direct = true;
+  static constexpr bool eigen_enabled = true;
+};
+
 #if defined HAVE_TRILINOS or defined HAVE_KOKKOS
 template <>
 struct traits<::pressio::solvers::linear::direct::getrs> {
