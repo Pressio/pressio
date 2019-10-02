@@ -224,10 +224,10 @@ private:
       // std::cout << "jacobian" << std::endl;
       // pythonOps_.attr("myprint")(jac_);
       // std::cout << "\n";
-#ifdef DEBUG_PRINT
-      std::cout << "hessian" << std::endl;
-      pythonOps_.attr("myprint")(hess_);
-#endif
+// #ifdef DEBUG_PRINT
+//       std::cout << "hessian" << std::endl;
+//       pythonOps_.attr("myprint")(hess_);
+// #endif
 
 #ifdef DEBUG_PRINT
       auto fmt1 = utils::io::magenta() + utils::io::bold();

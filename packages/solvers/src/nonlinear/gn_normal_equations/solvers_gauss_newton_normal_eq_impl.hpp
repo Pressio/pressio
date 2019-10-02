@@ -190,12 +190,12 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("hessian");
 #endif
 
-#ifdef DEBUG_PRINT
-    ::pressio::utils::io::print_stdout("HESSIAN" , "\n");
-    ::pressio::utils::io::print_stdout(std::fixed,
-				       std::setprecision(14),
-				       *H.data() , "\n");
-#endif
+// #ifdef DEBUG_PRINT
+//     ::pressio::utils::io::print_stdout("HESSIAN" , "\n");
+//     ::pressio::utils::io::print_stdout(std::fixed,
+// 				       std::setprecision(14),
+// 				       *H.data() , "\n");
+// #endif
 
 #ifdef DEBUG_PRINT
     auto fmt2 = utils::io::magenta() + utils::io::bold();
