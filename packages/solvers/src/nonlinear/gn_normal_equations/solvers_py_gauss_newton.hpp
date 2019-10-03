@@ -242,6 +242,10 @@ private:
       // compute RHS: J^T*res
       pythonOps_.attr("multiply2")(jac_, res_, JTR_, true);
       pythonOps_.attr("scale")(JTR_, negOne);
+#ifdef DEBUG_PRINT
+      std::cout << "JT R" << std::endl;
+      pythonOps_.attr("myprint")(JTR_);
+#endif
 
       // norm of projected residual
       norm_evaluator_t::evaluate(JTR_, normJTRes);
@@ -250,6 +254,11 @@ private:
 
       // solve normal equations
       linSolver_.attr("solve")(hess_, JTR_, dy_);
+#ifdef DEBUG_PRINT
+      std::cout << "Correction dy \n" << std::endl;
+      pythonOps_.attr("myprint")(dy_);
+#endif
+
 
       // compute norm of the correction
       norm_evaluator_t::evaluate(dy_, norm_dy_);
