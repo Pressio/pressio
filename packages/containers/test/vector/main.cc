@@ -61,10 +61,10 @@ int main(int argc, char *argv[]){
   {
     using state_t = std::vector<double>;
     using vec_t = containers::Vector<state_t>;
-    vec_t gigi;
-    gigi.resize(10);
-    gigi[0] = 22.4;
-    state_t const * myview = gigi.view();
+    vec_t vObj;
+    vObj.resize(10);
+    vObj[0] = 22.4;
+    state_t const * myview = vObj.view();
     std::cout << (*myview)[0] << " " << (*myview)[1] << std::endl;
     std::cout << containers::details::traits<vec_t>::isSTDVector << std::endl;
   }
@@ -72,10 +72,10 @@ int main(int argc, char *argv[]){
   {
     using state_t = myve;
     using vec_t = containers::Vector<state_t>;
-    vec_t gigi2;
-    size_t ss = gigi2.size();
+    vec_t vObj2;
+    size_t ss = vObj2.size();
     std::cout << "size l = " << ss << std::endl;
-    auto * vv = gigi2.view();
+    auto * vv = vObj2.view();
     std::cout << "view = " << (*vv)[0] << std::endl;
   }
 
@@ -95,10 +95,10 @@ int main(int argc, char *argv[]){
     x.PutScalar(21.0);
 
     using vec_t = containers::Vector<Epetra_Vector>;
-    vec_t gigi2(x);
-    std::cout << "size l = " << gigi2.localSize() << std::endl;
-    std::cout << "size g = " << gigi2.globalSize() << std::endl;
-    auto * vv = gigi2.view();
+    vec_t vObj2(x);
+    std::cout << "size l = " << vObj2.localSize() << std::endl;
+    std::cout << "size g = " << vObj2.globalSize() << std::endl;
+    auto * vv = vObj2.view();
     std::cout << "view = " << (*vv)[0] << std::endl;
 
     // // Define some constants for use below.

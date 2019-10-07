@@ -120,20 +120,20 @@ int main(int argc, char *argv[]){
   using converged_when_t = pressio::solvers::iterative::default_convergence;
   using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
     rom_system_t, converged_when_t, linear_solver_t, observer_t>;
-  gnsolver_t solver(lspgProblem.systemObj_, yROM, linSolverObj, myResidSampler);
+  gnsolver_t solver(lspgProblem.getSystemRef(), yROM, linSolverObj, myResidSampler);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
-  solver.solve(lspgProblem.systemObj_, yROM);
+  solver.solve(lspgProblem.getSystemRef(), yROM);
 
   /* the ROM is run for a parameter point that was used to generate
    * the basis, so we should recover the FOM solution exactly */
-  auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
+  auto yFomApprox = lspgProblem.getFomStateReconstructorCRef()(yROM);
   auto errorVec(yFom); errorVec = yFom - yFomApprox;
   const auto norm2err = pressio::containers::ops::norm2(errorVec);
   if( norm2err > 1e-12 ) checkStr = "FAILED";
 
   // now calculate the residual using the final yROM
-  auto fomResidFromFOMState = lspgProblem.systemObj_.residual(yROM);
+  auto fomResidFromFOMState = lspgProblem.getSystemRef().residual(yROM);
   // retrieve the residual that was stored by the sampler
   auto storedR = myResidSampler.getR();
   // the two should match exactly

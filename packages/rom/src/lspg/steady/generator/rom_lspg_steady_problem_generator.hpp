@@ -54,8 +54,9 @@
 namespace pressio{ namespace rom{
 
 template <typename lspg_problem>
-struct LSPGSteadyProblemGenerator<
-  lspg_problem > : lspg_problem {
+class LSPGSteadyProblemGenerator<
+  lspg_problem > : lspg_problem
+{
 
   using typename lspg_problem::fom_t;
   using typename lspg_problem::scalar_t;
@@ -78,16 +79,26 @@ struct LSPGSteadyProblemGenerator<
 
   fom_eval_rhs_policy_t		rhsEv_;
   fom_apply_jac_policy_t	ajacEv_;
-  fom_state_t		  yFomRef_;
-  fom_state_reconstr_t		yFomReconstructor_;
-  fom_velocity_t		   rFomRef_;
+  fom_state_t			yFomRef_;
+  fom_state_reconstr_t		fomStateReconstructor_;
+  fom_velocity_t		rFomRef_;
   fom_states_data		fomStates_;
-  fom_velocity_data			fomRhs_;
+  fom_velocity_data		fomRhs_;
   lspg_matrix_t			romMat_;
   lspg_residual_policy_t	resObj_;
   lspg_jacobian_policy_t	jacObj_;
   lspg_system_t			systemObj_;
 
+public:
+  lspg_system_t & getSystemRef(){
+    return systemObj_;
+  }
+
+  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
+    return fomStateReconstructor_;
+  }
+
+public:
   LSPGSteadyProblemGenerator(const fom_t	& appObj,
 			     const fom_native_state_t & yFomRefNative,
 			     const decoder_t	& decoder,
@@ -95,9 +106,9 @@ struct LSPGSteadyProblemGenerator<
     : rhsEv_{},
       ajacEv_{},
       yFomRef_(yFomRefNative),
-      yFomReconstructor_(yFomRef_, decoder),
+      fomStateReconstructor_(yFomRef_, decoder),
       rFomRef_( rhsEv_.evaluate(appObj, yFomRef_) ),
-      fomStates_(yFomRef_, yFomReconstructor_),
+      fomStates_(yFomRef_, fomStateReconstructor_),
       fomRhs_(rFomRef_),
       romMat_(ajacEv_.evaluate(appObj, yFomRef_,
 			       decoder.getReferenceToJacobian())),
