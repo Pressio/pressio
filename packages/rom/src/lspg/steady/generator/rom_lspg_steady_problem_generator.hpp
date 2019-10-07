@@ -90,7 +90,7 @@ class LSPGSteadyProblemGenerator<
   lspg_system_t			systemObj_;
 
 public:
-  const fom_state_reconstr_t & getReconstructorRef() const{
+  const fom_state_reconstr_t & getFomStateReconstructor() const{
     return fomStateReconstructor_;
   }
 

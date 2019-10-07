@@ -107,7 +107,7 @@ public:
     return stepperObj_;
   }
 
-  const fom_state_reconstr_t & getReconstructorRef() const{
+  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
     return fomStateReconstructor_;
   }
 

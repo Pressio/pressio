@@ -54,7 +54,7 @@
 namespace pressio{ namespace rom{
 
 template <typename problem_t>
-struct GalerkinProblemGenerator<problem_t>
+class GalerkinProblemGenerator<problem_t>
   : public problem_t
 {
 
@@ -87,6 +87,11 @@ public:
     return stepperObj_;
   }
 
+  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
+    return fomStateReconstructor_;
+  }
+
+public:
   /*
    * ud_ops_t == void and state_type is a wrapper
   */

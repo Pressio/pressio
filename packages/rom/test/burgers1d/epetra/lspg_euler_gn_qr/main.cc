@@ -68,15 +68,15 @@ int main(int argc, char *argv[]){
   using converged_when_t = pressio::solvers::iterative::default_convergence;
   using gnsolver_t  = pressio::solvers::iterative::GaussNewtonQR<
          qr_type, converged_when_t, lspg_stepper_t>;
-  gnsolver_t solver(lspgProblem.stepperObj_, yROM);
+  gnsolver_t solver(lspgProblem.getStepperRef(), yROM);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(200);
 
   // integrate in time
-  pressio::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, 10, solver);
+  pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
-  auto yFomFinal = lspgProblem.fomStateReconstructor_(yROM);
+  auto yFomFinal = lspgProblem.getFomStateReconstructorCRef(yROM);
   yFomFinal.data()->Print(std::cout << std::setprecision(14));
 
   // this is a reproducing ROM test, so the final reconstructed state

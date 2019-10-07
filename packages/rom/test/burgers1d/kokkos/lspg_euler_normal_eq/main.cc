@@ -77,16 +77,16 @@ int main(int argc, char *argv[]){
     // rom is solved using eigen, hessian is wrapper of eigen matrix
     using gnsolver_t   = pressio::solvers::iterative::GaussNewton<lspg_stepper_t,
     								  linear_solver_t>;
-    gnsolver_t solver(lspgProblem.stepperObj_, yROM, linSolverObj);
+    gnsolver_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
     solver.setTolerance(1e-14);
     // I know this should converge in few iters at every step
     solver.setMaxIterations(2);
 
     // integrate in time
-    pressio::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, 10, solver);
+    pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    const auto yFomFinal_d = lspgProblem.fomStateReconstructor_(yROM);
+    const auto yFomFinal_d = lspgProblem.getFomStateReconstructorCRef(yROM);
 
     // create a host mirror for yFomFinal
     native_state_t_h yFomFinal_h("yFF_h", numCell);

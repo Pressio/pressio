@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
   solver.solve(lspgProblem.systemObj_, yROM);
 
   // reconstruct the fom corresponding to our rom final state
-  auto yFomApprox = lspgProblem.fomStateReconstructor_(yROM);
+  auto yFomApprox = lspgProblem.getFomStateReconstructorCRef(yROM);
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
 
   /* this is a predictive run, so we should recover FOM

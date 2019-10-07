@@ -127,7 +127,7 @@ int main(int argc, char *argv[]){
 
   /* the ROM is run for a parameter point that was used to generate
    * the basis, so we should recover the FOM solution exactly */
-  auto yFomApprox = lspgProblem.fomStateReconstructor_(yROM);
+  auto yFomApprox = lspgProblem.getFomStateReconstructorCRef(yROM);
   auto errorVec(yFom); errorVec = yFom - yFomApprox;
   const auto norm2err = pressio::containers::ops::norm2(errorVec);
   if( norm2err > 1e-12 ) checkStr = "FAILED";
