@@ -85,7 +85,7 @@ struct LSPGUnsteadyProblemGenerator<lspg_problem>
   fom_eval_velocity_policy_t	rhsEv_;
   fom_apply_jac_policy_t	ajacEv_;
   fom_state_t			yFomRef_;
-  fom_state_reconstr_t		yFomReconstructor_;
+  fom_state_reconstr_t		fomStateReconstructor_;
   fom_velocity_t		rFomRef_;
   fom_states_data		fomStates_;
   fom_velocity_data		fomRhs_;
@@ -129,9 +129,9 @@ public:
     : rhsEv_{},
       ajacEv_{},
       yFomRef_(yFomRefNative),
-      yFomReconstructor_(yFomRef_, decoder),
+      fomStateReconstructor_(yFomRef_, decoder),
       rFomRef_( rhsEv_.evaluate(appObj, yFomRef_, t0) ),
-      fomStates_(yFomRef_, yFomReconstructor_),
+      fomStates_(yFomRef_, fomStateReconstructor_),
       fomRhs_(rFomRef_),
       romMat_(ajacEv_.evaluate(appObj, yFomRef_,
       			       decoder.getReferenceToJacobian(), t0)),
@@ -171,9 +171,9 @@ public:
     : rhsEv_{},
       ajacEv_{},
       yFomRef_(yFomRefNative),
-      yFomReconstructor_(yFomRef_, decoder),
+      fomStateReconstructor_(yFomRef_, decoder),
       rFomRef_( rhsEv_.evaluate(appObj, yFomRef_, t0) ),
-      fomStates_(yFomRef_, yFomReconstructor_),
+      fomStates_(yFomRef_, fomStateReconstructor_),
       fomRhs_(rFomRef_),
       romMat_(ajacEv_.evaluate(appObj, yFomRef_, decoder.getReferenceToJacobian(), t0)),
       resObj_(fomStates_, fomRhs_, rhsEv_),
@@ -198,9 +198,9 @@ public:
     : rhsEv_{},
       ajacEv_{},
       yFomRef_(yFomRefNative),
-      yFomReconstructor_(yFomRef_, decoder),
+      fomStateReconstructor_(yFomRef_, decoder),
       rFomRef_( rhsEv_.evaluate(appObj, yFomRef_, t0) ),
-      fomStates_(yFomRef_, yFomReconstructor_),
+      fomStates_(yFomRef_, fomStateReconstructor_),
       fomRhs_(rFomRef_),
       romMat_(ajacEv_.evaluate(appObj, yFomRef_,
   			       decoder.getReferenceToJacobian(), t0)),

@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
     pressio::ode::integrateNSteps(lspgProblem.stepperObj_, yROM, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
+    auto yFomFinal = lspgProblem.fomStateReconstructor_(yROM);
     auto yFF_v = yFomFinal.data()->getData();
 
     // this is a reproducing ROM test, so the final reconstructed state

@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
   pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
-  auto yFomFinal = lspgProblem.yFomReconstructor_(yROM);
+  auto yFomFinal = lspgProblem.fomStateReconstructor_(yROM);
 
   // this is a reproducing ROM test, so the final reconstructed state
   // has to match the FOM solution obtained with euler, same time-step, for 10 steps

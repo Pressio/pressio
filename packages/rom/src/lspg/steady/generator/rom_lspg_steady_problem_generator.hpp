@@ -79,7 +79,7 @@ struct LSPGSteadyProblemGenerator<
   fom_eval_rhs_policy_t		rhsEv_;
   fom_apply_jac_policy_t	ajacEv_;
   fom_state_t		  yFomRef_;
-  fom_state_reconstr_t		yFomReconstructor_;
+  fom_state_reconstr_t		fomStateReconstructor_;
   fom_velocity_t		   rFomRef_;
   fom_states_data		fomStates_;
   fom_velocity_data			fomRhs_;
@@ -95,9 +95,9 @@ struct LSPGSteadyProblemGenerator<
     : rhsEv_{},
       ajacEv_{},
       yFomRef_(yFomRefNative),
-      yFomReconstructor_(yFomRef_, decoder),
+      fomStateReconstructor_(yFomRef_, decoder),
       rFomRef_( rhsEv_.evaluate(appObj, yFomRef_) ),
-      fomStates_(yFomRef_, yFomReconstructor_),
+      fomStates_(yFomRef_, fomStateReconstructor_),
       fomRhs_(rFomRef_),
       romMat_(ajacEv_.evaluate(appObj, yFomRef_,
 			       decoder.getReferenceToJacobian())),

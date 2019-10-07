@@ -185,7 +185,7 @@ int main(int argc, char *argv[]){
 	Compute relative error between space-time solution with respect to FOM solution
 	*/
   // reconstruct the fom corresponding to our rom final state (should be a matrix Ns x Nt)
-  auto yFomApprox = lspgProblem.yFomReconstructor_(yROM);
+  auto yFomApprox = lspgProblem.fomStateReconstructor_(yROM);
   appObj.printStateToFile("rom.txt", *yFomApprox.data());
   {
   	// TODO: extract the last column of matrix yFomApprox and compare it with the FOM solution obtained with implicit euler, same time step, for 10 steps?

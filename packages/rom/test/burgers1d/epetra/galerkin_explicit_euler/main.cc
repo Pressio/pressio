@@ -75,7 +75,7 @@ const std::vector<double> bdf1Sol
   pressio::ode::integrateNSteps(galerkinProb.stepperObj_, yROM, 0.0, dt, nSteps);
 
   // compute the fom corresponding to our rom final state
-  auto yFomFinal = galerkinProb.yFomReconstructor_(yROM);
+  auto yFomFinal = galerkinProb.fomStateReconstructor_(yROM);
   yFomFinal.data()->Print(std::cout << std::setprecision(14));
 
   // check against gold solution

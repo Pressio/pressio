@@ -75,7 +75,7 @@ struct GalerkinProblemGenerator<problem_t>
   using typename problem_t::galerkin_stepper_t;
 
   fom_state_t			yFomRef_;
-  fom_state_reconstr_t		yFomReconstructor_;
+  fom_state_reconstr_t		fomStateReconstructor_;
   fom_velocity_t		rFomRef_;
   fom_states_data		fomStates_;
   fom_velocity_data		fomRhs_;
@@ -107,9 +107,9 @@ public:
   			   galerkin_state_t	    & yROM,
   			   scalar_t		    t0)
     : yFomRef_(yFomRefNative),
-      yFomReconstructor_(yFomRef_, decoder),
+      fomStateReconstructor_(yFomRef_, decoder),
       rFomRef_( appObj.velocity(*yFomRef_.data(), t0) ),
-      fomStates_(yFomRef_, yFomReconstructor_),
+      fomStates_(yFomRef_, fomStateReconstructor_),
       fomRhs_(rFomRef_),
       resObj_(fomStates_, fomRhs_, decoder),
       stepperObj_(yROM, appObj, resObj_)
@@ -133,9 +133,9 @@ public:
   			   scalar_t		    t0,
 			   const _ud_ops_t	    & udOps)
     : yFomRef_(yFomRefNative),
-      yFomReconstructor_(yFomRef_, decoder),
+      fomStateReconstructor_(yFomRef_, decoder),
       rFomRef_( appObj.attr("velocity")(yFomRef_, t0) ),
-      fomStates_(yFomRef_, yFomReconstructor_),
+      fomStates_(yFomRef_, fomStateReconstructor_),
       fomRhs_(rFomRef_),
       resObj_(fomStates_, fomRhs_, decoder, udOps),
       stepperObj_(yROM, appObj, resObj_)
