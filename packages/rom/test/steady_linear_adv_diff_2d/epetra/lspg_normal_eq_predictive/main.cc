@@ -89,13 +89,13 @@ int main(int argc, char *argv[]){
   using converged_when_t = pressio::solvers::iterative::default_convergence;
   using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
     rom_system_t, converged_when_t, linear_solver_t>;
-  gnsolver_t solver(lspgProblem.systemObj_, yROM, linSolverObj);
+  gnsolver_t solver(lspgProblem.getSystemRef(), yROM, linSolverObj);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
-  solver.solve(lspgProblem.systemObj_, yROM);
+  solver.solve(lspgProblem.getSystemRef(), yROM);
 
   // reconstruct the fom corresponding to our rom final state
-  auto yFomApprox = lspgProblem.getFomStateReconstructorCRef(yROM);
+  auto yFomApprox = lspgProblem.getFomStateReconstructorCRef()(yROM);
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
 
   /* this is a predictive run, so we should recover FOM

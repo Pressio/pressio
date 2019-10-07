@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){
     pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    const auto yFomFinal_d = lspgProblem.getFomStateReconstructorCRef(yROM);
+    const auto yFomFinal_d = lspgProblem.getFomStateReconstructorCRef()(yROM);
 
     // create a host mirror for yFomFinal
     native_state_t_h yFomFinal_h("yFF_h", numCell);
