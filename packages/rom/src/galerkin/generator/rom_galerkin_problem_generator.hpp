@@ -57,7 +57,7 @@ template <typename problem_t>
 class GalerkinProblemGenerator<problem_t>
   : public problem_t
 {
-
+public:
   using typename problem_t::fom_t;
   using typename problem_t::scalar_t;
   using typename problem_t::fom_native_state_t;
@@ -74,6 +74,7 @@ class GalerkinProblemGenerator<problem_t>
   using typename problem_t::galerkin_residual_policy_t;
   using typename problem_t::galerkin_stepper_t;
 
+private:
   fom_state_t			yFomRef_;
   fom_state_reconstr_t		fomStateReconstructor_;
   fom_velocity_t		rFomRef_;

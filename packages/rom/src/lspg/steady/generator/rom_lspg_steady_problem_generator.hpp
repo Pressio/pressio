@@ -58,6 +58,7 @@ class LSPGSteadyProblemGenerator<
   lspg_problem > : lspg_problem
 {
 
+public:
   using typename lspg_problem::fom_t;
   using typename lspg_problem::scalar_t;
   using typename lspg_problem::fom_native_state_t;
@@ -77,6 +78,7 @@ class LSPGSteadyProblemGenerator<
   using typename lspg_problem::lspg_jacobian_policy_t;
   using typename lspg_problem::lspg_system_t;
 
+private:
   fom_eval_rhs_policy_t		rhsEv_;
   fom_apply_jac_policy_t	ajacEv_;
   fom_state_t			yFomRef_;

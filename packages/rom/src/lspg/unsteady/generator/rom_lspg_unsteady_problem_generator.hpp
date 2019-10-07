@@ -59,7 +59,7 @@ template <typename lspg_problem>
 class LSPGUnsteadyProblemGenerator<lspg_problem>
   : public lspg_problem
 {
-
+public:
   using typename lspg_problem::fom_t;
   using typename lspg_problem::scalar_t;
   using typename lspg_problem::fom_native_state_t;
@@ -82,6 +82,7 @@ class LSPGUnsteadyProblemGenerator<lspg_problem>
   using typename lspg_problem::aux_stepper_t;
   using typename lspg_problem::lspg_stepper_t;
 
+private:
   fom_eval_velocity_policy_t	rhsEv_;
   fom_apply_jac_policy_t	ajacEv_;
   fom_state_t			yFomRef_;
