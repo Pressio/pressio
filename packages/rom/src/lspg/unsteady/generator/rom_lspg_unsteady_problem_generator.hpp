@@ -56,7 +56,7 @@
 namespace pressio{ namespace rom{
 
 template <typename lspg_problem>
-struct LSPGUnsteadyProblemGenerator<lspg_problem>
+class LSPGUnsteadyProblemGenerator<lspg_problem>
   : public lspg_problem
 {
 
@@ -105,6 +105,10 @@ struct LSPGUnsteadyProblemGenerator<lspg_problem>
 public:
   lspg_stepper_t & getStepperRef(){
     return stepperObj_;
+  }
+
+  const fom_state_reconstr_t & getReconstructorRef() const{
+    return fomStateReconstructor_;
   }
 
 public:
