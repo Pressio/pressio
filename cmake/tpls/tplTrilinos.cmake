@@ -1,5 +1,6 @@
 
 option(TPL_ENABLE_TRILINOS "Enable Trilinos TPL" OFF)
+
 if(TPL_ENABLE_TRILINOS)
   # this define is used by the cmake_config
   set(HAVE_TRILINOS ON)
@@ -8,8 +9,8 @@ if(TPL_ENABLE_TRILINOS)
   if(BUILD_UNIT_TESTS OR BUILD_TESTS)
 
     set(HAVE_TEUCHOS_TIMERS ON)
-    if(NOT TRILINOS_INC_DIR OR NOT TRILINOS_LIB_DIR
-	OR NOT TRILINOS_INCLUDE_DIR OR NOT TRILINOS_LIBRARIES_DIR)
+    if( (NOT TRILINOS_INC_DIR OR NOT TRILINOS_LIB_DIR)
+	AND (NOT TRILINOS_INCLUDE_DIR OR NOT TRILINOS_LIBRARIES_DIR))
       message(FATAL_ERROR "You set TPL_ENABLE_TRILINOS=${TPL_ENABLE_TRILINOS} but did not specify how to find it.
         Please reconfigure with:
           -DTRILINOS_INC_DIR=<full-path-to-trilinos-headers>
@@ -28,7 +29,6 @@ if(TPL_ENABLE_TRILINOS)
       set(TRILINOS_LIB_DIR ${TRILINOS_LIBRARIES_DIR})
     endif()
 
-    include_directories(${DTRILINOS_INC_DIR})
     set(TRILINOS_LIB_NAMES
       kokkosalgorithms
       kokkoscontainers
@@ -58,5 +58,10 @@ if(TPL_ENABLE_TRILINOS)
       # repeat to solve issue we have on linux
       kokkosalgorithms
       teuchosparameterlist)
+
+    include_directories(${TRILINOS_INC_DIR})
+    link_directories(${TRILINOS_LIB_DIR})
+    link_libraries(${TRILINOS_LIB_NAMES})
+
   endif()
 endif()

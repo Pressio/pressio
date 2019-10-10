@@ -1,7 +1,7 @@
 
 This file contains a list of cmake variables (and their description)
 that can be turned on/off by the user to enable/disable certain features
-at compile time since these are pre-processor directives.
+at compile time since these translate into pre-processor directives.
 
 - DEBUG_PRINT
 default = OFF
@@ -9,41 +9,46 @@ description: to turn on/off print statemetns for debugging
 prerequisites: none
 
 - HAVE_TRILINOS
-ON if TPL_ENABLE_TRILINOS = ON, OFF otherwise
+ON if -DTPL_ENABLE_TRILINOS=ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have Trilinos installed if you want this on
 
 - HAVE_KOKKOS
-ON if TPL_ENABLE_TRILINOS = ON or if Kokkos is used alone, OFF otherwise
+ON if -DTPL_ENABLE_TRILINOS=ON or if -DTPL_ENABLE_KOKKOS=ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have Kokkos alone or Trilinos installed if you want this on
 
 - HAVE_LAPACK
-ON if TPL_ENABLE_LAPACK = ON, OFF otherwise
+ON if -DTPL_ENABLE_LAPACK=ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have lapack installed if you want this on
 
+- HAVE_BLAS
+ON if -DTPL_ENABLE_BLAS=ON, OFF otherwise
+description: self-explanatory
+prerequisites: need to have blas installed if you want this on
+
 - HAVE_PYBIND11
-ON if TPL_ENABLE_PYBIND11 = ON, OFF otherwise
+ON if -DTPL_ENABLE_PYBIND11=ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have pybind11 installed if you want this on
 
 - HAVE_BLAZE
-ON if TPL_ENABLE_BLAZE = ON, OFF otherwise
+ON if -DTPL_ENABLE_BLAZE=ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have blaze installed if you want this on
 
 - HAVE_MPI
-ON if TPL_ENABLE_MPI = ON, OFF otherwise
+ON if -DTPL_ENABLE_MPI=ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have mpi installed if you want this on
 
 - HAVE_ARMADILLO
-ON if TPL_ENABLE_ARMADILLO = ON, OFF otherwise
+ON if -DTPL_ENABLE_ARMADILLO=ON, OFF otherwise
 description: self-explanatory
 prerequisites: need to have armadillo installed if you want this on
 
 - HAVE_TEUCHOS_TIMERS
-ON if TPL_ENABLE_TRILINOS=ON and DEBUG_PRINT=ON
+ON if -DTPL_ENABLE_TRILINOS=ON and DEBUG_PRINT=ON
 description: to turn on/off print statemetns for debugging
 prerequisites: HAVE_TRILINOS=ON

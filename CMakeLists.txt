@@ -66,9 +66,9 @@ option(BUILD_TESTS "Enable building of ALL pressio tests, regression and unit on
 
 include(tplEigen)
 include(tplMPI)
+include(tplTrilinos)
 include(tplBlas)
 include(tplLapack)
-include(tplTrilinos)
 include(tplKokkos)
 include(tplPybind11)
 include(tplArmadillo)
@@ -90,7 +90,7 @@ endif()
 #=====================================================================
 configure_file(pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h 
+  ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h
   DESTINATION ${CMAKE_INSTALL_PREFIX}/include
 )
 
@@ -123,4 +123,3 @@ if(cmake_generator_tolower MATCHES "makefile")
   message(STATUS "----------------|--------------------------------------------------------")
 endif()
 message(STATUS "")
-
