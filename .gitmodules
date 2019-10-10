@@ -1,4 +1,0 @@
-[submodule "TriBITS"]
-	path = TriBITS
-	url = git@github.com:TriBITSPub/TriBITS.git
-	#url = https://github.com/TriBITSPub/TriBITS.git
