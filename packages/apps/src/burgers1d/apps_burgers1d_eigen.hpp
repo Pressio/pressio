@@ -100,7 +100,15 @@ public:
 
   void velocity(const state_type & u,
 		const scalar_type /* t */,
-    velocity_type & rhs) const;
+    velocity_type & rhs) const{
+    rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
+    for (ui_t i=1; i<Ncell_; ++i){
+      rhs(i) = 0.5 * dxInv_ * (u(i-1)*u(i-1) - u(i)*u(i));
+    }
+    for (ui_t i=0; i<Ncell_; ++i){
+      rhs(i) += mu_(1)*exp(mu_(2)*xGrid_(i));
+    }
+  }
 
   velocity_type velocity(const state_type & u,
 			 const scalar_type t) const{
@@ -132,7 +140,20 @@ public:
 
   void jacobian(const state_type & u,
 		const scalar_type /*t*/,
-    jacobian_type & jac) const;
+    jacobian_type & jac) const
+  {
+    //evaluate jacobian
+    if (jac.rows() == 0 || jac.cols()==0 ){
+      jac.resize(u.size(), u.size());
+    }
+    tripletList.clear();
+    tripletList.push_back( Tr( 0, 0, -dxInv_*u(0)) );
+    for (ui_t i=1; i<Ncell_; ++i){
+      tripletList.push_back( Tr( i, i-1, dxInv_ * u(i-1) ) );
+      tripletList.push_back( Tr( i, i, -dxInv_ * u(i) ) );
+    }
+    jac.setFromTriplets(tripletList.begin(), tripletList.end());
+  }
 
   jacobian_type jacobian(const state_type & u,
 			 const scalar_type t) const{

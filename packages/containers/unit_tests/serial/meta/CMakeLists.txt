@@ -1,3 +1,0 @@
-
-add_serial_unit_test(meta_basic)
-add_serial_unit_test(meta_detect_typedefs)

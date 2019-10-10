@@ -49,7 +49,6 @@
 #ifndef ODE_CONFIGDEFS_HPP_
 #define ODE_CONFIGDEFS_HPP_
 
-#include "ode_config.h"
 #include "../../containers/src/containers_ConfigDefs.hpp"
 #include "../../containers/src/meta/containers_meta_basic.hpp"
 #include "../../containers/src/vector/containers_vector_traits.hpp"

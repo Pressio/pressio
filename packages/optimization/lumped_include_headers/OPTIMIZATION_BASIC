@@ -1,7 +1,0 @@
-
-#ifndef OPTIMIZATION_BASIC_HPP_
-#define OPTIMIZATION_BASIC_HPP_
-
-#include "../src/optimization_ConfigDefs.hpp"
-
-#endif

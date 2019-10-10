@@ -49,7 +49,6 @@
 #ifndef SVD_CONFIGDEFS_HPP
 #define SVD_CONFIGDEFS_HPP
 
-#include "svd_config.h"
 #include "../../containers/src/containers_ConfigDefs.hpp"
 
 namespace pressio{ 

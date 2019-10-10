@@ -1,6 +1,0 @@
-
-#cmakedefine HAVE_MPI
-#cmakedefine HAVE_TRILINOS
-#cmakedefine HAVE_TEUCHOS_TIMERS
-#cmakedefine HAVE_KOKKOS
-#cmakedefine HAVE_LAPACK

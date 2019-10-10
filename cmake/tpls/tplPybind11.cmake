@@ -1,0 +1,5 @@
+
+option(TPL_ENABLE_PYBIND11 "Enable Pybind11 TPL" OFF)
+if(TPL_ENABLE_PYBIND11)
+  set(HAVE_PYBIND11 ON)
+endif()

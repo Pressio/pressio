@@ -49,7 +49,6 @@
 #ifndef CONTAINERS_DEFAULT_TYPES_HPP_
 #define CONTAINERS_DEFAULT_TYPES_HPP_
 
-#include "containers_config.h"
 #include "../../utils/src/utils_ConfigDefs.hpp"
 
 namespace pressio{ namespace containers{ namespace default_types {

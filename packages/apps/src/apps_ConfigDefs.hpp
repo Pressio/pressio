@@ -49,7 +49,6 @@
 #ifndef APPS_CONFIGDEFS_HPP_
 #define APPS_CONFIGDEFS_HPP_
 
-#include "apps_config.h"
 #include "../../containers/src/containers_ConfigDefs.hpp"
 
 #endif

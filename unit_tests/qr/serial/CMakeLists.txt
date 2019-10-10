@@ -1,0 +1,4 @@
+
+
+add_serial_utest(qr_eigen_dense_matrix_factorization_out_of_place .)
+add_serial_utest(qr_eigen_dense_matrix_out_of_place_and_solve .)

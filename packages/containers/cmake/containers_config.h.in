@@ -1,4 +1,0 @@
-
-#cmakedefine HAVE_PYBIND11
-#cmakedefine HAVE_BLAZE
-#cmakedefine HAVE_ARMADILLO

@@ -1,0 +1,3 @@
+
+add_subdirectory(lspg_euler_normal_eq)
+add_subdirectory(lspg_bdf2_normal_eq)

@@ -1,0 +1,5 @@
+
+add_serial_utest(solvers_admissible_system_for_nonlinear_solve .)
+add_serial_utest(solvers_nonadmissible_system_for_nonlinear_solve .)
+add_serial_utest(solvers_gn_normal_eq .)
+add_serial_utest(solvers_gn_with_qr .)

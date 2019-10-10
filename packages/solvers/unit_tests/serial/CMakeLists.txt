@@ -1,6 +1,0 @@
-
-add_serial_unit_test(linear_dense_eigen)
-add_serial_unit_test(linear_sparse_eigen)
-add_serial_unit_test(newton_raphson_eigen)
-
-ADD_SUBDIRECTORY(non_linear_least_squares)

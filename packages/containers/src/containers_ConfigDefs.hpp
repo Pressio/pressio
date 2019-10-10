@@ -50,8 +50,6 @@
 #define CONTAINERS_CONFIGDEFS_HPP_
 
 #include <fstream>
-#include "containers_config.h"
-#include "../../mpl/src/mpl_ConfigDefs.hpp"
 #include "../../utils/src/utils_ConfigDefs.hpp"
 
 #include "containers_default_types.hpp"

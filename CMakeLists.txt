@@ -1,170 +1,126 @@
-# define your minimum CMake version.
-# This may be newer than the min required by TriBITS.
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11 FATAL_ERROR)
 
-# Make CMake set WIN32 with CYGWIN for older CMake versions.  CMake requires
-# this to be in the top-level CMakeLists.txt file and not an include file :-(
-#SET(CMAKE_LEGACY_CYGWIN_WIN32 1 CACHE BOOL "" FORCE)
+cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
+project(pressio C CXX)
 
-set(pressio_ENABLE_CXX11 ON)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-MESSAGE("The c++ standard for PRESSIO is set for c++${CMAKE_CXX_STANDARD}" )
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake;${PROJECT_SOURCE_DIR}/cmake/tpls)
 
-#
-# A) Define your project name and set up major project options
-#
-# NOTE: Don't set options that would impact what packages get defined or
-# enabled/disabled in this file as that would not impact other tools that
-# don't process this file.
-#
+#=====================================================================
+# do some guarding here for specific cases
+#=====================================================================
 
-# Get PROJECT_NAME (must be in a file for other parts of system to read)
-INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/ProjectName.cmake")
-
-# CMake requires that you declare the CMake project in the
-# top-level file and not in an include file :-(
-PROJECT(${PROJECT_NAME} NONE)
-
-#
-# B) Pull in the TriBITS system and execute
-#
-
-SET(${PROJECT_NAME}_TRIBITS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/TriBITS/tribits" CACHE STRING "TriBITS base directory")
-
-#SET(${PROJECT_NAME}_TRIBITS_DIR "${CMAKE_CURRENT_LIST_DIR}/../.."  CACHE  STRING
-#  "TriBITS base directory (default assumes in TriBITS source tree)")
-INCLUDE("${${PROJECT_NAME}_TRIBITS_DIR}/TriBITS.cmake")
-
-# Set default location for header-only TPL to make easy to configure out of
-# the TriBITS source tree.
-SET(HeaderOnlyTpl_INCLUDE_DIRS
-  "${${PROJECT_NAME}_TRIBITS_DIR}/examples/tpls/HeaderOnlyTpl"
-  CACHE PATH "Default set by TriBITS/CMakeLists.txt" )
-
-#------------------------------------------------------------
-# set the directory where all the mains for google tests are
-SET(GTESTMAINSDIR "${CMAKE_CURRENT_SOURCE_DIR}/gtest_mains")
-MESSAGE("Google tests main files are in: " ${GTESTMAINSDIR})
-
-#------------------------------------------------------------
-# turn on cmake variables based on corresponding TPL
-# these variables are defined inside the packages and
-# are needed as preprocessor directives to turn on/off code
-
-if (${CMAKE_CXX_STANDARD} EQUAL "14")
-  MESSAGE("CXX_STANDARD=14, so HAVE_CPP14=ON")
-  set(HAVE_CPP14 ON)
+# guard against in-source builds
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+  message(FATAL_ERROR "In-source builds are not allowed.
+    Please make a new directory (called a build directory) and run CMake from there.
+    You may need to remove CMakeCache.txt.")
 endif()
 
-if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-  message( "CMAKE_BUILD_TYPE==Debug so DEBUG_PRINT=ON" )
+# default to relase if build type is empty
+if (NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_tolower)
+if(    NOT cmake_build_type_tolower STREQUAL "debug"
+   AND NOT cmake_build_type_tolower STREQUAL "release")
+  message(FATAL_ERROR "Unknown build type \"${CMAKE_BUILD_TYPE}\".
+    Allowed values are Debug, Release (case-insensitive).")
+endif()
+
+
+#=====================================================================
+# we need c++11
+#=====================================================================
+include(CheckCXXCompilerFlag)
+
+check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORT_CPP11)
+if(NOT COMPILER_SUPPORT_CPP11)
+  message(FATAL_ERROR "Compiler does not support -std=c++11. This is required.")
+endif()
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+
+#=====================================================================
+# other stuff
+#=====================================================================
+include(GNUInstallDirs)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+add_subdirectory(packages)
+
+
+#=====================================================================
+# some optional and TPLs
+# note that linking to TPLs is only needed when building tests
+#=====================================================================
+if( cmake_build_type_tolower STREQUAL "debug" AND NOT DEBUG_PRINT)
+  message( "CMAKE_BUILD_TYPE==Debug, setting DEBUG_PRINT=ON" )
+  message( "If you want to turn off debug prints, reconfigure with -DDEBUG_PRINT=OFF" )
   set(DEBUG_PRINT ON)
 endif()
 
-if(TPL_ENABLE_GTEST)
-  MESSAGE("TPL_ENABLE_GTEST=ON, so HAVE_GTEST=ON")
-  set(HAVE_GTEST ON)
+option(BUILD_UNIT_TESTS "Enable building of pressio unit tests." OFF)
+option(BUILD_TESTS "Enable building of ALL pressio tests, regression and unit ones." OFF)
+
+include(tplEigen)
+include(tplMPI)
+include(tplBlas)
+include(tplLapack)
+include(tplTrilinos)
+include(tplKokkos)
+include(tplPybind11)
+include(tplArmadillo)
+include(tplBlaze)
+
+
+#=====================================================================
+# if we want to enable unit tests
+#=====================================================================
+if(BUILD_UNIT_TESTS OR BUILD_TESTS)
+  # tell CMake to use CTest extension
+  enable_testing()
+  # add subdir where the unit tests are
+  add_subdirectory(unit_tests)
 endif()
 
-if(TPL_ENABLE_TRILINOS)
-  MESSAGE("TPL_ENABLE_TRILINOS=ON, so HAVE_TRILINOS=ON")
-  set(HAVE_TRILINOS ON)
+#=====================================================================
+# configure file for cmakedefines
+#=====================================================================
+configure_file(pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h 
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+)
 
-  MESSAGE("TPL_ENABLE_TRILINOS=ON, so HAVE_KOKKOS=ON")
-  set(HAVE_KOKKOS ON)
+#=====================================================================
+# Add uninstall target
+#=====================================================================
+add_custom_target (uninstall COMMAND ${CMAKE_COMMAND} -P
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pressioUninstall.cmake)
 
-  if(DEBUG_PRINT)
-    MESSAGE("TPL_ENABLE_TRILINOS=DEBUG_PRINT=ON so HAVE_TEUCHOS_TIMERS=ON")
-    set(HAVE_TEUCHOS_TIMERS ON)
-  endif()
+
+#=====================================================================
+# log to screen
+#=====================================================================
+message(STATUS "")
+message(STATUS "Configured pressio")
+message(STATUS "")
+
+string(TOLOWER "${CMAKE_GENERATOR}" cmake_generator_tolower)
+if(cmake_generator_tolower MATCHES "makefile")
+  message(STATUS "Things you can do now:")
+  message(STATUS "----------------|--------------------------------------------------------")
+  message(STATUS "Command         |   Description")
+  message(STATUS "----------------|--------------------------------------------------------")
+  message(STATUS "make install    | Install headers to:")
+  message(STATUS "                |    ${CMAKE_INSTALL_PREFIX}/include")
+  message(STATUS "                | Change the install location using:")
+  message(STATUS "                |    cmake . -DCMAKE_INSTALL_PREFIX=yourprefix")
+  message(STATUS "                | ")
+  message(STATUS "make uninstall  | Removes files installed by make install")
+  message(STATUS "----------------|--------------------------------------------------------")
 endif()
+message(STATUS "")
 
-if(TPL_ENABLE_KOKKOS)
-  MESSAGE("TPL_ENABLE_KOKKOS=ON, so HAVE_KOKKOS=ON")
-  set(HAVE_KOKKOS ON)
-endif()
-
-if(TPL_ENABLE_LAPACK)
-  MESSAGE("TPL_ENABLE_LAPACK=ON, so HAVE_LAPACK=ON")
-  set(HAVE_LAPACK ON)
-endif()
-
-if(TPL_ENABLE_PYBIND11)
-  MESSAGE("TPL_ENABLE_PYBIND11=ON, so HAVE_PYBIND11=ON")
-  set(HAVE_PYBIND11 ON)
-  # if pybind11 is on, add include for python
-  INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
-endif()
-
-if(TPL_ENABLE_BLAZE)
-  MESSAGE("TPL_ENABLE_BLAZE=ON, so HAVE_BLAZE=ON")
-  set(HAVE_BLAZE ON)
-endif()
-
-if(TPL_ENABLE_ARMADILLO)
-  MESSAGE("TPL_ENABLE_ARMADILLO=ON, so HAVE_ARMADILLO=ON")
-  set(HAVE_ARMADILLO ON)
-endif()
-
-if(DEBUG_PRINT)
-  MESSAGE("DEBUG_PRINT is ON")
-endif()
-
-
-#------------------------------------------------------------------------
-# this function creates and adds an individual unit-test executable
-# currently it takes following arguments:
-#
-#  (1) test_name: self-explanatory
-#
-#  (2) mainfile: the name of the main file without extention.
-#			  	 If file is ``test1.cc'', mainfile = test1
-#
-#  (3) ARGV2: the number of ranks, 1 or more
-#
-function(add_unit_test test_name mainfile )
-
-  SET(NUMMPI ${ARGV2})
-  if(${NUMMPI} EQUAL 1)
-    SET(COMM1 serial mpi)
-  elseif(${NUMMPI} GREATER 1)
-    SET(COMM1 mpi)
-  endif()
-  # COMM serial => only run if pressio built without MPI
-  # COMM mpi => only run if pressio built with MPI
-  # COMM serial mpi => run in both cases,
-  #		for MPI # of ranks set to tribits default 4
-
-  TRIBITS_ADD_EXECUTABLE_AND_TEST(
-    utest_${test_name}
-    SOURCES ${test_name}.cc ${mainfile}.cc
-    COMM ${COMM1}
-    NUM_MPI_PROCS ${NUMMPI}
-    PASS_REGULAR_EXPRESSION "PASSED"
-    FAIL_REGULAR_EXPRESSION "FAILED"
-  )
-endfunction()
-
-#------------------------------------------------------------------------
-# this function creates and adds an individual SERIAL unit-test
-# currently it takes following arguments:
-#
-#  (1) test_name: self-explanatory
-#
-function(add_serial_unit_test test_name)
-
-  TRIBITS_ADD_EXECUTABLE_AND_TEST(
-    utest_${test_name}
-    SOURCES ${test_name}.cc ${GTESTMAINSDIR}/gTestMain_serial.cc
-    COMM serial mpi
-    NUM_MPI_PROCS 1
-    PASS_REGULAR_EXPRESSION "PASSED"
-    FAIL_REGULAR_EXPRESSION "FAILED"
-  )
-endfunction()
-
-
-#------------------------------------------------------------
-# Do all of the processing for this Tribits project
-TRIBITS_PROJECT()
