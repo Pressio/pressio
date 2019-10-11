@@ -2,7 +2,7 @@
 #include "epetra_only_fixtures.hpp"
 
 TEST_F(epetraMultiVectorR9C4VecS9Fixture,
-       MVVecDotProduct){
+       MVDotVec){
 
   using namespace pressio;
 

@@ -1,8 +1,10 @@
 
 #include "epetra_only_fixtures.hpp"
+#include <gtest/gtest.h>
 
-TEST(epetraMultiVectorR9C4VecS9Fixture,
-       MVVecDotProduct){
+
+TEST(epetraMultiVector,
+       MVDotMV){
 
   /*
     MultiVector A

@@ -29,8 +29,7 @@ if(TPL_ENABLE_TRILINOS)
       set(TRILINOS_LIB_DIR ${TRILINOS_LIBRARIES_DIR})
     endif()
 
-    set(TRILINOS_LIB_NAMES
-      kokkosalgorithms
+    set(TRILINOS_LIB_NAMES kokkosalgorithms
       kokkoscontainers
       kokkoscore
       teuchoskokkoscomm
@@ -62,6 +61,5 @@ if(TPL_ENABLE_TRILINOS)
     include_directories(${TRILINOS_INC_DIR})
     link_directories(${TRILINOS_LIB_DIR})
     link_libraries(${TRILINOS_LIB_NAMES})
-
   endif()
 endif()

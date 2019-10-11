@@ -61,9 +61,15 @@ if( cmake_build_type_tolower STREQUAL "debug" AND NOT DEBUG_PRINT)
   set(DEBUG_PRINT ON)
 endif()
 
-option(BUILD_UNIT_TESTS "Enable building of pressio unit tests." OFF)
-option(BUILD_TESTS "Enable building of ALL pressio tests, regression and unit ones." OFF)
+option(BUILD_UNIT_TESTS "Enabling pressio unit testing." OFF)
+option(BUILD_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
 
+# ALL_INC/LIB_DIR contain all include/lib directories as we add TPLs
+# we fill these vars up based on which TPLs are enabled. 
+# ALL_INC/LIB_DIR are then used for creating target executables
+set(ALL_INC_DIR "")
+set(ALL_LINK_DIR "")
+set(ALL_LINK_LIB "")
 include(tplEigen)
 include(tplMPI)
 include(tplTrilinos)

@@ -1,7 +1,7 @@
 
 #include "epetra_only_fixtures.hpp"
 
-TEST(epetraMultiVectorR9C4VecS9Fixture,
+TEST(epetraMultiVector,
      MVVecDotSelf){
 
   /*
