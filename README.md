@@ -17,10 +17,7 @@ Pressio is released with the following [LICENSE](./LICENSE).
 
 ======================================================================================
 ## Cloning
-To clone `pressio` (provided you have Git) use:
-```
-git clone https://github.com/Pressio/pressio.git
-```
+To clone `pressio` (provided you have Git) use: `git clone https://github.com/Pressio/pressio.git`
 
 ======================================================================================
 ## Structure
