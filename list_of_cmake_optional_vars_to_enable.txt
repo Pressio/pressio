@@ -4,7 +4,7 @@ that can be turned on/off by the user to enable/disable certain features
 at compile time since these translate into pre-processor directives.
 
 - DEBUG_PRINT
-default = OFF
+ON if -DENABLE_DEBUG_PRINT=ON, OFF otherwise
 description: to turn on/off print statemetns for debugging
 prerequisites: none
 

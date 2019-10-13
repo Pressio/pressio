@@ -46,6 +46,7 @@
 //@HEADER
 */
 
+#cmakedefine DEBUG_PRINT
 #cmakedefine HAVE_EIGEN
 #cmakedefine HAVE_TRILINOS
 #cmakedefine HAVE_TEUCHOS_TIMERS

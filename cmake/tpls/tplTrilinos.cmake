@@ -11,13 +11,14 @@ if(TPL_ENABLE_TRILINOS)
     set(HAVE_TEUCHOS_TIMERS ON)
     if( (NOT TRILINOS_INC_DIR OR NOT TRILINOS_LIB_DIR)
 	AND (NOT TRILINOS_INCLUDE_DIR OR NOT TRILINOS_LIBRARIES_DIR))
-      message(FATAL_ERROR "You set TPL_ENABLE_TRILINOS=${TPL_ENABLE_TRILINOS} but did not specify how to find it.
+      message(FATAL_ERROR
+	"TPL_ENABLE_TRILINOS=${TPL_ENABLE_TRILINOS} but did not specify how to find it.
         Please reconfigure with:
-          -DTRILINOS_INC_DIR=<full-path-to-trilinos-headers>
-          -DTRILINOS_LIB_DIR=<full-path-to-trilinos-libs>
+          -DTRILINOS_INC_DIR=<full-path-to-headers>
+          -DTRILINOS_LIB_DIR=<full-path-to-libs>
           or
-          -TRILINOS_INCLUDE_DIR=<full-path-to-trilinos-headers>
-          -TRILINOS_LIBRARIES_DIR=<full-path-to-trilinos-libs>
+          -TRILINOS_INCLUDE_DIR=<full-path-to-headers>
+          -TRILINOS_LIBRARIES_DIR=<full-path-to-libs>
           ")
     endif()
 

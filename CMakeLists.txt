@@ -56,10 +56,18 @@ add_subdirectory(packages)
 # note that linking to TPLs is only needed when building tests
 #=====================================================================
 if( cmake_build_type_tolower STREQUAL "debug" AND NOT DEBUG_PRINT)
-  message( "CMAKE_BUILD_TYPE==Debug, setting DEBUG_PRINT=ON" )
+  message( "CMAKE_BUILD_TYPE==Debug, setting so DEBUG_PRINT=ON" )
   message( "If you want to turn off debug prints, reconfigure with -DDEBUG_PRINT=OFF" )
-  set(DEBUG_PRINT ON)
+  message("")
+  #set(DEBUG_PRINT ON)
 endif()
+if(DEBUG_PRINT)
+  message( "Enabling debug prints since DEBUG_PRINT=ON" )
+  message( "If you want to turn off debug prints, reconfigure with -DDEBUG_PRINT=OFF" )
+  message("")
+  #set(DEBUG_PRINT ON)
+endif()
+
 
 option(BUILD_UNIT_TESTS "Enabling pressio unit testing." OFF)
 option(BUILD_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
@@ -81,8 +89,8 @@ include(tplArmadillo)
 include(tplBlaze)
 
 #=====================================================================
-# unit tests are enabled if 
-#   (a) BUILD_UNIT_TESTS = ON 
+# unit tests are enabled if
+#   (a) BUILD_UNIT_TESTS = ON
 #   (b) BUILD_TESTS = ON
 #=====================================================================
 if(BUILD_UNIT_TESTS OR BUILD_TESTS)
@@ -93,7 +101,7 @@ if(BUILD_UNIT_TESTS OR BUILD_TESTS)
 endif()
 
 #=====================================================================
-# basic regression tests are enabled if 
+# basic regression tests are enabled if
 #   BUILD_TESTS = ON
 #=====================================================================
 if(BUILD_TESTS)
@@ -104,7 +112,7 @@ if(BUILD_TESTS)
 endif()
 
 #=====================================================================
-# configure file with some cmakedefines that are used 
+# configure file with some cmakedefines that are used
 # within the code in preprocessor directives statements
 #=====================================================================
 configure_file(pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
