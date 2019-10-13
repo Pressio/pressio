@@ -1,5 +1,0 @@
-
-ADD_SUBDIRECTORY(lspg_euler_normal_eq)
-ADD_SUBDIRECTORY(lspg_euler_gn_qr)
-ADD_SUBDIRECTORY(lspg_bdf2_normal_eq)
-ADD_SUBDIRECTORY(lspg_bdf2_gn_qr)

@@ -2,7 +2,8 @@
 cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
 project(pressio C CXX)
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake;${PROJECT_SOURCE_DIR}/cmake/tpls)
+set(CMAKE_MODULE_PATH
+  ${PROJECT_SOURCE_DIR}/cmake;${PROJECT_SOURCE_DIR}/cmake/tpls)
 
 #=====================================================================
 # do some guarding here for specific cases
@@ -27,12 +28,11 @@ if(    NOT cmake_build_type_tolower STREQUAL "debug"
     Allowed values are Debug, Release (case-insensitive).")
 endif()
 
-
 #=====================================================================
 # we need c++11
 #=====================================================================
+# commands to test if compiler supports C++11
 include(CheckCXXCompilerFlag)
-
 check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORT_CPP11)
 if(NOT COMPILER_SUPPORT_CPP11)
   message(FATAL_ERROR "Compiler does not support -std=c++11. This is required.")
@@ -65,7 +65,7 @@ option(BUILD_UNIT_TESTS "Enabling pressio unit testing." OFF)
 option(BUILD_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
 
 # ALL_INC/LIB_DIR contain all include/lib directories as we add TPLs
-# we fill these vars up based on which TPLs are enabled. 
+# we fill these vars up based on which TPLs are enabled.
 # ALL_INC/LIB_DIR are then used for creating target executables
 set(ALL_INC_DIR "")
 set(ALL_LINK_DIR "")
@@ -80,9 +80,10 @@ include(tplPybind11)
 include(tplArmadillo)
 include(tplBlaze)
 
-
 #=====================================================================
-# if we want to enable unit tests
+# unit tests are enabled if 
+#   (a) BUILD_UNIT_TESTS = ON 
+#   (b) BUILD_TESTS = ON
 #=====================================================================
 if(BUILD_UNIT_TESTS OR BUILD_TESTS)
   # tell CMake to use CTest extension
@@ -92,7 +93,19 @@ if(BUILD_UNIT_TESTS OR BUILD_TESTS)
 endif()
 
 #=====================================================================
-# configure file for cmakedefines
+# basic regression tests are enabled if 
+#   BUILD_TESTS = ON
+#=====================================================================
+if(BUILD_TESTS)
+  # tell CMake to use CTest extension
+  enable_testing()
+  # add subdir where the unit tests are
+  add_subdirectory(tests)
+endif()
+
+#=====================================================================
+# configure file with some cmakedefines that are used 
+# within the code in preprocessor directives statements
 #=====================================================================
 configure_file(pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
 install(FILES

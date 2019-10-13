@@ -1,0 +1,6 @@
+
+add_subdirectory(lspg_normal_eq_reproducing)
+add_subdirectory(lspg_normal_eq_predictive)
+add_subdirectory(lspg_normal_eq_reproducing_with_observer)
+add_subdirectory(lspg_precond_normal_eq_reproducing)
+
