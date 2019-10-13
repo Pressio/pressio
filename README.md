@@ -24,32 +24,7 @@ git clone https://github.com/Pressio/pressio.git
 
 ======================================================================================
 ## Structure
-
-`pressio` is the main code repository and currently includes the following packages:
-
-* `mpl`: metaprogramming functionalities;
-
-* `utils`: common functionalities, e.g., I/O helpers, static constants, etc;
-
-* `containers`: data strutures wrappers and linear algebra;
-
-* `apps`: suites of mini-apps used for basic testing;
-
-* `qr`: QR factorization functionalities;
-
-* `svd`: singular value decomposition (SVD) functionalities;
-
-* `solvers`: linear and non-linear solvers (e.g. Gauss-Newton with and without line-search, etc.);
-
-* `ode`: explicit and implict time steppers and integrators;
-
-* `rom`: reduced-order modeling algorithms.
-
-The top-down order used above is informative of the packages' dependency structure and mutual visibility. For example, every package depends on `mpl`, but `qr` depends only on `mpl`, `utils`, `containers`. At the bottom of the hierarchy we have the `rom` package which requires all the others. Each package contains corresponding unit- and regular tests. Splitting the framework into separate packages has several benefits.
-* Maintability: `pressio` can be more easily developed and maintained since packages depend on one another through well-defined public interfaces, and appropriate namespaces are used to organize classes within each package.
-
-* Selective usability: This modular framework allows users, if needed, to leverage invidual packages. For instance, if a user needs/wants just the QR methods, they simply use that package, and all the dependencies are enabled automatically.
-
+For a description of `pressio` code structure, see [here](https://github.com/Pressio/pressio/wiki/Structure-of-pressio).
 
 ======================================================================================
 ## TPLs
