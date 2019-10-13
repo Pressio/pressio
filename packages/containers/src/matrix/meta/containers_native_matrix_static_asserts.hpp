@@ -69,7 +69,7 @@ namespace pressio{ namespace containers{
   static_assert( !containers::meta::is_sparse_matrix_eigen<TYPE>::value, \
 		 "THIS_IS_A_MATRIX_SPARSE_SHAREDMEM_EIGEN")
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #define STATIC_ASSERT_IS_MATRIX_SPARSE_DISTRIBUTED_EPETRA(TYPE)	      \
   static_assert( containers::meta::is_sparse_matrix_epetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_MATRIX_SPARSE_DIST_EPETRA")

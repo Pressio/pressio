@@ -93,7 +93,7 @@ template<
   typename enable = void>
 class ImplicitJacobianStandardPolicy;
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<
   typename state_type,
   typename model_type,

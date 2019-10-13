@@ -1,4 +1,4 @@
 
-IF(HAVE_TRILINOS OR (HAVE_KOKKOS AND KOKKOS_ENABLE_CUDA))
-	ADD_SUBDIRECTORY(lspg_euler_normal_eq)
-ENDIF()
+if(PRESSIO_ENABLE_TPL_KOKKOS AND PRESSIO_ENABLE_TPL_TRILINOS)
+  add_subdirectory(lspg_euler_normal_eq)
+endif()

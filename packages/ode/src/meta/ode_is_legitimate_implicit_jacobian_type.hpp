@@ -62,7 +62,7 @@ struct is_legitimate_jacobian_type<T,
        typename std::enable_if<
 	 containers::meta::is_matrix_wrapper<T>::value or
 	 containers::meta::is_multi_vector_wrapper<T>::value
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 	 or containers::meta::is_array_pybind11<T>::value
 #endif
 	 >::type

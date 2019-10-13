@@ -58,7 +58,7 @@ namespace pressio{ namespace qr{
 struct ModifiedGramSchmidt{};
 struct Householder{};
 
-#if defined HAVE_TRILINOS
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
 struct TSQR{};
 #endif
 

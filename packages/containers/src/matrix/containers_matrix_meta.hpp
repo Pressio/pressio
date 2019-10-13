@@ -55,14 +55,14 @@
 #include "./meta/containers_is_sparse_matrix_wrapper_eigen.hpp"
 #include "./meta/containers_is_matrix_wrapper_eigen.hpp"
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./meta/containers_is_dense_matrix_wrapper_epetra.hpp"
 #include "./meta/containers_is_dense_matrix_wrapper_teuchos.hpp"
 #include "./meta/containers_is_sparse_matrix_wrapper_epetra.hpp"
 #include "./meta/containers_is_sparse_matrix_wrapper_tpetra.hpp"
 #endif
 
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "./meta/containers_is_sparse_matrix_wrapper_kokkos.hpp"
 #include "./meta/containers_is_dense_matrix_wrapper_kokkos.hpp"
 #include "./meta/containers_is_matrix_wrapper_kokkos.hpp"

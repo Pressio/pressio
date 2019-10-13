@@ -66,7 +66,7 @@ template<typename T>
 struct is_legitimate_explicit_velocity_type<T,
  typename std::enable_if<
    containers::meta::is_vector_wrapper<T>::value
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
    or containers::meta::is_array_pybind11<T>::value
 #endif
    >::type

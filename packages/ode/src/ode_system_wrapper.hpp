@@ -50,7 +50,7 @@
 #define ODE_SYSTEM_WRAPPER_HPP_
 
 #include "ode_ConfigDefs.hpp"
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
 #endif
@@ -60,7 +60,7 @@ namespace pressio{ namespace ode{ namespace impl{
 template<typename model_type>
 struct OdeSystemWrapper<
   model_type
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   , mpl::enable_if_t<
       ::pressio::mpl::not_same<model_type, pybind11::object >::value
       >
@@ -85,7 +85,7 @@ private:
 /* for some reason to be determined, when we deal with
  * python objects, we need to pass by copy
  */
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<typename model_type>
 struct OdeSystemWrapper<
   model_type,

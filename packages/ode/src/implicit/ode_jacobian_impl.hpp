@@ -63,7 +63,7 @@ template <
   ::pressio::mpl::enable_if_t<
     (odeMethod == ::pressio::ode::ImplicitEnum::Euler) and
     (containers::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
      containers::meta::is_sparse_matrix_wrapper_epetra<jacobian_type>::value or
 #endif
     containers::meta::is_dense_matrix_wrapper_eigen<jacobian_type>::value)
@@ -76,7 +76,7 @@ template <
   jac.addToDiagonal(one);
 }
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
   ode::ImplicitEnum odeMethod,
   typename jacobian_type,

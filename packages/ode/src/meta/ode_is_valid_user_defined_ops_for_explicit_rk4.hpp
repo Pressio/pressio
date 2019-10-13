@@ -95,7 +95,7 @@ struct is_valid_user_defined_ops_for_explicit_rk4<
   > : std::true_type{};
 
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<typename T,
 	 typename scalar_t,
 	 typename state_t,

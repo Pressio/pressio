@@ -27,7 +27,7 @@ TEST(solvers_nonlinear_least_squares, gn_qr_exp_data_fit_n2){
   EXPECT_NEAR( x(1), 0.26464986197941, 1e-9 );
 
   // print summary from timers
-  #ifdef HAVE_TEUCHOS_TIMERS
+  #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   utils::TeuchosPerformanceMonitor::stackedTimersReportSerial();
   #endif
 }

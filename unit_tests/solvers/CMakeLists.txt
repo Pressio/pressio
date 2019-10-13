@@ -2,9 +2,9 @@
 add_subdirectory(meta)
 add_subdirectory(serial)
 
-if(HAVE_MPI)
+if(PRESSIO_ENABLE_TPL_MPI)
   add_subdirectory(mpi)
 endif()
-if(HAVE_KOKKOS)
+if(PRESSIO_ENABLE_TPL_KOKKOS)
   add_subdirectory(kokkos)
 endif()

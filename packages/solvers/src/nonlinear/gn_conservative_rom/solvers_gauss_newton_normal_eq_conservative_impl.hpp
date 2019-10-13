@@ -131,7 +131,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
   convCondDescr = std::string(is_conv_helper_t::description_);
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
   // get precision
   auto ss = std::cout.precision();
   // set to 14 for prints
@@ -153,7 +153,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   typename system_t::state_type dy_y(y.size());
   typename system_t::state_type dy_lambda(lambda.size());
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
   timer->start("Gausss Newton Conserv");
 #endif
@@ -162,7 +162,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   while (++iStep <= maxNonLIt)
   {
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout("\n");
     auto fmt = utils::io::underline();
     ::pressio::utils::io::print_stdout(fmt, "step", iStep,
@@ -170,7 +170,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     // residual norm for current state
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
     norm_evaluator_t::evaluate(resid, normRes);
     timer->stop("norm resid");
@@ -181,7 +181,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     if (iStep==1) normRes0 = normRes;
 
     // assemble LHS
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("lhs");
 #endif
     ::pressio::containers::ops::dot_self(jacob, jTj);
@@ -204,11 +204,11 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // ::pressio::utils::io::print_stdout(*A.data(), "\n");
     // ::pressio::utils::io::print_stdout("--------------\n");
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("lhs");
 #endif
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     // auto fmt1 = utils::io::magenta() + utils::io::bold();
     // ::pressio::utils::io::print_stdout(fmt1, "GN_JSize =",
     // ::pressio::solvers::impl::MatrixGetSizeHelper<jac_t>::globalRows(jacob),
@@ -221,7 +221,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     // compute RHS
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("rhs");
 #endif
 
@@ -251,16 +251,16 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     // ::pressio::utils::io::print_stdout(*b.data(), "\n");
     // ::pressio::utils::io::print_stdout("--------------\n");
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("rhs");
 #endif
 
     // projected residual norm for current state
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm JTR");
 #endif
     norm_evaluator_t::evaluate(jTr2, normJTRes);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm JTR");
 #endif
 
@@ -268,13 +268,13 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     if (iStep==1) normJTRes0 = normJTRes;
 
     // solve normal equations
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("solve normeq");
 #endif
 
     linSolver.solve(A, b, dy);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("solve normeq");
 #endif
 
@@ -285,7 +285,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     norm_evaluator_t::evaluate(dy_y, norm_dy);
     norm_evaluator_t::evaluate(dy_lambda, normLambda);
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
@@ -341,12 +341,12 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
   }//loop
 
-#if defined DEBUG_PRINT
+#if defined PRESSIO_ENABLE_DEBUG_PRINT
   std::cout.precision(ss);
   ::pressio::utils::io::print_stdout(std::fixed);
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   timer->stop("Gausss Newton Conserv");
 #endif
 

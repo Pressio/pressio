@@ -74,7 +74,7 @@ namespace pressio{ namespace containers{
   static_assert( !containers::meta::is_vector_stdlib<TYPE>::value, \
 		 "THIS_IS_A_STDLIB_VECTOR")
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #define STATIC_ASSERT_IS_VECTOR_EPETRA(TYPE) \
   static_assert( containers::meta::is_vector_epetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_VECTOR_EPETRA")
@@ -98,7 +98,7 @@ namespace pressio{ namespace containers{
 #endif
 
 
-#ifdef HAVE_KOKKOS  
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS  
 #define STATIC_ASSERT_IS_VECTOR_KOKKOS(TYPE) \
   static_assert( containers::meta::is_vector_kokkos<TYPE>::value, \
 		 "THIS_IS_NOT_A_VECTOR_KOKKOS")
@@ -108,7 +108,7 @@ namespace pressio{ namespace containers{
 #endif
 
 
-#ifdef HAVE_BLAZE
+#ifdef PRESSIO_ENABLE_TPL_BLAZE
 #define STATIC_ASSERT_IS_VECTOR_BLAZE(TYPE)				\
   static_assert( containers::meta::is_static_vector_blaze<TYPE>::value ||	\
                  containers::meta::is_dynamic_vector_blaze<TYPE>::value,	\
@@ -119,7 +119,7 @@ namespace pressio{ namespace containers{
 		 "THIS_IS_A_VECTOR_BLAZE")
 #endif
 
-#ifdef HAVE_ARMADILLO
+#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
 #define STATIC_ASSERT_IS_VECTOR_ARMADILLO(TYPE)			\
   static_assert( containers::meta::is_vector_armadillo<TYPE>::value,	\
 		 "THIS_IS_NOT_A_VECTOR_ARMADILLO")

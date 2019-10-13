@@ -1,6 +1,2 @@
-TRIBITS_ADD_EXECUTABLE_AND_TEST(
-  burgers1d_fom_kokkos_explicit_euler
-  SOURCES main.cc
-  NUM_MPI_PROCS 1
-  PASS_REGULAR_EXPRESSION "PASSED"
-  )
+
+add_serial_exe_and_test(burgers1d_fom_kokkos_explicit_euler ode main.cc "PASSED")

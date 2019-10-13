@@ -98,7 +98,7 @@ public:
 		  lspg_jac_t	     & romJJ,
   		  const app_t	     & app) const
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("lspg apply jac");
 #endif
@@ -108,7 +108,7 @@ public:
     //    timer->start("reconstruct fom state");
     fom_states_data::template reconstructCurrentFomState(romY);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
     const auto & basis = decoderObj_.getReferenceToJacobian();
     fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ);
@@ -118,7 +118,7 @@ public:
     fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ);
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("lspg apply jac");
 #endif
   }

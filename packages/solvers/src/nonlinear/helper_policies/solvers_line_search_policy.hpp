@@ -83,7 +83,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
   {
     scalar_t c1 = 1e-4;
     alpha = static_cast<scalar_t>(1);
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout("line search: Armijo rule,",
 				    "c1=", c1, "\n");
 #endif
@@ -103,7 +103,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     auto c2 = ::pressio::containers::ops::dot(dy, jTr);
     auto rhs = c1 * alpha * c2;
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(" f(y) =", fy, "\n");
     ::pressio::utils::io::print_stdout(" dy^T J^T R =", c2, "\n");
     ::pressio::utils::io::print_stdout(" c1*alfa*dy^T*J^T*R =", rhs, "\n");
@@ -112,7 +112,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     bool done = false;
     while (not done)
     {
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout(" backtracking: alpha =",
 				      alpha, "\n");
 #endif
@@ -125,7 +125,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
       auto fytrial  = ::pressio::containers::ops::norm2(resid);
       auto lhs = fytrial-fy;
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout(" f(y+alpha*dy) =", fytrial, "\n");
       ::pressio::utils::io::print_stdout(" f(y+alpha*dy)-f(y) =", lhs,
 				      "; rhs =", rhs, "\n");
@@ -133,7 +133,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 
       // eval Armijo
       if (lhs <= rhs){
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
 	::pressio::utils::io::print_stdout(" lsearch done","\n");
 #endif
 	done = true;
@@ -142,7 +142,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
       // exit also when abs(fytrail-fy) < eps, leave eps = 1e-14 for now
       // change later with some machine epsilon
       if (std::abs(lhs) <= 1e-14){
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
 	::pressio::utils::io::print_stdout(" detected negligible",
 					"change in obj f:",
 					"abs(fytrail-fy) < 1e-14,",
@@ -161,7 +161,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 
     }//while
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout("after line search:",
 				    "alpha =", alpha, "\n");
 #endif

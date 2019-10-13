@@ -101,7 +101,7 @@ public:
     typename ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops_t>::value and
       ::pressio::containers::meta::is_wrapper<galerkin_state_t>::value
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and
       !::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
 #endif
@@ -121,7 +121,7 @@ public:
       stepperObj_(yROM, appObj, resObj_)
   {}
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /*
    * ud_ops_t == pybind11::object and state_type is pybind11::array
   */

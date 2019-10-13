@@ -90,7 +90,7 @@ public:
   static constexpr bool isResidualPolicy_ = true;
   using typename fom_rhs_data::fom_rhs_t;
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<
     mpl::is_same<ud_ops, pybind11::object>::value,
     ud_ops,
@@ -126,7 +126,7 @@ public:
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
       !std::is_void<_ud_ops>::value
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and mpl::not_same<_ud_ops, pybind11::object>::value
 #endif
       > * = nullptr
@@ -142,7 +142,7 @@ public:
     static_assert( !std::is_void<_ud_ops>::value, "");
   }
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   // cnstr enabled when udOps is non-void and python
   template <
     typename _ud_ops = ud_ops,
@@ -247,7 +247,7 @@ private:
 		    scalar_t			   t,
 		    scalar_t			   dt) const
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("lspg residual");
 #endif
@@ -255,24 +255,24 @@ private:
     fom_states_data::template reconstructCurrentFomState(romY);
     fom_states_data::template reconstructFomOldStates<n>(oldYs);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
     fom_eval_rhs_policy::evaluate(app, yFom_, romR, t);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("time discrete residual");
 #endif
     this->time_discrete_dispatcher<odeMethod,maxNstates_>(yFom_, yFomOld_, romR, dt);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("lspg residual");
 #endif
   }

@@ -1,7 +1,7 @@
 
 ################ CMake Uninstall Template #######################
-# CMake Template file for uninstallation of files
-# mentioned in 'install_manifest.txt'
+# CMake Template file for uninstallation
+# of files in 'install_manifest.txt'
 #
 # Used by uinstall target
 #################################################################
@@ -34,5 +34,5 @@ if(EXISTS ${MANIFEST})
 else()
   message(STATUS "Cannot find install manifest: '${MANIFEST}'")
   message(STATUS "Probably make install has not been performed")
-  message(STATUS "   or install_manifest.txt has been deleted.")
+  message(STATUS "or install_manifest.txt has been deleted.")
 endif()

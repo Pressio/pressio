@@ -46,7 +46,7 @@
 //@HEADER
 */
 
-#if defined HAVE_TRILINOS
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
 #define QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
 
@@ -87,7 +87,7 @@ public:
 				false);
     //::pressio::utils::io::print_stdout(*localR_.get());
 
-// #ifdef DEBUG_PRINT
+// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
 //     int myrank{};
 //     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
 //     auto orthoErr = OM_->orthonormError(*Qmat_->data());

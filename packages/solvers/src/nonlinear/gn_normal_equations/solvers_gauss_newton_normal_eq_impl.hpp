@@ -135,7 +135,7 @@ void gauss_newton_neq_solve(const system_t & sys,
   constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
   convCondDescr = std::string(is_converged_t::description_);
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
   // get precision before GN
   auto ss = std::cout.precision();
   // set to 14 for the GN prints
@@ -150,7 +150,7 @@ void gauss_newton_neq_solve(const system_t & sys,
   norm_evaluator_t::evaluate(y, normO);
   norm_dy = {0};
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
   timer->start("NEQ-based Gausss Newton");
 #endif
@@ -162,7 +162,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     // call residual observer at each gauss step (no op for dummy case)
     residual_observer_each_step::evaluate(observer, resid, iStep);
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout("\n");
     auto fmt = utils::io::underline();
     ::pressio::utils::io::print_stdout(fmt, "GN step", iStep,
@@ -170,11 +170,11 @@ void gauss_newton_neq_solve(const system_t & sys,
 #endif
 
     // residual norm for current state
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
 #endif
     norm_evaluator_t::evaluate(resid, normRes);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm resid");
 #endif
 
@@ -182,22 +182,22 @@ void gauss_newton_neq_solve(const system_t & sys,
     if (iStep==1) normRes0 = normRes;
 
     // compute LHS: J^T*J
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("hessian");
 #endif
     hessian_evaluator_t::evaluate(jacob, H);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("hessian");
 #endif
 
-// #ifdef DEBUG_PRINT
+// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
 //     ::pressio::utils::io::print_stdout("HESSIAN" , "\n");
 //     ::pressio::utils::io::print_stdout(std::fixed,
 // 				       std::setprecision(14),
 // 				       *H.data() , "\n");
 // #endif
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto fmt2 = utils::io::magenta() + utils::io::bold();
     ::pressio::utils::io::print_stdout(fmt2, "GN_JSize =",
     ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
@@ -210,21 +210,21 @@ void gauss_newton_neq_solve(const system_t & sys,
 #endif
 
     // compute RHS: J^T*res
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("JTR");
 #endif
     jtr_evaluator_t::evaluate(jacob, resid, JTR);
     JTR.scale(static_cast<scalar_t>(-1));
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("JTR");
 #endif
 
     // projected residual norm for current state
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm JTR");
 #endif
     norm_evaluator_t::evaluate(JTR, normJTRes);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm JTR");
 #endif
 
@@ -236,11 +236,11 @@ void gauss_newton_neq_solve(const system_t & sys,
     // 				     *JTR.data() , "\n");
 
     // solve normal equations
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("solve normeq");
 #endif
     linSolver.solveAllowMatOverwrite(H, JTR, dy);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("solve normeq");
 #endif
 
@@ -252,7 +252,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     // compute norm of the correction
     norm_evaluator_t::evaluate(dy, norm_dy);
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
@@ -291,12 +291,12 @@ void gauss_newton_neq_solve(const system_t & sys,
 
   }//loop
 
-#if defined DEBUG_PRINT
+#if defined PRESSIO_ENABLE_DEBUG_PRINT
   std::cout.precision(ss);
   ::pressio::utils::io::print_stdout(std::fixed);
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   timer->stop("NEQ-based Gausss Newton");
 #endif
 

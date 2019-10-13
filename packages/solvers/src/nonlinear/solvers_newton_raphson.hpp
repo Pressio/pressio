@@ -57,7 +57,7 @@
 #include "../base/solvers_iterative_base.hpp"
 #include "../linear/solvers_linear_traits.hpp"
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
@@ -70,7 +70,7 @@ template <
   typename linear_solver_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::mpl::is_default_constructible<linear_solver_t>::value
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     or std::is_same<linear_solver_t, pybind11::object>::value
 #endif
     > * = nullptr
@@ -116,7 +116,7 @@ private:
   }
 
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
   // statically dispatch print based on whether the linear solver is iterative or not
   template <
     typename _linear_solver_t = linear_solver_t,
@@ -172,7 +172,7 @@ public:
   >
   void solveImpl(const system_t & sys, state_t & x)
   {
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     std::cout << " starting Newton-Raphson solve "
 	      << " tol = " << this->tolerance_
 	      << " maxIter = " << this->maxIters_
@@ -188,13 +188,13 @@ public:
 
     iStep_ = 0;
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     std::cout.precision(15);
 #endif
     while (++iStep_ <= this->maxIters_)
     {
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout("\n");
       auto fmt = utils::io::underline();
       ::pressio::utils::io::print_stdout(fmt, "NewRaph step", iStep_,
@@ -211,7 +211,7 @@ public:
       // store initial residual norm
       if (iStep_==1) normRes0_ = normRes_;
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       this->stepSummaryPrintDispatcher(linSolver_, normRes_, normRes0_, normN_);
 #endif
       if (normN_ < this->tolerance_)
@@ -225,7 +225,7 @@ public:
 
 
 // TODO: this needs to be cleaned
-// #ifdef HAVE_PYBIND11
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 //   template <
 //     typename system_t,
 //     typename state_t,
@@ -237,7 +237,7 @@ public:
 //     >
 //   void solveImpl(const system_t & sys, state_t & x)
 //   {
-// #ifdef DEBUG_PRINT
+// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
 //     std::cout << " starting Newton-Raphson solve "
 // 	      << " tol = " << this->tolerance_
 // 	      << " maxIter = " << this->maxIters_
@@ -253,7 +253,7 @@ public:
 //     std::cout.precision(15);
 //     while (++iStep <= this->maxIters_)
 //     {
-// #ifdef DEBUG_PRINT
+// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
 //       ::pressio::utils::io::print_stdout("\n");
 //       auto fmt = utils::io::underline();
 //       ::pressio::utils::io::print_stdout(fmt, "NewRaph step", iStep,

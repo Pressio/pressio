@@ -46,14 +46,14 @@
 //@HEADER
 */
 
-#cmakedefine DEBUG_PRINT
-#cmakedefine HAVE_EIGEN
-#cmakedefine HAVE_TRILINOS
-#cmakedefine HAVE_TEUCHOS_TIMERS
-#cmakedefine HAVE_PYBIND11
-#cmakedefine HAVE_KOKKOS
-#cmakedefine HAVE_BLAZE
-#cmakedefine HAVE_ARMADILLO
-#cmakedefine HAVE_BLAS
-#cmakedefine HAVE_LAPACK
-#cmakedefine HAVE_MPI
+#cmakedefine PRESSIO_ENABLE_DEBUG_PRINT
+#cmakedefine PRESSIO_ENABLE_TPL_EIGEN
+#cmakedefine PRESSIO_ENABLE_TPL_TRILINOS
+#cmakedefine PRESSIO_ENABLE_TEUCHOS_TIMERS
+#cmakedefine PRESSIO_ENABLE_TPL_PYBIND11
+#cmakedefine PRESSIO_ENABLE_TPL_KOKKOS
+#cmakedefine PRESSIO_ENABLE_TPL_BLAZE
+#cmakedefine PRESSIO_ENABLE_TPL_ARMADILLO
+#cmakedefine PRESSIO_ENABLE_TPL_BLAS
+#cmakedefine PRESSIO_ENABLE_TPL_LAPACK
+#cmakedefine PRESSIO_ENABLE_TPL_MPI

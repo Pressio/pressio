@@ -60,7 +60,7 @@ struct EvaluateFomVelocityDefault<false>{
   template <
     typename fom_t,   typename state_t,
     typename rhs_t, typename time_t
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
       !::pressio::containers::meta::is_array_pybind11<state_t>::value and
@@ -77,7 +77,7 @@ struct EvaluateFomVelocityDefault<false>{
 
   template <
     typename fom_t, typename state_t, typename time_t
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
 	mpl::not_same<fom_t, pybind11::object>::value and
 	!::pressio::containers::meta::is_array_pybind11<state_t>::value
@@ -96,7 +96,7 @@ struct EvaluateFomVelocityDefault<false>{
   //------------------------------------------
   // enabled when interfacing with python
   //------------------------------------------
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename fom_t, typename state_t,
     typename rhs_t, typename time_t,

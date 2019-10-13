@@ -86,7 +86,7 @@ struct is_legitimate_vector_type_for_qr_project<T, Q_t,
       > : std::true_type{};
 
 
-#if defined HAVE_TRILINOS
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
 template <typename algo_t, typename enable = void>
 struct is_legitimate_algo_for_epetra_mv : std::false_type {};
 
@@ -100,7 +100,7 @@ struct is_legitimate_algo_for_epetra_mv<algo_t,
 #endif
 
 
-#if defined HAVE_TRILINOS
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
 template <typename algo_t, typename enable = void>
 struct is_legitimate_algo_for_tpetra_mv : std::false_type {};
 

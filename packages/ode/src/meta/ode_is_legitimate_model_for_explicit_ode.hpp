@@ -77,7 +77,7 @@ struct is_legitimate_model_for_explicit_ode<
     >
   > : std::true_type{};
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<typename model_type>
 struct is_legitimate_model_for_explicit_ode<
   model_type,

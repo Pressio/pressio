@@ -97,14 +97,14 @@ public:
 		  lspg_residual_t	& romR,
   		  const fom_t		& app) const
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("lspg residual");
 #endif
 
     fom_states_data::template reconstructCurrentFomState(romY);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
     fom_eval_rhs_policy::evaluate(app, yFom_, romR);
     timer->stop("fom eval rhs");
@@ -112,7 +112,7 @@ public:
     fom_eval_rhs_policy::evaluate(app, yFom_, romR);
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("lspg residual");
 #endif
   }

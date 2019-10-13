@@ -80,7 +80,7 @@ protected:
   using fom_states_data::yFom_;
   using fom_velocity_data::fomRhs_;
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<
     mpl::is_same<ud_ops, pybind11::object>::value,
     ud_ops,
@@ -105,7 +105,7 @@ public:
       fom_velocity_data(fomResids),
       decoder_(decoder){}
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   // this cnstr only enabled when udOps is non-void and python
   template <
     typename _ud_ops = ud_ops,
@@ -142,7 +142,7 @@ public:
 			      const fom_t	      & app,
 			      scalar_t		 t) const
   {
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     // TODO: make this better, maybe initialized somewhere else
     galerkin_state_t result( const_cast<galerkin_state_t &>(romY).request() );
 #else
@@ -164,7 +164,7 @@ private:
   mpl::enable_if_t<
     std::is_void<_ud_ops>::value and
     ::pressio::containers::meta::is_vector_wrapper<galerkin_state_t>::value
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and !::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
 #endif
     > * = nullptr
@@ -174,38 +174,38 @@ private:
 		    const fom_t		    & app,
 		    scalar_t		    t) const
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("galerkin explicit velocity");
 #endif
 
     fom_states_data::template reconstructCurrentFomState(romY);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
     app.velocity(*yFom_.data(), t, *fomRhs_.data());
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("phiT*fomRhs");
 #endif
     const auto & phi = decoder_.getReferenceToJacobian();
     containers::ops::dot(phi, fomRhs_, romR);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("galerkin explicit velocity");
 #endif
   }
 
 
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
   typename galerkin_state_t,
   typename fom_t,
@@ -221,33 +221,33 @@ private:
 		    const fom_t		    & app,
 		    scalar_t		    t) const
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("galerkin explicit velocity");
 #endif
 
     fom_states_data::template reconstructCurrentFomState(romY);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
     app.attr("velocity")(yFom_, t, fomRhs_);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("phiT*fomRhs");
 #endif
     const auto & phi = decoder_.getReferenceToJacobian();
     auto constexpr transposePhi = true;
     udOps_.attr("multiply2")(phi, fomRhs_, romR, transposePhi);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("galerkin explicit velocity");
 #endif
   }

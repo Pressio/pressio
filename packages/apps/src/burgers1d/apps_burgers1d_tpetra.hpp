@@ -52,7 +52,7 @@
 #include "../apps_ConfigDefs.hpp"
 #include <numeric>
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Tpetra_CrsMatrix.hpp>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>

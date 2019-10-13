@@ -91,7 +91,7 @@ template<
   typename enable= void>
 class QRHouseholderEigenMultiVectorWrapper;
 
-#if defined HAVE_TRILINOS
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
 template<typename matrix_t,
 	 typename R_t,
 	 int n = utils::constants::dynamic,
@@ -155,7 +155,7 @@ template<typename matrix_t,
 	 typename enable = void>
 class ModGramSchmidtMVTpetra;
 
-#endif //HAVE_TRILINOS
+#endif //PRESSIO_ENABLE_TPL_TRILINOS
 
 
 template<

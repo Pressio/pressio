@@ -59,7 +59,7 @@
 #include "../../containers/src/matrix/containers_matrix_meta.hpp"
 #include "../../containers/src/meta/containers_is_wrapper.hpp"
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
 #include "../../utils/src/io/utils_print_helper.hpp"
 #endif
 

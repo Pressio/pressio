@@ -1,6 +1,5 @@
 
 
-
 # function(get_file_list_no_ext TARGDIR RESULT)
 
 	# TO finish

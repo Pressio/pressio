@@ -1,5 +1,5 @@
 
-if(HAVE_TRILINOS)
+if(PRESSIO_ENABLE_TPL_TRILINOS)
 
   set(SRC1
     ${CMAKE_CURRENT_SOURCE_DIR}/qr_multi_vector_distributed_epetra_factorization_out_of_place.cc

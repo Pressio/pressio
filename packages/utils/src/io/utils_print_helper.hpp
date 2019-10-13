@@ -51,7 +51,7 @@
 
 #include "../utils_ConfigDefs.hpp"
 #include "utils_colorize_print.hpp"
-#ifdef HAVE_MPI
+#ifdef PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
 #endif
 
@@ -73,7 +73,7 @@ void print(std::ostream & ss, head_t && head, tail_t && ... args){
 template <typename T = int>
 T myRank(){
   T rank = 0;
-#if defined HAVE_MPI
+#if defined PRESSIO_ENABLE_TPL_MPI
   int flag = 0; MPI_Initialized( &flag );
   if (flag==1) MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 #endif
@@ -89,10 +89,10 @@ void print_stdout(Args &&... args){
     impl::print(std::cout, std::forward<Args>(args)... );
 }
 
-// conditional on DEBUG_PRINT being on
+// conditional on PRESSIO_ENABLE_DEBUG_PRINT being on
 template <typename ... Args>
 void print_stdout_if_dp(Args &&... args){
-#if defined DEBUG_PRINT
+#if defined PRESSIO_ENABLE_DEBUG_PRINT
   print_stdout(std::forward<Args>(args)...);
 #endif
 }

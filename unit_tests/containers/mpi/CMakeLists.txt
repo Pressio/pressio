@@ -1,5 +1,5 @@
 
-if(HAVE_TRILINOS)
+if(PRESSIO_ENABLE_TPL_TRILINOS)
 
   set(SRC1
     ${CMAKE_CURRENT_SOURCE_DIR}/containers_vector_distributed_tpetra_traits.cc
@@ -46,7 +46,7 @@ if(HAVE_TRILINOS)
     )
   add_utest_mpi(containers_epetra "${SRC2}" gTestMain_mpi 3 )
 
-  if(HAVE_ARMADILLO)
+  if(PRESSIO_ENABLE_TPL_ARMADILLO)
     add_utest_mpi(containers_multi_vector_epetra_product_armadillo_vector
       containers_multi_vector_epetra_product_armadillo_vector.cc gTestMain_mpi 3)
   endif()

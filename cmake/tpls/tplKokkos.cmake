@@ -1,11 +1,13 @@
 
-option(TPL_ENABLE_KOKKOS "Enable Kokkos TPL" OFF)
-if(TPL_ENABLE_KOKKOS OR TPL_ENABLE_TRILINOS)
-  set(HAVE_KOKKOS ON)
-  set(KOKKOS_LIB_NAMES
-    kokkosalgorithms
-    kokkoscontainers
-    kokkoscore
-    kokkoskernels
-)
+option(PRESSIO_ENABLE_TPL_KOKKOS "Enable Kokkos TPL" OFF)
+
+if(PRESSIO_ENABLE_TPL_KOKKOS)
+  message("Enabling Kokkos")
+
+  if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
+    set(KOKKOS_LIB_NAMES
+      kokkosalgorithms  kokkoscontainers
+      kokkoscore kokkoskernels)
+  endif()
+
 endif()

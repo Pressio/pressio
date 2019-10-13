@@ -1,13 +1,11 @@
 
+option(PRESSIO_ENABLE_TPL_EIGEN "Enable Eigen TPL" ON)
 
-option(TPL_ENABLE_EIGEN "Enable Eigen TPL" ON)
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  message("Found PRESSIO_ENABLE_TPL_EIGEN=${PRESSIO_ENABLE_TPL_EIGEN}.")
 
-if(TPL_ENABLE_EIGEN)
-  set(HAVE_EIGEN ON)
-  message("Found TPL_ENABLE_EIGEN=${TPL_ENABLE_EIGEN}, so HAVE_EIGEN=${HAVE_EIGEN}")
-
-  # if we need to build tests, then add include and
-  if(BUILD_UNIT_TESTS OR BUILD_TESTS)
+  # if we need to build tests, then prep for it
+  if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
 
     if(NOT EIGEN_INC_DIR AND NOT EIGEN_INCLUDE_DIR)
       message(FATAL_ERROR

@@ -179,7 +179,7 @@ struct AdvancerPolicy{
 		      collector_type & collector,
 		      Args && ...	   args)
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("time loop");
 #endif
@@ -198,18 +198,18 @@ struct AdvancerPolicy{
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
     {
-      #ifdef DEBUG_PRINT
+      #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
       ::pressio::utils::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
       #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
       DoStepPolicy_t::execute(time, dt, step, yIn, std::forward<Args>(args)...);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif
 
@@ -217,7 +217,7 @@ struct AdvancerPolicy{
       collector_dispatch::execute(collector, step, time, yIn);
       //collector(step, time, yIn);
     }
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time loop");
 #endif
   }//end ()
@@ -239,7 +239,7 @@ struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
 		      time_type	dt,
 		      Args && ... args)
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("time loop");
 #endif
@@ -250,25 +250,25 @@ struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
     {
-      #ifdef DEBUG_PRINT
+      #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
       ::pressio::utils::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
       #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
       DoStepPolicy_t::execute(time, dt, step, std::forward<Args>(args)...);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif
 
       time = start_time + static_cast<time_type>(step) * dt;
     }
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time loop");
 #endif
 

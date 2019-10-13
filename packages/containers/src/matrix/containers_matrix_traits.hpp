@@ -52,10 +52,10 @@
 #include "../containers_fwd.hpp"
 #include "../containers_shared_traits.hpp"
 #include "./meta/containers_native_eigen_matrix_meta.hpp"
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./meta/containers_native_trilinos_matrix_meta.hpp"
 #endif
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "./meta/containers_native_kokkos_matrix_meta.hpp"
 #endif
 
@@ -72,7 +72,7 @@ struct traits<
     mpl::enable_if_t<
       !containers::meta::is_dense_matrix_eigen<wrapped_type>::value and
       !containers::meta::is_sparse_matrix_eigen<wrapped_type>::value
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
       and
       !containers::meta::is_sparse_matrix_epetra<wrapped_type>::value and
       !containers::meta::is_dense_matrix_epetra<wrapped_type>::value and
@@ -80,7 +80,7 @@ struct traits<
       !containers::meta::is_dense_matrix_teuchos_rcp<wrapped_type>::value and
       !containers::meta::is_sparse_matrix_tpetra<wrapped_type>::value
 #endif
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
       and
       !containers::meta::is_sparse_matrix_kokkos<wrapped_type>::value and
       !containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
@@ -174,7 +174,7 @@ struct traits< Matrix<
 //***********************************
 // epetra sparse distributed matrix
 //***********************************
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename wrapped_type>
 struct traits<Matrix
    <wrapped_type,
@@ -212,7 +212,7 @@ struct traits<Matrix
 //**********************************
 // for teuchos serial dense matrix
 //**********************************
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
 struct traits<Matrix<wrapped_type,
 	  typename
@@ -242,7 +242,7 @@ struct traits<Matrix<wrapped_type,
 //***********************************
 // epetra dense distributed matrix
 //***********************************
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename wrapped_type>
 struct traits<Matrix
    <wrapped_type,
@@ -278,7 +278,7 @@ struct traits<Matrix
 #endif
 
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 //*******************************
 // for tpetra crs matrix
 //*******************************
@@ -331,7 +331,7 @@ struct traits<Matrix<wrapped_type,
 //*******************************
 // Kokkos crs matrix
 //*******************************
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename wrapped_type>
 struct traits<
   Matrix<
@@ -372,7 +372,7 @@ struct traits<
 //*******************************
 // Kokkos dense matrix
 //*******************************
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename wrapped_type>
 struct traits<
   Matrix<

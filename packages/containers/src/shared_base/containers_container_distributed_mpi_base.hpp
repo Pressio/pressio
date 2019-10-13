@@ -46,7 +46,7 @@
 //@HEADER
 */
 
-#ifdef HAVE_MPI
+#ifdef PRESSIO_ENABLE_TPL_MPI
 #ifndef CONTAINERS_SHARED_BASE_CONTAINER_DISTRIBUTED_MPI_BASE_HPP_
 #define CONTAINERS_SHARED_BASE_CONTAINER_DISTRIBUTED_MPI_BASE_HPP_
 
@@ -66,7 +66,7 @@ public:
 
   template <typename T = comm_t,
 	    typename std::enable_if<
-      #ifdef HAVE_TRILINOS
+      #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 	      !meta::is_teuchos_rcp<T>::value and 
       #endif
         !::pressio::mpl::is_std_shared_ptr<T>::value 
@@ -78,7 +78,7 @@ public:
 
   template <typename T= comm_t,
   	    typename std::enable_if<
-      #ifdef HAVE_TRILINOS
+      #ifdef PRESSIO_ENABLE_TPL_TRILINOS
         meta::is_teuchos_rcp<T>::value or 
       #endif
         ::pressio::mpl::is_std_shared_ptr<T>::value 

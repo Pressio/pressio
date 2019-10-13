@@ -77,7 +77,7 @@ template <typename matrix_t, typename algo_tag, typename R_t,
 struct impl_class_helper{};
 
 
-#if defined HAVE_TRILINOS
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
 template <typename matrix_t, typename R_t,
 	  int n, int m, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<matrix_t, qr::TSQR, R_t, n, m, wrap_Q_type, Q_type,
@@ -207,7 +207,7 @@ struct traits<
 };
 
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 
 /*
  * traits_shared_trilinos_mv
@@ -363,7 +363,7 @@ struct traits<
 };
 
 
-#endif //HAVE_TRILINOS
+#endif //PRESSIO_ENABLE_TPL_TRILINOS
 
 }}}//end namespace pressio::qr::details
 #endif

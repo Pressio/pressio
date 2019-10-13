@@ -51,7 +51,7 @@
 
 #include "apps_burgers1d_epetra.hpp"
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Epetra_Import.h>
 
 namespace pressio{ namespace apps{

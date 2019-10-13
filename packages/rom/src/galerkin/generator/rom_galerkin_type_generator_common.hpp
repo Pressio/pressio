@@ -112,7 +112,7 @@ struct GalerkinCommonTypes<false, galerkin_state_type, Args...>
 };
 
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template < typename galerkin_state_type, typename ...Args >
 struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
 {
@@ -166,7 +166,7 @@ struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
 
 template <typename galerkin_state_type, typename ...Args>
 using GalerkinCommonTypes = impl::GalerkinCommonTypes<
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   ::pressio::containers::meta::is_array_pybind11<galerkin_state_type>::value,
 #else
   false,

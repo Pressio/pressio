@@ -6,7 +6,7 @@
 #include "CONTAINERS_ALL"
 #include "qr_r9c4_gold.hpp"
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "Epetra_MpiComm.h"
 #include "Eigen/Dense"
 #endif
@@ -77,7 +77,7 @@ struct eigenDenseR9Fixture
 // --------------------------------------------
 
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 struct epetraR9Fixture
   : public ::testing::Test{
 

@@ -1,5 +1,5 @@
 
-IF(HAVE_TRILINOS)
+IF(PRESSIO_ENABLE_TPL_TRILINOS)
 
   TRIBITS_ADD_EXECUTABLE(
     gn_normal_eq_exp_data_fit_n5_mpi_epetra

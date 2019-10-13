@@ -111,7 +111,7 @@ void gauss_newton_qr_solve(const system_t & sys,
   constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
   convCondDescr = std::string(is_converged_t::description_);
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
   // get precision before GN
   auto ss = std::cout.precision();
   // set to 14 for the GN prints
@@ -126,7 +126,7 @@ void gauss_newton_qr_solve(const system_t & sys,
   norm_evaluator_t::evaluate(y, normO);
   norm_dy = {};
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
   timer->start("QR-based Gausss Newton");
 #endif
@@ -134,7 +134,7 @@ void gauss_newton_qr_solve(const system_t & sys,
   iteration_t iStep = 0;
   while (++iStep <= maxNonLIt)
   {
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout("\n");
     auto fmt = utils::io::underline();
     ::pressio::utils::io::print_stdout(fmt, "GN step", iStep,
@@ -142,7 +142,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
     // residual norm for current state
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
     norm_evaluator_t::evaluate(resid, normRes);
     timer->stop("norm resid");
@@ -153,7 +153,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     if (iStep==1) normRes0 = normRes;
 
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR factorize");
     qrObj.computeThin(jacob);
     timer->stop("QR factorize");
@@ -161,7 +161,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     qrObj.computeThin(jacob);
 #endif
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto fmt2 = utils::io::magenta() + utils::io::bold();
     ::pressio::utils::io::print_stdout(fmt2, "GN_JSize =",
     ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
@@ -171,7 +171,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
     // compute: Q^T Residual
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR project");
     qrObj.project(resid, QTResid);
     timer->stop("QR project");
@@ -180,11 +180,11 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
     // projected residual norm for current state
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm QTResid");
 #endif
     norm_evaluator_t::evaluate(QTResid, normQTRes);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm QTResid");
 #endif
 
@@ -194,7 +194,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     // compute correction: dy
     // by solving R dy = - Q^T Residual
     QTResid.scale(static_cast<scalar_t>(-1));
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR R-solve");
     qrObj.solve(QTResid, dy);
     timer->stop("QR R-solve");
@@ -205,7 +205,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     // norm of the correction
     norm_evaluator_t::evaluate(dy, norm_dy);
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
@@ -236,11 +236,11 @@ void gauss_newton_qr_solve(const system_t & sys,
 
   }//loop
 
-#if defined DEBUG_PRINT
+#if defined PRESSIO_ENABLE_DEBUG_PRINT
   std::cout.precision(ss);
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   timer->stop("QR-based Gausss Newton");
 #endif
 

@@ -46,20 +46,20 @@
 //@HEADER
 */
 
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_HPP
 #define SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_HPP
 
 #include "../solvers_ConfigDefs.hpp"
 #include "../base/solvers_linear_base.hpp"
 #include "solvers_linear_traits.hpp"
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Teuchos_LAPACK.hpp>
 #include <Teuchos_SerialDenseSolver.hpp>
 #include <Teuchos_BLAS.hpp>
 #endif
 
-#if defined HAVE_KOKKOS and defined KOKKOS_ENABLE_CUDA
+#if defined PRESSIO_ENABLE_TPL_KOKKOS and defined KOKKOS_ENABLE_CUDA
 #include <cuda_runtime.h>
 #include <cusolverDn.h>
 #endif
@@ -116,7 +116,7 @@ public:
 
 private:
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
   /*
    * enable if:
    * the matrix has layout left (i.e. column major)
@@ -212,7 +212,7 @@ private:
 
 private:
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
   Teuchos::LAPACK<int, scalar_t> lpk_;
   Teuchos::BLAS<int, scalar_t> blas_;
 
@@ -225,7 +225,7 @@ private:
   std::vector<scalar_t> tau_ = {};
 #endif
 
-#if defined HAVE_KOKKOS and defined KOKKOS_ENABLE_CUDA
+#if defined PRESSIO_ENABLE_TPL_KOKKOS and defined KOKKOS_ENABLE_CUDA
   cusolverDnHandle_t cuDnHandle_;
 #endif
 };

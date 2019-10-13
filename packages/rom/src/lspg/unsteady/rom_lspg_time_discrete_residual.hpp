@@ -62,7 +62,7 @@ template<
   typename ud_ops,
   ::pressio::mpl::enable_if_t<
     method == ::pressio::ode::ImplicitEnum::Euler
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
    > * = nullptr
@@ -76,7 +76,7 @@ void time_discrete_residual(const state_type & yn,
   udOps->time_discrete_euler(*R.data(), *yn.data(), *ynm[0].data(), dt);
 }
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<
   ::pressio::ode::ImplicitEnum method,
   int n,
@@ -112,12 +112,12 @@ template<
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     method == ::pressio::ode::ImplicitEnum::Euler and
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
     (containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
      or
 #endif
      containers::meta::is_vector_wrapper_eigen<state_type>::value == true
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
      )
 #endif
     > * = nullptr
@@ -144,12 +144,12 @@ template<
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     method == ::pressio::ode::ImplicitEnum::BDF2 and
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
     (containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
      or
 #endif
      containers::meta::is_vector_wrapper_eigen<state_type>::value == true
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
      )
 #endif
     > * = nullptr
@@ -261,7 +261,7 @@ void time_discrete_residual(const state_type & yn,
  * the same distributions.
 */
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <::pressio::ode::ImplicitEnum odeMethod>
 struct time_discrete_single_entry_epetra;
 

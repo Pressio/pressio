@@ -51,7 +51,7 @@
 
 #include "ode_ConfigDefs.hpp"
 #include <array>
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #endif
 
@@ -82,7 +82,7 @@ struct OdeStorage<T, 1>{
 
   template <
     typename _T = T
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
       !containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
@@ -91,7 +91,7 @@ struct OdeStorage<T, 1>{
   OdeStorage(_T const & y)
     : data_{{y}}{}
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename _T = T,
     mpl::enable_if_t<
@@ -116,7 +116,7 @@ struct OdeStorage<T, 2>{
 
   template <
     typename _T = T
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
       !containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
@@ -125,7 +125,7 @@ struct OdeStorage<T, 2>{
   OdeStorage(_T const & y)
     : data_{{y,y}}{}
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename _T = T,
     mpl::enable_if_t<
@@ -151,7 +151,7 @@ struct OdeStorage<T, 3>{
 
   template <
     typename _T = T
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
       !containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
@@ -160,7 +160,7 @@ struct OdeStorage<T, 3>{
   OdeStorage(_T const & y)
     : data_{{y,y,y}}{}
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename _T = T,
     mpl::enable_if_t<
@@ -187,7 +187,7 @@ struct OdeStorage<T, 4>{
 
   template <
     typename _T = T
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
       !containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
@@ -196,7 +196,7 @@ struct OdeStorage<T, 4>{
   OdeStorage(_T const & y)
     : data_{{y,y,y,y}}{}
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename _T = T,
     mpl::enable_if_t<

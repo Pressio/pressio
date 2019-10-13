@@ -61,7 +61,7 @@ namespace direct{
   struct ColPivHouseholderQR {};
   struct PartialPivLU {};
 
-  #if defined HAVE_TRILINOS or defined HAVE_KOKKOS
+  #if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
   struct getrs{};
   struct geqrf{};
   #endif

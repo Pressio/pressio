@@ -145,7 +145,7 @@ public:
       auxStepperObj_{},
       stepperObj_(yROM, appObj, resObj_, jacObj_)
   {
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     std::cout << std::endl;
     std::cout << "LSPGProbGen" << std::endl;
     std::cout << "yFomRef_ " << yFomRef_.data() << std::endl;

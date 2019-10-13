@@ -51,7 +51,7 @@
 
 #include "../apps_ConfigDefs.hpp"
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "../../../CONTAINERS_ALL"
 #include "Epetra_MpiComm.h"
 #include <Epetra_config.h>

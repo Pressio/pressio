@@ -63,10 +63,10 @@
 #include <Eigen/SparseQR>
 #include <Eigen/OrderingMethods>
 
-// #ifdef HAVE_ARMADILLO
+// #ifdef PRESSIO_ENABLE_TPL_ARMADILLO
 //   #include "solvers_linear_wrapper_armadillo.hpp"
 // #endif
-// #ifdef HAVE_TRILINOS
+// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 //   #include "AztecOO.h"
 // #endif
 
@@ -166,7 +166,7 @@ struct traits<::pressio::solvers::linear::direct::PartialPivLU> {
   static constexpr bool eigen_enabled = true;
 };
 
-#if defined HAVE_TRILINOS or defined HAVE_KOKKOS
+#if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
 template <>
 struct traits<::pressio::solvers::linear::direct::getrs> {
 

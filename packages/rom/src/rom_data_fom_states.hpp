@@ -88,7 +88,7 @@ struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
     this->resetContainersToZero();
   }
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /* cnstr for maxNstates = 0, and fom_state_type is a pybind11 array */
   template <
     typename _fom_state_type = fom_state_type,
@@ -130,7 +130,7 @@ struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
     this->resetContainersToZero();
   }
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /* cnstr for maxNstates = 1, and fom_state_type is a pybind11 array */
   template <
     typename _fom_state_type = fom_state_type,
@@ -174,7 +174,7 @@ struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
     this->resetContainersToZero();
   }
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /* cnstr for maxNstates = 2, and fom_state_type is a pybind11 array */
   template <
     typename _fom_state_type = fom_state_type,
@@ -200,14 +200,14 @@ protected:
   template <typename rom_state_t>
   void reconstructCurrentFomState(const rom_state_t & romY) const
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("reconstruct fom state");
 #endif
 
     fomStateReconstrObj_(romY, yFom_);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("reconstruct fom state");
 #endif
   }
@@ -217,7 +217,7 @@ protected:
 			       rom_state_t, n
 			       > & romYprev) const
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("reconstruct fom old state");
 #endif
@@ -226,7 +226,7 @@ protected:
       fomStateReconstrObj_(romYprev[i], yFomOld_[i]);
     }
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("reconstruct fom old state");
 #endif
   }

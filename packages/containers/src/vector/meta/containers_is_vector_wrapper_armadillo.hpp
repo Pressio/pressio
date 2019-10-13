@@ -46,7 +46,7 @@
 //@HEADER
 */
 
-#ifdef HAVE_ARMADILLO
+#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
 #ifndef CONTAINERS_IS_VECTOR_WRAPPER_ARMADILLO_HPP_
 #define CONTAINERS_IS_VECTOR_WRAPPER_ARMADILLO_HPP_
 
@@ -81,4 +81,4 @@ struct is_column_vector_wrapper_armadillo<
 
 }}}//end namespace pressio::containers::meta
 #endif
-#endif // HAVE_ARMADILLO
+#endif // PRESSIO_ENABLE_TPL_ARMADILLO

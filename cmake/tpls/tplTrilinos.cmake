@@ -1,18 +1,16 @@
 
-option(TPL_ENABLE_TRILINOS "Enable Trilinos TPL" OFF)
+option(PRESSIO_ENABLE_TPL_TRILINOS "Enable Trilinos TPL" OFF)
 
-if(TPL_ENABLE_TRILINOS)
-  # this define is used by the cmake_config
-  set(HAVE_TRILINOS ON)
+if(PRESSIO_ENABLE_TPL_TRILINOS)
+  message("Enabling Trilinos since PRESSIO_ENABLE_TPL_TRILINOS=${PRESSIO_ENABLE_TPL_TRILINOS}")
 
-  # if we need to build tests, then add include and
-  if(BUILD_UNIT_TESTS OR BUILD_TESTS)
+  # if we need to build tests, then setup trilinos
+  if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
 
-    set(HAVE_TEUCHOS_TIMERS ON)
     if( (NOT TRILINOS_INC_DIR OR NOT TRILINOS_LIB_DIR)
 	AND (NOT TRILINOS_INCLUDE_DIR OR NOT TRILINOS_LIBRARIES_DIR))
       message(FATAL_ERROR
-	"TPL_ENABLE_TRILINOS=${TPL_ENABLE_TRILINOS} but did not specify how to find it.
+	"You enabled PRESSIO_ENABLE_TPL_TRILINOS but did not specify how to find it.
         Please reconfigure with:
           -DTRILINOS_INC_DIR=<full-path-to-headers>
           -DTRILINOS_LIB_DIR=<full-path-to-libs>

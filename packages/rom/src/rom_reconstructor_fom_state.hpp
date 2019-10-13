@@ -115,7 +115,7 @@ private:
 
 
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
   typename fom_state_t,
   typename decoder_type
@@ -141,7 +141,7 @@ public:
       yFomReference_(yFomIn),
       decoderObj_(decoder)
   {
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     std::cout << std::endl;
     std::cout << "Inside FomStateReconstructor " << std::endl;
     std::cout << "yFomReference_ " << yFomReference_.data() << std::endl;

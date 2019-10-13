@@ -52,12 +52,12 @@
 #include "../containers_fwd.hpp"
 #include "../containers_shared_traits.hpp"
 #include "./meta/containers_native_eigen_multi_vector_meta.hpp"
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./meta/containers_native_epetra_multi_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_multi_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_block_multi_vector_meta.hpp"
 #endif
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "./meta/containers_native_kokkos_multi_vector_meta.hpp"
 #endif
 
@@ -73,13 +73,13 @@ struct traits<
     wrapped_type,
     mpl::enable_if_t<
       !containers::meta::is_dynamic_multi_vector_eigen<wrapped_type>::value
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
       and
       !containers::meta::is_multi_vector_epetra<wrapped_type>::value and
       !containers::meta::is_multi_vector_tpetra_block<wrapped_type>::value and
       !containers::meta::is_multi_vector_tpetra<wrapped_type>::value
 #endif
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
       and
       !containers::meta::is_multi_vector_kokkos<wrapped_type>::value
 #endif
@@ -106,7 +106,7 @@ struct traits<
 };
 
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 //*******************************
 // for epetra multivector
 //*******************************
@@ -259,7 +259,7 @@ struct traits<MultiVector<wrapped_type,
 //*******************************
 // Kokkos multi vector
 //*******************************
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename wrapped_type>
 struct traits<
   MultiVector<

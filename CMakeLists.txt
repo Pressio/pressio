@@ -42,7 +42,6 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-
 #=====================================================================
 # other stuff
 #=====================================================================
@@ -50,27 +49,24 @@ include(GNUInstallDirs)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_subdirectory(packages)
 
-
 #=====================================================================
 # some optional and TPLs
 # note that linking to TPLs is only needed when building tests
 #=====================================================================
-if( cmake_build_type_tolower STREQUAL "debug" AND NOT DEBUG_PRINT)
-  message( "CMAKE_BUILD_TYPE==Debug, setting so DEBUG_PRINT=ON" )
-  message( "If you want to turn off debug prints, reconfigure with -DDEBUG_PRINT=OFF" )
+if( cmake_build_type_tolower STREQUAL "debug" AND NOT PRESSIO_ENABLE_DEBUG_PRINT)
+  message( "CMAKE_BUILD_TYPE==Debug, setting so PRESSIO_ENABLE_DEBUG_PRINT=ON" )
+  message( "If you want to turn off debug prints, reconfigure with -DPRESSIO_ENABLE_DEBUG_PRINT=OFF" )
   message("")
-  #set(DEBUG_PRINT ON)
 endif()
-if(DEBUG_PRINT)
-  message( "Enabling debug prints since DEBUG_PRINT=ON" )
+if(PRESSIO_ENABLE_DEBUG_PRINT)
+  message( "Enabling debug prints since PRESSIO_ENABLE_DEBUG_PRINT=ON" )
   message( "If you want to turn off debug prints, reconfigure with -DDEBUG_PRINT=OFF" )
   message("")
-  #set(DEBUG_PRINT ON)
 endif()
 
 
-option(BUILD_UNIT_TESTS "Enabling pressio unit testing." OFF)
-option(BUILD_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
+option(PRESSIO_ENABLE_UNIT_TESTS "Enabling pressio unit testing." OFF)
+option(PRESSIO_ENABLE_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
 
 # ALL_INC/LIB_DIR contain all include/lib directories as we add TPLs
 # we fill these vars up based on which TPLs are enabled.
@@ -90,10 +86,10 @@ include(tplBlaze)
 
 #=====================================================================
 # unit tests are enabled if
-#   (a) BUILD_UNIT_TESTS = ON
-#   (b) BUILD_TESTS = ON
+#   (a) PRESSIO_ENABLE_UNIT_TESTS = ON
+#   (b) PRESSIO_ENABLE_TESTS = ON
 #=====================================================================
-if(BUILD_UNIT_TESTS OR BUILD_TESTS)
+if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
   # tell CMake to use CTest extension
   enable_testing()
   # add subdir where the unit tests are
@@ -102,9 +98,9 @@ endif()
 
 #=====================================================================
 # basic regression tests are enabled if
-#   BUILD_TESTS = ON
+#   PRESSIO_ENABLE_TESTS = ON
 #=====================================================================
-if(BUILD_TESTS)
+if(PRESSIO_ENABLE_TESTS)
   # tell CMake to use CTest extension
   enable_testing()
   # add subdir where the unit tests are

@@ -46,7 +46,7 @@
 //@HEADER
 */
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #ifndef ROM_LINEAR_PY_DECODER_HPP_
 #define ROM_LINEAR_PY_DECODER_HPP_
 
@@ -96,7 +96,7 @@ public:
 		  const ops_t ops)
     : phi_(matIn), ops_{ops}
   {
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     std::cout << std::endl;
     std::cout << "Inside PyLinearDecoder " << std::endl;
     std::cout << "phi_ " << phi_.data() << std::endl;

@@ -106,7 +106,7 @@ template <typename ... Args>
 using GaussNewtonQR = typename impl::GNQRSpecializationPicker<Args...>::type;
 
 /* class to interface with python */
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
   typename system_t,
   typename state_t,

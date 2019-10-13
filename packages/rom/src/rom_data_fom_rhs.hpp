@@ -72,7 +72,7 @@ struct FomRhsData<fom_rhs_type>
     ::pressio::containers::ops::set_zero(fomRhs_);
   }
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename _fom_rhs_type = fom_rhs_type,
     mpl::enable_if_t<

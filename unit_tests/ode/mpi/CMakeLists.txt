@@ -1,3 +1,3 @@
 
-# if(HAVE_TRILINOS)
+# if(PRESSIO_ENABLE_TPL_TRILINOS)
 # endif()

@@ -123,7 +123,7 @@ struct LSPGCommonTypes<
   odeName, ud_ops,
   mpl::enable_if_t<
     ::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and mpl::not_same<fom_type, pybind11::object>::value
 #endif
     >
@@ -175,7 +175,7 @@ struct LSPGCommonTypes<
 
 
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 //-------------------------------------------------------
 // partial specialize for pybind11
 //-------------------------------------------------------

@@ -2,11 +2,11 @@
 # this function creates and adds an individual SERIAL test
 macro(add_serial_exe_and_test TESTNAME PKGNAME TESTSRCS REGEX)
   # set name of the executable
-  set(exeName ${PKGNAME}_${TESTNAME})
-  add_executable(${exeName} ${TESTSRCS})
-  add_test(NAME ${exeName} COMMAND ${exeName})
+  set(testNameFinal ${PKGNAME}_${TESTNAME})
+  add_executable(${testNameFinal} ${TESTSRCS})
+  add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
   set_tests_properties(
-    ${exeName}
+    ${testNameFinal}
     PROPERTIES
     PASS_REGULAR_EXPRESSION ${REGEX}
   )
@@ -15,16 +15,16 @@ endmacro()
 #=====================================================================
 
 macro(add_mpi_exe_and_test TESTNAME PKGNAME TESTSRCS nRANKS REGEX)
-  set(exeName ${PKGNAME}_${TESTNAME}_np${nRANKS})
-  add_executable(${exeName} ${TESTSRCS})
-  target_link_libraries(${exeName} ${MPI_CXX_LIBRARIES})
+  set(testNameFinal ${PKGNAME}_${TESTNAME}_np${nRANKS})
+  add_executable(${testNameFinal} ${TESTSRCS})
+  target_link_libraries(${testNameFinal} ${MPI_CXX_LIBRARIES})
   add_test(
-    NAME ${exeName}
+    NAME ${testNameFinal}
     COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${nRANKS}
-    ${MPIEXEC_PREFLAGS} ${exeName} ${MPIEXEC_POSTFLAGS}
+    ${MPIEXEC_PREFLAGS} ${testNameFinal} ${MPIEXEC_POSTFLAGS}
     )
   set_tests_properties(
-    ${exeName}
+    ${testNameFinal}
     PROPERTIES
     PASS_REGULAR_EXPRESSION ${REGEX}
   )

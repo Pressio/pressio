@@ -65,7 +65,7 @@ namespace pressio{ namespace containers{ namespace default_types {
   // Unsigned int type
   using uint = unsigned int;
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
   // admissible types for epetra vector
   using epetra_scalar_t = double;
   using epetra_lo_t = int;

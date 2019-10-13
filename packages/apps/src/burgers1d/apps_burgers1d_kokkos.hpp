@@ -52,7 +52,7 @@
 #include "../apps_ConfigDefs.hpp"
 
 // this has to be here because it is seen after we include configDefs
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 
 #include <Kokkos_Core.hpp>
 #include <KokkosSparse_CrsMatrix.hpp>

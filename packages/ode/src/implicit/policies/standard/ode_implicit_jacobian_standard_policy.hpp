@@ -115,7 +115,7 @@ public:
 
 
 
-// #ifdef HAVE_PYBIND11
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // /*
 //  * state_type and jacobian_type = pybind11::array_t
 //  */

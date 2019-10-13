@@ -52,7 +52,7 @@
 #include "../../ode_fwd.hpp"
 #include "ode_explicit_velocity_policy_base.hpp"
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
 #endif
@@ -71,7 +71,7 @@ class ExplicitVelocityStandardPolicy<
   state_type, system_type, state_type,
   mpl::enable_if_t<
     containers::meta::is_vector_wrapper<state_type>::value
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and mpl::not_same<system_type, pybind11::object >::value
 #endif
     >
@@ -109,7 +109,7 @@ public:
  * state_type = velocity_type
  * both are pybind11::array_t
  */
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<
   typename state_type,
   typename system_type

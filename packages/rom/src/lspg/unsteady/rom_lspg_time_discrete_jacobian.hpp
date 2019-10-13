@@ -60,7 +60,7 @@ template <
   typename scalar_type,
   typename decoder_jac_type,
   typename ud_ops
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   , mpl::enable_if_t<
     mpl::not_same< ud_ops, pybind11::object>::value
     > * = nullptr
@@ -80,7 +80,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 }
 
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
   ode::ImplicitEnum odeMethod,
   typename lspg_matrix_type,
@@ -119,7 +119,7 @@ template <
   ::pressio::mpl::enable_if_t<
     (containers::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
      containers::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value)
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
     or
     (containers::meta::is_multi_vector_wrapper_kokkos<lspg_matrix_type>::value and
      containers::meta::is_multi_vector_wrapper_kokkos<decoder_jac_type>::value)
@@ -177,7 +177,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
  * the same distributions.
 */
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 
 
 /*************************************

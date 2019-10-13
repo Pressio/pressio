@@ -75,7 +75,7 @@ struct svd_traits<const T> : svd_traits<T> {};
 //---------------------------------------------------------------
 
   
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename matrix_type,
 	  template <typename...> class lsv_type,
 	  template <typename...> class rsv_type,
@@ -111,7 +111,7 @@ struct svd_traits<Solver<
 //---------------------------------------------------------------
 
   
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename matrix_type,
 	  template <typename...> class lsv_type,
 	  template <typename...> class rsv_type,

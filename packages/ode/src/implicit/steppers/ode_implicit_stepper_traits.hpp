@@ -107,7 +107,7 @@ template <
   >
 struct StdPoliciesPicker<
   system_t, state_t, residual_t, jacobian_t
-#ifdef HAVE_PYBIND11  
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11  
   , mpl::enable_if_t<
     mpl::not_same<system_t, pybind11::object>::value
     >
@@ -120,7 +120,7 @@ struct StdPoliciesPicker<
     state_t, system_t, jacobian_t>;
 };
 
-#ifdef HAVE_PYBIND11  
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11  
 template <
   typename system_t,
   typename state_t,

@@ -2,6 +2,6 @@
 
 add_subdirectory(serial)
 
-if(HAVE_MPI)
+if(PRESSIO_ENABLE_TPL_MPI)
   add_subdirectory(mpi)
 endif()

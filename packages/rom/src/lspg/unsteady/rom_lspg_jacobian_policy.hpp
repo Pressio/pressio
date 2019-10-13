@@ -116,7 +116,7 @@ public:
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
       !std::is_void<_ud_ops>::value 
-#ifdef HAVE_PYBIND11      
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11      
       and mpl::not_same<_ud_ops, pybind11::object>::value
 #endif      
       > * = nullptr
@@ -134,7 +134,7 @@ public:
     static_assert( !std::is_void<_ud_ops>::value, "");
   }
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   // this cnstr only enabled when udOps is non-void and python
   template <
     typename _ud_ops = ud_ops,
@@ -230,7 +230,7 @@ private:
 		    scalar_t	     t,
 		    scalar_t	     dt) const
   {
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("lspg apply jac");
 #endif
@@ -240,30 +240,30 @@ private:
     //    timer->start("reconstruct fom state");
     fom_states_data::template reconstructCurrentFomState(romY);
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
 #endif
     const auto & basis = decoderObj_.getReferenceToJacobian();
     fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ, t);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("time discrete jacob");
 #endif
     this->time_discrete_dispatcher<odeMethod>(romJJ, dt, basis);
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete jacob");
 #endif
 
-#ifdef HAVE_TEUCHOS_TIMERS
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("lspg apply jac");
 #endif
   }
 
 protected:
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<
     mpl::is_same<ud_ops, pybind11::object>::value,
     ud_ops,

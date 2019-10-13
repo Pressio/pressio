@@ -56,7 +56,7 @@
 
 namespace pressio{ namespace containers{
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #define STATIC_ASSERT_IS_MULTIVECTOR_EPETRA(TYPE) \
   static_assert( containers::meta::is_multi_vector_epetra<TYPE>::value, \
 		 "THIS_IS_NOT_A_MULTIVECTOR_EPETRA")

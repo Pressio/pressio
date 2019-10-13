@@ -51,8 +51,8 @@
 
 #include "../apps_ConfigDefs.hpp"
 
-// this has to be here because HAVE_TRILINOS is seen after we include configDefs
-#ifdef HAVE_TRILINOS
+// this has to be here because PRESSIO_ENABLE_TPL_TRILINOS is seen after we include configDefs
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 
 #include "../../../CONTAINERS_ALL"
 #include "Epetra_MpiComm.h"

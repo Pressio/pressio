@@ -52,7 +52,7 @@
 #include "qr_ConfigDefs.hpp"
 #include "../../containers/src/vector/containers_vector_meta.hpp"
 #include "../../containers/src/matrix/containers_matrix_meta.hpp"
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "Teuchos_SerialDenseMatrix.hpp"
 #include "Teuchos_SerialDenseSolver.hpp"
 #include <Teuchos_SerialQRDenseSolver.hpp>
@@ -79,7 +79,7 @@ void solve(const vector_type & rhs,
 
 
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename vector_type, typename R_type,
 	 ::pressio::mpl::enable_if_t<
 	   ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
@@ -111,7 +111,7 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 
 
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename vector_type,
 	 typename R_type,
 	 int n,
@@ -129,7 +129,7 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 
 
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename vector_type,
 	 typename R_type,
 	 int n,
@@ -152,7 +152,7 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 
 
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename vector_type,
 	 typename R_type,
 	 int n,

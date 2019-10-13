@@ -55,14 +55,14 @@
 #include "./meta/containers_native_blaze_vector_meta.hpp"
 #include "./meta/containers_native_eigen_vector_meta.hpp"
 
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./meta/containers_native_epetra_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_vector_meta.hpp"
 #include "./meta/containers_native_teuchos_vector_meta.hpp"
 #include "./meta/containers_native_tpetra_block_vector_meta.hpp"
 #endif
 
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "./meta/containers_native_kokkos_vector_meta.hpp"
 #endif
 
@@ -78,16 +78,16 @@ struct traits<
     wrapped_type,
     mpl::enable_if_t<
       !containers::meta::is_vector_eigen<wrapped_type>::value
-#ifdef HAVE_ARMADILLO
+#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
       and !containers::meta::is_vector_armadillo<wrapped_type>::value
 #endif
-#ifdef HAVE_BLAZE
+#ifdef PRESSIO_ENABLE_TPL_BLAZE
       and !containers::meta::is_dynamic_vector_blaze<wrapped_type>::value
 #endif
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
       and !containers::meta::is_vector_kokkos<wrapped_type>::value
 #endif
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
       and !containers::meta::is_vector_epetra<wrapped_type>::value
       and !containers::meta::is_dense_vector_teuchos<wrapped_type>::value
       and !containers::meta::is_vector_tpetra_block<wrapped_type>::value
@@ -235,7 +235,7 @@ struct traits<Vector<wrapped_type,
 //*******************************
 // Armadillo column vector
 //*******************************
-#ifdef HAVE_ARMADILLO
+#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
 		     ::pressio::mpl::enable_if_t<
@@ -265,7 +265,7 @@ struct traits<Vector<wrapped_type,
 //*******************************
 // Armadillo row vector
 //*******************************
-#ifdef HAVE_ARMADILLO
+#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
 		     ::pressio::mpl::enable_if_t<
@@ -295,7 +295,7 @@ struct traits<Vector<wrapped_type,
 //*******************************
 // Blaze dynamic vector
 //*******************************
-#ifdef HAVE_BLAZE
+#ifdef PRESSIO_ENABLE_TPL_BLAZE
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
 		     ::pressio::mpl::enable_if_t<
@@ -324,7 +324,7 @@ struct traits<Vector<wrapped_type,
 //*******************************
 // for teuchos serial dense vec
 //*******************************
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
 struct traits<Vector<wrapped_type,
 	  typename
@@ -353,7 +353,7 @@ struct traits<Vector<wrapped_type,
 //*******************************
 // for epetra vector
 //*******************************
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
 struct traits<Vector<wrapped_type,
 	  typename
@@ -385,7 +385,7 @@ struct traits<Vector<wrapped_type,
 //*******************************
 // for tpetra vector
 //*******************************
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
 struct traits<Vector<wrapped_type,
 	  typename
@@ -435,7 +435,7 @@ struct traits<Vector<wrapped_type,
 //*******************************
 // Kokkos vector
 //*******************************
-#ifdef HAVE_KOKKOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename wrapped_type>
 struct traits<Vector<wrapped_type,
 	  ::pressio::mpl::enable_if_t<
@@ -480,7 +480,7 @@ struct traits<Vector<wrapped_type,
 //*******************************
 // for block tpetra vector
 //*******************************
-#ifdef HAVE_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
 struct traits<
   Vector<wrapped_type,

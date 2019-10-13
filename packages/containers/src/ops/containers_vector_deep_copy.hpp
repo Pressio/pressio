@@ -51,7 +51,7 @@
 
 #include "containers_ops_meta.hpp"
 #include "../vector/containers_vector_meta.hpp"
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #endif
@@ -75,7 +75,7 @@ void deep_copy(const T & src, T & dest){
 //--------------------------------------------------------------------------
 // enable for pybind11::array_t
 //--------------------------------------------------------------------------
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<
   typename T,
   ::pressio::mpl::enable_if_t<

@@ -46,7 +46,7 @@
 //@HEADER
 */
 
-#ifdef HAVE_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #ifndef SOLVERS_PY_GAUSS_NEWTON_HPP
 #define SOLVERS_PY_GAUSS_NEWTON_HPP
 
@@ -186,7 +186,7 @@ private:
     constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
     constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto ss = std::cout.precision();
     std::cout.precision(14);
     auto reset = utils::io::reset();
@@ -203,7 +203,7 @@ private:
     iteration_t iStep = 0;
     while (++iStep <= iterative_base_t::maxIters_)
     {
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout("\n");
       auto fmt = utils::io::underline();
       ::pressio::utils::io::print_stdout(fmt, "PyGN step", iStep,
@@ -224,12 +224,12 @@ private:
       // std::cout << "jacobian" << std::endl;
       // pythonOps_.attr("myprint")(jac_);
       // std::cout << "\n";
-// #ifdef DEBUG_PRINT
+// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
 //       std::cout << "hessian" << std::endl;
 //       pythonOps_.attr("myprint")(hess_);
 // #endif
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt1 = utils::io::magenta() + utils::io::bold();
       ::pressio::utils::io::print_stdout(fmt1, "GN_JSize =",
 				      jac_.shape()[0], jac_.shape()[1],
@@ -242,7 +242,7 @@ private:
       // compute RHS: J^T*res
       pythonOps_.attr("multiply2")(jac_, res_, JTR_, true);
       pythonOps_.attr("scale")(JTR_, negOne);
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       std::cout << "JT R" << std::endl;
       pythonOps_.attr("myprint")(JTR_);
 #endif
@@ -254,7 +254,7 @@ private:
 
       // solve normal equations
       linSolver_.attr("solve")(hess_, JTR_, dy_);
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       std::cout << "Correction dy \n" << std::endl;
       pythonOps_.attr("myprint")(dy_);
 #endif
@@ -263,7 +263,7 @@ private:
       // compute norm of the correction
       norm_evaluator_t::evaluate(dy_, norm_dy_);
 
-#ifdef DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout(std::scientific,
 				      "||R|| =", normRes,
 				      "||R||(r) =", normRes/normRes0,
@@ -304,7 +304,7 @@ private:
 
       }//loop
 
-#if defined DEBUG_PRINT
+#if defined PRESSIO_ENABLE_DEBUG_PRINT
     std::cout.precision(ss);
     ::pressio::utils::io::print_stdout(std::fixed);
 #endif
