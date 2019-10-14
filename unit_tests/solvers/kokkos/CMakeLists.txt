@@ -1,2 +1,3 @@
 
-# add_unit_test(linear_dense_kokkos ${GTESTMAINSDIR}/gTestMain_kokkos 1)
+add_serial_utest_kokkos(solvers_linear_dense_kokkos 
+	solvers_linear_dense_kokkos.cc)

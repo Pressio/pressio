@@ -12,6 +12,7 @@ file(GLOB all_files_here "*")
 foreach(f ${all_files_here})
   if(NOT f MATCHES "\\.txt"
   	 AND NOT f MATCHES ".DS_Store"
+     AND NOT f MATCHES ".h.in"
   	 AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/mpl"
   	 AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/utils"
   	 AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/containers"

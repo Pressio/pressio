@@ -93,6 +93,11 @@ TEST(ode_explicit_rk4, userDefinedOps){
   double dt = 0.1;
   ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
   {
+    std::cout << std::setprecision(14) 
+    << (*y.data())[0] << " " 
+    << (*y.data())[1] << " " 
+    << (*y.data())[2] << std::endl;
+
     auto yptr2 = y.data();
     EXPECT_DOUBLE_EQ( (*yptr2)[0], 0.375);
     EXPECT_DOUBLE_EQ( (*yptr2)[1], 0.75);

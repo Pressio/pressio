@@ -111,7 +111,7 @@ endif()
 # configure file with some cmakedefines that are used
 # within the code in preprocessor directives statements
 #=====================================================================
-configure_file(pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
+configure_file(packages/pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h
   DESTINATION ${CMAKE_INSTALL_PREFIX}/include
