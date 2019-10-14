@@ -37,6 +37,7 @@ at compile time since these are used for pre-processor directives.
 	- prerequisites: 	DPRESSIO_ENABLE_TPL_TRILINOS=ON
 	- ON if -DPRESSIO_ENABLE_TPL_TRILINOS=ON and PRESSIO_ENABLE_DEBUG_PRINT=ON
 
+
 - PRESSIO_ENABLE_TPL_BLAS
 	- description: 	self-explanatory
 	- enable with: 	-DPRESSIO_ENABLE_TPL_BLAS=[ON/OFF]
@@ -58,7 +59,7 @@ at compile time since these are used for pre-processor directives.
 	- default: 		OFF
 
 
-- PRESSIO_ENABLE_TPL_BLAZE
+<!-- - PRESSIO_ENABLE_TPL_BLAZE
 	- description: 	self-explanatory
 	- enable with: 	-DPRESSIO_ENABLE_TPL_BLAZE=[ON/OFF]
 	- prerequisites: 	need to have it installed if you want this on
@@ -70,5 +71,5 @@ at compile time since these are used for pre-processor directives.
 	- enable with: 	-DPRESSIO_ENABLE_TPL_ARMADILLO=[ON/OFF]
 	- prerequisites: 	need to have it installed if you want this on
 	- default: 		OFF
-
+ -->
 
