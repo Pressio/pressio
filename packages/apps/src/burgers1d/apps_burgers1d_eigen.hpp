@@ -58,13 +58,15 @@ namespace pressio{ namespace apps{
 
 class Burgers1dEigen{
   using eigVec = Eigen::VectorXd;
-  using mv_t = Eigen::MatrixXd;
+
   using ui_t = unsigned int;
 
 public:
   using scalar_type	= double;
   using state_type	= eigVec;
   using velocity_type	= eigVec;
+  using dense_matrix_type = Eigen::MatrixXd;
+
   using jacobian_type	= Eigen::SparseMatrix
     <scalar_type, Eigen::RowMajor, int>;
 
@@ -119,9 +121,9 @@ public:
 
   // computes: A = Jac B where B is a Eigen::MatrixXd
   void applyJacobian(const state_type & y,
-		     const mv_t & B,
+		     const dense_matrix_type & B,
 		     scalar_type t,
-         mv_t & A) const{
+		     dense_matrix_type & A) const{
     auto JJ = jacobian(y, t);
     // std::cout << "ApplyJacobian" << std::endl;
     // std::cout << JJ << std::endl;
@@ -130,10 +132,10 @@ public:
   }
 
   // computes: A = Jac B where B is a Eigen::MatrixXd
-  mv_t applyJacobian(const state_type & y,
-		     const mv_t & B,
-		     scalar_type t) const{
-    mv_t A( y.size(), B.cols() );
+  dense_matrix_type applyJacobian(const state_type & y,
+				  const dense_matrix_type & B,
+				  scalar_type t) const{
+    dense_matrix_type A( y.size(), B.cols() );
     applyJacobian(y, B, t, A);
     return A;
   }

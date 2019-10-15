@@ -54,14 +54,14 @@
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 namespace pressio{ namespace apps{
 
-class SteadyLinAdvDiff2dEpetraRomAdapter{
-  using mv_t = Epetra_MultiVector;
-
+class SteadyLinAdvDiff2dEpetraRomAdapter
+{
 public:
   /* these types exposed because need to be detected */
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
   using velocity_type	= state_type;
+  using dense_matrix_type = Epetra_MultiVector;
 
 public:
   template <typename ... Args>
@@ -117,8 +117,8 @@ public:
 
   // computes: C = Jac B where B is a multivector
   void applyJacobian(const state_type & yState,
-		     const mv_t & B,
-		     mv_t & C) const
+		     const dense_matrix_type & B,
+		     dense_matrix_type & C) const
   {
     appObj_.assembleMatrix();
     auto A = appObj_.getMatrix();
@@ -129,16 +129,17 @@ public:
   }
 
   // computes: A = Jac B where B is a multivector
-  mv_t applyJacobian(const state_type & yState,
-		     const mv_t & B) const{
-    mv_t C( appObj_.getDataMap(), B.NumVectors() );
+  dense_matrix_type applyJacobian(const state_type & yState,
+				  const dense_matrix_type & B) const
+  {
+    dense_matrix_type C( appObj_.getDataMap(), B.NumVectors() );
     applyJacobian(yState, B, C);
     return C;
   };
 
 
   void applyPreconditioner(const state_type & yState,
-                           mv_t & C) const {
+                           dense_matrix_type & C) const {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }

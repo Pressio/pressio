@@ -65,6 +65,10 @@ struct PreconditionedLSPGTypeGenerator
   using base_t = LSPGCommonTypes<
     fom_type, decoder_type, lspg_state_type, odeName>;
 
+  static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_lspg<fom_type>::value,
+		 "You are trying to setup an unsteady LSPG problem requiring your fom adapter \
+class to meet the velocity API. However, the fom/adapter type you passed does not meet this API.");
+
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
   using typename base_t::fom_native_state_t;

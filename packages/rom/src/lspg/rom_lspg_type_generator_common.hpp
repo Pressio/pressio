@@ -54,6 +54,7 @@
 #include "../rom_data_fom_rhs.hpp"
 #include "../rom_data_fom_states.hpp"
 #include "../rom_reconstructor_fom_state.hpp"
+#include "../meta/rom_is_legitimate_model_for_lspg.hpp"
 #include "../policies/rom_evaluate_fom_velocity_steady_policy.hpp"
 #include "../policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
 #include "../policies/rom_apply_fom_jacobian_steady_policy.hpp"
@@ -131,11 +132,6 @@ struct LSPGCommonTypes<
 {
   LSPGCommonTypes() = default;
   ~LSPGCommonTypes() = default;
-
-  static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_lspg<fom_type>::value,
-		 "You are trying to setup a LSPG problem requiring your fom adapter \
-class to meet the velocity API. However, the fom/adapter type you passed does not meet this API.");
-
 
   // these are native types of the full-order model (fom)
   using fom_t			= fom_type;

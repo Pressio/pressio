@@ -76,6 +76,7 @@ public:
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
   using velocity_type	= state_type;
+  using dense_matrix_type = Epetra_MultiVector;
 
 public:
   Burgers1dEpetra(std::vector<scalar_type> params,
@@ -169,9 +170,9 @@ public:
 
   // computes: A = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
-		     const Epetra_MultiVector & B,
+		     const dense_matrix_type & B,
 		     scalar_type t,
-         Epetra_MultiVector & A) const{
+		     dense_matrix_type & A) const{
     assert( Jac_->NumGlobalCols() == B.GlobalLength() );
     assert( A.GlobalLength() == Jac_->NumGlobalRows() );
     assert( A.NumVectors() == B.NumVectors() );
@@ -184,10 +185,10 @@ public:
   }
 
   // computes: A = Jac B where B is a multivector
-  Epetra_MultiVector applyJacobian(const state_type & y,
-  				   const Epetra_MultiVector & B,
-  				   scalar_type t) const{
-    Epetra_MultiVector C( Jac_->RangeMap(), B.NumVectors() );
+  dense_matrix_type applyJacobian(const state_type & y,
+				  const dense_matrix_type & B,
+				  scalar_type t) const{
+    dense_matrix_type C( Jac_->RangeMap(), B.NumVectors() );
     applyJacobian(y, B, t, C);
     return C;
   }

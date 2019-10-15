@@ -65,7 +65,6 @@ class Burgers1dTpetra{
 protected:
   using map_t		= Tpetra::Map<>;
   using nativeVec	= Tpetra::Vector<>;
-  using nativeMVec	= Tpetra::MultiVector<>;
   using jacobian_type	= Tpetra::CrsMatrix<>;
   using go_t		= typename map_t::global_ordinal_type;
   using lo_t		= typename map_t::local_ordinal_type;
@@ -81,6 +80,7 @@ public:
   using scalar_type	= double;
   using state_type	= nativeVec;
   using velocity_type	= state_type;
+  using dense_matrix_type	= Tpetra::MultiVector<>;
 
 public:
   Burgers1dTpetra(std::vector<scalar_type> params,
@@ -195,18 +195,20 @@ public:
 
   // computes: A = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
-		     const nativeMVec & B,
+		     const dense_matrix_type & B,
 		     scalar_type t,
-         nativeMVec & A) const{
+		     dense_matrix_type & A) const
+  {
     computeJacobianReplace(y, *Jac_, t);
     Jac_->apply(B, A);
   }
 
   // computes: A = Jac B where B is a multivector
-  nativeMVec applyJacobian(const state_type & y,
-			   const nativeMVec & B,
-			   scalar_type t) const{
-    nativeMVec C( dataMap_, B.getNumVectors() );
+  dense_matrix_type applyJacobian(const state_type & y,
+				  const dense_matrix_type & B,
+				  scalar_type t) const
+  {
+    dense_matrix_type C( dataMap_, B.getNumVectors() );
     applyJacobian(y, B, t, C);
     return C;
   }

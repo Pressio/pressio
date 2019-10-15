@@ -111,8 +111,8 @@ struct Burgers1dKokkos{
   using scalar_type	= sc_t;
   using state_type	= state_type_d;
   using velocity_type	= state_type_d;
+  using dense_matrix_type	= mv_d;
   using jacobian_type   = crs_mat;
-  using mvec_t	= mv_d;
 
 public:
   explicit Burgers1dKokkos(params_t params,
@@ -162,9 +162,9 @@ public:
   }
 
   void applyJacobian(const state_type & y,
-		     const mvec_t & B,
+		     const dense_matrix_type & B,
 		     scalar_type t,
-		     mvec_t & A) const
+		     dense_matrix_type & A) const
   {
     auto JJ = jacobian(y, t);
     constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
@@ -175,11 +175,11 @@ public:
   }
 
 
-  mvec_t applyJacobian(const state_type & y,
-		       const mvec_t & B,
-		       scalar_type t) const
+  dense_matrix_type applyJacobian(const state_type & y,
+				  const dense_matrix_type & B,
+				  scalar_type t) const
   {
-    mvec_t A("AA", Ncell_, B.extent(1) );
+    dense_matrix_type A("AA", Ncell_, B.extent(1) );
     applyJacobian(y, B, t, A);
     return A;
   }
