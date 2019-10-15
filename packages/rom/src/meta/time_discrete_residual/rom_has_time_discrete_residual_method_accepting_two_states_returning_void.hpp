@@ -49,7 +49,7 @@
 #ifndef ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_TWO_STATES_RETURNING_VOID_HPP_
 #define ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_TWO_STATES_RETURNING_VOID_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace rom{ namespace meta {
 
 template <
   typename T,
@@ -72,7 +72,7 @@ template <
 struct has_time_discrete_residual_method_accepting_two_states_returning_void<
   T, step_t, sc_t, state_t, residual_t,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<
+    std::is_void<
       decltype(
 	       std::declval<T>().timeDiscreteResidual(
 						      std::declval<step_t const &>(),
@@ -86,5 +86,5 @@ struct has_time_discrete_residual_method_accepting_two_states_returning_void<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::rom::meta
 #endif

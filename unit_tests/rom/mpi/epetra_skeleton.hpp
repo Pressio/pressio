@@ -22,6 +22,7 @@ public:
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
   using velocity_type	= state_type;
+  using dense_matrix_type = Epetra_MultiVector;
 
 public:
   EpetraSkeleton() = default;
@@ -31,22 +32,22 @@ public:
   state_type const & getInitialState() const;
 
   void velocity(const state_type & u,
-		velocity_type & rhs,
-		const scalar_type /* t */) const;
+		const scalar_type /* t */,
+		velocity_type & f) const;
 
   velocity_type velocity(const state_type & u,
 			 const scalar_type t) const;
 
   // computes: A = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
-		     const Epetra_MultiVector & B,
-		     Epetra_MultiVector & A,
-		     scalar_type t) const;
+		     const dense_matrix_type & B,
+		     scalar_type t,
+		     dense_matrix_type & A) const;
 
   // computes: A = Jac B where B is a multivector
-  Epetra_MultiVector applyJacobian(const state_type & y,
-  				   const Epetra_MultiVector & B,
-  				   scalar_type t) const;
+  dense_matrix_type applyJacobian(const state_type & y,
+				  const dense_matrix_type & B,
+				  scalar_type t) const;
 
 };//end class
 

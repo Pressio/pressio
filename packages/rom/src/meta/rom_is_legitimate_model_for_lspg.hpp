@@ -57,46 +57,12 @@ namespace pressio{ namespace rom{ namespace meta {
 template<typename T>
 struct is_legitimate_model_for_lspg{
   // check for velocity API
-  static constexpr auto vel_api = ::pressio::rom::meta::model_meets_velocity_api_for_lspg<T>::value;
+  static constexpr auto velo_api = ::pressio::rom::meta::model_meets_velocity_api_for_lspg<T>::value;
   // check for residual API
-  static constexpr auto res_api = ::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value;
+  static constexpr auto resid_api = ::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value;
 
-  static constexpr bool value = (val_api or res_api) ? true : false;
-}
-
-// // Velocity is supported, residual API is not
-// template<typename T>
-// struct is_legitimate_model_for_lspg<
-//   T,
-//   mpl::enable_if_t<
-//     ::pressio::rom::meta::model_meets_velocity_api_for_lspg<T>::value
-//     and
-//     !::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value
-//     >
-//   > : std::true_type{};
-
-// // velocity API is supported, residual API is not
-// template<typename T>
-// struct is_legitimate_model_for_lspg<
-//   T,
-//   mpl::enable_if_t<
-//     ::pressio::rom::meta::model_meets_velocity_api_for_lspg<T>::value
-//     and
-//     !::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value
-//     >
-//   > : std::true_type{};
-
-// /*
-//  * second admissible case is when T has supports the "residual" API
-//  * i.e. when T provides a method to compute the time-discrete residual directly
-//  */
-// template<typename T>
-// struct is_legitimate_model_for_lspg<
-//   T,
-//   mpl::enable_if_t<
-//     ::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value
-//     >
-//   > : std::true_type{};
+  static constexpr bool value = (velo_api or resid_api) ? true : false;
+};
 
 }}} // namespace pressio::rom::meta
 #endif

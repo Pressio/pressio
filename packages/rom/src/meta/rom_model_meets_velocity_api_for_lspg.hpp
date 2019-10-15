@@ -64,21 +64,21 @@ template<typename T>
 struct model_meets_velocity_api_for_lspg<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
-    ::pressio::ode::meta::has_state_typedef<model_type>::value and
-    ::pressio::ode::meta::has_velocity_typedef<model_type>::value and
-    ::pressio::rom::meta::has_dense_matrix_typedef<model_type>::value and
+    ::pressio::containers::meta::has_scalar_typedef<T>::value and
+    ::pressio::ode::meta::has_state_typedef<T>::value and
+    ::pressio::ode::meta::has_velocity_typedef<T>::value and
+    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value and
     ::pressio::rom::meta::model_has_needed_velocity_methods<
-      model_type,
-      typename model_type::state_type,
-      typename model_type::velocity_type,
-      typename model_type::scalar_type
+      T,
+      typename T::state_type,
+      typename T::velocity_type,
+      typename T::scalar_type
       >::value and
     ::pressio::rom::meta::model_has_needed_apply_jacobian_methods<
-      model_type,
-      typename model_type::state_type,
-      typename model_type::scalar_type,
-      typename model_type::dense_matrix_type
+      T,
+      typename T::state_type,
+      typename T::scalar_type,
+      typename T::dense_matrix_type
       >::value
     >
   > : std::true_type{};

@@ -53,8 +53,8 @@
 #include "rom_has_residual_typedef.hpp"
 #include "rom_has_dense_matrix_typedef.hpp"
 #include "rom_model_has_all_needed_apply_jacobian_methods.hpp"
-#include "rom_has_needed_time_discrete_residual_method_with_void_return.hpp"
-#include "rom_has_needed_time_discrete_residual_method_with_non_void_return.hpp"
+#include "./time_discrete_residual/rom_has_needed_time_discrete_residual_method_with_void_return.hpp"
+#include "./time_discrete_residual/rom_has_needed_time_discrete_residual_method_with_non_void_return.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
 
@@ -65,27 +65,29 @@ template<typename T>
 struct model_meets_residual_api_for_lspg<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
-    ::pressio::ode::meta::has_state_typedef<model_type>::value and
-    ::pressio::ode::meta::has_residual_typedef<model_type>::value and
-    ::pressio::rom::meta::has_dense_matrix_typedef<model_type>::value and
+    ::pressio::containers::meta::has_scalar_typedef<T>::value and
+    ::pressio::ode::meta::has_state_typedef<T>::value and
+    ::pressio::rom::meta::has_residual_typedef<T>::value and
+    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value and
     ::pressio::rom::meta::has_needed_time_discrete_residual_method_with_non_void_return<
-      model_type,
-      typename model_type::state_type,
-      typename model_type::scalar_type,
-      typename model_type::dense_matrix_type
+      T,
+      int32_t, // use int here as type for the step, it can be any integral type
+      typename T::scalar_type,
+      typename T::state_type,
+      typename T::residual_type
       >::value and
     ::pressio::rom::meta::has_needed_time_discrete_residual_method_with_void_return<
-      model_type,
-      typename model_type::state_type,
-      typename model_type::scalar_type,
-      typename model_type::dense_matrix_type
+      T,
+      int32_t, // use int here as type for the step, it can be any integral type
+      typename T::scalar_type,
+      typename T::state_type,
+      typename T::residual_type
       >::value and
     ::pressio::rom::meta::model_has_needed_apply_jacobian_methods<
-      model_type,
-      typename model_type::state_type,
-      typename model_type::scalar_type,
-      typename model_type::dense_matrix_type
+      T,
+      typename T::state_type,
+      typename T::scalar_type,
+      typename T::dense_matrix_type
       >::value
     >
   > : std::true_type{};

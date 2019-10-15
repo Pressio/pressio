@@ -52,7 +52,7 @@
 #include "rom_has_apply_jacobian_method_callable_with_three_args.hpp"
 #include "rom_has_apply_jacobian_method_callable_with_four_args.hpp"
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace rom{ namespace meta {
 
 template<
   typename model_type,
@@ -73,15 +73,15 @@ template<
 struct model_has_needed_apply_jacobian_methods<
   model_type, state_type, scalar_type, dense_mat_type,
   mpl::enable_if_t<
-    has_apply_jacobian_method_callable_with_three_args<
+    ::pressio::rom::meta::has_apply_jacobian_method_callable_with_three_args<
       model_type, state_type, scalar_type, dense_mat_type
       >::value and
-    has_apply_jacobian_method_callable_with_four_args<
+    ::pressio::rom::meta::has_apply_jacobian_method_callable_with_four_args<
       model_type, state_type, scalar_type, dense_mat_type
       >::value
     >
   > : std::true_type{};
 
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::rom::meta
 #endif

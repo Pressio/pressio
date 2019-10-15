@@ -49,9 +49,8 @@
 #ifndef ROM_MODEL_HAS_ALL_NEEDED_VELOCITY_METHODS_HPP_
 #define ROM_MODEL_HAS_ALL_NEEDED_VELOCITY_METHODS_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-#include "ode_has_velocity_method_callable_with_two_args.hpp"
-#include "ode_has_velocity_method_callable_with_three_args.hpp"
+#include "../../../ode/src/meta/ode_has_velocity_method_callable_with_two_args.hpp"
+#include "../../../ode/src/meta/ode_has_velocity_method_callable_with_three_args.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
 
@@ -74,10 +73,10 @@ template<
 struct model_has_needed_velocity_methods<
   model_type, state_type, velocity_type, scalar_type,
   mpl::enable_if_t<
-    ode::has_velocity_method_callable_with_two_args<
+    ::pressio::ode::meta::has_velocity_method_callable_with_two_args<
       model_type, state_type, scalar_type, velocity_type
       >::value and
-    ode::has_velocity_method_callable_with_three_args<
+    ::pressio::ode::meta::has_velocity_method_callable_with_three_args<
       model_type, state_type, scalar_type, velocity_type
       >::value
     >

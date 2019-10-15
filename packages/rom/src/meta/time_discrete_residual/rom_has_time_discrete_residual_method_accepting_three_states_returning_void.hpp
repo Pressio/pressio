@@ -49,7 +49,7 @@
 #ifndef ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_THREE_STATES_RETURNING_VOID_HPP_
 #define ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_THREE_STATES_RETURNING_VOID_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace rom{ namespace meta {
 
 template <
   typename T,
@@ -87,5 +87,5 @@ struct has_time_discrete_residual_method_accepting_three_states_returning_void<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::rom::meta
 #endif

@@ -52,7 +52,7 @@
 #include "rom_has_time_discrete_residual_method_accepting_two_states_returning_non_void.hpp"
 #include "rom_has_time_discrete_residual_method_accepting_three_states_returning_non_void.hpp"
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace rom{ namespace meta {
 
 template <
   typename T,
@@ -75,6 +75,7 @@ template <
 struct has_needed_time_discrete_residual_method_with_non_void_return<
   T, step_t, sc_t, state_t, residual_t,
   ::pressio::mpl::enable_if_t<
+    // for now, just check case for two and three states passed
     has_time_discrete_residual_method_accepting_two_states_returning_non_void<
       T, step_t, sc_t, state_t, residual_t
       >::value
@@ -85,5 +86,5 @@ struct has_needed_time_discrete_residual_method_with_non_void_return<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::rom::meta
 #endif

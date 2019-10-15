@@ -49,9 +49,7 @@
 #ifndef ROM_HAS_APPLY_JACOBIAN_METHOD_CALLABLE_WITH_FOUR_ARGS_HPP_
 #define ROM_HAS_APPLY_JACOBIAN_METHOD_CALLABLE_WITH_FOUR_ARGS_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace rom{ namespace meta {
 
 template <
   typename T,
@@ -78,12 +76,12 @@ struct has_apply_jacobian_method_callable_with_four_args<
 					       std::declval<state_t const&>(),
 					       std::declval<dense_mat_t const&>(),
 					       std::declval<sc_t>(),
-					       std::declval<dense_mat_t &>(),
+					       std::declval<dense_mat_t &>()
 					       )
 	       )
       >::value
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::rom::meta
 #endif

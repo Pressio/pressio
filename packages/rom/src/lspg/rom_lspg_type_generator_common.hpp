@@ -94,8 +94,8 @@ struct auxStepperHelper<
     ode::ImplicitEnum::Euler, Rest...>;
 };
 
-
 //-------------------------------------------------------
+
 
 template <
   typename fom_type,
@@ -131,6 +131,11 @@ struct LSPGCommonTypes<
 {
   LSPGCommonTypes() = default;
   ~LSPGCommonTypes() = default;
+
+  static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_lspg<fom_type>::value,
+		 "You are trying to setup a LSPG problem requiring your fom adapter \
+class to meet the velocity API. However, the fom/adapter type you passed does not meet this API.");
+
 
   // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
