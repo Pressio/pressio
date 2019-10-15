@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_model_has_all_needed_jacobian_methods.hpp
+// rom_is_legitimate_model_for_lspg.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,57 @@
 //@HEADER
 */
 
-#ifndef ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
-#define ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
+#ifndef ROM_IS_LEGITIMATE_MODEL_FOR_LSPG_HPP_
+#define ROM_IS_LEGITIMATE_MODEL_FOR_LSPG_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-#include "ode_has_jacobian_method_callable_with_two_args.hpp"
-#include "ode_has_jacobian_method_callable_with_three_args.hpp"
+#include "rom_model_meets_velocity_api_for_lspg.hpp"
+#include "rom_model_meets_residual_api_for_lspg.hpp"
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace rom{ namespace meta {
 
-template<
-  typename model_type,
-  typename state_type,
-  typename jacobian_type,
-  typename scalar_type,
-  typename enable = void
-  >
-struct model_has_needed_jacobian_methods : std::false_type{};
+template<typename T>
+struct is_legitimate_model_for_lspg{
+  // check for velocity API
+  static constexpr auto vel_api = ::pressio::rom::meta::model_meets_velocity_api_for_lspg<T>::value;
+  // check for residual API
+  static constexpr auto res_api = ::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value;
 
-template<
-  typename model_type,
-  typename state_type,
-  typename jacobian_type,
-  typename scalar_type
-  >
-struct model_has_needed_jacobian_methods<
-  model_type, state_type, jacobian_type, scalar_type,
-  mpl::enable_if_t<
-    has_jacobian_method_callable_with_two_args<
-      model_type, state_type, scalar_type, jacobian_type
-      >::value and
-    has_jacobian_method_callable_with_three_args<
-      model_type, state_type, scalar_type, jacobian_type
-      >::value
-    >
-  > : std::true_type{};
+  static constexpr bool value = (val_api or res_api) ? true : false;
+}
 
-}}} // namespace pressio::ode::meta
+// // Velocity is supported, residual API is not
+// template<typename T>
+// struct is_legitimate_model_for_lspg<
+//   T,
+//   mpl::enable_if_t<
+//     ::pressio::rom::meta::model_meets_velocity_api_for_lspg<T>::value
+//     and
+//     !::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value
+//     >
+//   > : std::true_type{};
+
+// // velocity API is supported, residual API is not
+// template<typename T>
+// struct is_legitimate_model_for_lspg<
+//   T,
+//   mpl::enable_if_t<
+//     ::pressio::rom::meta::model_meets_velocity_api_for_lspg<T>::value
+//     and
+//     !::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value
+//     >
+//   > : std::true_type{};
+
+// /*
+//  * second admissible case is when T has supports the "residual" API
+//  * i.e. when T provides a method to compute the time-discrete residual directly
+//  */
+// template<typename T>
+// struct is_legitimate_model_for_lspg<
+//   T,
+//   mpl::enable_if_t<
+//     ::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value
+//     >
+//   > : std::true_type{};
+
+}}} // namespace pressio::rom::meta
 #endif

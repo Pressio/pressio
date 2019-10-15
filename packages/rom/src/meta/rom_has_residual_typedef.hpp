@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_model_has_all_needed_jacobian_methods.hpp
+// rom_has_residual_typedef.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,25 @@
 //@HEADER
 */
 
-#ifndef ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
-#define ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
+#ifndef ROM_HAS_RESIDUAL_TYPEDEF_HPP_
+#define ROM_HAS_RESIDUAL_TYPEDEF_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-#include "ode_has_jacobian_method_callable_with_two_args.hpp"
-#include "ode_has_jacobian_method_callable_with_three_args.hpp"
+#include <type_traits>
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace rom{ namespace meta {
 
-template<
-  typename model_type,
-  typename state_type,
-  typename jacobian_type,
-  typename scalar_type,
-  typename enable = void
-  >
-struct model_has_needed_jacobian_methods : std::false_type{};
+template <typename T, typename enable = void>
+struct has_residual_typedef : std::false_type{};
 
-template<
-  typename model_type,
-  typename state_type,
-  typename jacobian_type,
-  typename scalar_type
-  >
-struct model_has_needed_jacobian_methods<
-  model_type, state_type, jacobian_type, scalar_type,
+template <typename T>
+struct has_residual_typedef<
+  T,
   mpl::enable_if_t<
-    has_jacobian_method_callable_with_two_args<
-      model_type, state_type, scalar_type, jacobian_type
-      >::value and
-    has_jacobian_method_callable_with_three_args<
-      model_type, state_type, scalar_type, jacobian_type
+    !std::is_void<
+      typename T::residual_type
       >::value
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}}//end namespace pressio::rom::meta
 #endif
