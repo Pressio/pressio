@@ -79,9 +79,9 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & yFomIn,
+  FomStatesData(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
-    : yFom_(yFomIn),
+    : fomState_(fomStateIn),
       fomStateReconstrObj_(fomStateReconstr)
   {
     this->resetContainersToZero();
@@ -97,9 +97,9 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & yFomIn,
+  FomStatesData(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
-    : yFom_{ {_fom_state_type(const_cast<_fom_state_type &>(yFomIn).request())} },
+    : fomState_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
       fomStateReconstrObj_(fomStateReconstr)
   {
     this->resetContainersToZero();
@@ -119,10 +119,10 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & yFomIn,
+  FomStatesData(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
-    : yFom_(yFomIn),
-      yFomOld_{{yFomIn}},
+    : fomState_(fomStateIn),
+      fomOldStates_{{fomStateIn}},
       fomStateReconstrObj_(fomStateReconstr)
   {
     this->resetContainersToZero();
@@ -138,10 +138,10 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & yFomIn,
+  FomStatesData(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
-    : yFom_{ {_fom_state_type(const_cast<_fom_state_type &>(yFomIn).request())} },
-      yFomOld_{ {_fom_state_type(const_cast<_fom_state_type &>(yFomIn).request())} },
+    : fomState_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
+      fomOldStates_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
       fomStateReconstrObj_(fomStateReconstr)
   {
     this->resetContainersToZero();
@@ -161,10 +161,10 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & yFomIn,
+  FomStatesData(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
-    : yFom_(yFomIn),
-      yFomOld_{{yFomIn, yFomIn}},
+    : fomState_(fomStateIn),
+      fomOldStates_{{fomStateIn, fomStateIn}},
       fomStateReconstrObj_(fomStateReconstr)
   {
     this->resetContainersToZero();
@@ -180,11 +180,11 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & yFomIn,
+  FomStatesData(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
-    : yFom_{ {_fom_state_type(const_cast<_fom_state_type &>(yFomIn).request())} },
-      yFomOld_{ {_fom_state_type(const_cast<_fom_state_type &>(yFomIn).request())},
-		{_fom_state_type(const_cast<_fom_state_type &>(yFomIn).request())}},
+    : fomState_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
+      fomOldStates_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())},
+		{_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())}},
       fomStateReconstrObj_(fomStateReconstr)
   {
     this->resetContainersToZero();
@@ -195,11 +195,11 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
 public:
 
   const fom_state_type & getCRefToFomState() const{
-    return yFom_;
+    return fomState_;
   }
 
   const std::array<fom_state_type, N> & getCRefToFomOldStates() const{
-    return yFomOld_;
+    return fomOldStates_;
   }
 
   template <typename rom_state_t>
@@ -210,7 +210,7 @@ public:
     timer->start("reconstruct fom state");
 #endif
 
-    fomStateReconstrObj_(romY, yFom_);
+    fomStateReconstrObj_(romY, fomState_);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("reconstruct fom state");
@@ -228,7 +228,7 @@ public:
 #endif
 
     for (auto i=0; i<n; i++){
-      fomStateReconstrObj_(romYprev[i], yFomOld_[i]);
+      fomStateReconstrObj_(romYprev[i], fomOldStates_[i]);
     }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -239,15 +239,15 @@ public:
 private:
   /* set all entries to zero for all members */
   void resetContainersToZero(){
-    ::pressio::containers::ops::set_zero(yFom_);
-    for (size_t i=0; i<yFomOld_.size(); i++)
-      ::pressio::containers::ops::set_zero(yFomOld_[i]);
+    ::pressio::containers::ops::set_zero(fomState_);
+    for (auto i=0; i<N; i++)
+      ::pressio::containers::ops::set_zero(fomOldStates_[i]);
   }
 
 private:
-  mutable fom_state_type yFom_                             = {};
-  mutable std::array<fom_state_type, N> yFomOld_  = {};
-  const reconstuctor_type & fomStateReconstrObj_	   = {};
+  mutable fom_state_type fomState_                = {};
+  mutable std::array<fom_state_type, N> fomOldStates_  = {};
+  const reconstuctor_type & fomStateReconstrObj_  = {};
 
 };//end class
 
