@@ -111,32 +111,38 @@ public:
 // #endif
 //       > * = nullptr
 //     >
-//   LSPGUnsteadyResidualPolicyVelocityApi(const fom_states_data & fomStates,
-//   		     const fom_rhs_data & fomResids,
-//   		     const fom_velocity_eval_policy & fomEvalRhsFunctor,
-//   		     const _ud_ops & udOps)
-//     : fom_states_data(fomStates),
-//       fom_rhs_data(fomResids),
-//       fom_velocity_eval_policy(fomEvalRhsFunctor),
+//   LSPGUnsteadyResidualPolicyVelocityApi(const residual_t & RIn,
+// 					fom_states_data & fomStates,
+// 					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
+// 					const _ud_ops & udOps)
+//     : R_{RIn},
+//       fom_states_data(fomStates),
+//       fom_velocity_eval_policy(fomEvalVelocityFunctor),
 //       udOps_{&udOps}{
 //     static_assert( !std::is_void<_ud_ops>::value, "");
 //   }
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 //   // cnstr enabled when udOps is non-void and python
+//   // need to be careful because here we need to use :
+//   // R_{{residual_type(const_cast<residual_type &>(RIn).request())}}
+//   // unless we simply use view semnatic to point RIn which is owened by problem generator
 //   template <
 //     typename _ud_ops = ud_ops,
+//     typename _residual_type = residual_type,
 //     mpl::enable_if_t<
+//       ::pressio::containers::meta::is_array_pybind11<_residual_type>::value and
 //       mpl::is_same<_ud_ops, pybind11::object>::value
 //       > * = nullptr
 //     >
-//   LSPGUnsteadyResidualPolicyVelocityApi(const fom_states_data & fomStates,
-//   		     const fom_rhs_data & fomResids,
-//   		     const fom_velocity_eval_policy & fomEvalRhsFunctor,
-//   		     const _ud_ops & udOps)
-//     : fom_states_data(fomStates),
+//   LSPGUnsteadyResidualPolicyVelocityApi(const _residual_type & RIn,
+// 					fom_states_data & fomStates,
+// 					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
+// 					const _ud_ops & udOps)
+//     : R_{{residual_type(const_cast<residual_type &>(RIn).request())}},
+//       fom_states_data(fomStates),
 //       fom_rhs_data(fomResids),
-//       fom_velocity_eval_policy(fomEvalRhsFunctor),
+//       fom_velocity_eval_policy(fomEvalVelocityFunctor),
 //       udOps_{udOps}
 //   {}
 // #endif

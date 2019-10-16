@@ -177,65 +177,6 @@ void time_discrete_residual(const state_type & yn,
   //     - bdf2<scalar_type>::c3_*dt*R;
 }
 
-
-// /*
-//  * for EIGEN (this is not suitable for sample mesh)
-//  * only works when structures are of same size
-// */
-// template<
-//   ::pressio::ode::ImplicitEnum method,
-//   int n,
-//   typename state_type,
-//   typename scalar_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
-//     method == ::pressio::ode::ImplicitEnum::Euler
-//     > * = nullptr
-//   >
-// void time_discrete_residual(const state_type & yn,
-// 			    const std::array<state_type,n> & ynm,
-// 			    state_type & R,
-// 			    scalar_type dt){
-
-//   assert( R.size() == yn.size() );
-//   assert( yn.size() == ynm[0].size() );
-//   // On input: R contains the application RHS, i.e. if
-//   // dudt = f(x,u,...), R contains f(...)
-//   *R.data() = *yn.data() - *ynm[0].data() - dt * (*R.data());
-// }
-
-// template<
-//   ::pressio::ode::ImplicitEnum method,
-//   int n,
-//   typename state_type,
-//   typename scalar_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_vector_wrapper_eigen<state_type>::value == true and
-//     method == ::pressio::ode::ImplicitEnum::BDF2
-//     > * = nullptr
-//   >
-// void time_discrete_residual(const state_type & yn,
-// 			    const std::array<state_type,n> & ynm,
-// 			    state_type & R,
-// 			    scalar_type dt){
-
-//   using namespace ::pressio::ode::coeffs;
-
-//   assert( R.size() == yn.size() );
-//   assert( yn.size() == ynm[0].size() );
-//   assert( ynm[0].size() == ynm[1].size());
-
-//   // // On input: R contains the application RHS, i.e. if
-//   // // dudt = f(x,u,...), R contains f(...)
-//   R = yn
-//     - bdf2<scalar_type>::c1_*ynm[1]
-//     + bdf2<scalar_type>::c2_*ynm[0]
-//     - bdf2<scalar_type>::c3_*dt*R;
-// }
-
-
-
-
 /* when we have hyper-reduction and we need to calculate the
  * time-discrete residual, yn (i.e. the current state) and
  * ynm (i.e. the states at prev steps) might have
@@ -286,10 +227,6 @@ struct time_discrete_single_entry_epetra<::pressio::ode::ImplicitEnum::BDF2>{
 			 const std::array<state_type,n> & ynm){
     using namespace ::pressio::ode::coeffs;
 
-    // R[i] = yn[lid]
-    //   - bdf2<scalar_type>::c1_*ynm[1][lid]
-    //   - bdf2<scalar_type>::c2_*ynm[0][lid]
-    //   - bdf2<scalar_type>::c3_*dt*R[i];
     R = yn[lid]
       - bdf2<T>::c1_*ynm[1][lid]
       + bdf2<T>::c2_*ynm[0][lid]
@@ -383,10 +320,6 @@ struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::BDF2>{
 			 const std::array<state_type,n> & ynm){
     using namespace ::pressio::ode::coeffs;
 
-    // R[i] = yn[lid]
-    //   - bdf2<scalar_type>::c1_*ynm[1][lid]
-    //   - bdf2<scalar_type>::c2_*ynm[0][lid]
-    //   - bdf2<scalar_type>::c3_*dt*R[i];
     R = (yn.getData())[lid]
       - bdf2<T>::c1_*(ynm[1].getData())[lid]
       + bdf2<T>::c2_*(ynm[0].getData())[lid]
@@ -497,8 +430,6 @@ void time_discrete_residual(const state_type & yn,
      *ynm[0].data(),
      *ynm[1].data());
 }
-
-
 
 
 /*************************************

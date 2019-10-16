@@ -178,46 +178,36 @@ public:
   {}
 
 
-//   /* - aux stepper NOT needed
-//    * - ud_ops_t != void
-//   */
-//   template <
-//     typename T = aux_stepper_t,
-//     typename T2 = ud_ops_t,
-//     typename ::pressio::mpl::enable_if_t<
-//       std::is_void<T>::value and
-//       !std::is_void<T2>::value
-//       > * = nullptr
-//   >
-//   LSPGUnsteadyProblemGenerator(const fom_t	 & appObj,
-// 			       const fom_native_state_t & yFomRefNative,
-// 			       decoder_t	 & decoder,
-// 			       lspg_state_t	 & yROM,
-// 			       scalar_t		 t0,
-// 			       const T2		 & udOps)
-//     : veloQuerier_{},
-//       applyJacobQuerier__{},
-//       fomStateReference_(yFomRefNative),
-//       fomStateReconstructor_(fomStateReference_, decoder),
-//       rFomRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
-//       fomStates_(fomStateReference_, fomStateReconstructor_),
-//       fomRhs_(rFomRef_),
-//       jPhiMatrix_(applyJacobQuerier__.evaluate(appObj, fomStateReference_,
-//       			       decoder.getReferenceToJacobian(), t0)),
-//       residualPolicy_(fomStates_, fomRhs_, veloQuerier_, udOps),
-//       jacobianPolicy_(fomStates_, applyJacobQuerier__, jPhiMatrix_, decoder, udOps),
-//       auxStepperObj_{},
-//       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
-//   {
-// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-//     std::cout << std::endl;
-//     std::cout << "LSPGProbGen" << std::endl;
-//     std::cout << "fomStateReference_ " << fomStateReference_.data() << std::endl;
-//     std::cout << "rFomRef_ " << rFomRef_.data() << std::endl;
-//     std::cout << "jPhiMatrix_ " << jPhiMatrix_.data() << std::endl;
-//     std::cout << std::endl;
-// #endif
-//   }
+  // /* - aux stepper NOT needed
+  //  * - ud_ops_t != void
+  // */
+  //  careful here is this is for pybind11, need to handle properly the deep copy
+  // template <
+  //   typename _aux_stepper_t = aux_stepper_t,
+  //   typename _ud_ops_t = ud_ops_t,
+  //   typename ::pressio::mpl::enable_if_t<
+  //     std::is_void<_aux_stepper_t>::value and
+  //     !std::is_void<_ud_ops_t>::value
+  //     > * = nullptr
+  // >
+  // LSPGUnsteadyProblemGenerator(const fom_t	 & appObj,
+  // 			       const fom_native_state_t & yFomRefNative,
+  // 			       decoder_t	 & decoder,
+  // 			       lspg_state_t	 & yROM,
+  // 			       scalar_t		 t0,
+  // 			       const _ud_ops_t	 & udOps)
+  //   : veloQuerier_{},
+  //     applyJacobQuerier__{},
+  //     fomStateReference_(yFomRefNative),
+  //     fomStateReconstructor_(fomStateReference_, decoder),
+  //     fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+  //     fomStates_(fomStateReference_, fomStateReconstructor_),
+  //     jPhiMatrix_(applyJacobQuerier_.evaluate(appObj, fomStateReference_, decoder.getReferenceToJacobian(), t0)),
+  //     residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_, udOps),
+  //     jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder, udOps),
+  //     auxStepperObj_{},
+  //     stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
+  // {}
 
 };
 
