@@ -56,7 +56,6 @@
 #include "../policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
 #include "../../ode_storage.hpp"
 #include "../../ode_system_wrapper.hpp"
-//#include "../ode_implicit_aux_data.hpp"
 
 namespace pressio{ namespace ode{
 
@@ -64,10 +63,8 @@ namespace pressio{ namespace ode{
  * (1) constructors here should be private but we need
  * them public to enable interfacing with pybind11
  */
-
 template<typename concrete_stepper_type, int nAuxStates>
 class ImplicitStepperBase
-//: private utils::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>
 {
   using traits		  = typename details::traits<concrete_stepper_type>;
   using sc_t		  = typename traits::scalar_t;
@@ -193,11 +190,6 @@ public:
       residual_obj_{resPolicyObj},
       jacobian_obj_{}
   {}
-
-  // /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  // template<typename DummyType> struct dummy{using type = DummyType;};
-  // friend typename dummy<concrete_stepper_type>::type;
-  // friend utils::details::CrtpBase<ImplicitStepperBase<concrete_stepper_type, nAuxStates>>;
 
 };//end class
 
