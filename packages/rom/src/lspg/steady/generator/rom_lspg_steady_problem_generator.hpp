@@ -49,7 +49,7 @@
 #ifndef PRESSIO_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
 #define PRESSIO_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
 
-#include "rom_lspg_type_generator_default.hpp"
+#include "rom_lspg_steady_type_generator_default.hpp"
 
 namespace pressio{ namespace rom{
 
@@ -69,7 +69,6 @@ public:
   using typename lspg_problem::decoder_t;
   using typename lspg_problem::fom_state_reconstr_t;
   using typename lspg_problem::fom_states_data;
-  using typename lspg_problem::fom_velocity_data;
 
   using typename lspg_problem::lspg_matrix_t;
   using typename lspg_problem::fom_eval_rhs_policy_t;
@@ -79,16 +78,15 @@ public:
   using typename lspg_problem::lspg_system_t;
 
 private:
-  fom_eval_rhs_policy_t		rhsEv_;
-  fom_apply_jac_policy_t	ajacEv_;
-  fom_state_t			yFomRef_;
+  fom_eval_rhs_policy_t		rhsQuerier_;
+  fom_apply_jac_policy_t	applyJacobQuerier_;
+  fom_state_t			fomStateReference_;
   fom_state_reconstr_t		fomStateReconstructor_;
-  fom_velocity_t		rFomRef_;
+  fom_velocity_t		fomVelocityRef_;
   fom_states_data		fomStates_;
-  fom_velocity_data		fomRhs_;
-  lspg_matrix_t			romMat_;
-  lspg_residual_policy_t	resObj_;
-  lspg_jacobian_policy_t	jacObj_;
+  lspg_matrix_t			jPhiMatrix_;
+  lspg_residual_policy_t	residualPolicy_;
+  lspg_jacobian_policy_t	jacobianPolicy_;
   lspg_system_t			systemObj_;
 
 public:
@@ -105,18 +103,17 @@ public:
 			     const fom_native_state_t & yFomRefNative,
 			     const decoder_t	& decoder,
 			     lspg_state_t	& yROM)
-    : rhsEv_{},
-      ajacEv_{},
-      yFomRef_(yFomRefNative),
-      fomStateReconstructor_(yFomRef_, decoder),
-      rFomRef_( rhsEv_.evaluate(appObj, yFomRef_) ),
-      fomStates_(yFomRef_, fomStateReconstructor_),
-      fomRhs_(rFomRef_),
-      romMat_(ajacEv_.evaluate(appObj, yFomRef_,
-			       decoder.getReferenceToJacobian())),
-      resObj_(fomStates_, fomRhs_, rhsEv_),
-      jacObj_(fomStates_, ajacEv_, romMat_, decoder),
-      systemObj_(appObj, resObj_, jacObj_)
+    : rhsQuerier_{},
+      applyJacobQuerier_{},
+      fomStateReference_(yFomRefNative),
+      fomStateReconstructor_(fomStateReference_, decoder),
+      fomVelocityRef_( rhsQuerier_.evaluate(appObj, fomStateReference_) ),
+      fomStates_(fomStateReference_, fomStateReconstructor_),
+      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj, fomStateReference_,
+					  decoder.getReferenceToJacobian())),
+      residualPolicy_(fomVelocityRef_, fomStates_, rhsQuerier_),
+      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
+      systemObj_(appObj, residualPolicy_, jacobianPolicy_)
   {}
 
 };

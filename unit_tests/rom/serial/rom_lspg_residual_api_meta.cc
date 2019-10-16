@@ -59,9 +59,9 @@ public:
 TEST(rom_lspg_meta, validResidualAPI){
   using namespace pressio;
   using app_t    = ValidApp;
-  static_assert( rom::meta::model_meets_residual_api_for_lspg<app_t>::value,"");
-  static_assert( rom::meta::is_legitimate_model_for_lspg<app_t>::value,"");
+  static_assert( rom::meta::model_meets_residual_api_for_unsteady_lspg<app_t>::value,"");
+  static_assert( rom::meta::is_legitimate_model_for_unsteady_lspg<app_t>::value,"");
 
   // assert that it does not meet velocity api
-  static_assert( !rom::meta::model_meets_velocity_api_for_lspg<app_t>::value,"");
+  static_assert( !rom::meta::model_meets_velocity_api_for_unsteady_lspg<app_t>::value,"");
 }

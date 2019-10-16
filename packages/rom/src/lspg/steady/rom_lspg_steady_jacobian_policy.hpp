@@ -61,15 +61,12 @@ template<
   typename decoder_type
   >
 class LSPGSteadyJacobianPolicy
-  : protected fom_states_data,
-    protected fom_apply_jac_policy{
+  : protected fom_apply_jac_policy{
 
 protected:
   using this_t = LSPGSteadyJacobianPolicy<
   fom_states_data, apply_jac_return_type,
   fom_apply_jac_policy, decoder_type>;
-
-  using fom_states_data::yFom_;
 
 public:
   static constexpr bool isResidualPolicy_ = false;
@@ -77,23 +74,24 @@ public:
 
 public:
   LSPGSteadyJacobianPolicy() = delete;
-
   ~LSPGSteadyJacobianPolicy() = default;
 
-  LSPGSteadyJacobianPolicy(const fom_states_data	& fomStates,
+  LSPGSteadyJacobianPolicy(fom_states_data	& fomStates,
 			   const fom_apply_jac_policy	& applyJacFunctor,
 			   const apply_jac_return_type	& applyJacObj,
 			   const decoder_type		& decoder)
-    : fom_states_data(fomStates),
+    : fomStates_(fomStates),
       fom_apply_jac_policy(applyJacFunctor),
       JJ_(applyJacObj),
       decoderObj_(decoder){}
 
 public:
 
-  template <typename lspg_state_t,
-	    typename lspg_jac_t,
-	    typename app_t>
+  template <
+    typename lspg_state_t,
+    typename lspg_jac_t,
+    typename app_t
+  >
   void operator()(const lspg_state_t & romY,
 		  lspg_jac_t	     & romJJ,
   		  const app_t	     & app) const
@@ -106,19 +104,17 @@ public:
     // todo: this is not needed if jacobian is called after resiudal
     // because residual takes care of reconstructing the fom state
     //    timer->start("reconstruct fom state");
-    fom_states_data::template reconstructCurrentFomState(romY);
+    fomStates_.template reconstructCurrentFomState(romY);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
-    const auto & basis = decoderObj_.getReferenceToJacobian();
-    fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ);
-    timer->stop("fom apply jac");
-#else
-    const auto & basis = decoderObj_.getReferenceToJacobian();
-    fom_apply_jac_policy::evaluate(app, yFom_, basis, romJJ);
 #endif
 
+    const auto & basis = decoderObj_.getReferenceToJacobian();
+    fom_apply_jac_policy::evaluate(app, fomStates_.getCRefToFomState(), basis, romJJ);
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    timer->stop("fom apply jac");
     timer->stop("lspg apply jac");
 #endif
   }
@@ -134,7 +130,7 @@ public:
 protected:
   mutable apply_jac_return_t JJ_   = {};
   const decoder_type & decoderObj_ = {};
-
+  fom_states_data & fomStates_;
 };
 
 }}//end namespace pressio::rom

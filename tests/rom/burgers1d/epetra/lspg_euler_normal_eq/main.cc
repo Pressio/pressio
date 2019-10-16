@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
 
   // define LSPG type
   constexpr auto ode_case = pressio::ode::ImplicitEnum::Euler;
-  using lspg_problem_types = pressio::rom::DefaultLSPGTypeGenerator<
+  using lspg_problem_types = pressio::rom::DefaultLSPGUnsteadyTypeGenerator<
     fom_t, ode_case, decoder_t, lspg_state_t>;
   pressio::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
       appobj, yRef, decoderObj, yROM, t0);

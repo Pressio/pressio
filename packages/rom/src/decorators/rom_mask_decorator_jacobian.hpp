@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_model_for_lspg.hpp
+// rom_mask_decorator_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,23 +46,63 @@
 //@HEADER
 */
 
-#ifndef ROM_IS_LEGITIMATE_MODEL_FOR_LSPG_HPP_
-#define ROM_IS_LEGITIMATE_MODEL_FOR_LSPG_HPP_
+#ifndef ROM_MASK_DECORATOR_JACOBIAN_HPP_
+#define ROM_MASK_DECORATOR_JACOBIAN_HPP_
 
-#include "rom_model_meets_velocity_api_for_lspg.hpp"
-#include "rom_model_meets_residual_api_for_lspg.hpp"
+#include "../rom_fwd.hpp"
+#include "../../../ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace decorator{
 
-template<typename T>
-struct is_legitimate_model_for_lspg{
-  // check for velocity API
-  static constexpr auto velo_api = ::pressio::rom::meta::model_meets_velocity_api_for_lspg<T>::value;
-  // check for residual API
-  static constexpr auto resid_api = ::pressio::rom::meta::model_meets_residual_api_for_lspg<T>::value;
 
-  static constexpr bool value = (velo_api or resid_api) ? true : false;
-};
+template <typename maskable>
+class Masked<maskable,
+  /* enable when decorating a jacobian policy */
+  ::pressio::mpl::enable_if_t<maskable::isResidualPolicy_ == false>
+  > : public maskable{
 
-}}} // namespace pressio::rom::meta
+public:
+  using typename maskable::apply_jac_return_t;
+  mutable std::shared_ptr<apply_jac_return_t> maskedJJ_ = {};
+  using maskable::JJ_;
+
+public:
+  Masked() = delete;
+  Masked(const maskable & obj) : maskable(obj){}
+
+  template <typename ... Args>
+  Masked(Args && ... args)
+    : maskable(std::forward<Args>(args)...){}
+
+  ~Masked() = default;
+
+public:
+  template <ode::ImplicitEnum odeMethod, typename ode_state_t,
+	    typename app_t, typename scalar_t>
+  apply_jac_return_t operator()(const ode_state_t & odeY,
+				const app_t & app,
+				scalar_t t, scalar_t dt) const
+  {
+    maskable::template operator()<odeMethod>(odeY, JJ_, app, t, dt);
+    if (!maskedJJ_){
+      maskedJJ_ = std::make_shared<apply_jac_return_t>( app.applyMask(*JJ_.data(), t) );
+    }
+    else
+      app.applyMask(*JJ_.data(), *maskedJJ_->data(), t);
+
+    return *maskedJJ_;
+  }
+
+  template <ode::ImplicitEnum odeMethod, typename ode_state_t,
+	    typename ode_jac_t,  typename app_t, typename scalar_t>
+  void operator()(const ode_state_t & odeY, ode_jac_t & odeJJ,
+  		  const app_t & app, scalar_t t, scalar_t dt) const
+  {
+    maskable::template operator()<odeMethod>(odeY, JJ_, app, t, dt);
+    app.applyMask(*JJ_.data(), *odeJJ.data(), t);
+  }
+
+};//end class
+
+}}} //end namespace pressio::rom::decorator
 #endif

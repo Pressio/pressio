@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_model_has_all_needed_velocity_methods.hpp
+// rom_model_meets_residual_api_for_unsteady_lspg.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,51 @@
 //@HEADER
 */
 
-#ifndef ROM_MODEL_HAS_ALL_NEEDED_VELOCITY_METHODS_HPP_
-#define ROM_MODEL_HAS_ALL_NEEDED_VELOCITY_METHODS_HPP_
+#ifndef ROM_MODEL_MEETS_RESIDUAL_API_FOR_UNSTEADY_LSPG_HPP_
+#define ROM_MODEL_MEETS_RESIDUAL_API_FOR_UNSTEADY_LSPG_HPP_
 
-#include "../../../ode/src/meta/ode_has_velocity_method_callable_with_two_args.hpp"
-#include "../../../ode/src/meta/ode_has_velocity_method_callable_with_three_args.hpp"
+#include "../../../ode/src/meta/ode_has_state_typedef.hpp"
+#include "rom_has_residual_typedef.hpp"
+#include "rom_has_dense_matrix_typedef.hpp"
+#include "rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"
+#include "./time_discrete_residual/rom_has_needed_time_discrete_residual_method_with_void_return.hpp"
+#include "./time_discrete_residual/rom_has_needed_time_discrete_residual_method_with_non_void_return.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
 
-template<
-  typename model_type,
-  typename state_type,
-  typename velocity_type,
-  typename scalar_type,
-  typename enable = void
-  >
-struct model_has_needed_velocity_methods
-  : std::false_type{};
+template<typename T, typename enable = void>
+struct model_meets_residual_api_for_unsteady_lspg : std::false_type{};
 
-template<
-  typename model_type,
-  typename state_type,
-  typename velocity_type,
-  typename scalar_type
-  >
-struct model_has_needed_velocity_methods<
-  model_type, state_type, velocity_type, scalar_type,
+template<typename T>
+struct model_meets_residual_api_for_unsteady_lspg<
+  T,
   mpl::enable_if_t<
-    ::pressio::ode::meta::has_velocity_method_callable_with_two_args<
-      model_type, state_type, scalar_type, velocity_type
+    ::pressio::containers::meta::has_scalar_typedef<T>::value and
+    ::pressio::ode::meta::has_state_typedef<T>::value and
+    ::pressio::rom::meta::has_residual_typedef<T>::value and
+    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value and
+    ::pressio::rom::meta::has_needed_time_discrete_residual_method_with_non_void_return<
+      T,
+      int32_t, // use int here as type for the step, it can be any integral type
+      typename T::scalar_type,
+      typename T::state_type,
+      typename T::residual_type
       >::value and
-    ::pressio::ode::meta::has_velocity_method_callable_with_three_args<
-      model_type, state_type, scalar_type, velocity_type
+    ::pressio::rom::meta::has_needed_time_discrete_residual_method_with_void_return<
+      T,
+      int32_t, // use int here as type for the step, it can be any integral type
+      typename T::scalar_type,
+      typename T::state_type,
+      typename T::residual_type
+      >::value and
+    ::pressio::rom::meta::model_has_needed_apply_jacobian_methods_for_unsteady<
+      T,
+      typename T::state_type,
+      typename T::scalar_type,
+      typename T::dense_matrix_type
       >::value
     >
   > : std::true_type{};
-
 
 }}} // namespace pressio::rom::meta
 #endif

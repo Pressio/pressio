@@ -51,14 +51,12 @@
 
 #include "ROM_BASIC"
 
-#include "rom/src/meta/rom_is_legitimate_model_for_lspg.hpp"
+#include "rom/src/meta/rom_is_legitimate_model_for_unsteady_lspg.hpp"
 
-#include "rom/src/lspg/unsteady/rom_lspg_residual_policy.hpp"
-#include "rom/src/lspg/unsteady/rom_lspg_jacobian_policy.hpp"
-#include "rom/src/lspg/unsteady/generator/rom_lspg_unsteady_problem_type_generator_default.hpp"
-#include "rom/src/lspg/unsteady/generator/rom_lspg_unsteady_problem_type_generator_preconditioned.hpp"
-#include "rom/src/lspg/unsteady/generator/rom_lspg_unsteady_problem_type_generator_masked.hpp"
 #include "rom/src/lspg/unsteady/generator/rom_lspg_unsteady_problem_generator.hpp"
+
+#include "rom/src/lspg/unsteady/rom_lspg_unsteady_residual_policy_velocity_api.hpp"
+#include "rom/src/lspg/unsteady/rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
 #include "rom/src/lspg/unsteady/rom_lspg_time_discrete_residual.hpp"
 #include "rom/src/lspg/unsteady/rom_lspg_time_discrete_jacobian.hpp"
 

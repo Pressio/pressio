@@ -51,7 +51,6 @@
 
 #include "../../rom_ConfigDefs.hpp"
 #include "../../rom_fwd.hpp"
-#include "../../rom_data_fom_rhs.hpp"
 #include "../../rom_data_fom_states.hpp"
 #include "../../policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
 #include "../../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
@@ -101,11 +100,8 @@ struct GalerkinCommonTypes<false, galerkin_state_type, Args...>
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
   // class type holding fom states data
-  using fom_states_data = ::pressio::rom::FomStatesData<
-	fom_state_t, 0, fom_state_reconstr_t>;
-
-  // class type holding fom rhs data
-  using fom_velocity_data = ::pressio::rom::FomRhsData<fom_velocity_t>;
+  using fom_states_data =
+    ::pressio::rom::FomStatesData<fom_state_t, 0, fom_state_reconstr_t>;
 
   // for now, set ops to void, i.e. we only use pressio ops
   using ud_ops_t = void;
@@ -152,9 +148,6 @@ struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
   // class type holding fom states data
   using fom_states_data = ::pressio::rom::FomStatesData<
 	fom_state_t, 0, fom_state_reconstr_t>;
-
-  // class type holding fom rhs data
-  using fom_velocity_data = ::pressio::rom::FomRhsData<fom_velocity_t>;
 
   // when interfacing with Python, ops are defined by a pybind11::object
   using ud_ops_t = pybind11::object;

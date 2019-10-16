@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_model_meets_residual_api_for_lspg.hpp
+// rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,51 +46,28 @@
 //@HEADER
 */
 
-#ifndef ROM_MODEL_MEETS_RESIDUAL_API_FOR_LSPG_HPP_
-#define ROM_MODEL_MEETS_RESIDUAL_API_FOR_LSPG_HPP_
+#ifndef ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
+#define ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
 
-#include "../../../ode/src/meta/ode_has_state_typedef.hpp"
-#include "rom_has_residual_typedef.hpp"
-#include "rom_has_dense_matrix_typedef.hpp"
-#include "rom_model_has_all_needed_apply_jacobian_methods.hpp"
-#include "./time_discrete_residual/rom_has_needed_time_discrete_residual_method_with_void_return.hpp"
-#include "./time_discrete_residual/rom_has_needed_time_discrete_residual_method_with_non_void_return.hpp"
+#include "../../../../rom_fwd.hpp"
+#include "../../../../../../ode/src/ode_fwd.hpp"
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace impl{
 
-template<typename T, typename enable = void>
-struct model_meets_residual_api_for_lspg : std::false_type{};
+template <ode::ImplicitEnum odeName>
+struct fomStatesStorageCapacityHelper{
+  static constexpr int value = 1;
+};
 
-template<typename T>
-struct model_meets_residual_api_for_lspg<
-  T,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<T>::value and
-    ::pressio::ode::meta::has_state_typedef<T>::value and
-    ::pressio::rom::meta::has_residual_typedef<T>::value and
-    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value and
-    ::pressio::rom::meta::has_needed_time_discrete_residual_method_with_non_void_return<
-      T,
-      int32_t, // use int here as type for the step, it can be any integral type
-      typename T::scalar_type,
-      typename T::state_type,
-      typename T::residual_type
-      >::value and
-    ::pressio::rom::meta::has_needed_time_discrete_residual_method_with_void_return<
-      T,
-      int32_t, // use int here as type for the step, it can be any integral type
-      typename T::scalar_type,
-      typename T::state_type,
-      typename T::residual_type
-      >::value and
-    ::pressio::rom::meta::model_has_needed_apply_jacobian_methods<
-      T,
-      typename T::state_type,
-      typename T::scalar_type,
-      typename T::dense_matrix_type
-      >::value
-    >
-  > : std::true_type{};
+template <>
+struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::Euler>{
+  static constexpr int value = 1;
+};
 
-}}} // namespace pressio::rom::meta
+template <>
+struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::BDF2>{
+  static constexpr int value = 2;
+};
+
+}}}//end  namespace pressio::rom::impl
 #endif

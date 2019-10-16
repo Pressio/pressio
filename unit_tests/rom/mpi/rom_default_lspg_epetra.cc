@@ -14,7 +14,7 @@ TEST(lspg, epetra_types)
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
 
   // define LSPG type
-  using lspg_problem_types = pressio::rom::DefaultLSPGTypeGenerator<
+  using lspg_problem_types = pressio::rom::DefaultLSPGUnsteadyTypeGenerator<
     fom_t, pressio::ode::ImplicitEnum::Euler, decoder_t, lspg_state_t>;
 
   using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;

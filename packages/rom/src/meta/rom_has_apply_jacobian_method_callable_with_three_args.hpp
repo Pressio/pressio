@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_apply_jacobian_method_callable_with_three_args.hpp
+// rom_has_apply_jacobian_method_callable_with_three_args_for_unsteady.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_APPLY_JACOBIAN_METHOD_CALLABLE_WITH_THREE_ARGS_HPP_
-#define ROM_HAS_APPLY_JACOBIAN_METHOD_CALLABLE_WITH_THREE_ARGS_HPP_
+#ifndef ROM_HAS_APPLY_JACOBIAN_METHOD_CALLABLE_WITH_THREE_ARGS_FOR_UNSTEADY_HPP_
+#define ROM_HAS_APPLY_JACOBIAN_METHOD_CALLABLE_WITH_THREE_ARGS_FOR_UNSTEADY_HPP_
 
 namespace pressio{ namespace rom{ namespace meta {
 
@@ -58,7 +58,7 @@ template <
   typename dense_mat_t,
   typename = void
   >
-struct has_apply_jacobian_method_callable_with_three_args
+struct has_apply_jacobian_method_callable_with_three_args_for_unsteady
   : std::false_type{};
 
 template <
@@ -67,7 +67,7 @@ template <
   typename sc_t,
   typename dense_mat_t
   >
-struct has_apply_jacobian_method_callable_with_three_args<
+struct has_apply_jacobian_method_callable_with_three_args_for_unsteady<
   T, state_t, sc_t, dense_mat_t,
   ::pressio::mpl::enable_if_t<
     !std::is_void<

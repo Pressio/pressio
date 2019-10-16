@@ -55,29 +55,25 @@ namespace pressio{ namespace rom{
 
 template <
   typename fom_state_type,
-  int maxNstates,
+  int N,
   typename reconstuctor_type,
   typename enable = void
   >
 struct FomStatesData;
-
-template <
-  typename fom_rhs_type,
-  typename enable = void>
-struct FomRhsData;
-
 
 /* decorators */
 namespace decorator{
 
 template <
   typename preconditionable,
-  typename enable = void>
+  typename enable = void
+  >
 class Preconditioned;
 
 template <
   typename maskable,
-  typename enable = void>
+  typename enable = void
+  >
 class Masked;
 
 }// namespace pressio::rom::decorator
@@ -118,20 +114,47 @@ class MatrixOperator;
 
 
 /* ------------------
+ * explicit galerkin
+ ------------------ */
+template <
+  typename fom_states_data_t,
+  typename fom_rhs_t,
+  typename decoder_jac_t,
+  typename ud_ops = void
+  >
+class DefaultGalerkinExplicitVelocityPolicy;
+
+template <
+  typename type_generator_t,
+  typename enable = void
+  >
+struct GalerkinProblemGenerator;
+
+
+/* ------------------
  * steady LSPG
  ------------------ */
 
+template <
+  typename fom_type,
+  typename decoder_type,
+  typename lspg_state_type,
+  typename enable = void
+  >
+struct LSPGSteadyCommonTypes;
+
+
 /* policies */
 template <
-  typename fom_states_data_t,
-  typename fom_rhs_data_t,
+  typename residual_type,
+  typename fom_states_data_type,
   typename fom_rhs_eval_policy
   >
 class LSPGSteadyResidualPolicy;
 
 template<
-  typename fom_states_data_t,
-  typename jac_type,
+  typename fom_states_data,
+  typename apply_jac_return_type,
   typename fom_apply_jac_policy,
   typename decoder_t
   >
@@ -160,14 +183,28 @@ struct LSPGSteadyProblemGenerator;
  * UNsteady LSPG
  ------------------ */
 
+namespace impl{
+
+template <
+  typename fom_type,
+  typename decoder_type,
+  typename lspg_state_type,
+  ode::ImplicitEnum odeName,
+  typename ud_ops = void,
+  typename enable = void
+  >
+struct LSPGUnsteadyCommonTypesVelocityAPI;
+
+} // end namespace pressio::rom::impl
+
 /* policies */
 template <
-  typename fom_states_data_t,
-  typename fom_rhs_data_t,
-  typename fom_rhs_eval_policy,
+  typename residual_type,
+  typename fom_states_data_type,
+  typename fom_velocity_eval_policy,
   typename ud_ops = void
   >
-class LSPGResidualPolicy;
+class LSPGUnsteadyResidualPolicyVelocityApi;
 
 template<
   typename fom_states_data_t,
@@ -176,29 +213,13 @@ template<
   typename decoder_t,
   typename ud_ops = void
   >
-class LSPGJacobianPolicy;
+class LSPGUnsteadyJacobianPolicyVelocityApi;
 
 template <
   typename type_generator_t,
   typename enable = void
   >
 struct LSPGUnsteadyProblemGenerator;
-//-----------------------------------
-
-/* Explicit Galerkin policies */
-template <
-  typename fom_states_data_t,
-  typename fom_rhs_data_t,
-  typename decoder_jac_t,
-  typename ud_ops = void
-  >
-class DefaultGalerkinExplicitVelocityPolicy;
-
-template <
-  typename type_generator_t,
-  typename enable = void
-  >
-struct GalerkinProblemGenerator;
 
 
 }} // end namespace pressio::rom

@@ -46,53 +46,50 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_TYPE_GENERATOR_PRECONDITIONED_HPP_
-#define ROM_LSPG_TYPE_GENERATOR_PRECONDITIONED_HPP_
+#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_PRECONDITIONED_HPP_
+#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_PRECONDITIONED_HPP_
 
-#include "../../rom_lspg_type_generator_common.hpp"
+#include "./impl/rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
 
 namespace pressio{ namespace rom{
 
-template <typename fom_type,
-	  ode::ImplicitEnum odeName,
-	  typename decoder_type,
-	  typename lspg_state_type>
-struct PreconditionedLSPGTypeGenerator
-  : LSPGCommonTypes<
-  fom_type, decoder_type, lspg_state_type, odeName
-  >{
+//-------------------------------------------------------
+// specialize for then the fom type meets velocity API
+//-------------------------------------------------------
+template <
+  typename fom_type,
+  ode::ImplicitEnum odeName,
+  typename decoder_type,
+  typename lspg_state_type,
+  typename ud_ops = void,
+  mpl::enable_if_t<
+    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value
+    > * = nullptr
+  >
+struct PreconditionedLSPGUnsteadyTypeGenerator{
 
-  using base_t = LSPGCommonTypes<
-    fom_type, decoder_type, lspg_state_type, odeName>;
+  // assert here that fom_type supports the precondition interface
 
-  static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_lspg<fom_type>::value,
-		 "You are trying to setup an unsteady LSPG problem requiring your fom adapter \
-class to meet the velocity API. However, the fom/adapter type you passed does not meet this API.");
+  using common_types_helper =
+    impl::LSPGUnsteadyCommonTypesVelocityAPI<fom_type,
+					     decoder_type,
+					     lspg_state_type,
+					     odeName,
+					     ud_ops>;
 
-  using typename base_t::fom_t;
-  using typename base_t::scalar_t;
-  using typename base_t::fom_native_state_t;
-  using typename base_t::fom_state_t;
-  using typename base_t::fom_velocity_t;
-  using typename base_t::lspg_state_t;
-  using typename base_t::lspg_residual_t;
-  using typename base_t::decoder_t;
-  using typename base_t::decoder_jac_t;
-  using typename base_t::fom_state_reconstr_t;
-  using typename base_t::fom_states_data;
-  using typename base_t::fom_velocity_data;
-
-  /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
-   * * J is the jacobian of the fom rhs
-   * * decoder_jac_t is the type of the decoder jacobian
-   * In more complex cases, we might have (something)*J*decoder_jac_t,
-   * where (something) is product of few matrices.
-   * For now, set lspg_matrix_t to be of same type as decoder_jac_t
-   * if phi is MV<>, then lspg_matrix_t = containers::MV<>
-   * if phi is Matrix<>, then we have containers::Matrix<>
-   * not bad assumption since all matrices are left-applied to decoder_jac_t
-   */
-  using lspg_matrix_t		= decoder_jac_t;
+  using fom_t			= typename common_types_helper::fom_t;
+  using scalar_t		= typename common_types_helper::scalar_t;
+  using fom_native_state_t	= typename common_types_helper::fom_native_state_t;
+  using fom_state_t		= typename common_types_helper::fom_state_t;
+  using fom_velocity_t		= typename common_types_helper::fom_velocity_t;
+  using lspg_state_t		= typename common_types_helper::lspg_state_t;
+  using lspg_residual_t		= typename common_types_helper::lspg_residual_t;
+  using decoder_t		= typename common_types_helper::decoder_t;
+  using decoder_jac_t		= typename common_types_helper::decoder_jac_t;
+  using lspg_matrix_t		= typename common_types_helper::lspg_matrix_t;
+  using fom_state_reconstr_t	= typename common_types_helper::fom_state_reconstr_t;
+  using fom_states_data		= typename common_types_helper::fom_states_data;
+  using ud_ops_t		= typename common_types_helper::ud_ops_t;
 
   // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
   using fom_eval_velocity_policy_t	= ::pressio::rom::policy::EvaluateFomVelocityDefault<false>;
@@ -104,21 +101,21 @@ class to meet the velocity API. However, the fom/adapter type you passed does no
   // policy defining how to compute the LSPG time-discrete residual
   using lspg_residual_policy_t =
     rom::decorator::Preconditioned<
-    rom::LSPGResidualPolicy<
-      fom_states_data, fom_velocity_data, fom_eval_velocity_policy_t
+    rom::LSPGUnsteadyResidualPolicyVelocityApi<
+      lspg_residual_t, fom_states_data, fom_eval_velocity_policy_t
       >
     >;
 
   // policy defining how to compute the LSPG time-discrete jacobian
   using lspg_jacobian_policy_t	=
     rom::decorator::Preconditioned<
-    rom::LSPGJacobianPolicy<
+    rom::LSPGUnsteadyJacobianPolicyVelocityApi<
       fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t
       >
     >;
 
   // auxiliary stepper
-  using aux_stepper_t = typename auxStepperHelper<
+  using aux_stepper_t = typename impl::auxStepperHelper<
     odeName, lspg_state_type,
     lspg_residual_t, lspg_matrix_t,
     fom_type, lspg_residual_policy_t,

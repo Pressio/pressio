@@ -56,27 +56,26 @@ namespace pressio{ namespace rom{
 
 template <
   typename fom_state_type,
-  int maxNstates,
+  int N,
   typename reconstuctor_type
   >
-struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
+struct FomStatesData<fom_state_type, N, reconstuctor_type>
 {
-  static constexpr int maxNstates_ = maxNstates;
-  //using fom_state_t = fom_state_type;
+  static constexpr int N_ = N;
 
   FomStatesData() = delete;
   ~FomStatesData() = default;
 
   /* ----------------
-   * maxNstates = 0
+   * N = 0
    * ---------------*/
 
-  /* cnstr for maxNstates = 0, and fom_state_type is a pressio vector wrapper */
+  /* cnstr for N = 0, and fom_state_type is a pressio vector wrapper */
   template <
     typename _fom_state_type = fom_state_type,
-    int _maxNstates = maxNstates,
+    int _N = N,
     ::pressio::mpl::enable_if_t<
-      _maxNstates==0 and
+      _N==0 and
       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
       > * = nullptr
     >
@@ -89,12 +88,12 @@ struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  /* cnstr for maxNstates = 0, and fom_state_type is a pybind11 array */
+  /* cnstr for N = 0, and fom_state_type is a pybind11 array */
   template <
     typename _fom_state_type = fom_state_type,
-    int _maxNstates = maxNstates,
+    int _N = N,
     ::pressio::mpl::enable_if_t<
-      _maxNstates==0 and
+      _N==0 and
       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
       > * = nullptr
     >
@@ -109,15 +108,14 @@ struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
 
 
   /* ----------------
-   * maxNstates = 1
+   * N = 1
    * ---------------*/
-
-  /* cnstr for maxNstates = 1, and fom_state_type is a pressio vector wrapper */
+  /* cnstr for N = 1, and fom_state_type is a pressio vector wrapper */
   template <
     typename _fom_state_type = fom_state_type,
-    int _maxNstates = maxNstates,
+    int _N = N,
     ::pressio::mpl::enable_if_t<
-      _maxNstates==1 and
+      _N==1 and
       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
       > * = nullptr
     >
@@ -131,12 +129,12 @@ struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  /* cnstr for maxNstates = 1, and fom_state_type is a pybind11 array */
+  /* cnstr for N = 1, and fom_state_type is a pybind11 array */
   template <
     typename _fom_state_type = fom_state_type,
-    int _maxNstates = maxNstates,
+    int _N = N,
     ::pressio::mpl::enable_if_t<
-      _maxNstates==1 and
+      _N==1 and
       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
       > * = nullptr
     >
@@ -151,17 +149,15 @@ struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
 #endif
 
 
-
   /* ----------------
-   * maxNstates = 2
+   * N = 2
    * ---------------*/
-
-  /* cnstr for maxNstates = 2, and fom_state_type is a pressio vector wrapper */
+  /* cnstr for N = 2, and fom_state_type is a pressio vector wrapper */
   template <
     typename _fom_state_type = fom_state_type,
-    int _maxNstates = maxNstates,
+    int _N = N,
     ::pressio::mpl::enable_if_t<
-      _maxNstates==2 and
+      _N==2 and
       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
       > * = nullptr
     >
@@ -175,12 +171,12 @@ struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  /* cnstr for maxNstates = 2, and fom_state_type is a pybind11 array */
+  /* cnstr for N = 2, and fom_state_type is a pybind11 array */
   template <
     typename _fom_state_type = fom_state_type,
-    int _maxNstates = maxNstates,
+    int _N = N,
     ::pressio::mpl::enable_if_t<
-      _maxNstates==2 and
+      _N==2 and
       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
       > * = nullptr
     >
@@ -196,7 +192,16 @@ struct FomStatesData<fom_state_type, maxNstates, reconstuctor_type>
 #endif
 
 
-protected:
+public:
+
+  const fom_state_type & getCRefToFomState() const{
+    return yFom_;
+  }
+
+  const std::array<fom_state_type, N> & getCRefToFomOldStates() const{
+    return yFomOld_;
+  }
+
   template <typename rom_state_t>
   void reconstructCurrentFomState(const rom_state_t & romY) const
   {
@@ -239,9 +244,9 @@ private:
       ::pressio::containers::ops::set_zero(yFomOld_[i]);
   }
 
-protected:
+private:
   mutable fom_state_type yFom_                             = {};
-  mutable std::array<fom_state_type, maxNstates> yFomOld_  = {};
+  mutable std::array<fom_state_type, N> yFomOld_  = {};
   const reconstuctor_type & fomStateReconstrObj_	   = {};
 
 };//end class

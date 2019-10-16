@@ -50,49 +50,41 @@
 #define ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
 
 #include "../../rom_fwd.hpp"
-#include "../../rom_data_fom_rhs.hpp"
-#include "../../rom_data_fom_states.hpp"
 
 namespace pressio{ namespace rom{
 
 template <
+  typename residual_type,
   typename fom_states_data,
-  typename fom_rhs_data,
   typename fom_eval_rhs_policy
   >
 class LSPGSteadyResidualPolicy
-  : protected fom_states_data,
-    protected fom_rhs_data,
-    protected fom_eval_rhs_policy{
-
-protected:
-  // protected because we might have decorators of this class
-  using this_t = LSPGSteadyResidualPolicy<fom_states_data,
-					  fom_rhs_data,
-					  fom_eval_rhs_policy>;
-
-  using fom_states_data::yFom_;
-  using fom_rhs_data::fomRhs_;
+  : protected fom_eval_rhs_policy{
 
 public:
+  using this_t = LSPGSteadyResidualPolicy<residual_type,
+					  fom_states_data,
+					  fom_eval_rhs_policy>;
+
   static constexpr bool isResidualPolicy_ = true;
-  using typename fom_rhs_data::fom_rhs_t;
+  using residual_t = residual_type;
 
 public:
   LSPGSteadyResidualPolicy() = delete;
   ~LSPGSteadyResidualPolicy() = default;
 
-  LSPGSteadyResidualPolicy(const fom_states_data     & fomStates,
-			   const fom_rhs_data	     & fomResids,
+  LSPGSteadyResidualPolicy(const residual_t & RIn,
+			   fom_states_data & fomStatesIn,
 			   const fom_eval_rhs_policy & fomEvalRhsFunctor)
-    : fom_states_data(fomStates),
-      fom_rhs_data(fomResids),
+    : R_{RIn},
+      fomStates_(fomStatesIn),
       fom_eval_rhs_policy(fomEvalRhsFunctor){}
 
 public:
-  template <typename lspg_state_t,
-	    typename lspg_residual_t,
-	    typename fom_t>
+  template <
+    typename lspg_state_t,
+    typename lspg_residual_t,
+    typename fom_t>
   void operator()(const lspg_state_t	& romY,
 		  lspg_residual_t	& romR,
   		  const fom_t		& app) const
@@ -102,28 +94,31 @@ public:
     timer->start("lspg residual");
 #endif
 
-    fom_states_data::template reconstructCurrentFomState(romY);
+    fomStates_.template reconstructCurrentFomState(romY);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
-    fom_eval_rhs_policy::evaluate(app, yFom_, romR);
-    timer->stop("fom eval rhs");
-#else
-    fom_eval_rhs_policy::evaluate(app, yFom_, romR);
 #endif
 
+    fom_eval_rhs_policy::evaluate(app, fomStates_.getCRefToFomState(), romR);
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    timer->stop("fom eval rhs");
     timer->stop("lspg residual");
 #endif
   }
 
   template <typename lspg_state_t, typename fom_t>
-  fom_rhs_t operator()(const lspg_state_t & romY,
-			 const fom_t	    & app) const
+  residual_t operator()(const lspg_state_t & romY,
+		       const fom_t	  & app) const
   {
-    (*this).template operator()(romY, fomRhs_, app);
-    return fomRhs_;
+    (*this).template operator()(romY, R_, app);
+    return R_;
   }
+
+protected:
+  mutable residual_t R_ = {};
+  fom_states_data & fomStates_;
 
 };//end class
 

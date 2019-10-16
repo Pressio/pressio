@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_problem_type_generator_default.hpp
+// rom_lspg_steady_type_generator_common.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,50 +46,58 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
-#define ROM_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
+#ifndef ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
+#define ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
 
-#include "rom_galerkin_type_generator_common.hpp"
+#include "../../../rom_fwd.hpp"
+#include "../../../rom_data_fom_states.hpp"
+#include "../../../rom_reconstructor_fom_state.hpp"
 
 namespace pressio{ namespace rom{
 
 template <
-  ode::ExplicitEnum odeName,
-  typename galerkin_state_type,
-  typename ...Args
+  typename fom_type,
+  typename decoder_type,
+  typename lspg_state_type
   >
-struct DefaultGalerkinExplicitTypeGenerator
-  : GalerkinCommonTypes<galerkin_state_type, Args...>
+struct LSPGSteadyCommonTypes<
+  fom_type, decoder_type, lspg_state_type,
+  mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
+    >
+  >
 {
+  LSPGSteadyCommonTypes() = default;
+  ~LSPGSteadyCommonTypes() = default;
 
-  using base_t = GalerkinCommonTypes<galerkin_state_type, Args...>;
+  // these are native types of the full-order model (fom)
+  using fom_t			= fom_type;
+  using scalar_t		= typename fom_t::scalar_type;
+  using fom_native_state_t	= typename fom_t::state_type;
+  using fom_native_velocity_t	= typename fom_t::velocity_type;
 
-  static constexpr ode::ExplicitEnum odeName_ = odeName;
+  // fom wrapper types
+  using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;
+  using fom_velocity_t	= ::pressio::containers::Vector<fom_native_velocity_t>;
 
-  using typename base_t::fom_t;
-  using typename base_t::scalar_t;
-  using typename base_t::fom_native_state_t;
-  using typename base_t::fom_state_t;
-  using typename base_t::fom_velocity_t;
-  using typename base_t::galerkin_state_t;
-  using typename base_t::galerkin_residual_t;
-  using typename base_t::decoder_t;
-  using typename base_t::decoder_jac_t;
-  using typename base_t::fom_state_reconstr_t;
-  using typename base_t::fom_states_data;
-  using typename base_t::ud_ops_t;
+  // rom state type (passed in)
+  using lspg_state_t		= lspg_state_type;
 
-  // policy for evaluating the ode velocity
-  using galerkin_residual_policy_t =
-    ::pressio::rom::DefaultGalerkinExplicitVelocityPolicy<
-    fom_states_data, fom_velocity_t, decoder_t, ud_ops_t>;
+  // for LSPG, the rom residual type = containers::wrapper of application rhs
+  // i.e. the wrapped fom rhs type
+  using lspg_residual_t		= fom_velocity_t;
 
-  // declare type of stepper object
-  using galerkin_stepper_t = ::pressio::ode::ExplicitStepper<
-    odeName, galerkin_state_type, fom_t,
-    galerkin_residual_t, galerkin_residual_policy_t, scalar_t>;
+  // decoder types (passed in)
+  using decoder_t		= decoder_type;
+  using decoder_jac_t		= typename decoder_t::jacobian_t;
 
-};//end class
+  // fom state reconstructor type
+  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+
+  // class type holding fom states data
+  using fom_states_data = ::pressio::rom::FomStatesData<
+	fom_state_t, 1, fom_state_reconstr_t>;
+};
 
 }}//end  namespace pressio::rom
 #endif
