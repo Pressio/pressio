@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_stepper_euler.hpp
+// ode_implicit_stepper_arbitrary.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_EULER_HPP_
-#define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_EULER_HPP_
+#ifndef ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_ARBITRARY_HPP_
+#define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_ARBITRARY_HPP_
 
 #include "ode_implicit_stepper_traits.hpp"
 #include "ode_implicit_stepper_base.hpp"
@@ -62,7 +62,7 @@ template<
   typename ... Args
   >
 class ImplicitStepper<
-  ImplicitEnum::Euler,
+  ImplicitEnum::Arbitrary,
   ode_state_type,
   ode_residual_type,
   ode_jacobian_type,
@@ -71,15 +71,13 @@ class ImplicitStepper<
   >
   : public ImplicitStepperBase<
   ImplicitStepper<
-    ImplicitEnum::Euler,
-    ode_state_type,
-    ode_residual_type,
-    ode_jacobian_type,
+    ImplicitEnum::Arbitrary, ode_state_type,
+    ode_residual_type, ode_jacobian_type,
     system_type, Args...>
   >
 {
 
-  using this_t	       = ImplicitStepper<ImplicitEnum::Euler,
+  using this_t	       = ImplicitStepper<ImplicitEnum::Arbitrary,
 					 ode_state_type,
 					 ode_residual_type,
 					 ode_jacobian_type,
@@ -88,12 +86,12 @@ class ImplicitStepper<
   using stepper_base_t = ImplicitStepperBase<this_t>;
   friend stepper_base_t;
 
-  using mytraits       = details::traits<this_t>;
-  using standard_res_policy_t = typename mytraits::standard_res_policy_t;
-  using standard_jac_policy_t = typename mytraits::standard_jac_policy_t;
-  using residual_pol_t = typename mytraits::residual_policy_t;
-  using jacobian_pol_t = typename mytraits::jacobian_policy_t;
-  using scalar_t       = typename mytraits::scalar_t;
+  using mytraits		= details::traits<this_t>;
+  using standard_res_policy_t	= typename mytraits::standard_res_policy_t;
+  using standard_jac_policy_t	= typename mytraits::standard_jac_policy_t;
+  using residual_pol_t		= typename mytraits::residual_policy_t;
+  using jacobian_pol_t		= typename mytraits::jacobian_policy_t;
+  using scalar_t		= typename mytraits::scalar_t;
   static constexpr auto my_enum = mytraits::enum_id;
 
 public:
@@ -113,96 +111,47 @@ public:
   		  const jacobian_pol_t & jacPolicyObj)
     : stepper_base_t{y0, model, resPolicyObj, jacPolicyObj}{}
 
-  // cstr for standard residual and jacob policies
-  template <
-    typename T1 = standard_res_policy_t,
-    typename T2 = standard_jac_policy_t,
-    ::pressio::mpl::enable_if_t<
-      mpl::is_same<T1, residual_pol_t>::value and
-      mpl::is_same<T2, jacobian_pol_t>::value
-      > * = nullptr
-    >
-  ImplicitStepper(const ode_state_type & y0,
-		  const system_type & model)
-    : stepper_base_t{y0, model}{}
-
-  // cstr for standard jacob policies
-  template <
-    typename T1 = standard_jac_policy_t,
-    ::pressio::mpl::enable_if_t<
-      mpl::is_same<T1, jacobian_pol_t>::value
-      > * = nullptr
-    >
-  ImplicitStepper(const ode_state_type & y0,
-  		  const system_type & model,
-  		  const residual_pol_t & resPolicyObj)
-    : stepper_base_t{y0, model, resPolicyObj}{}
-
 public:
-
   template<typename solver_type>
   void operator()(ode_state_type & y,
 		  scalar_t t,
 		  scalar_t dt,
 		  types::step_t step,
-		  solver_type & solver){
-
+		  solver_type & solver)
+  {
     auto & auxY0 = this->stateAuxStorage_.data_[0];
     this->dt_ = dt;
     this->t_ = t;
     this->step_ = step;
     ::pressio::containers::ops::deep_copy(y, auxY0);
-    solver.solve(*this, y);
-  }
-
-  template<
-    typename solver_type,
-    typename guess_callback_t
-    >
-  void operator()(ode_state_type & y,
-		  scalar_t t,
-		  scalar_t dt,
-		  types::step_t step,
-		  solver_type & solver,
-		  guess_callback_t && guesserCb){
-    auto & auxY0 = this->stateAuxStorage_.data_[0];
-    this->dt_ = dt;
-    this->t_ = t;
-    this->step_ = step;
-    ::pressio::containers::ops::deep_copy(y, auxY0);
-    guesserCb(step, t, y);
     solver.solve(*this, y);
   }
 
 private:
   void residualImpl(const state_type & y, residual_type & R) const
   {
-    this->residual_obj_.template operator()<
-      my_enum, mytraits::numAuxStates
-      >(y, R, this->stateAuxStorage_.data_,
-	this->sys_.get(), this->t_, this->dt_, this->step_);
+    this->residual_obj_.operator()
+      (y, R, this->stateAuxStorage_.data_,
+       this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
   residual_type residualImpl(const state_type & y) const
   {
-    return this->residual_obj_.template operator()<
-      my_enum, mytraits::numAuxStates
-      >(y, this->stateAuxStorage_.data_,
-	this->sys_.get(), this->t_, this->dt_, this->step_);
+    return this->residual_obj_.operator()
+      (y, this->stateAuxStorage_.data_,
+       this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
   void jacobianImpl(const state_type & y, jacobian_type & J) const
   {
-    this->jacobian_obj_.template operator()<
-      mytraits::enum_id
-      >(y, J, this->sys_.get(), this->t_, this->dt_, this->step_);
+    this->jacobian_obj_.operator()
+      (y, J, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
   jacobian_type jacobianImpl(const state_type & y) const
   {
-    return this->jacobian_obj_.template operator()<
-      mytraits::enum_id
-      >(y, this->sys_.get(), this->t_, this->dt_, this->step_);
+    return this->jacobian_obj_.operator()
+      (y, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
 };//end class

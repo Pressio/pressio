@@ -121,5 +121,24 @@ struct DefaultLSPGUnsteadyTypeGenerator{
 };//end class
 
 
+// //-------------------------------------------------------
+// // specialize for then the fom type meets Residual API
+// //-------------------------------------------------------
+// template <
+//   typename fom_type,
+//   ode::ImplicitEnum odeName,
+//   typename decoder_type,
+//   typename lspg_state_type,
+//   typename ud_ops = void,
+//   mpl::enable_if_t<
+//     ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value
+//     > * = nullptr
+//   >
+// struct DefaultLSPGUnsteadyTypeGenerator{
+
+
+// };//end class
+
+
 }}//end  namespace pressio::rom
 #endif

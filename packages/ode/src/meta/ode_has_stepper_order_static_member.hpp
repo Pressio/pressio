@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_IMPLICIT
+// ode_has_stepper_order_static_member.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,21 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_HPP_
-#define ODE_IMPLICIT_HPP_
+#ifndef ODE_HAS_STEPPER_ORDER_STATIC_MEMBER_HPP_
+#define ODE_HAS_STEPPER_ORDER_STATIC_MEMBER_HPP_
 
-#include "ODE_BASIC"
+#include <type_traits>
 
-#include "ode/src/implicit/ode_residual_impl.hpp"
-#include "ode/src/implicit/ode_jacobian_impl.hpp"
+namespace pressio{ namespace ode{ namespace meta {
 
-#include "ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
-#include "ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy_pybind11.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy_pybind11.hpp"
+template <typename T, typename enable = void>
+struct has_stepper_order_static_member
+  : std::false_type{};
 
-#include "ode/src/implicit/policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_residual_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_jacobian_policy.hpp"
+template <typename T>
+struct has_stepper_order_static_member<
+  T, mpl::enable_if_t< T::stepper_order != 0 >
+  > : std::true_type{};
 
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
-
-#include "ode/src/implicit/steppers/ode_implicit_stepper_traits.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_base.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_euler.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_bdf2.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_arbitrary.hpp"
-
+}}}//end namespace pressio::ode::meta
 #endif

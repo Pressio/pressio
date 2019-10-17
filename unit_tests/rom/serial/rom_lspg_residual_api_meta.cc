@@ -15,7 +15,7 @@ private:
   template <typename step_t>
   void timeDiscreteResidualImpl(const step_t & step,
 				const scalar_type & time,
-				residual_type & f,
+				residual_type & R,
 				const state_type & y1,
 				const state_type & y2) const
   {}
@@ -25,7 +25,7 @@ public:
   template <typename step_t, typename ... Args>
   void timeDiscreteResidual(const step_t & step,
   			    const scalar_type & time,
-  			    residual_type & f,
+  			    residual_type & R,
   			    Args & ... states) const
   {
     // forward to whatever approriate impl method, e. g.

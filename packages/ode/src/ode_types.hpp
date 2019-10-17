@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_IMPLICIT
+// ode_default_types.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,19 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_HPP_
-#define ODE_IMPLICIT_HPP_
+#ifndef ODE_TYPES_HPP_
+#define ODE_TYPES_HPP_
 
-#include "ODE_BASIC"
+namespace pressio{ namespace ode{ namespace types {
 
-#include "ode/src/implicit/ode_residual_impl.hpp"
-#include "ode/src/implicit/ode_jacobian_impl.hpp"
+//! Default type for the ode step
+using step_t = int32_t;
 
-#include "ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
-#include "ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy_pybind11.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy_pybind11.hpp"
+//! Default type for the order of a stepper
+using stepper_order_t = int32_t;
 
-#include "ode/src/implicit/policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_residual_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_jacobian_policy.hpp"
+//! Default type for the num of aux states
+using stepper_n_states_t = int32_t;
 
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
-
-#include "ode/src/implicit/steppers/ode_implicit_stepper_traits.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_base.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_euler.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_bdf2.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_arbitrary.hpp"
-
+}}} // end of namespace pressio::containers::default_types
 #endif

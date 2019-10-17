@@ -109,8 +109,10 @@ struct DoStepPolicy<solver_type, utils::impl::empty>{
 //-------------------------------------------------------
 
 template <
-  typename collector_type, typename int_type,
-  typename time_type, typename state_type,
+  typename collector_type,
+  typename int_type,
+  typename time_type,
+  typename state_type,
   typename enable = void
   >
 struct CallCollectorDispatch;
@@ -168,11 +170,12 @@ struct CallCollectorDispatch<
 template <typename collector_type, typename DoStepPolicy_t>
 struct AdvancerPolicy{
 
-  template <typename integral_type,
-	    typename time_type,
-	    typename state_type,
-	    typename ... Args>
-  static void execute(integral_type    num_steps,
+  template <
+    typename time_type,
+    typename state_type,
+    typename ... Args
+    >
+  static void execute(::pressio::ode::types::step_t num_steps,
 		      time_type	   start_time,
 		      time_type	   dt,
 		      state_type &	   yIn,
@@ -184,9 +187,9 @@ struct AdvancerPolicy{
     timer->start("time loop");
 #endif
 
-    using collector_dispatch = CallCollectorDispatch<collector_type, integral_type,
-						     time_type, state_type>;
-    constexpr auto zero = ::pressio::utils::constants::zero<integral_type>();
+    using step_t = ::pressio::ode::types::step_t;
+    using collector_dispatch = CallCollectorDispatch<collector_type, step_t, time_type, state_type>;
+    constexpr auto zero = ::pressio::utils::constants::zero<step_t>();
 
     // time variable
     time_type time = start_time;
@@ -194,7 +197,7 @@ struct AdvancerPolicy{
     collector_dispatch::execute(collector, zero, time, yIn);
     //collector(0, time, yIn);
 
-    integral_type step = 1;
+    step_t step = 1;
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
     {
@@ -231,21 +234,21 @@ struct AdvancerPolicy{
 template <typename DoStepPolicy_t>
 struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
 
-  template <typename integral_type,
-	    typename time_type,
-	    typename ... Args>
-  static void execute(integral_type num_steps,
+  template <typename time_type, typename ... Args>
+  static void execute(::pressio::ode::types::step_t num_steps,
 		      time_type	start_time,
 		      time_type	dt,
 		      Args && ... args)
   {
+    using step_t = ::pressio::ode::types::step_t;
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("time loop");
 #endif
 
     time_type time = start_time;
-    integral_type step = 1;
+    step_t step = 1;
 
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
@@ -271,10 +274,8 @@ struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time loop");
 #endif
-
   }//end ()
 };
-
 
 }}}//end namespace pressio::ode::impl
 #endif

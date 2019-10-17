@@ -160,7 +160,8 @@ public:
   		  const std::array<lspg_state_t,n> & romOldYs,
   		  const fom_t			   & app,
 		  scalar_t			   t,
-		  scalar_t			   dt) const
+		  scalar_t			   dt,
+		  ::pressio::ode::types::step_t step) const
   {
     this->compute_impl<odeMethod, n>(romY, romR, romOldYs, app, t, dt);
   }
@@ -176,7 +177,8 @@ public:
 			const std::array<lspg_state_t,n>  & romOldYs,
 			const fom_t			   & app,
 			scalar_t			   t,
-			scalar_t			   dt) const
+			scalar_t			   dt,
+			::pressio::ode::types::step_t step) const
   {
     this->compute_impl<odeMethod, n>(romY, R_, romOldYs, app, t, dt);
     return R_;

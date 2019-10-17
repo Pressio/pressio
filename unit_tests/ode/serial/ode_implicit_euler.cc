@@ -80,9 +80,9 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
-  int nSteps = 2;
+  ::pressio::ode::types::step_t nSteps = 2;
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 2, solverO);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
@@ -122,10 +122,9 @@ TEST(ode_implicit_euler, guesserLambda){
   auto testLambda = [](size_t step, double time, state_t & yIn){
   		      yIn[0] = -20.; yIn[1] = -20.; yIn[2] = -20.; };
 
-  int nSteps = 1;
   double dt = 0.01;
   ode::integrateNSteps(stepperObj, y, 0.0, dt,
-		       nSteps, solverO, testLambda);
+		       1, solverO, testLambda);
 
   std::cout << std::setprecision(14) << *y.data() << "\n";
   // appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
@@ -172,7 +171,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
-  int nSteps = 2;
+  ::pressio::ode::types::step_t nSteps = 2;
   double dt = 0.01;
   ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
   std::cout << std::setprecision(14) << *y.data() << "\n";
@@ -222,7 +221,7 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
   pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
-  int nSteps = 2;
+  ::pressio::ode::types::step_t nSteps = 2;
   double dt = 0.01;
   ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
   std::cout << std::setprecision(14) << *y.data() << "\n";

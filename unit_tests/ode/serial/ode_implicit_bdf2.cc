@@ -91,7 +91,7 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
-  int nSteps = 4;
+  ::pressio::ode::types::step_t nSteps = 4;
   double dt = 0.01;
   ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
   std::cout << std::setprecision(14) << *y.data() << "\n";
@@ -148,7 +148,7 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
-  int nSteps = 4;
+  ::pressio::ode::types::step_t nSteps = 4;
   double dt = 0.01;
   ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
   std::cout << std::setprecision(14) << *y.data() << "\n";
@@ -204,7 +204,7 @@ TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
   pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
-  int nSteps = 4;
+  ::pressio::ode::types::step_t nSteps = 4;
   double dt = 0.01;
   ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
   std::cout << std::setprecision(14) << *y.data() << "\n";

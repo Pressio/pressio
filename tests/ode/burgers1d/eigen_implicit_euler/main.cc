@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
   // integrate in time
   scalar_t fint = 35;
   scalar_t dt = 0.01;
-  auto Nsteps = static_cast<unsigned int>(fint/dt);
+  auto Nsteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
   pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, solverO);
   std::cout << std::setprecision(14) << *y.data();
   {

@@ -163,7 +163,8 @@ public:
 		  lspg_jac_t	     & romJac,
   		  const app_t	     & app,
 		  scalar_t	     t,
-		  scalar_t	     dt) const
+		  scalar_t	     dt,
+		  ::pressio::ode::types::step_t step) const
   {
     this->compute_impl<odeMethod>(romY, romJac, app, t, dt);
   }
@@ -176,7 +177,8 @@ public:
   apply_jac_return_t operator()(const lspg_state_t & romY,
 				const app_t	   & app,
 				scalar_t	   t,
-				scalar_t	   dt) const
+				scalar_t	   dt,
+				::pressio::ode::types::step_t step) const
   {
     this->compute_impl<odeMethod>(romY, JJ_, app, t, dt);
     return JJ_;

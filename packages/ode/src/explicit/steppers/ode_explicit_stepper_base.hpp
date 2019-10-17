@@ -91,11 +91,10 @@ public:
     return step_traits::order_value;
   }
 
-  template<typename step_t>
   void operator()(state_t & yinout,
 		  scalar_t t,
 		  scalar_t dt,
-		  step_t step){
+		  types::step_t step){
     static_cast<stepper_type&>(*this).compute(yinout, t, dt, step);
   }
 

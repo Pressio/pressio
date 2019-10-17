@@ -52,6 +52,7 @@
 #include "ode/src/ode_ConfigDefs.hpp"
 #include "ode/src/ode_fwd.hpp"
 #include "ode/src/ode_enum.hpp"
+#include "ode/src/ode_types.hpp"
 
 #include "ode/src/meta/ode_has_state_typedef.hpp"
 #include "ode/src/meta/ode_has_velocity_typedef.hpp"
@@ -70,6 +71,8 @@
 #include "ode/src/meta/ode_model_has_all_needed_jacobian_methods.hpp"
 #include "ode/src/meta/ode_model_has_all_needed_velocity_methods.hpp"
 #include "ode/src/meta/ode_is_valid_user_defined_ops_for_explicit_ode.hpp"
+#include "ode/src/meta/ode_has_stepper_order_static_member.hpp"
+#include "ode/src/meta/ode_has_num_aux_states_static_member.hpp"
 
 #include "ode/src/ode_system_wrapper.hpp"
 #include "ode/src/ode_storage.hpp"

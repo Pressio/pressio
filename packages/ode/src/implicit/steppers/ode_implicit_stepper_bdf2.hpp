@@ -147,12 +147,11 @@ public:
       auxStepper_{auxStepper}{}
 
 public:
-  template<typename step_t,
-	   typename solver_type>
+  template<typename solver_type>
   void operator()(ode_state_type & y,
 		  scalar_t t,
 		  scalar_t dt,
-		  step_t step,
+		  types::step_t step,
 		  solver_type & solver){
 
     auto & auxY0 = this->stateAuxStorage_.data_[0];
@@ -160,6 +159,7 @@ public:
 
     this->dt_ = dt;
     this->t_ = t;
+    this->step_ = step;
 
     // first step, use auxiliary stepper
     if (step == 1){
@@ -177,13 +177,11 @@ public:
     }
   }
 
- template<typename step_t,
-	  typename solver_type,
-	  typename guess_callback_t>
+ template<typename solver_type,typename guess_callback_t>
   void operator()(ode_state_type & y,
 		  scalar_t t,
 		  scalar_t dt,
-		  step_t step,
+		  types::step_t step,
 		  solver_type & solver,
 		  guess_callback_t && guesserCb){
 
@@ -192,6 +190,7 @@ public:
 
    this->dt_ = dt;
    this->t_ = t;
+   this->step_t = step;
 
    // first step, use auxiliary stepper
    if (step == 1){
@@ -215,31 +214,31 @@ private:
   void residualImpl(const state_type & y, residual_type & R) const
   {
     this->residual_obj_.template operator()<
-      my_enum, mytraits::steps
+      my_enum, mytraits::numAuxStates
       >(y, R, this->stateAuxStorage_.data_,
-	this->sys_.get(), this->t_, this->dt_);
+	this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
   residual_type residualImpl(const state_type & y) const
   {
     return this->residual_obj_.template operator()<
-      my_enum, mytraits::steps
+      my_enum, mytraits::numAuxStates
       >(y, this->stateAuxStorage_.data_,
-	this->sys_.get(), this->t_, this->dt_);
+	this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
   void jacobianImpl(const state_type & y, jacobian_type & J) const
   {
     this->jacobian_obj_.template operator()<
       mytraits::enum_id
-      >(y, J, this->sys_.get(), this->t_, this->dt_);
+      >(y, J, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
   jacobian_type jacobianImpl(const state_type & y) const
   {
     return this->jacobian_obj_.template operator()<
       mytraits::enum_id
-      >(y, this->sys_.get(), this->t_, this->dt_);
+      >(y, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
 };//end class

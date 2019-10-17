@@ -103,11 +103,10 @@ public:
   ~ExplicitRungeKutta4StepperImpl() = default;
 
 public:
-  template< typename step_t >
   void doStep(state_type & y,
   	      scalar_type t,
   	      scalar_type dt,
-  	      step_t step)
+  	      types::step_t step)
   {
     auto & ytmp	   = stateAuxStorage_.data_[0];
     auto & auxRhs0 = residAuxStorage_.data_[0];
@@ -127,26 +126,18 @@ public:
     // stage 1: ytmp = y + auxRhs0*dt_half;
     policy_(y, auxRhs0, sys_.get(), t);
     this->stage_update_impl(ytmp, y, auxRhs0, dt_half);
-    //::pressio::containers::ops::do_update(ytmp, y, one, auxRhs0, dt_half);
 
     // stage 2: ytmp = y + auxRhs1*dt_half;
     policy_(ytmp, auxRhs1, sys_.get(), t_phalf);
     this->stage_update_impl(ytmp, y, auxRhs1, dt_half);
-    //::pressio::containers::ops::do_update(ytmp, y, one, auxRhs1, dt_half);
 
     // stage 3: ytmp = y + auxRhs2*dt;
     policy_(ytmp, auxRhs2, sys_.get(), t_phalf);
     this->stage_update_impl(ytmp, y, auxRhs2, dt);
-    //::pressio::containers::ops::do_update(ytmp, y, one, auxRhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     policy_(ytmp, auxRhs3, sys_.get(), t + dt);
     this->stage_update_impl(y, auxRhs0, auxRhs1, auxRhs2, auxRhs3, dt6, dt3);
-    //::pressio::containers::ops::do_update(y, one,
-					// auxRhs0, dt6,
-					// auxRhs1, dt3,
-					// auxRhs2, dt3,
-					// auxRhs3, dt6);
   }//end doStep
 
 private:

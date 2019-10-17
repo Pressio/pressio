@@ -53,7 +53,7 @@
 
 #include "rom/src/meta/rom_is_legitimate_model_for_unsteady_lspg.hpp"
 
-#include "rom/src/lspg/unsteady/generator/rom_lspg_unsteady_problem_generator.hpp"
+#include "rom/src/lspg/unsteady/generator/rom_lspg_unsteady_problem_generator_velocity_api.hpp"
 
 #include "rom/src/lspg/unsteady/rom_lspg_unsteady_residual_policy_velocity_api.hpp"
 #include "rom/src/lspg/unsteady/rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"

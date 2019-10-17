@@ -56,7 +56,7 @@ namespace pressio{ namespace ode{ namespace meta {
 template<
   typename T,
   ImplicitEnum name,
-  int nstates,
+  types::stepper_n_states_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -69,14 +69,14 @@ struct is_legitimate_implicit_residual_policy : std::false_type{};
 template<
   typename T,
   ImplicitEnum name,
-  int nstates,
+  types::stepper_n_states_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
   typename scalar_t
   >
 struct is_legitimate_implicit_residual_policy<
-  T, name, nstates, state_t, residual_t, system_t, scalar_t,
+  T, name, numPrevStates, state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
     // is callable with five args
     std::is_same<
@@ -86,12 +86,13 @@ struct is_legitimate_implicit_residual_policy<
        std::declval<T>().template operator()
        <
        name,
-       nstates
+       numPrevStates
        >( std::declval<const state_t &>(),
-	  std::declval<const std::array<state_t, nstates> &>(),
+	  std::declval<const std::array<state_t, numPrevStates> &>(),
 	  std::declval<const system_t&>(),
 	  std::declval<scalar_t>(),
-	  std::declval<scalar_t>()
+	  std::declval<scalar_t>(),
+	  std::declval<::pressio::ode::types::step_t>()
 	  )
        )
       >::value
@@ -103,13 +104,14 @@ struct is_legitimate_implicit_residual_policy<
        std::declval<T>().template operator()
        <
        name,
-       nstates
+       numPrevStates
        >( std::declval<const state_t &>(),
 	  std::declval<residual_t &>(),
-	  std::declval<const std::array<state_t, nstates> &>(),
+	  std::declval<const std::array<state_t, numPrevStates> &>(),
 	  std::declval<const system_t&>(),
 	  std::declval<scalar_t>(),
-	  std::declval<scalar_t>()
+	  std::declval<scalar_t>(),
+	  std::declval<::pressio::ode::types::step_t>()
 	  )
        )
       >::value

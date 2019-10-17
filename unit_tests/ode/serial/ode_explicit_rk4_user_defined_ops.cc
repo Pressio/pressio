@@ -91,7 +91,7 @@ TEST(ode_explicit_rk4, userDefinedOps){
 
   // integrate in time
   double dt = 0.1;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1);
   {
     std::cout << std::setprecision(14) 
     << (*y.data())[0] << " " 

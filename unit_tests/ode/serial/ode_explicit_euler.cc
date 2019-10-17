@@ -56,14 +56,14 @@ TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
 
   // integrate in time
   double dt = 0.1;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1);
   EXPECT_DOUBLE_EQ( y[0], 1.1);
   EXPECT_DOUBLE_EQ( y[1], 2.2);
   EXPECT_DOUBLE_EQ( y[2], 3.3);
   std::cout << std::setprecision(14) << *y.data();
 
   // integrate in time
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1);
   EXPECT_DOUBLE_EQ( y[0], 1.21);
   EXPECT_DOUBLE_EQ( y[1], 2.42);
   EXPECT_DOUBLE_EQ( y[2], 3.63);
@@ -94,14 +94,14 @@ TEST(ode_explicit_euler, numericsStdResidualPolPassedByUser){
 
   // integrate in time
   double dt = 0.1;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1);
   EXPECT_DOUBLE_EQ( y[0], 1.1);
   EXPECT_DOUBLE_EQ( y[1], 2.2);
   EXPECT_DOUBLE_EQ( y[2], 3.3);
   std::cout << std::setprecision(14) << *y.data();
 
   // integrate in time
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1ul);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1);
   EXPECT_DOUBLE_EQ( y[0], 1.21);
   EXPECT_DOUBLE_EQ( y[1], 2.42);
   EXPECT_DOUBLE_EQ( y[2], 3.63);

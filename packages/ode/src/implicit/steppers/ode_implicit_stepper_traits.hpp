@@ -52,6 +52,8 @@
 #include "../../ode_fwd.hpp"
 #include "../policies/meta/ode_find_if_legitimate_implicit_residual_policy.hpp"
 #include "../policies/meta/ode_find_if_legitimate_implicit_jacobian_policy.hpp"
+#include "../policies/meta/ode_find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
+#include "../policies/meta/ode_find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
 #include "../../meta/ode_is_valid_user_defined_ops_for_implicit_ode.hpp"
 
 namespace pressio{ namespace ode{ namespace details{
@@ -177,9 +179,8 @@ struct traits<
   using system_t	  = system_type;
   using aux_stepper_t	  = void;
 
-  static constexpr unsigned int order_value = 1;
-  static constexpr unsigned int steps = 1;
-  static constexpr unsigned int numAuxStates = 1;
+  static constexpr types::stepper_order_t order_value = 1;
+  static constexpr types::stepper_n_states_t numAuxStates = 1;
 
   // check if scalar is provided in Args
   using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
@@ -204,7 +205,7 @@ the containers, pass scalar as a template.");
 
   // check Args for a user-defined admissible residual policy
   using ic1 = ::pressio::ode::meta::find_if_legitimate_implicit_residual_policy_t<
-    this_t::enum_id, this_t::steps, state_t, residual_t, system_t, scalar_t,
+    this_t::enum_id, this_t::numAuxStates, state_t, residual_t, system_t, scalar_t,
     Args...>;
   using residual_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_res_policy_t, ic1::value, Args...>;
@@ -216,7 +217,6 @@ the containers, pass scalar as a template.");
   using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic2::value, Args...>;
 };
-
 
 
 template<
@@ -244,14 +244,13 @@ struct traits<
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
 
-  using state_t		  = state_type;
-  using residual_t	  = residual_type;
-  using jacobian_t	  = jacobian_type;
-  using system_t		  = system_type;
+  using state_t	   = state_type;
+  using residual_t = residual_type;
+  using jacobian_t = jacobian_type;
+  using system_t   = system_type;
 
-  static constexpr unsigned int order_value = 2;
-  static constexpr unsigned int steps = 2;
-  static constexpr unsigned int numAuxStates = 2;
+  static constexpr types::stepper_order_t order_value = 2;
+  static constexpr types::stepper_n_states_t numAuxStates = 2;
 
   // check if scalar is provided in Args
   using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
@@ -274,14 +273,14 @@ the containers, pass scalar as a template.");
     stepper_t, ::pressio::ode::meta::is_legitimate_auxiliary_stepper, Args...>;
   using aux_stepper_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
 
-  // // standard policies (only used if user-defined policies not passed)
+  // standard policies (only used if user-defined policies not passed)
   using policy_picker = impl::StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
   using standard_res_policy_t = typename policy_picker::standard_res_policy_t;
   using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
 
   // check Args if a user-defined admissible residual policy is passed
   using ic2 = ::pressio::ode::meta::find_if_legitimate_implicit_residual_policy_t<
-    this_t::enum_id, this_t::steps, state_t, residual_t, system_t, scalar_t,
+    this_t::enum_id, this_t::numAuxStates, state_t, residual_t, system_t, scalar_t,
     Args...>;
   using residual_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_res_policy_t, ic2::value, Args...>;
@@ -292,6 +291,123 @@ the containers, pass scalar as a template.");
     Args...>;
   using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic3::value, Args...>;
+};
+
+
+
+
+template<
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
+  typename system_type,
+  typename ...Args
+  >
+struct traits<
+  ImplicitStepper<
+    ImplicitEnum::Arbitrary,
+    state_type, residual_type,
+    jacobian_type, system_type, Args...>
+  > {
+
+  using stepper_t =   ImplicitStepper< ImplicitEnum::Arbitrary,
+				       state_type, residual_type,
+				       jacobian_type, system_type, Args...>;
+  using this_t = traits<stepper_t>;
+
+  static constexpr ode::ImplicitEnum enum_id = ode::ImplicitEnum::Arbitrary;
+  static constexpr bool is_implicit = true;
+  static constexpr bool is_explicit = false;
+
+  using state_t		  = state_type;
+  using residual_t	  = residual_type;
+  using jacobian_t	  = jacobian_type;
+  using system_t	  = system_type;
+  using aux_stepper_t	  = void;
+
+  // standard policies (only used if not passed a user-defined policy)
+  using policy_picker = impl::StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
+  using standard_res_policy_t = typename policy_picker::standard_res_policy_t;
+  using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
+
+  //-----------------------------------------------------------
+  // check if scalar is provided in Args
+  //-----------------------------------------------------------
+  using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
+  using scalar_from_args = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+  // check if state is a containers wrapper, and if so get its scalar_type
+  using scalar_type_from_traits = typename impl::ScalarHelper<state_type>::type;
+  // decide which to pick
+  using scalar_t = typename std::conditional<std::is_void<scalar_from_args>::value,
+					     scalar_type_from_traits,
+					     scalar_from_args>::type;
+
+  static_assert( std::is_floating_point<scalar_t>::value,
+  		 "I cannot determine the scalar_type because it is not found \
+in the templates args and the state_type used is not a containers' wrapper. \
+If you are using custom data structures that are not wrappeed in containers types, \
+pass a valid scalar type as a template argument to ImplicitStepper.");
+
+  //-----------------------------------------------------------
+  // check Args for a user-defined admissible residual policy
+  //-----------------------------------------------------------
+  // using ic3 = ::pressio::mpl::variadic::find_if_quinary_pred_t<
+  //   state_t, residual_t, system_t, scalar_t,
+  //   meta::is_legitimate_residual_policy_for_implicit_arbitrary_stepper, Args...>;
+  using ic3 = ::pressio::ode::meta::find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper_t<
+    state_t, residual_t, system_t, scalar_t, Args...>;
+  using residual_policy_t = ::pressio::mpl::variadic::at_or_t<void, ic3::value, Args...>;
+
+  // check Args for a user-defined admissible jacobian policy
+  using ic4 = ::pressio::ode::meta::find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper_t<
+    state_t, jacobian_t, system_t, scalar_t, Args...>;
+  using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t<void, ic4::value, Args...>;
+
+  // make sure we have non-void policies
+  static_assert( !std::is_void<residual_policy_t>::value and
+		 !std::is_void<jacobian_policy_t>::value,
+  		 "If you want to use an arbitrary implicit stepper, \
+i.e. when ode::ImplicitEnum::Arbitrary, you must provide user-defined \
+residual and jacobian policies which are in charge of computing the \
+time discrete residual and its jacobian. ");
+
+  // now that the policies are set, find order and num of aux states needed.
+  // detect order and num aux states from the residual policy
+  static constexpr types::stepper_order_t order_value_from_res_pol     = residual_policy_t::stepper_order;
+  static constexpr types::stepper_n_states_t n_aux_states_from_res_pol = residual_policy_t::num_aux_states;
+  // detect order and num aux states from the jacobian policy
+  static constexpr types::stepper_order_t order_value_from_jac_pol     = jacobian_policy_t::stepper_order;
+  static constexpr types::stepper_n_states_t n_aux_states_from_jac_pol = jacobian_policy_t::num_aux_states;
+
+  // make sure they are the same otherwise it might be that residual and jacobian are
+  // doing different things
+  static_assert( order_value_from_res_pol == order_value_from_jac_pol,
+		 "The stepper order I detected from the residual policy does not match the \
+one detected from the jacobian policy. This can be because you are using two \
+policies together that actually do things differently. So one of them has to be fixed because \
+the stepper order should match." );
+
+  static_assert( n_aux_states_from_res_pol == n_aux_states_from_jac_pol,
+		 "The num_aux_states I detected from the residual policy does not match the \
+one detected from the jacobian policy. This can be because you are using two \
+policies together that actually do things differently. So one of them has to be fixed because \
+the num of aux states neeeded should match." );
+
+  // if we get here, we can use order and num states from either policies since they are the same
+  static constexpr auto order_value = order_value_from_res_pol;
+  static constexpr auto numAuxStates = n_aux_states_from_res_pol;
+
+//   // we need to make sure that the residual and jac policies are not standard policies
+//   using policy_picker = impl::StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
+//   using standard_res_policy_t = typename policy_picker::standard_res_policy_t;
+//   using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
+//   static_assert( mpl::not_same<residual_policy_t, residual_policy_t>::value and
+// 		 mpl::not_same<jacobian_policy_t, jacobian_policy_t>::value ,
+//   		 "You cannot use standard policies to an arbitrary implicit stepper \
+// i.e. when ode::ImplicitEnum::Arbitrary, you must provide user-defined \
+// residual and jacobian policies which are in charge of computing the \
+// time discrete residual and its jacobian. ");
+
 };
 
 }}}//end namespace pressio::ode::details

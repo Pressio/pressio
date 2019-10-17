@@ -87,7 +87,8 @@ struct is_legitimate_implicit_jacobian_policy
       >( std::declval<const state_t &>(),
 	 std::declval<const system_t&>(),
 	 std::declval<scalar_t>(),
-	 std::declval<scalar_t>()
+	 std::declval<scalar_t>(),
+	 std::declval<::pressio::ode::types::step_t>()
 	 )
       )
      >::value
@@ -102,7 +103,8 @@ struct is_legitimate_implicit_jacobian_policy
 	 std::declval<jacobian_t &>(),
 	 std::declval<const system_t&>(),
 	 std::declval<scalar_t>(),
-	 std::declval<scalar_t>()
+	 std::declval<scalar_t>(),
+	 std::declval<::pressio::ode::types::step_t>()
 	 )
       )
    >::value

@@ -106,7 +106,6 @@ public:
    * user does NOT provide custom ops, so we use containers::ops
    */
   template<
-    typename step_t,
     typename _ops_t = ops_t,
     typename _state_type = state_type,
     mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr
@@ -114,7 +113,7 @@ public:
   void doStep(_state_type & y,
 	      scalar_type t,
 	      scalar_type dt,
-	      step_t step){
+	      types::step_t step){
     auto & auxRhs0 = residAuxStorage_.data_[0];
     //eval RHS
     policy_(y, auxRhs0, sys_.get(), t);
@@ -127,7 +126,6 @@ public:
    * user does provide custom ops, and they need raw data not wrappers
    */
   template<
-    typename step_t,
     typename _ops_t = ops_t,
     typename _state_type = state_type,
     mpl::enable_if_t<
@@ -138,7 +136,7 @@ public:
   void doStep(_state_type & y,
   	      scalar_type t,
   	      scalar_type dt,
-  	      step_t step){
+  	      types::step_t step){
     using op = typename ops_t::update_op;
     auto & auxRhs0 = residAuxStorage_.data_[0];
 

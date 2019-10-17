@@ -58,13 +58,12 @@ template<
   typename stepper_type,
   typename state_type,
   typename time_type,
-  typename integral_type,
   typename collector_type,
   typename std::enable_if<
     ode::meta::is_legitimate_collector<
-      collector_type, integral_type, time_type, state_type
+      collector_type, ::pressio::ode::types::step_t, 
+      time_type, state_type
       >::value &&
-    std::is_integral<integral_type>::value &&
     details::traits<stepper_type>::is_explicit
     >::type * = nullptr
   >
@@ -72,7 +71,7 @@ void integrateNSteps(stepper_type   & stepper,
 		     state_type	    & yIn,
 		     time_type	      start_time,
 		     time_type	      dt,
-		     integral_type    num_steps,
+		     types::step_t    num_steps,
 		     collector_type & collector)
 {
   using empty_t = utils::impl::empty;
@@ -85,7 +84,6 @@ template<
   typename stepper_type,
   typename state_type,
   typename time_type,
-  typename integral_type,
   typename std::enable_if<
     details::traits<stepper_type>::is_explicit
     >::type * = nullptr
@@ -94,7 +92,7 @@ void integrateNSteps(stepper_type & stepper,
 		     state_type	  & yIn,
 		     time_type	    start_time,
 		     time_type	    dt,
-		     integral_type  num_steps){
+		     types::step_t  num_steps){
 
   using empty_t = utils::impl::empty;
   using do_step_policy_t = impl::DoStepPolicy<empty_t, empty_t>;

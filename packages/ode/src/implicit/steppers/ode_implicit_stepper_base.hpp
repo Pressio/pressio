@@ -90,6 +90,7 @@ protected:
   // procted because these are accessed only by children classes
   sc_t t_  = {};
   sc_t dt_ = {};
+  types::step_t step_  = {};
   system_wrapper_t sys_;
   impl::OdeStorage<state_t, traits::numAuxStates> stateAuxStorage_;
 
@@ -112,7 +113,7 @@ protected:
     >::type jacobian_obj_;
 
 public:
-  decltype(traits::order_value) order() const{
+  types::stepper_order_t order() const{
     return traits::order_value;
   }
 

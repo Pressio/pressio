@@ -64,6 +64,7 @@
 #endif
 
 #include "ode_enum.hpp"
+#include "ode_types.hpp"
 
 namespace pressio{ namespace ode{ namespace details {
 

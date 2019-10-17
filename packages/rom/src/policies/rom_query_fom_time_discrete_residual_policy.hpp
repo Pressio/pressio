@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_IMPLICIT
+// rom_query_fom_time_discrete_residual_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,42 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_HPP_
-#define ODE_IMPLICIT_HPP_
+#ifndef ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
+#define ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
 
-#include "ODE_BASIC"
+namespace pressio{ namespace rom{ namespace policy{
 
-#include "ode/src/implicit/ode_residual_impl.hpp"
-#include "ode/src/implicit/ode_jacobian_impl.hpp"
+struct QueryFomTimeDiscreteResidual
+{
+  template <
+    int numStates,
+    typename fom_t, typename step_t, typename time_t, typename fom_state_t,
+    mpl::enable_if_t< n == 1 > * = nullptr
+    >
+  void evaluate(const fom_t   & fomObj,
+		const step_t  & step,
+		const time_t  & time,
+		const fom_state_t & fomState,
+		const std::array<numStates, fom_state_t> & fomPrevStates,
+		result_t      & R) const
+  {
+    fomObj.template timeDiscreteResidual(step, time, *R.data(),
+					 *fomState.data(),
+					 *fomStates[0].data());
+  }
 
-#include "ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
-#include "ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy_pybind11.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy_pybind11.hpp"
+  // template <
+  //   typename fom_t, typename state_t, typename time_t
+  //   >
+  // auto evaluate(const fom_t	& fomObj,
+  // 		const state_t & yFOM,
+  // 		time_t		t) const
+  //   -> decltype(fomObj.velocity(*yFOM.data(), t))
+  // {
+  //   return fomObj.velocity(*yFOM.data(), t);
+  // }
 
-#include "ode/src/implicit/policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_residual_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_jacobian_policy.hpp"
+};
 
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
-
-#include "ode/src/implicit/steppers/ode_implicit_stepper_traits.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_base.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_euler.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_bdf2.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_arbitrary.hpp"
-
+}}} //end namespace pressio::rom::policy
 #endif

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_generator.hpp
+// rom_lspg_unsteady_problem_generator_velocity_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
-#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_API_HPP_
+#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_API_HPP_
 
 #include "rom_lspg_unsteady_problem_type_generator_default.hpp"
 #include "rom_lspg_unsteady_problem_type_generator_masked.hpp"

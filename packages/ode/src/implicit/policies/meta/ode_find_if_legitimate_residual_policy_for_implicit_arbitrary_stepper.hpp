@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_IMPLICIT
+// ode_find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,69 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_HPP_
-#define ODE_IMPLICIT_HPP_
+#ifndef ODE_FIND_IF_LEGITIMATE_RESIDUAL_POLICY_FOR_IMPLICIT_ARBITRARY_STEPPER_HPP_
+#define ODE_FIND_IF_LEGITIMATE_RESIDUAL_POLICY_FOR_IMPLICIT_ARBITRARY_STEPPER_HPP_
 
-#include "ODE_BASIC"
+#include "./ode_is_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
 
-#include "ode/src/implicit/ode_residual_impl.hpp"
-#include "ode/src/implicit/ode_jacobian_impl.hpp"
+namespace pressio{ namespace ode{ namespace meta {
 
-#include "ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
-#include "ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy_pybind11.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy_pybind11.hpp"
+template<
+  typename state_t,
+  typename residual_t,
+  typename system_t,
+  typename scalar_t,
+  class ... Args2
+  >
+struct find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper;
 
-#include "ode/src/implicit/policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_residual_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_jacobian_policy.hpp"
+template<
+  typename state_t,
+  typename residual_t,
+  typename system_t,
+  typename scalar_t
+  >
+struct find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper<
+  state_t, residual_t, system_t, scalar_t
+  > : std::integral_constant<std::size_t, 0>{};
 
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
 
-#include "ode/src/implicit/steppers/ode_implicit_stepper_traits.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_base.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_euler.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_bdf2.hpp"
-#include "ode/src/implicit/steppers/ode_implicit_stepper_arbitrary.hpp"
+template<
+  typename state_t,
+  typename residual_t,
+  typename system_t,
+  typename scalar_t,
+  class Head, class ... Tail
+  >
+struct find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper<
+  state_t, residual_t, system_t, scalar_t,
+  Head, Tail...
+  >
+  : std::conditional <
+  is_legitimate_residual_policy_for_implicit_arbitrary_stepper<
+    Head, state_t, residual_t, system_t, scalar_t
+    >::type::value,
+  std::integral_constant<std::size_t, 0>,
+  std::integral_constant <
+    std::size_t, 1 +
+    find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper
+    <state_t, residual_t, system_t, scalar_t,
+    Tail...>::type::value
+    >
+  >::type
+{};
 
+template <
+  typename state_t,
+  typename residual_t,
+  typename system_t,
+  typename scalar_t,
+  class... Args
+  >
+using find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper_t =
+  typename find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper
+  <state_t, residual_t, system_t, scalar_t, Args...>::type;
+
+
+}}} // namespace pressio::ode::meta
 #endif

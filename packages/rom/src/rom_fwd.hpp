@@ -87,6 +87,8 @@ struct EvaluateFomVelocityDefault;
 template <bool is_steady_problem>
 struct ApplyFomJacobianDefault;
 
+struct QueryFomTimeDiscreteResidual;
+
 }// namespace pressio::rom::policy
 //---------------------------------
 
