@@ -63,20 +63,20 @@ namespace pressio{ namespace ode{
  * (1) constructors here should be private but we need
  * them public to enable interfacing with pybind11
  */
-template<typename concrete_stepper_type, int nAuxStates>
+template<typename concrete_stepper_type>
 class ImplicitStepperBase
 {
-  using traits		  = typename details::traits<concrete_stepper_type>;
-  using sc_t		  = typename traits::scalar_t;
-  using state_t		  = typename traits::state_t;
-  using residual_t	  = typename traits::residual_t;
-  using jacobian_t	  = typename traits::jacobian_t;
-  using standard_res_policy_t = typename traits::standard_res_policy_t;
-  using standard_jac_policy_t = typename traits::standard_jac_policy_t;
-  using residual_pol_t = typename traits::residual_policy_t;
-  using jacobian_pol_t = typename traits::jacobian_policy_t;
-  using system_t		  = typename traits::system_t;
-  using system_wrapper_t = impl::OdeSystemWrapper<system_t>;
+  using traits			= typename details::traits<concrete_stepper_type>;
+  using sc_t			= typename traits::scalar_t;
+  using state_t			= typename traits::state_t;
+  using residual_t		= typename traits::residual_t;
+  using jacobian_t		= typename traits::jacobian_t;
+  using standard_res_policy_t	= typename traits::standard_res_policy_t;
+  using standard_jac_policy_t	= typename traits::standard_jac_policy_t;
+  using residual_pol_t		= typename traits::residual_policy_t;
+  using jacobian_pol_t		= typename traits::jacobian_policy_t;
+  using system_t		= typename traits::system_t;
+  using system_wrapper_t	= impl::OdeSystemWrapper<system_t>;
 
   //do checking here that things are as supposed
   static_assert( meta::is_legitimate_implicit_state_type<state_t>::value,
@@ -91,7 +91,7 @@ protected:
   sc_t t_  = {};
   sc_t dt_ = {};
   system_wrapper_t sys_;
-  impl::OdeStorage<state_t, nAuxStates> stateAuxStorage_;
+  impl::OdeStorage<state_t, traits::numAuxStates> stateAuxStorage_;
 
   // conditionally set the type of the object knowing how to compute residual
   // if we have a standard policy, then it takes a copy
@@ -116,32 +116,20 @@ public:
     return traits::order_value;
   }
 
-  void residual(const state_t & y,
-  		residual_t & R) const{
-    this->residual_obj_.template operator()<
-      traits::enum_id,
-      traits::steps
-      >(y, R, stateAuxStorage_.data_, sys_.get(), this->t_, this->dt_);
+  void residual(const state_t & y, residual_t & R) const{
+    static_cast<const concrete_stepper_type &>(*this).residualImpl(y, R);
   }
 
   residual_t residual(const state_t & y) const{
-    return this->residual_obj_.template operator()<
-      traits::enum_id,
-      traits::steps
-      >(y, stateAuxStorage_.data_, sys_.get(), this->t_, this->dt_);
+    return static_cast<const concrete_stepper_type &>(*this).residualImpl(y);
   }
 
-  void jacobian(const state_t & y,
-  		jacobian_t & J) const{
-    this->jacobian_obj_.template operator()<
-      traits::enum_id
-      >(y, J, sys_.get(), this->t_, this->dt_);
+  void jacobian(const state_t & y, jacobian_t & J) const{
+    static_cast<const concrete_stepper_type &>(*this).jacobianImpl(y, J);
   }
 
   jacobian_t jacobian(const state_t & y) const{
-    return this->jacobian_obj_.template operator()<
-      traits::enum_id
-      >(y, sys_.get(), this->t_, this->dt_);
+    return static_cast<const concrete_stepper_type &>(*this).jacobianImpl(y);
   }
 
 public:

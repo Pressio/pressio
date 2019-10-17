@@ -56,6 +56,8 @@
 
 namespace pressio{ namespace ode{ namespace details{
 
+namespace impl{
+
 template <typename T, typename = void>
 struct ScalarHelper{
   static constexpr bool value = false;
@@ -107,11 +109,11 @@ template <
   >
 struct StdPoliciesPicker<
   system_t, state_t, residual_t, jacobian_t
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11  
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   , mpl::enable_if_t<
     mpl::not_same<system_t, pybind11::object>::value
     >
-#endif    
+#endif
   >
 {
   using standard_res_policy_t = policy::ImplicitResidualStandardPolicy<
@@ -120,7 +122,7 @@ struct StdPoliciesPicker<
     state_t, system_t, jacobian_t>;
 };
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11  
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
   typename system_t,
   typename state_t,
@@ -140,7 +142,8 @@ struct StdPoliciesPicker<
     state_t, system_t, jacobian_t>;
 };
 #endif
-//------------------------------------------------------------------
+
+} // end namepsace pressio::ode::details::impl
 
 
 template<
@@ -171,28 +174,31 @@ struct traits<
   using state_t		  = state_type;
   using residual_t	  = residual_type;
   using jacobian_t	  = jacobian_type;
-  using system_t		  = system_type;
+  using system_t	  = system_type;
   using aux_stepper_t	  = void;
 
   static constexpr unsigned int order_value = 1;
   static constexpr unsigned int steps = 1;
+  static constexpr unsigned int numAuxStates = 1;
 
   // check if scalar is provided in Args
   using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
   using scalar_from_args = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
   // check if state is a containers wrapper, and if so get its scalar_type
-  using scalar_type_from_traits = typename ScalarHelper<state_type>::type;
+  using scalar_type_from_traits = typename impl::ScalarHelper<state_type>::type;
   // decide which to pick
   using scalar_t = typename std::conditional<
     std::is_void<scalar_from_args>::value,
     scalar_type_from_traits, scalar_from_args>::type;
 
   static_assert( std::is_floating_point<scalar_t>::value,
-  		 "I cannot guess the scalar_type because it is not found in templates and the state_type used is not a containers wrapper. If you are using custom data structures that do not have wrappers in the containers, pass scalar as a template.");
-
+  		 "I cannot determine the scalar_type because it is not found \
+in the templates args and the state_type used is not a containers wrapper. \
+If you are using custom data structures that do not have wrappers in \
+the containers, pass scalar as a template.");
 
   // standard policies (only used if not passed a user-defined policy)
-  using policy_picker = StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
+  using policy_picker = impl::StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
   using standard_res_policy_t = typename policy_picker::standard_res_policy_t;
   using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
 
@@ -210,6 +216,7 @@ struct traits<
   using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic2::value, Args...>;
 };
+
 
 
 template<
@@ -244,20 +251,23 @@ struct traits<
 
   static constexpr unsigned int order_value = 2;
   static constexpr unsigned int steps = 2;
+  static constexpr unsigned int numAuxStates = 2;
 
   // check if scalar is provided in Args
   using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
   using scalar_from_args = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
   // check if state is a containers wrapper, and if so get its scalar_type
-  using scalar_type_from_traits = typename ScalarHelper<state_type>::type;
+  using scalar_type_from_traits = typename impl::ScalarHelper<state_type>::type;
   // decide which to pick
   using scalar_t = typename std::conditional<
     std::is_void<scalar_from_args>::value,
     scalar_type_from_traits, scalar_from_args>::type;
 
   static_assert( std::is_floating_point<scalar_t>::value,
-  		 "I cannot guess the scalar_type because it is not found in templates and the state_type used is not a containers wrapper. If you are using custom data structures that do not have wrappers in the containers, pass scalar as a template.");
-
+  		 "I cannot determine the scalar_type because it is not found \
+in the templates args and the state_type used is not a containers wrapper. \
+If you are using custom data structures that do not have wrappers in \
+the containers, pass scalar as a template.");
 
   // for BDF2 the user has to pass an auxiliary stepper
   using ic1 = ::pressio::mpl::variadic::find_if_binary_pred_t<
@@ -265,7 +275,7 @@ struct traits<
   using aux_stepper_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
 
   // // standard policies (only used if user-defined policies not passed)
-  using policy_picker = StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
+  using policy_picker = impl::StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
   using standard_res_policy_t = typename policy_picker::standard_res_policy_t;
   using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
 

@@ -75,8 +75,7 @@ class ImplicitStepper<
     ode_state_type,
     ode_residual_type,
     ode_jacobian_type,
-    system_type, Args...>,
-  1 //num aux states
+    system_type, Args...>
   >
 {
 
@@ -86,7 +85,7 @@ class ImplicitStepper<
 					 ode_jacobian_type,
 					 system_type,
 					 Args...>;
-  using stepper_base_t = ImplicitStepperBase<this_t, 1>;
+  using stepper_base_t = ImplicitStepperBase<this_t>;
   friend stepper_base_t;
 
   using mytraits       = details::traits<this_t>;
@@ -175,6 +174,37 @@ public:
     ::pressio::containers::ops::deep_copy(y, auxY0);
     guesserCb(step, t, y);
     solver.solve(*this, y);
+  }
+
+private:
+  void residualImpl(const state_type & y, residual_type & R) const
+  {
+    this->residual_obj_.template operator()<
+      my_enum, mytraits::steps
+      >(y, R, this->stateAuxStorage_.data_,
+	this->sys_.get(), this->t_, this->dt_);
+  }
+
+  residual_type residualImpl(const state_type & y) const
+  {
+    return this->residual_obj_.template operator()<
+      my_enum, mytraits::steps
+      >(y, this->stateAuxStorage_.data_,
+	this->sys_.get(), this->t_, this->dt_);
+  }
+
+  void jacobianImpl(const state_type & y, jacobian_type & J) const
+  {
+    this->jacobian_obj_.template operator()<
+      mytraits::enum_id
+      >(y, J, this->sys_.get(), this->t_, this->dt_);
+  }
+
+  jacobian_type jacobianImpl(const state_type & y) const
+  {
+    return this->jacobian_obj_.template operator()<
+      mytraits::enum_id
+      >(y, this->sys_.get(), this->t_, this->dt_);
   }
 
 };//end class
