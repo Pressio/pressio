@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_type_generator_default.hpp
+// rom_lspg_unsteady_problem_type_generator_default_residual_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,30 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
+#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
+#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
 
-#include "./impl/rom_lspg_unsteady_type_generator_default_velocity_api.hpp"
-#include "./impl/rom_lspg_unsteady_type_generator_default_residual_api.hpp"
+#include "rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace impl{
 
-template <typename fom_type, typename ... Args>
-using DefaultLSPGUnsteadyTypeGenerator =
-  typename std::conditional<
-  ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
-  impl::DefaultLSPGUnsteadyTypeGeneratorVelocityAPI<fom_type, Args...>,
-  impl::DefaultLSPGUnsteadyTypeGeneratorResidualAPI<fom_type, Args...>
-  >::type;
+// //-------------------------------------------------------
+// // specialize for then the fom type meets Residual API
+// //-------------------------------------------------------
+// template <
+//   typename fom_type,
+//   ode::ImplicitEnum odeName,
+//   typename decoder_type,
+//   typename lspg_state_type,
+//   typename ud_ops = void,
+//   mpl::enable_if_t<
+//     ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value
+//     > * = nullptr
+//   >
+// struct DefaultLSPGUnsteadyTypeGeneratorResidualAPI{
+//
+// };//end class
 
-}}//end  namespace pressio::rom
+
+}}}//end  namespace pressio::rom::impl
 #endif

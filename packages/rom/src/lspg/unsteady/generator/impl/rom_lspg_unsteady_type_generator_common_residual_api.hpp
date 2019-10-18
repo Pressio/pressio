@@ -57,10 +57,8 @@ namespace pressio{ namespace rom{ namespace impl{
 
 template <
   typename fom_type,
-  typename decoder_type,
   typename lspg_state_type,
-  ode::ImplicitEnum odeName,
-  typename ud_ops
+  typename ... Args,
   >
 struct LSPGUnsteadyCommonTypesResidualAPI<
   fom_type, decoder_type, lspg_state_type, odeName, ud_ops,
@@ -73,11 +71,11 @@ struct LSPGUnsteadyCommonTypesResidualAPI<
   >
 {
 
-  static_assert( ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
-		 "You are trying to setup an unsteady LSPG problem requiring \
-a fom adapter class to meet the residual API. \
-However, the fom/adapter type you passed does not meet that API. \
-Verify the fom/adapter class to check if you are missing something.");
+//   static_assert( ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
+// 		 "You are trying to setup an unsteady LSPG problem requiring \
+// a fom adapter class to meet the residual API. \
+// However, the fom/adapter type you passed does not meet that API. \
+// Verify the fom/adapter class to check if you are missing something.");
 
   // // these are native types of the full-order model (fom)
   // using fom_t			= fom_type;
