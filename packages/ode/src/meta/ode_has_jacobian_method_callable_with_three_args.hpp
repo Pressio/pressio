@@ -73,10 +73,11 @@ struct has_jacobian_method_callable_with_three_args<
   T, state_t, sc_t, jac_t,
   ::pressio::mpl::void_t<
   decltype(
-	   std::declval<T>().jacobian
-	   (std::declval<state_t const&>(),
-	    std::declval<sc_t>(),
-	    std::declval<jac_t &>())
+	   std::declval<T const>().jacobian(
+					    std::declval<state_t const&>(),
+					    std::declval<sc_t const &>(),
+					    std::declval<jac_t &>()
+					    )
 	   )
     >
   >: std::true_type{};

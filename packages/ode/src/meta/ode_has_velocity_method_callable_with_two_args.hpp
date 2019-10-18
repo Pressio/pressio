@@ -66,21 +66,13 @@ template <
 struct has_velocity_method_callable_with_two_args<
   T, state_t, sc_t, velo_t,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<
-      decltype(
-	       std::declval<T>().velocity(
-					  std::declval<state_t const&>(),
-					  std::declval<sc_t>()
-					  )
-	       )
-      >::value
-    and
+    !std::is_void<velo_t>::value and
     mpl::is_same<
       velo_t,
       decltype(
-	       std::declval<T>().velocity(
+	       std::declval<T const>().velocity(
 					  std::declval<state_t const&>(),
-					  std::declval<sc_t>()
+					  std::declval<sc_t const &>()
 					  )
 	       )
       >::value

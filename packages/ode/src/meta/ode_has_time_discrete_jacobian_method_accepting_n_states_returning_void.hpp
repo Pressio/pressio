@@ -65,7 +65,7 @@ struct has_time_discrete_jacobian_method_accepting_n_states_returning_void<
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T>().timeDiscreteJacobian(
+	       std::declval<T const>().timeDiscreteJacobian(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
 						      std::declval<jacobian_t &>(),
@@ -83,7 +83,7 @@ struct has_time_discrete_jacobian_method_accepting_n_states_returning_void<
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T>().timeDiscreteJacobian(
+	       std::declval<T const>().timeDiscreteJacobian(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
 						      std::declval<jacobian_t &>(),
@@ -102,7 +102,7 @@ struct has_time_discrete_jacobian_method_accepting_n_states_returning_void<
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T>().timeDiscreteJacobian(
+	       std::declval<T const>().timeDiscreteJacobian(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
 						      std::declval<jacobian_t &>(),

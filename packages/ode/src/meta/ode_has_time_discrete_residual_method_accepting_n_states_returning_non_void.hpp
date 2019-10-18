@@ -67,7 +67,7 @@ struct has_time_discrete_residual_method_accepting_n_states_returning_non_void<
     mpl::is_same<
       residual_t,
       decltype(
-	       std::declval<T>().timeDiscreteResidual(
+	       std::declval<T const>().timeDiscreteResidual(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
 						      std::declval<state_t const&>()
@@ -86,7 +86,7 @@ struct has_time_discrete_residual_method_accepting_n_states_returning_non_void<
     mpl::is_same<
       residual_t,
       decltype(
-	       std::declval<T>().timeDiscreteResidual(
+	       std::declval<T const>().timeDiscreteResidual(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
 						      std::declval<state_t const&>(),
@@ -107,7 +107,7 @@ struct has_time_discrete_residual_method_accepting_n_states_returning_non_void<
     mpl::is_same<
       residual_t,
       decltype(
-	       std::declval<T>().timeDiscreteResidual(
+	       std::declval<T const>().timeDiscreteResidual(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
 						      std::declval<state_t const&>(),

@@ -116,6 +116,18 @@ public:
   jacobian_type jacobian(const state_type &, scalar_type) const{ return jacobian_type(); }
 };
 
+struct ModelForImplicitMissingConst{
+  using scalar_type = double;
+  using state_type    = Eigen::VectorXd;
+  using velocity_type = Eigen::VectorXd;
+  using jacobian_type = Eigen::MatrixXd;
+public:
+  void velocity(const state_type &, scalar_type , velocity_type &){}
+  velocity_type velocity(const state_type &, scalar_type) { return velocity_type(); }
+  void jacobian(const state_type &, scalar_type, jacobian_type &) {}
+  jacobian_type jacobian(state_type &, scalar_type) { return jacobian_type(); }
+};
+
 struct ModelForImplicitValid{
   using scalar_type   = double;
   using state_type    = Eigen::VectorXd;

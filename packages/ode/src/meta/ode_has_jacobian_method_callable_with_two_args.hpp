@@ -63,7 +63,6 @@ template <
 struct has_jacobian_method_callable_with_two_args
   : std::false_type{};
 
-
 template <
   typename T,
   typename state_t,
@@ -73,22 +72,14 @@ template <
 struct has_jacobian_method_callable_with_two_args<
   T, state_t, sc_t, jacobian_t,
   mpl::enable_if_t<
-    !std::is_void<
-      decltype(
-	       std::declval<T>().jacobian(
-					  std::declval<state_t const&>(),
-					  std::declval<sc_t>()
-					  )
-	       )
-      >::value
-    and
+    !std::is_void<jacobian_t>::value and
     std::is_same<
       jacobian_t,
       decltype(
-	       std::declval<T>().jacobian(
-					  std::declval<state_t const&>(),
-					  std::declval<sc_t>()
-					  )
+	       std::declval<T const>().jacobian(
+						std::declval<state_t const &>(),
+						std::declval<sc_t const &>()
+						)
 	       )
       >::value
     >

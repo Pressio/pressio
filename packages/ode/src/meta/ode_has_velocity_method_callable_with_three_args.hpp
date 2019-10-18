@@ -73,9 +73,9 @@ struct has_velocity_method_callable_with_three_args<
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T>().velocity(
+	       std::declval<T const>().velocity(
 					  std::declval<state_t const&>(),
-					  std::declval<const sc_t>(),
+					  std::declval<sc_t const &>(),
 					  std::declval<velo_t &>()
 					  )
 	   )

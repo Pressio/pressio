@@ -65,7 +65,7 @@ struct has_time_discrete_residual_method_accepting_n_states_returning_void<
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T>().timeDiscreteResidual(
+	       std::declval<T const>().timeDiscreteResidual(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
 						      std::declval<residual_t &>(),
@@ -83,7 +83,7 @@ struct has_time_discrete_residual_method_accepting_n_states_returning_void<
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T>().timeDiscreteResidual(
+	       std::declval<T const>().timeDiscreteResidual(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
 						      std::declval<residual_t &>(),
@@ -102,7 +102,7 @@ struct has_time_discrete_residual_method_accepting_n_states_returning_void<
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T>().timeDiscreteResidual(
+	       std::declval<T const>().timeDiscreteResidual(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
 						      std::declval<residual_t &>(),
