@@ -65,7 +65,7 @@ class Burgers1dTpetra{
 protected:
   using map_t		= Tpetra::Map<>;
   using nativeVec	= Tpetra::Vector<>;
-  using jacobian_type	= Tpetra::CrsMatrix<>;
+
   using go_t		= typename map_t::global_ordinal_type;
   using lo_t		= typename map_t::local_ordinal_type;
 
@@ -81,6 +81,7 @@ public:
   using state_type	= nativeVec;
   using velocity_type	= state_type;
   using dense_matrix_type	= Tpetra::MultiVector<>;
+  using jacobian_type	= Tpetra::CrsMatrix<>;
 
 public:
   Burgers1dTpetra(std::vector<scalar_type> params,

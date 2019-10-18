@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_EULER_HPP_
 #define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_EULER_HPP_
 
-#include "ode_implicit_stepper_traits.hpp"
+#include "ode_implicit_stepper_traits_euler.hpp"
 #include "ode_implicit_stepper_base.hpp"
 
 namespace pressio{ namespace ode{

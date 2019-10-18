@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_BASIC
+// ode_has_needed_time_discrete_jacobian_methods.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,46 @@
 //@HEADER
 */
 
-#ifndef ODE_BASIC_HPP_
-#define ODE_BASIC_HPP_
+#ifndef ODE_HAS_NEEDED_TIME_DISCRETE_JACOBIAN_METHOD_WITH_NON_VOID_RETURN_HPP_
+#define ODE_HAS_NEEDED_TIME_DISCRETE_JACOBIAN_METHOD_WITH_NON_VOID_RETURN_HPP_
 
-#include "ode/src/ode_ConfigDefs.hpp"
-#include "ode/src/ode_fwd.hpp"
-#include "ode/src/ode_enum.hpp"
-#include "ode/src/ode_types.hpp"
+#include "ode_has_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
+#include "ode_has_time_discrete_jacobian_method_accepting_n_states_returning_non_void.hpp"
 
-#include "ode/src/meta/ode_has_state_typedef.hpp"
-#include "ode/src/meta/ode_has_velocity_typedef.hpp"
-#include "ode/src/meta/ode_has_jacobian_typedef.hpp"
-#include "ode/src/meta/ode_is_legitimate_explicit_velocity_type.hpp"
-#include "ode/src/meta/ode_is_legitimate_explicit_state_type.hpp"
-#include "ode/src/meta/ode_is_legitimate_implicit_jacobian_type.hpp"
-#include "ode/src/meta/ode_is_legitimate_implicit_residual_type.hpp"
-#include "ode/src/meta/ode_is_legitimate_implicit_state_type.hpp"
-#include "ode/src/meta/ode_collector_accepts_native_container.hpp"
-#include "ode/src/meta/ode_collector_accepts_pressio_container.hpp"
-#include "ode/src/meta/ode_is_legitimate_collector.hpp"
-#include "ode/src/meta/ode_is_legitimate_auxiliary_stepper.hpp"
-#include "ode/src/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
-#include "ode/src/meta/ode_is_legitimate_model_for_implicit_ode.hpp"
-#include "ode/src/meta/ode_model_has_all_needed_jacobian_methods.hpp"
-#include "ode/src/meta/ode_model_has_all_needed_velocity_methods.hpp"
-#include "ode/src/meta/ode_is_valid_user_defined_ops_for_explicit_ode.hpp"
-#include "ode/src/meta/ode_is_stepper_order_setter.hpp"
-#include "ode/src/meta/ode_is_stepper_total_n_states_setter.hpp"
+namespace pressio{ namespace ode{ namespace meta {
 
+template <
+  typename T, typename step_t, typename sc_t, typename state_t, typename jacobian_t,
+  typename = void
+  >
+struct has_needed_time_discrete_jacobian_methods
+  : std::false_type{};
 
-#include "ode/src/ode_system_wrapper.hpp"
-#include "ode/src/ode_storage.hpp"
+template <
+  typename T,
+  typename step_t,
+  typename sc_t,
+  typename state_t,
+  typename jacobian_t
+  >
+struct has_needed_time_discrete_jacobian_methods<
+  T, step_t, sc_t, state_t, jacobian_t,
+  ::pressio::mpl::enable_if_t<
+    // for now, just check case for 2 and 3 states passed
+    has_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
+      T, 2, step_t, sc_t, state_t, jacobian_t
+      >::value and
+    has_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
+      T, 3, step_t, sc_t, state_t, jacobian_t
+      >::value and
+    has_time_discrete_jacobian_method_accepting_n_states_returning_void<
+      T, 2, step_t, sc_t, state_t, jacobian_t
+      >::value and
+    has_time_discrete_jacobian_method_accepting_n_states_returning_void<
+      T, 3, step_t, sc_t, state_t, jacobian_t
+      >::value
+    >
+  > : std::true_type{};
 
+}}} // namespace pressio::ode::meta
 #endif

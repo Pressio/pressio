@@ -56,20 +56,18 @@
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<
-  typename model_type,
-  typename enable = void
-  >
-struct is_legitimate_model_for_explicit_ode : std::false_type{};
+template<typename model_type, typename enable = void>
+struct is_legitimate_model_for_explicit_ode
+  : std::false_type{};
 
 template<typename model_type>
 struct is_legitimate_model_for_explicit_ode<
   model_type,
   mpl::enable_if_t<
     ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
-    has_state_typedef<model_type>::value and
-    has_velocity_typedef<model_type>::value and
-    model_has_needed_velocity_methods<
+    ::pressio::ode::meta::has_state_typedef<model_type>::value and
+    ::pressio::ode::meta::has_velocity_typedef<model_type>::value and
+    ::pressio::ode::meta::model_has_needed_velocity_methods<
       model_type,
       typename model_type::state_type,
       typename model_type::velocity_type,

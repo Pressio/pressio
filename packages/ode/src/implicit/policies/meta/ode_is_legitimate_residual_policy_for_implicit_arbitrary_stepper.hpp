@@ -58,24 +58,35 @@
 namespace pressio{ namespace ode{ namespace meta {
 
 template<
-  typename T, typename state_t, typename residual_t, typename system_t, typename scalar_t,
+  typename T,
+  types::stepper_n_states_t numPrevStates,
+  typename state_t,
+  typename residual_t,
+  typename system_t,
+  typename scalar_t,
   typename enable = void
   >
 struct residual_policy_callable_with_six_args : std::false_type{};
 
 template<
-  typename T, typename state_t, typename residual_t, typename system_t, typename scalar_t
+  typename T,
+  types::stepper_n_states_t numPrevStates,
+  typename state_t,
+  typename residual_t,
+  typename system_t,
+  typename scalar_t
   >
 struct residual_policy_callable_with_six_args<
-  T, state_t, residual_t, system_t, scalar_t,
+  T, numPrevStates, state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
     std::is_same<
       residual_t,
       decltype
       (
-       std::declval<T>().operator()
+       std::declval<T>().template operator()
+       <numPrevStates>
        ( std::declval<const state_t &>(),
-	 std::declval<const std::array<state_t, T::num_aux_states> &>(),
+	 std::declval<const std::array<state_t, numPrevStates> &>(),
 	 std::declval<const system_t&>(),
 	 std::declval<scalar_t>(),
 	 std::declval<scalar_t>(),
@@ -87,25 +98,37 @@ struct residual_policy_callable_with_six_args<
   > : std::true_type{};
 /////////////////////////
 
+
 template<
-  typename T, typename state_t, typename residual_t, typename system_t, typename scalar_t,
+  typename T,
+  types::stepper_n_states_t numPrevStates,
+  typename state_t,
+  typename residual_t,
+  typename system_t,
+  typename scalar_t,
   typename enable = void
   >
 struct residual_policy_callable_with_seven_args : std::false_type{};
 
 template<
-  typename T, typename state_t, typename residual_t, typename system_t, typename scalar_t
+  typename T,
+  types::stepper_n_states_t numPrevStates,
+  typename state_t,
+  typename residual_t,
+  typename system_t,
+  typename scalar_t
   >
 struct residual_policy_callable_with_seven_args<
-  T, state_t, residual_t, system_t, scalar_t,
+  T, numPrevStates, state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T>().operator()
+       std::declval<T>().template operator()
+       <numPrevStates>
        ( std::declval<const state_t &>(),
 	 std::declval<residual_t &>(),
-	 std::declval<const std::array<state_t, T::num_aux_states> &>(),
+	 std::declval<const std::array<state_t, numPrevStates> &>(),
 	 std::declval<const system_t&>(),
 	 std::declval<scalar_t>(),
 	 std::declval<scalar_t>(),
@@ -117,8 +140,10 @@ struct residual_policy_callable_with_seven_args<
   > : std::true_type{};
 /////////////////////////
 
+
 template<
   typename T,
+  types::stepper_n_states_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -130,25 +155,25 @@ struct is_legitimate_residual_policy_for_implicit_arbitrary_stepper
   static constexpr bool c1 = ::pressio::ode::meta::is_legitimate_implicit_state_type<state_t>::value;
   static constexpr bool c2 = ::pressio::ode::meta::is_legitimate_implicit_residual_type<residual_t>::value;
 
-  static constexpr bool c3 = ::pressio::ode::meta::has_stepper_order_static_member<T>::value;
-  static_assert( c3, "The residual policy you are trying to pass to \
-arbitrary implicit stepper is missing a static member: stepper_order=... \
-to set the order of the stepper.");
+//   static constexpr bool c3 = ::pressio::ode::meta::has_stepper_order_static_member<T>::value;
+//   static_assert( c3, "The residual policy you are trying to pass to \
+// // arbitrary implicit stepper is missing a static member: stepper_order=... \
+// // to set the order of the stepper.");
 
-  static constexpr bool c4 = ::pressio::ode::meta::has_num_aux_states_static_member<T>::value;
-  static_assert( c4, "The residual policy you are trying to pass to \
-arbitrary implicit stepper is missing a static member: num_aux_states=... \
-setting the number of auxiliary states I need.");
-  static constexpr types::stepper_n_states_t numAuxStates = T::num_aux_states;
+//   static constexpr bool c4 = ::pressio::ode::meta::has_num_aux_states_static_member<T>::value;
+//   static_assert( c4, "The residual policy you are trying to pass to \
+// // arbitrary implicit stepper is missing a static member: num_aux_states=... \
+// // setting the number of auxiliary states I need.");
+//   static constexpr types::stepper_n_states_t numAuxStates = T::num_aux_states;
 
   static constexpr bool c5 = residual_policy_callable_with_six_args<
-    T, state_t, residual_t, system_t, scalar_t>::value;
+    T, numPrevStates, state_t, residual_t, system_t, scalar_t>::value;
 
-   static constexpr bool c6 = residual_policy_callable_with_seven_args<
-    T, state_t, residual_t, system_t, scalar_t>::value;
+  static constexpr bool c6 = residual_policy_callable_with_seven_args<
+    T, numPrevStates, state_t, residual_t, system_t, scalar_t>::value;
 
   using value_type = bool;
-  static constexpr value_type value = c1 && c2 && c3 && c4 && c5 && c6;
+  static constexpr value_type value = c1 && c2 && c5 && c6;
   using type = std::integral_constant<value_type, value>;
 };
 

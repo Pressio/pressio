@@ -10,7 +10,7 @@ struct fakeAppForTraitsForExp{
   using state_type = std::vector<double>;
   using velocity_type = std::vector<double>;
 
-  void velocity(const state_type & y, 
+  void velocity(const state_type & y,
     scalar_type t, velocity_type & R) const{
   };
   velocity_type velocity(const state_type & y, scalar_type t )const{
@@ -78,7 +78,7 @@ public:
     y << 1., 2., 3.;
   }
 
-  void velocity(const state_type & yIn, 
+  void velocity(const state_type & yIn,
     scalar_type t, velocity_type & R) const{
     assert(yIn.size()==3);
     R = -10. * yIn;
@@ -157,6 +157,59 @@ public:
 };//end app refAppForImpEigen
 //************************************************
 //************************************************
+
+
+
+struct refAppForArbitraryImpl{
+  using scalar_type   = double;
+  using state_type    = Eigen::VectorXd;
+  using residual_type = state_type;
+  using jacobian_type = Eigen::SparseMatrix<double>;
+
+public:
+
+  template <typename step_t, typename ... Args>
+  void timeDiscreteResidual(const step_t & step,
+                            const scalar_type &,
+                            residual_type &,
+                            Args & ... states) const
+  {
+    //timeDiscreteResidualImpl<step_t>( step, time, f, std::forward<Args>(states)... );
+  }
+
+  template <typename step_t, typename ... Args>
+  residual_type timeDiscreteResidual(const step_t &,
+                                     const scalar_type &,
+                                     Args & ... states) const
+  {
+    // initialize which depends on the app and data structure types used
+    residual_type R(3);
+    // this->timeDiscreteResidual(step, time, g, std::forward<Args>(states)...);
+    return R;
+  }
+
+  template <typename step_t, typename ... Args>
+  void timeDiscreteJacobian(const step_t & step,
+                            const scalar_type &,
+                            jacobian_type &,
+                            Args & ... states) const
+  {
+    // forward to whatever approriate impl method, e. g.
+    // timeDiscreteJacobianImpl<step_t>( step, time, f, std::forward<Args>(states)... );
+  }
+
+  template <typename step_t, typename ... Args>
+  jacobian_type timeDiscreteJacobian(const step_t & step,
+                                     const scalar_type & time,
+                                     Args & ... states) const
+  {
+    // initialize which depends on the app and data structure types used
+    jacobian_type J(3,3);
+    // this->timeDiscreteJacobian(step, time, g, std::forward<Args>(states)...);
+    return J;
+  }
+
+};//
 
 }}} // namespace pressio::ode::testing
 #endif

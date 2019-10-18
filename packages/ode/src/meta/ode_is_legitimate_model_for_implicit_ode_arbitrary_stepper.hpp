@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_time_discrete_residual_method_accepting_three_states_returning_non_void.hpp
+// ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,58 +46,44 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_THREE_STATES_RETURNING_NON_VOID_HPP_
-#define ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_THREE_STATES_RETURNING_NON_VOID_HPP_
+#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_HPP_
+#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+#include "../../../containers/src/meta/containers_meta_has_scalar_typedef.hpp"
+#include "ode_has_state_typedef.hpp"
+#include "ode_has_residual_typedef.hpp"
+#include "ode_has_jacobian_typedef.hpp"
+#include "ode_has_needed_time_discrete_residual_methods.hpp"
+#include "ode_has_needed_time_discrete_jacobian_methods.hpp"
 
-template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t,
-  typename = void
-  >
-struct has_time_discrete_residual_method_accepting_three_states_returning_non_void
+namespace pressio{ namespace ode{ namespace meta {
+
+template<typename model_type, typename enable = void>
+struct is_legitimate_model_for_implicit_ode_arbitrary_stepper
   : std::false_type{};
 
-template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t
-  >
-struct has_time_discrete_residual_method_accepting_three_states_returning_non_void<
-  T, step_t, sc_t, state_t, residual_t,
-  ::pressio::mpl::enable_if_t<
-    !std::is_void<
-      decltype(
-	       std::declval<T>().timeDiscreteResidual(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
-	       )
+template<typename model_type>
+struct is_legitimate_model_for_implicit_ode_arbitrary_stepper<
+  model_type,
+  typename std::enable_if<
+    ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
+    ::pressio::ode::meta::has_state_typedef<model_type>::value and
+    ::pressio::ode::meta::has_residual_typedef<model_type>::value and
+    ::pressio::ode::meta::has_jacobian_typedef<model_type>::value and
+    ::pressio::ode::meta::has_needed_time_discrete_residual_methods<
+      model_type, types::step_t,
+      typename model_type::scalar_type,
+      typename model_type::state_type,
+      typename model_type::residual_type
+      >::value and
+    ::pressio::ode::meta::has_needed_time_discrete_jacobian_methods<
+      model_type, types::step_t,
+      typename model_type::scalar_type,
+      typename model_type::state_type,
+      typename model_type::jacobian_type
       >::value
-    and
-    mpl::is_same<
-      residual_t,
-      decltype(
-	       std::declval<T>().timeDiscreteResidual(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
-	       )
-      >::value
-    >
+    >::type
   > : std::true_type{};
 
-}}} // namespace pressio::rom::meta
+}}} // namespace pressio::ode::meta
 #endif

@@ -67,17 +67,15 @@ struct is_legitimate_model_for_implicit_ode<
   model_type,
   typename std::enable_if<
     ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
-    has_state_typedef<model_type>::value and
-    has_velocity_typedef<model_type>::value and
-    has_jacobian_typedef<model_type>::value and
-    // has velocity methods
-    model_has_needed_velocity_methods<
+    ::pressio::ode::meta::has_state_typedef<model_type>::value and
+    ::pressio::ode::meta::has_velocity_typedef<model_type>::value and
+    ::pressio::ode::meta::has_jacobian_typedef<model_type>::value and
+    ::pressio::ode::meta::model_has_needed_velocity_methods<
       model_type,
       typename model_type::state_type,
       typename model_type::velocity_type,
       typename model_type::scalar_type>::value and
-    // has jacobian methods
-    model_has_needed_jacobian_methods<
+    ::pressio::ode::meta::model_has_needed_jacobian_methods<
       model_type,
       typename model_type::state_type,
       typename model_type::jacobian_type,

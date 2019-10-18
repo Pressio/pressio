@@ -73,7 +73,9 @@
 #include "ode/src/implicit/policies/meta/ode_is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"
 #include "ode/src/implicit/policies/meta/ode_is_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
 
-#include "ode/src/implicit/steppers/ode_implicit_stepper_traits.hpp"
+#include "ode/src/implicit/steppers/ode_implicit_stepper_traits_euler.hpp"
+#include "ode/src/implicit/steppers/ode_implicit_stepper_traits_bdf2.hpp"
+#include "ode/src/implicit/steppers/ode_implicit_stepper_traits_arbitrary.hpp"
 #include "ode/src/implicit/steppers/ode_implicit_stepper_base.hpp"
 #include "ode/src/implicit/steppers/ode_implicit_stepper_euler.hpp"
 #include "ode/src/implicit/steppers/ode_implicit_stepper_bdf2.hpp"

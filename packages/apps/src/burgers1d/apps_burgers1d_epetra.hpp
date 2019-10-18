@@ -69,7 +69,6 @@ class Burgers1dEpetra{
 protected:
   using nativeVec = Epetra_Vector;
   template<typename T> using rcp = std::shared_ptr<T>;
-  using jacobian_type	= Epetra_CrsMatrix;
 
 /* these types exposed because need to be detected */
 public:
@@ -77,6 +76,7 @@ public:
   using state_type	= Epetra_Vector;
   using velocity_type	= state_type;
   using dense_matrix_type = Epetra_MultiVector;
+  using jacobian_type	= Epetra_CrsMatrix;
 
 public:
   Burgers1dEpetra(std::vector<scalar_type> params,
@@ -193,7 +193,6 @@ public:
     return C;
   }
 
-protected:
   void jacobian(const state_type & u,
 		const scalar_type /*t*/,
 		jacobian_type & jac) const

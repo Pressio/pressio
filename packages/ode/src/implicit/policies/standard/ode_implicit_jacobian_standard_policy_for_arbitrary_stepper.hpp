@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_residual_standard_policy.hpp
+// ode_implicit_jacobian_standard_policy_for_arbitrary_stepper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,74 +46,90 @@
 //@HEADER
 */
 
-#ifndef ODE_POLICIES_STANDARD_IMPLICIT_RESIDUAL_STANDARD_POLICY_HPP_
-#define ODE_POLICIES_STANDARD_IMPLICIT_RESIDUAL_STANDARD_POLICY_HPP_
+#ifndef ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_FOR_ARBITRARY_STEPPER_HPP_
+#define ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_FOR_ARBITRARY_STEPPER_HPP_
 
 #include "../../../ode_fwd.hpp"
-#include "../base/ode_implicit_residual_policy_base.hpp"
-#include "../../ode_residual_impl.hpp"
+#include "../base/ode_jacobian_policy_base.hpp"
+#include "../../ode_jacobian_impl.hpp"
 
 namespace pressio{ namespace ode{ namespace policy{
 
 template<
   typename state_type,
   typename system_type,
-  typename residual_type
+  typename jacobian_type
   >
-class ImplicitResidualStandardPolicy<
-  state_type, system_type, residual_type,
+class ImplicitJacobianStandardPolicyForArbitraryStepper<
+  state_type, system_type, jacobian_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
-    ::pressio::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
+    ::pressio::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
     containers::meta::is_wrapper<state_type>::value and
-    containers::meta::is_wrapper<residual_type>::value
+    containers::meta::is_wrapper<jacobian_type>::value
     >
-  >
-  : public ImplicitResidualPolicyBase<
-  ImplicitResidualStandardPolicy<state_type, system_type, residual_type>>
+  > : public JacobianPolicyBase<ImplicitJacobianStandardPolicyForArbitraryStepper<
+    state_type, system_type, jacobian_type> >
 {
 
-  using this_t = ImplicitResidualStandardPolicy<state_type, system_type, residual_type>;
-  friend ImplicitResidualPolicyBase<this_t>;
+  using this_t
+  = ImplicitJacobianStandardPolicyForArbitraryStepper<state_type, system_type, jacobian_type>;
+  friend JacobianPolicyBase<this_t>;
 
 public:
-  ImplicitResidualStandardPolicy() = default;
-  ~ImplicitResidualStandardPolicy() = default;
+  ImplicitJacobianStandardPolicyForArbitraryStepper() = default;
+  ~ImplicitJacobianStandardPolicyForArbitraryStepper() = default;
 
 public:
 
-  template <
-    ode::ImplicitEnum method,
-    ::pressio::ode::types::stepper_n_states_t n,
-    typename scalar_type
-  >
+  // specialize for n == 1
+  template <typename scalar_t>
   void operator()(const state_type & y,
-		  residual_type & R,
-		  const std::array<state_type, n> & oldYs,
+		  jacobian_type & J,
+		  const std::array<state_type, 1> & oldYs,
 		  const system_type & model,
-		  scalar_type t,
-		  scalar_type dt,
-		  types::step_t step) const{
-
-    model.velocity(*y.data(), t, *R.data());
-    ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
+		  scalar_t t,
+		  scalar_t dt,
+		  types::step_t step) const
+  {
+    model.timeDiscreteJacobian(step, t, *J.data(), *oldYs[0].data());
   }
 
-  template <
-    ode::ImplicitEnum method,
-    ::pressio::ode::types::stepper_n_states_t n,
-    typename scalar_type
-    >
-  residual_type operator()(const state_type & y,
-  			   const std::array<state_type, n> & oldYs,
+  template <typename scalar_t>
+  jacobian_type operator()(const state_type & y,
+			   const std::array<state_type, 1> & oldYs,
   			   const system_type & model,
-  			   scalar_type t,
-  			   scalar_type dt,
-			   types::step_t step) const{
+  			   scalar_t t,
+  			   scalar_t dt,
+			   types::step_t step) const
+  {
+    return model.timeDiscreteJacobian(step, t, *J.data(), *oldYs[0].data());
+  }
 
-    residual_type R(model.velocity(*y.data(), t));
-    ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
-    return R;
+  // specialize for n == 2
+  template <typename scalar_t>
+  void operator()(const state_type & y,
+		  jacobian_type & J,
+		  const std::array<state_type, 2> & oldYs,
+		  const system_type & model,
+		  scalar_t t,
+		  scalar_t dt,
+		  types::step_t step) const
+  {
+    model.timeDiscreteJacobian(step, t, *J.data(), *oldYs[0].data(),
+			       *oldYs[1].data());
+  }
+
+  template <typename scalar_t>
+  jacobian_type operator()(const state_type & y,
+			   const std::array<state_type, 2> & oldYs,
+  			   const system_type & model,
+  			   scalar_t t,
+  			   scalar_t dt,
+			   types::step_t step) const
+  {
+    return model.timeDiscreteJacobian(step, t, *J.data(),
+				      *oldYs[0].data(), *oldYs[1].data());
   }
 
 };//end class

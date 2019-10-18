@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_BASIC
+// ode_is_stepper_order_setter.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,45 @@
 //@HEADER
 */
 
-#ifndef ODE_BASIC_HPP_
-#define ODE_BASIC_HPP_
+#ifndef ODE_IS_STEPPER_ORDER_SETTER_HPP_
+#define ODE_IS_STEPPER_ORDER_SETTER_HPP_
 
-#include "ode/src/ode_ConfigDefs.hpp"
-#include "ode/src/ode_fwd.hpp"
-#include "ode/src/ode_enum.hpp"
-#include "ode/src/ode_types.hpp"
+#include "../ode_types.hpp"
 
-#include "ode/src/meta/ode_has_state_typedef.hpp"
-#include "ode/src/meta/ode_has_velocity_typedef.hpp"
-#include "ode/src/meta/ode_has_jacobian_typedef.hpp"
-#include "ode/src/meta/ode_is_legitimate_explicit_velocity_type.hpp"
-#include "ode/src/meta/ode_is_legitimate_explicit_state_type.hpp"
-#include "ode/src/meta/ode_is_legitimate_implicit_jacobian_type.hpp"
-#include "ode/src/meta/ode_is_legitimate_implicit_residual_type.hpp"
-#include "ode/src/meta/ode_is_legitimate_implicit_state_type.hpp"
-#include "ode/src/meta/ode_collector_accepts_native_container.hpp"
-#include "ode/src/meta/ode_collector_accepts_pressio_container.hpp"
-#include "ode/src/meta/ode_is_legitimate_collector.hpp"
-#include "ode/src/meta/ode_is_legitimate_auxiliary_stepper.hpp"
-#include "ode/src/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
-#include "ode/src/meta/ode_is_legitimate_model_for_implicit_ode.hpp"
-#include "ode/src/meta/ode_model_has_all_needed_jacobian_methods.hpp"
-#include "ode/src/meta/ode_model_has_all_needed_velocity_methods.hpp"
-#include "ode/src/meta/ode_is_valid_user_defined_ops_for_explicit_ode.hpp"
-#include "ode/src/meta/ode_is_stepper_order_setter.hpp"
-#include "ode/src/meta/ode_is_stepper_total_n_states_setter.hpp"
+namespace pressio{ namespace ode{ namespace meta { namespace impl{
+
+template <typename T>
+struct IsStepperOrderSetter : std::false_type{};
+
+template <>
+struct IsStepperOrderSetter<
+  ::pressio::ode::types::StepperOrder<1>
+  > : std::true_type{};
 
 
-#include "ode/src/ode_system_wrapper.hpp"
-#include "ode/src/ode_storage.hpp"
+template <>
+struct IsStepperOrderSetter<
+  ::pressio::ode::types::StepperOrder<2>
+  > : std::true_type{};
 
+
+template <>
+struct IsStepperOrderSetter<
+  ::pressio::ode::types::StepperOrder<3>
+  > : std::true_type{};
+
+
+template <>
+struct IsStepperOrderSetter<
+  ::pressio::ode::types::StepperOrder<4>
+  > : std::true_type{};
+
+
+template <>
+struct IsStepperOrderSetter<
+  ::pressio::ode::types::StepperOrder<5>
+  > : std::true_type{};
+
+
+}}}} // namespace pressio::ode::meta::impl
 #endif

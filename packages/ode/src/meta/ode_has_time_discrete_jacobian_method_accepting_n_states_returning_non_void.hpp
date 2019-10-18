@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_time_discrete_residual_method_accepting_two_states_returning_void.hpp
+// ode_has_time_discrete_jacobian_method_accepting_n_states_returning_non_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,38 +46,49 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_TWO_STATES_RETURNING_VOID_HPP_
-#define ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_TWO_STATES_RETURNING_VOID_HPP_
+#ifndef ODE_HAS_TIME_DISCRETE_JACOBIAN_METHOD_ACCEPTING_N_STATES_RETURNING_NON_VOID_HPP_
+#define ODE_HAS_TIME_DISCRETE_JACOBIAN_METHOD_ACCEPTING_N_STATES_RETURNING_NON_VOID_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace ode{ namespace meta {
 
 template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t,
+  typename T, int n, typename step_t, typename sc_t, typename state_t, typename jacobian_t,
   typename = void
   >
-struct has_time_discrete_residual_method_accepting_two_states_returning_void
+struct has_time_discrete_jacobian_method_accepting_n_states_returning_non_void
   : std::false_type{};
 
-template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t
-  >
-struct has_time_discrete_residual_method_accepting_two_states_returning_void<
-  T, step_t, sc_t, state_t, residual_t,
+
+template <typename T, typename step_t, typename sc_t, typename state_t, typename jacobian_t>
+struct has_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
+  T, 1, step_t, sc_t, state_t, jacobian_t,
   ::pressio::mpl::enable_if_t<
-    std::is_void<
+    !std::is_void<jacobian_t>::value and
+    mpl::is_same<
+      jacobian_t,
       decltype(
-	       std::declval<T>().timeDiscreteResidual(
+	       std::declval<T>().timeDiscreteJacobian(
 						      std::declval<step_t const &>(),
 						      std::declval<sc_t const &>(),
-						      std::declval<residual_t &>(),
+						      std::declval<state_t const&>()
+						      )
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
+
+template <typename T, typename step_t, typename sc_t, typename state_t, typename jacobian_t>
+struct has_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
+  T, 2, step_t, sc_t, state_t, jacobian_t,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<jacobian_t>::value and
+    mpl::is_same<
+      jacobian_t,
+      decltype(
+	       std::declval<T>().timeDiscreteJacobian(
+						      std::declval<step_t const &>(),
+						      std::declval<sc_t const &>(),
 						      std::declval<state_t const&>(),
 						      std::declval<state_t const&>()
 						      )
@@ -86,5 +97,28 @@ struct has_time_discrete_residual_method_accepting_two_states_returning_void<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::rom::meta
+
+
+template <typename T, typename step_t, typename sc_t, typename state_t, typename jacobian_t>
+struct has_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
+  T, 3, step_t, sc_t, state_t, jacobian_t,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<jacobian_t>::value and
+    mpl::is_same<
+      jacobian_t,
+      decltype(
+	       std::declval<T>().timeDiscreteJacobian(
+						      std::declval<step_t const &>(),
+						      std::declval<sc_t const &>(),
+						      std::declval<state_t const&>(),
+						      std::declval<state_t const&>(),
+						      std::declval<state_t const&>()
+						      )
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
+
+}}} // namespace pressio::ode::meta
 #endif

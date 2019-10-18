@@ -54,6 +54,7 @@
 namespace pressio{ namespace ode{ namespace meta {
 
 template<
+  types::stepper_n_states_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -63,17 +64,19 @@ template<
 struct find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper;
 
 template<
+  types::stepper_n_states_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
   typename scalar_t
   >
 struct find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper<
-  state_t, residual_t, system_t, scalar_t
+  numPrevStates, state_t, residual_t, system_t, scalar_t
   > : std::integral_constant<std::size_t, 0>{};
 
 
 template<
+  types::stepper_n_states_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -81,24 +84,25 @@ template<
   class Head, class ... Tail
   >
 struct find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper<
-  state_t, residual_t, system_t, scalar_t,
+  numPrevStates, state_t, residual_t, system_t, scalar_t,
   Head, Tail...
   >
   : std::conditional <
   is_legitimate_residual_policy_for_implicit_arbitrary_stepper<
-    Head, state_t, residual_t, system_t, scalar_t
+    Head, numPrevStates, state_t, residual_t, system_t, scalar_t
     >::type::value,
   std::integral_constant<std::size_t, 0>,
   std::integral_constant <
     std::size_t, 1 +
     find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper
-    <state_t, residual_t, system_t, scalar_t,
+    <numPrevStates, state_t, residual_t, system_t, scalar_t,
     Tail...>::type::value
     >
   >::type
 {};
 
 template <
+  types::stepper_n_states_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -107,7 +111,7 @@ template <
   >
 using find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper_t =
   typename find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper
-  <state_t, residual_t, system_t, scalar_t, Args...>::type;
+  <numPrevStates, state_t, residual_t, system_t, scalar_t, Args...>::type;
 
 
 }}} // namespace pressio::ode::meta

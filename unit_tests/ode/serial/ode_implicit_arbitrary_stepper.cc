@@ -5,19 +5,15 @@
 #include "reference_apps_for_testing.hpp"
 
 template<typename state_type, typename system_type, typename residual_type>
-class ResidualPolicy
-  : public ::pressio::ode::policy::ImplicitResidualPolicyBase<
+class ResidualPolicy : public ::pressio::ode::policy::ImplicitResidualPolicyBase<
   ResidualPolicy<state_type, system_type, residual_type>
-  >
-{
+  >{
+
 public:
-
-  static constexpr auto stepper_order = 3;
-  static constexpr auto num_aux_states = 1;
-
+  template <int n>
   void operator()(const state_type & y,
 		  residual_type & R,
-		  const std::array<state_type, num_aux_states> & oldYs,
+		  const std::array<state_type, n> & oldYs,
 		  const system_type & model,
 		  double t,
 		  double dt,
@@ -25,32 +21,29 @@ public:
     // here I would need to compute the time discrete residual
   }
 
+  template <int n>
   residual_type operator()(const state_type & y,
-  			   const std::array<state_type, num_aux_states> & oldYs,
+  			   const std::array<state_type, n> & oldYs,
   			   const system_type & model,
   			   double t,
   			   double dt,
 			   ::pressio::ode::types::step_t step) const{
     // here I would need to compute the time discrete residual
-    residual_type R;
-    return R;
+    return residual_type();
   }
-
 };//end class
 
 
 template<typename state_type, typename system_type, typename jacobian_type>
-class JacobianPolicy
-  : public ::pressio::ode::policy::JacobianPolicyBase<
+class JacobianPolicy : public ::pressio::ode::policy::JacobianPolicyBase<
   JacobianPolicy<state_type, system_type, jacobian_type>
-  >
-{
-public:
-  static constexpr auto stepper_order = 3;
-  static constexpr auto num_aux_states = 1;
+  >{
 
+public:
+  template <int n>
   void operator()(const state_type & y,
 		  jacobian_type & J,
+		  const std::array<state_type, n> & oldYs,
 		  const system_type & model,
 		  double t,
 		  double dt,
@@ -58,14 +51,15 @@ public:
     // here I would need to compute the time discrete version
   }
 
+  template <int n>
   jacobian_type operator()(const state_type & y,
+			   const std::array<state_type, n> & oldYs,
   			   const system_type & model,
   			   double t,
   			   double dt,
 			   ::pressio::ode::types::step_t step) const{
     // here I would need to compute the time discrete version
-    jacobian_type J;
-    return J;
+    return jacobian_type();
   }
 
 };//end class
@@ -85,45 +79,49 @@ TEST(ode_implicit, validArbitraryStepperPolicies){
   using residual_policy_t = ResidualPolicy<state_t, app_t, res_t>;
   static_assert
     (ode::meta::is_legitimate_residual_policy_for_implicit_arbitrary_stepper<
-     residual_policy_t, state_t, res_t, app_t, double>::value, "");
+     residual_policy_t, 1, state_t, res_t, app_t, double>::value, "");
 
   using jacobian_policy_t = JacobianPolicy<state_t, app_t, jac_t>;
   static_assert
     (ode::meta::is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper<
-     jacobian_policy_t, state_t, jac_t, app_t, double>::value, "");
+     jacobian_policy_t, 1, state_t, jac_t, app_t, double>::value, "");
 }
 
 
 TEST(ode_implicit, validArbitraryStepper){
   using namespace pressio;
 
-  using app_t = ode::testing::refAppForImpEigen;
+  using app_t	 = ode::testing::refAppForArbitraryImpl;
   using nstate_t = typename app_t::state_type;
-  using nvel_t = typename app_t::velocity_type;
-  using njac_t = typename app_t::jacobian_type;
-  using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nvel_t>;
-  using jac_t = containers::Matrix<njac_t>;
+  using nres_t   = typename app_t::residual_type;
+  using njac_t	 = typename app_t::jacobian_type;
+  using state_t  = containers::Vector<nstate_t>;
+  using res_t	 = containers::Vector<nres_t>;
+  using jac_t    = containers::Matrix<njac_t>;
 
-  using residual_policy_t = ResidualPolicy<state_t, app_t, res_t>;
-  static_assert
-    (ode::meta::is_legitimate_residual_policy_for_implicit_arbitrary_stepper<
-     residual_policy_t, state_t, res_t, app_t, double>::value, "");
+  // using residual_policy_t = ResidualPolicy<state_t, app_t, res_t>;
+  // static_assert
+  //   (ode::meta::is_legitimate_residual_policy_for_implicit_arbitrary_stepper<
+  //    residual_policy_t, 1, state_t, res_t, app_t, double>::value, "");
 
-  using jacobian_policy_t = JacobianPolicy<state_t, app_t, jac_t>;
-  static_assert
-    (ode::meta::is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper<
-     jacobian_policy_t, state_t, jac_t, app_t, double>::value, "");
+  // using jacobian_policy_t = JacobianPolicy<state_t, app_t, jac_t>;
+  // static_assert
+  //   (ode::meta::is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper<
+  //    jacobian_policy_t, 1, state_t, jac_t, app_t, double>::value, "");
+
+  using stepper_order = ode::types::StepperOrder<1>;
+  using stepper_n_states = ode::types::StepperTotalNumberOfStates<2>;
 
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::Arbitrary,
     state_t, res_t, jac_t, app_t,
-    residual_policy_t, jacobian_policy_t>;
+    stepper_order, stepper_n_states>;
 
   using traits = ode::details::traits<stepper_t>;
   static_assert( traits::is_implicit, "");
 
-  static_assert( traits::order_value == 3, "");
+  static_assert( traits::order_value == 1, "");
+  // numAuxStates = 1 because it is one less than the total stepper states
   static_assert( traits::numAuxStates == 1, "");
 
   ::testing::StaticAssertTypeEq<typename

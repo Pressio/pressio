@@ -55,10 +55,6 @@
 
 namespace pressio{ namespace ode{ namespace policy{
 
-/*
- * state and jacobian types are containers wrappers
- * both are wrappers from containers
- */
 template<
   typename state_type,
   typename system_type,
@@ -84,6 +80,7 @@ public:
   ~ImplicitJacobianStandardPolicy() = default;
 
 public:
+
   template <
     ode::ImplicitEnum method, typename scalar_t
   >
@@ -99,7 +96,8 @@ public:
   }
 
   template <
-    ode::ImplicitEnum method, typename scalar_t
+    ode::ImplicitEnum method,
+    typename scalar_t
     >
   jacobian_type operator()(const state_type & y,
   			   const system_type & model,
@@ -107,8 +105,7 @@ public:
   			   scalar_t dt,
 			   types::step_t step) const
   {
-    auto nJJ = model.jacobian(*y.data(), t);
-    jacobian_type JJ(nJJ);
+    jacobian_type JJ(model.jacobian(*y.data(), t));
     ::pressio::ode::impl::time_discrete_jacobian<method>(JJ, dt);
     return JJ;
   }

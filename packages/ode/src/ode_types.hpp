@@ -60,5 +60,20 @@ using stepper_order_t = int32_t;
 //! Default type for the num of aux states
 using stepper_n_states_t = int32_t;
 
+// this is used to set implicit stepper order when
+// the user chooses the arbitrary one
+template <types::stepper_order_t valueIn>
+struct StepperOrder{
+  static constexpr types::stepper_order_t value = valueIn;
+};
+
+// this is used to set the total number of states needed
+// for the stepper
+template <types::stepper_n_states_t valueIn>
+struct StepperTotalNumberOfStates{
+  static constexpr types::stepper_n_states_t value = valueIn;
+};
+
+
 }}} // end of namespace pressio::containers::default_types
 #endif

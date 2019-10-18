@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_time_discrete_residual_method_accepting_three_states_returning_void.hpp
+// ode_has_needed_time_discrete_residual_methods.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,19 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_THREE_STATES_RETURNING_VOID_HPP_
-#define ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_THREE_STATES_RETURNING_VOID_HPP_
+#ifndef ODE_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_NON_VOID_RETURN_HPP_
+#define ODE_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_NON_VOID_RETURN_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+#include "ode_has_time_discrete_residual_method_accepting_n_states_returning_void.hpp"
+#include "ode_has_time_discrete_residual_method_accepting_n_states_returning_non_void.hpp"
+
+namespace pressio{ namespace ode{ namespace meta {
 
 template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t,
+  typename T, typename step_t, typename sc_t, typename state_t, typename residual_t,
   typename = void
   >
-struct has_time_discrete_residual_method_accepting_three_states_returning_void
+struct has_needed_time_discrete_residual_methods
   : std::false_type{};
 
 template <
@@ -69,23 +68,24 @@ template <
   typename state_t,
   typename residual_t
   >
-struct has_time_discrete_residual_method_accepting_three_states_returning_void<
+struct has_needed_time_discrete_residual_methods<
   T, step_t, sc_t, state_t, residual_t,
   ::pressio::mpl::enable_if_t<
-    std::is_void<
-      decltype(
-	       std::declval<T>().timeDiscreteResidual(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<residual_t &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
-	       )
+    // for now, just check case for 2 and 3 states passed
+    has_time_discrete_residual_method_accepting_n_states_returning_non_void<
+      T, 2, step_t, sc_t, state_t, residual_t
+      >::value and
+    has_time_discrete_residual_method_accepting_n_states_returning_non_void<
+      T, 3, step_t, sc_t, state_t, residual_t
+      >::value and
+    has_time_discrete_residual_method_accepting_n_states_returning_void<
+      T, 2, step_t, sc_t, state_t, residual_t
+      >::value and
+    has_time_discrete_residual_method_accepting_n_states_returning_void<
+      T, 3, step_t, sc_t, state_t, residual_t
       >::value
     >
   > : std::true_type{};
 
-}}} // namespace pressio::rom::meta
+}}} // namespace pressio::ode::meta
 #endif

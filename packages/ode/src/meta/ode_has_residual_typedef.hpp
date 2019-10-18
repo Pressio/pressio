@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_time_discrete_residual_method_accepting_two_states_returning_non_void.hpp
+// ode_has_residual_typedef.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,56 +46,25 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_TWO_STATES_RETURNING_NON_VOID_HPP_
-#define ROM_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_TWO_STATES_RETURNING_NON_VOID_HPP_
+#ifndef ODE_META_HAS_RESIDUAL_TYPEDEF_HPP_
+#define ODE_META_HAS_RESIDUAL_TYPEDEF_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+#include <type_traits>
 
-template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t,
-  typename = void
-  >
-struct has_time_discrete_residual_method_accepting_two_states_returning_non_void
-  : std::false_type{};
+namespace pressio{ namespace ode{ namespace meta {
 
-template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t
-  >
-struct has_time_discrete_residual_method_accepting_two_states_returning_non_void<
-  T, step_t, sc_t, state_t, residual_t,
-  ::pressio::mpl::enable_if_t<
+template <typename T, typename enable = void>
+struct has_residual_typedef : std::false_type{};
+
+template <typename T>
+struct has_residual_typedef<
+  T,
+  mpl::enable_if_t<
     !std::is_void<
-      decltype(
-	       std::declval<T>().timeDiscreteResidual(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
-	       )
-      >::value
-    and
-    mpl::is_same<
-      residual_t,
-      decltype(
-	       std::declval<T>().timeDiscreteResidual(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
-	       )
+      typename T::residual_type
       >::value
     >
   > : std::true_type{};
 
-}}} // namespace pressio::rom::meta
+}}}//end namespace pressio::ode::meta
 #endif

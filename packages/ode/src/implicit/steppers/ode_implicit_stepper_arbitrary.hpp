@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_ARBITRARY_HPP_
 #define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_ARBITRARY_HPP_
 
-#include "ode_implicit_stepper_traits.hpp"
+#include "ode_implicit_stepper_traits_arbitrary.hpp"
 #include "ode_implicit_stepper_base.hpp"
 
 namespace pressio{ namespace ode{
@@ -111,6 +111,19 @@ public:
   		  const jacobian_pol_t & jacPolicyObj)
     : stepper_base_t{y0, model, resPolicyObj, jacPolicyObj}{}
 
+  // cstr for standard residual and jacob policies
+  template <
+    typename T1 = standard_res_policy_t,
+    typename T2 = standard_jac_policy_t,
+    ::pressio::mpl::enable_if_t<
+      mpl::is_same<T1, residual_pol_t>::value and
+      mpl::is_same<T2, jacobian_pol_t>::value
+      > * = nullptr
+    >
+  ImplicitStepper(const ode_state_type & y0,
+		  const system_type & model)
+    : stepper_base_t{y0, model}{}
+
 public:
   template<typename solver_type>
   void operator()(ode_state_type & y,
@@ -145,13 +158,15 @@ private:
   void jacobianImpl(const state_type & y, jacobian_type & J) const
   {
     this->jacobian_obj_.operator()
-      (y, J, this->sys_.get(), this->t_, this->dt_, this->step_);
+      (y, J, this->stateAuxStorage_.data_,
+       this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
   jacobian_type jacobianImpl(const state_type & y) const
   {
     return this->jacobian_obj_.operator()
-      (y, this->sys_.get(), this->t_, this->dt_, this->step_);
+      (y, this->stateAuxStorage_.data_,
+       this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
 };//end class

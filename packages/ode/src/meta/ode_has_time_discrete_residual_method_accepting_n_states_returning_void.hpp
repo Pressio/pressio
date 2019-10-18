@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_has_velocity_method_callable_with_three_args.hpp
+// rom_has_time_discrete_residual_method_accepting_n_states_returning_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,75 @@
 //@HEADER
 */
 
-#ifndef ODE_HAS_VELOCITY_METHOD_CALLABLE_WITH_THREE_ARGS_HPP_
-#define ODE_HAS_VELOCITY_METHOD_CALLABLE_WITH_THREE_ARGS_HPP_
-
-#include "../ode_ConfigDefs.hpp"
+#ifndef ODE_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_N_STATES_RETURNING_VOID_HPP_
+#define ODE_HAS_TIME_DISCRETE_RESIDUAL_METHOD_ACCEPTING_N_STATES_RETURNING_VOID_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
 template <
-  typename T,
-  typename state_t,
-  typename sc_t,
-  typename velo_t,
+  typename T, int n, typename step_t, typename sc_t, typename state_t, typename residual_t,
   typename = void
   >
-struct has_velocity_method_callable_with_three_args : std::false_type{};
+struct has_time_discrete_residual_method_accepting_n_states_returning_void
+  : std::false_type{};
 
-template <
-  typename T,
-  typename state_t,
-  typename sc_t,
-  typename velo_t
-  >
-struct has_velocity_method_callable_with_three_args<
-  T, state_t, sc_t, velo_t,
+
+template <typename T, typename step_t, typename sc_t, typename state_t, typename residual_t>
+struct has_time_discrete_residual_method_accepting_n_states_returning_void<
+  T, 1, step_t, sc_t, state_t, residual_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T>().velocity(
-					  std::declval<state_t const&>(),
-					  std::declval<const sc_t>(),
-					  std::declval<velo_t &>()
-					  )
-	   )
+	       std::declval<T>().timeDiscreteResidual(
+						      std::declval<step_t const &>(),
+						      std::declval<sc_t const &>(),
+						      std::declval<residual_t &>(),
+						      std::declval<state_t const&>()
+						      )
+	       )
       >::value
     >
   > : std::true_type{};
+
+
+template <typename T, typename step_t, typename sc_t, typename state_t, typename residual_t>
+struct has_time_discrete_residual_method_accepting_n_states_returning_void<
+  T, 2, step_t, sc_t, state_t, residual_t,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T>().timeDiscreteResidual(
+						      std::declval<step_t const &>(),
+						      std::declval<sc_t const &>(),
+						      std::declval<residual_t &>(),
+						      std::declval<state_t const&>(),
+						      std::declval<state_t const&>()
+						      )
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
+
+template <typename T, typename step_t, typename sc_t, typename state_t, typename residual_t>
+struct has_time_discrete_residual_method_accepting_n_states_returning_void<
+  T, 3, step_t, sc_t, state_t, residual_t,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T>().timeDiscreteResidual(
+						      std::declval<step_t const &>(),
+						      std::declval<sc_t const &>(),
+						      std::declval<residual_t &>(),
+						      std::declval<state_t const&>(),
+						      std::declval<state_t const&>(),
+						      std::declval<state_t const&>()
+						      )
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
 
 }}} // namespace pressio::ode::meta
 #endif
