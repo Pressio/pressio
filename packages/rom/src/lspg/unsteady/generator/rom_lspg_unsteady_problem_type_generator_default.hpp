@@ -121,6 +121,7 @@ struct DefaultLSPGUnsteadyTypeGenerator{
 };//end class
 
 
+
 // //-------------------------------------------------------
 // // specialize for then the fom type meets Residual API
 // //-------------------------------------------------------
@@ -135,8 +136,6 @@ struct DefaultLSPGUnsteadyTypeGenerator{
 //     > * = nullptr
 //   >
 // struct DefaultLSPGUnsteadyTypeGenerator{
-
-
 // };//end class
 
 

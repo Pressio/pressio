@@ -78,9 +78,9 @@ struct LSPGUnsteadyCommonTypesVelocityAPI<
 {
 
   static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
-		 "You are trying to setup an unsteady LSPG problem requiring \
-a fom adapter class to meet the velocity API. \
-However, the fom/adapter type you passed does not meet the velocity API. \
+		 "\nYou are trying to setup an unsteady LSPG problem requiring \n \
+a fom adapter class to meet the velocity API. \n \
+However, the fom/adapter type you passed does not meet the velocity API. \n \
 Verify the fom/adapter class to check if you are missing something.");
 
   // these are native types of the full-order model (fom)

@@ -104,7 +104,6 @@ public:
 
 public:
   template <
-    ode::ImplicitEnum odeMethod,
     int n,
     typename lspg_state_t,
     typename fom_t,
@@ -115,65 +114,66 @@ public:
   		  const std::array<lspg_state_t,n> & romOldYs,
   		  const fom_t			   & app,
 		  scalar_t			   t,
-		  scalar_t			   dt) const
+		  scalar_t			   dt,
+		  ::pressio::ode::types::step_t step) const
   {
-    this->compute_impl<odeMethod, n>(romY, romR, romOldYs, app, t, dt);
+    std::cout << " empty LSPGUnsteadyResidualPolicyResidualApi" << std::endl;
   }
 
   template <
-    ode::ImplicitEnum odeMethod,
     int n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t
     >
-  residual_t operator()(const lspg_state_t		   & romY,
+  residual_t operator()(const lspg_state_t		& romY,
 			const std::array<lspg_state_t,n>  & romOldYs,
-			const fom_t			   & app,
-			scalar_t			   t,
-			scalar_t			   dt) const
+			const fom_t			& app,
+			scalar_t			t,
+			scalar_t			dt,
+			::pressio::ode::types::step_t   step) const
   {
-    this->compute_impl<odeMethod, n>(romY, R_, romOldYs, app, t, dt);
+    std::cout << " empty LSPGUnsteadyResidualPolicyResidualApi" << std::endl;
     return R_;
   }
 
 
-private:
-  template <
-    ode::ImplicitEnum odeMethod,
-    int n,
-    typename lspg_state_t,
-    typename fom_t,
-    typename scalar_t
-  >
-  void compute_impl(const lspg_state_t		     & romY,
-		    residual_t			     & romR,
-		    const std::array<lspg_state_t,n> & romOldYs,
-		    const fom_t			     & app,
-		    scalar_t			     t,
-		    scalar_t			     dt) const
-  {
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-//     timer->start("lspg residual");
-// #endif
+// private:
+//   template <
+//     ode::ImplicitEnum odeMethod,
+//     int n,
+//     typename lspg_state_t,
+//     typename fom_t,
+//     typename scalar_t
+//   >
+//   void compute_impl(const lspg_state_t		     & romY,
+// 		    residual_t			     & romR,
+// 		    const std::array<lspg_state_t,n> & romOldYs,
+// 		    const fom_t			     & app,
+// 		    scalar_t			     t,
+// 		    scalar_t			     dt) const
+//   {
+// // #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+// //     auto timer = Teuchos::TimeMonitor::getStackedTimer();
+// //     timer->start("lspg residual");
+// // #endif
 
-//     fomStates_.template reconstructCurrentFomState(romY);
-//     fomStates_.template reconstructFomOldStates<n>(romOldYs);
+// //     fomStates_.template reconstructCurrentFomState(romY);
+// //     fomStates_.template reconstructFomOldStates<n>(romOldYs);
 
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     timer->start("fom compute td residual");
-// #endif
-//     //    fom_querier_policy::evaluate<n>(app,
-// 				    //fomStates_.getCRefToFomState(),
-//     // 				 fomStates_.getCRefToFomOldStates(), romR, t);
+// // #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+// //     timer->start("fom compute td residual");
+// // #endif
+// //     //    fom_querier_policy::evaluate<n>(app,
+// // 				    //fomStates_.getCRefToFomState(),
+// //     // 				 fomStates_.getCRefToFomOldStates(), romR, t);
 
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     timer->stop("fom compute td residual");
-// #endif
-//     timer->stop("lspg residual");
-// #endif
-  }
+// // #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+// //     timer->stop("fom compute td residual");
+// // #endif
+// //     timer->stop("lspg residual");
+// // #endif
+//   }
 
 
 protected:

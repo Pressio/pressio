@@ -65,7 +65,7 @@ struct is_legitimate_model_for_implicit_ode_arbitrary_stepper
 template<typename model_type>
 struct is_legitimate_model_for_implicit_ode_arbitrary_stepper<
   model_type,
-  typename std::enable_if<
+  mpl::enable_if_t<
     ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
     ::pressio::ode::meta::has_state_typedef<model_type>::value and
     ::pressio::ode::meta::has_residual_typedef<model_type>::value and
@@ -82,7 +82,7 @@ struct is_legitimate_model_for_implicit_ode_arbitrary_stepper<
       typename model_type::state_type,
       typename model_type::jacobian_type
       >::value
-    >::type
+    >
   > : std::true_type{};
 
 }}} // namespace pressio::ode::meta

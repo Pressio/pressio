@@ -53,8 +53,8 @@
 #include "rom_has_residual_typedef.hpp"
 #include "rom_has_dense_matrix_typedef.hpp"
 #include "rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"
-// #include "./time_discrete_residual/rom_has_needed_time_discrete_residual_method_with_void_return.hpp"
-// #include "./time_discrete_residual/rom_has_needed_time_discrete_residual_method_with_non_void_return.hpp"
+#include "../../../ode/src/meta/ode_has_needed_time_discrete_residual_methods.hpp"
+#include "../../../ode/src/meta/ode_has_needed_time_discrete_jacobian_methods.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
 
@@ -68,27 +68,13 @@ struct model_meets_residual_api_for_unsteady_lspg<
     ::pressio::containers::meta::has_scalar_typedef<T>::value and
     ::pressio::ode::meta::has_state_typedef<T>::value and
     ::pressio::rom::meta::has_residual_typedef<T>::value and
-    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value
-    // ::pressio::rom::meta::has_needed_time_discrete_residual_method_with_non_void_return<
-    //   T,
-    //   int32_t, // use int here as type for the step, it can be any integral type
-    //   typename T::scalar_type,
-    //   typename T::state_type,
-    //   typename T::residual_type
-    //   >::value and
-    // ::pressio::rom::meta::has_needed_time_discrete_residual_method_with_void_return<
-    //   T,
-    //   int32_t, // use int here as type for the step, it can be any integral type
-    //   typename T::scalar_type,
-    //   typename T::state_type,
-    //   typename T::residual_type
-    //   >::value and
-    // ::pressio::rom::meta::model_has_needed_apply_jacobian_methods_for_unsteady<
-    //   T,
-    //   typename T::state_type,
-    //   typename T::scalar_type,
-    //   typename T::dense_matrix_type
-    //   >::value
+    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value and
+    ::pressio::ode::meta::has_needed_time_discrete_residual_methods<
+      T, ::pressio::ode::types::step_t,
+      typename T::scalar_type,
+      typename T::state_type,
+      typename T::residual_type
+      >::value
     >
   > : std::true_type{};
 
