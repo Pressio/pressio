@@ -70,24 +70,15 @@ template <
 struct has_apply_jacobian_method_callable_with_three_args_for_unsteady<
   T, state_t, sc_t, dense_mat_t,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<
-      decltype(
-	       std::declval<T>().applyJacobian(
-					       std::declval<state_t const&>(),
-					       std::declval<dense_mat_t const&>(),
-					       std::declval<sc_t>()
-					       )
-	       )
-      >::value
-    and
+    !std::is_void<dense_mat_t>::value and
     mpl::is_same<
       dense_mat_t,
       decltype(
-	       std::declval<T>().applyJacobian(
-					       std::declval<state_t const&>(),
-					       std::declval<dense_mat_t const&>(),
-					       std::declval<sc_t>()
-					       )
+	       std::declval<T const>().applyJacobian(
+						     std::declval<state_t const &>(),
+						     std::declval<dense_mat_t const &>(),
+						     std::declval<sc_t const &>()
+						     )
 	       )
       >::value
     >
