@@ -49,39 +49,46 @@
 #ifndef ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
 #define ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
 
-#include "../../../../rom_ConfigDefs.hpp"
-#include "../../../../rom_fwd.hpp"
-#include "rom_lspg_unsteady_aux_stepper_type_helper.hpp"
-#include "rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
+#include "../../rom_fwd.hpp"
+#include "../../meta/rom_is_legitimate_decoder_type.hpp"
+#include "../impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
+#include "../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{
+
+template <
+  bool isCpp,
+  ::pressio::ode::ImplicitEnum odeName,
+  typename fom_type,
+  typename lspg_state_type,
+  typename ...Args>
+struct LSPGUnsteadyCommonTypesVelocityAPI;
+
 
 //-------------------------------------------------------
 // partial specialize for when we are native C++
 //-------------------------------------------------------
 template <
+  ::pressio::ode::ImplicitEnum odeName,
   typename fom_type,
-  typename decoder_type,
   typename lspg_state_type,
-  ode::ImplicitEnum odeName,
-  typename ud_ops
-  >
+  typename ...Args>
 struct LSPGUnsteadyCommonTypesVelocityAPI<
-  fom_type, decoder_type, lspg_state_type, odeName, ud_ops,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and mpl::not_same<fom_type, pybind11::object>::value
-#endif
-    >
+  true, odeName, fom_type, lspg_state_type, Args ...
   >
 {
 
-  static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
-		 "\nYou are trying to setup an unsteady LSPG problem requiring \n \
-a fom adapter class to meet the velocity API. \n \
-However, the fom/adapter type you passed does not meet the velocity API. \n \
-Verify the fom/adapter class to check if you are missing something.");
+  /* template arguments definitely needed
+   * - valid decoder
+   * - we possibly also have user-defined ops
+   */
+  // verify that args contains a valid decoder type
+  using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
+    ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
+  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+  static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
+		"A valid decoder type must be passed to define a LSPG problem");
+  using decoder_jac_t = typename decoder_t::jacobian_t;
 
   // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
@@ -105,10 +112,6 @@ Verify the fom/adapter class to check if you are missing something.");
    */
   using lspg_residual_t		= fom_velocity_t;
 
-  // decoder types (passed in)
-  using decoder_t		= decoder_type;
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
-
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
    * * decoder_jac_t is the type of the decoder jacobian
@@ -128,70 +131,78 @@ Verify the fom/adapter class to check if you are missing something.");
   static constexpr auto auxStates = fomStatesStorageCapacityHelper<odeName>::value;
 
   // type of class holding the fom states
-  using fom_states_data = ::pressio::rom::FomStatesData<
-	fom_state_t, auxStates, fom_state_reconstr_t>;
+  using fom_states_data = ::pressio::rom::FomStatesData<fom_state_t, auxStates, fom_state_reconstr_t>;
 
-  // if we have a non-trivial user-defined ops
-  using ud_ops_t = ud_ops;
+  // if we have a non-trivial user-defined ops, need to find from Args
+  using ud_ops_t = void;
+
 };
 
 
 
-//-------------------------------------------------------
-// partial specialize for pybind11
-//-------------------------------------------------------
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <
-  typename fom_type,
-  typename decoder_type,
-  typename lspg_state_type,
-  ode::ImplicitEnum odeName,
-  typename ud_ops
-  >
-struct LSPGUnsteadyCommonTypesVelocityAPI<
-  fom_type, decoder_type, lspg_state_type, odeName, ud_ops,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value and
-    mpl::is_same<fom_type, pybind11::object>::value
-    >
-  >
-{
+// //-------------------------------------------------------
+// // partial specialize for pybind11
+// //-------------------------------------------------------
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// // template <
+// //   typename fom_type,
+// //   typename decoder_type,
+// //   typename lspg_state_type,
+// //   ode::ImplicitEnum odeName,
+// //   typename ud_ops
+// //   >
+// // struct LSPGUnsteadyCommonTypesVelocityAPI<
+// //   fom_type, decoder_type, lspg_state_type, odeName, ud_ops,
+// //   mpl::enable_if_t<
+// //     ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value and
+// //     mpl::is_same<fom_type, pybind11::object>::value
+// //     >
+// //   >
 
-  // in this case there is no difference between types because
-  // they all are pybind11::array_t so basically wrappers of numpy arrays
-  // Since this is used to interface to python, EVERYTHING is done using numpy arrays
+// template <
+//   ::pressio::ode::ImplicitEnum odeName,
+//   typename fom_type,
+//   typename lspg_state_type,
+//   typename ...Args>
+// struct LSPGUnsteadyCommonTypesVelocityAPI<
+//   false, odeName, fom_type, lspg_state_type, Args ...
+//   >
+// {
+// //   // in this case there is no difference between types because
+// //   // they all are pybind11::array_t so basically wrappers of numpy arrays
+// //   // Since this is used to interface to python, EVERYTHING is done using numpy arrays
 
-  // these are native types of the full-order model (fom)
-  using fom_t			= fom_type;
-  using scalar_t		= typename decoder_type::scalar_t;
-  using fom_native_state_t	= lspg_state_type;
-  using fom_native_velocity_t	= lspg_state_type;
-  using fom_state_t		= lspg_state_type;
-  using fom_velocity_t		= lspg_state_type;
+// //   // these are native types of the full-order model (fom)
+// //   using fom_t			= fom_type;
+// //   using scalar_t		= typename decoder_type::scalar_t;
+// //   using fom_native_state_t	= lspg_state_type;
+// //   using fom_native_velocity_t	= lspg_state_type;
+// //   using fom_state_t		= lspg_state_type;
+// //   using fom_velocity_t		= lspg_state_type;
 
-  // rom state type (passed in)
-  using lspg_state_t		= lspg_state_type;
+// //   // rom state type (passed in)
+// //   using lspg_state_t		= lspg_state_type;
 
-  // LSPG residual
-  using lspg_residual_t		= fom_velocity_t;
+// //   // LSPG residual
+// //   using lspg_residual_t		= fom_velocity_t;
 
-  // decoder types (passed in)
-  using decoder_t		= decoder_type;
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
+// //   // decoder types (passed in)
+// //   using decoder_t		= decoder_type;
+// //   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
-  // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+// //   // fom state reconstructor type
+// //   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
-  static constexpr auto nFomAuxStates = statesStorageCapacityHelper<odeName>::value;
+// //   static constexpr auto nFomAuxStates = statesStorageCapacityHelper<odeName>::value;
 
-  // class type holding fom states data
-  using fom_states_data = ::pressio::rom::FomStatesData<
-	fom_state_t, nFomAuxStates, fom_state_reconstr_t>;
+// //   // class type holding fom states data
+// //   using fom_states_data = ::pressio::rom::FomStatesData<
+// // 	fom_state_t, nFomAuxStates, fom_state_reconstr_t>;
 
-  // if we have a non-trivial user-defined ops
-  using ud_ops_t = ud_ops;
-};
-#endif
+// //   // if we have a non-trivial user-defined ops
+// //   using ud_ops_t = ud_ops;
+// };
+// #endif
 
 
 }}}//end  namespace pressio::rom::impl

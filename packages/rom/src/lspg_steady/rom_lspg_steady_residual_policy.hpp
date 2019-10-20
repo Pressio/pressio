@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_jacobian_policy.hpp
+// rom_lspg_steady_residual_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,92 +46,81 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
-#define ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
+#ifndef ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
+#define ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
 
-#include "../../rom_fwd.hpp"
-#include "../../rom_data_fom_states.hpp"
+#include "../rom_fwd.hpp"
 
 namespace pressio{ namespace rom{
 
-template<
+template <
+  typename residual_type,
   typename fom_states_data,
-  typename apply_jac_return_type,
-  typename fom_apply_jac_policy,
-  typename decoder_type
+  typename fom_eval_rhs_policy
   >
-class LSPGSteadyJacobianPolicy
-  : protected fom_apply_jac_policy{
-
-protected:
-  using this_t = LSPGSteadyJacobianPolicy<
-  fom_states_data, apply_jac_return_type,
-  fom_apply_jac_policy, decoder_type>;
+class LSPGSteadyResidualPolicy
+  : protected fom_eval_rhs_policy{
 
 public:
-  static constexpr bool isResidualPolicy_ = false;
-  using apply_jac_return_t = apply_jac_return_type;
+  using this_t = LSPGSteadyResidualPolicy<residual_type,
+					  fom_states_data,
+					  fom_eval_rhs_policy>;
+
+  static constexpr bool isResidualPolicy_ = true;
+  using residual_t = residual_type;
 
 public:
-  LSPGSteadyJacobianPolicy() = delete;
-  ~LSPGSteadyJacobianPolicy() = default;
+  LSPGSteadyResidualPolicy() = delete;
+  ~LSPGSteadyResidualPolicy() = default;
 
-  LSPGSteadyJacobianPolicy(fom_states_data	& fomStates,
-			   const fom_apply_jac_policy	& applyJacFunctor,
-			   const apply_jac_return_type	& applyJacObj,
-			   const decoder_type		& decoder)
-    : fomStates_(fomStates),
-      fom_apply_jac_policy(applyJacFunctor),
-      JJ_(applyJacObj),
-      decoderObj_(decoder){}
+  LSPGSteadyResidualPolicy(const residual_t & RIn,
+			   fom_states_data & fomStatesIn,
+			   const fom_eval_rhs_policy & fomEvalRhsFunctor)
+    : R_{RIn},
+      fomStates_(fomStatesIn),
+      fom_eval_rhs_policy(fomEvalRhsFunctor){}
 
 public:
-
   template <
     typename lspg_state_t,
-    typename lspg_jac_t,
-    typename app_t
-  >
-  void operator()(const lspg_state_t & romY,
-		  lspg_jac_t	     & romJJ,
-  		  const app_t	     & app) const
+    typename lspg_residual_t,
+    typename fom_t>
+  void operator()(const lspg_state_t	& romY,
+		  lspg_residual_t	& romR,
+  		  const fom_t		& app) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("lspg apply jac");
+    timer->start("lspg residual");
 #endif
 
-    // todo: this is not needed if jacobian is called after resiudal
-    // because residual takes care of reconstructing the fom state
-    //    timer->start("reconstruct fom state");
     fomStates_.template reconstructCurrentFomState(romY);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->start("fom apply jac");
+    timer->start("fom eval rhs");
 #endif
 
-    const auto & basis = decoderObj_.getReferenceToJacobian();
-    fom_apply_jac_policy::evaluate(app, fomStates_.getCRefToFomState(), basis, romJJ);
+    fom_eval_rhs_policy::evaluate(app, fomStates_.getCRefToFomState(), romR);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("fom apply jac");
-    timer->stop("lspg apply jac");
+    timer->stop("fom eval rhs");
+    timer->stop("lspg residual");
 #endif
   }
 
-  template <typename lspg_state_t, typename app_t>
-  apply_jac_return_t operator()(const lspg_state_t & romY,
-				const app_t	   & app) const
+  template <typename lspg_state_t, typename fom_t>
+  residual_t operator()(const lspg_state_t & romY,
+		       const fom_t	  & app) const
   {
-    (*this).template operator()(romY, JJ_, app);
-    return JJ_;
+    (*this).template operator()(romY, R_, app);
+    return R_;
   }
 
 protected:
-  mutable apply_jac_return_t JJ_   = {};
-  const decoder_type & decoderObj_ = {};
+  mutable residual_t R_ = {};
   fom_states_data & fomStates_;
-};
+
+};//end class
 
 }}//end namespace pressio::rom
 #endif

@@ -51,12 +51,12 @@
 
 #include "ROM_BASIC"
 
-#include "rom/src/lspg/steady/rom_lspg_steady_jacobian_policy.hpp"
-#include "rom/src/lspg/steady/rom_lspg_steady_residual_policy.hpp"
-#include "rom/src/lspg/steady/rom_lspg_steady_system.hpp"
+#include "rom/src/lspg_steady/rom_lspg_steady_residual_policy.hpp"
+#include "rom/src/lspg_steady/rom_lspg_steady_jacobian_policy.hpp"
+#include "rom/src/lspg_steady/rom_lspg_steady_system.hpp"
 
-#include "rom/src/lspg/steady/generator/rom_lspg_steady_problem_generator.hpp"
-#include "rom/src/lspg/steady/generator/rom_lspg_steady_type_generator_preconditioned.hpp"
-#include "rom/src/lspg/steady/generator/rom_lspg_steady_type_generator_default.hpp"
+#include "rom/src/lspg_steady/rom_lspg_steady_problem_generator.hpp"
+#include "rom/src/lspg_steady/rom_lspg_steady_type_generator_default.hpp"
+#include "rom/src/lspg_steady/rom_lspg_steady_type_generator_preconditioned.hpp"
 
 #endif

@@ -2,7 +2,7 @@
 #include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
-#include "ROM_LSPG"
+#include "ROM_LSPG_UNSTEADY"
 #include "APPS_UNSTEADYBURGERS1D"
 #include "utils_eigen.hpp"
 
@@ -49,11 +49,10 @@ int main(int argc, char *argv[]){
 
   // define LSPG type
   constexpr auto ode_case  = pressio::ode::ImplicitEnum::Euler;
-  using lspg_problem_types = pressio::rom::DefaultLSPGUnsteadyTypeGenerator<fom_t, ode_case, decoder_t, lspg_state_t>;
-  pressio::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
-      appobj, yRef, decoderObj, yROM, t0);
-
-  using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;
+  using lspg_problem = pressio::rom::LSPGUnsteadyProblem<
+    pressio::rom::DefaultLSPGUnsteady, ode_case, fom_t, lspg_state_t, decoder_t>;
+  using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
+  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
@@ -66,8 +65,7 @@ int main(int argc, char *argv[]){
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
   // rom is solved using eigen, hessian is wrapper of eigen matrix
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
-    lspg_stepper_t, linear_solver_t>;
+  using gnsolver_t   = pressio::solvers::iterative::GaussNewton<lspg_stepper_t, linear_solver_t>;
   gnsolver_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);
   // I know this should converge in few iters every step
@@ -84,7 +82,7 @@ int main(int argc, char *argv[]){
   // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
   for (auto i=0; i<yFomFinal.size(); i++){
-    if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10) 
+    if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
       checkStr = "FAILED";
   }
 

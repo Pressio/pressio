@@ -49,40 +49,78 @@
 #ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_VELOCITY_API_HPP_
 #define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_VELOCITY_API_HPP_
 
+#include "rom_lspg_unsteady_residual_policy_velocity_api.hpp"
+#include "rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
+#include "../../policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
+#include "../../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
 #include "rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{
 
+template <typename fom_type, typename lspg_state_type, typename enable = void>
+struct CommonTypesHelper;
+
+template <typename fom_type, typename lspg_state_type>
+struct CommonTypesHelper<fom_type, lspg_state_type>
+{
+  template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
+  using type = LSPGUnsteadyCommonTypesVelocityAPI<true, odeName, fom_type, lspg_state_type, Args...>;
+};
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename fom_type, typename lspg_state_type>
+struct CommonTypesHelper<
+  fom_type, lspg_state_type,
+  mpl::enable_if_t<
+    ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value and
+    and mpl::is_same<fom_type, pybind11::object>::value
+    >
+  >
+{
+  template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
+  using type = LSPGUnsteadyCommonTypesVelocityAPI<false, odeName, fom_type, lspg_state_type, Args...>;
+};
+#endif
+
+
+
 template <
+  ::pressio::ode::ImplicitEnum odeName,
   typename fom_type,
   typename lspg_state_type,
   typename ... Args
   >
 struct DefaultLSPGUnsteadyTypeGeneratorVelocityAPI{
 
-  static_assert(::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
- 		 "You are trying to setup an unsteady LSPG problem requiring \n \
-a fom adapter class to meet the velocity API. \n \
-However, the fom/adapter type you passed does not meet that API. \n \
-Verify the fom/adapter class to check if you are missing something.");
+  /* here, the fom_type must satisfy the velocity api */
+  static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
+		 "\nUsing DefaultLSPGUnsteadyTypeGeneratorVelocityAPI \n \
+requires a fom adapter class that meets the velocity API. \n \
+However, the fom/adapter type you passed does not meet the velocity API. \n \
+Verify the fom/adapter class you are using meets the velocity API.");
 
-  using common_types_helper =
-    impl::LSPGUnsteadyCommonTypesVelocityAPI<fom_type, lspg_state_type, Args...>;
+  static_assert( odeName != ::pressio::ode::ImplicitEnum::Arbitrary,
+		 "\nTo use unsteady LSPG with the velocity API, \n \
+you cannot pass ode::ImplicitEnum::Arbitrary since that is only \n \
+valid when using the residual API. For the velocity API you need \n \
+to pass a valid enum from the ode steppers, like ImplicitEnum::Euler/BDF2");
 
-  using fom_t			= typename common_types_helper::fom_t;
-  using scalar_t		= typename common_types_helper::scalar_t;
-  using fom_native_state_t	= typename common_types_helper::fom_native_state_t;
-  using fom_state_t		= typename common_types_helper::fom_state_t;
-  using fom_velocity_t		= typename common_types_helper::fom_velocity_t;
-  using lspg_state_t		= typename common_types_helper::lspg_state_t;
-  using lspg_residual_t		= typename common_types_helper::lspg_residual_t;
-  using decoder_t		= typename common_types_helper::decoder_t;
-  using decoder_jac_t		= typename common_types_helper::decoder_jac_t;
-  using lspg_matrix_t		= typename common_types_helper::lspg_matrix_t;
-  using fom_state_reconstr_t	= typename common_types_helper::fom_state_reconstr_t;
-  using fom_states_data		= typename common_types_helper::fom_states_data;
-  using ud_ops_t		= typename common_types_helper::ud_ops_t;
-  static constexpr auto odeName = common_types_helper::ode_name;
+  using common_types_t
+  = typename CommonTypesHelper<fom_type, lspg_state_type>::template type< odeName, Args...>;
+
+  using fom_t			= typename common_types_t::fom_t;
+  using scalar_t		= typename common_types_t::scalar_t;
+  using fom_native_state_t	= typename common_types_t::fom_native_state_t;
+  using fom_state_t		= typename common_types_t::fom_state_t;
+  using fom_velocity_t		= typename common_types_t::fom_velocity_t;
+  using lspg_state_t		= typename common_types_t::lspg_state_t;
+  using lspg_residual_t		= typename common_types_t::lspg_residual_t;
+  using decoder_t		= typename common_types_t::decoder_t;
+  using decoder_jac_t		= typename common_types_t::decoder_jac_t;
+  using lspg_matrix_t		= typename common_types_t::lspg_matrix_t;
+  using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
+  using fom_states_data		= typename common_types_t::fom_states_data;
+  using ud_ops_t		= typename common_types_t::ud_ops_t;
 
   // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
   using fom_eval_velocity_policy_t	= ::pressio::rom::policy::EvaluateFomVelocityDefault<false>;
@@ -92,11 +130,11 @@ Verify the fom/adapter class to check if you are missing something.");
   using fom_apply_jac_policy_t	= ::pressio::rom::policy::ApplyFomJacobianDefault<false>;
 
   // policy defining how to compute the LSPG time-discrete residual
-  using lspg_residual_policy_t	= ::pressio::rom::LSPGUnsteadyResidualPolicyVelocityApi<
+  using lspg_residual_policy_t	= ::pressio::rom::impl::LSPGUnsteadyResidualPolicyVelocityApi<
     lspg_residual_t, fom_states_data, fom_eval_velocity_policy_t, ud_ops_t>;
 
   // policy defining how to compute the LSPG time-discrete jacobian
-  using lspg_jacobian_policy_t	= ::pressio::rom::LSPGUnsteadyJacobianPolicyVelocityApi<
+  using lspg_jacobian_policy_t	= ::pressio::rom::impl::LSPGUnsteadyJacobianPolicyVelocityApi<
     fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops_t>;
 
   using aux_stepper_t = typename ::pressio::rom::impl::auxStepperHelper<

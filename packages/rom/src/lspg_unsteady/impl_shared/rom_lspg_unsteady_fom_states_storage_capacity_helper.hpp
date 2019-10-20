@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_residual_policy.hpp
+// rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,81 +46,28 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
-#define ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
+#ifndef ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
+#define ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
 
 #include "../../rom_fwd.hpp"
+#include "../../../../ode/src/ode_fwd.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace impl{
 
-template <
-  typename residual_type,
-  typename fom_states_data,
-  typename fom_eval_rhs_policy
-  >
-class LSPGSteadyResidualPolicy
-  : protected fom_eval_rhs_policy{
+template <ode::ImplicitEnum odeName>
+struct fomStatesStorageCapacityHelper{
+  static constexpr int value = 1;
+};
 
-public:
-  using this_t = LSPGSteadyResidualPolicy<residual_type,
-					  fom_states_data,
-					  fom_eval_rhs_policy>;
+template <>
+struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::Euler>{
+  static constexpr int value = 1;
+};
 
-  static constexpr bool isResidualPolicy_ = true;
-  using residual_t = residual_type;
+template <>
+struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::BDF2>{
+  static constexpr int value = 2;
+};
 
-public:
-  LSPGSteadyResidualPolicy() = delete;
-  ~LSPGSteadyResidualPolicy() = default;
-
-  LSPGSteadyResidualPolicy(const residual_t & RIn,
-			   fom_states_data & fomStatesIn,
-			   const fom_eval_rhs_policy & fomEvalRhsFunctor)
-    : R_{RIn},
-      fomStates_(fomStatesIn),
-      fom_eval_rhs_policy(fomEvalRhsFunctor){}
-
-public:
-  template <
-    typename lspg_state_t,
-    typename lspg_residual_t,
-    typename fom_t>
-  void operator()(const lspg_state_t	& romY,
-		  lspg_residual_t	& romR,
-  		  const fom_t		& app) const
-  {
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("lspg residual");
-#endif
-
-    fomStates_.template reconstructCurrentFomState(romY);
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->start("fom eval rhs");
-#endif
-
-    fom_eval_rhs_policy::evaluate(app, fomStates_.getCRefToFomState(), romR);
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("fom eval rhs");
-    timer->stop("lspg residual");
-#endif
-  }
-
-  template <typename lspg_state_t, typename fom_t>
-  residual_t operator()(const lspg_state_t & romY,
-		       const fom_t	  & app) const
-  {
-    (*this).template operator()(romY, R_, app);
-    return R_;
-  }
-
-protected:
-  mutable residual_t R_ = {};
-  fom_states_data & fomStates_;
-
-};//end class
-
-}}//end namespace pressio::rom
+}}}//end  namespace pressio::rom::impl
 #endif

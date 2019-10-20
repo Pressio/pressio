@@ -49,8 +49,8 @@
 #ifndef ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_RESIDUAL_API_HPP_
 #define ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_RESIDUAL_API_HPP_
 
-#include "../../../../rom_ConfigDefs.hpp"
-#include "../../../../rom_fwd.hpp"
+#include "../../rom_ConfigDefs.hpp"
+#include "../../rom_fwd.hpp"
 #include "rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{

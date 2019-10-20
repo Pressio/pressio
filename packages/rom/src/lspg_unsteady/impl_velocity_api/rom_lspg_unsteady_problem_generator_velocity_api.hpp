@@ -49,22 +49,30 @@
 #ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_API_HPP_
 #define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_API_HPP_
 
-#include "rom_lspg_unsteady_problem_type_generator_default.hpp"
-#include "rom_lspg_unsteady_problem_type_generator_masked.hpp"
-#include "rom_lspg_unsteady_problem_type_generator_preconditioned.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_default_velocity_api.hpp"
+// #include "rom_lspg_unsteady_problem_type_generator_masked.hpp"
+// #include "rom_lspg_unsteady_problem_type_generator_preconditioned.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace impl{
 
-template <typename lspg_problem_t>
-class LSPGUnsteadyProblemGenerator<
-  lspg_problem_t,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<
-      typename lspg_problem_t::fom_t
-      >::value
-    >
+template <
+  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
+  ::pressio::ode::ImplicitEnum odeName,
+  typename fom_type,
+  typename lspg_state_type,
+  typename ...Args
   >
+struct LSPGUnsteadyProblemGeneratorVelocityAPI
 {
+  /* here, the fom_type must satisfy the velocity api */
+  static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
+		 "\nYou are trying to generate an unsteady LSPG problem \n \
+requiring a fom adapter class to meet the velocity API. \n \
+However, the fom/adapter type you passed does not meet the velocity API. \n \
+Verify the fom/adapter class you are using meets the velocity API.");
+
+  // define the type holding types for the problem
+  using lspg_problem_t = lspg_t<odeName, fom_type, lspg_state_type, Args...>;
 
 public:
   using fom_t			= typename lspg_problem_t::fom_t;
@@ -128,7 +136,7 @@ public:
       std::is_void<_ud_ops_t>::value
       > * = nullptr
   >
-  LSPGUnsteadyProblemGenerator(const fom_t	 & appObj,
+  LSPGUnsteadyProblemGeneratorVelocityAPI(const fom_t	 & appObj,
   			       const fom_native_state_t & fomStateReferenceNative,
   			       decoder_t	 & decoder,
   			       lspg_state_t	 & yROM,
@@ -139,9 +147,14 @@ public:
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
       fomStates_(fomStateReference_, fomStateReconstructor_),
-      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj, fomStateReference_, decoder.getReferenceToJacobian(), t0)),
-      // here we pass a fom velocity object to the residual policy to use it to initialize the residual data
-      // since the lspg residual is of same type and size of the fom velocity (this is true w and w/o hyperreduction)
+      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
+					      fomStateReference_,
+					      decoder.getReferenceToJacobian(),
+					      t0)),
+      // here we pass a fom velocity object to the residual policy to
+      // use it to initialize the residual data
+      // since the lspg residual is of same type and size of the fom velocity
+      // (this is true w and w/o hyperreduction)
       residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_),
       jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
       auxStepperObj_{},
@@ -152,12 +165,14 @@ public:
   /*- aux stepper is non-void
    * - ud_ops_t = void */
   template <
-    typename T = aux_stepper_t,
+    typename _aux_stepper_t = aux_stepper_t,
+    typename _ud_ops_t = ud_ops_t,
     typename ::pressio::mpl::enable_if_t<
-      std::is_void<T>::value == false
+      !std::is_void<_aux_stepper_t>::value and
+      std::is_void<_ud_ops_t>::value
       > * = nullptr
-    >
-  LSPGUnsteadyProblemGenerator(const fom_t	 & appObj,
+  >
+  LSPGUnsteadyProblemGeneratorVelocityAPI(const fom_t	 & appObj,
   			       const fom_native_state_t & fomStateReferenceNative,
   			       const decoder_t	 & decoder,
   			       lspg_state_t	 & yROM,
@@ -168,9 +183,14 @@ public:
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
       fomStates_(fomStateReference_, fomStateReconstructor_),
-      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj, fomStateReference_, decoder.getReferenceToJacobian(), t0)),
-      // here we pass a fom velocity object to the residual policy to use it to initialize the residual data
-      // since the lspg residual is of same type and size of the fom velocity (this is true w and w/o hyperreduction)
+      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
+  					      fomStateReference_,
+  					      decoder.getReferenceToJacobian(),
+  					      t0)),
+      // here we pass a fom velocity object to the residual policy to
+      // use it to initialize the residual data
+      // since the lspg residual is of same type and size of the fom velocity
+      // (this is true w and w/o hyperreduction)
       residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_),
       jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
       auxStepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_),
@@ -190,7 +210,7 @@ public:
   //     !std::is_void<_ud_ops_t>::value
   //     > * = nullptr
   // >
-  // LSPGUnsteadyProblemGenerator(const fom_t	 & appObj,
+  // LSPGUnsteadyProblemGeneratorVelocityAPI(const fom_t	 & appObj,
   // 			       const fom_native_state_t & yFomRefNative,
   // 			       decoder_t	 & decoder,
   // 			       lspg_state_t	 & yROM,
@@ -211,5 +231,5 @@ public:
 
 };
 
-}}//end namespace pressio::rom
+}}}//end namespace pressio::rom::impl
 #endif

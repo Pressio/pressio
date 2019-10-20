@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_aux_stepper_type_helper.hpp
+// rom_lspg_unsteady_problem_type_generator_default_residual_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,23 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_AUX_STEPPER_TYPE_HELPER_HPP_
-#define ROM_LSPG_UNSTEADY_AUX_STEPPER_TYPE_HELPER_HPP_
+#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
+#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
 
-#include "../../../../rom_fwd.hpp"
-#include "../../../../../../ode/src/ode_fwd.hpp"
+// #include "../impl_shared/rom_lspg_unsteady_type_generator_common_residual_api.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{
 
 template <
   ::pressio::ode::ImplicitEnum odeName,
-  typename ... Rest
+  typename fom_type,
+  typename lspg_state_type,
+  typename ... Args
   >
-struct auxStepperHelper{
-  using type = void;
-};
+struct DefaultLSPGUnsteadyTypeGeneratorResidualAPI{
 
-template <typename ... Rest>
-struct auxStepperHelper<::pressio::ode::ImplicitEnum::BDF2, Rest...>
-{
-  using type = ::pressio::ode::ImplicitStepper<
-    ::pressio::ode::ImplicitEnum::Euler, Rest...>;
-};
+};//end class
+
 
 }}}//end  namespace pressio::rom::impl
 #endif

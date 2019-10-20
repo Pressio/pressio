@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp
+// rom_lspg_unsteady_problem_generator.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,75 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
-#define ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
+#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
 
-#include "../../../../rom_fwd.hpp"
-#include "../../../../../../ode/src/ode_fwd.hpp"
+#include "./impl_velocity_api/rom_lspg_unsteady_problem_generator_velocity_api.hpp"
+#include "./impl_residual_api/rom_lspg_unsteady_problem_generator_residual_api.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{
 
-template <ode::ImplicitEnum odeName>
-struct fomStatesStorageCapacityHelper{
-  static constexpr int value = 1;
+namespace impl{
+
+template <typename T, typename enable = void>
+struct LSPGUnsteadyProblemHelper
+{
+  template <
+    template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
+    ::pressio::ode::ImplicitEnum name,
+    typename lspg_state_t,
+    typename ...Args
+    >
+  using type = void;
 };
 
-template <>
-struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::Euler>{
-  static constexpr int value = 1;
+template <typename T>
+struct LSPGUnsteadyProblemHelper<
+  T,
+  mpl::enable_if_t<
+    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
+    >
+  >
+{
+  template <
+    template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
+    ::pressio::ode::ImplicitEnum name,
+    typename lspg_state_t,
+    typename ...Args
+    >
+    using type = impl::LSPGUnsteadyProblemGeneratorVelocityAPI<lspg_t, name, T, lspg_state_t, Args...>;
 };
 
-template <>
-struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::BDF2>{
-  static constexpr int value = 2;
+
+template <typename T>
+struct LSPGUnsteadyProblemHelper<
+  T,
+  mpl::enable_if_t<
+    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
+    >
+  >
+{
+  template <
+    template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
+    ::pressio::ode::ImplicitEnum name,
+    typename lspg_state_t,
+    typename ...Args
+    >
+    using type = impl::LSPGUnsteadyProblemGeneratorResidualAPI<lspg_t, name, T, lspg_state_t, Args...>;
 };
 
-}}}//end  namespace pressio::rom::impl
+}// end namespace pressio::rom::impl
+
+
+template <
+  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_type,
+  ::pressio::ode::ImplicitEnum odeName,
+  typename fom_type,
+  typename lspg_state_t,
+  typename ...Args
+  >
+using LSPGUnsteadyProblem =
+  typename impl::LSPGUnsteadyProblemHelper<fom_type>::template type<lspg_type, odeName, lspg_state_t, Args...>;
+
+}}//end namespace pressio::rom
 #endif

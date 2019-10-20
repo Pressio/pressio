@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ROM_LSPG"
+#include "ROM_LSPG_UNSTEADY"
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
 #include "Epetra_IntVector.h"

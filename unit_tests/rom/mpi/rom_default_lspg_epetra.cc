@@ -1,6 +1,8 @@
 
 #include <gtest/gtest.h>
-#include "ROM_LSPG"
+#include "CONTAINERS_ALL"
+#include "ODE_ALL"
+#include "ROM_LSPG_UNSTEADY"
 #include "epetra_skeleton.hpp"
 
 TEST(lspg, epetra_types)
@@ -13,11 +15,11 @@ TEST(lspg, epetra_types)
   using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
 
-  // define LSPG type
-  using lspg_problem_types = pressio::rom::DefaultLSPGUnsteadyTypeGenerator<
-    fom_t, pressio::ode::ImplicitEnum::Euler, decoder_t, lspg_state_t>;
+  static_assert(::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_t>::value , "");
 
-  using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;
-
+  constexpr auto ode_case  = pressio::ode::ImplicitEnum::Euler;
+  using lspg_problem = pressio::rom::LSPGUnsteadyProblem<
+    pressio::rom::DefaultLSPGUnsteady, ode_case, fom_t, lspg_state_t, decoder_t>;
+  using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
   static_assert(!std::is_void<lspg_stepper_t>::value, "");
 }

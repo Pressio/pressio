@@ -49,24 +49,26 @@
 #ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_API_HPP_
 #define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_API_HPP_
 
-#include "rom_lspg_unsteady_problem_type_generator_default.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_default_residual_api.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace impl{
 
-template <typename lspg_problem_t>
-class LSPGUnsteadyProblemGenerator<
-  lspg_problem_t,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<
-      typename lspg_problem_t::fom_t
-      >::value
-    >
+template <
+  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
+  ::pressio::ode::ImplicitEnum odeName,
+  typename fom_t,
+  typename lspg_state_t,
+  typename ...Args
   >
+class LSPGUnsteadyProblemGeneratorResidualAPI
 {
+  // ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<
+  //     typename lspg_problem_t::fom_t
+  //     >::value
 
-public:
-  using fom_t			= typename lspg_problem_t::fom_t;
-  using scalar_t		= typename lspg_problem_t::scalar_t;
+// public:
+//   using fom_t			= typename lspg_problem_t::fom_t;
+//   using scalar_t		= typename lspg_problem_t::scalar_t;
   // using fom_native_state_t	= typename lspg_problem_t::fom_native_state_t;
   // using fom_state_t		= typename lspg_problem_t::fom_state_t;
   // using fom_velocity_t		= typename lspg_problem_t::fom_velocity_t;
@@ -148,5 +150,5 @@ public:
 
 };
 
-}}//end namespace pressio::rom
+}}}//end namespace pressio::rom::impl
 #endif

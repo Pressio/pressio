@@ -50,11 +50,11 @@
 #define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_API_HPP_
 
 #include "../../rom_fwd.hpp"
-#include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "../../rom_data_fom_states.hpp"
+#include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "rom_lspg_time_discrete_residual.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace impl{
 
 template <
   typename residual_type,
@@ -63,7 +63,7 @@ template <
   typename ud_ops
   >
 class LSPGUnsteadyResidualPolicyVelocityApi
-  : public ode::policy::ImplicitResidualPolicyBase<
+  : public ::pressio::ode::policy::ImplicitResidualPolicyBase<
       LSPGUnsteadyResidualPolicyVelocityApi<residual_type,
 			 fom_states_data_type,
 			 fom_velocity_eval_policy,
@@ -76,7 +76,7 @@ public:
 				    fom_states_data_type,
 				    fom_velocity_eval_policy,
 				    ud_ops>;
-  friend ode::policy::ImplicitResidualPolicyBase<this_t>;
+  friend ::pressio::ode::policy::ImplicitResidualPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
@@ -149,7 +149,7 @@ public:
 
 public:
   template <
-    ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeMethod,
     int n,
     typename lspg_state_t,
     typename fom_t,
@@ -167,7 +167,7 @@ public:
   }
 
   template <
-    ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeMethod,
     int n,
     typename lspg_state_t,
     typename fom_t,
@@ -187,7 +187,7 @@ public:
 
 private:
   template <
-    ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeMethod,
     int n,
     typename state_t,
     typename scalar_t,
@@ -206,7 +206,7 @@ private:
   }
 
   template <
-    ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeMethod,
     int n,
     typename state_t,
     typename scalar_t,
@@ -225,7 +225,7 @@ private:
   }
 
   template <
-    ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeMethod,
     int n,
     typename lspg_state_t,
     typename fom_t,
@@ -281,5 +281,5 @@ protected:
 
 };//end class
 
-}}//end namespace pressio::rom
+}}}//end namespace pressio::rom::impl
 #endif

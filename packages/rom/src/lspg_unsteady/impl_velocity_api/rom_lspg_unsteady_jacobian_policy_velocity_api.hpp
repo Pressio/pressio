@@ -50,11 +50,11 @@
 #define ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_VELOCITY_API_HPP_
 
 #include "../../rom_fwd.hpp"
-#include "rom_lspg_time_discrete_jacobian.hpp"
-#include "../../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "../../rom_data_fom_states.hpp"
+#include "../../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
+#include "rom_lspg_time_discrete_jacobian.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace impl{
 
 template<
   typename fom_states_data_type,
@@ -64,7 +64,7 @@ template<
   typename ud_ops
   >
 class LSPGUnsteadyJacobianPolicyVelocityApi
-  : public ode::policy::JacobianPolicyBase<
+  : public ::pressio::ode::policy::JacobianPolicyBase<
 	LSPGUnsteadyJacobianPolicyVelocityApi<fom_states_data_type,
 			   apply_jac_return_type,
 			   fom_apply_jac_policy,
@@ -80,7 +80,7 @@ public:
 				    decoder_type,
 				    ud_ops>;
 
-  friend ode::policy::JacobianPolicyBase<this_t>;
+  friend ::pressio::ode::policy::JacobianPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
@@ -154,7 +154,7 @@ public:
 
 
 public:
-  template <ode::ImplicitEnum odeMethod,
+  template <::pressio::ode::ImplicitEnum odeMethod,
 	    typename lspg_state_t,
 	    typename lspg_jac_t,
 	    typename app_t,
@@ -170,7 +170,7 @@ public:
   }
 
 
-  template <ode::ImplicitEnum odeMethod,
+  template <::pressio::ode::ImplicitEnum odeMethod,
 	    typename lspg_state_t,
 	    typename app_t,
 	    typename scalar_t>
@@ -186,7 +186,7 @@ public:
 
 private:
   template <
-    ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeMethod,
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
@@ -203,7 +203,7 @@ private:
 
 
   template <
-    ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeMethod,
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
@@ -219,7 +219,7 @@ private:
   }
 
 
-  template <ode::ImplicitEnum odeMethod,
+  template <::pressio::ode::ImplicitEnum odeMethod,
 	    typename lspg_state_t,
 	    typename lspg_jac_t,
 	    typename app_t,
@@ -278,5 +278,5 @@ protected:
 
 };
 
-}}//end namespace pressio::rom
+}}}//end namespace pressio::rom::impl
 #endif

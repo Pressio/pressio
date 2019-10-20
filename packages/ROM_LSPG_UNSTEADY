@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ROM_LSPG
+// ROM_LSPG_UNSTEADY
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,25 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_HPP_
-#define ROM_LSPG_HPP_
+#ifndef ROM_LSPG_UNSTEADY_HPP_
+#define ROM_LSPG_UNSTEADY_HPP_
 
 #include "ROM_BASIC"
 
 #include "rom/src/meta/rom_is_legitimate_model_for_unsteady_lspg.hpp"
 
-#include "rom/src/lspg/unsteady/generator/rom_lspg_unsteady_problem_generator_velocity_api.hpp"
+#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_default.hpp"
+#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_masked.hpp"
+#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_preconditioned.hpp"
+#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_generator.hpp"
 
-#include "rom/src/lspg/unsteady/rom_lspg_unsteady_residual_policy_velocity_api.hpp"
-#include "rom/src/lspg/unsteady/rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
-#include "rom/src/lspg/unsteady/rom_lspg_time_discrete_residual.hpp"
-#include "rom/src/lspg/unsteady/rom_lspg_time_discrete_jacobian.hpp"
+#include "rom/src/lspg_unsteady/impl_velocity_api/rom_lspg_time_discrete_jacobian.hpp"
+#include "rom/src/lspg_unsteady/impl_velocity_api/rom_lspg_time_discrete_residual.hpp"
+#include "rom/src/lspg_unsteady/impl_velocity_api/rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
+#include "rom/src/lspg_unsteady/impl_velocity_api/rom_lspg_unsteady_problem_generator_velocity_api.hpp"
+#include "rom/src/lspg_unsteady/impl_velocity_api/rom_lspg_unsteady_problem_type_generator_default_velocity_api.hpp"
+#include "rom/src/lspg_unsteady/impl_velocity_api/rom_lspg_unsteady_residual_policy_velocity_api.hpp"
+#include "rom/src/lspg_unsteady/impl_velocity_api/rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
+
 
 #endif
