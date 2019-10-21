@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_model_meets_residual_api_for_unsteady_lspg.hpp
+// rom_has_apply_time_discrete_jacobian_method_callable_with_three_args.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,40 @@
 //@HEADER
 */
 
-#ifndef ROM_MODEL_MEETS_RESIDUAL_API_FOR_UNSTEADY_LSPG_HPP_
-#define ROM_MODEL_MEETS_RESIDUAL_API_FOR_UNSTEADY_LSPG_HPP_
-
-#include "../../../ode/src/meta/ode_has_state_typedef.hpp"
-#include "rom_has_residual_typedef.hpp"
-#include "rom_has_dense_matrix_typedef.hpp"
-#include "rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"
-#include "../../../ode/src/meta/ode_has_needed_time_discrete_residual_methods.hpp"
-#include "../../../ode/src/meta/ode_has_needed_time_discrete_jacobian_methods.hpp"
+#ifndef ROM_HAS_APPLY_TIME_DISCRETE_JACOBIAN_METHOD_CALLABLE_WITH_THREE_ARGS_HPP_
+#define ROM_HAS_APPLY_TIME_DISCRETE_JACOBIAN_METHOD_CALLABLE_WITH_THREE_ARGS_HPP_
 
 namespace pressio{ namespace rom{ namespace meta {
 
-template<typename T, typename enable = void>
-struct model_meets_residual_api_for_unsteady_lspg : std::false_type{};
+template <
+  typename T,
+  typename state_t,
+  typename sc_t,
+  typename dense_mat_t,
+  typename = void
+  >
+struct has_apply_time_discrete_jacobian_method_callable_with_three_args
+  : std::false_type{};
 
-template<typename T>
-struct model_meets_residual_api_for_unsteady_lspg<
-  T,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<T>::value and
-    ::pressio::ode::meta::has_state_typedef<T>::value and
-    ::pressio::rom::meta::has_residual_typedef<T>::value and
-    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value and
-    ::pressio::ode::meta::has_needed_time_discrete_residual_methods<
-      T, ::pressio::ode::types::step_t,
-      typename T::scalar_type,
-      typename T::state_type,
-      typename T::residual_type
+template <
+  typename T,
+  typename state_t,
+  typename sc_t,
+  typename dense_mat_t
+  >
+struct has_apply_time_discrete_jacobian_method_callable_with_three_args<
+  T, state_t, sc_t, dense_mat_t,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<dense_mat_t>::value and
+    mpl::is_same<
+      dense_mat_t,
+      decltype(
+	       std::declval<T const>().applyTimeDiscreteJacobian(
+								 std::declval<state_t const &>(),
+								 std::declval<dense_mat_t const &>(),
+								 std::declval<sc_t const &>()
+								 )
+	       )
       >::value
     >
   > : std::true_type{};

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_VELOCITY_API_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_VELOCITY_API_HPP_
+#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_VELOCITY_api_HPP_
+#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_VELOCITY_api_HPP_
 
 #include "rom_lspg_unsteady_residual_policy_velocity_api.hpp"
 #include "rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
@@ -64,7 +64,7 @@ template <typename fom_type, typename lspg_state_type>
 struct CommonTypesHelper<fom_type, lspg_state_type>
 {
   template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityAPI<true, odeName, fom_type, lspg_state_type, Args...>;
+  using type = LSPGUnsteadyCommonTypesVelocityApi<true, odeName, fom_type, lspg_state_type, Args...>;
 };
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -78,7 +78,7 @@ struct CommonTypesHelper<
   >
 {
   template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityAPI<false, odeName, fom_type, lspg_state_type, Args...>;
+  using type = LSPGUnsteadyCommonTypesVelocityApi<false, odeName, fom_type, lspg_state_type, Args...>;
 };
 #endif
 
@@ -90,21 +90,22 @@ template <
   typename lspg_state_type,
   typename ... Args
   >
-struct DefaultLSPGUnsteadyTypeGeneratorVelocityAPI{
+struct DefaultLSPGUnsteadyTypeGeneratorVelocityApi{
+
+  static_assert( odeName != ::pressio::ode::ImplicitEnum::Arbitrary,
+		 "\nTo use unsteady LSPG with the velocity api, \n \
+you cannot pass ode::ImplicitEnum::Arbitrary since that is only \n \
+valid when using the residual api. For the velocity api you need \n \
+to pass a valid enum from the ode steppers, like ImplicitEnum::Euler/BDF2");
 
   /* here, the fom_type must satisfy the velocity api */
   static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
-		 "\nUsing DefaultLSPGUnsteadyTypeGeneratorVelocityAPI \n \
-requires a fom adapter class that meets the velocity API. \n \
-However, the fom/adapter type you passed does not meet the velocity API. \n \
-Verify the fom/adapter class you are using meets the velocity API.");
+		 "\nUsing DefaultLSPGUnsteadyTypeGeneratorVelocityApi \n \
+requires a fom adapter class that meets the velocity api. \n \
+However, the fom/adapter type you passed does not meet the velocity api. \n \
+Verify the fom/adapter class you are using meets the velocity api.");
 
-  static_assert( odeName != ::pressio::ode::ImplicitEnum::Arbitrary,
-		 "\nTo use unsteady LSPG with the velocity API, \n \
-you cannot pass ode::ImplicitEnum::Arbitrary since that is only \n \
-valid when using the residual API. For the velocity API you need \n \
-to pass a valid enum from the ode steppers, like ImplicitEnum::Euler/BDF2");
-
+  // pick the common types holder
   using common_types_t
   = typename CommonTypesHelper<fom_type, lspg_state_type>::template type< odeName, Args...>;
 
@@ -138,12 +139,12 @@ to pass a valid enum from the ode steppers, like ImplicitEnum::Euler/BDF2");
     fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops_t>;
 
   using aux_stepper_t = typename ::pressio::rom::impl::auxStepperHelper<
-    odeName, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_type,
+    odeName, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
     lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>::type;
 
   // declare type of stepper object
   using lspg_stepper_t		= ::pressio::ode::ImplicitStepper<
-    odeName, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_type,
+    odeName, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
     aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>;
 
 };//end class

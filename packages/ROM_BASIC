@@ -54,8 +54,6 @@
 
 #include "rom/src/rom_matrix_operator.hpp"
 #include "rom/src/rom_multi_vector_operator.hpp"
-
-//#include "rom/src/rom_data_fom_rhs.hpp"
 #include "rom/src/rom_data_fom_states.hpp"
 #include "rom/src/rom_reconstructor_fom_state.hpp"
 

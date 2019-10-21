@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
-#define ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
+#ifndef ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_api_HPP_
+#define ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_api_HPP_
 
 #include "../../rom_fwd.hpp"
 #include "../../meta/rom_is_legitimate_decoder_type.hpp"
@@ -62,7 +62,7 @@ template <
   typename fom_type,
   typename lspg_state_type,
   typename ...Args>
-struct LSPGUnsteadyCommonTypesVelocityAPI;
+struct LSPGUnsteadyCommonTypesVelocityApi;
 
 
 //-------------------------------------------------------
@@ -73,7 +73,7 @@ template <
   typename fom_type,
   typename lspg_state_type,
   typename ...Args>
-struct LSPGUnsteadyCommonTypesVelocityAPI<
+struct LSPGUnsteadyCommonTypesVelocityApi<
   true, odeName, fom_type, lspg_state_type, Args ...
   >
 {
@@ -151,7 +151,7 @@ struct LSPGUnsteadyCommonTypesVelocityAPI<
 // //   ode::ImplicitEnum odeName,
 // //   typename ud_ops
 // //   >
-// // struct LSPGUnsteadyCommonTypesVelocityAPI<
+// // struct LSPGUnsteadyCommonTypesVelocityApi<
 // //   fom_type, decoder_type, lspg_state_type, odeName, ud_ops,
 // //   mpl::enable_if_t<
 // //     ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value and
@@ -164,7 +164,7 @@ struct LSPGUnsteadyCommonTypesVelocityAPI<
 //   typename fom_type,
 //   typename lspg_state_type,
 //   typename ...Args>
-// struct LSPGUnsteadyCommonTypesVelocityAPI<
+// struct LSPGUnsteadyCommonTypesVelocityApi<
 //   false, odeName, fom_type, lspg_state_type, Args ...
 //   >
 // {

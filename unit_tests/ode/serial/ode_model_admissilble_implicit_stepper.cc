@@ -40,7 +40,7 @@ TEST(ode_implicit, checkModelsVelocityMethodsMissing){
   using nstate_t = typename app_t::state_type;
   using nvel_t   = typename app_t::velocity_type;
 
-  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
+  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<app_t>::value, "");
   static_assert(!::pressio::ode::meta::model_has_needed_velocity_methods<
 		app_t, nstate_t, nvel_t, sc_t>::value, "");
 }
@@ -51,7 +51,7 @@ TEST(ode_implicit, checkModelsVelocityNonVoidMethodMissing){
   using sc_t	 = typename app_t::scalar_type;
   using nstate_t = typename app_t::state_type;
   using nvel_t   = typename app_t::velocity_type;
-  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
+  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<app_t>::value, "");
   static_assert(!::pressio::ode::meta::model_has_needed_velocity_methods<
 		app_t, nstate_t, nvel_t, sc_t>::value, "");
 }
@@ -62,7 +62,7 @@ TEST(ode_implicit, checkModelsVelocityVoidMethodMissing){
   using sc_t	 = typename app_t::scalar_type;
   using nstate_t = typename app_t::state_type;
   using nvel_t   = typename app_t::velocity_type;
-  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
+  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<app_t>::value, "");
   static_assert(!::pressio::ode::meta::model_has_needed_velocity_methods<
 		app_t, nstate_t, nvel_t, sc_t>::value, "");
 }
@@ -75,7 +75,7 @@ TEST(ode_implicit, checkModelsJacobianMethodsMissing){
   using nstate_t = typename app_t::state_type;
   using njac_t   = typename app_t::jacobian_type;
 
-  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
+  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<app_t>::value, "");
   static_assert(!::pressio::ode::meta::model_has_needed_jacobian_methods<
 		app_t, nstate_t, njac_t, sc_t>::value, "");
 }
@@ -87,7 +87,7 @@ TEST(ode_implicit, checkModelsJacobianVoidMethodMissing){
   using nstate_t = typename app_t::state_type;
   using njac_t   = typename app_t::jacobian_type;
 
-  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
+  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<app_t>::value, "");
   static_assert(!::pressio::ode::meta::model_has_needed_jacobian_methods<
 		app_t, nstate_t, njac_t, sc_t>::value, "");
 }
@@ -99,7 +99,7 @@ TEST(ode_implicit, checkModelsJacobianNonVoidMethodMissing){
   using nstate_t = typename app_t::state_type;
   using njac_t   = typename app_t::jacobian_type;
 
-  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
+  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<app_t>::value, "");
   static_assert(!::pressio::ode::meta::model_has_needed_jacobian_methods<
 		app_t, nstate_t, njac_t, sc_t>::value, "");
 }
@@ -111,12 +111,12 @@ TEST(ode_implicit, checkModelsConstMissing){
   using nstate_t = typename app_t::state_type;
   using njac_t   = typename app_t::jacobian_type;
 
-  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
+  static_assert(!ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<app_t>::value, "");
 }
 
 
 TEST(ode_implicit, checkModelsValid){
   using namespace pressio;
   using app_t	 = ode::testing::ModelForImplicitValid;
-  static_assert(ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
+  static_assert(ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<app_t>::value, "");
 }

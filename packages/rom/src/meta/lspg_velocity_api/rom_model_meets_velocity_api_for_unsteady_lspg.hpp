@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_residual_typedef.hpp
+// rom_model_meets_velocity_api_for_unsteady_lspg.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,45 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_RESIDUAL_TYPEDEF_HPP_
-#define ROM_HAS_RESIDUAL_TYPEDEF_HPP_
+#ifndef ROM_MODEL_MEETS_VELOCITY_api_FOR_UNSTEADY_LSPG_HPP_
+#define ROM_MODEL_MEETS_VELOCITY_api_FOR_UNSTEADY_LSPG_HPP_
 
-#include <type_traits>
+#include "../../../../ode/src/meta/ode_has_state_typedef.hpp"
+#include "../../../../ode/src/meta/ode_has_velocity_typedef.hpp"
+#include "../../../../ode/src/meta/ode_has_jacobian_typedef.hpp"
+#include "../rom_has_dense_matrix_typedef.hpp"
+#include "rom_model_has_needed_velocity_methods.hpp"
+#include "rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
 
-template <typename T, typename enable = void>
-struct has_residual_typedef : std::false_type{};
+template<typename T, typename enable = void>
+struct model_meets_velocity_api_for_unsteady_lspg : std::false_type{};
 
-template <typename T>
-struct has_residual_typedef<
+template<typename T>
+struct model_meets_velocity_api_for_unsteady_lspg<
   T,
   mpl::enable_if_t<
-    !std::is_void<
-      typename T::residual_type
+    ::pressio::containers::meta::has_scalar_typedef<T>::value and
+    ::pressio::ode::meta::has_state_typedef<T>::value and
+    ::pressio::ode::meta::has_velocity_typedef<T>::value and
+    ::pressio::ode::meta::has_jacobian_typedef<T>::value and
+    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value and
+    ::pressio::rom::meta::model_has_needed_velocity_methods<
+      T,
+      typename T::state_type,
+      typename T::velocity_type,
+      typename T::scalar_type
+      >::value and
+    ::pressio::rom::meta::model_has_needed_apply_jacobian_methods_for_unsteady<
+      T,
+      typename T::state_type,
+      typename T::scalar_type,
+      typename T::dense_matrix_type
       >::value
     >
   > : std::true_type{};
 
-}}}//end namespace pressio::rom::meta
+
+}}} // namespace pressio::rom::meta
 #endif

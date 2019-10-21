@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_generator.hpp
+// rom_model_has_needed_apply_time_discrete_jacobian_methods.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,75 +46,42 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
-#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+#ifndef ROM_MODEL_HAS_NEEDED_APPLY_TIME_DISCRETE_JACOBIAN_METHODS_HPP_
+#define ROM_MODEL_HAS_NEEDED_APPLY_TIME_DISCRETE_JACOBIAN_METHODS_HPP_
 
-#include "./impl_velocity_api/rom_lspg_unsteady_problem_generator_velocity_api.hpp"
-#include "./impl_residual_api/rom_lspg_unsteady_problem_generator_residual_api.hpp"
+#include "rom_has_apply_time_discrete_jacobian_method_callable_with_three_args.hpp"
+#include "rom_has_apply_time_discrete_jacobian_method_callable_with_four_args.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace meta {
 
-namespace impl{
+template<
+  typename model_type,
+  typename state_type,
+  typename scalar_type,
+  typename dense_mat_type,
+  typename enable = void
+  >
+struct model_has_needed_apply_time_discrete_jacobian_methods
+  : std::false_type{};
 
-template <typename T, typename enable = void>
-struct LSPGUnsteadyProblemHelper
-{
-  template <
-    template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
-    ::pressio::ode::ImplicitEnum name,
-    typename lspg_state_t,
-    typename ...Args
-    >
-  using type = void;
-};
-
-template <typename T>
-struct LSPGUnsteadyProblemHelper<
-  T,
+template<
+  typename model_type,
+  typename state_type,
+  typename scalar_type,
+  typename dense_mat_type
+  >
+struct model_has_needed_apply_time_discrete_jacobian_methods<
+  model_type, state_type, scalar_type, dense_mat_type,
   mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
+    ::pressio::rom::meta::has_apply_time_discrete_jacobian_method_callable_with_three_args<
+      model_type, state_type, scalar_type, dense_mat_type
+      >::value and
+    ::pressio::rom::meta::has_apply_time_discrete_jacobian_method_callable_with_four_args<
+      model_type, state_type, scalar_type, dense_mat_type
+      >::value
     >
-  >
-{
-  template <
-    template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
-    ::pressio::ode::ImplicitEnum name,
-    typename lspg_state_t,
-    typename ...Args
-    >
-    using type = impl::LSPGUnsteadyProblemGeneratorVelocityApi<lspg_t, name, T, lspg_state_t, Args...>;
-};
+  > : std::true_type{};
 
 
-template <typename T>
-struct LSPGUnsteadyProblemHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
-    >
-  >
-{
-  template <
-    template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
-    ::pressio::ode::ImplicitEnum name,
-    typename lspg_state_t,
-    typename ...Args
-    >
-    using type = impl::LSPGUnsteadyProblemGeneratorResidualApi<lspg_t, name, T, lspg_state_t, Args...>;
-};
-
-}// end namespace pressio::rom::impl
-
-
-template <
-  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_type,
-  ::pressio::ode::ImplicitEnum odeName,
-  typename fom_type,
-  typename lspg_state_t,
-  typename ...Args
-  >
-using LSPGUnsteadyProblem =
-  typename impl::LSPGUnsteadyProblemHelper<fom_type>::template type<lspg_type, odeName, lspg_state_t, Args...>;
-
-}}//end namespace pressio::rom
+}}} // namespace pressio::rom::meta
 #endif

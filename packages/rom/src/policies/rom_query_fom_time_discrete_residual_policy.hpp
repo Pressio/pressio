@@ -54,32 +54,43 @@ namespace pressio{ namespace rom{ namespace policy{
 struct QueryFomTimeDiscreteResidual
 {
   template <
-    int numStates,
-    typename fom_t, typename step_t, typename time_t, typename fom_state_t,
-    mpl::enable_if_t< n == 1 > * = nullptr
+    typename fom_t,
+    typename step_t,
+    typename time_t,
+    typename result_t,
+    typename fom_state_t
     >
   void evaluate(const fom_t   & fomObj,
-		const step_t  & step,
-		const time_t  & time,
-		const fom_state_t & fomState,
-		const std::array<numStates, fom_state_t> & fomPrevStates,
-		result_t      & R) const
+  		const step_t  & step,
+  		const time_t  & time,
+  		result_t & R,
+  		const fom_state_t & fomState,
+  		const std::array<fom_state_t, 1> & fomPrevStates) const
   {
-    fomObj.template timeDiscreteResidual(step, time, *R.data(),
-					 *fomState.data(),
-					 *fomStates[0].data());
+    fomObj.template timeDiscreteResidual(step, time,
+  					 *R.data(),
+    					 *fomState.data(),
+    					 *fomPrevStates[0].data());
   }
 
-  // template <
-  //   typename fom_t, typename state_t, typename time_t
-  //   >
-  // auto evaluate(const fom_t	& fomObj,
-  // 		const state_t & yFOM,
-  // 		time_t		t) const
-  //   -> decltype(fomObj.velocity(*yFOM.data(), t))
-  // {
-  //   return fomObj.velocity(*yFOM.data(), t);
-  // }
+  template <
+    typename fom_t,
+    typename step_t,
+    typename time_t,
+    typename fom_state_t
+    >
+  auto evaluate(const fom_t   & fomObj,
+  		const step_t  & step,
+  		const time_t  & t,
+  		const fom_state_t & fomState,
+  		const std::array<fom_state_t, 1> & fomPrevStates) const
+    -> decltype(
+  		fomObj.template timeDiscreteResidual(step, t, *fomState.data(),
+						     *(fomPrevStates[0].data()))
+  		)
+  {
+    return fomObj.template timeDiscreteResidual(step, t, *fomState.data(), *(fomPrevStates[0].data()));
+  }
 
 };
 

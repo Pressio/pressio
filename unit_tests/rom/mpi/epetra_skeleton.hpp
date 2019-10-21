@@ -29,8 +29,6 @@ public:
   ~EpetraSkeleton() = default;
 
 public:
-  state_type const & getInitialState() const;
-
   void velocity(const state_type & u,
 		const scalar_type /* t */,
 		velocity_type & f) const;

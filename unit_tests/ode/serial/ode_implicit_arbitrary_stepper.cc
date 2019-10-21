@@ -99,16 +99,6 @@ TEST(ode_implicit, validArbitraryStepper){
   using res_t	 = containers::Vector<nres_t>;
   using jac_t    = containers::Matrix<njac_t>;
 
-  // using residual_policy_t = ResidualPolicy<state_t, app_t, res_t>;
-  // static_assert
-  //   (ode::meta::is_legitimate_residual_policy_for_implicit_arbitrary_stepper<
-  //    residual_policy_t, 1, state_t, res_t, app_t, double>::value, "");
-
-  // using jacobian_policy_t = JacobianPolicy<state_t, app_t, jac_t>;
-  // static_assert
-  //   (ode::meta::is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper<
-  //    jacobian_policy_t, 1, state_t, jac_t, app_t, double>::value, "");
-
   using stepper_order = ode::types::StepperOrder<1>;
   using stepper_n_states = ode::types::StepperTotalNumberOfStates<2>;
 

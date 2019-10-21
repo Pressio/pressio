@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_needed_time_discrete_residual_method_with_void_return.hpp
+// rom_query_fom_apply_time_discrete_jacobian_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,44 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_VOID_RETURN_HPP_
-#define ROM_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_VOID_RETURN_HPP_
+#ifndef ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
+#define ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
 
-#include "rom_has_time_discrete_residual_method_accepting_two_states_returning_void.hpp"
-#include "rom_has_time_discrete_residual_method_accepting_three_states_returning_void.hpp"
+namespace pressio{ namespace rom{ namespace policy{
 
-namespace pressio{ namespace rom{ namespace meta {
+struct QueryFomApplyTimeDiscreteJacobian
+{
 
-template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t,
-  typename = void
-  >
-struct has_needed_time_discrete_residual_method_with_void_return
-  : std::false_type{};
-
-template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t
-  >
-struct has_needed_time_discrete_residual_method_with_void_return<
-  T, step_t, sc_t, state_t, residual_t,
-  ::pressio::mpl::enable_if_t<
-    // for now, just check case for two and three states passed
-    has_time_discrete_residual_method_accepting_two_states_returning_void<
-      T, step_t, sc_t, state_t, residual_t
-      >::value
-    and
-    has_time_discrete_residual_method_accepting_three_states_returning_void<
-      T, step_t, sc_t, state_t, residual_t
-      >::value
+  template <
+    typename fom_t,
+    typename state_t,
+    typename operand_t,
+    typename time_t
     >
-  > : std::true_type{};
+  auto evaluate(const fom_t	& fomObj,
+		const state_t   & yFOM,
+		const operand_t & B,
+		time_t		  t) const
+    -> decltype(fomObj.applyTimeDiscreteJacobian(*yFOM.data(), *B.data(), t))
+  {
+    return fomObj.applyTimeDiscreteJacobian(*yFOM.data(), *B.data(), t);
+  }
 
-}}} // namespace pressio::rom::meta
+  template <
+    typename fom_t,
+    typename state_t,
+    typename operand_t,
+    typename result_t,
+    typename time_t
+    >
+  void evaluate(const fom_t	  & fomObj,
+		const state_t	  & yFOM,
+		const operand_t & B,
+		result_t	  & out,
+		time_t		  t) const{
+    fomObj.applyTimeDiscreteJacobian(*yFOM.data(), *B.data(), t, *out.data());
+  }
+};
+
+}}} //end namespace pressio::rom::policy
 #endif

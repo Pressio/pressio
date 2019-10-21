@@ -69,7 +69,7 @@ namespace pressio{ namespace rom{
 //   // assert here that fom_type supports the mask interface
 
 //   using common_types_helper =
-//     impl::LSPGUnsteadyCommonTypesVelocityAPI<fom_type,
+//     impl::LSPGUnsteadyCommonTypesVelocityApi<fom_type,
 // 					     decoder_type,
 // 					     lspg_state_type,
 // 					     odeName,

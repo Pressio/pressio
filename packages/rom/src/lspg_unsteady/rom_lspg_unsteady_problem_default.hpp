@@ -71,7 +71,7 @@ struct DefaultLSPGUnsteadyHelper<
   >
 {
   template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::DefaultLSPGUnsteadyTypeGeneratorVelocityAPI<name, T, lspg_state_t, Args...>;
+  using type = impl::DefaultLSPGUnsteadyTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
 };
 
 
@@ -84,7 +84,7 @@ struct DefaultLSPGUnsteadyHelper<
   >
 {
   template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::DefaultLSPGUnsteadyTypeGeneratorResidualAPI<name, T, lspg_state_t, Args...>;
+  using type = impl::DefaultLSPGUnsteadyTypeGeneratorResidualApi<name, T, lspg_state_t, Args...>;
 };
 
 }// end namespace pressio::rom::impl

@@ -9,6 +9,7 @@ struct ValidApp{
   using scalar_type   = double;
   using state_type    = std::vector<scalar_type>;
   using residual_type = state_type;
+  using jacobian_type = std::vector<std::vector<scalar_type>>;
   using dense_matrix_type = std::vector<std::vector<scalar_type>>;
 
 private:
@@ -42,13 +43,13 @@ public:
     return g;
   }
 
-  void applyJacobian(const state_type & y,
+  void applyTimeDiscreteJacobian(const state_type & y,
 		     const dense_matrix_type & B,
 		     scalar_type t,
 		     dense_matrix_type & A) const
   {}
 
-  dense_matrix_type applyJacobian(const state_type & y,
+  dense_matrix_type applyTimeDiscreteJacobian(const state_type & y,
 				  const dense_matrix_type & B,
 				  scalar_type t) const{
     dense_matrix_type A;

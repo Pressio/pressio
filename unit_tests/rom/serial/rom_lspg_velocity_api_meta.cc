@@ -9,6 +9,7 @@ struct ValidApp{
   using scalar_type   = double;
   using state_type    = std::vector<scalar_type>;
   using velocity_type = state_type;
+  using jacobian_type = std::vector<std::vector<scalar_type>>;;
   using dense_matrix_type = std::vector<std::vector<scalar_type>>;
 
 public:

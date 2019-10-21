@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp
+// rom_model_has_needed_velocity_methods.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,38 +46,38 @@
 //@HEADER
 */
 
-#ifndef ROM_MODEL_HAS_NEEDED_APPLY_JACOBIAN_METHODS_FOR_UNSTEADY_HPP_
-#define ROM_MODEL_HAS_NEEDED_APPLY_JACOBIAN_METHODS_FOR_UNSTEADY_HPP_
+#ifndef ROM_MODEL_HAS_NEEDED_VELOCITY_METHODS_HPP_
+#define ROM_MODEL_HAS_NEEDED_VELOCITY_METHODS_HPP_
 
-#include "rom_has_apply_jacobian_method_callable_with_three_args.hpp"
-#include "rom_has_apply_jacobian_method_callable_with_four_args.hpp"
+#include "../../../../ode/src/meta/ode_has_velocity_method_callable_with_two_args.hpp"
+#include "../../../../ode/src/meta/ode_has_velocity_method_callable_with_three_args.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
 
 template<
   typename model_type,
   typename state_type,
+  typename velocity_type,
   typename scalar_type,
-  typename dense_mat_type,
   typename enable = void
   >
-struct model_has_needed_apply_jacobian_methods_for_unsteady
+struct model_has_needed_velocity_methods
   : std::false_type{};
 
 template<
   typename model_type,
   typename state_type,
-  typename scalar_type,
-  typename dense_mat_type
+  typename velocity_type,
+  typename scalar_type
   >
-struct model_has_needed_apply_jacobian_methods_for_unsteady<
-  model_type, state_type, scalar_type, dense_mat_type,
+struct model_has_needed_velocity_methods<
+  model_type, state_type, velocity_type, scalar_type,
   mpl::enable_if_t<
-    ::pressio::rom::meta::has_apply_jacobian_method_callable_with_three_args_for_unsteady<
-      model_type, state_type, scalar_type, dense_mat_type
+    ::pressio::ode::meta::has_velocity_method_callable_with_two_args<
+      model_type, state_type, scalar_type, velocity_type
       >::value and
-    ::pressio::rom::meta::has_apply_jacobian_method_callable_with_four_args_for_unsteady<
-      model_type, state_type, scalar_type, dense_mat_type
+    ::pressio::ode::meta::has_velocity_method_callable_with_three_args<
+      model_type, state_type, scalar_type, velocity_type
       >::value
     >
   > : std::true_type{};

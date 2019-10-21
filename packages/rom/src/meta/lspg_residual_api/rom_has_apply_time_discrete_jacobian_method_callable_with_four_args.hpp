@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_needed_time_discrete_residual_method_with_non_void_return.hpp
+// rom_has_apply_time_discrete_jacobian_method_callable_with_four_args.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,39 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_NON_VOID_RETURN_HPP_
-#define ROM_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_NON_VOID_RETURN_HPP_
-
-#include "rom_has_time_discrete_residual_method_accepting_two_states_returning_non_void.hpp"
-#include "rom_has_time_discrete_residual_method_accepting_three_states_returning_non_void.hpp"
+#ifndef ROM_HAS_APPLY_TIME_DISCRETE_JACOBIAN_METHOD_CALLABLE_WITH_FOUR_ARGS_HPP_
+#define ROM_HAS_APPLY_TIME_DISCRETE_JACOBIAN_METHOD_CALLABLE_WITH_FOUR_ARGS_HPP_
 
 namespace pressio{ namespace rom{ namespace meta {
 
 template <
   typename T,
-  typename step_t,
-  typename sc_t,
   typename state_t,
-  typename residual_t,
+  typename sc_t,
+  typename dense_mat_t,
   typename = void
   >
-struct has_needed_time_discrete_residual_method_with_non_void_return
+struct has_apply_time_discrete_jacobian_method_callable_with_four_args
   : std::false_type{};
 
 template <
   typename T,
-  typename step_t,
-  typename sc_t,
   typename state_t,
-  typename residual_t
+  typename sc_t,
+  typename dense_mat_t
   >
-struct has_needed_time_discrete_residual_method_with_non_void_return<
-  T, step_t, sc_t, state_t, residual_t,
+struct has_apply_time_discrete_jacobian_method_callable_with_four_args<
+  T, state_t, sc_t, dense_mat_t,
   ::pressio::mpl::enable_if_t<
-    // for now, just check case for two and three states passed
-    has_time_discrete_residual_method_accepting_two_states_returning_non_void<
-      T, step_t, sc_t, state_t, residual_t
-      >::value
-    and
-    has_time_discrete_residual_method_accepting_three_states_returning_non_void<
-      T, step_t, sc_t, state_t, residual_t
+    std::is_void<
+      decltype(
+	       std::declval<T const>().applyTimeDiscreteJacobian(
+								 std::declval<state_t const &>(),
+								 std::declval<dense_mat_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<dense_mat_t &>()
+								 )
+	       )
       >::value
     >
   > : std::true_type{};

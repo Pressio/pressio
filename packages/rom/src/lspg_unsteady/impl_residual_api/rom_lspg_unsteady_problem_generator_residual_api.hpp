@@ -46,107 +46,116 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_API_HPP_
-#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_API_HPP_
+#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_api_HPP_
+#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_api_HPP_
 
 #include "rom_lspg_unsteady_problem_type_generator_default_residual_api.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{
 
 template <
-  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
+  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_type,
   ::pressio::ode::ImplicitEnum odeName,
-  typename fom_t,
-  typename lspg_state_t,
+  typename fom_type,
+  typename lspg_state_type,
   typename ...Args
   >
-class LSPGUnsteadyProblemGeneratorResidualAPI
+class LSPGUnsteadyProblemGeneratorResidualApi
 {
-  // ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<
-  //     typename lspg_problem_t::fom_t
-  //     >::value
 
-// public:
-//   using fom_t			= typename lspg_problem_t::fom_t;
-//   using scalar_t		= typename lspg_problem_t::scalar_t;
-  // using fom_native_state_t	= typename lspg_problem_t::fom_native_state_t;
-  // using fom_state_t		= typename lspg_problem_t::fom_state_t;
-  // using fom_velocity_t		= typename lspg_problem_t::fom_velocity_t;
-  // using lspg_state_t		= typename lspg_problem_t::lspg_state_t;
-  // using decoder_t		= typename lspg_problem_t::decoder_t;
-  // using fom_state_reconstr_t	= typename lspg_problem_t::fom_state_reconstr_t;
-  // using fom_states_data		= typename lspg_problem_t::fom_states_data;
-  // using ud_ops_t		= typename lspg_problem_t::ud_ops_t;
-  // using lspg_matrix_t		= typename lspg_problem_t::lspg_matrix_t;
-  // using fom_eval_velo_policy_t	= typename lspg_problem_t::fom_eval_velocity_policy_t;
-  // using fom_apply_jac_policy_t	= typename lspg_problem_t::fom_apply_jac_policy_t;
-  // using lspg_residual_policy_t	= typename lspg_problem_t::lspg_residual_policy_t;
-  // using lspg_jacobian_policy_t	= typename lspg_problem_t::lspg_jacobian_policy_t;
-  // using aux_stepper_t		= typename lspg_problem_t::aux_stepper_t;
-  // using lspg_stepper_t		= typename lspg_problem_t::lspg_stepper_t;
+  /* here, the fom_type must satisfy the residual api */
+  static_assert( ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
+		 "\nYou are trying to generate an unsteady LSPG problem \n \
+requiring a fom adapter class to meet the residual api. \n \
+However, the fom/adapter type you passed does not meet that api. \n \
+Verify the fom/adapter class you are using.");
 
-// private:
-//   fom_eval_velo_policy_t	veloQuerier_;
-//   fom_apply_jac_policy_t	applyJacobQuerier_;
-//   fom_state_t			fomStateReference_;
-//   fom_state_reconstr_t		fomStateReconstructor_;
-//   fom_velocity_t		fomVelocityRef_;
-//   fom_states_data		fomStates_;
-//   lspg_matrix_t			jPhiMatrix_;
-//   lspg_residual_policy_t	residualPolicy_;
-//   lspg_jacobian_policy_t	jacobianPolicy_;
+public:
 
-//   /* here we use conditional type if auxiliary stepper is non-void,
-//    * otherwise we set it to a dummy type and we dont construct it */
-//   typename std::conditional<
-//     std::is_void<aux_stepper_t>::value,
-//     utils::impl::empty, aux_stepper_t
-//     >::type auxStepperObj_;
+  // define the type holding types for the problem
+  using lspg_problem_t = lspg_type<odeName, fom_type, lspg_state_type, Args...>;
 
-//   // actual stepper object
-//   lspg_stepper_t  stepperObj_;
+  using fom_t			= typename lspg_problem_t::fom_t;
+  using scalar_t		= typename lspg_problem_t::scalar_t;
+  using fom_native_state_t	= typename lspg_problem_t::fom_native_state_t;
+  using fom_native_residual_t	= typename lspg_problem_t::fom_native_residual_t;
+  using fom_state_t		= typename lspg_problem_t::fom_state_t;
 
+  using decoder_t		= typename lspg_problem_t::decoder_t;
+  using fom_state_reconstr_t	= typename lspg_problem_t::fom_state_reconstr_t;
+  using fom_states_data		= typename lspg_problem_t::fom_states_data;
+  using ud_ops_t		= typename lspg_problem_t::ud_ops_t;
 
-// public:
-//   lspg_stepper_t & getStepperRef(){
-//     return stepperObj_;
-//   }
+  using lspg_state_t		= typename lspg_problem_t::lspg_state_t;
+  using lspg_residual_t		= typename lspg_problem_t::lspg_residual_t;
+  using lspg_matrix_t		= typename lspg_problem_t::lspg_matrix_t;
 
-//   const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
-//     return fomStateReconstructor_;
-//   }
+  using fom_r_querier_policy_t  = typename lspg_problem_t::fom_residual_querier_policy_t;
+  using fom_apply_jac_policy_t	 = typename lspg_problem_t::fom_apply_jac_policy_t;
 
-// public:
+  using lspg_residual_policy_t	= typename lspg_problem_t::lspg_residual_policy_t;
+  using lspg_jacobian_policy_t	= typename lspg_problem_t::lspg_jacobian_policy_t;
 
-//   /*- aux stepper = void
-//    * - ud_ops_t = void */
-//   template <
-//     typename _aux_stepper_t = aux_stepper_t,
-//     typename _ud_ops_t = ud_ops_t,
-//     typename ::pressio::mpl::enable_if_t<
-//       std::is_void<_aux_stepper_t>::value and
-//       std::is_void<_ud_ops_t>::value
-//       > * = nullptr
-//   >
-//   LSPGUnsteadyProblemGenerator(const fom_t	 & appObj,
-//   			       const fom_native_state_t & fomStateReferenceNative,
-//   			       decoder_t	 & decoder,
-//   			       lspg_state_t	 & yROM,
-//   			       scalar_t		 t0)
-//     : veloQuerier_{},
-//       applyJacobQuerier_{},
-//       fomStateReference_(fomStateReferenceNative),
-//       fomStateReconstructor_(fomStateReference_, decoder),
-//       fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
-//       fomStates_(fomStateReference_, fomStateReconstructor_),
-//       jPhiMatrix_(applyJacobQuerier_.evaluate(appObj, fomStateReference_, decoder.getReferenceToJacobian(), t0)),
-//       // here we pass a fom velocity object to the residual policy to use it to initialize the residual data
-//       // since the lspg residual is of same type and size of the fom velocity (this is true w and w/o hyperreduction)
-//       residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_),
-//       jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
-//       auxStepperObj_{},
-//       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
-//   {}
+  using lspg_stepper_t		= typename lspg_problem_t::lspg_stepper_t;
+
+private:
+  ::pressio::ode::types::step_t step0_;
+  scalar_t			t0_;
+  fom_r_querier_policy_t	residualQuerier_;
+  fom_apply_jac_policy_t	applyJacobQuerier_;
+  fom_state_t			fomStateReference_;
+  fom_states_data		fomStates_;
+  fom_state_reconstr_t		fomStateReconstructor_;
+
+  lspg_residual_t		lspgResidualRef_;
+  lspg_matrix_t			jPhiMatrix_;
+  lspg_residual_policy_t	residualPolicy_;
+  lspg_jacobian_policy_t	jacobianPolicy_;
+
+  lspg_stepper_t		stepperObj_;
+
+public:
+  lspg_stepper_t & getStepperRef(){
+    return stepperObj_;
+  }
+
+  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
+    return fomStateReconstructor_;
+  }
+
+public:
+  LSPGUnsteadyProblemGeneratorResidualApi(const fom_t	 & appObj,
+					  const fom_native_state_t & fomStateReferenceNative,
+					  decoder_t	 & decoder,
+					  lspg_state_t	 & yROM,
+					  scalar_t	t0)
+    : t0_{t0},
+      residualQuerier_{},
+      applyJacobQuerier_{},
+      fomStateReference_(fomStateReferenceNative),
+      fomStates_(fomStateReference_, fomStateReconstructor_),
+      fomStateReconstructor_(fomStateReference_, decoder),
+      //
+      // here we query at step 0 and t0
+      lspgResidualRef_( residualQuerier_.template evaluate(appObj,
+							   step0_,
+							   t0_,
+							   fomStateReference_,
+							   fomStates_.getCRefToFomOldStates())),
+      //
+      // construct J*phi once
+      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
+					      fomStateReference_,
+					      decoder.getReferenceToJacobian(),
+					      t0_)),
+      //
+      // construct policies
+      residualPolicy_(lspgResidualRef_, fomStates_, residualQuerier_),
+      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
+      //
+      // construct stepper
+      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
+  {}
 
 };
 

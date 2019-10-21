@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_API_HPP_
-#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_API_HPP_
+#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_api_HPP_
+#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_api_HPP_
 
 #include "rom_lspg_unsteady_problem_type_generator_default_velocity_api.hpp"
 // #include "rom_lspg_unsteady_problem_type_generator_masked.hpp"
@@ -56,25 +56,25 @@
 namespace pressio{ namespace rom{ namespace impl{
 
 template <
-  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
+  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_type,
   ::pressio::ode::ImplicitEnum odeName,
   typename fom_type,
   typename lspg_state_type,
   typename ...Args
   >
-struct LSPGUnsteadyProblemGeneratorVelocityAPI
+struct LSPGUnsteadyProblemGeneratorVelocityApi
 {
   /* here, the fom_type must satisfy the velocity api */
   static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
 		 "\nYou are trying to generate an unsteady LSPG problem \n \
-requiring a fom adapter class to meet the velocity API. \n \
-However, the fom/adapter type you passed does not meet the velocity API. \n \
-Verify the fom/adapter class you are using meets the velocity API.");
-
-  // define the type holding types for the problem
-  using lspg_problem_t = lspg_t<odeName, fom_type, lspg_state_type, Args...>;
+requiring a fom adapter class to meet the velocity api. \n \
+However, the fom/adapter type you passed does not meet the velocity api. \n \
+Verify the fom/adapter class you are using meets the velocity api.");
 
 public:
+  // define the type holding types for the problem
+  using lspg_problem_t = lspg_type<odeName, fom_type, lspg_state_type, Args...>;
+
   using fom_t			= typename lspg_problem_t::fom_t;
   using scalar_t		= typename lspg_problem_t::scalar_t;
   using fom_native_state_t	= typename lspg_problem_t::fom_native_state_t;
@@ -136,7 +136,7 @@ public:
       std::is_void<_ud_ops_t>::value
       > * = nullptr
   >
-  LSPGUnsteadyProblemGeneratorVelocityAPI(const fom_t	 & appObj,
+  LSPGUnsteadyProblemGeneratorVelocityApi(const fom_t	 & appObj,
   			       const fom_native_state_t & fomStateReferenceNative,
   			       decoder_t	 & decoder,
   			       lspg_state_t	 & yROM,
@@ -172,7 +172,7 @@ public:
       std::is_void<_ud_ops_t>::value
       > * = nullptr
   >
-  LSPGUnsteadyProblemGeneratorVelocityAPI(const fom_t	 & appObj,
+  LSPGUnsteadyProblemGeneratorVelocityApi(const fom_t	 & appObj,
   			       const fom_native_state_t & fomStateReferenceNative,
   			       const decoder_t	 & decoder,
   			       lspg_state_t	 & yROM,
@@ -210,7 +210,7 @@ public:
   //     !std::is_void<_ud_ops_t>::value
   //     > * = nullptr
   // >
-  // LSPGUnsteadyProblemGeneratorVelocityAPI(const fom_t	 & appObj,
+  // LSPGUnsteadyProblemGeneratorVelocityApi(const fom_t	 & appObj,
   // 			       const fom_native_state_t & yFomRefNative,
   // 			       decoder_t	 & decoder,
   // 			       lspg_state_t	 & yROM,
