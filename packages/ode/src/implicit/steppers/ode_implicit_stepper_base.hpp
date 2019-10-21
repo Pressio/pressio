@@ -49,7 +49,6 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
-// #include "ode_implicit_stepper_traits.hpp"
 #include "../policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
 #include "../policies/meta/ode_is_implicit_residual_standard_policy.hpp"
 #include "../policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
@@ -86,6 +85,27 @@ class ImplicitStepperBase
   static_assert( meta::is_legitimate_jacobian_type<jacobian_t>::value,
        "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
+public:
+  types::stepper_order_t order() const{
+    return traits::order_value;
+  }
+
+  void residual(const state_t & y, residual_t & R) const{
+    static_cast<const concrete_stepper_type &>(*this).residualImpl(y, R);
+  }
+
+  residual_t residual(const state_t & y) const{
+    return static_cast<const concrete_stepper_type &>(*this).residualImpl(y);
+  }
+
+  void jacobian(const state_t & y, jacobian_t & J) const{
+    static_cast<const concrete_stepper_type &>(*this).jacobianImpl(y, J);
+  }
+
+  jacobian_t jacobian(const state_t & y) const{
+    return static_cast<const concrete_stepper_type &>(*this).jacobianImpl(y);
+  }
+
 protected:
   // procted because these are accessed only by children classes
   sc_t t_  = {};
@@ -111,27 +131,6 @@ protected:
     const jacobian_pol_t,
     const jacobian_pol_t &
     >::type jacobian_obj_;
-
-public:
-  types::stepper_order_t order() const{
-    return traits::order_value;
-  }
-
-  void residual(const state_t & y, residual_t & R) const{
-    static_cast<const concrete_stepper_type &>(*this).residualImpl(y, R);
-  }
-
-  residual_t residual(const state_t & y) const{
-    return static_cast<const concrete_stepper_type &>(*this).residualImpl(y);
-  }
-
-  void jacobian(const state_t & y, jacobian_t & J) const{
-    static_cast<const concrete_stepper_type &>(*this).jacobianImpl(y, J);
-  }
-
-  jacobian_t jacobian(const state_t & y) const{
-    return static_cast<const concrete_stepper_type &>(*this).jacobianImpl(y);
-  }
 
 public:
   ImplicitStepperBase() = delete;

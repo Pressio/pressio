@@ -148,26 +148,6 @@ struct StdPoliciesPicker<
     state_t, system_t, jacobian_t>;
 };
 #endif
-//-------------------------------------------------------------------
-
-
-template <typename T, bool isStdPolicy>
-struct CheckModelJacobianMethods;
-
-template <typename T>
-struct CheckModelJacobianMethods<T, false> {};
-
-template <typename T>
-struct CheckModelJacobianMethods<T, true>{
-  static_assert(::pressio::ode::meta::model_has_needed_jacobian_methods<
-		T, typename T::state_type,
-		typename T::jacobian_type, typename T::scalar_type
-		>::value,
-		"\nThe model type you passed to the implicit stepper \n \
-does not have valid jacobian methods and since you are using \n \
-a standard policy, the model needs to implement the jacobian. \n \
-See api for reference.");
-};
 
 }}}}//end namespace pressio::ode::details::impl
 #endif

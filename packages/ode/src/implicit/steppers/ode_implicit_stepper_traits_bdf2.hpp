@@ -50,6 +50,7 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_BDF2_HPP_
 
 #include "ode_implicit_stepper_traits_helpers.hpp"
+#include "../../meta/ode_model_is_compatible_with_policies_for_implicit_ode.hpp"
 
 namespace pressio{ namespace ode{ namespace details{
 
@@ -106,12 +107,6 @@ using velocity_type = ...; ");
 does not have a valid public jacobian_type typedef. Define it inside your class as: \n \
 using jacobian_type = ...; ");
 
-  static_assert(::pressio::ode::meta::model_has_needed_velocity_methods<
-		system_t, typename system_t::state_type, typename system_t::velocity_type, typename system_t::scalar_type
-		>::value,
-		"\nThe model type you passed to the BDF2 implicit stepper \n \
-does not have valid velocity methods, see api for reference.");
-
 
   static constexpr types::stepper_order_t order_value = 2;
   static constexpr types::stepper_n_states_t numAuxStates = 2;
@@ -156,10 +151,17 @@ the containers, pass scalar as a template.");
   using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic3::value, Args...>;
 
-  // we only need to check that model has jacobian methods when the policy is
-  // the standard one, since for non-standard the user might be doing things differently
-  using check1 = impl::CheckModelJacobianMethods<
-    system_t, std::is_same<jacobian_policy_t, standard_jac_policy_t>::value>;
+//   //----------------------------------------------------------------
+//   // check if model type meets the required API
+//   static_assert( ::pressio::ode::meta::model_is_compatible_with_policies_for_implicit_ode<
+// 		 system_t,
+// 		 std::is_same<residual_policy_t, standard_res_policy_t>::value,
+// 		 std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+// 		 >::value,
+// 		 "\nThe model type you passed to the implicit stepper \
+// does not seem to be compatible with the policies. If you are using standard policies \n \
+// make sure you have the proper velocity and jacobian methods.");
+
 };
 
 }}}//end namespace pressio::ode::details

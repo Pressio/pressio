@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_legitimate_model_for_implicit_ode.hpp
+// ode_is_legitimate_model_for_implicit_ode_regular_stepper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,24 +46,24 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
-#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
+#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_HPP_
+#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_HPP_
 
-#include "ode_is_legitimate_model_for_implicit_ode_regular_stepper.hpp"
-#include "ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
+#include "ode_is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies.hpp"
+#include "ode_is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies.hpp"
 
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename model_type, typename enable = void>
-struct is_legitimate_model_for_implicit_ode : std::false_type{};
+struct is_legitimate_model_for_implicit_ode_regular_stepper
+  : std::false_type{};
 
 template<typename model_type>
-struct is_legitimate_model_for_implicit_ode<
+struct is_legitimate_model_for_implicit_ode_regular_stepper<
   model_type,
   mpl::enable_if_t<
-    is_legitimate_model_for_implicit_ode_regular_stepper<model_type>::value
-    or
-    is_legitimate_model_for_implicit_ode_arbitrary_stepper<model_type>::value
+    is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<model_type>::value or
+    is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies<model_type>::value
     >
   > : std::true_type{};
 

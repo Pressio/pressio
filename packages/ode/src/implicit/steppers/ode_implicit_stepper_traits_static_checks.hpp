@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_legitimate_model_for_implicit_ode.hpp
+// ode_implicit_stepper_traits_static_checks.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,26 +46,35 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
-#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
+#ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_STATIC_CHECKS_HPP_
+#define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_STATIC_CHECKS_HPP_
 
-#include "ode_is_legitimate_model_for_implicit_ode_regular_stepper.hpp"
-#include "ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
+#include "../../ode_fwd.hpp"
+#include "../../meta/ode_is_valid_user_defined_ops_for_implicit_ode.hpp"
+#include "../../meta/ode_is_legitimate_model_for_implicit_ode.hpp"
+#include "../../meta/ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
+#include "../../meta/ode_is_stepper_order_setter.hpp"
+#include "../../meta/ode_is_stepper_total_n_states_setter.hpp"
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace details{ namespace impl{
 
-template<typename model_type, typename enable = void>
-struct is_legitimate_model_for_implicit_ode : std::false_type{};
+template <typename T, bool isStdPolicy>
+struct CheckModelTimeDiscreteJacobianMethods;
 
-template<typename model_type>
-struct is_legitimate_model_for_implicit_ode<
-  model_type,
-  mpl::enable_if_t<
-    is_legitimate_model_for_implicit_ode_regular_stepper<model_type>::value
-    or
-    is_legitimate_model_for_implicit_ode_arbitrary_stepper<model_type>::value
-    >
-  > : std::true_type{};
+template <typename T>
+struct CheckModelTimeDiscreteJacobianMethods<T, false> {};
 
-}}} // namespace pressio::ode::meta
+template <typename T>
+struct CheckModelTimeDiscreteJacobianMethods<T, true>
+{
+  static_assert(::pressio::ode::meta::has_needed_time_discrete_jacobian_methods<
+		T, types::step_t,
+		typename T::scalar_type, typename T::state_type, typename T::jacobian_type
+		>::value,
+		"\nThe model type you passed to the Arbitrary implicit stepper \n \
+does not have valid jacobian methods, see api for reference.");
+};
+
+
+}}}}//end namespace pressio::ode::details::impl
 #endif

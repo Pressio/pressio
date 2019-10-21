@@ -49,6 +49,8 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_EULER_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_EULER_HPP_
 
+#include "../../meta/ode_is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies.hpp"
+#include "../../meta/ode_model_is_compatible_with_policies_for_implicit_ode.hpp"
 #include "ode_implicit_stepper_traits_helpers.hpp"
 
 namespace pressio{ namespace ode{ namespace details{
@@ -66,7 +68,8 @@ struct traits<
     state_type, residual_type,
     jacobian_type, system_type,
     Args...>
-  > {
+  >
+{
 
   using stepper_t =   ImplicitStepper< ImplicitEnum::Euler,
 				       state_type, residual_type,
@@ -88,39 +91,34 @@ struct traits<
   // do some checks on the system type
   //----------------------------------------------------------------
   static_assert(::pressio::containers::meta::has_scalar_typedef<system_t>::value,
-		"\nThe model type you passed to the Euler implicit stepper \n \
-does not have a valid public scalar_type typedef. Define it inside your class as: \n \
+		"\nThe model type passed to the Euler implicit stepper \
+does not have a valid public scalar_type typedef. Define it inside your class as:\
 using scalar_type = ...; ");
 
   static_assert(::pressio::ode::meta::has_state_typedef<system_t>::value,
-		"\nThe model type you passed to the Euler implicit stepper \n \
-does not have a valid public state_type typedef. Define it inside your class as: \n \
+		"\nThe model type passed to the Euler implicit stepper \
+does not have a valid public state_type typedef. Define it inside your class as: \
 using state_type = ...; ");
 
   static_assert(::pressio::ode::meta::has_velocity_typedef<system_t>::value,
-		"\nThe model type you passed to the Euler implicit stepper \n \
-does not have a valid public velocity_type typedef. Define it inside your class as: \n \
+		"\nThe model type passed to the Euler implicit stepper \
+does not have a valid public velocity_type typedef. Define it inside your class as:\
 using velocity_type = ...; ");
 
   static_assert(::pressio::ode::meta::has_jacobian_typedef<system_t>::value,
-		"\nThe model type you passed to the Euler implicit stepper \n \
-does not have a valid public jacobian_type typedef. Define it inside your class as: \n \
+		"\nThe model type passed to the Euler implicit stepper \
+does not have a valid public jacobian_type typedef. Define it inside your class as: \
 using jacobian_type = ...; ");
 
-  static_assert(::pressio::ode::meta::model_has_needed_velocity_methods<
-		system_t, typename system_t::state_type,
-		typename system_t::velocity_type, typename system_t::scalar_type
-		>::value,
-		"\nThe model type you passed to the Euler implicit stepper \n \
-does not have valid velocity methods, see api for reference.");
-
   //----------------------------------------------------------------
-  // set order and aux states
+  // set order and number of aux states
   //----------------------------------------------------------------
   static constexpr types::stepper_order_t order_value = 1;
   static constexpr types::stepper_n_states_t numAuxStates = 1;
 
+  //----------------------------------------------------------------
   // check if scalar is provided in Args
+  //----------------------------------------------------------------
   using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;
   using scalar_from_args = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
   // check if state is a containers wrapper, and if so get its scalar_type
@@ -136,6 +134,7 @@ in the templates args and the state_type used is not a containers wrapper. \
 If you are using custom data structures that do not have wrappers in \
 the containers, pass scalar as a template.");
 
+  //----------------------------------------------------------------
   // standard policies (only used if not passed a user-defined policy)
   using policy_picker = impl::StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
   using standard_res_policy_t = typename policy_picker::standard_res_policy_t;
@@ -143,22 +142,27 @@ the containers, pass scalar as a template.");
 
   // check Args for a user-defined admissible residual policy
   using ic1 = ::pressio::ode::meta::find_if_legitimate_implicit_residual_policy_t<
-    this_t::enum_id, this_t::numAuxStates, state_t, residual_t, system_t, scalar_t,
-    Args...>;
-  using residual_policy_t = ::pressio::mpl::variadic::at_or_t
-    <standard_res_policy_t, ic1::value, Args...>;
+    this_t::enum_id, this_t::numAuxStates, state_t, residual_t, system_t, scalar_t, Args...>;
+  using residual_policy_t = ::pressio::mpl::variadic::at_or_t<
+    standard_res_policy_t, ic1::value, Args...>;
 
   // check Args for a user-defined admissible jacobian policy
   using ic2 = ::pressio::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
-    this_t::enum_id, state_t, jacobian_t, system_t, scalar_t,
-    Args...>;
+    this_t::enum_id, state_t, jacobian_t, system_t, scalar_t, Args...>;
   using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic2::value, Args...>;
 
-  // we only need to check that model has jacobian methods when the policy is
-  // the standard one, since for non-standard the user might be doing things differently
-  using check1 = impl::CheckModelJacobianMethods<
-    system_t, std::is_same<jacobian_policy_t, standard_jac_policy_t>::value>;
+//   //----------------------------------------------------------------
+//   // check if model type meets the required API
+//   static_assert( ::pressio::ode::meta::model_is_compatible_with_policies_for_implicit_ode<
+// 		 system_t,
+// 		 std::is_same<residual_policy_t, standard_res_policy_t>::value,
+// 		 std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+// 		 >::value,
+// 		 "\nThe model type you passed to the implicit stepper \
+// does not seem to be compatible with the policies. If you are using standard policies \n \
+// make sure you have the proper velocity and jacobian methods.");
+
 };
 
 }}}//end namespace pressio::ode::details

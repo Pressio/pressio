@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_legitimate_model_for_implicit_ode.hpp
+// ode_is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,24 +46,56 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
-#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
+#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_WITH_USER_DEFINED_POLICIES_HPP_
+#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_WITH_USER_DEFINED_POLICIES_HPP_
 
-#include "ode_is_legitimate_model_for_implicit_ode_regular_stepper.hpp"
-#include "ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
+#include "../../../containers/src/meta/containers_meta_has_scalar_typedef.hpp"
+#include "ode_has_state_typedef.hpp"
+#include "ode_has_velocity_typedef.hpp"
+#include "ode_has_jacobian_typedef.hpp"
+#include "ode_model_has_all_needed_velocity_methods.hpp"
+#include "ode_model_has_all_needed_jacobian_methods.hpp"
 
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename model_type, typename enable = void>
-struct is_legitimate_model_for_implicit_ode : std::false_type{};
+struct is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies
+  : std::false_type{};
+
 
 template<typename model_type>
-struct is_legitimate_model_for_implicit_ode<
+struct is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies<
   model_type,
   mpl::enable_if_t<
-    is_legitimate_model_for_implicit_ode_regular_stepper<model_type>::value
-    or
-    is_legitimate_model_for_implicit_ode_arbitrary_stepper<model_type>::value
+    ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
+    ::pressio::ode::meta::has_state_typedef<model_type>::value and
+    ::pressio::ode::meta::has_velocity_typedef<model_type>::value and
+    ::pressio::ode::meta::has_jacobian_typedef<model_type>::value and
+    ::pressio::ode::meta::model_has_needed_velocity_methods<
+      model_type,
+      typename model_type::state_type,
+      typename model_type::velocity_type,
+      typename model_type::scalar_type>::value and
+    ::pressio::ode::meta::model_has_needed_jacobian_methods<
+      model_type,
+      typename model_type::state_type,
+      typename model_type::jacobian_type,
+      typename model_type::scalar_type>::value
+    >
+  > : std::true_type{};
+
+// we allow the case where the model does not have velocities and jacobian methods
+// since this is applicable if the user specifies custom residaul and jacobian policies
+// where we do not know what happens and it can very well be that the user
+// handles things differently so the model can be anything.
+template<typename model_type>
+struct is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies<
+  model_type,
+  mpl::enable_if_t<
+    ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
+    ::pressio::ode::meta::has_state_typedef<model_type>::value and
+    ::pressio::ode::meta::has_velocity_typedef<model_type>::value and
+    ::pressio::ode::meta::has_jacobian_typedef<model_type>::value
     >
   > : std::true_type{};
 

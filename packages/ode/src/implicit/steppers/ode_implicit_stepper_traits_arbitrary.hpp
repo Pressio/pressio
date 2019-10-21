@@ -50,6 +50,7 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_ARBITRARY_HPP_
 
 #include "ode_implicit_stepper_traits_helpers.hpp"
+#include "ode_implicit_stepper_traits_static_checks.hpp"
 
 namespace pressio{ namespace ode{ namespace details{
 
@@ -112,15 +113,6 @@ using jacobian_type = ...; ");
 		>::value,
 		"\nThe model type you passed to the Arbitrary implicit stepper \n \
 does not have valid velocity methods, see api for reference.");
-
-  static_assert(::pressio::ode::meta::has_needed_time_discrete_jacobian_methods<
-		system_t, types::step_t,
-		typename system_t::scalar_type,
-		typename system_t::state_type, typename system_t::jacobian_type
-		>::value,
-		"\nThe model type you passed to the Arbitrary implicit stepper \n \
-does not have valid jacobian methods, see api for reference.");
-
 
   //-------------------------------
   // find the order setter in Args
@@ -203,6 +195,10 @@ i.e. when ode::ImplicitEnum::Arbitrary, you must provide user-defined \
 residual and jacobian policies which are in charge of computing the \
 time discrete residual and its jacobian. ");
 
+
+  using check2 = impl::CheckModelTimeDiscreteJacobianMethods<
+    system_t, std::is_same<jacobian_policy_t, standard_jac_policy_t>::value>;
+  check2 gg;
 
 //   // we need to make sure that the residual and jac policies are not standard policies
 //   using policy_picker = impl::StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
