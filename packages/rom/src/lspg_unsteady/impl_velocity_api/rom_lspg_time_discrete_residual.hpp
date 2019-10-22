@@ -162,7 +162,7 @@ void time_discrete_residual(const state_type & yn,
   assert( yn.size() == ynm[0].size() );
   assert( ynm[0].size() == ynm[1].size());
 
-  using namespace ::pressio::ode::coeffs;
+  using namespace ::pressio::ode::constants;
 
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
   constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
@@ -225,7 +225,7 @@ struct time_discrete_single_entry_epetra<::pressio::ode::ImplicitEnum::BDF2>{
 			 int lid,
 			 const state_type& yn,
 			 const std::array<state_type,n> & ynm){
-    using namespace ::pressio::ode::coeffs;
+    using namespace ::pressio::ode::constants;
 
     R = yn[lid]
       - bdf2<T>::c1_*ynm[1][lid]
@@ -318,7 +318,7 @@ struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::BDF2>{
 			 int lid,
 			 const state_type & yn,
 			 const std::array<state_type,n> & ynm){
-    using namespace ::pressio::ode::coeffs;
+    using namespace ::pressio::ode::constants;
 
     R = (yn.getData())[lid]
       - bdf2<T>::c1_*(ynm[1].getData())[lid]
@@ -333,7 +333,7 @@ struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::BDF2>{
 			 const state_type& yn,
 			 const state_type & ynm0,
 			 const state_type & ynm1){
-    using namespace ::pressio::ode::coeffs;
+    using namespace ::pressio::ode::constants;
     R = (yn.getData())[lid]
       - bdf2<T>::c1_*(ynm1.getData())[lid]
       + bdf2<T>::c2_*(ynm0.getData())[lid]

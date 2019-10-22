@@ -74,7 +74,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   // prefactor (f) multiplying f*dt*J*phi
   auto prefactor = static_cast<scalar_type>(1);
   if (odeMethod == ode::ImplicitEnum::BDF2)
-    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+    prefactor = ode::constants::bdf2<scalar_type>::c3_;
 
   udOps->time_discrete_jacobian(*jphi.data(), *phi.data(), prefactor, dt);
 }
@@ -99,7 +99,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   // prefactor (f) multiplying f*dt*J*phi
   auto prefactor = static_cast<scalar_type>(1);
   if (odeMethod == ode::ImplicitEnum::BDF2)
-    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+    prefactor = ode::constants::bdf2<scalar_type>::c3_;
 
   udOps.attr("time_discrete_jacobian")(jphi, phi, prefactor, dt);
 }
@@ -136,7 +136,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   // prefactor (f) multiplying f*dt*J*phi
   auto prefactor = ::pressio::utils::constants::one<scalar_type>();
   if (odeMethod == ode::ImplicitEnum::BDF2)
-    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+    prefactor = ode::constants::bdf2<scalar_type>::c3_;
 
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
   constexpr auto negone = ::pressio::utils::constants::negOne<scalar_type>();
@@ -215,7 +215,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
   // prefactor (f) multiplying f*dt*J*phi
   auto prefactor = static_cast<scalar_type>(1);
   if (odeMethod == ode::ImplicitEnum::BDF2)
-    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+    prefactor = ode::constants::bdf2<scalar_type>::c3_;
 
   //loop over elements of jphi
   for (auto i=0; i<jphi.localLength(); i++){
@@ -257,7 +257,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   // prefactor (f) multiplying f*dt*J*phi
   auto prefactor = static_cast<scalar_type>(1);
   if (odeMethod == ode::ImplicitEnum::BDF2)
-    prefactor = ode::coeffs::bdf2<scalar_type>::c3_;
+    prefactor = ode::constants::bdf2<scalar_type>::c3_;
 
   auto jphi2dView = jphi.get2dViewNonConst();
   auto phi2dView = phi.get2dView();

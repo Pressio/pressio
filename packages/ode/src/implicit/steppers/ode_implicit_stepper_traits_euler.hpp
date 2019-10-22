@@ -49,9 +49,8 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_EULER_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_EULER_HPP_
 
-#include "../../meta/ode_is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies.hpp"
-#include "../../meta/ode_model_is_compatible_with_policies_for_implicit_ode.hpp"
 #include "ode_implicit_stepper_traits_helpers.hpp"
+#include "../meta/ode_model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper.hpp"
 
 namespace pressio{ namespace ode{ namespace details{
 
@@ -87,8 +86,13 @@ struct traits<
   using system_t	  = system_type;
   using aux_stepper_t	  = void;
 
+//   static_assert( ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper<system_t>::value,
+// 		"\nThe model type passed to the Euler implicit stepper \
+// does not have a valid API to be used by a regular stepper. \
+// Check the API references to see what you are missing.");
+
   //----------------------------------------------------------------
-  // do some checks on the system type
+  // do some checks on the system
   //----------------------------------------------------------------
   static_assert(::pressio::containers::meta::has_scalar_typedef<system_t>::value,
 		"\nThe model type passed to the Euler implicit stepper \
@@ -152,16 +156,71 @@ the containers, pass scalar as a template.");
   using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic2::value, Args...>;
 
-//   //----------------------------------------------------------------
-//   // check if model type meets the required API
-//   static_assert( ::pressio::ode::meta::model_is_compatible_with_policies_for_implicit_ode<
-// 		 system_t,
-// 		 std::is_same<residual_policy_t, standard_res_policy_t>::value,
-// 		 std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
-// 		 >::value,
-// 		 "\nThe model type you passed to the implicit stepper \
-// does not seem to be compatible with the policies. If you are using standard policies \n \
-// make sure you have the proper velocity and jacobian methods.");
+
+  //----------------------------------------------------------------
+  // check if model type meets the required API
+  static_assert
+  (
+   (std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<system_t>::value
+    )
+    or
+   ::pressio::ode::meta::model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper<
+   system_t,
+   std::is_same<residual_policy_t, standard_res_policy_t>::value,
+   std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+   >::value, "\n The model type you passed to the Euler implict stepper is not \
+compatible with using standard residual and jacobian policies. This typically means that \
+your model class is missing or has the wrong typedefs, and/or velocity methods \
+and/or jacobian methods.");
+
+  static_assert
+  (
+   (!std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_ud_res_standard_jac_policies<system_t>::value
+    )
+    or
+   ::pressio::ode::meta::model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper<
+   system_t, std::is_same<residual_policy_t, standard_res_policy_t>::value,
+   std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+   >::value, "\n The model type you passed to the Euler implict stepper is not \
+compatible with using a custom residual but standard jacobian policies. \
+This typically means that your model class is missing or has the wrong typedefs,\
+and/or jacobian methods");
+
+
+  static_assert
+  (
+   (std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    !std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_res_ud_jac_policies<system_t>::value
+    )
+    or
+   ::pressio::ode::meta::model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper<
+   system_t, std::is_same<residual_policy_t, standard_res_policy_t>::value,
+   std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+   >::value, "\n The model type you passed to the Euler implict stepper is not \
+compatible with using a standard residual but custom jacobian policies. \
+This typically means that your model class is missing or has the wrong typedefs,\
+and/or velocity methods");
+
+
+  static_assert
+  (
+   (!std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    !std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies<system_t>::value
+    )
+    or
+   ::pressio::ode::meta::model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper<
+   system_t, std::is_same<residual_policy_t, standard_res_policy_t>::value,
+   std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+   >::value, "\n The model type you passed to the Euler implict stepper is not \
+compatible with using custom residual and jacobian policies. \
+This typically means that your model class is missing or has the wrong typedefs \
+for scalar, state, velocity and jacobian.");
 
 };
 

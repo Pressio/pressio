@@ -51,7 +51,7 @@
 
 #include "../../../ode_fwd.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
-#include "../../ode_jacobian_impl.hpp"
+#include "../../ode_time_discrete_jacobian.hpp"
 
 namespace pressio{ namespace ode{ namespace policy{
 

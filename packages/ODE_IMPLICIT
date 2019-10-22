@@ -51,8 +51,8 @@
 
 #include "ODE_BASIC"
 
-#include "ode/src/implicit/ode_residual_impl.hpp"
-#include "ode/src/implicit/ode_jacobian_impl.hpp"
+#include "ode/src/implicit/ode_time_discrete_residual.hpp"
+#include "ode/src/implicit/ode_time_discrete_jacobian.hpp"
 
 #include "ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
@@ -61,17 +61,12 @@
 #include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy_pybind11.hpp"
 #include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy_pybind11.hpp"
 
-#include "ode/src/implicit/policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
-#include "ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
 #include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_residual_policy.hpp"
 #include "ode/src/implicit/policies/meta/ode_find_if_legitimate_implicit_jacobian_policy.hpp"
 
-#include "ode/src/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
-#include "ode/src/meta/ode_is_legitimate_model_for_implicit_ode.hpp"
-#include "ode/src/meta/ode_is_legitimate_model_for_implicit_ode_regular_stepper.hpp"
-#include "ode/src/meta/ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
+#include "ode/src/implicit/meta/ode_is_legitimate_model_for_implicit_ode.hpp"
+#include "ode/src/implicit/meta/ode_is_legitimate_model_for_implicit_ode_regular_stepper.hpp"
+#include "ode/src/implicit/meta/ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
 
 // meta for arbitrary stepper
 #include "ode/src/implicit/policies/meta/ode_find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"

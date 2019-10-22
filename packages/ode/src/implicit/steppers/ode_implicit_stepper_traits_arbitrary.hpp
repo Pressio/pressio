@@ -50,7 +50,7 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_ARBITRARY_HPP_
 
 #include "ode_implicit_stepper_traits_helpers.hpp"
-#include "ode_implicit_stepper_traits_static_checks.hpp"
+#include "../meta/ode_model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper.hpp"
 
 namespace pressio{ namespace ode{ namespace details{
 
@@ -87,32 +87,32 @@ struct traits<
   // do some checks on the system type
   //----------------------------------------------------------------
   static_assert(::pressio::containers::meta::has_scalar_typedef<system_t>::value,
-		"\nThe model type you passed to the Arbitrary implicit stepper \n \
-does not have a valid public scalar_type typedef. Define it inside your class as: \n \
+		"\nThe model type you passed to the Arbitrary implicit stepper  \
+does not have a valid public scalar_type typedef. Define it inside your class as:  \
 using scalar_type = ...; ");
 
   static_assert(::pressio::ode::meta::has_state_typedef<system_t>::value,
-		"\nThe model type you passed to the Arbitrary implicit stepper \n \
-does not have a valid public state_type typedef. Define it inside your class as: \n \
+		"\nThe model type you passed to the Arbitrary implicit stepper  \
+does not have a valid public state_type typedef. Define it inside your class as:  \
 using state_type = ...; ");
 
   static_assert(::pressio::ode::meta::has_residual_typedef<system_t>::value,
-		"\nThe model type you passed to the Arbitrary implicit stepper \n \
-does not have a valid public residual_type typedef. Define it inside your class as: \n \
+		"\nThe model type you passed to the Arbitrary implicit stepper  \
+does not have a valid public residual_type typedef. Define it inside your class as:  \
 using residual_type = ...; ");
 
   static_assert(::pressio::ode::meta::has_jacobian_typedef<system_t>::value,
-		"\nThe model type you passed to the Arbitrary implicit stepper \n \
-does not have a valid public jacobian_type typedef. Define it inside your class as: \n \
+		"\nThe model type you passed to the Arbitrary implicit stepper  \
+does not have a valid public jacobian_type typedef. Define it inside your class as:  \
 using jacobian_type = ...; ");
 
-  static_assert(::pressio::ode::meta::has_needed_time_discrete_residual_methods<
-		system_t, types::step_t,
-		typename system_t::scalar_type,
-		typename system_t::state_type, typename system_t::residual_type
-		>::value,
-		"\nThe model type you passed to the Arbitrary implicit stepper \n \
-does not have valid velocity methods, see api for reference.");
+//   static_assert(::pressio::ode::meta::has_needed_time_discrete_residual_methods<
+// 		system_t, types::step_t,
+// 		typename system_t::scalar_type,
+// 		typename system_t::state_type, typename system_t::residual_type
+// 		>::value,
+// 		"\nThe model type you passed to the Arbitrary implicit stepper  \
+// does not have valid velocity methods, see api for reference.");
 
   //-------------------------------
   // find the order setter in Args
@@ -178,14 +178,12 @@ pass a valid scalar type as a template argument to ImplicitStepper.");
   //-----------------------------------------------------------
   using ic3 = ::pressio::ode::meta::find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper_t<
     numAuxStates, state_t, residual_t, system_t, scalar_t, Args...>;
-  using residual_policy_t = ::pressio::mpl::variadic::at_or_t<standard_res_policy_t,
-							      ic3::value, Args...>;
+  using residual_policy_t = ::pressio::mpl::variadic::at_or_t<standard_res_policy_t, ic3::value, Args...>;
 
   // check Args for a user-defined admissible jacobian policy
   using ic4 = ::pressio::ode::meta::find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper_t<
     numAuxStates, state_t, jacobian_t, system_t, scalar_t, Args...>;
-  using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t<standard_jac_policy_t,
-							      ic4::value, Args...>;
+  using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t<standard_jac_policy_t, ic4::value, Args...>;
 
   // make sure we have non-void policies
   static_assert( !std::is_void<residual_policy_t>::value and
@@ -196,20 +194,70 @@ residual and jacobian policies which are in charge of computing the \
 time discrete residual and its jacobian. ");
 
 
-  using check2 = impl::CheckModelTimeDiscreteJacobianMethods<
-    system_t, std::is_same<jacobian_policy_t, standard_jac_policy_t>::value>;
-  check2 gg;
+  //----------------------------------------------------------------
+  // check if model type meets the required API
+  static_assert
+  (
+   (std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_policies<system_t>::value
+    )
+    or
+   ::pressio::ode::meta::model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper<
+   system_t,
+   std::is_same<residual_policy_t, standard_res_policy_t>::value,
+   std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+   >::value, "\n The model type you passed to the Arbitrary implict stepper is not \
+compatible with using standard residual and jacobian policies. This typically means that \
+your model class is missing or has the wrong typedefs, and/or time-discrete velocity methods \
+and/or time-discrete jacobian methods.");
 
-//   // we need to make sure that the residual and jac policies are not standard policies
-//   using policy_picker = impl::StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;
-//   using standard_res_policy_t = typename policy_picker::standard_res_policy_t;
-//   using standard_jac_policy_t = typename policy_picker::standard_jac_policy_t;
-//   static_assert( mpl::not_same<residual_policy_t, residual_policy_t>::value and
-// 		 mpl::not_same<jacobian_policy_t, jacobian_policy_t>::value ,
-//   		 "You cannot use standard policies to an arbitrary implicit stepper \
-// i.e. when ode::ImplicitEnum::Arbitrary, you must provide user-defined \
-// residual and jacobian policies which are in charge of computing the \
-// time discrete residual and its jacobian. ");
+  static_assert
+  (
+   (!std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_ud_res_standard_jac_policies<system_t>::value
+    )
+    or
+   ::pressio::ode::meta::model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper<
+   system_t, std::is_same<residual_policy_t, standard_res_policy_t>::value,
+   std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+   >::value, "\n The model type you passed to the Arbitrary implict stepper is not \
+compatible with using a custom residual but standard jacobian policies. \
+This typically means that your model class is missing or has the wrong typedefs,\
+and/or time-discrete jacobian methods");
+
+
+  static_assert
+  (
+   (std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    !std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_res_ud_jac_policies<system_t>::value
+    )
+    or
+   ::pressio::ode::meta::model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper<
+   system_t, std::is_same<residual_policy_t, standard_res_policy_t>::value,
+   std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+   >::value, "\n The model type you passed to the Arbitrary implict stepper is not \
+compatible with using a standard residual but custom jacobian policies. \
+This typically means that your model class is missing or has the wrong typedefs,\
+and/or time-discrete velocity methods");
+
+
+  static_assert
+  (
+   (!std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    !std::is_same<residual_policy_t, standard_res_policy_t>::value and
+    ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_user_defined_policies<system_t>::value
+    )
+    or
+   ::pressio::ode::meta::model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper<
+   system_t, std::is_same<residual_policy_t, standard_res_policy_t>::value,
+   std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
+   >::value, "\n The model type you passed to the Arbitrary implict stepper is not \
+compatible with using custom residual and jacobian policies. \
+This typically means that your model class is missing or has the wrong typedefs \
+for scalar, state, residual and jacobian.");
 
 };
 

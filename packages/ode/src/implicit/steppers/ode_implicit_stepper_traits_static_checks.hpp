@@ -50,11 +50,11 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_STATIC_CHECKS_HPP_
 
 #include "../../ode_fwd.hpp"
-#include "../../meta/ode_is_valid_user_defined_ops_for_implicit_ode.hpp"
-#include "../../meta/ode_is_legitimate_model_for_implicit_ode.hpp"
-#include "../../meta/ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
-#include "../../meta/ode_is_stepper_order_setter.hpp"
-#include "../../meta/ode_is_stepper_total_n_states_setter.hpp"
+#include "../meta/ode_is_valid_user_defined_ops_for_implicit_ode.hpp"
+#include "../meta/ode_is_legitimate_model_for_implicit_ode.hpp"
+#include "../meta/ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
+#include "../meta/ode_is_stepper_order_setter.hpp"
+#include "../meta/ode_is_stepper_total_n_states_setter.hpp"
 
 namespace pressio{ namespace ode{ namespace details{ namespace impl{
 

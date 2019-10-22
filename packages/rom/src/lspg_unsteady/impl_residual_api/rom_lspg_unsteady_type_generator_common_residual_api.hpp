@@ -53,8 +53,8 @@
 #include "../../meta/rom_is_legitimate_decoder_type.hpp"
 #include "../impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
 #include "../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
-#include "../../../../ode/src/meta/ode_is_stepper_order_setter.hpp"
-#include "../../../../ode/src/meta/ode_is_stepper_total_n_states_setter.hpp"
+#include "../../../../ode/src/implicit/meta/ode_is_stepper_order_setter.hpp"
+#include "../../../../ode/src/implicit/meta/ode_is_stepper_total_n_states_setter.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{
 

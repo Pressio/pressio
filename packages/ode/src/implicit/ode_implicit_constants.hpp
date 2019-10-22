@@ -51,17 +51,7 @@
 
 #include "../ode_ConfigDefs.hpp"
 
-namespace pressio{ namespace ode{ namespace coeffs{
-
-// bdf1 needs states: y_n and y_n-1
-static constexpr std::size_t bdf1_numAuxStates_ = 1;
-// bdf1 needs no extra rhs: f(y_n,...)
-static constexpr std::size_t bdf1_numAuxRHS_ = 0;
-
-// bdf2 needs y_n, y_n-1, y_n-2
-static constexpr std::size_t bdf2_numAuxStates_ = 2;
-// bdf2 needs no extra rhs: f(y_n,...)
-static constexpr std::size_t bdf2_numAuxRHS_ = 0;
+namespace pressio{ namespace ode{ namespace constants{
 
 template <typename scalar_t>
 struct bdf2{
@@ -71,5 +61,5 @@ struct bdf2{
 };
 
 
-}}}// end namespace pressio::ode::coeffs
+}}}// end namespace pressio::ode::constants
 #endif

@@ -49,10 +49,6 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
-#include "../policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"
-#include "../policies/meta/ode_is_implicit_residual_standard_policy.hpp"
-#include "../policies/meta/ode_is_legitimate_implicit_jacobian_policy.hpp"
-#include "../policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
 #include "../../ode_storage.hpp"
 #include "../../ode_system_wrapper.hpp"
 

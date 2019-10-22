@@ -50,9 +50,9 @@
 #define ROM_MODEL_MEETS_RESIDUAL_api_FOR_UNSTEADY_LSPG_HPP_
 
 #include "../../../../ode/src/meta/ode_has_state_typedef.hpp"
-#include "../../../../ode/src/meta/ode_has_residual_typedef.hpp"
-#include "../../../../ode/src/meta/ode_has_jacobian_typedef.hpp"
-#include "../../../../ode/src/meta/ode_has_needed_time_discrete_residual_methods.hpp"
+#include "../../../../ode/src/implicit/meta/ode_has_residual_typedef.hpp"
+#include "../../../../ode/src/implicit/meta/ode_has_jacobian_typedef.hpp"
+#include "../../../../ode/src/implicit/meta/ode_has_needed_time_discrete_residual_methods.hpp"
 #include "../rom_has_dense_matrix_typedef.hpp"
 #include "rom_model_has_needed_apply_time_discrete_jacobian_methods.hpp"
 

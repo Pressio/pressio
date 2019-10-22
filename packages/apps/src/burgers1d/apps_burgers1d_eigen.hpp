@@ -101,7 +101,7 @@ public:
   };
 
   void velocity(const state_type & u,
-		const scalar_type /* t */,
+  		const scalar_type /* t */,
     velocity_type & rhs) const{
     rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
     for (ui_t i=1; i<Ncell_; ++i){
@@ -113,7 +113,7 @@ public:
   }
 
   velocity_type velocity(const state_type & u,
-			 const scalar_type t) const{
+  			 const scalar_type t) const{
     velocity_type RR(Ncell_);
     this->velocity(u, t, RR);
     return RR;

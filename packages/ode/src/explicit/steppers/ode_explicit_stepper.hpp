@@ -50,7 +50,7 @@
 #define ODE_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_HPP_
 
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
-#include "ode_explicit_stepper_traits.hpp"
+#include "./impl/ode_explicit_runge_kutta4_stepper_impl.hpp"
 
 namespace pressio{ namespace ode{
 

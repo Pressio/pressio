@@ -51,7 +51,7 @@
 
 #include "../../../../ode/src/meta/ode_has_state_typedef.hpp"
 #include "../../../../ode/src/meta/ode_has_velocity_typedef.hpp"
-#include "../../../../ode/src/meta/ode_has_jacobian_typedef.hpp"
+#include "../../../../ode/src/implicit/meta/ode_has_jacobian_typedef.hpp"
 #include "../rom_has_dense_matrix_typedef.hpp"
 #include "rom_model_has_needed_velocity_methods.hpp"
 #include "rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"

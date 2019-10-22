@@ -51,7 +51,7 @@
 
 #include "../../../ode_fwd.hpp"
 #include "../base/ode_implicit_residual_policy_base.hpp"
-#include "../../ode_residual_impl.hpp"
+#include "../../ode_time_discrete_residual.hpp"
 
 namespace pressio{ namespace ode{ namespace policy{
 
