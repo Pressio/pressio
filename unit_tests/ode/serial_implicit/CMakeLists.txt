@@ -7,3 +7,9 @@ add_serial_utest(ode_implicit_bdf2 ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_bdf2
 
 add_serial_utest(ode_implicit_arbitrary_stepper
   ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_arbitrary_stepper.cc)
+
+add_serial_utest(ode_is_valid_time_step_setter
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_is_valid_time_step_setter_for_implicit_ode.cc)
+
+add_serial_utest(ode_is_valid_guesser_for_implicit_ode
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_is_valid_guesser_for_implicit_ode.cc)

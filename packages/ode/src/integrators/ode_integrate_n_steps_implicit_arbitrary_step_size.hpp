@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_integrate_n_steps_explicit.hpp
+// ode_integrate_n_steps_implicit_arbitrary_step_size.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,62 +46,78 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_INTEGRATE_N_STEPS_EXPLICIT_HPP_
-#define ODE_INTEGRATORS_INTEGRATE_N_STEPS_EXPLICIT_HPP_
+#ifndef ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#define ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 
+#include "../ode_ConfigDefs.hpp"
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_n_steps_integrators.hpp"
 #include "../meta/ode_is_legitimate_collector.hpp"
-#include "../explicit/meta/ode_is_legitimate_explicit_state_type.hpp"
+#include "../meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
 
 namespace pressio{ namespace ode{
 
+// the arbitrary step size is only enabled for now
+// for the "Arbitrary" stepper
+
+// basic version
 template<
   typename stepper_type,
   typename state_type,
   typename time_type,
-  typename collector_type,
+  typename solver_type,
+  typename step_size_cb_t,
   typename std::enable_if<
-    ::pressio::ode::meta::is_legitimate_explicit_state_type<state_type>::value and
-    ode::meta::is_legitimate_collector<
-      collector_type, ::pressio::ode::types::step_t, time_type, state_type
-      >::value and
-    ::pressio::ode::details::traits<stepper_type>::is_explicit
+    ::pressio::ode::details::traits<stepper_type>::is_implicit and
+    ::pressio::ode::details::traits<stepper_type>::enum_id ==
+    ::pressio::ode::ImplicitEnum::Arbitrary and
+    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+      solver_type, stepper_type, state_type
+      >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type			 & stepper,
-		     state_type				 & odeStateInOut,
-		     const time_type			 start_time,
-		     const time_type			 dt,
-		     const ::pressio::ode::types::step_t num_steps,
-		     collector_type			 & collector){
-
-  using empty_t		 = utils::impl::empty;
-  using do_step_policy_t = impl::ExplicitDoStepBasic;
-  using advancer_t	 = impl::IntegratorNStepsWithCollectorAndConstDt<collector_type, do_step_policy_t>;
-  advancer_t::execute(num_steps, start_time, dt, odeStateInOut, collector, stepper);
-}
-
-template<
-  typename stepper_type,
-  typename state_type,
-  typename time_type,
-  typename std::enable_if<
-    ::pressio::ode::meta::is_legitimate_explicit_state_type<state_type>::value and
-    ::pressio::ode::details::traits<stepper_type>::is_explicit
-    >::type * = nullptr
-  >
-void integrateNSteps(stepper_type		    & stepper,
-		     state_type			    & odeStateInOut,
-		     const time_type		    start_time,
-		     const time_type		    dt,
-		     const ::pressio::ode::types::step_t num_steps){
-
-  using empty_t		 = utils::impl::empty;
-  using do_step_policy_t = impl::ExplicitDoStepBasic;
-  using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
-  advancer_t::execute(num_steps, start_time, dt, odeStateInOut, stepper);
+void integrateNSteps(stepper_type	 & stepper,
+		     state_type		 & odeStateInOut,
+		     const time_type	 start_time,
+		     const time_type	 dt,
+		     const types::step_t num_steps,
+		     solver_type	 & solver,
+		     step_size_cb_t	 && dtManager)
+{
+  using empty_t = utils::impl::empty;
+  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
+  advancer_t::execute(num_steps, start_time, dt, odeStateInOut, stepper, solver);
 }
 
 }}//end namespace pressio::ode
 #endif
+
+
+// //---------------------------------------------------
+// // arbitrary stepper with time step size scheduling
+// //---------------------------------------------------
+// template<
+//   typename dt_setter_t,
+//   typename stepper_type,
+//   typename state_type,
+//   typename time_type,
+//   typename solver_type,
+//   typename std::enable_if<
+//     details::traits<stepper_type>::enum_id == ImplicitEnum::Arbitrary and
+//     !std::is_void<dt_setter_t>::value
+//     >::type * = nullptr
+//   >
+// void integrateNSteps(stepper_type   & stepper,
+// 		     state_type	    & odeStateInOut,
+// 		     const time_type	      start_time,
+// 		     const ::pressio::ode::types::step_t    num_steps,
+// 		     solver_type    & solver,
+// 		     const dt_setter_t & dtManager)
+// {
+//   static constexpr bool with_dt = true;
+//   using empty_t = utils::impl::empty;
+//   using do_step_policy_t = impl::DoStepPolicy<solver_type, empty_t, with_dt>;
+//   using advancer_t = impl::AdvancerNoCollectorForImplicitArbitraryStepper<do_step_policy_t>;
+//   advancer_t::execute(num_steps, start_time, dtManager, odeStateInOut, stepper, solver);
+// }

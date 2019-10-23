@@ -116,22 +116,29 @@ TEST(ode_implicit_euler, guesserLambda){
   using lin_algo_t = solvers::linear::iterative::Bicgstab;
   using lin_solver_t = solvers::iterative::EigenIterative<lin_algo_t, jac_t>;
   lin_solver_t linSolverObj;
-  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
+  using nonlin_solver_t = pressio::solvers::NewtonRaphson<double, lin_solver_t>;
+  nonlin_solver_t solverO(linSolverObj);
 
-  // integrate in time
-  auto testLambda = [](int step, double time, state_t & yIn) -> void{
-  		      yIn[0] = -20.; yIn[1] = -20.; yIn[2] = -20.;
-		    };
+  // struct gigi{
+  //   void run(ode::types::step_t step, const double & time, state_t & d) const{
+  //   }
+  // };
+  // static_assert(ode::meta::is_legitimate_guesser<gigi,
+  // 		ode::types::step_t, double, state_t>::value, "dfgfgfgf");
 
-  double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt,
-		       1, solverO, testLambda);
 
-  std::cout << std::setprecision(14) << *y.data() << "\n";
-  // appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
-  // EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
-  // EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
-  // EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
+  // // integrate in time
+  // const auto testLambda = [](const ode::types::step_t & step,
+  // 			     const double & time,
+  // 			     state_t & yIn) -> void
+  // 			  {
+  // 			    yIn[0] = -20.; yIn[1] = -20.; yIn[2] = -20.;
+  // 			  };
+
+  // double dt = 0.01;
+  // ode::integrateNSteps<stepper_t, state_t, double, nonlin_solver_t, gigi>(stepperObj, y, 0.0, dt, 1, solverO, gigi());
+
+  // std::cout << std::setprecision(14) << *y.data() << "\n";
 }
 
 

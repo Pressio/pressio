@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_INTEGRATORS
+// ode_is_legitimate_guesser.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,30 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_HPP_
-#define ODE_INTEGRATORS_HPP_
+#ifndef ODE_IS_LEGITIMATE_GUESSER_HPP_
+#define ODE_IS_LEGITIMATE_GUESSER_HPP_
 
-#include "ODE_BASIC"
+namespace pressio{ namespace ode{ namespace meta {
 
-#include "ode/src/integrators/ode_integrate_n_steps_explicit.hpp"
-#include "ode/src/integrators/ode_integrate_n_steps_implicit_constant_step_size.hpp"
-#include "ode/src/integrators/ode_integrate_n_steps_implicit_arbitrary_step_size.hpp"
+template <typename T, typename step_t, typename time_t, typename state_t, typename enable = void>
+struct is_legitimate_guesser
+  : std::false_type{};
 
+template <typename T, typename step_t, typename time_t, typename state_t>
+struct is_legitimate_guesser<
+  T, step_t, time_t, state_t,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T const>().operator()(
+						  std::declval<step_t const &>(),
+						  std::declval<time_t const &>(),
+						  std::declval<state_t &>()
+						  )
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
+}}} // namespace pressio::ode::meta
 #endif
