@@ -214,9 +214,6 @@ void integrateNSteps(stepper_type		& stepper,
 #endif
 
 
-
-
-
 // //---------------------------------------------------
 // // arbitrary stepper with time step size scheduling
 // //---------------------------------------------------
