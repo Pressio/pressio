@@ -82,41 +82,48 @@ public:
 
 public:
 
+  //-------------------------------
   // specialize for n == 1
+  //-------------------------------
   template <typename scalar_t>
   void operator()(const state_type & y,
-		  jacobian_type & J,
 		  const std::array<state_type, 1> & oldYs,
 		  const system_type & model,
-		  scalar_t t,
-		  scalar_t dt,
-		  types::step_t step) const
+		  const scalar_t & t,
+		  const scalar_t & dt,
+		  const types::step_t &  step,
+		  jacobian_type & J) const
   {
-    model.timeDiscreteJacobian(step, t, *J.data(), *oldYs[0].data());
+    model.timeDiscreteJacobian(step, t, dt,  *J.data(),
+			       *oldYs[0].data());
   }
 
   template <typename scalar_t>
   jacobian_type operator()(const state_type & y,
 			   const std::array<state_type, 1> & oldYs,
   			   const system_type & model,
-  			   scalar_t t,
-  			   scalar_t dt,
-			   types::step_t step) const
+  			   const scalar_t & t,
+  			   const scalar_t & dt,
+			   const types::step_t & step) const
   {
-    return model.timeDiscreteJacobian(step, t, *J.data(), *oldYs[0].data());
+    return model.timeDiscreteJacobian(step, t, dt, *J.data(),
+				      *oldYs[0].data());
   }
 
+  //-------------------------------
   // specialize for n == 2
+  //-------------------------------
   template <typename scalar_t>
   void operator()(const state_type & y,
-		  jacobian_type & J,
 		  const std::array<state_type, 2> & oldYs,
 		  const system_type & model,
-		  scalar_t t,
-		  scalar_t dt,
-		  types::step_t step) const
+		  const scalar_t & t,
+		  const scalar_t & dt,
+		  const types::step_t & step,
+		  jacobian_type & J) const
   {
-    model.timeDiscreteJacobian(step, t, *J.data(), *oldYs[0].data(),
+    model.timeDiscreteJacobian(step, t, dt,  *J.data(),
+			       *oldYs[0].data(),
 			       *oldYs[1].data());
   }
 
@@ -124,13 +131,47 @@ public:
   jacobian_type operator()(const state_type & y,
 			   const std::array<state_type, 2> & oldYs,
   			   const system_type & model,
-  			   scalar_t t,
-  			   scalar_t dt,
-			   types::step_t step) const
+  			   const scalar_t &  t,
+  			   const scalar_t &  dt,
+			   const types::step_t & step) const
   {
-    return model.timeDiscreteJacobian(step, t, *J.data(),
-				      *oldYs[0].data(), *oldYs[1].data());
+    return model.timeDiscreteJacobian(step, t, dt,  *J.data(),
+				      *oldYs[0].data(),
+				      *oldYs[1].data());
   }
+
+  //-------------------------------
+  // specialize for n == 3
+  //-------------------------------
+  template <typename scalar_t>
+  void operator()(const state_type & y,
+		  const std::array<state_type, 3> & oldYs,
+		  const system_type & model,
+		  const scalar_t & t,
+		  const scalar_t & dt,
+		  const types::step_t & step,
+		  jacobian_type & J) const
+  {
+    model.timeDiscreteJacobian(step, t, dt,  *J.data(),
+			       *oldYs[0].data(),
+			       *oldYs[1].data(),
+			       *oldYs[2].data());
+  }
+
+  template <typename scalar_t>
+  jacobian_type operator()(const state_type & y,
+			   const std::array<state_type, 3> & oldYs,
+  			   const system_type & model,
+  			   const scalar_t &  t,
+  			   const scalar_t &  dt,
+			   const types::step_t & step) const
+  {
+    return model.timeDiscreteJacobian(step, t, dt, *J.data(),
+				      *oldYs[0].data(),
+				      *oldYs[1].data(),
+				      *oldYs[2].data());
+  }
+
 
 };//end class
 

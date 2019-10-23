@@ -49,11 +49,43 @@
 #ifndef ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_HPP_
 #define ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_HPP_
 
-#include "ode_integrate_n_steps_impl.hpp"
+#include "../ode_ConfigDefs.hpp"
+#include "./impl/ode_call_stepper_policy.hpp"
+#include "./impl/ode_n_steps_integrators.hpp"
 #include "../meta/ode_is_legitimate_collector.hpp"
+#include "../meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
 
 namespace pressio{ namespace ode{
 
+// basic version
+template<
+  typename stepper_type,
+  typename state_type,
+  typename time_type,
+  typename solver_type,
+  typename std::enable_if<
+    ::pressio::ode::details::traits<stepper_type>::is_implicit and
+    !std::is_void<solver_type>::value and
+    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+      solver_type, stepper_type, state_type
+      >::value
+    >::type * = nullptr
+  >
+void integrateNSteps(stepper_type	 & stepper,
+		     state_type		 & odeStateInOut,
+		     const time_type	 start_time,
+		     const time_type	 dt,
+		     const types::step_t num_steps,
+		     solver_type	 & solver)
+{
+  using empty_t = utils::impl::empty;
+  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
+  advancer_t::execute(num_steps, start_time, dt, odeStateInOut, stepper, solver);
+}
+
+
+// with collector
 template<
   typename stepper_type,
   typename state_type,
@@ -61,48 +93,31 @@ template<
   typename collector_type,
   typename solver_type,
   typename std::enable_if<
-    details::traits<stepper_type>::is_implicit and
+    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ode::meta::is_legitimate_collector<
-      collector_type, types::step_t,
-      time_type, state_type>::value
+      collector_type, types::step_t, time_type, state_type
+      >::value and
+    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+      solver_type, stepper_type, state_type
+      >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type   & stepper,
-		     state_type	    & yIn,
-		     time_type	      start_time,
-		     time_type	      dt,
-		     types::step_t    num_steps,
-		     collector_type & collector,
-		     solver_type    & solver){
+void integrateNSteps(stepper_type	 & stepper,
+		     state_type		 & odeStateInOut,
+		     const time_type	 start_time,
+		     const time_type	 dt,
+		     const types::step_t num_steps,
+		     collector_type	 & collector,
+		     solver_type	 & solver)
+{
   using empty_t = utils::impl::empty;
-  using do_step_policy_t = impl::DoStepPolicy<solver_type, empty_t>;
-  using advancer_t = impl::AdvancerPolicy<collector_type, do_step_policy_t>;
-  advancer_t::execute(num_steps, start_time, dt, yIn, collector, stepper, solver);
+  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t = impl::IntegratorNStepsWithCollectorAndConstDt<collector_type, do_step_policy_t>;
+  advancer_t::execute(num_steps, start_time, dt, odeStateInOut, collector, stepper, solver);
 }
 
 
-template<
-  typename stepper_type,
-  typename state_type,
-  typename time_type,
-  typename solver_type,
-  typename std::enable_if<
-    details::traits<stepper_type>::is_implicit
-    >::type * = nullptr
-  >
-void integrateNSteps(stepper_type   & stepper,
-		     state_type	    & yIn,
-		     time_type	      start_time,
-		     time_type	      dt,
-		     types::step_t    num_steps,
-		     solver_type    & solver){
-
-  using empty_t = utils::impl::empty;
-  using do_step_policy_t = impl::DoStepPolicy<solver_type, empty_t>;
-  using advancer_t = impl::AdvancerPolicy<empty_t, do_step_policy_t>;
-  advancer_t::execute(num_steps, start_time, dt, yIn, stepper, solver);
-}
-
+// with guesser
 template<
   typename stepper_type,
   typename state_type,
@@ -110,24 +125,29 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
-    details::traits<stepper_type>::is_implicit
+    ::pressio::ode::details::traits<stepper_type>::is_implicit and
+    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+      solver_type, stepper_type, state_type
+      >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type   & stepper,
-		     state_type	    & yIn,
-		     time_type	      start_time,
-		     time_type	      dt,
-		     types::step_t    num_steps,
-		     solver_type    & solver,
-		     guess_callback_t   && guessCb){
-
+void integrateNSteps(stepper_type	 & stepper,
+		     state_type		 & odeStateInOut,
+		     const time_type	 start_time,
+		     const time_type	 dt,
+		     const types::step_t num_steps,
+		     solver_type	 & solver,
+		     guess_callback_t    && guessCb)
+{
   using empty_t = utils::impl::empty;
-  using do_step_policy_t = impl::DoStepPolicy<solver_type, guess_callback_t>;
-  using advancer_t = impl::AdvancerPolicy<empty_t, do_step_policy_t>;
-  advancer_t::execute(num_steps, start_time, dt, yIn, stepper, solver,
+  using do_step_policy_t = impl::ImplicitDoStepWithGuesser<solver_type, guess_callback_t>;
+  using advancer_t = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
+  advancer_t::execute(num_steps, start_time, dt, odeStateInOut, stepper, solver,
 		      std::forward<guess_callback_t>(guessCb));
 }
 
+
+// with guesser and collector
 template<
   typename stepper_type,
   typename state_type,
@@ -136,26 +156,91 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
-    ode::meta::is_legitimate_collector<
-      collector_type, types::step_t,
-      time_type, state_type>::value &&
-    details::traits<stepper_type>::is_implicit
+    ::pressio::ode::details::traits<stepper_type>::is_implicit and
+    ::pressio::ode::meta::is_legitimate_collector<
+      collector_type, types::step_t, time_type, state_type
+      >::value and
+    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+      solver_type, stepper_type, state_type
+      >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type   & stepper,
-		     state_type	    & yIn,
-		     time_type	      start_time,
-		     time_type	      dt,
-		     types::step_t    num_steps,
-		     collector_type & collector,
-		     solver_type    & solver,
-		     guess_callback_t && guessCb){
-
-  using do_step_policy_t = impl::DoStepPolicy<solver_type, guess_callback_t>;
-  using advancer_t = impl::AdvancerPolicy<collector_type, do_step_policy_t>;
-  advancer_t::execute(num_steps, start_time, dt, yIn, collector, stepper,
+void integrateNSteps(stepper_type		& stepper,
+		     state_type			& odeStateInOut,
+		     const time_type	        start_time,
+		     const time_type		dt,
+		     const types::step_t	num_steps,
+		     collector_type		& collector,
+		     solver_type		& solver,
+		     guess_callback_t		&& guessCb)
+{
+  using do_step_policy_t = impl::ImplicitDoStepWithGuesser<solver_type, guess_callback_t>;
+  using advancer_t = impl::IntegratorNStepsWithCollectorAndConstDt<collector_type, do_step_policy_t>;
+  advancer_t::execute(num_steps, start_time, dt, odeStateInOut, collector, stepper,
 		      solver, std::forward<guess_callback_t>(guessCb));
+}
+
+
+// with guesser and collector passed in different order
+template<
+  typename stepper_type,
+  typename state_type,
+  typename time_type,
+  typename collector_type,
+  typename solver_type,
+  typename guess_callback_t,
+  typename std::enable_if<
+    ::pressio::ode::meta::is_legitimate_collector<
+      collector_type, types::step_t, time_type, state_type
+      >::value and
+    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+      solver_type, stepper_type, state_type
+      >::value
+    >::type * = nullptr
+  >
+void integrateNSteps(stepper_type		& stepper,
+		     state_type			& odeStateInOut,
+		     const time_type	        start_time,
+		     const time_type		dt,
+		     const types::step_t	num_steps,
+		     solver_type		& solver,
+		     collector_type		& collector,
+		     guess_callback_t		&& guessCb)
+{
+  integrateNSteps(stepper, odeStateInOut, start_time, dt, num_steps, collector, solver, guessCb);
 }
 
 }}//end namespace pressio::ode
 #endif
+
+
+
+
+
+// //---------------------------------------------------
+// // arbitrary stepper with time step size scheduling
+// //---------------------------------------------------
+// template<
+//   typename dt_setter_t,
+//   typename stepper_type,
+//   typename state_type,
+//   typename time_type,
+//   typename solver_type,
+//   typename std::enable_if<
+//     details::traits<stepper_type>::enum_id == ImplicitEnum::Arbitrary and
+//     !std::is_void<dt_setter_t>::value
+//     >::type * = nullptr
+//   >
+// void integrateNSteps(stepper_type   & stepper,
+// 		     state_type	    & odeStateInOut,
+// 		     const time_type	      start_time,
+// 		     const ::pressio::ode::types::step_t    num_steps,
+// 		     solver_type    & solver,
+// 		     const dt_setter_t & dtManager)
+// {
+//   static constexpr bool with_dt = true;
+//   using empty_t = utils::impl::empty;
+//   using do_step_policy_t = impl::DoStepPolicy<solver_type, empty_t, with_dt>;
+//   using advancer_t = impl::AdvancerNoCollectorForImplicitArbitraryStepper<do_step_policy_t>;
+//   advancer_t::execute(num_steps, start_time, dtManager, odeStateInOut, stepper, solver);
+// }

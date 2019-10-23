@@ -91,9 +91,9 @@ public:
 		  residual_type & R,
 		  const std::array<state_type, n> & oldYs,
 		  const system_type & model,
-		  scalar_type t,
-		  scalar_type dt,
-		  types::step_t step) const{
+		  const scalar_type & t,
+		  const scalar_type & dt,
+		  const types::step_t &  step) const{
 
     model.velocity(*y.data(), t, *R.data());
     ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
@@ -107,9 +107,9 @@ public:
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, n> & oldYs,
   			   const system_type & model,
-  			   scalar_type t,
-  			   scalar_type dt,
-			   types::step_t step) const{
+  			   const scalar_type & t,
+  			   const scalar_type & dt,
+			   const types::step_t &  step) const{
 
     residual_type R(model.velocity(*y.data(), t));
     ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);

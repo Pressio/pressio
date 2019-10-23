@@ -126,9 +126,9 @@ public:
 
 public:
   template<typename solver_type>
-  void operator()(ode_state_type & y,
-		  scalar_t t,
-		  scalar_t dt,
+  void operator()(ode_state_type & odeState,
+		  scalar_t & t,
+		  const scalar_t & dt,
 		  types::step_t step,
 		  solver_type & solver)
   {
@@ -136,36 +136,36 @@ public:
     this->dt_ = dt;
     this->t_ = t;
     this->step_ = step;
-    ::pressio::containers::ops::deep_copy(y, auxY0);
-    solver.solve(*this, y);
+    ::pressio::containers::ops::deep_copy(odeState, auxY0);
+    solver.solve(*this, odeState);
   }
 
 private:
-  void residualImpl(const state_type & y, residual_type & R) const
+  void residualImpl(const state_type & odeState, residual_type & R) const
   {
     this->residual_obj_.operator()
-      (y, R, this->stateAuxStorage_.data_,
-       this->sys_.get(), this->t_, this->dt_, this->step_);
+      (odeState, this->stateAuxStorage_.data_,
+       this->sys_.get(), this->t_, this->dt_, this->step_, R);
   }
 
-  residual_type residualImpl(const state_type & y) const
+  residual_type residualImpl(const state_type & odeState) const
   {
     return this->residual_obj_.operator()
-      (y, this->stateAuxStorage_.data_,
+      (odeState, this->stateAuxStorage_.data_,
        this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
-  void jacobianImpl(const state_type & y, jacobian_type & J) const
+  void jacobianImpl(const state_type & odeState, jacobian_type & J) const
   {
     this->jacobian_obj_.operator()
-      (y, J, this->stateAuxStorage_.data_,
-       this->sys_.get(), this->t_, this->dt_, this->step_);
+      (odeState, this->stateAuxStorage_.data_,
+       this->sys_.get(), this->t_, this->dt_, this->step_, J);
   }
 
-  jacobian_type jacobianImpl(const state_type & y) const
+  jacobian_type jacobianImpl(const state_type & odeState) const
   {
     return this->jacobian_obj_.operator()
-      (y, this->stateAuxStorage_.data_,
+      (odeState, this->stateAuxStorage_.data_,
        this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 

@@ -58,7 +58,6 @@ template <
 struct has_time_discrete_residual_method_accepting_n_states_returning_void
   : std::false_type{};
 
-
 template <typename T, typename step_t, typename sc_t, typename state_t, typename residual_t>
 struct has_time_discrete_residual_method_accepting_n_states_returning_void<
   T, 1, step_t, sc_t, state_t, residual_t,
@@ -66,11 +65,12 @@ struct has_time_discrete_residual_method_accepting_n_states_returning_void<
     std::is_void<
       decltype(
 	       std::declval<T const>().timeDiscreteResidual(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<residual_t &>(),
-						      std::declval<state_t const&>()
-						      )
+							    std::declval<step_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<residual_t &>(),
+							    std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >
@@ -84,12 +84,13 @@ struct has_time_discrete_residual_method_accepting_n_states_returning_void<
     std::is_void<
       decltype(
 	       std::declval<T const>().timeDiscreteResidual(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<residual_t &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
+							    std::declval<step_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<residual_t &>(),
+							    std::declval<state_t const&>(),
+							    std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >
@@ -103,13 +104,14 @@ struct has_time_discrete_residual_method_accepting_n_states_returning_void<
     std::is_void<
       decltype(
 	       std::declval<T const>().timeDiscreteResidual(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<residual_t &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
+							    std::declval<step_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<residual_t &>(),
+							    std::declval<state_t const&>(),
+							    std::declval<state_t const&>(),
+							    std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >

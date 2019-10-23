@@ -66,11 +66,12 @@ struct has_time_discrete_jacobian_method_accepting_n_states_returning_void<
     std::is_void<
       decltype(
 	       std::declval<T const>().timeDiscreteJacobian(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<jacobian_t &>(),
-						      std::declval<state_t const&>()
-						      )
+							    std::declval<step_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<jacobian_t &>(),
+							    std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >
@@ -84,12 +85,13 @@ struct has_time_discrete_jacobian_method_accepting_n_states_returning_void<
     std::is_void<
       decltype(
 	       std::declval<T const>().timeDiscreteJacobian(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<jacobian_t &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
+							    std::declval<step_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<jacobian_t &>(),
+							    std::declval<state_t const&>(),
+							    std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >
@@ -103,13 +105,14 @@ struct has_time_discrete_jacobian_method_accepting_n_states_returning_void<
     std::is_void<
       decltype(
 	       std::declval<T const>().timeDiscreteJacobian(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<jacobian_t &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
+							    std::declval<step_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<jacobian_t &>(),
+							    std::declval<state_t const&>(),
+							    std::declval<state_t const&>(),
+							    std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_jacobian_standard_policy.hpp
+// ode_call_stepper_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,71 +46,56 @@
 //@HEADER
 */
 
-#ifndef ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
-#define ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
+#ifndef ODE_CALL_STEPPER_POLICY_HPP_
+#define ODE_CALL_STEPPER_POLICY_HPP_
 
-#include "../../../ode_fwd.hpp"
-#include "../base/ode_jacobian_policy_base.hpp"
-#include "../../ode_time_discrete_jacobian.hpp"
+namespace pressio{ namespace ode{ namespace impl{
 
-namespace pressio{ namespace ode{ namespace policy{
-
-template<
-  typename state_type,
-  typename system_type,
-  typename jacobian_type
-  >
-class ImplicitJacobianStandardPolicy<
-  state_type, system_type, jacobian_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
-    ::pressio::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
-    containers::meta::is_wrapper<state_type>::value and
-    containers::meta::is_wrapper<jacobian_type>::value
-    >
-  > : public JacobianPolicyBase<ImplicitJacobianStandardPolicy<
-    state_type, system_type, jacobian_type> >
+struct ExplicitDoStepBasic
 {
-
-  using this_t = ImplicitJacobianStandardPolicy<state_type, system_type, jacobian_type>;
-  friend JacobianPolicyBase<this_t>;
-
-public:
-  ImplicitJacobianStandardPolicy() = default;
-  ~ImplicitJacobianStandardPolicy() = default;
-
-public:
-
-  template <
-    ode::ImplicitEnum method, typename scalar_t
-  >
-  void operator()(const state_type & y,
-		  jacobian_type & J,
-		  const system_type & model,
-		  const scalar_t & t,
-		  const scalar_t & dt,
-		  const types::step_t & step) const
+  template <typename time_t, typename int_t, typename state_t, typename stepper_t>
+  static void execute(const time_t & time,
+		      const time_t & dt,
+		      const int_t & step,
+		      state_t & yIn,
+		      stepper_t & stepper)
   {
-    model.jacobian( *y.data(), t, *J.data());
-    ::pressio::ode::impl::time_discrete_jacobian<method>(J, dt);
+    stepper(yIn, time, dt, step);
   }
+};
 
-  template <
-    ode::ImplicitEnum method,
-    typename scalar_t
-    >
-  jacobian_type operator()(const state_type & y,
-  			   const system_type & model,
-  			   const scalar_t & t,
-  			   const scalar_t & dt,
-			   const types::step_t & step) const
+
+template<typename solver_type>
+struct ImplicitDoStepBasic
+{
+  template <typename time_t, typename int_t, typename state_t, typename stepper_t>
+  static void execute(const time_t & time,
+		      const time_t & dt,
+		      const int_t & step,
+		      state_t & yIn,
+		      stepper_t & stepper,
+		      solver_type & solver)
   {
-    jacobian_type JJ(model.jacobian(*y.data(), t));
-    ::pressio::ode::impl::time_discrete_jacobian<method>(JJ, dt);
-    return JJ;
+    stepper(yIn, time, dt, step, solver);
   }
+};
 
-};//end class
 
-}}}//end namespace pressio::ode::policy
+template<typename solver_type, typename guesser_cb_t>
+struct ImplicitDoStepWithGuesser
+{
+  template <typename time_t, typename int_t, typename state_t, typename stepper_t>
+  static void execute(const time_t & time,
+		      const time_t & dt,
+		      const int_t & step,
+		      state_t & yIn,
+		      stepper_t & stepper,
+		      solver_type & solver,
+		      guesser_cb_t && guessCb)
+  {
+    stepper(yIn, time, dt, step, solver, std::forward<guesser_cb_t>(guessCb));
+  }
+};
+
+}}}//end namespace pressio::ode::impl
 #endif

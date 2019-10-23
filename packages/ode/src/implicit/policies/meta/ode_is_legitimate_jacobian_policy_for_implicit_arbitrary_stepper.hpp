@@ -83,13 +83,14 @@ struct jacobian_policy_callable_with_six_args<
       (
        std::declval<T>().template operator()
        <numPrevStates>
-       ( std::declval<const state_t &>(),
-	 std::declval<const std::array<state_t, numPrevStates> &>(),
-	 std::declval<const system_t&>(),
-	 std::declval<scalar_t>(),
-	 std::declval<scalar_t>(),
-	 std::declval<::pressio::ode::types::step_t>()
-	 )
+       (
+	std::declval<state_t const &>(),
+	std::declval<std::array<state_t, numPrevStates> const &>(),
+	std::declval<system_t const &>(),
+	std::declval<scalar_t const & >(),
+	std::declval<scalar_t const &>(),
+	std::declval<::pressio::ode::types::step_t const &>()
+	)
        )
       >::value
     >
@@ -124,14 +125,15 @@ struct jacobian_policy_callable_with_seven_args<
       (
        std::declval<T>().template operator()
        <numPrevStates>
-       ( std::declval<const state_t &>(),
-	 std::declval<jacobian_t &>(),
-	 std::declval<const std::array<state_t, numPrevStates> &>(),
-	 std::declval<const system_t&>(),
-	 std::declval<scalar_t>(),
-	 std::declval<scalar_t>(),
-	 std::declval<::pressio::ode::types::step_t>()
-	 )
+       (
+	std::declval<state_t const &>(),
+	std::declval<std::array<state_t, numPrevStates> const &>(),
+	std::declval<system_t const &>(),
+	std::declval<scalar_t const & >(),
+	std::declval<scalar_t const &>(),
+	std::declval<::pressio::ode::types::step_t const &>(),
+	std::declval<jacobian_t &>()
+	)
        )
       >::value
     >

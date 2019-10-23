@@ -68,10 +68,11 @@ struct has_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
       jacobian_t,
       decltype(
 	       std::declval<T const>().timeDiscreteJacobian(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<state_t const&>()
-						      )
+							    std::declval<step_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >
@@ -87,11 +88,12 @@ struct has_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
       jacobian_t,
       decltype(
 	       std::declval<T const>().timeDiscreteJacobian(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
+							    std::declval<step_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<state_t const&>(),
+							    std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >
@@ -108,12 +110,13 @@ struct has_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
       jacobian_t,
       decltype(
 	       std::declval<T const>().timeDiscreteJacobian(
-						      std::declval<step_t const &>(),
-						      std::declval<sc_t const &>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>(),
-						      std::declval<state_t const&>()
-						      )
+							    std::declval<step_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<sc_t const &>(),
+							    std::declval<state_t const&>(),
+							    std::declval<state_t const&>(),
+							    std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >

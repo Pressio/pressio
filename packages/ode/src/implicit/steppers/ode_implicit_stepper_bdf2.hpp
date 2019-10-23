@@ -149,10 +149,11 @@ public:
 public:
   template<typename solver_type>
   void operator()(ode_state_type & y,
-		  scalar_t t,
-		  scalar_t dt,
-		  types::step_t step,
-		  solver_type & solver){
+		  const scalar_t &  t,
+		  const scalar_t &  dt,
+		  const types::step_t & step,
+		  solver_type & solver)
+  {
 
     auto & auxY0 = this->stateAuxStorage_.data_[0];
     auto & auxY1 = this->stateAuxStorage_.data_[1];
@@ -179,9 +180,9 @@ public:
 
  template<typename solver_type,typename guess_callback_t>
   void operator()(ode_state_type & y,
-		  scalar_t t,
-		  scalar_t dt,
-		  types::step_t step,
+		  const scalar_t &  t,
+		  const scalar_t &  dt,
+		  const types::step_t & step,
 		  solver_type & solver,
 		  guess_callback_t && guesserCb){
 

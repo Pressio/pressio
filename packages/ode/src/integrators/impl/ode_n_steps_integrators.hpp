@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_integrate_n_steps_impl.hpp
+// ode_n_steps_integrators.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,141 +46,87 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPL_HPP_
-#define ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPL_HPP_
+#ifndef ODE_INTEGRATORS_N_STEPS_INTEGRATORS_HPP_
+#define ODE_INTEGRATORS_N_STEPS_INTEGRATORS_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-#include "../ode_fwd.hpp"
+#include "../../ode_ConfigDefs.hpp"
+#include "../../ode_fwd.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
-
-template< typename solver_type, typename guesser_cb_t>
-struct DoStepPolicy{
-  template <typename time_type,
-	    typename integral_type,
-	    typename state_type,
-	    typename stepper_type>
-  static void execute(time_type time,
-		      time_type dt,
-		      integral_type step,
-		      state_type & yIn,
-		      stepper_type & stepper,
-		      solver_type & solver,
-		      guesser_cb_t && guessCb)
-  {
-    stepper(yIn, time, dt, step, solver,
-	    std::forward<guesser_cb_t>(guessCb));
-  }
-};
-
-template<>
-struct DoStepPolicy<utils::impl::empty, utils::impl::empty>{
-  template <typename time_type,
-	    typename integral_type,
-	    typename state_type,
-	    typename stepper_type>
-  static void execute(time_type time,
-		      time_type dt,
-		      integral_type step,
-		      state_type & yIn,
-		      stepper_type & stepper)
-  {
-    stepper(yIn, time, dt, step);
-  }
-};
-
-
-template<typename solver_type>
-struct DoStepPolicy<solver_type, utils::impl::empty>{
-  template <typename time_type,
-	    typename integral_type,
-	    typename state_type,
-	    typename stepper_type>
-  static void execute(time_type time,
-		      time_type dt,
-		      integral_type step,
-		      state_type & yIn,
-		      stepper_type & stepper,
-		      solver_type & solver)
-  {
-    stepper(yIn, time, dt, step, solver);
-  }
-};
-//-------------------------------------------------------
-
+//this is within the impl namespace, so should not be used outside
 template <
-  typename collector_type,
-  typename int_type,
-  typename time_type,
-  typename state_type,
+  typename collector_type, typename int_type, typename time_type, typename state_type,
   typename enable = void
   >
 struct CallCollectorDispatch;
 
-
+// this is within the impl namespace, so should not be used outside
+// specialize for when collector accepts a native type
 template <
-  typename collector_type, typename int_type,
-  typename time_type, typename state_type
+  typename collector_type, typename int_type, typename time_type, typename state_type
   >
 struct CallCollectorDispatch<
   collector_type, int_type, time_type, state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_wrapper<state_type>::value and
-    ::pressio::ode::meta::collector_accepts_native_container
-    <collector_type, int_type, time_type, state_type>::value
+    ::pressio::ode::meta::collector_accepts_native_container<
+      collector_type, int_type, time_type, state_type
+      >::value
     >
   >
 {
-  static void execute(collector_type & collector,
-		      const int_type & step,
-		      const time_type & time,
-		      const state_type & yIn){
+  static void execute(collector_type	& collector,
+		      const int_type	& step,
+		      const time_type	& time,
+		      const state_type	& yIn){
+
     collector(step, time, *yIn.data());
   }
 };
 
 
+//this is within the impl namespace, so should not be used outside
+// specialize for when collector accepts a pressio container directly
 template <
-  typename collector_type, typename int_type,
-  typename time_type, typename state_type
+  typename collector_type, typename int_type, typename time_type, typename state_type
   >
 struct CallCollectorDispatch<
   collector_type, int_type, time_type, state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_wrapper<state_type>::value and
-    ::pressio::ode::meta::collector_accepts_pressio_container
-    <collector_type, int_type, time_type, state_type>::value
+    ::pressio::ode::meta::collector_accepts_pressio_container<
+      collector_type, int_type, time_type, state_type
+      >::value
     >
   >
 {
-  static void execute(collector_type & collector,
-		      const int_type & step,
-		      const time_type & time,
-		      const state_type & yIn){
+  static void execute(collector_type	& collector,
+		      const int_type	& step,
+		      const time_type	& time,
+		      const state_type	& yIn){
+
     collector(step, time, yIn);
   }
 };
-
+//----------------------------------------------------------------------------
 
 
 /*
- * A valid collector object is passed by user
- * to take snapshots
+ * A valid collector object is available
+ * this is within the impl namespace, so should not be used outside
+ * we leave it up to the caller to make sure collector type is admissible
  */
 template <typename collector_type, typename DoStepPolicy_t>
-struct AdvancerPolicy{
+struct IntegratorNStepsWithCollectorAndConstDt
+{
 
-  template <
-    typename time_type,
-    typename state_type,
-    typename ... Args
-    >
-  static void execute(::pressio::ode::types::step_t num_steps,
-		      time_type	   start_time,
-		      time_type	   dt,
-		      state_type &	   yIn,
-		      collector_type & collector,
-		      Args && ...	   args)
+  template <typename time_type, typename state_type, typename ... Args>
+  static void execute(const ::pressio::ode::types::step_t & num_steps,
+		      const time_type			  & start_time,
+		      const time_type			  & dt,
+		      state_type			  & yIn,
+		      collector_type			  & collector,
+		      Args				  && ... args)
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -195,18 +141,17 @@ struct AdvancerPolicy{
     time_type time = start_time;
     // pass initial condition to collector object
     collector_dispatch::execute(collector, zero, time, yIn);
-    //collector(0, time, yIn);
 
     step_t step = 1;
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
     {
-      #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
       ::pressio::utils::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
-      #endif
+#endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
@@ -218,7 +163,6 @@ struct AdvancerPolicy{
 
       time = start_time + static_cast<time_type>(step) * dt;
       collector_dispatch::execute(collector, step, time, yIn);
-      //collector(step, time, yIn);
     }
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time loop");
@@ -228,17 +172,20 @@ struct AdvancerPolicy{
 
 
 
+
 /*
  * No collector object is passed by user
+ * this is within the impl namespace, so should not be used outside
  */
 template <typename DoStepPolicy_t>
-struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
+struct IntegratorNStepsWithConstDt
+{
 
   template <typename time_type, typename ... Args>
-  static void execute(::pressio::ode::types::step_t num_steps,
-		      time_type	start_time,
-		      time_type	dt,
-		      Args && ... args)
+  static void execute(const ::pressio::ode::types::step_t & num_steps,
+		      const time_type			  & start_time,
+		      const time_type			  & dt,
+		      Args				  && ... args)
   {
     using step_t = ::pressio::ode::types::step_t;
 
@@ -253,12 +200,12 @@ struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= num_steps ; ++step)
     {
-      #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
       ::pressio::utils::io::print_stdout(fmt, "time step =",
 				      step, reset, "\n");
-      #endif
+#endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
@@ -276,6 +223,66 @@ struct AdvancerPolicy<utils::impl::empty, DoStepPolicy_t>{
 #endif
   }//end ()
 };
+
+
+
+// /*
+//  * No collector object is passed by user and no dt
+//  */
+// template <typename DoStepPolicy_t>
+// struct AdvancerNoCollectorForImplicitArbitraryStepper
+// {
+
+//   template <
+//     typename time_type, typename dt_setter_t, typename ... Args
+//     >
+//   static void execute(::pressio::ode::types::step_t num_steps,
+// 		      time_type	start_time,
+// 		      const dt_setter_t & dtManager,
+// 		      Args && ... args)
+//   {
+//     using step_t = ::pressio::ode::types::step_t;
+
+// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+//     auto timer = Teuchos::TimeMonitor::getStackedTimer();
+//     timer->start("time loop");
+// #endif
+
+//     time_type dt   = {};
+//     time_type time = start_time;
+//     step_t step	   = 1;
+
+//     // query what is the time step to use at a given step
+//     dtManager(time, step, dt);
+
+//     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
+//     for( ; step <= num_steps ; ++step)
+//     {
+//       // query what is the time step to use at a given step
+//       dtManager(time, step, dt);
+
+//       #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+//       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
+//       auto reset = utils::io::reset();
+//       ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
+//       #endif
+
+// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+//       timer->start("time step");
+// #endif
+//       DoStepPolicy_t::execute(time, dt, step, std::forward<Args>(args)...);
+// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+//       timer->stop("time step");
+// #endif
+
+//       time = start_time + static_cast<time_type>(step) * dt;
+//     }
+
+// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+//     timer->stop("time loop");
+// #endif
+//   }//end ()
+
 
 }}}//end namespace pressio::ode::impl
 #endif

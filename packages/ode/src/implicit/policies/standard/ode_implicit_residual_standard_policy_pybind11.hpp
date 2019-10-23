@@ -90,9 +90,9 @@ public:
 		  residual_type & R,
 		  const std::array<state_type, n> & oldYs,
 		  const system_type & model,
-		  scalar_type t,
-		  scalar_type dt,
-		  types::step_t step) const
+		  const scalar_type & t,
+		  const scalar_type & dt,
+		  const types::step_t & step) const
   {
     throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
     // printf("C++ R address: %p\n", R.data());
@@ -106,9 +106,9 @@ public:
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, n> & oldYs,
   			   const system_type & model,
-  			   scalar_type t,
-  			   scalar_type dt,
-			   types::step_t step) const
+  			   const scalar_type & t,
+  			   const scalar_type & dt,
+			   const types::step_t & step) const
   {
     throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
     residual_type nR;// = model.attr("residual1")(y, t);
