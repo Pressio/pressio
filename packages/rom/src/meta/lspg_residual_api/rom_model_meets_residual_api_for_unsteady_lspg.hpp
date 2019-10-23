@@ -49,11 +49,8 @@
 #ifndef ROM_MODEL_MEETS_RESIDUAL_api_FOR_UNSTEADY_LSPG_HPP_
 #define ROM_MODEL_MEETS_RESIDUAL_api_FOR_UNSTEADY_LSPG_HPP_
 
-#include "../../../../ode/src/meta/ode_has_state_typedef.hpp"
-#include "../../../../ode/src/implicit/meta/ode_has_residual_typedef.hpp"
-#include "../../../../ode/src/implicit/meta/ode_has_jacobian_typedef.hpp"
+#include "rom_model_has_needed_typedefs_for_unsteady_lspg_residual_api.hpp"
 #include "../../../../ode/src/implicit/meta/ode_has_needed_time_discrete_residual_methods.hpp"
-#include "../rom_has_dense_matrix_typedef.hpp"
 #include "rom_model_has_needed_apply_time_discrete_jacobian_methods.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
@@ -65,21 +62,19 @@ template<typename T>
 struct model_meets_residual_api_for_unsteady_lspg<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<T>::value and
-    ::pressio::ode::meta::has_state_typedef<T>::value and
-    ::pressio::ode::meta::has_residual_typedef<T>::value and
-    ::pressio::ode::meta::has_jacobian_typedef<T>::value and
-    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value and
+    model_has_needed_typedefs_for_unsteady_lspg_residual_api<T>::value
+    and
     ::pressio::ode::meta::has_needed_time_discrete_residual_methods<
       T, ::pressio::ode::types::step_t,
       typename T::scalar_type,
       typename T::state_type,
       typename T::residual_type
-      >::value and
+      >::value
+    and
     ::pressio::rom::meta::model_has_needed_apply_time_discrete_jacobian_methods<
-      T,
-      typename T::state_type,
+      T, ::pressio::ode::types::step_t,
       typename T::scalar_type,
+      typename T::state_type,
       typename T::dense_matrix_type
       >::value
     >

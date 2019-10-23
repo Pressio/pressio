@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_apply_time_discrete_jacobian_policy.hpp
+// rom_model_has_needed_typedefs_for_unsteady_lspg_residual_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,44 +46,31 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
-#define ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
+#ifndef ROM_MODEL_HAS_NEEDED_TYPEDEFS_FOR_UNSTEADY_LSPG_RESIDUAL_API_HPP_
+#define ROM_MODEL_HAS_NEEDED_TYPEDEFS_FOR_UNSTEADY_LSPG_RESIDUAL_API_HPP_
 
-namespace pressio{ namespace rom{ namespace policy{
+#include "../../../../ode/src/meta/ode_has_state_typedef.hpp"
+#include "../../../../ode/src/implicit/meta/ode_has_residual_typedef.hpp"
+#include "../../../../ode/src/implicit/meta/ode_has_jacobian_typedef.hpp"
+#include "../rom_has_dense_matrix_typedef.hpp"
 
-struct QueryFomApplyTimeDiscreteJacobian
-{
+namespace pressio{ namespace rom{ namespace meta {
 
-  template <
-    typename fom_t,
-    typename state_t,
-    typename operand_t,
-    typename time_t
+template<typename T, typename enable = void>
+struct model_has_needed_typedefs_for_unsteady_lspg_residual_api
+  : std::false_type{};
+
+template<typename T>
+struct model_has_needed_typedefs_for_unsteady_lspg_residual_api<
+  T,
+  mpl::enable_if_t<
+    ::pressio::containers::meta::has_scalar_typedef<T>::value and
+    ::pressio::ode::meta::has_state_typedef<T>::value and
+    ::pressio::ode::meta::has_residual_typedef<T>::value and
+    ::pressio::ode::meta::has_jacobian_typedef<T>::value and
+    ::pressio::rom::meta::has_dense_matrix_typedef<T>::value
     >
-  auto evaluate(const fom_t	& fomObj,
-		const state_t   & yFOM,
-		const operand_t & B,
-		time_t		  t) const
-    -> decltype(fomObj.applyTimeDiscreteJacobian(*yFOM.data(), *B.data(), t))
-  {
-    return fomObj.applyTimeDiscreteJacobian(*yFOM.data(), *B.data(), t);
-  }
+  > : std::true_type{};
 
-  template <
-    typename fom_t,
-    typename state_t,
-    typename operand_t,
-    typename result_t,
-    typename time_t
-    >
-  void evaluate(const fom_t	  & fomObj,
-		const state_t	  & yFOM,
-		const operand_t & B,
-		result_t	  & out,
-		time_t		  t) const{
-    fomObj.applyTimeDiscreteJacobian(*yFOM.data(), *B.data(), t, *out.data());
-  }
-};
-
-}}} //end namespace pressio::rom::policy
+}}} // namespace pressio::rom::meta
 #endif

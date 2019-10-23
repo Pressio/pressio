@@ -12,20 +12,12 @@ struct ValidApp{
   using jacobian_type = std::vector<std::vector<scalar_type>>;
   using dense_matrix_type = std::vector<std::vector<scalar_type>>;
 
-private:
-  template <typename step_t>
-  void timeDiscreteResidualImpl(const step_t & step,
-				const scalar_type & time,
-				residual_type & R,
-				const state_type & y1,
-				const state_type & y2) const
-  {}
-
 public:
 
   template <typename step_t, typename ... Args>
   void timeDiscreteResidual(const step_t & step,
   			    const scalar_type & time,
+			    const scalar_type & dt,
   			    residual_type & R,
   			    Args & ... states) const
   {
@@ -35,23 +27,33 @@ public:
 
   template <typename step_t, typename ... Args>
   residual_type timeDiscreteResidual(const step_t & step,
-  				     const scalar_type & time,
+				     const scalar_type & time,
+  				     const scalar_type & dt,
   				     Args & ... states) const
   {
     residual_type g;
-    this->timeDiscreteResidual(step, time, g, std::forward<Args>(states)...);
+    //this->timeDiscreteResidual(step, time, g, std::forward<Args>(states)...);
     return g;
   }
 
-  void applyTimeDiscreteJacobian(const state_type & y,
-		     const dense_matrix_type & B,
-		     scalar_type t,
-		     dense_matrix_type & A) const
+  template <typename step_t, typename ... Args>
+  void applyTimeDiscreteJacobian(const step_t & step,
+				 const scalar_type & time,
+				 const scalar_type & dt,
+				 const dense_matrix_type & B,
+				 int id,
+				 dense_matrix_type & A,
+				 Args & ... states) const
   {}
 
-  dense_matrix_type applyTimeDiscreteJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const{
+  template <typename step_t, typename ... Args>
+  dense_matrix_type applyTimeDiscreteJacobian(const step_t & step,
+  					      const scalar_type & time,
+  					      const scalar_type & dt,
+  					      const dense_matrix_type & B,
+  					      int id,
+  					      Args & ... states) const
+  {
     dense_matrix_type A;
     return A;
   }
@@ -61,8 +63,8 @@ TEST(rom_lspg_meta, validResidualAPI){
   using namespace pressio;
   using app_t    = ValidApp;
   static_assert( rom::meta::model_meets_residual_api_for_unsteady_lspg<app_t>::value,"");
-  static_assert( rom::meta::is_legitimate_model_for_unsteady_lspg<app_t>::value,"");
 
+  static_assert( rom::meta::is_legitimate_model_for_unsteady_lspg<app_t>::value,"");
   // assert that it does not meet velocity api
   static_assert( !rom::meta::model_meets_velocity_api_for_unsteady_lspg<app_t>::value,"");
 }

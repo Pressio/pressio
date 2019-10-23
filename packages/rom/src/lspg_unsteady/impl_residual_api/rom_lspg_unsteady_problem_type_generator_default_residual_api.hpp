@@ -46,13 +46,13 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_api_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_api_HPP_
+#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
+#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
 
 #include "rom_lspg_unsteady_residual_policy_residual_api.hpp"
 #include "rom_lspg_unsteady_jacobian_policy_residual_api.hpp"
 #include "../../policies/rom_query_fom_time_discrete_residual_policy.hpp"
-#include "../../policies/rom_query_fom_apply_time_discrete_jacobian_policy.hpp"
+#include "../../policies/rom_query_fom_apply_time_discrete_jacobian_basic_policy.hpp"
 #include "rom_lspg_unsteady_type_generator_common_residual_api.hpp"
 #include "../../../../ode/src/ode_fwd.hpp"
 
@@ -100,7 +100,7 @@ Verify the fom/adapter class you are using.");
   using fom_residual_querier_policy_t	= ::pressio::rom::policy::QueryFomTimeDiscreteResidual;
 
   // policy for querying the J*phi from FOM
-  using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyTimeDiscreteJacobian;
+  using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyTimeDiscreteJacobianBasic;
 
   // policy to compute the LSPG time-discrete residual
   using lspg_residual_policy_t	= ::pressio::rom::impl::LSPGUnsteadyResidualPolicyResidualApi<

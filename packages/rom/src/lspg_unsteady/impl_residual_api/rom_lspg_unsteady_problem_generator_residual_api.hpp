@@ -101,6 +101,7 @@ public:
 private:
   ::pressio::ode::types::step_t step0_;
   scalar_t			t0_;
+  scalar_t			dt0_;
   fom_r_querier_policy_t	residualQuerier_;
   fom_apply_jac_policy_t	applyJacobQuerier_;
   fom_state_t			fomStateReference_;
@@ -129,7 +130,9 @@ public:
 					  decoder_t	 & decoder,
 					  lspg_state_t	 & yROM,
 					  scalar_t	t0)
-    : t0_{t0},
+    : step0_{},
+      t0_{t0},
+      dt0_{}, // this should be initialized from dtManager
       residualQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
@@ -137,17 +140,21 @@ public:
       fomStateReconstructor_(fomStateReference_, decoder),
       //
       // here we query at step 0 and t0
-      lspgResidualRef_( residualQuerier_.template evaluate(appObj,
-							   step0_,
+      lspgResidualRef_( residualQuerier_.template evaluate(fomStateReference_,
+							   fomStates_.getCRefToFomOldStates(),
+							   appObj,
 							   t0_,
-							   fomStateReference_,
-							   fomStates_.getCRefToFomOldStates())),
+							   dt0_,
+							   step0_)),
       //
       // construct J*phi once
-      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
-					      fomStateReference_,
-					      decoder.getReferenceToJacobian(),
-					      t0_)),
+      jPhiMatrix_(applyJacobQuerier_.evaluate(fomStateReference_,
+					      fomStates_.getCRefToFomOldStates(),
+					      appObj,
+					      t0_,
+					      dt0_,
+					      step0_,
+					      decoder.getReferenceToJacobian())),
       //
       // construct policies
       residualPolicy_(lspgResidualRef_, fomStates_, residualQuerier_),

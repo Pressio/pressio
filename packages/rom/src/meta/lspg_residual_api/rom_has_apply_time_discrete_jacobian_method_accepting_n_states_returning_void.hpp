@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_apply_time_discrete_jacobian_method_callable_with_four_args.hpp
+// rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,94 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_APPLY_TIME_DISCRETE_JACOBIAN_METHOD_CALLABLE_WITH_FOUR_ARGS_HPP_
-#define ROM_HAS_APPLY_TIME_DISCRETE_JACOBIAN_METHOD_CALLABLE_WITH_FOUR_ARGS_HPP_
+#ifndef ROM_HAS_APPLY_TIME_DISCRETE_JACOBIAN_METHOD_ACCEPTING_N_STATES_RETURNING_VOID_HPP_
+#define ROM_HAS_APPLY_TIME_DISCRETE_JACOBIAN_METHOD_ACCEPTING_N_STATES_RETURNING_VOID_HPP_
 
 namespace pressio{ namespace rom{ namespace meta {
 
 template <
-  typename T,
-  typename state_t,
-  typename sc_t,
-  typename dense_mat_t,
+  typename T, int n, typename step_t, typename sc_t, typename state_t, typename dense_mat_t,
   typename = void
   >
-struct has_apply_time_discrete_jacobian_method_callable_with_four_args
+struct has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void
   : std::false_type{};
 
+
+
 template <
-  typename T,
-  typename state_t,
-  typename sc_t,
-  typename dense_mat_t
+  typename T, typename step_t, typename sc_t, typename state_t, typename dense_mat_t
   >
-struct has_apply_time_discrete_jacobian_method_callable_with_four_args<
-  T, state_t, sc_t, dense_mat_t,
+struct has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void<
+  T, 2, step_t, sc_t, state_t, dense_mat_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T const>().applyTimeDiscreteJacobian(
-								 std::declval<state_t const &>(),
-								 std::declval<dense_mat_t const &>(),
+								 std::declval<step_t const &>(),
 								 std::declval<sc_t const &>(),
-								 std::declval<dense_mat_t &>()
-								 )
+								 std::declval<sc_t const &>(),
+								 std::declval<dense_mat_t const &>(),
+								 std::declval<int>(),
+								 std::declval<dense_mat_t &>(),
+								 std::declval<state_t const&>(),
+								 std::declval<state_t const&>(),
+								 std::declval<state_t const&>()
+							    )
 	       )
       >::value
     >
   > : std::true_type{};
+
+
+template <
+  typename T, typename step_t, typename sc_t, typename state_t, typename dense_mat_t
+  >
+struct has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void<
+  T, 3, step_t, sc_t, state_t, dense_mat_t,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T const>().applyTimeDiscreteJacobian(
+								 std::declval<step_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<dense_mat_t const &>(),
+								 std::declval<int>(),
+								 std::declval<dense_mat_t &>(),
+								 std::declval<state_t const&>(),
+								 std::declval<state_t const&>(),
+								 std::declval<state_t const&>()
+							    )
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
+
+template <
+  typename T, typename step_t, typename sc_t, typename state_t, typename dense_mat_t
+  >
+struct has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void<
+  T, 4, step_t, sc_t, state_t, dense_mat_t,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T const>().applyTimeDiscreteJacobian(
+								 std::declval<step_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<dense_mat_t const &>(),
+								 std::declval<int>(),
+								 std::declval<dense_mat_t &>(),
+								 std::declval<state_t const&>(),
+								 std::declval<state_t const&>(),
+								 std::declval<state_t const&>()
+							    )
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
 
 }}} // namespace pressio::rom::meta
 #endif

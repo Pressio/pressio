@@ -170,7 +170,8 @@ public:
 
   template <typename step_t, typename ... Args>
   void timeDiscreteResidual(const step_t & step,
-                            const scalar_type &,
+                            const scalar_type & time,
+                            const scalar_type & dt,
                             residual_type &,
                             Args & ... states) const
   {
@@ -178,8 +179,9 @@ public:
   }
 
   template <typename step_t, typename ... Args>
-  residual_type timeDiscreteResidual(const step_t &,
-                                     const scalar_type &,
+  residual_type timeDiscreteResidual(const step_t & step,
+                                     const scalar_type & time,
+                                     const scalar_type & dt,
                                      Args & ... states) const
   {
     // initialize which depends on the app and data structure types used
@@ -190,7 +192,8 @@ public:
 
   template <typename step_t, typename ... Args>
   void timeDiscreteJacobian(const step_t & step,
-                            const scalar_type &,
+                            const scalar_type & time,
+                            const scalar_type & dt,
                             jacobian_type &,
                             Args & ... states) const
   {
@@ -201,6 +204,7 @@ public:
   template <typename step_t, typename ... Args>
   jacobian_type timeDiscreteJacobian(const step_t & step,
                                      const scalar_type & time,
+                                     const scalar_type & dt,
                                      Args & ... states) const
   {
     // initialize which depends on the app and data structure types used

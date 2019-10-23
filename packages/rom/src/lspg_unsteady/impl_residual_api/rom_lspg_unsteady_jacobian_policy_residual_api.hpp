@@ -99,58 +99,57 @@ public:
     int n,
     typename lspg_state_t,
     typename lspg_jac_t,
-    typename app_t,
+    typename fom_t,
     typename scalar_t
   >
-  void operator()(const lspg_state_t & romY,
-		  lspg_jac_t	     & romJac,
-		  const std::array<lspg_state_t, n>  & romOldYs,
-  		  const app_t	     & app,
-		  scalar_t	     t,
-		  scalar_t	     dt,
-		  ::pressio::ode::types::step_t step) const
+  void operator()(const lspg_state_t			& romState,
+		  const std::array<lspg_state_t, n>	& romOldYs,
+  		  const fom_t				& app,
+		  const scalar_t			& time,
+		  const scalar_t			& dt,
+		  const ::pressio::ode::types::step_t	& step,
+		  lspg_jac_t				& romJac) const
   {
-    //this->compute_impl<odeMethod>(romY, romJac, app, t, dt);
+    this->compute_impl<n>(romState, romJac, romOldYs, app, time, dt, step);
   }
-
 
   template <
     int n,
     typename lspg_state_t,
-    typename app_t,
+    typename fom_t,
     typename scalar_t
     >
-  apply_jac_return_t operator()(const lspg_state_t & romY,
-				const std::array<lspg_state_t, n>  & romOldYs,
-				const app_t	   & app,
-				scalar_t	   t,
-				scalar_t	   dt,
-				::pressio::ode::types::step_t step) const
+  apply_jac_return_t operator()(const lspg_state_t			& romState,
+				const std::array<lspg_state_t, n>	& romOldYs,
+				const fom_t				& app,
+				const scalar_t				& time,
+				const scalar_t				& dt,
+				const ::pressio::ode::types::step_t	& step) const
   {
-    //this->compute_impl<odeMethod>(romY, jAction_, app, t, dt);
+    this->compute_impl<n>(romState, jAction_, romOldYs, app, time, dt, step);
     return jAction_;
   }
 
 private:
-  // template<
-  // typename lspg_state_t,
-  // typename lspg_jac_t,
-  // typename app_t,
-  // typename scalar_t>
-  // void compute_impl(const lspg_state_t & romY,
-  // 		    lspg_jac_t	     & romJac,
-  // 		    const app_t	     & app,
-  // 		    scalar_t	     t,
-  // 		    scalar_t	     dt) const
-  // {
-  //   // todo: this is not needed if jacobian is called after resiudal
-  //   // because residual takes care of reconstructing the fom state
-  //   //    timer->start("reconstruct fom state");
-  //   fomStates_.template reconstructCurrentFomState(romY);
+  template<
+  typename lspg_state_t,
+  typename lspg_jac_t,
+  typename fom_t,
+  typename scalar_t>
+  void compute_impl(const lspg_state_t & romState,
+  		    lspg_jac_t	     & romJac,
+  		    const fom_t	     & app,
+  		    const scalar_t &	     t,
+  		    const scalar_t &	     dt) const
+  {
+    // todo: this is not needed if jacobian is called after resiudal
+    // because residual takes care of reconstructing the fom state
+    //    timer->start("reconstruct fom state");
+    fomStates_.template reconstructCurrentFomState(romState);
 
-  //   const auto & basis = decoderObj_.getReferenceToJacobian();
-  //   fom_querier_policy::evaluate(app, fomStates_.getCRefToFomState(), basis, romJac, t);
-  // }
+    const auto & phiJac = decoderObj_.getReferenceToJacobian();
+    fom_querier_policy::evaluate(app, fomStates_.getCRefToFomState(), phiJac, romJac, t);
+  }
 
 protected:
   mutable apply_jac_return_t jAction_	= {};

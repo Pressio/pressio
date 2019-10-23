@@ -11,19 +11,11 @@ struct ValidApp{
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
   using dense_matrix_type = Eigen::MatrixXd;
 
-private:
-  template <typename step_t>
-  void timeDiscreteResidualImpl(const step_t & step,
-				const scalar_type & time,
-				residual_type & R,
-				const state_type & y1,
-				const state_type & y2) const
-  {}
-
 public:
   template <typename step_t, typename ... Args>
   void timeDiscreteResidual(const step_t & step,
   			    const scalar_type & time,
+  			    const scalar_type & dt,
   			    residual_type & R,
   			    Args & ... states) const
   {
@@ -35,28 +27,39 @@ public:
   template <typename step_t, typename ... Args>
   residual_type timeDiscreteResidual(const step_t & step,
   				     const scalar_type & time,
+  				     const scalar_type & dt,
   				     Args & ... states) const
   {
     residual_type R(15);
-    this->timeDiscreteResidual(step, time, R, std::forward<Args>(states)...);
+    this->timeDiscreteResidual(step, time, dt, R, std::forward<Args>(states)...);
     return R;
   }
 
-  void applyTimeDiscreteJacobian(const state_type & y,
-  				 const dense_matrix_type & B,
-  				 scalar_type t,
-  				 dense_matrix_type & A) const
+  template <typename step_t, typename ... Args>
+  void applyTimeDiscreteJacobian(const step_t & step,
+				 const scalar_type & time,
+				 const scalar_type & dt,
+				 const dense_matrix_type & B,
+				 int id,
+				 dense_matrix_type & A,
+				 Args & ... states) const
   {
     A.setConstant(2);
   }
 
-  dense_matrix_type applyTimeDiscreteJacobian(const state_type & y,
+  template <typename step_t, typename ... Args>
+  dense_matrix_type applyTimeDiscreteJacobian(const step_t & step,
+  					      const scalar_type & time,
+  					      const scalar_type & dt,
   					      const dense_matrix_type & B,
-  					      scalar_type t) const{
+  					      int id,
+  					      Args & ... states) const
+  {
     dense_matrix_type A(15,3);
-    this->applyTimeDiscreteJacobian(y, B, t, A);
+    this->applyTimeDiscreteJacobian(step, time, dt, B, id, std::forward<Args>(states)...);
     return A;
   }
+
 };
 
 TEST(rom_lspg, defaultLSPGProblemResidualAPI)

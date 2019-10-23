@@ -49,39 +49,44 @@
 #ifndef ROM_MODEL_HAS_NEEDED_APPLY_TIME_DISCRETE_JACOBIAN_METHODS_HPP_
 #define ROM_MODEL_HAS_NEEDED_APPLY_TIME_DISCRETE_JACOBIAN_METHODS_HPP_
 
-#include "rom_has_apply_time_discrete_jacobian_method_callable_with_three_args.hpp"
-#include "rom_has_apply_time_discrete_jacobian_method_callable_with_four_args.hpp"
+#include "rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
+#include "rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_non_void.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
 
 template<
-  typename model_type,
-  typename state_type,
-  typename scalar_type,
-  typename dense_mat_type,
+  typename model_t, typename step_t, typename scalar_t, typename state_t, typename dense_mat_t,
   typename enable = void
   >
 struct model_has_needed_apply_time_discrete_jacobian_methods
   : std::false_type{};
 
 template<
-  typename model_type,
-  typename state_type,
-  typename scalar_type,
-  typename dense_mat_type
+  typename model_t, typename step_t, typename scalar_t, typename state_t, typename dense_mat_t
   >
 struct model_has_needed_apply_time_discrete_jacobian_methods<
-  model_type, state_type, scalar_type, dense_mat_type,
+  model_t, step_t, scalar_t, state_t, dense_mat_t,
   mpl::enable_if_t<
-    ::pressio::rom::meta::has_apply_time_discrete_jacobian_method_callable_with_three_args<
-      model_type, state_type, scalar_type, dense_mat_type
+    has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void<
+      model_t, 2, step_t, scalar_t, state_t, dense_mat_t
       >::value and
-    ::pressio::rom::meta::has_apply_time_discrete_jacobian_method_callable_with_four_args<
-      model_type, state_type, scalar_type, dense_mat_type
+    has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void<
+      model_t, 3, step_t, scalar_t, state_t, dense_mat_t
+      >::value and
+    has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void<
+      model_t, 4, step_t, scalar_t, state_t, dense_mat_t
+      >::value and
+    has_apply_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
+      model_t, 2, step_t, scalar_t, state_t, dense_mat_t
+      >::value and
+    has_apply_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
+      model_t, 3, step_t, scalar_t, state_t, dense_mat_t
+      >::value and
+    has_apply_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
+      model_t, 4, step_t, scalar_t, state_t, dense_mat_t
       >::value
     >
   > : std::true_type{};
-
 
 }}} // namespace pressio::rom::meta
 #endif

@@ -119,8 +119,9 @@ TEST(ode_implicit_euler, guesserLambda){
   pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
 
   // integrate in time
-  auto testLambda = [](size_t step, double time, state_t & yIn){
-  		      yIn[0] = -20.; yIn[1] = -20.; yIn[2] = -20.; };
+  auto testLambda = [](int step, double time, state_t & yIn) -> void{
+  		      yIn[0] = -20.; yIn[1] = -20.; yIn[2] = -20.;
+		    };
 
   double dt = 0.01;
   ode::integrateNSteps(stepperObj, y, 0.0, dt,
@@ -145,7 +146,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
-  state_t y(3);//appObj.y0);
+  state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
   //**********************
