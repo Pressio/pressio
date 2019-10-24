@@ -68,9 +68,11 @@ template<
   typename solver_type,
   typename step_size_cb_t,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
+    ::pressio::ode::details::traits<stepper_type>::is_implicit
+    and
     ::pressio::ode::details::traits<stepper_type>::enum_id ==
-    ::pressio::ode::ImplicitEnum::Arbitrary and
+    ::pressio::ode::ImplicitEnum::Arbitrary
+    and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value
@@ -84,40 +86,11 @@ void integrateNSteps(stepper_type	 & stepper,
 		     solver_type	 & solver,
 		     step_size_cb_t	 && dtManager)
 {
-  using empty_t = utils::impl::empty;
-  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
-  advancer_t::execute(num_steps, start_time, dt, odeStateInOut, stepper, solver);
+  // using empty_t = utils::impl::empty;
+  // using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
+  // using advancer_t = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
+  // advancer_t::execute(num_steps, start_time, dt, odeStateInOut, stepper, solver);
 }
 
 }}//end namespace pressio::ode
 #endif
-
-
-// //---------------------------------------------------
-// // arbitrary stepper with time step size scheduling
-// //---------------------------------------------------
-// template<
-//   typename dt_setter_t,
-//   typename stepper_type,
-//   typename state_type,
-//   typename time_type,
-//   typename solver_type,
-//   typename std::enable_if<
-//     details::traits<stepper_type>::enum_id == ImplicitEnum::Arbitrary and
-//     !std::is_void<dt_setter_t>::value
-//     >::type * = nullptr
-//   >
-// void integrateNSteps(stepper_type   & stepper,
-// 		     state_type	    & odeStateInOut,
-// 		     const time_type	      start_time,
-// 		     const ::pressio::ode::types::step_t    num_steps,
-// 		     solver_type    & solver,
-// 		     const dt_setter_t & dtManager)
-// {
-//   static constexpr bool with_dt = true;
-//   using empty_t = utils::impl::empty;
-//   using do_step_policy_t = impl::DoStepPolicy<solver_type, empty_t, with_dt>;
-//   using advancer_t = impl::AdvancerNoCollectorForImplicitArbitraryStepper<do_step_policy_t>;
-//   advancer_t::execute(num_steps, start_time, dtManager, odeStateInOut, stepper, solver);
-// }

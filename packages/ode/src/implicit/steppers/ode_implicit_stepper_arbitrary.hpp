@@ -127,9 +127,9 @@ public:
 public:
   template<typename solver_type>
   void operator()(ode_state_type & odeState,
-		  scalar_t & t,
+		  const scalar_t & t,
 		  const scalar_t & dt,
-		  types::step_t step,
+		  const types::step_t & step,
 		  solver_type & solver)
   {
     auto & auxY0 = this->stateAuxStorage_.data_[0];

@@ -62,10 +62,10 @@ struct is_legitimate_time_step_setter<
     std::is_void<
       decltype(
 	       std::declval<T const>()(
-				 std::declval<step_t const &>(),
-				 std::declval<time_t const &>(),
-				 std::declval<time_t &>()
-				 )
+				       std::declval<step_t const &>(), //step
+				       std::declval<time_t const &>(), //time
+				       std::declval<time_t &>()	       // dt
+				       )
 	       )
       >::value
     >

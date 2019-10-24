@@ -76,7 +76,6 @@ void integrateNSteps(stepper_type			 & stepper,
 		     const ::pressio::ode::types::step_t num_steps,
 		     collector_type			 & collector){
 
-  using empty_t		 = utils::impl::empty;
   using do_step_policy_t = impl::ExplicitDoStepBasic;
   using advancer_t	 = impl::IntegratorNStepsWithCollectorAndConstDt<collector_type, do_step_policy_t>;
   advancer_t::execute(num_steps, start_time, dt, odeStateInOut, collector, stepper);
@@ -97,7 +96,6 @@ void integrateNSteps(stepper_type		    & stepper,
 		     const time_type		    dt,
 		     const ::pressio::ode::types::step_t num_steps){
 
-  using empty_t		 = utils::impl::empty;
   using do_step_policy_t = impl::ExplicitDoStepBasic;
   using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
   advancer_t::execute(num_steps, start_time, dt, odeStateInOut, stepper);

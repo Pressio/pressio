@@ -2,16 +2,106 @@
 #include <gtest/gtest.h>
 #include "CONTAINERS_ALL"
 #include "ODE_ALL"
-#include "model_for_static_checks_for_implicit_stepper.hpp"
 
-TEST(ode_implicit, checkStepSetter){
+TEST(ode_implicit, staticCheckDtSetter){
   using namespace pressio;
+  using step_t = ode::types::step_t;
+  using time_t = double;
 
-  using sc_t = double;
+  {
+    const auto lambda = [](const step_t &, const time_t &, time_t &){};
+    using l_t = decltype(lambda);
+    static_assert( ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
 
-  const auto dt_setter = [](const int & step, const sc_t & time, sc_t & dt) -> void{
-			   dt = 1.1234;
-			 };
-  using setter_t = decltype(dt_setter);
-  static_assert(ode::meta::is_legitimate_time_step_setter<setter_t, int, sc_t>::value, "");
+  {
+    const auto lambda = [](const step_t &, const time_t &, time_t &) -> void{};
+    using l_t = decltype(lambda);
+    static_assert( ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+  {
+    const auto lambda = [](const step_t &, const time_t &, time_t &) -> double{ return 11.0; };
+    using l_t = decltype(lambda);
+    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+  {
+    const auto lambda = [](const step_t &, time_t &, time_t & ){};
+    using l_t = decltype(lambda);
+    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+  {
+    const auto lambda = [](step_t &, time_t &, time_t & ){};
+    using l_t = decltype(lambda);
+    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+  {
+    const auto lambda = [](const step_t &, time_t &, const time_t & ){};
+    using l_t = decltype(lambda);
+    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+  {
+    const auto lambda = [](time_t &, const time_t & ){};
+    using l_t = decltype(lambda);
+    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+}
+
+
+
+TEST(ode_implicit, staticCheckGuesserFunctor){
+  using namespace pressio;
+  using step_t = ode::types::step_t;
+  using time_t = double;
+
+  {
+    struct Guesser{
+      void operator()(const step_t &, const time_t &, time_t &) const
+      {}
+    };
+    using l_t = Guesser;;
+    static_assert( ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+  {
+    struct Guesser{
+      double operator()(const step_t &, const time_t &, time_t &)
+      {return 0.0;}
+    };
+    using l_t = Guesser;;
+    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+  {
+    struct Guesser{
+      void operator()(const step_t &, time_t &, time_t & )
+      {}
+    };
+    using l_t = Guesser;;
+    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+  {
+    struct Guesser{
+      void operator()(step_t &, time_t &, time_t & )
+      {}
+    };
+    using l_t = Guesser;;
+    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
+  {
+    struct Guesser{
+      void operator()(const step_t &, time_t &, const time_t & )
+      {}
+    };
+    using l_t = Guesser;;
+    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+  }
+
 }

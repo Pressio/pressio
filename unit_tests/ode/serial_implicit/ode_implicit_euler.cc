@@ -118,27 +118,23 @@ TEST(ode_implicit_euler, guesserLambda){
   lin_solver_t linSolverObj;
   using nonlin_solver_t = pressio::solvers::NewtonRaphson<double, lin_solver_t>;
   nonlin_solver_t solverO(linSolverObj);
+  solverO.setMaxIterations(0);
 
-  // struct gigi{
-  //   void run(ode::types::step_t step, const double & time, state_t & d) const{
-  //   }
-  // };
-  // static_assert(ode::meta::is_legitimate_guesser<gigi,
-  // 		ode::types::step_t, double, state_t>::value, "dfgfgfgf");
+  // integrate in time
+  const auto testLambda = [](const ode::types::step_t & step,
+  			     const double & time,
+  			     state_t & yIn)
+  			  {
+  			    yIn[0] = -22.; yIn[1] = -26.; yIn[2] = -28.;
+  			  };
 
+  double dt = 0.01;
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1, solverO, testLambda);
+  std::cout << std::setprecision(14) << *y.data() << "\n";
 
-  // // integrate in time
-  // const auto testLambda = [](const ode::types::step_t & step,
-  // 			     const double & time,
-  // 			     state_t & yIn) -> void
-  // 			  {
-  // 			    yIn[0] = -20.; yIn[1] = -20.; yIn[2] = -20.;
-  // 			  };
-
-  // double dt = 0.01;
-  // ode::integrateNSteps<stepper_t, state_t, double, nonlin_solver_t, gigi>(stepperObj, y, 0.0, dt, 1, solverO, gigi());
-
-  // std::cout << std::setprecision(14) << *y.data() << "\n";
+  EXPECT_DOUBLE_EQ(y[0], -22.0);
+  EXPECT_DOUBLE_EQ(y[1], -26.0);
+  EXPECT_DOUBLE_EQ(y[2], -28.0);
 }
 
 

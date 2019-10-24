@@ -59,10 +59,10 @@ struct is_legitimate_solver_for_implicit_stepper<
   T, stepper_t, state_t,
   mpl::void_t<
     decltype(
-	     std::declval<T &>().solve(
-				       std::declval<stepper_t &>(),
-				       std::declval<state_t &>()
-				       )
+	     std::declval<T>().solve(
+				     std::declval<stepper_t &>(),
+				     std::declval<state_t &>()
+				     )
 	     )
     >
   > : std::true_type{};
