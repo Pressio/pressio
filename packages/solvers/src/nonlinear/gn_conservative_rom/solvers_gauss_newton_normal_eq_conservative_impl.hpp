@@ -297,6 +297,14 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    utils::io::reset(), "\n");
 #endif
 
+
+    // exit with error if NaNs detected in solution update dy
+    if (std::isnan(norm_dy))
+    {
+      throw std::runtime_error(
+        "Nonlinear solver: Gauss Newton Conserv: NaNs detected in solution update dy");
+    }
+
     // // compute multiplicative factor if needed
     // lineSearchHelper(alpha, y, ytrial, dy, resid, jacob, sys);
 

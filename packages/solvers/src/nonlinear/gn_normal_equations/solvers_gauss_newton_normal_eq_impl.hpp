@@ -263,6 +263,13 @@ void gauss_newton_neq_solve(const system_t & sys,
 				    "\n");
 #endif
 
+    // exit with error if NaNs detected in solution update dy
+    if (std::isnan(norm_dy))
+    {
+      throw std::runtime_error(
+        "Nonlinear solver: NEQ-based Gausss Newton: NaNs detected in solution update dy");
+    }
+
     // compute multiplicative factor if needed
     lsearch_helper_t::evaluate(alpha, y, ytrial, dy, resid, jacob, sys);
 

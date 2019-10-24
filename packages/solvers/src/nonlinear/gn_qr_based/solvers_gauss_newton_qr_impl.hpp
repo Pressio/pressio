@@ -215,6 +215,13 @@ void gauss_newton_qr_solve(const system_t & sys,
 				    "\n");
 #endif
 
+    // exit with error if NaNs detected in solution update dy
+    if (std::isnan(norm_dy))
+    {
+      throw std::runtime_error(
+        "Nonlinear solver: QR-based Gauss Newton: NaNs detected in solution update dy");
+    }
+
     // compute multiplicative factor if needed
     lsearch_helper::evaluate(alpha, y, ytrial, dy, resid, jacob, sys);
 
