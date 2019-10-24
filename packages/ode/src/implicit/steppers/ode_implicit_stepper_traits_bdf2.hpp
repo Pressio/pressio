@@ -127,10 +127,19 @@ in the templates args and the state_type used is not a containers wrapper. \
 If you are using custom data structures that do not have wrappers in \
 the containers, pass scalar as a template.");
 
+  //--------------------------------------------------------------
   // for BDF2 the user has to pass an auxiliary stepper
   using ic1 = ::pressio::mpl::variadic::find_if_binary_pred_t<
-    stepper_t, ::pressio::ode::meta::is_legitimate_auxiliary_stepper, Args...>;
+    stepper_t, ::pressio::ode::meta::is_legitimate_auxiliary_stepper_for_implicit_ode, Args...>;
   using aux_stepper_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
+  static_assert( !std::is_void<aux_stepper_t>::value,
+  		 "I cannot find a valid auxiliary stepper template argmuent type \
+passed to BDF2. You need to specify one since this is needed to do the first step. \
+For now, the auxiliary stepper needs to be implicit too. \
+For example, you can use BDF1 as auxiliary stepper to BDF2. \
+Make sure that if you use custom policies for BDF2, you use the same (or at least somehow consistent) \
+policies for the auxiliary stepper otherwise you are solving a different problem.");
+
 
   // standard policies (only used if user-defined policies not passed)
   using policy_picker = impl::StdPoliciesPicker<system_t, state_t, residual_t, jacobian_t>;

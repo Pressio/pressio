@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_legitimate_auxiliary_stepper.hpp
+// ode_is_legitimate_auxiliary_stepper_for_implicit_ode.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_AUXILIARY_STEPPER_HPP_
-#define ODE_IS_LEGITIMATE_AUXILIARY_STEPPER_HPP_
+#ifndef ODE_IS_LEGITIMATE_AUXILIARY_STEPPER_FOR_IMPLICIT_ODE_HPP_
+#define ODE_IS_LEGITIMATE_AUXILIARY_STEPPER_FOR_IMPLICIT_ODE_HPP_
 
 #include <type_traits>
 
@@ -56,12 +56,13 @@ namespace pressio{ namespace ode{ namespace meta {
 template<typename T,
 	 typename aux_t,
 	 typename enable = void>
-struct is_legitimate_auxiliary_stepper : std::false_type{};
+struct is_legitimate_auxiliary_stepper_for_implicit_ode : std::false_type{};
 
 template<typename T, typename aux_t>
-struct is_legitimate_auxiliary_stepper<
+struct is_legitimate_auxiliary_stepper_for_implicit_ode<
   T, aux_t,
     mpl::enable_if_t<
+      ::pressio::ode::details::traits<T>::is_implicit and
       mpl::is_same<
 	typename ode::details::traits<T>::state_t,
 	typename ode::details::traits<aux_t>::state_t

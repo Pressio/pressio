@@ -70,7 +70,7 @@
 #include "ode/src/implicit/meta/ode_is_legitimate_implicit_jacobian_type.hpp"
 #include "ode/src/implicit/meta/ode_is_legitimate_implicit_residual_type.hpp"
 #include "ode/src/implicit/meta/ode_is_legitimate_implicit_state_type.hpp"
-#include "ode/src/implicit/meta/ode_is_legitimate_auxiliary_stepper.hpp"
+#include "ode/src/implicit/meta/ode_is_legitimate_auxiliary_stepper_for_implicit_ode.hpp"
 #include "ode/src/implicit/meta/ode_is_legitimate_model_for_implicit_ode.hpp"
 #include "ode/src/implicit/meta/ode_model_has_all_needed_jacobian_methods.hpp"
 #include "ode/src/implicit/meta/ode_is_stepper_order_setter.hpp"
