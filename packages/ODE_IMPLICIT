@@ -69,7 +69,7 @@
 #include "ode/src/implicit/meta/ode_is_legitimate_model_for_implicit_ode.hpp"
 #include "ode/src/implicit/meta/ode_is_legitimate_model_for_implicit_ode_regular_stepper.hpp"
 #include "ode/src/implicit/meta/ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
-#include "ode/src/meta/ode_is_legitimate_time_step_setter.hpp"
+#include "ode/src/meta/ode_is_legitimate_time_step_size_setter.hpp"
 
 // meta for arbitrary stepper
 #include "ode/src/implicit/policies/meta/ode_find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper.hpp"

@@ -11,43 +11,43 @@ TEST(ode_implicit, staticCheckDtSetter){
   {
     const auto lambda = [](const step_t &, const time_t &, time_t &){};
     using l_t = decltype(lambda);
-    static_assert( ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
     const auto lambda = [](const step_t &, const time_t &, time_t &) -> void{};
     using l_t = decltype(lambda);
-    static_assert( ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
     const auto lambda = [](const step_t &, const time_t &, time_t &) -> double{ return 11.0; };
     using l_t = decltype(lambda);
-    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( !ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
     const auto lambda = [](const step_t &, time_t &, time_t & ){};
     using l_t = decltype(lambda);
-    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( !ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
     const auto lambda = [](step_t &, time_t &, time_t & ){};
     using l_t = decltype(lambda);
-    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( !ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
     const auto lambda = [](const step_t &, time_t &, const time_t & ){};
     using l_t = decltype(lambda);
-    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( !ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
     const auto lambda = [](time_t &, const time_t & ){};
     using l_t = decltype(lambda);
-    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( !ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
 }
@@ -65,7 +65,7 @@ TEST(ode_implicit, staticCheckGuesserFunctor){
       {}
     };
     using l_t = Guesser;;
-    static_assert( ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
@@ -74,7 +74,7 @@ TEST(ode_implicit, staticCheckGuesserFunctor){
       {return 0.0;}
     };
     using l_t = Guesser;;
-    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( !ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
@@ -83,7 +83,7 @@ TEST(ode_implicit, staticCheckGuesserFunctor){
       {}
     };
     using l_t = Guesser;;
-    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( !ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
@@ -92,7 +92,7 @@ TEST(ode_implicit, staticCheckGuesserFunctor){
       {}
     };
     using l_t = Guesser;;
-    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( !ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
   {
@@ -101,7 +101,7 @@ TEST(ode_implicit, staticCheckGuesserFunctor){
       {}
     };
     using l_t = Guesser;;
-    static_assert( !ode::meta::is_legitimate_time_step_setter<l_t, step_t, time_t>::value, "" );
+    static_assert( !ode::meta::is_legitimate_time_step_size_setter<l_t, step_t, time_t>::value, "" );
   }
 
 }

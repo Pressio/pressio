@@ -57,10 +57,10 @@ struct ExplicitDoStepBasic
   static void execute(const time_t & time,
 		      const time_t & dt,
 		      const int_t & step,
-		      state_t & yIn,
+		      state_t & stateInOut,
 		      stepper_t & stepper)
   {
-    stepper(yIn, time, dt, step);
+    stepper(stateInOut, time, dt, step);
   }
 };
 
@@ -72,11 +72,11 @@ struct ImplicitDoStepBasic
   static void execute(const time_t & time,
 		      const time_t & dt,
 		      const int_t & step,
-		      state_t & yIn,
+		      state_t & stateInOut,
 		      stepper_t & stepper,
 		      solver_type & solver)
   {
-    stepper(yIn, time, dt, step, solver);
+    stepper(stateInOut, time, dt, step, solver);
   }
 };
 
@@ -88,12 +88,12 @@ struct ImplicitDoStepWithGuesser
   static void execute(const time_t & time,
 		      const time_t & dt,
 		      const int_t & step,
-		      state_t & yIn,
+		      state_t & stateInOut,
 		      stepper_t & stepper,
 		      solver_type & solver,
 		      guesser_cb_t && guessCb)
   {
-    stepper(yIn, time, dt, step, solver, std::forward<guesser_cb_t>(guessCb));
+    stepper(stateInOut, time, dt, step, solver, std::forward<guesser_cb_t>(guessCb));
   }
 };
 

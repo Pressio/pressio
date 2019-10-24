@@ -52,15 +52,13 @@
 #include "../ode_ConfigDefs.hpp"
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_n_steps_integrators.hpp"
-#include "../meta/ode_is_legitimate_collector.hpp"
 #include "../meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
+#include "../meta/ode_is_legitimate_time_step_size_setter.hpp"
 
 namespace pressio{ namespace ode{
 
-// the arbitrary step size is only enabled for now
-// for the "Arbitrary" stepper
+// for now, the arbitrary step size enabled when using "Arbitrary" stepper
 
-// basic version
 template<
   typename stepper_type,
   typename state_type,
@@ -68,28 +66,32 @@ template<
   typename solver_type,
   typename step_size_cb_t,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit
-    and
+    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::details::traits<stepper_type>::enum_id ==
-    ::pressio::ode::ImplicitEnum::Arbitrary
-    and
+    ::pressio::ode::ImplicitEnum::Arbitrary and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
+      >::value and
+    ::pressio::ode::meta::is_legitimate_time_step_size_setter<
+      step_size_cb_t, types::step_t, time_type
       >::value
     >::type * = nullptr
   >
 void integrateNSteps(stepper_type	 & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 start_time,
-		     const time_type	 dt,
 		     const types::step_t num_steps,
 		     solver_type	 & solver,
-		     step_size_cb_t	 && dtManager)
-{
-  // using empty_t = utils::impl::empty;
-  // using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
-  // using advancer_t = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
-  // advancer_t::execute(num_steps, start_time, dt, odeStateInOut, stepper, solver);
+		     step_size_cb_t	 && dtManager){
+
+  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. \
+See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+
+  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t	 = impl::IntegratorNStepsWithTimeStepSizeSetter<do_step_policy_t>;
+  advancer_t::execute(num_steps, start_time, dtManager, odeStateInOut, stepper, solver);
 }
 
 }}//end namespace pressio::ode

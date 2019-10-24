@@ -66,7 +66,6 @@ template<
   typename time_type,
   typename solver_type,
   typename std::enable_if<
-    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
@@ -78,8 +77,13 @@ void integrateNSteps(stepper_type	 & stepper,
 		     const time_type	 startTime,
 		     const time_type	 dt,
 		     const types::step_t numSteps,
-		     solver_type	 & solver)
-{
+		     solver_type	 & solver){
+
+  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. \
+See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+
   using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
   using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
   advancer_t::execute(numSteps, startTime, dt, odeStateInOut, stepper, solver);
@@ -94,7 +98,6 @@ template<
   typename collector_type,
   typename solver_type,
   typename std::enable_if<
-    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
@@ -110,8 +113,13 @@ void integrateNSteps(stepper_type	 & stepper,
 		     const time_type	 dt,
 		     const types::step_t numSteps,
 		     collector_type	 & collector,
-		     solver_type	 & solver)
-{
+		     solver_type	 & solver){
+
+  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. \
+See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+
   using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
   using advancer_t	 = impl::IntegratorNStepsWithCollectorAndConstDt<collector_type, do_step_policy_t>;
   advancer_t::execute(numSteps, startTime, dt, odeStateInOut, collector, stepper, solver);
@@ -126,11 +134,9 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
-    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
-      solver_type, stepper_type, state_type
-      >::value and
+      solver_type, stepper_type, state_type>::value and
     ::pressio::ode::meta::is_legitimate_guesser<
       guess_callback_t, types::step_t, time_type, state_type
       >::value
@@ -142,8 +148,13 @@ void integrateNSteps(stepper_type	 & stepper,
 		     const time_type	 dt,
 		     const types::step_t numSteps,
 		     solver_type	 & solver,
-		     guess_callback_t    && guessCb)
-{
+		     guess_callback_t    && guessCb){
+
+  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. \
+See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+
   using do_step_policy_t = impl::ImplicitDoStepWithGuesser<solver_type, guess_callback_t>;
   using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
   advancer_t::execute(numSteps, startTime, dt, odeStateInOut, stepper, solver,
@@ -160,7 +171,6 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
-    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
@@ -180,8 +190,13 @@ void integrateNSteps(stepper_type		& stepper,
 		     const types::step_t	numSteps,
 		     collector_type		& collector,
 		     solver_type		& solver,
-		     guess_callback_t		&& guessCb)
-{
+		     guess_callback_t		&& guessCb){
+
+  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. \
+See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+
   using do_step_policy_t = impl::ImplicitDoStepWithGuesser<solver_type, guess_callback_t>;
   using advancer_t	 = impl::IntegratorNStepsWithCollectorAndConstDt<collector_type, do_step_policy_t>;
   advancer_t::execute(numSteps, startTime, dt, odeStateInOut, collector, stepper,
@@ -198,7 +213,6 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
-    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
     ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
@@ -218,8 +232,13 @@ void integrateNSteps(stepper_type		& stepper,
 		     const types::step_t	numSteps,
 		     solver_type		& solver,
 		     collector_type		& collector,
-		     guess_callback_t		&& guessCb)
-{
+		     guess_callback_t		&& guessCb){
+
+  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. \
+See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+
   integrateNSteps(stepper, odeStateInOut, startTime, dt, numSteps, collector, solver, guessCb);
 }
 

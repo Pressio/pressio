@@ -121,7 +121,7 @@ struct IntegratorNStepsWithCollectorAndConstDt
 {
 
   template <typename time_type, typename state_type, typename ... Args>
-  static void execute(const ::pressio::ode::types::step_t & num_steps,
+  static void execute(const ::pressio::ode::types::step_t & numSteps,
 		      const time_type			  & start_time,
 		      const time_type			  & dt,
 		      state_type			  & yIn,
@@ -144,13 +144,12 @@ struct IntegratorNStepsWithCollectorAndConstDt
 
     step_t step = 1;
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
-    for( ; step <= num_steps ; ++step)
+    for( ; step <= numSteps ; ++step)
     {
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
-      ::pressio::utils::io::print_stdout(fmt, "time step =",
-				      step, reset, "\n");
+      ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
 #endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -182,7 +181,7 @@ struct IntegratorNStepsWithConstDt
 {
 
   template <typename time_type, typename ... Args>
-  static void execute(const ::pressio::ode::types::step_t & num_steps,
+  static void execute(const ::pressio::ode::types::step_t & numSteps,
 		      const time_type			  & start_time,
 		      const time_type			  & dt,
 		      Args				  && ... args)
@@ -198,13 +197,12 @@ struct IntegratorNStepsWithConstDt
     step_t step = 1;
 
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
-    for( ; step <= num_steps ; ++step)
+    for( ; step <= numSteps ; ++step)
     {
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
-      ::pressio::utils::io::print_stdout(fmt, "time step =",
-				      step, reset, "\n");
+      ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
 #endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -226,62 +224,62 @@ struct IntegratorNStepsWithConstDt
 
 
 
-// /*
-//  * No collector object is passed by user and no dt
-//  */
-// template <typename DoStepPolicy_t>
-// struct AdvancerNoCollectorForImplicitArbitraryStepper
-// {
 
-//   template <
-//     typename time_type, typename dt_setter_t, typename ... Args
-//     >
-//   static void execute(::pressio::ode::types::step_t num_steps,
-// 		      time_type	start_time,
-// 		      const dt_setter_t & dtManager,
-// 		      Args && ... args)
-//   {
-//     using step_t = ::pressio::ode::types::step_t;
+/*
+ * time step size setter is passed by user
+ * this is within the impl namespace, so should not be used outside
+ */
+template <typename DoStepPolicy_t>
+struct IntegratorNStepsWithTimeStepSizeSetter
+{
 
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-//     timer->start("time loop");
-// #endif
+  template <typename time_type, typename dt_setter, typename ... Args>
+  static void execute(const ::pressio::ode::types::step_t & numSteps,
+		      const time_type			  & start_time,
+		      const dt_setter			  & dtManager,
+		      Args				  && ... args)
+  {
+    using step_t = ::pressio::ode::types::step_t;
+    constexpr auto zero = ::pressio::utils::constants::zero<step_t>();
 
-//     time_type dt   = {};
-//     time_type time = start_time;
-//     step_t step	   = 1;
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("time loop");
+#endif
 
-//     // query what is the time step to use at a given step
-//     dtManager(time, step, dt);
+    time_type time = start_time;
+    time_type dt = {};
+    // call the dt manager to set the dt to use at the beginning
+    dtManager(zero, time, dt);
 
-//     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
-//     for( ; step <= num_steps ; ++step)
-//     {
-//       // query what is the time step to use at a given step
-//       dtManager(time, step, dt);
+    step_t step	   = 1;
+    ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
+    for( ; step <= numSteps ; ++step)
+    {
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
+      auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
+      auto reset = utils::io::reset();
+      ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
+#endif
 
-//       #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-//       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
-//       auto reset = utils::io::reset();
-//       ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
-//       #endif
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer->start("time step");
+#endif
+      DoStepPolicy_t::execute(time, dt, step, std::forward<Args>(args)...);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer->stop("time step");
+#endif
 
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//       timer->start("time step");
-// #endif
-//       DoStepPolicy_t::execute(time, dt, step, std::forward<Args>(args)...);
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//       timer->stop("time step");
-// #endif
+      time = start_time + static_cast<time_type>(step) * dt;
+      // call the dt manager to set the dt to use at the beginning
+      dtManager(step, time, dt);
+    }
 
-//       time = start_time + static_cast<time_type>(step) * dt;
-//     }
-
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     timer->stop("time loop");
-// #endif
-//   }//end ()
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    timer->stop("time loop");
+#endif
+  }//end ()
+};
 
 
 }}}//end namespace pressio::ode::impl

@@ -134,6 +134,7 @@ public:
 struct Bdf1Solver
 {
   using app_t		= MyApp;
+  using sc_t		= typename app_t::scalar_type;
   using nstate_t	= typename app_t::state_type;
   using nveloc_t	= typename app_t::velocity_type;
   using njacobian_t	= typename app_t::jacobian_type;
@@ -147,11 +148,12 @@ struct Bdf1Solver
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::iterative::EigenIterative<lin_solver_name, jac_t>;
-  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<double, lin_solver_t>;
+  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<sc_t, lin_solver_t>;
 
   state_t y_ = {};
   app_t appObj_ = {};
   stepper_t stepperObj_;
+  const sc_t dt_ = 0.01;
 
   Bdf1Solver()
     : appObj_{}, stepperObj_{y_, appObj_}
@@ -164,9 +166,7 @@ struct Bdf1Solver
   {
     lin_solver_t linSolverObj;
     nonlin_solver_t solverO(linSolverObj);
-    // integrate in time
-    const double dt = 0.01;
-    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt, steps, solverO);
+    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 };
 
@@ -174,6 +174,7 @@ struct Bdf1Solver
 struct CustomBdf1Solver
 {
   using app_t		= MyApp;
+  using sc_t		= typename app_t::scalar_type;
   using nstate_t	= typename app_t::state_type;
   using nresid_t	= typename app_t::residual_type;
   using njacobian_t	= typename app_t::jacobian_type;
@@ -198,11 +199,12 @@ struct CustomBdf1Solver
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::iterative::EigenIterative<lin_solver_name, jac_t>;
-  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<double, lin_solver_t>;
+  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<sc_t, lin_solver_t>;
 
   state_t y_ = {};
   app_t appObj_ = {};
   stepper_t stepperObj_;
+  const sc_t dt_ = 0.01;
 
   CustomBdf1Solver()
     : appObj_{}, stepperObj_{y_, appObj_}
@@ -215,33 +217,91 @@ struct CustomBdf1Solver
   {
     lin_solver_t linSolverObj;
     nonlin_solver_t solverO(linSolverObj);
-    // integrate in time
-    const double dt = 0.01;
-    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt, steps, solverO);
+    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
+
+
+  void runWithStepSizeManagerLambda(int steps)
+  {
+    lin_solver_t linSolverObj;
+    nonlin_solver_t solverO(linSolverObj);
+    using step_t = ::pressio::ode::types::step_t;
+    const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
+				  std::cout << " SETTING DT " << std::endl;
+				  dt = dt_;
+				};
+    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
+  };
+
+  void runWithStepSizeManagerLambdaWrong(int steps)
+  {
+    lin_solver_t linSolverObj;
+    nonlin_solver_t solverO(linSolverObj);
+    using step_t = ::pressio::ode::types::step_t;
+    const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
+				  std::cout << " SETTING DT " << std::endl;
+				  dt = dt_*2.;
+				};
+    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
+  };
+
 };
 
-TEST(ode_implicit, arbitraryStepperRunEuler)
+
+
+TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
 {
-  CustomBdf1Solver S1;
-  S1.run(2);
-  std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
+  for (int N = 1; N < 10; N++){
+    CustomBdf1Solver S1;
+    S1.run(N);
+    std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
 
-  Bdf1Solver S2;
-  S2.run(2);
-  std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
+    Bdf1Solver S2;
+    S2.run(N);
+    std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
-
-  // appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
-  // EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
-  // EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
-  // EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
-
+    EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
+    EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
+    EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
+  }
 }
 
 
+TEST(ode_implicit, arbitraryStepperRunEulerDtSetter)
+{
+  for (int N = 1; N < 10; N++){
+    CustomBdf1Solver S1;
+    S1.runWithStepSizeManagerLambda(N);
+    std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
+
+    Bdf1Solver S2;
+    S2.run(N);
+    std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
+
+    EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
+    EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
+    EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
+  }
+}
 
 
+TEST(ode_implicit, arbitraryStepperRunEulerDtSetterWithWrongDt)
+{
+  for (int N = 1; N < 10; N++){
+    CustomBdf1Solver S1;
+    // use here a dt that we know wont work because it is wrong
+    S1.runWithStepSizeManagerLambdaWrong(N);
+    std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
+
+    Bdf1Solver S2;
+    S2.run(N);
+    std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
+
+    ASSERT_TRUE( S1.y_[0] != S2.y_[0]);
+    ASSERT_TRUE( S1.y_[1] != S2.y_[1]);
+    ASSERT_TRUE( S1.y_[2] != S2.y_[2]);
+  }
+}
 
 
 
