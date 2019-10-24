@@ -52,7 +52,7 @@
 #include "rom_lspg_unsteady_residual_policy_residual_api.hpp"
 #include "rom_lspg_unsteady_jacobian_policy_residual_api.hpp"
 #include "../../policies/rom_query_fom_time_discrete_residual_policy.hpp"
-#include "../../policies/rom_query_fom_apply_time_discrete_jacobian_basic_policy.hpp"
+#include "../../policies/rom_query_fom_apply_time_discrete_jacobian_policy.hpp"
 #include "rom_lspg_unsteady_type_generator_common_residual_api.hpp"
 #include "../../../../ode/src/ode_fwd.hpp"
 
@@ -67,14 +67,14 @@ template <
 struct DefaultLSPGUnsteadyTypeGeneratorResidualApi
 {
   static_assert( odeName == ::pressio::ode::ImplicitEnum::Arbitrary,
-		 "\nTo use unsteady LSPG with the residual api, \n \
+		 "\nTo use unsteady LSPG with the residual api, \
 you need to pass ode::ImplicitEnum::Arbitrary");
 
   /* here, the fom_type must satisfy the residual api */
   static_assert( ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
-		 "\nUsing DefaultLSPGUnsteadyTypeGeneratorResidualApi \n \
-requires a fom adapter class that meets the residual api. \n \
-However, the fom/adapter type you passed does not meet this api. \n \
+		 "\nUsing DefaultLSPGUnsteadyTypeGeneratorResidualApi \
+requires a fom adapter class that meets the residual api. \
+However, the fom/adapter type you passed does not meet this api. \
 Verify the fom/adapter class you are using.");
 
   // pick the common types holder
@@ -100,7 +100,7 @@ Verify the fom/adapter class you are using.");
   using fom_residual_querier_policy_t	= ::pressio::rom::policy::QueryFomTimeDiscreteResidual;
 
   // policy for querying the J*phi from FOM
-  using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyTimeDiscreteJacobianBasic;
+  using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyTimeDiscreteJacobian;
 
   // policy to compute the LSPG time-discrete residual
   using lspg_residual_policy_t	= ::pressio::rom::impl::LSPGUnsteadyResidualPolicyResidualApi<

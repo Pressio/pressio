@@ -31,7 +31,7 @@ struct mytest
   }
 
   void check(){
-    const auto & yfR = MyStates.getCRefToFomState();
+    const auto & yfR = MyStates.getCRefToCurrentFomState();
     const auto sz = yfR.localSize();
     for (auto i=0; i<sz; i++)
       EXPECT_DOUBLE_EQ( yfR[i], 2.4);

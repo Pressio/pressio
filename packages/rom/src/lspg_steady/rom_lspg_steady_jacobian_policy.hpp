@@ -111,7 +111,7 @@ public:
 #endif
 
     const auto & basis = decoderObj_.getReferenceToJacobian();
-    fom_apply_jac_policy::evaluate(app, fomStates_.getCRefToFomState(), basis, romJJ);
+    fom_apply_jac_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), basis, romJJ);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");

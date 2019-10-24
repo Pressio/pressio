@@ -95,7 +95,7 @@ public:
     auto result = preconditionable::template operator()
       <odeMethod, n>(odeY, oldYs, app, t, dt);
 
-    const auto & yFom = fomStates_.getCRefToFomState();
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *result.data(), t);
     return result;
   }
@@ -118,7 +118,7 @@ public:
     preconditionable::template operator()
       <odeMethod, n>(odeY, odeR, oldYs, app, t, dt);
 
-    const auto & yFom = fomStates_.getCRefToFomState();
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *odeR.data(), t);
   }
 
@@ -134,7 +134,7 @@ public:
     auto result = preconditionable::template operator()
       <lspg_state_t, fom_t>(romY, app);
 
-    const auto & yFom = fomStates_.getCRefToFomState();
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *result.data());
     return result;
   }
@@ -150,7 +150,7 @@ public:
     preconditionable::template operator()
       <lspg_state_t, lspg_residual_t, fom_t>(romY, romR, app);
 
-    const auto & yFom = fomStates_.getCRefToFomState();
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *romR.data());
   }
 

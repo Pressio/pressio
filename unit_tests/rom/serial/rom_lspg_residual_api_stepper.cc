@@ -5,10 +5,13 @@
 #include "ROM_LSPG_UNSTEADY"
 
 struct ValidApp{
+
+  const int32_t numDof_ = 15;
+
   using scalar_type   = double;
   using state_type    = Eigen::VectorXd;
   using residual_type = state_type;
-  using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
+  using jacobian_type	= Eigen::MatrixXd; //SparseMatrix<scalar_type, Eigen::RowMajor, int>;
   using dense_matrix_type = Eigen::MatrixXd;
 
 public:
@@ -20,8 +23,6 @@ public:
   			    Args & ... states) const
   {
     R.setConstant(1);
-    // forward to whatever approriate impl method, e. g.
-    // timeDiscreteResidualImpl<step_t>( step, time, f, std::forward<Args>(states)... );
   }
 
   template <typename step_t, typename ... Args>
@@ -30,19 +31,19 @@ public:
   				     const scalar_type & dt,
   				     Args & ... states) const
   {
-    residual_type R(15);
+    residual_type R(numDof_);
     this->timeDiscreteResidual(step, time, dt, R, std::forward<Args>(states)...);
     return R;
   }
 
   template <typename step_t, typename ... Args>
   void applyTimeDiscreteJacobian(const step_t & step,
-				 const scalar_type & time,
-				 const scalar_type & dt,
-				 const dense_matrix_type & B,
-				 int id,
-				 dense_matrix_type & A,
-				 Args & ... states) const
+  				 const scalar_type & time,
+  				 const scalar_type & dt,
+  				 const dense_matrix_type & B,
+  				 int id,
+  				 dense_matrix_type & A,
+  				 Args && ... states) const
   {
     A.setConstant(2);
   }
@@ -53,10 +54,10 @@ public:
   					      const scalar_type & dt,
   					      const dense_matrix_type & B,
   					      int id,
-  					      Args & ... states) const
+  					      Args && ... states) const
   {
-    dense_matrix_type A(15,3);
-    this->applyTimeDiscreteJacobian(step, time, dt, B, id, std::forward<Args>(states)...);
+    dense_matrix_type A(numDof_, 3);
+    this->applyTimeDiscreteJacobian(step, time, dt, B, id, A, std::forward<Args>(states)...);
     return A;
   }
 
@@ -77,7 +78,7 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
 
   app_t appobj;
-  decoder_jac_t phi(Eigen::MatrixXd(3,3));
+  decoder_jac_t phi(Eigen::MatrixXd(appobj.numDof_,3));
   decoder_t decoderObj(phi);
   typename app_t::state_type yRef;
   lspg_state_t yROM;

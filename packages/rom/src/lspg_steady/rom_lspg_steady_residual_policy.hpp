@@ -100,7 +100,7 @@ public:
     timer->start("fom eval rhs");
 #endif
 
-    fom_eval_rhs_policy::evaluate(app, fomStates_.getCRefToFomState(), romR);
+    fom_eval_rhs_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), romR);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

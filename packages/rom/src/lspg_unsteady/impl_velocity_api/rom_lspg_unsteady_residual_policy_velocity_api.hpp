@@ -249,7 +249,7 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    fom_velocity_eval_policy::evaluate(app, fomStates_.getCRefToFomState(), romR, t);
+    fom_velocity_eval_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), romR, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
@@ -257,7 +257,7 @@ private:
 #endif
 
     this->time_discrete_dispatcher<odeMethod, fom_states_data_type::N_>
-      (fomStates_.getCRefToFomState(), fomStates_.getCRefToFomOldStates(), romR, dt);
+      (fomStates_.getCRefToCurrentFomState(), fomStates_.getCRefToFomOldStates(), romR, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");

@@ -148,7 +148,7 @@ private:
     fomStates_.template reconstructCurrentFomState(romState);
 
     const auto & phiJac = decoderObj_.getReferenceToJacobian();
-    fom_querier_policy::evaluate(app, fomStates_.getCRefToFomState(), phiJac, romJac, t);
+    fom_querier_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), phiJac, romJac, t);
   }
 
 protected:

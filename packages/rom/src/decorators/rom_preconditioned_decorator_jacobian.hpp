@@ -91,7 +91,7 @@ public:
 				scalar_t t, scalar_t dt) const
   {
     auto JJ = preconditionable::template operator()<odeMethod>(odeY, app, t, dt);
-    const auto & yFom = fomStates_.getCRefToFomState();
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *JJ.data(), t);
     return JJ;
   }
@@ -106,7 +106,7 @@ public:
   		  const app_t & app, scalar_t t, scalar_t dt) const
   {
     preconditionable::template operator()<odeMethod>(odeY, odeJJ, app, t, dt);
-    const auto & yFom = fomStates_.getCRefToFomState();
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *odeJJ.data(), t);
   }
 
@@ -123,7 +123,7 @@ public:
     auto JJ = preconditionable::template operator()
 	<lspg_state_t, app_t>(romY, app);
 
-    const auto & yFom = fomStates_.getCRefToFomState();
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *JJ.data());
     return JJ;
   }
@@ -139,7 +139,7 @@ public:
     preconditionable::template operator()
 	  <lspg_state_t, lspg_jac_t, app_t>(romY, romJJ, app);
 
-    const auto & yFom = fomStates_.getCRefToFomState();
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *romJJ.data());
   }
 

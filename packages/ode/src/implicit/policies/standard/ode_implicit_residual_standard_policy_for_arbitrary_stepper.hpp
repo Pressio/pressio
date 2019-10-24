@@ -94,8 +94,10 @@ public:
 		  const types::step_t & step,
 		  residual_type & R) const{
 
-    model.template timeDiscreteResidual(step, t, dt, *R.data(),
-			       *y.data(), *oldYs[0].data());
+    model.template timeDiscreteResidual(step, t, dt,
+					*R.data(),
+					*y.data(),
+					*oldYs[0].data());
   }
 
   template <typename scalar_type>
@@ -106,77 +108,81 @@ public:
   			   const scalar_type & dt,
   			   const types::step_t & step) const{
 
-    residual_type R(model.template timeDiscreteResidual(step, t, dt, *y.data(), *oldYs[0].data() ));
+    residual_type R(model.template timeDiscreteResidual(step, t, dt,
+							*y.data(),
+							*oldYs[0].data() ));
     return R;
   }
 
-  // //-------------------------------
-  // // specialize for n == 2
-  // //-------------------------------
-  // template <typename scalar_type>
-  // void operator()(const state_type & y,
-		//   const std::array<state_type, 2> & oldYs,
-		//   const system_type & model,
-		//   const scalar_type & t,
-		//   const scalar_type & dt,
-		//   const types::step_t & step,
-		//   residual_type & R) const{
+  //-------------------------------
+  // specialize for n == 2
+  //-------------------------------
+  template <typename scalar_type>
+  void operator()(const state_type & y,
+		  const std::array<state_type, 2> & oldYs,
+		  const system_type & model,
+		  const scalar_type & t,
+		  const scalar_type & dt,
+		  const types::step_t & step,
+		  residual_type & R) const{
 
-  //   model.template timeDiscreteResidual(step, t, dt,
-		// 	       *R.data(),
-		// 	       *y.data(),
-		// 	       *oldYs[0].data(),
-		// 	       *oldYs[1].data());
-  // }
+    model.template timeDiscreteResidual(step, t, dt,
+					*R.data(),
+					*y.data(),
+					*oldYs[0].data(),
+					*oldYs[1].data());
+  }
 
-  // template <typename scalar_type>
-  // residual_type operator()(const state_type & y,
-  // 			   const std::array<state_type, 2> & oldYs,
-  // 			   const system_type & model,
-  // 			   const scalar_type & t,
-  // 			   const scalar_type & dt,
-  // 			   const types::step_t &  step) const{
+  template <typename scalar_type>
+  residual_type operator()(const state_type & y,
+  			   const std::array<state_type, 2> & oldYs,
+  			   const system_type & model,
+  			   const scalar_type & t,
+  			   const scalar_type & dt,
+  			   const types::step_t &  step) const{
 
-  //   return model.template timeDiscreteResidual(step, t, dt,
-		// 		      *y.data(),
-		// 		      *oldYs[0].data(),
-		// 		      *oldYs[1].data());
-  // }
+    residual_type R( model.template timeDiscreteResidual(step, t, dt,
+							 *y.data(),
+							 *oldYs[0].data(),
+							 *oldYs[1].data() ));
+    return R;
+  }
 
-  // //-------------------------------
-  // // specialize for n == 3
-  // //-------------------------------
-  // template <typename scalar_type>
-  // void operator()(const state_type & y,
-		//   const std::array<state_type, 3> & oldYs,
-		//   const system_type & model,
-		//   const scalar_type & t,
-		//   const scalar_type & dt,
-		//   const types::step_t &  step,
-		//   residual_type & R) const{
+  //-------------------------------
+  // specialize for n == 3
+  //-------------------------------
+  template <typename scalar_type>
+  void operator()(const state_type & y,
+		  const std::array<state_type, 3> & oldYs,
+		  const system_type & model,
+		  const scalar_type & t,
+		  const scalar_type & dt,
+		  const types::step_t &  step,
+		  residual_type & R) const{
 
-  //   model.template timeDiscreteResidual(step, t, dt,
-		// 	       *R.data(),
-		// 	       *y.data(),
-		// 	       *oldYs[0].data(),
-		// 	       *oldYs[1].data(),
-		// 	       *oldYs[2].data());
-  // }
+    model.template timeDiscreteResidual(step, t, dt,
+					*R.data(),
+					*y.data(),
+					*oldYs[0].data(),
+					*oldYs[1].data(),
+					*oldYs[2].data());
+  }
 
-  // template <typename scalar_type>
-  // residual_type operator()(const state_type & y,
-  // 			   const std::array<state_type, 3> & oldYs,
-  // 			   const system_type & model,
-  // 			   const scalar_type & t,
-  // 			   const scalar_type & dt,
-  // 			   const types::step_t &  step) const{
+  template <typename scalar_type>
+  residual_type operator()(const state_type & y,
+  			   const std::array<state_type, 3> & oldYs,
+  			   const system_type & model,
+  			   const scalar_type & t,
+  			   const scalar_type & dt,
+  			   const types::step_t &  step) const{
 
-  //   return model.template timeDiscreteResidual(step, t, dt,
-		// 		      *y.data(),
-		// 		      *oldYs[0].data(),
-		// 		      *oldYs[1].data(),
-		// 		      *oldYs[2].data());
-  // }
+    residual_type R(model.template timeDiscreteResidual(step, t, dt,
+							*y.data(),
+							*oldYs[0].data(),
+							*oldYs[1].data(),
+							*oldYs[2].data() ));
+    return R;
+  }
 
 };//end class
 

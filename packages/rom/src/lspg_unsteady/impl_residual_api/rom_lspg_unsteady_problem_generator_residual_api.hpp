@@ -105,14 +105,14 @@ private:
   fom_r_querier_policy_t	residualQuerier_;
   fom_apply_jac_policy_t	applyJacobQuerier_;
   fom_state_t			fomStateReference_;
-  fom_states_data		fomStates_;
   fom_state_reconstr_t		fomStateReconstructor_;
+  fom_states_data		fomStates_;
 
   lspg_residual_t		lspgResidualRef_;
   lspg_matrix_t			jPhiMatrix_;
+
   lspg_residual_policy_t	residualPolicy_;
   lspg_jacobian_policy_t	jacobianPolicy_;
-
   lspg_stepper_t		stepperObj_;
 
 public:
@@ -132,29 +132,29 @@ public:
 					  scalar_t	t0)
     : step0_{},
       t0_{t0},
-      dt0_{}, // this should be initialized from dtManager
+      dt0_{},
       residualQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
-      fomStates_(fomStateReference_, fomStateReconstructor_),
       fomStateReconstructor_(fomStateReference_, decoder),
+      fomStates_(fomStateReference_, fomStateReconstructor_),
       //
       // here we query at step 0 and t0
       lspgResidualRef_( residualQuerier_.template evaluate(fomStateReference_,
-							   fomStates_.getCRefToFomOldStates(),
-							   appObj,
-							   t0_,
-							   dt0_,
-							   step0_)),
+      							   fomStates_.getCRefToFomOldStates(),
+      							   appObj,
+      							   t0_,
+      							   dt0_,
+      							   step0_)),
       //
       // construct J*phi once
-      jPhiMatrix_(applyJacobQuerier_.evaluate(fomStateReference_,
-					      fomStates_.getCRefToFomOldStates(),
-					      appObj,
-					      t0_,
-					      dt0_,
-					      step0_,
-					      decoder.getReferenceToJacobian())),
+      jPhiMatrix_(applyJacobQuerier_.template evaluate(fomStateReference_,
+						       fomStates_.getCRefToFomOldStates(),
+						       appObj,
+						       t0_,
+						       dt0_,
+						       step0_,
+						       decoder.getReferenceToJacobian())),
       //
       // construct policies
       residualPolicy_(lspgResidualRef_, fomStates_, residualQuerier_),

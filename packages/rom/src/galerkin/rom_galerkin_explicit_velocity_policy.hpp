@@ -172,7 +172,7 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    const auto & yFom = fomStates_.getCRefToFomState();
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.velocity(*yFom.data(), t, *R_.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

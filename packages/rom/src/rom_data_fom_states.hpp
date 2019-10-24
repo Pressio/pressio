@@ -194,7 +194,7 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
 
 public:
 
-  const fom_state_type & getCRefToFomState() const{
+  const fom_state_type & getCRefToCurrentFomState() const{
     return fomState_;
   }
 

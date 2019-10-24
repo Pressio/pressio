@@ -102,8 +102,7 @@ public:
 		  const ::pressio::ode::types::step_t	& step,
 		  residual_t				& romR) const
   {
-    std::cout << " empty LSPGUnsteadyResidualPolicyResidualApi" << std::endl;
-    this->compute_impl<n>(romState, romR, romPrevStates, app, time, dt, step);
+    this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, romR);
   }
 
   template <
@@ -119,8 +118,7 @@ public:
 			const scalar_t			    & dt,
 			const ::pressio::ode::types::step_t & step) const
   {
-    std::cout << " empty LSPGUnsteadyResidualPolicyResidualApi" << std::endl;
-    this->compute_impl<n>(romState, R_, romPrevStates, app, time, dt, step);
+    this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, R_);
     return R_;
   }
 
@@ -132,17 +130,17 @@ private:
     typename scalar_t
   >
   void compute_impl(const lspg_state_t		        & romState,
-		    residual_t			        & romR,
 		    const std::array<lspg_state_t,n>    & romPrevStates,
 		    const fom_t			        & app,
 		    const scalar_t		        & time,
 		    const scalar_t		        & dt,
-		    const ::pressio::ode::types::step_t & step) const
+		    const ::pressio::ode::types::step_t & step,
+		    residual_t			        & romR) const
   {
     fomStates_.template reconstructCurrentFomState(romState);
     fomStates_.template reconstructFomOldStates<n>(romPrevStates);
 
-    fom_querier_policy::evaluate<n>(fomStates_.getCRefToFomState(),
+    fom_querier_policy::evaluate<n>(fomStates_.getCRefToCurrentFomState(),
 				    fomStates_.getCRefToFomOldStates(),
 				    app, time, dt, step, romR);
   }

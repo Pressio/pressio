@@ -56,51 +56,35 @@ namespace pressio{ namespace rom{
 
 namespace impl{
 
-template <typename T, typename enable = void>
+template<
+  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
+  ::pressio::ode::ImplicitEnum name,
+  typename fom_type,
+  typename lspg_state_t,
+  typename ...Args
+  >
 struct LSPGUnsteadyProblemHelper
 {
-  template <
-    template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
-    ::pressio::ode::ImplicitEnum name,
-    typename lspg_state_t,
-    typename ...Args
-    >
-  using type = void;
-};
+    using type =
+    typename std::conditional<
+      // if meets velocity API
+      ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
+      // then set the proper type
+      impl::LSPGUnsteadyProblemGeneratorVelocityApi<lspg_t, name, fom_type, lspg_state_t, Args...>,
+      // else
+      typename std::conditional<
+	//check if meets residual API
+	::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
+	impl::LSPGUnsteadyProblemGeneratorResidualApi<lspg_t, name, fom_type, lspg_state_t, Args...>,
+	//otherwise set void
+	void
+	>::type
+    >::type;
 
-template <typename T>
-struct LSPGUnsteadyProblemHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
-    >
-  >
-{
-  template <
-    template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
-    ::pressio::ode::ImplicitEnum name,
-    typename lspg_state_t,
-    typename ...Args
-    >
-    using type = impl::LSPGUnsteadyProblemGeneratorVelocityApi<lspg_t, name, T, lspg_state_t, Args...>;
-};
-
-
-template <typename T>
-struct LSPGUnsteadyProblemHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
-    >
-  >
-{
-  template <
-    template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_t,
-    ::pressio::ode::ImplicitEnum name,
-    typename lspg_state_t,
-    typename ...Args
-    >
-    using type = impl::LSPGUnsteadyProblemGeneratorResidualApi<lspg_t, name, T, lspg_state_t, Args...>;
+  static_assert( !std::is_void<type>::value,
+		 "The model type you are using does not meet neither the velociy \
+nor the residual API, so I cannot instantiate a valid LSPGUnsteadyProblem. \
+Verify the API of your model/adapter class.");
 };
 
 }// end namespace pressio::rom::impl
@@ -114,7 +98,7 @@ template <
   typename ...Args
   >
 using LSPGUnsteadyProblem =
-  typename impl::LSPGUnsteadyProblemHelper<fom_type>::template type<lspg_type, odeName, lspg_state_t, Args...>;
+  typename impl::LSPGUnsteadyProblemHelper<lspg_type, odeName, fom_type, lspg_state_t, Args...>::type;
 
 }}//end namespace pressio::rom
 #endif
