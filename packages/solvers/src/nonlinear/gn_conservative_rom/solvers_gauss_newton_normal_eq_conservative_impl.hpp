@@ -155,7 +155,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("Gausss Newton Conserv");
+  timer->start("Gauss Newton Conserv");
 #endif
 
   iteration_t iStep = 0;
@@ -347,7 +347,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  timer->stop("Gausss Newton Conserv");
+  timer->stop("Gauss Newton Conserv");
 #endif
 
 }

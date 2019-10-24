@@ -128,7 +128,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("QR-based Gausss Newton");
+  timer->start("QR-based Gauss Newton");
 #endif
 
   iteration_t iStep = 0;
@@ -241,7 +241,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  timer->stop("QR-based Gausss Newton");
+  timer->stop("QR-based Gauss Newton");
 #endif
 
 }
