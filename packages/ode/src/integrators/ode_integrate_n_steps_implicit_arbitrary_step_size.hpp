@@ -52,8 +52,8 @@
 #include "../ode_ConfigDefs.hpp"
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_n_steps_integrators.hpp"
-#include "../meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
 #include "../meta/ode_is_legitimate_time_step_size_setter.hpp"
+#include "../implicit/meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
 
 namespace pressio{ namespace ode{
 

@@ -147,7 +147,14 @@ public:
       auxStepper_{auxStepper}{}
 
 public:
-  template<typename solver_type>
+
+  // enable when auxiliary stepper is implicit too
+  template<
+    typename solver_type,
+    ::pressio::mpl::enable_if_t<
+      ::pressio::ode::details::traits<aux_stepper_t>::is_implicit
+      > * = nullptr
+  >
   void operator()(ode_state_type & y,
 		  const scalar_t &  t,
 		  const scalar_t &  dt,
@@ -178,7 +185,14 @@ public:
     }
   }
 
- template<typename solver_type,typename guess_callback_t>
+ template<
+   typename solver_type,
+   typename guess_callback_t,
+   // enable when auxiliary stepper is implicit too
+   ::pressio::mpl::enable_if_t<
+     ::pressio::ode::details::traits<aux_stepper_t>::is_implicit
+     > * = nullptr
+   >
   void operator()(ode_state_type & y,
 		  const scalar_t &  t,
 		  const scalar_t &  dt,

@@ -52,6 +52,8 @@
 #include "../../../ode_fwd.hpp"
 #include "../base/ode_implicit_residual_policy_base.hpp"
 #include "../../ode_time_discrete_residual.hpp"
+#include "../../meta/ode_is_legitimate_implicit_state_type.hpp"
+#include "../../meta/ode_is_legitimate_implicit_residual_type.hpp"
 
 namespace pressio{ namespace ode{ namespace policy{
 
