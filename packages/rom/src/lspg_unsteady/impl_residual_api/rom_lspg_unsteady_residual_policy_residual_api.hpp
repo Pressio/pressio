@@ -89,7 +89,7 @@ public:
 
 public:
   template <
-    int n,
+    ode::types::stepper_n_states_t n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t
@@ -106,7 +106,7 @@ public:
   }
 
   template <
-    int n,
+    ode::types::stepper_n_states_t n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t
@@ -114,7 +114,7 @@ public:
   residual_t operator()(const lspg_state_t		    & romState,
 			const std::array<lspg_state_t,n>    & romPrevStates,
 			const fom_t			    & app,
-			const scalar_t			    & t,
+			const scalar_t			    & time,
 			const scalar_t			    & dt,
 			const ::pressio::ode::types::step_t & step) const
   {
@@ -124,7 +124,7 @@ public:
 
 private:
   template <
-    int n,
+    ode::types::stepper_n_states_t n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t
@@ -133,16 +133,16 @@ private:
 		    const std::array<lspg_state_t,n>    & romPrevStates,
 		    const fom_t			        & app,
 		    const scalar_t		        & time,
-		    const scalar_t		        & dt,
+		    const scalar_t			& dt,
 		    const ::pressio::ode::types::step_t & step,
 		    residual_t			        & romR) const
   {
     fomStates_.template reconstructCurrentFomState(romState);
     fomStates_.template reconstructFomOldStates<n>(romPrevStates);
 
-    fom_querier_policy::evaluate<n>(fomStates_.getCRefToCurrentFomState(),
-				    fomStates_.getCRefToFomOldStates(),
-				    app, time, dt, step, romR);
+    fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(),
+				 fomStates_.getCRefToFomOldStates(),
+				 app, time, dt, step, romR);
   }
 
 protected:

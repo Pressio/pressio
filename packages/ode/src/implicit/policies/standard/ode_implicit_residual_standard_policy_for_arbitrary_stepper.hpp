@@ -85,9 +85,9 @@ public:
   //-------------------------------
   // specialize for n == 1
   //-------------------------------
-  template <typename scalar_type>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   void operator()(const state_type & y,
-		  const std::array<state_type, 1> & oldYs,
+		  const std::array<state_type, n> & oldYs,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -100,7 +100,7 @@ public:
 					*oldYs[0].data());
   }
 
-  template <typename scalar_type>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, 1> & oldYs,
   			   const system_type & model,
@@ -117,7 +117,7 @@ public:
   //-------------------------------
   // specialize for n == 2
   //-------------------------------
-  template <typename scalar_type>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   void operator()(const state_type & y,
 		  const std::array<state_type, 2> & oldYs,
 		  const system_type & model,
@@ -133,7 +133,7 @@ public:
 					*oldYs[1].data());
   }
 
-  template <typename scalar_type>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, 2> & oldYs,
   			   const system_type & model,
@@ -151,7 +151,7 @@ public:
   //-------------------------------
   // specialize for n == 3
   //-------------------------------
-  template <typename scalar_type>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   void operator()(const state_type & y,
 		  const std::array<state_type, 3> & oldYs,
 		  const system_type & model,
@@ -168,7 +168,7 @@ public:
 					*oldYs[2].data());
   }
 
-  template <typename scalar_type>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   residual_type operator()(const state_type & y,
   			   const std::array<state_type, 3> & oldYs,
   			   const system_type & model,

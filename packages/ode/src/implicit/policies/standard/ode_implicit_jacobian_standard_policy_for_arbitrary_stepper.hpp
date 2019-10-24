@@ -84,12 +84,12 @@ public:
   //-------------------------------
   // specialize for n == 1
   //-------------------------------
-  template <typename scalar_t>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   void operator()(const state_type & stateIn,
 		  const std::array<state_type, 1> & oldStates,
 		  const system_type & model,
-		  const scalar_t & t,
-		  const scalar_t & dt,
+		  const scalar_type & t,
+		  const scalar_type & dt,
 		  const types::step_t &  step,
 		  jacobian_type & J) const
   {
@@ -99,12 +99,12 @@ public:
 					*oldStates[0].data());
   }
 
-  template <typename scalar_t>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   jacobian_type operator()(const state_type & stateIn,
 			   const std::array<state_type, 1> & oldStates,
   			   const system_type & model,
-  			   const scalar_t & t,
-  			   const scalar_t & dt,
+  			   const scalar_type & t,
+  			   const scalar_type & dt,
 			   const types::step_t & step) const
   {
     jacobian_type JJ(model.template timeDiscreteJacobian(step, t, dt, *stateIn.data(), *oldStates[0].data()));
@@ -114,12 +114,12 @@ public:
   //-------------------------------
   // specialize for n == 2
   //-------------------------------
-  template <typename scalar_t>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   void operator()(const state_type & stateIn,
 		  const std::array<state_type, 2> & oldStates,
 		  const system_type & model,
-		  const scalar_t & t,
-		  const scalar_t & dt,
+		  const scalar_type & t,
+		  const scalar_type & dt,
 		  const types::step_t & step,
 		  jacobian_type & J) const
   {
@@ -130,12 +130,12 @@ public:
 					*oldStates[1].data());
   }
 
-  template <typename scalar_t>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   jacobian_type operator()(const state_type & stateIn,
 			   const std::array<state_type, 2> & oldStates,
   			   const system_type & model,
-  			   const scalar_t &  t,
-  			   const scalar_t &  dt,
+  			   const scalar_type &  t,
+  			   const scalar_type &  dt,
 			   const types::step_t & step) const
   {
     jacobian_type JJ(model.template timeDiscreteJacobian(step, t, dt,
@@ -148,12 +148,12 @@ public:
   //-------------------------------
   // specialize for n == 3
   //-------------------------------
-  template <typename scalar_t>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   void operator()(const state_type & stateIn,
 		  const std::array<state_type, 3> & oldStates,
 		  const system_type & model,
-		  const scalar_t & t,
-		  const scalar_t & dt,
+		  const scalar_type & t,
+		  const scalar_type & dt,
 		  const types::step_t & step,
 		  jacobian_type & J) const
   {
@@ -165,12 +165,12 @@ public:
 					*oldStates[2].data());
   }
 
-  template <typename scalar_t>
+  template <int n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   jacobian_type operator()(const state_type & stateIn,
 			   const std::array<state_type, 3> & oldStates,
   			   const system_type & model,
-  			   const scalar_t &  t,
-  			   const scalar_t &  dt,
+  			   const scalar_type &  t,
+  			   const scalar_type &  dt,
 			   const types::step_t & step) const
   {
     jacobian_type JJ(model.timeDiscreteJacobian(step, t, dt,

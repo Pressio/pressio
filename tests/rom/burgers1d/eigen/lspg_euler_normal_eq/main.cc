@@ -86,9 +86,7 @@ int main(int argc, char *argv[]){
       checkStr = "FAILED";
   }
 
-  std::cout << *yFomFinal.data() << std::endl;
-  // auto n1 = ::pressio::containers::ops::norm2(yFomFinal);
-  // std::cout << n1 << std::endl;
+  std::cout << std::setprecision(14) << *yFomFinal.data() << std::endl;
 
   std::cout << checkStr <<  std::endl;
   return 0;

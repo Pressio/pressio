@@ -8,10 +8,10 @@ struct ValidApp{
 
   const int32_t numDof_ = 15;
 
-  using scalar_type   = double;
-  using state_type    = Eigen::VectorXd;
-  using residual_type = state_type;
-  using jacobian_type	= Eigen::MatrixXd; //SparseMatrix<scalar_type, Eigen::RowMajor, int>;
+  using scalar_type	= double;
+  using state_type	= Eigen::VectorXd;
+  using residual_type	= state_type;
+  using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int32_t>;
   using dense_matrix_type = Eigen::MatrixXd;
 
 public:

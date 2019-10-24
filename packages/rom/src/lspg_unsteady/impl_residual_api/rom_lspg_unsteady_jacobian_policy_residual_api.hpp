@@ -103,14 +103,14 @@ public:
     typename scalar_t
   >
   void operator()(const lspg_state_t			& romState,
-		  const std::array<lspg_state_t, n>	& romOldYs,
+		  const std::array<lspg_state_t, n>	& romPrevStates,
   		  const fom_t				& app,
 		  const scalar_t			& time,
 		  const scalar_t			& dt,
 		  const ::pressio::ode::types::step_t	& step,
 		  lspg_jac_t				& romJac) const
   {
-    this->compute_impl<n>(romState, romJac, romOldYs, app, time, dt, step);
+    this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, romJac);
   }
 
   template <
@@ -120,35 +120,41 @@ public:
     typename scalar_t
     >
   apply_jac_return_t operator()(const lspg_state_t			& romState,
-				const std::array<lspg_state_t, n>	& romOldYs,
+				const std::array<lspg_state_t, n>	& romPrevStates,
 				const fom_t				& app,
 				const scalar_t				& time,
 				const scalar_t				& dt,
 				const ::pressio::ode::types::step_t	& step) const
   {
-    this->compute_impl<n>(romState, jAction_, romOldYs, app, time, dt, step);
+    this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, jAction_);
     return jAction_;
   }
 
 private:
   template<
-  typename lspg_state_t,
-  typename lspg_jac_t,
-  typename fom_t,
-  typename scalar_t>
-  void compute_impl(const lspg_state_t & romState,
-  		    lspg_jac_t	     & romJac,
-  		    const fom_t	     & app,
-  		    const scalar_t &	     t,
-  		    const scalar_t &	     dt) const
+    int n,
+    typename lspg_state_t,
+    typename fom_t,
+    typename scalar_t,
+    typename lspg_jac_t
+  >
+  void compute_impl(const lspg_state_t			& romState,
+		    const std::array<lspg_state_t,n>    & romPrevStates,
+  		    const fom_t			        & app,
+  		    const scalar_t			& time,
+  		    const scalar_t			& dt,
+		    const ::pressio::ode::types::step_t	& step,
+		    lspg_jac_t				& romJac) const
   {
     // todo: this is not needed if jacobian is called after resiudal
     // because residual takes care of reconstructing the fom state
     //    timer->start("reconstruct fom state");
     fomStates_.template reconstructCurrentFomState(romState);
 
-    const auto & phiJac = decoderObj_.getReferenceToJacobian();
-    fom_querier_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), phiJac, romJac, t);
+    const auto & phi = decoderObj_.getReferenceToJacobian();
+    fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(),
+				 fomStates_.getCRefToFomOldStates(),
+				 app, time, dt, step, phi, romJac);
   }
 
 protected:
