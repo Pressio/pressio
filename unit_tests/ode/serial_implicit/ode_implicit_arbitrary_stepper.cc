@@ -12,7 +12,7 @@ class ResidualPolicy : public ::pressio::ode::policy::ImplicitResidualPolicyBase
 public:
   template <int n>
   void operator()(const state_type & y,
-		  const std::array<state_type, n> & oldYs,
+		  const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
 		  const system_type & model,
 		  double t,
 		  double dt,
@@ -23,7 +23,7 @@ public:
 
   template <int n>
   residual_type operator()(const state_type & y,
-  			   const std::array<state_type, n> & oldYs,
+  			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
   			   const system_type & model,
   			   double t,
   			   double dt,
@@ -42,7 +42,7 @@ class JacobianPolicy : public ::pressio::ode::policy::JacobianPolicyBase<
 public:
   template <int n>
   void operator()(const state_type & y,
-		  const std::array<state_type, n> & oldYs,
+		  const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
 		  const system_type & model,
 		  double t,
 		  double dt,
@@ -53,7 +53,7 @@ public:
 
   template <int n>
   jacobian_type operator()(const state_type & y,
-			   const std::array<state_type, n> & oldYs,
+			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
   			   const system_type & model,
   			   double t,
   			   double dt,

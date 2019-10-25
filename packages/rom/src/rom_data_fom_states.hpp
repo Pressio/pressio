@@ -51,6 +51,7 @@
 
 #include "rom_ConfigDefs.hpp"
 #include "rom_fwd.hpp"
+#include "../../ode/src/ode_states_container.hpp"
 
 namespace pressio{ namespace rom{
 
@@ -218,9 +219,7 @@ public:
   }
 
   template <int n, typename rom_state_t>
-  void reconstructFomOldStates(const std::array<
-			       rom_state_t, n
-			       > & romYprev) const
+  void reconstructFomOldStates(const ::pressio::ode::StatesContainer<rom_state_t, n> & romYprev) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();

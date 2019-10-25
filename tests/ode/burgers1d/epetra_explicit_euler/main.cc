@@ -1,4 +1,5 @@
 
+#include "UTILS_ALL"
 #include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "APPS_UNSTEADYBURGERS1D"
@@ -56,7 +57,7 @@ int main(int argc, char *argv[]){
   y.data()->Print(std::cout << std::setprecision(14));
   {
     using namespace pressio::apps::test;
-    checkSol(rank, y, 
+    checkSol(rank, y,
              Burgers1dExpGoldStatesEuler::get(Ncells, dt, fint));
   }
 

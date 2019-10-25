@@ -130,6 +130,7 @@ public:
 
 private:
 
+  // case when we only have a single auxiliary state
   template <typename step_t>
   void timeDiscreteResidualImpl(const step_t & step,
 				const scalar_type & time,
@@ -142,6 +143,7 @@ private:
     R = yn - ynm1 - dt * f;
   }
 
+  // case when we only have a single auxiliary state
   template <typename step_t, typename state_t>
   void applyTimeDiscreteJacobianImpl(const step_t & step,
 				     const scalar_type & time,

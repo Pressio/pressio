@@ -103,7 +103,7 @@ public:
     typename scalar_t
   >
   void operator()(const lspg_state_t			& romState,
-		  const std::array<lspg_state_t, n>	& romPrevStates,
+		  const ::pressio::ode::StatesContainer<lspg_state_t, n>	& romPrevStates,
   		  const fom_t				& app,
 		  const scalar_t			& time,
 		  const scalar_t			& dt,
@@ -120,7 +120,7 @@ public:
     typename scalar_t
     >
   apply_jac_return_t operator()(const lspg_state_t			& romState,
-				const std::array<lspg_state_t, n>	& romPrevStates,
+				const ::pressio::ode::StatesContainer<lspg_state_t, n>	& romPrevStates,
 				const fom_t				& app,
 				const scalar_t				& time,
 				const scalar_t				& dt,
@@ -139,7 +139,7 @@ private:
     typename lspg_jac_t
   >
   void compute_impl(const lspg_state_t			& romState,
-		    const std::array<lspg_state_t,n>    & romPrevStates,
+		    const ::pressio::ode::StatesContainer<lspg_state_t,n>    & romPrevStates,
   		    const fom_t			        & app,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,

@@ -157,7 +157,7 @@ public:
   >
   void operator()(const lspg_state_t		   & romY,
 		  residual_t			   & romR,
-  		  const std::array<lspg_state_t,n> & romOldYs,
+  		  const ::pressio::ode::StatesContainer<lspg_state_t,n> & romOldYs,
   		  const fom_t			   & app,
 		  scalar_t			   t,
 		  scalar_t			   dt,
@@ -174,7 +174,7 @@ public:
     typename scalar_t
     >
   residual_t operator()(const lspg_state_t		   & romY,
-			const std::array<lspg_state_t,n>  & romOldYs,
+			const ::pressio::ode::StatesContainer<lspg_state_t,n>  & romOldYs,
 			const fom_t			   & app,
 			scalar_t			   t,
 			scalar_t			   dt,
@@ -233,7 +233,7 @@ private:
   >
   void compute_impl(const lspg_state_t		     & romY,
 		    residual_t			     & romR,
-		    const std::array<lspg_state_t,n> & romOldYs,
+		    const ::pressio::ode::StatesContainer<lspg_state_t,n> & romOldYs,
 		    const fom_t			     & app,
 		    scalar_t			     t,
 		    scalar_t			     dt) const
