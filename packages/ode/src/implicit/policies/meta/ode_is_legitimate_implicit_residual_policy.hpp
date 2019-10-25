@@ -50,6 +50,7 @@
 #define ODE_IMPLICIT_POLICIES_IS_LEGITIMATE_IMPLICIT_RESIDUAL_POLICY_HPP_
 
 #include "../base/ode_implicit_residual_policy_base.hpp"
+#include "../../../ode_states_container.hpp"
 
 namespace pressio{ namespace ode{ namespace meta {
 
@@ -83,17 +84,18 @@ struct is_legitimate_implicit_residual_policy<
       residual_t,
       decltype
       (
-       std::declval<T>().template operator()
+       std::declval<T const>().template operator()
        <
        name,
        numPrevStates
-       >( std::declval<const state_t &>(),
-	  std::declval<const std::array<state_t, numPrevStates> &>(),
-	  std::declval<const system_t&>(),
-	  std::declval<scalar_t>(),
-	  std::declval<scalar_t>(),
-	  std::declval<::pressio::ode::types::step_t>()
-	  )
+       >(
+	 std::declval<state_t const &>(),
+	 std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
+	 std::declval<system_t const &>(),
+	 std::declval<scalar_t const &>(),
+	 std::declval<scalar_t const &>(),
+	 std::declval<::pressio::ode::types::step_t>()
+	 )
        )
       >::value
     and
@@ -101,18 +103,19 @@ struct is_legitimate_implicit_residual_policy<
     std::is_void<
       decltype
       (
-       std::declval<T>().template operator()
+       std::declval<T const>().template operator()
        <
        name,
        numPrevStates
-       >( std::declval<const state_t &>(),
-	  std::declval<residual_t &>(),
-	  std::declval<const std::array<state_t, numPrevStates> &>(),
-	  std::declval<const system_t&>(),
-	  std::declval<scalar_t>(),
-	  std::declval<scalar_t>(),
-	  std::declval<::pressio::ode::types::step_t>()
-	  )
+       >(
+	 std::declval<state_t const &>(),
+	 std::declval<residual_t &>(),
+	 std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
+	 std::declval<system_t const &>(),
+	 std::declval<scalar_t const &>(),
+	 std::declval<scalar_t const &>(),
+	 std::declval<::pressio::ode::types::step_t>()
+	 )
        )
       >::value
     >

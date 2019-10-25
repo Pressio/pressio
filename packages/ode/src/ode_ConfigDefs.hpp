@@ -62,6 +62,7 @@
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
 #include "../../utils/src/io/utils_print_helper.hpp"
 #endif
+#include "../../utils/src/utils_static_constants.hpp"
 
 #include "ode_enum.hpp"
 #include "ode_types.hpp"

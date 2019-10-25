@@ -50,6 +50,8 @@
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
 
 #include "../ode_explicit_stepper_base.hpp"
+#include "../../../ode_states_container.hpp"
+#include "../../../impl/ode_system_wrapper.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -58,61 +60,63 @@ template<
   typename state_type,
   typename system_type,
   typename ode_residual_type,
-  typename residual_policy_type,
+  typename velocity_policy_type,
   typename ops_t
   >
 class ExplicitRungeKutta4StepperImpl<scalar_type,
 				     state_type,
 				     system_type,
 				     ode_residual_type,
-				     residual_policy_type,
+				     velocity_policy_type,
 				     ops_t>
 {
 
   static_assert( meta::is_legitimate_explicit_velocity_policy<
-		 residual_policy_type>::value ||
+		 velocity_policy_type>::value ||
 		 meta::is_explicit_runge_kutta4_velocity_standard_policy<
-		 residual_policy_type>::value,
+		 velocity_policy_type>::value,
 "EXPLICIT RUNGEKUTTA4 VELOCITY_POLICY NOT ADMISSIBLE, \
 MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using this_t = ExplicitRungeKutta4StepperImpl< scalar_type,
 						 state_type, system_type,
 						 ode_residual_type,
-						 residual_policy_type,
+						 velocity_policy_type,
 						 ops_t>;
 
-  using state_storage_t = OdeStorage<state_type, 1>;
-  using resid_storage_t = OdeStorage<ode_residual_type, 4>;
-  using system_wrapper_t = OdeSystemWrapper<system_type>;
+  using state_storage_t	    = ::pressio::ode::StatesContainer<state_type, 1>;
+  using velocity_storage_t  = OdeStorage<ode_residual_type, 4>;
+  using system_wrapper_t    = OdeSystemWrapper<system_type>;
 
   state_storage_t stateAuxStorage_;
-  resid_storage_t residAuxStorage_;
+  velocity_storage_t veloAuxStorage_;
   system_wrapper_t sys_;
-  const residual_policy_type & policy_;
+  const velocity_policy_type & policy_;
 
 public:
   ExplicitRungeKutta4StepperImpl(const system_type & model,
-  				 const residual_policy_type & res_policy_obj,
-  				 const state_type & y0,
-  				 const ode_residual_type & r0)
-    : stateAuxStorage_{y0}, residAuxStorage_{r0},
-      sys_{model}, policy_{res_policy_obj}{}
+  				 const velocity_policy_type & policy_obj,
+  				 const state_type & stateIn0,
+  				 const ode_residual_type & f0)
+    : stateAuxStorage_{stateIn0},
+      veloAuxStorage_{f0},
+      sys_{model},
+      policy_{policy_obj}{}
 
   ExplicitRungeKutta4StepperImpl() = delete;
   ~ExplicitRungeKutta4StepperImpl() = default;
 
 public:
-  void doStep(state_type & y,
-  	      scalar_type t,
-  	      scalar_type dt,
-  	      types::step_t step)
+  void doStep(state_type & stateInOut,
+  	      const scalar_type & t,
+  	      const scalar_type & dt,
+  	      const types::step_t & step)
   {
-    auto & ytmp	   = stateAuxStorage_.data_[0];
-    auto & auxRhs0 = residAuxStorage_.data_[0];
-    auto & auxRhs1 = residAuxStorage_.data_[1];
-    auto & auxRhs2 = residAuxStorage_.data_[2];
-    auto & auxRhs3 = residAuxStorage_.data_[3];
+    auto & ytmp	   = stateAuxStorage_[0];
+    auto & auxRhs0 = veloAuxStorage_[0];
+    auto & auxRhs1 = veloAuxStorage_[1];
+    auto & auxRhs2 = veloAuxStorage_[2];
+    auto & auxRhs3 = veloAuxStorage_[3];
 
     constexpr auto two  = ::pressio::utils::constants::two<scalar_type>();
     constexpr auto three  = ::pressio::utils::constants::three<scalar_type>();
@@ -124,20 +128,20 @@ public:
     const scalar_type dt3 = dt / three;
 
     // stage 1: ytmp = y + auxRhs0*dt_half;
-    policy_(y, auxRhs0, sys_.get(), t);
-    this->stage_update_impl(ytmp, y, auxRhs0, dt_half);
+    policy_(stateInOut, auxRhs0, sys_.get(), t);
+    this->stage_update_impl(ytmp, stateInOut, auxRhs0, dt_half);
 
     // stage 2: ytmp = y + auxRhs1*dt_half;
     policy_(ytmp, auxRhs1, sys_.get(), t_phalf);
-    this->stage_update_impl(ytmp, y, auxRhs1, dt_half);
+    this->stage_update_impl(ytmp, stateInOut, auxRhs1, dt_half);
 
     // stage 3: ytmp = y + auxRhs2*dt;
     policy_(ytmp, auxRhs2, sys_.get(), t_phalf);
-    this->stage_update_impl(ytmp, y, auxRhs2, dt);
+    this->stage_update_impl(ytmp, stateInOut, auxRhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
     policy_(ytmp, auxRhs3, sys_.get(), t + dt);
-    this->stage_update_impl(y, auxRhs0, auxRhs1, auxRhs2, auxRhs3, dt6, dt3);
+    this->stage_update_impl(stateInOut, auxRhs0, auxRhs1, auxRhs2, auxRhs3, dt6, dt3);
   }//end doStep
 
 private:
@@ -151,11 +155,11 @@ private:
       > * = nullptr
   >
   void stage_update_impl(_state_type & yIn,
-			 const _state_type & y,
+			 const _state_type & stateIn,
 			 const rhs_t & rhsIn,
 			 scalar_type dtValue){
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    ::pressio::containers::ops::do_update(yIn, y, one, rhsIn, dtValue);
+    ::pressio::containers::ops::do_update(yIn, stateIn, one, rhsIn, dtValue);
   }
 
   /* with user defined ops */
@@ -169,12 +173,12 @@ private:
       > * = nullptr
   >
   void stage_update_impl(_state_type & yIn,
-			 const _state_type & y,
+			 const _state_type & stateIn,
 			 const rhs_t & rhsIn,
 			 scalar_type dtValue){
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
     using op = typename ops_t::update_op;
-    op::do_update(*yIn.data(), *y.data(), one, *rhsIn.data(), dtValue);
+    op::do_update(*yIn.data(), *stateIn.data(), one, *rhsIn.data(), dtValue);
   }
 
   /* user defined ops are void, use those from containers */
@@ -186,7 +190,7 @@ private:
       std::is_void<_ops_t>::value
       > * = nullptr
   >
-  void stage_update_impl(_state_type & y,
+  void stage_update_impl(_state_type & stateIn,
 			 const rhs_t & rhsIn0,
 			 const rhs_t & rhsIn1,
 			 const rhs_t & rhsIn2,
@@ -194,7 +198,7 @@ private:
 			 scalar_type dt6,
 			 scalar_type dt3){
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    ::pressio::containers::ops::do_update(y, one, rhsIn0, dt6,
+    ::pressio::containers::ops::do_update(stateIn, one, rhsIn0, dt6,
 					  rhsIn1, dt3, rhsIn2, dt3,
 					  rhsIn3, dt6);
   }
@@ -209,7 +213,7 @@ private:
       !std::is_void<_ops_t>::value
       > * = nullptr
   >
-  void stage_update_impl(_state_type & y,
+  void stage_update_impl(_state_type & stateIn,
 			 const rhs_t & rhsIn0,
 			 const rhs_t & rhsIn1,
 			 const rhs_t & rhsIn2,
@@ -218,7 +222,7 @@ private:
 			 scalar_type dt3){
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
     using op = typename ops_t::update_op;
-    op::do_update(*y.data(), one, *rhsIn0.data(),
+    op::do_update(*stateIn.data(), one, *rhsIn0.data(),
 		  dt6, *rhsIn1.data(),
 		  dt3, *rhsIn2.data(),
 		  dt3, *rhsIn3.data(), dt6);

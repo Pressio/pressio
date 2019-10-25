@@ -49,7 +49,7 @@
 #ifndef ODE_STORAGE_HPP_
 #define ODE_STORAGE_HPP_
 
-#include "ode_ConfigDefs.hpp"
+#include "../ode_ConfigDefs.hpp"
 #include <array>
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
@@ -58,7 +58,7 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 /*
- * note that these are auxiliary objects for storing data.
+ * note that these are auxiliary objects for storing states
  * it is fundamental that these DO not point to the same memory
  * locations of the objects passed in.
  * In other words, the y,r arguments to constructors are
@@ -67,34 +67,76 @@ namespace pressio{ namespace ode{ namespace impl{
  * each type can be different so we need a general way to create
  * an object from one of the same kind.
  *
- * However, if copy-constructing implements shallow copy, then
- * we need to do something else because the storage objects
- * need to be new allocations.
  */
 
-template<typename T, int n>
-struct OdeStorage;
+template<typename T, std::size_t n>
+class OdeStorage
+{
+  using storing_t = std::array<T, n>;
+
+public:
+  static constexpr std::size_t size(){
+    return n;
+  }
+
+  T & operator[](std::size_t i){
+    assert( i<n );
+    data_[i];
+  }
+
+  T const & operator[](std::size_t i) const{
+    assert( i<n );
+    data_[i];
+  }
+
+  T & operator()(std::size_t i){
+    assert( i<n );
+    data_[i];
+  }
+
+  T const & operator()(std::size_t i) const{
+    assert( i<n );
+    data_[i];
+  }
+
+  storing_t & data(){
+    return data_;
+  }
+
+  storing_t const & data() const{
+    return data_;
+  }
+
+public:
+  OdeStorage() = delete;
+  OdeStorage(const OdeStorage &) = delete;
+  OdeStorage & operator=(const OdeStorage &) = delete;
+  OdeStorage(OdeStorage &&) = delete;
+  OdeStorage & operator=(OdeStorage &&) = delete;
+
+  ~OdeStorage() = default;
 
 
-/* n = 1 */
-template<typename T>
-struct OdeStorage<T, 1>{
-
+  // constructor for n == 1
   template <
-    typename _T = T
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 1
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    , mpl::enable_if_t<
-      !containers::meta::is_array_pybind11<_T>::value
-      > * = nullptr
+      and !containers::meta::is_array_pybind11<_T>::value
 #endif
-    >
+      > * = nullptr
+  >
   OdeStorage(_T const & y)
     : data_{{y}}{}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename _T = T,
+    std::size_t _n = n,
     mpl::enable_if_t<
+      _n == 1 and
       containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
@@ -103,32 +145,26 @@ struct OdeStorage<T, 1>{
   {}
 #endif
 
-  OdeStorage() = delete;
-  ~OdeStorage() = default;
-
-  std::array<T, 1> data_;
-};
-
-
-/* n = 2 */
-template<typename T>
-struct OdeStorage<T, 2>{
-
+  // constructor for n == 2
   template <
-    typename _T = T
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 2
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    , mpl::enable_if_t<
-      !containers::meta::is_array_pybind11<_T>::value
-      > * = nullptr
+      ,!containers::meta::is_array_pybind11<_T>::value
 #endif
-    >
+      > * = nullptr
+  >
   OdeStorage(_T const & y)
     : data_{{y,y}}{}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename _T = T,
+    std::size_t _n = n,
     mpl::enable_if_t<
+      _n == 2
       containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
@@ -138,32 +174,27 @@ struct OdeStorage<T, 2>{
   {}
 #endif
 
-  OdeStorage() = delete;
-  ~OdeStorage() = default;
 
-  std::array<T, 2> data_;
-};
-
-
-/* n = 3 */
-template<typename T>
-struct OdeStorage<T, 3>{
-
+  // constructor for n == 3
   template <
-    typename _T = T
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 3
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    , mpl::enable_if_t<
-      !containers::meta::is_array_pybind11<_T>::value
-      > * = nullptr
+      ,!containers::meta::is_array_pybind11<_T>::value
 #endif
-    >
+      > * = nullptr
+  >
   OdeStorage(_T const & y)
     : data_{{y,y,y}}{}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename _T = T,
+    std::size_t _n = n,
     mpl::enable_if_t<
+      _n == 3
       containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
@@ -174,32 +205,27 @@ struct OdeStorage<T, 3>{
   {}
 #endif
 
-  OdeStorage() = delete;
-  ~OdeStorage() = default;
 
-  std::array<T, 3> data_;
-};
-
-
-/* n = 4 */
-template<typename T>
-struct OdeStorage<T, 4>{
-
+  // constructor for n == 4
   template <
-    typename _T = T
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 4
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    , mpl::enable_if_t<
-      !containers::meta::is_array_pybind11<_T>::value
-      > * = nullptr
+      ,!containers::meta::is_array_pybind11<_T>::value
 #endif
-    >
+      > * = nullptr
+  >
   OdeStorage(_T const & y)
     : data_{{y,y,y,y}}{}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     typename _T = T,
+    std::size_t _n = n,
     mpl::enable_if_t<
+      _n == 4
       containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
@@ -211,10 +237,7 @@ struct OdeStorage<T, 4>{
   {}
 #endif
 
-  OdeStorage() = delete;
-  ~OdeStorage() = default;
-
-  std::array<T, 4> data_;
+  storing_t data_;
 };
 
 }}}//end namespace pressio::ode::impl

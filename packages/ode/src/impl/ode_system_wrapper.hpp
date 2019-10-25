@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_legitimate_implicit_jacobian_policy.hpp
+// ode_system_wrapper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,84 +46,75 @@
 //@HEADER
 */
 
-#ifndef ODE_POLICIES_META_IS_LEGITIMATE_IMPLICIT_JACOBIAN_POLICIES_HPP_
-#define ODE_POLICIES_META_IS_LEGITIMATE_IMPLICIT_JACOBIAN_POLICIES_HPP_
+#ifndef ODE_SYSTEM_WRAPPER_HPP_
+#define ODE_SYSTEM_WRAPPER_HPP_
 
-#include "../base/ode_jacobian_policy_base.hpp"
+#include "../ode_fwd.hpp"
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include <pybind11/pybind11.h>
+#include <pybind11/functional.h>
+#endif
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace impl{
 
 template<
-  typename T,
-  ImplicitEnum name,
-  typename state_t,
-  typename jacobian_t,
-  typename system_t,
-  typename scalar_t,
+  typename model_type,
   typename enable = void
   >
-struct is_legitimate_implicit_jacobian_policy : std::false_type
-{};
+struct OdeSystemWrapper;
 
 
-template<
-  typename T,
-  ImplicitEnum name,
-  typename state_t,
-  typename jacobian_t,
-  typename system_t,
-  typename scalar_t
+template<typename model_type>
+struct OdeSystemWrapper<
+  model_type
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  , mpl::enable_if_t<
+      ::pressio::mpl::not_same<model_type, pybind11::object >::value
+      >
+#endif
   >
-struct is_legitimate_implicit_jacobian_policy
-<T, name, state_t, jacobian_t, system_t, scalar_t,
- ::pressio::mpl::enable_if_t<
-   std::is_same<
-     jacobian_t,
-     decltype
-     (
-      std::declval<T const>().template operator()
-      <
-      name
-      >(
-	std::declval<state_t const &>(),
-	std::declval<system_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::types::step_t const &>()
-	)
-      )
-     >::value
-   and
-   std::is_void<
-     decltype
-     (
-      std::declval<T const>().template operator()
-      <
-      name
-      >(
-	std::declval<state_t const &>(),
-	std::declval<jacobian_t &>(),
-	std::declval<system_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::types::step_t const &>()
-	)
-      )
-   >::value
-   >
- > : std::true_type{};
-//------------------------------------------------------------------
+{
+  OdeSystemWrapper(const model_type & system)
+    : data_(system){}
 
-template<typename T, typename ... args>
-using is_legitimate_implicit_euler_jacobian_policy =
-  is_legitimate_implicit_jacobian_policy<
-  T, ::pressio::ode::ImplicitEnum::Euler, args...>;
+  OdeSystemWrapper() = delete;
+  ~OdeSystemWrapper() = default;
 
-template<typename T, typename ... args>
-using is_legitimate_implicit_bdf2_jacobian_policy =
-  is_legitimate_implicit_jacobian_policy<
-  T, ::pressio::ode::ImplicitEnum::BDF2, args...>;
-//------------------------------------------------------------------
+  const model_type & get() const{
+    return data_;
+  }
 
-}}} // namespace pressio::ode::meta
+private:
+  const model_type & data_;
+};
+
+
+/* for some reason to be determined, when we deal with
+ * python objects, we need to pass by copy
+ */
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename model_type>
+struct OdeSystemWrapper<
+  model_type,
+  mpl::enable_if_t<
+    ::pressio::mpl::is_same<model_type, pybind11::object >::value
+    >
+  >
+{
+  OdeSystemWrapper(const model_type & system)
+    : data_(system){}
+
+  OdeSystemWrapper() = delete;
+  ~OdeSystemWrapper() = default;
+
+  const model_type & get() const{
+    return data_;
+  }
+
+private:
+    model_type data_;
+};
+#endif
+
+}}}//end namespace pressio::ode::impl
 #endif

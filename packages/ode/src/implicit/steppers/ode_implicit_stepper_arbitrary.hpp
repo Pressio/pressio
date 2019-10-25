@@ -105,11 +105,11 @@ public:
   ImplicitStepper() = delete;
   ~ImplicitStepper() = default;
 
-  ImplicitStepper(const ode_state_type & y0,
+  ImplicitStepper(const ode_state_type & stateIn0,
   		  const system_type & model,
   		  const residual_pol_t & resPolicyObj,
   		  const jacobian_pol_t & jacPolicyObj)
-    : stepper_base_t{y0, model, resPolicyObj, jacPolicyObj}{}
+    : stepper_base_t{stateIn0, model, resPolicyObj, jacPolicyObj}{}
 
   // cstr for standard residual and jacob policies
   template <
@@ -120,9 +120,9 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepper(const ode_state_type & y0,
+  ImplicitStepper(const ode_state_type & stateIn0,
 		  const system_type & model)
-    : stepper_base_t{y0, model}{}
+    : stepper_base_t{stateIn0, model}{}
 
 public:
   template<typename solver_type>
@@ -132,20 +132,78 @@ public:
 		  const types::step_t & step,
 		  solver_type & solver)
   {
-    auto & auxY0 = this->stateAuxStorage_.data_[0];
     this->dt_ = dt;
     this->t_ = t;
     this->step_ = step;
-    ::pressio::containers::ops::deep_copy(odeState, auxY0);
+
+    constexpr auto nAux = decltype(this->auxStates_)::size();
+    this->updateAuxiliaryStorage<nAux>(odeState);
     solver.solve(*this, odeState);
   }
+
+private:
+  // methods to do updating on the storage of previous states
+  template<std::size_t nAux, mpl::enable_if_t<nAux==1> * = nullptr>
+  void updateAuxiliaryStorage(const ode_state_type & odeState){
+    // copy y_n into y_n-1
+    auto & auxY0 = this->auxStates_[0];
+    ::pressio::containers::ops::deep_copy(odeState, auxY0);
+  }
+
+  // when we have two aux states,
+  template<std::size_t nAux, mpl::enable_if_t<nAux==2> * = nullptr>
+  void updateAuxiliaryStorage(const ode_state_type & odeState){
+    // copy y_n-1 into y_n-2
+    auto & aux1 = this->auxStates_[0];
+    auto & aux2 = this->auxStates_[1];
+    ::pressio::containers::ops::deep_copy(aux1, aux2);
+    // copy y_n into y_n-1
+    ::pressio::containers::ops::deep_copy(odeState, aux1);
+  }
+
+  // when we have three aux states,
+  template<std::size_t nAux, mpl::enable_if_t<nAux==3> * = nullptr>
+  void updateAuxiliaryStorage(const ode_state_type & odeState){
+    auto & aux1 = this->auxStates_[0];
+    auto & aux2 = this->auxStates_[1];
+    auto & aux3 = this->auxStates_[2];
+    ::pressio::containers::ops::deep_copy(aux2, aux3);
+    ::pressio::containers::ops::deep_copy(aux1, aux2);
+    ::pressio::containers::ops::deep_copy(odeState, aux1);
+  }
+
+  // when we have four aux states,
+  template<std::size_t nAux, mpl::enable_if_t<nAux==4> * = nullptr>
+  void updateAuxiliaryStorage(const ode_state_type & odeState){
+    auto & aux1 = this->auxStates_[0];
+    auto & aux2 = this->auxStates_[1];
+    auto & aux3 = this->auxStates_[2];
+    auto & aux4 = this->auxStates_[3];
+    ::pressio::containers::ops::deep_copy(aux3, aux4);
+    ::pressio::containers::ops::deep_copy(aux2, aux3);
+    ::pressio::containers::ops::deep_copy(aux1, aux2);
+    ::pressio::containers::ops::deep_copy(odeState, aux1);
+  }
+
+  // // when we have five aux states,
+  // template<std::size_t nAux, mpl::enable_if_t<nAux==5> * = nullptr>
+  // void updateAuxiliaryStorage(const ode_state_type & odeState){
+  //   for (auto i=nAux-2; i>=0; --i){
+  //     auto & source	  = this->auxStates_[i];
+  //     auto & destination = this->auxStates_[i+1];
+  //     ::pressio::containers::ops::deep_copy(source, destination);
+  //   }
+  //   auto & aux1 = this->auxStates_[0];
+  //   ::pressio::containers::ops::deep_copy(odeState, aux1);
+  // }
+
 
 private:
   void residualImpl(const state_type & odeState, residual_type & R) const
   {
     this->residual_obj_.template operator()<
       mytraits::numAuxStates
-      >(odeState, this->stateAuxStorage_.data_,
+      >(odeState, this->auxStates_,
        this->sys_.get(), this->t_, this->dt_, this->step_, R);
   }
 
@@ -153,7 +211,7 @@ private:
   {
     return this->residual_obj_.template operator()<
       mytraits::numAuxStates
-      >(odeState, this->stateAuxStorage_.data_,
+      >(odeState, this->auxStates_,
        this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
@@ -161,7 +219,7 @@ private:
   {
     this->jacobian_obj_.template operator()<
       mytraits::numAuxStates
-      >(odeState, this->stateAuxStorage_.data_,
+      >(odeState, this->auxStates_,
        this->sys_.get(), this->t_, this->dt_, this->step_, J);
   }
 
@@ -169,7 +227,7 @@ private:
   {
     return this->jacobian_obj_.template operator()<
       mytraits::numAuxStates
-      >(odeState, this->stateAuxStorage_.data_,
+      >(odeState, this->auxStates_,
 	this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 

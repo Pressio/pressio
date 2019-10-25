@@ -81,11 +81,11 @@ struct jacobian_policy_callable_with_six_args<
       jacobian_t,
       decltype
       (
-       std::declval<T>().template operator()
+       std::declval<T const>().template operator()
        <numPrevStates>
        (
 	std::declval<state_t const &>(),
-	std::declval<std::array<state_t, numPrevStates> const &>(),
+	std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const & >(),
 	std::declval<scalar_t const &>(),
@@ -123,11 +123,11 @@ struct jacobian_policy_callable_with_seven_args<
     std::is_void<
       decltype
       (
-       std::declval<T>().template operator()
+       std::declval<T const>().template operator()
        <numPrevStates>
        (
 	std::declval<state_t const &>(),
-	std::declval<std::array<state_t, numPrevStates> const &>(),
+	std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const & >(),
 	std::declval<scalar_t const &>(),
@@ -178,55 +178,3 @@ struct is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper
 
 }}} // namespace pressio::ode::meta
 #endif
-
-
-
-
-
-
-
-
-
-
-
-// template<
-//   typename T,
-//   typename state_t,
-//   typename jacobian_t,
-//   typename system_t,
-//   typename scalar_t
-//   >
-// struct is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper
-// <T, state_t, jacobian_t, system_t, scalar_t,
-//  ::pressio::mpl::enable_if_t<
-//    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_t>::value and
-//    ::pressio::ode::meta::is_legitimate_jacobian_type<jacobian_t>::value and
-//    std::is_same<
-//      jacobian_t,
-//      decltype
-//      (
-//       std::declval<T>().operator()
-//       ( std::declval<const state_t &>(),
-// 	 std::declval<const system_t&>(),
-// 	 std::declval<scalar_t>(),
-// 	 std::declval<scalar_t>(),
-// 	 std::declval<::pressio::ode::types::step_t>()
-// 	 )
-//       )
-//      >::value
-//    and
-//    std::is_void<
-//      decltype
-//      (
-//       std::declval<T>().operator()
-//       ( std::declval<const state_t &>(),
-// 	 std::declval<jacobian_t &>(),
-// 	 std::declval<const system_t&>(),
-// 	 std::declval<scalar_t>(),
-// 	 std::declval<scalar_t>(),
-// 	 std::declval<::pressio::ode::types::step_t>()
-// 	 )
-//       )
-//    >::value
-//    >
-//  > : std::true_type{};

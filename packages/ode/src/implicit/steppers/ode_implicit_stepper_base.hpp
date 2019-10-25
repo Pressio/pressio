@@ -49,8 +49,8 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
-#include "../../ode_storage.hpp"
-#include "../../ode_system_wrapper.hpp"
+#include "../../ode_states_container.hpp"
+#include "../../impl/ode_system_wrapper.hpp"
 
 namespace pressio{ namespace ode{
 
@@ -108,7 +108,7 @@ protected:
   sc_t dt_ = {};
   types::step_t step_  = {};
   system_wrapper_t sys_;
-  impl::OdeStorage<state_t, traits::numAuxStates> stateAuxStorage_;
+  ::pressio::ode::StatesContainer<state_t, traits::numAuxStates> auxStates_;
 
   // conditionally set the type of the object knowing how to compute residual
   // if we have a standard policy, then it takes a copy
@@ -132,12 +132,12 @@ public:
   ImplicitStepperBase() = delete;
   ~ImplicitStepperBase() = default;
 
-  ImplicitStepperBase(const state_t & y0,
+  ImplicitStepperBase(const state_t & stateIn0,
 		      const system_t & model,
 		      const residual_pol_t & resPolicyObj,
 		      const jacobian_pol_t & jacPolicyObj)
     : sys_{model},
-      stateAuxStorage_{y0},
+      auxStates_{stateIn0},
       residual_obj_{resPolicyObj},
       jacobian_obj_{jacPolicyObj}
   {}
@@ -151,10 +151,10 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepperBase(const state_t & y0,
+  ImplicitStepperBase(const state_t & stateIn0,
   		      const system_t & model)
     : sys_{model},
-      stateAuxStorage_{y0},
+      auxStates_{stateIn0},
       residual_obj_{},
       jacobian_obj_{}
   {}
@@ -166,11 +166,11 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepperBase(const state_t & y0,
+  ImplicitStepperBase(const state_t & stateIn0,
   		      const system_t & model,
   		      const residual_pol_t & resPolicyObj)
     : sys_{model},
-      stateAuxStorage_{y0},
+      auxStates_{stateIn0},
       residual_obj_{resPolicyObj},
       jacobian_obj_{}
   {}

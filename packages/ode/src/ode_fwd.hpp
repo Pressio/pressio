@@ -68,7 +68,7 @@ template<
   typename model_type,
   typename ...Args>
 class ImplicitStepper;
-//-----------------------------------
+
 
 namespace policy{
 
@@ -124,15 +124,12 @@ class ImplicitJacobianStandardPolicyPybind11;
 #endif
 
 }//end namespace policy
-//-----------------------------------
+
 
 namespace impl {
 
-template<
-  typename model_type,
-  typename enable = void
-  >
-struct OdeSystemWrapper;
+template<typename T, std::size_t n>
+class OdeStorage;
 
 template<
   typename scalar_type,

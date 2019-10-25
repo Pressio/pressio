@@ -81,11 +81,11 @@ struct residual_policy_callable_with_six_args<
       residual_t,
       decltype
       (
-       std::declval<T>().template operator()
+       std::declval<T const>().template operator()
        <numPrevStates>
        (
 	std::declval<state_t const &>(),
-	std::declval<std::array<state_t, numPrevStates> const &>(),
+	std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<scalar_t const &>(),
@@ -123,11 +123,11 @@ struct residual_policy_callable_with_seven_args<
     std::is_void<
       decltype
       (
-       std::declval<T>().template operator()
+       std::declval<T const>().template operator()
        <numPrevStates>
        (
 	std::declval<state_t const &>(),
-	std::declval<std::array<state_t, numPrevStates> const &>(),
+	std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<scalar_t const &>(),

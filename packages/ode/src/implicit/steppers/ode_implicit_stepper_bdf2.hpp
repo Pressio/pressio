@@ -109,12 +109,12 @@ public:
   ImplicitStepper() = delete;
   ~ImplicitStepper() = default;
 
-  ImplicitStepper(const ode_state_type & y0,
+  ImplicitStepper(const ode_state_type & stateIn0,
   		  const system_type & model,
   		  const residual_pol_t & resPolicyObj,
   		  const jacobian_pol_t & jacPolicyObj,
 		  aux_stepper_t & auxStepper)
-    : stepper_base_t{y0, model, resPolicyObj, jacPolicyObj},
+    : stepper_base_t{stateIn0, model, resPolicyObj, jacPolicyObj},
       auxStepper_{auxStepper}{}
 
   // cstr for standard residual and jacob policies
@@ -126,10 +126,10 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepper(const ode_state_type & y0,
+  ImplicitStepper(const ode_state_type & stateIn0,
 		  const system_type & model,
 		  aux_stepper_t & auxStepper)
-    : stepper_base_t{y0, model},
+    : stepper_base_t{stateIn0, model},
       auxStepper_{auxStepper}{}
 
   // cstr for standard jacob policies
@@ -139,11 +139,11 @@ public:
       mpl::is_same<T1, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepper(const ode_state_type & y0,
+  ImplicitStepper(const ode_state_type & stateIn0,
   		  const system_type & model,
   		  const residual_pol_t & resPolicyObj,
 		  aux_stepper_t & auxStepper)
-    : stepper_base_t{y0, model, resPolicyObj},
+    : stepper_base_t{stateIn0, model, resPolicyObj},
       auxStepper_{auxStepper}{}
 
 public:
@@ -155,15 +155,15 @@ public:
       ::pressio::ode::details::traits<aux_stepper_t>::is_implicit
       > * = nullptr
   >
-  void operator()(ode_state_type & y,
+  void operator()(ode_state_type & odeState,
 		  const scalar_t &  t,
 		  const scalar_t &  dt,
 		  const types::step_t & step,
 		  solver_type & solver)
   {
 
-    auto & auxY0 = this->stateAuxStorage_.data_[0];
-    auto & auxY1 = this->stateAuxStorage_.data_[1];
+    auto & auxY0 = this->auxStates_[0];
+    auto & auxY1 = this->auxStates_[1];
 
     this->dt_ = dt;
     this->t_ = t;
@@ -171,17 +171,17 @@ public:
 
     // first step, use auxiliary stepper
     if (step == 1){
-      ::pressio::containers::ops::deep_copy(y, auxY0);
-      auxStepper_(y, t, dt, step, solver);
+      ::pressio::containers::ops::deep_copy(odeState, auxY0);
+      auxStepper_(odeState, t, dt, step, solver);
     }
     if (step == 2){
-      ::pressio::containers::ops::deep_copy(y, auxY1);
-      solver.solve(*this, y);
+      ::pressio::containers::ops::deep_copy(odeState, auxY1);
+      solver.solve(*this, odeState);
     }
     if (step >= 3){
       ::pressio::containers::ops::deep_copy(auxY1, auxY0);
-      ::pressio::containers::ops::deep_copy(y, auxY1);
-      solver.solve(*this, y);
+      ::pressio::containers::ops::deep_copy(odeState, auxY1);
+      solver.solve(*this, odeState);
     }
   }
 
@@ -193,15 +193,15 @@ public:
      ::pressio::ode::details::traits<aux_stepper_t>::is_implicit
      > * = nullptr
    >
-  void operator()(ode_state_type & y,
+  void operator()(ode_state_type & odeState,
 		  const scalar_t &  t,
 		  const scalar_t &  dt,
 		  const types::step_t & step,
 		  solver_type & solver,
 		  guess_callback_t && guesserCb){
 
-   auto & auxY0 = this->stateAuxStorage_.data_[0];
-   auto & auxY1 = this->stateAuxStorage_.data_[1];
+   auto & auxY0 = this->auxStates_[0];
+   auto & auxY1 = this->auxStates_[1];
 
    this->dt_ = dt;
    this->t_ = t;
@@ -209,51 +209,51 @@ public:
 
    // first step, use auxiliary stepper
    if (step == 1){
-     ::pressio::containers::ops::deep_copy(y, auxY0);
-     auxStepper_(y, t, dt, step, solver);
+     ::pressio::containers::ops::deep_copy(odeState, auxY0);
+     auxStepper_(odeState, t, dt, step, solver);
    }
    if (step == 2){
-     ::pressio::containers::ops::deep_copy(y, auxY1);
-     guesserCb(step, t, y);
-     solver.solve(*this, y);
+     ::pressio::containers::ops::deep_copy(odeState, auxY1);
+     guesserCb(step, t, odeState);
+     solver.solve(*this, odeState);
    }
    if (step >= 3){
      ::pressio::containers::ops::deep_copy(auxY1, auxY0);
-     ::pressio::containers::ops::deep_copy(y, auxY1);
-     guesserCb(step, t, y);
-     solver.solve(*this, y);
+     ::pressio::containers::ops::deep_copy(odeState, auxY1);
+     guesserCb(step, t, odeState);
+     solver.solve(*this, odeState);
    }
  }
 
 private:
-  void residualImpl(const state_type & y, residual_type & R) const
+  void residualImpl(const state_type & odeState, residual_type & R) const
   {
     this->residual_obj_.template operator()<
       my_enum, mytraits::numAuxStates
-      >(y, R, this->stateAuxStorage_.data_,
+      >(odeState, R, this->auxStates_,
 	this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
-  residual_type residualImpl(const state_type & y) const
+  residual_type residualImpl(const state_type & odeState) const
   {
     return this->residual_obj_.template operator()<
       my_enum, mytraits::numAuxStates
-      >(y, this->stateAuxStorage_.data_,
+      >(odeState, this->auxStates_,
 	this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
-  void jacobianImpl(const state_type & y, jacobian_type & J) const
+  void jacobianImpl(const state_type & odeState, jacobian_type & J) const
   {
     this->jacobian_obj_.template operator()<
       mytraits::enum_id
-      >(y, J, this->sys_.get(), this->t_, this->dt_, this->step_);
+      >(odeState, J, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
-  jacobian_type jacobianImpl(const state_type & y) const
+  jacobian_type jacobianImpl(const state_type & odeState) const
   {
     return this->jacobian_obj_.template operator()<
       mytraits::enum_id
-      >(y, this->sys_.get(), this->t_, this->dt_, this->step_);
+      >(odeState, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
 };//end class

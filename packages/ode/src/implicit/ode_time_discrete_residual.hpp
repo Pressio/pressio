@@ -70,7 +70,7 @@ template < typename ode::ImplicitEnum method,
 	   >
 void time_discrete_residual(const state_type & y,
 			    residual_type & R,
-			    const std::array<state_type, n> & oldYs,
+			    const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
 			    scalar_type dt) {
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
   constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
@@ -90,7 +90,7 @@ template < typename ode::ImplicitEnum method,
 	   >
 void time_discrete_residual(const state_type & y,
 			    residual_type & R,
-			    const std::array<state_type, n> & oldYs,
+			    const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
 			    scalar_type dt) {
 
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();

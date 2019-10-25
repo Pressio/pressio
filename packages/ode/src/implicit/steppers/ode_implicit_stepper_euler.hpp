@@ -107,11 +107,11 @@ public:
   ImplicitStepper() = delete;
   ~ImplicitStepper() = default;
 
-  ImplicitStepper(const ode_state_type & y0,
+  ImplicitStepper(const ode_state_type & stateIn0,
   		  const system_type & model,
   		  const residual_pol_t & resPolicyObj,
   		  const jacobian_pol_t & jacPolicyObj)
-    : stepper_base_t{y0, model, resPolicyObj, jacPolicyObj}{}
+    : stepper_base_t{stateIn0, model, resPolicyObj, jacPolicyObj}{}
 
   // cstr for standard residual and jacob policies
   template <
@@ -122,9 +122,9 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepper(const ode_state_type & y0,
+  ImplicitStepper(const ode_state_type & stateIn0,
 		  const system_type & model)
-    : stepper_base_t{y0, model}{}
+    : stepper_base_t{stateIn0, model}{}
 
   // cstr for standard jacob policies
   template <
@@ -133,77 +133,77 @@ public:
       mpl::is_same<T1, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepper(const ode_state_type & y0,
+  ImplicitStepper(const ode_state_type & stateIn0,
   		  const system_type & model,
   		  const residual_pol_t & resPolicyObj)
-    : stepper_base_t{y0, model, resPolicyObj}{}
+    : stepper_base_t{stateIn0, model, resPolicyObj}{}
 
 public:
 
   template<typename solver_type>
-  void operator()(ode_state_type & y,
-		  const scalar_t & t,
+  void operator()(ode_state_type & odeState,
+		  const scalar_t & time,
 		  const scalar_t & dt,
 		  const types::step_t & step,
 		  solver_type & solver){
 
-    auto & auxY0 = this->stateAuxStorage_.data_[0];
+    auto & auxY0 = this->auxStates_[0];
     this->dt_ = dt;
-    this->t_ = t;
+    this->t_ = time;
     this->step_ = step;
-    ::pressio::containers::ops::deep_copy(y, auxY0);
-    solver.solve(*this, y);
+    ::pressio::containers::ops::deep_copy(odeState,  auxY0);
+    solver.solve(*this, odeState);
   }
 
   template<
     typename solver_type,
     typename guess_callback_t
     >
-  void operator()(ode_state_type & y,
-		  const scalar_t & t,
+  void operator()(ode_state_type & odeState,
+		  const scalar_t & time,
 		  const scalar_t & dt,
 		  const types::step_t & step,
 		  solver_type & solver,
 		  guess_callback_t && guesserCb)
   {
-    auto & auxY0 = this->stateAuxStorage_.data_[0];
+    auto & auxY0 = this->auxStates_[0];
     this->dt_ = dt;
-    this->t_ = t;
+    this->t_ = time;
     this->step_ = step;
-    ::pressio::containers::ops::deep_copy(y, auxY0);
-    guesserCb(step, t, y);
-    solver.solve(*this, y);
+    ::pressio::containers::ops::deep_copy(odeState, auxY0);
+    guesserCb(step, time, odeState);
+    solver.solve(*this, odeState);
   }
 
 private:
-  void residualImpl(const state_type & y, residual_type & R) const
+  void residualImpl(const state_type & state, residual_type & R) const
   {
     this->residual_obj_.template operator()<
       my_enum, mytraits::numAuxStates
-      >(y, R, this->stateAuxStorage_.data_,
+      >(state, R, this->auxStates_,
 	this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
-  residual_type residualImpl(const state_type & y) const
+  residual_type residualImpl(const state_type & state) const
   {
     return this->residual_obj_.template operator()<
       my_enum, mytraits::numAuxStates
-      >(y, this->stateAuxStorage_.data_,
+      >(state, this->auxStates_,
 	this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
-  void jacobianImpl(const state_type & y, jacobian_type & J) const
+  void jacobianImpl(const state_type & state, jacobian_type & J) const
   {
     this->jacobian_obj_.template operator()<
       mytraits::enum_id
-      >(y, J, this->sys_.get(), this->t_, this->dt_, this->step_);
+      >(state, J, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
-  jacobian_type jacobianImpl(const state_type & y) const
+  jacobian_type jacobianImpl(const state_type & state) const
   {
     return this->jacobian_obj_.template operator()<
       mytraits::enum_id
-      >(y, this->sys_.get(), this->t_, this->dt_, this->step_);
+      >(state, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
 };//end class
