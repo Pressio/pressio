@@ -51,7 +51,7 @@
 
 #include "../rom_fwd.hpp"
 #include "../../../ode/src/explicit/policies/ode_explicit_velocity_policy_base.hpp"
-#include "../rom_data_fom_states.hpp"
+#include "../rom_container_fom_states.hpp"
 
 namespace pressio{ namespace rom{
 

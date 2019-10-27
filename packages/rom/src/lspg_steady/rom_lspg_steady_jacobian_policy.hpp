@@ -50,7 +50,7 @@
 #define ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
 
 #include "../rom_fwd.hpp"
-#include "../rom_data_fom_states.hpp"
+#include "../rom_container_fom_states.hpp"
 
 namespace pressio{ namespace rom{
 
