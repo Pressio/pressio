@@ -95,7 +95,7 @@ struct LSPGSteadyCommonTypes<
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
   // class type holding fom states data
-  using fom_states_data = ::pressio::rom::FomStatesData<
+  using fom_states_data = ::pressio::rom::FomStatesContainer<
 	fom_state_t, 1, fom_state_reconstr_t>;
 };
 

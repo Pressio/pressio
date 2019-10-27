@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_data_fom_states.hpp
+// rom_container_fom_states.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_DATA_FOM_STATES_HPP_
-#define ROM_DATA_FOM_STATES_HPP_
+#ifndef ROM_CONTAINER_FOM_STATES_HPP_
+#define ROM_CONTAINER_FOM_STATES_HPP_
 
 #include "rom_ConfigDefs.hpp"
 #include "rom_fwd.hpp"
@@ -60,12 +60,12 @@ template <
   int N,
   typename reconstuctor_type
   >
-struct FomStatesData<fom_state_type, N, reconstuctor_type>
+struct FomStatesContainer<fom_state_type, N, reconstuctor_type>
 {
   static constexpr int N_ = N;
 
-  FomStatesData() = delete;
-  ~FomStatesData() = default;
+  FomStatesContainer() = delete;
+  ~FomStatesContainer() = default;
 
   /* ----------------
    * N = 0
@@ -80,7 +80,7 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & fomStateIn,
+  FomStatesContainer(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
     : fomState_(fomStateIn),
       fomStateReconstrObj_(fomStateReconstr)
@@ -98,7 +98,7 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & fomStateIn,
+  FomStatesContainer(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
     : fomState_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
       fomStateReconstrObj_(fomStateReconstr)
@@ -120,7 +120,7 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & fomStateIn,
+  FomStatesContainer(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
     : fomState_(fomStateIn),
       fomOldStates_{{fomStateIn}},
@@ -139,7 +139,7 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & fomStateIn,
+  FomStatesContainer(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
     : fomState_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
       fomOldStates_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
@@ -162,7 +162,7 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & fomStateIn,
+  FomStatesContainer(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
     : fomState_(fomStateIn),
       fomOldStates_{{fomStateIn, fomStateIn}},
@@ -181,7 +181,7 @@ struct FomStatesData<fom_state_type, N, reconstuctor_type>
       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
       > * = nullptr
     >
-  FomStatesData(const _fom_state_type & fomStateIn,
+  FomStatesContainer(const _fom_state_type & fomStateIn,
 		const reconstuctor_type & fomStateReconstr)
     : fomState_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
       fomOldStates_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())},

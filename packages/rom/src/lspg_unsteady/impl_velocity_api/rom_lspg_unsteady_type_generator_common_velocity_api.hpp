@@ -131,7 +131,7 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
   static constexpr auto auxStates = fomStatesStorageCapacityHelper<odeName>::value;
 
   // type of class holding the fom states
-  using fom_states_data = ::pressio::rom::FomStatesData<fom_state_t, auxStates, fom_state_reconstr_t>;
+  using fom_states_data = ::pressio::rom::FomStatesContainer<fom_state_t, auxStates, fom_state_reconstr_t>;
 
   // if we have a non-trivial user-defined ops, need to find from Args
   using ud_ops_t = void;
@@ -196,7 +196,7 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
 // //   static constexpr auto nFomAuxStates = statesStorageCapacityHelper<odeName>::value;
 
 // //   // class type holding fom states data
-// //   using fom_states_data = ::pressio::rom::FomStatesData<
+// //   using fom_states_data = ::pressio::rom::FomStatesContainer<
 // // 	fom_state_t, nFomAuxStates, fom_state_reconstr_t>;
 
 // //   // if we have a non-trivial user-defined ops

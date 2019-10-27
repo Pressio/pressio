@@ -141,7 +141,7 @@ basically the size of the stpper stencil.");
   static constexpr ::pressio::ode::types::stepper_n_states_t auxStates = tot_n_setter::value - 1;
 
   // type of class holding the fom states
-  using fom_states_data = ::pressio::rom::FomStatesData<fom_state_t, auxStates, fom_state_reconstr_t>;
+  using fom_states_data = ::pressio::rom::FomStatesContainer<fom_state_t, auxStates, fom_state_reconstr_t>;
 
   // if we have a non-trivial user-defined ops, need to find from Args
   using ud_ops_t = void;
