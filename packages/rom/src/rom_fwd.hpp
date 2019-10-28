@@ -56,7 +56,7 @@ namespace pressio{ namespace rom{
 template <
   typename fom_state_type, int N, typename reconstuctor_type, typename enable = void
   >
-struct FomStatesContainer;
+class FomStatesContainer;
 
 /* decorators */
 namespace decorator{

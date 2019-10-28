@@ -60,11 +60,26 @@ template <
   int N,
   typename reconstuctor_type
   >
-struct FomStatesContainer<fom_state_type, N, reconstuctor_type>
+class FomStatesContainer<fom_state_type, N, reconstuctor_type>
 {
+public:
   static constexpr int N_ = N;
 
+  // fom_state_type & operator[](std::size_t i){
+  //   assert( i<N );
+  //   fomOldStates_[i];
+  // }
+
+  // fom_state_type const & operator[](std::size_t i) const{
+  //   assert( i<N );
+  //   fomOldStates_[i];
+  // }
+
   FomStatesContainer() = delete;
+  FomStatesContainer(const FomStatesContainer &) = delete;
+  FomStatesContainer & operator=(const FomStatesContainer &) = delete;
+  FomStatesContainer(FomStatesContainer &&) = delete;
+  FomStatesContainer & operator=(FomStatesContainer &&) = delete;
   ~FomStatesContainer() = default;
 
   /* ----------------
