@@ -66,11 +66,11 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  *y.data() = appObj.getInitCond();
 
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::Euler,
-    state_t, res_t, jac_t, app_t>; /*aux stepper NOT needed for backEuler*/
+    state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
   // define solver
@@ -150,7 +150,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  *y.data() = appObj.getInitCond();
 
   //**********************
   // define policies and stepper
@@ -200,7 +200,7 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
   using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
   state_t y(3);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  *y.data() = appObj.getInitCond();
 
   //**********************
   // residual policy is user-defined (even if it is standard)

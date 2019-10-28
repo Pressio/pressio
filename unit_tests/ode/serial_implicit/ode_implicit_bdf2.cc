@@ -67,21 +67,17 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
-  state_t y(3);//appObj.y0);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
-  // res_t r(3);
-  // appObj.residual(*y.data(), *r.data(), 0.0);
+  state_t y(3);
+  *y.data() = appObj.getInitCond();
 
   // define auxiliary stepper
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
-    state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
+    ode::ImplicitEnum::Euler, state_t, res_t, jac_t, app_t>;
   aux_stepper_t stepperAux(y, appObj);
 
   // actual stepper
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::BDF2,
-    state_t, res_t, jac_t, app_t, aux_stepper_t>;
+    ode::ImplicitEnum::BDF2, state_t, res_t, jac_t, app_t, aux_stepper_t>;
   stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver
@@ -116,8 +112,8 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
-  state_t y(3);//appObj.y0);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  state_t y(3);
+  *y.data() = appObj.getInitCond();
 
   // define auxiliary policies and stepper
   using res_pol_t
@@ -125,10 +121,6 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   using jac_pol_t
     = ode::policy::ImplicitJacobianStandardPolicy<state_t, app_t, jac_t>;
 
-  // using aux_res_pol_t
-  //   = ode::policy::ImplicitResidualStandardPolicy<state_t, app_t, res_t>;
-  // using aux_jac_pol_t
-  //   = ode::policy::ImplicitJacobianStandardPolicy<state_t, app_t, jac_t>;
   using aux_stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::Euler,
     state_t, res_t, jac_t, app_t, void, /*aux stepper NOT needed for backEuler*/
@@ -174,8 +166,8 @@ TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::Matrix<njacobian_t>;
-  state_t y(3);//appObj.y0);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  state_t y(3);
+  *y.data() = appObj.getInitCond();
 
   //**********************
   // residual policy is user-defined (even if it is standard)

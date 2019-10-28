@@ -147,11 +147,11 @@ public:
 		  const types::step_t & step,
 		  solver_type & solver){
 
-    auto & auxY0 = this->auxStates_[0];
+    auto & odeState_nm1 = this->auxStates_[0];
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
-    ::pressio::containers::ops::deep_copy(odeState,  auxY0);
+    ::pressio::containers::ops::deep_copy(odeState,  odeState_nm1);
     solver.solve(*this, odeState);
   }
 
@@ -166,11 +166,11 @@ public:
 		  solver_type & solver,
 		  guess_callback_t && guesserCb)
   {
-    auto & auxY0 = this->auxStates_[0];
+    auto & odeState_nm1 = this->auxStates_[0];
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
-    ::pressio::containers::ops::deep_copy(odeState, auxY0);
+    ::pressio::containers::ops::deep_copy(odeState, odeState_nm1);
     guesserCb(step, time, odeState);
     solver.solve(*this, odeState);
   }

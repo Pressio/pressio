@@ -76,6 +76,7 @@ template <
   jac.addToDiagonal(one);
 }
 
+
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
   ode::ImplicitEnum odeMethod,

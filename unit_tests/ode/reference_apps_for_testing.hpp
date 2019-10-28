@@ -57,25 +57,32 @@ struct refAppForImpEigen{
 
     for a given time-step, dt, we have:
        Euler backward yields:
-          y_n+1 = y_n/(1+10*dt)
+          y_n = y_n-1/(1+10*dt)
 
        BDF2 yields:
-          num = (4/3) * y_n - (1/3) * y_n-2
+          num = (4/3) * y_n-1 - (1/3) * y_n-2
 	  den = 1 + (20/3) * dt
-          y_n+1 = num/den
+          y_n = num/den
    */
   using scalar_type = double;
   using state_type    = Eigen::VectorXd;
   using velocity_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
+  state_type y0_;
   state_type y;
   state_type y_nm1;
+  state_type y_nm2;
 
 public:
   refAppForImpEigen(){
     y.resize(3);
     y << 1., 2., 3.;
+    y0_ = y;
+  }
+
+  state_type getInitCond() const{
+    return y0_;
   }
 
   void velocity(const state_type & yIn,
@@ -120,21 +127,26 @@ public:
     for (int i=1; i!=n+1; i++)
     {
       y_nm1 = y;
-      y[0] = y[0]/den;
-      y[1] = y[1]/den;
-      y[2] = y[2]/den;
+      y[0] = y_nm1[0]/den;
+      y[1] = y_nm1[1]/den;
+      y[2] = y_nm1[2]/den;
     }
   };
   //--------------------------------------------
 
   void analyticAdvanceBDF2NSteps(double dt, int n){
-    double den = 1.0 + (20./3.)*dt;
-    for (int i=1; i!=n+1; i++){
-      double num1 = (4./3.) * y[0] - (1./3.) * y_nm1[0];
-      double num2 = (4./3.) * y[1] - (1./3.) * y_nm1[1];
-      double num3 = (4./3.) * y[2] - (1./3.) * y_nm1[2];
+    // here we assume that y_nm1 and y_nm2 are valid,
+    // e.g. advanceBackEuler has already been called
 
+    double den = 1.0 + (20./3.)*dt;
+    for (int i=1; i!=n+1; i++)
+    {
+      y_nm2 = y_nm1;
       y_nm1 = y;
+      double num1 = (4./3.) * y_nm1[0] - (1./3.) * y_nm2[0];
+      double num2 = (4./3.) * y_nm1[1] - (1./3.) * y_nm2[1];
+      double num3 = (4./3.) * y_nm1[2] - (1./3.) * y_nm2[2];
+
       y[0] = num1/den;
       y[1] = num2/den;
       y[2] = num3/den;

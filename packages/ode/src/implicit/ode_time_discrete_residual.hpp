@@ -54,53 +54,58 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-// in all functions below, on input R should contain
-// the target application RHS, i.e. if the system is
-// expressed as dudt = f(x,u,...), then on input R contains f(...)
-// On output, R contains the time-discrete residual
+// in all functions below:
+// - on input R contains the application RHS, i.e. if the system is
+// expressed as dudt = f(x,u,...), then on input R contains f(t_n, y_n, ...)
+// - on output, R contains the time-discrete residual
 
-template < typename ode::ImplicitEnum method,
-	   int n,
-	   typename state_type,
-	   typename residual_type,
-	   typename scalar_type,
-	   mpl::enable_if_t<
-	     method == ode::ImplicitEnum::Euler
-	     > * = nullptr
-	   >
-void time_discrete_residual(const state_type & y,
-			    residual_type & R,
-			    const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
-			    scalar_type dt) {
+template <
+  ode::ImplicitEnum method,
+  int n,
+  typename state_type,
+  typename residual_type,
+  typename scalar_type,
+  mpl::enable_if_t< method == ode::ImplicitEnum::Euler > * = nullptr
+  >
+void time_discrete_residual(const state_type	& odeCurrentState,
+			    residual_type	& R,
+			    const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
+			    const scalar_type	& dt)
+{
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
   constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
   const scalar_type negDt = -dt;
-  ::pressio::containers::ops::do_update(R, negDt, y, one, oldYs[0], negOne);
+  ::pressio::containers::ops::do_update(R, negDt, odeCurrentState, one, prevStates[0], negOne);
 }
 
-
-template < typename ode::ImplicitEnum method,
-	   int n,
-	   typename state_type,
-	   typename residual_type,
-	   typename scalar_type,
-	   mpl::enable_if_t<
-	     method == ode::ImplicitEnum::BDF2
-	     > * = nullptr
-	   >
-void time_discrete_residual(const state_type & y,
-			    residual_type & R,
-			    const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
-			    scalar_type dt) {
+template <
+  ode::ImplicitEnum method,
+  int n,
+  typename state_type,
+  typename residual_type,
+  typename scalar_type,
+  mpl::enable_if_t< method == ode::ImplicitEnum::BDF2 > * = nullptr
+  >
+void time_discrete_residual(const state_type	& odeCurrentState,
+			    residual_type	& R,
+			    const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
+			    const scalar_type	& dt)
+{
 
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
   constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
 
-  constexpr auto a = ::pressio::ode::constants::bdf2<scalar_type>::c1_*negOne;
-  constexpr auto b = ::pressio::ode::constants::bdf2<scalar_type>::c2_;
-  const auto c = ::pressio::ode::constants::bdf2<scalar_type>::c3_*dt*negOne;
+  constexpr auto a = ::pressio::ode::constants::bdf2<scalar_type>::c1_*negOne;  // -4/3
+  constexpr auto b = ::pressio::ode::constants::bdf2<scalar_type>::c2_;		// 1/3
+  const auto c = ::pressio::ode::constants::bdf2<scalar_type>::c3_*dt*negOne;   // -dt*2/3
 
-  ::pressio::containers::ops::do_update(R, c, y, one, oldYs[1], a, oldYs[0], b);
+  // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
+  // R contains already f(y_n,t_n) so we can just update R by doing
+  // R = -dt*2/3*R + y_n -4/3*y_n-1 + 1/3*y_n-2
+  ::pressio::containers::ops::do_update(R, c,
+					odeCurrentState, one,
+					prevStates[0], a,
+					prevStates[1], b);
 }
 
 }}}//end namespace pressio::ode::impl

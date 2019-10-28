@@ -162,8 +162,50 @@ public:
 		  solver_type & solver)
   {
 
-    auto & auxY0 = this->auxStates_[0];
-    auto & auxY1 = this->auxStates_[1];
+    this->dt_ = dt;
+    this->t_ = t;
+    this->step_ = step;
+
+    // first step, use auxiliary stepper
+    if (step == 1){
+      // step ==1 means that we are going from y_0 to y_1
+      // auxStates_[0] now holds y_0
+      ::pressio::containers::ops::deep_copy(odeState, this->auxStates_[0]);
+      // advnace the ode state
+      auxStepper_(odeState, t, dt, step, solver);
+    }
+    if (step >= 2)
+    {
+      // step == 2 means that we are going from y_1 to y_2, so:
+      //		y_n-2 = y_0 and y_n-1 = y_1
+      // step == 3 means that we are going from y_2 to y_3, so:
+      //		y_n-2 = y_1 and y_n-1 = y_2
+
+      auto & odeState_nm1 = this->auxStates_[0];
+      auto & odeState_nm2 = this->auxStates_[1];
+      ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
+      ::pressio::containers::ops::deep_copy(odeState, odeState_nm1);
+      solver.solve(*this, odeState);
+    }
+  }
+
+
+  // enable when auxiliary stepper is implicit too
+  // overload for when we have a guesser callback
+  template<
+    typename solver_type,
+    typename guess_callback_t,
+    ::pressio::mpl::enable_if_t<
+      ::pressio::ode::details::traits<aux_stepper_t>::is_implicit
+      > * = nullptr
+  >
+  void operator()(ode_state_type & odeState,
+		  const scalar_t &  t,
+		  const scalar_t &  dt,
+		  const types::step_t & step,
+		  solver_type & solver,
+		  guess_callback_t && guesserCb)
+  {
 
     this->dt_ = dt;
     this->t_ = t;
@@ -171,59 +213,27 @@ public:
 
     // first step, use auxiliary stepper
     if (step == 1){
-      ::pressio::containers::ops::deep_copy(odeState, auxY0);
+      // step ==1 means that we are going from y_0 to y_1
+      // auxStates_[0] now holds y_0
+      ::pressio::containers::ops::deep_copy(odeState, this->auxStates_[0]);
+      // advnace the ode state
       auxStepper_(odeState, t, dt, step, solver);
     }
-    if (step == 2){
-      ::pressio::containers::ops::deep_copy(odeState, auxY1);
-      solver.solve(*this, odeState);
-    }
-    if (step >= 3){
-      ::pressio::containers::ops::deep_copy(auxY1, auxY0);
-      ::pressio::containers::ops::deep_copy(odeState, auxY1);
+    if (step >= 2)
+    {
+      // step == 2 means that we are going from y_1 to y_2, so:
+      //		y_n-2 = y_0 and y_n-1 = y_1
+      // step == 3 means that we are going from y_2 to y_3, so:
+      //		y_n-2 = y_1 and y_n-1 = y_2
+
+      auto & odeState_nm1 = this->auxStates_[0];
+      auto & odeState_nm2 = this->auxStates_[1];
+      ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
+      ::pressio::containers::ops::deep_copy(odeState, odeState_nm1);
+      guesserCb(step, t, odeState);
       solver.solve(*this, odeState);
     }
   }
-
- template<
-   typename solver_type,
-   typename guess_callback_t,
-   // enable when auxiliary stepper is implicit too
-   ::pressio::mpl::enable_if_t<
-     ::pressio::ode::details::traits<aux_stepper_t>::is_implicit
-     > * = nullptr
-   >
-  void operator()(ode_state_type & odeState,
-		  const scalar_t &  t,
-		  const scalar_t &  dt,
-		  const types::step_t & step,
-		  solver_type & solver,
-		  guess_callback_t && guesserCb){
-
-   auto & auxY0 = this->auxStates_[0];
-   auto & auxY1 = this->auxStates_[1];
-
-   this->dt_ = dt;
-   this->t_ = t;
-   this->step_t = step;
-
-   // first step, use auxiliary stepper
-   if (step == 1){
-     ::pressio::containers::ops::deep_copy(odeState, auxY0);
-     auxStepper_(odeState, t, dt, step, solver);
-   }
-   if (step == 2){
-     ::pressio::containers::ops::deep_copy(odeState, auxY1);
-     guesserCb(step, t, odeState);
-     solver.solve(*this, odeState);
-   }
-   if (step >= 3){
-     ::pressio::containers::ops::deep_copy(auxY1, auxY0);
-     ::pressio::containers::ops::deep_copy(odeState, auxY1);
-     guesserCb(step, t, odeState);
-     solver.solve(*this, odeState);
-   }
- }
 
 private:
   void residualImpl(const state_type & odeState, residual_type & R) const
