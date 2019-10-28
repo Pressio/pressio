@@ -103,6 +103,7 @@ void time_discrete_residual(const state_type & currentState,
 #endif
 
 
+
 // ----------------------------------------------------------------------
 /*
  * for Kokkos and eigen wrappers (this is not suitable for sample mesh)
@@ -130,11 +131,13 @@ void time_discrete_residual(const state_type & currentState,
 
   assert( R.size() == currentState.size() );
   assert( currentState.size() == prevStates[0].size() );
-  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
-  const auto negDt = negOne*dt;
+
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
+  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+
   //R = y_n - y_nm1 - dt * R;
-  ::pressio::containers::ops::do_update(R, negDt, currentState, one, prevStates[0], negOne);
+  ::pressio::containers::ops::do_update(R, cf, currentState, cn, prevStates[0], cnm1);
 }
 
 
@@ -160,24 +163,20 @@ void time_discrete_residual(const state_type	& currentState,
   assert( currentState.size() == prevStates[0].size() );
   assert( prevStates[0].size() == prevStates[1].size());
 
-  using namespace ::pressio::ode::constants;
-
-  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
-  const auto a = negOne * bdf2<scalar_type>::c3_*dt;	// -dt*2/3
-  const auto b = negOne * bdf2<scalar_type>::c1_;	//-4/3
-  const auto c = bdf2<scalar_type>::c2_;		// 1/3
+  constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
+  constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
+  constexpr auto cnm2 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_;
+  const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   auto & y_nm1 = prevStates[0];
   auto & y_nm2 = prevStates[1];
-
   // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
-  ::pressio::containers::ops::do_update(R, a,
-					currentState, one,
-					prevStates[0], b,
-					prevStates[1], c);
-
+  ::pressio::containers::ops::do_update(R, cf,
+					currentState, cn,
+					prevStates[0], cnm1,
+					prevStates[1], cnm2);
 }
+
 
 
 
@@ -222,8 +221,12 @@ struct time_discrete_single_entry_epetra<::pressio::ode::ImplicitEnum::Euler>{
 			 T & R,
 			 int lid,
 			 const state_type& odeCurrentState,
-			 const std::array<state_type,n> & prevStates){
-    R = odeCurrentState[lid] - prevStates[0][lid] - dt * R;
+			 const std::array<state_type,n> & prevStates)
+  {
+    constexpr auto cn   = ::pressio::ode::constants::bdf1<T>::c_n_;
+    constexpr auto cnm1 = ::pressio::ode::constants::bdf1<T>::c_nm1_;
+    const auto cf	  = ::pressio::ode::constants::bdf1<T>::c_f_ * dt;
+    R = cn*odeCurrentState[lid] + cnm1*prevStates[0][lid] + cf*R;
   }
 };
 
@@ -233,13 +236,13 @@ struct time_discrete_single_entry_epetra<::pressio::ode::ImplicitEnum::BDF2>{
     static void evaluate(const T& dt, T & R,
 			 int lid,
 			 const state_type& odeCurrentState,
-			 const std::array<state_type,n> & prevStates){
-    using namespace ::pressio::ode::constants;
-
-    R = odeCurrentState[lid]
-      - bdf2<T>::c1_*prevStates[0][lid]
-      + bdf2<T>::c2_*prevStates[1][lid]
-      - bdf2<T>::c3_*dt*R;
+			 const std::array<state_type,n> & prevStates)
+  {
+    constexpr auto cn   = ::pressio::ode::constants::bdf2<T>::c_n_;
+    constexpr auto cnm1 = ::pressio::ode::constants::bdf2<T>::c_nm1_;
+    constexpr auto cnm2 = ::pressio::ode::constants::bdf2<T>::c_nm2_;
+    const auto cf	  = ::pressio::ode::constants::bdf2<T>::c_f_ * dt;
+    R = cn*odeCurrentState[lid] + cnm1*prevStates[0][lid] + cnm2*prevStates[1][lid] + cf*R;
   }
 };
 
@@ -326,13 +329,16 @@ struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::BDF2>{
 			 T & R,
 			 int lid,
 			 const state_type & odeCurrentState,
-			 const std::array<state_type,n> & prevStates){
-    using namespace ::pressio::ode::constants;
-
-    R = (odeCurrentState.getData())[lid]
-      - bdf2<T>::c1_*(prevStates[0].getData())[lid]
-      + bdf2<T>::c2_*(prevStates[1].getData())[lid]
-      - bdf2<T>::c3_*dt*R;
+			 const std::array<state_type,n> & prevStates)
+  {
+    constexpr auto cn   = ::pressio::ode::constants::bdf2<T>::c_n_;
+    constexpr auto cnm1 = ::pressio::ode::constants::bdf2<T>::c_nm1_;
+    constexpr auto cnm2 = ::pressio::ode::constants::bdf2<T>::c_nm2_;
+    const auto cf	  = ::pressio::ode::constants::bdf2<T>::c_f_ * dt;
+    R = cn*(odeCurrentState.getData())[lid]
+      + cnm1*(prevStates[0].getData())[lid]
+      + cnm2*(prevStates[1].getData())[lid]
+      + cf*R;
   }
 
   template <typename T, typename state_type>
@@ -341,12 +347,16 @@ struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::BDF2>{
 			 int lid,
 			 const state_type& odeCurrentState,
 			 const state_type & ynm1,
-			 const state_type & ynm2){
-    using namespace ::pressio::ode::constants;
-    R = (odeCurrentState.getData())[lid]
-      - bdf2<T>::c1_*(ynm1.getData())[lid]
-      + bdf2<T>::c2_*(ynm2.getData())[lid]
-      - bdf2<T>::c3_*dt*R;
+			 const state_type & ynm2)
+  {
+    constexpr auto cn   = ::pressio::ode::constants::bdf2<T>::c_n_;
+    constexpr auto cnm1 = ::pressio::ode::constants::bdf2<T>::c_nm1_;
+    constexpr auto cnm2 = ::pressio::ode::constants::bdf2<T>::c_nm2_;
+    const auto cf	  = ::pressio::ode::constants::bdf2<T>::c_f_ * dt;
+    R = cn*(odeCurrentState.getData())[lid]
+      + cnm1*(ynm1.getData())[lid]
+      + cnm2*(ynm2.getData())[lid]
+      + cf*R;
   }
 };
 

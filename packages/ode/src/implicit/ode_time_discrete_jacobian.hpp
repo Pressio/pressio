@@ -70,10 +70,12 @@ template <
     > * = nullptr
   >
   void time_discrete_jacobian(jacobian_type & jac,
-			      scalar_type dt){
-  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-  jac.scale(-dt);
-  jac.addToDiagonal(one);
+			      const scalar_type & dt)
+{
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  jac.scale(cf);
+  jac.addToDiagonal(cn);
 }
 
 
@@ -88,9 +90,12 @@ template <
     > * = nullptr
   >
 void time_discrete_jacobian(jacobian_type & jac,
-			    scalar_type dt){
+			    const scalar_type & dt)
+{
   using namespace ::pressio::ode::constants;
-  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
 
   if (jac.ndim() != 2)
     throw std::runtime_error("Tensors with dim>2 not supported");
@@ -100,10 +105,11 @@ void time_discrete_jacobian(jacobian_type & jac,
   const size_t cols = jac.shape()[1];
 
   for (size_t irow = 0; irow < rows; irow++){
-    for (size_t icol = 0; icol < cols; icol++){
-      ptr[irow*cols + icol] *= -dt;
+    for (size_t icol = 0; icol < cols; icol++)
+    {
+      ptr[irow*cols + icol] *= cf;
       if (irow == icol and irow == 2)
-	ptr[irow*cols + icol] += one;
+	ptr[irow*cols + icol] += cn;
     }
   }
 
@@ -122,11 +128,15 @@ template <
     > * = nullptr
   >
 void time_discrete_jacobian(jacobian_type & jac,
-			    scalar_type dt){
+			    const scalar_type & dt)
+{
+  constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
+  const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+
   using namespace ::pressio::ode::constants;
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-  jac.scale(-bdf2<scalar_type>::c3_*dt);
-  jac.addToDiagonal(one);
+  jac.scale(cf);
+  jac.addToDiagonal(cn);
 }
 
 

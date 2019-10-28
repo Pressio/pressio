@@ -72,11 +72,13 @@ void time_discrete_residual(const state_type	& odeCurrentState,
 			    const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
 			    const scalar_type	& dt)
 {
-  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
-  const scalar_type negDt = -dt;
-  ::pressio::containers::ops::do_update(R, negDt, odeCurrentState, one, prevStates[0], negOne);
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
+  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  // R = y_n - y_n-1 - dt*f()
+  ::pressio::containers::ops::do_update(R, cf, odeCurrentState, cn, prevStates[0], cnm1);
 }
+
 
 template <
   ode::ImplicitEnum method,
@@ -91,21 +93,23 @@ void time_discrete_residual(const state_type	& odeCurrentState,
 			    const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
 			    const scalar_type	& dt)
 {
+  constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
+  constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
+  constexpr auto cnm2 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_;
+  const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
-  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
-
-  constexpr auto a = ::pressio::ode::constants::bdf2<scalar_type>::c1_*negOne;  // -4/3
-  constexpr auto b = ::pressio::ode::constants::bdf2<scalar_type>::c2_;		// 1/3
-  const auto c = ::pressio::ode::constants::bdf2<scalar_type>::c3_*dt*negOne;   // -dt*2/3
+  // constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  // constexpr auto a = ::pressio::ode::constants::bdf2<scalar_type>::c1_;  // -4/3
+  // constexpr auto b = ::pressio::ode::constants::bdf2<scalar_type>::c2_;	 // 1/3
+  // const auto c = ::pressio::ode::constants::bdf2<scalar_type>::c3_*dt;   // -dt*2/3
 
   // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
   // R contains already f(y_n,t_n) so we can just update R by doing
   // R = -dt*2/3*R + y_n -4/3*y_n-1 + 1/3*y_n-2
-  ::pressio::containers::ops::do_update(R, c,
-					odeCurrentState, one,
-					prevStates[0], a,
-					prevStates[1], b);
+  ::pressio::containers::ops::do_update(R, cf,
+					odeCurrentState, cn,
+					prevStates[0], cnm1,
+					prevStates[1], cnm2);
 }
 
 }}}//end namespace pressio::ode::impl
