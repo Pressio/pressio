@@ -59,7 +59,8 @@ template <typename preconditionable>
 class Preconditioned<
   preconditionable,
   ::pressio::mpl::enable_if_t<preconditionable::isResidualPolicy_ == false>
-  > : public preconditionable{
+  > : public preconditionable
+{
 
 public:
   using typename preconditionable::apply_jac_return_t;
@@ -81,6 +82,24 @@ public:
   // for unsteady LSPG
   //-------------------------------
   template <
+      ode::ImplicitEnum odeMethod,
+      typename ode_state_t,
+      typename ode_jac_t,
+      typename app_t,
+      typename scalar_t>
+  void operator()(const ode_state_t & odeY,
+		  ode_jac_t & odeJJ,
+  		  const app_t & app,
+		  const scalar_t & t,
+		  const scalar_t & dt,
+		  const ::pressio::ode::types::step_t & step) const
+  {
+    preconditionable::template operator()<odeMethod>(odeY, odeJJ, app, t, dt, step);
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
+    app.applyPreconditioner(*yFom.data(), *odeJJ.data(), t);
+  }
+
+  template <
     ode::ImplicitEnum odeMethod,
     typename ode_state_t,
     typename app_t,
@@ -88,27 +107,16 @@ public:
   >
   apply_jac_return_t operator()(const ode_state_t & odeY,
 				const app_t & app,
-				scalar_t t, scalar_t dt) const
+				const scalar_t & t,
+				const scalar_t & dt,
+				const ::pressio::ode::types::step_t & step) const
   {
-    auto JJ = preconditionable::template operator()<odeMethod>(odeY, app, t, dt);
+    auto JJ = preconditionable::template operator()<odeMethod>(odeY, app, t, dt, step);
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *JJ.data(), t);
     return JJ;
   }
 
-  template <
-      ode::ImplicitEnum odeMethod,
-      typename ode_state_t,
-      typename ode_jac_t,
-      typename app_t,
-      typename scalar_t>
-  void operator()(const ode_state_t & odeY, ode_jac_t & odeJJ,
-  		  const app_t & app, scalar_t t, scalar_t dt) const
-  {
-    preconditionable::template operator()<odeMethod>(odeY, odeJJ, app, t, dt);
-    const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *odeJJ.data(), t);
-  }
 
 
   //-------------------------------
@@ -120,9 +128,7 @@ public:
   apply_jac_return_t operator()(const lspg_state_t & romY,
                                 const app_t & app) const
   {
-    auto JJ = preconditionable::template operator()
-	<lspg_state_t, app_t>(romY, app);
-
+    auto JJ = preconditionable::template operator()<lspg_state_t, app_t>(romY, app);
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *JJ.data());
     return JJ;
@@ -136,9 +142,7 @@ public:
                   lspg_jac_t & romJJ,
                   const app_t & app) const
   {
-    preconditionable::template operator()
-	  <lspg_state_t, lspg_jac_t, app_t>(romY, romJJ, app);
-
+    preconditionable::template operator()<lspg_state_t, lspg_jac_t, app_t>(romY, romJJ, app);
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *romJJ.data());
   }

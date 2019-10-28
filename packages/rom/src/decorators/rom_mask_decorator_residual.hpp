@@ -75,17 +75,46 @@ public:
   ~Masked() = default;
 
 public:
-  template <ode::ImplicitEnum odeMethod, int n,
-	    typename ode_state_t, typename app_t,
-	    typename scalar_t>
+
+  template <
+    ::pressio::ode::ImplicitEnum odeMethod,
+    int n,
+    typename ode_state_t,
+    typename ode_res_t,
+    typename app_t,
+    typename scalar_t
+  >
+  void operator()(const ode_state_t & odeY,
+  		  ode_res_t & R,
+		  const ::pressio::ode::StatesContainer<ode_state_t,n> & prevStates,
+  		  const app_t & app,
+		  const scalar_t & t,
+		  const scalar_t & dt,
+		  const ::pressio::ode::types::step_t & step) const
+  {
+    maskable::template operator()<
+      odeMethod, n>(odeY, R_, prevStates, app, t, dt, step);
+
+    app.applyMask(*R_.data(), *R.data(), t);
+  }
+
+
+  template <
+    ode::ImplicitEnum odeMethod,
+    int n,
+    typename ode_state_t,
+    typename app_t,
+    typename scalar_t
+    >
   residual_t operator()(const ode_state_t & odeY,
-			const std::array<ode_state_t, n> & oldYs,
+			const ::pressio::ode::StatesContainer<ode_state_t,n> & prevStates,
 			const app_t & app,
-			scalar_t t,
-			scalar_t dt) const
+			const scalar_t & t,
+			const scalar_t & dt,
+			const ::pressio::ode::types::step_t & step) const
   {
     auto R1 = maskable::template operator()
-      <odeMethod, n>(odeY, oldYs, app, t, dt);
+      <odeMethod, n>(odeY, prevStates, app, t, dt, step);
 
     if (!maskedR_){
       maskedR_ = std::make_shared
@@ -97,21 +126,6 @@ public:
     return *maskedR_;
   }
 
-  template <ode::ImplicitEnum odeMethod,  int n,
-	    typename ode_state_t, typename ode_res_t,
-	    typename app_t, typename scalar_t>
-  void operator()(const ode_state_t & odeY,
-  		  ode_res_t & odeR,
-  		  const std::array<ode_state_t, n> & oldYs,
-  		  const app_t & app,
-		  scalar_t t,
-		  scalar_t dt) const
-  {
-    maskable::template operator()<
-      odeMethod, n>(odeY, R_, oldYs, app, t, dt);
-
-    app.applyMask(*R_.data(), *odeR.data(), t);
-  }
 };//end class
 
 }}} //end namespace pressio::rom::decorator

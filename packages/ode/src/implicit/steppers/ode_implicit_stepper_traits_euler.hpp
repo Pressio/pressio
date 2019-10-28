@@ -170,10 +170,12 @@ the containers, pass scalar as a template.");
    system_t,
    std::is_same<residual_policy_t, standard_res_policy_t>::value,
    std::is_same<jacobian_policy_t, standard_jac_policy_t>::value
-   >::value, "\n The model type you passed to the Euler implict stepper is not \
+   >::value, "\n I am trying to instantiate an implicit Euler stepper with standard polcies but I cannot. \
+The model type you passed to the Euler implict stepper is not \
 compatible with using standard residual and jacobian policies. This typically means that \
 your model class is missing or has the wrong typedefs, and/or velocity methods \
-and/or jacobian methods.");
+and/or jacobian methods. Or it can also be that you passed invalid policies as template args, \
+so by default I try to use standard ones.");
 
   static_assert
   (

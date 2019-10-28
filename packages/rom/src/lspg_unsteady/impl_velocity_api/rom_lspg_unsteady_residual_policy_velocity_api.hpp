@@ -155,15 +155,15 @@ public:
     typename fom_t,
     typename scalar_t
   >
-  void operator()(const lspg_state_t		   & romY,
+  void operator()(const lspg_state_t		   & romState,
 		  residual_t			   & romR,
-  		  const ::pressio::ode::StatesContainer<lspg_state_t,n> & romOldYs,
+  		  const ::pressio::ode::StatesContainer<lspg_state_t,n> & romPrevStates,
   		  const fom_t			   & app,
-		  scalar_t			   t,
-		  scalar_t			   dt,
-		  ::pressio::ode::types::step_t step) const
+		  const scalar_t		   & t,
+		  const scalar_t		   & dt,
+		  const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeMethod, n>(romY, romR, romOldYs, app, t, dt);
+    this->compute_impl<odeMethod, n>(romState, romR, romPrevStates, app, t, dt);
   }
 
   template <
@@ -173,14 +173,14 @@ public:
     typename fom_t,
     typename scalar_t
     >
-  residual_t operator()(const lspg_state_t		   & romY,
-			const ::pressio::ode::StatesContainer<lspg_state_t,n>  & romOldYs,
+  residual_t operator()(const lspg_state_t		   & romState,
+			const ::pressio::ode::StatesContainer<lspg_state_t,n>  & romPrevStates,
 			const fom_t			   & app,
-			scalar_t			   t,
-			scalar_t			   dt,
-			::pressio::ode::types::step_t step) const
+			const scalar_t			   & t,
+			const scalar_t			   & dt,
+			const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeMethod, n>(romY, R_, romOldYs, app, t, dt);
+    this->compute_impl<odeMethod, n>(romState, R_, romPrevStates, app, t, dt);
     return R_;
   }
 
@@ -231,20 +231,20 @@ private:
     typename fom_t,
     typename scalar_t
   >
-  void compute_impl(const lspg_state_t		     & romY,
+  void compute_impl(const lspg_state_t		     & romState,
 		    residual_t			     & romR,
-		    const ::pressio::ode::StatesContainer<lspg_state_t,n> & romOldYs,
+		    const ::pressio::ode::StatesContainer<lspg_state_t,n> & romPrevStates,
 		    const fom_t			     & app,
-		    scalar_t			     t,
-		    scalar_t			     dt) const
+		    const scalar_t		     & t,
+		    const scalar_t		     & dt) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("lspg residual");
 #endif
 
-    fomStates_.template reconstructCurrentFomState(romY);
-    fomStates_.template reconstructFomOldStates<n>(romOldYs);
+    fomStates_.template reconstructCurrentFomState(romState);
+    fomStates_.template reconstructFomOldStates<n>(romPrevStates);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");

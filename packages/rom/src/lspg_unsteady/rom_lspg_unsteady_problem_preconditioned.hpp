@@ -49,83 +49,40 @@
 #ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_PRECONDITIONED_HPP_
 #define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_PRECONDITIONED_HPP_
 
-#include "./impl_velocity_api/rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
+#include "./impl_velocity_api/rom_lspg_unsteady_problem_type_generator_preconditioned_velocity_api.hpp"
 
 namespace pressio{ namespace rom{
 
-// template <
-//   typename fom_type,
-//   ode::ImplicitEnum odeName,
-//   typename decoder_type,
-//   typename lspg_state_type,
-//   typename ud_ops = void,
-//   mpl::enable_if_t<
-//     ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value
-//     > * = nullptr
-//   >
-// struct PreconditionedLSPGUnsteadyTypeGenerator{
+namespace impl{
 
-//   // assert here that fom_type supports the precondition interface
+template <typename T, typename enable = void>
+struct PreconditionedLSPGUnsteadyHelper{
+  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
+  using type = void;
+};
 
-//   using common_types_helper =
-//     impl::LSPGUnsteadyCommonTypesVelocityApi<fom_type,
-// 					     decoder_type,
-// 					     lspg_state_type,
-// 					     odeName,
-// 					     ud_ops>;
+template <typename T>
+struct PreconditionedLSPGUnsteadyHelper<
+  T,
+  mpl::enable_if_t<
+    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
+    >
+  >
+{
+  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
+  using type = impl::PreconditionedLSPGUnsteadyTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
+};
 
-//   using fom_t			= typename common_types_helper::fom_t;
-//   using scalar_t		= typename common_types_helper::scalar_t;
-//   using fom_native_state_t	= typename common_types_helper::fom_native_state_t;
-//   using fom_state_t		= typename common_types_helper::fom_state_t;
-//   using fom_velocity_t		= typename common_types_helper::fom_velocity_t;
-//   using lspg_state_t		= typename common_types_helper::lspg_state_t;
-//   using lspg_residual_t		= typename common_types_helper::lspg_residual_t;
-//   using decoder_t		= typename common_types_helper::decoder_t;
-//   using decoder_jac_t		= typename common_types_helper::decoder_jac_t;
-//   using lspg_matrix_t		= typename common_types_helper::lspg_matrix_t;
-//   using fom_state_reconstr_t	= typename common_types_helper::fom_state_reconstr_t;
-//   using fom_states_data		= typename common_types_helper::fom_states_data;
-//   using ud_ops_t		= typename common_types_helper::ud_ops_t;
+}// end namespace pressio::rom::impl
 
-//   // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
-//   using fom_eval_velocity_policy_t	= ::pressio::rom::policy::EvaluateFomVelocityDefault<false>;
-
-//   // policy for left multiplying the fom jacobian with decoder_jac_t
-//   // possibly involving other stuff like explained above (<false> for unsteady overload)
-//   using fom_apply_jac_policy_t	= ::pressio::rom::policy::ApplyFomJacobianDefault<false>;
-
-//   // policy defining how to compute the LSPG time-discrete residual
-//   using lspg_residual_policy_t =
-//     rom::decorator::Preconditioned<
-//     rom::LSPGUnsteadyResidualPolicyVelocityApi<
-//       lspg_residual_t, fom_states_data, fom_eval_velocity_policy_t
-//       >
-//     >;
-
-//   // policy defining how to compute the LSPG time-discrete jacobian
-//   using lspg_jacobian_policy_t	=
-//     rom::decorator::Preconditioned<
-//     rom::LSPGUnsteadyJacobianPolicyVelocityApi<
-//       fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t
-//       >
-//     >;
-
-//   // auxiliary stepper
-//   using aux_stepper_t = typename impl::auxStepperHelper<
-//     odeName, lspg_state_type,
-//     lspg_residual_t, lspg_matrix_t,
-//     fom_type, lspg_residual_policy_t,
-//     lspg_jacobian_policy_t, scalar_t>::type;
-
-//   // primary stepper type
-//   using lspg_stepper_t		= ode::ImplicitStepper<
-//     odeName, lspg_state_type,
-//     lspg_residual_t, lspg_matrix_t,
-//     fom_type, aux_stepper_t,
-//     lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>;
-
-// };//end class
+template <
+  ::pressio::ode::ImplicitEnum name,
+  typename fom_type,
+  typename lspg_state_type,
+  typename ...Args
+  >
+using PreconditionedLSPGUnsteady =
+  typename impl::PreconditionedLSPGUnsteadyHelper<fom_type>::template type<name, lspg_state_type, Args...>;
 
 }}//end  namespace pressio::rom
 #endif

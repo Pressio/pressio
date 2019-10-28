@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// APPS_BURGERS1D
+// apps_burgers1d_epetra_preconditioned.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,45 @@
 //@HEADER
 */
 
-#ifndef APPS_BURGERS1D_HPP_
-#define APPS_BURGERS1D_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_EPETRA_PRECONDITIONED_HPP_
+#define PRESSIOAPPS_BURGERS1D_EPETRA_PRECONDITIONED_HPP_
 
-#include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_eigen_residual_api.hpp"
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "apps_burgers1d_epetra.hpp"
 
-#include "apps/src/burgers1d/apps_burgers1d_epetra.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_masked.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_identity_masked.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
+namespace pressio{ namespace apps{
 
-#include "apps/src/burgers1d/apps_burgers1d_tpetra.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
+class Burgers1dEpetraPreconditioned : public Burgers1dEpetra{
+  using base_t = Burgers1dEpetra;
+  using importer_t = Epetra_Import;
 
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
+public:
+  Burgers1dEpetraPreconditioned(std::vector<scalar_type> params,
+			int Ncell, Epetra_MpiComm * comm)
+    : base_t(params, Ncell, comm){}
 
+  ~Burgers1dEpetraPreconditioned() = default;
+
+public:
+  void setup(){
+    base_t::setup();
+  };
+
+  void applyPreconditioner(const state_type & yState,
+                           dense_matrix_type & C,
+			   const scalar_type & time) const {
+    // do nothing, preconditioner is identity
+    std::cout << "identiy precond" << std::endl;
+  }
+  void applyPreconditioner(const state_type & yState,
+                           velocity_type & rhs,
+			   const scalar_type & time) const {
+    // do nothing, preconditioner is identity
+    std::cout << "identiy precond" << std::endl;
+  }
+
+};
+
+}} //namespace pressio::apps
+#endif
 #endif

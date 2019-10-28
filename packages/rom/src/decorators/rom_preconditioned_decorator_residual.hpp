@@ -59,26 +59,54 @@ template <typename preconditionable>
 class Preconditioned<
   preconditionable,
   ::pressio::mpl::enable_if_t<preconditionable::isResidualPolicy_>
-  > : public preconditionable{
+  > : public preconditionable
+{
 
   using typename preconditionable::residual_t;
   using preconditionable::fomStates_;
 
 public:
   Preconditioned() = delete;
-  Preconditioned(const preconditionable & obj) : preconditionable(obj){}
+
+  Preconditioned(const preconditionable & obj)
+    : preconditionable(obj)
+  {}
 
   template <typename ... Args>
   Preconditioned(Args && ... args)
-    : preconditionable(std::forward<Args>(args)...){}
+    : preconditionable(std::forward<Args>(args)...)
+  {}
 
   ~Preconditioned() = default;
 
 public:
-
   //-------------------------------
   // for unsteady LSPG
   //-------------------------------
+
+  template <
+    ode::ImplicitEnum odeMethod,
+    int n,
+    typename ode_state_t,
+    typename lspg_res_t,
+    typename app_t,
+    typename scalar_t
+    >
+  void operator()(const ode_state_t		   & odeState,
+  		  lspg_res_t			   & R,
+		  const ::pressio::ode::StatesContainer<ode_state_t,n> & prevStates,
+  		  const app_t			   & app,
+		  const scalar_t		   & t,
+		  const scalar_t		   & dt,
+		  const ::pressio::ode::types::step_t & step) const
+  {
+    preconditionable::template operator()
+      <odeMethod, n>(odeState, R, prevStates, app, t, dt, step);
+
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
+    app.applyPreconditioner(*yFom.data(), *R.data(), t);
+  }
+
   template <
     ode::ImplicitEnum odeMethod,
     int n,
@@ -86,41 +114,21 @@ public:
     typename app_t,
     typename scalar_t
   >
-  residual_t operator()(const ode_state_t & odeY,
-			const std::array<ode_state_t, n> & oldYs,
-			const app_t & app,
-			scalar_t t,
-			scalar_t dt) const
+  residual_t operator()(const ode_state_t		 & odeState,
+			const ::pressio::ode::StatesContainer<ode_state_t,n> & prevStates,
+			const app_t			 & app,
+			const scalar_t			 & time,
+			const scalar_t			 & dt,
+			const ::pressio::ode::types::step_t & step) const
   {
     auto result = preconditionable::template operator()
-      <odeMethod, n>(odeY, oldYs, app, t, dt);
+      <odeMethod, n>(odeState, prevStates, app, time, dt, step);
 
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *result.data(), t);
+    app.applyPreconditioner(*yFom.data(), *result.data(), time);
     return result;
   }
 
-  template <
-    ode::ImplicitEnum odeMethod,
-    int n,
-    typename ode_state_t,
-    typename ode_res_t,
-    typename app_t,
-    typename scalar_t
-    >
-  void operator()(const ode_state_t & odeY,
-  		  ode_res_t & odeR,
-  		  const std::array<ode_state_t, n> & oldYs,
-  		  const app_t & app,
-		  scalar_t t,
-		  scalar_t dt) const
-  {
-    preconditionable::template operator()
-      <odeMethod, n>(odeY, odeR, oldYs, app, t, dt);
-
-    const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *odeR.data(), t);
-  }
 
   //-------------------------------
   // for steady LSPG
@@ -128,11 +136,11 @@ public:
   template <
       typename lspg_state_t,
       typename fom_t>
-  residual_t operator()(const lspg_state_t  & romY,
-                         const fom_t   & app) const
+  residual_t operator()(const lspg_state_t  & odeState,
+			const fom_t	    & app) const
   {
     auto result = preconditionable::template operator()
-      <lspg_state_t, fom_t>(romY, app);
+      <lspg_state_t, fom_t>(odeState, app);
 
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *result.data());
@@ -143,12 +151,12 @@ public:
       typename lspg_state_t,
       typename lspg_residual_t,
       typename fom_t>
-  void operator()(const lspg_state_t  & romY,
+  void operator()(const lspg_state_t  & odeState,
                   lspg_residual_t & romR,
                   const fom_t   & app) const
   {
     preconditionable::template operator()
-      <lspg_state_t, lspg_residual_t, fom_t>(romY, romR, app);
+      <lspg_state_t, lspg_residual_t, fom_t>(odeState, romR, app);
 
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *romR.data());

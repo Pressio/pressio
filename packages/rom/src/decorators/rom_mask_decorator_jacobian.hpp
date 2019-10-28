@@ -77,13 +77,38 @@ public:
   ~Masked() = default;
 
 public:
-  template <ode::ImplicitEnum odeMethod, typename ode_state_t,
-	    typename app_t, typename scalar_t>
+
+  template <
+    ::pressio::ode::ImplicitEnum odeMethod,
+    typename ode_state_t,
+    typename ode_jac_t,
+    typename app_t,
+    typename scalar_t
+  >
+  void operator()(const ode_state_t & odeY,
+		  ode_jac_t & odeJJ,
+  		  const app_t & app,
+		  const scalar_t & t,
+		  const scalar_t & dt,
+		  const ::pressio::ode::types::step_t & step) const
+  {
+    maskable::template operator()<odeMethod>(odeY, JJ_, app, t, dt, step);
+    app.applyMask(*JJ_.data(), *odeJJ.data(), t);
+  }
+
+  template <
+    ::pressio::ode::ImplicitEnum odeMethod,
+    typename ode_state_t,
+    typename app_t,
+    typename scalar_t
+    >
   apply_jac_return_t operator()(const ode_state_t & odeY,
 				const app_t & app,
-				scalar_t t, scalar_t dt) const
+				const scalar_t & t,
+				const scalar_t & dt,
+				const ::pressio::ode::types::step_t & step) const
   {
-    maskable::template operator()<odeMethod>(odeY, JJ_, app, t, dt);
+    maskable::template operator()<odeMethod>(odeY, JJ_, app, t, dt, step);
     if (!maskedJJ_){
       maskedJJ_ = std::make_shared<apply_jac_return_t>( app.applyMask(*JJ_.data(), t) );
     }
@@ -93,14 +118,6 @@ public:
     return *maskedJJ_;
   }
 
-  template <ode::ImplicitEnum odeMethod, typename ode_state_t,
-	    typename ode_jac_t,  typename app_t, typename scalar_t>
-  void operator()(const ode_state_t & odeY, ode_jac_t & odeJJ,
-  		  const app_t & app, scalar_t t, scalar_t dt) const
-  {
-    maskable::template operator()<odeMethod>(odeY, JJ_, app, t, dt);
-    app.applyMask(*JJ_.data(), *odeJJ.data(), t);
-  }
 
 };//end class
 

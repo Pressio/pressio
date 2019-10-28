@@ -154,33 +154,36 @@ public:
 
 
 public:
-  template <::pressio::ode::ImplicitEnum odeMethod,
-	    typename lspg_state_t,
-	    typename lspg_jac_t,
-	    typename app_t,
-	    typename scalar_t>
+  template <
+    ::pressio::ode::ImplicitEnum odeMethod,
+    typename lspg_state_t,
+    typename lspg_jac_t,
+    typename app_t,
+    typename scalar_t
+  >
   void operator()(const lspg_state_t & romY,
 		  lspg_jac_t	     & romJac,
   		  const app_t	     & app,
-		  scalar_t	     t,
-		  scalar_t	     dt,
-		  ::pressio::ode::types::step_t step) const
+		  const scalar_t     & time,
+		  const scalar_t     & dt,
+		  const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeMethod>(romY, romJac, app, t, dt);
+    this->compute_impl<odeMethod>(romY, romJac, app, time, dt);
   }
 
-
-  template <::pressio::ode::ImplicitEnum odeMethod,
-	    typename lspg_state_t,
-	    typename app_t,
-	    typename scalar_t>
+  template <
+    ::pressio::ode::ImplicitEnum odeMethod,
+    typename lspg_state_t,
+    typename app_t,
+    typename scalar_t
+    >
   apply_jac_return_t operator()(const lspg_state_t & romY,
 				const app_t	   & app,
-				scalar_t	   t,
-				scalar_t	   dt,
-				::pressio::ode::types::step_t step) const
+				const scalar_t     & time,
+				const scalar_t     & dt,
+				const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeMethod>(romY, JJ_, app, t, dt);
+    this->compute_impl<odeMethod>(romY, JJ_, app, time, dt);
     return JJ_;
   }
 
@@ -219,16 +222,18 @@ private:
   }
 
 
-  template <::pressio::ode::ImplicitEnum odeMethod,
-	    typename lspg_state_t,
-	    typename lspg_jac_t,
-	    typename app_t,
-	    typename scalar_t>
+  template <
+    ::pressio::ode::ImplicitEnum odeMethod,
+    typename lspg_state_t,
+    typename lspg_jac_t,
+    typename app_t,
+    typename scalar_t
+    >
   void compute_impl(const lspg_state_t & romY,
 		    lspg_jac_t	     & romJac,
 		    const app_t	     & app,
-		    scalar_t	     t,
-		    scalar_t	     dt) const
+		    const scalar_t   & t,
+		    const scalar_t   & dt) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();

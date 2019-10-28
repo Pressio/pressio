@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// APPS_BURGERS1D
+// apps_burgers1d_epetra_identity_masked.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,77 @@
 //@HEADER
 */
 
-#ifndef APPS_BURGERS1D_HPP_
-#define APPS_BURGERS1D_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_EPETRA_IDENTITY_MASK_HPP_
+#define PRESSIOAPPS_BURGERS1D_EPETRA_IDENTITY_MASK_HPP_
 
-#include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_eigen_residual_api.hpp"
+#include "apps_burgers1d_epetra.hpp"
 
-#include "apps/src/burgers1d/apps_burgers1d_epetra.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_masked.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_identity_masked.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include <Epetra_Import.h>
 
-#include "apps/src/burgers1d/apps_burgers1d_tpetra.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
+namespace pressio{ namespace apps{
 
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
+class Burgers1dEpetraIdentityMask : public Burgers1dEpetra{
+  using base_t = Burgers1dEpetra;
+  using importer_t = Epetra_Import;
 
+public:
+  Burgers1dEpetraIdentityMask(std::vector<scalar_type> params,
+			int Ncell, Epetra_MpiComm * comm)
+    : base_t(params, Ncell, comm){}
+
+  ~Burgers1dEpetraIdentityMask() = default;
+
+public:
+  void setup(){
+    base_t::setup();
+    // create a map to mimic the mask
+    createMaskMap();
+    importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
+  };
+
+  template <typename T>
+  void applyMask(const T & src, T & dest, double t) const{
+    dest.Import(src, *importer_, Insert);
+  }
+
+  velocity_type applyMask(const velocity_type & src, double t) const{
+    velocity_type dest(*maskMap_);
+    dest.Import(src, *importer_, Insert);
+    return dest;
+  }
+
+  Epetra_MultiVector applyMask(const Epetra_MultiVector & src,
+			       double t) const{
+    Epetra_MultiVector dest(*maskMap_, src.NumVectors());
+    dest.Import(src, *importer_, Insert);
+    return dest;
+  }
+
+private:
+  void createMaskMap(){
+    // get # of my elements for the full map
+    auto myN0 = dataMap_->NumMyElements();
+    // get my global IDs
+    auto myGID = dataMap_->MyGlobalElements();
+
+    // pick all elements
+    std::vector<int> myGIDnc;
+    for (decltype(myN0) i=0; i<myN0; i++) {
+	myGIDnc.emplace_back(myGID[i]);
+    }
+    maskMap_ = std::make_shared<Epetra_Map>(-1, myGIDnc.size(),
+					    myGIDnc.data(), 0,
+					    *comm_);
+    //maskMap_->Print(std::cout);
+  };
+
+private:
+  rcp<Epetra_Map> maskMap_;
+  std::vector<int> myMaskGel_;
+  rcp<importer_t> importer_;
+};
+
+}} //namespace pressio::apps
+#endif
 #endif
