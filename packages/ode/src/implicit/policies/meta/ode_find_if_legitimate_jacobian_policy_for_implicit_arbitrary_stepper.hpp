@@ -54,7 +54,7 @@
 namespace pressio{ namespace ode{ namespace meta {
 
 template<
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -64,7 +64,7 @@ template<
 struct find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper;
 
 template<
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -75,7 +75,7 @@ struct find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper<
   > : std::integral_constant<std::size_t, 0>{};
 
 template<
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -102,7 +102,7 @@ struct find_if_legitimate_jacobian_policy_for_implicit_arbitrary_stepper<
 {};
 
 template <
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename jacobian_t,
   typename system_t,

@@ -109,7 +109,7 @@ using jacobian_type = ...; ");
 
 
   static constexpr types::stepper_order_t order_value = 2;
-  static constexpr types::stepper_n_states_t numAuxStates = 2;
+  static constexpr std::size_t numAuxStates = 2;
 
   // check if scalar is provided in Args
   using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<std::is_floating_point, Args...>;

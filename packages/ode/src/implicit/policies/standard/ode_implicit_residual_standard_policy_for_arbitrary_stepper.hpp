@@ -85,7 +85,7 @@ public:
   //-------------------------------
   // specialize for n == 1
   //-------------------------------
-  template <int n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   void operator()(const state_type & y,
 		  const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
 		  const system_type & model,
@@ -100,9 +100,9 @@ public:
 					*oldYs[0].data());
   }
 
-  template <int n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   residual_type operator()(const state_type & y,
-  			   const ::pressio::ode::StatesContainer<state_type, 1> & oldYs,
+  			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
   			   const system_type & model,
   			   const scalar_type & t,
   			   const scalar_type & dt,
@@ -117,9 +117,9 @@ public:
   //-------------------------------
   // specialize for n == 2
   //-------------------------------
-  template <int n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   void operator()(const state_type & y,
-		  const ::pressio::ode::StatesContainer<state_type, 2> & oldYs,
+		  const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -133,9 +133,9 @@ public:
 					*oldYs[1].data());
   }
 
-  template <int n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   residual_type operator()(const state_type & y,
-  			   const ::pressio::ode::StatesContainer<state_type, 2> & oldYs,
+  			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
   			   const system_type & model,
   			   const scalar_type & t,
   			   const scalar_type & dt,
@@ -151,9 +151,9 @@ public:
   //-------------------------------
   // specialize for n == 3
   //-------------------------------
-  template <int n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   void operator()(const state_type & y,
-		  const ::pressio::ode::StatesContainer<state_type, 3> & oldYs,
+		  const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -168,9 +168,9 @@ public:
 					*oldYs[2].data());
   }
 
-  template <int n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   residual_type operator()(const state_type & y,
-  			   const ::pressio::ode::StatesContainer<state_type, 3> & oldYs,
+  			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
   			   const system_type & model,
   			   const scalar_type & t,
   			   const scalar_type & dt,

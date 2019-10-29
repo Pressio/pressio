@@ -84,9 +84,9 @@ public:
   //-------------------------------
   // specialize for n == 1
   //-------------------------------
-  template <int n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   void operator()(const state_type & stateIn,
-		  const ::pressio::ode::StatesContainer<state_type, 1> & oldStates,
+		  const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -99,9 +99,9 @@ public:
 					*oldStates[0].data());
   }
 
-  template <int n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   jacobian_type operator()(const state_type & stateIn,
-			   const ::pressio::ode::StatesContainer<state_type, 1> & oldStates,
+			   const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
   			   const system_type & model,
   			   const scalar_type & t,
   			   const scalar_type & dt,
@@ -114,9 +114,9 @@ public:
   //-------------------------------
   // specialize for n == 2
   //-------------------------------
-  template <int n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   void operator()(const state_type & stateIn,
-		  const ::pressio::ode::StatesContainer<state_type, 2> & oldStates,
+		  const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -130,7 +130,7 @@ public:
 					*oldStates[1].data());
   }
 
-  template <int n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==n> * = nullptr>
   jacobian_type operator()(const state_type & stateIn,
 			   const ::pressio::ode::StatesContainer<state_type, 2> & oldStates,
   			   const system_type & model,
@@ -148,9 +148,9 @@ public:
   //-------------------------------
   // specialize for n == 3
   //-------------------------------
-  template <int n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   void operator()(const state_type & stateIn,
-		  const ::pressio::ode::StatesContainer<state_type, 3> & oldStates,
+		  const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -165,9 +165,9 @@ public:
 					*oldStates[2].data());
   }
 
-  template <int n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   jacobian_type operator()(const state_type & stateIn,
-			   const ::pressio::ode::StatesContainer<state_type, 3> & oldStates,
+			   const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
   			   const system_type & model,
   			   const scalar_type &  t,
   			   const scalar_type &  dt,

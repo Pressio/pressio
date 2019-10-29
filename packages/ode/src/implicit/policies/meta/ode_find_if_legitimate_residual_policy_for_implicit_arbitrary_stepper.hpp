@@ -54,7 +54,7 @@
 namespace pressio{ namespace ode{ namespace meta {
 
 template<
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -64,7 +64,7 @@ template<
 struct find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper;
 
 template<
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -76,7 +76,7 @@ struct find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper<
 
 
 template<
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -102,7 +102,7 @@ struct find_if_legitimate_residual_policy_for_implicit_arbitrary_stepper<
 {};
 
 template <
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,

@@ -57,7 +57,7 @@ namespace pressio{ namespace ode{ namespace meta {
 
 template<
   typename T,
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -68,7 +68,7 @@ struct jacobian_policy_callable_with_six_args : std::false_type{};
 
 template<
   typename T,
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -100,7 +100,7 @@ struct jacobian_policy_callable_with_six_args<
 
 template<
   typename T,
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -111,7 +111,7 @@ struct jacobian_policy_callable_with_seven_args : std::false_type{};
 
 template<
   typename T,
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -143,7 +143,7 @@ struct jacobian_policy_callable_with_seven_args<
 
 template<
   typename T,
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename jacobian_t,
   typename system_t,
