@@ -125,55 +125,6 @@ public:
     return R;
   }
 
-
-  // ----------------------------------------------------------------------
-  // enable when stepper stepperName needs previous states and velocities
-  // ----------------------------------------------------------------------
-  template <
-    ode::ImplicitEnum stepperName,
-    std::size_t n1,
-    std::size_t n2,
-    typename scalar_type,
-    mpl::enable_if_t<
-      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_and_velocities<stepperName>::value
-      > * = nullptr
-  >
-  void operator()(const state_type & y,
-  		  residual_type & R,
-  		  const ::pressio::ode::StatesContainer<state_type, n1> & prevStates,
-  		  const ::pressio::ode::VelocitiesContainer<residual_type, n2> & prevRHSs,
-  		  const system_type & model,
-  		  const scalar_type & time,
-  		  const scalar_type & dt,
-  		  const types::step_t & step) const{
-
-    model.velocity(*y.data(), time, *R.data());
-    ::pressio::ode::impl::time_discrete_residual<stepperName, n1, n2>(y, R, prevStates, prevRHSs, dt);
-  }
-
-  template <
-    ode::ImplicitEnum stepperName,
-    std::size_t n1,
-    std::size_t n2,
-    typename scalar_type,
-    mpl::enable_if_t<
-      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_and_velocities<stepperName>::value
-      > * = nullptr
-    >
-  residual_type operator()(const state_type & y,
-  			   const ::pressio::ode::StatesContainer<state_type, n1> & prevStates,
-			   const ::pressio::ode::VelocitiesContainer<residual_type, n2> & prevRHSs,
-  			   const system_type & model,
-  			   const scalar_type & time,
-  			   const scalar_type & dt,
-  			   const types::step_t &  step) const{
-
-    residual_type R(model.velocity(*y.data(), time));
-    ::pressio::ode::impl::time_discrete_residual<stepperName, n1, n2>(y, R, prevStates, prevRHSs, dt);
-    return R;
-  }
-
-
 };//end class
 
 }}}//end namespace pressio::ode::policy
