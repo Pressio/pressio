@@ -130,9 +130,9 @@ public:
 					*oldStates[1].data());
   }
 
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==n> * = nullptr>
+  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   jacobian_type operator()(const state_type & stateIn,
-			   const ::pressio::ode::StatesContainer<state_type, 2> & oldStates,
+			   const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
   			   const system_type & model,
   			   const scalar_type &  t,
   			   const scalar_type &  dt,
