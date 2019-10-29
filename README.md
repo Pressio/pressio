@@ -30,7 +30,7 @@ However, since `pressio` uses preprocessor directives to selectively enable/disa
 
 For a list of CMake options to enable see [this file](./list_of_cmake_optional_vars_to_enable.md).
 
-For sample cmake configure lines can be found [here](https://github.com/Pressio/pressio/wiki/Sample-CMake-configure-lines-for-pressio).
+Sample cmake configure lines can be found [here](https://github.com/Pressio/pressio/wiki/Sample-CMake-configure-lines-for-pressio).
 <!--
 ======================================================================================
 ## TPLs
