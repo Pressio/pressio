@@ -95,16 +95,16 @@ public:
       ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<stepperName>::value
       > * = nullptr
   >
-  void operator()(const state_type & y,
+  void operator()(const state_type & odeCurrentState,
 		  residual_type & R,
-		  const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
+		  const ::pressio::ode::StatesContainer<state_type, n> & odePrevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
-		  const types::step_t &  step) const{
+		  const types::step_t & step) const{
 
-    model.velocity(*y.data(), t, *R.data());
-    ::pressio::ode::impl::time_discrete_residual<stepperName, n>(y, R, oldYs, dt);
+    model.velocity(*odeCurrentState.data(), t, *R.data());
+    ::pressio::ode::impl::time_discrete_residual<stepperName, n>(odeCurrentState, R, odePrevStates, dt);
   }
 
   template <
@@ -113,15 +113,15 @@ public:
       ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<stepperName>::value
       > * = nullptr
     >
-  residual_type operator()(const state_type & y,
-  			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
+  residual_type operator()(const state_type & odeCurrentState,
+  			   const ::pressio::ode::StatesContainer<state_type, n> & odePrevStates,
   			   const system_type & model,
   			   const scalar_type & t,
   			   const scalar_type & dt,
-			   const types::step_t &  step) const{
+			   const types::step_t & step) const{
 
-    residual_type R(model.velocity(*y.data(), t));
-    ::pressio::ode::impl::time_discrete_residual<stepperName, n>(y, R, oldYs, dt);
+    residual_type R(model.velocity(*odeCurrentState.data(), t));
+    ::pressio::ode::impl::time_discrete_residual<stepperName, n>(odeCurrentState, R, odePrevStates, dt);
     return R;
   }
 
