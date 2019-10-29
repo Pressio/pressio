@@ -97,7 +97,7 @@ public:
 	      )
   {}
 
-  // only enable if the residual policy is standard
+  // only enable if the policy is standard
   template <
     typename T = policy_t,
     ::pressio::mpl::enable_if_t<

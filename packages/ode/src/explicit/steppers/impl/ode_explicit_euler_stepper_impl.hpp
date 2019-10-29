@@ -52,6 +52,7 @@
 #include "../ode_explicit_stepper_base.hpp"
 #include "../../../ode_states_container.hpp"
 #include "../../../impl/ode_system_wrapper.hpp"
+#include "../../../ode_velocities_container.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -84,7 +85,7 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					   velocity_policy_type,
 					   ops_t>;
 
-  using velocity_storage_t = OdeStorage<velocity_type, 1>;
+  using velocity_storage_t = VelocitiesContainer<velocity_type, 1>;
   using system_wrapper_t   = OdeSystemWrapper<system_type>;
 
   velocity_storage_t veloAuxStorage_;

@@ -52,6 +52,7 @@
 #include "../ode_explicit_stepper_base.hpp"
 #include "../../../ode_states_container.hpp"
 #include "../../../impl/ode_system_wrapper.hpp"
+#include "../../../ode_velocities_container.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -59,14 +60,14 @@ template<
   typename scalar_type,
   typename state_type,
   typename system_type,
-  typename ode_residual_type,
+  typename velocity_type,
   typename velocity_policy_type,
   typename ops_t
   >
 class ExplicitRungeKutta4StepperImpl<scalar_type,
 				     state_type,
 				     system_type,
-				     ode_residual_type,
+				     velocity_type,
 				     velocity_policy_type,
 				     ops_t>
 {
@@ -80,12 +81,12 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 
   using this_t = ExplicitRungeKutta4StepperImpl< scalar_type,
 						 state_type, system_type,
-						 ode_residual_type,
+						 velocity_type,
 						 velocity_policy_type,
 						 ops_t>;
 
   using state_storage_t	    = ::pressio::ode::StatesContainer<state_type, 1>;
-  using velocity_storage_t  = OdeStorage<ode_residual_type, 4>;
+  using velocity_storage_t  = VelocitiesContainer<velocity_type, 4>;
   using system_wrapper_t    = OdeSystemWrapper<system_type>;
 
   state_storage_t stateAuxStorage_;
@@ -97,7 +98,7 @@ public:
   ExplicitRungeKutta4StepperImpl(const system_type & model,
   				 const velocity_policy_type & policy_obj,
   				 const state_type & stateIn0,
-  				 const ode_residual_type & f0)
+  				 const velocity_type & f0)
     : stateAuxStorage_{stateIn0},
       veloAuxStorage_{f0},
       sys_{model},

@@ -72,9 +72,11 @@ namespace pressio{ namespace ode{ namespace impl{
 template<typename T, std::size_t n>
 class OdeStorage
 {
-  using storing_t = std::array<T, n>;
-
 public:
+  using value_type    = T;
+  using storing_type  = std::array<T, n>;
+  using size_type     = std::size_t;
+
   static constexpr std::size_t size(){
     return n;
   }
@@ -99,11 +101,11 @@ public:
     data_[i];
   }
 
-  storing_t & data(){
+  storing_type & data(){
     return data_;
   }
 
-  storing_t const & data() const{
+  storing_type const & data() const{
     return data_;
   }
 
@@ -237,7 +239,7 @@ public:
   {}
 #endif
 
-  storing_t data_;
+  storing_type data_;
 };
 
 }}}//end namespace pressio::ode::impl

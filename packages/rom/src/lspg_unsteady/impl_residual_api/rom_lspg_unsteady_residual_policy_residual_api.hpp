@@ -89,7 +89,7 @@ public:
 
 public:
   template <
-    ode::types::stepper_n_states_t n,
+    std::size_t n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t
@@ -106,7 +106,7 @@ public:
   }
 
   template <
-    ode::types::stepper_n_states_t n,
+    std::size_t n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t
@@ -124,7 +124,7 @@ public:
 
 private:
   template <
-    ode::types::stepper_n_states_t n,
+    std::size_t n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t

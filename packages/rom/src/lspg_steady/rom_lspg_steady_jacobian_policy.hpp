@@ -92,7 +92,7 @@ public:
     typename lspg_jac_t,
     typename app_t
   >
-  void operator()(const lspg_state_t & romY,
+  void operator()(const lspg_state_t & romState,
 		  lspg_jac_t	     & romJJ,
   		  const app_t	     & app) const
   {
@@ -104,7 +104,7 @@ public:
     // todo: this is not needed if jacobian is called after resiudal
     // because residual takes care of reconstructing the fom state
     //    timer->start("reconstruct fom state");
-    fomStates_.template reconstructCurrentFomState(romY);
+    fomStates_.template reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
@@ -120,10 +120,10 @@ public:
   }
 
   template <typename lspg_state_t, typename app_t>
-  apply_jac_return_t operator()(const lspg_state_t & romY,
+  apply_jac_return_t operator()(const lspg_state_t & romState,
 				const app_t	   & app) const
   {
-    (*this).template operator()(romY, JJ_, app);
+    (*this).template operator()(romState, JJ_, app);
     return JJ_;
   }
 

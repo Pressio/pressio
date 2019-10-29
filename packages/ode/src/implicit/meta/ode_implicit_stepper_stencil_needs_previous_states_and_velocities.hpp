@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_find_if_legitimate_implicit_residual_policy.hpp
+// ode_implicit_stepper_stencil_needs_previous_states_and_velocities.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,80 +46,21 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_POLICIES_FIND_IF_LEGITIMATE_IMPLICIT_RESIDUAL_POLICY_HPP_
-#define ODE_IMPLICIT_POLICIES_FIND_IF_LEGITIMATE_IMPLICIT_RESIDUAL_POLICY_HPP_
+#ifndef ODE_IMPLICIT_STEPPER_STENCIL_NEEDS_PREVIOUS_STATES_AND_VELOCITIES_HPP_
+#define ODE_IMPLICIT_STEPPER_STENCIL_NEEDS_PREVIOUS_STATES_AND_VELOCITIES_HPP_
 
-#include "./ode_is_legitimate_implicit_residual_policy.hpp"
+#include "../../ode_enum.hpp"
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<
-  ImplicitEnum name,
-  std::size_t numPrevStates,
-  typename state_t,
-  typename residual_t,
-  typename system_t,
-  typename scalar_t,
-  class ... Args2
-  >
-struct find_if_legitimate_implicit_residual_policy;
+template <::pressio::ode::ImplicitEnum stepperName>
+struct implicit_stepper_stencil_needs_previous_states_and_velocities
+  : std::false_type{};
 
-template<
-  ImplicitEnum name,
-  std::size_t numPrevStates,
-  typename state_t,
-  typename residual_t,
-  typename system_t,
-  typename scalar_t
-  >
-struct find_if_legitimate_implicit_residual_policy<
-  name, numPrevStates, state_t, residual_t, system_t, scalar_t
-  > : std::integral_constant<std::size_t, 0>{};
-
-
-template<
-  ImplicitEnum name,
-  std::size_t numPrevStates,
-  typename state_t,
-  typename residual_t,
-  typename system_t,
-  typename scalar_t,
-  class Head, class ... Tail
-  >
-struct find_if_legitimate_implicit_residual_policy<
-  name, numPrevStates, state_t, residual_t, system_t, scalar_t,
-  Head, Tail...
-  >
-  : std::conditional <
-  is_legitimate_implicit_residual_policy<
-    Head, name, numPrevStates, state_t, residual_t,
-    system_t, scalar_t
-    >::type::value,
-  std::integral_constant<std::size_t, 0>,
-  std::integral_constant <
-    std::size_t, 1 +
-    find_if_legitimate_implicit_residual_policy
-    <name, numPrevStates, state_t, residual_t, system_t, scalar_t,
-    Tail...>::type::value
-    >
-  >::type
-{};
-
-
-template <
-  ImplicitEnum name,
-  std::size_t numPrevStates,
-  typename state_t,
-  typename residual_t,
-  typename system_t,
-  typename scalar_t,
-  class... Args
-  >
-using find_if_legitimate_implicit_residual_policy_t =
-  typename find_if_legitimate_implicit_residual_policy
-  <name, numPrevStates, state_t, residual_t, system_t, scalar_t,
-   Args...>::type;
-
+// template <>
+// struct implicit_stepper_stencil_needs_previous_states_and_velocities<
+//   ::pressio::ode::ImplicitEnum::CrankNicolson
+//   > : std::true_type{};
 
 }}} // namespace pressio::ode::meta
 #endif

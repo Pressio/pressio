@@ -84,7 +84,7 @@ public:
 
 public:
   template <
-    ode::ImplicitEnum method, int n, typename scalar_type
+    ode::ImplicitEnum method, std::size_t n, typename scalar_type
   >
   void operator()(const state_type & y,
 		  residual_type & R,
@@ -101,7 +101,7 @@ public:
   }
 
   template <
-    ode::ImplicitEnum method, int n, typename scalar_type
+    ode::ImplicitEnum method, std::size_t n, typename scalar_type
     >
   residual_type operator()(const state_type & y,
   			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,

@@ -118,7 +118,7 @@ using jacobian_type = ...; ");
   // set order and number of aux states
   //----------------------------------------------------------------
   static constexpr types::stepper_order_t order_value = 1;
-  static constexpr types::stepper_n_states_t numAuxStates = 1;
+  static constexpr std::size_t numAuxStates = 1;
 
   //----------------------------------------------------------------
   // check if scalar is provided in Args
