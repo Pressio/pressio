@@ -138,7 +138,7 @@ Note that this is the total number of states needed including previous ones, \n 
 basically the size of the stpper stencil.");
 
   // numAuxStates is the number of auxiliary states needed, so all other beside y_n
-  static constexpr ::pressio::ode::types::stepper_n_states_t auxStates = tot_n_setter::value - 1;
+  static constexpr std::size_t auxStates = tot_n_setter::value - 1;
 
   // type of class holding the fom states
   using fom_states_data = ::pressio::rom::FomStatesContainer<fom_state_t, auxStates, fom_state_reconstr_t>;

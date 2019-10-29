@@ -54,6 +54,8 @@
 #include "../../ode_time_discrete_residual.hpp"
 #include "../../meta/ode_is_legitimate_implicit_state_type.hpp"
 #include "../../meta/ode_is_legitimate_implicit_residual_type.hpp"
+#include "../../meta/ode_implicit_stepper_stencil_needs_previous_states_only.hpp"
+#include "../../meta/ode_implicit_stepper_stencil_needs_previous_states_and_velocities.hpp"
 
 namespace pressio{ namespace ode{ namespace policy{
 
@@ -84,37 +86,42 @@ public:
 
 public:
 
+  // -----------------------------------------------------
+  // enable when stepper stepperName only needs previous states
+  // -----------------------------------------------------
   template <
-    ode::ImplicitEnum method,
-    ::pressio::ode::types::stepper_n_states_t n,
-    typename scalar_type
+    ode::ImplicitEnum stepperName, std::size_t n, typename scalar_type,
+    mpl::enable_if_t<
+      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<stepperName>::value
+      > * = nullptr
   >
-  void operator()(const state_type & y,
+  void operator()(const state_type & odeCurrentState,
 		  residual_type & R,
-		  const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
+		  const ::pressio::ode::StatesContainer<state_type, n> & odePrevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
-		  const types::step_t &  step) const{
+		  const types::step_t & step) const{
 
-    model.velocity(*y.data(), t, *R.data());
-    ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
+    model.velocity(*odeCurrentState.data(), t, *R.data());
+    ::pressio::ode::impl::time_discrete_residual<stepperName, n>(odeCurrentState, R, odePrevStates, dt);
   }
 
   template <
-    ode::ImplicitEnum method,
-    ::pressio::ode::types::stepper_n_states_t n,
-    typename scalar_type
+    ode::ImplicitEnum stepperName, std::size_t n, typename scalar_type,
+    mpl::enable_if_t<
+      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<stepperName>::value
+      > * = nullptr
     >
-  residual_type operator()(const state_type & y,
-  			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
+  residual_type operator()(const state_type & odeCurrentState,
+  			   const ::pressio::ode::StatesContainer<state_type, n> & odePrevStates,
   			   const system_type & model,
   			   const scalar_type & t,
   			   const scalar_type & dt,
-			   const types::step_t &  step) const{
+			   const types::step_t & step) const{
 
-    residual_type R(model.velocity(*y.data(), t));
-    ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
+    residual_type R(model.velocity(*odeCurrentState.data(), t));
+    ::pressio::ode::impl::time_discrete_residual<stepperName, n>(odeCurrentState, R, odePrevStates, dt);
     return R;
   }
 

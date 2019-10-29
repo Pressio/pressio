@@ -85,7 +85,7 @@ public:
     typename lspg_state_t,
     typename lspg_residual_t,
     typename fom_t>
-  void operator()(const lspg_state_t	& romY,
+  void operator()(const lspg_state_t	& romState,
 		  lspg_residual_t	& romR,
   		  const fom_t		& app) const
   {
@@ -94,7 +94,7 @@ public:
     timer->start("lspg residual");
 #endif
 
-    fomStates_.template reconstructCurrentFomState(romY);
+    fomStates_.template reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
@@ -109,10 +109,10 @@ public:
   }
 
   template <typename lspg_state_t, typename fom_t>
-  residual_t operator()(const lspg_state_t & romY,
+  residual_t operator()(const lspg_state_t & romState,
 		       const fom_t	  & app) const
   {
-    (*this).template operator()(romY, R_, app);
+    (*this).template operator()(romState, R_, app);
     return R_;
   }
 

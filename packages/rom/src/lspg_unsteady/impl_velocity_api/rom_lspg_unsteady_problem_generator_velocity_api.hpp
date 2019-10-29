@@ -50,8 +50,8 @@
 #define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_api_HPP_
 
 #include "rom_lspg_unsteady_problem_type_generator_default_velocity_api.hpp"
-// #include "rom_lspg_unsteady_problem_type_generator_masked.hpp"
-// #include "rom_lspg_unsteady_problem_type_generator_preconditioned.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_masked_velocity_api.hpp"
+#include "rom_lspg_unsteady_problem_type_generator_preconditioned_velocity_api.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{
 

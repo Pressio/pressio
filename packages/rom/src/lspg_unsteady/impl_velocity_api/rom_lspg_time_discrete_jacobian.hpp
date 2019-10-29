@@ -58,13 +58,13 @@ namespace pressio{ namespace rom{ namespace impl{
 
 // user-defined OPS and method = BDF1 and NOT python
 template <
-  ode::ImplicitEnum odeMethod,
+  ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
   typename ud_ops,
   mpl::enable_if_t<
-    odeMethod == ::pressio::ode::ImplicitEnum::Euler
+    odeStepperName == ::pressio::ode::ImplicitEnum::Euler
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
@@ -83,13 +83,13 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 // user-defined OPS and method = BDF1 and NOT-python
 template <
-  ode::ImplicitEnum odeMethod,
+  ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
   typename ud_ops,
   mpl::enable_if_t<
-    odeMethod == ::pressio::ode::ImplicitEnum::BDF2
+    odeStepperName == ::pressio::ode::ImplicitEnum::BDF2
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
@@ -113,13 +113,13 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 // when we deal with python and have BDF1
 template <
-  ode::ImplicitEnum odeMethod,
+  ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
   typename ud_ops,
   mpl::enable_if_t<
-    odeMethod == ::pressio::ode::ImplicitEnum::Euler and
+    odeStepperName == ::pressio::ode::ImplicitEnum::Euler and
     mpl::is_same< ud_ops, pybind11::object>::value
     > * = nullptr
   >
@@ -134,13 +134,13 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 // when we deal with python and have BDF2
 template <
-  ode::ImplicitEnum odeMethod,
+  ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
   typename ud_ops,
   mpl::enable_if_t<
-    odeMethod == ::pressio::ode::ImplicitEnum::BDF2 and
+    odeStepperName == ::pressio::ode::ImplicitEnum::BDF2 and
     mpl::is_same< ud_ops, pybind11::object>::value
     > * = nullptr
   >
@@ -163,7 +163,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
  * only if jphi, phi are of same size
 */
 template <
-  ode::ImplicitEnum odeMethod,
+  ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -186,7 +186,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
   // prefactor (f) multiplying f*dt*J*phi
   auto prefactor = ::pressio::ode::constants::bdf1<scalar_type>::c_f_;
-  if (odeMethod == ode::ImplicitEnum::BDF2)
+  if (odeStepperName == ode::ImplicitEnum::BDF2)
     prefactor = ::pressio::ode::constants::bdf2<scalar_type>::c_f_;
 
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
@@ -237,7 +237,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
             epetra
 *************************************/
 template <
-  ode::ImplicitEnum odeMethod,
+  ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -267,7 +267,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 
   // prefactor (f) multiplying f*dt*J*phi
   auto prefactor = ::pressio::utils::constants::one<scalar_type>();
-  if (odeMethod == ode::ImplicitEnum::BDF2)
+  if (odeStepperName == ode::ImplicitEnum::BDF2)
     prefactor = ode::constants::bdf2<scalar_type>::c_f_;
 
   //loop over elements of jphi
@@ -285,7 +285,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
             tpetra
 *************************************/
 template <
-  ode::ImplicitEnum odeMethod,
+  ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -310,7 +310,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
   // prefactor (f) multiplying f*dt*J*phi
   auto prefactor = ::pressio::utils::constants::one<scalar_type>();
-  if (odeMethod == ode::ImplicitEnum::BDF2)
+  if (odeStepperName == ode::ImplicitEnum::BDF2)
     prefactor = ode::constants::bdf2<scalar_type>::c_f_;
 
   auto jphi2dView = jphi.get2dViewNonConst();
@@ -331,7 +331,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
             tpetra block
 *************************************/
 template <
-  ode::ImplicitEnum odeMethod,
+  ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -344,11 +344,11 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    scalar_type	dt,
 			    const decoder_jac_type & phi){
 
-  time_discrete_jacobian<odeMethod>(*jphi.data(), dt, *phi.data());
+  time_discrete_jacobian<odeStepperName>(*jphi.data(), dt, *phi.data());
 }
 
 template <
-  ode::ImplicitEnum odeMethod,
+  ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -362,7 +362,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    const decoder_jac_type & phi){
   auto jphi_mvv = jphi.data()->getMultiVectorView();
   auto phi_mvv  = phi.data()->getMultiVectorView();
-  time_discrete_jacobian<odeMethod>(jphi_mvv, dt, phi_mvv);
+  time_discrete_jacobian<odeStepperName>(jphi_mvv, dt, phi_mvv);
 }
 
 #endif

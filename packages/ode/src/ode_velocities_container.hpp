@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_find_if_legitimate_implicit_residual_policy.hpp
+// ode_velocities_container.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,80 +46,15 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_POLICIES_FIND_IF_LEGITIMATE_IMPLICIT_RESIDUAL_POLICY_HPP_
-#define ODE_IMPLICIT_POLICIES_FIND_IF_LEGITIMATE_IMPLICIT_RESIDUAL_POLICY_HPP_
+#ifndef ODE_VELOCITIES_CONTAINER_HPP_
+#define ODE_VELOCITIES_CONTAINER_HPP_
 
-#include "./ode_is_legitimate_implicit_residual_policy.hpp"
+#include "./impl/ode_storage.hpp"
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{
 
-template<
-  ImplicitEnum name,
-  std::size_t numPrevStates,
-  typename state_t,
-  typename residual_t,
-  typename system_t,
-  typename scalar_t,
-  class ... Args2
-  >
-struct find_if_legitimate_implicit_residual_policy;
+template<typename T, std::size_t n>
+using VelocitiesContainer = ::pressio::ode::impl::OdeStorage<T, n>;
 
-template<
-  ImplicitEnum name,
-  std::size_t numPrevStates,
-  typename state_t,
-  typename residual_t,
-  typename system_t,
-  typename scalar_t
-  >
-struct find_if_legitimate_implicit_residual_policy<
-  name, numPrevStates, state_t, residual_t, system_t, scalar_t
-  > : std::integral_constant<std::size_t, 0>{};
-
-
-template<
-  ImplicitEnum name,
-  std::size_t numPrevStates,
-  typename state_t,
-  typename residual_t,
-  typename system_t,
-  typename scalar_t,
-  class Head, class ... Tail
-  >
-struct find_if_legitimate_implicit_residual_policy<
-  name, numPrevStates, state_t, residual_t, system_t, scalar_t,
-  Head, Tail...
-  >
-  : std::conditional <
-  is_legitimate_implicit_residual_policy<
-    Head, name, numPrevStates, state_t, residual_t,
-    system_t, scalar_t
-    >::type::value,
-  std::integral_constant<std::size_t, 0>,
-  std::integral_constant <
-    std::size_t, 1 +
-    find_if_legitimate_implicit_residual_policy
-    <name, numPrevStates, state_t, residual_t, system_t, scalar_t,
-    Tail...>::type::value
-    >
-  >::type
-{};
-
-
-template <
-  ImplicitEnum name,
-  std::size_t numPrevStates,
-  typename state_t,
-  typename residual_t,
-  typename system_t,
-  typename scalar_t,
-  class... Args
-  >
-using find_if_legitimate_implicit_residual_policy_t =
-  typename find_if_legitimate_implicit_residual_policy
-  <name, numPrevStates, state_t, residual_t, system_t, scalar_t,
-   Args...>::type;
-
-
-}}} // namespace pressio::ode::meta
+}}//end namespace pressio::ode
 #endif

@@ -58,13 +58,13 @@ namespace pressio{ namespace rom{ namespace impl{
 // for user-defined ops with Euler
 // -------------------------------------
 template<
-  ::pressio::ode::ImplicitEnum method,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   int n,
   typename state_type,
   typename scalar_type,
   typename ud_ops,
   ::pressio::mpl::enable_if_t<
-    method == ::pressio::ode::ImplicitEnum::Euler
+    odeStepperName == ::pressio::ode::ImplicitEnum::Euler
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
@@ -81,13 +81,13 @@ void time_discrete_residual(const state_type & currentState,
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<
-  ::pressio::ode::ImplicitEnum method,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   int n,
   typename state_type,
   typename scalar_type,
   typename ud_ops,
   ::pressio::mpl::enable_if_t<
-    method == ::pressio::ode::ImplicitEnum::Euler and
+    odeStepperName == ::pressio::ode::ImplicitEnum::Euler and
     mpl::is_same< ud_ops, pybind11::object>::value
     > * = nullptr
   >
@@ -111,12 +111,12 @@ void time_discrete_residual(const state_type & currentState,
 */
 // ----------------------------------------------------------------------
 template<
-  ::pressio::ode::ImplicitEnum method,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   int n,
   typename state_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
-    method == ::pressio::ode::ImplicitEnum::Euler and
+    odeStepperName == ::pressio::ode::ImplicitEnum::Euler and
     (containers::meta::is_vector_wrapper_eigen<state_type>::value == true
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
      or containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
@@ -142,12 +142,12 @@ void time_discrete_residual(const state_type & currentState,
 
 
 template<
-  ::pressio::ode::ImplicitEnum method,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   int n,
   typename state_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
-    method == ::pressio::ode::ImplicitEnum::BDF2 and
+    odeStepperName == ::pressio::ode::ImplicitEnum::BDF2 and
     (containers::meta::is_vector_wrapper_eigen<state_type>::value == true
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
      or containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
@@ -211,7 +211,7 @@ void time_discrete_residual(const state_type	& currentState,
 /*************************************
 	    epetra
 *************************************/
-template <::pressio::ode::ImplicitEnum odeMethod>
+template <::pressio::ode::ImplicitEnum odeStepperName>
 struct time_discrete_single_entry_epetra;
 
 template <>
@@ -248,7 +248,7 @@ struct time_discrete_single_entry_epetra<::pressio::ode::ImplicitEnum::BDF2>{
 
 
 template<
-  ::pressio::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   int numStates,
   typename state_type,
   typename scalar_type,
@@ -285,7 +285,7 @@ void time_discrete_residual(const state_type & odeCurrentState,
     const auto lid = y_map.LID(gIDr[i]);
     // compute the time-discrete entry
     time_discrete_single_entry_epetra<
-      odeMethod
+      odeStepperName
       >::template evaluate<
       scalar_type, state_type, numStates>(dt, R[i], lid, odeCurrentState, prevStates);
   }
@@ -297,7 +297,7 @@ void time_discrete_residual(const state_type & odeCurrentState,
 /*************************************
 	    tpetra
 *************************************/
-template <::pressio::ode::ImplicitEnum odeMethod>
+template <::pressio::ode::ImplicitEnum odeStepperName>
 struct time_discrete_single_entry_tpetra;
 
 template <>
@@ -362,7 +362,7 @@ struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::BDF2>{
 
 
 template<
-  ::pressio::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   typename state_type,
   typename scalar_type,
   typename ... Args,
@@ -395,7 +395,7 @@ void time_discrete_residual_tpetra_impl(const state_type & odeCurrentState,
     const auto lid = y_map->getLocalElement(gIDr[i]);
     // compute the time-discrete entry
     time_discrete_single_entry_tpetra<
-      odeMethod
+      odeStepperName
       >::template evaluate<
       scalar_type, state_type
       >(dt, R.getDataNonConst()[i], lid, odeCurrentState, std::forward<Args>(args)...);
@@ -404,13 +404,13 @@ void time_discrete_residual_tpetra_impl(const state_type & odeCurrentState,
 
 
 template<
-  ::pressio::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   int n,
   typename state_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
-    odeMethod == ::pressio::ode::ImplicitEnum::Euler
+    odeStepperName == ::pressio::ode::ImplicitEnum::Euler
     > * = nullptr
   >
 void time_discrete_residual(const state_type & odeCurrentState,
@@ -418,19 +418,19 @@ void time_discrete_residual(const state_type & odeCurrentState,
 			    state_type & R,
 			    const scalar_type & dt){
 
-  time_discrete_residual_tpetra_impl<odeMethod>
+  time_discrete_residual_tpetra_impl<odeStepperName>
     (*odeCurrentState.data(), *R.data(), dt, *prevStates[0].data());
 
 }
 
 template<
-  ::pressio::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   int n,
   typename state_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
-    odeMethod == ::pressio::ode::ImplicitEnum::BDF2
+    odeStepperName == ::pressio::ode::ImplicitEnum::BDF2
     > * = nullptr
   >
 void time_discrete_residual(const state_type & odeCurrentState,
@@ -438,7 +438,7 @@ void time_discrete_residual(const state_type & odeCurrentState,
 			    state_type & R,
 			    scalar_type dt){
 
-  time_discrete_residual_tpetra_impl<odeMethod>
+  time_discrete_residual_tpetra_impl<odeStepperName>
     (*odeCurrentState.data(), *R.data(), dt,  *prevStates[0].data(), *prevStates[1].data());
 }
 
@@ -447,13 +447,13 @@ void time_discrete_residual(const state_type & odeCurrentState,
             tpetra block
 *************************************/
 template<
-  ::pressio::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   int n,
   typename state_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
-    odeMethod == ::pressio::ode::ImplicitEnum::Euler
+    odeStepperName == ::pressio::ode::ImplicitEnum::Euler
     > * = nullptr
   >
 void time_discrete_residual(const state_type & odeCurrentState,
@@ -464,17 +464,17 @@ void time_discrete_residual(const state_type & odeCurrentState,
   auto yn_vv = const_cast<state_type &>(odeCurrentState).data()->getVectorView();
   auto ynm0_vv = const_cast<state_type &>(prevStates[0]).data()->getVectorView();
   auto R_vv = R.data()->getVectorView();
-  time_discrete_residual_tpetra_impl<odeMethod>(yn_vv, R_vv, dt, ynm0_vv);
+  time_discrete_residual_tpetra_impl<odeStepperName>(yn_vv, R_vv, dt, ynm0_vv);
 }
 
 template<
-  ::pressio::ode::ImplicitEnum odeMethod,
+  ::pressio::ode::ImplicitEnum odeStepperName,
   int n,
   typename state_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
-    odeMethod == ::pressio::ode::ImplicitEnum::BDF2
+    odeStepperName == ::pressio::ode::ImplicitEnum::BDF2
     > * = nullptr
   >
 void time_discrete_residual(const state_type & odeCurrentState,
@@ -486,7 +486,7 @@ void time_discrete_residual(const state_type & odeCurrentState,
   auto ynm1_vv = const_cast<state_type &>(prevStates[0]).data()->getVectorView();
   auto ynm2_vv = const_cast<state_type &>(prevStates[1]).data()->getVectorView();
   auto R_vv = R.data()->getVectorView();
-  time_discrete_residual_tpetra_impl<odeMethod>(yn_vv, R_vv, dt, ynm1_vv, ynm2_vv);
+  time_discrete_residual_tpetra_impl<odeStepperName>(yn_vv, R_vv, dt, ynm1_vv, ynm2_vv);
 }
 
 #endif

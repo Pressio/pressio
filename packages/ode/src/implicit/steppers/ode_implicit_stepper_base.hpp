@@ -86,20 +86,20 @@ public:
     return traits::order_value;
   }
 
-  void residual(const state_t & y, residual_t & R) const{
-    static_cast<const concrete_stepper_type &>(*this).residualImpl(y, R);
+  void residual(const state_t & odeState, residual_t & R) const{
+    static_cast<const concrete_stepper_type &>(*this).residualImpl(odeState, R);
   }
 
-  residual_t residual(const state_t & y) const{
-    return static_cast<const concrete_stepper_type &>(*this).residualImpl(y);
+  residual_t residual(const state_t & odeState) const{
+    return static_cast<const concrete_stepper_type &>(*this).residualImpl(odeState);
   }
 
-  void jacobian(const state_t & y, jacobian_t & J) const{
-    static_cast<const concrete_stepper_type &>(*this).jacobianImpl(y, J);
+  void jacobian(const state_t & odeState, jacobian_t & J) const{
+    static_cast<const concrete_stepper_type &>(*this).jacobianImpl(odeState, J);
   }
 
-  jacobian_t jacobian(const state_t & y) const{
-    return static_cast<const concrete_stepper_type &>(*this).jacobianImpl(y);
+  jacobian_t jacobian(const state_t & odeState) const{
+    return static_cast<const concrete_stepper_type &>(*this).jacobianImpl(odeState);
   }
 
 protected:

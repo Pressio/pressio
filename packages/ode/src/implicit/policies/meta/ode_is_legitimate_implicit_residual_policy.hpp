@@ -57,7 +57,7 @@ namespace pressio{ namespace ode{ namespace meta {
 template<
   typename T,
   ImplicitEnum name,
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -70,7 +70,7 @@ struct is_legitimate_implicit_residual_policy : std::false_type{};
 template<
   typename T,
   ImplicitEnum name,
-  types::stepper_n_states_t numPrevStates,
+  std::size_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,

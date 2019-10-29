@@ -155,41 +155,41 @@ public:
 
 public:
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     typename lspg_state_t,
     typename lspg_jac_t,
     typename app_t,
     typename scalar_t
   >
-  void operator()(const lspg_state_t & romY,
+  void operator()(const lspg_state_t & romState,
 		  lspg_jac_t	     & romJac,
   		  const app_t	     & app,
 		  const scalar_t     & time,
 		  const scalar_t     & dt,
 		  const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeMethod>(romY, romJac, app, time, dt);
+    this->compute_impl<odeStepperName>(romState, romJac, app, time, dt);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     typename lspg_state_t,
     typename app_t,
     typename scalar_t
     >
-  apply_jac_return_t operator()(const lspg_state_t & romY,
+  apply_jac_return_t operator()(const lspg_state_t & romState,
 				const app_t	   & app,
 				const scalar_t     & time,
 				const scalar_t     & dt,
 				const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeMethod>(romY, JJ_, app, time, dt);
+    this->compute_impl<odeStepperName>(romState, JJ_, app, time, dt);
     return JJ_;
   }
 
 private:
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
@@ -201,12 +201,12 @@ private:
   void time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t  dt,
 				const decoder_jac_type & phi) const{
-    rom::impl::time_discrete_jacobian<odeMethod>(romJac, dt, phi);
+    rom::impl::time_discrete_jacobian<odeStepperName>(romJac, dt, phi);
   }
 
 
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
@@ -218,18 +218,18 @@ private:
   void time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t dt,
 				const decoder_jac_type & phi) const{
-    rom::impl::time_discrete_jacobian<odeMethod>(romJac, dt, phi, udOps_);
+    rom::impl::time_discrete_jacobian<odeStepperName>(romJac, dt, phi, udOps_);
   }
 
 
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     typename lspg_state_t,
     typename lspg_jac_t,
     typename app_t,
     typename scalar_t
     >
-  void compute_impl(const lspg_state_t & romY,
+  void compute_impl(const lspg_state_t & romState,
 		    lspg_jac_t	     & romJac,
 		    const app_t	     & app,
 		    const scalar_t   & t,
@@ -243,7 +243,7 @@ private:
     // todo: this is not needed if jacobian is called after resiudal
     // because residual takes care of reconstructing the fom state
     //    timer->start("reconstruct fom state");
-    fomStates_.template reconstructCurrentFomState(romY);
+    fomStates_.template reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
@@ -256,7 +256,7 @@ private:
     timer->start("time discrete jacob");
 #endif
 
-    this->time_discrete_dispatcher<odeMethod>(romJac, dt, basis);
+    this->time_discrete_dispatcher<odeStepperName>(romJac, dt, basis);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete jacob");

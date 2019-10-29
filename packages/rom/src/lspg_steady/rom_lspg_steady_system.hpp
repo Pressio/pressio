@@ -88,22 +88,20 @@ public:
       jacobianEvaluator_(jacPolicyObj){}
 
 public:
-  void residual(const lspg_state_type & y,
-		lspg_residual_type & R) const{
-    (this->residualEvaluator_).template operator()(y, R, app_);
+  void residual(const lspg_state_type & romState, lspg_residual_type & R) const{
+    (this->residualEvaluator_).template operator()(romState, R, app_);
   }
 
-  void jacobian(const lspg_state_type & y,
-		lspg_jacobian_type & J) const{
-    (this->jacobianEvaluator_).template operator()(y, J, app_);
+  void jacobian(const lspg_state_type & romState, lspg_jacobian_type & J) const{
+    (this->jacobianEvaluator_).template operator()(romState, J, app_);
   }
 
-  lspg_residual_type residual(const lspg_state_type & y) const{
-    return (this->residualEvaluator_).template operator()(y, app_);
+  lspg_residual_type residual(const lspg_state_type & romState) const{
+    return (this->residualEvaluator_).template operator()(romState, app_);
   }
 
-  lspg_jacobian_type jacobian(const lspg_state_type & y) const{
-    return (this->jacobianEvaluator_).template operator()(y, app_);
+  lspg_jacobian_type jacobian(const lspg_state_type & romState) const{
+    return (this->jacobianEvaluator_).template operator()(romState, app_);
   }
 };//end class
 

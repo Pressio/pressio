@@ -142,7 +142,7 @@ to the ImplicitStepper a template argument as follows: \
 Note that this is the total number of states needed including previous ones, \
 basically the size of the stpper stencil.");
   // numAuxStates is the number of auxiliary states needed, so all other beside y_n
-  static constexpr types::stepper_n_states_t numAuxStates = tot_n_setter::value - 1;
+  static constexpr std::size_t numAuxStates = tot_n_setter::value - 1;
 
 
   //-----------------------------------------------------------

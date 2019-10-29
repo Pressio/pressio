@@ -98,11 +98,6 @@ void time_discrete_residual(const state_type	& odeCurrentState,
   constexpr auto cnm2 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_;
   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
-  // constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-  // constexpr auto a = ::pressio::ode::constants::bdf2<scalar_type>::c1_;  // -4/3
-  // constexpr auto b = ::pressio::ode::constants::bdf2<scalar_type>::c2_;	 // 1/3
-  // const auto c = ::pressio::ode::constants::bdf2<scalar_type>::c3_*dt;   // -dt*2/3
-
   // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
   // R contains already f(y_n,t_n) so we can just update R by doing
   // R = -dt*2/3*R + y_n -4/3*y_n-1 + 1/3*y_n-2

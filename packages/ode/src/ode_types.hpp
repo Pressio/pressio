@@ -57,9 +57,6 @@ using step_t = int32_t;
 //! Default type for the order of a stepper
 using stepper_order_t = int32_t;
 
-//! Default type for the num of aux states
-using stepper_n_states_t = int32_t;
-
 // this is used to set implicit stepper order when
 // the user chooses the arbitrary one
 template <types::stepper_order_t valueIn>
@@ -69,9 +66,9 @@ struct StepperOrder{
 
 // this is used to set the total number of states needed
 // for the stepper
-template <types::stepper_n_states_t valueIn>
+template <std::size_t valueIn>
 struct StepperTotalNumberOfStates{
-  static constexpr types::stepper_n_states_t value = valueIn;
+  static constexpr std::size_t value = valueIn;
 };
 
 
