@@ -28,7 +28,7 @@ For a description of `pressio` code structure, see [here](https://github.com/Pre
 You just clone the code, and point to the headers which are inside the packages directory. 
 However, since `pressio` uses preprocessor directives to selectively enable/disable code for target TPLs, when you build your code you need to account for this. Also, if instead of just installing `pressio` you want to build the tests, then in that case too you need to enable specific TPLs if you want related tests to be turned on. 
 For a list of CMake options to enable see [this file](./list_of_cmake_optional_vars_to_enable.md).
-
+For sample cmake configure lines can be found [here](https://github.com/Pressio/pressio/wiki/Sample-CMake-configure-lines-for-pressio).
 <!--
 ======================================================================================
 ## TPLs
