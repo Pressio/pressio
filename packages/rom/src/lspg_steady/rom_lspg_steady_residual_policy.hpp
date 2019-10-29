@@ -76,9 +76,9 @@ public:
   LSPGSteadyResidualPolicy(const residual_t & RIn,
 			   fom_states_data & fomStatesIn,
 			   const fom_eval_rhs_policy & fomEvalRhsFunctor)
-    : R_{RIn},
-      fomStates_(fomStatesIn),
-      fom_eval_rhs_policy(fomEvalRhsFunctor){}
+    : fom_eval_rhs_policy(fomEvalRhsFunctor), 
+      R_{RIn},
+      fomStates_(fomStatesIn){}
 
 public:
   template <

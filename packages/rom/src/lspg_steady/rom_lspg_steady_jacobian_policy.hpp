@@ -80,8 +80,8 @@ public:
 			   const fom_apply_jac_policy	& applyJacFunctor,
 			   const apply_jac_return_type	& applyJacObj,
 			   const decoder_type		& decoder)
-    : fomStates_(fomStates),
-      fom_apply_jac_policy(applyJacFunctor),
+    : fom_apply_jac_policy(applyJacFunctor),
+      fomStates_(fomStates),
       JJ_(applyJacObj),
       decoderObj_(decoder){}
 
