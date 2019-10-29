@@ -49,6 +49,8 @@
 #ifndef CONTAINERS_ALL_HPP_
 #define CONTAINERS_ALL_HPP_
 
+#include "UTILS_ALL"
+
 #include "CONTAINERS_BASIC"
 #include "CONTAINERS_VECTOR"
 #include "CONTAINERS_MULTI_VECTOR"

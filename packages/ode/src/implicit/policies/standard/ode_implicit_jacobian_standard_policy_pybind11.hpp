@@ -88,8 +88,9 @@ public:
   void operator()(const state_type & y,
 		  jacobian_type & J,
 		  const system_type & model,
-		  scalar_t t,
-		  scalar_t dt)const
+		  const scalar_t & t,
+		  const scalar_t & dt,
+		  const types::step_t & step)const
   {
     throw std::runtime_error("ImplicitJacobianStandardPolicyPybind11 is missing");
     // model.attr("jacobian2")(y, J, t);
@@ -101,8 +102,9 @@ public:
     >
   jacobian_type operator()(const state_type & y,
   			   const system_type & model,
-  			   scalar_t t,
-  			   scalar_t dt)const
+  			   const scalar_t & t,
+  			   const scalar_t & dt,
+			   const types::step_t & step)const
   {
     throw std::runtime_error("ImplicitJacobianStandardPolicyPybind11 is missing");
     jacobian_type nJJ;// = model.attr("jacobian1")(y, t);

@@ -51,25 +51,23 @@
 
 #include "../ode_ConfigDefs.hpp"
 
-namespace pressio{ namespace ode{ namespace coeffs{
+namespace pressio{ namespace ode{ namespace constants{
 
-// bdf1 needs states: y_n and y_n-1
-static constexpr std::size_t bdf1_numAuxStates_ = 1;
-// bdf1 needs no extra rhs: f(y_n,...)
-static constexpr std::size_t bdf1_numAuxRHS_ = 0;
-
-// bdf2 needs y_n, y_n-1, y_n-2
-static constexpr std::size_t bdf2_numAuxStates_ = 2;
-// bdf2 needs no extra rhs: f(y_n,...)
-static constexpr std::size_t bdf2_numAuxRHS_ = 0;
+template <typename scalar_t>
+struct bdf1{
+  static constexpr scalar_t c_n_   = ::pressio::utils::constants::one<scalar_t>();
+  static constexpr scalar_t c_nm1_ = ::pressio::utils::constants::negOne<scalar_t>();
+  static constexpr scalar_t c_f_   = ::pressio::utils::constants::negOne<scalar_t>();
+};
 
 template <typename scalar_t>
 struct bdf2{
-  static constexpr scalar_t c1_ = static_cast<scalar_t>(4)/3;
-  static constexpr scalar_t c2_ = static_cast<scalar_t>(1)/3;
-  static constexpr scalar_t c3_ = static_cast<scalar_t>(2)/3;
+  static constexpr scalar_t c_n_   = ::pressio::utils::constants::one<scalar_t>();
+  static constexpr scalar_t c_nm1_ = static_cast<scalar_t>(4)/3 * ::pressio::utils::constants::negOne<scalar_t>();
+  static constexpr scalar_t c_nm2_ = static_cast<scalar_t>(1)/3;
+  static constexpr scalar_t c_f_   = static_cast<scalar_t>(2)/3 * ::pressio::utils::constants::negOne<scalar_t>();
 };
 
 
-}}}// end namespace pressio::ode::coeffs
+}}}// end namespace pressio::ode::constants
 #endif

@@ -81,29 +81,33 @@ struct is_legitimate_implicit_jacobian_policy
      jacobian_t,
      decltype
      (
-      std::declval<T>().template operator()
+      std::declval<T const>().template operator()
       <
       name
-      >( std::declval<const state_t &>(),
-	 std::declval<const system_t&>(),
-	 std::declval<scalar_t>(),
-	 std::declval<scalar_t>()
-	 )
+      >(
+	std::declval<state_t const &>(),
+	std::declval<system_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<::pressio::ode::types::step_t const &>()
+	)
       )
      >::value
    and
    std::is_void<
      decltype
      (
-      std::declval<T>().template operator()
+      std::declval<T const>().template operator()
       <
       name
-      >( std::declval<const state_t &>(),
-	 std::declval<jacobian_t &>(),
-	 std::declval<const system_t&>(),
-	 std::declval<scalar_t>(),
-	 std::declval<scalar_t>()
-	 )
+      >(
+	std::declval<state_t const &>(),
+	std::declval<jacobian_t &>(),
+	std::declval<system_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<::pressio::ode::types::step_t const &>()
+	)
       )
    >::value
    >

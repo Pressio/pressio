@@ -77,13 +77,12 @@ struct DefaultGalerkinExplicitTypeGenerator
   using typename base_t::decoder_jac_t;
   using typename base_t::fom_state_reconstr_t;
   using typename base_t::fom_states_data;
-  using typename base_t::fom_velocity_data;
   using typename base_t::ud_ops_t;
 
   // policy for evaluating the ode velocity
   using galerkin_residual_policy_t =
     ::pressio::rom::DefaultGalerkinExplicitVelocityPolicy<
-    fom_states_data, fom_velocity_data, decoder_t, ud_ops_t>;
+    fom_states_data, fom_velocity_t, decoder_t, ud_ops_t>;
 
   // declare type of stepper object
   using galerkin_stepper_t = ::pressio::ode::ExplicitStepper<

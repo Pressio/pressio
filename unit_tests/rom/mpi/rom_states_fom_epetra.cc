@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ROM_LSPG"
+#include "ROM_LSPG_UNSTEADY"
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
 #include "Epetra_IntVector.h"
@@ -15,24 +15,26 @@ using matrix_w_t	= containers::MultiVector<Epetra_MultiVector>;
 using decoder_t		= rom::LinearDecoder<matrix_w_t>;
 using fom_state_w_t	= containers::Vector<Epetra_Vector>;
 using fom_state_rec_t	= rom::FomStateReconstructor<fom_state_w_t,decoder_t>;
-using fom_states	= rom::FomStatesData<
-  fom_state_w_t, 1, fom_state_rec_t>;
+using fom_states	= rom::FomStatesContainer<fom_state_w_t, 1, fom_state_rec_t>;
 
-struct mytest : fom_states{
-  using base_t = fom_states;
+struct mytest
+{
+  fom_states MyStates;
 
+  mytest() = delete;
   mytest(const fom_state_w_t & y0Fom, const fom_state_rec_t & recObj)
-    : base_t(y0Fom, recObj)
+    : MyStates{y0Fom, recObj}
   {
-    fom_states MyStates(y0Fom, recObj);
     rom_state_t rY(2);
     rY.putScalar(1.2);
-    this->reconstructCurrentFomState(rY);
+    MyStates.reconstructCurrentFomState(rY);
   }
 
   void check(){
-    for (auto i=0; i<this->yFom_.localSize(); i++)
-      EXPECT_DOUBLE_EQ(this->yFom_[i], 2.4);
+    const auto & yfR = MyStates.getCRefToCurrentFomState();
+    const auto sz = yfR.localSize();
+    for (auto i=0; i<sz; i++)
+      EXPECT_DOUBLE_EQ( yfR[i], 2.4);
   }
 };
 
@@ -45,9 +47,7 @@ TEST(rom_data, fom_states_data){
   decoder_t decObj(A);
 
   fom_state_w_t y0Fom(rowMap);
-
   fom_state_rec_t recStr(y0Fom, decObj);
-
   mytest Ob(y0Fom, recStr);
   Ob.check();
 }

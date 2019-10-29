@@ -1,0 +1,246 @@
+/*
+//@HEADER
+// ************************************************************************
+//
+// apps_burgers1d_eigen_residual_api.hpp
+//                     		  Pressio
+//                             Copyright 2019
+//    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
+//
+// Under the terms of Contract DE-NA0003525 with NTESS, the
+// U.S. Government retains certain rights in this software.
+//
+// Pressio is licensed under BSD-3-Clause terms of use:
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived
+// from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+// IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// Questions? Contact Francesco Rizzi (fnrizzi@sandia.gov)
+//
+// ************************************************************************
+//@HEADER
+*/
+
+#ifndef PRESSIOAPPS_BURGERS1D_EIGEN_RESIDUAL_API_HPP_
+#define PRESSIOAPPS_BURGERS1D_EIGEN_RESIDUAL_API_HPP_
+
+#include "../apps_ConfigDefs.hpp"
+#include "Eigen/Dense"
+#include "Eigen/SparseCore"
+#include <iostream>
+
+namespace pressio{ namespace apps{
+
+class Burgers1dEigenResidualApi
+{
+  using eigVec = Eigen::VectorXd;
+  using ui_t = unsigned int;
+
+public:
+  using scalar_type	= double;
+  using state_type	= eigVec;
+  using velocity_type	= eigVec;
+  using residual_type	= eigVec;
+  using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
+  using dense_matrix_type = Eigen::MatrixXd;
+
+  typedef Eigen::Triplet<scalar_type> Tr;
+
+public:
+  explicit Burgers1dEigenResidualApi(eigVec params, ui_t Ncell=1000)
+    : mu_(params), Ncell_(Ncell){
+    this->setup();
+  }
+
+  Burgers1dEigenResidualApi() = delete;
+  ~Burgers1dEigenResidualApi() = default;
+
+public:
+  template <typename step_t, typename ... Args>
+  void timeDiscreteResidual(const step_t & step,
+  			    const scalar_type & time,
+  			    const scalar_type & dt,
+  			    residual_type & R,
+  			    Args & ... states) const
+  {
+    this->timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
+  }
+
+  template <typename step_t, typename ... Args>
+  residual_type timeDiscreteResidual(const step_t & step,
+  				     const scalar_type & time,
+  				     const scalar_type & dt,
+  				     Args & ... states) const
+  {
+    residual_type R(Ncell_);
+    this->timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
+    return R;
+  }
+
+  template <typename step_t, typename ... Args>
+  void applyTimeDiscreteJacobian(const step_t & step,
+  				 const scalar_type & time,
+  				 const scalar_type & dt,
+  				 const dense_matrix_type & B,
+  				 int id,
+  				 dense_matrix_type & A,
+  				 Args && ... states) const
+  {
+    this->applyTimeDiscreteJacobianImpl(step, time, dt, B, id, A, std::forward<Args>(states)...);
+  }
+
+  template <typename step_t, typename ... Args>
+  dense_matrix_type applyTimeDiscreteJacobian(const step_t & step,
+  					      const scalar_type & time,
+  					      const scalar_type & dt,
+  					      const dense_matrix_type & B,
+  					      int id,
+  					      Args && ... states) const
+  {
+    dense_matrix_type A(Ncell_, B.cols());
+    this->applyTimeDiscreteJacobianImpl(step, time, dt, B, id, A, std::forward<Args>(states)...);
+    return A;
+  }
+
+
+private:
+
+  // case when we only have a single auxiliary state
+  template <typename step_t>
+  void timeDiscreteResidualImpl(const step_t & step,
+				const scalar_type & time,
+				const scalar_type & dt,
+				residual_type & R,
+				const state_type & yn,
+				const state_type & ynm1) const
+  {
+    const auto f =  this->velocity(yn, time);
+    R = yn - ynm1 - dt * f;
+  }
+
+  // case when we only have a single auxiliary state
+  template <typename step_t, typename state_t>
+  void applyTimeDiscreteJacobianImpl(const step_t & step,
+				     const scalar_type & time,
+				     const scalar_type & dt,
+				     const dense_matrix_type & B,
+				     int id,
+				     dense_matrix_type & A,
+				     const state_t & yn,
+				     const state_t & ynm1) const
+  {
+    // compute Jacobian
+    auto J =  this->jacobian(yn, time);
+
+    // compute time discrete Jacobian
+    constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+    J.coeffs() *= -dt;
+    for (int i=0; i<Ncell_; ++i)
+      J.coeffRef(i,i) += one;
+
+    // compute A = J * B
+    A = J * B;
+  }
+
+private:
+  void setup(){
+    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
+    dxInv_ = 1.0/dx_;
+    // grid
+    xGrid_.resize(Ncell_);
+    for (ui_t i=0; i<Ncell_; ++i)
+      xGrid_(i) = dx_*i + dx_*0.5;
+
+    // init condition
+    U_.resize(Ncell_);
+    for (ui_t i=0; i<Ncell_; ++i)
+      U_(i) = 1.0;
+    U0_ = U_;
+  };
+
+  void velocity(const state_type & u,
+  		const scalar_type t,
+		velocity_type & rhs) const
+  {
+    rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
+    for (ui_t i=1; i<Ncell_; ++i){
+      rhs(i) = 0.5 * dxInv_ * (u(i-1)*u(i-1) - u(i)*u(i));
+    }
+    for (ui_t i=0; i<Ncell_; ++i){
+      rhs(i) += mu_(1)*exp(mu_(2)*xGrid_(i));
+    }
+  }
+
+  velocity_type velocity(const state_type & u,
+  			 const scalar_type t) const{
+    velocity_type RR(Ncell_);
+    this->velocity(u, t, RR);
+    return RR;
+  }
+
+  void jacobian(const state_type & u,
+		const scalar_type /*t*/,
+		jacobian_type & jac) const
+  {
+    //evaluate jacobian
+    if (jac.rows() == 0 || jac.cols()==0 ){
+      jac.resize(u.size(), u.size());
+    }
+    tripletList.clear();
+    tripletList.push_back( Tr( 0, 0, -dxInv_*u(0)) );
+    for (ui_t i=1; i<Ncell_; ++i){
+      tripletList.push_back( Tr( i, i-1, dxInv_ * u(i-1) ) );
+      tripletList.push_back( Tr( i, i, -dxInv_ * u(i) ) );
+    }
+    jac.setFromTriplets(tripletList.begin(), tripletList.end());
+  }
+
+  jacobian_type jacobian(const state_type & u,
+			 const scalar_type t) const{
+
+    jacobian_type JJ(u.size(), u.size());
+    this->jacobian(u, t, JJ);
+    return JJ;
+  }
+
+private:
+  eigVec mu_; // parameters
+  const scalar_type xL_ = 0.0; //left side of domain
+  const scalar_type xR_ = 100.0; // right side of domain
+  ui_t Ncell_; // # of cells
+  scalar_type dx_; // cell size
+  scalar_type dxInv_; // inv of cell size
+  eigVec xGrid_; // mesh points coordinates
+  mutable std::vector<Tr> tripletList;
+  mutable state_type U_; // state vector
+  mutable state_type U0_; // initial state vector
+
+};//end class
+
+}} //namespace pressio::apps
+#endif

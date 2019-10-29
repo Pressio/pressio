@@ -63,18 +63,30 @@ template<
 struct is_legitimate_collector{
 
   static constexpr auto collector_accepting_native_container =
-    ::pressio::ode::meta::collector_accepts_native_container<collector_type, int_type, time_type, state_type>::value;
+    ::pressio::ode::meta::collector_accepts_native_container<collector_type,
+							     int_type,
+							     time_type,
+							     state_type>::value;
 
   static constexpr auto collector_accepting_pressio_container =
-    ::pressio::ode::meta::collector_accepts_pressio_container<collector_type, int_type, time_type, state_type>::value;
+    ::pressio::ode::meta::collector_accepts_pressio_container<collector_type,
+							      int_type,
+							      time_type,
+							      state_type>::value;
 
   // force user to only use one or the other for now
-  static constexpr auto both_are_true = (collector_accepting_native_container and collector_accepting_pressio_container);
+  static constexpr auto both_are_true = (collector_accepting_native_container
+					 and collector_accepting_pressio_container);
   static_assert( both_are_true == false,
-		 "Currently, the collector/observer passed to ode must either accept a native container or a pressio container wrapper. You cannot have two methods to cover both cases nor you can have a collector class that has the operator () templated on the state, because that would lead to this error too. ");
+		 "Currently, the collector/observer passed to ode must \
+either accept a native container or a pressio container wrapper. \
+You cannot have two methods to cover both cases nor you can have a \
+collector class that has the operator () templated on the state, \
+because that would lead to this error too. ");
 
   // value is true if either one is true
-  static constexpr auto value = collector_accepting_native_container or collector_accepting_pressio_container;
+  static constexpr auto value = collector_accepting_native_container
+    or collector_accepting_pressio_container;
 };
 
 }}} // namespace pressio::ode::meta
