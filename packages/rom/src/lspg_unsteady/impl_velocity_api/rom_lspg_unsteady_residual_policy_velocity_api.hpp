@@ -149,7 +149,7 @@ public:
 
 public:
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     int n,
     typename lspg_state_t,
     typename fom_t,
@@ -163,11 +163,11 @@ public:
 		  const scalar_t		   & dt,
 		  const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeMethod, n>(romState, romR, romPrevStates, app, t, dt);
+    this->compute_impl<odeStepperName, n>(romState, romR, romPrevStates, app, t, dt);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     int n,
     typename lspg_state_t,
     typename fom_t,
@@ -180,14 +180,14 @@ public:
 			const scalar_t			   & dt,
 			const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeMethod, n>(romState, R_, romPrevStates, app, t, dt);
+    this->compute_impl<odeStepperName, n>(romState, R_, romPrevStates, app, t, dt);
     return R_;
   }
 
 
 private:
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     int n,
     typename state_t,
     typename scalar_t,
@@ -196,17 +196,17 @@ private:
 	std::is_void<_ud_ops>::value
       > * = nullptr
   >
-  void time_discrete_dispatcher(const state_t			& yFom,
-				const std::array<state_t,n>	& yFomOld,
+  void time_discrete_dispatcher(const state_t			& fomCurrentState,
+				const std::array<state_t,n>	& fomPrevStates,
 				residual_t			& romR,
 				scalar_t			dt) const{
     using namespace ::pressio::rom::impl;
-    time_discrete_residual<odeMethod,
-			   fom_states_data_type::N_>(yFom, yFomOld, romR, dt);
+    time_discrete_residual<odeStepperName,
+			   fom_states_data_type::N_>(fomCurrentState, fomPrevStates, romR, dt);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     int n,
     typename state_t,
     typename scalar_t,
@@ -215,17 +215,17 @@ private:
       !std::is_void<_ud_ops>::value
       > * = nullptr
   >
-  void time_discrete_dispatcher(const state_t			& yFom,
-  				const std::array<state_t,n>	& yFomOld,
+  void time_discrete_dispatcher(const state_t			& fomCurrentState,
+  				const std::array<state_t,n>	& fomPrevStates,
   				residual_t			& romR,
   				scalar_t			dt) const{
     using namespace ::pressio::rom::impl;
-    time_discrete_residual<odeMethod,
-			   fom_states_data_type::N_>(yFom, yFomOld, romR, dt, udOps_);
+    time_discrete_residual<odeStepperName,
+			   fom_states_data_type::N_>(fomCurrentState, fomPrevStates, romR, dt, udOps_);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    ::pressio::ode::ImplicitEnum odeStepperName,
     int n,
     typename lspg_state_t,
     typename fom_t,
@@ -256,7 +256,7 @@ private:
     timer->start("time discrete residual");
 #endif
 
-    this->time_discrete_dispatcher<odeMethod, fom_states_data_type::N_>
+    this->time_discrete_dispatcher<odeStepperName, fom_states_data_type::N_>
       (fomStates_.getCRefToCurrentFomState(), fomStates_.getCRefToFomOldStates(), romR, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
