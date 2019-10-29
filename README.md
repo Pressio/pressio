@@ -24,9 +24,9 @@ For a description of `pressio` code structure, see [here](https://github.com/Pre
 
 ======================================================================================
 ## Installing
-`pressio` is a header-only library, so there is **no building process needed**. 
+`pressio` is a header-only library, so there is **no building process needed** if you need to use it from your code. 
 You just clone the code, and point to the headers which are inside the packages directory. 
-However, since `pressio` uses preprocessor directives to selectively enable/disable code for target TPLs, when you build your code you need to account for this. Also, if instead of just installing `pressio` you want to build the tests, then in that case too you need to enable specific TPLs if you want related tests to be turned on. 
+However, since `pressio` uses preprocessor directives to selectively enable/disable code for target TPLs, when you build your code you need to account for this. Also, if you want to build the tests in `pressio`, in that case too you need to enable specific TPLs if you want related tests to be turned on. 
 
 For a list of CMake options to enable see [this file](./list_of_cmake_optional_vars_to_enable.md).
 
