@@ -71,7 +71,7 @@ const std::vector<double> bdf1Sol
       appobj, y0n, decoderObj, yROM, t0);
 
   scalar_t fint = 35;
-  auto nSteps = static_cast<unsigned int>(fint/dt);
+  auto nSteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
   pressio::ode::integrateNSteps(galerkinProb.getStepperRef(), yROM, 0.0, dt, nSteps);
 
   // compute the fom corresponding to our rom final state

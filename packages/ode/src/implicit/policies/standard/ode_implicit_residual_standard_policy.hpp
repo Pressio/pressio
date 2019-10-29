@@ -51,14 +51,12 @@
 
 #include "../../../ode_fwd.hpp"
 #include "../base/ode_implicit_residual_policy_base.hpp"
-#include "../../ode_residual_impl.hpp"
+#include "../../ode_time_discrete_residual.hpp"
+#include "../../meta/ode_is_legitimate_implicit_state_type.hpp"
+#include "../../meta/ode_is_legitimate_implicit_residual_type.hpp"
 
 namespace pressio{ namespace ode{ namespace policy{
 
-/*
- * state and residual_types are containers wrappers
- * both are wrappers from containers
- */
 template<
   typename state_type,
   typename system_type,
@@ -85,31 +83,37 @@ public:
   ~ImplicitResidualStandardPolicy() = default;
 
 public:
+
   template <
-    ode::ImplicitEnum method, int n, typename scalar_type
+    ode::ImplicitEnum method,
+    ::pressio::ode::types::stepper_n_states_t n,
+    typename scalar_type
   >
   void operator()(const state_type & y,
 		  residual_type & R,
-		  const std::array<state_type, n> & oldYs,
+		  const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
 		  const system_type & model,
-		  scalar_type t,
-		  scalar_type dt) const{
+		  const scalar_type & t,
+		  const scalar_type & dt,
+		  const types::step_t &  step) const{
 
     model.velocity(*y.data(), t, *R.data());
     ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
   }
 
   template <
-    ode::ImplicitEnum method, int n, typename scalar_type
+    ode::ImplicitEnum method,
+    ::pressio::ode::types::stepper_n_states_t n,
+    typename scalar_type
     >
   residual_type operator()(const state_type & y,
-  			   const std::array<state_type, n> & oldYs,
+  			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
   			   const system_type & model,
-  			   scalar_type t,
-  			   scalar_type dt)const {
+  			   const scalar_type & t,
+  			   const scalar_type & dt,
+			   const types::step_t &  step) const{
 
-    auto nR = model.velocity(*y.data(), t);
-    residual_type R(nR);
+    residual_type R(model.velocity(*y.data(), t));
     ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
     return R;
   }

@@ -2,7 +2,7 @@
 #include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
-#include "ROM_LSPG"
+#include "ROM_LSPG_UNSTEADY"
 #include "APPS_UNSTEADYBURGERS1D"
 #include "utils_eigen.hpp"
 
@@ -49,12 +49,13 @@ int main(int argc, char *argv[]){
 
   // define LSPG type
   constexpr auto ode_case  = pressio::ode::ImplicitEnum::BDF2;
-  using lspg_problem_types = pressio::rom::DefaultLSPGTypeGenerator<
-    fom_t, ode_case, decoder_t, lspg_state_t>;
-  pressio::rom::LSPGUnsteadyProblemGenerator<lspg_problem_types> lspgProblem(
-      appobj, yRef, decoderObj, yROM, t0);
+  using lspg_problem = pressio::rom::LSPGUnsteadyProblem<
+    pressio::rom::DefaultLSPGUnsteady, ode_case, fom_t, lspg_state_t, decoder_t>;
+  using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
+  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
 
-  using lspg_stepper_t = typename lspg_problem_types::lspg_stepper_t;
+
+  using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
@@ -82,7 +83,7 @@ int main(int argc, char *argv[]){
   // this is a reproducing ROM test, so the final reconstructed state
   // has to match the FOM solution obtained with bdf2, same time-step, for 10 steps
   // const auto trueY = pressio::apps::test::Burg1DtrueImpBDF2N20t010;
-  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(numCell, dt, 0.10);  
+  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(numCell, dt, 0.10);
   for (auto i=0; i<yFomFinal.size(); i++)
     if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10) checkStr = "FAILED";
 

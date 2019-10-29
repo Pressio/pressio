@@ -51,17 +51,22 @@
 
 #include "ODE_BASIC"
 
+// policies
 #include "ode/src/explicit/policies/ode_explicit_velocity_policy_base.hpp"
 #include "ode/src/explicit/policies/ode_explicit_velocity_standard_policy.hpp"
 #include "ode/src/explicit/policies/ode_is_explicit_euler_velocity_standard_policy.hpp"
 #include "ode/src/explicit/policies/ode_is_explicit_runge_kutta4_velocity_standard_policy.hpp"
 #include "ode/src/explicit/policies/ode_is_legitimate_explicit_velocity_policy.hpp"
 
-#include "ode/src/explicit/steppers/ode_explicit_stepper_base.hpp"
-#include "ode/src/explicit/steppers/impl/ode_explicit_euler_stepper_impl.hpp"
-#include "ode/src/explicit/steppers/impl/ode_explicit_runge_kutta4_stepper_impl.hpp"
-
-#include "ode/src/explicit/steppers/ode_explicit_stepper_traits.hpp"
+// steppers
 #include "ode/src/explicit/steppers/ode_explicit_stepper.hpp"
+#include "ode/src/explicit/steppers/ode_explicit_stepper_traits_euler.hpp"
+#include "ode/src/explicit/steppers/ode_explicit_stepper_traits_rk4.hpp"
+
+// metafncs for explicit ode
+#include "ode/src/explicit/meta/ode_is_legitimate_explicit_velocity_type.hpp"
+#include "ode/src/explicit/meta/ode_is_legitimate_explicit_state_type.hpp"
+#include "ode/src/explicit/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
+#include "ode/src/explicit/meta/ode_is_valid_user_defined_ops_for_explicit_ode.hpp"
 
 #endif

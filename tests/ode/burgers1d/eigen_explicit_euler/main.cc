@@ -1,4 +1,5 @@
 
+#include "UTILS_ALL"
 #include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "APPS_UNSTEADYBURGERS1D"
@@ -47,7 +48,7 @@ int main(int argc, char *argv[]){
   // integrate in time
   scalar_t fint = 35;
   scalar_t dt = 0.01;
-  auto Nsteps = static_cast<unsigned int>(fint/dt);
+  auto Nsteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
   pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
   {
     using namespace pressio::apps::test;

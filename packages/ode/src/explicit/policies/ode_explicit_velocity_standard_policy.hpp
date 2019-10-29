@@ -88,18 +88,20 @@ public:
   ~ExplicitVelocityStandardPolicy() = default;
 
   template < typename scalar_type >
-  void operator()(const state_type & y,
+  void operator()(const state_type & state,
 		  state_type & f,
 		  const system_type & model,
-		  scalar_type t) const{
-    model.velocity(*y.data(), t, *f.data());
+		  const scalar_type & time) const
+  {
+    model.velocity(*state.data(), time, *f.data());
   }
 
   template < typename scalar_type >
-  state_type operator()(const state_type & y,
+  state_type operator()(const state_type & state,
 			const system_type & model,
-			scalar_type t) const{
-    return state_type(model.velocity(*y.data(), t));
+			const scalar_type & time) const
+  {
+    return state_type(model.velocity(*state.data(), time));
   }
 };//end class
 
@@ -133,19 +135,21 @@ public:
   ~ExplicitVelocityStandardPolicy() = default;
 
   template <typename scalar_type>
-  void operator()(const state_type & y,
+  void operator()(const state_type & state,
 		  state_type & f,
 		  const system_type & model,
-		  scalar_type t) const{
+		  const scalar_type & time) const
+  {
     //printf("C++ f address: %p\n", f.data());
-    model.attr("velocity")(y, t, f);
+    model.attr("velocity")(state, time, f);
   }
 
   template <typename scalar_type>
-  state_type operator()(const state_type & y,
+  state_type operator()(const state_type & state,
   			const system_type & model,
-  			scalar_type t) const{
-    return model.attr("velocity")(y, t);
+  			const scalar_type & time) const
+  {
+    return model.attr("velocity")(state, t);
   }
 
 };//end class

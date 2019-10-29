@@ -3,7 +3,7 @@
 #include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
-#include "ROM_LSPG"
+#include "ROM_LSPG_UNSTEADY"
 #include "APPS_UNSTEADYBURGERS1D"
 #include "utils_kokkos.hpp"
 
@@ -58,13 +58,10 @@ int main(int argc, char *argv[]){
 
     // define LSPG type
     constexpr auto ode_case  = pressio::ode::ImplicitEnum::Euler;
-    using lspg_problem_t = pressio::rom::DefaultLSPGTypeGenerator<
-      fom_t, ode_case, decoder_d_t, lspg_state_d_t>;
-    pressio::rom::LSPGUnsteadyProblemGenerator<lspg_problem_t> lspgProblem(appobj,
-    									   yRef,
-    									   decoderObj,
-    									   yROM, t0);
-    using lspg_stepper_t = typename lspg_problem_t::lspg_stepper_t;
+    using lspg_problem = pressio::rom::LSPGUnsteadyProblem<
+      pressio::rom::DefaultLSPGUnsteady, ode_case, fom_t, lspg_state_d_t, decoder_d_t>;
+    using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
+    lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
 
     // linear solver
     using hessian_t  = pressio::containers::Matrix<typename fom_t::mv_d>;

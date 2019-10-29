@@ -155,7 +155,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
-  timer->start("Gausss Newton Conserv");
+  timer->start("Gauss Newton Conserv");
 #endif
 
   iteration_t iStep = 0;
@@ -297,6 +297,14 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    utils::io::reset(), "\n");
 #endif
 
+
+    // exit with error if NaNs detected in solution update dy
+    if (std::isnan(norm_dy))
+    {
+      throw std::runtime_error(
+        "Nonlinear solver: Gauss Newton Conserv: NaNs detected in solution update dy");
+    }
+
     // // compute multiplicative factor if needed
     // lineSearchHelper(alpha, y, ytrial, dy, resid, jacob, sys);
 
@@ -347,7 +355,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-  timer->stop("Gausss Newton Conserv");
+  timer->stop("Gauss Newton Conserv");
 #endif
 
 }

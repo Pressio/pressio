@@ -49,8 +49,9 @@
 #ifndef ODE_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_HPP_
 #define ODE_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_HPP_
 
+#include "../../ode_fwd.hpp"
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
-#include "ode_explicit_stepper_traits.hpp"
+#include "./impl/ode_explicit_runge_kutta4_stepper_impl.hpp"
 
 namespace pressio{ namespace ode{
 
@@ -70,31 +71,29 @@ class ExplicitStepper
   // need to friend base to allow it to access the () operator below
   friend base_t;
 
-  using mytraits		= details::traits<this_t>;
-  using scalar_type		= typename mytraits::scalar_t;
-  using system_type		= typename mytraits::model_t;
-  using velocity_type		= typename mytraits::velocity_t;
-  using standard_res_policy_t	= typename mytraits::standard_res_policy_t;
-  using policy_t		= typename mytraits::velocity_policy_t;
+  using mytraits	= details::traits<this_t>;
+  using scalar_type	= typename mytraits::scalar_t;
+  using system_type	= typename mytraits::model_t;
+  using velocity_type	= typename mytraits::velocity_t;
+  using policy_t	= typename mytraits::velocity_policy_t;
 
   // this is the impl class type which holds all the implement details
   using impl_class_t	= typename mytraits::impl_t;
-  impl_class_t myImpl_ = {};
-
-  static constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  impl_class_t myImpl_  = {};
 
 public:
   ExplicitStepper()  = delete;
   ~ExplicitStepper() = default;
 
   // this is enabled all the time
-  ExplicitStepper(state_type const	  & y0,
+  ExplicitStepper(state_type const	  & stateIn0,
 		  const system_type	  & model,
 		  const policy_t	  & policyObj)
     : myImpl_(model,
 	      policyObj,
-	      y0,
-	      policyObj(y0, model, this_t::zero)
+	      stateIn0,
+	      policyObj(stateIn0, model,
+			::pressio::utils::constants::zero<scalar_type>())
 	      )
   {}
 
@@ -107,12 +106,13 @@ public:
   	>::value
       > * = nullptr
     >
-  ExplicitStepper(const	state_type & y0,
+  ExplicitStepper(const	state_type & stateIn0,
   		  const system_type & model)
     : myImpl_(model,
   	      T(),
-  	      y0,
-  	      T()(y0, model, this_t::zero)
+  	      stateIn0,
+  	      T()(stateIn0, model,
+		  ::pressio::utils::constants::zero<scalar_type>())
   	      )
   {}
 

@@ -55,7 +55,11 @@ enum class ExplicitEnum
   {Undefined, Euler, RungeKutta4};
 
 enum class ImplicitEnum
-  {Undefined, Euler, BDF2};
+  {Undefined, Euler, BDF2,
+   Arbitrary // this is used to define a stepper that is user-defined,
+	     // so there is no specific info about it and it can be
+             // anything since the user assembles the time-discrete operators
+  };
 
 }}//end namespace pressio::ode
 #endif

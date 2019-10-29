@@ -50,13 +50,14 @@
 #define ODE_IMPLICIT_POLICIES_IS_LEGITIMATE_IMPLICIT_RESIDUAL_POLICY_HPP_
 
 #include "../base/ode_implicit_residual_policy_base.hpp"
+#include "../../../ode_states_container.hpp"
 
 namespace pressio{ namespace ode{ namespace meta {
 
 template<
   typename T,
   ImplicitEnum name,
-  int nstates,
+  types::stepper_n_states_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -69,30 +70,32 @@ struct is_legitimate_implicit_residual_policy : std::false_type{};
 template<
   typename T,
   ImplicitEnum name,
-  int nstates,
+  types::stepper_n_states_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
   typename scalar_t
   >
 struct is_legitimate_implicit_residual_policy<
-  T, name, nstates, state_t, residual_t, system_t, scalar_t,
+  T, name, numPrevStates, state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
     // is callable with five args
     std::is_same<
       residual_t,
       decltype
       (
-       std::declval<T>().template operator()
+       std::declval<T const>().template operator()
        <
        name,
-       nstates
-       >( std::declval<const state_t &>(),
-	  std::declval<const std::array<state_t, nstates> &>(),
-	  std::declval<const system_t&>(),
-	  std::declval<scalar_t>(),
-	  std::declval<scalar_t>()
-	  )
+       numPrevStates
+       >(
+	 std::declval<state_t const &>(),
+	 std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
+	 std::declval<system_t const &>(),
+	 std::declval<scalar_t const &>(),
+	 std::declval<scalar_t const &>(),
+	 std::declval<::pressio::ode::types::step_t>()
+	 )
        )
       >::value
     and
@@ -100,17 +103,19 @@ struct is_legitimate_implicit_residual_policy<
     std::is_void<
       decltype
       (
-       std::declval<T>().template operator()
+       std::declval<T const>().template operator()
        <
        name,
-       nstates
-       >( std::declval<const state_t &>(),
-	  std::declval<residual_t &>(),
-	  std::declval<const std::array<state_t, nstates> &>(),
-	  std::declval<const system_t&>(),
-	  std::declval<scalar_t>(),
-	  std::declval<scalar_t>()
-	  )
+       numPrevStates
+       >(
+	 std::declval<state_t const &>(),
+	 std::declval<residual_t &>(),
+	 std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
+	 std::declval<system_t const &>(),
+	 std::declval<scalar_t const &>(),
+	 std::declval<scalar_t const &>(),
+	 std::declval<::pressio::ode::types::step_t>()
+	 )
        )
       >::value
     >

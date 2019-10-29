@@ -59,7 +59,6 @@ namespace pressio{ namespace apps{
 class Burgers1dEpetraReducedNoMask : public Burgers1dEpetra{
   using base_t	   = Burgers1dEpetra;
   using importer_t = Epetra_Import;
-  using MV_t	   = Epetra_MultiVector;
 
 public:
   Burgers1dEpetraReducedNoMask(std::vector<scalar_type> params,
@@ -78,7 +77,7 @@ public:
   };
 
   void velocity(const state_type & u,
-		const scalar_type t, 
+		const scalar_type t,
     velocity_type & rhs) const
   {
     velocity_type R(*dataMap_);
@@ -97,21 +96,21 @@ public:
 
   // A = Jac * B
   void applyJacobian(const state_type & y,
-		     const MV_t & B,
+		     const dense_matrix_type & B,
 		     scalar_type t,
-         MV_t & A) const{
-    MV_t Cfull( Jac_->RangeMap(), B.NumVectors() );
+		     dense_matrix_type & A) const{
+    dense_matrix_type Cfull( Jac_->RangeMap(), B.NumVectors() );
     base_t::applyJacobian(y, B, t, Cfull);
     A.Import(Cfull, *importer_, Insert);
   }
 
   // return Jac * B
-  MV_t applyJacobian(const state_type & y,
-		     const MV_t & B,
-		     scalar_type t) const{
-    MV_t Cfull( Jac_->RangeMap(), B.NumVectors() );
+  dense_matrix_type applyJacobian(const state_type & y,
+				  const dense_matrix_type & B,
+				  scalar_type t) const{
+    dense_matrix_type Cfull( Jac_->RangeMap(), B.NumVectors() );
     base_t::applyJacobian(y, B, t, Cfull);
-    MV_t C(*maskMap_, B.NumVectors());
+    dense_matrix_type C(*maskMap_, B.NumVectors());
     C.Import(Cfull, *importer_, Insert);
     return C;
   }

@@ -49,7 +49,7 @@
 #ifndef ROM_IS_LEGITIMATE_MODEL_FOR_GALERKIN_HPP_
 #define ROM_IS_LEGITIMATE_MODEL_FOR_GALERKIN_HPP_
 
-#include "../../../ode/src/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
+#include "../../../ode/src/explicit/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
 
