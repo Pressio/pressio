@@ -197,8 +197,6 @@ private:
     //std::cout << " info-ormqr " << info << std::endl;
 
     // solver R y = Q^T b
-    const char uplo = 'U';
-    const char diag = 'N';
     constexpr scalar_t alpha = ::pressio::utils::constants::one<scalar_t>();
     blas_.TRSM(Teuchos::ESide::LEFT_SIDE,
     	       Teuchos::EUplo::UPPER_TRI,
