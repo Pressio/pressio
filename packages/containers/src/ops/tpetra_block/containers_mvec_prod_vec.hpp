@@ -103,8 +103,8 @@ void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
   // my number of rows
   const auto myNrows = mvA_mvv.getLocalLength();
   // loop
-  for (std::size_t i=0; i<myNrows; i++){
-    for (std::size_t j=0; j<numVecs; j++){
+  for (std::size_t i=0; i<(std::size_t)myNrows; i++){
+    for (std::size_t j=0; j<(std::size_t)numVecs; j++){
       // we use C_hv(i,0) because C is Tpetra::Vector, which is
       // actually a Tpetra::MultiVector with one column, so C_hv
       // is a kokkos::View<scalar**,...> so we need to index the

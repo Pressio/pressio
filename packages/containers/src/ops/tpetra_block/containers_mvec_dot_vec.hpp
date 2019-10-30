@@ -88,7 +88,7 @@ void dot(const mvec_type & mvA,
   const auto vecB_vv = const_cast<mv_tmp_t*>(vecB.data())->getVectorView();
   const auto mvA_mvv = mvA.data()->getMultiVectorView();
   const auto numVecs = mvA.globalNumVectors();
-  for (std::size_t i=0; i<numVecs; i++){
+  for (std::size_t i=0; i<(std::size_t)numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = mvA_mvv.getVector(i);
     result[i] = colI->dot(vecB_vv);
