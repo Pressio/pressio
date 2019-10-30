@@ -63,9 +63,9 @@ struct bdf1{
 template <typename scalar_t>
 struct bdf2{
   static constexpr scalar_t c_n_   = ::pressio::utils::constants::one<scalar_t>();
-  static constexpr scalar_t c_nm1_ = static_cast<scalar_t>(4)/3 * ::pressio::utils::constants::negOne<scalar_t>();
+  static constexpr scalar_t c_nm1_ = ::pressio::utils::constants::negOne<scalar_t>() * static_cast<scalar_t>(4)/3;
   static constexpr scalar_t c_nm2_ = static_cast<scalar_t>(1)/3;
-  static constexpr scalar_t c_f_   = static_cast<scalar_t>(2)/3 * ::pressio::utils::constants::negOne<scalar_t>();
+  static constexpr scalar_t c_f_   = ::pressio::utils::constants::negOne<scalar_t>() * static_cast<scalar_t>(2)/3;
 };
 
 
