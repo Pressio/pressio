@@ -26,17 +26,6 @@ public:
   }
 
   template <typename step_t, typename ... Args>
-  residual_type timeDiscreteResidual(const step_t & step,
-  				     const scalar_type & time,
-  				     const scalar_type & dt,
-  				     Args & ... states) const
-  {
-    residual_type R(numDof_);
-    this->timeDiscreteResidual(step, time, dt, R, std::forward<Args>(states)...);
-    return R;
-  }
-
-  template <typename step_t, typename ... Args>
   void applyTimeDiscreteJacobian(const step_t & step,
   				 const scalar_type & time,
   				 const scalar_type & dt,
@@ -47,6 +36,18 @@ public:
   {
     A.setConstant(2);
   }
+
+  template <typename step_t, typename ... Args>
+  residual_type timeDiscreteResidual(const step_t & step,
+  				     const scalar_type & time,
+  				     const scalar_type & dt,
+  				     Args & ... states) const
+  {
+    residual_type R(numDof_);
+    this->timeDiscreteResidual(step, time, dt, R, std::forward<Args>(states)...);
+    return R;
+  }
+
 
   template <typename step_t, typename ... Args>
   dense_matrix_type applyTimeDiscreteJacobian(const step_t & step,

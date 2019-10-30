@@ -77,7 +77,8 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using lin_solver_t = solvers::iterative::EigenIterative<
       solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
+  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 2;
@@ -116,8 +117,8 @@ TEST(ode_implicit_euler, guesserLambda){
   using lin_algo_t = solvers::linear::iterative::Bicgstab;
   using lin_solver_t = solvers::iterative::EigenIterative<lin_algo_t, jac_t>;
   lin_solver_t linSolverObj;
-  using nonlin_solver_t = pressio::solvers::NewtonRaphson<double, lin_solver_t>;
-  nonlin_solver_t solverO(linSolverObj);
+  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
   solverO.setMaxIterations(0);
 
   // integrate in time
@@ -172,7 +173,8 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   using lin_solver_t = solvers::iterative::EigenIterative<
       solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
+  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 2;
@@ -222,7 +224,8 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
   using lin_solver_t = solvers::iterative::EigenIterative<
       solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
+  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 2;

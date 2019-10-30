@@ -66,41 +66,85 @@
 namespace pressio{ namespace solvers{
 
 template <
-  typename scalar_t,
+  typename system_type,
   typename linear_solver_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::mpl::is_default_constructible<linear_solver_t>::value
+  typename scalar_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    or std::is_same<linear_solver_t, pybind11::object>::value
-#endif
+  ,::pressio::mpl::enable_if_t<
+     std::is_same<linear_solver_t, pybind11::object>::value
     > * = nullptr
+#endif
   >
 class NewtonRaphson
-  : public NonLinearSolverBase<NewtonRaphson<scalar_t, linear_solver_t>>,
-    public IterativeBase<NewtonRaphson<scalar_t, linear_solver_t>, scalar_t>{
+  : public NonLinearSolverBase<NewtonRaphson<system_type, linear_solver_t, scalar_t>>,
+    public IterativeBase<NewtonRaphson<system_type, linear_solver_t, scalar_t>, scalar_t>
+{
 
-  using this_t	= NewtonRaphson<scalar_t,linear_solver_t>;
+  using this_t	= NewtonRaphson<system_type, linear_solver_t, scalar_t>;
   using base_t  = NonLinearSolverBase<this_t>;
-  friend base_t;
-
   using iter_base_t  = IterativeBase<this_t, scalar_t>;
+  friend base_t;
   friend iter_base_t;
 
+  // from system_type get typedefsn
+  using state_t    = typename system_type::state_type;
+  using residual_t = typename system_type::residual_type;
+  using jacobian_t = typename system_type::jacobian_type;
+
+  static_assert( containers::meta::is_vector_wrapper_eigen<state_t>::value,
+		 "Newthon-Raphson is currently only enabled when using Eigen wrappers \
+becuase it needs be cleaned considerably before using for other types.");
+
+  //----------------
+  //   members
+  //----------------
   containers::default_types::uint iStep_ = {};
-
-  // norm of the correction
-  scalar_t normN_ = {};
-
-  // residual current and previous norm
-  scalar_t normRes_ = {};
-  scalar_t normRes0_ = {};
 
   // reference to a linear solver object
   linear_solver_t & linSolver_;
 
+  // norm of the correction
+  scalar_t normN_    = {};
+
+  // residual current and previous norm
+  scalar_t normRes_  = {};
+  scalar_t normRes0_ = {};
+
+  // dx is the correction
+  state_t deltaState_	     = {};
+
+  // prevState is the previous state
+  state_t prevState_ = {};
+
+  // R_ is the residual
+  residual_t R_    = {};
+  // jac is the jacobian
+  jacobian_t J_    = {};
+
 public:
   NewtonRaphson() = default;
-  NewtonRaphson(linear_solver_t & lsIn) : linSolver_{lsIn}{}
+
+  template <
+    typename system_in_t,
+    typename T1 = state_t,
+    typename T2 = residual_t,
+    typename T3 = jacobian_t,
+    ::pressio::mpl::enable_if_t<
+      std::is_same<T1, typename system_in_t::state_type>::value and
+      std::is_same<T2, typename system_in_t::residual_type>::value and
+      std::is_same<T3, typename system_in_t::jacobian_type>::value
+      > * = nullptr
+    >
+  NewtonRaphson(const system_in_t & sys,
+		const state_t	  & stateIn,
+		linear_solver_t   & linearSolverIn)
+    : linSolver_{linearSolverIn},
+      deltaState_(stateIn),
+      prevState_(stateIn),
+      R_(sys.residual(stateIn)),
+      J_(sys.jacobian(stateIn))
+  {}
+
   NewtonRaphson(const NewtonRaphson &) = delete;
   ~NewtonRaphson() = default;
 
@@ -117,12 +161,11 @@ private:
 
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-  // statically dispatch print based on whether the linear solver is iterative or not
+  // dispatch print based on whether the linear solver is iterative or not
   template <
     typename _linear_solver_t = linear_solver_t,
     ::pressio::mpl::enable_if_t<
-      std::is_void<_linear_solver_t>::value == false, void
-      /*::pressio::solvers::linear::details::traits<_linear_solver_t>::iterative == true*/
+      std::is_void<_linear_solver_t>::value == false
       > * = nullptr
     >
   void stepSummaryPrintDispatcher(const _linear_solver_t & linSolverIn,
@@ -159,18 +202,10 @@ private:
   }
 #endif
 
-public:
 
-  // for now, enable this for eigen only becuase it needs be cleaned
-  // if we want to use it for other types
-  template <
-    typename system_t,
-    typename state_t,
-    mpl::enable_if_t<
-      containers::meta::is_vector_wrapper_eigen<state_t>::value
-      > * = nullptr
-  >
-  void solveImpl(const system_t & sys, state_t & x)
+public:
+  template <typename system_t, typename state_t>
+  void solveImpl(const system_t & sys, state_t & stateInOut)
   {
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     std::cout << " starting Newton-Raphson solve "
@@ -179,13 +214,17 @@ public:
 	      << std::endl;
 #endif
 
-    auto dx(x);
-    state_t xOld(x);
+    // zero out the correction
+    ::pressio::containers::ops::set_zero(deltaState_);
+
+    // reset the norm
     normN_ = {0};
 
-    auto Residual = sys.residual(x);
-    auto Jac = sys.jacobian(x);
+    // compute residual and jacobian
+    sys.residual(stateInOut, R_);
+    sys.jacobian(stateInOut, J_);
 
+    // reset step counter
     iStep_ = 0;
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
@@ -197,17 +236,20 @@ public:
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout("\n");
       auto fmt = utils::io::underline();
-      ::pressio::utils::io::print_stdout(fmt, "NewRaph step", iStep_,
-				      utils::io::reset(), "\n");
+      ::pressio::utils::io::print_stdout(fmt, "step", iStep_, utils::io::reset(), "\n");
 #endif
 
       // solver linear system
-      linSolver_.solve(Jac, Residual, dx);
-      x -= dx;
+      linSolver_.solve(J_, R_, deltaState_);
+
+      // y_new = y - correction
+      constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+      constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+      ::pressio::containers::ops::do_update(stateInOut, one, deltaState_, negOne);
 
       // compute norms
-      normN_	= ::pressio::containers::ops::norm2(dx);
-      normRes_	= ::pressio::containers::ops::norm2(Residual);
+      normN_	= ::pressio::containers::ops::norm2(deltaState_);
+      normRes_	= ::pressio::containers::ops::norm2(R_);
       // store initial residual norm
       if (iStep_==1) normRes0_ = normRes_;
 
@@ -217,11 +259,16 @@ public:
       if (normN_ < this->tolerance_)
       	break;
 
-      xOld = x;
-      sys.residual(x, Residual);
-      sys.jacobian(x, Jac);
-    }
+      sys.residual(stateInOut, R_);
+      sys.jacobian(stateInOut, J_);
+    }//while
+
   }//solveImpl
+
+
+
+
+
 
 
 // TODO: this needs to be cleaned

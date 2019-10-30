@@ -81,6 +81,16 @@ public:
 
 public:
 
+  template <typename scalar_type>
+  jacobian_type operator()(const state_type & stateIn,
+  			   const system_type & model,
+  			   const scalar_type & t,
+			   const types::step_t & step) const
+  {
+    jacobian_type JJ(model.template createTimeDiscreteJacobianObject(step, t, *stateIn.data()));
+    return JJ;
+  }
+
   //-------------------------------
   // specialize for n == 1
   //-------------------------------
@@ -97,18 +107,6 @@ public:
 					*J.data(),
 					*stateIn.data(),
 					*oldStates[0].data());
-  }
-
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
-  jacobian_type operator()(const state_type & stateIn,
-			   const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
-  			   const system_type & model,
-  			   const scalar_type & t,
-  			   const scalar_type & dt,
-			   const types::step_t & step) const
-  {
-    jacobian_type JJ(model.template timeDiscreteJacobian(step, t, dt, *stateIn.data(), *oldStates[0].data()));
-    return JJ;
   }
 
   //-------------------------------
@@ -128,21 +126,6 @@ public:
 					*stateIn.data(),
 					*oldStates[0].data(),
 					*oldStates[1].data());
-  }
-
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
-  jacobian_type operator()(const state_type & stateIn,
-			   const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
-  			   const system_type & model,
-  			   const scalar_type &  t,
-  			   const scalar_type &  dt,
-			   const types::step_t & step) const
-  {
-    jacobian_type JJ(model.template timeDiscreteJacobian(step, t, dt,
-							 *stateIn.data(),
-							 *oldStates[0].data(),
-							 *oldStates[1].data()));
-    return JJ;
   }
 
   //-------------------------------
@@ -165,23 +148,95 @@ public:
 					*oldStates[2].data());
   }
 
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
-  jacobian_type operator()(const state_type & stateIn,
-			   const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
-  			   const system_type & model,
-  			   const scalar_type &  t,
-  			   const scalar_type &  dt,
-			   const types::step_t & step) const
-  {
-    jacobian_type JJ(model.timeDiscreteJacobian(step, t, dt,
-						*stateIn.data(),
-						*oldStates[0].data(),
-						*oldStates[1].data(),
-						*oldStates[2].data()));
-    return JJ;
-  }
-
 };//end class
 
 }}}//end namespace pressio::ode::policy
 #endif
+
+
+
+
+
+
+
+  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
+  // jacobian_type operator()(const state_type & stateIn,
+  // 			   const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
+  // 			   const system_type & model,
+  // 			   const scalar_type & t,
+  // 			   const scalar_type & dt,
+  // 			   const types::step_t & step) const
+  // {
+  //   jacobian_type JJ(model.template timeDiscreteJacobian(step, t, dt, *stateIn.data(), *oldStates[0].data()));
+  //   return JJ;
+  // }
+
+  // //-------------------------------
+  // // specialize for n == 2
+  // //-------------------------------
+  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
+  // void operator()(const state_type & stateIn,
+  // 		  const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
+  // 		  const system_type & model,
+  // 		  const scalar_type & t,
+  // 		  const scalar_type & dt,
+  // 		  const types::step_t & step,
+  // 		  jacobian_type & J) const
+  // {
+  //   model.template timeDiscreteJacobian(step, t, dt,
+  // 					*J.data(),
+  // 					*stateIn.data(),
+  // 					*oldStates[0].data(),
+  // 					*oldStates[1].data());
+  // }
+
+  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
+  // jacobian_type operator()(const state_type & stateIn,
+  // 			   const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
+  // 			   const system_type & model,
+  // 			   const scalar_type &  t,
+  // 			   const scalar_type &  dt,
+  // 			   const types::step_t & step) const
+  // {
+  //   jacobian_type JJ(model.template timeDiscreteJacobian(step, t, dt,
+  // 							 *stateIn.data(),
+  // 							 *oldStates[0].data(),
+  // 							 *oldStates[1].data()));
+  //   return JJ;
+  // }
+
+  // //-------------------------------
+  // // specialize for n == 3
+  // //-------------------------------
+  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
+  // void operator()(const state_type & stateIn,
+  // 		  const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
+  // 		  const system_type & model,
+  // 		  const scalar_type & t,
+  // 		  const scalar_type & dt,
+  // 		  const types::step_t & step,
+  // 		  jacobian_type & J) const
+  // {
+  //   model.template timeDiscreteJacobian(step, t, dt,
+  // 					*J.data(),
+  // 					*stateIn.data(),
+  // 					*oldStates[0].data(),
+  // 					*oldStates[1].data(),
+  // 					*oldStates[2].data());
+  // }
+
+  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
+  // jacobian_type operator()(const state_type & stateIn,
+  // 			   const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
+  // 			   const system_type & model,
+  // 			   const scalar_type &  t,
+  // 			   const scalar_type &  dt,
+  // 			   const types::step_t & step) const
+  // {
+  //   jacobian_type JJ(model.timeDiscreteJacobian(step, t, dt,
+  // 						*stateIn.data(),
+  // 						*oldStates[0].data(),
+  // 						*oldStates[1].data(),
+  // 						*oldStates[2].data()));
+  //   return JJ;
+  // }

@@ -22,6 +22,86 @@ struct MyApp
   using residual_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
+public:
+  void velocity(const state_type & yIn,
+		const scalar_type & t,
+		velocity_type & f) const{
+    f = -10. * yIn;
+  };
+
+  velocity_type velocity(const state_type & yIn,
+			 const scalar_type & t) const{
+    velocity_type f(3);
+    this->velocity(yIn, t, f);
+    return f;
+  };
+
+  void jacobian(const state_type & yIn,
+  		const scalar_type & t,
+		jacobian_type & JJ) const
+  {
+    typedef Eigen::Triplet<scalar_type> Tr;
+    std::vector<Tr> tripletList;
+    tripletList.push_back( Tr( 0, 0, -10.) );
+    tripletList.push_back( Tr( 1, 1, -10.) );
+    tripletList.push_back( Tr( 2, 2, -10.) );
+    JJ.setFromTriplets(tripletList.begin(), tripletList.end());
+  };
+
+  jacobian_type jacobian(const state_type & yIn,
+  			 const scalar_type & t) const{
+    jacobian_type JJ(3,3);
+    this->jacobian(yIn, t, JJ);
+    return JJ;
+  };
+  //--------------------------------------------
+
+public:
+  template <typename step_t, typename ... Args>
+  void timeDiscreteResidual(const step_t & step,
+                            const scalar_type & time,
+                            const scalar_type & dt,
+                            residual_type & R,
+                            Args && ... states) const
+  {
+    this->timeDiscreteResidualImpl( step, time, dt, R, std::forward<Args>(states)... );
+  }
+
+  template <typename step_t, typename ... Args>
+  void timeDiscreteJacobian(const step_t & step,
+                            const scalar_type & time,
+                            const scalar_type & dt,
+                            jacobian_type & J,
+                            Args && ... states) const
+  {
+    this->timeDiscreteJacobianImpl(step, time, dt, J, std::forward<Args>(states)... );
+  }
+
+  template <typename step_t>
+  residual_type createTimeDiscreteResidualObject(const step_t & step,
+						 const scalar_type & time,
+						 const state_type & state) const
+  {
+    residual_type R(3);
+    R.setConstant(0);
+    return R;
+  }
+
+  template <typename step_t>
+  jacobian_type createTimeDiscreteJacobianObject(const step_t & step,
+						 const scalar_type & time,
+						 const state_type & state) const
+  {
+    jacobian_type J(3,3);
+    typedef Eigen::Triplet<scalar_type> Tr;
+    std::vector<Tr> tripletList;
+    tripletList.push_back( Tr( 0, 0, 0.) );
+    tripletList.push_back( Tr( 1, 1, 0.) );
+    tripletList.push_back( Tr( 2, 2, 0.) );
+    J.setFromTriplets(tripletList.begin(), tripletList.end());
+    return J;
+  }
+
 private:
   template <typename step_t, typename state_type>
   void timeDiscreteResidualImpl(const step_t & step,
@@ -51,82 +131,6 @@ private:
     J.coeffRef(2,2) += one;
   }
 
-public:
-  void velocity(const state_type & yIn,
-		scalar_type t,
-		velocity_type & f) const{
-    f = -10. * yIn;
-  };
-
-  velocity_type velocity(const state_type & yIn,
-			 scalar_type t) const{
-    velocity_type f(3);
-    this->velocity(yIn, t, f);
-    return f;
-  };
-
-  void jacobian(const state_type & yIn,
-  		scalar_type t,
-		jacobian_type & JJ) const
-  {
-    typedef Eigen::Triplet<scalar_type> Tr;
-    std::vector<Tr> tripletList;
-    tripletList.push_back( Tr( 0, 0, -10.) );
-    tripletList.push_back( Tr( 1, 1, -10.) );
-    tripletList.push_back( Tr( 2, 2, -10.) );
-    JJ.setFromTriplets(tripletList.begin(), tripletList.end());
-  };
-
-  jacobian_type jacobian(const state_type & yIn,
-  			 scalar_type t) const{
-    jacobian_type JJ(3,3);
-    this->jacobian(yIn, t, JJ);
-    return JJ;
-  };
-  //--------------------------------------------
-
-public:
-  template <typename step_t, typename ... Args>
-  void timeDiscreteResidual(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
-                            residual_type & R,
-                            Args && ... states) const
-  {
-    this->timeDiscreteResidualImpl( step, time, dt, R, std::forward<Args>(states)... );
-  }
-
-  template <typename step_t, typename ... Args>
-  void timeDiscreteJacobian(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
-                            jacobian_type & J,
-                            Args && ... states) const
-  {
-    this->timeDiscreteJacobianImpl(step, time, dt, J, std::forward<Args>(states)... );
-  }
-
-  template <typename step_t, typename ... Args>
-  residual_type timeDiscreteResidual(const step_t & step,
-                                     const scalar_type & time,
-                                     const scalar_type & dt,
-                                     Args && ... states) const
-  {
-    residual_type R(3);
-    this->timeDiscreteResidual(step, time, dt, R, std::forward<Args>(states)...);
-    return R;
-  }
-
-  template <typename step_t, typename ... Args>
-  jacobian_type timeDiscreteJacobian(const step_t & step,
-                                     const scalar_type & time,
-                                     const scalar_type & dt,
-                                     Args && ... states) const
-  {
-    jacobian_type J(3,3);
-    this->timeDiscreteJacobian(step, time, dt, J, std::forward<Args>(states)...);
-    return J;
-  }
 };
 
 
@@ -148,24 +152,21 @@ struct Bdf1Solver
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::iterative::EigenIterative<lin_solver_name, jac_t>;
-  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<sc_t, lin_solver_t>;
+  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
 
-  state_t y_ = {};
   app_t appObj_ = {};
+  state_t y_ = {};
   stepper_t stepperObj_;
   const sc_t dt_ = 0.01;
 
-  Bdf1Solver()
-    : appObj_{}, stepperObj_{y_, appObj_}
-  {
-    y_.resize(3);
-    y_[0] = 1; y_[1]=2; y_[2]=3;
-  }
+  Bdf1Solver(const state_t & yIn)
+    : appObj_{}, y_{yIn}, stepperObj_{y_, appObj_}
+  {}
 
   void run(int steps)
   {
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(linSolverObj);
+    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
     ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 };
@@ -199,24 +200,21 @@ struct CustomBdf1Solver
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::iterative::EigenIterative<lin_solver_name, jac_t>;
-  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<sc_t, lin_solver_t>;
+  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
 
-  state_t y_ = {};
-  app_t appObj_ = {};
+  app_t appObj_		= {};
+  state_t y_		= {};
   stepper_t stepperObj_;
-  const sc_t dt_ = 0.01;
+  const sc_t dt_	= 0.01;
 
-  CustomBdf1Solver()
-    : appObj_{}, stepperObj_{y_, appObj_}
-  {
-    y_.resize(3);
-    y_[0] = 1; y_[1]=2; y_[2]=3;
-  }
+  CustomBdf1Solver(const state_t & yIn)
+    : appObj_{}, y_{yIn}, stepperObj_{y_, appObj_}
+  {}
 
   void run(int steps)
   {
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(linSolverObj);
+    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
     ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 
@@ -224,7 +222,7 @@ struct CustomBdf1Solver
   void runWithStepSizeManagerLambda(int steps)
   {
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(linSolverObj);
+    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -236,7 +234,7 @@ struct CustomBdf1Solver
   void runWithStepSizeManagerLambdaWrong(int steps)
   {
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(linSolverObj);
+    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -251,12 +249,15 @@ struct CustomBdf1Solver
 
 TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
 {
+  ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
+  *y0.data() << 1,2,3;
+
   for (int N = 1; N < 10; N++){
-    CustomBdf1Solver S1;
+    CustomBdf1Solver S1(y0);
     S1.run(N);
     std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
 
-    Bdf1Solver S2;
+    Bdf1Solver S2(y0);
     S2.run(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
@@ -269,12 +270,15 @@ TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
 
 TEST(ode_implicit, arbitraryStepperRunEulerDtSetter)
 {
+  ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
+  *y0.data() << 1,2,3;
+
   for (int N = 1; N < 10; N++){
-    CustomBdf1Solver S1;
+    CustomBdf1Solver S1(y0);
     S1.runWithStepSizeManagerLambda(N);
     std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
 
-    Bdf1Solver S2;
+    Bdf1Solver S2(y0);
     S2.run(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
@@ -287,13 +291,16 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetter)
 
 TEST(ode_implicit, arbitraryStepperRunEulerDtSetterWithWrongDt)
 {
+  ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
+  *y0.data() << 1,2,3;
+
   for (int N = 1; N < 10; N++){
-    CustomBdf1Solver S1;
+    CustomBdf1Solver S1(y0);
     // use here a dt that we know wont work because it is wrong
     S1.runWithStepSizeManagerLambdaWrong(N);
     std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
 
-    Bdf1Solver S2;
+    Bdf1Solver S2(y0);
     S2.run(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
@@ -302,73 +309,3 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterWithWrongDt)
     ASSERT_TRUE( S1.y_[2] != S2.y_[2]);
   }
 }
-
-
-
-// template<typename state_type, typename system_type, typename residual_type>
-// class ResidualPolicy
-//   : public ::pressio::ode::policy::ImplicitResidualPolicyBase<
-//   ResidualPolicy<state_type, system_type, residual_type>
-//   >
-// {
-// public:
-//   static constexpr auto stepper_order = 1;
-//   static constexpr auto num_aux_states = 1;
-
-//   void operator()(const state_type & y,
-// 		  residual_type & R,
-// 		  const std::array<state_type, num_aux_states> & oldYs,
-// 		  const system_type & model,
-// 		  double t,
-// 		  double dt,
-// 		  ::pressio::ode::types::step_t step) const
-//   {
-//     model.velocity(*y.data(), t, *R.data());
-//     R.data()->setConstant(1);
-//   }
-
-//   residual_type operator()(const state_type & y,
-//   			   const std::array<state_type, num_aux_states> & oldYs,
-//   			   const system_type & model,
-//   			   double t,
-//   			   double dt,
-// 			   ::pressio::ode::types::step_t step) const{
-//     // here I would need to compute the time discrete residual
-//     residual_type R(3);
-//     R.data()->setConstant(1);
-//     return R;
-//   }
-// };//end class
-
-
-// template<typename state_type, typename system_type, typename jacobian_type>
-// class JacobianPolicy
-//   : public ::pressio::ode::policy::JacobianPolicyBase<
-//   JacobianPolicy<state_type, system_type, jacobian_type>
-//   >
-// {
-// public:
-//   static constexpr auto stepper_order = 1;
-//   static constexpr auto num_aux_states = 1;
-
-//   void operator()(const state_type & y,
-// 		  jacobian_type & J,
-// 		  const system_type & model,
-// 		  double t,
-// 		  double dt,
-// 		  ::pressio::ode::types::step_t step) const{
-//     J.resize(3,3);
-//     // here I would need to compute the time discrete version
-//   }
-
-//   jacobian_type operator()(const state_type & y,
-//   			   const system_type & model,
-//   			   double t,
-//   			   double dt,
-// 			   ::pressio::ode::types::step_t step) const{
-//     // here I would need to compute the time discrete version
-//     jacobian_type J(3, 3);
-//     return J;
-//   }
-
-// };//end class

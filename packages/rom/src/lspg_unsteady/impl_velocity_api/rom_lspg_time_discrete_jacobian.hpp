@@ -81,7 +81,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 }
 
 
-// user-defined OPS and method = BDF1 and NOT-python
+// user-defined OPS and method = BDF2 and NOT-python
 template <
   ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
