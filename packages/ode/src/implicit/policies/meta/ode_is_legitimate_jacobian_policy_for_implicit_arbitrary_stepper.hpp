@@ -155,16 +155,6 @@ struct is_legitimate_jacobian_policy_for_implicit_arbitrary_stepper
   static constexpr auto c1 = ::pressio::ode::meta::is_legitimate_implicit_state_type<state_t>::value;
   static constexpr auto c2 = ::pressio::ode::meta::is_legitimate_jacobian_type<jacobian_t>::value;
 
-//   static constexpr auto c3 = ::pressio::ode::meta::has_stepper_order_static_member<T>::value;
-//   static_assert( c3, "The jacobian policy you are trying to pass to \
-// arbitrary implicit stepper is missing a static member: stepper_order=... \
-// to set the order of the stepper.");
-
-//   static constexpr auto c4 = ::pressio::ode::meta::has_num_aux_states_static_member<T>::value;
-//   static_assert( c4, "The jacobian policy you are trying to pass to \
-// arbitrary implicit stepper is missing a static member: num_aux_states=... \
-// to set the number of auxiliary states I need.");
-
   static constexpr auto c5 = jacobian_policy_callable_with_six_args<
     T, numPrevStates, state_t, jacobian_t, system_t, scalar_t>::value;
 

@@ -107,7 +107,7 @@ template <
 class DefaultGalerkinExplicitVelocityPolicy;
 
 template <typename type_generator_t, typename enable = void>
-struct GalerkinProblemGenerator;
+class GalerkinProblemGenerator;
 
 
 /* ------------------
@@ -153,7 +153,7 @@ template <
   typename type_generator_t,
   typename enable = void
   >
-struct LSPGSteadyProblemGenerator;
+class LSPGSteadyProblemGenerator;
 
 }} // end namespace pressio::rom
 #endif

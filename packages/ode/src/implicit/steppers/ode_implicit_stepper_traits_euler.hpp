@@ -86,10 +86,10 @@ struct traits<
   using system_t	  = system_type;
   using aux_stepper_t	  = void;
 
-//   static_assert( ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper<system_t>::value,
-// 		"\nThe model type passed to the Euler implicit stepper \
-// does not have a valid API to be used by a regular stepper. \
-// Check the API references to see what you are missing.");
+/*  static_assert( ::pressio::ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper<system_t>::value,
+		"\nThe model type passed to the Euler implicit stepper \
+does not have a valid API to be used by a regular stepper. \
+Check the API references to see what you are missing."); */
 
   //----------------------------------------------------------------
   // do some checks on the system

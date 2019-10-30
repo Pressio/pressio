@@ -134,7 +134,6 @@ void time_discrete_jacobian(jacobian_type & jac,
   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   using namespace ::pressio::ode::constants;
-  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
   jac.scale(cf);
   jac.addToDiagonal(cn);
 }

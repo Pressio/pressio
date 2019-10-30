@@ -51,12 +51,9 @@ TEST(tpetraVectors, loopedVectorManipulation){
   // using GO = typename nat_v_t::global_ordinal_type;
 
   // create a teuchos comm
-  uint_t rank;
-  uint_t numProc;
   Teuchos::RCP<const tcomm> comm;
   comm = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
-  rank = comm->getRank();
-  numProc = comm->getSize();
+  const auto numProc = comm->getSize();
   EXPECT_EQ(numProc, static_cast<uint_t>(4) );
 
   // create native tpetra vector of with N entries

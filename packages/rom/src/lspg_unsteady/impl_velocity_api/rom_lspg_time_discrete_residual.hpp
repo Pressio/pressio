@@ -173,8 +173,8 @@ void time_discrete_residual(const state_type	& currentState,
   // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
   ::pressio::containers::ops::do_update(R, cf,
 					currentState, cn,
-					prevStates[0], cnm1,
-					prevStates[1], cnm2);
+					y_nm1, cnm1,
+					y_nm2, cnm2);
 }
 
 

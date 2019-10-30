@@ -83,22 +83,22 @@ public:
 
   T & operator[](std::size_t i){
     assert( i<n );
-    data_[i];
+    return data_[i];
   }
 
   T const & operator[](std::size_t i) const{
     assert( i<n );
-    data_[i];
+    return data_[i];
   }
 
   T & operator()(std::size_t i){
     assert( i<n );
-    data_[i];
+    return data_[i];
   }
 
   T const & operator()(std::size_t i) const{
     assert( i<n );
-    data_[i];
+    return data_[i];
   }
 
   storing_type & data(){

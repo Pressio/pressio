@@ -78,11 +78,11 @@ void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
   auto mvB_v = mvB.data()->getMultiVectorView();
 
   // compute dot between every column of A with every col of B
-  for (decltype(numVecsA) i=0; i<numVecsA; i++)
+  for (std::size_t i=0; i<numVecsA; i++)
   {
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = mvA_v.getVector(i);
-    for (decltype(numVecsB) j=0; j<numVecsB; j++)
+    for (std::size_t j=0; j<numVecsB; j++)
     {
       const auto colJ = mvB_v.getVector(j);
       C(i,j) = colI->dot(*colJ);

@@ -133,10 +133,6 @@ TEST(ode_implicit, checkModelsJacobianNonVoidMethodMissing){
 TEST(ode_implicit, checkModelsConstMissing){
   using namespace pressio;
   using app_t	 = ode::testing::ModelForImplicitMissingConst;
-  using sc_t	 = typename app_t::scalar_type;
-  using nstate_t = typename app_t::state_type;
-  using njac_t   = typename app_t::jacobian_type;
-
   static_assert(ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper<app_t>::value, "");
   static_assert(ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies<app_t>::value, "");
   static_assert(!ode::meta::is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<app_t>::value, "");

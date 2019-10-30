@@ -95,11 +95,9 @@ public:
   LSPGUnsteadyResidualPolicyVelocityApi(const residual_t & RIn,
 					fom_states_data_type & fomStatesIn,
 					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
-    : R_{RIn},
-      fomStates_(fomStatesIn),
-      fom_velocity_eval_policy(fomEvalVelocityFunctor){
-    static_assert( std::is_void<_ud_ops>::value, "");
-  }
+    : fom_velocity_eval_policy(fomEvalVelocityFunctor),
+      R_{RIn},
+      fomStates_(fomStatesIn){}
 
 //   // cnstr enabled when udOps is non-void and not python
 //   template <

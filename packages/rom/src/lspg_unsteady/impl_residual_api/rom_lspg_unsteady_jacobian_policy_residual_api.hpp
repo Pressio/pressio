@@ -89,10 +89,10 @@ public:
 					const fom_querier_policy & fomQuerierFunctor,
 					const apply_jac_return_type & applyJacObj,
 					const decoder_type & decoder)
-    : fomStates_(fomStates),
-      fom_querier_policy(fomQuerierFunctor),
+    : fom_querier_policy(fomQuerierFunctor),
       jAction_(applyJacObj),
-      decoderObj_(decoder){}
+      decoderObj_(decoder),
+      fomStates_(fomStates){}
 
 public:
   template <
