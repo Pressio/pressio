@@ -171,17 +171,12 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   assert( jphi.numVectors() == phi.numVectors() );
   assert( jphi.length() == phi.length() );
 
-
   // prefactor (f) multiplying f*dt*J*phi
-  constexpr auto prefactor = dtPrefactor<odeStepperName, scalar_type>::value;
-  // auto prefactor = ::pressio::ode::constants::bdf1<scalar_type>::c_f_;
-  // if (odeStepperName == ode::ImplicitEnum::BDF2)
-  //   prefactor = ::pressio::ode::constants::bdf2<scalar_type>::c_f_;
-  const auto a = prefactor*dt;
+  const auto prefactor = dt * dtPrefactor<odeStepperName, scalar_type>::value;
 
   // jphi = phi + prefactor*dt*jphi
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-  ::pressio::containers::ops::do_update(jphi, a, phi, one);
+  ::pressio::containers::ops::do_update(jphi, prefactor, phi, one);
 }
 
 
@@ -231,7 +226,7 @@ template <
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
-			    scalar_type	dt,
+			    const scalar_type & dt,
 			    const decoder_jac_type & phi){
 
   // integral type of the global indices
@@ -251,8 +246,6 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 
   // prefactor (f) multiplying f*dt*J*phi
   constexpr auto prefactor = dtPrefactor<odeStepperName, scalar_type>::value;
-  // if (odeStepperName == ode::ImplicitEnum::BDF2)
-  //   prefactor = ode::constants::bdf2<scalar_type>::c_f_;
 
   //loop over elements of jphi
   for (auto i=0; i<jphi.localLength(); i++){
@@ -279,7 +272,7 @@ template <
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
-			    scalar_type	dt,
+			    const scalar_type & dt,
 			    const decoder_jac_type & phi){
 
   //get row map of phi
@@ -294,9 +287,6 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
   // prefactor (f) multiplying f*dt*J*phi
   constexpr auto prefactor = dtPrefactor<odeStepperName, scalar_type>::value;
-  // auto prefactor = ::pressio::utils::constants::one<scalar_type>();
-  // if (odeStepperName == ode::ImplicitEnum::BDF2)
-  //   prefactor = ode::constants::bdf2<scalar_type>::c_f_;
 
   auto jphi2dView = jphi.get2dViewNonConst();
   auto phi2dView = phi.get2dView();
@@ -326,7 +316,7 @@ template <
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi,
-			    scalar_type	dt,
+			    const scalar_type	& dt,
 			    const decoder_jac_type & phi){
 
   time_discrete_jacobian<odeStepperName>(*jphi.data(), dt, *phi.data());
@@ -343,7 +333,7 @@ template <
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi,
-			    scalar_type	dt,
+			    const scalar_type & dt,
 			    const decoder_jac_type & phi){
   auto jphi_mvv = jphi.data()->getMultiVectorView();
   auto phi_mvv  = phi.data()->getMultiVectorView();
