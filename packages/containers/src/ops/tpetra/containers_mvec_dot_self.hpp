@@ -79,10 +79,10 @@ void dot_self(const mvec_t & A, result_t & C)
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
-  for (auto i=0; i<numVecsA; i++){
+  for (std::size_t i=0; i<(std::size_t)numVecsA; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     auto colI = A.data()->getVector(i);
-    for (auto j=i; j<numVecsA; j++){
+    for (std::size_t j=i; j<(std::size_t)numVecsA; j++){
       auto colJ = A.data()->getVector(j);
       C(i,j) = colI->dot(*colJ);
       C(j,i) = C(i,j);

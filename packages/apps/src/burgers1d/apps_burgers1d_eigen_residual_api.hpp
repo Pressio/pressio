@@ -160,7 +160,7 @@ private:
     // compute time discrete Jacobian
     constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
     J.coeffs() *= -dt;
-    for (int i=0; i<Ncell_; ++i)
+    for (std::size_t i=0; i<Ncell_; ++i)
       J.coeffRef(i,i) += one;
 
     // compute A = J * B

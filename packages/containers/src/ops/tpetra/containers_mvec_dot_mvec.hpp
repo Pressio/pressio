@@ -77,10 +77,10 @@ void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C){
   assert(C.rows() == numVecsA);
   assert(C.cols() == numVecsB);
   // compute dot between every column of A with every col of B
-  for (size_t i=0; i<(size_t)numVecsA; i++){
+  for (std::size_t i=0; i<(std::size_t)numVecsA; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = mvA.data()->getVector(i);
-    for (size_t j=0; j< (size_t)numVecsB; j++)
+    for (std::size_t j=0; j< (std::size_t)numVecsB; j++)
     {
       const auto colJ = mvB.data()->getVector(j);
       C(i,j) = colI->dot(*colJ);

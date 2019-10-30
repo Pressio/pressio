@@ -86,8 +86,8 @@ public:
 					fom_states_data_type & fomStates,
 					const decoder_t & decoder)
     : R_{fomRhs},
-      fomStates_(fomStates),
-      decoder_(decoder){}
+      decoder_(decoder),
+      fomStates_(fomStates){}
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 //   // this cnstr only enabled when udOps is non-void and python

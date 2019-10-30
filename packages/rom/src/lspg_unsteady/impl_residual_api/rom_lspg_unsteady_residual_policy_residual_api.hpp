@@ -83,9 +83,9 @@ public:
   LSPGUnsteadyResidualPolicyResidualApi(const residual_t & RIn,
 					fom_states_data_type & fomStatesIn,
 					const fom_querier_policy & fomQuerierFunctor)
-    : R_{RIn},
-      fomStates_(fomStatesIn),
-      fom_querier_policy(fomQuerierFunctor){}
+    : fom_querier_policy(fomQuerierFunctor),
+      R_{RIn},
+      fomStates_(fomStatesIn){}
 
 public:
   template <
