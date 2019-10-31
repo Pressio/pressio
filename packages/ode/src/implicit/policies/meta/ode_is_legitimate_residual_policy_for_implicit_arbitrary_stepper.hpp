@@ -55,47 +55,82 @@
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<
-  typename T,
-  std::size_t numPrevStates,
-  typename state_t,
-  typename residual_t,
-  typename system_t,
-  typename scalar_t,
-  typename enable = void
-  >
-struct residual_policy_callable_with_six_args : std::false_type{};
 
 template<
   typename T,
-  std::size_t numPrevStates,
   typename state_t,
   typename residual_t,
   typename system_t,
-  typename scalar_t
+  typename enable = void
   >
-struct residual_policy_callable_with_six_args<
-  T, numPrevStates, state_t, residual_t, system_t, scalar_t,
+struct residual_policy_callable_with_four_args : std::false_type{};
+
+template<
+  typename T,
+  typename state_t,
+  typename residual_t,
+  typename system_t
+  >
+struct residual_policy_callable_with_four_args<
+  T, state_t, residual_t, system_t,
   ::pressio::mpl::enable_if_t<
     std::is_same<
       residual_t,
       decltype
       (
-       std::declval<T const>().template operator()
-       <numPrevStates>
+       std::declval<T const>().operator()
        (
 	std::declval<state_t const &>(),
-	std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
-	std::declval<system_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::types::step_t const &>()
+	std::declval<system_t const &>()
 	)
        )
       >::value
     >
   > : std::true_type{};
 /////////////////////////
+
+
+// template<
+//   typename T,
+//   std::size_t numPrevStates,
+//   typename state_t,
+//   typename residual_t,
+//   typename system_t,
+//   typename scalar_t,
+//   typename enable = void
+//   >
+// struct residual_policy_callable_with_six_args : std::false_type{};
+
+// template<
+//   typename T,
+//   std::size_t numPrevStates,
+//   typename state_t,
+//   typename residual_t,
+//   typename system_t,
+//   typename scalar_t
+//   >
+// struct residual_policy_callable_with_six_args<
+//   T, numPrevStates, state_t, residual_t, system_t, scalar_t,
+//   ::pressio::mpl::enable_if_t<
+//     std::is_same<
+//       residual_t,
+//       decltype
+//       (
+//        std::declval<T const>().template operator()
+//        <numPrevStates>
+//        (
+// 	std::declval<state_t const &>(),
+// 	std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
+// 	std::declval<system_t const &>(),
+// 	std::declval<scalar_t const &>(),
+// 	std::declval<scalar_t const &>(),
+// 	std::declval<::pressio::ode::types::step_t const &>()
+// 	)
+//        )
+//       >::value
+//     >
+//   > : std::true_type{};
+// /////////////////////////
 
 
 template<
@@ -155,8 +190,8 @@ struct is_legitimate_residual_policy_for_implicit_arbitrary_stepper
   static constexpr bool c1 = ::pressio::ode::meta::is_legitimate_implicit_state_type<state_t>::value;
   static constexpr bool c2 = ::pressio::ode::meta::is_legitimate_implicit_residual_type<residual_t>::value;
 
-  static constexpr bool c5 = residual_policy_callable_with_six_args<
-    T, numPrevStates, state_t, residual_t, system_t, scalar_t>::value;
+  static constexpr bool c5 = residual_policy_callable_with_four_args<
+    T, state_t, residual_t, system_t>::value;
 
   static constexpr bool c6 = residual_policy_callable_with_seven_args<
     T, numPrevStates, state_t, residual_t, system_t, scalar_t>::value;

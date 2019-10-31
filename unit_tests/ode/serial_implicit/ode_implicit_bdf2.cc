@@ -84,7 +84,8 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   using lin_solver_t = solvers::iterative::EigenIterative<
     solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
+  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 4;
@@ -137,7 +138,8 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   using lin_solver_t = solvers::iterative::EigenIterative<
     solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
+  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 4;
@@ -193,7 +195,8 @@ TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
   using lin_solver_t = solvers::iterative::EigenIterative<
     solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  pressio::solvers::NewtonRaphson<double, lin_solver_t> solverO(linSolverObj);
+  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 4;

@@ -14,7 +14,7 @@ macro(add_serial_exe_and_test TESTNAME PKGNAME TESTSRCS REGEX)
 endmacro()
 #=====================================================================
 
-macro(add_mpi_exe_and_test TESTNAME PKGNAME TESTSRCS nRANKS REGEX)
+macro(add_mpi_exe_and_test TESTNAME PKGNAME TESTSRCS nRANKS REGEXOK)
   set(testNameFinal ${PKGNAME}_${TESTNAME}_np${nRANKS})
   add_executable(${testNameFinal} ${TESTSRCS})
   target_link_libraries(${testNameFinal} ${MPI_CXX_LIBRARIES})
@@ -26,7 +26,8 @@ macro(add_mpi_exe_and_test TESTNAME PKGNAME TESTSRCS nRANKS REGEX)
   set_tests_properties(
     ${testNameFinal}
     PROPERTIES
-    PASS_REGULAR_EXPRESSION ${REGEX}
+    PASS_REGULAR_EXPRESSION ${REGEXOK}
+    FAIL_REGULAR_EXPRESSION "FAILED"
   )
 endmacro()
 #=====================================================================

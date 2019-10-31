@@ -20,20 +20,9 @@ public:
   			    const scalar_type & time,
   			    const scalar_type & dt,
   			    residual_type & R,
-  			    Args & ... states) const
+  			    Args && ... states) const
   {
     R.setConstant(1);
-  }
-
-  template <typename step_t, typename ... Args>
-  residual_type timeDiscreteResidual(const step_t & step,
-  				     const scalar_type & time,
-  				     const scalar_type & dt,
-  				     Args & ... states) const
-  {
-    residual_type R(numDof_);
-    this->timeDiscreteResidual(step, time, dt, R, std::forward<Args>(states)...);
-    return R;
   }
 
   template <typename step_t, typename ... Args>
@@ -48,19 +37,18 @@ public:
     A.setConstant(2);
   }
 
-  template <typename step_t, typename ... Args>
-  dense_matrix_type applyTimeDiscreteJacobian(const step_t & step,
-  					      const scalar_type & time,
-  					      const scalar_type & dt,
-  					      const dense_matrix_type & B,
-  					      int id,
-  					      Args && ... states) const
+  residual_type createTimeDiscreteResidualObject(const state_type & stateIn) const
   {
-    dense_matrix_type A(numDof_, 3);
-    this->applyTimeDiscreteJacobian(step, time, dt, B, id, A, std::forward<Args>(states)...);
-    return A;
+    residual_type R(numDof_);
+    return R;
   }
 
+  dense_matrix_type createApplyTimeDiscreteJacobianObject(const state_type & stateIn,
+							  const dense_matrix_type & B) const
+  {
+    dense_matrix_type A(numDof_, 3);
+    return A;
+  }
 };
 
 TEST(rom_lspg, defaultLSPGProblemResidualAPI)
@@ -94,4 +82,5 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
 
   lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, 0);
   std::cout << &lspgProblem << std::endl;
+
 }

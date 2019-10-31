@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_constants.hpp
+// rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,36 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_CONSTANTS_HPP_
-#define ODE_IMPLICIT_CONSTANTS_HPP_
+#ifndef ROM_HAS_CREATE_APPLY_TIME_DISCRETE_JACOBIAN_OBJECT_METHOD_RETURNING_NON_VOID_HPP_
+#define ROM_HAS_CREATE_APPLY_TIME_DISCRETE_JACOBIAN_OBJECT_METHOD_RETURNING_NON_VOID_HPP_
 
-#include "../ode_ConfigDefs.hpp"
+namespace pressio{ namespace rom{ namespace meta {
 
-namespace pressio{ namespace ode{ namespace constants{
-
-template <typename scalar_t>
-struct bdf1{
-  static constexpr scalar_t c_n_   = ::pressio::utils::constants::one<scalar_t>();
-  static constexpr scalar_t c_nm1_ = ::pressio::utils::constants::negOne<scalar_t>();
-  static constexpr scalar_t c_f_   = ::pressio::utils::constants::negOne<scalar_t>();
-};
-
-template <typename scalar_t>
-struct bdf2{
-  static constexpr scalar_t c_n_   = ::pressio::utils::constants::one<scalar_t>();
-  static constexpr scalar_t c_nm1_ = ::pressio::utils::constants::negOne<scalar_t>() * static_cast<scalar_t>(4)/3;
-  static constexpr scalar_t c_nm2_ = static_cast<scalar_t>(1)/3;
-  static constexpr scalar_t c_f_   = ::pressio::utils::constants::negOne<scalar_t>() * static_cast<scalar_t>(2)/3;
-};
+template <
+  typename T, typename state_t, typename dense_mat_t,
+  typename = void
+  >
+struct has_create_apply_time_discrete_jacobian_object_method_returning_non_void
+  : std::false_type{};
 
 
-}}}// end namespace pressio::ode::constants
+template <typename T, typename state_t, typename dense_mat_t>
+struct has_create_apply_time_discrete_jacobian_object_method_returning_non_void<
+  T, state_t, dense_mat_t,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<dense_mat_t>::value and
+    mpl::is_same<
+      dense_mat_t,
+      decltype(
+	       std::declval<T const>().createApplyTimeDiscreteJacobianObject(
+									     std::declval<state_t const&>(),
+									     std::declval<dense_mat_t const&>()
+									     )
+	       )
+      >::value
+    >
+  > : std::true_type{};
+
+
+}}} // namespace pressio::rom::meta
 #endif

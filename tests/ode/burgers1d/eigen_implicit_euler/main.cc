@@ -45,7 +45,8 @@ int main(int argc, char *argv[]){
   using lin_solver_t = pressio::solvers::iterative::EigenIterative<
     pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;
-  pressio::solvers::NewtonRaphson<scalar_t, lin_solver_t> solverO(linSolverObj);
+  using nonlin_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, scalar_t>; 
+  nonlin_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   scalar_t fint = 35;

@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
            qr_type, converged_when_t, lspg_stepper_t>;
     gnsolver_t solver(lspgProblem.getStepperRef(), yROM);
     solver.setTolerance(1e-13);
-    solver.setMaxIterations(200);
+    solver.setMaxIterations(4);
 
     // integrate in time
     pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
