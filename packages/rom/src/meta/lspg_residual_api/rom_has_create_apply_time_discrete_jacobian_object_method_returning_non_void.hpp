@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_has_create_time_discrete_residual_object_method_returning_non_void.hpp
+// rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,32 +46,36 @@
 //@HEADER
 */
 
-#ifndef ODE_HAS_CREATE_TIME_DISCRETE_RESIDUAL_OBJECT_METHOD_RETURNING_NON_VOID_HPP_
-#define ODE_HAS_CREATE_TIME_DISCRETE_RESIDUAL_OBJECT_METHOD_RETURNING_NON_VOID_HPP_
+#ifndef ROM_HAS_CREATE_APPLY_TIME_DISCRETE_JACOBIAN_OBJECT_METHOD_RETURNING_NON_VOID_HPP_
+#define ROM_HAS_CREATE_APPLY_TIME_DISCRETE_JACOBIAN_OBJECT_METHOD_RETURNING_NON_VOID_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace rom{ namespace meta {
 
 template <
-  typename T, typename state_t, typename residual_t,
+  typename T, typename state_t, typename dense_mat_t,
   typename = void
   >
-struct has_create_time_discrete_residual_object_method_returning_non_void
+struct has_create_apply_time_discrete_jacobian_object_method_returning_non_void
   : std::false_type{};
 
 
-template <typename T, typename state_t, typename residual_t>
-struct has_create_time_discrete_residual_object_method_returning_non_void<
-  T, state_t, residual_t,
+template <typename T, typename state_t, typename dense_mat_t>
+struct has_create_apply_time_discrete_jacobian_object_method_returning_non_void<
+  T, state_t, dense_mat_t,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<residual_t>::value and
+    !std::is_void<dense_mat_t>::value and
     mpl::is_same<
-      residual_t,
+      dense_mat_t,
       decltype(
-	       std::declval<T const>().createTimeDiscreteResidualObject(std::declval<state_t const&>())
+	       std::declval<T const>().createApplyTimeDiscreteJacobianObject(
+									     std::declval<state_t const&>(),
+									     std::declval<dense_mat_t const&>()
+									     )
 	       )
       >::value
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+
+}}} // namespace pressio::rom::meta
 #endif

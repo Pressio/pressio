@@ -21,21 +21,8 @@ public:
     // here I would need to compute the time discrete residual
   }
 
-  // template <int n>
-  // residual_type operator()(const state_type & y,
-  // 			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
-  // 			   const system_type & model,
-  // 			   const double &  t,
-  // 			   const double &  dt,
-  // 			   ::pressio::ode::types::step_t step) const{
-  //   // here I would need to compute the time discrete residual
-  //   return residual_type();
-  // }
-
   residual_type operator()(const state_type & y,
-  			   const system_type & model,
-  			   const double & t,
-			   ::pressio::ode::types::step_t step) const{
+  			   const system_type & model) const{
     return residual_type();
   }
 
@@ -59,22 +46,8 @@ public:
     // here I would need to compute the time discrete version
   }
 
-  // template <int n>
-  // jacobian_type operator()(const state_type & y,
-  // 			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
-  // 			   const system_type & model,
-  // 			   const double &  t,
-  // 			   const double &  dt,
-  // 			   ::pressio::ode::types::step_t step) const{
-  //   // here I would need to compute the time discrete version
-  //   return jacobian_type();
-  // }
-
   jacobian_type operator()(const state_type & y,
-  			   const system_type & model,
-  			   const double &  t,
-			   ::pressio::ode::types::step_t step) const{
-    // here I would need to compute the time discrete version
+  			   const system_type & model) const{
     return jacobian_type();
   }
 

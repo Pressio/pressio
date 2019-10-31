@@ -52,26 +52,22 @@
 namespace pressio{ namespace ode{ namespace meta {
 
 template <
-  typename T, typename step_t, typename sc_t, typename state_t, typename jacobian_t,
+  typename T, typename state_t, typename jacobian_t,
   typename = void
   >
 struct has_create_time_discrete_jacobian_object_method_returning_non_void
   : std::false_type{};
 
 
-template <typename T, typename step_t, typename sc_t, typename state_t, typename jacobian_t>
+template <typename T, typename state_t, typename jacobian_t>
 struct has_create_time_discrete_jacobian_object_method_returning_non_void<
-  T, step_t, sc_t, state_t, jacobian_t,
+  T, state_t, jacobian_t,
   ::pressio::mpl::enable_if_t<
     !std::is_void<jacobian_t>::value and
     mpl::is_same<
       jacobian_t,
       decltype(
-	       std::declval<T const>().createTimeDiscreteJacobianObject(
-									std::declval<step_t const &>(),
-									std::declval<sc_t const &>(),
-									std::declval<state_t const&>()
-									)
+	       std::declval<T const>().createTimeDiscreteJacobianObject(std::declval<state_t const&>())
 	       )
       >::value
     >

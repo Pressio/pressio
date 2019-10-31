@@ -77,20 +77,14 @@ public:
     this->timeDiscreteJacobianImpl(step, time, dt, J, std::forward<Args>(states)... );
   }
 
-  template <typename step_t>
-  residual_type createTimeDiscreteResidualObject(const step_t & step,
-						 const scalar_type & time,
-						 const state_type & state) const
+  residual_type createTimeDiscreteResidualObject(const state_type & state) const
   {
     residual_type R(3);
     R.setConstant(0);
     return R;
   }
 
-  template <typename step_t>
-  jacobian_type createTimeDiscreteJacobianObject(const step_t & step,
-						 const scalar_type & time,
-						 const state_type & state) const
+  jacobian_type createTimeDiscreteJacobianObject(const state_type & state) const
   {
     jacobian_type J(3,3);
     typedef Eigen::Triplet<scalar_type> Tr;

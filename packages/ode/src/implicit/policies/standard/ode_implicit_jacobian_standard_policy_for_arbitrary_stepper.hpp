@@ -81,13 +81,10 @@ public:
 
 public:
 
-  template <typename scalar_type>
   jacobian_type operator()(const state_type & stateIn,
-  			   const system_type & model,
-  			   const scalar_type & t,
-			   const types::step_t & step) const
+  			   const system_type & model) const
   {
-    jacobian_type JJ(model.template createTimeDiscreteJacobianObject(step, t, *stateIn.data()));
+    jacobian_type JJ(model.createTimeDiscreteJacobianObject(*stateIn.data()));
     return JJ;
   }
 

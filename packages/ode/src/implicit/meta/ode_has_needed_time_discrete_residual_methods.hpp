@@ -73,7 +73,7 @@ struct has_needed_time_discrete_residual_methods<
   ::pressio::mpl::enable_if_t<
     // for now, just check case for 2 and 3 states passed
     has_create_time_discrete_residual_object_method_returning_non_void<
-      T, step_t, sc_t, state_t, residual_t
+      T, state_t, residual_t
       >::value and
     has_time_discrete_residual_method_accepting_n_states_returning_void<
       T, 2, step_t, sc_t, state_t, residual_t

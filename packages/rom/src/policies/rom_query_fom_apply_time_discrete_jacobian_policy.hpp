@@ -54,10 +54,25 @@ namespace pressio{ namespace rom{ namespace policy{
 struct QueryFomApplyTimeDiscreteJacobian
 {
 
+  template <class fom_state_t, class fom_t, class operand_t>
+  auto evaluate(const fom_state_t & fomCurrentState,
+  		const fom_t	  & fomObj,
+  		const operand_t   & B) const
+    -> decltype(
+  		fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(),
+							     *B.data())
+  		)
+  {
+    return fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(),
+							*B.data());
+  }
+
+
   // ---------------------
   // for n = 1
   // ---------------------
-  template <class fom_t, class step_t, class time_t, class operand_t, class fom_state_t, class result_t>
+  template <class fom_t, class step_t, class time_t, class operand_t,
+	    class fom_state_t, class result_t>
   void evaluate(const fom_state_t & fomCurrentState,
   		const std::array<fom_state_t, 1> & fomPrevStates,
   		const fom_t	  & fomObj,
@@ -78,78 +93,28 @@ struct QueryFomApplyTimeDiscreteJacobian
   					      *fomPrevStates[0].data());
   }
 
-  template <class fom_t, class step_t, class time_t, class operand_t, class fom_state_t>
-  auto evaluate(const fom_state_t & fomCurrentState,
-  		const std::array<fom_state_t, 1> & fomPrevStates,
+  // ---------------------
+  // for n = 2
+  // ---------------------
+  template <class fom_t, class step_t, class time_t, class operand_t,
+	    class fom_state_t, class result_t>
+  void evaluate(const fom_state_t & fomCurrentState,
+  		const std::array<fom_state_t, 2> & fomPrevStates,
   		const fom_t	  & fomObj,
   		const time_t	  & time,
   		const time_t	  & dt,
   		const step_t	  & step,
   		const operand_t   & B,
+  		result_t	  & A,
   		int compute_jac_wrt_state_id = 0) const
-    -> decltype(
-  		fomObj.template applyTimeDiscreteJacobian(step, time, dt,
-  							  *B.data(),
-  							  compute_jac_wrt_state_id,
-  							  *fomCurrentState.data(),
-  							  *fomPrevStates[0].data())
-  		)
-  {
-    return fomObj.template applyTimeDiscreteJacobian(step, time, dt,
-  						     *B.data(),
-  						     compute_jac_wrt_state_id,
-  						     *fomCurrentState.data(),
-  						     *fomPrevStates[0].data());
-  }
-
-
-  // ---------------------
-  // for n = 2
-  // ---------------------
-  template <class fom_t, class step_t, class time_t, class operand_t, class fom_state_t, class result_t>
-  void evaluate(const fom_state_t & fomCurrentState,
-		const std::array<fom_state_t, 2> & fomPrevStates,
-		const fom_t	  & fomObj,
-  		const time_t	  & time,
-		const time_t	  & dt,
-  		const step_t	  & step,
-		const operand_t   & B,
-		result_t	  & A,
-		int compute_jac_wrt_state_id = 0) const
   {
     fomObj.template applyTimeDiscreteJacobian(step, time, dt,
-					      *B.data(),
-					      compute_jac_wrt_state_id,
-					      *A.data(),
-					      *fomCurrentState.data(),
-					      *fomPrevStates[0].data(),
-					      *fomPrevStates[1].data());
-  }
-
-  template <class fom_t, class step_t, class time_t, class operand_t, class fom_state_t>
-  auto evaluate(const fom_state_t & fomCurrentState,
-		const std::array<fom_state_t, 2> & fomPrevStates,
-		const fom_t	  & fomObj,
-  		const time_t	  & time,
-		const time_t	  & dt,
-  		const step_t	  & step,
-		const operand_t   & B,
-		int compute_jac_wrt_state_id = 0) const
-    -> decltype(
-		fomObj.template applyTimeDiscreteJacobian(step, time, dt,
-							  *B.data(),
-							  compute_jac_wrt_state_id,
-							  *fomCurrentState.data(),
-							  *fomPrevStates[0].data(),
-							  *fomPrevStates[1].data())
-  		)
-  {
-    return fomObj.template applyTimeDiscreteJacobian(step, time, dt,
-						     *B.data(),
-						     compute_jac_wrt_state_id,
-						     *fomCurrentState.data(),
-						     *fomPrevStates[0].data(),
-						     *fomPrevStates[1].data());
+  					      *B.data(),
+  					      compute_jac_wrt_state_id,
+  					      *A.data(),
+  					      *fomCurrentState.data(),
+  					      *fomPrevStates[0].data(),
+  					      *fomPrevStates[1].data());
   }
 
 };

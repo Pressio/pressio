@@ -87,10 +87,8 @@ public:
 
   LSPGUnsteadyJacobianPolicyResidualApi(fom_states_data_type & fomStates,
 					const fom_querier_policy & fomQuerierFunctor,
-					const apply_jac_return_type & applyJacObj,
 					const decoder_type & decoder)
     : fom_querier_policy(fomQuerierFunctor),
-      jAction_(applyJacObj),
       decoderObj_(decoder),
       fomStates_(fomStates){}
 
@@ -103,7 +101,7 @@ public:
     typename scalar_t
   >
   void operator()(const lspg_state_t			& romState,
-		  const ::pressio::ode::StatesContainer<lspg_state_t, n>	& romPrevStates,
+		  const ::pressio::ode::StatesContainer<lspg_state_t, n>  & romPrevStates,
   		  const fom_t				& app,
 		  const scalar_t			& time,
 		  const scalar_t			& dt,
@@ -113,21 +111,14 @@ public:
     this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, romJac);
   }
 
-  template <
-    int n,
-    typename lspg_state_t,
-    typename fom_t,
-    typename scalar_t
-    >
+  template <typename lspg_state_t, typename fom_t>
   apply_jac_return_t operator()(const lspg_state_t			& romState,
-				const ::pressio::ode::StatesContainer<lspg_state_t, n>	& romPrevStates,
-				const fom_t				& app,
-				const scalar_t				& time,
-				const scalar_t				& dt,
-				const ::pressio::ode::types::step_t	& step) const
+				const fom_t				& app) const
   {
-    this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, jAction_);
-    return jAction_;
+    fomStates_.template reconstructCurrentFomState(romState);
+    const auto & phi = decoderObj_.getReferenceToJacobian();
+    apply_jac_return_t romJac(fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(), app, phi));
+    return romJac;
   }
 
 private:
@@ -139,7 +130,7 @@ private:
     typename lspg_jac_t
   >
   void compute_impl(const lspg_state_t			& romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t,n>    & romPrevStates,
+		    const ::pressio::ode::StatesContainer<lspg_state_t,n> & romPrevStates,
   		    const fom_t			        & app,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,
@@ -158,10 +149,8 @@ private:
   }
 
 protected:
-  mutable apply_jac_return_t jAction_	= {};
   const decoder_type & decoderObj_	= {};
   fom_states_data_type & fomStates_;
-
 };
 
 }}}//end namespace pressio::rom::impl

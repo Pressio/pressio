@@ -82,13 +82,10 @@ public:
 
 public:
 
-  template <typename scalar_type>
   residual_type operator()(const state_type & odeCurrentState,
-  			   const system_type & model,
-  			   const scalar_type & t,
-  			   const types::step_t & step) const{
+  			   const system_type & model) const{
 
-    residual_type R(model.template createTimeDiscreteResidualObject(step, t, *odeCurrentState.data()));
+    residual_type R(model.createTimeDiscreteResidualObject(*odeCurrentState.data()));
     return R;
   }
 

@@ -61,7 +61,6 @@ template<
   typename state_t,
   typename residual_t,
   typename system_t,
-  typename scalar_t,
   typename enable = void
   >
 struct residual_policy_callable_with_four_args : std::false_type{};
@@ -70,11 +69,10 @@ template<
   typename T,
   typename state_t,
   typename residual_t,
-  typename system_t,
-  typename scalar_t
+  typename system_t
   >
 struct residual_policy_callable_with_four_args<
-  T, state_t, residual_t, system_t, scalar_t,
+  T, state_t, residual_t, system_t,
   ::pressio::mpl::enable_if_t<
     std::is_same<
       residual_t,
@@ -83,9 +81,7 @@ struct residual_policy_callable_with_four_args<
        std::declval<T const>().operator()
        (
 	std::declval<state_t const &>(),
-	std::declval<system_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::types::step_t const &>()
+	std::declval<system_t const &>()
 	)
        )
       >::value
@@ -195,7 +191,7 @@ struct is_legitimate_residual_policy_for_implicit_arbitrary_stepper
   static constexpr bool c2 = ::pressio::ode::meta::is_legitimate_implicit_residual_type<residual_t>::value;
 
   static constexpr bool c5 = residual_policy_callable_with_four_args<
-    T, state_t, residual_t, system_t, scalar_t>::value;
+    T, state_t, residual_t, system_t>::value;
 
   static constexpr bool c6 = residual_policy_callable_with_seven_args<
     T, numPrevStates, state_t, residual_t, system_t, scalar_t>::value;

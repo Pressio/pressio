@@ -80,11 +80,9 @@ public:
   LSPGUnsteadyResidualPolicyResidualApi() = delete;
   ~LSPGUnsteadyResidualPolicyResidualApi() = default;
 
-  LSPGUnsteadyResidualPolicyResidualApi(const residual_t & RIn,
-					fom_states_data_type & fomStatesIn,
+  LSPGUnsteadyResidualPolicyResidualApi(fom_states_data_type & fomStatesIn,
 					const fom_querier_policy & fomQuerierFunctor)
     : fom_querier_policy(fomQuerierFunctor),
-      R_{RIn},
       fomStates_(fomStatesIn){}
 
 public:
@@ -105,21 +103,13 @@ public:
     this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, romR);
   }
 
-  template <
-    std::size_t n,
-    typename lspg_state_t,
-    typename fom_t,
-    typename scalar_t
-    >
+  template <typename lspg_state_t, typename fom_t>
   residual_t operator()(const lspg_state_t		    & romState,
-			const ::pressio::ode::StatesContainer<lspg_state_t,n>    & romPrevStates,
-			const fom_t			    & app,
-			const scalar_t			    & time,
-			const scalar_t			    & dt,
-			const ::pressio::ode::types::step_t & step) const
+			const fom_t			    & app) const
   {
-    this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, R_);
-    return R_;
+    fomStates_.template reconstructCurrentFomState(romState);
+    residual_t R( fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(), app) );
+    return R;
   }
 
 private:
@@ -146,10 +136,8 @@ private:
   }
 
 protected:
-  mutable residual_t R_ = {};
   fom_states_data_type & fomStates_;
-
-};//end class
+};
 
 }}}//end namespace pressio::rom::impl
 #endif
