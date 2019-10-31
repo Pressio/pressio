@@ -70,7 +70,6 @@ struct dtPrefactor<::pressio::ode::ImplicitEnum::BDF2, scalar_t>{
 // ------------------------------------------------------
 
 
-
 // user-defined OPS and NOT python
 template <
   ode::ImplicitEnum odeStepperName,
@@ -140,8 +139,6 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   udOps.attr("time_discrete_jacobian")(jphi, phi, prefactor, dt);
 }
 #endif
-
-
 
 
 

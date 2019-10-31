@@ -26,17 +26,6 @@ public:
   }
 
   template <typename step_t, typename ... Args>
-  residual_type timeDiscreteResidual(const step_t & step,
-				     const scalar_type & time,
-  				     const scalar_type & dt,
-  				     Args & ... states) const
-  {
-    residual_type g;
-    //this->timeDiscreteResidual(step, time, g, std::forward<Args>(states)...);
-    return g;
-  }
-
-  template <typename step_t, typename ... Args>
   void applyTimeDiscreteJacobian(const step_t & step,
 				 const scalar_type & time,
 				 const scalar_type & dt,
@@ -46,17 +35,20 @@ public:
 				 Args & ... states) const
   {}
 
-  template <typename step_t, typename ... Args>
-  dense_matrix_type applyTimeDiscreteJacobian(const step_t & step,
-  					      const scalar_type & time,
-  					      const scalar_type & dt,
-  					      const dense_matrix_type & B,
-  					      int id,
-  					      Args & ... states) const
+
+  residual_type createTimeDiscreteResidualObject(const state_type & stateIn) const
+  {
+    residual_type R;
+    return R;
+  }
+
+  dense_matrix_type createApplyTimeDiscreteJacobianObject(const state_type & stateIn,
+							  const dense_matrix_type & B) const
   {
     dense_matrix_type A;
     return A;
   }
+
 };
 
 TEST(rom_lspg_meta, validResidualAPI){

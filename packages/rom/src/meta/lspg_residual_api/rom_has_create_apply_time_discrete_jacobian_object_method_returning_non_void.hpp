@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_time_discrete_residual_policy.hpp
+// rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,60 +46,36 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
-#define ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
+#ifndef ROM_HAS_CREATE_APPLY_TIME_DISCRETE_JACOBIAN_OBJECT_METHOD_RETURNING_NON_VOID_HPP_
+#define ROM_HAS_CREATE_APPLY_TIME_DISCRETE_JACOBIAN_OBJECT_METHOD_RETURNING_NON_VOID_HPP_
 
-namespace pressio{ namespace rom{ namespace policy{
+namespace pressio{ namespace rom{ namespace meta {
 
-struct QueryFomTimeDiscreteResidual
-{
+template <
+  typename T, typename state_t, typename dense_mat_t,
+  typename = void
+  >
+struct has_create_apply_time_discrete_jacobian_object_method_returning_non_void
+  : std::false_type{};
 
-  template <typename fom_state_t, typename fom_t>
-  auto evaluate(const fom_state_t & fomCurrentState,
-  		const fom_t   & fomObj) const
-    -> decltype(
-  		fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data())
-  		)
-  {
-    return fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data());
-  }
 
-  // ---------------------
-  // for n = 1
-  // ---------------------
-  template <typename fom_t, typename step_t, typename time_t, typename result_t, typename fom_state_t>
-  void evaluate(const fom_state_t & fomCurrentState,
-  		const std::array<fom_state_t, 1> & fomPrevStates,
-		const fom_t   & fomObj,
-		const time_t  & time,
-		const time_t  & dt,
-  		const step_t  & step,
-  		result_t      & R) const
-  {
-    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-    					 *fomCurrentState.data(),
-    					 *fomPrevStates[0].data());
-  }
+template <typename T, typename state_t, typename dense_mat_t>
+struct has_create_apply_time_discrete_jacobian_object_method_returning_non_void<
+  T, state_t, dense_mat_t,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<dense_mat_t>::value and
+    mpl::is_same<
+      dense_mat_t,
+      decltype(
+	       std::declval<T const>().createApplyTimeDiscreteJacobianObject(
+									     std::declval<state_t const&>(),
+									     std::declval<dense_mat_t const&>()
+									     )
+	       )
+      >::value
+    >
+  > : std::true_type{};
 
-  // ---------------------
-  // for n = 2
-  // ---------------------
-  template <typename fom_t, typename step_t, typename time_t, typename result_t, typename fom_state_t>
-  void evaluate(const fom_state_t & fomCurrentState,
-  		const std::array<fom_state_t, 2> & fomPrevStates,
-  		const fom_t   & fomObj,
-  		const time_t  & time,
-  		const time_t  & dt,
-  		const step_t  & step,
-  		result_t      & R) const
-  {
-    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-    					 *fomCurrentState.data(),
-    					 *fomPrevStates[0].data(),
-  					 *fomPrevStates[1].data());
-  }
 
-};
-
-}}} //end namespace pressio::rom::policy
+}}} // namespace pressio::rom::meta
 #endif

@@ -61,7 +61,7 @@ namespace pressio{ namespace ode{ namespace impl{
 
 template <
   ode::ImplicitEnum method,
-  int n,
+  std::size_t n,
   typename state_type,
   typename residual_type,
   typename scalar_type,
@@ -82,7 +82,7 @@ void time_discrete_residual(const state_type	& odeCurrentState,
 
 template <
   ode::ImplicitEnum method,
-  int n,
+  std::size_t n,
   typename state_type,
   typename residual_type,
   typename scalar_type,

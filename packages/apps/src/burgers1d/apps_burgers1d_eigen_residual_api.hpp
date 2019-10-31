@@ -86,20 +86,9 @@ public:
   			    const scalar_type & time,
   			    const scalar_type & dt,
   			    residual_type & R,
-  			    Args & ... states) const
+  			    Args && ... states) const
   {
     this->timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
-  }
-
-  template <typename step_t, typename ... Args>
-  residual_type timeDiscreteResidual(const step_t & step,
-  				     const scalar_type & time,
-  				     const scalar_type & dt,
-  				     Args & ... states) const
-  {
-    residual_type R(Ncell_);
-    this->timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
-    return R;
   }
 
   template <typename step_t, typename ... Args>
@@ -114,22 +103,24 @@ public:
     this->applyTimeDiscreteJacobianImpl(step, time, dt, B, id, A, std::forward<Args>(states)...);
   }
 
-  template <typename step_t, typename ... Args>
-  dense_matrix_type applyTimeDiscreteJacobian(const step_t & step,
-  					      const scalar_type & time,
-  					      const scalar_type & dt,
-  					      const dense_matrix_type & B,
-  					      int id,
-  					      Args && ... states) const
+  residual_type createTimeDiscreteResidualObject(const state_type & stateIn) const
   {
+    std::cout << "calling createTimeDiscreteResidualObject" << std::endl;
+    residual_type R(Ncell_);
+    R.setConstant(0);
+    return R;
+  }
+
+  dense_matrix_type createApplyTimeDiscreteJacobianObject(const state_type & stateIn,
+							  const dense_matrix_type & B) const
+  {
+    std::cout << "calling createApplyTimeDiscreteJacobianObject" << std::endl;
     dense_matrix_type A(Ncell_, B.cols());
-    this->applyTimeDiscreteJacobianImpl(step, time, dt, B, id, A, std::forward<Args>(states)...);
+    A.setConstant(0);
     return A;
   }
 
-
 private:
-
   // case when we only have a single auxiliary state
   template <typename step_t>
   void timeDiscreteResidualImpl(const step_t & step,

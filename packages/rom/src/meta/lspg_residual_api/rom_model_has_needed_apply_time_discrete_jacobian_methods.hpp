@@ -50,7 +50,7 @@
 #define ROM_MODEL_HAS_NEEDED_APPLY_TIME_DISCRETE_JACOBIAN_METHODS_HPP_
 
 #include "rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
-#include "rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_non_void.hpp"
+#include "rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp"
 
 namespace pressio{ namespace rom{ namespace meta {
 
@@ -76,14 +76,8 @@ struct model_has_needed_apply_time_discrete_jacobian_methods<
     has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void<
       model_t, 4, step_t, scalar_t, state_t, dense_mat_t
       >::value and
-    has_apply_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
-      model_t, 2, step_t, scalar_t, state_t, dense_mat_t
-      >::value and
-    has_apply_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
-      model_t, 3, step_t, scalar_t, state_t, dense_mat_t
-      >::value and
-    has_apply_time_discrete_jacobian_method_accepting_n_states_returning_non_void<
-      model_t, 4, step_t, scalar_t, state_t, dense_mat_t
+    has_create_apply_time_discrete_jacobian_object_method_returning_non_void<
+      model_t, state_t, dense_mat_t
       >::value
     >
   > : std::true_type{};
