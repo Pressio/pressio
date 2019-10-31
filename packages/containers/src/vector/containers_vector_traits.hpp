@@ -467,8 +467,11 @@ struct traits<Vector<wrapped_type,
   using host_mirror_space  = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t      = typename wrapped_type::host_mirror_type;
 
-  static constexpr bool has_host_execution_space =
-    (std::is_same<execution_space, Kokkos::Serial>::value
+  static constexpr bool has_host_execution_space = 
+    (false 
+     #ifdef KOKKOS_ENABLE_SERIAL
+     || std::is_same<execution_space, Kokkos::Serial>::value
+     #endif
      #ifdef KOKKOS_ENABLE_OPENMP
      || std::is_same<execution_space, Kokkos::OpenMP>::value
      #endif
