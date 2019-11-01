@@ -239,7 +239,9 @@ void integrateNSteps(stepper_type		& stepper,
 but the state type you are using is not admissible for implicit time-stepping. \
 See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
 
-  integrateNSteps(stepper, odeStateInOut, startTime, dt, numSteps, collector, solver, guessCb);
+  integrateNSteps(stepper, odeStateInOut, startTime,
+		  dt, numSteps, collector, solver,
+		  std::forward<guess_callback_t>(guessCb));
 }
 
 }}//end namespace pressio::ode
