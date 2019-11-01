@@ -236,7 +236,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
   template <typename time_type, typename dt_setter, typename ... Args>
   static void execute(const ::pressio::ode::types::step_t & numSteps,
 		      const time_type			  & start_time,
-		      const dt_setter			  & dtManager,
+		      dt_setter				  && dtManager,
 		      Args				  && ... args)
   {
     using step_t = ::pressio::ode::types::step_t;

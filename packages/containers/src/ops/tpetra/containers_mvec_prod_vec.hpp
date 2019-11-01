@@ -82,7 +82,7 @@ void product(const mvec_type & mvA, const vec_type & vecB, res_type & C){
   // how many vectors are in mvA
   const auto numVecs = mvA.globalNumVectors();
   // size of vecB
-  assert(size_t(numVecs) == vecB.size());
+  assert(numVecs == vecB.size());
 
   // my number of rows
   const auto myNrows = mvA.localLength();
