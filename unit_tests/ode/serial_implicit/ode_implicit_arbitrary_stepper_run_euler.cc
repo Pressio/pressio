@@ -157,7 +157,7 @@ struct Bdf1Solver
     : appObj_{}, y_{yIn}, stepperObj_{y_, appObj_}
   {}
 
-  void run(int steps)
+  void integrateForNSteps(int steps)
   {
     lin_solver_t linSolverObj;
     nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
@@ -205,15 +205,14 @@ struct CustomBdf1Solver
     : appObj_{}, y_{yIn}, stepperObj_{y_, appObj_}
   {}
 
-  void run(int steps)
+  void integrateForNSteps(int steps)
   {
     lin_solver_t linSolverObj;
     nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
     ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 
-
-  void runWithStepSizeManagerLambda(int steps)
+  void integrateForNStepsWithStepSizeManagerLambda(int steps)
   {
     lin_solver_t linSolverObj;
     nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
@@ -225,7 +224,7 @@ struct CustomBdf1Solver
     ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
   };
 
-  void runWithStepSizeManagerLambdaWrong(int steps)
+  void integrateForNStepsWithStepSizeManagerLambdaWrongDt(int steps)
   {
     lin_solver_t linSolverObj;
     nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
@@ -237,22 +236,37 @@ struct CustomBdf1Solver
     ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
   };
 
+  void integrateToTimeWithStepSizeManagerLambda(double finalTime)
+  {
+    lin_solver_t linSolverObj;
+    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
+    using step_t = ::pressio::ode::types::step_t;
+    const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
+				  std::cout << " SETTING DT " << std::endl;
+				  dt = dt_;
+				};
+    ::pressio::ode::integrateToTargetTime(stepperObj_, y_, 0.0, finalTime, solverO, dtSetterLambda);
+  };
+
 };
 
 
 
 TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
 {
+  constexpr double one = ::pressio::utils::constants::one<double>();
+  constexpr double two = ::pressio::utils::constants::two<double>();
+  constexpr double three = ::pressio::utils::constants::three<double>();
   ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
-  *y0.data() << 1,2,3;
+  *y0.data() << one,two,three;
 
   for (int N = 1; N < 10; N++){
     CustomBdf1Solver S1(y0);
-    S1.run(N);
+    S1.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
 
     Bdf1Solver S2(y0);
-    S2.run(N);
+    S2.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
     EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
@@ -264,16 +278,19 @@ TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
 
 TEST(ode_implicit, arbitraryStepperRunEulerDtSetter)
 {
+  constexpr double one = ::pressio::utils::constants::one<double>();
+  constexpr double two = ::pressio::utils::constants::two<double>();
+  constexpr double three = ::pressio::utils::constants::three<double>();
   ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
-  *y0.data() << 1,2,3;
+  *y0.data() << one,two,three;
 
   for (int N = 1; N < 10; N++){
     CustomBdf1Solver S1(y0);
-    S1.runWithStepSizeManagerLambda(N);
+    S1.integrateForNStepsWithStepSizeManagerLambda(N);
     std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
 
     Bdf1Solver S2(y0);
-    S2.run(N);
+    S2.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
     EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
@@ -285,21 +302,76 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetter)
 
 TEST(ode_implicit, arbitraryStepperRunEulerDtSetterWithWrongDt)
 {
+  constexpr double one = ::pressio::utils::constants::one<double>();
+  constexpr double two = ::pressio::utils::constants::two<double>();
+  constexpr double three = ::pressio::utils::constants::three<double>();
   ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
-  *y0.data() << 1,2,3;
+  *y0.data() << one,two,three;
 
   for (int N = 1; N < 10; N++){
     CustomBdf1Solver S1(y0);
     // use here a dt that we know wont work because it is wrong
-    S1.runWithStepSizeManagerLambdaWrong(N);
+    S1.integrateForNStepsWithStepSizeManagerLambdaWrongDt(N);
     std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
 
     Bdf1Solver S2(y0);
-    S2.run(N);
+    S2.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
     ASSERT_TRUE( S1.y_[0] != S2.y_[0]);
     ASSERT_TRUE( S1.y_[1] != S2.y_[1]);
     ASSERT_TRUE( S1.y_[2] != S2.y_[2]);
   }
+}
+
+
+TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeTrivial)
+{
+  constexpr double one = ::pressio::utils::constants::one<double>();
+  constexpr double two = ::pressio::utils::constants::two<double>();
+  constexpr double three = ::pressio::utils::constants::three<double>();
+  ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
+  *y0.data() << one,two,three;
+
+  // here we set final time to zero so this should not do anything,
+  // the state should remain the same as init condition
+  constexpr double finalTime = 0.0;
+
+  CustomBdf1Solver S1(y0);
+  S1.integrateToTimeWithStepSizeManagerLambda(finalTime);
+  std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
+
+  EXPECT_DOUBLE_EQ( S1.y_[0] , one );
+  EXPECT_DOUBLE_EQ( S1.y_[1] , two );
+  EXPECT_DOUBLE_EQ( S1.y_[2] , three);
+}
+
+
+TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
+{
+  constexpr double one = ::pressio::utils::constants::one<double>();
+  constexpr double two = ::pressio::utils::constants::two<double>();
+  constexpr double three = ::pressio::utils::constants::three<double>();
+  ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
+  *y0.data() << one,two,three;
+
+  // here we set final time to something non trivial and such that
+  // it is divisble by the default dt so that we get an integer number of steps
+  constexpr double finalTime = 0.1;
+
+  CustomBdf1Solver S1(y0);
+  S1.integrateToTimeWithStepSizeManagerLambda(finalTime);
+  std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
+
+  Bdf1Solver S2(y0);
+  // compute num of steps so that we make sure the integrate
+  // to target time matches the integrate n steps
+  const auto dt = S2.dt_;
+  const int nSteps = finalTime/dt;
+  S2.integrateForNSteps(nSteps);
+  std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
+
+  EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
+  EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
+  EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
 }
