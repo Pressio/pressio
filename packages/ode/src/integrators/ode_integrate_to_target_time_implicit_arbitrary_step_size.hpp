@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_INTEGRATORS
+// ode_integrate_to_target_time_implicit_arbitrary_step_size.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,55 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_HPP_
-#define ODE_INTEGRATORS_HPP_
+#ifndef ODE_INTEGRATE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#define ODE_INTEGRATE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 
-#include "ODE_BASIC"
+#include "../ode_ConfigDefs.hpp"
+#include "./impl/ode_call_stepper_policy.hpp"
+#include "./impl/ode_to_target_time_integrators.hpp"
+#include "../meta/ode_is_legitimate_time_step_size_setter.hpp"
+#include "../implicit/meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
 
-// integrator for fixed number of steps
-#include "ode/src/integrators/ode_integrate_n_steps_explicit.hpp"
-#include "ode/src/integrators/ode_integrate_n_steps_implicit_constant_step_size.hpp"
-#include "ode/src/integrators/ode_integrate_n_steps_implicit_arbitrary_step_size.hpp"
+namespace pressio{ namespace ode{
 
-// integrator until target time is reached
-#include "ode/src/integrators/ode_integrate_to_target_time_implicit_arbitrary_step_size.hpp"
+// for now, the arbitrary step size enabled when using "Arbitrary" stepper
 
+template<
+  typename stepper_type,
+  typename state_type,
+  typename time_type,
+  typename solver_type,
+  typename step_size_cb_t,
+  typename std::enable_if<
+    ::pressio::ode::details::traits<stepper_type>::is_implicit and
+    ::pressio::ode::details::traits<stepper_type>::enum_id ==
+    ::pressio::ode::ImplicitEnum::Arbitrary and
+    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+      solver_type, stepper_type, state_type
+      >::value and
+    ::pressio::ode::meta::is_legitimate_time_step_size_setter<
+      step_size_cb_t, types::step_t, time_type
+      >::value
+    >::type * = nullptr
+  >
+void integrateToTargetTime(stepper_type		& stepper,
+			   state_type		& odeStateInOut,
+			   const time_type	start_time,
+			   const time_type	final_time,
+			   solver_type		& solver,
+			   step_size_cb_t	&& dtManager){
+
+  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. \
+See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+
+  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t	 = impl::IntegratorToTargetTimeWithTimeStepSizeSetter<do_step_policy_t>;
+  advancer_t::execute(start_time, final_time,
+		      std::forward<step_size_cb_t>(dtManager),
+		      odeStateInOut, stepper, solver);
+}
+
+}}//end namespace pressio::ode
 #endif
