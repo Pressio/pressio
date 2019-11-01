@@ -301,35 +301,45 @@ template <::pressio::ode::ImplicitEnum odeStepperName>
 struct time_discrete_single_entry_tpetra;
 
 template <>
-struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::Euler>{
+struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::Euler>
+{
   template <typename T, typename state_type, int n>
-    static void evaluate(const T& dt, T & R,
-			 int lid,
-			 const state_type& odeCurrentState,
-			 const std::array<state_type,n> & prevStates){
-    //R[i] = odeCurrentState[lid]- prevStates[0][lid] - dt*R[i];
-    R = (odeCurrentState.getData())[lid]
-      - (prevStates[0].getData())[lid] - dt * R;
+  static void evaluate(const T& dt,
+		       T & R,
+		       int lid,
+		       const state_type& odeCurrentState,
+		       const std::array<state_type,n> & prevStates)
+  {
+    constexpr auto cn   = ::pressio::ode::constants::bdf1<T>::c_n_;
+    constexpr auto cnm1 = ::pressio::ode::constants::bdf1<T>::c_nm1_;
+    const auto cf	  = ::pressio::ode::constants::bdf1<T>::c_f_ * dt;
+
+    R = cn*(odeCurrentState.getData())[lid] + cnm1*(prevStates[0].getData())[lid] + cf*R;
   }
 
   template <typename T, typename state_type>
-    static void evaluate(const T& dt, T & R,
-			 int lid,
-			 const state_type& odeCurrentState,
-			 const state_type & prevStates0){
-    R = (odeCurrentState.getData())[lid]
-      - (prevStates0.getData())[lid] - dt * R;
+  static void evaluate(const T& dt, T & R,
+		       int lid,
+		       const state_type& odeCurrentState,
+		       const state_type & prevStates0)
+  {
+    constexpr auto cn   = ::pressio::ode::constants::bdf1<T>::c_n_;
+    constexpr auto cnm1 = ::pressio::ode::constants::bdf1<T>::c_nm1_;
+    const auto cf	  = ::pressio::ode::constants::bdf1<T>::c_f_ * dt;
+
+    R = cn*(odeCurrentState.getData())[lid] + cnm1*(prevStates0.getData())[lid] + cf*R;
   }
 };
 
 template <>
-struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::BDF2>{
+struct time_discrete_single_entry_tpetra<::pressio::ode::ImplicitEnum::BDF2>
+{
   template <typename T, typename state_type, int n>
-    static void evaluate(const T& dt,
-			 T & R,
-			 int lid,
-			 const state_type & odeCurrentState,
-			 const std::array<state_type,n> & prevStates)
+  static void evaluate(const T& dt,
+		       T & R,
+		       int lid,
+		       const state_type & odeCurrentState,
+		       const std::array<state_type,n> & prevStates)
   {
     constexpr auto cn   = ::pressio::ode::constants::bdf2<T>::c_n_;
     constexpr auto cnm1 = ::pressio::ode::constants::bdf2<T>::c_nm1_;

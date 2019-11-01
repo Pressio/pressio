@@ -197,7 +197,6 @@ private:
   //   ::pressio::containers::ops::deep_copy(odeState, aux1);
   // }
 
-
 private:
   void residualImpl(const state_type & odeState, residual_type & R) const
   {
@@ -209,10 +208,7 @@ private:
 
   residual_type residualImpl(const state_type & odeState) const
   {
-    return this->residual_obj_.template operator()<
-      mytraits::numAuxStates
-      >(odeState, this->auxStates_,
-       this->sys_.get(), this->t_, this->dt_, this->step_);
+    return this->residual_obj_.operator()(odeState, this->sys_.get());
   }
 
   void jacobianImpl(const state_type & odeState, jacobian_type & J) const
@@ -225,10 +221,7 @@ private:
 
   jacobian_type jacobianImpl(const state_type & odeState) const
   {
-    return this->jacobian_obj_.template operator()<
-      mytraits::numAuxStates
-      >(odeState, this->auxStates_,
-	this->sys_.get(), this->t_, this->dt_, this->step_);
+    return this->jacobian_obj_.operator()(odeState, this->sys_.get());
   }
 
 };//end class

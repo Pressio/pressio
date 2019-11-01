@@ -9,7 +9,7 @@ TEST(containers_multi_vector_distributed_tpetra_block, Traits){
   using LO = int;
   using GO = unsigned long;
   typedef Tpetra::MultiVector<>::node_type NT;
-  typedef Tpetra::Map<LO, GO, NT> map_type;
+  // typedef Tpetra::Map<LO, GO, NT> map_type;
   using nat_t = Tpetra::Experimental::BlockMultiVector<ST, LO, GO, NT>;
 
   STATIC_ASSERT_IS_MULTIVECTOR_TPETRA_BLOCK(nat_t);

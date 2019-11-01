@@ -108,9 +108,6 @@ private:
   fom_state_reconstr_t		fomStateReconstructor_;
   fom_states_data		fomStates_;
 
-  lspg_residual_t		lspgResidualRef_;
-  lspg_matrix_t			jPhiMatrix_;
-
   lspg_residual_policy_t	residualPolicy_;
   lspg_jacobian_policy_t	jacobianPolicy_;
   lspg_stepper_t		stepperObj_;
@@ -139,27 +136,9 @@ public:
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStates_(fomStateReference_, fomStateReconstructor_),
       //
-      // here we query at step 0 and t0
-      lspgResidualRef_( residualQuerier_.template evaluate(fomStateReference_,
-      							   fomStates_.getCRefToFomOldStates(),
-      							   appObj,
-      							   t0_,
-      							   dt0_,
-      							   step0_)),
-      //
-      // construct J*phi once
-      jPhiMatrix_(applyJacobQuerier_.template evaluate(fomStateReference_,
-						       fomStates_.getCRefToFomOldStates(),
-						       appObj,
-						       t0_,
-						       dt0_,
-						       step0_,
-						       decoder.getReferenceToJacobian())),
-      //
       // construct policies
-      residualPolicy_(lspgResidualRef_, fomStates_, residualQuerier_),
-      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
-      //
+      residualPolicy_(fomStates_, residualQuerier_),
+      jacobianPolicy_(fomStates_, applyJacobQuerier_, decoder),
       // construct stepper
       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
   {}

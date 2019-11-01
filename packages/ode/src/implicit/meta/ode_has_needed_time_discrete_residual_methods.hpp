@@ -50,7 +50,7 @@
 #define ODE_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_NON_VOID_RETURN_HPP_
 
 #include "ode_has_time_discrete_residual_method_accepting_n_states_returning_void.hpp"
-#include "ode_has_time_discrete_residual_method_accepting_n_states_returning_non_void.hpp"
+#include "ode_has_create_time_discrete_residual_object_method_returning_non_void.hpp"
 
 namespace pressio{ namespace ode{ namespace meta {
 
@@ -72,11 +72,8 @@ struct has_needed_time_discrete_residual_methods<
   T, step_t, sc_t, state_t, residual_t,
   ::pressio::mpl::enable_if_t<
     // for now, just check case for 2 and 3 states passed
-    has_time_discrete_residual_method_accepting_n_states_returning_non_void<
-      T, 2, step_t, sc_t, state_t, residual_t
-      >::value and
-    has_time_discrete_residual_method_accepting_n_states_returning_non_void<
-      T, 3, step_t, sc_t, state_t, residual_t
+    has_create_time_discrete_residual_object_method_returning_non_void<
+      T, state_t, residual_t
       >::value and
     has_time_discrete_residual_method_accepting_n_states_returning_void<
       T, 2, step_t, sc_t, state_t, residual_t

@@ -58,15 +58,15 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
   using scalar_t   = double;
 
   problem_t sys;
+  // my solution vector
+  state_t y(2);
 
   // linear system
   using lin_solver_t = iterative::EigenIterative<linear::iterative::LSCG, jacobian_t>;
   lin_solver_t linearSolverObj;
   // nonlinear system
-  NewtonRaphson<scalar_t, lin_solver_t> solver(linearSolverObj);
+  NewtonRaphson<problem_t, lin_solver_t, scalar_t> solver(sys, y, linearSolverObj);
 
-  // my solution vector
-  state_t y(2);
   solver.solve(sys, y);
 
   EXPECT_NEAR( y[0],  1.0, 1e-8 );

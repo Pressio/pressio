@@ -54,6 +54,16 @@ namespace pressio{ namespace rom{ namespace policy{
 struct QueryFomTimeDiscreteResidual
 {
 
+  template <typename fom_state_t, typename fom_t>
+  auto evaluate(const fom_state_t & fomCurrentState,
+  		const fom_t   & fomObj) const
+    -> decltype(
+  		fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data())
+  		)
+  {
+    return fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data());
+  }
+
   // ---------------------
   // for n = 1
   // ---------------------
@@ -71,60 +81,22 @@ struct QueryFomTimeDiscreteResidual
     					 *fomPrevStates[0].data());
   }
 
-  template <typename fom_t, typename step_t, typename time_t, typename fom_state_t>
-  auto evaluate(const fom_state_t & fomCurrentState,
-		const std::array<fom_state_t, 1> & fomPrevStates,
-		const fom_t   & fomObj,
-  		const time_t  & time,
-  		const time_t  & dt,
-  		const step_t  & step) const
-    -> decltype(
-  		fomObj.template timeDiscreteResidual(step, time, dt,
-						     *fomCurrentState.data(),
-						     *(fomPrevStates[0].data()))
-  		)
-  {
-    return fomObj.template timeDiscreteResidual(step, time, dt, *fomCurrentState.data(),
-						*(fomPrevStates[0].data()));
-  }
-
-
   // ---------------------
   // for n = 2
   // ---------------------
   template <typename fom_t, typename step_t, typename time_t, typename result_t, typename fom_state_t>
   void evaluate(const fom_state_t & fomCurrentState,
   		const std::array<fom_state_t, 2> & fomPrevStates,
-		const fom_t   & fomObj,
-		const time_t  & time,
-		const time_t  & dt,
+  		const fom_t   & fomObj,
+  		const time_t  & time,
+  		const time_t  & dt,
   		const step_t  & step,
   		result_t      & R) const
   {
     fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
     					 *fomCurrentState.data(),
     					 *fomPrevStates[0].data(),
-					 *fomPrevStates[1].data());
-  }
-
-  template <typename fom_t, typename step_t, typename time_t, typename fom_state_t>
-  auto evaluate(const fom_state_t & fomCurrentState,
-		const std::array<fom_state_t, 2> & fomPrevStates,
-		const fom_t   & fomObj,
-  		const time_t  & time,
-  		const time_t  & dt,
-  		const step_t  & step) const
-    -> decltype(
-  		fomObj.template timeDiscreteResidual(step, time, dt,
-						     *fomCurrentState.data(),
-						     *fomPrevStates[0].data(),
-						     *fomPrevStates[1].data())
-  		)
-  {
-    return fomObj.template timeDiscreteResidual(step, time, dt,
-						*fomCurrentState.data(),
-						*fomPrevStates[0].data(),
-						*fomPrevStates[1].data());
+  					 *fomPrevStates[1].data());
   }
 
 };
