@@ -274,6 +274,7 @@ public:
 				 wls_state_t	 & wlsInitialState,
 				 scalar_t	t0)
     : /* construct things that we need, like the policies and the system
+         basically here we should put what Eric's already started doing. 
 	residualPolicy(...),
 	jacobianPolicy(..),
 	systemObject(fomObj, residualPolicy, jacobianPolicy)
