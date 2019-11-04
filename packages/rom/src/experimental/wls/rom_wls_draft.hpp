@@ -301,7 +301,12 @@ int main()
   using stepper_stencil = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
 
   // the wls problem
-  using wls_problem	 = pressio::rom::WlsProblemGeneratorResidualApi<
+  /* Solver Types
+	1.) Regular Gauss--Newton
+    a.) storage for N x Ns residuals (and associated routines)
+    b.) Storage for a sparse (N Ns) x (K Ns ) Jacobian  
+  */
+  using wls_problem	 = pressio::rom::WlsProb lemGeneratorResidualApi<
     DefaultWlsTypeGeneratorResidualApi, numStepsInWindow,
     fom_t, wls_state_t, decoder_t, stepper_stencil, scalar_t>;
 
