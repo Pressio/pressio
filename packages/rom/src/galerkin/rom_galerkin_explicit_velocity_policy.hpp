@@ -89,23 +89,23 @@ public:
       decoder_(decoder),
       fomStates_(fomStates){}
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   // this cnstr only enabled when udOps is non-void and python
-//   template <
-//     typename _ud_ops = ud_ops,
-//     mpl::enable_if_t<
-//       mpl::is_same<_ud_ops, pybind11::object>::value
-//       > * = nullptr
-//     >
-//   DefaultGalerkinExplicitVelocityPolicy(fom_states_data_type & fomStates,
-// 					const fom_rhs_t & fomResids,
-// 					const decoder_t & decoder,
-// 					const _ud_ops & udOps)
-//     : fomStates_(fomStates),
-//       fom_rhs_t(fomResids),
-//       decoder_(decoder),
-//       udOps_{udOps}{}
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  // this cnstr only enabled when udOps is non-void and python
+  template <
+    typename _ud_ops = ud_ops,
+    mpl::enable_if_t<
+      mpl::is_same<_ud_ops, pybind11::object>::value
+      > * = nullptr
+    >
+  DefaultGalerkinExplicitVelocityPolicy(const fom_rhs_t & fomRhs,
+					fom_states_data_type & fomStates,
+					const decoder_t & decoder,
+					const _ud_ops & udOps)
+    : R_{fomRhs},
+      decoder_(decoder),
+      fomStates_(fomStates),
+      udOps_{udOps}{}
+#endif
 
 public:
   /* for now, the ROM state and ROM velocity must be of the same type */
@@ -216,14 +216,16 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    app.attr("velocity")(yFom_, t, fomRhs_);
+    const auto & yFom = fomStates_.getCRefToCurrentFomState();
+    app.attr("velocity")(yFom, t, R_);
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
     timer->start("phiT*fomRhs");
 #endif
     const auto & phi = decoder_.getReferenceToJacobian();
-    auto constexpr transposePhi = true;
-    udOps_.attr("multiply2")(phi, fomRhs_, romR, transposePhi);
+    constexpr bool transposePhi = true;
+    udOps_.attr("multiply2")(phi, R_, romR, transposePhi);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
