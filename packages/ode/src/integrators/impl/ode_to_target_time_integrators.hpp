@@ -90,7 +90,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
 
     step_t step	   = 1;
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
-    while (time <= final_time)
+    while (time < final_time)
     {
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
