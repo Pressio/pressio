@@ -111,10 +111,10 @@ public:
 
 public:
   OdeStorage() = delete;
-  OdeStorage(const OdeStorage &) = delete;
-  OdeStorage & operator=(const OdeStorage &) = delete;
-  OdeStorage(OdeStorage &&) = delete;
-  OdeStorage & operator=(OdeStorage &&) = delete;
+  // OdeStorage(const OdeStorage &) = delete;
+  // OdeStorage & operator=(const OdeStorage &) = delete;
+  // OdeStorage(OdeStorage &&) = delete;
+  // OdeStorage & operator=(OdeStorage &&) = delete;
 
   ~OdeStorage() = default;
 
