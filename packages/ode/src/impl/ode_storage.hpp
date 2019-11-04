@@ -154,7 +154,7 @@ public:
     mpl::enable_if_t<
       _n == 2
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      ,!containers::meta::is_array_pybind11<_T>::value
+      and !containers::meta::is_array_pybind11<_T>::value
 #endif
       > * = nullptr
   >
@@ -167,7 +167,7 @@ public:
     std::size_t _n = n,
     mpl::enable_if_t<
       _n == 2
-      containers::meta::is_array_pybind11<_T>::value
+      and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
   OdeStorage(_T const & y)
@@ -184,7 +184,7 @@ public:
     mpl::enable_if_t<
       _n == 3
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      ,!containers::meta::is_array_pybind11<_T>::value
+      and !containers::meta::is_array_pybind11<_T>::value
 #endif
       > * = nullptr
   >
@@ -197,7 +197,7 @@ public:
     std::size_t _n = n,
     mpl::enable_if_t<
       _n == 3
-      containers::meta::is_array_pybind11<_T>::value
+      and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
   OdeStorage(_T const & y)
@@ -215,7 +215,7 @@ public:
     mpl::enable_if_t<
       _n == 4
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      ,!containers::meta::is_array_pybind11<_T>::value
+      and !containers::meta::is_array_pybind11<_T>::value
 #endif
       > * = nullptr
   >
@@ -228,7 +228,7 @@ public:
     std::size_t _n = n,
     mpl::enable_if_t<
       _n == 4
-      containers::meta::is_array_pybind11<_T>::value
+      and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
   OdeStorage(_T const & y)
