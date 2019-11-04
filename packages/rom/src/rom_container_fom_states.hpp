@@ -76,10 +76,10 @@ public:
   // }
 
   FomStatesContainer() = delete;
-  FomStatesContainer(const FomStatesContainer &) = delete;
-  FomStatesContainer & operator=(const FomStatesContainer &) = delete;
-  FomStatesContainer(FomStatesContainer &&) = delete;
-  FomStatesContainer & operator=(FomStatesContainer &&) = delete;
+  // FomStatesContainer(const FomStatesContainer &) = delete;
+  // FomStatesContainer & operator=(const FomStatesContainer &) = delete;
+  // FomStatesContainer(FomStatesContainer &&) = delete;
+  // FomStatesContainer & operator=(FomStatesContainer &&) = delete;
   ~FomStatesContainer() = default;
 
   /* ----------------
