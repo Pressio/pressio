@@ -100,7 +100,7 @@ public:
 		  const ::pressio::ode::types::step_t	& step,
 		  residual_t				& romR) const
   {
-    this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, romR);
+    this->compute_impl(romState, romPrevStates, app, time, dt, step, romR);
   }
 
   template <typename lspg_state_t, typename fom_t>
@@ -113,14 +113,11 @@ public:
   }
 
 private:
-  template <
-    std::size_t n,
-    typename lspg_state_t,
-    typename fom_t,
-    typename scalar_t
-  >
+
+  // we have here n = 1 prev rom states
+  template <typename lspg_state_t, typename fom_t, typename scalar_t>
   void compute_impl(const lspg_state_t		        & romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t,n>    & romPrevStates,
+		    const ::pressio::ode::StatesContainer<lspg_state_t, 1> & romPrevStates,
 		    const fom_t			        & app,
 		    const scalar_t		        & time,
 		    const scalar_t			& dt,
@@ -128,9 +125,30 @@ private:
 		    residual_t			        & romR) const
   {
     fomStates_.reconstructCurrentFomState(romState);
-    fomStates_.template reconstructFomOldStates<n>(romPrevStates);
+    fomStates_.template reconstructFomOldStates<1>(romPrevStates);
 
-    fom_querier_policy::template evaluate<fom_states_data_type::size()>(fomStates_, app, time, dt, step, romR);
+    const auto & yn   = fomStates_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
+    fom_querier_policy::evaluate(yn, ynm1, app, time, dt, step, romR);
+  }
+
+  // we have here n = 2 prev rom states
+  template <typename lspg_state_t, typename fom_t, typename scalar_t>
+  void compute_impl(const lspg_state_t		        & romState,
+		    const ::pressio::ode::StatesContainer<lspg_state_t, 2> & romPrevStates,
+		    const fom_t			        & app,
+		    const scalar_t		        & time,
+		    const scalar_t			& dt,
+		    const ::pressio::ode::types::step_t & step,
+		    residual_t			        & romR) const
+  {
+    fomStates_.reconstructCurrentFomState(romState);
+    fomStates_.template reconstructFomOldStates<2>(romPrevStates);
+
+    const auto & yn   = fomStates_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
+    const auto & ynm2 = fomStates_.getCRefToFomStatePrevPrevStep();
+    fom_querier_policy::evaluate(yn, ynm1, ynm2, app, time, dt, step, romR);
   }
 
 protected:
