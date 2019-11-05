@@ -75,7 +75,9 @@ public:
   FomStatesStaticContainer(const reconstuctor_type & fomStateReconstr,
 			   Args && ... args)
     : fomStateReconstrObj_(fomStateReconstr),
-      data_( std::forward<Args>(args)... ){}
+      data_( std::forward<Args>(args)... ){
+    this->resetContainersToZero();
+  }
 
   ~FomStatesStaticContainer() = default;
 
@@ -85,39 +87,59 @@ public:
   }
 
   const fom_state_type & getCRefToCurrentFomState() const{
+    static_assert( n>=1, "Cannot call getCRefToCurrentFomState if n < 1");
     return data_[0];
   }
 
   const fom_state_type & getCRefToFomStatePrevStep() const{
-    // need to put static assert here 1 <= n-1
+    static_assert( n>=2, "Cannot call getCRefToFomStatePrevStep if n < 2");
     return data_[1];
   }
 
   const fom_state_type & getCRefToFomStatePrevPrevStep() const{
-    // need to put static assert here 2 <= n-1
+    static_assert( n>=3, "Cannot call getCRefToFomStatePrevPrevStep if n < 3");
     return data_[2];
   }
+
 
   template <typename rom_state_t>
   void reconstructCurrentFomState(const rom_state_t & romY)
   {
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("reconstruct fom state");
+#endif
+
+    static_assert( n>=1, "Cannot call reconstructCurrentFomState if n < 1");
     fomStateReconstrObj_(romY, data_[0]);
+
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    timer->stop("reconstruct fom state");
+#endif
   }
+
 
   template <std::size_t n2, typename rom_state_t>
   void reconstructFomOldStates(const ::pressio::ode::StatesContainer<rom_state_t, n2> & romYprev)
   {
-    static_assert(n2 < n, "Cannot reconstruct more states than currently stored");
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("reconstruct fom old state");
+#endif
 
+    static_assert( n>n2, "Cannot call reconstructFomOldStates if n > n2");
     for (std::size_t i=0; i<n2; i++){
       fomStateReconstrObj_(romYprev[i], data_[i+1]);
     }
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    timer->stop("reconstruct fom old state");
+#endif
   }
 
 private:
   /* set all entries to zero for all members */
   void resetContainersToZero(){
-    for (auto i=0; i<n; i++)
+    for (std::size_t i=0; i<n; i++)
       ::pressio::containers::ops::set_zero(data_[i]);
   }
 
@@ -133,195 +155,3 @@ private:
 
 }}//end namespace pressio::rom
 #endif
-
-
-
-
-
-
-
-// public:
-//   static constexpr int N_ = N;
-
-//   /* ----------------
-//    * N = 0
-//    * ---------------*/
-
-//   /* cnstr for N = 0, and fom_state_type is a pressio vector wrapper */
-//   template <
-//     typename _fom_state_type = fom_state_type,
-//     int _N = N,
-//     ::pressio::mpl::enable_if_t<
-//       _N==0 and
-//       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
-//       > * = nullptr
-//     >
-//   FomStatesContainer(const _fom_state_type & fomStateIn,
-// 		     const reconstuctor_type & fomStateReconstr)
-//     : fomState_(fomStateIn),
-//       fomStateReconstrObj_(fomStateReconstr)
-//   {
-//     this->resetContainersToZero();
-//   }
-
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   /* cnstr for N = 0, and fom_state_type is a pybind11 array */
-//   template <
-//     typename _fom_state_type = fom_state_type,
-//     int _N = N,
-//     ::pressio::mpl::enable_if_t<
-//       _N==0 and
-//       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
-//       > * = nullptr
-//     >
-//   FomStatesContainer(const _fom_state_type & fomStateIn,
-// 		const reconstuctor_type & fomStateReconstr)
-//     : fomState_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
-//       fomStateReconstrObj_(fomStateReconstr)
-//   {
-//     this->resetContainersToZero();
-//   }
-// #endif
-
-
-//   /* ----------------
-//    * N = 1
-//    * ---------------*/
-//   /* cnstr for N = 1, and fom_state_type is a pressio vector wrapper */
-//   template <
-//     typename _fom_state_type = fom_state_type,
-//     int _N = N,
-//     ::pressio::mpl::enable_if_t<
-//       _N==1 and
-//       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
-//       > * = nullptr
-//     >
-//   FomStatesContainer(const _fom_state_type & fomStateIn,
-// 		const reconstuctor_type & fomStateReconstr)
-//     : fomState_(fomStateIn),
-//       fomOldStates_{{fomStateIn}},
-//       fomStateReconstrObj_(fomStateReconstr)
-//   {
-//     this->resetContainersToZero();
-//   }
-
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   /* cnstr for N = 1, and fom_state_type is a pybind11 array */
-//   template <
-//     typename _fom_state_type = fom_state_type,
-//     int _N = N,
-//     ::pressio::mpl::enable_if_t<
-//       _N==1 and
-//       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
-//       > * = nullptr
-//     >
-//   FomStatesContainer(const _fom_state_type & fomStateIn,
-// 		const reconstuctor_type & fomStateReconstr)
-//     : fomState_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
-//       fomOldStates_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
-//       fomStateReconstrObj_(fomStateReconstr)
-//   {
-//     this->resetContainersToZero();
-//   }
-// #endif
-
-
-//   /* ----------------
-//    * N = 2
-//    * ---------------*/
-//   /* cnstr for N = 2, and fom_state_type is a pressio vector wrapper */
-//   template <
-//     typename _fom_state_type = fom_state_type,
-//     int _N = N,
-//     ::pressio::mpl::enable_if_t<
-//       _N==2 and
-//       ::pressio::containers::meta::is_vector_wrapper<_fom_state_type>::value
-//       > * = nullptr
-//     >
-//   FomStatesContainer(const _fom_state_type & fomStateIn,
-// 		const reconstuctor_type & fomStateReconstr)
-//     : fomState_(fomStateIn),
-//       fomOldStates_{{fomStateIn, fomStateIn}},
-//       fomStateReconstrObj_(fomStateReconstr)
-//   {
-//     this->resetContainersToZero();
-//   }
-
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   /* cnstr for N = 2, and fom_state_type is a pybind11 array */
-//   template <
-//     typename _fom_state_type = fom_state_type,
-//     int _N = N,
-//     ::pressio::mpl::enable_if_t<
-//       _N==2 and
-//       ::pressio::containers::meta::is_array_pybind11<_fom_state_type>::value
-//       > * = nullptr
-//     >
-//   FomStatesContainer(const _fom_state_type & fomStateIn,
-// 		const reconstuctor_type & fomStateReconstr)
-//     : fomState_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())} },
-//       fomOldStates_{ {_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())},
-// 		{_fom_state_type(const_cast<_fom_state_type &>(fomStateIn).request())}},
-//       fomStateReconstrObj_(fomStateReconstr)
-//   {
-//     this->resetContainersToZero();
-//   }
-// #endif
-
-
-// public:
-
-//   const fom_state_type & getCRefToCurrentFomState() const{
-//     return fomState_;
-//   }
-
-//   const std::array<fom_state_type, N> & getCRefToFomOldStates() const{
-//     return fomOldStates_;
-//   }
-
-//   template <typename rom_state_t>
-//   void reconstructCurrentFomState(const rom_state_t & romY) const
-//   {
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-//     timer->start("reconstruct fom state");
-// #endif
-
-//     fomStateReconstrObj_(romY, fomState_);
-
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     timer->stop("reconstruct fom state");
-// #endif
-//   }
-
-//   template <int n, typename rom_state_t>
-//   void reconstructFomOldStates(const ::pressio::ode::StatesContainer<rom_state_t, n> & romYprev) const
-//   {
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-//     timer->start("reconstruct fom old state");
-// #endif
-
-//     for (auto i=0; i<n; i++){
-//       fomStateReconstrObj_(romYprev[i], fomOldStates_[i]);
-//     }
-
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     timer->stop("reconstruct fom old state");
-// #endif
-//   }
-
-// private:
-//   /* set all entries to zero for all members */
-//   void resetContainersToZero(){
-//     ::pressio::containers::ops::set_zero(fomState_);
-//     for (auto i=0; i<N; i++)
-//       ::pressio::containers::ops::set_zero(fomOldStates_[i]);
-//   }
-
-// private:
-//   mutable fom_state_type fomState_                = {};
-//   mutable std::array<fom_state_type, N> fomOldStates_  = {};
-//   const reconstuctor_type & fomStateReconstrObj_  = {};
-
-// };//end class
