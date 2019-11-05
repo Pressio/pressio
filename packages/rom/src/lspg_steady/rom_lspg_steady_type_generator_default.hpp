@@ -96,11 +96,11 @@ struct DefaultLSPGSteadyTypeGenerator
   using lspg_matrix_t		= decoder_jac_t;
 
   // policy for evaluating the rhs of the fom object (<true> for steady overload)
-  using fom_eval_rhs_policy_t	= ::pressio::rom::policy::EvaluateFomVelocityDefault<this_t::is_steady>;
+  using fom_eval_rhs_policy_t	= ::pressio::rom::policy::QueryFomVelocityDefault<this_t::is_steady>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above (<true> for steady overload
-  using fom_apply_jac_policy_t	= ::pressio::rom::policy::ApplyFomJacobianDefault<this_t::is_steady>;
+  using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyJacobianDefault<this_t::is_steady>;
 
   // Policy defining how to compute the LSPG residual
   using lspg_residual_policy_t	= ::pressio::rom::LSPGSteadyResidualPolicy<

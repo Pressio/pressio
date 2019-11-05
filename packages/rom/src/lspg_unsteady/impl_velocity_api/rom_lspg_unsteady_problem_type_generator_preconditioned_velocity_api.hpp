@@ -53,8 +53,8 @@
 #include "rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
 #include "../../decorators/rom_preconditioned_decorator_residual.hpp"
 #include "../../decorators/rom_preconditioned_decorator_jacobian.hpp"
-#include "../../policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
-#include "../../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
+#include "../../fom_querying_policies/rom_query_fom_velocity_unsteady_policy.hpp"
+#include "../../fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
 #include "rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{
@@ -99,11 +99,11 @@ Verify the fom/adapter class you are using meets the velocity api.");
   using ud_ops_t		= typename common_types_t::ud_ops_t;
 
   // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
-  using fom_eval_velocity_policy_t	= ::pressio::rom::policy::EvaluateFomVelocityDefault<false>;
+  using fom_eval_velocity_policy_t	= ::pressio::rom::policy::QueryFomVelocityDefault<false>;
 
   // policy for left multiplying the fom jacobian with decoder_jac_t
   // possibly involving other stuff like explained above (<false> for unsteady overload)
-  using fom_apply_jac_policy_t	= ::pressio::rom::policy::ApplyFomJacobianDefault<false>;
+  using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyJacobianDefault<false>;
 
   // policy defining how to compute the LSPG time-discrete residual
   using lspg_residual_policy_t =

@@ -51,8 +51,8 @@
 
 #include "rom_lspg_unsteady_residual_policy_residual_api.hpp"
 #include "rom_lspg_unsteady_jacobian_policy_residual_api.hpp"
-#include "../../policies/rom_query_fom_time_discrete_residual_policy.hpp"
-#include "../../policies/rom_query_fom_apply_time_discrete_jacobian_policy.hpp"
+#include "../../fom_querying_policies/rom_query_fom_time_discrete_residual_policy.hpp"
+#include "../../fom_querying_policies/rom_query_fom_apply_time_discrete_jacobian_policy.hpp"
 #include "rom_lspg_unsteady_type_generator_common_residual_api.hpp"
 #include "../../../../ode/src/ode_fwd.hpp"
 

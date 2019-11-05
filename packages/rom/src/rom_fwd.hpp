@@ -76,10 +76,10 @@ class Masked;
 namespace policy{
 
 template <bool is_steady_problem>
-struct EvaluateFomVelocityDefault;
+struct QueryFomVelocityDefault;
 
 template <bool is_steady_problem>
-struct ApplyFomJacobianDefault;
+struct QueryFomApplyJacobianDefault;
 
 struct QueryFomTimeDiscreteResidual;
 
