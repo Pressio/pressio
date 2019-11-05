@@ -134,7 +134,7 @@ public:
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomStates_(fomStateReference_, fomStateReconstructor_),
+      fomStates_(fomStateReconstructor_, fomStateReference_),
       //
       // construct policies
       residualPolicy_(fomStates_, residualQuerier_),

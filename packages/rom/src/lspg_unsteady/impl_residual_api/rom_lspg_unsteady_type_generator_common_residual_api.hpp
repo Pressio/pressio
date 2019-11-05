@@ -137,11 +137,11 @@ to LSPGUnsteadyProblem a template argument as follows: \n \
 Note that this is the total number of states needed including previous ones, \n \
 basically the size of the stpper stencil.");
 
-  // numAuxStates is the number of auxiliary states needed, so all other beside y_n
-  static constexpr std::size_t auxStates = tot_n_setter::value - 1;
+  // numStates is the number of states needed
+  static constexpr std::size_t numStates = tot_n_setter::value;
 
   // type of class holding the fom states
-  using fom_states_data = ::pressio::rom::FomStatesContainer<fom_state_t, auxStates, fom_state_reconstr_t>;
+  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
 
   // if we have a non-trivial user-defined ops, need to find from Args
   using ud_ops_t = void;

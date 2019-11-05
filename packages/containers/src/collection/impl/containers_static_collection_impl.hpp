@@ -74,7 +74,7 @@ class StaticCollection
 {
   static_assert( ::pressio::containers::meta::is_wrapper<T>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-		 or containers::meta::is_array_pybind11<_T>::value
+		 or containers::meta::is_array_pybind11<T>::value
 #endif
 		 , "Currently, you can only create a StaticCollection of types \
 which have pressio wrappers.");

@@ -50,7 +50,7 @@
 #define ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_VELOCITY_api_HPP_
 
 #include "../../rom_fwd.hpp"
-#include "../../rom_container_fom_states.hpp"
+#include "../../rom_static_container_fom_states.hpp"
 #include "../../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "rom_lspg_time_discrete_jacobian.hpp"
 
@@ -241,7 +241,7 @@ private:
     // todo: this is not needed if jacobian is called after resiudal
     // because residual takes care of reconstructing the fom state
     //    timer->start("reconstruct fom state");
-    fomStates_.template reconstructCurrentFomState(romState);
+    fomStates_.reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
