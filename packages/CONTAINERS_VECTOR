@@ -51,6 +51,8 @@
 
 #include "CONTAINERS_BASIC"
 
+#include "containers/src/collection/containers_static_collection.hpp"
+
 #include "containers/src/vector/containers_native_vector_static_asserts.hpp"
 #include "containers/src/vector/containers_vector_traits.hpp"
 #include "containers/src/vector/containers_vector_meta.hpp"

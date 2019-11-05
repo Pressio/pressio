@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_MULTI_VECTOR
+// containers_static_collection.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,15 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MULTI_VECTOR_HPP_
-#define CONTAINERS_MULTI_VECTOR_HPP_
+#ifndef CONTAINERS_STATIC_COLLECTION_HPP_
+#define CONTAINERS_STATIC_COLLECTION_HPP_
 
-#include "CONTAINERS_BASIC"
+#include "./impl/containers_static_collection_impl.hpp"
 
-#include "containers/src/collection/containers_static_collection.hpp"
+namespace pressio{ namespace containers{
 
-#include "containers/src/multi_vector/containers_native_multi_vector_static_asserts.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_traits.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_meta.hpp"
+template<typename T, std::size_t n>
+using StaticCollection = ::pressio::containers::impl::StaticCollection<T, n>;
 
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_epetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra_block.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_kokkos.hpp"
-
+}}//end namespace pressio::containers
 #endif
