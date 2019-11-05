@@ -70,18 +70,22 @@ template<
   >
 void do_update(T & v, scalar_t a,
 	       const T & v1, scalar_t b){
+
   // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
-  }
+  assert(v.ndim()==1 && v1.ndim()==1);
 
   const auto vsz = v.size();
-  if (vsz != v1.size())
-    throw std::runtime_error("containers::ops::do_update: Input shapes must match");
-
-  for (decltype(v.size()) i=0; i<vsz; ++i){
-    v.mutable_at(i) = a*v.at(i) + b*v1.at(i);
+  auto v_proxy = v.mutable_unchecked();
+  const auto v1_proxy = v1.unchecked();
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i);
   }
+
+  // // if (v.ndim() > 1){
+  // //   throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
+  // // }
+  // if (vsz != v1.size())
+  //   throw std::runtime_error("containers::ops::do_update: Input shapes must match");
 }
 
 

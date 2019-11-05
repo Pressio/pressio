@@ -66,14 +66,12 @@ auto norm1(const vec_type & a) -> typename vec_type::value_type
 {
   using sc_t = typename vec_type::value_type;
   sc_t result = 0.0;
-
   // make sure this is a vector
-  if (a.ndim() > 1){
-    throw std::runtime_error("a.ndims()!=1, this norm op is for pybind11 vectors");
-  }
+  assert(a.ndim() == 1);
 
+  auto a_proxy = a.unchecked();
   for (decltype(a.size()) i=0; i<a.size(); i++)
-    result += std::abs(a.at(i));
+    result += std::abs(a_proxy(i));
   return result;
 }
 
@@ -88,14 +86,12 @@ auto norm2(const vec_type & a) -> typename vec_type::value_type
 {
   using sc_t = typename vec_type::value_type;
   sc_t result = 0.0;
-
   // make sure this is a vector
-  if (a.ndim() > 1){
-    throw std::runtime_error("a.ndims()!=1, this norm op is for pybind11 vectors");
-  }
+  assert(a.ndim() == 1);
 
+  auto a_proxy = a.unchecked();
   for (decltype(a.size()) i=0; i<a.size(); i++)
-    result += a.at(i)*a.at(i);
+    result += a_proxy(i)*a_proxy(i);
   return std::sqrt(result);
 }
 
