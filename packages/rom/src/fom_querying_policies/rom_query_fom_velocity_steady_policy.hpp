@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_evaluate_fom_velocity_steady_policy.hpp
+// rom_query_fom_velocity_steady_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,13 @@
 //@HEADER
 */
 
-#ifndef ROM_EVALUATE_FOM_VELOCITY_STEADY_HPP_
-#define ROM_EVALUATE_FOM_VELOCITY_STEADY_HPP_
+#ifndef ROM_QUERY_FOM_VELOCITY_STEADY_POLICY_HPP_
+#define ROM_QUERY_FOM_VELOCITY_STEADY_POLICY_HPP_
 
 namespace pressio{ namespace rom{ namespace policy{
 
 template <>
-struct EvaluateFomVelocityDefault<true>{
+struct QueryFomVelocityDefault<true>{
 
   template <
     typename fom_t,

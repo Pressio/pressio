@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_apply_fom_jacobian_steady_policy.hpp
+// ode_system_wrapper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,75 @@
 //@HEADER
 */
 
-#ifndef ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
-#define ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
+#ifndef ODE_SYSTEM_WRAPPER_HPP_
+#define ODE_SYSTEM_WRAPPER_HPP_
 
-namespace pressio{ namespace rom{ namespace policy{
+#include "ode_fwd.hpp"
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include <pybind11/pybind11.h>
+#include <pybind11/functional.h>
+#endif
 
-template <>
-struct ApplyFomJacobianDefault<true>{
+namespace pressio{ namespace ode{ namespace impl{
 
-  template <
-    typename fom_t,
-    typename state_t,
-    typename operand_t
-    >
-  auto evaluate(const fom_t	  & fomObj,
-		const state_t   & yFOM,
-		const operand_t & B) const
-    -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data()))
-  {
-    return fomObj.applyJacobian(*yFOM.data(), *B.data());
+template<
+  typename model_type,
+  typename enable = void
+  >
+struct OdeSystemWrapper;
+
+
+template<typename model_type>
+struct OdeSystemWrapper<
+  model_type
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  , mpl::enable_if_t<
+      ::pressio::mpl::not_same<model_type, pybind11::object >::value
+      >
+#endif
+  >
+{
+  OdeSystemWrapper(const model_type & system)
+    : data_(system){}
+
+  OdeSystemWrapper() = delete;
+  ~OdeSystemWrapper() = default;
+
+  const model_type & get() const{
+    return data_;
   }
 
-  template <
-    typename fom_t,
-    typename state_t,
-    typename operand_t,
-    typename result_t
-    >
-  void evaluate(const fom_t	  & fomObj,
-		const state_t	  & yFOM,
-		const operand_t & B,
-		result_t	  & out) const
-  {
-    fomObj.applyJacobian(*yFOM.data(), *B.data(), *out.data());
-  }
-
+private:
+  const model_type & data_;
 };
 
-}}} //end namespace pressio::rom::policy
+
+/* for some reason to be determined, when we deal with
+ * python objects, we need to pass by copy
+ */
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename model_type>
+struct OdeSystemWrapper<
+  model_type,
+  mpl::enable_if_t<
+    ::pressio::mpl::is_same<model_type, pybind11::object >::value
+    >
+  >
+{
+  OdeSystemWrapper(const model_type & system)
+    : data_(system){}
+
+  OdeSystemWrapper() = delete;
+  ~OdeSystemWrapper() = default;
+
+  const model_type & get() const{
+    return data_;
+  }
+
+private:
+    model_type data_;
+};
+#endif
+
+}}}//end namespace pressio::ode::impl
 #endif

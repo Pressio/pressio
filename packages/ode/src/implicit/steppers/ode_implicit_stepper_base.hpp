@@ -50,7 +50,7 @@
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
 #include "../../ode_states_container.hpp"
-#include "../../impl/ode_system_wrapper.hpp"
+#include "../../ode_system_wrapper.hpp"
 
 namespace pressio{ namespace ode{
 

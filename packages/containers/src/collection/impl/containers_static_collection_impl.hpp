@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_storage.hpp
+// containers_static_collection_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,16 +46,16 @@
 //@HEADER
 */
 
-#ifndef ODE_STORAGE_HPP_
-#define ODE_STORAGE_HPP_
+#ifndef CONTAINERS_STATIC_COLLECTION_IMPL_HPP_
+#define CONTAINERS_STATIC_COLLECTION_IMPL_HPP_
 
-#include "../ode_ConfigDefs.hpp"
 #include <array>
+#include "../../containers_ConfigDefs.hpp"
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #endif
 
-namespace pressio{ namespace ode{ namespace impl{
+namespace pressio{ namespace containers{ namespace impl{
 
 /*
  * note that these are auxiliary objects for storing states
@@ -70,14 +70,21 @@ namespace pressio{ namespace ode{ namespace impl{
  */
 
 template<typename T, std::size_t n>
-class OdeStorage
+class StaticCollection
 {
+  static_assert( ::pressio::containers::meta::is_wrapper<T>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+		 or containers::meta::is_array_pybind11<T>::value
+#endif
+		 , "Currently, you can only create a StaticCollection of types \
+which have pressio wrappers.");
+
 public:
   using value_type    = T;
-  using storing_type  = std::array<T, n>;
+  using data_type     = std::array<T, n>;
   using size_type     = std::size_t;
 
-  static constexpr std::size_t size(){
+  static constexpr std::size_t size() {
     return n;
   }
 
@@ -101,23 +108,20 @@ public:
     return data_[i];
   }
 
-  storing_type & data(){
+  data_type & data(){
     return data_;
   }
 
-  storing_type const & data() const{
+  data_type const & data() const{
     return data_;
   }
+
+private:
+  data_type data_;
 
 public:
-  OdeStorage() = delete;
-  OdeStorage(const OdeStorage &) = delete;
-  OdeStorage & operator=(const OdeStorage &) = delete;
-  OdeStorage(OdeStorage &&) = delete;
-  OdeStorage & operator=(OdeStorage &&) = delete;
-
-  ~OdeStorage() = default;
-
+  StaticCollection() = delete;
+  ~StaticCollection() = default;
 
   // constructor for n == 1
   template <
@@ -130,7 +134,7 @@ public:
 #endif
       > * = nullptr
   >
-  OdeStorage(_T const & y)
+  StaticCollection(_T const & y)
     : data_{{y}}{}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -142,9 +146,8 @@ public:
       containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
-  OdeStorage(_T const & y)
-    : data_{{_T(const_cast<_T &>(y).request())}}
-  {}
+  StaticCollection(_T const & y)
+    : data_{{_T(const_cast<_T &>(y).request())}}{}
 #endif
 
   // constructor for n == 2
@@ -154,11 +157,11 @@ public:
     mpl::enable_if_t<
       _n == 2
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      ,!containers::meta::is_array_pybind11<_T>::value
+      and !containers::meta::is_array_pybind11<_T>::value
 #endif
       > * = nullptr
   >
-  OdeStorage(_T const & y)
+  StaticCollection(_T const & y)
     : data_{{y,y}}{}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -167,15 +170,13 @@ public:
     std::size_t _n = n,
     mpl::enable_if_t<
       _n == 2
-      containers::meta::is_array_pybind11<_T>::value
+      and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
-  OdeStorage(_T const & y)
+  StaticCollection(_T const & y)
     : data_{{_T(const_cast<_T &>(y).request()),
-	     _T(const_cast<_T &>(y).request())}}
-  {}
+	     _T(const_cast<_T &>(y).request())}}{}
 #endif
-
 
   // constructor for n == 3
   template <
@@ -184,11 +185,11 @@ public:
     mpl::enable_if_t<
       _n == 3
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      ,!containers::meta::is_array_pybind11<_T>::value
+      and !containers::meta::is_array_pybind11<_T>::value
 #endif
       > * = nullptr
   >
-  OdeStorage(_T const & y)
+  StaticCollection(_T const & y)
     : data_{{y,y,y}}{}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -197,16 +198,14 @@ public:
     std::size_t _n = n,
     mpl::enable_if_t<
       _n == 3
-      containers::meta::is_array_pybind11<_T>::value
+      and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
-  OdeStorage(_T const & y)
+  StaticCollection(_T const & y)
     : data_{{_T(const_cast<_T &>(y).request()),
 	     _T(const_cast<_T &>(y).request()),
-	     _T(const_cast<_T &>(y).request())}}
-  {}
+	     _T(const_cast<_T &>(y).request())}}{}
 #endif
-
 
   // constructor for n == 4
   template <
@@ -215,11 +214,11 @@ public:
     mpl::enable_if_t<
       _n == 4
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      ,!containers::meta::is_array_pybind11<_T>::value
+      and !containers::meta::is_array_pybind11<_T>::value
 #endif
       > * = nullptr
   >
-  OdeStorage(_T const & y)
+  StaticCollection(_T const & y)
     : data_{{y,y,y,y}}{}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -228,19 +227,17 @@ public:
     std::size_t _n = n,
     mpl::enable_if_t<
       _n == 4
-      containers::meta::is_array_pybind11<_T>::value
+      and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
-  OdeStorage(_T const & y)
+  StaticCollection(_T const & y)
     : data_{{_T(const_cast<_T &>(y).request()),
 	     _T(const_cast<_T &>(y).request()),
 	     _T(const_cast<_T &>(y).request()),
-	     _T(const_cast<_T &>(y).request())}}
-  {}
+	     _T(const_cast<_T &>(y).request())}}{}
 #endif
 
-  storing_type data_;
 };
 
-}}}//end namespace pressio::ode::impl
+}}}//end namespace pressio::containers::impl
 #endif

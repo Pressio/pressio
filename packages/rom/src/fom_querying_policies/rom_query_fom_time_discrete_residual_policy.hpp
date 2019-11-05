@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_apply_time_discrete_jacobian_policy.hpp
+// rom_query_fom_time_discrete_residual_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,75 +46,56 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
-#define ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
+#ifndef ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
+#define ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
 
 namespace pressio{ namespace rom{ namespace policy{
 
-struct QueryFomApplyTimeDiscreteJacobian
+struct QueryFomTimeDiscreteResidual
 {
 
-  template <class fom_state_t, class fom_t, class operand_t>
+  template <typename fom_state_t, typename fom_t>
   auto evaluate(const fom_state_t & fomCurrentState,
-  		const fom_t	  & fomObj,
-  		const operand_t   & B) const
+  		const fom_t   & fomObj) const
     -> decltype(
-  		fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(),
-							     *B.data())
+  		fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data())
   		)
   {
-    return fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(),
-							*B.data());
+    return fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data());
   }
 
-
-  // ---------------------
-  // for n = 1
-  // ---------------------
-  template <class fom_t, class step_t, class time_t, class operand_t,
-	    class fom_state_t, class result_t>
-  void evaluate(const fom_state_t & fomCurrentState,
-  		const std::array<fom_state_t, 1> & fomPrevStates,
-  		const fom_t	  & fomObj,
-  		const time_t	  & time,
-  		const time_t	  & dt,
-  		const step_t	  & step,
-  		const operand_t   & B,
-  		result_t	  & A,
-  		int compute_jac_wrt_state_id = 0) const
+  template <
+    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
+    >
+  void evaluate(const fom_state_t & state_n,
+		const fom_state_t & state_nm1,
+		const fom_t   & fomObj,
+		const time_t  & time,
+		const time_t  & dt,
+  		const step_t  & step,
+  		result_t      & R) const
   {
-    // by default, we compute wrt current state
-
-    fomObj.template applyTimeDiscreteJacobian(step, time, dt,
-  					      *B.data(),
-  					      compute_jac_wrt_state_id,
-  					      *A.data(),
-  					      *fomCurrentState.data(),
-  					      *fomPrevStates[0].data());
+    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+					 *state_n.data(),
+					 *state_nm1.data());
   }
 
-  // ---------------------
-  // for n = 2
-  // ---------------------
-  template <class fom_t, class step_t, class time_t, class operand_t,
-	    class fom_state_t, class result_t>
-  void evaluate(const fom_state_t & fomCurrentState,
-  		const std::array<fom_state_t, 2> & fomPrevStates,
-  		const fom_t	  & fomObj,
-  		const time_t	  & time,
-  		const time_t	  & dt,
-  		const step_t	  & step,
-  		const operand_t   & B,
-  		result_t	  & A,
-  		int compute_jac_wrt_state_id = 0) const
+  template <
+    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
+    >
+  void evaluate(const fom_state_t & state_n,
+		const fom_state_t & state_nm1,
+		const fom_state_t & state_nm2,
+		const fom_t   & fomObj,
+		const time_t  & time,
+		const time_t  & dt,
+  		const step_t  & step,
+  		result_t      & R) const
   {
-    fomObj.template applyTimeDiscreteJacobian(step, time, dt,
-  					      *B.data(),
-  					      compute_jac_wrt_state_id,
-  					      *A.data(),
-  					      *fomCurrentState.data(),
-  					      *fomPrevStates[0].data(),
-  					      *fomPrevStates[1].data());
+    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+					 *state_n.data(),
+					 *state_nm1.data(),
+					 *state_nm2.data());
   }
 
 };

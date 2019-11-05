@@ -52,7 +52,12 @@
 
 #include "../../../ode_fwd.hpp"
 #include "../base/ode_implicit_residual_policy_base.hpp"
-#include "../../ode_residual_impl.hpp"
+#include "../../ode_time_discrete_residual.hpp"
+#include "../../meta/ode_is_legitimate_implicit_state_type.hpp"
+#include "../../meta/ode_is_legitimate_implicit_residual_type.hpp"
+#include "../../meta/ode_implicit_stepper_stencil_needs_previous_states_only.hpp"
+#include "../../meta/ode_implicit_stepper_stencil_needs_previous_states_and_velocities.hpp"
+
 
 namespace pressio{ namespace ode{ namespace policy{
 

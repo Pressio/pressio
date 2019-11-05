@@ -70,17 +70,15 @@ template<
   >
 void do_update(T & v, scalar_t a,
 	       const T & v1, scalar_t b){
+
   // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
-  }
+  assert(v.ndim()==1 && v1.ndim()==1);
 
   const auto vsz = v.size();
-  if (vsz != v1.size())
-    throw std::runtime_error("containers::ops::do_update: Input shapes must match");
-
-  for (decltype(v.size()) i=0; i<vsz; ++i){
-    v.mutable_at(i) = a*v.at(i) + b*v1.at(i);
+  auto v_proxy = v.mutable_unchecked();
+  const auto v1_proxy = v1.unchecked();
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i);
   }
 }
 
@@ -94,16 +92,14 @@ template<
   >
 void do_update(T & v, const T & v1, const scalar_t b){
   // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
-  }
+  assert(v.ndim()==1 && v1.ndim()==1);
+  assert(v.size()==v1.size());
 
   const auto vsz = v.size();
-  if (vsz != v1.size())
-    throw std::runtime_error("containers::ops::do_update: Input shapes must match");
-
-  for (decltype(v.size()) i=0; i<vsz; ++i){
-    v.mutable_at(i) = b*v1.at(i);
+  auto v_proxy = v.mutable_unchecked();
+  auto v1_proxy = v1.unchecked();
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = b*v1_proxy(i);
   }
 }
 
@@ -122,17 +118,17 @@ template<
 void do_update(T & v, const scalar_t &a,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c){
-  std::cout << " do_update pybind11 two terms " << std::endl;
-  // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
-  }
-  const auto vsz = v.size();
-  if (vsz != v1.size() and vsz != v2.size())
-    throw std::runtime_error("containers::ops::do_update: Input shapes must match");
 
-  for (decltype(v.size()) i=0; i<vsz; ++i){
-    v.mutable_at(i) = a*v.at(i) + b*v1.at(i) + c*v2.at(i);
+  // make sure this is a vector
+  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1);
+  assert(v.size()==v1.size() && v1.size()==v2.size());
+
+  const auto vsz = v.size();
+  auto v_proxy   = v.mutable_unchecked();
+  auto v1_proxy	 = v1.unchecked();
+  auto v2_proxy  = v2.unchecked();
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i) + c*v2_proxy(i);
   }
 }
 
@@ -147,17 +143,17 @@ template<
 void do_update(T & v,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c){
+
   // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
-  }
+  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1);
+  assert(v.size()==v1.size() && v1.size()==v2.size());
 
   const auto vsz = v.size();
-  if (vsz != v1.size() and vsz != v2.size())
-    throw std::runtime_error("containers::ops::do_update: Input shapes must match");
-
-  for (decltype(v.size()) i=0; i<vsz; ++i){
-    v.mutable_at(i) = b*v1.at(i) + c*v2.at(i);
+  auto v_proxy   = v.mutable_unchecked();
+  auto v1_proxy	 = v1.unchecked();
+  auto v2_proxy  = v2.unchecked();
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = b*v1_proxy(i) + c*v2_proxy(i);
   }
 }
 
@@ -178,17 +174,21 @@ void do_update(T & v, const scalar_t &a,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c,
 	       const T & v3, const scalar_t &d){
+
+
   // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
-  }
+  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1 && v3.ndim()==1 && v4.ndim());
+  assert(v.size()==v1.size() && v1.size()==v2.size());
+  assert(v2.size()==v3.size());
 
   const auto vsz = v.size();
-  if (vsz != v1.size() and vsz != v2.size() and vsz != v3.size())
-    throw std::runtime_error("containers::ops::do_update: Input shapes must match");
+  auto v_proxy   = v.mutable_unchecked();
+  auto v1_proxy	 = v1.unchecked();
+  auto v2_proxy  = v2.unchecked();
+  auto v3_proxy	 = v3.unchecked();
 
-  for (decltype(v.size()) i=0; i<vsz; ++i){
-    v.mutable_at(i) = a*v.at(i) + b*v1.at(i) + c*v2.at(i) + d*v3.at(i);
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i);
   }
 }
 
@@ -204,17 +204,21 @@ void do_update(T & v,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c,
 	       const T & v3, const scalar_t &d){
+
+
   // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
-  }
+  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1 && v3.ndim()==1 && v4.ndim());
+  assert(v.size()==v1.size() && v1.size()==v2.size());
+  assert(v2.size()==v3.size());
 
   const auto vsz = v.size();
-  if (vsz != v1.size() and vsz != v2.size() and vsz != v3.size())
-    throw std::runtime_error("containers::ops::do_update: Input shapes must match");
+  auto v_proxy   = v.mutable_unchecked();
+  auto v1_proxy	 = v1.unchecked();
+  auto v2_proxy  = v2.unchecked();
+  auto v3_proxy	 = v3.unchecked();
 
-  for (decltype(v.size()) i=0; i<vsz; ++i){
-    v.mutable_at(i) = b*v1.at(i) + c*v2.at(i) + d*v3.at(i);
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i);
   }
 }
 
@@ -236,18 +240,21 @@ void do_update(T & v, const scalar_t &a,
 	       const T & v2, const scalar_t &c,
 	       const T & v3, const scalar_t &d,
 	       const T & v4, const scalar_t &e){
+
   // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
-  }
+  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1 && v3.ndim()==1 && v4.ndim());
+  assert(v.size()==v1.size() && v1.size()==v2.size());
+  assert(v2.size()==v3.size() && v3.size()==v4.size());
 
   const auto vsz = v.size();
-  if (vsz != v1.size() and vsz != v2.size()
-      and vsz != v3.size() and vsz != v4.size())
-    throw std::runtime_error("containers::ops::do_update: Input shapes must match");
+  auto v_proxy   = v.mutable_unchecked();
+  auto v1_proxy	 = v1.unchecked();
+  auto v2_proxy  = v2.unchecked();
+  auto v3_proxy	 = v3.unchecked();
+  auto v4_proxy  = v4.unchecked();
 
-  for (decltype(v.size()) i=0; i<vsz; ++i){
-    v.mutable_at(i) = a*v.at(i) + b*v1.at(i) + c*v2.at(i) + d*v3.at(i) + e*v4.at(i);
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i) + e*v4_proxy(i);
   }
 }
 
@@ -264,18 +271,21 @@ void do_update(T & v,
 	       const T & v2, const scalar_t &c,
 	       const T & v3, const scalar_t &d,
 	       const T & v4, const scalar_t &e){
+
   // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::do_update: v.ndims()!=1, while this operation requires a vector");
-  }
+  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1 && v3.ndim()==1 && v4.ndim());
+  assert(v.size()==v1.size() && v1.size()==v2.size());
+  assert(v2.size()==v3.size() && v3.size()==v4.size());
 
   const auto vsz = v.size();
-  if (vsz != v1.size() and vsz != v2.size()
-      and vsz != v3.size() and vsz != v4.size())
-    throw std::runtime_error("containers::ops::do_update: Input shapes must match");
+  auto v_proxy   = v.mutable_unchecked();
+  auto v1_proxy	 = v1.unchecked();
+  auto v2_proxy  = v2.unchecked();
+  auto v3_proxy	 = v3.unchecked();
+  auto v4_proxy  = v4.unchecked();
 
-  for (decltype(v.size()) i=0; i<vsz; ++i){
-    v.mutable_at(i) = b*v1.at(i) + c*v2.at(i) + d*v3.at(i) + e*v4.at(i);
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i) + e*v4_proxy(i);
   }
 }
 

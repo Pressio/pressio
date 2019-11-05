@@ -91,7 +91,9 @@ See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
 
   using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
   using advancer_t	 = impl::IntegratorNStepsWithTimeStepSizeSetter<do_step_policy_t>;
-  advancer_t::execute(num_steps, start_time, dtManager, odeStateInOut, stepper, solver);
+  advancer_t::execute(num_steps, start_time,
+		      std::forward<step_size_cb_t>(dtManager),
+		      odeStateInOut, stepper, solver);
 }
 
 }}//end namespace pressio::ode

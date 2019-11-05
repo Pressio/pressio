@@ -54,7 +54,7 @@
 
 #include "rom/src/rom_matrix_operator.hpp"
 #include "rom/src/rom_multi_vector_operator.hpp"
-#include "rom/src/rom_container_fom_states.hpp"
+#include "rom/src/rom_static_container_fom_states.hpp"
 #include "rom/src/rom_reconstructor_fom_state.hpp"
 
 #include "rom/src/decoder/rom_decoder_base.hpp"
@@ -66,9 +66,9 @@
 #include "rom/src/decorators/rom_mask_decorator_residual.hpp"
 #include "rom/src/decorators/rom_mask_decorator_jacobian.hpp"
 
-#include "rom/src/policies/rom_apply_fom_jacobian_steady_policy.hpp"
-#include "rom/src/policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
-#include "rom/src/policies/rom_evaluate_fom_velocity_steady_policy.hpp"
-#include "rom/src/policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
+#include "rom/src/fom_querying_policies/rom_query_fom_apply_jacobian_steady_policy.hpp"
+#include "rom/src/fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
+#include "rom/src/fom_querying_policies/rom_query_fom_velocity_steady_policy.hpp"
+#include "rom/src/fom_querying_policies/rom_query_fom_velocity_unsteady_policy.hpp"
 
 #endif

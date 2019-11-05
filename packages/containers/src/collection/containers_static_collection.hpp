@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_INTEGRATORS
+// containers_static_collection.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,15 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_HPP_
-#define ODE_INTEGRATORS_HPP_
+#ifndef CONTAINERS_STATIC_COLLECTION_HPP_
+#define CONTAINERS_STATIC_COLLECTION_HPP_
 
-#include "ODE_BASIC"
+#include "./impl/containers_static_collection_impl.hpp"
 
-// integrator for fixed number of steps
-#include "ode/src/integrators/ode_integrate_n_steps_explicit.hpp"
-#include "ode/src/integrators/ode_integrate_n_steps_implicit_constant_step_size.hpp"
-#include "ode/src/integrators/ode_integrate_n_steps_implicit_arbitrary_step_size.hpp"
+namespace pressio{ namespace containers{
 
-// integrator until target time is reached
-#include "ode/src/integrators/ode_integrate_to_target_time_implicit_arbitrary_step_size.hpp"
+template<typename T, std::size_t n>
+using StaticCollection = ::pressio::containers::impl::StaticCollection<T, n>;
 
+}}//end namespace pressio::containers
 #endif

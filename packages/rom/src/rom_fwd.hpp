@@ -53,6 +53,9 @@
 
 namespace pressio{ namespace rom{
 
+template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename enable = void>
+class FomStatesStaticContainer;
+
 template <
   typename fom_state_type, int N, typename reconstuctor_type, typename enable = void
   >
@@ -73,10 +76,10 @@ class Masked;
 namespace policy{
 
 template <bool is_steady_problem>
-struct EvaluateFomVelocityDefault;
+struct QueryFomVelocityDefault;
 
 template <bool is_steady_problem>
-struct ApplyFomJacobianDefault;
+struct QueryFomApplyJacobianDefault;
 
 struct QueryFomTimeDiscreteResidual;
 

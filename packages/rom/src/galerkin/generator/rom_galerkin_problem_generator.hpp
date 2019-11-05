@@ -113,36 +113,36 @@ public:
     : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( appObj.velocity(*fomStateReference_.data(), t0) ),
-      fomStates_(fomStateReference_, fomStateReconstructor_),
+      fomStates_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStates_, decoder),
       stepperObj_(yROM, appObj, residualPolicy_)
   {}
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   /*
-//    * ud_ops_t == pybind11::object and state_type is pybind11::array
-//   */
-//   template <
-//     typename _ud_ops_t = ud_ops_t,
-//     ::pressio::mpl::enable_if_t<
-//       ::pressio::mpl::is_same<_ud_ops_t, pybind11::object>::value and
-//       ::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
-//       > * = nullptr
-//   >
-//   GalerkinProblemGenerator(const fom_t		    & appObj,
-//   			   const fom_native_state_t & yFomRefNative,
-//   			   decoder_t		    & decoder,
-//   			   galerkin_state_t	    & yROM,
-//   			   scalar_t		    t0,
-// 			   const _ud_ops_t	    & udOps)
-//     : fomStateReference_(yFomRefNative),
-//       fomStateReconstructor_(fomStateReference_, decoder),
-//       fomVelocityRef_( appObj.attr("velocity")(fomStateReference_, t0) ),
-//       fomStates_(fomStateReference_, fomStateReconstructor_),
-//       residualPolicy_(fomStates_, fomVelocityRef_, decoder, udOps),
-//       stepperObj_(yROM, appObj, residualPolicy_)
-//   {}
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  /*
+   * ud_ops_t == pybind11::object and state_type is pybind11::array
+  */
+  template <
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t<
+      ::pressio::mpl::is_same<_ud_ops_t, pybind11::object>::value and
+      ::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
+      > * = nullptr
+  >
+  GalerkinProblemGenerator(const fom_t		    & appObj,
+  			   const fom_native_state_t & yFomRefNative,
+  			   decoder_t		    & decoder,
+  			   galerkin_state_t	    & yROM,
+  			   scalar_t		    t0,
+			   const _ud_ops_t	    & udOps)
+    : fomStateReference_(yFomRefNative),
+      fomStateReconstructor_(fomStateReference_, decoder),
+      fomVelocityRef_( appObj.attr("velocity")(fomStateReference_, t0) ),
+      fomStates_(fomStateReconstructor_, fomStateReference_),
+      residualPolicy_(fomVelocityRef_, fomStates_, decoder, udOps),
+      stepperObj_(yROM, appObj, residualPolicy_)
+  {}
+#endif
 
 };
 

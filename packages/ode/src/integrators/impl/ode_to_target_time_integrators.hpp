@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_jacobian_policy.hpp
+// ode_to_target_time_integrators.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,92 +46,79 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
-#define ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
+#ifndef ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
+#define ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
 
-#include "../rom_fwd.hpp"
-#include "../rom_static_container_fom_states.hpp"
+#include "../../ode_ConfigDefs.hpp"
+#include "../../ode_fwd.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace ode{ namespace impl{
 
-template<
-  typename fom_states_data,
-  typename apply_jac_return_type,
-  typename fom_apply_jac_policy,
-  typename decoder_type
-  >
-class LSPGSteadyJacobianPolicy
-  : protected fom_apply_jac_policy{
+/*
+ * time step size setter is passed by user
+ * this is within the impl namespace, so should not be used outside
+ */
+template <typename DoStepPolicy_t>
+struct IntegratorToTargetTimeWithTimeStepSizeSetter
+{
 
-protected:
-  using this_t = LSPGSteadyJacobianPolicy<
-  fom_states_data, apply_jac_return_type,
-  fom_apply_jac_policy, decoder_type>;
-
-public:
-  static constexpr bool isResidualPolicy_ = false;
-  using apply_jac_return_t = apply_jac_return_type;
-
-public:
-  LSPGSteadyJacobianPolicy() = delete;
-  ~LSPGSteadyJacobianPolicy() = default;
-
-  LSPGSteadyJacobianPolicy(fom_states_data	& fomStates,
-			   const fom_apply_jac_policy	& applyJacFunctor,
-			   const apply_jac_return_type	& applyJacObj,
-			   const decoder_type		& decoder)
-    : fom_apply_jac_policy(applyJacFunctor),
-      JJ_(applyJacObj),
-      decoderObj_(decoder),
-      fomStates_(fomStates){}
-
-public:
-
-  template <
-    typename lspg_state_t,
-    typename lspg_jac_t,
-    typename app_t
-  >
-  void operator()(const lspg_state_t & romState,
-		  lspg_jac_t	     & romJJ,
-  		  const app_t	     & app) const
+  template <typename time_type, typename dt_setter, typename ... Args>
+  static void execute(const time_type	& start_time,
+		      const time_type	& final_time,
+		      dt_setter		&& dtManager,
+		      Args		&& ... args)
   {
+
+    using step_t = ::pressio::ode::types::step_t;
+    constexpr auto zero = ::pressio::utils::constants::zero<step_t>();
+
+    if (final_time < start_time)
+      throw std::runtime_error("You cannot call an integrator with a final time < start time.");
+
+    if (final_time == start_time)
+      return;
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("lspg apply jac");
+    timer->start("time loop");
 #endif
 
-    // todo: this is not needed if jacobian is called after resiudal
-    // because residual takes care of reconstructing the fom state
-    //    timer->start("reconstruct fom state");
-    fomStates_.template reconstructCurrentFomState(romState);
+    time_type time = start_time;
+    time_type dt = {};
+    // call the dt manager to set the dt to use at the beginning
+    dtManager(zero, time, dt);
+
+    step_t step	   = 1;
+    ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
+    while (time < final_time)
+    {
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
+      auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
+      auto reset = utils::io::reset();
+      ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
+#endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->start("fom apply jac");
+      timer->start("time step");
+#endif
+      DoStepPolicy_t::execute(time, dt, step, std::forward<Args>(args)...);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer->stop("time step");
 #endif
 
-    const auto & basis = decoderObj_.getReferenceToJacobian();
-    fom_apply_jac_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), basis, romJJ);
+      step++;
+      time = start_time + static_cast<time_type>(step) * dt;
+
+      // call the dt manager to set the dt to use at the beginning
+      dtManager(step, time, dt);
+    }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("fom apply jac");
-    timer->stop("lspg apply jac");
+    timer->stop("time loop");
 #endif
-  }
-
-  template <typename lspg_state_t, typename app_t>
-  apply_jac_return_t operator()(const lspg_state_t & romState,
-				const app_t	   & app) const
-  {
-    (*this).template operator()(romState, JJ_, app);
-    return JJ_;
-  }
-
-protected:
-  mutable apply_jac_return_t JJ_   = {};
-  const decoder_type & decoderObj_ = {};
-  fom_states_data & fomStates_;
+  }//end ()
 };
 
-}}//end namespace pressio::rom
+
+}}}//end namespace pressio::ode::impl
 #endif

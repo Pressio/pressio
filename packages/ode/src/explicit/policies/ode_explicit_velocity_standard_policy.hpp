@@ -149,7 +149,7 @@ public:
   			const system_type & model,
   			const scalar_type & time) const
   {
-    return model.attr("velocity")(state, t);
+    return model.attr("velocity")(state, time);
   }
 
 };//end class

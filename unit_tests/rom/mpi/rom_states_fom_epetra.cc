@@ -15,7 +15,7 @@ using matrix_w_t	= containers::MultiVector<Epetra_MultiVector>;
 using decoder_t		= rom::LinearDecoder<matrix_w_t>;
 using fom_state_w_t	= containers::Vector<Epetra_Vector>;
 using fom_state_rec_t	= rom::FomStateReconstructor<fom_state_w_t,decoder_t>;
-using fom_states	= rom::FomStatesContainer<fom_state_w_t, 1, fom_state_rec_t>;
+using fom_states	= rom::FomStatesStaticContainer<fom_state_w_t, 1, fom_state_rec_t>;
 
 struct mytest
 {
@@ -23,7 +23,7 @@ struct mytest
 
   mytest() = delete;
   mytest(const fom_state_w_t & y0Fom, const fom_state_rec_t & recObj)
-    : MyStates{y0Fom, recObj}
+    : MyStates{recObj, y0Fom}
   {
     rom_state_t rY(2);
     rY.putScalar(1.2);

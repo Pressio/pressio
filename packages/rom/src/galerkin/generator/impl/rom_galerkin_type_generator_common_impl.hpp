@@ -51,9 +51,9 @@
 
 #include "../../../rom_ConfigDefs.hpp"
 #include "../../../rom_fwd.hpp"
-#include "../../../rom_container_fom_states.hpp"
-#include "../../../policies/rom_evaluate_fom_velocity_unsteady_policy.hpp"
-#include "../../../policies/rom_apply_fom_jacobian_unsteady_policy.hpp"
+#include "../../../rom_static_container_fom_states.hpp"
+#include "../../../fom_querying_policies/rom_query_fom_velocity_unsteady_policy.hpp"
+#include "../../../fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
 #include "../../../../../ode/src/ode_fwd.hpp"
 #include "../../../meta/rom_is_legitimate_model_for_galerkin.hpp"
 #include "../../../meta/rom_is_legitimate_decoder_type.hpp"
@@ -101,7 +101,7 @@ struct GalerkinCommonTypes<false, galerkin_state_type, Args...>
 
   // class type holding fom states data
   using fom_states_data =
-    ::pressio::rom::FomStatesContainer<fom_state_t, 0, fom_state_reconstr_t>;
+    ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;
 
   // for now, set ops to void, i.e. we only use pressio ops
   using ud_ops_t = void;
@@ -146,8 +146,7 @@ struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
   // class type holding fom states data
-  using fom_states_data = ::pressio::rom::FomStatesContainer<
-	fom_state_t, 0, fom_state_reconstr_t>;
+  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;
 
   // when interfacing with Python, ops are defined by a pybind11::object
   using ud_ops_t = pybind11::object;
