@@ -113,7 +113,7 @@ public:
     : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( appObj.velocity(*fomStateReference_.data(), t0) ),
-      fomStates_(fomStateReference_, fomStateReconstructor_),
+      fomStates_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStates_, decoder),
       stepperObj_(yROM, appObj, residualPolicy_)
   {}
@@ -138,7 +138,7 @@ public:
     : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( appObj.attr("velocity")(fomStateReference_, t0) ),
-      fomStates_(fomStateReference_, fomStateReconstructor_),
+      fomStates_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStates_, decoder, udOps),
       stepperObj_(yROM, appObj, residualPolicy_)
   {}

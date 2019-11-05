@@ -53,6 +53,9 @@
 
 namespace pressio{ namespace rom{
 
+template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename enable = void>
+class FomStatesStaticContainer;
+
 template <
   typename fom_state_type, int N, typename reconstuctor_type, typename enable = void
   >

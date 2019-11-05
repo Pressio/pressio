@@ -67,9 +67,12 @@ struct QueryFomTimeDiscreteResidual
   // ---------------------
   // for n = 1
   // ---------------------
-  template <typename fom_t, typename step_t, typename time_t, typename result_t, typename fom_state_t>
-  void evaluate(const fom_state_t & fomCurrentState,
-  		const std::array<fom_state_t, 1> & fomPrevStates,
+  template <
+    std::size_t n,
+    typename fom_states_t, typename fom_t, typename step_t, typename time_t, typename result_t,
+    mpl::enable_if_t< n == 2> * = nullptr
+    >
+  void evaluate(const fom_states_t & states,
 		const fom_t   & fomObj,
 		const time_t  & time,
 		const time_t  & dt,
@@ -77,27 +80,66 @@ struct QueryFomTimeDiscreteResidual
   		result_t      & R) const
   {
     fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-    					 *fomCurrentState.data(),
-    					 *fomPrevStates[0].data());
+    					 *(states.getCRefToCurrentFomState().data()),
+					 *(states.getCRefToFomStatePrevStep().data()));
   }
 
   // ---------------------
   // for n = 2
   // ---------------------
-  template <typename fom_t, typename step_t, typename time_t, typename result_t, typename fom_state_t>
-  void evaluate(const fom_state_t & fomCurrentState,
-  		const std::array<fom_state_t, 2> & fomPrevStates,
-  		const fom_t   & fomObj,
-  		const time_t  & time,
-  		const time_t  & dt,
+  template <
+    std::size_t n,
+    typename fom_states_t, typename fom_t, typename step_t, typename time_t, typename result_t,
+    mpl::enable_if_t< n == 3> * = nullptr
+    >
+  void evaluate(const fom_states_t & states,
+		const fom_t   & fomObj,
+		const time_t  & time,
+		const time_t  & dt,
   		const step_t  & step,
   		result_t      & R) const
   {
     fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-    					 *fomCurrentState.data(),
-    					 *fomPrevStates[0].data(),
-  					 *fomPrevStates[1].data());
+    					 *(states.getCRefToCurrentFomState().data()),
+					 *(states.getCRefToFomStatePrevStep().data()),
+					 *(states.getCRefToFomStatePrevPrevStep().data()));
   }
+
+
+  // // ---------------------
+  // // for n = 1
+  // // ---------------------
+  // template <typename fom_t, typename step_t, typename time_t, typename result_t, typename fom_state_t>
+  // void evaluate(const fom_state_t & fomCurrentState,
+  // 		const std::array<fom_state_t, 1> & fomPrevStates,
+  // 		const fom_t   & fomObj,
+  // 		const time_t  & time,
+  // 		const time_t  & dt,
+  // 		const step_t  & step,
+  // 		result_t      & R) const
+  // {
+  //   fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+  //   					 *fomCurrentState.data(),
+  //   					 *fomPrevStates[0].data());
+  // }
+
+  // // ---------------------
+  // // for n = 2
+  // // ---------------------
+  // template <typename fom_t, typename step_t, typename time_t, typename result_t, typename fom_state_t>
+  // void evaluate(const fom_state_t & fomCurrentState,
+  // 		const std::array<fom_state_t, 2> & fomPrevStates,
+  // 		const fom_t   & fomObj,
+  // 		const time_t  & time,
+  // 		const time_t  & dt,
+  // 		const step_t  & step,
+  // 		result_t      & R) const
+  // {
+  //   fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+  //   					 *fomCurrentState.data(),
+  //   					 *fomPrevStates[0].data(),
+  // 					 *fomPrevStates[1].data());
+  // }
 
 };
 

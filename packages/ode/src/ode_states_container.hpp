@@ -49,12 +49,50 @@
 #ifndef ODE_STATES_CONTAINER_HPP_
 #define ODE_STATES_CONTAINER_HPP_
 
-#include "./impl/ode_storage.hpp"
+#include "../../containers/src/collection/containers_static_collection.hpp"
 
 namespace pressio{ namespace ode{
 
 template<typename T, std::size_t n>
-using StatesContainer = ::pressio::ode::impl::OdeStorage<T, n>;
+class StatesContainer{
+public:
+
+  using data_type = ::pressio::containers::StaticCollection<T, n>;
+
+  template <typename ... Args>
+  StatesContainer(Args && ... args)
+    : data_( std::forward<Args>(args)... ){}
+
+  ~StatesContainer() = default;
+
+public:
+  static constexpr std::size_t size() {
+    return data_type::size();
+  }
+
+  T & operator[](std::size_t i){
+    assert( i<n );
+    return data_[i];
+  }
+
+  T const & operator[](std::size_t i) const{
+    assert( i<n );
+    return data_[i];
+  }
+
+  T & operator()(std::size_t i){
+    assert( i<n );
+    return data_[i];
+  }
+
+  T const & operator()(std::size_t i) const{
+    assert( i<n );
+    return data_[i];
+  }
+
+private:
+  data_type data_;
+};
 
 }}//end namespace pressio::ode
 #endif

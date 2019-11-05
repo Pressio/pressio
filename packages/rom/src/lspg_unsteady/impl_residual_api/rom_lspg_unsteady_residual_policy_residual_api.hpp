@@ -46,12 +46,12 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_RESIDUAL_api_HPP_
-#define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_RESIDUAL_api_HPP_
+#ifndef ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_RESIDUAL_API_HPP_
+#define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_RESIDUAL_API_HPP_
 
 #include "../../rom_fwd.hpp"
 #include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
-#include "../../rom_container_fom_states.hpp"
+#include "../../rom_static_container_fom_states.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -127,12 +127,10 @@ private:
 		    const ::pressio::ode::types::step_t & step,
 		    residual_t			        & romR) const
   {
-    fomStates_.template reconstructCurrentFomState(romState);
+    fomStates_.reconstructCurrentFomState(romState);
     fomStates_.template reconstructFomOldStates<n>(romPrevStates);
 
-    fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(),
-				 fomStates_.getCRefToFomOldStates(),
-				 app, time, dt, step, romR);
+    fom_querier_policy::template evaluate<fom_states_data_type::size()>(fomStates_, app, time, dt, step, romR);
   }
 
 protected:

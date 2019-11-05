@@ -76,5 +76,4 @@
 #include "containers/src/meta/containers_has_static_method_do_update_four_terms.hpp"
 #include "containers/src/meta/containers_has_static_method_scale.hpp"
 
-
 #endif

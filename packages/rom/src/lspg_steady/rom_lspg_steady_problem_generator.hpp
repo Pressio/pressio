@@ -108,7 +108,7 @@ public:
       fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( rhsQuerier_.evaluate(appObj, fomStateReference_) ),
-      fomStates_(fomStateReference_, fomStateReconstructor_),
+      fomStates_(fomStateReconstructor_, fomStateReference_),
       jPhiMatrix_(applyJacobQuerier_.evaluate(appObj, fomStateReference_,
 					  decoder.getReferenceToJacobian())),
       residualPolicy_(fomVelocityRef_, fomStates_, rhsQuerier_),

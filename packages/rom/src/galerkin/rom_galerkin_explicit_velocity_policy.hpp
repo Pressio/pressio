@@ -39,7 +39,7 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 // IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-//
+]//
 // Questions? Contact Francesco Rizzi (fnrizzi@sandia.gov)
 //
 // ************************************************************************
@@ -51,7 +51,7 @@
 
 #include "../rom_fwd.hpp"
 #include "../../../ode/src/explicit/policies/ode_explicit_velocity_policy_base.hpp"
-#include "../rom_container_fom_states.hpp"
+#include "../rom_static_container_fom_states.hpp"
 
 namespace pressio{ namespace rom{
 
@@ -167,7 +167,7 @@ private:
     timer->start("galerkin explicit velocity");
 #endif
 
-    fomStates_.template reconstructCurrentFomState(romY);
+    fomStates_.reconstructCurrentFomState(romY);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
@@ -211,7 +211,7 @@ private:
     timer->start("galerkin explicit velocity");
 #endif
 
-    fomStates_.template reconstructCurrentFomState(romY);
+    fomStates_.reconstructCurrentFomState(romY);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");

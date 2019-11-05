@@ -56,17 +56,17 @@ namespace pressio{ namespace rom{ namespace impl{
 
 template <ode::ImplicitEnum odeName>
 struct fomStatesStorageCapacityHelper{
-  static constexpr int value = 1;
+  static constexpr std::size_t value = 1;
 };
 
 template <>
 struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::Euler>{
-  static constexpr int value = 1;
+  static constexpr std::size_t value = 2;
 };
 
 template <>
 struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::BDF2>{
-  static constexpr int value = 2;
+  static constexpr std::size_t value = 3;
 };
 
 }}}//end  namespace pressio::rom::impl
