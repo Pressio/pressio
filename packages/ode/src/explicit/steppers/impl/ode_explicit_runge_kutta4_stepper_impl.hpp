@@ -51,7 +51,7 @@
 
 #include "../ode_explicit_stepper_base.hpp"
 #include "../../../ode_states_container.hpp"
-#include "../../../impl/ode_system_wrapper.hpp"
+#include "../../../ode_system_wrapper.hpp"
 #include "../../../ode_velocities_container.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
