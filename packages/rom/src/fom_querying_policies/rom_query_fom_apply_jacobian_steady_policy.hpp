@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_evaluate_fom_velocity_steady_policy.hpp
+// rom_query_fom_apply_jacobian_steady_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,39 @@
 //@HEADER
 */
 
-#ifndef ROM_EVALUATE_FOM_VELOCITY_STEADY_HPP_
-#define ROM_EVALUATE_FOM_VELOCITY_STEADY_HPP_
+#ifndef ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
+#define ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
 
 namespace pressio{ namespace rom{ namespace policy{
 
 template <>
-struct EvaluateFomVelocityDefault<true>{
+struct QueryFomApplyJacobianDefault<true>{
 
   template <
     typename fom_t,
     typename state_t,
-    typename rhs_t
+    typename operand_t
     >
-  void evaluate(const fom_t	& fomObj,
-		const state_t & yFOM,
-		rhs_t		& rhs) const{
-    fomObj.velocity(*yFOM.data(), *rhs.data());
+  auto evaluate(const fom_t	  & fomObj,
+		const state_t   & yFOM,
+		const operand_t & B) const
+    -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data()))
+  {
+    return fomObj.applyJacobian(*yFOM.data(), *B.data());
   }
 
   template <
     typename fom_t,
-    typename state_t
+    typename state_t,
+    typename operand_t,
+    typename result_t
     >
-  auto evaluate(const fom_t	& fomObj,
-		const state_t & yFOM) const
-    -> decltype(fomObj.velocity(*yFOM.data())){
-    return fomObj.velocity(*yFOM.data());
+  void evaluate(const fom_t	  & fomObj,
+		const state_t	  & yFOM,
+		const operand_t & B,
+		result_t	  & out) const
+  {
+    fomObj.applyJacobian(*yFOM.data(), *B.data(), *out.data());
   }
 
 };
