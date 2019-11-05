@@ -86,15 +86,16 @@ template<
     > * = nullptr
   >
 void set_zero(T & v){
-  // make sure this is a vector
-  if (v.ndim() > 1){
-    throw std::runtime_error("containers::ops::set_zero: v.ndims()!=1, while this operation requires a vector");
-  }
+  // make sure this is a vector for now
+  assert(v.ndim()==1 && v1.ndim()==1);
 
   using scalar_t = typename T::value_type;
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-  for (decltype(v.size()) i=0; i<v.size(); ++i){
-    v.mutable_at(i) = zero;
+
+  const auto vsz = v.size();
+  auto v_proxy = v.mutable_unchecked();
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    v_proxy(i) = zero;
   }
 }
 #endif

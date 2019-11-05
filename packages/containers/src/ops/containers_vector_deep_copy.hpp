@@ -83,16 +83,17 @@ template<
     > * = nullptr
   >
 void deep_copy(const T & src, T & dest){
+
   if (src.ndim() > 1){
     throw std::runtime_error("containers::ops::deep_copy: v.ndims()!=1. this operation currently supported for vectors only");
   }
 
   const auto vsz = src.size();
-  if (vsz != dest.size())
-    throw std::runtime_error("containers::ops::deep_copy: Input shapes must match");
-
-  for (decltype(dest.size()) i=0; i<vsz; ++i){
-    dest.mutable_at(i) = src.at(i);
+  assert(vsz == dest.size());
+  auto dest_proxy = dest.mutable_unchecked();
+  auto src_proxy  = src.unchecked();
+  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+    dest_proxy(i) = src_proxy(i);
   }
 }
 #endif
