@@ -108,7 +108,7 @@ public:
 		  const ::pressio::ode::types::step_t	& step,
 		  lspg_jac_t				& romJac) const
   {
-    this->compute_impl<n>(romState, romPrevStates, app, time, dt, step, romJac);
+    this->compute_impl(romState, romPrevStates, app, time, dt, step, romJac);
   }
 
   template <typename lspg_state_t, typename fom_t>
@@ -122,15 +122,11 @@ public:
   }
 
 private:
-  template<
-    int n,
-    typename lspg_state_t,
-    typename fom_t,
-    typename scalar_t,
-    typename lspg_jac_t
-  >
+
+  // we have here n = 1 prev rom states
+  template<typename lspg_state_t, typename fom_t, typename scalar_t, typename lspg_jac_t>
   void compute_impl(const lspg_state_t			& romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t,n> & romPrevStates,
+		    const ::pressio::ode::StatesContainer<lspg_state_t,1> & romPrevStates,
   		    const fom_t			        & app,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,
@@ -139,12 +135,35 @@ private:
   {
     // todo: this is not needed if jacobian is called after resiudal
     // because residual takes care of reconstructing the fom state
-    //    timer->start("reconstruct fom state");
     fomStates_.template reconstructCurrentFomState(romState);
 
     const auto & phi = decoderObj_.getReferenceToJacobian();
-    fom_querier_policy::template evaluate<fom_states_data_type::size()>(fomStates_, app, time, dt, step, phi, romJac);
+    const auto & yn   = fomStates_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
+    fom_querier_policy::evaluate(yn, ynm1, app, time, dt, step, phi, romJac);
   }
+
+  // we have here n = 2 prev rom states
+  template<typename lspg_state_t, typename fom_t, typename scalar_t, typename lspg_jac_t>
+  void compute_impl(const lspg_state_t			& romState,
+		    const ::pressio::ode::StatesContainer<lspg_state_t, 2> & romPrevStates,
+  		    const fom_t			        & app,
+  		    const scalar_t			& time,
+  		    const scalar_t			& dt,
+		    const ::pressio::ode::types::step_t	& step,
+		    lspg_jac_t				& romJac) const
+  {
+    // todo: this is not needed if jacobian is called after resiudal
+    // because residual takes care of reconstructing the fom state
+    fomStates_.template reconstructCurrentFomState(romState);
+
+    const auto & phi = decoderObj_.getReferenceToJacobian();
+    const auto & yn   = fomStates_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
+    const auto & ynm2 = fomStates_.getCRefToFomStatePrevStep();
+    fom_querier_policy::evaluate(yn, ynm1, ynm2, app, time, dt, step, phi, romJac);
+  }
+
 
 protected:
   const decoder_type & decoderObj_	= {};
