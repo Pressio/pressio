@@ -127,11 +127,11 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
   // fom state reconstructor type
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
-  // num of states needed for stepper is deduced from odeName
-  static constexpr auto auxStates = fomStatesStorageCapacityHelper<odeName>::value;
+  // num of total states (i.e. stencil width) needed for stepper is deduced from odeName
+  static constexpr auto numStates = fomStatesStorageCapacityHelper<odeName>::value;
 
   // type of class holding the fom states
-  using fom_states_data = ::pressio::rom::FomStatesContainer<fom_state_t, auxStates, fom_state_reconstr_t>;
+  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
 
   // if we have a non-trivial user-defined ops, need to find from Args
   using ud_ops_t = void;

@@ -50,7 +50,7 @@
 #define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_api_HPP_
 
 #include "../../rom_fwd.hpp"
-#include "../../rom_container_fom_states.hpp"
+#include "../../rom_static_container_fom_states.hpp"
 #include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "rom_lspg_time_discrete_residual.hpp"
 
@@ -58,14 +58,14 @@ namespace pressio{ namespace rom{ namespace impl{
 
 template <
   typename residual_type,
-  typename fom_states_data_type,
+  typename fom_states_cont_type,
   typename fom_velocity_eval_policy,
   typename ud_ops
   >
 class LSPGUnsteadyResidualPolicyVelocityApi
   : public ::pressio::ode::policy::ImplicitResidualPolicyBase<
       LSPGUnsteadyResidualPolicyVelocityApi<residual_type,
-			 fom_states_data_type,
+			 fom_states_cont_type,
 			 fom_velocity_eval_policy,
 			 ud_ops>>,
     protected fom_velocity_eval_policy
@@ -73,7 +73,7 @@ class LSPGUnsteadyResidualPolicyVelocityApi
 
 public:
   using this_t = LSPGUnsteadyResidualPolicyVelocityApi<residual_type,
-				    fom_states_data_type,
+				    fom_states_cont_type,
 				    fom_velocity_eval_policy,
 				    ud_ops>;
   friend ::pressio::ode::policy::ImplicitResidualPolicyBase<this_t>;
@@ -93,7 +93,7 @@ public:
       > * = nullptr
     >
   LSPGUnsteadyResidualPolicyVelocityApi(const residual_t & RIn,
-					fom_states_data_type & fomStatesIn,
+					fom_states_cont_type & fomStatesIn,
 					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
       R_{RIn},
@@ -148,7 +148,7 @@ public:
 public:
   template <
     ::pressio::ode::ImplicitEnum odeStepperName,
-    int n,
+    std::size_t n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t
@@ -166,7 +166,7 @@ public:
 
   template <
     ::pressio::ode::ImplicitEnum odeStepperName,
-    int n,
+    std::size_t n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t
@@ -183,48 +183,46 @@ public:
   }
 
 
+
 private:
+
   template <
     ::pressio::ode::ImplicitEnum odeStepperName,
-    int n,
-    typename state_t,
+    typename fom_state_cont_type,
     typename scalar_t,
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
 	std::is_void<_ud_ops>::value
       > * = nullptr
   >
-  void time_discrete_dispatcher(const state_t			& fomCurrentState,
-				const std::array<state_t,n>	& fomPrevStates,
+  void time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
 				residual_t			& romR,
-				scalar_t			dt) const{
+				const scalar_t			& dt) const{
     using namespace ::pressio::rom::impl;
-    time_discrete_residual<odeStepperName,
-			   fom_states_data_type::N_>(fomCurrentState, fomPrevStates, romR, dt);
+    time_discrete_residual<odeStepperName>(fomStates, romR, dt);
   }
 
   template <
     ::pressio::ode::ImplicitEnum odeStepperName,
-    int n,
-    typename state_t,
+    typename fom_state_cont_type,
     typename scalar_t,
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
       !std::is_void<_ud_ops>::value
       > * = nullptr
   >
-  void time_discrete_dispatcher(const state_t			& fomCurrentState,
-  				const std::array<state_t,n>	& fomPrevStates,
+  void time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
   				residual_t			& romR,
-  				scalar_t			dt) const{
+  				const scalar_t			& dt) const{
     using namespace ::pressio::rom::impl;
-    time_discrete_residual<odeStepperName,
-			   fom_states_data_type::N_>(fomCurrentState, fomPrevStates, romR, dt, udOps_);
+    time_discrete_residual<odeStepperName>(fomStates, romR, dt, udOps_);
   }
 
+
+private:
   template <
     ::pressio::ode::ImplicitEnum odeStepperName,
-    int n,
+    std::size_t n,
     typename lspg_state_t,
     typename fom_t,
     typename scalar_t
@@ -241,7 +239,7 @@ private:
     timer->start("lspg residual");
 #endif
 
-    fomStates_.template reconstructCurrentFomState(romState);
+    fomStates_.reconstructCurrentFomState(romState);
     fomStates_.template reconstructFomOldStates<n>(romPrevStates);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -254,8 +252,7 @@ private:
     timer->start("time discrete residual");
 #endif
 
-    this->time_discrete_dispatcher<odeStepperName, fom_states_data_type::N_>
-      (fomStates_.getCRefToCurrentFomState(), fomStates_.getCRefToFomOldStates(), romR, dt);
+    this->time_discrete_dispatcher<odeStepperName>(fomStates_, romR, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");
@@ -266,7 +263,7 @@ private:
 
 protected:
   mutable residual_t R_ = {};
-  fom_states_data_type & fomStates_;
+  fom_states_cont_type & fomStates_;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<
