@@ -60,25 +60,37 @@ namespace pressio{ namespace rom{ namespace impl{
 template <typename fom_type, typename lspg_state_type, typename enable = void>
 struct CommonTypesHelper;
 
+
 template <typename fom_type, typename lspg_state_type>
-struct CommonTypesHelper<fom_type, lspg_state_type>
+struct CommonTypesHelper<
+  fom_type, lspg_state_type
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  , mpl::enable_if_t<
+      !::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value
+      and !mpl::is_same<fom_type, pybind11::object>::value
+      >
+#endif
+  >
 {
+  static constexpr bool isNativeCpp = true;
   template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityApi<true, odeName, fom_type, lspg_state_type, Args...>;
+  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, odeName, fom_type, lspg_state_type, Args...>;
 };
+
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <typename fom_type, typename lspg_state_type>
 struct CommonTypesHelper<
   fom_type, lspg_state_type,
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value and
+    ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value
     and mpl::is_same<fom_type, pybind11::object>::value
     >
   >
 {
+  static constexpr bool isNativeCpp = false;
   template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityApi<false, odeName, fom_type, lspg_state_type, Args...>;
+  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, odeName, fom_type, lspg_state_type, Args...>;
 };
 #endif
 

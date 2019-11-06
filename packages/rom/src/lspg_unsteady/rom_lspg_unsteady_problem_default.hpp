@@ -67,6 +67,9 @@ struct DefaultLSPGUnsteadyHelper<
   T,
   mpl::enable_if_t<
     ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    or mpl::is_same<T, pybind11::object>::value
+#endif
     >
   >
 {
