@@ -86,12 +86,8 @@ private:
 public:
   PyLinearDecoder() = delete;
 
-  // since matrix is a pybind11::array_t, the following
-  // uses view semantics, so NOT a deep copy. Hence, the object
-  // is owened on the python side. This is fine, beucase this is the
-  // only object who owns the basis vectors. if we want to do a deep copy,
-  // then we have to init phi_ using the buffer of matIn like we do
-  // in ode_storage for example
+  // since matrix is a pybind11::array_t, use deep copy so that
+  // we own the phi here
   PyLinearDecoder(const jacobian_t & matIn,
 		  const ops_t ops)
     : phi_( jacobian_t(const_cast<jacobian_t &>(matIn).request() )),
