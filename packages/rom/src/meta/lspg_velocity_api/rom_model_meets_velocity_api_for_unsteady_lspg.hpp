@@ -61,6 +61,16 @@ namespace pressio{ namespace rom{ namespace meta {
 template<typename T, typename enable = void>
 struct model_meets_velocity_api_for_unsteady_lspg : std::false_type{};
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct model_meets_velocity_api_for_unsteady_lspg<
+  T,
+  mpl::enable_if_t<
+    ::pressio::mpl::is_same<T, pybind11::object>::value
+    >
+  > : std::true_type{};
+#endif
+
 template<typename T>
 struct model_meets_velocity_api_for_unsteady_lspg<
   T,
