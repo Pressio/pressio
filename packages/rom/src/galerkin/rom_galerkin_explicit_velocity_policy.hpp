@@ -225,7 +225,7 @@ private:
 #endif
     const auto & phi = decoder_.getReferenceToJacobian();
     constexpr bool transposePhi = true;
-    udOps_.attr("multiply2")(phi, R_, romR, transposePhi);
+    udOps_.attr("multiply")(phi, transposePhi, R_, false, romR);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");

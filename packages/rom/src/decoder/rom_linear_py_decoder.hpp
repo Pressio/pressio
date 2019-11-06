@@ -86,31 +86,27 @@ private:
 public:
   PyLinearDecoder() = delete;
 
-  // since matrix is a pybind11::array_t, the following
-  // uses view semantics, so NOT a deep copy. Hence, the object
-  // is owened on the python side. This is fine, beucase this is the
-  // only object who owns the basis vectors. if we want to do a deep copy,
-  // then we have to init phi_ using the buffer of matIn like we do
-  // in ode_storage for example
+  // since matrix is a pybind11::array_t, use deep copy so that
+  // we own the phi here
   PyLinearDecoder(const jacobian_t & matIn,
 		  const ops_t ops)
-    : phi_(matIn), ops_{ops}
-  {
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-    std::cout << std::endl;
-    std::cout << "Inside PyLinearDecoder " << std::endl;
-    std::cout << "phi_ " << phi_.data() << std::endl;
-    std::cout << std::endl;
-#endif
-  }
+    : phi_( jacobian_t(const_cast<jacobian_t &>(matIn).request() )),
+      ops_{ops}
+  {}
 
   ~PyLinearDecoder() = default;
+
+  template <typename operand_t, typename result_t>
+  void _applyMappingTest(const operand_t & operandObj,
+			result_t & resultObj) const{
+    ops_.attr("multiply")(phi_, false, operandObj, false, resultObj);
+  }
 
 protected:
   template <typename operand_t, typename result_t>
   void applyMappingImpl(const operand_t & operandObj,
 			result_t & resultObj) const{
-    ops_.attr("multiply2")(phi_, operandObj, resultObj);
+    ops_.attr("multiply")(phi_, false, operandObj, false, resultObj);
   }
 
   const jacobian_t & getReferenceToJacobianImpl() const{

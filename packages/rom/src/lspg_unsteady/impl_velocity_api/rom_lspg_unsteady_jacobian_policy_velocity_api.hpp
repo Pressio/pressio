@@ -96,10 +96,10 @@ public:
       std::is_void<_ud_ops>::value
       > * = nullptr
     >
-  LSPGUnsteadyJacobianPolicyVelocityApi(fom_states_data_type	 & fomStates,
-		     const fom_apply_jac_policy  & applyJacFunctor,
-		     const apply_jac_return_type & applyJacObj,
-		     const decoder_type		 & decoder)
+  LSPGUnsteadyJacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
+					const fom_apply_jac_policy  & applyJacFunctor,
+					const apply_jac_return_type & applyJacObj,
+					const decoder_type	    & decoder)
     : fom_apply_jac_policy(applyJacFunctor),
       JJ_(applyJacObj),
       decoderObj_(decoder),
@@ -128,27 +128,26 @@ public:
 //     static_assert( !std::is_void<_ud_ops>::value, "");
 //   }
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   // this cnstr only enabled when udOps is non-void and python
-//   template <
-//     typename _ud_ops = ud_ops,
-//     mpl::enable_if_t<
-//       !std::is_void<_ud_ops>::value and
-//       mpl::is_same<_ud_ops, pybind11::object>::value
-//       > * = nullptr
-//     >
-//   LSPGUnsteadyJacobianPolicyVelocityApi(fom_states_data_type	 & fomStates,
-// 		     const fom_apply_jac_policy  & applyJacFunctor,
-// 		     const apply_jac_return_type & applyJacObj,
-// 		     const decoder_type		 & decoder,
-// 		     const _ud_ops & udOps)
-//     : fomStates_(fomStates),
-//       fom_apply_jac_policy(applyJacFunctor),
-//       udOps_{udOps},
-//       JJ_(applyJacObj),
-//       decoderObj_(decoder)
-//   {}
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  // this cnstr only enabled when udOps is non-void and python
+  template <
+    typename _ud_ops = ud_ops,
+    mpl::enable_if_t<
+      !std::is_void<_ud_ops>::value and
+      mpl::is_same<_ud_ops, pybind11::object>::value
+      > * = nullptr
+    >
+  LSPGUnsteadyJacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
+					const fom_apply_jac_policy  & applyJacFunctor,
+					const apply_jac_return_type & applyJacObj,
+					const decoder_type	    & decoder,
+					const _ud_ops		    & udOps)
+    : fom_apply_jac_policy(applyJacFunctor),
+      JJ_{applyJacObj},
+      decoderObj_(decoder),
+      fomStates_(fomStates),
+      udOps_{udOps}{}
+#endif
 
 
 public:

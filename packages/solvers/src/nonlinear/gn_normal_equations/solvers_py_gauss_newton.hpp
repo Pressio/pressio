@@ -94,7 +94,10 @@ class PyGaussNewton<
     >, scalar_t>
 {
   static_assert( mpl::not_same<system_t, pybind11::object>::value,
-		 "The PyGaussNewton is supposed to have state/res/jac = pybind11::array_t, but the system_t should NOT be a pybind11::object to contain a Python object. If you need to use a GaussNewton solver on numpy strucrtures, just use one ready off the shelf. This PyGaussNewton is tailored so that you can use an Application class written in Python and use the time-integrators within Pressio as well as the ROMs methods inside Pressio.");
+		 "In PyGaussNewton, detected the system_t != pybind11::object. \
+This solver is supposed to have state/res/jac = pybind11::array_t, and the system_t == pybind11::object. \
+This PyGaussNewton is tailored so that you can use an Application class written in Python \
+and use the time-integrators within Pressio as well as the ROMs methods inside Pressio.");
 
   using this_t = PyGaussNewton<
     system_t, state_t, residual_t, jacobian_t,
@@ -143,7 +146,7 @@ public:
       linSolver_(linearSolverIn),
       res_(system.residual(yState)),
       jac_(system.jacobian(yState)),
-      hess_(pythonOps_.attr("multiply1")(jac_, jac_, true)),
+      hess_(pythonOps_.attr("multiply")(jac_, true, jac_, false)),
       JTR_{ state_t(const_cast<state_t &>(yState).request()) },
       dy_{ state_t(const_cast<state_t &>(yState).request()) },
       ytrial_{ state_t(const_cast<state_t &>(yState).request()) },
@@ -193,7 +196,7 @@ private:
     auto fmt1 = utils::io::cyan() + utils::io::underline();
     const auto convString = std::string(is_converged_t::description_);
     ::pressio::utils::io::print_stdout(fmt1, "PyGN normal eqns:", "criterion:",
-				    convString, reset, "\n");
+				       convString, reset, "\n");
 #endif
 
     // compute the initial norm of y (the state)
@@ -206,46 +209,45 @@ private:
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout("\n");
       auto fmt = utils::io::underline();
-      ::pressio::utils::io::print_stdout(fmt, "PyGN step", iStep,
-				      utils::io::reset(), "\n");
+      ::pressio::utils::io::print_stdout(fmt, "PyGN step", iStep, utils::io::reset(), "\n");
 #endif
 
       // residual norm for current state
       norm_evaluator_t::evaluate(res_, normRes);
-      // std::cout << "residual" << std::endl;
-      // pythonOps_.attr("myprint")(res_);
 
       // store initial residual norm
       if (iStep==1) normRes0 = normRes;
 
-      // compute LHS: J^T*J
-      pythonOps_.attr("multiply2")(jac_, jac_, hess_, true);
+      // std::cout << "residual" << std::endl;
+      // pythonOps_.attr("myprint")(res_);
+
       // std::cout << "\n";
       // std::cout << "jacobian" << std::endl;
       // pythonOps_.attr("myprint")(jac_);
       // std::cout << "\n";
-// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-//       std::cout << "hessian" << std::endl;
-//       pythonOps_.attr("myprint")(hess_);
-// #endif
+
+      // compute hessian: J^T*J
+      pythonOps_.attr("multiply")(jac_, true, jac_, false, hess_);
+
+      // std::cout << "hessian" << std::endl;
+      // pythonOps_.attr("myprint")(hess_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt1 = utils::io::magenta() + utils::io::bold();
       ::pressio::utils::io::print_stdout(fmt1, "GN_JSize =",
-				      jac_.shape()[0], jac_.shape()[1],
-				      "\n");
+					 jac_.shape()[0], jac_.shape()[1],
+					 "\n");
       ::pressio::utils::io::print_stdout(fmt1, "GN_HessianSize =",
-				    hess_.shape()[0], hess_.shape()[1],
-				    utils::io::reset(), "\n");
+					 hess_.shape()[0], hess_.shape()[1],
+					 utils::io::reset(), "\n");
 #endif
 
       // compute RHS: J^T*res
-      pythonOps_.attr("multiply2")(jac_, res_, JTR_, true);
+      pythonOps_.attr("multiply")(jac_, true, res_, false, JTR_);
       pythonOps_.attr("scale")(JTR_, negOne);
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      std::cout << "JT R" << std::endl;
-      pythonOps_.attr("myprint")(JTR_);
-#endif
+
+      // std::cout << "JT R" << std::endl;
+      // pythonOps_.attr("myprint")(JTR_);
 
       // norm of projected residual
       norm_evaluator_t::evaluate(JTR_, normJTRes);
@@ -254,22 +256,19 @@ private:
 
       // solve normal equations
       linSolver_.attr("solve")(hess_, JTR_, dy_);
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      std::cout << "Correction dy \n" << std::endl;
-      pythonOps_.attr("myprint")(dy_);
-#endif
 
+      // std::cout << "Correction dy \n" << std::endl;
+      // pythonOps_.attr("myprint")(dy_);
 
       // compute norm of the correction
       norm_evaluator_t::evaluate(dy_, norm_dy_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout(std::scientific,
-				      "||R|| =", normRes,
-				      "||R||(r) =", normRes/normRes0,
-				      "||dy|| =", norm_dy_,
-				      utils::io::reset(),
-				      "\n");
+					 "||R|| =", normRes,
+					 "||R||(r) =", normRes/normRes0,
+					 "||dy|| =", norm_dy_,
+					 utils::io::reset(), "\n");
 #endif
 
       // compute multiplicative factor if needed

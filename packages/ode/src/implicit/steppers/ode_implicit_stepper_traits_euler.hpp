@@ -94,22 +94,38 @@ Check the API references to see what you are missing."); */
   //----------------------------------------------------------------
   // do some checks on the system
   //----------------------------------------------------------------
-  static_assert(::pressio::containers::meta::has_scalar_typedef<system_t>::value,
+  static_assert(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+		mpl::is_same<system_t, pybind11::object>::value or
+#endif
+		::pressio::containers::meta::has_scalar_typedef<system_t>::value,
 		"\nThe model type passed to the Euler implicit stepper \
 does not have a valid public scalar_type typedef. Define it inside your class as:\
 using scalar_type = ...; ");
 
-  static_assert(::pressio::ode::meta::has_state_typedef<system_t>::value,
+  static_assert(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+		mpl::is_same<system_t, pybind11::object>::value or
+#endif
+		::pressio::ode::meta::has_state_typedef<system_t>::value,
 		"\nThe model type passed to the Euler implicit stepper \
 does not have a valid public state_type typedef. Define it inside your class as: \
 using state_type = ...; ");
 
-  static_assert(::pressio::ode::meta::has_velocity_typedef<system_t>::value,
+  static_assert(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+		mpl::is_same<system_t, pybind11::object>::value or
+#endif
+		::pressio::ode::meta::has_velocity_typedef<system_t>::value,
 		"\nThe model type passed to the Euler implicit stepper \
 does not have a valid public velocity_type typedef. Define it inside your class as:\
 using velocity_type = ...; ");
 
-  static_assert(::pressio::ode::meta::has_jacobian_typedef<system_t>::value,
+  static_assert(
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+		mpl::is_same<system_t, pybind11::object>::value or
+#endif
+		::pressio::ode::meta::has_jacobian_typedef<system_t>::value,
 		"\nThe model type passed to the Euler implicit stepper \
 does not have a valid public jacobian_type typedef. Define it inside your class as: \
 using jacobian_type = ...; ");

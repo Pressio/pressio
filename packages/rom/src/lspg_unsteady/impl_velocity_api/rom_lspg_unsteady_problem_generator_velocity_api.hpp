@@ -137,10 +137,10 @@ public:
       > * = nullptr
   >
   LSPGUnsteadyProblemGeneratorVelocityApi(const fom_t	 & appObj,
-  			       const fom_native_state_t & fomStateReferenceNative,
-  			       decoder_t	 & decoder,
-  			       lspg_state_t	 & yROM,
-  			       scalar_t		 t0)
+  					  const fom_native_state_t & fomStateReferenceNative,
+  					  const decoder_t & decoder,
+  					  lspg_state_t	 & yROM,
+  					  scalar_t	 t0)
     : veloQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
@@ -148,9 +148,9 @@ public:
       fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
       fomStates_(fomStateReconstructor_, fomStateReference_),
       jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
-					      fomStateReference_,
-					      decoder.getReferenceToJacobian(),
-					      t0)),
+  					      fomStateReference_,
+  					      decoder.getReferenceToJacobian(),
+  					      t0)),
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
       // since the lspg residual is of same type and size of the fom velocity
@@ -173,10 +173,10 @@ public:
       > * = nullptr
   >
   LSPGUnsteadyProblemGeneratorVelocityApi(const fom_t	 & appObj,
-  			       const fom_native_state_t & fomStateReferenceNative,
-  			       const decoder_t	 & decoder,
-  			       lspg_state_t	 & yROM,
-  			       scalar_t		 t0)
+  					  const fom_native_state_t & fomStateReferenceNative,
+  					  const decoder_t	 & decoder,
+  					  lspg_state_t	 & yROM,
+  					  scalar_t  t0)
     : veloQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
@@ -198,36 +198,43 @@ public:
   {}
 
 
-  // /* - aux stepper NOT needed
-  //  * - ud_ops_t != void
-  // */
-  //  careful here is this is for pybind11, need to handle properly the deep copy
-  // template <
-  //   typename _aux_stepper_t = aux_stepper_t,
-  //   typename _ud_ops_t = ud_ops_t,
-  //   typename ::pressio::mpl::enable_if_t<
-  //     std::is_void<_aux_stepper_t>::value and
-  //     !std::is_void<_ud_ops_t>::value
-  //     > * = nullptr
-  // >
-  // LSPGUnsteadyProblemGeneratorVelocityApi(const fom_t	 & appObj,
-  // 			       const fom_native_state_t & yFomRefNative,
-  // 			       decoder_t	 & decoder,
-  // 			       lspg_state_t	 & yROM,
-  // 			       scalar_t		 t0,
-  // 			       const _ud_ops_t	 & udOps)
-  //   : veloQuerier_{},
-  //     applyJacobQuerier__{},
-  //     fomStateReference_(yFomRefNative),
-  //     fomStateReconstructor_(fomStateReference_, decoder),
-  //     fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
-  //     fomStates_(fomStateReference_, fomStateReconstructor_),
-  //     jPhiMatrix_(applyJacobQuerier_.evaluate(appObj, fomStateReference_, decoder.getReferenceToJacobian(), t0)),
-  //     residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_, udOps),
-  //     jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder, udOps),
-  //     auxStepperObj_{},
-  //     stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
-  // {}
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  /* - aux stepper NOT needed and ud_ops_t != void */
+  // careful here is this is for pybind11, need to handle properly the deep copy
+  template <
+    typename _fom_t = fom_t,
+    typename _aux_stepper_t = aux_stepper_t,
+    typename _ud_ops_t = ud_ops_t,
+    typename ::pressio::mpl::enable_if_t<
+      std::is_same< _fom_t, pybind11::object >::value and
+      std::is_void<_aux_stepper_t>::value and
+      !std::is_void<_ud_ops_t>::value
+      > * = nullptr
+  >
+  LSPGUnsteadyProblemGeneratorVelocityApi(const fom_t		   & appObj,
+					  const fom_native_state_t & fomStateReferenceIn,
+					  const decoder_t	   & decoder,
+					  lspg_state_t		   & yROM,
+					  scalar_t		   t0,
+					  const _ud_ops_t	   & udOps)
+    : veloQuerier_{},
+      applyJacobQuerier_{},
+      // here we do a deep copy of the fomStateReference (the other option would be to view it,
+      // which assumes the fomStateReferenceIn needsto stay alive in the user code)
+      fomStateReference_{{fom_native_state_t(const_cast<fom_native_state_t &>(fomStateReferenceIn).request())}},
+      fomStateReconstructor_(fomStateReference_, decoder),
+      fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+      fomStates_(fomStateReconstructor_, fomStateReference_),
+      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
+					      fomStateReference_,
+					      decoder.getReferenceToJacobian(),
+					      t0)),
+      residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_, udOps),
+      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder, udOps),
+      auxStepperObj_{},
+      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
+  {}
+#endif
 
 };
 
