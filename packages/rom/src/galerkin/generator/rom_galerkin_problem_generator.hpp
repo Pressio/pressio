@@ -107,7 +107,7 @@ public:
   >
   GalerkinProblemGenerator(const fom_t		    & appObj,
   			   const fom_native_state_t & yFomRefNative,
-  			   decoder_t		    & decoder,
+  			   const decoder_t	    & decoder,
   			   galerkin_state_t	    & yROM,
   			   scalar_t		    t0)
     : fomStateReference_(yFomRefNative),
@@ -131,7 +131,7 @@ public:
   >
   GalerkinProblemGenerator(const fom_t		    & appObj,
   			   const fom_native_state_t & yFomRefNative,
-  			   decoder_t		    & decoder,
+  			   const decoder_t	    & decoder,
   			   galerkin_state_t	    & yROM,
   			   scalar_t		    t0,
 			   const _ud_ops_t	    & udOps)
