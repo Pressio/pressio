@@ -133,6 +133,7 @@ void gauss_newton_neq_solve(const system_t & sys,
   scalar_t normJTRes0 = {};
 
   constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
   convCondDescr = std::string(is_converged_t::description_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
@@ -165,8 +166,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout("\n");
     auto fmt = utils::io::underline();
-    ::pressio::utils::io::print_stdout(fmt, "GN step", iStep,
-				    utils::io::reset(), "\n");
+    ::pressio::utils::io::print_stdout(fmt, "GN step", iStep, utils::io::reset(), "\n");
 #endif
 
     // residual norm for current state
@@ -178,8 +178,16 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("norm resid");
 #endif
 
+    // // print the residual
+    // ::pressio::utils::io::print_stdout("residual \n");
+    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(15), *resid.data(), "\n");
+
     // store initial residual norm
     if (iStep==1) normRes0 = normRes;
+
+    // // print the jacobian
+    // ::pressio::utils::io::print_stdout("jacobian \n");
+    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(15), *jacob.data(), "\n");
 
     // compute LHS: J^T*J
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -190,12 +198,9 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("hessian");
 #endif
 
-// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-//     ::pressio::utils::io::print_stdout("HESSIAN" , "\n");
-//     ::pressio::utils::io::print_stdout(std::fixed,
-// 				       std::setprecision(14),
-// 				       *H.data() , "\n");
-// #endif
+    // // // print the hessian
+    // ::pressio::utils::io::print_stdout("HESSIAN" , "\n");
+    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(14), *H.data() , "\n");
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto fmt2 = utils::io::magenta() + utils::io::bold();
@@ -205,8 +210,8 @@ void gauss_newton_neq_solve(const system_t & sys,
 				    "\n");
     // this print only works when hessian is a shared mem matrix
     ::pressio::utils::io::print_stdout(fmt2, "GN_HessianSize =",
-				    H.rows(), H.cols(),
-				    utils::io::reset(), "\n");
+				       H.rows(), H.cols(),
+				       utils::io::reset(), "\n");
 #endif
 
     // compute RHS: J^T*res
@@ -214,7 +219,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->start("JTR");
 #endif
     jtr_evaluator_t::evaluate(jacob, resid, JTR);
-    JTR.scale(static_cast<scalar_t>(-1));
+    JTR.scale(negOne);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("JTR");
 #endif
@@ -231,9 +236,9 @@ void gauss_newton_neq_solve(const system_t & sys,
     // store initial residual norm
     if (iStep==1) normJTRes0 = normJTRes;
 
+    // // // print J^T R
     // ::pressio::utils::io::print_stdout("J^T R \n");
-    // ::pressio::utils::io::print_stdout( std::fixed,
-    // 				     *JTR.data() , "\n");
+    // ::pressio::utils::io::print_stdout( std::fixed, *JTR.data() , "\n");
 
     // solve normal equations
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -243,14 +248,12 @@ void gauss_newton_neq_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("solve normeq");
 #endif
+    // compute norm of the correction
+    norm_evaluator_t::evaluate(dy, norm_dy);
 
     // // // print the correction
     // ::pressio::utils::io::print_stdout("Correction dy \n");
-    // ::pressio::utils::io::print_stdout(std::fixed,
-    // 				    *dy.data());
-
-    // compute norm of the correction
-    norm_evaluator_t::evaluate(dy, norm_dy);
+    // ::pressio::utils::io::print_stdout(std::fixed, *dy.data());
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
