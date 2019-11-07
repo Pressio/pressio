@@ -96,17 +96,49 @@ public:
 
   ~PyLinearDecoder() = default;
 
-  template <typename operand_t, typename result_t>
-  void _applyMappingTest(const operand_t & operandObj,
-			result_t & resultObj) const{
-    ops_.attr("multiply")(phi_, false, operandObj, false, resultObj);
+private:
+  /* if phi has col-major order, use blas*/
+  template <
+  typename operand_t,
+  typename result_t,
+  typename _matrix_type = matrix_type,
+  mpl::enable_if_t<
+    ::pressio::containers::meta::is_fstyle_array_pybind11<_matrix_type>::value
+    > * = nullptr
+  >
+  void applyMappingImpl(const operand_t & operandObj,
+			result_t & resultObj) const
+  {
+    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto izero = ::pressio::utils::constants::zero<int>();
+    constexpr auto ione  = ::pressio::utils::constants::one<int>();
+
+    constexpr auto transA = izero;
+    // overwrite y passed in to dgemv
+    constexpr auto owy = ione;
+
+    pybind11::object spy = pybind11::module::import("scipy.linalg.blas");
+    spy.attr("dgemv")(one, phi_, operandObj, zero, resultObj, izero, ione, izero, ione, transA, owy);
+
+    //ops_.attr("multiply")(phi_, false, operandObj, false, resultObj);
   }
 
-protected:
-  template <typename operand_t, typename result_t>
+  /* if phi has row-major order, use numpy*/
+  template <
+    typename operand_t,
+    typename result_t,
+    typename _matrix_type = matrix_type,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_cstyle_array_pybind11<_matrix_type>::value
+      > * = nullptr
+  >
   void applyMappingImpl(const operand_t & operandObj,
-			result_t & resultObj) const{
-    ops_.attr("multiply")(phi_, false, operandObj, false, resultObj);
+			result_t & resultObj) const
+  {
+    pybind11::object numpy = pybind11::module::import("numpy");
+    // this is typically a matrix vec product. So  use matmul
+    resultObj = numpy.attr("dot")(phi_, operandObj);
   }
 
   const jacobian_t & getReferenceToJacobianImpl() const{
