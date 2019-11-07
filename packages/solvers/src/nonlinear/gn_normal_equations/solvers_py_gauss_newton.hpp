@@ -138,7 +138,14 @@ public:
   PyGaussNewton(const PyGaussNewton &) = delete;
   ~PyGaussNewton() = default;
 
-  PyGaussNewton(const system_t	 & system,
+  template <
+    typename _system_t = system_t,
+    typename _jacobian_t = jacobian_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_array_pybind11<_jacobian_t>::value
+      > * = nullptr
+    >
+  PyGaussNewton(const _system_t	 & system,
 		const state_t	 & yState,
 		linear_solver_t & linearSolverIn,
 		pybind11::object ops)
@@ -146,6 +153,8 @@ public:
       linSolver_(linearSolverIn),
       res_(system.residual(yState)),
       jac_(system.jacobian(yState)),
+      // need to figure out a way to init just using sizes
+      // rather than calling this multiply
       hess_(pythonOps_.attr("multiply")(jac_, true, jac_, false)),
       JTR_{ state_t(const_cast<state_t &>(yState).request()) },
       dy_{ state_t(const_cast<state_t &>(yState).request()) },
@@ -153,6 +162,7 @@ public:
       normO_{0}, norm_dy_{0},
       obsObj_{}
   {}
+
 
 private:
 
@@ -186,8 +196,12 @@ private:
     scalar_t normJTRes = {};
     scalar_t normJTRes0 = {};
 
+    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
     constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+
+    pybind11::object spy = pybind11::module::import("scipy.linalg.blas");
+    pybind11::object spylap = pybind11::module::import("scipy.linalg.lapack");
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto ss = std::cout.precision();
@@ -226,8 +240,18 @@ private:
       // pythonOps_.attr("myprint")(jac_);
       // std::cout << "\n";
 
+      //----------------------------
       // compute hessian: J^T*J
-      pythonOps_.attr("multiply")(jac_, true, jac_, false, hess_);
+      //----------------------------
+      //pythonOps_.attr("multiply")(jac_, true, jac_, false, hess_);
+      constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+      constexpr auto no   = ::pressio::utils::constants::zero<int>();
+      constexpr auto yes  = ::pressio::utils::constants::one<int>();
+      constexpr auto transA = yes;
+      constexpr auto transB = no;
+      constexpr auto ovw    = yes;
+      spy.attr("dgemm")(one, jac_, jac_, zero, hess_, transA, transB, ovw);
+      //----------------------------
 
       // std::cout << "hessian" << std::endl;
       // pythonOps_.attr("myprint")(hess_);
@@ -235,16 +259,19 @@ private:
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt1 = utils::io::magenta() + utils::io::bold();
       ::pressio::utils::io::print_stdout(fmt1, "GN_JSize =",
-					 jac_.shape()[0], jac_.shape()[1],
-					 "\n");
+					 jac_.shape()[0], jac_.shape()[1], "\n");
       ::pressio::utils::io::print_stdout(fmt1, "GN_HessianSize =",
 					 hess_.shape()[0], hess_.shape()[1],
 					 utils::io::reset(), "\n");
 #endif
 
+      //--------------------------------------------------------------
       // compute RHS: J^T*res
-      pythonOps_.attr("multiply")(jac_, true, res_, false, JTR_);
-      pythonOps_.attr("scale")(JTR_, negOne);
+      constexpr auto izero = ::pressio::utils::constants::zero<int>();
+      constexpr auto ione  = ::pressio::utils::constants::one<int>();
+      spy.attr("dgemv")(negOne, jac_, res_, zero, JTR_, izero, ione, izero, ione, yes, yes);
+      // pythonOps_.attr("multiply")(jac_, true, res_, false, JTR_);
+      // pythonOps_.attr("scale")(JTR_, negOne);
 
       // std::cout << "JT R" << std::endl;
       // pythonOps_.attr("myprint")(JTR_);
@@ -291,7 +318,7 @@ private:
 
       // if we have converged, exit
       if (flag) {
-	break;
+      	break;
       }
 
       // store new norm into old variable
@@ -302,6 +329,8 @@ private:
       sys.jacobian(y, jac_);
 
       }//loop
+
+    //std::cout << iStep << " " << norm_dy_ << std::endl;
 
 #if defined PRESSIO_ENABLE_DEBUG_PRINT
     std::cout.precision(ss);
