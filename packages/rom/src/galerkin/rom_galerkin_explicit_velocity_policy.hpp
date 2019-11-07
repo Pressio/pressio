@@ -191,6 +191,57 @@ private:
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+
+  template <
+    typename scalar_t,
+    typename operand_t,
+    typename result_t,
+    typename _decoder_t = decoder_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_fstyle_array_pybind11<typename _decoder_t::jacobian_t>::value
+      > * = nullptr
+    >
+  void applyDecoderJacobianToFomVel(const typename _decoder_t::jacobian_t & phi,
+				    const operand_t & operandObj,
+				    result_t & resObj) const
+  {
+    constexpr auto dzero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto done  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto izero = ::pressio::utils::constants::zero<int>();
+    constexpr auto ione  = ::pressio::utils::constants::one<int>();
+
+    constexpr auto transA = ione;
+    // overwrite y passed in to dgemv
+    constexpr auto owy = ione;
+
+    pybind11::object spy = pybind11::module::import("scipy.linalg.blas");
+    spy.attr("dgemv")(done, phi, operandObj, dzero, resObj, izero, ione, izero, ione, transA, owy);
+  }
+
+
+  template <
+    typename scalar_t,
+    typename operand_t,
+    typename result_t,
+    typename _decoder_t = decoder_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_cstyle_array_pybind11<typename _decoder_t::jacobian_t>::value
+      > * = nullptr
+    >
+  void applyDecoderJacobianToFomVel(const typename _decoder_t::jacobian_t & phi,
+  				    const operand_t & operandObj,
+  				    result_t & resObj) const
+  {
+    pybind11::object numpy = pybind11::module::import("numpy");
+    // this is typically a matrix vec product. So  use matmul
+    auto phiT = numpy.attr("transpose")(phi);
+    resObj = numpy.attr("dot")(phiT, operandObj);
+
+    // constexpr bool transposePhi = true;
+    // udOps_.attr("multiply")(phi, transposePhi, operandObj, false, resObj);
+  }
+
+
   template <
   typename galerkin_state_t,
   typename fom_t,
@@ -224,8 +275,10 @@ private:
     timer->start("phiT*fomRhs");
 #endif
     const auto & phi = decoder_.getReferenceToJacobian();
-    constexpr bool transposePhi = true;
-    udOps_.attr("multiply")(phi, transposePhi, R_, false, romR);
+    (*this).template applyDecoderJacobianToFomVel<scalar_t>(phi, R_, romR);
+
+    // constexpr bool transposePhi = true;
+    // udOps_.attr("multiply")(phi, transposePhi, R_, false, romR);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
