@@ -50,6 +50,7 @@
 #define CONTAINERS_CONFIGDEFS_HPP_
 
 #include <fstream>
+#include <chrono>
 #include "../../utils/src/utils_ConfigDefs.hpp"
 
 #include "containers_default_types.hpp"
