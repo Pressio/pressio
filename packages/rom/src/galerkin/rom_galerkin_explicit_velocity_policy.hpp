@@ -333,7 +333,10 @@ private:
 
 
 protected:
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11  
   pybind11::object numpy_ = pybind11::module::import("numpy");
+#endif
+  
   mutable fom_rhs_t R_ = {};
   const decoder_t & decoder_;
   fom_states_data_type & fomStates_;

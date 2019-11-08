@@ -112,9 +112,9 @@ public:
 					const fom_apply_jac_policy  & applyJacFunctor,
 					const _apply_jac_return_type & applyJacObj,
 					const decoder_type	    & decoder)
-    : JJ_(applyJacObj),
+    : fom_apply_jac_policy(applyJacFunctor),
+      JJ_(applyJacObj),
       fomStates_(fomStates),
-      fom_apply_jac_policy(applyJacFunctor),
       decoderObj_(decoder){}
 
 
@@ -135,9 +135,9 @@ public:
 					const _apply_jac_return_type & applyJacObj,
 					const decoder_type	    & decoder,
 					const _ud_ops		    & udOps)
-    : JJ_(applyJacObj),
+    : fom_apply_jac_policy(applyJacFunctor),
+      JJ_(applyJacObj),
       fomStates_(fomStates),
-      fom_apply_jac_policy(applyJacFunctor),
       decoderObj_(decoder),
       udOps_{&udOps}
   {}
@@ -157,9 +157,9 @@ public:
 					const fom_apply_jac_policy  & applyJacFunctor,
 					const _apply_jac_return_type & applyJacObj,
 					const decoder_type	    & decoder)
-    : JJ_{{_apply_jac_return_type(const_cast<_apply_jac_return_type &>(applyJacObj).request())}},
+    : fom_apply_jac_policy(applyJacFunctor),
+      JJ_{{_apply_jac_return_type(const_cast<_apply_jac_return_type &>(applyJacObj).request())}},
       fomStates_(fomStates),
-      fom_apply_jac_policy(applyJacFunctor),
       decoderObj_(decoder){}
 
   // 4. enable for python bindings and non-void ops (which means user passes ops)
@@ -176,9 +176,9 @@ public:
 					const _apply_jac_return_type & applyJacObj,
 					const decoder_type	    & decoder,
 					const _ud_ops		    & udOps)
-    : JJ_{{_apply_jac_return_type(const_cast<_apply_jac_return_type &>(applyJacObj).request())}},
+    : fom_apply_jac_policy(applyJacFunctor),
+      JJ_{{_apply_jac_return_type(const_cast<_apply_jac_return_type &>(applyJacObj).request())}},
       fomStates_(fomStates),
-      fom_apply_jac_policy(applyJacFunctor),
       decoderObj_(decoder),
       udOps_{udOps}
   {}
