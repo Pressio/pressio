@@ -54,9 +54,9 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-// -------------------------------------
-// for user-defined ops with BDF1
-// -------------------------------------
+/* enable when we have:
+ * regular c++, BDF1 and user-defined ops
+*/
 template<
   ::pressio::ode::ImplicitEnum odeStepperName,
   typename fom_states_cont_t,
@@ -66,6 +66,7 @@ template<
   ::pressio::mpl::enable_if_t<
     odeStepperName == ::pressio::ode::ImplicitEnum::Euler
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    and !::pressio::containers::meta::is_array_pybind11<state_type>::value
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
    > * = nullptr
@@ -80,22 +81,59 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
   udOps->time_discrete_euler(*R.data(), *fomStateAt_n.data(), *fomStateAt_nm1.data(), dt);
 }
 
+
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+/*
+ * for python binddings, enable when we have BDF1 and we do the computation
+*/
 template<
   ::pressio::ode::ImplicitEnum odeStepperName,
   typename fom_states_cont_t,
   typename state_type,
   typename scalar_type,
-  typename ud_ops,
   ::pressio::mpl::enable_if_t<
     odeStepperName == ::pressio::ode::ImplicitEnum::Euler and
-    mpl::is_same< ud_ops, pybind11::object>::value
+    ::pressio::containers::meta::is_array_pybind11<state_type>::value
+    > * = nullptr
+  >
+void time_discrete_residual(const fom_states_cont_t & fomStates,
+			    state_type & R,
+			    const scalar_type & dt)
+{
+  const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
+  const auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
+
+  auto R_px = R.mutable_unchecked();
+  auto yn_px = fomStateAt_n.unchecked();
+  auto ynm1_px = fomStateAt_nm1.unchecked();
+
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
+  const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+
+  const auto Rsz = R.size();
+  for (std::size_t i=0; i<(std::size_t)Rsz; ++i){
+    R_px(i) = cn*yn_px(i) + cnm1*ynm1_px(i) + cf*R_px(i);
+  }
+}
+
+/*
+ * for python binddings, enable when we have BDF1 and we use custom ops
+*/
+template<
+  ::pressio::ode::ImplicitEnum odeStepperName,
+  typename fom_states_cont_t,
+  typename state_type,
+  typename scalar_type,
+  ::pressio::mpl::enable_if_t<
+    odeStepperName == ::pressio::ode::ImplicitEnum::Euler and
+    ::pressio::containers::meta::is_array_pybind11<state_type>::value
     > * = nullptr
   >
 void time_discrete_residual(const fom_states_cont_t & fomStates,
 			    state_type & R,
 			    const scalar_type & dt,
-			    const ud_ops & udOps){
+			    const pybind11::object & udOps){
 
   const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
   const auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
@@ -103,6 +141,7 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
   udOps.attr("time_discrete_euler")(R, fomStateAt_n, fomStateAt_nm1, dt);
 }
 #endif
+
 
 
 // ----------------------------------------------------------------------
@@ -183,6 +222,7 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
 					y_nm1, cnm1,
 					y_nm2, cnm2);
 }
+
 
 
 

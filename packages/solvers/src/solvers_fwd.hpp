@@ -115,6 +115,7 @@ template <
   typename hessian_t,
   typename linear_solver_t,
   typename scalar_t,
+  typename ops_t,
   typename when_converged_t = default_convergence,
   typename enable = void
   >

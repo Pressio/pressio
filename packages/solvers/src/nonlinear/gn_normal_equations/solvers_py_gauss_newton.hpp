@@ -69,11 +69,12 @@ template <
   typename hessian_t,
   typename linear_solver_t,
   typename scalar_t,
+  typename ops_t,
   typename when_converged_t
   >
 class PyGaussNewton<
   system_t, state_t, residual_t, jacobian_t,
-  hessian_t, linear_solver_t, scalar_t, when_converged_t,
+  hessian_t, linear_solver_t, scalar_t, ops_t, when_converged_t,
   mpl::enable_if_t<
     ::pressio::containers::meta::is_array_pybind11<state_t>::value and
     ::pressio::containers::meta::is_array_pybind11<residual_t>::value and
@@ -84,13 +85,13 @@ class PyGaussNewton<
   : public NonLinearSolverBase<
   PyGaussNewton<
     system_t, state_t, residual_t, jacobian_t,
-    hessian_t, linear_solver_t, scalar_t, when_converged_t
+    hessian_t, linear_solver_t, scalar_t, ops_t, when_converged_t
     >
   >,
     public IterativeBase<
   PyGaussNewton<
     system_t, state_t, residual_t, jacobian_t,
-    hessian_t, linear_solver_t, scalar_t, when_converged_t
+    hessian_t, linear_solver_t, scalar_t, ops_t, when_converged_t
     >, scalar_t>
 {
 
@@ -99,6 +100,10 @@ class PyGaussNewton<
 		"PyGaussNewton currently only supports jacobians and hessians \
 with col-major layout. This is because we use blas and lapack for some operations.");
 
+  static_assert(std::is_void<ops_t>::value,
+		"PyGaussNewton currently only supports ops_t = void\
+which means pression handles calls to compute hessian, project residual, etc. internally. \
+Support for custom ops will be added later.");
 
   static_assert( mpl::not_same<system_t, pybind11::object>::value,
 		 "In PyGaussNewton, detected the system_t != pybind11::object. \
@@ -107,7 +112,7 @@ and the system_t == pybind11::object. \
 The PyGaussNewton is meant to be used when the application class written in Python.");
 
   using this_t = PyGaussNewton<system_t, state_t, residual_t, jacobian_t,
-			       hessian_t, linear_solver_t, scalar_t,
+			       hessian_t, linear_solver_t, scalar_t, ops_t,
 			       when_converged_t>;
 
   // need to friend base (crpt) to grant it access to this private methods
@@ -136,8 +141,14 @@ The PyGaussNewton is meant to be used when the application class written in Pyth
 
 
 private: // data members
-  // this references a Python class where we search for all needed ops
-  pybind11::object pyOps_    = {};
+
+  // here we do this conditional type because it seems when ops_t= pybind11::object
+  // it only works if we copy the object. Need to figure out if we can leave ptr in all cases.
+  typename std::conditional<
+    mpl::is_same<ops_t, pybind11::object>::value, ops_t,
+    void *
+    >::type customOps_ = {};
+
   pybind11::object spyblas   = pybind11::module::import("scipy.linalg.blas");
 
   linear_solver_t linSolver_ = {};
@@ -166,24 +177,51 @@ public:
   ~PyGaussNewton() = default;
 
   template <
+    typename _ops_t = ops_t,
     typename _system_t = system_t,
     typename _jacobian_t = jacobian_t,
     mpl::enable_if_t<
       ::pressio::containers::meta::is_array_pybind11<_jacobian_t>::value
+      and mpl::is_same<_ops_t, pybind11::object>::value
       > * = nullptr
     >
   PyGaussNewton(const _system_t	 & system,
 		const state_t	 & yState,
 		linear_solver_t & linearSolverIn,
 		pybind11::object ops)
-    : pyOps_{ops},
+    : customOps_{ops},
       linSolver_(linearSolverIn),
       res_(system.residual(yState)),
       jac_(system.jacobian(yState)),
       // the hessian is square with number of rows = cols of jac
       // so we can initialize from just the shape
       // rather than calling the ops object:
-      // hess_(pyOps_.attr("multiply")(jac_, true, jac_, false)),
+      // hess_(customOps_.attr("multiply")(jac_, true, jac_, false)),
+      hess_({ jac_.shape(1), jac_.shape(1) }),
+      JTR_{ state_t(const_cast<state_t &>(yState).request()) },
+      dy_{ state_t(const_cast<state_t &>(yState).request()) },
+      ytrial_{ state_t(const_cast<state_t &>(yState).request()) },
+      normO_{0}, norm_dy_{0},
+      obsObj_{}
+  {}
+
+  template <
+    typename _ops_t = ops_t,
+    typename _system_t = system_t,
+    typename _jacobian_t = jacobian_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_array_pybind11<_jacobian_t>::value
+      and std::is_void<_ops_t>::value
+      > * = nullptr
+    >
+  PyGaussNewton(const _system_t	 & system,
+		const state_t	 & yState,
+		linear_solver_t & linearSolverIn)
+    : linSolver_(linearSolverIn),
+      res_(system.residual(yState)),
+      jac_(system.jacobian(yState)),
+      // the hessian is square with number of rows = cols of jac
+      // so we can initialize from just the shape
       hess_({ jac_.shape(1), jac_.shape(1) }),
       JTR_{ state_t(const_cast<state_t &>(yState).request()) },
       dy_{ state_t(const_cast<state_t &>(yState).request()) },
@@ -245,18 +283,18 @@ private:
 
       // print residual
       // std::cout << "residual" << std::endl;
-      // pyOps_.attr("myprint")(res_);
+      // customOps_.attr("myprint")(res_);
 
       // print jacobian
       // std::cout << "\n";
       // std::cout << "jacobian" << std::endl;
-      // pyOps_.attr("myprint")(jac_);
+      // customOps_.attr("myprint")(jac_);
       // std::cout << "\n";
 
       //--------------------------------------------------------------
       // compute hessian: J^T*J
       //--------------------------------------------------------------
-      //pyOps_.attr("multiply")(jac_, true, jac_, false, hess_);
+      //customOps_.attr("multiply")(jac_, true, jac_, false, hess_);
       constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
       constexpr auto no   = ::pressio::utils::constants::zero<int>();
       constexpr auto yes  = ::pressio::utils::constants::one<int>();
@@ -267,7 +305,7 @@ private:
 
       // print hessian
       // std::cout << "hessian" << std::endl;
-      // pyOps_.attr("myprint")(hess_);
+      // customOps_.attr("myprint")(hess_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt1 = utils::io::magenta() + utils::io::bold();
@@ -289,12 +327,12 @@ private:
       // sign convention we use
       spyblas.attr("dgemv")(negOne, jac_, res_, zero, JTR_,
 			    izero, ione, izero, ione, transJ, ow);
-      // pyOps_.attr("multiply")(jac_, true, res_, false, JTR_);
-      // pyOps_.attr("scale")(JTR_, negOne);
+      // customOps_.attr("multiply")(jac_, true, res_, false, JTR_);
+      // customOps_.attr("scale")(JTR_, negOne);
 
       // print J^T*res
       // std::cout << "JT R" << std::endl;
-      // pyOps_.attr("myprint")(JTR_);
+      // customOps_.attr("myprint")(JTR_);
 
       // norm of projected residual
       norm_evaluator_t::evaluate(JTR_, normJTRes);
@@ -312,7 +350,7 @@ private:
 
       // print correction
       // std::cout << "Correction dy \n" << std::endl;
-      // pyOps_.attr("myprint")(dy_);
+      // customOps_.attr("myprint")(dy_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout(std::scientific,

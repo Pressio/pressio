@@ -85,49 +85,79 @@ public:
   LSPGUnsteadyResidualPolicyVelocityApi() = delete;
   ~LSPGUnsteadyResidualPolicyVelocityApi() = default;
 
-  // cnstr enabled when udOps is void
+  /* for constructing this we need to deal with a few cases
+   * 1. regular c++ with void ops
+   * 2. regular c++ with non-void ops
+   * 3. python bindings with void ops
+   * 4. python bindings with non-void ops
+   */
+
+  // 1. enable for regular c++ and void ops
   template <
+    typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
       std::is_void<_ud_ops>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      and !::pressio::containers::meta::is_array_pybind11<_residual_type>::value
+#endif
       > * = nullptr
     >
-  LSPGUnsteadyResidualPolicyVelocityApi(const residual_t & RIn,
+  LSPGUnsteadyResidualPolicyVelocityApi(const _residual_type & RIn,
 					fom_states_cont_type & fomStatesIn,
 					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
       R_{RIn},
-      fomStates_(fomStatesIn){}
+      fomStates_(fomStatesIn)
+  {}
 
-//   // cnstr enabled when udOps is non-void and not python
-//   template <
-//     typename _ud_ops = ud_ops,
-//     mpl::enable_if_t<
-//       !std::is_void<_ud_ops>::value
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//       and mpl::not_same<_ud_ops, pybind11::object>::value
-// #endif
-//       > * = nullptr
-//     >
-//   LSPGUnsteadyResidualPolicyVelocityApi(const residual_t & RIn,
-// 					fom_states_data & fomStates,
-// 					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
-// 					const _ud_ops & udOps)
-//     : R_{RIn},
-//       fom_states_data(fomStates),
-//       fom_velocity_eval_policy(fomEvalVelocityFunctor),
-//       udOps_{&udOps}{
-//     static_assert( !std::is_void<_ud_ops>::value, "");
-//   }
+
+  // 2. enable for regular c++ and non-void ops
+  template <
+    typename _residual_type = residual_type,
+    typename _ud_ops = ud_ops,
+    mpl::enable_if_t<
+      !std::is_void<_ud_ops>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      and !::pressio::containers::meta::is_array_pybind11<_residual_type>::value
+      and mpl::not_same<_ud_ops, pybind11::object>::value
+#endif
+      > * = nullptr
+    >
+  LSPGUnsteadyResidualPolicyVelocityApi(const _residual_type & RIn,
+					fom_states_cont_type & fomStatesIn,
+					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
+					const _ud_ops & udOps)
+    : R_{RIn},
+      fomStates_(fomStatesIn),
+      fom_velocity_eval_policy(fomEvalVelocityFunctor),
+      udOps_{&udOps}
+  {}
+
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // cnstr enabled when udOps is non-void and python
-  // need to be careful because here we need to use :
-  // R_{{residual_type(const_cast<residual_type &>(RIn).request())}}
-  // unless we simply use view semnatic to point RIn which is owened by problem generator
+  // 3. python bindings with void ops (which means we do the ops here)
   template <
-    typename _ud_ops = ud_ops,
     typename _residual_type = residual_type,
+    typename _ud_ops = ud_ops,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_array_pybind11<_residual_type>::value and
+      std::is_void<_ud_ops>::value
+      > * = nullptr
+    >
+  LSPGUnsteadyResidualPolicyVelocityApi(const _residual_type & RIn,
+					fom_states_cont_type & fomStatesIn,
+					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
+    : fom_velocity_eval_policy(fomEvalVelocityFunctor),
+      R_{{_residual_type(const_cast<_residual_type &>(RIn).request())}},
+      fomStates_(fomStatesIn)
+  {}
+
+
+  // 4. python bindings with non-void ops (means the user passes object with ops)
+  template <
+    typename _residual_type = residual_type,
+    typename _ud_ops = ud_ops,
     mpl::enable_if_t<
       ::pressio::containers::meta::is_array_pybind11<_residual_type>::value and
       mpl::is_same<_ud_ops, pybind11::object>::value
@@ -143,6 +173,7 @@ public:
       udOps_{udOps}
   {}
 #endif
+
 
 public:
   template <
@@ -265,9 +296,11 @@ protected:
   fom_states_cont_type & fomStates_;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  // here we do this conditional type because it seems when ud_ops= pybind11::object
+  // it only works if we copy the object. Need to figure out if we can leave ptr in all cases.
   typename std::conditional<
-    mpl::is_same<ud_ops, pybind11::object>::value,
-    ud_ops, const ud_ops *
+    mpl::is_same<ud_ops, pybind11::object>::value, ud_ops,
+    const ud_ops *
     >::type udOps_ = {};
 #else
     const ud_ops * udOps_ = {};
