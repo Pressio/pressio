@@ -82,38 +82,71 @@ public:
   DefaultGalerkinExplicitVelocityPolicy() = delete;
   ~DefaultGalerkinExplicitVelocityPolicy() = default;
 
-  DefaultGalerkinExplicitVelocityPolicy(const fom_rhs_t & fomRhs,
+  /* for constructing this we need to deal with a few cases
+   * 1. regular c++ with void ops
+   * 2. python bindings with void ops
+   * 3. python bindings with non-void ops
+   */
+
+  // 1. enable for regular c++ and void ops
+  template <
+    typename _fom_rhs_t = fom_rhs_t,
+    typename _ud_ops = ud_ops,
+    mpl::enable_if_t<
+      std::is_void<_ud_ops>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      and !::pressio::containers::meta::is_array_pybind11<_fom_rhs_t>::value
+#endif
+      > * = nullptr
+    >
+  DefaultGalerkinExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
 					fom_states_data_type & fomStates,
 					const decoder_t & decoder)
     : R_{fomRhs},
       decoder_(decoder),
       fomStates_(fomStates){}
 
+
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // this cnstr only enabled when udOps is non-void and python
+  // 2. python bindings with void ops
   template <
+    typename _fom_rhs_t = fom_rhs_t,
     typename _ud_ops = ud_ops,
     mpl::enable_if_t<
-      mpl::is_same<_ud_ops, pybind11::object>::value
+      std::is_void<_ud_ops>::value
+      and ::pressio::containers::meta::is_array_pybind11<_fom_rhs_t>::value
       > * = nullptr
     >
-  DefaultGalerkinExplicitVelocityPolicy(const fom_rhs_t & fomRhs,
+  DefaultGalerkinExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
 					fom_states_data_type & fomStates,
-					const decoder_t & decoder,
-					const _ud_ops & udOps)
+					const decoder_t & decoder)
+    : R_{fomRhs},
+      decoder_(decoder),
+      fomStates_(fomStates){}
+
+  // 3. python bindings with non-void ops
+  template <
+    typename _fom_rhs_t = fom_rhs_t,
+    typename _ud_ops = ud_ops,
+    mpl::enable_if_t<
+      std::is_same<_ud_ops, pybind11::object>::value
+      and ::pressio::containers::meta::is_array_pybind11<_fom_rhs_t>::value
+      > * = nullptr
+    >
+  DefaultGalerkinExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
+  					fom_states_data_type & fomStates,
+  					const decoder_t & decoder,
+  					const _ud_ops & udOps)
     : R_{fomRhs},
       decoder_(decoder),
       fomStates_(fomStates),
       udOps_{udOps}{}
 #endif
 
+
 public:
   /* for now, the ROM state and ROM velocity must be of the same type */
-  template <
-    typename galerkin_state_t,
-    typename fom_t,
-    typename scalar_t
-  >
+  template <typename galerkin_state_t, typename fom_t, typename scalar_t>
   void operator()(const galerkin_state_t  & romY,
 		  galerkin_state_t	  & romR,
   		  const fom_t		  & app,
@@ -121,11 +154,7 @@ public:
     this->compute_impl(romY, romR, app, t);
   }
 
-  template <
-    typename galerkin_state_t,
-    typename fom_t,
-    typename scalar_t
-    >
+  template <typename galerkin_state_t, typename fom_t, typename scalar_t>
   galerkin_state_t operator()(const galerkin_state_t  & romY,
 			      const fom_t	      & app,
 			      scalar_t		 t) const
@@ -143,7 +172,6 @@ public:
 
 
 private:
-
   template <
   typename galerkin_state_t,
   typename fom_t,
@@ -191,64 +219,12 @@ private:
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-
-  template <
-    typename scalar_t,
-    typename operand_t,
-    typename result_t,
-    typename _decoder_t = decoder_t,
-    mpl::enable_if_t<
-      ::pressio::containers::meta::is_fstyle_array_pybind11<typename _decoder_t::jacobian_t>::value
-      > * = nullptr
-    >
-  void applyDecoderJacobianToFomVel(const typename _decoder_t::jacobian_t & phi,
-				    const operand_t & operandObj,
-				    result_t & resObj) const
-  {
-    constexpr auto dzero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto done  = ::pressio::utils::constants::one<scalar_t>();
-    constexpr auto izero = ::pressio::utils::constants::zero<int>();
-    constexpr auto ione  = ::pressio::utils::constants::one<int>();
-
-    constexpr auto transA = ione;
-    // overwrite y passed in to dgemv
-    constexpr auto owy = ione;
-
-    pybind11::object spy = pybind11::module::import("scipy.linalg.blas");
-    spy.attr("dgemv")(done, phi, operandObj, dzero, resObj, izero, ione, izero, ione, transA, owy);
-  }
-
-
-  template <
-    typename scalar_t,
-    typename operand_t,
-    typename result_t,
-    typename _decoder_t = decoder_t,
-    mpl::enable_if_t<
-      ::pressio::containers::meta::is_cstyle_array_pybind11<typename _decoder_t::jacobian_t>::value
-      > * = nullptr
-    >
-  void applyDecoderJacobianToFomVel(const typename _decoder_t::jacobian_t & phi,
-  				    const operand_t & operandObj,
-  				    result_t & resObj) const
-  {
-    pybind11::object numpy = pybind11::module::import("numpy");
-    // this is typically a matrix vec product. So  use matmul
-    auto phiT = numpy.attr("transpose")(phi);
-    resObj = numpy.attr("dot")(phiT, operandObj);
-
-    // constexpr bool transposePhi = true;
-    // udOps_.attr("multiply")(phi, transposePhi, operandObj, false, resObj);
-  }
-
-
   template <
   typename galerkin_state_t,
   typename fom_t,
   typename scalar_t,
   typename _ud_ops = ud_ops,
   mpl::enable_if_t<
-    ::pressio::mpl::is_same<_ud_ops, pybind11::object>::value and
     ::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
     > * = nullptr
   >
@@ -285,10 +261,79 @@ private:
     timer->stop("galerkin explicit velocity");
 #endif
   }
+
+
+  /* if ops_void, and phi has col-major order, use blas*/
+  template <
+    typename scalar_t,
+    typename operand_t,
+    typename result_t,
+    typename _ops_t = ud_ops,
+    typename _decoder_t = decoder_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_fstyle_array_pybind11<typename _decoder_t::jacobian_t>::value and
+      std::is_void<_ops_t>::value
+      > * = nullptr
+    >
+  void applyDecoderJacobianToFomVel(const typename _decoder_t::jacobian_t & phi,
+				    const operand_t & operandObj,
+				    result_t & resObj) const{
+    constexpr auto dzero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto done  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto izero = ::pressio::utils::constants::zero<int>();
+    constexpr auto ione  = ::pressio::utils::constants::one<int>();
+    constexpr auto transA = ione;
+    // overwrite y passed in to dgemv
+    constexpr auto owy = ione;
+    pybind11::object spy = pybind11::module::import("scipy.linalg.blas");
+    spy.attr("dgemv")(done, phi, operandObj, dzero, resObj, izero, ione, izero, ione, transA, owy);
+  }
+
+  /* if ops_t == void, phi has row-major order, use numpy*/
+  template <
+    typename scalar_t,
+    typename operand_t,
+    typename result_t,
+    typename _ops_t = ud_ops,
+    typename _decoder_t = decoder_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_cstyle_array_pybind11<typename _decoder_t::jacobian_t>::value and
+      std::is_void<_ops_t>::value
+      > * = nullptr
+    >
+  void applyDecoderJacobianToFomVel(const typename _decoder_t::jacobian_t & phi,
+  				    const operand_t & operandObj,
+  				    result_t & resObj) const
+  {
+    // this is typically a matrix vec product. So  use matmul
+    const auto phiT = numpy_.attr("transpose")(phi);
+    resObj = numpy_.attr("dot")(phiT, operandObj);
+  }
+
+  /* if ops_t == pybind11::object*/
+  template <
+    typename scalar_t,
+    typename operand_t,
+    typename result_t,
+    typename _ops_t = ud_ops,
+    typename _decoder_t = decoder_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_cstyle_array_pybind11<typename _decoder_t::jacobian_t>::value and
+      std::is_same<_ops_t, pybind11::object>::value
+      > * = nullptr
+    >
+  void applyDecoderJacobianToFomVel(const typename _decoder_t::jacobian_t & phi,
+  				    const operand_t & operandObj,
+  				    result_t & resObj) const
+  {
+    constexpr bool transposePhi = true;
+    udOps_.attr("multiply")(phi, transposePhi, operandObj, false, resObj);
+  }
 #endif
 
 
 protected:
+  pybind11::object numpy_ = pybind11::module::import("numpy");
   mutable fom_rhs_t R_ = {};
   const decoder_t & decoder_;
   fom_states_data_type & fomStates_;
