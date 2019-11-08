@@ -70,7 +70,7 @@ struct dtPrefactor<::pressio::ode::ImplicitEnum::BDF2, scalar_t>{
 // ------------------------------------------------------
 
 
-// user-defined OPS and NOT python
+// regular c++ with user-defined OPS
 template <
   ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
@@ -79,6 +79,7 @@ template <
   typename ud_ops
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   ,mpl::enable_if_t<
+     !::pressio::containers::meta::is_array_pybind11<lspg_matrix_type>::value and
      mpl::not_same< ud_ops, pybind11::object>::value
     > * = nullptr
 #endif
@@ -94,48 +95,53 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 }
 
 
-
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 
-// when we deal with python and have BDF1
+// when we deal with python and have void ops
 template <
   ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  typename ud_ops,
   mpl::enable_if_t<
-    odeStepperName == ::pressio::ode::ImplicitEnum::Euler and
-    mpl::is_same< ud_ops, pybind11::object>::value
+    ::pressio::containers::meta::is_array_pybind11<lspg_matrix_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const scalar_type	& dt,
-			    const decoder_jac_type & phi,
-			    const ud_ops & udOps){
+			    const decoder_jac_type & phi)
+{
+  auto jphi_px = jphi.mutable_unchecked();
+  auto phi_px  = phi.unchecked();
 
-  constexpr auto prefactor = ode::constants::bdf1<scalar_type>::c_f_;
-  udOps.attr("time_discrete_jacobian")(jphi, phi, prefactor, dt);
+  // prefactor (f) multiplying f*dt*J*phi
+  const auto prefactor = dt * dtPrefactor<odeStepperName, scalar_type>::value;
+
+  const auto nRows = jphi.shape(0);
+  const auto nCols = jphi.shape(1);
+  for (std::size_t i=0; i<(std::size_t)nRows; ++i){
+    for (std::size_t j=0; j<(std::size_t)nCols; ++j){
+      jphi_px(i,j) = phi_px(i,j) + prefactor*jphi_px(i,j);
+    }
+  }
 }
 
-// when we deal with python and have BDF2
+
 template <
   ode::ImplicitEnum odeStepperName,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  typename ud_ops,
   mpl::enable_if_t<
-    odeStepperName == ::pressio::ode::ImplicitEnum::BDF2 and
-    mpl::is_same< ud_ops, pybind11::object>::value
+    ::pressio::containers::meta::is_array_pybind11<lspg_matrix_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const scalar_type	& dt,
 			    const decoder_jac_type & phi,
-			    const ud_ops & udOps){
+			    const pybind11::object & udOps){
 
-  constexpr auto prefactor = ode::constants::bdf2<scalar_type>::c_f_;
+  constexpr auto prefactor = dtPrefactor<odeStepperName, scalar_type>::value;
   udOps.attr("time_discrete_jacobian")(jphi, phi, prefactor, dt);
 }
 #endif

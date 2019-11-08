@@ -147,30 +147,28 @@ template <
   ::pressio::ode::ImplicitEnum odeName,
   typename fom_type,
   typename lspg_state_type,
-  typename ...Args>
+  typename decoder_type,
+  typename ud_ops_type
+  >
 struct LSPGUnsteadyCommonTypesVelocityApi<
-  false, odeName, fom_type, lspg_state_type, Args ...
+  false, odeName, fom_type, lspg_state_type, decoder_type, ud_ops_type
   >
 {
 
-  /* template arguments definitely needed
-   * - valid decoder
-   */
-  // verify that args contains a valid decoder type
-  using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
-  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
-  static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
-		"A valid decoder type must be passed to define a LSPG problem");
-  using decoder_jac_t = typename decoder_t::jacobian_t;
+  // verify that we have a valid decoder type
+  static_assert( ::pressio::rom::meta::is_legitimate_decoder_type<decoder_type>::value,
+		"A valid decoder type must be passed to define a LSPG problem for Python bindings. \
+The type detected does not meet the requirements.");
+  using decoder_t		= decoder_type;
+  using decoder_jac_t		= typename decoder_type::jacobian_t;
+
+  // the fom_t is a pybind11::object since this comes from the python side
+  using fom_t			= fom_type;
+  using scalar_t		= typename decoder_type::scalar_t;
 
   // in this case there is no difference between types because
   // they all are pybind11::array_t so basically wrappers of numpy arrays
   // Since this is used to interface to python, EVERYTHING is done using numpy arrays
-
-  // these are native types of the full-order model (fom)
-  using fom_t			= fom_type;
-  using scalar_t		= typename decoder_t::scalar_t;
   using fom_native_state_t	= lspg_state_type;
   using fom_native_velocity_t	= lspg_state_type;
 
@@ -210,8 +208,11 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
   // type of class holding the fom states
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
 
-  // when interfacing with Python, ops are defined by a pybind11::object
-  using ud_ops_t = pybind11::object;
+  // ud_ops_t (if this is non-void, it should be a pybind11::object since this is passed by user from python side)
+  using ud_ops_t = ud_ops_type;
+  static_assert( std::is_void<ud_ops_t>::value or std::is_same<ud_ops_t, pybind11::object>::value,
+		 "The type for the user defined ops for LSPG bindings to python is not valid. \
+It must be a pybind11::object.");
 
 };
 #endif
