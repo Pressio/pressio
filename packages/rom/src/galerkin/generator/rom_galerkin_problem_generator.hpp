@@ -91,6 +91,10 @@ public:
   }
 
 public:
+
+  GalerkinProblemGenerator() = delete;
+  ~GalerkinProblemGenerator() = default;
+
   /*
    * ud_ops_t == void and state_type is a wrapper
   */
