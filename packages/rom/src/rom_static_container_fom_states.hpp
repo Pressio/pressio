@@ -67,7 +67,8 @@ class FomStatesStaticContainer<fom_state_type, n, reconstuctor_type>
 which have pressio wrappers.");
 
 public:
-  using data_type = ::pressio::containers::StaticCollection<fom_state_type, n>;
+  using data_type  = ::pressio::containers::StaticCollection<fom_state_type, n>;
+  using value_type = fom_state_type;
 
   FomStatesStaticContainer() = delete;
 
