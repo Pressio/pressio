@@ -149,7 +149,11 @@ private: // data members
     void *
     >::type customOps_ = {};
 
-  pybind11::object spyblas   = pybind11::module::import("scipy.linalg.blas");
+  pybind11::object spyblas  = pybind11::module::import("scipy.linalg.blas");
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
+  pybind11::object pprint   = pybind11::module::import("pprint");
+  pybind11::object numpy   = pybind11::module::import("numpy");
+#endif
 
   linear_solver_t linSolver_ = {};
   residual_t res_	     = {};
@@ -281,20 +285,20 @@ private:
       // store initial residual norm
       if (iStep==1) normRes0 = normRes;
 
-      // print residual
+      // //print residual
       // std::cout << "residual" << std::endl;
-      // customOps_.attr("myprint")(res_);
+      // pprint.attr("pprint")(res_);
 
-      // print jacobian
+      // //print jacobian
       // std::cout << "\n";
       // std::cout << "jacobian" << std::endl;
-      // customOps_.attr("myprint")(jac_);
+      // pprint.attr("pprint")(jac_);
       // std::cout << "\n";
 
       //--------------------------------------------------------------
       // compute hessian: J^T*J
       //--------------------------------------------------------------
-      //customOps_.attr("multiply")(jac_, true, jac_, false, hess_);
+      //numpy.attr("matmul")(jac_, true, jac_, false, hess_);
       constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
       constexpr auto no   = ::pressio::utils::constants::zero<int>();
       constexpr auto yes  = ::pressio::utils::constants::one<int>();
