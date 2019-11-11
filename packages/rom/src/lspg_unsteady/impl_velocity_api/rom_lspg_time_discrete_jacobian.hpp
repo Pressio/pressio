@@ -112,7 +112,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const decoder_jac_type & phi)
 {
   auto jphi_px = jphi.mutable_unchecked();
-  auto phi_px  = phi.unchecked();
+  const auto phi_px  = phi.unchecked();
 
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<odeStepperName, scalar_type>::value;
