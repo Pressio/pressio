@@ -1,6 +1,9 @@
 language: cpp
-script: 
-- echo "$TRAVIS_OS_NAME : Pressio CI on $HOME with compiler $TRAVIS_COMPILER"
+script:
+- ls
+- cd ..
+- ls
+- cd -
 - mkdir $HOME/pressio_repos
 - mkdir $HOME/pressio_builds
 - export PRESSIO_REPOS=$HOME/pressio_repos
@@ -10,12 +13,16 @@ script:
 - CC=$(which gcc)
 - CXX=$(which g++)
 - cd ${PRESSIO_REPOS}
-- git clone git@github.com:Pressio/pressio.git
+- git clone git://github.com/Pressio/pressio.git
 - cd pressio
 - git checkout v0.2.1
 - cd -
-- git clone git@github.com:Pressio/pressio-builder.git
+- git clone git://github.com/Pressio/pressio-builder.git
 - cd pressio-builder
 - git checkout master
 - cd -
-- git clone git@github.com:Pressio/pressio-tutorials.git
+- git clone git://github.com/Pressio/pressio-tutorials.git
+- cd ${PRESSIO_REPOS}/pressio-builder
+- ./main_tpls.sh -dryrun=no -tpls=eigen -target-dir=${PRESSIO_BUILDS}
+- ./main_pressio.sh -dryrun=no -pressio-src=${PRESSIO_REPOS}/pressio -target-dir=${PRESSIO_BUILDS} -cmake-generator-name=default_for_tutorials
+- ./main_tutorials.sh -dryrun=no -pressio-tutorials-src=${PRESSIO_REPOS}/pressio-tutorials -target-dir=${PRESSIO_BUILDS} -build-mode=Release -eigen-path=${PRESSIO_BUILDS}/eigen/install -pressio-path=${PRESSIO_BUILDS}/pressio/install
