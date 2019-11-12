@@ -176,7 +176,7 @@ public:
 private:
 
   //--------------------------------------------
-  // fom velocity querying calls
+  // query fom velocity
   //--------------------------------------------
   /* if regular c++ */
   template<
@@ -206,13 +206,13 @@ private:
   void queryFomVelocityDispatch(const fom_t & app,
 				const fom_state_t & fomState,
 				const scalar_t & time) const{
-    app.attr("velocity")(fomState, time, fomRhs_);
+    fomRhs_ = app.attr("velocity")(fomState, time);
   }
 #endif
 
 
   // --------------------------------------------
-  // compute RHS querying calls
+  // compute RHS of ode
   // --------------------------------------------
 
   /* if regular c++ */
@@ -253,8 +253,7 @@ private:
     constexpr auto transA = ione;
     // overwrite y passed in to dgemv
     constexpr auto owy = ione;
-    pybind11::object spy = pybind11::module::import("scipy.linalg.blas");
-    spy.attr("dgemv")(done, phi, fomRhs_, dzero, resObj, izero, ione, izero, ione, transA, owy);
+    spy_.attr("dgemv")(done, phi, fomRhs_, dzero, resObj, izero, ione, izero, ione, transA, owy);
   }
 
   /* if ops_t == void, phi has row-major order, use numpy*/
@@ -344,6 +343,7 @@ protected:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   pybind11::object numpy_ = pybind11::module::import("numpy");
+  pybind11::object spy_	  = pybind11::module::import("scipy.linalg.blas");
 #endif
 
   mutable fom_rhs_t fomRhs_ = {};
