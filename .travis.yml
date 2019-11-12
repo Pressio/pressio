@@ -9,5 +9,13 @@ script:
 - which g++
 - CC=$(which gcc)
 - CXX=$(which g++)
-- echo "gcc is : $CC"
-- echo "g++ is : $CXX"
+- cd ${PRESSIO_REPOS}
+- git clone git@github.com:Pressio/pressio.git
+- cd pressio
+- git checkout v0.2.1
+- cd -
+- git clone git@github.com:Pressio/pressio-builder.git
+- cd pressio-builder
+- git checkout master
+- cd -
+- git clone git@github.com:Pressio/pressio-tutorials.git
