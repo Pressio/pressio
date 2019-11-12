@@ -1,1 +1,13 @@
 language: cpp
+script: 
+- echo "$TRAVIS_OS_NAME : Pressio CI on $HOME with compiler $TRAVIS_COMPILER"
+- mkdir $HOME/pressio_repos
+- mkdir $HOME/pressio_builds
+- export PRESSIO_REPOS=$HOME/pressio_repos
+- export PRESSIO_BUILDS=$HOME/pressio_builds
+- which gcc
+- which g++
+- CC=$(which gcc)
+- CXX=$(which g++)
+- echo "gcc is : $CC"
+- echo "g++ is : $CXX"
