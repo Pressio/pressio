@@ -103,7 +103,7 @@ public:
 					fom_states_data_type & fomStates,
 					const decoder_t & decoder)
     : fomRhs_{fomRhs},
-      decoder_(decoder),
+      phi_(decoder.getReferenceToJacobian()),
       fomStates_(fomStates){}
 
 
@@ -121,7 +121,7 @@ public:
 					fom_states_data_type & fomStates,
 					const decoder_t & decoder)
     : fomRhs_{fomRhs},
-      decoder_(decoder),
+      phi_(decoder.getReferenceToJacobian()),
       fomStates_(fomStates){}
 
   // 3. python bindings with non-void ops
@@ -138,7 +138,7 @@ public:
   					const decoder_t & decoder,
   					const _ud_ops & udOps)
     : fomRhs_{fomRhs},
-      decoder_(decoder),
+      phi_(decoder.getReferenceToJacobian()),
       fomStates_(fomStates),
       udOps_{udOps}{}
 #endif
@@ -227,8 +227,7 @@ private:
     >
   void applyDecoderJacobianToFomVelDispatch(result_t & resObj) const
   {
-    const auto & phi = decoder_.getReferenceToJacobian();
-    containers::ops::dot(phi, fomRhs_, resObj);
+    containers::ops::dot(phi_, fomRhs_, resObj);
   }
 
 
@@ -244,8 +243,6 @@ private:
     >
   void applyDecoderJacobianToFomVelDispatch(result_t & resObj) const
   {
-    const auto & phi = decoder_.getReferenceToJacobian();
-
     constexpr auto dzero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto done  = ::pressio::utils::constants::one<scalar_t>();
     constexpr auto izero = ::pressio::utils::constants::zero<int>();
@@ -253,7 +250,7 @@ private:
     constexpr auto transA = ione;
     // overwrite y passed in to dgemv
     constexpr auto owy = ione;
-    spy_.attr("dgemv")(done, phi, fomRhs_, dzero, resObj, izero, ione, izero, ione, transA, owy);
+    spy_.attr("dgemv")(done, phi_, fomRhs_, dzero, resObj, izero, ione, izero, ione, transA, owy);
   }
 
   /* if ops_t == void, phi has row-major order, use numpy*/
@@ -268,9 +265,10 @@ private:
     >
   void applyDecoderJacobianToFomVelDispatch(result_t & resObj) const
   {
-    const auto & phi = decoder_.getReferenceToJacobian();
+    // todo: compute this once, move somewhere we have a persistent
+    // transposed phi rather than doing it every time
     // this is typically a matrix vec product. So  use matmul
-    const auto phiT = numpy_.attr("transpose")(phi);
+    const auto phiT = numpy_.attr("transpose")(phi_);
     resObj = numpy_.attr("dot")(phiT, fomRhs_);
   }
 
@@ -286,9 +284,8 @@ private:
     >
   void applyDecoderJacobianToFomVelDispatch(result_t & resObj) const
   {
-    const auto & phi = decoder_.getReferenceToJacobian();
     constexpr bool transposePhi = true;
-    udOps_.attr("multiply")(phi, transposePhi, fomRhs_, false, resObj);
+    udOps_.attr("multiply")(phi_, transposePhi, fomRhs_, false, resObj);
   }
 #endif
 
@@ -347,7 +344,7 @@ protected:
 #endif
 
   mutable fom_rhs_t fomRhs_ = {};
-  const decoder_t & decoder_;
+  const typename decoder_t::jacobian_t & phi_;
   fom_states_data_type & fomStates_;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
