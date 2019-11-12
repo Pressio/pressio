@@ -112,7 +112,7 @@ struct QueryFomVelocityDefault<false>{
 		const state_t & yFOM,
 		rhs_t		& rhs,
 		time_t		t) const{
-    fomObj.attr("velocity")(yFOM, t, rhs);
+    rhs = fomObj.attr("velocity")(yFOM, t);
   }
 
   template <

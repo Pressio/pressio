@@ -135,7 +135,7 @@ struct QueryFomApplyJacobianDefault<false>{
 		const operand_t & B,
 		result_t	  & out,
 		time_t		  t) const{
-    fomObj.attr("applyJacobian")(yFOM, B, t, out);
+    out = fomObj.attr("applyJacobian")(yFOM, B, t);
   }
 #endif
 
