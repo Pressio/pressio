@@ -4,8 +4,8 @@ script:
 - PARENT_DIR=$(pwd)
 - mkdir $PARENT_DIR/pressio_repos
 - mkdir $PARENT_DIR/pressio_builds
-- export PRESSIO_REPOS=$HOME/pressio_repos
-- export PRESSIO_BUILDS=$HOME/pressio_builds
+- export PRESSIO_REPOS=$PARENT_DIR/pressio_repos
+- export PRESSIO_BUILDS=$PARENT_DIR/pressio_builds
 - CC=$(which gcc)
 - CXX=$(which g++)
 - cd ${PRESSIO_REPOS}
