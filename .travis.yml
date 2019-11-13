@@ -1,9 +1,8 @@
+git:
+  clone: false
 language: cpp
 script:
 - ls
-- cd ..
-- ls
-- cd -
 - mkdir $HOME/pressio_repos
 - mkdir $HOME/pressio_builds
 - export PRESSIO_REPOS=$HOME/pressio_repos
