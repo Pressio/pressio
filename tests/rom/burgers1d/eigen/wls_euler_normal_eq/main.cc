@@ -1,4 +1,5 @@
-
+#include <iostream>
+#include <string>
 #include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
@@ -14,6 +15,60 @@
 
 // n is the window size
 
+namespace pressio{ namespace rom{ namespace experimental{
+
+
+struct JTJ_JTR_policy_standard{
+public:
+  template< typename wls_state_type, typename fom_t>
+  void operator()(wls_state_type wls_state, fom_t appObj) const { 
+    std::cout << "Computed JTJ and JTR through default policy" << std::endl;
+}
+};
+
+struct JTJ_JTR_policy_smart{
+public:
+  template< typename wls_state_type, typename fom_t>
+  void operator()(wls_state_type wls_state, fom_t appObj) const { 
+  std::cout << "Computed JTJ and JTR through the smart policy" << std::endl; 
+}
+};
+
+
+template<
+  typename fom_type,
+  typename wls_state_type,
+  typename JTJ_type,
+  typename JTR_type,
+  typename JTJ_JTR_policy
+  typename residual_policy, 
+  typename jacobian_policy,
+  >
+class WlsSystem{
+  const fom_type & fomObj_;
+public:
+  // these need to be public because are detected by solver
+  using scalar_type     = typename fom_type::scalar_type;
+  using state_type      = wls_state_type;
+  using residual_type   = wls_state_type; 
+public:
+  WlsSystem() = delete;
+  ~WlsSystem() = default;
+  WlsSystem(const fom_type & fomObject)
+    : fomObj_(fomObject){}
+
+public:
+  void JTJ_JTR(wls_state_type & wls_state) const{JTJ_JTR_policy()(wls_state,fomObj_);}
+  // This would be the naive implementation
+  void residual(const wls_state_type & wls_state, residual_type & resid) const{}
+  residual_type residual(const wls_state_type & yROM) const{}
+  void jacobian(const wls_state_type & yROM, jacobian_type & Jphi) const{};
+//  jacobian_type jacobian(const wls_state_type & yROM) const{};
+};
+
+}}}
+
+/*
 
 namespace pressio{ namespace rom{ namespace experimental{
 
@@ -76,7 +131,7 @@ private:
 protected:
   fom_states_container_type & fomStates_;
 };
-}}}//end namespace pressio::rom::experimental
+}}}
 
 
 
@@ -138,10 +193,10 @@ private:
 }}}
 
 
+*/
 
 
-
-
+/*
 
 
 namespace pressio{ namespace rom{ namespace experimental{
@@ -172,14 +227,14 @@ struct DefaultWlsTypeGeneratorResidualApi{
   // J*phi that stems from the wls formulation. Since the WLS matrix has a block structure with dense blocks,
   // a basic version could be one where each block is a multivector (as it is done now for lspg) and
   // we use a std::list of multi-vectors to hold the full matrix.
-//  using wls_matrix_t          = /* */;
+//  using wls_matrix_t          = ;
   // decoder types are easy, see the LspgUnsteady classes
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
   using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
   static_assert(!std::is_void<decoder_t>::value and ic1::value < sizeof... (Args),
                 "A valid decoder type must be passed to define a WLS problem");
-  //using decoder_t             = /* get it from args */;
+  //using decoder_t             =  get it from args ;
   using decoder_jac_t           = typename decoder_t::jacobian_t;
   // fom state reconstructor type
   using fom_state_reconstr_t    = FomStateReconstructor<fom_state_t, decoder_t>;
@@ -202,7 +257,7 @@ struct DefaultWlsTypeGeneratorResidualApi{
   using wls_residual_policy_t   = ::pressio::rom::experimental::WlsSequentialResidualPolicyForResidualApi<
     auxStates, wls_residual_t, fom_states_container_t>;
   // // policy to compute the WLS jacobian, do something similar for the residual one
-  //using wls_jacobian_policy_t = /* */;
+  //using wls_jacobian_policy_t =  ;
 
 };//end class
 }}}
@@ -242,6 +297,7 @@ public:
   using wls_jacobian_policy_t   = typename wls_problem_t::wls_jacobian_policy_t;
   using wls_system_t            = typename wls_problem_t::wls_system_t;
 
+  wls_state 			wls_state_type;
   wls_residual_policy_t         residualPolicy_;
   wls_jacobian_policy_t         jacobianPolicy_;
   wls_system_t                  systemObj_;
@@ -265,6 +321,8 @@ public:
 };//end class
 }}}
 
+
+*/
 int main(int argc, char *argv[]){
   using fom_t		= pressio::apps::Burgers1dEigen;
   //using fom_resid_t	= pressio::apps::Burgers1dEigenResidualApi::residual_type;
@@ -273,7 +331,7 @@ int main(int argc, char *argv[]){
   using scalar_t	= typename fom_t::scalar_type;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
+  using rom_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using eig_dyn_mat	= Eigen::Matrix<scalar_t, -1, -1>;
   using decoder_jac_t	= pressio::containers::MultiVector<eig_dyn_mat>;
@@ -285,8 +343,8 @@ int main(int argc, char *argv[]){
   // app object
   int fomSize = 20;
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
-  fom_t appobj( mu, fomSize);
-  appobj.setup();
+  fom_t appObj( mu, fomSize);
+  appObj.setup();
   auto t0 = static_cast<scalar_t>(0);
   scalar_t dt = 0.01;
 
@@ -298,11 +356,11 @@ int main(int argc, char *argv[]){
   int numBasis = phi.numVectors();
   if( numBasis != romSize ) return 0;
 
-  // create decoder obj
+  // create decoder Obj
   decoder_t decoderObj(phi);
 
   // for this problem, my reference state = initial state
-  auto & yRef = appobj.getInitialState();
+  auto & yRef = appObj.getInitialState();
 
 
 
@@ -316,9 +374,15 @@ int main(int argc, char *argv[]){
 
 
   // define ROM state
-  lspg_state_t yROM(romSize);
-  lspg_state_t resid(fomSize);
+  rom_state_t yROM(romSize);
+  using JTR_type = rom_state_t;
+  using JTJ_type = pressio::containers::MultiVector<eig_dyn_mat>;
+  using wls_t = pressio::rom::experimental::WlsSystem<fom_t,rom_state_t,JTJ_type,JTR_type,pressio::rom::experimental::JTJ_JTR_policy_smart>;
+  wls_t wls(appObj);
+  wls.JTJ_JTR(yROM); 
 
+  /*
+  //pressio::rom::experimental::WlsSystem<lspg_state_t,fom_t> wls(appobj); 
   // initialize to zero (this has to be done)
   yROM.putScalar(0.0);
 
@@ -372,5 +436,6 @@ int main(int argc, char *argv[]){
   std::cout << std::setprecision(14) << *yFomFinal.data() << std::endl;
 
   std::cout << checkStr <<  std::endl;
+  */
   return 0;
 }
