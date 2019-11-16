@@ -58,31 +58,6 @@ template <
   typename enable = void>
 class FomStatesStaticContainer;
 
-/* decorators */
-namespace decorator{
-
-template <typename preconditionable, typename enable = void>
-class Preconditioned;
-
-template <typename maskable, typename enable = void>
-class Masked;
-
-}// namespace pressio::rom::decorator
-//---------------------------------
-
-namespace policy{
-
-template <bool is_steady_problem>
-struct QueryFomVelocityDefault;
-
-template <bool is_steady_problem>
-struct QueryFomApplyJacobianDefault;
-
-struct QueryFomTimeDiscreteResidual;
-
-}// namespace pressio::rom::policy
-//---------------------------------
-
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <typename matrix_type, typename ops_t, typename enable = void>
 struct PyLinearDecoder;
@@ -96,9 +71,32 @@ template<typename wrapped_type, typename enable = void>
 class MatrixOperator;
 
 
-/* ------------------
- * galerkin
- ------------------ */
+/*--- decorators ---*/
+namespace decorator{
+
+template <typename preconditionable, typename enable = void>
+class Preconditioned;
+
+template <typename maskable, typename enable = void>
+class Masked;
+
+}// namespace pressio::rom::decorator
+
+
+namespace policy{
+
+template <bool is_steady_problem>
+struct QueryFomVelocityDefault;
+
+template <bool is_steady_problem>
+struct QueryFomApplyJacobianDefault;
+
+struct QueryFomTimeDiscreteResidual;
+
+}// namespace pressio::rom::policy
+
+
+/* --- galerkin --- */
 namespace galerkin{
 
 template <
@@ -115,9 +113,7 @@ class ProblemGenerator;
 } // end namespace pressio::rom::galerkin
 
 
-/* ------------------
- * steady LSPG
- ------------------ */
+/*--- steady LSPG --- */
 namespace lspg{ namespace steady{
 
 template <
