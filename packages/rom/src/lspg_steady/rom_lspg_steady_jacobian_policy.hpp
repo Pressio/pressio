@@ -52,7 +52,7 @@
 #include "../rom_fwd.hpp"
 #include "../rom_static_container_fom_states.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template<
   typename fom_states_data,
@@ -60,11 +60,11 @@ template<
   typename fom_apply_jac_policy,
   typename decoder_type
   >
-class LSPGSteadyJacobianPolicy
-  : protected fom_apply_jac_policy{
+class JacobianPolicy : protected fom_apply_jac_policy
+{
 
 protected:
-  using this_t = LSPGSteadyJacobianPolicy<
+  using this_t = JacobianPolicy<
   fom_states_data, apply_jac_return_type,
   fom_apply_jac_policy, decoder_type>;
 
@@ -73,13 +73,13 @@ public:
   using apply_jac_return_t = apply_jac_return_type;
 
 public:
-  LSPGSteadyJacobianPolicy() = delete;
-  ~LSPGSteadyJacobianPolicy() = default;
+  JacobianPolicy() = delete;
+  ~JacobianPolicy() = default;
 
-  LSPGSteadyJacobianPolicy(fom_states_data	& fomStates,
-			   const fom_apply_jac_policy	& applyJacFunctor,
-			   const apply_jac_return_type	& applyJacObj,
-			   const decoder_type		& decoder)
+  JacobianPolicy(fom_states_data	& fomStates,
+		 const fom_apply_jac_policy	& applyJacFunctor,
+		 const apply_jac_return_type	& applyJacObj,
+		 const decoder_type		& decoder)
     : fom_apply_jac_policy(applyJacFunctor),
       JJ_(applyJacObj),
       decoderObj_(decoder),
@@ -133,5 +133,5 @@ protected:
   fom_states_data & fomStates_;
 };
 
-}}//end namespace pressio::rom
+}}}}//end namespace pressio::rom::lspg::steady
 #endif

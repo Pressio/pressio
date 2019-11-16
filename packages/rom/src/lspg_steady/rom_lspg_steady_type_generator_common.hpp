@@ -53,23 +53,20 @@
 #include "../rom_static_container_fom_states.hpp"
 #include "../rom_reconstructor_fom_state.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template <
   typename fom_type,
   typename decoder_type,
   typename lspg_state_type
   >
-struct LSPGSteadyCommonTypes<
+struct CommonTypes<
   fom_type, decoder_type, lspg_state_type,
   mpl::enable_if_t<
     ::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
     >
   >
 {
-  LSPGSteadyCommonTypes() = default;
-  ~LSPGSteadyCommonTypes() = default;
-
   // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
   using scalar_t		= typename fom_t::scalar_type;
@@ -99,5 +96,5 @@ struct LSPGSteadyCommonTypes<
 	fom_state_t, 1, fom_state_reconstr_t>;
 };
 
-}}//end  namespace pressio::rom
+}}}}//end  namespace pressio::rom::lspg::steady
 #endif

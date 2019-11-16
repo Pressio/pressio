@@ -51,23 +51,19 @@
 
 #include "rom_lspg_steady_type_generator_common.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template <
   typename fom_type,
   typename decoder_type,
   typename lspg_state_type
   >
-struct DefaultLSPGSteadyTypeGenerator
-  : LSPGSteadyCommonTypes<
-  fom_type, decoder_type, lspg_state_type
-  >{
+struct DefaultProblemType
+  : CommonTypes<fom_type, decoder_type, lspg_state_type>
+{
 
-  using this_t = DefaultLSPGSteadyTypeGenerator
-    <fom_type, decoder_type, lspg_state_type>;
-
-  using base_t = LSPGSteadyCommonTypes
-    <fom_type, decoder_type, lspg_state_type>;
+  using this_t = DefaultProblemType<fom_type, decoder_type, lspg_state_type>;
+  using base_t = CommonTypes<fom_type, decoder_type, lspg_state_type>;
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
@@ -103,19 +99,19 @@ struct DefaultLSPGSteadyTypeGenerator
   using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyJacobianDefault<this_t::is_steady>;
 
   // Policy defining how to compute the LSPG residual
-  using lspg_residual_policy_t	= ::pressio::rom::LSPGSteadyResidualPolicy<
+  using lspg_residual_policy_t	= ::pressio::rom::lspg::steady::ResidualPolicy<
 	lspg_residual_t, fom_states_data, fom_eval_rhs_policy_t>;
 
   // policy defining how to compute the LSPG jacobian
-  using lspg_jacobian_policy_t	= ::pressio::rom::LSPGSteadyJacobianPolicy<
+  using lspg_jacobian_policy_t	= ::pressio::rom::lspg::steady::JacobianPolicy<
     fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t>;
 
   // system's type
-  using lspg_system_t		= ::pressio::rom::LSPGSteadySystem<
+  using lspg_system_t		= ::pressio::rom::lspg::steady::System<
     fom_t, lspg_state_type, lspg_residual_t, lspg_matrix_t,
     lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class
 
-}}//end  namespace pressio::rom
+}}}}//end  namespace pressio::rom::lspg::steady
 #endif

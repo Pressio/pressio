@@ -51,11 +51,10 @@
 
 #include "rom_lspg_steady_type_generator_default.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template <typename lspg_problem>
-class LSPGSteadyProblemGenerator<
-  lspg_problem > : lspg_problem
+class ProblemGenerator<lspg_problem > : lspg_problem
 {
 
 public:
@@ -99,10 +98,10 @@ public:
   }
 
 public:
-  LSPGSteadyProblemGenerator(const fom_t	& appObj,
-			     const fom_native_state_t & yFomRefNative,
-			     const decoder_t	& decoder,
-			     lspg_state_t	& yROM)
+  ProblemGenerator(const fom_t	& appObj,
+		   const fom_native_state_t & yFomRefNative,
+		   const decoder_t	& decoder,
+		   lspg_state_t	& yROM)
     : rhsQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(yFomRefNative),
@@ -118,5 +117,5 @@ public:
 
 };
 
-}}//end namespace pressio::rom
+}}}}//end namespace pressio::rom::lspg::steady
 #endif

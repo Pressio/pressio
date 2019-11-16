@@ -53,7 +53,9 @@
 
 namespace pressio{ namespace rom{
 
-template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename enable = void>
+template <
+  typename fom_state_type, std::size_t n, typename reconstuctor_type,
+  typename enable = void>
 class FomStatesStaticContainer;
 
 /* decorators */
@@ -111,37 +113,34 @@ template <typename type_generator_t, typename enable = void>
 class ProblemGenerator;
 
 } // end namespace pressio::rom::galerkin
-//---------------------------------
 
 
 /* ------------------
  * steady LSPG
  ------------------ */
+namespace lspg{ namespace steady{
+
 template <
-  typename fom_type,
-  typename decoder_type,
-  typename lspg_state_type,
+  typename fom_type, typename decoder_type, typename lspg_state_type,
   typename enable = void
   >
-struct LSPGSteadyCommonTypes;
+struct CommonTypes;
 
-/* policies */
-template <
-  typename residual_type,
-  typename fom_states_data_type,
-  typename fom_rhs_eval_policy
-  >
-class LSPGSteadyResidualPolicy;
+template <typename residual_type, typename fom_states_data_type, typename fom_rhs_eval_policy>
+class ResidualPolicy;
 
 template<
-  typename fom_states_data,
-  typename apply_jac_return_type,
-  typename fom_apply_jac_policy,
-  typename decoder_t
+  typename fom_states_data, typename apply_jac_return_type,
+  typename fom_apply_jac_policy, typename decoder_t
   >
-class LSPGSteadyJacobianPolicy;
+class JacobianPolicy;
 
-/* problem */
+template <typename fom_type, typename decoder_type, typename lspg_state_type>
+struct DefaultProblemType;
+
+template <typename fom_type, typename decoder_type, typename lspg_state_type>
+struct PreconditionedProblemType;
+
 template<
   typename app_type,
   typename lspg_state_type,
@@ -151,13 +150,24 @@ template<
   typename jacobian_policy_type,
   typename enable = void
   >
-class LSPGSteadySystem;
+class System;
 
-template <
-  typename type_generator_t,
-  typename enable = void
-  >
-class LSPGSteadyProblemGenerator;
+template <typename type_generator_t, typename enable = void>
+class ProblemGenerator;
+
+}} // end namespace lspg::steady
+
+
+// These are here for backward compatibility, should be deleted at some point
+template <typename ... Args>
+using DefaultLSPGSteadyTypeGenerator = ::pressio::rom::lspg::steady::DefaultProblemType<Args...>;
+
+template <typename ... Args>
+using PreconditionedLSPGSteadyTypeGenerator = ::pressio::rom::lspg::steady::PreconditionedProblemType<Args...>;
+
+template <typename problem_type, typename enable = void>
+using LSPGSteadyProblemGenerator = ::pressio::rom::lspg::steady::ProblemGenerator<problem_type>;
+
 
 }} // end namespace pressio::rom
 #endif
