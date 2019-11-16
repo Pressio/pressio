@@ -61,9 +61,9 @@ template<
   typename fom_querier_policy,
   typename decoder_type
   >
-class LSPGUnsteadyJacobianPolicyResidualApi
+class JacobianPolicyResidualApi
   : public ::pressio::ode::policy::JacobianPolicyBase<
-	LSPGUnsteadyJacobianPolicyResidualApi<fom_states_data_type,
+	JacobianPolicyResidualApi<fom_states_data_type,
 			   apply_jac_return_type,
 			   fom_querier_policy,
 			   decoder_type>>,
@@ -71,7 +71,7 @@ class LSPGUnsteadyJacobianPolicyResidualApi
 {
 
 public:
-  using this_t = LSPGUnsteadyJacobianPolicyResidualApi<fom_states_data_type,
+  using this_t = JacobianPolicyResidualApi<fom_states_data_type,
 				    apply_jac_return_type,
 				    fom_querier_policy,
 				    decoder_type>;
@@ -82,10 +82,10 @@ public:
   using apply_jac_return_t = apply_jac_return_type;
 
 public:
-  LSPGUnsteadyJacobianPolicyResidualApi() = delete;
-  ~LSPGUnsteadyJacobianPolicyResidualApi() = default;
+  JacobianPolicyResidualApi() = delete;
+  ~JacobianPolicyResidualApi() = default;
 
-  LSPGUnsteadyJacobianPolicyResidualApi(fom_states_data_type & fomStates,
+  JacobianPolicyResidualApi(fom_states_data_type & fomStates,
 					const fom_querier_policy & fomQuerierFunctor,
 					const decoder_type & decoder)
     : fom_querier_policy(fomQuerierFunctor),

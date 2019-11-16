@@ -88,7 +88,7 @@ template<
     typename std::conditional<
       //check if meets residual API
       ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
-      impl::LSPGUnsteadyProblemGeneratorResidualApi<lspg_t, name, fom_type, lspg_state_t, Args...>,
+      impl::ProblemGeneratorResidualApi<lspg_t, name, fom_type, lspg_state_t, Args...>,
       //otherwise set void
       void
       >::type

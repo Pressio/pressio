@@ -87,7 +87,7 @@ struct DefaultHelper<
   >
 {
   template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::DefaultLSPGUnsteadyTypeGeneratorResidualApi<name, T, lspg_state_t, Args...>;
+  using type = impl::DefaultProblemTypeGeneratorResidualApi<name, T, lspg_state_t, Args...>;
 };
 
 }// end namespace pressio::rom::lspg::unsteady::impl

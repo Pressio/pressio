@@ -60,7 +60,7 @@ template <
   typename lspg_state_type,
   typename ...Args
   >
-class LSPGUnsteadyProblemGeneratorResidualApi
+class ProblemGeneratorResidualApi
 {
 
   /* here, the fom_type must satisfy the residual api */
@@ -122,7 +122,7 @@ public:
   }
 
 public:
-  LSPGUnsteadyProblemGeneratorResidualApi(const fom_t	 & appObj,
+  ProblemGeneratorResidualApi(const fom_t	 & appObj,
 					  const fom_native_state_t & fomStateReferenceNative,
 					  decoder_t	 & decoder,
 					  lspg_state_t	 & yROM,

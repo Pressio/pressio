@@ -64,7 +64,7 @@ template <
   typename lspg_state_type,
   typename ...Args
   >
-struct LSPGUnsteadyCommonTypesResidualApi
+struct CommonTypesResidualApi
 {
   //::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
 

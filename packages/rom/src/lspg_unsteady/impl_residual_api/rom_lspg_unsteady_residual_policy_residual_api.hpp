@@ -60,15 +60,15 @@ template <
   typename fom_states_data_type,
   typename fom_querier_policy
   >
-class LSPGUnsteadyResidualPolicyResidualApi
+class ResidualPolicyResidualApi
   : public ode::policy::ImplicitResidualPolicyBase<
-  LSPGUnsteadyResidualPolicyResidualApi<residual_type, fom_states_data_type, fom_querier_policy>
+  ResidualPolicyResidualApi<residual_type, fom_states_data_type, fom_querier_policy>
   >,
   protected fom_querier_policy
 {
 
 public:
-  using this_t = LSPGUnsteadyResidualPolicyResidualApi<residual_type,
+  using this_t = ResidualPolicyResidualApi<residual_type,
 						       fom_states_data_type,
 						       fom_querier_policy>;
   friend ode::policy::ImplicitResidualPolicyBase<this_t>;
@@ -77,10 +77,10 @@ public:
   using residual_t = residual_type;
 
 public:
-  LSPGUnsteadyResidualPolicyResidualApi() = delete;
-  ~LSPGUnsteadyResidualPolicyResidualApi() = default;
+  ResidualPolicyResidualApi() = delete;
+  ~ResidualPolicyResidualApi() = default;
 
-  LSPGUnsteadyResidualPolicyResidualApi(fom_states_data_type & fomStatesIn,
+  ResidualPolicyResidualApi(fom_states_data_type & fomStatesIn,
 					const fom_querier_policy & fomQuerierFunctor)
     : fom_querier_policy(fomQuerierFunctor),
       fomStates_(fomStatesIn){}
