@@ -52,7 +52,7 @@
 #include "../../../../ode/src/ode_ConfigDefs.hpp"
 #include "../../../../ode/src/implicit/ode_implicit_constants.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 /* enable when we have:
  * regular c++, BDF1 and user-defined ops
@@ -571,5 +571,5 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
 
 #endif
 
-}}}//end namespace pressio::rom::impl
+}}}}}//end namespace pressio::rom::lspg::unstedy::impl
 #endif

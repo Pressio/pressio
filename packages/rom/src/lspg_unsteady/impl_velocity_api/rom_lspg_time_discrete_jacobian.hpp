@@ -52,7 +52,7 @@
 #include "../../../../ode/src/ode_ConfigDefs.hpp"
 #include "../../../../ode/src/implicit/ode_implicit_constants.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 
 template <::pressio::ode::ImplicitEnum odeStepperName, typename scalar_t>
@@ -345,5 +345,5 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 
 #endif
 
-}}}//end namespace pressio::rom::impl
+}}}}}//end namespace pressio::rom::lspg::unsteady::impl
 #endif

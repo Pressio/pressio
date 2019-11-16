@@ -53,7 +53,7 @@
 #include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "../../rom_static_container_fom_states.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   typename residual_type,
@@ -155,5 +155,5 @@ protected:
   fom_states_data_type & fomStates_;
 };
 
-}}}//end namespace pressio::rom::impl
+}}}}}//end namespace pressio::rom::lspg::unsteady::impl
 #endif

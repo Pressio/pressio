@@ -52,18 +52,18 @@
 #include "./impl_velocity_api/rom_lspg_unsteady_problem_type_generator_default_velocity_api.hpp"
 #include "./impl_residual_api/rom_lspg_unsteady_problem_type_generator_default_residual_api.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
 namespace impl{
 
 template <typename T, typename enable = void>
-struct DefaultLSPGUnsteadyHelper{
+struct DefaultHelper{
   template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
   using type = void;
 };
 
 template <typename T>
-struct DefaultLSPGUnsteadyHelper<
+struct DefaultHelper<
   T,
   mpl::enable_if_t<
     ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
@@ -74,12 +74,12 @@ struct DefaultLSPGUnsteadyHelper<
   >
 {
   template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::DefaultLSPGUnsteadyTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
+  using type = impl::DefaultProblemTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
 };
 
 
 template <typename T>
-struct DefaultLSPGUnsteadyHelper<
+struct DefaultHelper<
   T,
   mpl::enable_if_t<
     ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
@@ -90,7 +90,7 @@ struct DefaultLSPGUnsteadyHelper<
   using type = impl::DefaultLSPGUnsteadyTypeGeneratorResidualApi<name, T, lspg_state_t, Args...>;
 };
 
-}// end namespace pressio::rom::impl
+}// end namespace pressio::rom::lspg::unsteady::impl
 
 template <
   ::pressio::ode::ImplicitEnum name,
@@ -98,8 +98,20 @@ template <
   typename lspg_state_type,
   typename ...Args
   >
-using DefaultLSPGUnsteady =
-  typename impl::DefaultLSPGUnsteadyHelper<fom_type>::template type<name, lspg_state_type, Args...>;
+using Default = typename impl::DefaultHelper<fom_type>::template type<name, lspg_state_type, Args...>;
 
-}}//end  namespace pressio::rom
+}}//end namespace pressio::rom::lspg::unsteady
+
+
+// These are here for backward compatibility, should be deleted at some point
+template <
+  ::pressio::ode::ImplicitEnum name,
+  typename fom_type,
+  typename lspg_state_type,
+  typename ...Args
+  >
+using DefaultLSPGUnsteady = ::pressio::rom::lspg::unsteady::Default<name, fom_type, lspg_state_type, Args...>;
+
+
+}} //end namespace pressio::rom
 #endif

@@ -54,7 +54,7 @@
 #include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "rom_lspg_time_discrete_residual.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   typename residual_type,
@@ -62,9 +62,9 @@ template <
   typename fom_velocity_eval_policy,
   typename ud_ops
   >
-class LSPGUnsteadyResidualPolicyVelocityApi
+class ResidualPolicyVelocityApi
   : public ::pressio::ode::policy::ImplicitResidualPolicyBase<
-      LSPGUnsteadyResidualPolicyVelocityApi<residual_type,
+      ResidualPolicyVelocityApi<residual_type,
 			 fom_states_cont_type,
 			 fom_velocity_eval_policy,
 			 ud_ops>>,
@@ -72,7 +72,7 @@ class LSPGUnsteadyResidualPolicyVelocityApi
 {
 
 public:
-  using this_t = LSPGUnsteadyResidualPolicyVelocityApi<residual_type,
+  using this_t = ResidualPolicyVelocityApi<residual_type,
 				    fom_states_cont_type,
 				    fom_velocity_eval_policy,
 				    ud_ops>;
@@ -82,8 +82,8 @@ public:
   using residual_t = residual_type;
 
 public:
-  LSPGUnsteadyResidualPolicyVelocityApi() = delete;
-  ~LSPGUnsteadyResidualPolicyVelocityApi() = default;
+  ResidualPolicyVelocityApi() = delete;
+  ~ResidualPolicyVelocityApi() = default;
 
   /* for constructing this we need to deal with a few cases
    * 1. regular c++ with void ops
@@ -96,14 +96,14 @@ public:
   template <
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !::pressio::containers::meta::is_array_pybind11<_residual_type>::value
 #endif
       > * = nullptr
     >
-  LSPGUnsteadyResidualPolicyVelocityApi(const _residual_type & RIn,
+  ResidualPolicyVelocityApi(const _residual_type & RIn,
 					fom_states_cont_type & fomStatesIn,
 					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
@@ -116,15 +116,15 @@ public:
   template <
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       !std::is_void<_ud_ops>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !::pressio::containers::meta::is_array_pybind11<_residual_type>::value
-      and mpl::not_same<_ud_ops, pybind11::object>::value
+      and ::pressio::mpl::not_same<_ud_ops, pybind11::object>::value
 #endif
       > * = nullptr
     >
-  LSPGUnsteadyResidualPolicyVelocityApi(const _residual_type & RIn,
+  ResidualPolicyVelocityApi(const _residual_type & RIn,
 					fom_states_cont_type & fomStatesIn,
 					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
 					const _ud_ops & udOps)
@@ -140,12 +140,12 @@ public:
   template <
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_array_pybind11<_residual_type>::value and
       std::is_void<_ud_ops>::value
       > * = nullptr
     >
-  LSPGUnsteadyResidualPolicyVelocityApi(const _residual_type & RIn,
+  ResidualPolicyVelocityApi(const _residual_type & RIn,
 					fom_states_cont_type & fomStatesIn,
 					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
@@ -158,12 +158,12 @@ public:
   template <
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_array_pybind11<_residual_type>::value and
-      mpl::is_same<_ud_ops, pybind11::object>::value
+      ::pressio::mpl::is_same<_ud_ops, pybind11::object>::value
       > * = nullptr
     >
-  LSPGUnsteadyResidualPolicyVelocityApi(const _residual_type & RIn,
+  ResidualPolicyVelocityApi(const _residual_type & RIn,
 					fom_states_cont_type & fomStatesIn,
 					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
 					const _ud_ops & udOps)
@@ -221,14 +221,14 @@ private:
     typename fom_state_cont_type,
     typename scalar_t,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
 	std::is_void<_ud_ops>::value
       > * = nullptr
   >
   void time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
 				residual_t			& romR,
 				const scalar_t			& dt) const{
-    using namespace ::pressio::rom::impl;
+    using namespace ::pressio::rom::lspg::unsteady::impl;
     time_discrete_residual<odeStepperName>(fomStates, romR, dt);
   }
 
@@ -237,14 +237,14 @@ private:
     typename fom_state_cont_type,
     typename scalar_t,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       !std::is_void<_ud_ops>::value
       > * = nullptr
   >
   void time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
   				residual_t			& romR,
   				const scalar_t			& dt) const{
-    using namespace ::pressio::rom::impl;
+    using namespace ::pressio::rom::lspg::unsteady::impl;
     time_discrete_residual<odeStepperName>(fomStates, romR, dt, udOps_);
   }
 
@@ -299,7 +299,7 @@ protected:
   // here we do this conditional type because it seems when ud_ops= pybind11::object
   // it only works if we copy the object. Need to figure out if we can leave ptr in all cases.
   typename std::conditional<
-    mpl::is_same<ud_ops, pybind11::object>::value, ud_ops,
+    ::pressio::mpl::is_same<ud_ops, pybind11::object>::value, ud_ops,
     const ud_ops *
     >::type udOps_ = {};
 #else
@@ -308,5 +308,5 @@ protected:
 
 };//end class
 
-}}}//end namespace pressio::rom::impl
+}}}}}//end namespace pressio::rom::lspg::unstedy::impl
 #endif

@@ -53,7 +53,7 @@
 #include "rom_lspg_unsteady_problem_type_generator_masked_velocity_api.hpp"
 #include "rom_lspg_unsteady_problem_type_generator_preconditioned_velocity_api.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_type,
@@ -62,7 +62,7 @@ template <
   typename lspg_state_type,
   typename ...Args
   >
-struct LSPGUnsteadyProblemGeneratorVelocityApi
+struct ProblemGeneratorVelocityApi
 {
   /* here, the fom_type must satisfy the velocity api */
   static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
@@ -125,8 +125,8 @@ public:
   }
 
 public:
-  LSPGUnsteadyProblemGeneratorVelocityApi() = delete;
-  ~LSPGUnsteadyProblemGeneratorVelocityApi() = default;
+  ProblemGeneratorVelocityApi() = delete;
+  ~ProblemGeneratorVelocityApi() = default;
 
   /* specialize for:
    * - the fom_t is regular c++
@@ -145,7 +145,7 @@ public:
 #endif
       > * = nullptr
   >
-  LSPGUnsteadyProblemGeneratorVelocityApi(const _fom_t	& appObj,
+  ProblemGeneratorVelocityApi(const _fom_t	& appObj,
   					  const fom_native_state_t & fomStateReferenceNative,
   					  const decoder_t & decoder,
   					  lspg_state_t	 & yROM,
@@ -187,7 +187,7 @@ public:
 #endif
       > * = nullptr
   >
-  LSPGUnsteadyProblemGeneratorVelocityApi(const _fom_t	 & appObj,
+  ProblemGeneratorVelocityApi(const _fom_t	 & appObj,
   					  const fom_native_state_t & fomStateReferenceNative,
   					  const decoder_t	 & decoder,
   					  lspg_state_t	 & yROM,
@@ -238,7 +238,7 @@ public:
       std::is_same<_ud_ops_t, pybind11::object>::value
       > * = nullptr
   >
-  LSPGUnsteadyProblemGeneratorVelocityApi(const _fom_t		   & appObj,
+  ProblemGeneratorVelocityApi(const _fom_t		   & appObj,
 					  const fom_native_state_t & fomStateReferenceIn,
 					  const decoder_t	   & decoder,
 					  _lspg_state_t		   & yROM,
@@ -280,7 +280,7 @@ public:
       std::is_void<_ud_ops_t>::value
       > * = nullptr
   >
-  LSPGUnsteadyProblemGeneratorVelocityApi(const _fom_t		   & appObj,
+  ProblemGeneratorVelocityApi(const _fom_t		   & appObj,
 					  const fom_native_state_t & fomStateReferenceIn,
 					  const decoder_t	   & decoder,
 					  _lspg_state_t		   & yROM,
@@ -307,5 +307,5 @@ public:
 
 };
 
-}}}//end namespace pressio::rom::impl
+}}}}}//end namespace pressio::rom::lspg::unstedy::impl
 #endif

@@ -54,7 +54,7 @@
 #include "../../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "rom_lspg_time_discrete_jacobian.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template<
   typename fom_states_data_type,
@@ -63,9 +63,9 @@ template<
   typename decoder_type,
   typename ud_ops
   >
-class LSPGUnsteadyJacobianPolicyVelocityApi
+class JacobianPolicyVelocityApi
   : public ::pressio::ode::policy::JacobianPolicyBase<
-	LSPGUnsteadyJacobianPolicyVelocityApi<fom_states_data_type,
+	JacobianPolicyVelocityApi<fom_states_data_type,
 			   apply_jac_return_type,
 			   fom_apply_jac_policy,
 			   decoder_type,
@@ -74,7 +74,7 @@ class LSPGUnsteadyJacobianPolicyVelocityApi
 {
 
 public:
-  using this_t = LSPGUnsteadyJacobianPolicyVelocityApi<fom_states_data_type,
+  using this_t = JacobianPolicyVelocityApi<fom_states_data_type,
 				    apply_jac_return_type,
 				    fom_apply_jac_policy,
 				    decoder_type,
@@ -86,8 +86,8 @@ public:
   using apply_jac_return_t = apply_jac_return_type;
 
 public:
-  LSPGUnsteadyJacobianPolicyVelocityApi() = delete;
-  ~LSPGUnsteadyJacobianPolicyVelocityApi() = default;
+  JacobianPolicyVelocityApi() = delete;
+  ~JacobianPolicyVelocityApi() = default;
 
   /* for constructing this we need to deal with a few cases
    * 1. regular c++ with void ops
@@ -100,7 +100,7 @@ public:
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops>::value and
       ::pressio::containers::meta::is_wrapper<_apply_jac_return_type>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -108,7 +108,7 @@ public:
 #endif
       > * = nullptr
     >
-  LSPGUnsteadyJacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
+  JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
 					const fom_apply_jac_policy  & applyJacFunctor,
 					const _apply_jac_return_type & applyJacObj,
 					const decoder_type	    & decoder)
@@ -122,7 +122,7 @@ public:
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       !std::is_void<_ud_ops>::value and
       ::pressio::containers::meta::is_wrapper<_apply_jac_return_type>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -130,7 +130,7 @@ public:
 #endif
       > * = nullptr
     >
-  LSPGUnsteadyJacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
+  JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
 					const fom_apply_jac_policy  & applyJacFunctor,
 					const _apply_jac_return_type & applyJacObj,
 					const decoder_type	    & decoder,
@@ -148,12 +148,12 @@ public:
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops>::value
       and ::pressio::containers::meta::is_array_pybind11<_apply_jac_return_type>::value
       > * = nullptr
     >
-  LSPGUnsteadyJacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
+  JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
 					const fom_apply_jac_policy  & applyJacFunctor,
 					const _apply_jac_return_type & applyJacObj,
 					const decoder_type	    & decoder)
@@ -166,12 +166,12 @@ public:
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       !std::is_void<_ud_ops>::value
       and ::pressio::containers::meta::is_array_pybind11<_apply_jac_return_type>::value
       > * = nullptr
     >
-  LSPGUnsteadyJacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
+  JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
 					const fom_apply_jac_policy  & applyJacFunctor,
 					const _apply_jac_return_type & applyJacObj,
 					const decoder_type	    & decoder,
@@ -221,14 +221,14 @@ private:
     typename scalar_t,
     typename decoder_jac_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
 	std::is_void<_ud_ops>::value
       > * = nullptr
   >
   void time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t  dt,
 				const decoder_jac_type & phi) const{
-    rom::impl::time_discrete_jacobian<odeStepperName>(romJac, dt, phi);
+    ::pressio::rom::lspg::unsteady::impl::time_discrete_jacobian<odeStepperName>(romJac, dt, phi);
   }
 
   template <
@@ -237,14 +237,14 @@ private:
     typename scalar_t,
     typename decoder_jac_type,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       !std::is_void<_ud_ops>::value
       > * = nullptr
   >
   void time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t dt,
 				const decoder_jac_type & phi) const{
-    rom::impl::time_discrete_jacobian<odeStepperName>(romJac, dt, phi, udOps_);
+    ::pressio::rom::lspg::unsteady::impl::time_discrete_jacobian<odeStepperName>(romJac, dt, phi, udOps_);
   }
 
 
@@ -298,7 +298,7 @@ protected:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<
-    mpl::is_same<ud_ops, pybind11::object>::value, ud_ops,
+    ::pressio::mpl::is_same<ud_ops, pybind11::object>::value, ud_ops,
     const ud_ops *
     >::type udOps_ = {};
 #else
@@ -307,5 +307,5 @@ protected:
 
 };
 
-}}}//end namespace pressio::rom::impl
+}}}}}//end namespace pressio::rom::lspg::unstedy::impl
 #endif

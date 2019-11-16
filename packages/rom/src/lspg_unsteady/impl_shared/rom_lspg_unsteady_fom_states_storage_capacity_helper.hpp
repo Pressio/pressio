@@ -52,7 +52,7 @@
 #include "../../rom_fwd.hpp"
 #include "../../../../ode/src/ode_fwd.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <ode::ImplicitEnum odeName>
 struct fomStatesStorageCapacityHelper{
@@ -69,5 +69,5 @@ struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::BDF2>{
   static constexpr std::size_t value = 3;
 };
 
-}}}//end  namespace pressio::rom::impl
+}}}}}//end  namespace pressio::rom::lspg::unsteady::impl
 #endif

@@ -56,7 +56,7 @@
 #include "rom_lspg_unsteady_type_generator_common_residual_api.hpp"
 #include "../../../../ode/src/ode_fwd.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   ::pressio::ode::ImplicitEnum odeName,
@@ -103,11 +103,11 @@ Verify the fom/adapter class you are using.");
   using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyTimeDiscreteJacobian;
 
   // policy to compute the LSPG time-discrete residual
-  using lspg_residual_policy_t	= ::pressio::rom::impl::LSPGUnsteadyResidualPolicyResidualApi<
+  using lspg_residual_policy_t	= ::pressio::rom::lspg::unsteady::impl::LSPGUnsteadyResidualPolicyResidualApi<
     lspg_residual_t, fom_states_data, fom_residual_querier_policy_t>;
 
   // policy to compute the LSPG time-discrete jacobian
-  using lspg_jacobian_policy_t	= ::pressio::rom::impl::LSPGUnsteadyJacobianPolicyResidualApi<
+  using lspg_jacobian_policy_t	= ::pressio::rom::lspg::unsteady::impl::LSPGUnsteadyJacobianPolicyResidualApi<
     fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t>;
 
   using stepper_order_t  = typename common_types_t::order_setter;
@@ -120,5 +120,5 @@ Verify the fom/adapter class you are using.");
 
 };//end class
 
-}}}//end  namespace pressio::rom::impl
+}}}}}//end  namespace pressio::rom::lspg::unsteady::impl
 #endif

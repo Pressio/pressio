@@ -164,6 +164,5 @@ using PreconditionedLSPGSteadyTypeGenerator = ::pressio::rom::lspg::steady::Prec
 template <typename problem_type, typename enable = void>
 using LSPGSteadyProblemGenerator = ::pressio::rom::lspg::steady::ProblemGenerator<problem_type>;
 
-
 }} // end namespace pressio::rom
 #endif

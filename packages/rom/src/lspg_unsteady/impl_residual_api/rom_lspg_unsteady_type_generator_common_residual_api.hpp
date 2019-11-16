@@ -56,7 +56,7 @@
 #include "../../../../ode/src/implicit/meta/ode_is_stepper_order_setter.hpp"
 #include "../../../../ode/src/implicit/meta/ode_is_stepper_total_n_states_setter.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   ::pressio::ode::ImplicitEnum odeName,
@@ -147,5 +147,5 @@ basically the size of the stpper stencil.");
   using ud_ops_t = void;
 };
 
-}}}//end  namespace pressio::rom::impl
+}}}}}//end  namespace pressio::rom::lspg::unsteady::impl
 #endif

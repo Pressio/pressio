@@ -51,18 +51,18 @@
 
 #include "./impl_velocity_api/rom_lspg_unsteady_problem_type_generator_masked_velocity_api.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
 namespace impl{
 
 template <typename T, typename enable = void>
-struct MaskedLSPGUnsteadyHelper{
+struct MaskedHelper{
   template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
   using type = void;
 };
 
 template <typename T>
-struct MaskedLSPGUnsteadyHelper<
+struct MaskedHelper<
   T,
   mpl::enable_if_t<
     ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
@@ -70,10 +70,10 @@ struct MaskedLSPGUnsteadyHelper<
   >
 {
   template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::MaskedLSPGUnsteadyTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
+  using type = impl::MaskedProblemTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
 };
 
-}// end namespace pressio::rom::impl
+}// end namespace pressio::rom::lspg::unsteady::impl
 
 template <
   ::pressio::ode::ImplicitEnum name,
@@ -81,8 +81,17 @@ template <
   typename lspg_state_type,
   typename ...Args
   >
-using MaskedLSPGUnsteady =
-  typename impl::MaskedLSPGUnsteadyHelper<fom_type>::template type<name, lspg_state_type, Args...>;
+using Masked = typename impl::MaskedHelper<fom_type>::template type<name, lspg_state_type, Args...>;
 
-}}//end  namespace pressio::rom
+}}//end  namespace pressio::rom::lspg::unsteady
+
+template <
+  ::pressio::ode::ImplicitEnum name,
+  typename fom_type,
+  typename lspg_state_type,
+  typename ...Args
+  >
+using MaskedLSPGUnsteady = ::pressio::rom::lspg::unsteady::Masked<name, fom_type, lspg_state_type, Args...>;
+
+}} //end  namespace pressio::rom
 #endif
