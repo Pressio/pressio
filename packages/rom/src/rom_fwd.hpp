@@ -56,11 +56,6 @@ namespace pressio{ namespace rom{
 template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename enable = void>
 class FomStatesStaticContainer;
 
-template <
-  typename fom_state_type, int N, typename reconstuctor_type, typename enable = void
-  >
-class FomStatesContainer;
-
 /* decorators */
 namespace decorator{
 
@@ -98,19 +93,25 @@ class MultiVectorOperator;
 template<typename wrapped_type, typename enable = void>
 class MatrixOperator;
 
+
 /* ------------------
- * explicit galerkin
+ * galerkin
  ------------------ */
+namespace galerkin{
+
 template <
   typename fom_states_data_t,
   typename fom_rhs_t,
   typename decoder_jac_t,
   typename ud_ops = void
   >
-class DefaultGalerkinExplicitVelocityPolicy;
+class DefaultExplicitVelocityPolicy;
 
 template <typename type_generator_t, typename enable = void>
-class GalerkinProblemGenerator;
+class ProblemGenerator;
+
+} // end namespace pressio::rom::galerkin
+//---------------------------------
 
 
 /* ------------------

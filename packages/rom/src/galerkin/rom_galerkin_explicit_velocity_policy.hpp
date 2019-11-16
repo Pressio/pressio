@@ -53,7 +53,7 @@
 #include "../../../ode/src/explicit/policies/ode_explicit_velocity_policy_base.hpp"
 #include "../rom_static_container_fom_states.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace galerkin{
 
 template <
   typename fom_states_data_type,
@@ -61,26 +61,26 @@ template <
   typename decoder_t,
   typename ud_ops
   >
-class DefaultGalerkinExplicitVelocityPolicy
-  : public ode::policy::ExplicitVelocityPolicyBase<
-       DefaultGalerkinExplicitVelocityPolicy<fom_states_data_type,
-					     fom_rhs_t,
-					     decoder_t, ud_ops>>
+class DefaultExplicitVelocityPolicy
+  : public ::pressio::ode::policy::ExplicitVelocityPolicyBase<
+       DefaultExplicitVelocityPolicy<fom_states_data_type,
+				     fom_rhs_t,
+				     decoder_t, ud_ops>>
 {
 
 protected:
-  using this_t = DefaultGalerkinExplicitVelocityPolicy<fom_states_data_type,
-						       fom_rhs_t,
-						       decoder_t,
-						       ud_ops>;
-  friend ode::policy::ExplicitVelocityPolicyBase<this_t>;
+  using this_t = DefaultExplicitVelocityPolicy<fom_states_data_type,
+					       fom_rhs_t,
+					       decoder_t,
+					       ud_ops>;
+  friend ::pressio::ode::policy::ExplicitVelocityPolicyBase<this_t>;
 
 public:
   static constexpr bool isResidualPolicy_ = true;
 
 public:
-  DefaultGalerkinExplicitVelocityPolicy() = delete;
-  ~DefaultGalerkinExplicitVelocityPolicy() = default;
+  DefaultExplicitVelocityPolicy() = delete;
+  ~DefaultExplicitVelocityPolicy() = default;
 
   /* for constructing this we need to deal with a few cases
    * 1. regular c++ with void ops
@@ -92,16 +92,16 @@ public:
   template <
     typename _fom_rhs_t = fom_rhs_t,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !::pressio::containers::meta::is_array_pybind11<_fom_rhs_t>::value
 #endif
       > * = nullptr
     >
-  DefaultGalerkinExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
-					fom_states_data_type & fomStates,
-					const decoder_t & decoder)
+  DefaultExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
+				fom_states_data_type & fomStates,
+				const decoder_t & decoder)
     : fomRhs_{fomRhs},
       phi_(decoder.getReferenceToJacobian()),
       fomStates_(fomStates){}
@@ -112,14 +112,14 @@ public:
   template <
     typename _fom_rhs_t = fom_rhs_t,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops>::value
       and ::pressio::containers::meta::is_array_pybind11<_fom_rhs_t>::value
       > * = nullptr
     >
-  DefaultGalerkinExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
-					fom_states_data_type & fomStates,
-					const decoder_t & decoder)
+  DefaultExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
+				fom_states_data_type & fomStates,
+				const decoder_t & decoder)
     : fomRhs_{fomRhs},
       phi_(decoder.getReferenceToJacobian()),
       fomStates_(fomStates){}
@@ -128,15 +128,15 @@ public:
   template <
     typename _fom_rhs_t = fom_rhs_t,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_same<_ud_ops, pybind11::object>::value
       and ::pressio::containers::meta::is_array_pybind11<_fom_rhs_t>::value
       > * = nullptr
     >
-  DefaultGalerkinExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
-  					fom_states_data_type & fomStates,
-  					const decoder_t & decoder,
-  					const _ud_ops & udOps)
+  DefaultExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
+				fom_states_data_type & fomStates,
+				const decoder_t & decoder,
+				const _ud_ops & udOps)
     : fomRhs_{fomRhs},
       phi_(decoder.getReferenceToJacobian()),
       fomStates_(fomStates),
@@ -182,10 +182,10 @@ private:
   template<
     typename scalar_t, typename fom_t, typename fom_state_t,
     typename _fom_rhs_t = fom_rhs_t,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_wrapper<fom_state_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and mpl::not_same<fom_t, pybind11::object>::value
+      and ::pressio::mpl::not_same<fom_t, pybind11::object>::value
 #endif
       > * = nullptr
   >
@@ -199,7 +199,7 @@ private:
   template<
     typename scalar_t, typename fom_t, typename fom_state_t,
     typename _fom_rhs_t = fom_rhs_t,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_array_pybind11<fom_state_t>::value
       > * = nullptr
     >
@@ -220,7 +220,7 @@ private:
     typename scalar_t,
     typename result_t,
     typename _ops_t = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_wrapper<result_t>::value and
       std::is_void<_ops_t>::value
       > * = nullptr
@@ -236,7 +236,7 @@ private:
   template <
     typename scalar_t, typename result_t,
     typename _ops_t = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_fstyle_array_pybind11<result_t>::value and
       std::is_void<_ops_t>::value
       > * = nullptr
@@ -258,7 +258,7 @@ private:
     typename scalar_t,
     typename result_t,
     typename _ops_t = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_cstyle_array_pybind11<result_t>::value and
       std::is_void<_ops_t>::value
       > * = nullptr
@@ -277,7 +277,7 @@ private:
     typename scalar_t,
     typename result_t,
     typename _ops_t = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_cstyle_array_pybind11<result_t>::value and
       std::is_same<_ops_t, pybind11::object>::value
       > * = nullptr
@@ -296,7 +296,7 @@ private:
     typename fom_t,
     typename scalar_t,
     typename _ud_ops = ud_ops,
-    mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops>::value and
       ::pressio::containers::meta::is_vector_wrapper<galerkin_state_t>::value
   #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -349,7 +349,7 @@ protected:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<
-    mpl::is_same<ud_ops, pybind11::object>::value, ud_ops,
+    ::pressio::mpl::is_same<ud_ops, pybind11::object>::value, ud_ops,
     const ud_ops *
     >::type udOps_ = {};
 #else
@@ -358,5 +358,5 @@ protected:
 
 };//end class
 
-}}//end namespace pressio::rom
+}}}//end namespace pressio::rom::galerkin
 #endif

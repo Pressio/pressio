@@ -51,10 +51,10 @@
 
 #include "rom_galerkin_problem_type_generator_default.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace galerkin{
 
 template <typename problem_t>
-class GalerkinProblemGenerator<problem_t>
+class ProblemGenerator<problem_t>
   : public problem_t
 {
 public:
@@ -92,8 +92,8 @@ public:
 
 public:
 
-  GalerkinProblemGenerator() = delete;
-  ~GalerkinProblemGenerator() = default;
+  ProblemGenerator() = delete;
+  ~ProblemGenerator() = default;
 
   /*
    * ud_ops_t == void and state_type is a wrapper
@@ -108,7 +108,7 @@ public:
 #endif
       > * = nullptr
   >
-  GalerkinProblemGenerator(const fom_t		    & appObj,
+  ProblemGenerator(const fom_t		    & appObj,
   			   const fom_native_state_t & yFomRefNative,
   			   const decoder_t	    & decoder,
   			   galerkin_state_t	    & yROM,
@@ -132,7 +132,7 @@ public:
       ::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
       > * = nullptr
   >
-  GalerkinProblemGenerator(const fom_t		    & appObj,
+  ProblemGenerator(const fom_t		    & appObj,
   			   const fom_native_state_t & yFomRefNative,
   			   const decoder_t	    & decoder,
   			   galerkin_state_t	    & yROM,
@@ -148,5 +148,5 @@ public:
 
 };
 
-}}//end namespace pressio::rom
+}}}//end namespace pressio::rom::galerkin
 #endif

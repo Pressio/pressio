@@ -53,8 +53,8 @@
 
 #include "rom/src/galerkin/rom_galerkin_explicit_velocity_policy.hpp"
 
-#include "rom/src/galerkin/generator/rom_galerkin_type_generator_common.hpp"
-#include "rom/src/galerkin/generator/rom_galerkin_problem_type_generator_default.hpp"
-#include "rom/src/galerkin/generator/rom_galerkin_problem_generator.hpp"
+#include "rom/src/galerkin/rom_galerkin_type_generator_common.hpp"
+#include "rom/src/galerkin/rom_galerkin_problem_type_generator_default.hpp"
+#include "rom/src/galerkin/rom_galerkin_problem_generator.hpp"
 
 #endif
