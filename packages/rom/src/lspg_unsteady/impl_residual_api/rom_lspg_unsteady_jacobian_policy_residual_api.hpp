@@ -115,6 +115,7 @@ public:
   apply_jac_return_t operator()(const lspg_state_t			& romState,
 				const fom_t				& app) const
   {
+    // this is only called once
     fomStates_.template reconstructCurrentFomState(romState);
     const auto & phi = decoderObj_.getReferenceToJacobian();
     apply_jac_return_t romJac(fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(), app, phi));
@@ -133,8 +134,9 @@ private:
 		    const ::pressio::ode::types::step_t	& step,
 		    lspg_jac_t				& romJac) const
   {
-    // todo: this is not needed if jacobian is called after resiudal
-    // because residual takes care of reconstructing the fom state
+    // here we assume that the current state has already been reconstructd
+    // by the residual policy. So we do not recompute the FOM state.
+    // Maybe we should find a way to ensure this is the case.
     fomStates_.template reconstructCurrentFomState(romState);
 
     const auto & phi = decoderObj_.getReferenceToJacobian();
@@ -153,8 +155,9 @@ private:
 		    const ::pressio::ode::types::step_t	& step,
 		    lspg_jac_t				& romJac) const
   {
-    // todo: this is not needed if jacobian is called after resiudal
-    // because residual takes care of reconstructing the fom state
+    // here we assume that the current state has already been reconstructd
+    // by the residual policy. So we do not recompute the FOM state.
+    // Maybe we should find a way to ensure this is the case.
     fomStates_.template reconstructCurrentFomState(romState);
 
     const auto & phi = decoderObj_.getReferenceToJacobian();

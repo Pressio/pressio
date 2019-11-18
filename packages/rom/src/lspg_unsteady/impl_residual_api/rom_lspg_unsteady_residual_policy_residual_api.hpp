@@ -107,12 +107,35 @@ public:
   residual_t operator()(const lspg_state_t		    & romState,
 			const fom_t			    & app) const
   {
+    // this method only called once at the beginning
     fomStates_.template reconstructCurrentFomState(romState);
     residual_t R( fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(), app) );
     return R;
   }
 
+
 private:
+  template <std::size_t n, typename lspg_state_t>
+  void doFomStatesReconstruction(const lspg_state_t & romState,
+				 const ::pressio::ode::StatesContainer<lspg_state_t, n> & romPrevStates,
+				 const ::pressio::ode::types::step_t & step) const
+  {
+    /* the currrent FOM has to be recomputed every time regardless
+     * of whether the step changes since we might be inside a non-linear solve
+     * where the time step does not change but this residual method
+     * is called multiple times.
+     */
+    fomStates_.reconstructCurrentFomState(romState);
+
+    /* the previous FOM states should only be recomputed when the time step changes
+     * we do not need to reconstruct all the FOM states, we just need to reconstruct
+     * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
+     */
+    if (currentStep_ != step){
+      fomStates_ << romPrevStates[0];
+      currentStep_ = step;
+    }
+  }
 
   // we have here n = 1 prev rom states
   template <typename lspg_state_t, typename fom_t, typename scalar_t>
@@ -124,8 +147,7 @@ private:
 		    const ::pressio::ode::types::step_t & step,
 		    residual_t			        & romR) const
   {
-    fomStates_.reconstructCurrentFomState(romState);
-    fomStates_.template reconstructFomOldStates<1>(romPrevStates);
+    doFomStatesReconstruction<1>(romState, romPrevStates, step);
 
     const auto & yn   = fomStates_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
@@ -142,8 +164,7 @@ private:
 		    const ::pressio::ode::types::step_t & step,
 		    residual_t			        & romR) const
   {
-    fomStates_.reconstructCurrentFomState(romState);
-    fomStates_.template reconstructFomOldStates<2>(romPrevStates);
+    doFomStatesReconstruction<2>(romState, romPrevStates, step);
 
     const auto & yn   = fomStates_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
@@ -152,6 +173,12 @@ private:
   }
 
 protected:
+  // currentStep is used to keep track of which step we are doing.
+  // This is used to decide whether we need to update/recompute the previous
+  // FOM states or not. Since it does not make sense to recompute previous
+  // FOM states if we are not in a new time step.
+  mutable ::pressio::ode::types::step_t currentStep_ = {};
+
   fom_states_data_type & fomStates_;
 };
 

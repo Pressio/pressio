@@ -191,7 +191,7 @@ public:
 		  const scalar_t		   & dt,
 		  const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeStepperName, n>(romState, romR, romPrevStates, app, t, dt);
+    this->compute_impl<odeStepperName, n>(romState, romR, romPrevStates, app, t, dt, step);
   }
 
   template <
@@ -208,7 +208,7 @@ public:
 			const scalar_t			   & dt,
 			const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeStepperName, n>(romState, R_, romPrevStates, app, t, dt);
+    this->compute_impl<odeStepperName, n>(romState, R_, romPrevStates, app, t, dt, step);
     return R_;
   }
 
@@ -262,15 +262,29 @@ private:
 		    const ::pressio::ode::StatesContainer<lspg_state_t,n> & romPrevStates,
 		    const fom_t			     & app,
 		    const scalar_t		     & t,
-		    const scalar_t		     & dt) const
+		    const scalar_t		     & dt,
+		    const ::pressio::ode::types::step_t & step) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("lspg residual");
 #endif
 
+    /* the currrent FOM has to be recomputed every time regardless
+     * of whether the step changes since we might be inside a non-linear solve
+     * where the time step does not change but this residual method
+     * is called multiple times.
+     */
     fomStates_.reconstructCurrentFomState(romState);
-    fomStates_.template reconstructFomOldStates<n>(romPrevStates);
+
+    /* the previous FOM states should only be recomputed when the time step changes
+     * we do not need to reconstruct all the FOM states, we just need to reconstruct
+     * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
+     */
+    if (currentStep_ != step){
+      fomStates_ << romPrevStates[0];
+      currentStep_ = step;
+    }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
@@ -292,6 +306,12 @@ private:
 
 
 protected:
+  // currentStep is used to keep track of which step we are doing.
+  // This is used to decide whether we need to update/recompute the previous
+  // FOM states or not. Since it does not make sense to recompute previous
+  // FOM states if we are not in a new time step.
+  mutable ::pressio::ode::types::step_t currentStep_ = {};
+
   mutable residual_t R_ = {};
   fom_states_cont_type & fomStates_;
 

@@ -197,7 +197,7 @@ public:
 		  const scalar_t     & dt,
 		  const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeStepperName>(romState, romJac, app, time, dt);
+    this->compute_impl<odeStepperName>(romState, romJac, app, time, dt, step);
   }
 
   template <
@@ -210,7 +210,7 @@ public:
 				const scalar_t     & dt,
 				const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeStepperName>(romState, JJ_, app, time, dt);
+    this->compute_impl<odeStepperName>(romState, JJ_, app, time, dt, step);
     return JJ_;
   }
 
@@ -259,17 +259,18 @@ private:
 		    lspg_jac_t	     & romJac,
 		    const app_t	     & app,
 		    const scalar_t   & t,
-		    const scalar_t   & dt) const
+		    const scalar_t   & dt,
+		    const ::pressio::ode::types::step_t & step) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("lspg apply jac");
 #endif
 
-    // todo: this is not needed if jacobian is called after resiudal
-    // because residual takes care of reconstructing the fom state
-    //    timer->start("reconstruct fom state");
-    fomStates_.reconstructCurrentFomState(romState);
+    // here we assume that the current state has already been reconstructd
+    // by the residual policy. So we do not recompute the FOM state.
+    // Maybe we should find a way to ensure this is the case.
+    // fomStates_.reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
