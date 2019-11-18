@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_fwd.hpp
+// solvers_gauss_newton.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,26 +46,17 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_FORWARD_DECLARATIONS_HPP_
-#define SOLVERS_FORWARD_DECLARATIONS_HPP_
+#ifndef SOLVERS_GAUSS_NEWTON_HPP
+#define SOLVERS_GAUSS_NEWTON_HPP
 
-#include "solvers_ConfigDefs.hpp"
-#include "solvers_convergence_tags.hpp"
-#include "solvers_line_search_tags.hpp"
+#include "../../solvers_fwd.hpp"
+#include "../../base/solvers_nonlinear_base.hpp"
+#include "../../base/solvers_iterative_base.hpp"
+#include "./solvers_gauss_newton_normal_eq_impl.hpp"
 
-namespace pressio{ namespace solvers{
-
-namespace direct{
-
-template<typename SolverT, typename MatrixT, typename enable = void>
-class KokkosDirect;
-
-}//end namespace pressio::solvers::direct
-
-
-namespace iterative{ namespace impl{
-
+namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 namespace experimental{
+
 template <
   typename system_type,
   typename linear_solver_type,
@@ -73,85 +64,66 @@ template <
   typename line_search_type,
   typename convergence_when_t
   >
-class GaussNewtonJtjJtrApi;
-}//end namespace experimental
-
-template <
-  typename system_t,
-  typename hessian_t,
-  typename linear_solver_t,
-  typename scalar_t,
-  typename line_search_t,
-  typename when_converged_t,
-  typename resid_obs_t,
-  typename enable = void
+class GaussNewtonJtjJtrApi<
+  system_type,
+  linear_solver_type,
+  scalar_type,
+  line_search_type,
+  convergence_when_t
   >
-class GaussNewton;
+  : public NonLinearSolverBase</*...*/>,
+    public IterativeBase</*...*/>
+{
+  using this_t = /*...*/;
 
-template <
-  typename system_t,
-  typename qr_solver_t,
-  typename scalar_t,
-  typename line_search_t,
-  typename when_converged_t,
-  typename enable = void
-  >
-class GaussNewtonQR;
+  // need to be friend of base (crpt)
+  using non_lin_sol_base_t = NonLinearSolverBase<this_t>;
+  friend non_lin_sol_base_t;
 
-template <typename ... Args>
-struct GNNEQSpecializationPicker;
+  // iterative base
+  using iterative_base_t = IterativeBase<this_t, scalar_type>;
 
-template <typename ... Args>
-struct GNQRSpecializationPicker;
+  // typedefs from the system
+  using state_t    = typename system_type::state_type;
+  using hessian_t  = typename system_type::hessian_type;
+  using proj_res_t = typename system_type::projected_residual_type;
 
-}//end namespace pressio::solvers::iterative::impl
+  // --- data members ---
+  linear_solver_type & linSolver_ = {};
+  hessian_type hess_		  = {};
+  proj_res_t JTResid_		  = {};
+  // delta is the correction
+  state_t delta_		  = {};
+  // ytrail needed if/when line search is used
+  state_t ytrial_		  = {};
+  // norms
+  scalar_type normO_		  = {};
+  scalar_type normN_		  = {};
 
+public:
+  GaussNewtonJtjJtrApi() = delete;
+  GaussNewtonJtjJtrApi(const GaussNewtonJtjJtrApi &) = delete;
+  ~GaussNewtonJtjJtrApi() = default;
 
-/* alias: GN solvers normal equations */
-template <typename ... Args>
-using GaussNewton = typename impl::GNNEQSpecializationPicker<Args...>::type;
+  GaussNewtonJtjJtrApi(const system_type  & system,
+		       const state_t	  & stateIn,
+		       linear_solver_type & linearSolverIn)
+    : linSolver_(linearSolverIn),
+      // J^T J and J^T R constructed from the system
+      hess_( system.createHessianObject(stateIn) ),
+      JTResid_( system.createProjectedResidualObject(stateIn) ),
+      delta_(yState),
+      ytrial_(yState),
+      normO_{0},
+      normN_{0}
+  {}
 
+private:
+  void solveImpl(const system_type & sys, state_t & yState)
+  {
+    /* ... */
+  }
+};
 
-/* alias: QR-based GN solvers */
-template <typename ... Args>
-using GaussNewtonQR = typename impl::GNQRSpecializationPicker<Args...>::type;
-
-/* class to interface with python */
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <
-  typename system_t,
-  typename state_t,
-  typename residual_t,
-  typename jacobian_t,
-  typename hessian_t,
-  typename linear_solver_t,
-  typename scalar_t,
-  typename ops_t,
-  typename when_converged_t = default_convergence,
-  typename enable = void
-  >
-struct PyGaussNewton;
-#endif
-
-namespace hacked{
-
-/* solver for conservative ROM */
-template <
-  typename scalar_t,
-  typename lin_solver_tag,
-  template <typename, typename> class lin_solver_t,
-  typename line_search_t,
-  typename when_converged_t = default_convergence,
-  typename system_t = void,
-  typename cbar_t = void,
-  typename enable = void
-  >
-class GaussNewtonConservative;
-
-}//end namespace pressio::solvers::iterative::hacked
-
-}//end namespace pressio::solvers::iterative
-
-}}//end namespace pressio::solvers
-
+}}}}}//end namespace pressio::solvers::iterative::impl::experimental
 #endif
