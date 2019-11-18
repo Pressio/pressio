@@ -6,7 +6,7 @@
 #include "ROM_LSPG_UNSTEADY"
 #include "APPS_UNSTEADYBURGERS1D"
 #include "utils_eigen.hpp"
-
+#include "wls_apis.hpp"
 //#include "/Users/ejparis/pressio_repos/pressio/packages/solvers/src/meta/solvers_basic_meta.hpp"
 //#include "/Users/ejparis/pressio_repos/pressio/packages/solvers/src/meta/solvers_system_has_all_needed_jacobian_methods.hpp"
 //#include "/Users/ejparis/pressio_repos/pressio/packages/solvers/src/meta/solvers_system_has_all_needed_residual_methods.hpp"
@@ -15,58 +15,46 @@
 
 // n is the window size
 
-namespace pressio{ namespace rom{ namespace experimental{
+namespace pressio{ namespace rom{ namespace wls{
 
 
-struct JTJ_JTR_policy_standard{
-public:
-  template< typename wls_state_type, typename fom_t>
-  void operator()(wls_state_type wls_state, fom_t appObj) const { 
-    std::cout << "Computed JTJ and JTR through default policy" << std::endl;
-}
+template<typename api_tag, typename fom_type, typename wls_state_type,typename ... rest>
+struct Specializer{
+  using type = void;
 };
 
-struct JTJ_JTR_policy_smart{
-public:
-  template< typename wls_state_type, typename fom_t>
-  void operator()(wls_state_type wls_state, fom_t appObj) const { 
-  std::cout << "Computed JTJ and JTR through the smart policy" << std::endl; 
-}
-};
-
+//struct DefaultApi{};
 
 template<
-  typename fom_type,
-  typename wls_state_type,
-  typename JTJ_type,
-  typename JTR_type,
-  typename JTJ_JTR_policy
-  typename residual_policy, 
-  typename jacobian_policy,
-  >
-class WlsSystem{
-  const fom_type & fomObj_;
-public:
-  // these need to be public because are detected by solver
-  using scalar_type     = typename fom_type::scalar_type;
-  using state_type      = wls_state_type;
-  using residual_type   = wls_state_type; 
-public:
-  WlsSystem() = delete;
-  ~WlsSystem() = default;
-  WlsSystem(const fom_type & fomObject)
-    : fomObj_(fomObject){}
-
-public:
-  void JTJ_JTR(wls_state_type & wls_state) const{JTJ_JTR_policy()(wls_state,fomObj_);}
-  // This would be the naive implementation
-  void residual(const wls_state_type & wls_state, residual_type & resid) const{}
-  residual_type residual(const wls_state_type & yROM) const{}
-  void jacobian(const wls_state_type & yROM, jacobian_type & Jphi) const{};
-//  jacobian_type jacobian(const wls_state_type & yROM) const{};
+  typename fom_type, typename wls_state_type,
+  typename residual_pol_type, typename jac_pol_type
+>
+struct Specializer<pressio::rom::wls::WlsSystemDefaultApi<fom_type,wls_state_type,residual_pol_type,jac_pol_type>, fom_type, wls_state_type, residual_pol_type, jac_pol_type>
+{ 
+//  static_assert( ::pressio::rom::meta::is_legitimate_residual_policy_for_wls<residual_pol_t>,
+//     "You are trying to use Wls with default api but the residual policy passed \
+is not admissible for this: maybe you have the wrong api? blas blas");
+  using type = pressio::rom::wls::WlsSystemDefaultApi<fom_type, wls_state_type, residual_pol_type, jac_pol_type>;
+};
+template<
+  typename fom_type, typename wls_state_type,
+  typename jtj_jtr_pol_type
+>
+struct Specializer<pressio::rom::wls::WlsSystemJTJApi<fom_type,wls_state_type,jtj_jtr_pol_type>, fom_type, wls_state_type, jtj_jtr_pol_type>
+{ 
+//  static_assert( ::pressio::rom::meta::is_legitimate_residual_policy_for_wls<residual_pol_t>,
+//     "You are trying to use Wls with default api but the residual policy passed \
+is not admissible for this: maybe you have the wrong api? blas blas");
+  using type = pressio::rom::wls::WlsSystemJTJApi<fom_type, wls_state_type,jtj_jtr_pol_type>;
 };
 
-}}}
+//struct DefaultApi{};
+//struct JTJRApi{};
+template<typename api_type,typename fom_type,typename wls_state_type,typename ... rest>
+using WlsSystem = typename pressio::rom::wls::Specializer<api_type, fom_type, wls_state_type, rest...>::type;
+}}} // end namespace rom::wls
+
+
 
 /*
 
@@ -375,11 +363,36 @@ int main(int argc, char *argv[]){
 
   // define ROM state
   rom_state_t yROM(romSize);
-  using JTR_type = rom_state_t;
-  using JTJ_type = pressio::containers::MultiVector<eig_dyn_mat>;
-  using wls_t = pressio::rom::experimental::WlsSystem<fom_t,rom_state_t,JTJ_type,JTR_type,pressio::rom::experimental::JTJ_JTR_policy_smart>;
-  wls_t wls(appObj);
-  wls.JTJ_JTR(yROM); 
+  using jtr_t = rom_state_t;
+  using jtj_t = pressio::containers::MultiVector<eig_dyn_mat>;
+  jtj_t jtj(romSize,romSize);
+  jtr_t jtr(romSize);
+  //using wls_t = pressio::rom::experimental::WlsSystem<fom_t,rom_state_t,JTJ_type,JTR_type,pressio::rom::wls::impl::JTJ_JTR_policy_smart>;
+  using jtjr_policy_t = pressio::rom::wls::impl::JTJ_JTR_policy_smart<rom_state_t,fom_t,jtj_t,jtr_t>;
+  using wls_api_t   = pressio::rom::wls::WlsSystemJTJApi<fom_t,rom_state_t,jtjr_policy_t>;
+  using wls_system_t  = pressio::rom::wls::WlsSystem<wls_api_t, fom_t, rom_state_t,jtjr_policy_t>;
+  // construct objects and test
+  jtjr_policy_t jtjr_policy;
+  wls_system_t wls(jtjr_policy);
+  wls.JTJ_JTR(yROM,jtj,jtr); 
+
+
+  using resid_t = rom_state_t;
+  using jacobian_t = pressio::containers::MultiVector<eig_dyn_mat>;
+  resid_t residual(romSize);
+  jacobian_t jacobian(romSize,romSize);
+  using residual_policy_t = pressio::rom::wls::impl::residual_policy_naive<rom_state_t,fom_t,resid_t>;
+  using jacobian_policy_t = pressio::rom::wls::impl::jacobian_policy_naive<rom_state_t,fom_t,jacobian_t>;
+  using wls_naive_api_t   = pressio::rom::wls::WlsSystemDefaultApi<fom_t,rom_state_t,residual_policy_t,jacobian_policy_t>;
+  using wls_naive_system_t  = pressio::rom::wls::WlsSystem<wls_naive_api_t, fom_t, rom_state_t,residual_policy_t,jacobian_policy_t>;
+  //construct objects and test
+  residual_policy_t residual_policy;
+  jacobian_policy_t jacobian_policy;
+  wls_naive_system_t wls_naive(residual_policy,jacobian_policy);
+  wls_naive.residual(yROM,residual); 
+
+
+//  wls_system wls(residual_policy_t,jacobian_policy);
 
   /*
   //pressio::rom::experimental::WlsSystem<lspg_state_t,fom_t> wls(appobj); 
