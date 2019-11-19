@@ -127,7 +127,7 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
   // fom state reconstructor type
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
-  // num of total states (i.e. stencil width) needed for stepper is deduced from odeName
+  // total num of fom states (i.e. stencil size plus the state at current step) needed
   static constexpr auto numStates = fomStatesStorageCapacityHelper<odeName>::value;
 
   // type of class holding the fom states
@@ -202,17 +202,17 @@ The type detected does not meet the requirements.");
   // fom state reconstructor type
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
-  // num of total states (i.e. stencil width) needed for stepper is deduced from odeName
+  // total num of fom states (i.e. stencil size plus the state at current step) needed
   static constexpr auto numStates = fomStatesStorageCapacityHelper<odeName>::value;
 
-  // type of class holding the fom states
+  // class type holding the fom states
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
 
   // ud_ops_t (if this is non-void, it should be a pybind11::object since this is passed by user from python side)
   using ud_ops_t = ud_ops_type;
   static_assert( std::is_void<ud_ops_t>::value or std::is_same<ud_ops_t, pybind11::object>::value,
-		 "The type for the user defined ops for LSPG bindings to python is not valid. \
-It must be a pybind11::object.");
+		 "The type passes for the user defined ops for LSPG bindings \
+to python is not valid. It must be a pybind11::object.");
 
 };
 #endif

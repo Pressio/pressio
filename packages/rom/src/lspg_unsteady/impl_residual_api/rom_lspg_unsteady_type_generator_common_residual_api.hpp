@@ -137,7 +137,7 @@ to LSPGUnsteadyProblem a template argument as follows: \n \
 Note that this is the total number of states needed including previous ones, \n \
 basically the size of the stpper stencil.");
 
-  // numStates is the number of states needed
+  // total number of fom states needed (size of stencil plus the state at current step)
   static constexpr std::size_t numStates = tot_n_setter::value;
 
   // type of class holding the fom states

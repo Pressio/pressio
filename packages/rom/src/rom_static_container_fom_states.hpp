@@ -125,9 +125,12 @@ public:
   }
 
 
-  // we are overloading the left shift operator such that
-  // it operates on a rom state object, reconstructs it and
-  // updates the previous FOM states
+  // overload the left shift operator to use when we need to
+  // reconstruct the FOM state at n-1 and shift all previous ones
+
+  /* when n == 1, disenable the << operator since that is meant
+   * to use for time-dep problems when we have to store the states
+   * for the stepper stencil */
 
   /* when n == 2, it means I only have current state and previous one
    * so when I need to reconstruct the previous state, I can simply
@@ -139,7 +142,7 @@ public:
     >
   void operator << (const rom_state_t & romStateIn)
   {
-    // then, reconstrct the FOM state at n-1
+    // reconstrct the FOM state at n-1
     fomStateReconstrObj_(romStateIn, data_[1]);
   }
 
@@ -154,33 +157,25 @@ public:
     >
   void operator << (const rom_state_t & romStateIn)
   {
-    // copy all states back
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("reconstruct fom old states");
+#endif
+
+    // copy all states back, such that y_t-2 goes into y_t-3,
+    // and y_t-1 goes into y_t-2, etc. so that y_t-1 is free to overwrite
     for (std::size_t i=n-2; i>=1; --i){
       const auto & src  = data_[i];
       auto & dest = data_[i+1];
       ::pressio::containers::ops::deep_copy(src, dest);
     }
-    // then, reconstrct the FOM state at n-1
+    // then, reconstrct the FOM state at t-1
     fomStateReconstrObj_(romStateIn, data_[1]);
+
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    timer->stop("reconstruct fom old state");
+#endif
   }
-
-
-//   template <std::size_t n2, typename rom_state_t>
-//   void reconstructFomOldStates(const ::pressio::ode::StatesContainer<rom_state_t, n2> & romYprev)
-//   {
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-//     timer->start("reconstruct fom old state");
-// #endif
-
-//     static_assert( n>n2, "Cannot call reconstructFomOldStates if n <= n2");
-//     for (std::size_t i=0; i<n2; i++){
-//       fomStateReconstrObj_(romYprev[i], data_[i+1]);
-//     }
-// #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-//     timer->stop("reconstruct fom old state");
-// #endif
-//   }
 
 private:
   /* set all entries to zero for all members */
