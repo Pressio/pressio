@@ -73,7 +73,7 @@ template <
   typename line_search_type,
   typename convergence_when_t
   >
-class GaussNewtonJtjJtrApi;
+class GaussNewtonHessianGradientApi;
 }//end namespace experimental
 
 template <

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_is_legitimate_system_for_gn_hessian_proj_resid_api.hpp
+// solvers_is_legitimate_system_for_gn_hessian_gradient_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,53 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GN_HESSIAN_PROJ_RESID_API_HPP_
-#define SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GN_HESSIAN_PROJ_RESID_API_HPP_
+#ifndef SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GN_HESSIAN_GRADIENT_API_HPP_
+#define SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GN_HESSIAN_GRADIENT_API_HPP_
 
 #include "../meta/solvers_basic_meta.hpp"
-#include "solvers_system_has_needed_compute_hessian_and_projected_residual.hpp"
 
 namespace pressio{ namespace solvers{ namespace meta { namespace experimental{
 
-template<typename system_type, typename enable = void>
-struct is_legitimate_system_for_gn_hessian_proj_residual_api : std::false_type{};
+template<typename T, typename enable = void>
+struct is_legitimate_system_for_gn_hessian_gradient_api : std::false_type{};
 
-template<typename system_type>
-struct is_legitimate_system_for_gn_hessian_proj_residual_api
-<
-  system_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::mpl::is_detected<has_scalar_typedef, system_type>::value   and
-    ::pressio::mpl::is_detected<has_state_typedef, system_type>::value    and
-    /* check that system contains the hessian and j^T R, however that is called*/
-    //
-    system_has_needed_compute_hessian_and_proejcted_residual_methods</*...*/>::value
-    >
-  > : std::true_type{};
+template<typename T>
+struct is_legitimate_system_for_gn_hessian_gradient_api
+<T,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::mpl::is_detected<has_scalar_typedef, T>::value and
+   ::pressio::mpl::is_detected<has_state_typedef, T>::value and
+   ::pressio::mpl::is_detected<has_hessian_typedef, T>::value and
+   ::pressio::mpl::is_detected<has_gradient_typedef, T>::value and
+   // --- detect createHessianObject ---
+   ::pressio::mpl::is_same<
+     typename T::hessian_type,
+     decltype(
+	      std::declval<T const>().createHessianObject
+	      ( std::declval<typename T::state_type const&>() )
+	      )
+     >::value and
+   // --- detect createGradientObject ---
+   ::pressio::mpl::is_same<
+     typename T::gradient_type,
+     decltype(
+	      std::declval<T const>().createGradientObject
+	      (std::declval<typename T::state_type const&>())
+	      )
+     >::value and
+   // --- detect computeHessianAndProjectedResidual ---
+   std::is_void<
+     decltype(
+	      std::declval<T const>().computeHessianAndGradient
+	      (
+	       std::declval<typename T::state_type const&>(),
+	       std::declval<typename T::hessian_type &>(),
+	       std::declval<typename T::gradient_type &>()
+	       )
+	      )
+     >::value
+   >
+ > : std::true_type{};
 
 }}}} // namespace pressio::solvers::meta::experimental
 #endif
