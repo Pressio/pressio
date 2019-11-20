@@ -29,8 +29,12 @@ public:
   using residual_type = typename res_pol_t::residual_t;
   using jacobian_type = typename jac_pol_t::jacobian_t;
 
-  WlsSystemDefaultApi(const res_pol_t & resPolObj, const jac_pol_t & jacPolObj)
-    : resPolObj_(resPolObj), jacPolObj_(jacPolObj){}
+  using fom_native_state_t      = typename fom_type::state_type;
+  using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
+  using fom_container_type = typename pressio::ode::StatesContainer<fom_state_t, 2>;
+
+  WlsSystemDefaultApi(const res_pol_t & resPolObj, const jac_pol_t & jacPolObj, int numSteps)
+    : resPolObj_(resPolObj), jacPolObj_(jacPolObj), {}
 
   void residual(wls_state_type & wls_state, residual_type & resid) const{
       resPolObj_(wls_state,resid);
