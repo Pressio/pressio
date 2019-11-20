@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_masked.hpp
+// solvers_is_legitimate_system_for_gauss_newton.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,52 +46,42 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
+#ifndef SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GAUSS_NEWTON_HPP_
+#define SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GAUSS_NEWTON_HPP_
 
-#include "./impl_velocity_api/rom_lspg_unsteady_problem_type_generator_masked_velocity_api.hpp"
+#include "solvers_system_meets_default_api.hpp"
+#include "../experimental/solvers_system_meets_gn_hessian_gradient_api.hpp"
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
+namespace pressio{ namespace solvers{ namespace meta {
 
-namespace impl{
+template<typename system_type>
+struct is_legitimate_system_for_gauss_newton_normal_eq{
 
-template <typename T, typename enable = void>
-struct MaskedHelper{
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = void;
+  static constexpr bool meetDefaultApi  = system_meets_default_api<system_type>::value;
+  static constexpr bool meetHessGradApi = experimental::system_meets_gn_hessian_gradient_api<system_type>::value;
+  static constexpr bool value =  (meetDefaultApi || meetHessGradApi);
+  using type = std::integral_constant<bool, value>;
 };
 
-template <typename T>
-struct MaskedHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
-    >
-  >
-{
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::MaskedProblemTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
+
+template<typename system_type>
+struct is_legitimate_system_for_gauss_newton_qr{
+
+  static constexpr bool meetDefaultApi  = system_meets_default_api<system_type>::value;
+  static constexpr bool value = meetDefaultApi;
+  using type = std::integral_constant<bool, value>;
 };
 
-}// end namespace pressio::rom::lspg::unsteady::impl
 
-template <
-  ::pressio::ode::ImplicitEnum name,
-  typename fom_type,
-  typename lspg_state_type,
-  typename ...Args
-  >
-using Masked = typename impl::MaskedHelper<fom_type>::template type<name, lspg_state_type, Args...>;
+template<typename system_type>
+struct is_legitimate_system_for_gauss_newton{
 
-}}//end  namespace pressio::rom::lspg::unsteady
+  static constexpr bool forGN = is_legitimate_system_for_gauss_newton_normal_eq<system_type>::value;
+  static constexpr bool forQR = is_legitimate_system_for_gauss_newton_qr<system_type>::value;
 
-template <
-  ::pressio::ode::ImplicitEnum name,
-  typename fom_type,
-  typename lspg_state_type,
-  typename ...Args
-  >
-using MaskedLSPGUnsteady = ::pressio::rom::lspg::unsteady::Masked<name, fom_type, lspg_state_type, Args...>;
+  static constexpr bool value =  (forGN || forQR);
+  using type = std::integral_constant<bool, value>;
+};
 
-}} //end  namespace pressio::rom
+}}} // namespace pressio::solvers::meta
 #endif

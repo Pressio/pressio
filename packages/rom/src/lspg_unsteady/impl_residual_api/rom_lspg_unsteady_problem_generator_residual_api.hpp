@@ -51,7 +51,7 @@
 
 #include "rom_lspg_unsteady_problem_type_generator_default_residual_api.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_type,
@@ -60,7 +60,7 @@ template <
   typename lspg_state_type,
   typename ...Args
   >
-class LSPGUnsteadyProblemGeneratorResidualApi
+class ProblemGeneratorResidualApi
 {
 
   /* here, the fom_type must satisfy the residual api */
@@ -122,7 +122,7 @@ public:
   }
 
 public:
-  LSPGUnsteadyProblemGeneratorResidualApi(const fom_t	 & appObj,
+  ProblemGeneratorResidualApi(const fom_t	 & appObj,
 					  const fom_native_state_t & fomStateReferenceNative,
 					  decoder_t	 & decoder,
 					  lspg_state_t	 & yROM,
@@ -145,5 +145,5 @@ public:
 
 };
 
-}}}//end namespace pressio::rom::impl
+}}}}}//end namespace pressio::rom::lspg::unsteady::impl
 #endif

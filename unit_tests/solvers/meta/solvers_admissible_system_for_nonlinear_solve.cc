@@ -26,9 +26,7 @@ TEST(solvers_meta, system_admissible){
   using namespace pressio;
   using system_t   = ValidSystemA;
 
-  static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
-     <system_t>::value, "");
+  static_assert(solvers::meta::system_meets_default_api<system_t>::value, "");
 }
 
 

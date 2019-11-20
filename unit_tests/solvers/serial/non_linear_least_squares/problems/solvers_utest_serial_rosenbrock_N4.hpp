@@ -2,13 +2,13 @@
 #if not defined SOLVERS_UTEST_SERIAL_ROSENBROCK_N4_HPP_
 #define SOLVERS_UTEST_SERIAL_ROSENBROCK_N4_HPP_
 
+#include "MPL_ALL"
 #include "CONTAINERS_VECTOR"
 #include "CONTAINERS_MATRIX"
 
 namespace pressio{ namespace solvers{ namespace test{
 
-struct Rosenbrock4 {
-
+struct Rosenbrock4Impl{
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_dyn_vec	= Eigen::VectorXd;
   using jacobian_w_t	= pressio::containers::Matrix<eig_dyn_mat>;
@@ -64,6 +64,55 @@ struct Rosenbrock4 {
     jacobian_type jac(nf, nv);
     this->jacobian(x, jac);
     return jac;
+  }
+};
+
+
+using Rosenbrock4 = Rosenbrock4Impl;
+
+
+
+struct Rosenbrock4HessGradApi{
+  using eig_dyn_mat	= Eigen::MatrixXd;
+  using eig_dyn_vec	= Eigen::VectorXd;
+  using jacobian_w_t	= pressio::containers::Matrix<eig_dyn_mat>;
+  using state_w_t	= pressio::containers::Vector<eig_dyn_vec>;
+
+  using scalar_type = double;
+  using state_type	= state_w_t;
+  using hessian_type	= pressio::containers::Matrix<eig_dyn_mat>;
+  using gradient_type	= state_type;
+
+  static constexpr int nf = 6; // num functions
+  static constexpr int nv = 4; // num variables
+
+  Rosenbrock4Impl rosImpl;
+
+  void computeHessianAndGradient(const state_type & x,
+  				 hessian_type & hess,
+  				 gradient_type & grad,
+  				 const pressio::solvers::Norm & normType,
+  				 scalar_type & residualNorm) const{
+    auto J = rosImpl.jacobian(x);
+    *hess.data() = J.data()->transpose() * (*J.data());
+    const auto R = rosImpl.residual(x);
+    *grad.data() = J.data()->transpose() * (*R.data());
+    if (normType == ::pressio::solvers::Norm::L2)
+      residualNorm = R.data()->norm();
+    else
+      throw std::runtime_error("RosenbrockN4 only supports L2 norm");
+  }
+
+  hessian_type createHessianObject(const state_type & x) const{
+    // this only construct empty objects
+    hessian_type hess(nv, nv);
+    return hess;
+  }
+
+  gradient_type createGradientObject(const state_type & x) const{
+    // this only construct empty objects
+    gradient_type grad(nv);
+    return grad;
   }
 };
 

@@ -55,30 +55,42 @@
 #include "../../fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
 #include "rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <typename fom_type, typename lspg_state_type, typename enable = void>
 struct CommonTypesHelper;
 
+
 template <typename fom_type, typename lspg_state_type>
-struct CommonTypesHelper<fom_type, lspg_state_type>
+struct CommonTypesHelper<
+  fom_type, lspg_state_type
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  , mpl::enable_if_t<
+      !::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value
+      and !mpl::is_same<fom_type, pybind11::object>::value
+      >
+#endif
+  >
 {
+  static constexpr bool isNativeCpp = true;
   template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityApi<true, odeName, fom_type, lspg_state_type, Args...>;
+  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, odeName, fom_type, lspg_state_type, Args...>;
 };
+
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <typename fom_type, typename lspg_state_type>
 struct CommonTypesHelper<
   fom_type, lspg_state_type,
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value and
+    ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value
     and mpl::is_same<fom_type, pybind11::object>::value
     >
   >
 {
+  static constexpr bool isNativeCpp = false;
   template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityApi<false, odeName, fom_type, lspg_state_type, Args...>;
+  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, odeName, fom_type, lspg_state_type, Args...>;
 };
 #endif
 
@@ -90,7 +102,7 @@ template <
   typename lspg_state_type,
   typename ... Args
   >
-struct DefaultLSPGUnsteadyTypeGeneratorVelocityApi{
+struct DefaultProblemTypeGeneratorVelocityApi{
 
   static_assert( odeName != ::pressio::ode::ImplicitEnum::Arbitrary,
 		 "\nTo use unsteady LSPG with the velocity api, \n \
@@ -100,7 +112,7 @@ to pass a valid enum from the ode steppers, like ImplicitEnum::Euler/BDF2");
 
   /* here, the fom_type must satisfy the velocity api */
   static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
-		 "\nUsing DefaultLSPGUnsteadyTypeGeneratorVelocityApi \n \
+		 "\nUsing DefaultProblemTypeGeneratorVelocityApi \n \
 requires a fom adapter class that meets the velocity api. \n \
 However, the fom/adapter type you passed does not meet the velocity api. \n \
 Verify the fom/adapter class you are using meets the velocity api.");
@@ -131,14 +143,14 @@ Verify the fom/adapter class you are using meets the velocity api.");
   using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyJacobianDefault<false>;
 
   // policy defining how to compute the LSPG time-discrete residual
-  using lspg_residual_policy_t	= ::pressio::rom::impl::LSPGUnsteadyResidualPolicyVelocityApi<
+  using lspg_residual_policy_t	= ::pressio::rom::lspg::unsteady::impl::ResidualPolicyVelocityApi<
     lspg_residual_t, fom_states_data, fom_eval_velocity_policy_t, ud_ops_t>;
 
   // policy defining how to compute the LSPG time-discrete jacobian
-  using lspg_jacobian_policy_t	= ::pressio::rom::impl::LSPGUnsteadyJacobianPolicyVelocityApi<
+  using lspg_jacobian_policy_t	= ::pressio::rom::lspg::unsteady::impl::JacobianPolicyVelocityApi<
     fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops_t>;
 
-  using aux_stepper_t = typename ::pressio::rom::impl::auxStepperHelper<
+  using aux_stepper_t = typename ::pressio::rom::lspg::unsteady::impl::auxStepperHelper<
     odeName, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
     lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>::type;
 
@@ -149,5 +161,5 @@ Verify the fom/adapter class you are using meets the velocity api.");
 
 };//end class
 
-}}}//end  namespace pressio::rom::impl
+}}}}}//end  namespace pressio::rom::lspg::unstedy::impl
 #endif

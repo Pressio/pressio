@@ -65,6 +65,17 @@ class KokkosDirect;
 
 namespace iterative{ namespace impl{
 
+namespace experimental{
+template <
+  typename system_type,
+  typename linear_solver_type,
+  typename scalar_type,
+  typename line_search_type,
+  typename convergence_when_t
+  >
+class GaussNewtonHessianGradientApi;
+}//end namespace experimental
+
 template <
   typename system_t,
   typename hessian_t,
@@ -75,7 +86,7 @@ template <
   typename resid_obs_t,
   typename enable = void
   >
-class GaussNewton;
+class GaussNewtonNormalEqResJacApi;
 
 template <
   typename system_t,
@@ -115,6 +126,7 @@ template <
   typename hessian_t,
   typename linear_solver_t,
   typename scalar_t,
+  typename ops_t,
   typename when_converged_t = default_convergence,
   typename enable = void
   >

@@ -51,18 +51,18 @@
 
 #include "./impl_velocity_api/rom_lspg_unsteady_problem_type_generator_preconditioned_velocity_api.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
 namespace impl{
 
 template <typename T, typename enable = void>
-struct PreconditionedLSPGUnsteadyHelper{
+struct PreconditionedHelper{
   template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
   using type = void;
 };
 
 template <typename T>
-struct PreconditionedLSPGUnsteadyHelper<
+struct PreconditionedHelper<
   T,
   mpl::enable_if_t<
     ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
@@ -70,10 +70,10 @@ struct PreconditionedLSPGUnsteadyHelper<
   >
 {
   template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::PreconditionedLSPGUnsteadyTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
+  using type = impl::PreconditionedProblemTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
 };
 
-}// end namespace pressio::rom::impl
+}// end namespace pressio::rom::lspg::unsteady::impl
 
 template <
   ::pressio::ode::ImplicitEnum name,
@@ -81,8 +81,17 @@ template <
   typename lspg_state_type,
   typename ...Args
   >
-using PreconditionedLSPGUnsteady =
-  typename impl::PreconditionedLSPGUnsteadyHelper<fom_type>::template type<name, lspg_state_type, Args...>;
+using Preconditioned = typename impl::PreconditionedHelper<fom_type>::template type<name, lspg_state_type, Args...>;
 
-}}//end  namespace pressio::rom
+}}//end  namespace pressio::rom::lspg::unsteady
+
+template <
+  ::pressio::ode::ImplicitEnum name,
+  typename fom_type,
+  typename lspg_state_type,
+  typename ...Args
+  >
+using PreconditionedLSPGUnsteady = ::pressio::rom::lspg::unsteady::Preconditioned<name, fom_type, lspg_state_type, Args...>;
+
+}} //end  namespace pressio::rom
 #endif

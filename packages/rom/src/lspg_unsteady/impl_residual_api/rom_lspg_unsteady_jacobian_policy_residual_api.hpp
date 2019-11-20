@@ -53,7 +53,7 @@
 #include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "../../rom_static_container_fom_states.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template<
   typename fom_states_data_type,
@@ -61,9 +61,9 @@ template<
   typename fom_querier_policy,
   typename decoder_type
   >
-class LSPGUnsteadyJacobianPolicyResidualApi
+class JacobianPolicyResidualApi
   : public ::pressio::ode::policy::JacobianPolicyBase<
-	LSPGUnsteadyJacobianPolicyResidualApi<fom_states_data_type,
+	JacobianPolicyResidualApi<fom_states_data_type,
 			   apply_jac_return_type,
 			   fom_querier_policy,
 			   decoder_type>>,
@@ -71,7 +71,7 @@ class LSPGUnsteadyJacobianPolicyResidualApi
 {
 
 public:
-  using this_t = LSPGUnsteadyJacobianPolicyResidualApi<fom_states_data_type,
+  using this_t = JacobianPolicyResidualApi<fom_states_data_type,
 				    apply_jac_return_type,
 				    fom_querier_policy,
 				    decoder_type>;
@@ -82,10 +82,10 @@ public:
   using apply_jac_return_t = apply_jac_return_type;
 
 public:
-  LSPGUnsteadyJacobianPolicyResidualApi() = delete;
-  ~LSPGUnsteadyJacobianPolicyResidualApi() = default;
+  JacobianPolicyResidualApi() = delete;
+  ~JacobianPolicyResidualApi() = default;
 
-  LSPGUnsteadyJacobianPolicyResidualApi(fom_states_data_type & fomStates,
+  JacobianPolicyResidualApi(fom_states_data_type & fomStates,
 					const fom_querier_policy & fomQuerierFunctor,
 					const decoder_type & decoder)
     : fom_querier_policy(fomQuerierFunctor),
@@ -115,6 +115,7 @@ public:
   apply_jac_return_t operator()(const lspg_state_t			& romState,
 				const fom_t				& app) const
   {
+    // this is only called once
     fomStates_.template reconstructCurrentFomState(romState);
     const auto & phi = decoderObj_.getReferenceToJacobian();
     apply_jac_return_t romJac(fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(), app, phi));
@@ -133,8 +134,9 @@ private:
 		    const ::pressio::ode::types::step_t	& step,
 		    lspg_jac_t				& romJac) const
   {
-    // todo: this is not needed if jacobian is called after resiudal
-    // because residual takes care of reconstructing the fom state
+    // here we assume that the current state has already been reconstructd
+    // by the residual policy. So we do not recompute the FOM state.
+    // Maybe we should find a way to ensure this is the case.
     fomStates_.template reconstructCurrentFomState(romState);
 
     const auto & phi = decoderObj_.getReferenceToJacobian();
@@ -153,8 +155,9 @@ private:
 		    const ::pressio::ode::types::step_t	& step,
 		    lspg_jac_t				& romJac) const
   {
-    // todo: this is not needed if jacobian is called after resiudal
-    // because residual takes care of reconstructing the fom state
+    // here we assume that the current state has already been reconstructd
+    // by the residual policy. So we do not recompute the FOM state.
+    // Maybe we should find a way to ensure this is the case.
     fomStates_.template reconstructCurrentFomState(romState);
 
     const auto & phi = decoderObj_.getReferenceToJacobian();
@@ -170,5 +173,5 @@ protected:
   fom_states_data_type & fomStates_;
 };
 
-}}}//end namespace pressio::rom::impl
+}}}}}//end namespace pressio::rom::lspg::unsteady::impl
 #endif

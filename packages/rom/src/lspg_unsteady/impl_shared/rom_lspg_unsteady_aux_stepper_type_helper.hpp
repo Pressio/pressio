@@ -52,7 +52,7 @@
 #include "../../rom_fwd.hpp"
 #include "../../../../ode/src/ode_fwd.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   ::pressio::ode::ImplicitEnum odeName,
@@ -69,5 +69,5 @@ struct auxStepperHelper<::pressio::ode::ImplicitEnum::BDF2, Rest...>
     ::pressio::ode::ImplicitEnum::Euler, Rest...>;
 };
 
-}}}//end  namespace pressio::rom::impl
+}}}}}//end  namespace pressio::rom::lspg::unsteady::impl
 #endif

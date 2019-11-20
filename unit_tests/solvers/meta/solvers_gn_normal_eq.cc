@@ -31,20 +31,20 @@ struct checkTypes{
   using scalar_t		= typename pick_t::scalar_t;
   using system_t		= typename pick_t::system_t;
   using linear_solver_t		= typename pick_t::linear_solver_t;
-  using hessian_t		= typename pick_t::hessian_t;
+  // using hessian_t		= typename pick_t::hessian_t;
   using line_search_t		= typename pick_t::line_search_t;
   using convergence_t		= typename pick_t::convergence_t;
-  using observer_when_conv_t	= typename pick_t::observer_when_conv_t;
-  using observer_each_step_t	= typename pick_t::observer_each_step_t;
+  // using observer_when_conv_t	= typename pick_t::observer_when_conv_t;
+  // using observer_each_step_t	= typename pick_t::observer_each_step_t;
 
   static_assert(std::is_same<scalar_t,		double>::value, "dont match");
   static_assert(std::is_same<system_t,		T1>::value, "dont match");
   static_assert(std::is_same<linear_solver_t,	T2>::value, "dont match");
-  static_assert(std::is_same<hessian_t,		T3>::value, "dont match");
+  // static_assert(std::is_same<hessian_t,		T3>::value, "dont match");
   static_assert(std::is_same<line_search_t,	T4>::value, "dont match");
   static_assert(std::is_same<convergence_t,	T5>::value, "dont match");
-  static_assert(std::is_same<observer_when_conv_t, T6>::value, "dont match");
-  static_assert(std::is_same<observer_each_step_t, T6>::value, "dont match");
+  // static_assert(std::is_same<observer_when_conv_t, T6>::value, "dont match");
+  // static_assert(std::is_same<observer_each_step_t, T6>::value, "dont match");
   static constexpr bool value = true;
 };
 
@@ -54,7 +54,7 @@ TEST(solvers_meta, gn_normal_equations){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_normal_eq
      <sys_t>::value, "");
 
   using hessian_type = containers::Matrix<Eigen::MatrixXd>;
@@ -94,7 +94,7 @@ TEST(solvers_meta, gn_normal_equations_noHess){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_normal_eq
      <sys_t>::value, "");
 
   using hessian_type = containers::Matrix<Eigen::MatrixXd>;
@@ -134,7 +134,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_normal_eq
      <sys_t>::value, "");
 
   using hessian_type = containers::Matrix<Eigen::MatrixXd>;
@@ -142,8 +142,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
   using lin_solver_t = solvers::iterative::EigenIterative<tag, hessian_type>;
 
   using ls_t   = solvers::iterative::gn::ArmijoLineSearch;
-  using norm_t = solvers::L1Norm;
-  using conv_t = solvers::iterative::converged_when::absoluteNormCorrectionBelowTol<norm_t>;
+  using conv_t = solvers::iterative::converged_when::absoluteNormCorrectionBelowTol;
 
   // define types, then rotate, it should not matter
   {

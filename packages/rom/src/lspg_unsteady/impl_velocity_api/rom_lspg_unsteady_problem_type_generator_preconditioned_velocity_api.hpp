@@ -57,7 +57,7 @@
 #include "../../fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
 #include "rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   ode::ImplicitEnum odeName,
@@ -65,7 +65,7 @@ template <
   typename lspg_state_type,
   typename ... Args
   >
-struct PreconditionedLSPGUnsteadyTypeGeneratorVelocityApi{
+struct PreconditionedProblemTypeGeneratorVelocityApi{
 
   static_assert( odeName != ::pressio::ode::ImplicitEnum::Arbitrary,
 		 "\nTo use unsteady LSPG with the velocity api, \n \
@@ -75,7 +75,7 @@ to pass a valid enum from the ode steppers, like ImplicitEnum::Euler/BDF2");
 
   /* here, the fom_type must satisfy the velocity api */
   static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
-		 "\nUsing DefaultLSPGUnsteadyTypeGeneratorVelocityApi \n \
+		 "\nUsing DefaultProblemTypeGeneratorVelocityApi \n \
 requires a fom adapter class that meets the velocity api. \n \
 However, the fom/adapter type you passed does not meet the velocity api. \n \
 Verify the fom/adapter class you are using meets the velocity api.");
@@ -108,7 +108,7 @@ Verify the fom/adapter class you are using meets the velocity api.");
   // policy defining how to compute the LSPG time-discrete residual
   using lspg_residual_policy_t =
     ::pressio::rom::decorator::Preconditioned<
-    ::pressio::rom::impl::LSPGUnsteadyResidualPolicyVelocityApi<
+    ::pressio::rom::lspg::unsteady::impl::ResidualPolicyVelocityApi<
       lspg_residual_t, fom_states_data, fom_eval_velocity_policy_t, ud_ops_t
       >
     >;
@@ -116,13 +116,13 @@ Verify the fom/adapter class you are using meets the velocity api.");
   // policy defining how to compute the LSPG time-discrete jacobian
   using lspg_jacobian_policy_t	=
     ::pressio::rom::decorator::Preconditioned<
-    ::pressio::rom::impl::LSPGUnsteadyJacobianPolicyVelocityApi<
+    ::pressio::rom::lspg::unsteady::impl::JacobianPolicyVelocityApi<
       fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops_t
       >
     >;
 
   // auxiliary stepper
-  using aux_stepper_t = typename ::pressio::rom::impl::auxStepperHelper<
+  using aux_stepper_t = typename ::pressio::rom::lspg::unsteady::impl::auxStepperHelper<
     odeName, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_type,
     lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>::type;
 
@@ -133,5 +133,5 @@ Verify the fom/adapter class you are using meets the velocity api.");
 
 };//end class
 
-}}}//end  namespace pressio::rom::impl
+}}}}}//end  namespace pressio::rom::lspg::unstedy::impl
 #endif

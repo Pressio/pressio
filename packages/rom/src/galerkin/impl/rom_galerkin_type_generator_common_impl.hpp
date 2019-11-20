@@ -49,16 +49,16 @@
 #ifndef ROM_GALERKIN_TYPE_GENERATOR_COMMON_IMPL_HPP_
 #define ROM_GALERKIN_TYPE_GENERATOR_COMMON_IMPL_HPP_
 
-#include "../../../rom_ConfigDefs.hpp"
-#include "../../../rom_fwd.hpp"
-#include "../../../rom_static_container_fom_states.hpp"
-#include "../../../fom_querying_policies/rom_query_fom_velocity_unsteady_policy.hpp"
-#include "../../../fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
-#include "../../../../../ode/src/ode_fwd.hpp"
-#include "../../../meta/rom_is_legitimate_model_for_galerkin.hpp"
-#include "../../../meta/rom_is_legitimate_decoder_type.hpp"
+#include "../../rom_ConfigDefs.hpp"
+#include "../../rom_fwd.hpp"
+#include "../../rom_static_container_fom_states.hpp"
+#include "../../fom_querying_policies/rom_query_fom_velocity_unsteady_policy.hpp"
+#include "../../fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
+#include "../../../../ode/src/ode_fwd.hpp"
+#include "../../meta/rom_is_legitimate_model_for_galerkin.hpp"
+#include "../../meta/rom_is_legitimate_decoder_type.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template < bool doingPython, typename galerkin_state_type, typename ...Args >
 struct GalerkinCommonTypes;
@@ -109,15 +109,36 @@ struct GalerkinCommonTypes<false, galerkin_state_type, Args...>
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template < typename galerkin_state_type, typename ...Args >
-struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
+template < typename galerkin_state_type, typename fom_type, typename decoder_type, typename ud_ops_type>
+struct GalerkinCommonTypes<true, galerkin_state_type, fom_type, decoder_type, ud_ops_type>
 {
-  // verify that args contains a valid fom/adapter type for Galerkin
-  using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::rom::meta::is_legitimate_model_for_galerkin, Args...>;
-  using fom_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
-  static_assert(mpl::is_same<fom_t, pybind11::object>::value,
-		"The adapter/fom type must be a pybind11::object to be valid for interfacing to Python");
+
+  // verify that we have a valid decoder type
+  static_assert( ::pressio::rom::meta::is_legitimate_decoder_type<decoder_type>::value,
+		"A valid decoder type must be passed to define a Galerkin problem for Python bindings. \
+The type detected does not meet the requirements.");
+  using decoder_t		= decoder_type;
+  using decoder_jac_t		= typename decoder_type::jacobian_t;
+  // // verify the sequence contains a valid decoder type
+  // using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
+  //   ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
+  // using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+  // static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
+  // 		"A valid decoder type must be passed to define a ROM Galerkin problem");
+  // using decoder_jac_t		= typename decoder_t::jacobian_t;
+
+  // verify that we have a valid fom_t
+  static_assert( ::pressio::rom::meta::is_legitimate_model_for_galerkin<fom_type>::value,
+		 "The adapter/fom type must be a pybind11::object to be valid for making python \
+bindings to Galerkin");
+  using fom_t = fom_type;
+
+  // // verify that args contains a valid fom/adapter type for Galerkin
+  // using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
+  //   ::pressio::rom::meta::is_legitimate_model_for_galerkin, Args...>;
+  // using fom_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
+  // static_assert(mpl::is_same<fom_t, pybind11::object>::value,
+  // 		"The adapter/fom type must be a pybind11::object to be valid for interfacing to Python");
 
   // rom state type
   using galerkin_state_t	= galerkin_state_type;
@@ -128,14 +149,6 @@ struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
 
   // the GALERKIN residual type is (for now) same as state type
   using galerkin_residual_t	= galerkin_state_t;
-
-  // verify the sequence contains a valid decoder type
-  using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
-  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
-  static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
-		"A valid decoder type must be passed to define a ROM Galerkin problem");
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
 
   // the native types
   using scalar_t		= typename decoder_t::scalar_t;
@@ -148,10 +161,10 @@ struct GalerkinCommonTypes<true, galerkin_state_type, Args...>
   // class type holding fom states data
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;
 
-  // when interfacing with Python, ops are defined by a pybind11::object
-  using ud_ops_t = pybind11::object;
+  // the type of user defined ops
+  using ud_ops_t = ud_ops_type;
 };
 #endif
 
-}}}//end  namespace pressio::rom::impl
+}}}}//end  namespace pressio::rom::galerkin::impl
 #endif

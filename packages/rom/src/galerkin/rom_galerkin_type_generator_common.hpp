@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_masked.hpp
+// rom_galerkin_type_generator_common.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,52 +46,25 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
+#ifndef ROM_GALERKIN_TYPE_GENERATOR_COMMON_HPP_
+#define ROM_GALERKIN_TYPE_GENERATOR_COMMON_HPP_
 
-#include "./impl_velocity_api/rom_lspg_unsteady_problem_type_generator_masked_velocity_api.hpp"
+#include "./impl/rom_galerkin_type_generator_common_impl.hpp"
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
-
-namespace impl{
-
-template <typename T, typename enable = void>
-struct MaskedHelper{
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = void;
-};
-
-template <typename T>
-struct MaskedHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
-    >
-  >
-{
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::MaskedProblemTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
-};
-
-}// end namespace pressio::rom::lspg::unsteady::impl
+namespace pressio{ namespace rom{ namespace galerkin{
 
 template <
-  ::pressio::ode::ImplicitEnum name,
-  typename fom_type,
-  typename lspg_state_type,
+  typename galerkin_state_type,
   typename ...Args
   >
-using Masked = typename impl::MaskedHelper<fom_type>::template type<name, lspg_state_type, Args...>;
+using CommonTypes =
+  impl::GalerkinCommonTypes<
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  ::pressio::containers::meta::is_array_pybind11<galerkin_state_type>::value,
+#else
+  false,
+#endif
+  galerkin_state_type, Args...>;
 
-}}//end  namespace pressio::rom::lspg::unsteady
-
-template <
-  ::pressio::ode::ImplicitEnum name,
-  typename fom_type,
-  typename lspg_state_type,
-  typename ...Args
-  >
-using MaskedLSPGUnsteady = ::pressio::rom::lspg::unsteady::Masked<name, fom_type, lspg_state_type, Args...>;
-
-}} //end  namespace pressio::rom
+}}}//end  namespace pressio::rom::galerkin
 #endif

@@ -95,9 +95,9 @@ int main(int argc, char *argv[]){
   yROM.putScalar(0.0);
 
   // define LSPG type
-  using lspg_problem_type = pressio::rom::DefaultLSPGSteadyTypeGenerator<
+  using lspg_problem_type = pressio::rom::lspg::steady::DefaultProblemType<
     fom_adapter_t, decoder_t, lspg_state_t>;
-  pressio::rom::LSPGSteadyProblemGenerator<lspg_problem_type> lspgProblem(
+  pressio::rom::lspg::steady::ProblemGenerator<lspg_problem_type> lspgProblem(
       appObjROM, *yRef, decoderObj, yROM);
   using rom_system_t = typename lspg_problem_type::lspg_system_t;
 

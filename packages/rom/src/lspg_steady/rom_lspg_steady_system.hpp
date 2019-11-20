@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_STEADY_SYSTEM_HPP_
 #define ROM_LSPG_STEADY_SYSTEM_HPP_
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template<
   typename app_type,
@@ -59,7 +59,7 @@ template<
   typename residual_policy_type,
   typename jacobian_policy_type
   >
-class LSPGSteadySystem<
+class System<
   app_type, lspg_state_type, lspg_residual_type,
   lspg_jacobian_type, residual_policy_type,
   jacobian_policy_type
@@ -77,12 +77,12 @@ public:
   using jacobian_type	= lspg_jacobian_type;
 
 public:
-  LSPGSteadySystem() = delete;
-  ~LSPGSteadySystem() = default;
+  System() = delete;
+  ~System() = default;
 
-  LSPGSteadySystem(const app_type & appIn,
-		   const residual_policy_type & resPolicyObj,
-		   const jacobian_policy_type & jacPolicyObj)
+  System(const app_type & appIn,
+	 const residual_policy_type & resPolicyObj,
+	 const jacobian_policy_type & jacPolicyObj)
     : app_(appIn),
       residualEvaluator_(resPolicyObj),
       jacobianEvaluator_(jacPolicyObj){}
@@ -105,5 +105,5 @@ public:
   }
 };//end class
 
-}} // end namespace pressio::ode
+}}}} // end namespace pressio::ode::lspg::steady
 #endif

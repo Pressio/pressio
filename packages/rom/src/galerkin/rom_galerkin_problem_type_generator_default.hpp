@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_masked.hpp
+// rom_galerkin_problem_type_generator_default.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,52 +46,50 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
+#ifndef ROM_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
+#define ROM_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
 
-#include "./impl_velocity_api/rom_lspg_unsteady_problem_type_generator_masked_velocity_api.hpp"
+#include "rom_galerkin_type_generator_common.hpp"
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
+namespace pressio{ namespace rom{ namespace galerkin{
 
-namespace impl{
-
-template <typename T, typename enable = void>
-struct MaskedHelper{
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = void;
-};
-
-template <typename T>
-struct MaskedHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
-    >
+template <
+  ::pressio::ode::ExplicitEnum odeName,
+  typename galerkin_state_type,
+  typename ...Args
   >
+struct DefaultProblemType
+  : CommonTypes<galerkin_state_type, Args...>
 {
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::MaskedProblemTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
-};
 
-}// end namespace pressio::rom::lspg::unsteady::impl
+  using base_t = CommonTypes<galerkin_state_type, Args...>;
 
-template <
-  ::pressio::ode::ImplicitEnum name,
-  typename fom_type,
-  typename lspg_state_type,
-  typename ...Args
-  >
-using Masked = typename impl::MaskedHelper<fom_type>::template type<name, lspg_state_type, Args...>;
+  static constexpr ::pressio::ode::ExplicitEnum odeName_ = odeName;
 
-}}//end  namespace pressio::rom::lspg::unsteady
+  using typename base_t::fom_t;
+  using typename base_t::scalar_t;
+  using typename base_t::fom_native_state_t;
+  using typename base_t::fom_state_t;
+  using typename base_t::fom_velocity_t;
+  using typename base_t::galerkin_state_t;
+  using typename base_t::galerkin_residual_t;
+  using typename base_t::decoder_t;
+  using typename base_t::decoder_jac_t;
+  using typename base_t::fom_state_reconstr_t;
+  using typename base_t::fom_states_data;
+  using typename base_t::ud_ops_t;
 
-template <
-  ::pressio::ode::ImplicitEnum name,
-  typename fom_type,
-  typename lspg_state_type,
-  typename ...Args
-  >
-using MaskedLSPGUnsteady = ::pressio::rom::lspg::unsteady::Masked<name, fom_type, lspg_state_type, Args...>;
+  // policy for evaluating the ode velocity
+  using galerkin_residual_policy_t =
+    ::pressio::rom::galerkin::DefaultExplicitVelocityPolicy<
+    fom_states_data, fom_velocity_t, decoder_t, ud_ops_t>;
 
-}} //end  namespace pressio::rom
+  // declare type of stepper object
+  using galerkin_stepper_t = ::pressio::ode::ExplicitStepper<
+    odeName, galerkin_state_type, fom_t,
+    galerkin_residual_t, galerkin_residual_policy_t, scalar_t>;
+
+};//end class
+
+}}}//end  namespace pressio::rom::galerkin
 #endif

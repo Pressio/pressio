@@ -50,25 +50,23 @@
 #define SOLVERS_GAUSS_NEWTON_CONSERVATIVE_HPP
 
 #include "../../solvers_fwd.hpp"
-//#include "../../solvers_meta_static_checks.hpp"
 #include "../../base/solvers_nonlinear_base.hpp"
 #include "../../base/solvers_iterative_base.hpp"
 #include "./solvers_gauss_newton_normal_eq_conservative_impl.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace hacked{
 
-/*
- * part-specialize when system type is passed
- */
 template <
-  typename scalar_t, typename lin_solver_tag,
+  typename scalar_t,
+  typename lin_solver_tag,
   template <typename,typename> class lin_solver_t,
-  typename line_search_t, typename converged_when_t,
-  typename system_t, typename cbar_t
+  typename line_search_t,
+  typename converged_when_t,
+  typename system_t,
+  typename cbar_t
   >
 class GaussNewtonConservative<
-  scalar_t, lin_solver_tag, lin_solver_t, line_search_t,
-  converged_when_t, system_t, cbar_t,
+  scalar_t, lin_solver_tag, lin_solver_t, line_search_t, converged_when_t, system_t, cbar_t,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_eigen<typename system_t::state_type>::value and
     containers::meta::is_vector_wrapper<typename system_t::residual_type>::value
@@ -97,7 +95,8 @@ class GaussNewtonConservative<
   using solverT    = lin_solver_t<lin_solver_tag, mat_t>;
 
   using this_t	   = GaussNewtonConservative<scalar_t, lin_solver_tag, lin_solver_t,
-					     line_search_t, converged_when_t, system_t, cbar_t>;
+					     line_search_t, converged_when_t,
+					     system_t, cbar_t>;
   using iter_base_t = IterativeBase<this_t, scalar_t>;
   using base_t	   = NonLinearSolverBase<this_t>;
   friend base_t;
@@ -107,9 +106,8 @@ class GaussNewtonConservative<
   residual_t cbarTlambda_ = {};
   const cbar_t & cbarT_	= {};
 
+  ::pressio::solvers::Norm normType_ = ::pressio::solvers::defaultNormType;
   solverT linSolver_ = {};
-  scalar_t normO_    = {};
-  scalar_t normN_    = {};
   state_t delta_     = {};
   mat_t jTj_     = {};
   mat_t jTcbarT_   = {};
@@ -139,11 +137,13 @@ public:
   template <typename system_in_t = system_t>
   GaussNewtonConservative(const system_in_t & system,
 			  const state_t & y,
-			  const cbar_t & cbarT)
+			  const cbar_t & cbarT,
+			  const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
     : res_(system.residual(y)),
       jac_(system.jacobian(y)),
       cbarTlambda_(system.residual(y)),//this is just to initialize it
-      cbarT_(cbarT)
+      cbarT_(cbarT),
+      normType_(normType)
   {
     // number of cols of Cbar
     const auto nlambda = cbarT_.globalNumVectors();
@@ -183,26 +183,16 @@ public:
       typename iter_base_t::iteration_t,
       scalar_t, solverT, line_search_t,
       converged_when_t, cbar_t, mat_t
-      >(sys,
-	y,
-	ytrial_,
-	res_, jac_,
-	this->maxIters_,
-	this->tolerance_,
+      >(sys, y,	ytrial_, res_, jac_,
+	this->maxIters_, this->tolerance_,
 	delta_, linSolver_,
-	normO_, normN_,
-	cbarT_,
-	jTj_, jTcbarT_,
-	cbarJ_,	zero_,
-	cbarTlambda_, jTr2_,
-	cbarR_,	A_,
-	b_, lambda_,
-	y2_,
-	base_t::convergenceConditionDescription_
-	);
+	cbarT_, jTj_, jTcbarT_,
+	cbarJ_,	zero_, cbarTlambda_, jTr2_,
+	cbarR_,	A_, b_, lambda_, y2_,
+	base_t::convergenceConditionDescription_,
+	normType_);
 
   }//end solve
-
 };//class
 
 

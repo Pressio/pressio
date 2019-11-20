@@ -56,7 +56,7 @@
 #include "../../../../ode/src/implicit/meta/ode_is_stepper_order_setter.hpp"
 #include "../../../../ode/src/implicit/meta/ode_is_stepper_total_n_states_setter.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   ::pressio::ode::ImplicitEnum odeName,
@@ -64,7 +64,7 @@ template <
   typename lspg_state_type,
   typename ...Args
   >
-struct LSPGUnsteadyCommonTypesResidualApi
+struct CommonTypesResidualApi
 {
   //::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
 
@@ -137,7 +137,7 @@ to LSPGUnsteadyProblem a template argument as follows: \n \
 Note that this is the total number of states needed including previous ones, \n \
 basically the size of the stpper stencil.");
 
-  // numStates is the number of states needed
+  // total number of fom states needed (size of stencil plus the state at current step)
   static constexpr std::size_t numStates = tot_n_setter::value;
 
   // type of class holding the fom states
@@ -147,5 +147,5 @@ basically the size of the stpper stencil.");
   using ud_ops_t = void;
 };
 
-}}}//end  namespace pressio::rom::impl
+}}}}}//end  namespace pressio::rom::lspg::unsteady::impl
 #endif

@@ -112,9 +112,6 @@ private:
 
 
 
-
-
-
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
   typename fom_state_t,
@@ -135,18 +132,15 @@ public:
 
   FomStateReconstructor(const fom_state_t & yFomIn,
 			const decoder_type & decoder)
-    : /*yFomReference_( const_cast<fom_state_t&>(yFomIn).request().shape,
-		      const_cast<fom_state_t&>(yFomIn).request().strides,
-		      yFomIn.data() ),*/
-      yFomReference_(yFomIn),
+    : yFomReference_(yFomIn),
       decoderObj_(decoder)
   {
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-    std::cout << std::endl;
-    std::cout << "Inside FomStateReconstructor " << std::endl;
-    std::cout << "yFomReference_ " << yFomReference_.data() << std::endl;
-    std::cout << std::endl;
-#endif
+// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+//     std::cout << std::endl;
+//     std::cout << "Inside FomStateReconstructor " << std::endl;
+//     std::cout << "yFomReference_ " << yFomReference_.data() << std::endl;
+//     std::cout << std::endl;
+// #endif
   }
 
 public:
@@ -156,8 +150,8 @@ public:
     decoderObj_.applyMapping(romY, yOut);
 
     constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+    // add reference state yOut += yFomReference
     ::pressio::containers::ops::do_update(yOut, one, yFomReference_, one);
-    //yOut += yFomReference_;
   }
 
   template <typename rom_state_t>
@@ -169,8 +163,8 @@ public:
   }
 
 private:
-  fom_state_t yFomReference_	= {};
-  const decoder_type & decoderObj_	= {};
+  fom_state_t yFomReference_	   = {};
+  const decoder_type & decoderObj_ = {};
 
 };//end class
 #endif

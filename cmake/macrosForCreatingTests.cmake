@@ -9,6 +9,7 @@ macro(add_serial_exe_and_test TESTNAME PKGNAME TESTSRCS REGEX)
     ${testNameFinal}
     PROPERTIES
     PASS_REGULAR_EXPRESSION ${REGEX}
+    FAIL_REGULAR_EXPRESSION "FAILED"
   )
 
 endmacro()

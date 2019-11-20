@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_masked.hpp
+// solvers_system_meets_default_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,52 +46,38 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
+#ifndef SOLVERS_SYSTEM_MEETS_DEFAULT_API_HPP_
+#define SOLVERS_SYSTEM_MEETS_DEFAULT_API_HPP_
 
-#include "./impl_velocity_api/rom_lspg_unsteady_problem_type_generator_masked_velocity_api.hpp"
+#include "../meta/solvers_basic_meta.hpp"
+#include "solvers_system_has_all_needed_jacobian_methods.hpp"
+#include "solvers_system_has_all_needed_residual_methods.hpp"
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
+namespace pressio{ namespace solvers{ namespace meta {
 
-namespace impl{
+template<typename system_type, typename enable = void>
+struct system_meets_default_api : std::false_type{};
 
-template <typename T, typename enable = void>
-struct MaskedHelper{
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = void;
-};
+template<typename system_type>
+struct system_meets_default_api
+<system_type,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::mpl::is_detected<has_scalar_typedef, system_type>::value   and
+   ::pressio::mpl::is_detected<has_state_typedef, system_type>::value    and
+   ::pressio::mpl::is_detected<has_residual_typedef, system_type>::value and
+   ::pressio::mpl::is_detected<has_jacobian_typedef, system_type>::value and
+   system_has_needed_residual_methods<
+     system_type,
+     typename system_type::state_type,
+     typename system_type::residual_type
+     >::value and
+   system_has_needed_jacobian_methods<
+     system_type,
+     typename system_type::state_type,
+     typename system_type::jacobian_type
+     >::value
+   >
+ > : std::true_type{};
 
-template <typename T>
-struct MaskedHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
-    >
-  >
-{
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::MaskedProblemTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
-};
-
-}// end namespace pressio::rom::lspg::unsteady::impl
-
-template <
-  ::pressio::ode::ImplicitEnum name,
-  typename fom_type,
-  typename lspg_state_type,
-  typename ...Args
-  >
-using Masked = typename impl::MaskedHelper<fom_type>::template type<name, lspg_state_type, Args...>;
-
-}}//end  namespace pressio::rom::lspg::unsteady
-
-template <
-  ::pressio::ode::ImplicitEnum name,
-  typename fom_type,
-  typename lspg_state_type,
-  typename ...Args
-  >
-using MaskedLSPGUnsteady = ::pressio::rom::lspg::unsteady::Masked<name, fom_type, lspg_state_type, Args...>;
-
-}} //end  namespace pressio::rom
+}}} // namespace pressio::solvers::meta
 #endif

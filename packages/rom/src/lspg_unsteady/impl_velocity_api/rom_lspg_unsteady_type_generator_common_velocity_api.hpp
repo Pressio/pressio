@@ -54,7 +54,7 @@
 #include "../impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
 #include "../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
   bool isCpp,
@@ -127,7 +127,7 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
   // fom state reconstructor type
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
-  // num of total states (i.e. stencil width) needed for stepper is deduced from odeName
+  // total num of fom states (i.e. stencil size plus the state at current step) needed
   static constexpr auto numStates = fomStatesStorageCapacityHelper<odeName>::value;
 
   // type of class holding the fom states
@@ -139,71 +139,84 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
 };
 
 
+//-------------------------------------------------------
+// partial specialize for pybind11
+//-------------------------------------------------------
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <
+  ::pressio::ode::ImplicitEnum odeName,
+  typename fom_type,
+  typename lspg_state_type,
+  typename decoder_type,
+  typename ud_ops_type
+  >
+struct LSPGUnsteadyCommonTypesVelocityApi<
+  false, odeName, fom_type, lspg_state_type, decoder_type, ud_ops_type
+  >
+{
 
-// //-------------------------------------------------------
-// // partial specialize for pybind11
-// //-------------------------------------------------------
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// // template <
-// //   typename fom_type,
-// //   typename decoder_type,
-// //   typename lspg_state_type,
-// //   ode::ImplicitEnum odeName,
-// //   typename ud_ops
-// //   >
-// // struct LSPGUnsteadyCommonTypesVelocityApi<
-// //   fom_type, decoder_type, lspg_state_type, odeName, ud_ops,
-// //   mpl::enable_if_t<
-// //     ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value and
-// //     mpl::is_same<fom_type, pybind11::object>::value
-// //     >
-// //   >
+  // verify that we have a valid decoder type
+  static_assert( ::pressio::rom::meta::is_legitimate_decoder_type<decoder_type>::value,
+		"A valid decoder type must be passed to define a LSPG problem for Python bindings. \
+The type detected does not meet the requirements.");
+  using decoder_t		= decoder_type;
+  using decoder_jac_t		= typename decoder_type::jacobian_t;
 
-// template <
-//   ::pressio::ode::ImplicitEnum odeName,
-//   typename fom_type,
-//   typename lspg_state_type,
-//   typename ...Args>
-// struct LSPGUnsteadyCommonTypesVelocityApi<
-//   false, odeName, fom_type, lspg_state_type, Args ...
-//   >
-// {
-// //   // in this case there is no difference between types because
-// //   // they all are pybind11::array_t so basically wrappers of numpy arrays
-// //   // Since this is used to interface to python, EVERYTHING is done using numpy arrays
+  // the fom_t is a pybind11::object since this comes from the python side
+  using fom_t			= fom_type;
+  using scalar_t		= typename decoder_type::scalar_t;
 
-// //   // these are native types of the full-order model (fom)
-// //   using fom_t			= fom_type;
-// //   using scalar_t		= typename decoder_type::scalar_t;
-// //   using fom_native_state_t	= lspg_state_type;
-// //   using fom_native_velocity_t	= lspg_state_type;
-// //   using fom_state_t		= lspg_state_type;
-// //   using fom_velocity_t		= lspg_state_type;
+  // in this case there is no difference between types because
+  // they all are pybind11::array_t so basically wrappers of numpy arrays
+  // Since this is used to interface to python, EVERYTHING is done using numpy arrays
+  using fom_native_state_t	= lspg_state_type;
+  using fom_native_velocity_t	= lspg_state_type;
 
-// //   // rom state type (passed in)
-// //   using lspg_state_t		= lspg_state_type;
+  using fom_state_t		= lspg_state_type;
+  using fom_velocity_t		= lspg_state_type;
 
-// //   // LSPG residual
-// //   using lspg_residual_t		= fom_velocity_t;
+  // rom state type (passed in)
+  using lspg_state_t		= lspg_state_type;
 
-// //   // decoder types (passed in)
-// //   using decoder_t		= decoder_type;
-// //   using decoder_jac_t		= typename decoder_t::jacobian_t;
+  /* for LSPG, the lspg_residual_type = fom_velocity_type
+   * and typically, the residual object has same size of velocity object
+   * this is because the residual is computed where the velocity is computed.
+   * This is important for sample mesh cases.
+   * For instance imagine BDF1, where the residual is:
+   *        R = -dt f() + y_n - y_n-1
+   */
+  using lspg_residual_t		= fom_velocity_t;
 
-// //   // fom state reconstructor type
-// //   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+  /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
+   * * J is the jacobian of the fom rhs
+   * * decoder_jac_t is the type of the decoder jacobian
+   * In more complex cases, we might have (something)*J*decoder_jac_t,
+   * where (something) is product of few matrices.
+   * For now, set lspg_matrix_t to be of same type as decoder_jac_t
+   * if phi is MV<>, then lspg_matrix_t = containers::MV<>
+   * if phi is Matrix<>, then we have containers::Matrix<>
+   * not bad assumption since all matrices are left-applied to decoder_jac_t
+   */
+  using lspg_matrix_t		= decoder_jac_t;
 
-// //   static constexpr auto nFomAuxStates = statesStorageCapacityHelper<odeName>::value;
+  // fom state reconstructor type
+  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
-// //   // class type holding fom states data
-// //   using fom_states_data = ::pressio::rom::FomStatesContainer<
-// // 	fom_state_t, nFomAuxStates, fom_state_reconstr_t>;
+  // total num of fom states (i.e. stencil size plus the state at current step) needed
+  static constexpr auto numStates = fomStatesStorageCapacityHelper<odeName>::value;
 
-// //   // if we have a non-trivial user-defined ops
-// //   using ud_ops_t = ud_ops;
-// };
-// #endif
+  // class type holding the fom states
+  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
+
+  // ud_ops_t (if this is non-void, it should be a pybind11::object since this is passed by user from python side)
+  using ud_ops_t = ud_ops_type;
+  static_assert( std::is_void<ud_ops_t>::value or std::is_same<ud_ops_t, pybind11::object>::value,
+		 "The type passes for the user defined ops for LSPG bindings \
+to python is not valid. It must be a pybind11::object.");
+
+};
+#endif
 
 
-}}}//end  namespace pressio::rom::impl
+}}}}}//end  namespace pressio::rom::lspg::unstedy::impl
 #endif

@@ -63,6 +63,20 @@ template <
 		 typename details::traits<vec_type>::mag_t>::value
     > * = nullptr
   >
+auto norm1(const vec_type & a)
+  -> typename details::traits<vec_type>::mag_t
+{
+  return a.data()->norm1();
+}
+
+template <
+  typename vec_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
+    std::is_same<typename details::traits<vec_type>::scalar_t,
+		 typename details::traits<vec_type>::mag_t>::value
+    > * = nullptr
+  >
 auto norm2(const vec_type & a)
   -> typename details::traits<vec_type>::mag_t
 {

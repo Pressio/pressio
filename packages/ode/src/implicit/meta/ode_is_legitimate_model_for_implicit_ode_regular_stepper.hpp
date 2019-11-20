@@ -71,5 +71,15 @@ struct is_legitimate_model_for_implicit_ode_regular_stepper<
     >
   > : std::true_type{};
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename model_type>
+struct is_legitimate_model_for_implicit_ode_regular_stepper<
+  model_type,
+  mpl::enable_if_t<
+    mpl::is_same<model_type, pybind11::object>::value
+    >
+  > : std::true_type{};
+#endif
+
 }}} // namespace pressio::ode::meta
 #endif

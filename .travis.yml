@@ -1,0 +1,20 @@
+language: cpp
+script:
+- cd ..
+- PARENT_DIR=$(pwd)
+- mkdir $PARENT_DIR/pressio_repos
+- mkdir $PARENT_DIR/pressio_builds
+- export PRESSIO_REPOS=$PARENT_DIR/pressio_repos
+- export PRESSIO_BUILDS=$PARENT_DIR/pressio_builds
+- CC=$(which gcc)
+- CXX=$(which g++)
+- cd ${PRESSIO_REPOS}
+- git clone git://github.com/Pressio/pressio-builder.git
+- cd pressio-builder
+- git checkout master
+- cd -
+- git clone git://github.com/Pressio/pressio-tutorials.git
+- cd ${PRESSIO_REPOS}/pressio-builder
+- ./main_tpls.sh -dryrun=no -tpls=eigen -target-dir=${PRESSIO_BUILDS}
+- ./main_pressio.sh -dryrun=no -pressio-src=${PARENT_DIR}/pressio -target-dir=${PRESSIO_BUILDS} -cmake-generator-name=default_for_tutorials
+- ./main_tutorials.sh -dryrun=no -pressio-tutorials-src=${PRESSIO_REPOS}/pressio-tutorials -target-dir=${PRESSIO_BUILDS} -build-mode=Release -eigen-path=${PRESSIO_BUILDS}/eigen/install -pressio-path=${PRESSIO_BUILDS}/pressio/install

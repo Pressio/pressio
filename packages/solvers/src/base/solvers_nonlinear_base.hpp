@@ -50,7 +50,6 @@
 #define SOLVERS_NONLINEAR_BASE_HPP
 
 #include "../solvers_ConfigDefs.hpp"
-#include "../meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
 #include "../../../containers/src/vector/containers_vector_meta.hpp"
 
 namespace pressio{ namespace solvers{
@@ -75,10 +74,6 @@ struct NonLinearSolverBase {
 
   template <typename system_t, typename state_t >
   void solve(const system_t & sys, state_t & x){
-    // static_assert( ::pressio::solvers::meta::is_legitimate_system_for_nonlinear_solver<
-    //   system_t>::value,
-    // 		   "The system obj type is not valid for non-linear solver");
-
     static_cast<Derived&>(*this).solveImpl(sys, x);
   }
 

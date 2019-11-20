@@ -54,40 +54,23 @@
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
-template <typename convergence_tag>
-struct NormSelectorHelper{
-  using norm_t = L2Norm;
-};
-
-template <typename norm_type>
-struct NormSelectorHelper<
-  converged_when::absoluteNormCorrectionBelowTol<norm_type>
-  >{
-  using norm_t = norm_type;
-};
-//---------------------------------------------------------
-
-
-template <typename norm_t>
-struct ComputeNormHelper;
-
-template <>
-struct ComputeNormHelper<::pressio::solvers::L2Norm>{
+struct ComputeNormHelper
+{
   template <typename vec_t, typename scalar_t>
-  static void evaluate(const vec_t & vecIn, scalar_t & result) {
-    result = ::pressio::containers::ops::norm2(vecIn);
+  static void evaluate(const vec_t & vecIn,
+		       scalar_t & result,
+		       const ::pressio::solvers::Norm & normType)
+  {
+    if (normType == ::pressio::solvers::Norm::L1){
+      result = ::pressio::containers::ops::norm1(vecIn);
+    }
+    else if (normType == ::pressio::solvers::Norm::L2){
+      result = ::pressio::containers::ops::norm2(vecIn);
+    }
+    else
+      throw std::runtime_error("Invalid norm type, cannot conmpute norm");
   }
 };
-
-template <>
-struct ComputeNormHelper<::pressio::solvers::L1Norm>{
-  template <typename vec_t, typename scalar_t>
-  static void evaluate(const vec_t & vecIn, scalar_t & result) {
-    result = ::pressio::containers::ops::norm1(vecIn);
-  }
-};
-//---------------------------------------------------------
-
 
 }}}} //end namespace pressio::solvers::iterative::impl
 #endif

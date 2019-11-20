@@ -51,31 +51,29 @@
 
 #include "../rom_fwd.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template <
   typename residual_type,
   typename fom_states_data,
   typename fom_eval_rhs_policy
   >
-class LSPGSteadyResidualPolicy
-  : protected fom_eval_rhs_policy{
+class ResidualPolicy : protected fom_eval_rhs_policy
+{
 
 public:
-  using this_t = LSPGSteadyResidualPolicy<residual_type,
-					  fom_states_data,
-					  fom_eval_rhs_policy>;
+  using this_t = ResidualPolicy<residual_type, fom_states_data,	fom_eval_rhs_policy>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
 
 public:
-  LSPGSteadyResidualPolicy() = delete;
-  ~LSPGSteadyResidualPolicy() = default;
+  ResidualPolicy() = delete;
+  ~ResidualPolicy() = default;
 
-  LSPGSteadyResidualPolicy(const residual_t & RIn,
-			   fom_states_data & fomStatesIn,
-			   const fom_eval_rhs_policy & fomEvalRhsFunctor)
+  ResidualPolicy(const residual_t & RIn,
+		 fom_states_data & fomStatesIn,
+		 const fom_eval_rhs_policy & fomEvalRhsFunctor)
     : fom_eval_rhs_policy(fomEvalRhsFunctor),
       R_{RIn},
       fomStates_(fomStatesIn){}
@@ -122,5 +120,5 @@ protected:
 
 };//end class
 
-}}//end namespace pressio::rom
+}}}}//end namespace pressio::rom::lspg::steady
 #endif

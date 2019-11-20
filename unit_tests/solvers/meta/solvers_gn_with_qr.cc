@@ -46,7 +46,7 @@ TEST(solvers_meta, gn_with_qr){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_qr
      <sys_t>::value, "");
 
   using mat_type    = typename sys_t::jacobian_type;
@@ -76,7 +76,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_normal_eq
      <sys_t>::value, "");
 
   using mat_type    = typename sys_t::jacobian_type;
@@ -84,8 +84,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
   using qr_solver_t = qr::QRSolver<mat_type, qr_algo>;
 
   using ls_t   = solvers::iterative::gn::ArmijoLineSearch;
-  using norm_t = solvers::L1Norm;
-  using conv_t = solvers::iterative::converged_when::absoluteNormCorrectionBelowTol<norm_t>;
+  using conv_t = solvers::iterative::converged_when::absoluteNormCorrectionBelowTol;
 
   // define types, then rotate, it should not matter
   {

@@ -81,7 +81,7 @@ public:
 
   ~LinearDecoder() = default;
 
-protected:
+private:
   template <typename operand_t, typename result_t>
   void applyMappingImpl(const operand_t & operandObj,
 			result_t & resultObj) const{
