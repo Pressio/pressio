@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// SOLVERS_NONLINEAR
+// solvers_system_meets_default_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,38 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_HPP_
-#define SOLVERS_NONLINEAR_HPP_
+#ifndef SOLVERS_SYSTEM_MEETS_DEFAULT_API_HPP_
+#define SOLVERS_SYSTEM_MEETS_DEFAULT_API_HPP_
 
-#include "SOLVERS_LINEAR"
+#include "../meta/solvers_basic_meta.hpp"
+#include "solvers_system_has_all_needed_jacobian_methods.hpp"
+#include "solvers_system_has_all_needed_residual_methods.hpp"
 
-#include "solvers/src/meta/solvers_basic_meta.hpp"
-#include "solvers/src/meta/solvers_is_legitimate_system_for_gauss_newton.hpp"
-#include "solvers/src/meta/solvers_is_legitimate_system_for_newton_raphson.hpp"
+namespace pressio{ namespace solvers{ namespace meta {
 
-// GN with normal equations
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_gauss_newton_normal_eq_res_jac_api.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_neq_specialization_picker.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_py_gauss_newton.hpp"
+template<typename system_type, typename enable = void>
+struct system_meets_default_api : std::false_type{};
 
-// GN with QR-solver
-#include "solvers/src/nonlinear/gn_qr_based/solvers_gauss_newton_qr.hpp"
-#include "solvers/src/nonlinear/gn_qr_based/solvers_gn_qr_specialization_picker.hpp"
+template<typename system_type>
+struct system_meets_default_api
+<system_type,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::mpl::is_detected<has_scalar_typedef, system_type>::value   and
+   ::pressio::mpl::is_detected<has_state_typedef, system_type>::value    and
+   ::pressio::mpl::is_detected<has_residual_typedef, system_type>::value and
+   ::pressio::mpl::is_detected<has_jacobian_typedef, system_type>::value and
+   system_has_needed_residual_methods<
+     system_type,
+     typename system_type::state_type,
+     typename system_type::residual_type
+     >::value and
+   system_has_needed_jacobian_methods<
+     system_type,
+     typename system_type::state_type,
+     typename system_type::jacobian_type
+     >::value
+   >
+ > : std::true_type{};
 
-// Newton-Raphson
-#include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
-
-// the hacked solver for conservative ROM
-#include "solvers/src/nonlinear/gn_conservative_rom/solvers_gauss_newton_conservative.hpp"
-
+}}} // namespace pressio::solvers::meta
 #endif

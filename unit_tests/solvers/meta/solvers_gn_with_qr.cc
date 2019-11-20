@@ -46,7 +46,7 @@ TEST(solvers_meta, gn_with_qr){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_qr
      <sys_t>::value, "");
 
   using mat_type    = typename sys_t::jacobian_type;
@@ -76,7 +76,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_normal_eq
      <sys_t>::value, "");
 
   using mat_type    = typename sys_t::jacobian_type;

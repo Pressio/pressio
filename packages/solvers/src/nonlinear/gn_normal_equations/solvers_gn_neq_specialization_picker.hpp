@@ -50,7 +50,7 @@
 #define SOLVERS_GN_NEQ_SPECIALIZATION_PICKER_HPP_
 
 #include "../../solvers_fwd.hpp"
-#include "../../meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
+#include "../../meta/solvers_is_legitimate_system_for_gauss_newton.hpp"
 #include "../../meta/solvers_is_legitimate_linear_solver_for_gn_normeq.hpp"
 #include "../../meta/solvers_is_legitimate_hessian_for_gn_normeq.hpp"
 #include "../../meta/solvers_is_legitimate_line_search_tag.hpp"
@@ -176,13 +176,13 @@ struct GNNEQSpecializationPicker{
   /* ------------------------------------------------ */
   // verify the sequence contains a valid system type
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::solvers::meta::is_legitimate_system_for_nonlinear_solver, Args...>;
+    ::pressio::solvers::meta::is_legitimate_system_for_gauss_newton_normal_eq, Args...>;
   using system_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
   static_assert(!std::is_void<system_t>::value and ic1::value < sizeof... (Args),
 		"A valid system type must be passed to GN templates. \
 This compile-time error means that template arguments passed to the GaussNewton solver\
-do not contain a type that satisfies either the residual-jacobian or the hessian-gradient API.");
-  static constexpr bool hasDefaultApi  = ::pressio::solvers::meta::meets_residual_jacobian_api<system_t>::value;
+do not contain a type that is admissible for the normal-equation solver.");
+  static constexpr bool hasDefaultApi = ::pressio::solvers::meta::system_meets_default_api<system_t>::value;
 
   /* ------------------------------------------------ */
   // since system is valid, detect the scalar type

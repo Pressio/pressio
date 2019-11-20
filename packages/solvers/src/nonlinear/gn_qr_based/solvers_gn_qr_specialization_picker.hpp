@@ -50,7 +50,7 @@
 #define SOLVERS_GN_QR_SPECIALIZATION_PICKER_HPP_
 
 #include "../../solvers_fwd.hpp"
-#include "../../meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
+#include "../../meta/solvers_is_legitimate_system_for_gauss_newton.hpp"
 #include "../../meta/solvers_is_legitimate_qr_solver_for_gn_qr.hpp"
 #include "../../meta/solvers_is_legitimate_line_search_tag.hpp"
 #include "../../meta/solvers_is_legitimate_convergence_tag.hpp"
@@ -62,7 +62,7 @@ struct GNQRSpecializationPicker{
 
   // verify the sequence contains a valid system type
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::solvers::meta::is_legitimate_system_for_nonlinear_solver, Args...>;
+    ::pressio::solvers::meta::is_legitimate_system_for_gauss_newton_qr, Args...>;
   using system_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
   static_assert(!std::is_void<system_t>::value and
 		ic1::value < sizeof... (Args),

@@ -51,7 +51,7 @@
 
 #include "SOLVERS_BASIC"
 
-#include "solvers/src/experimental/solvers_is_legitimate_system_for_gn_hessian_gradient_api.hpp"
+#include "solvers/src/experimental/solvers_system_meets_gn_hessian_gradient_api.hpp"
 #include "solvers/src/experimental/solvers_gauss_newton_hessian_gradient_api.hpp"
 
 #endif

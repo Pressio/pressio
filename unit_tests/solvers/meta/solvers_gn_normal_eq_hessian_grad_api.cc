@@ -27,5 +27,5 @@ TEST(solvers_meta, gn_normeq_hess_grad_api){
   using namespace pressio::solvers::meta::experimental;
   using sys_t   = System;
 
-  static_assert(is_legitimate_system_for_gn_hessian_gradient_api<sys_t>::value, "");
+  static_assert(system_meets_gn_hessian_gradient_api<sys_t>::value, "");
 }

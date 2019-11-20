@@ -66,7 +66,8 @@ struct has_residual_method_callable_with_one_arg<
   ::pressio::mpl::void_t<
     decltype(std::declval<T>().residual(std::declval<Arg const&>()))
     >
-  >{
+  >
+{
   using type = decltype(std::declval<T>().residual(std::declval<Arg const&>()));
   static constexpr bool value = true;
 };
@@ -102,8 +103,7 @@ template<
 struct system_has_needed_residual_methods
 < system_type, state_type, residual_type,
   ::pressio::mpl::enable_if_t<
-      has_residual_method_callable_with_one_arg<
-	system_type, state_type
+      has_residual_method_callable_with_one_arg<system_type, state_type
       >::value and
       has_residual_method_callable_with_two_args<
 	system_type, state_type, residual_type

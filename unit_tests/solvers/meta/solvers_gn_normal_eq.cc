@@ -54,7 +54,7 @@ TEST(solvers_meta, gn_normal_equations){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_normal_eq
      <sys_t>::value, "");
 
   using hessian_type = containers::Matrix<Eigen::MatrixXd>;
@@ -94,7 +94,7 @@ TEST(solvers_meta, gn_normal_equations_noHess){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_normal_eq
      <sys_t>::value, "");
 
   using hessian_type = containers::Matrix<Eigen::MatrixXd>;
@@ -134,7 +134,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
   using sys_t   = System;
 
   static_assert
-    (solvers::meta::is_legitimate_system_for_nonlinear_solver
+    (solvers::meta::is_legitimate_system_for_gauss_newton_normal_eq
      <sys_t>::value, "");
 
   using hessian_type = containers::Matrix<Eigen::MatrixXd>;

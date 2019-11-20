@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_is_legitimate_system_for_nonlinear_solver.hpp
+// solvers_is_legitimate_system_for_gauss_newton.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,40 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IS_LEGITIMATE_SYSTEM_NONLIN_SOLVER_HPP_
-#define SOLVERS_IS_LEGITIMATE_SYSTEM_NONLIN_SOLVER_HPP_
+#ifndef SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GAUSS_NEWTON_HPP_
+#define SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GAUSS_NEWTON_HPP_
 
-#include "solvers_meets_residual_jacobian_api.hpp"
-#include "../experimental/solvers_is_legitimate_system_for_gn_hessian_gradient_api.hpp"
+#include "solvers_system_meets_default_api.hpp"
+#include "../experimental/solvers_system_meets_gn_hessian_gradient_api.hpp"
 
 namespace pressio{ namespace solvers{ namespace meta {
 
 template<typename system_type>
-struct is_legitimate_system_for_nonlinear_solver{
+struct is_legitimate_system_for_gauss_newton_normal_eq{
 
-  //using namespace pressio::solvers::meta;
-  static constexpr bool meetDefaultApi  = ::pressio::solvers::meta::meets_residual_jacobian_api<system_type>::value;
-  static constexpr bool meetHessGradApi = ::pressio::solvers::meta::experimental::is_legitimate_system_for_gn_hessian_gradient_api<system_type>::value;
-
+  static constexpr bool meetDefaultApi  = system_meets_default_api<system_type>::value;
+  static constexpr bool meetHessGradApi = experimental::system_meets_gn_hessian_gradient_api<system_type>::value;
   static constexpr bool value =  (meetDefaultApi || meetHessGradApi);
+  using type = std::integral_constant<bool, value>;
+};
+
+
+template<typename system_type>
+struct is_legitimate_system_for_gauss_newton_qr{
+
+  static constexpr bool meetDefaultApi  = system_meets_default_api<system_type>::value;
+  static constexpr bool value = meetDefaultApi;
+  using type = std::integral_constant<bool, value>;
+};
+
+
+template<typename system_type>
+struct is_legitimate_system_for_gauss_newton{
+
+  static constexpr bool forGN = is_legitimate_system_for_gauss_newton_normal_eq<system_type>::value;
+  static constexpr bool forQR = is_legitimate_system_for_gauss_newton_qr<system_type>::value;
+
+  static constexpr bool value =  (forGN || forQR);
   using type = std::integral_constant<bool, value>;
 };
 

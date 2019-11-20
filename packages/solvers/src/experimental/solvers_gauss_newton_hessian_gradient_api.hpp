@@ -158,6 +158,7 @@ private:
 
     // compute J^T J and J^T R in one shot
     sys.computeHessianAndGradient(stateInOut, hessian_, gradient_, normType_, normResidual_);
+    gradient_.scale(negOne);
     normResidual0_ = normResidual_;
 
     // compute the initial norm of y (the state)
@@ -196,7 +197,7 @@ private:
       // // compute multiplicative factor if needed (not supported for now)
       // lsearch_helper_t::evaluate(alpha, stateInOut, ytrial, correction_, resid, jacob, sys);
 
-      // solution update: y = y + alpha*dy
+      // solution update: state = state + alpha*correction
       ::pressio::containers::ops::do_update(stateInOut, one, correction_, alpha);
 
       // check convergence (whatever method user decided)
@@ -214,6 +215,7 @@ private:
 
       // compute hessian and gradient
       sys.computeHessianAndGradient(stateInOut, hessian_, gradient_, normType_, normResidual_);
+      gradient_.scale(negOne);
     }//loop
   }
 };

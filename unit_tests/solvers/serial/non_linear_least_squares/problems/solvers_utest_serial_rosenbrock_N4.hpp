@@ -97,7 +97,6 @@ struct Rosenbrock4HessGradApi{
     *hess.data() = J.data()->transpose() * (*J.data());
     const auto R = rosImpl.residual(x);
     *grad.data() = J.data()->transpose() * (*R.data());
-    *grad.data() *= -1;
     if (normType == ::pressio::solvers::Norm::L2)
       residualNorm = R.data()->norm();
     else
