@@ -97,6 +97,7 @@ struct GNNEQWithResidualJacobainApi
 {
   using linear_solver_matrix_t = typename linear_solver_t::matrix_type;
 
+  /* ------------------------------------------------ */
   // check if the sequence contains a valid hessian type
   using ic3 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::solvers::meta::is_legitimate_hessian_for_gn_normeq, Args...>;
@@ -108,21 +109,21 @@ struct GNNEQWithResidualJacobainApi
   static_assert(!std::is_void<hessian_t>::value,
   		"The hessian type cannot be void");
 
+  /* ------------------------------------------------ */
   // check if sequence contains an observer for the residual after GN is converged
   using ic6 = ::pressio::mpl::variadic::find_if_binary_pred_t<
     typename system_t::residual_type,
     ::pressio::solvers::meta::is_legitimate_residual_observer_when_solver_converged, Args...>;
-  // store the type
   using observer_when_conv_t = ::pressio::mpl::variadic::at_or_t<void, ic6::value, Args...>;
 
+  /* ------------------------------------------------ */
   // check if sequence contains an observer for the residual at each GN step
   using ic7 = ::pressio::mpl::variadic::find_if_binary_pred_t<
     typename system_t::residual_type,
     ::pressio::solvers::meta::is_legitimate_residual_observer_each_solver_step, Args...>;
-  // store the type
   using observer_each_step_t = ::pressio::mpl::variadic::at_or_t<void, ic7::value, Args...>;
 
-  /* currently we only allows all observation methods on the residual to be
+  /* currently we only allow all methods to observe the residual to be
    * in the same observer class. So we need to check here that when both
    *  observers type detected are NOT void, then they must be the same type */
   using obs_supported_t = ObserverTypesSupported<observer_when_conv_t, observer_each_step_t>;
@@ -132,7 +133,8 @@ struct GNNEQWithResidualJacobainApi
   but cannot pass multiple types with individual observation methods");
   using observer_t = typename obs_supported_t::type;
 
-  using type = ::pressio::solvers::iterative::impl::GaussNewton<
+  // the class type
+  using type = ::pressio::solvers::iterative::impl::GaussNewtonNormalEqResJacApi<
     system_t, hessian_t, linear_solver_t, scalar_t, line_search_t, convergence_t, observer_t>;
 };
 
@@ -159,19 +161,21 @@ struct GNNEQSpecializationPicker{
     ::pressio::solvers::meta::is_legitimate_system_for_nonlinear_solver, Args...>;
   using system_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
   static_assert(!std::is_void<system_t>::value and ic1::value < sizeof... (Args),
-		"A valid system type must be passed to GN templates");
+		"A valid system type must be passed to GN templates. \
+This compile-time error means that template arguments passed to the GaussNewton solver\
+do not contain a type that satisfies either the residual-jacobian or the hessian-gradient API.");
 
   /* ------------------------------------------------ */
   // since system is valid, detect the scalar type
   using scalar_t = typename system_t::scalar_type;
 
   /* ------------------------------------------------ */
-  // verify the sequence contains a valid solver type
+  // check for a valid linear solver type
   using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::solvers::meta::is_legitimate_linear_solver_for_gn_normeq, Args...>;
   using linear_solver_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
   static_assert(!std::is_void<linear_solver_t>::value and ic2::value < sizeof... (Args),
-  		"A valid linear solver type must be passed to GN templates");
+  		"A valid linear solver type must be passed to GN with normal equations");
 
   /* ------------------------------------------------ */
   // check if sequence contains a line search tag
@@ -180,10 +184,11 @@ struct GNNEQSpecializationPicker{
   using default_no_ls = ::pressio::solvers::iterative::gn::noLineSearch;
   using line_search_t = ::pressio::mpl::variadic::at_or_t<default_no_ls, ic4::value, Args...>;
   static_assert(!std::is_void<line_search_t>::value,
-		"The line search type for GN cannot be void");
+		"The line search type for GN cannot be void: either omit it so that I use the \
+default, or pick one that is valid.");
 
   /* ------------------------------------------------ */
-  // check if sequence contains a valid default convergence
+  // check if sequence contains a valid convergence tag
   using ic5 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::solvers::meta::is_legitimate_convergence_tag, Args...>;
   using default_conv = ::pressio::solvers::iterative::default_convergence;
@@ -191,8 +196,7 @@ struct GNNEQSpecializationPicker{
   static_assert(!std::is_void<convergence_t>::value, "The convergence type for GN cannot be void");
 
   /* ------------------------------------------------ */
-  // the types above are common for all APIs, not pass args...
-  // to specializers for further inspection
+  // the types above are common for all APIs, now pass args to specializers for further inspection
   using type = typename std::conditional<
     ::pressio::solvers::meta::experimental::is_legitimate_system_for_gn_hessian_gradient_api<system_t>::value,
     typename GNNEQWithHessianGradientApi<system_t, scalar_t, linear_solver_t, line_search_t, convergence_t, Args...>::type,

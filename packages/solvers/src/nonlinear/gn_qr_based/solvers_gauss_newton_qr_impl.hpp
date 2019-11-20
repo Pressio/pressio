@@ -66,47 +66,29 @@ template <
   typename scalar_t
   >
 void gauss_newton_qr_solve(const system_t & sys,
-			   typename system_t::state_type & y,
+			   typename system_t::state_type & stateInOut,
 			   typename system_t::state_type & ytrial,
-			   typename system_t::residual_type & resid,
-			   typename system_t::jacobian_type & jacob,
-			   typename system_t::state_type & dy,
+			   typename system_t::residual_type & residual,
+			   typename system_t::jacobian_type & jacobian,
+			   typename system_t::state_type & correction,
 			   typename system_t::state_type & QTResid,
 			   qr_solver_t & qrObj,
 			   iteration_t maxNonLIt,
 			   scalar_t tolerance,
-			   scalar_t & normO,
-			   scalar_t & norm_dy,
-			   std::string & convCondDescr){
+			   std::string & convCondDescr,
+			   const ::pressio::solvers::Norm & normType){
 
   using jacobian_t	= typename system_t::jacobian_type;
-
-  // find out which norm to use
-  using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
-
-  // policy for  evaluating the norm of a vector
-  using norm_evaluator_t = ComputeNormHelper<norm_t>;
 
   // policy for checking convergence
   using is_converged_t = IsConvergedHelper<converged_when_tag>;
 
   /* policy for computing line search factor (alpha) such that
-   * the update is done with y = y + alpha dy
+   * the update is done with stateInOut = stateInOut + alpha correction
    * alpha = 1 default when user does not want line search
    */
   using lsearch_helper = LineSearchHelper<line_search_t>;
   //-------------------------------------------------------
-
-  // alpha for taking steps
-  scalar_t alpha = {};
-  // residual norm
-  scalar_t normRes = {};
-  // initial residual norm
-  scalar_t normRes0 = {};
-  // residual norm
-  scalar_t normQTRes = {};
-  // initial residual norm
-  scalar_t normQTRes0 = {};
 
   constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
   convCondDescr = std::string(is_converged_t::description_);
@@ -122,9 +104,18 @@ void gauss_newton_qr_solve(const system_t & sys,
 				     convCondDescr, utils::io::reset(), "\n");
 #endif
 
-  // compute (whatever type) norm of y
-  norm_evaluator_t::evaluate(y, normO);
-  norm_dy = {};
+  // alpha for taking steps
+  scalar_t alpha = {};
+  // residual norm
+  scalar_t normRes = {};
+  // initial residual norm
+  scalar_t normRes0 = {};
+  // residual norm
+  scalar_t normQTRes = {};
+  // initial residual norm
+  scalar_t normQTRes0 = {};
+  // norm of correction
+  scalar_t correctionNorm = {};
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -137,17 +128,16 @@ void gauss_newton_qr_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout("\n");
     auto fmt = utils::io::underline();
-    ::pressio::utils::io::print_stdout(fmt, "GN step", iStep,
-				    utils::io::reset(), "\n");
+    ::pressio::utils::io::print_stdout(fmt, "GN step", iStep, utils::io::reset(), "\n");
 #endif
 
     // residual norm for current state
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
-    norm_evaluator_t::evaluate(resid, normRes);
+#endif
+    ComputeNormHelper::evaluate(residual, normRes, normType);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm resid");
-#else
-    norm_evaluator_t::evaluate(resid, normRes);
 #endif
     // store initial residual norm
     if (iStep==1) normRes0 = normRes;
@@ -155,55 +145,53 @@ void gauss_newton_qr_solve(const system_t & sys,
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR factorize");
-    qrObj.computeThin(jacob);
+#endif
+    qrObj.computeThin(jacobian);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("QR factorize");
-#else
-    qrObj.computeThin(jacob);
 #endif
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto fmt2 = utils::io::magenta() + utils::io::bold();
     ::pressio::utils::io::print_stdout(fmt2, "GN_JSize =",
-    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
-    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
-				    utils::io::reset(),
-				    "\n");
+    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacobian),
+    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacobian),
+				       utils::io::reset(), "\n");
 #endif
 
     // compute: Q^T Residual
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR project");
-    qrObj.project(resid, QTResid);
+#endif
+    qrObj.project(residual, QTResid);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("QR project");
-#else
-    qrObj.project(resid, QTResid);
 #endif
 
     // projected residual norm for current state
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm QTResid");
 #endif
-    norm_evaluator_t::evaluate(QTResid, normQTRes);
+    ComputeNormHelper::evaluate(QTResid, normQTRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm QTResid");
 #endif
-
     // store initial residual norm
     if (iStep==1) normQTRes0 = normQTRes;
 
-    // compute correction: dy
-    // by solving R dy = - Q^T Residual
+    // compute correction: correction
+    // by solving R correction = - Q^T Residual
     QTResid.scale(static_cast<scalar_t>(-1));
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR R-solve");
-    qrObj.solve(QTResid, dy);
+    qrObj.solve(QTResid, correction);
     timer->stop("QR R-solve");
 #else
-    qrObj.solve(QTResid, dy);
+    qrObj.solve(QTResid, correction);
 #endif
 
     // norm of the correction
-    norm_evaluator_t::evaluate(dy, norm_dy);
+    ComputeNormHelper::evaluate(correction, correctionNorm, normType);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
@@ -211,35 +199,32 @@ void gauss_newton_qr_solve(const system_t & sys,
 				    "||R||(r) =", normRes/normRes0,
 				    "||Q^T R|| =", normQTRes,
 				    "||Q^T R||(r) =", normQTRes/normQTRes0,
-				    "||dy|| =", norm_dy,
+				    "||dy|| =", correctionNorm,
 				    "\n");
 #endif
 
-    // exit with error if NaNs detected in solution update dy
-    if (std::isnan(norm_dy))
+    // exit with error if NaNs detected in solution update correction
+    if (std::isnan(correctionNorm))
     {
       throw std::runtime_error(
-        "Nonlinear solver: QR-based Gauss Newton: NaNs detected in solution update dy");
+        "Nonlinear solver: QR-based Gauss Newton: NaNs detected in solution update correction");
     }
 
     // compute multiplicative factor if needed
-    lsearch_helper::evaluate(alpha, y, ytrial, dy, resid, jacob, sys);
+    lsearch_helper::evaluate(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
 
-    // solution update: y = y + alpha*dy
-    ::pressio::containers::ops::do_update(y, one, dy, alpha);
+    // solution update: stateInOut = stateInOut + alpha*correction
+    ::pressio::containers::ops::do_update(stateInOut, one, correction, alpha);
 
     // check convergence (whatever method user decided)
-    const auto flag = is_converged_t::evaluate(y, dy,
-					       norm_dy, normRes, normRes0,
+    const auto flag = is_converged_t::evaluate(stateInOut, correction,
+					       correctionNorm, normRes, normRes0,
 					       normQTRes, normQTRes0,
 					       iStep, maxNonLIt, tolerance);
     if (flag) break;
 
-    // store new norm into old variable
-    normO = norm_dy;
-
-    sys.residual(y, resid);
-    sys.jacobian(y, jacob);
+    sys.residual(stateInOut, residual);
+    sys.jacobian(stateInOut, jacobian);
 
   }//loop
 

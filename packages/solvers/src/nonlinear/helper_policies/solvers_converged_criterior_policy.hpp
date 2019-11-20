@@ -76,10 +76,8 @@ struct IsConvergedHelper<converged_when::completingNumMaxIters>{
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::absoluteNormCorrectionBelowTol<norm_t>>{
-
+template <>
+struct IsConvergedHelper<converged_when::absoluteNormCorrectionBelowTol>{
   static constexpr char const * description_ = "||dy|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
@@ -97,10 +95,8 @@ struct IsConvergedHelper<
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::absoluteNormResidualBelowTol<norm_t>>{
-
+template <>
+struct IsConvergedHelper<converged_when::absoluteNormResidualBelowTol>{
   static constexpr char const * description_ = "||R|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
@@ -118,10 +114,8 @@ struct IsConvergedHelper<
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::relativeNormResidualBelowTol<norm_t>>{
-
+template <>
+struct IsConvergedHelper<converged_when::relativeNormResidualBelowTol>{
   static constexpr char const * description_ = "||R||(r) < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
@@ -139,10 +133,8 @@ struct IsConvergedHelper<
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::absoluteNormGradientBelowTol<norm_t>>{
-
+template <>
+struct IsConvergedHelper<converged_when::absoluteNormGradientBelowTol>{
   static constexpr char const * description_ = "||J^T R|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
@@ -160,10 +152,8 @@ struct IsConvergedHelper<
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::relativeNormGradientBelowTol<norm_t>>{
-
+template <>
+struct IsConvergedHelper<converged_when::relativeNormGradientBelowTol>{
   static constexpr char const * description_ = "||J^T R||(r) < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
@@ -180,8 +170,6 @@ struct IsConvergedHelper<
     return (norm_proj_r/norm_proj_r0<tol);
   }
 };
-
-
 
 }}}} //end namespace pressio::solvers::iterative::impl
 #endif

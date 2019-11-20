@@ -51,8 +51,13 @@
 
 namespace pressio{ namespace solvers{
 
-struct L1Norm{};
-struct L2Norm{};
+// struct L1Norm{};
+// struct L2Norm{};
+
+enum class Norm
+  {Undefined, L1, L2};
+
+constexpr Norm defaultNormType = Norm::L2;
 
 }}//end namespace pressio::solvers
 #endif

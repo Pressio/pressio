@@ -84,8 +84,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
   using qr_solver_t = qr::QRSolver<mat_type, qr_algo>;
 
   using ls_t   = solvers::iterative::gn::ArmijoLineSearch;
-  using norm_t = solvers::L1Norm;
-  using conv_t = solvers::iterative::converged_when::absoluteNormCorrectionBelowTol<norm_t>;
+  using conv_t = solvers::iterative::converged_when::absoluteNormCorrectionBelowTol;
 
   // define types, then rotate, it should not matter
   {

@@ -86,7 +86,7 @@ template <
   typename resid_obs_t,
   typename enable = void
   >
-class GaussNewton;
+class GaussNewtonNormalEqResJacApi;
 
 template <
   typename system_t,

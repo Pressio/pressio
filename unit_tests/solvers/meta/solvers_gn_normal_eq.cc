@@ -142,8 +142,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
   using lin_solver_t = solvers::iterative::EigenIterative<tag, hessian_type>;
 
   using ls_t   = solvers::iterative::gn::ArmijoLineSearch;
-  using norm_t = solvers::L1Norm;
-  using conv_t = solvers::iterative::converged_when::absoluteNormCorrectionBelowTol<norm_t>;
+  using conv_t = solvers::iterative::converged_when::absoluteNormCorrectionBelowTol;
 
   // define types, then rotate, it should not matter
   {

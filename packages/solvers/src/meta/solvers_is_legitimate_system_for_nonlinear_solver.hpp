@@ -68,12 +68,6 @@ struct is_legitimate_system_for_nonlinear_solver
     ::pressio::mpl::is_detected<has_state_typedef, system_type>::value    and
     ::pressio::mpl::is_detected<has_residual_typedef, system_type>::value and
     ::pressio::mpl::is_detected<has_jacobian_typedef, system_type>::value and
-    // containers::meta::is_vector_wrapper<
-    //   typename system_type::state_type
-    //   >::value and
-    // containers::meta::is_vector_wrapper<
-    //   typename system_type::residual_type
-    //   >::value and
     system_has_needed_residual_methods<
       system_type,
       typename system_type::state_type,

@@ -55,7 +55,7 @@
 #include "solvers/src/meta/solvers_is_legitimate_system_for_nonlinear_solver.hpp"
 
 // GN with normal equations
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_gauss_newton.hpp"
+#include "solvers/src/nonlinear/gn_normal_equations/solvers_gauss_newton_normal_eq_res_jac_api.hpp"
 #include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_neq_specialization_picker.hpp"
 #include "solvers/src/nonlinear/gn_normal_equations/solvers_py_gauss_newton.hpp"
 

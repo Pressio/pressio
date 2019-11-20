@@ -57,15 +57,13 @@ template <typename T, typename enable = void>
 struct is_legitimate_line_search_tag
   : std::false_type{};
 
-template <typename T>
-struct is_legitimate_line_search_tag<
-  T,
-  ::pressio::mpl::enable_if_t<
-    std::is_same<
-      T,
-      ::pressio::solvers::iterative::gn::ArmijoLineSearch>::value
-    >
-  > : std::true_type{};
+template <>
+struct is_legitimate_line_search_tag<::pressio::solvers::iterative::gn::noLineSearch>
+  : std::true_type{};
+
+template <>
+struct is_legitimate_line_search_tag<::pressio::solvers::iterative::gn::ArmijoLineSearch>
+  : std::true_type{};
 
 }}} // namespace pressio::solvers::meta
 #endif
