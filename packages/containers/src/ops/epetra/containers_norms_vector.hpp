@@ -61,6 +61,21 @@ template <
     ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value
     > * = nullptr
   >
+auto norm1(const vec_type & a)
+  -> typename details::traits<vec_type>::scalar_t
+{
+  using sc_t = typename details::traits<vec_type>::scalar_t;
+  sc_t result = 0.0;
+  a.data()->Norm1(&result);
+  return result;
+}
+
+template <
+  typename vec_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value
+    > * = nullptr
+  >
 auto norm2(const vec_type & a)
   -> typename details::traits<vec_type>::scalar_t
 {
