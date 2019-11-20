@@ -91,9 +91,24 @@ struct ObserverTypesSupported<T, T>{
 
 
 template <
-  typename system_t, typename scalar_t, typename linear_solver_t,
-  typename line_search_t, typename convergence_t, typename ... Args>
-struct GNNEQWithResidualJacobainApi
+  bool hasDefaultApi,
+  typename system_t,
+  typename scalar_t,
+  typename linear_solver_t,
+  typename line_search_t,
+  typename convergence_t,
+  typename ... Args>
+struct GNNEQSpecializeApi;
+
+template <
+  typename system_t,
+  typename scalar_t,
+  typename linear_solver_t,
+  typename line_search_t,
+  typename convergence_t,
+  typename ... Args>
+struct GNNEQSpecializeApi<
+  true, system_t, scalar_t, linear_solver_t, line_search_t, convergence_t, Args...>
 {
   using linear_solver_matrix_t = typename linear_solver_t::matrix_type;
 
@@ -139,16 +154,19 @@ struct GNNEQWithResidualJacobainApi
 };
 
 
-
 template <
-  typename system_t, typename scalar_t, typename linear_solver_t,
-  typename line_search_t, typename convergence_t, typename ... Args>
-struct GNNEQWithHessianGradientApi
+  typename system_t,
+  typename scalar_t,
+  typename linear_solver_t,
+  typename line_search_t,
+  typename convergence_t,
+  typename ... Args>
+struct GNNEQSpecializeApi<
+  false, system_t, scalar_t, linear_solver_t, line_search_t, convergence_t, Args...>
 {
   using type = ::pressio::solvers::iterative::impl::experimental::GaussNewtonHessianGradientApi<
     system_t, linear_solver_t, scalar_t, line_search_t, convergence_t>;
 };
-
 
 
 
@@ -164,6 +182,7 @@ struct GNNEQSpecializationPicker{
 		"A valid system type must be passed to GN templates. \
 This compile-time error means that template arguments passed to the GaussNewton solver\
 do not contain a type that satisfies either the residual-jacobian or the hessian-gradient API.");
+  static constexpr bool hasDefaultApi  = ::pressio::solvers::meta::meets_residual_jacobian_api<system_t>::value;
 
   /* ------------------------------------------------ */
   // since system is valid, detect the scalar type
@@ -197,11 +216,8 @@ default, or pick one that is valid.");
 
   /* ------------------------------------------------ */
   // the types above are common for all APIs, now pass args to specializers for further inspection
-  using type = typename std::conditional<
-    ::pressio::solvers::meta::experimental::is_legitimate_system_for_gn_hessian_gradient_api<system_t>::value,
-    typename GNNEQWithHessianGradientApi<system_t, scalar_t, linear_solver_t, line_search_t, convergence_t, Args...>::type,
-    typename GNNEQWithResidualJacobainApi<system_t, scalar_t, linear_solver_t, line_search_t, convergence_t, Args...>::type
-    >::type;
+  using type =
+    typename GNNEQSpecializeApi<hasDefaultApi, system_t, scalar_t, linear_solver_t, line_search_t, convergence_t, Args...>::type;
 };
 
 }}}}//end namespace pressio::solvers::iterative::impl

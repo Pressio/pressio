@@ -14,7 +14,11 @@ struct System {
   using hessian_type	= matrix_w_t;
   using gradient_type	= vector_w_t;
 
-  void computeHessianAndGradient(const state_type & x, hessian_type & hess, gradient_type & grad) const;
+  void computeHessianAndGradient(const state_type & x,
+				 hessian_type & hess,
+				 gradient_type & grad,
+				 const pressio::solvers::Norm & normType,
+				 scalar_type & residualNorm) const;
   hessian_type createHessianObject(const state_type & x) const;
   gradient_type createGradientObject(const state_type & x) const;
 };

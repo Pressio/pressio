@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_is_legitimate_system_for_gn_hessian_gradient_api.hpp
+// solvers_meets_residual_jacobian_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,57 +46,39 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GN_HESSIAN_GRADIENT_API_HPP_
-#define SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GN_HESSIAN_GRADIENT_API_HPP_
+#ifndef SOLVERS_MEETS_RESIDUAL_JACOBIAN_API_HPP_
+#define SOLVERS_MEETS_RESIDUAL_JACOBIAN_API_HPP_
 
 #include "../meta/solvers_basic_meta.hpp"
-#include "../solvers_norm_tags.hpp"
+#include "solvers_system_has_all_needed_jacobian_methods.hpp"
+#include "solvers_system_has_all_needed_residual_methods.hpp"
 
-namespace pressio{ namespace solvers{ namespace meta { namespace experimental{
+namespace pressio{ namespace solvers{ namespace meta {
 
-template<typename T, typename enable = void>
-struct is_legitimate_system_for_gn_hessian_gradient_api : std::false_type{};
+template<typename system_type, typename enable = void>
+struct meets_residual_jacobian_api : std::false_type{};
 
-template<typename T>
-struct is_legitimate_system_for_gn_hessian_gradient_api
-<T,
- ::pressio::mpl::enable_if_t<
-   ::pressio::mpl::is_detected<has_scalar_typedef, T>::value and
-   ::pressio::mpl::is_detected<has_state_typedef, T>::value and
-   ::pressio::mpl::is_detected<has_hessian_typedef, T>::value and
-   ::pressio::mpl::is_detected<has_gradient_typedef, T>::value and
-   // --- detect createHessianObject ---
-   ::pressio::mpl::is_same<
-     typename T::hessian_type,
-     decltype(
-	      std::declval<T const>().createHessianObject
-	      ( std::declval<typename T::state_type const&>() )
-	      )
-     >::value and
-   // --- detect createGradientObject ---
-   ::pressio::mpl::is_same<
-     typename T::gradient_type,
-     decltype(
-	      std::declval<T const>().createGradientObject
-	      (std::declval<typename T::state_type const&>())
-	      )
-     >::value and
-   // --- detect computeHessianAndProjectedResidual ---
-   std::is_void<
-     decltype(
-	      std::declval<T const>().computeHessianAndGradient
-	      (
-	       std::declval<typename T::state_type const&>(),
-	       std::declval<typename T::hessian_type &>(),
-	       std::declval<typename T::gradient_type &>(),
-	       /* does not matter here what we pass, just to test */
-	       ::pressio::solvers::Norm::L2,
-	       std::declval<typename T::scalar_type &>()
-	       )
-	      )
-     >::value
-   >
- > : std::true_type{};
+template<typename system_type>
+struct meets_residual_jacobian_api
+<
+  system_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::is_detected<has_scalar_typedef, system_type>::value   and
+    ::pressio::mpl::is_detected<has_state_typedef, system_type>::value    and
+    ::pressio::mpl::is_detected<has_residual_typedef, system_type>::value and
+    ::pressio::mpl::is_detected<has_jacobian_typedef, system_type>::value and
+    system_has_needed_residual_methods<
+      system_type,
+      typename system_type::state_type,
+      typename system_type::residual_type
+      >::value and
+    system_has_needed_jacobian_methods<
+      system_type,
+      typename system_type::state_type,
+      typename system_type::jacobian_type
+    >::value
+    >
+  > : std::true_type{};
 
-}}}} // namespace pressio::solvers::meta::experimental
+}}} // namespace pressio::solvers::meta
 #endif
