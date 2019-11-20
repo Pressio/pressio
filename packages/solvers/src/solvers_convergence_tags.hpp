@@ -80,19 +80,19 @@ struct relativeNormResidualBelowTol{
 };
 
 template <typename norm_type>
-struct absoluteNormProjectedResidualBelowTol{
+struct absoluteNormGradientBelowTol{
   using norm_t = norm_type;
   static_assert(mpl::is_same<norm_t, ::pressio::solvers::L1Norm>::value or
 		mpl::is_same<norm_t, ::pressio::solvers::L2Norm>::value,
-		"Invalid template for absoluteNormProjectedResidualBelowTol, it must be L1Norm or L2Norm");
+		"Invalid template for absoluteNormGradientBelowTol, it must be L1Norm or L2Norm");
 };
 
 template <typename norm_type>
-struct relativeNormProjectedResidualBelowTol{
+struct relativeNormGradientBelowTol{
   using norm_t = norm_type;
   static_assert(mpl::is_same<norm_t, ::pressio::solvers::L1Norm>::value or
 		mpl::is_same<norm_t, ::pressio::solvers::L2Norm>::value,
-		"Invalid template for relativeNormProjectedResidualBelowTol, it must be L1Norm or L2Norm");
+		"Invalid template for relativeNormGradientBelowTol, it must be L1Norm or L2Norm");
 };
 
 

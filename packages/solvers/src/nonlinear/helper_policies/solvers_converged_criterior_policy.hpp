@@ -141,9 +141,9 @@ struct IsConvergedHelper<
 
 template <typename norm_t>
 struct IsConvergedHelper<
-  converged_when::absoluteNormProjectedResidualBelowTol<norm_t>>{
+  converged_when::absoluteNormGradientBelowTol<norm_t>>{
 
-  static constexpr char const * description_ = "||P^T R|| < tol";
+  static constexpr char const * description_ = "||J^T R|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
   static bool evaluate(const state_t & y,
@@ -162,9 +162,9 @@ struct IsConvergedHelper<
 
 template <typename norm_t>
 struct IsConvergedHelper<
-  converged_when::relativeNormProjectedResidualBelowTol<norm_t>>{
+  converged_when::relativeNormGradientBelowTol<norm_t>>{
 
-  static constexpr char const * description_ = "||P^T R||(r) < tol";
+  static constexpr char const * description_ = "||J^T R||(r) < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
   static bool evaluate(const state_t & y,

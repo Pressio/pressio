@@ -88,7 +88,7 @@ TEST(solvers_nonlinear_least_squares, gn_conv_conditions){
 
   {
     // GaussNewton solver
-    using converged_when_t_a = solvers::iterative::converged_when::absoluteNormProjectedResidualBelowTol<norm_t>;
+    using converged_when_t_a = solvers::iterative::converged_when::absoluteNormGradientBelowTol<norm_t>;
 
     using gn_t = solvers::iterative::GaussNewton
       <linear_solver_t, converged_when_t_a, problem_t, hessian_t>;
@@ -98,12 +98,12 @@ TEST(solvers_nonlinear_least_squares, gn_conv_conditions){
     GNSolver.solve(problem, x);
 
     const auto solverConvStr = GNSolver.getConvergenceConditionDescription();
-    EXPECT_EQ(solverConvStr, "||P^T R|| < tol");
+    EXPECT_EQ(solverConvStr, "||J^T R|| < tol");
   }
 
   {
     // GaussNewton solver
-    using converged_when_t_a = solvers::iterative::converged_when::relativeNormProjectedResidualBelowTol<norm_t>;
+    using converged_when_t_a = solvers::iterative::converged_when::relativeNormGradientBelowTol<norm_t>;
 
     using gn_t = solvers::iterative::GaussNewton
       <linear_solver_t, converged_when_t_a, problem_t, hessian_t>;
@@ -113,7 +113,7 @@ TEST(solvers_nonlinear_least_squares, gn_conv_conditions){
     GNSolver.solve(problem, x);
 
     const auto solverConvStr = GNSolver.getConvergenceConditionDescription();
-    EXPECT_EQ(solverConvStr, "||P^T R||(r) < tol");
+    EXPECT_EQ(solverConvStr, "||J^T R||(r) < tol");
   }
 
 }

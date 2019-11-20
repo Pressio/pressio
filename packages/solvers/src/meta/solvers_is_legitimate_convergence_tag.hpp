@@ -90,20 +90,20 @@ struct is_legitimate_convergence_tag<
     //---------------------------------
     or
     std::is_same<
-      T, iterative::converged_when::absoluteNormProjectedResidualBelowTol<L1Norm>
+      T, iterative::converged_when::absoluteNormGradientBelowTol<L1Norm>
       >::value
     or
     std::is_same<
-      T, iterative::converged_when::absoluteNormProjectedResidualBelowTol<L2Norm>
+      T, iterative::converged_when::absoluteNormGradientBelowTol<L2Norm>
       >::value
     //---------------------------------
     or
     std::is_same<
-      T, iterative::converged_when::relativeNormProjectedResidualBelowTol<L1Norm>
+      T, iterative::converged_when::relativeNormGradientBelowTol<L1Norm>
       >::value
     or
     std::is_same<
-      T, iterative::converged_when::relativeNormProjectedResidualBelowTol<L2Norm>
+      T, iterative::converged_when::relativeNormGradientBelowTol<L2Norm>
       >::value
     //---------------------------------
     or

@@ -52,7 +52,7 @@
 #include "solvers_basic_meta.hpp"
 #include "solvers_system_has_all_needed_jacobian_methods.hpp"
 #include "solvers_system_has_all_needed_residual_methods.hpp"
-// #include "../../../containers/src/vector/containers_vector_meta.hpp"
+#include "../experimental/solvers_is_legitimate_system_for_gn_hessian_gradient_api.hpp"
 
 namespace pressio{ namespace solvers{ namespace meta {
 
@@ -87,6 +87,14 @@ struct is_legitimate_system_for_nonlinear_solver
     >
   > : std::true_type{};
 
+
+template<typename T>
+struct is_legitimate_system_for_nonlinear_solver
+<T,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::solvers::meta::experimental::is_legitimate_system_for_gn_hessian_gradient_api<T>::value
+   >
+ > : std::true_type{};
 
 }}} // namespace pressio::solvers::meta
 #endif
