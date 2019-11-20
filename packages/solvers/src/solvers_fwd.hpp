@@ -73,7 +73,7 @@ template <
   typename line_search_type,
   typename convergence_when_t
   >
-class GaussNewtonJtjJtrApi;
+class GaussNewtonHessianGradientApi;
 }//end namespace experimental
 
 template <
@@ -86,7 +86,7 @@ template <
   typename resid_obs_t,
   typename enable = void
   >
-class GaussNewton;
+class GaussNewtonNormalEqResJacApi;
 
 template <
   typename system_t,

@@ -15,3 +15,6 @@ set(SRC3
   ${CMAKE_CURRENT_SOURCE_DIR}/solvers_gn_with_qr.cc
   )
 add_serial_utest(solvers_meta_serial_gn_qr "${SRC3}")
+
+set(SRC4 ${CMAKE_CURRENT_SOURCE_DIR}/solvers_gn_normal_eq_hessian_grad_api.cc)
+add_serial_utest(solvers_meta_serial_gn_neq_hess_grad_api "${SRC4}")

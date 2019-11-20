@@ -73,30 +73,29 @@ template <
   typename observer_t = utils::impl::empty
   >
 void gauss_newton_neq_solve(const system_t & sys,
-			    typename system_t::state_type & y,
+			    typename system_t::state_type & stateInOut,
 			    typename system_t::state_type & ytrial,
-			    typename system_t::residual_type & resid,
-			    typename system_t::jacobian_type & jacob,
-			    typename system_t::state_type & dy,
-			    typename system_t::state_type & JTR,
-			    hessian_t & H,
+			    typename system_t::residual_type & residual,
+			    typename system_t::jacobian_type & jacobian,
+			    typename system_t::state_type & correction,
+			    typename system_t::state_type & gradient,
+			    hessian_t & hessian,
 			    lin_solver_t & linSolver,
 			    iteration_t maxNonLIt,
 			    scalar_t tolerance,
-			    scalar_t & normO,
-			    scalar_t & norm_dy,
 			    const observer_t * observer,
-			    std::string & convCondDescr)
+			    std::string & convCondDescr,
+			    ::pressio::solvers::Norm normType)
 {
 
   using residual_t	= typename system_t::residual_type;
   using jacobian_t	= typename system_t::jacobian_type;
 
-  // find out which norm to use
-  using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
+  // // find out which norm to use
+  // using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
 
   // policy for evaluating the norm of a vector
-  using norm_evaluator_t = ComputeNormHelper<norm_t>;
+  using norm_evaluator = ComputeNormHelper;
 
   // policy to approximate hessian J^T*J
   using hessian_evaluator_t = HessianApproxHelper<jacobian_t>;
@@ -108,29 +107,17 @@ void gauss_newton_neq_solve(const system_t & sys,
   using is_converged_t = IsConvergedHelper<converged_when_tag>;
 
   // policy to observing residual at each GN step
-  using residual_observer_each_step = ResidualObserverEachSolverStep<
-    observer_t, residual_t>;
+  using residual_observer_each_step = ResidualObserverEachSolverStep<observer_t, residual_t>;
 
   // policy to observing residual when converged before exiting
-  using residual_observer_when_conv = ResidualObserverWhenSolverConverged<
-    observer_t, residual_t>;
+  using residual_observer_when_conv = ResidualObserverWhenSolverConverged<observer_t, residual_t>;
 
   /* policy for computing line search factor (alpha) such that
-   * the update is done with y = y + alpha dy
-   * alpha = 1 default when user does not want line search
-   */
+   * the update is done with y = y + alpha correction
+   * alpha = 1 default when user does not want line search*/
   using lsearch_helper_t = LineSearchHelper<line_search_t>;
 
   //-------------------------------------------------------
-
-  // alpha for taking steps
-  scalar_t alpha = {};
-  // storing residual norm
-  scalar_t normRes = {};
-  scalar_t normRes0 = {};
-  // storing projected residual norm
-  scalar_t normJTRes = {};
-  scalar_t normJTRes0 = {};
 
   constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
   constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
@@ -147,9 +134,16 @@ void gauss_newton_neq_solve(const system_t & sys,
 				     convCondDescr, reset, "\n");
 #endif
 
-  // compute the initial norm of y (the state)
-  norm_evaluator_t::evaluate(y, normO);
-  norm_dy = {0};
+  // alpha for taking steps
+  scalar_t alpha = {};
+  // storing residual norm
+  scalar_t normRes = {};
+  scalar_t normRes0 = {};
+  // storing gradient norm
+  scalar_t normGrad = {};
+  scalar_t normGrad0 = {};
+  // norm of the correction
+  scalar_t correctionNorm = {0};
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -161,7 +155,7 @@ void gauss_newton_neq_solve(const system_t & sys,
   {
 
     // call residual observer at each gauss step (no op for dummy case)
-    residual_observer_each_step::evaluate(observer, resid, iStep);
+    residual_observer_each_step::evaluate(observer, residual, iStep);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout("\n");
@@ -173,131 +167,128 @@ void gauss_newton_neq_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
 #endif
-    norm_evaluator_t::evaluate(resid, normRes);
+    ComputeNormHelper::evaluate(residual, normRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm resid");
 #endif
 
     // // print the residual
     // ::pressio::utils::io::print_stdout("residual \n");
-    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(15), *resid.data(), "\n");
+    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(15), *residual.data(), "\n");
 
     // store initial residual norm
     if (iStep==1) normRes0 = normRes;
 
     // // print the jacobian
     // ::pressio::utils::io::print_stdout("jacobian \n");
-    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(15), *jacob.data(), "\n");
+    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(15), *jacobian.data(), "\n");
 
     // compute LHS: J^T*J
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("hessian");
 #endif
-    hessian_evaluator_t::evaluate(jacob, H);
+    hessian_evaluator_t::evaluate(jacobian, hessian);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("hessian");
 #endif
 
     // // // print the hessian
     // ::pressio::utils::io::print_stdout("HESSIAN" , "\n");
-    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(14), *H.data() , "\n");
+    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(14), *hessian.data() , "\n");
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto fmt2 = utils::io::magenta() + utils::io::bold();
     ::pressio::utils::io::print_stdout(fmt2, "GN_JSize =",
-    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacob),
-    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacob),
+    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacobian),
+    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacobian),
 				    "\n");
     // this print only works when hessian is a shared mem matrix
     ::pressio::utils::io::print_stdout(fmt2, "GN_HessianSize =",
-				       H.rows(), H.cols(),
+				       hessian.rows(), hessian.cols(),
 				       utils::io::reset(), "\n");
 #endif
 
     // compute RHS: J^T*res
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->start("JTR");
+    timer->start("gradient");
 #endif
-    jtr_evaluator_t::evaluate(jacob, resid, JTR);
-    JTR.scale(negOne);
+    jtr_evaluator_t::evaluate(jacobian, residual, gradient);
+    gradient.scale(negOne);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("JTR");
+    timer->stop("gradient");
 #endif
 
-    // projected residual norm for current state
+    // gradient norm for current state
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->start("norm JTR");
+    timer->start("norm gradient");
 #endif
-    norm_evaluator_t::evaluate(JTR, normJTRes);
+    ComputeNormHelper::evaluate(gradient, normGrad, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("norm JTR");
+    timer->stop("norm gradient");
 #endif
 
     // store initial residual norm
-    if (iStep==1) normJTRes0 = normJTRes;
+    if (iStep==1) normGrad0 = normGrad;
 
     // // // print J^T R
     // ::pressio::utils::io::print_stdout("J^T R \n");
-    // ::pressio::utils::io::print_stdout( std::fixed, *JTR.data() , "\n");
+    // ::pressio::utils::io::print_stdout( std::fixed, *gradient.data() , "\n");
 
     // solve normal equations
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("solve normeq");
 #endif
-    linSolver.solveAllowMatOverwrite(H, JTR, dy);
+    linSolver.solveAllowMatOverwrite(hessian, gradient, correction);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("solve normeq");
 #endif
     // compute norm of the correction
-    norm_evaluator_t::evaluate(dy, norm_dy);
+    ComputeNormHelper::evaluate(correction, correctionNorm, normType);
 
     // // // print the correction
-    // ::pressio::utils::io::print_stdout("Correction dy \n");
-    // ::pressio::utils::io::print_stdout(std::fixed, *dy.data());
+    // ::pressio::utils::io::print_stdout("Correction correction \n");
+    // ::pressio::utils::io::print_stdout(std::fixed, *correction.data());
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
 				    "||R|| =", normRes,
 				    "||R||(r) =", normRes/normRes0,
-				    "||J^T R|| =", normJTRes,
-				    "||J^T R||(r) =", normJTRes/normJTRes0,
-				    "||dy|| =", norm_dy,
+				    "||J^T R|| =", normGrad,
+				    "||J^T R||(r) =", normGrad/normGrad0,
+				    "||dy|| =", correctionNorm,
 				    utils::io::reset(),
 				    "\n");
 #endif
 
     // exit with error if NaNs detected in solution update dy
-    if (std::isnan(norm_dy))
+    if (std::isnan(correctionNorm))
     {
       throw std::runtime_error(
         "Nonlinear solver: NEQ-based Gausss Newton: NaNs detected in solution update dy");
     }
 
     // compute multiplicative factor if needed
-    lsearch_helper_t::evaluate(alpha, y, ytrial, dy, resid, jacob, sys);
+    lsearch_helper_t::evaluate(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
 
-    // solution update: y = y + alpha*dy
-    ::pressio::containers::ops::do_update(y, one, dy, alpha);
+    // solution update: y = y + alpha*correction
+    ::pressio::containers::ops::do_update(stateInOut, one, correction, alpha);
 
     // check convergence (whatever method user decided)
-    const auto flag = is_converged_t::evaluate(y, dy,
-					       norm_dy, normRes, normRes0,
-					       normJTRes, normJTRes0,
+    const auto flag = is_converged_t::evaluate(stateInOut, correction, correctionNorm,
+					       normRes, normRes0,
+					       normGrad, normGrad0,
 					       iStep, maxNonLIt, tolerance);
 
     // if we have converged, query the observer
     if (flag) {
       // observe residual (no op for dummy case)
-      residual_observer_when_conv::evaluate(observer, resid);
+      residual_observer_when_conv::evaluate(observer, residual);
       break;
     }
 
-    // store new norm into old variable
-    normO = norm_dy;
-
     // compute residual and jacobian
-    sys.residual(y, resid);
-    sys.jacobian(y, jacob);
+    sys.residual(stateInOut, residual);
+    sys.jacobian(stateInOut, jacobian);
 
   }//loop
 

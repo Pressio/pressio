@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_system_has_needed_compute_hessian_and_projected_residual_methods.hpp
+// solvers_is_legitimate_system_for_newton_raphson.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,21 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SYSTEM_HAS_NEEDED_COMPUTE_HESSIAN_AND_PROJECTED_RESIDUAL_METHODS_HPP_
-#define SOLVERS_SYSTEM_HAS_NEEDED_COMPUTE_HESSIAN_AND_PROJECTED_RESIDUAL_METHODS_HPP_
+#ifndef SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_NEWTON_RAPHSON_HPP_
+#define SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_NEWTON_RAPHSON_HPP_
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../../../mpl/src/detection_idiom.hpp"
+#include "solvers_system_meets_default_api.hpp"
+#include "../experimental/solvers_system_meets_gn_hessian_gradient_api.hpp"
 
-namespace pressio{ namespace solvers{ namespace meta { namespace experimental{
+namespace pressio{ namespace solvers{ namespace meta {
 
-template<
-  typename system_type,
-  typename state_type,
-  /* ... */
-  typename enable = void
-  >
-struct system_has_needed_compute_hessian_and_projected_residual_methods
-  : std::false_type{};
+template<typename system_type>
+struct is_legitimate_system_for_newton_raphson{
 
-template<typename system_type, typename state_type, /* ... */>
-struct system_has_needed_compute_hessian_and_projected_residual_methods<
-  system_type, state_type, /* ... */
-  ::pressio::mpl::enable_if_t< /* ... */ >
-  > : std::true_type{};
+  static constexpr bool meetDefaultApi  = system_meets_default_api<system_type>::value;
+  static constexpr bool value = meetDefaultApi;
+  using type = std::integral_constant<bool, value>;
+};
 
-}}}} // namespace pressio::solvers::meta::experimental
+}}} // namespace pressio::solvers::meta
 #endif

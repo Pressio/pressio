@@ -76,10 +76,8 @@ struct IsConvergedHelper<converged_when::completingNumMaxIters>{
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::absoluteNormCorrectionBelowTol<norm_t>>{
-
+template <>
+struct IsConvergedHelper<converged_when::absoluteNormCorrectionBelowTol>{
   static constexpr char const * description_ = "||dy|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
@@ -97,10 +95,8 @@ struct IsConvergedHelper<
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::absoluteNormResidualBelowTol<norm_t>>{
-
+template <>
+struct IsConvergedHelper<converged_when::absoluteNormResidualBelowTol>{
   static constexpr char const * description_ = "||R|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
@@ -118,10 +114,8 @@ struct IsConvergedHelper<
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::relativeNormResidualBelowTol<norm_t>>{
-
+template <>
+struct IsConvergedHelper<converged_when::relativeNormResidualBelowTol>{
   static constexpr char const * description_ = "||R||(r) < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
@@ -139,11 +133,9 @@ struct IsConvergedHelper<
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::absoluteNormProjectedResidualBelowTol<norm_t>>{
-
-  static constexpr char const * description_ = "||P^T R|| < tol";
+template <>
+struct IsConvergedHelper<converged_when::absoluteNormGradientBelowTol>{
+  static constexpr char const * description_ = "||J^T R|| < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
   static bool evaluate(const state_t & y,
@@ -160,11 +152,9 @@ struct IsConvergedHelper<
   }
 };
 
-template <typename norm_t>
-struct IsConvergedHelper<
-  converged_when::relativeNormProjectedResidualBelowTol<norm_t>>{
-
-  static constexpr char const * description_ = "||P^T R||(r) < tol";
+template <>
+struct IsConvergedHelper<converged_when::relativeNormGradientBelowTol>{
+  static constexpr char const * description_ = "||J^T R||(r) < tol";
 
   template <typename state_t, typename step_t, typename scalar_t>
   static bool evaluate(const state_t & y,
@@ -180,8 +170,6 @@ struct IsConvergedHelper<
     return (norm_proj_r/norm_proj_r0<tol);
   }
 };
-
-
 
 }}}} //end namespace pressio::solvers::iterative::impl
 #endif

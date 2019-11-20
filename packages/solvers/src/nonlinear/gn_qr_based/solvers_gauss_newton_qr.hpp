@@ -65,9 +65,11 @@ template <
   typename line_search_type,
   typename convergence_when_t
   >
-class GaussNewtonQR<
-  system_type, qr_solver_type,
-  scalar_type, line_search_type, convergence_when_t>
+class GaussNewtonQR<system_type,
+		    qr_solver_type,
+		    scalar_type,
+		    line_search_type,
+		    convergence_when_t>
   : public NonLinearSolverBase<
      GaussNewtonQR<
        system_type, qr_solver_type, scalar_type,
@@ -75,13 +77,14 @@ class GaussNewtonQR<
      >,
     public IterativeBase<
        GaussNewtonQR<
-       system_type, qr_solver_type, scalar_type,
-	 line_search_type, convergence_when_t>, 
+	 system_type, qr_solver_type, scalar_type,
+	 line_search_type, convergence_when_t>,
    scalar_type
    >
 {
   using this_t = GaussNewtonQR<system_type, qr_solver_type,
-     scalar_type, line_search_type, convergence_when_t>;
+			       scalar_type, line_search_type,
+			       convergence_when_t>;
 
   // need to be friend of base (crpt)
   using non_lin_sol_base_t = NonLinearSolverBase<this_t>;
@@ -95,21 +98,15 @@ class GaussNewtonQR<
   using jacobian_t = typename system_type::jacobian_type;
 
   qr_solver_type qrSolver_ = {};
-  residual_t res_  = {};
-  jacobian_t jac_  = {};
-
+  ::pressio::solvers::Norm normType_ = ::pressio::solvers::defaultNormType;
+  residual_t residual_  = {};
+  jacobian_t jacobian_  = {};
   // to store Q^T times residual
   state_t QTResid_ = {};
-
   // delta is the correction
-  state_t delta_     = {};
-
-  // ytrail needed if/when line search is used
-  state_t ytrial_    = {};
-
-  // norms
-  scalar_type normO_  = {};
-  scalar_type normN_  = {};
+  state_t correction_     = {};
+  // needed if/when line search is used
+  state_t trialState_    = {};
 
 public:
   GaussNewtonQR() = delete;
@@ -127,31 +124,29 @@ public:
 	      > * = nullptr
 	    >
   GaussNewtonQR(const system_in_t & system,
-		const state_t & yState)
-    : qrSolver_{}, // default constructed
-      res_(system.residual(yState)),
-      jac_(system.jacobian(yState)),
+		const state_t & yState,
+		const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
+    : qrSolver_{}, // default construct
+      normType_(normType),
+      residual_(system.residual(yState)),
+      jacobian_(system.jacobian(yState)),
       QTResid_(yState),
-      delta_(yState),
-      ytrial_(yState),
-      normO_{0},
-      normN_{0}{}
+      correction_(yState),
+      trialState_(yState){}
 
 private:
   template <typename system_t>
   void solveImpl(const system_t & sys, state_t & yState){
-    sys.residual(yState, res_);
-    sys.jacobian(yState, jac_);
+    sys.residual(yState, residual_);
+    sys.jacobian(yState, jacobian_);
 
     gauss_newton_qr_solve<
       line_search_type, convergence_when_t>
-      (sys, yState, ytrial_,
-       res_, jac_, delta_, QTResid_,
-       qrSolver_,
+      (sys, yState, trialState_,
+       residual_, jacobian_, correction_, QTResid_, qrSolver_,
        iterative_base_t::maxIters_,
        iterative_base_t::tolerance_,
-       normO_, normN_,
-       non_lin_sol_base_t::convergenceConditionDescription_);
+       non_lin_sol_base_t::convergenceConditionDescription_, normType_);
   }//end solve
 
 };//class

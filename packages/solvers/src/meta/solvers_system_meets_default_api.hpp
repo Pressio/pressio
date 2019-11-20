@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_norms_vector.hpp
+// solvers_system_meets_default_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,38 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef CONTAINERS_SRC_OPS_EPETRA_NORMS_HPP_
-#define CONTAINERS_SRC_OPS_EPETRA_NORMS_HPP_
+#ifndef SOLVERS_SYSTEM_MEETS_DEFAULT_API_HPP_
+#define SOLVERS_SYSTEM_MEETS_DEFAULT_API_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../vector/containers_vector_meta.hpp"
+#include "../meta/solvers_basic_meta.hpp"
+#include "solvers_system_has_all_needed_jacobian_methods.hpp"
+#include "solvers_system_has_all_needed_residual_methods.hpp"
 
-namespace pressio{ namespace containers{ namespace ops{
+namespace pressio{ namespace solvers{ namespace meta {
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value
-    > * = nullptr
-  >
-auto norm1(const vec_type & a)
-  -> typename details::traits<vec_type>::scalar_t
-{
-  using sc_t = typename details::traits<vec_type>::scalar_t;
-  sc_t result = 0.0;
-  a.data()->Norm1(&result);
-  return result;
-}
+template<typename system_type, typename enable = void>
+struct system_meets_default_api : std::false_type{};
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value
-    > * = nullptr
-  >
-auto norm2(const vec_type & a)
-  -> typename details::traits<vec_type>::scalar_t
-{
-  using sc_t = typename details::traits<vec_type>::scalar_t;
-  sc_t result = 0.0;
-  a.data()->Norm2(&result);
-  return result;
-}
+template<typename system_type>
+struct system_meets_default_api
+<system_type,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::mpl::is_detected<has_scalar_typedef, system_type>::value   and
+   ::pressio::mpl::is_detected<has_state_typedef, system_type>::value    and
+   ::pressio::mpl::is_detected<has_residual_typedef, system_type>::value and
+   ::pressio::mpl::is_detected<has_jacobian_typedef, system_type>::value and
+   system_has_needed_residual_methods<
+     system_type,
+     typename system_type::state_type,
+     typename system_type::residual_type
+     >::value and
+   system_has_needed_jacobian_methods<
+     system_type,
+     typename system_type::state_type,
+     typename system_type::jacobian_type
+     >::value
+   >
+ > : std::true_type{};
 
-}}}//end namespace pressio::containers::ops
-#endif
+}}} // namespace pressio::solvers::meta
 #endif

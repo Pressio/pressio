@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_norms_vector.hpp
+// solvers_is_legitimate_system_for_gauss_newton.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,42 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef CONTAINERS_SRC_OPS_EPETRA_NORMS_HPP_
-#define CONTAINERS_SRC_OPS_EPETRA_NORMS_HPP_
+#ifndef SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GAUSS_NEWTON_HPP_
+#define SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_GAUSS_NEWTON_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../vector/containers_vector_meta.hpp"
+#include "solvers_system_meets_default_api.hpp"
+#include "../experimental/solvers_system_meets_gn_hessian_gradient_api.hpp"
 
-namespace pressio{ namespace containers{ namespace ops{
+namespace pressio{ namespace solvers{ namespace meta {
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value
-    > * = nullptr
-  >
-auto norm1(const vec_type & a)
-  -> typename details::traits<vec_type>::scalar_t
-{
-  using sc_t = typename details::traits<vec_type>::scalar_t;
-  sc_t result = 0.0;
-  a.data()->Norm1(&result);
-  return result;
-}
+template<typename system_type>
+struct is_legitimate_system_for_gauss_newton_normal_eq{
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value
-    > * = nullptr
-  >
-auto norm2(const vec_type & a)
-  -> typename details::traits<vec_type>::scalar_t
-{
-  using sc_t = typename details::traits<vec_type>::scalar_t;
-  sc_t result = 0.0;
-  a.data()->Norm2(&result);
-  return result;
-}
+  static constexpr bool meetDefaultApi  = system_meets_default_api<system_type>::value;
+  static constexpr bool meetHessGradApi = experimental::system_meets_gn_hessian_gradient_api<system_type>::value;
+  static constexpr bool value =  (meetDefaultApi || meetHessGradApi);
+  using type = std::integral_constant<bool, value>;
+};
 
-}}}//end namespace pressio::containers::ops
-#endif
+
+template<typename system_type>
+struct is_legitimate_system_for_gauss_newton_qr{
+
+  static constexpr bool meetDefaultApi  = system_meets_default_api<system_type>::value;
+  static constexpr bool value = meetDefaultApi;
+  using type = std::integral_constant<bool, value>;
+};
+
+
+template<typename system_type>
+struct is_legitimate_system_for_gauss_newton{
+
+  static constexpr bool forGN = is_legitimate_system_for_gauss_newton_normal_eq<system_type>::value;
+  static constexpr bool forQR = is_legitimate_system_for_gauss_newton_qr<system_type>::value;
+
+  static constexpr bool value =  (forGN || forQR);
+  using type = std::integral_constant<bool, value>;
+};
+
+}}} // namespace pressio::solvers::meta
 #endif
