@@ -58,15 +58,8 @@
 namespace pressio{ namespace containers{ namespace impl{
 
 /*
- * note that these are auxiliary objects for storing states
- * it is fundamental that these DO not point to the same memory
- * locations of the objects passed in.
- * In other words, the y,r arguments to constructors are
- * only needed so that we copy-construct them since
- * we do not know if they have or not a default constructor, etc.
- * each type can be different so we need a general way to create
- * an object from one of the same kind.
- *
+ * we need to be careful here for types with view semantics.
+ * we create things by deep copying
  */
 
 template<typename T, std::size_t n>
@@ -142,8 +135,7 @@ public:
     typename _T = T,
     std::size_t _n = n,
     mpl::enable_if_t<
-      _n == 1 and
-      containers::meta::is_array_pybind11<_T>::value
+      _n == 1 and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
   StaticCollection(_T const & y)
@@ -169,8 +161,7 @@ public:
     typename _T = T,
     std::size_t _n = n,
     mpl::enable_if_t<
-      _n == 2
-      and containers::meta::is_array_pybind11<_T>::value
+      _n == 2 and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
   StaticCollection(_T const & y)
@@ -197,8 +188,7 @@ public:
     typename _T = T,
     std::size_t _n = n,
     mpl::enable_if_t<
-      _n == 3
-      and containers::meta::is_array_pybind11<_T>::value
+      _n == 3 and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
   StaticCollection(_T const & y)
@@ -226,12 +216,105 @@ public:
     typename _T = T,
     std::size_t _n = n,
     mpl::enable_if_t<
-      _n == 4
-      and containers::meta::is_array_pybind11<_T>::value
+      _n == 4 and containers::meta::is_array_pybind11<_T>::value
       > * = nullptr
     >
   StaticCollection(_T const & y)
     : data_{{_T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request())}}{}
+#endif
+
+  // constructor for n == 5
+  template <
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 5
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      and !containers::meta::is_array_pybind11<_T>::value
+#endif
+      > * = nullptr
+  >
+  StaticCollection(_T const & y)
+    : data_{{y,y,y,y,y}}{}
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 5 and containers::meta::is_array_pybind11<_T>::value
+      > * = nullptr
+    >
+  StaticCollection(_T const & y)
+    : data_{{_T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request())}}{}
+#endif
+
+  // constructor for n == 6
+  template <
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 6
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      and !containers::meta::is_array_pybind11<_T>::value
+#endif
+      > * = nullptr
+  >
+  StaticCollection(_T const & y)
+    : data_{{y,y,y,y,y,y}}{}
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 6 and containers::meta::is_array_pybind11<_T>::value
+      > * = nullptr
+    >
+  StaticCollection(_T const & y)
+    : data_{{_T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request())}}{}
+#endif
+
+
+  // constructor for n == 7
+  template <
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 7
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      and !containers::meta::is_array_pybind11<_T>::value
+#endif
+      > * = nullptr
+  >
+  StaticCollection(_T const & y)
+    : data_{{y,y,y,y,y,y,y}}{}
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    typename _T = T,
+    std::size_t _n = n,
+    mpl::enable_if_t<
+      _n == 7 and containers::meta::is_array_pybind11<_T>::value
+      > * = nullptr
+    >
+  StaticCollection(_T const & y)
+    : data_{{_T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
+	     _T(const_cast<_T &>(y).request()),
 	     _T(const_cast<_T &>(y).request()),
 	     _T(const_cast<_T &>(y).request()),
 	     _T(const_cast<_T &>(y).request())}}{}
