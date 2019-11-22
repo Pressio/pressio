@@ -55,8 +55,6 @@ namespace pressio{ namespace containers{
 
 template<typename derived_type>
 class MultiVectorSharedMemBase
-  : private utils::details::CrtpBase<
-  MultiVectorSharedMemBase<derived_type>>
 {
   static_assert(details::traits<derived_type>::is_shared_mem==1,
   "OOPS: distributed concrete vector inheriting from sharedMem base!");
@@ -67,18 +65,15 @@ private:
 
 public:
   ord_t numVectors() const{
-    return this->underlying().numVectorsImpl();
+    return static_cast<const derived_type &>(*this).numVectorsImpl();
   }
 
   ord_t length() const {
-    return this->underlying().lengthImpl();
+    return static_cast<const derived_type &>(*this).lengthImpl();
   };
 
 private:
-  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<derived_type>::type;
-
+  friend derived_type;
   using this_t = MultiVectorSharedMemBase<derived_type>;
   friend utils::details::CrtpBase<this_t>;
 
