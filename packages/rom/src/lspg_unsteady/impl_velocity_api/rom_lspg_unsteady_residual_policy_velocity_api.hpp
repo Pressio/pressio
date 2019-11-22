@@ -104,8 +104,8 @@ public:
       > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-					fom_states_cont_type & fomStatesIn,
-					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
+			    fom_states_cont_type & fomStatesIn,
+			    const fom_velocity_eval_policy & fomEvalVelocityFunctor)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
       R_{RIn},
       fomStates_(fomStatesIn)
@@ -125,9 +125,9 @@ public:
       > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-					fom_states_cont_type & fomStatesIn,
-					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
-					const _ud_ops & udOps)
+			    fom_states_cont_type & fomStatesIn,
+			    const fom_velocity_eval_policy & fomEvalVelocityFunctor,
+			    const _ud_ops & udOps)
     : R_{RIn},
       fomStates_(fomStatesIn),
       fom_velocity_eval_policy(fomEvalVelocityFunctor),
@@ -146,8 +146,8 @@ public:
       > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-					fom_states_cont_type & fomStatesIn,
-					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
+			    fom_states_cont_type & fomStatesIn,
+			    const fom_velocity_eval_policy & fomEvalVelocityFunctor)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
       R_{{_residual_type(const_cast<_residual_type &>(RIn).request())}},
       fomStates_(fomStatesIn)
@@ -164,9 +164,9 @@ public:
       > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-					fom_states_cont_type & fomStatesIn,
-					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
-					const _ud_ops & udOps)
+			    fom_states_cont_type & fomStatesIn,
+			    const fom_velocity_eval_policy & fomEvalVelocityFunctor,
+			    const _ud_ops & udOps)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
       R_{{_residual_type(const_cast<_residual_type &>(RIn).request())}},
       fomStates_(fomStatesIn),
@@ -279,10 +279,10 @@ private:
 
     /* the previous FOM states should only be recomputed when the time step changes
      * we do not need to reconstruct all the FOM states, we just need to reconstruct
-     * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
+     * the state at the previous step (i.e. t-dt) which is stored in romPrevStates(0)
      */
     if (currentStep_ != step){
-      fomStates_ << romPrevStates[0];
+      fomStates_ << romPrevStates(0);
       currentStep_ = step;
     }
 
