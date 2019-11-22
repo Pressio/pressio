@@ -147,7 +147,7 @@ public:
 		  const types::step_t & step,
 		  solver_type & solver){
 
-    auto & odeState_nm1 = this->auxStates_[0];
+    auto & odeState_nm1 = this->auxStates_(0);
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
@@ -166,7 +166,7 @@ public:
 		  solver_type & solver,
 		  guess_callback_t && guesserCb)
   {
-    auto & odeState_nm1 = this->auxStates_[0];
+    auto & odeState_nm1 = this->auxStates_(0);
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;

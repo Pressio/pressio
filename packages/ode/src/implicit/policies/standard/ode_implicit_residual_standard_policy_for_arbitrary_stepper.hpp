@@ -104,7 +104,7 @@ public:
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
 					*odeCurrentState.data(),
-					*prevStates[0].data());
+					*prevStates(0).data());
   }
 
   //-------------------------------
@@ -122,8 +122,8 @@ public:
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
 					*odeCurrentState.data(),
-					*prevStates[0].data(),
-					*prevStates[1].data());
+					*prevStates(0).data(),
+					*prevStates(1).data());
   }
 
   //-------------------------------
@@ -141,9 +141,9 @@ public:
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
 					*odeCurrentState.data(),
-					*prevStates[0].data(),
-					*prevStates[1].data(),
-					*prevStates[2].data());
+					*prevStates(0).data(),
+					*prevStates(1).data(),
+					*prevStates(2).data());
   }
 
 };//end class
@@ -151,95 +151,3 @@ public:
 }}}//end namespace pressio::ode::policy
 #endif
 
-
-
-
-
-
-
-
-
-
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
-  // residual_type operator()(const state_type & odeCurrentState,
-  // 			   const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 			   const system_type & model,
-  // 			   const scalar_type & t,
-  // 			   const scalar_type & dt,
-  // 			   const types::step_t & step) const{
-
-  //   residual_type R(model.template timeDiscreteResidual(step, t, dt,
-  // 							*odeCurrentState.data(),
-  // 							*prevStates[0].data() ));
-  //   return R;
-  // }
-
-  // //-------------------------------
-  // // specialize for n == 2
-  // //-------------------------------
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
-  // void operator()(const state_type & odeCurrentState,
-  // 		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 		  const system_type & model,
-  // 		  const scalar_type & t,
-  // 		  const scalar_type & dt,
-  // 		  const types::step_t & step,
-  // 		  residual_type & R) const{
-
-  //   model.template timeDiscreteResidual(step, t, dt,
-  // 					*R.data(),
-  // 					*odeCurrentState.data(),
-  // 					*prevStates[0].data(),
-  // 					*prevStates[1].data());
-  // }
-
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
-  // residual_type operator()(const state_type & odeCurrentState,
-  // 			   const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 			   const system_type & model,
-  // 			   const scalar_type & t,
-  // 			   const scalar_type & dt,
-  // 			   const types::step_t &  step) const{
-
-  //   residual_type R( model.template timeDiscreteResidual(step, t, dt,
-  // 							 *odeCurrentState.data(),
-  // 							 *prevStates[0].data(),
-  // 							 *prevStates[1].data() ));
-  //   return R;
-  // }
-
-  // //-------------------------------
-  // // specialize for n == 3
-  // //-------------------------------
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
-  // void operator()(const state_type & odeCurrentState,
-  // 		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 		  const system_type & model,
-  // 		  const scalar_type & t,
-  // 		  const scalar_type & dt,
-  // 		  const types::step_t &  step,
-  // 		  residual_type & R) const{
-
-  //   model.template timeDiscreteResidual(step, t, dt,
-  // 					*R.data(),
-  // 					*odeCurrentState.data(),
-  // 					*prevStates[0].data(),
-  // 					*prevStates[1].data(),
-  // 					*prevStates[2].data());
-  // }
-
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
-  // residual_type operator()(const state_type & odeCurrentState,
-  // 			   const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 			   const system_type & model,
-  // 			   const scalar_type & t,
-  // 			   const scalar_type & dt,
-  // 			   const types::step_t &  step) const{
-
-  //   residual_type R(model.template timeDiscreteResidual(step, t, dt,
-  // 							*odeCurrentState.data(),
-  // 							*prevStates[0].data(),
-  // 							*prevStates[1].data(),
-  // 							*prevStates[2].data() ));
-  //   return R;
-  // }

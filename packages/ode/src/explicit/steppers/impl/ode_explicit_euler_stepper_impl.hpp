@@ -119,7 +119,7 @@ public:
 	      const scalar_type & dt,
 	      const types::step_t & step)
   {
-    auto & auxRhs0 = veloAuxStorage_[0];
+    auto & auxRhs0 = veloAuxStorage_(0);
     //eval RHS
     policy_(stateInOut, auxRhs0, sys_.get(), time);
     // y = y + dt * rhs
@@ -144,7 +144,7 @@ public:
   	      const types::step_t & step)
   {
     using op = typename ops_t::update_op;
-    auto & auxRhs0 = veloAuxStorage_[0];
+    auto & auxRhs0 = veloAuxStorage_(0);
 
     //eval RHS
     policy_(stateInOut, auxRhs0, sys_.get(), time);

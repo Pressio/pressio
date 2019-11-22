@@ -113,11 +113,11 @@ public:
   	      const scalar_type & dt,
   	      const types::step_t & step)
   {
-    auto & ytmp	   = stateAuxStorage_[0];
-    auto & auxRhs0 = veloAuxStorage_[0];
-    auto & auxRhs1 = veloAuxStorage_[1];
-    auto & auxRhs2 = veloAuxStorage_[2];
-    auto & auxRhs3 = veloAuxStorage_[3];
+    auto & ytmp	   = stateAuxStorage_(0);
+    auto & auxRhs0 = veloAuxStorage_(0);
+    auto & auxRhs1 = veloAuxStorage_(1);
+    auto & auxRhs2 = veloAuxStorage_(2);
+    auto & auxRhs3 = veloAuxStorage_(3);
 
     constexpr auto two  = ::pressio::utils::constants::two<scalar_type>();
     constexpr auto three  = ::pressio::utils::constants::three<scalar_type>();

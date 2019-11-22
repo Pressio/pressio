@@ -52,7 +52,6 @@
 #include "rom_ConfigDefs.hpp"
 #include "rom_fwd.hpp"
 #include "../../containers/src/collection/containers_static_collection.hpp"
-#include "../../ode/src/ode_states_container.hpp"
 
 namespace pressio{ namespace rom{
 
@@ -93,17 +92,17 @@ public:
 
   const fom_state_type & getCRefToCurrentFomState() const{
     static_assert( n>=1, "Cannot call getCRefToCurrentFomState if n < 1");
-    return data_[0];
+    return data_(0);
   }
 
   const fom_state_type & getCRefToFomStatePrevStep() const{
     static_assert( n>=2, "Cannot call getCRefToFomStatePrevStep if n < 2");
-    return data_[1];
+    return data_(1);
   }
 
   const fom_state_type & getCRefToFomStatePrevPrevStep() const{
     static_assert( n>=3, "Cannot call getCRefToFomStatePrevPrevStep if n < 3");
-    return data_[2];
+    return data_(2);
   }
 
 
@@ -117,7 +116,7 @@ public:
 #endif
 
     static_assert( n>=1, "Cannot call reconstructCurrentFomState if n < 1");
-    fomStateReconstrObj_(romY, data_[0]);
+    fomStateReconstrObj_(romY, data_(0));
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("reconstruct fom state");
@@ -134,7 +133,7 @@ public:
 
   /* when n == 2, it means I only have current state and previous one
    * so when I need to reconstruct the previous state, I can simply
-   * overwrite the data in data_[1] */
+   * overwrite the data in data_(1) */
   template <
     typename rom_state_t,
     std::size_t _n = n,
@@ -143,13 +142,13 @@ public:
   void operator << (const rom_state_t & romStateIn)
   {
     // reconstrct the FOM state at n-1
-    fomStateReconstrObj_(romStateIn, data_[1]);
+    fomStateReconstrObj_(romStateIn, data_(1));
   }
 
   /* when n >= 3, we need to deep copy data to
    * such that y_t-2 goes into y_t-3,
    * and y_t-1 goes into y_t-2, etc.
-   * and then finally we overwrite data_[0] */
+   * and then finally we overwrite data_(0) */
   template <
     typename rom_state_t,
     std::size_t _n = n,
@@ -165,12 +164,12 @@ public:
     // copy all states back, such that y_t-2 goes into y_t-3,
     // and y_t-1 goes into y_t-2, etc. so that y_t-1 is free to overwrite
     for (std::size_t i=n-2; i>=1; --i){
-      const auto & src  = data_[i];
-      auto & dest = data_[i+1];
+      const auto & src  = data_(i);
+      auto & dest = data_(i+1);
       ::pressio::containers::ops::deep_copy(src, dest);
     }
     // then, reconstrct the FOM state at t-1
-    fomStateReconstrObj_(romStateIn, data_[1]);
+    fomStateReconstrObj_(romStateIn, data_(1));
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("reconstruct fom old state");
@@ -181,7 +180,7 @@ private:
   /* set all entries to zero for all members */
   void resetContainersToZero(){
     for (std::size_t i=0; i<n; i++)
-      ::pressio::containers::ops::set_zero(data_[i]);
+      ::pressio::containers::ops::set_zero(data_(i));
   }
 
 private:

@@ -132,7 +132,7 @@ private:
      * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
     if (currentStep_ != step){
-      fomStates_ << romPrevStates[0];
+      fomStates_ << romPrevStates(0);
       currentStep_ = step;
     }
   }
