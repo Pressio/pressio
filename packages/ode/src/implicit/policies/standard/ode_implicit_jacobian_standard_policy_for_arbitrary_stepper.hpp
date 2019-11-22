@@ -93,17 +93,19 @@ public:
   //-------------------------------
   template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   void operator()(const state_type & stateIn,
-		  const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
+		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t &  step,
 		  jacobian_type & J) const
   {
+    const auto & ynm1 = oldStates.template get<ode::nMinusOne>();
+
     model.template timeDiscreteJacobian(step, t, dt,
 					*J.data(),
 					*stateIn.data(),
-					*oldStates(0).data());
+					*ynm1.data() );
   }
 
   //-------------------------------
@@ -111,18 +113,21 @@ public:
   //-------------------------------
   template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   void operator()(const state_type & stateIn,
-		  const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
+		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
 		  jacobian_type & J) const
   {
+    const auto & ynm1 = oldStates.template get<ode::nMinusOne>();
+    const auto & ynm2 = oldStates.template get<ode::nMinusTwo>();
+
     model.template timeDiscreteJacobian(step, t, dt,
 					*J.data(),
 					*stateIn.data(),
-					*oldStates(0).data(),
-					*oldStates(1).data());
+					(*ynm1.data() ),
+					(*ynm2.data()) );
   }
 
   //-------------------------------
@@ -130,19 +135,23 @@ public:
   //-------------------------------
   template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   void operator()(const state_type & stateIn,
-		  const ::pressio::ode::StatesContainer<state_type, n> & oldStates,
+		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
 		  jacobian_type & J) const
   {
+    const auto & ynm1 = oldStates.template get<ode::nMinusOne>();
+    const auto & ynm2 = oldStates.template get<ode::nMinusTwo>();
+    const auto & ynm3 = oldStates.template get<ode::nMinusThree>();
+
     model.template timeDiscreteJacobian(step, t, dt,
 					*J.data(),
 					*stateIn.data(),
-					*oldStates(0).data(),
-					*oldStates(1).data(),
-					*oldStates(2).data());
+					(*ynm1.data() ),
+					(*ynm2.data() ),
+					(*ynm3.data()) );
   }
 
 };//end class

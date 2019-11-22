@@ -93,7 +93,7 @@ public:
     typename scalar_t
   >
   void operator()(const lspg_state_t			& romState,
-  		  const ::pressio::ode::StatesContainer<lspg_state_t,n>	& romPrevStates,
+  		  const ::pressio::ode::AuxStatesContainer<false, lspg_state_t,n>	& romPrevStates,
   		  const fom_t				& app,
 		  const scalar_t			& time,
 		  const scalar_t			& dt,
@@ -117,7 +117,7 @@ public:
 private:
   template <std::size_t n, typename lspg_state_t>
   void doFomStatesReconstruction(const lspg_state_t & romState,
-				 const ::pressio::ode::StatesContainer<lspg_state_t, n> & romPrevStates,
+				 const ::pressio::ode::AuxStatesContainer<false, lspg_state_t, n> & romPrevStates,
 				 const ::pressio::ode::types::step_t & step) const
   {
     /* the currrent FOM has to be recomputed every time regardless
@@ -131,16 +131,16 @@ private:
      * we do not need to reconstruct all the FOM states, we just need to reconstruct
      * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
-    if (currentStep_ != step){
-      fomStates_ << romPrevStates(0);
-      currentStep_ = step;
+    if (storedStep_ != step){
+      fomStates_ << romPrevStates.template get<ode::nMinusOne>();
+      storedStep_ = step;
     }
   }
 
   // we have here n = 1 prev rom states
   template <typename lspg_state_t, typename fom_t, typename scalar_t>
   void compute_impl(const lspg_state_t		        & romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t, 1> & romPrevStates,
+		    const ::pressio::ode::AuxStatesContainer<false, lspg_state_t, 1> & romPrevStates,
 		    const fom_t			        & app,
 		    const scalar_t		        & time,
 		    const scalar_t			& dt,
@@ -157,7 +157,7 @@ private:
   // we have here n = 2 prev rom states
   template <typename lspg_state_t, typename fom_t, typename scalar_t>
   void compute_impl(const lspg_state_t		        & romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t, 2> & romPrevStates,
+		    const ::pressio::ode::AuxStatesContainer<false, lspg_state_t, 2> & romPrevStates,
 		    const fom_t			        & app,
 		    const scalar_t		        & time,
 		    const scalar_t			& dt,
@@ -173,11 +173,11 @@ private:
   }
 
 protected:
-  // currentStep is used to keep track of which step we are doing.
+  // storedStep is used to keep track of which step we are doing.
   // This is used to decide whether we need to update/recompute the previous
   // FOM states or not. Since it does not make sense to recompute previous
   // FOM states if we are not in a new time step.
-  mutable ::pressio::ode::types::step_t currentStep_ = {};
+  mutable ::pressio::ode::types::step_t storedStep_ = {};
 
   fom_states_data_type & fomStates_;
 };

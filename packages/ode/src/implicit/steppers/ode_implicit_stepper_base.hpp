@@ -49,7 +49,7 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
-#include "../../ode_states_container.hpp"
+#include "../../ode_aux_states_container.hpp"
 #include "../../ode_system_wrapper.hpp"
 
 namespace pressio{ namespace ode{
@@ -82,6 +82,8 @@ class ImplicitStepperBase
        "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
 public:
+  using aux_states_t		= ::pressio::ode::AuxStatesContainer<false, state_t, traits::numAuxStates>;
+
   types::stepper_order_t order() const{
     return traits::order_value;
   }
@@ -108,7 +110,7 @@ protected:
   sc_t dt_ = {};
   types::step_t step_  = {};
   system_wrapper_t sys_;
-  ::pressio::ode::StatesContainer<state_t, traits::numAuxStates> auxStates_;
+  aux_states_t auxStates_;
 
   // conditionally set the type of the object knowing how to compute residual
   // if we have a standard policy, then it takes a copy

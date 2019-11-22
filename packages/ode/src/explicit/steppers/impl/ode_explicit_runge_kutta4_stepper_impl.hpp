@@ -50,7 +50,7 @@
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
 
 #include "../ode_explicit_stepper_base.hpp"
-#include "../../../ode_states_container.hpp"
+#include "../../../ode_aux_states_container.hpp"
 #include "../../../ode_system_wrapper.hpp"
 #include "../../../ode_velocities_container.hpp"
 
@@ -85,7 +85,8 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 						 velocity_policy_type,
 						 ops_t>;
 
-  using state_storage_t	    = ::pressio::ode::StatesContainer<state_type, 1>;
+  static constexpr bool is_explicit = true;
+  using state_storage_t	    = ::pressio::ode::AuxStatesContainer<is_explicit, state_type, 1>;
   using velocity_storage_t  = VelocitiesContainer<velocity_type, 4>;
   using system_wrapper_t    = OdeSystemWrapper<system_type>;
 

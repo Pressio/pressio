@@ -101,7 +101,7 @@ public:
     typename scalar_t
   >
   void operator()(const lspg_state_t			& romState,
-		  const ::pressio::ode::StatesContainer<lspg_state_t, n>  & romPrevStates,
+		  const ::pressio::ode::AuxStatesContainer<false, lspg_state_t, n>  & romPrevStates,
   		  const fom_t				& app,
 		  const scalar_t			& time,
 		  const scalar_t			& dt,
@@ -127,7 +127,7 @@ private:
   // we have here n = 1 prev rom states
   template<typename lspg_state_t, typename fom_t, typename scalar_t, typename lspg_jac_t>
   void compute_impl(const lspg_state_t			& romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t,1> & romPrevStates,
+		    const ::pressio::ode::AuxStatesContainer<false, lspg_state_t,1> & romPrevStates,
   		    const fom_t			        & app,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,
@@ -148,7 +148,7 @@ private:
   // we have here n = 2 prev rom states
   template<typename lspg_state_t, typename fom_t, typename scalar_t, typename lspg_jac_t>
   void compute_impl(const lspg_state_t			& romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t, 2> & romPrevStates,
+		    const ::pressio::ode::AuxStatesContainer<false, lspg_state_t, 2> & romPrevStates,
   		    const fom_t			        & app,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,

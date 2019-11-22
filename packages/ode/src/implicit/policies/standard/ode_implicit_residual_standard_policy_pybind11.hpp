@@ -93,7 +93,7 @@ public:
   >
   void operator()(const state_type & y,
 		  residual_type & R,
-		  const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
+		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldYs,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -109,7 +109,7 @@ public:
     ode::ImplicitEnum method, std::size_t n, typename scalar_type
     >
   residual_type operator()(const state_type & y,
-  			   const ::pressio::ode::StatesContainer<state_type, n> & oldYs,
+  			   const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldYs,
   			   const system_type & model,
   			   const scalar_type & t,
   			   const scalar_type & dt,

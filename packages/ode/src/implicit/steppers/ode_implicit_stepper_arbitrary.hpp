@@ -146,43 +146,43 @@ private:
   template<std::size_t nAux, mpl::enable_if_t<nAux==1> * = nullptr>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
     // copy y_n into y_n-1
-    auto & auxY0 = this->auxStates_(0);
-    ::pressio::containers::ops::deep_copy(odeState, auxY0);
+    auto & y_nm1 = this->auxStates_.template get<ode::nMinusOne>();
+    ::pressio::containers::ops::deep_copy(odeState, y_nm1);
   }
 
   // when we have two aux states,
   template<std::size_t nAux, mpl::enable_if_t<nAux==2> * = nullptr>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
     // copy y_n-1 into y_n-2
-    auto & aux1 = this->auxStates_(0);
-    auto & aux2 = this->auxStates_(1);
-    ::pressio::containers::ops::deep_copy(aux1, aux2);
+    auto & y_nm1 = this->auxStates_.template get<ode::nMinusOne>();
+    auto & Y_nm2 = this->auxStates_.template get<ode::nMinusTwo>();
+    ::pressio::containers::ops::deep_copy(y_nm1, Y_nm2);
     // copy y_n into y_n-1
-    ::pressio::containers::ops::deep_copy(odeState, aux1);
+    ::pressio::containers::ops::deep_copy(odeState, y_nm1);
   }
 
   // when we have three aux states,
   template<std::size_t nAux, mpl::enable_if_t<nAux==3> * = nullptr>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
-    auto & aux1 = this->auxStates_(0);
-    auto & aux2 = this->auxStates_(1);
-    auto & aux3 = this->auxStates_(2);
-    ::pressio::containers::ops::deep_copy(aux2, aux3);
-    ::pressio::containers::ops::deep_copy(aux1, aux2);
-    ::pressio::containers::ops::deep_copy(odeState, aux1);
+    auto & y_nm1 = this->auxStates_.template get<ode::nMinusOne>();
+    auto & y_nm2 = this->auxStates_.template get<ode::nMinusTwo>();
+    auto & y_nm3 = this->auxStates_.template get<ode::nMinusThree>();
+    ::pressio::containers::ops::deep_copy(y_nm2, y_nm3);
+    ::pressio::containers::ops::deep_copy(y_nm1, y_nm2);
+    ::pressio::containers::ops::deep_copy(odeState, y_nm1);
   }
 
   // when we have four aux states,
   template<std::size_t nAux, mpl::enable_if_t<nAux==4> * = nullptr>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
-    auto & aux1 = this->auxStates_(0);
-    auto & aux2 = this->auxStates_(1);
-    auto & aux3 = this->auxStates_(2);
-    auto & aux4 = this->auxStates_(3);
-    ::pressio::containers::ops::deep_copy(aux3, aux4);
-    ::pressio::containers::ops::deep_copy(aux2, aux3);
-    ::pressio::containers::ops::deep_copy(aux1, aux2);
-    ::pressio::containers::ops::deep_copy(odeState, aux1);
+    auto & y_nm1 = this->auxStates_.template get<ode::nMinusOne>();
+    auto & y_nm2 = this->auxStates_.template get<ode::nMinusTwo>();
+    auto & y_nm3 = this->auxStates_.template get<ode::nMinusThree>();
+    auto & y_nm4 = this->auxStates_.template get<ode::nMinusFour>();
+    ::pressio::containers::ops::deep_copy(y_nm3, y_nm4);
+    ::pressio::containers::ops::deep_copy(y_nm2, y_nm3);
+    ::pressio::containers::ops::deep_copy(y_nm1, y_nm2);
+    ::pressio::containers::ops::deep_copy(odeState, y_nm1);
   }
 
   // // when we have five aux states,

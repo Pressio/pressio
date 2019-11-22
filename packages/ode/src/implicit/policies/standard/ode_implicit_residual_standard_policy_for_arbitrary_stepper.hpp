@@ -94,17 +94,19 @@ public:
   //-------------------------------
   template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
   void operator()(const state_type & odeCurrentState,
-		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
+		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & prevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
 		  residual_type & R) const{
 
+    const auto & ynm1 = prevStates.template get<ode::nMinusOne>();
+
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
 					*odeCurrentState.data(),
-					*prevStates(0).data());
+					*ynm1.data());
   }
 
   //-------------------------------
@@ -112,18 +114,21 @@ public:
   //-------------------------------
   template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
   void operator()(const state_type & odeCurrentState,
-		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
+		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & prevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
 		  residual_type & R) const{
 
+    const auto & ynm1 = prevStates.template get<ode::nMinusOne>();
+    const auto & ynm2 = prevStates.template get<ode::nMinusTwo>();
+
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
 					*odeCurrentState.data(),
-					*prevStates(0).data(),
-					*prevStates(1).data());
+					*ynm1.data(),
+					*ynm2.data());
   }
 
   //-------------------------------
@@ -131,19 +136,23 @@ public:
   //-------------------------------
   template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
   void operator()(const state_type & odeCurrentState,
-		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
+		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & prevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t &  step,
 		  residual_type & R) const{
 
+    const auto & ynm1 = prevStates.template get<ode::nMinusOne>();
+    const auto & ynm2 = prevStates.template get<ode::nMinusTwo>();
+    const auto & ynm3 = prevStates.template get<ode::nMinusThree>();
+
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
 					*odeCurrentState.data(),
-					*prevStates(0).data(),
-					*prevStates(1).data(),
-					*prevStates(2).data());
+					*ynm1.data(),
+					*ynm2.data(),
+					*ynm3.data());
   }
 
 };//end class

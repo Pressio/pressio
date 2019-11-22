@@ -53,6 +53,12 @@
 
 namespace pressio{ namespace ode{
 
+class nMinusOne{};
+class nMinusTwo{};
+class nMinusThree{};
+class nMinusFour{};
+
+
 template<
   ExplicitEnum name,
   typename state_type,
