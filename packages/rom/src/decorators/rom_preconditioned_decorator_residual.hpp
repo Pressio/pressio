@@ -94,7 +94,7 @@ public:
     >
   void operator()(const ode_state_t		   & odeState,
   		  lspg_res_t			   & R,
-		  const ::pressio::ode::StatesContainer<ode_state_t,n> & prevStates,
+		  const ::pressio::ode::AuxStatesContainer<false, ode_state_t,n> & prevStates,
   		  const app_t			   & app,
 		  const scalar_t		   & t,
 		  const scalar_t		   & dt,
@@ -115,7 +115,7 @@ public:
     typename scalar_t
   >
   residual_t operator()(const ode_state_t		 & odeState,
-			const ::pressio::ode::StatesContainer<ode_state_t,n> & prevStates,
+			const ::pressio::ode::AuxStatesContainer<false, ode_state_t,n> & prevStates,
 			const app_t			 & app,
 			const scalar_t			 & time,
 			const scalar_t			 & dt,

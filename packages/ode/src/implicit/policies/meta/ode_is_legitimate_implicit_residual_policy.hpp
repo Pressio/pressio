@@ -50,7 +50,7 @@
 #define ODE_IMPLICIT_POLICIES_IS_LEGITIMATE_IMPLICIT_RESIDUAL_POLICY_HPP_
 
 #include "../base/ode_implicit_residual_policy_base.hpp"
-#include "../../../ode_states_container.hpp"
+#include "../../../ode_aux_states_container.hpp"
 
 namespace pressio{ namespace ode{ namespace meta {
 
@@ -90,7 +90,7 @@ struct is_legitimate_implicit_residual_policy<
        numPrevStates
        >(
 	 std::declval<state_t const &>(),
-	 std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
+	 std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
 	 std::declval<system_t const &>(),
 	 std::declval<scalar_t const &>(),
 	 std::declval<scalar_t const &>(),
@@ -110,7 +110,7 @@ struct is_legitimate_implicit_residual_policy<
        >(
 	 std::declval<state_t const &>(),
 	 std::declval<residual_t &>(),
-	 std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
+	 std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
 	 std::declval<system_t const &>(),
 	 std::declval<scalar_t const &>(),
 	 std::declval<scalar_t const &>(),

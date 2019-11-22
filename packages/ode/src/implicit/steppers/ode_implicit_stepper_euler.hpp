@@ -86,6 +86,7 @@ class ImplicitStepper<
 					 system_type,
 					 Args...>;
   using stepper_base_t = ImplicitStepperBase<this_t>;
+  using typename stepper_base_t::aux_states_t;
   friend stepper_base_t;
 
   using mytraits       = details::traits<this_t>;
@@ -147,7 +148,8 @@ public:
 		  const types::step_t & step,
 		  solver_type & solver){
 
-    auto & odeState_nm1 = this->auxStates_(0);
+    using nm1 = ode::nMinusOne;
+    auto & odeState_nm1 = this->auxStates_.template get<nm1>();
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
@@ -166,7 +168,8 @@ public:
 		  solver_type & solver,
 		  guess_callback_t && guesserCb)
   {
-    auto & odeState_nm1 = this->auxStates_(0);
+    using nm1 = ode::nMinusOne;
+    auto & odeState_nm1 = this->auxStates_.template get<nm1>();
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;

@@ -53,7 +53,7 @@
 #include "ode/src/ode_fwd.hpp"
 #include "ode/src/ode_enum.hpp"
 #include "ode/src/ode_types.hpp"
-#include "ode/src/ode_states_container.hpp"
+#include "ode/src/ode_aux_states_container.hpp"
 
 #include "ode/src/meta/ode_has_state_typedef.hpp"
 #include "ode/src/meta/ode_has_velocity_typedef.hpp"

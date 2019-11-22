@@ -97,7 +97,7 @@ public:
   >
   void operator()(const state_type & odeCurrentState,
 		  residual_type & R,
-		  const ::pressio::ode::StatesContainer<state_type, n> & odePrevStates,
+		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & odePrevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -114,7 +114,7 @@ public:
       > * = nullptr
     >
   residual_type operator()(const state_type & odeCurrentState,
-  			   const ::pressio::ode::StatesContainer<state_type, n> & odePrevStates,
+  			   const ::pressio::ode::AuxStatesContainer<false, state_type, n> & odePrevStates,
   			   const system_type & model,
   			   const scalar_type & t,
   			   const scalar_type & dt,

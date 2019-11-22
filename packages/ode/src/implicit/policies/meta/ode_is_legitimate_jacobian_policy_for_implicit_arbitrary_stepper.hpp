@@ -88,50 +88,6 @@ struct jacobian_policy_callable_with_four_args<
   > : std::true_type{};
 /////////////////////////
 
-
-// template<
-//   typename T,
-//   std::size_t numPrevStates,
-//   typename state_t,
-//   typename jacobian_t,
-//   typename system_t,
-//   typename scalar_t,
-//   typename enable = void
-//   >
-// struct jacobian_policy_callable_with_six_args : std::false_type{};
-
-// template<
-//   typename T,
-//   std::size_t numPrevStates,
-//   typename state_t,
-//   typename jacobian_t,
-//   typename system_t,
-//   typename scalar_t
-//   >
-// struct jacobian_policy_callable_with_six_args<
-//   T, numPrevStates, state_t, jacobian_t, system_t, scalar_t,
-//   ::pressio::mpl::enable_if_t<
-//     std::is_same<
-//       jacobian_t,
-//       decltype
-//       (
-//        std::declval<T const>().template operator()
-//        <numPrevStates>
-//        (
-// 	std::declval<state_t const &>(),
-// 	std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
-// 	std::declval<system_t const &>(),
-// 	std::declval<scalar_t const & >(),
-// 	std::declval<scalar_t const &>(),
-// 	std::declval<::pressio::ode::types::step_t const &>()
-// 	)
-//        )
-//       >::value
-//     >
-//   > : std::true_type{};
-/////////////////////////
-
-
 template<
   typename T,
   std::size_t numPrevStates,
@@ -161,7 +117,7 @@ struct jacobian_policy_callable_with_seven_args<
        <numPrevStates>
        (
 	std::declval<state_t const &>(),
-	std::declval<::pressio::ode::StatesContainer<state_t, numPrevStates> const &>(),
+	std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const & >(),
 	std::declval<scalar_t const &>(),
