@@ -26,7 +26,6 @@ int main(int argc, char *argv[]){
 
   const int Nx = 11, Ny = Nx*2-1;
   fom_t  appObj(Comm, Nx, Ny);
-  appObj.setup();
   appObj.assembleMatrix();
   appObj.fillRhs();
   appObj.solve();

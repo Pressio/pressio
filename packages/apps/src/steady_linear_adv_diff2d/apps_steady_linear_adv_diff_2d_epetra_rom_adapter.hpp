@@ -67,9 +67,7 @@ public:
   template <typename ... Args>
   SteadyLinAdvDiff2dEpetraRomAdapter(Args&& ... args)
     : appObj_{std::forward<Args>(args)...}
-  {
-    appObj_.setup();
-  }
+  {}
 
 public:
   Epetra_Map const & getDataMap()const {

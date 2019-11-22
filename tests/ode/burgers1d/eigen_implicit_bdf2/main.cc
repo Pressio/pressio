@@ -26,7 +26,6 @@ int main(int argc, char *argv[]){
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   const int Ncell = 20;
   app_t appObj(mu, Ncell);
-  appObj.setup();
   auto & y0n = appObj.getInitialState();
 
   // types for ode

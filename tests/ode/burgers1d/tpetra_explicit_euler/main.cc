@@ -46,7 +46,6 @@ int main(int argc, char *argv[]){
     std::vector<double> mu({5.0, 0.02, 0.02});
     const int Ncells = 20;
     app_t appobj(mu, Ncells, Comm);
-    appobj.setup();
     auto & y0n = appobj.getInitialState();
 
     using ode_state_t = pressio::containers::Vector<app_state_t>;

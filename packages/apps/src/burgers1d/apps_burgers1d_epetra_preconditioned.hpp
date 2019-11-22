@@ -61,15 +61,13 @@ class Burgers1dEpetraPreconditioned : public Burgers1dEpetra{
 public:
   Burgers1dEpetraPreconditioned(std::vector<scalar_type> params,
 			int Ncell, Epetra_MpiComm * comm)
-    : base_t(params, Ncell, comm){}
+    : base_t(params, Ncell, comm){
+    this->setup();
+  }
 
   ~Burgers1dEpetraPreconditioned() = default;
 
 public:
-  void setup(){
-    base_t::setup();
-  };
-
   void applyPreconditioner(const state_type & yState,
                            dense_matrix_type & C,
 			   const scalar_type & time) const {
@@ -82,6 +80,10 @@ public:
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }
+private:
+  void setup(){
+    base_t::setup();
+  };
 
 };
 

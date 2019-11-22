@@ -135,7 +135,9 @@ public:
       dySqInv_{1.0/(dy_*dy_)},
       dx2Inv_{1./dx_},
       dy2Inv_{1./dy_}
-  {}
+  {
+    this->setup();
+  }
 
 private:
   void localIDToLiLj(int ID, int & li, int & lj) const{
@@ -152,38 +154,12 @@ public:
   void createMap(){
     // total number of dof (we only consider the interior points)
     numGlobalDof_ = NxDof_ * NyDof_;
-    myMap_ = std::make_shared<Epetra_Map>(numGlobalDof_, 0, comm_);    
+    myMap_ = std::make_shared<Epetra_Map>(numGlobalDof_, 0, comm_);
   }
 
-  Epetra_Map const & getDataMap()const { 
-    return *myMap_; 
+  Epetra_Map const & getDataMap()const {
+    return *myMap_;
   };
-
-  void setup(){
-    createMap();
-    dofPerProc_= myMap_->NumMyElements();
-    MyGlobalDof_ = myMap_->MyGlobalElements();
-
-    x_ = std::make_shared<nativeVec>(*myMap_);
-    y_ = std::make_shared<nativeVec>(*myMap_);
-    u_ = std::make_shared<nativeVec>(*myMap_);
-    v_ = std::make_shared<nativeVec>(*myMap_);
-    int gi{}; int gj{};
-    for (auto i = 0; i<dofPerProc_; i++){
-      auto GID = MyGlobalDof_[i];
-      globalIDToGiGj(GID, gi, gj);
-      (*x_)[i] = dx_ + gi * dx_;
-      (*y_)[i] = gj * dy_;
-      auto xval = (*x_)[i];
-      auto yval = (*y_)[i];
-      (*u_)[i] = -std::sin(M_PI*xval) * std::cos(M_PI*yval);
-      (*v_)[i] = std::cos(M_PI*xval) * std::sin(M_PI*yval);
-    }
-
-    A_ = std::make_shared<nativeMatrix>(Copy, *myMap_, maxNonZeroPerRow_);
-    T_ = std::make_shared<nativeVec>(*myMap_);
-    f_ = std::make_shared<nativeVec>(*myMap_);
-  }
 
   void assembleMatrix() const
   {
@@ -272,7 +248,7 @@ public:
     }//loop
 
     if(!A_->Filled())
-      A_->FillComplete();    
+      A_->FillComplete();
   }
 
   void fillRhs() const{
@@ -295,7 +271,7 @@ public:
         auto value = invPrRe_*dxSqInv_ - (*u_)[i]*dx2Inv_;
         (*f_)[i] = -value * Tright_;
       }
-    }//loop    
+    }//loop
   }
 
   void solve(){
@@ -303,7 +279,7 @@ public:
     AztecOO Solver(Problem);
     Solver.Iterate(500, solveTolerance_);
     Solver.NumIters();
-    Solver.TrueResidual();    
+    Solver.TrueResidual();
   }
 
   void printStateToFile(std::string fileName){
@@ -334,6 +310,33 @@ public:
 
   std::shared_ptr<nativeVec>
   getForcing() const { return f_; }
+
+protected:
+  void setup(){
+    createMap();
+    dofPerProc_= myMap_->NumMyElements();
+    MyGlobalDof_ = myMap_->MyGlobalElements();
+
+    x_ = std::make_shared<nativeVec>(*myMap_);
+    y_ = std::make_shared<nativeVec>(*myMap_);
+    u_ = std::make_shared<nativeVec>(*myMap_);
+    v_ = std::make_shared<nativeVec>(*myMap_);
+    int gi{}; int gj{};
+    for (auto i = 0; i<dofPerProc_; i++){
+      auto GID = MyGlobalDof_[i];
+      globalIDToGiGj(GID, gi, gj);
+      (*x_)[i] = dx_ + gi * dx_;
+      (*y_)[i] = gj * dy_;
+      auto xval = (*x_)[i];
+      auto yval = (*y_)[i];
+      (*u_)[i] = -std::sin(M_PI*xval) * std::cos(M_PI*yval);
+      (*v_)[i] = std::cos(M_PI*xval) * std::sin(M_PI*yval);
+    }
+
+    A_ = std::make_shared<nativeMatrix>(Copy, *myMap_, maxNonZeroPerRow_);
+    T_ = std::make_shared<nativeVec>(*myMap_);
+    f_ = std::make_shared<nativeVec>(*myMap_);
+  }
 
 protected:
   const int maxNonZeroPerRow_ = 5;

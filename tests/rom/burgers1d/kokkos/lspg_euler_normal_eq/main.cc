@@ -36,7 +36,6 @@ int main(int argc, char *argv[]){
     // app object
     constexpr int numCell = 20;
     fom_t appobj({{5.0, 0.02, 0.02}}, numCell);
-    appobj.setup();
     const scalar_t dt = 0.01;
     constexpr auto t0 = zero;
 

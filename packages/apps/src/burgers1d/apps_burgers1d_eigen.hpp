@@ -74,28 +74,14 @@ public:
 
 public:
   explicit Burgers1dEigen(eigVec params, ui_t Ncell=1000)
-    : mu_(params), Ncell_(Ncell){}
+    : mu_(params), Ncell_(Ncell){
+    this->setup();
+  }
 
   Burgers1dEigen() = delete;
   ~Burgers1dEigen() = default;
 
 public:
-  void setup(){
-    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
-    dxInv_ = 1.0/dx_;
-
-    // grid
-    xGrid_.resize(Ncell_);
-    for (ui_t i=0; i<Ncell_; ++i)
-      xGrid_(i) = dx_*i + dx_*0.5;
-
-    // init condition
-    U_.resize(Ncell_);
-    for (ui_t i=0; i<Ncell_; ++i)
-      U_(i) = 1.0;
-    U0_ = U_;
-  };
-
   state_type const & getInitialState() const {
     return U0_;
   };
@@ -164,6 +150,23 @@ public:
     this->jacobian(u, t, JJ);
     return JJ;
   }
+
+private:
+  void setup(){
+    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
+    dxInv_ = 1.0/dx_;
+
+    // grid
+    xGrid_.resize(Ncell_);
+    for (ui_t i=0; i<Ncell_; ++i)
+      xGrid_(i) = dx_*i + dx_*0.5;
+
+    // init condition
+    U_.resize(Ncell_);
+    for (ui_t i=0; i<Ncell_; ++i)
+      U_(i) = 1.0;
+    U0_ = U_;
+  };
 
 private:
   eigVec mu_; // parameters

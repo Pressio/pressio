@@ -45,7 +45,6 @@ const std::vector<double> bdf1Sol
   // app object
   int numCell = 50;
   fom_t appobj({5.0, 0.02, 0.02}, numCell, &Comm);
-  appobj.setup();
   auto t0 = static_cast<scalar_t>(0);
   scalar_t dt = 0.01;
 
