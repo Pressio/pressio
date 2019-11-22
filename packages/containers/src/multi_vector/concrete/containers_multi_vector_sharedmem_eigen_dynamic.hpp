@@ -103,10 +103,6 @@ public:
     return data_(irow, iVec);
   }
 
-  something getVector(std::size_t index) const{
-    auto vecJ = data_.col(index);
-  }
-
 private:
 
   ord_t numVectorsImpl() const{
