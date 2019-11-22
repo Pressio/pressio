@@ -128,20 +128,20 @@ public:
   // n-3
   template <typename T1>
   ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusThree>::value, T &>
-  get(){ return data_(1); }
+  get(){ return data_(2); }
 
   template <typename T1>
   ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusThree>::value, T const &>
-  get() const{ return data_(1); }
+  get() const{ return data_(2); }
 
   // n-4
   template <typename T1>
   ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusFour>::value, T &>
-  get(){ return data_(1); }
+  get(){ return data_(3); }
 
   template <typename T1>
   ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusFour>::value, T const &>
-  get() const{ return data_(1); }
+  get() const{ return data_(3); }
 
 private:
   data_type data_;
