@@ -61,15 +61,15 @@ namespace pressio{ namespace ode{ namespace impl{
 
 template <
   ode::ImplicitEnum method,
-  std::size_t n,
   typename state_type,
   typename residual_type,
+  typename pre_states_type,
   typename scalar_type
   >
 mpl::enable_if_t<method == ode::ImplicitEnum::Euler>
 time_discrete_residual(const state_type	& odeCurrentState,
 		       residual_type	& R,
-		       const ::pressio::ode::AuxStatesContainer<false, state_type, n> & prevStates,
+		       const pre_states_type & prevStates,
 		       const scalar_type	& dt)
 {
   using nm1 = ode::nMinusOne;
@@ -84,16 +84,16 @@ time_discrete_residual(const state_type	& odeCurrentState,
 
 template <
   ode::ImplicitEnum method,
-  std::size_t n,
   typename state_type,
   typename residual_type,
-  typename scalar_type,
-  mpl::enable_if_t< method == ode::ImplicitEnum::BDF2 > * = nullptr
+  typename pre_states_type,
+  typename scalar_type
   >
-void time_discrete_residual(const state_type	& odeCurrentState,
-			    residual_type	& R,
-			    const ::pressio::ode::AuxStatesContainer<false, state_type, n> & prevStates,
-			    const scalar_type	& dt)
+mpl::enable_if_t< method == ode::ImplicitEnum::BDF2>
+time_discrete_residual(const state_type	& odeCurrentState,
+		       residual_type	& R,
+		       const pre_states_type & prevStates,
+		       const scalar_type	& dt)
 {
   using nm1 = ode::nMinusOne;
   using nm2 = ode::nMinusTwo;

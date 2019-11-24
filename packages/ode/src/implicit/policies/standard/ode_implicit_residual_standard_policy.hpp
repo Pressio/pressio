@@ -90,38 +90,42 @@ public:
   // enable when stepper stepperName only needs previous states
   // -----------------------------------------------------
   template <
-    ode::ImplicitEnum stepperName, std::size_t n, typename scalar_type,
+    ode::ImplicitEnum stepperName,
+    typename prev_states_type,
+    typename scalar_type,
     mpl::enable_if_t<
       ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<stepperName>::value
       > * = nullptr
   >
   void operator()(const state_type & odeCurrentState,
-		  residual_type & R,
-		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & odePrevStates,
+		  const prev_states_type & odePrevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
-		  const types::step_t & step) const{
+		  const types::step_t & step,
+		  residual_type & R) const{
 
     model.velocity(*odeCurrentState.data(), t, *R.data());
-    ::pressio::ode::impl::time_discrete_residual<stepperName, n>(odeCurrentState, R, odePrevStates, dt);
+    ::pressio::ode::impl::time_discrete_residual<stepperName>(odeCurrentState, R, odePrevStates, dt);
   }
 
   template <
-    ode::ImplicitEnum stepperName, std::size_t n, typename scalar_type,
+    ode::ImplicitEnum stepperName,
+    typename prev_states_type,
+    typename scalar_type,
     mpl::enable_if_t<
       ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<stepperName>::value
       > * = nullptr
     >
   residual_type operator()(const state_type & odeCurrentState,
-  			   const ::pressio::ode::AuxStatesContainer<false, state_type, n> & odePrevStates,
+  			   const prev_states_type & odePrevStates,
   			   const system_type & model,
   			   const scalar_type & t,
   			   const scalar_type & dt,
 			   const types::step_t & step) const{
 
     residual_type R(model.velocity(*odeCurrentState.data(), t));
-    ::pressio::ode::impl::time_discrete_residual<stepperName, n>(odeCurrentState, R, odePrevStates, dt);
+    ::pressio::ode::impl::time_discrete_residual<stepperName>(odeCurrentState, R, odePrevStates, dt);
     return R;
   }
 

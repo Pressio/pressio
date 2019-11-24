@@ -85,16 +85,13 @@ struct is_legitimate_implicit_residual_policy<
       decltype
       (
        std::declval<T const>().template operator()
-       <
-       name,
-       numPrevStates
-       >(
-	 std::declval<state_t const &>(),
-	 std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
-	 std::declval<system_t const &>(),
-	 std::declval<scalar_t const &>(),
-	 std::declval<scalar_t const &>(),
-	 std::declval<::pressio::ode::types::step_t>()
+       <name>(
+	      std::declval<state_t const &>(),
+	      std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
+	      std::declval<system_t const &>(),
+	      std::declval<scalar_t const &>(),
+	      std::declval<scalar_t const &>(),
+	      std::declval<::pressio::ode::types::step_t>()
 	 )
        )
       >::value
@@ -104,17 +101,14 @@ struct is_legitimate_implicit_residual_policy<
       decltype
       (
        std::declval<T const>().template operator()
-       <
-       name,
-       numPrevStates
-       >(
-	 std::declval<state_t const &>(),
-	 std::declval<residual_t &>(),
-	 std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
-	 std::declval<system_t const &>(),
-	 std::declval<scalar_t const &>(),
-	 std::declval<scalar_t const &>(),
-	 std::declval<::pressio::ode::types::step_t>()
+       <name>(
+	      std::declval<state_t const &>(),
+	      std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
+	      std::declval<system_t const &>(),
+	      std::declval<scalar_t const &>(),
+	      std::declval<scalar_t const &>(),
+	      std::declval<::pressio::ode::types::step_t>(),
+	      std::declval<residual_t &>()
 	 )
        )
       >::value

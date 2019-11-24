@@ -91,9 +91,10 @@ public:
   //-------------------------------
   // specialize for n == 1
   //-------------------------------
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
+  template <typename prev_states_type, typename scalar_type,
+	    mpl::enable_if_t< prev_states_type::size()==1 > * = nullptr>
   void operator()(const state_type & stateIn,
-		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldStates,
+		  const prev_states_type & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -111,9 +112,10 @@ public:
   //-------------------------------
   // specialize for n == 2
   //-------------------------------
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
+  template <typename prev_states_type, typename scalar_type,
+	    mpl::enable_if_t< prev_states_type::size()==2 > * = nullptr>
   void operator()(const state_type & stateIn,
-		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldStates,
+		  const prev_states_type & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
@@ -133,9 +135,10 @@ public:
   //-------------------------------
   // specialize for n == 3
   //-------------------------------
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
+  template <typename prev_states_type, typename scalar_type,
+	    mpl::enable_if_t< prev_states_type::size()==3 > * = nullptr>
   void operator()(const state_type & stateIn,
-		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldStates,
+		  const prev_states_type & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,

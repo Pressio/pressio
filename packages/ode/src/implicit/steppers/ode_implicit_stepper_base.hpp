@@ -82,7 +82,7 @@ class ImplicitStepperBase
        "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
 public:
-  using aux_states_t		= ::pressio::ode::AuxStatesContainer<false, state_t, traits::numAuxStates>;
+  using aux_states_t = ::pressio::ode::AuxStatesContainer<false, state_t, traits::numAuxStates>;
 
   types::stepper_order_t order() const{
     return traits::order_value;

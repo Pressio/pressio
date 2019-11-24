@@ -200,10 +200,8 @@ private:
 private:
   void residualImpl(const state_type & odeState, residual_type & R) const
   {
-    this->residual_obj_.template operator()<
-      mytraits::numAuxStates
-      >(odeState, this->auxStates_,
-       this->sys_.get(), this->t_, this->dt_, this->step_, R);
+    this->residual_obj_(odeState, this->auxStates_, this->sys_.get(),
+			this->t_, this->dt_, this->step_, R);
   }
 
   residual_type residualImpl(const state_type & odeState) const
@@ -213,10 +211,8 @@ private:
 
   void jacobianImpl(const state_type & odeState, jacobian_type & J) const
   {
-    this->jacobian_obj_.template operator()<
-      mytraits::numAuxStates
-      >(odeState, this->auxStates_,
-       this->sys_.get(), this->t_, this->dt_, this->step_, J);
+    this->jacobian_obj_(odeState, this->auxStates_, this->sys_.get(),
+			this->t_, this->dt_, this->step_, J);
   }
 
   jacobian_type jacobianImpl(const state_type & odeState) const

@@ -78,22 +78,22 @@ public:
 
   template <
     ::pressio::ode::ImplicitEnum odeMethod,
-    int n,
     typename ode_state_t,
-    typename ode_res_t,
+    typename prev_states_t,
     typename app_t,
-    typename scalar_t
+    typename scalar_t,
+    typename ode_res_t
   >
-  void operator()(const ode_state_t & odeY,
-  		  ode_res_t & R,
-		  const ::pressio::ode::AuxStatesContainer<false, ode_state_t,n> & prevStates,
-  		  const app_t & app,
-		  const scalar_t & t,
-		  const scalar_t & dt,
-		  const ::pressio::ode::types::step_t & step) const
+  void operator()(const ode_state_t   & odeY,
+		  const prev_states_t & prevStates,
+  		  const app_t	      & app,
+		  const scalar_t      & t,
+		  const scalar_t      & dt,
+		  const ::pressio::ode::types::step_t & step,
+		  ode_res_t	      & R) const
   {
     maskable::template operator()<
-      odeMethod, n>(odeY, R_, prevStates, app, t, dt, step);
+      odeMethod>(odeY, prevStates, app, t, dt, step, R_);
 
     app.applyMask(*R_.data(), *R.data(), t);
   }
@@ -101,20 +101,20 @@ public:
 
   template <
     ode::ImplicitEnum odeMethod,
-    int n,
     typename ode_state_t,
+    typename prev_states_t,
     typename app_t,
     typename scalar_t
     >
-  residual_t operator()(const ode_state_t & odeY,
-			const ::pressio::ode::AuxStatesContainer<false, ode_state_t,n> & prevStates,
-			const app_t & app,
-			const scalar_t & t,
-			const scalar_t & dt,
+  residual_t operator()(const ode_state_t   & odeY,
+			const prev_states_t & prevStates,
+			const app_t	    & app,
+			const scalar_t	    & t,
+			const scalar_t	    & dt,
 			const ::pressio::ode::types::step_t & step) const
   {
-    auto R1 = maskable::template operator()
-      <odeMethod, n>(odeY, prevStates, app, t, dt, step);
+    auto R1 = maskable::template operator()<
+      odeMethod>(odeY, prevStates, app, t, dt, step);
 
     if (!maskedR_){
       maskedR_ = std::make_shared

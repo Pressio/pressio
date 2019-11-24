@@ -178,37 +178,37 @@ public:
 public:
   template <
     ::pressio::ode::ImplicitEnum odeStepperName,
-    std::size_t n,
     typename lspg_state_t,
+    typename prev_states_t,
     typename fom_t,
     typename scalar_t
   >
   void operator()(const lspg_state_t		   & romState,
-		  residual_t			   & romR,
-  		  const ::pressio::ode::AuxStatesContainer<false, lspg_state_t,n> & romPrevStates,
+  		  const prev_states_t & romPrevStates,
   		  const fom_t			   & app,
 		  const scalar_t		   & t,
 		  const scalar_t		   & dt,
-		  const ::pressio::ode::types::step_t & step) const
+		  const ::pressio::ode::types::step_t & step,
+		  residual_t			   & romR) const
   {
-    this->compute_impl<odeStepperName, n>(romState, romR, romPrevStates, app, t, dt, step);
+    this->compute_impl<odeStepperName>(romState, romR, romPrevStates, app, t, dt, step);
   }
 
   template <
     ::pressio::ode::ImplicitEnum odeStepperName,
-    std::size_t n,
     typename lspg_state_t,
+    typename prev_states_t,
     typename fom_t,
     typename scalar_t
     >
   residual_t operator()(const lspg_state_t		   & romState,
-			const ::pressio::ode::AuxStatesContainer<false, lspg_state_t,n>  & romPrevStates,
+			const prev_states_t & romPrevStates,
 			const fom_t			   & app,
 			const scalar_t			   & t,
 			const scalar_t			   & dt,
 			const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeStepperName, n>(romState, R_, romPrevStates, app, t, dt, step);
+    this->compute_impl<odeStepperName>(romState, R_, romPrevStates, app, t, dt, step);
     return R_;
   }
 
@@ -252,14 +252,14 @@ private:
 private:
   template <
     ::pressio::ode::ImplicitEnum odeStepperName,
-    std::size_t n,
     typename lspg_state_t,
+    typename prev_states_t,
     typename fom_t,
     typename scalar_t
   >
   void compute_impl(const lspg_state_t		     & romState,
 		    residual_t			     & romR,
-		    const ::pressio::ode::AuxStatesContainer<false, lspg_state_t,n> & romPrevStates,
+		    const prev_states_t & romPrevStates,
 		    const fom_t			     & app,
 		    const scalar_t		     & t,
 		    const scalar_t		     & dt,

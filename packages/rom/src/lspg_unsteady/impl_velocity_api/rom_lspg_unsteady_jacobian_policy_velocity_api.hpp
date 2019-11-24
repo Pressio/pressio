@@ -191,11 +191,11 @@ public:
     typename lspg_state_t, typename lspg_jac_t, typename app_t, typename scalar_t
   >
   void operator()(const lspg_state_t & romState,
-		  lspg_jac_t	     & romJac,
   		  const app_t	     & app,
 		  const scalar_t     & time,
 		  const scalar_t     & dt,
-		  const ::pressio::ode::types::step_t & step) const
+		  const ::pressio::ode::types::step_t & step,
+		  lspg_jac_t	     & romJac) const
   {
     this->compute_impl<odeStepperName>(romState, romJac, app, time, dt, step);
   }
@@ -213,6 +213,7 @@ public:
     this->compute_impl<odeStepperName>(romState, JJ_, app, time, dt, step);
     return JJ_;
   }
+
 
 private:
   template <

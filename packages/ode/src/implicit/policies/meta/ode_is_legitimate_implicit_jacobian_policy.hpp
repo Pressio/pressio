@@ -102,11 +102,11 @@ struct is_legitimate_implicit_jacobian_policy
       name
       >(
 	std::declval<state_t const &>(),
-	std::declval<jacobian_t &>(),
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::types::step_t const &>()
+	std::declval<::pressio::ode::types::step_t const &>(),
+	std::declval<jacobian_t &>()
 	)
       )
    >::value

@@ -182,24 +182,22 @@ private:
   void residualImpl(const state_type & odeState, residual_type & R) const
   {
     this->residual_obj_.template operator()<
-      my_enum, mytraits::numAuxStates
-      >(odeState, R, this->auxStates_,
-	this->sys_.get(), this->t_, this->dt_, this->step_);
+      my_enum>(odeState, this->auxStates_,
+	       this->sys_.get(), this->t_, this->dt_, this->step_, R);
   }
 
   residual_type residualImpl(const state_type & odeState) const
   {
     return this->residual_obj_.template operator()<
-      my_enum, mytraits::numAuxStates
-      >(odeState, this->auxStates_,
-	this->sys_.get(), this->t_, this->dt_, this->step_);
+      my_enum>(odeState, this->auxStates_,
+	       this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
   void jacobianImpl(const state_type & odeState, jacobian_type & J) const
   {
     this->jacobian_obj_.template operator()<
       mytraits::enum_id
-      >(odeState, J, this->sys_.get(), this->t_, this->dt_, this->step_);
+      >(odeState, this->sys_.get(), this->t_, this->dt_, this->step_, J);
   }
 
   jacobian_type jacobianImpl(const state_type & odeState) const

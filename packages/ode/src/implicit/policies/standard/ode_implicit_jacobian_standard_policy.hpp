@@ -87,11 +87,11 @@ public:
     ode::ImplicitEnum method, typename scalar_t
   >
   void operator()(const state_type & odeCurrentState,
-		  jacobian_type & J,
 		  const system_type & model,
 		  const scalar_t & t,
 		  const scalar_t & dt,
-		  const types::step_t & step) const
+		  const types::step_t & step,
+		  jacobian_type & J) const
   {
     model.jacobian( *odeCurrentState.data(), t, *J.data());
     ::pressio::ode::impl::time_discrete_jacobian<method>(J, dt);

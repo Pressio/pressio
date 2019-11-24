@@ -83,25 +83,24 @@ public:
   //-------------------------------
   // for unsteady LSPG
   //-------------------------------
-
   template <
     ode::ImplicitEnum odeMethod,
-    int n,
-    typename ode_state_t,
     typename lspg_res_t,
+    typename prev_states_t,
     typename app_t,
-    typename scalar_t
+    typename scalar_t,
+    typename ode_state_t
     >
-  void operator()(const ode_state_t		   & odeState,
-  		  lspg_res_t			   & R,
-		  const ::pressio::ode::AuxStatesContainer<false, ode_state_t,n> & prevStates,
-  		  const app_t			   & app,
-		  const scalar_t		   & t,
-		  const scalar_t		   & dt,
-		  const ::pressio::ode::types::step_t & step) const
+  void operator()(const ode_state_t	& odeState,
+		  const prev_states_t	& prevStates,
+  		  const app_t		& app,
+		  const scalar_t	& t,
+		  const scalar_t	& dt,
+		  const ::pressio::ode::types::step_t & step,
+		  lspg_res_t		& R) const
   {
-    preconditionable::template operator()
-      <odeMethod, n>(odeState, R, prevStates, app, t, dt, step);
+    preconditionable::template operator()<
+      odeMethod>(odeState, prevStates, app, t, dt, step, R);
 
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *R.data(), t);
@@ -109,20 +108,20 @@ public:
 
   template <
     ode::ImplicitEnum odeMethod,
-    int n,
     typename ode_state_t,
+    typename prev_states_t,
     typename app_t,
     typename scalar_t
   >
-  residual_t operator()(const ode_state_t		 & odeState,
-			const ::pressio::ode::AuxStatesContainer<false, ode_state_t,n> & prevStates,
-			const app_t			 & app,
-			const scalar_t			 & time,
-			const scalar_t			 & dt,
+  residual_t operator()(const ode_state_t   & odeState,
+			const prev_states_t & prevStates,
+			const app_t	    & app,
+			const scalar_t	    & time,
+			const scalar_t	    & dt,
 			const ::pressio::ode::types::step_t & step) const
   {
-    auto result = preconditionable::template operator()
-      <odeMethod, n>(odeState, prevStates, app, time, dt, step);
+    auto result = preconditionable::template operator()<
+      odeMethod>(odeState, prevStates, app, time, dt, step);
 
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *result.data(), time);

@@ -88,38 +88,44 @@ public:
   ~ImplicitResidualStandardPolicyPybind11() = default;
 
 public:
-  template <
-    ode::ImplicitEnum method, std::size_t n, typename scalar_type
-  >
-  void operator()(const state_type & y,
-		  residual_type & R,
-		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldYs,
-		  const system_type & model,
-		  const scalar_type & t,
-		  const scalar_type & dt,
-		  const types::step_t & step) const
-  {
-    throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
-    // printf("C++ R address: %p\n", R.data());
-    // model.attr("residual2")(y, R, t);
-    // ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
-  }
+  // template <
+  //   ode::ImplicitEnum method,
+  //   typename prev_states_type,
+  //   typename scalar_type
+  // >
+  // void operator()(const state_type & y,
 
-  template <
-    ode::ImplicitEnum method, std::size_t n, typename scalar_type
-    >
-  residual_type operator()(const state_type & y,
-  			   const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldYs,
-  			   const system_type & model,
-  			   const scalar_type & t,
-  			   const scalar_type & dt,
-			   const types::step_t & step) const
-  {
-    throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
-    residual_type nR;// = model.attr("residual1")(y, t);
-    // ::pressio::ode::impl::time_discrete_residual<method, n>(y, nR, oldYs, dt);
-    return nR;
-  }
+  // 		  const prev_states_type & oldYs,
+  // 		  const system_type & model,
+  // 		  const scalar_type & t,
+  // 		  const scalar_type & dt,
+  // 		  const types::step_t & step,
+  // 		  residual_type & R) const
+  // {
+  //   throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
+  //   // printf("C++ R address: %p\n", R.data());
+  //   // model.attr("residual2")(y, R, t);
+  //   // ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
+  // }
+
+  // template <
+  //   ode::ImplicitEnum method,
+  //   typename prev_states_type,
+  //   typename scalar_type
+  //   >
+  // residual_type operator()(const state_type & y,
+  // 			   const prev_states_type & oldYs,
+  // 			   const system_type & model,
+  // 			   const scalar_type & t,
+  // 			   const scalar_type & dt,
+  // 			   const types::step_t & step) const
+  // {
+  //   throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
+  //   residual_type nR;// = model.attr("residual1")(y, t);
+  //   // ::pressio::ode::impl::time_discrete_residual<method, n>(y, nR, oldYs, dt);
+  //   return nR;
+  // }
+
 };//end class
 
 }}}//end namespace pressio::ode::policy

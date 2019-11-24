@@ -82,21 +82,22 @@ public:
   // for unsteady LSPG
   //-------------------------------
   template <
-      ode::ImplicitEnum odeMethod,
-      typename ode_state_t,
-      typename ode_jac_t,
-      typename app_t,
-      typename scalar_t>
-  void operator()(const ode_state_t & odeY,
-		  ode_jac_t & odeJJ,
+    ode::ImplicitEnum odeMethod,
+    typename ode_state_t,
+    typename app_t,
+    typename scalar_t,
+    typename ode_jac_t
+  >
+  void operator()(const ode_state_t & odeState,
   		  const app_t & app,
 		  const scalar_t & t,
 		  const scalar_t & dt,
-		  const ::pressio::ode::types::step_t & step) const
+		  const ::pressio::ode::types::step_t & step,
+		  ode_jac_t & odeJacobian) const
   {
-    preconditionable::template operator()<odeMethod>(odeY, odeJJ, app, t, dt, step);
+    preconditionable::template operator()<odeMethod>(odeState, app, t, dt, step, odeJacobian);
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *odeJJ.data(), t);
+    app.applyPreconditioner(*yFom.data(), *odeJacobian.data(), t);
   }
 
   template <
@@ -105,46 +106,46 @@ public:
     typename app_t,
     typename scalar_t
   >
-  apply_jac_return_t operator()(const ode_state_t & odeY,
+  apply_jac_return_t operator()(const ode_state_t & odeState,
 				const app_t & app,
 				const scalar_t & t,
 				const scalar_t & dt,
 				const ::pressio::ode::types::step_t & step) const
   {
-    auto JJ = preconditionable::template operator()<odeMethod>(odeY, app, t, dt, step);
+    auto jacob = preconditionable::template operator()<odeMethod>(odeState, app, t, dt, step);
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *JJ.data(), t);
-    return JJ;
+    app.applyPreconditioner(*yFom.data(), *jacob.data(), t);
+    return jacob;
   }
-
 
 
   //-------------------------------
   // for steady LSPG
   //-------------------------------
   template <
-      typename lspg_state_t,
-      typename app_t>
-  apply_jac_return_t operator()(const lspg_state_t & romY,
+    typename state_t,
+    typename app_t
+    >
+  apply_jac_return_t operator()(const state_t & stateObj,
                                 const app_t & app) const
   {
-    auto JJ = preconditionable::template operator()<lspg_state_t, app_t>(romY, app);
+    auto jacob = preconditionable::template operator()<state_t, app_t>(stateObj, app);
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *JJ.data());
-    return JJ;
+    app.applyPreconditioner(*yFom.data(), *jacob.data());
+    return jacob;
   }
 
   template <
-      typename lspg_state_t,
+      typename state_t,
       typename lspg_jac_t,
       typename app_t>
-  void operator()(const lspg_state_t & romY,
-                  lspg_jac_t & romJJ,
+  void operator()(const state_t & stateObj,
+                  lspg_jac_t & romjacob,
                   const app_t & app) const
   {
-    preconditionable::template operator()<lspg_state_t, lspg_jac_t, app_t>(romY, romJJ, app);
+    preconditionable::template operator()<state_t, lspg_jac_t, app_t>(stateObj, romjacob, app);
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *romJJ.data());
+    app.applyPreconditioner(*yFom.data(), *romjacob.data());
   }
 
 };//end class

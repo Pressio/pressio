@@ -10,14 +10,14 @@ class ResidualPolicy : public ::pressio::ode::policy::ImplicitResidualPolicyBase
   >{
 
 public:
-  template <int n>
+  template <typename prev_states_type>
   void operator()(const state_type & y,
-		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldYs,
+		  const prev_states_type & oldYs,
 		  const system_type & model,
 		  const double & t,
 		  const double & dt,
 		  ::pressio::ode::types::step_t step,
-      residual_type & R) const{
+		  residual_type & R) const{
     // here I would need to compute the time discrete residual
   }
 
@@ -35,14 +35,14 @@ class JacobianPolicy : public ::pressio::ode::policy::JacobianPolicyBase<
   >{
 
 public:
-  template <int n>
+  template <typename prev_states_type>
   void operator()(const state_type & y,
-		  const ::pressio::ode::AuxStatesContainer<false, state_type, n> & oldYs,
+		  const prev_states_type & oldYs,
 		  const system_type & model,
 		  const double &  t,
 		  const double &  dt,
 		  ::pressio::ode::types::step_t step,
-      jacobian_type & J) const{
+		  jacobian_type & J) const{
     // here I would need to compute the time discrete version
   }
 

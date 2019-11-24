@@ -115,7 +115,6 @@ struct residual_policy_callable_with_seven_args<
       decltype
       (
        std::declval<T const>().template operator()
-       <numPrevStates>
        (
 	std::declval<state_t const &>(),
 	std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
