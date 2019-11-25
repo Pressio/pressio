@@ -77,7 +77,7 @@ public:
 public:
 
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    typename stepper_tag,
     typename ode_state_t,
     typename prev_states_t,
     typename app_t,
@@ -93,14 +93,14 @@ public:
 		  ode_res_t	      & R) const
   {
     maskable::template operator()<
-      odeMethod>(odeY, prevStates, app, t, dt, step, R_);
+      stepper_tag>(odeY, prevStates, app, t, dt, step, R_);
 
     app.applyMask(*R_.data(), *R.data(), t);
   }
 
 
   template <
-    ode::ImplicitEnum odeMethod,
+    typename stepper_tag,
     typename ode_state_t,
     typename prev_states_t,
     typename app_t,
@@ -114,7 +114,7 @@ public:
 			const ::pressio::ode::types::step_t & step) const
   {
     auto R1 = maskable::template operator()<
-      odeMethod>(odeY, prevStates, app, t, dt, step);
+      stepper_tag>(odeY, prevStates, app, t, dt, step);
 
     if (!maskedR_){
       maskedR_ = std::make_shared

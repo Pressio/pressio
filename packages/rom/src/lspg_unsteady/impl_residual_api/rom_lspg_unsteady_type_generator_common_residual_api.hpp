@@ -59,7 +59,7 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
-  ::pressio::ode::ImplicitEnum odeName,
+  typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ...Args

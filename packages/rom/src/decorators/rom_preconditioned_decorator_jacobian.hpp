@@ -82,7 +82,7 @@ public:
   // for unsteady LSPG
   //-------------------------------
   template <
-    ode::ImplicitEnum odeMethod,
+    typename stepper_tag,
     typename ode_state_t,
     typename app_t,
     typename scalar_t,
@@ -95,13 +95,13 @@ public:
 		  const ::pressio::ode::types::step_t & step,
 		  ode_jac_t & odeJacobian) const
   {
-    preconditionable::template operator()<odeMethod>(odeState, app, t, dt, step, odeJacobian);
+    preconditionable::template operator()<stepper_tag>(odeState, app, t, dt, step, odeJacobian);
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *odeJacobian.data(), t);
   }
 
   template <
-    ode::ImplicitEnum odeMethod,
+    typename stepper_tag,
     typename ode_state_t,
     typename app_t,
     typename scalar_t
@@ -112,7 +112,7 @@ public:
 				const scalar_t & dt,
 				const ::pressio::ode::types::step_t & step) const
   {
-    auto jacob = preconditionable::template operator()<odeMethod>(odeState, app, t, dt, step);
+    auto jacob = preconditionable::template operator()<stepper_tag>(odeState, app, t, dt, step);
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *jacob.data(), t);
     return jacob;

@@ -56,7 +56,7 @@ namespace pressio{ namespace ode{ namespace meta {
 
 template<
   typename T,
-  ImplicitEnum name,
+  typename tag,
   std::size_t numPrevStates,
   typename state_t,
   typename residual_t,
@@ -69,7 +69,7 @@ struct is_legitimate_implicit_residual_policy : std::false_type{};
 
 template<
   typename T,
-  ImplicitEnum name,
+  typename tag,
   std::size_t numPrevStates,
   typename state_t,
   typename residual_t,
@@ -77,7 +77,7 @@ template<
   typename scalar_t
   >
 struct is_legitimate_implicit_residual_policy<
-  T, name, numPrevStates, state_t, residual_t, system_t, scalar_t,
+  T, tag, numPrevStates, state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
     // is callable with five args
     std::is_same<
@@ -85,7 +85,7 @@ struct is_legitimate_implicit_residual_policy<
       decltype
       (
        std::declval<T const>().template operator()
-       <name>(
+       <tag>(
 	      std::declval<state_t const &>(),
 	      std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
 	      std::declval<system_t const &>(),
@@ -101,7 +101,7 @@ struct is_legitimate_implicit_residual_policy<
       decltype
       (
        std::declval<T const>().template operator()
-       <name>(
+       <tag>(
 	      std::declval<state_t const &>(),
 	      std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
 	      std::declval<system_t const &>(),
@@ -120,12 +120,12 @@ struct is_legitimate_implicit_residual_policy<
 template<typename T, typename ... args>
 using is_legitimate_implicit_euler_residual_policy =
   is_legitimate_implicit_residual_policy<
-  T, ImplicitEnum::Euler, 1, args...>;
+  T, ::pressio::ode::implicitmethods::Euler, 1, args...>;
 
 template<typename T, typename ... args>
 using is_legitimate_implicit_bdf2_residual_policy =
   is_legitimate_implicit_residual_policy<
-  T, ImplicitEnum::BDF2, 2, args...>;
+  T, ::pressio::ode::implicitmethods::BDF2, 2, args...>;
 //------------------------------------------------------------------
 
 }}} // namespace pressio::ode::meta

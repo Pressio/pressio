@@ -63,7 +63,7 @@ struct is_explicit_runge_kutta4_velocity_standard_policy<
   policy_t<Args...>,
   typename std::enable_if<
     std::is_same<policy_t<Args...>,
-		 ode::policy::ExplicitVelocityStandardPolicy<
+		 ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<
 		   Args...>
 		 >::value
     >::type

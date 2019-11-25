@@ -59,14 +59,14 @@
 #include "../../meta/ode_implicit_stepper_stencil_needs_previous_states_and_velocities.hpp"
 
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<
   typename state_type,
   typename system_type,
   typename residual_type
   >
-class ImplicitResidualStandardPolicyPybind11<
+class ResidualStandardPolicyPybind11<
   state_type, system_type, residual_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
@@ -76,58 +76,23 @@ class ImplicitResidualStandardPolicyPybind11<
     containers::meta::is_array_pybind11<residual_type>::value
     >
   >
-  : public ImplicitResidualPolicyBase<
-  ImplicitResidualStandardPolicyPybind11<state_type, system_type, residual_type>>
+  : public ResidualPolicyBase<
+  ResidualStandardPolicyPybind11<state_type, system_type, residual_type>>
 {
 
-  using this_t = ImplicitResidualStandardPolicyPybind11<state_type, system_type, residual_type>;
-  friend ImplicitResidualPolicyBase<this_t>;
+  using this_t = ResidualStandardPolicyPybind11<state_type, system_type, residual_type>;
+  friend ResidualPolicyBase<this_t>;
 
 public:
-  ImplicitResidualStandardPolicyPybind11() = default;
-  ~ImplicitResidualStandardPolicyPybind11() = default;
+  ResidualStandardPolicyPybind11() = default;
+  ~ResidualStandardPolicyPybind11() = default;
 
 public:
-  // template <
-  //   ode::ImplicitEnum method,
-  //   typename prev_states_type,
-  //   typename scalar_type
-  // >
-  // void operator()(const state_type & y,
 
-  // 		  const prev_states_type & oldYs,
-  // 		  const system_type & model,
-  // 		  const scalar_type & t,
-  // 		  const scalar_type & dt,
-  // 		  const types::step_t & step,
-  // 		  residual_type & R) const
-  // {
-  //   throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
-  //   // printf("C++ R address: %p\n", R.data());
-  //   // model.attr("residual2")(y, R, t);
-  //   // ::pressio::ode::impl::time_discrete_residual<method, n>(y, R, oldYs, dt);
-  // }
-
-  // template <
-  //   ode::ImplicitEnum method,
-  //   typename prev_states_type,
-  //   typename scalar_type
-  //   >
-  // residual_type operator()(const state_type & y,
-  // 			   const prev_states_type & oldYs,
-  // 			   const system_type & model,
-  // 			   const scalar_type & t,
-  // 			   const scalar_type & dt,
-  // 			   const types::step_t & step) const
-  // {
-  //   throw std::runtime_error("ImplicitResidualStandardPolicyPybind11 missing");
-  //   residual_type nR;// = model.attr("residual1")(y, t);
-  //   // ::pressio::ode::impl::time_discrete_residual<method, n>(y, nR, oldYs, dt);
-  //   return nR;
-  // }
+  // TODO
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::implicitmethods::policy
 #endif
 #endif

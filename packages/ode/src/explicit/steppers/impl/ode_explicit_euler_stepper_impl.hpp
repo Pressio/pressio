@@ -54,7 +54,7 @@
 #include "../../../ode_system_wrapper.hpp"
 #include "../../../ode_velocities_container.hpp"
 
-namespace pressio{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
 template<
   typename scalar_type,
@@ -86,7 +86,7 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					   ops_t>;
 
   using velocity_storage_t = VelocitiesContainer<velocity_type, 1>;
-  using system_wrapper_t   = OdeSystemWrapper<system_type>;
+  using system_wrapper_t   = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
 
   velocity_storage_t veloAuxStorage_;
   system_wrapper_t sys_;
@@ -154,5 +154,5 @@ public:
   }
 };
 
-}}}//end namespace pressio::ode::impl
+}}}}//end namespace pressio::ode::explicitmethods::impl
 #endif

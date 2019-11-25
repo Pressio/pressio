@@ -71,13 +71,13 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
   typename app_t::state_type yRef;
   lspg_state_t yROM;
 
-  constexpr auto ode_case  = pressio::ode::ImplicitEnum::Arbitrary;
+  using ode_name_t = pressio::ode::implicitmethods::Arbitrary;
 
   using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
   using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
 
   using lspg_problem = pressio::rom::LSPGUnsteadyProblem<
-    pressio::rom::DefaultLSPGUnsteady, ode_case, app_t,
+    pressio::rom::DefaultLSPGUnsteady, ode_name_t, app_t,
     lspg_state_t, decoder_t, stepper_order, stepper_n_states, scalar_t>;
 
   lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, 0);

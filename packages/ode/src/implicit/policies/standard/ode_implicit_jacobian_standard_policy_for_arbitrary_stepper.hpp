@@ -52,14 +52,14 @@
 #include "../../../ode_fwd.hpp"
 #include "../base/ode_jacobian_policy_base.hpp"
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<
   typename state_type,
   typename system_type,
   typename jacobian_type
   >
-class ImplicitJacobianStandardPolicyForArbitraryStepper<
+class JacobianStandardPolicyForArbitraryStepper<
   state_type, system_type, jacobian_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
@@ -67,17 +67,17 @@ class ImplicitJacobianStandardPolicyForArbitraryStepper<
     containers::meta::is_wrapper<state_type>::value and
     containers::meta::is_wrapper<jacobian_type>::value
     >
-  > : public JacobianPolicyBase<ImplicitJacobianStandardPolicyForArbitraryStepper<
+  > : public JacobianPolicyBase<JacobianStandardPolicyForArbitraryStepper<
     state_type, system_type, jacobian_type> >
 {
 
   using this_t
-  = ImplicitJacobianStandardPolicyForArbitraryStepper<state_type, system_type, jacobian_type>;
+  = JacobianStandardPolicyForArbitraryStepper<state_type, system_type, jacobian_type>;
   friend JacobianPolicyBase<this_t>;
 
 public:
-  ImplicitJacobianStandardPolicyForArbitraryStepper() = default;
-  ~ImplicitJacobianStandardPolicyForArbitraryStepper() = default;
+  JacobianStandardPolicyForArbitraryStepper() = default;
+  ~JacobianStandardPolicyForArbitraryStepper() = default;
 
 public:
 
@@ -159,5 +159,5 @@ public:
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::implicitmethods::policy
 #endif

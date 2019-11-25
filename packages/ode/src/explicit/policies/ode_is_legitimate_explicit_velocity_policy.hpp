@@ -64,7 +64,7 @@ struct is_legitimate_explicit_velocity_policy<
     // TODO: detect operator ()
     ::pressio::mpl::publicly_inherits_from<
       policy_t,
-      ode::policy::ExplicitVelocityPolicyBase<policy_t>
+      ::pressio::ode::explicitmethods::policy::VelocityPolicyBase<policy_t>
       >::value
     >::type
   > : std::true_type{};

@@ -59,16 +59,16 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
-  ::pressio::ode::ImplicitEnum odeName,
+  typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ... Args
   >
 struct DefaultProblemTypeGeneratorResidualApi
 {
-  static_assert( odeName == ::pressio::ode::ImplicitEnum::Arbitrary,
+  static_assert( std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
 		 "\nTo use unsteady LSPG with the residual api, \
-you need to pass ode::ImplicitEnum::Arbitrary");
+you need to pass as template argument ::pressio::ode::implicitmethods::Arbitrary");
 
   /* here, the fom_type must satisfy the residual api */
   static_assert( ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
@@ -78,7 +78,7 @@ However, the fom/adapter type you passed does not meet this api. \
 Verify the fom/adapter class you are using.");
 
   // pick the common types holder
-  using common_types_t = CommonTypesResidualApi<odeName, fom_type, lspg_state_type, Args...>;
+  using common_types_t = CommonTypesResidualApi<stepper_tag, fom_type, lspg_state_type, Args...>;
 
   using fom_t			= typename common_types_t::fom_t;
   using scalar_t		= typename common_types_t::scalar_t;
@@ -114,8 +114,8 @@ Verify the fom/adapter class you are using.");
   using tot_n_setter_t   = typename common_types_t::tot_n_setter;
 
   // declare type of stepper object
-  using lspg_stepper_t		= ::pressio::ode::ImplicitStepper<
-    odeName, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
+  using lspg_stepper_t		= ::pressio::ode::implicitmethods::Stepper<
+    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
     lspg_residual_policy_t, lspg_jacobian_policy_t, stepper_order_t, tot_n_setter_t>;
 
 };//end class

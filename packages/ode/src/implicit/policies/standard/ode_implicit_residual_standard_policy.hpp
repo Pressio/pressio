@@ -57,14 +57,14 @@
 #include "../../meta/ode_implicit_stepper_stencil_needs_previous_states_only.hpp"
 #include "../../meta/ode_implicit_stepper_stencil_needs_previous_states_and_velocities.hpp"
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<
   typename state_type,
   typename system_type,
   typename residual_type
   >
-class ImplicitResidualStandardPolicy<
+class ResidualStandardPolicy<
   state_type, system_type, residual_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
@@ -73,16 +73,16 @@ class ImplicitResidualStandardPolicy<
     containers::meta::is_wrapper<residual_type>::value
     >
   >
-  : public ImplicitResidualPolicyBase<
-  ImplicitResidualStandardPolicy<state_type, system_type, residual_type>>
+  : public ResidualPolicyBase<
+  ResidualStandardPolicy<state_type, system_type, residual_type>>
 {
 
-  using this_t = ImplicitResidualStandardPolicy<state_type, system_type, residual_type>;
-  friend ImplicitResidualPolicyBase<this_t>;
+  using this_t = ResidualStandardPolicy<state_type, system_type, residual_type>;
+  friend ResidualPolicyBase<this_t>;
 
 public:
-  ImplicitResidualStandardPolicy() = default;
-  ~ImplicitResidualStandardPolicy() = default;
+  ResidualStandardPolicy() = default;
+  ~ResidualStandardPolicy() = default;
 
 public:
 
@@ -90,11 +90,11 @@ public:
   // enable when stepper stepperName only needs previous states
   // -----------------------------------------------------
   template <
-    ode::ImplicitEnum stepperName,
+    typename tag_name,
     typename prev_states_type,
     typename scalar_type,
     mpl::enable_if_t<
-      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<stepperName>::value
+      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<tag_name>::value
       > * = nullptr
   >
   void operator()(const state_type & odeCurrentState,
@@ -106,15 +106,15 @@ public:
 		  residual_type & R) const{
 
     model.velocity(*odeCurrentState.data(), t, *R.data());
-    ::pressio::ode::impl::time_discrete_residual<stepperName>(odeCurrentState, R, odePrevStates, dt);
+    ::pressio::ode::impl::time_discrete_residual<tag_name>(odeCurrentState, R, odePrevStates, dt);
   }
 
   template <
-    ode::ImplicitEnum stepperName,
+    typename tag_name,
     typename prev_states_type,
     typename scalar_type,
     mpl::enable_if_t<
-      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<stepperName>::value
+      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<tag_name>::value
       > * = nullptr
     >
   residual_type operator()(const state_type & odeCurrentState,
@@ -125,11 +125,11 @@ public:
 			   const types::step_t & step) const{
 
     residual_type R(model.velocity(*odeCurrentState.data(), t));
-    ::pressio::ode::impl::time_discrete_residual<stepperName>(odeCurrentState, R, odePrevStates, dt);
+    ::pressio::ode::impl::time_discrete_residual<tag_name>(odeCurrentState, R, odePrevStates, dt);
     return R;
   }
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::implicitmethods::policy
 #endif

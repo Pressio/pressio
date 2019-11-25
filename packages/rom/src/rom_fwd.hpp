@@ -49,7 +49,7 @@
 #ifndef ROM_FORWARD_DECLARATIONS_HPP_
 #define ROM_FORWARD_DECLARATIONS_HPP_
 
-#include "../../ode/src/ode_enum.hpp"
+#include "../../ode/src/ode_stepper_tags.hpp"
 
 namespace pressio{ namespace rom{
 

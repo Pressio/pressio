@@ -55,7 +55,7 @@
 namespace pressio{ namespace ode{ namespace meta {
 
 template<
-  ::pressio::ode::ImplicitEnum whichone,
+  typename name_tag,
   typename policy_t,
   typename enable = void
   >
@@ -63,24 +63,24 @@ struct is_implicit_residual_standard_policy : std::false_type{};
 
 template <template <typename...> class policy_t, typename... Args>
 struct is_implicit_residual_standard_policy<
-  ::pressio::ode::ImplicitEnum::Euler,
+  ::pressio::ode::implicitmethods::Euler,
   policy_t<Args...>,
   typename std::enable_if<
     std::is_same<
       policy_t<Args...>,
-      ode::policy::ImplicitResidualStandardPolicy<Args...>
+      ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<Args...>
       >::value
     >::type > : std::true_type{};
 
 
 template <template <typename...> class policy_t, typename... Args>
 struct is_implicit_residual_standard_policy<
-  ::pressio::ode::ImplicitEnum::BDF2,
+  ::pressio::ode::implicitmethods::BDF2,
   policy_t<Args...>,
   typename std::enable_if<
     std::is_same<
       policy_t<Args...>,
-      ode::policy::ImplicitResidualStandardPolicy<Args...>
+      ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<Args...>
       >::value
     >::type > : std::true_type{};
 
@@ -88,12 +88,12 @@ struct is_implicit_residual_standard_policy<
 template<template <typename...> class policy_t, typename... Args>
 using is_implicit_euler_residual_standard_policy =
   typename is_implicit_residual_standard_policy<
-  ::pressio::ode::ImplicitEnum::Euler, policy_t<Args...>>::type;
+  ::pressio::ode::implicitmethods::Euler, policy_t<Args...>>::type;
 
 template<template <typename...> class policy_t, typename... Args>
 using is_implicit_bdf2_residual_standard_policy =
   typename is_implicit_residual_standard_policy<
-  ::pressio::ode::ImplicitEnum::BDF2, policy_t<Args...>>::type;
+  ::pressio::ode::implicitmethods::BDF2, policy_t<Args...>>::type;
 
 
 

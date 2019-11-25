@@ -83,7 +83,7 @@ TEST(ode_explicit_rk4,
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
   // the standard policy
-  using res_std_pol_t = ode::policy::ExplicitVelocityStandardPolicy<
+  using res_std_pol_t = ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<
     state_t, app_t, res_t>;
   res_std_pol_t polObj;
   using stepper_t = ode::ExplicitStepper<

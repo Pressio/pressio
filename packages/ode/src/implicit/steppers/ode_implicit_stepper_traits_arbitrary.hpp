@@ -62,18 +62,18 @@ template<
   typename ...Args
   >
 struct traits<
-  ImplicitStepper<
-    ImplicitEnum::Arbitrary,
+  ::pressio::ode::implicitmethods::Stepper<
+    ::pressio::ode::implicitmethods::Arbitrary,
     state_type, residual_type,
     jacobian_type, system_type, Args...>
   > {
 
-  using stepper_t =   ImplicitStepper< ImplicitEnum::Arbitrary,
-				       state_type, residual_type,
-				       jacobian_type, system_type, Args...>;
+  using tag_name  = ::pressio::ode::implicitmethods::Arbitrary;
+
+  using stepper_t = ::pressio::ode::implicitmethods::Stepper<
+    tag_name, state_type, residual_type, jacobian_type, system_type, Args...>;
   using this_t = traits<stepper_t>;
 
-  static constexpr ode::ImplicitEnum enum_id = ode::ImplicitEnum::Arbitrary;
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
 
@@ -149,9 +149,9 @@ basically the size of the stpper stencil.");
   // standard policies (only used if not passed a user-defined policy)
   //-----------------------------------------------------------
   using standard_res_policy_t
-  = policy::ImplicitResidualStandardPolicyForArbitraryStepper<state_t, system_t, residual_t>;
+  = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicyForArbitraryStepper<state_t, system_t, residual_t>;
   using standard_jac_policy_t
-  = policy::ImplicitJacobianStandardPolicyForArbitraryStepper<state_t, system_t, jacobian_t>;
+  = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicyForArbitraryStepper<state_t, system_t, jacobian_t>;
 
 
   //-----------------------------------------------------------
@@ -189,7 +189,7 @@ pass a valid scalar type as a template argument to ImplicitStepper.");
   static_assert( !std::is_void<residual_policy_t>::value and
 		 !std::is_void<jacobian_policy_t>::value,
   		 "If you want to use an arbitrary implicit stepper, \
-i.e. when ode::ImplicitEnum::Arbitrary, you must provide user-defined \
+i.e. when ::pressio::ode::implicitmethods::Arbitrary, you must provide user-defined \
 residual and jacobian policies which are in charge of computing the \
 time discrete residual and its jacobian. ");
 

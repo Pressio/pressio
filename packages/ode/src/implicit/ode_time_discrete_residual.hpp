@@ -60,13 +60,13 @@ namespace pressio{ namespace ode{ namespace impl{
 // - on output, R contains the time-discrete residual
 
 template <
-  ode::ImplicitEnum method,
+  typename stepper_tag,
   typename state_type,
   typename residual_type,
   typename pre_states_type,
   typename scalar_type
   >
-mpl::enable_if_t<method == ode::ImplicitEnum::Euler>
+mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value>
 time_discrete_residual(const state_type	& odeCurrentState,
 		       residual_type	& R,
 		       const pre_states_type & prevStates,
@@ -83,13 +83,13 @@ time_discrete_residual(const state_type	& odeCurrentState,
 
 
 template <
-  ode::ImplicitEnum method,
+  typename stepper_tag,
   typename state_type,
   typename residual_type,
   typename pre_states_type,
   typename scalar_type
   >
-mpl::enable_if_t< method == ode::ImplicitEnum::BDF2>
+mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value>
 time_discrete_residual(const state_type	& odeCurrentState,
 		       residual_type	& R,
 		       const pre_states_type & prevStates,

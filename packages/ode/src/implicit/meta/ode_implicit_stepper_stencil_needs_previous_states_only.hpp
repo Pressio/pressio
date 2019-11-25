@@ -49,28 +49,28 @@
 #ifndef ODE_IMPLICIT_STEPPER_STENCIL_NEEDS_PREVIOUS_STATES_ONLY_HPP_
 #define ODE_IMPLICIT_STEPPER_STENCIL_NEEDS_PREVIOUS_STATES_ONLY_HPP_
 
-#include "../../ode_enum.hpp"
+#include "../../ode_stepper_tags.hpp"
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template <::pressio::ode::ImplicitEnum stepperName>
+template <typename tag_name>
 struct implicit_stepper_stencil_needs_previous_states_only
   : std::false_type{};
 
 template <>
 struct implicit_stepper_stencil_needs_previous_states_only<
-  ::pressio::ode::ImplicitEnum::Euler
+  ::pressio::ode::implicitmethods::Euler
   > : std::true_type{};
 
 template <>
 struct implicit_stepper_stencil_needs_previous_states_only<
-  ::pressio::ode::ImplicitEnum::BDF2
+  ::pressio::ode::implicitmethods::BDF2
   > : std::true_type{};
 
 // for the time being, leave arbitrary here
 template <>
 struct implicit_stepper_stencil_needs_previous_states_only<
-  ::pressio::ode::ImplicitEnum::Arbitrary
+  ::pressio::ode::implicitmethods::Arbitrary
   > : std::true_type{};
 
 

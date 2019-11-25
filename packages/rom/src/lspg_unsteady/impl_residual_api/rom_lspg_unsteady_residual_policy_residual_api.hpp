@@ -61,7 +61,7 @@ template <
   typename fom_querier_policy
   >
 class ResidualPolicyResidualApi
-  : public ode::policy::ImplicitResidualPolicyBase<
+  : public ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<
   ResidualPolicyResidualApi<residual_type, fom_states_data_type, fom_querier_policy>
   >,
   protected fom_querier_policy
@@ -71,7 +71,7 @@ public:
   using this_t = ResidualPolicyResidualApi<residual_type,
 						       fom_states_data_type,
 						       fom_querier_policy>;
-  friend ode::policy::ImplicitResidualPolicyBase<this_t>;
+  friend ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;

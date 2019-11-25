@@ -52,14 +52,14 @@
 #include "../../../ode_fwd.hpp"
 #include "../base/ode_implicit_residual_policy_base.hpp"
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<
   typename state_type,
   typename system_type,
   typename residual_type
   >
-class ImplicitResidualStandardPolicyForArbitraryStepper<
+class ResidualStandardPolicyForArbitraryStepper<
   state_type, system_type, residual_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
@@ -68,17 +68,17 @@ class ImplicitResidualStandardPolicyForArbitraryStepper<
     containers::meta::is_wrapper<residual_type>::value
     >
   >
-  : public ImplicitResidualPolicyBase<
-  ImplicitResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>>
+  : public ResidualPolicyBase<
+  ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>>
 {
 
   using this_t
-  = ImplicitResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>;
-  friend ImplicitResidualPolicyBase<this_t>;
+  = ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>;
+  friend ResidualPolicyBase<this_t>;
 
 public:
-  ImplicitResidualStandardPolicyForArbitraryStepper() = default;
-  ~ImplicitResidualStandardPolicyForArbitraryStepper() = default;
+  ResidualStandardPolicyForArbitraryStepper() = default;
+  ~ResidualStandardPolicyForArbitraryStepper() = default;
 
 public:
 
@@ -160,5 +160,5 @@ public:
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::implicitmethods::policy
 #endif

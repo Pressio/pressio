@@ -62,7 +62,7 @@ template<
   typename decoder_type
   >
 class JacobianPolicyResidualApi
-  : public ::pressio::ode::policy::JacobianPolicyBase<
+  : public ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<
 	JacobianPolicyResidualApi<fom_states_data_type,
 			   apply_jac_return_type,
 			   fom_querier_policy,
@@ -76,7 +76,7 @@ public:
 				    fom_querier_policy,
 				    decoder_type>;
 
-  friend ::pressio::ode::policy::JacobianPolicyBase<this_t>;
+  friend ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;

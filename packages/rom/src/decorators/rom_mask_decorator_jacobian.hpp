@@ -79,7 +79,7 @@ public:
 public:
 
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    typename stepper_tag,
     typename ode_state_t,
     typename app_t,
     typename scalar_t,
@@ -92,12 +92,12 @@ public:
 		  const ::pressio::ode::types::step_t & step,
 		  ode_jac_t & odeJJ) const
   {
-    maskable::template operator()<odeMethod>(odeY, app, t, dt, step, JJ_);
+    maskable::template operator()<stepper_tag>(odeY, app, t, dt, step, JJ_);
     app.applyMask(*JJ_.data(), *odeJJ.data(), t);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeMethod,
+    typename stepper_tag,
     typename ode_state_t,
     typename app_t,
     typename scalar_t
@@ -108,7 +108,7 @@ public:
 				const scalar_t & dt,
 				const ::pressio::ode::types::step_t & step) const
   {
-    maskable::template operator()<odeMethod>(odeY, app, t, dt, step, JJ_);
+    maskable::template operator()<stepper_tag>(odeY, app, t, dt, step, JJ_);
     if (!maskedJJ_){
       maskedJJ_ = std::make_shared<apply_jac_return_t>( app.applyMask(*JJ_.data(), t) );
     }

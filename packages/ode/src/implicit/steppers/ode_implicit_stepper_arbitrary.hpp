@@ -52,7 +52,7 @@
 #include "ode_implicit_stepper_traits_arbitrary.hpp"
 #include "ode_implicit_stepper_base.hpp"
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace implicitmethods{
 
 template<
   typename ode_state_type,
@@ -61,38 +61,38 @@ template<
   typename system_type,
   typename ... Args
   >
-class ImplicitStepper<
-  ImplicitEnum::Arbitrary,
+class Stepper<
+  ::pressio::ode::implicitmethods::Arbitrary,
   ode_state_type,
   ode_residual_type,
   ode_jacobian_type,
   system_type,
   Args...
   >
-  : public ImplicitStepperBase<
-  ImplicitStepper<
-    ImplicitEnum::Arbitrary, ode_state_type,
+  : public StepperBase<
+  Stepper<
+    ::pressio::ode::implicitmethods::Arbitrary, ode_state_type,
     ode_residual_type, ode_jacobian_type,
     system_type, Args...>
   >
 {
 
-  using this_t	       = ImplicitStepper<ImplicitEnum::Arbitrary,
-					 ode_state_type,
-					 ode_residual_type,
-					 ode_jacobian_type,
-					 system_type,
-					 Args...>;
-  using stepper_base_t = ImplicitStepperBase<this_t>;
+  using this_t	       = Stepper<::pressio::ode::implicitmethods::Arbitrary,
+				  ode_state_type,
+				  ode_residual_type,
+				  ode_jacobian_type,
+				  system_type,
+				  Args...>;
+  using stepper_base_t = StepperBase<this_t>;
   friend stepper_base_t;
 
-  using mytraits		= details::traits<this_t>;
+  using mytraits		= ::pressio::ode::details::traits<this_t>;
   using standard_res_policy_t	= typename mytraits::standard_res_policy_t;
   using standard_jac_policy_t	= typename mytraits::standard_jac_policy_t;
   using residual_pol_t		= typename mytraits::residual_policy_t;
   using jacobian_pol_t		= typename mytraits::jacobian_policy_t;
   using scalar_t		= typename mytraits::scalar_t;
-  static constexpr auto my_enum = mytraits::enum_id;
+  using tag_name		= typename mytraits::tag_name;
 
 public:
   // these need to be here because are detected by solver
@@ -102,10 +102,10 @@ public:
   using jacobian_type	= ode_jacobian_type;
 
 public:
-  ImplicitStepper() = delete;
-  ~ImplicitStepper() = default;
+  Stepper() = delete;
+  ~Stepper() = default;
 
-  ImplicitStepper(const ode_state_type & stateIn0,
+  Stepper(const ode_state_type & stateIn0,
   		  const system_type & model,
   		  const residual_pol_t & resPolicyObj,
   		  const jacobian_pol_t & jacPolicyObj)
@@ -120,7 +120,7 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepper(const ode_state_type & stateIn0,
+  Stepper(const ode_state_type & stateIn0,
 		  const system_type & model)
     : stepper_base_t{stateIn0, model}{}
 
@@ -222,5 +222,5 @@ private:
 
 };//end class
 
-}} // end namespace pressio::ode
+}}} // end namespace pressio::ode::implicitmethods
 #endif

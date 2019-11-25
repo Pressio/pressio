@@ -63,7 +63,7 @@ template <
   typename ud_ops
   >
 class ResidualPolicyVelocityApi
-  : public ::pressio::ode::policy::ImplicitResidualPolicyBase<
+  : public ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<
       ResidualPolicyVelocityApi<residual_type,
 			 fom_states_cont_type,
 			 fom_velocity_eval_policy,
@@ -76,7 +76,7 @@ public:
 				    fom_states_cont_type,
 				    fom_velocity_eval_policy,
 				    ud_ops>;
-  friend ::pressio::ode::policy::ImplicitResidualPolicyBase<this_t>;
+  friend ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
@@ -177,7 +177,7 @@ public:
 
 public:
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename lspg_state_t,
     typename prev_states_t,
     typename fom_t,
@@ -191,11 +191,11 @@ public:
 		  const ::pressio::ode::types::step_t & step,
 		  residual_t			   & romR) const
   {
-    this->compute_impl<odeStepperName>(romState, romR, romPrevStates, app, t, dt, step);
+    this->compute_impl<stepper_tag>(romState, romR, romPrevStates, app, t, dt, step);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename lspg_state_t,
     typename prev_states_t,
     typename fom_t,
@@ -208,7 +208,7 @@ public:
 			const scalar_t			   & dt,
 			const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeStepperName>(romState, R_, romPrevStates, app, t, dt, step);
+    this->compute_impl<stepper_tag>(romState, R_, romPrevStates, app, t, dt, step);
     return R_;
   }
 
@@ -217,7 +217,7 @@ public:
 private:
 
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
     typename _ud_ops = ud_ops,
@@ -229,11 +229,11 @@ private:
 				residual_t			& romR,
 				const scalar_t			& dt) const{
     using namespace ::pressio::rom::lspg::unsteady::impl;
-    time_discrete_residual<odeStepperName>(fomStates, romR, dt);
+    time_discrete_residual<stepper_tag>(fomStates, romR, dt);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
     typename _ud_ops = ud_ops,
@@ -245,13 +245,13 @@ private:
   				residual_t			& romR,
   				const scalar_t			& dt) const{
     using namespace ::pressio::rom::lspg::unsteady::impl;
-    time_discrete_residual<odeStepperName>(fomStates, romR, dt, udOps_);
+    time_discrete_residual<stepper_tag>(fomStates, romR, dt, udOps_);
   }
 
 
 private:
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename lspg_state_t,
     typename prev_states_t,
     typename fom_t,
@@ -296,7 +296,7 @@ private:
     timer->start("time discrete residual");
 #endif
 
-    this->time_discrete_dispatcher<odeStepperName>(fomStates_, romR, dt);
+    this->time_discrete_dispatcher<stepper_tag>(fomStates_, romR, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");

@@ -58,7 +58,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace 
 
 template <
   bool isCpp,
-  ::pressio::ode::ImplicitEnum odeName,
+  typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ...Args>
@@ -69,12 +69,12 @@ struct LSPGUnsteadyCommonTypesVelocityApi;
 // partial specialize for when we are native C++
 //-------------------------------------------------------
 template <
-  ::pressio::ode::ImplicitEnum odeName,
+  typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ...Args>
 struct LSPGUnsteadyCommonTypesVelocityApi<
-  true, odeName, fom_type, lspg_state_type, Args ...
+  true, stepper_tag, fom_type, lspg_state_type, Args ...
   >
 {
 
@@ -128,7 +128,7 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
   // total num of fom states (i.e. stencil size plus the state at current step) needed
-  static constexpr auto numStates = fomStatesStorageCapacityHelper<odeName>::value;
+  static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;
 
   // type of class holding the fom states
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
@@ -144,14 +144,14 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
 //-------------------------------------------------------
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
-  ::pressio::ode::ImplicitEnum odeName,
+  typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename decoder_type,
   typename ud_ops_type
   >
 struct LSPGUnsteadyCommonTypesVelocityApi<
-  false, odeName, fom_type, lspg_state_type, decoder_type, ud_ops_type
+  false, stepper_tag, fom_type, lspg_state_type, decoder_type, ud_ops_type
   >
 {
 
@@ -203,7 +203,7 @@ The type detected does not meet the requirements.");
   using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
 
   // total num of fom states (i.e. stencil size plus the state at current step) needed
-  static constexpr auto numStates = fomStatesStorageCapacityHelper<odeName>::value;
+  static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;
 
   // class type holding the fom states
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;

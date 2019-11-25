@@ -17,9 +17,9 @@ TEST(lspg, epetra_types_euler)
 
   static_assert(::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_t>::value , "");
 
-  constexpr auto ode_case  = pressio::ode::ImplicitEnum::Euler;
+  using ode_name_t = pressio::ode::implicitmethods::Euler;
   using lspg_problem = pressio::rom::LSPGUnsteadyProblem<
-    pressio::rom::DefaultLSPGUnsteady, ode_case, fom_t, lspg_state_t, decoder_t>;
+    pressio::rom::DefaultLSPGUnsteady, ode_name_t, fom_t, lspg_state_t, decoder_t>;
   using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
   static_assert(!std::is_void<lspg_stepper_t>::value, "");
 }
@@ -37,9 +37,9 @@ TEST(lspg, epetra_types_bdf2)
 
   static_assert(::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_t>::value , "");
 
-  constexpr auto ode_case  = pressio::ode::ImplicitEnum::BDF2;
+  using ode_name_t = pressio::ode::implicitmethods::BDF2;
   using lspg_problem = pressio::rom::LSPGUnsteadyProblem<
-    pressio::rom::DefaultLSPGUnsteady, ode_case, fom_t, lspg_state_t, decoder_t>;
+    pressio::rom::DefaultLSPGUnsteady, ode_name_t, fom_t, lspg_state_t, decoder_t>;
   using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
   static_assert(!std::is_void<lspg_stepper_t>::value, "");
 }

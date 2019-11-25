@@ -57,7 +57,7 @@
 #include <pybind11/functional.h>
 #endif
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace explicitmethods{ namespace policy{
 
 /*
  * state_type = velocity_type
@@ -67,7 +67,7 @@ template<
   typename state_type,
   typename system_type
   >
-class ExplicitVelocityStandardPolicy<
+class VelocityStandardPolicy<
   state_type, system_type, state_type,
   mpl::enable_if_t<
     containers::meta::is_vector_wrapper<state_type>::value
@@ -76,16 +76,16 @@ class ExplicitVelocityStandardPolicy<
 #endif
     >
   >
-  : public ExplicitVelocityPolicyBase<
-  ExplicitVelocityStandardPolicy<state_type, system_type> >{
+  : public VelocityPolicyBase<
+  VelocityStandardPolicy<state_type, system_type> >{
 
-  using base_t = ExplicitVelocityPolicyBase<
-    ExplicitVelocityStandardPolicy<state_type, system_type>>;
+  using base_t = VelocityPolicyBase<
+    VelocityStandardPolicy<state_type, system_type>>;
   friend base_t;
 
 public:
-  ExplicitVelocityStandardPolicy() = default;
-  ~ExplicitVelocityStandardPolicy() = default;
+  VelocityStandardPolicy() = default;
+  ~VelocityStandardPolicy() = default;
 
   template < typename scalar_type >
   void operator()(const state_type & state,
@@ -116,23 +116,23 @@ template<
   typename state_type,
   typename system_type
   >
-class ExplicitVelocityStandardPolicy<
+class VelocityStandardPolicy<
   state_type, system_type, state_type,
   mpl::enable_if_t<
     mpl::is_same<system_type, pybind11::object >::value and
     containers::meta::is_array_pybind11<state_type>::value
     >
   >
-  : public ExplicitVelocityPolicyBase<
-  ExplicitVelocityStandardPolicy<state_type, system_type> >{
+  : public VelocityPolicyBase<
+  VelocityStandardPolicy<state_type, system_type> >{
 
-  using base_t = ExplicitVelocityPolicyBase<
-    ExplicitVelocityStandardPolicy<state_type, system_type>>;
+  using base_t = VelocityPolicyBase<
+    VelocityStandardPolicy<state_type, system_type>>;
   friend base_t;
 
 public:
-  ExplicitVelocityStandardPolicy() = default;
-  ~ExplicitVelocityStandardPolicy() = default;
+  VelocityStandardPolicy() = default;
+  ~VelocityStandardPolicy() = default;
 
   template <typename scalar_type>
   void operator()(const state_type & state,
@@ -156,5 +156,5 @@ public:
 #endif
 
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::explicitmethods::policy
 #endif

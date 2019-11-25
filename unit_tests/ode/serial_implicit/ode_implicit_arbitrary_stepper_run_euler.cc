@@ -188,7 +188,7 @@ struct CustomBdf1Solver
   using rp_t = typename traits::residual_policy_t;
   static_assert( !std::is_void<rp_t>::value, "");
 
-  using std_r1 = ::pressio::ode::policy::ImplicitResidualStandardPolicyForArbitraryStepper<state_t, app_t, res_t>;
+  using std_r1 = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicyForArbitraryStepper<state_t, app_t, res_t>;
   using std_r2 = typename traits::standard_res_policy_t;
   static_assert( std::is_same<rp_t, std_r1>::value, "");
 

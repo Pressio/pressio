@@ -64,7 +64,7 @@ template<
   typename ud_ops
   >
 class JacobianPolicyVelocityApi
-  : public ::pressio::ode::policy::JacobianPolicyBase<
+  : public ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<
 	JacobianPolicyVelocityApi<fom_states_data_type,
 			   apply_jac_return_type,
 			   fom_apply_jac_policy,
@@ -80,7 +80,7 @@ public:
 				    decoder_type,
 				    ud_ops>;
 
-  friend ::pressio::ode::policy::JacobianPolicyBase<this_t>;
+  friend ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
@@ -187,7 +187,7 @@ public:
 
 public:
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename lspg_state_t, typename lspg_jac_t, typename app_t, typename scalar_t
   >
   void operator()(const lspg_state_t & romState,
@@ -197,11 +197,11 @@ public:
 		  const ::pressio::ode::types::step_t & step,
 		  lspg_jac_t	     & romJac) const
   {
-    this->compute_impl<odeStepperName>(romState, romJac, app, time, dt, step);
+    this->compute_impl<stepper_tag>(romState, romJac, app, time, dt, step);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename lspg_state_t, typename app_t, typename scalar_t
     >
   apply_jac_return_t operator()(const lspg_state_t & romState,
@@ -210,14 +210,14 @@ public:
 				const scalar_t     & dt,
 				const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeStepperName>(romState, JJ_, app, time, dt, step);
+    this->compute_impl<stepper_tag>(romState, JJ_, app, time, dt, step);
     return JJ_;
   }
 
 
 private:
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
@@ -229,11 +229,11 @@ private:
   void time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t  dt,
 				const decoder_jac_type & phi) const{
-    ::pressio::rom::lspg::unsteady::impl::time_discrete_jacobian<odeStepperName>(romJac, dt, phi);
+    ::pressio::rom::lspg::unsteady::impl::time_discrete_jacobian<stepper_tag>(romJac, dt, phi);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
@@ -245,12 +245,12 @@ private:
   void time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t dt,
 				const decoder_jac_type & phi) const{
-    ::pressio::rom::lspg::unsteady::impl::time_discrete_jacobian<odeStepperName>(romJac, dt, phi, udOps_);
+    ::pressio::rom::lspg::unsteady::impl::time_discrete_jacobian<stepper_tag>(romJac, dt, phi, udOps_);
   }
 
 
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename lspg_state_t,
     typename lspg_jac_t,
     typename app_t,
@@ -284,7 +284,7 @@ private:
     timer->start("time discrete jacob");
 #endif
 
-    this->time_discrete_dispatcher<odeStepperName>(romJac, dt, basis);
+    this->time_discrete_dispatcher<stepper_tag>(romJac, dt, basis);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete jacob");

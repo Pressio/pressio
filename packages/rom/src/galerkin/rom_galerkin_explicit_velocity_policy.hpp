@@ -62,7 +62,7 @@ template <
   typename ud_ops
   >
 class DefaultExplicitVelocityPolicy
-  : public ::pressio::ode::policy::ExplicitVelocityPolicyBase<
+  : public ::pressio::ode::explicitmethods::policy::VelocityPolicyBase<
        DefaultExplicitVelocityPolicy<fom_states_data_type,
 				     fom_rhs_t,
 				     decoder_t, ud_ops>>
@@ -73,7 +73,7 @@ protected:
 					       fom_rhs_t,
 					       decoder_t,
 					       ud_ops>;
-  friend ::pressio::ode::policy::ExplicitVelocityPolicyBase<this_t>;
+  friend ::pressio::ode::explicitmethods::policy::VelocityPolicyBase<this_t>;
 
 public:
   static constexpr bool isResidualPolicy_ = true;

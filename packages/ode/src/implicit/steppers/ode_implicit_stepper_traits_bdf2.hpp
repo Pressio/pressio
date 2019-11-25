@@ -62,20 +62,19 @@ template<
   typename ...Args
   >
 struct traits<
-  ImplicitStepper<
-    ImplicitEnum::BDF2,
+  ::pressio::ode::implicitmethods::Stepper<
+    ::pressio::ode::implicitmethods::BDF2,
     state_type, residual_type,
     jacobian_type, system_type,
     Args...>
   > {
 
-  using stepper_t =   ImplicitStepper< ImplicitEnum::BDF2,
-				       state_type, residual_type,
-				       jacobian_type, system_type,
-				       Args...>;
+  using tag_name = ::pressio::ode::implicitmethods::BDF2;
+
+  using stepper_t = ::pressio::ode::implicitmethods::Stepper<
+    tag_name, state_type, residual_type, jacobian_type, system_type, Args...>;
   using this_t = traits<stepper_t>;
 
-  static constexpr ode::ImplicitEnum enum_id = ode::ImplicitEnum::BDF2;
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
 
@@ -148,14 +147,14 @@ policies for the auxiliary stepper otherwise you are solving a different problem
 
   // check Args if a user-defined admissible residual policy is passed
   using ic2 = ::pressio::ode::meta::find_if_legitimate_implicit_residual_policy_t<
-    this_t::enum_id, this_t::numAuxStates, state_t, residual_t, system_t, scalar_t,
+    this_t::tag_name, this_t::numAuxStates, state_t, residual_t, system_t, scalar_t,
     Args...>;
   using residual_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_res_policy_t, ic2::value, Args...>;
 
   // check Args if a user-defined admissible jacobian policy is passed
   using ic3 = ::pressio::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
-    this_t::enum_id, state_t, jacobian_t, system_t, scalar_t,
+    this_t::tag_name, state_t, jacobian_t, system_t, scalar_t,
     Args...>;
   using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic3::value, Args...>;

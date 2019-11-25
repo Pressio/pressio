@@ -56,13 +56,12 @@ struct EulerLSPGWithResidualApi
     yROM_.putScalar(0.0);
 
     // define LSPG type
-    constexpr auto ode_case = pressio::ode::ImplicitEnum::Arbitrary;
-
+    using ode_tag = pressio::ode::implicitmethods::Arbitrary;
     using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
     using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
 
     using lspg_problem	 = pressio::rom::LSPGUnsteadyProblem<
-      pressio::rom::DefaultLSPGUnsteady, ode_case, fom_t,
+      pressio::rom::DefaultLSPGUnsteady, ode_tag, fom_t,
       lspg_state_t, decoder_t, stepper_order, stepper_n_states, scalar_t>;
     using lspg_stepper_t	 = typename lspg_problem::lspg_stepper_t;
     lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM_, t0);
@@ -149,10 +148,9 @@ struct EulerLSPGWithVelocityApi
     yROM_.putScalar(0.0);
 
     // define LSPG type
-    constexpr auto ode_case = pressio::ode::ImplicitEnum::Euler;
-
+    using ode_tag = pressio::ode::implicitmethods::Euler;
     using lspg_problem	 = pressio::rom::LSPGUnsteadyProblem<
-      pressio::rom::DefaultLSPGUnsteady, ode_case, fom_t, lspg_state_t, decoder_t>;
+      pressio::rom::DefaultLSPGUnsteady, ode_tag, fom_t, lspg_state_t, decoder_t>;
     using lspg_stepper_t	 = typename lspg_problem::lspg_stepper_t;
     lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM_, t0);
 

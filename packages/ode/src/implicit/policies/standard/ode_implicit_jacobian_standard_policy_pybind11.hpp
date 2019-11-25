@@ -56,14 +56,14 @@
 #include "../../meta/ode_is_legitimate_implicit_state_type.hpp"
 #include "../../meta/ode_is_legitimate_implicit_jacobian_type.hpp"
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<
   typename state_type,
   typename system_type,
   typename jacobian_type
   >
-class ImplicitJacobianStandardPolicyPybind11<
+class JacobianStandardPolicyPybind11<
   state_type, system_type, jacobian_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
@@ -72,50 +72,23 @@ class ImplicitJacobianStandardPolicyPybind11<
     containers::meta::is_array_pybind11<state_type>::value and
     containers::meta::is_array_pybind11<jacobian_type>::value
     >
-  > : public JacobianPolicyBase<ImplicitJacobianStandardPolicyPybind11<
+  > : public JacobianPolicyBase<JacobianStandardPolicyPybind11<
     state_type, system_type, jacobian_type> >
 {
 
-  using this_t = ImplicitJacobianStandardPolicyPybind11<state_type, system_type, jacobian_type>;
+  using this_t = JacobianStandardPolicyPybind11<state_type, system_type, jacobian_type>;
   friend JacobianPolicyBase<this_t>;
 
 public:
-  ImplicitJacobianStandardPolicyPybind11() = default;
-  ~ImplicitJacobianStandardPolicyPybind11() = default;
+  JacobianStandardPolicyPybind11() = default;
+  ~JacobianStandardPolicyPybind11() = default;
 
 public:
-  // template <
-  //   ode::ImplicitEnum method, typename scalar_t
-  // >
-  // void operator()(const state_type & y,
-  // 		  jacobian_type & J,
-  // 		  const system_type & model,
-  // 		  const scalar_t & t,
-  // 		  const scalar_t & dt,
-  // 		  const types::step_t & step)const
-  // {
-  //   throw std::runtime_error("ImplicitJacobianStandardPolicyPybind11 is missing");
-  //   // model.attr("jacobian2")(y, J, t);
-  //   // ::pressio::ode::impl::time_discrete_jacobian<method>(J, dt);
-  // }
 
-  // template <
-  //   ode::ImplicitEnum method, typename scalar_t
-  //   >
-  // jacobian_type operator()(const state_type & y,
-  // 			   const system_type & model,
-  // 			   const scalar_t & t,
-  // 			   const scalar_t & dt,
-  // 			   const types::step_t & step)const
-  // {
-  //   throw std::runtime_error("ImplicitJacobianStandardPolicyPybind11 is missing");
-  //   jacobian_type nJJ;// = model.attr("jacobian1")(y, t);
-  //   // ::pressio::ode::impl::time_discrete_jacobian<method>(nJJ, dt);
-  //   return nJJ;
-  // }
+  // todo
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::implicitmethods::policy
 #endif
 #endif

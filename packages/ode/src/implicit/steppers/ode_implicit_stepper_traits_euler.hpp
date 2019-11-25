@@ -62,21 +62,20 @@ template<
   typename ...Args
   >
 struct traits<
-  ImplicitStepper<
-    ImplicitEnum::Euler,
+  ::pressio::ode::implicitmethods::Stepper<
+    ::pressio::ode::implicitmethods::Euler,
     state_type, residual_type,
     jacobian_type, system_type,
     Args...>
   >
 {
 
-  using stepper_t =   ImplicitStepper< ImplicitEnum::Euler,
-				       state_type, residual_type,
-				       jacobian_type, system_type,
-				       Args...>;
+  using tag_name = ::pressio::ode::implicitmethods::Euler;
+
+  using stepper_t = ::pressio::ode::implicitmethods::Stepper<
+    tag_name, state_type, residual_type, jacobian_type, system_type, Args...>;
   using this_t = traits<stepper_t>;
 
-  static constexpr ode::ImplicitEnum enum_id = ode::ImplicitEnum::Euler;
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
 
@@ -162,13 +161,13 @@ the containers, pass scalar as a template.");
 
   // check Args for a user-defined admissible residual policy
   using ic1 = ::pressio::ode::meta::find_if_legitimate_implicit_residual_policy_t<
-    this_t::enum_id, this_t::numAuxStates, state_t, residual_t, system_t, scalar_t, Args...>;
+    this_t::tag_name, this_t::numAuxStates, state_t, residual_t, system_t, scalar_t, Args...>;
   using residual_policy_t = ::pressio::mpl::variadic::at_or_t<
     standard_res_policy_t, ic1::value, Args...>;
 
   // check Args for a user-defined admissible jacobian policy
   using ic2 = ::pressio::ode::meta::find_if_legitimate_implicit_jacobian_policy_t<
-    this_t::enum_id, state_t, jacobian_t, system_t, scalar_t, Args...>;
+    this_t::tag_name, state_t, jacobian_t, system_t, scalar_t, Args...>;
   using jacobian_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_jac_policy_t, ic2::value, Args...>;
 
