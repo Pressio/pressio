@@ -63,12 +63,12 @@ template <typename matrix_type, typename ops_t, typename enable = void>
 struct PyLinearDecoder;
 #endif
 
-/* operators */
-template<typename wrapped_type, typename enable = void>
-class MultiVectorOperator;
+// /* operators */
+// template<typename wrapped_type, typename enable = void>
+// class MultiVectorOperator;
 
-template<typename wrapped_type, typename enable = void>
-class MatrixOperator;
+// template<typename wrapped_type, typename enable = void>
+// class MatrixOperator;
 
 
 /*--- decorators ---*/
