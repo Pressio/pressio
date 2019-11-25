@@ -59,11 +59,6 @@ namespace pressio{ namespace containers{ namespace ops{
  * multi_vector prod vector
  */
 
-
-//-------------------------------------------------------//
-//  EPETRA multivector with eigen vector
-//-------------------------------------------------------//
-
 // the result type is an Epetra wrapper and object is passed in
 template <
   typename mvec_type,
@@ -71,7 +66,8 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    containers::meta::is_vector_wrapper_eigen<vec_type>::value
+    (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
+     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
     > * = nullptr
   >
 void product(const mvec_type & mvA,
@@ -104,7 +100,8 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    containers::meta::is_vector_wrapper_eigen<vec_type>::value
+    (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
+     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
   > * = nullptr
  >
 containers::Vector<Epetra_Vector>
@@ -123,68 +120,66 @@ product(const mvec_type & mvA, const vec_type & vecB) {
 }
 
 
-//-------------------------------------------------------//
-//  EPETRA multivector with teuchos vector
-//-------------------------------------------------------//
+// //-------------------------------------------------------//
+// //  EPETRA multivector with teuchos vector
+// //-------------------------------------------------------//
 
-template <
-  typename mvec_type,
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
-    > * = nullptr
-  >
-void product(const mvec_type & mvA,
-	     const vec_type & vecB,
-	     containers::Vector<Epetra_Vector> & C){
+// template <
+//   typename mvec_type,
+//   typename vec_type,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
+//     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+//     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
+//     > * = nullptr
+//   >
+// void product(const mvec_type & mvA,
+// 	     const vec_type & vecB,
+// 	     containers::Vector<Epetra_Vector> & C){
 
-  //zero out result
-  C.setZero();
-  // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
-  // size of vecB
-  assert(size_t(numVecs) == size_t(vecB.size()));
-  // the data map of the multivector
-  const auto mvMap = mvA.getDataMap();
-  // my number of rows
-  const auto myNrows = mvMap.NumMyElements();
+//   //zero out result
+//   C.setZero();
+//   // how many vectors are in mvA
+//   const auto numVecs = mvA.globalNumVectors();
+//   // size of vecB
+//   assert(size_t(numVecs) == size_t(vecB.size()));
+//   // the data map of the multivector
+//   const auto mvMap = mvA.getDataMap();
+//   // my number of rows
+//   const auto myNrows = mvMap.NumMyElements();
 
-  // loop
-  for (decltype(myNrows) i=0; i<myNrows; i++){
-    for (decltype(numVecs) j=0; j<numVecs; j++){
-      C[i] += mvA(i,j) * vecB[j];
-    }
-  }
-}
+//   // loop
+//   for (decltype(myNrows) i=0; i<myNrows; i++){
+//     for (decltype(numVecs) j=0; j<numVecs; j++){
+//       C[i] += mvA(i,j) * vecB[j];
+//     }
+//   }
+// }
 
-// result is returned
-template <
-  typename mvec_type,
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
-  > * = nullptr
- >
-containers::Vector<Epetra_Vector>
-product(const mvec_type & mvA, const vec_type & vecB) {
+// // result is returned
+// template <
+//   typename mvec_type,
+//   typename vec_type,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
+//     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+//     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
+//   > * = nullptr
+//  >
+// containers::Vector<Epetra_Vector>
+// product(const mvec_type & mvA, const vec_type & vecB) {
 
-  // here, mvA is distrubted, but vecB is NOT.
-  // we interpret this as a linear combination of vectors
+//   // here, mvA is distrubted, but vecB is NOT.
+//   // we interpret this as a linear combination of vectors
 
-  // the data map of the multivector
-  const auto mvMap = mvA.getDataMap();
-  // result is an Epetra Vector with same distribution of mvA
-  using res_t = containers::Vector<Epetra_Vector>;
-  res_t c(mvMap);
-  product(mvA, vecB, c);
-  return c;
-}
-
-
+//   // the data map of the multivector
+//   const auto mvMap = mvA.getDataMap();
+//   // result is an Epetra Vector with same distribution of mvA
+//   using res_t = containers::Vector<Epetra_Vector>;
+//   res_t c(mvMap);
+//   product(mvA, vecB, c);
+//   return c;
+// }
 
 
 

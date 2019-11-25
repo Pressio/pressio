@@ -60,10 +60,6 @@ namespace pressio{ namespace containers{ namespace ops{
  */
 
 
-//-------------------------------------------------------//
-//  TPETRA_BLOCK multivector with eigen vector
-//-------------------------------------------------------//
-
 // the result type is an Tpetra_Block wrapper and object is passed in
 template <
   typename mvec_type,
