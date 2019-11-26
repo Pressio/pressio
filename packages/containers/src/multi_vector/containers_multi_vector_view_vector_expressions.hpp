@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_fwd.hpp
+// containers_multi_vector_view_vector_expressions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,64 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_FORWARD_DECLARATIONS_HPP_
-#define CONTAINERS_FORWARD_DECLARATIONS_HPP_
+#ifndef CONTAINERS_MULTI_VECTOR_VIEW_VECTOR_EXPRESSIONS_HPP_
+#define CONTAINERS_MULTI_VECTOR_VIEW_VECTOR_EXPRESSIONS_HPP_
 
-#include "containers_ConfigDefs.hpp"
+#include "containers_multi_vector_meta.hpp"
 
-namespace pressio{ namespace containers{
+namespace pressio{ namespace containers{ namespace exprtemplates{
 
-template <typename wrapped_type,
-	  typename Enable = void>
-class Vector;
+template <typename mv_t, typename scalar_type>
+struct ViewColumnVectorExpr<
+  mv_t, scalar_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mv_t>::value
+    >
+  >
+{
+  static constexpr auto is_view_vector_expr = true;
+  static constexpr auto is_view_col_vector_expr = true;
+  using scalar_t = scalar_type;
 
-template <typename wrapped_type,
-	  typename Enable = void>
-class MultiVector;
+private:
+  const mv_t & mvObj_;
+  const std::size_t vecIndex_;
 
-template <typename wrapped_type,
-	  typename Enable = void>
-class Matrix;
+public:
+  ViewColumnVectorExpr() = delete;
+  ~ViewColumnVectorExpr() = default;
 
-template<typename T,
-	 typename enable = void>
-struct traits;
+  ViewColumnVectorExpr(const mv_t & mvObjIn, const std::size_t vecIndexIn)
+    : mvObj_(mvObjIn), vecIndex_(vecIndexIn){}
 
-namespace exprtemplates{
-template <typename mv_t, typename scalar_t, typename enable = void>
-struct ViewColumnVectorExpr;
-}
+  ViewColumnVectorExpr(const ViewColumnVectorExpr & other) = default;
+  ViewColumnVectorExpr(ViewColumnVectorExpr && other) = default;
+  ViewColumnVectorExpr & operator=(const ViewColumnVectorExpr & other) = default;
+  ViewColumnVectorExpr & operator=(ViewColumnVectorExpr && other) = default;
 
-}} // end namespace pressio::containers
+  // this is for a column vector, so return the # of rows
+  std::size_t size() const{
+    return mvObj_.length();
+  }
+
+  const scalar_t & operator()(const std::size_t & rowIndex) const{
+    return mvObj_(rowIndex, vecIndex_);
+  }
+
+  const scalar_t & operator[](const std::size_t & rowIndex) const{
+    return (*this)(rowIndex);
+  }
+
+  // these should not be used unless for special cases where
+  // we know what types are involved, and you know what you are doing
+  std::size_t getIndex() const{
+    return vecIndex_;
+  }
+  const mv_t & getCRefToObject() const{
+    return mvObj_;
+  }
+};
+
+}}} //end namespace pressio::containers::exprtemplates
+
 #endif

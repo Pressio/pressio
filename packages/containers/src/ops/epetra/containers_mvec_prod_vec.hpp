@@ -55,11 +55,40 @@
 
 namespace pressio{ namespace containers{ namespace ops{
 
-/*
- * multi_vector prod vector
- */
+/* epetra multi_vector prod vector */
 
-// the result type is an Epetra wrapper and object is passed in
+
+// begin namespace pressio::containers::ops::impl
+namespace impl{
+template <typename mvec_type, typename operand_type>
+void _product_epetra_mv_sharedmem_vec(const mvec_type & mvA,
+				      const operand_type & b,
+				      containers::Vector<Epetra_Vector> & C){
+  //zero out result
+  C.setZero();
+  // how many vectors are in mvA
+  const auto numVecs = mvA.globalNumVectors();
+  // size of b
+  assert(size_t(numVecs) == size_t(b.size()));
+  // the data map of the multivector
+  const auto mvMap = mvA.getDataMap();
+  // my number of rows
+  const auto myNrows = mvMap.NumMyElements();
+
+  // loop
+  for (size_t i=0; i<(size_t)myNrows; i++){
+    for (size_t j=0; j<(size_t)numVecs; j++){
+      C[i] += mvA(i,j) * b[j];
+    }
+  }
+}
+}//end namespace pressio::containers::ops::impl
+
+
+
+/* -------------------------------------------------------------------
+ * specialize for epetra mv operating on a sharedmem vector wrapper
+ *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
   typename vec_type,
@@ -72,38 +101,21 @@ template <
   >
 void product(const mvec_type & mvA,
 	     const vec_type & vecB,
-	     containers::Vector<Epetra_Vector> & C){
-
-  //zero out result
-  C.setZero();
-  // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
-  // size of vecB
-  assert(size_t(numVecs) == size_t(vecB.size()));
-  // the data map of the multivector
-  const auto mvMap = mvA.getDataMap();
-  // my number of rows
-  const auto myNrows = mvMap.NumMyElements();
-
-  // loop
-  for (size_t i=0; i<(size_t)myNrows; i++){
-    for (size_t j=0; j<(size_t)numVecs; j++){
-      C[i] += mvA(i,j) * vecB[j];
-    }
-  }
+	     containers::Vector<Epetra_Vector> & C)
+{
+  ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, vecB, C);
 }
 
 // return result Epetra wrapper
 template <
-  typename mvec_type,
-  typename vec_type,
+  typename mvec_type, typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
      containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
-  > * = nullptr
- >
+    > * = nullptr
+  >
 containers::Vector<Epetra_Vector>
 product(const mvec_type & mvA, const vec_type & vecB) {
 
@@ -120,133 +132,43 @@ product(const mvec_type & mvA, const vec_type & vecB) {
 }
 
 
-// //-------------------------------------------------------//
-// //  EPETRA multivector with teuchos vector
-// //-------------------------------------------------------//
 
-// template <
-//   typename mvec_type,
-//   typename vec_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-//     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-//     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
-//     > * = nullptr
-//   >
-// void product(const mvec_type & mvA,
-// 	     const vec_type & vecB,
-// 	     containers::Vector<Epetra_Vector> & C){
+/* -------------------------------------------------------------------
+ * specialize for epetra mv operating on an expression like viewColvector
+ *-------------------------------------------------------------------*/
+template <
+  typename mvec_type,
+  typename expr_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
+    expr_type::is_view_vector_expr
+    > * = nullptr
+  >
+void product(const mvec_type & mvA,
+	     const expr_type & b,
+	     containers::Vector<Epetra_Vector> & C)
+{
+  ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, b, C);
+}
 
-//   //zero out result
-//   C.setZero();
-//   // how many vectors are in mvA
-//   const auto numVecs = mvA.globalNumVectors();
-//   // size of vecB
-//   assert(size_t(numVecs) == size_t(vecB.size()));
-//   // the data map of the multivector
-//   const auto mvMap = mvA.getDataMap();
-//   // my number of rows
-//   const auto myNrows = mvMap.NumMyElements();
+// return result Epetra wrapper
+template <
+  typename mvec_type,
+  typename expr_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
+    expr_type::is_view_vector_expr
+    > * = nullptr
+  >
+containers::Vector<Epetra_Vector>
+product(const mvec_type & mvA, const expr_type & b) {
 
-//   // loop
-//   for (decltype(myNrows) i=0; i<myNrows; i++){
-//     for (decltype(numVecs) j=0; j<numVecs; j++){
-//       C[i] += mvA(i,j) * vecB[j];
-//     }
-//   }
-// }
-
-// // result is returned
-// template <
-//   typename mvec_type,
-//   typename vec_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-//     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-//     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value
-//   > * = nullptr
-//  >
-// containers::Vector<Epetra_Vector>
-// product(const mvec_type & mvA, const vec_type & vecB) {
-
-//   // here, mvA is distrubted, but vecB is NOT.
-//   // we interpret this as a linear combination of vectors
-
-//   // the data map of the multivector
-//   const auto mvMap = mvA.getDataMap();
-//   // result is an Epetra Vector with same distribution of mvA
-//   using res_t = containers::Vector<Epetra_Vector>;
-//   res_t c(mvMap);
-//   product(mvA, vecB, c);
-//   return c;
-// }
-
-
-
-//-------------------------------------------------------//
-//  EPETRA multivector with armadillo vector
-//-------------------------------------------------------//
-// //-----------------------------------------------------
-// // we pass the result object
-// template <
-//   typename mvec_type,
-//   typename vec_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-//     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-//     (containers::meta::is_column_vector_wrapper_armadillo<vec_type>::value or
-//      containers::meta::is_row_vector_wrapper_armadillo<vec_type>::value)
-//     > * = nullptr
-//   >
-// void product(const mvec_type & mvA,
-// 	     const vec_type & vecB,
-// 	     containers::Vector<Epetra_Vector> & C){
-
-//   //zero out result
-//   C.setZero();
-//   // how many vectors are in mvA
-//   const auto numVecs = mvA.globalNumVectors();
-//   // size of vecB
-//   const size_t vecBLen = vecB.size();
-//   assert(size_t(numVecs) == vecBLen);
-//   // the data map of the multivector
-//   const auto mvMap = mvA.getDataMap();
-//   // my number of rows
-//   const auto myNrows = mvMap.NumMyElements();
-
-//   // loop
-//   for (decltype(myNrows) i=0; i<myNrows; i++){
-//     for (decltype(numVecs) j=0; j<numVecs; j++){
-//       C[i] += mvA(i,j) * vecB[j];
-//     }
-//   }
-// }
-// //-------------------------------------------------------
-
-// // result is returned
-// template <typename mvec_type,
-// 	  typename vec_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-//     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-//     (containers::meta::is_column_vector_wrapper_armadillo<vec_type>::value or
-//      containers::meta::is_row_vector_wrapper_armadillo<vec_type>::value)
-//   > * = nullptr
-//  >
-// containers::Vector<Epetra_Vector>
-// product(const mvec_type & mvA, const vec_type & vecB) {
-
-//   // here, mvA is distrubted, but vecB is NOT.
-//   // we interpret this as a linear combination of vectors
-
-//   // the data map of the multivector
-//   const auto mvMap = mvA.getDataMap();
-//   // result is an Epetra Vector with same distribution of mvA
-//   using res_t = containers::Vector<Epetra_Vector>;
-//   res_t c(mvMap);
-//   product(mvA, vecB, c);
-//   return c;
-// }
+  const auto mvMap = mvA.getDataMap();
+  using res_t = containers::Vector<Epetra_Vector>;
+  res_t c(mvMap);
+  product(mvA, b, c);
+  return c;
+}
 
 
 }}}//end namespace pressio::containers::ops
