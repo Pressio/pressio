@@ -100,60 +100,6 @@ vec_type product(const mvec_type & mvA, const vec_type & vecB){
 }
 
 
-
-// /* -------------------------------------------------------------------
-//  * specialize for eigen mv operating on a column vector of eigen mv
-//  *-------------------------------------------------------------------*/
-// template <
-//   typename mvecA_type,
-//   typename mvecB_type,
-//   typename vec_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_eigen<mvecA_type>::value and
-//     containers::meta::is_multi_vector_wrapper_eigen<mvecB_type>::value and
-//     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
-//     containers::meta::wrapper_pair_have_same_scalar<mvecA_type, vec_type>::value and
-//     containers::meta::wrapper_pair_have_same_scalar<mvecA_type, mvecB_type>::value
-//     > * = nullptr
-//   >
-// void product(const mvecA_type & mvA, const mvecB_type & mvB, vec_type & C,
-// 	     const std::size_t & index)
-// {
-//   assert( C.size() == mvA.length() );
-//   const auto numVecs = mvA.numVectors();
-//   assert(numVecs == mvB.length());
-
-//   const auto colVec = mvB.data()->col(index);
-//   (*C.data()) = (*mvA.data()) * colVec;
-// }//end function
-
-
-// template <
-//   typename mvecA_type,
-//   typename mvecB_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_eigen<mvecA_type>::value and
-//     containers::meta::is_multi_vector_wrapper_eigen<mvecB_type>::value and
-//     containers::meta::wrapper_pair_have_same_scalar<mvecA_type, mvecB_type>::value
-//     > * = nullptr
-//   >
-// auto product(const mvecA_type & mvA, const mvecB_type & mvB, const std::size_t & index)
-//   // return a wrapper of a dynamic col vector
-//   -> ::pressio::containers::Vector<
-//     Eigen::Matrix< typename containers::details::traits<mvecA_type>::scalar_t, -1, 1>
-//     >
-// {
-//   using scalar_t  = typename containers::details::traits<mvecA_type>::scalar_t;
-//   using eig_vec_t = Eigen::Matrix<scalar_t, -1, 1>;
-//   using return_t  = ::pressio::containers::Vector<eig_vec_t>;
-
-//   return_t c(mvA.length());
-//   product(mvA, mvB, c, index);
-//   return c;
-// }
-
-
-
 /* -------------------------------------------------------------------
  * specialize for eigen mv operating on an expression
  *-------------------------------------------------------------------*/
