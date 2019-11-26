@@ -52,19 +52,15 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   {
     // view the vector at j=0
     const auto colVec = B.viewColumnVector(0);
-    EXPECT_DOUBLE_EQ( colVec(0), B(0,0) );
-    EXPECT_DOUBLE_EQ( colVec[0], colVec(0) );
-    EXPECT_DOUBLE_EQ( colVec(3), B(3,0) );
-    EXPECT_DOUBLE_EQ( colVec[3], colVec(3) );
+    EXPECT_DOUBLE_EQ( colVec[0], B(0,0) );
+    EXPECT_DOUBLE_EQ( colVec[3], B(3,0) );
   }
 
   {
     // view the vector at j=1
     const auto colVec = B.viewColumnVector(1);
-    EXPECT_DOUBLE_EQ( colVec(1), B(1,1) );
-    EXPECT_DOUBLE_EQ( colVec[1], colVec(1) );
-    EXPECT_DOUBLE_EQ( colVec(2), B(2,1) );
-    EXPECT_DOUBLE_EQ( colVec[2], colVec(2) );
+    EXPECT_DOUBLE_EQ( colVec[1], B(1,1) );
+    EXPECT_DOUBLE_EQ( colVec[2], B(2,1) );
   }
 
   // do product

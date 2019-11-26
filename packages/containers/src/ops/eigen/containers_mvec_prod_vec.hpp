@@ -56,7 +56,7 @@ namespace pressio{ namespace containers{ namespace ops{
 /* multi_vector prod vector */
 
 /* -------------------------------------------------------------------
- * specialize for eigen mv operating on a eigen vector
+ * specialize for eigen mv wrapper operating on a eigen vector wrapper
  *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
@@ -101,7 +101,7 @@ vec_type product(const mvec_type & mvA, const vec_type & vecB){
 
 
 /* -------------------------------------------------------------------
- * specialize for eigen mv operating on an expression
+ * specialize for eigen mv wrapper operating on an col vector expression
  *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
@@ -114,16 +114,13 @@ template <
     expr_type::is_view_col_vector_expr
     > * = nullptr
   >
-void product(const mvec_type & mvA, const expr_type & b, vec_type & C)
+void product(const mvec_type & mvA, const expr_type & exprObj, vec_type & C)
 {
   assert( C.size() == mvA.length() );
   const auto numVecs = mvA.numVectors();
-  assert(numVecs == b.size());
+  assert(numVecs == exprObj.size());
 
-  const auto & wrapper = b.getCRefToObject();
-  const auto & colIndex = b.getIndex();
-  (*C.data()) = (*mvA.data()) * (wrapper.data()->col(colIndex) );
-
+  *C.data() = (*mvA.data()) * exprObj();
 }//end function
 
 
@@ -135,7 +132,7 @@ template <
     expr_type::is_view_col_vector_expr
     > * = nullptr
   >
-auto product(const mvec_type & mvA, const expr_type & b)
+auto product(const mvec_type & mvA, const expr_type & exprObj)
   // return a wrapper of a dynamic col vector
   -> ::pressio::containers::Vector<
     Eigen::Matrix< typename containers::details::traits<mvec_type>::scalar_t, -1, 1>
@@ -146,7 +143,7 @@ auto product(const mvec_type & mvA, const expr_type & b)
   using return_t  = ::pressio::containers::Vector<eig_vec_t>;
 
   return_t c(mvA.length());
-  product(mvA, b, c);
+  product(mvA, exprObj, c);
   return c;
 }
 

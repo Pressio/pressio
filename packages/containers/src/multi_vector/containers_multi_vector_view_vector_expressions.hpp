@@ -64,6 +64,7 @@ struct ViewColumnVectorExpr<
   static constexpr auto is_view_vector_expr = true;
   static constexpr auto is_view_col_vector_expr = true;
   using scalar_t = scalar_type;
+  using data_t = mv_t;
 
 private:
   const mv_t & mvObj_;
@@ -72,37 +73,69 @@ private:
 public:
   ViewColumnVectorExpr() = delete;
   ~ViewColumnVectorExpr() = default;
-
-  ViewColumnVectorExpr(const mv_t & mvObjIn, const std::size_t vecIndexIn)
-    : mvObj_(mvObjIn), vecIndex_(vecIndexIn){}
-
   ViewColumnVectorExpr(const ViewColumnVectorExpr & other) = default;
   ViewColumnVectorExpr(ViewColumnVectorExpr && other) = default;
   ViewColumnVectorExpr & operator=(const ViewColumnVectorExpr & other) = default;
   ViewColumnVectorExpr & operator=(ViewColumnVectorExpr && other) = default;
+
+  ViewColumnVectorExpr(const mv_t & mvObjIn, const std::size_t vecIndexIn)
+    : mvObj_(mvObjIn), vecIndex_(vecIndexIn){}
 
   // this is for a column vector, so return the # of rows
   std::size_t size() const{
     return mvObj_.length();
   }
 
-  const scalar_t & operator()(const std::size_t & rowIndex) const{
+  const scalar_t & operator[](const std::size_t & rowIndex) const{
     return mvObj_(rowIndex, vecIndex_);
   }
 
-  const scalar_t & operator[](const std::size_t & rowIndex) const{
-    return (*this)(rowIndex);
-  }
-
-  // these should not be used unless for special cases where
-  // we know what types are involved, and you know what you are doing
-  std::size_t getIndex() const{
-    return vecIndex_;
-  }
-  const mv_t & getCRefToObject() const{
-    return mvObj_;
+  auto operator()() const -> decltype(mvObj_.data()->col(vecIndex_))
+  {
+    return mvObj_.data()->col(vecIndex_);
   }
 };
+
+
+template <typename mv_t, typename scalar_type>
+struct ViewColumnVectorExpr<
+  mv_t, scalar_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<mv_t>::value
+    >
+  >
+{
+  static constexpr auto is_view_vector_expr = true;
+  static constexpr auto is_view_col_vector_expr = true;
+  using scalar_t = scalar_type;
+  using data_t = mv_t;
+
+private:
+  const mv_t & mvObj_;
+  const std::size_t vecIndex_;
+
+public:
+  ViewColumnVectorExpr() = delete;
+  ~ViewColumnVectorExpr() = default;
+  ViewColumnVectorExpr(const ViewColumnVectorExpr & other) = default;
+  ViewColumnVectorExpr(ViewColumnVectorExpr && other) = default;
+  ViewColumnVectorExpr & operator=(const ViewColumnVectorExpr & other) = default;
+  ViewColumnVectorExpr & operator=(ViewColumnVectorExpr && other) = default;
+
+  ViewColumnVectorExpr(const mv_t & mvObjIn, const std::size_t vecIndexIn)
+    : mvObj_(mvObjIn), vecIndex_(vecIndexIn){}
+
+  // this is for a column vector, so return the # of rows
+  std::size_t size() const{
+    return mvObj_.length();
+  }
+
+  auto operator()() const -> decltype( Kokkos::subview(*mvObj_.data(), Kokkos::ALL(), vecIndex_) )
+  {
+    return Kokkos::subview(*mvObj_.data(), Kokkos::ALL(), vecIndex_);
+  }
+};
+
 
 }}} //end namespace pressio::containers::exprtemplates
 

@@ -301,8 +301,7 @@ struct traits<
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
-  // for now it is void, but need to enable this
-  using view_col_vec_ret_t = void;
+  using view_col_vec_ret_t = exprtemplates::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
 
   static constexpr bool has_host_execution_space =
     (false

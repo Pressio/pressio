@@ -87,7 +87,7 @@ void _product_epetra_mv_sharedmem_vec(const mvec_type & mvA,
 
 
 /* -------------------------------------------------------------------
- * specialize for epetra mv operating on a sharedmem vector wrapper
+ * specialize for epetra mv wrapper operating on a sharedmem vector wrapper
  *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
@@ -134,7 +134,7 @@ product(const mvec_type & mvA, const vec_type & vecB) {
 
 
 /* -------------------------------------------------------------------
- * specialize for epetra mv operating on an expression like viewColvector
+ * specialize for epetra mv wrapper operating on an expression like viewColvector
  *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
@@ -145,10 +145,10 @@ template <
     > * = nullptr
   >
 void product(const mvec_type & mvA,
-	     const expr_type & b,
+	     const expr_type & exprObj,
 	     containers::Vector<Epetra_Vector> & C)
 {
-  ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, b, C);
+  ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, exprObj, C);
 }
 
 // return result Epetra wrapper
@@ -161,12 +161,12 @@ template <
     > * = nullptr
   >
 containers::Vector<Epetra_Vector>
-product(const mvec_type & mvA, const expr_type & b) {
+product(const mvec_type & mvA, const expr_type & exprObj) {
 
   const auto mvMap = mvA.getDataMap();
   using res_t = containers::Vector<Epetra_Vector>;
   res_t c(mvMap);
-  product(mvA, b, c);
+  product(mvA, exprObj, c);
   return c;
 }
 
