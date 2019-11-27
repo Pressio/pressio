@@ -97,6 +97,7 @@ public:
 };
 
 
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename mv_t, typename scalar_type>
 struct ViewColumnVectorExpr<
   mv_t, scalar_type,
@@ -135,7 +136,7 @@ public:
     return Kokkos::subview(*mvObj_.data(), Kokkos::ALL(), vecIndex_);
   }
 };
-
+#endif
 
 }}} //end namespace pressio::containers::exprtemplates
 
