@@ -86,10 +86,6 @@ class Vector<
 public:
   Vector() = delete;
 
-  // explicit Vector(const map_t & mapO,
-  // 		  const LO_t blockSize)
-  //   : data_(mapO, blockSize){}
-
 
   /* Block MV/V still missing a copy constructor,
    * see https://github.com/trilinos/Trilinos/issues/4627
@@ -104,22 +100,36 @@ public:
 		 ::pressio::utils::constants::zero<sc_t>());
   }
 
-  // delegate (for now) to the one above
-  Vector(this_t const & other)
-    : Vector(*other.data()){}
 
-  ~Vector() = default;
+  // here we do not default the copy and move because if we did that,
+  // it would use the tpetra copy/move which have view semantics
+  // which is not what we want here (for the time being)
 
-public:
+  // copy cnstr delegating (for now) to the one above
+  Vector(Vector const & other) : Vector(*other.data()){}
 
   // copy assignment
-  this_t & operator=(const this_t & other){
+  Vector & operator=(const Vector & other){
     this->data_.update(::pressio::utils::constants::one<sc_t>(),
 		       *other.data(),
 		       ::pressio::utils::constants::zero<sc_t>() );
     return *this;
   }
 
+  // move cnstr
+  Vector(Vector && other) : Vector(*other.data()){}
+
+  // move assignment
+  Vector & operator=(Vector && other){
+    this->data_.update(::pressio::utils::constants::one<sc_t>(),
+		       *other.data(),
+		       ::pressio::utils::constants::zero<sc_t>() );
+    return *this;
+  }
+
+  ~Vector() = default;
+
+public:
   // compound add assignment when type(b) = type(this)
   // this += b
   this_t & operator+=(const this_t & other) {

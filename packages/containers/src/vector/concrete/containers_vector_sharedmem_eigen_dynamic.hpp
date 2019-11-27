@@ -83,23 +83,24 @@ class Vector<wrapped_type,
 public:
   Vector() = default;
 
-  ~Vector() = default;
-
   explicit Vector(ord_t insize){
     this->resize(insize);
     this->setZero();
   }
+  explicit Vector(const wrap_t & src) : data_(src){}
 
-  explicit Vector(const wrap_t & src)
-    : data_(src){}
-
-  Vector(this_t const & other)
-    : data_(*other.data()){
-  }
-
+  // copy cnstr
+  Vector(Vector const & other) = default;
+  // copy assignment
+  Vector & operator=(const Vector & other) = default;
+  // move cnstr
+  Vector(Vector && o) = default;
+  // move assignment
+  Vector & operator=(Vector && other) = default;
+  // destructor
+  ~Vector() = default;
 
 public:
-
   // constructor from any expression, force evaluation
   template <typename T,
   	    ::pressio::mpl::enable_if_t<
@@ -122,14 +123,6 @@ public:
     return *this;
   }
 
-  // assignment with other vector of same type
-  this_t & operator=(const this_t & other){
-    if(this->size() != other.size())
-       this->resize( other.size() );
-    data_ = *other.data();
-    return *this;
-  }
-
   // assignment with value
   template <typename T,
   	    ::pressio::mpl::enable_if_t<
@@ -139,7 +132,6 @@ public:
       data_[i] = value;
     return *this;
   }
-
 
   // compound assignment from expression template
   // this += expr
@@ -160,7 +152,6 @@ public:
     this->data_ += *other.data();
     return *this;
   }
-
 
   // compound assignment from expression template
   // this -= expr

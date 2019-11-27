@@ -90,29 +90,44 @@ class Vector<wrapped_type,
   using mpicomm_t = typename details::traits<this_t>::communicator_t;
 
 public:
+  // default cnstr
   Vector() = delete;
 
+  // cnstrs
   explicit Vector(const wrap_t & vecobj)
-    // use the deep_copy constructor
+    // use the deep_copy cnstr
     : data_(vecobj, Teuchos::Copy){}
 
   explicit Vector(Teuchos::RCP<const map_t> mapO)
     : data_(mapO){}
 
-  Vector(this_t const & other)
-    : data_(*other.data(), Teuchos::Copy){}
+  // here we do not default the copy and move because if we did that,
+  // it would use the tpetra copy/move which have view semantics
+  // which is not what we want here (for the time being)
 
-  ~Vector() = default;
-
-public:
-
+  // copy cnstr
+  Vector(Vector const & other) : data_(*other.data(), Teuchos::Copy){}
   // copy assignment
-  this_t & operator=(const this_t & other){
+  Vector & operator=(const Vector & other){
     assert(this->localSize() == other.localSize());
     data_.assign( *other.data() );
     return *this;
   }
 
+  // move cnstr
+  Vector(Vector && other) : data_(*other.data(), Teuchos::Copy){}
+
+  // move assignment
+  Vector & operator=(Vector && other){
+    assert(this->localSize() == other.localSize());
+    data_.assign( *other.data() );
+    return *this;
+  }
+
+  // destructor
+  ~Vector() = default;
+
+public:
   // compound assignment when type(b) = type(this)
   // this += b
   this_t & operator+=(const this_t & other) {
@@ -133,15 +148,6 @@ public:
   }
 
 private:
-
-//   void matchLayoutWithImpl(const der_t & other){
-//     data_.ReplaceMap( other.getDataMap() );
-//   }
-
-//   mpicomm_t const & commCRefImpl() const{
-//     return data_.getMap()->getComm();
-//   }
-
   map_t const & getDataMapImpl() const{
     return *data_.getMap();
   }
@@ -204,12 +210,6 @@ private:
 
 private:
   wrap_t data_ = {};
-
-  // // myLocDataView_: persistent non-const view of my local data
-  // Teuchos::ArrayRCP<sc_t> myLocDataView_;
-  // // myLocDataView_: persistent const view of my local data
-  // Teuchos::ArrayRCP<const sc_t> myLocDataCView_;
-
 };//end class
 
 }}//end namespace pressio::containers

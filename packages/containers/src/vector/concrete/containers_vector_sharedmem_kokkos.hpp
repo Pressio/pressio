@@ -73,44 +73,50 @@ class Vector<wrapped_type,
   using ord_t = typename  mytraits::ordinal_t;
   using wrap_t = typename mytraits::wrapped_t;
 
+
+public:
+  // default cnstr
+  Vector() = default;
+
   // Views have "view semantics." copy constructor and
   // operator= only do shallow copies.
   // Here, for the time being, we construct wrapper
   // of a view WITHOUT doing shallow copy.
   // We create a new object and deep_copy original.
 
-public:
-  Vector() = default;
-
   explicit Vector(const wrap_t src)
-    : data_{src.label(), src.extent(0)}
-  {
+    : data_{src.label(), src.extent(0)}{
     Kokkos::deep_copy(data_, src);
-    // std::cout << "Kokkos wrapper" << std::endl;
-    // std::cout << data_.label() << std::endl;
   }
 
-  Vector(const std::string & label, size_t e1)
-    : data_{label, e1}
-  {}
+  Vector(const std::string & label, size_t e1) : data_{label, e1}{}
 
-  Vector(const this_t & other)
-    : data_{other.data_.label(), other.data_.extent(0)}
-  {
+  // copy constructor implements copy semantics (for time being)
+  Vector(const Vector & other)
+    : data_{other.data_.label(), other.data_.extent(0)}{
     Kokkos::deep_copy(data_, other.data_);
-    // std::cout << "Kokkos copy cstr" << std::endl;
-    // std::cout << data_.label() << std::endl;
   }
 
-  ~Vector(){}
-
-public:
   // copy assign implments copy semantics not view (for time being)
-  this_t & operator=(const this_t & other){
+  Vector & operator=(const Vector & other){
     assert(this->size() == other.size());
     Kokkos::deep_copy(data_, *other.data());
     return *this;
   }
+
+  // move cnstr and assign
+  Vector(Vector && other)
+    : data_{other.data_.label(), other.data_.extent(0)}{
+    Kokkos::deep_copy(data_, other.data_);
+  }
+
+  Vector & operator=(Vector && other){
+    assert(this->size() == other.size());
+    Kokkos::deep_copy(data_, *other.data());
+    return *this;
+  }
+
+  ~Vector() = default;
 
 private:
   wrap_t const * dataImpl() const{

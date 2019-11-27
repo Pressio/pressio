@@ -78,22 +78,13 @@ class Vector<wrapped_type,
 
 public:
   Vector() = default;
-  ~Vector() = default;
 
   explicit Vector(ord_t insize){
     this->resize(insize);
   }
+  explicit Vector(const wrap_t & src) : data_(src){}
 
-  explicit Vector(const sc_t * src)
-    : data_(src){}
-
-  explicit Vector(const wrap_t & src)
-    : data_(src){}
-
-  Vector(this_t const & other)
-    : data_(*other.data()){
-  }
-
+public:
   // constructor from any expression, force evaluation
   template <typename T,
   	    ::pressio::mpl::enable_if_t<
@@ -116,12 +107,6 @@ public:
     return *this;
   }
 
-  // assignment
-  this_t & operator=(const this_t & other){
-    data_ = *other.data();
-    return *this;
-  }
-
 public:
   sc_t & operator [] (ord_t i){
     return data_[i];
@@ -138,7 +123,6 @@ public:
     return data_[i];
   };
 
-
   // compound assignment from expression template
   // this += expr
   template <typename T,
@@ -153,10 +137,10 @@ public:
 
   // compound assignment when type(b) = type(this)
   // this += b
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator+=(const T & other) {
+  // template <typename T,
+  // 	    ::pressio::mpl::enable_if_t<
+  // 	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator+=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ += *other.data();
     return *this;
@@ -177,18 +161,16 @@ public:
 
   // compound assignment when type(b) = type(this)
   // this -= b
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T,this_t>::value> * = nullptr>
-  this_t & operator-=(const T & other) {
+  // template <typename T,
+  // 	    ::pressio::mpl::enable_if_t<
+  // 	      std::is_same<T,this_t>::value> * = nullptr>
+  this_t & operator-=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ -= *other.data();
     return *this;
   }
 
-
 private:
-
   wrap_t const * dataImpl() const{
     return &data_;
   }
