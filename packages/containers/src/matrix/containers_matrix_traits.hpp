@@ -196,9 +196,9 @@ struct traits<Matrix
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::CrsEpetra;
 
-  using scalar_t = default_types::epetra_scalar_t;
-  using local_ordinal_t = containers::default_types::epetra_lo_t;
-  using global_ordinal_t = containers::default_types::epetra_go_t1;
+  using scalar_t = double;
+  using local_ordinal_t = int;
+  using global_ordinal_t = int;
   using communicator_t = Epetra_Comm;
   using row_map_t = Epetra_Map;
   using col_map_t = Epetra_Map;
@@ -263,9 +263,9 @@ struct traits<Matrix
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEpetra;
 
-  using scalar_t = default_types::epetra_scalar_t;
-  using local_ordinal_t = containers::default_types::epetra_lo_t;
-  using global_ordinal_t = containers::default_types::epetra_go_t1;
+  using scalar_t = double;
+  using local_ordinal_t = int;
+  using global_ordinal_t = int;
   using communicator_t = Epetra_Comm;
   using row_map_t = Epetra_BlockMap;
 

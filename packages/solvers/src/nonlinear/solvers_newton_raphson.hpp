@@ -98,7 +98,7 @@ becuase it needs be cleaned considerably before using for other types.");
   //----------------
   //   members
   //----------------
-  containers::default_types::uint iStep_ = {};
+  typename iter_base_t::iteration_t iStep_ = {};
 
   // reference to a linear solver object
   linear_solver_t & linSolver_;
@@ -296,7 +296,7 @@ public:
 //     auto Residual = sys.attr("residual1")(x);
 //     auto Jac = sys.attr("jacobian1")(x);
 //     normN_ = {0};
-//     containers::default_types::uint iStep = 0;
+//     typename iter_base_t::iteration_t iStep = 0;
 //     std::cout.precision(15);
 //     while (++iStep <= this->maxIters_)
 //     {

@@ -373,9 +373,9 @@ struct traits<Vector<wrapped_type,
   wrapped_vector_identifier = WrappedVectorIdentifier::Epetra;
 
   static constexpr bool is_admissible_for_expression_templates = true;
-  using scalar_t = containers::default_types::epetra_scalar_t;
-  using local_ordinal_t = containers::default_types::epetra_lo_t;
-  using global_ordinal_t = containers::default_types::epetra_go_t1;
+  using scalar_t = double;
+  using local_ordinal_t = int;
+  using global_ordinal_t = int;
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
 };

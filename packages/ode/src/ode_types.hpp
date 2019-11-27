@@ -72,5 +72,5 @@ struct StepperTotalNumberOfStates{
 };
 
 
-}}} // end of namespace pressio::containers::default_types
+}}} // end of namespace pressio::ode::types
 #endif
