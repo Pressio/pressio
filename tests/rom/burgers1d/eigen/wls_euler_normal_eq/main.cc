@@ -26,6 +26,7 @@ struct Specializer{
 
 //struct DefaultApi{};
 
+/*
 template<
   typename fom_type, typename wls_state_type,
   typename residual_pol_type, typename jac_pol_type, typename decoder_type
@@ -37,6 +38,8 @@ struct Specializer<pressio::rom::wls::WlsSystemDefaultApi<fom_type,wls_state_typ
 is not admissible for this: maybe you have the wrong api? blas blas");
   using type = pressio::rom::wls::WlsSystemDefaultApi<fom_type, wls_state_type, residual_pol_type, jac_pol_type,decoder_type>;
 };
+*/
+
 template<
   typename fom_type, typename wls_state_type,
   typename decoder_type, typename fom_state_container_type, typename hessian_gradient_pol_type
@@ -136,7 +139,8 @@ int main(int argc, char *argv[]){
   decoder_t decoderObj(phi);
   decoderObj.getReferenceToJacobian();
   //using stepper_stencil = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-  using fom_state_container_t = typename pressio::ode::StatesContainer<fom_state_t, 2>; 
+  //using fom_state_container_t = typename pressio::ode::AuxStatesContainer<fom_state_t, 2>; 
+  using fom_state_container_t = std::vector<fom_state_t>; 
 
   // define WLS state
   wls_state_t  wlsState(numStepsInWindow,rom_state_t(romSize) );
@@ -146,7 +150,6 @@ int main(int argc, char *argv[]){
   //wls_state_t  wlsStateIC(t_stencil_width-1,rom_state_t(romSize) );
   for (int i=0;i<numStepsInWindow; i++){wlsState[i].putScalar(0.0);}
   for (int i=0;i<numStepsInWindow; i++){wlsStateIC[i].putScalar(0.0);}
-
 
   fom_state_t yFOM(fomSize);
   fom_native_state_t yRef(fomSize);
@@ -169,8 +172,9 @@ int main(int argc, char *argv[]){
 
   // construct objects and test
   hessian_gradient_policy_t hessian_gradient_policy(2,phi,romSize,numStepsInWindow,fomSize);
+
   wls_system_t wlsSystem(appObj,hessian_gradient_policy,decoderObj,yFOM,dt,numStepsInWindow,romSize,fomSize);
- 
+
   double t = 0.;
   int numSteps = 10/numStepsInWindow;
 
@@ -181,6 +185,7 @@ int main(int argc, char *argv[]){
 
   using gn_type = my_gauss_newton_class<wls_system_t,wls_state_t,hessian_t,gradient_t,linear_solver_t>;
   gn_type gn_solver(wlsSystem,wlsState,linear_solver);
+
   for (int step = 0; step < numSteps; step++)
   {
     //my_gauss_newton<wls_system_t,wls_state_t,hessian_t,gradient_t,linear_solver_t>(wls,wlsState,wlsStateIC,hessian,gradient,grad,romSize,numStepsInWindow,linear_solver); 
@@ -214,7 +219,8 @@ int main(int argc, char *argv[]){
   using t1 = wls_system_t::hessian_type;
   using t2 = wls_system_t::gradient_type;
   using t3 = wls_system_t::scalar_type;
-
+/*
+*/
 //template <
 //  typename system_type,
 //  typename linear_solver_type,

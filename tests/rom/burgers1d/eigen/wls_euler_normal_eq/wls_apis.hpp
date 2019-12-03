@@ -24,24 +24,24 @@ public:
 
   fom_state_reconstr_t  fomStateReconstructorObj_;
   fom_state_reconstr_t & fomStateReconstructorObjPtr;
-  fom_state_container_t  fomStateContainerObj_;
-  fom_state_container_t & fomStateContainerObjPtr;
+  mutable fom_state_container_t  fomStateContainerObj;
+  //fom_state_container_t & fomStateContainerObjPtr;
   scalar_t dt;
   int romSize; 
   int fomSize;
   int numStepsInWindow; 
-  WlsSystemJTJApi(fom_type & appObj, const hessian_gradient_pol_t & hessian_gradient_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, int numStepsInWindow, int romSize, int fomSize) : appObj_(appObj), hessian_gradient_polObj_(hessian_gradient_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),fomStateContainerObj_(yFOM),fomStateContainerObjPtr(fomStateContainerObj_)
+  WlsSystemJTJApi(fom_type & appObj, const hessian_gradient_pol_t & hessian_gradient_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, int numStepsInWindow, int romSize, int fomSize) : appObj_(appObj), hessian_gradient_polObj_(hessian_gradient_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),fomStateContainerObj(2,yFOM)//,fomStateContainerObjPtr(fomStateContainerObj_)
 {
   this->dt = dt;
   this->numStepsInWindow = numStepsInWindow;
   this->romSize = romSize;
   this->fomSize = fomSize;
-
+//  this->fomStateContainerObj_(2,yFOM);
  
 }
 
   void computeHessianAndGradient(wls_state_type & wls_state, wls_state_type & wls_state_ic, hessian_type & hessian, gradient_type & gradient, const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2, scalar_type rnorm=0.) const{
-    hessian_gradient_polObj_(appObj_,wls_state,wls_state_ic,hessian,gradient,fomStateContainerObjPtr,fomStateReconstructorObjPtr,dt,numStepsInWindow);
+    hessian_gradient_polObj_(appObj_,wls_state,wls_state_ic,hessian,gradient,fomStateContainerObj,fomStateReconstructorObjPtr,dt,numStepsInWindow);
   }
 
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
@@ -59,7 +59,7 @@ public:
 
 
 
-
+/*
 
 // this is the same as in other file
 template<typename fom_type, typename wls_state_type, typename res_pol_t, typename jac_pol_t, typename decoder_t>
@@ -99,6 +99,7 @@ public:
 //    jacobian_policy()(wls_state,fomObj_);
   };
 };
+*/
 }}}
 
 

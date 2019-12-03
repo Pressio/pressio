@@ -87,7 +87,7 @@ public:
 };
 
 
-
+/*
 template< typename wls_state_type, typename fom_type, typename residual_type, typename decoder_t>
 struct residual_policy_naive{
 public:
@@ -95,7 +95,7 @@ public:
   using fom_native_state_t      = typename fom_type::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
-  using fom_state_container_t = typename pressio::ode::StatesContainer<fom_state_t, 2>;
+  using fom_state_container_t = typename pressio::ode::AuxStatesContainer<fom_state_t, 2>;
   using scalar_t	= typename fom_type::scalar_type;
 
   void operator()(fom_type & appObj, wls_state_type  & wlsState, residual_t & residual, fom_state_container_t &  fomStateContainerObj_, fom_state_reconstr_t & fomStateReconstrObj_,scalar_t dt) const { 
@@ -125,7 +125,7 @@ public:
 }
 };
 
-
+*/
 
 
 }}}}
