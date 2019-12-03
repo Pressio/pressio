@@ -56,8 +56,8 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
-  template <::pressio::ode::ImplicitEnum, class, class, class ...> class lspg_type,
-  ::pressio::ode::ImplicitEnum odeName,
+  template <class, class, class, class ...> class lspg_type,
+  typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ...Args
@@ -73,7 +73,7 @@ Verify the fom/adapter class you are using meets the velocity api.");
 
 public:
   // define the type holding types for the problem
-  using lspg_problem_t = lspg_type<odeName, fom_type, lspg_state_type, Args...>;
+  using lspg_problem_t = lspg_type<stepper_tag, fom_type, lspg_state_type, Args...>;
 
   using fom_t			= typename lspg_problem_t::fom_t;
   using scalar_t		= typename lspg_problem_t::scalar_t;

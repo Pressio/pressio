@@ -51,14 +51,14 @@
 
 #include "../../../ode_ConfigDefs.hpp"
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template <typename derived_t>
-struct ImplicitResidualPolicyBase
+struct ResidualPolicyBase
   : private utils::details::CrtpBase<
-  ImplicitResidualPolicyBase<derived_t>>{
+  ResidualPolicyBase<derived_t>>{
 
-  using this_t = ImplicitResidualPolicyBase<derived_t>;
+  using this_t = ResidualPolicyBase<derived_t>;
 
   /* for now empty, because policies overload (),
    * but we can fill in other methods if needed
@@ -72,10 +72,10 @@ private:
 
   friend utils::details::CrtpBase<this_t>;
 
-  ImplicitResidualPolicyBase() = default;
-  ~ImplicitResidualPolicyBase() = default;
+  ResidualPolicyBase() = default;
+  ~ResidualPolicyBase() = default;
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::implicitmethods::policy
 #endif

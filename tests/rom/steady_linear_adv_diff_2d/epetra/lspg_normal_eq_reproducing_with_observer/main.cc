@@ -56,7 +56,6 @@ int main(int argc, char *argv[]){
   // -------------------------
 
   true_fom_t  appObj(Comm, Nx, Ny, Pr, Re);
-  appObj.setup();
   appObj.assembleMatrix();
   appObj.fillRhs();
   appObj.solve();

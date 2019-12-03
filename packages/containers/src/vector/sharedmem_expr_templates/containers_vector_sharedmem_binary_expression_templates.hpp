@@ -105,7 +105,7 @@ class SharedMemVectorBinaryExp
     : a_(a), b_(b){}
   ~SharedMemVectorBinaryExp() = default;
 
-  value_t operator()(size_t i) const {
+  value_t operator()(std::size_t i) const {
     return op_(a_(i), b_(i));}
 
   ord_t size() const {
@@ -141,7 +141,7 @@ public:
     : a_(a), b_(b){}
   ~SharedMemVectorBinaryExp() = default;
 
-  value_t operator()(size_t i) const {
+  value_t operator()(std::size_t i) const {
     return op_(a_(i), b_(i));}
 
   ord_t size() const {
@@ -176,7 +176,7 @@ public:
     : a_(a), b_(b){}
   ~SharedMemVectorBinaryExp() = default;
 
-  value_t operator()(size_t i) const {
+  value_t operator()(std::size_t i) const {
     return op_(a_(i), b_);}
 
   ord_t size() const{

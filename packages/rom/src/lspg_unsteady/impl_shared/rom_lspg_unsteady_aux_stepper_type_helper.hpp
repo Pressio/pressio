@@ -54,19 +54,16 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
-template <
-  ::pressio::ode::ImplicitEnum odeName,
-  typename ... Rest
-  >
+template <typename stepper_tag, typename ... Rest>
 struct auxStepperHelper{
   using type = void;
 };
 
 template <typename ... Rest>
-struct auxStepperHelper<::pressio::ode::ImplicitEnum::BDF2, Rest...>
+struct auxStepperHelper<::pressio::ode::implicitmethods::BDF2, Rest...>
 {
-  using type = ::pressio::ode::ImplicitStepper<
-    ::pressio::ode::ImplicitEnum::Euler, Rest...>;
+  using aux_stepper_tag = ::pressio::ode::implicitmethods::Euler;
+  using type = ::pressio::ode::implicitmethods::Stepper<aux_stepper_tag, Rest...>;
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unsteady::impl

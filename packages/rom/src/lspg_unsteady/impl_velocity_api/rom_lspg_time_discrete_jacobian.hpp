@@ -55,16 +55,16 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 
-template <::pressio::ode::ImplicitEnum odeStepperName, typename scalar_t>
+template <typename stepper_tag, typename scalar_t>
 struct dtPrefactor;
 
 template <typename scalar_t>
-struct dtPrefactor<::pressio::ode::ImplicitEnum::Euler, scalar_t>{
+struct dtPrefactor<::pressio::ode::implicitmethods::Euler, scalar_t>{
   static constexpr auto value = ::pressio::ode::constants::bdf1<scalar_t>::c_f_;
 };
 
 template <typename scalar_t>
-struct dtPrefactor<::pressio::ode::ImplicitEnum::BDF2, scalar_t>{
+struct dtPrefactor<::pressio::ode::implicitmethods::BDF2, scalar_t>{
   static constexpr auto value = ::pressio::ode::constants::bdf2<scalar_t>::c_f_;
 };
 // ------------------------------------------------------
@@ -72,7 +72,7 @@ struct dtPrefactor<::pressio::ode::ImplicitEnum::BDF2, scalar_t>{
 
 // regular c++ with user-defined OPS
 template <
-  ode::ImplicitEnum odeStepperName,
+  typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -90,7 +90,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const ud_ops * udOps){
 
   // prefactor showing in: prefactor*dt*J*phi
-  constexpr auto prefactor = dtPrefactor<odeStepperName, scalar_type>::value;
+  constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
   udOps->time_discrete_jacobian(*jphi.data(), *phi.data(), prefactor, dt);
 }
 
@@ -99,7 +99,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 // when we deal with python and have void ops
 template <
-  ode::ImplicitEnum odeStepperName,
+  typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -115,7 +115,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   const auto phi_px  = phi.unchecked();
 
   // prefactor (f) multiplying f*dt*J*phi
-  const auto prefactor = dt * dtPrefactor<odeStepperName, scalar_type>::value;
+  const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
 
   const auto nRows = jphi.shape(0);
   const auto nCols = jphi.shape(1);
@@ -128,7 +128,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 
 template <
-  ode::ImplicitEnum odeStepperName,
+  typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -141,7 +141,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const decoder_jac_type & phi,
 			    const pybind11::object & udOps){
 
-  constexpr auto prefactor = dtPrefactor<odeStepperName, scalar_type>::value;
+  constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
   udOps.attr("time_discrete_jacobian")(jphi, phi, prefactor, dt);
 }
 #endif
@@ -153,7 +153,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
  * only if jphi, phi are of same size
 */
 template <
-  ode::ImplicitEnum odeStepperName,
+  typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -175,7 +175,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   assert( jphi.length() == phi.length() );
 
   // prefactor (f) multiplying f*dt*J*phi
-  const auto prefactor = dt * dtPrefactor<odeStepperName, scalar_type>::value;
+  const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
 
   // jphi = phi + prefactor*dt*jphi
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
@@ -219,7 +219,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 *************************************/
 
 template <
-  ode::ImplicitEnum odeStepperName,
+  typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -248,7 +248,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
   jphi_map.MyGlobalElements( gIDjphi.data() );
 
   // prefactor (f) multiplying f*dt*J*phi
-  constexpr auto prefactor = dtPrefactor<odeStepperName, scalar_type>::value;
+  constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
 
   //loop over elements of jphi
   for (auto i=0; i<jphi.localLength(); i++){
@@ -265,7 +265,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
             tpetra
 *************************************/
 template <
-  ode::ImplicitEnum odeStepperName,
+  typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -289,7 +289,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   const auto gIDjphi = jphi_map->getMyGlobalIndices();
 
   // prefactor (f) multiplying f*dt*J*phi
-  constexpr auto prefactor = dtPrefactor<odeStepperName, scalar_type>::value;
+  constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
 
   auto jphi2dView = jphi.get2dViewNonConst();
   auto phi2dView = phi.get2dView();
@@ -309,7 +309,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
             tpetra block
 *************************************/
 template <
-  ode::ImplicitEnum odeStepperName,
+  typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -322,11 +322,11 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    const scalar_type	& dt,
 			    const decoder_jac_type & phi){
 
-  time_discrete_jacobian<odeStepperName>(*jphi.data(), dt, *phi.data());
+  time_discrete_jacobian<stepper_tag>(*jphi.data(), dt, *phi.data());
 }
 
 template <
-  ode::ImplicitEnum odeStepperName,
+  typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
@@ -340,7 +340,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi,
 			    const decoder_jac_type & phi){
   auto jphi_mvv = jphi.data()->getMultiVectorView();
   auto phi_mvv  = phi.data()->getMultiVectorView();
-  time_discrete_jacobian<odeStepperName>(jphi_mvv, dt, phi_mvv);
+  time_discrete_jacobian<stepper_tag>(jphi_mvv, dt, phi_mvv);
 }
 
 #endif

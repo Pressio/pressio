@@ -58,7 +58,7 @@ namespace impl{
 
 template <typename T, typename enable = void>
 struct DefaultHelper{
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
+  template <typename stepper_tag, typename lspg_state_t, typename ...Args>
   using type = void;
 };
 
@@ -73,8 +73,8 @@ struct DefaultHelper<
     >
   >
 {
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::DefaultProblemTypeGeneratorVelocityApi<name, T, lspg_state_t, Args...>;
+  template <typename stepper_tag, typename lspg_state_t, typename ...Args>
+  using type = impl::DefaultProblemTypeGeneratorVelocityApi<stepper_tag, T, lspg_state_t, Args...>;
 };
 
 
@@ -86,32 +86,31 @@ struct DefaultHelper<
     >
   >
 {
-  template <::pressio::ode::ImplicitEnum name, typename lspg_state_t, typename ...Args>
-  using type = impl::DefaultProblemTypeGeneratorResidualApi<name, T, lspg_state_t, Args...>;
+  template <typename stepper_tag, typename lspg_state_t, typename ...Args>
+  using type = impl::DefaultProblemTypeGeneratorResidualApi<stepper_tag, T, lspg_state_t, Args...>;
 };
 
 }// end namespace pressio::rom::lspg::unsteady::impl
 
 template <
-  ::pressio::ode::ImplicitEnum name,
+  typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ...Args
   >
-using Default = typename impl::DefaultHelper<fom_type>::template type<name, lspg_state_type, Args...>;
+using Default = typename impl::DefaultHelper<fom_type>::template type<stepper_tag, lspg_state_type, Args...>;
 
 }}//end namespace pressio::rom::lspg::unsteady
 
 
 // These are here for backward compatibility, should be deleted at some point
 template <
-  ::pressio::ode::ImplicitEnum name,
+  typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ...Args
   >
-using DefaultLSPGUnsteady = ::pressio::rom::lspg::unsteady::Default<name, fom_type, lspg_state_type, Args...>;
-
+using DefaultLSPGUnsteady = ::pressio::rom::lspg::unsteady::Default<stepper_tag, fom_type, lspg_state_type, Args...>;
 
 }} //end namespace pressio::rom
 #endif

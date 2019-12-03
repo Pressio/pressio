@@ -53,25 +53,24 @@
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
 #include "./impl/ode_explicit_runge_kutta4_stepper_impl.hpp"
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace explicitmethods{
 
 template<
-  ExplicitEnum whichone,
+  typename tag,
   typename state_type,
   typename ...Args
   >
-class ExplicitStepper
-  : public ExplicitStepperBase<
-  ExplicitStepper<whichone, state_type, Args...>
+class Stepper : public StepperBase<
+  Stepper<tag, state_type, Args...>
   >
 {
 
-  using this_t		= ExplicitStepper<whichone, state_type, Args...>;
-  using base_t		= ExplicitStepperBase<this_t>;
+  using this_t		= Stepper<tag, state_type, Args...>;
+  using base_t		= StepperBase<this_t>;
   // need to friend base to allow it to access the () operator below
   friend base_t;
 
-  using mytraits	= details::traits<this_t>;
+  using mytraits	= ::pressio::ode::details::traits<this_t>;
   using scalar_type	= typename mytraits::scalar_t;
   using system_type	= typename mytraits::model_t;
   using velocity_type	= typename mytraits::velocity_t;
@@ -82,13 +81,13 @@ class ExplicitStepper
   impl_class_t myImpl_  = {};
 
 public:
-  ExplicitStepper()  = delete;
-  ~ExplicitStepper() = default;
+  Stepper()  = delete;
+  ~Stepper() = default;
 
   // this is enabled all the time
-  ExplicitStepper(state_type const	  & stateIn0,
-		  const system_type	  & model,
-		  const policy_t	  & policyObj)
+  Stepper(state_type const	  & stateIn0,
+	  const system_type	  & model,
+	  const policy_t	  & policyObj)
     : myImpl_(model,
 	      policyObj,
 	      stateIn0,
@@ -106,8 +105,8 @@ public:
   	>::value
       > * = nullptr
     >
-  ExplicitStepper(const	state_type & stateIn0,
-  		  const system_type & model)
+  Stepper(const	state_type & stateIn0,
+	  const system_type & model)
     : myImpl_(model,
   	      T(),
   	      stateIn0,
@@ -126,5 +125,5 @@ private:
 
 };//end class
 
-}} // end namespace pressio::ode
+}}} // end namespace pressio::ode::explicitmethods
 #endif

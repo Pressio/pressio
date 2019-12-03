@@ -55,30 +55,36 @@ namespace pressio{ namespace containers{
 
 template<typename derived_type>
 class MultiVectorSharedMemBase
-  : private utils::details::CrtpBase<
-  MultiVectorSharedMemBase<derived_type>>
 {
-  static_assert(details::traits<derived_type>::is_shared_mem==1,
-  "OOPS: distributed concrete vector inheriting from sharedMem base!");
+  using traits = ::pressio::containers::details::traits<derived_type>;
+
+  static_assert(traits::is_shared_mem==1,
+		"OOPS: the concrete vector type inheriting from sharedMem base is not shared mem!");
 
 private:
-  using sc_t = typename details::traits<derived_type>::scalar_t;
-  using ord_t = typename details::traits<derived_type>::ordinal_t;
+  using sc_t  = typename traits::scalar_t;
+  using ord_t = typename traits::ordinal_t;
+  using view_col_vec_ret_t = typename traits::view_col_vec_ret_t;
 
 public:
   ord_t numVectors() const{
-    return this->underlying().numVectorsImpl();
+    return static_cast<const derived_type &>(*this).numVectorsImpl();
   }
 
   ord_t length() const {
-    return this->underlying().lengthImpl();
+    return static_cast<const derived_type &>(*this).lengthImpl();
+  };
+
+  template< typename _view_col_ret_t = view_col_vec_ret_t>
+  mpl::enable_if_t< !std::is_void<_view_col_ret_t>::value, _view_col_ret_t>
+  viewColumnVector(const ord_t & colIndex) const {
+    assert( colIndex < this->numVectors() );
+    const auto & mvObj = static_cast<const derived_type &>(*this);
+    return view_col_vec_ret_t(mvObj, colIndex);
   };
 
 private:
-  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<derived_type>::type;
-
+  friend derived_type;
   using this_t = MultiVectorSharedMemBase<derived_type>;
   friend utils::details::CrtpBase<this_t>;
 

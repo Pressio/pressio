@@ -55,7 +55,7 @@
 #include "ode_explicit_stepper_traits_rk4.hpp"
 
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace explicitmethods{
 
 /*
  * (1) constructors here should be private but we need
@@ -63,15 +63,15 @@ namespace pressio{ namespace ode{
  */
 
 template<typename stepper_type>
-class ExplicitStepperBase
+class StepperBase
 {
 private:
-  using step_traits	= ode::details::traits<stepper_type>;
-  using scalar_t	= typename step_traits::scalar_t;
-  using state_t		= typename step_traits::state_t;
-  using velocity_t	= typename step_traits::velocity_t;
-  using model_t		= typename step_traits::model_t;
-  using policy_t	= typename step_traits::velocity_policy_t;
+  using stepper_traits	= ::pressio::ode::details::traits<stepper_type>;
+  using scalar_t	= typename stepper_traits::scalar_t;
+  using state_t		= typename stepper_traits::state_t;
+  using velocity_t	= typename stepper_traits::velocity_t;
+  using model_t		= typename stepper_traits::model_t;
+  using policy_t	= typename stepper_traits::velocity_policy_t;
 
   static_assert( meta::is_legitimate_explicit_state_type<state_t>::value,
   "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
@@ -83,12 +83,12 @@ private:
   "VELOCITY_POLICY NOT ADMISSIBLE: MAYBE NOT INHERITING FROM EXPLICIT POLICY BASE");
 
 public:
-  ExplicitStepperBase() = default;
-  ~ExplicitStepperBase() = default;
+  StepperBase() = default;
+  ~StepperBase() = default;
 
 public:
-  typename step_traits::order_t order() const{
-    return step_traits::order_value;
+  typename stepper_traits::order_t order() const{
+    return stepper_traits::order_value;
   }
 
   void operator()(state_t & odeStateInOut,
@@ -101,5 +101,5 @@ public:
 
 };//end class
 
-}}//end namespace pressio::ode
+}}}//end namespace pressio::ode::explicitmethods
 #endif

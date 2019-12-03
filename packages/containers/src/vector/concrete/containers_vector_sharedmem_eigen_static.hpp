@@ -82,17 +82,22 @@ class Vector<wrapped_type,
 
 public:
   Vector() = default;
+
+  explicit Vector(const sc_t * src) : data_(src){}
+  explicit Vector(const wrap_t & src) : data_(src){}
+
+  // copy cnstr
+  Vector(Vector const & other) = default;
+  // copy assignment
+  Vector & operator=(Vector const & other) = default;
+  // move cnstr
+  Vector(Vector && other) = default;
+  // move assignment
+  Vector & operator=(Vector && other) = default;
+  // destructor
   ~Vector() = default;
 
-  explicit Vector(const sc_t * src)
-    : data_(src){}
-
-  explicit Vector(const wrap_t & src)
-    : data_(src){}
-
-  Vector(this_t const & other)
-    : data_(*other.data()){}
-
+public:
   // assignment from any expression, force evaluation
   template <typename T,
 	    ::pressio::mpl::enable_if_t<
@@ -140,7 +145,6 @@ public:
     return *this;
   }
 
-
   // compound assignment from expression template
   // this -= expr
   template <typename T,
@@ -161,9 +165,7 @@ public:
     return *this;
   }
 
-
 private:
-
   template <typename stream_t>
   void printImpl(stream_t & os, char c, ord_t nIn) const{
     assert(nIn <= this->size());

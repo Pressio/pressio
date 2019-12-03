@@ -69,5 +69,10 @@ template<typename T,
 	 typename enable = void>
 struct traits;
 
+namespace exprtemplates{
+template <typename mv_t, typename scalar_t, typename enable = void>
+struct ViewColumnVectorExpr;
+}
+
 }} // end namespace pressio::containers
 #endif

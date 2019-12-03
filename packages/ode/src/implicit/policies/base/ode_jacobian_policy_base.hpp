@@ -51,7 +51,7 @@
 
 #include "../../../ode_ConfigDefs.hpp"
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template <typename derived_t>
 struct JacobianPolicyBase
@@ -77,5 +77,5 @@ private:
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::implicitmethods::policy
 #endif

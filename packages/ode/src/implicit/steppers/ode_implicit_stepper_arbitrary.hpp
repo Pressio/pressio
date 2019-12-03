@@ -52,7 +52,7 @@
 #include "ode_implicit_stepper_traits_arbitrary.hpp"
 #include "ode_implicit_stepper_base.hpp"
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace implicitmethods{
 
 template<
   typename ode_state_type,
@@ -61,38 +61,38 @@ template<
   typename system_type,
   typename ... Args
   >
-class ImplicitStepper<
-  ImplicitEnum::Arbitrary,
+class Stepper<
+  ::pressio::ode::implicitmethods::Arbitrary,
   ode_state_type,
   ode_residual_type,
   ode_jacobian_type,
   system_type,
   Args...
   >
-  : public ImplicitStepperBase<
-  ImplicitStepper<
-    ImplicitEnum::Arbitrary, ode_state_type,
+  : public StepperBase<
+  Stepper<
+    ::pressio::ode::implicitmethods::Arbitrary, ode_state_type,
     ode_residual_type, ode_jacobian_type,
     system_type, Args...>
   >
 {
 
-  using this_t	       = ImplicitStepper<ImplicitEnum::Arbitrary,
-					 ode_state_type,
-					 ode_residual_type,
-					 ode_jacobian_type,
-					 system_type,
-					 Args...>;
-  using stepper_base_t = ImplicitStepperBase<this_t>;
+  using this_t	       = Stepper<::pressio::ode::implicitmethods::Arbitrary,
+				  ode_state_type,
+				  ode_residual_type,
+				  ode_jacobian_type,
+				  system_type,
+				  Args...>;
+  using stepper_base_t = StepperBase<this_t>;
   friend stepper_base_t;
 
-  using mytraits		= details::traits<this_t>;
+  using mytraits		= ::pressio::ode::details::traits<this_t>;
   using standard_res_policy_t	= typename mytraits::standard_res_policy_t;
   using standard_jac_policy_t	= typename mytraits::standard_jac_policy_t;
   using residual_pol_t		= typename mytraits::residual_policy_t;
   using jacobian_pol_t		= typename mytraits::jacobian_policy_t;
   using scalar_t		= typename mytraits::scalar_t;
-  static constexpr auto my_enum = mytraits::enum_id;
+  using tag_name		= typename mytraits::tag_name;
 
 public:
   // these need to be here because are detected by solver
@@ -102,10 +102,10 @@ public:
   using jacobian_type	= ode_jacobian_type;
 
 public:
-  ImplicitStepper() = delete;
-  ~ImplicitStepper() = default;
+  Stepper() = delete;
+  ~Stepper() = default;
 
-  ImplicitStepper(const ode_state_type & stateIn0,
+  Stepper(const ode_state_type & stateIn0,
   		  const system_type & model,
   		  const residual_pol_t & resPolicyObj,
   		  const jacobian_pol_t & jacPolicyObj)
@@ -120,7 +120,7 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepper(const ode_state_type & stateIn0,
+  Stepper(const ode_state_type & stateIn0,
 		  const system_type & model)
     : stepper_base_t{stateIn0, model}{}
 
@@ -146,64 +146,62 @@ private:
   template<std::size_t nAux, mpl::enable_if_t<nAux==1> * = nullptr>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
     // copy y_n into y_n-1
-    auto & auxY0 = this->auxStates_[0];
-    ::pressio::containers::ops::deep_copy(odeState, auxY0);
+    auto & y_nm1 = this->auxStates_.template get<ode::nMinusOne>();
+    ::pressio::containers::ops::deep_copy(odeState, y_nm1);
   }
 
   // when we have two aux states,
   template<std::size_t nAux, mpl::enable_if_t<nAux==2> * = nullptr>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
     // copy y_n-1 into y_n-2
-    auto & aux1 = this->auxStates_[0];
-    auto & aux2 = this->auxStates_[1];
-    ::pressio::containers::ops::deep_copy(aux1, aux2);
+    auto & y_nm1 = this->auxStates_.template get<ode::nMinusOne>();
+    auto & Y_nm2 = this->auxStates_.template get<ode::nMinusTwo>();
+    ::pressio::containers::ops::deep_copy(y_nm1, Y_nm2);
     // copy y_n into y_n-1
-    ::pressio::containers::ops::deep_copy(odeState, aux1);
+    ::pressio::containers::ops::deep_copy(odeState, y_nm1);
   }
 
   // when we have three aux states,
   template<std::size_t nAux, mpl::enable_if_t<nAux==3> * = nullptr>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
-    auto & aux1 = this->auxStates_[0];
-    auto & aux2 = this->auxStates_[1];
-    auto & aux3 = this->auxStates_[2];
-    ::pressio::containers::ops::deep_copy(aux2, aux3);
-    ::pressio::containers::ops::deep_copy(aux1, aux2);
-    ::pressio::containers::ops::deep_copy(odeState, aux1);
+    auto & y_nm1 = this->auxStates_.template get<ode::nMinusOne>();
+    auto & y_nm2 = this->auxStates_.template get<ode::nMinusTwo>();
+    auto & y_nm3 = this->auxStates_.template get<ode::nMinusThree>();
+    ::pressio::containers::ops::deep_copy(y_nm2, y_nm3);
+    ::pressio::containers::ops::deep_copy(y_nm1, y_nm2);
+    ::pressio::containers::ops::deep_copy(odeState, y_nm1);
   }
 
   // when we have four aux states,
   template<std::size_t nAux, mpl::enable_if_t<nAux==4> * = nullptr>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
-    auto & aux1 = this->auxStates_[0];
-    auto & aux2 = this->auxStates_[1];
-    auto & aux3 = this->auxStates_[2];
-    auto & aux4 = this->auxStates_[3];
-    ::pressio::containers::ops::deep_copy(aux3, aux4);
-    ::pressio::containers::ops::deep_copy(aux2, aux3);
-    ::pressio::containers::ops::deep_copy(aux1, aux2);
-    ::pressio::containers::ops::deep_copy(odeState, aux1);
+    auto & y_nm1 = this->auxStates_.template get<ode::nMinusOne>();
+    auto & y_nm2 = this->auxStates_.template get<ode::nMinusTwo>();
+    auto & y_nm3 = this->auxStates_.template get<ode::nMinusThree>();
+    auto & y_nm4 = this->auxStates_.template get<ode::nMinusFour>();
+    ::pressio::containers::ops::deep_copy(y_nm3, y_nm4);
+    ::pressio::containers::ops::deep_copy(y_nm2, y_nm3);
+    ::pressio::containers::ops::deep_copy(y_nm1, y_nm2);
+    ::pressio::containers::ops::deep_copy(odeState, y_nm1);
   }
 
   // // when we have five aux states,
   // template<std::size_t nAux, mpl::enable_if_t<nAux==5> * = nullptr>
   // void updateAuxiliaryStorage(const ode_state_type & odeState){
   //   for (auto i=nAux-2; i>=0; --i){
-  //     auto & source	  = this->auxStates_[i];
-  //     auto & destination = this->auxStates_[i+1];
+  //     auto & source	  = this->auxStates_(i);
+  //     auto & destination = this->auxStates_(i)1];
   //     ::pressio::containers::ops::deep_copy(source, destination);
   //   }
-  //   auto & aux1 = this->auxStates_[0];
+  //   auto & aux1 = this->auxStates_(0);
   //   ::pressio::containers::ops::deep_copy(odeState, aux1);
   // }
 
 private:
   void residualImpl(const state_type & odeState, residual_type & R) const
   {
-    this->residual_obj_.template operator()<
-      mytraits::numAuxStates
-      >(odeState, this->auxStates_,
-       this->sys_.get(), this->t_, this->dt_, this->step_, R);
+    this->residual_obj_(odeState, this->auxStates_, this->sys_.get(),
+			this->t_, this->dt_, this->step_, R);
   }
 
   residual_type residualImpl(const state_type & odeState) const
@@ -213,10 +211,8 @@ private:
 
   void jacobianImpl(const state_type & odeState, jacobian_type & J) const
   {
-    this->jacobian_obj_.template operator()<
-      mytraits::numAuxStates
-      >(odeState, this->auxStates_,
-       this->sys_.get(), this->t_, this->dt_, this->step_, J);
+    this->jacobian_obj_(odeState, this->auxStates_, this->sys_.get(),
+			this->t_, this->dt_, this->step_, J);
   }
 
   jacobian_type jacobianImpl(const state_type & odeState) const
@@ -226,5 +222,5 @@ private:
 
 };//end class
 
-}} // end namespace pressio::ode
+}}} // end namespace pressio::ode::implicitmethods
 #endif

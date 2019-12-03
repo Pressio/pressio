@@ -63,18 +63,13 @@ class Burgers1dEpetraIdentityMask : public Burgers1dEpetra{
 public:
   Burgers1dEpetraIdentityMask(std::vector<scalar_type> params,
 			int Ncell, Epetra_MpiComm * comm)
-    : base_t(params, Ncell, comm){}
+    : base_t(params, Ncell, comm){
+    this->setup();
+  }
 
   ~Burgers1dEpetraIdentityMask() = default;
 
 public:
-  void setup(){
-    base_t::setup();
-    // create a map to mimic the mask
-    createMaskMap();
-    importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
-  };
-
   template <typename T>
   void applyMask(const T & src, T & dest, double t) const{
     dest.Import(src, *importer_, Insert);
@@ -94,6 +89,13 @@ public:
   }
 
 private:
+  void setup(){
+    base_t::setup();
+    // create a map to mimic the mask
+    createMaskMap();
+    importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
+  };
+
   void createMaskMap(){
     // get # of my elements for the full map
     auto myN0 = dataMap_->NumMyElements();

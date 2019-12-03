@@ -45,7 +45,6 @@ const std::vector<double> bdf1Sol
   // app object
   int numCell = 50;
   fom_t appobj({5.0, 0.02, 0.02}, numCell, &Comm);
-  appobj.setup();
   auto t0 = static_cast<scalar_t>(0);
   scalar_t dt = 0.01;
 
@@ -64,9 +63,9 @@ const std::vector<double> bdf1Sol
   // initialize to zero (this has to be done)
   yROM.putScalar(0.0);
 
-  constexpr auto odeName = pressio::ode::ExplicitEnum::Euler;
-  using galerkin_t = pressio::rom::galerkin::DefaultProblemType<
-    odeName, rom_state_t, fom_t, decoder_t>;
+  using ode_tag = pressio::ode::explicitmethods::Euler;
+  using pressio::rom::galerkin::DefaultProblemType;
+  using galerkin_t = DefaultProblemType<ode_tag, rom_state_t, fom_t, decoder_t>;
   pressio::rom::galerkin::ProblemGenerator<galerkin_t> galerkinProb(
       appobj, y0n, decoderObj, yROM, t0);
 

@@ -52,7 +52,7 @@
 #include "ode_implicit_stepper_traits_euler.hpp"
 #include "ode_implicit_stepper_base.hpp"
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace implicitmethods{
 
 template<
   typename ode_state_type,
@@ -61,17 +61,17 @@ template<
   typename system_type,
   typename ... Args
   >
-class ImplicitStepper<
-  ImplicitEnum::Euler,
+class Stepper<
+  ::pressio::ode::implicitmethods::Euler,
   ode_state_type,
   ode_residual_type,
   ode_jacobian_type,
   system_type,
   Args...
   >
-  : public ImplicitStepperBase<
-  ImplicitStepper<
-    ImplicitEnum::Euler,
+  : public StepperBase<
+  Stepper<
+    ::pressio::ode::implicitmethods::Euler,
     ode_state_type,
     ode_residual_type,
     ode_jacobian_type,
@@ -79,13 +79,14 @@ class ImplicitStepper<
   >
 {
 
-  using this_t	       = ImplicitStepper<ImplicitEnum::Euler,
-					 ode_state_type,
-					 ode_residual_type,
-					 ode_jacobian_type,
-					 system_type,
-					 Args...>;
-  using stepper_base_t = ImplicitStepperBase<this_t>;
+  using this_t	       = Stepper<::pressio::ode::implicitmethods::Euler,
+				  ode_state_type,
+				  ode_residual_type,
+				  ode_jacobian_type,
+				  system_type,
+				  Args...>;
+  using stepper_base_t = StepperBase<this_t>;
+  using typename stepper_base_t::aux_states_t;
   friend stepper_base_t;
 
   using mytraits       = details::traits<this_t>;
@@ -94,7 +95,7 @@ class ImplicitStepper<
   using residual_pol_t = typename mytraits::residual_policy_t;
   using jacobian_pol_t = typename mytraits::jacobian_policy_t;
   using scalar_t       = typename mytraits::scalar_t;
-  static constexpr auto my_enum = mytraits::enum_id;
+  using tag_name       = typename mytraits::tag_name;
 
 public:
   // these need to be here because are detected by solver
@@ -104,10 +105,10 @@ public:
   using jacobian_type	= ode_jacobian_type;
 
 public:
-  ImplicitStepper() = delete;
-  ~ImplicitStepper() = default;
+  Stepper() = delete;
+  ~Stepper() = default;
 
-  ImplicitStepper(const ode_state_type & stateIn0,
+  Stepper(const ode_state_type & stateIn0,
   		  const system_type & model,
   		  const residual_pol_t & resPolicyObj,
   		  const jacobian_pol_t & jacPolicyObj)
@@ -122,7 +123,7 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepper(const ode_state_type & stateIn0,
+  Stepper(const ode_state_type & stateIn0,
 		  const system_type & model)
     : stepper_base_t{stateIn0, model}{}
 
@@ -133,7 +134,7 @@ public:
       mpl::is_same<T1, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepper(const ode_state_type & stateIn0,
+  Stepper(const ode_state_type & stateIn0,
   		  const system_type & model,
   		  const residual_pol_t & resPolicyObj)
     : stepper_base_t{stateIn0, model, resPolicyObj}{}
@@ -147,7 +148,8 @@ public:
 		  const types::step_t & step,
 		  solver_type & solver){
 
-    auto & odeState_nm1 = this->auxStates_[0];
+    using nm1 = ode::nMinusOne;
+    auto & odeState_nm1 = this->auxStates_.template get<nm1>();
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
@@ -166,7 +168,8 @@ public:
 		  solver_type & solver,
 		  guess_callback_t && guesserCb)
   {
-    auto & odeState_nm1 = this->auxStates_[0];
+    using nm1 = ode::nMinusOne;
+    auto & odeState_nm1 = this->auxStates_.template get<nm1>();
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
@@ -179,34 +182,30 @@ private:
   void residualImpl(const state_type & odeState, residual_type & R) const
   {
     this->residual_obj_.template operator()<
-      my_enum, mytraits::numAuxStates
-      >(odeState, R, this->auxStates_,
-	this->sys_.get(), this->t_, this->dt_, this->step_);
+      tag_name>(odeState, this->auxStates_,
+		this->sys_.get(), this->t_, this->dt_, this->step_, R);
   }
 
   residual_type residualImpl(const state_type & odeState) const
   {
     return this->residual_obj_.template operator()<
-      my_enum, mytraits::numAuxStates
-      >(odeState, this->auxStates_,
-	this->sys_.get(), this->t_, this->dt_, this->step_);
+      tag_name>(odeState, this->auxStates_,
+		this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
   void jacobianImpl(const state_type & odeState, jacobian_type & J) const
   {
     this->jacobian_obj_.template operator()<
-      mytraits::enum_id
-      >(odeState, J, this->sys_.get(), this->t_, this->dt_, this->step_);
+      tag_name>(odeState, this->sys_.get(), this->t_, this->dt_, this->step_, J);
   }
 
   jacobian_type jacobianImpl(const state_type & odeState) const
   {
     return this->jacobian_obj_.template operator()<
-      mytraits::enum_id
-      >(odeState, this->sys_.get(), this->t_, this->dt_, this->step_);
+      tag_name>(odeState, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
 };//end class
 
-}} // end namespace pressio::ode
+}}} // end namespace pressio::ode::implicitmethods
 #endif

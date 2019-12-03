@@ -29,7 +29,6 @@ int main(int argc, char *argv[]){
     std::array< scalar_t, 3> mu({5.0, 0.02, 0.02});
     const int Ncell = 20;
     app_t appObj(mu, Ncell);
-    appObj.setup();
     auto y0n = appObj.getInitialState();
 
     // types for ode

@@ -49,18 +49,13 @@
 #ifndef ODE_IMPLICIT_STEPPER_STENCIL_NEEDS_PREVIOUS_STATES_AND_VELOCITIES_HPP_
 #define ODE_IMPLICIT_STEPPER_STENCIL_NEEDS_PREVIOUS_STATES_AND_VELOCITIES_HPP_
 
-#include "../../ode_enum.hpp"
+#include "../../ode_stepper_tags.hpp"
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template <::pressio::ode::ImplicitEnum stepperName>
+template <typename tag_name>
 struct implicit_stepper_stencil_needs_previous_states_and_velocities
   : std::false_type{};
-
-// template <>
-// struct implicit_stepper_stencil_needs_previous_states_and_velocities<
-//   ::pressio::ode::ImplicitEnum::CrankNicolson
-//   > : std::true_type{};
 
 }}} // namespace pressio::ode::meta
 #endif

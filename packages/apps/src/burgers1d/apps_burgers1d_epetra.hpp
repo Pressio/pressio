@@ -81,44 +81,16 @@ public:
 public:
   Burgers1dEpetra(std::vector<scalar_type> params,
 		  int Ncell, Epetra_MpiComm * comm)
-    : mu_(params), Ncell_(Ncell), comm_(comm){}
+    : mu_(params), Ncell_(Ncell), comm_(comm){
+    this->setup();
+  }
 
   Burgers1dEpetra() = delete;
   ~Burgers1dEpetra() = default;
 
 public:
-
   Epetra_Map const & getDataMap(){
     return *dataMap_;
-  };
-
-  void setup(){
-    // distribute cells
-    dataMap_ = std::make_shared<Epetra_Map>(Ncell_,0,*comm_);
-
-    NumMyElem_ = dataMap_->NumMyElements();
-    myGel_.resize(NumMyElem_);
-    dataMap_->MyGlobalElements(myGel_.data());
-
-    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
-    dxInv_ = 1.0/dx_;
-
-    // grid
-    xGrid_ = std::make_shared<nativeVec>(*dataMap_);
-    int i=0;
-    for (auto const & it : myGel_){
-      (*xGrid_)[i] = dx_*it + dx_*0.5;
-      i++;
-    };
-    //xGrid_->Print(std::cout);
-    // init condition
-    U0_ = std::make_shared<nativeVec>(*dataMap_);
-    U_ = std::make_shared<nativeVec>(*dataMap_);
-    U0_->PutScalar(1.0);
-    U_->PutScalar(1.0);
-    myRank_ =  comm_->MyPID();
-    totRanks_ =  comm_->NumProc();
-    Jac_ = std::make_shared<Epetra_CrsMatrix>(Copy, *dataMap_, nonZrPerRow_);
   };
 
   state_type const & getInitialState() const{
@@ -249,6 +221,36 @@ public:
       jac.FillComplete();
   }//end jacobian
   //-------------------------------------------------------
+
+protected:
+  void setup(){
+    // distribute cells
+    dataMap_ = std::make_shared<Epetra_Map>(Ncell_,0,*comm_);
+
+    NumMyElem_ = dataMap_->NumMyElements();
+    myGel_.resize(NumMyElem_);
+    dataMap_->MyGlobalElements(myGel_.data());
+
+    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
+    dxInv_ = 1.0/dx_;
+
+    // grid
+    xGrid_ = std::make_shared<nativeVec>(*dataMap_);
+    int i=0;
+    for (auto const & it : myGel_){
+      (*xGrid_)[i] = dx_*it + dx_*0.5;
+      i++;
+    };
+    //xGrid_->Print(std::cout);
+    // init condition
+    U0_ = std::make_shared<nativeVec>(*dataMap_);
+    U_ = std::make_shared<nativeVec>(*dataMap_);
+    U0_->PutScalar(1.0);
+    U_->PutScalar(1.0);
+    myRank_ =  comm_->MyPID();
+    totRanks_ =  comm_->NumProc();
+    Jac_ = std::make_shared<Epetra_CrsMatrix>(Copy, *dataMap_, nonZrPerRow_);
+  };
 
 protected:
   std::vector<scalar_type> mu_; // parameters

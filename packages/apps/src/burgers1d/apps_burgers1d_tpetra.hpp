@@ -87,7 +87,9 @@ public:
   Burgers1dTpetra(std::vector<scalar_type> params,
 		  int Ncell,
 		  rcpcomm_t comm)
-    : mu_{params}, Ncell_{Ncell}, comm_{comm}{}
+    : mu_{params}, Ncell_{Ncell}, comm_{comm}{
+      this->setup();
+    }
 
   Burgers1dTpetra() = delete;
   ~Burgers1dTpetra() = default;
@@ -95,52 +97,6 @@ public:
 public:
   rcpmap_t getDataMap(){
     return dataMap_;
-  };
-
-  void setup(){
-    using Teuchos::rcpFromRef;
-    using Teuchos::FancyOStream;
-    wrappedCout_ = getFancyOStream(rcpFromRef(std::cout));
-
-    myRank_ =  comm_->getRank();
-    totRanks_ =  comm_->getSize();
-
-    // distribute cells
-    dataMap_ = Teuchos::rcp(new map_t(Ncell_, 0, comm_));
-
-    NumMyElem_ = dataMap_->getNodeNumElements();
-    auto minGId = dataMap_->getMinGlobalIndex();
-    myGel_.resize(NumMyElem_);
-    std::iota(myGel_.begin(), myGel_.end(), minGId);
-    dataMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
-
-    if (myRank_==1){
-      for (auto it : myGel_)
-	std::cout << it << std::endl;
-    }
-
-    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
-    dxInv_ = 1.0/dx_;
-
-    // grid
-    xGrid_ = std::make_shared<nativeVec>(dataMap_);
-    auto xGridv = xGrid_->getDataNonConst();
-    lo_t i=0;
-    for (auto const & it : myGel_){
-      xGridv[i] = dx_*it + dx_*0.5;
-      i++;
-    };
-    xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
-
-    // init condition
-    U0_ = std::make_shared<nativeVec>(dataMap_);
-    U0_->putScalar(1.0);
-
-    U_ = std::make_shared<nativeVec>(dataMap_);
-    U_->putScalar(1.0);
-
-    Jac_ = std::make_shared<jacobian_type>(dataMap_, nonZrPerRow_);
-    this->computeJacobianInsert(*U_, *Jac_, 0.0);
   };
 
   state_type const & getInitialState() const{
@@ -215,6 +171,52 @@ public:
   }
 
 protected:
+  void setup(){
+    using Teuchos::rcpFromRef;
+    using Teuchos::FancyOStream;
+    wrappedCout_ = getFancyOStream(rcpFromRef(std::cout));
+
+    myRank_ =  comm_->getRank();
+    totRanks_ =  comm_->getSize();
+
+    // distribute cells
+    dataMap_ = Teuchos::rcp(new map_t(Ncell_, 0, comm_));
+
+    NumMyElem_ = dataMap_->getNodeNumElements();
+    auto minGId = dataMap_->getMinGlobalIndex();
+    myGel_.resize(NumMyElem_);
+    std::iota(myGel_.begin(), myGel_.end(), minGId);
+    dataMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+
+    if (myRank_==1){
+      for (auto it : myGel_)
+	std::cout << it << std::endl;
+    }
+
+    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
+    dxInv_ = 1.0/dx_;
+
+    // grid
+    xGrid_ = std::make_shared<nativeVec>(dataMap_);
+    auto xGridv = xGrid_->getDataNonConst();
+    lo_t i=0;
+    for (auto const & it : myGel_){
+      xGridv[i] = dx_*it + dx_*0.5;
+      i++;
+    };
+    xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+
+    // init condition
+    U0_ = std::make_shared<nativeVec>(dataMap_);
+    U0_->putScalar(1.0);
+
+    U_ = std::make_shared<nativeVec>(dataMap_);
+    U_->putScalar(1.0);
+
+    Jac_ = std::make_shared<jacobian_type>(dataMap_, nonZrPerRow_);
+    this->computeJacobianInsert(*U_, *Jac_, 0.0);
+  };
+
   void computeJacobianReplace(const state_type & u,
 			      jacobian_type & jac,
 			      const scalar_type /*t*/) const

@@ -55,20 +55,20 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 // base case
-template <ode::ImplicitEnum odeName>
+template <typename stepper_tag>
 struct fomStatesStorageCapacityHelper{
   static constexpr std::size_t value = 1;
 };
 
 template <>
-struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::Euler>{
+struct fomStatesStorageCapacityHelper<::pressio::ode::implicitmethods::Euler>{
   // for euler, I need to store the state at the current step
   // plus the state at the previous step, so 2 total
   static constexpr std::size_t value = 2;
 };
 
 template <>
-struct fomStatesStorageCapacityHelper<ode::ImplicitEnum::BDF2>{
+struct fomStatesStorageCapacityHelper<::pressio::ode::implicitmethods::BDF2>{
   // for BDF2, I need to store the state at the current step
   // plus the state at the previous two steps, so 3 total
   static constexpr std::size_t value = 3;

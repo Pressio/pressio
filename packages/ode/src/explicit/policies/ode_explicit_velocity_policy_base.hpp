@@ -51,13 +51,13 @@
 
 #include "../../ode_fwd.hpp"
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace explicitmethods{ namespace policy{
 
 template <typename derived_t>
-class ExplicitVelocityPolicyBase
+class VelocityPolicyBase
 {
 
-  using this_t = ExplicitVelocityPolicyBase<derived_t>;
+  using this_t = VelocityPolicyBase<derived_t>;
 
   /* for now empty, because policies overload (),
    * but we can fill in other methods if needed
@@ -65,10 +65,10 @@ class ExplicitVelocityPolicyBase
    */
 
 public:
-  ExplicitVelocityPolicyBase() = default;
-  ~ExplicitVelocityPolicyBase() = default;
+  VelocityPolicyBase() = default;
+  ~VelocityPolicyBase() = default;
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::explicitmethods::policy
 #endif

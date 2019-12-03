@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_enum.hpp
+// ode_stepper_tags.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,11 +46,31 @@
 //@HEADER
 */
 
-#ifndef ODE_ENUM_HPP_
-#define ODE_ENUM_HPP_
+#ifndef ODE_STEPPER_TAGS_HPP_
+#define ODE_STEPPER_TAGS_HPP_
 
 namespace pressio{ namespace ode{
 
+namespace explicitmethods{
+struct Undefined{};
+struct Euler{};
+struct RungeKutta4{};
+}//end namespace pressio::ode::explicitmethods
+
+namespace implicitmethods{
+struct Undefined{};
+struct Euler{};
+struct BDF2{};
+
+// this is used to define a stepper that is user-defined,
+// so there is no specific info about it and it can be
+// anything since the user assembles the time-discrete operators
+struct Arbitrary{};
+
+}//end namespace pressio::ode::implicitmethods
+
+
+/* for now, support also enums for backward compability */
 enum class ExplicitEnum
   {Undefined, Euler, RungeKutta4};
 
@@ -60,6 +80,54 @@ enum class ImplicitEnum
 	     // so there is no specific info about it and it can be
              // anything since the user assembles the time-discrete operators
   };
+
+
+namespace impl{
+
+// helper to convert an enum to tag
+template <::pressio::ode::ExplicitEnum>
+struct ExplicitEnumToTagType{ using type = void; };
+
+template <>
+struct ExplicitEnumToTagType<::pressio::ode::ExplicitEnum::Undefined>{
+  using type = ::pressio::ode::explicitmethods::Undefined;
+};
+
+template <>
+struct ExplicitEnumToTagType<::pressio::ode::ExplicitEnum::Euler>{
+  using type = ::pressio::ode::explicitmethods::Euler;
+};
+
+template <>
+struct ExplicitEnumToTagType<::pressio::ode::ExplicitEnum::RungeKutta4>{
+  using type = ::pressio::ode::explicitmethods::RungeKutta4;
+};
+
+// helper to convert an enum to tag
+template <::pressio::ode::ImplicitEnum>
+struct ImplicitEnumToTagType{ using type = void; };
+
+template <>
+struct ImplicitEnumToTagType<::pressio::ode::ImplicitEnum::Undefined>{
+  using type = ::pressio::ode::implicitmethods::Undefined;
+};
+
+template <>
+struct ImplicitEnumToTagType<::pressio::ode::ImplicitEnum::Euler>{
+  using type = ::pressio::ode::implicitmethods::Euler;
+};
+
+template <>
+struct ImplicitEnumToTagType<::pressio::ode::ImplicitEnum::BDF2>{
+  using type = ::pressio::ode::implicitmethods::BDF2;
+};
+
+template <>
+struct ImplicitEnumToTagType<::pressio::ode::ImplicitEnum::Arbitrary>{
+  using type = ::pressio::ode::implicitmethods::Arbitrary;
+};
+
+}// end pressio::ode::impl
 
 }}//end namespace pressio::ode
 #endif

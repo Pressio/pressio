@@ -62,7 +62,7 @@ template<
   typename decoder_type
   >
 class JacobianPolicyResidualApi
-  : public ::pressio::ode::policy::JacobianPolicyBase<
+  : public ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<
 	JacobianPolicyResidualApi<fom_states_data_type,
 			   apply_jac_return_type,
 			   fom_querier_policy,
@@ -76,7 +76,7 @@ public:
 				    fom_querier_policy,
 				    decoder_type>;
 
-  friend ::pressio::ode::policy::JacobianPolicyBase<this_t>;
+  friend ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
@@ -94,14 +94,14 @@ public:
 
 public:
   template <
-    int n,
     typename lspg_state_t,
+    typename lspg_prev_states_t,
     typename lspg_jac_t,
     typename fom_t,
     typename scalar_t
   >
   void operator()(const lspg_state_t			& romState,
-		  const ::pressio::ode::StatesContainer<lspg_state_t, n>  & romPrevStates,
+		  const lspg_prev_states_t		& romPrevStates,
   		  const fom_t				& app,
 		  const scalar_t			& time,
 		  const scalar_t			& dt,
@@ -125,9 +125,13 @@ public:
 private:
 
   // we have here n = 1 prev rom states
-  template<typename lspg_state_t, typename fom_t, typename scalar_t, typename lspg_jac_t>
+  template<
+    typename lspg_state_t, typename lspg_prev_states_t, typename fom_t,
+    typename scalar_t, typename lspg_jac_t,
+    mpl::enable_if_t< lspg_prev_states_t::size()==1 > * = nullptr
+  >
   void compute_impl(const lspg_state_t			& romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t,1> & romPrevStates,
+		    const lspg_prev_states_t		& romPrevStates,
   		    const fom_t			        & app,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,
@@ -145,10 +149,15 @@ private:
     fom_querier_policy::evaluate(yn, ynm1, app, time, dt, step, phi, romJac);
   }
 
+
   // we have here n = 2 prev rom states
-  template<typename lspg_state_t, typename fom_t, typename scalar_t, typename lspg_jac_t>
+  template<
+    typename lspg_state_t, typename lspg_prev_states_t, typename fom_t,
+    typename scalar_t, typename lspg_jac_t,
+    mpl::enable_if_t< lspg_prev_states_t::size()==2 > * = nullptr
+    >
   void compute_impl(const lspg_state_t			& romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t, 2> & romPrevStates,
+		    const lspg_prev_states_t		& romPrevStates,
   		    const fom_t			        & app,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,

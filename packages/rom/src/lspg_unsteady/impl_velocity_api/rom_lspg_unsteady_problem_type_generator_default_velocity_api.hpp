@@ -73,8 +73,8 @@ struct CommonTypesHelper<
   >
 {
   static constexpr bool isNativeCpp = true;
-  template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, odeName, fom_type, lspg_state_type, Args...>;
+  template <typename stepper_tag, typename ...Args>
+  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, stepper_tag, fom_type, lspg_state_type, Args...>;
 };
 
 
@@ -89,26 +89,26 @@ struct CommonTypesHelper<
   >
 {
   static constexpr bool isNativeCpp = false;
-  template <::pressio::ode::ImplicitEnum odeName, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, odeName, fom_type, lspg_state_type, Args...>;
+  template <typename stepper_tag, typename ...Args>
+  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, stepper_tag, fom_type, lspg_state_type, Args...>;
 };
 #endif
 
 
 
 template <
-  ::pressio::ode::ImplicitEnum odeName,
+  typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ... Args
   >
 struct DefaultProblemTypeGeneratorVelocityApi{
 
-  static_assert( odeName != ::pressio::ode::ImplicitEnum::Arbitrary,
+  static_assert( !std::is_same< stepper_tag,  ::pressio::ode::implicitmethods::Arbitrary>::value, 
 		 "\nTo use unsteady LSPG with the velocity api, \n \
-you cannot pass ode::ImplicitEnum::Arbitrary since that is only \n \
+you cannot pass ode::implicitmethods::Arbitrary since that is only \n \
 valid when using the residual api. For the velocity api you need \n \
-to pass a valid enum from the ode steppers, like ImplicitEnum::Euler/BDF2");
+to pass a valid enum from the ode steppers, like implicitmethods::Euler/BDF2");
 
   /* here, the fom_type must satisfy the velocity api */
   static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
@@ -119,7 +119,7 @@ Verify the fom/adapter class you are using meets the velocity api.");
 
   // pick the common types holder
   using common_types_t
-  = typename CommonTypesHelper<fom_type, lspg_state_type>::template type< odeName, Args...>;
+  = typename CommonTypesHelper<fom_type, lspg_state_type>::template type< stepper_tag, Args...>;
 
   using fom_t			= typename common_types_t::fom_t;
   using scalar_t		= typename common_types_t::scalar_t;
@@ -151,12 +151,12 @@ Verify the fom/adapter class you are using meets the velocity api.");
     fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops_t>;
 
   using aux_stepper_t = typename ::pressio::rom::lspg::unsteady::impl::auxStepperHelper<
-    odeName, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
+    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
     lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>::type;
 
   // declare type of stepper object
-  using lspg_stepper_t		= ::pressio::ode::ImplicitStepper<
-    odeName, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
+  using lspg_stepper_t		= ::pressio::ode::implicitmethods::Stepper<
+    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
     aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>;
 
 };//end class

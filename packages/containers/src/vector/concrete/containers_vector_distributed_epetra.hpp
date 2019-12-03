@@ -88,23 +88,30 @@ class Vector<wrapped_type,
   using mpicomm_t = typename details::traits<this_t>::communicator_t;
 
 public:
+  // default cnstr
   Vector() = delete;
+
+  // cnstrs
+  explicit Vector(const map_t & mapobj) : data_(mapobj){}
+  explicit Vector(const wrap_t & vecobj) : data_(vecobj){}
+
+  // copy cnstr
+  Vector(Vector const & other) = default;
+  // copy assignment
+  Vector & operator=(Vector const & other) = default;
+  // move cnstr
+  Vector(Vector && other) = default;
+  // move assignment
+  Vector & operator=(Vector && other) = default;
+  // destructor
   ~Vector() = default;
 
-  explicit Vector(const map_t & mapobj)
-    : data_(mapobj){}
-
-  explicit Vector(const wrap_t & vecobj)
-    : data_(vecobj){}
-
-  Vector(this_t const & other)
-    : data_(*other.data()){}
-
-  // assignment from any expression, force evaluation
+public:
+  // assignment from any expression
   template <typename T,
 	    ::pressio::mpl::enable_if_t<
 	      T::is_vector_expression> * = nullptr>
-  this_t & operator=(const T & expr){
+  Vector & operator=(const T & expr){
     assert(this->localSize() == expr.localSize());
     for (LO_t i = 0; i != expr.localSize(); ++i)
       data_[i] = expr(i);
@@ -130,13 +137,12 @@ public:
     return data_[i];
   };
 
-
   // compound assignment from expression template
   // this += expr
   template <typename T,
   	    ::pressio::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
-  this_t & operator+=(const T & expr) {
+  Vector & operator+=(const T & expr) {
     assert(this->localSize() == expr.localSize());
     for (LO_t i = 0; i != expr.localSize(); ++i)
       data_[i] += expr(i);
@@ -145,7 +151,7 @@ public:
 
   // compound assignment when type(b) = type(this)
   // this += b
-  this_t & operator+=(const this_t & other) {
+  Vector & operator+=(const Vector & other) {
     this->data_.Update(1.0, *other.data(), 1.0 );
     return *this;
   }
@@ -156,7 +162,7 @@ public:
   template <typename T,
   	    ::pressio::mpl::enable_if_t<
   	      T::is_vector_expression> * = nullptr>
-  this_t & operator-=(const T & expr) {
+  Vector & operator-=(const T & expr) {
     assert(this->localSize() == expr.localSize());
     for (LO_t i = 0; i != expr.localSize(); ++i)
       data_[i] -= expr(i);
@@ -165,11 +171,10 @@ public:
 
   // compound assignment when type(b) = type(this)
   // this -= b
-  this_t & operator-=(const this_t & other) {
+  Vector & operator-=(const Vector & other) {
     this->data_.Update(-1.0, *other.data(), 1.0 );
     return *this;
   }
-
 
   void print(std::string tag) const{
     ::pressio::utils::io::print_stdout(tag);

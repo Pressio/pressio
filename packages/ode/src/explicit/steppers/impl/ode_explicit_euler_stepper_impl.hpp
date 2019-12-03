@@ -50,11 +50,11 @@
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_EULER_STEPPER_IMPL_HPP_
 
 #include "../ode_explicit_stepper_base.hpp"
-#include "../../../ode_states_container.hpp"
+#include "../../../ode_aux_states_container.hpp"
 #include "../../../ode_system_wrapper.hpp"
 #include "../../../ode_velocities_container.hpp"
 
-namespace pressio{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
 template<
   typename scalar_type,
@@ -86,7 +86,7 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 					   ops_t>;
 
   using velocity_storage_t = VelocitiesContainer<velocity_type, 1>;
-  using system_wrapper_t   = OdeSystemWrapper<system_type>;
+  using system_wrapper_t   = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
 
   velocity_storage_t veloAuxStorage_;
   system_wrapper_t sys_;
@@ -119,7 +119,7 @@ public:
 	      const scalar_type & dt,
 	      const types::step_t & step)
   {
-    auto & auxRhs0 = veloAuxStorage_[0];
+    auto & auxRhs0 = veloAuxStorage_(0);
     //eval RHS
     policy_(stateInOut, auxRhs0, sys_.get(), time);
     // y = y + dt * rhs
@@ -144,7 +144,7 @@ public:
   	      const types::step_t & step)
   {
     using op = typename ops_t::update_op;
-    auto & auxRhs0 = veloAuxStorage_[0];
+    auto & auxRhs0 = veloAuxStorage_(0);
 
     //eval RHS
     policy_(stateInOut, auxRhs0, sys_.get(), time);
@@ -154,5 +154,5 @@ public:
   }
 };
 
-}}}//end namespace pressio::ode::impl
+}}}}//end namespace pressio::ode::explicitmethods::impl
 #endif

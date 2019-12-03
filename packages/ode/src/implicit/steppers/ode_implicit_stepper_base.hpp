@@ -49,19 +49,19 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
-#include "../../ode_states_container.hpp"
+#include "../../ode_aux_states_container.hpp"
 #include "../../ode_system_wrapper.hpp"
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace implicitmethods{
 
 /*
  * (1) constructors here should be private but we need
  * them public to enable interfacing with pybind11
  */
 template<typename concrete_stepper_type>
-class ImplicitStepperBase
+class StepperBase
 {
-  using traits			= typename details::traits<concrete_stepper_type>;
+  using traits			= typename ::pressio::ode::details::traits<concrete_stepper_type>;
   using sc_t			= typename traits::scalar_t;
   using state_t			= typename traits::state_t;
   using residual_t		= typename traits::residual_t;
@@ -71,18 +71,20 @@ class ImplicitStepperBase
   using residual_pol_t		= typename traits::residual_policy_t;
   using jacobian_pol_t		= typename traits::jacobian_policy_t;
   using system_t		= typename traits::system_t;
-  using system_wrapper_t	= impl::OdeSystemWrapper<system_t>;
+  using system_wrapper_t	= ::pressio::ode::impl::OdeSystemWrapper<system_t>;
 
   //do checking here that things are as supposed
-  static_assert( meta::is_legitimate_implicit_state_type<state_t>::value,
+  static_assert( ::pressio::ode::meta::is_legitimate_implicit_state_type<state_t>::value,
        "OOPS: STATE_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::is_legitimate_implicit_residual_type<residual_t>::value,
+  static_assert( ::pressio::ode::meta::is_legitimate_implicit_residual_type<residual_t>::value,
        "OOPS: RESIDUAL_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
-  static_assert( meta::is_legitimate_jacobian_type<jacobian_t>::value,
+  static_assert( ::pressio::ode::meta::is_legitimate_jacobian_type<jacobian_t>::value,
        "OOPS: JACOBIAN_TYPE IN SELECTED IMPLICIT STEPPER IS NOT VALID");
 
 public:
-  types::stepper_order_t order() const{
+  using aux_states_t = ::pressio::ode::AuxStatesContainer<false, state_t, traits::numAuxStates>;
+
+  ::pressio::ode::types::stepper_order_t order() const{
     return traits::order_value;
   }
 
@@ -108,7 +110,7 @@ protected:
   sc_t dt_ = {};
   types::step_t step_  = {};
   system_wrapper_t sys_;
-  ::pressio::ode::StatesContainer<state_t, traits::numAuxStates> auxStates_;
+  aux_states_t auxStates_;
 
   // conditionally set the type of the object knowing how to compute residual
   // if we have a standard policy, then it takes a copy
@@ -129,10 +131,10 @@ protected:
     >::type jacobian_obj_;
 
 public:
-  ImplicitStepperBase() = delete;
-  ~ImplicitStepperBase() = default;
+  StepperBase() = delete;
+  ~StepperBase() = default;
 
-  ImplicitStepperBase(const state_t & stateIn0,
+  StepperBase(const state_t & stateIn0,
 		      const system_t & model,
 		      const residual_pol_t & resPolicyObj,
 		      const jacobian_pol_t & jacPolicyObj)
@@ -151,7 +153,7 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepperBase(const state_t & stateIn0,
+  StepperBase(const state_t & stateIn0,
   		      const system_t & model)
     : sys_{model},
       auxStates_{stateIn0},
@@ -166,7 +168,7 @@ public:
       mpl::is_same<T2, jacobian_pol_t>::value
       > * = nullptr
     >
-  ImplicitStepperBase(const state_t & stateIn0,
+  StepperBase(const state_t & stateIn0,
   		      const system_t & model,
   		      const residual_pol_t & resPolicyObj)
     : sys_{model},
@@ -177,5 +179,5 @@ public:
 
 };//end class
 
-}}//end namespace pressio::ode
+}}}//end namespace pressio::ode::implicitmethods
 #endif

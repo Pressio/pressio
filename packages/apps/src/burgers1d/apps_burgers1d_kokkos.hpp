@@ -121,26 +121,15 @@ public:
       x_d_{"xd", Ncell_},
       x_h_{"xd", Ncell_},
       U_d_{"ud", Ncell_},
-      U_h_{"ud", Ncell_}{}
+      U_h_{"ud", Ncell_}
+  {
+    this->setup();
+  }
 
   Burgers1dKokkos() = delete;
   ~Burgers1dKokkos() = default;
 
 public:
-  void setup()
-  {
-    dx_ = (xR_ - xL_)/static_cast<sc_t>(Ncell_);
-    dxInv_ = 1.0/dx_;
-
-    // grid
-    for (ui_t i=0; i<Ncell_; ++i){
-      x_h_(i) = dx_*i + dx_*0.5;
-      U_h_(i) = 1.0;
-    }
-    Kokkos::deep_copy(x_d_, x_h_);
-    Kokkos::deep_copy(U_d_, U_h_);
-  }
-
   state_type const getInitialState() const {
     return U_d_;
   };
@@ -256,6 +245,21 @@ public:
     jacobian_type JJ("JJ", numRows, numCols, numEnt, val, ptr, ind);
     this->jacobian(u, t, JJ);
     return JJ;
+  }
+
+private:
+  void setup()
+  {
+    dx_ = (xR_ - xL_)/static_cast<sc_t>(Ncell_);
+    dxInv_ = 1.0/dx_;
+
+    // grid
+    for (ui_t i=0; i<Ncell_; ++i){
+      x_h_(i) = dx_*i + dx_*0.5;
+      U_h_(i) = 1.0;
+    }
+    Kokkos::deep_copy(x_d_, x_h_);
+    Kokkos::deep_copy(U_d_, U_h_);
   }
 
 private:

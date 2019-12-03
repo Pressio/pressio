@@ -63,7 +63,7 @@ template <
   typename ud_ops
   >
 class ResidualPolicyVelocityApi
-  : public ::pressio::ode::policy::ImplicitResidualPolicyBase<
+  : public ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<
       ResidualPolicyVelocityApi<residual_type,
 			 fom_states_cont_type,
 			 fom_velocity_eval_policy,
@@ -76,7 +76,7 @@ public:
 				    fom_states_cont_type,
 				    fom_velocity_eval_policy,
 				    ud_ops>;
-  friend ::pressio::ode::policy::ImplicitResidualPolicyBase<this_t>;
+  friend ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
@@ -104,8 +104,8 @@ public:
       > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-					fom_states_cont_type & fomStatesIn,
-					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
+			    fom_states_cont_type & fomStatesIn,
+			    const fom_velocity_eval_policy & fomEvalVelocityFunctor)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
       R_{RIn},
       fomStates_(fomStatesIn)
@@ -125,9 +125,9 @@ public:
       > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-					fom_states_cont_type & fomStatesIn,
-					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
-					const _ud_ops & udOps)
+			    fom_states_cont_type & fomStatesIn,
+			    const fom_velocity_eval_policy & fomEvalVelocityFunctor,
+			    const _ud_ops & udOps)
     : R_{RIn},
       fomStates_(fomStatesIn),
       fom_velocity_eval_policy(fomEvalVelocityFunctor),
@@ -146,8 +146,8 @@ public:
       > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-					fom_states_cont_type & fomStatesIn,
-					const fom_velocity_eval_policy & fomEvalVelocityFunctor)
+			    fom_states_cont_type & fomStatesIn,
+			    const fom_velocity_eval_policy & fomEvalVelocityFunctor)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
       R_{{_residual_type(const_cast<_residual_type &>(RIn).request())}},
       fomStates_(fomStatesIn)
@@ -164,9 +164,9 @@ public:
       > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-					fom_states_cont_type & fomStatesIn,
-					const fom_velocity_eval_policy & fomEvalVelocityFunctor,
-					const _ud_ops & udOps)
+			    fom_states_cont_type & fomStatesIn,
+			    const fom_velocity_eval_policy & fomEvalVelocityFunctor,
+			    const _ud_ops & udOps)
     : fom_velocity_eval_policy(fomEvalVelocityFunctor),
       R_{{_residual_type(const_cast<_residual_type &>(RIn).request())}},
       fomStates_(fomStatesIn),
@@ -177,38 +177,38 @@ public:
 
 public:
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
-    std::size_t n,
+    typename stepper_tag,
     typename lspg_state_t,
+    typename prev_states_t,
     typename fom_t,
     typename scalar_t
   >
   void operator()(const lspg_state_t		   & romState,
-		  residual_t			   & romR,
-  		  const ::pressio::ode::StatesContainer<lspg_state_t,n> & romPrevStates,
+  		  const prev_states_t & romPrevStates,
   		  const fom_t			   & app,
 		  const scalar_t		   & t,
 		  const scalar_t		   & dt,
-		  const ::pressio::ode::types::step_t & step) const
+		  const ::pressio::ode::types::step_t & step,
+		  residual_t			   & romR) const
   {
-    this->compute_impl<odeStepperName, n>(romState, romR, romPrevStates, app, t, dt, step);
+    this->compute_impl<stepper_tag>(romState, romR, romPrevStates, app, t, dt, step);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
-    std::size_t n,
+    typename stepper_tag,
     typename lspg_state_t,
+    typename prev_states_t,
     typename fom_t,
     typename scalar_t
     >
   residual_t operator()(const lspg_state_t		   & romState,
-			const ::pressio::ode::StatesContainer<lspg_state_t,n>  & romPrevStates,
+			const prev_states_t & romPrevStates,
 			const fom_t			   & app,
 			const scalar_t			   & t,
 			const scalar_t			   & dt,
 			const ::pressio::ode::types::step_t & step) const
   {
-    this->compute_impl<odeStepperName, n>(romState, R_, romPrevStates, app, t, dt, step);
+    this->compute_impl<stepper_tag>(romState, R_, romPrevStates, app, t, dt, step);
     return R_;
   }
 
@@ -217,7 +217,7 @@ public:
 private:
 
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
     typename _ud_ops = ud_ops,
@@ -229,11 +229,11 @@ private:
 				residual_t			& romR,
 				const scalar_t			& dt) const{
     using namespace ::pressio::rom::lspg::unsteady::impl;
-    time_discrete_residual<odeStepperName>(fomStates, romR, dt);
+    time_discrete_residual<stepper_tag>(fomStates, romR, dt);
   }
 
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
+    typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
     typename _ud_ops = ud_ops,
@@ -245,21 +245,21 @@ private:
   				residual_t			& romR,
   				const scalar_t			& dt) const{
     using namespace ::pressio::rom::lspg::unsteady::impl;
-    time_discrete_residual<odeStepperName>(fomStates, romR, dt, udOps_);
+    time_discrete_residual<stepper_tag>(fomStates, romR, dt, udOps_);
   }
 
 
 private:
   template <
-    ::pressio::ode::ImplicitEnum odeStepperName,
-    std::size_t n,
+    typename stepper_tag,
     typename lspg_state_t,
+    typename prev_states_t,
     typename fom_t,
     typename scalar_t
   >
   void compute_impl(const lspg_state_t		     & romState,
 		    residual_t			     & romR,
-		    const ::pressio::ode::StatesContainer<lspg_state_t,n> & romPrevStates,
+		    const prev_states_t & romPrevStates,
 		    const fom_t			     & app,
 		    const scalar_t		     & t,
 		    const scalar_t		     & dt,
@@ -279,11 +279,11 @@ private:
 
     /* the previous FOM states should only be recomputed when the time step changes
      * we do not need to reconstruct all the FOM states, we just need to reconstruct
-     * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
+     * the state at the previous step (i.e. t-dt) which is stored in romPrevStates(0)
      */
-    if (currentStep_ != step){
-      fomStates_ << romPrevStates[0];
-      currentStep_ = step;
+    if (storedStep_ != step){
+      fomStates_ << romPrevStates.template get<ode::nMinusOne>();
+      storedStep_ = step;
     }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -296,7 +296,7 @@ private:
     timer->start("time discrete residual");
 #endif
 
-    this->time_discrete_dispatcher<odeStepperName>(fomStates_, romR, dt);
+    this->time_discrete_dispatcher<stepper_tag>(fomStates_, romR, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");
@@ -306,11 +306,11 @@ private:
 
 
 protected:
-  // currentStep is used to keep track of which step we are doing.
+  // storedStep is used to keep track of which step we are doing.
   // This is used to decide whether we need to update/recompute the previous
   // FOM states or not. Since it does not make sense to recompute previous
   // FOM states if we are not in a new time step.
-  mutable ::pressio::ode::types::step_t currentStep_ = {};
+  mutable ::pressio::ode::types::step_t storedStep_ = {};
 
   mutable residual_t R_ = {};
   fom_states_cont_type & fomStates_;

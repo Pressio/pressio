@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_states_container.hpp
+// ode_aux_states_container.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,49 +46,102 @@
 //@HEADER
 */
 
-#ifndef ODE_STATES_CONTAINER_HPP_
-#define ODE_STATES_CONTAINER_HPP_
+#ifndef ODE_AUX_STATES_CONTAINER_HPP_
+#define ODE_AUX_STATES_CONTAINER_HPP_
 
+#include "ode_fwd.hpp"
 #include "../../containers/src/collection/containers_static_collection.hpp"
 
 namespace pressio{ namespace ode{
 
-template<typename T, std::size_t n>
-class StatesContainer{
-public:
+template<bool is_explicit, typename T, std::size_t n>
+class AuxStatesContainer;
 
+
+// partially specialize for explicit scheme
+template<typename T, std::size_t n>
+class AuxStatesContainer<true, T, n>{
+public:
   using data_type = ::pressio::containers::StaticCollection<T, n>;
 
   template <typename ... Args>
-  StatesContainer(Args && ... args)
+  AuxStatesContainer(Args && ... args)
     : data_( std::forward<Args>(args)... ){}
 
-  ~StatesContainer() = default;
+  ~AuxStatesContainer() = default;
 
 public:
   static constexpr std::size_t size() {
     return data_type::size();
   }
 
-  T & operator[](std::size_t i){
-    assert( i<n );
-    return data_[i];
-  }
-
-  T const & operator[](std::size_t i) const{
-    assert( i<n );
-    return data_[i];
-  }
-
   T & operator()(std::size_t i){
     assert( i<n );
-    return data_[i];
+    return data_(i);
   }
 
   T const & operator()(std::size_t i) const{
     assert( i<n );
-    return data_[i];
+    return data_(i);
   }
+
+private:
+  data_type data_;
+};
+
+
+// partially specialize for implicit scheme
+template<typename T, std::size_t n>
+class AuxStatesContainer<false, T, n>{
+public:
+  using data_type = ::pressio::containers::StaticCollection<T, n>;
+
+  template <typename ... Args>
+  AuxStatesContainer(Args && ... args)
+    : data_( std::forward<Args>(args)... ){}
+
+  ~AuxStatesContainer() = default;
+
+public:
+  static constexpr std::size_t size() {
+    return data_type::size();
+  }
+
+  // n-1
+  template <typename T1>
+  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusOne>::value, T &>
+  get(){ return data_(0); }
+
+  template <typename T1>
+  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusOne>::value, T const &>
+  get() const{ return data_(0); }
+
+  // n-2
+  template <typename T1>
+  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusTwo>::value, T &>
+  get(){ return data_(1); }
+
+  template <typename T1>
+  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusTwo>::value, T const &>
+  get() const{ return data_(1); }
+
+  // n-3
+  template <typename T1>
+  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusThree>::value, T &>
+  get(){ return data_(2); }
+
+  template <typename T1>
+  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusThree>::value, T const &>
+  get() const{ return data_(2); }
+
+  // n-4
+  template <typename T1>
+  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusFour>::value, T &>
+  get(){ return data_(3); }
+
+  template <typename T1>
+  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusFour>::value, T const &>
+  get() const{ return data_(3); }
 
 private:
   data_type data_;

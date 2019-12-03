@@ -55,7 +55,7 @@ namespace pressio{ namespace ode{ namespace meta {
 
 template<
   typename T,
-  ImplicitEnum name,
+  typename tag,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -68,29 +68,27 @@ struct is_legitimate_implicit_jacobian_policy : std::false_type
 
 template<
   typename T,
-  ImplicitEnum name,
+  typename tag,
   typename state_t,
   typename jacobian_t,
   typename system_t,
   typename scalar_t
   >
 struct is_legitimate_implicit_jacobian_policy
-<T, name, state_t, jacobian_t, system_t, scalar_t,
+<T, tag, state_t, jacobian_t, system_t, scalar_t,
  ::pressio::mpl::enable_if_t<
    std::is_same<
      jacobian_t,
      decltype
      (
       std::declval<T const>().template operator()
-      <
-      name
-      >(
-	std::declval<state_t const &>(),
-	std::declval<system_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::types::step_t const &>()
-	)
+      <tag>(
+	    std::declval<state_t const &>(),
+	    std::declval<system_t const &>(),
+	    std::declval<scalar_t const &>(),
+	    std::declval<scalar_t const &>(),
+	    std::declval<::pressio::ode::types::step_t const &>()
+	    )
       )
      >::value
    and
@@ -98,15 +96,13 @@ struct is_legitimate_implicit_jacobian_policy
      decltype
      (
       std::declval<T const>().template operator()
-      <
-      name
-      >(
-	std::declval<state_t const &>(),
-	std::declval<jacobian_t &>(),
-	std::declval<system_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::types::step_t const &>()
+      <tag>(
+	    std::declval<state_t const &>(),
+	    std::declval<system_t const &>(),
+	    std::declval<scalar_t const &>(),
+	    std::declval<scalar_t const &>(),
+	    std::declval<::pressio::ode::types::step_t const &>(),
+	    std::declval<jacobian_t &>()
 	)
       )
    >::value
@@ -117,12 +113,12 @@ struct is_legitimate_implicit_jacobian_policy
 template<typename T, typename ... args>
 using is_legitimate_implicit_euler_jacobian_policy =
   is_legitimate_implicit_jacobian_policy<
-  T, ::pressio::ode::ImplicitEnum::Euler, args...>;
+  T, ::pressio::ode::implicitmethods::Euler, args...>;
 
 template<typename T, typename ... args>
 using is_legitimate_implicit_bdf2_jacobian_policy =
   is_legitimate_implicit_jacobian_policy<
-  T, ::pressio::ode::ImplicitEnum::BDF2, args...>;
+  T, ::pressio::ode::implicitmethods::BDF2, args...>;
 //------------------------------------------------------------------
 
 }}} // namespace pressio::ode::meta

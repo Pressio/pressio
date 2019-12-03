@@ -54,24 +54,17 @@
 
 namespace pressio{ namespace rom{
 
-template <
-  typename matrix_type,
-  template <typename...> class
-  wrapper_operator_t = MultiVectorOperator
-  >
+template <typename matrix_type>
 struct LinearDecoder
-  : public DecoderBase<
-  LinearDecoder<matrix_type, wrapper_operator_t>,
-  matrix_type>{
+  : public DecoderBase<LinearDecoder<matrix_type>, matrix_type>{
 
-  using this_t	    = LinearDecoder<matrix_type, wrapper_operator_t>;
+  using this_t	    = LinearDecoder<matrix_type>;
   using base_t	    = DecoderBase<this_t, matrix_type>;
-  using matrix_op_t = wrapper_operator_t<matrix_type>;
   using jacobian_t  = matrix_type;
 
 private:
   friend base_t;
-  matrix_op_t phi_ = {};
+  matrix_type phi_ = {};
 
 public:
   LinearDecoder() = delete;
@@ -85,11 +78,11 @@ private:
   template <typename operand_t, typename result_t>
   void applyMappingImpl(const operand_t & operandObj,
 			result_t & resultObj) const{
-    phi_.apply(operandObj, resultObj);
+    ::pressio::containers::ops::product(phi_, operandObj, resultObj);
   }
 
   const jacobian_t & getReferenceToJacobianImpl() const{
-    return phi_.getRefToOperator();
+    return phi_;
   }
 
 };//end class

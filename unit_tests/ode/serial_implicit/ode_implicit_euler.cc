@@ -156,10 +156,8 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   //**********************
   // define policies and stepper
   //**********************
-  using res_pol_t = ode::policy::ImplicitResidualStandardPolicy<
-    state_t, app_t, res_t>;
-  using jac_pol_t = ode::policy::ImplicitJacobianStandardPolicy<
-    state_t, app_t, jac_t>;
+  using res_pol_t = ode::implicitmethods::policy::ResidualStandardPolicy<state_t, app_t, res_t>;
+  using jac_pol_t = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, app_t, jac_t>;
 
   using stepper_t = ode::ImplicitStepper<
     ode::ImplicitEnum::Euler,
@@ -208,7 +206,7 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
   // residual policy is user-defined (even if it is standard)
   // jacobian_policy is standard and default-constructed
   //**********************
-  using res_pol_t = ode::policy::ImplicitResidualStandardPolicy<
+  using res_pol_t = ode::implicitmethods::policy::ResidualStandardPolicy<
     state_t, app_t, res_t>;
 
   using stepper_t = ode::ImplicitStepper<

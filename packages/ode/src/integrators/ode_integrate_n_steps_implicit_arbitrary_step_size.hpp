@@ -67,8 +67,9 @@ template<
   typename step_size_cb_t,
   typename std::enable_if<
     ::pressio::ode::details::traits<stepper_type>::is_implicit and
-    ::pressio::ode::details::traits<stepper_type>::enum_id ==
-    ::pressio::ode::ImplicitEnum::Arbitrary and
+    std::is_same<
+    typename ::pressio::ode::details::traits<stepper_type>::tag_name,
+    ::pressio::ode::implicitmethods::Arbitrary>::value and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value and

@@ -55,14 +55,14 @@
 #include "../../meta/ode_is_legitimate_implicit_state_type.hpp"
 #include "../../meta/ode_is_legitimate_implicit_jacobian_type.hpp"
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<
   typename state_type,
   typename system_type,
   typename jacobian_type
   >
-class ImplicitJacobianStandardPolicy<
+class JacobianStandardPolicy<
   state_type, system_type, jacobian_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
@@ -70,37 +70,32 @@ class ImplicitJacobianStandardPolicy<
     containers::meta::is_wrapper<state_type>::value and
     containers::meta::is_wrapper<jacobian_type>::value
     >
-  > : public JacobianPolicyBase<ImplicitJacobianStandardPolicy<
+  > : public JacobianPolicyBase<JacobianStandardPolicy<
     state_type, system_type, jacobian_type> >
 {
 
-  using this_t = ImplicitJacobianStandardPolicy<state_type, system_type, jacobian_type>;
+  using this_t = JacobianStandardPolicy<state_type, system_type, jacobian_type>;
   friend JacobianPolicyBase<this_t>;
 
 public:
-  ImplicitJacobianStandardPolicy() = default;
-  ~ImplicitJacobianStandardPolicy() = default;
+  JacobianStandardPolicy() = default;
+  ~JacobianStandardPolicy() = default;
 
 public:
 
-  template <
-    ode::ImplicitEnum method, typename scalar_t
-  >
+  template <typename tag_name, typename scalar_t>
   void operator()(const state_type & odeCurrentState,
-		  jacobian_type & J,
 		  const system_type & model,
 		  const scalar_t & t,
 		  const scalar_t & dt,
-		  const types::step_t & step) const
+		  const types::step_t & step,
+		  jacobian_type & J) const
   {
     model.jacobian( *odeCurrentState.data(), t, *J.data());
-    ::pressio::ode::impl::time_discrete_jacobian<method>(J, dt);
+    ::pressio::ode::impl::time_discrete_jacobian<tag_name>(J, dt);
   }
 
-  template <
-    ode::ImplicitEnum method,
-    typename scalar_t
-    >
+  template <typename tag_name, typename scalar_t>
   jacobian_type operator()(const state_type & odeCurrentState,
   			   const system_type & model,
   			   const scalar_t & t,
@@ -108,11 +103,11 @@ public:
 			   const types::step_t & step) const
   {
     jacobian_type JJ(model.jacobian(*odeCurrentState.data(), t));
-    ::pressio::ode::impl::time_discrete_jacobian<method>(JJ, dt);
+    ::pressio::ode::impl::time_discrete_jacobian<tag_name>(JJ, dt);
     return JJ;
   }
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::implicitmethods::policy
 #endif

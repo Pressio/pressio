@@ -50,11 +50,11 @@
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
 
 #include "../ode_explicit_stepper_base.hpp"
-#include "../../../ode_states_container.hpp"
+#include "../../../ode_aux_states_container.hpp"
 #include "../../../ode_system_wrapper.hpp"
 #include "../../../ode_velocities_container.hpp"
 
-namespace pressio{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
 template<
   typename scalar_type,
@@ -85,9 +85,10 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
 						 velocity_policy_type,
 						 ops_t>;
 
-  using state_storage_t	    = ::pressio::ode::StatesContainer<state_type, 1>;
+  static constexpr bool is_explicit = true;
+  using state_storage_t	    = ::pressio::ode::AuxStatesContainer<is_explicit, state_type, 1>;
   using velocity_storage_t  = VelocitiesContainer<velocity_type, 4>;
-  using system_wrapper_t    = OdeSystemWrapper<system_type>;
+  using system_wrapper_t    = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
 
   state_storage_t stateAuxStorage_;
   velocity_storage_t veloAuxStorage_;
@@ -113,11 +114,11 @@ public:
   	      const scalar_type & dt,
   	      const types::step_t & step)
   {
-    auto & ytmp	   = stateAuxStorage_[0];
-    auto & auxRhs0 = veloAuxStorage_[0];
-    auto & auxRhs1 = veloAuxStorage_[1];
-    auto & auxRhs2 = veloAuxStorage_[2];
-    auto & auxRhs3 = veloAuxStorage_[3];
+    auto & ytmp	   = stateAuxStorage_(0);
+    auto & auxRhs0 = veloAuxStorage_(0);
+    auto & auxRhs1 = veloAuxStorage_(1);
+    auto & auxRhs2 = veloAuxStorage_(2);
+    auto & auxRhs3 = veloAuxStorage_(3);
 
     constexpr auto two  = ::pressio::utils::constants::two<scalar_type>();
     constexpr auto three  = ::pressio::utils::constants::three<scalar_type>();
@@ -230,5 +231,5 @@ private:
   }
 }; //end class
 
-}}}//end namespace pressio::ode::impl
+}}}}//end namespace pressio::ode::explicitmethods::impl
 #endif

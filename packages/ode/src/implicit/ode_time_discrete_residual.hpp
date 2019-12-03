@@ -60,39 +60,44 @@ namespace pressio{ namespace ode{ namespace impl{
 // - on output, R contains the time-discrete residual
 
 template <
-  ode::ImplicitEnum method,
-  std::size_t n,
+  typename stepper_tag,
   typename state_type,
   typename residual_type,
-  typename scalar_type,
-  mpl::enable_if_t< method == ode::ImplicitEnum::Euler > * = nullptr
+  typename pre_states_type,
+  typename scalar_type
   >
-void time_discrete_residual(const state_type	& odeCurrentState,
-			    residual_type	& R,
-			    const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-			    const scalar_type	& dt)
+mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value>
+time_discrete_residual(const state_type	& odeCurrentState,
+		       residual_type	& R,
+		       const pre_states_type & prevStates,
+		       const scalar_type	& dt)
 {
+  using nm1 = ode::nMinusOne;
+
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
   // R = y_n - y_n-1 - dt*f()
-  ::pressio::containers::ops::do_update(R, cf, odeCurrentState, cn, prevStates[0], cnm1);
+  ::pressio::containers::ops::do_update(R, cf, odeCurrentState, cn, prevStates.template get<nm1>(), cnm1);
 }
 
 
 template <
-  ode::ImplicitEnum method,
-  std::size_t n,
+  typename stepper_tag,
   typename state_type,
   typename residual_type,
-  typename scalar_type,
-  mpl::enable_if_t< method == ode::ImplicitEnum::BDF2 > * = nullptr
+  typename pre_states_type,
+  typename scalar_type
   >
-void time_discrete_residual(const state_type	& odeCurrentState,
-			    residual_type	& R,
-			    const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-			    const scalar_type	& dt)
+mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value>
+time_discrete_residual(const state_type	& odeCurrentState,
+		       residual_type	& R,
+		       const pre_states_type & prevStates,
+		       const scalar_type	& dt)
 {
+  using nm1 = ode::nMinusOne;
+  using nm2 = ode::nMinusTwo;
+
   constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
   constexpr auto cnm2 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_;
@@ -103,8 +108,8 @@ void time_discrete_residual(const state_type	& odeCurrentState,
   // R = -dt*2/3*R + y_n -4/3*y_n-1 + 1/3*y_n-2
   ::pressio::containers::ops::do_update(R, cf,
 					odeCurrentState, cn,
-					prevStates[0], cnm1,
-					prevStates[1], cnm2);
+					prevStates.template get<nm1>(), cnm1,
+					prevStates.template get<nm2>(), cnm2);
 }
 
 }}}//end namespace pressio::ode::impl

@@ -53,84 +53,36 @@
 
 namespace pressio{ namespace ode{
 
+class nMinusOne{};
+class nMinusTwo{};
+class nMinusThree{};
+class nMinusFour{};
+
+
+/*--------------------------
+ * EXPLICIT METHODS
+ --------------------------*/
+namespace explicitmethods{
+
 template<
-  ExplicitEnum name,
+  typename stepper_tag,
   typename state_type,
   typename ...Args
   >
-class ExplicitStepper;
-
-template<
-  ImplicitEnum name,
-  typename state_type,
-  typename residual_type,
-  typename jacobian_type,
-  typename model_type,
-  typename ...Args>
-class ImplicitStepper;
+class Stepper;
 
 
 namespace policy{
-
 template<
   typename state_type,
   typename model_type,
   typename velocity_type = state_type,
   typename enable = void>
-class ExplicitVelocityStandardPolicy;
-
-template<
-  typename state_type,
-  typename model_type,
-  typename residual_type = state_type,
-  typename enable = void>
-class ImplicitResidualStandardPolicy;
-
-template<
-  typename state_type,
-  typename model_type,
-  typename residual_type = state_type,
-  typename enable = void>
-class ImplicitResidualStandardPolicyForArbitraryStepper;
-
-template<
-  typename state_type,
-  typename model_type,
-  typename jacobian_type,
-  typename enable = void>
-class ImplicitJacobianStandardPolicy;
-
-template<
-  typename state_type,
-  typename model_type,
-  typename jacobian_type,
-  typename enable = void>
-class ImplicitJacobianStandardPolicyForArbitraryStepper;
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<
-  typename state_type,
-  typename model_type,
-  typename residual_type = state_type,
-  typename enable = void>
-class ImplicitResidualStandardPolicyPybind11;
-
-template<
-  typename state_type,
-  typename model_type,
-  typename jacobian_type,
-  typename enable = void>
-class ImplicitJacobianStandardPolicyPybind11;
-#endif
-
-}//end namespace policy
+class VelocityStandardPolicy;
+}//end namespace pressio::ode::explicitmethods::policy
 
 
 namespace impl {
-
-template<typename T, std::size_t n>
-class OdeStorage;
-
 template<
   typename scalar_type,
   typename state_type,
@@ -152,8 +104,97 @@ template<
   typename enable = void
   >
 class ExplicitRungeKutta4StepperImpl;
+}//end namespace pressio::ode::explicitmethods::impl
 
-}//end namespace impl
+}//end namespace pressio::ode::explicitmethods
+
+
+
+/*--------------------------
+ * IMPLICIT METHODS
+ --------------------------*/
+namespace implicitmethods{
+
+template<
+  typename stepper_tag,
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
+  typename model_type,
+  typename ...Args>
+class Stepper;
+
+namespace policy{
+template<
+  typename state_type,
+  typename model_type,
+  typename residual_type = state_type,
+  typename enable = void>
+class ResidualStandardPolicy;
+
+template<
+  typename state_type,
+  typename model_type,
+  typename residual_type = state_type,
+  typename enable = void>
+class ResidualStandardPolicyForArbitraryStepper;
+
+template<
+  typename state_type,
+  typename model_type,
+  typename jacobian_type,
+  typename enable = void>
+class JacobianStandardPolicy;
+
+template<
+  typename state_type,
+  typename model_type,
+  typename jacobian_type,
+  typename enable = void>
+class JacobianStandardPolicyForArbitraryStepper;
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<
+  typename state_type,
+  typename model_type,
+  typename residual_type = state_type,
+  typename enable = void>
+class ResidualStandardPolicyPybind11;
+
+template<
+  typename state_type,
+  typename model_type,
+  typename jacobian_type,
+  typename enable = void>
+class JacobianStandardPolicyPybind11;
+#endif
+
+}//end namespace pressio::ode::implicitmethods::policy
+
+}//end namespace pressio::ode::explicitmethods
+
+
+// aliases to deprecate later
+template<
+  ExplicitEnum stepperName,
+  typename state_type,
+  typename ...Args
+  >
+using ExplicitStepper = ::pressio::ode::explicitmethods::Stepper<
+  typename impl::ExplicitEnumToTagType<stepperName>::type, state_type, Args...
+  >;
+
+template<
+  ImplicitEnum stepperName,
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
+  typename model_type,
+  typename ...Args
+  >
+using ImplicitStepper = ::pressio::ode::implicitmethods::Stepper<
+  typename impl::ImplicitEnumToTagType<stepperName>::type, state_type, residual_type, jacobian_type, model_type, Args...
+  >;
 
 }} // end namespace pressio::ode
 #endif

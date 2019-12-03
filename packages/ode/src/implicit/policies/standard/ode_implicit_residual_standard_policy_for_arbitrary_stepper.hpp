@@ -52,14 +52,14 @@
 #include "../../../ode_fwd.hpp"
 #include "../base/ode_implicit_residual_policy_base.hpp"
 
-namespace pressio{ namespace ode{ namespace policy{
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<
   typename state_type,
   typename system_type,
   typename residual_type
   >
-class ImplicitResidualStandardPolicyForArbitraryStepper<
+class ResidualStandardPolicyForArbitraryStepper<
   state_type, system_type, residual_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
@@ -68,17 +68,17 @@ class ImplicitResidualStandardPolicyForArbitraryStepper<
     containers::meta::is_wrapper<residual_type>::value
     >
   >
-  : public ImplicitResidualPolicyBase<
-  ImplicitResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>>
+  : public ResidualPolicyBase<
+  ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>>
 {
 
   using this_t
-  = ImplicitResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>;
-  friend ImplicitResidualPolicyBase<this_t>;
+  = ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>;
+  friend ResidualPolicyBase<this_t>;
 
 public:
-  ImplicitResidualStandardPolicyForArbitraryStepper() = default;
-  ~ImplicitResidualStandardPolicyForArbitraryStepper() = default;
+  ResidualStandardPolicyForArbitraryStepper() = default;
+  ~ResidualStandardPolicyForArbitraryStepper() = default;
 
 public:
 
@@ -92,154 +92,73 @@ public:
   //-------------------------------
   // specialize for n == 1
   //-------------------------------
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
+  template <typename prev_states_type, typename scalar_type,
+	    mpl::enable_if_t< prev_states_type::size()==1> * = nullptr>
   void operator()(const state_type & odeCurrentState,
-		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
+		  const prev_states_type & prevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
 		  residual_type & R) const{
 
+    const auto & ynm1 = prevStates.template get<ode::nMinusOne>();
+
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
 					*odeCurrentState.data(),
-					*prevStates[0].data());
+					*ynm1.data());
   }
 
   //-------------------------------
   // specialize for n == 2
   //-------------------------------
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
+  template <typename prev_states_type, typename scalar_type,
+	    mpl::enable_if_t< prev_states_type::size()==2> * = nullptr>
   void operator()(const state_type & odeCurrentState,
-		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
+		  const prev_states_type & prevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
 		  residual_type & R) const{
 
+    const auto & ynm1 = prevStates.template get<ode::nMinusOne>();
+    const auto & ynm2 = prevStates.template get<ode::nMinusTwo>();
+
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
 					*odeCurrentState.data(),
-					*prevStates[0].data(),
-					*prevStates[1].data());
+					*ynm1.data(),
+					*ynm2.data());
   }
 
   //-------------------------------
   // specialize for n == 3
   //-------------------------------
-  template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
+  template <typename prev_states_type, typename scalar_type,
+	    mpl::enable_if_t< prev_states_type::size()==3> * = nullptr>
   void operator()(const state_type & odeCurrentState,
-		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
+		  const prev_states_type & prevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t &  step,
 		  residual_type & R) const{
 
+    const auto & ynm1 = prevStates.template get<ode::nMinusOne>();
+    const auto & ynm2 = prevStates.template get<ode::nMinusTwo>();
+    const auto & ynm3 = prevStates.template get<ode::nMinusThree>();
+
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
 					*odeCurrentState.data(),
-					*prevStates[0].data(),
-					*prevStates[1].data(),
-					*prevStates[2].data());
+					*ynm1.data(),
+					*ynm2.data(),
+					*ynm3.data());
   }
 
 };//end class
 
-}}}//end namespace pressio::ode::policy
+}}}}//end namespace pressio::ode::implicitmethods::policy
 #endif
-
-
-
-
-
-
-
-
-
-
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==1> * = nullptr>
-  // residual_type operator()(const state_type & odeCurrentState,
-  // 			   const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 			   const system_type & model,
-  // 			   const scalar_type & t,
-  // 			   const scalar_type & dt,
-  // 			   const types::step_t & step) const{
-
-  //   residual_type R(model.template timeDiscreteResidual(step, t, dt,
-  // 							*odeCurrentState.data(),
-  // 							*prevStates[0].data() ));
-  //   return R;
-  // }
-
-  // //-------------------------------
-  // // specialize for n == 2
-  // //-------------------------------
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
-  // void operator()(const state_type & odeCurrentState,
-  // 		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 		  const system_type & model,
-  // 		  const scalar_type & t,
-  // 		  const scalar_type & dt,
-  // 		  const types::step_t & step,
-  // 		  residual_type & R) const{
-
-  //   model.template timeDiscreteResidual(step, t, dt,
-  // 					*R.data(),
-  // 					*odeCurrentState.data(),
-  // 					*prevStates[0].data(),
-  // 					*prevStates[1].data());
-  // }
-
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==2> * = nullptr>
-  // residual_type operator()(const state_type & odeCurrentState,
-  // 			   const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 			   const system_type & model,
-  // 			   const scalar_type & t,
-  // 			   const scalar_type & dt,
-  // 			   const types::step_t &  step) const{
-
-  //   residual_type R( model.template timeDiscreteResidual(step, t, dt,
-  // 							 *odeCurrentState.data(),
-  // 							 *prevStates[0].data(),
-  // 							 *prevStates[1].data() ));
-  //   return R;
-  // }
-
-  // //-------------------------------
-  // // specialize for n == 3
-  // //-------------------------------
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
-  // void operator()(const state_type & odeCurrentState,
-  // 		  const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 		  const system_type & model,
-  // 		  const scalar_type & t,
-  // 		  const scalar_type & dt,
-  // 		  const types::step_t &  step,
-  // 		  residual_type & R) const{
-
-  //   model.template timeDiscreteResidual(step, t, dt,
-  // 					*R.data(),
-  // 					*odeCurrentState.data(),
-  // 					*prevStates[0].data(),
-  // 					*prevStates[1].data(),
-  // 					*prevStates[2].data());
-  // }
-
-  // template <std::size_t n, typename scalar_type, mpl::enable_if_t<n==3> * = nullptr>
-  // residual_type operator()(const state_type & odeCurrentState,
-  // 			   const ::pressio::ode::StatesContainer<state_type, n> & prevStates,
-  // 			   const system_type & model,
-  // 			   const scalar_type & t,
-  // 			   const scalar_type & dt,
-  // 			   const types::step_t &  step) const{
-
-  //   residual_type R(model.template timeDiscreteResidual(step, t, dt,
-  // 							*odeCurrentState.data(),
-  // 							*prevStates[0].data(),
-  // 							*prevStates[1].data(),
-  // 							*prevStates[2].data() ));
-  //   return R;
-  // }

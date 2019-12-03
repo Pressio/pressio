@@ -59,30 +59,26 @@ namespace pressio{ namespace containers{ namespace ops{
  * multi_vector prod vector
  */
 
-
-//-------------------------------------------------------//
-//  TPETRA multivector with eigen vector
-//-------------------------------------------------------//
+// begin namespace pressio::containers::ops::impl
+namespace impl{
 
 template <
-  typename mvec_type,
-  typename vec_type,
-  typename res_type,
+  typename mvec_type, typename operand_t, typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    containers::meta::is_vector_wrapper_eigen<vec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<res_type>::value
     > * = nullptr
   >
-void product(const mvec_type & mvA, const vec_type & vecB, res_type & C){
+void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
+				      const operand_t & b,
+				      res_type & C){
 
   //zero out result
   C.setZero();
   // how many vectors are in mvA
   const auto numVecs = mvA.globalNumVectors();
   // size of vecB
-  assert(size_t(numVecs) == size_t(vecB.size()));
+  assert(size_t(numVecs) == size_t(b.size()));
 
   // my number of rows
   const auto myNrows = mvA.localLength();
@@ -100,23 +96,46 @@ void product(const mvec_type & mvA, const vec_type & vecB, res_type & C){
   // loop
   for (size_t i=0; i<(size_t)myNrows; i++){
     for (size_t j=0; j<(size_t)numVecs; j++){
-     C2[i] += mv2d(i,j) * vecB[j];
+     C2[i] += mv2d(i,j) * b[j];
     }
   }
   using device_t = typename details::traits<res_type>::device_t;
   C.data()->template sync<device_t>();
 }
+}//end namespace pressio::containers::ops::impl
 
 
-// result is returned
+
+
+/* -------------------------------------------------------------------
+ * specialize for tpetra mv operating on a sharedmem vector wrapper
+ *-------------------------------------------------------------------*/
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename res_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
+    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+    containers::meta::is_vector_wrapper_tpetra<res_type>::value and
+    (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
+     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
+    > * = nullptr
+  >
+void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
+{
+  ::pressio::containers::ops::impl::_product_tpetra_mv_sharedmem_vec(mvA, vecB, C);
+}
+
 template <
   typename mvec_type,
   typename vec_type,
   ::pressio::mpl::enable_if_t<
-   containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-   containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    (containers::meta::is_vector_wrapper_eigen<vec_type>::value)
-  > * = nullptr
+    containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
+    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+    (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
+     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
+    > * = nullptr
  >
 auto product(const mvec_type & mvA, const vec_type & vecB)
   -> containers::Vector<
@@ -149,66 +168,34 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
 }
 
 
-//-------------------------------------------------------//
-//  TPETRA multivector with teuchos vector
-//-------------------------------------------------------//
 
+
+/* -------------------------------------------------------------------
+ * specialize for tpetra mv operating on an expression like viewColvector
+ *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
-  typename vec_type,
+  typename expr_type,
   typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value and
-    containers::meta::is_vector_wrapper_tpetra<res_type>::value
+    expr_type::is_view_vector_expr
     > * = nullptr
   >
-void product(const mvec_type & mvA, const vec_type & vecB, res_type & C){
-
-  //zero out result
-  C.setZero();
-  // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
-  // size of vecB
-  assert(size_t(numVecs) == size_t(vecB.size()));
-
-  // my number of rows
-  const auto myNrows = mvA.localLength();
-
-  // get the wrapped trilinos tpetra multivector
-  auto trilD = mvA.data();
-  //  trilD->template sync<Kokkos::HostSpace>();
-  auto mv2d = trilD->template getLocalView<Kokkos::HostSpace>();
-
-  // get wrapped data for the result too
-  auto C1 = C.data()->template getLocalView<Kokkos::HostSpace>();
-  auto C2 = Kokkos::subview(C1, Kokkos::ALL(), 0);
-  C.data()->template modify<Kokkos::HostSpace>();
-
-  // loop
-  for (decltype(myNrows) i=0; i<myNrows; i++){
-    for (decltype(numVecs) j=0; j<numVecs; j++){
-     C2[i] += mv2d(i,j) * vecB[j];
-    }
-  }
-  using device_t = typename details::traits<res_type>::device_t;
-  C.data()->template sync<device_t>();
-
+void product(const mvec_type & mvA, const expr_type & b, res_type & C)
+{
+  ::pressio::containers::ops::impl::_product_tpetra_mv_sharedmem_vec(mvA, b, C);
 }
 
-
-// result is returned
 template <
   typename mvec_type,
-  typename vec_type,
+  typename expr_type,
   ::pressio::mpl::enable_if_t<
-   containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-   containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    (containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
-  > * = nullptr
+    containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
+    expr_type::is_view_vector_expr
+    > * = nullptr
  >
-auto product(const mvec_type & mvA, const vec_type & vecB)
+auto product(const mvec_type & mvA, const expr_type & b)
   -> containers::Vector<
   Tpetra::Vector<typename details::traits<mvec_type>::scalar_t,
                  typename details::traits<mvec_type>::local_ordinal_t,
@@ -216,10 +203,6 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
                  typename details::traits<mvec_type>::node_t>
                  >
 {
-
-  // here, mvA is distrubted, but vecB is NOT.
-  // we interpret this as a linear combination of vectors
-
   // the data map of the multivector
   auto rcpMap = mvA.getRCPDataMap();
 
@@ -231,10 +214,9 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
 
   // result is an Tpetra Vector with same distribution of mvA
   using res_nat_t = Tpetra::Vector<sc_t, LO_t, GO_t, NO_t>;
-  //  res_nat_t tmp(rcpMap);
   using res_t = containers::Vector<res_nat_t>;
   res_t c(rcpMap);
-  product(mvA, vecB, c);
+  product(mvA, b, c);
   return c;
 }
 

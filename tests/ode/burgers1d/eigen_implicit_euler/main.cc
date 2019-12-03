@@ -26,7 +26,6 @@ int main(int argc, char *argv[]){
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   constexpr int Ncell = 20;
   app_t appObj(mu, Ncell);
-  appObj.setup();
   auto & y0n = appObj.getInitialState();
   auto r0n = appObj.velocity(y0n, static_cast<scalar_t>(0));
 

@@ -60,7 +60,7 @@ struct IterativeBase
   IterativeBase(const IterativeBase &) = delete;
   ~IterativeBase() = default;
 
-  using iteration_t = containers::default_types::uint;
+  using iteration_t = unsigned int;
 
   /** Get the number of iterations performed. */
   iteration_t getNumIterationsExecuted() const {

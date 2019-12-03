@@ -61,7 +61,9 @@ namespace pressio{ namespace ode{ namespace details{
 
 template<typename state_type, typename ...Args>
 struct traits<
-  ExplicitStepper<ExplicitEnum::Euler, state_type, Args...>
+  ::pressio::ode::explicitmethods::Stepper<
+    ::pressio::ode::explicitmethods::Euler, state_type, Args...
+    >
   >{
 
   static constexpr bool is_implicit = false;
@@ -96,7 +98,7 @@ struct traits<
 
   // this is the standard velocity policy (just typedef, it is only used
   // if the user does not pass a user-defined policy)
-  using standard_velocity_policy_t = policy::ExplicitVelocityStandardPolicy<
+  using standard_velocity_policy_t = ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<
     state_t, model_t, velocity_t>;
 
   // check Args if a user-defined velocity policy is passed
@@ -112,7 +114,7 @@ struct traits<
   using ops_t = ::pressio::mpl::variadic::at_or_t<void, ic4::value, Args...>;
 
   // implementation class type
-  using impl_t = impl::ExplicitEulerStepperImpl
+  using impl_t = ::pressio::ode::explicitmethods::impl::ExplicitEulerStepperImpl
     <scalar_t, state_t, model_t, velocity_t, velocity_policy_t, ops_t>;
 };
 

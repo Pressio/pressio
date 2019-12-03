@@ -64,7 +64,7 @@
 #endif
 #include "../../utils/src/utils_static_constants.hpp"
 
-#include "ode_enum.hpp"
+#include "ode_stepper_tags.hpp"
 #include "ode_types.hpp"
 
 namespace pressio{ namespace ode{ namespace details {

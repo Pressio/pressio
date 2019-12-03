@@ -49,7 +49,6 @@
 #ifndef CONTAINERS_BASIC_HPP_
 #define CONTAINERS_BASIC_HPP_
 
-#include "containers/src/containers_default_types.hpp"
 #include "containers/src/containers_ConfigDefs.hpp"
 #include "containers/src/containers_fwd.hpp"
 #include "containers/src/containers_shared_traits.hpp"

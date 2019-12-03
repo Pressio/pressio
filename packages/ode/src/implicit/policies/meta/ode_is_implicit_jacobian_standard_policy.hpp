@@ -55,7 +55,7 @@
 namespace pressio{ namespace ode{ namespace meta {
 
 template<
-  ::pressio::ode::ImplicitEnum whichone,
+  typename name_tag,
   typename policy_t,
   typename enable = void
   >
@@ -66,12 +66,12 @@ template <
   typename... Args
   >
 struct is_implicit_jacobian_standard_policy<
-  ::pressio::ode::ImplicitEnum::Euler,
+  ::pressio::ode::implicitmethods::Euler,
   policy_t<Args...>,
   typename std::enable_if<
     std::is_same<
       policy_t<Args...>,
-      ode::policy::ImplicitJacobianStandardPolicy<
+      ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
 	Args...
 	>
       >::value
@@ -83,12 +83,12 @@ template <
   typename... Args
   >
 struct is_implicit_jacobian_standard_policy<
-  ::pressio::ode::ImplicitEnum::BDF2,
+  ::pressio::ode::implicitmethods::BDF2,
   policy_t<Args...>,
   typename std::enable_if<
     std::is_same<
       policy_t<Args...>,
-      ode::policy::ImplicitJacobianStandardPolicy<
+      ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
 	Args...
 	>
       >::value
@@ -98,12 +98,12 @@ struct is_implicit_jacobian_standard_policy<
 template<template <typename...> class policy_t, typename... Args>
 using is_implicit_euler_jacobian_standard_policy =
   typename is_implicit_jacobian_standard_policy<
-  ::pressio::ode::ImplicitEnum::Euler,policy_t<Args...>>::type;
+  ::pressio::ode::implicitmethods::Euler,policy_t<Args...>>::type;
 
 template<template <typename...> class policy_t, typename... Args>
 using is_implicit_bdf2_jacobian_standard_policy =
   typename is_implicit_jacobian_standard_policy<
-  ::pressio::ode::ImplicitEnum::BDF2,policy_t<Args...>>::type;
+  ::pressio::ode::implicitmethods::BDF2,policy_t<Args...>>::type;
 
 
 }}} // namespace pressio::ode::meta

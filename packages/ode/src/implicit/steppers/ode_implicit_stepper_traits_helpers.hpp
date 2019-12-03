@@ -113,9 +113,9 @@ struct StdPoliciesPicker<
 #endif
   >
 {
-  using standard_res_policy_t = policy::ImplicitResidualStandardPolicy<
+  using standard_res_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
     state_t, system_t, residual_t>;
-  using standard_jac_policy_t = policy::ImplicitJacobianStandardPolicy<
+  using standard_jac_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
     state_t, system_t, jacobian_t>;
 };
 
@@ -133,9 +133,9 @@ struct StdPoliciesPicker<
     >
   >
 {
-  using standard_res_policy_t = policy::ImplicitResidualStandardPolicyPybind11<
+  using standard_res_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicyPybind11<
     state_t, system_t, residual_t>;
-  using standard_jac_policy_t = policy::ImplicitJacobianStandardPolicyPybind11<
+  using standard_jac_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicyPybind11<
     state_t, system_t, jacobian_t>;
 };
 #endif

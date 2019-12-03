@@ -61,7 +61,7 @@ template <
   typename fom_querier_policy
   >
 class ResidualPolicyResidualApi
-  : public ode::policy::ImplicitResidualPolicyBase<
+  : public ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<
   ResidualPolicyResidualApi<residual_type, fom_states_data_type, fom_querier_policy>
   >,
   protected fom_querier_policy
@@ -71,7 +71,7 @@ public:
   using this_t = ResidualPolicyResidualApi<residual_type,
 						       fom_states_data_type,
 						       fom_querier_policy>;
-  friend ode::policy::ImplicitResidualPolicyBase<this_t>;
+  friend ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
@@ -87,13 +87,13 @@ public:
 
 public:
   template <
-    std::size_t n,
     typename lspg_state_t,
+    typename lspg_prev_states_t,
     typename fom_t,
     typename scalar_t
   >
   void operator()(const lspg_state_t			& romState,
-  		  const ::pressio::ode::StatesContainer<lspg_state_t,n>	& romPrevStates,
+  		  const lspg_prev_states_t		& romPrevStates,
   		  const fom_t				& app,
 		  const scalar_t			& time,
 		  const scalar_t			& dt,
@@ -104,8 +104,8 @@ public:
   }
 
   template <typename lspg_state_t, typename fom_t>
-  residual_t operator()(const lspg_state_t		    & romState,
-			const fom_t			    & app) const
+  residual_t operator()(const lspg_state_t  & romState,
+			const fom_t	    & app) const
   {
     // this method only called once at the beginning
     fomStates_.template reconstructCurrentFomState(romState);
@@ -115,9 +115,9 @@ public:
 
 
 private:
-  template <std::size_t n, typename lspg_state_t>
+  template <typename lspg_state_t, typename lspg_prev_states_t>
   void doFomStatesReconstruction(const lspg_state_t & romState,
-				 const ::pressio::ode::StatesContainer<lspg_state_t, n> & romPrevStates,
+				 const lspg_prev_states_t & romPrevStates,
 				 const ::pressio::ode::types::step_t & step) const
   {
     /* the currrent FOM has to be recomputed every time regardless
@@ -131,40 +131,41 @@ private:
      * we do not need to reconstruct all the FOM states, we just need to reconstruct
      * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
-    if (currentStep_ != step){
-      fomStates_ << romPrevStates[0];
-      currentStep_ = step;
+    if (storedStep_ != step){
+      fomStates_ << romPrevStates.template get<ode::nMinusOne>();
+      storedStep_ = step;
     }
   }
 
   // we have here n = 1 prev rom states
-  template <typename lspg_state_t, typename fom_t, typename scalar_t>
+  template <typename lspg_state_t, typename lspg_prev_states_t, typename fom_t, typename scalar_t,
+	    mpl::enable_if_t< lspg_prev_states_t::size()==1 > * = nullptr>
   void compute_impl(const lspg_state_t		        & romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t, 1> & romPrevStates,
+		    const lspg_prev_states_t			& romPrevStates,
 		    const fom_t			        & app,
 		    const scalar_t		        & time,
 		    const scalar_t			& dt,
 		    const ::pressio::ode::types::step_t & step,
 		    residual_t			        & romR) const
   {
-    doFomStatesReconstruction<1>(romState, romPrevStates, step);
-
+    doFomStatesReconstruction(romState, romPrevStates, step);
     const auto & yn   = fomStates_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
     fom_querier_policy::evaluate(yn, ynm1, app, time, dt, step, romR);
   }
 
   // we have here n = 2 prev rom states
-  template <typename lspg_state_t, typename fom_t, typename scalar_t>
+  template <typename lspg_state_t, typename lspg_prev_states_t, typename fom_t, typename scalar_t,
+	    mpl::enable_if_t< lspg_prev_states_t::size()==2 > * = nullptr>
   void compute_impl(const lspg_state_t		        & romState,
-		    const ::pressio::ode::StatesContainer<lspg_state_t, 2> & romPrevStates,
+		    const lspg_prev_states_t		& romPrevStates,
 		    const fom_t			        & app,
 		    const scalar_t		        & time,
 		    const scalar_t			& dt,
 		    const ::pressio::ode::types::step_t & step,
 		    residual_t			        & romR) const
   {
-    doFomStatesReconstruction<2>(romState, romPrevStates, step);
+    doFomStatesReconstruction(romState, romPrevStates, step);
 
     const auto & yn   = fomStates_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
@@ -173,11 +174,11 @@ private:
   }
 
 protected:
-  // currentStep is used to keep track of which step we are doing.
+  // storedStep is used to keep track of which step we are doing.
   // This is used to decide whether we need to update/recompute the previous
   // FOM states or not. Since it does not make sense to recompute previous
   // FOM states if we are not in a new time step.
-  mutable ::pressio::ode::types::step_t currentStep_ = {};
+  mutable ::pressio::ode::types::step_t storedStep_ = {};
 
   fom_states_data_type & fomStates_;
 };

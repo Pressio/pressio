@@ -54,7 +54,7 @@
 namespace pressio{ namespace ode{ namespace meta {
 
 template<
-  ImplicitEnum name,
+  typename name_tag,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -64,19 +64,19 @@ template<
 struct find_if_legitimate_implicit_jacobian_policy;
 
 template<
-  ImplicitEnum name,
+  typename name_tag,
   typename state_t,
   typename jacobian_t,
   typename system_t,
   typename scalar_t
   >
 struct find_if_legitimate_implicit_jacobian_policy<
-  name, state_t, jacobian_t, system_t, scalar_t
+  name_tag, state_t, jacobian_t, system_t, scalar_t
   > : std::integral_constant<std::size_t, 0>{};
 
 
 template<
-  ImplicitEnum name,
+  typename name_tag,
   typename state_t,
   typename jacobian_t,
   typename system_t,
@@ -84,25 +84,24 @@ template<
   class Head, class ... Tail
   >
 struct find_if_legitimate_implicit_jacobian_policy<
-  name, state_t, jacobian_t, system_t, scalar_t,
+  name_tag, state_t, jacobian_t, system_t, scalar_t,
   Head, Tail...
   >
   : std::conditional <
   is_legitimate_implicit_jacobian_policy
-	  <Head, name,
-	   state_t, jacobian_t,
-	   system_t, scalar_t
-           >::type::value,
+  <Head, name_tag,
+   state_t, jacobian_t, system_t, scalar_t
+   >::type::value,
   std::integral_constant<std::size_t, 0>,
   std::integral_constant <
     std::size_t, 1 +
     find_if_legitimate_implicit_jacobian_policy
-    <name, state_t, jacobian_t, system_t, scalar_t, Tail...>::type::value
+    <name_tag, state_t, jacobian_t, system_t, scalar_t, Tail...>::type::value
     >
   >::type
 {};
 
-template <ImplicitEnum name,
+template <typename name_tag,
 	  typename state_t,
 	  typename jacobian_t,
 	  typename system_t,
@@ -110,8 +109,7 @@ template <ImplicitEnum name,
 	  class... Args>
 using find_if_legitimate_implicit_jacobian_policy_t =
   typename find_if_legitimate_implicit_jacobian_policy<
-  name, state_t, jacobian_t, system_t, scalar_t,
-  Args...>::type;
+  name_tag, state_t, jacobian_t, system_t, scalar_t, Args...>::type;
 
 
 }}} // namespace pressio::ode::meta

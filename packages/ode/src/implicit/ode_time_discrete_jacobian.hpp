@@ -57,11 +57,11 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 template <
-  ode::ImplicitEnum odeMethod,
+  typename stepper_tag,
   typename jacobian_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
-    (odeMethod == ::pressio::ode::ImplicitEnum::Euler) and
+    (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value) and
     (containers::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
      containers::meta::is_sparse_matrix_wrapper_epetra<jacobian_type>::value or
@@ -69,8 +69,7 @@ template <
     containers::meta::is_dense_matrix_wrapper_eigen<jacobian_type>::value)
     > * = nullptr
   >
-  void time_discrete_jacobian(jacobian_type & jac,
-			      const scalar_type & dt)
+  void time_discrete_jacobian(jacobian_type & jac, const scalar_type & dt)
 {
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
@@ -81,16 +80,15 @@ template <
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
-  ode::ImplicitEnum odeMethod,
+  typename stepper_tag,
   typename jacobian_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
-    (odeMethod == ::pressio::ode::ImplicitEnum::Euler) and
+    (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value) and
     containers::meta::is_array_pybind11<jacobian_type>::value
     > * = nullptr
   >
-void time_discrete_jacobian(jacobian_type & jac,
-			    const scalar_type & dt)
+void time_discrete_jacobian(jacobian_type & jac, const scalar_type & dt)
 {
   using namespace ::pressio::ode::constants;
 
@@ -112,23 +110,20 @@ void time_discrete_jacobian(jacobian_type & jac,
 	ptr[irow*cols + icol] += cn;
     }
   }
-
-  // no need to reshape array since it has already right shape
 }
 #endif
 
 
 template <
-  ode::ImplicitEnum odeMethod,
+  typename stepper_tag,
   typename jacobian_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
-    (odeMethod == ::pressio::ode::ImplicitEnum::BDF2) and
+    (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value) and
     containers::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
     > * = nullptr
   >
-void time_discrete_jacobian(jacobian_type & jac,
-			    const scalar_type & dt)
+void time_discrete_jacobian(jacobian_type & jac, const scalar_type & dt)
 {
   constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;

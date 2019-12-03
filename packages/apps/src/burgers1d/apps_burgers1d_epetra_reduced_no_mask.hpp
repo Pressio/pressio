@@ -63,19 +63,13 @@ class Burgers1dEpetraReducedNoMask : public Burgers1dEpetra{
 public:
   Burgers1dEpetraReducedNoMask(std::vector<scalar_type> params,
 			int Ncell, Epetra_MpiComm * comm)
-    : base_t(params, Ncell, comm){}
+    : base_t(params, Ncell, comm){
+    this->setup();
+  }
 
   ~Burgers1dEpetraReducedNoMask() = default;
 
 public:
-  void setup(){
-    base_t::setup();
-    // create a map to mimic the mask
-    createMaskMap();
-    //    maskMap_->Print(std::cout);
-    importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
-  };
-
   void velocity(const state_type & u,
 		const scalar_type t,
     velocity_type & rhs) const
@@ -116,6 +110,14 @@ public:
   }
 
 private:
+  void setup(){
+    base_t::setup();
+    // create a map to mimic the mask
+    createMaskMap();
+    //    maskMap_->Print(std::cout);
+    importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
+  };
+
   void createMaskMap(){
     // get # of my elements for the full map
     auto myN0 = dataMap_->NumMyElements();
