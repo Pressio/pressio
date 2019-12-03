@@ -39,11 +39,11 @@ is not admissible for this: maybe you have the wrong api? blas blas");
 };
 template<
   typename fom_type, typename wls_state_type,
-  typename decoder_type, typename fom_state_container_type, typename jtj_jtr_pol_type
+  typename decoder_type, typename fom_state_container_type, typename hessian_gradient_pol_type
 >
-struct Specializer<pressio::rom::wls::WlsSystemJTJApi<fom_type,wls_state_type,decoder_type,fom_state_container_type, jtj_jtr_pol_type>, fom_type, wls_state_type, decoder_type, fom_state_container_type,jtj_jtr_pol_type>
+struct Specializer<pressio::rom::wls::WlsSystemJTJApi<fom_type,wls_state_type,decoder_type,fom_state_container_type, hessian_gradient_pol_type>, fom_type, wls_state_type, decoder_type, fom_state_container_type,hessian_gradient_pol_type>
 { 
-  using type = pressio::rom::wls::WlsSystemJTJApi<fom_type, wls_state_type,decoder_type,fom_state_container_type, jtj_jtr_pol_type>;
+  using type = pressio::rom::wls::WlsSystemJTJApi<fom_type, wls_state_type,decoder_type,fom_state_container_type, hessian_gradient_pol_type>;
 };
 
 //struct DefaultApi{};
@@ -53,34 +53,42 @@ using WlsSystem = typename pressio::rom::wls::Specializer<api_type, fom_type, wl
 }}} // end namespace rom::wls
 
 
-template <typename system_type, typename state_type, typename jtj_type, typename jtr_type>
-void my_gauss_newton(const system_type & sys, state_type & state, state_type & stateIC, jtj_type jtj, jtr_type jtr, int romSize, int numStepsInWindow)
-{
-  double gnorm = 1.;
-  double tol = 1e-8; 
-  int iteration = 0;
-  while (gnorm >= tol){
-    sys.JTJ_JTR(state,stateIC,jtj,jtr); 
-    Eigen::MatrixXd x = (*jtj.data()).colPivHouseholderQr().solve(*jtr.data());
-    iteration += 1;
-    gnorm = (*jtr.data()).squaredNorm();
-    cout << "grad norm = " << gnorm << endl; 
-    cout << "Hess norm = " << (*jtj.data()).squaredNorm() << endl; 
-    cout << "x    norm = " << x.squaredNorm() << endl; 
-    cout << "iteration = " << iteration << endl; 
-    //cout << (*jtj.data()) << endl;
-    jtj.setZero();
-    for (int n = 0; n < numStepsInWindow; n++){
-      *(state[n]).data() += x.block(n*romSize,0,romSize,1); 
-      cout << "===============" << endl;
 
-    }
+template <typename system_type, typename state_type, typename hessian_type, typename gradient_type, typename linear_solver_type>
+class my_gauss_newton_class{
+public:
+  using scalar_type = typename system_type::scalar_type;
+  hessian_type hessian_ = {};
+  gradient_type gradient_ = {};
+  gradient_type dx_ = {};
+  linear_solver_type & linear_solver_ = {};
+
+  my_gauss_newton_class(const system_type & system,const state_type & stateIn,linear_solver_type & linear_solver) : hessian_(system.createHessianObject(stateIn)) , gradient_(system.createGradientObject(stateIn)),dx_(system.createGradientObject(stateIn)), linear_solver_(linear_solver){}; 
+
+  void my_gauss_newton(const system_type & sys, state_type & state, state_type & stateIC, int romSize, int numStepsInWindow)
+  {
+    double gnorm = 1.;
+    double tol = 1e-8;
+    scalar_type rnorm = 0.; 
+    int iteration = 0;
+    while (gnorm >= tol){
+      sys.computeHessianAndGradient(state,stateIC,hessian_,gradient_); 
+      linear_solver_.solve(hessian_,gradient_,dx_);
+      iteration += 1;
+      gnorm = (*gradient_.data()).squaredNorm();
+      cout << "grad norm = " << gnorm << endl; 
+      cout << "Hess norm = " << (*hessian_.data()).squaredNorm() << endl; 
+      cout << "x    norm = " << (*dx_.data()).squaredNorm() << endl; 
+      cout << "iteration = " << iteration << endl; 
+      //cout << (*hessian.data()) << endl;
+      hessian_.setZero();
+      for (int n = 0; n < numStepsInWindow; n++){
+        *(state[n]).data() += (*dx_.data()).block(n*romSize,0,romSize,1); 
+        cout << "===============" << endl;
+      }
+    } 
   } 
-//  cout << (*jtj.data()).size() << endl;
-//  cout << (*jtr.data()).size() << endl;
-} 
-
-
+};
 
 
 int main(int argc, char *argv[]){
@@ -100,10 +108,10 @@ int main(int argc, char *argv[]){
   using fom_native_residual_t = pressio::apps::Burgers1dEigenResidualApi::residual_type; 
   using fom_residual_t             = ::pressio::containers::Vector<fom_native_residual_t>;
 
-  using wls_step_jac_t	= pressio::containers::MultiVector<eig_dyn_mat>;
   // Windowed least-squares types. std::vector will be replaced in the future with something custom; e.g., multivector
   using wls_state_t     = std::vector<rom_state_t>; 
-  using wls_jacs_t     =  std::vector<wls_step_jac_t>;
+//  using wls_state_t     = pressio::MultiVector<Eigen::Matrix<scalar_t, -1, -1,Eigen::ColMajor>>;
+
 
   std::string checkStr {"PASSED"};
 
@@ -112,7 +120,7 @@ int main(int argc, char *argv[]){
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   scalar_t dt = 0.01;
   int romSize = 11;
-  constexpr int numStepsInWindow = 10;
+  constexpr int numStepsInWindow = 5;
   int t_stencil_width = 2;
   //-------------------------------
   // app object
@@ -139,8 +147,6 @@ int main(int argc, char *argv[]){
   for (int i=0;i<numStepsInWindow; i++){wlsState[i].putScalar(0.0);}
   for (int i=0;i<numStepsInWindow; i++){wlsStateIC[i].putScalar(0.0);}
 
-  // define WLS jacobian
-  wls_jacs_t  wlsJacs(t_stencil_width,phi);
 
   fom_state_t yFOM(fomSize);
   fom_native_state_t yRef(fomSize);
@@ -149,28 +155,37 @@ int main(int argc, char *argv[]){
   //auto & yFOM = appObj.getInitialState();
 
 
-  using jtr_t = rom_state_t; //this should be the same as WLS state
-  using jtj_t = pressio::containers::MultiVector<eig_dyn_mat>;
-  using hessian_t = std::vector<jtj_t>;
+  using gradient_t = rom_state_t;
+  using hessian_t = pressio::containers::Matrix<eig_dyn_mat>;
+  hessian_t hessian(romSize*numStepsInWindow,romSize*numStepsInWindow);
+  gradient_t gradient(romSize*numStepsInWindow);
+  gradient_t grad(romSize*numStepsInWindow);
 
-  jtj_t jtj(romSize*numStepsInWindow,romSize*numStepsInWindow);
-  jtr_t jtr(romSize*numStepsInWindow);
-  hessian_t H(5,jtj);
-  using jtjr_policy_t = pressio::rom::wls::impl::JTJ_JTR_policy_smart<wls_state_t,fom_t,jtj_t,jtr_t,decoder_t>;
-  using wls_api_t   = pressio::rom::wls::WlsSystemJTJApi<fom_t,wls_state_t,decoder_t,fom_state_container_t,jtjr_policy_t>;
-  using wls_system_t  = pressio::rom::wls::WlsSystem<wls_api_t, fom_t, wls_state_t,decoder_t, fom_state_container_t, jtjr_policy_t>;
+  using hessian_gradient_policy_t = pressio::rom::wls::impl::JTJ_JTR_policy_smart<wls_state_t,fom_t,hessian_t,gradient_t,decoder_t>;
+  using wls_api_t   = pressio::rom::wls::WlsSystemJTJApi<fom_t,wls_state_t,decoder_t,fom_state_container_t,hessian_gradient_policy_t>;
+  using wls_system_t  = pressio::rom::wls::WlsSystem<wls_api_t, fom_t, wls_state_t,decoder_t, fom_state_container_t, hessian_gradient_policy_t>;
 
 
 
   // construct objects and test
-  jtjr_policy_t jtjr_policy(2,phi,romSize,numStepsInWindow,fomSize);
-  wls_system_t wls(appObj,jtjr_policy,decoderObj,yFOM,dt,numStepsInWindow);
+  hessian_gradient_policy_t hessian_gradient_policy(2,phi,romSize,numStepsInWindow,fomSize);
+  wls_system_t wlsSystem(appObj,hessian_gradient_policy,decoderObj,yFOM,dt,numStepsInWindow,romSize,fomSize);
  
   double t = 0.;
   int numSteps = 10/numStepsInWindow;
+
+  // Use pressio interface for linear solvers 
+  using solver_tag   = pressio::solvers::linear::direct::ColPivHouseholderQR;
+  using linear_solver_t = pressio::solvers::direct::EigenDirect<solver_tag, hessian_t>;
+  linear_solver_t linear_solver; 
+
+  using gn_type = my_gauss_newton_class<wls_system_t,wls_state_t,hessian_t,gradient_t,linear_solver_t>;
+  gn_type gn_solver(wlsSystem,wlsState,linear_solver);
   for (int step = 0; step < numSteps; step++)
   {
-    my_gauss_newton<wls_system_t,wls_state_t,jtj_t,jtr_t>(wls,wlsState,wlsStateIC,jtj,jtr,romSize,numStepsInWindow); 
+    //my_gauss_newton<wls_system_t,wls_state_t,hessian_t,gradient_t,linear_solver_t>(wls,wlsState,wlsStateIC,hessian,gradient,grad,romSize,numStepsInWindow,linear_solver); 
+    gn_solver.my_gauss_newton(wlsSystem,wlsState,wlsStateIC,romSize,numStepsInWindow); 
+
     *wlsStateIC[0].data() = *wlsState[numStepsInWindow-1].data();
     cout << " step " << step << " completed " << endl;
 //    cout << "n1 " << (*wlsStateIC[0].data()).squaredNorm() << endl;
@@ -191,13 +206,32 @@ int main(int argc, char *argv[]){
     if (std::abs(yFinal[i] - trueY[i]) > 1e-7) checkStr = "FAILED";
   }
   cout << checkStr << endl;
-  //wls.JTJ_JTR(wlsState,wlsState,jtj,jtr);
-  //cout << (*jtj.data()).size() << endl;
-  //cout << (*jtr.data()).size() << endl;
-  //auto x = (*jtj.data()).colPivHouseholderQr().solve((*jtr.data())); 
+
+
+  using line_search_t = pressio::solvers::iterative::gn::noLineSearch;
+  using converged_t = pressio::solvers::iterative::converged_when::absoluteNormCorrectionBelowTol;
+
+  using t1 = wls_system_t::hessian_type;
+  using t2 = wls_system_t::gradient_type;
+  using t3 = wls_system_t::scalar_type;
+
+//template <
+//  typename system_type,
+//  typename linear_solver_type,
+//  typename scalar_type,
+//  typename line_search_type,
+//  typename converged_when
+//  
+//  using nlSolver_t =  pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
+  //pressio::solvers::iterative::impl::experimental::GaussNewtonHessianGradientApi<wls_system_t,linear_solver_t,scalar_t,line_search_t,converged_t>;
+  //nlSolver_t nlSolver(wlsSystem,wlsState,linear_solver);
+  //wls.JTJ_JTR(wlsState,wlsState,hessian,gradient);
+  //cout << (*hessian.data()).size() << endl;
+  //cout << (*gradient.data()).size() << endl;
+  //auto x = (*hessian.data()).colPivHouseholderQr().solve((*gradient.data())); 
 
   /*
-  //(*jtj.data()).block(1,1,testInt,testInt) = (*jtj2.data()); 
+  //(*hessian.data()).block(1,1,testInt,testInt) = (*hessian2.data()); 
 //  using resid_t = wls_state_t;
 //  using jacobian_t = pressio::containers::MultiVector<eig_dyn_mat>;
 //  resid_t residual(romSize);

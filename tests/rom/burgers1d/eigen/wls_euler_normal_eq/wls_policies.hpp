@@ -7,11 +7,11 @@ namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 //}
 //};
 
-template< typename wls_state_type, typename fom_type, typename hess_type, typename jtr_type, typename decoder_t>
+template< typename wls_state_type, typename fom_type, typename hess_type, typename gradient_type, typename decoder_t>
 struct JTJ_JTR_policy_smart{
 public:
   using hess_t = hess_type;
-  using jtr_t = jtr_type;
+  using gradient_t = gradient_type;
   using fom_native_state_t      = typename fom_type::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
@@ -41,39 +41,41 @@ public:
     this->fomSize = fomSize;
   }
 
-
   template <typename fom_state_container_t>
-  void operator()(fom_type & appObj, wls_state_type  & wlsState, wls_state_type & wlsStateIC, hess_type & jtj, jtr_type & jtr,fom_state_container_t &  fomStateContainerObj_, fom_state_reconstr_t & fomStateReconstrObj_,scalar_t dt, std::size_t numStepsInWindow) const { 
+  void operator()(fom_type & appObj, wls_state_type  & wlsState, wls_state_type & wlsStateIC, hess_type & jtj, gradient_type & gradient,fom_state_container_t &  fomStateContainerObj_, fom_state_reconstr_t & fomStateReconstrObj_,scalar_t dt, std::size_t numStepsInWindow) const { 
   int n = 0;
-  fomStateReconstrObj_(wlsState[n],fomStateContainerObj_[1]);
-  fomStateReconstrObj_(wlsStateIC[0],fomStateContainerObj_[0]);
-  (*(wlsJacs[0]).data()).setZero();
-  //(*(wlsJacs[0]).data()).diagonal().array() = -1.;
-  (*wlsJacs[0].data()).block(0,0,fomSize,romSize) = -(*phi_.data());
 
-  //std::cout << (*fomStateContainerObj_[1].data()) << std::endl;
+
+//  const auto wlsCurrentState = wlsState.viewColumnVector(n)
+  fomStateReconstrObj_(wlsState[n],fomStateContainerObj_[1]);
+
+
+
+
+
+  fomStateReconstrObj_(wlsStateIC[0],fomStateContainerObj_[0]);
+  (*wlsJacs[0].data()).block(0,0,fomSize,romSize) = -(*phi_.data());
   appObj.timeDiscreteResidual(n,dt*n,dt,*residual.data(),*fomStateContainerObj_[1].data(),*fomStateContainerObj_[0].data());
-  //mutable auto & J1 = wlsJacs[1];
   appObj.applyTimeDiscreteJacobian(n,dt*n,dt,*phi_.data(),0,*(wlsJacs[1]).data(),*fomStateContainerObj_[1].data(), *fomStateContainerObj_[0].data());
   (*jtj.data()).block(n*romSize,n*romSize,romSize,romSize) = (*wlsJacs[1].data()).transpose() * (*wlsJacs[1].data());
-  (*jtr.data()).block(n*romSize,0,romSize,1) = -(*wlsJacs[1].data()).transpose()*(*residual.data());
+
+
+  (*gradient.data()).block(n*romSize,0,romSize,1) = -(*wlsJacs[1].data()).transpose()*(*residual.data());
+
+
   for (int n = 1; n < numStepsInWindow; n++){
     // === reconstruct FOM states ========
     *fomStateContainerObj_[0].data() = *fomStateContainerObj_[1].data();
     fomStateReconstrObj_(wlsState[n],fomStateContainerObj_[1]);
-    //fomStateReconstrObj_(wlsState[n-1],fomStateContainerObj_[0]);
     // == Evaluate residual ============
     appObj.timeDiscreteResidual(n,dt*n,dt,*residual.data(),*fomStateContainerObj_[1].data(),*fomStateContainerObj_[0].data());
-    // == Evaluate Jacobian
-    //appObj.applyTimeDiscreteJacobian(n,dt*n,dt,*wlsJacs[0].data(),1,*phi_.data(),*fomStateContainerObj_[0].data(), *fomStateContainerObj_[1].data());
+    // == Evaluate Jacobian (Currently have jacobian w.r.p to previous state hard coded outside of loop)
     appObj.applyTimeDiscreteJacobian(n,dt*n,dt,*phi_.data(),0,*(wlsJacs[1]).data(),*fomStateContainerObj_[1].data(), *fomStateContainerObj_[0].data());
-    (*jtr.data()).block(n*romSize,0,romSize,1) = -(*wlsJacs[1].data()).transpose()*(*residual.data());
+    (*gradient.data()).block(n*romSize,0,romSize,1) = -(*wlsJacs[1].data()).transpose()*(*residual.data());
     for (int i=1; i < time_stencil_size; i++){
-      (*jtr.data()).block((n-i)*romSize,0,romSize,1) -= (*wlsJacs[time_stencil_size-i-1].data()).transpose()*(*residual.data());}
-    //appObj.applyTimeDiscreteJacobian(n,dt*n,dt,*J0.data(),0,*phi_.data(),*fomStateContainerObj_[0].data(), *fomStateContainerObj_[1].data());
+      (*gradient.data()).block((n-i)*romSize,0,romSize,1) -= (*wlsJacs[time_stencil_size-i-1].data()).transpose()*(*residual.data());}
     // == Assembel local component of global Hessian //
     for (int i=0; i < time_stencil_size; i++){
-//      (*jtr.data()).block((n-i)*romSize,0,romSize,1) -= (*wlsJacs[time_stencil_size-i-1].data()).transpose()*(*residual.data());
       for (int j=0; j <= i; j++){
          (*jtj.data()).block((n-i)*romSize,(n-j)*romSize,romSize,romSize) += (*wlsJacs[time_stencil_size-i-1].data()).transpose() * (*wlsJacs[time_stencil_size-j-1].data());
          if (i != j){
