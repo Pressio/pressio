@@ -14,7 +14,7 @@ public:
   fom_type & appObj_;
   
 
-  using jtj_type = typename jtj_jtr_pol_t::jtj_t;
+  using jtj_type = typename jtj_jtr_pol_t::hess_t;
   using jtr_type = typename jtj_jtr_pol_t::jtr_t;
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
   using decoder_jac_t = typename decoder_t::jacobian_t;
@@ -26,15 +26,14 @@ public:
   fom_state_container_t & fomStateContainerObjPtr;
   scalar_t dt_;
   std::size_t numStepsInWindow_; 
-  WlsSystemJTJApi(fom_type & appObj, const jtj_jtr_pol_t & jtj_jtr_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, std::size_t numStepsInWindow) : appObj_(appObj), jtj_jtr_polObj_(jtj_jtr_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),
-																										    fomStateContainerObj_(yFOM),fomStateContainerObjPtr(fomStateContainerObj_)
+  WlsSystemJTJApi(fom_type & appObj, const jtj_jtr_pol_t & jtj_jtr_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, std::size_t numStepsInWindow) : appObj_(appObj), jtj_jtr_polObj_(jtj_jtr_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),fomStateContainerObj_(yFOM),fomStateContainerObjPtr(fomStateContainerObj_)
 {
   dt_ = dt;
   numStepsInWindow_ = numStepsInWindow;
 }
 
-  void JTJ_JTR(wls_state_type & wls_state, jtj_type & jtj, jtr_type & jtr) const{
-    jtj_jtr_polObj_(appObj_,wls_state,jtj,jtr,fomStateContainerObjPtr,fomStateReconstructorObjPtr,dt_,numStepsInWindow_);
+  void JTJ_JTR(wls_state_type & wls_state, wls_state_type & wls_state_ic, jtj_type & jtj, jtr_type & jtr) const{
+    jtj_jtr_polObj_(appObj_,wls_state,wls_state_ic,jtj,jtr,fomStateContainerObjPtr,fomStateReconstructorObjPtr,dt_,numStepsInWindow_);
 }
 };
 
