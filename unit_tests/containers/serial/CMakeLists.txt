@@ -10,6 +10,7 @@ set(SRC1
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_matrix_matrix_product_eigen.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_matrix_dense_serial_eigen_class.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_eigen_product_eigen_vector.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_eigen_product_eigen_subview_vector_from_mv.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_sparse_matrix_product_multi_vector_eigen.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_serial_eigen_dynamic_class.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_eigen_dot_eigen_vector.cc

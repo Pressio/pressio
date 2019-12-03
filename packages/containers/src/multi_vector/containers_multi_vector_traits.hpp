@@ -231,23 +231,29 @@ struct traits<
 // for eigen multivector
 //*******************************
 template<typename wrapped_type>
-struct traits<MultiVector<wrapped_type,
-      typename std::enable_if<
-       meta::is_dynamic_multi_vector_eigen<wrapped_type
-      >::value>::type>
-     >
-  : public containers_shared_traits<MultiVector<wrapped_type>,
-            wrapped_type,
-            false, false, true,
-            WrappedPackageIdentifier::Eigen, true,
-	   ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
-	     wrapped_type::ColsAtCompileTime != Eigen::Dynamic )>
+struct traits<
+  MultiVector<
+    wrapped_type,
+    ::pressio::mpl::enable_if_t<
+      meta::is_dynamic_multi_vector_eigen<wrapped_type>::value
+      >
+    >
+  >
+  : public containers_shared_traits<
+  MultiVector<wrapped_type>,
+  wrapped_type, false, false, true,
+  WrappedPackageIdentifier::Eigen, true,
+  ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
+    wrapped_type::ColsAtCompileTime != Eigen::Dynamic )
+  >
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Eigen;
 
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
+
+  using view_col_vec_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
 
   // static constexpr bool is_static =
   //   ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
@@ -295,8 +301,10 @@ struct traits<
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
-  static constexpr bool has_host_execution_space = 
-    (false 
+  using view_col_vec_ret_t = exprtemplates::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
+
+  static constexpr bool has_host_execution_space =
+    (false
      #ifdef KOKKOS_ENABLE_SERIAL
      || std::is_same<execution_space, Kokkos::Serial>::value
      #endif

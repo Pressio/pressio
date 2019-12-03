@@ -97,7 +97,7 @@ public:
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  ~MultiVector(){}
+  ~MultiVector() = default;
 
 public:
   // copy assign implments copy semantics not view (for time being)

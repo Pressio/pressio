@@ -53,10 +53,11 @@
 
 namespace pressio{ namespace containers{ namespace ops{
 
-/*
- * multi_vector prod vector
- */
+/* multi_vector prod vector */
 
+/* -------------------------------------------------------------------
+ * specialize for eigen mv wrapper operating on a eigen vector wrapper
+ *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
   typename vec_type,
@@ -69,12 +70,8 @@ template <
 void product(const mvec_type & mvA, const vec_type & vecB, vec_type & C){
 
   assert( C.size() == mvA.length() );
-  //zero out result
   C.setZero();
-
   const auto numVecs = mvA.numVectors();
-  // const auto Alength = mvA.length();
-  // size of vecB
   assert(numVecs == vecB.size());
 
   // compute
@@ -86,8 +83,6 @@ void product(const mvec_type & mvA, const vec_type & vecB, vec_type & C){
   // }
 }//end function
 
-
-// result is constructed and returned
 template <
   typename mvec_type,
   typename vec_type,
@@ -99,9 +94,56 @@ template <
     > * = nullptr
   >
 vec_type product(const mvec_type & mvA, const vec_type & vecB){
-
   vec_type c(mvA.length());
   product(mvA, vecB, c);
+  return c;
+}
+
+
+/* -------------------------------------------------------------------
+ * specialize for eigen mv wrapper operating on an col vector expression
+ *-------------------------------------------------------------------*/
+template <
+  typename mvec_type,
+  typename expr_type,
+  typename vec_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
+    containers::meta::is_vector_wrapper_eigen<vec_type>::value and
+    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+    expr_type::is_view_col_vector_expr
+    > * = nullptr
+  >
+void product(const mvec_type & mvA, const expr_type & exprObj, vec_type & C)
+{
+  assert( C.size() == mvA.length() );
+  const auto numVecs = mvA.numVectors();
+  assert(numVecs == exprObj.size());
+
+  *C.data() = (*mvA.data()) * exprObj();
+}//end function
+
+
+template <
+  typename mvec_type,
+  typename expr_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
+    expr_type::is_view_col_vector_expr
+    > * = nullptr
+  >
+auto product(const mvec_type & mvA, const expr_type & exprObj)
+  // return a wrapper of a dynamic col vector
+  -> ::pressio::containers::Vector<
+    Eigen::Matrix< typename containers::details::traits<mvec_type>::scalar_t, -1, 1>
+    >
+{
+  using scalar_t  = typename containers::details::traits<mvec_type>::scalar_t;
+  using eig_vec_t = Eigen::Matrix<scalar_t, -1, 1>;
+  using return_t  = ::pressio::containers::Vector<eig_vec_t>;
+
+  return_t c(mvA.length());
+  product(mvA, exprObj, c);
   return c;
 }
 

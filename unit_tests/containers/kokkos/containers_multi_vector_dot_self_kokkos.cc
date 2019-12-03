@@ -5,7 +5,7 @@
 #include "CONTAINERS_MULTI_VECTOR"
 #include "CONTAINERS_OPS"
 
-template <typename h_layout, typename d_layout>
+template <typename d_layout>
 struct RunTest{
   // number of elements
   const int Nr = 6;
@@ -64,34 +64,16 @@ struct RunTest{
   }
 };
 
-TEST(containers_multi_vector_kokkos, dotSelf_hLR_dLL){
+TEST(containers_multi_vector_kokkos, dotSelf_dLL){
   // kokkos initialize and finalize already set from environment, see CMakeList
 
-  using h_lay = Kokkos::LayoutRight;
   using d_lay = Kokkos::LayoutLeft;
-  RunTest<h_lay, d_lay> r1;
+  RunTest<d_lay> r1;
 }
 
-TEST(containers_multi_vector_kokkos, dotSelf_hLL_dLL){
+TEST(containers_multi_vector_kokkos, dotSelf_dLR){
   // kokkos initialize and finalize already set from environment, see CMakeList
 
-  using h_lay = Kokkos::LayoutLeft;
-  using d_lay = Kokkos::LayoutLeft;
-  RunTest<h_lay, d_lay> r1;
-}
-
-TEST(containers_multi_vector_kokkos, dotSelf_hLR_dLR){
-  // kokkos initialize and finalize already set from environment, see CMakeList
-
-  using h_lay = Kokkos::LayoutRight;
   using d_lay = Kokkos::LayoutRight;
-  RunTest<h_lay, d_lay> r1;
-}
-
-TEST(containers_multi_vector_kokkos, dotSelf_hLL_dLR){
-  // kokkos initialize and finalize already set from environment, see CMakeList
-
-  using h_lay = Kokkos::LayoutLeft;
-  using d_lay = Kokkos::LayoutRight;
-  RunTest<h_lay, d_lay> r1;
+  RunTest<d_lay> r1;
 }
