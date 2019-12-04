@@ -9,10 +9,14 @@
 #include "../wls_files/wls_apis.hpp"
 #include "../wls_files/my_gauss_newton.hpp"
 #include "../wls_files/wls_specializers.hpp"
+
+// n is the window size
 using namespace std;
+
+
 int main(int argc, char *argv[]){
-  using fom_t		= pressio::apps::Burgers1dEigenResidualApi;
-  using scalar_t	= typename fom_t::scalar_type;
+  using fom_t   = pressio::apps::Burgers1dEigen;
+  using scalar_t  = typename fom_t::scalar_type;
   using fom_native_state_t      = typename fom_t::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
@@ -23,9 +27,7 @@ int main(int argc, char *argv[]){
   using fom_native_state_t = pressio::apps::Burgers1dEigenResidualApi::state_type;
 
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-//  using wls_state_t     = std::vector<rom_state_t>; 
   using wls_state_t    = ::pressio::containers::MultiVector<Eigen::Matrix<scalar_t, -1, -1,Eigen::ColMajor>>;
-
 
   std::string checkStr {"PASSED"};
 
@@ -36,7 +38,6 @@ int main(int argc, char *argv[]){
   int romSize = 11;
   constexpr int numStepsInWindow = 1;
   int t_stencil_width = 2;
-
 
   //-------------------------------
   // app object
@@ -51,16 +52,6 @@ int main(int argc, char *argv[]){
   // create decoder Obj
   decoder_t decoderObj(phi);
   decoderObj.getReferenceToJacobian();
-  //using stepper_stencil = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-  /*
-  // define WLS state
-  wls_state_t  wlsState(numStepsInWindow,rom_state_t(romSize) );
-  wls_state_t  wlsStateIC(t_stencil_width-1,rom_state_t(romSize) );
-  // create initial conditions for WLS
-  wls_state_t  wlsStateIC(t_stencil_width-1,rom_state_t(romSize) );
-  for (int i=0;i<numStepsInWindow; i++){wlsState[i].putScalar(0.0);}
-  for (int i=0;i<numStepsInWindow; i++){wlsStateIC[i].putScalar(0.0);}
-  */
   wls_state_t  wlsState(romSize,numStepsInWindow);
   wls_state_t  wlsStateIC( romSize,t_stencil_width-1);
   wlsState.setZero();
@@ -69,28 +60,20 @@ int main(int argc, char *argv[]){
   fom_state_t yFOM(fomSize);
   fom_native_state_t yRef(fomSize);
   (*yFOM.data()).setConstant(1.);
-  //yRef.setConstant(1);
-  //auto & yFOM = appObj.getInitialState();
-
   using gradient_t = rom_state_t;
   using hessian_t = pressio::containers::Matrix<eig_dyn_mat>;
   hessian_t hessian(romSize*numStepsInWindow,romSize*numStepsInWindow);
   gradient_t gradient(romSize*numStepsInWindow);
   gradient_t grad(romSize*numStepsInWindow);
 
-  using local_residual_policy_t = pressio::rom::wls::impl::local_residual_policy_residualAPI<fom_t>;
-  using local_jacobian_policy_t = pressio::rom::wls::impl::local_jacobian_policy_residualAPI<fom_t,decoder_t>;
-
-  //using hessian_gradient_policy_t = pressio::rom::wls::impl::hessian_gradient_policy_residualAPI<wls_state_t,fom_t,hessian_t,gradient_t,decoder_t>;
+  using local_residual_policy_t = pressio::rom::wls::impl::local_residual_policy_velocityAPI<fom_t>;
+  using local_jacobian_policy_t = pressio::rom::wls::impl::local_jacobian_policy_velocityAPI<fom_t,decoder_t>;
   using hessian_gradient_policy_t = pressio::rom::wls::impl::hessian_gradient_policy<wls_state_t,fom_t,hessian_t,gradient_t,decoder_t,local_residual_policy_t,local_jacobian_policy_t>;
   using wls_api_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,hessian_gradient_policy_t>;
   using wls_system_t  = pressio::rom::wls::WlsSystem<wls_api_t, fom_t, wls_state_t,decoder_t, hessian_gradient_policy_t>;
 
-
-
   // construct objects and test
   hessian_gradient_policy_t hessian_gradient_policy(romSize,fomSize,numStepsInWindow,2,phi);
-
   wls_system_t wlsSystem(appObj,hessian_gradient_policy,decoderObj,yFOM,dt,numStepsInWindow,romSize,fomSize,t_stencil_width);
 
   double t = 0.;
@@ -131,5 +114,7 @@ int main(int argc, char *argv[]){
 
   using nlSolver_t =  pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
 //  nlSolver_t nlSolver(wlsSystem,wlsState,linear_solver);
+/*
+*/
   return 0;
 }
