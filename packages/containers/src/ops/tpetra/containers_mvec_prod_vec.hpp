@@ -66,7 +66,8 @@ template <
   typename mvec_type, typename operand_t, typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-    containers::meta::is_vector_wrapper_tpetra<res_type>::value
+    containers::meta::is_vector_wrapper_tpetra<res_type>::value and
+    !containers::meta::is_vector_wrapper_kokkos<operand_t>::value
     > * = nullptr
   >
 void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
@@ -102,6 +103,44 @@ void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
   using device_t = typename details::traits<res_type>::device_t;
   C.data()->template sync<device_t>();
 }
+
+
+// when the operand is a kokkos wrapper we use kokkos functionalities directly
+template <
+  typename mvec_type, typename operand_t, typename res_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
+    containers::meta::is_vector_wrapper_kokkos<operand_t>::value and
+    containers::meta::is_vector_wrapper_tpetra<res_type>::value
+    > * = nullptr
+  >
+void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
+				      const operand_t & b,
+				      res_type & C){
+
+  // make sure the tpetra mv has same exe space of the kokkos vector wrapper
+  using tpetra_mv_dev_t = typename ::pressio::containers::details::traits<mvec_type>::device_t;
+  using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<operand_t>::device_type;
+  static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
+		 "product: tpetra MV and kokkos wrapper need to have same device type" );
+  using dev_t  = tpetra_mv_dev_t;
+
+  assert( mvA.globalNumVectors() == b.data()->extent(0) );
+
+  using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
+  constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+  constexpr auto one = ::pressio::utils::constants::one<sc_t>();
+  const char ctA = 'N';
+
+  const auto mvALocalView_d = mvA.data()->template getLocalView<dev_t>();
+  // I need to do the following because Tpetra::Vector is implemented
+  // as a special case of MultiVector so getLocalView returns a rank-2 view
+  // so in order to get view with rank==1 I need to explicitly get the subview
+  const auto mvCLocalView_drank2 = C.data()->template getLocalView<dev_t>();
+  const auto mvCLocalView_drank1 = Kokkos::subview(mvCLocalView_drank2, Kokkos::ALL(), 0);
+  KokkosBlas::gemv(&ctA, one, mvALocalView_d, *b.data(), zero, mvCLocalView_drank1);
+}
+
 }//end namespace pressio::containers::ops::impl
 
 
@@ -119,7 +158,8 @@ template <
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<res_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
-     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
+     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value or
+     containers::meta::is_vector_wrapper_kokkos<vec_type>::value)
     > * = nullptr
   >
 void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
@@ -134,7 +174,8 @@ template <
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
-     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
+     containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value or
+     containers::meta::is_vector_wrapper_kokkos<vec_type>::value)
     > * = nullptr
  >
 auto product(const mvec_type & mvA, const vec_type & vecB)
@@ -147,7 +188,6 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
 {
 
   // here, mvA is distrubted, but vecB is NOT.
-  // we interpret this as a linear combination of vectors
 
   // the data map of the multivector
   auto rcpMap = mvA.getRCPDataMap();
@@ -160,13 +200,11 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
 
   // result is an Tpetra Vector with same distribution of mvA
   using res_nat_t = Tpetra::Vector<sc_t, LO_t, GO_t, NO_t>;
-  //  res_nat_t tmp(rcpMap);
   using res_t = containers::Vector<res_nat_t>;
   res_t c(rcpMap);
   product(mvA, vecB, c);
   return c;
 }
-
 
 
 
