@@ -59,8 +59,7 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
   // create the vector to do the product
   // the vector is a wrapper of a kokkos vector
   {
-    using kll = Kokkos::LayoutLeft;
-    using k1d_d = Kokkos::View<double*, kll, device_t>;
+    using k1d_d = Kokkos::View<double*, device_t>;
     using k1d_h = typename k1d_d::HostMirror;
     using vec_t = pressio::containers::Vector<k1d_d>;
     STATIC_ASSERT_IS_CONTAINERS_VECTOR_WRAPPER(vec_t);
