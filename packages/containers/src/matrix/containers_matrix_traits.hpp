@@ -403,13 +403,13 @@ struct traits<
   using ordinal_t	  = typename wrapped_type::traits::size_type;
   using execution_space   = typename wrapped_type::traits::execution_space;
   using memory_space	  = typename wrapped_type::traits::memory_space;
-  using device_type	  = typename wrapped_type::traits::device_type;
+  using device_t	  = typename wrapped_type::traits::device_type;
   using memory_traits	  = typename wrapped_type::traits::memory_traits;
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
-  static constexpr bool has_host_execution_space = 
-    (false 
+  static constexpr bool has_host_execution_space =
+    (false
      #ifdef KOKKOS_ENABLE_SERIAL
      || std::is_same<execution_space, Kokkos::Serial>::value
      #endif
