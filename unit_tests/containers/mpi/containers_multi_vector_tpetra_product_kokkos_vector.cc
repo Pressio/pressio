@@ -58,44 +58,40 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
 
   // create the vector to do the product
   // the vector is a wrapper of a kokkos vector
+  {
+    using kll = Kokkos::LayoutLeft;
+    using k1d_d = Kokkos::View<double*, kll, device_t>;
+    using k1d_h = typename k1d_d::HostMirror;
+    using vec_t = pressio::containers::Vector<k1d_d>;
+    STATIC_ASSERT_IS_CONTAINERS_VECTOR_WRAPPER(vec_t);
 
-  using kll = Kokkos::LayoutLeft;
-  using k1dLl_d = Kokkos::View<double*, kll, device_t>;
-  using k1dLl_h = typename k1dLl_d::HostMirror;
-  using vec_t = pressio::containers::Vector<k1dLl_d>;
-  STATIC_ASSERT_IS_CONTAINERS_VECTOR_WRAPPER(vec_t);
-
-  // create host vector
-  k1dLl_h b_h("bh", 4);
-  b_h(0) = 1.;
-  b_h(1) = 2.;
-  b_h(2) = 3.;
-  b_h(3) = 4.;
-  // create device
-  k1dLl_d b_d("bd", 4);
-  // copy host -> device
-  Kokkos::deep_copy(b_d, b_h);
-  // wrap device vector
-  vec_t b(b_d);
-
-  // do product, returning a tpetra vector
-  auto res = containers::ops::product(MV, b);
-  auto cc2 = res.data()->getLocalView<Kokkos::HostSpace>();
-  auto cc = Kokkos::subview (cc2, Kokkos::ALL (), 0);
-
-  if (rank_==0){
-    EXPECT_DOUBLE_EQ( cc(0), 5.6);
-    EXPECT_DOUBLE_EQ( cc(1), 1.2);
-    EXPECT_DOUBLE_EQ( cc(2), 12.0);
-  }
-  if (rank_==1){
-    EXPECT_DOUBLE_EQ( cc(0), 0.0);
-    EXPECT_DOUBLE_EQ( cc(1), 0.0);
-    EXPECT_DOUBLE_EQ( cc(2), 9.0);
-  }
-  if (rank_==2){
-    EXPECT_DOUBLE_EQ( cc(0), 0.);
-    EXPECT_DOUBLE_EQ( cc(1), 4.4);
-    EXPECT_DOUBLE_EQ( cc(2), 0.);
+    // create host vector
+    k1d_h b_h("bh", 4);
+    b_h(0) = 1.; b_h(1) = 2.; b_h(2) = 3.; b_h(3) = 4.;
+    // create device
+    k1d_d b_d("bd", 4);
+    // copy host -> device
+    Kokkos::deep_copy(b_d, b_h);
+    // wrap device vector
+    vec_t b(b_d);
+    // do product, returning a tpetra vector
+    auto res = containers::ops::product(MV, b);
+    auto cc2 = res.data()->getLocalView<Kokkos::HostSpace>();
+    auto cc = Kokkos::subview (cc2, Kokkos::ALL (), 0);
+    if (rank_==0){
+      EXPECT_DOUBLE_EQ( cc(0), 5.6);
+      EXPECT_DOUBLE_EQ( cc(1), 1.2);
+      EXPECT_DOUBLE_EQ( cc(2), 12.0);
+    }
+    if (rank_==1){
+      EXPECT_DOUBLE_EQ( cc(0), 0.0);
+      EXPECT_DOUBLE_EQ( cc(1), 0.0);
+      EXPECT_DOUBLE_EQ( cc(2), 9.0);
+    }
+    if (rank_==2){
+      EXPECT_DOUBLE_EQ( cc(0), 0.);
+      EXPECT_DOUBLE_EQ( cc(1), 4.4);
+      EXPECT_DOUBLE_EQ( cc(2), 0.);
+    }
   }
 }
