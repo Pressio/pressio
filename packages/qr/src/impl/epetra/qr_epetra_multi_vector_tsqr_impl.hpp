@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr_tpetra_multi_vector_modified_gram_schmidt_impl.hpp
+// qr_epetra_multi_vector_tsqr_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -47,78 +47,84 @@
 */
 
 #if defined PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef QR_TPETRA_MV_MODIFIED_GRAM_SCHMIDT_IMPL_HPP_
-#define QR_TPETRA_MV_MODIFIED_GRAM_SCHMIDT_IMPL_HPP_
+#ifndef QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
+#define QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
 
 #include "../qr_rfactor_solve_impl.hpp"
+#include "Epetra_TsqrAdaptor.hpp"
 
 namespace pressio{ namespace qr{ namespace impl{
 
-/* partially specialize for when n and m are dynamic.
- * This just means that the R matrix is dynamic
-*/
-template<typename matrix_t, typename R_t,
-	 typename MV_t, template<typename...> class Q_type>
-class ModGramSchmidtMVTpetra<
-  matrix_t, R_t, utils::constants::dynamic,
-  utils::constants::dynamic, MV_t, Q_type, void>{
+template<typename matrix_t, typename R_t, typename MV_t, template<typename...> class Q_type>
+class EpetraMVTSQR<matrix_t, R_t, MV_t, Q_type, void>
+{
 
-  using this_t	     = ModGramSchmidtMVTpetra<matrix_t, R_t,
-					      utils::constants::dynamic,
-					      utils::constants::dynamic,
-					      MV_t, Q_type, void>;
   using int_t	     = int;
   using sc_t	     = typename containers::details::traits<matrix_t>::scalar_t;
-  using eig_dyn_mat  =  Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using R_nat_t	     = containers::Matrix<eig_dyn_mat>;
+  using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
+  using trcp_mat     = Teuchos::RCP<serden_mat_t>;
   using Q_t	     = Q_type<MV_t>;
+  using tsqr_adaptor_type = Epetra::TsqrAdaptor;
 
 public:
-  ModGramSchmidtMVTpetra() = default;
-  ~ModGramSchmidtMVTpetra() = default;
+  EpetraMVTSQR() = default;
+  ~EpetraMVTSQR() = default;
 
   void computeThinOutOfPlace(matrix_t & A) {
     auto nVecs = A.globalNumVectors();
     auto & ArowMap = A.getDataMap();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
+    tsqrAdaptor_.factorExplicit(*A.data(),
+				*Qmat_->data(),
+				*localR_.get(),
+				false);
+    //::pressio::utils::io::print_stdout(*localR_.get());
 
-    sc_t rkkInv = {};
-    for (auto k=0; k<A.globalNumVectors(); k++)
-    {
-      auto ak = A.data()->getVector(k);
-      localR_(k,k) = ak->norm2();
-      rkkInv = utils::constants::one<sc_t>()/localR_(k,k);
+// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+//     int myrank{};
+//     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+//     auto orthoErr = OM_->orthonormError(*Qmat_->data());
+//     if (myrank==0)
+//       std::cout << "orthoErr = " << orthoErr << std::endl;
+// #endif
 
-      auto qk = Qmat_->data()->getVectorNonConst(k);
-      qk->update( rkkInv, *ak, utils::constants::zero<sc_t>() );
-
-      for (auto j=k+1; j<A.globalNumVectors(); j++){
-      	auto aj = A.data()->getVectorNonConst(j);
-      	localR_(k,j) = qk->dot(*aj);
-      	aj->update(-localR_(k,j), *qk, utils::constants::one<sc_t>());
-      }
-    }
+//     assert(computedRank_ == nVecs);
   }
 
-  // void computeThinInPlace(matrix_t & A) {
-  //     // auto nVecs = A.globalNumVectors();
-  //     // createLocalRIfNeeded(nVecs);
-  //     // computedRank_ = OM_->normalize(*A.data(), localR_);
-  //     // assert(computedRank_ == nVecs);
-  // }
+  // void computeThinInPlace(matrix_t & A) {}
 
   template <typename vector_t>
   void doLinSolve(const vector_t & rhs, vector_t & y)const {
-    //auto vecSize = y.size();
-    auto & Rm = localR_.data()->template triangularView<Eigen::Upper>();
-    *y.data() = Rm.solve(*rhs.data());
+    qr::impl::solve<vector_t, trcp_mat>(rhs, this->localR_, y);
   }
 
+
   template < typename vector_in_t, typename vector_out_t>
-  void project(const vector_in_t & vecIn,
-	       vector_out_t & vecOut) const{
+  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const{
     containers::ops::dot( *this->Qmat_, vecIn, vecOut );
+  }
+
+  // if R_type != wrapper of Teuchos::SerialDenseMatrix
+  template <typename T = R_t,
+  	    ::pressio::mpl::enable_if_t<
+  	      !containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
+	      !std::is_void<T>::value
+  	      > * = nullptr>
+  const T & getCRefRFactor() const {
+    this->Rmat_ = std::make_shared<T>(this->localR_->values());
+    return *this->Rmat_;
+  }
+
+  // if R_type == wrapper of Teuchos::SerialDenseMatrix
+  template <typename T = R_t,
+  	    ::pressio::mpl::enable_if_t<
+  	      containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
+	      !std::is_void<T>::value
+  	      > * = nullptr>
+  const T & getCRefRFactor() const {
+    this->Rmat_ = std::make_shared<T>(*this->localR_, Teuchos::View);
+    return *this->Rmat_;
   }
 
   const Q_t & getCRefQFactor() const {
@@ -127,9 +133,9 @@ public:
 
 private:
   void createLocalRIfNeeded(int newsize){
-    if (localR_.rows()!=newsize or localR_.cols()!=newsize){
-      localR_ = R_nat_t(newsize, newsize);
-      localR_.setZero();
+    if (localR_.is_null() or
+    	(localR_->numRows()!=newsize and localR_->numCols()!=newsize)){
+      localR_ = Teuchos::rcp(new serden_mat_t(newsize, newsize) );
     }
   }
 
@@ -140,8 +146,9 @@ private:
   }
 
 private:
-  R_nat_t localR_			= {};
-  // todo: these must be moved somewhere else
+  tsqr_adaptor_type tsqrAdaptor_;
+  trcp_mat localR_			= {};
+  int computedRank_			= {};
   mutable std::shared_ptr<Q_t> Qmat_	= nullptr;
   mutable std::shared_ptr<R_t> Rmat_	= nullptr;
 };

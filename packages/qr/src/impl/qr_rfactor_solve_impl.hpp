@@ -49,9 +49,10 @@
 #ifndef QR_RFACTOR_SOLVE_HPP_
 #define QR_RFACTOR_SOLVE_HPP_
 
-#include "qr_ConfigDefs.hpp"
-#include "../../containers/src/vector/containers_vector_meta.hpp"
-#include "../../containers/src/matrix/containers_matrix_meta.hpp"
+#include "../qr_ConfigDefs.hpp"
+#include "../../../containers/src/vector/containers_vector_meta.hpp"
+#include "../../../containers/src/matrix/containers_matrix_meta.hpp"
+
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "Teuchos_SerialDenseMatrix.hpp"
 #include "Teuchos_SerialDenseSolver.hpp"
@@ -60,13 +61,14 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-
-template<typename vector_type,
-	 typename R_type,
-	 ::pressio::mpl::enable_if_t<
-	   ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
-	   ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<R_type>::value
-	   > * = nullptr>
+template<
+  typename vector_type,
+  typename R_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<R_type>::value
+    > * = nullptr
+  >
 void solve(const vector_type & rhs,
 	   const R_type & Rmatrix,
 	   vector_type & y){
@@ -78,13 +80,15 @@ void solve(const vector_type & rhs,
 }
 
 
-
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename vector_type, typename R_type,
-	 ::pressio::mpl::enable_if_t<
-	   ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
-	   ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
-	   > * = nullptr>
+template<
+  typename vector_type,
+  typename R_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
+    ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
+    > * = nullptr
+  >
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
   using ord_t	 = typename R_type::element_type::ordinalType;
@@ -112,55 +116,49 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename vector_type,
-	 typename R_type,
-	 int n,
-	 ::pressio::mpl::enable_if_t<
-	   ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
-	   ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
-	   n == utils::constants::dynamic
-	   > * = nullptr>
-void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
-{
-  // n is not used here, call the one above
-  solve(rhs, Rmatrix, y);
-}
-#endif
+// template<
+//   typename vector_type,
+//   typename R_type,
+//   ::pressio::mpl::enable_if_t<
+//     ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
+//     ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
+//     > * = nullptr
+//   >
+// void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
+// {
+//   // n is not used here, call the one above
+//   solve(rhs, Rmatrix, y);
+// }
 
+// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// template<typename vector_type,
+// 	 typename R_type,
+// 	 int n,
+// 	 ::pressio::mpl::enable_if_t<
+// 	   ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
+// 	   ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
+// 	   n != utils::constants::dynamic and n>=1
+// 	   > * = nullptr>
+// void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
+// {
+//   //using ord_t = typename R_type::element_type::ordinalType;
+//   using sc_t  = typename R_type::element_type::scalarType;
 
+//   //  auto vecSize = rhs.size();
+//   using eigMat = Eigen::Matrix<sc_t, n, n>;
+//   containers::Matrix<eigMat> eigR( Rmatrix->values() );
+//   solve(rhs, eigR, y);
+// }
+// #endif
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename vector_type,
-	 typename R_type,
-	 int n,
-	 ::pressio::mpl::enable_if_t<
-	   ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
-	   ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
-	   n != utils::constants::dynamic and n>=1
-	   > * = nullptr>
-void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
-{
-  //using ord_t = typename R_type::element_type::ordinalType;
-  using sc_t  = typename R_type::element_type::scalarType;
-
-  //  auto vecSize = rhs.size();
-  using eigMat = Eigen::Matrix<sc_t, n, n>;
-  containers::Matrix<eigMat> eigR( Rmatrix->values() );
-  solve(rhs, eigR, y);
-}
-#endif
-
-
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename vector_type,
-	 typename R_type,
-	 int n,
-	 ::pressio::mpl::enable_if_t<
-	   ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
-	   ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value and
-	   n == utils::constants::dynamic
-	   > * = nullptr>
+template<
+  typename vector_type,
+  typename R_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
+    ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
+    > * = nullptr
+  >
 void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
   // todo: maybe here we should use directly backward substitution but it does
@@ -179,17 +177,13 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
   My_Solver.setVectors( Teuchos::rcp(&yTV, false), Teuchos::rcp(&rhsTV, false) );
   int info = My_Solver.factor();
   if (info != 0)
-    std::cout << "SerialDenseSolver::factor() returned : "
-	      << info << std::endl;
+    std::cout << "SerialDenseSolver::factor() returned : " << info << std::endl;
 
   info = My_Solver.solve();
   if (info != 0)
-    std::cout << "SerialDenseSolver::solve() returned : "
-	      << info << std::endl;
+    std::cout << "SerialDenseSolver::solve() returned : " << info << std::endl;
 }
 #endif
-
-
 
 }}}//end namespace pressio::qr::impl
 #endif

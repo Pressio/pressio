@@ -56,7 +56,8 @@ namespace pressio{ namespace qr{
 template<typename derived_t>
 class QRSolveBase
   : private utils::details::CrtpBase<
-  QRSolveBase<derived_t> >{
+  QRSolveBase<derived_t> >
+{
 
   using this_t = QRSolveBase<derived_t>;
 

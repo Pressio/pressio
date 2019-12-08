@@ -16,7 +16,7 @@ TEST_F(tpetraR9Fixture,
 
   //  do Q^T * v_, i.e. project v_ onto Q
   myv_t rhs(pressio::qr::test::numVectors_);
-  qrObj.project(*v_, rhs);
+  qrObj.applyQTranspose(*v_, rhs);
   if (rank_==0)
     std::cout << " RHS" << std::setprecision(14)
 	      << *rhs.data() << std::endl;
@@ -48,7 +48,7 @@ TEST_F(tpetraR9Fixture,
 
   //  do Q^T * v_, i.e. project v_ onto Q
   myv_t rhs;
-  qrObj.project(*v_, rhs);
+  qrObj.applyQTranspose(*v_, rhs);
   if (rank_==0)
     std::cout << " RHS" << std::setprecision(14)
 	      << *rhs.data() << std::endl;
