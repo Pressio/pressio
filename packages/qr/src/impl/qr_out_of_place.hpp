@@ -49,31 +49,26 @@
 #ifndef QR_OUT_OF_PLACE_HPP_
 #define QR_OUT_OF_PLACE_HPP_
 
-#include "./base/qr_out_of_place_base.hpp"
-#include "./base/qr_solve_base.hpp"
-#include "./base/qr_r_factor_base.hpp"
-#include "qr_traits.hpp"
+#include "../base/qr_out_of_place_base.hpp"
+#include "../base/qr_solve_base.hpp"
+#include "../base/qr_r_factor_base.hpp"
+#include "../qr_traits.hpp"
 
 namespace pressio{ namespace qr{ namespace impl{
 
 /* overload for R_type == void, in_place = false */
-template<
-  typename matrix_type, typename algo, int m,
-  int n, template <typename...> class Q_type
-  >
+template<typename matrix_type, typename algo, template <typename...> class Q_type>
 class QRSolver<
-  matrix_type, algo, false, m, n, void, Q_type,
+  matrix_type, algo, false, void, Q_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper<matrix_type>::value or
     containers::meta::is_matrix_wrapper<matrix_type>::value
     >
-  > : public details::traits< QRSolver<matrix_type, algo,
-				       false, m, n, void, Q_type>>::base_compute_t,
-      public details::traits< QRSolver<matrix_type, algo,
-				       false, m, n, void, Q_type>>::base_solve_t
+  > : public details::traits< QRSolver<matrix_type, algo, false, void, Q_type>>::base_compute_t,
+      public details::traits< QRSolver<matrix_type, algo, false, void, Q_type>>::base_solve_t
 {
 
-  using this_t	       = QRSolver<matrix_type, algo, false, m, n, void, Q_type>;
+  using this_t	       = QRSolver<matrix_type, algo, false, void, Q_type>;
   using traits_t       = details::traits<this_t>;
   using base_compute_t = typename traits_t::base_compute_t;
   using base_solve_t   = typename traits_t::base_solve_t;
@@ -92,9 +87,8 @@ private:
   }
 
   template < typename vector_in_t, typename vector_out_t>
-  void projectImpl(const vector_in_t & vecIn,
-  		   vector_out_t & vecOut) const{
-    myImpl_.template project<vector_in_t, vector_out_t>(vecIn, vecOut);
+  void applyQTransposeImpl(const vector_in_t & vecIn, vector_out_t & vecOut) const{
+    myImpl_.template applyQTranspose<vector_in_t, vector_out_t>(vecIn, vecOut);
   }
 
   template <typename vector_t>
@@ -117,25 +111,25 @@ private:
 //  *   overload for R_type != void, in_place = false
 //  */
 // template<
-//   typename matrix_type, typename algo, int m,
-//   int n, typename R_type, template <typename...> class Q_type
+//   typename matrix_type, typename algo,
+//   typename R_type, template <typename...> class Q_type
 //   >
 // class QRSolver<
-//   matrix_type, algo, false, m, n, R_type, Q_type,
+//   matrix_type, algo, false, R_type, Q_type,
 //   ::pressio::mpl::enable_if_t<
 //     meta::is_legitimate_r_type<R_type>::value and
 //     (containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value or
 //      containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value)
 //     >
 //   > : public details::traits< QRSolver<matrix_type, algo,
-// 				       false, m, n, R_type, Q_type>>::base_compute_t,
+// 				       false, R_type, Q_type>>::base_compute_t,
 //       public details::traits< QRSolver<matrix_type, algo,
-// 				       false, m, n, R_type, Q_type>>::base_solve_t,
+// 				       false, R_type, Q_type>>::base_solve_t,
 //       public details::traits< QRSolver<matrix_type, algo,
-// 				       false, m, n, R_type, Q_type>>::base_Rfactor_t
+// 				       false, R_type, Q_type>>::base_Rfactor_t
 // {
 
-//   using this_t	       = QRSolver<matrix_type, algo, false, m, n, R_type, Q_type>;
+//   using this_t	  = QRSolver<matrix_type, algo, false, R_type, Q_type>;
 //   using traits_t       = details::traits<this_t>;
 //   using base_compute_t = typename traits_t::base_compute_t;
 //   using base_solve_t   = typename traits_t::base_solve_t;
