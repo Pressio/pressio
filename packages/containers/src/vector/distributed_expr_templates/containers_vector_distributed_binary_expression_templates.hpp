@@ -68,25 +68,26 @@ public:
 };
 ///-----------------------------------------------------
 
-
-template <typename T,
-	  typename enable = void>
+template <typename T, typename enable = void>
 struct is_distributed_vector_expression : std::false_type{};
 
 template <typename T>
-struct is_distributed_vector_expression<T,
-      ::pressio::mpl::enable_if_t<
-       ::pressio::mpl::publicly_inherits_from<
-	T,DistributedVecExpressionBase<T>
-	 >::value
-	>> : std::true_type{};
+struct is_distributed_vector_expression<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::publicly_inherits_from<
+      T,DistributedVecExpressionBase<T>
+      >::value
+    >> : std::true_type{};
 
 
 //----------------------------------------------------
 // default
-template <typename OP_t, typename T1,
-	  typename T2, typename value_t,
-	  typename LO_t, typename enable = void>
+template <
+  typename OP_t, typename T1,
+  typename T2, typename value_t,
+  typename LO_t, typename enable = void
+  >
 class DistributedVectorBinaryExp
   : public DistributedVecExpressionBase<
   DistributedVectorBinaryExp<OP_t,T1,T2,value_t,LO_t>>{
@@ -115,8 +116,10 @@ class DistributedVectorBinaryExp
 
 //----------------------------------------------------
 // T1: whatever, T2: vector
-template <typename OP_t, typename T1, typename T2,
-	  typename value_t, typename LO_t>
+template <
+  typename OP_t, typename T1, typename T2,
+  typename value_t, typename LO_t
+  >
 class DistributedVectorBinaryExp<
          OP_t, T1, T2, value_t, LO_t,
 	 ::pressio::mpl::enable_if_t<
@@ -151,8 +154,10 @@ public:
 
 //-----------------------------------------------------
 // T1: not scalar, T2: scalar
-template <typename OP_t, typename T1,
-	    typename value_t, typename LO_t>
+template <
+  typename OP_t, typename T1,
+  typename value_t, typename LO_t
+  >
 class DistributedVectorBinaryExp<
          OP_t, T1, value_t, value_t, LO_t,
 	 ::pressio::mpl::enable_if_t<

@@ -7,14 +7,14 @@
 
 namespace pressio{ namespace rom{ namespace test{ namespace eigen{
 
-// template just to avoid having a cc file
 template <typename T = int>
 auto convertFromVVecToMultiVec(
       const std::vector<std::vector<double>> & A0,
       T nrows, T ncols)
   -> pressio::containers::MultiVector<Eigen::MatrixXd>{
 
-  pressio::containers::MultiVector<Eigen::MatrixXd> ADW(nrows, ncols);
+  using eig_mat = Eigen::MatrixXd;
+  pressio::containers::MultiVector<eig_mat> ADW(nrows, ncols);
 
   for (int i=0; i<nrows; i++){
     for (int j=0; j<ncols; j++)
@@ -23,7 +23,6 @@ auto convertFromVVecToMultiVec(
   return ADW;
 }
 
-// template just to avoid having a cc file
 template <typename T = int>
 auto readBasis(
   std::string filename,

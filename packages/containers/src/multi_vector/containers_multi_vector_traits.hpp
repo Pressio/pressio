@@ -85,7 +85,8 @@ struct traits<
 #endif
       >
     >
-  > {
+  >
+{
 
   using wrapped_t = wrapped_type;
   using derived_t = MultiVector<wrapped_t>;
@@ -111,11 +112,16 @@ struct traits<
 // for epetra multivector
 //*******************************
 template<typename wrapped_type>
-struct traits<MultiVector<wrapped_type,
-      typename std::enable_if<
-       meta::is_multi_vector_epetra<wrapped_type
-      >::value>::type>
-     >
+struct traits<
+  MultiVector<
+    wrapped_type,
+    ::pressio::mpl::enable_if_t<
+      meta::is_multi_vector_epetra<
+	wrapped_type
+	>::value
+      >
+    >
+  >
   : public containers_shared_traits<MultiVector<wrapped_type>,
 				    wrapped_type,
 				    false, false, true,
@@ -137,11 +143,16 @@ struct traits<MultiVector<wrapped_type,
 // for tpetra multivector
 //*******************************
 template<typename wrapped_type>
-struct traits<MultiVector<wrapped_type,
-      typename std::enable_if<
-       meta::is_multi_vector_tpetra<wrapped_type
-      >::value>::type>
-     >
+struct traits<
+  MultiVector<
+    wrapped_type,
+    ::pressio::mpl::enable_if_t<
+      meta::is_multi_vector_tpetra<
+	wrapped_type
+	>::value
+      >
+    >
+  >
   : public containers_shared_traits<MultiVector<wrapped_type>,
 				    wrapped_type,
 				    false, false, true,

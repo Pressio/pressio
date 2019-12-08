@@ -60,15 +60,6 @@
 
 namespace pressio{ namespace containers{ namespace meta {
 
-// template<typename T>
-// struct remove_const: std::remove_const<T>{};
-
-// template<typename T>
-// struct remove_reference : std::remove_reference<T>{};
-
-// template<typename T>
-// struct remove_pointer : std::remove_pointer<T>{};
-
 template<typename T>
 struct is_arithmetic : std::is_arithmetic<T>{};
 

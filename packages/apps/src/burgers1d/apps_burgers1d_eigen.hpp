@@ -67,8 +67,8 @@ public:
   using velocity_type	= eigVec;
   using dense_matrix_type = Eigen::MatrixXd;
 
-  using jacobian_type	= Eigen::SparseMatrix
-    <scalar_type, Eigen::RowMajor, int>;
+  using eig_sp_mat = Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
+  using jacobian_type	= eig_sp_mat;
 
   typedef Eigen::Triplet<scalar_type> Tr;
 
