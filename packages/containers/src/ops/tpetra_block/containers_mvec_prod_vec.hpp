@@ -68,6 +68,66 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+    containers::meta::is_vector_wrapper_kokkos<vec_type>::value and
+    containers::meta::is_vector_wrapper_tpetra_block<res_type>::value
+    > * = nullptr
+  >
+void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
+{
+  throw std::runtime_error("Tpetra block MV product MV returning a Kokkos view wrapper NOT supported yet");
+}
+
+// return a Tpetra vector wrapper, because a block one can be
+// constructed from a regular tpetra vector
+template<
+  typename mvec_type,
+  typename vec_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
+    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+    containers::meta::is_vector_wrapper_kokkos<vec_type>::value
+    > * = nullptr
+  >
+auto product(const mvec_type & mvA, const vec_type & vecB)
+  -> containers::Vector<
+  Tpetra::Vector<typename details::traits<mvec_type>::scalar_t,
+                 typename details::traits<mvec_type>::local_ordinal_t,
+                 typename details::traits<mvec_type>::global_ordinal_t,
+                 typename details::traits<mvec_type>::node_t>
+                 >
+{
+  // the data map of the multivector
+  const auto rcpMap = mvA.getRCPDataMap();
+
+  using mvec_traits = typename details::traits<mvec_type>;
+  using sc_t = typename mvec_traits::scalar_t;
+  using LO_t = typename mvec_traits::local_ordinal_t;
+  using GO_t = typename mvec_traits::global_ordinal_t;
+  using NO_t = typename mvec_traits::node_t;
+
+  // result is an Tpetra Vector with same distribution of mvA
+  using res_nat_t = Tpetra::Vector<sc_t, LO_t, GO_t, NO_t>;
+  using res_t = containers::Vector<res_nat_t>;
+  res_t c(rcpMap);
+  product(mvA, vecB, c);
+  return c;
+}
+
+
+
+
+
+
+
+
+// the result type is an Tpetra_Block wrapper and object is passed in
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename res_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
+    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<res_type>::value
     > * = nullptr
