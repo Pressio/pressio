@@ -74,8 +74,9 @@ template <
   >
 void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
 {
-  throw std::runtime_error("Tpetra block MV product MV returning a Kokkos view wrapper NOT supported yet");
+  throw std::runtime_error("Tpetra block MV product Kokkos view vector NOT supported yet");
 }
+
 
 // return a Tpetra vector wrapper, because a block one can be
 // constructed from a regular tpetra vector
