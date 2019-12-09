@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   scalar_t dt = 0.01;
   int romSize = 11;
-  constexpr int numStepsInWindow = 1;
+  constexpr int numStepsInWindow = 5;
   int t_stencil_width = 2;
 
   //-------------------------------
@@ -86,6 +86,16 @@ int main(int argc, char *argv[]){
 
   using gn_type = my_gauss_newton_class<wls_system_t,wls_state_t,hessian_t,gradient_t,linear_solver_t>;
   gn_type gn_solver(wlsSystem,wlsState,linear_solver);
+
+  constexpr auto ode_case = pressio::ode::ImplicitEnum::Euler;
+  using app_jacob_t = typename fom_t::jacobian_type;
+  using ode_jac_t   = pressio::containers::Matrix<app_jacob_t>;
+  using stepper_t = pressio::ode::ImplicitStepper<ode_case, fom_state_t, fom_state_t, ode_jac_t, fom_t>;
+  stepper_t stepperObj(yFOM, appObj);
+  using nm1 = pressio::ode::nMinusOne;
+  auto & odeState_nm1 = stepperObj.auxStates_.template get<nm1>();
+  cout << *(odeState_nm1).data() << endl;
+  auto test = stepperObj.residual(yFOM);
 
   for (int step = 0; step < numSteps; step++)
   {

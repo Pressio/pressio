@@ -1,4 +1,7 @@
 #include "wls_local_policies.hpp"
+#include "wls_functions.hpp"
+
+
 /* 
 This header file contains policies for computing the hessian and gradients in the WLS system.
 The policies are templated on the policies for compputing the local residuals and jacobians as defined in the wls_local_policies.hpp file
@@ -44,9 +47,11 @@ public:
   const auto wlsInitialState = wlsStateIC.viewColumnVector(0);
   fomStateReconstrObj_(wlsInitialState,fomStateContainerObj_[0]);
   residualPolicy(appObj,residual,fomStateContainerObj_,n*dt,dt);
-  jacobianPolicy(appObj,wlsJacs[1],phi_,fomStateContainerObj_,n*dt,dt,0);
-  jacobianPolicy(appObj,wlsJacs[0],phi_,fomStateContainerObj_,n*dt,dt,1);
-  (*hess.data()).block(n*romSize,n*romSize,romSize,romSize) = (*wlsJacs[1].data()).transpose() * (*wlsJacs[1].data());
+  for (int i = 0; i < time_stencil_size; i++){
+    jacobianPolicy(appObj,wlsJacs[time_stencil_size - i - 1],phi_,fomStateContainerObj_,n*dt,dt,i);
+  }
+  local_mat_update(wlsJacs[1],wlsJacs[1],hess,n*romSize,n*romSize,romSize,romSize);
+  //(*hess.data()).block(n*romSize,n*romSize,romSize,romSize) = (*wlsJacs[1].data()).transpose() * (*wlsJacs[1].data());
   (*gradient.data()).block(n*romSize,0,romSize,1) = -(*wlsJacs[1].data()).transpose()*(*residual.data());
   for (int n = 1; n < numStepsInWindow; n++){
     // === reconstruct FOM states ========
@@ -63,10 +68,12 @@ public:
     // == Assembel local component of global Hessian //
     for (int i=0; i < time_stencil_size; i++){
       for (int j=0; j <= i; j++){
-         (*hess.data()).block((n-i)*romSize,(n-j)*romSize,romSize,romSize) += (*wlsJacs[time_stencil_size-i-1].data()).transpose() * (*wlsJacs[time_stencil_size-j-1].data());
-         if (i != j){
-          (*hess.data()).block((n-j)*romSize,(n-i)*romSize,romSize,romSize) =  (*hess.data()).block((n-i)*romSize,(n-j)*romSize,romSize,romSize).transpose();}
-      }
+         local_mat_update(wlsJacs[time_stencil_size-i-1],wlsJacs[time_stencil_size-j-1],hess,(n-i)*romSize,(n-j)*romSize,romSize,romSize);
+         //(*hess.data()).block((n-i)*romSize,(n-j)*romSize,romSize,romSize) += (*wlsJacs[time_stencil_size-i-1].data()).transpose() * (*wlsJacs[time_stencil_size-j-1].data());
+         block_sym_update(hess,(n-i)*romSize,(n-j)*romSize,romSize,romSize); 
+//         if (i != j){
+//          (*hess.data()).block((n-j)*romSize,(n-i)*romSize,romSize,romSize) =  (*hess.data()).block((n-i)*romSize,(n-j)*romSize,romSize,romSize).transpose();}
+        }
     }
   } 
 }
