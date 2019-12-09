@@ -132,26 +132,28 @@ template <
   >
 void dot_self(const mvec_t & A, result_t & C)
 {
-  using scalar_t = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
-  using map_t    = typename ::pressio::containers::details::traits<mvec_t>::data_map_t;
-  using tpetra_mv_t = typename ::pressio::containers::details::traits<mvec_t>::wrapped_t;
+  throw std::runtime_error("Tpetra block MV dot self returning Kokkos matrix NOT supported yet");
 
-  // get a tpetra multivector that views the tpetra block data
-  const auto mvView = A.data()->getMultiVectorView();
+  // using scalar_t = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
+  // using map_t    = typename ::pressio::containers::details::traits<mvec_t>::data_map_t;
+  // using tpetra_mv_t = typename ::pressio::containers::details::traits<mvec_t>::wrapped_t;
 
-  const auto indexBase = mvView.getMap()->getIndexBase();
-  const auto comm = mvView.getMap()->getComm();
-  // C should be symmetric
-  assert( C.rows() == C.cols() );
-  const auto n = C.rows();
-  Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
-  // create multivector that views the Kokkos matrix
-  tpetra_mv_t Cmv(replMap, *C.data());
+  // // get a tpetra multivector that views the tpetra block data
+  // const auto mvView = A.data()->getMultiVectorView();
 
-  constexpr auto beta = ::pressio::utils::constants::zero<scalar_t>();
-  constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
-  // do the operation C = A^T A
-  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, mvView, mvView, beta);
+  // const auto indexBase = mvView.getMap()->getIndexBase();
+  // const auto comm = mvView.getMap()->getComm();
+  // // C should be symmetric
+  // assert( C.rows() == C.cols() );
+  // const auto n = C.rows();
+  // Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
+  // // create multivector that views the Kokkos matrix
+  // tpetra_mv_t Cmv(replMap, *C.data());
+
+  // constexpr auto beta = ::pressio::utils::constants::zero<scalar_t>();
+  // constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+  // // do the operation C = A^T A
+  // Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, mvView, mvView, beta);
 }
 
 template <
