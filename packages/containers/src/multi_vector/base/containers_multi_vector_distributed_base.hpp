@@ -98,10 +98,6 @@ private:
 
   using this_t = MultiVectorDistributedBase<derived_type>;
   friend utils::details::CrtpBase<this_t>;
-
-  MultiVectorDistributedBase() = default;
-  ~MultiVectorDistributedBase() = default;
-
 };//end class
 
 }}//end namespace pressio::containers
