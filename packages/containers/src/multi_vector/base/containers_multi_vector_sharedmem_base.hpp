@@ -61,7 +61,6 @@ class MultiVectorSharedMemBase
   static_assert(traits::is_shared_mem==1,
 		"OOPS: the concrete vector type inheriting from sharedMem base is not shared mem!");
 
-private:
   using sc_t  = typename traits::scalar_t;
   using ord_t = typename traits::ordinal_t;
   using view_col_vec_ret_t = typename traits::view_col_vec_ret_t;
@@ -87,10 +86,6 @@ private:
   friend derived_type;
   using this_t = MultiVectorSharedMemBase<derived_type>;
   friend utils::details::CrtpBase<this_t>;
-
-  MultiVectorSharedMemBase() = default;
-  ~MultiVectorSharedMemBase() = default;
-
 };//end class
 
 }}//end namespace pressio::containers
