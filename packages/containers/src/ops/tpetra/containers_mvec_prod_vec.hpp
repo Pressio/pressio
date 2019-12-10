@@ -52,6 +52,7 @@
 
 #include "../containers_ops_meta.hpp"
 #include "../../multi_vector/containers_multi_vector_meta.hpp"
+#include "KokkosBlas2_gemv.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{
 
