@@ -72,6 +72,9 @@ struct traits;
 namespace exprtemplates{
 template <typename mv_t, typename scalar_t, typename enable = void>
 struct ViewColumnVectorExpr;
+
+template <typename mat_t, typename scalar_t, typename enable = void>
+struct SubspanExpr;
 }
 
 }} // end namespace pressio::containers
