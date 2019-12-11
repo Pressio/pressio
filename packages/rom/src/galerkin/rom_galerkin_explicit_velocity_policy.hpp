@@ -180,7 +180,9 @@ private:
   //--------------------------------------------
   /* if regular c++ */
   template<
-    typename scalar_t, typename fom_t, typename fom_state_t,
+    typename scalar_t,
+    typename fom_t,
+    typename fom_state_t,
     typename _fom_rhs_t = fom_rhs_t,
     ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_wrapper<fom_state_t>::value
@@ -197,7 +199,9 @@ private:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template<
-    typename scalar_t, typename fom_t, typename fom_state_t,
+    typename scalar_t,
+    typename fom_t,
+    typename fom_state_t,
     typename _fom_rhs_t = fom_rhs_t,
     ::pressio::mpl::enable_if_t<
       ::pressio::containers::meta::is_array_pybind11<fom_state_t>::value
@@ -320,14 +324,14 @@ private:
     timer->start("fom eval rhs");
 #endif
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    (*this).queryFomVelocityDispatch<scalar_t>(app, yFom, t);
+    (*this).template queryFomVelocityDispatch<scalar_t>(app, yFom, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
     timer->start("phiT*fomRhs");
 #endif
 
-    (*this).applyDecoderJacobianToFomVelDispatch<scalar_t>(romRhs);
+    (*this).template applyDecoderJacobianToFomVelDispatch<scalar_t>(romRhs);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
