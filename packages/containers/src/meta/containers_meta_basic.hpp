@@ -58,13 +58,4 @@
 #include "containers_meta_has_size_method.hpp"
 #include "containers_meta_is_teuchos_rcp.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
-
-template<typename T>
-struct is_arithmetic : std::is_arithmetic<T>{};
-
-template<typename T>
-struct is_integral: std::is_integral<T>{};
-
-}}} // namespace pressio::containers::meta
 #endif
