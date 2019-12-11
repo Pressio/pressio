@@ -56,11 +56,12 @@
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
- * multi_vector prod vector
+ * tpetra block multi_vector prod shared mem vector
  */
 
-
-// the result type is an Tpetra_Block wrapper and object is passed in
+/* -------------------------------------------------------------------
+ * specialize for tpetra block mv product Kokkos wrapper
+ *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
   typename vec_type,
@@ -74,12 +75,34 @@ template <
   >
 void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
 {
-  throw std::runtime_error("Tpetra block MV product Kokkos view vector NOT supported yet");
+  using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
+
+  // make sure the tpetra mv has same exe space of the kokkos vector wrapper
+  using tpetra_mv_dev_t = typename ::pressio::containers::details::traits<mvec_type>::device_t;
+  using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<vec_type>::device_type;
+  static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
+		 "product: tpetra MV and kokkos wrapper need to have same device type" );
+  using dev_t  = tpetra_mv_dev_t;
+
+  assert( mvA.globalNumVectors() == vecB.size() );
+
+  constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+  constexpr auto one = ::pressio::utils::constants::one<sc_t>();
+  const char ctA = 'N';
+
+  // the the underlying tpetra multivector
+  const auto mvView = mvA.data()->getMultiVectorView();
+  // get a local view
+  const auto mvALocalView_d = mvView.getLocalViewDevice();
+  // I need to do the following because Tpetra::Vector is implemented
+  // as a special case of MultiVector so getLocalView returns a rank-2 view
+  // so in order to get view with rank==1 I need to explicitly get the subview
+  const auto CView = C.data()->getVectorView();
+  const auto CLocalView_drank2 = CView.getLocalViewDevice();
+  const auto CLocalView_drank1 = Kokkos::subview(CLocalView_drank2, Kokkos::ALL(), 0);
+  KokkosBlas::gemv(&ctA, one, mvALocalView_d, *vecB.data(), zero, CLocalView_drank1);
 }
 
-
-// return a Tpetra vector wrapper, because a block one can be
-// constructed from a regular tpetra vector
 template<
   typename mvec_type,
   typename vec_type,
@@ -91,14 +114,18 @@ template<
   >
 auto product(const mvec_type & mvA, const vec_type & vecB)
   -> containers::Vector<
-  Tpetra::Vector<typename details::traits<mvec_type>::scalar_t,
-                 typename details::traits<mvec_type>::local_ordinal_t,
-                 typename details::traits<mvec_type>::global_ordinal_t,
-                 typename details::traits<mvec_type>::node_t>
-                 >
+    Tpetra::Experimental::BlockVector<
+      typename details::traits<mvec_type>::scalar_t,
+      typename details::traits<mvec_type>::local_ordinal_t,
+      typename details::traits<mvec_type>::global_ordinal_t,
+      typename details::traits<mvec_type>::node_t
+      >
+    >
 {
   // the data map of the multivector
   const auto rcpMap = mvA.getRCPDataMap();
+  // the block size
+  const auto mvABlockSize = mvA.getBlockSize();
 
   using mvec_traits = typename details::traits<mvec_type>;
   using sc_t = typename mvec_traits::scalar_t;
@@ -107,21 +134,18 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
   using NO_t = typename mvec_traits::node_t;
 
   // result is an Tpetra Vector with same distribution of mvA
-  using res_nat_t = Tpetra::Vector<sc_t, LO_t, GO_t, NO_t>;
+  using res_nat_t = Tpetra::Experimental::BlockVector<sc_t, LO_t, GO_t, NO_t>;
   using res_t = containers::Vector<res_nat_t>;
-  res_t c(rcpMap);
+  res_t c( res_nat_t(*rcpMap, mvABlockSize) );
   product(mvA, vecB, c);
   return c;
 }
 
 
 
-
-
-
-
-
-// the result type is an Tpetra_Block wrapper and object is passed in
+/* -------------------------------------------------------------------
+ * specialize for tpetra block mv product eigen wrapper
+ *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
   typename vec_type,
@@ -129,8 +153,8 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    containers::meta::is_vector_wrapper_eigen<vec_type>::value and
-    containers::meta::is_vector_wrapper_tpetra_block<res_type>::value
+    containers::meta::is_vector_wrapper_tpetra_block<res_type>::value and
+    containers::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
 void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
@@ -151,21 +175,19 @@ void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
   // get the wrapped trilinos tpetra multivector
   const auto mvA_mvv = mvA.data()->getMultiVectorView();
   const auto mvA_hv = mvA_mvv.template getLocalView<Kokkos::HostSpace>();
+  // my number of rows
+  const auto myNrows = mvA_mvv.getLocalLength();
 
-  // get data for the result too
+  // the result is a block tpetra vector, get the regular tpetra vector
   auto C_vv = C.data()->getVectorView();
   auto C_hv = C_vv.template getLocalView<Kokkos::HostSpace>();
   C_vv.template modify<Kokkos::HostSpace>();
 
-  // my number of rows
-  const auto myNrows = mvA_mvv.getLocalLength();
-  // loop
   for (std::size_t i=0; i<(std::size_t)myNrows; i++){
     for (std::size_t j=0; j<(std::size_t)numVecs; j++){
       // we use C_hv(i,0) because C is Tpetra::Vector, which is
       // actually a Tpetra::MultiVector with one column, so C_hv
-      // is a kokkos::View<scalar**,...> so we need to index the
-      // zero column too
+      // is a kokkos::View<scalar**,...> so we need to index the zero column
       C_hv(i,0) += mvA_hv(i,j) * vecB[j];
     }
   }
@@ -173,9 +195,6 @@ void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
   C.data()->template sync<device_t>();
 }
 
-
-// return a Tpetra vector wrapper, because a block one can be
-// constructed from a regular tpetra vector
 template<
   typename mvec_type,
   typename vec_type,
@@ -187,17 +206,18 @@ template<
   >
 auto product(const mvec_type & mvA, const vec_type & vecB)
   -> containers::Vector<
-  Tpetra::Vector<typename details::traits<mvec_type>::scalar_t,
-                 typename details::traits<mvec_type>::local_ordinal_t,
-                 typename details::traits<mvec_type>::global_ordinal_t,
-                 typename details::traits<mvec_type>::node_t>
-                 >
+    Tpetra::Experimental::BlockVector<
+      typename details::traits<mvec_type>::scalar_t,
+      typename details::traits<mvec_type>::local_ordinal_t,
+      typename details::traits<mvec_type>::global_ordinal_t,
+      typename details::traits<mvec_type>::node_t
+      >
+    >
 {
-  // here, mvA is distrubted, but vecB is NOT.
-  // we interpret this as a linear combination of vectors
-
   // the data map of the multivector
   const auto rcpMap = mvA.getRCPDataMap();
+  // the block size
+  const auto mvABlockSize = mvA.getBlockSize();
 
   using mvec_traits = typename details::traits<mvec_type>;
   using sc_t = typename mvec_traits::scalar_t;
@@ -208,8 +228,7 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
   // result is an Tpetra Vector with same distribution of mvA
   using res_nat_t = Tpetra::Vector<sc_t, LO_t, GO_t, NO_t>;
   using res_t = containers::Vector<res_nat_t>;
-
-  res_t c(rcpMap);
+  res_t c( res_nat_t(*rcpMap, mvABlockSize) );
   product(mvA, vecB, c);
   return c;
 }
