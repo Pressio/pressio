@@ -108,40 +108,20 @@ public:
   }
 
   // n-1
-  template <typename T1>
-  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusOne>::value, T &>
-  get(){ return data_(0); }
-
-  template <typename T1>
-  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusOne>::value, T const &>
-  get() const{ return data_(0); }
+  T & get(ode::nMinusOne tag){ return data_(0); }
+  T const & get(ode::nMinusOne tag) const{ return data_(0); }
 
   // n-2
-  template <typename T1>
-  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusTwo>::value, T &>
-  get(){ return data_(1); }
-
-  template <typename T1>
-  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusTwo>::value, T const &>
-  get() const{ return data_(1); }
+  T & get(ode::nMinusTwo tag){ return data_(1); }
+  T const & get(ode::nMinusTwo tag) const{ return data_(1); }
 
   // n-3
-  template <typename T1>
-  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusThree>::value, T &>
-  get(){ return data_(2); }
-
-  template <typename T1>
-  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusThree>::value, T const &>
-  get() const{ return data_(2); }
+  T & get(ode::nMinusThree tag){ return data_(2); }
+  T const & get(ode::nMinusThree tag) const{ return data_(2); }
 
   // n-4
-  template <typename T1>
-  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusFour>::value, T &>
-  get(){ return data_(3); }
-
-  template <typename T1>
-  ::pressio::mpl::enable_if_t< std::is_same<T1, ode::nMinusFour>::value, T const &>
-  get() const{ return data_(3); }
+  T & get(ode::nMinusFour tag){ return data_(3); }
+  T const & get(ode::nMinusFour tag) const{ return data_(3); }
 
 private:
   data_type data_;

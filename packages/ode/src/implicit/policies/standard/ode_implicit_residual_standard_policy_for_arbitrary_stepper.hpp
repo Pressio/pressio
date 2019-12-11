@@ -102,7 +102,7 @@ public:
 		  const types::step_t & step,
 		  residual_type & R) const{
 
-    const auto & ynm1 = prevStates.template get<ode::nMinusOne>();
+    const auto & ynm1 = prevStates.get(ode::nMinusOne());
 
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
@@ -123,8 +123,8 @@ public:
 		  const types::step_t & step,
 		  residual_type & R) const{
 
-    const auto & ynm1 = prevStates.template get<ode::nMinusOne>();
-    const auto & ynm2 = prevStates.template get<ode::nMinusTwo>();
+    const auto & ynm1 = prevStates.get(ode::nMinusOne());
+    const auto & ynm2 = prevStates.get(ode::nMinusTwo());
 
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
@@ -146,9 +146,9 @@ public:
 		  const types::step_t &  step,
 		  residual_type & R) const{
 
-    const auto & ynm1 = prevStates.template get<ode::nMinusOne>();
-    const auto & ynm2 = prevStates.template get<ode::nMinusTwo>();
-    const auto & ynm3 = prevStates.template get<ode::nMinusThree>();
+    const auto & ynm1 = prevStates.get(ode::nMinusOne());
+    const auto & ynm2 = prevStates.get(ode::nMinusTwo());
+    const auto & ynm3 = prevStates.get(ode::nMinusThree());
 
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
