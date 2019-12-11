@@ -262,7 +262,10 @@ struct traits<
   using ordinal_t = int;
 
   static constexpr bool is_admissible_for_expression_templates = true;
-  using view_col_vec_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
+  using view_col_vec_const_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<
+    const MultiVector<wrapped_type>, scalar_t>;
+  using view_col_vec_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<
+    MultiVector<wrapped_type>, scalar_t>;
 };
 
 
@@ -306,7 +309,10 @@ struct traits<
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
   static constexpr bool is_admissible_for_expression_templates = false;
-  using view_col_vec_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
+  using view_col_vec_const_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<
+    const MultiVector<wrapped_type>, scalar_t>;
+  // for now, the non-cost view col vector is not allowed for Kokkos
+  using view_col_vec_ret_t = void;
 };
 #endif
 
