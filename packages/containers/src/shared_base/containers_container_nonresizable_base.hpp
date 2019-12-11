@@ -67,9 +67,6 @@ class ContainerNonResizableBase
 
   friend utils::details::CrtpBase<this_t>;
 
-  ContainerNonResizableBase() = default;
-  ~ContainerNonResizableBase() = default;
-
 };//end class
 } // end namespace containers
 }//end namespace pressio

@@ -86,9 +86,6 @@ private:
 
   friend utils::details::CrtpBase<this_t>;
 
-  ContainerDistributedTrilinosBase() = default;
-  ~ContainerDistributedTrilinosBase() = default;
-
 };//end class
 
 }}//end namespace pressio::containers

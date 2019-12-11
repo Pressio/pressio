@@ -99,8 +99,10 @@ public:
 
   // copy assign implments copy semantics not view (for time being)
   Vector & operator=(const Vector & other){
-    assert(this->size() == other.size());
-    Kokkos::deep_copy(data_, *other.data());
+    if (&other != this){
+      assert(this->size() == other.size());
+      Kokkos::deep_copy(data_, *other.data());
+    }
     return *this;
   }
 

@@ -109,8 +109,10 @@ public:
   Vector(Vector const & other) : data_(*other.data(), Teuchos::Copy){}
   // copy assignment
   Vector & operator=(const Vector & other){
-    assert(this->localSize() == other.localSize());
-    data_.assign( *other.data() );
+    if (&other != this){
+      assert(this->localSize() == other.localSize());
+      data_.assign( *other.data() );
+    }
     return *this;
   }
 

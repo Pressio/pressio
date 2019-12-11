@@ -104,7 +104,7 @@ private:
 
 public:
   StaticCollection() = delete;
-  ~StaticCollection() = default;
+  //~StaticCollection() = default;
 
   // constructor for n == 1
   template <

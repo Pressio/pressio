@@ -110,9 +110,11 @@ public:
 
   // copy assignment
   Vector & operator=(const Vector & other){
-    this->data_.update(::pressio::utils::constants::one<sc_t>(),
-		       *other.data(),
-		       ::pressio::utils::constants::zero<sc_t>() );
+    if (&other != this){
+      this->data_.update(::pressio::utils::constants::one<sc_t>(),
+			 *other.data(),
+			 ::pressio::utils::constants::zero<sc_t>() );
+    }
     return *this;
   }
 

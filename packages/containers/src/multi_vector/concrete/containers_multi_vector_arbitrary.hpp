@@ -68,7 +68,6 @@ class MultiVector<
 
 public:
   MultiVector() = delete;
-  ~MultiVector() = delete;
 
   template <typename ...Args>
   MultiVector(Args && ... args)
