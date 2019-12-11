@@ -132,8 +132,6 @@ template <
   >
 void dot_self(const mvec_t & A, result_t & C)
 {
-  throw std::runtime_error("Tpetra block MV dot self returning Kokkos matrix NOT supported yet");
-
   // check traits of the block mv
   using scalar_t     = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
   using tpetra_mvb_t = typename ::pressio::containers::details::traits<mvec_t>::wrapped_t;
