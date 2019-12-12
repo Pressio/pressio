@@ -95,7 +95,7 @@ void gauss_newton_neq_solve(const system_t & sys,
   // using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
 
   // policy for evaluating the norm of a vector
-  using norm_evaluator = ComputeNormHelper;
+  // using norm_evaluator = ComputeNormHelper;
 
   // policy to approximate hessian J^T*J
   using hessian_evaluator_t = HessianApproxHelper<jacobian_t>;
