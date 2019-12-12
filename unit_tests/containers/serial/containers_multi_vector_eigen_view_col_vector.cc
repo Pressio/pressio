@@ -59,7 +59,7 @@ namespace{
 }
 
 TEST(containers_multi_vector_serial_eigen_dynamic_class,
-     productWithEigenVectorViewFromMV){
+     EigenVectorViewFromMV){
 
   //construct multivector
   myMV_t A(6,3);
