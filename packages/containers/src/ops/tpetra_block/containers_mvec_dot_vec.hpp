@@ -56,15 +56,48 @@
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
- * multi_vector dot vector
- *
- * overloads for c = A dot b
+ * c = A dot b
  * where:
  * A = wrapper of Tpetra block Multivector
- * b = tpetra block vector
- * c = a shared-mem vector, like eigen or armadillo or std::vector
+ * b = wrapper of tpetra block vector
+ * c = a shared-mem vector, like eigen or armadillo or std::vector or kokkos::view
  */
 
+//------------------------------------
+// c = wrapper of Kokkos vector
+//------------------------------------
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value &&
+    containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value &&
+    containers::meta::is_vector_wrapper_kokkos<result_type>::value
+    > * = nullptr
+  >
+void dot(const mvec_type & mvA, const vec_type & vecB, result_type & result)
+{
+  static_assert(containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+		containers::meta::wrapper_pair_have_same_scalar<result_type, vec_type>::value,
+		"Tpetra MV dot V: operands do not have matching scalar type");
+
+  static_assert(std::is_same<
+		typename containers::details::traits<mvec_type>::device_t,
+		typename containers::details::traits<vec_type>::device_t>::value,
+		"Tpetra MV dot V: operands do not have the same device type");
+
+  static_assert(std::is_same<
+		typename containers::details::traits<vec_type>::device_t,
+		typename containers::details::traits<result_type>::device_t>::value,
+		"Tpetra MV dot V: V and result do not have the same device type");
+
+  const auto mvA_mvv = mvA.data()->getMultiVectorView();
+  using tpetra_blockvector_t = typename containers::details::traits<vec_type>::wrapped_t;
+  const auto vecB_vv = const_cast<tpetra_blockvector_t*>(vecB.data())->getVectorView();
+  auto request = Tpetra::idot( *result.data(), mvA_mvv, vecB_vv);
+  request->wait();
+}
 
 //------------------------------------
 // c = scalar *, passed in
@@ -78,14 +111,13 @@ template <
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
     > * = nullptr
   >
-void dot(const mvec_type & mvA,
-	 const vec_type & vecB,
+void dot(const mvec_type & mvA, const vec_type & vecB,
 	 typename details::traits<mvec_type>::scalar_t * result){
 
-  /* workaround the non-constness of getVectorView,
-   * which is supposed to be const but it is not */
-  using mv_tmp_t = Tpetra::Experimental::BlockVector<>;
-  const auto vecB_vv = const_cast<mv_tmp_t*>(vecB.data())->getVectorView();
+  /* workaround the non-constness of getVectorView*/
+  using tpetra_blockvec_t = typename containers::details::traits<vec_type>::wrapped_t;
+  const auto vecB_vv = const_cast<tpetra_blockvec_t*>(vecB.data())->getVectorView();
+
   const auto mvA_mvv = mvA.data()->getMultiVectorView();
   const auto numVecs = mvA.globalNumVectors();
   for (std::size_t i=0; i<(std::size_t)numVecs; i++){
@@ -113,14 +145,11 @@ template <
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
-void dot(const mvec_type & mvA,
-	 const vec_type & vecB,
-	 result_vec_type & result){
+void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
+{
   const auto numVecs = mvA.globalNumVectors();
-
   if ( result.size() != numVecs )
     result.resize(numVecs);
-
   dot(mvA, vecB, result.data()->values());
 }
 
@@ -142,9 +171,7 @@ template <
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
-void dot(const mvec_type & mvA,
-	 const vec_type & vecB,
-	 result_vec_type & result){
+void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result){
 
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
@@ -156,7 +183,6 @@ void dot(const mvec_type & mvA,
      from mvA and do dot product one a time*/
 
   const auto numVecs = mvA.globalNumVectors();
-
   // check the result has right size
   if ( result.size() != numVecs )
     result.resize(numVecs);
@@ -177,23 +203,18 @@ template <
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						       vec_type,
-						       result_vec_type>::value and
+    containers::meta::wrapper_triplet_have_same_scalar<mvec_type, vec_type, result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_static
     > * = nullptr
   >
-void dot(const mvec_type & mvA,
-	 const vec_type & vecB,
-	 result_vec_type & result){
-
+void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
+{
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
   // check the result has right size
   assert( result.size() == mvA.globalNumVectors() );
   dot(mvA, vecB, result.data()->data());
 }
-
 
 }}}//end namespace pressio::containers::ops
 #endif

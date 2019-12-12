@@ -52,6 +52,7 @@
 
 #include "../containers_ops_meta.hpp"
 #include "../../multi_vector/containers_multi_vector_meta.hpp"
+#include "Tpetra_idot.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{
 
@@ -62,8 +63,41 @@ namespace pressio{ namespace containers{ namespace ops{
  * where:
  * A = wrapper of Tpetra Multivector
  * b = tpetra vector
- * c = a shared-mem vector, like eigen or armadillo or std::vector
+ * c = a shared-mem vector, like eigen or armadillo or std::vector or kokkos
  */
+
+//------------------------------------
+// c = wrapper of Kokkos vector
+//------------------------------------
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename result_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value &&
+    containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
+    containers::meta::is_vector_wrapper_kokkos<result_type>::value
+    > * = nullptr
+  >
+void dot(const mvec_type & mvA, const vec_type & vecB, result_type & result)
+{
+  static_assert(containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
+		containers::meta::wrapper_pair_have_same_scalar<result_type, vec_type>::value,
+		"Tpetra MV dot V: operands do not have matching scalar type");
+
+  static_assert(std::is_same<
+		typename containers::details::traits<mvec_type>::device_t,
+		typename containers::details::traits<vec_type>::device_t>::value,
+		"Tpetra MV dot V: operands do not have the same device type");
+
+  static_assert(std::is_same<
+		typename containers::details::traits<vec_type>::device_t,
+		typename containers::details::traits<result_type>::device_t>::value,
+		"Tpetra MV dot V: V and result do not have the same device type");
+
+  auto request = Tpetra::idot( *result.data(), *mvA.data(), *vecB.data());
+  request->wait();
+}
 
 
 //------------------------------------

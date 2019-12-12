@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_default_types.hpp
+// pressio_cmake_config.h.in
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,14 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_DEFAULT_TYPES_HPP_
-#define CONTAINERS_DEFAULT_TYPES_HPP_
-
-#include "../../utils/src/utils_ConfigDefs.hpp"
-
-namespace pressio{ namespace containers{ namespace default_types {
-
-  //! Default value of Scalar template parameter.
-  using scalar_t = double;
-
-  //! Default value of LocalOrdinal template parameter.
-  using local_ordinal_t = int;
-
-  /// default global_ordinal_type
-  using global_ordinal_t = int;
-
-  // Unsigned int type
-  using uint = unsigned int;
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  // admissible types for epetra vector
-  using epetra_scalar_t = double;
-  using epetra_lo_t = int;
-  using epetra_go_t1 = int;
-  using epetra_go_t2 = long long;
-#endif
-
-
-}}} // end of namespace pressio::containers::default_types
-#endif
+//#define PRESSIO_ENABLE_DEBUG_PRINT
+#define PRESSIO_ENABLE_TPL_EIGEN
+#define PRESSIO_ENABLE_TPL_TRILINOS
+#define PRESSIO_ENABLE_TEUCHOS_TIMERS
+//#define PRESSIO_ENABLE_TPL_PYBIND11
+#define PRESSIO_ENABLE_TPL_KOKKOS
+//#define PRESSIO_ENABLE_TPL_BLAZE
+//#define PRESSIO_ENABLE_TPL_ARMADILLO
+#define PRESSIO_ENABLE_TPL_BLAS
+#define PRESSIO_ENABLE_TPL_LAPACK
+#define PRESSIO_ENABLE_TPL_MPI

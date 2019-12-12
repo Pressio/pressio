@@ -87,9 +87,6 @@ private:
   friend typename dummy<derived_type>::type;
 
   friend utils::details::CrtpBase<this_t>;
-
-  ContainerPrintable1DBase() = default;
-  ~ContainerPrintable1DBase() = default;
 };//end class
 
 
@@ -122,10 +119,6 @@ private:
   friend typename dummy<derived_type>::type;
 
   friend utils::details::CrtpBase<this_t>;
-
-  ContainerPrintable2DBase() = default;
-  ~ContainerPrintable2DBase() = default;
-
 };//end class
 
 }}//end namespace pressio::containers

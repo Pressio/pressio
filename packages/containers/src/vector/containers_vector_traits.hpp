@@ -373,9 +373,9 @@ struct traits<Vector<wrapped_type,
   wrapped_vector_identifier = WrappedVectorIdentifier::Epetra;
 
   static constexpr bool is_admissible_for_expression_templates = true;
-  using scalar_t = containers::default_types::epetra_scalar_t;
-  using local_ordinal_t = containers::default_types::epetra_lo_t;
-  using global_ordinal_t = containers::default_types::epetra_go_t1;
+  using scalar_t = double;
+  using local_ordinal_t = int;
+  using global_ordinal_t = int;
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
 };
@@ -463,12 +463,13 @@ struct traits<Vector<wrapped_type,
   using execution_space    = typename wrapped_type::traits::execution_space;
   using memory_space	   = typename wrapped_type::traits::memory_space;
   using device_type	   = typename wrapped_type::traits::device_type;
+  using device_t	   = typename wrapped_type::traits::device_type;
   using memory_traits	   = typename wrapped_type::traits::memory_traits;
   using host_mirror_space  = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t      = typename wrapped_type::host_mirror_type;
 
-  static constexpr bool has_host_execution_space = 
-    (false 
+  static constexpr bool has_host_execution_space =
+    (false
      #ifdef KOKKOS_ENABLE_SERIAL
      || std::is_same<execution_space, Kokkos::Serial>::value
      #endif

@@ -13,7 +13,7 @@ TEST_F(eigenDenseR9Fixture,
 
   //  do Q^T * v_, i.e. project v_ onto Q
   myvec_t rhs(pressio::qr::test::numVectors_);
-  qrObj.project(*v_, rhs);
+  qrObj.applyQTranspose(*v_, rhs);
   std::cout << " RHS" << std::setprecision(14)
   	    << *rhs.data() << std::endl;
 

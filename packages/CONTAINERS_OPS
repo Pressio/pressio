@@ -65,6 +65,7 @@
 #include "containers/src/ops/eigen/containers_min_max_vector.hpp"
 #include "containers/src/ops/eigen/containers_multi_vector_do_update.hpp"
 #include "containers/src/ops/eigen/containers_mvec_dot_self.hpp"
+#include "containers/src/ops/eigen/containers_mvec_dot_mvec.hpp"
 #include "containers/src/ops/eigen/containers_mvec_dot_vec.hpp"
 #include "containers/src/ops/eigen/containers_mvec_prod_vec.hpp"
 #include "containers/src/ops/eigen/containers_norms_vector.hpp"

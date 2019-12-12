@@ -81,14 +81,25 @@ private:
 public:
   MultiVector() = delete;
 
-  explicit MultiVector(ord_t length, ord_t numVectors)
+  MultiVector(ord_t length, ord_t numVectors)
     : data_(length, numVectors){
-        this->setZero();
+    this->setZero();
   }
 
-  explicit MultiVector(const wrap_t & other) : data_(other){}
+  explicit MultiVector(const wrap_t & other)
+    : data_(other){}
 
+  // copy cnstr
+  MultiVector(MultiVector const & other) = default;
+  // copy assignment
+  MultiVector & operator=(const MultiVector & other) = default;
+  // move cnstr
+  MultiVector(MultiVector && o) = default;
+  // move assignment
+  MultiVector & operator=(MultiVector && other) = default;
+  // destructor
   ~MultiVector() = default;
+
 
 public:
   sc_t & operator()(ord_t irow, ord_t iVec){

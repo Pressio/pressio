@@ -69,24 +69,26 @@ public:
 };
 ///-----------------------------------------------------
 
-template <typename T,
-	  typename enable = void>
+template <typename T, typename enable = void>
 struct is_sharedmem_vector_expression : std::false_type{};
 
 template <typename T>
-struct is_sharedmem_vector_expression<T,
-      ::pressio::mpl::enable_if_t<
-       ::pressio::mpl::publicly_inherits_from<
-	T,SharedMemVecExpressionBase<T>
-	 >::value
-	>> : std::true_type{};
+struct is_sharedmem_vector_expression<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::publicly_inherits_from<
+      T,SharedMemVecExpressionBase<T>
+      >::value
+    >> : std::true_type{};
 
 
 //----------------------------------------------------
 // default
-template <typename OP_t, typename T1,
-	  typename T2, typename value_t,
-	  typename ord_t, typename enable = void>
+template <
+  typename OP_t, typename T1,
+  typename T2, typename value_t,
+  typename ord_t, typename enable = void
+  >
 class SharedMemVectorBinaryExp
   : public SharedMemVecExpressionBase<
   SharedMemVectorBinaryExp<OP_t,T1,T2,value_t,ord_t>>{
@@ -105,7 +107,7 @@ class SharedMemVectorBinaryExp
     : a_(a), b_(b){}
   ~SharedMemVectorBinaryExp() = default;
 
-  value_t operator()(size_t i) const {
+  value_t operator()(std::size_t i) const {
     return op_(a_(i), b_(i));}
 
   ord_t size() const {
@@ -115,8 +117,10 @@ class SharedMemVectorBinaryExp
 
 //----------------------------------------------------
 // T1: whatever, T2: vector
-template <typename OP_t, typename T1, typename T2,
-	  typename value_t, typename ord_t>
+template <
+  typename OP_t, typename T1, typename T2,
+  typename value_t, typename ord_t
+  >
 class SharedMemVectorBinaryExp<
          OP_t, T1, T2, value_t, ord_t,
 	 ::pressio::mpl::enable_if_t<
@@ -141,7 +145,7 @@ public:
     : a_(a), b_(b){}
   ~SharedMemVectorBinaryExp() = default;
 
-  value_t operator()(size_t i) const {
+  value_t operator()(std::size_t i) const {
     return op_(a_(i), b_(i));}
 
   ord_t size() const {
@@ -151,8 +155,10 @@ public:
 
 //-----------------------------------------------------
 // T1: not scalar, T2: scalar
-template <typename OP_t, typename T1,
-	    typename value_t, typename ord_t>
+template <
+  typename OP_t, typename T1,
+  typename value_t, typename ord_t
+  >
 class SharedMemVectorBinaryExp<
          OP_t, T1, value_t, value_t, ord_t,
 	 ::pressio::mpl::enable_if_t<
@@ -176,7 +182,7 @@ public:
     : a_(a), b_(b){}
   ~SharedMemVectorBinaryExp() = default;
 
-  value_t operator()(size_t i) const {
+  value_t operator()(std::size_t i) const {
     return op_(a_(i), b_);}
 
   ord_t size() const{

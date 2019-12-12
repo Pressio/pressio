@@ -154,6 +154,8 @@ private:
 
     int info = 0;
     const int ipivSz = n;
+    // this needs to be moved out, does not make sense to construct it every time
+    // hopefully compiler figures it out for now :)
     std::vector<int> ipiv(ipivSz);
 
     // LU factorize using GETRF
@@ -161,17 +163,12 @@ private:
     assert(info == 0);
 
     // we need to deep copy b into y and pass y
-    // because getrs
-    // overwrite the RHS in place with the solution
+    // because getrs overwrite the RHS in place with the solution
     Kokkos::deep_copy(*y.data(), *b.data());
 
     const char ct = 'N';
-    lpk_.GETRS(ct, n, nRhs,
-	       A.data()->data(),
-	       n, ipiv.data(),
-	       y.data()->data(),
-	       y.size(),
-	       &info);
+    lpk_.GETRS(ct, n, nRhs, A.data()->data(), n, ipiv.data(),
+	       y.data()->data(), y.size(), &info);
     assert(info == 0);
   }
 #endif
@@ -228,9 +225,7 @@ private:
     // cuDnHandle already created in constructor
 
     // compute buffer size and prep.memory
-    cusolverStatus = cusolverDnDgetrf_bufferSize(cuDnHandle_, n, n,
-						 A.data()->data(),
-						 n, &Lwork);
+    cusolverStatus = cusolverDnDgetrf_bufferSize(cuDnHandle_, n, n, A.data()->data(), n, &Lwork);
     assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
 
     // for now, working buffers are stored as Kokkos arrays but
@@ -241,17 +236,14 @@ private:
     ::pressio::containers::Vector<k1di_d> pivot_d("d_pivot", n);
     ::pressio::containers::Vector<k1di_d> info_d("d_info", 1);
 
-    cusolverStatus = cusolverDnDgetrf(cuDnHandle_, n, n,
-    				      A.data()->data(),
-    				      n,
+    cusolverStatus = cusolverDnDgetrf(cuDnHandle_, n, n, A.data()->data(), n,
     				      work_d.data()->data(),
-    				      pivot_d.data()->data(),
+				      pivot_d.data()->data(),
     				      info_d.data()->data());
     assert(cusolverStatus == CUSOLVER_STATUS_SUCCESS);
 
     // we need to deep copy b into y and pass y
-    // because getrs
-    // overwrite the RHS in place with the solution
+    // because getrs overwrites the RHS in place with the solution
     Kokkos::deep_copy(*y.data(), *b.data());
 
     cusolverStatus = cusolverDnDgetrs(cuDnHandle_, CUBLAS_OP_N,

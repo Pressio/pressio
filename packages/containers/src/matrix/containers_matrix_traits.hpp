@@ -102,8 +102,7 @@ struct traits<
   static constexpr bool is_matrix = true;
   static constexpr bool is_multi_vector = false;
 
-  // by default, any container is not admissible to expr templates
-  // the ones that are, will overwrite this
+  // by default, an arbitrary matrix type is not admissible to expr templates
   static constexpr bool is_admissible_for_expression_templates = false;
 };
 
@@ -134,6 +133,9 @@ struct traits< Matrix<
 
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
+  static constexpr bool is_admissible_for_expression_templates = true;
+  using subspan_ret_t = exprtemplates::SubspanExpr<Matrix<wrapped_type>, scalar_t>;
+  using subspan_const_ret_t = exprtemplates::SubspanExpr< const Matrix<wrapped_type>, scalar_t>;
 };
 
 
@@ -196,9 +198,9 @@ struct traits<Matrix
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::CrsEpetra;
 
-  using scalar_t = default_types::epetra_scalar_t;
-  using local_ordinal_t = containers::default_types::epetra_lo_t;
-  using global_ordinal_t = containers::default_types::epetra_go_t1;
+  using scalar_t = double;
+  using local_ordinal_t = int;
+  using global_ordinal_t = int;
   using communicator_t = Epetra_Comm;
   using row_map_t = Epetra_Map;
   using col_map_t = Epetra_Map;
@@ -235,6 +237,10 @@ struct traits<Matrix<wrapped_type,
 
   using scalar_t = typename wrapped_type::scalarType;
   using ordinal_t = typename wrapped_type::ordinalType;
+
+  // for now, this must be empty until we enable support for subspanning a kokkos matrix
+  using subspan_ret_t = void;
+  using subspan_const_ret_t = void;
 };
 #endif
 
@@ -263,9 +269,9 @@ struct traits<Matrix
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEpetra;
 
-  using scalar_t = default_types::epetra_scalar_t;
-  using local_ordinal_t = containers::default_types::epetra_lo_t;
-  using global_ordinal_t = containers::default_types::epetra_go_t1;
+  using scalar_t = double;
+  using local_ordinal_t = int;
+  using global_ordinal_t = int;
   using communicator_t = Epetra_Comm;
   using row_map_t = Epetra_BlockMap;
 
@@ -403,13 +409,17 @@ struct traits<
   using ordinal_t	  = typename wrapped_type::traits::size_type;
   using execution_space   = typename wrapped_type::traits::execution_space;
   using memory_space	  = typename wrapped_type::traits::memory_space;
-  using device_type	  = typename wrapped_type::traits::device_type;
+  using device_t	  = typename wrapped_type::traits::device_type;
   using memory_traits	  = typename wrapped_type::traits::memory_traits;
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
-  static constexpr bool has_host_execution_space = 
-    (false 
+  // for now, this must be empty until we enable support for subspanning a kokkos matrix
+  using subspan_ret_t = void;
+  using subspan_const_ret_t = void;
+
+  static constexpr bool has_host_execution_space =
+    (false
      #ifdef KOKKOS_ENABLE_SERIAL
      || std::is_same<execution_space, Kokkos::Serial>::value
      #endif
@@ -417,10 +427,8 @@ struct traits<
      || std::is_same<execution_space, Kokkos::OpenMP>::value
      #endif
      );
-
 };
 #endif
-
 
 }}}//end namespace pressio::containers::details
 #endif

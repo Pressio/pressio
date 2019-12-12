@@ -58,13 +58,20 @@ template <typename T, typename enable = void>
 struct is_dynamic_multi_vector_eigen : std::false_type {};
 
 template <typename T>
-struct is_dynamic_multi_vector_eigen<T,
-  typename
-   std::enable_if<
+struct is_dynamic_multi_vector_eigen<
+  T,
+  ::pressio::mpl::enable_if_t<
     is_dense_dynamic_matrix_eigen<T>::value
-   >::type
-  > : std::true_type{};
+    >
+  >
+{
+  // multivectors make sense only for col-major matrices
+  static constexpr bool cond2 =  int(T::IsRowMajor) == 0;
+  static_assert( cond2, "You cannot wrap a row-major Eigen dense matrix as a multivector.\
+Only column-major dense matrices can be wrapped and used as multivectors.");
 
+  static constexpr bool value = cond2;
+};
 
 }}}//end namespace pressio::containers::meta
 #endif

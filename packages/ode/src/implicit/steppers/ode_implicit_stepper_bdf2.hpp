@@ -173,7 +173,7 @@ public:
     if (step == 1){
       // step ==1 means that we are going from y_0 to y_1
       // auxStates_(0) now holds y_0
-      ::pressio::containers::ops::deep_copy(odeState, this->auxStates_.template get<nm1>() );
+      ::pressio::containers::ops::deep_copy(odeState, this->auxStates_.get(nm1()));
       // advnace the ode state
       auxStepper_(odeState, t, dt, step, solver);
     }
@@ -184,8 +184,8 @@ public:
       // step == 3 means that we are going from y_2 to y_3, so:
       //		y_n-2 = y_1 and y_n-1 = y_2
 
-      auto & odeState_nm1 = this->auxStates_.template get<nm1>();
-      auto & odeState_nm2 = this->auxStates_.template get<nm2>();
+      auto & odeState_nm1 = this->auxStates_.get(nm1());
+      auto & odeState_nm2 = this->auxStates_.get(nm2());
       ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
       ::pressio::containers::ops::deep_copy(odeState, odeState_nm1);
       solver.solve(*this, odeState);
@@ -220,7 +220,7 @@ public:
     if (step == 1){
       // step ==1 means that we are going from y_0 to y_1
       // auxStates_(0) now holds y_0
-      ::pressio::containers::ops::deep_copy(odeState, this->auxStates_.template get<nm1>());
+      ::pressio::containers::ops::deep_copy(odeState, this->auxStates_.get(nm1()));
       // advnace the ode state
       auxStepper_(odeState, t, dt, step, solver);
     }
@@ -231,8 +231,8 @@ public:
       // step == 3 means that we are going from y_2 to y_3, so:
       //		y_n-2 = y_1 and y_n-1 = y_2
 
-      auto & odeState_nm1 = this->auxStates_.template get<nm1>();
-      auto & odeState_nm2 = this->auxStates_.template get<nm2>();
+      auto & odeState_nm1 = this->auxStates_.get(nm1());
+      auto & odeState_nm2 = this->auxStates_.get(nm2());
       ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
       ::pressio::containers::ops::deep_copy(odeState, odeState_nm1);
       guesserCb(step, t, odeState);

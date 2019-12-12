@@ -80,10 +80,6 @@ private:
   friend typename dummy<derived_type>::type;
 
   friend utils::details::CrtpBase<this_t>;
-
-  ContainerResizableBase() = default;
-  ~ContainerResizableBase() = default;
-
 };//end class
 
 }}//end namespace pressio::containers

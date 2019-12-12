@@ -85,9 +85,8 @@ struct HessianApproxHelper<
 
 /* when J is multivector wrapper, the hessian J^T*J
  * is computed by doing the J self_dot J
- * this ensures that we leverage symmetry of the result,
- * since self_dot computes only half of the result matrix
- * and fills the rest by symmetry
+ * in some cases, the impl of self dot leverages symmetry of the result,
+ * so self_dot computes only half of the result matrix and fills the rest by symmetry
  */
 template<typename J_t>
 struct HessianApproxHelper<

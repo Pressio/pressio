@@ -87,26 +87,44 @@ public:
   }
 
   MultiVector(const std::string & label, size_t e1, size_t e2)
-    : data_{label, e1, e2}
-  {}
+    : data_{label, e1, e2}{}
 
-  MultiVector(const this_t & other)
+  // copy constr
+  MultiVector(const MultiVector & other)
     : data_{other.data_.label(),
 	    other.data_.extent(0),
-	    other.data_.extent(1)}{
+	    other.data_.extent(1)}
+  {
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  ~MultiVector(){}
-
-public:
   // copy assign implments copy semantics not view (for time being)
-  this_t & operator=(const this_t & other){
+  MultiVector & operator=(const MultiVector & other){
+    if (&other != this){
+      assert(this->length() == other.length());
+      assert(this->numVectors() == other.numVectors());
+      Kokkos::deep_copy(data_, *other.data());
+    }
+    return *this;
+  }
+
+  // move cnstr and assign
+  MultiVector(MultiVector && other)
+    : data_{other.data_.label(),
+	    other.data_.extent(0),
+	    other.data_.extent(1)}
+  {
+    Kokkos::deep_copy(data_, other.data_);
+  }
+
+  MultiVector & operator=(MultiVector && other){
     assert(this->length() == other.length());
     assert(this->numVectors() == other.numVectors());
     Kokkos::deep_copy(data_, *other.data());
     return *this;
   }
+
+  ~MultiVector() = default;
 
 private:
   wrap_t const * dataImpl() const{

@@ -58,8 +58,7 @@ namespace pressio{  namespace qr{
 template<typename derived, typename matrix_t>
 class QRInPlaceBase;
 
-template<typename derived,
-	 typename matrix_t, typename Q_type>
+template<typename derived, typename matrix_t, typename Q_type>
 class QROutOfPlaceBase;
 
 template<typename derived, typename R_type>
@@ -74,85 +73,68 @@ namespace impl{
 template<
   typename matrix_type,
   typename R_t = void,
-  int n = utils::constants::dynamic,
-  int m = utils::constants::dynamic,
-  template <typename...> class Q_type
-	= containers::MultiVector,
+  template <typename...> class Q_type = containers::MultiVector,
   typename enable= void>
 class QRHouseholderDenseEigenMatrixWrapper;
 
 template<
   typename matrix_type,
   typename R_t = void,
-  int n = utils::constants::dynamic,
-  int m = utils::constants::dynamic,
-  template <typename...> class Q_type
-	= containers::MultiVector,
+  template <typename...> class Q_type = containers::MultiVector,
   typename enable= void>
 class QRHouseholderEigenMultiVectorWrapper;
 
 #if defined PRESSIO_ENABLE_TPL_TRILINOS
-template<typename matrix_t,
-	 typename R_t,
-	 int n = utils::constants::dynamic,
-	 int m = utils::constants::dynamic,
-	 template <typename...> class Q_type
-	 = containers::MultiVector>
+template<
+  typename matrix_t,
+  typename R_t,
+  template <typename...> class Q_type = containers::MultiVector>
 class EpetraMVHouseholderUsingEigen;
 
-template<typename matrix_t,
-	 typename R_t,
-	 int n = utils::constants::dynamic,
-	 int m = utils::constants::dynamic,
-	 template <typename...> class Q_type
-	 = containers::MultiVector>
+template<
+  typename matrix_t,
+  typename R_t,
+  template <typename...> class Q_type = containers::MultiVector>
 class TpetraMVHouseholderUsingEigen;
 
-template<typename matrix_t,
-	 typename R_t,
-	 int n, int m,
-	 typename wrap_Q_type,
-	 template <typename...> class Q_type
-	 = containers::MultiVector,
-	 typename enable = void>
+template<
+  typename matrix_t,
+  typename R_t,
+  typename wrap_Q_type,
+  template <typename...> class Q_type = containers::MultiVector,
+  typename enable = void>
 class EpetraMVTSQR;
 
-template<typename matrix_t,
-	 typename R_t,
-	 int n, int m,
-	 typename wrap_Q_type,
-	 template <typename...> class Q_type
-	 = containers::MultiVector,
-	 typename enable = void>
+template<
+  typename matrix_t,
+  typename R_t,
+  typename wrap_Q_type,
+  template <typename...> class Q_type = containers::MultiVector,
+  typename enable = void>
 class TpetraMVTSQR;
 
-template<typename matrix_t,
-	 typename R_t,
-	 int n, int m,
-	 typename wrap_Q_type,
-	 template <typename...> class Q_type
-	 = containers::MultiVector,
-	 typename enable = void>
+template<
+  typename matrix_t,
+  typename R_t,
+  typename wrap_Q_type,
+  template <typename...> class Q_type = containers::MultiVector,
+  typename enable = void>
 class TpetraBlockMVTSQR;
 
-template<typename matrix_t,
-	 typename R_t,
-	 int n = utils::constants::dynamic,
-	 int m = utils::constants::dynamic,
-	 typename wrap_Q_type = void,
-	 template <typename...> class Q_type
-	 = containers::MultiVector,
-	 typename enable = void>
+template<
+  typename matrix_t,
+  typename R_t,
+  typename wrap_Q_type = void,
+  template <typename...> class Q_type = containers::MultiVector,
+  typename enable = void>
 class ModGramSchmidtMVEpetra;
 
-template<typename matrix_t,
-	 typename R_t,
-	 int n = utils::constants::dynamic,
-	 int m = utils::constants::dynamic,
-	 typename wrap_Q_type = void,
-	 template <typename...> class Q_type
-	 = containers::MultiVector,
-	 typename enable = void>
+template<
+  typename matrix_t,
+  typename R_t,
+  typename wrap_Q_type = void,
+  template <typename...> class Q_type = containers::MultiVector,
+  typename enable = void>
 class ModGramSchmidtMVTpetra;
 
 #endif //PRESSIO_ENABLE_TPL_TRILINOS
@@ -162,8 +144,6 @@ template<
   typename matrix_type,
   typename algorithm,
   bool in_place,
-  int m,
-  int n,
   typename R_type,
   template <typename...> class Q_type,
   typename enable = void>
@@ -176,33 +156,20 @@ template<
   typename matrix_type,
   typename algorithm,
   bool in_place = false,
-  int n = utils::constants::dynamic,
-  int m = utils::constants::dynamic,
-  template <typename...> class Q_type
-        = ::pressio::containers::MultiVector,
+  template <typename...> class Q_type = ::pressio::containers::MultiVector,
   typename enable = void
   >
-using QRSolver = impl::QRSolver<matrix_type, algorithm,
-				in_place, m, n,
-				void, Q_type>;
+using QRSolver = impl::QRSolver<matrix_type, algorithm, in_place, void, Q_type>;
 
 template<
   typename matrix_type,
   typename algorithm,
   typename R_type,
   bool in_place = false,
-  int n = utils::constants::dynamic,
-  int m = utils::constants::dynamic,
-  template <typename...> class Q_type
-        = ::pressio::containers::MultiVector,
+  template <typename...> class Q_type = ::pressio::containers::MultiVector,
   typename enable = void
   >
-using QRSolverWrapR = impl::QRSolver<matrix_type,
-				     algorithm,
-				     in_place,
-				     m, n,
-				     R_type,
-				     Q_type>;
+using QRSolverWrapR = impl::QRSolver<matrix_type, algorithm, in_place, R_type, Q_type>;
 
 
 }}//end namespace pressio::qr

@@ -53,11 +53,11 @@
 
 namespace pressio{ namespace qr{
 
-template<typename derived_t,
-	 typename matrix_t>
+template<typename derived_t, typename matrix_t>
 class QRInPlaceBase
   : private utils::details::CrtpBase<
-  QRInPlaceBase<derived_t, matrix_t>>{
+  QRInPlaceBase<derived_t, matrix_t>>
+{
 
   using this_t = QRInPlaceBase<derived_t, matrix_t>;
 

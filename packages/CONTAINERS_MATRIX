@@ -55,6 +55,8 @@
 #include "containers/src/matrix/containers_matrix_traits.hpp"
 #include "containers/src/matrix/containers_matrix_meta.hpp"
 
+#include "containers/src/matrix/containers_matrix_subspan_expression.hpp"
+
 ///base classes
 #include "containers/src/matrix/base/containers_matrix_base.hpp"
 #include "containers/src/matrix/base/containers_matrix_sparse_base.hpp"

@@ -81,19 +81,10 @@ class Vector<wrapped_type,
 
 public:
   Vector() = default;
+  explicit Vector(ord_t insize) : data_(insize){}
+  explicit Vector(const wrap_t & src) : data_(src){}
 
-  ~Vector() = default;
-
-  explicit Vector(ord_t insize)
-    : data_(insize){}
-
-  explicit Vector(const wrap_t & src)
-    : data_(src){}
-
-  Vector(this_t const & other)
-    : data_(*other.data()){
-  }
-
+public:
   // constructor from any expression, force evaluation
   template <typename T,
   	    ::pressio::mpl::enable_if_t<
@@ -104,8 +95,6 @@ public:
       data_[i] = expr(i);
   }
 
-public:
-
   // assignment from any expression, force evaluation
   template <typename T,
   	    ::pressio::mpl::enable_if_t<
@@ -115,12 +104,6 @@ public:
       this->resize(expr.size());
     for (ord_t i = 0; i != expr.size(); ++i)
       data_[i] = expr(i);
-    return *this;
-  }
-
-  // assignment with other vector of same type
-  this_t & operator=(const this_t & other){
-    data_ = *other.data();
     return *this;
   }
 

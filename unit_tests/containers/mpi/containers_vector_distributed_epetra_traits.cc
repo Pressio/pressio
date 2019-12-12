@@ -20,16 +20,13 @@ TEST(containers_vector_distributed_epetra, EpetraVectorTraits)
   using vecTrait = containers::details::traits<myvec_t>;
  
   ::testing::StaticAssertTypeEq<typename
-  				vecTrait::scalar_t,
-  				containers::default_types::epetra_scalar_t>();
+  				vecTrait::scalar_t, double>();
 
   ::testing::StaticAssertTypeEq<typename
-  				vecTrait::local_ordinal_t,
-  				containers::default_types::epetra_lo_t>();
+  				vecTrait::local_ordinal_t, int>();
 
   ::testing::StaticAssertTypeEq<typename
-  				vecTrait::global_ordinal_t,
-  				containers::default_types::epetra_go_t1>();
+  				vecTrait::global_ordinal_t, int>();
   
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::wrapped_t, natV_t>();

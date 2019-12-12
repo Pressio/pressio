@@ -59,9 +59,9 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template<typename matrix_t, typename R_t, int n, int m,
-	 template <typename...> class Q_type>
-class TpetraMVHouseholderUsingEigen{
+template<typename matrix_t, typename R_t, template <typename...> class Q_type>
+class TpetraMVHouseholderUsingEigen
+{
 
   using MV = typename containers::details::traits<matrix_t>::wrapped_t;
   using sc_t = typename containers::details::traits<matrix_t>::scalar_t;
@@ -74,8 +74,7 @@ class TpetraMVHouseholderUsingEigen{
   using Q_t = Q_type<MV>;
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_mat_w	= containers::Matrix<eig_dyn_mat>;
-  using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<
-				eig_mat_w, R_t, n, m, Q_type>;
+  using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<eig_mat_w, R_t, Q_type>;
   help_impl_t myImpl_	= {};
 
 public:
@@ -83,8 +82,7 @@ public:
   ~TpetraMVHouseholderUsingEigen() = default;
 
   template < typename vector_in_t, typename vector_out_t>
-  void project(const vector_in_t & vecIn,
-  	       vector_out_t & vecOut) const{
+  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const{
     containers::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 
@@ -97,8 +95,8 @@ public:
     return *this->Qmat_;
   }
 
-  void computeThinOutOfPlace(matrix_t & A){
-
+  void computeThinOutOfPlace(matrix_t & A)
+  {
     auto rows = A.globalLength();
     auto cols = A.globalNumVectors();
     auto ArowMap = A.getRCPDataMap();
@@ -169,7 +167,6 @@ private:
   mutable std::shared_ptr<R_t> Rmat_	= nullptr;
 
 };//end class
-
 
 }}} // end namespace pressio::qr::impl
 #endif
