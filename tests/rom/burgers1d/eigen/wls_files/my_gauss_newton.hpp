@@ -13,7 +13,7 @@ public:
   {
 
     double gnorm = 1.;
-    double tol = 1e-8;
+    double tol = 1e-20;
     scalar_type rnorm = 0.; 
     constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
     int iteration = 0;
@@ -33,7 +33,6 @@ public:
       std::cout << "Hess norm = " << (*hessian_.data()).squaredNorm() << std::endl; 
       std::cout << "x    norm = " << (*dx_.data()).squaredNorm() << std::endl; 
       std::cout << "iteration = " << iteration << std::endl; 
-      hessian_.setZero();
       (*stateV.data()) = (*stateV.data()) + (*dx_.data());
     } 
 

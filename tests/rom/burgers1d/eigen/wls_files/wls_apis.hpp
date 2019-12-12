@@ -1,7 +1,7 @@
 // this is the same as in other file
 #include "wls_policies.hpp"
 namespace pressio{ namespace rom{ namespace wls{
-template<typename fom_type, typename wls_state_type, typename decoder_t, typename hessian_gradient_pol_t>
+template<typename fom_type, typename wls_state_type, typename decoder_t, typename hessian_gradient_pol_t, typename fom_state_container_t2>
 class WlsSystemHessianAndGradientApi{
 private:
   const hessian_gradient_pol_t & hessian_gradient_polObj_;
@@ -26,25 +26,30 @@ public:
   fom_state_reconstr_t  fomStateReconstructorObj_;
   fom_state_reconstr_t & fomStateReconstructorObjPtr;
   mutable fom_state_container_t  fomStateContainerObj;
+  mutable fom_state_container_t2  fomStateContainerObj2;
+
   mutable wls_state_type wlsStateIC;
   //fom_state_container_t & fomStateContainerObjPtr;
   scalar_t dt;
+  mutable scalar_t ts = 0.;
   int romSize; 
   int fomSize;
   int numStepsInWindow;
-  int tStencil; 
-  WlsSystemHessianAndGradientApi(fom_type & appObj, const hessian_gradient_pol_t & hessian_gradient_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, int numStepsInWindow, int romSize, int fomSize, int tStencil) : appObj_(appObj), hessian_gradient_polObj_(hessian_gradient_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),fomStateContainerObj(2,yFOM),wlsStateIC(romSize,tStencil-1)
-{
+  int time_stencil_size;
+  int windowNum = 0; 
+  WlsSystemHessianAndGradientApi(fom_type & appObj, const hessian_gradient_pol_t & hessian_gradient_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, int numStepsInWindow, int romSize, int fomSize, const int time_stencil_size) : appObj_(appObj), hessian_gradient_polObj_(hessian_gradient_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),fomStateContainerObj(time_stencil_size,yFOM),wlsStateIC(romSize,time_stencil_size-1), fomStateContainerObj2(yFOM){
   this->dt = dt;
   this->numStepsInWindow = numStepsInWindow;
   this->romSize = romSize;
   this->fomSize = fomSize;
-  this->tStencil = tStencil;
+  this->time_stencil_size = time_stencil_size;
+  this->wlsStateIC.setZero();
+  //::pressio::ode::AuxStatesContainer<false,fom_state_t,time_stencil_size> statesContainer(yFOM);    
 //  this->fomStateContainerObj_(2,yFOM);
 }
 
   void computeHessianAndGradient(const wls_state_type & wls_state,hessian_type & hessian, gradient_type & gradient, const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2, scalar_type rnorm=0.) const{
-    hessian_gradient_polObj_(appObj_,wls_state,wlsStateIC,hessian,gradient,fomStateContainerObj,fomStateReconstructorObjPtr,dt,numStepsInWindow);
+    hessian_gradient_polObj_(appObj_,wls_state,wlsStateIC,hessian,gradient,fomStateContainerObj,fomStateReconstructorObjPtr,dt,numStepsInWindow,this->ts,fomStateContainerObj2);
   }
 
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
@@ -55,6 +60,22 @@ public:
     gradient_type g(romSize*numStepsInWindow);  //how do we do this for arbitrary types?
     return g;} 
 
+
+
+  template <typename solverType>
+  void advanceOneWindow(wls_state_type & wlsState, solverType & solver, int  windowNum) {
+    this->windowNum = windowNum;
+    this->ts  = windowNum*this->dt*this->numStepsInWindow; 
+    solver.my_gauss_newton(*this,wlsState,romSize,numStepsInWindow);
+    //sbar = std::min(this->time_stencil_size-1,numStepsInWindow);
+    int start = std::max(0,time_stencil_size - 1 - numStepsInWindow);
+    for (int i = 0; i < start; i++){
+      (*(this->wlsStateIC).data()).block(0,i,romSize,1) = (*(this->wlsStateIC).data()).block(0,i+1,romSize,1);} 
+    for (int i = start ; i < this->time_stencil_size-1; i++){
+      std::cout << i << std::endl;
+      (*(this->wlsStateIC).data()).block(0,i,romSize,1) = (*wlsState.data()).block(0,numStepsInWindow - this->time_stencil_size + 1 + i , romSize ,1);}
+    std::cout << " Window " << windowNum << " completed " << std::endl;
+  }
 
 };
 

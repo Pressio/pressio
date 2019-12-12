@@ -93,15 +93,16 @@ int main(int argc, char *argv[]){
   using stepper_t = pressio::ode::ImplicitStepper<ode_case, fom_state_t, fom_state_t, ode_jac_t, fom_t>;
   stepper_t stepperObj(yFOM, appObj);
   using nm1 = pressio::ode::nMinusOne;
-  auto & odeState_nm1 = stepperObj.auxStates_.template get<nm1>();
-  cout << *(odeState_nm1).data() << endl;
-  auto test = stepperObj.residual(yFOM);
+//  auto & odeState_nm1 = stepperObj.auxStates_.template get<nm1>();
+//  cout << *(odeState_nm1).data() << endl;
+//  auto test = stepperObj.residual(yFOM);
 
   for (int step = 0; step < numSteps; step++)
   {
-    gn_solver.my_gauss_newton(wlsSystem,wlsState,romSize,numStepsInWindow); 
-    (*wlsSystem.wlsStateIC.data()).block(0,0,romSize,1) = (*wlsState.data()).block(0,numStepsInWindow-1,romSize,1); 
-    cout << " step " << step << " completed " << endl;
+    wlsSystem.advanceOneWindow(wlsState,gn_solver,step);
+//    gn_solver.my_gauss_newton(wlsSystem,wlsState,romSize,numStepsInWindow); 
+//    (*wlsSystem.wlsStateIC.data()).block(0,0,romSize,1) = (*wlsState.data()).block(0,numStepsInWindow-1,romSize,1); 
+//    cout << " step " << step << " completed " << endl;
   }
 
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.1);
@@ -114,7 +115,7 @@ int main(int argc, char *argv[]){
 
   for (int i=0;i<fomSize;i++){
     cout << yFinal[i] << " " << trueY[i] << endl;
-    if (std::abs(yFinal[i] - trueY[i]) > 1e-7) checkStr = "FAILED";
+    if (std::abs(yFinal[i] - trueY[i]) > 1e-12) checkStr = "FAILED";
   }
   cout << checkStr << endl;
 

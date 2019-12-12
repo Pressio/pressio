@@ -1,5 +1,5 @@
-template <typename Mat, typename MatMat>
-void local_mat_update(Mat & A, Mat & B, MatMat & C, int scol, int srow, int colSize, int rowSize){
+template <typename Mat, typename MatOrVec, typename MatMat>
+void local_mat_update(Mat & A, MatOrVec & B, MatMat & C, int scol, int srow, int colSize, int rowSize){
   (*C.data()).block(scol,srow,colSize,rowSize) += (*A.data()).transpose() * (*B.data());
 }
 

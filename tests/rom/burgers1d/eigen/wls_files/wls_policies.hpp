@@ -24,6 +24,9 @@ public:
   using jac_t = typename pressio::containers::Matrix<Eigen::Matrix<scalar_t, -1, -1>>;
   using wls_jacs_t = std::vector<jac_t>;
 
+  using nm1 = ode::nMinusOne;
+  using nm2 = ode::nMinusTwo;
+
   // Initialize required objects
   int romSize;
   int fomSize;
@@ -39,43 +42,60 @@ public:
     this->time_stencil_size = time_stencil_size;
     this->fomSize = fomSize;
   }
-
-  void operator()(fom_type & appObj, const wls_state_type  & wlsState, wls_state_type & wlsStateIC, hess_type & hess, gradient_type & gradient,fom_state_container_t &  fomStateContainerObj_, fom_state_reconstr_t & fomStateReconstrObj_,scalar_t dt, std::size_t numStepsInWindow) const{
+  template <typename  fom_state_container_t2>
+  void operator()(fom_type & appObj, const wls_state_type  & wlsState, wls_state_type & wlsStateIC, hess_type & hess, gradient_type & gradient,fom_state_container_t &  fomStateContainerObj_, fom_state_reconstr_t & fomStateReconstrObj_,scalar_t dt, std::size_t numStepsInWindow, scalar_t ts ,fom_state_container_t2 & fomStateContainerObj2) const{
   int n = 0;
-  const auto wlsCurrentState = wlsState.viewColumnVector(n);
-  fomStateReconstrObj_(wlsCurrentState,fomStateContainerObj_[1]);
-  const auto wlsInitialState = wlsStateIC.viewColumnVector(0);
-  fomStateReconstrObj_(wlsInitialState,fomStateContainerObj_[0]);
-  residualPolicy(appObj,residual,fomStateContainerObj_,n*dt,dt);
+  scalar_t t = ts + n*dt;
+  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+  hess.setZero();
+  gradient.setZero();
+
+  const auto wlsCurrentState = wlsState.viewColumnVector(0);
+  //auto  testState = fomStateContainerObj2(0);//template get<nm1>();
+  fomStateReconstrObj_(wlsCurrentState,testState);
+
+  fomStateReconstrObj_(wlsCurrentState,fomStateContainerObj_[time_stencil_size-1]);
+  for (int i=0; i < time_stencil_size-1; i++){
+    const auto wlsInitialState = wlsStateIC.viewColumnVector(i);
+    fomStateReconstrObj_(wlsInitialState,fomStateContainerObj_[i]); 
+  }
+
+  residualPolicy(appObj,residual,fomStateContainerObj_,ts,dt);
   for (int i = 0; i < time_stencil_size; i++){
     jacobianPolicy(appObj,wlsJacs[time_stencil_size - i - 1],phi_,fomStateContainerObj_,n*dt,dt,i);
   }
-  local_mat_update(wlsJacs[1],wlsJacs[1],hess,n*romSize,n*romSize,romSize,romSize);
-  //(*hess.data()).block(n*romSize,n*romSize,romSize,romSize) = (*wlsJacs[1].data()).transpose() * (*wlsJacs[1].data());
-  (*gradient.data()).block(n*romSize,0,romSize,1) = -(*wlsJacs[1].data()).transpose()*(*residual.data());
+  local_mat_update(wlsJacs[time_stencil_size-1],wlsJacs[time_stencil_size-1],hess,n*romSize,n*romSize,romSize,romSize);
+  local_mat_update(wlsJacs[time_stencil_size-1],residual,gradient,n*romSize,0,romSize,1);
+
   for (int n = 1; n < numStepsInWindow; n++){
     // === reconstruct FOM states ========
-    *fomStateContainerObj_[0].data() = *fomStateContainerObj_[1].data();
+    for (int i=0; i < time_stencil_size - 1; i++){
+      *fomStateContainerObj_[i].data() = *fomStateContainerObj_[i+1].data();}
+
     const auto wlsCurrentState = wlsState.viewColumnVector(n);
-    fomStateReconstrObj_(wlsCurrentState,fomStateContainerObj_[1]);
+    fomStateReconstrObj_(wlsCurrentState,fomStateContainerObj_[time_stencil_size-1]);
     // == Evaluate residual ============
-    residualPolicy(appObj,residual,fomStateContainerObj_,n*dt,dt);
+    t = ts + n*dt;
+    residualPolicy(appObj,residual,fomStateContainerObj_,t,dt);
     // == Evaluate Jacobian (Currently have jacobian w.r.p to previous state hard coded outside of loop)
-    jacobianPolicy(appObj,wlsJacs[1],phi_,fomStateContainerObj_,n*dt,dt,0);
-    (*gradient.data()).block(n*romSize,0,romSize,1) = -(*wlsJacs[1].data()).transpose()*(*residual.data());
-    for (int i=1; i < time_stencil_size; i++){
-      (*gradient.data()).block((n-i)*romSize,0,romSize,1) -= (*wlsJacs[time_stencil_size-i-1].data()).transpose()*(*residual.data());}
+    jacobianPolicy(appObj,wlsJacs[time_stencil_size-1],phi_,fomStateContainerObj_,t,dt,0);
+    // == Update everything
+    //local_mat_update(wlsJacs[time_stencil_size-1],residual,gradient,n*romSize,0,romSize,1);
+    int sbar = std::min(n,time_stencil_size);
+    for (int i=0; i < sbar; i++){
+      local_mat_update(wlsJacs[time_stencil_size-i-1],residual,gradient,(n-i)*romSize,0,romSize,1);}
     // == Assembel local component of global Hessian //
-    for (int i=0; i < time_stencil_size; i++){
+    for (int i=0; i < sbar; i++){
       for (int j=0; j <= i; j++){
          local_mat_update(wlsJacs[time_stencil_size-i-1],wlsJacs[time_stencil_size-j-1],hess,(n-i)*romSize,(n-j)*romSize,romSize,romSize);
-         //(*hess.data()).block((n-i)*romSize,(n-j)*romSize,romSize,romSize) += (*wlsJacs[time_stencil_size-i-1].data()).transpose() * (*wlsJacs[time_stencil_size-j-1].data());
          block_sym_update(hess,(n-i)*romSize,(n-j)*romSize,romSize,romSize); 
-//         if (i != j){
-//          (*hess.data()).block((n-j)*romSize,(n-i)*romSize,romSize,romSize) =  (*hess.data()).block((n-i)*romSize,(n-j)*romSize,romSize,romSize).transpose();}
         }
     }
   } 
+  gradient.scale(negOne);
+/*
+
+*/
 }
 };
 

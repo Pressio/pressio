@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   scalar_t dt = 0.01;
   int romSize = 11;
-  constexpr int numStepsInWindow = 1;
+  constexpr int numStepsInWindow = 5;
   int t_stencil_width = 2;
 
 
