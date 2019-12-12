@@ -16,5 +16,5 @@ script:
 - git clone git://github.com/Pressio/pressio-tutorials.git
 - cd ${PRESSIO_REPOS}/pressio-builder
 - ./main_tpls.sh -dryrun=no -tpls=eigen,gtest -target-dir=${PRESSIO_BUILDS}
-- ./main_pressio.sh -dryrun=no -pressio-src=${PARENT_DIR}/pressio -target-dir=${PRESSIO_BUILDS} -cmake-generator-name=default -eigen-path=${PRESSIO_BUILDS}/eigen/install -gtest-path=${PRESSIO_BUILDS}/gtest
+- ./main_pressio.sh -dryrun=no -pressio-src=${PARENT_DIR}/pressio -target-dir=${PRESSIO_BUILDS} -cmake-generator-name=default -eigen-path=${PRESSIO_BUILDS}/eigen/install -gtest-path=${PRESSIO_BUILDS}/gtest/install
 #- ./main_tutorials.sh -dryrun=no -pressio-tutorials-src=${PRESSIO_REPOS}/pressio-tutorials -target-dir=${PRESSIO_BUILDS} -build-mode=Release -eigen-path=${PRESSIO_BUILDS}/eigen/install -pressio-path=${PRESSIO_BUILDS}/pressio/install
