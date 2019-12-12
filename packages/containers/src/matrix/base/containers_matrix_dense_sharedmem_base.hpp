@@ -56,24 +56,38 @@ namespace containers{
 
 template<typename derived_type>
 class MatrixDenseSharedMemBase
-  : private utils::details::CrtpBase<
-     MatrixDenseSharedMemBase<derived_type>>{
-  using this_t = MatrixDenseSharedMemBase<derived_type>;
-
+{
   static_assert( details::traits<derived_type>::is_shared_mem==1,
-  "OOPS: distributed matrix inheriting from dense sharedMem base!");
+  "OOPS: NON-shared mem matrix inheriting from dense sharedMem base!");
+
+  using this_t = MatrixDenseSharedMemBase<derived_type>;
+  using traits = ::pressio::containers::details::traits<derived_type>;
+  using subspan_ret_t = typename traits::subspan_ret_t;
+  using subspan_const_ret_t = typename traits::subspan_const_ret_t;
+
+public:
+  template< typename _subspan_ret_t = subspan_ret_t>
+  mpl::enable_if_t< !std::is_void<_subspan_ret_t>::value, _subspan_ret_t>
+  subspan(const typename _subspan_ret_t::interval_t & rowRangeIn,
+	  const typename _subspan_ret_t::interval_t & colRangeIn)
+  {
+    auto & matObj = static_cast<derived_type &>(*this);
+    return subspan_ret_t(matObj, rowRangeIn, colRangeIn);
+  };
+
+  template< typename _subspan_const_ret_t = subspan_const_ret_t>
+  mpl::enable_if_t< !std::is_void<_subspan_const_ret_t>::value, _subspan_const_ret_t>
+  subspan(const typename _subspan_const_ret_t::interval_t & rowRangeIn,
+	  const typename _subspan_const_ret_t::interval_t & colRangeIn) const
+  {
+    const auto & matObj = static_cast<const derived_type &>(*this);
+    return subspan_const_ret_t(matObj, rowRangeIn, colRangeIn);
+  };
 
 private:
-  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<derived_type>::type;
-
-  friend utils::details::CrtpBase<this_t>;
-
+  friend derived_type;
   using sc_t = typename details::traits<derived_type>::scalar_t;
   using ord_t = typename details::traits<derived_type>::ordinal_t;
-  MatrixDenseSharedMemBase() = default;
-  ~MatrixDenseSharedMemBase() = default;
 
 };//end class
 
