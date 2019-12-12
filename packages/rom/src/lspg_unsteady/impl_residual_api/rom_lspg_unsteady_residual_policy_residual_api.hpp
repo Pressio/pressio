@@ -132,7 +132,7 @@ private:
      * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
     if (storedStep_ != step){
-      fomStates_ << romPrevStates.template get<ode::nMinusOne>();
+      fomStates_ << romPrevStates.get(ode::nMinusOne());
       storedStep_ = step;
     }
   }

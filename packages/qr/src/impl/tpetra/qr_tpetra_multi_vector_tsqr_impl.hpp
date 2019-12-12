@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// qr_epetra_multi_vector_tsqr_impl.hpp
+// qr_tpetra_multi_vector_tsqr_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -47,46 +47,38 @@
 */
 
 #if defined PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
-#define QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
+#ifndef QR_TPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
+#define QR_TPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
 
 #include "../qr_rfactor_solve_impl.hpp"
-#include "Epetra_TsqrAdaptor.hpp"
-// #include "AnasaziTsqrOrthoManager.hpp"
-// #include "AnasaziConfigDefs.hpp"
-// #include "AnasaziSolverUtils.hpp"
-// #include "AnasaziEpetraAdapter.hpp"
-// #include "AnasaziTpetraAdapter.hpp"
+#include "Tpetra_TsqrAdaptor.hpp"
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template<typename matrix_t, typename R_t, int n, int m,
-	 typename MV_t, template<typename...> class Q_type>
-class EpetraMVTSQR<matrix_t, R_t, n, m, MV_t, Q_type, void>{
+template<typename matrix_t, typename R_t, typename MV_t, template<typename...> class Q_type>
+class TpetraMVTSQR<matrix_t, R_t, MV_t, Q_type, void>
+{
 
   using int_t	     = int;
   using sc_t	     = typename containers::details::traits<matrix_t>::scalar_t;
   using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
   using trcp_mat     = Teuchos::RCP<serden_mat_t>;
   using Q_t	     = Q_type<MV_t>;
-  using tsqr_adaptor_type = Epetra::TsqrAdaptor;
+  using tsqr_adaptor_type = Tpetra::TsqrAdaptor<MV_t>;
 
 
 public:
-  EpetraMVTSQR() = default;
-  ~EpetraMVTSQR() = default;
+  TpetraMVTSQR() = default;
+  ~TpetraMVTSQR() = default;
 
   void computeThinOutOfPlace(matrix_t & A) {
     auto nVecs = A.globalNumVectors();
     auto & ArowMap = A.getDataMap();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
-    tsqrAdaptor_.factorExplicit(*A.data(),
-				*Qmat_->data(),
-				*localR_.get(),
-				false);
-    //::pressio::utils::io::print_stdout(*localR_.get());
+    tsqrAdaptor_.factorExplicit(*A.data(), *Qmat_->data(), *localR_.get(), false);
 
+    //::pressio::utils::io::print_stdout(*localR_.get());
 // #ifdef PRESSIO_ENABLE_DEBUG_PRINT
 //     int myrank{};
 //     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
@@ -102,13 +94,12 @@ public:
 
   template <typename vector_t>
   void doLinSolve(const vector_t & rhs, vector_t & y)const {
-      qr::impl::solve<vector_t, trcp_mat, n>(rhs, this->localR_, y);
+      qr::impl::solve<vector_t, trcp_mat>(rhs, this->localR_, y);
   }
 
 
   template < typename vector_in_t, typename vector_out_t>
-  void project(const vector_in_t & vecIn,
-  		   vector_out_t & vecOut) const{
+  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const{
     containers::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 

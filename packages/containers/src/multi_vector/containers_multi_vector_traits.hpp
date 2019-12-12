@@ -85,7 +85,8 @@ struct traits<
 #endif
       >
     >
-  > {
+  >
+{
 
   using wrapped_t = wrapped_type;
   using derived_t = MultiVector<wrapped_t>;
@@ -100,8 +101,7 @@ struct traits<
   static constexpr bool is_matrix = false;
   static constexpr bool is_multi_vector = true;
 
-  // by default, any container is not admissible to expr templates
-  // the ones that are, will overwrite this
+  // by default, an arbitrary multivector is not admissible to expr templates
   static constexpr bool is_admissible_for_expression_templates = false;
 };
 
@@ -111,11 +111,16 @@ struct traits<
 // for epetra multivector
 //*******************************
 template<typename wrapped_type>
-struct traits<MultiVector<wrapped_type,
-      typename std::enable_if<
-       meta::is_multi_vector_epetra<wrapped_type
-      >::value>::type>
-     >
+struct traits<
+  MultiVector<
+    wrapped_type,
+    ::pressio::mpl::enable_if_t<
+      meta::is_multi_vector_epetra<
+	wrapped_type
+	>::value
+      >
+    >
+  >
   : public containers_shared_traits<MultiVector<wrapped_type>,
 				    wrapped_type,
 				    false, false, true,
@@ -137,11 +142,16 @@ struct traits<MultiVector<wrapped_type,
 // for tpetra multivector
 //*******************************
 template<typename wrapped_type>
-struct traits<MultiVector<wrapped_type,
-      typename std::enable_if<
-       meta::is_multi_vector_tpetra<wrapped_type
-      >::value>::type>
-     >
+struct traits<
+  MultiVector<
+    wrapped_type,
+    ::pressio::mpl::enable_if_t<
+      meta::is_multi_vector_tpetra<
+	wrapped_type
+	>::value
+      >
+    >
+  >
   : public containers_shared_traits<MultiVector<wrapped_type>,
 				    wrapped_type,
 				    false, false, true,
@@ -228,7 +238,7 @@ struct traits<
 
 
 //*******************************
-// for eigen multivector
+// for eigen dynamic multivector
 //*******************************
 template<typename wrapped_type>
 struct traits<
@@ -242,9 +252,7 @@ struct traits<
   : public containers_shared_traits<
   MultiVector<wrapped_type>,
   wrapped_type, false, false, true,
-  WrappedPackageIdentifier::Eigen, true,
-  ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
-    wrapped_type::ColsAtCompileTime != Eigen::Dynamic )
+  WrappedPackageIdentifier::Eigen, true, false
   >
 {
   static constexpr WrappedMultiVectorIdentifier
@@ -253,12 +261,11 @@ struct traits<
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
 
-  using view_col_vec_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
-
-  // static constexpr bool is_static =
-  //   ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
-  //     wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
-  // static constexpr bool is_dynamic = !is_static;
+  static constexpr bool is_admissible_for_expression_templates = true;
+  using view_col_vec_const_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<
+    const MultiVector<wrapped_type>, scalar_t>;
+  using view_col_vec_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<
+    MultiVector<wrapped_type>, scalar_t>;
 };
 
 
@@ -301,18 +308,11 @@ struct traits<
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
-  using view_col_vec_ret_t = exprtemplates::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
-
-  static constexpr bool has_host_execution_space =
-    (false
-     #ifdef KOKKOS_ENABLE_SERIAL
-     || std::is_same<execution_space, Kokkos::Serial>::value
-     #endif
-     #ifdef KOKKOS_ENABLE_OPENMP
-     || std::is_same<execution_space, Kokkos::OpenMP>::value
-     #endif
-     );
-
+  static constexpr bool is_admissible_for_expression_templates = false;
+  using view_col_vec_const_ret_t = ::pressio::containers::exprtemplates::ViewColumnVectorExpr<
+    const MultiVector<wrapped_type>, scalar_t>;
+  // for now, the non-cost view col vector is not allowed for Kokkos
+  using view_col_vec_ret_t = void;
 };
 #endif
 

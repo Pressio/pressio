@@ -53,25 +53,37 @@
 
 namespace pressio{ namespace containers{
 
-template <typename wrapped_type,
-	  typename Enable = void>
+template <
+  typename wrapped_type,
+  typename Enable = void>
 class Vector;
 
-template <typename wrapped_type,
-	  typename Enable = void>
+template <
+  typename wrapped_type,
+  typename Enable = void>
 class MultiVector;
 
-template <typename wrapped_type,
-	  typename Enable = void>
+template <
+  typename wrapped_type,
+  typename Enable = void>
 class Matrix;
 
-template<typename T,
-	 typename enable = void>
+template<
+  typename T,
+  typename enable = void>
 struct traits;
 
+
 namespace exprtemplates{
-template <typename mv_t, typename scalar_t, typename enable = void>
+
+template <
+  typename mv_t,
+  typename scalar_t,
+  typename enable = void>
 struct ViewColumnVectorExpr;
+
+template <typename mat_t, typename scalar_t, typename enable = void>
+struct SubspanExpr;
 }
 
 }} // end namespace pressio::containers

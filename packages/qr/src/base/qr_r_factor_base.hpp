@@ -53,11 +53,11 @@
 
 namespace pressio{ namespace qr{
 
-template<typename derived_t,
-	 typename R_t>
+template<typename derived_t, typename R_t>
 class RFactorBase
   : private utils::details::CrtpBase<
-  RFactorBase<derived_t, R_t>>{
+  RFactorBase<derived_t, R_t>>
+{
 
   using this_t = RFactorBase<derived_t, R_t>;
 

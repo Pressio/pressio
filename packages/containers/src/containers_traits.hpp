@@ -54,11 +54,12 @@
 namespace pressio{ namespace containers{ namespace details {
 
 template<typename T, typename enable = void>
-struct traits : public
-containers_shared_traits<void, void,
-			 false, false, false,
-			 WrappedPackageIdentifier::Undefined,
-			 false, false>{};
+struct traits
+  : public containers_shared_traits<
+  void, void, false, false, false,
+  WrappedPackageIdentifier::Undefined,
+  false, false
+  >{};
 
 template<typename T>
 struct traits<const T> : traits<T> {};

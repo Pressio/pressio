@@ -97,22 +97,38 @@ public:
     // use the deep_copy constructor
     : data_(other, Teuchos::Copy){}
 
-  MultiVector(const this_t & other)
+  // copy constr
+  MultiVector(const MultiVector & other)
     : data_(*other.data(), Teuchos::Copy){}
+
+  // copy assignment
+  MultiVector & operator=(const MultiVector & other){
+    if(&other != this){
+      assert(this->localSize() == other.localSize());
+      data_.assign( *other.data() );
+    }
+    return *this;
+  }
+
+  // move cnstr
+  MultiVector(MultiVector && other)
+    // use the deep_copy constructor
+    : data_(*other.data(), Teuchos::Copy){}
+
+  // move assignment
+  MultiVector & operator=(MultiVector && other){
+    assert(this->localSize() == other.localSize());
+    data_.assign( *other.data() );
+    return *this;
+  }
 
   ~MultiVector() = default;
 
+public:
   // compound assignment when type(b) = type(this)
   // this += b
   this_t & operator+=(const this_t & other) {
     this->data_.update(1.0, *other.data(), 1.0 );
-    return *this;
-  }
-
-  // copy assignment
-  this_t & operator=(const this_t & other){
-    assert(this->localSize() == other.localSize());
-    data_.assign( *other.data() );
     return *this;
   }
 

@@ -59,9 +59,9 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template<typename matrix_t, typename R_t, int n, int m,
-	 template <typename...> class Q_type>
-class EpetraMVHouseholderUsingEigen{
+template<typename matrix_t, typename R_t, template <typename...> class Q_type>
+class EpetraMVHouseholderUsingEigen
+{
 
   using MV = Epetra_MultiVector;
   using sc_t = typename containers::details::traits<matrix_t>::scalar_t;
@@ -69,8 +69,7 @@ class EpetraMVHouseholderUsingEigen{
 
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_mat_w	= containers::Matrix<eig_dyn_mat>;
-  using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<
-				eig_mat_w, R_t, n, m, Q_type>;
+  using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<eig_mat_w, R_t, Q_type>;
   help_impl_t myImpl_	= {};
 
 public:
@@ -78,8 +77,7 @@ public:
   ~EpetraMVHouseholderUsingEigen() = default;
 
   template < typename vector_in_t, typename vector_out_t>
-  void project(const vector_in_t & vecIn,
-  	       vector_out_t & vecOut) const{
+  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const{
     containers::ops::dot( *this->Qmat_, vecIn, vecOut );
   }
 

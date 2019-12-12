@@ -60,7 +60,9 @@ namespace pressio{ namespace containers{ namespace ops{
  * multi_vector dot self: equivalent to doing A^T A
  */
 
-// store result into eigen dense matrix wrapper
+// --------------------------------------------------------
+// specialize when result is an eigen dense matrix wrapper
+// --------------------------------------------------------
 template <
   typename mvec_t,
   typename result_t,
@@ -93,7 +95,6 @@ void dot_self(const mvec_t & mvA, result_t & C)
   }
 }
 
-// return result in the form of eigen dense matrix wrapper
 template <
   typename mvec_t,
   typename result_t,
@@ -108,6 +109,69 @@ result_t dot_self(const mvec_t & mvA)
 {
   const auto numVecsA = mvA.globalNumVectors();
   result_t C(numVecsA, numVecsA);
+  dot_self(mvA, C);
+  return C;
+}
+
+
+// --------------------------------------------------------
+// specialize when result is a kokkos view wrapper
+// --------------------------------------------------------
+template <
+  typename mvec_t,
+  typename result_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
+    ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<result_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value and
+    std::is_same<
+      typename containers::details::traits<mvec_t>::device_t,
+      typename containers::details::traits<result_t>::device_t
+      >::value
+    > * = nullptr
+  >
+void dot_self(const mvec_t & A, result_t & C)
+{
+  // check traits of the block mv
+  using scalar_t     = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
+  using tpetra_mvb_t = typename ::pressio::containers::details::traits<mvec_t>::wrapped_t;
+
+  // from the mvb type we can get the underlying regular tpetra::mv
+  using tpetra_mv_t  = typename tpetra_mvb_t::mv_type;
+  using map_t	     = typename tpetra_mv_t::map_type;
+
+  // get a tpetra multivector that views the tpetra block data
+  const auto mvView = A.data()->getMultiVectorView();
+
+  const auto indexBase = mvView.getMap()->getIndexBase();
+  const auto comm = mvView.getMap()->getComm();
+  // C should be symmetric
+  assert( C.rows() == C.cols() );
+  const auto n = C.rows();
+  Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
+  // create multivector that views the Kokkos matrix result
+  tpetra_mv_t Cmv(replMap, *C.data());
+
+  constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
+  constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+  // do the operation C = A^T A
+  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, mvView, mvView, beta);
+}
+
+template <
+  typename mvec_t,
+  typename result_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
+    ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<result_t>::value and
+    ::pressio::containers::details::traits<result_t>::is_dynamic and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    > * = nullptr
+  >
+result_t dot_self(const mvec_t & mvA)
+{
+  const auto numVecsA = mvA.globalNumVectors();
+  result_t C("dummyLabel", numVecsA, numVecsA);
   dot_self(mvA, C);
   return C;
 }

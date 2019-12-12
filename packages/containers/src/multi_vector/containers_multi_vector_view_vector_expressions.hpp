@@ -64,10 +64,11 @@ struct ViewColumnVectorExpr<
   static constexpr auto is_view_vector_expr = true;
   static constexpr auto is_view_col_vector_expr = true;
   using scalar_t = scalar_type;
-  using data_t = mv_t;
+  using data_t   = mv_t;
+  using native_t = typename ::pressio::containers::details::traits<mv_t>::wrapped_t;
 
 private:
-  const mv_t & mvObj_;
+  mv_t & mvObj_;
   const std::size_t vecIndex_;
 
 public:
@@ -78,7 +79,7 @@ public:
   ViewColumnVectorExpr & operator=(const ViewColumnVectorExpr & other) = default;
   ViewColumnVectorExpr & operator=(ViewColumnVectorExpr && other) = default;
 
-  ViewColumnVectorExpr(const mv_t & mvObjIn, const std::size_t vecIndexIn)
+  ViewColumnVectorExpr(mv_t & mvObjIn, const std::size_t vecIndexIn)
     : mvObj_(mvObjIn), vecIndex_(vecIndexIn){}
 
   // this is for a column vector, so return the # of rows
@@ -90,9 +91,20 @@ public:
     return mvObj_(rowIndex, vecIndex_);
   }
 
-  auto operator()() const -> decltype(mvObj_.data()->col(vecIndex_))
+  scalar_t & operator[](const std::size_t & rowIndex){
+    return mvObj_(rowIndex, vecIndex_);
+  }
+
+  auto operator()()
+    -> decltype( mvObj_.data()->col(vecIndex_) )
   {
     return mvObj_.data()->col(vecIndex_);
+  }
+
+  auto operator()() const
+    -> decltype( std::declval<const native_t>().col(vecIndex_) )
+  {
+    return static_cast<native_t const *>(mvObj_.data())->col(vecIndex_);
   }
 };
 

@@ -163,7 +163,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR project");
 #endif
-    qrObj.project(residual, QTResid);
+    qrObj.applyQTranspose(residual, QTResid);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("QR project");
 #endif

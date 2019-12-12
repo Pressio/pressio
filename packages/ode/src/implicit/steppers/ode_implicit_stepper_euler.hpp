@@ -149,7 +149,7 @@ public:
 		  solver_type & solver){
 
     using nm1 = ode::nMinusOne;
-    auto & odeState_nm1 = this->auxStates_.template get<nm1>();
+    auto & odeState_nm1 = this->auxStates_.get(nm1());
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
@@ -169,7 +169,7 @@ public:
 		  guess_callback_t && guesserCb)
   {
     using nm1 = ode::nMinusOne;
-    auto & odeState_nm1 = this->auxStates_.template get<nm1>();
+    auto & odeState_nm1 = this->auxStates_.get(nm1());
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;

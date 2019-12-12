@@ -88,8 +88,18 @@ public:
   MultiVector(const map_t & mapobj, GO_t numVectors)
     : data_(mapobj, numVectors){}
 
-  explicit MultiVector(const wrap_t & other) : data_(other){}
+  explicit MultiVector(const wrap_t & other)
+    : data_(other){}
 
+  // copy cnstr
+  MultiVector(MultiVector const & other) = default;
+  // copy assignment
+  MultiVector & operator=(const MultiVector & other) = default;
+  // move cnstr
+  MultiVector(MultiVector && o) = default;
+  // move assignment
+  MultiVector & operator=(MultiVector && other) = default;
+  // destructor
   ~MultiVector() = default;
 
 public:

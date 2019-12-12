@@ -54,30 +54,31 @@
 namespace pressio{ namespace rom{
 
 template <
-  typename fom_state_type, std::size_t n, typename reconstuctor_type,
+  typename fom_state_type,
+  std::size_t n,
+  typename reconstuctor_type,
   typename enable = void>
 class FomStatesStaticContainer;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename matrix_type, typename ops_t, typename enable = void>
+template <
+  typename matrix_type,
+  typename ops_t,
+  typename enable = void>
 struct PyLinearDecoder;
 #endif
-
-// /* operators */
-// template<typename wrapped_type, typename enable = void>
-// class MultiVectorOperator;
-
-// template<typename wrapped_type, typename enable = void>
-// class MatrixOperator;
-
 
 /*--- decorators ---*/
 namespace decorator{
 
-template <typename preconditionable, typename enable = void>
+template <
+  typename preconditionable,
+  typename enable = void>
 class Preconditioned;
 
-template <typename maskable, typename enable = void>
+template <
+  typename maskable,
+  typename enable = void>
 class Masked;
 
 }// namespace pressio::rom::decorator
@@ -107,7 +108,9 @@ template <
   >
 class DefaultExplicitVelocityPolicy;
 
-template <typename type_generator_t, typename enable = void>
+template <
+  typename type_generator_t,
+  typename enable = void>
 class ProblemGenerator;
 
 } // end namespace pressio::rom::galerkin
@@ -117,24 +120,36 @@ class ProblemGenerator;
 namespace lspg{ namespace steady{
 
 template <
-  typename fom_type, typename decoder_type, typename lspg_state_type,
+  typename fom_type,
+  typename decoder_type,
+  typename lspg_state_type,
   typename enable = void
   >
 struct CommonTypes;
 
-template <typename residual_type, typename fom_states_data_type, typename fom_rhs_eval_policy>
+template <
+  typename residual_type,
+  typename fom_states_data_type,
+  typename fom_rhs_eval_policy>
 class ResidualPolicy;
 
 template<
-  typename fom_states_data, typename apply_jac_return_type,
-  typename fom_apply_jac_policy, typename decoder_t
-  >
+  typename fom_states_data,
+  typename apply_jac_return_type,
+  typename fom_apply_jac_policy,
+  typename decoder_t>
 class JacobianPolicy;
 
-template <typename fom_type, typename decoder_type, typename lspg_state_type>
+template <
+  typename fom_type,
+  typename decoder_type,
+  typename lspg_state_type>
 struct DefaultProblemType;
 
-template <typename fom_type, typename decoder_type, typename lspg_state_type>
+template <
+  typename fom_type,
+  typename decoder_type,
+  typename lspg_state_type>
 struct PreconditionedProblemType;
 
 template<
@@ -148,7 +163,9 @@ template<
   >
 class System;
 
-template <typename type_generator_t, typename enable = void>
+template <
+  typename type_generator_t,
+  typename enable = void>
 class ProblemGenerator;
 
 }} // end namespace lspg::steady

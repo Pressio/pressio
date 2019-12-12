@@ -54,12 +54,11 @@
 namespace pressio{ namespace qr{
 
 
-template<typename derived_t,
-	 typename matrix_t,
-	 typename Q_t>
+template<typename derived_t, typename matrix_t, typename Q_t>
 class QROutOfPlaceBase
   : private utils::details::CrtpBase<
-  QROutOfPlaceBase<derived_t, matrix_t, Q_t>>{
+  QROutOfPlaceBase<derived_t, matrix_t, Q_t>>
+{
 
   using this_t = QROutOfPlaceBase<derived_t, matrix_t, Q_t>;
 
@@ -84,13 +83,11 @@ public:
     ::pressio::mpl::enable_if_t<
       containers::meta::is_vector_wrapper<vec_in_t>::value and
       containers::meta::is_vector_wrapper<vec_out_t>::value and
-      meta::is_legitimate_vector_type_for_qr_project<vec_in_t,
-						     Q_t>::value
+      meta::is_legitimate_vector_type_for_qr_project<vec_in_t, Q_t>::value
       >* = nullptr
     >
-  void project(const vec_in_t & vecIn,
-	       vec_out_t & vecOut) const{
-    this->underlying().projectImpl(vecIn, vecOut);
+  void applyQTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
+    this->underlying().applyQTransposeImpl(vecIn, vecOut);
   }
 
 private:

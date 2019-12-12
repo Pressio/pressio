@@ -67,9 +67,9 @@ public:
   template <typename T = comm_t,
 	    typename std::enable_if<
       #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-	      !meta::is_teuchos_rcp<T>::value and 
+	      !meta::is_teuchos_rcp<T>::value and
       #endif
-        !::pressio::mpl::is_std_shared_ptr<T>::value 
+        !::pressio::mpl::is_std_shared_ptr<T>::value
 	      >::type * = nullptr
 	    >
   T const & commCRef() const{
@@ -79,9 +79,9 @@ public:
   template <typename T= comm_t,
   	    typename std::enable_if<
       #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-        meta::is_teuchos_rcp<T>::value or 
+        meta::is_teuchos_rcp<T>::value or
       #endif
-        ::pressio::mpl::is_std_shared_ptr<T>::value 
+        ::pressio::mpl::is_std_shared_ptr<T>::value
   	      >::type * = nullptr>
   T comm() const{
     return this->underlying().commImpl();
@@ -93,9 +93,6 @@ private:
   friend typename dummy<derived_type>::type;
 
   friend utils::details::CrtpBase<this_t>;
-
-  ContainerDistributedMpiBase() = default;
-  ~ContainerDistributedMpiBase() = default;
 
 };//end class
 

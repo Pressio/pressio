@@ -101,7 +101,7 @@ public:
 		  const types::step_t &  step,
 		  jacobian_type & J) const
   {
-    const auto & ynm1 = oldStates.template get<ode::nMinusOne>();
+    const auto & ynm1 = oldStates.get(ode::nMinusOne());
 
     model.template timeDiscreteJacobian(step, t, dt,
 					*J.data(),
@@ -122,8 +122,8 @@ public:
 		  const types::step_t & step,
 		  jacobian_type & J) const
   {
-    const auto & ynm1 = oldStates.template get<ode::nMinusOne>();
-    const auto & ynm2 = oldStates.template get<ode::nMinusTwo>();
+    const auto & ynm1 = oldStates.get(ode::nMinusOne());
+    const auto & ynm2 = oldStates.get(ode::nMinusTwo());
 
     model.template timeDiscreteJacobian(step, t, dt,
 					*J.data(),
@@ -145,9 +145,9 @@ public:
 		  const types::step_t & step,
 		  jacobian_type & J) const
   {
-    const auto & ynm1 = oldStates.template get<ode::nMinusOne>();
-    const auto & ynm2 = oldStates.template get<ode::nMinusTwo>();
-    const auto & ynm3 = oldStates.template get<ode::nMinusThree>();
+    const auto & ynm1 = oldStates.get(ode::nMinusOne());
+    const auto & ynm2 = oldStates.get(ode::nMinusTwo());
+    const auto & ynm3 = oldStates.get(ode::nMinusThree());
 
     model.template timeDiscreteJacobian(step, t, dt,
 					*J.data(),

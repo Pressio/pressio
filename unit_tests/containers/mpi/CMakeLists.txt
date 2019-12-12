@@ -7,6 +7,7 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
     ${CMAKE_CURRENT_SOURCE_DIR}/containers_vector_distributed_tpetra_block_traits.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/containers_vector_distributed_tpetra_block_class.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_tpetra_product_eigen_vector.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_tpetra_product_kokkos_vector.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_tpetra_product_eigen_subview_vector_from_mv.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_distributed_tpetra_traits.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_distributed_tpetra_class.cc

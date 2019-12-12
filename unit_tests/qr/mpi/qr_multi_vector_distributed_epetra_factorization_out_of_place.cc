@@ -54,15 +54,6 @@ TEST_F(epetraR9Fixture,
 // }
 // #endif
 
-
-
-
-
-
-
-
-
-
 // TEST_F(epetraR9Fixture,
 //        TSQRepetraMultiVectorOutOfPlaceWrapREigen){
 //   using namespace pressio;
