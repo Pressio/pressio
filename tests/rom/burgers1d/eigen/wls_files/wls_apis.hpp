@@ -11,7 +11,6 @@ public:
   using scalar_type = scalar_t;
   using fom_native_state_t      = typename fom_type::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_state_container_t = std::vector<fom_state_t>;
 
   fom_type & appObj_;
   
@@ -25,7 +24,6 @@ public:
 
   fom_state_reconstr_t  fomStateReconstructorObj_;
   fom_state_reconstr_t & fomStateReconstructorObjPtr;
-  mutable fom_state_container_t  fomStateContainerObj;
   mutable fom_state_container_t2  fomStateContainerObj2;
 
   mutable wls_state_type wlsStateIC;
@@ -37,7 +35,7 @@ public:
   int numStepsInWindow;
   int time_stencil_size;
   int windowNum = 0; 
-  WlsSystemHessianAndGradientApi(fom_type & appObj, const hessian_gradient_pol_t & hessian_gradient_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, int numStepsInWindow, int romSize, int fomSize, const int time_stencil_size) : appObj_(appObj), hessian_gradient_polObj_(hessian_gradient_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),fomStateContainerObj(time_stencil_size,yFOM),wlsStateIC(romSize,time_stencil_size-1), fomStateContainerObj2(yFOM){
+  WlsSystemHessianAndGradientApi(fom_type & appObj, const hessian_gradient_pol_t & hessian_gradient_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, int numStepsInWindow, int romSize, int fomSize, const int time_stencil_size) : appObj_(appObj), hessian_gradient_polObj_(hessian_gradient_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),wlsStateIC(romSize,time_stencil_size-1), fomStateContainerObj2(yFOM){
   this->dt = dt;
   this->numStepsInWindow = numStepsInWindow;
   this->romSize = romSize;
@@ -49,7 +47,7 @@ public:
 }
 
   void computeHessianAndGradient(const wls_state_type & wls_state,hessian_type & hessian, gradient_type & gradient, const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2, scalar_type rnorm=0.) const{
-    hessian_gradient_polObj_(appObj_,wls_state,wlsStateIC,hessian,gradient,fomStateContainerObj,fomStateReconstructorObjPtr,dt,numStepsInWindow,this->ts,fomStateContainerObj2);
+    hessian_gradient_polObj_(appObj_,wls_state,wlsStateIC,hessian,gradient,fomStateReconstructorObjPtr,dt,numStepsInWindow,this->ts,fomStateContainerObj2);
   }
 
   hessian_type createHessianObject(const wls_state_type & stateIn) const{

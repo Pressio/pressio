@@ -29,6 +29,10 @@ int main(int argc, char *argv[]){
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using wls_state_t    = ::pressio::containers::MultiVector<Eigen::Matrix<scalar_t, -1, -1,Eigen::ColMajor>>;
 
+  //using jac_t = decoder_t::jacobian_t;
+
+
+
   std::string checkStr {"PASSED"};
 
   //---- Information for WLS
@@ -37,7 +41,10 @@ int main(int argc, char *argv[]){
   scalar_t dt = 0.01;
   int romSize = 11;
   constexpr int numStepsInWindow = 5;
-  int t_stencil_width = 2;
+  const int t_stencil_width = 2;
+
+  using ode_tag = ::pressio::ode::implicitmethods::Euler;
+  using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,t_stencil_width>;// statesContainer(yFOM); 
 
   //-------------------------------
   // app object
@@ -53,26 +60,27 @@ int main(int argc, char *argv[]){
   decoder_t decoderObj(phi);
   decoderObj.getReferenceToJacobian();
   wls_state_t  wlsState(romSize,numStepsInWindow);
-  wls_state_t  wlsStateIC( romSize,t_stencil_width-1);
   wlsState.setZero();
-  wlsStateIC.setZero();
 
+
+  constexpr auto ode_case_t = pressio::ode::ImplicitEnum::Euler;
   fom_state_t yFOM(fomSize);
   fom_native_state_t yRef(fomSize);
   (*yFOM.data()).setConstant(1.);
+
+  using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
+  fom_state_reconstr_t  fomStateReconstructor(yFOM,decoderObj);
+
+
   using gradient_t = rom_state_t;
   using hessian_t = pressio::containers::Matrix<eig_dyn_mat>;
-  hessian_t hessian(romSize*numStepsInWindow,romSize*numStepsInWindow);
-  gradient_t gradient(romSize*numStepsInWindow);
-  gradient_t grad(romSize*numStepsInWindow);
-  using local_residual_policy_t = pressio::rom::wls::impl::local_residual_policy_velocityAPI<fom_t>;
-  using local_jacobian_policy_t = pressio::rom::wls::impl::local_jacobian_policy_velocityAPI<fom_t,decoder_t>;
-  using hessian_gradient_policy_t = pressio::rom::wls::impl::hessian_gradient_policy<wls_state_t,fom_t,hessian_t,gradient_t,decoder_t,local_residual_policy_t,local_jacobian_policy_t>;
-  using wls_api_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,hessian_gradient_policy_t>;
-  using wls_system_t  = pressio::rom::wls::WlsSystem<wls_api_t, fom_t, wls_state_t,decoder_t, hessian_gradient_policy_t>;
-
+  using local_residual_policy_t = pressio::rom::wls::impl::local_residual_policy_BDF2_velocityAPI<fom_t>;
+  using local_jacobian_policy_t = pressio::rom::wls::impl::local_jacobian_policy_BDF2_velocityAPI<fom_t,decoder_t>;
+  using hessian_gradient_policy_t = pressio::rom::wls::impl::hessian_gradient_policy<wls_state_t,fom_t,hessian_t,gradient_t,decoder_t,local_residual_policy_t,local_jacobian_policy_t,ode_tag>;
+  using wls_api_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,hessian_gradient_policy_t,aux_states_container_t>;
+  using wls_system_t  = pressio::rom::wls::WlsSystem<wls_api_t, fom_t, wls_state_t,decoder_t, hessian_gradient_policy_t,aux_states_container_t>;
   // construct objects and test
-  hessian_gradient_policy_t hessian_gradient_policy(romSize,fomSize,numStepsInWindow,2,phi);
+  hessian_gradient_policy_t hessian_gradient_policy(romSize,fomSize,numStepsInWindow,t_stencil_width,phi);
   wls_system_t wlsSystem(appObj,hessian_gradient_policy,decoderObj,yFOM,dt,numStepsInWindow,romSize,fomSize,t_stencil_width);
 
   double t = 0.;
@@ -82,14 +90,12 @@ int main(int argc, char *argv[]){
   using solver_tag   = pressio::solvers::linear::direct::ColPivHouseholderQR;
   using linear_solver_t = pressio::solvers::direct::EigenDirect<solver_tag, hessian_t>;
   linear_solver_t linear_solver; 
-
   using gn_type = my_gauss_newton_class<wls_system_t,wls_state_t,hessian_t,gradient_t,linear_solver_t>;
   gn_type gn_solver(wlsSystem,wlsState,linear_solver);
 
-  constexpr auto ode_case = pressio::ode::ImplicitEnum::Euler;
   using app_jacob_t = typename fom_t::jacobian_type;
   using ode_jac_t   = pressio::containers::Matrix<app_jacob_t>;
-  using stepper_t = pressio::ode::ImplicitStepper<ode_case, fom_state_t, fom_state_t, ode_jac_t, fom_t>;
+  using stepper_t = pressio::ode::ImplicitStepper<ode_case_t, fom_state_t, fom_state_t, ode_jac_t, fom_t>;
   stepper_t stepperObj(yFOM, appObj);
   using nm1 = pressio::ode::nMinusOne;
 //  auto & odeState_nm1 = stepperObj.auxStates_.template get<nm1>();
@@ -99,32 +105,35 @@ int main(int argc, char *argv[]){
   for (int step = 0; step < numSteps; step++)
   {
     wlsSystem.advanceOneWindow(wlsState,gn_solver,step);
-//    gn_solver.my_gauss_newton(wlsSystem,wlsState,romSize,numStepsInWindow); 
-//    (*wlsSystem.wlsStateIC.data()).block(0,0,romSize,1) = (*wlsState.data()).block(0,numStepsInWindow-1,romSize,1); 
-//    cout << " step " << step << " completed " << endl;
   }
 
-  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.1);
 
-  using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
-  fom_state_reconstr_t  fomStateReconstructor(yFOM,decoderObj);
-  fom_state_t yFinal(fomSize);
+  fom_state_t yTest(fomSize);
+
+  aux_states_container_t  fomStateContainerObj(yTest);
+  ::pressio::ode::impl::time_discrete_residual<ode_tag>(yTest,yTest,fomStateContainerObj,dt);
+
+
+
+
+
+  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
+
   const auto wlsCurrentState = wlsState.viewColumnVector(numStepsInWindow-1);
+  fom_state_t yFinal(fomSize);
+
   fomStateReconstructor(wlsCurrentState,yFinal);
 
   for (int i=0;i<fomSize;i++){
     cout << yFinal[i] << " " << trueY[i] << endl;
-    if (std::abs(yFinal[i] - trueY[i]) > 1e-12) checkStr = "FAILED";
+    if (std::abs(yFinal[i] - trueY[i]) > 1e-9) checkStr = "FAILED";
   }
   cout << checkStr << endl;
+//  ::pressio::ode::impl::time_discrete_residual<ode_case_t,fom_state_t,fom_state_t,fom_state_t,scalar_t>time_discrete_residual(yFOM,yFOM,yFOM,dt);
+//  ::pressio::ode::impl::time_discrete_residual<ode_case_t2>(yFOM,yFOM,statesContainer,dt);
 
-
-//  using line_search_t = pressio::solvers::iterative::gn::noLineSearch;
-//  using converged_t = pressio::solvers::iterative::converged_when::absoluteNormCorrectionBelowTol;
-
-  using nlSolver_t =  pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
-//  nlSolver_t nlSolver(wlsSystem,wlsState,linear_solver);
 /*
+
 */
   return 0;
 }

@@ -8,20 +8,19 @@ The policies are templated on the policies for compputing the local residuals an
 */
 
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
-template< typename wls_state_type, typename fom_type, typename hess_type, typename gradient_type, typename decoder_t,typename local_residual_policy_t,typename local_jacobian_policy_t>
+template< typename wls_state_type, typename fom_type, typename hess_type, typename gradient_type, typename decoder_t,typename local_residual_policy_t,typename local_jacobian_policy_t, typename  ode_tag>
 struct hessian_gradient_policy{
 public:
   using hess_t = hess_type;
   using gradient_t = gradient_type;
   using fom_native_state_t      = typename fom_type::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_state_container_t = std::vector<fom_state_t>;
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
   using scalar_t	= typename fom_type::scalar_type;
   using basis_t  = typename decoder_t::jacobian_t;
   using residual_t = fom_state_t; //maybe we need to change this for hyper reduction?
   // Create types for Jacobians and Jacobian containers
-  using jac_t = typename pressio::containers::Matrix<Eigen::Matrix<scalar_t, -1, -1>>;
+  using jac_t = typename pressio::containers::MultiVector<Eigen::Matrix<scalar_t, -1, -1>>;
   using wls_jacs_t = std::vector<jac_t>;
 
   using nm1 = ode::nMinusOne;
@@ -34,16 +33,50 @@ public:
   basis_t & phi_;
   mutable residual_t residual;
   mutable wls_jacs_t wlsJacs;
+  mutable fom_state_t yFOM_current;
   local_residual_policy_t residualPolicy;
   local_jacobian_policy_t jacobianPolicy;
 
-  hessian_gradient_policy(int romSize,  int fomSize, int numStepsInWindow, int time_stencil_size,  basis_t & phi) : wlsJacs(time_stencil_size,jac_t(fomSize,romSize)), phi_(phi), residual(fomSize){ 
+  ode_tag ode;
+  hessian_gradient_policy(int romSize,  int fomSize, int numStepsInWindow, int time_stencil_size,  basis_t & phi) : wlsJacs(time_stencil_size,jac_t(fomSize,romSize)), phi_(phi), residual(fomSize), yFOM_current(fomSize){ 
     this->romSize = romSize;    
     this->time_stencil_size = time_stencil_size;
     this->fomSize = fomSize;
   }
+
+
+  template <typename aux_states_container_t> 
+  void updateStatesFirstStep(const wls_state_type & wlsStateIC, const fom_state_reconstr_t & fomStateReconstr, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::BDF2  tag) const{
+    const auto wlsInitialStateNm2 = wlsStateIC.viewColumnVector(0);
+    auto & fomStateNm2 = auxStatesContainer.get(nm2());
+    fomStateReconstr(wlsInitialStateNm2,fomStateNm2);
+    const auto wlsInitialStateNm1 = wlsStateIC.viewColumnVector(1);
+    auto & fomStateNm1 = auxStatesContainer.get(nm1());
+    fomStateReconstr(wlsInitialStateNm1,fomStateNm1);
+  }
+  template <typename aux_states_container_t> 
+  void updateStatesNStep(const fom_state_t & yFOM_current, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::BDF2  tag) const{
+      auto & odeState_nm1 = auxStatesContainer.get(nm1());
+      auto & odeState_nm2 = auxStatesContainer.get(nm2());
+      ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
+      ::pressio::containers::ops::deep_copy(yFOM_current, odeState_nm1);
+  }
+
+  template <typename aux_states_container_t> 
+  void updateStatesFirstStep(const wls_state_type & wlsStateIC, const fom_state_reconstr_t & fomStateReconstr, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::Euler  tag) const{
+    const auto wlsInitialStateNm1 = wlsStateIC.viewColumnVector(0);
+    auto & fomStateNm1 = auxStatesContainer.get(nm1());
+    fomStateReconstr(wlsInitialStateNm1,fomStateNm1);
+  }
+  template <typename aux_states_container_t> 
+  void updateStatesNStep(const fom_state_t & yFOM_current, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::Euler  tag) const{
+      auto & odeState_nm1 = auxStatesContainer.get(nm1());
+      ::pressio::containers::ops::deep_copy(yFOM_current, odeState_nm1);
+  }
+
+
   template <typename  fom_state_container_t2>
-  void operator()(fom_type & appObj, const wls_state_type  & wlsState, wls_state_type & wlsStateIC, hess_type & hess, gradient_type & gradient,fom_state_container_t &  fomStateContainerObj_, fom_state_reconstr_t & fomStateReconstrObj_,scalar_t dt, std::size_t numStepsInWindow, scalar_t ts ,fom_state_container_t2 & fomStateContainerObj2) const{
+  void operator()(fom_type & appObj, const wls_state_type  & wlsState, wls_state_type & wlsStateIC, hess_type & hess, gradient_type & gradient, fom_state_reconstr_t & fomStateReconstrObj_,scalar_t dt, std::size_t numStepsInWindow, const scalar_t ts ,fom_state_container_t2 & fomStateContainerObj2) const{
   int n = 0;
   scalar_t t = ts + n*dt;
   constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
@@ -51,51 +84,56 @@ public:
   gradient.setZero();
 
   const auto wlsCurrentState = wlsState.viewColumnVector(0);
-  //auto  testState = fomStateContainerObj2(0);//template get<nm1>();
-  fomStateReconstrObj_(wlsCurrentState,testState);
+  // New way
+  updateStatesFirstStep(wlsStateIC,fomStateReconstrObj_,fomStateContainerObj2,ode);
+  fomStateReconstrObj_(wlsCurrentState,yFOM_current);
 
-  fomStateReconstrObj_(wlsCurrentState,fomStateContainerObj_[time_stencil_size-1]);
-  for (int i=0; i < time_stencil_size-1; i++){
-    const auto wlsInitialState = wlsStateIC.viewColumnVector(i);
-    fomStateReconstrObj_(wlsInitialState,fomStateContainerObj_[i]); 
-  }
 
-  residualPolicy(appObj,residual,fomStateContainerObj_,ts,dt);
+  residualPolicy(ode,appObj,yFOM_current,residual,fomStateContainerObj2,ts,dt);
   for (int i = 0; i < time_stencil_size; i++){
-    jacobianPolicy(appObj,wlsJacs[time_stencil_size - i - 1],phi_,fomStateContainerObj_,n*dt,dt,i);
+    jacobianPolicy(ode,appObj,yFOM_current,wlsJacs[time_stencil_size - i - 1],phi_,fomStateContainerObj2,n*dt,dt,i);
   }
-  local_mat_update(wlsJacs[time_stencil_size-1],wlsJacs[time_stencil_size-1],hess,n*romSize,n*romSize,romSize,romSize);
+  hess_t C(romSize,romSize);
+
+  auto hess_block = hess.subspan( std::make_pair( n*romSize,(n+1)*romSize ) , std::make_pair( n*romSize,(n+1)*romSize ) );
+  ::pressio::containers::ops::dot(wlsJacs[time_stencil_size-1],wlsJacs[time_stencil_size-1], hess_block);
   local_mat_update(wlsJacs[time_stencil_size-1],residual,gradient,n*romSize,0,romSize,1);
 
   for (int n = 1; n < numStepsInWindow; n++){
     // === reconstruct FOM states ========
-    for (int i=0; i < time_stencil_size - 1; i++){
-      *fomStateContainerObj_[i].data() = *fomStateContainerObj_[i+1].data();}
+    updateStatesNStep(yFOM_current,fomStateContainerObj2,ode); 
 
     const auto wlsCurrentState = wlsState.viewColumnVector(n);
-    fomStateReconstrObj_(wlsCurrentState,fomStateContainerObj_[time_stencil_size-1]);
+    fomStateReconstrObj_(wlsCurrentState,yFOM_current);
     // == Evaluate residual ============
     t = ts + n*dt;
-    residualPolicy(appObj,residual,fomStateContainerObj_,t,dt);
-    // == Evaluate Jacobian (Currently have jacobian w.r.p to previous state hard coded outside of loop)
-    jacobianPolicy(appObj,wlsJacs[time_stencil_size-1],phi_,fomStateContainerObj_,t,dt,0);
+    residualPolicy(ode,appObj,yFOM_current,residual,fomStateContainerObj2,t,dt);
+    // == Evaluate Jacobian (Currently have Jacobian w.r.p to previous state hard coded outside of loop)
+    jacobianPolicy(ode,appObj,yFOM_current,wlsJacs[time_stencil_size-1],phi_,fomStateContainerObj2,t,dt,0);
     // == Update everything
-    //local_mat_update(wlsJacs[time_stencil_size-1],residual,gradient,n*romSize,0,romSize,1);
     int sbar = std::min(n,time_stencil_size);
     for (int i=0; i < sbar; i++){
       local_mat_update(wlsJacs[time_stencil_size-i-1],residual,gradient,(n-i)*romSize,0,romSize,1);}
-    // == Assembel local component of global Hessian //
+    // == Assemble local component of global Hessian //
     for (int i=0; i < sbar; i++){
       for (int j=0; j <= i; j++){
-         local_mat_update(wlsJacs[time_stencil_size-i-1],wlsJacs[time_stencil_size-j-1],hess,(n-i)*romSize,(n-j)*romSize,romSize,romSize);
-         block_sym_update(hess,(n-i)*romSize,(n-j)*romSize,romSize,romSize); 
-        }
+         auto hess_block = hess.subspan( std::make_pair( (n-i)*romSize,(n-i+1)*romSize ) , std::make_pair( (n-j)*romSize,(n-j+1)*romSize ) );
+         ::pressio::containers::ops::dot(wlsJacs[time_stencil_size-i-1],wlsJacs[time_stencil_size-j-1], C);
+         for (int k = 0; k<romSize; k++){
+           for (int l = 0; l<romSize; l++){
+             hess_block(k,l) = hess_block(k,l) + C(k,l); 
+            }
+         }
+         auto hess_block2 = hess.subspan( std::make_pair( (n-j)*romSize,(n-j+1)*romSize ) , std::make_pair( (n-i)*romSize,(n-i+1)*romSize ) );
+         for (int k = 0; k<romSize; k++){
+           for (int l = 0; l<romSize; l++){
+             hess_block2(l,k) = hess_block(k,l); 
+            }
+         }
+      }
     }
   } 
   gradient.scale(negOne);
-/*
-
-*/
 }
 };
 
