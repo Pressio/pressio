@@ -14,21 +14,6 @@ public:
   using fom_state_container_t = std::vector<fom_state_t>;
   using scalar_t	= typename fom_type::scalar_type;
   using residual_t = fom_state_t; //maybe we need to change this for hyper reduction?
-  void operator()(fom_type & appObj, residual_t & residual,fom_state_container_t & fomStateContainerObj_,scalar_t t, scalar_t dt) const{
-    // u^n - u^{n-1} - f
-    appObj.velocity(*fomStateContainerObj_[1].data(),t,*residual.data());
-    (*residual.data()) = *(fomStateContainerObj_[1]).data() - *(fomStateContainerObj_[0]).data() - dt*(*residual.data());
-    }
-};
-
-template< typename fom_type>
-struct local_residual_policy_BDF2_velocityAPI{
-public:
-  using fom_native_state_t      = typename fom_type::state_type;
-  using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_state_container_t = std::vector<fom_state_t>;
-  using scalar_t	= typename fom_type::scalar_type;
-  using residual_t = fom_state_t; //maybe we need to change this for hyper reduction?
   //BDF2
   template <typename aux_states_container_t>
   void operator()(const ::pressio::ode::implicitmethods::BDF2  tag, const fom_type & appObj,const fom_state_t & yFOM, residual_t & residual,const aux_states_container_t & auxStatesContainer,const scalar_t t,const  scalar_t dt) const{
@@ -39,7 +24,6 @@ public:
     }
     if (t < 1e-10){
     // u^n - 4./3.*u^{n-1} + 1./3.u^{n-1} - 2./3.*dt*f
-    std::cout << "Here!" << std::endl;
     appObj.velocity(*yFOM.data(),t,*residual.data());
     ::pressio::ode::impl::time_discrete_residual<::pressio::ode::implicitmethods::Euler>(yFOM,residual,auxStatesContainer,dt);
     } 
@@ -56,27 +40,6 @@ public:
 
 template< typename fom_type, typename decoder_t>
 struct local_jacobian_policy_velocityAPI{
-public:
-  using fom_native_state_t      = typename fom_type::state_type;
-  using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_state_container_t = std::vector<fom_state_t>;
-  using scalar_t	= typename fom_type::scalar_type;
-  using basis_t  = typename decoder_t::jacobian_t;
-  using jac_t = basis_t;//typename pressio::containers::Matrix<Eigen::Matrix<scalar_t, -1, -1>>;
-  // Policies for local residuals and jacobians
-  void operator()(fom_type & appObj, jac_t & Jphi, basis_t & phi, fom_state_container_t & fomStateContainerObj_,scalar_t t, scalar_t dt, int arg=0) const{
-    // u^n - u^{n-1} - f ; 
-    if (arg == 0){
-      appObj.applyJacobian(*fomStateContainerObj_[1].data(),*phi.data(),t,*(Jphi).data());
-      (*Jphi.data()) = *phi.data() - dt*(*Jphi.data());}
-    if (arg == 1){
-      (*Jphi.data()) = -*phi.data() ;}
-    }
-};
-
-
-template< typename fom_type, typename decoder_t>
-struct local_jacobian_policy_BDF2_velocityAPI{
 public:
   using fom_native_state_t      = typename fom_type::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;

@@ -40,10 +40,10 @@ int main(int argc, char *argv[]){
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   scalar_t dt = 0.01;
   int romSize = 11;
-  constexpr int numStepsInWindow = 5;
-  const int t_stencil_width = 2;
+  constexpr int numStepsInWindow = 10;
+  const int t_stencil_width = 3;
 
-  using ode_tag = ::pressio::ode::implicitmethods::Euler;
+  using ode_tag = ::pressio::ode::implicitmethods::BDF2;
   using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,t_stencil_width>;// statesContainer(yFOM); 
 
   //-------------------------------
@@ -63,7 +63,6 @@ int main(int argc, char *argv[]){
   wlsState.setZero();
 
 
-  constexpr auto ode_case_t = pressio::ode::ImplicitEnum::Euler;
   fom_state_t yFOM(fomSize);
   fom_native_state_t yRef(fomSize);
   (*yFOM.data()).setConstant(1.);
@@ -74,8 +73,8 @@ int main(int argc, char *argv[]){
 
   using gradient_t = rom_state_t;
   using hessian_t = pressio::containers::Matrix<eig_dyn_mat>;
-  using local_residual_policy_t = pressio::rom::wls::impl::local_residual_policy_BDF2_velocityAPI<fom_t>;
-  using local_jacobian_policy_t = pressio::rom::wls::impl::local_jacobian_policy_BDF2_velocityAPI<fom_t,decoder_t>;
+  using local_residual_policy_t = pressio::rom::wls::impl::local_residual_policy_velocityAPI<fom_t>;
+  using local_jacobian_policy_t = pressio::rom::wls::impl::local_jacobian_policy_velocityAPI<fom_t,decoder_t>;
   using hessian_gradient_policy_t = pressio::rom::wls::impl::hessian_gradient_policy<wls_state_t,fom_t,hessian_t,gradient_t,decoder_t,local_residual_policy_t,local_jacobian_policy_t,ode_tag>;
   using wls_api_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,hessian_gradient_policy_t,aux_states_container_t>;
   using wls_system_t  = pressio::rom::wls::WlsSystem<wls_api_t, fom_t, wls_state_t,decoder_t, hessian_gradient_policy_t,aux_states_container_t>;
@@ -95,30 +94,16 @@ int main(int argc, char *argv[]){
 
   using app_jacob_t = typename fom_t::jacobian_type;
   using ode_jac_t   = pressio::containers::Matrix<app_jacob_t>;
-  using stepper_t = pressio::ode::ImplicitStepper<ode_case_t, fom_state_t, fom_state_t, ode_jac_t, fom_t>;
-  stepper_t stepperObj(yFOM, appObj);
-  using nm1 = pressio::ode::nMinusOne;
-//  auto & odeState_nm1 = stepperObj.auxStates_.template get<nm1>();
-//  cout << *(odeState_nm1).data() << endl;
-//  auto test = stepperObj.residual(yFOM);
-
   for (int step = 0; step < numSteps; step++)
   {
     wlsSystem.advanceOneWindow(wlsState,gn_solver,step);
   }
-
-
   fom_state_t yTest(fomSize);
-
   aux_states_container_t  fomStateContainerObj(yTest);
   ::pressio::ode::impl::time_discrete_residual<ode_tag>(yTest,yTest,fomStateContainerObj,dt);
 
 
-
-
-
-  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
-
+  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);
   const auto wlsCurrentState = wlsState.viewColumnVector(numStepsInWindow-1);
   fom_state_t yFinal(fomSize);
 
