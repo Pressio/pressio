@@ -49,10 +49,10 @@
 #ifndef CONTAINERS_MATRIX_SUBSPAN_EXPRESSION_HPP_
 #define CONTAINERS_MATRIX_SUBSPAN_EXPRESSION_HPP_
 
-#include "containers_matrix_meta.hpp"
+#include "../matrix/containers_matrix_meta.hpp"
 #include <typeinfo>
 
-namespace pressio{ namespace containers{ namespace exprtemplates{
+namespace pressio{ namespace containers{ namespace expressions{
 
 template <typename matrix_t, typename scalar_type>
 struct SubspanExpr<
@@ -140,6 +140,6 @@ public:
 
 };
 
-}}} //end namespace pressio::containers::exprtemplates
+}}} //end namespace pressio::containers::expressions
 
 #endif

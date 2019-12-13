@@ -85,29 +85,6 @@ public:
   explicit Vector(const wrap_t & src) : data_(src){}
 
 public:
-  // constructor from any expression, force evaluation
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      T::is_vector_expression> * = nullptr>
-  explicit Vector(const T & expr){
-    this->resize(expr.size());
-    for (ord_t i = 0; i != expr.size(); ++i)
-      data_[i] = expr(i);
-  }
-
-  // assignment from any expression, force evaluation
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      T::is_vector_expression> * = nullptr>
-  this_t & operator=(const T & expr){
-    if(this->size() != expr.size())
-      this->resize(expr.size());
-    for (ord_t i = 0; i != expr.size(); ++i)
-      data_[i] = expr(i);
-    return *this;
-  }
-
-public:
   sc_t & operator [] (ord_t i){
     return data_[i];
   };
@@ -123,18 +100,6 @@ public:
     return data_[i];
   };
 
-  // compound assignment from expression template
-  // this += expr
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      T::is_vector_expression> * = nullptr>
-  this_t & operator+=(const T & expr) {
-    assert( expr.size() == this->size() );
-    for (ord_t i = 0; i != expr.size(); ++i)
-      data_[i] += expr(i);
-    return *this;
-  }
-
   // compound assignment when type(b) = type(this)
   // this += b
   // template <typename T,
@@ -143,19 +108,6 @@ public:
   this_t & operator+=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ += *other.data();
-    return *this;
-  }
-
-
-  // compound assignment from expression template
-  // this -= expr
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      T::is_vector_expression> * = nullptr>
-  this_t & operator-=(const T & expr) {
-    assert( expr.size() == this->size() );
-    for (ord_t i = 0; i != expr.size(); ++i)
-      data_[i] -= expr(i);
     return *this;
   }
 

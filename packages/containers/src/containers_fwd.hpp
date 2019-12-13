@@ -53,6 +53,14 @@
 
 namespace pressio{ namespace containers{
 
+namespace details {
+template<typename T, typename enable = void>
+struct traits;
+
+template<typename T>
+struct traits<const T> : traits<T> {};
+}
+
 template <
   typename wrapped_type,
   typename Enable = void>
@@ -74,7 +82,12 @@ template<
 struct traits;
 
 
-namespace exprtemplates{
+namespace expressions{
+
+template <
+  typename derived_t,
+  typename = void>
+struct BaseExpr;
 
 template <
   typename mv_t,
