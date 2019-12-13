@@ -77,7 +77,7 @@ public:
   explicit Vector(const wrapped_type & vecobj)
     : data_(vecobj){}
 
-  Vector(this_t const & other)
+  Vector(Vector const & other)
     : data_(*other.data()){}
 
 private:

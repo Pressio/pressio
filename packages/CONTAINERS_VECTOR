@@ -69,14 +69,4 @@
 #include "containers/src/vector/concrete/containers_vector_sharedmem_armadillo.hpp"
 #include "containers/src/vector/concrete/containers_vector_sharedmem_teuchos_serial_dense.hpp"
 
-// headers for vector expression templates
-#include "containers/src/vector/sharedmem_expr_templates/containers_vector_sharedmem_binary_expression_templates.hpp"
-#include "containers/src/vector/distributed_expr_templates/containers_vector_distributed_binary_expression_templates.hpp"
-#include "containers/src/vector/sharedmem_expr_templates/containers_vector_plus_operator_sharedmem.hpp"
-#include "containers/src/vector/sharedmem_expr_templates/containers_vector_times_operator_sharedmem.hpp"
-#include "containers/src/vector/sharedmem_expr_templates/containers_vector_subtract_operator_sharedmem.hpp"
-#include "containers/src/vector/distributed_expr_templates/containers_vector_plus_operator_distributed.hpp"
-#include "containers/src/vector/distributed_expr_templates/containers_vector_times_operator_distributed.hpp"
-#include "containers/src/vector/distributed_expr_templates/containers_vector_subtract_operator_distributed.hpp"
-
 #endif

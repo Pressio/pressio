@@ -55,7 +55,7 @@
 #include "containers/src/matrix/containers_matrix_traits.hpp"
 #include "containers/src/matrix/containers_matrix_meta.hpp"
 
-#include "containers/src/matrix/containers_matrix_subspan_expression.hpp"
+#include "containers/src/expressions/containers_matrix_subspan_expression.hpp"
 
 ///base classes
 #include "containers/src/matrix/base/containers_matrix_base.hpp"
@@ -79,9 +79,5 @@
 #include "containers/src/matrix/concrete/containers_matrix_sparse_distributed_tpetra.hpp"
 #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_teuchos_serial.hpp"
 #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_kokkos.hpp"
-
-#include "containers/src/matrix/containers_matrix_plus_operator.hpp"
-#include "containers/src/matrix/containers_matrix_times_operator.hpp"
-#include "containers/src/matrix/containers_matrix_subtract_operator.hpp"
 
 #endif

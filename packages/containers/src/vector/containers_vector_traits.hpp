@@ -95,7 +95,13 @@ struct traits<
 #endif
       >
     >
-  > {
+  >
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+				    WrappedPackageIdentifier::Undefined,
+				    false, false>
+{
 
   using wrapped_t = wrapped_type;
   using derived_t = Vector<wrapped_t>;
@@ -109,10 +115,6 @@ struct traits<
   static constexpr bool is_vector = true;
   static constexpr bool is_matrix = false;
   static constexpr bool is_multi_vector = false;
-
-  // by default, any container is not admissible to expr templates
-  // the ones that are, will overwrite this
-  static constexpr bool is_admissible_for_expression_templates = false;
 };
 
 
@@ -139,7 +141,6 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenRowStatic;
 
-  static constexpr bool is_admissible_for_expression_templates = true;
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
 };
@@ -168,7 +169,6 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenColStatic;
 
-  static constexpr bool is_admissible_for_expression_templates = true;
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
 };
@@ -197,7 +197,6 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenRowDynamic;
 
-  static constexpr bool is_admissible_for_expression_templates = true;
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
 };
@@ -226,7 +225,6 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenColDynamic;
 
-  static constexpr bool is_admissible_for_expression_templates = true;
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
 };
@@ -252,10 +250,8 @@ struct traits<Vector<wrapped_type,
 {
 
   static constexpr WrappedVectorIdentifier
-  wrapped_vector_identifier =
-    WrappedVectorIdentifier::ArmadilloCol;
+  wrapped_vector_identifier = WrappedVectorIdentifier::ArmadilloCol;
 
-  static constexpr bool is_admissible_for_expression_templates = true;
   using scalar_t = typename wrapped_type::elem_type;
   using ordinal_t = unsigned long;
 };
@@ -281,11 +277,9 @@ struct traits<Vector<wrapped_type,
 				    true, false>
 {
 
-  static constexpr WrappedVectorIdentifier
-  wrapped_vector_identifier =
-    WrappedVectorIdentifier::ArmadilloRow;
+  static constexpr WrappedVectorIdentifier wrapped_vector_identifier
+  = WrappedVectorIdentifier::ArmadilloRow;
 
-  static constexpr bool is_admissible_for_expression_templates = true;
   using scalar_t = typename wrapped_type::elem_type;
   using ordinal_t = unsigned long;
 };
@@ -314,7 +308,6 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::BlazeDynamic;
 
-  static constexpr bool is_admissible_for_expression_templates = true;
   using scalar_t = typename wrapped_type::ElementType;
   using ordinal_t = unsigned long;
 };
@@ -343,7 +336,6 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::TeuchosSerialDense;
 
-  static constexpr bool is_admissible_for_expression_templates = true;
   using scalar_t = typename wrapped_type::scalarType;
   using ordinal_t = typename wrapped_type::ordinalType;
 };
@@ -372,7 +364,6 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Epetra;
 
-  static constexpr bool is_admissible_for_expression_templates = true;
   using scalar_t = double;
   using local_ordinal_t = int;
   using global_ordinal_t = int;

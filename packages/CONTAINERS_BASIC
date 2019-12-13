@@ -53,7 +53,6 @@
 #include "containers/src/containers_fwd.hpp"
 #include "containers/src/containers_shared_traits.hpp"
 #include "containers/src/containers_wrapped_types_enum.hpp"
-#include "containers/src/containers_expression_templates_operators.hpp"
 
 #include "containers/src/shared_base/containers_container_base.hpp"
 #include "containers/src/shared_base/containers_container_distributed_mpi_base.hpp"
@@ -64,7 +63,6 @@
 #include "containers/src/shared_base/containers_container_printable_base.hpp"
 
 #include "containers/src/meta/containers_meta_basic.hpp"
-#include "containers/src/meta/containers_has_expression_templates_support.hpp"
 
 #include "containers/src/meta/containers_native_pybind_array_meta.hpp"
 #include "containers/src/meta/containers_is_wrapper.hpp"

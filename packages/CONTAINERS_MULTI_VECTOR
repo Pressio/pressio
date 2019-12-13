@@ -56,7 +56,7 @@
 #include "containers/src/multi_vector/containers_native_multi_vector_static_asserts.hpp"
 #include "containers/src/multi_vector/containers_multi_vector_traits.hpp"
 #include "containers/src/multi_vector/containers_multi_vector_meta.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_view_vector_expressions.hpp"
+#include "containers/src/expressions/containers_multi_vector_view_vector_expressions.hpp"
 
 #include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_epetra.hpp"
 #include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"

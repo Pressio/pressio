@@ -86,7 +86,6 @@ class Vector<
 public:
   Vector() = delete;
 
-
   /* Block MV/V still missing a copy constructor,
    * see https://github.com/trilinos/Trilinos/issues/4627
    * so for now we construct this one using other's data */
@@ -99,7 +98,6 @@ public:
 		 vecobj,
 		 ::pressio::utils::constants::zero<sc_t>());
   }
-
 
   // here we do not default the copy and move because if we did that,
   // it would use the tpetra copy/move which have view semantics
