@@ -50,10 +50,27 @@
 #define CONTAINERS_EXPRESSIONS_TRAITS_HPP_
 
 #include "../containers_fwd.hpp"
+#include "../vector/containers_vector_meta.hpp"
 #include "../matrix/containers_matrix_meta.hpp"
 #include "../multi_vector/containers_multi_vector_meta.hpp"
 
 namespace pressio{ namespace containers{ namespace details{
+
+template <typename v_type, typename scalar_type>
+struct traits<
+  ::pressio::containers::expressions::SpanExpr<v_type, scalar_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<v_type>::value
+    >
+  >
+{
+  static constexpr auto is_expression = true;
+
+  using scalar_t      = scalar_type;
+  using data_t	      = v_type;
+  using native_t      = typename ::pressio::containers::details::traits<v_type>::wrapped_t;
+};
+
 
 template <typename matrix_type, typename scalar_type>
 struct traits<
@@ -70,6 +87,7 @@ struct traits<
   using native_t      = typename ::pressio::containers::details::traits<matrix_type>::wrapped_t;
 };
 
+
 template <typename mv_type, typename scalar_type>
 struct traits<
   ::pressio::containers::expressions::ViewColumnVectorExpr<mv_type, scalar_type>,
@@ -84,6 +102,7 @@ struct traits<
   using data_t	      = mv_type;
   using native_t      = typename ::pressio::containers::details::traits<mv_type>::wrapped_t;
 };
+
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename mv_type, typename scalar_type>

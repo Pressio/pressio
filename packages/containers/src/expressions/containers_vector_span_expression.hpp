@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_VECTOR
+// containers_vector_span_expression.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,74 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_HPP_
-#define CONTAINERS_VECTOR_HPP_
+#ifndef CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
+#define CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
 
-#include "CONTAINERS_BASIC"
+#include "../vector/containers_vector_meta.hpp"
+#include "containers_expression_base.hpp"
 
-#include "containers/src/collection/containers_static_collection.hpp"
+namespace pressio{ namespace containers{ namespace expressions{
 
-#include "containers/src/vector/containers_native_vector_static_asserts.hpp"
-#include "containers/src/vector/containers_vector_traits.hpp"
-#include "containers/src/vector/containers_vector_meta.hpp"
+template <typename vector_t, typename scalar_type>
+struct SpanExpr<
+  vector_t, scalar_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<vector_t>::value
+    >
+  >
+  : public BaseExpr< SpanExpr<vector_t, scalar_type> >
+{
+  using native_t   = typename ::pressio::containers::details::traits<vector_t>::wrapped_t;
 
-#include "containers/src/expressions/containers_expressions_traits.hpp"
-#include "containers/src/expressions/containers_span.hpp"
+private:
+  vector_t & vecObj_;
+  std::size_t startIndex_;
+  std::size_t extent_ = {};
 
-// concrete classes (these in turn include bases)
-#include "containers/src/vector/concrete/containers_vector_arbitrary.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_tpetra.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_tpetra_block.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_epetra.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_static.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_kokkos.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_blaze_dynamic.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_armadillo.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_teuchos_serial_dense.hpp"
+public:
+  SpanExpr() = delete;
+  ~SpanExpr() = default;
+  SpanExpr(const SpanExpr & other) = default;
+  SpanExpr(SpanExpr && other) = default;
+  SpanExpr & operator=(const SpanExpr & other) = default;
+  SpanExpr & operator=(SpanExpr && other) = default;
+
+  SpanExpr(vector_t & objIn,
+	   const std::size_t startIndexIn,
+	   const std::size_t extentIn)
+    : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn)
+  {
+    assert( startIndex_ >= 0 and startIndex_ < objIn.size() );
+  }
+
+  std::size_t const & size() const{ return extent_; }
+
+  scalar_type & operator()(std::size_t i)
+  {
+    assert(i < extent_);
+    return vecObj_(startIndex_+i);
+  }
+
+  scalar_type const & operator()(std::size_t i) const
+  {
+    assert(i < extent_);
+    return vecObj_(startIndex_+i);
+  }
+
+  auto operator()()
+    -> decltype(vecObj_.data()->segment(startIndex_, extent_))
+  {
+    return vecObj_.data()->segment(startIndex_, extent_);
+  }
+
+  auto operator()() const
+    -> decltype( std::declval<const native_t>().segment(startIndex_, extent_))
+  {
+    return static_cast<native_t const *>(vecObj_.data())->segment(startIndex_, extent_);
+  }
+
+};
+
+}}} //end namespace pressio::containers::expressions
 
 #endif
