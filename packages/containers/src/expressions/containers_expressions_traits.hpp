@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_MATRIX
+// containers_expressions_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,61 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MATRIX_HPP_
-#define CONTAINERS_MATRIX_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_TRAITS_HPP_
+#define CONTAINERS_EXPRESSIONS_TRAITS_HPP_
 
-#include "CONTAINERS_VECTOR"
+#include "../containers_fwd.hpp"
+#include "../matrix/containers_matrix_meta.hpp"
+#include "../multi_vector/containers_multi_vector_meta.hpp"
 
-#include "containers/src/matrix/meta/containers_native_matrix_static_asserts.hpp"
-#include "containers/src/matrix/containers_matrix_traits.hpp"
-#include "containers/src/matrix/containers_matrix_meta.hpp"
+namespace pressio{ namespace containers{ namespace details{
 
-#include "containers/src/expressions/containers_expressions_traits.hpp"
-#include "containers/src/expressions/containers_matrix_subspan_expression.hpp"
+template <typename matrix_type, typename scalar_type>
+struct traits<
+  ::pressio::containers::expressions::SubspanExpr<matrix_type, scalar_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_matrix_wrapper_eigen<matrix_type>::value
+    >
+  >
+{
+  static constexpr auto is_expression = true;
 
-///base classes
-#include "containers/src/matrix/base/containers_matrix_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_sparse_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_sharedmem_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_distributed_base.hpp"
-///---- dense ----
-#include "containers/src/matrix/base/containers_matrix_dense_distributed_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_dense_sharedmem_base.hpp"
-///---- sparse ----
-#include "containers/src/matrix/base/containers_matrix_sparse_sharedmem_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_sparse_distributed_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_sparse_distributed_trilinos_base.hpp"
+  using scalar_t      = scalar_type;
+  using data_t	      = matrix_type;
+  using native_t      = typename ::pressio::containers::details::traits<matrix_type>::wrapped_t;
+};
 
-///concrete classes
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_sparse_sharedmem_eigen.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_sparse_distributed_epetra.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_distributed_epetra.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_sparse_distributed_tpetra.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_teuchos_serial.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_kokkos.hpp"
+template <typename mv_type, typename scalar_type>
+struct traits<
+  ::pressio::containers::expressions::ViewColumnVectorExpr<mv_type, scalar_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mv_type>::value
+    >
+  >
+{
+  static constexpr auto is_expression = true;
 
+  using scalar_t      = scalar_type;
+  using data_t	      = mv_type;
+  using native_t      = typename ::pressio::containers::details::traits<mv_type>::wrapped_t;
+};
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename mv_type, typename scalar_type>
+struct traits<
+  ::pressio::containers::expressions::ViewColumnVectorExpr<mv_type, scalar_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<mv_type>::value
+    >
+  >
+{
+  static constexpr auto is_expression = true;
+
+  using scalar_t      = scalar_type;
+  using data_t	      = mv_type;
+  using native_t      = typename ::pressio::containers::details::traits<mv_type>::wrapped_t;
+};
+#endif
+
+}}}//end namespace pressio::containers::details
 #endif

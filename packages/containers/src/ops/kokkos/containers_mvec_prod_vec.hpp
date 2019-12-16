@@ -138,7 +138,7 @@ template <
   typename expr_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-    expr_type::is_view_col_vector_expr
+    ::pressio::containers::meta::is_expression<expr_type>::value
     > * = nullptr
   >
 void product(const mvec_type & A,
@@ -152,7 +152,7 @@ void product(const mvec_type & A,
 	     > & c)
 {
   // type of data wrapped by the expression
-  using expr_data_t = typename expr_type::data_t;
+  using expr_data_t = typename ::pressio::containers::details::traits<expr_type>::data_t;
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, expr_data_t>::value,
   		"product: MV and expr types need to have same execution space" );
 
@@ -172,7 +172,7 @@ template <
   typename expr_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-    expr_type::is_view_col_vector_expr
+    ::pressio::containers::meta::is_expression<expr_type>::value
     > * = nullptr
   >
 auto product(const mvec_type & mvA, const expr_type & exprObj)
@@ -185,7 +185,7 @@ auto product(const mvec_type & mvA, const expr_type & exprObj)
   >
 {
   // type of data wrapped by the expression
-  using expr_data_t = typename expr_type::data_t;
+  using expr_data_t = typename ::pressio::containers::details::traits<expr_type>::data_t;
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, expr_data_t>::value,
   		"product: MV and expr types need to have same execution space" );
 

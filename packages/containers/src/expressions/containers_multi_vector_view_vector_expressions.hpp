@@ -50,6 +50,7 @@
 #define CONTAINERS_MULTI_VECTOR_VIEW_VECTOR_EXPRESSIONS_HPP_
 
 #include "../multi_vector/containers_multi_vector_meta.hpp"
+#include "containers_expression_base.hpp"
 
 namespace pressio{ namespace containers{ namespace expressions{
 
@@ -60,11 +61,8 @@ struct ViewColumnVectorExpr<
     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mv_t>::value
     >
   >
+  : public BaseExpr< ViewColumnVectorExpr<mv_t, scalar_type> >
 {
-  static constexpr auto is_view_vector_expr = true;
-  static constexpr auto is_view_col_vector_expr = true;
-  using scalar_t = scalar_type;
-  using data_t   = mv_t;
   using native_t = typename ::pressio::containers::details::traits<mv_t>::wrapped_t;
 
 private:
@@ -87,11 +85,11 @@ public:
     return mvObj_.length();
   }
 
-  const scalar_t & operator[](const std::size_t & rowIndex) const{
+  const scalar_type & operator[](const std::size_t & rowIndex) const{
     return mvObj_(rowIndex, vecIndex_);
   }
 
-  scalar_t & operator[](const std::size_t & rowIndex){
+  scalar_type & operator[](const std::size_t & rowIndex){
     return mvObj_(rowIndex, vecIndex_);
   }
 
@@ -117,12 +115,8 @@ struct ViewColumnVectorExpr<
     ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<mv_t>::value
     >
   >
+  : public BaseExpr< ViewColumnVectorExpr<mv_t, scalar_type> >
 {
-  static constexpr auto is_view_vector_expr = true;
-  static constexpr auto is_view_col_vector_expr = true;
-  using scalar_t = scalar_type;
-  using data_t = mv_t;
-
 private:
   const mv_t & mvObj_;
   const std::size_t vecIndex_;

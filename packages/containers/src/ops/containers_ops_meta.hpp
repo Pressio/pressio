@@ -51,6 +51,7 @@
 #include "../vector/containers_vector_meta.hpp"
 #include "../matrix/containers_matrix_meta.hpp"
 #include "../multi_vector/containers_multi_vector_meta.hpp"
+#include "../meta/containers_meta_is_expression.hpp"
 
 namespace pressio{ namespace containers{ namespace meta {
 

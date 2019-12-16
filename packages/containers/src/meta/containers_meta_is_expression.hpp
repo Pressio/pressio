@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_MATRIX
+// containers_meta_is_expression.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,25 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MATRIX_HPP_
-#define CONTAINERS_MATRIX_HPP_
+#ifndef CONTAINERS_META_IS_EXPRESSION_HPP_
+#define CONTAINERS_META_IS_EXPRESSION_HPP_
 
-#include "CONTAINERS_VECTOR"
+#include "../containers_fwd.hpp"
 
-#include "containers/src/matrix/meta/containers_native_matrix_static_asserts.hpp"
-#include "containers/src/matrix/containers_matrix_traits.hpp"
-#include "containers/src/matrix/containers_matrix_meta.hpp"
+namespace pressio{ namespace containers{ namespace meta {
 
-#include "containers/src/expressions/containers_expressions_traits.hpp"
-#include "containers/src/expressions/containers_matrix_subspan_expression.hpp"
+template <typename T, typename enable = void>
+struct is_expression : std::false_type{};
 
-///base classes
-#include "containers/src/matrix/base/containers_matrix_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_sparse_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_sharedmem_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_distributed_base.hpp"
-///---- dense ----
-#include "containers/src/matrix/base/containers_matrix_dense_distributed_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_dense_sharedmem_base.hpp"
-///---- sparse ----
-#include "containers/src/matrix/base/containers_matrix_sparse_sharedmem_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_sparse_distributed_base.hpp"
-#include "containers/src/matrix/base/containers_matrix_sparse_distributed_trilinos_base.hpp"
+template <typename T>
+struct is_expression<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::publicly_inherits_from<
+      T, ::pressio::containers::expressions::BaseExpr<T>
+      >::value
+    >
+  > : std::true_type{};
 
-///concrete classes
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_sparse_sharedmem_eigen.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_sparse_distributed_epetra.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_distributed_epetra.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_sparse_distributed_tpetra.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_teuchos_serial.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_kokkos.hpp"
-
+}}} // namespace pressio::containers::meta
 #endif

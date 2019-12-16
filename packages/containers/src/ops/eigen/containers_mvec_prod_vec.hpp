@@ -111,7 +111,7 @@ template <
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
     containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-    expr_type::is_view_col_vector_expr
+    ::pressio::containers::meta::is_expression<expr_type>::value
     > * = nullptr
   >
 void product(const mvec_type & mvA, const expr_type & exprObj, vec_type & C)
@@ -129,7 +129,7 @@ template <
   typename expr_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
-    expr_type::is_view_col_vector_expr
+    ::pressio::containers::meta::is_expression<expr_type>::value
     > * = nullptr
   >
 auto product(const mvec_type & mvA, const expr_type & exprObj)
