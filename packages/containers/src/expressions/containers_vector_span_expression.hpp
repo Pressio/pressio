@@ -84,6 +84,17 @@ public:
     : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn)
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.size() );
+    assert( extent_ <= objIn.size() );
+  }
+
+  SpanExpr(vector_t & objIn,
+	   std::pair<std::size_t, std::size_t> indexRange)
+    : vecObj_(objIn),
+      startIndex_(std::get<0>(indexRange)),
+      extent_(std::get<1>(indexRange)-startIndex_)
+  {
+    assert( startIndex_ >= 0 and startIndex_ < objIn.size() );
+    assert( extent_ <= objIn.size() );
   }
 
   std::size_t const & size() const{ return extent_; }

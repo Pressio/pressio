@@ -83,3 +83,29 @@ TEST(containers_vector_eigen, span)
   test2(a);
   testConst(a);
 }
+
+
+TEST(containers_vector_eigen, spanConstructor)
+{
+  using eigv_t = Eigen::VectorXd;
+  using my_t = pressio::containers::Vector<eigv_t>;
+
+  my_t a(6);
+  a(0) = 1.;
+  a(1) = 5.;
+  a(2) = 9.;
+  a(3) = 13.;
+  a(4) = 17.;
+  a(5) = 21.;
+
+  // span elements a[2],a[3],a[4]
+  const auto sp = pressio::containers::span(a, 2, 3);
+  EXPECT_EQ( sp.size(), 3 );
+
+  const auto sp2 = pressio::containers::span(a, std::make_pair(2,5));
+  EXPECT_EQ( sp2.size(), 3 );
+
+  EXPECT_DOUBLE_EQ(sp[0], sp2[0]);
+  EXPECT_DOUBLE_EQ(sp[1], sp2[1]);
+  EXPECT_DOUBLE_EQ(sp[2], sp2[2]);
+}
