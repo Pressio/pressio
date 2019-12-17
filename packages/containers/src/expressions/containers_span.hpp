@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_VECTOR
+// containers_span.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,38 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_HPP_
-#define CONTAINERS_VECTOR_HPP_
+#ifndef CONTAINERS_SPAN_HPP_
+#define CONTAINERS_SPAN_HPP_
 
-#include "CONTAINERS_BASIC"
+#include "containers_expression_base.hpp"
+#include "../vector/containers_vector_meta.hpp"
+#include "containers_vector_span_expression.hpp"
 
-#include "containers/src/collection/containers_static_collection.hpp"
+namespace pressio{ namespace containers{
 
-#include "containers/src/vector/containers_native_vector_static_asserts.hpp"
-#include "containers/src/vector/containers_vector_traits.hpp"
-#include "containers/src/vector/containers_vector_meta.hpp"
+template <typename T>
+mpl::enable_if_t<
+  meta::is_dynamic_vector_wrapper_eigen<T>::value,
+  typename details::traits<T>::span_const_ret_t
+  >
+span(const T & vecObj, std::size_t startIndex, std::size_t extent)
+{
+  using return_t = typename details::traits<T>::span_const_ret_t;
+  return return_t(vecObj, startIndex, extent);
+}
 
-#include "containers/src/expressions/containers_expressions_traits.hpp"
-#include "containers/src/expressions/containers_span.hpp"
+template <typename T>
+mpl::enable_if_t<
+  meta::is_dynamic_vector_wrapper_eigen<T>::value,
+  typename details::traits<T>::span_ret_t
+  >
+span(T & vecObj, std::size_t startIndex, std::size_t extent)
+{
+  using return_t = typename details::traits<T>::span_ret_t;
+  return return_t(vecObj, startIndex, extent);
+}
 
-// concrete classes (these in turn include bases)
-#include "containers/src/vector/concrete/containers_vector_arbitrary.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_tpetra.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_tpetra_block.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_epetra.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_static.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_kokkos.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_blaze_dynamic.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_armadillo.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_teuchos_serial_dense.hpp"
+
+}} //end namespace pressio::containers
 
 #endif

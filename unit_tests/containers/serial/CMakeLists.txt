@@ -14,6 +14,8 @@ set(SRC1
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_sparse_matrix_product_multi_vector_eigen.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_serial_eigen_dynamic_class.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_eigen_dot_eigen_vector.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_eigen_product_eigen_vector_span.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/containers_vector_serial_eigen_span.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_eigen_dot_multi_vector_eigen.cc
   )
 add_serial_utest(containers_serial "${SRC1}")

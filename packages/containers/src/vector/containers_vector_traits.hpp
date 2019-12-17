@@ -199,6 +199,8 @@ struct traits<Vector<wrapped_type,
 
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
+  using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>, scalar_t>;
+  using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>, scalar_t>;
 };
 
 
@@ -225,8 +227,10 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenColDynamic;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
+  using scalar_t	 = typename wrapped_type::Scalar;
+  using ordinal_t	 = int;
+  using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>, scalar_t>;
+  using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>, scalar_t>;
 };
 
 
@@ -518,7 +522,6 @@ struct traits<
   // store types for host
   using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
   using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
-
   using communicator_t = decltype(std::declval<data_map_t>().getComm());
 };
 #endif

@@ -95,6 +95,9 @@ struct ViewColumnVectorExpr;
 
 template <typename mat_t, typename scalar_t, typename enable = void>
 struct SubspanExpr;
+
+template <typename vec_t, typename scalar_t, typename enable = void>
+struct SpanExpr;
 }
 
 }} // end namespace pressio::containers
