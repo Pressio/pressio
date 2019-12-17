@@ -76,8 +76,10 @@ template <typename matrix_type, typename scalar_type>
 struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type, scalar_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_matrix_wrapper_eigen<matrix_type>::value or
-    ::pressio::containers::meta::is_matrix_wrapper_kokkos<matrix_type>::value
+    ::pressio::containers::meta::is_matrix_wrapper_eigen<matrix_type>::value
+    #ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    or ::pressio::containers::meta::is_matrix_wrapper_kokkos<matrix_type>::value
+    #endif
     >
   >
 {
