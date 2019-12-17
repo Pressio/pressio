@@ -101,7 +101,7 @@ vec_type product(const mvec_type & mvA, const vec_type & vecB){
 
 
 /* -------------------------------------------------------------------
- * specialize for eigen mv wrapper operating on an col vector expression
+ * specialize for eigen mv wrapper operating on an expression
  *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
