@@ -10,13 +10,13 @@ namespace{
     {
       const auto sp = ::pressio::containers::span(a, 3, 2);
       EXPECT_EQ( sp.size(), 2 );
-      EXPECT_DOUBLE_EQ( sp(0), 13. );
-      EXPECT_DOUBLE_EQ( sp(1), 17. );
+      EXPECT_DOUBLE_EQ( sp[0], 13. );
+      EXPECT_DOUBLE_EQ( sp[1], 17. );
     }
     {
       const auto sp = ::pressio::containers::span(a, 2, 1);
       EXPECT_EQ( sp.size(), 1 );
-      EXPECT_DOUBLE_EQ( sp(0), 9. );
+      EXPECT_DOUBLE_EQ( sp[0], 9. );
     }
   }
 
@@ -29,15 +29,15 @@ namespace{
       EXPECT_EQ( sp.size(), 3 );
 
       // before changing it
-      EXPECT_DOUBLE_EQ( sp(0), 9. );
-      EXPECT_DOUBLE_EQ( sp(1), 13. );
-      EXPECT_DOUBLE_EQ( sp(2), 17. );
+      EXPECT_DOUBLE_EQ( sp[0], 9. );
+      EXPECT_DOUBLE_EQ( sp[1], 13. );
+      EXPECT_DOUBLE_EQ( sp[2], 17. );
       // modify
-      sp(0) = 44.;
+      sp[0] = 44.;
       // after
-      EXPECT_DOUBLE_EQ( sp(0), 44. );
-      EXPECT_DOUBLE_EQ( sp(1), 13. );
-      EXPECT_DOUBLE_EQ( sp(2), 17. );
+      EXPECT_DOUBLE_EQ( sp[0], 44. );
+      EXPECT_DOUBLE_EQ( sp[1], 13. );
+      EXPECT_DOUBLE_EQ( sp[2], 17. );
     }
 
     {
@@ -55,9 +55,9 @@ namespace{
   void testConst(const T & a){
     const auto sp = pressio::containers::span(a, 2, 3);
     EXPECT_EQ( sp.size(), 3 );
-    EXPECT_DOUBLE_EQ( sp(0), 44. );
-    EXPECT_DOUBLE_EQ( sp(1), 13. );
-    EXPECT_DOUBLE_EQ( sp(2), 17. );
+    EXPECT_DOUBLE_EQ( sp[0], 44. );
+    EXPECT_DOUBLE_EQ( sp[1], 13. );
+    EXPECT_DOUBLE_EQ( sp[2], 17. );
     auto natEx = sp();
     EXPECT_DOUBLE_EQ( natEx(0), 44. );
     EXPECT_DOUBLE_EQ( natEx(1), 13. );

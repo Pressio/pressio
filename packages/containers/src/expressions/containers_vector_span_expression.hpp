@@ -88,13 +88,13 @@ public:
 
   std::size_t const & size() const{ return extent_; }
 
-  scalar_type & operator()(std::size_t i)
+  scalar_type & operator[](std::size_t i)
   {
     assert(i < extent_);
     return vecObj_(startIndex_+i);
   }
 
-  scalar_type const & operator()(std::size_t i) const
+  scalar_type const & operator[](std::size_t i) const
   {
     assert(i < extent_);
     return vecObj_(startIndex_+i);
