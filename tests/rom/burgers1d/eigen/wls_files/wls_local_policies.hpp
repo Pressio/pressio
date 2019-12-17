@@ -41,20 +41,20 @@ public:
     if (t < 1e-10){ 
       if (arg == 0){
         appObj.applyJacobian(*yFOM.data(),*phi.data(),t,*(Jphi).data());
-        (*Jphi.data()) = *phi.data() - dt*(*Jphi.data());}
+        ::pressio::containers::ops::do_update(Jphi,-dt,phi,1.);}
       if (arg == 1){
-        (*Jphi.data()) = -4./3.*(*phi.data()) ;}
+        ::pressio::containers::ops::do_update(Jphi,phi,-4./3.);}
       if (arg == 2){
-        (*Jphi.data()) =  1./3.*(*phi.data()) ;}
+        ::pressio::containers::ops::do_update(Jphi,phi,1./3.);}
       }
     if (t > 1e-10){ 
       if (arg == 0){
         appObj.applyJacobian(*yFOM.data(),*phi.data(),t,*(Jphi).data());
-        (*Jphi.data()) = *phi.data() - 2./3.*dt*(*Jphi.data());}
+        ::pressio::containers::ops::do_update(Jphi,-2./3.*dt,phi,1.);}
       if (arg == 1){
-        (*Jphi.data()) = -4./3.*(*phi.data()) ;}
+        ::pressio::containers::ops::do_update(Jphi,phi,-4./3.);}
       if (arg == 2){
-        (*Jphi.data()) =  1./3.*(*phi.data()) ;}
+        ::pressio::containers::ops::do_update(Jphi,phi,1./3.);}
       }
   }
   template <typename fom_type, typename fom_state_t, typename jac_t, typename basis_t, typename aux_states_container_t, typename scalar_t>
@@ -62,9 +62,9 @@ public:
     // u^n - u^{n-1} - f ;
     if (arg == 0){
       appObj.applyJacobian(*yFOM.data(),*phi.data(),t,*(Jphi).data());
-      (*Jphi.data()) = *phi.data() - dt*(*Jphi.data());}
+      ::pressio::containers::ops::do_update(Jphi,-dt,phi,1.);}
     if (arg == 1){
-      (*Jphi.data()) = (*phi.data()) ;}
+      ::pressio::containers::ops::do_update(Jphi,phi,-1.);}
   }
 };
 
@@ -104,7 +104,7 @@ public:
       appObj.applyTimeDiscreteJacobian(n,dt*n,dt,*phi.data(),0,*Jphi.data(),*fomStateContainerObj_[1].data(), *fomStateContainerObj_[0].data());
     }
     if (arg == 1){
-      (*Jphi.data()) = -*phi.data() ;}
+      ::pressio::containers::ops::do_update(Jphi,phi,-1.);}
     }
 };
 //============================

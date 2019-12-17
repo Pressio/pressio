@@ -16,6 +16,7 @@ public:
     double tol = 1e-20;
     scalar_type rnorm = 0.; 
     constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+    constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
     int iteration = 0;
     //const int sz = romSize*numStepsInWindow;
 //    scalar_type * data = eigMatrix.data();
@@ -25,7 +26,8 @@ public:
 //    ::pressio::containers::Vector<Eigen::Map<Eigen::Matrix<scalar_type, -1, 1,Eigen::ColMajor>>> stateV((*state.data()).data(), (*state.data()).size());
 
     while (gnorm >= tol){
-      sys.computeHessianAndGradient(state,hessian_,gradient_); 
+      sys.computeHessianAndGradient(state,hessian_,gradient_);
+      gradient_.scale(negOne);
       linear_solver_.solve(hessian_,gradient_,dx_);
       iteration += 1;
       gnorm = (*gradient_.data()).squaredNorm();
