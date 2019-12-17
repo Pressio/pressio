@@ -62,24 +62,28 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value and
-    ::pressio::containers::meta::has_expression_templates_support<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
     > * = nullptr
   >
-void do_update(T & v, const scalar_t a, const T & v1, const scalar_t b){
-  v = a*v + b*v1;
+void do_update(T & v, const scalar_t a, const T & v1, const scalar_t b)
+{
+  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  for (int_t i=0; i<v.localSize(); ++i)
+    v[i] = a*v[i] + b*v1[i];
 }
 
 template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value and
-    ::pressio::containers::meta::has_expression_templates_support<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
     > * = nullptr
   >
-void do_update(T & v, const T & v1, const scalar_t  b){
-  v = b*v1;
+void do_update(T & v, const T & v1, const scalar_t  b)
+{
+  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  for (int_t i=0; i<v.localSize(); ++i)
+    v[i] = b*v1[i];
 }
 
 
@@ -90,28 +94,32 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value and
-    ::pressio::containers::meta::has_expression_templates_support<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
     > * = nullptr
   >
 void do_update(T & v, const scalar_t &a,
 	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c){
-  v = a*v + b*v1 + c*v2;
+	       const T & v2, const scalar_t &c)
+{
+  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  for (int_t i=0; i<v.localSize(); ++i)
+    v[i] = a*v[i] + b*v1[i] + c*v2[i];
 }
 
 template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value and
-    ::pressio::containers::meta::has_expression_templates_support<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
     > * = nullptr
   >
 void do_update(T & v,
 	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c){
-  v = b*v1 + c*v2;
+	       const T & v2, const scalar_t &c)
+{
+  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  for (int_t i=0; i<v.localSize(); ++i)
+    v[i] = b*v1[i] + c*v2[i];
 }
 
 
@@ -123,30 +131,34 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value and
-    ::pressio::containers::meta::has_expression_templates_support<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
     > * = nullptr
   >
 void do_update(T & v, const scalar_t &a,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d){
-  v = a*v + b*v1 + c*v2 + d*v3;
+	       const T & v3, const scalar_t &d)
+{
+  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  for (int_t i=0; i<v.localSize(); ++i)
+    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
 }
 
 template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value and
-    ::pressio::containers::meta::has_expression_templates_support<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
     > * = nullptr
   >
 void do_update(T & v,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d){
-  v = b*v1 + c*v2 + d*v3;
+	       const T & v3, const scalar_t &d)
+{
+  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  for (int_t i=0; i<v.localSize(); ++i)
+    v[i] = b*v1[i] + c*v2[i] + d*v3[i];
 }
 
 //----------------------------------------------------------------------
@@ -157,32 +169,36 @@ template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value and
-    ::pressio::containers::meta::has_expression_templates_support<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
     > * = nullptr
   >
 void do_update(T & v, const scalar_t &a,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c,
 	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e){
-  v = a*v + b*v1 + c*v2 + d*v3 + e*v4;
+	       const T & v4, const scalar_t &e)
+{
+  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  for (int_t i=0; i<v.localSize(); ++i)
+    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
 }
 
 template<
   typename T,
   typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value and
-    ::pressio::containers::meta::has_expression_templates_support<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
     > * = nullptr
   >
 void do_update(T & v,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c,
 	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e){
-  v = b*v1 + c*v2 + d*v3 + e*v4;
+	       const T & v4, const scalar_t &e)
+{
+  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  for (int_t i=0; i<v.localSize(); ++i)
+    v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
 }
 
 

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_matrix_subtract_operator.hpp
+// containers_meta_is_expression.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,27 +46,25 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MATRIX_MATRIX_SUBTRACT_OPERATOR_HPP_
-#define CONTAINERS_MATRIX_MATRIX_SUBTRACT_OPERATOR_HPP_
+#ifndef CONTAINERS_META_IS_EXPRESSION_HPP_
+#define CONTAINERS_META_IS_EXPRESSION_HPP_
 
-#include "containers_matrix_traits.hpp"
-#include "containers_matrix_meta.hpp"
+#include "../containers_fwd.hpp"
 
-namespace pressio{ namespace containers{
+namespace pressio{ namespace containers{ namespace meta {
 
-template <typename T1, 
-	  ::pressio::mpl::enable_if_t<
-	    containers::meta::is_dense_matrix_wrapper_eigen<T1>::value or
-	    containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value
-	    > * = nullptr>
-T1 operator-(const T1 & A, const T1 & B) {
-  assert( A.rows() == B.rows() );
-  assert( A.cols() == B.cols() );
-  T1 C(A.rows(), A.cols());
-  *C.data() = *A.data_ - *B.data();
-  return C;
-}
-  
+template <typename T, typename enable = void>
+struct is_expression : std::false_type{};
 
-}}//end namespace containers::pressio
+template <typename T>
+struct is_expression<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::publicly_inherits_from<
+      T, ::pressio::containers::expressions::BaseExpr<T>
+      >::value
+    >
+  > : std::true_type{};
+
+}}} // namespace pressio::containers::meta
 #endif

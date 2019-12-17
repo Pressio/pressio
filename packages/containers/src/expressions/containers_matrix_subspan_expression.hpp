@@ -49,10 +49,10 @@
 #ifndef CONTAINERS_MATRIX_SUBSPAN_EXPRESSION_HPP_
 #define CONTAINERS_MATRIX_SUBSPAN_EXPRESSION_HPP_
 
-#include "containers_matrix_meta.hpp"
-#include <typeinfo>
+#include "../matrix/containers_matrix_meta.hpp"
+#include "containers_expression_base.hpp"
 
-namespace pressio{ namespace containers{ namespace exprtemplates{
+namespace pressio{ namespace containers{ namespace expressions{
 
 template <typename matrix_t, typename scalar_type>
 struct SubspanExpr<
@@ -61,12 +61,11 @@ struct SubspanExpr<
     ::pressio::containers::meta::is_matrix_wrapper_eigen<matrix_t>::value
     >
   >
+  : public BaseExpr< SubspanExpr<matrix_t, scalar_type> >
 {
-  static constexpr auto is_subspan_expr = true;
-  using scalar_t      = scalar_type;
-  using data_t	      = matrix_t;
-  using interval_t    = std::pair<std::size_t, std::size_t>;
-  using native_t      = typename ::pressio::containers::details::traits<matrix_t>::wrapped_t;
+
+  using interval_t = std::pair<std::size_t, std::size_t>;
+  using native_t   = typename ::pressio::containers::details::traits<matrix_t>::wrapped_t;
 
 private:
   matrix_t & matObj_;
@@ -88,7 +87,6 @@ public:
 	      const interval_t colRangeIn)
     : matObj_(matObjIn)
   {
-
     rowStart_ = std::get<0>(rowRangeIn);
     colStart_ = std::get<0>(colRangeIn);
 
@@ -140,6 +138,6 @@ public:
 
 };
 
-}}} //end namespace pressio::containers::exprtemplates
+}}} //end namespace pressio::containers::expressions
 
 #endif

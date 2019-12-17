@@ -87,7 +87,13 @@ struct traits<
 #endif
       >
     >
-  > {
+  >
+  : public containers_shared_traits<Matrix<wrapped_type>,
+				    wrapped_type,
+				    false, true, false,
+				    WrappedPackageIdentifier::Undefined,
+				    false, false>
+{
 
   using wrapped_t = wrapped_type;
   using derived_t = Matrix<wrapped_t>;
@@ -101,9 +107,6 @@ struct traits<
   static constexpr bool is_vector = false;
   static constexpr bool is_matrix = true;
   static constexpr bool is_multi_vector = false;
-
-  // by default, an arbitrary matrix type is not admissible to expr templates
-  static constexpr bool is_admissible_for_expression_templates = false;
 };
 
 
@@ -133,9 +136,8 @@ struct traits< Matrix<
 
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
-  static constexpr bool is_admissible_for_expression_templates = true;
-  using subspan_ret_t = exprtemplates::SubspanExpr<Matrix<wrapped_type>, scalar_t>;
-  using subspan_const_ret_t = exprtemplates::SubspanExpr< const Matrix<wrapped_type>, scalar_t>;
+  using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>, scalar_t>;
+  using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>, scalar_t>;
 };
 
 
@@ -274,12 +276,6 @@ struct traits<Matrix
   using global_ordinal_t = int;
   using communicator_t = Epetra_Comm;
   using row_map_t = Epetra_BlockMap;
-
-  // // a multivector can also be seen as literally a multi-vector.
-  // // But here is intended as distributed dense matrix.
-  // // So we set actsAsMultiVector = false, actingAsDenseMatrix = true
-  // static constexpr int actingAsMultiVector = 0;
-  // static constexpr int actingAsDenseMatrix = 1;
 };
 #endif
 

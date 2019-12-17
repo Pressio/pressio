@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_matrix_times_operator.hpp
+// containers_subspan.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,26 +46,42 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MATRIX_MATRIX_TIMES_OPERATOR_HPP_
-#define CONTAINERS_MATRIX_MATRIX_TIMES_OPERATOR_HPP_
+#ifndef CONTAINERS_SUBSPAN_HPP_
+#define CONTAINERS_SUBSPAN_HPP_
 
-#include "containers_matrix_traits.hpp"
-#include "containers_matrix_meta.hpp"
+#include "containers_expression_base.hpp"
+#include "../matrix/containers_matrix_meta.hpp"
+#include "containers_matrix_subspan_expression.hpp"
 
 namespace pressio{ namespace containers{
-  
-template <typename T1, 
-	  ::pressio::mpl::enable_if_t<
-	    containers::meta::is_dense_matrix_wrapper_eigen<T1>::value or
-	    containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value
-	    > * = nullptr>
-T1 operator*(const T1 & A, const T1 & B) {
-  assert( A.rows() == B.rows() );
-  assert( A.cols() == B.cols() );
-  T1 C(A.rows(), A.cols());
-  *C.data() = (*A.data_) * (*B.data());
-  return C;
+
+template <typename T>
+mpl::enable_if_t<
+  meta::is_matrix_wrapper<T>::value,
+  typename details::traits<T>::subspan_const_ret_t
+  >
+subspan(const T & obj,
+	const typename details::traits<T>::subspan_const_ret_t::interval_t & rowRangeIn,
+	const typename details::traits<T>::subspan_const_ret_t::interval_t & colRangeIn)
+{
+  using return_t = typename details::traits<T>::subspan_const_ret_t;
+  return return_t(obj, rowRangeIn, colRangeIn);
 }
 
-}}//end namespace containers::pressio
+template <typename T>
+mpl::enable_if_t<
+  meta::is_matrix_wrapper<T>::value,
+  typename details::traits<T>::subspan_ret_t
+  >
+subspan(T & obj,
+	const typename details::traits<T>::subspan_ret_t::interval_t & rowRangeIn,
+	const typename details::traits<T>::subspan_ret_t::interval_t & colRangeIn)
+{
+  using return_t = typename details::traits<T>::subspan_ret_t;
+  return return_t(obj, rowRangeIn, colRangeIn);
+}
+
+
+}} //end namespace pressio::containers
+
 #endif

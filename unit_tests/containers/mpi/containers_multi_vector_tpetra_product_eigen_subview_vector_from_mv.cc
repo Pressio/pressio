@@ -65,7 +65,7 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
   B(3, 0) = 4.; B(3, 1) = 8.;
 
   {
-    const auto colVec = B.viewColumnVector(0);
+    const auto colVec = pressio::containers::viewColumnVector(B, 0);
     auto res = containers::ops::product(MV, colVec);
     auto cc2 = res.data()->getLocalView<Kokkos::HostSpace>();
     auto cc = Kokkos::subview (cc2, Kokkos::ALL (), 0);
@@ -110,7 +110,7 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
 
 
   {
-    const auto colVec = B.viewColumnVector(1);
+    const auto colVec = pressio::containers::viewColumnVector(B, 1);
     auto res = containers::ops::product(MV, colVec);
     auto cc2 = res.data()->getLocalView<Kokkos::HostSpace>();
     auto cc = Kokkos::subview (cc2, Kokkos::ALL (), 0);

@@ -76,10 +76,6 @@ struct containers_shared_traits{
   static constexpr bool is_shared_mem = is_shared_mem_t;
   static constexpr bool is_static = is_static_t;
   static constexpr bool is_dynamic = !is_static_t;
-
-  // by default, any container is not admissible to expr templates
-  // the ones that are, will overwrite this
-  static constexpr bool is_admissible_for_expression_templates = false;
 };
 
 /// common traits of matrices

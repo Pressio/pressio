@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_admissible_vector_for_sharedmem_expr_templates.hpp
+// containers_span.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,23 +46,38 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_IS_ADMISSIBLE_VECTOR_FOR_SHAREDMEM_EXP_TEMPL_HPP_
-#define CONTAINERS_IS_ADMISSIBLE_VECTOR_FOR_SHAREDMEM_EXP_TEMPL_HPP_
+#ifndef CONTAINERS_SPAN_HPP_
+#define CONTAINERS_SPAN_HPP_
 
-#include "containers_is_vector_wrapper.hpp"
+#include "containers_expression_base.hpp"
+#include "../vector/containers_vector_meta.hpp"
+#include "containers_vector_span_expression.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{
 
-template <typename T,
-    typename enable = void>
-struct is_admissible_vec_for_sharedmem_expression : std::false_type{};
+template <typename T, typename ... Args>
+mpl::enable_if_t<
+  meta::is_vector_wrapper<T>::value and (0 < sizeof...(Args)),
+  typename details::traits<T>::span_const_ret_t
+  >
+span(const T & vecObj, Args&& ... args)
+{
+  using return_t = typename details::traits<T>::span_const_ret_t;
+  return return_t(vecObj, std::forward<Args>(args)... );
+}
 
-template <typename T>
-struct is_admissible_vec_for_sharedmem_expression<T,
-      ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper<T>::value &&
-  containers::details::traits<T>::is_shared_mem
-      >> : std::true_type{};
+template <typename T, typename ... Args>
+mpl::enable_if_t<
+  meta::is_vector_wrapper<T>::value and (0 < sizeof...(Args)),
+  typename details::traits<T>::span_ret_t
+  >
+span(T & vecObj, Args&& ... args)
+{
+  using return_t = typename details::traits<T>::span_ret_t;
+  return return_t(vecObj, std::forward<Args>(args)... );
+}
 
-}}}//end namespace pressio::containers::meta
+
+}} //end namespace pressio::containers
+
 #endif

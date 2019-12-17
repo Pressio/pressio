@@ -27,7 +27,7 @@ struct observer{
   void operator()(size_t step,
   		  double t,
   		  const state_t & y){
-    yIncr_ = y - y0_;
+    *yIncr_.data() = *y.data() - *y0_.data();
     this->storeInColumn(yIncr_, count_);
     count_++;
   }

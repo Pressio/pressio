@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_has_expression_templates_support.hpp
+// containers_expression_base.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,23 +46,15 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_HAS_EXPRESSION_TEMPLATES_SUPPORT_HPP_
-#define CONTAINERS_HAS_EXPRESSION_TEMPLATES_SUPPORT_HPP_
+#ifndef CONTAINERS_EXPRESSION_BASE_HPP_
+#define CONTAINERS_EXPRESSION_BASE_HPP_
 
-#include "../containers_fwd.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace expressions{
 
-template <typename T, typename enable = void>
-struct has_expression_templates_support : std::false_type{};
+template <typename derived_type>
+class BaseExpr{};
 
-template <typename T>
-struct has_expression_templates_support<
-  T,
-  ::pressio::mpl::enable_if_t<
-    containers::details::traits<T>::is_admissible_for_expression_templates
-    >
-  > : std::true_type{};
+}}} //end namespace pressio::containers::expressions
 
-}}}//end namespace pressio::containers::meta
 #endif

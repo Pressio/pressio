@@ -63,8 +63,6 @@ class MultiVectorSharedMemBase
 
   using sc_t  = typename traits::scalar_t;
   using ord_t = typename traits::ordinal_t;
-  using view_col_vec_ret_t = typename traits::view_col_vec_ret_t;
-  using view_col_vec_const_ret_t = typename traits::view_col_vec_const_ret_t;
 
 public:
   ord_t numVectors() const{
@@ -73,22 +71,6 @@ public:
 
   ord_t length() const {
     return static_cast<const derived_type &>(*this).lengthImpl();
-  };
-
-  template< typename _view_col_vec_const_ret_t = view_col_vec_const_ret_t>
-  mpl::enable_if_t< !std::is_void<_view_col_vec_const_ret_t>::value, _view_col_vec_const_ret_t>
-  viewColumnVector(const ord_t & colIndex) const {
-    assert( colIndex < this->numVectors() );
-    const auto & mvObj = static_cast<const derived_type &>(*this);
-    return view_col_vec_const_ret_t(mvObj, colIndex);
-  };
-
-  template< typename _view_col_vec_ret_t = view_col_vec_ret_t>
-  mpl::enable_if_t< !std::is_void<_view_col_vec_ret_t>::value, _view_col_vec_ret_t>
-  viewColumnVector(const ord_t & colIndex) {
-    assert( colIndex < this->numVectors() );
-    auto & mvObj = static_cast<derived_type &>(*this);
-    return view_col_vec_ret_t(mvObj, colIndex);
   };
 
 private:

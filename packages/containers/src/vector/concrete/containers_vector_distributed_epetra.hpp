@@ -107,18 +107,6 @@ public:
   ~Vector() = default;
 
 public:
-  // assignment from any expression
-  template <typename T,
-	    ::pressio::mpl::enable_if_t<
-	      T::is_vector_expression> * = nullptr>
-  Vector & operator=(const T & expr){
-    assert(this->localSize() == expr.localSize());
-    for (LO_t i = 0; i != expr.localSize(); ++i)
-      data_[i] = expr(i);
-    return *this;
-  }
-
-public:
   sc_t & operator [] (LO_t i){
     assert(i < this->localSize());
     return data_[i];
@@ -137,35 +125,10 @@ public:
     return data_[i];
   };
 
-  // compound assignment from expression template
-  // this += expr
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      T::is_vector_expression> * = nullptr>
-  Vector & operator+=(const T & expr) {
-    assert(this->localSize() == expr.localSize());
-    for (LO_t i = 0; i != expr.localSize(); ++i)
-      data_[i] += expr(i);
-    return *this;
-  }
-
   // compound assignment when type(b) = type(this)
   // this += b
   Vector & operator+=(const Vector & other) {
     this->data_.Update(1.0, *other.data(), 1.0 );
-    return *this;
-  }
-
-
-  // compound assignment from expression template
-  // this -= expr
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      T::is_vector_expression> * = nullptr>
-  Vector & operator-=(const T & expr) {
-    assert(this->localSize() == expr.localSize());
-    for (LO_t i = 0; i != expr.localSize(); ++i)
-      data_[i] -= expr(i);
     return *this;
   }
 

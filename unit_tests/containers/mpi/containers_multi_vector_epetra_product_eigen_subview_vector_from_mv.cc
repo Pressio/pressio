@@ -51,21 +51,21 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 
   {
     // view the vector at j=0
-    const auto colVec = B.viewColumnVector(0);
+    const auto colVec = pressio::containers::viewColumnVector(B, 0);
     EXPECT_DOUBLE_EQ( colVec[0], B(0,0) );
     EXPECT_DOUBLE_EQ( colVec[3], B(3,0) );
   }
 
   {
     // view the vector at j=1
-    const auto colVec = B.viewColumnVector(1);
+    const auto colVec = pressio::containers::viewColumnVector(B, 1);
     EXPECT_DOUBLE_EQ( colVec[1], B(1,1) );
     EXPECT_DOUBLE_EQ( colVec[2], B(2,1) );
   }
 
   // do product
   {
-    const auto colVec = B.viewColumnVector(0);
+    const auto colVec = pressio::containers::viewColumnVector(B, 0);
     auto res = containers::ops::product(MV, colVec);
     res.data()->Print(std::cout);
     if (rank_==0){
@@ -106,7 +106,7 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 
   // do product with second col
   {
-    const auto colVec = B.viewColumnVector(1);
+    const auto colVec = pressio::containers::viewColumnVector(B, 1);
     auto res = containers::ops::product(MV, colVec);
     res.data()->Print(std::cout);
     if (rank_==0){

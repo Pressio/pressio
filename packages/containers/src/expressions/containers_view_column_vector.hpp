@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_expression_templates_operators.hpp
+// containers_view_column_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,38 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSION_TEMPLATES_OPERATORS_HPP_
-#define CONTAINERS_EXPRESSION_TEMPLATES_OPERATORS_HPP_
+#ifndef CONTAINERS_VIEW_COLUMN_VECTOR_HPP_
+#define CONTAINERS_VIEW_COLUMN_VECTOR_HPP_
 
-namespace pressio{ namespace containers{ namespace exprtemplates{
+#include "containers_expression_base.hpp"
+#include "../multi_vector/containers_multi_vector_meta.hpp"
+#include "containers_multi_vector_view_column_vector_expression.hpp"
 
-struct plus_{
-  template <typename a_t, typename b_t>
-  auto operator()(const a_t & a, const b_t & b) const
-  -> decltype(a+b) {
-    return a + b;
-  }
-};
+namespace pressio{ namespace containers{
 
-struct subtract_{
-  template <typename a_t, typename b_t>
-  auto operator()(const a_t & a, const b_t & b) const
-  -> decltype(a-b) {
-    return a - b;
-  }
-};
+template <typename T>
+mpl::enable_if_t<
+  ::pressio::containers::meta::is_multi_vector_wrapper<T>::value,
+  typename details::traits<T>::view_col_vec_const_ret_t
+  >
+viewColumnVector(const T & obj, std::size_t index)
+{
+  using return_t = typename details::traits<T>::view_col_vec_const_ret_t;
+  return return_t(obj, index);
+}
 
-struct times_{
-  template <typename a_t, typename b_t>
-  auto operator()(const a_t & a, const b_t & b) const
-  -> decltype(a*b) {
-    return a * b;
-  }
-};
+template <typename T>
+mpl::enable_if_t<
+  ::pressio::containers::meta::is_multi_vector_wrapper<T>::value,
+  typename details::traits<T>::view_col_vec_ret_t
+  >
+viewColumnVector(T & obj, std::size_t index)
+{
+  using return_t = typename details::traits<T>::view_col_vec_ret_t;
+  return return_t(obj, index);
+}
 
-}}} // end of namespace pressio::containers::exprtemplates
+
+}} //end namespace pressio::containers
+
 #endif

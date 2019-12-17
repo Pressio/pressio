@@ -100,7 +100,8 @@ int main(int argc, char *argv[]){
   /* this is a predictive run, so we should recover FOM
    * solution only approximately */
   auto normFomY = pressio::containers::ops::norm2(yFom);
-  auto errorVec(yFom); errorVec = yFom - yFomApprox;
+  auto errorVec(yFom); 
+  pressio::containers::ops::do_update(errorVec, yFom, 1., yFomApprox, -1.);
   const auto norm2err = pressio::containers::ops::norm2(errorVec);
   if( (norm2err/normFomY)*100 > 0.1 ) checkStr = "FAILED";
 
