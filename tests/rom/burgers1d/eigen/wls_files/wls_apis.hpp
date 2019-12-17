@@ -35,7 +35,7 @@ public:
   int numStepsInWindow;
   int time_stencil_size;
   int windowNum = 0; 
-  WlsSystemHessianAndGradientApi(fom_type & appObj, const hessian_gradient_pol_t & hessian_gradient_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, int numStepsInWindow, int romSize, int fomSize, const int time_stencil_size) : appObj_(appObj), hessian_gradient_polObj_(hessian_gradient_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),wlsStateIC(romSize,time_stencil_size-1), fomStateContainerObj2(yFOM){
+  WlsSystemHessianAndGradientApi(fom_type & appObj, const hessian_gradient_pol_t & hessian_gradient_polObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt, int numStepsInWindow, int romSize, int fomSize, const int time_stencil_size) : appObj_(appObj), hessian_gradient_polObj_(hessian_gradient_polObj),fomStateReconstructorObj_(yFOM,decoderObj),fomStateReconstructorObjPtr(fomStateReconstructorObj_),wlsStateIC(romSize*(time_stencil_size-1)), fomStateContainerObj2(yFOM){
   this->dt = dt;
   this->numStepsInWindow = numStepsInWindow;
   this->romSize = romSize;
@@ -68,10 +68,17 @@ public:
     //sbar = std::min(this->time_stencil_size-1,numStepsInWindow);
     int start = std::max(0,time_stencil_size - 1 - numStepsInWindow);
     for (int i = 0; i < start; i++){
-      (*(this->wlsStateIC).data()).block(0,i,romSize,1) = (*(this->wlsStateIC).data()).block(0,i+1,romSize,1);} 
+      auto wlsTmpState = ::pressio::containers::span(wlsStateIC,i*romSize,romSize);
+      auto wlsTmpState2 = ::pressio::containers::span(wlsStateIC,(i+1)*romSize,romSize);
+      for (int k=0; k < romSize; k++){
+        wlsTmpState[k] = wlsTmpState2[k];}}
     for (int i = start ; i < this->time_stencil_size-1; i++){
       std::cout << i << std::endl;
-      (*(this->wlsStateIC).data()).block(0,i,romSize,1) = (*wlsState.data()).block(0,numStepsInWindow - this->time_stencil_size + 1 + i , romSize ,1);}
+      auto wlsTmpState = ::pressio::containers::span(wlsStateIC,i*romSize,romSize);
+      auto wlsTmpState2 = ::pressio::containers::span(wlsState,( numStepsInWindow - this->time_stencil_size + 1 + i )*romSize,romSize);
+      for (int k=0; k < romSize; k++){
+        wlsTmpState[k] = wlsTmpState2[k];}}
+      //(*(this->wlsStateIC).data()).block(0,i,romSize,1) = (*wlsState.data()).block(0,numStepsInWindow - this->time_stencil_size + 1 + i , romSize ,1);}
     std::cout << " Window " << windowNum << " completed " << std::endl;
   }
 

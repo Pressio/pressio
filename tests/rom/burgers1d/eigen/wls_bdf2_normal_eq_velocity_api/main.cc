@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
   using fom_native_state_t = pressio::apps::Burgers1dEigenResidualApi::state_type;
 
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-  using wls_state_t    = ::pressio::containers::MultiVector<Eigen::Matrix<scalar_t, -1, -1,Eigen::ColMajor>>;
+  using wls_state_t    = rom_state_t;//::pressio::containers::MultiVector<Eigen::Matrix<scalar_t, -1, -1,Eigen::ColMajor>>;
 
   //using jac_t = decoder_t::jacobian_t;
 
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   scalar_t dt = 0.01;
   int romSize = 11;
-  constexpr int numStepsInWindow = 10;
+  constexpr int numStepsInWindow = 5;
   const int t_stencil_width = 3;
 
   using ode_tag = ::pressio::ode::implicitmethods::BDF2;
@@ -59,11 +59,15 @@ int main(int argc, char *argv[]){
   // create decoder Obj
   decoder_t decoderObj(phi);
   decoderObj.getReferenceToJacobian();
-  wls_state_t  wlsState(romSize,numStepsInWindow);
+  wls_state_t  wlsState(romSize*numStepsInWindow);
   wlsState.setZero();
 
 
+
+
   fom_state_t yFOM(fomSize);
+
+  //auto test = pressio::containers::span(yFOM, 2, 5);
   fom_native_state_t yRef(fomSize);
   (*yFOM.data()).setConstant(1.);
 
@@ -79,6 +83,8 @@ int main(int argc, char *argv[]){
   using wls_api_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,hessian_gradient_policy_t,aux_states_container_t,hessian_t,gradient_t>;
   using wls_system_t  = wls_api_t;//pressio::rom::wls::WlsSystem<wls_api_t, fom_t, wls_state_t,decoder_t, hessian_gradient_policy_t,aux_states_container_t,hessian_t,gradient_t>;
   // construct objects and test
+
+
   hessian_gradient_policy_t hessian_gradient_policy(romSize,fomSize,numStepsInWindow,t_stencil_width,phi);
   wls_system_t wlsSystem(appObj,hessian_gradient_policy,decoderObj,yFOM,dt,numStepsInWindow,romSize,fomSize,t_stencil_width);
 
@@ -98,13 +104,14 @@ int main(int argc, char *argv[]){
   {
     wlsSystem.advanceOneWindow(wlsState,gn_solver,step);
   }
+
   fom_state_t yTest(fomSize);
   aux_states_container_t  fomStateContainerObj(yTest);
   ::pressio::ode::impl::time_discrete_residual<ode_tag>(yTest,yTest,fomStateContainerObj,dt);
 
 
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);
-  const auto wlsCurrentState = wlsState.viewColumnVector(numStepsInWindow-1);
+  const auto wlsCurrentState = pressio::containers::span(wlsState,(numStepsInWindow-1)*romSize,romSize);
   fom_state_t yFinal(fomSize);
 
   fomStateReconstructor(wlsCurrentState,yFinal);
@@ -117,8 +124,6 @@ int main(int argc, char *argv[]){
 //  ::pressio::ode::impl::time_discrete_residual<ode_case_t,fom_state_t,fom_state_t,fom_state_t,scalar_t>time_discrete_residual(yFOM,yFOM,yFOM,dt);
 //  ::pressio::ode::impl::time_discrete_residual<ode_case_t2>(yFOM,yFOM,statesContainer,dt);
 
-/*
 
-*/
   return 0;
 }

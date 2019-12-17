@@ -22,7 +22,7 @@ public:
 //    Eigen::VectorXd eigVector(data);
 //    ::pressio::containers::Vector<Eigen::VectorXd> pressioVector(eigVector);
 //    eigenVector.data() = data;  
-    ::pressio::containers::Vector<Eigen::Map<Eigen::Matrix<scalar_type, -1, 1,Eigen::ColMajor>>> stateV((*state.data()).data(), (*state.data()).size());
+//    ::pressio::containers::Vector<Eigen::Map<Eigen::Matrix<scalar_type, -1, 1,Eigen::ColMajor>>> stateV((*state.data()).data(), (*state.data()).size());
 
     while (gnorm >= tol){
       sys.computeHessianAndGradient(state,hessian_,gradient_); 
@@ -33,7 +33,7 @@ public:
       std::cout << "Hess norm = " << (*hessian_.data()).squaredNorm() << std::endl; 
       std::cout << "x    norm = " << (*dx_.data()).squaredNorm() << std::endl; 
       std::cout << "iteration = " << iteration << std::endl; 
-      (*stateV.data()) = (*stateV.data()) + (*dx_.data());
+      (*state.data()) = (*state.data()) + (*dx_.data());
     } 
 
  } 

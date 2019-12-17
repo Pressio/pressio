@@ -52,12 +52,15 @@ public:
 
   template <typename wls_state_type, typename aux_states_container_t> 
   void updateStatesFirstStep(const wls_state_type & wlsStateIC, const fom_state_reconstr_t & fomStateReconstr, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::BDF2  tag) const{
-    const auto wlsInitialStateNm2 = wlsStateIC.viewColumnVector(0);
+    const auto wlsInitialStateNm2 = ::pressio::containers::span(wlsStateIC,0,romSize);
     auto & fomStateNm2 = auxStatesContainer.get(nm2());
     fomStateReconstr(wlsInitialStateNm2,fomStateNm2);
-    const auto wlsInitialStateNm1 = wlsStateIC.viewColumnVector(1);
+    const auto wlsInitialStateNm1 = ::pressio::containers::span(wlsStateIC,romSize,romSize);
     auto & fomStateNm1 = auxStatesContainer.get(nm1());
+    std::cout<< "here" << std::endl;
     fomStateReconstr(wlsInitialStateNm1,fomStateNm1);
+    std::cout<< "here2" << std::endl;
+
   }
   template <typename aux_states_container_t> 
   void updateStatesNStep(const fom_state_t & yFOM_current, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::BDF2  tag) const{
@@ -69,7 +72,7 @@ public:
 
   template <typename wls_state_type, typename aux_states_container_t> 
   void updateStatesFirstStep(const wls_state_type & wlsStateIC, const fom_state_reconstr_t & fomStateReconstr, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::Euler  tag) const{
-    const auto wlsInitialStateNm1 = wlsStateIC.viewColumnVector(0);
+    const auto wlsInitialStateNm1 = ::pressio::containers::span(wlsStateIC,0,romSize);
     auto & fomStateNm1 = auxStatesContainer.get(nm1());
     fomStateReconstr(wlsInitialStateNm1,fomStateNm1);
   }
@@ -85,30 +88,27 @@ public:
   int n = 0;
   scalar_t t = ts + n*dt;
   constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
-  hess.setZero();
+
+  hess.setZero(); // may be possible to get rid of these
   gradient.setZero();
 
-  const auto wlsCurrentState = wlsState.viewColumnVector(0);
-  // New way
-  updateStatesFirstStep(wlsStateIC,fomStateReconstrObj_,fomStateContainerObj2,ode);
+  const auto wlsCurrentState = ::pressio::containers::span(wlsState,0,romSize);
   fomStateReconstrObj_(wlsCurrentState,yFOM_current);
-
+  updateStatesFirstStep(wlsStateIC,fomStateReconstrObj_,fomStateContainerObj2,ode);
 
   residualPolicy(ode,appObj,yFOM_current,residual,fomStateContainerObj2,ts,dt);
   for (int i = 0; i < time_stencil_size; i++){
     jacobianPolicy(ode,appObj,yFOM_current,wlsJacs[time_stencil_size - i - 1],phi_,fomStateContainerObj2,n*dt,dt,i);
   }
   hess_type C(romSize,romSize); // this is a temporary work around for the += issue.
-
-  auto hess_block = hess.subspan( std::make_pair( n*romSize,(n+1)*romSize ) , std::make_pair( n*romSize,(n+1)*romSize ) );
+  auto hess_block = ::pressio::containers::subspan( hess,std::make_pair( n*romSize,(n+1)*romSize ) , std::make_pair( n*romSize,(n+1)*romSize ) );
   ::pressio::containers::ops::dot(wlsJacs[time_stencil_size-1],wlsJacs[time_stencil_size-1], hess_block);
-  local_mat_update(wlsJacs[time_stencil_size-1],residual,gradient,n*romSize,0,romSize,1);
-
+  local_vec_update(wlsJacs[time_stencil_size-1],residual,gradient,n*romSize,romSize);
   for (int n = 1; n < numStepsInWindow; n++){
     // === reconstruct FOM states ========
     updateStatesNStep(yFOM_current,fomStateContainerObj2,ode); 
 
-    const auto wlsCurrentState = wlsState.viewColumnVector(n);
+    const auto wlsCurrentState = ::pressio::containers::span(wlsState,n*romSize,romSize);
     fomStateReconstrObj_(wlsCurrentState,yFOM_current);
     // == Evaluate residual ============
     t = ts + n*dt;
@@ -118,18 +118,18 @@ public:
     // == Update everything
     int sbar = std::min(n,time_stencil_size);
     for (int i=0; i < sbar; i++){
-      local_mat_update(wlsJacs[time_stencil_size-i-1],residual,gradient,(n-i)*romSize,0,romSize,1);}
+      local_vec_update(wlsJacs[time_stencil_size-i-1],residual,gradient,(n-i)*romSize,romSize);}
     // == Assemble local component of global Hessian //
     for (int i=0; i < sbar; i++){
       for (int j=0; j <= i; j++){
-         auto hess_block = hess.subspan( std::make_pair( (n-i)*romSize,(n-i+1)*romSize ) , std::make_pair( (n-j)*romSize,(n-j+1)*romSize ) );
+         auto hess_block = ::pressio::containers::subspan(hess, std::make_pair( (n-i)*romSize,(n-i+1)*romSize ) , std::make_pair( (n-j)*romSize,(n-j+1)*romSize ) );
          ::pressio::containers::ops::dot(wlsJacs[time_stencil_size-i-1],wlsJacs[time_stencil_size-j-1], C);
          for (int k = 0; k<romSize; k++){
            for (int l = 0; l<romSize; l++){
              hess_block(k,l) = hess_block(k,l) + C(k,l); 
             }
          }
-         auto hess_block2 = hess.subspan( std::make_pair( (n-j)*romSize,(n-j+1)*romSize ) , std::make_pair( (n-i)*romSize,(n-i+1)*romSize ) );
+         auto hess_block2 = ::pressio::containers::subspan(hess, std::make_pair( (n-j)*romSize,(n-j+1)*romSize ) , std::make_pair( (n-i)*romSize,(n-i+1)*romSize ) );
          for (int k = 0; k<romSize; k++){
            for (int l = 0; l<romSize; l++){
              hess_block2(l,k) = hess_block(k,l); 
