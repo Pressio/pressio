@@ -73,11 +73,11 @@ int main(int argc, char *argv[]){
 
   using gradient_t = rom_state_t;
   using hessian_t = pressio::containers::Matrix<eig_dyn_mat>;
-  using local_residual_policy_t = pressio::rom::wls::impl::local_residual_policy_velocityAPI<fom_t>;
-  using local_jacobian_policy_t = pressio::rom::wls::impl::local_jacobian_policy_velocityAPI<fom_t,decoder_t>;
-  using hessian_gradient_policy_t = pressio::rom::wls::impl::hessian_gradient_policy<wls_state_t,fom_t,hessian_t,gradient_t,decoder_t,local_residual_policy_t,local_jacobian_policy_t,ode_tag>;
-  using wls_api_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,hessian_gradient_policy_t,aux_states_container_t>;
-  using wls_system_t  = pressio::rom::wls::WlsSystem<wls_api_t, fom_t, wls_state_t,decoder_t, hessian_gradient_policy_t,aux_states_container_t>;
+  using local_residual_policy_t = pressio::rom::wls::impl::local_residual_policy_velocityAPI;
+  using local_jacobian_policy_t = pressio::rom::wls::impl::local_jacobian_policy_velocityAPI;
+  using hessian_gradient_policy_t = pressio::rom::wls::impl::hessian_gradient_policy<fom_t,decoder_t,local_residual_policy_t,local_jacobian_policy_t,ode_tag>;
+  using wls_api_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,hessian_gradient_policy_t,aux_states_container_t,hessian_t,gradient_t>;
+  using wls_system_t  = wls_api_t;//pressio::rom::wls::WlsSystem<wls_api_t, fom_t, wls_state_t,decoder_t, hessian_gradient_policy_t,aux_states_container_t,hessian_t,gradient_t>;
   // construct objects and test
   hessian_gradient_policy_t hessian_gradient_policy(romSize,fomSize,numStepsInWindow,t_stencil_width,phi);
   wls_system_t wlsSystem(appObj,hessian_gradient_policy,decoderObj,yFOM,dt,numStepsInWindow,romSize,fomSize,t_stencil_width);

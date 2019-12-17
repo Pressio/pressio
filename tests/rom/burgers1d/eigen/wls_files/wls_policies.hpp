@@ -7,12 +7,17 @@ This header file contains policies for computing the hessian and gradients in th
 The policies are templated on the policies for compputing the local residuals and jacobians as defined in the wls_local_policies.hpp file
 */
 
+/*
+The hessian_gradient policy is responsible for assembling Jw^T Jw and J^T rw, where Jw is the reduced windowed Jacobian and rw the residual. 
+The policy initializes in memory:
+	wlsJacs: this is a vector container of n_s -1 local Jacobians, J, where n_s is the width of the time stencil (e.g., n_s = 3 for BDF2)
+  residual: this is the residual vector for Jw^T rw
+  yFOM_current: this is a working variable for the fom state.
+*/
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
-template< typename wls_state_type, typename fom_type, typename hess_type, typename gradient_type, typename decoder_t,typename local_residual_policy_t,typename local_jacobian_policy_t, typename  ode_tag>
+template<typename fom_type, typename decoder_t,typename local_residual_policy_t,typename local_jacobian_policy_t, typename  ode_tag>
 struct hessian_gradient_policy{
 public:
-  using hess_t = hess_type;
-  using gradient_t = gradient_type;
   using fom_native_state_t      = typename fom_type::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
@@ -20,7 +25,7 @@ public:
   using basis_t  = typename decoder_t::jacobian_t;
   using residual_t = fom_state_t; //maybe we need to change this for hyper reduction?
   // Create types for Jacobians and Jacobian containers
-  using jac_t = typename pressio::containers::MultiVector<Eigen::Matrix<scalar_t, -1, -1>>;
+  using jac_t = basis_t;//typename pressio::containers::MultiVector<Eigen::Matrix<scalar_t, -1, -1>>;
   using wls_jacs_t = std::vector<jac_t>;
 
   using nm1 = ode::nMinusOne;
@@ -45,7 +50,7 @@ public:
   }
 
 
-  template <typename aux_states_container_t> 
+  template <typename wls_state_type, typename aux_states_container_t> 
   void updateStatesFirstStep(const wls_state_type & wlsStateIC, const fom_state_reconstr_t & fomStateReconstr, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::BDF2  tag) const{
     const auto wlsInitialStateNm2 = wlsStateIC.viewColumnVector(0);
     auto & fomStateNm2 = auxStatesContainer.get(nm2());
@@ -62,7 +67,7 @@ public:
       ::pressio::containers::ops::deep_copy(yFOM_current, odeState_nm1);
   }
 
-  template <typename aux_states_container_t> 
+  template <typename wls_state_type, typename aux_states_container_t> 
   void updateStatesFirstStep(const wls_state_type & wlsStateIC, const fom_state_reconstr_t & fomStateReconstr, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::Euler  tag) const{
     const auto wlsInitialStateNm1 = wlsStateIC.viewColumnVector(0);
     auto & fomStateNm1 = auxStatesContainer.get(nm1());
@@ -75,7 +80,7 @@ public:
   }
 
 
-  template <typename  fom_state_container_t2>
+  template <typename wls_state_type, typename  fom_state_container_t2, typename hess_type, typename gradient_type>
   void operator()(fom_type & appObj, const wls_state_type  & wlsState, wls_state_type & wlsStateIC, hess_type & hess, gradient_type & gradient, fom_state_reconstr_t & fomStateReconstrObj_,scalar_t dt, std::size_t numStepsInWindow, const scalar_t ts ,fom_state_container_t2 & fomStateContainerObj2) const{
   int n = 0;
   scalar_t t = ts + n*dt;
@@ -93,7 +98,7 @@ public:
   for (int i = 0; i < time_stencil_size; i++){
     jacobianPolicy(ode,appObj,yFOM_current,wlsJacs[time_stencil_size - i - 1],phi_,fomStateContainerObj2,n*dt,dt,i);
   }
-  hess_t C(romSize,romSize);
+  hess_type C(romSize,romSize); // this is a temporary work around for the += issue.
 
   auto hess_block = hess.subspan( std::make_pair( n*romSize,(n+1)*romSize ) , std::make_pair( n*romSize,(n+1)*romSize ) );
   ::pressio::containers::ops::dot(wlsJacs[time_stencil_size-1],wlsJacs[time_stencil_size-1], hess_block);

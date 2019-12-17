@@ -1,7 +1,7 @@
 // this is the same as in other file
 #include "wls_policies.hpp"
 namespace pressio{ namespace rom{ namespace wls{
-template<typename fom_type, typename wls_state_type, typename decoder_t, typename hessian_gradient_pol_t, typename fom_state_container_t2>
+template<typename fom_type, typename wls_state_type, typename decoder_t, typename hessian_gradient_pol_t, typename fom_state_container_t2, typename hessian_type, typename gradient_type>
 class WlsSystemHessianAndGradientApi{
 private:
   const hessian_gradient_pol_t & hessian_gradient_polObj_;
@@ -16,8 +16,8 @@ public:
   
 
   using state_type = wls_state_type;
-  using hessian_type = typename hessian_gradient_pol_t::hess_t;
-  using gradient_type = typename hessian_gradient_pol_t::gradient_t;
+  //using hessian_type = typename hessian_gradient_pol_t::hess_t;
+  //using gradient_type = typename hessian_gradient_pol_t::gradient_t;
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
   using decoder_jac_t = typename decoder_t::jacobian_t;
   
