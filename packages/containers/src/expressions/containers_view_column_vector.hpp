@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_MULTI_VECTOR
+// containers_view_column_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,38 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MULTI_VECTOR_HPP_
-#define CONTAINERS_MULTI_VECTOR_HPP_
+#ifndef CONTAINERS_VIEW_COLUMN_VECTOR_HPP_
+#define CONTAINERS_VIEW_COLUMN_VECTOR_HPP_
 
-#include "CONTAINERS_BASIC"
+#include "containers_expression_base.hpp"
+#include "../multi_vector/containers_multi_vector_meta.hpp"
+#include "containers_multi_vector_view_column_vector_expression.hpp"
 
-#include "containers/src/collection/containers_static_collection.hpp"
+namespace pressio{ namespace containers{
 
-#include "containers/src/multi_vector/containers_native_multi_vector_static_asserts.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_traits.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_meta.hpp"
+template <typename T>
+mpl::enable_if_t<
+  ::pressio::containers::meta::is_multi_vector_wrapper<T>::value,
+  typename details::traits<T>::view_col_vec_const_ret_t
+  >
+viewColumnVector(const T & obj, std::size_t index)
+{
+  using return_t = typename details::traits<T>::view_col_vec_const_ret_t;
+  return return_t(obj, index);
+}
 
-#include "containers/src/expressions/containers_expressions_traits.hpp"
-#include "containers/src/expressions/containers_multi_vector_view_column_vector_expression.hpp"
-#include "containers/src/expressions/containers_view_column_vector.hpp"
+template <typename T>
+mpl::enable_if_t<
+  ::pressio::containers::meta::is_multi_vector_wrapper<T>::value,
+  typename details::traits<T>::view_col_vec_ret_t
+  >
+viewColumnVector(T & obj, std::size_t index)
+{
+  using return_t = typename details::traits<T>::view_col_vec_ret_t;
+  return return_t(obj, index);
+}
 
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_epetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra_block.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_kokkos.hpp"
+
+}} //end namespace pressio::containers
 
 #endif

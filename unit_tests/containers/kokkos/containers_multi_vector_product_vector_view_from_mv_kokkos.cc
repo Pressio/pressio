@@ -70,7 +70,7 @@ struct RunTest{
 
     {
       // get a view of the 0-th col
-      const auto colView = mvB_d.viewColumnVector(0);
+      const auto colView = pressio::containers::viewColumnVector(mvB_d, 0);
 
       auto c_d = ::pressio::containers::ops::product(mvA_d, colView);
       using expected_ret_t = ::pressio::containers::Vector<k1d_d>;
@@ -94,7 +94,7 @@ struct RunTest{
 
     {
       // get a view of the 1-st col
-      const auto colView = mvB_d.viewColumnVector(1);
+      const auto colView = pressio::containers::viewColumnVector(mvB_d, 1);
 
       auto c_d = ::pressio::containers::ops::product(mvA_d, colView);
       using expected_ret_t = ::pressio::containers::Vector<k1d_d>;

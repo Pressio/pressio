@@ -57,8 +57,7 @@ namespace pressio{ namespace containers{
 
 template <typename T>
 mpl::enable_if_t<
-  meta::is_matrix_wrapper_eigen<T>::value or
-  meta::is_matrix_wrapper_kokkos<T>::value,
+  meta::is_matrix_wrapper<T>::value,
   typename details::traits<T>::subspan_const_ret_t
   >
 subspan(const T & obj,
@@ -71,7 +70,7 @@ subspan(const T & obj,
 
 template <typename T>
 mpl::enable_if_t<
-  meta::is_matrix_wrapper_eigen<T>::value,
+  meta::is_matrix_wrapper<T>::value,
   typename details::traits<T>::subspan_ret_t
   >
 subspan(T & obj,

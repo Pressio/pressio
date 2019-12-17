@@ -57,7 +57,7 @@ namespace pressio{ namespace containers{
 
 template <typename T>
 mpl::enable_if_t<
-  meta::is_dynamic_vector_wrapper_eigen<T>::value,
+  meta::is_vector_wrapper<T>::value,
   typename details::traits<T>::span_const_ret_t
   >
 span(const T & vecObj, std::size_t startIndex, std::size_t extent)
@@ -68,7 +68,7 @@ span(const T & vecObj, std::size_t startIndex, std::size_t extent)
 
 template <typename T>
 mpl::enable_if_t<
-  meta::is_dynamic_vector_wrapper_eigen<T>::value,
+  meta::is_vector_wrapper<T>::value,
   typename details::traits<T>::span_ret_t
   >
 span(T & vecObj, std::size_t startIndex, std::size_t extent)

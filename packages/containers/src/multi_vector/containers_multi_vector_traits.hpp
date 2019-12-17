@@ -311,8 +311,7 @@ struct traits<
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
   using view_col_vec_const_ret_t = expressions::ViewColumnVectorExpr<const MultiVector<wrapped_type>, scalar_t>;
-  // for now, the non-cost view col vector is not allowed for Kokkos
-  using view_col_vec_ret_t = void;
+  using view_col_vec_ret_t = expressions::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
 };
 #endif
 

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_multi_vector_view_vector_expressions.hpp
+// containers_multi_vector_view_column_vector_expressions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MULTI_VECTOR_VIEW_VECTOR_EXPRESSIONS_HPP_
-#define CONTAINERS_MULTI_VECTOR_VIEW_VECTOR_EXPRESSIONS_HPP_
+#ifndef CONTAINERS_MULTI_VECTOR_VIEW_COLUMN_VECTOR_EXPRESSIONS_HPP_
+#define CONTAINERS_MULTI_VECTOR_VIEW_COLUMN_VECTOR_EXPRESSIONS_HPP_
 
 #include "../multi_vector/containers_multi_vector_meta.hpp"
 #include "containers_expression_base.hpp"
@@ -78,7 +78,9 @@ public:
   ViewColumnVectorExpr & operator=(ViewColumnVectorExpr && other) = default;
 
   ViewColumnVectorExpr(mv_t & mvObjIn, const std::size_t vecIndexIn)
-    : mvObj_(mvObjIn), vecIndex_(vecIndexIn){}
+    : mvObj_(mvObjIn), vecIndex_(vecIndexIn){
+    assert( vecIndexIn < mvObj_.numVectors() );
+  }
 
   // this is for a column vector, so return the # of rows
   std::size_t size() const{
