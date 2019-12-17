@@ -10,7 +10,7 @@ namespace{
   void test1(myMV_t & A)
   {
     {
-      auto c1 = A.viewColumnVector(0);
+      auto c1 = pressio::containers::viewColumnVector(A, 0);
       c1[0] = 0.5;
       ASSERT_EQ( c1.size(), 6 );
       EXPECT_DOUBLE_EQ( c1[0], .5);
@@ -21,7 +21,7 @@ namespace{
       EXPECT_DOUBLE_EQ( c1[5], 0.);
     }
     {
-      auto c1 = A.viewColumnVector(0);
+      auto c1 = pressio::containers::viewColumnVector(A, 0);
       auto natExpr = c1();
       natExpr[0] = 0.35;
       EXPECT_DOUBLE_EQ( natExpr[0], .35);
@@ -36,7 +36,7 @@ namespace{
   void test2(const myMV_t & A)
   {
     {
-      const auto c1 = A.viewColumnVector(0);
+      const auto c1 = pressio::containers::viewColumnVector(A, 0);
       ASSERT_EQ( c1.size(), 6 );
       EXPECT_DOUBLE_EQ( c1[0], .35);
       EXPECT_DOUBLE_EQ( c1[1], 3.);
@@ -46,7 +46,7 @@ namespace{
       EXPECT_DOUBLE_EQ( c1[5], 0.);
     }
     {
-      const auto c1 = A.viewColumnVector(0);
+      const auto c1 = pressio::containers::viewColumnVector(A, 0);
       const auto natExpr = c1();
       EXPECT_DOUBLE_EQ( natExpr[0], .35);
       EXPECT_DOUBLE_EQ( natExpr[1], 3.);

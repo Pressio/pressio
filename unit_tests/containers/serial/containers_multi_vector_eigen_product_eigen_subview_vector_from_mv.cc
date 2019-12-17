@@ -25,7 +25,7 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   b(2,0) = 1.; b(2,1) = 2.;
 
   {
-    const auto colVec = b.viewColumnVector(0);
+    const auto colVec = pressio::containers::viewColumnVector(b, 0);
     auto c1 = pressio::containers::ops::product(A, colVec);
     ASSERT_EQ( c1.size(), 6 );
     EXPECT_DOUBLE_EQ( c1(0), 6.);
@@ -42,7 +42,7 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   }
 
   {
-    const auto colVec = b.viewColumnVector(1);
+    const auto colVec = pressio::containers::viewColumnVector(b, 1);
     auto c1 = pressio::containers::ops::product(A, colVec);
     ASSERT_EQ( c1.size(), 6 );
     EXPECT_DOUBLE_EQ( c1(0), 12.);

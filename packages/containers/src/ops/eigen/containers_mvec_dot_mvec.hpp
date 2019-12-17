@@ -110,22 +110,22 @@ result_t dot(const mvec_t & A, const mvec_t & B)
 
 
 /* ----------------------------------------------
- * result_t = subspan expression
+ * result_t = an expression
  ---------------------------------------------- */
 template <
   typename mvec_t,
   typename expr_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value and
-    expr_t::is_subspan_expr
+    ::pressio::containers::meta::is_expression<expr_t>::value
     > * = nullptr
   >
 void dot(const mvec_t & A, const mvec_t & B, expr_t & exprObj)
 {
-  using mv_scalar_t = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
-  using expr_scalar_t = typename expr_t::scalar_t;
+  using mv_scalar_t   = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
+  using expr_scalar_t = typename ::pressio::containers::details::traits<expr_t>::scalar_t;
   static_assert( std::is_same<mv_scalar_t, expr_scalar_t>::value,
-		 "MV dot MV for Eigen wrappers: the MV and subspan expression type need to have matching scalar types");
+		 "MV dot MV for Eigen wrappers: the MV and expr types need to have matching scalar types");
 
   const auto nAcols = A.numVectors();
   const auto nArows = A.length();

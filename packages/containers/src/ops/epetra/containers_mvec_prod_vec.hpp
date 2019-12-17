@@ -134,14 +134,14 @@ product(const mvec_type & mvA, const vec_type & vecB) {
 
 
 /* -------------------------------------------------------------------
- * specialize for epetra mv wrapper operating on an expression like viewColvector
+ * specialize for epetra mv wrapper operating on an expression
  *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
   typename expr_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    expr_type::is_view_vector_expr
+    ::pressio::containers::meta::is_expression<expr_type>::value
     > * = nullptr
   >
 void product(const mvec_type & mvA,
@@ -151,13 +151,12 @@ void product(const mvec_type & mvA,
   ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, exprObj, C);
 }
 
-// return result Epetra wrapper
 template <
   typename mvec_type,
   typename expr_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    expr_type::is_view_vector_expr
+    ::pressio::containers::meta::is_expression<expr_type>::value
     > * = nullptr
   >
 containers::Vector<Epetra_Vector>

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_admissible_vector_for_sharedmem_expr_templates.hpp
+// containers_vector_span_expression.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,23 +46,74 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_IS_ADMISSIBLE_VECTOR_FOR_SHAREDMEM_EXP_TEMPL_HPP_
-#define CONTAINERS_IS_ADMISSIBLE_VECTOR_FOR_SHAREDMEM_EXP_TEMPL_HPP_
+#ifndef CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
+#define CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
 
-#include "containers_is_vector_wrapper.hpp"
+#include "../vector/containers_vector_meta.hpp"
+#include "containers_expression_base.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace expressions{
 
-template <typename T,
-    typename enable = void>
-struct is_admissible_vec_for_sharedmem_expression : std::false_type{};
+template <typename vector_t, typename scalar_type>
+struct SpanExpr<
+  vector_t, scalar_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<vector_t>::value
+    >
+  >
+  : public BaseExpr< SpanExpr<vector_t, scalar_type> >
+{
+  using native_t   = typename ::pressio::containers::details::traits<vector_t>::wrapped_t;
 
-template <typename T>
-struct is_admissible_vec_for_sharedmem_expression<T,
-      ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper<T>::value &&
-  containers::details::traits<T>::is_shared_mem
-      >> : std::true_type{};
+private:
+  vector_t & vecObj_;
+  std::size_t startIndex_;
+  std::size_t extent_ = {};
 
-}}}//end namespace pressio::containers::meta
+public:
+  SpanExpr() = delete;
+  ~SpanExpr() = default;
+  SpanExpr(const SpanExpr & other) = default;
+  SpanExpr(SpanExpr && other) = default;
+  SpanExpr & operator=(const SpanExpr & other) = default;
+  SpanExpr & operator=(SpanExpr && other) = default;
+
+  SpanExpr(vector_t & objIn,
+	   const std::size_t startIndexIn,
+	   const std::size_t extentIn)
+    : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn)
+  {
+    assert( startIndex_ >= 0 and startIndex_ < objIn.size() );
+  }
+
+  std::size_t const & size() const{ return extent_; }
+
+  scalar_type & operator[](std::size_t i)
+  {
+    assert(i < extent_);
+    return vecObj_(startIndex_+i);
+  }
+
+  scalar_type const & operator[](std::size_t i) const
+  {
+    assert(i < extent_);
+    return vecObj_(startIndex_+i);
+  }
+
+  auto operator()()
+    -> decltype(vecObj_.data()->segment(startIndex_, extent_))
+  {
+    return vecObj_.data()->segment(startIndex_, extent_);
+  }
+
+  auto operator()() const
+    -> decltype( std::declval<const native_t>().segment(startIndex_, extent_))
+  {
+    return static_cast<native_t const *>(vecObj_.data())->segment(startIndex_, extent_);
+  }
+
+};
+
+}}} //end namespace pressio::containers::expressions
+
 #endif

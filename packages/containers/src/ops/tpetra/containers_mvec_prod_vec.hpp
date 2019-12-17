@@ -210,7 +210,7 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
 
 
 /* -------------------------------------------------------------------
- * specialize for tpetra mv operating on an expression like viewColvector
+ * specialize for tpetra mv operating on an expression
  *-------------------------------------------------------------------*/
 template <
   typename mvec_type,
@@ -218,7 +218,7 @@ template <
   typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-    expr_type::is_view_vector_expr
+    ::pressio::containers::meta::is_expression<expr_type>::value
     > * = nullptr
   >
 void product(const mvec_type & mvA, const expr_type & b, res_type & C)
@@ -231,7 +231,7 @@ template <
   typename expr_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-    expr_type::is_view_vector_expr
+    ::pressio::containers::meta::is_expression<expr_type>::value
     > * = nullptr
  >
 auto product(const mvec_type & mvA, const expr_type & b)

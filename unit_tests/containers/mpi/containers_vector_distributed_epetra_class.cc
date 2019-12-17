@@ -25,7 +25,7 @@ TEST_F(epetraVectorGlobSize15Fixture, Constructor){
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
 //   ::testing::StaticAssertTypeEq<decltype(v1.data()),
-//   				Epetra_Vector * >(); 
+//   				Epetra_Vector * >();
 //   const myvec_t v2( *x_ );
 //   ::testing::StaticAssertTypeEq< decltype(v2.data()),
 //   				 const Epetra_Vector * >();
@@ -73,10 +73,10 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   myvec_t v1( *contigMap_ );
 //   double rankD = static_cast<double>(rank_);
 //   v1.putScalar( 3.3 +rankD );
-  
+
 //   myvec_t v2( *contigMap_ );
 //   v2.putScalar(1.0);
-  
+
 //   myvec_t v3 = v1 + v2;
 //   for (int i=0; i<v3.localSize(); i++){
 //     EXPECT_DOUBLE_EQ( v3[i], 4.3 + rankD );
@@ -84,70 +84,14 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   //missing test for a case where vectors are incompatible
 // }
 
-
-TEST_F(epetraVectorGlobSize15Fixture,
-       expreTempPlus){
-  using namespace pressio;
-
-  using myvec_t = containers::Vector<Epetra_Vector>;
-  myvec_t v1( *contigMap_ );
-  double rankD = static_cast<double>(rank_);
-  v1.putScalar( 3.3 +rankD );
-  
-  myvec_t v2( *contigMap_ );
-  v2.putScalar(1.0);
-
-  myvec_t v3( *contigMap_ );
-  v3.putScalar(1.2);
-
-  myvec_t v4( *contigMap_ );
-
-  v4 = (v1+v2)*2.;
-  v4.data()->Print(std::cout);
-
-  v4 = 3.*(v1+v2);
-  v4.data()->Print(std::cout);
-  
-  v4 = 3.*v2;
-  v4.data()->Print(std::cout);
-
-  v4 = v2*2.;
-  v4.data()->Print(std::cout);
-  
-  v4 = v2 + v1;
-  v4.data()->Print(std::cout);
-
-  v4 = v2 - v1;
-  v4.data()->Print(std::cout);
-  
-  v4 = v2 + v1 + v3;
-  v4.data()->Print(std::cout);
-  
-  v4 = v2 + v1 + v3;
-  v4.data()->Print(std::cout);
-
-  v4 = v2*2. + 1.*v1;
-  v4.data()->Print(std::cout);
-
-  v4 = v2*2. + 1.*v1 + v3;
-  v4.data()->Print(std::cout);
-  
-  // for (int i=0; i<v3.localSize(); i++){
-  //   EXPECT_DOUBLE_EQ( v3[i], 4.3 + rankD );
-  // }
-}
-
-
-
-
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        SubtractOperator){
 //   using namespace pressio;
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
-//   double rankD = static_cast<double>(rank_);  
-//   v1.putScalar( 3.3 +rankD );  
+//   double rankD = static_cast<double>(rank_);
+//   v1.putScalar( 3.3 +rankD );
 
 //   myvec_t v2( *contigMap_ );
 //   v2.putScalar(1.0);
@@ -166,9 +110,9 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
-//   double rankD = static_cast<double>(rank_);  
+//   double rankD = static_cast<double>(rank_);
 //   v1.putScalar( 3. +rankD );
-  
+
 //   myvec_t v2( *contigMap_ );
 //   v2.putScalar(1.0);
 
@@ -192,7 +136,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
 //   v1.putScalar( 3. );
-  
+
 //   myvec_t v2( *contigMap_ );
 //   v2.putScalar(1.0);
 
@@ -211,7 +155,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
 //   v1.putScalar( 3. );
-  
+
 //   myvec_t v2( *contigMap_ );
 //   v2.putScalar(1.0);
 
@@ -230,7 +174,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   using myvec_t = containers::Vector<Epetra_Vector>;
 //   myvec_t v1( *contigMap_ );
 //   v1.setZero();
-  
+
 //   for (int i=0; i<v1.localSize(); i++){
 //     EXPECT_NEAR( v1[i], 0.0, 1e-12 );
 //   }
@@ -280,7 +224,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
 //   myvec_t v2( *contigMap_ );
 //   v2.putScalar(2.1);
-  
+
 //   v1.inPlaceOp<std::plus<double>>(2.0, 0.0, v2);
 
 //   EXPECT_DOUBLE_EQ( v1[0], 2.2);

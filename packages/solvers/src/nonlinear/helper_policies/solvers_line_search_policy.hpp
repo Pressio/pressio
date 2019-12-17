@@ -90,6 +90,8 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 
     ytrial.setZero();
 
+    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+
     // eval obj function for current solution: f(y)
     auto fy  = ::pressio::containers::ops::norm2(resid);
 
@@ -117,8 +119,10 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 				      alpha, "\n");
 #endif
 
-      // update
-      ytrial = y + alpha * dy;
+      // update : ytrial = y + dy*alpha
+      ::pressio::containers::ops::do_update(ytrial,
+					    y, one,
+					    dy, alpha);
 
       // eval function for updated step solition: f(y + alpha*dy)
       sys.residual(ytrial, resid);

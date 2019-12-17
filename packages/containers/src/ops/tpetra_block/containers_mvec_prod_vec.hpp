@@ -82,7 +82,6 @@ void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
   using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<vec_type>::device_type;
   static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
-  using dev_t  = tpetra_mv_dev_t;
 
   assert( mvA.globalNumVectors() == vecB.size() );
 

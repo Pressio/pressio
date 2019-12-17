@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_admissible_vector_for_distributed_expr_templates.hpp
+// containers_span.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,23 +46,38 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_IS_ADMISSIBLE_VECTOR_FOR_DISTRIBUTED_EXP_TEMPL_HPP_
-#define CONTAINERS_IS_ADMISSIBLE_VECTOR_FOR_DISTRIBUTED_EXP_TEMPL_HPP_
+#ifndef CONTAINERS_SPAN_HPP_
+#define CONTAINERS_SPAN_HPP_
 
-#include "containers_is_vector_wrapper.hpp"
+#include "containers_expression_base.hpp"
+#include "../vector/containers_vector_meta.hpp"
+#include "containers_vector_span_expression.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
-
-template <typename T,
-    typename enable = void>
-struct is_admissible_vec_for_dist_expression : std::false_type{};
+namespace pressio{ namespace containers{
 
 template <typename T>
-struct is_admissible_vec_for_dist_expression<T,
-      ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper<T>::value &&
-  !containers::details::traits<T>::is_shared_mem
-      >> : std::true_type{};
+mpl::enable_if_t<
+  meta::is_vector_wrapper<T>::value,
+  typename details::traits<T>::span_const_ret_t
+  >
+span(const T & vecObj, std::size_t startIndex, std::size_t extent)
+{
+  using return_t = typename details::traits<T>::span_const_ret_t;
+  return return_t(vecObj, startIndex, extent);
+}
 
-}}}//end namespace pressio::containers::meta
+template <typename T>
+mpl::enable_if_t<
+  meta::is_vector_wrapper<T>::value,
+  typename details::traits<T>::span_ret_t
+  >
+span(T & vecObj, std::size_t startIndex, std::size_t extent)
+{
+  using return_t = typename details::traits<T>::span_ret_t;
+  return return_t(vecObj, startIndex, extent);
+}
+
+
+}} //end namespace pressio::containers
+
 #endif

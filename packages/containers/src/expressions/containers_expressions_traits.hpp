@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_ops_meta.hpp
+// containers_expressions_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -45,60 +45,84 @@
 // ************************************************************************
 //@HEADER
 */
-#ifndef CONTAINERS_OPS_META_HPP_
-#define CONTAINERS_OPS_META_HPP_
 
+#ifndef CONTAINERS_EXPRESSIONS_TRAITS_HPP_
+#define CONTAINERS_EXPRESSIONS_TRAITS_HPP_
+
+#include "../containers_fwd.hpp"
 #include "../vector/containers_vector_meta.hpp"
 #include "../matrix/containers_matrix_meta.hpp"
 #include "../multi_vector/containers_multi_vector_meta.hpp"
-#include "../meta/containers_meta_is_expression.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace details{
+
+template <typename v_type, typename scalar_type>
+struct traits<
+  ::pressio::containers::expressions::SpanExpr<v_type, scalar_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<v_type>::value
+    >
+  >
+{
+  static constexpr auto is_expression = true;
+
+  using scalar_t  = scalar_type;
+  using data_t	  = v_type;
+  using wrapped_t = typename ::pressio::containers::details::traits<v_type>::wrapped_t;
+};
+
+
+template <typename matrix_type, typename scalar_type>
+struct traits<
+  ::pressio::containers::expressions::SubspanExpr<matrix_type, scalar_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_matrix_wrapper_eigen<matrix_type>::value
+    #ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    or ::pressio::containers::meta::is_matrix_wrapper_kokkos<matrix_type>::value
+    #endif
+    >
+  >
+{
+  static constexpr auto is_expression = true;
+
+  using scalar_t  = scalar_type;
+  using data_t	  = matrix_type;
+  using wrapped_t = typename ::pressio::containers::details::traits<matrix_type>::wrapped_t;
+};
+
+
+template <typename mv_type, typename scalar_type>
+struct traits<
+  ::pressio::containers::expressions::ViewColumnVectorExpr<mv_type, scalar_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mv_type>::value
+    >
+  >
+{
+  static constexpr auto is_expression = true;
+
+  using scalar_t  = scalar_type;
+  using data_t	  = mv_type;
+  using wrapped_t = typename ::pressio::containers::details::traits<mv_type>::wrapped_t;
+};
+
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename T1, typename T2, typename enable = void>
-struct kokkos_wrapper_pair_have_same_exe_space : std::false_type {};
-
-template <typename T1, typename T2>
-struct kokkos_wrapper_pair_have_same_exe_space<
-  T1,T2,
+template <typename mv_type, typename scalar_type>
+struct traits<
+  ::pressio::containers::expressions::ViewColumnVectorExpr<mv_type, scalar_type>,
   ::pressio::mpl::enable_if_t<
-    std::is_same<
-      typename containers::details::traits<T1>::execution_space,
-      typename containers::details::traits<T2>::execution_space
-      >::value
+    ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<mv_type>::value
     >
-  > : std::true_type{};
+  >
+{
+  static constexpr auto is_expression = true;
+
+  using scalar_t  = scalar_type;
+  using data_t	  = mv_type;
+  using wrapped_t = typename ::pressio::containers::details::traits<mv_type>::wrapped_t;
+};
 #endif
 
-
-template <typename T1, typename T2, typename enable = void>
-struct wrapper_pair_have_same_scalar : std::false_type {};
-
-template <typename T1, typename T2>
-struct wrapper_pair_have_same_scalar<T1,T2,
-  ::pressio::mpl::enable_if_t<
-    std::is_same<typename
-		 containers::details::traits<T1>::scalar_t,
-		 typename
-		 containers::details::traits<T2>::scalar_t
-		 >::value
-    >
-  > : std::true_type{};
-
-
-
-template <typename T1, typename T2,
-	  typename T3, typename enable = void>
-struct wrapper_triplet_have_same_scalar : std::false_type {};
-
-template <typename T1, typename T2, typename T3>
-struct wrapper_triplet_have_same_scalar<T1,T2,T3,
-  ::pressio::mpl::enable_if_t<
-    wrapper_pair_have_same_scalar<T1,T2>::value &&
-    wrapper_pair_have_same_scalar<T2,T3>::value
-    >
-  > : std::true_type{};
-
-}}} // namespace pressio::containers::meta
+}}}//end namespace pressio::containers::details
 #endif
