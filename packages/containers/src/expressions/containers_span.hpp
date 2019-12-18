@@ -55,26 +55,26 @@
 
 namespace pressio{ namespace containers{
 
-template <typename T>
+template <typename T, typename ... Args>
 mpl::enable_if_t<
-  meta::is_vector_wrapper<T>::value,
+  meta::is_vector_wrapper<T>::value and (0 < sizeof...(Args)),
   typename details::traits<T>::span_const_ret_t
   >
-span(const T & vecObj, std::size_t startIndex, std::size_t extent)
+span(const T & vecObj, Args&& ... args)
 {
   using return_t = typename details::traits<T>::span_const_ret_t;
-  return return_t(vecObj, startIndex, extent);
+  return return_t(vecObj, std::forward<Args>(args)... );
 }
 
-template <typename T>
+template <typename T, typename ... Args>
 mpl::enable_if_t<
-  meta::is_vector_wrapper<T>::value,
+  meta::is_vector_wrapper<T>::value and (0 < sizeof...(Args)),
   typename details::traits<T>::span_ret_t
   >
-span(T & vecObj, std::size_t startIndex, std::size_t extent)
+span(T & vecObj, Args&& ... args)
 {
   using return_t = typename details::traits<T>::span_ret_t;
-  return return_t(vecObj, startIndex, extent);
+  return return_t(vecObj, std::forward<Args>(args)... );
 }
 
 
