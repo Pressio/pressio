@@ -1,5 +1,5 @@
 #include "wls_local_policies.hpp"
-#include "wls_functions.hpp"
+//#include "wls_functions.hpp"
 
 
 /* 
@@ -52,7 +52,7 @@ private:
   }
 
   template <typename aux_states_container_t> 
-  void updateStatesNStep(const fom_state_t & yFOM_current, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::BDF2  tag) const{
+  void updateStatesNStep(const fom_state_t & yFOM_current, aux_states_container_t & auxStatesContainer, const ::pressio::ode::implicitmethods::BDF2 & tag) const{
       auto & odeState_nm1 = auxStatesContainer.get(nm1());
       auto & odeState_nm2 = auxStatesContainer.get(nm2());
       ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
@@ -60,18 +60,26 @@ private:
   }
   // Euler
   template <typename wls_state_type,typename fom_state_reconstr_t, typename aux_states_container_t> 
-  void updateStatesFirstStep(const wls_state_type & wlsStateIC, const fom_state_reconstr_t & fomStateReconstr, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::Euler  tag) const{
+  void updateStatesFirstStep(const wls_state_type & wlsStateIC, const fom_state_reconstr_t & fomStateReconstr, aux_states_container_t & auxStatesContainer, const ::pressio::ode::implicitmethods::Euler & tag) const{
     const auto wlsInitialStateNm1 = ::pressio::containers::span(wlsStateIC,0,romSize);
     auto & fomStateNm1 = auxStatesContainer.get(nm1());
     fomStateReconstr(wlsInitialStateNm1,fomStateNm1);
   }
 
   template <typename aux_states_container_t> 
-  void updateStatesNStep(const fom_state_t & yFOM_current, aux_states_container_t & auxStatesContainer, ::pressio::ode::implicitmethods::Euler  tag) const{
+  void updateStatesNStep(const fom_state_t & yFOM_current, aux_states_container_t & auxStatesContainer, const ::pressio::ode::implicitmethods::Euler  & tag) const{
       auto & odeState_nm1 = auxStatesContainer.get(nm1());
       ::pressio::containers::ops::deep_copy(yFOM_current, odeState_nm1);
   }
   //==========================================
+  // Function to do c += A^T b
+  template <typename Mat, typename Vec>
+  void local_vec_update(const Mat & A,const  Vec & b, Vec  & cOut,const int & scol,const int & colSize) const{
+    auto gradientView = ::pressio::containers::span(cOut,scol,colSize);
+    auto tmp = pressio::containers::ops::dot(A, b);
+    for (int k =0; k< colSize; k++){
+      gradientView[k] += tmp[k];}
+  }
 
 public:
   hessian_gradient_policy(int romSize,  int fomSize, int numStepsInWindow, int time_stencil_size,  jac_t & phi) : wlsJacs(time_stencil_size,jac_t(fomSize,romSize)), phi_(phi), residual(fomSize), yFOM_current(fomSize){ 
@@ -81,7 +89,7 @@ public:
   }
 
   template <typename wls_state_type,typename fom_state_reconstr_t, typename  aux_states_container_t, typename hess_type, typename gradient_type>
-  void operator()(fom_type & appObj, const wls_state_type  & wlsState, wls_state_type & wlsStateIC, hess_type & hess, gradient_type & gradient, const fom_state_reconstr_t & fomStateReconstrObj_,scalar_t dt, std::size_t numStepsInWindow, const scalar_t ts ,aux_states_container_t & auxStatesContainer) const{
+  void operator()(const fom_type & appObj, const wls_state_type  & wlsState,const wls_state_type & wlsStateIC, hess_type & hess, gradient_type & gradient, const fom_state_reconstr_t & fomStateReconstrObj_,const scalar_t dt, const std::size_t numStepsInWindow, const scalar_t ts , aux_states_container_t & auxStatesContainer) const{
   int n = 0;
   scalar_t t = ts + n*dt;
 

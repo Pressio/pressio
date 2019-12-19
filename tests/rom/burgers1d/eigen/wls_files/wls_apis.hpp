@@ -20,26 +20,26 @@ public:
   using decoder_jac_t = typename decoder_t::jacobian_t;
 private:
   const hessian_gradient_pol_t & hessian_gradient_polObj_;
-  fom_type & appObj_;
-  fom_state_reconstr_t  fomStateReconstructorObj_;
-  mutable aux_states_container_t  auxStatesContainer;
-  mutable wls_state_type wlsStateIC;
+  const fom_type & appObj_;
+  const fom_state_reconstr_t  fomStateReconstructorObj_;
+  mutable aux_states_container_t  auxStatesContainer; //understand mutable keyword better
+  wls_state_type wlsStateIC;
   scalar_t dt;
-  mutable scalar_t ts = 0.;
+  scalar_t ts = 0.;
   int romSize; 
   int fomSize;
   int numStepsInWindow;
   int time_stencil_size;
   int windowNum = 0;
 public: 
-  WlsSystemHessianAndGradientApi(fom_type & appObj, 
+  WlsSystemHessianAndGradientApi(const fom_type & appObj, 
 				const hessian_gradient_pol_t & hessian_gradient_polObj, 
 				const decoder_t & decoderObj,
 				fom_state_t & yFOM, 
-				scalar_t dt, 
-				int numStepsInWindow, 
-				int romSize, 
-				int fomSize, 
+				const scalar_t dt, 
+				const int numStepsInWindow, 
+				const int romSize, 
+				const int fomSize, 
 				const int time_stencil_size) : 
 				appObj_(appObj), 
 				hessian_gradient_polObj_(hessian_gradient_polObj),
@@ -66,12 +66,10 @@ public:
 
 
   template <typename solverType>
-  void advanceOneWindow(wls_state_type & wlsState, solverType & solver, int  windowNum) {
+  void advanceOneWindow(wls_state_type & wlsState,solverType & solver,const int  & windowNum) {
     this->windowNum = windowNum;
     this->ts  = windowNum*this->dt*this->numStepsInWindow; 
-    //solver.my_gauss_newton(*this,wlsState,romSize,numStepsInWindow);
     solver.solve(*this,wlsState);
-    //sbar = std::min(this->time_stencil_size-1,numStepsInWindow);
     int start = std::max(0,time_stencil_size - 1 - numStepsInWindow);
     for (int i = 0; i < start; i++){
       auto wlsTmpState = ::pressio::containers::span(wlsStateIC,i*romSize,romSize);
@@ -83,7 +81,6 @@ public:
       auto wlsTmpState2 = ::pressio::containers::span(wlsState,( numStepsInWindow - this->time_stencil_size + 1 + i )*romSize,romSize);
       for (int k=0; k < romSize; k++){
         wlsTmpState[k] = wlsTmpState2[k];}}
-      //(*(this->wlsStateIC).data()).block(0,i,romSize,1) = (*wlsState.data()).block(0,numStepsInWindow - this->time_stencil_size + 1 + i , romSize ,1);}
     std::cout << " Window " << windowNum << " completed " << std::endl;
   }
 
