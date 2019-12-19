@@ -11,14 +11,14 @@ struct local_residual_policy_velocityAPI{
 public:
   //BDF2
   template <typename fom_type, typename fom_state_t, typename residual_t, typename aux_states_container_t, typename scalar_t>
-  void operator()(const ::pressio::ode::implicitmethods::BDF2  & tag, const fom_type & appObj,const fom_state_t & yFOM, residual_t & residual,const aux_states_container_t & auxStatesContainer,const scalar_t & t,const  scalar_t & dt) const{
+  void operator()(const ::pressio::ode::implicitmethods::BDF2  & tag, const fom_type & appObj,const fom_state_t & yFOM, residual_t & residual,const aux_states_container_t & auxStatesContainer,const scalar_t & t,const  scalar_t & dt, const int & step) const{
     // will replace the if statement with step
-    if (t > 1e-10){
+    if (step > 0){
     // u^n - 4./3.*u^{n-1} + 1./3.u^{n-2} - 2./3.*dt*f
     appObj.velocity(*yFOM.data(),t,*residual.data());
     ::pressio::ode::impl::time_discrete_residual<::pressio::ode::implicitmethods::BDF2>(yFOM,residual,auxStatesContainer,dt);
     }
-    if (t < 1e-10){
+    if (step == 0){
     // u^n - u^{n-1}  - dt*f
     appObj.velocity(*yFOM.data(),t,*residual.data());
     ::pressio::ode::impl::time_discrete_residual<::pressio::ode::implicitmethods::Euler>(yFOM,residual,auxStatesContainer,dt);
@@ -26,7 +26,7 @@ public:
   }
   // Implicit Euler
   template <typename fom_type,typename fom_state_t, typename residual_t, typename aux_states_container_t, typename scalar_t>
-  void operator()(const ::pressio::ode::implicitmethods::Euler & tag, const fom_type & appObj,const fom_state_t & yFOM, residual_t & residual,const aux_states_container_t & auxStatesContainer,const scalar_t & t,const scalar_t & dt) const{
+  void operator()(const ::pressio::ode::implicitmethods::Euler & tag, const fom_type & appObj,const fom_state_t & yFOM, residual_t & residual,const aux_states_container_t & auxStatesContainer,const scalar_t & t,const scalar_t & dt, const int & step) const{
     appObj.velocity(*yFOM.data(),t,*residual.data());
     ::pressio::ode::impl::time_discrete_residual<::pressio::ode::implicitmethods::Euler>(yFOM,residual,auxStatesContainer,dt);
   } 
@@ -37,14 +37,14 @@ struct local_jacobian_policy_velocityAPI{
 public:
   // Policies for local residuals and jacobians
   template <typename fom_type, typename fom_state_t, typename jac_t, typename basis_t, typename aux_states_container_t, typename scalar_t>
-  void operator()(const ::pressio::ode::implicitmethods::BDF2 & tag, const fom_type & appObj,const fom_state_t & yFOM, jac_t & Jphi,const basis_t & phi, const aux_states_container_t & auxStatesContainer, const scalar_t & t, const scalar_t & dt, int arg=0 ) const{
+  void operator()(const ::pressio::ode::implicitmethods::BDF2 & tag, const fom_type & appObj,const fom_state_t & yFOM, jac_t & Jphi,const basis_t & phi, const aux_states_container_t & auxStatesContainer, const scalar_t & t, const scalar_t & dt, const int & step, int arg=0 ) const{
     // u^n - u^{n-1} - dt*f ;
-    if (t < 1e-10){ 
+    if (step == 0){ 
       if (arg == 0){
         appObj.applyJacobian(*yFOM.data(),*phi.data(),t,*(Jphi).data());
         ::pressio::containers::ops::do_update(Jphi,-dt,phi,1.);}
       }
-    if (t > 1e-10){ 
+    if (step > 0){ 
       if (arg == 0){
         appObj.applyJacobian(*yFOM.data(),*phi.data(),t,*(Jphi).data());
         ::pressio::containers::ops::do_update(Jphi,-2./3.*dt,phi,1.);}
@@ -55,7 +55,7 @@ public:
       }
   }
   template <typename fom_type, typename fom_state_t, typename jac_t, typename basis_t, typename aux_states_container_t, typename scalar_t>
-  void operator()(const ::pressio::ode::implicitmethods::Euler & tag,const fom_type & appObj,const fom_state_t & yFOM, jac_t & Jphi, const basis_t & phi, const aux_states_container_t & auxStatesContainer,const scalar_t & t, const scalar_t & dt, int arg=0 ) const{
+  void operator()(const ::pressio::ode::implicitmethods::Euler & tag,const fom_type & appObj,const fom_state_t & yFOM, jac_t & Jphi, const basis_t & phi, const aux_states_container_t & auxStatesContainer,const scalar_t & t, const scalar_t & dt, const int & step, int arg=0 ) const{
     // u^n - u^{n-1} - f ;
     if (arg == 0){
       appObj.applyJacobian(*yFOM.data(),*phi.data(),t,*(Jphi).data());

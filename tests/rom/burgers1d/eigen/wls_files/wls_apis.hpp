@@ -31,6 +31,7 @@ private:
   int numStepsInWindow;
   int time_stencil_size;
   int windowNum = 0;
+  int step_s = 0;
 public: 
   WlsSystemHessianAndGradientApi(const fom_type & appObj, 
 				const hessian_gradient_pol_t & hessian_gradient_polObj, 
@@ -54,7 +55,7 @@ public:
     this->wlsStateIC.setZero();
   }
   void computeHessianAndGradient(const state_type & wls_state,hessian_type & hessian, gradient_type & gradient, const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2, scalar_type rnorm=0.) const{
-    hessian_gradient_polObj_(appObj_,wls_state,wlsStateIC,hessian,gradient,fomStateReconstructorObj_,dt,numStepsInWindow,this->ts,auxStatesContainer);
+    hessian_gradient_polObj_(appObj_,wls_state,wlsStateIC,hessian,gradient,fomStateReconstructorObj_,dt,numStepsInWindow,this->ts,auxStatesContainer,step_s);
   }
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
     hessian_type H(romSize*numStepsInWindow,romSize*numStepsInWindow);  //how do we do this for arbitrary types?
@@ -69,6 +70,7 @@ public:
   void advanceOneWindow(wls_state_type & wlsState,solverType & solver,const int  & windowNum) {
     this->windowNum = windowNum;
     this->ts  = windowNum*this->dt*this->numStepsInWindow; 
+    this->step_s  = windowNum*this->numStepsInWindow; 
     solver.solve(*this,wlsState);
     int start = std::max(0,time_stencil_size - 1 - numStepsInWindow);
     for (int i = 0; i < start; i++){

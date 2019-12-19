@@ -89,10 +89,10 @@ public:
   }
 
   template <typename wls_state_type,typename fom_state_reconstr_t, typename  aux_states_container_t, typename hess_type, typename gradient_type>
-  void operator()(const fom_type & appObj, const wls_state_type  & wlsState,const wls_state_type & wlsStateIC, hess_type & hess, gradient_type & gradient, const fom_state_reconstr_t & fomStateReconstrObj_,const scalar_t dt, const std::size_t numStepsInWindow, const scalar_t ts , aux_states_container_t & auxStatesContainer) const{
+  void operator()(const fom_type & appObj, const wls_state_type  & wlsState,const wls_state_type & wlsStateIC, hess_type & hess, gradient_type & gradient, const fom_state_reconstr_t & fomStateReconstrObj_,const scalar_t dt, const std::size_t numStepsInWindow, const scalar_t ts , aux_states_container_t & auxStatesContainer, const int step_s) const{
   int n = 0;
   scalar_t t = ts + n*dt;
-
+  int step = step_s + n;
   hess.setZero(); // may be possible to get rid of these
   gradient.setZero();
 
@@ -100,9 +100,9 @@ public:
   fomStateReconstrObj_(wlsCurrentState,yFOM_current);
   updateStatesFirstStep(wlsStateIC,fomStateReconstrObj_,auxStatesContainer,ode);
 
-  residualPolicy(ode,appObj,yFOM_current,residual,auxStatesContainer,ts,dt);
+  residualPolicy(ode,appObj,yFOM_current,residual,auxStatesContainer,ts,dt,step);
   for (int i = 0; i < time_stencil_size; i++){
-    jacobianPolicy(ode,appObj,yFOM_current,wlsJacs[time_stencil_size - i - 1],phi_,auxStatesContainer,n*dt,dt,i);
+    jacobianPolicy(ode,appObj,yFOM_current,wlsJacs[time_stencil_size - i - 1],phi_,auxStatesContainer,n*dt,dt,step,i);
   }
   hess_type C(romSize,romSize); // this is a temporary work around for the += issue.
   auto hess_block = ::pressio::containers::subspan( hess,std::make_pair( n*romSize,(n+1)*romSize ) , std::make_pair( n*romSize,(n+1)*romSize ) );
@@ -116,9 +116,10 @@ public:
     fomStateReconstrObj_(wlsCurrentState,yFOM_current);
     // == Evaluate residual ============
     t = ts + n*dt;
-    residualPolicy(ode,appObj,yFOM_current,residual,auxStatesContainer,t,dt);
+    step = step_s + n; 
+    residualPolicy(ode,appObj,yFOM_current,residual,auxStatesContainer,t,dt,step);
     // == Evaluate Jacobian (Currently have Jacobian w.r.p to previous state hard coded outside of loop)
-    jacobianPolicy(ode,appObj,yFOM_current,wlsJacs[time_stencil_size-1],phi_,auxStatesContainer,t,dt,0);
+    jacobianPolicy(ode,appObj,yFOM_current,wlsJacs[time_stencil_size-1],phi_,auxStatesContainer,t,dt,step, 0);
     // == Update everything
     int sbar = std::min(n,time_stencil_size);
     for (int i=0; i < sbar; i++){
