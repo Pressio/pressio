@@ -1,11 +1,11 @@
 // this is the same as in other file
-#include "wls_policies.hpp"
+#include "../../policies/wls_policies.hpp"
 
-namespace pressio{ namespace rom{ namespace wls{
+namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 template<typename fom_type, 
 	typename wls_state_type, 
 	typename decoder_t,
-  typename ode_t, 
+        typename ode_t, 
 	typename hessian_gradient_pol_t, 
 	typename aux_states_container_t, 
 	typename hessian_t>
@@ -35,46 +35,40 @@ private:
   int windowNum_ = 0;
   int step_s_ = 0;
 public: 
-  WlsSystemHessianAndGradientApi(
-				const fom_type & appObj, 
-				const decoder_t & decoderObj,
-				fom_state_t & yFOM, 
-				const int numStepsInWindow, 
-//				const int romSize, 
-        const int timeStencilSize
-				) 
-				: 
-				appObj_(appObj),
-        fomSize_(yFOM.size()),
-				romSize_((decoderObj.getReferenceToJacobian()).numVectors()),
-				fomStateReconstructorObj_(yFOM,decoderObj),
-				wlsStateIC_( ( (decoderObj.getReferenceToJacobian()).numVectors() ) *(timeStencilSize-1)),
-				auxStatesContainer_(yFOM),
-				hessian_gradient_polObj_( ( (decoderObj.getReferenceToJacobian()).numVectors() ) ,yFOM.size(),numStepsInWindow,timeStencilSize,decoderObj)
-				{
-			    this->numStepsInWindow_ = numStepsInWindow;
-    			this->timeStencilSize_ = timeStencilSize;
-    			this->wlsStateIC_.setZero();
-  			}
+  WlsSystemHessianAndGradientApi(const fom_type & appObj, 
+                                 const decoder_t & decoderObj,
+                                 fom_state_t & yFOM, 
+                                 const int numStepsInWindow, 
+                                 const int timeStencilSize) 
+				 : 
+                                 appObj_(appObj),
+                                 fomSize_(yFOM.size()),
+                                 romSize_((decoderObj.getReferenceToJacobian()).numVectors()),
+                                 fomStateReconstructorObj_(yFOM,decoderObj),
+                                 wlsStateIC_( ( (decoderObj.getReferenceToJacobian()).numVectors() ) *(timeStencilSize-1)),
+                                 auxStatesContainer_(yFOM),
+                                 hessian_gradient_polObj_( ( (decoderObj.getReferenceToJacobian()).numVectors() ) ,yFOM.size(),numStepsInWindow,timeStencilSize,decoderObj)
+				 {
+                                   this->numStepsInWindow_ = numStepsInWindow;
+                                   this->timeStencilSize_ = timeStencilSize;
+                                   this->wlsStateIC_.setZero();
+  			         }
   void computeHessianAndGradient(const state_type & wls_state,
-														     hessian_type & hessian, 
-																 gradient_type & gradient, 
-																 const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2, 
-																 scalar_type rnorm=0.) const
-  {
-    hessian_gradient_polObj_(
-														this->appObj_,
-														wls_state,
-														this->wlsStateIC_,
-														hessian,
-														gradient,
-														this->fomStateReconstructorObj_,
-														this->dt_,
-														this->numStepsInWindow_,
-														this->ts_,
-														this->auxStatesContainer_,
-														this->step_s_
- 														);
+                                 hessian_type & hessian, 
+                                 gradient_type & gradient, 
+                                 const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2, 
+                                 scalar_type rnorm=0.) const{
+    hessian_gradient_polObj_(this->appObj_,
+                             wls_state,
+                             this->wlsStateIC_,
+                             hessian,
+                             gradient,
+                             this->fomStateReconstructorObj_,
+                             this->dt_,
+                             this->numStepsInWindow_,
+                             this->ts_,
+                             this->auxStatesContainer_,
+                             this->step_s_);
   }
   //We have to put static assertion for gradient and hessian to be pressio wrappers for specific types
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
@@ -154,7 +148,7 @@ public:
   };
 };
 */
-}}}
+}}}}
 
 
 
