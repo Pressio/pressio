@@ -1,8 +1,7 @@
-// this is the same as in other file
-#include "../../policies/wls_policies.hpp"
+#include "../../policies/hess_and_grad_policies/hess_and_grad_policies.hpp"
 
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
-template<typename fom_type, 
+template<typename fom_type,        
 	typename wls_state_type, 
 	typename decoder_t,
         typename ode_t, 
@@ -20,6 +19,11 @@ public:
   using hessian_type = hessian_t;
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
   using decoder_jac_t = typename decoder_t::jacobian_t;
+
+  // Assertions 
+  static_assert(std::is_same<wls_state_type, ::pressio::containers::Vector<fom_native_state_t> >::value, "WLS_state_type  must be of type ::pressio::containers::Vector");
+  static_assert(std::is_same<hessian_type,pressio::containers::Matrix<Eigen::Matrix<scalar_t, -1, -1>> >::value, "hessian_type must be of type pressio::containers::Matrix<Eigen::Matrix<scalar_t, -1, -1>>");
+
 private:
   const hessian_gradient_pol_t hessian_gradient_polObj_; 
   const fom_type & appObj_;
@@ -29,7 +33,6 @@ private:
   scalar_t dt_;
   scalar_t ts_ = 0.;
   int romSize_; 
-  int fomSize_;
   int numStepsInWindow_;
   int timeStencilSize_;
   int windowNum_ = 0;
@@ -42,17 +45,17 @@ public:
                                  const int timeStencilSize) 
 				 : 
                                  appObj_(appObj),
-                                 fomSize_(yFOM.size()),
-                                 romSize_((decoderObj.getReferenceToJacobian()).numVectors()),
                                  fomStateReconstructorObj_(yFOM,decoderObj),
                                  wlsStateIC_( ( (decoderObj.getReferenceToJacobian()).numVectors() ) *(timeStencilSize-1)),
                                  auxStatesContainer_(yFOM),
-                                 hessian_gradient_polObj_( ( (decoderObj.getReferenceToJacobian()).numVectors() ) ,yFOM.size(),numStepsInWindow,timeStencilSize,decoderObj)
+                                 hessian_gradient_polObj_( appObj, yFOM,numStepsInWindow,timeStencilSize,decoderObj)
 				 {
+                                   this-> romSize_ = (decoderObj.getReferenceToJacobian()).numVectors();
                                    this->numStepsInWindow_ = numStepsInWindow;
                                    this->timeStencilSize_ = timeStencilSize;
                                    this->wlsStateIC_.setZero();
   			         }
+
   void computeHessianAndGradient(const state_type & wls_state,
                                  hessian_type & hessian, 
                                  gradient_type & gradient, 
@@ -70,6 +73,7 @@ public:
                              this->auxStatesContainer_,
                              this->step_s_);
   }
+
   //We have to put static assertion for gradient and hessian to be pressio wrappers for specific types
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
     hessian_type H(romSize_*numStepsInWindow_,romSize_*numStepsInWindow_);  //how do we do this for arbitrary types?
@@ -103,51 +107,6 @@ public:
 
 };
 
-
-
-
-
-/*
-
-// this is the same as in other file
-template<typename fom_type, typename wls_state_type, typename res_pol_t, typename jac_pol_t, typename decoder_t>
-class WlsSystemDefaultApi{
-private:
-  const res_pol_t & resPolObj_;
-  const jac_pol_t & jacPolObj_;
-
-public:
-  using residual_type = typename res_pol_t::residual_t;
-  using jacobian_type = typename jac_pol_t::jacobian_t;
-  using scalar_t	= typename fom_type::scalar_type;
-
-  using fom_native_state_t      = typename fom_type::state_type;
-  using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_state_container_t = typename pressio::ode::StatesContainer<fom_state_t, 2>;
-  using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
-  fom_state_reconstr_t  fomStateReconstructorObj_;
-  fom_state_reconstr_t & fomStateReconstructorObjPtr;
-
-  fom_state_container_t  fomStateContainerObj_;
-  fom_state_container_t & fomStateContainerObjPtr;
-  fom_type & appObj_;
-  scalar_t dt_;
-
-  WlsSystemDefaultApi(fom_type & appObj, const res_pol_t & resPolObj, const jac_pol_t & jacPolObj, const decoder_t & decoderObj, fom_state_t & yFOM, scalar_t dt)
-    : appObj_(appObj), resPolObj_(resPolObj), jacPolObj_(jacPolObj), fomStateReconstructorObj_(yFOM,decoderObj),fomStateContainerObj_(yFOM), fomStateReconstructorObjPtr(fomStateReconstructorObj_),fomStateContainerObjPtr(fomStateContainerObj_)
-  {
-    dt_ = dt;
-  }
-
-  void residual(wls_state_type & wls_state, residual_type & resid) const{
-      resPolObj_(appObj_,wls_state,resid,fomStateContainerObjPtr,fomStateReconstructorObjPtr,dt_);
-  }
-
-  void jacobian(const wls_state_type & yROM, jacobian_type & Jphi) const{
-//    jacobian_policy()(wls_state,fomObj_);
-  };
-};
-*/
 }}}}
 
 

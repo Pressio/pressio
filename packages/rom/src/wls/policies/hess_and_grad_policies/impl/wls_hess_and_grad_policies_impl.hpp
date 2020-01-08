@@ -1,6 +1,6 @@
-#include "../wls_residual_policies_singlestep.hpp"
-#include "../wls_jacobian_policies_singlestep.hpp"
-
+#include "../../single_step_policies/wls_residual_policies_singlestep.hpp"
+#include "../../single_step_policies/wls_jacobian_policies_singlestep.hpp"
+#include "../../single_step_policies/wls_singlestep_helper.hpp"
 
 //#include "wls_functions.hpp"
 
@@ -12,24 +12,22 @@ The policies are templated on the policies for compputing the local residuals an
 /*
 The hessian_gradient policy is responsible for assembling Jw^T Jw and J^T rw, where Jw is the reduced windowed Jacobian and rw the residual. 
 The policy initializes in memory:
-	wlsJacs: this is a vector container of n_s -1 local Jacobians, J, where n_s is the width of the time stencil (e.g., n_s = 3 for BDF2)
+wlsJacs: this is a vector container of n_s -1 local Jacobians, J, where n_s is the width of the time stencil (e.g., n_s = 3 for BDF2)
   residual: this is the residual vector for the FOM 
   yFOM_current: this is a working variable for the fom state.
 */
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 template<typename fom_type,
 	 typename decoder_t,
-	 typename local_residual_policy_t, 
-	 typename local_jacobian_policy_t,
 	 typename ode_tag>
 class hessian_gradient_policy{
 private:
   using fom_native_state_t      = typename fom_type::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-  using scalar_t	= typename fom_type::scalar_type;
-  using jacobian_t = typename decoder_t::jacobian_t; 
-  using jac_t  =  jacobian_t;
-  using residual_t = fom_state_t; //maybe we need to change this for hyper reduction?
+  using scalar_t                = typename fom_type::scalar_type;
+  using jacobian_t              = typename decoder_t::jacobian_t; 
+  using jac_t                   =  jacobian_t;
+  using residual_t              = fom_state_t; //maybe we need to change this for hyper reduction?
   // Create types for Jacobians and Jacobian containers
   using wls_jacs_t = std::vector<jac_t>; //
   using nm1 = ode::nMinusOne;
@@ -42,9 +40,11 @@ private:
   int fomSize_;
   int time_stencil_size;
   const jac_t & phi_;
+  using single_step_residual_policy_t = ::pressio::rom::wls::helpers::single_step_residual_policy<fom_type>;
+  using single_step_jacobian_policy_t = ::pressio::rom::wls::helpers::single_step_jacobian_policy<fom_type>;
 
-  local_residual_policy_t residualPolicy;
-  local_jacobian_policy_t jacobianPolicy;
+  single_step_residual_policy_t residualPolicy;
+  single_step_jacobian_policy_t jacobianPolicy;
   ode_tag ode;
   //=============================================
   // Functions to update the state in the WLS loop
@@ -104,18 +104,21 @@ private:
       gradientView[k] += tmp[k];}
     }
 public:
-  hessian_gradient_policy(int romSize,  
-                          int fomSize, 
+
+  hessian_gradient_policy(const fom_type & appObj,
+                          const fom_state_t & yFOM,
                           int numStepsInWindow, 
                           int time_stencil_size,  
                           const decoder_t & decoderObj) : 
-                          wlsJacs_(time_stencil_size,jac_t(fomSize,romSize)),
+                          wlsJacs_(time_stencil_size,decoderObj.getReferenceToJacobian()),  // construct Jacobians off of decoder type. // jac_t(fomSize,romSize)),
                           phi_(decoderObj.getReferenceToJacobian()), 
-                          residual_(fomSize), 
-                          yFOM_current_(fomSize){ 
-    this->romSize_ = romSize;    
+                          residual_( appObj.velocity( *yFOM.data() , ::pressio::utils::constants::zero<scalar_t>()) ),
+                          yFOM_current_( yFOM ) 
+{ 
+
+    this->romSize_ = decoderObj.getReferenceToJacobian().numVectors(); 
     this->time_stencil_size = time_stencil_size;
-    this->fomSize_ = fomSize;
+    this->fomSize_ = yFOM.size();
     }
   template <typename wls_state_type,
             typename fom_state_reconstr_t, 

@@ -1,4 +1,3 @@
-// this is the same as in other file
 #include "./impl/wls_apis_impl.hpp"
 
 namespace pressio{ namespace rom{ namespace wls{ 

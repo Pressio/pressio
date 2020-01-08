@@ -4,10 +4,13 @@
 #include "ODE_ALL"
 #include "SOLVERS_NONLINEAR"
 #include "SOLVERS_EXPERIMENTAL"
-#include "ROM_LSPG_UNSTEADY"
+#include "ROM_BASIC"
+#include "rom/src/meta/wls_velocity_api/rom_model_meets_velocity_api_for_unsteady_wls.hpp"
 #include "APPS_UNSTEADYBURGERS1D"
 #include "utils_eigen.hpp"
 #include "/Users/ejparis/pressio_repos/pressio/packages/rom/src/wls/apis/wls_apis.hpp"
+//#include "/Users/ejparis/pressio_repos/pressio/packages/rom/src/wls/policies/wls_default.hpp"
+
 //#include "../wls_files/my_gauss_newton.hpp"
 //#include "../wls_files/wls_specializers.hpp"
 
@@ -24,8 +27,7 @@ int main(int argc, char *argv[]){
   using decoder_jac_t	= pressio::containers::MultiVector<eig_dyn_mat>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
   using fom_state_t     = ::pressio::containers::Vector<fom_native_state_t>;
-
-
+  using hessian_t       = pressio::containers::Matrix<eig_dyn_mat>;
   std::string checkStr {"PASSED"};
 
   //---- Information for WLS
@@ -38,51 +40,39 @@ int main(int argc, char *argv[]){
 
   using ode_tag = ::pressio::ode::implicitmethods::Euler;
 
-//  using ode_traits_t = pressio::ode::details::traits<ode_tag>;
-//  ode_traits_t ode_traits;
-  // update this to be inside
   const int t_stencil_width = 2;
   using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,t_stencil_width>;
   //
   //-------------------------------
   // app object
   fom_t appObj( mu, fomSize);
-  fom_state_t yFOM(fomSize);
-  (*yFOM.data()).setConstant(1.);
+  auto & yRef_native = appObj.getInitialState();
+  fom_state_t yRef(yRef_native);
   auto t0 = static_cast<scalar_t>(0);
   // read from file the jacobian of the decoder
-  // store modes computed before from file
+  // store modes computed before from fil
   decoder_jac_t phi =
     pressio::rom::test::eigen::readBasis("basis.txt", romSize, fomSize);
   int numBasis = phi.numVectors();
   if( numBasis != romSize ) return 0;
   // create decoder Obj
   decoder_t decoderObj(phi);
-  decoderObj.getReferenceToJacobian();
 
+  
   // Create WLS state
   wls_state_t  wlsState(romSize*numStepsInWindow);
   wlsState.setZero();
 
 
 
- // using gradient_t = wls_state_t; ( [Jphi]^T Jphi )
-  using hessian_t = pressio::containers::Matrix<eig_dyn_mat>;
 
 
-  using local_residual_policy_t = pressio::rom::wls::local_residual_policy_velocityAPI;
-  using local_jacobian_policy_t = pressio::rom::wls::local_jacobian_policy_velocityAPI;
-  /* Create policy to evaluate the hessian  and  gradient. Templates:
-    fom_t: this is used to infer fom_state_t and  residual_t
-    jac_t: this is used to infer the jacbobian type
-    local_residual_policy_t: this is used to create a residual policy
-    local_jacobian_policy_t: this is used to create a Jacobian policy 
-    ode_tag: this is up in the air, but I'd like this to be used to infer the time stencil size. 
-  */
-  using hessian_gradient_policy_t = pressio::rom::wls::hessian_gradient_policy<fom_t,decoder_t,local_residual_policy_t,local_jacobian_policy_t,ode_tag>;
+  using hessian_gradient_policy_t = pressio::rom::wls::hessian_gradient_policy<fom_t,decoder_t,ode_tag>;
   using wls_system_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_gradient_policy_t,aux_states_container_t,hessian_t>;
-  wls_system_t wlsSystem(appObj,decoderObj,yFOM,numStepsInWindow,t_stencil_width);
-// appObj, yREf, decoderObj, t0 
+  wls_system_t wlsSystem(appObj,decoderObj,yRef,numStepsInWindow,t_stencil_width);
+
+
+
   // Use pressio interface for solvers 
   using solver_tag   = pressio::solvers::linear::direct::ColPivHouseholderQR;
   using linear_solver_t = pressio::solvers::direct::EigenDirect<solver_tag, hessian_t>;
@@ -101,7 +91,7 @@ int main(int argc, char *argv[]){
   fom_state_t yFinal(fomSize);
 
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
-  fom_state_reconstr_t  fomStateReconstructor(yFOM,decoderObj);
+  fom_state_reconstr_t  fomStateReconstructor(yRef,decoderObj);
   fomStateReconstructor(wlsCurrentState,yFinal);
 
   for (int i=0;i<fomSize;i++){
