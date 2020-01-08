@@ -135,7 +135,8 @@ public:
                   const std::size_t numStepsInWindow, 
                   const scalar_t ts , 
                   aux_states_container_t & auxStatesContainer, 
-                  const int step_s) const{
+                  const int step_s,
+                  scalar_t & rnorm) const{
   int n = 0;
   scalar_t t = ts + n*dt;
   int step = step_s + n;
@@ -147,6 +148,7 @@ public:
   updateStatesFirstStep(wlsStateIC,fomStateReconstrObj_,auxStatesContainer,ode);
 
   residualPolicy(ode,appObj,yFOM_current_,residual_,auxStatesContainer,ts,dt,step);
+  rnorm += ::pressio::containers::ops::norm2(residual_);
   for (int i = 0; i < time_stencil_size; i++){
     jacobianPolicy(ode,appObj,yFOM_current_,wlsJacs_[time_stencil_size - i - 1],phi_,auxStatesContainer,n*dt,dt,step,i);
   }
@@ -166,6 +168,7 @@ public:
     t = ts + n*dt;
     step = step_s + n; 
     residualPolicy(ode,appObj,yFOM_current_,residual_,auxStatesContainer,t,dt,step);
+    rnorm += ::pressio::containers::ops::norm2(residual_);
     // == Evaluate Jacobian (Currently have Jacobian w.r.p to previous state hard coded outside of loop)
     jacobianPolicy(ode,appObj,yFOM_current_,wlsJacs_[time_stencil_size-1],phi_,auxStatesContainer,t,dt,step, 0);
     // == Update everything

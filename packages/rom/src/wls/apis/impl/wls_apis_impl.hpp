@@ -60,7 +60,8 @@ public:
                                  hessian_type & hessian, 
                                  gradient_type & gradient, 
                                  const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2, 
-                                 scalar_type rnorm=0.) const{
+                                 scalar_type & rnorm=0.) const{
+    rnorm = 0.;
     hessian_gradient_polObj_(this->appObj_,
                              wls_state,
                              this->wlsStateIC_,
@@ -71,7 +72,8 @@ public:
                              this->numStepsInWindow_,
                              this->ts_,
                              this->auxStatesContainer_,
-                             this->step_s_);
+                             this->step_s_,
+                             rnorm);
   }
 
   //We have to put static assertion for gradient and hessian to be pressio wrappers for specific types
