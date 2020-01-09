@@ -39,7 +39,7 @@ private:
   int romSize_;
   int fomSize_;
   int time_stencil_size;
-  const jac_t & phi_;
+  const jac_t & phi_; 
   using single_step_residual_policy_t = ::pressio::rom::wls::helpers::single_step_residual_policy<fom_type>;
   using single_step_jacobian_policy_t = ::pressio::rom::wls::helpers::single_step_jacobian_policy<fom_type>;
 
@@ -114,8 +114,7 @@ public:
                           phi_(decoderObj.getReferenceToJacobian()), 
                           residual_( appObj.velocity( *yFOM.data() , ::pressio::utils::constants::zero<scalar_t>()) ),
                           yFOM_current_( yFOM ) 
-{ 
-
+    { 
     this->romSize_ = decoderObj.getReferenceToJacobian().numVectors(); 
     this->time_stencil_size = time_stencil_size;
     this->fomSize_ = yFOM.size();
@@ -195,6 +194,44 @@ public:
     }
   } 
 }
+
+
+  template <typename wls_state_type,
+            typename fom_state_reconstr_t, 
+            typename aux_states_container_t> 
+  void computeResidualNorm(const fom_type & appObj, 
+                  const wls_state_type  & wlsState,
+                  const wls_state_type & wlsStateIC, 
+                  const fom_state_reconstr_t & fomStateReconstrObj_,
+                  const scalar_t dt, 
+                  const std::size_t numStepsInWindow, 
+                  const scalar_t ts , 
+                  aux_states_container_t & auxStatesContainer, 
+                  const int step_s,
+                  scalar_t & rnorm) const{
+  rnorm = ::pressio::utils::constants::zero<scalar_t>();
+  int n = 0;
+  scalar_t t = ts + n*dt;
+  int step = step_s + n;
+  const auto wlsCurrentState = ::pressio::containers::span(wlsState,0,romSize_);
+  fomStateReconstrObj_(wlsCurrentState,yFOM_current_);
+  updateStatesFirstStep(wlsStateIC,fomStateReconstrObj_,auxStatesContainer,ode);
+  residualPolicy(ode,appObj,yFOM_current_,residual_,auxStatesContainer,ts,dt,step);
+  rnorm += ::pressio::containers::ops::norm2(residual_);
+  for (int n = 1; n < numStepsInWindow; n++){
+    // === reconstruct FOM states ========
+    updateStatesNStep(yFOM_current_,auxStatesContainer,ode); 
+    const auto wlsCurrentState = ::pressio::containers::span(wlsState,n*romSize_,romSize_);
+    fomStateReconstrObj_(wlsCurrentState,yFOM_current_);
+    // == Evaluate residual ============
+    t = ts + n*dt;
+    step = step_s + n; 
+    residualPolicy(ode,appObj,yFOM_current_,residual_,auxStatesContainer,t,dt,step);
+    rnorm += ::pressio::containers::ops::norm2(residual_);
+  }
+}
+
+
 };
 
 

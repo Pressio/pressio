@@ -5,7 +5,6 @@ template<typename fom_type,
 	typename wls_state_type, 
 	typename decoder_t,
         typename ode_t, 
-	typename hessian_gradient_pol_t, 
 	typename aux_states_container_t, 
 	typename hessian_t>
 class WlsSystemHessianAndGradientApi{
@@ -19,6 +18,7 @@ public:
   using hessian_type = hessian_t;
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
   using decoder_jac_t = typename decoder_t::jacobian_t;
+  using hessian_gradient_pol_t = ::pressio::rom::wls::hessian_gradient_policy<fom_type,decoder_t,ode_t>;
 
   // Assertions 
   static_assert(std::is_same<wls_state_type, ::pressio::containers::Vector<fom_native_state_t> >::value, "WLS_state_type  must be of type ::pressio::containers::Vector");
@@ -28,7 +28,7 @@ private:
   const hessian_gradient_pol_t hessian_gradient_polObj_; 
   const fom_type & appObj_;
   const fom_state_reconstr_t  fomStateReconstructorObj_;
-  mutable aux_states_container_t  auxStatesContainer_; //understand mutable keyword better
+  mutable aux_states_container_t  auxStatesContainer_; 
   wls_state_type wlsStateIC_;
   scalar_t dt_;
   scalar_t ts_ = 0.;
