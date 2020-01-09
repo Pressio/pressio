@@ -53,8 +53,6 @@
 #include <chrono>
 #include "../../utils/src/utils_ConfigDefs.hpp"
 
-#include "containers_traits.hpp"
-
 #include "../../mpl/src/mpl_non_variadic.hpp"
 #include "../../mpl/src/mpl_variadic.hpp"
 
