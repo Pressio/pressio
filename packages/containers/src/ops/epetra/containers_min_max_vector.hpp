@@ -50,7 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_EPETRA_MINMAX_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_EPETRA_MINMAX_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{

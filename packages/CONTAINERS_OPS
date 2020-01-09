@@ -53,7 +53,6 @@
 #include "CONTAINERS_MULTI_VECTOR"
 #include "CONTAINERS_MATRIX"
 
-#include "containers/src/ops/containers_ops_meta.hpp"
 #include "containers/src/ops/containers_vector_deep_copy.hpp"
 #include "containers/src/ops/containers_vector_set_zero.hpp"
 

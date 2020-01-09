@@ -50,8 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_EPETRA_MAT_PROD_MULTI_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_EPETRA_MAT_PROD_MULTI_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*

@@ -48,7 +48,6 @@
 #ifndef CONTAINERS_SRC_OPS_EIGEN_MULTI_VECTOR_DOT_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_EIGEN_MULTI_VECTOR_DOT_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
 #include "../../multi_vector/containers_multi_vector_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
 

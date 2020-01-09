@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_vector_deep_copy.hpp
+// containers_wrappers_have_same_scalar.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -45,58 +45,42 @@
 // ************************************************************************
 //@HEADER
 */
-
-#ifndef CONTAINERS_CONTAINER_OPS_VECTOR_DEEP_COPY_HPP_
-#define CONTAINERS_CONTAINER_OPS_VECTOR_DEEP_COPY_HPP_
+#ifndef CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
+#define CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
 
 #include "../vector/containers_vector_meta.hpp"
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
-#endif
+#include "../matrix/containers_matrix_meta.hpp"
+#include "../multi_vector/containers_multi_vector_meta.hpp"
+#include "../meta/containers_meta_is_expression.hpp"
 
-namespace pressio{ namespace containers{ namespace ops{
+namespace pressio{ namespace containers{ namespace meta {
 
-//--------------------------------------------------------------------------
-// for wrappers, because we overload the = operator
-// and for now we do NOT have view semantics
-//--------------------------------------------------------------------------
-template<
-  typename T,
+template <typename T1, typename T2, typename enable = void>
+struct wrapper_pair_have_same_scalar : std::false_type {};
+
+template <typename T1, typename T2>
+struct wrapper_pair_have_same_scalar<T1,T2,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<T>::value
-    > * = nullptr
-  >
-void deep_copy(const T & src, T & dest){
-  dest = src;
-}
+    std::is_same<
+      typename containers::details::traits<T1>::scalar_t,
+      typename containers::details::traits<T2>::scalar_t
+      >::value
+    >
+  > : std::true_type{};
 
-//--------------------------------------------------------------------------
-// enable for pybind11::array_t
-//--------------------------------------------------------------------------
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<
-  typename T,
+
+template <
+  typename T1, typename T2, typename T3, typename enable = void
+  >
+struct wrapper_triplet_have_same_scalar : std::false_type {};
+
+template <typename T1, typename T2, typename T3>
+struct wrapper_triplet_have_same_scalar<T1,T2,T3,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<T>::value
-    > * = nullptr
-  >
-void deep_copy(const T & src, T & dest){
+    wrapper_pair_have_same_scalar<T1,T2>::value &&
+    wrapper_pair_have_same_scalar<T2,T3>::value
+    >
+  > : std::true_type{};
 
-  if (src.ndim() > 1){
-    throw std::runtime_error("containers::ops::deep_copy: v.ndims()!=1. this operation currently supported for vectors only");
-  }
-
-  const auto vsz = src.size();
-  assert(vsz == dest.size());
-  auto dest_proxy = dest.mutable_unchecked();
-  auto src_proxy  = src.unchecked();
-  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
-    dest_proxy(i) = src_proxy(i);
-  }
-}
-#endif
-
-
-}}}//end namespace pressio::containers::ops
+}}} // namespace pressio::containers::meta
 #endif

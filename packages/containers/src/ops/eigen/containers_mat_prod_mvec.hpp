@@ -48,7 +48,6 @@
 #ifndef CONTAINERS_SRC_OPS_EIGEN_MAT_PROD_MULTI_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_EIGEN_MAT_PROD_MULTI_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
 #include "containers_eigen_ops_helper_impl.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{

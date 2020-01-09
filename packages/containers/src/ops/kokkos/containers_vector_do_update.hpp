@@ -50,7 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_KOKKOS_VECTOR_DO_UPDATE_HPP_
 #define CONTAINERS_SRC_OPS_KOKKOS_VECTOR_DO_UPDATE_HPP_
 
-#include "../containers_ops_meta.hpp"
 #include "../../vector/containers_vector_meta.hpp"
 #include "containers_vector_do_update_kokkos_functors.hpp"
 #include<KokkosBlas1_axpby.hpp>
