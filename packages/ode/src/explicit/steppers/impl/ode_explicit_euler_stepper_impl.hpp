@@ -104,6 +104,15 @@ public:
   ExplicitEulerStepperImpl() = delete;
   ~ExplicitEulerStepperImpl() = default;
 
+  // copy cnstr
+  ExplicitEulerStepperImpl(const ExplicitEulerStepperImpl & other)  = delete;
+  // copy assignment
+  ExplicitEulerStepperImpl & operator=(const ExplicitEulerStepperImpl & other)  = delete;
+  // move cnstr
+  ExplicitEulerStepperImpl(ExplicitEulerStepperImpl && other)  = delete;
+  // move assign
+  ExplicitEulerStepperImpl & operator=(ExplicitEulerStepperImpl && other)  = delete;
+
 public:
 
   /*

@@ -84,6 +84,15 @@ public:
   Stepper()  = delete;
   ~Stepper() = default;
 
+  // copy cnstr
+  Stepper(const Stepper & other)  = delete;
+  // copy assignment
+  Stepper & operator=(const Stepper & other)  = delete;
+  // move cnstr
+  Stepper(Stepper && other)  = delete;
+  // move assign
+  Stepper & operator=(Stepper && other)  = delete;
+
   // this is enabled all the time
   Stepper(state_type const	  & stateIn0,
 	  const system_type	  & model,

@@ -86,6 +86,15 @@ public:
   StepperBase() = default;
   ~StepperBase() = default;
 
+  // copy cnstr
+  StepperBase(const StepperBase & other)  = delete;
+  // copy assignment
+  StepperBase & operator=(const StepperBase & other)  = delete;
+  // move cnstr
+  StepperBase(StepperBase && other)  = delete;
+  // move assign
+  StepperBase & operator=(StepperBase && other)  = delete;
+
 public:
   typename stepper_traits::order_t order() const{
     return stepper_traits::order_value;
