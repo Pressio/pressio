@@ -134,6 +134,15 @@ public:
   StepperBase() = delete;
   ~StepperBase() = default;
 
+  // copy cnstr
+  StepperBase(const StepperBase & other)  = delete;
+  // copy assignment
+  StepperBase & operator=(const StepperBase & other)  = delete;
+  // move cnstr
+  StepperBase(StepperBase && other)  = delete;
+  // move assign
+  StepperBase & operator=(StepperBase && other)  = delete;
+
   StepperBase(const state_t & stateIn0,
 		      const system_t & model,
 		      const residual_pol_t & resPolicyObj,
