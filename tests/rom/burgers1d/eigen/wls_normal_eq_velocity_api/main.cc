@@ -35,14 +35,14 @@ int main(int argc, char *argv[]){
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   scalar_t dt = 0.01;
   int romSize = 11;
-  constexpr int numStepsInWindow = 5;
+  static constexpr int numStepsInWindow = 5;
   // ODE information
 
-  using ode_tag = ::pressio::ode::implicitmethods::Euler;
+  using ode_tag = ::pressio::ode::explicitmethods::Euler; //define ODE tag
 
-  const int t_stencil_width = 2;
-  using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,t_stencil_width>;
-  //
+  const int t_stencil_width = 2; // define width of time stencil, in the future we should tie this to ode tag, which will let us move this inside
+  using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,t_stencil_width>; //define type for the auxStates 
+
   //-------------------------------
   // app object
   fom_t appObj( mu, fomSize);
@@ -60,16 +60,10 @@ int main(int argc, char *argv[]){
 
   
   // Create WLS state
-  wls_state_t  wlsState(romSize*numStepsInWindow);
-  wlsState.setZero();
-
-
-
-
-
-  using hessian_gradient_policy_t = pressio::rom::wls::hessian_gradient_policy<fom_t,decoder_t,ode_tag>;
-  using wls_system_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_gradient_policy_t,aux_states_container_t,hessian_t>;
-  wls_system_t wlsSystem(appObj,decoderObj,yRef,numStepsInWindow,t_stencil_width);
+  wls_state_t  wlsState(romSize*numStepsInWindow); //initialize WLS state into one vector
+  wlsState.setZero(); //set to zero
+  using wls_system_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,aux_states_container_t,hessian_t>; //define wls system type
+  wls_system_t wlsSystem(appObj,decoderObj,yRef,numStepsInWindow,t_stencil_width); //initialize object
 
 
 
@@ -77,28 +71,35 @@ int main(int argc, char *argv[]){
   using solver_tag   = pressio::solvers::linear::direct::ColPivHouseholderQR;
   using linear_solver_t = pressio::solvers::direct::EigenDirect<solver_tag, hessian_t>;
   linear_solver_t linear_solver; 
-  using gn_t = pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
+  using gn_t = pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t,::pressio::solvers::iterative::gn::noLineSearch>;
   gn_t GNSolver(wlsSystem, wlsState, linear_solver);
-
   int numSteps = 10/numStepsInWindow;
+
+  std::clock_t start = std::clock();
+  double duration;
+
   for (int step = 0; step < numSteps; step++)
   {
     wlsSystem.advanceOneWindow(wlsState,GNSolver,step,dt);
   }
 
-  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
+  duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC; 
   const auto wlsCurrentState = pressio::containers::span(wlsState,(numStepsInWindow-1)*romSize,romSize);
   fom_state_t yFinal(fomSize);
-
   using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
   fom_state_reconstr_t  fomStateReconstructor(yRef,decoderObj);
   fomStateReconstructor(wlsCurrentState,yFinal);
+
+   
+  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
+
 
   for (int i=0;i<fomSize;i++){
     cout << yFinal[i] << " " << trueY[i] << endl;
     if (std::abs(yFinal[i] - trueY[i]) > 1e-9) checkStr = "FAILED";
   }
   cout << checkStr << endl;
-
+  
+  std::cout<<"Walltime = "<< duration <<'\n';
   return 0;
 }

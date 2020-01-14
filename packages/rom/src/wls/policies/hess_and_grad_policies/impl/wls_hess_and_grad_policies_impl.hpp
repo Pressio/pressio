@@ -70,7 +70,7 @@ private:
       ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
       ::pressio::containers::ops::deep_copy(yFOM_current_, odeState_nm1);
     }
-  // Euler
+  // Implicit Euler
   template <typename wls_state_type,
             typename fom_state_reconstr_t,
             typename aux_states_container_t> 
@@ -89,6 +89,26 @@ private:
       auto & odeState_nm1 = auxStatesContainer.get(nm1());
       ::pressio::containers::ops::deep_copy(yFOM_current_, odeState_nm1);
       }
+  // Explicit Euler
+  template <typename wls_state_type,
+            typename fom_state_reconstr_t,
+            typename aux_states_container_t> 
+  void updateStatesFirstStep(const wls_state_type & wlsStateIC,
+                             const fom_state_reconstr_t & fomStateReconstr, 
+                             aux_states_container_t & auxStatesContainer, 
+                             const ::pressio::ode::explicitmethods::Euler & tag) const{
+    	const auto wlsInitialStateNm1 = ::pressio::containers::span(wlsStateIC,0,romSize_);
+    	auto & fomStateNm1 = auxStatesContainer.get(nm1());
+    	fomStateReconstr(wlsInitialStateNm1,fomStateNm1);
+  	}
+  template <typename aux_states_container_t> 
+  void updateStatesNStep(const fom_state_t & yFOM_current_, 
+                         aux_states_container_t & auxStatesContainer,
+                         const ::pressio::ode::explicitmethods::Euler  & tag) const{
+      auto & odeState_nm1 = auxStatesContainer.get(nm1());
+      ::pressio::containers::ops::deep_copy(yFOM_current_, odeState_nm1);
+      }
+
   //==========================================
   // Function to do c += A^T b
   template <typename Mat, 
@@ -139,24 +159,23 @@ public:
   int n = 0;
   scalar_t t = ts + n*dt;
   int step = step_s + n;
-  hess.setZero(); // may be possible to get rid of these
+  hess.setZero(); //ensure zero as we use += 
   gradient.setZero();
 
-  const auto wlsCurrentState = ::pressio::containers::span(wlsState,0,romSize_);
+  const auto wlsCurrentState = ::pressio::containers::span(wlsState,0,romSize_); //get access to the state at the first window
   fomStateReconstrObj_(wlsCurrentState,yFOM_current_);
-  updateStatesFirstStep(wlsStateIC,fomStateReconstrObj_,auxStatesContainer,ode);
+  updateStatesFirstStep(wlsStateIC,fomStateReconstrObj_,auxStatesContainer,ode); // reconstruct the FOM states from the previous window/ICs 
 
-  residualPolicy(ode,appObj,yFOM_current_,residual_,auxStatesContainer,ts,dt,step);
-  rnorm += ::pressio::containers::ops::norm2(residual_);
-  for (int i = 0; i < time_stencil_size; i++){
-    jacobianPolicy(ode,appObj,yFOM_current_,wlsJacs_[time_stencil_size - i - 1],phi_,auxStatesContainer,n*dt,dt,step,i);
-  }
+  residualPolicy(ode,appObj,yFOM_current_,residual_,auxStatesContainer,ts,dt,step); //compute the time discrete residual
+  rnorm += ::pressio::containers::ops::norm2(residual_); //increment the norm
+
   hess_type C(romSize_,romSize_); // this is a temporary work around for the += issue.
 
+  // add to local block of hessian
   auto hess_block = ::pressio::containers::subspan( hess,std::make_pair( n*romSize_,(n+1)*romSize_ ) , std::make_pair( n*romSize_,(n+1)*romSize_) );
   ::pressio::containers::ops::dot(wlsJacs_[time_stencil_size-1],wlsJacs_[time_stencil_size-1], hess_block);
 
-  local_vec_update(wlsJacs_[time_stencil_size-1],residual_,gradient,n*romSize_,romSize_);
+  local_vec_update(wlsJacs_[time_stencil_size-1],residual_,gradient,n*romSize_,romSize_);  // compute gradient[n*romSize_:(n+1)*romSize] += J^T r
   for (int n = 1; n < numStepsInWindow; n++){
     // === reconstruct FOM states ========
     updateStatesNStep(yFOM_current_,auxStatesContainer,ode); 
@@ -168,8 +187,9 @@ public:
     step = step_s + n; 
     residualPolicy(ode,appObj,yFOM_current_,residual_,auxStatesContainer,t,dt,step);
     rnorm += ::pressio::containers::ops::norm2(residual_);
-    // == Evaluate Jacobian (Currently have Jacobian w.r.p to previous state hard coded outside of loop)
-    jacobianPolicy(ode,appObj,yFOM_current_,wlsJacs_[time_stencil_size-1],phi_,auxStatesContainer,t,dt,step, 0);
+    for (int i = 0; i < time_stencil_size; i++){
+      jacobianPolicy(ode,appObj,yFOM_current_,wlsJacs_[time_stencil_size - i - 1],phi_,auxStatesContainer,n*dt,dt,step,i); //compute the Jacobian for each state in the stencil
+    }
     // == Update everything
     int sbar = std::min(n,time_stencil_size);
     for (int i=0; i < sbar; i++){
