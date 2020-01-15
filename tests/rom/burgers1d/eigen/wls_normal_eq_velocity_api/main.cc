@@ -38,16 +38,16 @@ int main(int argc, char *argv[]){
   static constexpr int numStepsInWindow = 5;
   // ODE information
 
-  using ode_tag = ::pressio::ode::explicitmethods::Euler; //define ODE tag
+  using ode_tag = ::pressio::ode::implicitmethods::BDF2; //define ODE tag
 
-  const int t_stencil_width = 2; // define width of time stencil, in the future we should tie this to ode tag, which will let us move this inside
+  const int t_stencil_width = 3; // define width of time stencil, in the future we should tie this to ode tag, which will let us move this inside
   using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,t_stencil_width>; //define type for the auxStates 
 
   //-------------------------------
   // app object
   fom_t appObj( mu, fomSize);
-  auto & yRef_native = appObj.getInitialState();
-  fom_state_t yRef(yRef_native);
+  auto & yFOM_IC_native = appObj.getInitialState();
+  fom_state_t yFOM_IC(yFOM_IC_native);
   auto t0 = static_cast<scalar_t>(0);
   // read from file the jacobian of the decoder
   // store modes computed before from fil
@@ -63,7 +63,8 @@ int main(int argc, char *argv[]){
   wls_state_t  wlsState(romSize*numStepsInWindow); //initialize WLS state into one vector
   wlsState.setZero(); //set to zero
   using wls_system_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,aux_states_container_t,hessian_t>; //define wls system type
-  wls_system_t wlsSystem(appObj,decoderObj,yRef,numStepsInWindow,t_stencil_width); //initialize object
+  auto & yRef(yFOM_IC); //declare reference state as an alias to the ICs
+  wls_system_t wlsSystem(appObj,decoderObj,yFOM_IC,yRef,numStepsInWindow,t_stencil_width); //initialize object
 
 
 
@@ -91,7 +92,7 @@ int main(int argc, char *argv[]){
   fomStateReconstructor(wlsCurrentState,yFinal);
 
    
-  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
+  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);
 
 
   for (int i=0;i<fomSize;i++){

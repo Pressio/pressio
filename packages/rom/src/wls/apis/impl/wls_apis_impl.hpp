@@ -1,4 +1,5 @@
 #include "../../policies/hess_and_grad_policies/hess_and_grad_policies.hpp"
+#include "SOLVERS_LINEAR"
 
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 template<typename fom_type,        
@@ -40,21 +41,43 @@ private:
 public: 
   WlsSystemHessianAndGradientApi(const fom_type & appObj, 
                                  const decoder_t & decoderObj,
-                                 fom_state_t & yFOM, 
+                                 fom_state_t & yFOM_IC, 
+                                 fom_state_t & yFOM_Ref, 
                                  const int numStepsInWindow, 
                                  const int timeStencilSize) 
-				 : 
+                                 : 
                                  appObj_(appObj),
-                                 fomStateReconstructorObj_(yFOM,decoderObj),
+                                 fomStateReconstructorObj_(yFOM_Ref,decoderObj),
                                  wlsStateIC_( ( (decoderObj.getReferenceToJacobian()).numVectors() ) *(timeStencilSize-1)),
-                                 auxStatesContainer_(yFOM),
-                                 hessian_gradient_polObj_( appObj, yFOM,numStepsInWindow,timeStencilSize,decoderObj)
-				 {
-                                   this-> romSize_ = (decoderObj.getReferenceToJacobian()).numVectors();
+                                 auxStatesContainer_(yFOM_IC),
+                                 hessian_gradient_polObj_( appObj, yFOM_IC,numStepsInWindow,timeStencilSize,decoderObj)
+                                 {
+                                   this->romSize_ = (decoderObj.getReferenceToJacobian()).numVectors();
                                    this->numStepsInWindow_ = numStepsInWindow;
                                    this->timeStencilSize_ = timeStencilSize;
-                                   this->wlsStateIC_.setZero();
-  			         }
+                                   auto wlsInitialStateNm1 = ::pressio::containers::span(wlsStateIC_,0,romSize_);
+                                   initializeCoeffs(decoderObj.getReferenceToJacobian(), wlsInitialStateNm1 , yFOM_IC,yFOM_Ref);
+                                 }
+
+
+  // Function to initialize the coefficients for a given FOM IC and reference state
+  // computes the ICs via optimal L^2 projection, phi^T phi xhat = phi^T(x - xRef)
+  template <typename basis_t, typename wls_stateview_t>
+  void initializeCoeffs(const basis_t & phi, wls_stateview_t & wlsStateIC, const fom_state_t & yFOM_IC,const fom_state_t & yRef ){
+    using solver_tag   = pressio::solvers::linear::direct::ColPivHouseholderQR;
+    using linear_solver_t = pressio::solvers::direct::EigenDirect<solver_tag, hessian_t>;
+    linear_solver_t linear_solver; //initialize linear solver. This is only used here 
+    hessian_t H(this->romSize_,this->romSize_); // create the system matrix, phi^T phi
+    ::pressio::containers::ops::dot(phi,phi,H);
+    fom_state_t b(yFOM_IC); //create a vector to store yFOM - yRef.
+    pressio::containers::ops::do_update(b,1.,yRef,-1.);
+    auto r = pressio::containers::ops::dot(phi,b); // compute phi^T b
+    wls_state_type y_l2(this->romSize_); //currently have no way of passing a span to the linear solver
+    linear_solver.solveAllowMatOverwrite(H, r, y_l2); //solve system for optimal L2 projection
+    for (int i=0; i< this->romSize_; i++){
+      wlsStateIC[i] = y_l2[i]; //set ICs
+    }
+  }
 
   void computeHessianAndGradient(const state_type & wls_state,
                                  hessian_type & hessian, 
@@ -76,7 +99,6 @@ public:
                              rnorm);
   }
 
-  //We have to put static assertion for gradient and hessian to be pressio wrappers for specific types
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
     hessian_type H(romSize_*numStepsInWindow_,romSize_*numStepsInWindow_);  //how do we do this for arbitrary types?
     return H;} 
@@ -93,6 +115,8 @@ public:
     this->ts_  = windowNum*this->dt_*this->numStepsInWindow_; 
     this->step_s_  = windowNum*this->numStepsInWindow_; 
     solver.solve(*this,wlsState);
+    // Loop to update the the wlsStateIC vector. 
+    // If we add multistep explicit methods, need to add things here.
     int start = std::max(0,timeStencilSize_ - 1 - numStepsInWindow_); 
     for (int i = 0; i < start; i++){
       auto wlsTmpState = ::pressio::containers::span(wlsStateIC_,i*romSize_,romSize_);

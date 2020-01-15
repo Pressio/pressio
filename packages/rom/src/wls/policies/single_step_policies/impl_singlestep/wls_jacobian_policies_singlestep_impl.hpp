@@ -94,7 +94,7 @@ struct local_jacobian_policy_velocityAPI{
       const auto One  = ::pressio::utils::constants::one<scalar_type>(); //  1*dt
       ::pressio::containers::ops::do_update(Jphi,phi,One);}
     if (arg == 1){
-      using nm1 = ode::nMinusOne;
+      using nm1 = ::pressio::ode::nMinusOne;
       const auto dtnegOne  = ::pressio::utils::constants::negOne<scalar_type>()*dt; //  -1*dt
       const auto One  = ::pressio::utils::constants::one<scalar_type>(); //  1*dt
 
