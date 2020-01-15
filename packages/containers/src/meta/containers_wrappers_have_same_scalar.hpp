@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_ops_meta.hpp
+// containers_wrappers_have_same_scalar.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -45,8 +45,8 @@
 // ************************************************************************
 //@HEADER
 */
-#ifndef CONTAINERS_OPS_META_HPP_
-#define CONTAINERS_OPS_META_HPP_
+#ifndef CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
+#define CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
 
 #include "../vector/containers_vector_meta.hpp"
 #include "../matrix/containers_matrix_meta.hpp"
@@ -55,41 +55,23 @@
 
 namespace pressio{ namespace containers{ namespace meta {
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename T1, typename T2, typename enable = void>
-struct kokkos_wrapper_pair_have_same_exe_space : std::false_type {};
-
-template <typename T1, typename T2>
-struct kokkos_wrapper_pair_have_same_exe_space<
-  T1,T2,
-  ::pressio::mpl::enable_if_t<
-    std::is_same<
-      typename containers::details::traits<T1>::execution_space,
-      typename containers::details::traits<T2>::execution_space
-      >::value
-    >
-  > : std::true_type{};
-#endif
-
-
 template <typename T1, typename T2, typename enable = void>
 struct wrapper_pair_have_same_scalar : std::false_type {};
 
 template <typename T1, typename T2>
 struct wrapper_pair_have_same_scalar<T1,T2,
   ::pressio::mpl::enable_if_t<
-    std::is_same<typename
-		 containers::details::traits<T1>::scalar_t,
-		 typename
-		 containers::details::traits<T2>::scalar_t
-		 >::value
+    std::is_same<
+      typename containers::details::traits<T1>::scalar_t,
+      typename containers::details::traits<T2>::scalar_t
+      >::value
     >
   > : std::true_type{};
 
 
-
-template <typename T1, typename T2,
-	  typename T3, typename enable = void>
+template <
+  typename T1, typename T2, typename T3, typename enable = void
+  >
 struct wrapper_triplet_have_same_scalar : std::false_type {};
 
 template <typename T1, typename T2, typename T3>

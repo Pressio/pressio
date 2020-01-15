@@ -108,10 +108,19 @@ public:
   Stepper() = delete;
   ~Stepper() = default;
 
+  // copy cnstr
+  Stepper(const Stepper & other)  = delete;
+  // copy assignment
+  Stepper & operator=(const Stepper & other)  = delete;
+  // move cnstr
+  Stepper(Stepper && other)  = delete;
+  // move assign
+  Stepper & operator=(Stepper && other)  = delete;
+
   Stepper(const ode_state_type & stateIn0,
-  		  const system_type & model,
-  		  const residual_pol_t & resPolicyObj,
-  		  const jacobian_pol_t & jacPolicyObj)
+	  const system_type & model,
+	  const residual_pol_t & resPolicyObj,
+	  const jacobian_pol_t & jacPolicyObj)
     : stepper_base_t{stateIn0, model, resPolicyObj, jacPolicyObj}{}
 
   // cstr for standard residual and jacob policies
@@ -124,7 +133,7 @@ public:
       > * = nullptr
     >
   Stepper(const ode_state_type & stateIn0,
-		  const system_type & model)
+	  const system_type & model)
     : stepper_base_t{stateIn0, model}{}
 
   // cstr for standard jacob policies
@@ -135,8 +144,8 @@ public:
       > * = nullptr
     >
   Stepper(const ode_state_type & stateIn0,
-  		  const system_type & model,
-  		  const residual_pol_t & resPolicyObj)
+	  const system_type & model,
+	  const residual_pol_t & resPolicyObj)
     : stepper_base_t{stateIn0, model, resPolicyObj}{}
 
 public:

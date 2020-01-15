@@ -67,4 +67,7 @@
 #include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra_block.hpp"
 #include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_kokkos.hpp"
 
+#include "containers/src/meta/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
+#include "containers/src/meta/containers_wrappers_have_same_scalar.hpp"
+
 #endif

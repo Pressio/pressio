@@ -108,6 +108,15 @@ public:
   ExplicitRungeKutta4StepperImpl() = delete;
   ~ExplicitRungeKutta4StepperImpl() = default;
 
+  // copy cnstr
+  ExplicitRungeKutta4StepperImpl(const ExplicitRungeKutta4StepperImpl & other)  = delete;
+  // copy assignment
+  ExplicitRungeKutta4StepperImpl & operator=(const ExplicitRungeKutta4StepperImpl & other)  = delete;
+  // move cnstr
+  ExplicitRungeKutta4StepperImpl(ExplicitRungeKutta4StepperImpl && other)  = delete;
+  // move assign
+  ExplicitRungeKutta4StepperImpl & operator=(ExplicitRungeKutta4StepperImpl && other)  = delete;
+
 public:
   void doStep(state_type & stateInOut,
   	      const scalar_type & t,
