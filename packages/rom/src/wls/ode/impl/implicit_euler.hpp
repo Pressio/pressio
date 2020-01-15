@@ -1,26 +1,27 @@
 
 namespace pressio{ namespace rom{ namespace wls{ namespace ode{ namespace impl{
 
-template<typename fom_state_t>
+template<typename fom_state_t, typename wls_state_t>
 class ImplicitEuler{
 private:
   int & stateSize_;
   using nm1 = ::pressio::ode::nMinusOne;
 public:
-
-  ImplicitEuler(int & stateSize) : stateSize_(stateSize){}
-
+  static constexpr int state_stencil_size_ = 2;
+  using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,state_stencil_size_>;
+  mutable aux_states_container_t auxStatesContainer_;
+  mutable wls_state_t wlsStateIC_;
+  ImplicitEuler(int & stateSize, const fom_state_t & yFOM) : stateSize_(stateSize), auxStatesContainer_(yFOM),wlsStateIC_(stateSize*state_stencil_size_){}
   // Residual Policy
   template <typename fom_type,
           typename fom_state_type,
           typename residual_type,
-          typename aux_states_container_type,
           typename scalar_type>
   void time_discrete_residual(
                   const fom_type & appObj,
                   const fom_state_type & yFOM,
                   residual_type & residual,
-                  const aux_states_container_type & auxStatesContainer,
+                  const aux_states_container_t & auxStatesContainer,
                   const scalar_type & t,
                   const scalar_type & dt,
                   const int & step) const{
@@ -33,14 +34,13 @@ public:
             typename fom_state_type,
             typename jac_type,
             typename basis_type,
-            typename aux_states_container_type,
             typename scalar_type>
   void time_discrete_jacobian(
                   const fom_type & appObj,
                   const fom_state_type & yFOM,
                   jac_type & Jphi,
                   const basis_type & phi,
-                  const aux_states_container_type & auxStatesContainer,
+                  const aux_states_container_t & auxStatesContainer,
                   const scalar_type & t,
                   const scalar_type & dt,
                   const int & step,
@@ -60,8 +60,7 @@ public:
 
   // Policy for first step, here we move data from the IC container to the aux container
   template <typename wls_state_type,
-            typename fom_state_reconstr_t,
-            typename aux_states_container_t>
+            typename fom_state_reconstr_t>
   void updateStatesFirstStep(const wls_state_type & wlsStateIC,
                              const fom_state_reconstr_t & fomStateReconstr,
                              aux_states_container_t & auxStatesContainer) const{
@@ -71,7 +70,6 @@ public:
   }
 
   // Policies at an N step. Here we are just dealing with the aux container
-  template <typename aux_states_container_t>
   void updateStatesNStep(const fom_state_t & yFOM_current_,
                          aux_states_container_t & auxStatesContainer) const{
       auto & odeState_nm1 = auxStatesContainer.get(nm1());

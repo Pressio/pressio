@@ -37,12 +37,7 @@ int main(int argc, char *argv[]){
   int romSize = 11;
   static constexpr int numStepsInWindow = 5;
   // ODE information
-
   using ode_tag = ::pressio::ode::implicitmethods::BDF2; //define ODE tag
-
-  const int t_stencil_width = 3; // define width of time stencil, in the future we should tie this to ode tag, which will let us move this inside
-  using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,t_stencil_width>; //define type for the auxStates 
-
   //-------------------------------
   // app object
   fom_t appObj( mu, fomSize);
@@ -62,9 +57,9 @@ int main(int argc, char *argv[]){
   // Create WLS state
   wls_state_t  wlsState(romSize*numStepsInWindow); //initialize WLS state into one vector
   wlsState.setZero(); //set to zero
-  using wls_system_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,aux_states_container_t,hessian_t>; //define wls system type
+  using wls_system_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>; //define wls system type
   auto & yRef(yFOM_IC); //declare reference state as an alias to the ICs
-  wls_system_t wlsSystem(appObj,decoderObj,yFOM_IC,yRef,numStepsInWindow,t_stencil_width); //initialize object
+  wls_system_t wlsSystem(appObj,decoderObj,yFOM_IC,yRef,numStepsInWindow); //initialize system 
 
 
 

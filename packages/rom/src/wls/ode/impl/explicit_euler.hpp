@@ -1,12 +1,16 @@
 
 namespace pressio{ namespace rom{ namespace wls{ namespace ode{ namespace impl{
-template<typename fom_state_t>
+template<typename fom_state_t, typename wls_state_t>
 class ExplicitEuler{
 private:
   int & stateSize_;
   using nm1 = ::pressio::ode::nMinusOne;
 public:
-  ExplicitEuler(int & stateSize) : stateSize_(stateSize){}
+  static constexpr int state_stencil_size_ = 2;
+  using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,state_stencil_size_>;
+  mutable aux_states_container_t auxStatesContainer_;
+  mutable wls_state_t wlsStateIC_;
+  ExplicitEuler(int & stateSize, const fom_state_t & yFOM) : stateSize_(stateSize), auxStatesContainer_(yFOM), wlsStateIC_(stateSize*state_stencil_size_){}
   // Residual Policy
   template <typename fom_type, 
           typename fom_state_type, 

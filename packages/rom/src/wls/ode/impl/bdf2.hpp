@@ -1,14 +1,18 @@
 
 namespace pressio{ namespace rom{ namespace wls{ namespace ode{ namespace impl{
 //WLS Interface for BDF2
-template<typename fom_state_t>
+template<typename fom_state_t, typename wls_state_t>
 class BDF2{
 private:
   int & stateSize_;
   using nm1 = ::pressio::ode::nMinusOne;
   using nm2 = ::pressio::ode::nMinusTwo;
 public:
-  BDF2(int & stateSize) : stateSize_(stateSize){}
+  static constexpr int state_stencil_size_ = 3;
+  using aux_states_container_t = ::pressio::ode::AuxStatesContainer<false,fom_state_t,state_stencil_size_>;
+  mutable aux_states_container_t auxStatesContainer_;
+  mutable wls_state_t wlsStateIC_;
+  BDF2(int & stateSize,const fom_state_t & yFOM) :  stateSize_(stateSize), auxStatesContainer_(yFOM), wlsStateIC_(stateSize*state_stencil_size_){}
   // Residual Policy
   template <typename fom_type,
           typename fom_state_type,
@@ -93,7 +97,7 @@ public:
       auto & odeState_nm2 = auxStatesContainer.get(nm2());
       ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
       ::pressio::containers::ops::deep_copy(yFOM_current_, odeState_nm1);
-    }
+  }
 
 
 };
