@@ -73,11 +73,11 @@ int main(int argc, char *argv[]){
   // -----------------
   constexpr scalar_t finalTime = 0.1;
   constexpr scalar_t dt	       = 0.01;
-  constexpr int numSteps       = static_cast<int>(finalTime/dt)/numStepsInWindow;
+  constexpr int numWindows     = static_cast<int>(finalTime/dt)/numStepsInWindow;
 
   auto startTime = std::chrono::high_resolution_clock::now();
-  for (auto step = 0; step < numSteps; step++){
-    wlsSystem.advanceOneWindow(wlsState,GNSolver,step,dt);
+  for (auto iWind = 0; iWind < numWindows; iWind++){
+    wlsSystem.advanceOneWindow(wlsState, GNSolver, iWind, dt);
   }
 
   const auto finishTime = std::chrono::high_resolution_clock::now();
