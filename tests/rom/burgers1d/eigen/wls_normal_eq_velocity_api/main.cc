@@ -2,13 +2,12 @@
 #include <string>
 #include "CONTAINERS_ALL"
 #include "ODE_ALL"
+#include "APPS_UNSTEADYBURGERS1D"
 #include "SOLVERS_NONLINEAR"
 #include "SOLVERS_EXPERIMENTAL"
-#include "ROM_BASIC"
-#include "rom/src/meta/wls_velocity_api/rom_model_meets_velocity_api_for_unsteady_wls.hpp"
-#include "APPS_UNSTEADYBURGERS1D"
+#include "ROM_WLS"
 #include "utils_eigen.hpp"
-#include "../../../../../packages/rom/src/wls/apis/wls_apis.hpp"
+
 
 int main(int argc, char *argv[]){
   std::string checkStr {"PASSED"};
@@ -52,11 +51,11 @@ int main(int argc, char *argv[]){
   // -----------------
   constexpr int numStepsInWindow = 5;
   using ode_tag	     = ::pressio::ode::implicitmethods::BDF2;
-  using wls_system_t = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
+  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
   // create the wls state
   wls_state_t  wlsState(romSize*numStepsInWindow); wlsState.setZero();
   // create the wls system
-  wls_system_t wlsSystem(appObj, decoderObj, yFOM_IC, yRef, numStepsInWindow);
+  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow);
 
   // -----------------
   // solver
@@ -66,6 +65,8 @@ int main(int argc, char *argv[]){
   using gn_t		= pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
   linear_solver_t linear_solver;
   gn_t GNSolver(wlsSystem, wlsState, linear_solver);
+  GNSolver.setTolerance(1e-13);
+  GNSolver.setMaxIterations(50);
 
   // -----------------
   // solve wls problem
@@ -96,8 +97,8 @@ int main(int argc, char *argv[]){
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, finalTime);
 
   for (int i=0;i<fomSize;i++){
-    std::cout << yFinal[i] << " " << trueY[i] << "\n";
-    if (std::abs(yFinal[i] - trueY[i]) > 1e-9) checkStr = "FAILED";
+    std::cout << std::setprecision(15) << yFinal[i] << " " << trueY[i] << "\n";
+    if (std::abs(yFinal[i] - trueY[i]) > 1e-8) checkStr = "FAILED";
   }
   std::cout << checkStr << std::endl;
 
