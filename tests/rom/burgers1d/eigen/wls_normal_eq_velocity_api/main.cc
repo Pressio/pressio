@@ -8,94 +8,98 @@
 #include "rom/src/meta/wls_velocity_api/rom_model_meets_velocity_api_for_unsteady_wls.hpp"
 #include "APPS_UNSTEADYBURGERS1D"
 #include "utils_eigen.hpp"
-#include "/Users/ejparis/pressio_repos/pressio/packages/rom/src/wls/apis/wls_apis.hpp"
-//#include "/Users/ejparis/pressio_repos/pressio/packages/rom/src/wls/policies/wls_default.hpp"
-
-//#include "../wls_files/my_gauss_newton.hpp"
-//#include "../wls_files/wls_specializers.hpp"
-
-using namespace std;
+#include "../../../../../packages/rom/src/wls/apis/wls_apis.hpp"
 
 int main(int argc, char *argv[]){
-  using fom_t   = pressio::apps::Burgers1dEigen;
-  using scalar_t  = typename fom_t::scalar_type;
-  using fom_native_state_t      = typename fom_t::state_type;
-  using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-  using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using wls_state_t	= pressio::containers::Vector<eig_dyn_vec>;
-  using eig_dyn_mat	= Eigen::Matrix<scalar_t, -1, -1>;
-  using decoder_jac_t	= pressio::containers::MultiVector<eig_dyn_mat>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
-  using fom_state_t     = ::pressio::containers::Vector<fom_native_state_t>;
-  using hessian_t       = pressio::containers::Matrix<eig_dyn_mat>;
   std::string checkStr {"PASSED"};
 
-  //---- Information for WLS
-  int fomSize = 20;
-  Eigen::Vector3d mu(5.0, 0.02, 0.02);
-  scalar_t dt = 0.01;
-  int romSize = 11;
-  static constexpr int numStepsInWindow = 5;
-  // ODE information
-  using ode_tag = ::pressio::ode::implicitmethods::BDF2; //define ODE tag
-  //-------------------------------
-  // app object
-  fom_t appObj( mu, fomSize);
+  using fom_t		   = pressio::apps::Burgers1dEigen;
+  using scalar_t	   = typename fom_t::scalar_type;
+  using fom_native_state_t = typename fom_t::state_type;
+  using fom_state_t        = ::pressio::containers::Vector<fom_native_state_t>;
+
+  using eig_dyn_mat	   = Eigen::Matrix<scalar_t, -1, -1>;
+  using decoder_jac_t	   = pressio::containers::MultiVector<eig_dyn_mat>;
+  using decoder_t	   = pressio::rom::LinearDecoder<decoder_jac_t>;
+
+  using eig_dyn_vec	   = Eigen::Matrix<scalar_t, -1, 1>;
+  using wls_state_t	   = pressio::containers::Vector<eig_dyn_vec>;
+  using hessian_t          = pressio::containers::Matrix<eig_dyn_mat>;
+
+  constexpr auto zero = pressio::utils::constants::zero<scalar_t>();
+
+  // -------------------
+  // fom object
+  // -------------------
+  constexpr int fomSize = 20;
+  fom_t appObj( Eigen::Vector3d{5.0, 0.02, 0.02}, fomSize);
+  // get initial condition
   auto & yFOM_IC_native = appObj.getInitialState();
+  // wrap into pressio container
   fom_state_t yFOM_IC(yFOM_IC_native);
-  auto t0 = static_cast<scalar_t>(0);
-  // read from file the jacobian of the decoder
-  // store modes computed before from fil
-  decoder_jac_t phi =
-    pressio::rom::test::eigen::readBasis("basis.txt", romSize, fomSize);
-  int numBasis = phi.numVectors();
-  if( numBasis != romSize ) return 0;
-  // create decoder Obj
-  decoder_t decoderObj(phi);
+  //reference state is equal to the IC
+  fom_state_t & yRef = yFOM_IC;
 
-  
-  // Create WLS state
-  wls_state_t  wlsState(romSize*numStepsInWindow); //initialize WLS state into one vector
-  wlsState.setZero(); //set to zero
-  using wls_system_t   = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>; //define wls system type
-  auto & yRef(yFOM_IC); //declare reference state as an alias to the ICs
-  wls_system_t wlsSystem(appObj,decoderObj,yFOM_IC,yRef,numStepsInWindow); //initialize system 
+  // -------------------
+  // decoder
+  // -------------------
+  const int romSize = 11;
+  const auto phiNative = pressio::rom::test::eigen::readBasis("basis.txt", romSize, fomSize);
+  decoder_t decoderObj(phiNative);
 
+  // -----------------
+  // WLS problem
+  // -----------------
+  constexpr int numStepsInWindow = 5;
+  using ode_tag	     = ::pressio::ode::implicitmethods::BDF2;
+  using wls_system_t = pressio::rom::wls::WlsSystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
+  // create the wls state
+  wls_state_t  wlsState(romSize*numStepsInWindow); wlsState.setZero();
+  // create the wls system
+  wls_system_t wlsSystem(appObj, decoderObj, yFOM_IC, yRef, numStepsInWindow);
 
-
-  // Use pressio interface for solvers 
-  using solver_tag   = pressio::solvers::linear::direct::ColPivHouseholderQR;
-  using linear_solver_t = pressio::solvers::direct::EigenDirect<solver_tag, hessian_t>;
-  linear_solver_t linear_solver; 
-  using gn_t = pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t,::pressio::solvers::iterative::gn::noLineSearch>;
+  // -----------------
+  // solver
+  // -----------------
+  using lin_solver_tag	= pressio::solvers::linear::direct::ColPivHouseholderQR;
+  using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, hessian_t>;
+  using gn_t		= pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
+  linear_solver_t linear_solver;
   gn_t GNSolver(wlsSystem, wlsState, linear_solver);
-  int numSteps = 10/numStepsInWindow;
 
-  std::clock_t start = std::clock();
-  double duration;
+  // -----------------
+  // solve wls problem
+  // -----------------
+  constexpr scalar_t finalTime = 0.1;
+  constexpr scalar_t dt	       = 0.01;
+  constexpr int numSteps       = static_cast<int>(finalTime/dt)/numStepsInWindow;
 
-  for (int step = 0; step < numSteps; step++)
-  {
+  auto startTime = std::chrono::high_resolution_clock::now();
+  for (auto step = 0; step < numSteps; step++){
     wlsSystem.advanceOneWindow(wlsState,GNSolver,step,dt);
   }
 
-  duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC; 
-  const auto wlsCurrentState = pressio::containers::span(wlsState,(numStepsInWindow-1)*romSize,romSize);
+  const auto finishTime = std::chrono::high_resolution_clock::now();
+  const std::chrono::duration<double> elapsed = finishTime - startTime;
+  std::cout << "Walltime = " << elapsed.count() << '\n';
+
+  // -----------------
+  // process solution
+  // -----------------
+  const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
   fom_state_t yFinal(fomSize);
-  using fom_state_reconstr_t    = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
-  fom_state_reconstr_t  fomStateReconstructor(yRef,decoderObj);
-  fomStateReconstructor(wlsCurrentState,yFinal);
+  using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
+  fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
+  fomStateReconstructor(wlsCurrentState, yFinal);
 
-   
-  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);
-
+  // get true solution
+  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, finalTime);
 
   for (int i=0;i<fomSize;i++){
-    cout << yFinal[i] << " " << trueY[i] << endl;
+    std::cout << yFinal[i] << " " << trueY[i] << "\n";
     if (std::abs(yFinal[i] - trueY[i]) > 1e-9) checkStr = "FAILED";
   }
-  cout << checkStr << endl;
-  
-  std::cout<<"Walltime = "<< duration <<'\n';
+  std::cout << checkStr << std::endl;
+
   return 0;
 }
