@@ -2,7 +2,7 @@
 #ifndef ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_IMPL_HPP_
 #define ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_IMPL_HPP_
 
-#include "../ode/rom_wls_select_ode_helper.hpp"
+#include "../time_schemes/rom_wls_select_timescheme_helper.hpp"
 #include "../policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
 
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
@@ -33,7 +33,7 @@ public:
   using hessian_gradient_pol_t	= ::pressio::rom::wls::HessianGradientSequentialPolicy<fom_type,decoder_t>;
 
   // information on stencil width, time discrete resiudal, time discrete jacobian, etc.
-  using time_stencil_t = ::pressio::rom::wls::ode::helpers::ode_policies_t<ode_tag, fom_state_t, wls_state_type>;
+  using time_stencil_t = ::pressio::rom::wls::timeschemes::timescheme_t<ode_tag, fom_state_t, wls_state_type>;
   static constexpr auto timeStencilSize_ = time_stencil_t::state_stencil_size_;
 
   // in all cases we need types to be wrappers from containers

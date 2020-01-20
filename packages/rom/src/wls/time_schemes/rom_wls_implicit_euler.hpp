@@ -2,7 +2,7 @@
 #ifndef ROM_WLS_IMPLICIT_EULER_HPP_
 #define ROM_WLS_IMPLICIT_EULER_HPP_
 
-namespace pressio{ namespace rom{ namespace wls{ namespace ode{ namespace impl{
+namespace pressio{ namespace rom{ namespace wls{ namespace timeschemes{ namespace impl{
 
 template<typename fom_state_t, typename wls_state_t>
 class ImplicitEuler{
