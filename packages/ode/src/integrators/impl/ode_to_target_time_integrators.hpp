@@ -91,7 +91,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
     while (time < final_time)
     {
       // call the dt manager to set the dt to use for current step
-      dtManager(zero, time, dt);
+      dtManager(step, time, dt);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
