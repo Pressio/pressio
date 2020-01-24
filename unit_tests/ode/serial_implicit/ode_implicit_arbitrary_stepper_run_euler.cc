@@ -8,12 +8,11 @@
 template <typename state_t>
 struct Observer{
   using matrix_t = Eigen::MatrixXd;
+  using step_t = pressio::ode::types::step_t;
 
   size_t state_size_ {};
   matrix_t A_;
   size_t count_ {};
-
-  using step_t = pressio::ode::types::step_t;
 
   Observer(int N, int state_size)
     : A_(state_size, N+1){} //+1 to store also init cond
