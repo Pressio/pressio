@@ -13,10 +13,12 @@ struct Observer{
   matrix_t A_;
   size_t count_ {};
 
+  using step_t = pressio::ode::types::step_t;
+
   Observer(int N, int state_size)
     : A_(state_size, N+1){} //+1 to store also init cond
 
-  void operator()(size_t step, double t, const state_t & y)
+  void operator()(step_t step, double t, const state_t & y)
   {
     this->storeInColumn(y, count_);
     count_++;
