@@ -6,13 +6,13 @@
 #include "rom_wls_bdf2.hpp"
 #include "rom_wls_explicit_euler.hpp"
 
-namespace pressio{ namespace rom{ namespace wls{ namespace timeschemes{ 
+namespace pressio{ namespace rom{ namespace wls{ namespace timeschemes{
 
 namespace impl{
 
 template <typename ode_tag, typename fom_state_t, typename wls_state_t>
 struct DefaultHelper{
-  using timescheme_t = void;
+  using type = void;
 };
 
 //Explicit Euler specialization
