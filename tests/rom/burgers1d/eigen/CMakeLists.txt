@@ -1,4 +1,5 @@
-
+add_subdirectory(wls_bdf2_normal_eq_velocity_api)
+add_subdirectory(wls_euler_normal_eq_velocity_api)
 add_subdirectory(lspg_euler_normal_eq)
 add_subdirectory(lspg_bdf2_normal_eq)
 add_subdirectory(lspg_euler_normal_eq_residual_api)
