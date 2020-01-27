@@ -54,7 +54,7 @@ private:
   //size of generalized coordinates
   int romSize_			= {};
   // object knowing the time stencil for doing chuncks of step
-  time_stencil_t timeStencilObj_;
+  time_stencil_t timeSchemeObj_;
 
   //number of discrete time instances in a window
   int numStepsInWindow_		= {};
@@ -72,7 +72,7 @@ private:
   int wlsProblemSize_		= romSize_*numStepsInWindow_;
 
   // I keep this here since you pass it to the policy. Originally this was owened
-  // by the timeStencilObj but it should be owened here
+  // by the timeSchemeObj but it should be owened here
   wls_state_type wlsStateIC_{romSize_*timeStencilSize_};
 
 public:
@@ -84,7 +84,7 @@ public:
     : appObj_(appObj),
       fomStateReconstructorObj_(yFOM_Ref, decoderObj),
       romSize_(decoderObj.getReferenceToJacobian().numVectors()),
-      timeStencilObj_(romSize_, yFOM_IC),
+      timeSchemeObj_(romSize_, yFOM_IC),
       numStepsInWindow_{numStepsInWindow},
       hessian_gradient_polObj_( appObj, yFOM_IC, numStepsInWindow, timeStencilSize_, decoderObj)
   {
@@ -116,8 +116,7 @@ public:
                                  scalar_type		      & rnorm = pressio::utils::constants::zero<scalar_type>()) const
   {
     rnorm = pressio::utils::constants::zero<scalar_type>();
-    hessian_gradient_polObj_(appObj_,
-                             timeStencilObj_,
+    hessian_gradient_polObj_(timeSchemeObj_,
                              wls_state,
                              wlsStateIC_,
                              hessian,
