@@ -367,7 +367,7 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
   // compute num of steps so that we make sure the integrate
   // to target time matches the integrate n steps
   const auto dt = S2.dt_;
-  const int nSteps = finalTime/dt - 1;
+  const int nSteps = finalTime/dt;
   S2.integrateForNSteps(nSteps);
   std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
