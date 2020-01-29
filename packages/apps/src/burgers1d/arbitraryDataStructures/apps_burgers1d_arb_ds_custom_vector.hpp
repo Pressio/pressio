@@ -49,7 +49,7 @@
 #ifndef PRESSIOAPPS_BURGERS1D_ARB_DS_CUSTOM_VECTOR_HPP_
 #define PRESSIOAPPS_BURGERS1D_ARB_DS_CUSTOM_VECTOR_HPP_
 
-#include "../apps_ConfigDefs.hpp"
+#include "../../apps_ConfigDefs.hpp"
 
 namespace pressio{ namespace apps{ namespace arbds{
 
@@ -62,6 +62,8 @@ public:
   using index_type = std::size_t;
 
 public:
+  Vector() = default;
+
   explicit Vector(std::size_t extent)
     : data_(extent){}
 
@@ -69,7 +71,7 @@ public:
     data_.resize(newSize);
   }
 
-  index_type extent(index_t k) const{
+  index_type extent(index_type k) const{
     assert(k == 0);
     return data_.size();
   }

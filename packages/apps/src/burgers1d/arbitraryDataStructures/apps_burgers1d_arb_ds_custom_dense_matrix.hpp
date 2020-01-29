@@ -49,7 +49,7 @@
 #ifndef PRESSIOAPPS_BURGERS1D_ARB_DS_CUSTOM_CUSTOM_DENSE_MATRIX_HPP_
 #define PRESSIOAPPS_BURGERS1D_ARB_DS_CUSTOM_CUSTOM_DENSE_MATRIX_HPP_
 
-#include "../apps_ConfigDefs.hpp"
+#include "../../apps_ConfigDefs.hpp"
 
 namespace pressio{ namespace apps{ namespace arbds{
 
@@ -62,15 +62,19 @@ public:
   using index_type = std::size_t;
 
 public:
+  DenseMatrix() = default;
+
   DenseMatrix(index_type nRows, index_type nCols)
-    : data_(nRows, nCols){}
+    : data_(nRows){
+      for (auto & it : data_) it.resize(nCols);
+    }
 
   void resize(index_type newRows, index_type newCols){
     data_.resize(newRows);
     for (auto & it : data_) it.resize(newCols);
   }
 
-  index_type extent(index_t k) const{
+  index_type extent(index_type k) const{
     assert(k <= 1);
     assert(data_.empty() == false);
 

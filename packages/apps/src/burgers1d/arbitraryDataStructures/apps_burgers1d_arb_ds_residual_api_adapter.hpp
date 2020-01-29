@@ -49,23 +49,22 @@
 #ifndef PRESSIOAPPS_BURGERS1D_ARB_DS_RESIDUAL_API_ADAPTER_HPP_
 #define PRESSIOAPPS_BURGERS1D_ARB_DS_RESIDUAL_API_ADAPTER_HPP_
 
-#include "../apps_ConfigDefs.hpp"
+#include "../../apps_ConfigDefs.hpp"
 #include "apps_burgers1d_arb_ds.hpp"
 
 namespace pressio{ namespace apps{
 
 class Burgers1dArbDsResidualApiAdapter
 {
-  using int_t		  = int32_t;
-  using sc_t		  = double;
-
-  using scalar_type	  = sc_t;
-  using state_type	  = arbds::Vector<scalar_type>;
-  using residual_type	  = arbds::Vector<scalar_type>;
-  using jacobian_type	  = arbds::DenseMatrix<scalar_type>;
-  using dense_matrix_type = arbds::DenseMatrix<scalar_type>;
-
 public:
+  using int_t		  = typename Burgers1dArbDs::int_t;
+  using sc_t		  = typename Burgers1dArbDs::scalar_type;
+  using scalar_type	  = typename Burgers1dArbDs::scalar_type;
+  using state_type	  = typename Burgers1dArbDs::state_type;
+  using residual_type	  = typename Burgers1dArbDs::state_type;
+  using dense_matrix_type = typename Burgers1dArbDs::dense_matrix_type;
+  using jacobian_type	  = typename Burgers1dArbDs::dense_matrix_type;
+
   Burgers1dArbDsResidualApiAdapter() = delete;
 
   Burgers1dArbDsResidualApiAdapter(const Burgers1dArbDs & appObj)
@@ -98,9 +97,9 @@ public:
   residual_type createTimeDiscreteResidualObject(const state_type & stateIn) const
   {
     std::cout << "calling createTimeDiscreteResidualObject" << std::endl;
-    residual_type R(Ncell_);
+    //residual_type R(Ncell_);
     //R.setConstant(0);
-    return R;
+    return residual_type();
   }
 
   dense_matrix_type createApplyTimeDiscreteJacobianObject(const state_type & stateIn,
@@ -109,7 +108,7 @@ public:
     std::cout << "calling createApplyTimeDiscreteJacobianObject" << std::endl;
     //dense_matrix_type A(Ncell_, B.cols());
     //A.setConstant(0);
-    return A;
+    return dense_matrix_type();
   }
 
 private:
@@ -138,7 +137,7 @@ private:
 				     const state_t & ynm1) const
   {
     // compute Jacobian
-    auto J =  this->jacobian(yn, time);
+    //auto J =  this->jacobian(yn, time);
 
     // // compute time discrete Jacobian
     // constexpr auto one = ::pressio::utils::constants::one<scalar_type>();

@@ -49,7 +49,7 @@
 #ifndef PRESSIOAPPS_BURGERS1D_ARB_DS_HPP_
 #define PRESSIOAPPS_BURGERS1D_ARB_DS_HPP_
 
-#include "../apps_ConfigDefs.hpp"
+#include "../../apps_ConfigDefs.hpp"
 #include "apps_burgers1d_arb_ds_custom_vector.hpp"
 #include "apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
 #include <iostream>
@@ -110,7 +110,7 @@ public:
   dense_matrix_type applyJacobian(const state_type & u,
 				  const dense_matrix_type & B,
 				  const scalar_type & t) const{
-    dense_matrix_type A( u.size(), B.cols() );
+    dense_matrix_type A( u.extent(0), B.extent(1) );
     //this->applyJacobian(u, B, t, A);
     return A;
   }
@@ -148,9 +148,9 @@ private:
     constexpr auto oneHalf = one/two;
 
     const auto coeff = oneHalf * dxInv_;
-    f(0) = coeff*(mu_(0)*mu_(0) - u(0)*u(0)) + mu_(1) * std::exp(mu_(2)*xGrid_(0));
+    f(0) = coeff*(mu_[0]*mu_[0] - u(0)*u(0)) + mu_[1] * std::exp(mu_[2]*xGrid_(0));
     for (int_t i=1; i<Ncell_; ++i){
-      f(i) = coeff*(u(i-1)*u(i-1) - u(i)*u(i)) + mu_(1)*std::exp(mu_(2)*xGrid_(i));
+      f(i) = coeff*(u(i-1)*u(i-1) - u(i)*u(i)) + mu_[1]*std::exp(mu_[2]*xGrid_(i));
     }
   }
 
@@ -177,7 +177,7 @@ private:
 
   mutable state_type U_;
   mutable state_type f_;
-  mutable jacobian_type JJ_ = {};
+  mutable jacobian_type JJ_;
 
 };//end class
 
