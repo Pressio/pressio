@@ -71,7 +71,6 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
   {
 
     using step_t = ::pressio::ode::types::step_t;
-    constexpr auto zero = ::pressio::utils::constants::zero<step_t>();
 
     if (final_time < start_time)
       throw std::runtime_error("You cannot call an integrator with a final time < start time.");
