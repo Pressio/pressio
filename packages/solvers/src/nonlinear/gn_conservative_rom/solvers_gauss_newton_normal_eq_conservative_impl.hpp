@@ -250,7 +250,10 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
       throw std::runtime_error(
         "Nonlinear solver: Gauss Newton Conserv: NaNs detected in solution update dy");
     }
-    y2 = y2 + alpha * dy;
+    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+    //y2 = y2 + alpha * dy;
+    ::pressio::containers::ops::do_update(y2, one, dy, alpha);
+
 
     // solution update
     *y.data() = y2.data()->block(0, 0, y.size(), 1);
