@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_vector_wrapper_arbitrary.hpp
+// containers_is_matrix_wrapper_arbitrary.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,24 +46,24 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_IS_VECTOR_WRAPPER_ARBITRARY_HPP_
-#define CONTAINERS_IS_VECTOR_WRAPPER_ARBITRARY_HPP_
+#ifndef CONTAINERS_IS_MATRIX_WRAPPER_ARBITRARY_HPP_
+#define CONTAINERS_IS_MATRIX_WRAPPER_ARBITRARY_HPP_
 
-#include "../containers_vector_traits.hpp"
+#include "../containers_matrix_traits.hpp"
 
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
-struct is_vector_wrapper_arbitrary : std::false_type {};
+struct is_matrix_wrapper_arbitrary : std::false_type {};
 
 template <typename T>
-struct is_vector_wrapper_arbitrary<
+struct is_matrix_wrapper_arbitrary<
   T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_vector &&
+       containers::details::traits<T>::is_matrix &&
        containers::details::traits<T>::wrapped_package_identifier ==
 		containers::details::WrappedPackageIdentifier::Arbitrary &&
-       containers::details::traits<T>::wrapped_vector_identifier ==
-		containers::details::WrappedVectorIdentifier::Arbitrary
+       containers::details::traits<T>::wrapped_matrix_identifier ==
+		containers::details::WrappedMatrixIdentifier::Arbitrary
        >
   > : std::true_type{};
 
