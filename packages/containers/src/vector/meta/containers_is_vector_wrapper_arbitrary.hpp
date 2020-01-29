@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_vector_meta.hpp
+// containers_is_vector_wrapper_arbitrary.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,26 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_META_HPP_
-#define CONTAINERS_VECTOR_META_HPP_
+#ifndef CONTAINERS_IS_VECTOR_WRAPPER_ARBITRARY_HPP_
+#define CONTAINERS_IS_VECTOR_WRAPPER_ARBITRARY_HPP_
 
-#include "./meta/containers_is_vector_wrapper.hpp"
-#include "./meta/containers_is_vector_wrapper_arbitrary.hpp"
-#include "./meta/containers_is_dense_vector_wrapper_teuchos.hpp"
-#include "./meta/containers_is_vector_wrapper_armadillo.hpp"
-#include "./meta/containers_is_vector_wrapper_blaze.hpp"
-#include "./meta/containers_is_vector_wrapper_eigen.hpp"
-#include "./meta/containers_is_vector_wrapper_epetra.hpp"
-#include "./meta/containers_is_vector_wrapper_tpetra.hpp"
-#include "./meta/containers_is_vector_wrapper_kokkos.hpp"
-#include "./meta/containers_is_vector_wrapper_tpetra_block.hpp"
+#include "../containers_vector_traits.hpp"
 
+namespace pressio{ namespace containers{ namespace meta {
+
+template <typename T, typename enable = void>
+struct is_vector_wrapper_arbitrary : std::false_type {};
+
+template <typename T>
+struct is_vector_wrapper_arbitrary<
+  T, ::pressio::mpl::enable_if_t<
+       containers::details::traits<T>::is_vector &&
+       containers::details::traits<T>::wrapped_vector_identifier ==
+       containers::details::WrappedPackageIdentifier::Arbitrary &&
+       containers::details::traits<T>::wrapped_package_identifier ==
+       containers::details::WrappedVectorIdentifier::Arbitrary
+       >
+  > : std::true_type{};
+
+}}}//end namespace pressio::containers::meta
 #endif
