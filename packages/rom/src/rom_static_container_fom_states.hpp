@@ -172,7 +172,7 @@ public:
     fomStateReconstrObj_(romStateIn, data_(1));
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("reconstruct fom old state");
+    timer->stop("reconstruct fom old states");
 #endif
   }
 
