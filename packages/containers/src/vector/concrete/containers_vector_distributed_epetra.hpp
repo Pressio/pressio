@@ -170,10 +170,6 @@ private:
     data_.PutScalar(value);
   }
 
-  void setZeroImpl(){
-    data_.PutScalar(static_cast<sc_t>(0));
-  }
-
   bool emptyImpl() const{
     return this->globalSize()==0 ? true : false;
   }

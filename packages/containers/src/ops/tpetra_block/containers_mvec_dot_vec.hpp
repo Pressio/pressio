@@ -186,7 +186,7 @@ void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
   if ( result.size() != numVecs )
     result.resize(numVecs);
 
-  result.setZero();
+  ::pressio::containers::ops::set_zero(result);
   dot(mvA, vecB, result.data()->data());
 }
 

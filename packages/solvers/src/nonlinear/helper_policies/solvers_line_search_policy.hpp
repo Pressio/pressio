@@ -88,7 +88,7 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 				    "c1=", c1, "\n");
 #endif
 
-    ytrial.setZero();
+    ::pressio::containers::ops::set_zero(ytrial);
 
     constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
 
@@ -96,7 +96,8 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     auto fy  = ::pressio::containers::ops::norm2(resid);
 
     // compute J^T * Residual
-    state_t jTr(y);  jTr.setZero();
+    state_t jTr(y);  
+    ::pressio::containers::ops::set_zero(jTr);
     using jtr_prod_helper_t = JacobianTranspResProdHelper<jacobian_t>;
     // evaluate
     jtr_prod_helper_t::evaluate(jacob, resid, jTr);

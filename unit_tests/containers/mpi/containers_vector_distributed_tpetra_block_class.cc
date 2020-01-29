@@ -118,7 +118,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   using sc_t = typename fix_t::ST;
 
   myvec_t v1( *x_ );
-  v1.setZero();
+  ::pressio::containers::ops::set_zero(v1);
 
   // v1 is a wrapper of a block vector, so get a tpetra vector
   auto v1_tp = v1.data()->getVectorView();

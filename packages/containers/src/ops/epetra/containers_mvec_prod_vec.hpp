@@ -51,6 +51,7 @@
 #define CONTAINERS_SRC_OPS_EPETRA_MULTI_VECTOR_PROD_VECTOR_HPP_
 
 #include "../../multi_vector/containers_multi_vector_meta.hpp"
+#include "containers_set_zero.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{
 
@@ -64,7 +65,7 @@ void _product_epetra_mv_sharedmem_vec(const mvec_type & mvA,
 				      const operand_type & b,
 				      containers::Vector<Epetra_Vector> & C){
   //zero out result
-  C.setZero();
+  ::pressio::containers::ops::set_zero(C);
   // how many vectors are in mvA
   const auto numVecs = mvA.globalNumVectors();
   // size of b

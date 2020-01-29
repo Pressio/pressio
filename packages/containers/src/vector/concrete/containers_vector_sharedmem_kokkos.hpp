@@ -132,11 +132,6 @@ private:
     KokkosBlas::scal(data_, value, data_);
   }
 
-  void setZeroImpl() {
-    constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
-    KokkosBlas::fill(data_, zero);
-  }
-
   wrap_t dataCpImpl(){
     return data_;
   }

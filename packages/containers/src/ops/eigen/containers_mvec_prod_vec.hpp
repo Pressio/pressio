@@ -49,6 +49,7 @@
 #define CONTAINERS_SRC_OPS_EIGEN_MULTI_VECTOR_PROD_VECTOR_HPP_
 
 #include "../../multi_vector/containers_multi_vector_meta.hpp"
+#include "containers_set_zero.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{
 
@@ -69,7 +70,7 @@ template <
 void product(const mvec_type & mvA, const vec_type & vecB, vec_type & C){
 
   assert( C.size() == mvA.length() );
-  C.setZero();
+  ::pressio::containers::ops::set_zero(C);
   const auto numVecs = mvA.numVectors();
   assert(numVecs == vecB.size());
 

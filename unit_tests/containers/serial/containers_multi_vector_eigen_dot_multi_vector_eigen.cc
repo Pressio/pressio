@@ -90,7 +90,7 @@ TEST(containers_multi_vector_eigen, mv_dot_mvEigen_ColMajorMatrix_subspanStore){
 
   // make a matrix bit enough
   mat_t C(20, 25);
-  C.setZero();
+  ::pressio::containers::ops::set_zero(C);
 
   // do operation on subspan of C from rows (10,13) and cols (15,19)
   doDot(d.A,d.B,C);

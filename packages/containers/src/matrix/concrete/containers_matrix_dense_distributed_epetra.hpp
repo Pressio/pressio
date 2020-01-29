@@ -131,10 +131,6 @@ private:
       this->globalRows()==0 ? true : false;
   }
 
-  void setZeroImpl() {
-    data_.PutScalar(static_cast<sc_t>(0));
-  }
-
   bool isDistributedGloballyImpl() const{
     return data_.DistributedGlobal();
   }

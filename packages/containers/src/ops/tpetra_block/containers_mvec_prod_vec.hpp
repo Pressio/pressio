@@ -160,7 +160,7 @@ void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
   /* computes: C = mvA*vecB */
 
   //zero out result
-  C.setZero();
+  ::pressio::containers::ops::set_zero(C);
 
   // how many vectors are in mvA
   const auto numVecs = mvA.globalNumVectors();

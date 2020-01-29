@@ -85,7 +85,7 @@ public:
 
   explicit Vector(ord_t insize){
     this->resize(insize);
-    this->setZero();
+    data_.setConstant( ::pressio::utils::constants::zero<sc_t>() );
   }
   explicit Vector(const wrap_t & src) : data_(src){}
 
@@ -190,10 +190,6 @@ private:
 
   void putScalarImpl(sc_t value) {
     data_.setConstant(value);
-  }
-
-  void setZeroImpl() {
-    this->putScalarImpl( static_cast<sc_t>(0) );
   }
 
   bool emptyImpl() const{

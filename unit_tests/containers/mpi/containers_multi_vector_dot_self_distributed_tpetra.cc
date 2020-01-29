@@ -44,7 +44,8 @@ TEST(containers_ops, TpetraMultiVectorDotSelfStoreEigenMatWrapper){
   using mvec_t = containers::MultiVector<nat_mvec_t>;
   using mv_device_t = typename containers::details::traits<mvec_t>::device_t;
 
-  mvec_t A( *mvA ); A.setZero();
+  mvec_t A( *mvA ); 
+  ::pressio::containers::ops::set_zero(A);
 
   /*------------- fill A -------------- */
   {
@@ -122,7 +123,7 @@ TEST(containers_ops, TpetraMultiVectorDotSelfStoreKokkosMatWrapper){
   using device_t = typename containers::details::traits<mvec_t>::device_t;
 
   mvec_t A(*mvA);
-  A.setZero();
+  ::pressio::containers::ops::set_zero(A);
 
   /*------------- fill A -------------- */
   {

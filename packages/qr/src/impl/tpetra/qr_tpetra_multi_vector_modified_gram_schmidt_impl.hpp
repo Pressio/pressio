@@ -120,7 +120,7 @@ private:
   void createLocalRIfNeeded(int newsize){
     if (localR_.rows()!=newsize or localR_.cols()!=newsize){
       localR_ = R_nat_t(newsize, newsize);
-      localR_.setZero();
+      ::pressio::containers::ops::set_zero(localR_);
     }
   }
 

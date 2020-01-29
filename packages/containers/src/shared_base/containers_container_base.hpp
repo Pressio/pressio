@@ -83,10 +83,6 @@ public:
     this->underlying().scaleImpl(value);
   }
 
-  void setZero() {
-    this->underlying().setZeroImpl();
-  }
-
   template <typename T= derived_type,
 	    ::pressio::mpl::enable_if_t<
   	      containers::details::traits<T>::is_shared_mem==0,

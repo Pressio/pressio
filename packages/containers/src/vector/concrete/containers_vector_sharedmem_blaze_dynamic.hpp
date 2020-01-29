@@ -139,10 +139,6 @@ private:
     }
   }
 
-  void setZeroImpl() {
-    this->putScalarImpl( static_cast<sc_t>(0) );
-  }
-
   bool emptyImpl() const{
     return this->size()==0 ? true : false;
   }

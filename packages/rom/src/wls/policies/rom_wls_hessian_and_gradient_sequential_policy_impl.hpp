@@ -161,8 +161,8 @@ public:
     int n = 0;
     scalar_t t = ts + n*dt;
     int step = step_s + n;
-    hess.setZero(); //ensure zero as we use +=
-    gradient.setZero();
+    ::pressio::containers::ops::set_zero(hess); //ensure zero as we use +=
+    ::pressio::containers::ops::set_zero(gradient);
 
     //get access to the state at the first window
     setCurrentFomState(wlsState,0,fomStateReconstrObj);

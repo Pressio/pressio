@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_ARBITRARYHPP_
-#define CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_ARBITRARYHPP_
+#ifndef CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_ARBITRARY_HPP_
+#define CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_ARBITRARY_HPP_
 
 #include "../../shared_base/containers_container_base.hpp"
 
@@ -73,7 +73,7 @@ public:
   MultiVector(Args && ... args)
     : data_( std::forward<Args>(args)... ){}
 
-  explicit MultiVector(const wrap_t & vecobj)
+  explicit MultiVector(const wrapped_type & vecobj)
     : data_(vecobj){}
 
   MultiVector(this_t const & other)
@@ -91,7 +91,7 @@ private:
 private:
   friend ContainerBase< this_t, wrapped_type >;
 
-  wrap_t data_ = {};
+  wrapped_type data_ = {};
 
 };//end class
 
