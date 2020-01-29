@@ -85,7 +85,7 @@ struct traits;
 namespace expressions{
 
 template <typename derived_t>
-struct BaseExpr;
+class BaseExpr;
 
 template <
   typename mv_t,
