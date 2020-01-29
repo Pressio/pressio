@@ -150,10 +150,6 @@ private:
     return data_.numCols();
   }
 
-  void setZeroImpl() {
-    data_.putScalar(static_cast<sc_t>(0));
-  }
-
   void resizeImpl(ord_t nrows, ord_t ncols){
     //shape does a resize and sets entries to zero
     data_.shape(nrows, ncols);

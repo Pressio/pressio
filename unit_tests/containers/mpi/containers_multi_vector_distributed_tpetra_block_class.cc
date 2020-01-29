@@ -138,7 +138,7 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
   mymvec_t B( *mv_ );
   // set all values to 1.22
   B.data()->putScalar(1.22);
-  B.setZero();
+  ::pressio::containers::ops::set_zero(B);
 
   // check that all values are 0
   // B is wrapper of a block MV, so get a tpetra MV

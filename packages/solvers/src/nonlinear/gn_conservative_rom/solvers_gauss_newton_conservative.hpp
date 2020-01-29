@@ -152,7 +152,7 @@ public:
     jTcbarT_.resize( jac_.globalNumVectors(), nlambda );
     cbarJ_.resize( nlambda, jac_.globalNumVectors() );
     zero_.resize( nlambda, nlambda);
-    zero_.setZero();
+    ::pressio::containers::ops::set_zero(zero_);
 
     jTr2_.resize(y.size());
     cbarR_.resize(nlambda);

@@ -166,12 +166,6 @@ private:
     return data_;
   }
 
-  void setZeroImpl(){
-    data_.putScalar( ::pressio::utils::constants::zero<sc_t>() );
-    // putScalar doesn't sync afterwards, so we have to sync manually.
-    this->needSync();
-  }
-
   void putScalarImpl(sc_t value) {
     data_.putScalar(value);
     // putScalar doesn't sync afterwards, so we have to sync manually.

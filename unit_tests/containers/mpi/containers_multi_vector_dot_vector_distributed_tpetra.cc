@@ -12,7 +12,7 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
   using mv_device_t = typename containers::details::traits<mvec_t>::device_t;
 
   mvec_t MV( *mv_ );
-  MV.setZero();
+  ::pressio::containers::ops::set_zero(MV);
   // get trilinos tpetra multivector object
   auto trilD = MV.data();
   trilD->sync<Kokkos::HostSpace>();
@@ -47,7 +47,7 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
   ::testing::StaticAssertTypeEq<mv_device_t, v_device_t>();
 
   vec_t VV( *x_ );
-  VV.setZero();
+  ::pressio::containers::ops::set_zero(VV);
   // get trilinos tpetra vector object
   auto vvtrilD = VV.data();
   vvtrilD->putScalar(static_cast<double>(1));
@@ -101,7 +101,7 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVDotVecStoreIntoKokkosWrapper){
   using mv_device_t = typename containers::details::traits<mvec_t>::device_t;
 
   mvec_t MV( *mv_ );
-  MV.setZero();
+  ::pressio::containers::ops::set_zero(MV);
   // get trilinos tpetra multivector object
   auto trilD = MV.data();
   trilD->sync<Kokkos::HostSpace>();
@@ -136,7 +136,7 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVDotVecStoreIntoKokkosWrapper){
   ::testing::StaticAssertTypeEq<mv_device_t, v_device_t>();
 
   vec_t VV( *x_ );
-  VV.setZero();
+  ::pressio::containers::ops::set_zero(VV);
   // get trilinos tpetra vector object
   auto vvtrilD = VV.data();
   vvtrilD->putScalar(static_cast<double>(1));

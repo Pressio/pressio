@@ -178,10 +178,6 @@ private:
     data_.setIdentity();
   }
 
-  void setZeroImpl(){
-    data_.setZero();
-  }
-
   // inserting for row major storage
   template <typename U = ord_t,
 	    typename std::enable_if<

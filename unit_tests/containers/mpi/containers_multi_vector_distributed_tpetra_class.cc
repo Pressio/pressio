@@ -125,7 +125,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
 
   using mymvec_t = containers::MultiVector<typename tpetraMultiVectorGlobSize15Fixture::mvec_t>;
   mymvec_t v1( *x_ );
-  v1.setZero();
+  ::pressio::containers::ops::set_zero(v1);
 
   for (int k=0; k<4; k++){
     Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData(k);

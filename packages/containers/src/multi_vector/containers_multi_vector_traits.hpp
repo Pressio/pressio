@@ -89,7 +89,7 @@ struct traits<
   : public containers_shared_traits<MultiVector<wrapped_type>,
 				    wrapped_type,
 				    false, false, true,
-				    WrappedPackageIdentifier::Undefined,
+				    WrappedPackageIdentifier::Arbitrary,
 				    false, false>
 {
 

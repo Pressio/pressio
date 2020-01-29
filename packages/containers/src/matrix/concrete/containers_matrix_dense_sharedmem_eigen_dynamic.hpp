@@ -147,13 +147,9 @@ private:
     return data_.cols();
   }
 
-  void setZeroImpl() {
-    data_.setConstant(static_cast<sc_t>(0));
-  }
-
   void resizeImpl(ord_t nrows, ord_t ncols){
     data_.resize(nrows, ncols);
-    this->setZero();
+    data_.setConstant(static_cast<sc_t>(0));
   }
 
   void scaleImpl(sc_t value) {

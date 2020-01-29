@@ -82,7 +82,7 @@ public:
 
   MultiVector(ord_t length, ord_t numVectors)
     : data_(length, numVectors){
-    this->setZero();
+    data_.setConstant(static_cast<sc_t>(0));
   }
 
   explicit MultiVector(const wrap_t & other)
@@ -143,13 +143,9 @@ private:
     data_.coeffs() *= factor;
   };
 
-  void setZeroImpl() {
-    data_.setConstant(static_cast<sc_t>(0));
-  }
-
   void resizeImpl(ord_t newlength, ord_t nVec){
     data_.resize(newlength, nVec);
-    this->setZero();
+    data_.setConstant(static_cast<sc_t>(0));
   }
 
 private:

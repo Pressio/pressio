@@ -127,7 +127,7 @@ TEST_F(tpetraVectorGlobSize15Fixture,
 
   using myvec_t = containers::Vector<native_t>;
   myvec_t v1( *x_ );
-  v1.setZero();
+  ::pressio::containers::ops::set_zero(v1);
 
   Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
   for (int i=0; i<v1.localSize(); i++){

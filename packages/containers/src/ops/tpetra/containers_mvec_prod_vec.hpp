@@ -51,6 +51,7 @@
 #define CONTAINERS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_VECTOR_HPP_
 
 #include "../../multi_vector/containers_multi_vector_meta.hpp"
+#include "containers_set_zero.hpp"
 #include "KokkosBlas2_gemv.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{
@@ -75,7 +76,8 @@ void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
 				      res_type & C){
 
   //zero out result
-  C.setZero();
+  ::pressio::containers::ops::set_zero(C);
+
   // how many vectors are in mvA
   const auto numVecs = mvA.globalNumVectors();
   // size of vecB

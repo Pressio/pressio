@@ -167,12 +167,6 @@ private:
     return data_.isDistributed();
   }
 
-  void setZeroImpl(){
-    data_.putScalar(static_cast<sc_t>(0));
-    // putScalar doesn't sync afterwards, so we have to sync manually.
-    this->needSync();
-  }
-
   bool emptyImpl() const{
     return this->globalSize()==0 ? true : false;
   }

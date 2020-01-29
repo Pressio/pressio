@@ -131,12 +131,6 @@ private:
     return data_.getMap();
   }
 
-  void setZeroImpl() {
-    data_.putScalar( ::pressio::utils::constants::zero<sc_t>() );
-    // putScalar doesn't sync afterwards, so we have to sync manually.
-    this->needSync();
-  }
-
   GO_t globalNumVectorsImpl() const{
     return data_.getNumVectors();
   }

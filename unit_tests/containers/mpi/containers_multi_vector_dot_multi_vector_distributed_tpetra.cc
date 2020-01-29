@@ -57,8 +57,8 @@ TEST(containers_ops, TpetraMultiVectorDotMultiVector){
   using mvec_t = containers::MultiVector<nat_mvec_t>;
   using mv_device_t = typename containers::details::traits<mvec_t>::device_t;
 
-  mvec_t A( *mvA ); A.setZero();
-  mvec_t B( *mvB ); B.setZero();
+  mvec_t A( *mvA ); ::pressio::containers::ops::set_zero(A);
+  mvec_t B( *mvB ); ::pressio::containers::ops::set_zero(B);
 
   /*------------- fill A -------------- */
   {

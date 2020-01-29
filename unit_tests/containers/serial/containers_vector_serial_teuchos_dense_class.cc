@@ -210,7 +210,7 @@ TEST(containers_vector_teuchos_serial_dense_class,
      settingZero){
 
   myvec_t a(4);
-  a.setZero();
+  ::pressio::containers::ops::set_zero(a);
   EXPECT_DOUBLE_EQ( a(0), 0.0);
   EXPECT_DOUBLE_EQ( a(1), 0.0);
   EXPECT_DOUBLE_EQ( a(2), 0.0);
