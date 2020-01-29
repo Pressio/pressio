@@ -89,7 +89,7 @@ struct CommonTypes<
   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data: we only need to store one FOM state
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;

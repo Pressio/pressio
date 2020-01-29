@@ -90,7 +90,7 @@ int main(int argc, char *argv[]){
   // -----------------
   const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
   fom_state_t yFinal(fomSize);
-  using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
   fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
   fomStateReconstructor(wlsCurrentState, yFinal);
 

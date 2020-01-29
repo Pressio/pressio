@@ -26,7 +26,7 @@ public:
 
   using fom_native_state_t	= typename fom_type::state_type;
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_state_reconstr_t	= pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= pressio::rom::FomStateReconstructor<scalar_type, fom_state_t, decoder_t>;
   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
   // policy type (here policy knows how to compute hessian and gradient)

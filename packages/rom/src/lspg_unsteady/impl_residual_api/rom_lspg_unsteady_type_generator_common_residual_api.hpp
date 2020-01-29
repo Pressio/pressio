@@ -108,7 +108,7 @@ Verify the fom/adapter class to check if you are missing something.");
   using lspg_matrix_t		= decoder_jac_t;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   //-------------------------------
   // find the order setter in Args
