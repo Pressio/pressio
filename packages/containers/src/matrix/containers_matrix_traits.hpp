@@ -97,6 +97,9 @@ struct traits<
 
   using wrapped_t = wrapped_type;
   using derived_t = Matrix<wrapped_t>;
+  using scalar_t  = typename wrapped_type::value_type;
+  using value_t   = typename wrapped_type::value_type;
+  using size_t   = typename wrapped_type::size_type;
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::Arbitrary;

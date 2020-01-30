@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_multi_vector_arbitrary.hpp
+// containers_set_zero.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,72 +46,26 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_ARBITRARY_HPP_
-#define CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_ARBITRARY_HPP_
+#ifndef CONTAINERS_CONTAINER_OPS_ARBITRARY_SET_ZERO_HPP_
+#define CONTAINERS_CONTAINER_OPS_ARBITRARY_SET_ZERO_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
+#include "../../vector/containers_vector_meta.hpp"
 
-namespace pressio{ namespace containers{
+namespace pressio{ namespace containers{ namespace ops{
 
-template <typename wrapped_type>
-class MultiVector<
-  wrapped_type,
-  mpl::enable_if_t<
-    details::traits<MultiVector<wrapped_type>>::wrapped_multi_vector_identifier
-    == details::WrappedMultiVectorIdentifier::Arbitrary
-    >
-  >
-  : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >
-{
-  using this_t = MultiVector<wrapped_type>;
-  using size_t = typename details::traits<this_t>::size_t;
-  using sc_t   = typename details::traits<this_t>::scalar_t;
-
-public:
-  template<
-    typename _wrapped_type,
-    mpl::enable_if_t<
-      std::is_default_constructible<_wrapped_type>::value
+template <
+  typename T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_arbitrary<T>::value
     > * = nullptr
   >
-  MultiVector(){};
+void set_zero(T & v){
+  using int_t = decltype(v.extent(0));
+  using value_t = typename ::pressio::containers::details::traits<T>::value_t;
 
-  template <typename ...Args>
-  MultiVector(Args && ... args)
-    : data_( std::forward<Args>(args)... ){}
+  for (int_t i=0; i<v.extent(0); ++i)
+    v(i) = ::pressio::utils::constants::zero<value_t>();
+}
 
-  explicit MultiVector(const wrapped_type & vecobj)
-    : data_(vecobj){}
-
-  MultiVector(MultiVector const & other)
-    : data_(*other.data()){}
-
-  size_t extent(size_t k) const{
-    return data_.extent(k);
-  }
-
-  sc_t & operator()(size_t i, size_t j){
-    return data_(i, j);
-  };
-  sc_t const & operator()(size_t i, size_t j) const{
-    return data_(i, j);
-  };
-
-private:
-  wrapped_type const * dataImpl() const{
-    return &data_;
-  }
-
-  wrapped_type * dataImpl(){
-    return &data_;
-  }
-
-private:
-  friend ContainerBase< this_t, wrapped_type >;
-  wrapped_type data_ = {};
-
-};//end class
-
-}}//end namespace pressio::containers
-
+}}}//end namespace pressio::containers::ops
 #endif

@@ -107,6 +107,7 @@ struct traits<
   using derived_t = Vector<wrapped_t>;
   using scalar_t  = typename wrapped_type::value_type;
   using value_t   = typename wrapped_type::value_type;
+  using size_t    = typename wrapped_type::size_type;
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Arbitrary;

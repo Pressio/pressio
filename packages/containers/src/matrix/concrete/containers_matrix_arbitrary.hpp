@@ -63,22 +63,40 @@ class Matrix<
   >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >
 {
-
   using this_t = Matrix<wrapped_type>;
+  using size_t = typename details::traits<this_t>::size_t;
+  using sc_t   = typename details::traits<this_t>::scalar_t;
 
 public:
-  Matrix() = delete;
-  ~Matrix() = delete;
+  template<
+    typename _wrapped_type,
+    mpl::enable_if_t<
+      std::is_default_constructible<_wrapped_type>::value
+    > * = nullptr
+  >
+  Matrix(){};
 
   template <typename ...Args>
   Matrix(Args && ... args)
     : data_( std::forward<Args>(args)... ){}
 
-  explicit Matrix(const wrap_t & vecobj)
+  explicit Matrix(const wrapped_type & vecobj)
     : data_(vecobj){}
 
-  Matrix(this_t const & other)
+  Matrix(Matrix const & other)
     : data_(*other.data()){}
+
+  size_t extent(size_t k) const{
+    return data_.extent(k);
+  }
+
+
+  sc_t & operator()(size_t i, size_t j){
+    return data_(i, j);
+  };
+  sc_t const & operator()(size_t i, size_t j) const{
+    return data_(i, j);
+  };
 
 private:
   wrapped_type const * dataImpl() const{
@@ -91,7 +109,6 @@ private:
 
 private:
   friend ContainerBase< this_t, wrapped_type >;
-
   wrap_t data_ = {};
 
 };//end class

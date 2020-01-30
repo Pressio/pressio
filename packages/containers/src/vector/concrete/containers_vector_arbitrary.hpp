@@ -65,10 +65,17 @@ class Vector<
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >
 {
   using this_t = Vector<wrapped_type>;
+  using size_t = typename details::traits<this_t>::size_t;
+  using sc_t   = typename details::traits<this_t>::scalar_t;
 
 public:
-  Vector() = delete;
-  ~Vector() = default;
+  template<
+    typename _wrapped_type,
+    mpl::enable_if_t<
+      std::is_default_constructible<_wrapped_type>::value
+    > * = nullptr
+  >
+  Vector(){};
 
   template <typename ...Args>
   explicit Vector(Args && ... args)
@@ -79,6 +86,17 @@ public:
 
   Vector(Vector const & other)
     : data_(*other.data()){}
+
+  size_t extent(size_t k) const{
+    return data_.extent(k);
+  }
+
+  sc_t & operator()(size_t i){
+    return data_(i);
+  };
+  sc_t const & operator()(size_t i) const{
+    return data_(i);
+  };
 
 private:
   wrapped_type const * dataImpl() const{
@@ -91,8 +109,6 @@ private:
 
 private:
   friend ContainerBase< this_t, wrapped_type >;
-
-private:
   wrapped_type data_ = {};
 
 };//end class
