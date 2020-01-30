@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_decoder_type.hpp
+// rom_has_static_method_product_three_args.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,38 @@
 //@HEADER
 */
 
-#ifndef ROM_IS_LEGITIMATE_DECODER_TYPE_HPP_
-#define ROM_IS_LEGITIMATE_DECODER_TYPE_HPP_
+#ifndef ROM_ROM_HAS_STATIC_METHOD_PRODUCT_THREE_ARGS_HPP_
+#define ROM_ROM_HAS_STATIC_METHOD_PRODUCT_THREE_ARGS_HPP_
 
-#include "../decoder/rom_decoder_base.hpp"
+#include <utility>
 
 namespace pressio{ namespace rom{ namespace meta {
 
-template<typename T, typename enable = void>
-struct is_legitimate_decoder_type
+template <
+  typename T,
+  typename arg1_t, typename arg2_t, typename arg3_t, typename = void>
+struct has_static_method_product_three_args
   : std::false_type{};
 
-template <typename T>
-struct is_legitimate_decoder_type<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::mpl::publicly_inherits_from<
-      T,
-      ::pressio::rom::DecoderBase<
-	T, typename T::jacobian_t, typename T::rom_state_t, typename T::fom_state_t
-	>
+template <
+  typename T,
+  typename arg1_t, typename arg2_t, typename arg3_t>
+struct has_static_method_product_three_args<
+  T, arg1_t, arg2_t, arg3_t,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       T::template product<arg2_t>
+       (
+	std::declval< arg1_t const & >(),
+	std::declval< arg2_t const & >(),
+	std::declval< arg3_t & >()
+	)
+       )
       >::value
     >
   > : std::true_type{};
 
-}}} // namespace pressio::rom::meta
+}}} //pressio::rom::meta
 #endif
