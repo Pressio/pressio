@@ -9,13 +9,15 @@
 int main(int argc, char *argv[]){
   using fom_t		= pressio::apps::Burgers1dEigen;
   using scalar_t	= typename fom_t::scalar_type;
+  using native_state_t  = typename fom_t::state_type;
+  using fom_state_t  = pressio::containers::Vector<native_state_t>;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using eig_dyn_mat	= Eigen::Matrix<scalar_t, -1, -1>;
   using decoder_jac_t	= pressio::containers::MultiVector<eig_dyn_mat>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
 
   std::string checkStr {"PASSED"};
 

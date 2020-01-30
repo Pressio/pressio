@@ -58,14 +58,15 @@ class DenseMatrix
 {
 public:
   using value_type = scalar_t;
-  using data_type  = std::vector<std::vector<scalar_t>>;
-  using index_type = std::size_t;
+  using size_type  = std::size_t;
+  using index_type = size_type;
 
+  using data_type  = std::vector<std::vector<scalar_t>>;
 public:
   DenseMatrix() = default;
 
   DenseMatrix(index_type nRows, index_type nCols)
-    : data_(nRows){
+    : data_(nRows), numRows_{nRows}, numCols_{nCols}{
       for (auto & it : data_) it.resize(nCols);
     }
 
@@ -78,23 +79,27 @@ public:
     assert(k <= 1);
     assert(data_.empty() == false);
 
-    if (k==0)
-      return data_.size();
-    else
-      return data_[0].size();
+    return (k==0) ? numRows_ : numCols_;
   }
-
 
   value_type & operator()(index_type i, index_type j){
     return data_[i][j];
   }
-
   value_type const & operator()(index_type i, index_type j) const{
     return data_[i][j];
   }
 
+  data_type * data(){
+    return &data_;
+  }
+  data_type const * data() const{
+    return &data_;
+  }
+
 private:
   data_type data_;
+  size_type numRows_ {};
+  size_type numCols_ {};
 
 };//end class
 

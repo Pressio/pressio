@@ -18,6 +18,18 @@
 // }
 // }
 
+
+template <typename sc_t>
+struct myOps
+{
+  template <typename operand_t>
+  static void product(const pressio::apps::arbds::DenseMatrix<sc_t> & A,
+  		      const operand_t & vecB,
+		      pressio::apps::arbds::Vector<sc_t> & v)
+  {}
+};
+
+
 struct EulerLSPGWithResidualApi
 {
   using fom_t		= pressio::apps::Burgers1dArbDsResidualApiAdapter;
@@ -29,10 +41,17 @@ struct EulerLSPGWithResidualApi
   using eig_dyn_mat	= Eigen::Matrix<scalar_t, -1, -1>;
 
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
+  // hessian comes up in GN solver, it is (J phi)^T (J phi)
   using hessian_t	= pressio::containers::Matrix<eig_dyn_mat>;
 
+  using ops_t		= myOps<scalar_t>;
+
+  using fom_state_t	= pressio::containers::Vector<native_state_t>;
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t,
+						      lspg_state_t,
+						      fom_state_t,
+						      ops_t>;
 
   native_state_t fomSol_ = {};
   lspg_state_t yROM_ = {};
@@ -78,20 +97,16 @@ struct EulerLSPGWithResidualApi
     // using lspg_stepper_t	 = typename lspg_problem::lspg_stepper_t;
     // lspg_problem lspgProblem(fomObj, yRef, decoderObj, yROM_, t0);
 
-  //   // linear solver
-  //   using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
-  //   using hessian_t	 = pressio::containers::Matrix<eig_dyn_mat>;
-  //   using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
-  //   using linear_solver_t  = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
-  //   linear_solver_t linSolverObj;
+    // // linear solver
+    // using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
+    // using linear_solver_t  = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+    // linear_solver_t linSolverObj;
 
-  //   // GaussNewton solver
-  //   // hessian comes up in GN solver, it is (J phi)^T (J phi)
-  //   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  //   using gnsolver_t   = pressio::solvers::iterative::GaussNewton<lspg_stepper_t, linear_solver_t>;
-  //   gnsolver_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
-  //   solver.setTolerance(1e-13);
-  //   solver.setMaxIterations(4);
+    // // GaussNewton solver
+    // using gnsolver_t   = pressio::solvers::iterative::GaussNewton<lspg_stepper_t, linear_solver_t>;
+    // gnsolver_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
+    // solver.setTolerance(1e-13);
+    // solver.setMaxIterations(4);
 
   //   // integrate in time
   //   pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM_, 0.0, dt, 10, solver);
@@ -114,6 +129,20 @@ struct EulerLSPGWithResidualApi
 };
 
 
+template <typename nat_dmat_t, typename nat_fom_state_t>
+struct myOps2
+{
+  template <typename operand_t>
+  static void product(const nat_dmat_t & A,
+  		      const operand_t & vecB,
+		      nat_fom_state_t & v)
+  {
+    // I can do this here bceause I know these are eigen types
+    // since this is used below
+    v = A * (*vecB.data());
+  }
+};
+
 struct EulerLSPGWithVelocityApi
 {
   using fom_t		= pressio::apps::Burgers1dEigen;
@@ -127,8 +156,11 @@ struct EulerLSPGWithVelocityApi
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
   using hessian_t	= pressio::containers::Matrix<eig_dyn_mat>;
 
+  using ops_t = myOps2<native_dmat_t, native_state_t>;
+
+  using fom_state_t	= pressio::containers::Vector<native_state_t>;
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t, ops_t>;
 
   using ode_tag = pressio::ode::implicitmethods::Euler;
 
