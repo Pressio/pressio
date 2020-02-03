@@ -43,10 +43,10 @@ public:
 		"WLS: hessian_type must be a pressio container matrix");
 
   // currently we limit support to eigen types
-  static_assert(::pressio::containers::meta::is_vector_wrapper_eigen<wls_state_type>::value,
-		"WLS: currently supports eigen only");
-  static_assert(::pressio::containers::meta::is_matrix_wrapper_eigen<hessian_type>::value,
-		"WLS: hessian_type must be a Eigen matrix wrapper");
+//  static_assert(::pressio::containers::meta::is_vector_wrapper_eigen<wls_state_type>::value,
+//		"WLS: currently supports eigen only");
+//  static_assert(::pressio::containers::meta::is_matrix_wrapper_eigen<hessian_type>::value,
+//		"WLS: hessian_type must be a Eigen matrix wrapper");
 
 private:
   const fom_type & appObj_;
@@ -70,10 +70,10 @@ private:
 
   // cache the size of the wls problem: romSize*numStepsInWindow
   int wlsProblemSize_		= romSize_*numStepsInWindow_;
-
+  size_t wlsStencilSize_           = static_cast<size_t>(romSize_*timeStencilSize_);
   // I keep this here since you pass it to the policy. Originally this was owened
   // by the timeSchemeObj but it should be owened here
-  wls_state_type wlsStateIC_{romSize_*timeStencilSize_};
+  wls_state_type wlsStateIC_{wlsStencilSize_};
 
 public:
   SystemHessianGradientApi(const fom_type & appObj,

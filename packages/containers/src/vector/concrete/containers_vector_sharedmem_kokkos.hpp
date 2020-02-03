@@ -91,6 +91,8 @@ public:
 
   Vector(const std::string & label, size_t e1) : data_{label, e1}{}
 
+  Vector(const size_t e1) : data_{"empty", e1}{}
+
   // copy constructor implements copy semantics (for time being)
   Vector(const Vector & other)
     : data_{other.data_.label(), other.data_.extent(0)}{
