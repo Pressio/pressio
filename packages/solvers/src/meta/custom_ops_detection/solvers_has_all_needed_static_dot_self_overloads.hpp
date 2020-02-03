@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_type_generator_common.hpp
+// solvers_has_all_needed_static_dot_self_overloads.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,54 +46,28 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
-#define ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
+#ifndef SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_DOT_SELF_OVERLOADS_HPP_
+#define SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_DOT_SELF_OVERLOADS_HPP_
 
-#include "../rom_fwd.hpp"
-#include "../rom_static_container_fom_states.hpp"
-#include "../fomStateReconstructor/rom_reconstructor_fom_state.hpp"
+#include "solvers_has_static_method_dot_self_single_arg_return_non_void.hpp"
+#include "solvers_has_static_method_dot_self_two_args_return_void.hpp"
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
+namespace pressio{ namespace solvers{ namespace meta {
 
 template <
-  typename fom_type,
-  typename decoder_type,
-  typename lspg_state_type
-  >
-struct CommonTypes<
-  fom_type, decoder_type, lspg_state_type,
+  typename T, typename arg_t, typename result_t,
+  typename enable = void>
+struct has_all_needed_static_dot_self_overloads
+  : std::false_type{};
+
+template <typename T, typename arg_t, typename result_t>
+struct has_all_needed_static_dot_self_overloads<
+  T, arg_t, result_t,
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
+    has_static_method_dot_self_single_arg_return_non_void<T, arg_t, result_t>::value and
+    has_static_method_dot_self_two_args_return_void<T, arg_t, result_t>::value
     >
-  >
-{
-  // these are native types of the full-order model (fom)
-  using fom_t			= fom_type;
-  using scalar_t		= typename fom_t::scalar_type;
-  using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_velocity_t	= typename fom_t::velocity_type;
+  > : std::true_type{};
 
-  // fom wrapper types
-  using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_velocity_t	= ::pressio::containers::Vector<fom_native_velocity_t>;
-
-  // rom state type (passed in)
-  using lspg_state_t		= lspg_state_type;
-
-  // for LSPG, the rom residual type = containers::wrapper of application rhs
-  // i.e. the wrapped fom rhs type
-  using lspg_residual_t		= fom_velocity_t;
-
-  // decoder types (passed in)
-  using decoder_t		= decoder_type;
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
-
-  // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
-
-  // class type holding fom states data: we only need to store one FOM state
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;
-};
-
-}}}}//end  namespace pressio::rom::lspg::steady
+}}} //pressio::solvers::meta
 #endif

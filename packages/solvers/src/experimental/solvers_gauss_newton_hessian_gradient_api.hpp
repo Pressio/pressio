@@ -162,7 +162,7 @@ private:
     normResidual0_ = normResidual_;
 
     // compute the initial norm of y (the state)
-    ComputeNormHelper::evaluate(stateInOut, normCorrection_, normType_);
+    ComputeNormHelper::template evaluate<void>(stateInOut, normCorrection_, normType_);
     normCorrection_ = {0};
 
     // the alpha is 1, but this can change from the line search
@@ -172,11 +172,11 @@ private:
     while (++iStep <= maxNonLIt)
     {
       // norm of J^T R
-      ComputeNormHelper::evaluate(gradient_, normGradient_, normType_);
+      ComputeNormHelper::template evaluate<void>(gradient_, normGradient_, normType_);
       if (iStep==1) normGradient0_ = normGradient_;
 
       linSolver_.solveAllowMatOverwrite(hessian_, gradient_, correction_);
-      ComputeNormHelper::evaluate(correction_, normCorrection_, normType_);
+      ComputeNormHelper::template evaluate<void>(correction_, normCorrection_, normType_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout(std::scientific,

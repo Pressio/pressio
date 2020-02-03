@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_type_generator_common.hpp
+// rom_reconstructor_fom_state_custom_ops.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,54 +46,54 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
-#define ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
+#ifndef ROM_RECONSTRUCTOR_FOM_STATE_CUSTOM_OPS_HPP_
+#define ROM_RECONSTRUCTOR_FOM_STATE_CUSTOM_OPS_HPP_
 
-#include "../rom_fwd.hpp"
-#include "../rom_static_container_fom_states.hpp"
-#include "../fomStateReconstructor/rom_reconstructor_fom_state.hpp"
+#include "../rom_ConfigDefs.hpp"
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
+namespace pressio{ namespace rom{ namespace impl{
 
 template <
-  typename fom_type,
+  typename scalar_type,
+  typename fom_state_type,
   typename decoder_type,
-  typename lspg_state_type
+  typename ops_type
   >
-struct CommonTypes<
-  fom_type, decoder_type, lspg_state_type,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
-    >
-  >
+struct FomStateReconstructorCustomOps
 {
-  // these are native types of the full-order model (fom)
-  using fom_t			= fom_type;
-  using scalar_t		= typename fom_t::scalar_type;
-  using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_velocity_t	= typename fom_t::velocity_type;
+  FomStateReconstructorCustomOps() = delete;
 
-  // fom wrapper types
-  using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_velocity_t	= ::pressio::containers::Vector<fom_native_velocity_t>;
+  FomStateReconstructorCustomOps(const fom_state_type & yFomIn,
+				 const decoder_type & decoder)
+    : yFomReference_(yFomIn),
+      decoderObj_(decoder)
+  {}
 
-  // rom state type (passed in)
-  using lspg_state_t		= lspg_state_type;
+  template <typename rom_state_t>
+  void operator()(const rom_state_t & romY,
+		  fom_state_type    & yOut) const
+  {
+    // map current romY to FOM state
+    decoderObj_.applyMapping(romY, yOut);
 
-  // for LSPG, the rom residual type = containers::wrapper of application rhs
-  // i.e. the wrapped fom rhs type
-  using lspg_residual_t		= fom_velocity_t;
+    constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+    // yOut = yOut + yFomReference_;
+    ops_type::axpy(one, *yFomReference_.data(), *yOut.data());
+  }
 
-  // decoder types (passed in)
-  using decoder_t		= decoder_type;
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
+  template <typename rom_state_t>
+  fom_state_type operator()(const rom_state_t & romY) const{
+    auto yOut(yFomReference_);
+    ::pressio::containers::ops::set_zero(yOut);
+    this->template operator()(romY,yOut);
+    return yOut;
+  }
 
-  // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+private:
+  const fom_state_type & yFomReference_	= {};
+  const decoder_type   & decoderObj_	= {};
 
-  // class type holding fom states data: we only need to store one FOM state
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;
-};
+};//end class
 
-}}}}//end  namespace pressio::rom::lspg::steady
+}}}//end namespace pressio::rom::impl
 #endif

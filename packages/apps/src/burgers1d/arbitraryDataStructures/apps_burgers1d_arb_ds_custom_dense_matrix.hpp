@@ -63,7 +63,7 @@ public:
 
   using data_type  = std::vector<std::vector<scalar_t>>;
 public:
-  DenseMatrix() = default;
+  // DenseMatrix() = default;
 
   DenseMatrix(index_type nRows, index_type nCols)
     : data_(nRows), numRows_{nRows}, numCols_{nCols}{

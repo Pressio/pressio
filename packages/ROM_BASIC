@@ -53,7 +53,8 @@
 #include "rom/src/rom_fwd.hpp"
 
 #include "rom/src/rom_static_container_fom_states.hpp"
-#include "rom/src/rom_reconstructor_fom_state.hpp"
+
+#include "rom/src/fomStateReconstructor/rom_reconstructor_fom_state.hpp"
 
 #include "rom/src/decoder/rom_decoder_base.hpp"
 #include "rom/src/decoder/rom_linear_decoder_specializer.hpp"

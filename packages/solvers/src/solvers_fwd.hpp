@@ -84,6 +84,7 @@ template <
   typename line_search_t,
   typename when_converged_t,
   typename resid_obs_t,
+  typename ud_ops_t,
   typename enable = void
   >
 class GaussNewtonNormalEqResJacApi;

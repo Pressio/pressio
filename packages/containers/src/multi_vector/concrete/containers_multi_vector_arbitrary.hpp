@@ -68,17 +68,24 @@ class MultiVector<
   using sc_t   = typename details::traits<this_t>::scalar_t;
 
 public:
+
   template<
-    typename _wrapped_type,
+    typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
       std::is_default_constructible<_wrapped_type>::value
     > * = nullptr
   >
   MultiVector(){};
 
-  template <typename ...Args>
-  MultiVector(Args && ... args)
-    : data_( std::forward<Args>(args)... ){}
+
+  template<
+    typename _wrapped_type = wrapped_type,
+    mpl::enable_if_t<
+      std::is_constructible<_wrapped_type, size_t, size_t>::value
+    > * = nullptr
+  >
+  MultiVector(size_t nR, size_t nC) : data_(nR, nC){};
+
 
   explicit MultiVector(const wrapped_type & vecobj)
     : data_(vecobj){}

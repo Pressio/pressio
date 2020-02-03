@@ -95,7 +95,7 @@ template<
     >::type;
 
   static_assert( !std::is_void<type>::value,
-		 "The model type you are using does not meet neither the velociy \
+		 "The model type you are using does meets neither the velociy \
 nor the residual API, so I cannot instantiate a valid LSPGUnsteadyProblem. \
 Verify the API of your model/adapter class.");
 };

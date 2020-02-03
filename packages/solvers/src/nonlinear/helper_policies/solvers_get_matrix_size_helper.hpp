@@ -50,11 +50,6 @@
 #define SOLVERS_GET_MATRIX_SIZE_HELPER_HPP
 
 #include "../../solvers_ConfigDefs.hpp"
-// #include "../../solvers_system_traits.hpp"
-// #include "../../solvers_meta_static_checks.hpp"
-// #include "../helper_policies/solvers_converged_criterior_policy.hpp"
-// #include "../helper_policies/solvers_norm_helper_policy.hpp"
-// #include "../helper_policies/solvers_line_search_policy.hpp"
 
 namespace pressio{ namespace solvers{ namespace impl{
 

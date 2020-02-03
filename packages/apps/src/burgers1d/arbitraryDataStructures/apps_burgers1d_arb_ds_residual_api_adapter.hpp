@@ -68,8 +68,9 @@ public:
   Burgers1dArbDsResidualApiAdapter() = delete;
 
   Burgers1dArbDsResidualApiAdapter(const Burgers1dArbDs & appObj)
-    : appObj_{appObj}
-  {}
+    : appObj_{appObj},
+      f_{appObj.meshSize()},
+      JJ_{appObj.meshSize(), appObj.meshSize()}{}
 
 public:
   template <typename step_t, typename ... Args>
@@ -79,7 +80,7 @@ public:
   			    residual_type & R,
   			    Args && ... states) const
   {
-    //timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
+    timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
   }
 
   template <typename step_t, typename ... Args>
@@ -91,25 +92,33 @@ public:
   				 dense_matrix_type & A,
   				 Args && ... states) const
   {
-    //applyTimeDiscreteJacobianImpl(step, time, dt, B, id, A, std::forward<Args>(states)...);
+    applyTimeDiscreteJacobianImpl(step, time, dt, B, id, A, std::forward<Args>(states)...);
   }
 
   residual_type createTimeDiscreteResidualObject(const state_type & stateIn) const
   {
     std::cout << "calling createTimeDiscreteResidualObject" << std::endl;
-    //residual_type R(Ncell_);
-    //R.setConstant(0);
-    return residual_type();
+
+    residual_type R( appObj_.meshSize() );
+    for (int_t i=0; i<R.extent(0); ++i)
+      R(i) = ::pressio::utils::constants::zero<scalar_type>();
+
+    return R;
   }
 
   dense_matrix_type createApplyTimeDiscreteJacobianObject(const state_type & stateIn,
 							  const dense_matrix_type & B) const
   {
     std::cout << "calling createApplyTimeDiscreteJacobianObject" << std::endl;
-    //dense_matrix_type A(Ncell_, B.cols());
-    //A.setConstant(0);
-    return dense_matrix_type();
+
+    dense_matrix_type A(appObj_.meshSize(), B.extent(1));
+    for (int_t i=0; i<A.extent(0); ++i)
+      for (int_t j=0; j<A.extent(1); ++j)
+	A(i,j) = ::pressio::utils::constants::zero<scalar_type>();
+
+    return A;
   }
+
 
 private:
   // case when we only have a single auxiliary state
@@ -121,8 +130,9 @@ private:
 				const state_type & yn,
 				const state_type & ynm1) const
   {
-    // const auto f =  this->velocity(yn, time);
-    // R = yn - ynm1 - dt * f;
+    appObj_.velocity(yn, time, f_);
+    for (int_t i=0; i<f_.extent(0); ++i)
+      R(i) = yn(i) - ynm1(i) - dt * f_(i);
   }
 
   // case when we only have a single auxiliary state
@@ -137,20 +147,33 @@ private:
 				     const state_t & ynm1) const
   {
     // compute Jacobian
-    //auto J =  this->jacobian(yn, time);
+    appObj_.jacobian(yn, time, JJ_);
 
-    // // compute time discrete Jacobian
-    // constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-    // J.coeffs() *= -dt;
-    // for (std::size_t i=0; i<Ncell_; ++i)
-    //   J.coeffRef(i,i) += one;
+    // compute time discrete Jacobian
+    for (int_t i=0; i<JJ_.extent(0); ++i){
+      for (int_t j=0; j<JJ_.extent(1); ++j){
+	JJ_(i,j) *= -dt;
+	if (i==j)
+	  JJ_(i,j) += ::pressio::utils::constants::one<scalar_type>();
+      }
+    }
 
-    // // compute A = J * B
-    // A = J * B;
+    // compute A = JJ * B
+    for (int_t i=0; i<A.extent(0); ++i){
+      for (int_t j=0; j<A.extent(1); ++j){
+	A(i,j) = ::pressio::utils::constants::zero<scalar_type>();
+	for (int_t k=0; k<JJ_.extent(1); ++k){
+	  A(i,j) += JJ_(i,k) * B(k,j);
+	}
+      }
+    }
   }
 
 private:
   const Burgers1dArbDs & appObj_;
+  mutable state_type f_;
+  mutable jacobian_type JJ_;
+
 };//end class
 
 }} //namespace pressio::apps

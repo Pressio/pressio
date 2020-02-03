@@ -1,0 +1,2 @@
+
+add_subdirectory(lspg_euler_normal_eq_residual_api_arb_ds)

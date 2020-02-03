@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_reconstructor_fom_state.hpp
+// rom_reconstructor_fom_state_pressio_ops.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,38 +46,24 @@
 //@HEADER
 */
 
-#ifndef ROM_RECONSTRUCTOR_FOM_STATE_HPP_
-#define ROM_RECONSTRUCTOR_FOM_STATE_HPP_
+#ifndef ROM_RECONSTRUCTOR_FOM_STATE_PRESSIO_OPS_HPP_
+#define ROM_RECONSTRUCTOR_FOM_STATE_PRESSIO_OPS_HPP_
 
-#include "rom_ConfigDefs.hpp"
+#include "../rom_ConfigDefs.hpp"
 
-namespace pressio{ namespace rom{
-
-template <
-  typename scalar_type,
-  typename fom_state_type,
-  typename decoder_type,
-  typename enable = void
-  >
-struct FomStateReconstructor;
-
+namespace pressio{ namespace rom{ namespace impl{
 
 template <
   typename scalar_type,
   typename fom_state_type,
   typename decoder_type
   >
-struct FomStateReconstructor<
-  scalar_type, fom_state_type, decoder_type,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::is_wrapper<fom_state_type>::value
-    >
-  >
+struct FomStateReconstructorPressioOps
 {
-  FomStateReconstructor() = delete;
+  FomStateReconstructorPressioOps() = delete;
 
-  FomStateReconstructor(const fom_state_type & yFomIn,
-			const decoder_type & decoder)
+  FomStateReconstructorPressioOps(const fom_state_type & yFomIn,
+				  const decoder_type & decoder)
     : yFomReference_(yFomIn),
       decoderObj_(decoder)
   {}
@@ -109,14 +95,13 @@ private:
 };//end class
 
 
-
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
   typename scalar_type,
   typename fom_state_type,
   typename decoder_type
   >
-class FomStateReconstructor<
+class FomStateReconstructorPressioOps<
   scalar_type, fom_state_type, decoder_type,
   mpl::enable_if_t<
     ::pressio::containers::meta::is_array_pybind11<fom_state_type>::value
@@ -124,9 +109,9 @@ class FomStateReconstructor<
   >
 {
 public:
-  FomStateReconstructor() = delete;
-  FomStateReconstructor(const fom_state_type & yFomIn,
-			const decoder_type & decoder)
+  FomStateReconstructorPressioOps() = delete;
+  FomStateReconstructorPressioOps(const fom_state_type & yFomIn,
+				  const decoder_type & decoder)
     : yFomReference_(yFomIn),
       decoderObj_(decoder)
   {}
@@ -157,5 +142,5 @@ private:
 };//end class
 #endif
 
-}}//end namespace pressio::rom
+}}}//end namespace pressio::rom::impl
 #endif

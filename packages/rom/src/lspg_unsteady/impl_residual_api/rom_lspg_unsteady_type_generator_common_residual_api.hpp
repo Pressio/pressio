@@ -55,8 +55,35 @@
 #include "../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
 #include "../../../../ode/src/implicit/meta/ode_is_stepper_order_setter.hpp"
 #include "../../../../ode/src/implicit/meta/ode_is_stepper_total_n_states_setter.hpp"
+#include "../../meta/rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
+
+template <typename ops_t, typename enable = void>
+struct FomStateReconHelper;
+
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< std::is_void<ops_t>::value >
+  >
+{
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+};
+
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< !std::is_void<ops_t>::value >
+  >
+{
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t, ops_t>;
+};
+
+
+
+
+
 
 template <
   typename stepper_tag,
@@ -107,8 +134,15 @@ Verify the fom/adapter class to check if you are missing something.");
    */
   using lspg_matrix_t		= decoder_jac_t;
 
+  // if we have an admissible user-defined ops
+  using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
+    decoder_jac_t, lspg_state_t, fom_state_t,
+    ::pressio::rom::meta::is_legitimate_custom_ops_for_unsteady_lspg_residual_api, Args...>;
+  using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
+
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+  using fom_state_reconstr_t =
+    typename FomStateReconHelper<ud_ops_t>::template type<scalar_t, fom_state_t, decoder_t>;
 
   //-------------------------------
   // find the order setter in Args
@@ -143,8 +177,6 @@ basically the size of the stpper stencil.");
   // type of class holding the fom states
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
 
-  // if we have a non-trivial user-defined ops, need to find from Args
-  using ud_ops_t = void;
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unsteady::impl

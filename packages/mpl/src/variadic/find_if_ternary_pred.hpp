@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_type_generator_common.hpp
+// find_if_ternary_pred.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,54 +46,49 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
-#define ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
+#ifndef PRESSIO_MPL_VARIADIC_FIND_IF_TERNARY_HPP
+#define PRESSIO_MPL_VARIADIC_FIND_IF_TERNARY_HPP
 
-#include "../rom_fwd.hpp"
-#include "../rom_static_container_fom_states.hpp"
-#include "../fomStateReconstructor/rom_reconstructor_fom_state.hpp"
+#include <type_traits>
+#include <cstddef>
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
+namespace pressio{ namespace mpl{ namespace variadic {
+
+template<
+  typename T1, typename T2,
+  template<class ...> class Predicate,
+  class ... Args2>
+struct find_if_ternary_pred;
+
+template<
+  typename T1, typename T2,
+  template<class ...> class Predicate>
+struct find_if_ternary_pred<T1, T2, Predicate>
+  : std::integral_constant<std::size_t, 0>
+{};
+
+template<
+  typename T1, typename T2,
+  template<class ...T> class Predicate,
+  class Head, class ... Tail>
+struct find_if_ternary_pred<T1, T2, Predicate, Head, Tail...>
+  : std::conditional <
+  Predicate<Head, T1, T2>::type::value,
+  std::integral_constant<std::size_t, 0>,
+  std::integral_constant <
+    std::size_t, 1 + find_if_ternary_pred<T1,T2, Predicate, Tail...>::type::value
+    >
+  >::type
+{};
 
 template <
-  typename fom_type,
-  typename decoder_type,
-  typename lspg_state_type
-  >
-struct CommonTypes<
-  fom_type, decoder_type, lspg_state_type,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
-    >
-  >
-{
-  // these are native types of the full-order model (fom)
-  using fom_t			= fom_type;
-  using scalar_t		= typename fom_t::scalar_type;
-  using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_velocity_t	= typename fom_t::velocity_type;
+  typename T1, typename T2,
+  template <class... T> class Predicate,
+  class... Args>
+using find_if_ternary_pred_t = typename find_if_ternary_pred<T1, T2,
+							     Predicate,
+							     Args...>::type;
 
-  // fom wrapper types
-  using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_velocity_t	= ::pressio::containers::Vector<fom_native_velocity_t>;
+}}} // namespace
 
-  // rom state type (passed in)
-  using lspg_state_t		= lspg_state_type;
-
-  // for LSPG, the rom residual type = containers::wrapper of application rhs
-  // i.e. the wrapped fom rhs type
-  using lspg_residual_t		= fom_velocity_t;
-
-  // decoder types (passed in)
-  using decoder_t		= decoder_type;
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
-
-  // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
-
-  // class type holding fom states data: we only need to store one FOM state
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;
-};
-
-}}}}//end  namespace pressio::rom::lspg::steady
 #endif

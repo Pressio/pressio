@@ -60,9 +60,11 @@ template <
   typename system_type,
   typename hessian_type,
   typename linear_solver_type,
-  typename scalar_type
+  typename scalar_type,
+  typename ud_ops_t = void
   >
-class GNHelperMixin{
+class GNHelperMixin
+{
 
 protected:
   /* --- type aliasing--- */
@@ -72,7 +74,7 @@ protected:
   // to compute hessian, we use a helper functor because
   // the calculation is different based on the jacobian being
   // a matrix wrapper vs a multi-vector wrapper
-  using hessian_evaluator_t = HessianApproxHelper<jacobian_t>;
+  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t, jacobian_t>;
 
   /* --- members --- */
   linear_solver_type & linSolver_ = {};
@@ -123,7 +125,8 @@ template <
   typename linear_solver_type,
   typename scalar_type,
   typename line_search_type,
-  typename convergence_when_t
+  typename convergence_when_t,
+  typename ud_ops_t
   >
 class GaussNewtonNormalEqResJacApi<
   system_type,
@@ -132,21 +135,23 @@ class GaussNewtonNormalEqResJacApi<
   scalar_type,
   line_search_type,
   convergence_when_t,
-  void
+  void,
+  ud_ops_t
   >
   : public NonLinearSolverBase<
      GaussNewtonNormalEqResJacApi<system_type, hessian_type, linear_solver_type, scalar_type,
-				  line_search_type, convergence_when_t, void>
+				  line_search_type, convergence_when_t, void, ud_ops_t>
      >,
     public IterativeBase< GaussNewtonNormalEqResJacApi<system_type, hessian_type,
 						       linear_solver_type, scalar_type,
 						       line_search_type, convergence_when_t,
-						       void>, scalar_type>,
-    protected GNHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type>
+						       void, ud_ops_t>, scalar_type>,
+    protected GNHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type, ud_ops_t>
 {
 
   using this_t = GaussNewtonNormalEqResJacApi<system_type, hessian_type, linear_solver_type,
-					      scalar_type, line_search_type, convergence_when_t, void>;
+					      scalar_type, line_search_type, convergence_when_t,
+					      void, ud_ops_t>;
 
   // need to be friend of base (crpt)
   using non_lin_sol_base_t = NonLinearSolverBase<this_t>;
@@ -156,7 +161,7 @@ class GaussNewtonNormalEqResJacApi<
   using iterative_base_t = IterativeBase<this_t, scalar_type>;
 
   // mixin helper
-  using gn_mixin_t = GNHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type>;
+  using gn_mixin_t = GNHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type, ud_ops_t>;
 
   using typename iterative_base_t::iteration_t;
   using typename gn_mixin_t::state_t;
@@ -197,7 +202,7 @@ private:
     sys.jacobian(yState, jacobian_);
 
     gauss_newton_neq_solve<
-      line_search_type, convergence_when_t>
+      ud_ops_t, line_search_type, convergence_when_t>
       (sys, yState, trialState_,
        residual_, jacobian_, correction_, gradient_,
        hessian_, linSolver_,
@@ -219,7 +224,8 @@ template <
   typename scalar_type,
   typename line_search_type,
   typename convergence_when_t,
-  typename observer_t
+  typename observer_t,
+  typename ud_ops_t
   >
 class GaussNewtonNormalEqResJacApi<
   system_type,
@@ -228,22 +234,24 @@ class GaussNewtonNormalEqResJacApi<
   scalar_type,
   line_search_type,
   convergence_when_t,
-  observer_t
+  observer_t,
+  ud_ops_t
   >
   : public NonLinearSolverBase< GaussNewtonNormalEqResJacApi<system_type, hessian_type,
 							     linear_solver_type, scalar_type,
 							     line_search_type, convergence_when_t,
-							     observer_t>>,
+							     observer_t, ud_ops_t>>,
     public IterativeBase< GaussNewtonNormalEqResJacApi<system_type, hessian_type,
 						       linear_solver_type, scalar_type,
 						       line_search_type, convergence_when_t,
-						       observer_t>, scalar_type>,
-    protected GNHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type>
+						       observer_t, ud_ops_t>, scalar_type>,
+    protected GNHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type, ud_ops_t>
 {
 
   using this_t = GaussNewtonNormalEqResJacApi<system_type, hessian_type,
 					      linear_solver_type, scalar_type,
-					      line_search_type, convergence_when_t, observer_t>;
+					      line_search_type, convergence_when_t,
+					      observer_t, ud_ops_t>;
 
   // need to be friend of base (crpt)
   using non_lin_sol_base_t = NonLinearSolverBase<this_t>;
@@ -253,7 +261,7 @@ class GaussNewtonNormalEqResJacApi<
   using iterative_base_t = IterativeBase<this_t, scalar_type>;
 
   // mixin helper
-  using gn_mixin_t = GNHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type>;
+  using gn_mixin_t = GNHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type, ud_ops_t>;
 
   using typename iterative_base_t::iteration_t;
   using typename gn_mixin_t::state_t;
@@ -294,17 +302,17 @@ public:
     sys.jacobian(yState, jacobian_);
 
     gauss_newton_neq_solve<
-      line_search_type, convergence_when_t>
-      (sys, yState, trialState_,
-       residual_, jacobian_, correction_, gradient_,
-       hessian_, linSolver_,
-       iterative_base_t::maxIters_,
-       iterative_base_t::tolerance_,
-       &obsObj_,
-       non_lin_sol_base_t::convergenceConditionDescription_,
-       normType_);
-
+      ud_ops_t, line_search_type, convergence_when_t
+      >(sys, yState, trialState_,
+	residual_, jacobian_, correction_, gradient_,
+	hessian_, linSolver_,
+	iterative_base_t::maxIters_,
+	iterative_base_t::tolerance_,
+	&obsObj_,
+	non_lin_sol_base_t::convergenceConditionDescription_,
+	normType_);
   }//end solveImpl
+
 };
 
 }}}}//end namespace pressio::solvers::iterative::impl

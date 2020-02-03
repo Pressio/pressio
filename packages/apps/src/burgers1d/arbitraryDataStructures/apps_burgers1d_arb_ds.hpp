@@ -58,7 +58,7 @@ namespace pressio{ namespace apps{
 
 class Burgers1dArbDs{
 public:
-  using int_t		  = int32_t;
+  using int_t		  = std::size_t;
   using scalar_type	  = double;
   using sc_t		  = scalar_type;
   using state_type	  = arbds::Vector<scalar_type>;
@@ -74,17 +74,22 @@ public:
     setup();
   }
 
+  int_t meshSize() const{
+    return Ncell_;
+  }
+
 public:
   void velocity(const state_type & u,
-		const scalar_type & t,
-		velocity_type & f) const{
+  		const scalar_type & t,
+  		velocity_type & f) const{
     this->velocity_impl(u, t, f);
   }
 
   velocity_type velocity(const state_type & u,
 			 const scalar_type & t) const{
-    this->velocity_impl(u, t, f_);
-    return f_;
+    velocity_type f(Ncell_);
+    this->velocity_impl(u, t, f);
+    return f;
   }
 
   void jacobian(const state_type & u,
@@ -94,25 +99,10 @@ public:
   }
 
   jacobian_type jacobian(const state_type & u,
-  			 const scalar_type & t) const{
-    this->jacobian_impl(u, t, JJ_);
-    return JJ_;
-  }
-
-  void applyJacobian(const state_type & u,
-  		     const dense_matrix_type & B,
-  		     const scalar_type & t,
-  		     dense_matrix_type & A) const{
-    this->jacobian_impl(u, t, JJ_);
-    //A = JJ_ * B;
-  }
-
-  dense_matrix_type applyJacobian(const state_type & u,
-				  const dense_matrix_type & B,
-				  const scalar_type & t) const{
-    dense_matrix_type A( u.extent(0), B.extent(1) );
-    //this->applyJacobian(u, B, t, A);
-    return A;
+			 const scalar_type & t) const{
+    jacobian_type JJ(Ncell_, Ncell_);
+    this->jacobian_impl(u, t, JJ);
+    return JJ;
   }
 
 private:
@@ -133,11 +123,7 @@ private:
     U_.resize(Ncell_);
     for (int_t i=0; i<Ncell_; ++i)
       U_(i) = one;
-
-    f_.resize(Ncell_);
-    JJ_.resize(Ncell_, Ncell_);
   };
-
 
   void velocity_impl(const state_type & u,
 		     const scalar_type & t,
@@ -176,8 +162,6 @@ private:
   state_type xGrid_;
 
   mutable state_type U_;
-  mutable state_type f_;
-  mutable jacobian_type JJ_;
 
 };//end class
 
