@@ -7,7 +7,7 @@
 #include "SOLVERS_EXPERIMENTAL"
 #include "ROM_WLS"
 #include "utils_eigen.hpp"
-
+#include "ROM_UTILS"
 
 int main(int argc, char *argv[]){
   std::string checkStr {"PASSED"};
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
   wls_state_t  wlsState(romSize*numStepsInWindow); wlsState.setZero();
   // create the wls system
   wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow);
-
+  
   // -----------------
   // solver
   // -----------------
@@ -67,10 +67,11 @@ int main(int argc, char *argv[]){
   gn_t GNSolver(wlsSystem, wlsState, linear_solver);
   GNSolver.setTolerance(1e-13);
   GNSolver.setMaxIterations(50);
-
   // -----------------
   // solve wls problem
   // -----------------
+  // Initialize coefficients from L2 projection of yFOM_IC
+  wlsSystem.initializeCoeffs<linear_solver_t>(decoderObj,yFOM_IC,yRef);
   constexpr scalar_t finalTime = 0.1;
   constexpr scalar_t dt	       = 0.01;
   constexpr int numWindows     = static_cast<int>(finalTime/dt)/numStepsInWindow;

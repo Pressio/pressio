@@ -1,7 +1,7 @@
 
 #ifndef ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_IMPL_HPP_
 #define ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_IMPL_HPP_
-
+#include "ROM_UTILS"
 #include "../time_schemes/rom_wls_select_timescheme_helper.hpp"
 #include "../policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
 
@@ -73,7 +73,7 @@ private:
   size_t wlsStencilSize_           = static_cast<size_t>(romSize_*timeStencilSize_);
   // I keep this here since you pass it to the policy. Originally this was owened
   // by the timeSchemeObj but it should be owened here
-  wls_state_type wlsStateIC_{wlsStencilSize_};
+  wls_state_type wlsStateIC_{static_cast<int>(wlsStencilSize_)};
 
 public:
   SystemHessianGradientApi(const fom_type & appObj,
@@ -91,8 +91,6 @@ public:
     // Set initial condition based on L^2 projection onto trial space
     // note that wlsStateIC_[-romSize:end] contains nm1, wlsStateIC[-2*romSize:-romSize] contains nm2 entry, etc.
     const auto spanStartIndex = romSize_*(timeStencilSize_-2);
-    auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
-    initializeCoeffs(decoderObj.getReferenceToJacobian(), wlsInitialStateNm1 , yFOM_IC,yFOM_Ref);
   }
 
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
@@ -167,41 +165,19 @@ public:
     std::cout << " Window " << windowIndex << " completed " << std::endl;
   }// end advanceOneWindow
 
-
-private:
   // Function to initialize the coefficients for a given FOM IC and reference state
   // computes the ICs via optimal L^2 projection, phi^T phi xhat = phi^T(x - xRef)
-  // FRizzi: this should be private (but better should be stripped out)
-  template <typename basis_t, typename wls_stateview_t>
-  void initializeCoeffs(const basis_t & phi,
-			wls_stateview_t & wlsStateIC,
-			const fom_state_t & yFOM_IC,
-			const fom_state_t & yRef )
+  template <typename linear_solver_t>
+  void initializeCoeffs(const decoder_t & decoderObj,const fom_state_t & yFOM_IC,const fom_state_t & yRef )
   {
-    using solver_tag   = pressio::solvers::linear::direct::ColPivHouseholderQR;
-    using linear_solver_t = pressio::solvers::direct::EigenDirect<solver_tag, hessian_t>;
+    wls_state_type wlsStateTmp(romSize_);
 
-    //initialize linear solver. This is only used here
-    linear_solver_t linear_solver;
+    ::pressio::rom::utils::setRomCoefficients<linear_solver_t>(decoderObj.getReferenceToJacobian(),wlsStateTmp,yFOM_IC,yRef,romSize_);
 
-    // create the system matrix, phi^T phi
-    hessian_t H(this->romSize_,this->romSize_);
-    ::pressio::containers::ops::dot(phi,phi,H);
-
-    //create a vector to store yFOM - yRef
-    fom_state_t b(yFOM_IC);
-    pressio::containers::ops::do_update(b,1.,yRef,-1.);
-
-    // compute phi^T b
-    const auto r = pressio::containers::ops::dot(phi,b);
-
-    //currently have no way of passing a span to the linear solver
-    wls_state_type y_l2(this->romSize_);
-    //solve system for optimal L2 projection
-    linear_solver.solveAllowMatOverwrite(H, r, y_l2);
-
+    const auto spanStartIndex = romSize_*(timeStencilSize_-2);
+    auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
     for (int i=0; i< this->romSize_; i++){
-      wlsStateIC[i] = y_l2[i];
+      wlsInitialStateNm1[i] = wlsStateTmp[i];
     }
   }
 
