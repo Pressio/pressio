@@ -122,6 +122,55 @@ public:
 
   ~Vector() = default;
 
+  template<
+    typename _wrapped_type = wrapped_type,
+    mpl::enable_if_t<
+      // todo: this is not entirely correct because this would work also
+      // for UMV space, needs to be fixed
+      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
+      > * = nullptr
+    >
+  sc_t & operator [] (ord_t i){
+    return data_(i);
+  };
+
+  template<
+    typename _wrapped_type = wrapped_type,
+    mpl::enable_if_t<
+      // todo: this is not entirely correct because this would work also
+      // for UMV space, needs to be fixed
+      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
+      > * = nullptr
+    >
+  sc_t const & operator [] (ord_t i) const{
+    return data_(i);
+  };
+
+  template<
+    typename _wrapped_type = wrapped_type,
+    mpl::enable_if_t<
+      // todo: this is not entirely correct because this would work also
+      // for UMV space, needs to be fixed
+      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
+      > * = nullptr
+    >
+  sc_t & operator () (ord_t i){
+    return data_(i);
+  };
+
+  template<
+    typename _wrapped_type = wrapped_type,
+    mpl::enable_if_t<
+      // todo: this is not entirely correct because this would work also
+      // for UMV space, needs to be fixed
+      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
+      > * = nullptr
+    >
+  sc_t const & operator () (ord_t i) const{
+    return data_(i);
+  };
+
+
 private:
   wrap_t const * dataImpl() const{
     return &data_;
