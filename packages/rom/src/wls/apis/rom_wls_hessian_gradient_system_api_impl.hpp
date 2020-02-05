@@ -26,7 +26,7 @@ public:
 
   using fom_native_state_t	= typename fom_type::state_type;
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_state_reconstr_t	= pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
   // policy type (here policy knows how to compute hessian and gradient)
@@ -41,12 +41,6 @@ public:
 		"For WLS, the state_type must be a pressio container vector");
   static_assert(::pressio::containers::meta::is_matrix_wrapper<hessian_type>::value,
 		"WLS: hessian_type must be a pressio container matrix");
-
-  // currently we limit support to eigen types
-//  static_assert(::pressio::containers::meta::is_vector_wrapper_eigen<wls_state_type>::value,
-//		"WLS: currently supports eigen only");
-//  static_assert(::pressio::containers::meta::is_matrix_wrapper_eigen<hessian_type>::value,
-//		"WLS: hessian_type must be a Eigen matrix wrapper");
 
 private:
   const fom_type & appObj_;
@@ -112,10 +106,10 @@ public:
   void computeHessianAndGradient(const state_type	      & wls_state,
                                  hessian_type		      & hessian,
                                  gradient_type		      & gradient,
-                                 const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2,
-                                 scalar_type		      & rnorm = pressio::utils::constants::zero<scalar_type>()) const
+                                 const ::pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2,
+                                 scalar_type		      & rnorm = ::pressio::utils::constants::zero<scalar_type>()) const
   {
-    rnorm = pressio::utils::constants::zero<scalar_type>();
+    rnorm = ::pressio::utils::constants::zero<scalar_type>();
     hessian_gradient_polObj_(timeSchemeObj_,
                              wls_state,
                              wlsStateIC_,
@@ -178,8 +172,14 @@ private:
 			const fom_state_t & yFOM_IC,
 			const fom_state_t & yRef )
   {
-    using solver_tag   = pressio::solvers::linear::direct::ColPivHouseholderQR;
-    using linear_solver_t = pressio::solvers::direct::EigenDirect<solver_tag, hessian_t>;
+    using solver_tag_e = ::pressio::solvers::linear::direct::ColPivHouseholderQR;
+    using solver_tag_k = ::pressio::solvers::linear::direct::getrs;
+
+    using linear_solver_t = typename std::conditional<
+      ::pressio::containers::meta::is_matrix_wrapper_eigen<hessian_t>::value,
+      ::pressio::solvers::direct::EigenDirect<solver_tag_e, hessian_t>,
+      ::pressio::solvers::direct::KokkosDirect<solver_tag_k, hessian_t>
+      >::type;
 
     //initialize linear solver. This is only used here
     linear_solver_t linear_solver;
@@ -190,21 +190,18 @@ private:
 
     //create a vector to store yFOM - yRef
     fom_state_t b(yFOM_IC);
-    pressio::containers::ops::do_update(b,1.,yRef,-1.);
+    ::pressio::containers::ops::do_update(b,1.,yRef,-1.);
 
     // compute phi^T b
-    const auto r = pressio::containers::ops::dot(phi,b);
+    const auto r = ::pressio::containers::ops::dot(phi,b);
 
     //currently have no way of passing a span to the linear solver
     wls_state_type y_l2(this->romSize_);
     //solve system for optimal L2 projection
     linear_solver.solveAllowMatOverwrite(H, r, y_l2);
 
-    for (int i=0; i< this->romSize_; i++){
-      wlsStateIC[i] = y_l2[i];
-    }
+    ::pressio::containers::ops::deep_copy(y_l2, wlsStateIC);
   }
-
 };
 
 }}}}//end namespace pressio::rom::src::wls::impl

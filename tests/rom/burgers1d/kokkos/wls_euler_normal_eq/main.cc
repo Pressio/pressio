@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
     // app object
     constexpr int numCell = 20;
     fom_t appObj({{5.0, 0.02, 0.02}}, numCell);
-    const scalar_t dt = 0.01;
+    constexpr scalar_t dt = 0.01;
     constexpr auto t0 = zero;
 
     constexpr int romSize = 11;
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
     // -----------------
     // WLS problem
     // -----------------
-    constexpr int numStepsInWindow = 5;
+    constexpr int numStepsInWindow = 1;
     using ode_tag	     = ::pressio::ode::implicitmethods::BDF2;
     using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_d_t,decoder_d_t,ode_tag,hessian_t>;
 
@@ -75,12 +75,8 @@ int main(int argc, char *argv[]){
     wls_state_d_t  wlsState("yRom",romSize*numStepsInWindow); wlsState.setZero();
     // create the wls system
     wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow);
- 
+
     //  Currently just see if we can get here with the build!
-
-
-    /*
-
     // -----------------
     // solver
     // -----------------
@@ -92,16 +88,12 @@ int main(int argc, char *argv[]){
     GNSolver.setTolerance(1e-13);
     GNSolver.setMaxIterations(50);
 
-
-
-    
     // -----------------
     // solve wls problem
     // -----------------
     constexpr scalar_t finalTime = 0.1;
-    constexpr scalar_t dt	       = 0.01;
     constexpr int numWindows     = static_cast<int>(finalTime/dt)/numStepsInWindow;
-  
+
     auto startTime = std::chrono::high_resolution_clock::now();
     for (auto iWind = 0; iWind < numWindows; iWind++){
       wlsSystem.advanceOneWindow(wlsState, GNSolver, iWind, dt);
@@ -111,28 +103,27 @@ int main(int argc, char *argv[]){
     const std::chrono::duration<double> elapsed = finishTime - startTime;
     std::cout << "Walltime = " << elapsed.count() << '\n';
 
-    */
-    /*
-    // compute the fom corresponding to our rom final state
-    const auto yFomFinal_d = lspgProblem.getFomStateReconstructorCRef()(yROM);
+    // -----------------
+    // process solution
+    // -----------------
+    const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
+    fom_state_t yFinal("yFF_d",numCell); //may not build
 
-    // create a host mirror for yFomFinal
-    native_state_t_h yFomFinal_h("yFF_h", numCell);
-    Kokkos::deep_copy(yFomFinal_h, *yFomFinal_d.data());
+    using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<fom_state_t, decoder_d_t>;
+    fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
+    fomStateReconstructor(wlsCurrentState, yFinal);
 
-    // this is a reproducing ROM test, so the final reconstructed state
-    // has to match the FOM solution obtained with euler, same time-step, for 10 steps
-    const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
+    // create a host mirror for yFinal
+    native_state_t_h yFinal_h("yFF_h", numCell);
+    Kokkos::deep_copy(yFinal_h, *yFinal.data());
+
+    // get true solution
+    const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, finalTime);
     for (auto i=0; i<numCell; i++){
-      std::cout << std::setprecision(15) << yFomFinal_h(i) << " " << trueY[i] << std::endl;
-      if (std::abs(yFomFinal_h(i) - trueY[i]) > 1e-10) checkStr = "FAILED";
+      std::cout << std::setprecision(15) << yFinal_h(i) << " " << trueY[i] << std::endl;
+      if (std::abs(yFinal_h(i) - trueY[i]) > 1e-8) checkStr = "FAILED";
     }
-
-    auto n1 = ::pressio::containers::ops::norm2(yFomFinal_d);
-    std::cout << n1 << std::endl;
-
-    std::cout << checkStr <<  std::endl;
-    */
+    std::cout << checkStr << std::endl;
   }
   Kokkos::finalize();
   return 0;
