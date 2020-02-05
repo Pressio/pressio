@@ -80,13 +80,14 @@ public:
 			   const fom_state_t & yFOM_IC,
 			   const fom_state_t & yFOM_Ref,
 			   const decoder_t & decoderObj,
-			   const int numStepsInWindow)
+			   const int numStepsInWindow, 
+                           const int romSize)
     : appObj_(appObj),
       fomStateReconstructorObj_(yFOM_Ref, decoderObj),
-      romSize_(decoderObj.getReferenceToJacobian().numVectors()),
+      romSize_(romSize),
       timeSchemeObj_(romSize_, yFOM_IC),
       numStepsInWindow_{numStepsInWindow},
-      hessian_gradient_polObj_( appObj, yFOM_IC, numStepsInWindow, timeStencilSize_, decoderObj),
+      hessian_gradient_polObj_( appObj, yFOM_IC, numStepsInWindow, timeStencilSize_, decoderObj,romSize),
       wlsStateIC_(wlsStencilSize_)
   {
     // Set initial condition based on L^2 projection onto trial space
