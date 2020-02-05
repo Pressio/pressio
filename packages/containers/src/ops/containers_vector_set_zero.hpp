@@ -55,6 +55,10 @@
 #include <pybind11/numpy.h>
 #endif
 
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include <KokkosBlas1_fill.hpp>
+#endif
+
 //----------------------------------------------------------------------
 //  overloads for setting all entries of vector to zero
 //----------------------------------------------------------------------
@@ -67,12 +71,31 @@ namespace pressio{ namespace containers{ namespace ops{
 template<
   typename T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<T>::value
+    ::pressio::containers::meta::is_wrapper<T>::value and
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    (!::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value and
+     !::pressio::containers::meta::is_matrix_wrapper_kokkos<T>::value)
+#endif
     > * = nullptr
   >
 void set_zero(T & v){
   v.setZero();
 }
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template<
+  typename T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value or
+    ::pressio::containers::meta::is_matrix_wrapper_kokkos<T>::value
+    > * = nullptr
+  >
+void set_zero(T & o){
+  using scalar_t = typename ::pressio::containers::details::traits<T>::scalar_t;
+  KokkosBlas::fill( *o.data(), ::pressio::utils::constants::zero<scalar_t>());
+}
+#endif
+
 
 //--------------------------------------------------------------------------
 // enable for pybind11::array_t
