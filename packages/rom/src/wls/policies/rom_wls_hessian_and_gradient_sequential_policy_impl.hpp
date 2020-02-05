@@ -167,7 +167,6 @@ public:
     ::pressio::containers::ops::set_zero(gradient);
     //get access to the state at the first window
     setCurrentFomState(wlsState,0,fomStateReconstrObj);
-    /*
     //reconstruct the FOM states from the previous window/ICs
     timeSchemeObj.updateStatesFirstStep(wlsStateIC, fomStateReconstrObj);
     //compute the time discrete residual
@@ -237,7 +236,6 @@ public:
 	  }
       }// end assembling local component of global Hessian
     }//end loop over stepsInWindow
-  */
  
   }//end operator()
 
