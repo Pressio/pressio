@@ -75,6 +75,9 @@ struct traits<
 };
 
 
+
+
+
 template <typename matrix_type, typename scalar_type>
 struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type, scalar_type>,
