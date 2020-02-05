@@ -122,9 +122,100 @@ public:
   {
     return static_cast<native_t const *>(vecObj_.data())->segment(startIndex_, extent_);
   }
-
 };
 
-}}} //end namespace pressio::containers::expressions
 
+
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename vector_t, typename scalar_type>
+struct SpanExpr<
+  vector_t, scalar_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<vector_t>::value
+    >
+  >
+  : public BaseExpr< SpanExpr<vector_t, scalar_type> >
+{
+  using native_t   = typename ::pressio::containers::details::traits<vector_t>::wrapped_t;
+
+private:
+  vector_t & vecObj_;
+  std::size_t startIndex_;
+  std::size_t extent_ = {};
+  using pair_t = std::pair<std::size_t, std::size_t>;
+
+public:
+  SpanExpr() = delete;
+  ~SpanExpr() = default;
+  SpanExpr(const SpanExpr & other) = default;
+  SpanExpr(SpanExpr && other) = default;
+  SpanExpr & operator=(const SpanExpr & other) = default;
+  SpanExpr & operator=(SpanExpr && other) = default;
+
+  SpanExpr(vector_t & objIn,
+	   const std::size_t startIndexIn,
+	   const std::size_t extentIn)
+    : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn)
+  {
+    assert( startIndex_ >= 0 and startIndex_ < objIn.size() );
+    assert( extent_ <= objIn.size() );
+  }
+
+  SpanExpr(vector_t & objIn,
+	   std::pair<std::size_t, std::size_t> indexRange)
+    : vecObj_(objIn),
+      startIndex_(std::get<0>(indexRange)),
+      extent_(std::get<1>(indexRange)-startIndex_)
+  {
+    assert( startIndex_ >= 0 and startIndex_ < objIn.size() );
+    assert( extent_ <= objIn.size() );
+  }
+
+  std::size_t const & size() const{ return extent_; }
+
+  // TODO: enable only on host
+  scalar_type & operator[](std::size_t i)
+  {
+    assert(i < extent_);
+    return vecObj_(startIndex_+i);
+  }
+
+  // TODO: enable only on host
+  scalar_type const & operator[](std::size_t i) const
+  {
+    assert(i < extent_);
+    return vecObj_(startIndex_+i);
+  }
+
+  auto operator()()
+    -> decltype
+    (
+     Kokkos::subview(*vecObj_.data(), std::declval<pair_t>())
+     )
+  {
+    return Kokkos::subview(*vecObj_.data(),
+			   std::make_pair(startIndex_, startIndex_+extent_));
+  }
+
+  auto operator()() const
+    -> decltype
+    (
+     Kokkos::subview(*vecObj_.data(), std::declval<pair_t>())
+     )
+  {
+    return Kokkos::subview(*vecObj_.data(),
+			   std::make_pair(startIndex_, startIndex_+extent_));
+  }
+
+  // auto operator()() const
+  //   -> decltype( std::declval<const native_t>().segment(startIndex_, extent_))
+  // {
+  //   return static_cast<native_t const *>(vecObj_.data())->segment(startIndex_, extent_);
+  // }
+};
+#endif
+
+
+}}} //end namespace pressio::containers::expressions
 #endif

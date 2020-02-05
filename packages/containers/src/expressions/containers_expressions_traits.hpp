@@ -61,6 +61,9 @@ struct traits<
   ::pressio::containers::expressions::SpanExpr<v_type, scalar_type>,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<v_type>::value
+    #ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    or ::pressio::containers::meta::is_vector_wrapper_kokkos<v_type>::value
+    #endif
     >
   >
 {
