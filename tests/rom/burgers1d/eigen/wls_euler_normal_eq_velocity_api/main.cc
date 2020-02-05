@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
   // -------------------
   // decoder
   // -------------------
-  const int romSize = 11;
+  int romSize = 11;
   const auto phiNative = pressio::rom::test::eigen::readBasis("basis.txt", romSize, fomSize);
   decoder_t decoderObj(phiNative);
 

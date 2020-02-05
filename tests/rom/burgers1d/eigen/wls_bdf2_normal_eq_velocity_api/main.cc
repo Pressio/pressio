@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
 
   for (int i=0;i<fomSize;i++){
     std::cout << std::setprecision(15) << yFinal[i] << " " << trueY[i] << "\n";
-    if (std::abs(yFinal[i] - trueY[i]) > 1e-8) checkStr = "FAILED";
+    if (std::abs(yFinal[i] - trueY[i]) > 1e-10) checkStr = "FAILED";
   }
   std::cout << checkStr << std::endl;
 

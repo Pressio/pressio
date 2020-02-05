@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
     constexpr scalar_t dt = 0.01;
     constexpr auto t0 = zero;
 
-    constexpr int romSize = 11;
+    int romSize = 11;
 
     // create/read jacobian of the decoder
     decoder_jac_d_t phi("phi", numCell, 11);
@@ -67,8 +67,8 @@ int main(int argc, char *argv[]){
     // -----------------
     // WLS problem
     // -----------------
-    constexpr int numStepsInWindow = 1;
-    using ode_tag	     = ::pressio::ode::implicitmethods::BDF2;
+    constexpr int numStepsInWindow = 5;
+    using ode_tag	     = ::pressio::ode::implicitmethods::Euler;
     using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_d_t,decoder_d_t,ode_tag,hessian_t>;
 
     // create the wls state
