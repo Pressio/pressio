@@ -26,7 +26,7 @@ public:
 
   using fom_native_state_t	= typename fom_type::state_type;
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
   // policy type (here policy knows how to compute hessian and gradient)
@@ -41,6 +41,12 @@ public:
 		"For WLS, the state_type must be a pressio container vector");
   static_assert(::pressio::containers::meta::is_matrix_wrapper<hessian_type>::value,
 		"WLS: hessian_type must be a pressio container matrix");
+
+  // currently we limit support to eigen types
+//  static_assert(::pressio::containers::meta::is_vector_wrapper_eigen<wls_state_type>::value,
+//		"WLS: currently supports eigen only");
+//  static_assert(::pressio::containers::meta::is_matrix_wrapper_eigen<hessian_type>::value,
+//		"WLS: hessian_type must be a Eigen matrix wrapper");
 
 private:
   const fom_type & appObj_;
@@ -64,10 +70,10 @@ private:
 
   // cache the size of the wls problem: romSize*numStepsInWindow
   int wlsProblemSize_		= romSize_*numStepsInWindow_;
-  size_t wlsStencilSize_           = static_cast<size_t>(romSize_*timeStencilSize_);
+  int wlsStencilSize_           = romSize_*timeStencilSize_;
   // I keep this here since you pass it to the policy. Originally this was owened
   // by the timeSchemeObj but it should be owened here
-  wls_state_type wlsStateIC_{static_cast<int>(wlsStencilSize_)};
+  wls_state_type wlsStateIC_;
 
 public:
   SystemHessianGradientApi(const fom_type & appObj,
@@ -80,7 +86,8 @@ public:
       romSize_(decoderObj.getReferenceToJacobian().numVectors()),
       timeSchemeObj_(romSize_, yFOM_IC),
       numStepsInWindow_{numStepsInWindow},
-      hessian_gradient_polObj_( appObj, yFOM_IC, numStepsInWindow, timeStencilSize_, decoderObj)
+      hessian_gradient_polObj_( appObj, yFOM_IC, numStepsInWindow, timeStencilSize_, decoderObj),
+      wlsStateIC_(wlsStencilSize_)
   {
     // Set initial condition based on L^2 projection onto trial space
     // note that wlsStateIC_[-romSize:end] contains nm1, wlsStateIC[-2*romSize:-romSize] contains nm2 entry, etc.
@@ -104,10 +111,10 @@ public:
   void computeHessianAndGradient(const state_type	      & wls_state,
                                  hessian_type		      & hessian,
                                  gradient_type		      & gradient,
-                                 const ::pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2,
-                                 scalar_type		      & rnorm = ::pressio::utils::constants::zero<scalar_type>()) const
+                                 const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2,
+                                 scalar_type		      & rnorm = pressio::utils::constants::zero<scalar_type>()) const
   {
-    rnorm = ::pressio::utils::constants::zero<scalar_type>();
+    rnorm = pressio::utils::constants::zero<scalar_type>();
     hessian_gradient_polObj_(timeSchemeObj_,
                              wls_state,
                              wlsStateIC_,
@@ -138,7 +145,7 @@ public:
 
     // Loop to update the the wlsStateIC vector.
     // If we add multistep explicit methods, need to add things here.
-    const int start = std::max(0,this->timeStencilSize_ - 1 - this->numStepsInWindow_);
+    const int start = std::max(0,this->timeStencilSize_  - this->numStepsInWindow_);
     for (int i = 0; i < start; i++)
     {
       auto wlsTmpState  = ::pressio::containers::span(wlsStateIC_, i*romSize_,     romSize_);
@@ -148,10 +155,10 @@ public:
       }
     }
 
-    for (int i = start ; i < timeStencilSize_-1; i++)
+    for (int i = start ; i < timeStencilSize_; i++)
     {
       auto wlsTmpState  = ::pressio::containers::span(wlsStateIC_, i*romSize_, romSize_);
-      auto wlsTmpState2 = ::pressio::containers::span(wlsState, (numStepsInWindow_ - timeStencilSize_+1+i)*romSize_, romSize_);
+      auto wlsTmpState2 = ::pressio::containers::span(wlsState, (numStepsInWindow_ - timeStencilSize_+i)*romSize_, romSize_);
       for (int k=0; k < romSize_; k++){
 	wlsTmpState[k] = wlsTmpState2[k];
       }
@@ -166,14 +173,15 @@ public:
   {
     wls_state_type wlsStateTmp(romSize_);
 
-    ::pressio::rom::utils::setRomCoefficients<linear_solver_t>(decoderObj.getReferenceToJacobian(),wlsStateTmp,yFOM_IC,yRef,romSize_);
+    ::pressio::rom::utils::setRomCoefficientsL2Projection<linear_solver_t>(decoderObj.getReferenceToJacobian(),wlsStateTmp,yFOM_IC,yRef,romSize_);
 
-    const auto spanStartIndex = romSize_*(timeStencilSize_-2);
+    const auto spanStartIndex = romSize_*(timeStencilSize_-1);
     auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
     for (int i=0; i< this->romSize_; i++){
       wlsInitialStateNm1[i] = wlsStateTmp[i];
     }
   }
+
 };
 
 }}}}//end namespace pressio::rom::src::wls::impl

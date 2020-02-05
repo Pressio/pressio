@@ -176,7 +176,7 @@ public:
 
     computeJacobiansOverStencil(timeSchemeObj,
                                 time_stencil_size,
-                                5,t,dt);
+                                step,t,dt);
 
     // add to local block of hessian
     auto hess_block = ::pressio::containers::subspan( hess,
