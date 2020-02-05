@@ -15,7 +15,7 @@ yFOM_current: this is a working variable for the fom state.
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 
 // Helper function to do c += A^T b
-template <typename Mat, typename Vec>
+template <typename gradient_type, typename Mat, typename Vec>
 void addToGradient(const Mat & A,
 		      const  Vec & b,
 		      Vec  & cOut,
@@ -23,7 +23,8 @@ void addToGradient(const Mat & A,
 		      const int & colSize)
 {
   auto gradientView = ::pressio::containers::span(cOut,scol,colSize);
-  auto tmp = pressio::containers::ops::dot(A, b);
+  wls_state_type tmp(colSize);
+  pressio::containers::ops::dot(A, b, tmp);
   for (int k =0; k< colSize; k++){
     gradientView[k] += tmp[k];
   }
@@ -185,7 +186,7 @@ public:
     ::pressio::containers::ops::dot(wlsJacs_[time_stencil_size-1], wlsJacs_[time_stencil_size-1], hess_block);
 
     // compute gradient[n*romSize_:(n+1)*romSize] += J^T r
-    addToGradient(wlsJacs_[time_stencil_size-1], residual_, gradient, n*romSize_, romSize_);
+    addToGradient<gradient_type>(wlsJacs_[time_stencil_size-1], residual_, gradient, n*romSize_, romSize_);
 
 
     // this is a temporary work around for the += issue.
@@ -206,7 +207,7 @@ public:
       int sbar = std::min(n,time_stencil_size);
       for (int i=0; i < sbar; i++)
       {
-        addToGradient(wlsJacs_[time_stencil_size-i-1], residual_, gradient, (n-i)*romSize_, romSize_);
+        addToGradient<gradient_type>(wlsJacs_[time_stencil_size-i-1], residual_, gradient, (n-i)*romSize_, romSize_);
       }
 
       // == Assemble local component of global Hessian //
