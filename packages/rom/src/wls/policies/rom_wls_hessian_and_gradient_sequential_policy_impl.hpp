@@ -126,7 +126,8 @@ public:
                                   const fom_state_t & yFOM,
                                   int numStepsInWindow,
                                   int time_stencil_size,
-                                  const decoder_t & decoderObj)
+                                  const decoder_t & decoderObj,
+                                  const int romSize)
     : // construct wls Jacobians from jacobian of the decoder: we might need to change this later
       appObj_(appObj),
       wlsJacs_(time_stencil_size,decoderObj.getReferenceToJacobian()),
@@ -134,9 +135,8 @@ public:
       residual_( appObj.velocity( *yFOM.data() , ::pressio::utils::constants::zero<scalar_t>()) ),
       yFOM_current_(yFOM)
   {
-    this->romSize_ = decoderObj.getReferenceToJacobian().numVectors();
+    this->romSize_ = romSize;
     this->time_stencil_size = time_stencil_size;
-    this->fomSize_ = yFOM.size();
   }
 
 
@@ -164,9 +164,9 @@ public:
     int step = step_s + n;
     ::pressio::containers::ops::set_zero(hess);
     ::pressio::containers::ops::set_zero(gradient);
-
     //get access to the state at the first window
     setCurrentFomState(wlsState,0,fomStateReconstrObj);
+    /*
     //reconstruct the FOM states from the previous window/ICs
     timeSchemeObj.updateStatesFirstStep(wlsStateIC, fomStateReconstrObj);
     //compute the time discrete residual
@@ -236,7 +236,8 @@ public:
 	  }
       }// end assembling local component of global Hessian
     }//end loop over stepsInWindow
-
+  */
+ 
   }//end operator()
 
 
