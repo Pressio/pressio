@@ -50,5 +50,5 @@
 #define ROM_UTILS_HPP_
 
 #include "rom/src/utils/rom_utils_set_rom_coefficients.hpp"
-#endif*
+#endif
 
