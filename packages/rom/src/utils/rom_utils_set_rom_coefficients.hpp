@@ -6,7 +6,7 @@ template <typename linear_solver_t,
           typename basis_t, 
           typename rom_state_t, 
           typename fom_state_t>
-void setRomCoefficients(const basis_t & phi,
+void setRomCoefficientsL2Projection(const basis_t & phi,
                       rom_state_t & romState,
                       const fom_state_t & yFOM_IC,
                       const fom_state_t & yRef, 
@@ -26,7 +26,7 @@ void setRomCoefficients(const basis_t & phi,
   ::pressio::containers::ops::dot(phi,phi,H);
   //create a vector to store yFOM - yRef
   fom_state_t b(yFOM_IC);
-  pressio::containers::ops::do_update(b,1.,yRef,-1.);
+  pressio::containers::ops::do_update(b,::pressio::utils::constants::one(),yRef,::pressio::utils::constants::negOne());
   // compute phi^T b
   const auto r = pressio::containers::ops::dot(phi,b);
   //solve system for optimal L2 projection
