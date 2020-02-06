@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
   // create the wls state
   wls_state_t  wlsState(romSize*numStepsInWindow); wlsState.setZero();
   // create the wls system
-  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow);
+  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize);
 
   // -----------------
   // solver
