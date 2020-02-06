@@ -97,6 +97,7 @@
 #include "containers/src/ops/tpetra_block/containers_mvec_prod_vec.hpp"
 #include "containers/src/ops/tpetra_block/containers_norms_vector.hpp"
 #include "containers/src/ops/tpetra_block/containers_vector_do_update.hpp"
+#include "containers/src/ops/tpetra_block/containers_multi_vector_do_update.hpp"
 
 // teuchos
 #include "containers/src/ops/teuchos/containers_norms_vector.hpp"
