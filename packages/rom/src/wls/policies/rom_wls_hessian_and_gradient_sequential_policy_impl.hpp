@@ -15,15 +15,15 @@ yFOM_current: this is a working variable for the fom state.
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 
 // Helper function to do c += A^T b
-template <typename gradient_type, typename Mat, typename Vec>
-void addToGradient(const Mat & A,
-		      const  Vec & b,
-		      Vec  & cOut,
+template <typename gradient_type, typename mat_t, typename vec1_t, typename vec2_t>
+void addToGradient(const mat_t & A,
+		      const  vec1_t & b,
+		      vec2_t  & cOut,
 		      const int & scol,
 		      const int & colSize)
 {
   auto gradientView = ::pressio::containers::span(cOut,scol,colSize);
-  wls_state_type tmp(colSize);
+  gradient_type tmp(colSize);
   pressio::containers::ops::dot(A, b, tmp);
   for (int k =0; k< colSize; k++){
     gradientView[k] += tmp[k];

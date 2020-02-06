@@ -28,7 +28,8 @@ void setRomCoefficientsL2Projection(const basis_t & phi,
   fom_state_t b(yFOM_IC);
   pressio::containers::ops::do_update(b,::pressio::utils::constants::one(),yRef,::pressio::utils::constants::negOne());
   // compute phi^T b
-  const auto r = pressio::containers::ops::dot(phi,b);
+  rom_state_t r(romSize);
+  pressio::containers::ops::dot(phi, b, r);
   //solve system for optimal L2 projection
   linear_solver.solveAllowMatOverwrite(H, r, romState);
 }
