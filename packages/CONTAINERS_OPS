@@ -88,6 +88,7 @@
 #include "containers/src/ops/tpetra/containers_mvec_prod_vec.hpp"
 #include "containers/src/ops/tpetra/containers_norms_vector.hpp"
 #include "containers/src/ops/tpetra/containers_vector_do_update.hpp"
+#include "containers/src/ops/tpetra/containers_multi_vector_do_update.hpp"
 
 // Tpetra block
 #include "containers/src/ops/tpetra_block/containers_mvec_dot_mvec.hpp"
