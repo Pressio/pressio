@@ -60,7 +60,7 @@ private:
   int time_stencil_size;
   const decoder_jac_t & phi_;
   const fom_type & appObj_;
-  const preconditioner_t Preconditioner;
+  const preconditioner_t Preconditioner{};
 
 
   // reconstructs yFOM_current_ from the stepNum entry of wlsState
