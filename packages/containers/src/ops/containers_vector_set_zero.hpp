@@ -71,8 +71,9 @@ namespace pressio{ namespace containers{ namespace ops{
 template<
   typename T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_wrapper<T>::value and
+    ::pressio::containers::meta::is_wrapper<T>::value
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    and
     (!::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value and
      !::pressio::containers::meta::is_matrix_wrapper_kokkos<T>::value)
 #endif
