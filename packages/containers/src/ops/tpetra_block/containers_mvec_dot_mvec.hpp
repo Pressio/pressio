@@ -124,7 +124,7 @@ template <
   >
 void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
 {
-  std::cout << "Warning, container::ops::dot operation between tpetra_block, tpetra_block, and putting result into expression not yet supported" << std::endl;
+  throw std::runtime_error("Warning, container::ops::dot operation between tpetra_block, tpetra_block, and putting result into expression not yet supported");
 }
 
 }}}//end namespace pressio::containers::ops

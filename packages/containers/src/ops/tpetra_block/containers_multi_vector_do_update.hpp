@@ -69,7 +69,7 @@ template<
 void do_update(T & mv, const scalar_t &a,
 	       const T & mv1, const scalar_t &b)
 {
-  std::cout << "Warning, container::ops::do_update operation between not yet supported for tpetra block" << std::endl;
+  throw std::runtime_error("Warning, container::ops::do_update operation between not yet supported for tpetra block"); 
   //mv.data()->update(b, *mv1.data(), a);
 }
 
@@ -84,8 +84,7 @@ void do_update(T & mv, const T & mv1, const scalar_t & b)
 {
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
   //mv.data()->update(b, *mv1.data(), zero);
-  std::cout << "Warning, container::ops::do_update operation between not yet supported for tpetra block" << std::endl;
-
+  throw std::runtime_error("Warning, container::ops::do_update operation between not yet supported for tpetra block"); 
 }
 
 }}}//end namespace pressio::containers::ops

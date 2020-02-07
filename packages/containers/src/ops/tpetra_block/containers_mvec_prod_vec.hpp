@@ -245,7 +245,7 @@ template <
   >
 void product(const mvec_type & mvA, const expr_type & b, res_type & C)
 {
-  std::cout << "Warning, container::ops:product operation between tpetra block and expression not yet supported" << std::endl;
+  throw std::runtime_error("Warning, container::ops:product operation between tpetra block and expression not yet supported"); 
   //::pressio::containers::ops::impl::_product_tpetra_mv_sharedmem_vec(mvA, b, C);
 }
 
@@ -265,7 +265,7 @@ auto product(const mvec_type & mvA, const expr_type & b)
                  typename details::traits<mvec_type>::node_t>
                  >
 {
-  std::cout << "Warning, container::ops::product operation between tpetra block and expression not yet supported" << std::endl;
+  throw std::runtime_error("Warning, container::ops::product operation between tpetra block and expression not yet supported");
   // the data map of the multivector
   /* 
   auto rcpMap = mvA.getRCPDataMap();
