@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
     constexpr scalar_t dt = 0.01;
     constexpr auto t0 = zero;
 
-    int romSize = 11;
+    constexpr int romSize = 11;
 
     // create/read jacobian of the decoder
     decoder_jac_d_t phi("phi", numCell, 11);
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
     // WLS problem
     // -----------------
     constexpr int numStepsInWindow = 5;
-    using ode_tag	     = ::pressio::ode::implicitmethods::Euler;
+    using ode_tag	     = ::pressio::ode::implicitmethods::BDF2;
     using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_d_t,decoder_d_t,ode_tag,hessian_t>;
 
     // create the wls state
@@ -118,10 +118,10 @@ int main(int argc, char *argv[]){
     Kokkos::deep_copy(yFinal_h, *yFinal.data());
 
     // get true solution
-    const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, finalTime);
+    const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(numCell, dt, finalTime);
     for (auto i=0; i<numCell; i++){
       std::cout << std::setprecision(15) << yFinal_h(i) << " " << trueY[i] << std::endl;
-      if (std::abs(yFinal_h(i) - trueY[i]) > 1e-8) checkStr = "FAILED";
+      if (std::abs(yFinal_h(i) - trueY[i]) > 1e-10) checkStr = "FAILED";
     }
     std::cout << checkStr << std::endl;
   }
