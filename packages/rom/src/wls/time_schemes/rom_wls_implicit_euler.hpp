@@ -8,7 +8,7 @@ template<typename fom_state_t, typename wls_state_t>
 class ImplicitEuler{
 
 public:
-  static constexpr int state_stencil_size_ = 2;
+  static constexpr int state_stencil_size_ = 1;
   static constexpr bool is_explicit	   = false;
 
 private:

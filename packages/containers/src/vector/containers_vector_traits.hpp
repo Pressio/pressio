@@ -465,6 +465,8 @@ struct traits<Vector<wrapped_type,
   using memory_traits	   = typename wrapped_type::traits::memory_traits;
   using host_mirror_space  = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t      = typename wrapped_type::host_mirror_type;
+  using span_ret_t	   = expressions::SpanExpr<Vector<wrapped_type>, scalar_t>;
+  using span_const_ret_t   = expressions::SpanExpr<const Vector<wrapped_type>, scalar_t>;
 
   static constexpr bool has_host_execution_space =
     (false

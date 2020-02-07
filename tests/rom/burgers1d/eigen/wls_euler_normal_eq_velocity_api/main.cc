@@ -7,6 +7,7 @@
 #include "SOLVERS_EXPERIMENTAL"
 #include "ROM_WLS"
 #include "utils_eigen.hpp"
+#include "ROM_UTILS"
 
 
 int main(int argc, char *argv[]){
@@ -43,21 +44,21 @@ int main(int argc, char *argv[]){
   // -------------------
   // decoder
   // -------------------
-  const int romSize = 11;
+  int romSize = 11;
   const auto phiNative = pressio::rom::test::eigen::readBasis("basis.txt", romSize, fomSize);
   decoder_t decoderObj(phiNative);
 
   // -----------------
   // WLS problem
   // -----------------
-  constexpr int numStepsInWindow = 5;
+  constexpr int numStepsInWindow = 1;
   using ode_tag	     = ::pressio::ode::implicitmethods::Euler;
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
   // create the wls state
   wls_state_t  wlsState(romSize*numStepsInWindow); 
   ::pressio::containers::ops::set_zero(wlsState);
   // create the wls system
-  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow);
+  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize);
 
   // -----------------
   // solver
@@ -73,6 +74,8 @@ int main(int argc, char *argv[]){
   // -----------------
   // solve wls problem
   // -----------------
+  // Initialize coefficients from L2 projection of yFOM_IC
+  wlsSystem.initializeCoeffs<linear_solver_t>(decoderObj,yFOM_IC,yRef);
   constexpr scalar_t finalTime = 0.1;
   constexpr scalar_t dt	       = 0.01;
   constexpr int numWindows     = static_cast<int>(finalTime/dt)/numStepsInWindow;

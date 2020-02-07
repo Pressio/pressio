@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_set_zero.hpp
+// containers_multi_vector_do_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,75 +46,45 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#ifndef CONTAINERS_CONTAINER_OPS_PYBIND11_SET_ZERO_HPP_
-#define CONTAINERS_CONTAINER_OPS_PYBIND11_SET_ZERO_HPP_
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#ifndef CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DO_UPDATE_HPP_
+#define CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DO_UPDATE_HPP_
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include <KokkosBlas1_fill.hpp>
-#endif
-
-//----------------------------------------------------------------------
-//  overloads for setting all entries of vector to zero
-//----------------------------------------------------------------------
+#include "../../multi_vector/containers_multi_vector_meta.hpp"
+#include<KokkosBlas1_axpby.hpp>
 
 namespace pressio{ namespace containers{ namespace ops{
 
-//--------------------------------------------------------------------------
-// enable for wrappers
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------
+//  overloads for computing: MV = a * MV + b * MV1
+// where MV is an tpetra multivector wrapper
+//----------------------------------------------------------------------
 template<
   typename T,
+  typename scalar_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_wrapper<T>::value
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-    and
-    (!::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value and
-     !::pressio::containers::meta::is_matrix_wrapper_kokkos<T>::value)
-#endif
+    containers::meta::is_multi_vector_wrapper_tpetra_block<T>::value
     > * = nullptr
   >
-void set_zero(T & v){
-  v.setZero();
-}
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value or
-    ::pressio::containers::meta::is_matrix_wrapper_kokkos<T>::value
-    > * = nullptr
-  >
-void set_zero(T & o){
-  using scalar_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  KokkosBlas::fill( *o.data(), ::pressio::utils::constants::zero<scalar_t>());
-}
-#endif
-
-
-//--------------------------------------------------------------------------
-// enable for pybind11::array_t
-//--------------------------------------------------------------------------
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<T>::value
-    > * = nullptr
-  >
-void set_zero(T & v)
+void do_update(T & mv, const scalar_t &a,
+	       const T & mv1, const scalar_t &b)
 {
-  // if this is a vector
-  if(v.ndim()==1){
-    using scalar_t = typename T::value_type;
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    const auto vsz = v.size();
-    auto v_proxy = v.mutable_unchecked();
-    for (std::size_t i=0; i<(std::size_t)vsz; ++i){
-      v_proxy(i) = zero;
-    }
-  }
+  throw std::runtime_error("Warning, container::ops::do_update operation between not yet supported for tpetra block"); 
+  //mv.data()->update(b, *mv1.data(), a);
+}
+
+template<
+  typename T,
+  typename scalar_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<T>::value
+    > * = nullptr
+  >
+void do_update(T & mv, const T & mv1, const scalar_t & b)
+{
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+  //mv.data()->update(b, *mv1.data(), zero);
+  throw std::runtime_error("Warning, container::ops::do_update operation between not yet supported for tpetra block"); 
 }
 
 }}}//end namespace pressio::containers::ops

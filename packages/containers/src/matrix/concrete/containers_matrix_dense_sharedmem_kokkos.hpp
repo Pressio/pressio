@@ -92,6 +92,10 @@ public:
     : data_{label, e1, e2}
   {}
 
+  Matrix(size_t e1, size_t e2)
+    : data_{"dummyLabel", e1, e2}
+  {}
+
   Matrix(const this_t & other)
     : data_{other.data_.label(),
 	    other.data_.extent(0),
@@ -109,6 +113,32 @@ public:
     Kokkos::deep_copy(data_, *other.data());
     return *this;
   }
+
+
+  template<
+    typename _wrapped_type = wrapped_type,
+    mpl::enable_if_t<
+      // todo: this is not entirely correct because this would work also
+      // for UMV space, needs to be fixed
+      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
+      > * = nullptr
+    >
+  sc_t & operator () (ord_t i, ord_t j){
+    return data_(i,j);
+  };
+
+  template<
+    typename _wrapped_type = wrapped_type,
+    mpl::enable_if_t<
+      // todo: this is not entirely correct because this would work also
+      // for UMV space, needs to be fixed
+      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
+      > * = nullptr
+    >
+  sc_t const & operator () (ord_t i, ord_t j) const{
+    return data_(i, j);
+  };
+
 
 private:
   wrap_t const * dataImpl() const{

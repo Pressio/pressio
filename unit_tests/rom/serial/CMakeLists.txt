@@ -1,5 +1,4 @@
 
-add_serial_utest(rom_wls_velocity_api_hessian_and_gradient_api rom_wls_velocity_api_hessian_and_gradient_api.cc)
 add_serial_utest(rom_wls_velocity_api_meta rom_wls_velocity_api_meta.cc)
 add_serial_utest(rom_lspg_velocity_api_meta rom_lspg_velocity_api_meta.cc)
 add_serial_utest(rom_lspg_residual_api_meta rom_lspg_residual_api_meta.cc)

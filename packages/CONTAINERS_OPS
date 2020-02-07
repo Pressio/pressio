@@ -86,6 +86,7 @@
 #include "containers/src/ops/epetra/containers_set_zero.hpp"
 
 // Kokkos
+#include "containers/src/ops/kokkos/containers_mvec_dot_mvec.hpp"
 #include "containers/src/ops/kokkos/containers_mvec_dot_self.hpp"
 #include "containers/src/ops/kokkos/containers_mvec_dot_vec.hpp"
 #include "containers/src/ops/kokkos/containers_mvec_prod_vec.hpp"
@@ -107,6 +108,7 @@
 #include "containers/src/ops/tpetra/containers_norms_vector.hpp"
 #include "containers/src/ops/tpetra/containers_vector_do_update.hpp"
 #include "containers/src/ops/tpetra/containers_set_zero.hpp"
+#include "containers/src/ops/tpetra/containers_multi_vector_do_update.hpp"
 
 // Tpetra block
 #include "containers/src/ops/tpetra_block/containers_mvec_dot_mvec.hpp"
@@ -116,6 +118,7 @@
 #include "containers/src/ops/tpetra_block/containers_norms_vector.hpp"
 #include "containers/src/ops/tpetra_block/containers_vector_do_update.hpp"
 #include "containers/src/ops/tpetra_block/containers_set_zero.hpp"
+#include "containers/src/ops/tpetra_block/containers_multi_vector_do_update.hpp"
 
 // pybind11
 #include "containers/src/ops/pybind11/containers_norms_vector.hpp"

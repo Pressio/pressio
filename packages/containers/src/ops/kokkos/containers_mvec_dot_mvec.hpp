@@ -46,69 +46,82 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DOT_MULTI_VECTOR_HPP_
-#define CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DOT_MULTI_VECTOR_HPP_
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#ifndef CONTAINERS_SRC_OPS_KOKKOS_MULTI_VECTOR_DOT_MVEC_HPP_
+#define CONTAINERS_SRC_OPS_KOKKOS_MULTI_VECTOR_DOT_MVEC_HPP_
 
 #include "../../multi_vector/containers_multi_vector_meta.hpp"
+#include "KokkosBlas3_gemm.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
- * multi_vector dot multi vector
+ * A dot B
+ * multi_vector dot mvec: equivalent to doing A^T B
+ * returns a dense container kokkos wrapper matrix
+ * in the form of a containers::Matrix< Kokkos::View<> >
  */
 
-// result is stored into an Eigen dense matrix wrapper
+
 template <
   typename mvec_t,
   typename result_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
-    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    containers::meta::is_multi_vector_wrapper_kokkos<mvec_t>::value and
+    containers::meta::is_matrix_wrapper_kokkos<result_t>::value and
+    std::is_same<
+      typename containers::details::traits<result_t>::execution_space,
+      typename containers::details::traits<mvec_t>::execution_space
+    >::value and
+    std::is_same<
+      typename containers::details::traits<result_t>::layout,
+      typename containers::details::traits<mvec_t>::layout
+    >::value and
+    std::is_same<
+      typename containers::details::traits<result_t>::scalar_t,
+      typename containers::details::traits<mvec_t>::scalar_t
+    >::value
     > * = nullptr
   >
-void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
+void dot(const mvec_t & A, const mvec_t & B, result_t & C)
 {
-  // how many vectors are in mvA and mvB
-  const auto numVecsA = mvA.globalNumVectors();
-  const auto numVecsB = mvB.globalNumVectors();
-  auto mvA_v = mvA.data()->getMultiVectorView();
-  auto mvB_v = mvB.data()->getMultiVectorView();
 
-  // compute dot between every column of A with every col of B
-  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
-  {
-    // colI is a Teuchos::RCP<Vector<...>>
-    const auto colI = mvA_v.getVector(i);
-    for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
-    {
-      const auto colJ = mvB_v.getVector(j);
-      C(i,j) = colI->dot(*colJ);
-    }
-  }
+  using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
+  constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+  constexpr auto one = ::pressio::utils::constants::one<sc_t>();
+  const char ctA = 'T';
+  const char ctB = 'N';
+  KokkosBlas::gemm(&ctA, &ctB, one, *A.data(), *B.data(), zero, *C.data());
 }
 
 
-// result is stored into an Eigen dense DYNAMIC matrix wrapper
 template <
   typename mvec_t,
   typename result_t,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
-    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::details::traits<result_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    containers::meta::is_multi_vector_wrapper_kokkos<mvec_t>::value and
+    containers::meta::is_matrix_wrapper_kokkos<result_t>::value and
+    std::is_same<
+      typename containers::details::traits<result_t>::execution_space,
+      typename containers::details::traits<mvec_t>::execution_space
+    >::value and
+    std::is_same<
+      typename containers::details::traits<result_t>::layout,
+      typename containers::details::traits<mvec_t>::layout
+    >::value and
+    std::is_same<
+      typename containers::details::traits<result_t>::scalar_t,
+      typename containers::details::traits<mvec_t>::scalar_t
+    >::value
     > * = nullptr
   >
 result_t dot(const mvec_t & mvA, const mvec_t & mvB)
 {
-  const auto numVecsA = mvA.globalNumVectors();
-  const auto numVecsB = mvB.globalNumVectors();
-  result_t C(numVecsA, numVecsB);
+  result_t C(mvA.numVectors(), mvB.numVectors());
   dot(mvA, mvB, C);
   return C;
 }
+
 
 /* ----------------------------------------------
  * result_t = an expression
@@ -117,15 +130,25 @@ template <
   typename mvec_t,
   typename result_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
-    ::pressio::containers::meta::is_expression<result_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    containers::meta::is_multi_vector_wrapper_kokkos<mvec_t>::value and
+    containers::meta::is_expression<result_t>::value and
+    std::is_same<
+      typename containers::details::traits<result_t>::scalar_t,
+      typename containers::details::traits<mvec_t>::scalar_t
+    >::value
     > * = nullptr
   >
-void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
+void dot(const mvec_t & A, const mvec_t & B, result_t & C)
 {
-  throw std::runtime_error("Warning, container::ops::dot operation between tpetra_block, tpetra_block, and putting result into expression not yet supported");
+
+  using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
+  constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+  constexpr auto one = ::pressio::utils::constants::one<sc_t>();
+  const char ctA = 'T';
+  const char ctB = 'N';
+  KokkosBlas::gemm( &ctA, &ctB, one, *A.data(), *B.data(), zero, C() );
 }
+
 
 }}}//end namespace pressio::containers::ops
 #endif

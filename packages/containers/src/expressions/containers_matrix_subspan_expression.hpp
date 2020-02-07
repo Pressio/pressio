@@ -135,9 +135,108 @@ public:
   {
     return static_cast<native_t const *>(matObj_.data())->block(rowStart_, colStart_, numRows_, numCols_);
   }
-
 };
 
-}}} //end namespace pressio::containers::expressions
 
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename matrix_t, typename scalar_type>
+struct SubspanExpr<
+  matrix_t, scalar_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_matrix_wrapper_kokkos<matrix_t>::value
+    >
+  >
+  : public BaseExpr< SubspanExpr<matrix_t, scalar_type> >
+{
+
+  using interval_t = std::pair<std::size_t, std::size_t>;
+  using native_t   = typename ::pressio::containers::details::traits<matrix_t>::wrapped_t;
+
+private:
+  matrix_t & matObj_;
+  std::size_t rowStart_;
+  std::size_t colStart_;
+  std::size_t numRows_ = {};
+  std::size_t numCols_ = {};
+  using pair_t = std::pair<std::size_t, std::size_t>;
+
+public:
+  SubspanExpr() = delete;
+  ~SubspanExpr() = default;
+  SubspanExpr(const SubspanExpr & other) = default;
+  SubspanExpr(SubspanExpr && other) = default;
+  SubspanExpr & operator=(const SubspanExpr & other) = default;
+  SubspanExpr & operator=(SubspanExpr && other) = default;
+
+  SubspanExpr(matrix_t & matObjIn,
+	      const interval_t rowRangeIn,
+	      const interval_t colRangeIn)
+    : matObj_(matObjIn)
+  {
+    rowStart_ = std::get<0>(rowRangeIn);
+    colStart_ = std::get<0>(colRangeIn);
+
+    assert( rowStart_ >= 0 and rowStart_ < matObjIn.rows() );
+    assert( std::get<1>(rowRangeIn) <= matObjIn.rows() );
+    assert( colStart_ >= 0 and colStart_ < matObjIn.cols() );
+    assert( std::get<1>(colRangeIn) <= matObjIn.cols() );
+
+    // here the ranges are exclusive of the last index (like Kokkos and Python)
+    // so the indices of the last row and col included are:
+    const auto endRow = std::get<1>(rowRangeIn)-1;
+    const auto endCol = std::get<1>(colRangeIn)-1;
+    assert(endRow >= rowStart_);
+    assert(endCol >= colStart_);
+
+    // # of rows and cols of the subspan
+    numRows_ = endRow - rowStart_ + 1;
+    numCols_ = endCol - colStart_ + 1;
+  }
+
+  std::size_t const & rows() const{ return numRows_; }
+  std::size_t const & cols() const{ return numCols_; }
+
+  scalar_type & operator()(const std::size_t & i, const std::size_t & j)
+  {
+    assert(i < numRows_);
+    assert(j < numCols_);
+    return matObj_(rowStart_+i, colStart_+j);
+  }
+
+  scalar_type const & operator()(const std::size_t & i, const std::size_t & j) const
+  {
+    assert(i < numRows_);
+    assert(j < numCols_);
+    return matObj_(rowStart_+i, colStart_+j);
+  }
+
+  auto operator()()
+    -> decltype
+    (
+     Kokkos::subview(*matObj_.data(), std::declval<pair_t>(), std::declval<pair_t>())
+     )
+  {
+    return Kokkos::subview( *matObj_.data(),
+			    std::make_pair(rowStart_, rowStart_+numRows_),
+			    std::make_pair(colStart_, colStart_+numCols_));
+  }
+
+
+  // auto operator()()
+  //   -> decltype(matObj_.data()->block(rowStart_, colStart_, numRows_, numCols_))
+  // {
+  //   return matObj_.data()->block(rowStart_, colStart_, numRows_, numCols_);
+  // }
+
+  // auto operator()() const
+  //   -> decltype( std::declval<const native_t>().block(rowStart_, colStart_, numRows_, numCols_))
+  // {
+  //   return static_cast<native_t const *>(matObj_.data())->block(rowStart_, colStart_, numRows_, numCols_);
+  // }
+};
+#endif
+
+
+}}} //end namespace pressio::containers::expressions
 #endif
