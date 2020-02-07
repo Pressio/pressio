@@ -55,6 +55,8 @@
 
 #include "containers/src/ops/containers_vector_deep_copy.hpp"
 
+// arbitrary
+#include "containers/src/ops/arbitrary/containers_set_zero.hpp"
 
 // Eigen
 #include "containers/src/ops/eigen/containers_eigen_ops_helper_impl.hpp"

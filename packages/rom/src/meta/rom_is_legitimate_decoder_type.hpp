@@ -62,7 +62,10 @@ struct is_legitimate_decoder_type<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::mpl::publicly_inherits_from<
-      T, ::pressio::rom::DecoderBase<T, typename T::jacobian_t>
+      T,
+      ::pressio::rom::DecoderBase<
+	T, typename T::jacobian_t, typename T::rom_state_t, typename T::fom_state_t
+	>
       >::value
     >
   > : std::true_type{};

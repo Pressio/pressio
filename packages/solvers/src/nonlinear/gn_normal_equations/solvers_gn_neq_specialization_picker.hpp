@@ -56,6 +56,7 @@
 #include "../../meta/solvers_is_legitimate_line_search_tag.hpp"
 #include "../../meta/solvers_is_legitimate_convergence_tag.hpp"
 #include "../../meta/solvers_is_legitimate_residual_observer_when_converged.hpp"
+#include "solvers_gn_neq_custom_ops_detection_helper.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -90,6 +91,7 @@ struct ObserverTypesSupported<T, T>{
 
 
 
+
 template <
   bool hasDefaultApi,
   typename system_t,
@@ -99,6 +101,7 @@ template <
   typename convergence_t,
   typename ... Args>
 struct GNNEQSpecializeApi;
+
 
 template <
   typename system_t,
@@ -148,9 +151,32 @@ struct GNNEQSpecializeApi<
   but cannot pass multiple types with individual observation methods");
   using observer_t = typename obs_supported_t::type;
 
+
+  /* --------------------------------------------------------- */
+  // check if the sequence contains a valid type for custom ops
+  /* There are three functionalities needed for GN normal-eq:
+   * 1. computing the norm of the residual and gradient
+   * 2. computing the hessian J^T * J
+   * 3. computing the gradient J^T * R
+   *
+   * For 2., remember that the system's jacobian can be either a matrix or a mv wrapper
+   * and, depending on that, we do things differently when we have to compute hessian.
+   * Specifically, what we do is the following (see also hessian_helper_policy inside helper_policies)
+   * 1. if the jacobjan is a matrix wrapper, we compute hessian calling: ops::product
+   * 2. if the jacobjan is a mv wrapper, we compute hessian calling: ops::self_dot
+   *
+   * so when we detect custom ops, we need to differentiate based on jacobian's type
+   */
+  using gradient_t = typename system_t::state_type; // the gradient is same type as state
+  using residual_t = typename system_t::residual_type;
+  using jacobian_t = typename system_t::jacobian_type;
+  using ud_ops_t   = typename GaussNewtonNEqCustomOpsDetectionHelper<gradient_t, residual_t, jacobian_t,
+								     hessian_t,  Args...>::type;
+
   // the class type
   using type = ::pressio::solvers::iterative::impl::GaussNewtonNormalEqResJacApi<
-    system_t, hessian_t, linear_solver_t, scalar_t, line_search_t, convergence_t, observer_t>;
+    system_t, hessian_t, linear_solver_t, scalar_t, line_search_t,
+    convergence_t, observer_t, ud_ops_t>;
 };
 
 

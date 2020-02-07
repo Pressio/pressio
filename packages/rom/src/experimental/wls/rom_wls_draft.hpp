@@ -204,7 +204,7 @@ struct DefaultWlsTypeGeneratorResidualApi{
   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // fom_states_data: is used to store the fom states, use a custom class for this (see top of this file)
   using fom_states_container_t	= WlsFomStatesContainer<n, fom_state_t, fom_state_reconstr_t>;

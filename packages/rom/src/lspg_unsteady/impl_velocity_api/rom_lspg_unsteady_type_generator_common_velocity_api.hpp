@@ -125,7 +125,7 @@ struct LSPGUnsteadyCommonTypesVelocityApi<
   using lspg_matrix_t		= decoder_jac_t;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // total num of fom states (i.e. stencil size plus the state at current step) needed
   static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;
@@ -200,7 +200,7 @@ The type detected does not meet the requirements.");
   using lspg_matrix_t		= decoder_jac_t;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // total num of fom states (i.e. stencil size plus the state at current step) needed
   static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;

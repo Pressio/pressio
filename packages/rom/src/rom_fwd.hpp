@@ -53,12 +53,44 @@
 
 namespace pressio{ namespace rom{
 
+/*--- decoder ---*/
+namespace impl{
+
 template <
+  typename matrix_type,
+  typename rom_state_type,
+  typename fom_state_type
+  >
+class LinearDecoderWithPressioOps;
+
+template <
+  typename matrix_type,
+  typename rom_state_type,
   typename fom_state_type,
-  std::size_t n,
-  typename reconstuctor_type,
-  typename enable = void>
-class FomStatesStaticContainer;
+  typename ops_type
+  >
+class LinearDecoderWithCustomOps;
+
+template <
+  typename matrix_type,
+  typename rom_state_type,
+  typename fom_state_type,
+  typename ... Args>
+struct LinearDecoderSpecializer;
+
+}// namespace pressio::rom::impl
+
+template <
+  typename matrix_type,
+  typename rom_state_type,
+  typename fom_state_type,
+  typename ... Args>
+using LinearDecoder =
+  typename impl::LinearDecoderSpecializer<matrix_type,
+					  rom_state_type,
+					  fom_state_type,
+					  Args...>::type;
+
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
@@ -67,6 +99,17 @@ template <
   typename enable = void>
 struct PyLinearDecoder;
 #endif
+
+
+/*--- others ---*/
+template <
+  typename fom_state_type,
+  std::size_t n,
+  typename reconstuctor_type,
+  typename enable = void>
+class FomStatesStaticContainer;
+
+
 
 /*--- decorators ---*/
 namespace decorator{

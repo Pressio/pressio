@@ -50,6 +50,8 @@
 #define CONTAINERS_MULTI_VECTOR_META_HPP_
 
 #include "./meta/containers_is_multi_vector_wrapper.hpp"
+#include "./meta/containers_is_multi_vector_wrapper_arbitrary.hpp"
+
 #include "./meta/containers_is_multi_vector_wrapper_eigen.hpp"
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS

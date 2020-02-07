@@ -53,6 +53,7 @@
 #include "variadic/at.hpp"
 #include "variadic/find_if_unary_pred.hpp"
 #include "variadic/find_if_binary_pred.hpp"
+#include "variadic/find_if_ternary_pred.hpp"
 #include "variadic/find_if_quaternary_pred.hpp"
 #include "variadic/find_if_quinary_pred.hpp"
 #include "variadic/any_of.hpp"

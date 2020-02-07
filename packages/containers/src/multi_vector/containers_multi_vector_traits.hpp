@@ -95,6 +95,9 @@ struct traits<
 
   using wrapped_t = wrapped_type;
   using derived_t = MultiVector<wrapped_t>;
+  using scalar_t  = typename wrapped_type::value_type;
+  using value_t   = typename wrapped_type::value_type;
+  using size_t   = typename wrapped_type::size_type;
 
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Arbitrary;

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_linear_decoder.hpp
+// rom_is_legitimate_custom_ops_for_linear_decoder.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,46 +46,36 @@
 //@HEADER
 */
 
-#ifndef ROM_LINEAR_DECODER_HPP_
-#define ROM_LINEAR_DECODER_HPP_
+#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
+#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
 
-#include "rom_decoder_base.hpp"
-#include "../rom_fwd.hpp"
+#include "rom_has_static_method_product_three_args.hpp"
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace meta {
 
-template <typename matrix_type>
-struct LinearDecoder
-  : public DecoderBase<LinearDecoder<matrix_type>, matrix_type>{
+template<
+  typename T,
+  typename mat_type, typename rom_state_type, typename fom_state_type,
+  typename enable = void
+  >
+struct is_legitimate_custom_ops_for_linear_decoder
+  : std::false_type{};
 
-  using this_t	    = LinearDecoder<matrix_type>;
-  using base_t	    = DecoderBase<this_t, matrix_type>;
-  using jacobian_t  = matrix_type;
+template <
+  typename T,
+  typename mat_type, typename rom_state_type, typename fom_state_type
+  >
+struct is_legitimate_custom_ops_for_linear_decoder<
+  T, mat_type, rom_state_type, fom_state_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::rom::meta::has_static_method_product_three_args<
+      T,
+      typename ::pressio::containers::details::traits<mat_type>::wrapped_t,
+      rom_state_type,
+      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
 
-private:
-  friend base_t;
-  matrix_type phi_ = {};
-
-public:
-  LinearDecoder() = delete;
-
-  LinearDecoder(const jacobian_t & matIn)
-    : phi_(matIn){}
-
-  ~LinearDecoder() = default;
-
-private:
-  template <typename operand_t, typename result_t>
-  void applyMappingImpl(const operand_t & operandObj,
-			result_t & resultObj) const{
-    ::pressio::containers::ops::product(phi_, operandObj, resultObj);
-  }
-
-  const jacobian_t & getReferenceToJacobianImpl() const{
-    return phi_;
-  }
-
-};//end class
-
-}}//end namespace pressio::rom
+}}} // namespace pressio::rom::meta
 #endif

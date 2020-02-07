@@ -17,13 +17,13 @@ int main(int argc, char *argv[]){
   using fom_native_state_t = typename fom_t::state_type;
   using fom_state_t        = ::pressio::containers::Vector<fom_native_state_t>;
 
-  using eig_dyn_mat	   = Eigen::Matrix<scalar_t, -1, -1>;
-  using decoder_jac_t	   = pressio::containers::MultiVector<eig_dyn_mat>;
-  using decoder_t	   = pressio::rom::LinearDecoder<decoder_jac_t>;
+  using eig_dyn_vec    = Eigen::Matrix<scalar_t, -1, 1>;
+  using eig_dyn_mat    = Eigen::Matrix<scalar_t, -1, -1>;
 
-  using eig_dyn_vec	   = Eigen::Matrix<scalar_t, -1, 1>;
-  using wls_state_t	   = pressio::containers::Vector<eig_dyn_vec>;
+  using wls_state_t    = pressio::containers::Vector<eig_dyn_vec>;
   using hessian_t          = pressio::containers::Matrix<eig_dyn_mat>;
+  using decoder_jac_t	   = pressio::containers::MultiVector<eig_dyn_mat>;
+  using decoder_t	   = pressio::rom::LinearDecoder<decoder_jac_t, wls_state_t, fom_state_t>;
 
   constexpr auto zero = pressio::utils::constants::zero<scalar_t>();
 
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]){
   // -----------------
   const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
   fom_state_t yFinal(fomSize);
-  using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
   fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
   fomStateReconstructor(wlsCurrentState, yFinal);
 
