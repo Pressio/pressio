@@ -1,7 +1,7 @@
 
 #ifndef ROM_WLS_HESSIAN_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
 #define ROM_WLS_HESSIAN_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
-
+#include "rom_wls_preconditioners_impl.hpp"
 /*
 This header file contains the class object used for computing the hessian and gradients in the WLS system.
 The hessian_gradient policy is responsible for assembling Jw^T Jw and J^T rw,
@@ -32,7 +32,9 @@ void addToGradient(const mat_t & A,
 
 
 
-template<typename fom_type, typename decoder_t>
+template<typename fom_type, 
+         typename decoder_t, 
+         typename preconditioner_t = typename ::pressio::rom::wls::preconditioners::impl::NoPreconditioner>
 class HessianGradientSequentialPolicy
 {
 
@@ -41,7 +43,6 @@ private:
   using fom_native_state_t      = typename fom_type::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using decoder_jac_t           = typename decoder_t::jacobian_t;
-
   // currently have this as a vector of jacobians, can change to container
   /* For now, set wls_jacs_t to be a vector of item type = decoder_jac_t
    * this is a similar assumption as done for lspg
@@ -59,7 +60,7 @@ private:
   int time_stencil_size;
   const decoder_jac_t & phi_;
   const fom_type & appObj_;
-
+  const preconditioner_t Preconditioner;
 
 
   // reconstructs yFOM_current_ from the stepNum entry of wlsState
@@ -87,6 +88,7 @@ private:
                                            wlsJacs_[time_stencil_size - i - 1],
                                            phi_,
                                            t, dt, stepNum, i);
+      Preconditioner(appObj_,yFOM_current_,wlsJacs_[time_stencil_size - i - 1],t);
     }
   }
 
@@ -118,6 +120,7 @@ private:
       int step;
       step = step_s + n;
       timeSchemeObj.time_discrete_residual(appObj_, yFOM_current_, residual_, t, dt, step);
+      Preconditioner(appObj_,yFOM_current_,residual_,t);
       rnorm += ::pressio::containers::ops::norm2(residual_);
       computeJacobiansOverStencil(timeSchemeObj,timeStencilSize,step,t,dt);
   }
@@ -171,6 +174,7 @@ public:
     timeSchemeObj.updateStatesFirstStep(wlsStateIC, fomStateReconstrObj);
     //compute the time discrete residual
     timeSchemeObj.time_discrete_residual(appObj_, yFOM_current_, residual_, ts, dt, step);
+    Preconditioner(appObj_,yFOM_current_,residual_,t);
     //increment the norm
     rnorm += ::pressio::containers::ops::norm2(residual_);
 
