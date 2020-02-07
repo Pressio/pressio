@@ -110,6 +110,23 @@ result_t dot(const mvec_t & mvA, const mvec_t & mvB)
   return C;
 }
 
+/* ----------------------------------------------
+ * result_t = an expression
+ ---------------------------------------------- */
+template <
+  typename mvec_t,
+  typename result_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
+    ::pressio::containers::meta::is_expression<result_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    > * = nullptr
+  >
+void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
+{
+  std::cout << "Warning, container::ops::dot operation between tpetra_block, tpetra_block, and putting result into expression not yet supported" << std::endl;
+}
+
 }}}//end namespace pressio::containers::ops
 #endif
 #endif
