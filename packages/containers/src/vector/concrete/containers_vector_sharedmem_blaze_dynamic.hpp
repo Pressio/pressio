@@ -50,10 +50,9 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
-#include "../../shared_base/containers_container_resizable_base.hpp"
-#include "../../shared_base/containers_container_subscriptable_base.hpp"
-#include "../base/containers_vector_sharedmem_base.hpp"
+#include "../../base/containers_container_base.hpp"
+#include "../../base/containers_container_sharedmem_base.hpp"
+#include "../../base/containers_vector_sharedmem_base.hpp"
 
 namespace pressio{ namespace containers{
 
@@ -64,11 +63,9 @@ class Vector<wrapped_type,
       >
     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
-    public VectorSharedMemBase< Vector<wrapped_type> >,
-    public ContainerResizableBase<Vector<wrapped_type>, 1>,
-    public ContainerSubscriptable1DBase< Vector<wrapped_type>,
-     typename details::traits<Vector<wrapped_type>>::scalar_t,
-     typename details::traits<Vector<wrapped_type>>::ordinal_t>{
+    public ContainerSharedMemBase< Vector<wrapped_type> >,
+    public VectorSharedMemBase< Vector<wrapped_type> >
+{
 
   using this_t = Vector<wrapped_type>;
   using mytraits = typename details::traits<this_t>;
@@ -131,32 +128,18 @@ private:
     return &data_;
   }
 
-  void putScalarImpl(sc_t value) {
-    for( typename
-	  blaze::DynamicVector<ord_t>::Iterator it=data_.begin();
-	 it!=data_.end(); ++it ) {
-      it->value() = value;
-    }
-  }
-
   bool emptyImpl() const{
     return this->size()==0 ? true : false;
   }
 
-  ord_t sizeImpl() const {
+  ord_t extentImpl() const {
     return data_.size();
   }
 
-  void resizeImpl(ord_t val){
-    data_.resize(val);
-  }
-
-
 private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend ContainerSharedMemBase< this_t >;
   friend VectorSharedMemBase< this_t >;
-  friend ContainerResizableBase<this_t, 1>;
-  friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
 
 private:
   wrap_t data_ = {};

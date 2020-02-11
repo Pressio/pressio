@@ -71,13 +71,13 @@ public:
   ~ModGramSchmidtMVEpetra() = default;
 
   void computeThinOutOfPlace(matrix_t & A) {
-    auto nVecs = A.globalNumVectors();
-    auto & ArowMap = A.getDataMap();
+    auto nVecs = A.numVectors();
+    auto & ArowMap = A.data()->Map();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
 
     sc_t rkkInv = zero_;
-    for (auto k=0; k<A.globalNumVectors(); k++)
+    for (auto k=0; k<A.numVectors(); k++)
     {
       auto & ak = (*A.data())(k);
       ak->Norm2(&localR_(k,k));
@@ -86,7 +86,7 @@ public:
       auto & qk = (*Qmat_->data())(k);
       qk->Update( rkkInv, *ak, zero_ );
 
-      for (auto j=k+1; j<A.globalNumVectors(); j++){
+      for (auto j=k+1; j<A.numVectors(); j++){
 	auto & aj = (*A.data())(j);
 	qk->Dot(*aj, &localR_(k,j));
 	aj->Update(-localR_(k,j), *qk, one_);
@@ -119,7 +119,7 @@ public:
 
 private:
   void createLocalRIfNeeded(int newsize){
-    if (localR_.rows()!=newsize or localR_.cols()!=newsize){
+    if (localR_.extent(0)!=newsize or localR_.extent(1)!=newsize){
       localR_ = R_nat_t(newsize, newsize);
       ::pressio::containers::ops::set_zero(localR_);
     }
@@ -127,7 +127,7 @@ private:
 
   template <typename map_t>
   void createQIfNeeded(const map_t & map, int cols){
-    if (!Qmat_ or !Qmat_->hasRowMapEqualTo(map) )
+    if (!Qmat_ or !Qmat_->data()->Map().SameAs(map))
       Qmat_ = std::make_shared<Q_t>(map, cols);
   }
 

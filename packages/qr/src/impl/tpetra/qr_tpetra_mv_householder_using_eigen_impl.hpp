@@ -97,9 +97,9 @@ public:
 
   void computeThinOutOfPlace(matrix_t & A)
   {
-    auto rows = A.globalLength();
-    auto cols = A.globalNumVectors();
-    auto ArowMap = A.getRCPDataMap();
+    auto rows = A.extent(0);
+    auto cols = A.numVectors();
+    auto ArowMap = A.data()->getMap();
     Teuchos::RCP<const Teuchos::Comm<int> > comm =
       Teuchos::rcp (new Teuchos::MpiComm<int> (MPI_COMM_SELF));
 

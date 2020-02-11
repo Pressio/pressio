@@ -73,8 +73,10 @@ template <
 {
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
-  jac.scale(cf);
-  jac.addToDiagonal(cn);
+  // jac.scale(cf);
+  // jac.addToDiagonal(cn);
+  ::pressio::containers::ops::scale(jac, cf);
+  ::pressio::containers::ops::addToDiagonal(jac, cn);
 }
 
 
@@ -129,8 +131,10 @@ void time_discrete_jacobian(jacobian_type & jac, const scalar_type & dt)
   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   using namespace ::pressio::ode::constants;
-  jac.scale(cf);
-  jac.addToDiagonal(cn);
+  // jac.scale(cf);
+  // jac.addToDiagonal(cn);
+  ::pressio::containers::ops::scale(jac, cf);
+  ::pressio::containers::ops::addToDiagonal(jac, cn);
 }
 
 

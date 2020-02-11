@@ -91,7 +91,7 @@ void dot(const mvec_type & mvA,
   */
 
   // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectorsGlobal();
   auto * mvNatData = mvA.data();
   const auto * vecNatData = vecB.data();
   for (size_t i=0; i<(size_t)numVecs; i++){
@@ -121,9 +121,8 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  const auto numVecs = mvA.globalNumVectors();
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  const auto numVecs = mvA.numVectorsGlobal();
+  result.data()->resize(numVecs);
   dot(mvA, vecB, result.data()->values());
 }
 
@@ -138,20 +137,20 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_epetra<vec_type>::value and
-    containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
+    containers::meta::is_dynamic_vector_wrapper_eigen<result_vec_type>::value and
     containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
 						       vec_type,
-						       result_vec_type>::value and
-    containers::details::traits<result_vec_type>::is_dynamic
+						       result_vec_type>::value
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  const auto numVecs = mvA.globalNumVectors();
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  const auto numVecs = mvA.numVectorsGlobal();
+  if ( result.extent(0) != numVecs ){
+    result.data()->resize(numVecs);
+  }
   dot(mvA, vecB, result.data()->data());
 }
 
@@ -177,7 +176,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  assert(result.size() == mvA.globalNumVectors());
+  assert(result.extent(0) == mvA.numVectorsGlobal());
   dot(mvA, vecB, result.data()->data());
 }
 
@@ -198,7 +197,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 std::vector<typename
 	 details::traits<mvec_type>::scalar_t> & result){
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectorsGlobal();
   if ( result.size() != (size_t)numVecs )
     result.resize(numVecs);
   dot(mvA, vecB, result.data());
@@ -221,7 +220,7 @@ std::vector<typename details::traits<mvec_type>::scalar_t>
 dot(const mvec_type & mvA, const vec_type & vecB)
 {
   using sc_t = typename details::traits<mvec_type>::scalar_t;
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectorsGlobal();
   using res_t = std::vector<sc_t>;
 
   res_t res(numVecs);

@@ -53,8 +53,8 @@ struct EulerLSPGWithResidualApi
     yRef.setConstant(1);
 
     // define ROM state
-    yROM_.resize(romSize);
-    yROM_.putScalar(0.0);
+    ::pressio::containers::ops::resize(yROM_, romSize);
+    ::pressio::containers::ops::fill(yROM_, 0.0);
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::Arbitrary;
@@ -93,7 +93,7 @@ struct EulerLSPGWithResidualApi
     // has to match the FOM solution obtained with euler, same time-step, for 10 steps
     // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
-    for (auto i=0; i<yFomFinal.size(); i++){
+    for (auto i=0; i<yFomFinal.extent(0); i++){
       if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
         checkStr = "FAILED";
     }
@@ -146,8 +146,8 @@ struct EulerLSPGWithVelocityApi
     yRef.setConstant(1);
 
     // define ROM state
-    yROM_.resize(romSize);
-    yROM_.putScalar(0.0);
+    ::pressio::containers::ops::resize(yROM_, romSize);
+    ::pressio::containers::ops::fill(yROM_, 0.0);
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::Euler;
@@ -182,7 +182,7 @@ struct EulerLSPGWithVelocityApi
     // has to match the FOM solution obtained with euler, same time-step, for 10 steps
     // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
-    for (auto i=0; i<yFomFinal.size(); i++){
+    for (auto i=0; i<yFomFinal.extent(0); i++){
       if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
         checkStr = "FAILED";
     }
@@ -205,7 +205,7 @@ int main(int argc, char *argv[]){
 
   std::cout << "check that gen coords match" << std::endl;
   // check the reconstructed rom state
-  for (auto i=0; i<veloRomSol.size(); i++){
+  for (auto i=0; i<veloRomSol.extent(0); i++){
     std::cout << std::setprecision(14)
   	      << veloRomSol[i]
   	      << " "

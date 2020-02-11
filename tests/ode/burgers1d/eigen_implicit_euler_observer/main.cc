@@ -33,7 +33,7 @@ struct observer{
   }
 
   void storeInColumn(const state_t & y, int j){
-    for (auto i=0; i<y.size(); i++)
+    for (auto i=0; i<y.extent(0); i++)
       A_(i,j) = y(i);
   }
   size_t getCount() const{ return count_;}

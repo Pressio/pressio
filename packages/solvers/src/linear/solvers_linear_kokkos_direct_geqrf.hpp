@@ -145,16 +145,17 @@ private:
   >
   void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y)
   {
-    assert(A.rows() == b.size() );
-    assert(A.cols() == y.size() );
     // gerts is for square matrices
-    assert(A.rows() == A.cols() );
+    assert(A.extent(0) == A.extent(1));
+
+    assert(A.extent(0) == b.extent(0) );
+    assert(A.extent(1) == y.extent(0) );
 
     // only one rhs because this is only enabled if T is a vector wrapper
     constexpr int nRhs = 1;
 
     // just use n, since rows == cols
-    const auto n = A.rows();
+    const auto n = A.extent(0);
 
     // to store the return code of the function
     int info = 0;

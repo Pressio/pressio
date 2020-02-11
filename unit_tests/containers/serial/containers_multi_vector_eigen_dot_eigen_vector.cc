@@ -25,14 +25,14 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   
   auto c1 = pressio::containers::ops::dot(A,b);
   std::cout << *c1.data() << std::endl;
-  ASSERT_EQ(c1.size(), 3);
+  ASSERT_EQ(c1.extent(0), 3);
   EXPECT_DOUBLE_EQ( c1(0), 6.);
   EXPECT_DOUBLE_EQ( c1(1), 6.);
   EXPECT_DOUBLE_EQ( c1(2), 6.);
   
   pressio::containers::Vector<Eigen::VectorXd> c(3);
   pressio::containers::ops::dot(A,b,c);
-  for (auto i=0; i<c1.size(); i++)
+  for (auto i=0; i<c1.extent(0); i++)
     EXPECT_DOUBLE_EQ( c(i), c1(i));
   
 }
@@ -63,7 +63,7 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   eig_v_st a;
   pressio::containers::Vector<eig_v_st> c(a);
   pressio::containers::ops::dot(A,b,c);
-  ASSERT_EQ(c.size(), 3);
+  ASSERT_EQ(c.extent(0), 3);
   EXPECT_DOUBLE_EQ( c(0), 6.);
   EXPECT_DOUBLE_EQ( c(1), 6.);
   EXPECT_DOUBLE_EQ( c(2), 6.);  

@@ -91,12 +91,12 @@ public:
   }
 
   void computeThinOutOfPlace(matrix_t & A){
-    auto rows = A.globalLength();
-    auto cols = A.globalNumVectors();
-    auto & ArowMap = A.getDataMap();
+    auto rows = A.extent(0);
+    auto cols = A.numVectors();
+    auto & ArowMap = A.data()->Map();
 
     // convert it to replicated eptra matrix
-    Epetra_LocalMap locMap(rows, 0, A.commCRef());
+    Epetra_LocalMap locMap(rows, 0, A.data()->Comm());
     Epetra_Import importer(locMap, ArowMap);
     matrix_t A2(locMap, cols);
     A2.data()->Import(*A.data(), importer, Insert);

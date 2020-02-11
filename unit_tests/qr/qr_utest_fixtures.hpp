@@ -58,7 +58,7 @@ struct eigenDenseR9Fixture
   }
 
   void fillVector(){
-    v_->putScalar(1.0);
+    pressio::containers::ops::fill(*v_.get(), 1.);
   }
 
   void checkQFactor(const nat_mat_t & Q){
@@ -137,15 +137,15 @@ struct epetraR9Fixture
   }
 
   void fillVector(){
-    v_->putScalar(1.0);
+    pressio::containers::ops::fill(*v_.get(), 1.);
   }
 
   void checkQFactor(const mymvec_t & Q){
-    EXPECT_EQ( Q.globalLength(), ::pressio::qr::test::numRows_);
-    EXPECT_EQ( Q.globalNumVectors(), ::pressio::qr::test::numVectors_);
+    EXPECT_EQ( Q.extent(0), ::pressio::qr::test::numRows_);
+    EXPECT_EQ( Q.numVectors(), ::pressio::qr::test::numVectors_);
 
     for (auto i=0; i<localSize_; i++)
-      for (auto j=0; j<Q.localNumVectors(); j++){
+      for (auto j=0; j<Q.numVectorsLocal(); j++){
 	EXPECT_NEAR( std::abs(Q(i,j)),
 		     std::abs(gold_.trueQ_(i+shift_,j)),
 		     1e-6);
@@ -238,13 +238,14 @@ struct tpetraR9Fixture
   }
 
   void fillVector(){
-    v_->putScalar(1.0);
+    pressio::containers::ops::fill(*v_.get(), 1.);
   }
 
-  void checkQFactor(const mymvec_t & Q){
-    EXPECT_EQ( Q.globalLength(), ::pressio::qr::test::numRows_);
-    EXPECT_EQ( Q.globalNumVectors(), ::pressio::qr::test::numVectors_);
-    for (auto j=0; j<Q.localNumVectors(); j++){
+  void checkQFactor(const mymvec_t & Q)
+  {
+    EXPECT_EQ( Q.extent(0), ::pressio::qr::test::numRows_);
+    EXPECT_EQ( Q.numVectors(), ::pressio::qr::test::numVectors_);
+    for (auto j=0; j<Q.numVectorsLocal(); j++){
       auto colData = Q.data()->getData(j);
       for (auto i=0; i<localSize_; i++){
 	EXPECT_NEAR( std::abs(colData[i]),

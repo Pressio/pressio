@@ -158,7 +158,10 @@ private:
 
     // compute J^T J and J^T R in one shot
     sys.computeHessianAndGradient(stateInOut, hessian_, gradient_, normType_, normResidual_);
-    gradient_.scale(negOne);
+
+    ::pressio::containers::ops::scale(gradient_, negOne);
+    // gradient_.scale(negOne);
+
     normResidual0_ = normResidual_;
 
     // compute the initial norm of y (the state)
@@ -215,7 +218,8 @@ private:
 
       // compute hessian and gradient
       sys.computeHessianAndGradient(stateInOut, hessian_, gradient_, normType_, normResidual_);
-      gradient_.scale(negOne);
+      ::pressio::containers::ops::scale(gradient_, negOne);
+      // gradient_.scale(negOne);
     }//loop
   }
 };

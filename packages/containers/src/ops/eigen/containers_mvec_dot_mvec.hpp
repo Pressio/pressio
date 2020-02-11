@@ -72,13 +72,13 @@ template <
 void dot(const mvec_t & A, const mvec_t & B, result_t & C)
 {
   const auto nAcols = A.numVectors();
-  const auto nArows = A.length();
+  const auto nArows = A.extent(0);
   const auto nBcols = B.numVectors();
-  const auto nBrows = B.length();
+  const auto nBrows = B.extent(0);
   assert(nArows == nBrows);
 
   // since C is dynamic, I can resize if needed
-  if(C.rows() != nAcols || C.cols() != nBcols)
+  if(C.extent(0) != nAcols || C.extent(1) != nBcols)
     C.data()->resize( nAcols, nBcols );
 
   *C.data() = A.data()->transpose() * (*B.data());
@@ -127,12 +127,12 @@ void dot(const mvec_t & A, const mvec_t & B, expr_t & exprObj)
 		 "MV dot MV for Eigen wrappers: the MV and expr types need to have matching scalar types");
 
   const auto nAcols = A.numVectors();
-  const auto nArows = A.length();
+  const auto nArows = A.extent(0);
   const auto nBcols = B.numVectors();
-  const auto nBrows = B.length();
+  const auto nBrows = B.extent(0);
   assert(nArows == nBrows);
 
-  assert(exprObj.rows()==nAcols and exprObj.cols()==nBcols);
+  assert(exprObj.extent(0)==nAcols and exprObj.extent(1)==nBcols);
   exprObj() = A.data()->transpose() * (*B.data());
 }
 

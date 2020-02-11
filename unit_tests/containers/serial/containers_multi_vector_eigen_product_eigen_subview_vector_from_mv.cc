@@ -27,7 +27,7 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   {
     const auto colVec = pressio::containers::viewColumnVector(b, 0);
     auto c1 = pressio::containers::ops::product(A, colVec);
-    ASSERT_EQ( c1.size(), 6 );
+    ASSERT_EQ( c1.extent(0), 6 );
     EXPECT_DOUBLE_EQ( c1(0), 6.);
     EXPECT_DOUBLE_EQ( c1(1), 6.);
     EXPECT_DOUBLE_EQ( c1(2), 1.);
@@ -37,14 +37,14 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
 
     pressio::containers::Vector<Eigen::VectorXd> c(6);
     pressio::containers::ops::product(A,colVec,c);
-    for (auto i=0; i<c1.size(); i++)
+    for (auto i=0; i<c1.extent(0); i++)
       EXPECT_DOUBLE_EQ( c(i), c1(i));
   }
 
   {
     const auto colVec = pressio::containers::viewColumnVector(b, 1);
     auto c1 = pressio::containers::ops::product(A, colVec);
-    ASSERT_EQ( c1.size(), 6 );
+    ASSERT_EQ( c1.extent(0), 6 );
     EXPECT_DOUBLE_EQ( c1(0), 12.);
     EXPECT_DOUBLE_EQ( c1(1), 12.);
     EXPECT_DOUBLE_EQ( c1(2), 2.);
@@ -54,7 +54,7 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
 
     pressio::containers::Vector<Eigen::VectorXd> c(6);
     pressio::containers::ops::product(A,colVec,c);
-    for (auto i=0; i<c1.size(); i++)
+    for (auto i=0; i<c1.extent(0); i++)
       EXPECT_DOUBLE_EQ( c(i), c1(i));
   }
 }

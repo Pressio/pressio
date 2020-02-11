@@ -72,10 +72,10 @@ template <
 void dot_self(const mvec_t & A, result_t & C)
 {
   // how many vectors are in A
-  const auto numVecsA = A.globalNumVectors();
+  const auto numVecsA = A.numVectors();
   const auto & Adata = *A.data();
-  assert(C.rows() == numVecsA);
-  assert(C.cols() == numVecsA);
+  assert(C.extent(0) == numVecsA);
+  assert(C.extent(1) == numVecsA);
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
@@ -101,7 +101,7 @@ template <
   >
 result_t dot_self(const mvec_t & mvA)
 {
-  const auto numVecsA = mvA.globalNumVectors();
+  const auto numVecsA = mvA.numVectors();
   result_t C(numVecsA, numVecsA);
   dot_self(mvA, C);
   return C;

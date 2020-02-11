@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_MATRIX_CONCRETE_MATRIX_ARBITRARY_HPP_
 #define CONTAINERS_MATRIX_CONCRETE_MATRIX_ARBITRARY_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
+#include "../../base/containers_container_base.hpp"
 
 namespace pressio{ namespace containers{
 
@@ -102,6 +102,7 @@ public:
   sc_t & operator()(size_t i, size_t j){
     return data_(i, j);
   };
+
   sc_t const & operator()(size_t i, size_t j) const{
     return data_(i, j);
   };

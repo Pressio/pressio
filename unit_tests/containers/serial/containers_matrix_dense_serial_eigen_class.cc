@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 #include "CONTAINERS_MATRIX"
+#include "CONTAINERS_OPS"
 
 using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
 using mymat_t = pressio::containers::Matrix<nat_t>;
@@ -13,18 +14,18 @@ TEST(containers_matrix_dense_eigen_dynamic_class,
   //using matTrait = pressio::containers::details::traits<mymat_t>;
 
   mymat_t m1;
-  EXPECT_EQ( m1.rows(), 0 );
-  EXPECT_EQ( m1.cols(), 0 );
+  EXPECT_EQ( m1.extent(0), 0 );
+  EXPECT_EQ( m1.extent(1), 0 );
 
   mymat_t m2(5, 8);
-  EXPECT_EQ( m2.rows(), 5 );
-  EXPECT_EQ( m2.cols(), 8 );
+  EXPECT_EQ( m2.extent(0), 5 );
+  EXPECT_EQ( m2.extent(1), 8 );
 
   nat_t eigMat;
   eigMat.resize(56,101);
   mymat_t m3(eigMat);
-  EXPECT_EQ( m3.rows(), 56 );
-  EXPECT_EQ( m3.cols(), 101 );
+  EXPECT_EQ( m3.extent(0), 56 );
+  EXPECT_EQ( m3.extent(1), 101 );
 }
 
 
@@ -44,13 +45,13 @@ TEST(containers_matrix_dense_eigen_dynamic_class,
      sizeResize)
 {
   mymat_t m1;
-  EXPECT_EQ( m1.rows(), 0 );
-  EXPECT_EQ( m1.cols(), 0 );
-  m1.resize(11,45);
-  EXPECT_NE( m1.rows(), 0 );
-  EXPECT_NE( m1.cols(), 0 );
-  EXPECT_EQ( m1.rows(), 11 );
-  EXPECT_EQ( m1.cols(), 45 );
+  EXPECT_EQ( m1.extent(0), 0 );
+  EXPECT_EQ( m1.extent(1), 0 );
+  pressio::containers::ops::resize(m1, 11, 45);
+  EXPECT_NE( m1.extent(0), 0 );
+  EXPECT_NE( m1.extent(1), 0 );
+  EXPECT_EQ( m1.extent(0), 11 );
+  EXPECT_EQ( m1.extent(1), 45 );
 }
 
 
@@ -70,8 +71,8 @@ TEST(containers_matrix_dense_eigen_dynamic_class,
   EXPECT_DOUBLE_EQ( m1(1,2), 6.0);
 
   mymat_t m3(em1);
-  EXPECT_EQ( m3.rows(), 2 );
-  EXPECT_EQ( m3.cols(), 3 );
+  EXPECT_EQ( m3.extent(0), 2 );
+  EXPECT_EQ( m3.extent(1), 3 );
   m3(1,1) = 55.;
   m3(0,2) = -12.;
   EXPECT_DOUBLE_EQ( m3(1,1), 55.);
@@ -123,46 +124,21 @@ TEST(containers_matrix_dense_eigen_dynamic_class,
 
 
 
-TEST(containers_matrix_dense_eigen_dynamic_class,
-     addToDiagonal)
-{
-  nat_t em1;
-  em1.resize(2,2);
-  em1 << 2., 4., 3., 6.;
-  mymat_t m1(em1);
+// TEST(containers_matrix_dense_eigen_dynamic_class,
+//      addToDiagonal)
+// {
+//   nat_t em1;
+//   em1.resize(2,2);
+//   em1 << 2., 4., 3., 6.;
+//   mymat_t m1(em1);
 
-  m1.addToDiagonal(1.);
+//   m1.addToDiagonal(1.);
 
-  EXPECT_DOUBLE_EQ(m1(0,0), 3.);
-  EXPECT_DOUBLE_EQ(m1(0,1), 4.);
-  EXPECT_DOUBLE_EQ(m1(1,0), 3.);
-  EXPECT_DOUBLE_EQ(m1(1,1), 7.);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//   EXPECT_DOUBLE_EQ(m1(0,0), 3.);
+//   EXPECT_DOUBLE_EQ(m1(0,1), 4.);
+//   EXPECT_DOUBLE_EQ(m1(1,0), 3.);
+//   EXPECT_DOUBLE_EQ(m1(1,1), 7.);
+// }
 
 // TEST(containers_matrix_dense_eigen_dynamic_class, additionOperator)
 // {

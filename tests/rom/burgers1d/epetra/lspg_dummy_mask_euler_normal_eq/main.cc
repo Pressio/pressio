@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
   decoder_jac_t phi =
     pressio::rom::test::epetra::readBasis("basis.txt", romSize, numCell,
 					 Comm, appobj.getDataMap());
-  if( phi.globalNumVectors() != romSize ) return 0;
+  if( phi.numVectors() != romSize ) return 0;
   // create decoder obj
   decoder_t decoderObj(phi);
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]){
   // define ROM state
   lspg_state_t yROM(romSize);
   // initialize to zero (this has to be done)
-  yROM.putScalar(0.0);
+  pressio::containers::ops::fill(yROM, 0.0);
 
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]){
   // has to match the FOM solution obtained with euler, same time-step, for 10 steps
   {
     int shift = (rank==0) ? 0 : 10;
-    const int myn = yFomFinal.getDataMap().NumMyElements();
+    const int myn = yFomFinal.data()->Map().NumMyElements();
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++)
       if (std::abs(yFomFinal[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";

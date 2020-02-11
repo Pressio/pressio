@@ -11,5 +11,5 @@ endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
   add_subdirectory(epetra_explicit_euler)
-  add_subdirectory(tpetra_explicit_euler)
+  # add_subdirectory(tpetra_explicit_euler)
 ENDIF()

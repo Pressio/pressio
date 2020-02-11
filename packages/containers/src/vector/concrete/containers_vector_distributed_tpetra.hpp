@@ -50,13 +50,10 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_TPETRA_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_TPETRA_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
-#include "../../shared_base/containers_container_distributed_mpi_base.hpp"
-#include "../../shared_base/containers_container_distributed_trilinos_base.hpp"
-#include "../../shared_base/containers_container_subscriptable_base.hpp"
-#include "../../shared_base/containers_container_resizable_base.hpp"
-#include "../base/containers_vector_distributed_base.hpp"
 #include <MatrixMarket_Tpetra.hpp>
+#include "../../base/containers_container_base.hpp"
+#include "../../base/containers_container_distributed_base.hpp"
+#include "../../base/containers_vector_distributed_base.hpp"
 
 namespace pressio{ namespace containers{
 
@@ -69,11 +66,8 @@ class Vector<wrapped_type,
 	       >::type
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
-    public VectorDistributedBase< Vector<wrapped_type> >,
-    /*public ContainerDistributedMpiBase< Vector<wrapped_type>,
-     typename details::traits<Vector<wrapped_type>>::communicator_t >,*/
-    public ContainerDistributedTrilinosBase< Vector<wrapped_type>,
-     typename details::traits<Vector<wrapped_type>>::data_map_t >
+    public ContainerDistributedBase< Vector<wrapped_type> >,
+    public VectorDistributedBase< Vector<wrapped_type> >
 {
 
   using this_t = Vector<wrapped_type>;
@@ -107,7 +101,7 @@ public:
   // copy assignment
   Vector & operator=(const Vector & other){
     if (&other != this){
-      assert(this->localSize() == other.localSize());
+      assert(this->extentLocal(0) == other.extentLocal(0));
       data_.assign( *other.data() );
     }
     return *this;
@@ -118,7 +112,7 @@ public:
 
   // move assignment
   Vector & operator=(Vector && other){
-    assert(this->localSize() == other.localSize());
+    assert(this->extentLocal(0) == other.extentLocal(0));
     data_.assign( *other.data() );
     return *this;
   }
@@ -147,10 +141,6 @@ public:
   }
 
 private:
-  map_t const & getDataMapImpl() const{
-    return *data_.getMap();
-  }
-
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -163,41 +153,20 @@ private:
     return data_;
   }
 
-  bool isDistributedGloballyImpl() const{
-    return data_.isDistributed();
-  }
-
-  bool emptyImpl() const{
-    return this->globalSize()==0 ? true : false;
-  }
-
-  void putScalarImpl(sc_t value) {
-    data_.putScalar(value);
-    // putScalar doesn't sync afterwards, so we have to sync manually.
-    this->needSync();
-  }
-
-  GO_t globalSizeImpl() const {
+  GO_t extentImpl(std::size_t i) const{
+    assert(i==0);
     return data_.getGlobalLength();
   }
 
-  LO_t localSizeImpl() const {
+  LO_t extentLocalImpl(std::size_t i) const{
+    assert(i==0);
     return data_.getLocalLength();
   }
 
 private:
-  void needSync(){
-    if (data_.template need_sync<Kokkos::HostSpace>())
-      data_.template sync<Kokkos::HostSpace> ();
-    else if (data_.template need_sync<device_t>())
-      data_.template sync<device_t> ();
-  }
-
-private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend ContainerDistributedBase< this_t >;
   friend VectorDistributedBase< this_t >;
-  // friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
-  friend ContainerDistributedTrilinosBase< this_t, map_t >;
 
 private:
   wrap_t data_ = {};

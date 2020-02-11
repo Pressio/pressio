@@ -64,11 +64,11 @@ struct MatrixGetSizeHelper<
     containers::details::traits<T>::is_shared_mem == false
     >
   >{
-  static auto globalRows(const T & A) -> decltype(A.globalLength()){
-    return A.globalLength();
+  static auto globalRows(const T & A) -> decltype(A.extent(0)){
+    return A.extent(0);
   }
-  static auto globalCols(const T & A) -> decltype(A.globalNumVectors()){
-    return A.globalNumVectors();
+  static auto globalCols(const T & A) -> decltype(A.numVectors()){
+    return A.numVectors();
   }
 };
 
@@ -81,11 +81,11 @@ struct MatrixGetSizeHelper<
     containers::details::traits<T>::is_shared_mem == false
     >
   >{
-  static auto globalRows(const T & A) -> decltype(A.globalRows()){
-    return A.globalRows();
+  static auto globalRows(const T & A) -> decltype(A.extent(0)){
+    return A.extent(0);
   }
-  static auto globalCols(const T & A) -> decltype(A.globalCols()){
-    return A.globalCols();
+  static auto globalCols(const T & A) -> decltype(A.extent(1)){
+    return A.extent(1);
   }
 };
 
@@ -97,11 +97,11 @@ struct MatrixGetSizeHelper<
     containers::details::traits<T>::is_shared_mem == true
     >
   >{
-  static auto globalRows(const T & A) -> decltype(A.rows()){
-    return A.rows();
+  static auto globalRows(const T & A) -> decltype(A.extent(0)){
+    return A.extent(0);
   }
-  static auto globalCols(const T & A) -> decltype(A.cols()){
-    return A.cols();
+  static auto globalCols(const T & A) -> decltype(A.extent(1)){
+    return A.extent(1);
   }
 };
 
@@ -113,8 +113,8 @@ struct MatrixGetSizeHelper<
     containers::details::traits<T>::is_shared_mem == true
     >
   >{
-  static auto globalRows(const T & A) -> decltype(A.length()){
-    return A.length();
+  static auto globalRows(const T & A) -> decltype(A.extent()){
+    return A.extent();
   }
   static auto globalCols(const T & A) -> decltype(A.numVectors()){
     return A.numVectors();

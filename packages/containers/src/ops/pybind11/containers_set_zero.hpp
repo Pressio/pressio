@@ -116,6 +116,7 @@ void set_zero(T & v)
     }
   }
 }
+#endif
 
 }}}//end namespace pressio::containers::ops
 #endif

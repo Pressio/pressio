@@ -57,8 +57,9 @@
 #include "containers/src/vector/containers_vector_traits.hpp"
 #include "containers/src/vector/containers_vector_meta.hpp"
 
-#include "containers/src/expressions/containers_expressions_traits.hpp"
-#include "containers/src/expressions/containers_span.hpp"
+#include "containers/src/expressions/span/containers_expressions_traits.hpp"
+#include "containers/src/expressions/span/containers_span.hpp"
+#include "containers/src/expressions/span/containers_vector_span_expression.hpp"
 
 // concrete classes (these in turn include bases)
 #include "containers/src/vector/concrete/containers_vector_arbitrary.hpp"

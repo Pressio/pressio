@@ -57,12 +57,11 @@ template <typename scalar_t>
 class Vector
 {
 public:
-
   using value_type = scalar_t;
   using size_type  = std::size_t;
   using index_type = size_type;
-
   using data_type  = std::vector<scalar_t>;
+
 public:
   Vector() = default;
 

@@ -181,7 +181,9 @@ void gauss_newton_qr_solve(const system_t & sys,
 
     // compute correction: correction
     // by solving R correction = - Q^T Residual
-    QTResid.scale(static_cast<scalar_t>(-1));
+    pressio::containers::ops::scale( QTResid, utils::constants::negOne<scalar_t>());
+    // QTResid.scale(static_cast<scalar_t>(-1));
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR R-solve");
     qrObj.solve(QTResid, correction);

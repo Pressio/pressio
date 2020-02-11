@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
     decoder_jac_t phi =
       pressio::rom::test::tpetra::readBasis("basis.txt", romSize, numCell,
     					   Comm, appobj.getDataMap());
-    const int numBasis = phi.globalNumVectors();
+    const int numBasis = phi.numVectors();
     if( numBasis != romSize ) return 0;
     // create decoder obj
     decoder_t decoderObj(phi);
@@ -96,7 +96,7 @@ int main(int argc, char *argv[]){
     // this is a reproducing ROM test, so the final reconstructed state
     // has to match the FOM solution obtained with euler, same time-step, for 10 steps
     int shift = (rank==0) ? 0 : 10;
-    const int myn = yFomFinal.getDataMap().getNodeNumElements();
+    const int myn = yFomFinal.data()->getMap()->getNodeNumElements();
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++)
       if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";

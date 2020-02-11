@@ -67,7 +67,7 @@ void dot(const vec_type & vecA,
 	 const vec_type & vecB,
 	 typename details::traits<vec_type>::scalar_t & result)
 {
-  assert(vecA.size() == vecB.size());
+  assert(vecA.extent(0) == vecB.extent(0));
   result = vecA.data()->dot(*vecB.data());
 }
 

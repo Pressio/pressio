@@ -139,8 +139,8 @@ struct traits< Matrix<
 
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
-  using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>, scalar_t>;
-  using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>, scalar_t>;
+  using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>>;
+  using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>>;
 };
 
 
@@ -413,8 +413,8 @@ struct traits<
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
-  using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>, scalar_t>;
-  using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>, scalar_t>;
+  using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>>;
+  using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>>;
 
   static constexpr bool has_host_execution_space =
     (false

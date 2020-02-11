@@ -70,13 +70,13 @@ public:
   ~ModGramSchmidtMVTpetra() = default;
 
   void computeThinOutOfPlace(matrix_t & A) {
-    auto nVecs = A.globalNumVectors();
-    auto & ArowMap = A.getDataMap();
+    auto nVecs = A.numVectors();
+    auto & ArowMap = *A.data()->getMap();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
 
     sc_t rkkInv = {};
-    for (auto k=0; k<A.globalNumVectors(); k++)
+    for (auto k=0; k<A.numVectors(); k++)
     {
       auto ak = A.data()->getVector(k);
       localR_(k,k) = ak->norm2();
@@ -85,20 +85,13 @@ public:
       auto qk = Qmat_->data()->getVectorNonConst(k);
       qk->update( rkkInv, *ak, utils::constants::zero<sc_t>() );
 
-      for (auto j=k+1; j<A.globalNumVectors(); j++){
+      for (auto j=k+1; j<A.numVectors(); j++){
       	auto aj = A.data()->getVectorNonConst(j);
       	localR_(k,j) = qk->dot(*aj);
       	aj->update(-localR_(k,j), *qk, utils::constants::one<sc_t>());
       }
     }
   }
-
-  // void computeThinInPlace(matrix_t & A) {
-  //     // auto nVecs = A.globalNumVectors();
-  //     // createLocalRIfNeeded(nVecs);
-  //     // computedRank_ = OM_->normalize(*A.data(), localR_);
-  //     // assert(computedRank_ == nVecs);
-  // }
 
   template <typename vector_t>
   void doLinSolve(const vector_t & rhs, vector_t & y)const {
@@ -118,7 +111,7 @@ public:
 
 private:
   void createLocalRIfNeeded(int newsize){
-    if (localR_.rows()!=newsize or localR_.cols()!=newsize){
+    if (localR_.extent(0)!=newsize or localR_.extent(1)!=newsize){
       localR_ = R_nat_t(newsize, newsize);
       ::pressio::containers::ops::set_zero(localR_);
     }
@@ -126,7 +119,7 @@ private:
 
   template <typename map_t>
   void createQIfNeeded(const map_t & map, int cols){
-    if (!Qmat_ or !Qmat_->hasRowMapEqualTo(map) )
+    if (!Qmat_ or !Qmat_->data()->getMap()->isSameAs(map) )
       Qmat_ = std::make_shared<Q_t>(map, cols);
   }
 

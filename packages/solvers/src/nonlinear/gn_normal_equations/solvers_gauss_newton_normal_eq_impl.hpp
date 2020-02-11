@@ -199,7 +199,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     // 				       "\n");
     // this print only works when hessian is a shared mem matrix
     ::pressio::utils::io::print_stdout(fmt2, "GN_HessianSize =",
-				       hessian.rows(), hessian.cols(),
+				       hessian.extent(0), hessian.extent(1),
 				       utils::io::reset(), "\n");
 #endif
 
@@ -208,7 +208,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->start("gradient");
 #endif
     jtr_evaluator_t::evaluate(jacobian, residual, gradient);
-    gradient.scale(negOne);
+    ::pressio::containers::ops::scale(gradient, negOne);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("gradient");
 #endif

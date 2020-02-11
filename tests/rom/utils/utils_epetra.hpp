@@ -26,7 +26,7 @@ auto convertFromVVecToMultiVec(
   for (int i=0; i<nMyElem; i++){
     int gi = myGel[i];
     for (int j=0; j<ncols; j++)
-      ADW.replaceGlobalValue(gi, j, A0[gi][j]);
+      ADW.data()->ReplaceGlobalValue(gi, j, A0[gi][j]);
   }
   return ADW;
 }

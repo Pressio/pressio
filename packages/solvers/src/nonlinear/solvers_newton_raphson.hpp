@@ -119,10 +119,10 @@ becuase it needs be cleaned considerably before using for other types.");
   // R_ is the residual
   residual_t R_    = {};
   // jac is the jacobian
-  jacobian_t J_    = {};
+  jacobian_t J_ = {};
 
 public:
-  NewtonRaphson() = default;
+  NewtonRaphson() = delete;
 
   template <
     typename system_in_t,

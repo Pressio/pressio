@@ -126,8 +126,8 @@ template <
   >
 void product(const A_t & A, const b_t & b, c_t & c){
 
-  assert(A.cols() == b.size());
-  assert(c.size() == A.rows());
+  assert(A.extent(1) == b.extent(0));
+  assert(A.extent(0) == c.extent(0));
   (*c.data()) = (*A.data()) * (*b.data());
 }
 
@@ -153,8 +153,8 @@ template <
   >
 void product(const A_t & A, const b_t & b, c_t & c){
 
-  assert(A.rows() == b.size());
-  assert(c.size() == A.cols());
+  assert(A.extent(0) == b.extent(0));
+  assert(A.extent(1) == c.extent(0));
   (*c.data()) = (*A.data()).transpose() * (*b.data());
 }
 
@@ -177,7 +177,7 @@ template <
    >
 b_t product(const A_t & A, const b_t & b)
 {
-  b_t c(A.rows());
+  b_t c(A.extent(0));
   product(A,b,c);
   return c;
 }

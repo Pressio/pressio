@@ -141,16 +141,16 @@ private:
       > * = nullptr
   >
   void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
-    assert(A.rows() == b.size() );
-    assert(A.cols() == y.size() );
+    assert(A.extent(0) == b.extent(0) );
+    assert(A.extent(1) == y.extent(0) );
     // gerts is for square matrices
-    assert(A.rows() == A.cols() );
+    assert(A.extent(0) == A.extent(1) );
 
     // only one rhs because this is only enabled if T is a vector wrapper
     constexpr int nRhs = 1;
 
     // just use n, since rows == cols
-    const auto n = A.rows();
+    const auto n = A.extent(0);
 
     int info = 0;
     const int ipivSz = n;
@@ -168,7 +168,7 @@ private:
 
     const char ct = 'N';
     lpk_.GETRS(ct, n, nRhs, A.data()->data(), n, ipiv.data(),
-	       y.data()->data(), y.size(), &info);
+	       y.data()->data(), y.extent(0), &info);
     assert(info == 0);
   }
 #endif
@@ -206,16 +206,16 @@ private:
   >
   void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y)
   {
-    assert(A.rows() == b.size() );
-    assert(A.cols() == y.size() );
+    assert(A.extent(0) == b.extent(0) );
+    assert(A.extent(1) == y.extent(0) );
     // gerts is for square matrices
-    assert(A.rows() == A.cols() );
+    assert(A.extent(0) == A.extent(1) );
 
     // only one rhs because this is only enabled if T is a vector wrapper
     constexpr int nRhs = 1;
 
     // n = nRows = nCols: because it is square matrix
-    const auto n = A.rows();
+    const auto n = A.extent(0);
 
     cusolverStatus_t cusolverStatus;
     //cusolverDnHandle_t handle;

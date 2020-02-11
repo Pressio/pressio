@@ -95,7 +95,7 @@ public:
 
   template <typename vector_t>
   void doLinSolve(const vector_t & rhs, vector_t & y)const{
-    auto vecSize = y.size();
+    auto vecSize = y.extent(0);
     auto & Rm = fct_->matrixQR().block(0,0,vecSize,vecSize).
       template triangularView<Eigen::Upper>();
     *y.data() = Rm.solve(*rhs.data());

@@ -9,13 +9,13 @@ namespace{
   {
     {
       const auto sspan = pressio::containers::subspan(A, std::make_pair(0,2), std::make_pair(1,2) );
-      EXPECT_EQ( sspan.rows(), 2 ); EXPECT_EQ( sspan.cols(), 1 );
+      EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 1 );
       EXPECT_DOUBLE_EQ( sspan(0,0), 2. );
       EXPECT_DOUBLE_EQ( sspan(1,0), 6. );
     }
     {
       const auto sspan = pressio::containers::subspan(A, std::make_pair(0,3), std::make_pair(1,3) );
-      EXPECT_EQ( sspan.rows(), 3 ); EXPECT_EQ( sspan.cols(), 2 );
+      EXPECT_EQ( sspan.extent(0), 3 ); EXPECT_EQ( sspan.extent(1), 2 );
       EXPECT_DOUBLE_EQ( sspan(0,0), 2. );  EXPECT_DOUBLE_EQ( sspan(0,1), 3. );
       EXPECT_DOUBLE_EQ( sspan(1,0), 6. );  EXPECT_DOUBLE_EQ( sspan(1,1), 7. );
       EXPECT_DOUBLE_EQ( sspan(2,0), 10. ); EXPECT_DOUBLE_EQ( sspan(2,1), 11. );
@@ -23,13 +23,13 @@ namespace{
 
     {
       const auto sspan = pressio::containers::subspan(A, std::make_pair(2,4), std::make_pair(1,3) );
-      EXPECT_EQ( sspan.rows(), 2 ); EXPECT_EQ( sspan.cols(), 2 );
+      EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 2 );
       EXPECT_DOUBLE_EQ( sspan(0,0), 10. );  EXPECT_DOUBLE_EQ( sspan(0,1), 11. );
       EXPECT_DOUBLE_EQ( sspan(1,0), 14. );  EXPECT_DOUBLE_EQ( sspan(1,1), 15. );
     }
     {
       const auto sspan = pressio::containers::subspan(A, std::make_pair(2,3), std::make_pair(0,1) );
-      EXPECT_EQ( sspan.rows(), 1 ); EXPECT_EQ( sspan.cols(), 1 );
+      EXPECT_EQ( sspan.extent(0), 1 ); EXPECT_EQ( sspan.extent(1), 1 );
       EXPECT_DOUBLE_EQ( sspan(0,0), 9. );
     }
   }
@@ -40,7 +40,7 @@ namespace{
     {
       // change some entries
       auto sspan = pressio::containers::subspan(A, std::make_pair(2,4), std::make_pair(1,3) );
-      EXPECT_EQ( sspan.rows(), 2 ); EXPECT_EQ( sspan.cols(), 2 );
+      EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 2 );
 
       // before changing it
       EXPECT_DOUBLE_EQ( sspan(0,0), 10. );  EXPECT_DOUBLE_EQ( sspan(0,1), 11. );
@@ -65,7 +65,7 @@ namespace{
   template <typename T>
   void testConst(const T & A){
     const auto sspan = pressio::containers::subspan(A, std::make_pair(2,4), std::make_pair(1,3) );
-    EXPECT_EQ( sspan.rows(), 2 ); EXPECT_EQ( sspan.cols(), 2 );
+    EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 2 );
     EXPECT_DOUBLE_EQ( sspan(0,0), 44. );  EXPECT_DOUBLE_EQ( sspan(0,1), 33. );
     EXPECT_DOUBLE_EQ( sspan(1,0), 14. );  EXPECT_DOUBLE_EQ( sspan(1,1), 15. );
 

@@ -50,8 +50,9 @@
 #ifndef CONTAINERS_DENSE_MATRIX_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_DENSE_MATRIX_SHAREDMEM_KOKKOS_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
-#include "../base/containers_matrix_sharedmem_base.hpp"
+#include "../../base/containers_container_base.hpp"
+#include "../../base/containers_container_sharedmem_base.hpp"
+#include "../../base/containers_matrix_sharedmem_base.hpp"
 
 namespace pressio{ namespace containers{
 
@@ -63,6 +64,7 @@ class Matrix<
     >
   >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
+    public ContainerSharedMemBase< Matrix<wrapped_type> >,
     public MatrixSharedMemBase< Matrix<wrapped_type> >
 {
 
@@ -152,16 +154,14 @@ private:
     return data_;
   }
 
-  ord_t rowsImpl() const{
-    return data_.extent(0);
-  }
-
-  ord_t colsImpl() const{
-    return data_.extent(1);
+  ord_t extentImpl(ord_t i) const {
+    assert(i==0 or i==1);
+    return data_.extent(i);
   }
 
 private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend ContainerSharedMemBase< this_t >;
   friend MatrixSharedMemBase< this_t >;
 
 private:

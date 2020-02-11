@@ -50,10 +50,10 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
   // sync from host to device
   trilD->sync<device_t> ();
 
-  EXPECT_EQ( MV.globalNumVectors(), 4 );
-  EXPECT_EQ( MV.localNumVectors(), 4 );
-  EXPECT_EQ( MV.globalLength(), 9 );
-  EXPECT_EQ( MV.localLength(), 3);
+  EXPECT_EQ( MV.numVectors(), 4 );
+  EXPECT_EQ( MV.numVectorsLocal(), 4 );
+  EXPECT_EQ( MV.extent(0), 9 );
+  EXPECT_EQ( MV.extentLocal(0), 3);
 
   //-------------------------------------
   //-------------------------------------

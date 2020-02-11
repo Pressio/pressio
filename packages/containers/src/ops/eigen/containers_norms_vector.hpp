@@ -64,7 +64,7 @@ auto norm1(const vec_type & a)
 {
   using sc_t = typename details::traits<vec_type>::scalar_t;
   sc_t result = 0.0;
-  for (decltype(a.size()) i=0; i<a.size(); i++)
+  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
     result += std::abs(a(i));
   return result;
 }
@@ -81,7 +81,7 @@ auto norm2(const vec_type & a)
 {
   using sc_t = typename details::traits<vec_type>::scalar_t;
   sc_t result = 0.0;
-  for (decltype(a.size()) i=0; i<a.size(); i++)
+  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
     result += a[i]*a[i];
   return std::sqrt(result);
 }

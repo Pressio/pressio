@@ -66,9 +66,9 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
 
   // //MV dot b = c2
   containers::Vector<Eigen::VectorXd> c2;
-  c2.resize(4);
+  c2.data()->resize(4);
   containers::ops::dot(MV, VV, c2);
-  EXPECT_EQ( c2.size(), 4);
+  EXPECT_EQ( c2.extent(0), 4);
   EXPECT_NEAR(c2[0], 4.4, 1e-12);
   EXPECT_NEAR(c2[1], 5.2, 1e-12);
   EXPECT_NEAR(c2[2], 3., 1e-12);
@@ -79,7 +79,7 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVVecDotProduct){
   using natvec_t3 = Teuchos::SerialDenseVector<int, double>;
   containers::Vector<natvec_t3> c3(4);
   containers::ops::dot(MV, VV, c3);
-  EXPECT_EQ( c3.size(), 4);
+  EXPECT_EQ( c3.extent(0), 4);
   EXPECT_NEAR(c3[0], 4.4, 1e-12);
   EXPECT_NEAR(c3[1], 5.2, 1e-12);
   EXPECT_NEAR(c3[2], 3., 1e-12);
@@ -151,10 +151,10 @@ TEST_F(tpetraMultiVectorR9C4VecS9Fixture, MVDotVecStoreIntoKokkosWrapper){
   using kv_t = pressio::containers::Vector<k1d_d>;
   STATIC_ASSERT_IS_CONTAINERS_VECTOR_WRAPPER(kv_t);
 
-  kv_t c("dummyLabel", MV.globalNumVectors());
+  kv_t c("dummyLabel", MV.numVectors());
   containers::ops::dot(MV, VV, c);
   // create host vector
-  k1d_h c_h("ch", c.size());
+  k1d_h c_h("ch", c.extent(0));
   // copy device -> host
   Kokkos::deep_copy(c_h, *c.data());
 

@@ -33,11 +33,11 @@ TEST(epetraMultiVector,
   using mvec_t = containers::MultiVector<Epetra_MultiVector>;
   mvec_t A(rowMap, 4);
 
-  EXPECT_EQ( A.globalNumVectors(), 4 );
-  EXPECT_EQ( A.globalLength(), 6 );
+  EXPECT_EQ( A.numVectors(), 4 );
+  EXPECT_EQ( A.extent(0), 6 );
 
   for (int i=0; i<localSize; i++){
-    for (int j=0; j<A.globalNumVectors(); j++)
+    for (int j=0; j<A.numVectors(); j++)
       EXPECT_NEAR( 0.0, A(i,j), 1e-12);
   }
 

@@ -50,10 +50,10 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
-#include "../base/containers_vector_sharedmem_base.hpp"
-#include <KokkosBlas1_fill.hpp>
-#include <KokkosBlas1_scal.hpp>
+
+#include "../../base/containers_container_base.hpp"
+#include "../../base/containers_container_sharedmem_base.hpp"
+#include "../../base/containers_vector_sharedmem_base.hpp"
 
 namespace pressio{ namespace containers{
 
@@ -64,6 +64,7 @@ class Vector<wrapped_type,
 	       >
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
+    public ContainerSharedMemBase< Vector<wrapped_type> >,
     public VectorSharedMemBase< Vector<wrapped_type> >
 {
 
@@ -102,7 +103,7 @@ public:
   // copy assign implments copy semantics not view (for time being)
   Vector & operator=(const Vector & other){
     if (&other != this){
-      assert(this->size() == other.size());
+      assert(this->extent(0) == other.extent(0));
       Kokkos::deep_copy(data_, *other.data());
     }
     return *this;
@@ -115,7 +116,7 @@ public:
   }
 
   Vector & operator=(Vector && other){
-    assert(this->size() == other.size());
+    assert(this->extent(0) == other.extent(0));
     Kokkos::deep_copy(data_, *other.data());
     return *this;
   }
@@ -179,20 +180,22 @@ private:
     return &data_;
   }
 
-  void scaleImpl(sc_t value) {
-    KokkosBlas::scal(data_, value, data_);
-  }
-
   wrap_t dataCpImpl(){
     return data_;
   }
 
-  ord_t sizeImpl() const {
-    return data_.extent(0);
+  bool emptyImpl() const{
+    return data_.extent(0)==0 ? true : false;
+  }
+
+  ord_t extentImpl(ord_t i) const {
+    assert( i == 0 );
+    return data_.extent(i);
   }
 
 private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend ContainerSharedMemBase< this_t >;
   friend VectorSharedMemBase< this_t >;
 
 private:

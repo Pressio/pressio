@@ -448,14 +448,14 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivialWith
   const auto dt = S1.dt_;
   const int nSteps = finalTime/dt;
   // create observer
-  observer_t observerObj(nSteps, y0.size());
+  observer_t observerObj(nSteps, y0.extent(0));
 
   S1.integrateToTimeWithStepSizeManagerLambdaAndCollector(finalTime, observerObj);
   std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
   observerObj.printAll();
 
   // check that observer has right data
-  Eigen::MatrixXd trueS(y0.size(), nSteps+1);
+  Eigen::MatrixXd trueS(y0.extent(0), nSteps+1);
   trueS(0,0)=1.00000000000000e+00;
   trueS(1,0)=2.00000000000000e+00;
   trueS(2,0)=3.00000000000000e+00;

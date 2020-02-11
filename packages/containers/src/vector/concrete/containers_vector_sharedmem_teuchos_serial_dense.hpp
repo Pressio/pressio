@@ -50,10 +50,10 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_TEUCHOS_SERIAL_DENSE_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_TEUCHOS_SERIAL_DENSE_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
-#include "../../shared_base/containers_container_resizable_base.hpp"
-#include "../../shared_base/containers_container_subscriptable_base.hpp"
-#include "../base/containers_vector_sharedmem_base.hpp"
+
+#include "../../base/containers_container_base.hpp"
+#include "../../base/containers_container_sharedmem_base.hpp"
+#include "../../base/containers_vector_sharedmem_base.hpp"
 
 namespace pressio{ namespace containers{
 
@@ -64,14 +64,9 @@ class Vector<wrapped_type,
 	       >
 	     >
   : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
-    public VectorSharedMemBase< Vector<wrapped_type> >,
-    public ContainerResizableBase<Vector<wrapped_type>, 1>,
-    public ContainerSubscriptable1DBase< Vector<wrapped_type>,
-     typename details::traits<Vector<wrapped_type>>::scalar_t,
-     typename details::traits<Vector<wrapped_type>>::ordinal_t>,
-    public ContainerPrintable1DBase<
-	       Vector<wrapped_type>,
-	       typename details::traits<Vector<wrapped_type>>::ordinal_t>{
+    public ContainerSharedMemBase< Vector<wrapped_type> >,
+    public VectorSharedMemBase< Vector<wrapped_type> >
+{
 
   using this_t = Vector<wrapped_type>;
   using mytraits = typename details::traits<this_t>;
@@ -90,7 +85,7 @@ public:
   	    ::pressio::mpl::enable_if_t<
   	      std::is_same<T, sc_t>::value> * = nullptr>
   this_t & operator=(const T value){
-    for (ord_t i = 0; i != this->size(); ++i)
+    for (ord_t i = 0; i != this->extent(0); ++i)
       data_[i] = value;
     return *this;
   }
@@ -98,7 +93,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this += b
   this_t & operator+=(const this_t & other) {
-    assert( other.size() == this->size() );
+    assert( other.extent(0) == this->extent(0) );
     this->data_ += *other.data();
     return *this;
   }
@@ -106,7 +101,7 @@ public:
   // compound assignment when type(b) = type(this)
   // this -= b
   this_t & operator-=(const this_t & other) {
-    assert( other.size() == this->size() );
+    assert( other.extent(0) == this->extent(0) );
     this->data_ -= *other.data();
     return *this;
   }
@@ -129,36 +124,28 @@ public:
 
 private:
 
-  template <typename stream_t>
-  void printImpl(stream_t & os, char c, ord_t nIn) const{
-    assert(nIn <= this->size());
-    auto nToPrint = (nIn==-1) ? this->size() : nIn;
-    ::pressio::utils::impl::setStreamPrecision<stream_t, sc_t>(os);
-    if (c=='d') this->printVertically(os, nToPrint);
-    if (c=='f') this->printFlatten(os, nToPrint);
-  }
+  // template <typename stream_t>
+  // void printImpl(stream_t & os, char c, ord_t nIn) const{
+  //   assert(nIn <= this->size());
+  //   auto nToPrint = (nIn==-1) ? this->size() : nIn;
+  //   ::pressio::utils::impl::setStreamPrecision<stream_t, sc_t>(os);
+  //   if (c=='d') this->printVertically(os, nToPrint);
+  //   if (c=='f') this->printFlatten(os, nToPrint);
+  // }
 
-  template <typename stream_t>
-  void printVertically(stream_t & os, ord_t nToPrint) const{
-    for (auto i=0; i<nToPrint; i++)
-      os << data_[i] << "\n";
-    os << std::endl;
-  }
+  // template <typename stream_t>
+  // void printVertically(stream_t & os, ord_t nToPrint) const{
+  //   for (auto i=0; i<nToPrint; i++)
+  //     os << data_[i] << "\n";
+  //   os << std::endl;
+  // }
 
-  template <typename stream_t>
-  void printFlatten(stream_t & os, ord_t nToPrint) const{
-    for (auto i=0; i<nToPrint; i++)
-      os << data_[i] << " ";
-    os << std::endl;
-  }
-
-  void matchLayoutWithImpl(const this_t & other){
-    this->resize( other.size() );
-  }
-
-  void scaleImpl(sc_t value) {
-    data_.scale(value);
-  }
+  // template <typename stream_t>
+  // void printFlatten(stream_t & os, ord_t nToPrint) const{
+  //   for (auto i=0; i<nToPrint; i++)
+  //     os << data_[i] << " ";
+  //   os << std::endl;
+  // }
 
   wrap_t const * dataImpl() const{
     return &data_;
@@ -168,29 +155,19 @@ private:
     return &data_;
   }
 
-  void putScalarImpl(sc_t value) {
-    data_.putScalar(value);
-  }
-
   bool emptyImpl() const{
-    return this->size()==0 ? true : false;
+    return this->extent(0)==0 ? true : false;
   }
 
-  ord_t sizeImpl() const {
+  ord_t extentImpl(std::size_t i) const {
+    assert(i==0);
     return data_.length();
-  }
-
-  void resizeImpl(ord_t newsize){
-    //this will resize and reset to zero
-    data_.size(newsize);
   }
 
 private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend ContainerSharedMemBase< this_t >;
   friend VectorSharedMemBase< this_t >;
-  friend ContainerResizableBase<this_t, 1>;
-  friend ContainerSubscriptable1DBase<this_t, sc_t, ord_t>;
-  friend ContainerPrintable1DBase<this_t, ord_t>;
 
 private:
   wrap_t data_ = {};

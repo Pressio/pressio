@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
   // define ROM state
   lspg_state_t yROM(romSize);
   // initialize to zero (this has to be done)
-  yROM.putScalar(0.0);
+  pressio::containers::ops::fill(yROM, 0.0);
 
   // define LSPG type
   using ode_tag = pressio::ode::implicitmethods::BDF2;
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]){
   // has to match the FOM solution obtained with bdf2, same time-step, for 10 steps
   // const auto trueY = pressio::apps::test::Burg1DtrueImpBDF2N20t010;
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(numCell, dt, 0.10);
-  for (auto i=0; i<yFomFinal.size(); i++)
+  for (auto i=0; i<yFomFinal.extent(0); i++)
     if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10) checkStr = "FAILED";
 
   std::cout << *yFomFinal.data() << std::endl;

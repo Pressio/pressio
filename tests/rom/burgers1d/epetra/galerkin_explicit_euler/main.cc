@@ -63,7 +63,7 @@ const std::vector<double> bdf1Sol
   // define ROM state
   rom_state_t yROM(romSize);
   // initialize to zero (this has to be done)
-  yROM.putScalar(0.0);
+  pressio::containers::ops::fill(yROM, 0.0);
 
   using ode_tag = pressio::ode::explicitmethods::Euler;
   using pressio::rom::galerkin::DefaultProblemType;
@@ -82,7 +82,7 @@ const std::vector<double> bdf1Sol
   // check against gold solution
   int shift = 0;
   if (rank==1)  shift = 25;
-  int myn = yFomFinal.getDataMap().NumMyElements();
+  int myn = yFomFinal.data()->Map().NumMyElements();
   for (auto i=0; i<myn; i++){
     if(std::abs(yFomFinal[i] - bdf1Sol[i+shift]) > 1e-12 ){
       checkStr = "FAILED";

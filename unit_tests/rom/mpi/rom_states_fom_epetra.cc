@@ -28,13 +28,13 @@ struct mytest
     : MyStates{recObj, y0Fom}
   {
     rom_state_t rY(2);
-    rY.putScalar(1.2);
+    pressio::containers::ops::fill(rY, 1.2);
     MyStates.reconstructCurrentFomState(rY);
   }
 
   void check(){
     const auto & yfR = MyStates.getCRefToCurrentFomState();
-    const auto sz = yfR.localSize();
+    const auto sz = yfR.extentLocal(0);
     for (auto i=0; i<sz; i++)
       EXPECT_DOUBLE_EQ( yfR[i], 2.4);
   }

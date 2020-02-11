@@ -49,14 +49,9 @@
 #ifndef CONTAINERS_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_STATIC_HPP_
 #define CONTAINERS_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_STATIC_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
-#include "../../shared_base/containers_container_resizable_base.hpp"
-#include "../../shared_base/containers_container_nonresizable_base.hpp"
-#include "../../shared_base/containers_container_subscriptable_base.hpp"
-
-#include "../base/containers_matrix_base.hpp"
-#include "../base/containers_matrix_sharedmem_base.hpp"
-#include "../base/containers_matrix_dense_sharedmem_base.hpp"
+#include "../../base/containers_container_base.hpp"
+#include "../../base/containers_container_sharedmem_base.hpp"
+#include "../../base/containers_matrix_sharedmem_base.hpp"
 
 namespace pressio{ namespace containers{
 
@@ -67,14 +62,8 @@ class Matrix<wrapped_type,
 		 wrapped_type>::value>
 	     >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
-    public MatrixBase< Matrix<wrapped_type> >,
-    public MatrixSharedMemBase< Matrix<wrapped_type> >,
-    public MatrixDenseSharedMemBase< Matrix<wrapped_type> >,
-    public ContainerSubscriptable2DBase<
-     Matrix<wrapped_type>,
-     typename details::traits<Matrix<wrapped_type>>::scalar_t,
-     typename details::traits<Matrix<wrapped_type>>::ordinal_t>,
-    public ContainerNonResizableBase<Matrix<wrapped_type>, 2>
+    public ContainerSharedMemBase< Matrix<wrapped_type> >,
+    public MatrixSharedMemBase< Matrix<wrapped_type> >
 {
 
   using derived_t = Matrix<wrapped_type>;
@@ -129,28 +118,15 @@ private:
     return &data_;
   };
 
-  void addToDiagonalImpl(sc_t value) {
-    // check matrix is diagonal
-    assert(this->rows()==this->cols());
-    for (ord_t ir=0; ir<this->rows(); ir++)
-      data_(ir,ir) += value;
-  };
-
-  ord_t rowsImpl() const{
-    return data_.rows();
-  }
-
-  ord_t colsImpl() const{
-    return data_.cols();
+  ord_t extentImpl(ord_t i) const {
+    assert(i==0 or i==1);
+    return (i==0) ? data_.rows() : data_.cols();
   }
 
 private:
   friend ContainerBase< derived_t, wrapped_type >;
-  friend MatrixBase< derived_t >;
+  friend ContainerSharedMemBase< derived_t >;
   friend MatrixSharedMemBase< derived_t >;
-  friend MatrixDenseSharedMemBase< derived_t >;
-  friend ContainerSubscriptable2DBase< derived_t, sc_t, ord_t>;
-  friend ContainerNonResizableBase<derived_t, 2>;
 
 private:
   wrap_t data_ = {};

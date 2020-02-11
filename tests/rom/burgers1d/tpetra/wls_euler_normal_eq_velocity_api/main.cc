@@ -17,13 +17,13 @@ int main(int argc, char *argv[]){
   using fom_native_state_t = typename fom_t::state_type;
   using fom_state_t        = ::pressio::containers::Vector<fom_native_state_t>;
 
-  using decoder_jac_t	   = pressio::containers::MultiVector<Tpetra::MultiVector<>>;
-  using decoder_t	   = pressio::rom::LinearDecoder<decoder_jac_t>;
-
   using eig_dyn_vec	   = Eigen::Matrix<scalar_t, -1, 1>;
   using eig_dyn_mat	   = Eigen::Matrix<scalar_t, -1, -1>;
   using wls_state_t	   = pressio::containers::Vector<eig_dyn_vec>;
   using hessian_t          = pressio::containers::Matrix<eig_dyn_mat>;
+
+  using decoder_jac_t    = pressio::containers::MultiVector<Tpetra::MultiVector<>>;
+  using decoder_t    = pressio::rom::LinearDecoder<decoder_jac_t, wls_state_t, fom_state_t>;
 
   using tcomm_t		= Teuchos::MpiComm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
@@ -63,7 +63,8 @@ int main(int argc, char *argv[]){
     using ode_tag	     = ::pressio::ode::implicitmethods::Euler;
     using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
     // create the wls state
-    wls_state_t  wlsState(romSize*numStepsInWindow); wlsState.setZero();
+    wls_state_t  wlsState(romSize*numStepsInWindow); 
+    pressio::containers::ops::fill(wlsState, zero);
     // create the wls system
     wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize);
 
@@ -101,7 +102,7 @@ int main(int argc, char *argv[]){
     // -----------------
     const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
     fom_state_t yFinal(yFOM_IC_native);
-    using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<fom_state_t, decoder_t>;
+    using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
     fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
     fomStateReconstructor(wlsCurrentState, yFinal);
 
@@ -109,7 +110,7 @@ int main(int argc, char *argv[]){
     // has to match the FOM solution obtained with euler, same time-step, for 10 steps
     auto yFF_v = yFinal.data()->getData();
     int shift = (rank==0) ? 0 : 10;
-    const int myn = yFinal.getDataMap().getNodeNumElements();
+    const int myn = yFinal.data()->getMap()->getNodeNumElements();
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
     for (auto i=0; i<myn; i++)
       if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";

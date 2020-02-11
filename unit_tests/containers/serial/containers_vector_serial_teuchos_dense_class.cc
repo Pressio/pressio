@@ -16,15 +16,12 @@ TEST(containers_vector_teuchos_serial_dense_class,
   myvec_t v0;
 
   myvec_t v1(5);
-  std::cout << *v1.data() << std::endl;
 
   natvec_t nv2(8);
   nv2(2) = 2.2; nv2(4) = 4.4;
   myvec_t v2(nv2);
-  std::cout << *v2.data() << std::endl;
 
   myvec_t v3(v2);
-  std::cout << *v3.data() << std::endl;
 }
 
 
@@ -33,8 +30,7 @@ TEST(containers_vector_teuchos_serial_dense_class,
 
   //construct by passing the size
   myvec_t m_v2(5);
-  ASSERT_FALSE( m_v2.empty() );
-  ASSERT_TRUE( m_v2.size() == 5 );
+  ASSERT_TRUE( m_v2.extent(0) == 5 );
   for (size_t i=0; i<5; i++)
     EXPECT_DOUBLE_EQ( m_v2[i], 0.);
 
@@ -42,8 +38,7 @@ TEST(containers_vector_teuchos_serial_dense_class,
   natvec_t e_v1(45);
   e_v1(2) = 2.2; e_v1(4) = 4.4;
   myvec_t m_v1(e_v1);
-  ASSERT_FALSE( m_v1.empty() );
-  ASSERT_TRUE( m_v1.size() == 45 );
+  ASSERT_TRUE( m_v1.extent(0) == 45 );
   EXPECT_DOUBLE_EQ( m_v1[2], 2.2);
   EXPECT_DOUBLE_EQ( m_v1[4], 4.4);
 }
@@ -94,7 +89,7 @@ TEST(containers_vector_teuchos_serial_dense_class,
      size){
 
   myvec_t m_v1(11);
-  ASSERT_TRUE( m_v1.size() == 11 );
+  ASSERT_TRUE( m_v1.extent(0) == 11 );
 }
 
 TEST(containers_vector_teuchos_serial_dense_class,
@@ -110,10 +105,10 @@ TEST(containers_vector_teuchos_serial_dense_class,
 
   myvec_t m_v1(11);
   ASSERT_FALSE( m_v1.empty() );
-  ASSERT_TRUE( m_v1.size() == 11 );
-  m_v1.resize(22);
-  ASSERT_FALSE( m_v1.empty() );
-  ASSERT_TRUE( m_v1.size() == 22 );
+  ASSERT_TRUE( m_v1.extent(0) == 11 );
+  // m_v1.resize(22);
+  // ASSERT_FALSE( m_v1.empty() );
+  // ASSERT_TRUE( m_v1.extent(0) == 22 );
 }
 
 
@@ -124,7 +119,7 @@ TEST(containers_vector_teuchos_serial_dense_class,
   ::testing::StaticAssertTypeEq<
     decltype(m_v3[1]), double & >();
 
-  ASSERT_TRUE( m_v3.size() == 4 );
+  ASSERT_TRUE( m_v3.extent(0) == 4 );
   m_v3[0] = 34.0;
   m_v3[1] = 22.5;
   m_v3[2] = 11.5;
@@ -147,7 +142,7 @@ TEST(containers_vector_teuchos_serial_dense_class,
      subscriptOperatorParenthesis){
 
   myvec_t m_v3(4);
-  ASSERT_TRUE( m_v3.size() == 4 );
+  ASSERT_TRUE( m_v3.extent(0) == 4 );
   ::testing::StaticAssertTypeEq<
     decltype(m_v3(1)), double & >();
   m_v3(0) = 34.0;
@@ -171,22 +166,10 @@ TEST(containers_vector_teuchos_serial_dense_class,
 
 
 TEST(containers_vector_teuchos_serial_dense_class,
-     matchingLayout){
-
-  myvec_t a(4);
-  ASSERT_TRUE( a.size() == 4 );
-  myvec_t b(6);
-  a.matchLayoutWith(b);
-  ASSERT_TRUE( a.size() == 6 );
-  ASSERT_FALSE( a.size() == 4 );
-}
-
-
-TEST(containers_vector_teuchos_serial_dense_class,
      setToScalar){
 
   myvec_t a(4);
-  a.putScalar(1.12);
+  pressio::containers::ops::fill(a, 1.12);
   EXPECT_DOUBLE_EQ( a(0), 1.12);
   EXPECT_DOUBLE_EQ( a(1), 1.12);
   EXPECT_DOUBLE_EQ( a(2), 1.12);

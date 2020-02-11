@@ -57,15 +57,14 @@
 #include "containers/src/multi_vector/containers_multi_vector_traits.hpp"
 #include "containers/src/multi_vector/containers_multi_vector_meta.hpp"
 
-#include "containers/src/expressions/containers_expressions_traits.hpp"
-#include "containers/src/expressions/containers_multi_vector_view_column_vector_expression.hpp"
-#include "containers/src/expressions/containers_view_column_vector.hpp"
+#include "containers/src/expressions/mv_view_col_vector/containers_expressions_traits.hpp"
+#include "containers/src/expressions/mv_view_col_vector/containers_view_column_vector.hpp"
 
 #include "containers/src/multi_vector/concrete/containers_multi_vector_arbitrary.hpp"
 #include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_epetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
 #include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra.hpp"
 #include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra_block.hpp"
+#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
 #include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_kokkos.hpp"
 
 #include "containers/src/meta/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"

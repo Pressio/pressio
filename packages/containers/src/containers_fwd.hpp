@@ -76,27 +76,19 @@ template <
   typename Enable = void>
 class Matrix;
 
-template<
-  typename T,
-  typename enable = void>
-struct traits;
-
 
 namespace expressions{
 
 template <typename derived_t>
 class BaseExpr;
 
-template <
-  typename mv_t,
-  typename scalar_t,
-  typename enable = void>
+template < typename mv_t, typename enable = void>
 struct ViewColumnVectorExpr;
 
-template <typename mat_t, typename scalar_t, typename enable = void>
+template <typename mat_t, typename enable = void>
 struct SubspanExpr;
 
-template <typename vec_t, typename scalar_t, typename enable = void>
+template <typename vec_t, typename enable = void>
 struct SpanExpr;
 }
 

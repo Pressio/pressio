@@ -267,10 +267,8 @@ struct traits<
   using ordinal_t = int;
 
   static constexpr bool is_admissible_for_expression_templates = true;
-  using view_col_vec_const_ret_t = ::pressio::containers::expressions::ViewColumnVectorExpr<
-    const MultiVector<wrapped_type>, scalar_t>;
-  using view_col_vec_ret_t = ::pressio::containers::expressions::ViewColumnVectorExpr<
-    MultiVector<wrapped_type>, scalar_t>;
+  using view_col_vec_const_ret_t = expressions::ViewColumnVectorExpr<const MultiVector<wrapped_type>>;
+  using view_col_vec_ret_t = expressions::ViewColumnVectorExpr<MultiVector<wrapped_type>>;
 };
 
 
@@ -313,8 +311,8 @@ struct traits<
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
-  using view_col_vec_const_ret_t = expressions::ViewColumnVectorExpr<const MultiVector<wrapped_type>, scalar_t>;
-  using view_col_vec_ret_t = expressions::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
+  using view_col_vec_const_ret_t = expressions::ViewColumnVectorExpr<const MultiVector<wrapped_type>>;
+  using view_col_vec_ret_t = expressions::ViewColumnVectorExpr<MultiVector<wrapped_type>>;
 };
 #endif
 

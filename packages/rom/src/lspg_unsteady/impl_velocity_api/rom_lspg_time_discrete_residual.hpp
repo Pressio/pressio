@@ -171,8 +171,8 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
   const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
   const auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
 
-  assert( R.size() == fomStateAt_n.size() );
-  assert( fomStateAt_n.size() == fomStateAt_nm1.size() );
+  assert( R.extent(0) == fomStateAt_n.extent(0) );
+  assert( fomStateAt_n.extent(0) == fomStateAt_nm1.extent(0) );
 
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
@@ -205,9 +205,9 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
   const auto & fomStateAt_nm1   = fomStates.getCRefToFomStatePrevStep();
   const auto & fomStateAt_nm2   = fomStates.getCRefToFomStatePrevPrevStep();
 
-  assert( R.size() == fomStateAt_n.size() );
-  assert( fomStateAt_n.size() == fomStateAt_nm1.size() );
-  assert( fomStateAt_nm1.size() == fomStateAt_nm2.size());
+  assert( R.extent(0) == fomStateAt_n.extent(0) );
+  assert( fomStateAt_n.extent(0) == fomStateAt_nm1.extent(0) );
+  assert( fomStateAt_nm1.extent(0) == fomStateAt_nm2.extent(0));
 
   constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
@@ -321,19 +321,19 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
   using GO_t = typename containers::details::traits<state_type>::global_ordinal_t;
 
   // get map of y_n (prevStates has for sure the same map as y_n)
-  const auto & y_map = y_n.getDataMap();
+  const auto & y_map = y_n.data()->Map();
   // get my global elements
-  std::vector<GO_t> gIDy( y_n.localSize() );
+  std::vector<GO_t> gIDy( y_n.extentLocal(0) );
   y_map.MyGlobalElements( gIDy.data() );
 
   // get map of R
-  const auto & R_map = R.getDataMap();
+  const auto & R_map = R.data()->Map();
   // get global elements
-  std::vector<GO_t> gIDr( R.localSize() );
+  std::vector<GO_t> gIDr( R.extentLocal(0) );
   R_map.MyGlobalElements( gIDr.data() );
 
   //loop over elements of R
-  for (auto i=0; i<R.localSize(); i++){
+  for (auto i=0; i<R.extentLocal(0); i++){
     // ask the state map what is the local index corresponding
     // to the global index we are handling
     const auto lid = y_map.LID(gIDr[i]);

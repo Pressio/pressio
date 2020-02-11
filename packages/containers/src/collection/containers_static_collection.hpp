@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_STATIC_COLLECTION_HPP_
 #define CONTAINERS_STATIC_COLLECTION_HPP_
 
-#include "./impl/containers_static_collection_impl.hpp"
+#include "containers_static_collection_impl.hpp"
 
 namespace pressio{ namespace containers{
 

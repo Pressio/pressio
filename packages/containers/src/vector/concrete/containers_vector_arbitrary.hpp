@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_ARBITRARY_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_ARBITRARY_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
+#include "../../base/containers_container_base.hpp"
 #include <utility>
 
 namespace pressio{ namespace containers{

@@ -79,12 +79,12 @@ void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
   ::pressio::containers::ops::set_zero(C);
 
   // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectors();
   // size of vecB
-  assert(size_t(numVecs) == size_t(b.size()));
+  assert(size_t(numVecs) == size_t(b.extent(0)));
 
   // my number of rows
-  const auto myNrows = mvA.localLength();
+  const auto myNrows = mvA.extentLocal(0);
 
   // get the wrapped trilinos tpetra multivector
   auto trilD = mvA.data();
@@ -127,7 +127,7 @@ void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
   using dev_t  = tpetra_mv_dev_t;
 
-  assert( mvA.globalNumVectors() == b.data()->extent(0) );
+  assert( mvA.numVectors() == b.data()->extent(0) );
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
@@ -192,7 +192,7 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
   // here, mvA is distrubted, but vecB is NOT.
 
   // the data map of the multivector
-  auto rcpMap = mvA.getRCPDataMap();
+  auto rcpMap = mvA.data()->getMap();
 
   using mvec_traits = typename details::traits<mvec_type>;
   using sc_t = typename mvec_traits::scalar_t;
@@ -244,7 +244,7 @@ auto product(const mvec_type & mvA, const expr_type & b)
                  >
 {
   // the data map of the multivector
-  auto rcpMap = mvA.getRCPDataMap();
+  auto rcpMap = mvA.data()->getMap();
 
   using mvec_traits = typename details::traits<mvec_type>;
   using sc_t = typename mvec_traits::scalar_t;

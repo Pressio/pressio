@@ -155,9 +155,9 @@ void product(const mvec_type & A,
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, expr_data_t>::value,
   		"product: MV and expr types need to have same execution space" );
 
-  assert( c.size() == A.length() );
+  assert( c.extent(0) == A.extent(0) );
   const auto numVecs = A.numVectors();
-  assert(numVecs == exprObj.size());
+  assert(numVecs == exprObj.extent(0));
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();

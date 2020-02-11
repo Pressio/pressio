@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 
   // define ROM state and set to zero
   lspg_state_t yROM(romSize);
-  yROM.putScalar(0.0);
+  pressio::containers::ops::fill(yROM, 0.0);
 
   // define LSPG type
   using lspg_problem_type = pressio::rom::lspg::steady::PreconditionedProblemType<

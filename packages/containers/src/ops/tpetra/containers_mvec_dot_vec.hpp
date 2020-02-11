@@ -115,7 +115,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 typename details::traits<mvec_type>::scalar_t * result)
 {
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectors();
   for (auto i=0; i<numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     auto colI = mvA.data()->getVector(i);
@@ -145,9 +145,9 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  const auto numVecs = mvA.globalNumVectors();
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  const auto numVecs = mvA.numVectors();
+  if ( result.extent(0) != numVecs )
+    result.data()->resize(numVecs);
   dot(mvA, vecB, result.data()->values());
 }
 
@@ -183,10 +183,11 @@ void dot(const mvec_type & mvA,
      from mvA and do dot product one a time*/
 
   // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectors();
   // check the result has right size
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  if ( result.extent(0) != numVecs ){
+    ::pressio::containers::ops::resize(result, numVecs);
+  }
 
   dot(mvA, vecB, result.data()->data());
   // for (decltype(numVecs) i=0; i<numVecs; i++){
@@ -222,7 +223,7 @@ void dot(const mvec_type & mvA,
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
   // check the result has right size
-  assert( result.size() == mvA.globalNumVectors() );
+  assert( result.extent(0) == mvA.numVectors() );
   dot(mvA, vecB, result.data()->data());
 
   // for (decltype(numVecs) i=0; i<numVecs; i++){

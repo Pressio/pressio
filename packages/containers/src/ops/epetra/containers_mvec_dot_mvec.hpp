@@ -72,14 +72,14 @@ template <
 void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C){
 
   // how many vectors are in mvA and mvB
-  const auto numVecsA = mvA.globalNumVectors();
-  const auto numVecsB = mvB.globalNumVectors();
-  assert( mvA.globalLength() == mvB.globalLength());
+  const auto numVecsA = mvA.numVectors();
+  const auto numVecsB = mvB.numVectors();
+  assert( mvA.extent(0) == mvB.extent(0));
   auto const & mvAdata = *mvA.data();
   auto const & mvBdata = *mvB.data();
 
-  assert(C.rows() == numVecsA);
-  assert(C.cols() == numVecsB);
+  assert(C.extent(0) == numVecsA);
+  assert(C.extent(1) == numVecsB);
   // compute dot between every column of A with every col of B
   for (size_t i=0; i<(size_t)numVecsA; i++){
     for (size_t j=0; j<(size_t)numVecsB; j++){
@@ -100,8 +100,8 @@ template <
     > * = nullptr
   >
 result_t dot(const mvec_t & mvA, const mvec_t & mvB){
-  const auto numVecsA = mvA.globalNumVectors();
-  const auto numVecsB = mvB.globalNumVectors();
+  const auto numVecsA = mvA.numVectors();
+  const auto numVecsB = mvB.numVectors();
   result_t C(numVecsA, numVecsB);
   dot(mvA, mvB, C);
   return C;

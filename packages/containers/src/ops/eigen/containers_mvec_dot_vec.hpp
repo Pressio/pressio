@@ -75,11 +75,12 @@ template <
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
-	 result_vec_type & result){
+	 result_vec_type & result)
+{
   const auto numVecs = mvA.numVectors();
   // I can resize if needed because I know here it is a dynamic vector
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  if ( result.extent(0) != numVecs )
+    result.data()->resize(numVecs);
   *result.data() = (*mvA.data()).transpose() * (*vecB.data());
 }
 
@@ -126,7 +127,7 @@ void dot(const mvec_type & mvA,
 	 result_vec_type & result)
 {
   // we are dealing with static vector type, so this needs to be true
-  assert(result.size() == mvA.data()->cols());
+  assert(result.extent(0) == mvA.data()->cols());
   // compute
   *result.data() = (*mvA.data()).transpose() * (*vecB.data());
 }

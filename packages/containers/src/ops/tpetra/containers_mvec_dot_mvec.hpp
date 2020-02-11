@@ -70,11 +70,11 @@ template <
   >
 void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C){
   // how many vectors are in mvA and mvB
-  const auto numVecsA = mvA.globalNumVectors();
-  const auto numVecsB = mvB.globalNumVectors();
-  assert( mvA.globalLength() == mvB.globalLength());
-  assert(C.rows() == numVecsA);
-  assert(C.cols() == numVecsB);
+  const auto numVecsA = mvA.numVectors();
+  const auto numVecsB = mvB.numVectors();
+  assert( mvA.extent(0) == mvB.extent(0));
+  assert(C.extent(0) == numVecsA);
+  assert(C.extent(1) == numVecsB);
   // compute dot between every column of A with every col of B
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++){
     // colI is a Teuchos::RCP<Vector<...>>
@@ -100,8 +100,8 @@ template <
   >
 result_t dot(const mvec_t & mvA, const mvec_t & mvB){
 
-  const auto numVecsA = mvA.globalNumVectors();
-  const auto numVecsB = mvB.globalNumVectors();
+  const auto numVecsA = mvA.numVectors();
+  const auto numVecsB = mvB.numVectors();
   result_t C(numVecsA, numVecsB);
   dot(mvA, mvB, C);
   return C;
@@ -123,11 +123,9 @@ template <
   >
 void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C){
   // how many vectors are in mvA and mvB
-  const auto numVecsA = mvA.globalNumVectors();
-  const auto numVecsB = mvB.globalNumVectors();
-  assert( mvA.globalLength() == mvB.globalLength());
-  // assert(C.rows() == numVecsA);
-  // assert(C.cols() == numVecsB);
+  const auto numVecsA = mvA.numVectors();
+  const auto numVecsB = mvB.numVectors();
+  assert( mvA.extent(0) == mvB.extent(0));
 
   // compute dot between every column of A with every col of B
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++){

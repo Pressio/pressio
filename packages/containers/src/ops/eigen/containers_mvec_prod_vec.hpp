@@ -69,10 +69,10 @@ template <
   >
 void product(const mvec_type & mvA, const vec_type & vecB, vec_type & C){
 
-  assert( C.size() == mvA.length() );
+  assert( C.extent(0) == mvA.extent(0) );
   ::pressio::containers::ops::set_zero(C);
   const auto numVecs = mvA.numVectors();
-  assert(numVecs == vecB.size());
+  assert(numVecs == vecB.extent(0));
 
   // compute
   (*C.data()) = (*mvA.data()) * (*vecB.data());
@@ -94,7 +94,7 @@ template <
     > * = nullptr
   >
 vec_type product(const mvec_type & mvA, const vec_type & vecB){
-  vec_type c(mvA.length());
+  vec_type c(mvA.extent(0));
   product(mvA, vecB, c);
   return c;
 }
@@ -116,9 +116,9 @@ template <
   >
 void product(const mvec_type & mvA, const expr_type & exprObj, vec_type & C)
 {
-  assert( C.size() == mvA.length() );
+  assert( C.extent(0) == mvA.extent(0) );
   const auto numVecs = mvA.numVectors();
-  assert(numVecs == exprObj.size());
+  assert(numVecs == exprObj.extent(0));
 
   *C.data() = (*mvA.data()) * exprObj();
 }//end function
@@ -142,7 +142,7 @@ auto product(const mvec_type & mvA, const expr_type & exprObj)
   using eig_vec_t = Eigen::Matrix<scalar_t, -1, 1>;
   using return_t  = ::pressio::containers::Vector<eig_vec_t>;
 
-  return_t c(mvA.length());
+  return_t c(mvA.extent(0));
   product(mvA, exprObj, c);
   return c;
 }

@@ -74,9 +74,9 @@ template <
 void dot_self(const mvec_t & A, result_t & C)
 {
   // how many vectors are in A and mvB
-  const auto numVecsA = A.globalNumVectors();
-  assert(C.rows() == numVecsA);
-  assert(C.cols() == numVecsA);
+  const auto numVecsA = A.numVectors();
+  assert(C.extent(0) == numVecsA);
+  assert(C.extent(1) == numVecsA);
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
@@ -103,7 +103,7 @@ template <
   >
 result_t dot_self(const mvec_t & mvA)
 {
-  const auto numVecsA = mvA.globalNumVectors();
+  const auto numVecsA = mvA.numVectors();
   result_t C(numVecsA, numVecsA);
   dot_self(mvA, C);
   return C;
@@ -135,8 +135,8 @@ void dot_self(const mvec_t & A, result_t & C)
   const auto indexBase = A.data()->getMap()->getIndexBase();
   const auto comm = A.data()->getMap()->getComm();
   // C should be symmetric
-  assert( C.rows() == C.cols() );
-  const auto n = C.rows();
+  assert( C.extent(0) == C.extent(1) );
+  const auto n = C.extent(0);
   Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
   // create multivector that views the Kokkos matrix
   tpetra_mv_t Cmv(replMap, *C.data());
@@ -159,7 +159,7 @@ template <
   >
 result_t dot_self(const mvec_t & mvA)
 {
-  const auto numVecsA = mvA.globalNumVectors();
+  const auto numVecsA = mvA.numVectors();
   result_t C("dummyLabel", numVecsA, numVecsA);
   dot_self(mvA, C);
   return C;
