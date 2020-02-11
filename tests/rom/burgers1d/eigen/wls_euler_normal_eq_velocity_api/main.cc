@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
   // -----------------
   // WLS problem
   // -----------------
-  constexpr int numStepsInWindow = 1;
+  constexpr int numStepsInWindow = 5;
   using ode_tag	     = ::pressio::ode::implicitmethods::Euler;
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
   // create the wls state

@@ -57,7 +57,8 @@ private:
   mutable residual_t residual_;	     // working variable for the time discrete residual
   int romSize_;
   int fomSize_;
-  int time_stencil_size;
+  int time_stencil_size_;
+  int jac_stencil_size_;
   const decoder_jac_t & phi_;
   const fom_type & appObj_;
   const preconditioner_t Preconditioner{};
@@ -77,18 +78,19 @@ private:
   // computes Jacobians over stencil
   template <typename time_scheme_t>
   void computeJacobiansOverStencil(const time_scheme_t & timeSchemeObj,
-                          const int & time_stencil_size,
                           const int & stepNum,
                           const scalar_t & t,
                           const scalar_t & dt) const
   {
-    for (int i = 0; i < time_stencil_size; i++){
+    for (int i = 0; i < jac_stencil_size_; i++){
       timeSchemeObj.time_discrete_jacobian(appObj_,
                                            yFOM_current_,
-                                           wlsJacs_[time_stencil_size - i - 1],
+                                           wlsJacs_[jac_stencil_size_ - i - 1],
                                            phi_,
                                            t, dt, stepNum, i);
-      Preconditioner(appObj_,yFOM_current_,wlsJacs_[time_stencil_size - i - 1],t);
+      if (timeSchemeObj.jacobian_needs_recomputing_[jac_stencil_size_ - i - 1]){
+        Preconditioner(appObj_,yFOM_current_,wlsJacs_[jac_stencil_size_ - i - 1],t);
+      }
     }
   }
 
@@ -109,8 +111,7 @@ private:
                   const scalar_t & ts,
                   scalar_t & rnorm,
                   gradient_type & gradient,
-                  const scalar_t & dt,
-                  int  timeStencilSize) const{
+                  const scalar_t & dt) const{
       // === reconstruct FOM states ========
       timeSchemeObj.updateStatesNStep(yFOM_current_);
       setCurrentFomState(wlsState,n,fomStateReconstrObj);
@@ -122,7 +123,7 @@ private:
       timeSchemeObj.time_discrete_residual(appObj_, yFOM_current_, residual_, t, dt, step);
       Preconditioner(appObj_,yFOM_current_,residual_,t);
       rnorm += ::pressio::containers::ops::norm2(residual_);
-      computeJacobiansOverStencil(timeSchemeObj,timeStencilSize,step,t,dt);
+      computeJacobiansOverStencil(timeSchemeObj,step,t,dt);
   }
 
 public:
@@ -134,13 +135,14 @@ public:
                                   const int romSize)
     : // construct wls Jacobians from jacobian of the decoder: we might need to change this later
       appObj_(appObj),
-      wlsJacs_(time_stencil_size,decoderObj.getReferenceToJacobian()),
+      jac_stencil_size_(std::min(time_stencil_size+1,numStepsInWindow) ),
+      wlsJacs_(std::min(time_stencil_size+1,numStepsInWindow),decoderObj.getReferenceToJacobian()),
       phi_(decoderObj.getReferenceToJacobian()),
       residual_( appObj.velocity( *yFOM.data() , ::pressio::utils::constants::zero<scalar_t>()) ),
       yFOM_current_(yFOM)
   {
     this->romSize_ = romSize;
-    this->time_stencil_size = time_stencil_size;
+    this->time_stencil_size_ = time_stencil_size;
   }
 
 
@@ -179,17 +181,16 @@ public:
     rnorm += ::pressio::containers::ops::norm2(residual_);
 
     computeJacobiansOverStencil(timeSchemeObj,
-                                time_stencil_size,
                                 step,t,dt);
 
     // add to local block of hessian
     auto hess_block = ::pressio::containers::subspan( hess,
 						      std::make_pair( n*romSize_,(n+1)*romSize_ ) ,
 						      std::make_pair( n*romSize_,(n+1)*romSize_) );
-    ::pressio::containers::ops::dot(wlsJacs_[time_stencil_size-1], wlsJacs_[time_stencil_size-1], hess_block);
+    ::pressio::containers::ops::dot(wlsJacs_[jac_stencil_size_-1], wlsJacs_[jac_stencil_size_-1], hess_block);
 
     // compute gradient[n*romSize_:(n+1)*romSize] += J^T r
-    addToGradient<gradient_type>(wlsJacs_[time_stencil_size-1], residual_, gradient, n*romSize_, romSize_);
+    addToGradient<gradient_type>(wlsJacs_[jac_stencil_size_-1], residual_, gradient, n*romSize_, romSize_);
 
 
     // this is a temporary work around for the += issue.
@@ -204,13 +205,12 @@ public:
                                 ts,
                                 rnorm,
                                 gradient,
-                                dt,
-                                time_stencil_size);
+                                dt);
 
-      int sbar = std::min(n,time_stencil_size);
+      int sbar = std::min(n,jac_stencil_size_);
       for (int i=0; i < sbar; i++)
       {
-        addToGradient<gradient_type>(wlsJacs_[time_stencil_size-i-1], residual_, gradient, (n-i)*romSize_, romSize_);
+        addToGradient<gradient_type>(wlsJacs_[jac_stencil_size_-i-1], residual_, gradient, (n-i)*romSize_, romSize_);
       }
 
       // == Assemble local component of global Hessian //
@@ -221,7 +221,7 @@ public:
 	    auto hess_block = ::pressio::containers::subspan(hess,
 							     std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
 							     std::make_pair( (n-j)*romSize_,(n-j+1)*romSize_ ) );
-	    ::pressio::containers::ops::dot(wlsJacs_[time_stencil_size-i-1], wlsJacs_[time_stencil_size-j-1], C);
+	    ::pressio::containers::ops::dot(wlsJacs_[jac_stencil_size_-i-1], wlsJacs_[jac_stencil_size_-j-1], C);
 	    for (int k = 0; k<romSize_; k++){
 	      for (int l = 0; l<romSize_; l++){
 		hess_block(k,l) = hess_block(k,l) + C(k,l);
