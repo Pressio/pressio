@@ -61,24 +61,21 @@ namespace pressio{ namespace containers{ namespace ops{
 
 template <
   typename mvec_type,
-  typename vec_type,
+  typename vec1_type,
+  typename vec2_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::meta::is_vector_wrapper_kokkos<vec1_type>::value and
+    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec1_type>::value and
+    containers::meta::is_vector_wrapper_kokkos<vec2_type>::value and
+    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec2_type>::value
     > * = nullptr
   >
-void dot(const mvec_type & A,
-	 const vec_type & b,
-	 containers::Vector<
-	   Kokkos::View<
-	     typename containers::details::traits<mvec_type>::scalar_t*,
-	     typename containers::details::traits<mvec_type>::layout,
-	     typename containers::details::traits<mvec_type>::execution_space
-	   >
-	 > & c)
+void dot(const mvec_type & A, const vec1_type & b, vec2_type & c)
 {
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec_type>::value,
+  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec1_type>::value,
+		"dot: MV and vec types need to have same execution space" );
+  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<vec1_type, vec2_type>::value,
 		"dot: MV and vec types need to have same execution space" );
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;

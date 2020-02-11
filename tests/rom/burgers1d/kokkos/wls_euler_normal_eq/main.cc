@@ -31,7 +31,7 @@ int main(int argc, char *argv[]){
   // using decoder_jac_h_t	= pressio::containers::MultiVector<native_mv_t_h>;
 
   // device decoder type
-  using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t>;
+  using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, wls_state_d_t, fom_state_t>;
   using hessian_t  = pressio::containers::Matrix<typename fom_t::mv_d>;
 
   std::string checkStr {"PASSED"};
@@ -72,7 +72,9 @@ int main(int argc, char *argv[]){
     using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_d_t,decoder_d_t,ode_tag,hessian_t>;
 
     // create the wls state
-    wls_state_d_t  wlsState("yRom",romSize*numStepsInWindow); wlsState.setZero();
+    wls_state_d_t  wlsState("yRom",romSize*numStepsInWindow); 
+    pressio::containers::ops::set_zero(wlsState);
+    
     // create the wls system
     wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow,romSize);
 
@@ -109,7 +111,7 @@ int main(int argc, char *argv[]){
     const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
     fom_state_t yFinal("yFF_d",numCell); //may not build
 
-    using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<fom_state_t, decoder_d_t>;
+    using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_d_t>;
     fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
     fomStateReconstructor(wlsCurrentState, yFinal);
 

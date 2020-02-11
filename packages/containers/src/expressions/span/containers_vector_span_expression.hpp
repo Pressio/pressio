@@ -55,7 +55,7 @@ namespace pressio{ namespace containers{ namespace expressions{
 
 template <typename vector_t>
 struct SpanExpr<
-  vector_t, 
+  vector_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<vector_t>::value
     >
@@ -97,9 +97,9 @@ public:
     assert( extent_ <= objIn.extent(0) );
   }
 
-  std::size_t const & extent(std::size_t i) const{ 
+  std::size_t const & extent(std::size_t i) const{
     assert(i==0);
-    return extent_;  
+    return extent_;
   }
 
   scalar_t & operator[](std::size_t i)
@@ -133,7 +133,7 @@ public:
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename vector_t>
 struct SpanExpr<
-  vector_t, 
+  vector_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_vector_wrapper_kokkos<vector_t>::value
     >
@@ -162,8 +162,8 @@ public:
 	   const std::size_t extentIn)
     : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn)
   {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.extent() );
-    assert( extent_ <= objIn.extent() );
+    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
+    assert( extent_ <= objIn.extent(0) );
   }
 
   SpanExpr(vector_t & objIn,
@@ -172,18 +172,18 @@ public:
       startIndex_(std::get<0>(indexRange)),
       extent_(std::get<1>(indexRange)-startIndex_)
   {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.extent() );
-    assert( extent_ <= objIn.extent() );
+    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
+    assert( extent_ <= objIn.extent(0) );
   }
 
 
-  std::size_t const & extent(std::size_t i) const{ 
+  std::size_t const & extent(std::size_t i) const{
     assert(i==0);
-    return extent_;  
+    return extent_;
   }
 
-  std::size_t const & extent() const{ 
-    return extent_;  
+  std::size_t const & extent() const{
+    return extent_;
   }
 
   // TODO: enable only on host
