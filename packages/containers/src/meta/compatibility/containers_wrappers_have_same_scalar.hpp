@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_MULTI_VECTOR
+// containers_wrappers_have_same_scalar.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -45,29 +45,42 @@
 // ************************************************************************
 //@HEADER
 */
+#ifndef CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
+#define CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
 
-#ifndef CONTAINERS_MULTI_VECTOR_HPP_
-#define CONTAINERS_MULTI_VECTOR_HPP_
+#include "../../vector/containers_vector_meta.hpp"
+#include "../../matrix/containers_matrix_meta.hpp"
+#include "../../multi_vector/containers_multi_vector_meta.hpp"
+// #include "..//containers_meta_is_expression.hpp"
 
-#include "CONTAINERS_BASIC"
+namespace pressio{ namespace containers{ namespace meta {
 
-#include "containers/src/collection/containers_static_collection.hpp"
+template <typename T1, typename T2, typename enable = void>
+struct wrapper_pair_have_same_scalar : std::false_type {};
 
-#include "containers/src/multi_vector/containers_native_multi_vector_static_asserts.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_traits.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_meta.hpp"
+template <typename T1, typename T2>
+struct wrapper_pair_have_same_scalar<T1,T2,
+  ::pressio::mpl::enable_if_t<
+    std::is_same<
+      typename containers::details::traits<T1>::scalar_t,
+      typename containers::details::traits<T2>::scalar_t
+      >::value
+    >
+  > : std::true_type{};
 
-#include "containers/src/expressions/mv_view_col_vector/containers_expressions_traits.hpp"
-#include "containers/src/expressions/mv_view_col_vector/containers_view_column_vector.hpp"
 
-#include "containers/src/multi_vector/concrete/containers_multi_vector_arbitrary.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_epetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra_block.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_kokkos.hpp"
+template <
+  typename T1, typename T2, typename T3, typename enable = void
+  >
+struct wrapper_triplet_have_same_scalar : std::false_type {};
 
-#include "containers/src/meta/compatibility/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
-#include "containers/src/meta/compatibility/containers_wrappers_have_same_scalar.hpp"
+template <typename T1, typename T2, typename T3>
+struct wrapper_triplet_have_same_scalar<T1,T2,T3,
+  ::pressio::mpl::enable_if_t<
+    wrapper_pair_have_same_scalar<T1,T2>::value &&
+    wrapper_pair_have_same_scalar<T2,T3>::value
+    >
+  > : std::true_type{};
 
+}}} // namespace pressio::containers::meta
 #endif

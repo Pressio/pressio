@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_NATIVE_EIGEN_MATRIX_META_HPP_
 #define CONTAINERS_NATIVE_EIGEN_MATRIX_META_HPP_
 
-#include "../../meta/containers_meta_basic.hpp"
+// #include "../../meta/containers_meta_basic.hpp"
 #include "../../vector/meta/containers_native_eigen_vector_meta.hpp"
 #include "Eigen/Dense"
 #include "Eigen/Sparse"

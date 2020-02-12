@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_meta_basic.hpp
+// containers_meta_type_aliases_detection.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,16 +46,14 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_META_META_BASIC_HPP_
-#define CONTAINERS_META_META_BASIC_HPP_
+#ifndef CONTAINERS_META_META_TYPE_ALIASES_DETECTION_HPP_
+#define CONTAINERS_META_META_TYPE_ALIASES_DETECTION_HPP_
 
-#include "containers_meta_has_communicator_typedef.hpp"
-#include "containers_meta_has_data_map_typedef.hpp"
-#include "containers_meta_has_global_ordinal_typedef.hpp"
-#include "containers_meta_has_local_ordinal_typedef.hpp"
-#include "containers_meta_has_ordinal_typedef.hpp"
-#include "containers_meta_has_scalar_typedef.hpp"
-#include "containers_meta_has_size_method.hpp"
-#include "containers_meta_is_teuchos_rcp.hpp"
+#include "./type_aliases_detection/containers_meta_has_communicator_typedef.hpp"
+#include "./type_aliases_detection/containers_meta_has_data_map_typedef.hpp"
+#include "./type_aliases_detection/containers_meta_has_global_ordinal_typedef.hpp"
+#include "./type_aliases_detection/containers_meta_has_local_ordinal_typedef.hpp"
+#include "./type_aliases_detection/containers_meta_has_ordinal_typedef.hpp"
+#include "./type_aliases_detection/containers_meta_has_scalar_typedef.hpp"
 
 #endif

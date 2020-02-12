@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_MULTI_VECTOR
+// containers_is_wrapper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,28 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MULTI_VECTOR_HPP_
-#define CONTAINERS_MULTI_VECTOR_HPP_
+#ifndef CONTAINERS_IS_CONTAINERS_WRAPPER_HPP_
+#define CONTAINERS_IS_CONTAINERS_WRAPPER_HPP_
 
-#include "CONTAINERS_BASIC"
+#include "../../vector/meta/containers_is_vector_wrapper.hpp"
+#include "../../matrix/meta/containers_is_matrix_wrapper.hpp"
+#include "../../multi_vector/meta/containers_is_multi_vector_wrapper.hpp"
 
-#include "containers/src/collection/containers_static_collection.hpp"
+namespace pressio{ namespace containers{ namespace meta {
 
-#include "containers/src/multi_vector/containers_native_multi_vector_static_asserts.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_traits.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_meta.hpp"
+template <typename T, typename enable = void>
+struct is_wrapper : std::false_type {};
 
-#include "containers/src/expressions/mv_view_col_vector/containers_expressions_traits.hpp"
-#include "containers/src/expressions/mv_view_col_vector/containers_view_column_vector.hpp"
+template <typename T>
+struct is_wrapper<
+  T,
+  typename
+  std::enable_if<
+    ::pressio::containers::meta::is_vector_wrapper<T>::value or
+    ::pressio::containers::meta::is_multi_vector_wrapper<T>::value or
+    ::pressio::containers::meta::is_matrix_wrapper<T>::value
+    >::type
+  > : std::true_type{};
 
-#include "containers/src/multi_vector/concrete/containers_multi_vector_arbitrary.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_epetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra_block.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_kokkos.hpp"
-
-#include "containers/src/meta/compatibility/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
-#include "containers/src/meta/compatibility/containers_wrappers_have_same_scalar.hpp"
-
+}}}//end namespace pressio::containers::meta
 #endif

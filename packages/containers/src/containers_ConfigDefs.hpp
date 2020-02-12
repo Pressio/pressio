@@ -64,6 +64,9 @@
 #include "../../utils/src/io/utils_print_helper.hpp"
 #include "../../utils/src/io/utils_colorize_print.hpp"
 
-#include "meta/containers_meta_basic.hpp"
+#include "meta/containers_meta_compatibility.hpp"
+#include "meta/containers_meta_generic.hpp"
+#include "meta/containers_meta_methods_detection.hpp"
+#include "meta/containers_meta_type_aliases_detection.hpp"
 
 #endif

@@ -50,7 +50,7 @@
 #ifndef CONTAINERS_NATIVE_KOKKOS_MATRIX_META_HPP_
 #define CONTAINERS_NATIVE_KOKKOS_MATRIX_META_HPP_
 
-#include "../../meta/containers_meta_basic.hpp"
+// #include "../../meta/containers_meta_basic.hpp"
 #include <KokkosSparse_CrsMatrix.hpp>
 
 namespace pressio{ namespace containers{ namespace meta {

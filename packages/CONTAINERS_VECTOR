@@ -73,7 +73,7 @@
 #include "containers/src/vector/concrete/containers_vector_sharedmem_armadillo.hpp"
 #include "containers/src/vector/concrete/containers_vector_sharedmem_teuchos_serial_dense.hpp"
 
-#include "containers/src/meta/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
-#include "containers/src/meta/containers_wrappers_have_same_scalar.hpp"
+#include "containers/src/meta/compatibility/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
+#include "containers/src/meta/compatibility/containers_wrappers_have_same_scalar.hpp"
 
 #endif

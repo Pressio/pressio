@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_MULTI_VECTOR
+// containers_meta_methods_detection.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,14 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MULTI_VECTOR_HPP_
-#define CONTAINERS_MULTI_VECTOR_HPP_
+#ifndef CONTAINERS_META_META_METHODS_DETECTION_HPP_
+#define CONTAINERS_META_META_METHODS_DETECTION_HPP_
 
-#include "CONTAINERS_BASIC"
-
-#include "containers/src/collection/containers_static_collection.hpp"
-
-#include "containers/src/multi_vector/containers_native_multi_vector_static_asserts.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_traits.hpp"
-#include "containers/src/multi_vector/containers_multi_vector_meta.hpp"
-
-#include "containers/src/expressions/mv_view_col_vector/containers_expressions_traits.hpp"
-#include "containers/src/expressions/mv_view_col_vector/containers_view_column_vector.hpp"
-
-#include "containers/src/multi_vector/concrete/containers_multi_vector_arbitrary.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_epetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra_block.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_kokkos.hpp"
-
-#include "containers/src/meta/compatibility/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
-#include "containers/src/meta/compatibility/containers_wrappers_have_same_scalar.hpp"
+#include "./methods_detection/containers_has_static_method_add_to_diagonal.hpp"
+#include "./methods_detection/containers_has_static_method_do_update_four_terms.hpp"
+#include "./methods_detection/containers_has_static_method_do_update_one_term.hpp"
+#include "./methods_detection/containers_has_static_method_do_update_three_terms.hpp"
+#include "./methods_detection/containers_has_static_method_do_update_two_terms.hpp"
+#include "./methods_detection/containers_has_static_method_scale.hpp"
 
 #endif

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_meta_is_expression.hpp
+// containers_meta_generic.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,12 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_META_IS_EXPRESSION_HPP_
-#define CONTAINERS_META_IS_EXPRESSION_HPP_
+#ifndef CONTAINERS_META_META_GENERIC_HPP_
+#define CONTAINERS_META_META_GENERIC_HPP_
 
-#include "../containers_fwd.hpp"
+#include "./generic/containers_is_wrapper.hpp"
+#include "./generic/containers_meta_is_expression.hpp"
+#include "./generic/containers_meta_is_teuchos_rcp.hpp"
+#include "./generic/containers_native_pybind_array_meta.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
-
-template <typename T, typename enable = void>
-struct is_expression : std::false_type{};
-
-template <typename T>
-struct is_expression<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::mpl::publicly_inherits_from<
-      T, ::pressio::containers::expressions::BaseExpr<T>
-      >::value
-    >
-  > : std::true_type{};
-
-}}} // namespace pressio::containers::meta
 #endif

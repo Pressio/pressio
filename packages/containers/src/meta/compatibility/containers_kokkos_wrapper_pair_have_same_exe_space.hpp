@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_wrapper.hpp
+// containers_kokkos_wrapper_pair_have_same_exe_space.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -45,29 +45,30 @@
 // ************************************************************************
 //@HEADER
 */
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#ifndef CONTAINERS_KOKKOS_WRAPPER_PAIR_HAVE_SAME_EXE_SPACE_HPP_
+#define CONTAINERS_KOKKOS_WRAPPER_PAIR_HAVE_SAME_EXE_SPACE_HPP_
 
-#ifndef CONTAINERS_IS_CONTAINERS_WRAPPER_HPP_
-#define CONTAINERS_IS_CONTAINERS_WRAPPER_HPP_
-
-#include "../vector/meta/containers_is_vector_wrapper.hpp"
-#include "../matrix/meta/containers_is_matrix_wrapper.hpp"
-#include "../multi_vector/meta/containers_is_multi_vector_wrapper.hpp"
+#include "../../vector/containers_vector_meta.hpp"
+#include "../../matrix/containers_matrix_meta.hpp"
+#include "../../multi_vector/containers_multi_vector_meta.hpp"
 
 namespace pressio{ namespace containers{ namespace meta {
 
-template <typename T, typename enable = void>
-struct is_wrapper : std::false_type {};
+template <typename T1, typename T2, typename enable = void>
+struct kokkos_wrapper_pair_have_same_exe_space : std::false_type {};
 
-template <typename T>
-struct is_wrapper<
-  T,
-  typename
-  std::enable_if<
-    ::pressio::containers::meta::is_vector_wrapper<T>::value or
-    ::pressio::containers::meta::is_multi_vector_wrapper<T>::value or
-    ::pressio::containers::meta::is_matrix_wrapper<T>::value
-    >::type
+template <typename T1, typename T2>
+struct kokkos_wrapper_pair_have_same_exe_space<
+  T1,T2,
+  ::pressio::mpl::enable_if_t<
+    std::is_same<
+      typename containers::details::traits<T1>::execution_space,
+      typename containers::details::traits<T2>::execution_space
+      >::value
+    >
   > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}} // namespace pressio::containers::meta
+#endif
 #endif

@@ -50,7 +50,7 @@
 #ifndef CONTAINERS_NATIVE_TRILINOS_MATRIX_META_HPP_
 #define CONTAINERS_NATIVE_TRILINOS_MATRIX_META_HPP_
 
-#include "../../meta/containers_meta_basic.hpp"
+#include "../../meta/containers_meta_generic.hpp"
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_MultiVector.h>
 #include <Epetra_LocalMap.h>
