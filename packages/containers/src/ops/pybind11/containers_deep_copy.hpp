@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_vector_deep_copy.hpp
+// containers_deep_copy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,9 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_CONTAINER_OPS_VECTOR_DEEP_COPY_HPP_
-#define CONTAINERS_CONTAINER_OPS_VECTOR_DEEP_COPY_HPP_
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#ifndef CONTAINERS_CONTAINER_OPS_PYBIND11_DEEP_COPY_HPP_
+#define CONTAINERS_CONTAINER_OPS_PYBIND11_DEEP_COPY_HPP_
 
 #include "../vector/containers_vector_meta.hpp"
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -57,37 +58,6 @@
 
 namespace pressio{ namespace containers{ namespace ops{
 
-//--------------------------------------------------------------------------
-// for wrappers, because we overload the = operator
-// and for now we do NOT have view semantics
-//--------------------------------------------------------------------------
-template<
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<T>::value
-    > * = nullptr
-  >
-void deep_copy(const T & src, T & dest){
-  dest = src;
-}
-
-template<
-  typename T1, typename T2,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<T1>::value and
-    ::pressio::containers::meta::is_expression<T2>::value
-    > * = nullptr
-  >
-void deep_copy(const T1 & src, T2 & dest){
-  for (auto i=0; i<src.size(); ++i)
-    dest[i] = src[i];
-}
-
-
-//--------------------------------------------------------------------------
-// enable for pybind11::array_t
-//--------------------------------------------------------------------------
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<
   typename T,
   ::pressio::mpl::enable_if_t<
@@ -108,8 +78,7 @@ void deep_copy(const T & src, T & dest){
     dest_proxy(i) = src_proxy(i);
   }
 }
-#endif
-
 
 }}}//end namespace pressio::containers::ops
+#endif
 #endif
