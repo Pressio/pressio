@@ -62,9 +62,11 @@ yFOM_current: this is a working variable for the fom state.
 
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 
-template<typename fom_type,
-         typename decoder_t,
-         typename preconditioner_t = typename ::pressio::rom::wls::preconditioners::impl::NoPreconditioner>
+template<
+  typename fom_type,
+  typename decoder_t,
+  typename preconditioner_t = ::pressio::rom::wls::preconditioners::impl::NoPreconditioner
+  >
 class HessianGradientSequentialPolicy
 {
   using scalar_t                = typename fom_type::scalar_type;
@@ -149,9 +151,6 @@ public:
     auto gradientView = ::pressio::containers::span(gradient, n*romSize_, romSize_);
     ::pressio::containers::ops::updateWithDot( wlsJacs_[jac_stencil_size_-1], residual_, gradientView);
 
-
-    // this is a temporary work around for the += issue.
-    hess_type C(romSize_,romSize_);
     for (int n = 1; n < numStepsInWindow; n++)
     {
       updateResidualAndJacobian(timeSchemeObj, wlsState, fomStateReconstrObj, n, step_s, ts, rnorm, gradient, dt);
@@ -165,32 +164,23 @@ public:
 
       // == Assemble local component of global Hessian //
       for (int i=0; i < sbar; i++){
-	for (int j=0; j <= i; j++)
-	  {
+	for (int j=0; j <= i; j++){
 	    auto hess_block = ::pressio::containers::subspan(hess,
 							     std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
 							     std::make_pair( (n-j)*romSize_,(n-j+1)*romSize_ ) );
-	    ::pressio::containers::ops::dot(wlsJacs_[jac_stencil_size_-i-1], wlsJacs_[jac_stencil_size_-j-1], C);
-	    for (int k = 0; k<romSize_; k++){
-	      for (int l = 0; l<romSize_; l++){
-		hess_block(k,l) += C(k,l);
-	      }
-	    }
+	    ::pressio::containers::ops::updateWithDot(wlsJacs_[jac_stencil_size_-i-1],
+						      wlsJacs_[jac_stencil_size_-j-1],
+						      hess_block);
 
 	    // handle symmetry
 	    auto hess_block2 = ::pressio::containers::subspan(hess,
 							      std::make_pair( (n-j)*romSize_, (n-j+1)*romSize_),
 							      std::make_pair( (n-i)*romSize_,(n-i+1)*romSize_) );
-	    for (int k = 0; k<romSize_; k++){
-	      for (int l = 0; l<romSize_; l++){
-		hess_block2(l,k) = hess_block(k,l);
-	      }
-	    }
+	    ::pressio::containers::ops::deep_copy(hess_block, hess_block2);
 	  }
       }// end assembling local component of global Hessian
     }//end loop over stepsInWindow
   }//end operator()
-
 
 private:
   // reconstructs yFOM_current_ from the stepNum entry of wlsState
