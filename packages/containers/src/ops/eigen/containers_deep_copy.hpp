@@ -98,9 +98,12 @@ template<
   typename T1,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_expression<T1>::value and
-    ::pressio::containers::meta::is_vector_wrapper_eigen<
+    (::pressio::containers::meta::is_vector_wrapper_eigen<
       typename ::pressio::containers::details::traits<T1>::data_t
-      >::value
+      >::value or
+     ::pressio::containers::meta::is_matrix_wrapper_eigen<
+      typename ::pressio::containers::details::traits<T1>::data_t
+     >::value)
     > * = nullptr
   >
 void deep_copy(const T1 & src, T1 & dest){
