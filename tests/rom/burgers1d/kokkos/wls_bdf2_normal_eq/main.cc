@@ -65,20 +65,26 @@ int main(int argc, char *argv[]){
     fom_state_t & yRef = yFOM_IC;
 
     // -----------------
+    // L solver
+    // -----------------
+    using lin_solver_tag  = pressio::solvers::linear::direct::getrs;
+    using linear_solver_t = pressio::solvers::direct::KokkosDirect<lin_solver_tag, hessian_t>;
+    linear_solver_t linear_solver;
+
+    // -----------------
     // WLS problem
     // -----------------
     constexpr int numStepsInWindow = 5;
     using ode_tag	     = ::pressio::ode::implicitmethods::BDF2;
-    using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_d_t,decoder_d_t,ode_tag,hessian_t>;
+    using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_d_t,decoder_d_t,ode_tag,hessian_t,linear_solver_t>;
 
     // create the wls state
     wls_state_d_t  wlsState("yRom",romSize*numStepsInWindow); wlsState.setZero();
     // create the wls system
-    wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow,romSize);
+    wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow,romSize,linear_solver);
 
-    //  Currently just see if we can get here with the build!
     // -----------------
-    // solver
+    // NL solver
     // -----------------
     using lin_solver_tag  = pressio::solvers::linear::direct::getrs;
     using linear_solver_t = pressio::solvers::direct::KokkosDirect<lin_solver_tag, hessian_t>;
