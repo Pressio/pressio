@@ -108,6 +108,39 @@ result_t dot(const mvec_t & mvA, const mvec_t & mvB){
 }
 
 
+// C += mvA^T mvB
+template <
+  typename mvec_t,
+  typename expr_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
+    ::pressio::containers::meta::is_expression<expr_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, expr_t>::value and
+    ::pressio::containers::meta::is_matrix_wrapper_eigen<
+      typename ::pressio::containers::details::traits<expr_t>::data_t
+      >::value
+    > * = nullptr
+  >
+void updateWithDot(const mvec_t & mvA, const mvec_t & mvB, expr_t & C){
+  // how many vectors are in mvA and mvB
+  const auto numVecsA = mvA.numVectors();
+  const auto numVecsB = mvB.numVectors();
+  assert( mvA.extent(0) == mvB.extent(0));
+  assert(C.extent(0) == numVecsA);
+  assert(C.extent(1) == numVecsB);
+  // compute dot between every column of A with every col of B
+  for (std::size_t i=0; i<(std::size_t)numVecsA; i++){
+    // colI is a Teuchos::RCP<Vector<...>>
+    const auto colI = mvA.data()->getVector(i);
+    for (std::size_t j=0; j< (std::size_t)numVecsB; j++)
+    {
+      const auto colJ = mvB.data()->getVector(j);
+      C(i,j) += colI->dot(*colJ);
+    }
+  }
+}
+
+
 
 /* ----------------------------------------------
  * result_t = an expression

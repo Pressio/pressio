@@ -109,6 +109,36 @@ result_t dot(const mvec_t & A, const mvec_t & B)
 
 
 /* ----------------------------------------------
+ * C += A^T B
+ * C is an expression
+ ---------------------------------------------- */
+template <
+  typename mvec_t,
+  typename expr_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value and
+    ::pressio::containers::meta::is_expression<expr_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, expr_t>::value and
+    ::pressio::containers::meta::is_matrix_wrapper_eigen<
+      typename ::pressio::containers::details::traits<expr_t>::data_t
+      >::value
+    > * = nullptr
+  >
+void updateWithDot(const mvec_t & A, const mvec_t & B, expr_t & C)
+{
+  const auto nAcols = A.numVectors();
+  const auto nArows = A.extent(0);
+  const auto nBcols = B.numVectors();
+  const auto nBrows = B.extent(0);
+  assert(nArows == nBrows);
+  assert(C.extent(0) == nAcols and C.extent(1) == nBcols);
+
+  C() += A.data()->transpose() * (*B.data());
+}
+
+
+
+/* ----------------------------------------------
  * result_t = an expression
  ---------------------------------------------- */
 template <

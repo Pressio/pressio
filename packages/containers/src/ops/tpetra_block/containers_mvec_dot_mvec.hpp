@@ -110,6 +110,43 @@ result_t dot(const mvec_t & mvA, const mvec_t & mvB)
   return C;
 }
 
+
+
+// C += mvA^T mvB
+template <
+  typename mvec_t,
+  typename expr_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
+    ::pressio::containers::meta::is_expression<expr_t>::value and
+    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, expr_t>::value and
+    ::pressio::containers::meta::is_matrix_wrapper_eigen<
+      typename ::pressio::containers::details::traits<expr_t>::data_t
+      >::value
+    > * = nullptr
+  >
+void updateWithDot(const mvec_t & mvA, const mvec_t & mvB, expr_t & C)
+{
+  throw std::runtime_error("Error: updateWithDot for tpetrablock not yet supported");
+
+  // how many vectors are in mvA and mvB
+  const auto numVecsA = mvA.globalNumVectors();
+  const auto numVecsB = mvB.globalNumVectors();
+  auto mvA_v = mvA.data()->getMultiVectorView();
+  auto mvB_v = mvB.data()->getMultiVectorView();
+
+  // compute dot between every column of A with every col of B
+  for (std::size_t i=0; i<(std::size_t)numVecsA; i++){
+    // colI is a Teuchos::RCP<Vector<...>>
+    const auto colI = mvA_v.getVector(i);
+    for (std::size_t j=0; j<(std::size_t)numVecsB; j++){
+      const auto colJ = mvB_v.getVector(j);
+      C(i,j) += colI->dot(*colJ);
+    }
+  }
+}
+
+
 /* ----------------------------------------------
  * result_t = an expression
  ---------------------------------------------- */
@@ -124,7 +161,7 @@ template <
   >
 void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
 {
-  throw std::runtime_error("Warning, container::ops::dot operation between tpetra_block, tpetra_block, and putting result into expression not yet supported");
+  throw std::runtime_error("Error container::ops::dot operation between tpetra_block, tpetra_block, and putting result into expression not yet supported");
 }
 
 }}}//end namespace pressio::containers::ops

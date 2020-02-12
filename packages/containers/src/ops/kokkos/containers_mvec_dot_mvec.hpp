@@ -123,6 +123,38 @@ result_t dot(const mvec_t & mvA, const mvec_t & mvB)
 }
 
 
+// C += A^T B
+template <
+  typename mvec_t,
+  typename expr_t,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_kokkos<mvec_t>::value and
+    containers::meta::is_expression<expr_t>::value and
+    ::pressio::containers::meta::is_matrix_wrapper_kokkos<
+      typename ::pressio::containers::details::traits<expr_t>::data_t
+      >::value and
+    std::is_same<
+      typename containers::details::traits<expr_t>::execution_space,
+      typename containers::details::traits<mvec_t>::execution_space
+    >::value and
+    std::is_same<
+      typename containers::details::traits<expr_t>::scalar_t,
+      typename containers::details::traits<mvec_t>::scalar_t
+    >::value
+    > * = nullptr
+  >
+void updateWithDot(const mvec_t & A, const mvec_t & B, expr_t & C){
+
+  using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
+  constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+  constexpr auto one = ::pressio::utils::constants::one<sc_t>();
+  const char ctA = 'T';
+  const char ctB = 'N';
+  KokkosBlas::gemm(&ctA, &ctB, one, *A.data(), *B.data(), one, C());
+}
+
+
+
 /* ----------------------------------------------
  * result_t = an expression
  ---------------------------------------------- */
