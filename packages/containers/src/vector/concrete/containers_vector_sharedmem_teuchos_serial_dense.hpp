@@ -79,6 +79,17 @@ public:
   explicit Vector(ord_t insize) : data_(insize){}
   explicit Vector(const wrap_t & src) : data_(src){}
 
+  // copy constructor implements copy semantics
+  Vector(const Vector & other) = default;
+  // copy assign implments copy semantics
+  Vector & operator=(const Vector & other) = default;
+
+  // move cnstr and assign
+  Vector(Vector && other) = default;
+  Vector & operator=(Vector && other) = default;
+
+  ~Vector() = default;
+
 public:
   // assignment with value
   template <typename T,
