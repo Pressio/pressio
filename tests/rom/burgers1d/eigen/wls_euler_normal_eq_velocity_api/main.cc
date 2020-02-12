@@ -16,16 +16,16 @@ int main(int argc, char *argv[]){
   using fom_t		   = pressio::apps::Burgers1dEigen;
   using scalar_t	   = typename fom_t::scalar_type;
   using fom_native_state_t = typename fom_t::state_type;
+  using fom_dense_matrix_t = typename fom_t::dense_matrix_type;
+
   using fom_state_t        = ::pressio::containers::Vector<fom_native_state_t>;
 
   using eig_dyn_mat	   = Eigen::Matrix<scalar_t, -1, -1>;
-  using eig_dyn_vec    = Eigen::Matrix<scalar_t, -1, 1>;
-
-  using wls_state_t    = pressio::containers::Vector<eig_dyn_vec>;
+  using eig_dyn_vec	   = Eigen::Matrix<scalar_t, -1, 1>;
+  using wls_state_t	   = pressio::containers::Vector<eig_dyn_vec>;
   using hessian_t          = pressio::containers::Matrix<eig_dyn_mat>;
-  using decoder_jac_t	   = pressio::containers::MultiVector<eig_dyn_mat>;
+  using decoder_jac_t	   = pressio::containers::MultiVector<fom_dense_matrix_t>;
   using decoder_t	   = pressio::rom::LinearDecoder<decoder_jac_t, wls_state_t, fom_state_t>;
-
 
   constexpr auto zero = pressio::utils::constants::zero<scalar_t>();
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
   decoder_t decoderObj(phiNative);
 
   // -----------------
-  // linear solver type
+  // linear solver
   // -----------------
   using lin_solver_tag	= pressio::solvers::linear::direct::ColPivHouseholderQR;
   using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, hessian_t>;
@@ -60,17 +60,24 @@ int main(int argc, char *argv[]){
   // -----------------
   constexpr int numStepsInWindow = 5;
   using ode_tag	     = ::pressio::ode::implicitmethods::Euler;
-  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t,linear_solver_t>;
+
+  // The initial condition is based on L^2 projection onto trial space
+  wls_state_t wlsStateIc(romSize);
+  const auto & decoderJac = decoderObj.getReferenceToJacobian();
+  pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_t>(linearSolver, decoderJac, yFOM_IC, yRef, wlsStateIc);
+
+  // create the wls system
+  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
+  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize, wlsStateIc);
+
   // create the wls state
   wls_state_t  wlsState(romSize*numStepsInWindow);
   ::pressio::containers::ops::set_zero(wlsState);
-  // create the wls system
-  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize,linearSolver);
 
   // -----------------
   // nonlinear solver
   // -----------------
-  using gn_t		= pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
+  using gn_t = pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
   gn_t GNSolver(wlsSystem, wlsState, linearSolver);
   GNSolver.setTolerance(1e-13);
   GNSolver.setMaxIterations(50);

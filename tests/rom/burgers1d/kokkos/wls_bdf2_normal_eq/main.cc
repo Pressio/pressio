@@ -9,30 +9,22 @@
 #include "utils_kokkos.hpp"
 
 int main(int argc, char *argv[]){
+
   using fom_t		= pressio::apps::Burgers1dKokkos;
   using scalar_t	= typename fom_t::scalar_type;
+  using native_state_d_t= typename fom_t::state_type;
+  using native_dmat_d_t = typename fom_t::dense_matrix_type;
 
-  // using exe_space = typename fom_t::execution_space;
-  using native_state_t_d = typename fom_t::state_type_d;
-  using native_state_t_h = typename fom_t::state_type_h;
-  using native_mv_t_d = typename fom_t::mv_d;
+  using fom_state_d_t   = ::pressio::containers::Vector<native_state_d_t>;
 
+  // wls state type
+  using wls_state_d_t	= pressio::containers::Vector<native_state_d_t>;
+  using hessian_d_t	= pressio::containers::Matrix<native_dmat_d_t>;
 
-  using fom_state_t      = ::pressio::containers::Vector<native_state_t_d>;
+  // decoder jacobian type
+  using decoder_jac_d_t	= pressio::containers::MultiVector<native_dmat_d_t>;
+  using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, wls_state_d_t, fom_state_d_t>;
 
-  // using native_mv_t_h = typename fom_t::mv_h;
-
-  // device wls state type
-  using wls_state_d_t	= pressio::containers::Vector<native_state_t_h>;
-
-  // device decoder jacobian type
-  using decoder_jac_d_t	= pressio::containers::MultiVector<native_mv_t_d>;
-  // host decoder jacobian type
-  // using decoder_jac_h_t	= pressio::containers::MultiVector<native_mv_t_h>;
-
-  // device decoder type
-  using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, wls_state_d_t, fom_state_t>;
-  using hessian_t  = pressio::containers::Matrix<typename fom_t::mv_d>;
 
   std::string checkStr {"PASSED"};
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
@@ -60,23 +52,24 @@ int main(int argc, char *argv[]){
     auto & yFOM_IC_native = appObj.getInitialState();
 
     // wrap into pressio container
-    fom_state_t yFOM_IC(yFOM_IC_native);
+    fom_state_d_t yFOM_IC(yFOM_IC_native);
     //reference state is equal to the IC
-    fom_state_t & yRef = yFOM_IC;
+    fom_state_d_t & yRef = yFOM_IC;
 
     // -----------------
     // L solver
     // -----------------
     using lin_solver_tag  = pressio::solvers::linear::direct::getrs;
-    using linear_solver_t = pressio::solvers::direct::KokkosDirect<lin_solver_tag, hessian_t>;
+    using linear_solver_t = pressio::solvers::direct::KokkosDirect<lin_solver_tag, hessian_d_t>;
     linear_solver_t linear_solver;
 
     // -----------------
     // WLS problem
     // -----------------
     constexpr int numStepsInWindow = 5;
-    using ode_tag	     = ::pressio::ode::implicitmethods::BDF2;
-    using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_d_t,decoder_d_t,ode_tag,hessian_t,linear_solver_t>;
+    using ode_tag     = ::pressio::ode::implicitmethods::BDF2;
+    using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t, wls_state_d_t, decoder_d_t,
+									ode_tag, hessian_d_t>;
 
     // create the wls state
     wls_state_d_t  wlsState("yRom",romSize*numStepsInWindow);
@@ -111,13 +104,14 @@ int main(int argc, char *argv[]){
     // process solution
     // -----------------
     const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
-    fom_state_t yFinal("yFF_d",numCell); //may not build
+    fom_state_d_t yFinal("yFF_d",numCell); //may not build
 
-    using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_d_t>;
+    using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_d_t, decoder_d_t>;
     fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
     fomStateReconstructor(wlsCurrentState, yFinal);
 
     // create a host mirror for yFinal
+    using native_state_t_h = typename fom_t::state_type_h;
     native_state_t_h yFinal_h("yFF_h", numCell);
     Kokkos::deep_copy(yFinal_h, *yFinal.data());
 

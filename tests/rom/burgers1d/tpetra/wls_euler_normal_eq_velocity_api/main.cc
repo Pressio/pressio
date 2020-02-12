@@ -15,6 +15,7 @@ int main(int argc, char *argv[]){
   using fom_t		   = pressio::apps::Burgers1dTpetra;
   using scalar_t	   = typename fom_t::scalar_type;
   using fom_native_state_t = typename fom_t::state_type;
+  using fom_dmat_t         = typename fom_t::dense_matrix_type;
   using fom_state_t        = ::pressio::containers::Vector<fom_native_state_t>;
 
   using eig_dyn_vec	   = Eigen::Matrix<scalar_t, -1, 1>;
@@ -22,11 +23,11 @@ int main(int argc, char *argv[]){
   using wls_state_t	   = pressio::containers::Vector<eig_dyn_vec>;
   using hessian_t          = pressio::containers::Matrix<eig_dyn_mat>;
 
-  using decoder_jac_t    = pressio::containers::MultiVector<Tpetra::MultiVector<>>;
-  using decoder_t    = pressio::rom::LinearDecoder<decoder_jac_t, wls_state_t, fom_state_t>;
+  using decoder_jac_t      = pressio::containers::MultiVector<fom_dmat_t>;
+  using decoder_t	   = pressio::rom::LinearDecoder<decoder_jac_t, wls_state_t, fom_state_t>;
 
-  using tcomm_t		= Teuchos::MpiComm<int>;
-  using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
+  using tcomm_t		   = Teuchos::MpiComm<int>;
+  using rcpcomm_t	   = Teuchos::RCP<const tcomm_t>;
 
   constexpr auto zero = pressio::utils::constants::zero<scalar_t>();
 
@@ -68,9 +69,9 @@ int main(int argc, char *argv[]){
     // -----------------
     constexpr int numStepsInWindow = 5;
     using ode_tag	     = ::pressio::ode::implicitmethods::Euler;
-    using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t,linear_solver_t>;
+    using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
     // create the wls state
-    wls_state_t  wlsState(romSize*numStepsInWindow); 
+    wls_state_t  wlsState(romSize*numStepsInWindow);
     pressio::containers::ops::fill(wlsState, zero);
     // create the wls system
     wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize, linear_solver);

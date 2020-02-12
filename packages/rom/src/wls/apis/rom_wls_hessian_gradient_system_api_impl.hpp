@@ -60,8 +60,7 @@ template<
   typename wls_state_type,
   typename decoder_t,
   typename ode_tag,
-  typename hessian_t,
-  typename linear_solver_t
+  typename hessian_t
   >
 class SystemHessianGradientApi{
 
@@ -73,9 +72,10 @@ public:
   using gradient_type		= wls_state_type;
   using hessian_type		= hessian_t;
 
+public:
   using fom_native_state_t	= typename fom_type::state_type;
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_state_reconstr_t	= pressio::rom::FomStateReconstructor<scalar_type, fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<scalar_type, fom_state_t, decoder_t>;
   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
   // policy type (here policy knows how to compute hessian and gradient)
@@ -91,16 +91,10 @@ public:
   static_assert(::pressio::containers::meta::is_matrix_wrapper<hessian_type>::value,
 		"WLS: hessian_type must be a pressio container matrix");
 
-  // currently we limit support to eigen types
-//  static_assert(::pressio::containers::meta::is_vector_wrapper_eigen<wls_state_type>::value,
-//		"WLS: currently supports eigen only");
-//  static_assert(::pressio::containers::meta::is_matrix_wrapper_eigen<hessian_type>::value,
-//		"WLS: hessian_type must be a Eigen matrix wrapper");
-
 private:
   const fom_type & appObj_;
-  const linear_solver_t & linearSolver_;
   const fom_state_reconstr_t  fomStateReconstructorObj_;
+
   //size of generalized coordinates
   int romSize_			= {};
   // object knowing the time stencil for doing chuncks of step
@@ -126,37 +120,75 @@ private:
   wls_state_type wlsStateIC_;
 
 public:
+
   SystemHessianGradientApi(const fom_type & appObj,
 			   const fom_state_t & yFOM_IC,
 			   const fom_state_t & yFOM_Ref,
 			   const decoder_t & decoderObj,
 			   const int numStepsInWindow,
-         const int romSize,
-         linear_solver_t & linearSolver)
+			   const int romSize,
+			   const wls_state_type & wlsStateIcIn)
     : appObj_(appObj),
       fomStateReconstructorObj_(yFOM_Ref, decoderObj),
       romSize_(romSize),
       timeSchemeObj_(romSize_, yFOM_IC),
       numStepsInWindow_{numStepsInWindow},
       hessian_gradient_polObj_( appObj, yFOM_IC, numStepsInWindow, timeStencilSize_, decoderObj,romSize),
-      wlsStateIC_(wlsStencilSize_),
-      linearSolver_(linearSolver)
+      wlsStateIC_(wlsStencilSize_)
+  {
+    const auto spanStartIndex = romSize_*(timeStencilSize_-1);
+    auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
+    for (int i=0; i< this->romSize_; i++){
+      wlsInitialStateNm1[i] = wlsStateIcIn[i];
+    }
+  }
+
+
+  template <
+    typename linear_solver_type,
+    ::pressio::mpl::enable_if_t<
+      ::pressio::mpl::is_detected<::pressio::solvers::meta::has_matrix_typedef, linear_solver_type>::value and
+      !std::is_void<typename linear_solver_type::matrix_type>::value and
+      ::pressio::mpl::publicly_inherits_from<
+	linear_solver_type,
+	::pressio::solvers::LinearBase<
+	  typename linear_solver_type::solver_t, typename linear_solver_type::matrix_type, linear_solver_type
+	  >
+	>::value
+      > * = nullptr
+  >
+  SystemHessianGradientApi(const fom_type & appObj,
+			   const fom_state_t & yFOM_IC,
+			   const fom_state_t & yFOM_Ref,
+			   const decoder_t & decoderObj,
+			   const int numStepsInWindow,
+			   const int romSize,
+			   linear_solver_type & linSolverObj)
+    : appObj_(appObj),
+      fomStateReconstructorObj_(yFOM_Ref, decoderObj),
+      romSize_(romSize),
+      timeSchemeObj_(romSize_, yFOM_IC),
+      numStepsInWindow_{numStepsInWindow},
+      hessian_gradient_polObj_( appObj, yFOM_IC, numStepsInWindow, timeStencilSize_, decoderObj,romSize),
+      wlsStateIC_(wlsStencilSize_)
   {
     // Set initial condition based on L^2 projection onto trial space
     // note that wlsStateIC_[-romSize:end] contains nm1, wlsStateIC[-2*romSize:-romSize] contains nm2 entry, etc.
     wls_state_type wlsStateTmp(romSize);
-    ::pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_type>(linearSolver,decoderObj.getReferenceToJacobian(),wlsStateTmp,yFOM_IC,yFOM_Ref,romSize);
+    const auto & decoderJac = decoderObj.getReferenceToJacobian();
+
+    ::pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_type>(linSolverObj, decoderJac,
+									  yFOM_IC, yFOM_Ref, wlsStateTmp);
+
     const auto spanStartIndex = romSize_*(timeStencilSize_-1);
     auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
     for (int i=0; i< this->romSize_; i++){
       wlsInitialStateNm1[i] = wlsStateTmp[i];
     }
   }
+
+
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
-    // how do we do this for arbitrary types?
-    // FRizzi: typically this hessian is small and dense.
-    // I think most libraries have this type with a constructor that takes # of rows and cols.
-    // As long as we use pressio wrappers, we should be fine I think.
     hessian_type H(wlsProblemSize_, wlsProblemSize_);
     return H;
   }
@@ -169,8 +201,8 @@ public:
   void computeHessianAndGradient(const state_type	      & wls_state,
                                  hessian_type		      & hessian,
                                  gradient_type		      & gradient,
-                                 const pressio::solvers::Norm & normType  = ::pressio::solvers::Norm::L2,
-                                 scalar_type		      & rnorm = pressio::utils::constants::zero<scalar_type>()) const
+                                 const pressio::solvers::Norm & normType,
+                                 scalar_type		      & rnorm) const
   {
     rnorm = pressio::utils::constants::zero<scalar_type>();
     hessian_gradient_polObj_(timeSchemeObj_,
@@ -223,7 +255,6 @@ public:
     }
     std::cout << " Window " << windowIndex << " completed " << std::endl;
   }// end advanceOneWindow
-
 
 };
 

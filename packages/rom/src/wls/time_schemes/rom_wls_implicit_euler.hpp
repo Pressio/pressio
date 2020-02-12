@@ -57,7 +57,8 @@ class ImplicitEuler{
 public:
   static constexpr int state_stencil_size_ = 1;
   static constexpr bool is_explicit	   = false;
-  mutable  std::vector<bool>     jacobian_needs_recomputing_ = {true};
+  mutable std::vector<bool> jacobian_needs_recomputing_ = {true};
+
 private:
   int stateSize_;
   using aux_states_container_t = ::pressio::ode::AuxStatesContainer<is_explicit, fom_state_t, state_stencil_size_>;

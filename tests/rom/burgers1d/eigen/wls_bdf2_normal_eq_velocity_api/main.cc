@@ -15,14 +15,15 @@ int main(int argc, char *argv[]){
   using fom_t		   = pressio::apps::Burgers1dEigen;
   using scalar_t	   = typename fom_t::scalar_type;
   using fom_native_state_t = typename fom_t::state_type;
+  using fom_dense_matrix_t = typename fom_t::dense_matrix_type;
+
   using fom_state_t        = ::pressio::containers::Vector<fom_native_state_t>;
 
-  using eig_dyn_vec    = Eigen::Matrix<scalar_t, -1, 1>;
-  using eig_dyn_mat    = Eigen::Matrix<scalar_t, -1, -1>;
-
-  using wls_state_t    = pressio::containers::Vector<eig_dyn_vec>;
+  using eig_dyn_mat	   = Eigen::Matrix<scalar_t, -1, -1>;
+  using eig_dyn_vec	   = Eigen::Matrix<scalar_t, -1, 1>;
+  using wls_state_t	   = pressio::containers::Vector<eig_dyn_vec>;
   using hessian_t          = pressio::containers::Matrix<eig_dyn_mat>;
-  using decoder_jac_t	   = pressio::containers::MultiVector<eig_dyn_mat>;
+  using decoder_jac_t	   = pressio::containers::MultiVector<fom_dense_matrix_t>;
   using decoder_t	   = pressio::rom::LinearDecoder<decoder_jac_t, wls_state_t, fom_state_t>;
 
   constexpr auto zero = pressio::utils::constants::zero<scalar_t>();
@@ -47,7 +48,7 @@ int main(int argc, char *argv[]){
   decoder_t decoderObj(phiNative);
 
   // -----------------
-  // L solver
+  // Linear solver
   // -----------------
   using lin_solver_tag	= pressio::solvers::linear::direct::ColPivHouseholderQR;
   using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, hessian_t>;
@@ -58,13 +59,14 @@ int main(int argc, char *argv[]){
   // -----------------
   constexpr int numStepsInWindow = 5;
   using ode_tag	     = ::pressio::ode::implicitmethods::BDF2;
-  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t,linear_solver_t>;
-  // create the wls state
-  wls_state_t  wlsState(romSize*numStepsInWindow); 
-  ::pressio::containers::ops::set_zero(wlsState);
+  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
   // create the wls system
-  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow,romSize,linearSolver);
-  
+  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize, linearSolver);
+
+  // create the wls state
+  wls_state_t  wlsState(romSize*numStepsInWindow);
+  ::pressio::containers::ops::set_zero(wlsState);
+
   // -----------------
   // NL solver
   // -----------------
@@ -72,10 +74,10 @@ int main(int argc, char *argv[]){
   gn_t GNSolver(wlsSystem, wlsState, linearSolver);
   GNSolver.setTolerance(1e-13);
   GNSolver.setMaxIterations(50);
+
   // -----------------
   // solve wls problem
   // -----------------
-  // Initialize coefficients from L2 projection of yFOM_IC
   constexpr scalar_t finalTime = 0.1;
   constexpr scalar_t dt	       = 0.01;
   constexpr int numWindows     = static_cast<int>(finalTime/dt)/numStepsInWindow;

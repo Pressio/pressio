@@ -55,14 +55,13 @@ template <
   typename scalar_t,
   typename linear_solver_t,
   typename basis_t,
-  typename rom_state_t,
-  typename fom_state_t>
+  typename fom_state_t,
+  typename rom_state_t>
 void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 				       const basis_t & phi,
-				       rom_state_t & romState,
 				       const fom_state_t & yFOM_IC,
 				       const fom_state_t & yRef,
-				       const int & romSize)
+				       rom_state_t & romState)
 {
   /*
   Compute the ROM coefficients from optimal L^2 projection of yFOM
@@ -71,6 +70,8 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
   using hessian_t	= typename linear_solver_t::matrix_type;
   constexpr auto one    = ::pressio::utils::constants::one<scalar_t>();
   constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+
+  const auto romSize = romState.extent(0);
 
   //compute hessian for phi^T phi
   hessian_t H(romSize,romSize);
