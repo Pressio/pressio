@@ -108,8 +108,8 @@ public:
     numCols_ = endCol - colStart_ + 1;
   }
 
-  std::size_t const & extent(std::size_t i) const{ 
-    return (i==0) ? numRows_ : numCols_;  
+  std::size_t const & extent(std::size_t i) const{
+    return (i==0) ? numRows_ : numCols_;
   }
 
   scalar_t & operator()(const std::size_t & i, const std::size_t & j)
@@ -144,7 +144,7 @@ public:
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename matrix_t>
 struct SubspanExpr<
-  matrix_t, 
+  matrix_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_matrix_wrapper_kokkos<matrix_t>::value
     >
@@ -197,8 +197,8 @@ public:
     numCols_ = endCol - colStart_ + 1;
   }
 
-  std::size_t const & extent(std::size_t i) const{ 
-    return (i==0) ? numRows_ : numCols_;  
+  std::size_t const & extent(std::size_t i) const{
+    return (i==0) ? numRows_ : numCols_;
   }
 
   scalar_t & operator()(const std::size_t & i, const std::size_t & j)
@@ -226,18 +226,16 @@ public:
 			    std::make_pair(colStart_, colStart_+numCols_));
   }
 
-
-  // auto operator()()
-  //   -> decltype(matObj_.data()->block(rowStart_, colStart_, numRows_, numCols_))
-  // {
-  //   return matObj_.data()->block(rowStart_, colStart_, numRows_, numCols_);
-  // }
-
-  // auto operator()() const
-  //   -> decltype( std::declval<const native_t>().block(rowStart_, colStart_, numRows_, numCols_))
-  // {
-  //   return static_cast<native_t const *>(matObj_.data())->block(rowStart_, colStart_, numRows_, numCols_);
-  // }
+  auto operator()() const
+    -> decltype
+    (
+     Kokkos::subview(*matObj_.data(), std::declval<pair_t>(), std::declval<pair_t>())
+     )
+  {
+    return Kokkos::subview( *matObj_.data(),
+			    std::make_pair(rowStart_, rowStart_+numRows_),
+			    std::make_pair(colStart_, colStart_+numCols_));
+  }
 };
 #endif
 

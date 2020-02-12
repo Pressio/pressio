@@ -59,9 +59,6 @@ struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type>,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_matrix_wrapper_eigen<matrix_type>::value
-    #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-    or ::pressio::containers::meta::is_matrix_wrapper_kokkos<matrix_type>::value
-    #endif
     >
   >
 {
@@ -71,6 +68,25 @@ struct traits<
   using data_t	  = matrix_type;
   using wrapped_t = typename ::pressio::containers::details::traits<matrix_type>::wrapped_t;
 };
+
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename matrix_type>
+struct traits<
+  ::pressio::containers::expressions::SubspanExpr<matrix_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_matrix_wrapper_kokkos<matrix_type>::value
+    >
+  >
+{
+  static constexpr auto is_expression = true;
+
+  using data_t		= matrix_type;
+  using scalar_t	= typename ::pressio::containers::details::traits<matrix_type>::scalar_t;
+  using wrapped_t	= typename ::pressio::containers::details::traits<matrix_type>::wrapped_t;
+  using execution_space = typename ::pressio::containers::details::traits<matrix_type>::execution_space;
+};
+#endif
 
 }}}//end namespace pressio::containers::details
 #endif
