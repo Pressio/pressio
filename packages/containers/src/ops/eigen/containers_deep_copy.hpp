@@ -70,17 +70,42 @@ void deep_copy(const T & src, T & dest){
 }
 
 
-// template<
-//   typename T1, typename T2,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::containers::meta::is_vector_wrapper_eigen<T1>::value and
-//     ::pressio::containers::meta::is_expression<T2>::value
-//     > * = nullptr
-//   >
-// void deep_copy(const T1 & src, T2 & dest){
-//   for (auto i=0; i<src.size(); ++i)
-//     dest[i] = src[i];
-// }
+template<
+  typename T1, typename T2,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_eigen<T1>::value and
+     ::pressio::containers::meta::is_expression<T2>::value
+    > * = nullptr
+  >
+void deep_copy(const T1 & src, T2 & dest){
+  using index_t = decltype(src.extent(0));
+  for (index_t i=0; i<src.extent(0); ++i)
+    dest[i] = src[i];
+}
+
+template<
+  typename T1, typename T2,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_expression<T1>::value and
+    ::pressio::containers::meta::is_vector_wrapper_eigen<T2>::value
+    > * = nullptr
+  >
+void deep_copy(const T1 & src, T2 & dest){
+  *dest.data() = src();
+}
+
+template<
+  typename T1,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_expression<T1>::value and
+    ::pressio::containers::meta::is_vector_wrapper_eigen<
+      typename ::pressio::containers::details::traits<T1>::data_t
+      >::value
+    > * = nullptr
+  >
+void deep_copy(const T1 & src, T1 & dest){
+  dest() = src();
+}
 
 }}}//end namespace pressio::containers::ops
 #endif
