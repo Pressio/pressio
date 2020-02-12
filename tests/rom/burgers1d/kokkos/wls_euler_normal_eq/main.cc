@@ -78,9 +78,9 @@ int main(int argc, char *argv[]){
     using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_d_t,decoder_d_t,ode_tag,hessian_t,linear_solver_t>;
 
     // create the wls state
-    wls_state_d_t  wlsState("yRom",romSize*numStepsInWindow); 
+    wls_state_d_t  wlsState("yRom",romSize*numStepsInWindow);
     pressio::containers::ops::set_zero(wlsState);
-    
+
     // create the wls system
     wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow,romSize,linear_solver);
 
