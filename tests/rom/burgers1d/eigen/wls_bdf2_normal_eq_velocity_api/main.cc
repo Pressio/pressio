@@ -47,32 +47,35 @@ int main(int argc, char *argv[]){
   decoder_t decoderObj(phiNative);
 
   // -----------------
+  // L solver
+  // -----------------
+  using lin_solver_tag	= pressio::solvers::linear::direct::ColPivHouseholderQR;
+  using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, hessian_t>;
+  linear_solver_t linearSolver;
+
+  // -----------------
   // WLS problem
   // -----------------
   constexpr int numStepsInWindow = 5;
   using ode_tag	     = ::pressio::ode::implicitmethods::BDF2;
-  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
+  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t,linear_solver_t>;
   // create the wls state
   wls_state_t  wlsState(romSize*numStepsInWindow); 
   ::pressio::containers::ops::set_zero(wlsState);
   // create the wls system
-  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow,romSize);
+  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow,romSize,linearSolver);
   
   // -----------------
-  // solver
+  // NL solver
   // -----------------
-  using lin_solver_tag	= pressio::solvers::linear::direct::ColPivHouseholderQR;
-  using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, hessian_t>;
   using gn_t		= pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
-  linear_solver_t linear_solver;
-  gn_t GNSolver(wlsSystem, wlsState, linear_solver);
+  gn_t GNSolver(wlsSystem, wlsState, linearSolver);
   GNSolver.setTolerance(1e-13);
   GNSolver.setMaxIterations(50);
   // -----------------
   // solve wls problem
   // -----------------
   // Initialize coefficients from L2 projection of yFOM_IC
-  wlsSystem.initializeCoeffs<linear_solver_t>(decoderObj,yFOM_IC,yRef);
   constexpr scalar_t finalTime = 0.1;
   constexpr scalar_t dt	       = 0.01;
   constexpr int numWindows     = static_cast<int>(finalTime/dt)/numStepsInWindow;

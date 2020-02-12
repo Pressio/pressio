@@ -12,7 +12,8 @@ template<
   typename wls_state_type,
   typename decoder_t,
   typename ode_tag,
-  typename hessian_t
+  typename hessian_t,
+  typename linear_solver_t
   >
 class SystemHessianGradientApi{
 
@@ -50,6 +51,7 @@ public:
 
 private:
   const fom_type & appObj_;
+  const linear_solver_t & linearSolver_;
   const fom_state_reconstr_t  fomStateReconstructorObj_;
   //size of generalized coordinates
   int romSize_			= {};
@@ -81,20 +83,27 @@ public:
 			   const fom_state_t & yFOM_Ref,
 			   const decoder_t & decoderObj,
 			   const int numStepsInWindow, 
-                           const int romSize)
+         const int romSize,
+         linear_solver_t & linearSolver)
     : appObj_(appObj),
       fomStateReconstructorObj_(yFOM_Ref, decoderObj),
       romSize_(romSize),
       timeSchemeObj_(romSize_, yFOM_IC),
       numStepsInWindow_{numStepsInWindow},
       hessian_gradient_polObj_( appObj, yFOM_IC, numStepsInWindow, timeStencilSize_, decoderObj,romSize),
-      wlsStateIC_(wlsStencilSize_)
+      wlsStateIC_(wlsStencilSize_),
+      linearSolver_(linearSolver)
   {
     // Set initial condition based on L^2 projection onto trial space
     // note that wlsStateIC_[-romSize:end] contains nm1, wlsStateIC[-2*romSize:-romSize] contains nm2 entry, etc.
-    const auto spanStartIndex = romSize_*(timeStencilSize_-2);
+    wls_state_type wlsStateTmp(romSize);
+    ::pressio::rom::utils::SetGenCoordinatesL2Projection<scalar_type>(linearSolver,decoderObj.getReferenceToJacobian(),wlsStateTmp,yFOM_IC,yFOM_Ref,romSize);
+    const auto spanStartIndex = romSize_*(timeStencilSize_-1);
+    auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
+    for (int i=0; i< this->romSize_; i++){
+      wlsInitialStateNm1[i] = wlsStateTmp[i];
+    }
   }
-
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
     // how do we do this for arbitrary types?
     // FRizzi: typically this hessian is small and dense.
@@ -167,21 +176,6 @@ public:
     std::cout << " Window " << windowIndex << " completed " << std::endl;
   }// end advanceOneWindow
 
-  // Function to initialize the coefficients for a given FOM IC and reference state
-  // computes the ICs via optimal L^2 projection, phi^T phi xhat = phi^T(x - xRef)
-  template <typename linear_solver_t>
-  void initializeCoeffs(const decoder_t & decoderObj,const fom_state_t & yFOM_IC,const fom_state_t & yRef )
-  {
-    wls_state_type wlsStateTmp(romSize_);
-
-    ::pressio::rom::utils::setRomCoefficientsL2Projection<linear_solver_t>(decoderObj.getReferenceToJacobian(),wlsStateTmp,yFOM_IC,yRef,romSize_);
-
-    const auto spanStartIndex = romSize_*(timeStencilSize_-1);
-    auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
-    for (int i=0; i< this->romSize_; i++){
-      wlsInitialStateNm1[i] = wlsStateTmp[i];
-    }
-  }
 
 };
 

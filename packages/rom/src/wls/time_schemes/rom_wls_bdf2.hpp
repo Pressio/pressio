@@ -10,7 +10,7 @@ class BDF2{
 public:
   static constexpr int state_stencil_size_ = 2;
   static constexpr bool is_explicit	   = false;
-
+  mutable std::vector<bool>     jacobian_needs_recomputing_ = {true,true};
 private:
   using aux_states_container_t = ::pressio::ode::AuxStatesContainer<is_explicit, fom_state_t, state_stencil_size_>;
   int stateSize_;
@@ -88,14 +88,19 @@ public:
         ::pressio::containers::ops::do_update(Jphi, cfdt, phi, cn);
       }
 
-      if (arg == 1 && step == 0){//only perform computation once since this never changes
+      if (arg == 1 && jacobian_needs_recomputing_[1] ){//only perform computation once since this never changes
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
         ::pressio::containers::ops::do_update(Jphi, phi, cnm1);
+        jacobian_needs_recomputing_[1] = false;
+        std::cout << "here" << std::endl;
+
       }
 
-      if (arg == 2 && step == 0){//only perform computation once since this never changes
+      if (arg == 2 && jacobian_needs_recomputing_[0]){//only perform computation once since this never changes
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
         ::pressio::containers::ops::do_update(Jphi, phi, cnm2);
+        jacobian_needs_recomputing_[0] = false;
+        std::cout << "here" << std::endl;
       }
     }
   }
