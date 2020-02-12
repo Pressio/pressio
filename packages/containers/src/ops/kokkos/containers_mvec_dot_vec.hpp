@@ -122,6 +122,43 @@ auto dot(const mvec_type & mvA, const vec_type & vecB)
 }
 
 
+//--------------------------------------
+// compute c += A^T b
+// c = expression
+//--------------------------------------
+template <
+  typename mvec_type,
+  typename vec1_type,
+  typename expr_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
+    containers::meta::is_vector_wrapper_kokkos<vec1_type>::value and
+    containers::meta::is_expression<expr_type>::value and
+    containers::meta::wrapper_triplet_have_same_scalar<mvec_type, vec1_type, expr_type>::value and
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<
+      typename ::pressio::containers::details::traits<expr_type>::data_t
+      >::value
+    > * = nullptr
+  >
+void updateWithDot(const mvec_type & A, const vec1_type & b, expr_type & c)
+{
+  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec1_type>::value,
+		"dot: MV and vec types need to have same execution space" );
+  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<
+		vec1_type,
+	        typename containers::details::traits<expr_type>::data_t
+		>::value,
+		"dot: MV and vec types need to have same execution space" );
+
+  using sc_t	      = typename containers::details::traits<mvec_type>::scalar_t;
+  constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+  constexpr auto one  = ::pressio::utils::constants::one<sc_t>();
+
+  const char ctA = 'T';
+  KokkosBlas::gemv(&ctA, one, *A.data(), *b.data(), one, c());
+}
+
+
 }}}//end namespace pressio::containers::ops
 #endif
 #endif

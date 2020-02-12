@@ -57,11 +57,14 @@ class BDF2{
 public:
   static constexpr int state_stencil_size_ = 2;
   static constexpr bool is_explicit	   = false;
-  mutable std::vector<bool>     jacobian_needs_recomputing_ = {true,true};
+
+
 private:
   using aux_states_container_t = ::pressio::ode::AuxStatesContainer<is_explicit, fom_state_t, state_stencil_size_>;
   int stateSize_;
   mutable aux_states_container_t auxStatesContainer_;
+  mutable bool jacobianZeroNeedsRecomputing_ = true;
+  mutable bool jacobianOneNeedsRecomputing_  = true;
 
 public:
   BDF2() = delete;
@@ -75,6 +78,7 @@ public:
        auxStatesContainer_(yFOM)
   {}
 
+public:
   template <
     typename fom_type,
     typename fom_state_type,
@@ -135,22 +139,26 @@ public:
         ::pressio::containers::ops::do_update(Jphi, cfdt, phi, cn);
       }
 
-      if (arg == 1 && jacobian_needs_recomputing_[1] ){//only perform computation once since this never changes
+      if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
         ::pressio::containers::ops::do_update(Jphi, phi, cnm1);
-        jacobian_needs_recomputing_[1] = false;
+        jacobianOneNeedsRecomputing_ = false;
         std::cout << "here" << std::endl;
-
       }
 
-      if (arg == 2 && jacobian_needs_recomputing_[0]){//only perform computation once since this never changes
+      if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
         ::pressio::containers::ops::do_update(Jphi, phi, cnm2);
-        jacobian_needs_recomputing_[0] = false;
+        jacobianZeroNeedsRecomputing_ = false;
         std::cout << "here" << std::endl;
       }
     }
   }
+
+  bool jacobianNeedsRecomputing(std::size_t i) const{
+    return (i==0) ? jacobianZeroNeedsRecomputing_ : jacobianOneNeedsRecomputing_;
+  }
+
 
   // for first step, here we move data from the IC container to the aux container
   template <typename wls_state_type,typename fom_state_reconstr_t>

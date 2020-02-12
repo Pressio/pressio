@@ -98,6 +98,7 @@ void dot(const mvec_type & mvA, const vec_type & vecB, result_type & result)
   request->wait();
 }
 
+
 //------------------------------------
 // c = scalar *, passed in
 //------------------------------------
@@ -147,8 +148,8 @@ template <
 void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 {
   const auto numVecs = mvA.globalNumVectors();
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  if ( result.extent(0) != numVecs )
+    result.data()->resize(numVecs);
   dot(mvA, vecB, result.data()->values());
 }
 
@@ -183,8 +184,8 @@ void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 
   const auto numVecs = mvA.globalNumVectors();
   // check the result has right size
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  if( result.extent(0) != numVecs )
+    result.data()->resize(numVecs);
 
   ::pressio::containers::ops::set_zero(result);
   dot(mvA, vecB, result.data()->data());
@@ -211,9 +212,34 @@ void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
   // check the result has right size
-  assert( result.size() == mvA.globalNumVectors() );
+  assert( result.extent(0) == mvA.globalNumVectors() );
   dot(mvA, vecB, result.data()->data());
 }
+
+
+//--------------------------------------
+// c += mvA^T vecB
+// c is an expression
+//--------------------------------------
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename expr_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
+    containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
+    containers::meta::is_expression<expr_type>::value and
+    containers::meta::wrapper_triplet_have_same_scalar<mvec_type, vec_type, expr_type>::value and
+    ::pressio::containers::meta::is_vector_wrapper_eigen<
+      typename ::pressio::containers::details::traits<expr_type>::data_t
+      >::value
+    > * = nullptr
+  >
+void updateWithDot(const mvec_type & mvA, const vec_type & vecB, expr_type & result)
+{
+  throw std::runtime_error("updateWithDot for TpetraBlock not implemented");
+}
+
 
 }}}//end namespace pressio::containers::ops
 #endif

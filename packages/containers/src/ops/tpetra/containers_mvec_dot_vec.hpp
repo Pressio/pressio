@@ -197,7 +197,6 @@ void dot(const mvec_type & mvA,
   // }
 }
 
-
 //--------------------------------------
 // c = Eigen STATIC vector, passed in
 //--------------------------------------
@@ -225,14 +224,39 @@ void dot(const mvec_type & mvA,
   // check the result has right size
   assert( result.extent(0) == mvA.numVectors() );
   dot(mvA, vecB, result.data()->data());
-
-  // for (decltype(numVecs) i=0; i<numVecs; i++){
-  //   // colI is a Teuchos::RCP<Vector<...>>
-  //   auto colI = mvA.data()->getVector(i);
-  //   result[i] = colI->dot(*vecB.data());
-  // }
 }
 
+
+//--------------------------------------
+// compute c += mvA^T vecB
+// c = eigen expression
+//--------------------------------------
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename expr_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
+    containers::meta::is_vector_wrapper_tpetra<vec_type>::value and
+    containers::meta::is_expression<expr_type>::value and
+    containers::meta::wrapper_triplet_have_same_scalar<mvec_type, vec_type, expr_type>::value and
+    ::pressio::containers::meta::is_vector_wrapper_eigen<
+      typename ::pressio::containers::details::traits<expr_type>::data_t
+      >::value
+    > * = nullptr
+  >
+void updateWithDot(const mvec_type & mvA, const vec_type & vecB, expr_type & result)
+{
+  // check the result has right size
+  const auto numVecs = mvA.numVectors();
+  assert( result.extent(0) == numVecs );
+
+  for (auto i=0; i<numVecs; i++){
+    // colI is a Teuchos::RCP<Vector<...>>
+    auto colI = mvA.data()->getVector(i);
+    result[i] += colI->dot(*vecB.data());
+  }
+}
 
 }}}//end namespace pressio::containers::ops
 #endif
