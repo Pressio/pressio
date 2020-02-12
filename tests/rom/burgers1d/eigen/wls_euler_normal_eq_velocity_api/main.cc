@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
   using ode_tag	     = ::pressio::ode::implicitmethods::Euler;
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t,linear_solver_t>;
   // create the wls state
-  wls_state_t  wlsState(romSize*numStepsInWindow); 
+  wls_state_t  wlsState(romSize*numStepsInWindow);
   ::pressio::containers::ops::set_zero(wlsState);
   // create the wls system
   wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize,linearSolver);

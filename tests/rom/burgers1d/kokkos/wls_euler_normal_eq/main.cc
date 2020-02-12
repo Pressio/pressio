@@ -64,6 +64,7 @@ int main(int argc, char *argv[]){
     //reference state is equal to the IC
     fom_state_t & yRef = yFOM_IC;
 
+    // -----------------
     // lin solver
     // -----------------
     using lin_solver_tag  = pressio::solvers::linear::direct::getrs;

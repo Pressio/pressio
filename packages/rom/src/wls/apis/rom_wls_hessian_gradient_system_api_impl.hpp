@@ -1,6 +1,54 @@
+/*
+//@HEADER
+// ************************************************************************
+//
+// rom_wls_hessian_gradient_system_api_impl.hpp
+//                     		  Pressio
+//                             Copyright 2019
+//    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
+//
+// Under the terms of Contract DE-NA0003525 with NTESS, the
+// U.S. Government retains certain rights in this software.
+//
+// Pressio is licensed under BSD-3-Clause terms of use:
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived
+// from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+// IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// Questions? Contact Francesco Rizzi (fnrizzi@sandia.gov)
+//
+// ************************************************************************
+//@HEADER
+*/
 
 #ifndef ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_IMPL_HPP_
 #define ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_IMPL_HPP_
+
 #include "ROM_UTILS"
 #include "../time_schemes/rom_wls_select_timescheme_helper.hpp"
 #include "../policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
@@ -82,7 +130,7 @@ public:
 			   const fom_state_t & yFOM_IC,
 			   const fom_state_t & yFOM_Ref,
 			   const decoder_t & decoderObj,
-			   const int numStepsInWindow, 
+			   const int numStepsInWindow,
          const int romSize,
          linear_solver_t & linearSolver)
     : appObj_(appObj),
@@ -97,7 +145,7 @@ public:
     // Set initial condition based on L^2 projection onto trial space
     // note that wlsStateIC_[-romSize:end] contains nm1, wlsStateIC[-2*romSize:-romSize] contains nm2 entry, etc.
     wls_state_type wlsStateTmp(romSize);
-    ::pressio::rom::utils::SetGenCoordinatesL2Projection<scalar_type>(linearSolver,decoderObj.getReferenceToJacobian(),wlsStateTmp,yFOM_IC,yFOM_Ref,romSize);
+    ::pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_type>(linearSolver,decoderObj.getReferenceToJacobian(),wlsStateTmp,yFOM_IC,yFOM_Ref,romSize);
     const auto spanStartIndex = romSize_*(timeStencilSize_-1);
     auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
     for (int i=0; i< this->romSize_; i++){
