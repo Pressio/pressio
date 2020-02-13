@@ -50,12 +50,9 @@
 #ifndef QR_EPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 #define QR_EPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 
-#include "../qr_rfactor_solve_impl.hpp"
-
 #include <Eigen/OrderingMethods>
 #include <Eigen/SparseQR>
 #include <Epetra_Import.h>
-
 
 namespace pressio{ namespace qr{ namespace impl{
 

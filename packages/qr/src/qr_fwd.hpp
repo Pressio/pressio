@@ -49,9 +49,6 @@
 #ifndef QR_FORWARD_DECLARATIONS_HPP_
 #define QR_FORWARD_DECLARATIONS_HPP_
 
-#include "qr_ConfigDefs.hpp"
-#include "../../containers/src/containers_fwd.hpp"
-
 namespace pressio{  namespace qr{
 
 // all fwd decl of mixin base classes

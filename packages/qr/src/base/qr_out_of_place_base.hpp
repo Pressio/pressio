@@ -49,8 +49,6 @@
 #ifndef QR_BASE_OUT_OF_PLACE_BASE_HPP_
 #define QR_BASE_OUT_OF_PLACE_BASE_HPP_
 
-#include "../qr_meta.hpp"
-
 namespace pressio{ namespace qr{
 
 

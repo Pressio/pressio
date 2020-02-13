@@ -50,8 +50,6 @@
 #ifndef QR_TPETRA_MV_MODIFIED_GRAM_SCHMIDT_IMPL_HPP_
 #define QR_TPETRA_MV_MODIFIED_GRAM_SCHMIDT_IMPL_HPP_
 
-#include "../qr_rfactor_solve_impl.hpp"
-
 namespace pressio{ namespace qr{ namespace impl{
 
 template<typename matrix_t, typename R_t, typename MV_t, template<typename...> class Q_type>

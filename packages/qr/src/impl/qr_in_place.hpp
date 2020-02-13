@@ -49,12 +49,6 @@
 #ifndef QR_IN_PLACE_HPP_
 #define QR_IN_PLACE_HPP_
 
-#include "../base/qr_in_place_base.hpp"
-#include "../base/qr_solve_base.hpp"
-#include "../base/qr_r_factor_base.hpp"
-#include "../qr_traits.hpp"
-#include "qr_rfactor_solve_impl.hpp"
-
 namespace pressio{ namespace qr{ namespace impl{
 
 /* specialize for R_type == void */

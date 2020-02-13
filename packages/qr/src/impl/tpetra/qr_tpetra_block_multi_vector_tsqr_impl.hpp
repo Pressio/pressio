@@ -50,7 +50,6 @@
 #ifndef QR_TPETRA_BLOCK_MULTI_VECTOR_TSQR_IMPL_HPP_
 #define QR_TPETRA_BLOCK_MULTI_VECTOR_TSQR_IMPL_HPP_
 
-#include "../qr_rfactor_solve_impl.hpp"
 #include "Tpetra_TsqrAdaptor.hpp"
 
 namespace pressio{ namespace qr{ namespace impl{

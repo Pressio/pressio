@@ -49,13 +49,6 @@
 #ifndef QR_META_HPP_
 #define QR_META_HPP_
 
-#include "qr_ConfigDefs.hpp"
-#include "qr_algorithms_tags.hpp"
-#include "../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
-#include "../../containers/src/vector/containers_vector_meta.hpp"
-#include "../../containers/src/matrix/containers_matrix_meta.hpp"
-
-
 namespace pressio{ namespace qr{ namespace meta {
 
 template <typename T, typename enable = void>
@@ -69,7 +62,6 @@ struct is_legitimate_r_type<T,
 	   containers::details::traits<T>::is_dense
 	   >
       > : std::true_type{};
-
 
 
 template <typename T, typename Q_T, typename enable = void>

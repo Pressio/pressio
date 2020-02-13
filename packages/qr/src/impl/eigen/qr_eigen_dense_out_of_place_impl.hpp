@@ -50,8 +50,6 @@
 #define QR_HOUSEHOLDER_EIGEN_DENSE_MATRIX_OUT_OF_PLACE_IMPL_HPP_
 
 #include <Eigen/QR>
-#include "../../../../CONTAINERS_OPS"
-#include "../qr_rfactor_solve_impl.hpp"
 
 namespace pressio{ namespace qr{ namespace impl{
 

@@ -49,8 +49,6 @@
 #ifndef QR_BASE_SOLVE_BASE_HPP_
 #define QR_BASE_SOLVE_BASE_HPP_
 
-#include "../qr_meta.hpp"
-
 namespace pressio{ namespace qr{
 
 template<typename derived_t>

@@ -50,8 +50,6 @@
 #ifndef QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 #define QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 
-#include "../qr_rfactor_solve_impl.hpp"
-
 #include <Eigen/OrderingMethods>
 #include <Eigen/SparseQR>
 #include <Tpetra_Map.hpp>

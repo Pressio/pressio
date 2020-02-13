@@ -49,9 +49,6 @@
 #ifndef QR_TRAITS_HPP_
 #define QR_TRAITS_HPP_
 
-#include "qr_fwd.hpp"
-#include "qr_meta.hpp"
-
 namespace pressio{ namespace qr{ namespace details{
 
 /* common to all cases */
