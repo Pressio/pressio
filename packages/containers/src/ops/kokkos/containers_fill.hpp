@@ -46,6 +46,7 @@
 //@HEADER
 */
 
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef CONTAINERS_CONTAINER_OPS_KOKKOS_FILL_HPP_
 #define CONTAINERS_CONTAINER_OPS_KOKKOS_FILL_HPP_
 
@@ -67,4 +68,5 @@ void fill(T & o, typename ::pressio::containers::details::traits<T>::scalar_t va
 }
 
 }}}//end namespace pressio::containers::ops
+#endif
 #endif

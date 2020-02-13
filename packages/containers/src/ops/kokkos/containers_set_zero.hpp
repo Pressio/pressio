@@ -46,6 +46,7 @@
 //@HEADER
 */
 
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef CONTAINERS_CONTAINER_OPS_KOKKOS_SET_ZERO_HPP_
 #define CONTAINERS_CONTAINER_OPS_KOKKOS_SET_ZERO_HPP_
 
@@ -66,4 +67,5 @@ void set_zero(T & v){
 }
 
 }}}//end namespace pressio::containers::ops
+#endif
 #endif
