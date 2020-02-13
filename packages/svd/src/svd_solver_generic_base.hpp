@@ -49,10 +49,8 @@
 #ifndef SVD_SOLVER_GENERIC_BASE_HPP_
 #define SVD_SOLVER_GENERIC_BASE_HPP_
 
-#include "svd_solver_traits.hpp"
 
-namespace pressio{
-namespace svd{
+namespace pressio{ namespace svd{
 
 template<typename derived_type>
 class SolverBase

@@ -49,10 +49,6 @@
 #ifndef solvers_src_solvers_gn_neq_custom_ops_detection_helper_hpp_
 #define solvers_src_solvers_gn_neq_custom_ops_detection_helper_hpp_
 
-#include "../../meta/custom_ops_detection/solvers_has_all_needed_static_dot_self_overloads.hpp"
-#include "../../meta/custom_ops_detection/solvers_has_all_needed_static_norm_methods.hpp"
-#include "../../meta/custom_ops_detection/solvers_has_static_method_dot_three_args_return_void.hpp"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <

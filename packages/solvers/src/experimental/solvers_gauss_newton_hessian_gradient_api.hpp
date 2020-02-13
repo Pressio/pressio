@@ -49,9 +49,6 @@
 #ifndef SOLVERS_GAUSS_NEWTON_HESSIAN_GRADIENT_API_HPP_
 #define SOLVERS_GAUSS_NEWTON_HESSIAN_GRADIENT_API_HPP_
 
-#include "../solvers_fwd.hpp"
-#include "../base/solvers_nonlinear_base.hpp"
-#include "../base/solvers_iterative_base.hpp"
 #include "../nonlinear/helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../nonlinear/helper_policies/solvers_norm_helper_policy.hpp"
 #include "../nonlinear/helper_policies/solvers_line_search_policy.hpp"

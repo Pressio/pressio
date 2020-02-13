@@ -49,11 +49,6 @@
 #ifndef ODE_TIME_DISCRETE_JACOBIAN_IMPL_HPP_
 #define ODE_TIME_DISCRETE_JACOBIAN_IMPL_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-#include "../../../containers/src/matrix/containers_matrix_meta.hpp"
-#include "../../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
-#include "ode_implicit_constants.hpp"
-
 namespace pressio{ namespace ode{ namespace impl{
 
 template <

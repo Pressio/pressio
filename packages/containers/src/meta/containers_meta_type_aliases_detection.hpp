@@ -55,5 +55,6 @@
 #include "./type_aliases_detection/containers_meta_has_local_ordinal_typedef.hpp"
 #include "./type_aliases_detection/containers_meta_has_ordinal_typedef.hpp"
 #include "./type_aliases_detection/containers_meta_has_scalar_typedef.hpp"
+#include "./type_aliases_detection/containers_has_update_op_typedef.hpp"
 
 #endif

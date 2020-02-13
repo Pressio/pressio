@@ -49,10 +49,7 @@
 #ifndef SVD_CONFIGDEFS_HPP
 #define SVD_CONFIGDEFS_HPP
 
-#include "../../containers/src/containers_ConfigDefs.hpp"
-
-namespace pressio{ 
-namespace svd{
+namespace pressio{ namespace svd{
   
 // put here definitions
 enum class svdType{ 
@@ -86,8 +83,5 @@ enum class svdType{
   
 };
 
-
-
-} // end namespace svd
-}//end namespace pressio
+}} // end namespace pressio::svd
 #endif

@@ -49,10 +49,6 @@
 #ifndef SOLVERS_IMPL_LINE_SEARCH_POLICY_HPP
 #define SOLVERS_IMPL_LINE_SEARCH_POLICY_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
-#include "../../../../CONTAINERS_OPS"
-#include "solvers_jacob_res_product_policy.hpp"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <typename ls_tag>

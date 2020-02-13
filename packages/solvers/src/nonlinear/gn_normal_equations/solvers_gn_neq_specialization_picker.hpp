@@ -49,15 +49,6 @@
 #ifndef SOLVERS_GN_NEQ_SPECIALIZATION_PICKER_HPP_
 #define SOLVERS_GN_NEQ_SPECIALIZATION_PICKER_HPP_
 
-#include "../../solvers_fwd.hpp"
-#include "../../meta/solvers_is_legitimate_system_for_gauss_newton.hpp"
-#include "../../meta/solvers_is_legitimate_linear_solver_for_gn_normeq.hpp"
-#include "../../meta/solvers_is_legitimate_hessian_for_gn_normeq.hpp"
-#include "../../meta/solvers_is_legitimate_line_search_tag.hpp"
-#include "../../meta/solvers_is_legitimate_convergence_tag.hpp"
-#include "../../meta/solvers_is_legitimate_residual_observer_when_converged.hpp"
-#include "solvers_gn_neq_custom_ops_detection_helper.hpp"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <typename T1, typename T2>

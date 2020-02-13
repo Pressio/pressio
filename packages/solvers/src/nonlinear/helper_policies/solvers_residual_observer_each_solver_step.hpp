@@ -49,9 +49,6 @@
 #ifndef SOLVERS_IMPL_RESIDUAL_OBSERVER_EACH_SOLVER_STEP_HPP
 #define SOLVERS_IMPL_RESIDUAL_OBSERVER_EACH_SOLVER_STEP_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
-#include "../../meta/solvers_is_legitimate_residual_observer_each_solver_step.hpp"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template<typename observer_t,

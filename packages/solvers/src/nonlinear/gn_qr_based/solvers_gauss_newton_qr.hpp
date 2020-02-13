@@ -49,9 +49,6 @@
 #ifndef SOLVERS_GAUSS_NEWTON_QR_HPP
 #define SOLVERS_GAUSS_NEWTON_QR_HPP
 
-#include "../../solvers_fwd.hpp"
-#include "../../base/solvers_nonlinear_base.hpp"
-#include "../../base/solvers_iterative_base.hpp"
 #include "./solvers_gauss_newton_qr_impl.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{

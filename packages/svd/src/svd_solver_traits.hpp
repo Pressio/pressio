@@ -49,13 +49,7 @@
 #ifndef SVD_SOLVER_TRAITS_HPP_
 #define SVD_SOLVER_TRAITS_HPP_
 
-#include "svd_fwd.hpp"
-#include "../../containers/src/matrix/containers_matrix_meta.hpp"
-#include "../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
-
-namespace pressio{ 
-namespace svd{
-namespace details{
+namespace pressio{  namespace svd{ namespace details{
 
 template<typename T, typename enable = void>
 struct svd_traits{

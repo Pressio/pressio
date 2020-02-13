@@ -49,8 +49,6 @@
 #ifndef ODE_EXPLICIT_POLICIES_IS_LEGITIMATE_EXPLICIT_VELOCITY_POL_HPP_
 #define ODE_EXPLICIT_POLICIES_IS_LEGITIMATE_EXPLICIT_VELOCITY_POL_HPP_
 
-#include "ode_explicit_velocity_standard_policy.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename policy_t, typename enable = void>

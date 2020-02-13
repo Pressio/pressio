@@ -49,8 +49,6 @@
 #ifndef ODE_VELOCITIES_CONTAINER_HPP_
 #define ODE_VELOCITIES_CONTAINER_HPP_
 
-#include "../../containers/src/collection/containers_static_collection.hpp"
-
 namespace pressio{ namespace ode{
 
 

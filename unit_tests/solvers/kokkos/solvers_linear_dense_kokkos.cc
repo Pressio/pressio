@@ -1,8 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_MULTI_VECTOR"
-#include "CONTAINERS_MATRIX"
-#include "SOLVERS_LINEAR"
+#include "SOLVERS_ALL"
 
 TEST(solvers_linear_direct, getrs){
 

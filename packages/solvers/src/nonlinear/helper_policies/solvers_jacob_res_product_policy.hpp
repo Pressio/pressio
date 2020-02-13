@@ -49,9 +49,6 @@
 #ifndef SOLVERS_IMPL_JACOBIAN_RESIDUAL_PRODUCT_POLICY_HPP
 #define SOLVERS_IMPL_JACOBIAN_RESIDUAL_PRODUCT_POLICY_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
-#include "../../../../CONTAINERS_OPS"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template<typename ud_ops_t, typename J_t, typename enable = void>

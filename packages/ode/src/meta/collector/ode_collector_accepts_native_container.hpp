@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_model_has_all_needed_typedefs_for_implicit_ode_regular_stepper.hpp
+// ode_collector_accepts_native_container.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,75 @@
 //@HEADER
 */
 
-#ifndef ODE_MODEL_HAS_ALL_NEEDED_TYPEDEFS_FOR_IMPLICIT_ODE_REGULAR_STEPPER_HPP_
-#define ODE_MODEL_HAS_ALL_NEEDED_TYPEDEFS_FOR_IMPLICIT_ODE_REGULAR_STEPPER_HPP_
-
-#include "../../../../containers/src/meta/containers_meta_has_scalar_typedef.hpp"
-#include "../../meta/ode_has_state_typedef.hpp"
-#include "../../meta/ode_has_velocity_typedef.hpp"
-#include "ode_has_jacobian_typedef.hpp"
+#ifndef ODE_COLLECTOR_ACCEPTS_NATIVE_CONTAINER_HPP_
+#define ODE_COLLECTOR_ACCEPTS_NATIVE_CONTAINER_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<typename model_type, typename enable = void>
-struct ode_model_has_all_needed_typedefs_for_implicit_ode_regular_stepper
+template<
+  typename collector_type,
+  typename int_type,
+  typename time_type,
+  typename state_type,
+  typename enable = void
+  >
+struct collector_accepts_native_container
   : std::false_type{};
 
-template<typename model_type>
-struct ode_model_has_all_needed_typedefs_for_implicit_ode_regular_stepper<
-  model_type,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
-    ::pressio::ode::meta::has_state_typedef<model_type>::value and
-    ::pressio::ode::meta::has_velocity_typedef<model_type>::value and
-    ::pressio::ode::meta::has_jacobian_typedef<model_type>::value
+
+/* true if state_type is a wrapper and collector accepts the wrapped type */
+template<
+  typename collector_type,
+  typename int_type,
+  typename time_type,
+  typename state_type
+  >
+struct collector_accepts_native_container<
+  collector_type, int_type, time_type, state_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_wrapper<state_type>::value and
+    std::is_void<
+      decltype
+      (
+       std::declval<collector_type>()
+       (
+	std::declval<int_type>(),
+	std::declval<time_type>(),
+	std::declval<
+	const typename ::pressio::containers::details::traits<state_type>::wrapped_t &
+	>()
+	)
+       )
+      >::value
     >
   > : std::true_type{};
+
+
+/* true if state_type is NOT wrapper and collector accepts the type itself */
+template<
+  typename collector_type,
+  typename int_type,
+  typename time_type,
+  typename state_type
+  >
+struct collector_accepts_native_container<
+  collector_type, int_type, time_type, state_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_wrapper<state_type>::value == false and
+    std::is_void<
+      decltype
+      (
+       std::declval<collector_type>()
+       (
+	std::declval<int_type>(),
+	std::declval<time_type>(),
+	std::declval<const state_type &>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
+
 
 }}} // namespace pressio::ode::meta
 #endif

@@ -49,8 +49,6 @@
 #ifndef ODE_POLICIES_BASE_EXPLICIT_VELOCITY_POLICY_BASE_HPP_
 #define ODE_POLICIES_BASE_EXPLICIT_VELOCITY_POLICY_BASE_HPP_
 
-#include "../../ode_fwd.hpp"
-
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace policy{
 
 template <typename derived_t>

@@ -49,8 +49,6 @@
 #ifndef SOLVERS_IS_LEGITIMATE_RESIDUAL_OBSERVER_EACH_SOLVER_STEP_HPP
 #define SOLVERS_IS_LEGITIMATE_RESIDUAL_OBSERVER_EACH_SOLVER_STEP_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta{
 
 template <typename observer_t, typename residual_t, typename = void>

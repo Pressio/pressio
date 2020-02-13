@@ -49,8 +49,6 @@
 #ifndef SOLVERS_GET_MATRIX_SIZE_HELPER_HPP
 #define SOLVERS_GET_MATRIX_SIZE_HELPER_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
-
 namespace pressio{ namespace solvers{ namespace impl{
 
 template <typename T, typename enable = void>

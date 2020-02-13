@@ -49,7 +49,6 @@
 #ifndef SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_norm_helper_policy.hpp"
 #include "../helper_policies/solvers_line_search_policy.hpp"

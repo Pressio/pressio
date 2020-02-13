@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_model_has_all_needed_typedefs_for_implicit_ode_arbitrary_stepper.hpp
+// ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_res_ud_jac_policies.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,26 @@
 //@HEADER
 */
 
-#ifndef ODE_MODEL_HAS_ALL_NEEDED_TYPEDEFS_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_HPP_
-#define ODE_MODEL_HAS_ALL_NEEDED_TYPEDEFS_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_HPP_
-
-#include "../../../../containers/src/meta/containers_meta_has_scalar_typedef.hpp"
-#include "../../meta/ode_has_state_typedef.hpp"
-#include "ode_has_residual_typedef.hpp"
-#include "ode_has_jacobian_typedef.hpp"
+#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_WITH_STANDARD_RES_UD_JAC_POLICIES_HPP_
+#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_WITH_STANDARD_RES_UD_JAC_POLICIES_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename model_type, typename enable = void>
-struct ode_model_has_all_needed_typedefs_for_implicit_ode_arbitrary_stepper
+struct is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_res_ud_jac_policies
   : std::false_type{};
 
 template<typename model_type>
-struct ode_model_has_all_needed_typedefs_for_implicit_ode_arbitrary_stepper<
+struct is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_res_ud_jac_policies<
   model_type,
   mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<model_type>::value and
-    ::pressio::ode::meta::has_state_typedef<model_type>::value and
-    ::pressio::ode::meta::has_residual_typedef<model_type>::value and
-    ::pressio::ode::meta::has_jacobian_typedef<model_type>::value
+    ::pressio::ode::meta::ode_model_has_all_needed_typedefs_for_implicit_ode_arbitrary_stepper<model_type>::value and
+    ::pressio::ode::meta::has_needed_time_discrete_residual_methods<
+      model_type, types::step_t,
+      typename model_type::scalar_type,
+      typename model_type::state_type,
+      typename model_type::residual_type
+      >::value
     >
   > : std::true_type{};
 

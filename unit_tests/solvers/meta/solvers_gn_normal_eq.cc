@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
-#include "SOLVERS_NONLINEAR"
+#include "SOLVERS_ALL"
 
 struct System {
   using matrix_n_t = Eigen::SparseMatrix<double>;

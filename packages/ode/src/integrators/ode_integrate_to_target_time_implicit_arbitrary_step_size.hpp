@@ -49,11 +49,8 @@
 #ifndef ODE_INTEGRATE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 #define ODE_INTEGRATE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 
-#include "../ode_ConfigDefs.hpp"
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_to_target_time_integrators.hpp"
-#include "../meta/ode_is_legitimate_time_step_size_setter.hpp"
-#include "../implicit/meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
 
 namespace pressio{ namespace ode{
 

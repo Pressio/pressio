@@ -49,8 +49,6 @@
 #ifndef ODE_IMPLICIT_STEPPER_STENCIL_NEEDS_PREVIOUS_STATES_AND_VELOCITIES_HPP_
 #define ODE_IMPLICIT_STEPPER_STENCIL_NEEDS_PREVIOUS_STATES_AND_VELOCITIES_HPP_
 
-#include "../../ode_stepper_tags.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template <typename tag_name>

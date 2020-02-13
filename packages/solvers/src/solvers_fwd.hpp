@@ -49,18 +49,17 @@
 #ifndef SOLVERS_FORWARD_DECLARATIONS_HPP_
 #define SOLVERS_FORWARD_DECLARATIONS_HPP_
 
-#include "solvers_ConfigDefs.hpp"
-#include "solvers_convergence_tags.hpp"
-#include "solvers_line_search_tags.hpp"
-
 namespace pressio{ namespace solvers{
 
 namespace direct{
-
 template<typename SolverT, typename MatrixT, typename enable = void>
 class KokkosDirect;
-
 }//end namespace pressio::solvers::direct
+
+namespace linear { namespace details {
+template <typename T>
+struct traits;
+}}//end namespace pressio::solvers::linear::details
 
 
 namespace iterative{ namespace impl{
@@ -128,27 +127,24 @@ template <
   typename linear_solver_t,
   typename scalar_t,
   typename ops_t,
-  typename when_converged_t = default_convergence,
+  typename when_converged_t = ::pressio::solvers::iterative::default_convergence,
   typename enable = void
   >
 struct PyGaussNewton;
 #endif
 
 namespace hacked{
-
-/* solver for conservative ROM */
 template <
   typename scalar_t,
   typename lin_solver_tag,
   template <typename, typename> class lin_solver_t,
   typename line_search_t,
-  typename when_converged_t = default_convergence,
+  typename when_converged_t = ::pressio::solvers::iterative::default_convergence,
   typename system_t = void,
   typename cbar_t = void,
   typename enable = void
   >
 class GaussNewtonConservative;
-
 }//end namespace pressio::solvers::iterative::hacked
 
 }//end namespace pressio::solvers::iterative

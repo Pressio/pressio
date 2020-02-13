@@ -49,9 +49,6 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_BDF2_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_BDF2_HPP_
 
-#include "ode_implicit_stepper_traits_helpers.hpp"
-#include "../meta/ode_model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper.hpp"
-
 namespace pressio{ namespace ode{ namespace details{
 
 template<

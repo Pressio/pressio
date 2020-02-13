@@ -49,10 +49,6 @@
 #ifndef ODE_IS_LEGITIMATE_EXPLICIT_STATE_TYPE_HPP_
 #define ODE_IS_LEGITIMATE_EXPLICIT_STATE_TYPE_HPP_
 
-#include "../../ode_ConfigDefs.hpp"
-#include "../../../../containers/src/vector/containers_vector_meta.hpp"
-#include "../../../../containers/src/meta/containers_native_pybind_array_meta.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 /*

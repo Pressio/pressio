@@ -49,9 +49,6 @@
 #ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
 #define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_HPP_
 
-#include "ode_is_legitimate_model_for_implicit_ode_regular_stepper.hpp"
-#include "ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename model_type, typename enable = void>

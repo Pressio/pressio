@@ -1,6 +1,5 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "model_for_static_checks_for_implicit_stepper.hpp"
 

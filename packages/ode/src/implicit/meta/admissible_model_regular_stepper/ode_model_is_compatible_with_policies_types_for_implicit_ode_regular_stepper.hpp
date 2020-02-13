@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_has_jacobian_method_callable_with_two_args.hpp
+// ode_model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,44 +46,69 @@
 //@HEADER
 */
 
-#ifndef ODE_HAS_JACOBIAN_METHOD_CALLABLE_WITH_TWO_ARGS_HPP_
-#define ODE_HAS_JACOBIAN_METHOD_CALLABLE_WITH_TWO_ARGS_HPP_
-
-#include "../../ode_ConfigDefs.hpp"
+#ifndef ODE_MODEL_IS_COMPATIBLE_WITH_POLICIES_TYPES_FOR_IMPLICIT_ODE_REGULAR_STEPPER_HPP_
+#define ODE_MODEL_IS_COMPATIBLE_WITH_POLICIES_TYPES_FOR_IMPLICIT_ODE_REGULAR_STEPPER_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template <
-  typename T,
-  typename state_t,
-  typename sc_t,
-  typename jacobian_t,
-  typename = void
+template<
+  typename model_type,
+  bool residual_policy_is_standard,
+  bool jacobian_policy_is_standard,
+  typename enable = void
   >
-struct has_jacobian_method_callable_with_two_args
+struct model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper
   : std::false_type{};
 
-template <
-  typename T,
-  typename state_t,
-  typename sc_t,
-  typename jacobian_t
-  >
-struct has_jacobian_method_callable_with_two_args<
-  T, state_t, sc_t, jacobian_t,
+
+// specialize when residual = standard, jacobian = standard
+template<typename model_type>
+struct model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper<
+  model_type, true, true,
   mpl::enable_if_t<
-    !std::is_void<jacobian_t>::value and
-    std::is_same<
-      jacobian_t,
-      decltype(
-	       std::declval<T const>().jacobian(
-						std::declval<state_t const &>(),
-						std::declval<sc_t const &>()
-						)
-	       )
-      >::value
+    is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<model_type>::value
     >
   > : std::true_type{};
+
+// specialize when residual = standard, jacobian = custom
+template<typename model_type>
+struct model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper<
+  model_type, true, false,
+  mpl::enable_if_t<
+    is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_res_ud_jac_policies<model_type>::value
+    >
+  > : std::true_type{};
+
+
+// specialize when residual = custom, jacobian = standard
+template<typename model_type>
+struct model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper<
+  model_type, false, true,
+  mpl::enable_if_t<
+    is_legitimate_model_for_implicit_ode_regular_stepper_with_ud_res_standard_jac_policies<model_type>::value
+    >
+  > : std::true_type{};
+
+
+// specialize when policies are custom
+template<typename model_type>
+struct model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper<
+  model_type, false, false,
+  mpl::enable_if_t<
+    is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies<model_type>::value
+    >
+  > : std::true_type{};
+
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename model_type, bool bone, bool btwo>
+struct model_is_compatible_with_policies_types_for_implicit_ode_regular_stepper<
+  model_type, bone, btwo,
+  mpl::enable_if_t<
+    mpl::is_same<model_type, pybind11::object>::value
+    >
+  > : std::true_type{};
+#endif
 
 }}} // namespace pressio::ode::meta
 #endif

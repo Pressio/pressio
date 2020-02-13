@@ -49,8 +49,6 @@
 #ifndef ODE_FORWARD_DECLARATIONS_HPP_
 #define ODE_FORWARD_DECLARATIONS_HPP_
 
-#include "ode_ConfigDefs.hpp"
-
 namespace pressio{ namespace ode{
 
 class nMinusOne{};

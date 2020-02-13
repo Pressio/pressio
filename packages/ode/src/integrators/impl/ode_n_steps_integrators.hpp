@@ -49,8 +49,6 @@
 #ifndef ODE_INTEGRATORS_N_STEPS_INTEGRATORS_HPP_
 #define ODE_INTEGRATORS_N_STEPS_INTEGRATORS_HPP_
 
-#include "../../ode_ConfigDefs.hpp"
-#include "../../ode_fwd.hpp"
 #include "ode_call_collector_dispatcher.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{

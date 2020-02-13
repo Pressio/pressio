@@ -49,9 +49,6 @@
 #ifndef ODE_IS_VALID_USER_DEFINED_OPS_EXPLICIT_EULER_HPP_
 #define ODE_IS_VALID_USER_DEFINED_OPS_EXPLICIT_EULER_HPP_
 
-#include "../../../../containers/src/meta/containers_has_update_op_typedef.hpp"
-#include "../../../../containers/src/meta/containers_has_static_method_do_update_one_term.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename T,

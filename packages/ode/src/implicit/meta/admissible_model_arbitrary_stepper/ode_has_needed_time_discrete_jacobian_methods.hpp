@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_ud_res_standard_jac_policies.hpp
+// ode_has_needed_time_discrete_jacobian_methods.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,37 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_WITH_UD_RES_STANDARD_JAC_POLICIES_HPP_
-#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_WITH_UD_RES_STANDARD_JAC_POLICIES_HPP_
-
-#include "ode_model_has_all_needed_typedefs_for_implicit_ode_arbitrary_stepper.hpp"
-#include "ode_has_needed_time_discrete_jacobian_methods.hpp"
+#ifndef ODE_HAS_NEEDED_TIME_DISCRETE_JACOBIAN_METHOD_WITH_NON_VOID_RETURN_HPP_
+#define ODE_HAS_NEEDED_TIME_DISCRETE_JACOBIAN_METHOD_WITH_NON_VOID_RETURN_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<typename model_type, typename enable = void>
-struct is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_ud_res_standard_jac_policies
+template <
+  typename T, typename step_t, typename sc_t, typename state_t, typename jacobian_t,
+  typename = void
+  >
+struct has_needed_time_discrete_jacobian_methods
   : std::false_type{};
 
-template<typename model_type>
-struct is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_ud_res_standard_jac_policies<
-  model_type,
-  mpl::enable_if_t<
-    ::pressio::ode::meta::ode_model_has_all_needed_typedefs_for_implicit_ode_arbitrary_stepper<model_type>::value and
-    ::pressio::ode::meta::has_needed_time_discrete_jacobian_methods<
-      model_type, types::step_t,
-      typename model_type::scalar_type,
-      typename model_type::state_type,
-      typename model_type::jacobian_type
+template <
+  typename T,
+  typename step_t,
+  typename sc_t,
+  typename state_t,
+  typename jacobian_t
+  >
+struct has_needed_time_discrete_jacobian_methods<
+  T, step_t, sc_t, state_t, jacobian_t,
+  ::pressio::mpl::enable_if_t<
+    // for now, just check case for 2 and 3 states passed
+    has_create_time_discrete_jacobian_object_method_returning_non_void<
+      T, state_t, jacobian_t
+      >::value and
+    has_time_discrete_jacobian_method_accepting_n_states_returning_void<
+      T, 2, step_t, sc_t, state_t, jacobian_t
+      >::value and
+    has_time_discrete_jacobian_method_accepting_n_states_returning_void<
+      T, 3, step_t, sc_t, state_t, jacobian_t
       >::value
     >
   > : std::true_type{};

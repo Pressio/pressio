@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper.hpp
+// ode_is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_res_ud_jac_policies.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,64 +46,28 @@
 //@HEADER
 */
 
-#ifndef ODE_MODEL_IS_COMPATIBLE_WITH_POLICIES_TYPES_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_HPP_
-#define ODE_MODEL_IS_COMPATIBLE_WITH_POLICIES_TYPES_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_HPP_
-
-#include "ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_policies.hpp"
-#include "ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_res_ud_jac_policies.hpp"
-#include "ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_ud_res_standard_jac_policies.hpp"
-#include "ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_user_defined_policies.hpp"
+#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_WITH_STANDARD_RES_UD_JAC_POLICIES_HPP_
+#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_WITH_STANDARD_RES_UD_JAC_POLICIES_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<
-  typename model_type,
-  bool residual_policy_is_standard,
-  bool jacobian_policy_is_standard,
-  typename enable = void
-  >
-struct model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper
+template<typename model_type, typename enable = void>
+struct is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_res_ud_jac_policies
   : std::false_type{};
 
-
-// specialize when residual = standard, jacobian = standard
 template<typename model_type>
-struct model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper<
-  model_type, true, true,
+struct is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_res_ud_jac_policies<
+  model_type,
   mpl::enable_if_t<
-    is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_policies<model_type>::value
+    ::pressio::ode::meta::ode_model_has_all_needed_typedefs_for_implicit_ode_regular_stepper<model_type>::value and
+    ::pressio::ode::meta::model_has_needed_velocity_methods<
+      model_type,
+      typename model_type::state_type,
+      typename model_type::velocity_type,
+      typename model_type::scalar_type
+      >::value
     >
   > : std::true_type{};
-
-// specialize when residual = standard, jacobian = custom
-template<typename model_type>
-struct model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper<
-  model_type, true, false,
-  mpl::enable_if_t<
-    is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_res_ud_jac_policies<model_type>::value
-    >
-  > : std::true_type{};
-
-
-// specialize when residual = custom, jacobian = standard
-template<typename model_type>
-struct model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper<
-  model_type, false, true,
-  mpl::enable_if_t<
-    is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_ud_res_standard_jac_policies<model_type>::value
-    >
-  > : std::true_type{};
-
-
-// specialize when policies are custom
-template<typename model_type>
-struct model_is_compatible_with_policies_types_for_implicit_ode_arbitrary_stepper<
-  model_type, false, false,
-  mpl::enable_if_t<
-    is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_user_defined_policies<model_type>::value
-    >
-  > : std::true_type{};
-
 
 }}} // namespace pressio::ode::meta
 #endif

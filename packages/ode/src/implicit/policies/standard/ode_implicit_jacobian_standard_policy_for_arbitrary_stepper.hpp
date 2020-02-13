@@ -49,9 +49,6 @@
 #ifndef ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_FOR_ARBITRARY_STEPPER_HPP_
 #define ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_FOR_ARBITRARY_STEPPER_HPP_
 
-#include "../../../ode_fwd.hpp"
-#include "../base/ode_jacobian_policy_base.hpp"
-
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<

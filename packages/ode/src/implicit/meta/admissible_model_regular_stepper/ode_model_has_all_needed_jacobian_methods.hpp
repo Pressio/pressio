@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies.hpp
+// ode_model_has_all_needed_jacobian_methods.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,35 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_WITH_STANDARD_POLICIES_HPP_
-#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_WITH_STANDARD_POLICIES_HPP_
-
-#include "ode_model_has_all_needed_typedefs_for_implicit_ode_regular_stepper.hpp"
-#include "../../meta/ode_model_has_all_needed_velocity_methods.hpp"
-#include "ode_model_has_all_needed_jacobian_methods.hpp"
+#ifndef ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
+#define ODE_MODEL_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<typename model_type, typename enable = void>
-struct is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies
-  : std::false_type{};
+template<
+  typename model_type,
+  typename state_type,
+  typename jacobian_type,
+  typename scalar_type,
+  typename enable = void
+  >
+struct model_has_needed_jacobian_methods : std::false_type{};
 
-template<typename model_type>
-struct is_legitimate_model_for_implicit_ode_regular_stepper_with_standard_policies<
-  model_type,
+template<
+  typename model_type,
+  typename state_type,
+  typename jacobian_type,
+  typename scalar_type
+  >
+struct model_has_needed_jacobian_methods<
+  model_type, state_type, jacobian_type, scalar_type,
   mpl::enable_if_t<
-    ::pressio::ode::meta::ode_model_has_all_needed_typedefs_for_implicit_ode_regular_stepper<model_type>::value and
-    ::pressio::ode::meta::model_has_needed_velocity_methods<
-      model_type,
-      typename model_type::state_type,
-      typename model_type::velocity_type,
-      typename model_type::scalar_type>::value and
-    ::pressio::ode::meta::model_has_needed_jacobian_methods<
-      model_type,
-      typename model_type::state_type,
-      typename model_type::jacobian_type,
-      typename model_type::scalar_type>::value
+    has_jacobian_method_callable_with_two_args<
+      model_type, state_type, scalar_type, jacobian_type
+      >::value and
+    has_jacobian_method_callable_with_three_args<
+      model_type, state_type, scalar_type, jacobian_type
+      >::value
     >
   > : std::true_type{};
 

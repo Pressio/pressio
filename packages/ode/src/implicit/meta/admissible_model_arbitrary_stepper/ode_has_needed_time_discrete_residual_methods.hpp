@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies.hpp
+// ode_has_needed_time_discrete_residual_methods.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,31 +46,38 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_WITH_USER_DEFINED_POLICIES_HPP_
-#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_REGULAR_STEPPER_WITH_USER_DEFINED_POLICIES_HPP_
-
-#include "ode_model_has_all_needed_typedefs_for_implicit_ode_regular_stepper.hpp"
+#ifndef ODE_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_NON_VOID_RETURN_HPP_
+#define ODE_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_NON_VOID_RETURN_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
-// when we have user-defined policies, a model does not necessarily have to have all the required
-// time-discrete methods like we require for the regular stepper with standard policies.
-// This is because for custom policies we do not know what happens and it can very well
-// be that the user handles things differently so the model can be anything.
-// for instance, the user can define policies that call particular methods already existing in the model
-// and therefore we do not care what the user does.
-// Hence, when we have user-defined policies, we set the only requirement for the model to
-// have the minimal set of typedefs
-
-template<typename model_type, typename enable = void>
-struct is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies
+template <
+  typename T, typename step_t, typename sc_t, typename state_t, typename residual_t,
+  typename = void
+  >
+struct has_needed_time_discrete_residual_methods
   : std::false_type{};
 
-template<typename model_type>
-struct is_legitimate_model_for_implicit_ode_regular_stepper_with_user_defined_policies<
-  model_type,
-  mpl::enable_if_t<
-    ::pressio::ode::meta::ode_model_has_all_needed_typedefs_for_implicit_ode_regular_stepper<model_type>::value
+template <
+  typename T,
+  typename step_t,
+  typename sc_t,
+  typename state_t,
+  typename residual_t
+  >
+struct has_needed_time_discrete_residual_methods<
+  T, step_t, sc_t, state_t, residual_t,
+  ::pressio::mpl::enable_if_t<
+    // for now, just check case for 2 and 3 states passed
+    has_create_time_discrete_residual_object_method_returning_non_void<
+      T, state_t, residual_t
+      >::value and
+    has_time_discrete_residual_method_accepting_n_states_returning_void<
+      T, 2, step_t, sc_t, state_t, residual_t
+      >::value and
+    has_time_discrete_residual_method_accepting_n_states_returning_void<
+      T, 3, step_t, sc_t, state_t, residual_t
+      >::value
     >
   > : std::true_type{};
 

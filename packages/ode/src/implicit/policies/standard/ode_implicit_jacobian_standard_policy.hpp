@@ -49,12 +49,6 @@
 #ifndef ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
 #define ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
 
-#include "../../../ode_fwd.hpp"
-#include "../base/ode_jacobian_policy_base.hpp"
-#include "../../ode_time_discrete_jacobian.hpp"
-#include "../../meta/ode_is_legitimate_implicit_state_type.hpp"
-#include "../../meta/ode_is_legitimate_implicit_jacobian_type.hpp"
-
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<

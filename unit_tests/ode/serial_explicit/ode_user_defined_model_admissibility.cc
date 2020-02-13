@@ -1,6 +1,5 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
 #include "ODE_ALL"
 #include "../reference_apps_for_testing.hpp"
 

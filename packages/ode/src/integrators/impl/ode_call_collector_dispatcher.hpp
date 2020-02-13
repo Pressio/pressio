@@ -49,9 +49,6 @@
 #ifndef ODE_CALL_COLLECTOR_DISPATCHER_HPP_
 #define ODE_CALL_COLLECTOR_DISPATCHER_HPP_
 
-#include "../../ode_ConfigDefs.hpp"
-#include "../../ode_fwd.hpp"
-
 namespace pressio{ namespace ode{ namespace impl{
 
 //this is within the impl namespace, so should not be used outside

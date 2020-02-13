@@ -49,8 +49,6 @@
 #ifndef ODE_POLICIES_BASE_IMPLICIT_RESIDUAL_POLICY_BASE_HPP_
 #define ODE_POLICIES_BASE_IMPLICIT_RESIDUAL_POLICY_BASE_HPP_
 
-#include "../../../ode_ConfigDefs.hpp"
-
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template <typename derived_t>

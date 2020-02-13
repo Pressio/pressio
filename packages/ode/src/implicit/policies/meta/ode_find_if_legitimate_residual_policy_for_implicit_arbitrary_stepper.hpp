@@ -49,8 +49,6 @@
 #ifndef ODE_FIND_IF_LEGITIMATE_RESIDUAL_POLICY_FOR_IMPLICIT_ARBITRARY_STEPPER_HPP_
 #define ODE_FIND_IF_LEGITIMATE_RESIDUAL_POLICY_FOR_IMPLICIT_ARBITRARY_STEPPER_HPP_
 
-#include "./ode_is_legitimate_residual_policy_for_implicit_arbitrary_stepper.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<

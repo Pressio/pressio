@@ -50,13 +50,9 @@
 #ifndef SVD_MULTI_VECTOR_EPETRA_HPP_
 #define SVD_MULTI_VECTOR_EPETRA_HPP_
 
-#include <memory>
-#include "svd_solver_generic_base.hpp"
-#include "../../CONTAINERS_ALL"
 #include <Epetra_Import.h>
 
-namespace pressio{
-namespace svd{
+namespace pressio{ namespace svd{
 
 template<typename matrix_type,
 	 template <typename...> class lsv_type,

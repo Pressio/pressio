@@ -49,11 +49,6 @@
 #ifndef SOLVERS_LINEAR_EIGEN_ITERATIVE_HPP
 #define SOLVERS_LINEAR_EIGEN_ITERATIVE_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../base/solvers_iterative_base.hpp"
-#include "../base/solvers_linear_base.hpp"
-#include "solvers_linear_traits.hpp"
-
 namespace pressio { namespace solvers { namespace iterative{
 
 template<typename SolverT, typename MatrixT>

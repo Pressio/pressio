@@ -49,10 +49,6 @@
 #ifndef ODE_IS_VALID_USER_DEFINED_OPS_EXPLICIT_RK4_HPP_
 #define ODE_IS_VALID_USER_DEFINED_OPS_EXPLICIT_RK4_HPP_
 
-#include "../../../../containers/src/meta/containers_has_update_op_typedef.hpp"
-#include "../../../../containers/src/meta/containers_has_static_method_do_update_two_terms.hpp"
-#include "../../../../containers/src/meta/containers_has_static_method_do_update_four_terms.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename T,

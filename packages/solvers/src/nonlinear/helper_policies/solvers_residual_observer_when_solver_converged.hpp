@@ -49,9 +49,6 @@
 #ifndef SOLVERS_IMPL_RESIDUAL_OBSERVER_WHEN_SOLVER_CONVERGED_HPP
 #define SOLVERS_IMPL_RESIDUAL_OBSERVER_WHEN_SOLVER_CONVERGED_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
-#include "../../meta/solvers_is_legitimate_residual_observer_when_converged.hpp"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template<typename observer_t,

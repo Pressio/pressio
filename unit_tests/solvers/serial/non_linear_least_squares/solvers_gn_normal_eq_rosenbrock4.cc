@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "SOLVERS_NONLINEAR"
-#include "SOLVERS_EXPERIMENTAL"
+#include "SOLVERS_ALL"
 #include "./problems/solvers_utest_serial_rosenbrock_N4.hpp"
 
 

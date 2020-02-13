@@ -49,9 +49,6 @@
 #ifndef SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_DOT_SELF_OVERLOADS_HPP_
 #define SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_DOT_SELF_OVERLOADS_HPP_
 
-#include "solvers_has_static_method_dot_self_single_arg_return_non_void.hpp"
-#include "solvers_has_static_method_dot_self_two_args_return_void.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <

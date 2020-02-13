@@ -49,9 +49,6 @@
 #ifndef ODE_IS_VALID_USER_DEFINED_OPS_EXPLICIT_ODE_HPP_
 #define ODE_IS_VALID_USER_DEFINED_OPS_EXPLICIT_ODE_HPP_
 
-#include "ode_is_valid_user_defined_ops_for_explicit_euler.hpp"
-#include "ode_is_valid_user_defined_ops_for_explicit_rk4.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename T,

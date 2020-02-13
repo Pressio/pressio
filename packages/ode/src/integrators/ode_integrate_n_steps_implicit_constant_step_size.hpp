@@ -49,11 +49,6 @@
 #ifndef ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_CONSTANT_STEP_SIZE_HPP_
 #define ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_CONSTANT_STEP_SIZE_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-#include "../meta/ode_is_legitimate_collector.hpp"
-#include "../meta/ode_is_legitimate_guesser.hpp"
-#include "../implicit/meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
-#include "../implicit/meta/ode_is_legitimate_implicit_state_type.hpp"
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_n_steps_integrators.hpp"
 

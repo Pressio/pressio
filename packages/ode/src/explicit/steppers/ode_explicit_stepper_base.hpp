@@ -49,12 +49,6 @@
 #ifndef ODE_STEPPERS_EXPLICIT_STEPPERS_BASE_EXPLICIT_STEPPER_BASE_HPP_
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_BASE_EXPLICIT_STEPPER_BASE_HPP_
 
-#include "../../ode_fwd.hpp"
-#include "../policies/ode_is_legitimate_explicit_velocity_policy.hpp"
-#include "ode_explicit_stepper_traits_euler.hpp"
-#include "ode_explicit_stepper_traits_rk4.hpp"
-
-
 namespace pressio{ namespace ode{ namespace explicitmethods{
 
 /*

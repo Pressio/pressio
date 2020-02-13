@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_policies.hpp
+// ode_has_jacobian_method_callable_with_two_args.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,35 +46,39 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_WITH_STANDARD_POLICIES_HPP_
-#define ODE_IS_LEGITIMATE_MODEL_FOR_IMPLICIT_ODE_ARBITRARY_STEPPER_WITH_STANDARD_POLICIES_HPP_
-
-#include "ode_model_has_all_needed_typedefs_for_implicit_ode_arbitrary_stepper.hpp"
-#include "ode_has_needed_time_discrete_residual_methods.hpp"
-#include "ode_has_needed_time_discrete_jacobian_methods.hpp"
+#ifndef ODE_HAS_JACOBIAN_METHOD_CALLABLE_WITH_TWO_ARGS_HPP_
+#define ODE_HAS_JACOBIAN_METHOD_CALLABLE_WITH_TWO_ARGS_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<typename model_type, typename enable = void>
-struct is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_policies
+template <
+  typename T,
+  typename state_t,
+  typename sc_t,
+  typename jacobian_t,
+  typename = void
+  >
+struct has_jacobian_method_callable_with_two_args
   : std::false_type{};
 
-template<typename model_type>
-struct is_legitimate_model_for_implicit_ode_arbitrary_stepper_with_standard_policies<
-  model_type,
+template <
+  typename T,
+  typename state_t,
+  typename sc_t,
+  typename jacobian_t
+  >
+struct has_jacobian_method_callable_with_two_args<
+  T, state_t, sc_t, jacobian_t,
   mpl::enable_if_t<
-    ::pressio::ode::meta::ode_model_has_all_needed_typedefs_for_implicit_ode_arbitrary_stepper<model_type>::value and
-    ::pressio::ode::meta::has_needed_time_discrete_residual_methods<
-      model_type, types::step_t,
-      typename model_type::scalar_type,
-      typename model_type::state_type,
-      typename model_type::residual_type
-      >::value and
-    ::pressio::ode::meta::has_needed_time_discrete_jacobian_methods<
-      model_type, types::step_t,
-      typename model_type::scalar_type,
-      typename model_type::state_type,
-      typename model_type::jacobian_type
+    !std::is_void<jacobian_t>::value and
+    std::is_same<
+      jacobian_t,
+      decltype(
+	       std::declval<T const>().jacobian(
+						std::declval<state_t const &>(),
+						std::declval<sc_t const &>()
+						)
+	       )
       >::value
     >
   > : std::true_type{};

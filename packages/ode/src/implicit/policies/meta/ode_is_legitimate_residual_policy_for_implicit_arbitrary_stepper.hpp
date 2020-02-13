@@ -49,12 +49,7 @@
 #ifndef ODE_IS_LEGITIMATE_RESIDUAL_POLICY_FOR_IMPLICIT_ARBITRARY_STEPPER_HPP_
 #define ODE_IS_LEGITIMATE_RESIDUAL_POLICY_FOR_IMPLICIT_ARBITRARY_STEPPER_HPP_
 
-#include "../base/ode_implicit_residual_policy_base.hpp"
-#include "../../meta/ode_is_legitimate_implicit_state_type.hpp"
-#include "../../meta/ode_is_legitimate_implicit_residual_type.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
-
 
 template<
   typename T,

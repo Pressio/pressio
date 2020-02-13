@@ -49,12 +49,6 @@
 #ifndef SOLVERS_META_META_STATIC_CHECKS_HPP
 #define SOLVERS_META_META_STATIC_CHECKS_HPP
 
-#include <type_traits>
-
-#include "../../containers/src/matrix/containers_matrix_traits.hpp"
-#include "../../containers/src/vector/containers_vector_traits.hpp"
-
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 /**
@@ -69,8 +63,8 @@ namespace pressio{ namespace solvers{ namespace meta {
  */
 template <typename T, typename U>
 struct are_matrix_compatible {
-  static constexpr bool valid_matrix = containers::details::traits<T>::wrapped_package_identifier != containers::details::WrappedPackageIdentifier::Undefined;
-  static constexpr bool value = valid_matrix && (containers::details::traits<T>::wrapped_matrix_identifier == containers::details::traits<U>::wrapped_matrix_identifier);
+  static constexpr bool valid_matrix = ::pressio::containers::details::traits<T>::wrapped_package_identifier != ::pressio::containers::details::WrappedPackageIdentifier::Undefined;
+  static constexpr bool value = valid_matrix && (::pressio::containers::details::traits<T>::wrapped_matrix_identifier == ::pressio::containers::details::traits<U>::wrapped_matrix_identifier);
 };
 
 
@@ -84,9 +78,9 @@ struct are_matrix_compatible {
  */
 template <typename T, typename U>
 struct are_vector_matrix_compatible {
-  static constexpr bool valid_vector = containers::details::traits<T>::wrapped_package_identifier != containers::details::WrappedPackageIdentifier::Undefined;
-  static constexpr bool valid_matrix = containers::details::traits<U>::wrapped_package_identifier != containers::details::WrappedPackageIdentifier::Undefined;
-  static constexpr bool value = valid_vector && valid_matrix && (containers::details::traits<T>::wrapped_package_identifier == containers::details::traits<U>::wrapped_package_identifier);
+  static constexpr bool valid_vector = ::pressio::containers::details::traits<T>::wrapped_package_identifier != ::pressio::containers::details::WrappedPackageIdentifier::Undefined;
+  static constexpr bool valid_matrix = ::pressio::containers::details::traits<U>::wrapped_package_identifier != ::pressio::containers::details::WrappedPackageIdentifier::Undefined;
+  static constexpr bool value = valid_vector && valid_matrix && (::pressio::containers::details::traits<T>::wrapped_package_identifier == ::pressio::containers::details::traits<U>::wrapped_package_identifier);
 };
 
 
@@ -117,7 +111,7 @@ struct are_vector_compatible<
   T,
   U,
   typename std::enable_if<
-    !containers::details::traits<T>::is_vector || !containers::details::traits<U>::is_vector,
+    !::pressio::containers::details::traits<T>::is_vector || !::pressio::containers::details::traits<U>::is_vector,
     void
   >::type
 > {
@@ -136,24 +130,24 @@ struct are_vector_compatible<
   T,
   U,
   typename std::enable_if<
-    containers::details::traits<T>::is_vector && containers::details::traits<U>::is_vector,
+    ::pressio::containers::details::traits<T>::is_vector && ::pressio::containers::details::traits<U>::is_vector,
     void
   >::type
 > {
 
   static constexpr bool valid_vector =
-    containers::details::traits<T>::wrapped_package_identifier !=
-    containers::details::WrappedPackageIdentifier::Undefined;
+    ::pressio::containers::details::traits<T>::wrapped_package_identifier !=
+    ::pressio::containers::details::WrappedPackageIdentifier::Undefined;
 
   static constexpr bool same_type =
     valid_vector &&
-    containers::details::traits<T>::wrapped_vector_identifier ==
-    containers::details::traits<U>::wrapped_vector_identifier;
+    ::pressio::containers::details::traits<T>::wrapped_vector_identifier ==
+    ::pressio::containers::details::traits<U>::wrapped_vector_identifier;
 
   static constexpr bool value = same_type;
-    // (containers::details::traits<T>::is_dynamic ||
-    //  containers::details::traits<U>::is_dynamic ||
-    //  containers::details::traits<T>::rows == containers::details::traits<U>::rows);
+    // (::pressio::containers::details::traits<T>::is_dynamic ||
+    //  ::pressio::containers::details::traits<U>::is_dynamic ||
+    //  ::pressio::containers::details::traits<T>::rows == ::pressio::containers::details::traits<U>::rows);
 };
 
 

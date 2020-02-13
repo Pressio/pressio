@@ -50,9 +50,6 @@
 #ifndef SOLVERS_LINEAR_KOKKOS_DIRECT_GETRS_HPP
 #define SOLVERS_LINEAR_KOKKOS_DIRECT_GETRS_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../base/solvers_linear_base.hpp"
-#include "solvers_linear_traits.hpp"
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Teuchos_LAPACK.hpp>
 #include <Teuchos_SerialDenseSolver.hpp>

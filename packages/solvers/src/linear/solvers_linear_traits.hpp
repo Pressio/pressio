@@ -49,12 +49,6 @@
 #ifndef SOLVERS_EXPERIMENTAL_LINEAR_TRAITS_HPP
 #define SOLVERS_EXPERIMENTAL_LINEAR_TRAITS_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../solvers_tags.hpp"
-#include "../../../containers/src/matrix/containers_matrix_traits.hpp"
-#include "../../../containers/src/matrix/containers_matrix_meta.hpp"
-#include "../../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
-
 #include <Eigen/Core>
 #include <Eigen/IterativeLinearSolvers>
 #include <Eigen/Householder>

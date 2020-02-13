@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_has_needed_time_discrete_residual_methods.hpp
+// ode_collector_accepts_pressio_container.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,40 +46,42 @@
 //@HEADER
 */
 
-#ifndef ODE_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_NON_VOID_RETURN_HPP_
-#define ODE_HAS_NEEDED_TIME_DISCRETE_RESIDUAL_METHOD_WITH_NON_VOID_RETURN_HPP_
-
-#include "ode_has_time_discrete_residual_method_accepting_n_states_returning_void.hpp"
-#include "ode_has_create_time_discrete_residual_object_method_returning_non_void.hpp"
+#ifndef ODE_COLLECTOR_ACCEPTS_PRESSIO_CONTAINER_HPP_
+#define ODE_COLLECTOR_ACCEPTS_PRESSIO_CONTAINER_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template <
-  typename T, typename step_t, typename sc_t, typename state_t, typename residual_t,
-  typename = void
+template<
+  typename collector_type,
+  typename int_type,
+  typename time_type,
+  typename state_type,
+  typename enable = void
   >
-struct has_needed_time_discrete_residual_methods
+struct collector_accepts_pressio_container
   : std::false_type{};
 
-template <
-  typename T,
-  typename step_t,
-  typename sc_t,
-  typename state_t,
-  typename residual_t
+
+template<
+  typename collector_type,
+  typename int_type,
+  typename time_type,
+  typename state_type
   >
-struct has_needed_time_discrete_residual_methods<
-  T, step_t, sc_t, state_t, residual_t,
+struct collector_accepts_pressio_container<
+  collector_type, int_type, time_type, state_type,
   ::pressio::mpl::enable_if_t<
-    // for now, just check case for 2 and 3 states passed
-    has_create_time_discrete_residual_object_method_returning_non_void<
-      T, state_t, residual_t
-      >::value and
-    has_time_discrete_residual_method_accepting_n_states_returning_void<
-      T, 2, step_t, sc_t, state_t, residual_t
-      >::value and
-    has_time_discrete_residual_method_accepting_n_states_returning_void<
-      T, 3, step_t, sc_t, state_t, residual_t
+    ::pressio::containers::meta::is_wrapper<state_type>::value and
+    std::is_void<
+      decltype
+      (
+       std::declval<collector_type>()
+       (
+	std::declval<int_type>(),
+	std::declval<time_type>(),
+	std::declval<const state_type &>()
+	)
+       )
       >::value
     >
   > : std::true_type{};

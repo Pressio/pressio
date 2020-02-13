@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_MATRIX"
-#include "SOLVERS_LINEAR"
+#include "SOLVERS_ALL"
 
 TEST(solvers_linear_iterative, LSCGDenseEigen){
   // Namespaces

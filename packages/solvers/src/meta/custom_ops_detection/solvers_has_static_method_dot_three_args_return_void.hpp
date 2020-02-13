@@ -49,8 +49,6 @@
 #ifndef SOLVERS_SRC_META_SOLVERS_HAS_STATIC_METHOD_DOT_THREE_ARGS_RETURN_VOID_HPP_
 #define SOLVERS_SRC_META_SOLVERS_HAS_STATIC_METHOD_DOT_THREE_ARGS_RETURN_VOID_HPP_
 
-#include <utility>
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <

@@ -49,10 +49,6 @@
 #ifndef SOLVERS_SYSTEM_MEETS_DEFAULT_API_HPP_
 #define SOLVERS_SYSTEM_MEETS_DEFAULT_API_HPP_
 
-#include "../meta/solvers_basic_meta.hpp"
-#include "solvers_system_has_all_needed_jacobian_methods.hpp"
-#include "solvers_system_has_all_needed_residual_methods.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 template<typename system_type, typename enable = void>

@@ -49,14 +49,6 @@
 #ifndef ODE_STEPPERS_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_TRAITS_EULER_HPP_
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_TRAITS_EULER_HPP_
 
-#include "../../ode_fwd.hpp"
-#include "../meta/ode_is_legitimate_explicit_state_type.hpp"
-#include "../meta/ode_is_legitimate_explicit_velocity_type.hpp"
-#include "../meta/ode_is_legitimate_model_for_explicit_ode.hpp"
-#include "../meta/ode_is_valid_user_defined_ops_for_explicit_euler.hpp"
-#include "../meta/ode_is_valid_user_defined_ops_for_explicit_ode.hpp"
-
-
 namespace pressio{ namespace ode{ namespace details{
 
 template<typename state_type, typename ...Args>

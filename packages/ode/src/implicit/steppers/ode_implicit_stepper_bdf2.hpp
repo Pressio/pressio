@@ -49,9 +49,6 @@
 #ifndef ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_BDF2_HPP_
 #define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_BDF2_HPP_
 
-#include "ode_implicit_stepper_traits_bdf2.hpp"
-#include "ode_implicit_stepper_base.hpp"
-
 namespace pressio{ namespace ode{ namespace implicitmethods{
 
 template<

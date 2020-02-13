@@ -49,9 +49,6 @@
 #ifndef SOLVERS_IMPL_HESSIAN_APPROX_HELPERS_POLICY_HPP
 #define SOLVERS_IMPL_HESSIAN_APPROX_HELPERS_POLICY_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
-#include "../../../../CONTAINERS_OPS"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template<typename ud_ops_t, typename J_t, typename enable = void>

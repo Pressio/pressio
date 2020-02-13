@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "SOLVERS_NONLINEAR"
-#include "QR_BASIC"
+#include "SOLVERS_ALL"
 #include "./problems/solvers_utest_serial_expon_data_fit_n2.hpp"
 
 TEST(solvers_nonlinear_least_squares,

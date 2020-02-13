@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_has_jacobian_method_callable_with_three_args.hpp
+// ode_is_valid_user_defined_ops_for_implicit_ode.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,40 @@
 //@HEADER
 */
 
-#ifndef ODE_HAS_JACOBIAN_METHOD_CALLABLE_WITH_THREE_ARGS_HPP_
-#define ODE_HAS_JACOBIAN_METHOD_CALLABLE_WITH_THREE_ARGS_HPP_
-
-#include "../../ode_ConfigDefs.hpp"
+#ifndef ODE_IS_VALID_USER_DEFINED_OPS_IMPLICIT_ODE_HPP_
+#define ODE_IS_VALID_USER_DEFINED_OPS_IMPLICIT_ODE_HPP_
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template <
+template<
   typename T,
+  typename scalar_t,
   typename state_t,
-  typename sc_t,
-  typename jac_t,
-  typename = void
+  typename residual_t,
+  typename jacobian_t,
+  typename enable = void
   >
-struct has_jacobian_method_callable_with_three_args
-  : std::false_type{};
+struct is_valid_user_defined_ops_for_implicit_ode : std::false_type{};
 
-template <
+template<
   typename T,
+  typename scalar_t,
   typename state_t,
-  typename sc_t,
-  typename jac_t
+  typename residual_t,
+  typename jacobian_t
   >
-struct has_jacobian_method_callable_with_three_args<
-  T, state_t, sc_t, jac_t,
-  ::pressio::mpl::void_t<
-  decltype(
-	   std::declval<T const>().jacobian(
-					    std::declval<state_t const&>(),
-					    std::declval<sc_t const &>(),
-					    std::declval<jac_t &>()
-					    )
-	   )
+struct is_valid_user_defined_ops_for_implicit_ode<
+  T, scalar_t, state_t, residual_t, jacobian_t,
+  mpl::enable_if_t<
+    is_valid_user_defined_ops_for_implicit_euler<
+      T, scalar_t, state_t, residual_t, jacobian_t
+      >::value 
+    and
+    is_valid_user_defined_ops_for_implicit_bdf2<
+      T, scalar_t, state_t, residual_t, jacobian_t
+      >::value
     >
-  >: std::true_type{};
+  > : std::true_type{};
 
 }}} // namespace pressio::ode::meta
 #endif

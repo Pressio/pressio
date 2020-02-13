@@ -49,8 +49,6 @@
 #ifndef ODE_POLICIES_META_IS_LEGITIMATE_IMPLICIT_JACOBIAN_POLICIES_HPP_
 #define ODE_POLICIES_META_IS_LEGITIMATE_IMPLICIT_JACOBIAN_POLICIES_HPP_
 
-#include "../base/ode_jacobian_policy_base.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<

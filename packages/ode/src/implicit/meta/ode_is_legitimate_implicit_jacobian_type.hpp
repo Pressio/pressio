@@ -49,9 +49,6 @@
 #ifndef ODE_IS_LEGITIMATE_IMPLICIT_JACOBIAN_TYPE_HPP_
 #define ODE_IS_LEGITIMATE_IMPLICIT_JACOBIAN_TYPE_HPP_
 
-#include "../../ode_ConfigDefs.hpp"
-#include "../../../../containers/src/vector/containers_vector_meta.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename T, typename enable = void>
