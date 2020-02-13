@@ -49,9 +49,6 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_ARBITRARY_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_ARBITRARY_HPP_
 
-#include "../../base/containers_container_base.hpp"
-#include <utility>
-
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>

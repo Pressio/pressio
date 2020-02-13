@@ -50,10 +50,6 @@
 #ifndef CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_DISTRIBUTED_EPETRA_HPP_
 #define CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_DISTRIBUTED_EPETRA_HPP_
 
-// #include "../../base/containers_container_base.hpp"
-// #include "../../base/containers_container_distributed_base.hpp"
-// #include "../../base/containers_multi_vector_distributed_base.hpp"
-
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>

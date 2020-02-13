@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
 #define CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
 
-// #include "../containers_expression_base.hpp"
-
 namespace pressio{ namespace containers{ namespace expressions{
 
 template <typename vector_t>

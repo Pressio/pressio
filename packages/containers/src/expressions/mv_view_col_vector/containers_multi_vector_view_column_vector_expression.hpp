@@ -49,9 +49,6 @@
 #ifndef CONTAINERS_MULTI_VECTOR_VIEW_COLUMN_VECTOR_EXPRESSIONS_HPP_
 #define CONTAINERS_MULTI_VECTOR_VIEW_COLUMN_VECTOR_EXPRESSIONS_HPP_
 
-// #include "../../multi_vector/containers_multi_vector_meta.hpp"
-// #include "../containers_expression_base.hpp"
-
 namespace pressio{ namespace containers{ namespace expressions{
 
 template <typename mv_t>

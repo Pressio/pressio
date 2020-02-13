@@ -48,11 +48,6 @@
 #ifndef CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
 #define CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
 
-// #include "../../vector/containers_vector_meta.hpp"
-// #include "../../matrix/containers_matrix_meta.hpp"
-// #include "../../multi_vector/containers_multi_vector_meta.hpp"
-// #include "..//containers_meta_is_expression.hpp"
-
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T1, typename T2, typename enable = void>

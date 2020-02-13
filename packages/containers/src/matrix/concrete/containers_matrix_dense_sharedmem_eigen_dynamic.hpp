@@ -49,10 +49,6 @@
 #ifndef CONTAINERS_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_DYNAMIC_HPP_
 #define CONTAINERS_MATRIX_CONCRETE_MATRIX_DENSE_SHAREDMEM_EIGEN_DYNAMIC_HPP_
 
-// #include "../../base/containers_container_base.hpp"
-// #include "../../base/containers_container_sharedmem_base.hpp"
-// #include "../../base/containers_matrix_sharedmem_base.hpp"
-
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>

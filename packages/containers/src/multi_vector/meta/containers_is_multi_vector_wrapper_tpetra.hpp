@@ -50,8 +50,6 @@
 #ifndef CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_HPP_
 #define CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_HPP_
 
-// #include "../containers_multi_vector_traits.hpp"
-
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>

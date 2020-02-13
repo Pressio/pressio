@@ -51,9 +51,6 @@
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_TPETRA_HPP_
 
 #include <MatrixMarket_Tpetra.hpp>
-#include "../../base/containers_container_base.hpp"
-#include "../../base/containers_container_distributed_base.hpp"
-#include "../../base/containers_vector_distributed_base.hpp"
 
 namespace pressio{ namespace containers{
 

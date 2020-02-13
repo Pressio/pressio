@@ -50,7 +50,6 @@
 #ifndef CONTAINERS_NATIVE_TPETRA_VECTOR_META_HPP_
 #define CONTAINERS_NATIVE_TPETRA_VECTOR_META_HPP_
 
-// #include "../../meta/containers_meta_basic.hpp"
 #include "Tpetra_Vector.hpp"
 
 namespace pressio{ namespace containers{ namespace meta {

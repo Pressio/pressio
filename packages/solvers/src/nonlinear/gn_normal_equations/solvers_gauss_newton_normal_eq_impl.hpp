@@ -49,7 +49,6 @@
 #ifndef SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_hessian_helper_policy.hpp"
 #include "../helper_policies/solvers_jacob_res_product_policy.hpp"

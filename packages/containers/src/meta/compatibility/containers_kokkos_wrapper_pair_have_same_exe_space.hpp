@@ -49,10 +49,6 @@
 #ifndef CONTAINERS_KOKKOS_WRAPPER_PAIR_HAVE_SAME_EXE_SPACE_HPP_
 #define CONTAINERS_KOKKOS_WRAPPER_PAIR_HAVE_SAME_EXE_SPACE_HPP_
 
-// #include "../../vector/containers_vector_meta.hpp"
-// #include "../../matrix/containers_matrix_meta.hpp"
-// #include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T1, typename T2, typename enable = void>

@@ -49,10 +49,6 @@
 #ifndef CONTAINERS_EXPRESSIONS_TRAITS_SPAN_HPP_
 #define CONTAINERS_EXPRESSIONS_TRAITS_SPAN_HPP_
 
-// #include "../../containers_fwd.hpp"
-// #include "../../vector/containers_vector_meta.hpp"
-// #include "containers_vector_span_expression.hpp"
-
 namespace pressio{ namespace containers{ namespace details{
 
 template <typename v_type>

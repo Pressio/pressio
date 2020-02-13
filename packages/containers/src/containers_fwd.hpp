@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_FORWARD_DECLARATIONS_HPP_
 #define CONTAINERS_FORWARD_DECLARATIONS_HPP_
 
-#include "containers_ConfigDefs.hpp"
-
 namespace pressio{ namespace containers{
 
 namespace details {

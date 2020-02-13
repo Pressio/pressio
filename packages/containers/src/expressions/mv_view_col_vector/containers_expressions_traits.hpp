@@ -49,9 +49,6 @@
 #ifndef CONTAINERS_EXPRESSIONS_TRAITS_VCOLV_HPP_
 #define CONTAINERS_EXPRESSIONS_TRAITS_VCOLV_HPP_
 
-// #include "../../containers_fwd.hpp"
-// #include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace details{
 
 template <typename mv_type>

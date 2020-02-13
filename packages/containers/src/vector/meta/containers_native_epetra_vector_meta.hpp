@@ -50,7 +50,6 @@
 #ifndef CONTAINERS_NATIVE_EPETRA_VECTOR_META_HPP_
 #define CONTAINERS_NATIVE_EPETRA_VECTOR_META_HPP_
 
-// #include "../../meta/containers_meta_basic.hpp"
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
 

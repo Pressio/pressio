@@ -49,7 +49,6 @@
 #ifndef CONTAINERS_STATIC_COLLECTION_IMPL_HPP_
 #define CONTAINERS_STATIC_COLLECTION_IMPL_HPP_
 
-// #include "../containers_ConfigDefs.hpp"
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #endif
