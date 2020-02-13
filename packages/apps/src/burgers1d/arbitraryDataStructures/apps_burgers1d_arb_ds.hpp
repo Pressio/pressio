@@ -154,7 +154,7 @@ private:
 private:
   const scalar_type xL_ = 0.0;
   const scalar_type xR_ = 100.0;
-  std::array<scalar_type, 3> mu_ = {5., 0.02, 0.02};
+  std::array<scalar_type, 3> mu_ = {{5., 0.02, 0.02}};
 
   std::size_t Ncell_;
   scalar_type dx_;
