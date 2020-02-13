@@ -49,8 +49,6 @@
 #ifndef PRESSIO_MPL_HAS_MULTIPLICATION_OPERATOR_HPP_
 #define PRESSIO_MPL_HAS_MULTIPLICATION_OPERATOR_HPP_
 
-#include <type_traits>
-
 namespace pressio{ namespace mpl{
 
 template<typename T, typename U=T, typename enable = void>

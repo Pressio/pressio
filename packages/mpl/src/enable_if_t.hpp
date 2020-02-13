@@ -49,8 +49,6 @@
 #ifndef PRESSIO_MPL_ENABLE_IF_T_HPP_
 #define PRESSIO_MPL_ENABLE_IF_T_HPP_
 
-#include <type_traits>
-
 namespace pressio{ namespace mpl{
 
 /*This allows allows for a shorter syntax:

@@ -49,9 +49,6 @@
 #ifndef PRESSIO_MPL_VARIADIC_FIND_IF_QUATERNARY_HPP
 #define PRESSIO_MPL_VARIADIC_FIND_IF_QUATERNARY_HPP
 
-#include <type_traits>
-#include <cstddef>
-
 namespace pressio{ namespace mpl{ namespace variadic {
 
 template<typename T1, typename T2, typename T3,

@@ -52,5 +52,4 @@
 #include "./mpl/src/mpl_non_variadic.hpp"
 #include "./mpl/src/mpl_variadic.hpp"
 
-
 #endif

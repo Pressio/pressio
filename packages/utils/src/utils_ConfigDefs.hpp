@@ -49,14 +49,18 @@
 #ifndef UTILS_CONFIGDEFS_HPP_
 #define UTILS_CONFIGDEFS_HPP_
 
-#include "../../mpl/src/mpl_ConfigDefs.hpp"
-#include "utils_crtp_helper.hpp"
-#include "utils_empty.hpp"
-#include "utils_set_stream_precision.hpp"
-#include "utils_static_constants.hpp"
-#include "utils_teuchos_performance_monitor.hpp"
+#include <iomanip>
+#include <fstream>
+#include <vector>
+#include <cassert>
+#include <unistd.h>
+#include <iostream>
+#include <cstdio>
 
-#include "../../mpl/src/mpl_non_variadic.hpp"
-#include "../../mpl/src/mpl_variadic.hpp"
+// #include "../../mpl/src/mpl_ConfigDefs.hpp"
+// #include "utils_crtp_helper.hpp"
+// #include "utils_empty.hpp"
+// #include "../../mpl/src/mpl_non_variadic.hpp"
+// #include "../../mpl/src/mpl_variadic.hpp"
 
 #endif

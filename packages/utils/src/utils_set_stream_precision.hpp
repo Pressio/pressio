@@ -50,8 +50,6 @@
 #ifndef UTILS_SET_STREAM_PRECISION_HPP_
 #define UTILS_SET_STREAM_PRECISION_HPP_
 
-#include <iomanip>
-
 namespace pressio{ namespace utils{ namespace impl{
 
 template <typename stream_t, typename scalar_t>

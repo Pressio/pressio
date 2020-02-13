@@ -49,9 +49,6 @@
 #ifndef PRESSIO_MPL_VARIADIC_FIND_IF_TERNARY_HPP
 #define PRESSIO_MPL_VARIADIC_FIND_IF_TERNARY_HPP
 
-#include <type_traits>
-#include <cstddef>
-
 namespace pressio{ namespace mpl{ namespace variadic {
 
 template<

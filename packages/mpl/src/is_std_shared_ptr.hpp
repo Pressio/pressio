@@ -49,9 +49,6 @@
 #ifndef PRESSIO_MPL_IS_STD_SHARED_PTR_HPP_
 #define PRESSIO_MPL_IS_STD_SHARED_PTR_HPP_
 
-#include <type_traits>
-#include <memory>
-
 namespace pressio{ namespace mpl{ 
 
 template <typename T,

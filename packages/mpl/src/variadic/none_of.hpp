@@ -13,8 +13,6 @@
 #ifndef PRESSIO_MPL_VARIADIC_NONE_OF_HPP
 #define PRESSIO_MPL_VARIADIC_NONE_OF_HPP
 
-#include <type_traits>
-
 namespace pressio{ namespace mpl{ namespace variadic {
 
 /**
