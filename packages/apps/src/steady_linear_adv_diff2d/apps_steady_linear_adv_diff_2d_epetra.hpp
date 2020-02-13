@@ -49,10 +49,7 @@
 #ifndef PRESSIO_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
 #define PRESSIO_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
 
-#include "../apps_ConfigDefs.hpp"
-
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "../../../CONTAINERS_ALL"
 #include "Epetra_MpiComm.h"
 #include <Epetra_config.h>
 #include "Epetra_Map.h"

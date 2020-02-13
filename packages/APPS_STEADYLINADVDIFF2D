@@ -49,6 +49,9 @@
 #ifndef APPS_STEADYLINADVDIFF2D_HPP_
 #define APPS_STEADYLINADVDIFF2D_HPP_
 
+#include "CONTAINERS_ALL"
+#include "apps/src/apps_ConfigDefs.hpp"
+
 #include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp"
 #include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra_rom_adapter.hpp"
 

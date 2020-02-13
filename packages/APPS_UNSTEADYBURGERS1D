@@ -49,6 +49,9 @@
 #ifndef APPS_BURGERS1D_HPP_
 #define APPS_BURGERS1D_HPP_
 
+#include "CONTAINERS_ALL"
+#include "apps/src/apps_ConfigDefs.hpp"
+
 #include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_eigen_residual_api.hpp"
 

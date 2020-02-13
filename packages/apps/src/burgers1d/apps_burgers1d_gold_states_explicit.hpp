@@ -49,8 +49,6 @@
 #ifndef PRESSIO_BURGERS1D_GOLD_EXPLICIT_HPP_
 #define PRESSIO_BURGERS1D_GOLD_EXPLICIT_HPP_
 
-#include <vector>
-
 namespace pressio { namespace apps{ namespace test{
 
 struct Burgers1dExpGoldStatesEuler{
