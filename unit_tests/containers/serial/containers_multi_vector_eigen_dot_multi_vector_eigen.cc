@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 namespace{
   using eigdmat_t = Eigen::MatrixXd;

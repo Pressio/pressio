@@ -1,7 +1,7 @@
 
 #include "epetra_only_fixtures.hpp"
 #include "Epetra_MpiComm.h"
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 
 TEST_F(epetraSparseMatR7MultiVectorR9C4Fixture,

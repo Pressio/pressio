@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ROM_BASIC"
+#include "pressio_rom.hpp"
 #include "epetra_skeleton.hpp"
 
 TEST(lspg, epetra_types_euler)

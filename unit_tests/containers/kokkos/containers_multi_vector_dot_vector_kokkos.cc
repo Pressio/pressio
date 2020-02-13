@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 template <typename d_layout>
 struct RunTest{

@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "SOLVERS_ALL"
+#include "pressio_solvers.hpp"
 
 TEST(solvers_linear_iterative, LSCGDenseEigen){
   // Namespaces

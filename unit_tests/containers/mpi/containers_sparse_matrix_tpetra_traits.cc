@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 // #include <Tpetra_Map.hpp>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 TEST(containers_sparse_matrix_tpetra, Traits){
   using namespace pressio;

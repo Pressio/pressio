@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 using natvec_t = Teuchos::SerialDenseVector<int, double>;
 using myvec_t = pressio::containers::Vector<natvec_t>;

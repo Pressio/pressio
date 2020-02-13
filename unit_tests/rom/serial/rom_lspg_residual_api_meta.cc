@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ROM_BASIC"
+#include "pressio_rom.hpp"
 
 // NOTE: here it does not matter to leave all empty since this
 // is just for doing type checking

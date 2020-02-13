@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 using nat_t = Teuchos::SerialDenseMatrix<int, double>;
 using mymat_t = pressio::containers::Matrix<nat_t>;

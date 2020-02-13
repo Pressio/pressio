@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ROM_GALERKIN
+// pressio_mpl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,15 +46,12 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_HPP_
-#define ROM_GALERKIN_HPP_
+#ifndef PRESSIO_MPL_HPP_
+#define PRESSIO_MPL_HPP_
 
-#include "ROM_BASIC"
+#include "./mpl/src/mpl_ConfigDefs.hpp"
 
-#include "rom/src/galerkin/rom_galerkin_explicit_velocity_policy.hpp"
-
-#include "rom/src/galerkin/rom_galerkin_type_generator_common.hpp"
-#include "rom/src/galerkin/rom_galerkin_problem_type_generator_default.hpp"
-#include "rom/src/galerkin/rom_galerkin_problem_generator.hpp"
+#include "./mpl/src/mpl_non_variadic.hpp"
+#include "./mpl/src/mpl_variadic.hpp"
 
 #endif

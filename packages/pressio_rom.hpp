@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ROM_BASIC
+// pressio_rom.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,10 +46,16 @@
 //@HEADER
 */
 
-#ifndef ROM_BASIC_HPP_
-#define ROM_BASIC_HPP_
+#ifndef PRESSIO_ROM_HPP_
+#define PRESSIO_ROM_HPP_
 
-#include "ODE_ALL"
+#include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
+#include "pressio_containers.hpp"
+#include "pressio_qr.hpp"
+#include "pressio_svd.hpp"
+#include "pressio_solvers.hpp"
+#include "pressio_ode.hpp"
 
 #include "rom/src/rom_ConfigDefs.hpp"
 

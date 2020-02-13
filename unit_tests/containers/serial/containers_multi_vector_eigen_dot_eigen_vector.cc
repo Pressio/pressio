@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 
 TEST(containers_multi_vector_serial_eigen_dynamic_class,

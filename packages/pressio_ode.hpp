@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ODE_ALL
+// pressio_ode.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,11 +46,15 @@
 //@HEADER
 */
 
-#ifndef ODE_ALL_HPP_
-#define ODE_ALL_HPP_
+#ifndef PRESSIO_ODE_HPP_
+#define PRESSIO_ODE_HPP_
 
-#include "CONTAINERS_ALL"
-#include "SOLVERS_ALL"
+#include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
+#include "pressio_containers.hpp"
+#include "pressio_qr.hpp"
+#include "pressio_svd.hpp"
+#include "pressio_solvers.hpp"
 
 #include "ode/src/ode_ConfigDefs.hpp"
 

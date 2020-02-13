@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ODE_ALL"
+#include "pressio_ode.hpp"
 
 
 template <typename state_t>

@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
-#include "MPL_ALL"
 
+#include <gtest/gtest.h>
+#include "pressio_mpl.hpp"
 
 TEST(containers_meta_basic, isDefaultConstructible){
   using namespace pressio;

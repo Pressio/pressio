@@ -2,7 +2,7 @@
 #include "Epetra_Map.h"
 #include "Epetra_MultiVector.h"
 #include "Epetra_MpiComm.h"
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 TEST(containers_multivector_distributed_epetra,
      Traits){

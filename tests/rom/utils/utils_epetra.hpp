@@ -3,8 +3,7 @@
 #if not defined ROM_TEST_UTILS_EPETRA_HPP_
 #define ROM_TEST_UTILS_EPETRA_HPP_
 
-#include "UTILS_ALL"
-#include "CONTAINERS_ALL"
+#include "pressio_utils.hpp"
 #include "Epetra_MpiComm.h"
 
 namespace pressio{ namespace rom{ namespace test{ namespace epetra{

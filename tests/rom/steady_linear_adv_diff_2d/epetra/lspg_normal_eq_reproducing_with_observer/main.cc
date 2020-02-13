@@ -1,6 +1,6 @@
 
-#include "ROM_BASIC"
-#include "APPS_STEADYLINADVDIFF2D"
+#include "pressio_rom.hpp"
+#include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
 struct ResidualSampler{

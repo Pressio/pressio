@@ -3,8 +3,7 @@
 #if not defined ROM_TEST_UTILS_TPETRA_HPP_
 #define ROM_TEST_UTILS_TPETRA_HPP_
 
-#include "UTILS_ALL"
-#include "CONTAINERS_ALL"
+#include "pressio_utils.hpp"
 #include <Tpetra_Core.hpp>
 
 namespace pressio{ namespace rom{ namespace test{ namespace tpetra{

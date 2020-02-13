@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// SOLVERS_NONLINEAR
+// pressio_qr.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,39 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_HPP_
-#define SOLVERS_NONLINEAR_HPP_
+#ifndef PRESSIO_QR_HPP_
+#define PRESSIO_QR_HPP_
 
-#include "SOLVERS_LINEAR"
+#include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
+#include "pressio_containers.hpp"
 
-#include "solvers/src/meta/solvers_basic_meta.hpp"
-#include "solvers/src/meta/solvers_is_legitimate_system_for_gauss_newton.hpp"
-#include "solvers/src/meta/solvers_is_legitimate_system_for_newton_raphson.hpp"
+#include "qr/src/qr_ConfigDefs.hpp"
+#include "qr/src/qr_fwd.hpp"
+#include "qr/src/qr_algorithms_tags.hpp"
 
-// GN with normal equations
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_gauss_newton_normal_eq_res_jac_api.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_neq_specialization_picker.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_py_gauss_newton.hpp"
+#include "qr/src/qr_meta.hpp"
 
-// GN with QR-solver
-#include "solvers/src/nonlinear/gn_qr_based/solvers_gauss_newton_qr.hpp"
-#include "solvers/src/nonlinear/gn_qr_based/solvers_gn_qr_specialization_picker.hpp"
+#include "qr/src/base/qr_in_place_base.hpp"
+#include "qr/src/base/qr_out_of_place_base.hpp"
+#include "qr/src/base/qr_r_factor_base.hpp"
+#include "qr/src/base/qr_solve_base.hpp"
 
-// Newton-Raphson
-#include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
+#include "qr/src/qr_traits.hpp"
 
-// the hacked solver for conservative ROM
-#include "solvers/src/nonlinear/gn_conservative_rom/solvers_gauss_newton_conservative.hpp"
+#include "qr/src/impl/qr_rfactor_solve_impl.hpp"
+#include "qr/src/impl/qr_out_of_place.hpp"
+#include "qr/src/impl/qr_in_place.hpp"
+
+#include "qr/src/impl/eigen/qr_eigen_dense_out_of_place_impl.hpp"
+
+#include "qr/src/impl/epetra/qr_epetra_multi_vector_tsqr_impl.hpp"
+#include "qr/src/impl/epetra/qr_epetra_mv_householder_using_eigen_impl.hpp"
+#include "qr/src/impl/epetra/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
+
+#include "qr/src/impl/tpetra/qr_tpetra_multi_vector_tsqr_impl.hpp"
+#include "qr/src/impl/tpetra/qr_tpetra_multi_vector_modified_gram_schmidt_impl.hpp"
+#include "qr/src/impl/tpetra/qr_tpetra_mv_householder_using_eigen_impl.hpp"
+#include "qr/src/impl/tpetra/qr_tpetra_block_multi_vector_tsqr_impl.hpp"
 
 #endif

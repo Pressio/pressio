@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ODE_ALL"
+#include "pressio_ode.hpp"
 #include "../reference_apps_for_testing.hpp"
 
 template<typename state_type, typename system_type, typename residual_type>

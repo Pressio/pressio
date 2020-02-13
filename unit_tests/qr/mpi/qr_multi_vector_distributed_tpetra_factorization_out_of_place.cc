@@ -1,6 +1,6 @@
 
 #include "../qr_utest_fixtures.hpp"
-#include "QR_BASIC"
+#include "pressio_qr.hpp"
 
 TEST_F(tpetraR9Fixture,
        HouseholderTpetraMultiVectorOutOfPlace){

@@ -3,8 +3,7 @@
 #define SOLVERS_UTEST_MPI_EPETRA_EXPONENTIAL_DATA_FIT_N5_HPP_
 
 #include "Epetra_MpiComm.h"
-#include "CONTAINERS_VECTOR"
-#include "CONTAINERS_MATRIX"
+#include "pressio_solvers.hpp"
 
 /*
  * test taken from:

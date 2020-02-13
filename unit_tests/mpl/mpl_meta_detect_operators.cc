@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "MPL_ALL"
+#include "pressio_mpl.hpp"
 
 TEST(containers_meta_detect_operators, operatorAddDetecting)
 {

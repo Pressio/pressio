@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "SOLVERS_ALL"
+#include "pressio_solvers.hpp"
 #include "./problems/solvers_utest_serial_expon_data_fit_n2.hpp"
 
 TEST(solvers_nonlinear_least_squares, gn_qr_exp_data_fit_n2){

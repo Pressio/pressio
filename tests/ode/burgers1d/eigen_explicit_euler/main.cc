@@ -1,8 +1,6 @@
 
-#include "UTILS_ALL"
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "APPS_UNSTEADYBURGERS1D"
+#include "pressio_ode.hpp"
+#include "pressio_apps.hpp"
 #include <array>
 
 constexpr double eps = 1e-12;

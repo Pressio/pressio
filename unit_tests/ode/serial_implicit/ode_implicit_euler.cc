@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ODE_ALL"
+#include "pressio_ode.hpp"
 #include "../reference_apps_for_testing.hpp"
 
 TEST(ode_implicit_euler, traits){

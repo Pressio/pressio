@@ -1,6 +1,6 @@
 
-#include "ROM_BASIC"
-#include "APPS_UNSTEADYBURGERS1D"
+#include "pressio_rom.hpp"
+#include "pressio_apps.hpp"
 #include "utils_eigen.hpp"
 
 

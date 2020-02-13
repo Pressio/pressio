@@ -3,8 +3,7 @@
 #if not defined ROM_TEST_UTILS_KOKKOS_HPP_
 #define ROM_TEST_UTILS_KOKKOS_HPP_
 
-#include "UTILS_ALL"
-#include "CONTAINERS_ALL"
+#include "pressio_utils.hpp"
 
 namespace pressio{ namespace rom{ namespace test{ namespace kokkos{
 

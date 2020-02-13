@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ROM_BASIC"
+#include "pressio_rom.hpp"
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
 #include "Epetra_IntVector.h"

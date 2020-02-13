@@ -49,8 +49,6 @@
 #ifndef PRESSIO_MPL_NON_VARIADIC_HPP
 #define PRESSIO_MPL_NON_VARIADIC_HPP
 
-#include "mpl_ConfigDefs.hpp"
-
 #include "identity.hpp"
 #include "enable_if_t.hpp"
 #include "is_default_constructible.hpp"

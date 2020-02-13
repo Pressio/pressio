@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// CONTAINERS_ALL
+// pressio_containers.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,10 +46,11 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_ALL_HPP_
-#define CONTAINERS_ALL_HPP_
+#ifndef PRESSIO_CONTAINERS_HPP_
+#define PRESSIO_CONTAINERS_HPP_
 
-#include "UTILS_ALL"
+#include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
 
 #include "containers/src/containers_ConfigDefs.hpp"
 #include "containers/src/containers_fwd.hpp"
@@ -192,7 +193,7 @@
 #include "containers/src/meta/generic/containers_is_expression.hpp"
 
 //------------------
-// general 
+// others 
 //------------------
 #include "containers/src/meta/generic/containers_is_wrapper.hpp"
 #include "containers/src/meta/containers_meta_compatibility.hpp"

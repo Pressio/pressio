@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ODE_ALL"
+#include "pressio_ode.hpp"
 #include "model_for_static_checks_for_implicit_stepper.hpp"
 
 TEST(ode_implicit, checkModelsScalar){

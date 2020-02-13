@@ -1,7 +1,6 @@
-#include <iostream>
-#include <string>
-#include "APPS_UNSTEADYBURGERS1D"
-#include "ROM_BASIC"
+
+#include "pressio_rom.hpp"
+#include "pressio_apps.hpp"
 #include "utils_eigen.hpp"
 
 int main(int argc, char *argv[]){

@@ -1,5 +1,5 @@
-#include "CONTAINERS_ALL"
-#include "APPS_STEADYLINADVDIFF2D"
+
+#include "pressio_apps.hpp"
 #include <random>
 #include <Eigen/SVD>
 

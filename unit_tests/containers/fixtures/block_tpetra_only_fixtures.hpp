@@ -3,7 +3,7 @@
 #define CONTAINERS_FIXTURES_BLOCK_TPETRA_FIXTURES_HPP_
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 #include <Tpetra_Experimental_BlockVector.hpp>
 #include <Tpetra_Experimental_BlockMultiVector.hpp>

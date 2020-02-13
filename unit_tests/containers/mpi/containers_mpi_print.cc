@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 TEST(containers_basic, mpiPrint){
   auto a1 = "fr";

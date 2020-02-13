@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
 using myvec_t = pressio::containers::Vector<eigvec_t>;

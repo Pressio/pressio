@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 #include "Epetra_MpiComm.h"
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 
 struct epetraVectorGlobSize15Fixture
