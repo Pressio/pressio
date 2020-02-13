@@ -50,8 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_TPETRA_VECTOR_DO_UPDATE_HPP_
 #define CONTAINERS_SRC_OPS_TPETRA_VECTOR_DO_UPDATE_HPP_
 
-#include "../../vector/containers_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 //----------------------------------------------------------------------

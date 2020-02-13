@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_SHARED_TRAITS_HPP_
 #define CONTAINERS_SHARED_TRAITS_HPP_
 
-#include "containers_wrapped_types_enum.hpp"
-
 namespace pressio{ namespace containers{ namespace details {
 
 template<

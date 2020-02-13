@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_container_distributed_trilinos_base.hpp
+// containers_meta_is_teuchos_rcp.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -47,47 +47,30 @@
 */
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef CONTAINERS_SHARED_BASE_CONTAINER_DISTRIBUTED_TRILINOS_BASE_HPP_
-#define CONTAINERS_SHARED_BASE_CONTAINER_DISTRIBUTED_TRILINOS_BASE_HPP_
+#ifndef CONTAINERS_META_IS_TEUCHOS_RCP_HPP_
+#define CONTAINERS_META_IS_TEUCHOS_RCP_HPP_
 
-#include "../containers_ConfigDefs.hpp"
-#include "Teuchos_RCPDecl.hpp"
+#include <Teuchos_RCPDecl.hpp>
 
-namespace pressio{ namespace containers{
+namespace pressio{ namespace containers{ namespace meta {
 
-template<typename derived_type, typename map_t>
-class ContainerDistributedTrilinosBase
-  : private utils::details::CrtpBase<
-  ContainerDistributedTrilinosBase<derived_type, map_t> >{
+template <typename T,
+	  typename enable = void>
+struct is_teuchos_rcp : std::false_type{};
 
-  using this_t = ContainerDistributedTrilinosBase<derived_type,map_t>;
+template <typename T>
+struct is_teuchos_rcp<
+  T,
+  typename std::enable_if<
+    std::is_same<
+      T, Teuchos::RCP<typename T::element_type>
+      >::value or
+    std::is_same<
+      T, Teuchos::RCP<const typename T::element_type>
+      >::value
+    >::type
+  > : std::true_type{};
 
-public:
-  map_t const & getDataMap() const{
-    return this->underlying().getDataMapImpl();
-  }
-
-  bool hasRowMapEqualTo(map_t const &othermap) const{
-    return this->underlying().hasRowMapEqualToImpl(othermap);
-  }
-
-  Teuchos::RCP<const map_t> getRCPDataMap() const{
-    return this->underlying().getRCPDataMapImpl();
-  }
-
-  void replaceDataMap(const map_t & mapObj){
-    return this->underlying().replaceDataMapImpl(mapObj);
-  }
-
-private:
-  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<derived_type>::type;
-
-  friend utils::details::CrtpBase<this_t>;
-
-};//end class
-
-}}//end namespace pressio::containers
+}}} // namespace pressio::containers::meta
 #endif
 #endif

@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_VECTOR_BASE_VECTOR_DISTRIBUTED_BASE_HPP_
 #define CONTAINERS_VECTOR_BASE_VECTOR_DISTRIBUTED_BASE_HPP_
 
-#include "../vector/containers_vector_traits.hpp"
-
 namespace pressio{ namespace containers{
 
 template<typename derived_type>

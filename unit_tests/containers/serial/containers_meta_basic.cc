@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
-#include "CONTAINERS_VECTOR"
-#include "CONTAINERS_MATRIX"
+#include "CONTAINERS_ALL"
 
 TEST(containers_meta_basic, inheritanceVector){
   

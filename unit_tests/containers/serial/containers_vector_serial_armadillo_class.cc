@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_VECTOR"
+#include "CONTAINERS_ALL"
 
 TEST(containers_vector_serial_armadillo_class, Constructor)
 {

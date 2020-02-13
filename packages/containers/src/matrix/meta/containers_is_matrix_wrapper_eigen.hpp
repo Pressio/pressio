@@ -49,8 +49,8 @@
 #ifndef CONTAINERS_IS_MATRIX_WRAPPER_EIGEN_HPP_
 #define CONTAINERS_IS_MATRIX_WRAPPER_EIGEN_HPP_
 
-#include "containers_is_dense_matrix_wrapper_eigen.hpp"
-#include "containers_is_sparse_matrix_wrapper_eigen.hpp"
+// #include "containers_is_dense_matrix_wrapper_eigen.hpp"
+// #include "containers_is_sparse_matrix_wrapper_eigen.hpp"
 
 namespace pressio{ namespace containers{ namespace meta {
 

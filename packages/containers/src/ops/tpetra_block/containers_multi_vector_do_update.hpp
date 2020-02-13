@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DO_UPDATE_HPP_
 #define CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DO_UPDATE_HPP_
 
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-#include<KokkosBlas1_axpby.hpp>
-
 namespace pressio{ namespace containers{ namespace ops{
 
 //----------------------------------------------------------------------
@@ -69,8 +66,7 @@ template<
 void do_update(T & mv, const scalar_t &a,
 	       const T & mv1, const scalar_t &b)
 {
-  throw std::runtime_error("Warning, container::ops::do_update operation between not yet supported for tpetra block"); 
-  //mv.data()->update(b, *mv1.data(), a);
+  throw std::runtime_error("Error, container::ops::do_update operation between not yet supported for tpetra block"); 
 }
 
 template<
@@ -82,9 +78,7 @@ template<
   >
 void do_update(T & mv, const T & mv1, const scalar_t & b)
 {
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-  //mv.data()->update(b, *mv1.data(), zero);
-  throw std::runtime_error("Warning, container::ops::do_update operation between not yet supported for tpetra block"); 
+  throw std::runtime_error("Error, container::ops::do_update operation between not yet supported for tpetra block"); 
 }
 
 }}}//end namespace pressio::containers::ops

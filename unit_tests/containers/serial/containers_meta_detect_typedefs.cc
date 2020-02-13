@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_BASIC"
+#include "CONTAINERS_ALL"
+
 
 TEST(containers_meta_detect_typedefs, scalarTypedefDetect)
 {

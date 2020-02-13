@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_MULTIVECTOR_BASE_MULTIVECTOR_SHAREDMEM_BASE_HPP_
 #define CONTAINERS_MULTIVECTOR_BASE_MULTIVECTOR_SHAREDMEM_BASE_HPP_
 
-#include "../multi_vector/containers_multi_vector_traits.hpp"
-
 namespace pressio{ namespace containers{
 
 template<typename derived_type>

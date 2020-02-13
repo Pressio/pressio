@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_VIEW_COLUMN_VECTOR_HPP_
 #define CONTAINERS_VIEW_COLUMN_VECTOR_HPP_
 
-#include "containers_multi_vector_view_column_vector_expression.hpp"
+// #include "containers_multi_vector_view_column_vector_expression.hpp"
 
 namespace pressio{ namespace containers{
 

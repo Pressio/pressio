@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_CONTAINER_OPS_TPETRA_BLOCK_FILL_HPP_
 #define CONTAINERS_CONTAINER_OPS_TPETRA_BLOCK_FILL_HPP_
 
-#include "../../vector/containers_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 template <

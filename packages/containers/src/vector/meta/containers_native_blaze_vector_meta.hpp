@@ -50,7 +50,6 @@
 #ifndef CONTAINERS_NATIVE_BLAZE_VECTOR_META_HPP_
 #define CONTAINERS_NATIVE_BLAZE_VECTOR_META_HPP_
 
-#include "../meta/containers_meta_basic.hpp"
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticVector.h>
 

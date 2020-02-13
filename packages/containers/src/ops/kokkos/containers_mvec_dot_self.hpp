@@ -50,7 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_KOKKOS_MULTI_VECTOR_DOT_SELF_HPP_
 #define CONTAINERS_SRC_OPS_KOKKOS_MULTI_VECTOR_DOT_SELF_HPP_
 
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
 #include "KokkosBlas3_gemm.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{

@@ -50,8 +50,6 @@
 #ifndef CONTAINERS_CONTAINER_OPS_KOKKOS_DEEP_COPY_HPP_
 #define CONTAINERS_CONTAINER_OPS_KOKKOS_DEEP_COPY_HPP_
 
-#include "../../vector/containers_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 //--------------------------------------------------------------------------

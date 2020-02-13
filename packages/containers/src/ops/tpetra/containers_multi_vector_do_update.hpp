@@ -50,7 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_TPETRA_MULTI_VECTOR_DO_UPDATE_HPP_
 #define CONTAINERS_SRC_OPS_TPETRA_MULTI_VECTOR_DO_UPDATE_HPP_
 
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
 #include<KokkosBlas1_axpby.hpp>
 
 namespace pressio{ namespace containers{ namespace ops{

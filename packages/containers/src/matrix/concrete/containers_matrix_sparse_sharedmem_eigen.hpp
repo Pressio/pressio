@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_MATRIX_CONCRETE_MATRIX_SPARSE_SHAREDMEM_EIGEN_HPP_
 #define CONTAINERS_MATRIX_CONCRETE_MATRIX_SPARSE_SHAREDMEM_EIGEN_HPP_
 
-#include "../../base/containers_container_base.hpp"
+// #include "../../base/containers_container_base.hpp"
 
 namespace pressio{ namespace containers{
 

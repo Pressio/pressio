@@ -49,31 +49,31 @@
 #ifndef CONTAINERS_VECTOR_HPP_
 #define CONTAINERS_VECTOR_HPP_
 
-#include "CONTAINERS_BASIC"
+// #include "CONTAINERS_BASIC"
 
-#include "containers/src/collection/containers_static_collection.hpp"
+// #include "containers/src/collection/containers_static_collection.hpp"
 
-#include "containers/src/vector/containers_native_vector_static_asserts.hpp"
-#include "containers/src/vector/containers_vector_traits.hpp"
-#include "containers/src/vector/containers_vector_meta.hpp"
+// #include "containers/src/vector/containers_native_vector_static_asserts.hpp"
+// #include "containers/src/vector/containers_vector_traits.hpp"
+// #include "containers/src/vector/containers_vector_meta.hpp"
 
-#include "containers/src/expressions/span/containers_expressions_traits.hpp"
-#include "containers/src/expressions/span/containers_span.hpp"
-#include "containers/src/expressions/span/containers_vector_span_expression.hpp"
+// #include "containers/src/expressions/span/containers_expressions_traits.hpp"
+// #include "containers/src/expressions/span/containers_span.hpp"
+// #include "containers/src/expressions/span/containers_vector_span_expression.hpp"
 
-// concrete classes (these in turn include bases)
-#include "containers/src/vector/concrete/containers_vector_arbitrary.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_tpetra.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_tpetra_block.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_epetra.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_static.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_kokkos.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_blaze_dynamic.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_armadillo.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_teuchos_serial_dense.hpp"
+// // concrete classes (these in turn include bases)
+// #include "containers/src/vector/concrete/containers_vector_arbitrary.hpp"
+// #include "containers/src/vector/concrete/containers_vector_distributed_tpetra.hpp"
+// #include "containers/src/vector/concrete/containers_vector_distributed_tpetra_block.hpp"
+// #include "containers/src/vector/concrete/containers_vector_distributed_epetra.hpp"
+// #include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_dynamic.hpp"
+// #include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_static.hpp"
+// #include "containers/src/vector/concrete/containers_vector_sharedmem_kokkos.hpp"
+// #include "containers/src/vector/concrete/containers_vector_sharedmem_blaze_dynamic.hpp"
+// #include "containers/src/vector/concrete/containers_vector_sharedmem_armadillo.hpp"
+// #include "containers/src/vector/concrete/containers_vector_sharedmem_teuchos_serial_dense.hpp"
 
-#include "containers/src/meta/compatibility/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
-#include "containers/src/meta/compatibility/containers_wrappers_have_same_scalar.hpp"
+// #include "containers/src/meta/compatibility/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
+// #include "containers/src/meta/compatibility/containers_wrappers_have_same_scalar.hpp"
 
 #endif

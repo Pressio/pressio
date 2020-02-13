@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_SPAN_HPP_
 #define CONTAINERS_SPAN_HPP_
 
-#include "containers_vector_span_expression.hpp"
+// #include "containers_vector_span_expression.hpp"
 
 namespace pressio{ namespace containers{
 

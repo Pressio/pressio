@@ -49,7 +49,6 @@
 #ifndef CONTAINERS_CONTAINER_OPS_KOKKOS_SCALE_HPP_
 #define CONTAINERS_CONTAINER_OPS_KOKKOS_SCALE_HPP_
 
-#include "../../vector/containers_vector_meta.hpp"
 #include <KokkosBlas1_scal.hpp>
 
 namespace pressio{ namespace containers{ namespace ops{

@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_MULTI_VECTOR"
-#include "CONTAINERS_OPS"
+#include "CONTAINERS_ALL"
 
 using eigdmat_t = Eigen::MatrixXd;
 using myMV_t = pressio::containers::MultiVector<eigdmat_t>;

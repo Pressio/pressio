@@ -50,11 +50,10 @@
 #ifndef CONTAINERS_NATIVE_PYBIND11_ARRAY_HPP_
 #define CONTAINERS_NATIVE_PYBIND11_ARRAY_HPP_
 
-#include "containers_meta_basic.hpp"
+// #include "containers_meta_basic.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/numpy.h>
-
 
 namespace pressio{ namespace containers{ namespace meta {
 

@@ -49,8 +49,8 @@
 #ifndef CONTAINERS_MATRIX_SUBSPAN_EXPRESSION_HPP_
 #define CONTAINERS_MATRIX_SUBSPAN_EXPRESSION_HPP_
 
-#include "../../matrix/containers_matrix_meta.hpp"
-#include "../containers_expression_base.hpp"
+// #include "../../matrix/containers_matrix_meta.hpp"
+// #include "../containers_expression_base.hpp"
 
 namespace pressio{ namespace containers{ namespace expressions{
 

@@ -50,11 +50,8 @@
 #ifndef CONTAINERS_CONTAINER_OPS_PYBIND11_DEEP_COPY_HPP_
 #define CONTAINERS_CONTAINER_OPS_PYBIND11_DEEP_COPY_HPP_
 
-#include "../vector/containers_vector_meta.hpp"
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#endif
 
 namespace pressio{ namespace containers{ namespace ops{
 

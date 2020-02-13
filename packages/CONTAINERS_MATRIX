@@ -49,25 +49,25 @@
 #ifndef CONTAINERS_MATRIX_HPP_
 #define CONTAINERS_MATRIX_HPP_
 
-#include "CONTAINERS_VECTOR"
+// #include "CONTAINERS_VECTOR"
 
-#include "containers/src/matrix/meta/containers_native_matrix_static_asserts.hpp"
-#include "containers/src/matrix/containers_matrix_traits.hpp"
-#include "containers/src/matrix/containers_matrix_meta.hpp"
+// #include "containers/src/matrix/meta/containers_native_matrix_static_asserts.hpp"
+// #include "containers/src/matrix/containers_matrix_traits.hpp"
+// #include "containers/src/matrix/containers_matrix_meta.hpp"
 
-#include "containers/src/expressions/subspan/containers_expressions_traits.hpp"
-#include "containers/src/expressions/subspan/containers_matrix_subspan_expression.hpp"
-#include "containers/src/expressions/subspan/containers_subspan.hpp"
+// #include "containers/src/expressions/subspan/containers_expressions_traits.hpp"
+// #include "containers/src/expressions/subspan/containers_matrix_subspan_expression.hpp"
+// #include "containers/src/expressions/subspan/containers_subspan.hpp"
 
-///concrete classes
-#include "containers/src/matrix/concrete/containers_matrix_sparse_sharedmem_eigen.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_distributed_epetra.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_teuchos_serial.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_kokkos.hpp"
+// ///concrete classes
+// #include "containers/src/matrix/concrete/containers_matrix_sparse_sharedmem_eigen.hpp"
+// #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
+// #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"
+// #include "containers/src/matrix/concrete/containers_matrix_dense_distributed_epetra.hpp"
+// #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_teuchos_serial.hpp"
+// #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_kokkos.hpp"
 
-#include "containers/src/meta/compatibility/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
-#include "containers/src/meta/compatibility/containers_wrappers_have_same_scalar.hpp"
+// #include "containers/src/meta/compatibility/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
+// #include "containers/src/meta/compatibility/containers_wrappers_have_same_scalar.hpp"
 
 #endif

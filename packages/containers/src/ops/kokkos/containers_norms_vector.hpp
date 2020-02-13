@@ -50,7 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_KOKKOS_NORMS_HPP_
 #define CONTAINERS_SRC_OPS_KOKKOS_NORMS_HPP_
 
-#include "../../vector/containers_vector_meta.hpp"
 #include "KokkosBlas1_nrm1.hpp"
 #include "KokkosBlas1_nrm2.hpp"
 

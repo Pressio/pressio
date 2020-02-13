@@ -49,10 +49,7 @@
 #ifndef CONTAINERS_MATRIX_BASE_MATRIX_DISTRIBUTED_BASE_HPP_
 #define CONTAINERS_MATRIX_BASE_MATRIX_DISTRIBUTED_BASE_HPP_
 
-#include "../matrix/containers_matrix_traits.hpp"
-
-namespace pressio{
-namespace containers{
+namespace pressio{ namespace containers{
 
 template<typename derived_type>
 class MatrixDistributedBase
@@ -76,6 +73,6 @@ private:
   ~MatrixDistributedBase() = default;
 
 };//end class
-} // end namespace containers
-}//end namespace pressio
+
+}} // end namespace pressio::containers
 #endif

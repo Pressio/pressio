@@ -1,5 +1,7 @@
+
 #include <gtest/gtest.h>
-#include "CONTAINERS_BASIC"
+#include "CONTAINERS_ALL"
+
 
 TEST(containers_basic, serialPrint){
   auto a1 = "fr";

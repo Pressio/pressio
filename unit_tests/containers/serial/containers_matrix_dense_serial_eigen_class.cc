@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_MATRIX"
-#include "CONTAINERS_OPS"
+#include "CONTAINERS_ALL"
 
 using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
 using mymat_t = pressio::containers::Matrix<nat_t>;

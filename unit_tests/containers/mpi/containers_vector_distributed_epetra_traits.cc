@@ -3,7 +3,7 @@
 #include "Epetra_Vector.h"
 #include "Epetra_Version.h"
 #include "Epetra_MpiComm.h"
-#include "CONTAINERS_VECTOR"
+#include "CONTAINERS_ALL"
 
 TEST(containers_vector_distributed_epetra, EpetraVectorTraits)
 {

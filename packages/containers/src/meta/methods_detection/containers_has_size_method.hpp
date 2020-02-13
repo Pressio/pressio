@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_vector_meta.hpp
+// containers_meta_has_size_method.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,25 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_META_HPP_
-#define CONTAINERS_VECTOR_META_HPP_
+#ifndef CONTAINERS_META_META_HAS_SIZE_METHOD_HPP_
+#define CONTAINERS_META_META_HAS_SIZE_METHOD_HPP_
 
-#include "./meta/containers_is_vector_wrapper.hpp"
-#include "./meta/containers_is_vector_wrapper_arbitrary.hpp"
-#include "./meta/containers_is_dense_vector_wrapper_teuchos.hpp"
-#include "./meta/containers_is_vector_wrapper_armadillo.hpp"
-#include "./meta/containers_is_vector_wrapper_blaze.hpp"
-#include "./meta/containers_is_vector_wrapper_eigen.hpp"
-#include "./meta/containers_is_vector_wrapper_epetra.hpp"
-#include "./meta/containers_is_vector_wrapper_tpetra.hpp"
-#include "./meta/containers_is_vector_wrapper_kokkos.hpp"
-#include "./meta/containers_is_vector_wrapper_tpetra_block.hpp"
+namespace pressio{ namespace containers{ namespace meta {
 
+template<typename T,
+	 typename = void>
+struct has_size_method : std::false_type{};
+
+template<typename T>
+struct has_size_method<
+  T,
+  typename std::enable_if<
+    !std::is_void<
+      decltype(std::declval<T>().size())
+      >::value
+    >::type
+  > : std::true_type{};
+
+
+}}} // namespace pressio::containers::meta
 #endif

@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_MultiVector.hpp>
-#include "CONTAINERS_VECTOR"
-#include "CONTAINERS_MULTI_VECTOR"
+#include "CONTAINERS_ALL"
 
 TEST(containers_multi_vector_distributed_tpetra, Traits){
   using namespace pressio;

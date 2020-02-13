@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_IS_VECTOR_WRAPPER_ARBITRARY_HPP_
 #define CONTAINERS_IS_VECTOR_WRAPPER_ARBITRARY_HPP_
 
-#include "../containers_vector_traits.hpp"
-
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>

@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_CONTAINER_OPS_EIGEN_SET_ZERO_HPP_
 #define CONTAINERS_CONTAINER_OPS_EIGEN_SET_ZERO_HPP_
 
-#include "../../vector/containers_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 template <

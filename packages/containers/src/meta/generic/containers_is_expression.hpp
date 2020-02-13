@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_meta_has_size_method.hpp
+// containers_meta_is_expression.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,27 +46,23 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_META_META_HAS_SIZE_METHOD_HPP_
-#define CONTAINERS_META_META_HAS_SIZE_METHOD_HPP_
-
-#include <type_traits>
+#ifndef CONTAINERS_META_IS_EXPRESSION_HPP_
+#define CONTAINERS_META_IS_EXPRESSION_HPP_
 
 namespace pressio{ namespace containers{ namespace meta {
 
-template<typename T,
-	 typename = void>
-struct has_size_method : std::false_type{};
+template <typename T, typename enable = void>
+struct is_expression : std::false_type{};
 
-template<typename T>
-struct has_size_method<
+template <typename T>
+struct is_expression<
   T,
-  typename std::enable_if<
-    !std::is_void<
-      decltype(std::declval<T>().size())
+  ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::publicly_inherits_from<
+      T, ::pressio::containers::expressions::BaseExpr<T>
       >::value
-    >::type
+    >
   > : std::true_type{};
-
 
 }}} // namespace pressio::containers::meta
 #endif

@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_META_HAS_STATIC_METHOD_ADD_TO_DIAGONAL_HPP_
 #define CONTAINERS_META_HAS_STATIC_METHOD_ADD_TO_DIAGONAL_HPP_
 
-#include <utility>
-
 namespace pressio{ namespace containers{ namespace meta {
 
 template <

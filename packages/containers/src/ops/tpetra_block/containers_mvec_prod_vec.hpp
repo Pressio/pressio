@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_PROD_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_PROD_VECTOR_HPP_
 
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-#include "containers_set_zero.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*

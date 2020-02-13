@@ -49,9 +49,6 @@
 #ifndef CONTAINERS_META_HAS_COMMUNICATOR_TYPEDEF_HPP_
 #define CONTAINERS_META_HAS_COMMUNICATOR_TYPEDEF_HPP_
 
-#include <type_traits>
-
-
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>

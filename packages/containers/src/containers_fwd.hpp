@@ -61,6 +61,30 @@ template<typename T>
 struct traits<const T> : traits<T> {};
 }
 
+template<typename derived_type, typename wrapped_t>
+class ContainerBase;
+
+template<typename derived_type>
+class ContainerDistributedBase;
+template<typename derived_type>
+class ContainerSharedMemBase;
+
+template<typename derived_type>
+class MatrixDistributedBase;
+template<typename derived_type>
+class MatrixSharedMemBase;
+
+template<typename derived_type>
+class MultiVectorDistributedBase;
+template<typename derived_type>
+class MultiVectorSharedMemBase;
+
+template<typename derived_type>
+class VectorDistributedBase;
+template<typename derived_type>
+class VectorSharedMemBase;
+
+
 template <
   typename wrapped_type,
   typename Enable = void>

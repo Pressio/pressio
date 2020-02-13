@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_MATRIX_BASE_MATRIX_SHAREDMEM_BASE_HPP_
 #define CONTAINERS_MATRIX_BASE_MATRIX_SHAREDMEM_BASE_HPP_
 
-#include "../matrix/containers_matrix_traits.hpp"
-
 namespace pressio{ namespace containers{
 
 template<typename derived_type>

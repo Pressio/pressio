@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_VECTOR"
+#include "CONTAINERS_ALL"
 #include<Kokkos_Core.hpp>
 #include<Kokkos_Random.hpp>
 #include<KokkosBlas1_axpby.hpp>

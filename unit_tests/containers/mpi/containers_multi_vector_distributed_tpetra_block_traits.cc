@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
-#include "CONTAINERS_VECTOR"
-#include "CONTAINERS_MULTI_VECTOR"
+#include "CONTAINERS_ALL"
 
 TEST(containers_multi_vector_distributed_tpetra_block, Traits){
   using namespace pressio;

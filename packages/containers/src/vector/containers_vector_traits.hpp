@@ -49,22 +49,22 @@
 #ifndef CONTAINERS_VECTOR_VECTOR_TRAITS_HPP_
 #define CONTAINERS_VECTOR_VECTOR_TRAITS_HPP_
 
-#include "../containers_fwd.hpp"
-#include "../containers_shared_traits.hpp"
-#include "./meta/containers_native_armadillo_vector_meta.hpp"
-#include "./meta/containers_native_blaze_vector_meta.hpp"
-#include "./meta/containers_native_eigen_vector_meta.hpp"
+// #include "../containers_fwd.hpp"
+// #include "../containers_shared_traits.hpp"
+// #include "./meta/containers_native_armadillo_vector_meta.hpp"
+// #include "./meta/containers_native_blaze_vector_meta.hpp"
+// #include "./meta/containers_native_eigen_vector_meta.hpp"
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./meta/containers_native_epetra_vector_meta.hpp"
-#include "./meta/containers_native_tpetra_vector_meta.hpp"
-#include "./meta/containers_native_teuchos_vector_meta.hpp"
-#include "./meta/containers_native_tpetra_block_vector_meta.hpp"
-#endif
+// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// #include "./meta/containers_native_epetra_vector_meta.hpp"
+// #include "./meta/containers_native_tpetra_vector_meta.hpp"
+// #include "./meta/containers_native_teuchos_vector_meta.hpp"
+// #include "./meta/containers_native_tpetra_block_vector_meta.hpp"
+// #endif
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./meta/containers_native_kokkos_vector_meta.hpp"
-#endif
+// #ifdef PRESSIO_ENABLE_TPL_KOKKOS
+// #include "./meta/containers_native_kokkos_vector_meta.hpp"
+// #endif
 
 namespace pressio{ namespace containers{ namespace details{
 

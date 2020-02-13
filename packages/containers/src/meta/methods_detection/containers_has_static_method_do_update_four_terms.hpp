@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_HAS_STATIC_METHOD_DO_UPDATE_FOUR_TERMS_HPP_
 #define CONTAINERS_HAS_STATIC_METHOD_DO_UPDATE_FOUR_TERMS_HPP_
 
-#include <utility>
-
 namespace pressio{ namespace containers{ namespace meta {
 
 /*

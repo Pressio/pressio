@@ -50,7 +50,7 @@
 #ifndef CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_KOKKOS_HPP_
 #define CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_KOKKOS_HPP_
 
-#include "../containers_matrix_traits.hpp"
+// #include "../containers_matrix_traits.hpp"
 
 namespace pressio{ namespace containers{ namespace meta {
 

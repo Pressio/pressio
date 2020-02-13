@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_SHARED_BASE_CONTAINER_DISTRIBUTED_BASE_HPP_
 #define CONTAINERS_SHARED_BASE_CONTAINER_DISTRIBUTED_BASE_HPP_
 
-#include "../containers_ConfigDefs.hpp"
-
 namespace pressio{ namespace containers{
 
 template<typename derived_type>

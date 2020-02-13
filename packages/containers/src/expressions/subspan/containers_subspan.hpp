@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_SUBSPAN_HPP_
 #define CONTAINERS_SUBSPAN_HPP_
 
-#include "containers_matrix_subspan_expression.hpp"
+// #include "containers_matrix_subspan_expression.hpp"
 
 namespace pressio{ namespace containers{
 

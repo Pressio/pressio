@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_MATRIX_CONCRETE_MATRIX_ARBITRARY_HPP_
 #define CONTAINERS_MATRIX_CONCRETE_MATRIX_ARBITRARY_HPP_
 
-#include "../../base/containers_container_base.hpp"
+// #include "../../base/containers_container_base.hpp"
 
 namespace pressio{ namespace containers{
 
@@ -118,7 +118,7 @@ private:
 
 private:
   friend ContainerBase< this_t, wrapped_type >;
-  wrap_t data_ = {};
+  wrapped_type data_ = {};
 
 };//end class
 

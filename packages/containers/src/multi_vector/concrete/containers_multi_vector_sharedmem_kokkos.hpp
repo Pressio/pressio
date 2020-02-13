@@ -50,9 +50,9 @@
 #ifndef CONTAINERS_MULTI_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_MULTI_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 
-#include "../../base/containers_container_base.hpp"
-#include "../../base/containers_container_sharedmem_base.hpp"
-#include "../../base/containers_multi_vector_sharedmem_base.hpp"
+// #include "../../base/containers_container_base.hpp"
+// #include "../../base/containers_container_sharedmem_base.hpp"
+// #include "../../base/containers_multi_vector_sharedmem_base.hpp"
 
 namespace pressio{ namespace containers{
 

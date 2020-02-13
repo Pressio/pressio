@@ -55,5 +55,6 @@
 #include "./methods_detection/containers_has_static_method_do_update_three_terms.hpp"
 #include "./methods_detection/containers_has_static_method_do_update_two_terms.hpp"
 #include "./methods_detection/containers_has_static_method_scale.hpp"
+#include "./methods_detection/containers_has_size_method.hpp"
 
 #endif
