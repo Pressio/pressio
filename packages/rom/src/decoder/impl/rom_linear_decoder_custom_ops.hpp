@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_linear_decoder_impl.hpp
+// rom_linear_decoder_custom_ops.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,51 +46,10 @@
 //@HEADER
 */
 
-#ifndef ROM_LINEAR_DECODER_IMPL_HPP_
-#define ROM_LINEAR_DECODER_IMPL_HPP_
-
-#include "rom_decoder_base.hpp"
-#include "../rom_fwd.hpp"
+#ifndef ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_
+#define ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
-
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type
-  >
-struct LinearDecoderWithPressioOps
-  : public DecoderBase<
-  LinearDecoderWithPressioOps<matrix_type, rom_state_type, fom_state_type>,
-  matrix_type, rom_state_type, fom_state_type>
-{
-
-  using this_t	    = LinearDecoderWithPressioOps<matrix_type, rom_state_type, fom_state_type>;
-  using base_t	    = DecoderBase<this_t, matrix_type, rom_state_type, fom_state_type>;
-  using jacobian_t  = matrix_type;
-  using rom_state_t = rom_state_type;
-  using fom_state_t = fom_state_type;
-
-private:
-  friend base_t;
-  matrix_type phi_ = {};
-
-public:
-  LinearDecoderWithPressioOps() = delete;
-  LinearDecoderWithPressioOps(const jacobian_t & matIn) : phi_(matIn){}
-
-private:
-  template <typename operand_t>
-  void applyMappingImpl(const operand_t & operandObj, fom_state_type & resultObj) const
-  {
-    ::pressio::containers::ops::product(phi_, operandObj, resultObj);
-  }
-
-  const jacobian_t & getReferenceToJacobianImpl() const{
-    return phi_;
-  }
-};//end
-
 
 template <
   typename matrix_type,

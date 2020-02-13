@@ -49,8 +49,6 @@
 #ifndef ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
 #define ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
 
-#include <type_traits>
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template <typename T, typename enable = void>

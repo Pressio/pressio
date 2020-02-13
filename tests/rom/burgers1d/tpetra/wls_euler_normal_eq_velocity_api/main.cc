@@ -1,11 +1,6 @@
 
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
+#include "ROM_BASIC"
 #include "APPS_UNSTEADYBURGERS1D"
-#include "SOLVERS_NONLINEAR"
-#include "SOLVERS_EXPERIMENTAL"
-#include "ROM_WLS"
-#include "ROM_UTILS"
 #include "utils_tpetra.hpp"
 
 

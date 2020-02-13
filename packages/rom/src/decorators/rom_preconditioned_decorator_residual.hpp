@@ -49,9 +49,6 @@
 #ifndef ROM_PRECONDITIONED_DECORATOR_RESIDUAL_HPP_
 #define ROM_PRECONDITIONED_DECORATOR_RESIDUAL_HPP_
 
-#include "../rom_fwd.hpp"
-#include "../../../ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
-
 namespace pressio{ namespace rom{ namespace decorator{
 
 /* overload when decorating a residual policy */

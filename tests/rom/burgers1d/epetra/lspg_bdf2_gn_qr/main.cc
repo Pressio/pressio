@@ -1,9 +1,5 @@
 
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "QR_BASIC"
-#include "SOLVERS_NONLINEAR"
-#include "ROM_LSPG_UNSTEADY"
+#include "ROM_BASIC"
 #include "APPS_UNSTEADYBURGERS1D"
 #include "utils_epetra.hpp"
 

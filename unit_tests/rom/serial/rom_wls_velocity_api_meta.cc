@@ -1,11 +1,5 @@
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
-// Currently the WLS System requires calls to ODE package (time discrete residuals)
-// and nonlinear solvers (Initial conditions) 
-#include "ODE_ALL"
-#include "SOLVERS_NONLINEAR"
-#include "ROM_WLS"
-
+#include "ROM_BASIC"
 
 
 struct ValidApp{

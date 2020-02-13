@@ -50,9 +50,6 @@
 #ifndef ROM_LINEAR_PY_DECODER_HPP_
 #define ROM_LINEAR_PY_DECODER_HPP_
 
-#include "rom_decoder_base.hpp"
-#include "../rom_fwd.hpp"
-
 namespace pressio{ namespace rom{
 
 template <typename matrix_type, typename ops_t>

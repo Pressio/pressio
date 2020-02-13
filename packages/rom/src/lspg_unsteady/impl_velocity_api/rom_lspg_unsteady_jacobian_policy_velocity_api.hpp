@@ -49,9 +49,6 @@
 #ifndef ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_VELOCITY_api_HPP_
 #define ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_VELOCITY_api_HPP_
 
-#include "../../rom_fwd.hpp"
-#include "../../rom_static_container_fom_states.hpp"
-#include "../../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "rom_lspg_time_discrete_jacobian.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{

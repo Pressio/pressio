@@ -49,8 +49,6 @@
 #ifndef ROM_ROM_HAS_STATIC_METHOD_PRODUCT_THREE_ARGS_HPP_
 #define ROM_ROM_HAS_STATIC_METHOD_PRODUCT_THREE_ARGS_HPP_
 
-#include <utility>
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template <

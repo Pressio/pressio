@@ -49,8 +49,6 @@
 #ifndef ROM_LSPG_STEADY_TYPE_GENERATOR_DEFAULT_HPP_
 #define ROM_LSPG_STEADY_TYPE_GENERATOR_DEFAULT_HPP_
 
-#include "rom_lspg_steady_type_generator_common.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template <

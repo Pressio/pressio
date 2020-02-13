@@ -49,8 +49,6 @@
 #ifndef ROM_GALERKIN_PROBLEM_GENERATOR_HPP_
 #define ROM_GALERKIN_PROBLEM_GENERATOR_HPP_
 
-#include "rom_galerkin_problem_type_generator_default.hpp"
-
 namespace pressio{ namespace rom{ namespace galerkin{
 
 template <typename problem_t>

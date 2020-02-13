@@ -49,9 +49,6 @@
 #ifndef ROM_ROM_HAS_STATIC_METHOD_AXPY_HPP_
 #define ROM_ROM_HAS_STATIC_METHOD_AXPY_HPP_
 
-#include "../../../mpl/src/mpl_variadic.hpp"
-#include "../../../mpl/src/mpl_non_variadic.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template <

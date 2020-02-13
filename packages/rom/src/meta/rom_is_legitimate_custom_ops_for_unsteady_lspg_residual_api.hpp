@@ -49,9 +49,6 @@
 #ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_RESIDUAL_API_HPP_
 #define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_RESIDUAL_API_HPP_
 
-#include "rom_is_legitimate_custom_ops_for_linear_decoder.hpp"
-#include "rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template<

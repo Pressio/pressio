@@ -49,10 +49,6 @@
 #ifndef ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_IMPL_HPP_
 #define ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_IMPL_HPP_
 
-#include "ROM_UTILS"
-#include "../time_schemes/rom_wls_select_timescheme_helper.hpp"
-#include "../policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
-
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 
 template<

@@ -49,10 +49,6 @@
 #ifndef ROM_STATIC_CONTAINER_FOM_STATES_HPP_
 #define ROM_STATIC_CONTAINER_FOM_STATES_HPP_
 
-#include "rom_ConfigDefs.hpp"
-#include "rom_fwd.hpp"
-#include "../../containers/src/collection/containers_static_collection.hpp"
-
 namespace pressio{ namespace rom{
 
 template <typename fom_state_type, std::size_t n, typename reconstuctor_type>

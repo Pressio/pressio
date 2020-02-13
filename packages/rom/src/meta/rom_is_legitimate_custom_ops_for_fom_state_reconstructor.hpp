@@ -49,9 +49,6 @@
 #ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
 #define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
 
-#include "rom_has_static_method_axpy.hpp"
-#include "rom_has_static_method_deep_copy.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template<

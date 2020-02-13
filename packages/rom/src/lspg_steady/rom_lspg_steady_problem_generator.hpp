@@ -49,8 +49,6 @@
 #ifndef PRESSIO_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
 #define PRESSIO_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
 
-#include "rom_lspg_steady_type_generator_default.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template <typename lspg_problem>

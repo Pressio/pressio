@@ -49,10 +49,6 @@
 #ifndef ROM_DEFAULT_GALERKIN_EXPLICIT_VELOCITY_POLICY_HPP_
 #define ROM_DEFAULT_GALERKIN_EXPLICIT_VELOCITY_POLICY_HPP_
 
-#include "../rom_fwd.hpp"
-#include "../../../ode/src/explicit/policies/ode_explicit_velocity_policy_base.hpp"
-#include "../rom_static_container_fom_states.hpp"
-
 namespace pressio{ namespace rom{ namespace galerkin{
 
 template <

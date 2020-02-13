@@ -49,9 +49,6 @@
 #ifndef ROM_LSPG_UNSTEADY_AUX_STEPPER_TYPE_HELPER_HPP_
 #define ROM_LSPG_UNSTEADY_AUX_STEPPER_TYPE_HELPER_HPP_
 
-#include "../../rom_fwd.hpp"
-#include "../../../../ode/src/ode_fwd.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <typename stepper_tag, typename ... Rest>

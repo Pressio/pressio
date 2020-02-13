@@ -1,13 +1,8 @@
 #include <iostream>
 #include <string>
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
 #include "APPS_UNSTEADYBURGERS1D"
-#include "SOLVERS_NONLINEAR"
-#include "SOLVERS_EXPERIMENTAL"
-#include "ROM_WLS"
+#include "ROM_BASIC"
 #include "utils_eigen.hpp"
-#include "ROM_UTILS"
 
 int main(int argc, char *argv[]){
   std::string checkStr {"PASSED"};

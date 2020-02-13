@@ -49,8 +49,6 @@
 #ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
 #define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
 
-#include "rom_has_static_method_product_three_args.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template<

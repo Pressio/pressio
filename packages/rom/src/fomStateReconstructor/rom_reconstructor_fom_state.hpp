@@ -49,8 +49,7 @@
 #ifndef ROM_RECONSTRUCTOR_FOM_STATE_HPP_
 #define ROM_RECONSTRUCTOR_FOM_STATE_HPP_
 
-#include "../rom_ConfigDefs.hpp"
-#include "rom_reconstructor_fom_state_specializer.hpp"
+#include "./impl/rom_reconstructor_fom_state_specializer.hpp"
 
 namespace pressio{ namespace rom{
 

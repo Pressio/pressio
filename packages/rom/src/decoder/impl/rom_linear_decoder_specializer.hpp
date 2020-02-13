@@ -49,9 +49,8 @@
 #ifndef ROM_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
 #define ROM_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
 
-#include "../rom_fwd.hpp"
-#include "../meta/rom_is_legitimate_custom_ops_for_linear_decoder.hpp"
-#include "rom_linear_decoder_impl.hpp"
+#include "rom_linear_decoder_pressio_ops.hpp"
+#include "rom_linear_decoder_custom_ops.hpp"
 
 namespace pressio{ namespace rom{ namespace impl{
 

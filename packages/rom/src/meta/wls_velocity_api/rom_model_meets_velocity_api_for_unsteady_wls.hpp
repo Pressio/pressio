@@ -46,30 +46,13 @@
 //@HEADER
 */
 
-#ifndef ROM_MODEL_MEETS_VELOCITY_api_FOR_UNSTEADY_LSPG_HPP_
-#define ROM_MODEL_MEETS_VELOCITY_api_FOR_UNSTEADY_LSPG_HPP_
-
-#include "../../../../ode/src/meta/ode_has_state_typedef.hpp"
-#include "../../../../ode/src/meta/ode_has_velocity_typedef.hpp"
-#include "../../../../ode/src/implicit/meta/ode_has_jacobian_typedef.hpp"
-#include "../rom_has_dense_matrix_typedef.hpp"
-#include "../lspg_velocity_api/rom_model_has_needed_velocity_methods.hpp"
-#include "../lspg_velocity_api/rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"
+#ifndef ROM_MODEL_MEETS_VELOCITY_API_FOR_UNSTEADY_WLS_HPP_
+#define ROM_MODEL_MEETS_VELOCITY_API_FOR_UNSTEADY_WLS_HPP_
 
 namespace pressio{ namespace rom{ namespace meta {
 
 template<typename T, typename enable = void>
 struct model_meets_velocity_api_for_wls : std::false_type{};
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename T>
-struct model_meets_velocity_api_for_wls<
-  T,
-  mpl::enable_if_t<
-    ::pressio::mpl::is_same<T, pybind11::object>::value
-    >
-  > : std::true_type{};
-#endif
 
 template<typename T>
 struct model_meets_velocity_api_for_wls<

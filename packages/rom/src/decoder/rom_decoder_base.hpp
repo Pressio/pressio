@@ -49,8 +49,6 @@
 #ifndef ROM_DECODER_BASE_HPP_
 #define ROM_DECODER_BASE_HPP_
 
-#include "../rom_ConfigDefs.hpp"
-
 namespace pressio{ namespace rom{
 
 template <

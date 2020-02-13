@@ -49,48 +49,7 @@
 #ifndef ROM_FORWARD_DECLARATIONS_HPP_
 #define ROM_FORWARD_DECLARATIONS_HPP_
 
-#include "../../ode/src/ode_stepper_tags.hpp"
-
 namespace pressio{ namespace rom{
-
-/*--- decoder ---*/
-namespace impl{
-
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type
-  >
-class LinearDecoderWithPressioOps;
-
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type,
-  typename ops_type
-  >
-class LinearDecoderWithCustomOps;
-
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type,
-  typename ... Args>
-struct LinearDecoderSpecializer;
-
-}// namespace pressio::rom::impl
-
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type,
-  typename ... Args>
-using LinearDecoder =
-  typename impl::LinearDecoderSpecializer<matrix_type,
-					  rom_state_type,
-					  fom_state_type,
-					  Args...>::type;
-
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <

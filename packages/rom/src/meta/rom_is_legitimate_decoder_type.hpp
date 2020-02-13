@@ -49,8 +49,6 @@
 #ifndef ROM_IS_LEGITIMATE_DECODER_TYPE_HPP_
 #define ROM_IS_LEGITIMATE_DECODER_TYPE_HPP_
 
-#include "../decoder/rom_decoder_base.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template<typename T, typename enable = void>

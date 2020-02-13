@@ -1,8 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "ROM_LSPG_UNSTEADY"
+#include "ROM_BASIC"
 #include "epetra_skeleton.hpp"
 
 TEST(lspg, epetra_types_euler)

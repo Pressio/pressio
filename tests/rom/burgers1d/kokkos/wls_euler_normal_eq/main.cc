@@ -1,10 +1,5 @@
 
-#include "UTILS_ALL"
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "SOLVERS_NONLINEAR"
-#include "SOLVERS_EXPERIMENTAL"
-#include "ROM_WLS"
+#include "ROM_BASIC"
 #include "APPS_UNSTEADYBURGERS1D"
 #include "utils_kokkos.hpp"
 

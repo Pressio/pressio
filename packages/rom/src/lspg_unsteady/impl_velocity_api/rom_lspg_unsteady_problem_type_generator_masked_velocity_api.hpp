@@ -51,10 +51,6 @@
 
 #include "rom_lspg_unsteady_residual_policy_velocity_api.hpp"
 #include "rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
-#include "../../decorators/rom_mask_decorator_residual.hpp"
-#include "../../decorators/rom_mask_decorator_jacobian.hpp"
-#include "../../fom_querying_policies/rom_query_fom_velocity_unsteady_policy.hpp"
-#include "../../fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
 #include "rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{

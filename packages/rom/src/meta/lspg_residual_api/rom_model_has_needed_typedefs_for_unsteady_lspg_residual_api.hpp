@@ -49,11 +49,6 @@
 #ifndef ROM_MODEL_HAS_NEEDED_TYPEDEFS_FOR_UNSTEADY_LSPG_RESIDUAL_API_HPP_
 #define ROM_MODEL_HAS_NEEDED_TYPEDEFS_FOR_UNSTEADY_LSPG_RESIDUAL_API_HPP_
 
-#include "../../../../ode/src/meta/ode_has_state_typedef.hpp"
-#include "../../../../ode/src/implicit/meta/ode_has_residual_typedef.hpp"
-#include "../../../../ode/src/implicit/meta/ode_has_jacobian_typedef.hpp"
-#include "../rom_has_dense_matrix_typedef.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template<typename T, typename enable = void>

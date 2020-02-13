@@ -49,13 +49,8 @@
 #ifndef ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_RESIDUAL_API_HPP_
 #define ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_RESIDUAL_API_HPP_
 
-#include "../../rom_fwd.hpp"
-#include "../../meta/rom_is_legitimate_decoder_type.hpp"
 #include "../impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
 #include "../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
-#include "../../../../ode/src/implicit/meta/ode_is_stepper_order_setter.hpp"
-#include "../../../../ode/src/implicit/meta/ode_is_stepper_total_n_states_setter.hpp"
-#include "../../meta/rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 

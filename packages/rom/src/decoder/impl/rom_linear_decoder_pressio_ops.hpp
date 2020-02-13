@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_reconstructor_fom_state_custom_ops.hpp
+// rom_linear_decoder_pressio_ops.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,54 +46,48 @@
 //@HEADER
 */
 
-#ifndef ROM_RECONSTRUCTOR_FOM_STATE_CUSTOM_OPS_HPP_
-#define ROM_RECONSTRUCTOR_FOM_STATE_CUSTOM_OPS_HPP_
-
-#include "../rom_ConfigDefs.hpp"
+#ifndef ROM_LINEAR_DECODER_PRESSIO_OPS_HPP_
+#define ROM_LINEAR_DECODER_PRESSIO_OPS_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
 template <
-  typename scalar_type,
-  typename fom_state_type,
-  typename decoder_type,
-  typename ops_type
+  typename matrix_type,
+  typename rom_state_type,
+  typename fom_state_type
   >
-struct FomStateReconstructorCustomOps
+struct LinearDecoderWithPressioOps
+  : public DecoderBase<
+  LinearDecoderWithPressioOps<matrix_type, rom_state_type, fom_state_type>,
+  matrix_type, rom_state_type, fom_state_type>
 {
-  FomStateReconstructorCustomOps() = delete;
 
-  FomStateReconstructorCustomOps(const fom_state_type & yFomIn,
-				 const decoder_type & decoder)
-    : yFomReference_(yFomIn),
-      decoderObj_(decoder)
-  {}
-
-  template <typename rom_state_t>
-  void operator()(const rom_state_t & romY,
-		  fom_state_type    & yOut) const
-  {
-    // map current romY to FOM state
-    decoderObj_.applyMapping(romY, yOut);
-
-    constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-    // yOut = yOut + yFomReference_;
-    ops_type::axpy(one, *yFomReference_.data(), *yOut.data());
-  }
-
-  template <typename rom_state_t>
-  fom_state_type operator()(const rom_state_t & romY) const{
-    auto yOut(yFomReference_);
-    ::pressio::containers::ops::set_zero(yOut);
-    this->template operator()(romY,yOut);
-    return yOut;
-  }
+  using this_t	    = LinearDecoderWithPressioOps<matrix_type, rom_state_type, fom_state_type>;
+  using base_t	    = DecoderBase<this_t, matrix_type, rom_state_type, fom_state_type>;
+  using jacobian_t  = matrix_type;
+  using rom_state_t = rom_state_type;
+  using fom_state_t = fom_state_type;
 
 private:
-  const fom_state_type & yFomReference_	= {};
-  const decoder_type   & decoderObj_	= {};
+  friend base_t;
+  matrix_type phi_ = {};
 
-};//end class
+public:
+  LinearDecoderWithPressioOps() = delete;
+  LinearDecoderWithPressioOps(const jacobian_t & matIn) : phi_(matIn){}
+
+private:
+  template <typename operand_t>
+  void applyMappingImpl(const operand_t & operandObj, fom_state_type & resultObj) const
+  {
+    ::pressio::containers::ops::product(phi_, operandObj, resultObj);
+  }
+
+  const jacobian_t & getReferenceToJacobianImpl() const{
+    return phi_;
+  }
+};//end
+
 
 }}}//end namespace pressio::rom::impl
 #endif

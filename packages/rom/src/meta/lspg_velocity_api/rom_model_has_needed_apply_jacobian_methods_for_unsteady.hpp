@@ -49,9 +49,6 @@
 #ifndef ROM_MODEL_HAS_NEEDED_APPLY_JACOBIAN_METHODS_FOR_UNSTEADY_HPP_
 #define ROM_MODEL_HAS_NEEDED_APPLY_JACOBIAN_METHODS_FOR_UNSTEADY_HPP_
 
-#include "rom_has_apply_jacobian_method_callable_with_three_args_for_unsteady.hpp"
-#include "rom_has_apply_jacobian_method_callable_with_four_args_for_unsteady.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template<

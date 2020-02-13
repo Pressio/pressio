@@ -1,8 +1,5 @@
 
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "SVD_BASIC"
-#include "ROM_GALERKIN"
+#include "ROM_BASIC"
 #include "APPS_UNSTEADYBURGERS1D"
 #include "utils_epetra.hpp"
 

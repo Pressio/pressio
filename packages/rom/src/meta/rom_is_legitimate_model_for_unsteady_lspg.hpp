@@ -49,9 +49,6 @@
 #ifndef ROM_IS_LEGITIMATE_MODEL_FOR_UNSTEADY_LSPG_HPP_
 #define ROM_IS_LEGITIMATE_MODEL_FOR_UNSTEADY_LSPG_HPP_
 
-#include "./lspg_velocity_api/rom_model_meets_velocity_api_for_unsteady_lspg.hpp"
-#include "./lspg_residual_api/rom_model_meets_residual_api_for_unsteady_lspg.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template<typename T>

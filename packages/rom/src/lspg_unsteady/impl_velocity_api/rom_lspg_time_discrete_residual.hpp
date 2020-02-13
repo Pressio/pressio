@@ -49,9 +49,6 @@
 #ifndef ROM_LSPG_TIME_DISCRETE_RESIDUAL_HPP_
 #define ROM_LSPG_TIME_DISCRETE_RESIDUAL_HPP_
 
-#include "../../../../ode/src/ode_ConfigDefs.hpp"
-#include "../../../../ode/src/implicit/ode_implicit_constants.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 /* enable when we have:

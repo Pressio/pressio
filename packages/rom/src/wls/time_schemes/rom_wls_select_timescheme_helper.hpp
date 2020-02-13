@@ -49,10 +49,6 @@
 #ifndef ROM_WLS_SELECT_ODE_HELPER_HPP_
 #define ROM_WLS_SELECT_ODE_HELPER_HPP_
 
-#include "rom_wls_implicit_euler.hpp"
-#include "rom_wls_bdf2.hpp"
-#include "rom_wls_explicit_euler.hpp"
-
 namespace pressio{ namespace rom{ namespace wls{ namespace timeschemes{
 
 namespace impl{
