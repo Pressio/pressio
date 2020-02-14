@@ -65,7 +65,7 @@ template <
   >
 void product(const mvec_type & mvA, const vec_type & vecB, vec_type & C){
 
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
 		"Types are not scalar compatible");
 
   assert( C.extent(0) == mvA.extent(0) );
@@ -93,7 +93,7 @@ template <
   >
 vec_type product(const mvec_type & mvA, const vec_type & vecB)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
 		"Types are not scalar compatible");
 
   vec_type c(mvA.extent(0));
@@ -117,7 +117,7 @@ template <
   >
 void product(const mvec_type & mvA, const expr_type & exprObj, vec_type & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, expr_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, expr_type>::value,
 		"Types are not scalar compatible");
 
   assert( C.extent(0) == mvA.extent(0) );
@@ -142,7 +142,7 @@ auto product(const mvec_type & mvA, const expr_type & exprObj)
     Eigen::Matrix< typename containers::details::traits<mvec_type>::scalar_t, -1, 1>
     >
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, expr_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
 		"Types are not scalar compatible");
 
   using scalar_t  = typename containers::details::traits<mvec_type>::scalar_t;

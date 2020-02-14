@@ -79,8 +79,8 @@ template <
   >
 void dot(const mvec_type & mvA, const vec_type & vecB, result_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value and
-		containers::meta::wrappers_have_same_scalar<result_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value and
+		containers::meta::are_scalar_compatible<result_type, vec_type>::value,
 		"Tpetra MV dot V: operands do not have matching scalar type");
 
   static_assert(std::is_same<
@@ -113,7 +113,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 typename details::traits<mvec_type>::scalar_t * result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   const auto numVecs = mvA.numVectors();
@@ -143,7 +143,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
     "Types are not scalar compatible");
 
   const auto numVecs = mvA.numVectors();
@@ -180,7 +180,7 @@ void dot(const mvec_type & mvA,
      So we have to extract each column vector
      from mvA and do dot product one a time*/
 
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
     "Types are not scalar compatible");
 
   // how many vectors are in mvA
@@ -216,7 +216,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
     "Types are not scalar compatible");
 
   ///computes dot product of each vector in mvA
@@ -246,7 +246,7 @@ template <
   >
 void updateWithDot(const mvec_type & mvA, const vec_type & vecB, expr_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, expr_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, expr_type>::value,
     "Types are not scalar compatible");
 
   // check the result has right size

@@ -68,7 +68,7 @@ template <
   >
 void dot(const mvec_t & A, const mvec_t & B, result_t & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
 		"Types are not scalar compatible");
 
   const auto nAcols = A.numVectors();
@@ -95,7 +95,7 @@ template <
   >
 result_t dot(const mvec_t & A, const mvec_t & B)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
 		"Types are not scalar compatible");
 
   // this is A^T B
@@ -125,7 +125,7 @@ template <
   >
 void updateWithDot(const mvec_t & A, const mvec_t & B, expr_t & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, expr_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, expr_t>::value,
 		"Types are not scalar compatible");
 
   const auto nAcols = A.numVectors();
@@ -153,7 +153,7 @@ template <
   >
 void dot(const mvec_t & A, const mvec_t & B, expr_t & exprObj)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, expr_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, expr_t>::value,
 		"Types are not scalar compatible");
 
   const auto nAcols = A.numVectors();

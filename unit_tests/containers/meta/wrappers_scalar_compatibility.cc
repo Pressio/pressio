@@ -14,21 +14,21 @@ TEST(containers_meta, two_vector_scalar_compatible){
   using myv1_t = pressio::containers::Vector<eigvec_d_t>;
   using myv2_t = myv1_t;
   using myv3_t = pressio::containers::Vector<eigvec_i_t>;
-  static_assert( pressio::containers::meta::wrappers_have_same_scalar<myv1_t, myv2_t>::value, "");
-  static_assert( !pressio::containers::meta::wrappers_have_same_scalar<myv1_t, myv3_t>::value, "");
+  static_assert( pressio::containers::meta::are_scalar_compatible<myv1_t, myv2_t>::value, "");
+  static_assert( !pressio::containers::meta::are_scalar_compatible<myv1_t, myv3_t>::value, "");
 }
 
 TEST(containers_meta, three_vector_scalar_compatible){
   using myv1_t = pressio::containers::Vector<eigvec_d_t>;
   using myv2_t = myv1_t;
   using myv3_t = myv2_t;
-  static_assert( pressio::containers::meta::wrappers_have_same_scalar<myv1_t, myv2_t, myv3_t>::value, "");
+  static_assert( pressio::containers::meta::are_scalar_compatible<myv1_t, myv2_t, myv3_t>::value, "");
 
   using myv4_t = pressio::containers::Vector<eigvec_i_t>;
-  static_assert( !pressio::containers::meta::wrappers_have_same_scalar<myv1_t, myv2_t, myv4_t>::value, "");
+  static_assert( !pressio::containers::meta::are_scalar_compatible<myv1_t, myv2_t, myv4_t>::value, "");
 
   using myv5_t = pressio::containers::Vector<eigvec_f_t>;
-  static_assert( !pressio::containers::meta::wrappers_have_same_scalar<myv1_t, myv2_t, myv5_t>::value, "");
+  static_assert( !pressio::containers::meta::are_scalar_compatible<myv1_t, myv2_t, myv5_t>::value, "");
 }
 
 TEST(containers_meta, four_vector_scalar_compatible){
@@ -37,8 +37,8 @@ TEST(containers_meta, four_vector_scalar_compatible){
   using myv3_t = myv2_t;
   using myv4_t = pressio::containers::Vector<eigvec_i_t>;
 
-  static_assert( pressio::containers::meta::wrappers_have_same_scalar<myv1_t, myv2_t,
+  static_assert( pressio::containers::meta::are_scalar_compatible<myv1_t, myv2_t,
                 myv3_t, myv2_t>::value, "");
-  static_assert( !pressio::containers::meta::wrappers_have_same_scalar<myv1_t, myv2_t,
+  static_assert( !pressio::containers::meta::are_scalar_compatible<myv1_t, myv2_t,
                 myv3_t, myv4_t>::value, "");
 }

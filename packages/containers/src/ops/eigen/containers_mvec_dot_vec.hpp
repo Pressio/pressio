@@ -72,7 +72,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
 		"Types are not scalar compatible");
 
   const auto numVecs = mvA.numVectors();
@@ -97,7 +97,7 @@ template <
   >
 vec_type dot(const mvec_type & mvA, const vec_type & vecB)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
 		"Types are not scalar compatible");
 
   vec_type c(mvA.data()->cols());
@@ -123,7 +123,7 @@ template <
 void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 {
 
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
 		"Types are not scalar compatible");
 
   // we are dealing with static vector type, so this needs to be true
@@ -144,7 +144,7 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_dynamic_vector_wrapper_eigen<vec_type>::value and
-    containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, expr_type>::value and
+    containers::meta::are_scalar_compatible<mvec_type, vec_type, expr_type>::value and
     containers::meta::is_expression<expr_type>::value and
     ::pressio::containers::meta::is_vector_wrapper_eigen<
       typename ::pressio::containers::details::traits<expr_type>::data_t
@@ -153,7 +153,7 @@ template <
   >
 void updateWithDot(const mvec_type & mvA, const vec_type & vecB, expr_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, expr_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, expr_type>::value,
 		"Types are not scalar compatible");
 
   const auto numVecs = mvA.numVectors();

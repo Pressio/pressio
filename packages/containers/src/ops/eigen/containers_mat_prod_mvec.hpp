@@ -72,7 +72,7 @@ template <
   >
 void product(const mat_type & A, const mvec_type & mv, result_t & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mat_type, mvec_type, result_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mat_type, mvec_type, result_t>::value,
 		"Types are not scalar compatible");
 
   assert( C.data()->rows() == A.data()->rows() );
@@ -99,7 +99,7 @@ template <
   >
 void product(const mat_type & A, const mvec_type & mv, mvec_type & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mat_type, mvec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mat_type, mvec_type>::value,
 		"Types are not scalar compatible");
 
   assert( C.data()->rows() == A.data()->rows() );
@@ -130,7 +130,7 @@ template <
   >
 result_t product(const mat_type & A, const mvec_type & mv)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mat_type, mvec_type, result_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mat_type, mvec_type, result_t>::value,
 		"Types are not scalar compatible");
 
   result_t C(A.rows(), mv.numVectors());

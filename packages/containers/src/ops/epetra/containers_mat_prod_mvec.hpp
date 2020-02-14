@@ -74,7 +74,7 @@ template <
   >
 void product(const mat_type & A, const mvec_type & B, mvec_type & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mat_type, mvec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mat_type, mvec_type>::value,
     "Types are not scalar compatible");
 
 
@@ -95,7 +95,7 @@ template <
   >
 mvec_type product(const mat_type & A, const mvec_type & B)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mat_type, mvec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mat_type, mvec_type>::value,
     "Types are not scalar compatible");
 
   mvec_type C( A.getRangeDataMap(), B.globalNumVectors() );

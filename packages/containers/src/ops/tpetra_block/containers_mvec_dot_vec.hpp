@@ -75,8 +75,8 @@ template <
   >
 void dot(const mvec_type & mvA, const vec_type & vecB, result_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value and
-		containers::meta::wrappers_have_same_scalar<result_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value and
+		containers::meta::are_scalar_compatible<result_type, vec_type>::value,
 		"Tpetra MV dot V: operands do not have matching scalar type");
 
   static_assert(std::is_same<
@@ -106,13 +106,13 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value &&
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value &&
-    containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value
+    containers::meta::are_scalar_compatible<mvec_type, vec_type>::value
     > * = nullptr
   >
 void dot(const mvec_type & mvA, const vec_type & vecB,
 	 typename details::traits<mvec_type>::scalar_t * result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   /* workaround the non-constness of getVectorView*/
@@ -145,7 +145,7 @@ template <
   >
 void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
     "Types are not scalar compatible");
 
   const auto numVecs = mvA.globalNumVectors();
@@ -171,7 +171,7 @@ template <
   >
 void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
     "Types are not scalar compatible");
 
   ///computes dot product of each vector in mvA
@@ -209,7 +209,7 @@ template <
   >
 void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
     "Types are not scalar compatible");
 
   ///computes dot product of each vector in mvA
@@ -232,7 +232,7 @@ template <
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
     containers::meta::is_expression<expr_type>::value and
-    containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, expr_type>::value and
+    containers::meta::are_scalar_compatible<mvec_type, vec_type, expr_type>::value and
     ::pressio::containers::meta::is_vector_wrapper_eigen<
       typename ::pressio::containers::details::traits<expr_type>::data_t
       >::value

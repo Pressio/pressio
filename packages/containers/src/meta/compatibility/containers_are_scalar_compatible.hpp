@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_wrappers_have_same_scalar.hpp
+// containers_are_scalar_compatible.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -51,10 +51,10 @@
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename ... Args>
-struct wrappers_have_same_scalar;
+struct are_scalar_compatible;
 
 template <typename T1>
-struct wrappers_have_same_scalar<T1>
+struct are_scalar_compatible<T1>
 {
   static_assert( pressio::containers::meta::is_wrapper<T1>::value or
 		 pressio::containers::meta::is_expression<T1>::value,
@@ -64,7 +64,7 @@ struct wrappers_have_same_scalar<T1>
 };
 
 template <typename T1, typename T2>
-struct wrappers_have_same_scalar<T1, T2>
+struct are_scalar_compatible<T1, T2>
 {
   static_assert( (pressio::containers::meta::is_wrapper<T1>::value or
 		  pressio::containers::meta::is_expression<T1>::value )
@@ -80,11 +80,11 @@ struct wrappers_have_same_scalar<T1, T2>
 };
 
 template <typename T1, typename T2, typename ... rest>
-struct wrappers_have_same_scalar<T1, T2, rest...>
+struct are_scalar_compatible<T1, T2, rest...>
 {
   static constexpr auto value =
-    wrappers_have_same_scalar<T1, T2>::value and
-    wrappers_have_same_scalar<T2, rest...>::value;
+    are_scalar_compatible<T1, T2>::value and
+    are_scalar_compatible<T2, rest...>::value;
 };
 
 }}} // namespace pressio::containers::meta

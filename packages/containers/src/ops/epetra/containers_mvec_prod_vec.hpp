@@ -99,7 +99,7 @@ void product(const mvec_type & mvA,
 	     const vec_type & vecB,
 	     containers::Vector<Epetra_Vector> & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, vecB, C);
@@ -117,7 +117,7 @@ template <
 containers::Vector<Epetra_Vector>
 product(const mvec_type & mvA, const vec_type & vecB) 
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   // here, mvA is distrubted, but vecB is NOT.
@@ -149,7 +149,7 @@ void product(const mvec_type & mvA,
 	     const expr_type & exprObj,
 	     containers::Vector<Epetra_Vector> & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, expr_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
     "Types are not scalar compatible");
   ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, exprObj, C);
 }
@@ -165,7 +165,7 @@ template <
 containers::Vector<Epetra_Vector>
 product(const mvec_type & mvA, const expr_type & exprObj) 
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, expr_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
     "Types are not scalar compatible");
 
   const auto mvMap = mvA.data()->Map();

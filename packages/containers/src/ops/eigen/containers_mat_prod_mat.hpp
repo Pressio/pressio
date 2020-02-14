@@ -68,7 +68,7 @@ template <
   >
 void product(const TA & A, const TB & B, TC & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<TA,TB,TC>::value,
+  static_assert(containers::meta::are_scalar_compatible<TA,TB,TC>::value,
 		"Types are not scalar compatible");
 
   using implClass_t = impl::eig_mat_mat_product<transposeA,
@@ -91,7 +91,7 @@ template <
   >
 T3 product(const T1 & A, const T2 & B)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2,T3>::value,
+  static_assert(containers::meta::are_scalar_compatible<T1,T2,T3>::value,
 		"Types are not scalar compatible");
 
   using implClass_t = impl::eig_mat_mat_product<transposeA, transposeB>;
@@ -113,7 +113,7 @@ template <
 auto product(const T1 & A, const T2 & B)
   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2>::value,
+  static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
 		"Types are not scalar compatible");
 
   using implClass_t = impl::eig_mat_mat_product<transposeA,
@@ -135,7 +135,7 @@ template <
 auto product(const T1 & A, const T2 & B)
   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2>::value,
+  static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
 		"Types are not scalar compatible");
 
   using implClass_t = impl::eig_mat_mat_product<transposeA,
@@ -157,7 +157,7 @@ template <
 auto product(const T1 & A, const T2 & B)
   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2>::value,
+  static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
 		"Types are not scalar compatible");
 
   using implClass_t = impl::eig_mat_mat_product<transposeA,
@@ -180,7 +180,7 @@ template <
 auto product(const T1 & A, const T2 & B)
   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2>::value,
+  static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
 		"Types are not scalar compatible");
 
   using implClass_t = impl::eig_mat_mat_product<transposeA,

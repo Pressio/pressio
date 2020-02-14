@@ -72,7 +72,7 @@ template <
  >
 void product(const A_t & A, const b_t & b, c_t & c){
 
-  static_assert(containers::meta::wrappers_have_same_scalar<A_t, b_t, c_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
 		"Types are not scalar compatible");
 
   assert(A.cols() == b.size());
@@ -97,7 +97,7 @@ template <
   >
 b_t product(const A_t & A, const b_t & b)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<A_t, b_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t>::value,
 		"Types are not scalar compatible");
 
   b_t c(A.rows());
@@ -127,7 +127,7 @@ template <
   >
 void product(const A_t & A, const b_t & b, c_t & c){
 
-  static_assert(containers::meta::wrappers_have_same_scalar<A_t, b_t, c_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
 		"Types are not scalar compatible");
 
   assert(A.extent(1) == b.extent(0));
@@ -156,7 +156,7 @@ template <
   >
 void product(const A_t & A, const b_t & b, c_t & c){
 
-  static_assert(containers::meta::wrappers_have_same_scalar<A_t, b_t, c_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
 		"Types are not scalar compatible");
 
   assert(A.extent(0) == b.extent(0));
@@ -182,7 +182,7 @@ template <
    >
 b_t product(const A_t & A, const b_t & b)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<A_t, b_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t>::value,
 		"Types are not scalar compatible");
 
   b_t c(A.extent(0));

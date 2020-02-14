@@ -73,7 +73,7 @@ void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
 				      const operand_t & b,
 				      res_type & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, operand_t, res_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, operand_t, res_type>::value,
     "Types are not scalar compatible");
 
   //zero out result
@@ -121,7 +121,7 @@ void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
 				      const operand_t & b,
 				      res_type & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, operand_t, res_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, operand_t, res_type>::value,
     "Types are not scalar compatible");
 
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper

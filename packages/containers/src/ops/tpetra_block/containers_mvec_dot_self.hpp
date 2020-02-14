@@ -70,7 +70,7 @@ template <
   >
 void dot_self(const mvec_t & mvA, result_t & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
     "Types are not scalar compatible");
 
   // get a tpetra multivector that views the data
@@ -129,7 +129,7 @@ template <
   >
 void dot_self(const mvec_t & A, result_t & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
     "Types are not scalar compatible");
 
   // check traits of the block mv

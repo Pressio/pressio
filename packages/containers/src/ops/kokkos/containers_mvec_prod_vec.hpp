@@ -77,7 +77,7 @@ void product(const mvec_type & A,
 	   >
 	 > & c)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec_type>::value,
@@ -111,7 +111,7 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
       >
   >
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec_type>::value,
@@ -153,7 +153,7 @@ void product(const mvec_type & A,
 	     >
 	     > & c)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, expr_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
     "Types are not scalar compatible");
 
   // type of data wrapped by the expression
@@ -189,7 +189,7 @@ auto product(const mvec_type & mvA, const expr_type & exprObj)
       >
   >
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, expr_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
     "Types are not scalar compatible");
 
   // type of data wrapped by the expression

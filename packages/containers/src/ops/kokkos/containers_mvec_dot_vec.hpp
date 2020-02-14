@@ -70,7 +70,7 @@ template <
   >
 void dot(const mvec_type & A, const vec1_type & b, vec2_type & c)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec1_type, vec2_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec1_type, vec2_type>::value,
     "Types are not scalar compatible");
 
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec1_type>::value,
@@ -105,7 +105,7 @@ auto dot(const mvec_type & mvA, const vec_type & vecB)
       >
   >
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec_type>::value,
@@ -143,7 +143,7 @@ template <
   >
 void updateWithDot(const mvec_type & A, const vec1_type & b, expr_type & c)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec1_type, expr_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec1_type, expr_type>::value,
     "Types are not scalar compatible");
 
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec1_type>::value,

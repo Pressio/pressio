@@ -71,7 +71,7 @@ template <
   >
 void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, res_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, res_type>::value,
     "Types are not scalar compatible");
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
@@ -119,7 +119,7 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
       >
     >
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   // the data map of the multivector
@@ -160,7 +160,7 @@ void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
 {
   /* computes: C = mvA*vecB */
 
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, res_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, res_type>::value,
     "Types are not scalar compatible");
 
   //zero out result
@@ -215,7 +215,7 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
       >
     >
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   // the data map of the multivector

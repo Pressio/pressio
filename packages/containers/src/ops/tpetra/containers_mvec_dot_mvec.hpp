@@ -67,7 +67,7 @@ template <
   >
 void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
     "Types are not scalar compatible");
 
 
@@ -101,7 +101,7 @@ template <
   >
 result_t dot(const mvec_t & mvA, const mvec_t & mvB)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
     "Types are not scalar compatible");
 
   const auto numVecsA = mvA.numVectors();
@@ -126,7 +126,7 @@ template <
   >
 void updateWithDot(const mvec_t & mvA, const mvec_t & mvB, expr_t & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, expr_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, expr_t>::value,
     "Types are not scalar compatible");
 
   // how many vectors are in mvA and mvB
@@ -162,7 +162,7 @@ template <
   >
 void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
     "Types are not scalar compatible");
 
 

@@ -78,7 +78,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 typename details::traits<mvec_type>::scalar_t * result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   ///computes dot product of each vector in mvA
@@ -118,7 +118,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
     "Types are not scalar compatible");
 
   const auto numVecs = mvA.numVectorsGlobal();
@@ -144,7 +144,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
     "Types are not scalar compatible");
 
   const auto numVecs = mvA.numVectorsGlobal();
@@ -173,7 +173,7 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
     "Types are not scalar compatible");
 
   assert(result.extent(0) == mvA.numVectorsGlobal());
@@ -197,7 +197,7 @@ void dot(const mvec_type & mvA,
 	 std::vector<typename
 	 details::traits<mvec_type>::scalar_t> & result)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   const auto numVecs = mvA.numVectorsGlobal();
@@ -221,7 +221,7 @@ template <
 std::vector<typename details::traits<mvec_type>::scalar_t>
 dot(const mvec_type & mvA, const vec_type & vecB)
 {
-  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
   using sc_t = typename details::traits<mvec_type>::scalar_t;
