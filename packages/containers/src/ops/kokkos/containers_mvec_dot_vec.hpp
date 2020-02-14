@@ -73,9 +73,9 @@ void dot(const mvec_type & A, const vec1_type & b, vec2_type & c)
   static_assert(containers::meta::are_scalar_compatible<mvec_type, vec1_type, vec2_type>::value,
     "Types are not scalar compatible");
 
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec1_type>::value,
+  static_assert(meta::have_matching_execution_space<mvec_type, vec1_type>::value,
 		"dot: MV and vec types need to have same execution space" );
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<vec1_type, vec2_type>::value,
+  static_assert(meta::have_matching_execution_space<vec1_type, vec2_type>::value,
 		"dot: MV and vec types need to have same execution space" );
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
@@ -108,7 +108,7 @@ auto dot(const mvec_type & mvA, const vec_type & vecB)
   static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
     "Types are not scalar compatible");
 
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec_type>::value,
+  static_assert(meta::have_matching_execution_space<mvec_type, vec_type>::value,
 		"dot: MV and vec types need to have same execution space" );
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
@@ -146,9 +146,9 @@ void updateWithDot(const mvec_type & A, const vec1_type & b, expr_type & c)
   static_assert(containers::meta::are_scalar_compatible<mvec_type, vec1_type, expr_type>::value,
     "Types are not scalar compatible");
 
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec1_type>::value,
+  static_assert(meta::have_matching_execution_space<mvec_type, vec1_type>::value,
 		"dot: MV and vec types need to have same execution space" );
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<
+  static_assert(meta::have_matching_execution_space<
 		vec1_type,
 	        typename containers::details::traits<expr_type>::data_t
 		>::value,

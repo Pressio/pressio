@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_META_META_COMPATIBILITY_HPP_
 #define CONTAINERS_META_META_COMPATIBILITY_HPP_
 
-#include "compatibility/containers_kokkos_wrapper_pair_have_same_exe_space.hpp"
+#include "compatibility/containers_have_matching_exe_space.hpp"
 #include "compatibility/containers_are_scalar_compatible.hpp"
 
 #endif
