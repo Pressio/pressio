@@ -65,13 +65,15 @@ template <
   typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_kokkos<vec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<res_type>::value
     > * = nullptr
   >
 void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, res_type>::value,
+    "Types are not scalar compatible");
+
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
 
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
@@ -104,7 +106,6 @@ template<
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_kokkos<vec_type>::value
     > * = nullptr
   >
@@ -118,6 +119,9 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
       >
     >
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
+
   // the data map of the multivector
   const auto rcpMap = mvA.getRCPDataMap();
   // the block size
@@ -148,7 +152,6 @@ template <
   typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<res_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
@@ -156,6 +159,9 @@ template <
 void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
 {
   /* computes: C = mvA*vecB */
+
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, res_type>::value,
+    "Types are not scalar compatible");
 
   //zero out result
   ::pressio::containers::ops::set_zero(C);
@@ -196,7 +202,6 @@ template<
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
@@ -210,6 +215,9 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
       >
     >
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
+
   // the data map of the multivector
   const auto rcpMap = mvA.getRCPDataMap();
   // the block size

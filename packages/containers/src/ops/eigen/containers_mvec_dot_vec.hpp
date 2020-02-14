@@ -64,9 +64,7 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<vec_type,result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
@@ -74,6 +72,9 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+		"Types are not scalar compatible");
+
   const auto numVecs = mvA.numVectors();
   // I can resize if needed because I know here it is a dynamic vector
   if ( result.extent(0) != numVecs )
@@ -91,12 +92,14 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
-    containers::details::traits<vec_type>::is_dynamic and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::details::traits<vec_type>::is_dynamic
     > * = nullptr
   >
 vec_type dot(const mvec_type & mvA, const vec_type & vecB)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+		"Types are not scalar compatible");
+
   vec_type c(mvA.data()->cols());
   dot(mvA,vecB,c);
   return c;
@@ -114,15 +117,15 @@ template <
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
-    containers::details::traits<result_vec_type>::is_static and
-    containers::meta::wrapper_triplet_have_same_scalar<
-      mvec_type, vec_type, result_vec_type>::value
+    containers::details::traits<result_vec_type>::is_static 
     > * = nullptr
   >
-void dot(const mvec_type & mvA,
-	 const vec_type & vecB,
-	 result_vec_type & result)
+void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 {
+
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, result_vec_type>::value,
+		"Types are not scalar compatible");
+
   // we are dealing with static vector type, so this needs to be true
   assert(result.extent(0) == mvA.data()->cols());
   // compute
@@ -141,17 +144,18 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_dynamic_vector_wrapper_eigen<vec_type>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<mvec_type, vec_type, expr_type>::value and
+    containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, expr_type>::value and
     containers::meta::is_expression<expr_type>::value and
     ::pressio::containers::meta::is_vector_wrapper_eigen<
       typename ::pressio::containers::details::traits<expr_type>::data_t
       >::value
     > * = nullptr
   >
-void updateWithDot(const mvec_type & mvA,
-		   const vec_type & vecB,
-		   expr_type & result)
+void updateWithDot(const mvec_type & mvA, const vec_type & vecB, expr_type & result)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type, expr_type>::value,
+		"Types are not scalar compatible");
+
   const auto numVecs = mvA.numVectors();
   assert(result.extent(0) == numVecs );
   result() += (*mvA.data()).transpose() * (*vecB.data());

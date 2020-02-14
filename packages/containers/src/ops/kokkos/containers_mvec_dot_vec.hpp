@@ -65,13 +65,14 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
     containers::meta::is_vector_wrapper_kokkos<vec1_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec1_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec2_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec2_type>::value
+    containers::meta::is_vector_wrapper_kokkos<vec2_type>::value 
     > * = nullptr
   >
 void dot(const mvec_type & A, const vec1_type & b, vec2_type & c)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec1_type, vec2_type>::value,
+    "Types are not scalar compatible");
+
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec1_type>::value,
 		"dot: MV and vec types need to have same execution space" );
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<vec1_type, vec2_type>::value,
@@ -92,8 +93,7 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::meta::is_vector_wrapper_kokkos<vec_type>::value 
     > * = nullptr
   >
 auto dot(const mvec_type & mvA, const vec_type & vecB)
@@ -103,7 +103,10 @@ auto dot(const mvec_type & mvA, const vec_type & vecB)
       typename containers::details::traits<mvec_type>::layout,
       typename containers::details::traits<mvec_type>::execution_space
       >
-  >{
+  >
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
 
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec_type>::value,
 		"dot: MV and vec types need to have same execution space" );
@@ -133,7 +136,6 @@ template <
     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
     containers::meta::is_vector_wrapper_kokkos<vec1_type>::value and
     containers::meta::is_expression<expr_type>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<mvec_type, vec1_type, expr_type>::value and
     ::pressio::containers::meta::is_vector_wrapper_kokkos<
       typename ::pressio::containers::details::traits<expr_type>::data_t
       >::value
@@ -141,6 +143,9 @@ template <
   >
 void updateWithDot(const mvec_type & A, const vec1_type & b, expr_type & c)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec1_type, expr_type>::value,
+    "Types are not scalar compatible");
+
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec1_type>::value,
 		"dot: MV and vec types need to have same execution space" );
   static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<

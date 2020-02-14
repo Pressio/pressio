@@ -62,11 +62,15 @@ template <
   typename result_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
-    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value
     > * = nullptr
   >
-void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C){
+void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
+
+
   // how many vectors are in mvA and mvB
   const auto numVecsA = mvA.numVectors();
   const auto numVecsB = mvB.numVectors();
@@ -92,11 +96,13 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::details::traits<result_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::details::traits<result_t>::is_dynamic
     > * = nullptr
   >
-result_t dot(const mvec_t & mvA, const mvec_t & mvB){
+result_t dot(const mvec_t & mvA, const mvec_t & mvB)
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
 
   const auto numVecsA = mvA.numVectors();
   const auto numVecsB = mvB.numVectors();
@@ -113,13 +119,16 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
     ::pressio::containers::meta::is_expression<expr_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, expr_t>::value and
     ::pressio::containers::meta::is_matrix_wrapper_eigen<
       typename ::pressio::containers::details::traits<expr_t>::data_t
       >::value
     > * = nullptr
   >
-void updateWithDot(const mvec_t & mvA, const mvec_t & mvB, expr_t & C){
+void updateWithDot(const mvec_t & mvA, const mvec_t & mvB, expr_t & C)
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, expr_t>::value,
+    "Types are not scalar compatible");
+
   // how many vectors are in mvA and mvB
   const auto numVecsA = mvA.numVectors();
   const auto numVecsB = mvB.numVectors();
@@ -148,11 +157,15 @@ template <
   typename result_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
-    ::pressio::containers::meta::is_expression<result_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::meta::is_expression<result_t>::value 
     > * = nullptr
   >
-void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C){
+void dot(const mvec_t & mvA, const mvec_t & mvB, result_t & C)
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
+
+
   // how many vectors are in mvA and mvB
   const auto numVecsA = mvA.numVectors();
   const auto numVecsB = mvB.numVectors();

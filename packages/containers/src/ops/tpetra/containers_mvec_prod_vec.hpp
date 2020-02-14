@@ -71,7 +71,10 @@ template <
   >
 void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
 				      const operand_t & b,
-				      res_type & C){
+				      res_type & C)
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, operand_t, res_type>::value,
+    "Types are not scalar compatible");
 
   //zero out result
   ::pressio::containers::ops::set_zero(C);
@@ -116,7 +119,10 @@ template <
   >
 void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
 				      const operand_t & b,
-				      res_type & C){
+				      res_type & C)
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, operand_t, res_type>::value,
+    "Types are not scalar compatible");
 
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
   using tpetra_mv_dev_t = typename ::pressio::containers::details::traits<mvec_type>::device_t;
@@ -155,7 +161,6 @@ template <
   typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<res_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
      containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value or
@@ -172,7 +177,6 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
      containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value or
      containers::meta::is_vector_wrapper_kokkos<vec_type>::value)

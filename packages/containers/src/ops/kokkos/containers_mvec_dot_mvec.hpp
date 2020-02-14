@@ -75,15 +75,13 @@ template <
     std::is_same<
       typename containers::details::traits<result_t>::layout,
       typename containers::details::traits<mvec_t>::layout
-    >::value and
-    std::is_same<
-      typename containers::details::traits<result_t>::scalar_t,
-      typename containers::details::traits<mvec_t>::scalar_t
-    >::value
+    >::value 
     > * = nullptr
   >
 void dot(const mvec_t & A, const mvec_t & B, result_t & C)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
 
   using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
@@ -107,11 +105,7 @@ template <
     std::is_same<
       typename containers::details::traits<result_t>::layout,
       typename containers::details::traits<mvec_t>::layout
-    >::value and
-    std::is_same<
-      typename containers::details::traits<result_t>::scalar_t,
-      typename containers::details::traits<mvec_t>::scalar_t
-    >::value
+    >::value 
     > * = nullptr
   >
 result_t dot(const mvec_t & mvA, const mvec_t & mvB)
@@ -135,14 +129,13 @@ template <
     std::is_same<
       typename containers::details::traits<expr_t>::execution_space,
       typename containers::details::traits<mvec_t>::execution_space
-    >::value and
-    std::is_same<
-      typename containers::details::traits<expr_t>::scalar_t,
-      typename containers::details::traits<mvec_t>::scalar_t
-    >::value
+    >::value 
     > * = nullptr
   >
-void updateWithDot(const mvec_t & A, const mvec_t & B, expr_t & C){
+void updateWithDot(const mvec_t & A, const mvec_t & B, expr_t & C)
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, expr_t>::value,
+    "Types are not scalar compatible");
 
   using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
@@ -162,15 +155,13 @@ template <
   typename result_t,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_kokkos<mvec_t>::value and
-    containers::meta::is_expression<result_t>::value and
-    std::is_same<
-      typename containers::details::traits<result_t>::scalar_t,
-      typename containers::details::traits<mvec_t>::scalar_t
-    >::value
+    containers::meta::is_expression<result_t>::value 
     > * = nullptr
   >
 void dot(const mvec_t & A, const mvec_t & B, result_t & C)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
 
   using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();

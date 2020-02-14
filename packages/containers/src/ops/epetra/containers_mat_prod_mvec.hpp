@@ -69,13 +69,14 @@ template <
   typename mvec_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_sparse_matrix_wrapper_epetra<mat_type>::value and
-    ::pressio::containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+    ::pressio::containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value 
     > * = nullptr
   >
-void product(const mat_type & A,
-	     const mvec_type & B,
-	     mvec_type & C){
+void product(const mat_type & A, const mvec_type & B, mvec_type & C)
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mat_type, mvec_type>::value,
+    "Types are not scalar compatible");
+
 
   assert( A.isFillingCompleted() );
   assert( A.globalCols() == B.globalLength() );
@@ -89,12 +90,14 @@ template <
   typename mvec_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_sparse_matrix_wrapper_epetra<mat_type>::value and
-    ::pressio::containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mat_type, mvec_type>::value
+    ::pressio::containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value 
     > * = nullptr
   >
 mvec_type product(const mat_type & A, const mvec_type & B)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mat_type, mvec_type>::value,
+    "Types are not scalar compatible");
+
   mvec_type C( A.getRangeDataMap(), B.globalNumVectors() );
   product(A,B,C);
   return C;

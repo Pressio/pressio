@@ -63,11 +63,13 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_matrix_wrapper_eigen<TA>::value and
     containers::meta::is_matrix_wrapper_eigen<TB>::value and
-    containers::meta::is_matrix_wrapper_eigen<TC>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<TA,TB,TC>::value
+    containers::meta::is_matrix_wrapper_eigen<TC>::value
     > * = nullptr
   >
-void product(const TA & A, const TB & B, TC & C){
+void product(const TA & A, const TB & B, TC & C)
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<TA,TB,TC>::value,
+		"Types are not scalar compatible");
 
   using implClass_t = impl::eig_mat_mat_product<transposeA,
 						transposeB>;
@@ -84,13 +86,14 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
     containers::meta::is_dense_matrix_wrapper_eigen<T2>::value and
-    containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value and
-    containers::meta::is_dense_matrix_wrapper_eigen<T3>::value and
-    containers::meta::wrapper_pair_have_same_scalar<T1,T3>::value
+    containers::meta::is_dense_matrix_wrapper_eigen<T3>::value
     > * = nullptr
   >
 T3 product(const T1 & A, const T2 & B)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2,T3>::value,
+		"Types are not scalar compatible");
+
   using implClass_t = impl::eig_mat_mat_product<transposeA, transposeB>;
   return implClass_t()(A,B);
 }
@@ -104,13 +107,15 @@ template <
   bool transposeB = false,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
-    containers::meta::is_dense_matrix_wrapper_eigen<T2>::value and
-    containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value
+    containers::meta::is_dense_matrix_wrapper_eigen<T2>::value
     > * = nullptr
   >
 auto product(const T1 & A, const T2 & B)
   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2>::value,
+		"Types are not scalar compatible");
+
   using implClass_t = impl::eig_mat_mat_product<transposeA,
 						transposeB>;
   return implClass_t()(A,B);
@@ -124,13 +129,15 @@ template <
   bool transposeB = false,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value and
-    containers::meta::is_dense_matrix_wrapper_eigen<T2>::value and
-    containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value
+    containers::meta::is_dense_matrix_wrapper_eigen<T2>::value
     > * = nullptr
   >
 auto product(const T1 & A, const T2 & B)
   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2>::value,
+		"Types are not scalar compatible");
+
   using implClass_t = impl::eig_mat_mat_product<transposeA,
 						transposeB>;
   return implClass_t()(A,B);
@@ -144,13 +151,15 @@ template <
   bool transposeB = false,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
-    containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value and
-    containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value
+    containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value
     > * = nullptr
   >
 auto product(const T1 & A, const T2 & B)
   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2>::value,
+		"Types are not scalar compatible");
+
   using implClass_t = impl::eig_mat_mat_product<transposeA,
 						transposeB>;
   return implClass_t()(A,B);
@@ -165,13 +174,15 @@ template <
   bool transposeB = false,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value and
-    containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value and
-    containers::meta::wrapper_pair_have_same_scalar<T1,T2>::value
+    containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value
     > * = nullptr
   >
 auto product(const T1 & A, const T2 & B)
   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<T1,T2>::value,
+		"Types are not scalar compatible");
+
   using implClass_t = impl::eig_mat_mat_product<transposeA,
 						transposeB>;
   return implClass_t()(A,B);

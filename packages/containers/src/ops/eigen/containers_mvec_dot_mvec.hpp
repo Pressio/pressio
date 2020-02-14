@@ -63,12 +63,14 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::details::traits<result_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::details::traits<result_t>::is_dynamic
     > * = nullptr
   >
 void dot(const mvec_t & A, const mvec_t & B, result_t & C)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+		"Types are not scalar compatible");
+
   const auto nAcols = A.numVectors();
   const auto nArows = A.extent(0);
   const auto nBcols = B.numVectors();
@@ -93,8 +95,8 @@ template <
   >
 result_t dot(const mvec_t & A, const mvec_t & B)
 {
-  static_assert( ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value,
-		 "MV dot MV for Eigen wrappers: the MV and result type need to have matching scalar types");
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+		"Types are not scalar compatible");
 
   // this is A^T B
   const auto numVecsA = A.numVectors();
@@ -116,7 +118,6 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value and
     ::pressio::containers::meta::is_expression<expr_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, expr_t>::value and
     ::pressio::containers::meta::is_matrix_wrapper_eigen<
       typename ::pressio::containers::details::traits<expr_t>::data_t
       >::value
@@ -124,6 +125,9 @@ template <
   >
 void updateWithDot(const mvec_t & A, const mvec_t & B, expr_t & C)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, expr_t>::value,
+		"Types are not scalar compatible");
+
   const auto nAcols = A.numVectors();
   const auto nArows = A.extent(0);
   const auto nBcols = B.numVectors();
@@ -149,10 +153,8 @@ template <
   >
 void dot(const mvec_t & A, const mvec_t & B, expr_t & exprObj)
 {
-  using mv_scalar_t   = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
-  using expr_scalar_t = typename ::pressio::containers::details::traits<expr_t>::scalar_t;
-  static_assert( std::is_same<mv_scalar_t, expr_scalar_t>::value,
-		 "MV dot MV for Eigen wrappers: the MV and expr types need to have matching scalar types");
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, expr_t>::value,
+		"Types are not scalar compatible");
 
   const auto nAcols = A.numVectors();
   const auto nArows = A.extent(0);

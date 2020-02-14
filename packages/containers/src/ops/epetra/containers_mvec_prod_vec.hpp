@@ -91,7 +91,6 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
      containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
     > * = nullptr
@@ -100,6 +99,9 @@ void product(const mvec_type & mvA,
 	     const vec_type & vecB,
 	     containers::Vector<Epetra_Vector> & C)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
+
   ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, vecB, C);
 }
 
@@ -108,13 +110,15 @@ template <
   typename mvec_type, typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
      containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
     > * = nullptr
   >
 containers::Vector<Epetra_Vector>
-product(const mvec_type & mvA, const vec_type & vecB) {
+product(const mvec_type & mvA, const vec_type & vecB) 
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
 
   // here, mvA is distrubted, but vecB is NOT.
   // we interpret this as a linear combination of vectors
@@ -145,6 +149,8 @@ void product(const mvec_type & mvA,
 	     const expr_type & exprObj,
 	     containers::Vector<Epetra_Vector> & C)
 {
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, expr_type>::value,
+    "Types are not scalar compatible");
   ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, exprObj, C);
 }
 
@@ -157,7 +163,10 @@ template <
     > * = nullptr
   >
 containers::Vector<Epetra_Vector>
-product(const mvec_type & mvA, const expr_type & exprObj) {
+product(const mvec_type & mvA, const expr_type & exprObj) 
+{
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_type, expr_type>::value,
+    "Types are not scalar compatible");
 
   const auto mvMap = mvA.data()->Map();
   using res_t = containers::Vector<Epetra_Vector>;

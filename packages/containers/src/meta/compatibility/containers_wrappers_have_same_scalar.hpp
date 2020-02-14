@@ -50,32 +50,42 @@
 
 namespace pressio{ namespace containers{ namespace meta {
 
-template <typename T1, typename T2, typename enable = void>
-struct wrapper_pair_have_same_scalar : std::false_type {};
+template <typename ... Args>
+struct wrappers_have_same_scalar;
+
+template <typename T1>
+struct wrappers_have_same_scalar<T1>
+{
+  static_assert( pressio::containers::meta::is_wrapper<T1>::value or
+		 pressio::containers::meta::is_expression<T1>::value,
+		 "args for scalar compatibility check must be pressio wrappers or expressions");
+
+  static constexpr auto value = true;
+};
 
 template <typename T1, typename T2>
-struct wrapper_pair_have_same_scalar<T1,T2,
-  ::pressio::mpl::enable_if_t<
-    std::is_same<
-      typename containers::details::traits<T1>::scalar_t,
-      typename containers::details::traits<T2>::scalar_t
-      >::value
-    >
-  > : std::true_type{};
+struct wrappers_have_same_scalar<T1, T2>
+{
+  static_assert( (pressio::containers::meta::is_wrapper<T1>::value or
+		  pressio::containers::meta::is_expression<T1>::value )
+		 and
+		 (pressio::containers::meta::is_wrapper<T2>::value or
+		  pressio::containers::meta::is_expression<T2>::value ),
+		 "args for scalar compatibility check must be pressio wrappers or expressions");
 
+  static constexpr auto value = std::is_same<
+    typename containers::details::traits<T1>::scalar_t,
+    typename containers::details::traits<T2>::scalar_t
+    >::value;
+};
 
-template <
-  typename T1, typename T2, typename T3, typename enable = void
-  >
-struct wrapper_triplet_have_same_scalar : std::false_type {};
-
-template <typename T1, typename T2, typename T3>
-struct wrapper_triplet_have_same_scalar<T1,T2,T3,
-  ::pressio::mpl::enable_if_t<
-    wrapper_pair_have_same_scalar<T1,T2>::value &&
-    wrapper_pair_have_same_scalar<T2,T3>::value
-    >
-  > : std::true_type{};
+template <typename T1, typename T2, typename ... rest>
+struct wrappers_have_same_scalar<T1, T2, rest...>
+{
+  static constexpr auto value =
+    wrappers_have_same_scalar<T1, T2>::value and
+    wrappers_have_same_scalar<T2, rest...>::value;
+};
 
 }}} // namespace pressio::containers::meta
 #endif

@@ -100,17 +100,13 @@ template <
     std::is_same<
       typename containers::details::traits<result_t>::layout,
       typename containers::details::traits<mvec_t>::layout
-    >::value and
-    std::is_same<
-      typename containers::details::traits<result_t>::scalar_t,
-      typename containers::details::traits<mvec_t>::scalar_t
-    >::value
+    >::value 
     > * = nullptr
   >
 result_t dot_self(const mvec_t & mvA)
 {
-  // using dm_t = Kokkos::View<sc_t**, layout, exe_space>;
-  // using res_t = containers::Matrix<dm_t>;
+  static_assert(containers::meta::wrappers_have_same_scalar<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
 
   const auto numVecsA = mvA.numVectors();
   result_t C("dot_self_mat_res", numVecsA, numVecsA);
