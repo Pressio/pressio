@@ -63,21 +63,24 @@ private:
   using stepper_traits	= ::pressio::ode::details::traits<stepper_type>;
   using scalar_t	= typename stepper_traits::scalar_t;
   using state_t		= typename stepper_traits::state_t;
-  using velocity_t	= typename stepper_traits::velocity_t;
-  using model_t		= typename stepper_traits::model_t;
-  using policy_t	= typename stepper_traits::velocity_policy_t;
-
-  static_assert( meta::is_legitimate_explicit_state_type<state_t>::value,
-  "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
-
-  static_assert( meta::is_legitimate_explicit_velocity_type<velocity_t>::value,
-  "OOPS: VELOCITY_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
-
-  static_assert( meta::is_legitimate_explicit_velocity_policy<policy_t>::value,
-  "VELOCITY_POLICY NOT ADMISSIBLE: MAYBE NOT INHERITING FROM EXPLICIT POLICY BASE");
+  // friend the derived so that it can access private constructors
+  friend stepper_type;
 
 public:
-  StepperBase() = default;
+  typename stepper_traits::order_t order() const{
+    return stepper_traits::order_value;
+  }
+
+  void operator()(state_t & odeStateInOut,
+  		  const scalar_t & time,
+  		  const scalar_t & dt,
+  		  const ::pressio::ode::types::step_t & step)
+  {
+    static_cast<stepper_type&>(*this).doStep(odeStateInOut, time, dt, step);
+  }
+
+private:
+  StepperBase()  = default;
   ~StepperBase() = default;
 
   // copy cnstr
@@ -88,19 +91,6 @@ public:
   StepperBase(StepperBase && other)  = delete;
   // move assign
   StepperBase & operator=(StepperBase && other)  = delete;
-
-public:
-  typename stepper_traits::order_t order() const{
-    return stepper_traits::order_value;
-  }
-
-  void operator()(state_t & odeStateInOut,
-		  const scalar_t & time,
-		  const scalar_t & dt,
-		  const ::pressio::ode::types::step_t & step)
-  {
-    static_cast<stepper_type&>(*this).compute(odeStateInOut, time, dt, step);
-  }
 
 };//end class
 

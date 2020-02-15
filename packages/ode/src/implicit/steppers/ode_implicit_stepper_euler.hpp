@@ -83,8 +83,9 @@ class Stepper<
 				  system_type,
 				  Args...>;
   using stepper_base_t = StepperBase<this_t>;
-  using typename stepper_base_t::aux_states_t;
   friend stepper_base_t;
+
+  using typename stepper_base_t::aux_states_t;
 
   using mytraits       = details::traits<this_t>;
   using standard_res_policy_t = typename mytraits::standard_res_policy_t;
@@ -145,15 +146,14 @@ public:
 	  const residual_pol_t & resPolicyObj)
     : stepper_base_t{stateIn0, model, resPolicyObj}{}
 
-public:
-
+private:
   template<typename solver_type>
-  void operator()(ode_state_type & odeState,
-		  const scalar_t & time,
-		  const scalar_t & dt,
-		  const types::step_t & step,
-		  solver_type & solver){
-
+  void doStep(ode_state_type & odeState,
+	      const scalar_t & time,
+	      const scalar_t & dt,
+	      const types::step_t & step,
+	      solver_type & solver)
+  {
     using nm1 = ode::nMinusOne;
     auto & odeState_nm1 = this->auxStates_.get(nm1());
     this->dt_ = dt;
@@ -167,12 +167,12 @@ public:
     typename solver_type,
     typename guess_callback_t
     >
-  void operator()(ode_state_type & odeState,
-		  const scalar_t & time,
-		  const scalar_t & dt,
-		  const types::step_t & step,
-		  solver_type & solver,
-		  guess_callback_t && guesserCb)
+  void doStep(ode_state_type & odeState,
+	      const scalar_t & time,
+	      const scalar_t & dt,
+	      const types::step_t & step,
+	      solver_type & solver,
+	      guess_callback_t && guesserCb)
   {
     using nm1 = ode::nMinusOne;
     auto & odeState_nm1 = this->auxStates_.get(nm1());
@@ -184,7 +184,6 @@ public:
     solver.solve(*this, odeState);
   }
 
-private:
   void residualImpl(const state_type & odeState, residual_type & R) const
   {
     this->residual_obj_.template operator()<

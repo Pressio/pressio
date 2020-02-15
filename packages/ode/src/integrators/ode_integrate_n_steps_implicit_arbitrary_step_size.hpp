@@ -63,7 +63,6 @@ template<
   typename solver_type,
   typename step_size_cb_t,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     std::is_same<
     typename ::pressio::ode::details::traits<stepper_type>::tag_name,
     ::pressio::ode::implicitmethods::Arbitrary>::value and

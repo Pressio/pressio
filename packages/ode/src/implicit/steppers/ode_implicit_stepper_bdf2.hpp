@@ -153,20 +153,14 @@ public:
     : stepper_base_t{stateIn0, model, resPolicyObj},
       auxStepper_{auxStepper}{}
 
-public:
-
+private:
   // enable when auxiliary stepper is implicit too
-  template<
-    typename solver_type,
-    ::pressio::mpl::enable_if_t<
-      ::pressio::ode::details::traits<aux_stepper_t>::is_implicit
-      > * = nullptr
-  >
-  void operator()(ode_state_type & odeState,
-		  const scalar_t &  t,
-		  const scalar_t &  dt,
-		  const types::step_t & step,
-		  solver_type & solver)
+  template<typename solver_type>
+  void doStep(ode_state_type & odeState,
+	      const scalar_t &  t,
+	      const scalar_t &  dt,
+	      const types::step_t & step,
+	      solver_type & solver)
   {
     using nm1 = ode::nMinusOne;
     using nm2 = ode::nMinusTwo;
@@ -201,19 +195,13 @@ public:
 
   // enable when auxiliary stepper is implicit too
   // overload for when we have a guesser callback
-  template<
-    typename solver_type,
-    typename guess_callback_t,
-    ::pressio::mpl::enable_if_t<
-      ::pressio::ode::details::traits<aux_stepper_t>::is_implicit
-      > * = nullptr
-  >
-  void operator()(ode_state_type & odeState,
-		  const scalar_t &  t,
-		  const scalar_t &  dt,
-		  const types::step_t & step,
-		  solver_type & solver,
-		  guess_callback_t && guesserCb)
+  template<typename solver_type, typename guess_callback_t>
+  void doStep(ode_state_type & odeState,
+	      const scalar_t &  t,
+	      const scalar_t &  dt,
+	      const types::step_t & step,
+	      solver_type & solver,
+	      guess_callback_t && guesserCb)
   {
     using nm1 = ode::nMinusOne;
     using nm2 = ode::nMinusTwo;
@@ -246,7 +234,6 @@ public:
     }
   }
 
-private:
   void residualImpl(const state_type & odeState, residual_type & R) const
   {
     this->residual_obj_.template operator()<
