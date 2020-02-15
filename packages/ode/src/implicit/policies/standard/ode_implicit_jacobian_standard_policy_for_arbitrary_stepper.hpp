@@ -64,13 +64,10 @@ class JacobianStandardPolicyForArbitraryStepper<
     containers::meta::is_wrapper<state_type>::value and
     containers::meta::is_wrapper<jacobian_type>::value
     >
-  > : public JacobianPolicyBase<JacobianStandardPolicyForArbitraryStepper<
-    state_type, system_type, jacobian_type> >
+  >
 {
 
-  using this_t
-  = JacobianStandardPolicyForArbitraryStepper<state_type, system_type, jacobian_type>;
-  friend JacobianPolicyBase<this_t>;
+  using this_t = JacobianStandardPolicyForArbitraryStepper<state_type, system_type, jacobian_type>;
 
 public:
   JacobianStandardPolicyForArbitraryStepper() = default;

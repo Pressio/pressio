@@ -66,12 +66,10 @@ class JacobianStandardPolicyPybind11<
     containers::meta::is_array_pybind11<state_type>::value and
     containers::meta::is_array_pybind11<jacobian_type>::value
     >
-  > : public JacobianPolicyBase<JacobianStandardPolicyPybind11<
-    state_type, system_type, jacobian_type> >
+  >
 {
 
   using this_t = JacobianStandardPolicyPybind11<state_type, system_type, jacobian_type>;
-  friend JacobianPolicyBase<this_t>;
 
 public:
   JacobianStandardPolicyPybind11() = default;

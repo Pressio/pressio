@@ -59,13 +59,7 @@ template <
   typename fom_velocity_eval_policy,
   typename ud_ops
   >
-class ResidualPolicyVelocityApi
-  : public ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<
-      ResidualPolicyVelocityApi<residual_type,
-			 fom_states_cont_type,
-			 fom_velocity_eval_policy,
-			 ud_ops>>,
-    protected fom_velocity_eval_policy
+class ResidualPolicyVelocityApi : protected fom_velocity_eval_policy
 {
 
 public:
@@ -73,7 +67,6 @@ public:
 				    fom_states_cont_type,
 				    fom_velocity_eval_policy,
 				    ud_ops>;
-  friend ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;

@@ -147,9 +147,6 @@
 #include "ode/src/implicit/meta/ode_is_legitimate_model_for_implicit_ode.hpp"
 
 // implicit policies
-#include "ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
-#include "ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
-
 #include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy.hpp"
 #include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy_for_arbitrary_stepper.hpp"
 #include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy_pybind11.hpp"
@@ -187,23 +184,4 @@
 #include "ode/src/integrators/ode_integrate_n_steps_implicit_constant_step_size.hpp"
 #include "ode/src/integrators/ode_integrate_to_target_time_implicit_arbitrary_step_size.hpp"
 
-// #include "ODE_BASIC"
-// #include "ODE_INTEGRATORS"
-// #include "ODE_EXPLICIT"
-// #include "ODE_IMPLICIT"
-
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-

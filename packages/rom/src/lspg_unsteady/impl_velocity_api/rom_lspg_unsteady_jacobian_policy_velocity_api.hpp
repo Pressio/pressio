@@ -60,14 +60,7 @@ template<
   typename decoder_type,
   typename ud_ops
   >
-class JacobianPolicyVelocityApi
-  : public ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<
-	JacobianPolicyVelocityApi<fom_states_data_type,
-			   apply_jac_return_type,
-			   fom_apply_jac_policy,
-			   decoder_type,
-			   ud_ops>>,
-    protected fom_apply_jac_policy
+class JacobianPolicyVelocityApi : protected fom_apply_jac_policy
 {
 
 public:
@@ -76,8 +69,6 @@ public:
 				    fom_apply_jac_policy,
 				    decoder_type,
 				    ud_ops>;
-
-  friend ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;

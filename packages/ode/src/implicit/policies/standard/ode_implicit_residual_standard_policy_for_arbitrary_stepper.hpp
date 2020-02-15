@@ -65,13 +65,9 @@ class ResidualStandardPolicyForArbitraryStepper<
     containers::meta::is_wrapper<residual_type>::value
     >
   >
-  : public ResidualPolicyBase<
-  ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>>
 {
 
-  using this_t
-  = ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>;
-  friend ResidualPolicyBase<this_t>;
+  using this_t = ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>;
 
 public:
   ResidualStandardPolicyForArbitraryStepper() = default;

@@ -65,12 +65,9 @@ class ResidualStandardPolicy<
     containers::meta::is_wrapper<residual_type>::value
     >
   >
-  : public ResidualPolicyBase<
-  ResidualStandardPolicy<state_type, system_type, residual_type>>
 {
 
   using this_t = ResidualStandardPolicy<state_type, system_type, residual_type>;
-  friend ResidualPolicyBase<this_t>;
 
 public:
   ResidualStandardPolicy() = default;

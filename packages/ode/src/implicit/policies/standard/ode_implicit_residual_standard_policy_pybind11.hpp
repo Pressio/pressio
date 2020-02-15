@@ -67,12 +67,9 @@ class ResidualStandardPolicyPybind11<
     containers::meta::is_array_pybind11<residual_type>::value
     >
   >
-  : public ResidualPolicyBase<
-  ResidualStandardPolicyPybind11<state_type, system_type, residual_type>>
 {
 
   using this_t = ResidualStandardPolicyPybind11<state_type, system_type, residual_type>;
-  friend ResidualPolicyBase<this_t>;
 
 public:
   ResidualStandardPolicyPybind11() = default;
