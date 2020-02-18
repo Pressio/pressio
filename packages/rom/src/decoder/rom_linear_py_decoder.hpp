@@ -52,23 +52,29 @@
 
 namespace pressio{ namespace rom{
 
-template <typename matrix_type, typename ops_t>
+template <
+typename matrix_type, typename ops_t, 
+typename rom_state_type, typename fom_state_type
+>
 struct PyLinearDecoder<
-  matrix_type, ops_t,
+  matrix_type, ops_t, rom_state_type, fom_state_type,
   mpl::enable_if_t<
     ::pressio::containers::meta::is_array_pybind11<matrix_type>::value
     >
   >
-  : public DecoderBase<PyLinearDecoder<matrix_type, ops_t>, matrix_type>
+  : public DecoderBase<PyLinearDecoder<matrix_type, ops_t, rom_state_type, fom_state_type>, 
+  matrix_type, rom_state_type, fom_state_type>
 {
 
-  using this_t	    = PyLinearDecoder<matrix_type, ops_t>;
-  using base_t	    = DecoderBase<this_t, matrix_type>;
+  using this_t	    = PyLinearDecoder<matrix_type, ops_t, rom_state_type, fom_state_type>;
+  using base_t	    = DecoderBase<this_t, matrix_type,  rom_state_type, fom_state_type>;
   using jacobian_t  = matrix_type;
   using scalar_t    = double;
   static_assert( mpl::is_same<scalar_t,
 		 typename matrix_type::value_type>::value,
 		 "PyLinearDecoder: Scalar types don't match");
+  using rom_state_t = rom_state_type;
+  using fom_state_t = fom_state_type;
 
 private:
   friend base_t;

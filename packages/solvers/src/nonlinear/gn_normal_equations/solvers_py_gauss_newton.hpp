@@ -50,7 +50,12 @@
 #ifndef SOLVERS_PY_GAUSS_NEWTON_HPP
 #define SOLVERS_PY_GAUSS_NEWTON_HPP
 
-#include "./solvers_gauss_newton_normal_eq_impl.hpp"
+#include "../helper_policies/solvers_converged_criterior_policy.hpp"
+#include "../helper_policies/solvers_hessian_helper_policy.hpp"
+#include "../helper_policies/solvers_jacob_res_product_policy.hpp"
+#include "../helper_policies/solvers_norm_helper_policy.hpp"
+#include "../helper_policies/solvers_line_search_policy.hpp"
+#include "../helper_policies/solvers_get_matrix_size_helper.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{
 
@@ -120,11 +125,7 @@ The PyGaussNewton is meant to be used when the application class written in Pyth
   // the type to represent the iteration number
   using typename iterative_base_t::iteration_t;
 
-  // find out which norm to use
-  using norm_t		 = typename impl::NormSelectorHelper<when_converged_t>::norm_t;
-
-  // policy for evaluating the norm of a vector
-  using norm_evaluator_t = impl::ComputeNormHelper<norm_t>;
+  const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType;
 
   // policy to checking convergence
   using is_converged_t   = impl::IsConvergedHelper<when_converged_t>;
@@ -239,8 +240,12 @@ private:
     sys.residual(y, res_);
     sys.jacobian(y, jac_);
 
+    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+
     // alpha for taking steps
-    scalar_t alpha = {};
+    scalar_t alpha = one;
     // storing residaul norm
     scalar_t normRes = {};
     scalar_t normRes0 = {};
@@ -248,9 +253,6 @@ private:
     scalar_t normJTRes = {};
     scalar_t normJTRes0 = {};
 
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
-    constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto ss = std::cout.precision();
@@ -262,8 +264,8 @@ private:
 				       convString, reset, "\n");
 #endif
 
-    // compute the initial norm of y (the state)
-    norm_evaluator_t::evaluate(y, normO_);
+    // // compute the initial norm of y (the state)
+    impl::ComputeNormHelper::template evaluate<ops_t>(y, normO_, normType);
     norm_dy_ = {0};
 
     iteration_t iStep = 0;
@@ -277,7 +279,7 @@ private:
 #endif
 
       // compute norm of residual
-      norm_evaluator_t::evaluate(res_, normRes);
+      impl::ComputeNormHelper::template evaluate<void>(res_, normRes, normType);
 
       // store initial residual norm
       if (iStep==1) normRes0 = normRes;
@@ -336,7 +338,7 @@ private:
       // customOps_.attr("myprint")(JTR_);
 
       // norm of projected residual
-      norm_evaluator_t::evaluate(JTR_, normJTRes);
+      impl::ComputeNormHelper::template evaluate<void>(JTR_, normJTRes, normType);
 
       // store the initial norm
       if (iStep==1) normJTRes0 = normJTRes;
@@ -347,7 +349,7 @@ private:
       linSolver_.attr("solve")(hess_, JTR_, dy_);
 
       // compute norm of the correction
-      norm_evaluator_t::evaluate(dy_, norm_dy_);
+      impl::ComputeNormHelper::template evaluate<void>(dy_, norm_dy_, normType);
 
       // print correction
       // std::cout << "Correction dy \n" << std::endl;
@@ -365,7 +367,7 @@ private:
       // update the state
       //--------------------------------------------------------------
       // compute multiplicative factor if needed
-      lsearch_helper_t::evaluate(alpha, y, ytrial_, dy_, res_, jac_, sys);
+      //lsearch_helper_t::evaluate(alpha, y, ytrial_, dy_, res_, jac_, sys);
 
       // solution update: y = y + alpha*dy;
       ::pressio::containers::ops::do_update(y, one, dy_, alpha);
@@ -394,7 +396,7 @@ private:
       sys.residual(y, res_);
       sys.jacobian(y, jac_);
 
-      }//loop
+    }//loop
 
 #if defined PRESSIO_ENABLE_DEBUG_PRINT
     std::cout.precision(ss);
