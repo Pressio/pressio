@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DOT_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DOT_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
@@ -78,8 +75,8 @@ template <
   >
 void dot(const mvec_type & mvA, const vec_type & vecB, result_type & result)
 {
-  static_assert(containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
-		containers::meta::wrapper_pair_have_same_scalar<result_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value and
+		containers::meta::are_scalar_compatible<result_type, vec_type>::value,
 		"Tpetra MV dot V: operands do not have matching scalar type");
 
   static_assert(std::is_same<
@@ -99,6 +96,7 @@ void dot(const mvec_type & mvA, const vec_type & vecB, result_type & result)
   request->wait();
 }
 
+
 //------------------------------------
 // c = scalar *, passed in
 //------------------------------------
@@ -108,11 +106,14 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value &&
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value &&
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::meta::are_scalar_compatible<mvec_type, vec_type>::value
     > * = nullptr
   >
 void dot(const mvec_type & mvA, const vec_type & vecB,
-	 typename details::traits<mvec_type>::scalar_t * result){
+	 typename details::traits<mvec_type>::scalar_t * result)
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
 
   /* workaround the non-constness of getVectorView*/
   using tpetra_blockvec_t = typename containers::details::traits<vec_type>::wrapped_t;
@@ -139,17 +140,17 @@ template <
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
     containers::meta::is_dense_vector_wrapper_teuchos<result_vec_type>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						       vec_type,
-						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
 void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
+    "Types are not scalar compatible");
+
   const auto numVecs = mvA.globalNumVectors();
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  if ( result.extent(0) != numVecs )
+    result.data()->resize(numVecs);
   dot(mvA, vecB, result.data()->values());
 }
 
@@ -165,13 +166,13 @@ template <
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						       vec_type,
-						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
-void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result){
+void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
+    "Types are not scalar compatible");
 
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
@@ -184,10 +185,10 @@ void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 
   const auto numVecs = mvA.globalNumVectors();
   // check the result has right size
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  if( result.extent(0) != numVecs )
+    result.data()->resize(numVecs);
 
-  result.setZero();
+  ::pressio::containers::ops::set_zero(result);
   dot(mvA, vecB, result.data()->data());
 }
 
@@ -203,18 +204,45 @@ template <
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<mvec_type, vec_type, result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_static
     > * = nullptr
   >
 void dot(const mvec_type & mvA, const vec_type & vecB, result_vec_type & result)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
+    "Types are not scalar compatible");
+
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
   // check the result has right size
-  assert( result.size() == mvA.globalNumVectors() );
+  assert( result.extent(0) == mvA.globalNumVectors() );
   dot(mvA, vecB, result.data()->data());
 }
+
+
+//--------------------------------------
+// c += mvA^T vecB
+// c is an expression
+//--------------------------------------
+template <
+  typename mvec_type,
+  typename vec_type,
+  typename expr_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
+    containers::meta::is_vector_wrapper_tpetra_block<vec_type>::value and
+    containers::meta::is_expression<expr_type>::value and
+    containers::meta::are_scalar_compatible<mvec_type, vec_type, expr_type>::value and
+    ::pressio::containers::meta::is_vector_wrapper_eigen<
+      typename ::pressio::containers::details::traits<expr_type>::data_t
+      >::value
+    > * = nullptr
+  >
+void updateWithDot(const mvec_type & mvA, const vec_type & vecB, expr_type & result)
+{
+  throw std::runtime_error("updateWithDot for TpetraBlock not implemented");
+}
+
 
 }}}//end namespace pressio::containers::ops
 #endif

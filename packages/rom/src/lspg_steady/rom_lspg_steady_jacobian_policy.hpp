@@ -49,9 +49,6 @@
 #ifndef ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
 #define ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
 
-#include "../rom_fwd.hpp"
-#include "../rom_static_container_fom_states.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template<

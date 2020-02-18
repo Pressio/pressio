@@ -49,12 +49,9 @@
 #ifndef SOLVERS_IMPL_HESSIAN_APPROX_HELPERS_POLICY_HPP
 #define SOLVERS_IMPL_HESSIAN_APPROX_HELPERS_POLICY_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
-#include "../../../../CONTAINERS_OPS"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
-template<typename J_t, typename enable = void>
+template<typename ud_ops_t, typename J_t, typename enable = void>
 struct HessianApproxHelper;
 
 
@@ -62,7 +59,7 @@ struct HessianApproxHelper;
 // is computed by doing product of J^T*J
 template<typename J_t>
 struct HessianApproxHelper<
-  J_t,
+  void, J_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_matrix_wrapper<J_t>::value
     >
@@ -90,7 +87,7 @@ struct HessianApproxHelper<
  */
 template<typename J_t>
 struct HessianApproxHelper<
-  J_t,
+  void, J_t,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper<J_t>::value
     >
@@ -107,6 +104,59 @@ struct HessianApproxHelper<
     return ::pressio::containers::ops::dot_self<J_t, result_t>(J);
   }
 };
+
+
+
+/*********************
+ * user-defined ops
+ *********************/
+
+// for user-defined ops & jac is a multi-vector wrapper
+template<typename ud_ops_t, typename J_t>
+struct HessianApproxHelper<
+  ud_ops_t, J_t,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<ud_ops_t>::value and
+    ::pressio::containers::meta::is_multi_vector_wrapper<J_t>::value
+    >
+  >
+{
+
+  template <typename result_t>
+  static void evaluate(J_t & J, result_t & result){
+    // result = op(A) * op(b)
+    ud_ops_t::template dot_self<result_t>( *J.data(), result );
+  }
+
+  template <typename result_t>
+  static result_t evaluate(J_t & J){
+    return ud_ops_t::template dot_self<result_t>( *J.data() );
+  }
+};
+
+
+// // for user-defined ops & jac is a matrix wrapper
+// template<typename ud_ops_t, typename J_t>
+// struct HessianApproxHelper<
+//   ud_ops_t, J_t,
+//   ::pressio::mpl::enable_if_t<
+//     !std::is_void<ud_ops_t>::value and
+//     ::pressio::containers::meta::is_matrix_wrapper<J_t>::value
+//     >
+//   >
+// {
+
+//   template <typename result_t>
+//   static void evaluate(J_t & J, result_t & result){
+//     // result = op(A) * op(b)
+//     //ud_ops_t::template mat_prod<result_t>( *J_t.data(), *J_t.data(), result_t);
+//   }
+
+//   template <typename result_t>
+//   static result_t evaluate(J_t & J){
+//     return result_t();//ud_ops_t::template mat_prod<result_t>( *J_t.data(), *J_t.data() );
+//   }
+// };
 
 }}}} //end namespace pressio::solvers::iterative::impl
 #endif

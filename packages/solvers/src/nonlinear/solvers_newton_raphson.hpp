@@ -49,14 +49,6 @@
 #ifndef SOLVERS_NEWTON_RAPHSON_HPP
 #define SOLVERS_NEWTON_RAPHSON_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../solvers_meta_static_checks.hpp"
-#include "../../../CONTAINERS_BASIC"
-#include "../../../CONTAINERS_OPS"
-#include "../base/solvers_nonlinear_base.hpp"
-#include "../base/solvers_iterative_base.hpp"
-#include "../linear/solvers_linear_traits.hpp"
-
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
@@ -119,10 +111,10 @@ becuase it needs be cleaned considerably before using for other types.");
   // R_ is the residual
   residual_t R_    = {};
   // jac is the jacobian
-  jacobian_t J_    = {};
+  jacobian_t J_ = {};
 
 public:
-  NewtonRaphson() = default;
+  NewtonRaphson() = delete;
 
   template <
     typename system_in_t,

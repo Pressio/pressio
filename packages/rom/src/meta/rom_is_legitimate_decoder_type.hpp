@@ -49,8 +49,6 @@
 #ifndef ROM_IS_LEGITIMATE_DECODER_TYPE_HPP_
 #define ROM_IS_LEGITIMATE_DECODER_TYPE_HPP_
 
-#include "../decoder/rom_decoder_base.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template<typename T, typename enable = void>
@@ -62,7 +60,10 @@ struct is_legitimate_decoder_type<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::mpl::publicly_inherits_from<
-      T, ::pressio::rom::DecoderBase<T, typename T::jacobian_t>
+      T,
+      ::pressio::rom::DecoderBase<
+	T, typename T::jacobian_t, typename T::rom_state_t, typename T::fom_state_t
+	>
       >::value
     >
   > : std::true_type{};

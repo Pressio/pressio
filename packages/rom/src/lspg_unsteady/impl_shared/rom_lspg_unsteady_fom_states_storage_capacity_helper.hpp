@@ -49,9 +49,6 @@
 #ifndef ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
 #define ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
 
-#include "../../rom_fwd.hpp"
-#include "../../../../ode/src/ode_fwd.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 // base case

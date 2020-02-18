@@ -1,13 +1,10 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
+#include "pressio_ode.hpp"
 #include "../reference_apps_for_testing.hpp"
 
 template<typename state_type, typename system_type, typename residual_type>
-class ResidualPolicy : public ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<
-  ResidualPolicy<state_type, system_type, residual_type>
-  >{
+class ResidualPolicy{
 
 public:
   template <typename prev_states_type>
@@ -30,9 +27,7 @@ public:
 
 
 template<typename state_type, typename system_type, typename jacobian_type>
-class JacobianPolicy : public ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<
-  JacobianPolicy<state_type, system_type, jacobian_type>
-  >{
+class JacobianPolicy{
 
 public:
   template <typename prev_states_type>

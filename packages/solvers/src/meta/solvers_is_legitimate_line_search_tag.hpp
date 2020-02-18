@@ -49,8 +49,6 @@
 #ifndef SOLVERS_IS_LEGITIMATE_LINE_SEARCH_TAG_HPP_
 #define SOLVERS_IS_LEGITIMATE_LINE_SEARCH_TAG_HPP_
 
-#include "../solvers_line_search_tags.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T, typename enable = void>

@@ -13,10 +13,6 @@
 #ifndef PRESSIO_MPL_VARIADIC_AT_HPP
 #define PRESSIO_MPL_VARIADIC_AT_HPP
 
-#include <cstddef>
-#include "../identity.hpp"
-#include <tuple>
-
 namespace pressio{ namespace mpl{ namespace variadic {
 
 /**

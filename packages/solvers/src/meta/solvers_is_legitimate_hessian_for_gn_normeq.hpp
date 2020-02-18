@@ -49,9 +49,6 @@
 #ifndef SOLVERS_IS_LEGITIMATE_HESSIAN_FOR_GN_NORMEQ_HPP_
 #define SOLVERS_IS_LEGITIMATE_HESSIAN_FOR_GN_NORMEQ_HPP_
 
-#include "solvers_basic_meta.hpp"
-#include "../base/solvers_linear_base.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T, typename enable = void>

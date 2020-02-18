@@ -49,9 +49,6 @@
 #ifndef CONTAINERS_EIGEN_OPS_HELPER_IMPL_HPP_
 #define CONTAINERS_EIGEN_OPS_HELPER_IMPL_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../matrix/containers_matrix_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{ namespace impl{
 
 

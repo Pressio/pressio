@@ -49,9 +49,6 @@
 #ifndef SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
 #define SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
 
-#include "../meta/solvers_basic_meta.hpp"
-#include "../solvers_norm_tags.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta { namespace experimental{
 
 template<typename T, typename enable = void>

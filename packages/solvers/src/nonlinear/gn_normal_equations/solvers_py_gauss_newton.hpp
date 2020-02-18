@@ -50,9 +50,6 @@
 #ifndef SOLVERS_PY_GAUSS_NEWTON_HPP
 #define SOLVERS_PY_GAUSS_NEWTON_HPP
 
-#include "../../solvers_fwd.hpp"
-#include "../../base/solvers_nonlinear_base.hpp"
-#include "../../base/solvers_iterative_base.hpp"
 #include "./solvers_gauss_newton_normal_eq_impl.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{

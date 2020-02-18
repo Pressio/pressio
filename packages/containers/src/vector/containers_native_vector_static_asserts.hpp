@@ -49,15 +49,6 @@
 #ifndef CONTAINERS_NATIVE_VECTOR_STATIC_ASSERTS_HPP_
 #define CONTAINERS_NATIVE_VECTOR_STATIC_ASSERTS_HPP_
 
-#include "./meta/containers_native_blaze_vector_meta.hpp"
-#include "./meta/containers_native_eigen_vector_meta.hpp"
-#include "./meta/containers_native_epetra_vector_meta.hpp"
-#include "./meta/containers_native_tpetra_vector_meta.hpp"
-#include "./meta/containers_native_teuchos_vector_meta.hpp"
-#include "./meta/containers_native_kokkos_vector_meta.hpp"
-#include "./meta/containers_native_tpetra_block_vector_meta.hpp"
-
-
 namespace pressio{ namespace containers{
 
 #define STATIC_ASSERT_IS_VECTOR_EIGEN(TYPE) \

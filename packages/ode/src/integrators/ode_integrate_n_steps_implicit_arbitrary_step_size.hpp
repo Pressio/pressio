@@ -49,11 +49,8 @@
 #ifndef ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 #define ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 
-#include "../ode_ConfigDefs.hpp"
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_n_steps_integrators.hpp"
-#include "../meta/ode_is_legitimate_time_step_size_setter.hpp"
-#include "../implicit/meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
 
 namespace pressio{ namespace ode{
 
@@ -66,7 +63,6 @@ template<
   typename solver_type,
   typename step_size_cb_t,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     std::is_same<
     typename ::pressio::ode::details::traits<stepper_type>::tag_name,
     ::pressio::ode::implicitmethods::Arbitrary>::value and

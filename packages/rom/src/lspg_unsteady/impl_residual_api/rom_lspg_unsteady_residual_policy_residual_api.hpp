@@ -49,10 +49,6 @@
 #ifndef ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_RESIDUAL_API_HPP_
 #define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_RESIDUAL_API_HPP_
 
-#include "../../rom_fwd.hpp"
-#include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
-#include "../../rom_static_container_fom_states.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
@@ -60,18 +56,13 @@ template <
   typename fom_states_data_type,
   typename fom_querier_policy
   >
-class ResidualPolicyResidualApi
-  : public ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<
-  ResidualPolicyResidualApi<residual_type, fom_states_data_type, fom_querier_policy>
-  >,
-  protected fom_querier_policy
+class ResidualPolicyResidualApi : protected fom_querier_policy
 {
 
 public:
   using this_t = ResidualPolicyResidualApi<residual_type,
 						       fom_states_data_type,
 						       fom_querier_policy>;
-  friend ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;

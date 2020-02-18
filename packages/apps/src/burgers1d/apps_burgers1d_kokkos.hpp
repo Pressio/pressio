@@ -49,8 +49,6 @@
 #ifndef PRESSIOAPPS_BURGERS1D_KOKKOS_HPP_
 #define PRESSIOAPPS_BURGERS1D_KOKKOS_HPP_
 
-#include "../apps_ConfigDefs.hpp"
-
 // this has to be here because it is seen after we include configDefs
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 

@@ -50,8 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_KOKKOS_MULTI_VECTOR_PROD_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_KOKKOS_MULTI_VECTOR_PROD_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
 #include "KokkosBlas2_gemv.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{
@@ -66,8 +64,7 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::meta::is_vector_wrapper_kokkos<vec_type>::value
     > * = nullptr
   >
 void product(const mvec_type & A,
@@ -80,7 +77,10 @@ void product(const mvec_type & A,
 	   >
 	 > & c)
 {
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec_type>::value,
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
+
+  static_assert(meta::have_matching_execution_space<mvec_type, vec_type>::value,
 		"product: MV and vec types need to have same execution space" );
 
   assert( A.data()->extent(1) == b.data()->extent(0) );
@@ -99,8 +99,7 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::meta::is_vector_wrapper_kokkos<vec_type>::value 
     > * = nullptr
   >
 auto product(const mvec_type & mvA, const vec_type & vecB)
@@ -110,9 +109,12 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
       typename containers::details::traits<mvec_type>::layout,
       typename containers::details::traits<mvec_type>::execution_space
       >
-  >{
+  >
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
 
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, vec_type>::value,
+  static_assert(meta::have_matching_execution_space<mvec_type, vec_type>::value,
 		"product: MV and vec types need to have same execution space" );
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
@@ -151,14 +153,17 @@ void product(const mvec_type & A,
 	     >
 	     > & c)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
+    "Types are not scalar compatible");
+
   // type of data wrapped by the expression
   using expr_data_t = typename ::pressio::containers::details::traits<expr_type>::data_t;
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, expr_data_t>::value,
+  static_assert(meta::have_matching_execution_space<mvec_type, expr_data_t>::value,
   		"product: MV and expr types need to have same execution space" );
 
-  assert( c.size() == A.length() );
+  assert( c.extent(0) == A.extent(0) );
   const auto numVecs = A.numVectors();
-  assert(numVecs == exprObj.size());
+  assert(numVecs == exprObj.extent(0));
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
@@ -184,9 +189,12 @@ auto product(const mvec_type & mvA, const expr_type & exprObj)
       >
   >
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
+    "Types are not scalar compatible");
+
   // type of data wrapped by the expression
   using expr_data_t = typename ::pressio::containers::details::traits<expr_type>::data_t;
-  static_assert(meta::kokkos_wrapper_pair_have_same_exe_space<mvec_type, expr_data_t>::value,
+  static_assert(meta::have_matching_execution_space<mvec_type, expr_data_t>::value,
   		"product: MV and expr types need to have same execution space" );
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;

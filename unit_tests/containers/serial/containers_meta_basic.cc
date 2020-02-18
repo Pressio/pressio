@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
-#include "CONTAINERS_VECTOR"
-#include "CONTAINERS_MATRIX"
+#include "pressio_containers.hpp"
 
 TEST(containers_meta_basic, inheritanceVector){
   

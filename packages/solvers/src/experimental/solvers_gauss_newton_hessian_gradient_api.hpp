@@ -49,9 +49,6 @@
 #ifndef SOLVERS_GAUSS_NEWTON_HESSIAN_GRADIENT_API_HPP_
 #define SOLVERS_GAUSS_NEWTON_HESSIAN_GRADIENT_API_HPP_
 
-#include "../solvers_fwd.hpp"
-#include "../base/solvers_nonlinear_base.hpp"
-#include "../base/solvers_iterative_base.hpp"
 #include "../nonlinear/helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../nonlinear/helper_policies/solvers_norm_helper_policy.hpp"
 #include "../nonlinear/helper_policies/solvers_line_search_policy.hpp"
@@ -158,11 +155,14 @@ private:
 
     // compute J^T J and J^T R in one shot
     sys.computeHessianAndGradient(stateInOut, hessian_, gradient_, normType_, normResidual_);
-    gradient_.scale(negOne);
+
+    ::pressio::containers::ops::scale(gradient_, negOne);
+    // gradient_.scale(negOne);
+
     normResidual0_ = normResidual_;
 
     // compute the initial norm of y (the state)
-    ComputeNormHelper::evaluate(stateInOut, normCorrection_, normType_);
+    ComputeNormHelper::template evaluate<void>(stateInOut, normCorrection_, normType_);
     normCorrection_ = {0};
 
     // the alpha is 1, but this can change from the line search
@@ -172,11 +172,11 @@ private:
     while (++iStep <= maxNonLIt)
     {
       // norm of J^T R
-      ComputeNormHelper::evaluate(gradient_, normGradient_, normType_);
+      ComputeNormHelper::template evaluate<void>(gradient_, normGradient_, normType_);
       if (iStep==1) normGradient0_ = normGradient_;
 
       linSolver_.solveAllowMatOverwrite(hessian_, gradient_, correction_);
-      ComputeNormHelper::evaluate(correction_, normCorrection_, normType_);
+      ComputeNormHelper::template evaluate<void>(correction_, normCorrection_, normType_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout(std::scientific,
@@ -215,7 +215,8 @@ private:
 
       // compute hessian and gradient
       sys.computeHessianAndGradient(stateInOut, hessian_, gradient_, normType_, normResidual_);
-      gradient_.scale(negOne);
+      ::pressio::containers::ops::scale(gradient_, negOne);
+      // gradient_.scale(negOne);
     }//loop
   }
 };

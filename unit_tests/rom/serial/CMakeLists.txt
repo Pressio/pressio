@@ -1,4 +1,5 @@
 
+add_serial_utest(rom_wls_velocity_api_meta rom_wls_velocity_api_meta.cc)
 add_serial_utest(rom_lspg_velocity_api_meta rom_lspg_velocity_api_meta.cc)
 add_serial_utest(rom_lspg_residual_api_meta rom_lspg_residual_api_meta.cc)
 add_serial_utest(rom_lspg_residual_api_stepper rom_lspg_residual_api_stepper.cc)

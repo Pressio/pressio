@@ -49,11 +49,6 @@
 #ifndef ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_RUNGEKUTTA4_STEPPER_IMPL_HPP_
 
-#include "../ode_explicit_stepper_base.hpp"
-#include "../../../ode_aux_states_container.hpp"
-#include "../../../ode_system_wrapper.hpp"
-#include "../../../ode_velocities_container.hpp"
-
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
 template<
@@ -107,6 +102,15 @@ public:
 
   ExplicitRungeKutta4StepperImpl() = delete;
   ~ExplicitRungeKutta4StepperImpl() = default;
+
+  // copy cnstr
+  ExplicitRungeKutta4StepperImpl(const ExplicitRungeKutta4StepperImpl & other)  = delete;
+  // copy assignment
+  ExplicitRungeKutta4StepperImpl & operator=(const ExplicitRungeKutta4StepperImpl & other)  = delete;
+  // move cnstr
+  ExplicitRungeKutta4StepperImpl(ExplicitRungeKutta4StepperImpl && other)  = delete;
+  // move assign
+  ExplicitRungeKutta4StepperImpl & operator=(ExplicitRungeKutta4StepperImpl && other)  = delete;
 
 public:
   void doStep(state_type & stateInOut,

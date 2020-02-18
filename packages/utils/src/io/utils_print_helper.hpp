@@ -49,8 +49,6 @@
 #ifndef UTILS_PRINT_HELPER_HPP_
 #define UTILS_PRINT_HELPER_HPP_
 
-#include "../utils_ConfigDefs.hpp"
-#include "utils_colorize_print.hpp"
 #ifdef PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
 #endif

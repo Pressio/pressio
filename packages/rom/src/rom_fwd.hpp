@@ -49,16 +49,7 @@
 #ifndef ROM_FORWARD_DECLARATIONS_HPP_
 #define ROM_FORWARD_DECLARATIONS_HPP_
 
-#include "../../ode/src/ode_stepper_tags.hpp"
-
 namespace pressio{ namespace rom{
-
-template <
-  typename fom_state_type,
-  std::size_t n,
-  typename reconstuctor_type,
-  typename enable = void>
-class FomStatesStaticContainer;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <
@@ -67,6 +58,17 @@ template <
   typename enable = void>
 struct PyLinearDecoder;
 #endif
+
+
+/*--- others ---*/
+template <
+  typename fom_state_type,
+  std::size_t n,
+  typename reconstuctor_type,
+  typename enable = void>
+class FomStatesStaticContainer;
+
+
 
 /*--- decorators ---*/
 namespace decorator{

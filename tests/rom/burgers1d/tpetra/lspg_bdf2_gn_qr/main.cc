@@ -1,20 +1,19 @@
 
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "QR_BASIC"
-#include "SOLVERS_NONLINEAR"
-#include "ROM_LSPG_UNSTEADY"
-#include "APPS_UNSTEADYBURGERS1D"
+#include "pressio_rom.hpp"
+#include "pressio_apps.hpp"
 #include "utils_tpetra.hpp"
 
 int main(int argc, char *argv[]){
   using fom_t		= pressio::apps::Burgers1dTpetra;
   using scalar_t	= typename fom_t::scalar_type;
+  using native_state_t  = typename fom_t::state_type;
+  using fom_state_t  = pressio::containers::Vector<native_state_t>;
+
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<Tpetra::MultiVector<>>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
 
   using tcomm_t		= Teuchos::MpiComm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
@@ -47,7 +46,7 @@ int main(int argc, char *argv[]){
 
     // define ROM state and initialize to zero (this has to be done)
     lspg_state_t yROM(romSize);
-    yROM.putScalar(0.0);
+    pressio::containers::ops::fill(yROM, 0.);
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::BDF2;
@@ -79,7 +78,7 @@ int main(int argc, char *argv[]){
     // this is a reproducing ROM test, so the final reconstructed state
     // has to match the FOM solution obtained with bdf2, same time-step, for 10 steps
     int shift = (rank==0) ? 0 : 10;
-    const int myn = yFomFinal.getDataMap().getNodeNumElements();
+    const int myn = yFomFinal.data()->getMap()->getNodeNumElements();
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++){
       if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";

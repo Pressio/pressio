@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_TPETRA_MULTI_VECTOR_DOT_SELF_HPP_
 #define CONTAINERS_SRC_OPS_TPETRA_MULTI_VECTOR_DOT_SELF_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
@@ -68,16 +65,18 @@ template <
   typename result_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
-    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value
     > * = nullptr
   >
 void dot_self(const mvec_t & A, result_t & C)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
+
   // how many vectors are in A and mvB
-  const auto numVecsA = A.globalNumVectors();
-  assert(C.rows() == numVecsA);
-  assert(C.cols() == numVecsA);
+  const auto numVecsA = A.numVectors();
+  assert(C.extent(0) == numVecsA);
+  assert(C.extent(1) == numVecsA);
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
@@ -98,13 +97,12 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::details::traits<result_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::details::traits<result_t>::is_dynamic
     > * = nullptr
   >
 result_t dot_self(const mvec_t & mvA)
 {
-  const auto numVecsA = mvA.globalNumVectors();
+  const auto numVecsA = mvA.numVectors();
   result_t C(numVecsA, numVecsA);
   dot_self(mvA, C);
   return C;
@@ -120,7 +118,6 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<result_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value and
     std::is_same<
       typename containers::details::traits<mvec_t>::device_t,
       typename containers::details::traits<result_t>::device_t
@@ -129,6 +126,8 @@ template <
   >
 void dot_self(const mvec_t & A, result_t & C)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
 
   using scalar_t = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
   using map_t    = typename ::pressio::containers::details::traits<mvec_t>::data_map_t;
@@ -136,8 +135,8 @@ void dot_self(const mvec_t & A, result_t & C)
   const auto indexBase = A.data()->getMap()->getIndexBase();
   const auto comm = A.data()->getMap()->getComm();
   // C should be symmetric
-  assert( C.rows() == C.cols() );
-  const auto n = C.rows();
+  assert( C.extent(0) == C.extent(1) );
+  const auto n = C.extent(0);
   Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
   // create multivector that views the Kokkos matrix
   tpetra_mv_t Cmv(replMap, *C.data());
@@ -154,13 +153,12 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<result_t>::value and
-    ::pressio::containers::details::traits<result_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::details::traits<result_t>::is_dynamic 
     > * = nullptr
   >
 result_t dot_self(const mvec_t & mvA)
 {
-  const auto numVecsA = mvA.globalNumVectors();
+  const auto numVecsA = mvA.numVectors();
   result_t C("dummyLabel", numVecsA, numVecsA);
   dot_self(mvA, C);
   return C;

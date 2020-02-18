@@ -49,8 +49,6 @@
 #ifndef SOLVERS_ITERATIVE_BASE_HPP
 #define SOLVERS_ITERATIVE_BASE_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-
 namespace pressio { namespace solvers {
 
 template<typename derived_t, typename scalar_t>

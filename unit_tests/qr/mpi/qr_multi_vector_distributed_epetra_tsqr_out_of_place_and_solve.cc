@@ -1,6 +1,6 @@
 
 #include "../qr_utest_fixtures.hpp"
-#include "QR_BASIC"
+#include "pressio_qr.hpp"
 
 TEST_F(epetraR9Fixture,
        TSQREpetraMVOutOfPlaceAndSolveEigenVecDynamic){
@@ -79,18 +79,18 @@ TEST_F(epetraR9Fixture,
   //  do Q^T * v_, i.e. project v_ onto Q
   myv_t rhs(pressio::qr::test::numVectors_);
   qrObj.applyQTranspose(*v_, rhs);
-  if (rank_==0)
-    std::cout << " RHS" << std::setprecision(14)
-	      << *rhs.data() << std::endl;
+  // if (rank_==0)
+  //   std::cout << " RHS" << std::setprecision(14)
+	 //      << *rhs.data() << std::endl;
 
   // solve
   myv_t y;
-  y.resize(pressio::qr::test::numVectors_);
+  y.data()->resize(pressio::qr::test::numVectors_);
   qrObj.solve(rhs, y);
-  if (rank_==0)
-    std::cout << std::setprecision(14)
-  	      << " Y: "
-  	      << *y.data() << std::endl;
+  // if (rank_==0)
+  //   std::cout << std::setprecision(14)
+  // 	      << " Y: "
+  // 	      << *y.data() << std::endl;
 
   gold_.checkYForRsolve(y);
 }

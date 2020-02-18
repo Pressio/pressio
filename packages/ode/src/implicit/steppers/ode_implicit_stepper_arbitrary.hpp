@@ -49,9 +49,6 @@
 #ifndef ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_ARBITRARY_HPP_
 #define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_ARBITRARY_HPP_
 
-#include "ode_implicit_stepper_traits_arbitrary.hpp"
-#include "ode_implicit_stepper_base.hpp"
-
 namespace pressio{ namespace ode{ namespace implicitmethods{
 
 template<
@@ -105,10 +102,19 @@ public:
   Stepper() = delete;
   ~Stepper() = default;
 
+  // copy cnstr
+  Stepper(const Stepper & other)  = delete;
+  // copy assignment
+  Stepper & operator=(const Stepper & other)  = delete;
+  // move cnstr
+  Stepper(Stepper && other)  = delete;
+  // move assign
+  Stepper & operator=(Stepper && other)  = delete;
+
   Stepper(const ode_state_type & stateIn0,
-  		  const system_type & model,
-  		  const residual_pol_t & resPolicyObj,
-  		  const jacobian_pol_t & jacPolicyObj)
+	  const system_type & model,
+	  const residual_pol_t & resPolicyObj,
+	  const jacobian_pol_t & jacPolicyObj)
     : stepper_base_t{stateIn0, model, resPolicyObj, jacPolicyObj}{}
 
   // cstr for standard residual and jacob policies
@@ -121,16 +127,16 @@ public:
       > * = nullptr
     >
   Stepper(const ode_state_type & stateIn0,
-		  const system_type & model)
+	  const system_type & model)
     : stepper_base_t{stateIn0, model}{}
 
-public:
+private:
   template<typename solver_type>
-  void operator()(ode_state_type & odeState,
-		  const scalar_t & t,
-		  const scalar_t & dt,
-		  const types::step_t & step,
-		  solver_type & solver)
+  void doStep(ode_state_type & odeState,
+	      const scalar_t & t,
+	      const scalar_t & dt,
+	      const types::step_t & step,
+	      solver_type & solver)
   {
     this->dt_ = dt;
     this->t_ = t;
@@ -141,7 +147,6 @@ public:
     solver.solve(*this, odeState);
   }
 
-private:
   // methods to do updating on the storage of previous states
   template<std::size_t nAux, mpl::enable_if_t<nAux==1> * = nullptr>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
@@ -184,18 +189,6 @@ private:
     ::pressio::containers::ops::deep_copy(y_nm1, y_nm2);
     ::pressio::containers::ops::deep_copy(odeState, y_nm1);
   }
-
-  // // when we have five aux states,
-  // template<std::size_t nAux, mpl::enable_if_t<nAux==5> * = nullptr>
-  // void updateAuxiliaryStorage(const ode_state_type & odeState){
-  //   for (auto i=nAux-2; i>=0; --i){
-  //     auto & source	  = this->auxStates_(i);
-  //     auto & destination = this->auxStates_(i)1];
-  //     ::pressio::containers::ops::deep_copy(source, destination);
-  //   }
-  //   auto & aux1 = this->auxStates_(0);
-  //   ::pressio::containers::ops::deep_copy(odeState, aux1);
-  // }
 
 private:
   void residualImpl(const state_type & odeState, residual_type & R) const

@@ -49,7 +49,6 @@
 #ifndef SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_hessian_helper_policy.hpp"
 #include "../helper_policies/solvers_jacob_res_product_policy.hpp"
@@ -63,6 +62,7 @@ namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 
 template <
+  typename ud_ops_t,
   typename line_search_t,
   typename converged_when_tag,
   typename system_t,
@@ -91,17 +91,11 @@ void gauss_newton_neq_solve(const system_t & sys,
   using residual_t	= typename system_t::residual_type;
   using jacobian_t	= typename system_t::jacobian_type;
 
-  // // find out which norm to use
-  // using norm_t = typename NormSelectorHelper<converged_when_tag>::norm_t;
-
-  // policy for evaluating the norm of a vector
-  // using norm_evaluator = ComputeNormHelper;
-
   // policy to approximate hessian J^T*J
-  using hessian_evaluator_t = HessianApproxHelper<jacobian_t>;
+  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t, jacobian_t>;
 
   // policy to J^T * residual
-  using jtr_evaluator_t = JacobianTranspResProdHelper<jacobian_t>;
+  using jtr_evaluator_t = JacobianTranspResProdHelper<ud_ops_t, jacobian_t>;
 
   // policy to checking convergence
   using is_converged_t = IsConvergedHelper<converged_when_tag>;
@@ -167,7 +161,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
 #endif
-    ComputeNormHelper::evaluate(residual, normRes, normType);
+    ComputeNormHelper::template evaluate<ud_ops_t>(residual, normRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm resid");
 #endif
@@ -198,13 +192,13 @@ void gauss_newton_neq_solve(const system_t & sys,
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto fmt2 = utils::io::magenta() + utils::io::bold();
-    ::pressio::utils::io::print_stdout(fmt2, "GN_JSize =",
-    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacobian),
-    ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacobian),
-				    "\n");
+    // ::pressio::utils::io::print_stdout(fmt2, "GN_JSize =",
+    // ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacobian),
+    // ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacobian),
+    // 				       "\n");
     // this print only works when hessian is a shared mem matrix
     ::pressio::utils::io::print_stdout(fmt2, "GN_HessianSize =",
-				       hessian.rows(), hessian.cols(),
+				       hessian.extent(0), hessian.extent(1),
 				       utils::io::reset(), "\n");
 #endif
 
@@ -213,7 +207,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->start("gradient");
 #endif
     jtr_evaluator_t::evaluate(jacobian, residual, gradient);
-    gradient.scale(negOne);
+    ::pressio::containers::ops::scale(gradient, negOne);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("gradient");
 #endif
@@ -222,7 +216,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm gradient");
 #endif
-    ComputeNormHelper::evaluate(gradient, normGrad, normType);
+    ComputeNormHelper::template evaluate<ud_ops_t>(gradient, normGrad, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm gradient");
 #endif
@@ -243,7 +237,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("solve normeq");
 #endif
     // compute norm of the correction
-    ComputeNormHelper::evaluate(correction, correctionNorm, normType);
+    ComputeNormHelper::template evaluate<ud_ops_t>(correction, correctionNorm, normType);
 
     // // // print the correction
     // ::pressio::utils::io::print_stdout("Correction correction \n");
@@ -268,7 +262,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     }
 
     // compute multiplicative factor if needed
-    lsearch_helper_t::evaluate(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
+    lsearch_helper_t::template evaluate<ud_ops_t>(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
 
     // solution update: y = y + alpha*correction
     ::pressio::containers::ops::do_update(stateInOut, one, correction, alpha);

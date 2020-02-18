@@ -50,8 +50,6 @@
 #ifndef QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 #define QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 
-#include "../qr_rfactor_solve_impl.hpp"
-
 #include <Eigen/OrderingMethods>
 #include <Eigen/SparseQR>
 #include <Tpetra_Map.hpp>
@@ -97,9 +95,9 @@ public:
 
   void computeThinOutOfPlace(matrix_t & A)
   {
-    auto rows = A.globalLength();
-    auto cols = A.globalNumVectors();
-    auto ArowMap = A.getRCPDataMap();
+    auto rows = A.extent(0);
+    auto cols = A.numVectors();
+    auto ArowMap = A.data()->getMap();
     Teuchos::RCP<const Teuchos::Comm<int> > comm =
       Teuchos::rcp (new Teuchos::MpiComm<int> (MPI_COMM_SELF));
 

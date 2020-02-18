@@ -49,10 +49,6 @@
 #ifndef SOLVERS_LINEAR_EIGEN_DIRECT_HPP
 #define SOLVERS_LINEAR_EIGEN_DIRECT_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../base/solvers_linear_base.hpp"
-#include "solvers_linear_traits.hpp"
-
 namespace pressio { namespace solvers { namespace direct{
 
 template<typename SolverT, typename MatrixT>

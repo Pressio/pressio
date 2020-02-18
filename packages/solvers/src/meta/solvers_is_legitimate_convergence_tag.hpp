@@ -49,9 +49,6 @@
 #ifndef SOLVERS_IS_LEGITIMATE_CONVERGENCE_TAG_HPP_
 #define SOLVERS_IS_LEGITIMATE_CONVERGENCE_TAG_HPP_
 
-#include "../solvers_convergence_tags.hpp"
-#include "../solvers_norm_tags.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T, typename enable = void>

@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_MULTI_VECTOR"
-#include "CONTAINERS_MATRIX"
+#include "pressio_solvers.hpp"
 //#include <cblas.h>
 #include <time.h>
 #include <stdio.h>

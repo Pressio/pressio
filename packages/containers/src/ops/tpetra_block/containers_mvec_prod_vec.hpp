@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_PROD_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_PROD_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
@@ -68,13 +65,15 @@ template <
   typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_kokkos<vec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<res_type>::value
     > * = nullptr
   >
 void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, res_type>::value,
+    "Types are not scalar compatible");
+
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
 
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
@@ -107,7 +106,6 @@ template<
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_kokkos<vec_type>::value
     > * = nullptr
   >
@@ -121,6 +119,9 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
       >
     >
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
+
   // the data map of the multivector
   const auto rcpMap = mvA.getRCPDataMap();
   // the block size
@@ -151,7 +152,6 @@ template <
   typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_tpetra_block<res_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
@@ -160,8 +160,11 @@ void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
 {
   /* computes: C = mvA*vecB */
 
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, res_type>::value,
+    "Types are not scalar compatible");
+
   //zero out result
-  C.setZero();
+  ::pressio::containers::ops::set_zero(C);
 
   // how many vectors are in mvA
   const auto numVecs = mvA.globalNumVectors();
@@ -199,7 +202,6 @@ template<
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
@@ -213,6 +215,9 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
       >
     >
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
+
   // the data map of the multivector
   const auto rcpMap = mvA.getRCPDataMap();
   // the block size
@@ -230,6 +235,60 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
   res_t c( res_nat_t(*rcpMap, mvABlockSize) );
   product(mvA, vecB, c);
   return c;
+}
+
+/* -------------------------------------------------------------------
+ * specialize for tpetra mv operating on an expression
+ *-------------------------------------------------------------------*/
+template <
+  typename mvec_type,
+  typename expr_type,
+  typename res_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
+    ::pressio::containers::meta::is_expression<expr_type>::value
+    > * = nullptr
+  >
+void product(const mvec_type & mvA, const expr_type & b, res_type & C)
+{
+  throw std::runtime_error("Warning, container::ops:product operation between tpetra block and expression not yet supported"); 
+  //::pressio::containers::ops::impl::_product_tpetra_mv_sharedmem_vec(mvA, b, C);
+}
+
+template <
+  typename mvec_type,
+  typename expr_type,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
+    ::pressio::containers::meta::is_expression<expr_type>::value
+    > * = nullptr
+ >
+auto product(const mvec_type & mvA, const expr_type & b)
+  -> containers::Vector<
+  Tpetra::Vector<typename details::traits<mvec_type>::scalar_t,
+                 typename details::traits<mvec_type>::local_ordinal_t,
+                 typename details::traits<mvec_type>::global_ordinal_t,
+                 typename details::traits<mvec_type>::node_t>
+                 >
+{
+  throw std::runtime_error("Warning, container::ops::product operation between tpetra block and expression not yet supported");
+  // the data map of the multivector
+  /* 
+  auto rcpMap = mvA.getRCPDataMap();
+
+  using mvec_traits = typename details::traits<mvec_type>;
+  using sc_t = typename mvec_traits::scalar_t;
+  using LO_t = typename mvec_traits::local_ordinal_t;
+  using GO_t = typename mvec_traits::global_ordinal_t;
+  using NO_t = typename mvec_traits::node_t;
+
+  // result is an Tpetra Vector with same distribution of mvA
+  using res_nat_t = Tpetra::Vector<sc_t, LO_t, GO_t, NO_t>;
+  using res_t = containers::Vector<res_nat_t>;
+  res_t c(rcpMap);
+  product(mvA, b, c);
+  return c;
+  */
 }
 
 

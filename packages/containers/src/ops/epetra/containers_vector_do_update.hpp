@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_EPETRA_VECTOR_DO_UPDATE_HPP_
 #define CONTAINERS_SRC_OPS_EPETRA_VECTOR_DO_UPDATE_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../vector/containers_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 //----------------------------------------------------------------------
@@ -68,7 +65,7 @@ template<
 void do_update(T & v, const scalar_t a, const T & v1, const scalar_t b)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.localSize(); ++i)
+  for (int_t i=0; i<v.extentLocal(0); ++i)
     v[i] = a*v[i] + b*v1[i];
 }
 
@@ -82,7 +79,7 @@ template<
 void do_update(T & v, const T & v1, const scalar_t  b)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.localSize(); ++i)
+  for (int_t i=0; i<v.extentLocal(0); ++i)
     v[i] = b*v1[i];
 }
 
@@ -102,7 +99,7 @@ void do_update(T & v, const scalar_t &a,
 	       const T & v2, const scalar_t &c)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.localSize(); ++i)
+  for (int_t i=0; i<v.extentLocal(0); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i];
 }
 
@@ -118,7 +115,7 @@ void do_update(T & v,
 	       const T & v2, const scalar_t &c)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.localSize(); ++i)
+  for (int_t i=0; i<v.extentLocal(0); ++i)
     v[i] = b*v1[i] + c*v2[i];
 }
 
@@ -140,7 +137,7 @@ void do_update(T & v, const scalar_t &a,
 	       const T & v3, const scalar_t &d)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.localSize(); ++i)
+  for (int_t i=0; i<v.extentLocal(0); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
 }
 
@@ -157,7 +154,7 @@ void do_update(T & v,
 	       const T & v3, const scalar_t &d)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.localSize(); ++i)
+  for (int_t i=0; i<v.extentLocal(0); ++i)
     v[i] = b*v1[i] + c*v2[i] + d*v3[i];
 }
 
@@ -179,7 +176,7 @@ void do_update(T & v, const scalar_t &a,
 	       const T & v4, const scalar_t &e)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.localSize(); ++i)
+  for (int_t i=0; i<v.extentLocal(0); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
 }
 
@@ -197,7 +194,7 @@ void do_update(T & v,
 	       const T & v4, const scalar_t &e)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.localSize(); ++i)
+  for (int_t i=0; i<v.extentLocal(0); ++i)
     v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
 }
 

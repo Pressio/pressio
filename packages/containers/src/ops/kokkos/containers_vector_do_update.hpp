@@ -50,10 +50,7 @@
 #ifndef CONTAINERS_SRC_OPS_KOKKOS_VECTOR_DO_UPDATE_HPP_
 #define CONTAINERS_SRC_OPS_KOKKOS_VECTOR_DO_UPDATE_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../vector/containers_vector_meta.hpp"
-#include "containers_vector_do_update_kokkos_functors.hpp"
-#include<KokkosBlas1_axpby.hpp>
+#include <KokkosBlas1_axpby.hpp>
 
 namespace pressio{ namespace containers{ namespace ops{
 
@@ -106,7 +103,7 @@ void do_update(T & v, const scalar_t &a,
   using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
   using fnctr_t = ::pressio::containers::ops::impl::DoUpdateTwoTermsFunctor<view_t, scalar_t>;
   fnctr_t F(*v.data(), *v1.data(), *v2.data(), a, b, c);
-  Kokkos::parallel_for(v.size(), F);
+  Kokkos::parallel_for(v.extent(0), F);
 }
 
 template<
@@ -123,7 +120,7 @@ void do_update(T & v,
   using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
   using fnctr_t = ::pressio::containers::ops::impl::DoUpdateTwoTermsFunctor<view_t, scalar_t>;
   fnctr_t F(*v.data(), *v1.data(), *v2.data(), b, c);
-  Kokkos::parallel_for(v.size(), F);
+  Kokkos::parallel_for(v.extent(0), F);
 }
 
 
@@ -146,7 +143,7 @@ void do_update(T & v, const scalar_t &a,
   using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
   using fnctr_t = ::pressio::containers::ops::impl::DoUpdateThreeTermsFunctor<view_t, scalar_t>;
   fnctr_t F(*v.data(), *v1.data(), *v2.data(), *v3.data(), a, b, c, d);
-  Kokkos::parallel_for(v.size(), F);
+  Kokkos::parallel_for(v.extent(0), F);
 }
 
 template<
@@ -164,7 +161,7 @@ void do_update(T & v,
   using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
   using fnctr_t = ::pressio::containers::ops::impl::DoUpdateThreeTermsFunctor<view_t, scalar_t>;
   fnctr_t F(*v.data(), *v1.data(), *v2.data(), *v3.data(), b, c, d);
-  Kokkos::parallel_for(v.size(), F);
+  Kokkos::parallel_for(v.extent(0), F);
 }
 
 
@@ -188,7 +185,7 @@ void do_update(T & v, const scalar_t &a,
   using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
   using fnctr_t = ::pressio::containers::ops::impl::DoUpdateFourTermsFunctor<view_t, scalar_t>;
   fnctr_t F(*v.data(), *v1.data(), *v2.data(), *v3.data(), *v4.data(), a, b, c, d, e);
-  Kokkos::parallel_for(v.size(), F);
+  Kokkos::parallel_for(v.extent(0), F);
 }
 
 template<
@@ -207,7 +204,7 @@ void do_update(T & v,
   using view_t = typename ::pressio::containers::details::traits<T>::wrapped_t;
   using fnctr_t = ::pressio::containers::ops::impl::DoUpdateFourTermsFunctor<view_t, scalar_t>;
   fnctr_t F(*v.data(), *v1.data(), *v2.data(), *v3.data(), *v4.data(), b, c, d, e);
-  Kokkos::parallel_for(v.size(), F);
+  Kokkos::parallel_for(v.extent(0), F);
 }
 
 

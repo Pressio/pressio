@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 using eigdmat_t = Eigen::MatrixXd;
 using myMV_t = pressio::containers::MultiVector<eigdmat_t>;
@@ -12,7 +12,7 @@ namespace{
     {
       auto c1 = pressio::containers::viewColumnVector(A, 0);
       c1[0] = 0.5;
-      ASSERT_EQ( c1.size(), 6 );
+      ASSERT_EQ( c1.extent(0), 6 );
       EXPECT_DOUBLE_EQ( c1[0], .5);
       EXPECT_DOUBLE_EQ( c1[1], 3.);
       EXPECT_DOUBLE_EQ( c1[2], 0.);
@@ -37,7 +37,7 @@ namespace{
   {
     {
       const auto c1 = pressio::containers::viewColumnVector(A, 0);
-      ASSERT_EQ( c1.size(), 6 );
+      ASSERT_EQ( c1.extent(0), 6 );
       EXPECT_DOUBLE_EQ( c1[0], .35);
       EXPECT_DOUBLE_EQ( c1[1], 3.);
       EXPECT_DOUBLE_EQ( c1[2], 0.);

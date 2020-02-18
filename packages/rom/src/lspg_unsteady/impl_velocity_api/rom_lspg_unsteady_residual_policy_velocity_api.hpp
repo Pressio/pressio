@@ -49,9 +49,6 @@
 #ifndef ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_api_HPP_
 #define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_api_HPP_
 
-#include "../../rom_fwd.hpp"
-#include "../../rom_static_container_fom_states.hpp"
-#include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
 #include "rom_lspg_time_discrete_residual.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
@@ -62,13 +59,7 @@ template <
   typename fom_velocity_eval_policy,
   typename ud_ops
   >
-class ResidualPolicyVelocityApi
-  : public ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<
-      ResidualPolicyVelocityApi<residual_type,
-			 fom_states_cont_type,
-			 fom_velocity_eval_policy,
-			 ud_ops>>,
-    protected fom_velocity_eval_policy
+class ResidualPolicyVelocityApi : protected fom_velocity_eval_policy
 {
 
 public:
@@ -76,7 +67,6 @@ public:
 				    fom_states_cont_type,
 				    fom_velocity_eval_policy,
 				    ud_ops>;
-  friend ::pressio::ode::implicitmethods::policy::ResidualPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;

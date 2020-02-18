@@ -49,8 +49,6 @@
 #ifndef ODE_IS_LEGITIMATE_AUXILIARY_STEPPER_FOR_IMPLICIT_ODE_HPP_
 #define ODE_IS_LEGITIMATE_AUXILIARY_STEPPER_FOR_IMPLICIT_ODE_HPP_
 
-#include <type_traits>
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename T,

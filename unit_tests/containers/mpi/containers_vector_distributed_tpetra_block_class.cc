@@ -17,16 +17,16 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   				 const native_t * >();
 }
 
-TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
-       getMap){
-  using namespace pressio;
-  myvec_t v1( *x_ );
-  auto const & mapO = v1.getDataMap();
-  ::testing::StaticAssertTypeEq
-      <decltype(mapO),
-       const typename fix_t::map_t & >();
-  EXPECT_TRUE(mapO.isContiguous());
-}
+// TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
+//        getMap){
+//   using namespace pressio;
+//   myvec_t v1( *x_ );
+//   auto const & mapO = v1.getDataMap();
+//   ::testing::StaticAssertTypeEq
+//       <decltype(mapO),
+//        const typename fix_t::map_t & >();
+//   EXPECT_TRUE(mapO.isContiguous());
+// }
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        ConstructorFromNative){
@@ -43,7 +43,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   auto a_tp = a.data()->getVectorView();
   // now that we have a regular tpetra vector, we can check data
   Teuchos::ArrayRCP<const sc_t> dd = a_tp.getData();
-  for (int i=0; i<a.localSize(); i++){
+  for (int i=0; i<a.extentLocal(0); i++){
     EXPECT_DOUBLE_EQ( dd[i], 1.22 );
   }
 }
@@ -57,14 +57,14 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   using sc_t = typename fix_t::ST;
 
   myvec_t B( *x_ );
-  B.putScalar(1.22);
+  pressio::containers::ops::fill(B, 1.22);
 
   myvec_t a(B);
   // a is wrapper of a block vector, so get a tpetra vector
   auto a_tp = a.data()->getVectorView();
   // now that we have a regular tpetra vector, we can check data
   Teuchos::ArrayRCP<const sc_t> dd = a_tp.getData();
-  for (int i=0; i<a.localSize(); i++){
+  for (int i=0; i<a.extentLocal(0); i++){
     EXPECT_DOUBLE_EQ( dd[i], 1.22 );
   }
 }
@@ -75,7 +75,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   using namespace pressio;
   myvec_t v1( *x_ );
   EXPECT_EQ( numProc_, 3);
-  EXPECT_EQ( v1.localSize(), 5);
+  EXPECT_EQ( v1.extentLocal(0), 5);
 }
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
@@ -83,7 +83,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   using namespace pressio;
   myvec_t v1( *x_ );
   EXPECT_EQ( numProc_, 3);
-  EXPECT_EQ( v1.globalSize(), 15);
+  EXPECT_EQ( v1.extent(0), 15);
 }
 
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
@@ -100,14 +100,14 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   static_assert( std::is_same<sc_t, double>::value, "");
 
   myvec_t v1( *x_ );
-  v1.putScalar(43.3);
+  pressio::containers::ops::fill(v1, 43.3);
 
   // v1 is a wrapper of a block vector, so get a tpetra vector
   auto v1_tp = v1.data()->getVectorView();
 
   // now that we have a regular tpetra vector, we can check data
   Teuchos::ArrayRCP<const sc_t> dd = v1_tp.getData();
-  for (int i=0; i<v1.localSize(); i++){
+  for (int i=0; i<v1.extentLocal(0); i++){
     EXPECT_DOUBLE_EQ( dd[i], 43.3 );
   }
 }
@@ -118,14 +118,14 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   using sc_t = typename fix_t::ST;
 
   myvec_t v1( *x_ );
-  v1.setZero();
+  ::pressio::containers::ops::set_zero(v1);
 
   // v1 is a wrapper of a block vector, so get a tpetra vector
   auto v1_tp = v1.data()->getVectorView();
 
   // now that we have a regular tpetra vector, we can check data
   Teuchos::ArrayRCP<const sc_t> dd = v1_tp.getData();
-  for (int i=0; i<v1.localSize(); i++){
+  for (int i=0; i<v1.extentLocal(0); i++){
     EXPECT_DOUBLE_EQ( dd[i], 0.0 );
   }
 }

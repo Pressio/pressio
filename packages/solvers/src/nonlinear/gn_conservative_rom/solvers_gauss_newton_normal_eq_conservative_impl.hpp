@@ -49,8 +49,6 @@
 #ifndef SOLVERS_GAUSS_NEWTON_NORMAL_EQ_CONSERVATIVE_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_CONSERVATIVE_IMPL_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
-#include "../../solvers_meta_static_checks.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_hessian_helper_policy.hpp"
 #include "../helper_policies/solvers_jacob_res_product_policy.hpp"
@@ -155,7 +153,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
 #endif
-    ComputeNormHelper::evaluate(resid, normRes, normType);
+    ComputeNormHelper::template evaluate<void>(resid, normRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm resid");
 #endif
@@ -186,7 +184,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     ::pressio::containers::ops::dot(cbarT, resid, cbarR);
-    ComputeNormHelper::evaluate(cbarR, normCbarR, normType);
+    ComputeNormHelper::template evaluate<void>(cbarR, normCbarR, normType);
 
     ::pressio::containers::ops::product(cbarT, lambda, cbarTlambda);
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
@@ -206,7 +204,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm JTR");
 #endif
-    ComputeNormHelper::evaluate(jTr2, normJTRes, normType);
+    ComputeNormHelper::template evaluate<void>(jTr2, normJTRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm JTR");
 #endif
@@ -229,8 +227,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     *dy_lambda.data() = dy.data()->block(y.size(), 0, lambda.size(), 1);
 
     // norm of the correction
-    ComputeNormHelper::evaluate(dy_y, norm_dy, normType);
-    ComputeNormHelper::evaluate(dy_lambda, normLambda, normType);
+    ComputeNormHelper::template evaluate<void>(dy_y, norm_dy, normType);
+    ComputeNormHelper::template evaluate<void>(dy_lambda, normLambda, normType);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
@@ -250,7 +248,10 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
       throw std::runtime_error(
         "Nonlinear solver: Gauss Newton Conserv: NaNs detected in solution update dy");
     }
-    y2 = y2 + alpha * dy;
+    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+    //y2 = y2 + alpha * dy;
+    ::pressio::containers::ops::do_update(y2, one, dy, alpha);
+
 
     // solution update
     *y.data() = y2.data()->block(0, 0, y.size(), 1);

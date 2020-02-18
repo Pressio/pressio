@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_DENSE_MATRIX_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_DENSE_MATRIX_SHAREDMEM_KOKKOS_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
-#include "../base/containers_matrix_sharedmem_base.hpp"
-
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
@@ -63,6 +60,7 @@ class Matrix<
     >
   >
   : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
+    public ContainerSharedMemBase< Matrix<wrapped_type> >,
     public MatrixSharedMemBase< Matrix<wrapped_type> >
 {
 
@@ -92,6 +90,10 @@ public:
     : data_{label, e1, e2}
   {}
 
+  Matrix(size_t e1, size_t e2)
+    : data_{"dummyLabel", e1, e2}
+  {}
+
   Matrix(const this_t & other)
     : data_{other.data_.label(),
 	    other.data_.extent(0),
@@ -110,6 +112,32 @@ public:
     return *this;
   }
 
+
+  template<
+    typename _wrapped_type = wrapped_type,
+    mpl::enable_if_t<
+      // todo: this is not entirely correct because this would work also
+      // for UMV space, needs to be fixed
+      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
+      > * = nullptr
+    >
+  sc_t & operator () (ord_t i, ord_t j){
+    return data_(i,j);
+  };
+
+  template<
+    typename _wrapped_type = wrapped_type,
+    mpl::enable_if_t<
+      // todo: this is not entirely correct because this would work also
+      // for UMV space, needs to be fixed
+      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
+      > * = nullptr
+    >
+  sc_t const & operator () (ord_t i, ord_t j) const{
+    return data_(i, j);
+  };
+
+
 private:
   wrap_t const * dataImpl() const{
     return &data_;
@@ -122,16 +150,14 @@ private:
     return data_;
   }
 
-  ord_t rowsImpl() const{
-    return data_.extent(0);
-  }
-
-  ord_t colsImpl() const{
-    return data_.extent(1);
+  ord_t extentImpl(ord_t i) const {
+    assert(i==0 or i==1);
+    return data_.extent(i);
   }
 
 private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend ContainerSharedMemBase< this_t >;
   friend MatrixSharedMemBase< this_t >;
 
 private:

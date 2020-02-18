@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "SOLVERS_NONLINEAR"
+#include "pressio_solvers.hpp"
 #include "./problems/solvers_utest_mpi_epetra_expon_data_fit_n11.hpp"
 
 /*

@@ -48,15 +48,15 @@ TEST(epetraMultiVector,
   static_assert(containers::meta::is_multi_vector_wrapper_epetra<mvec_t>::value,
 		"");
 
-  EXPECT_EQ( A.globalNumVectors(), 4 );
-  EXPECT_EQ( B.localNumVectors(), 2 );
-  EXPECT_EQ( A.globalLength(), 6 );
-  EXPECT_EQ( B.globalLength(), 6 );
+  EXPECT_EQ( A.numVectors(), 4 );
+  EXPECT_EQ( B.numVectorsLocal(), 2 );
+  EXPECT_EQ( A.extent(0), 6 );
+  EXPECT_EQ( B.extent(0), 6 );
 
   for (int i=0; i<localSize; i++){
-    for (int j=0; j<A.globalNumVectors(); j++)
+    for (int j=0; j<A.numVectors(); j++)
       EXPECT_NEAR( 0.0, A(i,j), 1e-12);
-    for (int j=0; j<B.globalNumVectors(); j++)
+    for (int j=0; j<B.numVectors(); j++)
       EXPECT_NEAR( 0.0, B(i,j), 1e-12);
   }
 

@@ -1,9 +1,6 @@
 
-#include "UTILS_ALL"
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "SOLVERS_NONLINEAR"
-#include "APPS_UNSTEADYBURGERS1D"
+#include "pressio_ode.hpp"
+#include "pressio_apps.hpp"
 
 constexpr double eps = 1e-12;
 std::string checkStr {"PASSED"};
@@ -33,7 +30,7 @@ struct observer{
   }
 
   void storeInColumn(const state_t & y, int j){
-    for (auto i=0; i<y.size(); i++)
+    for (auto i=0; i<y.extent(0); i++)
       A_(i,j) = y(i);
   }
   size_t getCount() const{ return count_;}

@@ -49,7 +49,6 @@
 #ifndef CONTAINERS_EXPRESSION_BASE_HPP_
 #define CONTAINERS_EXPRESSION_BASE_HPP_
 
-
 namespace pressio{ namespace containers{ namespace expressions{
 
 template <typename derived_type>

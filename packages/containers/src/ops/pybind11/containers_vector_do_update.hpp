@@ -50,8 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_PYBIND11_VECTOR_DO_UPDATE_HPP_
 #define CONTAINERS_SRC_OPS_PYBIND11_VECTOR_DO_UPDATE_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../vector/containers_vector_meta.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 

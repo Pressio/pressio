@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_BASIC"
+#include "pressio_containers.hpp"
+
 
 TEST(containers_meta_detect_typedefs, scalarTypedefDetect)
 {

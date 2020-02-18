@@ -49,11 +49,6 @@
 #ifndef QR_OUT_OF_PLACE_HPP_
 #define QR_OUT_OF_PLACE_HPP_
 
-#include "../base/qr_out_of_place_base.hpp"
-#include "../base/qr_solve_base.hpp"
-#include "../base/qr_r_factor_base.hpp"
-#include "../qr_traits.hpp"
-
 namespace pressio{ namespace qr{ namespace impl{
 
 /* overload for R_type == void, in_place = false */

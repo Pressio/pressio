@@ -49,8 +49,6 @@
 #ifndef ODE_IMPLICIT_CONSTANTS_HPP_
 #define ODE_IMPLICIT_CONSTANTS_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-
 namespace pressio{ namespace ode{ namespace constants{
 
 template <typename scalar_t>

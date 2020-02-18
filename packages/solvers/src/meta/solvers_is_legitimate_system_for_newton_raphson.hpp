@@ -49,9 +49,6 @@
 #ifndef SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_NEWTON_RAPHSON_HPP_
 #define SOLVERS_IS_LEGITIMATE_SYSTEM_FOR_NEWTON_RAPHSON_HPP_
 
-#include "solvers_system_meets_default_api.hpp"
-#include "../experimental/solvers_system_meets_gn_hessian_gradient_api.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 template<typename system_type>

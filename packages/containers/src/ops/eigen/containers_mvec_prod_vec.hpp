@@ -48,9 +48,6 @@
 #ifndef CONTAINERS_SRC_OPS_EIGEN_MULTI_VECTOR_PROD_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_EIGEN_MULTI_VECTOR_PROD_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /* multi_vector prod vector */
@@ -63,16 +60,18 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
    containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
-   containers::meta::is_vector_wrapper_eigen<vec_type>::value and
-   containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+   containers::meta::is_vector_wrapper_eigen<vec_type>::value
     > * = nullptr
   >
 void product(const mvec_type & mvA, const vec_type & vecB, vec_type & C){
 
-  assert( C.size() == mvA.length() );
-  C.setZero();
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+		"Types are not scalar compatible");
+
+  assert( C.extent(0) == mvA.extent(0) );
+  ::pressio::containers::ops::set_zero(C);
   const auto numVecs = mvA.numVectors();
-  assert(numVecs == vecB.size());
+  assert(numVecs == vecB.extent(0));
 
   // compute
   (*C.data()) = (*mvA.data()) * (*vecB.data());
@@ -89,12 +88,15 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
-    containers::details::traits<vec_type>::is_dynamic and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::details::traits<vec_type>::is_dynamic
     > * = nullptr
   >
-vec_type product(const mvec_type & mvA, const vec_type & vecB){
-  vec_type c(mvA.length());
+vec_type product(const mvec_type & mvA, const vec_type & vecB)
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+		"Types are not scalar compatible");
+
+  vec_type c(mvA.extent(0));
   product(mvA, vecB, c);
   return c;
 }
@@ -110,15 +112,17 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_eigen<mvec_type>::value and
     containers::meta::is_vector_wrapper_eigen<vec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     ::pressio::containers::meta::is_expression<expr_type>::value
     > * = nullptr
   >
 void product(const mvec_type & mvA, const expr_type & exprObj, vec_type & C)
 {
-  assert( C.size() == mvA.length() );
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, expr_type>::value,
+		"Types are not scalar compatible");
+
+  assert( C.extent(0) == mvA.extent(0) );
   const auto numVecs = mvA.numVectors();
-  assert(numVecs == exprObj.size());
+  assert(numVecs == exprObj.extent(0));
 
   *C.data() = (*mvA.data()) * exprObj();
 }//end function
@@ -138,11 +142,14 @@ auto product(const mvec_type & mvA, const expr_type & exprObj)
     Eigen::Matrix< typename containers::details::traits<mvec_type>::scalar_t, -1, 1>
     >
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
+		"Types are not scalar compatible");
+
   using scalar_t  = typename containers::details::traits<mvec_type>::scalar_t;
   using eig_vec_t = Eigen::Matrix<scalar_t, -1, 1>;
   using return_t  = ::pressio::containers::Vector<eig_vec_t>;
 
-  return_t c(mvA.length());
+  return_t c(mvA.extent(0));
   product(mvA, exprObj, c);
   return c;
 }

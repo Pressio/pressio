@@ -49,7 +49,6 @@
 #ifndef SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
 #include "../helper_policies/solvers_converged_criterior_policy.hpp"
 #include "../helper_policies/solvers_norm_helper_policy.hpp"
 #include "../helper_policies/solvers_line_search_policy.hpp"
@@ -135,7 +134,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
 #endif
-    ComputeNormHelper::evaluate(residual, normRes, normType);
+    ComputeNormHelper::template evaluate<void>(residual, normRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm resid");
 #endif
@@ -172,7 +171,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm QTResid");
 #endif
-    ComputeNormHelper::evaluate(QTResid, normQTRes, normType);
+    ComputeNormHelper::template evaluate<void>(QTResid, normQTRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm QTResid");
 #endif
@@ -181,7 +180,9 @@ void gauss_newton_qr_solve(const system_t & sys,
 
     // compute correction: correction
     // by solving R correction = - Q^T Residual
-    QTResid.scale(static_cast<scalar_t>(-1));
+    pressio::containers::ops::scale( QTResid, utils::constants::negOne<scalar_t>());
+    // QTResid.scale(static_cast<scalar_t>(-1));
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR R-solve");
     qrObj.solve(QTResid, correction);
@@ -191,7 +192,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
     // norm of the correction
-    ComputeNormHelper::evaluate(correction, correctionNorm, normType);
+    ComputeNormHelper::template evaluate<void>(correction, correctionNorm, normType);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
@@ -211,7 +212,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     }
 
     // compute multiplicative factor if needed
-    lsearch_helper::evaluate(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
+    lsearch_helper::template evaluate<void>(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
 
     // solution update: stateInOut = stateInOut + alpha*correction
     ::pressio::containers::ops::do_update(stateInOut, one, correction, alpha);

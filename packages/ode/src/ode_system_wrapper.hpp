@@ -49,7 +49,6 @@
 #ifndef ODE_SYSTEM_WRAPPER_HPP_
 #define ODE_SYSTEM_WRAPPER_HPP_
 
-#include "ode_fwd.hpp"
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>

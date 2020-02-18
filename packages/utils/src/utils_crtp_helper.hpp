@@ -49,8 +49,6 @@
 #ifndef UTILS_CRTP_HELPER_HPP_
 #define UTILS_CRTP_HELPER_HPP_
 
-#include <type_traits>
-
 namespace pressio{ namespace utils{ namespace details {
 
 template <typename T, typename enable = void>

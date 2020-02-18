@@ -1,8 +1,38 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "SOLVERS_NONLINEAR"
+#include "pressio_ode.hpp"
+
+
+template <typename state_t>
+struct Observer{
+  using matrix_t = Eigen::MatrixXd;
+  using step_t = pressio::ode::types::step_t;
+
+  size_t state_size_ {};
+  matrix_t A_;
+  size_t count_ {};
+
+  Observer(int N, int state_size)
+    : A_(state_size, N+1){} //+1 to store also init cond
+
+  void operator()(step_t step, double t, const state_t & y)
+  {
+    this->storeInColumn(y, count_);
+    count_++;
+  }
+
+  void storeInColumn(const state_t & y, int j){
+    for (auto i=0; i<y.size(); i++)
+      A_(i,j) = y(i);
+  }
+  size_t getCount() const{ return count_;}
+  void printAll() const{ std::cout << A_ << std::endl; }
+
+  const matrix_t & viewSnaps() const{
+    return A_;
+  }
+};
+
 
 struct MyApp
 {
@@ -248,6 +278,22 @@ struct CustomBdf1Solver
     ::pressio::ode::integrateToTargetTime(stepperObj_, y_, 0.0, finalTime, solverO, dtSetterLambda);
   };
 
+
+  template <typename observer_t>
+  void integrateToTimeWithStepSizeManagerLambdaAndCollector(double finalTime, observer_t & observer)
+  {
+    lin_solver_t linSolverObj;
+    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
+    using step_t = ::pressio::ode::types::step_t;
+    const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
+				  std::cout << " SETTING DT " << std::endl;
+				  dt = dt_;
+				};
+    ::pressio::ode::integrateToTargetTime(stepperObj_, y_, 0.0,
+					  finalTime, solverO,
+					  dtSetterLambda, observer);
+  };
+
 };
 
 
@@ -367,11 +413,68 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
   // compute num of steps so that we make sure the integrate
   // to target time matches the integrate n steps
   const auto dt = S2.dt_;
-  const int nSteps = finalTime/dt - 1;
+  const int nSteps = finalTime/dt;
   S2.integrateForNSteps(nSteps);
   std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
   EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
   EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
   EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
+}
+
+
+TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivialWithCollector)
+{
+  constexpr double one = ::pressio::utils::constants::one<double>();
+  constexpr double two = ::pressio::utils::constants::two<double>();
+  constexpr double three = ::pressio::utils::constants::three<double>();
+  ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
+  *y0.data() << one,two,three;
+
+  // here we set final time to something non trivial and such that
+  // it is divisble by the default dt so that we get an integer number of steps
+  constexpr double finalTime = 0.1;
+
+  // define observer (templated on the native state type so that pressio
+  // passes us an object of the native state)
+  using state_t = typename MyApp::state_type;
+  using observer_t = Observer<state_t>;
+
+  // create test class object
+  CustomBdf1Solver S1(y0);
+
+  const auto dt = S1.dt_;
+  const int nSteps = finalTime/dt;
+  // create observer
+  observer_t observerObj(nSteps, y0.extent(0));
+
+  S1.integrateToTimeWithStepSizeManagerLambdaAndCollector(finalTime, observerObj);
+  std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
+  observerObj.printAll();
+
+  // check that observer has right data
+  Eigen::MatrixXd trueS(y0.extent(0), nSteps+1);
+  trueS(0,0)=1.00000000000000e+00;
+  trueS(1,0)=2.00000000000000e+00;
+  trueS(2,0)=3.00000000000000e+00;
+
+  trueS(0,2)=8.26446280991735e-01;
+  trueS(1,2)=1.65289256198347e+00;
+  trueS(2,2)=2.47933884297521e+00;
+
+  trueS(0,6)=5.64473930053777e-01;
+  trueS(1,6)=1.12894786010755e+00;
+  trueS(2,6)=1.69342179016133e+00;
+
+  trueS(0,10)=3.85543289429532e-01;
+  trueS(1,10)=7.71086578859064e-01;
+  trueS(2,10)=1.15662986828860e+00;
+
+  const auto & storedData = observerObj.viewSnaps();
+  std::vector<int> colInd = {0,2,6,10};
+  for (const auto & j : colInd){
+    EXPECT_NEAR( storedData(0,j), trueS(0,j), 1e-13);
+    EXPECT_NEAR( storedData(1,j), trueS(1,j), 1e-13);
+    EXPECT_NEAR( storedData(2,j), trueS(2,j), 1e-13);
+  }
 }

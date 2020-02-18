@@ -49,15 +49,6 @@
 #ifndef ROM_GALERKIN_TYPE_GENERATOR_COMMON_IMPL_HPP_
 #define ROM_GALERKIN_TYPE_GENERATOR_COMMON_IMPL_HPP_
 
-#include "../../rom_ConfigDefs.hpp"
-#include "../../rom_fwd.hpp"
-#include "../../rom_static_container_fom_states.hpp"
-#include "../../fom_querying_policies/rom_query_fom_velocity_unsteady_policy.hpp"
-#include "../../fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
-#include "../../../../ode/src/ode_fwd.hpp"
-#include "../../meta/rom_is_legitimate_model_for_galerkin.hpp"
-#include "../../meta/rom_is_legitimate_decoder_type.hpp"
-
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template < bool doingPython, typename galerkin_state_type, typename ...Args >
@@ -97,7 +88,7 @@ struct GalerkinCommonTypes<false, galerkin_state_type, Args...>
   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data
   using fom_states_data =
@@ -156,7 +147,7 @@ bindings to Galerkin");
   using fom_native_velocity_t	= galerkin_state_t;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<fom_state_t, decoder_t>;
+  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;

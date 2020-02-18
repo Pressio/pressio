@@ -49,7 +49,6 @@
 #ifndef ODE_MODEL_HAS_ALL_NEEDED_VELOCITY_METHODS_HPP_
 #define ODE_MODEL_HAS_ALL_NEEDED_VELOCITY_METHODS_HPP_
 
-#include "../ode_ConfigDefs.hpp"
 #include "ode_has_velocity_method_callable_with_two_args.hpp"
 #include "ode_has_velocity_method_callable_with_three_args.hpp"
 

@@ -49,9 +49,6 @@
 #ifndef ROM_MASK_DECORATOR_RESIDUAL_HPP_
 #define ROM_MASK_DECORATOR_RESIDUAL_HPP_
 
-#include "../rom_fwd.hpp"
-#include "../../../ode/src/implicit/policies/meta/ode_is_legitimate_implicit_residual_policy.hpp"
-
 namespace pressio{ namespace rom{ namespace decorator{
 
 template <typename maskable>

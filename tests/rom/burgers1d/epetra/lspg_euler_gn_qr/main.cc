@@ -1,20 +1,19 @@
 
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "QR_BASIC"
-#include "SOLVERS_NONLINEAR"
-#include "ROM_LSPG_UNSTEADY"
-#include "APPS_UNSTEADYBURGERS1D"
+#include "pressio_rom.hpp"
+#include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
 int main(int argc, char *argv[]){
   using fom_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
+  using native_state_t  = typename fom_t::state_type;
+  using fom_state_t  = pressio::containers::Vector<native_state_t>;
+
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
 
   std::string checkStr {"PASSED"};
 
@@ -38,7 +37,7 @@ int main(int argc, char *argv[]){
   decoder_jac_t phi =
     pressio::rom::test::epetra::readBasis("basis.txt", romSize, numCell,
 					 Comm, appobj.getDataMap());
-  const int numBasis = phi.globalNumVectors();
+  const int numBasis = phi.numVectors();
   if( numBasis != romSize ) return 0;
   // create decoder obj
   decoder_t decoderObj(phi);
@@ -49,7 +48,7 @@ int main(int argc, char *argv[]){
   // define ROM state
   lspg_state_t yROM(romSize);
   // initialize to zero (this has to be done)
-  yROM.putScalar(0.0);
+  pressio::containers::ops::fill( yROM, 0.0);
 
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;
@@ -82,7 +81,7 @@ int main(int argc, char *argv[]){
   // has to match the FOM solution obtained with euler, same time-step, for 10 steps
   {
     int shift = (rank==0) ? 0 : 10;
-    const int myn = yFomFinal.getDataMap().NumMyElements();
+    const int myn = yFomFinal.data()->Map().NumMyElements();
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++)
       if (std::abs(yFomFinal[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";

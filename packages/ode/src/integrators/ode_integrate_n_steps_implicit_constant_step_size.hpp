@@ -49,11 +49,6 @@
 #ifndef ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_CONSTANT_STEP_SIZE_HPP_
 #define ODE_INTEGRATORS_INTEGRATE_N_STEPS_IMPLICIT_CONSTANT_STEP_SIZE_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-#include "../meta/ode_is_legitimate_collector.hpp"
-#include "../meta/ode_is_legitimate_guesser.hpp"
-#include "../implicit/meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
-#include "../implicit/meta/ode_is_legitimate_implicit_state_type.hpp"
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_n_steps_integrators.hpp"
 
@@ -66,13 +61,12 @@ template<
   typename time_type,
   typename solver_type,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type	 & stepper,
+void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 startTime,
 		     const time_type	 dt,
@@ -98,7 +92,6 @@ template<
   typename collector_type,
   typename solver_type,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value and
@@ -107,7 +100,7 @@ template<
       >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type	 & stepper,
+void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 startTime,
 		     const time_type	 dt,
@@ -134,7 +127,6 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type>::value and
     ::pressio::ode::meta::is_legitimate_guesser<
@@ -142,7 +134,7 @@ template<
       >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type	 & stepper,
+void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 startTime,
 		     const time_type	 dt,
@@ -171,7 +163,6 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value and
@@ -183,7 +174,7 @@ template<
       >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type		& stepper,
+void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type			& odeStateInOut,
 		     const time_type	        startTime,
 		     const time_type		dt,
@@ -213,7 +204,6 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value and
@@ -225,7 +215,7 @@ template<
       >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type		& stepper,
+void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type			& odeStateInOut,
 		     const time_type	        startTime,
 		     const time_type		dt,

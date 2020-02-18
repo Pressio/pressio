@@ -49,11 +49,6 @@
 #ifndef ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_EULER_STEPPER_IMPL_HPP_
 #define ODE_STEPPERS_EXPLICIT_STEPPERS_IMPL_EXPLICIT_EULER_STEPPER_IMPL_HPP_
 
-#include "../ode_explicit_stepper_base.hpp"
-#include "../../../ode_aux_states_container.hpp"
-#include "../../../ode_system_wrapper.hpp"
-#include "../../../ode_velocities_container.hpp"
-
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
 template<
@@ -103,6 +98,15 @@ public:
 
   ExplicitEulerStepperImpl() = delete;
   ~ExplicitEulerStepperImpl() = default;
+
+  // copy cnstr
+  ExplicitEulerStepperImpl(const ExplicitEulerStepperImpl & other)  = delete;
+  // copy assignment
+  ExplicitEulerStepperImpl & operator=(const ExplicitEulerStepperImpl & other)  = delete;
+  // move cnstr
+  ExplicitEulerStepperImpl(ExplicitEulerStepperImpl && other)  = delete;
+  // move assign
+  ExplicitEulerStepperImpl & operator=(ExplicitEulerStepperImpl && other)  = delete;
 
 public:
 

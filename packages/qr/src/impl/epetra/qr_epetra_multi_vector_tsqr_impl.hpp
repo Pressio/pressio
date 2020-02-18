@@ -50,7 +50,6 @@
 #ifndef QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
 #define QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
 
-#include "../qr_rfactor_solve_impl.hpp"
 #include "Epetra_TsqrAdaptor.hpp"
 
 namespace pressio{ namespace qr{ namespace impl{
@@ -71,8 +70,8 @@ public:
   ~EpetraMVTSQR() = default;
 
   void computeThinOutOfPlace(matrix_t & A) {
-    auto nVecs = A.globalNumVectors();
-    auto & ArowMap = A.getDataMap();
+    auto nVecs = A.numVectors();
+    auto & ArowMap = A.data()->Map();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
     tsqrAdaptor_.factorExplicit(*A.data(),
@@ -141,7 +140,7 @@ private:
 
   template <typename map_t>
   void createQIfNeeded(const map_t & map, int cols){
-    if (!Qmat_ or !Qmat_->hasRowMapEqualTo(map) )
+    if (!Qmat_ or !Qmat_->data()->Map().SameAs(map))
       Qmat_ = std::make_shared<Q_t>(map, cols);
   }
 

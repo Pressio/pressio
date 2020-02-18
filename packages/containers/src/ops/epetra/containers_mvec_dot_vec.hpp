@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_EPETRA_MULTI_VECTOR_DOT_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_EPETRA_MULTI_VECTOR_DOT_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
@@ -74,13 +71,15 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value &&
-    containers::meta::is_vector_wrapper_epetra<vec_type>::value &&
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::meta::is_vector_wrapper_epetra<vec_type>::value
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
-	 typename details::traits<mvec_type>::scalar_t * result){
+	 typename details::traits<mvec_type>::scalar_t * result)
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
 
   ///computes dot product of each vector in mvA
   ///with vecB storing each value in result
@@ -92,7 +91,7 @@ void dot(const mvec_type & mvA,
   */
 
   // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectorsGlobal();
   auto * mvNatData = mvA.data();
   const auto * vecNatData = vecB.data();
   for (size_t i=0; i<(size_t)numVecs; i++){
@@ -112,9 +111,6 @@ template <
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_epetra<vec_type>::value and
     containers::meta::is_dense_vector_wrapper_teuchos<result_vec_type>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						       vec_type,
-						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_dynamic
     > * = nullptr
   >
@@ -122,9 +118,11 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  const auto numVecs = mvA.globalNumVectors();
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
+    "Types are not scalar compatible");
+
+  const auto numVecs = mvA.numVectorsGlobal();
+  result.data()->resize(numVecs);
   dot(mvA, vecB, result.data()->values());
 }
 
@@ -139,20 +137,20 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_epetra<vec_type>::value and
-    containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						       vec_type,
-						       result_vec_type>::value and
-    containers::details::traits<result_vec_type>::is_dynamic
+    containers::meta::is_dynamic_vector_wrapper_eigen<result_vec_type>::value
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  const auto numVecs = mvA.globalNumVectors();
-  if ( result.size() != numVecs )
-    result.resize(numVecs);
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
+    "Types are not scalar compatible");
+
+  const auto numVecs = mvA.numVectorsGlobal();
+  if ( result.extent(0) != numVecs ){
+    result.data()->resize(numVecs);
+  }
   dot(mvA, vecB, result.data()->data());
 }
 
@@ -168,9 +166,6 @@ template <
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
     containers::meta::is_vector_wrapper_epetra<vec_type>::value and
     containers::meta::is_vector_wrapper_eigen<result_vec_type>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<mvec_type,
-						       vec_type,
-						       result_vec_type>::value and
     containers::details::traits<result_vec_type>::is_static
     > * = nullptr
   >
@@ -178,7 +173,10 @@ void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 result_vec_type & result)
 {
-  assert(result.size() == mvA.globalNumVectors());
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
+    "Types are not scalar compatible");
+
+  assert(result.extent(0) == mvA.numVectorsGlobal());
   dot(mvA, vecB, result.data()->data());
 }
 
@@ -191,15 +189,18 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value &&
-    containers::meta::is_vector_wrapper_epetra<vec_type>::value &&
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::meta::is_vector_wrapper_epetra<vec_type>::value
     > * = nullptr
   >
 void dot(const mvec_type & mvA,
 	 const vec_type & vecB,
 	 std::vector<typename
-	 details::traits<mvec_type>::scalar_t> & result){
-  const auto numVecs = mvA.globalNumVectors();
+	 details::traits<mvec_type>::scalar_t> & result)
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
+
+  const auto numVecs = mvA.numVectorsGlobal();
   if ( result.size() != (size_t)numVecs )
     result.resize(numVecs);
   dot(mvA, vecB, result.data());
@@ -214,15 +215,17 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value &&
-    containers::meta::is_vector_wrapper_epetra<vec_type>::value &&
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value
+    containers::meta::is_vector_wrapper_epetra<vec_type>::value
     > * = nullptr
   >
 std::vector<typename details::traits<mvec_type>::scalar_t>
 dot(const mvec_type & mvA, const vec_type & vecB)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
+
   using sc_t = typename details::traits<mvec_type>::scalar_t;
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectorsGlobal();
   using res_t = std::vector<sc_t>;
 
   res_t res(numVecs);

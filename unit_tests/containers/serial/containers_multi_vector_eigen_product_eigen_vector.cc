@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 using eigdmat_t = Eigen::MatrixXd;
 using myMV_t = pressio::containers::MultiVector<eigdmat_t>;
@@ -23,7 +23,7 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   b(0) = 1.; b(1) = 1.; b(2) = 1.;
 
   auto c1 = pressio::containers::ops::product(A,b);
-  ASSERT_EQ( c1.size(), 6 );
+  ASSERT_EQ( c1.extent(0), 6 );
   EXPECT_DOUBLE_EQ( c1(0), 6.);
   EXPECT_DOUBLE_EQ( c1(1), 6.);
   EXPECT_DOUBLE_EQ( c1(2), 1.);
@@ -33,6 +33,6 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
 
   pressio::containers::Vector<Eigen::VectorXd> c(6);
   pressio::containers::ops::product(A,b,c);
-  for (auto i=0; i<c1.size(); i++)
+  for (auto i=0; i<c1.extent(0); i++)
     EXPECT_DOUBLE_EQ( c(i), c1(i));
 }

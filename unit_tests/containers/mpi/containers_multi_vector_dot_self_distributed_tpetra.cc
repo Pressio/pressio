@@ -3,7 +3,7 @@
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 #include <Teuchos_CommHelpers.hpp>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 #include <Tpetra_Map_decl.hpp>
 
   /*
@@ -44,7 +44,8 @@ TEST(containers_ops, TpetraMultiVectorDotSelfStoreEigenMatWrapper){
   using mvec_t = containers::MultiVector<nat_mvec_t>;
   using mv_device_t = typename containers::details::traits<mvec_t>::device_t;
 
-  mvec_t A( *mvA ); A.setZero();
+  mvec_t A( *mvA ); 
+  ::pressio::containers::ops::set_zero(A);
 
   /*------------- fill A -------------- */
   {
@@ -122,7 +123,7 @@ TEST(containers_ops, TpetraMultiVectorDotSelfStoreKokkosMatWrapper){
   using device_t = typename containers::details::traits<mvec_t>::device_t;
 
   mvec_t A(*mvA);
-  A.setZero();
+  ::pressio::containers::ops::set_zero(A);
 
   /*------------- fill A -------------- */
   {
@@ -173,9 +174,9 @@ TEST(containers_ops, TpetraMultiVectorDotSelfStoreKokkosMatWrapper){
     STATIC_ASSERT_IS_CONTAINERS_MATRIX_WRAPPER(mat_t);
     // C is a matrix wrapper of dense kokkos matrix
     auto C = containers::ops::dot_self<mvec_t, mat_t>(A);
-    EXPECT_EQ(C.rows(), 4); EXPECT_EQ(C.cols(), 4);
+    EXPECT_EQ(C.extent(0), 4); EXPECT_EQ(C.extent(1), 4);
     // create host mirror
-    k2d_h C_h("Ch", C.rows(), C.cols());
+    k2d_h C_h("Ch", C.extent(0), C.extent(1));
     Kokkos::deep_copy(C_h, *C.data());
     // check result against truth
     for (auto i=0; i<4; i++){
@@ -191,7 +192,7 @@ TEST(containers_ops, TpetraMultiVectorDotSelfStoreKokkosMatWrapper){
     //copy C_h to C
     Kokkos::deep_copy(*C.data(), C_h);
     containers::ops::dot_self(A, C);
-    EXPECT_EQ(C.rows(), 4); EXPECT_EQ(C.cols(), 4);
+    EXPECT_EQ(C.extent(0), 4); EXPECT_EQ(C.extent(1), 4);
     Kokkos::deep_copy(C_h, *C.data());
     for (auto i=0; i<4; i++)
       for (auto j=0; j<4; j++)

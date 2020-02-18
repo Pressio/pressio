@@ -49,9 +49,6 @@
 #ifndef SOLVERS_NONLINEAR_BASE_HPP
 #define SOLVERS_NONLINEAR_BASE_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../../../containers/src/vector/containers_vector_meta.hpp"
-
 namespace pressio{ namespace solvers{
 
 /**

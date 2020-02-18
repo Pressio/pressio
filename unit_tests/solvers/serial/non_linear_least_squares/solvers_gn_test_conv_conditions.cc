@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "SOLVERS_NONLINEAR"
+#include "pressio_solvers.hpp"
 #include "./problems/solvers_utest_serial_rosenbrock_N4.hpp"
 
 TEST(solvers_nonlinear_least_squares, gn_conv_conditions){

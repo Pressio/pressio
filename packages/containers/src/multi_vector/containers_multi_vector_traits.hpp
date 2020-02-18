@@ -49,18 +49,6 @@
 #ifndef CONTAINERS_MULTIVECTOR_MULTIVECTOR_TRAITS_HPP_
 #define CONTAINERS_MULTIVECTOR_MULTIVECTOR_TRAITS_HPP_
 
-#include "../containers_fwd.hpp"
-#include "../containers_shared_traits.hpp"
-#include "./meta/containers_native_eigen_multi_vector_meta.hpp"
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./meta/containers_native_epetra_multi_vector_meta.hpp"
-#include "./meta/containers_native_tpetra_multi_vector_meta.hpp"
-#include "./meta/containers_native_tpetra_block_multi_vector_meta.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./meta/containers_native_kokkos_multi_vector_meta.hpp"
-#endif
-
 namespace pressio{ namespace containers{ namespace details{
 
 /********************************
@@ -89,12 +77,15 @@ struct traits<
   : public containers_shared_traits<MultiVector<wrapped_type>,
 				    wrapped_type,
 				    false, false, true,
-				    WrappedPackageIdentifier::Undefined,
+				    WrappedPackageIdentifier::Arbitrary,
 				    false, false>
 {
 
   using wrapped_t = wrapped_type;
   using derived_t = MultiVector<wrapped_t>;
+  using scalar_t  = typename wrapped_type::value_type;
+  using value_t   = typename wrapped_type::value_type;
+  using size_t   = typename wrapped_type::size_type;
 
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Arbitrary;
@@ -264,10 +255,8 @@ struct traits<
   using ordinal_t = int;
 
   static constexpr bool is_admissible_for_expression_templates = true;
-  using view_col_vec_const_ret_t = ::pressio::containers::expressions::ViewColumnVectorExpr<
-    const MultiVector<wrapped_type>, scalar_t>;
-  using view_col_vec_ret_t = ::pressio::containers::expressions::ViewColumnVectorExpr<
-    MultiVector<wrapped_type>, scalar_t>;
+  using view_col_vec_const_ret_t = expressions::ViewColumnVectorExpr<const MultiVector<wrapped_type>>;
+  using view_col_vec_ret_t = expressions::ViewColumnVectorExpr<MultiVector<wrapped_type>>;
 };
 
 
@@ -310,8 +299,8 @@ struct traits<
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
-  using view_col_vec_const_ret_t = expressions::ViewColumnVectorExpr<const MultiVector<wrapped_type>, scalar_t>;
-  using view_col_vec_ret_t = expressions::ViewColumnVectorExpr<MultiVector<wrapped_type>, scalar_t>;
+  using view_col_vec_const_ret_t = expressions::ViewColumnVectorExpr<const MultiVector<wrapped_type>>;
+  using view_col_vec_ret_t = expressions::ViewColumnVectorExpr<MultiVector<wrapped_type>>;
 };
 #endif
 

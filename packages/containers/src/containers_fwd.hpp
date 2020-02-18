@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_FORWARD_DECLARATIONS_HPP_
 #define CONTAINERS_FORWARD_DECLARATIONS_HPP_
 
-#include "containers_ConfigDefs.hpp"
-
 namespace pressio{ namespace containers{
 
 namespace details {
@@ -60,6 +58,30 @@ struct traits;
 template<typename T>
 struct traits<const T> : traits<T> {};
 }
+
+template<typename derived_type, typename wrapped_t>
+class ContainerBase;
+
+template<typename derived_type>
+class ContainerDistributedBase;
+template<typename derived_type>
+class ContainerSharedMemBase;
+
+template<typename derived_type>
+class MatrixDistributedBase;
+template<typename derived_type>
+class MatrixSharedMemBase;
+
+template<typename derived_type>
+class MultiVectorDistributedBase;
+template<typename derived_type>
+class MultiVectorSharedMemBase;
+
+template<typename derived_type>
+class VectorDistributedBase;
+template<typename derived_type>
+class VectorSharedMemBase;
+
 
 template <
   typename wrapped_type,
@@ -76,27 +98,19 @@ template <
   typename Enable = void>
 class Matrix;
 
-template<
-  typename T,
-  typename enable = void>
-struct traits;
-
 
 namespace expressions{
 
 template <typename derived_t>
-struct BaseExpr;
+class BaseExpr;
 
-template <
-  typename mv_t,
-  typename scalar_t,
-  typename enable = void>
+template < typename mv_t, typename enable = void>
 struct ViewColumnVectorExpr;
 
-template <typename mat_t, typename scalar_t, typename enable = void>
+template <typename mat_t, typename enable = void>
 struct SubspanExpr;
 
-template <typename vec_t, typename scalar_t, typename enable = void>
+template <typename vec_t, typename enable = void>
 struct SpanExpr;
 }
 

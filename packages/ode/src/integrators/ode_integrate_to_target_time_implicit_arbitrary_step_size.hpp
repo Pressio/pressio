@@ -49,11 +49,8 @@
 #ifndef ODE_INTEGRATE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 #define ODE_INTEGRATE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 
-#include "../ode_ConfigDefs.hpp"
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_to_target_time_integrators.hpp"
-#include "../meta/ode_is_legitimate_time_step_size_setter.hpp"
-#include "../implicit/meta/ode_is_legitimate_solver_for_implicit_stepper.hpp"
 
 namespace pressio{ namespace ode{
 
@@ -66,10 +63,9 @@ template<
   typename solver_type,
   typename step_size_cb_t,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     std::is_same<
     typename ::pressio::ode::details::traits<stepper_type>::tag_name,
-    ::pressio::ode::implicitmethods::Arbitrary 
+    ::pressio::ode::implicitmethods::Arbitrary
     >::value and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
@@ -97,6 +93,51 @@ See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
 		      std::forward<step_size_cb_t>(dtManager),
 		      odeStateInOut, stepper, solver);
 }
+
+
+template<
+  typename stepper_type,
+  typename state_type,
+  typename time_type,
+  typename solver_type,
+  typename step_size_cb_t,
+  typename collector_type,
+  typename std::enable_if<
+    std::is_same<
+      typename ::pressio::ode::details::traits<stepper_type>::tag_name,
+      ::pressio::ode::implicitmethods::Arbitrary
+      >::value and
+    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+      solver_type, stepper_type, state_type
+      >::value and
+    ::pressio::ode::meta::is_legitimate_time_step_size_setter<
+      step_size_cb_t, types::step_t, time_type
+      >::value and
+    ode::meta::is_legitimate_collector<
+      collector_type, types::step_t, time_type, state_type
+      >::value
+    >::type * = nullptr
+  >
+void integrateToTargetTime(stepper_type		& stepper,
+			   state_type		& odeStateInOut,
+			   const time_type	start_time,
+			   const time_type	final_time,
+			   solver_type		& solver,
+			   step_size_cb_t	&& dtManager,
+			   collector_type	& collector){
+
+  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. \
+See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+
+  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t	 = impl::IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector<do_step_policy_t>;
+  advancer_t::execute(start_time, final_time, collector,
+		      std::forward<step_size_cb_t>(dtManager),
+		      odeStateInOut, stepper, solver);
+}
+
 
 }}//end namespace pressio::ode
 #endif

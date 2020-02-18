@@ -49,10 +49,6 @@
 #ifndef QR_RFACTOR_SOLVE_HPP_
 #define QR_RFACTOR_SOLVE_HPP_
 
-#include "../qr_ConfigDefs.hpp"
-#include "../../../containers/src/vector/containers_vector_meta.hpp"
-#include "../../../containers/src/matrix/containers_matrix_meta.hpp"
-
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "Teuchos_SerialDenseMatrix.hpp"
 #include "Teuchos_SerialDenseSolver.hpp"
@@ -168,7 +164,7 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
   using sc_t	  = typename R_type::element_type::scalarType;
   using tservec_t = Teuchos::SerialDenseVector<ord_t, sc_t>;
 
-  auto vecSize = rhs.size();
+  auto vecSize = rhs.extent(0);
   tservec_t rhsTV(Teuchos::View, const_cast<sc_t*>(rhs.data()->data()), vecSize);
   tservec_t yTV(Teuchos::View, y.data()->data(), vecSize);
 

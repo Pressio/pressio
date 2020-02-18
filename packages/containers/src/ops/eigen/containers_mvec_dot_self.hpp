@@ -48,9 +48,6 @@
 #ifndef CONTAINERS_SRC_OPS_EIGEN_MULTI_VECTOR_DOT_SELF_HPP_
 #define CONTAINERS_SRC_OPS_EIGEN_MULTI_VECTOR_DOT_SELF_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
@@ -66,12 +63,14 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::details::traits<result_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::details::traits<result_t>::is_dynamic
     > * = nullptr
   >
 void dot_self(const mvec_t & A, result_t & C)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
+		"Types are not scalar compatible");
+
   const auto nAcols = A.data()->cols();
   // since C is dynamic, I can resize if needed
   if(C.data()->rows() != nAcols || C.data()->cols() != nAcols)
@@ -90,12 +89,14 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::details::traits<result_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::details::traits<result_t>::is_dynamic
     > * = nullptr
   >
 result_t dot_self(const mvec_t & A)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
+		"Types are not scalar compatible");
+
   const auto numVecsA = A.numVectors();
   result_t C(numVecsA, numVecsA);
   dot_self(A, C);

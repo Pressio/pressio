@@ -49,9 +49,6 @@
 #ifndef SOLVERS_LINEAR_BASE_HPP
 #define SOLVERS_LINEAR_BASE_HPP
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../solvers_meta_static_checks.hpp"
-
 namespace pressio{ namespace solvers{
 
 /**

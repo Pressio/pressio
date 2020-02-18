@@ -1,10 +1,6 @@
 
-#include "UTILS_ALL"
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "SOLVERS_NONLINEAR"
-#include "ROM_LSPG_UNSTEADY"
-#include "APPS_UNSTEADYBURGERS1D"
+#include "pressio_rom.hpp"
+#include "pressio_apps.hpp"
 #include "utils_kokkos.hpp"
 
 int main(int argc, char *argv[]){
@@ -15,7 +11,7 @@ int main(int argc, char *argv[]){
   using native_state_t_d = typename fom_t::state_type_d;
   using native_state_t_h = typename fom_t::state_type_h;
   using native_mv_t_d = typename fom_t::mv_d;
-  // using native_mv_t_h = typename fom_t::mv_h;
+  using fom_state_t_d  = pressio::containers::Vector<native_state_t_d>;
 
   // device lspg state type
   using lspg_state_d_t	= pressio::containers::Vector<native_state_t_d>;
@@ -26,7 +22,7 @@ int main(int argc, char *argv[]){
   // using decoder_jac_h_t	= pressio::containers::MultiVector<native_mv_t_h>;
 
   // device decoder type
-  using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t>;
+  using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, lspg_state_d_t, fom_state_t_d>;
 
   std::string checkStr {"PASSED"};
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();

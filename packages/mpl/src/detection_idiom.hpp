@@ -49,9 +49,6 @@
 #ifndef PRESSIO_MPL_DETECTION_IDIOM_HPP 
 #define PRESSIO_MPL_DETECTION_IDIOM_HPP
 
-#include <type_traits>
-#include "void_t.hpp"
-
 namespace pressio{ namespace mpl{
   
 struct nonesuch {

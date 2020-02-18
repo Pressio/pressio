@@ -49,9 +49,6 @@
 #ifndef SOLVERS_SYSTEM_HAS_ALL_NEEDED_RESIDUAL_METHODS_HPP_
 #define SOLVERS_SYSTEM_HAS_ALL_NEEDED_RESIDUAL_METHODS_HPP_
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../../../mpl/src/detection_idiom.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T, typename Arg, typename enable = void>

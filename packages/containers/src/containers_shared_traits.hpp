@@ -49,40 +49,39 @@
 #ifndef CONTAINERS_SHARED_TRAITS_HPP_
 #define CONTAINERS_SHARED_TRAITS_HPP_
 
-#include "containers_wrapped_types_enum.hpp"
-
 namespace pressio{ namespace containers{ namespace details {
 
 template<
-  typename container_T,
-  typename wrapped_T,
-  bool is_vector_t,
-  bool is_matrix_t,
-  bool is_multi_vector_t,
+  typename container_type,
+  typename wrapped_type,
+  bool is_vector_b,
+  bool is_matrix_b,
+  bool is_multi_vector_b,
   WrappedPackageIdentifier wpid,
-  bool is_shared_mem_t,
-  bool is_static_t
+  bool is_shared_mem_b,
+  bool is_static_b
   >
 struct containers_shared_traits{
 
-  using wrapped_t = wrapped_T;
-  using derived_t = container_T;
+  using wrapped_t = wrapped_type;
+  using derived_t = container_type;
 
   static constexpr WrappedPackageIdentifier wrapped_package_identifier = wpid;
 
-  static constexpr bool is_vector = is_vector_t;
-  static constexpr bool is_matrix = is_matrix_t;
-  static constexpr bool is_multi_vector = is_multi_vector_t;
-  static constexpr bool is_shared_mem = is_shared_mem_t;
-  static constexpr bool is_static = is_static_t;
-  static constexpr bool is_dynamic = !is_static_t;
+  static constexpr bool is_vector	= is_vector_b;
+  static constexpr bool is_matrix	= is_matrix_b;
+  static constexpr bool is_multi_vector = is_multi_vector_b;
+  static constexpr bool is_shared_mem	= is_shared_mem_b;
+  static constexpr bool is_distributed	= !is_shared_mem;
+  static constexpr bool is_static	= is_static_b;
+  static constexpr bool is_dynamic	= !is_static;
 };
 
 /// common traits of matrices
-template<bool is_sparse_t>
+template<bool is_sparse_b>
 struct matrix_shared_traits{
-  static constexpr bool is_sparse = is_sparse_t;
-  static constexpr bool is_dense = !is_sparse_t;
+  static constexpr bool is_sparse = is_sparse_b;
+  static constexpr bool is_dense  = !is_sparse_b;
 };
 
 }}} // end namespace pressio::containers::details

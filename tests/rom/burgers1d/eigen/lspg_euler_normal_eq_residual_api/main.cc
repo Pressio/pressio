@@ -1,10 +1,6 @@
 
-#include "UTILS_ALL"
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "SOLVERS_NONLINEAR"
-#include "ROM_LSPG_UNSTEADY"
-#include "APPS_UNSTEADYBURGERS1D"
+#include "pressio_rom.hpp"
+#include "pressio_apps.hpp"
 #include "utils_eigen.hpp"
 
 
@@ -14,12 +10,13 @@ struct EulerLSPGWithResidualApi
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
   using native_dmat_t   = typename fom_t::dense_matrix_type;
+  using fom_state_t  = pressio::containers::Vector<native_state_t>;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
 
   native_state_t fomSol_ = {};
   lspg_state_t yROM_ = {};
@@ -52,8 +49,8 @@ struct EulerLSPGWithResidualApi
     yRef.setConstant(1);
 
     // define ROM state
-    yROM_.resize(romSize);
-    yROM_.putScalar(0.0);
+    ::pressio::containers::ops::resize(yROM_, romSize);
+    ::pressio::containers::ops::fill(yROM_, 0.0);
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::Arbitrary;
@@ -92,7 +89,7 @@ struct EulerLSPGWithResidualApi
     // has to match the FOM solution obtained with euler, same time-step, for 10 steps
     // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
-    for (auto i=0; i<yFomFinal.size(); i++){
+    for (auto i=0; i<yFomFinal.extent(0); i++){
       if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
         checkStr = "FAILED";
     }
@@ -107,12 +104,13 @@ struct EulerLSPGWithVelocityApi
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
   using native_dmat_t   = typename fom_t::dense_matrix_type;
+  using fom_state_t  = pressio::containers::Vector<native_state_t>;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
 
   native_state_t fomSol_ = {};
   lspg_state_t yROM_ = {};
@@ -144,8 +142,8 @@ struct EulerLSPGWithVelocityApi
     yRef.setConstant(1);
 
     // define ROM state
-    yROM_.resize(romSize);
-    yROM_.putScalar(0.0);
+    ::pressio::containers::ops::resize(yROM_, romSize);
+    ::pressio::containers::ops::fill(yROM_, 0.0);
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::Euler;
@@ -180,7 +178,7 @@ struct EulerLSPGWithVelocityApi
     // has to match the FOM solution obtained with euler, same time-step, for 10 steps
     // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
-    for (auto i=0; i<yFomFinal.size(); i++){
+    for (auto i=0; i<yFomFinal.extent(0); i++){
       if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
         checkStr = "FAILED";
     }
@@ -203,7 +201,7 @@ int main(int argc, char *argv[]){
 
   std::cout << "check that gen coords match" << std::endl;
   // check the reconstructed rom state
-  for (auto i=0; i<veloRomSol.size(); i++){
+  for (auto i=0; i<veloRomSol.extent(0); i++){
     std::cout << std::setprecision(14)
   	      << veloRomSol[i]
   	      << " "

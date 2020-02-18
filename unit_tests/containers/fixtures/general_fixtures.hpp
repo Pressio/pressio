@@ -3,7 +3,7 @@
 #define CONTAINERS_FIXTURES_GENERAL_FIXTURES_HPP_
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 // struct containers_general_fixture
 //   : public ::testing::Test{

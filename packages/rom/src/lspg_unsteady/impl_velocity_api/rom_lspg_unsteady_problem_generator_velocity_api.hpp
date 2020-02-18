@@ -108,7 +108,7 @@ private:
    * otherwise we set it to a dummy type and we dont construct it */
   typename std::conditional<
     std::is_void<aux_stepper_t>::value,
-    utils::impl::empty, aux_stepper_t
+    ::pressio::utils::impl::empty, aux_stepper_t
     >::type auxStepperObj_ = {};
 
   // actual stepper object

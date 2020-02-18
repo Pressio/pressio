@@ -49,7 +49,6 @@
 #ifndef CONTAINERS_NATIVE_EIGEN_VECTOR_META_HPP_
 #define CONTAINERS_NATIVE_EIGEN_VECTOR_META_HPP_
 
-#include "../../meta/containers_meta_basic.hpp"
 #include <Eigen/Dense>
 
 namespace pressio{ namespace containers{ namespace meta {

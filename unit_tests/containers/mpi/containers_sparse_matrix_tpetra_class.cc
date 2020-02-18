@@ -1,6 +1,6 @@
 
 #include "tpetra_only_fixtures.hpp"
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 TEST_F(tpetraSparseMatR7MultiVectorR7C4Fixture,
       CrsMatrixWrapperConstructor){

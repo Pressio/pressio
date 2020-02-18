@@ -49,8 +49,6 @@
 #ifndef ODE_IS_STEPPER_ORDER_SETTER_HPP_
 #define ODE_IS_STEPPER_ORDER_SETTER_HPP_
 
-#include "../../ode_types.hpp"
-
 namespace pressio{ namespace ode{ namespace meta { namespace impl{
 
 template <typename T>

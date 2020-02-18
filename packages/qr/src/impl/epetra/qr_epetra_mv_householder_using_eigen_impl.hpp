@@ -50,12 +50,9 @@
 #ifndef QR_EPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 #define QR_EPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 
-#include "../qr_rfactor_solve_impl.hpp"
-
 #include <Eigen/OrderingMethods>
 #include <Eigen/SparseQR>
 #include <Epetra_Import.h>
-
 
 namespace pressio{ namespace qr{ namespace impl{
 
@@ -91,12 +88,12 @@ public:
   }
 
   void computeThinOutOfPlace(matrix_t & A){
-    auto rows = A.globalLength();
-    auto cols = A.globalNumVectors();
-    auto & ArowMap = A.getDataMap();
+    auto rows = A.extent(0);
+    auto cols = A.numVectors();
+    auto & ArowMap = A.data()->Map();
 
     // convert it to replicated eptra matrix
-    Epetra_LocalMap locMap(rows, 0, A.commCRef());
+    Epetra_LocalMap locMap(rows, 0, A.data()->Comm());
     Epetra_Import importer(locMap, ArowMap);
     matrix_t A2(locMap, cols);
     A2.data()->Import(*A.data(), importer, Insert);

@@ -49,8 +49,6 @@
 #ifndef CONTAINERS_IS_CONTAINERS_MATRIX_WRAPPER_HPP_
 #define CONTAINERS_IS_CONTAINERS_MATRIX_WRAPPER_HPP_
 
-#include "../containers_matrix_traits.hpp"
-
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>

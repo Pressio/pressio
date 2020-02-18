@@ -50,8 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
 #include "KokkosBlas2_gemv.hpp"
 
 namespace pressio{ namespace containers{ namespace ops{
@@ -73,17 +71,21 @@ template <
   >
 void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
 				      const operand_t & b,
-				      res_type & C){
+				      res_type & C)
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, operand_t, res_type>::value,
+    "Types are not scalar compatible");
 
   //zero out result
-  C.setZero();
+  ::pressio::containers::ops::set_zero(C);
+
   // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectors();
   // size of vecB
-  assert(size_t(numVecs) == size_t(b.size()));
+  assert(size_t(numVecs) == size_t(b.extent(0)));
 
   // my number of rows
-  const auto myNrows = mvA.localLength();
+  const auto myNrows = mvA.extentLocal(0);
 
   // get the wrapped trilinos tpetra multivector
   auto trilD = mvA.data();
@@ -117,7 +119,10 @@ template <
   >
 void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
 				      const operand_t & b,
-				      res_type & C){
+				      res_type & C)
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, operand_t, res_type>::value,
+    "Types are not scalar compatible");
 
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
   using tpetra_mv_dev_t = typename ::pressio::containers::details::traits<mvec_type>::device_t;
@@ -126,7 +131,7 @@ void _product_tpetra_mv_sharedmem_vec(const mvec_type & mvA,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
   using dev_t  = tpetra_mv_dev_t;
 
-  assert( mvA.globalNumVectors() == b.data()->extent(0) );
+  assert( mvA.numVectors() == b.data()->extent(0) );
 
   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
@@ -156,7 +161,6 @@ template <
   typename res_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     containers::meta::is_vector_wrapper_tpetra<res_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
      containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value or
@@ -173,7 +177,6 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
      containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value or
      containers::meta::is_vector_wrapper_kokkos<vec_type>::value)
@@ -191,7 +194,7 @@ auto product(const mvec_type & mvA, const vec_type & vecB)
   // here, mvA is distrubted, but vecB is NOT.
 
   // the data map of the multivector
-  auto rcpMap = mvA.getRCPDataMap();
+  auto rcpMap = mvA.data()->getMap();
 
   using mvec_traits = typename details::traits<mvec_type>;
   using sc_t = typename mvec_traits::scalar_t;
@@ -243,7 +246,7 @@ auto product(const mvec_type & mvA, const expr_type & b)
                  >
 {
   // the data map of the multivector
-  auto rcpMap = mvA.getRCPDataMap();
+  auto rcpMap = mvA.data()->getMap();
 
   using mvec_traits = typename details::traits<mvec_type>;
   using sc_t = typename mvec_traits::scalar_t;

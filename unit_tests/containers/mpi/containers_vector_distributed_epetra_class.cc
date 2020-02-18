@@ -6,16 +6,15 @@ TEST_F(epetraVectorGlobSize15Fixture, Constructor){
 
   using myvec_t = containers::Vector<Epetra_Vector>;
   myvec_t a( *contigMap_ );
-  ASSERT_EQ( a.globalSize(), numGlobalEntries_ );
-  ASSERT_EQ( a.localSize(), localSize_ );
+  ASSERT_EQ( a.extent(0), numGlobalEntries_ );
+  ASSERT_EQ( a.extentLocal(0), localSize_ );
   myvec_t a2( *x_ );
-  ASSERT_EQ( a2.globalSize(), numGlobalEntries_ );
-  ASSERT_EQ( a2.localSize(), localSize_ );
+  ASSERT_EQ( a2.extent(0), numGlobalEntries_ );
+  ASSERT_EQ( a2.extentLocal(0), localSize_ );
   myvec_t a3( a2 );
-  ASSERT_EQ( a3.globalSize(), numGlobalEntries_ );
-  ASSERT_EQ( a3.localSize(), localSize_ );
+  ASSERT_EQ( a3.extent(0), numGlobalEntries_ );
+  ASSERT_EQ( a3.extentLocal(0), localSize_ );
 }
-
 
 // TEST_F(epetraVectorGlobSize15Fixture,
 //        QueryWrappedData)
@@ -31,7 +30,6 @@ TEST_F(epetraVectorGlobSize15Fixture, Constructor){
 //   				 const Epetra_Vector * >();
 // }
 
-
 TEST_F(epetraVectorGlobSize15Fixture,
        SubscriptOperator)
 {
@@ -41,10 +39,10 @@ TEST_F(epetraVectorGlobSize15Fixture,
 
   x_->PutScalar(11.2);
   myvec_t v1( *x_ );
-  for (int i=0; i<v1.localSize(); i++){
+  for (int i=0; i<v1.extentLocal(0); i++){
     v1[i] = 11.2;
   }
-  for (int i=0; i<v1.localSize(); i++){
+  for (int i=0; i<v1.extentLocal(0); i++){
     EXPECT_DOUBLE_EQ( v1[i], (*x_)[i] );
   }
   v1[3] = 56.;
@@ -60,7 +58,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   myvec_t v1( *contigMap_ );
 //   v1.putScalar(43.3);
 
-//   for (int i=0; i<v1.localSize(); i++){
+//   for (int i=0; i<v1.extentLocal(0); i++){
 //     EXPECT_DOUBLE_EQ( v1[i], 43.3 );
 //   }
 // }
@@ -78,7 +76,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   v2.putScalar(1.0);
 
 //   myvec_t v3 = v1 + v2;
-//   for (int i=0; i<v3.localSize(); i++){
+//   for (int i=0; i<v3.extentLocal(0); i++){
 //     EXPECT_DOUBLE_EQ( v3[i], 4.3 + rankD );
 //   }
 //   //missing test for a case where vectors are incompatible
@@ -97,7 +95,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   v2.putScalar(1.0);
 
 //   myvec_t v3 = v1 - v2;
-//   for (int i=0; i<v3.localSize(); i++){
+//   for (int i=0; i<v3.extentLocal(0); i++){
 //     EXPECT_DOUBLE_EQ( v3[i], 2.3 + rankD );
 //   }
 //   //missing test for a case where vectors are incompatible
@@ -117,7 +115,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   v2.putScalar(1.0);
 
 //   myvec_t v3 = v1 * v2;
-//   for (int i=0; i<v3.localSize(); i++){
+//   for (int i=0; i<v3.extentLocal(0); i++){
 //     if (rank_==0)
 //       EXPECT_DOUBLE_EQ( v3[i], 3. );
 //     if (rank_==1)
@@ -141,7 +139,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   v2.putScalar(1.0);
 
 //   v1 += v2;
-//   for (int i=0; i<v1.localSize(); i++){
+//   for (int i=0; i<v1.extentLocal(0); i++){
 //     EXPECT_DOUBLE_EQ( v1[i], 4. );
 //   }
 //   //missing test for a case where vectors are incompatible
@@ -160,7 +158,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   v2.putScalar(1.0);
 
 //   v1 -= v2;
-//   for (int i=0; i<v1.localSize(); i++){
+//   for (int i=0; i<v1.extentLocal(0); i++){
 //     EXPECT_DOUBLE_EQ( v1[i], 2. );
 //   }
 //   //missing test for a case where vectors are incompatible
@@ -175,7 +173,7 @@ TEST_F(epetraVectorGlobSize15Fixture,
 //   myvec_t v1( *contigMap_ );
 //   v1.setZero();
 
-//   for (int i=0; i<v1.localSize(); i++){
+//   for (int i=0; i<v1.extentLocal(0); i++){
 //     EXPECT_NEAR( v1[i], 0.0, 1e-12 );
 //   }
 // }

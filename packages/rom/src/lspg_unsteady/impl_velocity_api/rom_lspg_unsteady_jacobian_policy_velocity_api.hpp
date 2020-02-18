@@ -49,9 +49,6 @@
 #ifndef ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_VELOCITY_api_HPP_
 #define ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_VELOCITY_api_HPP_
 
-#include "../../rom_fwd.hpp"
-#include "../../rom_static_container_fom_states.hpp"
-#include "../../../../ode/src/implicit/policies/base/ode_jacobian_policy_base.hpp"
 #include "rom_lspg_time_discrete_jacobian.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
@@ -63,14 +60,7 @@ template<
   typename decoder_type,
   typename ud_ops
   >
-class JacobianPolicyVelocityApi
-  : public ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<
-	JacobianPolicyVelocityApi<fom_states_data_type,
-			   apply_jac_return_type,
-			   fom_apply_jac_policy,
-			   decoder_type,
-			   ud_ops>>,
-    protected fom_apply_jac_policy
+class JacobianPolicyVelocityApi : protected fom_apply_jac_policy
 {
 
 public:
@@ -79,8 +69,6 @@ public:
 				    fom_apply_jac_policy,
 				    decoder_type,
 				    ud_ops>;
-
-  friend ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;

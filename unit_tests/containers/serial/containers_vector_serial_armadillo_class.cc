@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_VECTOR"
+#include "pressio_containers.hpp"
 
 TEST(containers_vector_serial_armadillo_class, Constructor)
 {

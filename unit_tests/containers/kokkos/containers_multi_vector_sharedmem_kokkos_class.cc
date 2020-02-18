@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_VECTOR"
-#include "CONTAINERS_MULTI_VECTOR"
+#include "pressio_containers.hpp"
 
 template <typename T>
 struct InitView {

@@ -49,8 +49,6 @@
 #ifndef SOLVERS_CONVERGENCE_TAGS_HPP_
 #define SOLVERS_CONVERGENCE_TAGS_HPP_
 
-#include "solvers_norm_tags.hpp"
-
 namespace pressio{ namespace solvers{ namespace iterative{
 
 namespace converged_when{

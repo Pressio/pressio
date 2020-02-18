@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "ROM_LSPG_UNSTEADY"
+#include "pressio_rom.hpp"
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
 #include "Epetra_IntVector.h"
@@ -12,9 +12,11 @@
 using namespace pressio;
 using rom_state_t	= containers::Vector<Eigen::VectorXd>;
 using matrix_w_t	= containers::MultiVector<Epetra_MultiVector>;
-using decoder_t		= rom::LinearDecoder<matrix_w_t>;
-using fom_state_w_t	= containers::Vector<Epetra_Vector>;
-using fom_state_rec_t	= rom::FomStateReconstructor<fom_state_w_t,decoder_t>;
+using fom_state_w_t = containers::Vector<Epetra_Vector>;
+
+using decoder_t		= rom::LinearDecoder<matrix_w_t, rom_state_t, fom_state_w_t>;
+
+using fom_state_rec_t	= rom::FomStateReconstructor<double, fom_state_w_t,decoder_t>;
 using fom_states	= rom::FomStatesStaticContainer<fom_state_w_t, 1, fom_state_rec_t>;
 
 struct mytest
@@ -26,13 +28,13 @@ struct mytest
     : MyStates{recObj, y0Fom}
   {
     rom_state_t rY(2);
-    rY.putScalar(1.2);
+    pressio::containers::ops::fill(rY, 1.2);
     MyStates.reconstructCurrentFomState(rY);
   }
 
   void check(){
     const auto & yfR = MyStates.getCRefToCurrentFomState();
-    const auto sz = yfR.localSize();
+    const auto sz = yfR.extentLocal(0);
     for (auto i=0; i<sz; i++)
       EXPECT_DOUBLE_EQ( yfR[i], 2.4);
   }

@@ -49,11 +49,6 @@
 #ifndef ODE_IS_LEGITIMATE_MODEL_FOR_EXPLICIT_ODE_HPP_
 #define ODE_IS_LEGITIMATE_MODEL_FOR_EXPLICIT_ODE_HPP_
 
-#include "../../../../containers/src/meta/containers_meta_has_scalar_typedef.hpp"
-#include "../../meta/ode_has_state_typedef.hpp"
-#include "../../meta/ode_has_velocity_typedef.hpp"
-#include "../../meta/ode_model_has_all_needed_velocity_methods.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename model_type, typename enable = void>

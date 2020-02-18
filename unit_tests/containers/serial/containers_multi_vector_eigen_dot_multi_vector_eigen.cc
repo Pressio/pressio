@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 namespace{
   using eigdmat_t = Eigen::MatrixXd;
@@ -30,8 +30,8 @@ namespace{
   template <typename matrix_t>
   void doDot(const myMV_t & A, const myMV_t & B){
     auto C = pressio::containers::ops::dot<myMV_t, matrix_t>(A,B);
-    ASSERT_EQ(C.rows(), 3);
-    ASSERT_EQ(C.cols(), 4);
+    ASSERT_EQ(C.extent(0), 3);
+    ASSERT_EQ(C.extent(1), 4);
 
     // first row
     EXPECT_DOUBLE_EQ( C(0,0), 11.);
@@ -52,8 +52,8 @@ namespace{
     // subspan a block of size (3 x 4) so that we can store A^T B
     auto block = pressio::containers::subspan(C, std::make_pair(10, 13), std::make_pair(15,19));
     pressio::containers::ops::dot(A,B,block);
-    ASSERT_EQ(block.rows(), 3);
-    ASSERT_EQ(block.cols(), 4);
+    ASSERT_EQ(block.extent(0), 3);
+    ASSERT_EQ(block.extent(1), 4);
     EXPECT_DOUBLE_EQ( block(0,0), 11.);
     EXPECT_DOUBLE_EQ( block(0,1), 8.);
     EXPECT_DOUBLE_EQ( block(0,2), 6.);
@@ -90,7 +90,7 @@ TEST(containers_multi_vector_eigen, mv_dot_mvEigen_ColMajorMatrix_subspanStore){
 
   // make a matrix bit enough
   mat_t C(20, 25);
-  C.setZero();
+  ::pressio::containers::ops::set_zero(C);
 
   // do operation on subspan of C from rows (10,13) and cols (15,19)
   doDot(d.A,d.B,C);

@@ -48,9 +48,6 @@
 #ifndef CONTAINERS_SRC_OPS_EIGEN_VECTOR_DOT_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_EIGEN_VECTOR_DOT_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
@@ -68,7 +65,7 @@ void dot(const vec_type & vecA,
 	 const vec_type & vecB,
 	 typename details::traits<vec_type>::scalar_t & result)
 {
-  assert(vecA.size() == vecB.size());
+  assert(vecA.extent(0) == vecB.extent(0));
   result = vecA.data()->dot(*vecB.data());
 }
 

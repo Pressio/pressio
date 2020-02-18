@@ -49,8 +49,6 @@
 #ifndef ODE_META_HAS_RESIDUAL_TYPEDEF_HPP_
 #define ODE_META_HAS_RESIDUAL_TYPEDEF_HPP_
 
-#include <type_traits>
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template <typename T, typename enable = void>

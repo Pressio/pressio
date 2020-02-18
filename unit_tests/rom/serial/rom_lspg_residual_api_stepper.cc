@@ -1,8 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "ROM_LSPG_UNSTEADY"
+#include "pressio_rom.hpp"
 
 struct ValidApp{
 
@@ -60,10 +58,13 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
   static_assert( !rom::meta::model_meets_velocity_api_for_unsteady_lspg<app_t>::value,"");
 
   using scalar_t	= typename app_t::scalar_type;
+  using native_state_t  = typename app_t::state_type;
+  using fom_state_t  = pressio::containers::Vector<native_state_t>;
+
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
   using decoder_jac_t	= pressio::containers::MultiVector<typename app_t::dense_matrix_type>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
 
   app_t appobj;
   decoder_jac_t phi(Eigen::MatrixXd(appobj.numDof_,3));

@@ -48,9 +48,6 @@
 #ifndef CONTAINERS_SRC_OPS_EIGEN_MULTI_VECTOR_DO_UPDATE_HPP_
 #define CONTAINERS_SRC_OPS_EIGEN_MULTI_VECTOR_DO_UPDATE_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 //----------------------------------------------------------------------
@@ -67,10 +64,11 @@ template<
 void do_update(T & mv, const scalar_t &a,
 	       const T & mv1, const scalar_t &b)
 {
-  assert( mv.numVectors() == mv1.numVectors() );
-  assert( mv.length() == mv1.length() );
-  for (decltype(mv.length()) i=0; i<mv.length(); i++){
-    for (decltype(mv.numVectors()) j=0; j<mv.numVectors(); j++)
+  assert( mv.extent(0) == mv1.extent(0) );
+  assert( mv.extent(1) == mv1.extent(1) );
+
+  for (decltype(mv.extent(0)) i=0; i<mv.extent(0); i++){
+    for (decltype(mv.extent(1)) j=0; j<mv.extent(1); j++)
       mv(i,j) = a*mv(i,j) + b*mv1(i,j);
   }
 }
@@ -84,10 +82,10 @@ template<
   >
 void do_update(T & mv, const T & mv1, const scalar_t & b)
 {
-  assert( mv.numVectors() == mv1.numVectors() );
-  assert( mv.lenght() == mv1.length() );
-  for (decltype(mv.length()) i=0; i<mv.length(); i++){
-    for (decltype(mv.numVectors()) j=0; j<mv.numVectors(); j++)
+  assert( mv.extent(0) == mv1.extent(0) );
+  assert( mv.extent(1) == mv1.extent(1) );
+  for (decltype(mv.extent(0)) i=0; i<mv.extent(0); i++){
+    for (decltype(mv.extent(1)) j=0; j<mv.extent(1); j++)
       mv(i,j) = b*mv1(i,j);
   }
 }

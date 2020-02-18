@@ -49,12 +49,6 @@
 #ifndef SOLVERS_GN_QR_SPECIALIZATION_PICKER_HPP_
 #define SOLVERS_GN_QR_SPECIALIZATION_PICKER_HPP_
 
-#include "../../solvers_fwd.hpp"
-#include "../../meta/solvers_is_legitimate_system_for_gauss_newton.hpp"
-#include "../../meta/solvers_is_legitimate_qr_solver_for_gn_qr.hpp"
-#include "../../meta/solvers_is_legitimate_line_search_tag.hpp"
-#include "../../meta/solvers_is_legitimate_convergence_tag.hpp"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 template <typename ... Args>

@@ -49,23 +49,6 @@
 #ifndef CONTAINERS_VECTOR_VECTOR_TRAITS_HPP_
 #define CONTAINERS_VECTOR_VECTOR_TRAITS_HPP_
 
-#include "../containers_fwd.hpp"
-#include "../containers_shared_traits.hpp"
-#include "./meta/containers_native_armadillo_vector_meta.hpp"
-#include "./meta/containers_native_blaze_vector_meta.hpp"
-#include "./meta/containers_native_eigen_vector_meta.hpp"
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./meta/containers_native_epetra_vector_meta.hpp"
-#include "./meta/containers_native_tpetra_vector_meta.hpp"
-#include "./meta/containers_native_teuchos_vector_meta.hpp"
-#include "./meta/containers_native_tpetra_block_vector_meta.hpp"
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./meta/containers_native_kokkos_vector_meta.hpp"
-#endif
-
 namespace pressio{ namespace containers{ namespace details{
 
 /********************************
@@ -105,6 +88,9 @@ struct traits<
 
   using wrapped_t = wrapped_type;
   using derived_t = Vector<wrapped_t>;
+  using scalar_t  = typename wrapped_type::value_type;
+  using value_t   = typename wrapped_type::value_type;
+  using size_t    = typename wrapped_type::size_type;
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Arbitrary;
@@ -199,8 +185,8 @@ struct traits<Vector<wrapped_type,
 
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
-  using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>, scalar_t>;
-  using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>, scalar_t>;
+  using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
+  using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;
 };
 
 
@@ -229,8 +215,8 @@ struct traits<Vector<wrapped_type,
 
   using scalar_t	 = typename wrapped_type::Scalar;
   using ordinal_t	 = int;
-  using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>, scalar_t>;
-  using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>, scalar_t>;
+  using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
+  using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;
 };
 
 
@@ -462,6 +448,8 @@ struct traits<Vector<wrapped_type,
   using memory_traits	   = typename wrapped_type::traits::memory_traits;
   using host_mirror_space  = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t      = typename wrapped_type::host_mirror_type;
+  using span_ret_t	   = expressions::SpanExpr<Vector<wrapped_type>>;
+  using span_const_ret_t   = expressions::SpanExpr<const Vector<wrapped_type>>;
 
   static constexpr bool has_host_execution_space =
     (false

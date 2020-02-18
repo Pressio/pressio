@@ -49,19 +49,31 @@
 #ifndef ROM_DECODER_BASE_HPP_
 #define ROM_DECODER_BASE_HPP_
 
-#include "../rom_ConfigDefs.hpp"
-
 namespace pressio{ namespace rom{
 
-template <typename derived_type, typename jac_matrix_type>
+template <
+  typename derived_type,
+  typename jac_matrix_type,
+  typename rom_state_type,
+  typename fom_state_type
+  >
 struct DecoderBase
 {
-  using this_t = DecoderBase<derived_type, jac_matrix_type>;
+  using this_t = DecoderBase<derived_type,
+			     jac_matrix_type,
+			     rom_state_type,
+			     fom_state_type>;
 
-  template <typename operand_t, typename result_t>
-  void applyMapping(const operand_t & operandObj,
-		    result_t & result) const  {
-    static_cast<const derived_type &>(*this).applyMappingImpl(operandObj, result);
+  // template <typename operand_t, typename result_t>
+  // void applyMapping(const operand_t & operandObj,
+  // 		    result_t & result) const  {
+  //   static_cast<const derived_type &>(*this).applyMappingImpl(operandObj, result);
+  // }
+
+  template <typename operand_t>
+  void applyMapping(const operand_t & operandObj, fom_state_type & result) const
+  {
+    static_cast<const derived_type &>(*this).template applyMappingImpl<operand_t>(operandObj, result);
   }
 
   const jac_matrix_type & getReferenceToJacobian() const {

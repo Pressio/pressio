@@ -49,9 +49,6 @@
 #ifndef ODE_POLICIES_STANDARD_IMPLICIT_RESIDUAL_STANDARD_POLICY_FOR_ARBITRARY_STEPPER_HPP_
 #define ODE_POLICIES_STANDARD_IMPLICIT_RESIDUAL_STANDARD_POLICY_FOR_ARBITRARY_STEPPER_HPP_
 
-#include "../../../ode_fwd.hpp"
-#include "../base/ode_implicit_residual_policy_base.hpp"
-
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<
@@ -68,13 +65,9 @@ class ResidualStandardPolicyForArbitraryStepper<
     containers::meta::is_wrapper<residual_type>::value
     >
   >
-  : public ResidualPolicyBase<
-  ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>>
 {
 
-  using this_t
-  = ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>;
-  friend ResidualPolicyBase<this_t>;
+  using this_t = ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>;
 
 public:
   ResidualStandardPolicyForArbitraryStepper() = default;

@@ -49,9 +49,6 @@
 #ifndef ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
 #define ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
 
-#include "../../../../ode/src/ode_ConfigDefs.hpp"
-#include "../../../../ode/src/implicit/ode_implicit_constants.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 
@@ -172,7 +169,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const decoder_jac_type & phi){
 
   assert( jphi.numVectors() == phi.numVectors() );
-  assert( jphi.length() == phi.length() );
+  assert( jphi.extent(0) == phi.extent(0) );
 
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
@@ -236,26 +233,26 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
   using GO_t = typename containers::details::traits<lspg_matrix_type>::global_ordinal_t;
 
   //get row map of phi
-  const auto & phi_map = phi.getDataMap();
+  const auto & phi_map = phi.data()->Map();
   // get my global elements
-  std::vector<GO_t> gIDphi( phi.localLength() );
+  std::vector<GO_t> gIDphi( phi.extentLocal(0) );
   phi_map.MyGlobalElements( gIDphi.data() );
 
   // get map of jphi
-  const auto & jphi_map = jphi.getDataMap();
+  const auto & jphi_map = jphi.data()->Map();
   // get global elements
-  std::vector<GO_t> gIDjphi( jphi.localLength() );
+  std::vector<GO_t> gIDjphi( jphi.extentLocal(0) );
   jphi_map.MyGlobalElements( gIDjphi.data() );
 
   // prefactor (f) multiplying f*dt*J*phi
   constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
 
   //loop over elements of jphi
-  for (auto i=0; i<jphi.localLength(); i++){
+  for (auto i=0; i<jphi.extentLocal(0); i++){
     // ask the phi map what is the local index corresponding
     // to the global index we are handling
     auto lid = phi_map.LID(gIDjphi[i]);
-    for (auto j=0; j<jphi.globalNumVectors(); j++)
+    for (auto j=0; j<jphi.numVectors(); j++)
       jphi(i,j) = phi(lid,j) + prefactor*dt*jphi(i,j);
   }
 }

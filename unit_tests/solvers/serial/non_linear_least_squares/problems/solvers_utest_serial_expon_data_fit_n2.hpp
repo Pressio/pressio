@@ -2,8 +2,7 @@
 #if not defined SOLVERS_UTEST_SERIAL_EXPONENTIAL_DATA_FIT_N2_HPP_
 #define SOLVERS_UTEST_SERIAL_EXPONENTIAL_DATA_FIT_N2_HPP_
 
-#include "CONTAINERS_VECTOR"
-#include "CONTAINERS_MATRIX"
+#include "pressio_solvers.hpp"
 
 namespace pressio{ namespace solvers{ namespace test{
 

@@ -49,9 +49,6 @@
 #ifndef ODE_IMPLICIT_POLICIES_IS_LEGITIMATE_IMPLICIT_RESIDUAL_POLICY_HPP_
 #define ODE_IMPLICIT_POLICIES_IS_LEGITIMATE_IMPLICIT_RESIDUAL_POLICY_HPP_
 
-#include "../base/ode_implicit_residual_policy_base.hpp"
-#include "../../../ode_aux_states_container.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<

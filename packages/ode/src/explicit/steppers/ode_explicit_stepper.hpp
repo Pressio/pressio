@@ -49,7 +49,6 @@
 #ifndef ODE_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_HPP_
 #define ODE_EXPLICIT_STEPPERS_EXPLICIT_STEPPER_HPP_
 
-#include "../../ode_fwd.hpp"
 #include "./impl/ode_explicit_euler_stepper_impl.hpp"
 #include "./impl/ode_explicit_runge_kutta4_stepper_impl.hpp"
 
@@ -67,7 +66,7 @@ class Stepper : public StepperBase<
 
   using this_t		= Stepper<tag, state_type, Args...>;
   using base_t		= StepperBase<this_t>;
-  // need to friend base to allow it to access the () operator below
+  // need to friend base to allow it to access the private methods below
   friend base_t;
 
   using mytraits	= ::pressio::ode::details::traits<this_t>;
@@ -80,9 +79,27 @@ class Stepper : public StepperBase<
   using impl_class_t	= typename mytraits::impl_t;
   impl_class_t myImpl_  = {};
 
+  static_assert( meta::is_legitimate_explicit_state_type<state_type>::value,
+  "OOPS: STATE_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
+
+  static_assert( meta::is_legitimate_explicit_velocity_type<velocity_type>::value,
+  "OOPS: VELOCITY_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
+
+  static_assert( meta::is_legitimate_explicit_velocity_policy<policy_t>::value,
+  "VELOCITY_POLICY NOT ADMISSIBLE: MAYBE NOT INHERITING FROM EXPLICIT POLICY BASE");
+
 public:
   Stepper()  = delete;
   ~Stepper() = default;
+
+  // copy cnstr
+  Stepper(const Stepper & other)  = delete;
+  // copy assignment
+  Stepper & operator=(const Stepper & other)  = delete;
+  // move cnstr
+  Stepper(Stepper && other)  = delete;
+  // move assign
+  Stepper & operator=(Stepper && other)  = delete;
 
   // this is enabled all the time
   Stepper(state_type const	  & stateIn0,
@@ -119,7 +136,7 @@ private:
   // the compute method is private because we want users to use
   // the () operator in the base, which in turn calls compute here
   template<typename ... Args2>
-  void compute(Args2 && ... args){
+  void doStep(Args2 && ... args){
     myImpl_.doStep( std::forward<Args2>(args)... );
   }
 

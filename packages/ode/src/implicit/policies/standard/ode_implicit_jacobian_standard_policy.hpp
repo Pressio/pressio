@@ -49,12 +49,6 @@
 #ifndef ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
 #define ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
 
-#include "../../../ode_fwd.hpp"
-#include "../base/ode_jacobian_policy_base.hpp"
-#include "../../ode_time_discrete_jacobian.hpp"
-#include "../../meta/ode_is_legitimate_implicit_state_type.hpp"
-#include "../../meta/ode_is_legitimate_implicit_jacobian_type.hpp"
-
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<
@@ -70,12 +64,10 @@ class JacobianStandardPolicy<
     containers::meta::is_wrapper<state_type>::value and
     containers::meta::is_wrapper<jacobian_type>::value
     >
-  > : public JacobianPolicyBase<JacobianStandardPolicy<
-    state_type, system_type, jacobian_type> >
+  >
 {
 
   using this_t = JacobianStandardPolicy<state_type, system_type, jacobian_type>;
-  friend JacobianPolicyBase<this_t>;
 
 public:
   JacobianStandardPolicy() = default;

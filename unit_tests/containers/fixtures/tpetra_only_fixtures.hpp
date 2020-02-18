@@ -6,7 +6,7 @@
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 #include <Teuchos_CommHelpers.hpp>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 #include <Tpetra_Map_decl.hpp>
 
 /* the tpetra data structures below are

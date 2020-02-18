@@ -14,13 +14,13 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   mvec_t MV(*mv_);
   vec_t b(*x_);
 
-  EXPECT_EQ( MV.globalNumVectors(), 4 );
-  EXPECT_EQ( MV.localNumVectors(), 4 );
-  EXPECT_EQ( MV.globalLength(), 9 );
-  EXPECT_EQ( MV.localLength(), 3);
+  EXPECT_EQ( MV.numVectors(), 4 );
+  EXPECT_EQ( MV.numVectorsLocal(), 4 );
+  EXPECT_EQ( MV.extent(0), 9 );
+  EXPECT_EQ( MV.extentLocal(0), 3);
 
   for (int i=0; i<localSize_; i++)
-    for (int j=0; j<MV.globalNumVectors(); j++)
+    for (int j=0; j<MV.numVectors(); j++)
       EXPECT_NEAR( 0.0, MV(i,j), 1e-12);
 
   if(rank_==0){
@@ -51,9 +51,9 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   //MV dot b = c2
   using natvec_t2 = Eigen::VectorXd;
   containers::Vector<natvec_t2> c2;
-  c2.resize(4);
+  c2.data()->resize(4);
   containers::ops::dot(MV, b, c2);
-  EXPECT_EQ( c2.size(), 4);
+  EXPECT_EQ( c2.extent(0), 4);
   EXPECT_NEAR(c2[0], 4.4, 1e-12);
   EXPECT_NEAR(c2[1], 5.2, 1e-12);
   EXPECT_NEAR(c2[2], 3., 1e-12);
@@ -64,7 +64,7 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   using natvec_t3 = Teuchos::SerialDenseVector<int, double>;
   containers::Vector<natvec_t3> c3(4);
   containers::ops::dot(MV, b, c3);
-  EXPECT_EQ( c3.size(), 4);
+  EXPECT_EQ( c3.extent(0), 4);
   EXPECT_NEAR(c3[0], 4.4, 1e-12);
   EXPECT_NEAR(c3[1], 5.2, 1e-12);
   EXPECT_NEAR(c3[2], 3., 1e-12);

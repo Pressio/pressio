@@ -49,9 +49,6 @@
 #ifndef SOLVERS_GAUSS_NEWTON_CONSERVATIVE_HPP
 #define SOLVERS_GAUSS_NEWTON_CONSERVATIVE_HPP
 
-#include "../../solvers_fwd.hpp"
-#include "../../base/solvers_nonlinear_base.hpp"
-#include "../../base/solvers_iterative_base.hpp"
 #include "./solvers_gauss_newton_normal_eq_conservative_impl.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace hacked{
@@ -152,7 +149,7 @@ public:
     jTcbarT_.resize( jac_.globalNumVectors(), nlambda );
     cbarJ_.resize( nlambda, jac_.globalNumVectors() );
     zero_.resize( nlambda, nlambda);
-    zero_.setZero();
+    ::pressio::containers::ops::set_zero(zero_);
 
     jTr2_.resize(y.size());
     cbarR_.resize(nlambda);

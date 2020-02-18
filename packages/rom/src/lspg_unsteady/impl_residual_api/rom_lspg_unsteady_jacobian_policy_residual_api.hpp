@@ -46,12 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_RESIDUAL_api_HPP_
-#define ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_RESIDUAL_api_HPP_
-
-#include "../../rom_fwd.hpp"
-#include "../../../../ode/src/implicit/policies/base/ode_implicit_residual_policy_base.hpp"
-#include "../../rom_static_container_fom_states.hpp"
+#ifndef ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_RESIDUAL_API_HPP_
+#define ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_RESIDUAL_API_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
@@ -61,13 +57,7 @@ template<
   typename fom_querier_policy,
   typename decoder_type
   >
-class JacobianPolicyResidualApi
-  : public ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<
-	JacobianPolicyResidualApi<fom_states_data_type,
-			   apply_jac_return_type,
-			   fom_querier_policy,
-			   decoder_type>>,
-    protected fom_querier_policy
+class JacobianPolicyResidualApi : protected fom_querier_policy
 {
 
 public:
@@ -75,8 +65,6 @@ public:
 				    apply_jac_return_type,
 				    fom_querier_policy,
 				    decoder_type>;
-
-  friend ::pressio::ode::implicitmethods::policy::JacobianPolicyBase<this_t>;
 
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;

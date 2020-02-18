@@ -49,8 +49,6 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_HELPERS_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_TRAITS_HELPERS_HPP_
 
-#include "../../ode_fwd.hpp"
-
 namespace pressio{ namespace ode{ namespace details{ namespace impl{
 
 // these will be definitely improved... when I have time

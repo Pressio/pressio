@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
+#include "pressio_ode.hpp"
 
 TEST(ode_implicit, staticCheckDtSetter){
   using namespace pressio;

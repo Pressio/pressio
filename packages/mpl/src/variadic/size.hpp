@@ -13,9 +13,6 @@
 #ifndef PRESSIO_MPL_VARIADIC_SIZE_HPP
 #define PRESSIO_MPL_VARIADIC_SIZE_HPP
 
-#include <type_traits>
-#include <cstddef>
-
 namespace pressio{ namespace mpl{ namespace variadic {
 
 /**

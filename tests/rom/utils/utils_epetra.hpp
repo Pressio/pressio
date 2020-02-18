@@ -3,8 +3,7 @@
 #if not defined ROM_TEST_UTILS_EPETRA_HPP_
 #define ROM_TEST_UTILS_EPETRA_HPP_
 
-#include "UTILS_ALL"
-#include "CONTAINERS_ALL"
+#include "pressio_utils.hpp"
 #include "Epetra_MpiComm.h"
 
 namespace pressio{ namespace rom{ namespace test{ namespace epetra{
@@ -26,7 +25,7 @@ auto convertFromVVecToMultiVec(
   for (int i=0; i<nMyElem; i++){
     int gi = myGel[i];
     for (int j=0; j<ncols; j++)
-      ADW.replaceGlobalValue(gi, j, A0[gi][j]);
+      ADW.data()->ReplaceGlobalValue(gi, j, A0[gi][j]);
   }
   return ADW;
 }

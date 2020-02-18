@@ -49,9 +49,6 @@
 #ifndef CONTAINERS_NATIVE_MATRIX_STATIC_ASSERTS_HPP_
 #define CONTAINERS_NATIVE_MATRIX_STATIC_ASSERTS_HPP_
 
-#include "containers_native_eigen_matrix_meta.hpp"
-#include "containers_native_trilinos_matrix_meta.hpp"
-
 namespace pressio{ namespace containers{
 
 #define STATIC_ASSERT_IS_MATRIX_DENSE_SHAREDMEM_EIGEN(TYPE) \

@@ -1,8 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_MATRIX"
-#include "CONTAINERS_VECTOR"
-#include "SOLVERS_LINEAR"
+#include "pressio_solvers.hpp"
 
 TEST(solvers_linear_iterative, LSCGSparseEigen){
   // Namespaces

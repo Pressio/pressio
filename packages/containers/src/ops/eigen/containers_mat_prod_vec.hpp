@@ -48,9 +48,6 @@
 #ifndef CONTAINERS_SRC_OPS_EIGEN_MAT_PROD_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_EIGEN_MAT_PROD_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "containers_eigen_ops_helper_impl.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
@@ -70,11 +67,13 @@ template <
   ::pressio::mpl::enable_if_t<
     containers::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
     containers::meta::is_vector_wrapper_eigen<b_t>::value &&
-    containers::meta::is_vector_wrapper_eigen<c_t>::value &&
-    containers::meta::wrapper_triplet_have_same_scalar<A_t,b_t,c_t>::value
+    containers::meta::is_vector_wrapper_eigen<c_t>::value
     > * = nullptr
  >
 void product(const A_t & A, const b_t & b, c_t & c){
+
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
+		"Types are not scalar compatible");
 
   assert(A.cols() == b.size());
   assert(c.size() == A.rows());
@@ -93,12 +92,14 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
     ::pressio::containers::meta::is_vector_wrapper_eigen<b_t>::value &&
-    ::pressio::containers::details::traits<b_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<A_t, b_t>::value
+    ::pressio::containers::details::traits<b_t>::is_dynamic
     > * = nullptr
   >
 b_t product(const A_t & A, const b_t & b)
 {
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t>::value,
+		"Types are not scalar compatible");
+
   b_t c(A.rows());
   product(A,b,c);
   return c;
@@ -121,14 +122,16 @@ template <
     containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
     containers::meta::is_vector_wrapper_eigen<b_t>::value and
     containers::meta::is_vector_wrapper_eigen<c_t>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<A_t, b_t, c_t>::value and
     transposeA == false
     > * = nullptr
   >
 void product(const A_t & A, const b_t & b, c_t & c){
 
-  assert(A.cols() == b.size());
-  assert(c.size() == A.rows());
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
+		"Types are not scalar compatible");
+
+  assert(A.extent(1) == b.extent(0));
+  assert(A.extent(0) == c.extent(0));
   (*c.data()) = (*A.data()) * (*b.data());
 }
 
@@ -148,14 +151,16 @@ template <
     containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
     containers::meta::is_vector_wrapper_eigen<b_t>::value and
     containers::meta::is_vector_wrapper_eigen<c_t>::value and
-    containers::meta::wrapper_triplet_have_same_scalar<A_t, b_t, c_t>::value and
     transposeA == true
     > * = nullptr
   >
 void product(const A_t & A, const b_t & b, c_t & c){
 
-  assert(A.rows() == b.size());
-  assert(c.size() == A.cols());
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
+		"Types are not scalar compatible");
+
+  assert(A.extent(0) == b.extent(0));
+  assert(A.extent(1) == c.extent(0));
   (*c.data()) = (*A.data()).transpose() * (*b.data());
 }
 
@@ -172,13 +177,15 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
     ::pressio::containers::meta::is_vector_wrapper_eigen<b_t>::value and
-    ::pressio::containers::details::traits<b_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<A_t,b_t>::value
+    ::pressio::containers::details::traits<b_t>::is_dynamic
     > * = nullptr
    >
 b_t product(const A_t & A, const b_t & b)
 {
-  b_t c(A.rows());
+  static_assert(containers::meta::are_scalar_compatible<A_t, b_t>::value,
+		"Types are not scalar compatible");
+
+  b_t c(A.extent(0));
   product(A,b,c);
   return c;
 }

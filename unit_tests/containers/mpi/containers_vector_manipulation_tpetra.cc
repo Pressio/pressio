@@ -66,15 +66,15 @@ TEST(tpetraVectors, loopedVectorManipulation){
   using myvec_t = pressio::containers::Vector<nat_v_t>;
   // using myvec_dev_t = typename pressio::containers::details::traits<myvec_t>::device_t;
   // containers::Vector<> constr does a deep-copy (for now)
-  myvec_t myx(x);
-  myx.putScalar( pressio::utils::constants::zero<ST>() );
+  myvec_t myx(x);  
+  pressio::containers::ops::fill( myx, pressio::utils::constants::zero<ST>() );
 
   // modify the host (and then sync)
   myx.data()->modify<Kokkos::HostSpace>();
   auto vd = myx.data()->getLocalView<Kokkos::HostSpace>();
 
   // the # of entries I own
-  auto myN = myx.localSize();
+  auto myN = myx.extentLocal(0);
 
   for (auto i=0; i<myN; i++){
     vd(i,0) = 1.1;

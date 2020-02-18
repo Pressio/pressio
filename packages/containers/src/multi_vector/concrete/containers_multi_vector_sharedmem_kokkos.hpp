@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_MULTI_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_MULTI_VECTOR_CONCRETE_VECTOR_SHAREDMEM_KOKKOS_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
-#include "../base/containers_multi_vector_sharedmem_base.hpp"
-
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
@@ -63,6 +60,7 @@ class MultiVector<
     >
   >
   : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
+    public ContainerSharedMemBase< MultiVector<wrapped_type> >,
     public MultiVectorSharedMemBase<MultiVector<wrapped_type>>
 {
 
@@ -138,6 +136,10 @@ private:
     return data_;
   }
 
+  ord_t extentImpl(ord_t i) const {
+    return data_.extent(i);
+  }
+
   ord_t numVectorsImpl() const{
     return data_.extent(1);
   }
@@ -148,6 +150,7 @@ private:
 
 private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend ContainerSharedMemBase< this_t >;
   friend MultiVectorSharedMemBase<this_t>;
 
 private:

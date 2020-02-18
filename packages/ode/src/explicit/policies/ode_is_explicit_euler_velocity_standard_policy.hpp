@@ -49,8 +49,6 @@
 #ifndef ODE_EXPLICIT_POLICIES_IS_EXPLICIT_EULER_VELOCITY_STANDARD_POLICY_HPP_
 #define ODE_EXPLICIT_POLICIES_IS_EXPLICIT_EULER_VELOCITY_STANDARD_POLICY_HPP_
 
-#include "ode_explicit_velocity_standard_policy.hpp"
-
 namespace pressio{ namespace ode{ namespace meta {
 
 template<typename policy_t, typename enable = void>

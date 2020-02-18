@@ -50,11 +50,6 @@
 #ifndef CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_
 #define CONTAINERS_MULTIVECTOR_CONCRETE_MULTIVECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_
 
-#include "../../shared_base/containers_container_base.hpp"
-#include "../../shared_base/containers_container_distributed_mpi_base.hpp"
-#include "../../shared_base/containers_container_distributed_trilinos_base.hpp"
-#include "../base/containers_multi_vector_distributed_base.hpp"
-
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
@@ -67,11 +62,8 @@ class MultiVector<
     >
   >
   : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
-    public MultiVectorDistributedBase< MultiVector<wrapped_type> >,
-    public ContainerDistributedTrilinosBase< MultiVector<wrapped_type>,
-     typename details::traits<MultiVector<wrapped_type>>::data_map_t>,
-  public ContainerDistributedMpiBase< MultiVector<wrapped_type>,
-     typename details::traits<MultiVector<wrapped_type>>::communicator_t>
+    public ContainerDistributedBase< MultiVector<wrapped_type> >,
+    public MultiVectorDistributedBase< MultiVector<wrapped_type> >
 {
 
 private:
@@ -119,47 +111,33 @@ private:
     return &data_;
   }
 
-  map_t const & getDataMapImpl() const{
-    return *data_.getMap();
-  }
-
-  bool hasRowMapEqualToImpl(map_t const &othermap) const{
-    return data_.getMap()->isSameAs(othermap);
-  }
-
-  Teuchos::RCP<const map_t> getRCPDataMapImpl() const{
-    return data_.getMap();
-  }
-
-  void setZeroImpl() {
-    data_.putScalar( ::pressio::utils::constants::zero<sc_t>() );
-    // putScalar doesn't sync afterwards, so we have to sync manually.
-    this->needSync();
-  }
-
-  GO_t globalNumVectorsImpl() const{
+  GO_t numVectorsImpl() const{
     return data_.getNumVectors();
   }
 
-  LO_t localNumVectorsImpl() const{
+  GO_t numVectorsGlobalImpl() const{
     return data_.getNumVectors();
   }
 
-  GO_t globalLengthImpl() const {
-    return this->getDataMap().getGlobalNumElements();
-  };
-
-  LO_t localLengthImpl() const {
-    return this->getDataMap().getNodeNumElements();
-  };
-
-  mpicomm_t commImpl() const{
-    return data_.getMap()->getComm();
+  LO_t numVectorsLocalImpl() const{
+    // it is the same because epetra multivectors
+    // are distributed on data, but each process owns
+    // a part of each vector
+    return data_.getNumVectors();
   }
 
-  void scaleImpl(sc_t factor){
-    data_.scale(factor);
+  // for distributed objects, extent return the global extent
+  GO_t extentImpl(std::size_t i) const{
+    assert(i<=1);
+    return (i==0) ? data_.getMap()->getGlobalNumElements() : data_.getNumVectors();
   }
+
+  LO_t extentLocalImpl(std::size_t i) const{
+    // each process owns all cols 
+    assert(i<=1);
+    return (i==0) ? data_.getMap()->getNodeNumElements() : data_.getNumVectors();
+  }
+
 
 private:
   void needSync(){
@@ -171,9 +149,8 @@ private:
 
 private:
   friend ContainerBase< this_t, wrapped_type >;
+  friend ContainerDistributedBase< this_t >;
   friend MultiVectorDistributedBase< this_t >;
-  friend ContainerDistributedTrilinosBase< this_t, map_t >;
-  friend ContainerDistributedMpiBase< this_t, mpicomm_t >;
 
 private:
   wrap_t data_ = {};

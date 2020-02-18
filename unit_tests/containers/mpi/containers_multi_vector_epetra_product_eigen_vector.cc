@@ -10,12 +10,12 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   STATIC_ASSERT_IS_CONTAINERS_MULTI_VECTOR_WRAPPER(mvec_t);
   mvec_t MV(*mv_);
 
-  EXPECT_EQ( MV.globalNumVectors(), 4 );
-  EXPECT_EQ( MV.localNumVectors(), 4 );
-  EXPECT_EQ( MV.globalLength(), 9 );
-  EXPECT_EQ( MV.localLength(), 3);
+  EXPECT_EQ( MV.numVectors(), 4 );
+  EXPECT_EQ( MV.numVectorsLocal(), 4 );
+  EXPECT_EQ( MV.extent(0), 9 );
+  EXPECT_EQ( MV.extentLocal(0), 3);
   for (int i=0; i<localSize_; i++)
-    for (int j=0; j<MV.globalNumVectors(); j++)
+    for (int j=0; j<MV.numVectors(); j++)
       EXPECT_NEAR( 0.0, MV(i,j), 1e-12);
 
 // MyPID    GID    

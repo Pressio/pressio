@@ -49,9 +49,6 @@
 #ifndef ROM_MODEL_HAS_NEEDED_VELOCITY_METHODS_HPP_
 #define ROM_MODEL_HAS_NEEDED_VELOCITY_METHODS_HPP_
 
-#include "../../../../ode/src/meta/ode_has_velocity_method_callable_with_two_args.hpp"
-#include "../../../../ode/src/meta/ode_has_velocity_method_callable_with_three_args.hpp"
-
 namespace pressio{ namespace rom{ namespace meta {
 
 template<

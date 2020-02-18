@@ -49,20 +49,19 @@
 #ifndef ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 #define ODE_STEPPERS_IMPLICIT_STEPPERS_BASE_IMPLICIT_STEPPER_BASE_HPP_
 
-#include "../../ode_aux_states_container.hpp"
-#include "../../ode_system_wrapper.hpp"
-
 namespace pressio{ namespace ode{ namespace implicitmethods{
 
 /*
  * (1) constructors here should be private but we need
  * them public to enable interfacing with pybind11
  */
-template<typename concrete_stepper_type>
+template<typename derived_type>
 class StepperBase
 {
-  using traits			= typename ::pressio::ode::details::traits<concrete_stepper_type>;
-  using sc_t			= typename traits::scalar_t;
+  friend derived_type;
+
+  using traits			= typename ::pressio::ode::details::traits<derived_type>;
+  using scalar_t		= typename traits::scalar_t;
   using state_t			= typename traits::state_t;
   using residual_t		= typename traits::residual_t;
   using jacobian_t		= typename traits::jacobian_t;
@@ -88,26 +87,51 @@ public:
     return traits::order_value;
   }
 
+  template<typename solver_type>
+  void operator()(state_t & odeState,
+		  const scalar_t & time,
+		  const scalar_t & dt,
+		  const types::step_t & step,
+		  solver_type & solver)
+  {
+    static_cast<derived_type &>(*this).template doStep<solver_type>(odeState, time, dt, step, solver);
+  }
+
+  template<
+    typename solver_type,
+    typename guess_cb_t
+    >
+  void operator()(state_t & odeState,
+		  const scalar_t & time,
+		  const scalar_t & dt,
+		  const types::step_t & step,
+		  solver_type & solver,
+		  guess_cb_t && guesserCb)
+  {
+    static_cast<derived_type &>(*this).template doStep<solver_type, guess_cb_t>(odeState, time, dt, step,
+										solver, std::forward<guess_cb_t>(guesserCb));
+  }
+
   void residual(const state_t & odeState, residual_t & R) const{
-    static_cast<const concrete_stepper_type &>(*this).residualImpl(odeState, R);
+    static_cast<const derived_type &>(*this).residualImpl(odeState, R);
   }
 
   residual_t residual(const state_t & odeState) const{
-    return static_cast<const concrete_stepper_type &>(*this).residualImpl(odeState);
+    return static_cast<const derived_type &>(*this).residualImpl(odeState);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const{
-    static_cast<const concrete_stepper_type &>(*this).jacobianImpl(odeState, J);
+    static_cast<const derived_type &>(*this).jacobianImpl(odeState, J);
   }
 
   jacobian_t jacobian(const state_t & odeState) const{
-    return static_cast<const concrete_stepper_type &>(*this).jacobianImpl(odeState);
+    return static_cast<const derived_type &>(*this).jacobianImpl(odeState);
   }
 
 protected:
   // procted because these are accessed only by children classes
-  sc_t t_  = {};
-  sc_t dt_ = {};
+  scalar_t t_  = {};
+  scalar_t dt_ = {};
   types::step_t step_  = {};
   system_wrapper_t sys_;
   aux_states_t auxStates_;
@@ -130,9 +154,18 @@ protected:
     const jacobian_pol_t &
     >::type jacobian_obj_;
 
-public:
+private:
   StepperBase() = delete;
   ~StepperBase() = default;
+
+  // copy cnstr
+  StepperBase(const StepperBase & other)  = delete;
+  // copy assignment
+  StepperBase & operator=(const StepperBase & other)  = delete;
+  // move cnstr
+  StepperBase(StepperBase && other)  = delete;
+  // move assign
+  StepperBase & operator=(StepperBase && other)  = delete;
 
   StepperBase(const state_t & stateIn0,
 		      const system_t & model,

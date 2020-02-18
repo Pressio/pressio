@@ -49,9 +49,6 @@
 #ifndef SOLVERS_META_BASIC_META_HPP_
 #define SOLVERS_META_BASIC_META_HPP_
 
-#include "../solvers_ConfigDefs.hpp"
-#include "../../../mpl/src/detection_idiom.hpp"
-
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T>

@@ -1,9 +1,6 @@
 
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
-#include "SVD_BASIC"
-#include "ROM_GALERKIN"
-#include "APPS_UNSTEADYBURGERS1D"
+#include "pressio_rom.hpp"
+#include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
 const std::vector<double> bdf1Sol
@@ -25,12 +22,14 @@ const std::vector<double> bdf1Sol
 
   using fom_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
+  using native_state_t  = typename fom_t::state_type;
+  using fom_state_t  = pressio::containers::Vector<native_state_t>;
+
+  using eig_dyn_vec = Eigen::Matrix<scalar_t, -1, 1>;
+  using rom_state_t = pressio::containers::Vector<eig_dyn_vec>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
-
-  using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using rom_state_t	= pressio::containers::Vector<eig_dyn_vec>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, rom_state_t, fom_state_t>;
 
   std::string checkStr {"PASSED"};
 
@@ -61,7 +60,7 @@ const std::vector<double> bdf1Sol
   // define ROM state
   rom_state_t yROM(romSize);
   // initialize to zero (this has to be done)
-  yROM.putScalar(0.0);
+  pressio::containers::ops::fill(yROM, 0.0);
 
   using ode_tag = pressio::ode::explicitmethods::Euler;
   using pressio::rom::galerkin::DefaultProblemType;
@@ -80,7 +79,7 @@ const std::vector<double> bdf1Sol
   // check against gold solution
   int shift = 0;
   if (rank==1)  shift = 25;
-  int myn = yFomFinal.getDataMap().NumMyElements();
+  int myn = yFomFinal.data()->Map().NumMyElements();
   for (auto i=0; i<myn; i++){
     if(std::abs(yFomFinal[i] - bdf1Sol[i+shift]) > 1e-12 ){
       checkStr = "FAILED";

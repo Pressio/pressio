@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_EPETRA_MULTI_VECTOR_PROD_VECTOR_HPP_
 #define CONTAINERS_SRC_OPS_EPETRA_MULTI_VECTOR_PROD_VECTOR_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /* epetra multi_vector prod vector */
@@ -65,13 +62,13 @@ void _product_epetra_mv_sharedmem_vec(const mvec_type & mvA,
 				      const operand_type & b,
 				      containers::Vector<Epetra_Vector> & C){
   //zero out result
-  C.setZero();
+  ::pressio::containers::ops::set_zero(C);
   // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
+  const auto numVecs = mvA.numVectorsGlobal();
   // size of b
-  assert(size_t(numVecs) == size_t(b.size()));
+  assert(size_t(numVecs) == size_t(b.extent(0)));
   // the data map of the multivector
-  const auto mvMap = mvA.getDataMap();
+  const auto mvMap = mvA.data()->Map();
   // my number of rows
   const auto myNrows = mvMap.NumMyElements();
 
@@ -94,7 +91,6 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
      containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
     > * = nullptr
@@ -103,6 +99,9 @@ void product(const mvec_type & mvA,
 	     const vec_type & vecB,
 	     containers::Vector<Epetra_Vector> & C)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
+
   ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, vecB, C);
 }
 
@@ -111,19 +110,21 @@ template <
   typename mvec_type, typename vec_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-    containers::meta::wrapper_pair_have_same_scalar<mvec_type, vec_type>::value and
     (containers::meta::is_vector_wrapper_eigen<vec_type>::value or
      containers::meta::is_dense_vector_wrapper_teuchos<vec_type>::value)
     > * = nullptr
   >
 containers::Vector<Epetra_Vector>
-product(const mvec_type & mvA, const vec_type & vecB) {
+product(const mvec_type & mvA, const vec_type & vecB) 
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+    "Types are not scalar compatible");
 
   // here, mvA is distrubted, but vecB is NOT.
   // we interpret this as a linear combination of vectors
 
   // the data map of the multivector
-  const auto mvMap = mvA.getDataMap();
+  const auto mvMap = mvA.data()->Map();
   // result is an Epetra Vector with same distribution of mvA
   using res_t = containers::Vector<Epetra_Vector>;
   res_t c(mvMap);
@@ -148,6 +149,8 @@ void product(const mvec_type & mvA,
 	     const expr_type & exprObj,
 	     containers::Vector<Epetra_Vector> & C)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
+    "Types are not scalar compatible");
   ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, exprObj, C);
 }
 
@@ -160,9 +163,12 @@ template <
     > * = nullptr
   >
 containers::Vector<Epetra_Vector>
-product(const mvec_type & mvA, const expr_type & exprObj) {
+product(const mvec_type & mvA, const expr_type & exprObj) 
+{
+  static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
+    "Types are not scalar compatible");
 
-  const auto mvMap = mvA.getDataMap();
+  const auto mvMap = mvA.data()->Map();
   using res_t = containers::Vector<Epetra_Vector>;
   res_t c(mvMap);
   product(mvA, exprObj, c);

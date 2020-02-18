@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
+#include "pressio_containers.hpp"
 
 namespace{
 
@@ -9,13 +9,13 @@ namespace{
   {
     {
       const auto sp = ::pressio::containers::span(a, 3, 2);
-      EXPECT_EQ( sp.size(), 2 );
+      EXPECT_EQ( sp.extent(0), 2 );
       EXPECT_DOUBLE_EQ( sp[0], 13. );
       EXPECT_DOUBLE_EQ( sp[1], 17. );
     }
     {
       const auto sp = ::pressio::containers::span(a, 2, 1);
-      EXPECT_EQ( sp.size(), 1 );
+      EXPECT_EQ( sp.extent(0), 1 );
       EXPECT_DOUBLE_EQ( sp[0], 9. );
     }
   }
@@ -26,7 +26,7 @@ namespace{
     {
       // change some entries
       auto sp = pressio::containers::span(a, 2, 3);
-      EXPECT_EQ( sp.size(), 3 );
+      EXPECT_EQ( sp.extent(0), 3 );
 
       // before changing it
       EXPECT_DOUBLE_EQ( sp[0], 9. );
@@ -54,7 +54,7 @@ namespace{
   template <typename T>
   void testConst(const T & a){
     const auto sp = pressio::containers::span(a, 2, 3);
-    EXPECT_EQ( sp.size(), 3 );
+    EXPECT_EQ( sp.extent(0), 3 );
     EXPECT_DOUBLE_EQ( sp[0], 44. );
     EXPECT_DOUBLE_EQ( sp[1], 13. );
     EXPECT_DOUBLE_EQ( sp[2], 17. );
@@ -100,10 +100,10 @@ TEST(containers_vector_eigen, spanConstructor)
 
   // span elements a[2],a[3],a[4]
   const auto sp = pressio::containers::span(a, 2, 3);
-  EXPECT_EQ( sp.size(), 3 );
+  EXPECT_EQ( sp.extent(0), 3 );
 
   const auto sp2 = pressio::containers::span(a, std::make_pair(2,5));
-  EXPECT_EQ( sp2.size(), 3 );
+  EXPECT_EQ( sp2.extent(0), 3 );
 
   EXPECT_DOUBLE_EQ(sp[0], sp2[0]);
   EXPECT_DOUBLE_EQ(sp[1], sp2[1]);

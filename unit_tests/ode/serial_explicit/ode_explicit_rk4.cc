@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
-#include "ODE_ALL"
+#include "pressio_ode.hpp"
 #include "../reference_apps_for_testing.hpp"
 
 

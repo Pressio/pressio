@@ -1,5 +1,5 @@
-#include "CONTAINERS_ALL"
-#include "APPS_STEADYLINADVDIFF2D"
+
+#include "pressio_apps.hpp"
 #include "../fom_gold_states.hpp"
 
 constexpr double eps = 1e-7;

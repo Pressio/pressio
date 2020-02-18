@@ -49,8 +49,6 @@
 #ifndef ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
 #define ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
 
-#include "../rom_fwd.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template <

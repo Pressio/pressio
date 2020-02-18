@@ -1,8 +1,6 @@
 
-#include "CONTAINERS_ALL"
-#include "SOLVERS_NONLINEAR"
-#include "ROM_LSPG_STEADY"
-#include "APPS_STEADYLINADVDIFF2D"
+#include "pressio_rom.hpp"
+#include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
 int main(int argc, char *argv[]){
@@ -41,10 +39,12 @@ int main(int argc, char *argv[]){
   // -------------------------
   // LSPG ROM
   using native_state	= typename fom_adapter_t::state_type;
+  using fom_state_t = pressio::containers::Vector<native_state>;
+
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
   using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
 
   constexpr int romSize = 5;
 
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
 
   // define ROM state and set to zero
   lspg_state_t yROM(romSize);
-  yROM.putScalar(0.0);
+  pressio::containers::ops::fill(yROM, 0.0);
 
   // define LSPG type
   using lspg_problem_type = pressio::rom::lspg::steady::PreconditionedProblemType<

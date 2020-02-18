@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "CONTAINERS_ALL"
-#include "SOLVERS_NONLINEAR"
+#include "pressio_solvers.hpp"
 
 struct ValidSystem {
   // Matrix typedefs

@@ -49,8 +49,6 @@
 #ifndef PRESSIOAPPS_BURGERS1D_KOKKOS_FUNCTORS_HPP_
 #define PRESSIOAPPS_BURGERS1D_KOKKOS_FUNCTORS_HPP_
 
-#include "../apps_ConfigDefs.hpp"
-
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include <Kokkos_Core.hpp>
 #include <KokkosSparse_CrsMatrix.hpp>

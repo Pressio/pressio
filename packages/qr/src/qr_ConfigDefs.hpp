@@ -49,8 +49,6 @@
 #ifndef QR_CONFIGDEFS_HPP
 #define QR_CONFIGDEFS_HPP
 
-#include "../../containers/src/containers_ConfigDefs.hpp"
-
 namespace pressio{ namespace qr{ namespace details {
 
 template<typename T, typename enable = void> struct traits{};

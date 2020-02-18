@@ -49,14 +49,16 @@
 #ifndef SOLVERS_IMPL_NORM_HELPER_POLICY_HPP
 #define SOLVERS_IMPL_NORM_HELPER_POLICY_HPP
 
-#include "../../solvers_ConfigDefs.hpp"
-#include "../../../../CONTAINERS_OPS"
-
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 struct ComputeNormHelper
 {
-  template <typename vec_t, typename scalar_t>
+  template <
+    typename ud_ops_t, typename vec_t, typename scalar_t,
+    mpl::enable_if_t<
+      !::pressio::containers::meta::is_vector_wrapper_arbitrary<vec_t>::value
+      > * = nullptr
+    >
   static void evaluate(const vec_t & vecIn,
 		       scalar_t & result,
 		       const ::pressio::solvers::Norm & normType)
@@ -66,6 +68,27 @@ struct ComputeNormHelper
     }
     else if (normType == ::pressio::solvers::Norm::L2){
       result = ::pressio::containers::ops::norm2(vecIn);
+    }
+    else
+      throw std::runtime_error("Invalid norm type, cannot conmpute norm");
+  }
+
+  template <
+    typename ud_ops_t, typename vec_t, typename scalar_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_vector_wrapper_arbitrary<vec_t>::value and
+      !std::is_void<ud_ops_t>::value
+      > * = nullptr
+    >
+  static void evaluate(const vec_t & vecIn,
+		       scalar_t & result,
+		       const ::pressio::solvers::Norm & normType)
+  {
+    if (normType == ::pressio::solvers::Norm::L1){
+      result = ud_ops_t::norm1( *vecIn.data() );
+    }
+    else if (normType == ::pressio::solvers::Norm::L2){
+      result = ud_ops_t::norm2( *vecIn.data() );
     }
     else
       throw std::runtime_error("Invalid norm type, cannot conmpute norm");

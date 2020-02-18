@@ -49,11 +49,6 @@
 #ifndef ODE_TIME_DISCRETE_JACOBIAN_IMPL_HPP_
 #define ODE_TIME_DISCRETE_JACOBIAN_IMPL_HPP_
 
-#include "../ode_ConfigDefs.hpp"
-#include "../../../containers/src/matrix/containers_matrix_meta.hpp"
-#include "../../../containers/src/multi_vector/containers_multi_vector_meta.hpp"
-#include "ode_implicit_constants.hpp"
-
 namespace pressio{ namespace ode{ namespace impl{
 
 template <
@@ -73,8 +68,10 @@ template <
 {
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
-  jac.scale(cf);
-  jac.addToDiagonal(cn);
+  // jac.scale(cf);
+  // jac.addToDiagonal(cn);
+  ::pressio::containers::ops::scale(jac, cf);
+  ::pressio::containers::ops::addToDiagonal(jac, cn);
 }
 
 
@@ -129,8 +126,10 @@ void time_discrete_jacobian(jacobian_type & jac, const scalar_type & dt)
   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   using namespace ::pressio::ode::constants;
-  jac.scale(cf);
-  jac.addToDiagonal(cn);
+  // jac.scale(cf);
+  // jac.addToDiagonal(cn);
+  ::pressio::containers::ops::scale(jac, cf);
+  ::pressio::containers::ops::addToDiagonal(jac, cn);
 }
 
 

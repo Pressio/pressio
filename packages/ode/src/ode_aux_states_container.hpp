@@ -49,9 +49,6 @@
 #ifndef ODE_AUX_STATES_CONTAINER_HPP_
 #define ODE_AUX_STATES_CONTAINER_HPP_
 
-#include "ode_fwd.hpp"
-#include "../../containers/src/collection/containers_static_collection.hpp"
-
 namespace pressio{ namespace ode{
 
 template<bool is_explicit, typename T, std::size_t n>

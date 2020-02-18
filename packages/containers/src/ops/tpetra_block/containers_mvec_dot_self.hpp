@@ -50,9 +50,6 @@
 #ifndef CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DOT_SELF_HPP_
 #define CONTAINERS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_DOT_SELF_HPP_
 
-#include "../containers_ops_meta.hpp"
-#include "../../multi_vector/containers_multi_vector_meta.hpp"
-
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
@@ -68,12 +65,14 @@ template <
   typename result_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
-    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value 
     > * = nullptr
   >
 void dot_self(const mvec_t & mvA, result_t & C)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
+
   // get a tpetra multivector that views the data
   const auto mvView = mvA.data()->getMultiVectorView();
 
@@ -101,8 +100,7 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<result_t>::value and
-    ::pressio::containers::details::traits<result_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::details::traits<result_t>::is_dynamic 
     > * = nullptr
   >
 result_t dot_self(const mvec_t & mvA)
@@ -123,7 +121,6 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<result_t>::value and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value and
     std::is_same<
       typename containers::details::traits<mvec_t>::device_t,
       typename containers::details::traits<result_t>::device_t
@@ -132,6 +129,9 @@ template <
   >
 void dot_self(const mvec_t & A, result_t & C)
 {
+  static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
+    "Types are not scalar compatible");
+
   // check traits of the block mv
   using scalar_t     = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
   using tpetra_mvb_t = typename ::pressio::containers::details::traits<mvec_t>::wrapped_t;
@@ -164,8 +164,7 @@ template <
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_t>::value and
     ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<result_t>::value and
-    ::pressio::containers::details::traits<result_t>::is_dynamic and
-    ::pressio::containers::meta::wrapper_pair_have_same_scalar<mvec_t, result_t>::value
+    ::pressio::containers::details::traits<result_t>::is_dynamic 
     > * = nullptr
   >
 result_t dot_self(const mvec_t & mvA)

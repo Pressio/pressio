@@ -49,7 +49,6 @@
 #ifndef PRESSIOAPPS_BURGERS1D_TPETRA_HPP_
 #define PRESSIOAPPS_BURGERS1D_TPETRA_HPP_
 
-#include "../apps_ConfigDefs.hpp"
 #include <numeric>
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
