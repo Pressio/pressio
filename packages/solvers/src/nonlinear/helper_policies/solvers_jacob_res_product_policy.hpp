@@ -51,85 +51,41 @@
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
-template<typename ud_ops_t, typename J_t, typename enable = void>
+template<typename ud_ops_t, typename enable = void>
 struct JacobianTranspResProdHelper;
 
-
-// when J is a matrix wrapper, then J^T*R
-// is computed doing regular mat-vec product
-template<typename J_t>
-struct JacobianTranspResProdHelper<
-  void, J_t,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_matrix_wrapper<J_t>::value
-    >
-  >
+template<>
+struct JacobianTranspResProdHelper<void>
 {
+  template <typename J_t, typename resid_t, typename result_t>
+  static void evaluate(const J_t & J, const resid_t & R, result_t & result)
+  {
+    static_assert(::pressio::containers::meta::are_scalar_compatible<J_t, resid_t, result_t>::value,
+                  "Types are not scalar compatible");
 
-  template <typename resid_t, typename result_t>
-  static void evaluate(J_t & J, resid_t & R, result_t & result){
-    constexpr bool transposeJ = true;
-    ::pressio::containers::ops::product<J_t, resid_t, result_t,	transposeJ>(J, R, result);
+    using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
+    constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+    ::pressio::containers::ops::product(::pressio::transpose(), alpha, J, R, beta, result);
   }
 };
-
-// when J is multivector wrapper, then J^T*R
-// can be computed doing the DOT of J*R
-template<typename J_t>
-struct JacobianTranspResProdHelper<
-  void, J_t,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper<J_t>::value
-    >
-  >
-{
-
-  template <typename resid_t, typename result_t>
-  static void evaluate(J_t & J, resid_t & R, result_t & result) {
-    ::pressio::containers::ops::dot(J, R, result);
-  }
-};
-
-
 
 /*********************
  * user-defined ops
  *********************/
-
-// when J is multivector wrapper, then J^T*R can be computed doing the DOT of J*R
-template<typename ud_ops_t, typename J_t>
+template<typename ud_ops_t>
 struct JacobianTranspResProdHelper<
-  ud_ops_t, J_t,
+  ud_ops_t, 
   ::pressio::mpl::enable_if_t<
-    !std::is_void<ud_ops_t>::value and
-    containers::meta::is_multi_vector_wrapper<J_t>::value
+    !std::is_void<ud_ops_t>::value
     >
   >
 {
-
-  template <typename resid_t, typename result_t>
-  static void evaluate(J_t & J, resid_t & R, result_t & result) {
+  template <typename J_t, typename resid_t, typename result_t>
+  static void evaluate(const J_t & J, const resid_t & R, result_t & result) {
     ud_ops_t::template dot<result_t>( *J.data(), *R.data(), result);
   }
 };
-
-
-// // when J is a matrix wrapper, is computed doing regular mat-vec product
-// template<typename ud_ops_t, typename J_t>
-// struct JacobianTranspResProdHelper<
-//   ud_ops_t, J_t,
-//   ::pressio::mpl::enable_if_t<
-//     !std::is_void<ud_ops_t>::value and
-//     containers::meta::is_matrix_wrapper<J_t>::value
-//     >
-//   >
-// {
-
-//   template <typename resid_t, typename result_t>
-//   static void evaluate(J_t & J, resid_t & R, result_t & result){
-//     // TBD
-//   }
-// };
 
 }}}} //end namespace pressio::solvers::iterative::impl
 #endif

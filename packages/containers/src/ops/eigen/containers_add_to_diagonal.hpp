@@ -57,13 +57,14 @@ template <
     ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<T>::value
     > * = nullptr
   >
-void addToDiagonal(T & o, typename ::pressio::containers::details::traits<T>::scalar_t value)
+void addToDiagonal(T & o,
+		   typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
-	auto & natObj = *o.data();
-	auto ide(natObj);
-	ide.setIdentity();
-	ide.coeffs() *= value;
-	natObj += ide;
+  auto & natObj = *o.data();
+  auto ide(natObj);
+  ide.setIdentity();
+  ide.coeffs() *= value;
+  natObj += ide;
 }
 
 

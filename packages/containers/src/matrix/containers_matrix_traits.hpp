@@ -49,16 +49,6 @@
 #ifndef CONTAINERS_MATRIX_MATRIX_TRAITS_HPP_
 #define CONTAINERS_MATRIX_MATRIX_TRAITS_HPP_
 
-// #include "../containers_fwd.hpp"
-// #include "../containers_shared_traits.hpp"
-// #include "./meta/containers_native_eigen_matrix_meta.hpp"
-// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-// #include "./meta/containers_native_trilinos_matrix_meta.hpp"
-// #endif
-// #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// #include "./meta/containers_native_kokkos_matrix_meta.hpp"
-// #endif
-
 namespace pressio{ namespace containers{ namespace details{
 
 /********************************

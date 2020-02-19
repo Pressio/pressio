@@ -72,8 +72,8 @@ class Matrix<wrapped_type,
 public:
   Matrix() = default;
 
-  Matrix(ord_t nrows, ord_t ncols) {
-    data_.resize(nrows, ncols);
+  Matrix(ord_t nrows, ord_t ncols)
+    : data_(nrows, ncols){
     data_.setConstant(static_cast<sc_t>(0));
   }
 

@@ -54,113 +54,113 @@
 
 namespace pressio{ namespace containers{ namespace ops{
 
-/*
- * multi_vector dot vector
- */
+// /*
+//  * multi_vector dot vector
+//  */
 
-template <
-  typename mvec_type,
-  typename vec1_type,
-  typename vec2_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec1_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec2_type>::value 
-    > * = nullptr
-  >
-void dot(const mvec_type & A, const vec1_type & b, vec2_type & c)
-{
-  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec1_type, vec2_type>::value,
-    "Types are not scalar compatible");
+// template <
+//   typename mvec_type,
+//   typename vec1_type,
+//   typename vec2_type,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
+//     containers::meta::is_vector_wrapper_kokkos<vec1_type>::value and
+//     containers::meta::is_vector_wrapper_kokkos<vec2_type>::value
+//     > * = nullptr
+//   >
+// void dot(const mvec_type & A, const vec1_type & b, vec2_type & c)
+// {
+//   static_assert(containers::meta::are_scalar_compatible<mvec_type, vec1_type, vec2_type>::value,
+//     "Types are not scalar compatible");
 
-  static_assert(meta::have_matching_execution_space<mvec_type, vec1_type>::value,
-		"dot: MV and vec types need to have same execution space" );
-  static_assert(meta::have_matching_execution_space<vec1_type, vec2_type>::value,
-		"dot: MV and vec types need to have same execution space" );
+//   static_assert(meta::have_matching_execution_space<mvec_type, vec1_type>::value,
+// 		"dot: MV and vec types need to have same execution space" );
+//   static_assert(meta::have_matching_execution_space<vec1_type, vec2_type>::value,
+// 		"dot: MV and vec types need to have same execution space" );
 
-  using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
-  constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
-  constexpr auto one = ::pressio::utils::constants::one<sc_t>();
+//   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
+//   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+//   constexpr auto one = ::pressio::utils::constants::one<sc_t>();
 
-  const char ctA = 'T';
-  KokkosBlas::gemv(&ctA, one, *A.data(), *b.data(), zero, *c.data());
-}
-
-
-// result is built and returned
-template <
-  typename mvec_type,
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec_type>::value 
-    > * = nullptr
-  >
-auto dot(const mvec_type & mvA, const vec_type & vecB)
--> containers::Vector<
-    Kokkos::View<
-      typename containers::details::traits<mvec_type>::scalar_t*,
-      typename containers::details::traits<mvec_type>::layout,
-      typename containers::details::traits<mvec_type>::execution_space
-      >
-  >
-{
-  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
-    "Types are not scalar compatible");
-
-  static_assert(meta::have_matching_execution_space<mvec_type, vec_type>::value,
-		"dot: MV and vec types need to have same execution space" );
-
-  using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
-  using layout    = typename containers::details::traits<mvec_type>::layout;
-  using exe_space = typename containers::details::traits<mvec_type>::execution_space;
-
-  using v_t = Kokkos::View<sc_t*, layout, exe_space>;
-  using res_t = containers::Vector<v_t>;
-
-  res_t c("dot_res", mvA.data()->extent(1));
-  dot(mvA, vecB, c);
-  return c;
-}
+//   const char ctA = 'T';
+//   KokkosBlas::gemv(&ctA, one, *A.data(), *b.data(), zero, *c.data());
+// }
 
 
-//--------------------------------------
-// compute c += A^T b
-// c = expression
-//--------------------------------------
-template <
-  typename mvec_type,
-  typename vec1_type,
-  typename expr_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec1_type>::value and
-    containers::meta::is_expression<expr_type>::value and
-    ::pressio::containers::meta::is_vector_wrapper_kokkos<
-      typename ::pressio::containers::details::traits<expr_type>::data_t
-      >::value
-    > * = nullptr
-  >
-void updateWithDot(const mvec_type & A, const vec1_type & b, expr_type & c)
-{
-  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec1_type, expr_type>::value,
-    "Types are not scalar compatible");
+// // result is built and returned
+// template <
+//   typename mvec_type,
+//   typename vec_type,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
+//     containers::meta::is_vector_wrapper_kokkos<vec_type>::value
+//     > * = nullptr
+//   >
+// auto dot(const mvec_type & mvA, const vec_type & vecB)
+// -> containers::Vector<
+//     Kokkos::View<
+//       typename containers::details::traits<mvec_type>::scalar_t*,
+//       typename containers::details::traits<mvec_type>::layout,
+//       typename containers::details::traits<mvec_type>::execution_space
+//       >
+//   >
+// {
+//   static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
+//     "Types are not scalar compatible");
 
-  static_assert(meta::have_matching_execution_space<mvec_type, vec1_type>::value,
-		"dot: MV and vec types need to have same execution space" );
-  static_assert(meta::have_matching_execution_space<
-		vec1_type,
-	        typename containers::details::traits<expr_type>::data_t
-		>::value,
-		"dot: MV and vec types need to have same execution space" );
+//   static_assert(meta::have_matching_execution_space<mvec_type, vec_type>::value,
+// 		"dot: MV and vec types need to have same execution space" );
 
-  using sc_t	      = typename containers::details::traits<mvec_type>::scalar_t;
-  constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
-  constexpr auto one  = ::pressio::utils::constants::one<sc_t>();
+//   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
+//   using layout    = typename containers::details::traits<mvec_type>::layout;
+//   using exe_space = typename containers::details::traits<mvec_type>::execution_space;
 
-  const char ctA = 'T';
-  KokkosBlas::gemv(&ctA, one, *A.data(), *b.data(), one, c());
-}
+//   using v_t = Kokkos::View<sc_t*, layout, exe_space>;
+//   using res_t = containers::Vector<v_t>;
+
+//   res_t c("dot_res", mvA.data()->extent(1));
+//   dot(mvA, vecB, c);
+//   return c;
+// }
+
+
+// //--------------------------------------
+// // compute c += A^T b
+// // c = expression
+// //--------------------------------------
+// template <
+//   typename mvec_type,
+//   typename vec1_type,
+//   typename expr_type,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
+//     containers::meta::is_vector_wrapper_kokkos<vec1_type>::value and
+//     containers::meta::is_expression<expr_type>::value and
+//     ::pressio::containers::meta::is_vector_wrapper_kokkos<
+//       typename ::pressio::containers::details::traits<expr_type>::data_t
+//       >::value
+//     > * = nullptr
+//   >
+// void updateWithDot(const mvec_type & A, const vec1_type & b, expr_type & c)
+// {
+//   static_assert(containers::meta::are_scalar_compatible<mvec_type, vec1_type, expr_type>::value,
+//     "Types are not scalar compatible");
+
+//   static_assert(meta::have_matching_execution_space<mvec_type, vec1_type>::value,
+// 		"dot: MV and vec types need to have same execution space" );
+//   static_assert(meta::have_matching_execution_space<
+// 		vec1_type,
+// 	        typename containers::details::traits<expr_type>::data_t
+// 		>::value,
+// 		"dot: MV and vec types need to have same execution space" );
+
+//   using sc_t	      = typename containers::details::traits<mvec_type>::scalar_t;
+//   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
+//   constexpr auto one  = ::pressio::utils::constants::one<sc_t>();
+
+//   const char ctA = 'T';
+//   KokkosBlas::gemv(&ctA, one, *A.data(), *b.data(), one, c());
+// }
 
 
 }}}//end namespace pressio::containers::ops

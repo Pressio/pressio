@@ -71,7 +71,6 @@ struct RunTest{
     wv vb_d(b_d);
 
     // ---- do operation ---
-
     auto c_d = ::pressio::containers::ops::dot(mvA_d, vb_d);
     using expected_ret_t = ::pressio::containers::Vector<k1d_d>;
     static_assert( std::is_same< decltype(c_d), expected_ret_t>::value, "");

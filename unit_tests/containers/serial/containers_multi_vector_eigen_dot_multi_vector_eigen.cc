@@ -28,8 +28,12 @@ namespace{
   };
 
   template <typename matrix_t>
-  void doDot(const myMV_t & A, const myMV_t & B){
-    auto C = pressio::containers::ops::dot<myMV_t, matrix_t>(A,B);
+  void doDot(const myMV_t & A, const myMV_t & B)
+  {
+    constexpr auto beta  = ::pressio::utils::constants::zero<double>();
+    constexpr auto alpha = ::pressio::utils::constants::one<double>();
+    auto C = ::pressio::containers::ops::product<matrix_t>(::pressio::transpose(), 
+      ::pressio::nontranspose(), alpha, A, B);
     ASSERT_EQ(C.extent(0), 3);
     ASSERT_EQ(C.extent(1), 4);
 

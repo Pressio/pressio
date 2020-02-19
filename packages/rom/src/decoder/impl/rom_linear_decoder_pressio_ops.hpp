@@ -67,6 +67,7 @@ struct LinearDecoderWithPressioOps
   using jacobian_t  = matrix_type;
   using rom_state_t = rom_state_type;
   using fom_state_t = fom_state_type;
+  using scalar_t    = typename ::pressio::containers::details::traits<rom_state_t>::scalar_t;
 
 private:
   friend base_t;
@@ -78,9 +79,11 @@ public:
 
 private:
   template <typename operand_t>
-  void applyMappingImpl(const operand_t & operandObj, fom_state_type & resultObj) const
+  void applyMappingImpl(const operand_t & operand, fom_state_type & result) const
   {
-    ::pressio::containers::ops::product(phi_, operandObj, resultObj);
+    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    ::pressio::containers::ops::product(::pressio::nontranspose(), one, phi_, operand, zero, result);
   }
 
   const jacobian_t & getReferenceToJacobianImpl() const{

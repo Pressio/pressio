@@ -98,8 +98,11 @@ public:
   }
 
   template < typename vector_in_t, typename vector_out_t>
-  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const{
-    containers::ops::dot( *this->Qmat_, vecIn, vecOut );
+  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
+  {
+    constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
+    constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
+    ::pressio::containers::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
   // if R_type != wrapper of Teuchos::SerialDenseMatrix

@@ -9,9 +9,6 @@ using mymat_t = pressio::containers::Matrix<nat_t>;
 TEST(containers_matrix_dense_eigen_dynamic_class,
      constructor)
 {
-  // STATIC_ASSERT_IS_CONTAINERS_MATRIX_WRAPPER(mymat_t);
-  //using matTrait = pressio::containers::details::traits<mymat_t>;
-
   mymat_t m1;
   EXPECT_EQ( m1.extent(0), 0 );
   EXPECT_EQ( m1.extent(1), 0 );

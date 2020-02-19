@@ -129,15 +129,13 @@ TEST(containers_ops, TpetraMultiVectorDotMultiVector){
   TT(2,0) = 4.0; TT(2,1) = 5.0;
   TT(3,0) = 5.0; TT(3,1) = 6.0;
 
-  auto C = containers::ops::dot<mvec_t, eig_mat_w>(A, B);
-  for (auto i=0; i<4; i++){
-    for (auto j=0; j<2; j++){
-      EXPECT_NEAR( TT(i,j), C(i,j), 1e-12);
-    }
-  }
 
   eig_mat_w C2(4,2);
-  containers::ops::dot(A, B, C2);
+  constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
+  constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+  ::pressio::containers::ops::product(::pressio::transpose(), 
+    ::pressio::nontranspose(), alpha, A, B, beta, C2);
+
   for (auto i=0; i<4; i++){
     for (auto j=0; j<2; j++){
       EXPECT_NEAR( TT(i,j), C2(i,j), 1e-12);

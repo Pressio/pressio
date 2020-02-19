@@ -51,144 +51,201 @@
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
- * mat product vector
- */
+ * y = beta * y + alpha*op(A)*x
+ *
+*/
 
-/*---------------------------------------------
- * c = A * b
- * A : eigen sparse matrix wrapper
- * b: eigen vector wrapper
- * c: eigen vector
- *-----------------------------------------------*/
-template <
-  typename A_t,
-  typename b_t,
-  typename c_t,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
-    containers::meta::is_vector_wrapper_eigen<b_t>::value &&
-    containers::meta::is_vector_wrapper_eigen<c_t>::value
-    > * = nullptr
- >
-void product(const A_t & A, const b_t & b, c_t & c){
-
-  static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
-		"Types are not scalar compatible");
-
-  assert(A.cols() == b.size());
-  assert(c.size() == A.rows());
-  (*c.data()) = (*A.data()) * (*b.data());
-}
-
-/*---------------------------------------------
- * c = A * b
- * A : eigen sparse matrix wrapper
- * b: eigen vector wrapper
- * return c: eigen vector dynamic
- *-----------------------------------------------*/
-template <
-  typename A_t,
-  typename b_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
-    ::pressio::containers::meta::is_vector_wrapper_eigen<b_t>::value &&
-    ::pressio::containers::details::traits<b_t>::is_dynamic
-    > * = nullptr
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  (containers::meta::is_multi_vector_wrapper_eigen<A_type>::value or
+   containers::meta::is_matrix_wrapper_eigen<A_type>::value) and
+  containers::meta::is_vector_wrapper_eigen<x_type>::value and
+  containers::meta::is_vector_wrapper_eigen<y_type>::value
   >
-b_t product(const A_t & A, const b_t & b)
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_t, b_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
 
-  b_t c(A.rows());
-  product(A,b,c);
-  return c;
+  assert( y.extent(0) == A.extent(0) );
+  assert( x.extent(0) == A.extent(1) );
+  const auto & AE = *A.data();
+  const auto & xE = *x.data();
+  auto & yE = *y.data();
+
+  yE = beta * yE + alpha * AE * xE;
 }
 
 
-
-/*---------------------------------------------
- * c = A b
- * A : eigen dense matrix wrapper
- * b: eigen vector wrapper
- * c: eigen vector
- *-----------------------------------------------*/
-template <
-  typename A_t,
-  typename b_t,
-  typename c_t,
-  bool transposeA = false,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
-    containers::meta::is_vector_wrapper_eigen<b_t>::value and
-    containers::meta::is_vector_wrapper_eigen<c_t>::value and
-    transposeA == false
-    > * = nullptr
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  (containers::meta::is_multi_vector_wrapper_eigen<A_type>::value or
+   containers::meta::is_matrix_wrapper_eigen<A_type>::value) and
+  containers::meta::is_vector_wrapper_eigen<x_type>::value and
+  containers::meta::is_vector_wrapper_eigen<y_type>::value
   >
-void product(const A_t & A, const b_t & b, c_t & c){
-
-  static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
-		"Types are not scalar compatible");
-
-  assert(A.extent(1) == b.extent(0));
-  assert(A.extent(0) == c.extent(0));
-  (*c.data()) = (*A.data()) * (*b.data());
-}
-
-
-/*---------------------------------------------
- * c = A^T b
- * A : eigen dense matrix wrapper
- * b: eigen vector wrapper
- * c: eigen vector
- *-----------------------------------------------*/
-template <
-  typename A_t,
-  typename b_t,
-  typename c_t,
-  bool transposeA = false,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
-    containers::meta::is_vector_wrapper_eigen<b_t>::value and
-    containers::meta::is_vector_wrapper_eigen<c_t>::value and
-    transposeA == true
-    > * = nullptr
-  >
-void product(const A_t & A, const b_t & b, c_t & c){
-
-  static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
-		"Types are not scalar compatible");
-
-  assert(A.extent(0) == b.extent(0));
-  assert(A.extent(1) == c.extent(0));
-  (*c.data()) = (*A.data()).transpose() * (*b.data());
-}
-
-
-/*---------------------------------------------
- * c = A b
- * A : eigen dense matrix wrapper
- * b: eigen vector wrapper
- * c: eigen vector
- *-----------------------------------------------*/
-template <
-  typename A_t,
-  typename b_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
-    ::pressio::containers::meta::is_vector_wrapper_eigen<b_t>::value and
-    ::pressio::containers::details::traits<b_t>::is_dynamic
-    > * = nullptr
-   >
-b_t product(const A_t & A, const b_t & b)
+product(::pressio::transpose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_t, b_t>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
 
-  b_t c(A.extent(0));
-  product(A,b,c);
-  return c;
+  assert( y.extent(0) == A.extent(1) );
+  assert( x.extent(0) == A.extent(0) );
+
+  auto & yE	  = *y.data();
+  const auto & xE = *x.data();
+  const auto & AE = *A.data();
+  yE = beta * yE + alpha * AE.transpose() * xE;
 }
 
 }}}//end namespace pressio::containers::ops
 #endif
+
+
+
+
+// /*---------------------------------------------
+//  * c = A * b
+//  * A : eigen sparse matrix wrapper
+//  * b: eigen vector wrapper
+//  * c: eigen vector
+//  *-----------------------------------------------*/
+// template <
+//   typename A_t,
+//   typename b_t,
+//   typename c_t,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
+//     containers::meta::is_vector_wrapper_eigen<b_t>::value &&
+//     containers::meta::is_vector_wrapper_eigen<c_t>::value
+//     > * = nullptr
+//  >
+// void product(const A_t & A, const b_t & b, c_t & c){
+
+//   static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
+// 		"Types are not scalar compatible");
+
+//   assert(A.cols() == b.size());
+//   assert(c.size() == A.rows());
+//   (*c.data()) = (*A.data()) * (*b.data());
+// }
+
+// /*---------------------------------------------
+//  * c = A * b
+//  * A : eigen sparse matrix wrapper
+//  * b: eigen vector wrapper
+//  * return c: eigen vector dynamic
+//  *-----------------------------------------------*/
+// template <
+//   typename A_t,
+//   typename b_t,
+//   ::pressio::mpl::enable_if_t<
+//     ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<A_t>::value &&
+//     ::pressio::containers::meta::is_vector_wrapper_eigen<b_t>::value &&
+//     ::pressio::containers::details::traits<b_t>::is_dynamic
+//     > * = nullptr
+//   >
+// b_t product(const A_t & A, const b_t & b)
+// {
+//   static_assert(containers::meta::are_scalar_compatible<A_t, b_t>::value,
+// 		"Types are not scalar compatible");
+
+//   b_t c(A.rows());
+//   product(A,b,c);
+//   return c;
+// }
+
+
+
+// /*---------------------------------------------
+//  * c = A b
+//  * A : eigen dense matrix wrapper
+//  * b: eigen vector wrapper
+//  * c: eigen vector
+//  *-----------------------------------------------*/
+// template <
+//   typename A_t,
+//   typename b_t,
+//   typename c_t,
+//   bool transposeA = false,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
+//     containers::meta::is_vector_wrapper_eigen<b_t>::value and
+//     containers::meta::is_vector_wrapper_eigen<c_t>::value and
+//     transposeA == false
+//     > * = nullptr
+//   >
+// void product(const A_t & A, const b_t & b, c_t & c){
+
+//   static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
+// 		"Types are not scalar compatible");
+
+//   assert(A.extent(1) == b.extent(0));
+//   assert(A.extent(0) == c.extent(0));
+//   (*c.data()) = (*A.data()) * (*b.data());
+// }
+
+
+// /*---------------------------------------------
+//  * c = A^T b
+//  * A : eigen dense matrix wrapper
+//  * b: eigen vector wrapper
+//  * c: eigen vector
+//  *-----------------------------------------------*/
+// template <
+//   typename A_t,
+//   typename b_t,
+//   typename c_t,
+//   bool transposeA = false,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
+//     containers::meta::is_vector_wrapper_eigen<b_t>::value and
+//     containers::meta::is_vector_wrapper_eigen<c_t>::value and
+//     transposeA == true
+//     > * = nullptr
+//   >
+// void product(const A_t & A, const b_t & b, c_t & c){
+
+//   static_assert(containers::meta::are_scalar_compatible<A_t, b_t, c_t>::value,
+// 		"Types are not scalar compatible");
+
+//   assert(A.extent(0) == b.extent(0));
+//   assert(A.extent(1) == c.extent(0));
+//   (*c.data()) = (*A.data()).transpose() * (*b.data());
+// }
+
+
+// /*---------------------------------------------
+//  * c = A b
+//  * A : eigen dense matrix wrapper
+//  * b: eigen vector wrapper
+//  * c: eigen vector
+//  *-----------------------------------------------*/
+// template <
+//   typename A_t,
+//   typename b_t,
+//   ::pressio::mpl::enable_if_t<
+//     ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<A_t>::value and
+//     ::pressio::containers::meta::is_vector_wrapper_eigen<b_t>::value and
+//     ::pressio::containers::details::traits<b_t>::is_dynamic
+//     > * = nullptr
+//    >
+// b_t product(const A_t & A, const b_t & b)
+// {
+//   static_assert(containers::meta::are_scalar_compatible<A_t, b_t>::value,
+// 		"Types are not scalar compatible");
+
+//   b_t c(A.extent(0));
+//   product(A,b,c);
+//   return c;
+// }

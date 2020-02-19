@@ -38,7 +38,10 @@ struct RunTest{
 
     using ret_t = ::pressio::containers::Matrix<k2d_d>;
     // self-dot
-    auto C_d = ::pressio::containers::ops::dot_self<wmv, ret_t>(mvA_d);
+    constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
+    constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
+    auto C_d = ::pressio::containers::ops::product<ret_t>(::pressio::transpose(), ::pressio::nontranspose(), alpha, MV);
+
     using expected_ret_t = ::pressio::containers::Matrix<k2d_d>;
     static_assert( std::is_same< decltype(C_d), expected_ret_t>::value, "");
 

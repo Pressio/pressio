@@ -38,36 +38,32 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   b[1] = 1.0;
   b[2] = 1.0;
 
-  // return the result
-  //MV dot b = c
-  auto c = containers::ops::dot(MV, b);
-  EXPECT_EQ((int) c.size(), 4);
-  EXPECT_NEAR(c[0], 4.4, 1e-12);
-  EXPECT_NEAR(c[1], 5.2, 1e-12);
-  EXPECT_NEAR(c[2], 3., 1e-12);
-  EXPECT_NEAR(c[3], 0., 1e-12);
-
   // store into eigen dynamic vector wrapper
   //MV dot b = c2
   using natvec_t2 = Eigen::VectorXd;
   containers::Vector<natvec_t2> c2;
   c2.data()->resize(4);
-  containers::ops::dot(MV, b, c2);
+
+  {  
+  constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
+  constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
+  ::pressio::containers::ops::product(::pressio::transpose(), alpha, MV, b, beta, c2);
   EXPECT_EQ( c2.extent(0), 4);
   EXPECT_NEAR(c2[0], 4.4, 1e-12);
   EXPECT_NEAR(c2[1], 5.2, 1e-12);
   EXPECT_NEAR(c2[2], 3., 1e-12);
   EXPECT_NEAR(c2[3], 0., 1e-12);
+  }
 
-  // store into teuchos serial dense vector wrapper
-  //MV dot b = c3
-  using natvec_t3 = Teuchos::SerialDenseVector<int, double>;
-  containers::Vector<natvec_t3> c3(4);
-  containers::ops::dot(MV, b, c3);
-  EXPECT_EQ( c3.extent(0), 4);
-  EXPECT_NEAR(c3[0], 4.4, 1e-12);
-  EXPECT_NEAR(c3[1], 5.2, 1e-12);
-  EXPECT_NEAR(c3[2], 3., 1e-12);
-  EXPECT_NEAR(c3[3], 0., 1e-12);
+  // // store into teuchos serial dense vector wrapper
+  // //MV dot b = c3
+  // using natvec_t3 = Teuchos::SerialDenseVector<int, double>;
+  // containers::Vector<natvec_t3> c3(4);
+  // containers::ops::dot(MV, b, c3);
+  // EXPECT_EQ( c3.extent(0), 4);
+  // EXPECT_NEAR(c3[0], 4.4, 1e-12);
+  // EXPECT_NEAR(c3[1], 5.2, 1e-12);
+  // EXPECT_NEAR(c3[2], 3., 1e-12);
+  // EXPECT_NEAR(c3[3], 0., 1e-12);
 
 }

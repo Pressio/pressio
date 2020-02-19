@@ -49,7 +49,13 @@
 #ifndef CONTAINERS_FORWARD_DECLARATIONS_HPP_
 #define CONTAINERS_FORWARD_DECLARATIONS_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio{
+
+struct transpose{};
+struct nontranspose{};
+
+
+namespace containers{
 
 namespace details {
 template<typename T, typename enable = void>
@@ -57,7 +63,7 @@ struct traits;
 
 template<typename T>
 struct traits<const T> : traits<T> {};
-}
+}//end namespace containers::details
 
 template<typename derived_type, typename wrapped_t>
 class ContainerBase;

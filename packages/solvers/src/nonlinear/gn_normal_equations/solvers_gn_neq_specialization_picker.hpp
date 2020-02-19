@@ -151,11 +151,7 @@ struct GNNEQSpecializeApi<
    * 3. computing the gradient J^T * R
    *
    * For 2., remember that the system's jacobian can be either a matrix or a mv wrapper
-   * and, depending on that, we do things differently when we have to compute hessian.
-   * Specifically, what we do is the following (see also hessian_helper_policy inside helper_policies)
-   * 1. if the jacobjan is a matrix wrapper, we compute hessian calling: ops::product
-   * 2. if the jacobjan is a mv wrapper, we compute hessian calling: ops::self_dot
-   *
+   * and, depending on that, we (might) do things differently when we have to compute hessian.
    * so when we detect custom ops, we need to differentiate based on jacobian's type
    */
   using gradient_t = typename system_t::state_type; // the gradient is same type as state

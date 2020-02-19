@@ -71,7 +71,7 @@ protected:
   // to compute hessian, we use a helper functor because
   // the calculation is different based on the jacobian being
   // a matrix wrapper vs a multi-vector wrapper
-  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t, jacobian_t>;
+  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t>;
 
   /* --- members --- */
   linear_solver_type & linSolver_ = {};
@@ -106,7 +106,7 @@ protected:
       normType_(normType),
       residual_(system.residual(yState)),
       jacobian_(system.jacobian(yState)),
-      hessian_(hessian_evaluator_t::template evaluate<hessian_type>(jacobian_)),
+      hessian_(hessian_evaluator_t::template evaluate<jacobian_t, hessian_type>(jacobian_)),
       gradient_(yState),
       correction_(yState),
       trialState_(yState)

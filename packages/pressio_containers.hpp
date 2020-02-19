@@ -59,11 +59,12 @@
 
 #include "containers/src/meta/containers_meta_type_aliases_detection.hpp"
 #include "containers/src/meta/containers_meta_methods_detection.hpp"
-
 #include "containers/src/meta/generic/containers_is_teuchos_rcp.hpp"
 #include "containers/src/meta/generic/containers_native_pybind_array_meta.hpp"
 
+//------------------
 // BASE
+//------------------
 #include "containers/src/base/containers_vector_sharedmem_base.hpp"
 #include "containers/src/base/containers_vector_distributed_base.hpp"
 #include "containers/src/base/containers_multi_vector_sharedmem_base.hpp"
@@ -73,7 +74,6 @@
 #include "containers/src/base/containers_container_sharedmem_base.hpp"
 #include "containers/src/base/containers_container_distributed_base.hpp"
 #include "containers/src/base/containers_container_base.hpp"
-
 
 //------------------
 // VECTOR
@@ -172,7 +172,6 @@
 #include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_kokkos.hpp"
 
 
-
 //------------------
 // expressions
 //------------------
@@ -193,7 +192,7 @@
 #include "containers/src/meta/generic/containers_is_expression.hpp"
 
 //------------------
-// others 
+// others
 //------------------
 #include "containers/src/meta/generic/containers_is_wrapper.hpp"
 #include "containers/src/meta/containers_meta_compatibility.hpp"
@@ -207,22 +206,25 @@
 #include "containers/src/ops/arbitrary/containers_set_zero.hpp"
 
 // Eigen
-#include "containers/src/ops/eigen/containers_eigen_ops_helper_impl.hpp"
+//#include "containers/src/ops/eigen/containers_eigen_ops_helper_impl.hpp"
 #include "containers/src/ops/eigen/containers_set_zero.hpp"
 #include "containers/src/ops/eigen/containers_scale.hpp"
 #include "containers/src/ops/eigen/containers_fill.hpp"
 #include "containers/src/ops/eigen/containers_resize.hpp"
 #include "containers/src/ops/eigen/containers_deep_copy.hpp"
 #include "containers/src/ops/eigen/containers_add_to_diagonal.hpp"
-#include "containers/src/ops/eigen/containers_mat_prod_mat.hpp"
-#include "containers/src/ops/eigen/containers_mat_prod_mvec.hpp"
+#include "containers/src/ops/eigen/containers_min_max.hpp"
+
 #include "containers/src/ops/eigen/containers_mat_prod_vec.hpp"
-#include "containers/src/ops/eigen/containers_min_max_vector.hpp"
+#include "containers/src/ops/eigen/containers_mat_prod_mat.hpp"
+
+// #include "containers/src/ops/eigen/containers_mat_prod_mvec.hpp"
+// #include "containers/src/ops/eigen/containers_mvec_dot_self.hpp"
+// #include "containers/src/ops/eigen/containers_mvec_dot_mvec.hpp"
+// #include "containers/src/ops/eigen/containers_mvec_dot_vec.hpp"
+// #include "containers/src/ops/eigen/containers_mvec_prod_vec.hpp"
+
 #include "containers/src/ops/eigen/containers_multi_vector_do_update.hpp"
-#include "containers/src/ops/eigen/containers_mvec_dot_self.hpp"
-#include "containers/src/ops/eigen/containers_mvec_dot_mvec.hpp"
-#include "containers/src/ops/eigen/containers_mvec_dot_vec.hpp"
-#include "containers/src/ops/eigen/containers_mvec_prod_vec.hpp"
 #include "containers/src/ops/eigen/containers_norms_vector.hpp"
 #include "containers/src/ops/eigen/containers_vec_dot_vec.hpp"
 #include "containers/src/ops/eigen/containers_vector_do_update.hpp"
@@ -232,9 +234,7 @@
 #include "containers/src/ops/kokkos/containers_scale.hpp"
 #include "containers/src/ops/kokkos/containers_fill.hpp"
 #include "containers/src/ops/kokkos/containers_deep_copy.hpp"
-#include "containers/src/ops/kokkos/containers_mvec_dot_mvec.hpp"
-#include "containers/src/ops/kokkos/containers_mvec_dot_self.hpp"
-#include "containers/src/ops/kokkos/containers_mvec_dot_vec.hpp"
+#include "containers/src/ops/kokkos/containers_mvec_prod_mvec.hpp"
 #include "containers/src/ops/kokkos/containers_mvec_prod_vec.hpp"
 #include "containers/src/ops/kokkos/containers_norms_vector.hpp"
 #include "containers/src/ops/kokkos/containers_vector_do_update_kokkos_functors.hpp"
@@ -245,11 +245,8 @@
 #include "containers/src/ops/epetra/containers_set_zero.hpp"
 #include "containers/src/ops/epetra/containers_fill.hpp"
 #include "containers/src/ops/epetra/containers_deep_copy.hpp"
-#include "containers/src/ops/epetra/containers_mat_prod_mvec.hpp"
 #include "containers/src/ops/epetra/containers_min_max_vector.hpp"
-#include "containers/src/ops/epetra/containers_mvec_dot_mvec.hpp"
-#include "containers/src/ops/epetra/containers_mvec_dot_self.hpp"
-#include "containers/src/ops/epetra/containers_mvec_dot_vec.hpp"
+#include "containers/src/ops/epetra/containers_mvec_prod_mvec.hpp"
 #include "containers/src/ops/epetra/containers_mvec_prod_vec.hpp"
 #include "containers/src/ops/epetra/containers_norms_vector.hpp"
 #include "containers/src/ops/epetra/containers_vector_do_update.hpp"
@@ -265,9 +262,7 @@
 #include "containers/src/ops/tpetra/containers_set_zero.hpp"
 #include "containers/src/ops/tpetra/containers_fill.hpp"
 #include "containers/src/ops/tpetra/containers_deep_copy.hpp"
-#include "containers/src/ops/tpetra/containers_mvec_dot_mvec.hpp"
-#include "containers/src/ops/tpetra/containers_mvec_dot_self.hpp"
-#include "containers/src/ops/tpetra/containers_mvec_dot_vec.hpp"
+#include "containers/src/ops/tpetra/containers_mvec_prod_mvec.hpp"
 #include "containers/src/ops/tpetra/containers_mvec_prod_vec.hpp"
 #include "containers/src/ops/tpetra/containers_norms_vector.hpp"
 #include "containers/src/ops/tpetra/containers_vector_do_update.hpp"

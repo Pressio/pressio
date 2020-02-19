@@ -92,10 +92,10 @@ void gauss_newton_neq_solve(const system_t & sys,
   using jacobian_t	= typename system_t::jacobian_type;
 
   // policy to approximate hessian J^T*J
-  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t, jacobian_t>;
+  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t>;
 
   // policy to J^T * residual
-  using jtr_evaluator_t = JacobianTranspResProdHelper<ud_ops_t, jacobian_t>;
+  using jtr_evaluator_t = JacobianTranspResProdHelper<ud_ops_t>;
 
   // policy to checking convergence
   using is_converged_t = IsConvergedHelper<converged_when_tag>;

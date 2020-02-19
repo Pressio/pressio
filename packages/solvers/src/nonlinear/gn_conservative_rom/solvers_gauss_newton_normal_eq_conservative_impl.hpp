@@ -130,6 +130,9 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   auto normLambda = static_cast<scalar_t>(0);
   auto normCbarR = static_cast<scalar_t>(0);
 
+  constexpr auto zeroConst  = ::pressio::utils::constants::zero<scalar_t>();
+  constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+
   typename system_t::state_type dy_y(y.size());
   typename system_t::state_type dy_lambda(lambda.size());
 
@@ -165,9 +168,18 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("lhs");
 #endif
-    ::pressio::containers::ops::dot_self(jacob, jTj);
-    ::pressio::containers::ops::dot(jacob, cbarT, jTcbarT);
-    ::pressio::containers::ops::dot(cbarT, jacob, cbarJ);
+
+    // dot_self(jacob, jTj);
+    ::pressio::containers::ops::product(::pressio::transpose(), 
+        ::pressio::nontranspose(), one, jacob, zeroConst, jTj);
+
+    // ::pressio::containers::ops::dot(jacob, cbarT, jTcbarT);
+    ::pressio::containers::ops::product(::pressio::transpose(), 
+        one, jacob, cbarT, zeroConst, jTcbarT);
+
+    // ::pressio::containers::ops::dot(cbarT, jacob, cbarJ);
+    ::pressio::containers::ops::product(::pressio::transpose(), 
+        one, cbarT, jacob, zeroConst, cbarJ);
 
     A.data()->block(0, 0, jTj.rows(), jTj.cols()) = *jTj.data();
     A.data()->block(0, jTj.cols(), jTcbarT.rows(), jTcbarT.cols()) = *jTcbarT.data();
@@ -183,12 +195,20 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     timer->start("rhs");
 #endif
 
-    ::pressio::containers::ops::dot(cbarT, resid, cbarR);
+    // ::pressio::containers::ops::dot(cbarT, resid, cbarR);
+    ::pressio::containers::ops::product(::pressio::transpose(), 
+        one, cbarT, resid, zeroConst, cbarR);
+
     ComputeNormHelper::template evaluate<void>(cbarR, normCbarR, normType);
 
-    ::pressio::containers::ops::product(cbarT, lambda, cbarTlambda);
+    // ::pressio::containers::ops::product(cbarT, lambda, cbarTlambda);
+    ::pressio::containers::ops::product(::pressio::nontranspose(), 
+        one, cbarT, lambda, zeroConst, cbarTlambda);
+
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
-    ::pressio::containers::ops::dot(jacob, resid, jTr2);
+    // ::pressio::containers::ops::dot(jacob, resid, jTr2);
+    ::pressio::containers::ops::product(::pressio::transpose(), 
+        one, jacob, resid, zeroConst, jTr2);
 
     constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
     jTr2.scale(negOne);
@@ -248,7 +268,6 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
       throw std::runtime_error(
         "Nonlinear solver: Gauss Newton Conserv: NaNs detected in solution update dy");
     }
-    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
     //y2 = y2 + alpha * dy;
     ::pressio::containers::ops::do_update(y2, one, dy, alpha);
 

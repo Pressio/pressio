@@ -51,142 +51,259 @@
 namespace pressio{ namespace containers{ namespace ops{
 
 /*
- * mat mat product
- */
+ * C = beta * C + alpha*op(A)*op(B)
+ *
+*/
 
-template <
-  typename TA,
-  typename TB,
-  typename TC,
-  bool transposeA = false,
-  bool transposeB = false,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_matrix_wrapper_eigen<TA>::value and
-    containers::meta::is_matrix_wrapper_eigen<TB>::value and
-    containers::meta::is_matrix_wrapper_eigen<TC>::value
-    > * = nullptr
+template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<A_type>::value) and
+  (::pressio::containers::meta::is_matrix_wrapper_eigen<B_type>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<B_type>::value) and
+  (::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<C_type>::value)
   >
-void product(const TA & A, const TB & B, TC & C)
+product(::pressio::transpose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<TA,TB,TC>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
 
-  using implClass_t = impl::eig_mat_mat_product<transposeA,
-						transposeB>;
-  implClass_t()(A,B,C);
-}
+  assert( C.extent(0) == A.extent(1) );
+  assert( C.extent(1) == B.extent(1) );
+  assert( A.extent(0) == B.extent(0) );
 
-// DENSE times DENSE
-template <
-  typename T1,
-  typename T2,
-  typename T3,
-  bool transposeA = false,
-  bool transposeB = false,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
-    containers::meta::is_dense_matrix_wrapper_eigen<T2>::value and
-    containers::meta::is_dense_matrix_wrapper_eigen<T3>::value
-    > * = nullptr
-  >
-T3 product(const T1 & A, const T2 & B)
-{
-  static_assert(containers::meta::are_scalar_compatible<T1,T2,T3>::value,
-		"Types are not scalar compatible");
-
-  using implClass_t = impl::eig_mat_mat_product<transposeA, transposeB>;
-  return implClass_t()(A,B);
+  const auto & AE = *A.data();
+  const auto & BE = *B.data();
+  auto & CE = *C.data();
+  CE = beta * CE + alpha * AE.transpose() * BE;
 }
 
 
-// DENSE times DENSE
-template <
-  typename T1,
-  typename T2,
-  bool transposeA = false,
-  bool transposeB = false,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
-    containers::meta::is_dense_matrix_wrapper_eigen<T2>::value
-    > * = nullptr
+template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<A_type>::value) and
+  (::pressio::containers::meta::is_matrix_wrapper_eigen<B_type>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<B_type>::value) and
+  (::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<C_type>::value)
   >
-auto product(const T1 & A, const T2 & B)
-  -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
+product(::pressio::nontranspose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
 
-  using implClass_t = impl::eig_mat_mat_product<transposeA,
-						transposeB>;
-  return implClass_t()(A,B);
-}
+  assert( C.extent(0) == A.extent(0) );
+  assert( C.extent(1) == B.extent(1) );
+  assert( A.extent(1) == B.extent(0) );
 
-// SPARSE times DENSE
-template <
-  typename T1,
-  typename T2,
-  bool transposeA = false,
-  bool transposeB = false,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value and
-    containers::meta::is_dense_matrix_wrapper_eigen<T2>::value
-    > * = nullptr
-  >
-auto product(const T1 & A, const T2 & B)
-  -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
-{
-  static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
-		"Types are not scalar compatible");
+  const auto & AE = *A.data();
+  const auto & BE = *B.data();
+  auto & CE = *C.data();
 
-  using implClass_t = impl::eig_mat_mat_product<transposeA,
-						transposeB>;
-  return implClass_t()(A,B);
-}
-
-// DENSE times SPARSE
-template <
-  typename T1,
-  typename T2,
-  bool transposeA = false,
-  bool transposeB = false,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
-    containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value
-    > * = nullptr
-  >
-auto product(const T1 & A, const T2 & B)
-  -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
-{
-  static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
-		"Types are not scalar compatible");
-
-  using implClass_t = impl::eig_mat_mat_product<transposeA,
-						transposeB>;
-  return implClass_t()(A,B);
+  CE = beta * CE + alpha * AE * BE;
 }
 
 
-// SPARSE times SPARSE
-template <
-  typename T1,
-  typename T2,
-  bool transposeA = false,
-  bool transposeB = false,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value and
-    containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value
-    > * = nullptr
+/***********************************
+* special case A==B and op(A) = transpose
+**********************************/
+
+template <typename A_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<A_type>::value) and
+  (::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<C_type>::value)
   >
-auto product(const T1 & A, const T2 & B)
-  -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
+product(::pressio::transpose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A,
+	const scalar_type beta,
+	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
+  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
 		"Types are not scalar compatible");
 
-  using implClass_t = impl::eig_mat_mat_product<transposeA,
-						transposeB>;
-  return implClass_t()(A,B);
+  auto & CE = *C.data();
+  const auto & AE = *A.data();
+  CE = beta * CE + alpha * AE.transpose() * AE;
 }
+
+template <typename C_type, typename A_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<A_type>::value) and
+  ::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value,
+  C_type
+  >
+product(::pressio::transpose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A)
+{
+  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+		"Types are not scalar compatible");
+
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  C_type C(A.extent(1), A.extent(1));
+  product(modeA, modeB, alpha, A, A, zero, C);
+  return C;
+}
+
+
+
+
+
+
+
+// template <
+//   typename TA,
+//   typename TB,
+//   typename TC,
+//   bool transposeA = false,
+//   bool transposeB = false,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_matrix_wrapper_eigen<TA>::value and
+//     containers::meta::is_matrix_wrapper_eigen<TB>::value and
+//     containers::meta::is_matrix_wrapper_eigen<TC>::value
+//     > * = nullptr
+//   >
+// void product(const TA & A, const TB & B, TC & C)
+// {
+//   static_assert(containers::meta::are_scalar_compatible<TA,TB,TC>::value,
+// 		"Types are not scalar compatible");
+
+//   using implClass_t = impl::eig_mat_mat_product<transposeA,
+// 						transposeB>;
+//   implClass_t()(A,B,C);
+// }
+
+// // DENSE times DENSE
+// template <
+//   typename T1,
+//   typename T2,
+//   typename T3,
+//   bool transposeA = false,
+//   bool transposeB = false,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
+//     containers::meta::is_dense_matrix_wrapper_eigen<T2>::value and
+//     containers::meta::is_dense_matrix_wrapper_eigen<T3>::value
+//     > * = nullptr
+//   >
+// T3 product(const T1 & A, const T2 & B)
+// {
+//   static_assert(containers::meta::are_scalar_compatible<T1,T2,T3>::value,
+// 		"Types are not scalar compatible");
+
+//   using implClass_t = impl::eig_mat_mat_product<transposeA, transposeB>;
+//   return implClass_t()(A,B);
+// }
+
+
+// // DENSE times DENSE
+// template <
+//   typename T1,
+//   typename T2,
+//   bool transposeA = false,
+//   bool transposeB = false,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
+//     containers::meta::is_dense_matrix_wrapper_eigen<T2>::value
+//     > * = nullptr
+//   >
+// auto product(const T1 & A, const T2 & B)
+//   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
+// {
+//   static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
+// 		"Types are not scalar compatible");
+
+//   using implClass_t = impl::eig_mat_mat_product<transposeA,
+// 						transposeB>;
+//   return implClass_t()(A,B);
+// }
+
+// // SPARSE times DENSE
+// template <
+//   typename T1,
+//   typename T2,
+//   bool transposeA = false,
+//   bool transposeB = false,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value and
+//     containers::meta::is_dense_matrix_wrapper_eigen<T2>::value
+//     > * = nullptr
+//   >
+// auto product(const T1 & A, const T2 & B)
+//   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
+// {
+//   static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
+// 		"Types are not scalar compatible");
+
+//   using implClass_t = impl::eig_mat_mat_product<transposeA,
+// 						transposeB>;
+//   return implClass_t()(A,B);
+// }
+
+// // DENSE times SPARSE
+// template <
+//   typename T1,
+//   typename T2,
+//   bool transposeA = false,
+//   bool transposeB = false,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_dense_matrix_wrapper_eigen<T1>::value and
+//     containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value
+//     > * = nullptr
+//   >
+// auto product(const T1 & A, const T2 & B)
+//   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
+// {
+//   static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
+// 		"Types are not scalar compatible");
+
+//   using implClass_t = impl::eig_mat_mat_product<transposeA,
+// 						transposeB>;
+//   return implClass_t()(A,B);
+// }
+
+
+// // SPARSE times SPARSE
+// template <
+//   typename T1,
+//   typename T2,
+//   bool transposeA = false,
+//   bool transposeB = false,
+//   ::pressio::mpl::enable_if_t<
+//     containers::meta::is_sparse_matrix_wrapper_eigen<T1>::value and
+//     containers::meta::is_sparse_matrix_wrapper_eigen<T2>::value
+//     > * = nullptr
+//   >
+// auto product(const T1 & A, const T2 & B)
+//   -> typename impl::eigenMatMatProdRetTypeHelper<T1, T2>::prod_type
+// {
+//   static_assert(containers::meta::are_scalar_compatible<T1,T2>::value,
+// 		"Types are not scalar compatible");
+
+//   using implClass_t = impl::eig_mat_mat_product<transposeA,
+// 						transposeB>;
+//   return implClass_t()(A,B);
+// }
 
 }}}//end namespace pressio::containers::ops
 #endif

@@ -102,13 +102,12 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     // compute J^T * Residual
     state_t jTr(y);
     ::pressio::containers::ops::set_zero(jTr);
-    using jtr_prod_helper_t = JacobianTranspResProdHelper<ud_ops_t, jacobian_t>;
-    // evaluate
+    using jtr_prod_helper_t = JacobianTranspResProdHelper<ud_ops_t>;
     jtr_prod_helper_t::evaluate(jacob, resid, jTr);
 
-    // compute dy^T J^T R (this is always a dot product)
-    auto c2 = ::pressio::containers::ops::dot(dy, jTr);
-    auto rhs = c1 * alpha * c2;
+    // compute dy^T (J^T R)
+    const auto c2 = ::pressio::containers::ops::dot(dy, jTr);
+    const auto rhs = c1 * alpha * c2;
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(" f(y) =", fy, "\n");
