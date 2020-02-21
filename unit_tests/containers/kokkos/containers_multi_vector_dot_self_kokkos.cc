@@ -8,8 +8,9 @@ struct RunTest{
   const int Nr = 6;
   const int Nc = 4;
 
+  using sc_t = double;
   using exe_space = Kokkos::DefaultExecutionSpace;
-  using k2d_d = Kokkos::View<double**, d_layout, exe_space>;
+  using k2d_d = Kokkos::View<sc_t**, d_layout, exe_space>;
   using k2d_h = typename k2d_d::HostMirror;
 
   using wmv = ::pressio::containers::MultiVector<k2d_d>;
@@ -40,7 +41,7 @@ struct RunTest{
     // self-dot
     constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
     constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
-    auto C_d = ::pressio::containers::ops::product<ret_t>(::pressio::transpose(), ::pressio::nontranspose(), alpha, MV);
+    auto C_d = ::pressio::containers::ops::product<ret_t>(::pressio::transpose(), ::pressio::nontranspose(), alpha, mvA_d);
 
     using expected_ret_t = ::pressio::containers::Matrix<k2d_d>;
     static_assert( std::is_same< decltype(C_d), expected_ret_t>::value, "");

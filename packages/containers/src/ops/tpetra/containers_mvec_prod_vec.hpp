@@ -79,9 +79,6 @@ void _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
 				      const scalar_type beta,
 				      y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
-
   // how many vectors are in A
   const auto numVecs = A.numVectors();
   // size of vecB
@@ -117,8 +114,7 @@ template <
   typename A_type, typename x_type, typename y_type, typename scalar_type,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
-    containers::meta::is_vector_wrapper_tpetra<y_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<x_type>::value
+    containers::meta::is_vector_wrapper_tpetra<y_type>::value
     > * = nullptr
   >
 void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
@@ -127,22 +123,16 @@ void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
 					     const scalar_type beta,
 					     y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
-    "Types are not scalar compatible");
-
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
   using tpetra_mv_dev_t = typename ::pressio::containers::details::traits<A_type>::device_t;
   using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<x_type>::device_type;
   static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
   using dev_t  = tpetra_mv_dev_t;
+  using sc_t = typename containers::details::traits<A_type>::scalar_t;
+  const char ctA = 'N';
 
   assert( A.numVectors() == x.data()->extent(0) );
-
-  using sc_t = typename containers::details::traits<A_type>::scalar_t;
-  // constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
-  // constexpr auto one = ::pressio::utils::constants::one<sc_t>();
-  const char ctA = 'N';
 
   const auto ALocalView_d = A.data()->template getLocalView<dev_t>();
   // I need to do the following because Tpetra::Vector is implemented
@@ -152,9 +142,7 @@ void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   const auto mvCLocalView_drank1 = Kokkos::subview(mvCLocalView_drank2, Kokkos::ALL(), 0);
   KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, mvCLocalView_drank1);
 }
-
 }//end namespace pressio::containers::ops::impl
-
 
 
 /* -------------------------------------------------------------------
@@ -164,16 +152,18 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
 ::pressio::mpl::enable_if_t<
   containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
   containers::meta::is_vector_wrapper_tpetra<y_type>::value and
-  (containers::meta::is_vector_wrapper_eigen<x_type>::value or
-   containers::meta::is_dense_vector_wrapper_teuchos<x_type>::value)
+  !containers::meta::is_vector_wrapper_kokkos<x_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
-	const x_type & x,
+	const VectorSharedMemBase<x_type> & x,
 	const scalar_type beta,
 	y_type & y)
 {
+  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+    "Types are not scalar compatible");
+
   ::pressio::containers::ops::impl::_product_tpetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
@@ -190,10 +180,11 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
+  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+    "Types are not scalar compatible");
+
   ::pressio::containers::ops::impl::_product_tpetra_mv_sharedmem_vec_kokkos(alpha, A, x, beta, y);
 }
-
-
 
 /* -------------------------------------------------------------------
  * x is a distributed Tpetra vector wrapper
@@ -230,48 +221,21 @@ product(::pressio::transpose mode,
   request->wait();
 }
 
-
-// y = scalar *, passed in
-template <typename A_type, typename x_type, typename scalar_type>
-::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
-  containers::meta::is_vector_wrapper_tpetra<x_type>::value
-  >
-product(::pressio::transpose mode,
-	const scalar_type alpha,
-	const A_type & A,
-	const x_type & x,
-	const scalar_type beta,
-	scalar_type * y)
-{
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type>::value,
-		"Types are not scalar compatible");
-
-  const auto numVecs = A.numVectors();
-  for (auto i=0; i<numVecs; i++){
-    // colI is a Teuchos::RCP<Vector<...>>
-    const auto colI = A.data()->getVector(i);
-    y[i] = beta * y[i] + alpha * colI->dot(*x.data());
-  }
-}
-
-// y = Eigen vector
+// y = sharedmem vec not kokkos
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
   containers::meta::is_vector_wrapper_tpetra<x_type>::value and
-  containers::meta::is_vector_wrapper_eigen<y_type>::value
+  !containers::meta::is_vector_wrapper_kokkos<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
-	y_type & y)
+	VectorSharedMemBase<y_type> & y)
 {
-  ///computes dot product of each vector in A
-  ///with vecB storing each value in result
-
+  // dot product of each vector in A with vecB
   /* Apparently, trilinos does not support this...
      the native dot() method of multivectors is only for
      dot product of two multivectors with same # of columns.
@@ -281,131 +245,14 @@ product(::pressio::transpose mode,
   static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
 
-  const auto numVecs = A.numVectors();
-  // check the result has right size
-  assert( y.extent(0) == numVecs );
-  product(mode, alpha, A, x, beta, y.data()->data());
+  const auto numVecs = A.extent(1);
+  for (auto i=0; i<numVecs; i++){
+    // colI is a Teuchos::RCP<Vector<...>>
+    const auto colI = A.data()->getVector(i);
+    y[i] = beta * y[i] + alpha * colI->dot(*x.data());
+  }
 }
 
 }}}//end namespace pressio::containers::ops
 #endif
 #endif
-
-
-
-
-
-// /* -------------------------------------------------------------------
-//  * specialize for tpetra mv operating on an expression
-//  *-------------------------------------------------------------------*/
-// template <
-//   typename mvec_type,
-//   typename expr_type,
-//   typename res_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-//     ::pressio::containers::meta::is_expression<expr_type>::value
-//     > * = nullptr
-//   >
-// void product(const mvec_type & mvA, const expr_type & b, res_type & C)
-// {
-//   ::pressio::containers::ops::impl::_product_tpetra_mv_sharedmem_vec(mvA, b, C);
-// }
-
-// template <
-//   typename mvec_type,
-//   typename expr_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-//     ::pressio::containers::meta::is_expression<expr_type>::value
-//     > * = nullptr
-//  >
-// auto product(const mvec_type & mvA, const expr_type & b)
-//   -> containers::Vector<
-//   Tpetra::Vector<typename details::traits<mvec_type>::scalar_t,
-//                  typename details::traits<mvec_type>::local_ordinal_t,
-//                  typename details::traits<mvec_type>::global_ordinal_t,
-//                  typename details::traits<mvec_type>::node_t>
-//                  >
-// {
-//   // the data map of the multivector
-//   auto rcpMap = mvA.data()->getMap();
-
-//   using mvec_traits = typename details::traits<mvec_type>;
-//   using sc_t = typename mvec_traits::scalar_t;
-//   using LO_t = typename mvec_traits::local_ordinal_t;
-//   using GO_t = typename mvec_traits::global_ordinal_t;
-//   using NO_t = typename mvec_traits::node_t;
-
-//   // result is an Tpetra Vector with same distribution of mvA
-//   using res_nat_t = Tpetra::Vector<sc_t, LO_t, GO_t, NO_t>;
-//   using res_t = containers::Vector<res_nat_t>;
-//   res_t c(rcpMap);
-//   product(mvA, b, c);
-//   return c;
-// }
-
-
-
-
-// //--------------------------------------
-// // compute y = y + mvA^T vecB
-// // y = eigen expression
-// //--------------------------------------
-// template <
-//   typename mvec_type,
-//   typename vec_type,
-//   typename expr_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-//     containers::meta::is_vector_wrapper_tpetra<vec_type>::value and
-//     containers::meta::is_expression<expr_type>::value and
-//     ::pressio::containers::meta::is_vector_wrapper_eigen<
-//       typename ::pressio::containers::details::traits<expr_type>::data_t
-//       >::value
-//     > * = nullptr
-//   >
-// void updateWithDot(const mvec_type & mvA, const vec_type & vecB, expr_type & result)
-// {
-//   static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, expr_type>::value,
-//     "Types are not scalar compatible");
-
-//   // check the result has right size
-//   const auto numVecs = mvA.numVectors();
-//   assert( result.extent(0) == numVecs );
-
-//   for (auto i=0; i<numVecs; i++){
-//     // colI is a Teuchos::RCP<Vector<...>>
-//     auto colI = mvA.data()->getVector(i);
-//     result[i] += colI->dot(*vecB.data());
-//   }
-// }
-
-
-
-// //--------------------------------------------
-// // c = teuchos serial dense vector, passed in
-// //--------------------------------------------
-// template <
-//   typename mvec_type,
-//   typename vec_type,
-//   typename result_vec_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_tpetra<mvec_type>::value and
-//     containers::meta::is_vector_wrapper_tpetra<vec_type>::value and
-//     containers::meta::is_dense_vector_wrapper_teuchos<result_vec_type>::value and
-//     containers::details::traits<result_vec_type>::is_dynamic
-//     > * = nullptr
-//   >
-// void dot(const mvec_type & mvA,
-// 	 const vec_type & vecB,
-// 	 result_vec_type & result)
-// {
-//   static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
-//     "Types are not scalar compatible");
-
-//   const auto numVecs = mvA.numVectors();
-//   if ( result.extent(0) != numVecs )
-//     result.data()->resize(numVecs);
-//   dot(mvA, vecB, result.data()->values());
-// }

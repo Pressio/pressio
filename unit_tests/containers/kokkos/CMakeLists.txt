@@ -1,5 +1,5 @@
 
-add_serial_utest_kokkos(containers_multi_vector_dot_self_kokkos
+add_serial_utest_kokkos(containers_multi_vector_dot_self_kokkos 
   containers_multi_vector_dot_self_kokkos.cc)
 add_serial_utest_kokkos(containers_multi_vector_dot_vector_kokkos
   containers_multi_vector_dot_vector_kokkos.cc )
@@ -9,5 +9,3 @@ add_serial_utest_kokkos(containers_vector_sharedmem_kokkos_class
   containers_vector_sharedmem_kokkos_class.cc )
 add_serial_utest_kokkos(containers_multi_vector_sharedmem_kokkos_class
   containers_multi_vector_sharedmem_kokkos_class.cc )
-add_serial_utest_kokkos(containers_multi_vector_product_vector_view_from_mv_kokkos
-  containers_multi_vector_product_vector_view_from_mv_kokkos.cc)

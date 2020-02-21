@@ -30,10 +30,11 @@ namespace{
   template <typename matrix_t>
   void doDot(const myMV_t & A, const myMV_t & B)
   {
+    matrix_t C(A.extent(1), B.extent(1));
     constexpr auto beta  = ::pressio::utils::constants::zero<double>();
     constexpr auto alpha = ::pressio::utils::constants::one<double>();
-    auto C = ::pressio::containers::ops::product<matrix_t>(::pressio::transpose(), 
-      ::pressio::nontranspose(), alpha, A, B);
+    ::pressio::containers::ops::product(::pressio::transpose(), 
+      ::pressio::nontranspose(), alpha, A, B, beta, C);
     ASSERT_EQ(C.extent(0), 3);
     ASSERT_EQ(C.extent(1), 4);
 
@@ -55,7 +56,7 @@ namespace{
   {
     // subspan a block of size (3 x 4) so that we can store A^T B
     auto block = pressio::containers::subspan(C, std::make_pair(10, 13), std::make_pair(15,19));
-    pressio::containers::ops::dot(A,B,block);
+    pressio::containers::ops::product(::pressio::transpose(), pressio::nontranspose(), 1., A, B, 0., block);
     ASSERT_EQ(block.extent(0), 3);
     ASSERT_EQ(block.extent(1), 4);
     EXPECT_DOUBLE_EQ( block(0,0), 11.);

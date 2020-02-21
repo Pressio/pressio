@@ -119,6 +119,9 @@ public:
                   const int step_s,
                   scalar_t & rnorm) const
   {
+    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+
     int n = 0;
     scalar_t t = ts + n*dt;
     int step = step_s + n;
@@ -145,22 +148,48 @@ public:
     auto hess_block = ::pressio::containers::subspan( hess,
 						      std::make_pair( n*romSize_,(n+1)*romSize_ ) ,
 						      std::make_pair( n*romSize_,(n+1)*romSize_) );
-    ::pressio::containers::ops::dot(wlsJacs_[jac_stencil_size_-1], wlsJacs_[jac_stencil_size_-1], hess_block);
+    ::pressio::containers::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+					one, wlsJacs_[jac_stencil_size_-1],
+					wlsJacs_[jac_stencil_size_-1], zero, hess_block);
+
+    // for (auto i=0; i<romSize_; ++i){
+    //   for (auto j=0; j<romSize_; ++j){
+    //     std::cout << hess_block(i,j) << " ";
+    //   }
+    //   std::cout << "\n";
+    // }
+    // std::cout << "\n";
+    // std::cout << "\n";
 
     // compute gradient[n*romSize_:(n+1)*romSize] += J^T r
     auto gradientView = ::pressio::containers::span(gradient, n*romSize_, romSize_);
-    ::pressio::containers::ops::updateWithDot( wlsJacs_[jac_stencil_size_-1], residual_, gradientView);
+    ::pressio::containers::ops::product(::pressio::transpose(),
+					one, wlsJacs_[jac_stencil_size_-1], residual_,
+					one, gradientView);
+    // for (auto i=0; i<romSize_; ++i){
+    //   std::cout << gradientView[i] << " \n";
+    // }
+    // std::cout << "\n";
+    // std::cout << "\n";
 
     for (int n = 1; n < numStepsInWindow; n++)
     {
-      updateResidualAndJacobian(timeSchemeObj, wlsState, fomStateReconstrObj, n, step_s, ts, rnorm, gradient, dt);
+      updateResidualAndJacobian(timeSchemeObj, wlsState, fomStateReconstrObj, n,
+				step_s, ts, rnorm, gradient, dt);
 
       const int sbar = std::min(n,jac_stencil_size_);
       for (int i=0; i < sbar; i++)
       {
-	auto gradientView = ::pressio::containers::span(gradient, (n-i)*romSize_, romSize_);
-	::pressio::containers::ops::updateWithDot( wlsJacs_[jac_stencil_size_-i-1], residual_, gradientView );
+      	auto gradientView = ::pressio::containers::span(gradient, (n-i)*romSize_, romSize_);
+        ::pressio::containers::ops::product(::pressio::transpose(),
+					    one, wlsJacs_[jac_stencil_size_-i-1], residual_,
+					    one, gradientView);
       }
+      // for (auto i=0; i<romSize_; ++i){
+      //   std::cout << gradientView[i] << " \n";
+      // }
+      // std::cout << "\n";
+      // std::cout << "\n";
 
       // == Assemble local component of global Hessian //
       for (int i=0; i < sbar; i++){
@@ -168,9 +197,18 @@ public:
 	    auto hess_block = ::pressio::containers::subspan(hess,
 							     std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
 							     std::make_pair( (n-j)*romSize_,(n-j+1)*romSize_ ) );
-	    ::pressio::containers::ops::updateWithDot(wlsJacs_[jac_stencil_size_-i-1],
-						      wlsJacs_[jac_stencil_size_-j-1],
-						      hess_block);
+	    ::pressio::containers::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
+						wlsJacs_[jac_stencil_size_-i-1],
+						wlsJacs_[jac_stencil_size_-j-1], one, hess_block);
+
+	    // for (auto i=0; i<romSize_; ++i){
+	    //   for (auto j=0; j<romSize_; ++j){
+	    // 	std::cout << hess_block(i,j) << " ";
+	    //   }
+	    //   std::cout << "\n";
+	    // }
+	    // std::cout << "\n";
+	    // std::cout << "\n";
 
 	    // handle symmetry
 	    auto hess_block2 = ::pressio::containers::subspan(hess,

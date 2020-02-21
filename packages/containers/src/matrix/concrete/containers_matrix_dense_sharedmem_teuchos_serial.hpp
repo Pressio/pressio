@@ -58,9 +58,7 @@ class Matrix<wrapped_type,
 	       containers::meta::is_dense_matrix_teuchos<
 		 wrapped_type>::value>
 	     >
-  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
-    public ContainerSharedMemBase< Matrix<wrapped_type> >,
-    public MatrixSharedMemBase< Matrix<wrapped_type> >
+  : public MatrixSharedMemBase< Matrix<wrapped_type> >
 {
 
   using derived_t = Matrix<wrapped_type>;
@@ -109,8 +107,6 @@ public:
     return *this;
   }
 
-
-private:
   ord_t extentImpl(ord_t i) const {
     assert(i==0 or i==1);
     return (i==0) ? data_.numRows() : data_.numCols();
@@ -125,8 +121,6 @@ private:
   };
 
 private:
-  friend ContainerBase< derived_t, wrapped_type >;
-  friend ContainerSharedMemBase< derived_t >;
   friend MatrixSharedMemBase< derived_t >;
 
 private:

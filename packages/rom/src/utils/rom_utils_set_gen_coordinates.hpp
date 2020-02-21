@@ -76,8 +76,9 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 
   //compute hessian for phi^T phi
   hessian_t H(romSize,romSize);
-  ::pressio::containers::ops::dot(phi, phi, H);
-  // ::pressio::containers::ops::product(::pressio::transpose(), one, phi, phi, zero, H);
+  // ::pressio::containers::ops::dot(phi, phi, H);
+  ::pressio::containers::ops::product(::pressio::transpose(), 
+        ::pressio::nontranspose(), one, phi, phi, zero, H);
 
   //create a vector to store yFOM - yRef
   fom_state_t b(yFOM_IC);
@@ -85,7 +86,7 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 
   // compute phi^T b
   rom_state_t r(romSize);
-  pressio::containers::ops::dot(phi, b, r);
+  // pressio::containers::ops::dot(phi, b, r);
   ::pressio::containers::ops::product(::pressio::transpose(), one, phi, b, zero, r);
 
   // solve system for optimal L2 projection

@@ -10,30 +10,30 @@ TEST(containers_vector_serial_eigen_dynamic_class,
      constructor){
 
   using vecTrait = pressio::containers::details::traits<myvec_t>;
-  ASSERT_TRUE(vecTrait::wrapped_vector_identifier 
+  ASSERT_TRUE(vecTrait::wrapped_vector_identifier
   == pressio::containers::details::WrappedVectorIdentifier::EigenColDynamic);
 
-  //construct by passing the size 
+  //construct by passing the size
   myvec_t m_v2(5);
-  
+
   // pass native eigen vector
   eigvec_t e_v1(45);
-  e_v1(2) = 2.2; e_v1(4) = 4.4;  
+  e_v1(2) = 2.2; e_v1(4) = 4.4;
   myvec_t m_v1(e_v1);
 }
 
 TEST(containers_vector_serial_eigen_dynamic_class,
      constructorAndCheckVals){
 
-  //construct by passing the size 
+  //construct by passing the size
   myvec_t m_v2(5);
   ASSERT_TRUE( m_v2.extent(0) == 5 );
   for (size_t i=0; i<5; i++)
     EXPECT_DOUBLE_EQ( m_v2[i], 0.);
-  
+
   // pass native eigen vector
   eigvec_t e_v1(45);
-  e_v1(2) = 2.2; e_v1(4) = 4.4;  
+  e_v1(2) = 2.2; e_v1(4) = 4.4;
   myvec_t m_v1(e_v1);
   ASSERT_TRUE( m_v1.extent(0) == 45 );
   EXPECT_DOUBLE_EQ( m_v1[2], 2.2);
@@ -44,10 +44,10 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 TEST(containers_vector_serial_eigen_dynamic_class,
      copyConstructor){
 
-  //construct by passing the size 
+  //construct by passing the size
   myvec_t a(3);
   a[0]=1.1; a[1]=1.2; a[2]= 1.3;
-  
+
   myvec_t b(a);
   EXPECT_DOUBLE_EQ( b[0], 1.1);
   EXPECT_DOUBLE_EQ( b[1], 1.2);
@@ -58,10 +58,10 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 TEST(containers_vector_serial_eigen_dynamic_class,
      assignOp){
 
-  //construct by passing the size 
+  //construct by passing the size
   myvec_t a(3);
   a[0]=1.1; a[1]=1.2; a[2]= 1.3;
-  
+
   myvec_t b(3);
   b = a;
   EXPECT_DOUBLE_EQ( b[0], 1.1);
@@ -75,7 +75,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 
   myvec_t m_v1(4);
   ::testing::StaticAssertTypeEq<decltype(m_v1.data()),
-				eigvec_t * >(); 
+				eigvec_t * >();
   const myvec_t m_v2(4);
   ::testing::StaticAssertTypeEq< decltype(m_v2.data()),
 				 const eigvec_t * >();
@@ -107,12 +107,12 @@ TEST(containers_vector_serial_eigen_dynamic_class,
   myvec_t m_v3(4);
   ::testing::StaticAssertTypeEq<
     decltype(m_v3[1]), double & >();
-  
+
   ASSERT_TRUE( m_v3.extent(0) == 4 );
   m_v3[0] = 34.0;
   m_v3[1] = 22.5;
   m_v3[2] = 11.5;
-  m_v3[3] = 75.0;  
+  m_v3[3] = 75.0;
   EXPECT_DOUBLE_EQ( m_v3[0], 34.0);
   EXPECT_DOUBLE_EQ( m_v3[1], 22.5);
   EXPECT_DOUBLE_EQ( m_v3[2], 11.5);
@@ -120,7 +120,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
   m_v3[0] = 56.;
   m_v3[3] = 44.;
   EXPECT_DOUBLE_EQ( m_v3[0], 56.0);
-  EXPECT_DOUBLE_EQ( m_v3[3], 44.0);  
+  EXPECT_DOUBLE_EQ( m_v3[3], 44.0);
 
   const myvec_t m_v4(4);
   ::testing::StaticAssertTypeEq<
@@ -137,7 +137,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
   m_v3(0) = 34.0;
   m_v3(1) = 22.5;
   m_v3(2) = 11.5;
-  m_v3(3) = 75.0;  
+  m_v3(3) = 75.0;
   EXPECT_DOUBLE_EQ( m_v3(0), 34.0);
   EXPECT_DOUBLE_EQ( m_v3(1), 22.5);
   EXPECT_DOUBLE_EQ( m_v3(2), 11.5);
@@ -150,7 +150,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 
   const myvec_t m_v4(4);
   ::testing::StaticAssertTypeEq<
-    decltype(m_v4(1)), const double & >();  
+    decltype(m_v4(1)), const double & >();
 }
 
 

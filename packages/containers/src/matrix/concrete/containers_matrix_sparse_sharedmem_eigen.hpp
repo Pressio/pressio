@@ -57,7 +57,7 @@ class Matrix<wrapped_type,
 	       containers::meta::is_sparse_matrix_eigen<
 		 wrapped_type >::value>
 	     >
-  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >
+  : public MatrixSharedMemBase< Matrix<wrapped_type>>
 {
 
   using derived_t = Matrix<wrapped_type>;
@@ -107,8 +107,6 @@ public:
 
   ~Matrix() = default;
 
-public:
-
   // note here that we return by copy
   sc_t operator() (ord_t row, ord_t col) const{
     // eigen returns 0 if the item is zero
@@ -127,7 +125,6 @@ public:
     return *this;
   }
 
-private:
   wrap_t const * dataImpl() const{
     return &data_;
   };
@@ -137,7 +134,7 @@ private:
   };
 
 private:
-  friend ContainerBase< derived_t, wrapped_type >;
+  friend MatrixSharedMemBase<derived_t>;
 
 private:
   wrap_t data_ = {};

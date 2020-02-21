@@ -52,25 +52,22 @@
 namespace pressio{ namespace containers{
 
 template<typename derived_type>
-class MultiVectorSharedMemBase
+class MultiVectorSharedMemBase : public ContainerSharedMemBase<derived_type>
 {
   using traits = ::pressio::containers::details::traits<derived_type>;
 
   static_assert(traits::is_shared_mem==1,
 		"OOPS: the concrete vector type inheriting from sharedMem base is not shared mem!");
 
+  using this_t = MultiVectorSharedMemBase<derived_type>;
   using sc_t  = typename traits::scalar_t;
   using ord_t = typename traits::ordinal_t;
+  friend derived_type;
 
 public:
   ord_t numVectors() const{
     return static_cast<const derived_type &>(*this).numVectorsImpl();
   }
-
-private:
-  friend derived_type;
-  using this_t = MultiVectorSharedMemBase<derived_type>;
-  friend utils::details::CrtpBase<this_t>;
 };//end class
 
 }}//end namespace pressio::containers

@@ -59,13 +59,16 @@ namespace pressio{ namespace containers{ namespace ops{
  *
 */
 
+/* -------------------------------------------------------------------
+ * specialize for op(A) = A^T and op(B) = B
+ *-------------------------------------------------------------------*/
 template <
   typename A_type, typename B_type, typename scalar_type, typename C_type
   >
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<B_type>::value and
-  ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<C_type>::value
+  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<B_type>::value
+  /*and ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<C_type>::value*/
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -73,7 +76,7 @@ product(::pressio::transpose modeA,
 	const A_type & A,
 	const B_type & B,
 	const scalar_type beta,
-	C_type & C)
+	MatrixSharedMemBase<C_type> & C)
 {
   static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
@@ -128,7 +131,6 @@ product(::pressio::transpose modeA,
 // /***********************************
 //  * special case A==B
 // **********************************/
-
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and

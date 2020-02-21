@@ -57,9 +57,7 @@ class MultiVector<wrapped_type,
 		    meta::is_dynamic_multi_vector_eigen<
 		      wrapped_type>::value>
 		  >
-  : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
-    public ContainerSharedMemBase< MultiVector<wrapped_type>>,
-    public MultiVectorSharedMemBase< MultiVector<wrapped_type> >
+  : public MultiVectorSharedMemBase< MultiVector<wrapped_type> >
 {
 
 private:
@@ -104,8 +102,6 @@ public:
     return data_(irow, iVec);
   }
 
-private:
-
   ord_t numVectorsImpl() const{
     return data_.cols();
   }
@@ -128,8 +124,6 @@ private:
   }
 
 private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend ContainerSharedMemBase< this_t >;
   friend MultiVectorSharedMemBase< this_t >;
 
 private:

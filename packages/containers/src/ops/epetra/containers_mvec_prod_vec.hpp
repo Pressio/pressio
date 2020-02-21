@@ -91,14 +91,12 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
  *-------------------------------------------------------------------*/
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_epetra<A_type>::value and
-  (containers::meta::is_vector_wrapper_eigen<x_type>::value or
-   containers::meta::is_dense_vector_wrapper_teuchos<x_type>::value)
+  containers::meta::is_multi_vector_wrapper_epetra<A_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
-	const x_type & x,
+	const VectorSharedMemBase<x_type> & x,
 	const scalar_type beta,
 	::pressio::containers::Vector<Epetra_Vector> & y)
 {
@@ -115,33 +113,24 @@ product(::pressio::nontranspose mode,
 /* -------------------------------------------------------------------
  * x is a distributed Epetra vector wrapper
  *-------------------------------------------------------------------*/
-
-template <typename A_type, typename scalar_type>
+// y = Eigen vector, passed in
+template <typename A_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_epetra<A_type>::value
+  containers::meta::is_multi_vector_wrapper_epetra<A_type>::value  
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
 	const ::pressio::containers::Vector<Epetra_Vector> & x,
 	const scalar_type beta,
-	scalar_type * y)
+	VectorSharedMemBase<y_type> & y)
 {
-  static_assert(mpl::is_same<
-		typename ::pressio::containers::details::traits<A_type>::scalar_t,
-		scalar_type
-		>::value,
-		"Scalar compatibility broken");
+  static_assert(containers::meta::are_scalar_compatible<A_type, y_type>::value,
+		"Types are not scalar compatible");
 
-  ///computes A(:,j) dot x storing each value in y
-  /* Apparently, trilinos does not support this.
-   * the native Dot() method of multivectors is only for dot product
-   * of two multivectors of the same size. So we have to extract
-   * each column vector from A and do dot product one at a time.
-  */
-
-  // how many vectors are in A
   const auto numVecs = A.numVectorsGlobal();
+  assert( y.extent(0) == numVecs );
+
   auto * mvNatData = A.data();
   const auto * vecNatData = x.data();
   auto tmp = ::pressio::utils::constants::zero<scalar_type>();
@@ -152,99 +141,6 @@ product(::pressio::transpose mode,
   }
 }
 
-// y = Eigen vector, passed in
-template <typename A_type, typename y_type, typename scalar_type>
-::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_epetra<A_type>::value and
-  containers::meta::is_vector_wrapper_eigen<y_type>::value
-  >
-product(::pressio::transpose mode,
-	const scalar_type alpha,
-	const A_type & A,
-	const ::pressio::containers::Vector<Epetra_Vector> & x,
-	const scalar_type beta,
-	y_type & y)
-{
-  static_assert(containers::meta::are_scalar_compatible<A_type, y_type>::value,
-		"Types are not scalar compatible");
-
-  const auto numVecs = A.numVectorsGlobal();
-  assert( y.extent(0) == numVecs );
-  product( mode, alpha, A, x, beta, y.data()->data() );
-}
-
 }}}//end namespace pressio::containers::ops
 #endif
 #endif
-
-
-
-
-
-
-// /* -------------------------------------------------------------------
-//  * specialize for epetra mv wrapper operating on an expression
-//  *-------------------------------------------------------------------*/
-// template <
-//   typename mvec_type,
-//   typename expr_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-//     ::pressio::containers::meta::is_expression<expr_type>::value
-//     > * = nullptr
-//   >
-// void product(const mvec_type & mvA,
-// 	     const expr_type & exprObj,
-// 	     containers::Vector<Epetra_Vector> & C)
-// {
-//   static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
-//     "Types are not scalar compatible");
-//   ::pressio::containers::ops::impl::_product_epetra_mv_sharedmem_vec(mvA, exprObj, C);
-// }
-
-// template <
-//   typename mvec_type,
-//   typename expr_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-//     ::pressio::containers::meta::is_expression<expr_type>::value
-//     > * = nullptr
-//   >
-// containers::Vector<Epetra_Vector>
-// product(const mvec_type & mvA, const expr_type & exprObj)
-// {
-//   static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
-//     "Types are not scalar compatible");
-
-//   const auto mvMap = mvA.data()->Map();
-//   using res_t = containers::Vector<Epetra_Vector>;
-//   res_t c(mvMap);
-//   product(mvA, exprObj, c);
-//   return c;
-// }
-
-
-
-// // c = teuchos serial dense vector, passed in
-// template <
-//   typename mvec_type,
-//   typename vec_type,
-//   typename result_vec_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_epetra<mvec_type>::value and
-//     containers::meta::is_vector_wrapper_epetra<vec_type>::value and
-//     containers::meta::is_dense_vector_wrapper_teuchos<result_vec_type>::value and
-//     containers::details::traits<result_vec_type>::is_dynamic
-//     > * = nullptr
-//   >
-// void dot(const mvec_type & mvA,
-// 	 const vec_type & vecB,
-// 	 result_vec_type & result)
-// {
-//   static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, result_vec_type>::value,
-//     "Types are not scalar compatible");
-
-//   const auto numVecs = mvA.numVectorsGlobal();
-//   result.data()->resize(numVecs);
-//   dot(mvA, vecB, result.data()->values());
-// }

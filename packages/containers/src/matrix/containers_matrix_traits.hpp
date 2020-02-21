@@ -82,7 +82,7 @@ struct traits<
 				    wrapped_type,
 				    false, true, false,
 				    WrappedPackageIdentifier::Undefined,
-				    false, false>
+				    false>
 {
 
   using wrapped_t = wrapped_type;
@@ -90,6 +90,9 @@ struct traits<
   using scalar_t  = typename wrapped_type::value_type;
   using value_t   = typename wrapped_type::value_type;
   using size_t   = typename wrapped_type::size_type;
+
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::Arbitrary;
@@ -118,17 +121,23 @@ struct traits< Matrix<
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Eigen,true,
-				    ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
-				      wrapped_type::ColsAtCompileTime != Eigen::Dynamic )>,
+				    WrappedPackageIdentifier::Eigen, true>,
     public matrix_shared_traits<false>
 {
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEigen;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+
+  static constexpr bool is_static = ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
+                                      wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
+  static constexpr bool is_dynamic  = !is_static;
+
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
+  using size_t    = ordinal_t;
   using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>>;
   using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>>;
 };
@@ -150,14 +159,21 @@ struct traits< Matrix<
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Eigen, true, false>,
+				    WrappedPackageIdentifier::Eigen, true>,
     public matrix_shared_traits<true>
 {
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::SparseEigen;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = typename wrapped_type::StorageIndex;
+  using size_t    = ordinal_t;
   //  ordinal has to be integral and signed
   static_assert( std::is_integral<ordinal_t>::value &&
   		 std::is_signed<ordinal_t>::value,
@@ -186,16 +202,23 @@ struct traits<Matrix
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
 				    WrappedPackageIdentifier::Trilinos,
-				    false, false>,
+				    false>,
     public matrix_shared_traits<true>
 {
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::CrsEpetra;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
   using scalar_t = double;
   using local_ordinal_t = int;
   using global_ordinal_t = int;
+  using size_t    = global_ordinal_t;  
   using communicator_t = Epetra_Comm;
   using row_map_t = Epetra_Map;
   using col_map_t = Epetra_Map;
@@ -223,15 +246,22 @@ struct traits<Matrix<wrapped_type,
 				    wrapped_type,
 				    false, true, false,
 				    WrappedPackageIdentifier::Trilinos,
-				    true, false>,
+				    true>,
     public matrix_shared_traits<false>
 {
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::TeuchosSerialDense;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
   using scalar_t = typename wrapped_type::scalarType;
   using ordinal_t = typename wrapped_type::ordinalType;
+  using size_t    = ordinal_t;  
 
   // for now, this must be empty until we enable support for subspanning a kokkos matrix
   using subspan_ret_t = void;
@@ -258,15 +288,22 @@ struct traits<Matrix
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type, false, true, false,
 				    WrappedPackageIdentifier::Trilinos,
-				    false, false>,
+				    false>,
     public matrix_shared_traits<false>
 {
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEpetra;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
   using scalar_t = double;
   using local_ordinal_t = int;
   using global_ordinal_t = int;
+  using size_t    = global_ordinal_t;  
   using communicator_t = Epetra_Comm;
   using row_map_t = Epetra_BlockMap;
 };
@@ -285,21 +322,27 @@ struct traits<Matrix<wrapped_type,
      >
   : public containers_shared_traits<Matrix<wrapped_type>,
             wrapped_type, false, true, false,
-	    WrappedPackageIdentifier::Trilinos,false, false>,
+	    WrappedPackageIdentifier::Trilinos,false>,
     public matrix_shared_traits<true>
 {
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::SparseTpetra;
 
-  static constexpr int is_static = 0;
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
 
   using scalar_t = typename wrapped_type::impl_scalar_type;
   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
+  using size_t    = global_ordinal_t;  
+
   using row_map_t = typename wrapped_type::map_type;
   using col_map_t = typename wrapped_type::map_type;
   using range_map_t = typename wrapped_type::map_type;
   using domain_map_t = typename wrapped_type::map_type;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
 
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
@@ -343,19 +386,27 @@ struct traits<
   wrapped_type,
   false, true, false,
   WrappedPackageIdentifier::Kokkos,
-  true, //true because kokkos is for shared mem
-  // the values of the crs matrix are stored in a 1d dynamic view,
-  // so set crs kokkos matrix to be dynamic, but maybe we should decide in
-  // a different way
-  false
-  >
+  true //true because kokkos is for shared mem
+  >,
+  public matrix_shared_traits<true>
 {
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::CrsKokkos;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+
   using scalar_t	= typename wrapped_type::value_type;
   using ordinal_t	= typename wrapped_type::ordinal_type;
+  using size_t    = ordinal_t;  
+
+  // the values of the crs matrix are stored in a 1d dynamic view,
+  // so set crs kokkos matrix to be dynamic, but maybe we should decide in
+  // a different way
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
   using execution_space = typename wrapped_type::execution_space;
   using device_type	= typename wrapped_type::device_type;
   using memory_traits	= typename wrapped_type::memory_traits;
@@ -384,24 +435,31 @@ struct traits<
   wrapped_type,
   false, true, false,
   WrappedPackageIdentifier::Kokkos,
-  true, //true because kokkos is for shared mem
-  // static view if the number of runtime determined dimensions == 0
-  wrapped_type::traits::rank_dynamic==0
-  >
+  true //true because kokkos is for shared mem
+  >,
+  public matrix_shared_traits<false>
 {
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+
   using scalar_t	  = typename wrapped_type::traits::value_type;
   using layout		  = typename wrapped_type::traits::array_layout;
   using ordinal_t	  = typename wrapped_type::traits::size_type;
+  using size_t    = ordinal_t;  
+
   using execution_space   = typename wrapped_type::traits::execution_space;
   using memory_space	  = typename wrapped_type::traits::memory_space;
   using device_t	  = typename wrapped_type::traits::device_type;
   using memory_traits	  = typename wrapped_type::traits::memory_traits;
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
+
+  static constexpr bool is_static = wrapped_type::traits::rank_dynamic==0;
+  static constexpr bool is_dynamic  = !is_static;
 
   using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>>;
   using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>>;

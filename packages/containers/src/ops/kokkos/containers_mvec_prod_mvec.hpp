@@ -61,11 +61,14 @@ namespace pressio{ namespace containers{ namespace ops{
  *
 */
 
+//-------------------------------------------
+// specialize for op(A) = A^T and op(B) = B
+//-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value and
-  ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<B_type>::value and
-  ::pressio::containers::meta::is_matrix_wrapper_kokkos<C_type>::value
+  ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<B_type>::value
+  /*::pressio::containers::meta::is_matrix_wrapper_kokkos<C_type>::value*/
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -73,19 +76,10 @@ product(::pressio::transpose modeA,
 	const A_type & A,
 	const B_type & B,
 	const scalar_type beta,
-	C_type & C)
+	MatrixSharedMemBase<C_type> & C)
 {
   static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
-
-  // // std::is_same<
-  // //   typename containers::details::traits<result_t>::execution_space,
-  // //   typename containers::details::traits<mvec_t>::execution_space
-  // // >::value and
-  // // std::is_same<
-  // //   typename containers::details::traits<result_t>::layout,
-  // //   typename containers::details::traits<mvec_t>::layout
-  // // >::value
 
   const char ctA = 'T';
   const char ctB = 'N';
@@ -93,9 +87,9 @@ product(::pressio::transpose modeA,
 }
 
 
-/***********************************
+/*----------------------------------------
 * special case A==B (for now use impl above)
-**********************************/
+------------------------------------------*/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value and
@@ -164,28 +158,4 @@ product(::pressio::transpose modeA,
 //   const char ctA = 'T';
 //   const char ctB = 'N';
 //   KokkosBlas::gemm(&ctA, &ctB, one, *A.data(), *B.data(), one, C());
-// }
-
-// /* ----------------------------------------------
-//  * result_t = an expression
-//  ---------------------------------------------- */
-// template <
-//   typename mvec_t,
-//   typename result_t,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_kokkos<mvec_t>::value and
-//     containers::meta::is_expression<result_t>::value
-//     > * = nullptr
-//   >
-// void dot(const mvec_t & A, const mvec_t & B, result_t & C)
-// {
-//   static_assert(containers::meta::are_scalar_compatible<mvec_t, result_t>::value,
-//     "Types are not scalar compatible");
-
-//   using sc_t = typename containers::details::traits<mvec_t>::scalar_t;
-//   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
-//   constexpr auto one = ::pressio::utils::constants::one<sc_t>();
-//   const char ctA = 'T';
-//   const char ctB = 'N';
-//   KokkosBlas::gemm( &ctA, &ctB, one, *A.data(), *B.data(), zero, C() );
 // }

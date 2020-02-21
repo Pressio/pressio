@@ -78,7 +78,7 @@ struct traits<
 				    wrapped_type,
 				    false, false, true,
 				    WrappedPackageIdentifier::Arbitrary,
-				    false, false>
+				    false>
 {
 
   using wrapped_t = wrapped_type;
@@ -86,6 +86,10 @@ struct traits<
   using scalar_t  = typename wrapped_type::value_type;
   using value_t   = typename wrapped_type::value_type;
   using size_t   = typename wrapped_type::size_type;
+
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+  using data_cp_return_t = wrapped_type;
 
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Arbitrary;
@@ -118,14 +122,23 @@ struct traits<
 				    wrapped_type,
 				    false, false, true,
 				    WrappedPackageIdentifier::Trilinos,
-				    false, false>
+				    false>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Epetra;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+  using data_cp_return_t = wrapped_type;
+
   using scalar_t = double;
   using local_ordinal_t = int;
   using global_ordinal_t = int;
+  using size_t    = global_ordinal_t;  
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
 };
@@ -149,7 +162,7 @@ struct traits<
 				    wrapped_type,
 				    false, false, true,
 				    WrappedPackageIdentifier::Trilinos,
-				    false, false>
+				    false>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Tpetra;
@@ -158,6 +171,14 @@ struct traits<
   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
   using data_map_t = typename wrapped_type::map_type;
+  using size_t    = global_ordinal_t;  
+
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+  using data_cp_return_t = wrapped_type;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
 
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
@@ -199,7 +220,7 @@ struct traits<
 				    wrapped_type,
 				    false, false, true,
 				    WrappedPackageIdentifier::Trilinos,
-				    false, false>
+				    false>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::TpetraBlock;
@@ -208,6 +229,14 @@ struct traits<
   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
   using data_map_t = typename wrapped_type::map_type;
+  using size_t    = global_ordinal_t;  
+
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+  using data_cp_return_t = wrapped_type;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
 
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
@@ -245,18 +274,24 @@ struct traits<
   : public containers_shared_traits<
   MultiVector<wrapped_type>,
   wrapped_type, false, false, true,
-  WrappedPackageIdentifier::Eigen, true, false
+  WrappedPackageIdentifier::Eigen, true
   >
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Eigen;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+  using data_cp_return_t = wrapped_type;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = int;
+  using size_t    = ordinal_t;  
 
   static constexpr bool is_admissible_for_expression_templates = true;
-  using view_col_vec_const_ret_t = expressions::ViewColumnVectorExpr<const MultiVector<wrapped_type>>;
-  using view_col_vec_ret_t = expressions::ViewColumnVectorExpr<MultiVector<wrapped_type>>;
 };
 
 
@@ -280,27 +315,31 @@ struct traits<
   wrapped_type,
   false, false, true,
   WrappedPackageIdentifier::Kokkos,
-  true, //true because kokkos is for shared mem
-  // static view if the number of runtime determined dimensions == 0
-  wrapped_type::traits::rank_dynamic==0
+  true //true because kokkos is for shared mem
   >
 {
 
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Kokkos;
 
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+  using data_cp_return_t = wrapped_type;
+
+  // static view if the number of runtime determined dimensions == 0
+  static constexpr bool is_static = wrapped_type::traits::rank_dynamic==0;
+  static constexpr bool is_dynamic  = !is_static;
+
   using scalar_t	  = typename wrapped_type::traits::value_type;
   using layout		  = typename wrapped_type::traits::array_layout;
   using ordinal_t	  = typename wrapped_type::traits::size_type;
+  using size_t    = ordinal_t;    
   using execution_space	  = typename wrapped_type::traits::execution_space;
   using memory_space	  = typename wrapped_type::traits::memory_space;
   using device_type	  = typename wrapped_type::traits::device_type;
   using memory_traits	  = typename wrapped_type::traits::memory_traits;
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t     = typename wrapped_type::host_mirror_type;
-
-  using view_col_vec_const_ret_t = expressions::ViewColumnVectorExpr<const MultiVector<wrapped_type>>;
-  using view_col_vec_ret_t = expressions::ViewColumnVectorExpr<MultiVector<wrapped_type>>;
 };
 #endif
 

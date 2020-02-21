@@ -185,10 +185,6 @@
 #include "containers/src/expressions/subspan/containers_expressions_traits.hpp"
 #include "containers/src/expressions/subspan/containers_subspan.hpp"
 
-#include "containers/src/expressions/mv_view_col_vector/containers_multi_vector_view_column_vector_expression.hpp"
-#include "containers/src/expressions/mv_view_col_vector/containers_expressions_traits.hpp"
-#include "containers/src/expressions/mv_view_col_vector/containers_view_column_vector.hpp"
-
 #include "containers/src/meta/generic/containers_is_expression.hpp"
 
 //------------------
@@ -206,7 +202,6 @@
 #include "containers/src/ops/arbitrary/containers_set_zero.hpp"
 
 // Eigen
-//#include "containers/src/ops/eigen/containers_eigen_ops_helper_impl.hpp"
 #include "containers/src/ops/eigen/containers_set_zero.hpp"
 #include "containers/src/ops/eigen/containers_scale.hpp"
 #include "containers/src/ops/eigen/containers_fill.hpp"
@@ -214,16 +209,8 @@
 #include "containers/src/ops/eigen/containers_deep_copy.hpp"
 #include "containers/src/ops/eigen/containers_add_to_diagonal.hpp"
 #include "containers/src/ops/eigen/containers_min_max.hpp"
-
 #include "containers/src/ops/eigen/containers_mat_prod_vec.hpp"
 #include "containers/src/ops/eigen/containers_mat_prod_mat.hpp"
-
-// #include "containers/src/ops/eigen/containers_mat_prod_mvec.hpp"
-// #include "containers/src/ops/eigen/containers_mvec_dot_self.hpp"
-// #include "containers/src/ops/eigen/containers_mvec_dot_mvec.hpp"
-// #include "containers/src/ops/eigen/containers_mvec_dot_vec.hpp"
-// #include "containers/src/ops/eigen/containers_mvec_prod_vec.hpp"
-
 #include "containers/src/ops/eigen/containers_multi_vector_do_update.hpp"
 #include "containers/src/ops/eigen/containers_norms_vector.hpp"
 #include "containers/src/ops/eigen/containers_vec_dot_vec.hpp"

@@ -52,25 +52,28 @@
 namespace pressio{ namespace containers{
 
 template<typename derived_type>
-class MatrixSharedMemBase
-  : private utils::details::CrtpBase<
-  MatrixSharedMemBase<derived_type>>{
-
+class MatrixSharedMemBase : public ContainerSharedMemBase<derived_type>
+{
   static_assert( details::traits<derived_type>::is_shared_mem==1,
   "OOPS: distributed matrix inheriting from sharedMem base!");
 
-  using sc_t = typename details::traits<derived_type>::scalar_t;
-  using ord_t = typename details::traits<derived_type>::ordinal_t;
+  using mytraits = typename details::traits<derived_type>;
+  using sc_t = typename mytraits::scalar_t;
+  using ord_t = typename mytraits::ordinal_t;
+
+public:
+  sc_t & operator() (ord_t row, ord_t col){
+    return static_cast<derived_type &>(*this)(row,col);
+  }
+
+  sc_t const & operator() (ord_t row, ord_t col) const{
+    return static_cast<derived_type const &>(*this)(row,col);
+  }
 
 private:
   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
-
-  friend utils::details::CrtpBase<MatrixSharedMemBase<derived_type>>;
-  MatrixSharedMemBase() = default;
-  ~MatrixSharedMemBase() = default;
-
 };//end class
 
 }} // end namespace pressio::containers

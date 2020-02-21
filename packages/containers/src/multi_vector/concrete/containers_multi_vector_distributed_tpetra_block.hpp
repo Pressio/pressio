@@ -61,9 +61,7 @@ class MultiVector<
       >::value
     >
   >
-  : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
-    public ContainerDistributedBase< MultiVector<wrapped_type> >,
-    public MultiVectorDistributedBase< MultiVector<wrapped_type> >
+  : public MultiVectorDistributedBase< MultiVector<wrapped_type> >
 {
 
 private:
@@ -102,7 +100,6 @@ public:
 
   ~MultiVector() = default;
 
-private:
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -148,8 +145,6 @@ private:
   }
 
 private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend ContainerDistributedBase< this_t >;
   friend MultiVectorDistributedBase< this_t >;
 
 private:

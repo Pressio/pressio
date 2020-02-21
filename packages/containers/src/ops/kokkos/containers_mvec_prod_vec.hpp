@@ -61,15 +61,18 @@ namespace pressio{ namespace containers{ namespace ops{
  *
 */
 
+//-------------------------------
+// specialize for op(A) = A
+//-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value and
-  containers::meta::is_vector_wrapper_kokkos<x_type>::value
+  containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value
+  /*and containers::meta::is_vector_wrapper_kokkos<x_type>::value*/
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
-	const x_type & x,
+	const VectorSharedMemBase<x_type> & x,
 	const scalar_type beta,
 	y_type & y)
 {
@@ -78,13 +81,15 @@ product(::pressio::nontranspose mode,
   static_assert(meta::have_matching_execution_space<A_type, x_type, y_type>::value,
 		"operands need to have same execution space" );
 
-  assert( y.data()->extent(0) == A.data()->extent(0) );
-  assert( A.data()->extent(1) == x.data()->extent(0) );
+  assert( y.extent(0) == A.extent(0) );
+  assert( A.extent(1) == x.extent(0) );
   const char ctA = 'N';
   KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
 }
 
-
+//-------------------------------
+// specialize for op(A) = A^T
+//-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value and
@@ -95,15 +100,15 @@ product(::pressio::transpose mode,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
-	y_type & y)
+	VectorSharedMemBase<y_type> & y)
 {
   static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
   static_assert(meta::have_matching_execution_space<A_type, x_type, y_type>::value,
 		"operands need to have same execution space" );
 
-  assert( y.data()->extent(0) == A.data()->extent(1) );
-  assert( A.data()->extent(0) == x.data()->extent(0) );
+  assert( y.extent(0) == A.extent(1) );
+  assert( A.extent(0) == x.extent(0) );
   const char ctA = 'T';
   KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
 }
@@ -111,81 +116,3 @@ product(::pressio::transpose mode,
 }}}//end namespace pressio::containers::ops
 #endif
 #endif
-
-
-// /* -------------------------------------------------------------------
-//  * specialize for kokkos mv wrapper operating on col vector expression
-//  *-------------------------------------------------------------------*/
-// template <
-//   typename mvec_type,
-//   typename expr_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-//     ::pressio::containers::meta::is_expression<expr_type>::value
-//     > * = nullptr
-//   >
-// void product(const mvec_type & A,
-// 	     const expr_type & exprObj,
-// 	     containers::Vector<
-// 	     Kokkos::View<
-// 	     typename containers::details::traits<mvec_type>::scalar_t*,
-// 	     typename containers::details::traits<mvec_type>::layout,
-// 	     typename containers::details::traits<mvec_type>::execution_space
-// 	     >
-// 	     > & c)
-// {
-//   static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
-//     "Types are not scalar compatible");
-
-//   // type of data wrapped by the expression
-//   using expr_data_t = typename ::pressio::containers::details::traits<expr_type>::data_t;
-//   static_assert(meta::have_matching_execution_space<mvec_type, expr_data_t>::value,
-//   		"product: MV and expr types need to have same execution space" );
-
-//   assert( c.extent(0) == A.extent(0) );
-//   const auto numVecs = A.numVectors();
-//   assert(numVecs == exprObj.extent(0));
-
-//   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
-//   constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
-//   constexpr auto one = ::pressio::utils::constants::one<sc_t>();
-//   const char ctA = 'N';
-//   KokkosBlas::gemv(&ctA, one, *A.data(), exprObj(), zero, *c.data());
-// }
-
-// template <
-//   typename mvec_type,
-//   typename expr_type,
-//   ::pressio::mpl::enable_if_t<
-//     containers::meta::is_multi_vector_wrapper_kokkos<mvec_type>::value and
-//     ::pressio::containers::meta::is_expression<expr_type>::value
-//     > * = nullptr
-//   >
-// auto product(const mvec_type & mvA, const expr_type & exprObj)
-// -> containers::Vector<
-//     Kokkos::View<
-//       typename containers::details::traits<mvec_type>::scalar_t*,
-//       typename containers::details::traits<mvec_type>::layout,
-//       typename containers::details::traits<mvec_type>::execution_space
-//       >
-//   >
-// {
-//   static_assert(containers::meta::are_scalar_compatible<mvec_type, expr_type>::value,
-//     "Types are not scalar compatible");
-
-//   // type of data wrapped by the expression
-//   using expr_data_t = typename ::pressio::containers::details::traits<expr_type>::data_t;
-//   static_assert(meta::have_matching_execution_space<mvec_type, expr_data_t>::value,
-//   		"product: MV and expr types need to have same execution space" );
-
-//   using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
-//   using layout    = typename containers::details::traits<mvec_type>::layout;
-//   using exe_space = typename containers::details::traits<mvec_type>::execution_space;
-
-//   using v_t = Kokkos::View<sc_t*, layout, exe_space>;
-//   using res_t = containers::Vector<v_t>;
-
-//   res_t c("product_res", mvA.data()->extent(0));
-//   product(mvA, exprObj, c);
-//   return c;
-// }

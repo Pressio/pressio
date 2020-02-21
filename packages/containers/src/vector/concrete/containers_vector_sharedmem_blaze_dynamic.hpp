@@ -58,9 +58,7 @@ class Vector<wrapped_type,
       containers::meta::is_dynamic_vector_blaze<wrapped_type>::value
       >
     >
-  : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
-    public ContainerSharedMemBase< Vector<wrapped_type> >,
-    public VectorSharedMemBase< Vector<wrapped_type> >
+  : public VectorSharedMemBase< Vector<wrapped_type> >
 {
 
   using this_t = Vector<wrapped_type>;
@@ -68,6 +66,8 @@ class Vector<wrapped_type,
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename  mytraits::ordinal_t;
   using wrap_t = typename mytraits::wrapped_t;
+  using ref_t = typename mytraits::reference_t;
+  using const_ref_t = typename mytraits::const_reference_t;
 
 public:
   Vector() = default;
@@ -78,18 +78,18 @@ public:
   explicit Vector(const wrap_t & src) : data_(src){}
 
 public:
-  sc_t & operator [] (ord_t i){
+  ref_t operator [] (ord_t i){
     return data_[i];
   };
 
-  sc_t const & operator [] (ord_t i) const{
+  const_ref_t operator [] (ord_t i) const{
     return data_[i];
   };
 
-  sc_t & operator()(ord_t i){
+  ref_t operator()(ord_t i){
     return data_[i];
   };
-  sc_t const & operator()(ord_t i) const{
+  const_ref_t operator()(ord_t i) const{
     return data_[i];
   };
 
@@ -115,7 +115,6 @@ public:
     return *this;
   }
 
-private:
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -133,8 +132,6 @@ private:
   }
 
 private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend ContainerSharedMemBase< this_t >;
   friend VectorSharedMemBase< this_t >;
 
 private:

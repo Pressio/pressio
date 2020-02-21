@@ -57,9 +57,7 @@ class Matrix<wrapped_type,
 	       containers::meta::is_dense_dynamic_matrix_eigen<
 		 wrapped_type>::value>
 	     >
-  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
-  public ContainerSharedMemBase< Matrix<wrapped_type> >,
-    public MatrixSharedMemBase< Matrix<wrapped_type> >
+  : public MatrixSharedMemBase< Matrix<wrapped_type> >
 {
 
   using derived_t = Matrix<wrapped_type>;
@@ -110,7 +108,6 @@ public:
     return *this;
   }
 
-private:
   wrap_t * dataImpl(){
     return &data_;
   };
@@ -125,8 +122,6 @@ private:
   }
 
 private:
-  friend ContainerBase< derived_t, wrapped_type >;
-  friend ContainerSharedMemBase< derived_t >;
   friend MatrixSharedMemBase< derived_t >;
 
 private:

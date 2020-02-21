@@ -22,7 +22,8 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   pressio::containers::Vector<Eigen::VectorXd> b(3);
   b(0) = 1.; b(1) = 1.; b(2) = 1.;
 
-  auto c1 = pressio::containers::ops::product(A,b);
+  pressio::containers::Vector<Eigen::VectorXd> c1(6);
+  pressio::containers::ops::product(::pressio::nontranspose(), 1., A, b, 0., c1);
   ASSERT_EQ( c1.extent(0), 6 );
   EXPECT_DOUBLE_EQ( c1(0), 6.);
   EXPECT_DOUBLE_EQ( c1(1), 6.);
@@ -30,9 +31,4 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   EXPECT_DOUBLE_EQ( c1(3), 1.);
   EXPECT_DOUBLE_EQ( c1(4), 1.);
   EXPECT_DOUBLE_EQ( c1(5), 2.);
-
-  pressio::containers::Vector<Eigen::VectorXd> c(6);
-  pressio::containers::ops::product(A,b,c);
-  for (auto i=0; i<c1.extent(0); i++)
-    EXPECT_DOUBLE_EQ( c(i), c1(i));
 }

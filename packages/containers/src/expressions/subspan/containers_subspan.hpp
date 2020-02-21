@@ -51,30 +51,26 @@
 
 namespace pressio{ namespace containers{
 
-template <typename T>
+template <typename T, typename ... Args>
 mpl::enable_if_t<
-  meta::is_matrix_wrapper<T>::value,
+  meta::is_matrix_wrapper<T>::value and (0 < sizeof...(Args)),
   typename details::traits<T>::subspan_const_ret_t
   >
-subspan(const T & obj,
-	const typename details::traits<T>::subspan_const_ret_t::interval_t & rowRangeIn,
-	const typename details::traits<T>::subspan_const_ret_t::interval_t & colRangeIn)
+subspan(const T & obj, Args&& ... args)
 {
   using return_t = typename details::traits<T>::subspan_const_ret_t;
-  return return_t(obj, rowRangeIn, colRangeIn);
+  return return_t(obj, std::forward<Args>(args)... );
 }
 
-template <typename T>
+template <typename T, typename ... Args>
 mpl::enable_if_t<
-  meta::is_matrix_wrapper<T>::value,
+  meta::is_matrix_wrapper<T>::value and (0 < sizeof...(Args)),
   typename details::traits<T>::subspan_ret_t
   >
-subspan(T & obj,
-	const typename details::traits<T>::subspan_ret_t::interval_t & rowRangeIn,
-	const typename details::traits<T>::subspan_ret_t::interval_t & colRangeIn)
+subspan(T & obj, Args&& ... args)
 {
   using return_t = typename details::traits<T>::subspan_ret_t;
-  return return_t(obj, rowRangeIn, colRangeIn);
+  return return_t(obj, std::forward<Args>(args)... );
 }
 
 

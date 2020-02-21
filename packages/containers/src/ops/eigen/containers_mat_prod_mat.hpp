@@ -55,14 +55,16 @@ namespace pressio{ namespace containers{ namespace ops{
  *
 */
 
+//-------------------------------------------
+// specialize for op(A) = A^T and op(B) = B
+//-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<A_type>::value) and
   (::pressio::containers::meta::is_matrix_wrapper_eigen<B_type>::value or
    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<B_type>::value) and
-  (::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<C_type>::value)
+  ::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -86,6 +88,9 @@ product(::pressio::transpose modeA,
 }
 
 
+//-------------------------------------------
+// specialize for op(A) = A and op(B) = B
+//-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
@@ -116,6 +121,7 @@ product(::pressio::nontranspose modeA,
 
   CE = beta * CE + alpha * AE * BE;
 }
+
 
 
 /***********************************

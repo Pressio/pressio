@@ -53,8 +53,7 @@ namespace pressio{ namespace containers{
 
 template<typename derived_type>
 class MultiVectorDistributedBase
-  : private utils::details::CrtpBase<
-  MultiVectorDistributedBase<derived_type>>
+  : public ContainerDistributedBase<derived_type>
 {
 
   static_assert( details::traits<derived_type>::is_shared_mem==0,
@@ -69,23 +68,21 @@ private:
 
 public:
   GO_t numVectors() const{
-    return this->underlying().numVectorsImpl();
+    return static_cast<derived_type const *>(this)->numVectorsImpl();
   }
 
   GO_t numVectorsGlobal() const{
-    return this->underlying().numVectorsGlobalImpl();
+    return static_cast<derived_type const *>(this)->numVectorsGlobalImpl();
   }
 
   LO_t numVectorsLocal() const{
-    return this->underlying().numVectorsLocalImpl();
+    return static_cast<derived_type const *>(this)->numVectorsLocalImpl();
   }
 
 private:
   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
-
-  friend utils::details::CrtpBase<this_t>;
 };//end class
 
 }}//end namespace pressio::containers

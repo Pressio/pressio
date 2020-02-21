@@ -67,11 +67,11 @@ struct RunTest{
     // wrap device
     wv vb_d(b_d);
 
-    // ---- do operation ---
-
-    auto c_d = ::pressio::containers::ops::product(mvA_d, vb_d);
-    using expected_ret_t = ::pressio::containers::Vector<k1d_d>;
-    static_assert( std::is_same< decltype(c_d), expected_ret_t>::value, "");
+    wv c_d("cd", mvA_d.extent(0));
+    constexpr auto beta  = ::pressio::utils::constants::zero<double>();
+    constexpr auto alpha = ::pressio::utils::constants::one<double>();
+    ::pressio::containers::ops::product(::pressio::nontranspose(), alpha, mvA_d, vb_d, beta, c_d);
+    // auto c_d = ::pressio::containers::ops::product(mvA_d, vb_d);
 
     // create host mirror of C_d
     using c_h_t = typename ::pressio::containers::details::traits<wv>::host_mirror_t;

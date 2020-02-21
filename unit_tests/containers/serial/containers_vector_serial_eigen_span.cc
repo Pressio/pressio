@@ -42,8 +42,8 @@ namespace{
 
     {
       // get the native expression
-      const auto sp = pressio::containers::span(a, 2, 3);
-      auto natEx = sp();
+      auto sp = pressio::containers::span(a, 2, 3);
+      auto & natEx = *sp.data();
       EXPECT_EQ( natEx.size(), 3 );
       EXPECT_DOUBLE_EQ( natEx(0), 44. );
       EXPECT_DOUBLE_EQ( natEx(1), 13. );
@@ -53,18 +53,17 @@ namespace{
 
   template <typename T>
   void testConst(const T & a){
-    const auto sp = pressio::containers::span(a, 2, 3);
+    auto sp = pressio::containers::span(a, 2, 3);
     EXPECT_EQ( sp.extent(0), 3 );
     EXPECT_DOUBLE_EQ( sp[0], 44. );
     EXPECT_DOUBLE_EQ( sp[1], 13. );
     EXPECT_DOUBLE_EQ( sp[2], 17. );
-    auto natEx = sp();
+    const auto &natEx = *sp.data();
     EXPECT_DOUBLE_EQ( natEx(0), 44. );
     EXPECT_DOUBLE_EQ( natEx(1), 13. );
     EXPECT_DOUBLE_EQ( natEx(2), 17. );
   }
 };
-
 
 TEST(containers_vector_eigen, span)
 {
@@ -84,9 +83,7 @@ TEST(containers_vector_eigen, span)
   testConst(a);
 }
 
-
-TEST(containers_vector_eigen, spanConstructor)
-{
+TEST(containers_vector_eigen, spanConstructor){
   using eigv_t = Eigen::VectorXd;
   using my_t = pressio::containers::Vector<eigv_t>;
 

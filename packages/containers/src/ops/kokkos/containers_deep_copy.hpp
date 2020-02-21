@@ -56,51 +56,18 @@ namespace pressio{ namespace containers{ namespace ops{
 // for wrappers, we overload the = operator
 //--------------------------------------------------------------------------
 template<
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
-    > * = nullptr
-  >
-void deep_copy(const T & src, T & dest){
-  dest = src;
-}
-
-template<
   typename T1, typename T2,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_kokkos<T1>::value and
-    ::pressio::containers::meta::is_expression<T2>::value
+    (::pressio::containers::meta::is_vector_wrapper_kokkos<T1>::value or
+      ::pressio::containers::meta::is_matrix_wrapper_kokkos<T1>::value or
+      ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T1>::value) and
+    (::pressio::containers::meta::is_vector_wrapper_kokkos<T2>::value or
+      ::pressio::containers::meta::is_matrix_wrapper_kokkos<T2>::value or
+      ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T1>::value)
     > * = nullptr
   >
 void deep_copy(const T1 & src, T2 & dest){
-  Kokkos::deep_copy(dest(), *src.data());
-}
-
-template<
-  typename T1, typename T2,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_expression<T1>::value and
-    ::pressio::containers::meta::is_vector_wrapper_kokkos<T2>::value
-    > * = nullptr
-  >
-void deep_copy(const T1 & src, T2 & dest){
-  Kokkos::deep_copy( *dest.data(), src() );
-}
-
-template<
-  typename T1,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_expression<T1>::value and
-    (::pressio::containers::meta::is_vector_wrapper_kokkos<
-     typename ::pressio::containers::details::traits<T1>::data_t
-      >::value or
-     ::pressio::containers::meta::is_matrix_wrapper_kokkos<
-     typename ::pressio::containers::details::traits<T1>::data_t
-     >::value)
-    > * = nullptr
-  >
-void deep_copy(const T1 & src, T1 & dest){
-  Kokkos::deep_copy(dest(), src());
+  Kokkos::deep_copy(*dest.data(), *src.data());
 }
 
 }}}//end namespace pressio::containers::ops

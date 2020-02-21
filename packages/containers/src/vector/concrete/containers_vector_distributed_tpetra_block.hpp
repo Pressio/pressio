@@ -61,9 +61,7 @@ class Vector<
       >::value
     >
   >
-  : public ContainerBase< Vector<wrapped_type>, wrapped_type >,
-    public ContainerDistributedBase< Vector<wrapped_type> >,
-    public VectorDistributedBase< Vector<wrapped_type> >
+  : public VectorDistributedBase< Vector<wrapped_type> >
 {
 
   using this_t		= Vector<wrapped_type>;
@@ -141,12 +139,6 @@ public:
     return *this;
   }
 
-private:
-
-  // map_t const & getDataMapImpl() const{
-  //   return *data_.getMap();
-  // }
-
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -170,8 +162,6 @@ private:
   }
 
 private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend ContainerDistributedBase< this_t >;
   friend VectorDistributedBase< this_t >;
 
 private:

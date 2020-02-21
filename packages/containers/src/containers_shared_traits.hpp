@@ -58,8 +58,7 @@ template<
   bool is_matrix_b,
   bool is_multi_vector_b,
   WrappedPackageIdentifier wpid,
-  bool is_shared_mem_b,
-  bool is_static_b
+  bool is_shared_mem_b
   >
 struct containers_shared_traits{
 
@@ -73,8 +72,6 @@ struct containers_shared_traits{
   static constexpr bool is_multi_vector = is_multi_vector_b;
   static constexpr bool is_shared_mem	= is_shared_mem_b;
   static constexpr bool is_distributed	= !is_shared_mem;
-  static constexpr bool is_static	= is_static_b;
-  static constexpr bool is_dynamic	= !is_static;
 };
 
 /// common traits of matrices

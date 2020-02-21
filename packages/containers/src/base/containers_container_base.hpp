@@ -51,34 +51,27 @@
 
 namespace pressio{ namespace containers{
 
-template<typename derived_type, typename wrapped_t>
+template<typename derived_type>
 class ContainerBase
-  : private utils::details::CrtpBase<
-  ContainerBase<derived_type, wrapped_t>
-  >
 {
-  using this_t = ContainerBase<derived_type, wrapped_t>;
+  using this_t = ContainerBase<derived_type>;
+  using traits = ::pressio::containers::details::traits<derived_type>;
+  using const_data_ret_t = typename traits::const_data_return_t;
+  using data_ret_t       = typename traits::data_return_t;
+  using size_t		 = typename traits::size_t;
 
 public:
-  wrapped_t const * data() const {
-    return this->underlying().dataImpl();
+  size_t extent(size_t i) const{
+    return static_cast<derived_type const *>(this)->extentImpl(i);
   }
 
-  wrapped_t * data(){
-    return this->underlying().dataImpl();
+  const_data_ret_t data() const {
+    return static_cast<derived_type const *>(this)->dataImpl();
   }
 
-  wrapped_t dataCp(){
-    return this->underlying().dataCpImpl();
+  data_ret_t data(){
+    return static_cast<derived_type *>(this)->dataImpl();
   }
-
-private:
-  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<derived_type>::type;
-
-  friend utils::details::CrtpBase<this_t>;
-
 };//end class
 
 }}//end namespace pressio::containers
