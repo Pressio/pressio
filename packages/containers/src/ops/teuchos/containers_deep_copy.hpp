@@ -61,7 +61,7 @@ template<
     ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
     > * = nullptr
   >
-void deep_copy(const T & src, T & dest){
+void deep_copy(T & dest, const T & src){
   dest = src;
 }
 

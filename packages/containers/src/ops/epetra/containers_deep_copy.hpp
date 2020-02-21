@@ -61,7 +61,7 @@ template<
     ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
     > * = nullptr
   >
-void deep_copy(const T & src, T & dest){
+void deep_copy(T & dest, const T & src){
   dest = src;
 }
 

@@ -67,7 +67,7 @@ template<
      ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T2>::value)
     > * = nullptr
   >
-void deep_copy(const T1 & src, T2 & dest){
+void deep_copy(T2 & dest, const T1 & src){
   *dest.data() = *src.data();
 }
 

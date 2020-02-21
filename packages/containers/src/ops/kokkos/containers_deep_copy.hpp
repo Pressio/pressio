@@ -60,13 +60,14 @@ template<
   ::pressio::mpl::enable_if_t<
     (::pressio::containers::meta::is_vector_wrapper_kokkos<T1>::value or
       ::pressio::containers::meta::is_matrix_wrapper_kokkos<T1>::value or
-      ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T1>::value) and
+      ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T1>::value) 
+    and
     (::pressio::containers::meta::is_vector_wrapper_kokkos<T2>::value or
       ::pressio::containers::meta::is_matrix_wrapper_kokkos<T2>::value or
       ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T2>::value)
     > * = nullptr
   >
-void deep_copy(const T1 & src, T2 & dest){
+void deep_copy(T1 & dest, const T2 & src){
   Kokkos::deep_copy(*dest.data(), *src.data());
 }
 

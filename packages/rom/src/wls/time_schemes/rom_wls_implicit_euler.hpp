@@ -146,7 +146,7 @@ public:
   {
     using nm1 = ::pressio::ode::nMinusOne;
     auto & odeState_nm1 = auxStatesContainer_.get(nm1());
-    ::pressio::containers::ops::deep_copy(yFOM_current_, odeState_nm1);
+    ::pressio::containers::ops::deep_copy(odeState_nm1, yFOM_current_);
   }
 
 };

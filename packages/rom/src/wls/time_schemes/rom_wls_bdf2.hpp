@@ -184,8 +184,8 @@ public:
 
     auto & odeState_nm1 = auxStatesContainer_.get(nm1());
     auto & odeState_nm2 = auxStatesContainer_.get(nm2());
-    ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
-    ::pressio::containers::ops::deep_copy(yFOM_current_, odeState_nm1);
+    ::pressio::containers::ops::deep_copy(odeState_nm2, odeState_nm1);
+    ::pressio::containers::ops::deep_copy(odeState_nm1, yFOM_current_);
   }
 
 };

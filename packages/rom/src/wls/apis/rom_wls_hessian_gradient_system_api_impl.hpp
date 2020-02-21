@@ -134,7 +134,7 @@ public:
   {
     const auto spanStartIndex = romSize_*(timeStencilSize_-1);
     auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
-    ::pressio::containers::ops::deep_copy(wlsStateIcIn, wlsInitialStateNm1);
+    ::pressio::containers::ops::deep_copy(wlsInitialStateNm1, wlsStateIcIn);
   }
 
 
@@ -176,7 +176,7 @@ public:
 
     const auto spanStartIndex = romSize_*(timeStencilSize_-1);
     auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
-    ::pressio::containers::ops::deep_copy(wlsStateTmp, wlsInitialStateNm1);
+    ::pressio::containers::ops::deep_copy(wlsInitialStateNm1, wlsStateTmp);
   }
 
   hessian_type createHessianObject(const wls_state_type & stateIn) const{
@@ -231,14 +231,14 @@ public:
     {
       auto wlsTmpState	      = ::pressio::containers::span(wlsStateIC_, i*romSize_,     romSize_);
       const auto wlsTmpState2 = ::pressio::containers::span(wlsStateIC_, (i+1)*romSize_, romSize_);
-      ::pressio::containers::ops::deep_copy(wlsTmpState2, wlsTmpState);
+      ::pressio::containers::ops::deep_copy(wlsTmpState, wlsTmpState2);
     }
 
     for (int i = start ; i < timeStencilSize_; i++)
     {
       auto wlsTmpState  = ::pressio::containers::span(wlsStateIC_, i*romSize_, romSize_);
       const auto wlsTmpState2 = ::pressio::containers::span(wlsState, (numStepsInWindow_ - timeStencilSize_+i)*romSize_, romSize_);
-      ::pressio::containers::ops::deep_copy(wlsTmpState2, wlsTmpState);
+      ::pressio::containers::ops::deep_copy(wlsTmpState, wlsTmpState2);
     }
     std::cout << " Window " << windowIndex << " completed " << std::endl;
   }// end advanceOneWindow

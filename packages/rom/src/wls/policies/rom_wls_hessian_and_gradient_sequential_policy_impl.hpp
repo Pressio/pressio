@@ -214,7 +214,7 @@ public:
 	    auto hess_block2 = ::pressio::containers::subspan(hess,
 							      std::make_pair( (n-j)*romSize_, (n-j+1)*romSize_),
 							      std::make_pair( (n-i)*romSize_,(n-i+1)*romSize_) );
-	    ::pressio::containers::ops::deep_copy(hess_block, hess_block2);
+	    ::pressio::containers::ops::deep_copy(hess_block2, hess_block);
 	  }
       }// end assembling local component of global Hessian
     }//end loop over stepsInWindow

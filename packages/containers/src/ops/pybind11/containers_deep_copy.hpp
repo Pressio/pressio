@@ -61,7 +61,7 @@ template<
     ::pressio::containers::meta::is_array_pybind11<T>::value
     > * = nullptr
   >
-void deep_copy(const T & src, T & dest){
+void deep_copy(T & dest, const T & src){
 
   if (src.ndim() > 1){
     throw std::runtime_error("containers::ops::deep_copy: v.ndims()!=1. this operation currently supported for vectors only");
