@@ -63,7 +63,7 @@ template<
       ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T1>::value) and
     (::pressio::containers::meta::is_vector_wrapper_kokkos<T2>::value or
       ::pressio::containers::meta::is_matrix_wrapper_kokkos<T2>::value or
-      ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T1>::value)
+      ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T2>::value)
     > * = nullptr
   >
 void deep_copy(const T1 & src, T2 & dest){
