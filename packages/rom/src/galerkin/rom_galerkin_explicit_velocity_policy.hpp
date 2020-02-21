@@ -163,7 +163,7 @@ public:
 #else
     galerkin_state_t result(romState);
 #endif
-    ::pressio::containers::ops::set_zero(result);
+    ::pressio::ops::set_zero(result);
     this->compute_impl(romState, result, app, t);
     return result;
   }
@@ -227,9 +227,10 @@ private:
     >
   void applyDecoderJacobianToFomVelDispatch(result_t & resObj) const
   {
-    containers::ops::dot(phi_, fomRhs_, resObj);
+    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    ::pressio::ops::product(::pressio::transpose(), one, phi_, fomRhs_, zero, resObj);
   }
-
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /* if ops_void, and phi has col-major order, use blas*/

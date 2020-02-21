@@ -59,9 +59,7 @@ class Matrix<
     containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
     >
   >
-  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >,
-    public ContainerSharedMemBase< Matrix<wrapped_type> >,
-    public MatrixSharedMemBase< Matrix<wrapped_type> >
+  : public MatrixSharedMemBase< Matrix<wrapped_type> >
 {
 
   using this_t = Matrix<wrapped_type>;
@@ -137,8 +135,6 @@ public:
     return data_(i, j);
   };
 
-
-private:
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -156,8 +152,6 @@ private:
   }
 
 private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend ContainerSharedMemBase< this_t >;
   friend MatrixSharedMemBase< this_t >;
 
 private:

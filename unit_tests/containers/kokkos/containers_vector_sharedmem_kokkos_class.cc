@@ -64,7 +64,7 @@ TEST(containers_vector_sharedmem_kokkos_class, Constructor)
 
   myvec_t g(a);
 
-  Kokkos::parallel_for (N, InitView<view_type>( g.dataCp() ));
+  Kokkos::parallel_for (N, InitView<view_type>( *g.data() ));
   // double sum = 0;
   // Kokkos::parallel_reduce (N, ReduceFunctor<view_type>(a), sum);
   // printf ("Result: %f\n", sum);

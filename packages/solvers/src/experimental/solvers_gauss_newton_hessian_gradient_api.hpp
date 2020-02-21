@@ -156,7 +156,7 @@ private:
     // compute J^T J and J^T R in one shot
     sys.computeHessianAndGradient(stateInOut, hessian_, gradient_, normType_, normResidual_);
 
-    ::pressio::containers::ops::scale(gradient_, negOne);
+    ::pressio::ops::scale(gradient_, negOne);
     // gradient_.scale(negOne);
 
     normResidual0_ = normResidual_;
@@ -198,7 +198,7 @@ private:
       // lsearch_helper_t::evaluate(alpha, stateInOut, ytrial, correction_, resid, jacob, sys);
 
       // solution update: state = state + alpha*correction
-      ::pressio::containers::ops::do_update(stateInOut, one, correction_, alpha);
+      ::pressio::ops::do_update(stateInOut, one, correction_, alpha);
 
       // check convergence (whatever method user decided)
       // TODO: we need to make sure the convergence criterion is compatible for this solver
@@ -215,7 +215,7 @@ private:
 
       // compute hessian and gradient
       sys.computeHessianAndGradient(stateInOut, hessian_, gradient_, normType_, normResidual_);
-      ::pressio::containers::ops::scale(gradient_, negOne);
+      ::pressio::ops::scale(gradient_, negOne);
       // gradient_.scale(negOne);
     }//loop
   }

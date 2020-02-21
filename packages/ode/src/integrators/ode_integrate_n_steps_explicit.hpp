@@ -55,15 +55,11 @@
 namespace pressio{ namespace ode{
 
 
-template<
-  typename stepper_type,
-  typename state_type,
-  typename time_type,
-  typename std::enable_if<
-    ::pressio::ode::meta::is_legitimate_explicit_state_type<state_type>::value
-    >::type * = nullptr
-  >
-void integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
+template<typename stepper_type, typename state_type, typename time_type>
+mpl::enable_if_t<
+::pressio::ode::details::traits<stepper_type>::is_explicit 
+>
+integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type			    & odeStateInOut,
 		     const time_type		    start_time,
 		     const time_type		    dt,
@@ -86,8 +82,11 @@ template<
   typename state_type,
   typename time_type,
   typename collector_type
-  >
-void integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
+>
+mpl::enable_if_t<
+::pressio::ode::details::traits<stepper_type>::is_explicit 
+>
+integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type				 & odeStateInOut,
 		     const time_type			 start_time,
 		     const time_type			 dt,

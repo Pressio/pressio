@@ -64,12 +64,6 @@ struct DecoderBase
 			     rom_state_type,
 			     fom_state_type>;
 
-  // template <typename operand_t, typename result_t>
-  // void applyMapping(const operand_t & operandObj,
-  // 		    result_t & result) const  {
-  //   static_cast<const derived_type &>(*this).applyMappingImpl(operandObj, result);
-  // }
-
   template <typename operand_t>
   void applyMapping(const operand_t & operandObj, fom_state_type & result) const
   {

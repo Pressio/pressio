@@ -54,6 +54,10 @@ namespace pressio { namespace mpl {
 template<typename T1, typename T2>
 struct is_same : std::is_same<T1,T2> {};
 
+// only avaialable from c++14
+// template<typename T1, typename T2>
+// inline constexpr bool is_same_v = is_same<T1,T2>::value;
+
 }} // end namespace pressio::mpl
 
 #endif

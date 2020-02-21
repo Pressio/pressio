@@ -58,15 +58,26 @@ struct SpanExpr<
     ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<vector_t>::value
     >
   >
-  : public BaseExpr< SpanExpr<vector_t> >
+  : public VectorSharedMemBase< SpanExpr<vector_t> >
 {
-  using scalar_t = typename ::pressio::containers::details::traits<vector_t>::scalar_t;
-  using native_t   = typename ::pressio::containers::details::traits<vector_t>::wrapped_t;
+  using this_t = SpanExpr<vector_t>;
+  using mytraits = typename details::traits<this_t>;
+  using sc_t = typename mytraits::scalar_t;
+  using ord_t = typename mytraits::ordinal_t;
+  using size_t = typename mytraits::size_t;
+
+  using ref_t = typename mytraits::reference_t;
+  using const_ref_t = typename mytraits::const_reference_t;
+
+  using native_expr_t = typename mytraits::native_expr_t;
+  using data_return_t = typename mytraits::data_return_t;
+  using const_data_return_t = typename mytraits::const_data_return_t;
 
 private:
   vector_t & vecObj_;
-  std::size_t startIndex_;
-  std::size_t extent_ = {};
+  ord_t startIndex_;
+  ord_t extent_ = {};
+  native_expr_t nativeExprObj_;
 
 public:
   SpanExpr() = delete;
@@ -77,51 +88,49 @@ public:
   SpanExpr & operator=(SpanExpr && other) = default;
 
   SpanExpr(vector_t & objIn,
-	   const std::size_t startIndexIn,
-	   const std::size_t extentIn)
-    : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn)
+	   const ord_t startIndexIn,
+	   const ord_t extentIn)
+    : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn),
+    nativeExprObj_(vecObj_.data()->segment(startIndex_, extent_))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
   }
 
   SpanExpr(vector_t & objIn,
-	   std::pair<std::size_t, std::size_t> indexRange)
+	   std::pair<ord_t, ord_t> indexRange)
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
-      extent_(std::get<1>(indexRange)-startIndex_)
+      extent_(std::get<1>(indexRange)-startIndex_),
+      nativeExprObj_(vecObj_.data()->segment(startIndex_, extent_))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
   }
 
-  std::size_t const & extent(std::size_t i) const{
+  size_t extentImpl(size_t i) const{
     assert(i==0);
     return extent_;
   }
 
-  scalar_t & operator[](std::size_t i)
+  const_data_return_t dataImpl() const{
+    return &nativeExprObj_;
+  }
+
+  data_return_t dataImpl(){
+    return &nativeExprObj_;
+  }
+
+  ref_t operator[](std::size_t i)
   {
     assert(i < extent_);
-    return vecObj_(startIndex_+i);
+    return nativeExprObj_(i);
   }
 
-  scalar_t const & operator[](std::size_t i) const
+  const_ref_t operator[](std::size_t i) const
   {
     assert(i < extent_);
-    return vecObj_(startIndex_+i);
-  }
-
-  auto operator()()
-    -> decltype(vecObj_.data()->segment(startIndex_, extent_))
-  {
-    return vecObj_.data()->segment(startIndex_, extent_);
-  }
-
-  auto operator()() const
-    -> decltype( std::declval<const native_t>().segment(startIndex_, extent_))
-  {
-    return static_cast<native_t const *>(vecObj_.data())->segment(startIndex_, extent_);
+    return nativeExprObj_(i);
   }
 };
 
@@ -136,16 +145,27 @@ struct SpanExpr<
     ::pressio::containers::meta::is_vector_wrapper_kokkos<vector_t>::value
     >
   >
-  : public BaseExpr< SpanExpr<vector_t> >
+  : public VectorSharedMemBase< SpanExpr<vector_t> >
 {
-  using scalar_t = typename ::pressio::containers::details::traits<vector_t>::scalar_t;
-  using native_t   = typename ::pressio::containers::details::traits<vector_t>::wrapped_t;
+  using this_t = SpanExpr<vector_t>;
+  using mytraits = typename details::traits<this_t>;
+  using sc_t = typename mytraits::scalar_t;
+  using ord_t = typename mytraits::ordinal_t;
+  using size_t = typename mytraits::size_t;
+  using pair_t = typename mytraits::pair_t;
+
+  using ref_t = typename mytraits::reference_t;
+  using const_ref_t = typename mytraits::const_reference_t;
+
+  using native_expr_t = typename mytraits::native_expr_t;
+  using data_return_t = typename mytraits::data_return_t;
+  using const_data_return_t = typename mytraits::const_data_return_t;
 
 private:
   vector_t & vecObj_;
-  std::size_t startIndex_;
-  std::size_t extent_ = {};
-  using pair_t = std::pair<std::size_t, std::size_t>;
+  size_t startIndex_;
+  size_t extent_ = {};
+  native_expr_t nativeExprObj_;
 
 public:
   SpanExpr() = delete;
@@ -156,73 +176,50 @@ public:
   SpanExpr & operator=(SpanExpr && other) = default;
 
   SpanExpr(vector_t & objIn,
-	   const std::size_t startIndexIn,
-	   const std::size_t extentIn)
-    : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn)
+	   const size_t startIndexIn,
+	   const size_t extentIn)
+    : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn),
+    nativeExprObj_(Kokkos::subview(*vecObj_.data(), std::make_pair(startIndex_, startIndex_+extent_)))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
   }
 
-  SpanExpr(vector_t & objIn,
-	   std::pair<std::size_t, std::size_t> indexRange)
+  SpanExpr(vector_t & objIn, pair_t indexRange)
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
-      extent_(std::get<1>(indexRange)-startIndex_)
+      extent_(std::get<1>(indexRange)-startIndex_),
+      nativeExprObj_(Kokkos::subview(*vecObj_.data(), std::make_pair(startIndex_, startIndex_+extent_)))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
   }
 
-
-  std::size_t const & extent(std::size_t i) const{
+  size_t extentImpl(size_t i) const{
     assert(i==0);
     return extent_;
   }
 
-  std::size_t const & extent() const{
-    return extent_;
+  // TODO: enable only on host
+  ref_t operator[](std::size_t i){
+    assert(i < extent_);
+    return nativeExprObj_(i);
   }
 
   // TODO: enable only on host
-  scalar_t & operator[](std::size_t i)
+  const_ref_t operator[](std::size_t i) const
   {
     assert(i < extent_);
-    return vecObj_(startIndex_+i);
+    return nativeExprObj_(i);
   }
 
-  // TODO: enable only on host
-  scalar_t const & operator[](std::size_t i) const
-  {
-    assert(i < extent_);
-    return vecObj_(startIndex_+i);
+  const_data_return_t dataImpl() const{
+    return &nativeExprObj_;
   }
 
-  auto operator()()
-    -> decltype
-    (
-     Kokkos::subview(*vecObj_.data(), std::declval<pair_t>())
-     )
-  {
-    return Kokkos::subview(*vecObj_.data(),
-			   std::make_pair(startIndex_, startIndex_+extent_));
+  data_return_t dataImpl(){
+    return &nativeExprObj_;
   }
-
-  auto operator()() const
-    -> decltype
-    (
-     Kokkos::subview(*vecObj_.data(), std::declval<pair_t>())
-     )
-  {
-    return Kokkos::subview(*vecObj_.data(),
-			   std::make_pair(startIndex_, startIndex_+extent_));
-  }
-
-  // auto operator()() const
-  //   -> decltype( std::declval<const native_t>().segment(startIndex_, extent_))
-  // {
-  //   return static_cast<native_t const *>(vecObj_.data())->segment(startIndex_, extent_);
-  // }
 };
 #endif
 

@@ -59,9 +59,7 @@ class MultiVector<
     containers::meta::is_multi_vector_kokkos<wrapped_type>::value
     >
   >
-  : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
-    public ContainerSharedMemBase< MultiVector<wrapped_type> >,
-    public MultiVectorSharedMemBase<MultiVector<wrapped_type>>
+  : public MultiVectorSharedMemBase<MultiVector<wrapped_type>>
 {
 
   using this_t = MultiVector<wrapped_type>;
@@ -124,7 +122,6 @@ public:
 
   ~MultiVector() = default;
 
-private:
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -149,8 +146,6 @@ private:
   }
 
 private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend ContainerSharedMemBase< this_t >;
   friend MultiVectorSharedMemBase<this_t>;
 
 private:

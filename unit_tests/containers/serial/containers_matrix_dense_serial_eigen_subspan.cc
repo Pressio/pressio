@@ -55,7 +55,7 @@ namespace{
     {
       // get the native expression
       const auto sspan = pressio::containers::subspan(A, std::make_pair(2,4), std::make_pair(1,3) );
-      auto natEx = sspan();
+      auto &natEx = *sspan.data();
       EXPECT_EQ( natEx.rows(), 2 ); EXPECT_EQ( natEx.cols(), 2 );
       EXPECT_DOUBLE_EQ( natEx(0,0), 44. );  EXPECT_DOUBLE_EQ( natEx(0,1), 33. );
       EXPECT_DOUBLE_EQ( natEx(1,0), 14. );  EXPECT_DOUBLE_EQ( natEx(1,1), 15. );
@@ -69,10 +69,11 @@ namespace{
     EXPECT_DOUBLE_EQ( sspan(0,0), 44. );  EXPECT_DOUBLE_EQ( sspan(0,1), 33. );
     EXPECT_DOUBLE_EQ( sspan(1,0), 14. );  EXPECT_DOUBLE_EQ( sspan(1,1), 15. );
 
-    auto natEx = sspan();
+    auto & natEx = *sspan.data();
     EXPECT_DOUBLE_EQ( natEx(0,0), 44. );  EXPECT_DOUBLE_EQ( natEx(0,1), 33. );
     EXPECT_DOUBLE_EQ( natEx(1,0), 14. );  EXPECT_DOUBLE_EQ( natEx(1,1), 15. );
   }
+
 };
 
 

@@ -92,10 +92,10 @@ void gauss_newton_neq_solve(const system_t & sys,
   using jacobian_t	= typename system_t::jacobian_type;
 
   // policy to approximate hessian J^T*J
-  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t, jacobian_t>;
+  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t>;
 
   // policy to J^T * residual
-  using jtr_evaluator_t = JacobianTranspResProdHelper<ud_ops_t, jacobian_t>;
+  using jtr_evaluator_t = JacobianTranspResProdHelper<ud_ops_t>;
 
   // policy to checking convergence
   using is_converged_t = IsConvergedHelper<converged_when_tag>;
@@ -207,7 +207,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->start("gradient");
 #endif
     jtr_evaluator_t::evaluate(jacobian, residual, gradient);
-    ::pressio::containers::ops::scale(gradient, negOne);
+    ::pressio::ops::scale(gradient, negOne);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("gradient");
 #endif
@@ -265,7 +265,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     lsearch_helper_t::template evaluate<ud_ops_t>(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
 
     // solution update: y = y + alpha*correction
-    ::pressio::containers::ops::do_update(stateInOut, one, correction, alpha);
+    ::pressio::ops::do_update(stateInOut, one, correction, alpha);
 
     // check convergence (whatever method user decided)
     const auto flag = is_converged_t::evaluate(stateInOut, correction, correctionNorm,

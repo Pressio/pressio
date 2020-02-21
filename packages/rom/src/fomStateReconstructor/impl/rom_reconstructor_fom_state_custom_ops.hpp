@@ -82,7 +82,7 @@ struct FomStateReconstructorCustomOps
   template <typename rom_state_t>
   fom_state_type operator()(const rom_state_t & romY) const{
     auto yOut(yFomReference_);
-    ::pressio::containers::ops::set_zero(yOut);
+    ::pressio::ops::set_zero(yOut);
     this->template operator()(romY,yOut);
     return yOut;
   }

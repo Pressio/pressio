@@ -59,7 +59,7 @@ class Matrix<
     == details::WrappedMatrixIdentifier::Arbitrary
     >
   >
-  : public ContainerBase< Matrix<wrapped_type>, wrapped_type >
+  : public ContainerBase< Matrix<wrapped_type>>
 {
   using this_t = Matrix<wrapped_type>;
   using size_t = typename details::traits<this_t>::size_t;
@@ -105,7 +105,6 @@ public:
     return data_(i, j);
   };
 
-private:
   wrapped_type const * dataImpl() const{
     return &data_;
   }
@@ -115,7 +114,7 @@ private:
   }
 
 private:
-  friend ContainerBase< this_t, wrapped_type >;
+  friend ContainerBase<this_t>;
   wrapped_type data_ = {};
 
 };//end class

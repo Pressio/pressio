@@ -56,19 +56,105 @@ struct traits<
   ::pressio::containers::expressions::SpanExpr<v_type>,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<v_type>::value
-    #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-    or ::pressio::containers::meta::is_vector_wrapper_kokkos<v_type>::value
-    #endif
     >
   >
+  : public containers_shared_traits<
+  ::pressio::containers::expressions::SpanExpr<v_type>,
+  typename details::traits<v_type>::wrapped_t,
+  true, false, false,
+  WrappedPackageIdentifier::Eigen,
+  true
+  >
 {
-  static constexpr auto is_expression = true;
+  static constexpr auto wrapped_vector_identifier = details::traits<v_type>::wrapped_vector_identifier;
 
-  using scalar_t = typename ::pressio::containers::details::traits<v_type>::scalar_t;
-  using data_t	  = v_type;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
   using wrapped_t = typename ::pressio::containers::details::traits<v_type>::wrapped_t;
+  using scalar_t  = typename ::pressio::containers::details::traits<v_type>::scalar_t;
+  using ordinal_t = typename ::pressio::containers::details::traits<v_type>::ordinal_t;
+  using size_t    = ordinal_t;
+
+  // the reference type is conditionnal because the native expression
+  // returns by value when object is const
+  using reference_t = typename std::conditional<
+    std::is_const<v_type>::value, scalar_t, scalar_t &
+  >::type;
+
+  using const_reference_t = typename std::conditional<
+    std::is_const<v_type>::value, scalar_t, scalar_t const &
+  >::type;
+
+  // type of the native expression
+  using _native_expr_t = decltype(
+    std::declval<wrapped_t>().segment( std::declval<size_t>(), std::declval<size_t>() )
+    );
+  using _const_native_expr_t = decltype(
+    std::declval<const wrapped_t>().segment( std::declval<size_t>(), std::declval<size_t>() )
+    );
+  using native_expr_t = typename std::conditional<
+    std::is_const<v_type>::value,
+    _const_native_expr_t,
+    _native_expr_t
+  >::type;
+
+  using const_data_return_t = native_expr_t const *;
+  using data_return_t = native_expr_t *;
 };
 
+
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename v_type>
+struct traits<
+  ::pressio::containers::expressions::SpanExpr<v_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<v_type>::value
+    >
+  >
+  : public containers_shared_traits<
+  ::pressio::containers::expressions::SpanExpr<v_type>,
+  typename details::traits<v_type>::wrapped_t,
+  true, false, false,
+  WrappedPackageIdentifier::Kokkos,
+  true //true because kokkos is for shared mem
+  >
+{
+   static constexpr auto wrapped_vector_identifier = details::traits<v_type>::wrapped_vector_identifier;
+
+  using wrapped_t = typename ::pressio::containers::details::traits<v_type>::wrapped_t;
+  using execution_space = typename ::pressio::containers::details::traits<v_type>::execution_space;
+  using scalar_t  = typename ::pressio::containers::details::traits<v_type>::scalar_t;
+  using ordinal_t = typename ::pressio::containers::details::traits<v_type>::ordinal_t;
+  using size_t    = ordinal_t;
+  using pair_t = std::pair<size_t, size_t>;
+
+  // the reference type is conditionnal because the native expression
+  // returns by value when object is const
+  using reference_t = scalar_t &;
+  using const_reference_t = scalar_t const &;
+
+  // type of the native expression
+  using _native_expr_t = decltype(
+    Kokkos::subview(std::declval<wrapped_t>(), std::declval<pair_t>())
+    );
+  using _const_native_expr_t = decltype(
+      Kokkos::subview(std::declval<const wrapped_t>(), std::declval<pair_t>())
+    );
+  using native_expr_t = typename std::conditional<
+    std::is_const<v_type>::value,
+    _const_native_expr_t,
+    _native_expr_t
+  >::type;
+
+  static constexpr bool is_static = native_expr_t::traits::rank_dynamic==0;
+  static constexpr bool is_dynamic  = !is_static;
+
+  using const_data_return_t = native_expr_t const *;
+  using data_return_t = native_expr_t *;
+};
+#endif
 
 }}}//end namespace pressio::containers::details
 #endif

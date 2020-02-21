@@ -55,6 +55,8 @@ namespace pressio{ namespace rom{
 template <
   typename matrix_type,
   typename ops_t,
+  typename rom_state, 
+  typename fom_state,
   typename enable = void>
 struct PyLinearDecoder;
 #endif

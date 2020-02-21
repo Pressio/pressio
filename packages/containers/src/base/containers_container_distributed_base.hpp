@@ -52,34 +52,21 @@
 namespace pressio{ namespace containers{
 
 template<typename derived_type>
-class ContainerDistributedBase
-  : private utils::details::CrtpBase<
-  ContainerDistributedBase<derived_type>
-  >
+class ContainerDistributedBase : public ContainerBase<derived_type>
 {
   using this_t = ContainerDistributedBase<derived_type>;
   using traits = ::pressio::containers::details::traits<derived_type>;
-  using GO_t = typename traits::global_ordinal_t;
   using LO_t = typename traits::local_ordinal_t;
 
 public:
-  // for sharedmem object the local and global extent is same
-  // for distributed objects, extent return the global extent
-  GO_t extent(std::size_t i) const{
-    return this->underlying().extentImpl(i);
-  }
-
   LO_t extentLocal(std::size_t i) const{
-    return this->underlying().extentLocalImpl(i);
+    return static_cast<derived_type const *>(this)->extentLocalImpl(i);
   }
 
 private:
   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
-
-  friend utils::details::CrtpBase<this_t>;
-
 };//end class
 
 }}//end namespace pressio::containers

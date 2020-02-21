@@ -53,35 +53,33 @@ namespace pressio{ namespace containers{
 
 template<typename derived_type>
 class VectorSharedMemBase
-  : private utils::details::CrtpBase<
-     VectorSharedMemBase<derived_type>>
+  : public ContainerSharedMemBase<derived_type>
 {
-
   static_assert(details::traits<derived_type>::is_shared_mem==1,
   "OOPS: distributed concrete vector inheriting from sharedMem base!");
 
-  using this_t = VectorSharedMemBase<derived_type>;
-  using traits_t = details::traits<derived_type>;
-  using ordinal_t = typename traits_t::ordinal_t;
-  using sc_t = typename traits_t::scalar_t;
+  using mytraits = typename details::traits<derived_type>;
+  using ord_t = typename mytraits::ordinal_t;
+  using ref_t = typename mytraits::reference_t;
+  using const_ref_t = typename mytraits::const_reference_t;
 
 public:
-  // // for sharedmem object the local and global extent is same
-  // // for distributed objects, extent return the global extent
-  // ordinal_t extent() const{
-  //   return this->underlying().extentImpl();
-  // }
-
   bool empty() const{
-    return this->underlying().emptyImpl();
+    return static_cast<derived_type const *>(this)->emptyImpl();
+  }
+
+  ref_t operator[](ord_t i){
+    return static_cast<derived_type &>(*this)[i];
+  }
+
+  const_ref_t operator[](ord_t i) const{
+    return static_cast<derived_type const &>(*this)[i];
   }
 
 private:
   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
-  friend utils::details::CrtpBase<this_t>;
-
 };//end class
 
 }}//end namespace pressio::containers

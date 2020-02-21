@@ -60,9 +60,7 @@ class MultiVector<wrapped_type,
 	    wrapped_type>::value
        >::type
      >
-  : public ContainerBase< MultiVector<wrapped_type>, wrapped_type >,
-    public ContainerDistributedBase< MultiVector<wrapped_type>>,
-    public MultiVectorDistributedBase< MultiVector<wrapped_type> >
+  : public MultiVectorDistributedBase< MultiVector<wrapped_type> >
 {
 
 private:
@@ -119,12 +117,6 @@ public:
     data_.Print(std::cout);
   }
 
-private:
-
-  // void matchLayoutWithImpl(const this_t & other){
-  //   data_.ReplaceMap( other.getDataMap() );
-  // }
-
   wrap_t const * dataImpl() const{
     return &data_;
   }
@@ -155,14 +147,12 @@ private:
   }
 
   LO_t extentLocalImpl(std::size_t i) const{
-    // each process owns all cols 
+    // each process owns all cols
     assert(i<=1);
     return (i==0) ? data_.MyLength() : data_.NumVectors();
   }
 
 private:
-  friend ContainerBase< this_t, wrapped_type >;
-  friend ContainerDistributedBase< this_t >;
   friend MultiVectorDistributedBase< this_t >;
 
 private:

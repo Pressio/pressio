@@ -13,17 +13,11 @@ TEST(containers_multi_vector_distributed_tpetra, Traits){
   typedef Tpetra::Map<LO, GO, NT> map_type;
 
   using nat_t = Tpetra::MultiVector<ST, LO, GO, NT>;
-  STATIC_ASSERT_IS_MULTIVECTOR_TPETRA(nat_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(nat_t);
-  STATIC_ASSERT_IS_NOT_MULTIVECTOR_EPETRA(nat_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_TPETRA(nat_t);
-
   using mymvec_t = containers::MultiVector<nat_t>;
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(mymvec_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(mymvec_t);
-  STATIC_ASSERT_IS_NOT_MULTIVECTOR_EPETRA(mymvec_t);
-  STATIC_ASSERT_IS_NOT_MULTIVECTOR_TPETRA(mymvec_t);
-  STATIC_ASSERT_IS_CONTAINERS_MULTI_VECTOR_WRAPPER(mymvec_t);
+
+  static_assert(::pressio::containers::meta::is_multi_vector_tpetra<nat_t>::value,"");
+  static_assert(::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mymvec_t>::value,"");
+
 
   using mvecTrait = containers::details::traits<mymvec_t>;
 

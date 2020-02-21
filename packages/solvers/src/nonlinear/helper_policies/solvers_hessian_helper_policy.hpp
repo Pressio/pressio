@@ -51,60 +51,33 @@
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
-template<typename ud_ops_t, typename J_t, typename enable = void>
+template<typename ud_ops_t, typename enable = void>
 struct HessianApproxHelper;
 
 
-// when J is matrix wrapper, the hessian J^T*J
-// is computed by doing product of J^T*J
-template<typename J_t>
-struct HessianApproxHelper<
-  void, J_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_matrix_wrapper<J_t>::value
-    >
-  >
+template<>
+struct HessianApproxHelper<void>
 {
 
-  template <typename result_t>
-  static void evaluate(J_t & J, result_t & result){
-    constexpr bool transposeJ = true;
-    ::pressio::containers::ops::product<J_t, J_t, result_t,
-				transposeJ>(J, J, result);
+  template <typename J_t, typename result_t>
+  static void evaluate(const J_t & J, result_t & result)
+  {
+    using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
+    constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+    // here to compute hessian we use the overload taking only J, since we know H = J^T J 
+    // and that overload is more efficient for doing J^T J since J is the same
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), alpha, J, beta, result);
   }
 
-  template <typename result_t>
-  static result_t evaluate(J_t & J){
-    return ::pressio::containers::ops::product<J_t, J_t, result_t, true>(J, J);
-  }
-};
-
-
-/* when J is multivector wrapper, the hessian J^T*J
- * is computed by doing the J self_dot J
- * in some cases, the impl of self dot leverages symmetry of the result,
- * so self_dot computes only half of the result matrix and fills the rest by symmetry
- */
-template<typename J_t>
-struct HessianApproxHelper<
-  void, J_t,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper<J_t>::value
-    >
-  >
-{
-
-  template <typename result_t>
-  static void evaluate(J_t & J, result_t & result) {
-    ::pressio::containers::ops::dot_self(J, result);
-  }
-
-  template <typename result_t>
-  static result_t evaluate(J_t & J){
-    return ::pressio::containers::ops::dot_self<J_t, result_t>(J);
+  template <typename J_t, typename result_t>
+  static result_t evaluate(const J_t & J)
+  {
+    using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
+    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+    return ::pressio::ops::product<result_t>(::pressio::transpose(), ::pressio::nontranspose(), alpha, J);
   }
 };
-
 
 
 /*********************
@@ -112,24 +85,23 @@ struct HessianApproxHelper<
  *********************/
 
 // for user-defined ops & jac is a multi-vector wrapper
-template<typename ud_ops_t, typename J_t>
+template<typename ud_ops_t>
 struct HessianApproxHelper<
-  ud_ops_t, J_t,
+  ud_ops_t, 
   ::pressio::mpl::enable_if_t<
-    !std::is_void<ud_ops_t>::value and
-    ::pressio::containers::meta::is_multi_vector_wrapper<J_t>::value
+    !std::is_void<ud_ops_t>::value
     >
   >
 {
 
-  template <typename result_t>
-  static void evaluate(J_t & J, result_t & result){
+  template <typename J_t, typename result_t>
+  static void evaluate(const J_t & J, result_t & result){
     // result = op(A) * op(b)
     ud_ops_t::template dot_self<result_t>( *J.data(), result );
   }
 
-  template <typename result_t>
-  static result_t evaluate(J_t & J){
+  template <typename J_t, typename result_t>
+  static result_t evaluate(const J_t & J){
     return ud_ops_t::template dot_self<result_t>( *J.data() );
   }
 };
