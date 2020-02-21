@@ -1,0 +1,4 @@
+
+add_serial_utest_kokkos(ops_multi_vector_dot_self_kokkos ops_multi_vector_dot_self_kokkos.cc)
+add_serial_utest_kokkos(ops_multi_vector_dot_vector_kokkos ops_multi_vector_dot_vector_kokkos.cc )
+add_serial_utest_kokkos(ops_multi_vector_product_vector_kokkos ops_multi_vector_product_vector_kokkos.cc )

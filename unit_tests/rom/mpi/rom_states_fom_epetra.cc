@@ -28,7 +28,7 @@ struct mytest
     : MyStates{recObj, y0Fom}
   {
     rom_state_t rY(2);
-    pressio::containers::ops::fill(rY, 1.2);
+    pressio::ops::fill(rY, 1.2);
     MyStates.reconstructCurrentFomState(rY);
   }
 

@@ -13,7 +13,8 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
 
   // construct multivector wrapper
   mvec_t MV( *x_ );
-  ::pressio::containers::ops::set_zero(MV);
+  MV.data()->putScalar(0.0);
+
   // get trilinos tpetra multivector object
   auto trilD = MV.data();
   trilD->sync<Kokkos::HostSpace>();

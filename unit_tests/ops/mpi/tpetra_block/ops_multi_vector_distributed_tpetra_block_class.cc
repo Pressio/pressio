@@ -114,3 +114,43 @@ TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
   mymvec_t v1( *mv_ );
   EXPECT_EQ(v1.numVectorsGlobal(), 3);
 }
+
+
+// TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
+//        getMap){
+//   using namespace pressio;
+//   mymvec_t v1( *mv_ );
+//   auto const & mapO = v1.data()->getMap();
+//   EXPECT_TRUE( mapO.isSameAs(*mv_->getMap()) );
+
+//   ::testing::StaticAssertTypeEq
+//       <decltype(mapO),
+//        const typename fix_t::map_t & >();
+//   EXPECT_TRUE(mapO.isContiguous());
+// }
+
+
+TEST_F(tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture,
+       setZero){
+  using namespace pressio;
+
+  // create a wrapper
+  mymvec_t B( *mv_ );
+  // set all values to 1.22
+  B.data()->putScalar(1.22);
+  ::pressio::ops::set_zero(B);
+
+  // check that all values are 0
+  // B is wrapper of a block MV, so get a tpetra MV
+  auto Bmv = B.data()->getMultiVectorView();
+
+  // now that we have a regular tpetra MV, we can check data
+  for (int j=0; j<B.numVectorsLocal(); j++){
+    // get data for j column
+    auto jCol_d = Bmv.getData(j);
+    // loop over rows and check
+    for (int i=0; i<B.extentLocal(0); i++){
+      EXPECT_DOUBLE_EQ( jCol_d[i], 0.0 );
+    }
+  }
+}

@@ -2,27 +2,29 @@
 #include <gtest/gtest.h>
 #include "pressio_containers.hpp"
 
-using eigvec_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-using myvec_t = pressio::containers::Vector<eigvec_t>;
+using natvec_t = Teuchos::SerialDenseVector<int, double>;
+using myvec_t = pressio::containers::Vector<natvec_t>;
 
-
-TEST(containers_vector_serial_eigen_dynamic_class,
+TEST(containers_vector_teuchos_serial_dense_class,
      constructor){
 
   using vecTrait = pressio::containers::details::traits<myvec_t>;
   ASSERT_TRUE(vecTrait::wrapped_vector_identifier
-  == pressio::containers::details::WrappedVectorIdentifier::EigenColDynamic);
+  == pressio::containers::details::WrappedVectorIdentifier::TeuchosSerialDense);
 
-  //construct by passing the size
-  myvec_t m_v2(5);
+  myvec_t v0;
 
-  // pass native eigen vector
-  eigvec_t e_v1(45);
-  e_v1(2) = 2.2; e_v1(4) = 4.4;
-  myvec_t m_v1(e_v1);
+  myvec_t v1(5);
+
+  natvec_t nv2(8);
+  nv2(2) = 2.2; nv2(4) = 4.4;
+  myvec_t v2(nv2);
+
+  myvec_t v3(v2);
 }
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+
+TEST(containers_vector_teuchos_serial_dense_class,
      constructorAndCheckVals){
 
   //construct by passing the size
@@ -32,7 +34,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
     EXPECT_DOUBLE_EQ( m_v2[i], 0.);
 
   // pass native eigen vector
-  eigvec_t e_v1(45);
+  natvec_t e_v1(45);
   e_v1(2) = 2.2; e_v1(4) = 4.4;
   myvec_t m_v1(e_v1);
   ASSERT_TRUE( m_v1.extent(0) == 45 );
@@ -41,7 +43,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 }
 
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+TEST(containers_vector_teuchos_serial_dense_class,
      copyConstructor){
 
   //construct by passing the size
@@ -55,7 +57,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 }
 
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+TEST(containers_vector_teuchos_serial_dense_class,
      assignOp){
 
   //construct by passing the size
@@ -70,27 +72,46 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 }
 
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+TEST(containers_vector_teuchos_serial_dense_class,
      queryWrappedData){
 
   myvec_t m_v1(4);
   ::testing::StaticAssertTypeEq<decltype(m_v1.data()),
-				eigvec_t * >();
+				natvec_t * >();
   const myvec_t m_v2(4);
   ::testing::StaticAssertTypeEq< decltype(m_v2.data()),
-				 const eigvec_t * >();
+				 const natvec_t * >();
 }
 
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+TEST(containers_vector_teuchos_serial_dense_class,
      size){
 
   myvec_t m_v1(11);
   ASSERT_TRUE( m_v1.extent(0) == 11 );
 }
 
+TEST(containers_vector_teuchos_serial_dense_class,
+     empty){
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+  myvec_t m_v1(11);
+  ASSERT_FALSE( m_v1.empty());
+}
+
+
+TEST(containers_vector_teuchos_serial_dense_class,
+     resize){
+
+  myvec_t m_v1(11);
+  ASSERT_FALSE( m_v1.empty() );
+  ASSERT_TRUE( m_v1.extent(0) == 11 );
+  // m_v1.resize(22);
+  // ASSERT_FALSE( m_v1.empty() );
+  // ASSERT_TRUE( m_v1.extent(0) == 22 );
+}
+
+
+TEST(containers_vector_teuchos_serial_dense_class,
      subscriptOperatorSquareBrack){
 
   myvec_t m_v3(4);
@@ -116,7 +137,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
     decltype(m_v4[1]), const double & >();
 }
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+TEST(containers_vector_teuchos_serial_dense_class,
      subscriptOperatorParenthesis){
 
   myvec_t m_v3(4);
@@ -143,18 +164,19 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 }
 
 
-TEST(containers_vector_serial_eigen_dynamic_class,
-     matchingSize){
+TEST(containers_vector_teuchos_serial_dense_class,
+     setToScalar){
 
   myvec_t a(4);
-  ASSERT_TRUE( a.extent(0) == 4 );
-  myvec_t b(6);
-  a = b;
-  ASSERT_TRUE( a.extent(0) == 6 );
-  ASSERT_FALSE( a.extent(0) == 4 );
+  pressio::ops::fill(a, 1.12);
+  EXPECT_DOUBLE_EQ( a(0), 1.12);
+  EXPECT_DOUBLE_EQ( a(1), 1.12);
+  EXPECT_DOUBLE_EQ( a(2), 1.12);
+  EXPECT_DOUBLE_EQ( a(3), 1.12);
 }
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+
+TEST(containers_vector_teuchos_serial_dense_class,
      assignScalar){
 
   myvec_t a(4);
@@ -166,7 +188,39 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 }
 
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+TEST(containers_vector_teuchos_serial_dense_class,
+     settingZero){
+
+  myvec_t a(4);
+  ::pressio::ops::set_zero(a);
+  EXPECT_DOUBLE_EQ( a(0), 0.0);
+  EXPECT_DOUBLE_EQ( a(1), 0.0);
+  EXPECT_DOUBLE_EQ( a(2), 0.0);
+  EXPECT_DOUBLE_EQ( a(3), 0.0);
+}
+
+
+TEST(containers_vector_teuchos_serial_dense_class,
+     norm1){
+
+  myvec_t a(4);
+  a(0) = 1.; a(1) = 2.;
+  a(2) = -1.; a(3) = 3.;
+  auto res = pressio::ops::norm1(a);
+  EXPECT_DOUBLE_EQ( res, 7.0);
+}
+
+TEST(containers_vector_teuchos_serial_dense_class,
+     norm2){
+
+  myvec_t a(3);
+  a(0) = 1.; a(1) = 2.; a(2) = -2.;
+  auto res = pressio::ops::norm2(a);
+  EXPECT_DOUBLE_EQ( res, 3.0);
+}
+
+
+TEST(containers_vector_teuchos_serial_dense_class,
      CompoundAssignAddOperator){
 
   myvec_t m_v1(4);
@@ -184,7 +238,7 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 }
 
 
-TEST(containers_vector_serial_eigen_dynamic_class,
+TEST(containers_vector_teuchos_serial_dense_class,
      CompoundAssignSubtractOperator){
 
   myvec_t m_v1(4);
@@ -200,3 +254,22 @@ TEST(containers_vector_serial_eigen_dynamic_class,
   EXPECT_DOUBLE_EQ(m_v1[2], 3.);
   EXPECT_DOUBLE_EQ(m_v1[3], 4.);
 }
+
+
+// TEST(containers_vector_teuchos_serial_dense_class,
+//      minValue){
+
+//   myvec_t a(3);
+//   a(0) = 1.; a(1) = 2.; a(2) = -2.;
+//   auto res = pressio::ops::min(a);
+//   EXPECT_DOUBLE_EQ( res, -2.0);
+// }
+
+// TEST(containers_vector_teuchos_serial_dense_class,
+//      maxValue){
+
+//   myvec_t a(3);
+//   a(0) = 1.; a(1) = 2.; a(2) = -2.;
+//   auto res = pressio::ops::max(a);
+//   EXPECT_DOUBLE_EQ( res, 2.0);
+// }

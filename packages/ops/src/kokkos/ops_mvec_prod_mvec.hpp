@@ -67,8 +67,8 @@ namespace pressio{ namespace ops{
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value and
-  ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<B_type>::value
-  /*::pressio::containers::meta::is_matrix_wrapper_kokkos<C_type>::value*/
+  ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<B_type>::value and
+  ::pressio::containers::meta::is_matrix_wrapper_kokkos<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -76,7 +76,7 @@ product(::pressio::transpose modeA,
 	const A_type & A,
 	const B_type & B,
 	const scalar_type beta,
-	::pressio::containers::MatrixSharedMemBase<C_type> & C)
+	C_type & C)
 {
   static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
