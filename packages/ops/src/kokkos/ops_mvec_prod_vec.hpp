@@ -66,13 +66,13 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value
-  /*and containers::meta::is_vector_wrapper_kokkos<x_type>::value*/
+  containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value and 
+  containers::meta::is_vector_wrapper_kokkos<x_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
-	const ::pressio::containers::VectorSharedMemBase<x_type> & x,
+	const x_type & x,
 	const scalar_type beta,
 	y_type & y)
 {

@@ -67,11 +67,6 @@ void do_update(T & mv, const scalar_t &a,
   assert( mv.extent(0) == mv1.extent(0) );
   assert( mv.extent(1) == mv1.extent(1) );
   *mv.data() = a * (*mv.data()) + b * (*mv1.data());
-
-  // for (decltype(mv.extent(0)) i=0; i<mv.extent(0); i++){
-  //   for (decltype(mv.extent(1)) j=0; j<mv.extent(1); j++)
-  //     mv(i,j) = a*mv(i,j) + b*mv1(i,j);
-  // }
 }
 
 template<
@@ -86,11 +81,6 @@ void do_update(T & mv, const T & mv1, const scalar_t & b)
   assert( mv.extent(0) == mv1.extent(0) );
   assert( mv.extent(1) == mv1.extent(1) );
   *mv.data() = b * (*mv1.data());
-
-  // for (decltype(mv.extent(0)) i=0; i<mv.extent(0); i++){
-  //   for (decltype(mv.extent(1)) j=0; j<mv.extent(1); j++)
-  //     mv(i,j) = b*mv1(i,j);
-  // }
 }
 
 }}//end namespace pressio::ops
