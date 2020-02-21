@@ -83,7 +83,7 @@ private:
   {
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
-    ::pressio::containers::ops::product(::pressio::nontranspose(), one, phi_, operand, zero, result);
+    ::pressio::ops::product(::pressio::nontranspose(), one, phi_, operand, zero, result);
   }
 
   const jacobian_t & getReferenceToJacobianImpl() const{

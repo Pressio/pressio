@@ -111,7 +111,7 @@ public:
   {
     constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
     constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
-    ::pressio::containers::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
+    ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
   const Q_t & getCRefQFactor() const {
@@ -122,7 +122,7 @@ private:
   void createLocalRIfNeeded(int newsize){
     if (localR_.extent(0)!=newsize or localR_.extent(1)!=newsize){
       localR_ = R_nat_t(newsize, newsize);
-      ::pressio::containers::ops::set_zero(localR_);
+      ::pressio::ops::set_zero(localR_);
     }
   }
 

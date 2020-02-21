@@ -115,13 +115,13 @@ public:
       appObj.applyJacobian(*yFOM.data(),*phi.data(),t,*(Jphi).data());
       constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_; //      1
       const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt
-      ::pressio::containers::ops::do_update(Jphi,cfdt,phi,cn);
+      ::pressio::ops::do_update(Jphi,cfdt,phi,cn);
     }
 
     //only perform computation once since this never changes
     if (arg == 1 && jacobianNeedsRecomputing_){
       constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
-      ::pressio::containers::ops::do_update(Jphi,phi,cnm1);
+      ::pressio::ops::do_update(Jphi,phi,cnm1);
       jacobianNeedsRecomputing_ = false;
     }
   }
@@ -146,7 +146,7 @@ public:
   {
     using nm1 = ::pressio::ode::nMinusOne;
     auto & odeState_nm1 = auxStatesContainer_.get(nm1());
-    ::pressio::containers::ops::deep_copy(odeState_nm1, yFOM_current_);
+    ::pressio::ops::deep_copy(odeState_nm1, yFOM_current_);
   }
 
 };

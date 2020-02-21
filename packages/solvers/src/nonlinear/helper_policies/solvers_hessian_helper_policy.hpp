@@ -67,7 +67,7 @@ struct HessianApproxHelper<void>
     constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
     // here to compute hessian we use the overload taking only J, since we know H = J^T J 
     // and that overload is more efficient for doing J^T J since J is the same
-    ::pressio::containers::ops::product(::pressio::transpose(), ::pressio::nontranspose(), alpha, J, beta, result);
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), alpha, J, beta, result);
   }
 
   template <typename J_t, typename result_t>
@@ -75,7 +75,7 @@ struct HessianApproxHelper<void>
   {
     using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
     constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
-    return ::pressio::containers::ops::product<result_t>(::pressio::transpose(), ::pressio::nontranspose(), alpha, J);
+    return ::pressio::ops::product<result_t>(::pressio::transpose(), ::pressio::nontranspose(), alpha, J);
   }
 };
 

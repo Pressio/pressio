@@ -370,7 +370,7 @@ private:
       //lsearch_helper_t::evaluate(alpha, y, ytrial_, dy_, res_, jac_, sys);
 
       // solution update: y = y + alpha*dy;
-      ::pressio::containers::ops::do_update(y, one, dy_, alpha);
+      ::pressio::ops::do_update(y, one, dy_, alpha);
 
 
       //--------------------------------------------------------------

@@ -176,7 +176,7 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
   // jphi = phi + prefactor*dt*jphi
   constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-  ::pressio::containers::ops::do_update(jphi, prefactor, phi, one);
+  ::pressio::ops::do_update(jphi, prefactor, phi, one);
 }
 
 

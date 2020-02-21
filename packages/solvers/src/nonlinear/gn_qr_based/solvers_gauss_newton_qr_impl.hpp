@@ -180,7 +180,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 
     // compute correction: correction
     // by solving R correction = - Q^T Residual
-    pressio::containers::ops::scale( QTResid, utils::constants::negOne<scalar_t>());
+    pressio::ops::scale( QTResid, utils::constants::negOne<scalar_t>());
     // QTResid.scale(static_cast<scalar_t>(-1));
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -215,7 +215,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     lsearch_helper::template evaluate<void>(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
 
     // solution update: stateInOut = stateInOut + alpha*correction
-    ::pressio::containers::ops::do_update(stateInOut, one, correction, alpha);
+    ::pressio::ops::do_update(stateInOut, one, correction, alpha);
 
     // check convergence (whatever method user decided)
     const auto flag = is_converged_t::evaluate(stateInOut, correction,

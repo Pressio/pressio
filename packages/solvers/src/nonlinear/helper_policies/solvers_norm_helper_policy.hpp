@@ -64,10 +64,10 @@ struct ComputeNormHelper
 		       const ::pressio::solvers::Norm & normType)
   {
     if (normType == ::pressio::solvers::Norm::L1){
-      result = ::pressio::containers::ops::norm1(vecIn);
+      result = ::pressio::ops::norm1(vecIn);
     }
     else if (normType == ::pressio::solvers::Norm::L2){
-      result = ::pressio::containers::ops::norm2(vecIn);
+      result = ::pressio::ops::norm2(vecIn);
     }
     else
       throw std::runtime_error("Invalid norm type, cannot conmpute norm");

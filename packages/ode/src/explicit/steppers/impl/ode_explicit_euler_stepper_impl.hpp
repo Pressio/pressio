@@ -111,7 +111,7 @@ public:
 public:
 
   /*
-   * user does NOT provide custom ops, so we use containers::ops
+   * user does NOT provide custom ops, so we use ops
    */
   template<
     typename _ops_t = ops_t,
@@ -128,7 +128,7 @@ public:
     policy_(stateInOut, auxRhs0, sys_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    ::pressio::containers::ops::do_update(stateInOut, one, auxRhs0, dt);
+    ::pressio::ops::do_update(stateInOut, one, auxRhs0, dt);
   }
 
   /*

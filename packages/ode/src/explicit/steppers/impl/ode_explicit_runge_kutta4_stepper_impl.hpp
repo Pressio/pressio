@@ -165,7 +165,7 @@ private:
 			 const rhs_t & rhsIn,
 			 scalar_type dtValue){
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    ::pressio::containers::ops::do_update(yIn, stateIn, one, rhsIn, dtValue);
+    ::pressio::ops::do_update(yIn, stateIn, one, rhsIn, dtValue);
   }
 
   /* with user defined ops */
@@ -204,7 +204,7 @@ private:
 			 scalar_type dt6,
 			 scalar_type dt3){
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    ::pressio::containers::ops::do_update(stateIn, one, rhsIn0, dt6,
+    ::pressio::ops::do_update(stateIn, one, rhsIn0, dt6,
 					  rhsIn1, dt3, rhsIn2, dt3,
 					  rhsIn3, dt6);
   }

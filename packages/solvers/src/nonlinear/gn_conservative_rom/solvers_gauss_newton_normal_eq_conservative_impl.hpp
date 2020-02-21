@@ -170,15 +170,15 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     // dot_self(jacob, jTj);
-    ::pressio::containers::ops::product(::pressio::transpose(), 
+    ::pressio::ops::product(::pressio::transpose(), 
         ::pressio::nontranspose(), one, jacob, zeroConst, jTj);
 
-    // ::pressio::containers::ops::dot(jacob, cbarT, jTcbarT);
-    ::pressio::containers::ops::product(::pressio::transpose(), 
+    // ::pressio::ops::dot(jacob, cbarT, jTcbarT);
+    ::pressio::ops::product(::pressio::transpose(), 
         one, jacob, cbarT, zeroConst, jTcbarT);
 
-    // ::pressio::containers::ops::dot(cbarT, jacob, cbarJ);
-    ::pressio::containers::ops::product(::pressio::transpose(), 
+    // ::pressio::ops::dot(cbarT, jacob, cbarJ);
+    ::pressio::ops::product(::pressio::transpose(), 
         one, cbarT, jacob, zeroConst, cbarJ);
 
     A.data()->block(0, 0, jTj.rows(), jTj.cols()) = *jTj.data();
@@ -195,19 +195,19 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     timer->start("rhs");
 #endif
 
-    // ::pressio::containers::ops::dot(cbarT, resid, cbarR);
-    ::pressio::containers::ops::product(::pressio::transpose(), 
+    // ::pressio::ops::dot(cbarT, resid, cbarR);
+    ::pressio::ops::product(::pressio::transpose(), 
         one, cbarT, resid, zeroConst, cbarR);
 
     ComputeNormHelper::template evaluate<void>(cbarR, normCbarR, normType);
 
-    // ::pressio::containers::ops::product(cbarT, lambda, cbarTlambda);
-    ::pressio::containers::ops::product(::pressio::nontranspose(), 
+    // ::pressio::ops::product(cbarT, lambda, cbarTlambda);
+    ::pressio::ops::product(::pressio::nontranspose(), 
         one, cbarT, lambda, zeroConst, cbarTlambda);
 
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
-    // ::pressio::containers::ops::dot(jacob, resid, jTr2);
-    ::pressio::containers::ops::product(::pressio::transpose(), 
+    // ::pressio::ops::dot(jacob, resid, jTr2);
+    ::pressio::ops::product(::pressio::transpose(), 
         one, jacob, resid, zeroConst, jTr2);
 
     constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
@@ -269,7 +269,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
         "Nonlinear solver: Gauss Newton Conserv: NaNs detected in solution update dy");
     }
     //y2 = y2 + alpha * dy;
-    ::pressio::containers::ops::do_update(y2, one, dy, alpha);
+    ::pressio::ops::do_update(y2, one, dy, alpha);
 
 
     // solution update

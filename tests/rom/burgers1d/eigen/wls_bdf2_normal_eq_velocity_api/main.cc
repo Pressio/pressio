@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
 
   // create the wls state
   wls_state_t  wlsState(romSize*numStepsInWindow);
-  ::pressio::containers::ops::set_zero(wlsState);
+  ::pressio::ops::set_zero(wlsState);
 
   // -----------------
   // NL solver

@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
       if (std::abs(yFomFinal_h(i) - trueY[i]) > 1e-10) checkStr = "FAILED";
     }
 
-    auto n1 = ::pressio::containers::ops::norm2(yFomFinal_d);
+    auto n1 = ::pressio::ops::norm2(yFomFinal_d);
     std::cout << n1 << std::endl;
 
     std::cout << checkStr <<  std::endl;

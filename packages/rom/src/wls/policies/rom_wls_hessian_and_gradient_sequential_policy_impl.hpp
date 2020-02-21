@@ -125,8 +125,8 @@ public:
     int n = 0;
     scalar_t t = ts + n*dt;
     int step = step_s + n;
-    ::pressio::containers::ops::set_zero(hess);
-    ::pressio::containers::ops::set_zero(gradient);
+    ::pressio::ops::set_zero(hess);
+    ::pressio::ops::set_zero(gradient);
 
     //get access to the state at the first window
     setCurrentFomState(wlsState,0,fomStateReconstrObj);
@@ -139,7 +139,7 @@ public:
     Preconditioner(appObj_,yFOM_current_,residual_,t);
 
     //increment the norm
-    rnorm += ::pressio::containers::ops::norm2(residual_);
+    rnorm += ::pressio::ops::norm2(residual_);
 
     // compute jacobian over stencil
     computeJacobiansOverStencil(timeSchemeObj, step,t,dt);
@@ -148,7 +148,7 @@ public:
     auto hess_block = ::pressio::containers::subspan( hess,
 						      std::make_pair( n*romSize_,(n+1)*romSize_ ) ,
 						      std::make_pair( n*romSize_,(n+1)*romSize_) );
-    ::pressio::containers::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
 					one, wlsJacs_[jac_stencil_size_-1],
 					wlsJacs_[jac_stencil_size_-1], zero, hess_block);
 
@@ -163,7 +163,7 @@ public:
 
     // compute gradient[n*romSize_:(n+1)*romSize] += J^T r
     auto gradientView = ::pressio::containers::span(gradient, n*romSize_, romSize_);
-    ::pressio::containers::ops::product(::pressio::transpose(),
+    ::pressio::ops::product(::pressio::transpose(),
 					one, wlsJacs_[jac_stencil_size_-1], residual_,
 					one, gradientView);
     // for (auto i=0; i<romSize_; ++i){
@@ -181,7 +181,7 @@ public:
       for (int i=0; i < sbar; i++)
       {
       	auto gradientView = ::pressio::containers::span(gradient, (n-i)*romSize_, romSize_);
-        ::pressio::containers::ops::product(::pressio::transpose(),
+        ::pressio::ops::product(::pressio::transpose(),
 					    one, wlsJacs_[jac_stencil_size_-i-1], residual_,
 					    one, gradientView);
       }
@@ -197,7 +197,7 @@ public:
 	    auto hess_block = ::pressio::containers::subspan(hess,
 							     std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
 							     std::make_pair( (n-j)*romSize_,(n-j+1)*romSize_ ) );
-	    ::pressio::containers::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
+	    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
 						wlsJacs_[jac_stencil_size_-i-1],
 						wlsJacs_[jac_stencil_size_-j-1], one, hess_block);
 
@@ -214,7 +214,7 @@ public:
 	    auto hess_block2 = ::pressio::containers::subspan(hess,
 							      std::make_pair( (n-j)*romSize_, (n-j+1)*romSize_),
 							      std::make_pair( (n-i)*romSize_,(n-i+1)*romSize_) );
-	    ::pressio::containers::ops::deep_copy(hess_block2, hess_block);
+	    ::pressio::ops::deep_copy(hess_block2, hess_block);
 	  }
       }// end assembling local component of global Hessian
     }//end loop over stepsInWindow
@@ -276,7 +276,7 @@ private:
       step = step_s + n;
       timeSchemeObj.time_discrete_residual(appObj_, yFOM_current_, residual_, t, dt, step);
       Preconditioner(appObj_,yFOM_current_,residual_,t);
-      rnorm += ::pressio::containers::ops::norm2(residual_);
+      rnorm += ::pressio::ops::norm2(residual_);
       computeJacobiansOverStencil(timeSchemeObj,step,t,dt);
   }
 
@@ -327,7 +327,7 @@ private:
 //   odeObj_.updateStatesFirstStep(wlsStateIC,fomStateReconstrObj_);
 
 //   odeObj_.time_discrete_residual(appObj,yFOM_current_,residual_,ts,dt,step);
-//   rnorm += ::pressio::containers::ops::norm2(residual_);
+//   rnorm += ::pressio::ops::norm2(residual_);
 
 //   for (int n = 1; n < numStepsInWindow; n++)
 //   {
@@ -340,6 +340,6 @@ private:
 //     t = ts + n*dt;
 //     step = step_s + n;
 //     odeObj_.time_discrete_residual(appObj,yFOM_current_,residual_,t,dt,step);
-//     rnorm += ::pressio::containers::ops::norm2(residual_);
+//     rnorm += ::pressio::ops::norm2(residual_);
 //   }
 // }//end computeResidualNorm

@@ -92,7 +92,7 @@ public:
     // constexpr auto negOne  = ::pressio::utils::constants::negOne<scalar_type>(); //  -1*dt
     // constexpr auto  One  = ::pressio::utils::constants::one<scalar_type>(); //  -1*dt
     // appObj.velocity(*odeState_nm1.data(),t,*residual.data()); // gives f
-    // ::pressio::containers::ops::do_update(residual,dtnegOne,yFOM,One,odeState_nm1,negOne);
+    // ::pressio::ops::do_update(residual,dtnegOne,yFOM,One,odeState_nm1,negOne);
   }
 
   template <
@@ -113,7 +113,7 @@ public:
     // // u^n - u^{n-1} - f ;
     // if (arg == 0 && step == 0){//only perform computation once since this never changes
     //   const auto One  = ::pressio::utils::constants::one<scalar_type>(); //  1*dt
-    //   ::pressio::containers::ops::do_update(Jphi,phi,One);
+    //   ::pressio::ops::do_update(Jphi,phi,One);
     // }
 
     // if (arg == 1){
@@ -121,7 +121,7 @@ public:
     //   const auto One  = ::pressio::utils::constants::one<scalar_type>(); //  1*dt
     //   auto & odeState_nm1 = auxStatesContainer.get(nm1());
     //   appObj.applyJacobian(*odeState_nm1.data(),*phi.data(),t,*(Jphi).data());
-    //   ::pressio::containers::ops::do_update(Jphi,dtnegOne,phi,One);
+    //   ::pressio::ops::do_update(Jphi,dtnegOne,phi,One);
     // }
   }
 
@@ -138,7 +138,7 @@ public:
   void updateStatesNStep(const fom_state_t & yFOM_current_) const
   {
     // auto & odeState_nm1 = auxStatesContainer_.get(nm1());
-    // ::pressio::containers::ops::deep_copy(odeState_nm1, yFOM_current_);
+    // ::pressio::ops::deep_copy(odeState_nm1, yFOM_current_);
   }
 
 };

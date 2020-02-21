@@ -49,8 +49,8 @@ struct EulerLSPGWithResidualApi
     yRef.setConstant(1);
 
     // define ROM state
-    ::pressio::containers::ops::resize(yROM_, romSize);
-    ::pressio::containers::ops::fill(yROM_, 0.0);
+    ::pressio::ops::resize(yROM_, romSize);
+    ::pressio::ops::fill(yROM_, 0.0);
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::Arbitrary;
@@ -142,8 +142,8 @@ struct EulerLSPGWithVelocityApi
     yRef.setConstant(1);
 
     // define ROM state
-    ::pressio::containers::ops::resize(yROM_, romSize);
-    ::pressio::containers::ops::fill(yROM_, 0.0);
+    ::pressio::ops::resize(yROM_, romSize);
+    ::pressio::ops::fill(yROM_, 0.0);
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::Euler;

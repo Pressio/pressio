@@ -176,7 +176,7 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
 
   //R = y_n - y_nm1 - dt * R;
-  ::pressio::containers::ops::do_update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
+  ::pressio::ops::do_update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
 }
 
 
@@ -214,7 +214,7 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
   auto & y_nm1 = fomStates.getCRefToFomStatePrevStep();
   auto & y_nm2 = fomStates.getCRefToFomStatePrevPrevStep();
   // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
-  ::pressio::containers::ops::do_update(R, cf,
+  ::pressio::ops::do_update(R, cf,
 					fomStateAt_n, cn,
 					y_nm1, cnm1,
 					y_nm2, cnm2);
