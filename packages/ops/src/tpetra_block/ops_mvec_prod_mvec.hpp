@@ -47,10 +47,11 @@
 */
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef OPS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_MULTI_VECTOR_HPP_
-#define OPS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_MULTI_VECTOR_HPP_
+#ifndef OPS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_PROD_MULTI_VECTOR_HPP_
+#define OPS_SRC_OPS_TPETRA_BLOCK_MULTI_VECTOR_PROD_MULTI_VECTOR_HPP_
 
 namespace pressio{ namespace ops{
+
 
 /*
  * for tpetra:
@@ -66,9 +67,8 @@ template <
   typename A_type, typename B_type, typename scalar_type, typename C_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<B_type>::value
-  /*and ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<C_type>::value*/
+  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<B_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -78,36 +78,36 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	::pressio::containers::MatrixSharedMemBase<C_type> & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  throw std::runtime_error("Error, C = beta*C + alpha*A^T*B for tpetra block not yet supported");
 
-  const auto numVecsA = A.numVectors();
-  const auto numVecsB = B.numVectors();
-  assert( A.extent(0) == B.extent(0));
-  assert(C.extent(0) == numVecsA);
-  assert(C.extent(1) == numVecsB);
-
-  auto tmp = ::pressio::utils::constants::zero<scalar_type>();
-  // compute dot between every column of A with every col of B
-  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
-  {
-    // colI is a Teuchos::RCP<Vector<...>>
-    const auto colI = A.data()->getVector(i);
-    for (std::size_t j=0; j< (std::size_t)numVecsB; j++)
-    {
-      const auto colJ = B.data()->getVector(j);
-      C(i,j) = beta * C(i,j) + alpha * colI->dot(*colJ);
-    }
-  }
+  // static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
+  // 		"Types are not scalar compatible");
+//   // how many vectors are in mvA and mvB
+//   const auto numVecsA = mvA.globalNumVectors();
+//   const auto numVecsB = mvB.globalNumVectors();
+//   auto mvA_v = mvA.data()->getMultiVectorView();
+//   auto mvB_v = mvB.data()->getMultiVectorView();
+//   // compute dot between every column of A with every col of B
+//   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
+//   {
+//     // colI is a Teuchos::RCP<Vector<...>>
+//     const auto colI = mvA_v.getVector(i);
+//     for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
+//     {
+//       const auto colJ = mvB_v.getVector(j);
+//       C(i,j) = colI->dot(*colJ);
+//     }
+//   }
 }
 
 template <
   typename C_type, typename A_type, typename B_type, typename scalar_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<B_type>::value and
-  ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<C_type>::value,
+  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<B_type>::value and
+  (::pressio::containers::meta::is_dense_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<C_type>::value),
   C_type
   >
 product(::pressio::transpose modeA,
@@ -128,12 +128,13 @@ product(::pressio::transpose modeA,
 }
 
 
+
 // /***********************************
 //  * special case A==B
 // **********************************/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
+  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
@@ -143,36 +144,36 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
+  throw std::runtime_error("Error, C = beta*C + alpha*A^T*A for tpetra block not yet supported");
 
-  // how many vectors are in A and mvB
-  const auto numVecsA = A.numVectors();
-  assert(C.extent(0) == numVecsA);
-  assert(C.extent(1) == numVecsA);
+  // static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+  // 		"Types are not scalar compatible");
 
-  auto tmp = ::pressio::utils::constants::zero<scalar_type>();
+  // // get a tpetra multivector that views the data
+  // const auto mvView = mvA.data()->getMultiVectorView();
 
-  // A dot A = A^T*A, which yields a symmetric matrix
-  // only need to compute half and fill remaining entries accordingly
-  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
-  {
-    // colI is a Teuchos::RCP<Vector<...>>
-    auto colI = A.data()->getVector(i);
-    for (std::size_t j=i; j<(std::size_t)numVecsA; j++)
-    {
-      auto colJ = A.data()->getVector(j);
-      tmp = alpha*colI->dot(*colJ);
-      C(i,j) = beta*C(i,j) + tmp;
-      C(j,i) = beta*C(j,i) + tmp;
-    }
-  }
+  // // how many vectors are in mvA and mvB
+  // const auto numVecsA = mvA.globalNumVectors();
+
+  // // A dot A = A^T*A, which yields a symmetric matrix
+  // // only need to compute half and fill remaining entries accordingly
+  // for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
+  // {
+  //   // colI is a Teuchos::RCP<Vector<...>>
+  //   const auto colI = mvView.getVector(i);
+  //   for (std::size_t j=i; j<(std::size_t)numVecsA; j++)
+  //   {
+  //     const auto colJ = mvView.getVector(j);
+  //     C(i,j) = colI->dot(*colJ);
+  //     C(j,i) = C(i,j);
+  //   }
+  // }
 }
 
 
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
+  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<C_type>::value
   >
 product(::pressio::transpose modeA,
@@ -182,35 +183,40 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
+  throw std::runtime_error("Error, C = beta*C + alpha*A^T*A for tpetra block not yet supported");
 
-  static_assert(std::is_same<
-		typename containers::details::traits<A_type>::device_t,
-		typename containers::details::traits<C_type>::device_t
-		>::value,
-		"Non-matching device types");
+  // static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+  // 		"Types are not scalar compatible");
 
-  using map_t	    = typename ::pressio::containers::details::traits<A_type>::data_map_t;
-  using tpetra_mv_t = typename ::pressio::containers::details::traits<A_type>::wrapped_t;
-  const auto indexBase = A.data()->getMap()->getIndexBase();
-  const auto comm = A.data()->getMap()->getComm();
+  // // check traits of the block mv
+  // using scalar_t     = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
+  // using tpetra_mvb_t = typename ::pressio::containers::details::traits<mvec_t>::wrapped_t;
 
-  // C should be square matrix
-  assert( C.extent(0) == C.extent(1) );
-  const auto n = C.extent(0);
-  Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
-  // create multivector that views the Kokkos matrix
-  tpetra_mv_t Cmv(replMap, *C.data());
+  // // from the mvb type we can get the underlying regular tpetra::mv
+  // using tpetra_mv_t  = typename tpetra_mvb_t::mv_type;
+  // using map_t	     = typename tpetra_mv_t::map_type;
 
-  // do the operation
-  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, *A.data(), *A.data(), beta);
+  // // get a tpetra multivector that views the tpetra block data
+  // const auto mvView = A.data()->getMultiVectorView();
+
+  // const auto indexBase = mvView.getMap()->getIndexBase();
+  // const auto comm = mvView.getMap()->getComm();
+  // // C should be symmetric
+  // assert( C.rows() == C.cols() );
+  // const auto n = C.rows();
+  // Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
+  // // create multivector that views the Kokkos matrix result
+  // tpetra_mv_t Cmv(replMap, *C.data());
+
+  // constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
+  // constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+  // // do the operation C = A^T A
+  // Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, mvView, mvView, beta);
 }
-
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
+  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   (::pressio::containers::meta::is_dynamic_dense_matrix_wrapper_eigen<C_type>::value or
    ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<C_type>::value),
   C_type

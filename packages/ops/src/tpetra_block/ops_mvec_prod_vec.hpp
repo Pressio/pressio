@@ -53,244 +53,162 @@
 namespace pressio{ namespace ops{
 
 /*
- * tpetra block multi_vector prod shared mem vector
- */
+ * multi_vector prod vector
+ *
+ * y = beta * y + alpha*op(A)*x
+ *
+*/
 
 /* -------------------------------------------------------------------
- * specialize for tpetra block mv product Kokkos wrapper
+ * op(A) = A
+ * x is a sharedmem vector kokkos wrapper
  *-------------------------------------------------------------------*/
-template <
-  typename mvec_type,
-  typename vec_type,
-  typename res_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec_type>::value and
-    containers::meta::is_vector_wrapper_tpetra_block<res_type>::value
-    > * = nullptr
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  containers::meta::is_vector_wrapper_kokkos<x_type>::value and
+  containers::meta::is_vector_wrapper_tpetra_block<y_type>::value
   >
-void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, res_type>::value,
-    "Types are not scalar compatible");
+  throw std::runtime_error("Error, y = beta*y + alpha*A*x for tpetra block not yet supported");
 
-  using sc_t = typename containers::details::traits<mvec_type>::scalar_t;
+  // static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  //   "Types are not scalar compatible");
 
-  // make sure the tpetra mv has same exe space of the kokkos vector wrapper
-  using tpetra_mv_dev_t = typename ::pressio::containers::details::traits<mvec_type>::device_t;
-  using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<vec_type>::device_type;
-  static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
-		 "product: tpetra MV and kokkos wrapper need to have same device type" );
+  // // make sure the tpetra mv has same exe space of the kokkos vector wrapper
+  // using tpetra_mv_dev_t = typename ::pressio::containers::details::traits<A_type>::device_t;
+  // using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<x_type>::device_type;
+  // static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
+  // 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
 
-  assert( mvA.globalNumVectors() == vecB.size() );
+  // assert( A.globalNumVectors() == x.size() );
+  // const char ctA = 'N';
 
-  constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
-  constexpr auto one = ::pressio::utils::constants::one<sc_t>();
-  const char ctA = 'N';
-
-  // the the underlying tpetra multivector
-  const auto mvView = mvA.data()->getMultiVectorView();
-  // get a local view
-  const auto mvALocalView_d = mvView.getLocalViewDevice();
-  // I need to do the following because Tpetra::Vector is implemented
-  // as a special case of MultiVector so getLocalView returns a rank-2 view
-  // so in order to get view with rank==1 I need to explicitly get the subview
-  const auto CView = C.data()->getVectorView();
-  const auto CLocalView_drank2 = CView.getLocalViewDevice();
-  const auto CLocalView_drank1 = Kokkos::subview(CLocalView_drank2, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, one, mvALocalView_d, *vecB.data(), zero, CLocalView_drank1);
+  // // the the underlying tpetra multivector
+  // const auto mvView = A.data()->getMultiVectorView();
+  // // get a local view
+  // const auto ALocalView_d = mvView.getLocalViewDevice();
+  // // I need to do the following because Tpetra::Vector is implemented
+  // // as a special case of MultiVector so getLocalView returns a rank-2 view
+  // // so in order to get view with rank==1 I need to explicitly get the subview
+  // const auto yView = y.data()->getVectorView();
+  // const auto yLocalView_drank2 = yView.getLocalViewDevice();
+  // const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
+  // KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
-
-template<
-  typename mvec_type,
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::is_vector_wrapper_kokkos<vec_type>::value
-    > * = nullptr
-  >
-auto product(const mvec_type & mvA, const vec_type & vecB)
-  -> containers::Vector<
-    Tpetra::Experimental::BlockVector<
-      typename ::pressio::containers::details::traits<mvec_type>::scalar_t,
-      typename ::pressio::containers::details::traits<mvec_type>::local_ordinal_t,
-      typename ::pressio::containers::details::traits<mvec_type>::global_ordinal_t,
-      typename ::pressio::containers::details::traits<mvec_type>::node_t
-      >
-    >
-{
-  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
-    "Types are not scalar compatible");
-
-  // the data map of the multivector
-  const auto rcpMap = mvA.getRCPDataMap();
-  // the block size
-  const auto mvABlockSize = mvA.getBlockSize();
-
-  using mvec_traits = typename ::pressio::containers::details::traits<mvec_type>;
-  using sc_t = typename mvec_traits::scalar_t;
-  using LO_t = typename mvec_traits::local_ordinal_t;
-  using GO_t = typename mvec_traits::global_ordinal_t;
-  using NO_t = typename mvec_traits::node_t;
-
-  // result is an Tpetra Vector with same distribution of mvA
-  using res_nat_t = Tpetra::Experimental::BlockVector<sc_t, LO_t, GO_t, NO_t>;
-  using res_t = containers::Vector<res_nat_t>;
-  res_t c( res_nat_t(*rcpMap, mvABlockSize) );
-  product(mvA, vecB, c);
-  return c;
-}
-
 
 
 /* -------------------------------------------------------------------
- * specialize for tpetra block mv product eigen wrapper
+ * op(A) = A
+ * x is a sharedmem vector but NOT kokkos
  *-------------------------------------------------------------------*/
-template <
-  typename mvec_type,
-  typename vec_type,
-  typename res_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::is_vector_wrapper_tpetra_block<res_type>::value and
-    containers::meta::is_vector_wrapper_eigen<vec_type>::value
-    > * = nullptr
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  !containers::meta::is_vector_wrapper_kokkos<x_type>::value and
+  containers::meta::is_vector_wrapper_tpetra_block<y_type>::value
   >
-void product(const mvec_type & mvA, const vec_type & vecB, res_type & C)
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const ::pressio::containers::VectorSharedMemBase<x_type> & x,
+	const scalar_type beta,
+	y_type & y)
 {
-  /* computes: C = mvA*vecB */
+  throw std::runtime_error("Error, y = beta*y + alpha*A*x for tpetra block not yet supported");
 
-  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type, res_type>::value,
-    "Types are not scalar compatible");
+  // static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  //   "Types are not scalar compatible");
 
-  //zero out result
-  ::pressio::ops::set_zero(C);
+  // const auto numVecs = A.globalNumVectors();
+  // assert(size_t(numVecs) ==  x.extent(0));
 
-  // how many vectors are in mvA
-  const auto numVecs = mvA.globalNumVectors();
+  // // get the wrapped trilinos tpetra multivector
+  // const auto A_mvv = A.data()->getMultiVectorView();
+  // const auto A_hv = A_mvv.template getLocalView<Kokkos::HostSpace>();
+  // // my number of rows
+  // const auto myNrows = A_mvv.getLocalLength();
 
-  // size of vecB
-  const size_t vecBLen = vecB.size();
-  if (vecBLen != size_t(numVecs))
-    assert(size_t(numVecs) == vecBLen);
+  // // the result is a block tpetra vector, get the regular tpetra vector
+  // auto y_vv = y.data()->getVectorView();
+  // auto y_hv = y_vv.template getLocalView<Kokkos::HostSpace>();
+  // y_vv.template modify<Kokkos::HostSpace>();
 
-  // get the wrapped trilinos tpetra multivector
-  const auto mvA_mvv = mvA.data()->getMultiVectorView();
-  const auto mvA_hv = mvA_mvv.template getLocalView<Kokkos::HostSpace>();
-  // my number of rows
-  const auto myNrows = mvA_mvv.getLocalLength();
-
-  // the result is a block tpetra vector, get the regular tpetra vector
-  auto C_vv = C.data()->getVectorView();
-  auto C_hv = C_vv.template getLocalView<Kokkos::HostSpace>();
-  C_vv.template modify<Kokkos::HostSpace>();
-
-  for (std::size_t i=0; i<(std::size_t)myNrows; i++){
-    for (std::size_t j=0; j<(std::size_t)numVecs; j++){
-      // we use C_hv(i,0) because C is Tpetra::Vector, which is
-      // actually a Tpetra::MultiVector with one column, so C_hv
-      // is a kokkos::View<scalar**,...> so we need to index the zero column
-      C_hv(i,0) += mvA_hv(i,j) * vecB[j];
-    }
-  }
-  using device_t = typename ::pressio::containers::details::traits<res_type>::device_t;
-  C.data()->template sync<device_t>();
+  // for (std::size_t i=0; i<(std::size_t)myNrows; i++){
+  //   for (std::size_t j=0; j<(std::size_t)numVecs; j++){
+  //     // we use y_hv(i,0) because C is Tpetra::Vector, which is
+  //     // actually a Tpetra::MultiVector with one column, so y_hv
+  //     // is a kokkos::View<scalar**,...> so we need to index the zero column
+  //     y_hv(i,0) = beta * y_hv(i,0) + alpha * A_hv(i,j) * x[j];
+  //   }
+  // }
+  // using device_t = typename ::pressio::containers::details::traits<res_type>::device_t;
+  // y.data()->template sync<device_t>();
 }
 
-template<
-  typename mvec_type,
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    containers::meta::is_vector_wrapper_eigen<vec_type>::value
-    > * = nullptr
+
+/* -------------------------------------------------------------------
+ * op(A) = A^T
+ * x is a sharedmem vector wrapper not kokkos
+ *-------------------------------------------------------------------*/
+template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  containers::meta::is_vector_wrapper_tpetra_block<x_type>::value and
+  !containers::meta::is_vector_wrapper_kokkos<y_type>::value
   >
-auto product(const mvec_type & mvA, const vec_type & vecB)
-  -> containers::Vector<
-    Tpetra::Experimental::BlockVector<
-      typename ::pressio::containers::details::traits<mvec_type>::scalar_t,
-      typename ::pressio::containers::details::traits<mvec_type>::local_ordinal_t,
-      typename ::pressio::containers::details::traits<mvec_type>::global_ordinal_t,
-      typename ::pressio::containers::details::traits<mvec_type>::node_t
-      >
-    >
+product(::pressio::transpose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	::pressio::containers::VectorSharedMemBase<y_type> & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<mvec_type, vec_type>::value,
-    "Types are not scalar compatible");
+  throw std::runtime_error("Error, y = beta*y + alpha*A^T*x for tpetra block not yet supported");
 
-  // the data map of the multivector
-  const auto rcpMap = mvA.getRCPDataMap();
-  // the block size
-  const auto mvABlockSize = mvA.getBlockSize();
-
-  using mvec_traits = typename ::pressio::containers::details::traits<mvec_type>;
-  using sc_t = typename mvec_traits::scalar_t;
-  using LO_t = typename mvec_traits::local_ordinal_t;
-  using GO_t = typename mvec_traits::global_ordinal_t;
-  using NO_t = typename mvec_traits::node_t;
-
-  // result is an Tpetra Vector with same distribution of mvA
-  using res_nat_t = Tpetra::Vector<sc_t, LO_t, GO_t, NO_t>;
-  using res_t = containers::Vector<res_nat_t>;
-  res_t c( res_nat_t(*rcpMap, mvABlockSize) );
-  product(mvA, vecB, c);
-  return c;
+  // /* workaround the non-constness of getVectorView*/
+  // using tpetra_blockvec_t = typename containers::details::traits<vec_type>::wrapped_t;
+  // const auto vecB_vv = const_cast<tpetra_blockvec_t*>(vecB.data())->getVectorView();
+  // const auto mvA_mvv = mvA.data()->getMultiVectorView();
+  // const auto numVecs = mvA.globalNumVectors();
+  // for (std::size_t i=0; i<(std::size_t)numVecs; i++){
+  //   // colI is a Teuchos::RCP<Vector<...>>
+  //   const auto colI = mvA_mvv.getVector(i);
+  //   result[i] = colI->dot(vecB_vv);
+  // }
 }
 
 /* -------------------------------------------------------------------
- * specialize for tpetra mv operating on an expression
+ * op(A) = A^T
+ * x is a sharedmem vector kokkos wrapper
  *-------------------------------------------------------------------*/
-template <
-  typename mvec_type,
-  typename expr_type,
-  typename res_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    ::pressio::containers::meta::is_expression<expr_type>::value
-    > * = nullptr
+template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  containers::meta::is_vector_wrapper_tpetra_block<x_type>::value and
+  containers::meta::is_vector_wrapper_kokkos<y_type>::value
   >
-void product(const mvec_type & mvA, const expr_type & b, res_type & C)
+product(::pressio::transpose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
-  throw std::runtime_error("Warning, container::ops:product operation between tpetra block and expression not yet supported"); 
-  //::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec(mvA, b, C);
+  throw std::runtime_error("Error, y = beta*y + alpha*A^T*x for tpetra block not yet supported");
+
+  // const auto mvA_mvv = mvA.data()->getMultiVectorView();
+  // using tpetra_blockvector_t = typename containers::details::traits<vec_type>::wrapped_t;
+  // const auto vecB_vv = const_cast<tpetra_blockvector_t*>(vecB.data())->getVectorView();
+  // auto request = Tpetra::idot( *result.data(), mvA_mvv, vecB_vv);
+  // request->wait();
 }
-
-template <
-  typename mvec_type,
-  typename expr_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra_block<mvec_type>::value and
-    ::pressio::containers::meta::is_expression<expr_type>::value
-    > * = nullptr
- >
-auto product(const mvec_type & mvA, const expr_type & b)
-  -> containers::Vector<
-  Tpetra::Vector<typename ::pressio::containers::details::traits<mvec_type>::scalar_t,
-                 typename ::pressio::containers::details::traits<mvec_type>::local_ordinal_t,
-                 typename ::pressio::containers::details::traits<mvec_type>::global_ordinal_t,
-                 typename ::pressio::containers::details::traits<mvec_type>::node_t>
-                 >
-{
-  throw std::runtime_error("Warning, container::ops::product operation between tpetra block and expression not yet supported");
-  // the data map of the multivector
-  /* 
-  auto rcpMap = mvA.getRCPDataMap();
-
-  using mvec_traits = typename ::pressio::containers::details::traits<mvec_type>;
-  using sc_t = typename mvec_traits::scalar_t;
-  using LO_t = typename mvec_traits::local_ordinal_t;
-  using GO_t = typename mvec_traits::global_ordinal_t;
-  using NO_t = typename mvec_traits::node_t;
-
-  // result is an Tpetra Vector with same distribution of mvA
-  using res_nat_t = Tpetra::Vector<sc_t, LO_t, GO_t, NO_t>;
-  using res_t = containers::Vector<res_nat_t>;
-  res_t c(rcpMap);
-  product(mvA, b, c);
-  return c;
-  */
-}
-
 
 }}//end namespace pressio::ops
 #endif
