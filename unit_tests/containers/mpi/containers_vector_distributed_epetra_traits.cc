@@ -10,12 +10,10 @@ TEST(containers_vector_distributed_epetra, EpetraVectorTraits)
   using namespace pressio;
 
   using natV_t = Epetra_Vector;
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(natV_t);
-  STATIC_ASSERT_IS_VECTOR_EPETRA(natV_t);
-
   using myvec_t = containers::Vector<natV_t>;
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(myvec_t);
+
+  static_assert(::pressio::containers::meta::is_vector_epetra<natV_t>::value,"");
+  static_assert(::pressio::containers::meta::is_vector_wrapper_epetra<myvec_t>::value,"");
 
   using vecTrait = containers::details::traits<myvec_t>;
  

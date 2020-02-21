@@ -20,7 +20,6 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        ConstructorFromNative){
   using namespace pressio;
-  STATIC_ASSERT_IS_VECTOR_TPETRA_BLOCK(native_t);
   static_assert
     ( containers::meta::is_vector_wrapper_tpetra_block<myvec_t>::value, "");
   using sc_t = typename fix_t::ST;
@@ -40,7 +39,6 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
        CopyConstructor){
   using namespace pressio;
-  STATIC_ASSERT_IS_VECTOR_TPETRA_BLOCK(native_t);
   static_assert
     ( containers::meta::is_vector_wrapper_tpetra_block<myvec_t>::value, "");
   using sc_t = typename fix_t::ST;
