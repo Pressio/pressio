@@ -60,7 +60,7 @@ const std::vector<double> bdf1Sol
   // define ROM state
   rom_state_t yROM(romSize);
   // initialize to zero (this has to be done)
-  pressio::containers::ops::fill(yROM, 0.0);
+  pressio::ops::fill(yROM, 0.0);
 
   using ode_tag = pressio::ode::explicitmethods::Euler;
   using pressio::rom::galerkin::DefaultProblemType;

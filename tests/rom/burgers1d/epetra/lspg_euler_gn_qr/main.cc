@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
   // define ROM state
   lspg_state_t yROM(romSize);
   // initialize to zero (this has to be done)
-  pressio::containers::ops::fill( yROM, 0.0);
+  pressio::ops::fill( yROM, 0.0);
 
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;

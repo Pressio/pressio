@@ -65,7 +65,7 @@ int main(int argc, char *argv[]){
 
   // define ROM state and set to zero
   lspg_state_t yROM(romSize);
-  pressio::containers::ops::fill(yROM, 0.0);
+  pressio::ops::fill(yROM, 0.0);
 
   // define LSPG type
   using lspg_problem_type = pressio::rom::lspg::steady::DefaultProblemType<
@@ -99,10 +99,10 @@ int main(int argc, char *argv[]){
 
   /* this is a predictive run, so we should recover FOM
    * solution only approximately */
-  auto normFomY = pressio::containers::ops::norm2(yFom);
+  auto normFomY = pressio::ops::norm2(yFom);
   auto errorVec(yFom); 
-  pressio::containers::ops::do_update(errorVec, yFom, 1., yFomApprox, -1.);
-  const auto norm2err = pressio::containers::ops::norm2(errorVec);
+  pressio::ops::do_update(errorVec, yFom, 1., yFomApprox, -1.);
+  const auto norm2err = pressio::ops::norm2(errorVec);
   if( (norm2err/normFomY)*100 > 0.1 ) checkStr = "FAILED";
 
   std::cout << std::setprecision(15) <<

@@ -13,13 +13,10 @@ TEST(containers_vector_distributed_tpetra, Traits){
   typedef Tpetra::Map<LO, GO, NT> map_type;
   
   using natV_t = Tpetra::Vector<ST, LO, GO, NT>;
-  STATIC_ASSERT_IS_VECTOR_TPETRA(natV_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(natV_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(natV_t);
+  static_assert(::pressio::containers::meta::is_vector_tpetra<natV_t>::value,"");
 
   using myvec_t = containers::Vector<natV_t>;
-  STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(myvec_t);
-  STATIC_ASSERT_IS_NOT_VECTOR_EPETRA(myvec_t);
+  static_assert(::pressio::containers::meta::is_vector_wrapper_tpetra<myvec_t>::value,"");
 
   using vecTrait = containers::details::traits<myvec_t>;
  

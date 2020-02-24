@@ -127,7 +127,7 @@ public:
       if (arg == 0){
         appObj.applyJacobian(*yFOM.data(), *phi.data(), t, *(Jphi).data());
         constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; //1
-        ::pressio::containers::ops::do_update(Jphi, -dt, phi, cn);
+        ::pressio::ops::do_update(Jphi, -dt, phi, cn);
       }
     }
 
@@ -136,19 +136,19 @@ public:
         appObj.applyJacobian(*yFOM.data(),*phi.data(),t,*(Jphi).data());
         constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // 1
         const auto cfdt   = ::pressio::ode::constants::bdf2<scalar_type>::c_f_*dt; //2/3
-        ::pressio::containers::ops::do_update(Jphi, cfdt, phi, cn);
+        ::pressio::ops::do_update(Jphi, cfdt, phi, cn);
       }
 
       if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
-        ::pressio::containers::ops::do_update(Jphi, phi, cnm1);
+        ::pressio::ops::do_update(Jphi, phi, cnm1);
         jacobianOneNeedsRecomputing_ = false;
         std::cout << "here" << std::endl;
       }
 
       if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
-        ::pressio::containers::ops::do_update(Jphi, phi, cnm2);
+        ::pressio::ops::do_update(Jphi, phi, cnm2);
         jacobianZeroNeedsRecomputing_ = false;
         std::cout << "here" << std::endl;
       }
@@ -184,8 +184,8 @@ public:
 
     auto & odeState_nm1 = auxStatesContainer_.get(nm1());
     auto & odeState_nm2 = auxStatesContainer_.get(nm2());
-    ::pressio::containers::ops::deep_copy(odeState_nm1, odeState_nm2);
-    ::pressio::containers::ops::deep_copy(yFOM_current_, odeState_nm1);
+    ::pressio::ops::deep_copy(odeState_nm2, odeState_nm1);
+    ::pressio::ops::deep_copy(odeState_nm1, yFOM_current_);
   }
 
 };

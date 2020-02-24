@@ -144,7 +144,7 @@ private:
   template <typename T>
   scalar_t normOfDifference(const T & v1, const T& v2) const{
     T dVec(v1 - v2);
-    return ::pressio::containers::ops::norm2(dVec);
+    return ::pressio::ops::norm2(dVec);
   }
 
   typename iter_base_t::iteration_t getNumIterationsExecutedImpl() const {
@@ -207,7 +207,7 @@ public:
 #endif
 
     // zero out the correction
-    ::pressio::containers::ops::set_zero(deltaState_);
+    ::pressio::ops::set_zero(deltaState_);
 
     // reset the norm
     normN_ = {0};
@@ -237,11 +237,11 @@ public:
       // y_new = y - correction
       constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
       constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
-      ::pressio::containers::ops::do_update(stateInOut, one, deltaState_, negOne);
+      ::pressio::ops::do_update(stateInOut, one, deltaState_, negOne);
 
       // compute norms
-      normN_	= ::pressio::containers::ops::norm2(deltaState_);
-      normRes_	= ::pressio::containers::ops::norm2(R_);
+      normN_	= ::pressio::ops::norm2(deltaState_);
+      normRes_	= ::pressio::ops::norm2(R_);
       // store initial residual norm
       if (iStep_==1) normRes0_ = normRes_;
 
@@ -307,7 +307,7 @@ public:
 //       for (auto i=0; i<x.size(); ++i)
 // 	x.mutable_at(i) -= dx.at(i);
 
-//       normN_ =::pressio::containers::ops::norm2(dx);
+//       normN_ =::pressio::ops::norm2(dx);
 //       ::pressio::utils::io::print_stdout("norm(dx) =", normN_, "\n");
 //       if (normN_ < this->tolerance_)
 //       	break;

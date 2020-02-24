@@ -163,7 +163,7 @@ public:
 #else
     galerkin_state_t result(romState);
 #endif
-    ::pressio::containers::ops::set_zero(result);
+    ::pressio::ops::set_zero(result);
     this->compute_impl(romState, result, app, t);
     return result;
   }
@@ -229,7 +229,7 @@ private:
   {
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
-    ::pressio::containers::ops::product(::pressio::transpose(), one, phi_, fomRhs_, zero, resObj);
+    ::pressio::ops::product(::pressio::transpose(), one, phi_, fomRhs_, zero, resObj);
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11

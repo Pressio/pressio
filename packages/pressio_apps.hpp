@@ -52,6 +52,7 @@
 #include "pressio_mpl.hpp"
 #include "pressio_utils.hpp"
 #include "pressio_containers.hpp"
+#include "pressio_ops.hpp"
 
 #include "apps/src/apps_ConfigDefs.hpp"
 

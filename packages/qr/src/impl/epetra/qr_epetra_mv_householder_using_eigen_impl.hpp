@@ -78,7 +78,7 @@ public:
   {
     constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
     constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
-    ::pressio::containers::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
+    ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
   template <typename vector_t>

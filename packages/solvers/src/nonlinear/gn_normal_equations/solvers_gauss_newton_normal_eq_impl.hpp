@@ -207,7 +207,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->start("gradient");
 #endif
     jtr_evaluator_t::evaluate(jacobian, residual, gradient);
-    ::pressio::containers::ops::scale(gradient, negOne);
+    ::pressio::ops::scale(gradient, negOne);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("gradient");
 #endif
@@ -265,7 +265,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     lsearch_helper_t::template evaluate<ud_ops_t>(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
 
     // solution update: y = y + alpha*correction
-    ::pressio::containers::ops::do_update(stateInOut, one, correction, alpha);
+    ::pressio::ops::do_update(stateInOut, one, correction, alpha);
 
     // check convergence (whatever method user decided)
     const auto flag = is_converged_t::evaluate(stateInOut, correction, correctionNorm,

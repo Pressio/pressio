@@ -86,7 +86,6 @@
 #include "containers/src/vector/meta/containers_native_teuchos_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_tpetra_block_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_tpetra_vector_meta.hpp"
-#include "containers/src/vector/containers_native_vector_static_asserts.hpp"
 
 #include "containers/src/vector/meta/containers_is_dense_vector_wrapper_teuchos.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_arbitrary.hpp"
@@ -117,7 +116,6 @@
 //------------------
 #include "containers/src/matrix/meta/containers_native_eigen_matrix_meta.hpp"
 #include "containers/src/matrix/meta/containers_native_kokkos_matrix_meta.hpp"
-#include "containers/src/matrix/meta/containers_native_matrix_static_asserts.hpp"
 #include "containers/src/matrix/meta/containers_native_trilinos_matrix_meta.hpp"
 
 #include "containers/src/matrix/meta/containers_is_dense_matrix_wrapper_eigen.hpp"
@@ -152,7 +150,6 @@
 #include "containers/src/multi_vector/meta/containers_native_kokkos_multi_vector_meta.hpp"
 #include "containers/src/multi_vector/meta/containers_native_tpetra_block_multi_vector_meta.hpp"
 #include "containers/src/multi_vector/meta/containers_native_tpetra_multi_vector_meta.hpp"
-#include "containers/src/multi_vector/containers_native_multi_vector_static_asserts.hpp"
 
 #include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_tpetra.hpp"
 #include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_tpetra_block.hpp"
@@ -193,84 +190,5 @@
 #include "containers/src/meta/generic/containers_is_wrapper.hpp"
 #include "containers/src/meta/containers_meta_compatibility.hpp"
 #include "containers/src/collection/containers_static_collection.hpp"
-
-
-//------------------
-// ops
-//------------------
-// arbitrary
-#include "containers/src/ops/arbitrary/containers_set_zero.hpp"
-
-// Eigen
-#include "containers/src/ops/eigen/containers_set_zero.hpp"
-#include "containers/src/ops/eigen/containers_scale.hpp"
-#include "containers/src/ops/eigen/containers_fill.hpp"
-#include "containers/src/ops/eigen/containers_resize.hpp"
-#include "containers/src/ops/eigen/containers_deep_copy.hpp"
-#include "containers/src/ops/eigen/containers_add_to_diagonal.hpp"
-#include "containers/src/ops/eigen/containers_min_max.hpp"
-#include "containers/src/ops/eigen/containers_mat_prod_vec.hpp"
-#include "containers/src/ops/eigen/containers_mat_prod_mat.hpp"
-#include "containers/src/ops/eigen/containers_multi_vector_do_update.hpp"
-#include "containers/src/ops/eigen/containers_norms_vector.hpp"
-#include "containers/src/ops/eigen/containers_vec_dot_vec.hpp"
-#include "containers/src/ops/eigen/containers_vector_do_update.hpp"
-
-// Kokkos
-#include "containers/src/ops/kokkos/containers_set_zero.hpp"
-#include "containers/src/ops/kokkos/containers_scale.hpp"
-#include "containers/src/ops/kokkos/containers_fill.hpp"
-#include "containers/src/ops/kokkos/containers_deep_copy.hpp"
-#include "containers/src/ops/kokkos/containers_mvec_prod_mvec.hpp"
-#include "containers/src/ops/kokkos/containers_mvec_prod_vec.hpp"
-#include "containers/src/ops/kokkos/containers_norms_vector.hpp"
-#include "containers/src/ops/kokkos/containers_vector_do_update_kokkos_functors.hpp"
-#include "containers/src/ops/kokkos/containers_vector_do_update.hpp"
-#include "containers/src/ops/kokkos/containers_multi_vector_do_update.hpp"
-
-// Epetra
-#include "containers/src/ops/epetra/containers_set_zero.hpp"
-#include "containers/src/ops/epetra/containers_fill.hpp"
-#include "containers/src/ops/epetra/containers_deep_copy.hpp"
-#include "containers/src/ops/epetra/containers_min_max_vector.hpp"
-#include "containers/src/ops/epetra/containers_mvec_prod_mvec.hpp"
-#include "containers/src/ops/epetra/containers_mvec_prod_vec.hpp"
-#include "containers/src/ops/epetra/containers_norms_vector.hpp"
-#include "containers/src/ops/epetra/containers_vector_do_update.hpp"
-
-// teuchos
-#include "containers/src/ops/teuchos/containers_set_zero.hpp"
-#include "containers/src/ops/teuchos/containers_fill.hpp"
-#include "containers/src/ops/teuchos/containers_deep_copy.hpp"
-#include "containers/src/ops/teuchos/containers_norms_vector.hpp"
-#include "containers/src/ops/teuchos/containers_vector_do_update.hpp"
-
-// Tpetra
-#include "containers/src/ops/tpetra/containers_set_zero.hpp"
-#include "containers/src/ops/tpetra/containers_fill.hpp"
-#include "containers/src/ops/tpetra/containers_deep_copy.hpp"
-#include "containers/src/ops/tpetra/containers_mvec_prod_mvec.hpp"
-#include "containers/src/ops/tpetra/containers_mvec_prod_vec.hpp"
-#include "containers/src/ops/tpetra/containers_norms_vector.hpp"
-#include "containers/src/ops/tpetra/containers_vector_do_update.hpp"
-#include "containers/src/ops/tpetra/containers_multi_vector_do_update.hpp"
-
-// Tpetra block
-#include "containers/src/ops/tpetra_block/containers_set_zero.hpp"
-#include "containers/src/ops/tpetra_block/containers_fill.hpp"
-#include "containers/src/ops/tpetra_block/containers_deep_copy.hpp"
-#include "containers/src/ops/tpetra_block/containers_mvec_dot_mvec.hpp"
-#include "containers/src/ops/tpetra_block/containers_mvec_dot_self.hpp"
-#include "containers/src/ops/tpetra_block/containers_mvec_dot_vec.hpp"
-#include "containers/src/ops/tpetra_block/containers_mvec_prod_vec.hpp"
-#include "containers/src/ops/tpetra_block/containers_norms_vector.hpp"
-#include "containers/src/ops/tpetra_block/containers_vector_do_update.hpp"
-#include "containers/src/ops/tpetra_block/containers_multi_vector_do_update.hpp"
-
-// pybind11
-#include "containers/src/ops/pybind11/containers_set_zero.hpp"
-#include "containers/src/ops/pybind11/containers_deep_copy.hpp"
-#include "containers/src/ops/pybind11/containers_norms_vector.hpp"
-#include "containers/src/ops/pybind11/containers_vector_do_update.hpp"
 
 #endif

@@ -159,7 +159,7 @@ private:
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
-    ::pressio::containers::ops::deep_copy(odeState,  odeState_nm1);
+    ::pressio::ops::deep_copy(odeState_nm1, odeState);
     solver.solve(*this, odeState);
   }
 
@@ -179,7 +179,7 @@ private:
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
-    ::pressio::containers::ops::deep_copy(odeState, odeState_nm1);
+    ::pressio::ops::deep_copy(odeState_nm1, odeState);
     guesserCb(step, time, odeState);
     solver.solve(*this, odeState);
   }

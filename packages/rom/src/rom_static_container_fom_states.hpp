@@ -162,7 +162,7 @@ public:
     for (std::size_t i=n-2; i>=1; --i){
       const auto & src  = data_(i);
       auto & dest = data_(i+1);
-      ::pressio::containers::ops::deep_copy(src, dest);
+      ::pressio::ops::deep_copy(dest, src);
     }
     // then, reconstrct the FOM state at t-1
     fomStateReconstrObj_(romStateIn, data_(1));
@@ -176,7 +176,7 @@ private:
   /* set all entries to zero for all members */
   void resetContainersToZero(){
     for (std::size_t i=0; i<n; i++)
-      ::pressio::containers::ops::set_zero(data_(i));
+      ::pressio::ops::set_zero(data_(i));
   }
 
 private:

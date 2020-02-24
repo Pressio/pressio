@@ -75,13 +75,13 @@ struct FomStateReconstructorPressioOps
 
     constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
     // yOut = yOut + yFomReference_;
-    containers::ops::do_update(yOut, one, yFomReference_, one);
+    ops::do_update(yOut, one, yFomReference_, one);
   }
 
   template <typename rom_state_t>
   fom_state_type operator()(const rom_state_t & romY) const{
     auto yOut(yFomReference_);
-    ::pressio::containers::ops::set_zero(yOut);
+    ::pressio::ops::set_zero(yOut);
     this->template operator()(romY,yOut);
     return yOut;
   }
@@ -122,13 +122,13 @@ private:
 //     decoderObj_.applyMapping(romY, yOut);
 //     constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
 //     // add reference state yOut += yFomReference
-//     ::pressio::containers::ops::do_update(yOut, one, yFomReference_, one);
+//     ::pressio::ops::do_update(yOut, one, yFomReference_, one);
 //   }
 
 //   template <typename rom_state_t>
 //   fom_state_type operator()(const rom_state_t & romY) const{
 //     fom_state_type yOut{ fom_state_t(yFomReference_.request()) };
-//     ::pressio::containers::ops::set_zero(yOut);
+//     ::pressio::ops::set_zero(yOut);
 //     this->template operator()(romY,yOut);
 //     return yOut;
 //   }

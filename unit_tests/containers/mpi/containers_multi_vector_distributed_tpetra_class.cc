@@ -125,7 +125,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
 
   using mymvec_t = containers::MultiVector<typename tpetraMultiVectorGlobSize15Fixture::mvec_t>;
   mymvec_t v1( *x_ );
-  ::pressio::containers::ops::set_zero(v1);
+  v1.data()->putScalar(0.0);
 
   for (int k=0; k<4; k++){
     Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData(k);
@@ -134,25 +134,6 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture,
     }
   }
 }
-
-
-// TEST_F(tpetraMultiVectorGlobSize15Fixture,
-//        getMap){
-//   using namespace pressio;
-//   using nvec_t = typename tpetraMultiVectorGlobSize15Fixture::mvec_t;
-//   using myvec_t = containers::MultiVector<nvec_t>;
-//   myvec_t v1( *x_ );
-//   auto const & mapO = v1.getDataMap();
-//   ::testing::StaticAssertTypeEq<decltype(mapO),
-//   				const typename tpetraMultiVectorGlobSize15Fixture::map_t & >();
-//   EXPECT_TRUE(mapO.isContiguous());
-
-//   auto mapO1 = v1.getRCPDataMap();
-//   ::testing::StaticAssertTypeEq<decltype(mapO1),
-//   	Teuchos::RCP< const typename tpetraMultiVectorGlobSize15Fixture::map_t>>();
-//   EXPECT_TRUE(mapO1->isContiguous());
-// }
-
 
 TEST_F(tpetraMultiVectorGlobSize15Fixture,
        constrcutTVectorFromMVMap){

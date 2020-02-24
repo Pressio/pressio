@@ -58,7 +58,7 @@ struct eigenDenseR9Fixture
   }
 
   void fillVector(){
-    pressio::containers::ops::fill(*v_.get(), 1.);
+    pressio::ops::fill(*v_.get(), 1.);
   }
 
   void checkQFactor(const nat_mat_t & Q){
@@ -137,7 +137,7 @@ struct epetraR9Fixture
   }
 
   void fillVector(){
-    pressio::containers::ops::fill(*v_.get(), 1.);
+    pressio::ops::fill(*v_.get(), 1.);
   }
 
   void checkQFactor(const mymvec_t & Q){
@@ -238,7 +238,7 @@ struct tpetraR9Fixture
   }
 
   void fillVector(){
-    pressio::containers::ops::fill(*v_.get(), 1.);
+    pressio::ops::fill(*v_.get(), 1.);
   }
 
   void checkQFactor(const mymvec_t & Q)

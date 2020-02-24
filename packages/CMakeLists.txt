@@ -7,6 +7,16 @@ set(INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
 # including all the global includes files
 ##################################################
 
+# Dependency structure
+# mpl/utils/containers/ops/qr/svd/optimizers/solvers/ode/rom
+#
+# the apps package is not a real dependency of rom if 
+# pressio needs to be used as a library because apps is 
+# only used for testing
+#
+# The dependency structure is reflected in the order below.
+#
+
 file(GLOB all_files_here "*")
 
 foreach(f ${all_files_here})
@@ -16,6 +26,7 @@ foreach(f ${all_files_here})
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/mpl"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/utils"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/containers"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/ops"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/apps"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/qr"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/svd"
@@ -45,6 +56,7 @@ install(FILES
 install(DIRECTORY mpl		      DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
 install(DIRECTORY utils 	    DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
 install(DIRECTORY containers	DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ops         DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
 install(DIRECTORY apps 		    DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
 install(DIRECTORY qr 		      DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
 install(DIRECTORY svd 		    DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")

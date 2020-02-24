@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
 
     // create the wls state
     wls_state_d_t  wlsState("yRom",romSize*numStepsInWindow);
-    pressio::containers::ops::set_zero(wlsState);
+    pressio::ops::set_zero(wlsState);
     // create the wls system
     wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow,romSize,linear_solver);
 
