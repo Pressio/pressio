@@ -200,21 +200,13 @@ public:
 	    ::pressio::containers::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
 						wlsJacs_[jac_stencil_size_-i-1],
 						wlsJacs_[jac_stencil_size_-j-1], one, hess_block);
-
-	    // for (auto i=0; i<romSize_; ++i){
-	    //   for (auto j=0; j<romSize_; ++j){
-	    // 	std::cout << hess_block(i,j) << " ";
-	    //   }
-	    //   std::cout << "\n";
-	    // }
-	    // std::cout << "\n";
-	    // std::cout << "\n";
-
 	    // handle symmetry
 	    auto hess_block2 = ::pressio::containers::subspan(hess,
 							      std::make_pair( (n-j)*romSize_, (n-j+1)*romSize_),
 							      std::make_pair( (n-i)*romSize_,(n-i+1)*romSize_) );
-	    ::pressio::containers::ops::deep_copy(hess_block, hess_block2);
+            for (int k = 0; k<romSize_; k++){
+              for (int l = 0; l<romSize_; l++){
+                hess_block2(l,k) = hess_block(k,l);}}
 	  }
       }// end assembling local component of global Hessian
     }//end loop over stepsInWindow

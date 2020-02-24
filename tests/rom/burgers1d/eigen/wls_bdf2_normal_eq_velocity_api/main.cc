@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
   using gn_t		= pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
   gn_t GNSolver(wlsSystem, wlsState, linearSolver);
   GNSolver.setTolerance(1e-13);
-  GNSolver.setMaxIterations(50);
+  GNSolver.setMaxIterations(5);
 
   // -----------------
   // solve wls problem
