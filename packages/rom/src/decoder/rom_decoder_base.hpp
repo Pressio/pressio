@@ -54,18 +54,17 @@ namespace pressio{ namespace rom{
 template <
   typename derived_type,
   typename jac_matrix_type,
-  typename rom_state_type,
   typename fom_state_type
   >
 struct DecoderBase
 {
-  using this_t = DecoderBase<derived_type, jac_matrix_type, rom_state_type, fom_state_type>;
+  using this_t = DecoderBase<derived_type, jac_matrix_type, fom_state_type>;
 
   const jac_matrix_type & getReferenceToJacobian() const {
     return static_cast<const derived_type &>(*this).getReferenceToJacobianImpl();
   }
 
-  template <typename operand_t, typename fom_state_t>
+  template <typename operand_t, typename fom_state_t = fom_state_type>
   void applyMapping(const operand_t & operandObj, fom_state_t & result) const
   {
     static_cast<const derived_type &>(*this).template applyMappingImpl<operand_t, fom_state_t>(operandObj, result);

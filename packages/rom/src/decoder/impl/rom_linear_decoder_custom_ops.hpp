@@ -60,11 +60,11 @@ template <
 struct LinearDecoderWithCustomOps
   : public DecoderBase<
   LinearDecoderWithCustomOps<matrix_type, rom_state_type, fom_state_type, ops_t>,
-  matrix_type, rom_state_type, fom_state_type>
+  matrix_type, fom_state_type>
 {
 
   using this_t	    = LinearDecoderWithCustomOps<matrix_type, rom_state_type, fom_state_type, ops_t>;
-  using base_t	    = DecoderBase<this_t, matrix_type, rom_state_type, fom_state_type>;
+  using base_t	    = DecoderBase<this_t, matrix_type, fom_state_type>;
   using jacobian_t  = matrix_type;
   using rom_state_t = rom_state_type;
   using fom_state_t = fom_state_type;
@@ -78,7 +78,7 @@ public:
   LinearDecoderWithCustomOps(const jacobian_t & matIn) : phi_(matIn){}
 
 private:
-  template <typename operand_t>
+  template <typename operand_t, typename fom_state_t = fom_state_type>
   void applyMappingImpl(const operand_t & operandObj, fom_state_type & resultObj) const
   {
     ops_t::template product<operand_t>(*phi_.data(), operandObj, *resultObj.data());
