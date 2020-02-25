@@ -54,11 +54,7 @@
 
 namespace pressio{ namespace ode{ namespace explicitmethods{
 
-template<
-  typename tag,
-  typename state_type,
-  typename ...Args
-  >
+template< typename tag, typename state_type, typename ...Args >
 class Stepper : public StepperBase<
   Stepper<tag, state_type, Args...>
   >
@@ -74,6 +70,7 @@ class Stepper : public StepperBase<
   using system_type	= typename mytraits::model_t;
   using velocity_type	= typename mytraits::velocity_t;
   using policy_t	= typename mytraits::velocity_policy_t;
+  using std_vel_pol_t   = typename mytraits::standard_velocity_policy_t;
 
   // this is the impl class type which holds all the implement details
   using impl_class_t	= typename mytraits::impl_t;
@@ -102,33 +99,29 @@ public:
   Stepper & operator=(Stepper && other)  = delete;
 
   // this is enabled all the time
-  Stepper(state_type const	  & stateIn0,
-	  const system_type	  & model,
-	  const policy_t	  & policyObj)
+  Stepper(const state_type  & stateIn0,
+  	  const system_type & model,
+  	  const policy_t    & policyObj)
     : myImpl_(model,
-	      policyObj,
-	      stateIn0,
-	      policyObj(stateIn0, model,
-			::pressio::utils::constants::zero<scalar_type>())
-	      )
+  	      policyObj,
+  	      stateIn0,
+  	      policyObj(stateIn0, model, ::pressio::utils::constants::zero<scalar_type>())
+  	      )
   {}
 
   // only enable if the policy is standard
   template <
     typename T = policy_t,
     ::pressio::mpl::enable_if_t<
-      mpl::is_same<
-  	T, policy_t
-  	>::value
+      mpl::is_same<T, std_vel_pol_t>::value
       > * = nullptr
     >
   Stepper(const	state_type & stateIn0,
-	  const system_type & model)
+  	  const system_type & model)
     : myImpl_(model,
   	      T(),
-  	      stateIn0,
-  	      T()(stateIn0, model,
-		  ::pressio::utils::constants::zero<scalar_type>())
+	      stateIn0,
+  	      T()(stateIn0, model, ::pressio::utils::constants::zero<scalar_type>())
   	      )
   {}
 
