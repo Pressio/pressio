@@ -72,7 +72,6 @@ struct FomStateReconstructorPressioOps
   {
     // map current romY to FOM state
     decoderObj_.applyMapping(romY, yOut);
-
     constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
     // yOut = yOut + yFomReference_;
     ops::do_update(yOut, one, yFomReference_, one);
@@ -85,6 +84,22 @@ struct FomStateReconstructorPressioOps
     this->template operator()(romY,yOut);
     return yOut;
   }
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  // this is added for pybind because I cannot figure out how to overload ()
+  template <typename rom_state_t>
+  mpl::enable_if_t<
+    ::pressio::containers::meta::is_array_pybind<rom_state_t>::value,
+    typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
+    >
+  evaluate(const rom_state_t & romY) const{
+    ::pressio::containers::Vector<rom_state_t> romView(romY, ::pressio::view());
+    auto yOut(yFomReference_);
+    ::pressio::ops::set_zero(yOut);
+    this->template operator()(romView, yOut);
+    return *yOut.data();
+  }
+#endif
 
 private:
   const fom_state_type & yFomReference_	= {};

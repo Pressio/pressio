@@ -77,9 +77,15 @@ public:
   LinearDecoderWithPressioOps() = delete;
   LinearDecoderWithPressioOps(const jacobian_t & matIn) : phi_(matIn){}
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  LinearDecoderWithPressioOps(const typename ::pressio::containers::details::traits<jacobian_t>::wrapped_t & matIn)
+    : phi_(matIn){}
+#endif
+
 private:
-  template <typename operand_t>
-  void applyMappingImpl(const operand_t & operand, fom_state_type & result) const
+
+  template <typename operand_t, typename _fom_state_type>
+  void applyMappingImpl(const operand_t & operand, _fom_state_type & result) const
   {
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
@@ -90,7 +96,6 @@ private:
     return phi_;
   }
 };//end
-
 
 }}}//end namespace pressio::rom::impl
 #endif
