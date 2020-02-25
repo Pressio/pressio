@@ -60,6 +60,7 @@ namespace direct{
   struct HouseholderQR {};
   struct ColPivHouseholderQR {};
   struct PartialPivLU {};
+  struct LLT {};
 
   #if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
   struct getrs{};
