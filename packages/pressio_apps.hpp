@@ -65,6 +65,7 @@
 #include "apps/src/burgers1d/apps_burgers1d_epetra_identity_masked.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_tpetra.hpp"
+#include "apps/src/burgers1d/apps_burgers1d_tpetra_block.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
