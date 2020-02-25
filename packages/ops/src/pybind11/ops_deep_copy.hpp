@@ -50,23 +50,31 @@
 #ifndef OPS_CONTAINER_OPS_PYBIND11_DEEP_COPY_HPP_
 #define OPS_CONTAINER_OPS_PYBIND11_DEEP_COPY_HPP_
 
-#include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
-
 namespace pressio{ namespace ops{
 
 template<
   typename T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
     > * = nullptr
   >
 void deep_copy(T & dest, const T & src){
+  assert( dest.extent(0) == src.extent(0) );
+  for (std::size_t i=0; i<(std::size_t)dest.extent(0); ++i){
+    dest(i) = src(i);
+  }
+}
 
+template<
+  typename T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_array_pybind<T>::value
+    > * = nullptr
+  >
+void deep_copy(T & dest, const T & src){
   if (src.ndim() > 1){
     throw std::runtime_error("ops::deep_copy: v.ndims()!=1. this operation currently supported for vectors only");
   }
-
   const auto vsz = src.size();
   assert(vsz == dest.size());
   auto dest_proxy = dest.mutable_unchecked();
