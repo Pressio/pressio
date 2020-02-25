@@ -50,9 +50,6 @@
 #ifndef OPS_SRC_OPS_PYBIND11_VECTOR_DO_UPDATE_HPP_
 #define OPS_SRC_OPS_PYBIND11_VECTOR_DO_UPDATE_HPP_
 
-#include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
-
 namespace pressio{ namespace ops{
 
 
