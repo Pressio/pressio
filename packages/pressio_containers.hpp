@@ -89,6 +89,7 @@
 
 #include "containers/src/vector/meta/containers_is_dense_vector_wrapper_teuchos.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_arbitrary.hpp"
+#include "containers/src/vector/meta/containers_is_vector_wrapper_pybind.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_armadillo.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_blaze.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_eigen.hpp"
@@ -101,6 +102,7 @@
 #include "containers/src/vector/containers_vector_traits.hpp"
 
 #include "containers/src/vector/concrete/containers_vector_arbitrary.hpp"
+#include "containers/src/vector/concrete/containers_vector_sharedmem_pybind11.hpp"
 #include "containers/src/vector/concrete/containers_vector_distributed_epetra.hpp"
 #include "containers/src/vector/concrete/containers_vector_distributed_tpetra_block.hpp"
 #include "containers/src/vector/concrete/containers_vector_distributed_tpetra.hpp"
@@ -129,11 +131,13 @@
 #include "containers/src/matrix/meta/containers_is_matrix_wrapper_arbitrary.hpp"
 #include "containers/src/matrix/meta/containers_is_matrix_wrapper_eigen.hpp"
 #include "containers/src/matrix/meta/containers_is_matrix_wrapper_kokkos.hpp"
+#include "containers/src/matrix/meta/containers_is_matrix_wrapper_pybind.hpp"
 #include "containers/src/matrix/meta/containers_is_matrix_wrapper.hpp"
 
 #include "containers/src/matrix/containers_matrix_traits.hpp"
 
 #include "containers/src/matrix/concrete/containers_matrix_arbitrary.hpp"
+#include "containers/src/matrix/concrete/containers_matrix_sharedmem_pybind11.hpp"
 #include "containers/src/matrix/concrete/containers_matrix_dense_distributed_epetra.hpp"
 #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
 #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"
