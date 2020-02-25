@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_fwd.hpp
+// containers_is_vector_wrapper_pybind.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,75 +46,59 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_FORWARD_DECLARATIONS_HPP_
-#define CONTAINERS_FORWARD_DECLARATIONS_HPP_
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#ifndef CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
+#define CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
 
-namespace pressio{
+namespace pressio{ namespace containers{ namespace meta {
 
-struct transpose{};
-struct nontranspose{};
+template <typename T, typename enable = void>
+struct is_cstyle_vector_wrapper_pybind : std::false_type {};
 
-struct view{};
+template <typename T>
+struct is_cstyle_vector_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    details::traits<T>::is_vector &&
+    details::traits<T>::wrapped_vector_identifier==
+		details::WrappedVectorIdentifier::Pybind and
+    is_cstyle_array_pybind11<
+      typename details::traits<T>::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
+// -------------------------------------------------------
 
+template <typename T, typename enable = void>
+struct is_fstyle_vector_wrapper_pybind : std::false_type {};
 
-namespace containers{
-
-namespace details {
-template<typename T, typename enable = void>
-struct traits;
-
-template<typename T>
-struct traits<const T> : traits<T> {};
-}//end namespace containers::details
-
-template<typename derived_type>
-class ContainerBase;
-
-template<typename derived_type>
-class ContainerDistributedBase;
-template<typename derived_type>
-class ContainerSharedMemBase;
-
-template<typename derived_type>
-class MatrixDistributedBase;
-template<typename derived_type>
-class MatrixSharedMemBase;
-
-template<typename derived_type>
-class MultiVectorDistributedBase;
-template<typename derived_type>
-class MultiVectorSharedMemBase;
-
-template<typename derived_type>
-class VectorDistributedBase;
-template<typename derived_type>
-class VectorSharedMemBase;
+template <typename T>
+struct is_fstyle_vector_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    details::traits<T>::is_vector &&
+    details::traits<T>::wrapped_vector_identifier==
+		details::WrappedVectorIdentifier::Pybind and
+    is_fstyle_array_pybind11<
+      typename details::traits<T>::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
+// -------------------------------------------------------
 
 
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class Vector;
+template <typename T, typename enable = void>
+struct is_vector_wrapper_pybind : std::false_type {};
 
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class MultiVector;
+template <typename T>
+struct is_vector_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    is_cstyle_vector_wrapper_pybind<T>::value or
+    is_fstyle_vector_wrapper_pybind<T>::value
+    >
+  > : std::true_type{};
 
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class Matrix;
-
-
-namespace expressions{
-
-template <typename mat_t, typename enable = void>
-struct SubspanExpr;
-
-template <typename vec_t, typename enable = void>
-struct SpanExpr;
-}
-
-}} // end namespace pressio::containers
+}}}//end namespace pressio::containers::meta
 #endif
+#endif // PRESSIO_ENABLE_TPL_PYBIND11
