@@ -67,80 +67,83 @@ class Vector<
   using sc_t	    = typename mytraits::scalar_t;
   using ord_t	    = typename mytraits::ordinal_t;
   using wrap_t	    = typename mytraits::wrapped_t;
-  using ref_t	    = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
   using data_r_t    = typename mytraits::data_return_t;
   using const_data_r_t  = typename mytraits::const_data_return_t;
-
-  using mut_proxy_t = typename mytraits::mut_proxy_t;
-  using proxy_t	    = typename mytraits::proxy_t;
+  // using ref_t      = typename mytraits::reference_t;
+  // using const_ref_t = typename mytraits::const_reference_t;
+  // using mut_proxy_t = typename mytraits::mut_proxy_t;
+  // using proxy_t	    = typename mytraits::proxy_t;
 
 public:
   Vector() = delete;
 
-  explicit Vector(std::size_t insize)
-    : data_({insize}),
-      mutProxy_(data_.mutable_unchecked()),
-      proxy_(data_.unchecked()){}
+  template <
+    typename int_t,
+    mpl::enable_if_t<
+      std::is_integral<int_t>::value
+      > * = nullptr
+    >
+  explicit Vector(int_t insize)
+    : data_({ (std::size_t)insize})
+  {
+    auto proxy = data_.mutable_unchecked();
+    for (ord_t i=0; i<insize; ++i)
+      proxy(i) = static_cast<sc_t>(0);
+  }
 
   explicit Vector(const wrap_t & src)
-    : data_{ wrap_t(const_cast<wrap_t &>(src).request()) },
-      mutProxy_(data_.mutable_unchecked()),
-      proxy_(data_.unchecked())
+    : data_{ wrap_t(const_cast<wrap_t &>(src).request()) }
   {
     // src must be a vector to be wraped into a vector
     assert( data_.ndim() == 1 );
+
     // copy data from src to this
-    auto srcData = src.unchecked();
-    for (ord_t i=0; i<src.size(); ++i){
-      mutProxy_(i) = srcData(i);
-    }
+    auto proxy = data_.mutable_unchecked();
+    const auto srcPx = src.unchecked();
+    for (ord_t i=0; i<src.size(); ++i)
+      proxy(i) = srcPx(i);
   }
 
   // use only if you know what you are doing
   // it is currently used only in specific places
   Vector(wrap_t src, ::pressio::view)
-    : data_{src},
-      mutProxy_(data_.mutable_unchecked()),
-      proxy_(data_.unchecked())
-  {
-    // src must be a vector to be wraped into a vector
+    : data_{src}{
     assert( data_.ndim() == 1 );
   }
 
   // copy cnstr
   Vector(Vector const & other)
-    : data_{ other.extent(0) },
-      mutProxy_(data_.mutable_unchecked()),
-      proxy_(data_.unchecked())
+    : data_({other.extent(0)})
   {
     assert( other.data_.ndim() == 1 );
     // copy data from src to this
-    auto srcData = other.data_.unchecked();
-    for (ord_t i=0; i<other.extent(0); ++i){
-      mutProxy_(i) = srcData(i);
-    }
+    auto proxy = data_.mutable_unchecked();
+    const auto srcPx = other.data_.unchecked();
+    for (ord_t i=0; i<other.extent(0); ++i)
+      proxy(i) = srcPx(i);
   }
 
   // copy assignment
-  Vector & operator=(const Vector & o){
-    if (&o != this){
-      assert( o.data_.ndim() == 1 );
-      assert(o.extent(0) == this->extent(0));
-      for (ord_t i=0; i<o.extent(0); ++i){
-  	mutProxy_(i) = o(i);
-      }
+  Vector & operator=(const Vector & other){
+    if (&other != this){
+      assert( other.ndim() == 1 );
+      assert(this->extent(0) == other.extent(0));
+
+      // copy data from src to this
+      auto proxy = data_.mutable_unchecked();
+      const auto srcPx = other.data_.unchecked();
+      for (ord_t i=0; i<other.extent(0); ++i)
+  	proxy_(i) = srcPx(i);
     }
     return *this;
   }
 
   // // move cnstr and assign
-  Vector(Vector && other) = delete;
-  Vector & operator=(Vector && other) = delete;
+  // Vector(Vector && other);
+  // Vector & operator=(Vector && o) = delete;
 
   // destructor
-  ~Vector() = default;
-
+  ~Vector(){};
 
 public:
   ord_t extentImpl(ord_t i) const {
@@ -148,21 +151,21 @@ public:
     return data_.shape(0);
   }
 
-  ref_t operator [] (ord_t i){
-    return mutProxy_(i);
-  };
+  // sc_t & operator [] (ord_t i){
+  //   return mutProxy_(i);
+  // };
 
-  const_ref_t operator [] (ord_t i) const{
-    return proxy_(i);
-  };
+  // sc_t const & operator [] (ord_t i) const{
+  //   return proxy_(i);
+  // };
 
-  ref_t operator()(ord_t i){
-    return mutProxy_(i);
-  };
+  // ref_t operator()(ord_t i){
+  //   return mutProxy_(i);
+  // };
 
-  const_ref_t operator()(ord_t i) const{
-    return proxy_(i);
-  };
+  // const_ref_t operator()(ord_t i) const{
+  //   return proxy_(i);
+  // };
 
   const_data_r_t dataImpl() const{
     return &data_;
@@ -179,8 +182,6 @@ public:
 private:
   friend VectorSharedMemBase< this_t >;
   wrap_t data_ = {};
-  mut_proxy_t mutProxy_;
-  proxy_t proxy_;
 };//end class
 
 }}//end namespace pressio::containers

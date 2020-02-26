@@ -67,74 +67,72 @@ class Matrix<
   using sc_t	    = typename mytraits::scalar_t;
   using ord_t	    = typename mytraits::ordinal_t;
   using wrap_t	    = typename mytraits::wrapped_t;
-  using ref_t	    = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
-
-  using mut_proxy_t = typename mytraits::mut_proxy_t;
-  using proxy_t	    = typename mytraits::proxy_t;
+  // using ref_t	    = typename mytraits::reference_t;
+  // using const_ref_t = typename mytraits::const_reference_t;
+  // using mut_proxy_t = typename mytraits::mut_proxy_t;
+  // using proxy_t	    = typename mytraits::proxy_t;
 
 public:
   Matrix() = delete;
 
   explicit Matrix(std::size_t ext1, std::size_t ext2)
-    : data_({ext1, ext2}),
-      mutProxy_(data_.mutable_unchecked()),
-      proxy_(data_.unchecked()){}
+    : data_({ext1, ext2}){}
 
   explicit Matrix(const wrap_t & src)
-    : data_{ wrap_t(const_cast<wrap_t &>(src).request()) },
-      mutProxy_(data_.mutable_unchecked()),
-      proxy_(data_.unchecked())
+    : data_{ wrap_t(const_cast<wrap_t &>(src).request()) }
   {
     // src must be a matrix to be wraped into a matrix
     assert( data_.ndim() == 2 );
+
     // copy data from src to this
-    auto srcData = src.unchecked();
+    auto proxy = data_.mutable_unchecked();
+    const auto srcPx = src.unchecked();
     for (ord_t i=0; i<src.shape(0); ++i){
       for (ord_t j=0; j<src.shape(1); ++j){
-	mutProxy_(i,j) = srcData(i,j);
+	proxy(i,j) = srcPx(i,j);
       }
     }
   }
 
   // copy cnstr
   Matrix(Matrix const & other)
-    : data_({ other.extent(0), other.extent(1) }),
-      mutProxy_(data_.mutable_unchecked()),
-      proxy_(data_.unchecked())
+    : data_({ other.extent(0), other.extent(1) })
   {
     assert( other.data_.ndim() == 2 );
     // copy data from src to this
-    const auto srcData = other.data()->unchecked();
+    auto proxy = data_.mutable_unchecked();
+    const auto srcPx = other.data_.unchecked();
     for (ord_t i=0; i<other.extent(0); ++i){
       for (ord_t j=0; j<other.extent(1); ++j){
-	mutProxy_(i,j) = srcData(i,j);
+	proxy(i,j) = srcPx(i,j);
       }
     }
   }
 
   // copy assignment
-  Matrix & operator=(const Matrix & o){
-    if (&o != this){
-      assert( o.data_.ndim() == 2 );
-      assert(o.extent(0) == this->extent(0));
-      assert(o.extent(1) == this->extent(1));
-      for (ord_t i=0; i<o.extent(0); ++i){
-  	for (ord_t j=0; j<o.extent(1); ++j){
-  	  mutProxy_(i,j) = o(i,j);
+  Matrix & operator=(const Matrix & other){
+    if (&other != this){
+      assert(this->extent(0) == other.extent(0));
+      assert(this->extent(1) == other.extent(1));
+
+      // copy data from src to this
+      auto proxy = data_.mutable_unchecked();
+      const auto srcPx = other.data_.unchecked();
+      for (ord_t i=0; i<other.extent(0); ++i){
+  	for (ord_t j=0; j<other.extent(1); ++j){
+  	  proxy(i,j) = srcPx(i,j);
   	}
       }
     }
     return *this;
   }
 
-  // move cnstr and assign
-  Matrix(Matrix && other) = delete;
-  Matrix & operator=(Matrix && other) = delete;
+  // // move cnstr and assign
+  // Matrix(Matrix && o);
+  // Matrix & operator=(Matrix && o) = delete;
 
   // destructor
-  ~Matrix() = default;
-
+  ~Matrix(){};
 
 public:
   ord_t extentImpl(ord_t i) const {
@@ -142,13 +140,13 @@ public:
     return data_.shape(i);
   }
 
-  ref_t operator()(ord_t i, ord_t j){
-    return mutProxy_(i,j);
-  };
+  // ref_t operator()(ord_t i, ord_t j){
+  //   return mutProxy_(i,j);
+  // };
 
-  const_ref_t operator()(ord_t i, ord_t j) const{
-    return proxy_(i,j);
-  };
+  // const_ref_t operator()(ord_t i, ord_t j) const{
+  //   return proxy_(i,j);
+  // };
 
   wrap_t const * dataImpl() const{
     return &data_;
@@ -161,8 +159,6 @@ public:
 private:
   friend MatrixSharedMemBase< this_t >;
   wrap_t data_ = {};
-  mut_proxy_t mutProxy_;
-  proxy_t proxy_;
 };//end class
 
 }}//end namespace pressio::containers
