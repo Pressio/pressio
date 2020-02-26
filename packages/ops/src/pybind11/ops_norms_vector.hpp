@@ -52,36 +52,20 @@
 
 namespace pressio{ namespace ops{
 
-
+/* wrappers */
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_vector_wrapper_pybind<vec_type>::value
     > * = nullptr
   >
-auto norm1(const vec_type & a) -> typename vec_type::value_type
+auto norm1(const vec_type & a)
+  -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
 {
-  using sc_t = typename vec_type::value_type;
+  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
   sc_t result = ::pressio::utils::constants::zero<sc_t>();
+  const auto a_proxy = a.data()->unchecked();
   for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += std::abs(a(i));
-  return result;
-}
-
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<vec_type>::value
-    > * = nullptr
-  >
-auto norm1(const vec_type & a) -> typename vec_type::value_type
-{
-  using sc_t = typename vec_type::value_type;
-  sc_t result = ::pressio::utils::constants::zero<sc_t>();
-  // make sure this is a vector
-  assert(a.ndim() == 1);
-  auto a_proxy = a.unchecked();
-  for (decltype(a.size()) i=0; i<a.size(); i++)
     result += std::abs(a_proxy(i));
   return result;
 }
@@ -92,33 +76,16 @@ template <
     ::pressio::containers::meta::is_vector_wrapper_pybind<vec_type>::value
     > * = nullptr
   >
-auto norm2(const vec_type & a) -> typename vec_type::value_type
+auto norm2(const vec_type & a)
+  -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
 {
-  using sc_t = typename vec_type::value_type;
+  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
   sc_t result = ::pressio::utils::constants::zero<sc_t>();
+  const auto a_proxy = a.data()->unchecked();
   for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += a(i)*a(i);
-  return std::sqrt(result);
-}
-
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<vec_type>::value
-    > * = nullptr
-  >
-auto norm2(const vec_type & a) -> typename vec_type::value_type
-{
-  using sc_t = typename vec_type::value_type;
-  sc_t result = ::pressio::utils::constants::zero<sc_t>();
-  // make sure this is a vector
-  assert(a.ndim() == 1);
-  auto a_proxy = a.unchecked();
-  for (decltype(a.size()) i=0; i<a.size(); i++)
     result += a_proxy(i)*a_proxy(i);
   return std::sqrt(result);
 }
-
 
 }}//end namespace pressio::ops
 #endif

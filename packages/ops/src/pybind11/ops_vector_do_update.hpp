@@ -63,28 +63,14 @@ template<
     > * = nullptr
   >
 void do_update(T & v, scalar_t a, const T & v1, scalar_t b){
-  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-  for (int_t i=0; i<v.extent(0); ++i)
-    v[i] = a*v[i] + b*v1[i];
-}
+  using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
 
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v, scalar_t a, const T & v1, scalar_t b){
-  // make sure this is a vector
-  assert(v.ndim()==1 && v1.ndim()==1);
-  const auto vsz = v.size();
-  auto v_proxy = v.mutable_unchecked();
-  const auto v1_proxy = v1.unchecked();
-  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+  auto v_proxy        = v.data()->mutable_unchecked();
+  const auto v1_proxy = v1.data()->unchecked();
+  for (ord_t i=0; i<v.extent(0); ++i){
     v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i);
   }
 }
-
 
 template<
   typename T, typename scalar_t,
@@ -93,31 +79,17 @@ template<
     > * = nullptr
   >
 void do_update(T & v, const T & v1, const scalar_t b){
-  using int_t = typename ::pressio::containers::details::traits<T>::ordinat_t;
-  for (int_t i=0; i<v.extent(0); ++i)
-    v[i] = b*v1[i];
-}
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v, const T & v1, const scalar_t b){
-  // make sure this is a vector
-  assert(v.ndim()==1 && v1.ndim()==1);
-  assert(v.size()==v1.size());
-  const auto vsz = v.size();
-  auto v_proxy = v.mutable_unchecked();
-  auto v1_proxy = v1.unchecked();
-  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+  using ord_t = typename ::pressio::containers::details::traits<T>::ordinat_t;
+  auto v_proxy        = v.data()->mutable_unchecked();
+  const auto v1_proxy = v1.data()->unchecked();
+  for (ord_t i=0; i<v.extent(0); ++i){
     v_proxy(i) = b*v1_proxy(i);
   }
 }
 
 //----------------------------------------------------------------------
-//  overloads for computing this: V = a * V + b * V1 + c * V2
+//  overloads for computing:
+//  V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
 template<
   typename T, typename scalar_t,
@@ -126,73 +98,19 @@ template<
     > * = nullptr
   >
 void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c){
-
-  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-  for (int_t i=0; i<v.extent(0); ++i)
-    v[i] = a*v[i] + b*v1[i] + c*v2[i];
-}
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c){
-
-  // make sure this is a vector
-  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1);
-  assert(v.size()==v1.size() && v1.size()==v2.size());
-  const auto vsz = v.size();
-  auto v_proxy   = v.mutable_unchecked();
-  auto v1_proxy	 = v1.unchecked();
-  auto v2_proxy  = v2.unchecked();
-  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+         const T & v1, const scalar_t &b,
+         const T & v2, const scalar_t &c)
+{
+  // assert(v.extent(0)==v1.extent(0)==v2.extent(0));
+  using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  auto v_proxy   = v.data()->mutable_unchecked();
+  const auto v1_proxy = v1.data()->unchecked();
+  const auto v2_proxy = v2.data()->unchecked();
+  for (ord_t i=0; i<v.extent(0); ++i){
     v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i) + c*v2_proxy(i);
   }
 }
 
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c){
-
-  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-  for (int_t i=0; i<v.extent(0); ++i)
-    v[i] = b*v1[i] + c*v2[i];
-}
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c){
-
-  // make sure this is a vector
-  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1);
-  assert(v.size()==v1.size() && v1.size()==v2.size());
-  const auto vsz = v.size();
-  auto v_proxy   = v.mutable_unchecked();
-  auto v1_proxy	 = v1.unchecked();
-  auto v2_proxy  = v2.unchecked();
-  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
-    v_proxy(i) = b*v1_proxy(i) + c*v2_proxy(i);
-  }
-}
 
 //----------------------------------------------------------------------
 //  overloads for computing:
@@ -207,169 +125,15 @@ template<
 void do_update(T & v, const scalar_t &a,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d){
-
-  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-  for (int_t i=0; i<v.extent(0); ++i)
-    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
-}
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d){
-
-  // make sure this is a vector
-  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1 && v3.ndim()==1);
-  assert(v.size()==v1.size() && v1.size()==v2.size());
-  assert(v2.size()==v3.size());
-  const auto vsz = v.size();
-  auto v_proxy   = v.mutable_unchecked();
-  auto v1_proxy	 = v1.unchecked();
-  auto v2_proxy  = v2.unchecked();
-  auto v3_proxy	 = v3.unchecked();
-  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
+	       const T & v3, const scalar_t &d)
+{
+  using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  auto v_proxy   = v.data()->mutable_unchecked();
+  const auto v1_proxy = v1.data()->unchecked();
+  const auto v2_proxy = v2.data()->unchecked();
+  const auto v3_proxy = v3.data()->unchecked();
+  for (ord_t i=0; i<v.extent(0); ++i){
     v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i);
-  }
-}
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d){
-
-  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-  for (int_t i=0; i<v.extent(0); ++i)
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i];
-}
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d){
-
-  // make sure this is a vector
-  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1 && v3.ndim()==1);
-  assert(v.size()==v1.size() && v1.size()==v2.size());
-  assert(v2.size()==v3.size());
-  const auto vsz = v.size();
-  auto v_proxy   = v.mutable_unchecked();
-  auto v1_proxy	 = v1.unchecked();
-  auto v2_proxy  = v2.unchecked();
-  auto v3_proxy	 = v3.unchecked();
-
-  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
-    v_proxy(i) = b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i);
-  }
-}
-
-//----------------------------------------------------------------------
-//  overloads for computing:
-//	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
-//----------------------------------------------------------------------
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e){
-
-  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-  for (int_t i=0; i<v.extent(0); ++i)
-    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
-}
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e){
-
-  // make sure this is a vector
-  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1 && v3.ndim()==1 && v4.ndim()==1);
-  assert(v.size()==v1.size() && v1.size()==v2.size());
-  assert(v2.size()==v3.size() && v3.size()==v4.size());
-  const auto vsz = v.size();
-  auto v_proxy   = v.mutable_unchecked();
-  auto v1_proxy	 = v1.unchecked();
-  auto v2_proxy  = v2.unchecked();
-  auto v3_proxy	 = v3.unchecked();
-  auto v4_proxy  = v4.unchecked();
-  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
-    v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i) + e*v4_proxy(i);
-  }
-}
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e){
-
-  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-  for (int_t i=0; i<v.extent(0); ++i)
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
-}
-
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<T>::value
-    > * = nullptr
-  >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e){
-
-  // make sure this is a vector
-  assert(v.ndim()==1 && v1.ndim()==1 && v2.ndim()==1 && v3.ndim()==1 && v4.ndim()==1);
-  assert(v.size()==v1.size() && v1.size()==v2.size());
-  assert(v2.size()==v3.size() && v3.size()==v4.size());
-  const auto vsz = v.size();
-  auto v_proxy   = v.mutable_unchecked();
-  auto v1_proxy	 = v1.unchecked();
-  auto v2_proxy  = v2.unchecked();
-  auto v3_proxy	 = v3.unchecked();
-  auto v4_proxy  = v4.unchecked();
-  for (std::size_t i=0; i<(std::size_t)vsz; ++i){
-    v_proxy(i) = b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i) + e*v4_proxy(i);
   }
 }
 
