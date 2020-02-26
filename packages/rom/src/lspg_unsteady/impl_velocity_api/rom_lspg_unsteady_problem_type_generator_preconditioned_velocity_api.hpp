@@ -77,8 +77,7 @@ However, the fom/adapter type you passed does not meet the velocity api. \n \
 Verify the fom/adapter class you are using meets the velocity api.");
 
   // pick the common types holder
-  using common_types_t
-  = typename CommonTypesHelper<fom_type, lspg_state_type>::template type< stepper_tag, Args...>;
+  using common_types_t = LSPGUnsteadyCommonTypesVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>;
 
   using fom_t			= typename common_types_t::fom_t;
   using scalar_t		= typename common_types_t::scalar_t;

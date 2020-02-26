@@ -54,17 +54,14 @@ namespace pressio{ namespace rom{ namespace policy{
 template <>
 struct QueryFomApplyJacobianDefault<false>{
 
-  //------------------------------------------
-  // enabled for native c++
-  //------------------------------------------
   template <
     typename fom_t, typename state_t,
     typename operand_t, typename time_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
-      !::pressio::containers::meta::is_array_pybind11<state_t>::value and
-      !::pressio::containers::meta::is_array_pybind11<operand_t>::value
+      !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
       > * = nullptr
 #endif
     >
@@ -83,8 +80,8 @@ struct QueryFomApplyJacobianDefault<false>{
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
-      !::pressio::containers::meta::is_array_pybind11<state_t>::value and
-      !::pressio::containers::meta::is_array_pybind11<operand_t>::value
+      !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
       > * = nullptr
 #endif
     >
@@ -92,53 +89,41 @@ struct QueryFomApplyJacobianDefault<false>{
 		const state_t	  & yFOM,
 		const operand_t & B,
 		result_t	  & out,
-		time_t		  t) const{
+		time_t		  t) const
+  {
     fomObj.applyJacobian(*yFOM.data(), *B.data(), t, *out.data());
   }
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  //------------------------------------------
-  // enabled when interfacing with python
-  //------------------------------------------
-  template <
-    typename fom_t, typename state_t,
-    typename operand_t, typename time_t
-    , mpl::enable_if_t<
-      mpl::is_same<fom_t, pybind11::object>::value and
-      ::pressio::containers::meta::is_array_pybind11<state_t>::value and
-      ::pressio::containers::meta::is_array_pybind11<operand_t>::value and
-      // we should have all data struct to be = pybind11::array_t
-      mpl::is_same<state_t, operand_t>::value
-      > * = nullptr
+  template <typename state_t, typename operand_t, typename result_t, typename time_t>
+  mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+    ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
     >
-  state_t evaluate(const fom_t	   & fomObj,
-		   const state_t   & yFOM,
-		   const operand_t & B,
-		   time_t	     t) const{
-    return fomObj.attr("applyJacobian")(yFOM, B, t);
+  evaluate(const pybind11::object  & fomObj,
+  	   const state_t	  & yFOM,
+  	   const operand_t & B,
+  	   result_t	  & out,
+  	   const time_t	  t) const
+  {
+    *out.data() = fomObj.attr("applyJacobian")(*yFOM.data(), *B.data(), t);
   }
 
-  template <
-    typename fom_t, typename state_t, typename operand_t,
-    typename result_t, typename time_t
-    , mpl::enable_if_t<
-      mpl::is_same<fom_t, pybind11::object>::value and
-      ::pressio::containers::meta::is_array_pybind11<state_t>::value and
-      ::pressio::containers::meta::is_array_pybind11<operand_t>::value and
-      // because we should have all data struct to be = pybind11::array_t
-      mpl::is_same<state_t, operand_t>::value
-      > * = nullptr
+  template <typename state_t, typename operand_t, typename time_t>
+  mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+    ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
+    typename ::pressio::containers::details::traits<state_t>::wrapped_t
     >
-  void evaluate(const fom_t	  & fomObj,
-		const state_t	  & yFOM,
-		const operand_t & B,
-		result_t	  & out,
-		time_t		  t) const{
-    out = fomObj.attr("applyJacobian")(yFOM, B, t);
+  evaluate(const pybind11::object & fomObj,
+	   const state_t   & yFOM,
+	   const operand_t & B,
+	   const time_t	   t) const
+  {
+    return fomObj.attr("applyJacobian")(*yFOM.data(), *B.data(), t);
   }
 #endif
-
 };
 
 }}} //end namespace pressio::rom::policy

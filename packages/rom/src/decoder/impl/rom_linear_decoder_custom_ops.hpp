@@ -68,6 +68,7 @@ struct LinearDecoderWithCustomOps
   using jacobian_t  = matrix_type;
   using rom_state_t = rom_state_type;
   using fom_state_t = fom_state_type;
+  using scalar_t    = typename ::pressio::containers::details::traits<rom_state_t>::scalar_t;
 
 private:
   friend base_t;

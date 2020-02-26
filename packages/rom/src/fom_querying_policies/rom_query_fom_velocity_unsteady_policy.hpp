@@ -58,20 +58,20 @@ struct QueryFomVelocityDefault<false>{
   // enabled for native c++
   //------------------------------------------
   template <
-    typename fom_t,   typename state_t,
-    typename rhs_t, typename time_t
+    typename fom_t, typename state_t, typename rhs_t, typename time_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
-      !::pressio::containers::meta::is_array_pybind11<state_t>::value and
-      !::pressio::containers::meta::is_array_pybind11<rhs_t>::value
+      !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+      !::pressio::containers::meta::is_vector_wrapper_pybind<rhs_t>::value
       > * = nullptr
 #endif
     >
   void evaluate(const fom_t	& fomObj,
 		const state_t & yFOM,
 		rhs_t		& rhs,
-		time_t		t) const{
+		const time_t	t) const
+  {
     fomObj.velocity(*yFOM.data(), t, *rhs.data());
   }
 
@@ -80,7 +80,7 @@ struct QueryFomVelocityDefault<false>{
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
 	mpl::not_same<fom_t, pybind11::object>::value and
-	!::pressio::containers::meta::is_array_pybind11<state_t>::value
+	!::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value
 	> * = nullptr
 #endif
     >
@@ -98,34 +98,28 @@ struct QueryFomVelocityDefault<false>{
   //------------------------------------------
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
-    typename fom_t, typename state_t,
-    typename rhs_t, typename time_t,
+    typename state_t, typename rhs_t, typename time_t,
     mpl::enable_if_t<
-      mpl::is_same<fom_t, pybind11::object>::value and
-      ::pressio::containers::meta::is_array_pybind11<state_t>::value and
-      ::pressio::containers::meta::is_array_pybind11<rhs_t>::value and
-      // because we should have all = pybind11::array_t
-      mpl::is_same<state_t, rhs_t>::value
+      ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+      ::pressio::containers::meta::is_vector_wrapper_pybind<rhs_t>::value
       > * = nullptr
     >
-  void evaluate(const fom_t	& fomObj,
+  void evaluate(const pybind11::object & fomObj,
 		const state_t & yFOM,
 		rhs_t		& rhs,
-		time_t		t) const{
-    rhs = fomObj.attr("velocity")(yFOM, t);
+		time_t		t) const
+  {
+    *rhs.data() = fomObj.attr("velocity")(*yFOM.data(), t);
   }
 
-  template <
-    typename fom_t, typename state_t, typename time_t,
-    mpl::enable_if_t<
-      mpl::is_same<fom_t, pybind11::object>::value and
-      ::pressio::containers::meta::is_array_pybind11<state_t>::value
-      > * = nullptr
+  template <typename state_t, typename time_t>
+  mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value,
+    typename ::pressio::containers::details::traits<state_t>::wrapped_t
     >
-  state_t evaluate(const fom_t	& fomObj,
-		   const state_t & yFOM,
-		   time_t t) const {
-    return fomObj.attr("velocity")(yFOM, t);
+  evaluate(const pybind11::object & fomObj, const state_t & yFOM, time_t t) const
+  {
+    return fomObj.attr("velocity")(*yFOM.data(), t);
   }
 #endif
 };
