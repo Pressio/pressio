@@ -164,7 +164,7 @@ template <>
 struct traits<::pressio::solvers::linear::direct::LLT> {
 
   template <typename MatrixT>
-  using eigen_solver_type = Eigen::LLT<MatrixT,Eigen::Upper>;
+  using eigen_solver_type = Eigen::LLT<MatrixT,Eigen::Lower>;
 
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;

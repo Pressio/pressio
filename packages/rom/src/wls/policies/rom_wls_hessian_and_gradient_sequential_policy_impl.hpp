@@ -65,6 +65,7 @@ namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 template<
   typename fom_type,
   typename decoder_t,
+  typename hessian_matrix_structure_tag, 
   typename preconditioner_t = ::pressio::rom::wls::preconditioners::impl::NoPreconditioner
   >
 class HessianGradientSequentialPolicy
@@ -74,7 +75,7 @@ class HessianGradientSequentialPolicy
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using decoder_jac_t           = typename decoder_t::jacobian_t;
   using residual_t              = fom_state_t;
-
+   
   // currently have this as a vector of jacobians, can change to container
   /* For now, set wls_jacs_t to be a vector of item type = decoder_jac_t
    * this is a similar assumption as done for lspg
@@ -185,34 +186,39 @@ public:
 					    one, wlsJacs_[jac_stencil_size_-i-1], residual_,
 					    one, gradientView);
       }
-      // for (auto i=0; i<romSize_; ++i){
-      //   std::cout << gradientView[i] << " \n";
-      // }
-      // std::cout << "\n";
-      // std::cout << "\n";
-
-      // == Assemble local component of global Hessian //
-      for (int i=0; i < sbar; i++){
-	for (int j=0; j <= i; j++){
-	    auto hess_block = ::pressio::containers::subspan(hess,
-							     std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
-							     std::make_pair( (n-j)*romSize_,(n-j+1)*romSize_ ) );
-	    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
-						wlsJacs_[jac_stencil_size_-i-1],
-						wlsJacs_[jac_stencil_size_-j-1], one, hess_block);
-	    // handle symmetry
-	    auto hess_block2 = ::pressio::containers::subspan(hess,
-							      std::make_pair( (n-j)*romSize_, (n-j+1)*romSize_),
-							      std::make_pair( (n-i)*romSize_,(n-i+1)*romSize_) );
-            for (int k = 0; k<romSize_; k++){
-              for (int l = 0; l<romSize_; l++){
-                hess_block2(l,k) = hess_block(k,l);}}
-	  }
-      }// end assembling local component of global Hessian
+      addToHessian(hess,n,sbar,hessianMatrixStructureTag_);
     }//end loop over stepsInWindow
   }//end operator()
 
 private:
+  template<typename hessian_type>
+  void addToHessian(hessian_type & hess, const int & n, const int & sbar, const pressio::matrixUpperTriangular & hessianTag) const{
+    for (int i=0; i < sbar; i++){
+      for (int j=0; j <= i; j++){
+        constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+        auto hess_block = ::pressio::containers::subspan(hess,
+							     std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
+							     std::make_pair( (n-j)*romSize_,(n-j+1)*romSize_ ) );
+        ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
+						wlsJacs_[jac_stencil_size_-i-1],
+						wlsJacs_[jac_stencil_size_-j-1], one, hess_block);
+      }
+    }// end assembling local component of global Hessian
+  }
+  template<typename hessian_type>
+  void addToHessian(hessian_type & hess, const int & n, const int & sbar, const pressio::matrixLowerTriangular & hessianTag) const{
+    for (int i=0; i < sbar; i++){
+      for (int j=0; j <= i; j++){
+        constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+        auto hess_block = ::pressio::containers::subspan(hess,
+							     std::make_pair( (n-j)*romSize_, (n-j+1)*romSize_ ),
+							     std::make_pair( (n-i)*romSize_,(n-i+1)*romSize_ ) );
+        ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
+						wlsJacs_[jac_stencil_size_-j-1],
+						wlsJacs_[jac_stencil_size_-i-1], one, hess_block);
+      }
+    }// end assembling local component of global Hessian
+  }
   // reconstructs yFOM_current_ from the stepNum entry of wlsState
   template <typename wls_state_type, typename fom_state_reconstr_t>
   void setCurrentFomState(const wls_state_type & wlsState,
@@ -276,6 +282,7 @@ private:
   mutable wls_jacs_t wlsJacs_;
   mutable fom_state_t yFOM_current_; //working variable for the FOM state
   mutable residual_t residual_;	     // working variable for the time discrete residual
+  const hessian_matrix_structure_tag hessianMatrixStructureTag_;
   int romSize_;
   int fomSize_;
   int time_stencil_size_;

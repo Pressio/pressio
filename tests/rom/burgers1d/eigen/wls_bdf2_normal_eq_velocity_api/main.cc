@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
   // -----------------
   // Linear solver
   // -----------------
-  using lin_solver_tag	= pressio::solvers::linear::direct::ColPivHouseholderQR;
+  using lin_solver_tag	= pressio::solvers::linear::direct::LLT;
   using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, hessian_t>;
   linear_solver_t linearSolver;
 

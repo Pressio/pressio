@@ -56,7 +56,8 @@ template<
   typename wls_state_type,
   typename decoder_t,
   typename ode_tag,
-  typename hessian_t
+  typename hessian_t,
+  typename hessian_matrix_structure_tag = ::pressio::matrixLowerTriangular
   >
 class SystemHessianGradientApi{
 
@@ -75,7 +76,7 @@ public:
   using decoder_jac_t		= typename decoder_t::jacobian_t;
 
   // policy type (here policy knows how to compute hessian and gradient)
-  using hessian_gradient_pol_t	= ::pressio::rom::wls::HessianGradientSequentialPolicy<fom_type,decoder_t>;
+  using hessian_gradient_pol_t	= ::pressio::rom::wls::HessianGradientSequentialPolicy<fom_type,decoder_t,hessian_matrix_structure_tag>;
 
   // information on stencil width, time discrete resiudal, time discrete jacobian, etc.
   using time_stencil_t = ::pressio::rom::wls::timeschemes::timescheme_t<ode_tag, fom_state_t, wls_state_type>;

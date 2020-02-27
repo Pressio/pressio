@@ -54,6 +54,9 @@ namespace pressio{
 struct transpose{};
 struct nontranspose{};
 
+struct matrixFull{};
+struct matrixUpperTriangular{};
+struct matrixLowerTriangular{};
 
 namespace containers{
 
