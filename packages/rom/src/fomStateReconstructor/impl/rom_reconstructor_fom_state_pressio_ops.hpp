@@ -81,7 +81,7 @@ struct FomStateReconstructorPressioOps
   fom_state_type operator()(const rom_state_t & romY) const{
     auto yOut(yFomReference_);
     ::pressio::ops::set_zero(yOut);
-    this->template operator()(romY,yOut);
+    this->operator()(romY,yOut);
     return yOut;
   }
 
@@ -94,9 +94,9 @@ struct FomStateReconstructorPressioOps
     >
   evaluate(const rom_state_t & romY) const{
     ::pressio::containers::Vector<rom_state_t> romView(romY, ::pressio::view());
-    auto yOut(yFomReference_);
+    fom_state_type yOut(yFomReference_);
     ::pressio::ops::set_zero(yOut);
-    this->template operator()(romView, yOut);
+    this->operator()(romView, yOut);
     return *yOut.data();
   }
 #endif
