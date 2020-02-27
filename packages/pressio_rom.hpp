@@ -89,7 +89,6 @@
 #include "rom/src/meta/rom_has_static_method_product_three_args.hpp"
 #include "rom/src/meta/rom_is_legitimate_custom_ops_for_linear_decoder.hpp"
 #include "rom/src/decoder/rom_decoder_base.hpp"
-#include "rom/src/decoder/rom_linear_py_decoder.hpp"
 #include "rom/src/decoder/rom_linear_decoder.hpp"
 #include "rom/src/meta/rom_is_legitimate_decoder_type.hpp"
 

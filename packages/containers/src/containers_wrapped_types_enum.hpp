@@ -61,7 +61,8 @@ enum class WrappedPackageIdentifier{
    Trilinos,
    Kokkos,
    Armadillo,
-   Arbitrary
+   Arbitrary,
+   Pybind
 };
 
 /*--------------------------------------------
@@ -88,7 +89,8 @@ enum class WrappedVectorIdentifier{
    Kokkos,
    ArmadilloCol,
    ArmadilloRow,
-   Arbitrary
+   Arbitrary,
+   Pybind
 };
 
 /*--------------------------------------------
@@ -107,7 +109,8 @@ enum class WrappedMatrixIdentifier{
    SparseEigen,
    DenseBlaze, // maybe more specific
    SparseBlaze,
-   Arbitrary
+   Arbitrary,
+   Pybind
 };
 
 

@@ -63,10 +63,8 @@ class ResidualPolicyVelocityApi : protected fom_velocity_eval_policy
 {
 
 public:
-  using this_t = ResidualPolicyVelocityApi<residual_type,
-				    fom_states_cont_type,
-				    fom_velocity_eval_policy,
-				    ud_ops>;
+  using this_t = ResidualPolicyVelocityApi<residual_type, fom_states_cont_type,
+					   fom_velocity_eval_policy, ud_ops>;
 
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
@@ -76,22 +74,15 @@ public:
   ~ResidualPolicyVelocityApi() = default;
 
   /* for constructing this we need to deal with a few cases
-   * 1. regular c++ with void ops
-   * 2. regular c++ with non-void ops
-   * 3. python bindings with void ops
-   * 4. python bindings with non-void ops
+   * 1. void ops
+   * 2. non-void ops
    */
 
-  // 1. enable for regular c++ and void ops
+  // 1. void ops
   template <
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      std::is_void<_ud_ops>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !::pressio::containers::meta::is_array_pybind11<_residual_type>::value
-#endif
-      > * = nullptr
+    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
 			    fom_states_cont_type & fomStatesIn,
@@ -101,17 +92,12 @@ public:
       fomStates_(fomStatesIn)
   {}
 
-
-  // 2. enable for regular c++ and non-void ops
+  // 2. non-void ops
   template <
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<
       !std::is_void<_ud_ops>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !::pressio::containers::meta::is_array_pybind11<_residual_type>::value
-      and ::pressio::mpl::not_same<_ud_ops, pybind11::object>::value
-#endif
       > * = nullptr
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
@@ -123,47 +109,6 @@ public:
       fom_velocity_eval_policy(fomEvalVelocityFunctor),
       udOps_{&udOps}
   {}
-
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // 3. python bindings with void ops (which means we do the ops here)
-  template <
-    typename _residual_type = residual_type,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      ::pressio::containers::meta::is_array_pybind11<_residual_type>::value and
-      std::is_void<_ud_ops>::value
-      > * = nullptr
-    >
-  ResidualPolicyVelocityApi(const _residual_type & RIn,
-			    fom_states_cont_type & fomStatesIn,
-			    const fom_velocity_eval_policy & fomEvalVelocityFunctor)
-    : fom_velocity_eval_policy(fomEvalVelocityFunctor),
-      R_{{_residual_type(const_cast<_residual_type &>(RIn).request())}},
-      fomStates_(fomStatesIn)
-  {}
-
-
-  // 4. python bindings with non-void ops (means the user passes object with ops)
-  template <
-    typename _residual_type = residual_type,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      ::pressio::containers::meta::is_array_pybind11<_residual_type>::value and
-      ::pressio::mpl::is_same<_ud_ops, pybind11::object>::value
-      > * = nullptr
-    >
-  ResidualPolicyVelocityApi(const _residual_type & RIn,
-			    fom_states_cont_type & fomStatesIn,
-			    const fom_velocity_eval_policy & fomEvalVelocityFunctor,
-			    const _ud_ops & udOps)
-    : fom_velocity_eval_policy(fomEvalVelocityFunctor),
-      R_{{_residual_type(const_cast<_residual_type &>(RIn).request())}},
-      fomStates_(fomStatesIn),
-      udOps_{udOps}
-  {}
-#endif
-
 
 public:
   template <
@@ -202,10 +147,7 @@ public:
     return R_;
   }
 
-
-
 private:
-
   template <
     typename stepper_tag,
     typename fom_state_cont_type,
@@ -238,8 +180,6 @@ private:
     time_discrete_residual<stepper_tag>(fomStates, romR, dt, udOps_);
   }
 
-
-private:
   template <
     typename stepper_tag,
     typename lspg_state_t,

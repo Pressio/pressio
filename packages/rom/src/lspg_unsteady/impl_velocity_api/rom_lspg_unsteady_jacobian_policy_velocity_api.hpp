@@ -64,11 +64,8 @@ class JacobianPolicyVelocityApi : protected fom_apply_jac_policy
 {
 
 public:
-  using this_t = JacobianPolicyVelocityApi<fom_states_data_type,
-				    apply_jac_return_type,
-				    fom_apply_jac_policy,
-				    decoder_type,
-				    ud_ops>;
+  using this_t = JacobianPolicyVelocityApi<fom_states_data_type, apply_jac_return_type,
+					   fom_apply_jac_policy, decoder_type, ud_ops>;
 
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
@@ -78,100 +75,45 @@ public:
   ~JacobianPolicyVelocityApi() = default;
 
   /* for constructing this we need to deal with a few cases
-   * 1. regular c++ with void ops
-   * 2. regular c++ with non-void ops
-   * 3. python bindings with void ops
-   * 4. python bindings with non-void ops
+   * 1. void ops
+   * 2. non-void ops
    */
 
-  // 1. enable for regular c++ and void ops
+  // 1. void ops
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<
-      std::is_void<_ud_ops>::value and
-      ::pressio::containers::meta::is_wrapper<_apply_jac_return_type>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !::pressio::containers::meta::is_array_pybind11<_apply_jac_return_type>::value
-#endif
+      std::is_void<_ud_ops>::value
       > * = nullptr
     >
   JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
-					const fom_apply_jac_policy  & applyJacFunctor,
-					const _apply_jac_return_type & applyJacObj,
-					const decoder_type	    & decoder)
+			    const fom_apply_jac_policy  & applyJacFunctor,
+			    const _apply_jac_return_type & applyJacObj,
+			    const decoder_type	    & decoder)
     : fom_apply_jac_policy(applyJacFunctor),
       JJ_(applyJacObj),
       fomStates_(fomStates),
       decoderObj_(decoder){}
 
 
-  // 2. enable for regular c++ and non-void ops
+  // 2. non-void ops
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
     typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value and
-      ::pressio::containers::meta::is_wrapper<_apply_jac_return_type>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !::pressio::containers::meta::is_array_pybind11<_apply_jac_return_type>::value
-#endif
-      > * = nullptr
+    ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops>::value > * = nullptr
     >
   JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
-					const fom_apply_jac_policy  & applyJacFunctor,
-					const _apply_jac_return_type & applyJacObj,
-					const decoder_type	    & decoder,
-					const _ud_ops		    & udOps)
+			    const fom_apply_jac_policy  & applyJacFunctor,
+			    const _apply_jac_return_type & applyJacObj,
+			    const decoder_type	    & decoder,
+			    const _ud_ops		    & udOps)
     : fom_apply_jac_policy(applyJacFunctor),
       JJ_(applyJacObj),
       fomStates_(fomStates),
       decoderObj_(decoder),
       udOps_{&udOps}
   {}
-
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // 3. enable for python bindings and void ops (which means we do ops here)
-  template <
-    typename _apply_jac_return_type = apply_jac_return_type,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      std::is_void<_ud_ops>::value
-      and ::pressio::containers::meta::is_array_pybind11<_apply_jac_return_type>::value
-      > * = nullptr
-    >
-  JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
-					const fom_apply_jac_policy  & applyJacFunctor,
-					const _apply_jac_return_type & applyJacObj,
-					const decoder_type	    & decoder)
-    : fom_apply_jac_policy(applyJacFunctor),
-      JJ_{{_apply_jac_return_type(const_cast<_apply_jac_return_type &>(applyJacObj).request())}},
-      fomStates_(fomStates),
-      decoderObj_(decoder){}
-
-  // 4. enable for python bindings and non-void ops (which means user passes ops)
-  template <
-    typename _apply_jac_return_type = apply_jac_return_type,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value
-      and ::pressio::containers::meta::is_array_pybind11<_apply_jac_return_type>::value
-      > * = nullptr
-    >
-  JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
-					const fom_apply_jac_policy  & applyJacFunctor,
-					const _apply_jac_return_type & applyJacObj,
-					const decoder_type	    & decoder,
-					const _ud_ops		    & udOps)
-    : fom_apply_jac_policy(applyJacFunctor),
-      JJ_{{_apply_jac_return_type(const_cast<_apply_jac_return_type &>(applyJacObj).request())}},
-      fomStates_(fomStates),
-      decoderObj_(decoder),
-      udOps_{udOps}
-  {}
-#endif
-
 
 public:
   template <

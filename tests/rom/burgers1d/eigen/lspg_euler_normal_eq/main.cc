@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
   gnsolver_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);
   // I know this should converge in few iters every step
-  solver.setMaxIterations(2);
+  solver.setMaxIterations(4);
 
   // integrate in time
   pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);

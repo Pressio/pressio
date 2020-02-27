@@ -57,13 +57,16 @@ namespace pressio{ namespace ode{
 
 template<typename stepper_type, typename state_type, typename time_type>
 mpl::enable_if_t<
-::pressio::ode::details::traits<stepper_type>::is_explicit 
+  ::pressio::ode::details::traits<stepper_type>::is_explicit
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  and !::pressio::containers::meta::is_array_pybind<state_type>::value
+#endif
 >
 integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
-		     state_type			    & odeStateInOut,
-		     const time_type		    start_time,
-		     const time_type		    dt,
-		     const ::pressio::ode::types::step_t num_steps)
+		state_type			    & odeStateInOut,
+		const time_type		    start_time,
+		const time_type		    dt,
+		const ::pressio::ode::types::step_t num_steps)
 {
 
   static_assert(::pressio::ode::meta::is_legitimate_explicit_state_type<state_type>::value,
@@ -77,6 +80,35 @@ See the requirements inside ode_is_legitimate_explicit_state_type.hpp");
 }
 
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename stepper_type, typename state_type, typename time_type>
+mpl::enable_if_t<
+  ::pressio::ode::details::traits<stepper_type>::is_explicit
+  and ::pressio::containers::meta::is_array_pybind<state_type>::value
+>
+integrateNSteps(stepper_type & stepper,
+		state_type	 & odeStateInOut,
+		const time_type	 start_time,
+		const time_type	 dt,
+		const ::pressio::ode::types::step_t num_steps)
+{
+  static_assert(::pressio::ode::meta::is_legitimate_explicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an explicit stepper \
+but the state type you are using is not admissible for explicit time-stepping. \
+See the requirements inside ode_is_legitimate_explicit_state_type.hpp");
+
+  // here we want to view the odeStateInOut since we want to modify its data,
+  // which is numpy array owned by the user inside their Python code.
+  // upon exit of this function, the original odeStateInOut is changed since odeStateView only views it.
+  ::pressio::containers::Vector<state_type> odeStateView(odeStateInOut, ::pressio::view());
+
+  using do_step_policy_t = impl::ExplicitDoStepBasic;
+  using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
+  advancer_t::execute(num_steps, start_time, dt, odeStateView, stepper);
+}
+#endif
+
+
 template<
   typename stepper_type,
   typename state_type,
@@ -84,14 +116,14 @@ template<
   typename collector_type
 >
 mpl::enable_if_t<
-::pressio::ode::details::traits<stepper_type>::is_explicit 
+::pressio::ode::details::traits<stepper_type>::is_explicit
 >
 integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
-		     state_type				 & odeStateInOut,
-		     const time_type			 start_time,
-		     const time_type			 dt,
-		     const ::pressio::ode::types::step_t num_steps,
-		     collector_type			 & collector)
+		state_type				 & odeStateInOut,
+		const time_type			 start_time,
+		const time_type			 dt,
+		const ::pressio::ode::types::step_t num_steps,
+		collector_type			 & collector)
 {
 
   static_assert(::pressio::ode::meta::is_legitimate_explicit_state_type<state_type>::value,
@@ -99,12 +131,12 @@ integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
 but the state type you are using is not admissible for explicit time-stepping.\
 See the requirements inside ode_is_legitimate_explicit_state_type.hpp");
 
+
   static_assert(::pressio::ode::meta::is_legitimate_collector<
       collector_type, ::pressio::ode::types::step_t, time_type, state_type
 		>::value, "You are trying to call integrateNSteps with an explicit stepper \
 and a collector, but the collector type you are using is not admissible. \
-It does not meet the API of a valid collector. \
-See requirements in ode_is_legitimate_collector.hpp");
+It does not meet the API of a valid collector. See requirements in ode_is_legitimate_collector.hpp");
 
   using do_step_policy_t = impl::ExplicitDoStepBasic;
   using advancer_t	 = impl::IntegratorNStepsWithCollectorAndConstDt<collector_type, do_step_policy_t>;

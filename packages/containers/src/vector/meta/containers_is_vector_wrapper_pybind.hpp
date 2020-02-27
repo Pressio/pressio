@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_system_wrapper.hpp
+// containers_is_vector_wrapper_pybind.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,69 +46,59 @@
 //@HEADER
 */
 
-#ifndef ODE_SYSTEM_WRAPPER_HPP_
-#define ODE_SYSTEM_WRAPPER_HPP_
-
-namespace pressio{ namespace ode{ namespace impl{
-
-template<
-  typename model_type,
-  typename enable = void
-  >
-struct OdeSystemWrapper;
-
-
-template<typename model_type>
-struct OdeSystemWrapper<
-  model_type
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  , mpl::enable_if_t<
-      ::pressio::mpl::not_same<model_type, pybind11::object >::value
-      >
-#endif
-  >
-{
-  OdeSystemWrapper(const model_type & system)
-    : data_(system){}
+#ifndef CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
+#define CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
 
-  OdeSystemWrapper() = delete;
-  ~OdeSystemWrapper() = default;
+namespace pressio{ namespace containers{ namespace meta {
 
-  const model_type & get() const{
-    return data_;
-  }
+template <typename T, typename enable = void>
+struct is_cstyle_vector_wrapper_pybind : std::false_type {};
 
-private:
-  const model_type & data_;
-};
-
-
-/* for some reason to be determined, when we deal with
- * python objects, we need to pass by copy
- */
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename model_type>
-struct OdeSystemWrapper<
-  model_type,
-  mpl::enable_if_t<
-    ::pressio::mpl::is_same<model_type, pybind11::object >::value
+template <typename T>
+struct is_cstyle_vector_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    details::traits<T>::is_vector &&
+    details::traits<T>::wrapped_vector_identifier==
+		details::WrappedVectorIdentifier::Pybind and
+    is_cstyle_array_pybind11<
+      typename details::traits<T>::wrapped_t
+      >::value
     >
-  >
-{
-  OdeSystemWrapper(const model_type & system)
-    : data_(system){}
+  > : std::true_type{};
+// -------------------------------------------------------
 
-  OdeSystemWrapper() = delete;
-  ~OdeSystemWrapper() = default;
+template <typename T, typename enable = void>
+struct is_fstyle_vector_wrapper_pybind : std::false_type {};
 
-  const model_type & get() const{
-    return data_;
-  }
+template <typename T>
+struct is_fstyle_vector_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    details::traits<T>::is_vector &&
+    details::traits<T>::wrapped_vector_identifier==
+		details::WrappedVectorIdentifier::Pybind and
+    is_fstyle_array_pybind11<
+      typename details::traits<T>::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
+// -------------------------------------------------------
 
-private:
-    model_type data_;
-};
+
+template <typename T, typename enable = void>
+struct is_vector_wrapper_pybind : std::false_type {};
+
+template <typename T>
+struct is_vector_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    is_cstyle_vector_wrapper_pybind<T>::value or
+    is_fstyle_vector_wrapper_pybind<T>::value
+    >
+  > : std::true_type{};
+
+}}}//end namespace pressio::containers::meta
 #endif
-
-}}}//end namespace pressio::ode::impl
-#endif
+#endif // PRESSIO_ENABLE_TPL_PYBIND11

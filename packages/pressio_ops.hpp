@@ -127,5 +127,6 @@
 #include "ops/src/pybind11/ops_deep_copy.hpp"
 #include "ops/src/pybind11/ops_norms_vector.hpp"
 #include "ops/src/pybind11/ops_vector_do_update.hpp"
+#include "ops/src/pybind11/ops_mat_prod_vec.hpp"
 
 #endif

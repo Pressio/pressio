@@ -54,6 +54,8 @@ namespace pressio{
 struct transpose{};
 struct nontranspose{};
 
+struct view{};
+
 
 namespace containers{
 

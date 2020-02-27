@@ -51,17 +51,6 @@
 
 namespace pressio{ namespace rom{
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <
-  typename matrix_type,
-  typename ops_t,
-  typename rom_state, 
-  typename fom_state,
-  typename enable = void>
-struct PyLinearDecoder;
-#endif
-
-
 /*--- others ---*/
 template <
   typename fom_state_type,
@@ -69,7 +58,6 @@ template <
   typename reconstuctor_type,
   typename enable = void>
 class FomStatesStaticContainer;
-
 
 
 /*--- decorators ---*/

@@ -83,18 +83,17 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
   using velocity_storage_t = VelocitiesContainer<velocity_type, 1>;
   using system_wrapper_t   = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
 
-  velocity_storage_t veloAuxStorage_;
   system_wrapper_t sys_;
   const velocity_policy_type & policy_;
+  velocity_storage_t veloAuxStorage_;
 
 public:
   ExplicitEulerStepperImpl(const system_type & model,
-			   const velocity_policy_type & policy_obj,
-			   const state_type & stateIn0,
-			   const velocity_type & f0)
-    : veloAuxStorage_(f0),
-      sys_(model),
-      policy_(policy_obj){}
+  			   const velocity_policy_type & policy_obj,
+  			   const state_type & stateIn0,
+  			   const velocity_type & f0)
+    : sys_(model), policy_(policy_obj), veloAuxStorage_(f0)
+  {}
 
   ExplicitEulerStepperImpl() = delete;
   ~ExplicitEulerStepperImpl() = default;

@@ -49,12 +49,6 @@
 #ifndef SOLVERS_NEWTON_RAPHSON_HPP
 #define SOLVERS_NEWTON_RAPHSON_HPP
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include <pybind11/pybind11.h>
-#include <pybind11/functional.h>
-#include <pybind11/numpy.h>
-#endif
-
 namespace pressio{ namespace solvers{
 
 template <
@@ -63,7 +57,7 @@ template <
   typename scalar_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   ,::pressio::mpl::enable_if_t<
-     std::is_same<linear_solver_t, pybind11::object>::value
+     !std::is_same<linear_solver_t, pybind11::object>::value
     > * = nullptr
 #endif
   >

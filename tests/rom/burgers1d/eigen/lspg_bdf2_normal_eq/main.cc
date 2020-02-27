@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
     lspg_stepper_t, linear_solver_t>;
   gnsolver_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);
-  solver.setMaxIterations(200);
+  solver.setMaxIterations(10);
 
   // integrate in time
   pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);

@@ -63,6 +63,7 @@ public:
   using typename problem_t::fom_velocity_t;
 
   using typename problem_t::galerkin_state_t;
+  using typename problem_t::galerkin_native_state_t;
   using typename problem_t::decoder_t;
   using typename problem_t::fom_state_reconstr_t;
   using typename problem_t::fom_states_data;
@@ -89,12 +90,12 @@ public:
   }
 
 public:
-
   ProblemGenerator() = delete;
   ~ProblemGenerator() = default;
 
   /*
-   * ud_ops_t == void and state_type is a wrapper
+   * ud_ops_t   = void
+   * C++ types
   */
   template <
     typename _ud_ops_t = ud_ops_t,
@@ -102,15 +103,15 @@ public:
       std::is_void<_ud_ops_t>::value and
       ::pressio::containers::meta::is_wrapper<galerkin_state_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
+      and !::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
 #endif
       > * = nullptr
   >
   ProblemGenerator(const fom_t		    & appObj,
-  			   const fom_native_state_t & yFomRefNative,
-  			   const decoder_t	    & decoder,
-  			   galerkin_state_t	    & yROM,
-  			   scalar_t		    t0)
+		   const fom_native_state_t & yFomRefNative,
+		   const decoder_t	    & decoder,
+		   galerkin_state_t	    & yROM,
+		   scalar_t		    t0)
     : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( appObj.velocity(*fomStateReference_.data(), t0) ),
@@ -121,29 +122,28 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /*
-   * ud_ops_t == void and state_type is pybind11::array
+   * ud_ops_t == void and state_type is wrapper of pybind11::array
   */
   template <
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops_t>::value and
-      ::pressio::containers::meta::is_array_pybind11<galerkin_state_t>::value
+      ::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
       > * = nullptr
   >
   ProblemGenerator(const fom_t		    & appObj,
-  			   const fom_native_state_t & yFomRefNative,
-  			   const decoder_t	    & decoder,
-  			   galerkin_state_t	    & yROM,
-  			   scalar_t		    t0)
+		   fom_native_state_t	    yFomRefNative,
+		   const decoder_t	    & decoder,
+		   galerkin_native_state_t  yROM,
+		   scalar_t		    t0)
     : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomVelocityRef_( appObj.attr("velocity")(fomStateReference_, t0) ),
+      fomVelocityRef_( appObj.attr("velocity")(*fomStateReference_.data(), t0) ),
       fomStates_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStates_, decoder),
-      stepperObj_(yROM, appObj, residualPolicy_)
+      stepperObj_(galerkin_state_t(yROM), appObj, residualPolicy_)
   {}
 #endif
-
 };
 
 }}}//end namespace pressio::rom::galerkin

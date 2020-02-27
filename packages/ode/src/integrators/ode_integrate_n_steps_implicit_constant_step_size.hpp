@@ -61,12 +61,16 @@ template<
   typename time_type,
   typename solver_type,
   typename std::enable_if<
+    ::pressio::ode::details::traits<stepper_type>::is_implicit and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  and !::pressio::containers::meta::is_array_pybind<state_type>::value
+#endif
     >::type * = nullptr
   >
-void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
+void integrateNSteps(stepper_type & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 startTime,
 		     const time_type	 dt,
@@ -82,6 +86,41 @@ See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
   using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
   advancer_t::execute(numSteps, startTime, dt, odeStateInOut, stepper, solver);
 }
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<
+  typename stepper_type,
+  typename state_type,
+  typename time_type,
+  typename solver_type,
+  typename std::enable_if<
+    ::pressio::ode::details::traits<stepper_type>::is_implicit and
+    ::pressio::containers::meta::is_array_pybind<state_type>::value
+    >::type * = nullptr
+  >
+void integrateNSteps(stepper_type & stepper,
+		     state_type		 & odeStateInOut,
+		     const time_type	 startTime,
+		     const time_type	 dt,
+		     const types::step_t numSteps,
+		     solver_type	 & solver){
+
+  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+		"You are trying to call integrateNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. \
+See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+
+  // here we want to view the odeStateInOut since we want to modify its data,
+  // which is numpy array owned by the user inside their Python code.
+  // upon exit of this function, the original odeStateInOut is changed since odeStateView only views it.
+  ::pressio::containers::Vector<state_type> odeStateView(odeStateInOut, ::pressio::view());
+
+  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
+  advancer_t::execute(numSteps, startTime, dt, odeStateView, stepper, solver);
+}
+#endif
+
 
 
 // with collector

@@ -62,7 +62,7 @@ struct is_legitimate_decoder_type<
     ::pressio::mpl::publicly_inherits_from<
       T,
       ::pressio::rom::DecoderBase<
-	T, typename T::jacobian_t, typename T::rom_state_t, typename T::fom_state_t
+	T, typename T::jacobian_t, typename T::fom_state_t
 	>
       >::value
     >

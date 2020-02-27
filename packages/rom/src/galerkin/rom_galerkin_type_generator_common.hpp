@@ -57,14 +57,7 @@ template <
   typename galerkin_state_type,
   typename ...Args
   >
-using CommonTypes =
-  impl::GalerkinCommonTypes<
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  ::pressio::containers::meta::is_array_pybind11<galerkin_state_type>::value,
-#else
-  false,
-#endif
-  galerkin_state_type, Args...>;
+using CommonTypes = impl::GalerkinCommonTypes<galerkin_state_type, Args...>;
 
 }}}//end  namespace pressio::rom::galerkin
 #endif

@@ -11,6 +11,11 @@ set(SRC1
   )
 add_serial_utest(containers_serial "${SRC1}")
 
+if(PRESSIO_ENABLE_TPL_PYBIND11)
+  set(SRC2 ${CMAKE_CURRENT_SOURCE_DIR}/containers_vector_pybind.cc)
+  add_serial_utest(containers_pybind11 "${SRC2}")
+endif()
+
 # if(PRESSIO_ENABLE_TPL_TRILINOS)
 #   set(SRC2
 #     ${CMAKE_CURRENT_SOURCE_DIR}/containers_vector_serial_teuchos_dense_class.cc

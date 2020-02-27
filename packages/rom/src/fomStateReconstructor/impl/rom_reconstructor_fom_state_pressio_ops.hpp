@@ -72,7 +72,6 @@ struct FomStateReconstructorPressioOps
   {
     // map current romY to FOM state
     decoderObj_.applyMapping(romY, yOut);
-
     constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
     // yOut = yOut + yFomReference_;
     ops::do_update(yOut, one, yFomReference_, one);
@@ -82,63 +81,31 @@ struct FomStateReconstructorPressioOps
   fom_state_type operator()(const rom_state_t & romY) const{
     auto yOut(yFomReference_);
     ::pressio::ops::set_zero(yOut);
-    this->template operator()(romY,yOut);
+    this->operator()(romY,yOut);
     return yOut;
   }
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  // this is added for pybind because I cannot figure out how to overload ()
+  template <typename rom_state_t>
+  mpl::enable_if_t<
+    ::pressio::containers::meta::is_array_pybind<rom_state_t>::value,
+    typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
+    >
+  evaluate(const rom_state_t & romY) const{
+    ::pressio::containers::Vector<rom_state_t> romView(romY, ::pressio::view());
+    fom_state_type yOut(yFomReference_);
+    ::pressio::ops::set_zero(yOut);
+    this->operator()(romView, yOut);
+    return *yOut.data();
+  }
+#endif
 
 private:
   const fom_state_type & yFomReference_	= {};
   const decoder_type   & decoderObj_	= {};
 
 };//end class
-
-
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <
-//   typename scalar_type,
-//   typename fom_state_type,
-//   typename decoder_type
-//   >
-// class FomStateReconstructorPressioOps<
-//   scalar_type, fom_state_type, decoder_type,
-//   mpl::enable_if_t<
-//     ::pressio::containers::meta::is_array_pybind11<fom_state_type>::value
-//     >
-//   >
-// {
-// public:
-//   FomStateReconstructorPressioOps() = delete;
-//   FomStateReconstructorPressioOps(const fom_state_type & yFomIn,
-// 				  const decoder_type & decoder)
-//     : yFomReference_(yFomIn),
-//       decoderObj_(decoder)
-//   {}
-
-// public:
-//   template <typename rom_state_t>
-//   void operator()(const rom_state_t & romY,
-// 		  fom_state_type    & yOut) const
-//   {
-//     decoderObj_.applyMapping(romY, yOut);
-//     constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
-//     // add reference state yOut += yFomReference
-//     ::pressio::ops::do_update(yOut, one, yFomReference_, one);
-//   }
-
-//   template <typename rom_state_t>
-//   fom_state_type operator()(const rom_state_t & romY) const{
-//     fom_state_type yOut{ fom_state_t(yFomReference_.request()) };
-//     ::pressio::ops::set_zero(yOut);
-//     this->template operator()(romY,yOut);
-//     return yOut;
-//   }
-
-// private:
-//   fom_state_type yFomReference_	   = {};
-//   const decoder_type & decoderObj_ = {};
-
-// };//end class
-// #endif
 
 }}}//end namespace pressio::rom::impl
 #endif

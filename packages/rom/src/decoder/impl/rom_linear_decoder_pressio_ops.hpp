@@ -59,11 +59,11 @@ template <
 struct LinearDecoderWithPressioOps
   : public DecoderBase<
   LinearDecoderWithPressioOps<matrix_type, rom_state_type, fom_state_type>,
-  matrix_type, rom_state_type, fom_state_type>
+  matrix_type, fom_state_type>
 {
 
   using this_t	    = LinearDecoderWithPressioOps<matrix_type, rom_state_type, fom_state_type>;
-  using base_t	    = DecoderBase<this_t, matrix_type, rom_state_type, fom_state_type>;
+  using base_t	    = DecoderBase<this_t, matrix_type, fom_state_type>;
   using jacobian_t  = matrix_type;
   using rom_state_t = rom_state_type;
   using fom_state_t = fom_state_type;
@@ -77,9 +77,14 @@ public:
   LinearDecoderWithPressioOps() = delete;
   LinearDecoderWithPressioOps(const jacobian_t & matIn) : phi_(matIn){}
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  LinearDecoderWithPressioOps(const typename ::pressio::containers::details::traits<jacobian_t>::wrapped_t & matIn)
+    : phi_(matIn){}
+#endif
+
 private:
-  template <typename operand_t>
-  void applyMappingImpl(const operand_t & operand, fom_state_type & result) const
+  template <typename operand_t, typename fom_state_t>
+  void applyMappingImpl(const operand_t & operand, fom_state_t & result) const
   {
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
@@ -90,7 +95,6 @@ private:
     return phi_;
   }
 };//end
-
 
 }}}//end namespace pressio::rom::impl
 #endif
