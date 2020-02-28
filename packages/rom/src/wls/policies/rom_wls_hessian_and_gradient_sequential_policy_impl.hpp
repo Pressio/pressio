@@ -72,7 +72,7 @@ class HessianGradientSequentialPolicy
   using scalar_t                = typename fom_type::scalar_type;
   using fom_native_state_t      = typename fom_type::state_type;
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
-  using decoder_jac_t           = typename decoder_t::jacobian_t;
+  using decoder_jac_t           = typename decoder_t::jacobian_type;
   using residual_t              = fom_state_t;
 
   // currently have this as a vector of jacobians, can change to container

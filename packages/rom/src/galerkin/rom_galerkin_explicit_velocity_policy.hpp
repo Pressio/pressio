@@ -219,7 +219,7 @@ private:
 
 protected:
   mutable fom_rhs_t fomRhs_ = {};
-  const typename decoder_t::jacobian_t & phi_;
+  const typename decoder_t::jacobian_type & phi_;
   fom_states_data_type & fomStates_;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11

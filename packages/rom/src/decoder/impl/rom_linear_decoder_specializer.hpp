@@ -67,7 +67,6 @@ struct LinearDecoderSpecializer<
   matrix_type, rom_state_type, fom_state_type
   >
 {
-
   /* ------------------------------------------------ */
   // the matrix type passed must be either a multivector wrapper
   // or a matrix wrapper, so we need to detect if either type if found
@@ -138,11 +137,6 @@ must be (for now) a pressio vector wrapper.");
 		"You are tring to create linear decoder with custom ops. \
 The template arg passed to the LinearDecoder class representing the custom ops \
 does not have an admissible API for the linear decoder class.");
-  // using ic1 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
-  //   matrix_type, rom_state_type, fom_state_type,
-  //   ::pressio::rom::meta::is_legitimate_custom_ops_for_linear_decoder, Args...>;
-  // using ops_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
-  // static constexpr auto useCustomOps = !std::is_void<ops_t>::value;
 
   /* ------------------------------------------------ */
   using type = ::pressio::rom::impl::LinearDecoderWithCustomOps<matrix_type,

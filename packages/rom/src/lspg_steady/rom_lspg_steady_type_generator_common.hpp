@@ -82,7 +82,7 @@ struct CommonTypes<
 
   // decoder types (passed in)
   using decoder_t		= decoder_type;
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
+  using decoder_jac_t		= typename decoder_t::jacobian_type;
 
   // fom state reconstructor type
   using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;

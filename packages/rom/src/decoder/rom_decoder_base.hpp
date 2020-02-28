@@ -60,15 +60,15 @@ struct DecoderBase
 {
   using this_t = DecoderBase<derived_type, jac_matrix_type, fom_state_type>;
 
-  const jac_matrix_type & getReferenceToJacobian() const {
-    return static_cast<const derived_type &>(*this).getReferenceToJacobianImpl();
-  }
+  // const jac_matrix_type & getReferenceToJacobian() const {
+  //   return static_cast<const derived_type &>(*this).getReferenceToJacobianImpl();
+  // }
 
-  template <typename operand_t, typename fom_state_t = fom_state_type>
-  void applyMapping(const operand_t & operandObj, fom_state_t & result) const
-  {
-    static_cast<const derived_type &>(*this).template applyMappingImpl<operand_t, fom_state_t>(operandObj, result);
-  }
+  // template <typename operand_t, typename fom_state_t = fom_state_type>
+  // void applyMapping(const operand_t & operandObj, fom_state_t & result) const
+  // {
+  //   static_cast<const derived_type &>(*this).template applyMappingImpl<operand_t, fom_state_t>(operandObj, result);
+  // }
 
   DecoderBase() = default;
   ~DecoderBase() = default;
