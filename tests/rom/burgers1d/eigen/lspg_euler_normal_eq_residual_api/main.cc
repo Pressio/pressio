@@ -205,5 +205,7 @@ int main(int argc, char *argv[]){
       checkStr = "FAILED";
   }
 
+  std::cout << checkStr <<  std::endl;
+
   return 0;
 }
