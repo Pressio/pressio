@@ -76,7 +76,7 @@ private:
   using mpicomm_t = typename details::traits<this_t>::communicator_t;
 
 public:
-  MultiVector() = delete;
+  MultiVector() = default;
 
   MultiVector(Teuchos::RCP<const map_t> mapobj, GO_t numVectors)
     : data_(mapobj, numVectors){}
@@ -158,7 +158,7 @@ public:
   }
 
   LO_t extentLocalImpl(std::size_t i) const{
-    // each process owns all cols 
+    // each process owns all cols
     assert(i<=1);
     return (i==0) ? data_.getLocalLength() : data_.getNumVectors();
   }

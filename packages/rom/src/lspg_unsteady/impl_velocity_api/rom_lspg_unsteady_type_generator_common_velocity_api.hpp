@@ -94,24 +94,10 @@ template <
   typename ...Args>
 struct LSPGUnsteadyCommonTypesVelocityApi
 {
+  // the scalar type
+  using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  /* template arguments definitely needed
-   * - valid decoder
-   * - we possibly also have user-defined ops
-   */
-  // verify that args contains a valid decoder type
-  using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
-  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
-  static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
-		"A valid decoder type must be passed to define a LSPG problem");
-  using decoder_jac_t = typename decoder_t::jacobian_t;
-
-  using scalar_t		= typename decoder_t::scalar_t;
-
-  // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
-
   using fom_native_state_t	= typename ExtractNativeHelper<fom_t, lspg_state_type>::fom_native_state_t;
   using fom_native_velocity_t	= typename ExtractNativeHelper<fom_t, lspg_state_type>::fom_native_velocity_t;
 
@@ -130,6 +116,14 @@ struct LSPGUnsteadyCommonTypesVelocityApi
    *        R = -dt f() + y_n - y_n-1
    */
   using lspg_residual_t		= fom_velocity_t;
+
+  // verify that args contains a valid decoder type
+  using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
+    lspg_state_t, fom_state_t, ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
+  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+  static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
+		"A valid decoder type must be passed to define a LSPG problem");
+  using decoder_jac_t = typename decoder_t::jacobian_type;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
