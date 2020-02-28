@@ -67,7 +67,7 @@ private:
   using wrap_t = typename details::traits<this_t>::wrapped_t;
 
 public:
-  MultiVector() = delete;
+  MultiVector() = default;
 
   MultiVector(ord_t length, ord_t numVectors)
     : data_(length, numVectors){
