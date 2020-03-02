@@ -23,7 +23,7 @@ struct System {
 };
 
 TEST(solvers_meta, gn_normeq_hess_grad_api){
-  using namespace pressio::solvers::meta::experimental;
+  using namespace pressio::solvers::meta;
   using sys_t   = System;
 
   static_assert(system_meets_gn_hessian_gradient_api<sys_t>::value, "");

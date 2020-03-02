@@ -57,7 +57,7 @@ struct LineSearchHelper;
 template <>
 struct LineSearchHelper<gn::noLineSearch>
 {
-  template <typename ud_ops_t, typename scalar_t, typename ... Args>
+  template <typename scalar_t, typename ... Args>
   static void evaluate(scalar_t & alpha, Args&& ... args) {
     alpha = static_cast<scalar_t>(1);
   }
@@ -68,12 +68,13 @@ template <>
 struct LineSearchHelper<gn::ArmijoLineSearch>{
 
   template <
-    typename ud_ops_t,
     typename scalar_t,
     typename state_t,
     typename residual_t,
     typename jacobian_t,
-    typename system_t
+    typename system_t,
+    typename gradient_dispatcher_t,
+    typename norm_dispatcher_t
     >
   static void evaluate(scalar_t & alpha,
 		       const state_t & y,
@@ -81,7 +82,9 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 		       const state_t & dy,
 		       residual_t & resid,
 		       jacobian_t & jacob,
-		       const system_t & sys)
+		       const system_t & sys,
+		       const gradient_dispatcher_t & gradientDispatcher,
+		       const norm_dispatcher_t & normDispatcher)
   {
     scalar_t c1 = 1e-4;
     alpha = static_cast<scalar_t>(1);
@@ -93,17 +96,16 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     ::pressio::ops::set_zero(ytrial);
 
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
 
     // eval obj function for current solution: f(y)
     scalar_t fy = zero;
-    ComputeNormHelper::template evaluate<ud_ops_t>(resid, fy, ::pressio::solvers::Norm::L2);
+    normDispatcher.evaluate(resid, fy, ::pressio::solvers::Norm::L2);
 
     // compute J^T * Residual
     state_t jTr(y);
     ::pressio::ops::set_zero(jTr);
-    using jtr_prod_helper_t = JacobianTranspResProdHelper<ud_ops_t>;
-    jtr_prod_helper_t::evaluate(jacob, resid, jTr);
+    gradientDispatcher.evaluate(jacob, resid, jTr);
 
     // compute dy^T (J^T R)
     const auto c2 = ::pressio::ops::dot(dy, jTr);
@@ -119,19 +121,16 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
     while (not done)
     {
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      ::pressio::utils::io::print_stdout(" backtracking: alpha =",
-				      alpha, "\n");
+      ::pressio::utils::io::print_stdout(" backtracking: alpha =", alpha, "\n");
 #endif
 
       // update : ytrial = y + dy*alpha
-      ::pressio::ops::do_update(ytrial,
-					    y, one,
-					    dy, alpha);
+      ::pressio::ops::do_update(ytrial, y, one, dy, alpha);
 
       // eval function for updated step solition: f(y + alpha*dy)
       sys.residual(ytrial, resid);
       scalar_t fytrial = zero;
-      ComputeNormHelper::template evaluate<ud_ops_t>(resid, fytrial, ::pressio::solvers::Norm::L2);
+      normDispatcher.evaluate(resid, fytrial, ::pressio::solvers::Norm::L2);
       auto lhs = fytrial-fy;
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT

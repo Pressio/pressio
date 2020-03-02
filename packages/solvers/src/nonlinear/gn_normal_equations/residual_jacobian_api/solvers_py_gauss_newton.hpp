@@ -50,12 +50,9 @@
 #ifndef SOLVERS_PY_GAUSS_NEWTON_HPP
 #define SOLVERS_PY_GAUSS_NEWTON_HPP
 
-#include "../helper_policies/solvers_converged_criterior_policy.hpp"
-#include "../helper_policies/solvers_hessian_helper_policy.hpp"
-#include "../helper_policies/solvers_jacob_res_product_policy.hpp"
-#include "../helper_policies/solvers_norm_helper_policy.hpp"
-#include "../helper_policies/solvers_line_search_policy.hpp"
-#include "../helper_policies/solvers_get_matrix_size_helper.hpp"
+#include "../helpers/solvers_converged_criterior_policy.hpp"
+#include "../helpers/solvers_norm_dispatcher.hpp"
+#include "../helpers/solvers_get_matrix_size_helper.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{
 
@@ -158,6 +155,8 @@ private:
   scalar_t normO_	     = {};
   scalar_t norm_dy_	     = {};
 
+  impl::NormDispatcher<void> normDispatcher_ = {};
+
 public:
   PyGaussNewton() = delete;
   PyGaussNewton(const PyGaussNewton &) = delete;
@@ -231,7 +230,7 @@ private:
 #endif
 
       // compute norm of residual
-      impl::ComputeNormHelper::template evaluate<void>(res_, normRes, normType);
+      normDispatcher.evaluate(res_, normRes, normType);
       // store initial residual norm
       if (iStep==1) normRes0 = normRes;
 
@@ -279,7 +278,7 @@ private:
       // pybind11::print(*JTR_.data(), "\n");
 
       // Norm of gradient
-      impl::ComputeNormHelper::template evaluate<void>(JTR_, normJTRes, normType);
+      normDispatcher.evaluate(JTR_, normJTRes, normType);
       // store the initial norm
       if (iStep==1) normJTRes0 = normJTRes;
 
@@ -289,7 +288,7 @@ private:
       linSolver_.attr("solve")(*hess_.data(), *JTR_.data(), *dy_.data());
 
       // compute norm of the correction
-      impl::ComputeNormHelper::template evaluate<void>(dy_, norm_dy_, normType);
+      normDispatcher.evaluate(dy_, norm_dy_, normType);
 
       // print correction
       // std::cout << "Correction dy \n" << std::endl;
@@ -306,13 +305,9 @@ private:
 				    "\n");
 #endif
 
-      // //--------------------------------------------------------------
-      // // update the state
-      // //--------------------------------------------------------------
-      // // compute multiplicative factor if needed
-      // //lsearch_helper_t::evaluate(alpha, y, ytrial_, dy_, res_, jac_, sys);
-
-      // solution update: y = y + alpha*dy;
+      //--------------------------------------------------------------
+      // update the state y = y + alpha*dy;
+      //--------------------------------------------------------------
       ::pressio::ops::do_update(y, one, dy_, alpha);
 
       //--------------------------------------------------------------
@@ -346,37 +341,3 @@ private:
 }}}//end namespace pressio::solvers::iterative
 #endif
 #endif
-
-
-
-
-
-
-  // template <
-  //   typename _ops_t = ops_t,
-  //   typename _system_t = system_t,
-  //   typename _jacobian_t = jacobian_t,
-  //   mpl::enable_if_t<
-  //     ::pressio::containers::meta::is_array_pybind11<_jacobian_t>::value and
-  //     mpl::is_same<_ops_t, pybind11::object>::value
-  //     > * = nullptr
-  //   >
-  // PyGaussNewton(const _system_t	 & system,
-  // 		const state_t	 & yState,
-  // 		linear_solver_t & linearSolverIn,
-  // 		pybind11::object ops)
-  //   : customOps_{ops},
-  //     linSolver_(linearSolverIn),
-  //     res_(system.residual(yState)),
-  //     jac_(system.jacobian(yState)),
-  //     // the hessian is square with number of rows = cols of jac
-  //     // so we can initialize from just the shape
-  //     // rather than calling the ops object:
-  //     // hess_(customOps_.attr("multiply")(jac_, true, jac_, false)),
-  //     hess_({ jac_.shape(1), jac_.shape(1) }),
-  //     JTR_{ state_t(const_cast<state_t &>(yState).request()) },
-  //     dy_{ state_t(const_cast<state_t &>(yState).request()) },
-  //     ytrial_{ state_t(const_cast<state_t &>(yState).request()) },
-  //     normO_{0}, norm_dy_{0},
-  //     obsObj_{}
-  // {}

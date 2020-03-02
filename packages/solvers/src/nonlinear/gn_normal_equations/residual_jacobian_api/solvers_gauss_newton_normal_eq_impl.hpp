@@ -49,20 +49,16 @@
 #ifndef SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
 
-#include "../helper_policies/solvers_converged_criterior_policy.hpp"
-#include "../helper_policies/solvers_hessian_helper_policy.hpp"
-#include "../helper_policies/solvers_jacob_res_product_policy.hpp"
-#include "../helper_policies/solvers_norm_helper_policy.hpp"
-#include "../helper_policies/solvers_line_search_policy.hpp"
-#include "../helper_policies/solvers_residual_observer_when_solver_converged.hpp"
-#include "../helper_policies/solvers_residual_observer_each_solver_step.hpp"
-#include "../helper_policies/solvers_get_matrix_size_helper.hpp"
+#include "../../helpers/solvers_converged_criterior_policy.hpp"
+#include "../../helpers/solvers_line_search_policy.hpp"
+#include "../../helpers/solvers_residual_observer_when_solver_converged.hpp"
+#include "../../helpers/solvers_residual_observer_each_solver_step.hpp"
+#include "../../helpers/solvers_get_matrix_size_helper.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
 
 template <
-  typename ud_ops_t,
   typename line_search_t,
   typename converged_when_tag,
   typename system_t,
@@ -70,6 +66,9 @@ template <
   typename lin_solver_t,
   typename iteration_t,
   typename scalar_t,
+  typename hessian_dispatcher_t,
+  typename gradient_dispatcher_t,
+  typename norm_dispatcher_t,
   typename observer_t = utils::impl::empty
   >
 void gauss_newton_neq_solve(const system_t & sys,
@@ -85,17 +84,14 @@ void gauss_newton_neq_solve(const system_t & sys,
 			    scalar_t tolerance,
 			    const observer_t * observer,
 			    std::string & convCondDescr,
-			    ::pressio::solvers::Norm normType)
+			    ::pressio::solvers::Norm normType,
+			    const hessian_dispatcher_t & hessianDispatcher,
+			    const gradient_dispatcher_t & gradientDispatcher,
+			    const norm_dispatcher_t & normDispatcher)
 {
 
   using residual_t	= typename system_t::residual_type;
   using jacobian_t	= typename system_t::jacobian_type;
-
-  // policy to approximate hessian J^T*J
-  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t>;
-
-  // policy to J^T * residual
-  using jtr_evaluator_t = JacobianTranspResProdHelper<ud_ops_t>;
 
   // policy to checking convergence
   using is_converged_t = IsConvergedHelper<converged_when_tag>;
@@ -161,42 +157,24 @@ void gauss_newton_neq_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
 #endif
-    ComputeNormHelper::template evaluate<ud_ops_t>(residual, normRes, normType);
+    normDispatcher.evaluate(residual, normRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm resid");
 #endif
-
-    // // print the residual
-    // ::pressio::utils::io::print_stdout("residual \n");
-    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(15), *residual.data(), "\n");
-
     // store initial residual norm
     if (iStep==1) normRes0 = normRes;
-
-    // // print the jacobian
-    // ::pressio::utils::io::print_stdout("jacobian \n");
-    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(15), *jacobian.data(), "\n");
 
     // compute LHS: J^T*J
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("hessian");
 #endif
-    hessian_evaluator_t::evaluate(jacobian, hessian);
+    hessianDispatcher.evaluate(jacobian, hessian);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("hessian");
 #endif
 
-    // // // print the hessian
-    // ::pressio::utils::io::print_stdout("HESSIAN" , "\n");
-    // ::pressio::utils::io::print_stdout(std::fixed, std::setprecision(14), *hessian.data() , "\n");
-
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     auto fmt2 = utils::io::magenta() + utils::io::bold();
-    // ::pressio::utils::io::print_stdout(fmt2, "GN_JSize =",
-    // ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalRows(jacobian),
-    // ::pressio::solvers::impl::MatrixGetSizeHelper<jacobian_t>::globalCols(jacobian),
-    // 				       "\n");
-    // this print only works when hessian is a shared mem matrix
     ::pressio::utils::io::print_stdout(fmt2, "GN_HessianSize =",
 				       hessian.extent(0), hessian.extent(1),
 				       utils::io::reset(), "\n");
@@ -206,7 +184,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("gradient");
 #endif
-    jtr_evaluator_t::evaluate(jacobian, residual, gradient);
+    gradientDispatcher.evaluate(jacobian, residual, gradient);
     ::pressio::ops::scale(gradient, negOne);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("gradient");
@@ -216,17 +194,13 @@ void gauss_newton_neq_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm gradient");
 #endif
-    ComputeNormHelper::template evaluate<ud_ops_t>(gradient, normGrad, normType);
+    normDispatcher.evaluate(gradient, normGrad, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm gradient");
 #endif
-
     // store initial residual norm
     if (iStep==1) normGrad0 = normGrad;
 
-    // // // print J^T R
-    // ::pressio::utils::io::print_stdout("J^T R \n");
-    // ::pressio::utils::io::print_stdout( std::fixed, *gradient.data() , "\n");
 
     // solve normal equations
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -237,11 +211,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     timer->stop("solve normeq");
 #endif
     // compute norm of the correction
-    ComputeNormHelper::template evaluate<ud_ops_t>(correction, correctionNorm, normType);
-
-    // // // print the correction
-    // ::pressio::utils::io::print_stdout("Correction correction \n");
-    // ::pressio::utils::io::print_stdout(std::fixed, *correction.data());
+    normDispatcher.evaluate(correction, correctionNorm, normType);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
@@ -255,14 +225,15 @@ void gauss_newton_neq_solve(const system_t & sys,
 #endif
 
     // exit with error if NaNs detected in solution update dy
-    if (std::isnan(correctionNorm))
-    {
+    if (std::isnan(correctionNorm)){
       throw std::runtime_error(
         "Nonlinear solver: NEQ-based Gausss Newton: NaNs detected in solution update dy");
     }
 
     // compute multiplicative factor if needed
-    lsearch_helper_t::template evaluate<ud_ops_t>(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
+    lsearch_helper_t::evaluate(alpha, stateInOut, ytrial, correction,
+			       residual, jacobian, sys,
+			       gradientDispatcher, normDispatcher);
 
     // solution update: y = y + alpha*correction
     ::pressio::ops::do_update(stateInOut, one, correction, alpha);

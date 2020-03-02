@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_jacob_res_product_policy.hpp
+// solvers_hessian_dispatcher.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,44 +46,81 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IMPL_JACOBIAN_RESIDUAL_PRODUCT_POLICY_HPP
-#define SOLVERS_IMPL_JACOBIAN_RESIDUAL_PRODUCT_POLICY_HPP
+#ifndef SOLVERS_IMPL_HESSIAN_DISPATCHER_HPP_
+#define SOLVERS_IMPL_HESSIAN_DISPATCHER_HPP_
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
-template<typename ud_ops_t, typename enable = void>
-struct JacobianTranspResProdHelper;
+template <typename ud_ops_t, typename enable = void>
+struct HessianDispatcher;
 
-template<>
-struct JacobianTranspResProdHelper<void>
+template <>
+struct HessianDispatcher<void>
 {
-  template <typename J_t, typename resid_t, typename result_t>
-  static void evaluate(const J_t & J, const resid_t & R, result_t & result)
-  {
-    static_assert(::pressio::containers::meta::are_scalar_compatible<J_t, resid_t, result_t>::value,
-                  "Types are not scalar compatible");
 
+  template <typename J_t, typename result_t>
+  void evaluate(const J_t & J, result_t & result) const
+  {
     using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
     constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
-    ::pressio::ops::product(::pressio::transpose(), alpha, J, R, beta, result);
+    // here to compute hessian we use the overload taking only J, since we know H = J^T J
+    // and that overload is more efficient for doing J^T J since J is the same
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), alpha, J, beta, result);
+  }
+
+  template <typename J_t, typename result_t>
+  result_t evaluate(const J_t & J) const
+  {
+    using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
+    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+    return ::pressio::ops::product<result_t>(::pressio::transpose(),
+					     ::pressio::nontranspose(), alpha, J);
   }
 };
+
 
 /*********************
  * user-defined ops
  *********************/
-template<typename ud_ops_t>
-struct JacobianTranspResProdHelper<
-  ud_ops_t, 
-  ::pressio::mpl::enable_if_t<
-    !std::is_void<ud_ops_t>::value
-    >
+template <typename ud_ops_t>
+struct HessianDispatcher<
+  ud_ops_t,
+  mpl::enable_if_t< !std::is_void<ud_ops_t>::value>
   >
 {
-  template <typename J_t, typename resid_t, typename result_t>
-  static void evaluate(const J_t & J, const resid_t & R, result_t & result) {
-    ud_ops_t::template dot<result_t>( *J.data(), *R.data(), result);
+private:
+  const ud_ops_t * udOps_ = nullptr;
+
+public:
+  HessianDispatcher() = delete;
+  HessianDispatcher(const ud_ops_t * udOps) : udOps_{udOps}{}
+
+public:
+  template <
+    typename J_t, typename result_t, typename _ud_ops_t = ud_ops_t,
+    mpl::enable_if_t< !std::is_void<ud_ops_t>::value > * = nullptr
+    >
+  result_t evaluate(const J_t & J) const
+  {
+    using scalar_t	 = typename ::pressio::containers::details::traits<J_t>::scalar_t;
+    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
+    return udOps_->template product<result_t>(::pressio::transpose(), ::pressio::nontranspose(),
+					      alpha, *J.data(), *J.data());
+  }
+
+  template <
+    typename J_t, typename result_t, typename _ud_ops_t = ud_ops_t,
+    mpl::enable_if_t< !std::is_void<ud_ops_t>::value > * = nullptr
+    >
+  void evaluate(const J_t & J, result_t & result) const
+  {
+    using scalar_t	 = typename ::pressio::containers::details::traits<J_t>::scalar_t;
+    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
+    return udOps_->product(::pressio::transpose(), ::pressio::nontranspose(),
+			   alpha, *J.data(), *J.data(), beta, result);
   }
 };
 

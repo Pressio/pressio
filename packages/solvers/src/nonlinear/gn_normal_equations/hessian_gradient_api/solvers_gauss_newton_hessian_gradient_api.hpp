@@ -49,13 +49,12 @@
 #ifndef SOLVERS_GAUSS_NEWTON_HESSIAN_GRADIENT_API_HPP_
 #define SOLVERS_GAUSS_NEWTON_HESSIAN_GRADIENT_API_HPP_
 
-#include "../nonlinear/helper_policies/solvers_converged_criterior_policy.hpp"
-#include "../nonlinear/helper_policies/solvers_norm_helper_policy.hpp"
-#include "../nonlinear/helper_policies/solvers_line_search_policy.hpp"
-#include "../nonlinear/helper_policies/solvers_get_matrix_size_helper.hpp"
+#include "../../helpers/solvers_converged_criterior_policy.hpp"
+#include "../../helpers/solvers_norm_dispatcher.hpp"
+#include "../../helpers/solvers_line_search_policy.hpp"
+#include "../../helpers/solvers_get_matrix_size_helper.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
-namespace experimental{
 
 template <
   typename system_type,
@@ -126,6 +125,8 @@ If you get this error, most likely it is because of  the typedefs inside your sy
   scalar_type normResidual0_	  = {0};
   scalar_type normResidual_	  = {0};
 
+  NormDispatcher<void> normDispatcher_ = {};
+
 public:
   GaussNewtonHessianGradientApi() = delete;
   GaussNewtonHessianGradientApi(const GaussNewtonHessianGradientApi &) = delete;
@@ -162,7 +163,7 @@ private:
     normResidual0_ = normResidual_;
 
     // compute the initial norm of y (the state)
-    ComputeNormHelper::template evaluate<void>(stateInOut, normCorrection_, normType_);
+    normDispatcher_.evaluate(stateInOut, normCorrection_, normType_);
     normCorrection_ = {0};
 
     // the alpha is 1, but this can change from the line search
@@ -172,11 +173,11 @@ private:
     while (++iStep <= maxNonLIt)
     {
       // norm of J^T R
-      ComputeNormHelper::template evaluate<void>(gradient_, normGradient_, normType_);
+      normDispatcher_.evaluate(gradient_, normGradient_, normType_);
       if (iStep==1) normGradient0_ = normGradient_;
 
       linSolver_.solveAllowMatOverwrite(hessian_, gradient_, correction_);
-      ComputeNormHelper::template evaluate<void>(correction_, normCorrection_, normType_);
+      normDispatcher_.evaluate(correction_, normCorrection_, normType_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       ::pressio::utils::io::print_stdout(std::scientific,
@@ -221,5 +222,5 @@ private:
   }
 };
 
-}}}}}//end namespace pressio::solvers::iterative::impl::experimental
+}}}}//end namespace pressio::solvers::iterative::impl
 #endif

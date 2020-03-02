@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_static_method_deep_copy.hpp
+// solvers_system_meets_gn_hessian_gradient_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,35 +46,54 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_HAS_STATIC_METHOD_DEEP_COPY_HPP_
-#define ROM_ROM_HAS_STATIC_METHOD_DEEP_COPY_HPP_
+#ifndef SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
+#define SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace solvers{ namespace meta {
 
-template <
-  typename T,
-  typename from_t, typename to_t, typename = void>
-struct has_static_method_deep_copy
-  : std::false_type{};
+template<typename T, typename enable = void>
+struct system_meets_gn_hessian_gradient_api : std::false_type{};
 
-template <
-  typename T,
-  typename from_t, typename to_t>
-struct has_static_method_deep_copy<
-  T, from_t, to_t,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       T::deep_copy
-       (
-	std::declval< from_t const & >(),
-	std::declval< to_t & >()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+template<typename T>
+struct system_meets_gn_hessian_gradient_api
+<T,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_scalar_typedef, T>::value and
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_state_typedef, T>::value and
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_hessian_typedef, T>::value and
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_gradient_typedef, T>::value and
+   // --- detect createHessianObject ---
+   ::pressio::mpl::is_same<
+     typename T::hessian_type,
+     decltype(
+	      std::declval<T const>().createHessianObject
+	      ( std::declval<typename T::state_type const&>() )
+	      )
+     >::value and
+   // --- detect createGradientObject ---
+   ::pressio::mpl::is_same<
+     typename T::gradient_type,
+     decltype(
+	      std::declval<T const>().createGradientObject
+	      (std::declval<typename T::state_type const&>())
+	      )
+     >::value and
+   // --- detect computeHessianAndGradient ---
+   std::is_void<
+     decltype(
+	      std::declval<T const>().computeHessianAndGradient
+	      (
+	       std::declval<typename T::state_type const&>(),
+	       std::declval<typename T::hessian_type &>(),
+	       std::declval<typename T::gradient_type &>(),
+	       /* does not matter here what we pass, just to test */
+	       ::pressio::solvers::Norm::L2,
+	       std::declval<typename T::scalar_type &>()
+	       )
+	      )
+     >::value
+   >
+ > : std::true_type{};
 
-}}} //pressio::rom::meta
+}}} // namespace pressio::solvers::meta
 #endif

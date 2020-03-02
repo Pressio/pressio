@@ -49,12 +49,9 @@
 #ifndef SOLVERS_GAUSS_NEWTON_NORMAL_EQ_CONSERVATIVE_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_CONSERVATIVE_IMPL_HPP
 
-#include "../helper_policies/solvers_converged_criterior_policy.hpp"
-#include "../helper_policies/solvers_hessian_helper_policy.hpp"
-#include "../helper_policies/solvers_jacob_res_product_policy.hpp"
-#include "../helper_policies/solvers_norm_helper_policy.hpp"
-#include "../helper_policies/solvers_line_search_policy.hpp"
-#include "../helper_policies/solvers_get_matrix_size_helper.hpp"
+#include "../helpers/solvers_converged_criterior_policy.hpp"
+#include "../helpers/solvers_norm_dispatcher.hpp"
+#include "../helpers/solvers_get_matrix_size_helper.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -67,6 +64,7 @@ template <
   typename converged_when_tag,
   typename cbar_t,
   typename mat_t,
+  typename norm_dispatcher_t,
   ::pressio::mpl::enable_if_t<
     containers::meta::is_vector_wrapper_eigen<typename system_t::state_type>::value and
     containers::meta::is_vector_wrapper<typename system_t::residual_type>::value
@@ -94,7 +92,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 				    typename system_t::state_type & lambda,
 				    typename system_t::state_type & y2,
 				    std::string & convCondDescr,
-				    const ::pressio::solvers::Norm & normType)
+				    const ::pressio::solvers::Norm & normType,
+				    const norm_dispatcher_t & normDispatcher)
 {
 
   // functor for checking convergence
@@ -156,7 +155,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
 #endif
-    ComputeNormHelper::template evaluate<void>(resid, normRes, normType);
+    normDispatcher.evaluate(resid, normRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm resid");
 #endif
@@ -170,15 +169,15 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     // dot_self(jacob, jTj);
-    ::pressio::ops::product(::pressio::transpose(), 
+    ::pressio::ops::product(::pressio::transpose(),
         ::pressio::nontranspose(), one, jacob, zeroConst, jTj);
 
     // ::pressio::ops::dot(jacob, cbarT, jTcbarT);
-    ::pressio::ops::product(::pressio::transpose(), 
+    ::pressio::ops::product(::pressio::transpose(),
         one, jacob, cbarT, zeroConst, jTcbarT);
 
     // ::pressio::ops::dot(cbarT, jacob, cbarJ);
-    ::pressio::ops::product(::pressio::transpose(), 
+    ::pressio::ops::product(::pressio::transpose(),
         one, cbarT, jacob, zeroConst, cbarJ);
 
     A.data()->block(0, 0, jTj.rows(), jTj.cols()) = *jTj.data();
@@ -196,18 +195,18 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     // ::pressio::ops::dot(cbarT, resid, cbarR);
-    ::pressio::ops::product(::pressio::transpose(), 
+    ::pressio::ops::product(::pressio::transpose(),
         one, cbarT, resid, zeroConst, cbarR);
 
-    ComputeNormHelper::template evaluate<void>(cbarR, normCbarR, normType);
+    normDispatcher.evaluate(cbarR, normCbarR, normType);
 
     // ::pressio::ops::product(cbarT, lambda, cbarTlambda);
-    ::pressio::ops::product(::pressio::nontranspose(), 
+    ::pressio::ops::product(::pressio::nontranspose(),
         one, cbarT, lambda, zeroConst, cbarTlambda);
 
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
     // ::pressio::ops::dot(jacob, resid, jTr2);
-    ::pressio::ops::product(::pressio::transpose(), 
+    ::pressio::ops::product(::pressio::transpose(),
         one, jacob, resid, zeroConst, jTr2);
 
     constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
@@ -224,7 +223,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm JTR");
 #endif
-    ComputeNormHelper::template evaluate<void>(jTr2, normJTRes, normType);
+    normDispatcher.evaluate(jTr2, normJTRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm JTR");
 #endif
@@ -247,8 +246,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     *dy_lambda.data() = dy.data()->block(y.size(), 0, lambda.size(), 1);
 
     // norm of the correction
-    ComputeNormHelper::template evaluate<void>(dy_y, norm_dy, normType);
-    ComputeNormHelper::template evaluate<void>(dy_lambda, normLambda, normType);
+    normDispatcher.evaluate(dy_y, norm_dy, normType);
+    normDispatcher.evaluate(dy_lambda, normLambda, normType);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
