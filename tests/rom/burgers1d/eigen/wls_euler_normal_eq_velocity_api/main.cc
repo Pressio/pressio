@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
   // -----------------
   // linear solver
   // -----------------
-  using lin_solver_tag	= pressio::solvers::linear::direct::ColPivHouseholderQR;
+  using lin_solver_tag	= pressio::solvers::linear::direct::potrsL;
   using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, hessian_t>;
   linear_solver_t linearSolver;
 
@@ -60,7 +60,8 @@ int main(int argc, char *argv[]){
   pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_t>(linearSolver, decoderJac, yFOM_IC, yRef, wlsStateIc);
 
   // create the wls system
-  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t>;
+  using hessian_matrix_structure_tag = pressio::matrixLowerTriangular;
+  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t,hessian_matrix_structure_tag>;
   wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize, wlsStateIc);
 
   // create the wls state
@@ -73,7 +74,7 @@ int main(int argc, char *argv[]){
   using gn_t = pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
   gn_t GNSolver(wlsSystem, wlsState, linearSolver);
   GNSolver.setTolerance(1e-13);
-  GNSolver.setMaxIterations(50);
+  GNSolver.setMaxIterations(5);
 
   // -----------------
   // solve wls problem
