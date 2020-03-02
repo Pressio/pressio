@@ -50,9 +50,10 @@
 #ifndef SOLVERS_PY_GAUSS_NEWTON_HPP
 #define SOLVERS_PY_GAUSS_NEWTON_HPP
 
-#include "../helpers/solvers_converged_criterior_policy.hpp"
-#include "../helpers/solvers_norm_dispatcher.hpp"
-#include "../helpers/solvers_get_matrix_size_helper.hpp"
+#include "../../helpers/solvers_converged_criterior_policy.hpp"
+#include "../../helpers/solvers_norm_dispatcher.hpp"
+#include "../../helpers/solvers_get_matrix_size_helper.hpp"
+#include "../../helpers/solvers_line_search_policy.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{
 
@@ -216,7 +217,7 @@ private:
 #endif
 
     // compute the initial norm of y (the state)
-    impl::ComputeNormHelper::template evaluate<ops_t>(y, normO_, normType);
+    normDispatcher_.evaluate(y, normO_, normType);
     norm_dy_ = {0};
 
     iteration_t iStep = 0;
@@ -230,7 +231,7 @@ private:
 #endif
 
       // compute norm of residual
-      normDispatcher.evaluate(res_, normRes, normType);
+      normDispatcher_.evaluate(res_, normRes, normType);
       // store initial residual norm
       if (iStep==1) normRes0 = normRes;
 
@@ -278,7 +279,7 @@ private:
       // pybind11::print(*JTR_.data(), "\n");
 
       // Norm of gradient
-      normDispatcher.evaluate(JTR_, normJTRes, normType);
+      normDispatcher_.evaluate(JTR_, normJTRes, normType);
       // store the initial norm
       if (iStep==1) normJTRes0 = normJTRes;
 
@@ -288,7 +289,7 @@ private:
       linSolver_.attr("solve")(*hess_.data(), *JTR_.data(), *dy_.data());
 
       // compute norm of the correction
-      normDispatcher.evaluate(dy_, norm_dy_, normType);
+      normDispatcher_.evaluate(dy_, norm_dy_, normType);
 
       // print correction
       // std::cout << "Correction dy \n" << std::endl;
