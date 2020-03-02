@@ -105,6 +105,9 @@ class GaussNewtonQR<system_type,
   // needed if/when line search is used
   state_t trialState_    = {};
 
+  NormDispatcher<void> normDispatcher_ = {};
+  GradientDispatcher<void> gradientDispatcher_ = {};
+
 public:
   GaussNewtonQR() = delete;
   GaussNewtonQR(const GaussNewtonQR &) = delete;
@@ -143,7 +146,8 @@ private:
        residual_, jacobian_, correction_, QTResid_, qrSolver_,
        iterative_base_t::maxIters_,
        iterative_base_t::tolerance_,
-       non_lin_sol_base_t::convergenceConditionDescription_, normType_);
+       non_lin_sol_base_t::convergenceConditionDescription_,
+       normType_, gradientDispatcher_, normDispatcher_);
   }//end solve
 
 };//class

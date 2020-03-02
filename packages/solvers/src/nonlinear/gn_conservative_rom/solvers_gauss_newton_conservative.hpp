@@ -121,6 +121,8 @@ class GaussNewtonConservative<
   // so that it is constructed only once
   state_t ytrial_  = {};
 
+  ::pressio::solvers::iterative::impl::NormDispatcher<void> normDispatcher_ = {};
+
 public:
   GaussNewtonConservative() = delete;
 
@@ -187,7 +189,7 @@ public:
 	cbarJ_,	zero_, cbarTlambda_, jTr2_,
 	cbarR_,	A_, b_, lambda_, y2_,
 	base_t::convergenceConditionDescription_,
-	normType_);
+	normType_, normDispatcher_);
 
   }//end solve
 };//class

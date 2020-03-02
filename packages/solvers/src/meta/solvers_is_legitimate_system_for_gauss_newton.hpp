@@ -55,7 +55,7 @@ template<typename system_type>
 struct is_legitimate_system_for_gauss_newton_normal_eq{
 
   static constexpr bool meetDefaultApi  = system_meets_default_api<system_type>::value;
-  static constexpr bool meetHessGradApi = experimental::system_meets_gn_hessian_gradient_api<system_type>::value;
+  static constexpr bool meetHessGradApi = system_meets_gn_hessian_gradient_api<system_type>::value;
   static constexpr bool value =  (meetDefaultApi || meetHessGradApi);
   using type = std::integral_constant<bool, value>;
 };

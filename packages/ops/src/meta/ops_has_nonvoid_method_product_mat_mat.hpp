@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_static_method_dot_self_single_arg_return_non_void.hpp
+// ops_has_nonvoid_method_product_mat_mat.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,27 +46,37 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SRC_META_SOLVERS_HAS_STATIC_METHOD_DOT_SELF_SINGLE_ARG_RETURN_NON_VOID_HPP_
-#define SOLVERS_SRC_META_SOLVERS_HAS_STATIC_METHOD_DOT_SELF_SINGLE_ARG_RETURN_NON_VOID_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_NONVOID_METHOD_PRODUCT_MAT_MAT_HPP_
+#define OPS_SRC_META_OPS_HAS_NONVOID_METHOD_PRODUCT_MAT_MAT_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
 
 template <
-  typename T, typename arg_t, typename result_t,
-  typename enable = void>
-struct has_static_method_dot_self_single_arg_return_non_void
+  typename T,
+  typename modeA_t, typename modeB_t,
+  typename scalar_t, typename matA_t, typename matB_t, typename result_t,
+  typename enable = void
+  >
+struct has_nonvoid_method_product_mat_mat
   : std::false_type{};
 
-template <typename T, typename arg_t, typename result_t>
-struct has_static_method_dot_self_single_arg_return_non_void<
-  T, arg_t, result_t,
+template <
+  typename T, typename scalar_t, typename matA_t, typename matB_t, typename result_t
+  >
+struct has_nonvoid_method_product_mat_mat<
+  T,
+  ::pressio::transpose, ::pressio::nontranspose, scalar_t, matA_t, matB_t, result_t,
   mpl::enable_if_t<
     std::is_same<
       decltype
       (
-       T::template dot_self<result_t>
+       std::declval< T const &>().template product<result_t>
        (
-	std::declval< arg_t const & >()
+	std::declval< ::pressio::transpose >(),
+	std::declval< ::pressio::nontranspose >(),
+	std::declval< scalar_t>(),
+	std::declval< matA_t const & >(),
+	std::declval< matB_t const & >()
 	)
        ),
       result_t
@@ -74,5 +84,5 @@ struct has_static_method_dot_self_single_arg_return_non_void<
     >
   > : std::true_type{};
 
-}}} //pressio::solvers::meta
+}}} //pressio::ops::meta
 #endif

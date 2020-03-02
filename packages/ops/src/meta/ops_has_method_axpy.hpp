@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_all_needed_static_norm_overloads.hpp
+// ops_has_method_axpy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,32 +46,37 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_NORM_METHODS_HPP_
-#define SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_NORM_METHODS_HPP_
+#ifndef OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
+#define OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
 
 template <
-  typename T, typename arg_t, typename norm_t,
-  typename enable = void>
-struct has_all_needed_static_norm_methods
+  typename T, typename x_t, typename y_t, typename a_t,
+  typename = void
+  >
+struct has_method_axpy
   : std::false_type{};
 
-template <typename T, typename arg_t, typename norm_t>
-struct has_all_needed_static_norm_methods<
-  T, arg_t, norm_t,
+template <
+  typename T, typename x_t, typename y_t, typename a_t
+  >
+struct has_method_axpy<
+  T, x_t, y_t, a_t,
   mpl::enable_if_t<
-    std::is_same<
-      decltype(T::norm1( std::declval<arg_t const &>() )),
-      norm_t
-      >::value
-    and
-    std::is_same<
-      decltype(T::norm2( std::declval<arg_t const &>() )),
-      norm_t
+    std::is_void<
+      decltype
+      (
+       std::declval< T const &>().axpy
+       (
+	std::declval< a_t >(),
+	std::declval< x_t const & >(),
+	std::declval< y_t & >()
+	)
+       )
       >::value
     >
   > : std::true_type{};
 
-}}} //pressio::solvers::meta
+}}} //pressio::ops::meta
 #endif

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_basic_meta.hpp
+// ops_has_method_norm2.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,31 +46,26 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_META_BASIC_META_HPP_
-#define SOLVERS_META_BASIC_META_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_METHOD_NORM2_HPP_
+#define OPS_SRC_META_OPS_HAS_METHOD_NORM2_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
 
-template <typename T>
-using has_state_typedef = typename T::state_type;
+template <
+  typename T, typename arg_t, typename norm_t,
+  typename enable = void>
+struct has_method_norm2
+  : std::false_type{};
 
-template <typename T>
-using has_residual_typedef = typename T::residual_type;
+template <typename T, typename arg_t, typename norm_t>
+struct has_method_norm2<
+  T, arg_t, norm_t,
+  mpl::enable_if_t<
+    std::is_same<
+      decltype(std::declval< T const &>().norm2( std::declval<arg_t const &>() )), norm_t
+      >::value
+    >
+  > : std::true_type{};
 
-template <typename T>
-using has_jacobian_typedef = typename T::jacobian_type;
-
-template <typename T>
-using has_scalar_typedef = typename T::scalar_type;
-
-template <typename T>
-using has_matrix_typedef = typename T::matrix_type;
-
-template <typename T>
-using has_hessian_typedef = typename T::hessian_type;
-
-template <typename T>
-using has_gradient_typedef = typename T::gradient_type;
-
-}}} // namespace pressio::solvers::meta
+}}} //pressio::ops::meta
 #endif

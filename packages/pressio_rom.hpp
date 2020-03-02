@@ -86,7 +86,6 @@
 //----------------
 // decoder-related classes
 //----------------
-#include "rom/src/meta/rom_has_static_method_product_three_args.hpp"
 #include "rom/src/meta/rom_is_legitimate_custom_ops_for_linear_decoder.hpp"
 #include "rom/src/decoder/rom_linear_decoder.hpp"
 #include "rom/src/meta/rom_is_legitimate_decoder_type.hpp"
@@ -94,8 +93,6 @@
 //----------------
 // classes for fom state reconstructor
 //----------------
-#include "rom/src/meta/rom_has_static_method_axpy.hpp"
-#include "rom/src/meta/rom_has_static_method_deep_copy.hpp"
 #include "rom/src/meta/rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp"
 #include "rom/src/fomStateReconstructor/rom_reconstructor_fom_state.hpp"
 
@@ -122,14 +119,14 @@
 //----------------
 // unsteady LSPG
 //----------------
-// metaf for checking velocity api 
+// metaf for checking velocity api
 #include "rom/src/meta/lspg_velocity_api/rom_has_apply_jacobian_method_callable_with_three_args_for_unsteady.hpp"
 #include "rom/src/meta/lspg_velocity_api/rom_has_apply_jacobian_method_callable_with_four_args_for_unsteady.hpp"
 #include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"
 #include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_velocity_methods.hpp"
 #include "rom/src/meta/lspg_velocity_api/rom_model_meets_velocity_api_for_unsteady_lspg.hpp"
 
-// metaf for checking residual api 
+// metaf for checking residual api
 #include "rom/src/meta/rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp"
 #include "rom/src/meta/lspg_residual_api/rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
 #include "rom/src/meta/lspg_residual_api/rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp"
@@ -157,18 +154,3 @@
 #include "rom/src/wls/apis/rom_wls_hessian_gradient_system_api.hpp"
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

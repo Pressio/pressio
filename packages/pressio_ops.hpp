@@ -55,8 +55,14 @@
 
 #include "ops/src/ops_ConfigDefs.hpp"
 
-// arbitrary
-#include "ops/src/arbitrary/ops_set_zero.hpp"
+// meta
+#include "ops/src/meta/ops_has_method_deep_copy.hpp"
+#include "ops/src/meta/ops_has_method_axpy.hpp"
+#include "ops/src/meta/ops_has_method_norm1.hpp"
+#include "ops/src/meta/ops_has_method_norm2.hpp"
+#include "ops/src/meta/ops_has_void_method_product_mat_mat.hpp"
+#include "ops/src/meta/ops_has_nonvoid_method_product_mat_mat.hpp"
+#include "ops/src/meta/ops_has_void_method_product_mat_vec.hpp"
 
 // Eigen
 #include "ops/src/eigen/ops_set_zero.hpp"

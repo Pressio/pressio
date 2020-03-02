@@ -50,6 +50,9 @@
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_RES_JAC_API_HPP
 
 #include "./solvers_gauss_newton_normal_eq_impl.hpp"
+#include "../../helpers/solvers_norm_dispatcher.hpp"
+#include "../../helpers/solvers_hessian_dispatcher.hpp"
+#include "../../helpers/solvers_gradient_dispatcher.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -58,7 +61,7 @@ template <
   typename hessian_type,
   typename linear_solver_type,
   typename scalar_type,
-  typename ud_ops_t = void
+  typename ud_ops_t
   >
 class GNHelperMixin
 {
@@ -68,14 +71,13 @@ protected:
   using state_t    = typename system_type::state_type;
   using residual_t = typename system_type::residual_type;
   using jacobian_t = typename system_type::jacobian_type;
-  // to compute hessian, we use a helper functor because
-  // the calculation is different based on the jacobian being
-  // a matrix wrapper vs a multi-vector wrapper
-  using hessian_evaluator_t = HessianApproxHelper<ud_ops_t>;
 
   /* --- members --- */
   linear_solver_type & linSolver_ = {};
   ::pressio::solvers::Norm normType_ = ::pressio::solvers::defaultNormType;
+  HessianDispatcher<ud_ops_t> hessianDispatcher_ = {};
+  GradientDispatcher<ud_ops_t> gradientDispatcher_ = {};
+  NormDispatcher<ud_ops_t> normDispatcher_ = {};
   residual_t residual_    = {};
   jacobian_t jacobian_    = {};
   hessian_type hessian_	  = {};
@@ -95,7 +97,8 @@ protected:
     ::pressio::mpl::enable_if_t<
       std::is_same<T1, typename system_in_t::state_type>::value and
       std::is_same<T2, typename system_in_t::residual_type>::value and
-      std::is_same<T3, typename system_in_t::jacobian_type>::value
+      std::is_same<T3, typename system_in_t::jacobian_type>::value and
+      std::is_void<ud_ops_t>::value
       > * = nullptr
     >
   GNHelperMixin(const system_in_t  & system,
@@ -106,7 +109,38 @@ protected:
       normType_(normType),
       residual_(system.residual(yState)),
       jacobian_(system.jacobian(yState)),
-      hessian_(hessian_evaluator_t::template evaluate<jacobian_t, hessian_type>(jacobian_)),
+      hessian_(hessianDispatcher_.template evaluate<jacobian_t, hessian_type>(jacobian_)),
+      gradient_(yState),
+      correction_(yState),
+      trialState_(yState)
+  {}
+
+  template <
+    typename system_in_t,
+    typename T1 = state_t,
+    typename T2 = residual_t,
+    typename T3 = jacobian_t,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t<
+      std::is_same<T1, typename system_in_t::state_type>::value and
+      std::is_same<T2, typename system_in_t::residual_type>::value and
+      std::is_same<T3, typename system_in_t::jacobian_type>::value and
+      !std::is_void<ud_ops_t>::value
+      > * = nullptr
+    >
+  GNHelperMixin(const system_in_t  & system,
+		const state_t	  & yState,
+		linear_solver_type & linearSolverIn,
+		const ::pressio::solvers::Norm normType,
+		const _ud_ops_t & udOps)
+    : linSolver_(linearSolverIn),
+      normType_(normType),
+      hessianDispatcher_{&udOps},
+      gradientDispatcher_{&udOps},
+      normDispatcher_{&udOps},
+      residual_(system.residual(yState)),
+      jacobian_(system.jacobian(yState)),
+      hessian_(hessianDispatcher_.template evaluate<jacobian_t, hessian_type>(jacobian_)),
       gradient_(yState),
       correction_(yState),
       trialState_(yState)
@@ -164,7 +198,6 @@ class GaussNewtonNormalEqResJacApi<
   using typename gn_mixin_t::state_t;
   using typename gn_mixin_t::residual_t;
   using typename gn_mixin_t::jacobian_t;
-  using typename gn_mixin_t::hessian_evaluator_t;
 
   using gn_mixin_t::linSolver_;
   using gn_mixin_t::normType_;
@@ -174,6 +207,9 @@ class GaussNewtonNormalEqResJacApi<
   using gn_mixin_t::gradient_;
   using gn_mixin_t::correction_;
   using gn_mixin_t::trialState_;
+  using gn_mixin_t::hessianDispatcher_;
+  using gn_mixin_t::gradientDispatcher_;
+  using gn_mixin_t::normDispatcher_;
 
   // dummy observer
   utils::impl::empty obsObj_ = {};
@@ -183,12 +219,27 @@ public:
   GaussNewtonNormalEqResJacApi(const GaussNewtonNormalEqResJacApi &) = delete;
   ~GaussNewtonNormalEqResJacApi() = default;
 
-  template <typename system_in_t>
+  template <
+    typename system_in_t, typename _ud_ops_t = ud_ops_t,
+    mpl::enable_if_t< std::is_void<_ud_ops_t>::value > * = nullptr
+    >
   GaussNewtonNormalEqResJacApi(const system_in_t  & system,
 			       const state_t	 & yState,
 			       linear_solver_type & linearSolverIn,
 			       const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
     :  gn_mixin_t(system, yState, linearSolverIn, normType),
+       obsObj_{}{}
+
+  template <
+    typename system_in_t, typename _ud_ops_t = ud_ops_t,
+    mpl::enable_if_t< !std::is_void<_ud_ops_t>::value > * = nullptr
+    >
+  GaussNewtonNormalEqResJacApi(const system_in_t  & system,
+			       const state_t	 & yState,
+			       linear_solver_type & linearSolverIn,
+			       const _ud_ops_t & udOps,
+			       const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
+    :  gn_mixin_t(system, yState, linearSolverIn, normType, udOps),
        obsObj_{}{}
 
 private:
@@ -198,8 +249,7 @@ private:
     sys.residual(yState, residual_);
     sys.jacobian(yState, jacobian_);
 
-    gauss_newton_neq_solve<
-      ud_ops_t, line_search_type, convergence_when_t>
+    gauss_newton_neq_solve<line_search_type, convergence_when_t>
       (sys, yState, trialState_,
        residual_, jacobian_, correction_, gradient_,
        hessian_, linSolver_,
@@ -207,7 +257,8 @@ private:
        iterative_base_t::tolerance_,
        &obsObj_,
        non_lin_sol_base_t::convergenceConditionDescription_,
-       normType_);
+       normType_,
+       hessianDispatcher_, gradientDispatcher_, normDispatcher_);
   }//end solveImpl
 };
 
@@ -264,7 +315,6 @@ class GaussNewtonNormalEqResJacApi<
   using typename gn_mixin_t::state_t;
   using typename gn_mixin_t::residual_t;
   using typename gn_mixin_t::jacobian_t;
-  using typename gn_mixin_t::hessian_evaluator_t;
 
   using gn_mixin_t::linSolver_;
   using gn_mixin_t::normType_;
@@ -274,6 +324,9 @@ class GaussNewtonNormalEqResJacApi<
   using gn_mixin_t::gradient_;
   using gn_mixin_t::correction_;
   using gn_mixin_t::trialState_;
+  using gn_mixin_t::hessianDispatcher_;
+  using gn_mixin_t::gradientDispatcher_;
+  using gn_mixin_t::normDispatcher_;
 
   // reference to observer object
   const observer_t & obsObj_;
@@ -299,7 +352,7 @@ public:
     sys.jacobian(yState, jacobian_);
 
     gauss_newton_neq_solve<
-      ud_ops_t, line_search_type, convergence_when_t
+      line_search_type, convergence_when_t
       >(sys, yState, trialState_,
 	residual_, jacobian_, correction_, gradient_,
 	hessian_, linSolver_,
@@ -307,7 +360,8 @@ public:
 	iterative_base_t::tolerance_,
 	&obsObj_,
 	non_lin_sol_base_t::convergenceConditionDescription_,
-	normType_);
+	normType_,
+	hessianDispatcher_, gradientDispatcher_, normDispatcher_);
   }//end solveImpl
 
 };

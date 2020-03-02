@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_all_needed_static_dot_self_overloads.hpp
+// ops_has_method_deep_copy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,32 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_DOT_SELF_OVERLOADS_HPP_
-#define SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_DOT_SELF_OVERLOADS_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_METHOD_DEEP_COPY_HPP_
+#define OPS_SRC_META_OPS_HAS_METHOD_DEEP_COPY_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
 
 template <
-  typename T, typename arg_t, typename result_t,
+  typename T, typename from_t, typename dest_t,
   typename enable = void>
-struct has_all_needed_static_dot_self_overloads
+struct has_method_deep_copy
   : std::false_type{};
 
-template <typename T, typename arg_t, typename result_t>
-struct has_all_needed_static_dot_self_overloads<
-  T, arg_t, result_t,
+template <typename T, typename from_t, typename dest_t>
+struct has_method_deep_copy<
+  T, from_t, dest_t,
   mpl::enable_if_t<
-    has_static_method_dot_self_single_arg_return_non_void<T, arg_t, result_t>::value and
-    has_static_method_dot_self_two_args_return_void<T, arg_t, result_t>::value
+    std::is_void<
+      decltype(
+         std::declval< T const &>().deep_copy
+         (
+			    std::declval<dest_t &>(),
+			    std::declval<from_t const &>()
+			    )
+	       )
+      >::value
     >
   > : std::true_type{};
 
-}}} //pressio::solvers::meta
+}}} //pressio::ops::meta
 #endif

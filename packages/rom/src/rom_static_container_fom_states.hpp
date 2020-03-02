@@ -51,15 +51,11 @@
 
 namespace pressio{ namespace rom{
 
-template <typename fom_state_type, std::size_t n, typename reconstuctor_type>
-class FomStatesStaticContainer<fom_state_type, n, reconstuctor_type>
+template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename ud_ops_t>
+class FomStatesStaticContainer<fom_state_type, n, reconstuctor_type, ud_ops_t>
 {
-  static_assert( ::pressio::containers::meta::is_wrapper<fom_state_type>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-		 or containers::meta::is_array_pybind11<fom_state_type>::value
-#endif
-		 , "Currently, you can only create a FomStatesStaticContainer from types \
-which have pressio wrappers.");
+  static_assert( ::pressio::containers::meta::is_wrapper<fom_state_type>::value,
+		 "Currently, you can only create a FomStatesStaticContainer from types which have pressio wrappers.");
 
   static_assert( n>=1,
 		 "You are trying to instantiate a state FomStatesContainer object with zero size.\
@@ -75,6 +71,16 @@ public:
   FomStatesStaticContainer(const reconstuctor_type & fomStateReconstr,
 			   Args && ... args)
     : fomStateReconstrObj_(fomStateReconstr),
+      data_( std::forward<Args>(args)... ){
+    this->resetContainersToZero();
+  }
+
+  template <typename ... Args>
+  FomStatesStaticContainer(const reconstuctor_type & fomStateReconstr,
+         const ud_ops_t * udOps,
+         Args && ... args)
+    : udOps_(udOps),
+      fomStateReconstrObj_(fomStateReconstr),
       data_( std::forward<Args>(args)... ){
     this->resetContainersToZero();
   }
@@ -146,17 +152,13 @@ public:
    * and y_t-1 goes into y_t-2, etc.
    * and then finally we overwrite data_(0) */
   template <
-    typename rom_state_t,
-    std::size_t _n = n,
-    ::pressio::mpl::enable_if_t<_n >= 3> * = nullptr
-    >
+    typename _ud_ops_t = ud_ops_t, typename rom_state_t, std::size_t _n = n,
+    ::pressio::mpl::enable_if_t<
+      _n >= 3 and std::is_void<_ud_ops_t>::value
+    > * = nullptr
+		   >
   void operator << (const rom_state_t & romStateIn)
   {
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("reconstruct fom old states");
-#endif
-
     // copy all states back, such that y_t-2 goes into y_t-3,
     // and y_t-1 goes into y_t-2, etc. so that y_t-1 is free to overwrite
     for (std::size_t i=n-2; i>=1; --i){
@@ -166,20 +168,47 @@ public:
     }
     // then, reconstrct the FOM state at t-1
     fomStateReconstrObj_(romStateIn, data_(1));
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("reconstruct fom old states");
-#endif
   }
 
+  template <
+    typename _ud_ops_t = ud_ops_t, typename rom_state_t, std::size_t _n = n,
+    ::pressio::mpl::enable_if_t<
+      _n >= 3 and !std::is_void<_ud_ops_t>::value
+    > * = nullptr
+		   >
+  void operator << (const rom_state_t & romStateIn)
+  {
+    for (std::size_t i=n-2; i>=1; --i){
+      const auto & src  = data_(i);
+      auto & dest = data_(i+1);
+      udOps_->deep_copy(*dest.data(), *src.data());
+    }
+    // then, reconstrct the FOM state at t-1
+    fomStateReconstrObj_(romStateIn, data_(1));
+  }
+
+
 private:
-  /* set all entries to zero for all members */
+  template <
+  typename _ud_ops_t = ud_ops_t,
+  mpl::enable_if_t< std::is_void< _ud_ops_t>::value > * = nullptr
+  >
   void resetContainersToZero(){
     for (std::size_t i=0; i<n; i++)
       ::pressio::ops::set_zero(data_(i));
   }
 
+  template <
+  typename _ud_ops_t = ud_ops_t,
+  mpl::enable_if_t< !std::is_void< _ud_ops_t>::value > * = nullptr
+  >
+  void resetContainersToZero(){
+    for (std::size_t i=0; i<n; i++)
+      udOps_->set_zero(*data_(i).data());
+  }
+
 private:
+  const ud_ops_t * udOps_ = nullptr;
   const reconstuctor_type & fomStateReconstrObj_  = {};
 
   // data[0] contains the current fom state, i.e. step = n

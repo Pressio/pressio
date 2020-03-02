@@ -59,17 +59,27 @@ template<
 struct is_legitimate_custom_ops_for_linear_decoder
   : std::false_type{};
 
+
 template <
-  typename T,
-  typename mat_type, typename rom_state_type, typename fom_state_type
+  typename T, typename mat_type, typename rom_state_type, typename fom_state_type
   >
 struct is_legitimate_custom_ops_for_linear_decoder<
   T, mat_type, rom_state_type, fom_state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::meta::has_static_method_product_three_args<
+    ::pressio::ops::meta::has_void_method_product_mat_vec<
       T,
+      ::pressio::nontranspose,
+      typename ::pressio::containers::details::traits<mat_type>::scalar_t,
       typename ::pressio::containers::details::traits<mat_type>::wrapped_t,
       rom_state_type,
+      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
+      >::value and
+    ::pressio::ops::meta::has_void_method_product_mat_vec<
+      T,
+      ::pressio::nontranspose,
+      typename ::pressio::containers::details::traits<mat_type>::scalar_t,
+      typename ::pressio::containers::details::traits<mat_type>::wrapped_t,
+      typename ::pressio::containers::details::traits<rom_state_type>::span_const_ret_t,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
       >::value
     >

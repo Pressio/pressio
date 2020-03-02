@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_set_zero.hpp
+// solvers_has_all_needed_methods_norms.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,24 +46,23 @@
 //@HEADER
 */
 
-#ifndef OPS_CONTAINER_OPS_ARBITRARY_SET_ZERO_HPP_
-#define OPS_CONTAINER_OPS_ARBITRARY_SET_ZERO_HPP_
+#ifndef SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_METHODS_NORMS_HPP_
+#define SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_METHODS_NORMS_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace solvers{ namespace meta {
 
-template <
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_arbitrary<T>::value
-    > * = nullptr
-  >
-void set_zero(T & v){
-  using int_t = decltype(v.extent(0));
-  using value_t = typename ::pressio::containers::details::traits<T>::value_t;
+template <typename T, typename arg_t, typename scalar_t, typename enable = void>
+struct has_all_needed_methods_norms
+  : std::false_type{};
 
-  for (int_t i=0; i<v.extent(0); ++i)
-    v(i) = ::pressio::utils::constants::zero<value_t>();
-}
+template <typename T, typename arg_t, typename scalar_t>
+struct has_all_needed_methods_norms<
+  T, arg_t, scalar_t,
+  mpl::enable_if_t<
+    ::pressio::ops::meta::has_method_norm1<T, arg_t, scalar_t>::value and
+    ::pressio::ops::meta::has_method_norm2<T, arg_t, scalar_t>::value
+    >
+  > : std::true_type{};
 
-}}//end namespace pressio::ops
+}}} //pressio::solvers::meta
 #endif
