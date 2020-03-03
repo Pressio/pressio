@@ -124,33 +124,26 @@ public:
     return *this;
   }
 
-  // void print(std::string tag) const{
-  //   ::pressio::utils::io::print_stdout(tag);
-  //   data_.Print(std::cout);
-  // }
-
-  wrap_t const * dataImpl() const{
+  wrap_t const * data() const{
     return &data_;
   }
 
-  wrap_t * dataImpl(){
+  wrap_t * data(){
     return &data_;
   }
 
-  GO_t extentImpl(std::size_t i) const{
+  GO_t extent(std::size_t i) const{
     assert(i==0);
     return data_.GlobalLength();
   }
 
-  LO_t extentLocalImpl(std::size_t i) const{
+  LO_t extentLocal(std::size_t i) const{
     assert(i==0);
     return data_.MyLength();
   }
 
 private:
   friend VectorDistributedBase< this_t >;
-
-private:
   wrap_t data_ = {};
 
 };//end class

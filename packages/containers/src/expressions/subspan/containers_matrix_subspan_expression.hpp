@@ -117,15 +117,15 @@ public:
     assert(endCol_ >= colStart_);
   }
 
-  size_t extentImpl(size_t i) const{
+  size_t extent(size_t i) const{
     return (i==0) ? numRows_ : numCols_;
   }
 
-  const_data_return_t dataImpl() const{
+  const_data_return_t data() const{
     return &nativeExprObj_;
   }
 
-  data_return_t dataImpl(){
+  data_return_t data(){
     return &nativeExprObj_;
   }
 
@@ -214,7 +214,7 @@ public:
     assert(endCol_ >= colStart_);
   }
 
-  size_t extentImpl(size_t i) const{
+  size_t extent(size_t i) const{
     return (i==0) ? numRows_ : numCols_;
   }
 
@@ -230,11 +230,11 @@ public:
     return nativeExprObj_(i, j);
   }
 
-  const_data_return_t dataImpl() const{
+  const_data_return_t data() const{
     return &nativeExprObj_;
   }
 
-  data_return_t dataImpl(){
+  data_return_t data(){
     return &nativeExprObj_;
   }
 };

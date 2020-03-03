@@ -125,18 +125,16 @@ public:
     return *this;
   }
 
-  wrap_t const * dataImpl() const{
+  wrap_t const * data() const{
     return &data_;
   };
 
-  wrap_t * dataImpl(){
+  wrap_t * data(){
     return &data_;
   };
 
 private:
   friend MatrixSharedMemBase<derived_t>;
-
-private:
   wrap_t data_ = {};
 
 };//end class

@@ -68,15 +68,15 @@ private:
 
 public:
   GO_t numVectors() const{
-    return static_cast<derived_type const *>(this)->numVectorsImpl();
+    return static_cast<derived_type const *>(this)->numVectors();
   }
 
   GO_t numVectorsGlobal() const{
-    return static_cast<derived_type const *>(this)->numVectorsGlobalImpl();
+    return static_cast<derived_type const *>(this)->numVectorsGlobal();
   }
 
   LO_t numVectorsLocal() const{
-    return static_cast<derived_type const *>(this)->numVectorsLocalImpl();
+    return static_cast<derived_type const *>(this)->numVectorsLocal();
   }
 
 private:
