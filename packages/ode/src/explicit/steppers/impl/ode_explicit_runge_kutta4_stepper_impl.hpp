@@ -67,13 +67,6 @@ class ExplicitRungeKutta4StepperImpl<scalar_type,
 				     ops_t>
 {
 
-  static_assert( meta::is_legitimate_explicit_velocity_policy<
-		 velocity_policy_type>::value ||
-		 meta::is_explicit_runge_kutta4_velocity_standard_policy<
-		 velocity_policy_type>::value,
-"EXPLICIT RUNGEKUTTA4 VELOCITY_POLICY NOT ADMISSIBLE, \
-MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
-
   using this_t = ExplicitRungeKutta4StepperImpl< scalar_type,
 						 state_type, system_type,
 						 velocity_type,

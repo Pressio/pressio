@@ -92,11 +92,6 @@ integrateNSteps(stepper_type & stepper,
 		const time_type	 dt,
 		const ::pressio::ode::types::step_t num_steps)
 {
-  static_assert(::pressio::ode::meta::is_legitimate_explicit_state_type<state_type>::value,
-		"You are trying to call integrateNSteps with an explicit stepper \
-but the state type you are using is not admissible for explicit time-stepping. \
-See the requirements inside ode_is_legitimate_explicit_state_type.hpp");
-
   // here we want to view the odeStateInOut since we want to modify its data,
   // which is numpy array owned by the user inside their Python code.
   // upon exit of this function, the original odeStateInOut is changed since odeStateView only views it.

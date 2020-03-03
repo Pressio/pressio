@@ -65,9 +65,6 @@ template<typename T>
 struct is_legitimate_explicit_state_type<T,
  typename std::enable_if<
    containers::meta::is_vector_wrapper<T>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-   or containers::meta::is_array_pybind11<T>::value
-#endif
    >::type
   > : std::true_type{};
 

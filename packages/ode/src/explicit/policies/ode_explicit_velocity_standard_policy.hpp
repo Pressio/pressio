@@ -68,18 +68,12 @@ class VelocityStandardPolicy<
 #endif
     >
   >
-  : public VelocityPolicyBase<
-  VelocityStandardPolicy<state_type, system_type> >{
-
-  using base_t = VelocityPolicyBase<
-    VelocityStandardPolicy<state_type, system_type>>;
-  friend base_t;
-
+{
 public:
   VelocityStandardPolicy() = default;
   ~VelocityStandardPolicy() = default;
 
-  template < typename scalar_type >
+  template < typename scalar_type>
   void operator()(const state_type & state,
 		  state_type & f,
 		  const system_type & model,
@@ -96,57 +90,6 @@ public:
     return state_type(model.velocity(*state.data(), time));
   }
 };//end class
-
-
-
-/*
- * state_type = velocity_type
- * both are pybind11::array_t
- */
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<
-  typename state_type,
-  typename system_type
-  >
-class VelocityStandardPolicy<
-  state_type, system_type, state_type,
-  mpl::enable_if_t<
-    mpl::is_same<system_type, pybind11::object >::value and
-    containers::meta::is_array_pybind11<state_type>::value
-    >
-  >
-  : public VelocityPolicyBase<
-  VelocityStandardPolicy<state_type, system_type> >{
-
-  using base_t = VelocityPolicyBase<
-    VelocityStandardPolicy<state_type, system_type>>;
-  friend base_t;
-
-public:
-  VelocityStandardPolicy() = default;
-  ~VelocityStandardPolicy() = default;
-
-  template <typename scalar_type>
-  void operator()(const state_type & state,
-		  state_type & f,
-		  const system_type & model,
-		  const scalar_type & time) const
-  {
-    //printf("C++ f address: %p\n", f.data());
-    model.attr("velocity")(state, time, f);
-  }
-
-  template <typename scalar_type>
-  state_type operator()(const state_type & state,
-  			const system_type & model,
-  			const scalar_type & time) const
-  {
-    return model.attr("velocity")(state, time);
-  }
-
-};//end class
-#endif
-
 
 }}}}//end namespace pressio::ode::explicitmethods::policy
 #endif

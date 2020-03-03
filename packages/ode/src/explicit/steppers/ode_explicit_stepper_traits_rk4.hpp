@@ -90,11 +90,12 @@ struct traits<
 
   // this is the standard velocity policy (just typedef, it is only used
   // if the user does not pass a user-defined policy)
-  using standard_velocity_policy_t = ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<
-    state_t, model_t, velocity_t>;
+  using standard_velocity_policy_t =
+    ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_t, model_t, velocity_t>;
 
   // check Args if a user-defined velocity policy is passed
-  using ic3 = ::pressio::mpl::variadic::find_if_unary_pred_t<
+  using ic3 = ::pressio::mpl::variadic::find_if_quinary_pred_t<
+    scalar_t, state_type, velocity_t, model_t,
     ::pressio::ode::meta::is_legitimate_explicit_velocity_policy, Args...>;
   using velocity_policy_t = ::pressio::mpl::variadic::at_or_t
     <standard_velocity_policy_t, ic3::value, Args...>;

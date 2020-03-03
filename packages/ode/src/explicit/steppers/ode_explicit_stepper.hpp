@@ -82,9 +82,6 @@ class Stepper : public StepperBase<
   static_assert( meta::is_legitimate_explicit_velocity_type<velocity_type>::value,
   "OOPS: VELOCITY_TYPE IN SELECTED EXPLICIT STEPPER IS NOT VALID");
 
-  static_assert( meta::is_legitimate_explicit_velocity_policy<policy_t>::value,
-  "VELOCITY_POLICY NOT ADMISSIBLE: MAYBE NOT INHERITING FROM EXPLICIT POLICY BASE");
-
 public:
   Stepper()  = delete;
   ~Stepper() = default;

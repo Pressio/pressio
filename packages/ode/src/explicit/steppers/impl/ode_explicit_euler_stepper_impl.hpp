@@ -67,13 +67,6 @@ class ExplicitEulerStepperImpl<scalar_type,
 			       ops_t>
 {
 
-  static_assert( meta::is_legitimate_explicit_velocity_policy<
-		 velocity_policy_type>::value ||
-		 meta::is_explicit_euler_velocity_standard_policy<
-		 velocity_policy_type>::value,
-"EXPLICIT EULER VELOCITY_POLICY NOT ADMISSIBLE, \
-MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
-
   using this_t = ExplicitEulerStepperImpl< scalar_type,
 					   state_type, system_type,
 					   velocity_type,
