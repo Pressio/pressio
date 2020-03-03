@@ -98,6 +98,7 @@
 #include "solvers/src/linear/solvers_linear_kokkos_direct_geqrf.hpp"
 #include "solvers/src/linear/solvers_linear_kokkos_direct_getrs.hpp"
 #include "solvers/src/linear/solvers_linear_kokkos_direct_potrs_lower.hpp"
+#include "solvers/src/linear/solvers_linear_kokkos_direct_potrs_upper.hpp"
 
 // nonlinear newton-raphson
 #include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
