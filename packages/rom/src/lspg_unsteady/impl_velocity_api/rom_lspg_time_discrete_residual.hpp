@@ -63,7 +63,7 @@ template<
   ::pressio::mpl::enable_if_t<
     std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and !::pressio::containers::meta::is_array_pybind11<state_type>::value
+    and !::pressio::containers::meta::is_vector_wrapper_pybind<state_type>::value
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
    > * = nullptr
@@ -107,30 +107,6 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
   // //R = y_n - y_nm1 - dt * R;
   ::pressio::ops::do_update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
 }
-
-// /*
-//  * for python binddings, enable when we have BDF1 and we use custom ops
-// */
-// template<
-//   typename stepper_tag,
-//   typename fom_states_cont_t,
-//   typename state_type,
-//   typename scalar_type,
-//   ::pressio::mpl::enable_if_t<
-//     std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
-//     ::pressio::containers::meta::is_array_pybind11<state_type>::value
-//     > * = nullptr
-//   >
-// void time_discrete_residual(const fom_states_cont_t & fomStates,
-// 			    state_type & R,
-// 			    const scalar_type & dt,
-// 			    const pybind11::object & udOps){
-
-//   const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
-//   const auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
-//   //TODO: this function name will need to be changed to something better
-//   udOps.attr("time_discrete_euler")(R, fomStateAt_n, fomStateAt_nm1, dt);
-// }
 #endif
 
 

@@ -142,7 +142,6 @@ struct GNNEQSpecializeApi<
   but cannot pass multiple types with individual observation methods");
   using observer_t = typename obs_supported_t::type;
 
-
   /* --------------------------------------------------------- */
   // check if the sequence contains a valid type for custom ops
   /* There are three functionalities needed for GN normal-eq:
@@ -157,8 +156,8 @@ struct GNNEQSpecializeApi<
   using gradient_t = typename system_t::state_type; // the gradient is same type as state
   using residual_t = typename system_t::residual_type;
   using jacobian_t = typename system_t::jacobian_type;
-  using ud_ops_t   = typename GaussNewtonNEqCustomOpsDetectionHelper<gradient_t, residual_t, jacobian_t,
-								     hessian_t,  Args...>::type;
+  using ud_ops_t   = typename GaussNewtonNEqCustomOpsDetectionHelper<
+    scalar_t, gradient_t, residual_t, jacobian_t, hessian_t, Args...>::type;
 
   // the class type
   using type = ::pressio::solvers::iterative::impl::GaussNewtonNormalEqResJacApi<
@@ -177,7 +176,7 @@ template <
 struct GNNEQSpecializeApi<
   false, system_t, scalar_t, linear_solver_t, line_search_t, convergence_t, Args...>
 {
-  using type = ::pressio::solvers::iterative::impl::experimental::GaussNewtonHessianGradientApi<
+  using type = ::pressio::solvers::iterative::impl::GaussNewtonHessianGradientApi<
     system_t, linear_solver_t, scalar_t, line_search_t, convergence_t>;
 };
 

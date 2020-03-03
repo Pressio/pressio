@@ -71,11 +71,9 @@
 #include "solvers/src/base/solvers_nonlinear_base.hpp"
 
 // meta
-#include "solvers/src/meta/custom_ops_detection/solvers_has_static_method_dot_self_single_arg_return_non_void.hpp"
-#include "solvers/src/meta/custom_ops_detection/solvers_has_static_method_dot_self_two_args_return_void.hpp"
-#include "solvers/src/meta/custom_ops_detection/solvers_has_static_method_dot_three_args_return_void.hpp"
-#include "solvers/src/meta/custom_ops_detection/solvers_has_all_needed_static_dot_self_overloads.hpp"
-#include "solvers/src/meta/custom_ops_detection/solvers_has_all_needed_static_norm_methods.hpp"
+#include "solvers/src/meta/custom_ops_detection/solvers_has_all_needed_methods_norms.hpp"
+#include "solvers/src/meta/custom_ops_detection/solvers_has_all_needed_methods_for_hessian.hpp"
+#include "solvers/src/meta/custom_ops_detection/solvers_has_all_needed_methods_for_gradient.hpp"
 
 #include "solvers/src/meta/solvers_basic_meta.hpp"
 #include "solvers/src/meta/solvers_is_legitimate_convergence_tag.hpp"
@@ -85,7 +83,7 @@
 #include "solvers/src/meta/solvers_is_legitimate_qr_solver_for_gn_qr.hpp"
 #include "solvers/src/meta/solvers_is_legitimate_residual_observer_each_solver_step.hpp"
 #include "solvers/src/meta/solvers_is_legitimate_residual_observer_when_converged.hpp"
-#include "solvers/src/experimental/solvers_system_meets_gn_hessian_gradient_api.hpp"
+#include "solvers/src/meta/solvers_system_meets_gn_hessian_gradient_api.hpp"
 
 #include "solvers/src/meta/solvers_system_has_all_needed_jacobian_methods.hpp"
 #include "solvers/src/meta/solvers_system_has_all_needed_residual_methods.hpp"
@@ -93,27 +91,31 @@
 #include "solvers/src/meta/solvers_is_legitimate_system_for_gauss_newton.hpp"
 #include "solvers/src/meta/solvers_is_legitimate_system_for_newton_raphson.hpp"
 
-// linear 
+// linear
 #include "solvers/src/linear/solvers_linear_traits.hpp"
 #include "solvers/src/linear/solvers_linear_eigen_direct.hpp"
 #include "solvers/src/linear/solvers_linear_eigen_iterative.hpp"
 #include "solvers/src/linear/solvers_linear_kokkos_direct_geqrf.hpp"
 #include "solvers/src/linear/solvers_linear_kokkos_direct_getrs.hpp"
+#include "solvers/src/linear/solvers_linear_kokkos_direct_potrs_lower.hpp"
+#include "solvers/src/linear/solvers_linear_kokkos_direct_potrs_upper.hpp"
 
 // nonlinear newton-raphson
 #include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
-// nonlinear Gauss-Newton normal eq
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_py_gauss_newton.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_neq_custom_ops_detection_helper.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_gauss_newton_normal_eq_res_jac_api.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/solvers_gn_neq_specialization_picker.hpp"
+
+// nonlinear Gauss-Newton normal eq: residual jacobian api
+#include "solvers/src/nonlinear/gn_normal_equations/residual_jacobian_api/solvers_py_gauss_newton.hpp"
+#include "solvers/src/nonlinear/gn_normal_equations/residual_jacobian_api/solvers_gn_neq_custom_ops_detection_helper.hpp"
+#include "solvers/src/nonlinear/gn_normal_equations/residual_jacobian_api/solvers_gauss_newton_normal_eq_res_jac_api.hpp"
+#include "solvers/src/nonlinear/gn_normal_equations/residual_jacobian_api/solvers_gn_neq_specialization_picker.hpp"
+// nonlinear Gauss-Newton normal eq: hessian gradient api
+#include "solvers/src/nonlinear/gn_normal_equations/hessian_gradient_api/solvers_gauss_newton_hessian_gradient_api.hpp"
+
 // nonlinear Gauss-Newton cons rom
 #include "solvers/src/nonlinear/gn_conservative_rom/solvers_gauss_newton_conservative.hpp"
+
 // nonlinear Gauss-Newton QR
 #include "solvers/src/nonlinear/gn_qr_based/solvers_gauss_newton_qr.hpp"
 #include "solvers/src/nonlinear/gn_qr_based/solvers_gn_qr_specialization_picker.hpp"
-
-// experimental
-#include "solvers/src/experimental/solvers_gauss_newton_hessian_gradient_api.hpp"
 
 #endif

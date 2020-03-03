@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_hessian_helper_policy.hpp
+// solvers_gradient_dispatcher.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,89 +46,54 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IMPL_HESSIAN_APPROX_HELPERS_POLICY_HPP
-#define SOLVERS_IMPL_HESSIAN_APPROX_HELPERS_POLICY_HPP
+#ifndef SOLVERS_IMPL_GN_GRADIENT_DISPATCHER_HPP_
+#define SOLVERS_IMPL_GN_GRADIENT_DISPATCHER_HPP_
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
-template<typename ud_ops_t, typename enable = void>
-struct HessianApproxHelper;
+template <typename ud_ops_t, typename enable = void>
+struct GradientDispatcher;
 
-
-template<>
-struct HessianApproxHelper<void>
+template <>
+struct GradientDispatcher<void>
 {
-
-  template <typename J_t, typename result_t>
-  static void evaluate(const J_t & J, result_t & result)
+  template <typename J_t, typename resid_t, typename result_t>
+  void evaluate(const J_t & J, const resid_t & R, result_t & result) const
   {
+    static_assert(::pressio::containers::meta::are_scalar_compatible<J_t, resid_t, result_t>::value,
+                  "Types are not scalar compatible");
+
     using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
     constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
-    // here to compute hessian we use the overload taking only J, since we know H = J^T J 
-    // and that overload is more efficient for doing J^T J since J is the same
-    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), alpha, J, beta, result);
-  }
-
-  template <typename J_t, typename result_t>
-  static result_t evaluate(const J_t & J)
-  {
-    using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
-    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
-    return ::pressio::ops::product<result_t>(::pressio::transpose(), ::pressio::nontranspose(), alpha, J);
+    ::pressio::ops::product(::pressio::transpose(), alpha, J, R, beta, result);
   }
 };
-
 
 /*********************
  * user-defined ops
  *********************/
-
-// for user-defined ops & jac is a multi-vector wrapper
-template<typename ud_ops_t>
-struct HessianApproxHelper<
-  ud_ops_t, 
-  ::pressio::mpl::enable_if_t<
-    !std::is_void<ud_ops_t>::value
-    >
-  >
+template <typename ud_ops_t>
+struct GradientDispatcher<
+ud_ops_t, mpl::enable_if_t< !std::is_void<ud_ops_t>::value >
+>
 {
+private:
+  const ud_ops_t * udOps_ = nullptr;
 
-  template <typename J_t, typename result_t>
-  static void evaluate(const J_t & J, result_t & result){
-    // result = op(A) * op(b)
-    ud_ops_t::template dot_self<result_t>( *J.data(), result );
-  }
+public:
+  GradientDispatcher() = delete;
+  GradientDispatcher(const ud_ops_t * udOps) : udOps_{udOps}{}
 
-  template <typename J_t, typename result_t>
-  static result_t evaluate(const J_t & J){
-    return ud_ops_t::template dot_self<result_t>( *J.data() );
-  }
+  template <typename J_t, typename resid_t, typename result_t>
+  void evaluate(const J_t & J, const resid_t & R, result_t & result) const
+  {
+    using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
+    constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+    udOps_->product(::pressio::transpose(), alpha, *J.data(), *R.data(), beta, result);
+  };
 };
-
-
-// // for user-defined ops & jac is a matrix wrapper
-// template<typename ud_ops_t, typename J_t>
-// struct HessianApproxHelper<
-//   ud_ops_t, J_t,
-//   ::pressio::mpl::enable_if_t<
-//     !std::is_void<ud_ops_t>::value and
-//     ::pressio::containers::meta::is_matrix_wrapper<J_t>::value
-//     >
-//   >
-// {
-
-//   template <typename result_t>
-//   static void evaluate(J_t & J, result_t & result){
-//     // result = op(A) * op(b)
-//     //ud_ops_t::template mat_prod<result_t>( *J_t.data(), *J_t.data(), result_t);
-//   }
-
-//   template <typename result_t>
-//   static result_t evaluate(J_t & J){
-//     return result_t();//ud_ops_t::template mat_prod<result_t>( *J_t.data(), *J_t.data() );
-//   }
-// };
 
 }}}} //end namespace pressio::solvers::iterative::impl
 #endif

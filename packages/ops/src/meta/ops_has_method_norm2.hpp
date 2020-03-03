@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_static_method_dot_self_two_args_return_void.hpp
+// ops_has_method_norm2.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,26 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SRC_META_SOLVERS_HAS_STATIC_METHOD_DOT_SELF_TWO_ARGS_RETURN_VOID_HPP_
-#define SOLVERS_SRC_META_SOLVERS_HAS_STATIC_METHOD_DOT_SELF_TWO_ARGS_RETURN_VOID_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_METHOD_NORM2_HPP_
+#define OPS_SRC_META_OPS_HAS_METHOD_NORM2_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
 
 template <
-  typename T, typename arg_t, typename result_t,
+  typename T, typename arg_t, typename norm_t,
   typename enable = void>
-struct has_static_method_dot_self_two_args_return_void
+struct has_method_norm2
   : std::false_type{};
 
-template <typename T, typename arg_t, typename result_t>
-struct has_static_method_dot_self_two_args_return_void<
-  T, arg_t, result_t,
+template <typename T, typename arg_t, typename norm_t>
+struct has_method_norm2<
+  T, arg_t, norm_t,
   mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       T::template dot_self<result_t>
-       (
-	std::declval< arg_t const & >(),
-	std::declval< result_t & >()
-	)
-       )
+    std::is_same<
+      decltype(std::declval< T const &>().norm2( std::declval<arg_t const &>() )), norm_t
       >::value
     >
   > : std::true_type{};
 
-}}} //pressio::solvers::meta
+}}} //pressio::ops::meta
 #endif

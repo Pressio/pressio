@@ -66,16 +66,11 @@ using has_scalar_typedef = typename T::scalar_type;
 template <typename T>
 using has_matrix_typedef = typename T::matrix_type;
 
-namespace experimental{
-
 template <typename T>
 using has_hessian_typedef = typename T::hessian_type;
 
 template <typename T>
 using has_gradient_typedef = typename T::gradient_type;
-
-}// end namespace experimental
-
 
 }}} // namespace pressio::solvers::meta
 #endif

@@ -51,23 +51,24 @@
 
 namespace pressio { namespace solvers { namespace direct{
 
-template<typename SolverT, typename MatrixT>
+template<typename solver_tag, typename MatrixT>
 class EigenDirect
-  : public LinearBase<SolverT, MatrixT,
-		      EigenDirect<SolverT, MatrixT> >
+  : public LinearBase<MatrixT, EigenDirect<solver_tag, MatrixT>>
 {
 public:
   static_assert( ::pressio::containers::meta::is_matrix_wrapper_eigen<MatrixT>::value or
   		 ::pressio::containers::meta::is_multi_vector_wrapper_eigen<MatrixT>::value,
   		 "Eigen direct solver needs a matrix type = wrapper of an eigen matrix");
 
-  using solver_t	= SolverT;
+  using this_t          = EigenDirect<solver_tag, MatrixT>;
+  using base_interface  = LinearBase<MatrixT, this_t>;
+
+  using solver_t	= solver_tag;
   using matrix_type	= MatrixT;
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
-  using this_t          = EigenDirect<SolverT, MatrixT>;
-  using base_interface  = LinearBase<SolverT, MatrixT, this_t>;
-  using solver_traits   = linear::details::traits<SolverT>;
+
+  using solver_traits   = linear::details::traits<solver_tag>;
   using native_solver_t = typename solver_traits::template eigen_solver_type<native_mat_t>;
 
   static_assert( solver_traits::eigen_enabled == true,

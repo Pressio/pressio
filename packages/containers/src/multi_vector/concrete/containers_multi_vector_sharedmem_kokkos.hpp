@@ -122,33 +122,32 @@ public:
 
   ~MultiVector() = default;
 
-  wrap_t const * dataImpl() const{
+public:
+  wrap_t const * data() const{
     return &data_;
   }
-  wrap_t * dataImpl(){
+  wrap_t * data(){
     return &data_;
   }
 
-  wrap_t dataCpImpl(){
+  wrap_t dataCp(){
     return data_;
   }
 
-  ord_t extentImpl(ord_t i) const {
+  ord_t extent(ord_t i) const {
     return data_.extent(i);
   }
 
-  ord_t numVectorsImpl() const{
+  ord_t numVectors() const{
     return data_.extent(1);
   }
 
-  ord_t lengthImpl() const{
+  ord_t length() const{
     return data_.extent(0);
   }
 
 private:
   friend MultiVectorSharedMemBase<this_t>;
-
-private:
   wrap_t data_ = {};
 
 };//end class

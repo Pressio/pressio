@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_static_method_dot_three_args_return_void.hpp
+// solvers_has_all_needed_methods_for_gradient.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,31 +46,24 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SRC_META_SOLVERS_HAS_STATIC_METHOD_DOT_THREE_ARGS_RETURN_VOID_HPP_
-#define SOLVERS_SRC_META_SOLVERS_HAS_STATIC_METHOD_DOT_THREE_ARGS_RETURN_VOID_HPP_
+#ifndef SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_METHODS_FOR_GRADIENT_HPP_
+#define SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_METHODS_FOR_GRADIENT_HPP_
 
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <
-  typename T, typename arg1_t, typename arg2_t, typename result_t,
-  typename enable = void>
-struct has_static_method_dot_three_args_return_void
+  typename T, typename jac_t, typename residual_t, typename result_t, typename scalar_t,
+  typename enable = void
+  >
+struct has_all_needed_methods_for_gradient
   : std::false_type{};
 
-template <typename T, typename arg1_t, typename arg2_t, typename result_t>
-struct has_static_method_dot_three_args_return_void<
-  T, arg1_t, arg2_t, result_t,
+template <typename T, typename jac_t, typename residual_t, typename result_t, typename scalar_t>
+struct has_all_needed_methods_for_gradient<
+  T, jac_t, residual_t, result_t, scalar_t,
   mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       T::template dot<result_t>
-       (
-	std::declval< arg1_t const & >(),
-	std::declval< arg2_t const & >(),
-	std::declval< result_t & >()
-	)
-       )
+    ::pressio::ops::meta::has_void_method_product_mat_vec<
+      T, ::pressio::transpose, scalar_t, jac_t, residual_t, result_t
       >::value
     >
   > : std::true_type{};

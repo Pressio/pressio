@@ -135,7 +135,7 @@ public:
   ~Matrix(){};
 
 public:
-  ord_t extentImpl(ord_t i) const {
+  ord_t extent(ord_t i) const {
     assert( i <= 1 );
     return data_.shape(i);
   }
@@ -148,11 +148,11 @@ public:
   //   return proxy_(i,j);
   // };
 
-  wrap_t const * dataImpl() const{
+  wrap_t const * data() const{
     return &data_;
   }
 
-  wrap_t * dataImpl(){
+  wrap_t * data(){
     return &data_;
   }
 

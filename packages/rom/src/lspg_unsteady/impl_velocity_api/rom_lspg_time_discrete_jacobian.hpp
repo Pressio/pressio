@@ -76,7 +76,7 @@ template <
   typename ud_ops
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   ,mpl::enable_if_t<
-     !::pressio::containers::meta::is_array_pybind11<lspg_matrix_type>::value and
+     !::pressio::containers::meta::is_matrix_wrapper_pybind<lspg_matrix_type>::value and
      mpl::not_same< ud_ops, pybind11::object>::value
     > * = nullptr
 #endif
@@ -124,24 +124,6 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
     }
   }
 }
-
-// template <
-//   typename stepper_tag,
-//   typename lspg_matrix_type,
-//   typename scalar_type,
-//   typename decoder_jac_type,
-//   mpl::enable_if_t<
-//     ::pressio::containers::meta::is_array_pybind11<lspg_matrix_type>::value
-//     > * = nullptr
-//   >
-// void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
-// 			    const scalar_type	& dt,
-// 			    const decoder_jac_type & phi,
-// 			    const pybind11::object & udOps){
-
-//   constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
-//   udOps.attr("time_discrete_jacobian")(jphi, phi, prefactor, dt);
-// }
 #endif
 
 

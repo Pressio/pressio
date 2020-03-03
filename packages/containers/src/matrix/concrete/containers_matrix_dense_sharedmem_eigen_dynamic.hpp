@@ -108,23 +108,22 @@ public:
     return *this;
   }
 
-  wrap_t * dataImpl(){
+public:
+  wrap_t * data(){
     return &data_;
   };
 
-  wrap_t const * dataImpl() const{
+  wrap_t const * data() const{
     return &data_;
   };
 
-  ord_t extentImpl(ord_t i) const {
+  ord_t extent(ord_t i) const {
     assert(i==0 or i==1);
     return (i==0) ? data_.rows() : data_.cols();
   }
 
 private:
   friend MatrixSharedMemBase< derived_t >;
-
-private:
   wrap_t data_ = {};
 
 };//end class

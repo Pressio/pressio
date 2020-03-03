@@ -146,7 +146,7 @@ public:
   ~Vector(){};
 
 public:
-  ord_t extentImpl(ord_t i) const {
+  ord_t extent(ord_t i) const {
     assert( i == 0 );
     return data_.shape(0);
   }
@@ -167,15 +167,15 @@ public:
   //   return proxy_(i);
   // };
 
-  const_data_r_t dataImpl() const{
+  const_data_r_t data() const{
     return &data_;
   }
 
-  data_r_t dataImpl(){
+  data_r_t data(){
     return &data_;
   }
 
-  bool emptyImpl() const{
+  bool empty() const{
     return this->extent(0)==0 ? true : false;
   }
 

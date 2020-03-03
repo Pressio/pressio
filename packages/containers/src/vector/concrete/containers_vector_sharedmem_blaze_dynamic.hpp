@@ -93,48 +93,36 @@ public:
     return data_[i];
   };
 
-  // compound assignment when type(b) = type(this)
-  // this += b
-  // template <typename T,
-  // 	    ::pressio::mpl::enable_if_t<
-  // 	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator+=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ += *other.data();
     return *this;
   }
 
-  // compound assignment when type(b) = type(this)
-  // this -= b
-  // template <typename T,
-  // 	    ::pressio::mpl::enable_if_t<
-  // 	      std::is_same<T,this_t>::value> * = nullptr>
   this_t & operator-=(const this_t & other) {
     assert( other.size() == this->size() );
     this->data_ -= *other.data();
     return *this;
   }
 
-  wrap_t const * dataImpl() const{
+  wrap_t const * data() const{
     return &data_;
   }
 
-  wrap_t * dataImpl(){
+  wrap_t * data(){
     return &data_;
   }
 
-  bool emptyImpl() const{
+  bool empty() const{
     return this->size()==0 ? true : false;
   }
 
-  ord_t extentImpl() const {
+  ord_t extent() const {
     return data_.size();
   }
 
 private:
   friend VectorSharedMemBase< this_t >;
-
-private:
   wrap_t data_ = {};
 
 };//end class

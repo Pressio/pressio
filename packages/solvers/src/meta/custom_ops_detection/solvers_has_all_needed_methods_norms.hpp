@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_all_needed_static_norm_overloads.hpp
+// solvers_has_all_needed_methods_norms.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,21 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_NORM_METHODS_HPP_
-#define SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_STATIC_NORM_METHODS_HPP_
+#ifndef SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_METHODS_NORMS_HPP_
+#define SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_METHODS_NORMS_HPP_
 
 namespace pressio{ namespace solvers{ namespace meta {
 
-template <
-  typename T, typename arg_t, typename norm_t,
-  typename enable = void>
-struct has_all_needed_static_norm_methods
+template <typename T, typename arg_t, typename scalar_t, typename enable = void>
+struct has_all_needed_methods_norms
   : std::false_type{};
 
-template <typename T, typename arg_t, typename norm_t>
-struct has_all_needed_static_norm_methods<
-  T, arg_t, norm_t,
+template <typename T, typename arg_t, typename scalar_t>
+struct has_all_needed_methods_norms<
+  T, arg_t, scalar_t,
   mpl::enable_if_t<
-    std::is_same<
-      decltype(T::norm1( std::declval<arg_t const &>() )),
-      norm_t
-      >::value
-    and
-    std::is_same<
-      decltype(T::norm2( std::declval<arg_t const &>() )),
-      norm_t
-      >::value
+    ::pressio::ops::meta::has_method_norm1<T, arg_t, scalar_t>::value and
+    ::pressio::ops::meta::has_method_norm2<T, arg_t, scalar_t>::value
     >
   > : std::true_type{};
 

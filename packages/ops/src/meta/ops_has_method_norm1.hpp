@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_expressions_traits.hpp
+// ops_has_method_norm1.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,43 +46,26 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_TRAITS_VCOLV_HPP_
-#define CONTAINERS_EXPRESSIONS_TRAITS_VCOLV_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_METHOD_NORM1_HPP_
+#define OPS_SRC_META_OPS_HAS_METHOD_NORM1_HPP_
 
-namespace pressio{ namespace containers{ namespace details{
+namespace pressio{ namespace ops{ namespace meta {
 
-template <typename mv_type>
-struct traits<
-  ::pressio::containers::expressions::ViewColumnVectorExpr<mv_type>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<mv_type>::value
+template <
+  typename T, typename arg_t, typename norm_t,
+  typename enable = void>
+struct has_method_norm1
+  : std::false_type{};
+
+template <typename T, typename arg_t, typename norm_t>
+struct has_method_norm1<
+  T, arg_t, norm_t,
+  mpl::enable_if_t<
+    std::is_same<
+      decltype(std::declval< T const &>().norm1( std::declval<arg_t const &>() )), norm_t
+      >::value
     >
-  >
-{
-  static constexpr auto is_expression = true;
+  > : std::true_type{};
 
-  using scalar_t = typename ::pressio::containers::details::traits<mv_type>::scalar_t;
-  using data_t	  = mv_type;
-  using wrapped_t = typename ::pressio::containers::details::traits<mv_type>::wrapped_t;
-};
-
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename mv_type>
-struct traits<
-  ::pressio::containers::expressions::ViewColumnVectorExpr<mv_type>,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<mv_type>::value
-    >
-  >
-{
-  static constexpr auto is_expression = true;
-
-  using scalar_t = typename ::pressio::containers::details::traits<mv_type>::scalar_t;
-  using data_t	  = mv_type;
-  using wrapped_t = typename ::pressio::containers::details::traits<mv_type>::wrapped_t;
-};
-#endif
-
-}}}//end namespace pressio::containers::details
+}}} //pressio::ops::meta
 #endif

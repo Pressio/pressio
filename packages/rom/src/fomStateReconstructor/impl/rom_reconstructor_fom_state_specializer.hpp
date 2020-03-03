@@ -73,11 +73,8 @@ must be a floating point type");
 
   /* ------------------------------------------------ */
   // check for a valid FOM state type
-  static_assert(::pressio::containers::meta::is_vector_wrapper<fom_state_type>::value 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    or ::pressio::containers::meta::is_array_pybind11<fom_state_type>::value
-#endif
-    ,"The second template arg passed to FomStateReconstructor class \
+  static_assert(::pressio::containers::meta::is_vector_wrapper<fom_state_type>::value,
+    "The second template arg passed to FomStateReconstructor class \
 represents the FOM state and must be (for now) a pressio vector wrapper.");
 
   using type = FomStateReconstructorPressioOps<scalar_type, fom_state_type, decoder_type>;

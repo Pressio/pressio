@@ -143,11 +143,11 @@ struct LSPGUnsteadyCommonTypesVelocityApi
   // total num of fom states (i.e. stencil size plus the state at current step) needed
   static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;
 
-  // type of class holding the fom states
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
-
   // if we have a non-trivial user-defined ops, need to find from Args
   using ud_ops_t = void;
+
+  // type of class holding the fom states
+  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unstedy::impl

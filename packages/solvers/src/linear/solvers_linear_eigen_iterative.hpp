@@ -51,10 +51,10 @@
 
 namespace pressio { namespace solvers { namespace iterative{
 
-template<typename SolverT, typename MatrixT>
+template<typename solver_tag, typename MatrixT>
 class EigenIterative
-  : public LinearBase<SolverT, MatrixT, EigenIterative<SolverT, MatrixT> >,
-    public IterativeBase< EigenIterative<SolverT, MatrixT>,
+  : public LinearBase<MatrixT, EigenIterative<solver_tag, MatrixT> >,
+    public IterativeBase< EigenIterative<solver_tag, MatrixT>,
 			  typename containers::details::traits<MatrixT>::scalar_t>
 {
 public:
@@ -63,14 +63,14 @@ public:
   		 ::pressio::containers::meta::is_multi_vector_wrapper_eigen<MatrixT>::value,
   		 "Eigen iterative solver needs a matrix type = wrapper of an eigen matrix");
 
-  using solver_t	= SolverT;
+  using solver_t	= solver_tag;
   using matrix_type	= MatrixT;
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
-  using this_t          = EigenIterative<SolverT, MatrixT>;
-  using base_interface  = LinearBase<SolverT, MatrixT, this_t>;
+  using this_t          = EigenIterative<solver_tag, MatrixT>;
+  using base_interface  = LinearBase<MatrixT, this_t>;
   using base_iterative  = IterativeBase<this_t, scalar_t>;
-  using solver_traits   = linear::details::traits<SolverT>;
+  using solver_traits   = linear::details::traits<solver_tag>;
   using native_solver_t = typename solver_traits::template eigen_solver_type<native_mat_t>;
   using iteration_t	= typename base_iterative::iteration_t;
 

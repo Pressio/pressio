@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_static_method_product_three_args.hpp
+// ops_has_method_product_mat_vec.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,61 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_HAS_STATIC_METHOD_PRODUCT_THREE_ARGS_HPP_
-#define ROM_ROM_HAS_STATIC_METHOD_PRODUCT_THREE_ARGS_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_VOID_METHOD_PRODUCT_MAT_VEC_HPP_
+#define OPS_SRC_META_OPS_HAS_VOID_METHOD_PRODUCT_MAT_VEC_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
 
 template <
   typename T,
-  typename arg1_t, typename arg2_t, typename arg3_t, typename = void>
-struct has_static_method_product_three_args
+  typename mode_t, typename scalar_t, typename mat_t, typename vec_t, typename result_t,
+  typename enable = void>
+struct has_void_method_product_mat_vec
   : std::false_type{};
 
-template <
-  typename T,
-  typename arg1_t, typename arg2_t, typename arg3_t>
-struct has_static_method_product_three_args<
-  T, arg1_t, arg2_t, arg3_t,
+
+template <typename T, typename scalar_t, typename mat_t, typename vec_t, typename result_t>
+struct has_void_method_product_mat_vec<
+  T, ::pressio::transpose, scalar_t, mat_t, vec_t, result_t,
   mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       T::template product<arg2_t>
+       std::declval< T const &>().product
        (
-	std::declval< arg1_t const & >(),
-	std::declval< arg2_t const & >(),
-	std::declval< arg3_t & >()
+	std::declval< ::pressio::transpose >(),
+	std::declval< scalar_t>(),
+	std::declval< mat_t const & >(),
+	std::declval< vec_t const & >(),
+	std::declval< scalar_t>(),
+	std::declval< result_t & >()
 	)
        )
       >::value
     >
   > : std::true_type{};
 
-}}} //pressio::rom::meta
+
+template <typename T, typename scalar_t, typename mat_t, typename vec_t, typename result_t>
+struct has_void_method_product_mat_vec<
+  T, ::pressio::nontranspose, scalar_t, mat_t, vec_t, result_t,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval< T const &>().product
+       (
+	std::declval< ::pressio::nontranspose >(),
+	std::declval< scalar_t>(),
+	std::declval< mat_t const & >(),
+	std::declval< vec_t const & >(),
+	std::declval< scalar_t>(),
+	std::declval< result_t & >()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
+
+}}} //pressio::ops::meta
 #endif

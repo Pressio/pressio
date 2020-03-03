@@ -49,10 +49,10 @@
 #ifndef SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 
-#include "../helper_policies/solvers_converged_criterior_policy.hpp"
-#include "../helper_policies/solvers_norm_helper_policy.hpp"
-#include "../helper_policies/solvers_line_search_policy.hpp"
-#include "../helper_policies/solvers_get_matrix_size_helper.hpp"
+#include "../helpers/solvers_converged_criterior_policy.hpp"
+#include "../helpers/solvers_norm_dispatcher.hpp"
+#include "../helpers/solvers_line_search_policy.hpp"
+#include "../helpers/solvers_get_matrix_size_helper.hpp"
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
@@ -62,7 +62,9 @@ template <
   typename system_t,
   typename qr_solver_t,
   typename iteration_t,
-  typename scalar_t
+  typename scalar_t,
+  typename gradient_dispatcher_t,
+  typename norm_dispatcher_t
   >
 void gauss_newton_qr_solve(const system_t & sys,
 			   typename system_t::state_type & stateInOut,
@@ -75,7 +77,10 @@ void gauss_newton_qr_solve(const system_t & sys,
 			   iteration_t maxNonLIt,
 			   scalar_t tolerance,
 			   std::string & convCondDescr,
-			   const ::pressio::solvers::Norm & normType){
+			   const ::pressio::solvers::Norm & normType,
+         const gradient_dispatcher_t & gradientDispatcher,
+			   const norm_dispatcher_t & normDispatcher)
+{
 
   using jacobian_t	= typename system_t::jacobian_type;
 
@@ -104,7 +109,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
   // alpha for taking steps
-  scalar_t alpha = {};
+  scalar_t alpha = ::pressio::utils::constants::one<scalar_t>();
   // residual norm
   scalar_t normRes = {};
   // initial residual norm
@@ -134,7 +139,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm resid");
 #endif
-    ComputeNormHelper::template evaluate<void>(residual, normRes, normType);
+    normDispatcher.evaluate(residual, normRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm resid");
 #endif
@@ -171,7 +176,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("norm QTResid");
 #endif
-    ComputeNormHelper::template evaluate<void>(QTResid, normQTRes, normType);
+    normDispatcher.evaluate(QTResid, normQTRes, normType);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("norm QTResid");
 #endif
@@ -181,7 +186,6 @@ void gauss_newton_qr_solve(const system_t & sys,
     // compute correction: correction
     // by solving R correction = - Q^T Residual
     pressio::ops::scale( QTResid, utils::constants::negOne<scalar_t>());
-    // QTResid.scale(static_cast<scalar_t>(-1));
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR R-solve");
@@ -192,7 +196,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
     // norm of the correction
-    ComputeNormHelper::template evaluate<void>(correction, correctionNorm, normType);
+    normDispatcher.evaluate(correction, correctionNorm, normType);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
     ::pressio::utils::io::print_stdout(std::scientific,
@@ -212,7 +216,7 @@ void gauss_newton_qr_solve(const system_t & sys,
     }
 
     // compute multiplicative factor if needed
-    lsearch_helper::template evaluate<void>(alpha, stateInOut, ytrial, correction, residual, jacobian, sys);
+    lsearch_helper::evaluate(alpha, stateInOut, ytrial, correction, residual, jacobian, sys, gradientDispatcher, normDispatcher);
 
     // solution update: stateInOut = stateInOut + alpha*correction
     ::pressio::ops::do_update(stateInOut, one, correction, alpha);

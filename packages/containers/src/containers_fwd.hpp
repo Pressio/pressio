@@ -56,6 +56,9 @@ struct nontranspose{};
 
 struct view{};
 
+struct matrixFull{};
+struct matrixUpperTriangular{};
+struct matrixLowerTriangular{};
 
 namespace containers{
 

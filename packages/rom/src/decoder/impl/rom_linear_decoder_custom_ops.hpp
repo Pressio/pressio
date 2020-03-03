@@ -62,16 +62,21 @@ struct LinearDecoderWithCustomOps
   using jacobian_type  = matrix_type;
 
 private:
+  using scalar_t   = typename ::pressio::containers::details::traits<rom_state_type>::scalar_t;
   matrix_type phi_ = {};
+  const ops_t & udOps_;
 
 public:
   LinearDecoderWithCustomOps() = delete;
-  LinearDecoderWithCustomOps(const jacobian_type & matIn) : phi_(matIn){}
+  LinearDecoderWithCustomOps(const jacobian_type & matIn, const ops_t & udOps)
+    : phi_(matIn), udOps_{udOps}{}
 
   template <typename operand_t>
-  void applyMapping(const operand_t & operandObj, fom_state_type & resultObj) const
+  void applyMapping(const operand_t & operand, fom_state_type & result) const
   {
-    ops_t::template product<operand_t>(*phi_.data(), operandObj, *resultObj.data());
+    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    udOps_.product(::pressio::nontranspose(), one, *phi_.data(), operand, zero, *result.data());
   }
 
   const jacobian_type & getReferenceToJacobian() const{

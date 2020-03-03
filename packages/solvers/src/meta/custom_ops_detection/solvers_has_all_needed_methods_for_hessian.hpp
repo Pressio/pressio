@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_static_method_axpy.hpp
+// solvers_has_all_needed_methods_for_hessian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,30 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_HAS_STATIC_METHOD_AXPY_HPP_
-#define ROM_ROM_HAS_STATIC_METHOD_AXPY_HPP_
+#ifndef SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_METHODS_FOR_HESSIAN_HPP_
+#define SOLVERS_SRC_META_SOLVERS_HAS_ALL_NEEDED_METHODS_FOR_HESSIAN_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace solvers{ namespace meta {
 
 template <
-  typename T,
-  typename x_t, typename y_t, typename a_t,
-  typename = void
+  typename T, typename jac_t, typename result_t, typename scalar_t,
+  typename enable = void
   >
-struct has_static_method_axpy
+struct has_all_needed_methods_for_hessian
   : std::false_type{};
 
-template <
-  typename T,
-  typename x_t, typename y_t, typename a_t
-  >
-struct has_static_method_axpy<
-  T, x_t, y_t, a_t,
+template <typename T, typename jac_t, typename result_t, typename scalar_t>
+struct has_all_needed_methods_for_hessian<
+  T, jac_t, result_t, scalar_t,
   mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       T::axpy
-       (
-	std::declval< a_t >(),
-	std::declval< x_t const & >(),
-	std::declval< y_t & >()
-	)
-       )
+    ::pressio::ops::meta::has_nonvoid_method_product_mat_mat<
+      T, ::pressio::transpose, ::pressio::nontranspose, scalar_t, jac_t, jac_t, result_t
+      >::value and
+    ::pressio::ops::meta::has_void_method_product_mat_mat<
+      T, ::pressio::transpose, ::pressio::nontranspose, scalar_t, jac_t, jac_t, result_t
       >::value
     >
   > : std::true_type{};
 
-}}} //pressio::rom::meta
+}}} //pressio::solvers::meta
 #endif

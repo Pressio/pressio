@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_view_column_vector.hpp
+// solvers_system_meets_gn_hessian_gradient_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,54 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VIEW_COLUMN_VECTOR_HPP_
-#define CONTAINERS_VIEW_COLUMN_VECTOR_HPP_
+#ifndef SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
+#define SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio{ namespace solvers{ namespace meta {
 
-template <typename T>
-mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper<T>::value,
-  typename details::traits<T>::view_col_vec_const_ret_t
-  >
-viewColumnVector(const T & obj, std::size_t index)
-{
-  using return_t = typename details::traits<T>::view_col_vec_const_ret_t;
-  return return_t(obj, index);
-}
+template<typename T, typename enable = void>
+struct system_meets_gn_hessian_gradient_api : std::false_type{};
 
-template <typename T>
-mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper<T>::value,
-  typename details::traits<T>::view_col_vec_ret_t
-  >
-viewColumnVector(T & obj, std::size_t index)
-{
-  using return_t = typename details::traits<T>::view_col_vec_ret_t;
-  return return_t(obj, index);
-}
+template<typename T>
+struct system_meets_gn_hessian_gradient_api
+<T,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_scalar_typedef, T>::value and
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_state_typedef, T>::value and
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_hessian_typedef, T>::value and
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_gradient_typedef, T>::value and
+   // --- detect createHessianObject ---
+   ::pressio::mpl::is_same<
+     typename T::hessian_type,
+     decltype(
+	      std::declval<T const>().createHessianObject
+	      ( std::declval<typename T::state_type const&>() )
+	      )
+     >::value and
+   // --- detect createGradientObject ---
+   ::pressio::mpl::is_same<
+     typename T::gradient_type,
+     decltype(
+	      std::declval<T const>().createGradientObject
+	      (std::declval<typename T::state_type const&>())
+	      )
+     >::value and
+   // --- detect computeHessianAndGradient ---
+   std::is_void<
+     decltype(
+	      std::declval<T const>().computeHessianAndGradient
+	      (
+	       std::declval<typename T::state_type const&>(),
+	       std::declval<typename T::hessian_type &>(),
+	       std::declval<typename T::gradient_type &>(),
+	       /* does not matter here what we pass, just to test */
+	       ::pressio::solvers::Norm::L2,
+	       std::declval<typename T::scalar_type &>()
+	       )
+	      )
+     >::value
+   >
+ > : std::true_type{};
 
-
-}} //end namespace pressio::containers
-
+}}} // namespace pressio::solvers::meta
 #endif

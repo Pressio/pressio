@@ -122,6 +122,9 @@ public:
   }
 
 public:
+
+  template <typename _ud_ops_t = ud_ops_t, 
+  mpl::enable_if_t< std::is_void<_ud_ops_t>::value > * = nullptr>
   ProblemGeneratorResidualApi(const fom_t	 & appObj,
 					  const fom_native_state_t & fomStateReferenceNative,
 					  decoder_t	 & decoder,
@@ -135,6 +138,30 @@ public:
       fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStates_(fomStateReconstructor_, fomStateReference_),
+      //
+      // construct policies
+      residualPolicy_(fomStates_, residualQuerier_),
+      jacobianPolicy_(fomStates_, applyJacobQuerier_, decoder),
+      // construct stepper
+      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
+  {}
+
+  template <typename _ud_ops_t = ud_ops_t, 
+  mpl::enable_if_t< !std::is_void<_ud_ops_t>::value > * = nullptr>
+  ProblemGeneratorResidualApi(const fom_t  & appObj,
+            const fom_native_state_t & fomStateReferenceNative,
+            decoder_t  & decoder,
+            lspg_state_t   & yROM,
+            scalar_t  t0,
+            const _ud_ops_t & udOps)
+    : step0_{},
+      t0_{t0},
+      dt0_{},
+      residualQuerier_{},
+      applyJacobQuerier_{},
+      fomStateReference_(fomStateReferenceNative),
+      fomStateReconstructor_(fomStateReference_, decoder, udOps),
+      fomStates_(fomStateReconstructor_, &udOps, fomStateReference_),
       //
       // construct policies
       residualPolicy_(fomStates_, residualQuerier_),

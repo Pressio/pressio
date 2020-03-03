@@ -167,7 +167,7 @@ basically the size of the stpper stencil.");
   static constexpr std::size_t numStates = tot_n_setter::value;
 
   // type of class holding the fom states
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
+  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;
 
 };
 

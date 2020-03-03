@@ -66,7 +66,7 @@ class MultiVectorSharedMemBase : public ContainerSharedMemBase<derived_type>
 
 public:
   ord_t numVectors() const{
-    return static_cast<const derived_type &>(*this).numVectorsImpl();
+    return static_cast<const derived_type &>(*this).numVectors();
   }
 };//end class
 

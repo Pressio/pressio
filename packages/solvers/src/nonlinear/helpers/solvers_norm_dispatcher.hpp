@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_norm_helper_policy.hpp
+// solvers_norm_dispatcher.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,30 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IMPL_NORM_HELPER_POLICY_HPP
-#define SOLVERS_IMPL_NORM_HELPER_POLICY_HPP
+#ifndef SOLVERS_IMPL_NORM_DISPATCHER_HPP
+#define SOLVERS_IMPL_NORM_DISPATCHER_HPP
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
-struct ComputeNormHelper
+template <typename ud_ops_t>
+struct NormDispatcher
 {
+private:
+  const ud_ops_t * udOps_ = nullptr;
+
+public:
+  NormDispatcher() = default;
+  NormDispatcher(const ud_ops_t * udOps) : udOps_{udOps}{}
+
   template <
-    typename ud_ops_t, typename vec_t, typename scalar_t,
+    typename vec_t, typename scalar_t,
     mpl::enable_if_t<
       !::pressio::containers::meta::is_vector_wrapper_arbitrary<vec_t>::value
       > * = nullptr
     >
-  static void evaluate(const vec_t & vecIn,
-		       scalar_t & result,
-		       const ::pressio::solvers::Norm & normType)
+  void evaluate(const vec_t & vecIn,
+		       scalar_t & result, 
+		       const ::pressio::solvers::Norm & normType) const
   {
     if (normType == ::pressio::solvers::Norm::L1){
       result = ::pressio::ops::norm1(vecIn);
@@ -73,22 +81,23 @@ struct ComputeNormHelper
       throw std::runtime_error("Invalid norm type, cannot conmpute norm");
   }
 
+
   template <
-    typename ud_ops_t, typename vec_t, typename scalar_t,
+    typename vec_t, typename scalar_t, typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
       ::pressio::containers::meta::is_vector_wrapper_arbitrary<vec_t>::value and
-      !std::is_void<ud_ops_t>::value
+      !std::is_void<_ud_ops_t>::value
       > * = nullptr
     >
-  static void evaluate(const vec_t & vecIn,
+  void evaluate(const vec_t & vecIn,
 		       scalar_t & result,
-		       const ::pressio::solvers::Norm & normType)
+		       const ::pressio::solvers::Norm & normType) const
   {
     if (normType == ::pressio::solvers::Norm::L1){
-      result = ud_ops_t::norm1( *vecIn.data() );
+      result = udOps_->norm1( *vecIn.data() );
     }
     else if (normType == ::pressio::solvers::Norm::L2){
-      result = ud_ops_t::norm2( *vecIn.data() );
+      result = udOps_->norm2( *vecIn.data() );
     }
     else
       throw std::runtime_error("Invalid norm type, cannot conmpute norm");

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_system_meets_gn_hessian_gradient_api.hpp
+// ops_has_void_method_product_mat_mat.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,54 +46,44 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
-#define SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_VOID_METHOD_PRODUCT_MAT_MAT_HPP_
+#define OPS_SRC_META_OPS_HAS_VOID_METHOD_PRODUCT_MAT_MAT_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta { namespace experimental{
+namespace pressio{ namespace ops{ namespace meta {
 
-template<typename T, typename enable = void>
-struct system_meets_gn_hessian_gradient_api : std::false_type{};
+template <
+  typename T,
+  typename modeA_t, typename modeB_t,
+  typename scalar_t, typename matA_t, typename matB_t, typename result_t,
+  typename enable = void
+  >
+struct has_void_method_product_mat_mat
+  : std::false_type{};
 
-template<typename T>
-struct system_meets_gn_hessian_gradient_api
-<T,
- ::pressio::mpl::enable_if_t<
-   ::pressio::mpl::is_detected<has_scalar_typedef, T>::value and
-   ::pressio::mpl::is_detected<has_state_typedef, T>::value and
-   ::pressio::mpl::is_detected<has_hessian_typedef, T>::value and
-   ::pressio::mpl::is_detected<has_gradient_typedef, T>::value and
-   // --- detect createHessianObject ---
-   ::pressio::mpl::is_same<
-     typename T::hessian_type,
-     decltype(
-	      std::declval<T const>().createHessianObject
-	      ( std::declval<typename T::state_type const&>() )
-	      )
-     >::value and
-   // --- detect createGradientObject ---
-   ::pressio::mpl::is_same<
-     typename T::gradient_type,
-     decltype(
-	      std::declval<T const>().createGradientObject
-	      (std::declval<typename T::state_type const&>())
-	      )
-     >::value and
-   // --- detect computeHessianAndProjectedResidual ---
-   std::is_void<
-     decltype(
-	      std::declval<T const>().computeHessianAndGradient
-	      (
-	       std::declval<typename T::state_type const&>(),
-	       std::declval<typename T::hessian_type &>(),
-	       std::declval<typename T::gradient_type &>(),
-	       /* does not matter here what we pass, just to test */
-	       ::pressio::solvers::Norm::L2,
-	       std::declval<typename T::scalar_type &>()
-	       )
-	      )
-     >::value
-   >
- > : std::true_type{};
+template <
+  typename T, typename scalar_t, typename matA_t, typename matB_t, typename result_t
+  >
+struct has_void_method_product_mat_mat<
+  T,
+  ::pressio::transpose, ::pressio::nontranspose, scalar_t, matA_t, matB_t, result_t,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval< T const &>().product
+       (
+	std::declval< ::pressio::transpose >(),
+	std::declval< ::pressio::nontranspose >(),
+	std::declval< scalar_t>(),
+	std::declval< matA_t const & >(),
+	std::declval< matB_t const & >(),
+	std::declval< scalar_t>(),
+	std::declval< result_t const & >()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
 
-}}}} // namespace pressio::solvers::meta::experimental
+}}} //pressio::ops::meta
 #endif

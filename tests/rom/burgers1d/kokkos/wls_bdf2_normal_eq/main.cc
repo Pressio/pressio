@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
     // -----------------
     // L solver
     // -----------------
-    using lin_solver_tag  = pressio::solvers::linear::direct::getrs;
+    using lin_solver_tag  = pressio::solvers::linear::direct::potrsL;
     using linear_solver_t = pressio::solvers::direct::KokkosDirect<lin_solver_tag, hessian_d_t>;
     linear_solver_t linear_solver;
 
@@ -62,9 +62,10 @@ int main(int argc, char *argv[]){
     // WLS problem
     // -----------------
     constexpr int numStepsInWindow = 5;
+    using hessian_matrix_structure_tag = pressio::matrixLowerTriangular;
     using ode_tag     = ::pressio::ode::implicitmethods::BDF2;
     using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t, wls_state_d_t, decoder_d_t,
-									ode_tag, hessian_d_t>;
+									ode_tag, hessian_d_t, hessian_matrix_structure_tag>;
 
     // create the wls state
     wls_state_d_t  wlsState("yRom",romSize*numStepsInWindow);
@@ -78,7 +79,7 @@ int main(int argc, char *argv[]){
     using gn_t            = pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
     gn_t GNSolver(wlsSystem, wlsState, linear_solver);
     GNSolver.setTolerance(1e-13);
-    GNSolver.setMaxIterations(50);
+    GNSolver.setMaxIterations(5);
 
     // -----------------
     // solve wls problem

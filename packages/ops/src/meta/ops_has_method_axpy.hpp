@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_static_method_deep_copy.hpp
+// ops_has_method_axpy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,35 +46,37 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_HAS_STATIC_METHOD_DEEP_COPY_HPP_
-#define ROM_ROM_HAS_STATIC_METHOD_DEEP_COPY_HPP_
+#ifndef OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
+#define OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
 
 template <
-  typename T,
-  typename from_t, typename to_t, typename = void>
-struct has_static_method_deep_copy
+  typename T, typename x_t, typename y_t, typename a_t,
+  typename = void
+  >
+struct has_method_axpy
   : std::false_type{};
 
 template <
-  typename T,
-  typename from_t, typename to_t>
-struct has_static_method_deep_copy<
-  T, from_t, to_t,
+  typename T, typename x_t, typename y_t, typename a_t
+  >
+struct has_method_axpy<
+  T, x_t, y_t, a_t,
   mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       T::deep_copy
+       std::declval< T const &>().axpy
        (
-	std::declval< from_t const & >(),
-	std::declval< to_t & >()
+	std::declval< a_t >(),
+	std::declval< x_t const & >(),
+	std::declval< y_t & >()
 	)
        )
       >::value
     >
   > : std::true_type{};
 
-}}} //pressio::rom::meta
+}}} //pressio::ops::meta
 #endif

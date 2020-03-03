@@ -56,6 +56,7 @@ template <
   typename fom_state_type,
   std::size_t n,
   typename reconstuctor_type,
+  typename ud_ops_t,
   typename enable = void>
 class FomStatesStaticContainer;
 
