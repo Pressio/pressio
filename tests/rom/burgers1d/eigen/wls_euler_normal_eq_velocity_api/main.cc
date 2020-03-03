@@ -3,7 +3,11 @@
 #include "pressio_apps.hpp"
 #include "utils_eigen.hpp"
 
-int main(int argc, char *argv[]){
+namespace {
+
+template <typename lin_solver_tag, typename hessian_matrix_structure_tag>
+void doRun()
+{
   std::string checkStr {"PASSED"};
 
   using fom_t		   = pressio::apps::Burgers1dEigen;
@@ -44,7 +48,6 @@ int main(int argc, char *argv[]){
   // -----------------
   // linear solver
   // -----------------
-  using lin_solver_tag	= pressio::solvers::linear::direct::potrsL;
   using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, hessian_t>;
   linear_solver_t linearSolver;
 
@@ -60,8 +63,8 @@ int main(int argc, char *argv[]){
   pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_t>(linearSolver, decoderJac, yFOM_IC, yRef, wlsStateIc);
 
   // create the wls system
-  using hessian_matrix_structure_tag = pressio::matrixLowerTriangular;
-  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t,wls_state_t,decoder_t,ode_tag,hessian_t,hessian_matrix_structure_tag>;
+  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t, wls_state_t, decoder_t,
+								      ode_tag,hessian_t, hessian_matrix_structure_tag>;
   wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize, wlsStateIc);
 
   // create the wls state
@@ -109,6 +112,12 @@ int main(int argc, char *argv[]){
     if (std::abs(yFinal[i] - trueY[i]) > 1e-8) checkStr = "FAILED";
   }
   std::cout << checkStr << std::endl;
+}
+}
 
+int main(int argc, char *argv[])
+{
+  doRun< pressio::solvers::linear::direct::potrsU, pressio::matrixUpperTriangular >();
+  doRun< pressio::solvers::linear::direct::potrsL, pressio::matrixLowerTriangular >();
   return 0;
 }
