@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_linear_kokkos_direct_potrs_lower.hpp
+// solvers_linear_kokkos_direct_potrs_upper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -47,8 +47,8 @@
 */
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#ifndef SOLVERS_LINEAR_KOKKOS_DIRECT_POTRS_LOWER_HPP_
-#define SOLVERS_LINEAR_KOKKOS_DIRECT_POTRS_LOWER_HPP_
+#ifndef SOLVERS_LINEAR_KOKKOS_DIRECT_POTRS_UPPER_HPP_
+#define SOLVERS_LINEAR_KOKKOS_DIRECT_POTRS_UPPER_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Teuchos_LAPACK.hpp>
@@ -63,15 +63,15 @@
 namespace pressio { namespace solvers { namespace direct{
 
 template<typename MatrixT>
-class KokkosDirect<::pressio::solvers::linear::direct::potrsL, MatrixT>
-  : public LinearBase<MatrixT, KokkosDirect<::pressio::solvers::linear::direct::potrsL, MatrixT>>
+class KokkosDirect<::pressio::solvers::linear::direct::potrsU, MatrixT>
+  : public LinearBase<MatrixT, KokkosDirect<::pressio::solvers::linear::direct::potrsU, MatrixT>>
 {
 public:
   static_assert( ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
   		 ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<MatrixT>::value,
   		 "Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
 
-  using solver_tag	= ::pressio::solvers::linear::direct::potrsL;
+  using solver_tag	= ::pressio::solvers::linear::direct::potrsU;
   using this_t          = KokkosDirect<solver_tag, MatrixT>;
   using matrix_type	= MatrixT;
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
@@ -85,7 +85,6 @@ public:
   		 "the native solver must suppport kokkos to use in KokkosDirect");
   static_assert( solver_traits::direct == true,
   		 "the native solver must be direct to use in KokkosDirect");
-
 
 public:
   KokkosDirect() = default;
@@ -150,7 +149,7 @@ private:
 #endif
 
   friend base_t;
-  const char uplo_ = 'L';
+  const char uplo_ = 'U';
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   Teuchos::LAPACK<int, scalar_t> lpk_;
