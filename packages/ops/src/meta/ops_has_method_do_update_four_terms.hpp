@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_valid_user_defined_ops_for_explicit_ode.hpp
+// ops_has_method_do_update_four_terms.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,63 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_VALID_USER_DEFINED_OPS_EXPLICIT_ODE_HPP_
-#define ODE_IS_VALID_USER_DEFINED_OPS_EXPLICIT_ODE_HPP_
+#ifndef OPS_SRC_META_HAS_METHOD_DO_UPDATE_FOUR_TERMS_HPP_
+#define OPS_SRC_META_HAS_METHOD_DO_UPDATE_FOUR_TERMS_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
 
-template<typename T,
-	 typename scalar_t,
-	 typename state_t,
-	 typename residual_t,
-	 typename enable = void>
-struct is_valid_user_defined_ops_for_explicit_ode : std::false_type{};
+/*
+  static void do_update(T1 &, scalar_type,
+			const T2 &, scalar_type,
+			const T3 &, scalar_type,
+			const T4 &, scalar_type,
+			const T5 &, scalar_type)
+ */
 
-template<typename T,
-	 typename scalar_t,
-	 typename state_t,
-	 typename residual_t>
-struct is_valid_user_defined_ops_for_explicit_ode<
-  T, scalar_t, state_t, residual_t,
-    mpl::enable_if_t<
-      is_valid_user_defined_ops_for_explicit_euler<
-	T, scalar_t, state_t, residual_t
-      	>::value and
-      is_valid_user_defined_ops_for_explicit_rk4<
-      	T, scalar_t, state_t, residual_t
-      	>::value
-      >
+template <
+  typename T,
+  typename scalar_t,
+  typename T1,
+  typename T2,
+  typename T3,
+  typename T4,
+  typename T5,
+  typename = void
+  >
+struct has_method_do_update_four_terms : std::false_type{};
+
+template <
+  typename T,
+  typename sc_t,
+  typename T1,
+  typename T2,
+  typename T3,
+  typename T4,
+  typename T5
+  >
+struct has_method_do_update_four_terms<
+  T, sc_t, T1, T2, T3, T4, T5,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const &>().do_update
+       (
+	std::declval< T1 & >(),
+	std::declval<const sc_t>(),
+	std::declval<const T2 &>(),
+	std::declval<const sc_t>(),
+	std::declval<const T3 &>(),
+	std::declval<const sc_t>(),
+	std::declval<const T4 &>(),
+	std::declval<const sc_t>(),
+	std::declval<const T5 &>(),
+	std::declval<const sc_t>()
+	)
+       )
+      >::value
+    >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::ops::meta
 #endif

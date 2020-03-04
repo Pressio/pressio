@@ -63,6 +63,12 @@
 #include "ops/src/meta/ops_has_void_method_product_mat_mat.hpp"
 #include "ops/src/meta/ops_has_nonvoid_method_product_mat_mat.hpp"
 #include "ops/src/meta/ops_has_void_method_product_mat_vec.hpp"
+#include "ops/src/meta/ops_has_method_add_to_diagonal.hpp"
+#include "ops/src/meta/ops_has_method_scale.hpp"
+#include "ops/src/meta/ops_has_method_do_update_one_term.hpp"
+#include "ops/src/meta/ops_has_method_do_update_two_terms.hpp"
+#include "ops/src/meta/ops_has_method_do_update_three_terms.hpp"
+#include "ops/src/meta/ops_has_method_do_update_four_terms.hpp"
 
 // Eigen
 #include "ops/src/eigen/ops_set_zero.hpp"

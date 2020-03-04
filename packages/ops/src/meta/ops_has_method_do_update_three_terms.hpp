@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_has_static_method_scale.hpp
+// ops_has_method_do_update_three_terms.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,58 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_META_HAS_STATIC_METHOD_SCALE_HPP_
-#define CONTAINERS_META_HAS_STATIC_METHOD_SCALE_HPP_
+#ifndef OPS_SRC_META_HAS_METHOD_DO_UPDATE_THREE_TERMS_HPP_
+#define OPS_SRC_META_HAS_METHOD_DO_UPDATE_THREE_TERMS_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
+
+/*
+static void do_update(T1 &, scalar_type, 
+const T2 &, scalar_type,
+const T3 &, scalar_type,
+const T4 &, scalar_type)
+ */
 
 template <
   typename T,
-  typename arg_t,
   typename scalar_t,
+  typename T1,
+  typename T2,
+  typename T3,
+  typename T4,
   typename = void
   >
-struct has_static_method_scale : std::false_type{};
+struct has_method_do_update_three_terms : std::false_type{};
 
 template <
   typename T,
-  typename arg_t,
-  typename sc_t
+  typename sc_t,
+  typename T1,
+  typename T2,
+  typename T3,
+  typename T4
   >
-struct has_static_method_scale<
-  T, arg_t, sc_t,
+struct has_method_do_update_three_terms<
+  T, sc_t, T1, T2, T3, T4,
   mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       T::scale
+       std::declval<T const &>().do_update
        (
-	std::declval< arg_t & >(),
-	std::declval< const sc_t >()
+	std::declval< T1 & >(),
+	std::declval<const sc_t>(),
+	std::declval<const T2 &>(),
+	std::declval<const sc_t>(),
+	std::declval<const T3 &>(),
+	std::declval<const sc_t>(),
+	std::declval<const T4 &>(),
+	std::declval<const sc_t>()
 	)
        )
       >::value
     >
   > : std::true_type{};
 
-}}} //pressio::containers::meta
+}}} // namespace pressio::ops::meta
 #endif

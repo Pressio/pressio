@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_has_static_method_add_to_diagonal.hpp
+// ops_has_method_scale.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,10 +46,10 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_META_HAS_STATIC_METHOD_ADD_TO_DIAGONAL_HPP_
-#define CONTAINERS_META_HAS_STATIC_METHOD_ADD_TO_DIAGONAL_HPP_
+#ifndef OPS_SRC_META_HAS_METHOD_SCALE_HPP_
+#define OPS_SRC_META_HAS_METHOD_SCALE_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace ops{ namespace meta {
 
 template <
   typename T,
@@ -57,20 +57,20 @@ template <
   typename scalar_t,
   typename = void
   >
-struct has_static_method_add_to_diagonal : std::false_type{};
+struct has_method_scale : std::false_type{};
 
 template <
   typename T,
   typename arg_t,
   typename sc_t
   >
-struct has_static_method_add_to_diagonal<
+struct has_method_scale<
   T, arg_t, sc_t,
   mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       T::add_to_diagonal
+       std::declval<T const &>().scale
        (
 	std::declval< arg_t & >(),
 	std::declval< const sc_t >()
@@ -80,5 +80,5 @@ struct has_static_method_add_to_diagonal<
     >
   > : std::true_type{};
 
-}}} //pressio::containers::meta
+}}} //pressio::ops::meta
 #endif

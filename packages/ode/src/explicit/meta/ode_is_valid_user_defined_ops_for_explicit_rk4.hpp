@@ -66,20 +66,15 @@ template<typename T,
 struct is_valid_user_defined_ops_for_explicit_rk4<
   T, scalar_t, state_t, residual_t,
     mpl::enable_if_t<
-      ::pressio::containers::meta::is_vector_wrapper<state_t>::value
-      and
-      ::pressio::containers::meta::has_update_op_typedef<T>::value
-      and
-      ::pressio::containers::meta::has_static_method_do_update_two_terms<
-	typename T::update_op,
+      ::pressio::ops::meta::has_method_do_update_two_terms<
+	T,
 	scalar_t,
 	typename containers::details::traits<state_t>::wrapped_t,
 	typename containers::details::traits<residual_t>::wrapped_t,
 	typename containers::details::traits<residual_t>::wrapped_t
-	>::value
-      and
-      ::pressio::containers::meta::has_static_method_do_update_four_terms<
-	typename T::update_op,
+	>::value and
+      ::pressio::ops::meta::has_method_do_update_four_terms<
+	T,
 	scalar_t,
 	typename containers::details::traits<state_t>::wrapped_t,
 	typename containers::details::traits<residual_t>::wrapped_t,

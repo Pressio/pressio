@@ -79,13 +79,24 @@ class ExplicitEulerStepperImpl<scalar_type,
   system_wrapper_t sys_;
   const velocity_policy_type & policy_;
   velocity_storage_t veloAuxStorage_;
+  const ops_t * udOps_ = nullptr;
 
 public:
+  template <typename _ops_t = ops_t, mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr>
   ExplicitEulerStepperImpl(const system_type & model,
   			   const velocity_policy_type & policy_obj,
   			   const state_type & stateIn0,
   			   const velocity_type & f0)
     : sys_(model), policy_(policy_obj), veloAuxStorage_(f0)
+  {}
+
+  template <typename _ops_t = ops_t, mpl::enable_if_t< !std::is_void<_ops_t>::value > * = nullptr>
+  ExplicitEulerStepperImpl(const system_type & model,
+  			   const velocity_policy_type & policy_obj,
+  			   const state_type & stateIn0,
+  			   const velocity_type & f0,
+			   const _ops_t & udOps)
+    : sys_(model), policy_(policy_obj), veloAuxStorage_(f0), udOps_(&udOps)
   {}
 
   ExplicitEulerStepperImpl() = delete;
@@ -102,9 +113,7 @@ public:
 
 public:
 
-  /*
-   * user does NOT provide custom ops, so we use ops
-   */
+  /* user does NOT provide custom ops, so we use ops */
   template<
     typename _ops_t = ops_t,
     typename _state_type = state_type,
@@ -123,9 +132,7 @@ public:
     ::pressio::ops::do_update(stateInOut, one, auxRhs0, dt);
   }
 
-  /*
-   * user does provide custom ops, and they need raw data not wrappers
-   */
+  /* user provides custom ops */
   template<
     typename _ops_t = ops_t,
     typename _state_type = state_type,
@@ -139,14 +146,11 @@ public:
   	      const scalar_type & dt,
   	      const types::step_t & step)
   {
-    using op = typename ops_t::update_op;
     auto & auxRhs0 = veloAuxStorage_(0);
-
-    //eval RHS
     policy_(stateInOut, auxRhs0, sys_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    op::do_update(*stateInOut.data(), one, *auxRhs0.data(), dt);
+    udOps_->do_update(*stateInOut.data(), one, *auxRhs0.data(), dt);
   }
 };
 
