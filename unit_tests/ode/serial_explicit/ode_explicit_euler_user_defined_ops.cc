@@ -70,8 +70,9 @@ TEST(ode_explicit_euler, userDefinedOps){
   auto yptr = y.data();
   (*yptr)[0] = 1.; (*yptr)[1] = 2.; (*yptr)[2] = 3.;
 
+  using ode_tag = pressio::ode::explicitmethods::Euler;
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitEnum::Euler, state_t, app_t, res_t,
+    ode_tag, state_t, app_t, res_t,
     double, myops<scalar_t>>;
   stepper_t stepperObj(y, appObj);
 

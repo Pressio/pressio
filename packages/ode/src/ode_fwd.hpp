@@ -172,27 +172,12 @@ class JacobianStandardPolicyPybind11;
 }//end namespace pressio::ode::explicitmethods
 
 
-// aliases to deprecate later
-template<
-  ExplicitEnum stepperName,
-  typename state_type,
-  typename ...Args
-  >
-using ExplicitStepper = ::pressio::ode::explicitmethods::Stepper<
-  typename impl::ExplicitEnumToTagType<stepperName>::type, state_type, Args...
-  >;
+// aliases
+template<typename ...Args>
+using ExplicitStepper = ::pressio::ode::explicitmethods::Stepper<Args...>;
 
-template<
-  ImplicitEnum stepperName,
-  typename state_type,
-  typename residual_type,
-  typename jacobian_type,
-  typename model_type,
-  typename ...Args
-  >
-using ImplicitStepper = ::pressio::ode::implicitmethods::Stepper<
-  typename impl::ImplicitEnumToTagType<stepperName>::type, state_type, residual_type, jacobian_type, model_type, Args...
-  >;
+template<typename ...Args>
+using ImplicitStepper = ::pressio::ode::implicitmethods::Stepper<Args...>;
 
 }} // end namespace pressio::ode
 #endif

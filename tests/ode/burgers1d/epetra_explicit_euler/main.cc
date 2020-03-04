@@ -41,9 +41,9 @@ int main(int argc, char *argv[]){
   using ode_res_t   = pressio::containers::Vector<app_velocity_t>;
   ode_state_t y(y0n);
 
-  constexpr auto ode_case = pressio::ode::ExplicitEnum::Euler;
+  using ode_tag = pressio::ode::explicitmethods::Euler;
   using stepper_t = pressio::ode::ExplicitStepper<
-    ode_case, ode_state_t, app_t, ode_res_t, scalar_t>;
+    ode_tag, ode_state_t, app_t, ode_res_t, scalar_t>;
   stepper_t stepperObj(y, appobj);
 
   // integrate in time

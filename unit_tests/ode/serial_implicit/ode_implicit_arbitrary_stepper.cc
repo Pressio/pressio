@@ -87,7 +87,7 @@ TEST(ode_implicit, validArbitraryStepper){
   using stepper_n_states = ode::types::StepperTotalNumberOfStates<2>;
 
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Arbitrary,
+    ode::implicitmethods::Arbitrary,
     state_t, res_t, jac_t, app_t,
     stepper_order, stepper_n_states>;
 

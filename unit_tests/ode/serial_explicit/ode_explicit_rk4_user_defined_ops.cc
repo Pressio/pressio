@@ -84,7 +84,7 @@ TEST(ode_explicit_rk4, userDefinedOps){
   (*yptr)[0] = 1.; (*yptr)[1] = 2.; (*yptr)[2] = 3.;
 
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitEnum::RungeKutta4, state_t, app_t, res_t,
+    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t,
     double, myops>;
   stepper_t stepperObj(y, appObj);
 

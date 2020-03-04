@@ -21,11 +21,11 @@ TEST(ode_implicit_bdf2, traits){
     ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
 
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
+    ode::implicitmethods::Euler,
     state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
 
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::BDF2,
+    ode::implicitmethods::BDF2,
     state_t, res_t, jac_t, app_t, aux_stepper_t>;
 
   using traits = ode::details::traits<stepper_t>;
@@ -70,12 +70,12 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
 
   // define auxiliary stepper
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler, state_t, res_t, jac_t, app_t>;
+    ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t>;
   aux_stepper_t stepperAux(y, appObj);
 
   // actual stepper
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::BDF2, state_t, res_t, jac_t, app_t, aux_stepper_t>;
+    ode::implicitmethods::BDF2, state_t, res_t, jac_t, app_t, aux_stepper_t>;
   stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver
@@ -121,14 +121,14 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
     = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, app_t, jac_t>;
 
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
+    ode::implicitmethods::Euler,
     state_t, res_t, jac_t, app_t, void, /*aux stepper NOT needed for backEuler*/
     res_pol_t, jac_pol_t>;
   aux_stepper_t stepperAux(y, appObj, res_pol_t(), jac_pol_t());
 
   // stepper for BDF2
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::BDF2,
+    ode::implicitmethods::BDF2,
     state_t, res_t, jac_t, app_t, aux_stepper_t, res_pol_t, jac_pol_t>;
   stepper_t stepperObj(y, appObj, res_pol_t(), jac_pol_t(), stepperAux);
 
@@ -176,7 +176,7 @@ TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
   using res_pol_t = ode::implicitmethods::policy::ResidualStandardPolicy<state_t, app_t, res_t>;
 
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
+    ode::implicitmethods::Euler,
     state_t, res_t, jac_t, app_t,
     void, /*aux stepper NOT needed for backEuler*/
     res_pol_t>;
@@ -184,7 +184,7 @@ TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
 
   // stepper for BDF2
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::BDF2,
+    ode::implicitmethods::BDF2,
     state_t, res_t, jac_t, app_t, aux_stepper_t, res_pol_t>;
   stepper_t stepperObj(y, appObj, res_pol_t(), stepperAux);
 
