@@ -8,6 +8,8 @@ int main(int argc, char *argv[]){
   std::string checkStr {"PASSED"};
 
   using fom_t		   = pressio::apps::Burgers1dTpetraBlock;
+  using fom_t2		   = pressio::apps::Burgers1dTpetra;
+
   using scalar_t	   = typename fom_t::scalar_type;
   using fom_native_state_t = typename fom_t::state_type;
   using fom_dmat_t         = typename fom_t::dense_matrix_type;
@@ -31,27 +33,25 @@ int main(int argc, char *argv[]){
   {
     int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
-
     // -------------------
-    // fom object
+    // block vector fom object
     // -------------------
     constexpr int fomSize = 20;
     fom_t appObj( {5.0, 0.02, 0.02}, fomSize, Comm);
-
     // get initial condition
     auto & yFOM_IC_native = appObj.getInitialState();
-    // wrap into pressio container
     fom_state_t yFOM_IC(yFOM_IC_native);
-    //reference state is equal to the IC
-    fom_state_t & yRef = yFOM_IC;
-
+    fom_state_t yRef(yFOM_IC_native);
     // -------------------
     // decoder
     // -------------------
     int romSize = 11;
-    const auto phiNative = pressio::rom::test::tpetra::readBasis("basis.txt", romSize, fomSize,
-								 Comm, appObj.getDataMap());
+    const auto phiNative = pressio::rom::test::tpetra::readBasis("basis.txt", romSize, fomSize,Comm, appObj.getDataMap());
     decoder_t decoderObj(phiNative);
+    const auto & phi = decoderObj.getReferenceToJacobian();
+    // create the wls system
+    /* 
+
 
     // -----------------
     // lin solver
@@ -69,8 +69,11 @@ int main(int argc, char *argv[]){
     // create the wls state
     wls_state_t  wlsState(romSize*numStepsInWindow);
     pressio::ops::fill(wlsState, zero);
-    // create the wls system
+
     wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize, linear_solver);
+
+
+
 
     // -----------------
     // solver
@@ -91,7 +94,6 @@ int main(int argc, char *argv[]){
     for (auto iWind = 0; iWind < numWindows; iWind++){
       wlsSystem.advanceOneWindow(wlsState, GNSolver, iWind, dt);
     }
-    /*
     const auto finishTime = std::chrono::high_resolution_clock::now();
     const std::chrono::duration<double> elapsed = finishTime - startTime;
     std::cout << "Walltime = " << elapsed.count() << '\n';
@@ -114,9 +116,10 @@ int main(int argc, char *argv[]){
     for (auto i=0; i<myn; i++)
       if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
 
-    std::cout << checkStr << std::endl;
 
     */
+    std::cout << checkStr << std::endl;
+
   }
 
   return 0;
