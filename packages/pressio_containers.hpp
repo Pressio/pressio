@@ -58,7 +58,6 @@
 #include "containers/src/containers_shared_traits.hpp"
 
 #include "containers/src/meta/containers_meta_type_aliases_detection.hpp"
-#include "containers/src/meta/containers_meta_methods_detection.hpp"
 #include "containers/src/meta/generic/containers_is_teuchos_rcp.hpp"
 #include "containers/src/meta/generic/containers_native_pybind_array_meta.hpp"
 
@@ -89,6 +88,7 @@
 
 #include "containers/src/vector/meta/containers_is_dense_vector_wrapper_teuchos.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_arbitrary.hpp"
+#include "containers/src/vector/meta/containers_is_vector_wrapper_pybind.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_armadillo.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_blaze.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_eigen.hpp"
@@ -101,6 +101,7 @@
 #include "containers/src/vector/containers_vector_traits.hpp"
 
 #include "containers/src/vector/concrete/containers_vector_arbitrary.hpp"
+#include "containers/src/vector/concrete/containers_vector_sharedmem_pybind11.hpp"
 #include "containers/src/vector/concrete/containers_vector_distributed_epetra.hpp"
 #include "containers/src/vector/concrete/containers_vector_distributed_tpetra_block.hpp"
 #include "containers/src/vector/concrete/containers_vector_distributed_tpetra.hpp"
@@ -129,11 +130,13 @@
 #include "containers/src/matrix/meta/containers_is_matrix_wrapper_arbitrary.hpp"
 #include "containers/src/matrix/meta/containers_is_matrix_wrapper_eigen.hpp"
 #include "containers/src/matrix/meta/containers_is_matrix_wrapper_kokkos.hpp"
+#include "containers/src/matrix/meta/containers_is_matrix_wrapper_pybind.hpp"
 #include "containers/src/matrix/meta/containers_is_matrix_wrapper.hpp"
 
 #include "containers/src/matrix/containers_matrix_traits.hpp"
 
 #include "containers/src/matrix/concrete/containers_matrix_arbitrary.hpp"
+#include "containers/src/matrix/concrete/containers_matrix_sharedmem_pybind11.hpp"
 #include "containers/src/matrix/concrete/containers_matrix_dense_distributed_epetra.hpp"
 #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
 #include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"

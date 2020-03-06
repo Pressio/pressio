@@ -76,7 +76,7 @@ template <
   typename ud_ops
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   ,mpl::enable_if_t<
-     !::pressio::containers::meta::is_array_pybind11<lspg_matrix_type>::value and
+     !::pressio::containers::meta::is_matrix_wrapper_pybind<lspg_matrix_type>::value and
      mpl::not_same< ud_ops, pybind11::object>::value
     > * = nullptr
 #endif
@@ -101,45 +101,28 @@ template <
   typename scalar_type,
   typename decoder_jac_type,
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<lspg_matrix_type>::value
+    ::pressio::containers::meta::is_matrix_wrapper_pybind<lspg_matrix_type>::value
     > * = nullptr
   >
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const scalar_type	& dt,
 			    const decoder_jac_type & phi)
 {
-  auto jphi_px = jphi.mutable_unchecked();
-  const auto phi_px  = phi.unchecked();
+  auto & jphiNat = *jphi.data();
+  auto jphiMU = jphiNat.mutable_unchecked();
+
+  auto & phiNat  = *phi.data();
+  const auto phiMU  = phiNat.unchecked();
 
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
-
-  const auto nRows = jphi.shape(0);
-  const auto nCols = jphi.shape(1);
+  const auto nRows = jphi.extent(0);
+  const auto nCols = jphi.extent(1);
   for (std::size_t i=0; i<(std::size_t)nRows; ++i){
     for (std::size_t j=0; j<(std::size_t)nCols; ++j){
-      jphi_px(i,j) = phi_px(i,j) + prefactor*jphi_px(i,j);
+      jphiMU(i,j) = phiMU(i,j) + prefactor*jphiMU(i,j);
     }
   }
-}
-
-
-template <
-  typename stepper_tag,
-  typename lspg_matrix_type,
-  typename scalar_type,
-  typename decoder_jac_type,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<lspg_matrix_type>::value
-    > * = nullptr
-  >
-void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
-			    const scalar_type	& dt,
-			    const decoder_jac_type & phi,
-			    const pybind11::object & udOps){
-
-  constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
-  udOps.attr("time_discrete_jacobian")(jphi, phi, prefactor, dt);
 }
 #endif
 

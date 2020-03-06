@@ -63,7 +63,7 @@ template<
   ::pressio::mpl::enable_if_t<
     std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and !::pressio::containers::meta::is_array_pybind11<state_type>::value
+    and !::pressio::containers::meta::is_vector_wrapper_pybind<state_type>::value
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
    > * = nullptr
@@ -86,56 +86,26 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
 template<
   typename stepper_tag,
   typename fom_states_cont_t,
-  typename state_type,
+  typename residual_type,
   typename scalar_type,
   ::pressio::mpl::enable_if_t<
     std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
-    ::pressio::containers::meta::is_array_pybind11<state_type>::value
+    ::pressio::containers::meta::is_vector_wrapper_pybind<residual_type>::value
     > * = nullptr
   >
 void time_discrete_residual(const fom_states_cont_t & fomStates,
-			    state_type & R,
+			    residual_type & R,
 			    const scalar_type & dt)
 {
-  const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
-  const auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
-
-  auto R_px = R.mutable_unchecked();
-  auto yn_px = fomStateAt_n.unchecked();
-  auto ynm1_px = fomStateAt_nm1.unchecked();
+  auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
+  auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
 
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
   const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
 
-  const auto Rsz = R.size();
-  for (std::size_t i=0; i<(std::size_t)Rsz; ++i){
-    R_px(i) = cn*yn_px(i) + cnm1*ynm1_px(i) + cf*R_px(i);
-  }
-}
-
-/*
- * for python binddings, enable when we have BDF1 and we use custom ops
-*/
-template<
-  typename stepper_tag,
-  typename fom_states_cont_t,
-  typename state_type,
-  typename scalar_type,
-  ::pressio::mpl::enable_if_t<
-    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
-    ::pressio::containers::meta::is_array_pybind11<state_type>::value
-    > * = nullptr
-  >
-void time_discrete_residual(const fom_states_cont_t & fomStates,
-			    state_type & R,
-			    const scalar_type & dt,
-			    const pybind11::object & udOps){
-
-  const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
-  const auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
-  //TODO: this function name will need to be changed to something better
-  udOps.attr("time_discrete_euler")(R, fomStateAt_n, fomStateAt_nm1, dt);
+  // //R = y_n - y_nm1 - dt * R;
+  ::pressio::ops::do_update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
 }
 #endif
 
@@ -214,10 +184,7 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
   auto & y_nm1 = fomStates.getCRefToFomStatePrevStep();
   auto & y_nm2 = fomStates.getCRefToFomStatePrevPrevStep();
   // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
-  ::pressio::ops::do_update(R, cf,
-					fomStateAt_n, cn,
-					y_nm1, cnm1,
-					y_nm2, cnm2);
+  ::pressio::ops::do_update(R, cf, fomStateAt_n, cn, y_nm1, cnm1, y_nm2, cnm2);
 }
 
 

@@ -102,11 +102,12 @@ public:
     return data_(i, j);
   };
 
-  wrapped_type const * dataImpl() const{
+public:
+  wrapped_type const * data() const{
     return &data_;
   }
 
-  wrapped_type * dataImpl(){
+  wrapped_type * data(){
     return &data_;
   }
 

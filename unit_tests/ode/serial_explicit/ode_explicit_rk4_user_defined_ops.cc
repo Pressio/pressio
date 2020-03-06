@@ -26,48 +26,46 @@ public:
 };
 
 
-struct updateOps{
+struct MyOps
+{
   using v_t = std::vector<double>;
 
-  static void do_update(v_t & v, const double c,
+  void do_update(v_t & v, const double c,
   			const v_t & v0, const double a,
-  			const v_t & v1, const double b){
+  			const v_t & v1, const double b) const
+  {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = c*v[i] + a*v0[i] + b*v1[i];
   }
 
-  static void do_update(v_t & v,
+  void do_update(v_t & v,
   			const v_t & v0, const double a,
-  			const v_t & v1, const double b){
+  			const v_t & v1, const double b) const
+  {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = a*v0[i] + b*v1[i];
   }
 
-  static void do_update(v_t & v,
+  void do_update(v_t & v,
 			const v_t & v1, const double b,
 			const v_t & v2, const double c,
 			const v_t & v3, const double d,
-			const v_t & v4, const double e)
+			const v_t & v4, const double e) const
   {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
   }
 
-  static void do_update(v_t & v, const double a,
+  void do_update(v_t & v, const double a,
 			const v_t & v1, const double b,
 			const v_t & v2, const double c,
 			const v_t & v3, const double d,
-			const v_t & v4, const double e)
+			const v_t & v4, const double e) const
   {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
   }
 };
-
-struct myops{
-  using update_op = updateOps;
-};
-
 
 TEST(ode_explicit_rk4, userDefinedOps){
   using namespace pressio;
@@ -83,10 +81,10 @@ TEST(ode_explicit_rk4, userDefinedOps){
   auto yptr = y.data();
   (*yptr)[0] = 1.; (*yptr)[1] = 2.; (*yptr)[2] = 3.;
 
+  MyOps opsObj;
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitEnum::RungeKutta4, state_t, app_t, res_t,
-    double, myops>;
-  stepper_t stepperObj(y, appObj);
+    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, double, MyOps>;
+  stepper_t stepperObj(y, appObj, opsObj);
 
   // integrate in time
   double dt = 0.1;

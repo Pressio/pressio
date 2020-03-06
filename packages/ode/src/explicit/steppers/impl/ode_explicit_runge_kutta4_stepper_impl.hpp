@@ -67,13 +67,6 @@ class ExplicitRungeKutta4StepperImpl<scalar_type,
 				     ops_t>
 {
 
-  static_assert( meta::is_legitimate_explicit_velocity_policy<
-		 velocity_policy_type>::value ||
-		 meta::is_explicit_runge_kutta4_velocity_standard_policy<
-		 velocity_policy_type>::value,
-"EXPLICIT RUNGEKUTTA4 VELOCITY_POLICY NOT ADMISSIBLE, \
-MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
-
   using this_t = ExplicitRungeKutta4StepperImpl< scalar_type,
 						 state_type, system_type,
 						 velocity_type,
@@ -89,16 +82,26 @@ MAYBE NOT A CHILD OF ITS BASE OR DERIVING FROM WRONG BASE");
   velocity_storage_t veloAuxStorage_;
   system_wrapper_t sys_;
   const velocity_policy_type & policy_;
+  const ops_t * udOps_ = nullptr;
 
 public:
+  template <typename _ops_t = ops_t, mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr>
   ExplicitRungeKutta4StepperImpl(const system_type & model,
   				 const velocity_policy_type & policy_obj,
   				 const state_type & stateIn0,
   				 const velocity_type & f0)
-    : stateAuxStorage_{stateIn0},
-      veloAuxStorage_{f0},
-      sys_{model},
-      policy_{policy_obj}{}
+    : stateAuxStorage_{stateIn0}, veloAuxStorage_{f0}, sys_{model}, policy_{policy_obj}
+  {}
+
+  template <typename _ops_t = ops_t, mpl::enable_if_t< !std::is_void<_ops_t>::value > * = nullptr>
+  ExplicitRungeKutta4StepperImpl(const system_type & model,
+  				 const velocity_policy_type & policy_obj,
+  				 const state_type & stateIn0,
+  				 const velocity_type & f0,
+				 const _ops_t & udOps)
+    : stateAuxStorage_{stateIn0}, veloAuxStorage_{f0}, sys_{model},
+      policy_{policy_obj}, udOps_{&udOps}
+  {}
 
   ExplicitRungeKutta4StepperImpl() = delete;
   ~ExplicitRungeKutta4StepperImpl() = default;
@@ -151,87 +154,54 @@ public:
   }//end doStep
 
 private:
-  /* user defined ops are void, use those from containers */
-  template<
-    typename rhs_t,
-    typename _state_type = state_type,
-    typename _ops_t = ops_t,
-    mpl::enable_if_t<
-      std::is_void<_ops_t>::value
-      > * = nullptr
-  >
-  void stage_update_impl(_state_type & yIn,
-			 const _state_type & stateIn,
+  /* use pressio ops  */
+  template<typename rhs_t, typename _ops_t = ops_t>
+  mpl::enable_if_t<std::is_void<_ops_t>::value>
+  stage_update_impl(state_type & yIn,
+			 const state_type & stateIn,
 			 const rhs_t & rhsIn,
-			 scalar_type dtValue){
+			 scalar_type dtValue)
+  {
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
     ::pressio::ops::do_update(yIn, stateIn, one, rhsIn, dtValue);
   }
 
+  template<typename rhs_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< std::is_void<_ops_t>::value >
+  stage_update_impl(state_type & stateIn,
+			 const rhs_t & rhsIn0, const rhs_t & rhsIn1,
+			 const rhs_t & rhsIn2, const rhs_t & rhsIn3,
+			 scalar_type dt6, scalar_type dt3)
+  {
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+    ::pressio::ops::do_update(stateIn, one, rhsIn0, dt6, rhsIn1,
+			      dt3, rhsIn2, dt3, rhsIn3, dt6);
+  }
+  // -------------------------------------------------------
+
   /* with user defined ops */
-  template<
-    typename rhs_t,
-    typename _state_type = state_type,
-    typename _ops_t = ops_t,
-    mpl::enable_if_t<
-      ::pressio::containers::meta::is_wrapper<_state_type>::value and
-      !std::is_void<_ops_t>::value
-      > * = nullptr
-  >
-  void stage_update_impl(_state_type & yIn,
-			 const _state_type & stateIn,
+  template<typename rhs_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< !std::is_void<_ops_t>::value >
+  stage_update_impl(state_type & yIn,
+			 const state_type & stateIn,
 			 const rhs_t & rhsIn,
-			 scalar_type dtValue){
+			 scalar_type dtValue)
+  {
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    using op = typename ops_t::update_op;
-    op::do_update(*yIn.data(), *stateIn.data(), one, *rhsIn.data(), dtValue);
+    udOps_->do_update(*yIn.data(), *stateIn.data(), one, *rhsIn.data(), dtValue);
   }
 
-  /* user defined ops are void, use those from containers */
-  template<
-    typename rhs_t,
-    typename _state_type = state_type,
-    typename _ops_t = ops_t,
-    mpl::enable_if_t<
-      std::is_void<_ops_t>::value
-      > * = nullptr
-  >
-  void stage_update_impl(_state_type & stateIn,
-			 const rhs_t & rhsIn0,
-			 const rhs_t & rhsIn1,
-			 const rhs_t & rhsIn2,
-			 const rhs_t & rhsIn3,
-			 scalar_type dt6,
-			 scalar_type dt3){
+  template<typename rhs_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< !std::is_void<_ops_t>::value >
+  stage_update_impl(state_type & stateIn,
+			 const rhs_t & rhsIn0, const rhs_t & rhsIn1,
+			 const rhs_t & rhsIn2, const rhs_t & rhsIn3,
+			 scalar_type dt6, scalar_type dt3)
+  {
     constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    ::pressio::ops::do_update(stateIn, one, rhsIn0, dt6,
-					  rhsIn1, dt3, rhsIn2, dt3,
-					  rhsIn3, dt6);
-  }
-
-  /* user defined ops */
-  template<
-    typename rhs_t,
-    typename _state_type = state_type,
-    typename _ops_t = ops_t,
-    mpl::enable_if_t<
-      ::pressio::containers::meta::is_wrapper<_state_type>::value and
-      !std::is_void<_ops_t>::value
-      > * = nullptr
-  >
-  void stage_update_impl(_state_type & stateIn,
-			 const rhs_t & rhsIn0,
-			 const rhs_t & rhsIn1,
-			 const rhs_t & rhsIn2,
-			 const rhs_t & rhsIn3,
-			 scalar_type dt6,
-			 scalar_type dt3){
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-    using op = typename ops_t::update_op;
-    op::do_update(*stateIn.data(), one, *rhsIn0.data(),
-		  dt6, *rhsIn1.data(),
-		  dt3, *rhsIn2.data(),
-		  dt3, *rhsIn3.data(), dt6);
+    udOps_->do_update(*stateIn.data(), one, *rhsIn0.data(),
+		     dt6, *rhsIn1.data(), dt3, *rhsIn2.data(),
+		     dt3, *rhsIn3.data(), dt6);
   }
 }; //end class
 

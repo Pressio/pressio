@@ -60,7 +60,7 @@ class ContainerDistributedBase : public ContainerBase<derived_type>
 
 public:
   LO_t extentLocal(std::size_t i) const{
-    return static_cast<derived_type const *>(this)->extentLocalImpl(i);
+    return static_cast<derived_type const *>(this)->extentLocal(i);
   }
 
 private:

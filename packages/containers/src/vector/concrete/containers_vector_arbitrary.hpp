@@ -90,6 +90,7 @@ public:
   Vector(Vector const & other)
     : data_(*other.data()){}
 
+public:
   size_t extent(size_t k) const{
     return data_.extent(k);
   }
@@ -101,11 +102,11 @@ public:
     return data_(i);
   };
 
-  wrapped_type const * dataImpl() const{
+  wrapped_type const * data() const{
     return &data_;
   }
 
-  wrapped_type * dataImpl(){
+  wrapped_type * data(){
     return &data_;
   }
 

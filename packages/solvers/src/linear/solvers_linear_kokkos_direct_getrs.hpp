@@ -64,11 +64,7 @@ namespace pressio { namespace solvers { namespace direct{
 
 template<typename MatrixT>
 class KokkosDirect<::pressio::solvers::linear::direct::getrs, MatrixT>
-  : public LinearBase<
-  ::pressio::solvers::linear::direct::getrs,
-  MatrixT,
-  KokkosDirect<::pressio::solvers::linear::direct::getrs, MatrixT>
-  >
+  : public LinearBase<MatrixT, KokkosDirect<::pressio::solvers::linear::direct::getrs, MatrixT>>
 {
 public:
   static_assert( ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
@@ -82,7 +78,7 @@ public:
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
   using exe_space       = typename containers::details::traits<MatrixT>::execution_space;
 
-  using base_t  = LinearBase<solver_t, MatrixT, this_t>;
+  using base_t  = LinearBase<MatrixT, this_t>;
   using solver_traits   = linear::details::traits<solver_t>;
 
   static_assert( solver_traits::kokkos_enabled == true,

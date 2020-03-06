@@ -19,7 +19,7 @@ TEST(ode_explicit_rk4, traits){
    not ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
 
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitEnum::RungeKutta4, state_t, app_t, res_t, double>;
+    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, double>;
 
   using traits = ode::details::traits<stepper_t>;
   static_assert(ode::meta::is_explicit_euler_velocity_standard_policy<
@@ -50,7 +50,7 @@ TEST(ode_explicit_rk4,
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitEnum::RungeKutta4, state_t, app_t, res_t, double>;
+    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, double>;
   stepper_t stepperObj(y, appObj);
 
   // // integrate in time
@@ -86,7 +86,7 @@ TEST(ode_explicit_rk4,
     state_t, app_t, res_t>;
   res_std_pol_t polObj;
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitEnum::RungeKutta4, state_t,
+    ode::explicitmethods::RungeKutta4, state_t,
     app_t, res_t, res_std_pol_t, double>;
   stepper_t stepperObj(y, appObj, polObj);
 

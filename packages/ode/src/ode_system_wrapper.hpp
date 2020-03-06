@@ -49,11 +49,6 @@
 #ifndef ODE_SYSTEM_WRAPPER_HPP_
 #define ODE_SYSTEM_WRAPPER_HPP_
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include <pybind11/pybind11.h>
-#include <pybind11/functional.h>
-#endif
-
 namespace pressio{ namespace ode{ namespace impl{
 
 template<

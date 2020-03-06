@@ -58,37 +58,31 @@ template <
   typename ops_t
   >
 struct LinearDecoderWithCustomOps
-  : public DecoderBase<
-  LinearDecoderWithCustomOps<matrix_type, rom_state_type, fom_state_type, ops_t>,
-  matrix_type, rom_state_type, fom_state_type>
 {
-
-  using this_t	    = LinearDecoderWithCustomOps<matrix_type, rom_state_type, fom_state_type, ops_t>;
-  using base_t	    = DecoderBase<this_t, matrix_type, rom_state_type, fom_state_type>;
-  using jacobian_t  = matrix_type;
-  using rom_state_t = rom_state_type;
-  using fom_state_t = fom_state_type;
+  using jacobian_type  = matrix_type;
 
 private:
-  friend base_t;
+  using scalar_t   = typename ::pressio::containers::details::traits<rom_state_type>::scalar_t;
   matrix_type phi_ = {};
+  const ops_t & udOps_;
 
 public:
   LinearDecoderWithCustomOps() = delete;
-  LinearDecoderWithCustomOps(const jacobian_t & matIn) : phi_(matIn){}
+  LinearDecoderWithCustomOps(const jacobian_type & matIn, const ops_t & udOps)
+    : phi_(matIn), udOps_{udOps}{}
 
-private:
   template <typename operand_t>
-  void applyMappingImpl(const operand_t & operandObj, fom_state_type & resultObj) const
+  void applyMapping(const operand_t & operand, fom_state_type & result) const
   {
-    ops_t::template product<operand_t>(*phi_.data(), operandObj, *resultObj.data());
+    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    udOps_.product(::pressio::nontranspose(), one, *phi_.data(), operand, zero, *result.data());
   }
 
-  const jacobian_t & getReferenceToJacobianImpl() const{
+  const jacobian_type & getReferenceToJacobian() const{
     return phi_;
   }
 };//end
-
 
 }}}//end namespace pressio::rom::impl
 #endif

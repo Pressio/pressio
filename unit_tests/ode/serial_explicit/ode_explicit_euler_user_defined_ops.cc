@@ -26,34 +26,23 @@ public:
 };
 
 template <typename scalar_t>
-struct updateOps{
+struct MyOps
+{
   using v_t = std::vector<scalar_t>;
 
-  static void do_update(v_t & v, const v_t & v1, const scalar_t b){
+  void do_update(v_t & v, const v_t & v1, const scalar_t b) const
+  {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = b*v1[i];
   }
 
-  static void do_update(v_t & v, const scalar_t a,
-			const v_t & v1, const scalar_t b){
+  void do_update(v_t & v, const scalar_t a,
+			const v_t & v1, const scalar_t b) const
+  {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = a*v[i] + b*v1[i];
   }
 };
-
-template <typename scalar_t>
-struct myops{
-  // update_op is all you need to provide for explicit
-  // time integration. This type that pressio will detect for doing
-  // operations like vector additions.
-  using update_op = updateOps<scalar_t>;
-
-  // ... this might contains other types defining how to do
-  // other operations different in nature.
-  // for example how to do mat-vec products.
-  // this will be addressed in a later tutorial.
-};
-
 
 TEST(ode_explicit_euler, userDefinedOps){
   using namespace pressio;
@@ -70,10 +59,12 @@ TEST(ode_explicit_euler, userDefinedOps){
   auto yptr = y.data();
   (*yptr)[0] = 1.; (*yptr)[1] = 2.; (*yptr)[2] = 3.;
 
+  using ops_t = MyOps<scalar_t>;
+  ops_t myOps;
+  using ode_tag = pressio::ode::explicitmethods::Euler;
   using stepper_t = ode::ExplicitStepper<
-    ode::ExplicitEnum::Euler, state_t, app_t, res_t,
-    double, myops<scalar_t>>;
-  stepper_t stepperObj(y, appObj);
+    ode_tag, state_t, app_t, res_t, scalar_t, ops_t>;
+  stepper_t stepperObj(y, appObj, myOps);
 
   // integrate in time
   double dt = 0.1;

@@ -56,7 +56,8 @@ template<
   typename wls_state_type,
   typename decoder_t,
   typename ode_tag,
-  typename hessian_t
+  typename hessian_t,
+  typename hessian_matrix_structure_tag
   >
 class SystemHessianGradientApi{
 
@@ -72,10 +73,10 @@ public:
   using fom_native_state_t	= typename fom_type::state_type;
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
   using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<scalar_type, fom_state_t, decoder_t>;
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
+  using decoder_jac_t		= typename decoder_t::jacobian_type;
 
   // policy type (here policy knows how to compute hessian and gradient)
-  using hessian_gradient_pol_t	= ::pressio::rom::wls::HessianGradientSequentialPolicy<fom_type,decoder_t>;
+  using hessian_gradient_pol_t	= ::pressio::rom::wls::HessianGradientSequentialPolicy<fom_type,decoder_t,hessian_matrix_structure_tag>;
 
   // information on stencil width, time discrete resiudal, time discrete jacobian, etc.
   using time_stencil_t = ::pressio::rom::wls::timeschemes::timescheme_t<ode_tag, fom_state_t, wls_state_type>;
@@ -146,7 +147,7 @@ public:
       ::pressio::mpl::publicly_inherits_from<
 	linear_solver_type,
 	::pressio::solvers::LinearBase<
-	  typename linear_solver_type::solver_t, typename linear_solver_type::matrix_type, linear_solver_type
+	  typename linear_solver_type::matrix_type, linear_solver_type
 	  >
 	>::value
       > * = nullptr

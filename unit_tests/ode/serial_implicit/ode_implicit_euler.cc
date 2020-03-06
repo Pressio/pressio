@@ -27,7 +27,7 @@ TEST(ode_implicit_euler, traits){
   //   state_t, app_t, jac_t>;
 
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
+    ode::implicitmethods::Euler,
     state_t, res_t, jac_t, app_t, void>; /*aux stepper NOT needed for backEuler*/
 
   using traits = ode::details::traits<stepper_t>;
@@ -67,7 +67,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   *y.data() = appObj.getInitCond();
 
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
+    ode::implicitmethods::Euler,
     state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
@@ -107,7 +107,7 @@ TEST(ode_implicit_euler, guesserLambda){
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
+    ode::implicitmethods::Euler,
     state_t, res_t, jac_t, app_t>; /*aux stepper NOT needed for backEuler*/
   stepper_t stepperObj(y, appObj);
 
@@ -158,7 +158,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   using jac_pol_t = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, app_t, jac_t>;
 
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
+    ode::implicitmethods::Euler,
     state_t, res_t, jac_t, app_t, void, /*aux stepper NOT needed for backEuler*/
     res_pol_t, jac_pol_t>;
   stepper_t stepperObj(y, appObj, res_pol_t(), jac_pol_t());
@@ -208,7 +208,7 @@ TEST(ode_implicit_euler, numericsUserResidualDefaultJac){
     state_t, app_t, res_t>;
 
   using stepper_t = ode::ImplicitStepper<
-    ode::ImplicitEnum::Euler,
+    ode::implicitmethods::Euler,
     state_t, res_t, jac_t, app_t,
     void, /*because aux stepper NOT needed for backEuler*/
     res_pol_t>;

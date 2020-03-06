@@ -57,40 +57,35 @@ template <
   typename fom_state_type
   >
 struct LinearDecoderWithPressioOps
-  : public DecoderBase<
-  LinearDecoderWithPressioOps<matrix_type, rom_state_type, fom_state_type>,
-  matrix_type, rom_state_type, fom_state_type>
 {
-
-  using this_t	    = LinearDecoderWithPressioOps<matrix_type, rom_state_type, fom_state_type>;
-  using base_t	    = DecoderBase<this_t, matrix_type, rom_state_type, fom_state_type>;
-  using jacobian_t  = matrix_type;
-  using rom_state_t = rom_state_type;
-  using fom_state_t = fom_state_type;
-  using scalar_t    = typename ::pressio::containers::details::traits<rom_state_t>::scalar_t;
+  using jacobian_type  = matrix_type;
 
 private:
-  friend base_t;
+  using scalar_t	  = typename ::pressio::containers::details::traits<rom_state_type>::scalar_t;
+  using jacobian_native_t = typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
+  using fom_native_t	  = typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t;
+
   matrix_type phi_ = {};
 
 public:
   LinearDecoderWithPressioOps() = delete;
-  LinearDecoderWithPressioOps(const jacobian_t & matIn) : phi_(matIn){}
+  LinearDecoderWithPressioOps(const jacobian_type & matIn) : phi_(matIn){}
+  LinearDecoderWithPressioOps(const jacobian_native_t & matIn) : phi_(matIn){}
 
-private:
-  template <typename operand_t>
-  void applyMappingImpl(const operand_t & operand, fom_state_type & result) const
+  // applyMapping is templated because operand_t can be rom_state_type but
+  // can also be an expression based on rom_state_type (e.g. for WLS)
+  template <typename operand_t, typename fom_state_t = fom_state_type>
+  void applyMapping(const operand_t & operand, fom_state_t & result) const
   {
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
     ::pressio::ops::product(::pressio::nontranspose(), one, phi_, operand, zero, result);
   }
 
-  const jacobian_t & getReferenceToJacobianImpl() const{
+  const jacobian_type & getReferenceToJacobian() const{
     return phi_;
   }
 };//end
-
 
 }}}//end namespace pressio::rom::impl
 #endif

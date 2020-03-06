@@ -82,9 +82,7 @@
 #include "ode/src/explicit/meta/ode_is_legitimate_model_for_explicit_ode.hpp"
 #include "ode/src/explicit/meta/ode_is_valid_user_defined_ops_for_explicit_euler.hpp"
 #include "ode/src/explicit/meta/ode_is_valid_user_defined_ops_for_explicit_rk4.hpp"
-#include "ode/src/explicit/meta/ode_is_valid_user_defined_ops_for_explicit_ode.hpp"
 
-#include "ode/src/explicit/policies/ode_explicit_velocity_policy_base.hpp"
 #include "ode/src/explicit/policies/ode_is_legitimate_explicit_velocity_policy.hpp"
 #include "ode/src/explicit/policies/ode_explicit_velocity_standard_policy.hpp"
 #include "ode/src/explicit/policies/ode_is_explicit_euler_velocity_standard_policy.hpp"

@@ -95,18 +95,17 @@ public:
     return data_[icol][irow];
   }
 
-  wrap_t const * dataImpl() const{
+public:
+  wrap_t const * data() const{
     return &data_;
   }
 
-  wrap_t * dataImpl(){
+  wrap_t * data(){
     return &data_;
   }
 
 private:
   friend MatrixDistributedBase< this_t >;
-
-private:
   wrap_t data_ = {};
 
 };//end class

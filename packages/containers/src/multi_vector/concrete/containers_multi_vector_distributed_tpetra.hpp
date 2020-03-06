@@ -76,7 +76,7 @@ private:
   using mpicomm_t = typename details::traits<this_t>::communicator_t;
 
 public:
-  MultiVector() = delete;
+  MultiVector() = default;
 
   MultiVector(Teuchos::RCP<const map_t> mapobj, GO_t numVectors)
     : data_(mapobj, numVectors){}
@@ -123,28 +123,24 @@ public:
     return *this;
   }
 
-  void print(std::string tag) const{
-    Tpetra::MatrixMarket::Writer<wrap_t>::writeDense
-      (std::cout << std::setprecision(15), data_, tag, tag);
-  }
-
-  wrap_t const * dataImpl() const{
+public:
+  wrap_t const * data() const{
     return &data_;
   }
 
-  wrap_t * dataImpl(){
+  wrap_t * data(){
     return &data_;
   }
 
-  GO_t numVectorsImpl() const{
+  GO_t numVectors() const{
     return data_.getNumVectors();
   }
 
-  GO_t numVectorsGlobalImpl() const{
+  GO_t numVectorsGlobal() const{
     return data_.getNumVectors();
   }
 
-  LO_t numVectorsLocalImpl() const{
+  LO_t numVectorsLocal() const{
     // it is the same because epetra multivectors
     // are distributed on data, but each process owns
     // a part of each vector
@@ -152,21 +148,19 @@ public:
   }
 
   // for distributed objects, extent return the global extent
-  GO_t extentImpl(std::size_t i) const{
+  GO_t extent(std::size_t i) const{
     assert(i<=1);
     return (i==0) ? data_.getGlobalLength() : data_.getNumVectors();
   }
 
-  LO_t extentLocalImpl(std::size_t i) const{
-    // each process owns all cols 
+  LO_t extentLocal(std::size_t i) const{
+    // each process owns all cols
     assert(i<=1);
     return (i==0) ? data_.getLocalLength() : data_.getNumVectors();
   }
 
 private:
   friend MultiVectorDistributedBase< this_t >;
-
-private:
   wrap_t data_ = {};
 
 };//end class

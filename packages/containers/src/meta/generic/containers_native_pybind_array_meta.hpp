@@ -50,17 +50,11 @@
 #ifndef CONTAINERS_NATIVE_PYBIND11_ARRAY_HPP_
 #define CONTAINERS_NATIVE_PYBIND11_ARRAY_HPP_
 
-#include <pybind11/pybind11.h>
-#include <pybind11/eigen.h>
-#include <pybind11/numpy.h>
-
 namespace pressio{ namespace containers{ namespace meta {
 
 /*
  * this metafunction is here because a pybind11::array_t
  * can have arbitrary size since it maps to numpy.
- * And I don't know yet if a pybind11::array_t can be
- * checked at compile time to be a vector or matrix
  */
 
 template <typename T, typename enable = void>
@@ -112,6 +106,15 @@ struct is_array_pybind11<
     >
   > : std::true_type{};
 
+
+template <typename T>
+using is_array_pybind = is_array_pybind11<T>;
+
+template <typename T>
+using is_cstyle_array_pybind = is_cstyle_array_pybind11<T>;
+
+template <typename T>
+using is_fstyle_array_pybind = is_fstyle_array_pybind11<T>;
 
 }}}//end namespace pressio::containers::meta
 #endif

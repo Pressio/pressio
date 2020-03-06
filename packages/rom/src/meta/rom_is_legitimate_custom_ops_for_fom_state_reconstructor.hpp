@@ -66,13 +66,13 @@ template <
 struct is_legitimate_custom_ops_for_fom_state_reconstructor<
   T, fom_state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::meta::has_static_method_deep_copy<
+    ::pressio::ops::meta::has_method_deep_copy<
       T,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
       >::value
     and
-    ::pressio::rom::meta::has_static_method_axpy<
+    ::pressio::ops::meta::has_method_axpy<
       T,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,

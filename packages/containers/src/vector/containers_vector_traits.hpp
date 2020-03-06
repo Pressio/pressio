@@ -61,6 +61,9 @@ struct traits<
     wrapped_type,
     mpl::enable_if_t<
       !containers::meta::is_vector_eigen<wrapped_type>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      and !containers::meta::is_array_pybind<wrapped_type>::value
+#endif
 #ifdef PRESSIO_ENABLE_TPL_ARMADILLO
       and !containers::meta::is_vector_armadillo<wrapped_type>::value
 #endif
@@ -172,7 +175,7 @@ struct traits<Vector<wrapped_type,
   using size_t    = ordinal_t;
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
-  
+
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 
@@ -396,7 +399,7 @@ struct traits<Vector<wrapped_type,
   using data_return_t = wrapped_type *;
   using size_t    = int;
   using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;  
+  using const_reference_t = scalar_t const &;
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
 };
@@ -534,7 +537,7 @@ struct traits<Vector<wrapped_type,
   using memory_traits	   = typename wrapped_type::traits::memory_traits;
   using host_mirror_space  = typename wrapped_type::traits::host_mirror_space;
   using host_mirror_t      = typename wrapped_type::host_mirror_type;
-  
+
   using span_ret_t	   = expressions::SpanExpr<Vector<wrapped_type>>;
   using span_const_ret_t   = expressions::SpanExpr<const Vector<wrapped_type>>;
 
@@ -611,13 +614,58 @@ struct traits<
   using device_t = typename wrapped_type::device_type;
   using device_mem_space_t = typename device_t::memory_space;
   using device_exec_space_t = typename device_t::execution_space;
-  // store types for host  
+  // store types for host
   using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
   using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
   using communicator_t = decltype(std::declval<data_map_t>().getComm());
 };
 #endif
 
+
+
+//*******************************
+// Pybind array
+//*******************************
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename wrapped_type>
+struct traits<
+  Vector<
+    wrapped_type,
+    mpl::enable_if_t<
+      containers::meta::is_array_pybind<wrapped_type>::value
+      >
+    >
+  >
+  : public containers_shared_traits<Vector<wrapped_type>,
+				    wrapped_type,
+				    true, false, false,
+				    WrappedPackageIdentifier::Pybind,
+				    true>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::Pybind;
+
+  using scalar_t	 = typename wrapped_type::value_type;
+  using ordinal_t	 = std::size_t;
+  using size_t		 = ordinal_t;
+
+  using mut_proxy_t = decltype( std::declval<wrapped_type &>().mutable_unchecked() );
+  using proxy_t	    = decltype( std::declval<const wrapped_type &>().unchecked() );
+
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+
+  using reference_t = scalar_t &;
+  using const_reference_t = scalar_t const &;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
+  // using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
+  // using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;
+};
+#endif
 
 }}}//end namespace pressio::containers::details
 #endif

@@ -62,9 +62,5 @@ struct is_vector_wrapper<T,
 	     >::type
 	   > : std::true_type{};
 
-#define STATIC_ASSERT_IS_CONTAINERS_VECTOR_WRAPPER(TYPE) \
-  static_assert( containers::meta::is_vector_wrapper<TYPE>::value, \
-		 "THIS_IS_NOT_A_CONTAINERS_VECTOR_WRAPPER")
-
 }}}//end namespace pressio::containers::meta
 #endif

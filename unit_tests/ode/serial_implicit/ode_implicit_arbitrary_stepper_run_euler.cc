@@ -171,7 +171,7 @@ struct Bdf1Solver
   using res_t		= ::pressio::containers::Vector<nveloc_t>;
   using jac_t		= ::pressio::containers::Matrix<njacobian_t>;
 
-  using stepper_t = ::pressio::ode::ImplicitStepper<::pressio::ode::ImplicitEnum::Euler,
+  using stepper_t = ::pressio::ode::ImplicitStepper<::pressio::ode::implicitmethods::Euler,
 						    state_t, res_t, jac_t, app_t>;
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
@@ -210,7 +210,7 @@ struct CustomBdf1Solver
 
   using my_custom_order = ::pressio::ode::types::StepperOrder<1>;
   using my_num_states	= ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-  using stepper_t = ::pressio::ode::ImplicitStepper<::pressio::ode::ImplicitEnum::Arbitrary,
+  using stepper_t = ::pressio::ode::ImplicitStepper<::pressio::ode::implicitmethods::Arbitrary,
 						    state_t, res_t, jac_t, app_t,
 						    my_custom_order, my_num_states>;
 

@@ -6,8 +6,7 @@ using eigdmat_t = Eigen::MatrixXd;
 using myMV_t = pressio::containers::MultiVector<eigdmat_t>;
 
 
-TEST(ops_multi_vector_serial_eigen_dynamic_class,
-     productWithEigenVector){
+TEST(ops_multi_vector_prod_vector, productWithEigenVector){
 
   //construct multivector
   myMV_t A(6,3);

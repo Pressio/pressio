@@ -51,12 +51,53 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
-template < bool doingPython, typename galerkin_state_type, typename ...Args >
-struct GalerkinCommonTypes;
+template <typename fom_t, typename galerkin_state_t, typename enable = void>
+struct ExtractNativeHelper;
+
+template <typename fom_t, typename galerkin_state_t>
+struct ExtractNativeHelper<
+  fom_t, galerkin_state_t,
+  mpl::enable_if_t<
+    ::pressio::rom::meta::is_legitimate_model_for_galerkin<fom_t>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    and !::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
+#endif
+    >
+  >
+{
+  using fom_native_state_t    = typename fom_t::state_type;
+  using fom_native_velocity_t = typename fom_t::velocity_type;
+};
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename fom_t, typename galerkin_state_t>
+struct ExtractNativeHelper<
+  fom_t, galerkin_state_t,
+  mpl::enable_if_t<
+    ::pressio::rom::meta::is_legitimate_model_for_galerkin<fom_t>::value
+    and ::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
+    >
+  >
+{
+  using fom_native_state_t    = typename ::pressio::containers::details::traits<galerkin_state_t>::wrapped_t;
+  using fom_native_velocity_t = typename ::pressio::containers::details::traits<galerkin_state_t>::wrapped_t;
+};
+#endif
+// ------------------------------------------------------------------------------------
 
 template < typename galerkin_state_type, typename ...Args >
-struct GalerkinCommonTypes<false, galerkin_state_type, Args...>
+struct GalerkinCommonTypes
 {
+  // the scalar type
+  using scalar_t = typename ::pressio::containers::details::traits<galerkin_state_type>::scalar_t;
+
+  // rom state type and native type
+  using galerkin_state_t	= galerkin_state_type;
+  using galerkin_native_state_t	= typename ::pressio::containers::details::traits<galerkin_state_t>::wrapped_t;
+
+  // the Galerkin rhs type is (for now) same as state type
+  using galerkin_residual_t	= galerkin_state_t;
+
   // verify that args contains a valid fom/adapter type for Galerkin
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::rom::meta::is_legitimate_model_for_galerkin, Args...>;
@@ -64,98 +105,31 @@ struct GalerkinCommonTypes<false, galerkin_state_type, Args...>
   static_assert(!std::is_void<fom_t>::value and ic1::value < sizeof... (Args),
 		"A valid adapter/fom type must be passed to define a ROM Galerkin problem");
 
-  // get the native types from the full-order model (fom)
-  using scalar_t		= typename fom_t::scalar_type;
-  using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_velocity_t	= typename fom_t::velocity_type;
-
-  // declare fom wrapper types
+  // get the native types
+  using fom_native_state_t	= typename ExtractNativeHelper<fom_t, galerkin_state_t>::fom_native_state_t;
+  using fom_native_velocity_t	= typename ExtractNativeHelper<fom_t, galerkin_state_t>::fom_native_velocity_t;
+  // declare wrapper types
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
   using fom_velocity_t		= ::pressio::containers::Vector<fom_native_velocity_t>;
 
-  // rom state type (passed in)
-  using galerkin_state_t	= galerkin_state_type;
-
-  // the GALERKIN rhs type is (for now) same as state type
-  using galerkin_residual_t	= galerkin_state_type;
-
   // verify the sequence contains a valid decoder type
-  using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
+  using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
+    galerkin_state_type, fom_state_t, ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
   using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
   static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
 		"A valid decoder type must be passed to define a ROM Galerkin problem");
-  using decoder_jac_t		= typename decoder_t::jacobian_t;
+  using decoder_jac_t = typename decoder_t::jacobian_type;
+
 
   // fom state reconstructor type
   using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
-
-  // class type holding fom states data
-  using fom_states_data =
-    ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;
 
   // for now, set ops to void, i.e. we only use pressio ops
   using ud_ops_t = void;
-};
-
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template < typename galerkin_state_type, typename fom_type, typename decoder_type, typename ud_ops_type>
-struct GalerkinCommonTypes<true, galerkin_state_type, fom_type, decoder_type, ud_ops_type>
-{
-
-  // verify that we have a valid decoder type
-  static_assert( ::pressio::rom::meta::is_legitimate_decoder_type<decoder_type>::value,
-		"A valid decoder type must be passed to define a Galerkin problem for Python bindings. \
-The type detected does not meet the requirements.");
-  using decoder_t		= decoder_type;
-  using decoder_jac_t		= typename decoder_type::jacobian_t;
-  // // verify the sequence contains a valid decoder type
-  // using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-  //   ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
-  // using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
-  // static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
-  // 		"A valid decoder type must be passed to define a ROM Galerkin problem");
-  // using decoder_jac_t		= typename decoder_t::jacobian_t;
-
-  // verify that we have a valid fom_t
-  static_assert( ::pressio::rom::meta::is_legitimate_model_for_galerkin<fom_type>::value,
-		 "The adapter/fom type must be a pybind11::object to be valid for making python \
-bindings to Galerkin");
-  using fom_t = fom_type;
-
-  // // verify that args contains a valid fom/adapter type for Galerkin
-  // using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-  //   ::pressio::rom::meta::is_legitimate_model_for_galerkin, Args...>;
-  // using fom_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
-  // static_assert(mpl::is_same<fom_t, pybind11::object>::value,
-  // 		"The adapter/fom type must be a pybind11::object to be valid for interfacing to Python");
-
-  // rom state type
-  using galerkin_state_t	= galerkin_state_type;
-
-  // declare fom wrapper types
-  using fom_state_t		= galerkin_state_t;
-  using fom_velocity_t		= galerkin_state_t;
-
-  // the GALERKIN residual type is (for now) same as state type
-  using galerkin_residual_t	= galerkin_state_t;
-
-  // the native types
-  using scalar_t		= typename decoder_t::scalar_t;
-  using fom_native_state_t	= galerkin_state_t;
-  using fom_native_velocity_t	= galerkin_state_t;
-
-  // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t>;
-
-  // the type of user defined ops
-  using ud_ops_t = ud_ops_type;
+  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t, ud_ops_t>;
 };
-#endif
 
 }}}}//end  namespace pressio::rom::galerkin::impl
 #endif

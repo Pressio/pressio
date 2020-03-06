@@ -34,14 +34,14 @@ int main(int argc, char *argv[]){
 
   // define auxiliary stepper
   using aux_stepper_t = pressio::ode::ImplicitStepper<
-    pressio::ode::ImplicitEnum::Euler,
+    pressio::ode::implicitmethods::Euler,
     ode_state_t, ode_res_t, ode_jac_t, app_t>;
   aux_stepper_t stepperAux(y, appObj);
 
   // nonimal stepper
-  constexpr auto ode_case = pressio::ode::ImplicitEnum::BDF2;
+  using ode_tag = pressio::ode::implicitmethods::BDF2;
   using stepper_t = pressio::ode::ImplicitStepper<
-    ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t, aux_stepper_t>;
+    ode_tag, ode_state_t, ode_res_t, ode_jac_t, app_t, aux_stepper_t>;
   stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver

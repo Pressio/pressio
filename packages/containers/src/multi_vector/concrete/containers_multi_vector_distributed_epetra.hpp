@@ -112,28 +112,24 @@ public:
     return *this;
   }
 
-  void print(std::string tag) const{
-    ::pressio::utils::io::print_stdout(tag, utils::io::reset());
-    data_.Print(std::cout);
-  }
-
-  wrap_t const * dataImpl() const{
+public:
+  wrap_t const * data() const{
     return &data_;
   }
 
-  wrap_t * dataImpl(){
+  wrap_t * data(){
     return &data_;
   }
 
-  GO_t numVectorsImpl() const{
+  GO_t numVectors() const{
     return data_.NumVectors();
   }
 
-  GO_t numVectorsGlobalImpl() const{
+  GO_t numVectorsGlobal() const{
     return data_.NumVectors();
   }
 
-  LO_t numVectorsLocalImpl() const{
+  LO_t numVectorsLocal() const{
     // it is the same because epetra multivectors
     // are distributed on data, but each process owns
     // a part of each vector
@@ -141,12 +137,12 @@ public:
   }
 
   // for distributed objects, extent return the global extent
-  GO_t extentImpl(std::size_t i) const{
+  GO_t extent(std::size_t i) const{
     assert(i<=1);
     return (i==0) ? data_.GlobalLength() : data_.NumVectors();
   }
 
-  LO_t extentLocalImpl(std::size_t i) const{
+  LO_t extentLocal(std::size_t i) const{
     // each process owns all cols
     assert(i<=1);
     return (i==0) ? data_.MyLength() : data_.NumVectors();
@@ -154,8 +150,6 @@ public:
 
 private:
   friend MultiVectorDistributedBase< this_t >;
-
-private:
   wrap_t data_ = {};
 
 };//end class

@@ -51,20 +51,47 @@
 
 namespace pressio{ namespace ode{ namespace meta {
 
-template<typename policy_t, typename enable = void>
+template<
+  typename T,
+  typename scalar_t, typename state_t, typename velocity_t, typename model_t,
+  typename enable = void
+  >
 struct is_legitimate_explicit_velocity_policy
   : std::false_type{};
 
-template <typename policy_t>
+template<
+  typename T,
+  typename scalar_t, typename state_t, typename velocity_t, typename model_t
+  >
 struct is_legitimate_explicit_velocity_policy<
-  policy_t,
-  typename std::enable_if<
-    // TODO: detect operator ()
-    ::pressio::mpl::publicly_inherits_from<
-      policy_t,
-      ::pressio::ode::explicitmethods::policy::VelocityPolicyBase<policy_t>
+  T, scalar_t, state_t, velocity_t, model_t,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>().template operator()
+       (
+	std::declval<state_t const &>(),
+	std::declval<velocity_t &>(),
+	std::declval<model_t const &>(),
+	std::declval<scalar_t const &>()
+	)
+       )
       >::value
-    >::type
+    and
+    std::is_same<
+      decltype
+      (
+       std::declval<T const>().template operator()
+       (
+	std::declval<state_t const &>(),
+	std::declval<model_t const &>(),
+	std::declval<scalar_t const &>()
+	)
+       ),
+      velocity_t
+      >::value
+    >
   > : std::true_type{};
 
 

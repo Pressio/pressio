@@ -64,7 +64,6 @@ struct traits;
 
 namespace iterative{ namespace impl{
 
-namespace experimental{
 template <
   typename system_type,
   typename linear_solver_type,
@@ -73,7 +72,6 @@ template <
   typename convergence_when_t
   >
 class GaussNewtonHessianGradientApi;
-}//end namespace experimental
 
 template <
   typename system_t,

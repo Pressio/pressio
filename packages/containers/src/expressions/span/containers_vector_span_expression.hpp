@@ -108,16 +108,16 @@ public:
     assert( extent_ <= objIn.extent(0) );
   }
 
-  size_t extentImpl(size_t i) const{
+  size_t extent(size_t i) const{
     assert(i==0);
     return extent_;
   }
 
-  const_data_return_t dataImpl() const{
+  const_data_return_t data() const{
     return &nativeExprObj_;
   }
 
-  data_return_t dataImpl(){
+  data_return_t data(){
     return &nativeExprObj_;
   }
 
@@ -195,7 +195,7 @@ public:
     assert( extent_ <= objIn.extent(0) );
   }
 
-  size_t extentImpl(size_t i) const{
+  size_t extent(size_t i) const{
     assert(i==0);
     return extent_;
   }
@@ -213,11 +213,11 @@ public:
     return nativeExprObj_(i);
   }
 
-  const_data_return_t dataImpl() const{
+  const_data_return_t data() const{
     return &nativeExprObj_;
   }
 
-  data_return_t dataImpl(){
+  data_return_t data(){
     return &nativeExprObj_;
   }
 };

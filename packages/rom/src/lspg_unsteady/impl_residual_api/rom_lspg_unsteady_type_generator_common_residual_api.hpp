@@ -74,9 +74,7 @@ struct FomStateReconHelper<
   template <typename scalar_t, typename fom_state_t, typename decoder_t>
   using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t, ops_t>;
 };
-
-
-
+//------------------------------------------------------------------------------
 
 
 
@@ -88,25 +86,16 @@ template <
   >
 struct CommonTypesResidualApi
 {
-  //::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
-
   static_assert( ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
 		 "\nYou are trying to setup an unsteady LSPG problem requiring \n \
 a fom adapter class to meet the residual api. \n \
 However, the fom/adapter type you passed does not meet that api. \n \
 Verify the fom/adapter class to check if you are missing something.");
 
-  // verify that args contains a valid decoder type
-  using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
-  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
-  static_assert(!std::is_void<decoder_t>::value and ic0::value < sizeof... (Args),
-		"A valid decoder type must be passed to define a LSPG problem");
-  using decoder_jac_t = typename decoder_t::jacobian_t;
+  // the scalar type
+  using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
-  using scalar_t		= typename fom_t::scalar_type;
   using fom_native_state_t	= typename fom_t::state_type;
   using fom_native_residual_t	= typename fom_t::residual_type;
 
@@ -116,6 +105,14 @@ Verify the fom/adapter class to check if you are missing something.");
 
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
+
+  // verify that args contains a valid decoder type
+  using ic0 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
+    lspg_state_t, fom_state_t, ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
+  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
+  static_assert(!std::is_void<decoder_t>::value and ic0::value < sizeof... (Args),
+		"A valid decoder type must be passed to define a LSPG problem");
+  using decoder_jac_t = typename decoder_t::jacobian_type;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -170,7 +167,7 @@ basically the size of the stpper stencil.");
   static constexpr std::size_t numStates = tot_n_setter::value;
 
   // type of class holding the fom states
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t>;
+  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;
 
 };
 

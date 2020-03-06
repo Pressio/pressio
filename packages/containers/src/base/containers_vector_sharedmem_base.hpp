@@ -65,7 +65,7 @@ class VectorSharedMemBase
 
 public:
   bool empty() const{
-    return static_cast<derived_type const *>(this)->emptyImpl();
+    return static_cast<derived_type const *>(this)->empty();
   }
 
   ref_t operator[](ord_t i){

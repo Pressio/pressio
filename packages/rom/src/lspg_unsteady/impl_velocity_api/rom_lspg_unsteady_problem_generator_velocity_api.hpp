@@ -114,7 +114,6 @@ private:
   // actual stepper object
   lspg_stepper_t  stepperObj_;
 
-
 public:
   lspg_stepper_t & getStepperRef(){
     return stepperObj_;
@@ -146,10 +145,10 @@ public:
       > * = nullptr
   >
   ProblemGeneratorVelocityApi(const _fom_t	& appObj,
-  					  const fom_native_state_t & fomStateReferenceNative,
-  					  const decoder_t & decoder,
-  					  lspg_state_t	 & yROM,
-  					  scalar_t	 t0)
+			      const fom_native_state_t & fomStateReferenceNative,
+			      const decoder_t & decoder,
+			      lspg_state_t	 & yROM,
+			      scalar_t	 t0)
     : veloQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
@@ -188,10 +187,10 @@ public:
       > * = nullptr
   >
   ProblemGeneratorVelocityApi(const _fom_t	 & appObj,
-  					  const fom_native_state_t & fomStateReferenceNative,
-  					  const decoder_t	 & decoder,
-  					  lspg_state_t	 & yROM,
-  					  scalar_t  t0)
+			      const fom_native_state_t & fomStateReferenceNative,
+			      const decoder_t	 & decoder,
+			      lspg_state_t	 & yROM,
+			      scalar_t  t0)
     : veloQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
@@ -214,18 +213,9 @@ public:
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-
-  /* when pybind11 is enabled, for python bindings I can have two case:
-   * 1. the user passes a call-back object to do all needed operations
-   * 2. the user does NOT pass an call-back object for the needed operations
-   * so here we handle this case.
-   */
-
-  /* specialize for:
-   * - the fom_t is a pybind11::object
+  /*- the fom_t is a pybind11::object
    * - aux stepper is NOT needed (e.g. for BDF1)
-   * - ud_ops_t == pybind11::object (so user passes is custom ops)
-   */
+   * - ud_ops_t == void (so user relies on us providing the ops)*/
   template <
     typename _fom_t = fom_t,
     typename _lspg_state_t = lspg_state_t,
@@ -233,64 +223,19 @@ public:
     typename _ud_ops_t = ud_ops_t,
     typename ::pressio::mpl::enable_if_t<
       std::is_same< _fom_t, pybind11::object >::value and
-      ::pressio::containers::meta::is_array_pybind11<_lspg_state_t>::value and
-      std::is_void<_aux_stepper_t>::value and
-      std::is_same<_ud_ops_t, pybind11::object>::value
-      > * = nullptr
-  >
-  ProblemGeneratorVelocityApi(const _fom_t		   & appObj,
-					  const fom_native_state_t & fomStateReferenceIn,
-					  const decoder_t	   & decoder,
-					  _lspg_state_t		   & yROM,
-					  scalar_t		   t0,
-					  const _ud_ops_t	   & udOps)
-    : veloQuerier_{},
-      applyJacobQuerier_{},
-      // here we do a deep copy of the fomStateReference (the other option would be to view it,
-      // which assumes the fomStateReferenceIn needsto stay alive in the user code).
-      // we deep copy it so that pressio owns it
-      fomStateReference_{{fom_native_state_t(const_cast<fom_native_state_t &>(fomStateReferenceIn).request())}},
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
-					      fomStateReference_,
-					      decoder.getReferenceToJacobian(),
-					      t0)),
-      residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_, udOps),
-      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder, udOps),
-      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
-  {}
-
-
-  /* specialize for:
-   * - the fom_t is a pybind11::object
-   * - aux stepper is NOT needed (e.g. for BDF1)
-   * - ud_ops_t == void (so user relies on us providing the ops)
-   */
-  template <
-    typename _fom_t = fom_t,
-    typename _lspg_state_t = lspg_state_t,
-    typename _aux_stepper_t = aux_stepper_t,
-    typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
-      std::is_same< _fom_t, pybind11::object >::value and
-      ::pressio::containers::meta::is_array_pybind11<_lspg_state_t>::value and
+      ::pressio::containers::meta::is_vector_wrapper_pybind<_lspg_state_t>::value and
       std::is_void<_aux_stepper_t>::value and
       std::is_void<_ud_ops_t>::value
       > * = nullptr
   >
-  ProblemGeneratorVelocityApi(const _fom_t		   & appObj,
-					  const fom_native_state_t & fomStateReferenceIn,
-					  const decoder_t	   & decoder,
-					  _lspg_state_t		   & yROM,
-					  scalar_t		   t0)
+  ProblemGeneratorVelocityApi(const _fom_t       & appObj,
+			      const fom_native_state_t fomStateReferenceIn,
+			      const decoder_t    & decoder,
+			      typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & yROM,
+			      scalar_t       t0)
     : veloQuerier_{},
       applyJacobQuerier_{},
-      // here we do a deep copy of the fomStateReference (the other option would be to view it,
-      // which assumes the fomStateReferenceIn needsto stay alive in the user code).
-      // we deep copy it so that pressio owns it
-      fomStateReference_{{fom_native_state_t(const_cast<fom_native_state_t &>(fomStateReferenceIn).request())}},
+      fomStateReference_(fomStateReferenceIn),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
       fomStates_(fomStateReconstructor_, fomStateReference_),
@@ -300,9 +245,8 @@ public:
 					      t0)),
       residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_),
       jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
-      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
+      stepperObj_(_lspg_state_t(yROM), appObj, residualPolicy_, jacobianPolicy_)
   {}
-
 #endif
 
 };

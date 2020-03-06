@@ -55,8 +55,20 @@
 
 #include "ops/src/ops_ConfigDefs.hpp"
 
-// arbitrary
-#include "ops/src/arbitrary/ops_set_zero.hpp"
+// meta
+#include "ops/src/meta/ops_has_method_deep_copy.hpp"
+#include "ops/src/meta/ops_has_method_axpy.hpp"
+#include "ops/src/meta/ops_has_method_norm1.hpp"
+#include "ops/src/meta/ops_has_method_norm2.hpp"
+#include "ops/src/meta/ops_has_void_method_product_mat_mat.hpp"
+#include "ops/src/meta/ops_has_nonvoid_method_product_mat_mat.hpp"
+#include "ops/src/meta/ops_has_void_method_product_mat_vec.hpp"
+#include "ops/src/meta/ops_has_method_add_to_diagonal.hpp"
+#include "ops/src/meta/ops_has_method_scale.hpp"
+#include "ops/src/meta/ops_has_method_do_update_one_term.hpp"
+#include "ops/src/meta/ops_has_method_do_update_two_terms.hpp"
+#include "ops/src/meta/ops_has_method_do_update_three_terms.hpp"
+#include "ops/src/meta/ops_has_method_do_update_four_terms.hpp"
 
 // Eigen
 #include "ops/src/eigen/ops_set_zero.hpp"
@@ -127,5 +139,6 @@
 #include "ops/src/pybind11/ops_deep_copy.hpp"
 #include "ops/src/pybind11/ops_norms_vector.hpp"
 #include "ops/src/pybind11/ops_vector_do_update.hpp"
+#include "ops/src/pybind11/ops_mat_prod_vec.hpp"
 
 #endif

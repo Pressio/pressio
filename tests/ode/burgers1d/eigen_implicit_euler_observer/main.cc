@@ -64,9 +64,9 @@ int main(int argc, char *argv[]){
   using ode_jac_t   = pressio::containers::Matrix<app_jacob_t>;
 
   ode_state_t y(y0n);
-  constexpr auto ode_case = pressio::ode::ImplicitEnum::Euler;
+  using ode_tag = pressio::ode::implicitmethods::Euler;
   using stepper_t = pressio::ode::ImplicitStepper<
-    ode_case, ode_state_t, ode_res_t, ode_jac_t, app_t>;
+    ode_tag, ode_state_t, ode_res_t, ode_jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
   // define solver

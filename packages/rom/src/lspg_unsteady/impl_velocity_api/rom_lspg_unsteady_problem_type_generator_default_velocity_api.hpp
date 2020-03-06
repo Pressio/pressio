@@ -55,45 +55,6 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
-template <typename fom_type, typename lspg_state_type, typename enable = void>
-struct CommonTypesHelper;
-
-
-template <typename fom_type, typename lspg_state_type>
-struct CommonTypesHelper<
-  fom_type, lspg_state_type
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  , mpl::enable_if_t<
-      !::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value
-      and !mpl::is_same<fom_type, pybind11::object>::value
-      >
-#endif
-  >
-{
-  static constexpr bool isNativeCpp = true;
-  template <typename stepper_tag, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, stepper_tag, fom_type, lspg_state_type, Args...>;
-};
-
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename fom_type, typename lspg_state_type>
-struct CommonTypesHelper<
-  fom_type, lspg_state_type,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<lspg_state_type>::value
-    and mpl::is_same<fom_type, pybind11::object>::value
-    >
-  >
-{
-  static constexpr bool isNativeCpp = false;
-  template <typename stepper_tag, typename ...Args>
-  using type = LSPGUnsteadyCommonTypesVelocityApi<isNativeCpp, stepper_tag, fom_type, lspg_state_type, Args...>;
-};
-#endif
-
-
-
 template <
   typename stepper_tag,
   typename fom_type,
@@ -102,7 +63,7 @@ template <
   >
 struct DefaultProblemTypeGeneratorVelocityApi{
 
-  static_assert( !std::is_same< stepper_tag,  ::pressio::ode::implicitmethods::Arbitrary>::value, 
+  static_assert( !std::is_same< stepper_tag,  ::pressio::ode::implicitmethods::Arbitrary>::value,
 		 "\nTo use unsteady LSPG with the velocity api, \n \
 you cannot pass ode::implicitmethods::Arbitrary since that is only \n \
 valid when using the residual api. For the velocity api you need \n \
@@ -116,8 +77,7 @@ However, the fom/adapter type you passed does not meet the velocity api. \n \
 Verify the fom/adapter class you are using meets the velocity api.");
 
   // pick the common types holder
-  using common_types_t
-  = typename CommonTypesHelper<fom_type, lspg_state_type>::template type< stepper_tag, Args...>;
+  using common_types_t = LSPGUnsteadyCommonTypesVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>;
 
   using fom_t			= typename common_types_t::fom_t;
   using scalar_t		= typename common_types_t::scalar_t;

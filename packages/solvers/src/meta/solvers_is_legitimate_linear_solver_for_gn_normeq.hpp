@@ -66,7 +66,7 @@ struct is_legitimate_linear_solver_for_gn_normeq<
     ::pressio::mpl::publicly_inherits_from<
       T,
       ::pressio::solvers::LinearBase<
-	typename T::solver_t, typename T::matrix_type, T
+      typename T::matrix_type, T
 	>
       >::value
     >

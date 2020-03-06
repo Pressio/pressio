@@ -47,30 +47,3 @@ TEST(containers_meta_basic, isTeuchosRCP){
   EXPECT_EQ( containers::meta::is_teuchos_rcp<foo_t5>::value, true); 
 }
 #endif
-
-
-TEST(containers_meta_basic, hasSizeMethod){
-  
-  using namespace pressio;
-
-  struct foo{
-    int size() const{
-      return 3;
-    };
-  };
-  static_assert(containers::meta::has_size_method<foo>::value==true,"");
-
-  struct foo2{
-    int size(){
-      return 3;
-    };
-  };
-  static_assert(containers::meta::has_size_method<foo2>::value==true,"");
-
-  struct foo3{
-    void size(){
-    };
-  };
-  static_assert(containers::meta::has_size_method<foo3>::value==false,"");
-  
-}

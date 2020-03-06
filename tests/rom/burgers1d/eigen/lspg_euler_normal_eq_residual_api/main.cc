@@ -84,16 +84,6 @@ struct EulerLSPGWithResidualApi
     // compute the fom corresponding to our rom final state
     auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
-
-    // this is a reproducing ROM test, so the final reconstructed state
-    // has to match the FOM solution obtained with euler, same time-step, for 10 steps
-    // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
-    const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
-    for (auto i=0; i<yFomFinal.extent(0); i++){
-      if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
-        checkStr = "FAILED";
-    }
-    std::cout << checkStr <<  std::endl;
   }
 };
 
@@ -173,16 +163,6 @@ struct EulerLSPGWithVelocityApi
     // compute the fom corresponding to our rom final state
     auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
-
-    // this is a reproducing ROM test, so the final reconstructed state
-    // has to match the FOM solution obtained with euler, same time-step, for 10 steps
-    // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
-    const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
-    for (auto i=0; i<yFomFinal.extent(0); i++){
-      if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
-        checkStr = "FAILED";
-    }
-    std::cout << checkStr <<  std::endl;
   }
 };
 
@@ -224,6 +204,8 @@ int main(int argc, char *argv[]){
     if (std::abs(veloFomSol[i] - residFomSol[i]) > 1e-13)
       checkStr = "FAILED";
   }
+
+  std::cout << checkStr <<  std::endl;
 
   return 0;
 }

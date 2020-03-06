@@ -51,11 +51,6 @@
 
 namespace pressio{ namespace ode{ namespace explicitmethods{
 
-/*
- * (1) constructors here should be private but we need
- * them public to enable interfacing with pybind11
- */
-
 template<typename stepper_type>
 class StepperBase
 {

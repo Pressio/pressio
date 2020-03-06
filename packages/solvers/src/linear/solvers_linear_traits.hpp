@@ -160,6 +160,34 @@ struct traits<::pressio::solvers::linear::direct::PartialPivLU> {
   static constexpr bool eigen_enabled = true;
 };
 
+template <>
+struct traits<::pressio::solvers::linear::direct::potrsL> {
+
+  template <typename MatrixT>
+  using eigen_solver_type = Eigen::LLT<MatrixT, Eigen::Lower>;
+
+  static constexpr bool direct = true;
+  static constexpr bool eigen_enabled = true;
+#if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
+  static constexpr bool kokkos_enabled = true;
+#endif
+};
+
+
+template <>
+struct traits<::pressio::solvers::linear::direct::potrsU> {
+
+  template <typename MatrixT>
+  using eigen_solver_type = Eigen::LLT<MatrixT, Eigen::Upper>;
+
+  static constexpr bool direct = true;
+  static constexpr bool eigen_enabled = true;
+#if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
+  static constexpr bool kokkos_enabled = true;
+#endif
+};
+
+
 #if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
 template <>
 struct traits<::pressio::solvers::linear::direct::getrs> {

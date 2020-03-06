@@ -62,15 +62,15 @@ class ContainerBase
 
 public:
   size_t extent(size_t i) const{
-    return static_cast<derived_type const *>(this)->extentImpl(i);
+    return static_cast<derived_type const *>(this)->extent(i);
   }
 
   const_data_ret_t data() const {
-    return static_cast<derived_type const *>(this)->dataImpl();
+    return static_cast<derived_type const *>(this)->data();
   }
 
   data_ret_t data(){
-    return static_cast<derived_type *>(this)->dataImpl();
+    return static_cast<derived_type *>(this)->data();
   }
 };//end class
 

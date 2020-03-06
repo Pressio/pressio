@@ -55,21 +55,17 @@ namespace pressio{ namespace ops{
 template<
   typename T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind11<T>::value
+    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
     > * = nullptr
   >
-void set_zero(T & v)
-{
-  // if this is a vector
-  if(v.ndim()==1){
-    using scalar_t = typename T::value_type;
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    const auto vsz = v.size();
-    auto v_proxy = v.mutable_unchecked();
-    for (std::size_t i=0; i<(std::size_t)vsz; ++i){
-      v_proxy(i) = zero;
-    }
-  }
+void set_zero(T & v){
+  using traits	 = ::pressio::containers::details::traits<T>;
+  using scalar_t = typename traits::scalar_t;
+  using ord_t	 = typename traits::ordinal_t;
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+  auto proxy = v.data()->mutable_unchecked();
+  for (ord_t i=0; i<v.extent(0); ++i)
+    proxy(i) = zero;
 }
 
 }}//end namespace pressio::ops
