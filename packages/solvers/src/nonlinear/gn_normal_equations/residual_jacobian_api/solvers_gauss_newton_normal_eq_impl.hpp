@@ -57,6 +57,26 @@
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
+template <typename hessian_t>
+mpl::enable_if_t< !::pressio::containers::meta::is_dense_matrix_wrapper_eigen<hessian_t>::value >
+printConditionNumber(const hessian_t & H)
+{
+  //no op
+}
+
+template <typename hessian_t>
+mpl::enable_if_t< ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<hessian_t>::value >
+printConditionNumber(const hessian_t & H)
+{
+  using eig_mat = typename ::pressio::containers::details::traits<hessian_t>::wrapped_t;
+  Eigen::JacobiSVD<eig_mat> svd(*H.data());
+  const auto cond = svd.singularValues()(0) / svd.singularValues()(svd.singularValues().size()-1);
+
+  auto fmt2 = utils::io::magenta() + utils::io::bold();
+  ::pressio::utils::io::print_stdout(fmt2, "GN_HessianCondition =", cond, utils::io::reset(), "\n");
+}
+
+
 
 template <
   typename line_search_t,
@@ -178,6 +198,7 @@ void gauss_newton_neq_solve(const system_t & sys,
     ::pressio::utils::io::print_stdout(fmt2, "GN_HessianSize =",
 				       hessian.extent(0), hessian.extent(1),
 				       utils::io::reset(), "\n");
+    printConditionNumber(hessian);
 #endif
 
     // compute RHS: J^T*res
