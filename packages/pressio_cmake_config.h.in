@@ -46,6 +46,9 @@
 //@HEADER
 */
 
+#ifndef PRESSIO_CMAKE_CONFIG_H_
+#define PRESSIO_CMAKE_CONFIG_H_
+
 #cmakedefine PRESSIO_ENABLE_DEBUG_PRINT
 #cmakedefine PRESSIO_ENABLE_TPL_EIGEN
 #cmakedefine PRESSIO_ENABLE_TPL_TRILINOS
@@ -73,4 +76,6 @@
 #define PRESSIO_DEPRECATED __attribute__ ((deprecated))
 #else
 #define PRESSIO_DEPRECATED
+#endif
+
 #endif
