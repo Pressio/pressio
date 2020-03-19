@@ -173,7 +173,7 @@ public:
     // std::cout << "\n";
     // std::cout << "\n";
 
-    for (decltype(numStepsInWindow) n = 1; n < numStepsInWindow; n++)
+    for (std::size_t n = 1; n < numStepsInWindow; n++)
     {
       updateResidualAndJacobian(timeSchemeObj, wlsState, fomStateReconstrObj, n,
 				step_s, ts, rnorm, gradient, dt);
