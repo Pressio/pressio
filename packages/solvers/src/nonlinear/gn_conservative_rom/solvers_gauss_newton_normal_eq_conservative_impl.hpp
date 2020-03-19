@@ -195,7 +195,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     // ::pressio::ops::dot(cbarT, resid, cbarR);
-    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+    ::pressio::ops::product(::pressio::transpose(),
 			    one, cbarT, resid, zeroConst, cbarR);
 
     normDispatcher.evaluate(cbarR, normCbarR, normType);
