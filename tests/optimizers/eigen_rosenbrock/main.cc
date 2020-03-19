@@ -8,22 +8,21 @@ struct Rosenbrock1
 
 private:
   scalar_type alpha_;
-  scalar_type const1_;
-  scalar_type const2_;
 
 public:
-  Rosenbrock1(scalar_type alpha = 100.0)
-    : alpha_(alpha), const1_(100.0), const2_(20.0){}
+  Rosenbrock1(scalar_type alpha = 100.0) : alpha_(alpha){}
 
   scalar_type operator()(const state_type & x) const
   {
     const auto n = x.extent(0);
     scalar_type val = {};
-    for( std::size_t i=0; i<n/2; i++ ) {
-      val += alpha_ * std::pow(std::pow( x[2*i], 2) - x[2*i+1], 2);
-      val += std::pow( x[2*i] - 1.0, 2);
-    }
+    val = alpha_ * std::pow(std::pow( x[0], 2) - x[1], 2) + std::pow( x[0] - 1.0, 2);
     return val;
+  }
+  void gradient( const state_type & x, state_type &g) const
+  {
+    g[0] = 2.*alpha_*(std::pow(x[0], 2) - x[1])*2.*x[0] + 2.*(x[0]-1.);
+    g[1] = -2.*alpha_*(std::pow(x[0], 2) - x[1]);
   }
 };
 
@@ -36,11 +35,9 @@ int main(int argc, char *argv[])
   obj_t rosenbrock;
 
   // Set Initial Guess
-  state_t x(100);
-  for (int i=0; i<50; i++) {
-    x[2*i]   = -1.2;
-    x[2*i+1] =  1.0;
-  }
+  state_t x(2);
+  x[0] = -3.;
+  x[1] = -4.;
 
   using opt_param_t = pressio::optimizers::Parameters<sc_t>;
   opt_param_t MyPars;
@@ -50,5 +47,6 @@ int main(int argc, char *argv[])
   opt_prob_t optProblem(MyPars);
   optProblem.solve(rosenbrock, x);
 
+  std::cout << x[0] << " " << x[1] << std::endl;
   return 0;
 }

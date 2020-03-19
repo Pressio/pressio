@@ -66,11 +66,21 @@ class RolObjectiveWrapper : public ROL::StdObjective<scalar_type>
 public:
   RolObjectiveWrapper(const system_type & wrappedObj) : wrappedObj_(wrappedObj){}
 
-  scalar_type value(const std::vector<scalar_type> &x, scalar_type &tol){
+  scalar_type value(const std::vector<scalar_type> &x, scalar_type &tol)
+  {
     state_type x2(x.size());
     for (auto i=0; i<x2.extent(0); ++i) x2[i] = x[i];
-
     return wrappedObj_(x2);
+  }
+
+  void gradient( std::vector<scalar_type> &g, const std::vector<scalar_type> &x, scalar_type &tol )
+  {
+    state_type x2(x.size());
+    for (auto i=0; i<x2.extent(0); ++i) x2[i] = x[i];
+    state_type g2(g.size());
+
+    assert(g2.extent(0) == x2.extent(0));
+    return wrappedObj_.gradient(x2, g2);
   }
 };
 
@@ -104,6 +114,8 @@ public:
     problem.check(std::cout);
     ROL::OptimizationSolver<scalar_t> solver( problem, rolParList_ );
     solver.solve(std::cout);
+    std::cout << (*x)[0] << " " << (*x)[1] << std::endl;
+    for (auto i=0; i<optState.extent(0); ++i) (*x)[i] = optState[i];
   }
 };
 
