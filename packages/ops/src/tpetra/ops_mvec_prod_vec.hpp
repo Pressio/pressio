@@ -129,7 +129,7 @@ void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
   using dev_t  = tpetra_mv_dev_t;
-  using sc_t = typename containers::details::traits<A_type>::scalar_t;
+  //using sc_t = typename containers::details::traits<A_type>::scalar_t;
   const char ctA = 'N';
 
   assert( A.numVectors() == x.data()->extent(0) );

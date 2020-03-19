@@ -111,7 +111,7 @@ void gauss_newton_neq_solve(const system_t & sys,
 {
 
   using residual_t	= typename system_t::residual_type;
-  using jacobian_t	= typename system_t::jacobian_type;
+  //using jacobian_t	= typename system_t::jacobian_type;
 
   // policy to checking convergence
   using is_converged_t = IsConvergedHelper<converged_when_tag>;
