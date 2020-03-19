@@ -132,8 +132,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   constexpr auto zeroConst  = ::pressio::utils::constants::zero<scalar_t>();
   constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
 
-  typename system_t::state_type dy_y(y.size());
-  typename system_t::state_type dy_lambda(lambda.size());
+  typename system_t::state_type dy_y(y.extent(0));
+  typename system_t::state_type dy_lambda(lambda.extent(0));
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -169,21 +169,21 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     // dot_self(jacob, jTj);
-    ::pressio::ops::product(::pressio::transpose(),
-        ::pressio::nontranspose(), one, jacob, zeroConst, jTj);
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+			    one, jacob, zeroConst, jTj);
 
     // ::pressio::ops::dot(jacob, cbarT, jTcbarT);
-    ::pressio::ops::product(::pressio::transpose(),
-        one, jacob, cbarT, zeroConst, jTcbarT);
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+			    one, jacob, cbarT, zeroConst, jTcbarT);
 
     // ::pressio::ops::dot(cbarT, jacob, cbarJ);
-    ::pressio::ops::product(::pressio::transpose(),
-        one, cbarT, jacob, zeroConst, cbarJ);
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+			    one, cbarT, jacob, zeroConst, cbarJ);
 
-    A.data()->block(0, 0, jTj.rows(), jTj.cols()) = *jTj.data();
-    A.data()->block(0, jTj.cols(), jTcbarT.rows(), jTcbarT.cols()) = *jTcbarT.data();
-    A.data()->block(jTj.rows(), 0, cbarJ.rows(), cbarJ.cols()) = *cbarJ.data();
-    A.data()->block(jTj.rows(), jTj.cols(), zero.rows(), zero.cols()) = *zero.data();
+    A.data()->block(0, 0, jTj.extent(0), jTj.extent(1)) = *jTj.data();
+    A.data()->block(0, jTj.extent(1), jTcbarT.extent(0), jTcbarT.extent(1)) = *jTcbarT.data();
+    A.data()->block(jTj.extent(0), 0, cbarJ.extent(0), cbarJ.extent(1)) = *cbarJ.data();
+    A.data()->block(jTj.extent(0), jTj.extent(1), zero.extent(0), zero.extent(1)) = *zero.data();
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("lhs");
@@ -195,25 +195,25 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 #endif
 
     // ::pressio::ops::dot(cbarT, resid, cbarR);
-    ::pressio::ops::product(::pressio::transpose(),
-        one, cbarT, resid, zeroConst, cbarR);
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+			    one, cbarT, resid, zeroConst, cbarR);
 
     normDispatcher.evaluate(cbarR, normCbarR, normType);
 
     // ::pressio::ops::product(cbarT, lambda, cbarTlambda);
-    ::pressio::ops::product(::pressio::nontranspose(),
-        one, cbarT, lambda, zeroConst, cbarTlambda);
+    ::pressio::ops::product(::pressio::nontranspose(), ::pressio::nontranspose(),
+			    one, cbarT, lambda, zeroConst, cbarTlambda);
 
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
     // ::pressio::ops::dot(jacob, resid, jTr2);
-    ::pressio::ops::product(::pressio::transpose(),
-        one, jacob, resid, zeroConst, jTr2);
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+			    one, jacob, resid, zeroConst, jTr2);
 
     constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
-    jTr2.scale(negOne);
-    cbarR.scale(negOne);
-    b.data()->block(0, 0, jTr2.size(), 1) = *jTr2.data();
-    b.data()->block(jTr2.size(), 0, cbarR.size(), 1) = *cbarR.data();
+    ::pressio::ops::scale(jTr2, negOne);
+    ::pressio::ops::scale(cbarR, negOne);
+    b.data()->block(0, 0, jTr2.extent(0), 1) = *jTr2.data();
+    b.data()->block(jTr2.extent(0), 0, cbarR.extent(0), 1) = *cbarR.data();
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("rhs");
@@ -242,8 +242,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     timer->stop("solve normeq");
 #endif
 
-    *dy_y.data() = dy.data()->block(0, 0, y.size(), 1);
-    *dy_lambda.data() = dy.data()->block(y.size(), 0, lambda.size(), 1);
+    *dy_y.data() = dy.data()->block(0, 0, y.extent(0), 1);
+    *dy_lambda.data() = dy.data()->block(y.extent(0), 0, lambda.extent(0), 1);
 
     // norm of the correction
     normDispatcher.evaluate(dy_y, norm_dy, normType);
@@ -272,8 +272,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
 
 
     // solution update
-    *y.data() = y2.data()->block(0, 0, y.size(), 1);
-    *lambda.data() = y2.data()->block(y.size(), 0, lambda.size(), 1);
+    *y.data() = y2.data()->block(0, 0, y.extent(0), 1);
+    *lambda.data() = y2.data()->block(y.extent(0), 0, lambda.extent(0), 1);
 
     // check convergence (whatever method user decided)
     const auto flag = is_conv_helper_t::evaluate(y, dy,

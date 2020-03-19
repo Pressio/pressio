@@ -145,27 +145,28 @@ public:
       normType_(normType)
   {
     // number of cols of Cbar
-    const auto nlambda = cbarT_.globalNumVectors();
+    const auto nlambda = cbarT_.numVectors();
 
-    jTj_.resize( jac_.globalNumVectors(), jac_.globalNumVectors() );
-    jTcbarT_.resize( jac_.globalNumVectors(), nlambda );
-    cbarJ_.resize( nlambda, jac_.globalNumVectors() );
-    zero_.resize( nlambda, nlambda);
+    ::pressio::ops::resize( jTj_, jac_.numVectors(), jac_.numVectors() );
+    ::pressio::ops::resize( jTcbarT_, jac_.numVectors(), nlambda );
+    ::pressio::ops::resize( cbarJ_, nlambda, jac_.numVectors() );
+    ::pressio::ops::resize( zero_, nlambda, nlambda);
     ::pressio::ops::set_zero(zero_);
 
-    jTr2_.resize(y.size());
-    cbarR_.resize(nlambda);
+    ::pressio::ops::resize(jTr2_, y.extent(0));
+    ::pressio::ops::resize(cbarR_, nlambda);
+    ::pressio::ops::resize(A_, jac_.numVectors()+nlambda, jac_.numVectors()+nlambda);
+    ::pressio::ops::resize(b_, y.extent(0) + nlambda);
+    ::pressio::ops::resize(lambda_, nlambda);
 
-    A_.resize( jac_.globalNumVectors()+nlambda, jac_.globalNumVectors()+nlambda);
-    b_.resize(y.size() + nlambda);
-    lambda_.resize(nlambda);
-    lambda_.putScalar( static_cast<scalar_t>(0) );
-    y2_.resize(y.size() + nlambda);
-    ytrial_.resize(y2_.size());
-    delta_.resize(y2_.size());
+    ::pressio::ops::fill(lambda_, static_cast<scalar_t>(0) );
 
-    y2_.data()->block(0, 0, y.size(), 1) = *y.data();
-    y2_.data()->block(y.size(), 0, lambda_.size(), 1) = *lambda_.data();
+    ::pressio::ops::resize(y2_, y.extent(0) + nlambda);
+    ::pressio::ops::resize(ytrial_, y2_.extent(0));
+    ::pressio::ops::resize(delta_, y2_.extent(0));
+
+    y2_.data()->block(0, 0, y.extent(0), 1) = *y.data();
+    y2_.data()->block(y.extent(0), 0, lambda_.extent(0), 1) = *lambda_.data();
   }
 
   GaussNewtonConservative(const GaussNewtonConservative &) = delete;

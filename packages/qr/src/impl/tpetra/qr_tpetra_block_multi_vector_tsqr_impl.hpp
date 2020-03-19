@@ -76,12 +76,12 @@ public:
   ~TpetraBlockMVTSQR() = default;
 
   void computeThinOutOfPlace(matrix_t & A) {
-    auto nVecs	   = A.globalNumVectors();
+    auto nVecs	   = A.numVectors();
     auto blockSize = A.data()->getBlockSize();
     createLocalRIfNeeded(nVecs);
 
     // this is the row map of the block MV
-    auto & ArowMap = A.getDataMap();
+    auto & ArowMap = *A.data()->getMap();
     createQIfNeeded(ArowMap, blockSize, nVecs);
 
     // get the multivector
