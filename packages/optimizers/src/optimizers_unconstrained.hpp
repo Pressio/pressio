@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// optimizers_fwd.hpp
+// optimizers_unconstrained.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,74 @@
 //@HEADER
 */
 
-#ifndef OPTIMIZERS_FWD_HPP_
-#define OPTIMIZERS_FWD_HPP_
+#ifndef OPTIMIZERS_UNCONSTRAINED_HPP_
+#define OPTIMIZERS_UNCONSTRAINED_HPP_
 
-#include "optimizers_ConfigDefs.hpp"
+#include "ROL_OptimizationSolver.hpp"
+#include "ROL_RandomVector.hpp"
+#include "ROL_StdObjective.hpp"
 
 namespace pressio{ namespace optimizers{
 
+namespace impl{
+
+template<typename scalar_type, typename system_type>
+class RolObjectiveWrapper : public ROL::StdObjective<scalar_type>
+{
+  using state_type = typename system_type::state_type;
+  const system_type & wrappedObj_;
+
+public:
+  RolObjectiveWrapper(const system_type & wrappedObj) : wrappedObj_(wrappedObj){}
+
+  scalar_type value(const std::vector<scalar_type> &x, scalar_type &tol){
+    return double(); //wrappedObj_(x);
+  }
+
+  // void gradient( std::vector<scalar_type> &g,
+  //		    const std::vector<scalar_type> &x,
+  //		    scalar_type &tol ){
+  //   wrappedObj.gradient(g, x);
+  // }
+};
+
+
+template <typename system_type>
+class UnconstrainedRol
+{
+  using scalar_t = typename system_type::scalar_type;
+  using state_t  = typename system_type::state_type;
+
+  const ::pressio::optimizers::Parameters<scalar_t> & params_;
+  ROL::ParameterList rolParList_;
+
+public:
+  UnconstrainedRol(const ::pressio::optimizers::Parameters<scalar_t> & params)
+    : params_(params)
+  {
+    // convert params to rolParList
+  }
+
+  void solve(const system_type & sysObj, state_t & optState)
+  {
+    using wrapper_t = RolObjectiveWrapper<scalar_t, system_type>;
+    auto obj = ROL::makePtr<wrapper_t>(sysObj);
+
+    const auto optSize = optState.extent(0);
+    ROL::Ptr<ROL::Vector<scalar_t> > x = ROL::makePtr<ROL::StdVector<scalar_t>>(optSize);
+    // copy optState into x
+
+    ROL::OptimizationProblem<scalar_t> problem( obj, x );
+    problem.check(std::cout);
+    // ROL::OptimizationSolver<RealT> solver( problem, parlist );
+    // solver.solve(*outStream);
+  }
+};
+
+} //end namespace impl
+
+template <typename ...Args>
+using Unconstrained = impl::UnconstrainedRol<Args...>;
 
 }}//end namespace pressio::optimizers
 #endif

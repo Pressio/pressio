@@ -7,4 +7,5 @@ include(macrosForCreatingTests)
 
 add_subdirectory(apps)
 add_subdirectory(ode)
+add_subdirectory(optimizers)
 add_subdirectory(rom)
