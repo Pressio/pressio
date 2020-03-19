@@ -201,12 +201,12 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     normDispatcher.evaluate(cbarR, normCbarR, normType);
 
     // ::pressio::ops::product(cbarT, lambda, cbarTlambda);
-    ::pressio::ops::product(::pressio::nontranspose(), ::pressio::nontranspose(),
+    ::pressio::ops::product(::pressio::nontranspose(),
 			    one, cbarT, lambda, zeroConst, cbarTlambda);
 
     resid.data()->update(1.0, *cbarTlambda.data(), 1.0);
     // ::pressio::ops::dot(jacob, resid, jTr2);
-    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+    ::pressio::ops::product(::pressio::transpose(),
 			    one, jacob, resid, zeroConst, jTr2);
 
     constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
