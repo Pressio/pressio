@@ -67,16 +67,12 @@ public:
   RolObjectiveWrapper(const system_type & wrappedObj) : wrappedObj_(wrappedObj){}
 
   scalar_type value(const std::vector<scalar_type> &x, scalar_type &tol){
-    return double(); //wrappedObj_(x);
+    state_type x2(x.size());
+    for (auto i=0; i<x2.extent(0); ++i) x2[i] = x[i];
+
+    return wrappedObj_(x2);
   }
-
-  // void gradient( std::vector<scalar_type> &g,
-  //		    const std::vector<scalar_type> &x,
-  //		    scalar_type &tol ){
-  //   wrappedObj.gradient(g, x);
-  // }
 };
-
 
 template <typename system_type>
 class UnconstrainedRol
@@ -88,10 +84,11 @@ class UnconstrainedRol
   ROL::ParameterList rolParList_;
 
 public:
-  UnconstrainedRol(const ::pressio::optimizers::Parameters<scalar_t> & params)
-    : params_(params)
+  UnconstrainedRol(const ::pressio::optimizers::Parameters<scalar_t> & params) : params_(params)
   {
     // convert params to rolParList
+    rolParList_.sublist("Step").set("Type","Trust Region");
+    rolParList_.sublist("Step").sublist("Trust Region").set("Subproblem Solver","Truncated CG");
   }
 
   void solve(const system_type & sysObj, state_t & optState)
@@ -100,13 +97,13 @@ public:
     auto obj = ROL::makePtr<wrapper_t>(sysObj);
 
     const auto optSize = optState.extent(0);
-    ROL::Ptr<ROL::Vector<scalar_t> > x = ROL::makePtr<ROL::StdVector<scalar_t>>(optSize);
-    // copy optState into x
+    ROL::Ptr<ROL::StdVector<scalar_t> > x = ROL::makePtr<ROL::StdVector<scalar_t>>(optSize);
+    for (auto i=0; i<optState.extent(0); ++i) optState[i] = (*x)[i];
 
     ROL::OptimizationProblem<scalar_t> problem( obj, x );
     problem.check(std::cout);
-    // ROL::OptimizationSolver<RealT> solver( problem, parlist );
-    // solver.solve(*outStream);
+    ROL::OptimizationSolver<scalar_t> solver( problem, rolParList_ );
+    solver.solve(std::cout);
   }
 };
 

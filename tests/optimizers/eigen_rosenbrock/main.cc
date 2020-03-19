@@ -15,7 +15,7 @@ public:
   Rosenbrock1(scalar_type alpha = 100.0)
     : alpha_(alpha), const1_(100.0), const2_(20.0){}
 
-  scalar_type operator()(const state_type & x)
+  scalar_type operator()(const state_type & x) const
   {
     const auto n = x.extent(0);
     scalar_type val = {};
