@@ -65,7 +65,7 @@ namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 template<
   typename fom_type,
   typename decoder_t,
-  typename hessian_matrix_structure_tag, 
+  typename hessian_matrix_structure_tag,
   typename preconditioner_t = ::pressio::rom::wls::preconditioners::impl::NoPreconditioner
   >
 class HessianGradientSequentialPolicy
@@ -75,7 +75,7 @@ class HessianGradientSequentialPolicy
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using decoder_jac_t           = typename decoder_t::jacobian_type;
   using residual_t              = fom_state_t;
-   
+
   // currently have this as a vector of jacobians, can change to container
   /* For now, set wls_jacs_t to be a vector of item type = decoder_jac_t
    * this is a similar assumption as done for lspg
@@ -173,7 +173,7 @@ public:
     // std::cout << "\n";
     // std::cout << "\n";
 
-    for (int n = 1; n < numStepsInWindow; n++)
+    for (decltype(numStepsInWindow) n = 1; n < numStepsInWindow; n++)
     {
       updateResidualAndJacobian(timeSchemeObj, wlsState, fomStateReconstrObj, n,
 				step_s, ts, rnorm, gradient, dt);
