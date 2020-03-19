@@ -141,7 +141,7 @@ private:
 
   template <typename map_t>
   void createQIfNeeded(const map_t & map, int blockSize, int numVecs){
-    if (!Qmat_ or !Qmat_->hasRowMapEqualTo(map) ){
+    if (!Qmat_ or !Qmat_->data()->getMap()->isSameAs(map) )
       Qmat_ = std::make_shared<Q_t>(map, blockSize, numVecs);
     }
   }
