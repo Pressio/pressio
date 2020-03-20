@@ -121,42 +121,39 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  throw std::runtime_error("Error, y = beta*y + alpha*A*x for tpetra block not yet supported");
+  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+    "Types are not scalar compatible");
 
-  // static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
-  //   "Types are not scalar compatible");
+  const auto numVecs = A.numVectors();
+  assert(size_t(numVecs) == size_t(x.extent(0)));
+  const auto myNrows = A.extentLocal(0);
 
-  // const auto numVecs = A.globalNumVectors();
-  // assert(size_t(numVecs) ==  x.extent(0));
+  // get the wrapped trilinos tpetra multivector
+  auto trilD = A.data()->getMultiVectorView();
+  auto mv2d = trilD.getLocalViewHost();
 
-  // // get the wrapped trilinos tpetra multivector
-  // const auto A_mvv = A.data()->getMultiVectorView();
-  // const auto A_hv = A_mvv.template getLocalView<Kokkos::HostSpace>();
-  // // my number of rows
-  // const auto myNrows = A_mvv.getLocalLength();
+  // get wrapped data for the result
+  auto y1 = y.data()->getVectorView().getLocalViewHost();
+  auto y2 = Kokkos::subview(y1, Kokkos::ALL(), 0);
+  y.data()->template modify<Kokkos::HostSpace>();
 
-  // // the result is a block tpetra vector, get the regular tpetra vector
-  // auto y_vv = y.data()->getVectorView();
-  // auto y_hv = y_vv.template getLocalView<Kokkos::HostSpace>();
-  // y_vv.template modify<Kokkos::HostSpace>();
-
-  // for (std::size_t i=0; i<(std::size_t)myNrows; i++){
-  //   for (std::size_t j=0; j<(std::size_t)numVecs; j++){
-  //     // we use y_hv(i,0) because C is Tpetra::Vector, which is
-  //     // actually a Tpetra::MultiVector with one column, so y_hv
-  //     // is a kokkos::View<scalar**,...> so we need to index the zero column
-  //     y_hv(i,0) = beta * y_hv(i,0) + alpha * A_hv(i,j) * x[j];
-  //   }
-  // }
-  // using device_t = typename ::pressio::containers::details::traits<res_type>::device_t;
-  // y.data()->template sync<device_t>();
+  // loop
+  for (size_t i=0; i<(size_t)myNrows; i++){
+    y2[i] = beta*y2[i];
+    for (size_t j=0; j<(size_t)numVecs; j++){
+      y2[i] += alpha * mv2d(i,j) * x[j];
+    }
+  }
+  using device_t = typename ::pressio::containers::details::traits<y_type>::device_t;
+  y.data()->template sync<device_t>();
 }
 
 
 /* -------------------------------------------------------------------
- * op(A) = A^T
- * x is a sharedmem vector wrapper not kokkos
+ * x is a distributed Tpetra block vector wrapper
  *-------------------------------------------------------------------*/
+
+// y = sharedmem vec not kokkos
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
@@ -170,24 +167,19 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	::pressio::containers::VectorSharedMemBase<y_type> & y)
 {
-  throw std::runtime_error("Error, y = beta*y + alpha*A^T*x for tpetra block not yet supported");
-
-  // /* workaround the non-constness of getVectorView*/
-  // using tpetra_blockvec_t = typename containers::details::traits<vec_type>::wrapped_t;
-  // const auto vecB_vv = const_cast<tpetra_blockvec_t*>(vecB.data())->getVectorView();
-  // const auto mvA_mvv = mvA.data()->getMultiVectorView();
-  // const auto numVecs = mvA.globalNumVectors();
-  // for (std::size_t i=0; i<(std::size_t)numVecs; i++){
-  //   // colI is a Teuchos::RCP<Vector<...>>
-  //   const auto colI = mvA_mvv.getVector(i);
-  //   result[i] = colI->dot(vecB_vv);
-  // }
+  /* workaround the non-constness of getVectorView*/
+  using wrapped_t = typename containers::details::traits<x_type>::wrapped_t;
+  const auto xvv = const_cast<wrapped_t*>(x.data())->getVectorView();
+  const auto mvA_mvv = A.data()->getMultiVectorView();
+  const auto numVecs = A.numVectors();
+  for (std::size_t i=0; i<(std::size_t)numVecs; i++){
+    // colI is a Teuchos::RCP<Vector<...>>
+    const auto colI = mvA_mvv.getVector(i);
+    y[i] = beta*y[i] + alpha * colI->dot(xvv);
+  }
 }
 
-/* -------------------------------------------------------------------
- * op(A) = A^T
- * x is a sharedmem vector kokkos wrapper
- *-------------------------------------------------------------------*/
+// y = wrapper of Kokkos vector
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and

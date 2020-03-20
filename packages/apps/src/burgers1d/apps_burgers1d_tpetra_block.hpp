@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// apps_burgers1d_tpetra.hpp
+// apps_burgers1d_tpetra_block.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -83,22 +83,17 @@ public:
   using scalar_type	= double;
   using state_type	= nativeBlockVec;
   using velocity_type	= state_type;
-  using dense_matrix_type	= Tpetra::MultiVector<>;
-  using dense_block_matrix_type	= Tpetra::BlockMultiVector<>;
-
-  using jacobian_block_type = Tpetra::BlockCrsMatrix<>;
-  using jacobian_type	= Tpetra::CrsMatrix<>;
-
+  using dense_matrix_type	= Tpetra::BlockMultiVector<>;
+  using jacobian_type = Tpetra::BlockCrsMatrix<>;
   using crs_graph_type = Tpetra::CrsGraph<>;
+
 public:
   Burgers1dTpetraBlock(std::vector<scalar_type> params,
-		  int Ncell,
-		  rcpcomm_t comm)
+		       int Ncell,
+		       rcpcomm_t comm)
     : mu_{params}, Ncell_{Ncell}, comm_{comm}{
       this->setup();
     }
-  //Burgers1dTpetra() = delete;
-  //~Burgers1dTpetra() = default;
 
 public:
   rcpmap_t getDataMap(){
@@ -130,36 +125,37 @@ public:
     lo_t i=0;
     scalar_type uim1;
     scalar_type rhsLoc;
-
-    for (auto const & it : myGel_){
+    for (auto const & it : myGel_)
+    {
       uim1 = valueFromLeft;
       if (it==0)
-      {
-	uim1 = mu_[0]; // left boundary condition
-        auto uC = u.getLocalBlock(i);
-        rhsLoc = ( 0.5*(uim1*uim1 - uC(0)*uC(0)) )/dx_; 
-      }
+	{
+	  uim1 = mu_[0]; // left boundary condition
+	  auto uC = u.getLocalBlock(i);
+	  rhsLoc = ( 0.5*(uim1*uim1 - uC(0)*uC(0)) )/dx_;
+	}
       if (i>0)
-      {
-        auto uL = u.getLocalBlock(i-1);
-        auto uC = u.getLocalBlock(i);
-        rhsLoc = ( 0.5*(uL(0)*uL(0) - uC(0)*uC(0)) )/dx_;
-      } 
-      rhs.replaceLocalValues(i,&rhsLoc); 
+	{
+	  auto uL = u.getLocalBlock(i-1);
+	  auto uC = u.getLocalBlock(i);
+	  rhsLoc = ( 0.5*(uL(0)*uL(0) - uC(0)*uC(0)) )/dx_;
+	}
+      rhs.replaceLocalValues(i,&rhsLoc);
       i++;
     }
     auto xgrid_v = xGrid_->getDataNonConst();
     for (i=0; i<NumMyElem_; ++i){
       auto rhsVal = rhs.getLocalBlock(i);
       rhsLoc = rhsVal(0) + mu_[1]*exp(mu_[2] * xgrid_v[i]);
-      rhs.replaceLocalValues(i,&rhsLoc); 
+      rhs.replaceLocalValues(i,&rhsLoc);
     }
   }
 
 
   velocity_type velocity(const state_type & u,
-			 const scalar_type t) const{
-    map_t meshMap(Ncell_, 0, comm_); //can't use meshMap_ here for some reason?
+			 const scalar_type t) const
+  {
+    map_t meshMap(Ncell_, 0, comm_);
     velocity_type R(meshMap,1);
     velocity(u,t,R);
     return R;
@@ -172,20 +168,19 @@ public:
 		     dense_matrix_type & A) const
   {
     computeJacobianUpdate(y, *Jac_, t);
-    Jac_->apply(B, A);
+    const auto B_vv = B.getMultiVectorView();
+    auto A_vv	    = A.getMultiVectorView();
+    Jac_->apply(B_vv, A_vv);
   }
 
-  // computes: A = Jac B where B is a multivector
+  // computes: A = Jac B
   dense_matrix_type applyJacobian(const state_type & y,
 				  const dense_matrix_type & B,
 				  scalar_type t) const
   {
-    dense_matrix_type C( dataMap_, B.getNumVectors() );
-    // the next lines are for blockMultiVector
-    /*map_t meshMap(Ncell_, 0, comm_); //can't use meshMap_ here for some reason?
-    dense_matrix_type C(meshMap, 1, B.getNumVectors() ); */
-    applyJacobian(y, B, t, C);
-    return C;
+    dense_matrix_type A( *dataMap_, blockSize, B.getNumVectors() );
+    applyJacobian(y, B, t, A);
+    return A;
   }
 
 protected:
@@ -226,65 +221,64 @@ protected:
     xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
 
     // init condition
-    U0_ = std::make_shared<nativeBlockVec>(meshMap_,1);
+    U0_ = std::make_shared<nativeBlockVec>(meshMap_,blockSize);
     U0_->putScalar(1.0);
 
-    U_ = std::make_shared<nativeBlockVec>(meshMap_,1);
+    U_ = std::make_shared<nativeBlockVec>(meshMap_,blockSize);
     U_->putScalar(1.0);
 
     // construct a graph for the block matrix
     crs_graph_type dataGraph(dataMap_,nonZrPerRow_);
     this->assembleGraph(dataGraph);
-    Jac_ = std::make_shared<jacobian_block_type>(dataGraph,blockSize);
+    Jac_ = std::make_shared<jacobian_type>(dataGraph,blockSize);
     this->computeJacobianUpdate(*U_, *Jac_, 0.0);
   };
 
   void computeJacobianUpdate(const state_type & u,
-			     jacobian_block_type & jac,
+			     jacobian_type & jac,
 			     const scalar_type ) const
   {
     const scalar_type buffer = exchangeFlux(u);
-    for (lo_t i=0; i<NumMyElem_; i++){
+    for (lo_t i=0; i<NumMyElem_; i++)
+    {
       auto thisGID = myGel_[i];
-      if (thisGID==0){
-        auto uC = u.getLocalBlock(i);
-        // Get a view of the current row.
-        const lo_t* localColInds;
-        scalar_type* vals;
-        lo_t numEntries = 1;
-        int err = 0;
-        err = jac.getLocalRowView(i, localColInds, vals, numEntries);
-        if (err != 0) {
-          break;
-        }
-        vals[0]  =  -dxInv_ * uC(0);
+      if (thisGID==0)
+      {
+	auto uC = u.getLocalBlock(i);
+	// Get a view of the current row.
+	const lo_t* localColInds;
+	scalar_type* vals;
+	lo_t numEntries = 1;
+	int err = 0;
+	err = jac.getLocalRowView(i, localColInds, vals, numEntries);
+	if (err != 0) {
+	  break;
+	}
+	vals[0]  =  -dxInv_ * uC(0);
       }
-      else{
-        const lo_t* localColInds;
-        scalar_type* vals;
-        lo_t numEntries = 2;
-        int err = 0;
-        err = jac.getLocalRowView(i, localColInds, vals, numEntries);
+      else
+      {
+	const lo_t* localColInds;
+	scalar_type* vals;
+	lo_t numEntries = 2;
+	int err = 0;
+	err = jac.getLocalRowView(i, localColInds, vals, numEntries);
 
 	if (i==0){
-           vals[0] = dxInv_ * buffer;
-        }
+	  vals[0] = dxInv_ * buffer;
+	}
 	if (i>0){
-          auto uC = u.getLocalBlock(i-1);
-          vals[0] = dxInv_ * uC(0);
-        }
-        auto uC = u.getLocalBlock(i);
+	  auto uC = u.getLocalBlock(i-1);
+	  vals[0] = dxInv_ * uC(0);
+	}
+	auto uC = u.getLocalBlock(i);
 	vals[1] = -dxInv_ * uC(0);
       }
     }
-    
   }//end
 
-
-  // function to assemble crsGraph
   void assembleGraph(crs_graph_type & graph)
   {
-
     using tarr_dt = Teuchos::ArrayView<scalar_type>;
     using tarr_it = Teuchos::ArrayView<go_t>;
     std::array<go_t,1> ci1;
@@ -305,13 +299,9 @@ protected:
   }//end
 
 
-
-
-  
   template <typename state_t_in>
   scalar_type exchangeFlux(const state_t_in & u) const
   {
-
     // to populate the jacobian each process needs the last grid
     // point solution from the previous process
     scalar_type buffer {0.0};
@@ -328,7 +318,6 @@ protected:
     }
     return buffer;
   }
-  
 
 protected:
   std::vector<scalar_type> mu_; // parameters
@@ -353,7 +342,7 @@ protected:
 
   mutable stdrcp<nativeBlockVec> U_{}; // state vector
   mutable stdrcp<nativeBlockVec> U0_{}; // initial state vector
-  stdrcp<jacobian_block_type> Jac_{};
+  stdrcp<jacobian_type> Jac_{};
 
 };//end class
 

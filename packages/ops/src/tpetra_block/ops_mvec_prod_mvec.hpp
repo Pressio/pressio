@@ -144,10 +144,31 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  throw std::runtime_error("Error, C = beta*C + alpha*A^T*A for tpetra block not yet supported");
+  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+  		"Types are not scalar compatible");
 
-  // static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
-  // 		"Types are not scalar compatible");
+  // get a tpetra multivector that views the data
+  const auto Amvv = A.data()->getMultiVectorView();
+  const auto numVecsA = A.numVectors();
+  assert(C.extent(0) == numVecsA);
+  assert(C.extent(1) == numVecsA);
+  scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>();
+
+  // A dot A = A^T*A, which yields a symmetric matrix
+  // only need to compute half and fill remaining entries accordingly
+  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
+  {
+    // colI is a Teuchos::RCP<Vector<...>>
+    auto colI = Amvv.getVector(i);
+    for (std::size_t j=i; j<(std::size_t)numVecsA; j++)
+    {
+      auto colJ = Amvv.getVector(j);
+      tmp = alpha*colI->dot(*colJ);
+      C(i,j) = beta*C(i,j) + tmp;
+      C(j,i) = beta*C(j,i) + tmp;
+    }
+  }
+
 
   // // get a tpetra multivector that views the data
   // const auto mvView = mvA.data()->getMultiVectorView();
