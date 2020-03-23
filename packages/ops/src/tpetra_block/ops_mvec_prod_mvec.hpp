@@ -78,26 +78,30 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	::pressio::containers::MatrixSharedMemBase<C_type> & C)
 {
-  throw std::runtime_error("Error, C = beta*C + alpha*A^T*B for tpetra block not yet supported");
+  static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
+  		"Types are not scalar compatible");
 
-  // static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
-  // 		"Types are not scalar compatible");
-//   // how many vectors are in mvA and mvB
-//   const auto numVecsA = mvA.globalNumVectors();
-//   const auto numVecsB = mvB.globalNumVectors();
-//   auto mvA_v = mvA.data()->getMultiVectorView();
-//   auto mvB_v = mvB.data()->getMultiVectorView();
-//   // compute dot between every column of A with every col of B
-//   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
-//   {
-//     // colI is a Teuchos::RCP<Vector<...>>
-//     const auto colI = mvA_v.getVector(i);
-//     for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
-//     {
-//       const auto colJ = mvB_v.getVector(j);
-//       C(i,j) = colI->dot(*colJ);
-//     }
-//   }
+  // get a tpetra multivector that views the data
+  const auto Amvv = A.data()->getMultiVectorView();
+  const auto Bmvv = B.data()->getMultiVectorView();
+  const auto numVecsA = A.numVectors();
+  const auto numVecsB = B.numVectors();
+  assert(A.extent(0) == B.extent(0));
+  assert(C.extent(0) == numVecsA);
+  assert(C.extent(1) == numVecsB);
+
+  scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>();
+
+  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
+  {
+    // colI is a Teuchos::RCP<Vector<...>>
+    auto colI = Amvv.getVector(i);
+    for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
+    {
+      auto colJ = Bmvv.getVector(j);
+      C(i,j) = beta*C(i,j) + alpha*colI->dot(*colJ);
+    }
+  }
 }
 
 template <
@@ -168,27 +172,6 @@ product(::pressio::transpose modeA,
       C(j,i) = beta*C(j,i) + tmp;
     }
   }
-
-
-  // // get a tpetra multivector that views the data
-  // const auto mvView = mvA.data()->getMultiVectorView();
-
-  // // how many vectors are in mvA and mvB
-  // const auto numVecsA = mvA.globalNumVectors();
-
-  // // A dot A = A^T*A, which yields a symmetric matrix
-  // // only need to compute half and fill remaining entries accordingly
-  // for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
-  // {
-  //   // colI is a Teuchos::RCP<Vector<...>>
-  //   const auto colI = mvView.getVector(i);
-  //   for (std::size_t j=i; j<(std::size_t)numVecsA; j++)
-  //   {
-  //     const auto colJ = mvView.getVector(j);
-  //     C(i,j) = colI->dot(*colJ);
-  //     C(j,i) = C(i,j);
-  //   }
-  // }
 }
 
 
@@ -204,7 +187,8 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  throw std::runtime_error("Error, C = beta*C + alpha*A^T*A for tpetra block not yet supported");
+  throw std::runtime_error("Error, C = beta*C + alpha*A^T*A where A = tpetra block \
+and C = Kokkos wrapper, is not yet supported");
 
   // static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
   // 		"Types are not scalar compatible");

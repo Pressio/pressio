@@ -76,7 +76,8 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  throw std::runtime_error("Error, y = beta*y + alpha*A*x for tpetra block not yet supported");
+  throw std::runtime_error("Error, y = beta*y + alpha*A*x where A = tpetra block \
+and x = Kokkos wrapper, is not yet supported");
 
   // static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
   //   "Types are not scalar compatible");
@@ -193,7 +194,8 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  throw std::runtime_error("Error, y = beta*y + alpha*A^T*x for tpetra block not yet supported");
+  throw std::runtime_error("Error, y = beta*y + alpha*A^T*x where A = tpetra block and \
+y = Kokkos wrapper, is not yet supported");
 
   // const auto mvA_mvv = mvA.data()->getMultiVectorView();
   // using tpetra_blockvector_t = typename containers::details::traits<vec_type>::wrapped_t;
