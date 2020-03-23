@@ -36,11 +36,14 @@ int main(int argc, char *argv[]){
     // read from file the jacobian of the decoder
     constexpr int romSize = 11;
     // store modes computed before from file
-    auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize, numCell,
-					   Comm, appobj.getDataMap());
+    auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize,
+    							 numCell, Comm,
+    							 appobj.getDataMap());
     native_dmat_t tpb_phi(*tpw_phi.data(), *appobj.getDataMap(), 1);
+    decoder_jac_t phi(tpb_phi);
+
     // create decoder obj
-    decoder_t decoderObj(tpb_phi);
+    decoder_t decoderObj(phi);
 
     // for this problem, my reference state = initial state
     auto & yRef = appobj.getInitialState();
@@ -73,7 +76,7 @@ int main(int argc, char *argv[]){
     solver.setMaxIterations(4);
 
     // integrate in time
-    pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 1, solver);
+    pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
     auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM);

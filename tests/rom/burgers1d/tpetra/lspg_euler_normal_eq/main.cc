@@ -37,9 +37,8 @@ int main(int argc, char *argv[]){
     // store modes computed before from file
     decoder_jac_t phi =
       pressio::rom::test::tpetra::readBasis("basis.txt", romSize, numCell,
-					   Comm, appobj.getDataMap());
-    const int numBasis = phi.numVectors();
-    if( numBasis != romSize ) return 0;
+    					   Comm, appobj.getDataMap());
+
     // create decoder obj
     decoder_t decoderObj(phi);
 
