@@ -137,9 +137,11 @@ public:
       if (i>0)
 	{
 	  auto uL = u.getLocalBlock(i-1);
-	  auto uC = u.getLocalBlock(i);
-	  rhsLoc = ( 0.5*(uL(0)*uL(0) - uC(0)*uC(0)) )/dx_;
+          uim1 = uL(0);
 	}
+      auto uC = u.getLocalBlock(i);
+      rhsLoc = ( 0.5*(uim1*uim1 - uC(0)*uC(0)) )/dx_;
+
       rhs.replaceLocalValues(i,&rhsLoc);
       i++;
     }
