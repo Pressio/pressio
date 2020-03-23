@@ -141,7 +141,7 @@ void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   // Tpetra::Vector is implemented as a special case of MultiVector //
   // so getLocalView returns a rank-2 view so in order to get
   // view with rank==1 I need to explicitly get the subview of that
-  const auto yLocalView_drank2 = y.data()->template getLocalView<dev_t>();
+  const auto yLocalView_drank2 = y.data()->getLocalViewDevice();
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
   KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
