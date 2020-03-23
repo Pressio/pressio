@@ -52,6 +52,7 @@
 
 #include "Tpetra_idot.hpp"
 #include "KokkosBlas2_gemv.hpp"
+#include <KokkosBlas1_scal.hpp>
 
 namespace pressio{ namespace ops{
 
@@ -128,19 +129,21 @@ void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<x_type>::device_type;
   static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
-  using dev_t  = tpetra_mv_dev_t;
-  //using sc_t = typename containers::details::traits<A_type>::scalar_t;
-  const char ctA = 'N';
 
   assert( A.numVectors() == x.data()->extent(0) );
 
-  const auto ALocalView_d = A.data()->template getLocalView<dev_t>();
-  // I need to do the following because Tpetra::Vector is implemented
-  // as a special case of MultiVector so getLocalView returns a rank-2 view
-  // so in order to get view with rank==1 I need to explicitly get the subview
-  const auto mvCLocalView_drank2 = y.data()->template getLocalView<dev_t>();
-  const auto mvCLocalView_drank1 = Kokkos::subview(mvCLocalView_drank2, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, mvCLocalView_drank1);
+  //using dev_t  = tpetra_mv_dev_t;
+  //using sc_t = typename containers::details::traits<A_type>::scalar_t;
+  const char ctA = 'N';
+
+  const auto ALocalView_d = A.data()->getLocalViewDevice();
+
+  // Tpetra::Vector is implemented as a special case of MultiVector //
+  // so getLocalView returns a rank-2 view so in order to get
+  // view with rank==1 I need to explicitly get the subview of that
+  const auto yLocalView_drank2 = y.data()->template getLocalView<dev_t>();
+  const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
+  KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
 }//end namespace pressio::ops::impl
 
@@ -216,6 +219,12 @@ product(::pressio::transpose mode,
 		typename containers::details::traits<x_type>::device_t,
 		typename containers::details::traits<y_type>::device_t>::value,
 		"Tpetra MV dot V: V and result do not have the same device type");
+
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+  if (alpha != one and beta != zero)
+    throw std::runtime_error("y = beta * y + alpha*op(A)*x where A = Tpetra MV wrapper and \
+x=Tpetra Vector wrapper and y=Kokkos wrapper is not yet supported for beta!=0 and alpha!=1.");
 
   auto request = Tpetra::idot( *y.data(), *A.data(), *x.data());
   request->wait();

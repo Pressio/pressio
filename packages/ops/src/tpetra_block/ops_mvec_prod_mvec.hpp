@@ -187,36 +187,31 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  throw std::runtime_error("Error, C = beta*C + alpha*A^T*A where A = tpetra block \
-and C = Kokkos wrapper, is not yet supported");
+  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+  		"Types are not scalar compatible");
 
-  // static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
-  // 		"Types are not scalar compatible");
+  // check traits of the block mv
+  using scalar_t     = typename ::pressio::containers::details::traits<A_type>::scalar_t;
+  using tpetra_mvb_t = typename ::pressio::containers::details::traits<A_type>::wrapped_t;
 
-  // // check traits of the block mv
-  // using scalar_t     = typename ::pressio::containers::details::traits<mvec_t>::scalar_t;
-  // using tpetra_mvb_t = typename ::pressio::containers::details::traits<mvec_t>::wrapped_t;
+  // from the mvb type we can get the underlying regular tpetra::mv and map
+  using tpetra_mv_t  = typename tpetra_mvb_t::mv_type;
+  using map_t	     = typename tpetra_mv_t::map_type;
 
-  // // from the mvb type we can get the underlying regular tpetra::mv
-  // using tpetra_mv_t  = typename tpetra_mvb_t::mv_type;
-  // using map_t	     = typename tpetra_mv_t::map_type;
+  // tpetra multivector that views the tpetra block data
+  const auto mvView = A.data()->getMultiVectorView();
 
-  // // get a tpetra multivector that views the tpetra block data
-  // const auto mvView = A.data()->getMultiVectorView();
+  const auto indexBase = mvView.getMap()->getIndexBase();
+  const auto comm = mvView.getMap()->getComm();
+  // C should be symmetric
+  assert( C.extent(0) == C.extent(1) );
+  const auto n = C.extent(0);
+  Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
+  // create multivector that views the Kokkos matrix result
+  tpetra_mv_t Cmv(replMap, *C.data());
 
-  // const auto indexBase = mvView.getMap()->getIndexBase();
-  // const auto comm = mvView.getMap()->getComm();
-  // // C should be symmetric
-  // assert( C.rows() == C.cols() );
-  // const auto n = C.rows();
-  // Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
-  // // create multivector that views the Kokkos matrix result
-  // tpetra_mv_t Cmv(replMap, *C.data());
-
-  // constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
-  // constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
-  // // do the operation C = A^T A
-  // Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, mvView, mvView, beta);
+  // do the operation C = A^T A
+  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, mvView, mvView, beta);
 }
 
 template <typename C_type, typename A_type, typename scalar_type>

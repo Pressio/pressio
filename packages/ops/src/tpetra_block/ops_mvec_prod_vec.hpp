@@ -76,32 +76,31 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  throw std::runtime_error("Error, y = beta*y + alpha*A*x where A = tpetra block \
-and x = Kokkos wrapper, is not yet supported");
+  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+    "Types are not scalar compatible");
 
-  // static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
-  //   "Types are not scalar compatible");
+  // make sure the tpetra mv has same exe space of the kokkos vector wrapper
+  using tpetra_mvb_dev_t = typename ::pressio::containers::details::traits<A_type>::device_t;
+  using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<x_type>::device_type;
+  static_assert( std::is_same<tpetra_mvb_dev_t, kokkos_v_dev_t>::value,
+  		 "product: tpetra MV and kokkos wrapper need to have same device type" );
 
-  // // make sure the tpetra mv has same exe space of the kokkos vector wrapper
-  // using tpetra_mv_dev_t = typename ::pressio::containers::details::traits<A_type>::device_t;
-  // using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<x_type>::device_type;
-  // static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
-  // 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
+  assert( A.numVectors() == x.extent(0) );
+  const char ctA = 'N';
 
-  // assert( A.globalNumVectors() == x.size() );
-  // const char ctA = 'N';
+  // the the underlying tpetra multivector
+  const auto mvViewA = A.data()->getMultiVectorView();
 
-  // // the the underlying tpetra multivector
-  // const auto mvView = A.data()->getMultiVectorView();
-  // // get a local view
-  // const auto ALocalView_d = mvView.getLocalViewDevice();
-  // // I need to do the following because Tpetra::Vector is implemented
-  // // as a special case of MultiVector so getLocalView returns a rank-2 view
-  // // so in order to get view with rank==1 I need to explicitly get the subview
-  // const auto yView = y.data()->getVectorView();
-  // const auto yLocalView_drank2 = yView.getLocalViewDevice();
-  // const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
-  // KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
+  // get a local view
+  const auto yView = y.data()->getVectorView();
+  const auto ALocalView_d = mvViewA.getLocalViewDevice();
+
+  // Tpetra::Vector is implemented as a special case of MultiVector //
+  // so getLocalView returns a rank-2 view so in order to get
+  // view with rank==1 I need to explicitly get the subview of that
+  const auto yLocalView_drank2 = yView.getLocalViewDevice();
+  const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
+  KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
 
 
@@ -194,14 +193,17 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  throw std::runtime_error("Error, y = beta*y + alpha*A^T*x where A = tpetra block and \
-y = Kokkos wrapper, is not yet supported");
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+  if (alpha != one and beta != zero)
+    throw std::runtime_error("y = beta * y + alpha*op(A)*x where A = Tpetra MV wrapper and \
+x=Tpetra Vector wrapper and y=Kokkos wrapper is not yet supported for beta!=0 and alpha!=1.");
 
-  // const auto mvA_mvv = mvA.data()->getMultiVectorView();
-  // using tpetra_blockvector_t = typename containers::details::traits<vec_type>::wrapped_t;
-  // const auto vecB_vv = const_cast<tpetra_blockvector_t*>(vecB.data())->getVectorView();
-  // auto request = Tpetra::idot( *result.data(), mvA_mvv, vecB_vv);
-  // request->wait();
+  const auto A_mvv = A.data()->getMultiVectorView();
+  using tpetra_blockvector_t = typename containers::details::traits<x_type>::wrapped_t;
+  const auto x_vv = const_cast<tpetra_blockvector_t*>(x.data())->getVectorView();
+  auto request = Tpetra::idot( *y.data(), A_mvv, x_vv);
+  request->wait();
 }
 
 }}//end namespace pressio::ops
