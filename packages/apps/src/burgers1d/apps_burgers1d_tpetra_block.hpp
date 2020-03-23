@@ -68,10 +68,8 @@ protected:
   using map_t		= Tpetra::Map<>;
   using nativeBlockVec	= Tpetra::BlockVector<>;
   using nativeVec	= Tpetra::Vector<>;
-
   using go_t		= typename map_t::global_ordinal_type;
   using lo_t		= typename map_t::local_ordinal_type;
-
   using tcomm_t		= Teuchos::MpiComm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
   using rcpmap_t	= Teuchos::RCP<const map_t>;
@@ -105,7 +103,7 @@ public:
   };
 
   void velocity(const state_type & u,
-		const scalar_type /* t */,
+		const scalar_type t,
 		velocity_type & rhs) const
   {
 
@@ -128,23 +126,17 @@ public:
     for (auto const & it : myGel_)
     {
       uim1 = valueFromLeft;
+      const auto uCi = u.getLocalBlock(i)(0);
       if (it==0)
-	{
-	  uim1 = mu_[0]; // left boundary condition
-	  auto uC = u.getLocalBlock(i);
-	  rhsLoc = ( 0.5*(uim1*uim1 - uC(0)*uC(0)) )/dx_;
-	}
+	uim1 = mu_[0];
       if (i>0)
-	{
-	  auto uL = u.getLocalBlock(i-1);
-          uim1 = uL(0);
-	}
-      auto uC = u.getLocalBlock(i);
-      rhsLoc = ( 0.5*(uim1*uim1 - uC(0)*uC(0)) )/dx_;
+	uim1 = u.getLocalBlock(i-1)(0);
 
+      rhsLoc = ( 0.5*(uim1*uim1 - uCi*uCi) )/dx_;
       rhs.replaceLocalValues(i,&rhsLoc);
       i++;
     }
+
     auto xgrid_v = xGrid_->getDataNonConst();
     for (i=0; i<NumMyElem_; ++i){
       auto rhsVal = rhs.getLocalBlock(i);
@@ -153,17 +145,15 @@ public:
     }
   }
 
-
   velocity_type velocity(const state_type & u,
 			 const scalar_type t) const
   {
-    map_t meshMap(Ncell_, 0, comm_);
-    velocity_type R(meshMap,1);
+    velocity_type R(*dataMap_,1);
     velocity(u,t,R);
     return R;
   }
 
-  // computes: A = Jac B where B is a multivector
+  // computes: A = Jac B where B is dense
   void applyJacobian(const state_type & y,
 		     const dense_matrix_type & B,
 		     scalar_type t,
@@ -173,9 +163,10 @@ public:
     const auto B_vv = B.getMultiVectorView();
     auto A_vv	    = A.getMultiVectorView();
     Jac_->apply(B_vv, A_vv);
+    //Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
   }
 
-  // computes: A = Jac B
+  // computes: A = Jac B where B is dense
   dense_matrix_type applyJacobian(const state_type & y,
 				  const dense_matrix_type & B,
 				  scalar_type t) const
@@ -195,14 +186,13 @@ protected:
     totRanks_ =  comm_->getSize();
     // distribute cells
     dataMap_ = Teuchos::rcp(new map_t(Ncell_, 0, comm_));
-    map_t meshMap_(Ncell_, 0, comm_);
 
     NumMyElem_ = dataMap_->getNodeNumElements();
     auto minGId = dataMap_->getMinGlobalIndex();
 
     myGel_.resize(NumMyElem_);
     std::iota(myGel_.begin(), myGel_.end(), minGId);
-    dataMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+    //dataMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
 
     if (myRank_==1){
       for (auto it : myGel_)
@@ -220,20 +210,22 @@ protected:
       xGridv[i] = dx_*it + dx_*0.5;
       i++;
     };
-    xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+    //xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
 
     // init condition
-    U0_ = std::make_shared<nativeBlockVec>(meshMap_,blockSize);
+    U0_ = std::make_shared<nativeBlockVec>(*dataMap_,blockSize);
     U0_->putScalar(1.0);
 
-    U_ = std::make_shared<nativeBlockVec>(meshMap_,blockSize);
+    U_ = std::make_shared<nativeBlockVec>(*dataMap_,blockSize);
     U_->putScalar(1.0);
 
     // construct a graph for the block matrix
     crs_graph_type dataGraph(dataMap_,nonZrPerRow_);
     this->assembleGraph(dataGraph);
     Jac_ = std::make_shared<jacobian_type>(dataGraph,blockSize);
-    this->computeJacobianUpdate(*U_, *Jac_, 0.0);
+
+    //this->computeJacobianUpdate(*U_, *Jac_, 0.0);
+    Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
   };
 
   void computeJacobianUpdate(const state_type & u,
@@ -241,41 +233,40 @@ protected:
 			     const scalar_type ) const
   {
     const scalar_type buffer = exchangeFlux(u);
+
+    const lo_t* localColInds;
+    scalar_type* vals;
     for (lo_t i=0; i<NumMyElem_; i++)
     {
       auto thisGID = myGel_[i];
+      auto uC = u.getLocalBlock(i);
       if (thisGID==0)
-      {
-	auto uC = u.getLocalBlock(i);
-	// Get a view of the current row.
-	const lo_t* localColInds;
-	scalar_type* vals;
-	lo_t numEntries = 1;
-	int err = 0;
-	err = jac.getLocalRowView(i, localColInds, vals, numEntries);
-	if (err != 0) {
-	  break;
+	{
+	  lo_t numEntries = 1;
+	  int err = 0;
+	  err = jac.getLocalRowView(i, localColInds, vals, numEntries);
+	  if (err != 0) {
+	    break;
+	  }
+	  vals[0]  =  -dxInv_ * uC(0);
 	}
-	vals[0]  =  -dxInv_ * uC(0);
-      }
       else
-      {
-	const lo_t* localColInds;
-	scalar_type* vals;
-	lo_t numEntries = 2;
-	int err = 0;
-	err = jac.getLocalRowView(i, localColInds, vals, numEntries);
+	{
+	  lo_t numEntries = 2;
+	  int err = 0;
+	  err = jac.getLocalRowView(i, localColInds, vals, numEntries);
 
-	if (i==0){
-	  vals[0] = dxInv_ * buffer;
+	  if (i==0){
+	    // don't know why the indices here must be inverted, but this is right/
+	    // looks like block does strange here for storing the col indices of this point
+	    vals[1] = dxInv_ * buffer;
+	    vals[0] = -dxInv_ * uC(0);
+	  }
+	  if (i>0){
+	    vals[0] = dxInv_ * u.getLocalBlock(i-1)(0);
+	    vals[1] = -dxInv_ * uC(0);
+	  }
 	}
-	if (i>0){
-	  auto uC = u.getLocalBlock(i-1);
-	  vals[0] = dxInv_ * uC(0);
-	}
-	auto uC = u.getLocalBlock(i);
-	vals[1] = -dxInv_ * uC(0);
-      }
     }
   }//end
 
@@ -300,9 +291,7 @@ protected:
     graph.fillComplete();
   }//end
 
-
-  template <typename state_t_in>
-  scalar_type exchangeFlux(const state_t_in & u) const
+  scalar_type exchangeFlux(const state_type & u) const
   {
     // to populate the jacobian each process needs the last grid
     // point solution from the previous process
@@ -334,8 +323,7 @@ protected:
 
   Teuchos::RCP<Teuchos::FancyOStream> wrappedCout_;
   rcpcomm_t comm_{};
-  rcpmap_t dataMap_{}; //Teuchos::RCP<const map_t> dataMap_{};
-  map_t meshMap_{};
+  rcpmap_t dataMap_{};
 
   int myRank_{};
   int totRanks_{};

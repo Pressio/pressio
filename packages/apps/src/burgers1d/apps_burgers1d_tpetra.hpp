@@ -73,6 +73,7 @@ protected:
   using rcpmap_t	= Teuchos::RCP<const map_t>;
 
   template<typename T> using stdrcp = std::shared_ptr<T>;
+  using crs_graph_type = Tpetra::CrsGraph<>;
 
 public:
   /* these types exposed because need to be detected */
@@ -149,7 +150,7 @@ public:
     return R;
   }
 
-  // computes: A = Jac B where B is a multivector
+  // computes: A = Jac B where B is dense
   void applyJacobian(const state_type & y,
 		     const dense_matrix_type & B,
 		     scalar_type t,
@@ -157,9 +158,10 @@ public:
   {
     computeJacobianReplace(y, *Jac_, t);
     Jac_->apply(B, A);
+    // Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
   }
 
-  // computes: A = Jac B where B is a multivector
+  // computes: A = Jac B where B is dense
   dense_matrix_type applyJacobian(const state_type & y,
 				  const dense_matrix_type & B,
 				  scalar_type t) const
@@ -185,7 +187,7 @@ protected:
     auto minGId = dataMap_->getMinGlobalIndex();
     myGel_.resize(NumMyElem_);
     std::iota(myGel_.begin(), myGel_.end(), minGId);
-    dataMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+    //dataMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
 
     if (myRank_==1){
       for (auto it : myGel_)
@@ -203,7 +205,7 @@ protected:
       xGridv[i] = dx_*it + dx_*0.5;
       i++;
     };
-    xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+    //xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
 
     // init condition
     U0_ = std::make_shared<nativeVec>(dataMap_);
@@ -212,8 +214,12 @@ protected:
     U_ = std::make_shared<nativeVec>(dataMap_);
     U_->putScalar(1.0);
 
-    Jac_ = std::make_shared<jacobian_type>(dataMap_, nonZrPerRow_);
-    this->computeJacobianInsert(*U_, *Jac_, 0.0);
+    Teuchos::RCP<crs_graph_type> dataGraph =
+      Teuchos::rcp(new crs_graph_type(dataMap_, nonZrPerRow_));
+
+    this->assembleGraph(*dataGraph);
+    Jac_ = std::make_shared<jacobian_type>(dataGraph);
+    Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
   };
 
   void computeJacobianReplace(const state_type & u,
@@ -244,6 +250,7 @@ protected:
       else{
 	ci2[0] = thisGID-1;
 	ci2[1] = thisGID;
+
 	if (i==0) va2[0] = dxInv_ * buffer;
 	if (i>0) va2[0] = dxInv_ * u_v[i-1];
 
@@ -256,44 +263,26 @@ protected:
     jac.fillComplete();
   }//end
 
-
-  void computeJacobianInsert(const state_type & u,
-			     jacobian_type & jac,
-			     const scalar_type /*t*/) const
+  void assembleGraph(crs_graph_type & graph)
   {
-    const scalar_type buffer = exchangeFlux(u);
-    auto u_v = u.getData();
-
     using tarr_dt = Teuchos::ArrayView<scalar_type>;
     using tarr_it = Teuchos::ArrayView<go_t>;
-    std::array<scalar_type,1> va1;
     std::array<go_t,1> ci1;
-    std::array<scalar_type,2> va2;
     std::array<go_t,2> ci2;
-
     for (lo_t i=0; i<NumMyElem_; i++){
       auto thisGID = myGel_[i];
       if (thisGID==0){
-	va1[0] = -dxInv_ * u_v[0];
 	ci1[0] = 0;
-	jac.insertGlobalValues(thisGID, tarr_it(ci1.data(),1),
-			       tarr_dt(va1.data(),1) );
+	graph.insertGlobalIndices(thisGID, tarr_it(ci1.data(),1));
       }
       else{
 	ci2[0] = thisGID-1;
 	ci2[1] = thisGID;
-	if (i==0) va2[0] = dxInv_ * buffer;
-	if (i>0) va2[0] = dxInv_ * u_v[i-1];
-
-	va2[1] = -dxInv_ * u_v[i];
-	jac.insertGlobalValues(thisGID, tarr_it(ci2.data(),2),
-			       tarr_dt(va2.data(),2) );
+	graph.insertGlobalIndices(thisGID, tarr_it(ci2.data(),2));
       }
     }
-
-    jac.fillComplete();
+    graph.fillComplete();
   }//end
-
 
   scalar_type exchangeFlux(const state_type & u) const
   {
