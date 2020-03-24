@@ -90,7 +90,7 @@ product(::pressio::transpose modeA,
   assert(C.extent(0) == numVecsA);
   assert(C.extent(1) == numVecsB);
 
-  scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>();
+  scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>(); //is this needed?
 
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
   {
