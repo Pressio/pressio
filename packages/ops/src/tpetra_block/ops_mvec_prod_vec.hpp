@@ -126,6 +126,7 @@ product(::pressio::nontranspose mode,
 
   const auto numVecs = A.numVectors();
   assert(size_t(numVecs) == size_t(x.extent(0)));
+  (void)numVec;
 
   using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
 				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
