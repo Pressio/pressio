@@ -1,7 +1,6 @@
 
 #include "pressio_rom.hpp"
 #include "pressio_apps.hpp"
-#include "utils_kokkos.hpp"
 #include "utils_tpetra.hpp"
 
 namespace {
@@ -15,7 +14,7 @@ template <
 void doRun(rcpcomm_t & Comm, int rank)
 {
 
-  using fom_t		= pressio::apps::Burgers1dTpetraBlock;
+  using fom_t		= pressio::apps::Burgers1dTpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t= typename fom_t::state_type;
   //using native_dmat_d_t = typename fom_t::dense_matrix_type;
@@ -47,15 +46,10 @@ void doRun(rcpcomm_t & Comm, int rank)
   int romSize = 11;
 
   // create/read jacobian of the decoder
-  auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize,
-                 numCell, Comm, appObj.getDataMap());
-  fom_dmat_t tpb_phi(*tpw_phi.data(), *appObj.getDataMap(), 1);
-  decoder_d_t decoderObj(tpb_phi);
+  const auto phiNative = pressio::rom::test::tpetra::readBasis("basis.txt", romSize, numCell,
+                                                               Comm, appObj.getDataMap());
+  decoder_d_t decoderObj(phiNative);
 
-
-
-  // for this problem, my reference state = initial state
-  // get initial condition
   auto & yFOM_IC_native = appObj.getInitialState();
 
   // wrap into pressio container
@@ -100,6 +94,7 @@ void doRun(rcpcomm_t & Comm, int rank)
   constexpr int numWindows     = static_cast<int>(finalTime/dt)/numStepsInWindow;
 
   auto startTime = std::chrono::high_resolution_clock::now();
+
   for (auto iWind = 0; iWind < numWindows; iWind++){
     wlsSystem.advanceOneWindow(wlsState, GNSolver, iWind, dt);
   }
@@ -116,16 +111,12 @@ void doRun(rcpcomm_t & Comm, int rank)
   using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_d_t>;
   fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
   fomStateReconstructor(wlsCurrentState, yFinal);
-
-  // this is a reproducing ROM test, so the final reconstructed state
-  // has to match the FOM solution obtained with euler, same time-step, for 10 steps
-  auto yFF_v = yFinal.data()->getVectorView().getData();
+  auto yFF_v = yFinal.data()->getData();
   int shift = (rank==0) ? 0 : 10;
   const int myn = yFinal.data()->getMap()->getNodeNumElements();
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
   for (auto i=0; i<myn; i++)
     if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
-
   std::cout << checkStr << std::endl;
 
 }
@@ -137,18 +128,13 @@ int main(int argc, char *argv[])
   using tcomm_t		   = Teuchos::MpiComm<int>;
   using rcpcomm_t	   = Teuchos::RCP<const tcomm_t>;
 
-
-  // scope guard needed for tpetra
-  Kokkos::initialize (argc, argv);
-  {
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);
   {
     int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
-    //doRun< tcomm_t, pressio::solvers::linear::direct::potrsU, pressio::matrixUpperTriangular >(Comm, rank);
+
+    doRun< tcomm_t, pressio::solvers::linear::direct::potrsU, pressio::matrixUpperTriangular >(Comm, rank);
     doRun< tcomm_t, pressio::solvers::linear::direct::potrsL, pressio::matrixLowerTriangular >(Comm, rank);
-  }
-  Kokkos::finalize();
   }
   return 0;
 }
