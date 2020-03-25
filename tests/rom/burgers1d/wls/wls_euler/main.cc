@@ -8,19 +8,23 @@ namespace {
 //======= For tpetra =============
 template <typename decoder_d_t, typename fom_dmat_t, typename rcpcomm_t>
 decoder_d_t readBasis( pressio::apps::Burgers1dTpetra & appObj, int  romSize, int  fomSize, rcpcomm_t Comm){
+
   const auto phiNative = pressio::rom::test::tpetra::readBasis("basis.txt", romSize, fomSize,Comm, appObj.getDataMap());
   decoder_d_t decoderObj(phiNative);
+
   return decoderObj;
 }
 
 template<typename y1_t, typename y2_t>
 std::string checkSol(pressio::apps::Burgers1dTpetra & appObj ,y1_t yFinal,y2_t trueY,int rank){
   std::string checkStr {"PASSED"};
+
   auto yFF_v = yFinal.data()->getData();
   int shift = (rank==0) ? 0 : 10;
   const int myn = yFinal.data()->getMap()->getNodeNumElements();
   for (auto i=0; i<myn; i++)
     if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
+
   return checkStr; 
 }
 //===================================
@@ -29,19 +33,23 @@ std::string checkSol(pressio::apps::Burgers1dTpetra & appObj ,y1_t yFinal,y2_t t
 //for tpetra_block=================================
 template <typename decoder_d_t, typename fom_dmat_t, typename rcpcomm_t>
 decoder_d_t readBasis( pressio::apps::Burgers1dTpetraBlock & appObj, int  romSize, int  fomSize, rcpcomm_t Comm){
+
   auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize,fomSize, Comm, appObj.getDataMap());
   fom_dmat_t tpb_phi(*tpw_phi.data(), *appObj.getDataMap(), 1);
   decoder_d_t decoderObj(tpb_phi);
+
   return decoderObj;
 }
 template<typename y1_t, typename y2_t>
 std::string checkSol(pressio::apps::Burgers1dTpetraBlock & appObj ,y1_t yFinal,y2_t trueY,int rank){
+
   std::string checkStr {"PASSED"};
   auto yFF_v = yFinal.data()->getVectorView().getData();
   int shift = (rank==0) ? 0 : 10;
   const int myn = yFinal.data()->getMap()->getNodeNumElements();
   for (auto i=0; i<myn; i++)
     if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
+
   return checkStr;
 }
 //==============================================
@@ -75,7 +83,6 @@ template <
   typename fom_t,
   typename rom_data_t,
   typename tcomm_t,
-  typename lin_solver_tag,
   typename hessian_matrix_structure_tag,
   typename rcpcomm_t
   >
@@ -90,7 +97,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
 
   // wls state type
   using wls_state_d_t	= typename rom_data_t::wls_state_d_t;
-  using hessian_d_t	= typename rom_data_t::hessian_d_t;//pressio::containers::Matrix<k2dLl_d>;
+  using hessian_d_t	= typename rom_data_t::hessian_d_t;
 
   // decoder jacobian type
   using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, wls_state_d_t, fom_state_t>;
@@ -121,8 +128,6 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   // -----------------
   // lin solver
   // -----------------
-  //using lin_solver_tag =  pressio::matrixLowerTriangular;
-  //using linear_solver_t = pressio::solvers::direct::KokkosDirect<lin_solver_tag, hessian_d_t>;
   using linear_solver_t = typename rom_data_t::linear_solver_t;
   linear_solver_t linear_solver;
 
@@ -191,8 +196,6 @@ int main(int argc, char *argv[])
   using rom_data_t_kokkos= romDataTypeKokkos<scalar_t>;
   using rom_data_t_eigen= romDataTypeEigen<scalar_t>;
 
-  //using wls_state_d_t   = pressio::containers::Vector<k1dLl_d>;
-
   // scope guard needed for tpetra
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);
   {
@@ -200,10 +203,10 @@ int main(int argc, char *argv[])
     int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
     //doRun< tcomm_t, pressio::solvers::linear::direct::potrsU, pressio::matrixUpperTriangular >(Comm, rank);
-    std::string checkStr1 = doRun< fom_t_tpetra, rom_data_t_eigen, tcomm_t, pressio::solvers::linear::direct::potrsL, pressio::matrixLowerTriangular >(Comm, rank);
-    std::string checkStr2 = doRun< fom_t_tpetra, rom_data_t_kokkos, tcomm_t, pressio::solvers::linear::direct::potrsL, pressio::matrixLowerTriangular >(Comm, rank);
-    std::string checkStr3 = doRun< fom_t_tpetra_block, rom_data_t_eigen, tcomm_t, pressio::solvers::linear::direct::potrsL, pressio::matrixLowerTriangular >(Comm, rank);
-    std::string checkStr4 = doRun< fom_t_tpetra_block, rom_data_t_kokkos, tcomm_t, pressio::solvers::linear::direct::potrsL, pressio::matrixLowerTriangular >(Comm, rank);
+    std::string checkStr1 = doRun< fom_t_tpetra, rom_data_t_eigen, tcomm_t,  pressio::matrixLowerTriangular >(Comm, rank);
+    std::string checkStr2 = doRun< fom_t_tpetra, rom_data_t_kokkos, tcomm_t, pressio::matrixLowerTriangular >(Comm, rank);
+    std::string checkStr3 = doRun< fom_t_tpetra_block, rom_data_t_eigen, tcomm_t, pressio::matrixLowerTriangular >(Comm, rank);
+    std::string checkStr4 = doRun< fom_t_tpetra_block, rom_data_t_kokkos, tcomm_t,pressio::matrixLowerTriangular >(Comm, rank);
 
     if (checkStr1 == "FAILED"){
       std::cout << "WLS failed on fom_t_tpetra, rom_data_t_eigen" << std::endl;
