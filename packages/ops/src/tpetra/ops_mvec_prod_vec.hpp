@@ -51,8 +51,8 @@
 #define OPS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_VECTOR_HPP_
 
 #include "Tpetra_idot.hpp"
+#include <KokkosBlas1_axpby.hpp>
 #include "KokkosBlas2_gemv.hpp"
-#include <KokkosBlas1_scal.hpp>
 
 namespace pressio{ namespace ops{
 
@@ -85,28 +85,18 @@ void _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
   // size of vecB
   assert(size_t(numVecs) == size_t(x.extent(0)));
 
-  // my number of rows
-  const auto myNrows = A.extentLocal(0);
+  using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
+				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
+  kokkos_view_t xview(x.data()->data(), x.extent(0));
 
-  // get the wrapped trilinos tpetra multivector
-  auto trilD = A.data();
-  //  trilD->template sync<Kokkos::HostSpace>();
-  auto mv2d = trilD->template getLocalView<Kokkos::HostSpace>();
-
-  // get wrapped data for the result too
-  auto y1 = y.data()->template getLocalView<Kokkos::HostSpace>();
-  auto y2 = Kokkos::subview(y1, Kokkos::ALL(), 0);
-  y.data()->template modify<Kokkos::HostSpace>();
-
-  // loop
-  for (size_t i=0; i<(size_t)myNrows; i++){
-    y2[i] = beta*y2[i];
-    for (size_t j=0; j<(size_t)numVecs; j++){
-      y2[i] += alpha * mv2d(i,j) * x[j];
-    }
-  }
-  using device_t = typename ::pressio::containers::details::traits<y_type>::device_t;
-  y.data()->template sync<device_t>();
+  const auto ALocalView_h = A.data()->getLocalViewHost();
+  const auto yLocalView_h = y.data()->getLocalViewHost();
+  const char ctA = 'N';
+  // Tpetra::Vector is implemented as a special case of MultiVector //
+  // so getLocalView returns a rank-2 view so in order to get
+  // view with rank==1 I need to explicitly get the subview of that
+  const auto yLocalView_drank1 = Kokkos::subview(yLocalView_h, Kokkos::ALL(), 0);
+  KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
 }
 
 
@@ -131,11 +121,7 @@ void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
 
   assert( A.numVectors() == x.data()->extent(0) );
-
-  //using dev_t  = tpetra_mv_dev_t;
-  //using sc_t = typename containers::details::traits<A_type>::scalar_t;
   const char ctA = 'N';
-
   const auto ALocalView_d = A.data()->getLocalViewDevice();
 
   // Tpetra::Vector is implemented as a special case of MultiVector //
@@ -220,14 +206,12 @@ product(::pressio::transpose mode,
 		typename containers::details::traits<y_type>::device_t>::value,
 		"Tpetra MV dot V: V and result do not have the same device type");
 
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
-  constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-  if (alpha != one and beta != zero)
-    throw std::runtime_error("y = beta * y + alpha*op(A)*x where A = Tpetra MV wrapper and \
-x=Tpetra Vector wrapper and y=Kokkos wrapper is not yet supported for beta!=0 and alpha!=1.");
-
-  auto request = Tpetra::idot( *y.data(), *A.data(), *x.data());
+  using kokkos_v_t = typename ::pressio::containers::details::traits<y_type>::wrapped_t;
+  using v_t = ::pressio::containers::Vector<kokkos_v_t>;
+  v_t ATx(y.extent(0));
+  auto request = Tpetra::idot(*ATx.data(), *A.data(), *x.data());
   request->wait();
+  KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
 }
 
 // y = sharedmem vec not kokkos

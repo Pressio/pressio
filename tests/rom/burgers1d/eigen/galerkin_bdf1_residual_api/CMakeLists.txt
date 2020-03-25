@@ -1,3 +1,3 @@
 
 configure_file(../../basis/svd_basis_ncell20_t010_dt001_implicit_euler.txt basis.txt COPYONLY)
-add_serial_exe_and_test(burgers1d_tpetra_block_wls_euler_gn_normal_eqns rom main.cc "PASSED")
+add_serial_exe_and_test(burgers1d_eigen_galerkin_bdf1_residual_api rom main.cc "PASSED")

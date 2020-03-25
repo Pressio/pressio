@@ -153,4 +153,10 @@
 #include "rom/src/wls/policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
 #include "rom/src/wls/apis/rom_wls_hessian_gradient_system_api.hpp"
 
+//------------------------------------
+// experimental galerkin residual api
+//------------------------------------
+#include "rom/src/experimental/galerkin_residual_api/rom_galerkin_problem_default.hpp"
+#include "rom/src/experimental/galerkin_residual_api/rom_galerkin_problem_generator.hpp"
+
 #endif
