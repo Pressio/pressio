@@ -84,6 +84,7 @@ void _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
   const auto numVecs = A.numVectors();
   // size of vecB
   assert(size_t(numVecs) == size_t(x.extent(0)));
+  (void)numVecs;
 
   using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
 				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
