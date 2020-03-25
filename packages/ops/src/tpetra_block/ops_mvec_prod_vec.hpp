@@ -126,26 +126,19 @@ product(::pressio::nontranspose mode,
 
   const auto numVecs = A.numVectors();
   assert(size_t(numVecs) == size_t(x.extent(0)));
-  const auto myNrows = A.extentLocal(0);
 
-  // get the wrapped trilinos tpetra multivector
-  auto trilD = A.data()->getMultiVectorView();
-  auto mv2d = trilD.getLocalViewHost();
+  using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
+				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
+  kokkos_view_t xview(x.data()->data(), x.extent(0));
 
-  // get wrapped data for the result
-  auto y1 = y.data()->getVectorView().getLocalViewHost();
-  auto y2 = Kokkos::subview(y1, Kokkos::ALL(), 0);
-  y.data()->template modify<Kokkos::HostSpace>();
-
-  // loop
-  for (size_t i=0; i<(size_t)myNrows; i++){
-    y2[i] = beta*y2[i];
-    for (size_t j=0; j<(size_t)numVecs; j++){
-      y2[i] += alpha * mv2d(i,j) * x[j];
-    }
-  }
-  using device_t = typename ::pressio::containers::details::traits<y_type>::device_t;
-  y.data()->template sync<device_t>();
+  const auto ALocalView_h = A.data()->getMultiVectorView().getLocalViewHost();
+  const auto yLocalView_h = y.data()->getVectorView().getLocalViewHost();
+  const char ctA = 'N';
+  // Tpetra::Vector is implemented as a special case of MultiVector //
+  // so getLocalView returns a rank-2 view so in order to get
+  // view with rank==1 I need to explicitly get the subview of that
+  const auto yLocalView_drank1 = Kokkos::subview(yLocalView_h, Kokkos::ALL(), 0);
+  KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
 }
 
 
@@ -209,7 +202,6 @@ product(::pressio::transpose mode,
   using kokkos_v_t = typename ::pressio::containers::details::traits<y_type>::wrapped_t;
   using v_t = ::pressio::containers::Vector<kokkos_v_t>;
   using tpetra_blockvector_t = typename containers::details::traits<x_type>::wrapped_t;
-  using tpetra_vec_t = typename tpetra_blockvector_t::vec_type;
 
   const auto A_mvv = A.data()->getMultiVectorView();
   const auto x_vv = const_cast<tpetra_blockvector_t*>(x.data())->getVectorView();
