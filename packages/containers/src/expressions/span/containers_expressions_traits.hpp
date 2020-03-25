@@ -125,6 +125,8 @@ struct traits<
 
   using wrapped_t = typename ::pressio::containers::details::traits<v_type>::wrapped_t;
   using execution_space = typename ::pressio::containers::details::traits<v_type>::execution_space;
+  using device_t = typename ::pressio::containers::details::traits<v_type>::device_t;
+  using device_type = typename ::pressio::containers::details::traits<v_type>::device_t;
   using scalar_t  = typename ::pressio::containers::details::traits<v_type>::scalar_t;
   using ordinal_t = typename ::pressio::containers::details::traits<v_type>::ordinal_t;
   using size_t    = ordinal_t;

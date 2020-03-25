@@ -51,8 +51,8 @@
 #define OPS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_VECTOR_HPP_
 
 #include "Tpetra_idot.hpp"
+#include <KokkosBlas1_axpby.hpp>
 #include "KokkosBlas2_gemv.hpp"
-#include <KokkosBlas1_scal.hpp>
 
 namespace pressio{ namespace ops{
 
@@ -220,14 +220,12 @@ product(::pressio::transpose mode,
 		typename containers::details::traits<y_type>::device_t>::value,
 		"Tpetra MV dot V: V and result do not have the same device type");
 
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
-  constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-  if (alpha != one and beta != zero)
-    throw std::runtime_error("y = beta * y + alpha*op(A)*x where A = Tpetra MV wrapper and \
-x=Tpetra Vector wrapper and y=Kokkos wrapper is not yet supported for beta!=0 and alpha!=1.");
-
-  auto request = Tpetra::idot( *y.data(), *A.data(), *x.data());
+  using kokkos_v_t = typename ::pressio::containers::details::traits<y_type>::wrapped_t;
+  using v_t = ::pressio::containers::Vector<kokkos_v_t>;
+  v_t ATx(y.extent(0));
+  auto request = Tpetra::idot(*ATx.data(), *A.data(), *x.data());
   request->wait();
+  KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
 }
 
 // y = sharedmem vec not kokkos

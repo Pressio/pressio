@@ -193,17 +193,31 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
-  constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
-  if (alpha != one and beta != zero)
-    throw std::runtime_error("y = beta * y + alpha*op(A)*x where A = Tpetra MV wrapper and \
-x=Tpetra Vector wrapper and y=Kokkos wrapper is not yet supported for beta!=0 and alpha!=1.");
+  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+		"Tpetra MV dot V: operands do not have matching scalar type");
+
+  static_assert(std::is_same<
+		typename containers::details::traits<A_type>::device_t,
+		typename containers::details::traits<x_type>::device_t>::value,
+		"Tpetra MV dot V: operands do not have the same device type");
+
+  static_assert(std::is_same<
+		typename containers::details::traits<x_type>::device_t,
+		typename containers::details::traits<y_type>::device_t>::value,
+		"Tpetra MV dot V: V and result do not have the same device type");
+
+  using kokkos_v_t = typename ::pressio::containers::details::traits<y_type>::wrapped_t;
+  using v_t = ::pressio::containers::Vector<kokkos_v_t>;
+  using tpetra_blockvector_t = typename containers::details::traits<x_type>::wrapped_t;
+  using tpetra_vec_t = typename tpetra_blockvector_t::vec_type;
 
   const auto A_mvv = A.data()->getMultiVectorView();
-  using tpetra_blockvector_t = typename containers::details::traits<x_type>::wrapped_t;
   const auto x_vv = const_cast<tpetra_blockvector_t*>(x.data())->getVectorView();
-  auto request = Tpetra::idot( *y.data(), A_mvv, x_vv);
+
+  v_t ATx(y.extent(0));
+  auto request = Tpetra::idot(*ATx.data(), A_mvv, x_vv);
   request->wait();
+  KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
 }
 
 }}//end namespace pressio::ops
