@@ -90,8 +90,6 @@ product(::pressio::transpose modeA,
   assert(C.extent(0) == numVecsA);
   assert(C.extent(1) == numVecsB);
 
-  scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>();
-
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
   {
     // colI is a Teuchos::RCP<Vector<...>>
@@ -191,7 +189,6 @@ product(::pressio::transpose modeA,
   		"Types are not scalar compatible");
 
   // check traits of the block mv
-  using scalar_t     = typename ::pressio::containers::details::traits<A_type>::scalar_t;
   using tpetra_mvb_t = typename ::pressio::containers::details::traits<A_type>::wrapped_t;
 
   // from the mvb type we can get the underlying regular tpetra::mv and map
