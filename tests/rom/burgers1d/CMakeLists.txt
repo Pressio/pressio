@@ -11,6 +11,4 @@ endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)
   add_subdirectory(kokkos)
-  add_subdirectory(wls)
-
 endif()

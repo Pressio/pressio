@@ -5,11 +5,37 @@
 #include "utils_tpetra.hpp"
 
 namespace {
+
+template <typename scalar_t>
+auto readSol(::pressio::ode::implicitmethods::Euler & odeTag, const int numCell, const scalar_t dt) 
+  -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10)) 
+{
+  auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
+  return trueY;
+}
+
+template <typename scalar_t>
+auto readSol(::pressio::ode::implicitmethods::BDF2 & odeTag, const int numCell, const scalar_t dt) 
+  -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(numCell, dt, 0.10)) 
+{
+  auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(numCell, dt, 0.10);
+  return trueY;
+}
+
 //======= For tpetra =============
 template <typename decoder_d_t, typename fom_dmat_t, typename rcpcomm_t>
-decoder_d_t readBasis( pressio::apps::Burgers1dTpetra & appObj, int  romSize, int  fomSize, rcpcomm_t Comm){
+decoder_d_t readBasis( pressio::apps::Burgers1dTpetra & appObj, ::pressio::ode::implicitmethods::Euler & odeTag, int  romSize, int  fomSize, rcpcomm_t Comm){
 
-  const auto phiNative = pressio::rom::test::tpetra::readBasis("basis.txt", romSize, fomSize,Comm, appObj.getDataMap());
+  const auto phiNative = pressio::rom::test::tpetra::readBasis("basis_euler.txt", romSize, fomSize,Comm, appObj.getDataMap());
+  decoder_d_t decoderObj(phiNative);
+
+  return decoderObj;
+}
+
+template <typename decoder_d_t, typename fom_dmat_t, typename rcpcomm_t>
+decoder_d_t readBasis( pressio::apps::Burgers1dTpetra & appObj, ::pressio::ode::implicitmethods::BDF2 & odeTag, int  romSize, int  fomSize, rcpcomm_t Comm){
+
+  const auto phiNative = pressio::rom::test::tpetra::readBasis("basis_bdf2.txt", romSize, fomSize,Comm, appObj.getDataMap());
   decoder_d_t decoderObj(phiNative);
 
   return decoderObj;
@@ -32,14 +58,21 @@ std::string checkSol(pressio::apps::Burgers1dTpetra & appObj ,y1_t yFinal,y2_t t
 
 //for tpetra_block=================================
 template <typename decoder_d_t, typename fom_dmat_t, typename rcpcomm_t>
-decoder_d_t readBasis( pressio::apps::Burgers1dTpetraBlock & appObj, int  romSize, int  fomSize, rcpcomm_t Comm){
-
-  auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize,fomSize, Comm, appObj.getDataMap());
+decoder_d_t readBasis( pressio::apps::Burgers1dTpetraBlock & appObj, ::pressio::ode::implicitmethods::Euler & odeTag, int  romSize, int  fomSize, rcpcomm_t Comm){
+  auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis_euler.txt", romSize,fomSize, Comm, appObj.getDataMap());
   fom_dmat_t tpb_phi(*tpw_phi.data(), *appObj.getDataMap(), 1);
   decoder_d_t decoderObj(tpb_phi);
-
   return decoderObj;
 }
+
+template <typename decoder_d_t, typename fom_dmat_t, typename rcpcomm_t>
+decoder_d_t readBasis( pressio::apps::Burgers1dTpetraBlock & appObj, ::pressio::ode::implicitmethods::BDF2 & odeTag, int  romSize, int  fomSize, rcpcomm_t Comm){
+  auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis_bdf2.txt", romSize,fomSize, Comm, appObj.getDataMap());
+  fom_dmat_t tpb_phi(*tpw_phi.data(), *appObj.getDataMap(), 1);
+  decoder_d_t decoderObj(tpb_phi);
+  return decoderObj;
+}
+
 template<typename y1_t, typename y2_t>
 std::string checkSol(pressio::apps::Burgers1dTpetraBlock & appObj ,y1_t yFinal,y2_t trueY,int rank){
 
@@ -78,12 +111,13 @@ struct romDataTypeEigen
   using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, hessian_d_t>;
 
 };
-
+/// MPI Version
 template <
   typename fom_t,
   typename rom_data_t,
   typename tcomm_t,
   typename hessian_matrix_structure_tag,
+  typename ode_tag,
   typename rcpcomm_t
   >
 std::string doRun(rcpcomm_t & Comm, int rank)
@@ -113,7 +147,8 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   int romSize = 11;
 
   // create/read jacobian of the decoder
-  auto decoderObj = readBasis<decoder_d_t,fom_dmat_t>(appObj,romSize,numCell,Comm);
+  ode_tag odeTag;
+  auto decoderObj = readBasis<decoder_d_t,fom_dmat_t>(appObj,odeTag,romSize,numCell,Comm);
 
 
   // for this problem, my reference state = initial state
@@ -135,7 +170,6 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   // WLS problem
   // -----------------
   constexpr int numStepsInWindow = 5;
-  using ode_tag      = ::pressio::ode::implicitmethods::Euler;
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t, wls_state_d_t, decoder_d_t,
 								      ode_tag, hessian_d_t,
 								      hessian_matrix_structure_tag>;
@@ -178,54 +212,15 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_d_t>;
   fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
   fomStateReconstructor(wlsCurrentState, yFinal);
-  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
+  const auto trueY = readSol(odeTag,numCell, dt);
+  //const   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
   std::string checkStr = checkSol(appObj ,yFinal,trueY,rank);
   return checkStr;
 }
+
+
+
 }// end namespace
 
 
-int main(int argc, char *argv[])
-{
-  using tcomm_t		   = Teuchos::MpiComm<int>;
-  using rcpcomm_t	   = Teuchos::RCP<const tcomm_t>;
-  using fom_t_tpetra_block = pressio::apps::Burgers1dTpetraBlock;
-  using fom_t_tpetra       = pressio::apps::Burgers1dTpetra;
-  using fom_t_kokkos       = pressio::apps::Burgers1dKokkos;
-  using scalar_t        = typename fom_t_tpetra::scalar_type;
-  using rom_data_t_kokkos= romDataTypeKokkos<scalar_t>;
-  using rom_data_t_eigen= romDataTypeEigen<scalar_t>;
 
-  // scope guard needed for tpetra
-  Tpetra::ScopeGuard tpetraScope (&argc, &argv);
-  {
-    std::string checkStr {"PASSED"};
-    int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
-    //doRun< tcomm_t, pressio::solvers::linear::direct::potrsU, pressio::matrixUpperTriangular >(Comm, rank);
-    std::string checkStr1 = doRun< fom_t_tpetra, rom_data_t_eigen, tcomm_t,  pressio::matrixLowerTriangular >(Comm, rank);
-    std::string checkStr2 = doRun< fom_t_tpetra, rom_data_t_kokkos, tcomm_t, pressio::matrixLowerTriangular >(Comm, rank);
-    std::string checkStr3 = doRun< fom_t_tpetra_block, rom_data_t_eigen, tcomm_t, pressio::matrixLowerTriangular >(Comm, rank);
-    std::string checkStr4 = doRun< fom_t_tpetra_block, rom_data_t_kokkos, tcomm_t,pressio::matrixLowerTriangular >(Comm, rank);
-
-    if (checkStr1 == "FAILED"){
-      std::cout << "WLS failed on fom_t_tpetra, rom_data_t_eigen" << std::endl;
-      checkStr = "FAILED";
-    }
-    if (checkStr2 == "FAILED"){
-      std::cout << "WLS failed on fom_t_tpetra, rom_data_t_kokkos" << std::endl;
-      checkStr = "FAILED";
-    }
-    if (checkStr3 == "FAILED"){
-      std::cout << "WLS failed on fom_t_tpetra_block, rom_data_t_eigen" << std::endl;
-      checkStr = "FAILED";
-    }
-    if (checkStr4 == "FAILED"){
-      std::cout << "WLS failed on fom_t_tpetra_block, rom_data_t_kokkos" << std::endl;
-      checkStr = "FAILED";
-    }
-    std::cout << checkStr << std::endl; 
-  }
-  Kokkos::finalize();
-  return 0;
-}
