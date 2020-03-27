@@ -218,6 +218,13 @@ public:
 			const int & windowIndex,
 			scalar_type dt)
   {
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      const int procRank = Teuchos::GlobalMPISession::getRank();
+      Teuchos::oblackholestream blackhole;
+      std::ostream &out = (procRank == 0 ? std::cout : blackhole);
+      Teuchos::RCP<Teuchos::StackedTimer> timer_ = Teuchos::TimeMonitor::getStackedTimer();
+    #endif
+
     dt_			= dt; //set time step
     activeWindowIndex_  = windowIndex; //set window number
     windowStartTime_	= windowIndex*dt_*numStepsInWindow_;  //set starting time
@@ -242,6 +249,11 @@ public:
       ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
     }
     std::cout << " Window " << windowIndex << " completed " << std::endl;
+
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer_->report(out);
+    #endif
+
   }// end advanceOneWindow
 
 };
