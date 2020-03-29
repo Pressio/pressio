@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_apps.hpp
+// TBD
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,22 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_APPS_HPP_
-#define PRESSIO_APPS_HPP_
+#ifndef PRESSIO_ROM_EXP_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
+#define PRESSIO_ROM_EXP_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
 
-#include "pressio_mpl.hpp"
-#include "pressio_utils.hpp"
-#include "pressio_containers.hpp"
-#include "pressio_ops.hpp"
+#include "./impl/rom_galerkin_problem_type_generator_default_residual_api.hpp"
 
-#include "apps/src/apps_ConfigDefs.hpp"
+namespace pressio{ namespace rom{ namespace experimental{ namespace galerkin{
 
-// burgers1d
-#include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_eigen_residual_api.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_masked.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_identity_masked.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_tpetra.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_tpetra_block.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
-#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds.hpp"
-#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
-#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_vector.hpp"
-#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_residual_api_adapter.hpp"
+template <
+  typename stepper_tag,
+  typename fom_type,
+  typename rom_state_type,
+  typename rom_matrix_type,
+  typename ...Args
+  >
+using Default = impl::DefaultProblemTypeGeneratorResidualApi<
+  stepper_tag, fom_type, rom_state_type, rom_matrix_type, Args...>;
 
-// steady 2d adv-diff
-#include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp"
-#include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra_rom_adapter.hpp"
-
+}}}} //end namespace pressio::rom::experimental::galerkin
 #endif

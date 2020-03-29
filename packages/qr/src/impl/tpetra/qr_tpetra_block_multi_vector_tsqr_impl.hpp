@@ -76,12 +76,12 @@ public:
   ~TpetraBlockMVTSQR() = default;
 
   void computeThinOutOfPlace(matrix_t & A) {
-    auto nVecs	   = A.globalNumVectors();
+    auto nVecs	   = A.numVectors();
     auto blockSize = A.data()->getBlockSize();
     createLocalRIfNeeded(nVecs);
 
     // this is the row map of the block MV
-    auto & ArowMap = A.getDataMap();
+    auto & ArowMap = *A.data()->getMap();
     createQIfNeeded(ArowMap, blockSize, nVecs);
 
     // get the multivector
@@ -141,7 +141,7 @@ private:
 
   template <typename map_t>
   void createQIfNeeded(const map_t & map, int blockSize, int numVecs){
-    if (!Qmat_ or !Qmat_->hasRowMapEqualTo(map) ){
+    if (!Qmat_ or !Qmat_->data()->getMap()->isSameAs(map) ){
       Qmat_ = std::make_shared<Q_t>(map, blockSize, numVecs);
     }
   }

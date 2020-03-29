@@ -66,7 +66,7 @@ template<
 void do_update(T & mv, const scalar_t &a,
 	       const T & mv1, const scalar_t &b)
 {
-  throw std::runtime_error("Error, container::ops::do_update operation between not yet supported for tpetra block"); 
+  mv.data()->update(b, *mv1.data(), a);
 }
 
 template<
@@ -78,7 +78,8 @@ template<
   >
 void do_update(T & mv, const T & mv1, const scalar_t & b)
 {
-  throw std::runtime_error("Error, container::ops::do_update operation between not yet supported for tpetra block"); 
+  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+  mv.data()->update(b, *mv1.data(), zero);
 }
 
 }}//end namespace pressio::ops

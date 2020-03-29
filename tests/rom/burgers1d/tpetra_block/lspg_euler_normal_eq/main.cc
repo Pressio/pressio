@@ -4,15 +4,16 @@
 #include "utils_tpetra.hpp"
 
 int main(int argc, char *argv[]){
-  using fom_t		= pressio::apps::Burgers1dTpetra;
+  using fom_t		= pressio::apps::Burgers1dTpetraBlock;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
   using fom_state_t  = pressio::containers::Vector<native_state_t>;
+  using native_dmat_t = typename fom_t::dense_matrix_type;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
-  using decoder_jac_t	= pressio::containers::MultiVector<Tpetra::MultiVector<>>;
+  using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
 
   using tcomm_t		= Teuchos::MpiComm<int>;
@@ -35,9 +36,11 @@ int main(int argc, char *argv[]){
     // read from file the jacobian of the decoder
     constexpr int romSize = 11;
     // store modes computed before from file
-    decoder_jac_t phi =
-      pressio::rom::test::tpetra::readBasis("basis.txt", romSize, numCell,
-    					   Comm, appobj.getDataMap());
+    auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize,
+    							 numCell, Comm,
+    							 appobj.getDataMap());
+    native_dmat_t tpb_phi(*tpw_phi.data(), *appobj.getDataMap(), 1);
+    decoder_jac_t phi(tpb_phi);
 
     // create decoder obj
     decoder_t decoderObj(phi);
@@ -77,7 +80,7 @@ int main(int argc, char *argv[]){
 
     // compute the fom corresponding to our rom final state
     auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM);
-    auto yFF_v = yFomFinal.data()->getData();
+    auto yFF_v = yFomFinal.data()->getVectorView().getData();
 
     // this is a reproducing ROM test, so the final reconstructed state
     // has to match the FOM solution obtained with euler, same time-step, for 10 steps

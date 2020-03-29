@@ -50,6 +50,14 @@
 #define ROM_WLS_HESSIAN_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
 
 #include "rom_wls_preconditioners_impl.hpp"
+
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+  #include "Teuchos_GlobalMPISession.hpp"
+  #include "Teuchos_oblackholestream.hpp"
+  #include "Teuchos_TimeMonitor.hpp"
+  #include "Teuchos_Version.hpp"
+#endif
+
 /*
 This header file contains the class object used for computing the hessian and gradients in the WLS system.
 The hessian_gradient policy is responsible for assembling Jw^T Jw and J^T rw,
@@ -65,7 +73,7 @@ namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 template<
   typename fom_type,
   typename decoder_t,
-  typename hessian_matrix_structure_tag, 
+  typename hessian_matrix_structure_tag,
   typename preconditioner_t = ::pressio::rom::wls::preconditioners::impl::NoPreconditioner
   >
 class HessianGradientSequentialPolicy
@@ -75,7 +83,7 @@ class HessianGradientSequentialPolicy
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using decoder_jac_t           = typename decoder_t::jacobian_type;
   using residual_t              = fom_state_t;
-   
+
   // currently have this as a vector of jacobians, can change to container
   /* For now, set wls_jacs_t to be a vector of item type = decoder_jac_t
    * this is a similar assumption as done for lspg
@@ -85,10 +93,10 @@ class HessianGradientSequentialPolicy
 public:
   HessianGradientSequentialPolicy(const fom_type & appObj,
                                   const fom_state_t & yFOM,
-                                  int numStepsInWindow,
-                                  int time_stencil_size,
+                                  std::size_t numStepsInWindow,
+                                  std::size_t time_stencil_size,
                                   const decoder_t & decoderObj,
-                                  const int romSize)
+                                  const std::size_t romSize)
     : // construct wls Jacobians from jacobian of the decoder: we might need to change this later
       appObj_(appObj),
       jac_stencil_size_(std::min(time_stencil_size+1,numStepsInWindow) ),
@@ -117,15 +125,15 @@ public:
                   const scalar_t dt,
                   const std::size_t numStepsInWindow,
                   const scalar_t ts ,
-                  const int step_s,
+                  const std::size_t step_s,
                   scalar_t & rnorm) const
   {
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
 
-    int n = 0;
+    std::size_t n = 0;
     scalar_t t = ts + n*dt;
-    int step = step_s + n;
+    std::size_t step = step_s + n;
     ::pressio::ops::set_zero(hess);
     ::pressio::ops::set_zero(gradient);
 
@@ -136,16 +144,38 @@ public:
     timeSchemeObj.updateStatesFirstStep(wlsStateIC, fomStateReconstrObj);
 
     //compute the time discrete residual
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+        timer_->start("residual");
+    #endif
+
     timeSchemeObj.time_discrete_residual(appObj_, yFOM_current_, residual_, ts, dt, step);
+
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+        timer_->stop("residual");
+    #endif
+
     Preconditioner(appObj_,yFOM_current_,residual_,t);
 
     //increment the norm
     rnorm += ::pressio::ops::norm2(residual_);
 
     // compute jacobian over stencil
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer_->start("jacobian");
+    #endif
+
     computeJacobiansOverStencil(timeSchemeObj, step,t,dt);
 
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer_->stop("jacobian");
+    #endif
+
+
     // add to local block of hessian
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer_->start("hessian computation"); 
+    #endif
+
     auto hess_block = ::pressio::containers::subspan( hess,
 						      std::make_pair( n*romSize_,(n+1)*romSize_ ) ,
 						      std::make_pair( n*romSize_,(n+1)*romSize_) );
@@ -153,48 +183,68 @@ public:
 					one, wlsJacs_[jac_stencil_size_-1],
 					wlsJacs_[jac_stencil_size_-1], zero, hess_block);
 
-    // for (auto i=0; i<romSize_; ++i){
-    //   for (auto j=0; j<romSize_; ++j){
-    //     std::cout << hess_block(i,j) << " ";
-    //   }
-    //   std::cout << "\n";
-    // }
-    // std::cout << "\n";
-    // std::cout << "\n";
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer_->stop("hessian computation");
+    #endif
+
 
     // compute gradient[n*romSize_:(n+1)*romSize] += J^T r
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer_->start("gradient computation"); 
+    #endif
+
     auto gradientView = ::pressio::containers::span(gradient, n*romSize_, romSize_);
     ::pressio::ops::product(::pressio::transpose(),
 					one, wlsJacs_[jac_stencil_size_-1], residual_,
 					one, gradientView);
-    // for (auto i=0; i<romSize_; ++i){
-    //   std::cout << gradientView[i] << " \n";
-    // }
-    // std::cout << "\n";
-    // std::cout << "\n";
 
-    for (int n = 1; n < numStepsInWindow; n++)
+    #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer_->stop("gradient computation");
+    #endif
+
+
+    for (std::size_t n = 1; n < numStepsInWindow; n++)
     {
       updateResidualAndJacobian(timeSchemeObj, wlsState, fomStateReconstrObj, n,
 				step_s, ts, rnorm, gradient, dt);
 
-      const int sbar = std::min(n,jac_stencil_size_);
-      for (int i=0; i < sbar; i++)
+      const std::size_t sbar = std::min(n,jac_stencil_size_);
+      for (std::size_t i=0; i < sbar; i++)
       {
+
+        #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+          timer_->start("gradient computation"); 
+        #endif
+
       	auto gradientView = ::pressio::containers::span(gradient, (n-i)*romSize_, romSize_);
         ::pressio::ops::product(::pressio::transpose(),
 					    one, wlsJacs_[jac_stencil_size_-i-1], residual_,
 					    one, gradientView);
+
+        #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+          timer_->stop("gradient computation"); 
+        #endif
+
       }
+
+      #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+        timer_->start("hessian computation");
+      #endif
+
       addToHessian(hess, n, sbar, hessian_matrix_structure_tag());
+
+      #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+        timer_->stop("hessian computation"); 
+      #endif
+
     }//end loop over stepsInWindow
   }//end operator()
 
 private:
   template<typename hessian_type>
-  void addToHessian(hessian_type & hess, const int & n, const int & sbar, const ::pressio::matrixUpperTriangular & hessianTag) const{
-    for (int i=0; i < sbar; i++){
-      for (int j=0; j <= i; j++){
+  void addToHessian(hessian_type & hess, const std::size_t & n, const std::size_t & sbar, const ::pressio::matrixUpperTriangular & hessianTag) const{
+    for (std::size_t i=0; i < sbar; i++){
+      for (std::size_t j=0; j <= i; j++){
         constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
         auto hess_block = ::pressio::containers::subspan(hess,
 							     std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
@@ -206,9 +256,9 @@ private:
     }// end assembling local component of global Hessian
   }
   template<typename hessian_type>
-  void addToHessian(hessian_type & hess, const int & n, const int & sbar, const ::pressio::matrixLowerTriangular & hessianTag) const{
-    for (int i=0; i < sbar; i++){
-      for (int j=0; j <= i; j++){
+  void addToHessian(hessian_type & hess, const std::size_t & n, const std::size_t & sbar, const ::pressio::matrixLowerTriangular & hessianTag) const{
+    for (std::size_t i=0; i < sbar; i++){
+      for (std::size_t j=0; j <= i; j++){
         constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
         auto hess_block = ::pressio::containers::subspan(hess,
 							     std::make_pair( (n-j)*romSize_, (n-j+1)*romSize_ ),
@@ -222,7 +272,7 @@ private:
   // reconstructs yFOM_current_ from the stepNum entry of wlsState
   template <typename wls_state_type, typename fom_state_reconstr_t>
   void setCurrentFomState(const wls_state_type & wlsState,
-                          const int & stepNum,
+                          const std::size_t & stepNum,
                           const fom_state_reconstr_t & fomStateReconstrObj) const{
     const auto wlsCurrentState = ::pressio::containers::span(wlsState, stepNum*romSize_, romSize_);
     fomStateReconstrObj(wlsCurrentState, yFOM_current_);
@@ -230,11 +280,11 @@ private:
 
   template <typename time_scheme_t>
   void computeJacobiansOverStencil(const time_scheme_t & timeSchemeObj,
-				   const int & stepNum,
+				   const std::size_t & stepNum,
 				   const scalar_t & t,
 				   const scalar_t & dt) const
   {
-    for (int i = 0; i < jac_stencil_size_; i++)
+    for (std::size_t i = 0; i < jac_stencil_size_; i++)
     {
       timeSchemeObj.time_discrete_jacobian(appObj_,
                                            yFOM_current_,
@@ -256,8 +306,8 @@ private:
   void updateResidualAndJacobian(const ode_obj_t & timeSchemeObj,
 				 const wls_state_type & wlsState,
 				 const fom_state_reconstr_t & fomStateReconstrObj,
-				 const int & n,
-				 const int & step_s,
+				 const std::size_t & n,
+				 const std::size_t & step_s,
 				 const scalar_t & ts,
 				 scalar_t & rnorm,
 				 gradient_type & gradient,
@@ -267,28 +317,56 @@ private:
       timeSchemeObj.updateStatesNStep(yFOM_current_);
       setCurrentFomState(wlsState,n,fomStateReconstrObj);
 
+
       // == Evaluate residual ============
       scalar_t t;
       t = ts + n*dt;
-      int step;
+      std::size_t step;
       step = step_s + n;
+
+      #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS 
+        timer_->start("residual");
+      #endif
+
       timeSchemeObj.time_discrete_residual(appObj_, yFOM_current_, residual_, t, dt, step);
+
+      #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS 
+        timer_->stop("residual");
+      #endif
+
       Preconditioner(appObj_,yFOM_current_,residual_,t);
       rnorm += ::pressio::ops::norm2(residual_);
-      computeJacobiansOverStencil(timeSchemeObj,step,t,dt);
+
+      #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS 
+        timer_->start("jacobian");
+      #endif
+
+        computeJacobiansOverStencil(timeSchemeObj,step,t,dt);
+
+      #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS 
+        timer_->stop("jacobian");
+      #endif
   }
 
 private:
   mutable wls_jacs_t wlsJacs_;
   mutable fom_state_t yFOM_current_; //working variable for the FOM state
   mutable residual_t residual_;	     // working variable for the time discrete residual
-  int romSize_;
-  int fomSize_;
-  int time_stencil_size_;
-  int jac_stencil_size_;
+  std::size_t romSize_;
+  std::size_t fomSize_;
+  std::size_t time_stencil_size_;
+  std::size_t jac_stencil_size_;
   const decoder_jac_t & phi_;
   const fom_type & appObj_;
   const preconditioner_t Preconditioner{};
+  #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    const int procRank = Teuchos::GlobalMPISession::getRank();
+    Teuchos::oblackholestream blackhole;
+    std::ostream &out = (procRank == 0 ? std::cout : blackhole);
+    Teuchos::RCP<Teuchos::StackedTimer> timer_ = Teuchos::TimeMonitor::getStackedTimer();
+  #endif
+
+
 };
 
 }}}} //end namespace pressio::rom::wls::impl

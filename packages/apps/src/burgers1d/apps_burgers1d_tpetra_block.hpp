@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// apps_burgers1d_tpetra.hpp
+// apps_burgers1d_tpetra_block.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,16 @@
 //@HEADER
 */
 
-#ifndef PRESSIOAPPS_BURGERS1D_TPETRA_HPP_
-#define PRESSIOAPPS_BURGERS1D_TPETRA_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_TPETRABLOCK_HPP_
+#define PRESSIOAPPS_BURGERS1D_TPETRABLOCK_HPP_
 
 #include <numeric>
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Tpetra_CrsMatrix.hpp>
+#include <Tpetra_BlockCrsMatrix.hpp>
+#include <Tpetra_BlockVector.hpp>
+#include <Tpetra_BlockMultiVector.hpp>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 #include <Teuchos_FancyOStream.hpp>
@@ -60,39 +63,35 @@
 
 namespace pressio{ namespace apps{
 
-class Burgers1dTpetra{
+class Burgers1dTpetraBlock{
 protected:
   using map_t		= Tpetra::Map<>;
+  using nativeBlockVec	= Tpetra::BlockVector<>;
   using nativeVec	= Tpetra::Vector<>;
-
   using go_t		= typename map_t::global_ordinal_type;
   using lo_t		= typename map_t::local_ordinal_type;
-
   using tcomm_t		= Teuchos::MpiComm<int>;
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
   using rcpmap_t	= Teuchos::RCP<const map_t>;
 
   template<typename T> using stdrcp = std::shared_ptr<T>;
-  using crs_graph_type = Tpetra::CrsGraph<>;
 
 public:
   /* these types exposed because need to be detected */
   using scalar_type	= double;
-  using state_type	= nativeVec;
+  using state_type	= nativeBlockVec;
   using velocity_type	= state_type;
-  using dense_matrix_type	= Tpetra::MultiVector<>;
-  using jacobian_type	= Tpetra::CrsMatrix<>;
+  using dense_matrix_type	= Tpetra::BlockMultiVector<>;
+  using jacobian_type = Tpetra::BlockCrsMatrix<>;
+  using crs_graph_type = Tpetra::CrsGraph<>;
 
 public:
-  Burgers1dTpetra(std::vector<scalar_type> params,
-		  int Ncell,
-		  rcpcomm_t comm)
+  Burgers1dTpetraBlock(std::vector<scalar_type> params,
+		       int Ncell,
+		       rcpcomm_t comm)
     : mu_{params}, Ncell_{Ncell}, comm_{comm}{
       this->setup();
     }
-
-  Burgers1dTpetra() = delete;
-  ~Burgers1dTpetra() = default;
 
 public:
   rcpmap_t getDataMap(){
@@ -104,48 +103,52 @@ public:
   };
 
   void velocity(const state_type & u,
-		const scalar_type /* t */,
+		const scalar_type t,
 		velocity_type & rhs) const
   {
-    auto u_v = u.getData();
-    auto rhs_v = rhs.getDataNonConst();
 
     double valueFromLeft = 0.0;
     constexpr int tag_ = 1;
+
     if( myRank_ < totRanks_ - 1 ){
-      MPI_Send( &u_v[NumMyElem_-1], 1, MPI_DOUBLE,
+      auto uC = u.getLocalBlock(NumMyElem_ - 1);
+      MPI_Send( &uC(0), 1, MPI_DOUBLE,
 		myRank_+1, tag_, *comm_->getRawMpiComm() );
     }
     if( myRank_ > 0 ){
       MPI_Status status;
       MPI_Recv(&valueFromLeft, 1, MPI_DOUBLE,
 	       myRank_-1, tag_,
-	       *comm_->getRawMpiComm(), &status);
-    }
-
+	       *comm_->getRawMpiComm(), &status);    }
     lo_t i=0;
     scalar_type uim1;
-    for (auto const & it : myGel_){
+    scalar_type rhsLoc;
+    for (auto const & it : myGel_)
+    {
       uim1 = valueFromLeft;
+      const auto uCi = u.getLocalBlock(i)(0);
       if (it==0)
-	uim1 = mu_[0]; // left boundary condition
+	uim1 = mu_[0];
       if (i>0)
-	uim1 = u_v[i-1];
+	uim1 = u.getLocalBlock(i-1)(0);
 
-      rhs_v[i] = ( 0.5*(uim1*uim1 - u_v[i]*u_v[i]) )/dx_;
+      rhsLoc = ( 0.5*(uim1*uim1 - uCi*uCi) )/dx_;
+      rhs.replaceLocalValues(i,&rhsLoc);
       i++;
     }
 
     auto xgrid_v = xGrid_->getDataNonConst();
     for (i=0; i<NumMyElem_; ++i){
-      rhs_v[i] += mu_[1]*exp(mu_[2] * xgrid_v[i]);
+      auto rhsVal = rhs.getLocalBlock(i);
+      rhsLoc = rhsVal(0) + mu_[1]*exp(mu_[2] * xgrid_v[i]);
+      rhs.replaceLocalValues(i,&rhsLoc);
     }
   }
 
-
   velocity_type velocity(const state_type & u,
-			 const scalar_type t) const{
-    velocity_type R(dataMap_);
+			 const scalar_type t) const
+  {
+    velocity_type R(*dataMap_,1);
     velocity(u,t,R);
     return R;
   }
@@ -156,9 +159,11 @@ public:
 		     scalar_type t,
 		     dense_matrix_type & A) const
   {
-    computeJacobianReplace(y, *Jac_, t);
-    Jac_->apply(B, A);
-    // Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+    computeJacobianUpdate(y, *Jac_, t);
+    const auto B_vv = B.getMultiVectorView();
+    auto A_vv	    = A.getMultiVectorView();
+    Jac_->apply(B_vv, A_vv);
+    //Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
   }
 
   // computes: A = Jac B where B is dense
@@ -166,9 +171,9 @@ public:
 				  const dense_matrix_type & B,
 				  scalar_type t) const
   {
-    dense_matrix_type C( dataMap_, B.getNumVectors() );
-    applyJacobian(y, B, t, C);
-    return C;
+    dense_matrix_type A( *dataMap_, blockSize, B.getNumVectors() );
+    applyJacobian(y, B, t, A);
+    return A;
   }
 
 protected:
@@ -179,12 +184,12 @@ protected:
 
     myRank_ =  comm_->getRank();
     totRanks_ =  comm_->getSize();
-
     // distribute cells
     dataMap_ = Teuchos::rcp(new map_t(Ncell_, 0, comm_));
 
     NumMyElem_ = dataMap_->getNodeNumElements();
     auto minGId = dataMap_->getMinGlobalIndex();
+
     myGel_.resize(NumMyElem_);
     std::iota(myGel_.begin(), myGel_.end(), minGId);
     //dataMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
@@ -208,59 +213,61 @@ protected:
     //xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
 
     // init condition
-    U0_ = std::make_shared<nativeVec>(dataMap_);
+    U0_ = std::make_shared<nativeBlockVec>(*dataMap_,blockSize);
     U0_->putScalar(1.0);
 
-    U_ = std::make_shared<nativeVec>(dataMap_);
+    U_ = std::make_shared<nativeBlockVec>(*dataMap_,blockSize);
     U_->putScalar(1.0);
 
-    Teuchos::RCP<crs_graph_type> dataGraph =
-      Teuchos::rcp(new crs_graph_type(dataMap_, nonZrPerRow_));
+    // construct a graph for the block matrix
+    crs_graph_type dataGraph(dataMap_,nonZrPerRow_);
+    this->assembleGraph(dataGraph);
+    Jac_ = std::make_shared<jacobian_type>(dataGraph,blockSize);
 
-    this->assembleGraph(*dataGraph);
-    Jac_ = std::make_shared<jacobian_type>(dataGraph);
+    //this->computeJacobianUpdate(*U_, *Jac_, 0.0);
     Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
   };
 
-  void computeJacobianReplace(const state_type & u,
-			      jacobian_type & jac,
-			      const scalar_type /*t*/) const
+  void computeJacobianUpdate(const state_type & u,
+			     jacobian_type & jac,
+			     const scalar_type ) const
   {
     const scalar_type buffer = exchangeFlux(u);
-    auto u_v = u.getData();
 
-    // resume fill because below we change entries
-    jac.resumeFill();
-
-    using tarr_dt = Teuchos::ArrayView<scalar_type>;
-    using tarr_it = Teuchos::ArrayView<go_t>;
-    std::array<scalar_type,1> va1;
-    std::array<go_t,1> ci1;
-    std::array<scalar_type,2> va2;
-    std::array<go_t,2> ci2;
-
-    for (lo_t i=0; i<NumMyElem_; i++){
+    const lo_t* localColInds;
+    scalar_type* vals;
+    for (lo_t i=0; i<NumMyElem_; i++)
+    {
       auto thisGID = myGel_[i];
-      if (thisGID==0){
-	va1[0] = -dxInv_ * u_v[0];
-	ci1[0] = 0;
-	jac.replaceGlobalValues(thisGID, tarr_it(ci1.data(),1),
-				tarr_dt(va1.data(),1) );
-      }
-      else{
-	ci2[0] = thisGID-1;
-	ci2[1] = thisGID;
+      auto uC = u.getLocalBlock(i);
+      if (thisGID==0)
+	{
+	  lo_t numEntries = 1;
+	  int err = 0;
+	  err = jac.getLocalRowView(i, localColInds, vals, numEntries);
+	  if (err != 0) {
+	    break;
+	  }
+	  vals[0]  =  -dxInv_ * uC(0);
+	}
+      else
+	{
+	  lo_t numEntries = 2;
+	  int err = 0;
+	  err = jac.getLocalRowView(i, localColInds, vals, numEntries);
 
-	if (i==0) va2[0] = dxInv_ * buffer;
-	if (i>0) va2[0] = dxInv_ * u_v[i-1];
-
-	va2[1] = -dxInv_ * u_v[i];
-	jac.replaceGlobalValues(thisGID, tarr_it(ci2.data(),2),
-				tarr_dt(va2.data(),2) );
-      }
+	  if (i==0){
+	    // don't know why the indices here must be inverted, but this is right/
+	    // looks like block does strange here for storing the col indices of this point
+	    vals[1] = dxInv_ * buffer;
+	    vals[0] = -dxInv_ * uC(0);
+	  }
+	  if (i>0){
+	    vals[0] = dxInv_ * u.getLocalBlock(i-1)(0);
+	    vals[1] = -dxInv_ * uC(0);
+	  }
+	}
     }
-
-    jac.fillComplete();
   }//end
 
   void assembleGraph(crs_graph_type & graph)
@@ -286,15 +293,14 @@ protected:
 
   scalar_type exchangeFlux(const state_type & u) const
   {
-    auto u_v = u.getData();
-
     // to populate the jacobian each process needs the last grid
     // point solution from the previous process
     scalar_type buffer {0.0};
     MPI_Status st;
     constexpr int tag_ = 1;
     if (myRank_ < totRanks_-1){
-      MPI_Send(&u_v[NumMyElem_-1], 1, MPI_DOUBLE,
+      auto uC = u.getLocalBlock(NumMyElem_ - 1);
+      MPI_Send(&uC(0), 1, MPI_DOUBLE,
 	       myRank_+1, tag_, *comm_->getRawMpiComm());
     }
     if (myRank_ >= 1){
@@ -308,6 +314,7 @@ protected:
   std::vector<scalar_type> mu_; // parameters
   const scalar_type xL_ = 0.0; //left side of domain
   const scalar_type xR_ = 100.0; // right side of domain
+  const lo_t blockSize = 1;
   int Ncell_{}; // # of cells
   scalar_type dx_{}; // cell size
   scalar_type dxInv_{}; // inv of cell size
@@ -323,8 +330,8 @@ protected:
   lo_t NumMyElem_{};
   std::vector<go_t> myGel_{};
 
-  mutable stdrcp<nativeVec> U_{}; // state vector
-  mutable stdrcp<nativeVec> U0_{}; // initial state vector
+  mutable stdrcp<nativeBlockVec> U_{}; // state vector
+  mutable stdrcp<nativeBlockVec> U0_{}; // initial state vector
   stdrcp<jacobian_type> Jac_{};
 
 };//end class

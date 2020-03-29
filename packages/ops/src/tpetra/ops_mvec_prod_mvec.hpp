@@ -87,7 +87,6 @@ product(::pressio::transpose modeA,
   assert(C.extent(0) == numVecsA);
   assert(C.extent(1) == numVecsB);
 
-  auto tmp = ::pressio::utils::constants::zero<scalar_type>();
   // compute dot between every column of A with every col of B
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
   {
@@ -151,7 +150,7 @@ product(::pressio::transpose modeA,
   assert(C.extent(0) == numVecsA);
   assert(C.extent(1) == numVecsA);
 
-  auto tmp = ::pressio::utils::constants::zero<scalar_type>();
+  scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>();
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly

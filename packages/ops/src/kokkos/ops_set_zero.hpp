@@ -50,6 +50,8 @@
 #ifndef OPS_CONTAINER_OPS_KOKKOS_SET_ZERO_HPP_
 #define OPS_CONTAINER_OPS_KOKKOS_SET_ZERO_HPP_
 
+#include <KokkosBlas1_fill.hpp>
+
 namespace pressio{ namespace ops{
 
 template <

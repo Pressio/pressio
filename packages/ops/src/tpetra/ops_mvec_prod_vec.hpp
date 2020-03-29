@@ -51,6 +51,7 @@
 #define OPS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_VECTOR_HPP_
 
 #include "Tpetra_idot.hpp"
+#include <KokkosBlas1_axpby.hpp>
 #include "KokkosBlas2_gemv.hpp"
 
 namespace pressio{ namespace ops{
@@ -83,29 +84,20 @@ void _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
   const auto numVecs = A.numVectors();
   // size of vecB
   assert(size_t(numVecs) == size_t(x.extent(0)));
+  (void)numVecs;
 
-  // my number of rows
-  const auto myNrows = A.extentLocal(0);
+  using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
+				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
+  kokkos_view_t xview(x.data()->data(), x.extent(0));
 
-  // get the wrapped trilinos tpetra multivector
-  auto trilD = A.data();
-  //  trilD->template sync<Kokkos::HostSpace>();
-  auto mv2d = trilD->template getLocalView<Kokkos::HostSpace>();
-
-  // get wrapped data for the result too
-  auto y1 = y.data()->template getLocalView<Kokkos::HostSpace>();
-  auto y2 = Kokkos::subview(y1, Kokkos::ALL(), 0);
-  y.data()->template modify<Kokkos::HostSpace>();
-
-  // loop
-  for (size_t i=0; i<(size_t)myNrows; i++){
-    y2[i] = beta*y2[i];
-    for (size_t j=0; j<(size_t)numVecs; j++){
-      y2[i] += alpha * mv2d(i,j) * x[j];
-    }
-  }
-  using device_t = typename ::pressio::containers::details::traits<y_type>::device_t;
-  y.data()->template sync<device_t>();
+  const auto ALocalView_h = A.data()->getLocalViewHost();
+  const auto yLocalView_h = y.data()->getLocalViewHost();
+  const char ctA = 'N';
+  // Tpetra::Vector is implemented as a special case of MultiVector //
+  // so getLocalView returns a rank-2 view so in order to get
+  // view with rank==1 I need to explicitly get the subview of that
+  const auto yLocalView_drank1 = Kokkos::subview(yLocalView_h, Kokkos::ALL(), 0);
+  KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
 }
 
 
@@ -128,19 +120,17 @@ void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<x_type>::device_type;
   static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
-  using dev_t  = tpetra_mv_dev_t;
-  using sc_t = typename containers::details::traits<A_type>::scalar_t;
-  const char ctA = 'N';
 
   assert( A.numVectors() == x.data()->extent(0) );
+  const char ctA = 'N';
+  const auto ALocalView_d = A.data()->getLocalViewDevice();
 
-  const auto ALocalView_d = A.data()->template getLocalView<dev_t>();
-  // I need to do the following because Tpetra::Vector is implemented
-  // as a special case of MultiVector so getLocalView returns a rank-2 view
-  // so in order to get view with rank==1 I need to explicitly get the subview
-  const auto mvCLocalView_drank2 = y.data()->template getLocalView<dev_t>();
-  const auto mvCLocalView_drank1 = Kokkos::subview(mvCLocalView_drank2, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, mvCLocalView_drank1);
+  // Tpetra::Vector is implemented as a special case of MultiVector //
+  // so getLocalView returns a rank-2 view so in order to get
+  // view with rank==1 I need to explicitly get the subview of that
+  const auto yLocalView_drank2 = y.data()->getLocalViewDevice();
+  const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
+  KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
 }//end namespace pressio::ops::impl
 
@@ -217,8 +207,12 @@ product(::pressio::transpose mode,
 		typename containers::details::traits<y_type>::device_t>::value,
 		"Tpetra MV dot V: V and result do not have the same device type");
 
-  auto request = Tpetra::idot( *y.data(), *A.data(), *x.data());
+  using kokkos_v_t = typename ::pressio::containers::details::traits<y_type>::wrapped_t;
+  using v_t = ::pressio::containers::Vector<kokkos_v_t>;
+  v_t ATx(y.extent(0));
+  auto request = Tpetra::idot(*ATx.data(), *A.data(), *x.data());
   request->wait();
+  KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
 }
 
 // y = sharedmem vec not kokkos
