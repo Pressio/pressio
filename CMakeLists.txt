@@ -68,8 +68,8 @@ endif()
 option(PRESSIO_ENABLE_UNIT_TESTS "Enabling pressio unit testing." OFF)
 option(PRESSIO_ENABLE_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
 
-# ALL_INC/LIB_DIR contain all include/lib directories as we add TPLs
-# we fill these vars up based on which TPLs are enabled.
+# ALL_INC/LIB_DIR contain include/lib directories as we add TPLs
+# we set these variables based on which TPLs are enabled.
 # ALL_INC/LIB_DIR are then used for creating target executables
 set(ALL_INC_DIR "")
 set(ALL_LINK_DIR "")
