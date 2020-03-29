@@ -81,8 +81,8 @@ include(tplBlas)
 include(tplLapack)
 include(tplKokkos)
 include(tplPybind11)
-include(tplArmadillo)
-include(tplBlaze)
+#include(tplArmadillo)
+#include(tplBlaze)
 
 #=====================================================================
 # unit tests are enabled if
