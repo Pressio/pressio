@@ -55,10 +55,21 @@
 
 namespace pressio{ namespace optimizers{
 
+
+template <typename scalar_type>
+void convertToRolParameterList(const Parameters<scalar_type> & params,
+			       ROL::ParameterList & rolParList)
+{
+  rolParList.sublist("Status Test").set("Iteration Limit", params.getMaxIterations());
+  rolParList.sublist("Status Test").set("Gradient Tolerance", params.getGradientNormOptimalityTolerance());
+  rolParList.sublist("Status Test").set("Step Tolerance", params.getStepNormOptimalityTolerance());
+}
+
+
 namespace impl{
 
 template<typename scalar_type, typename system_type>
-class RolObjectiveWrapper : public ROL::StdObjective<scalar_type>
+class RolObjectiveWrapper : public ROL::Objective<scalar_type>
 {
   using state_type = typename system_type::state_type;
   const system_type & wrappedObj_;
@@ -66,23 +77,20 @@ class RolObjectiveWrapper : public ROL::StdObjective<scalar_type>
 public:
   RolObjectiveWrapper(const system_type & wrappedObj) : wrappedObj_(wrappedObj){}
 
-  scalar_type value(const std::vector<scalar_type> &x, scalar_type &tol)
+  scalar_type value(const ROL::Vector<scalar_type> &x, scalar_type &tol)
   {
-    state_type x2(x.size());
-    for (auto i=0; i<x2.extent(0); ++i) x2[i] = x[i];
-    return wrappedObj_(x2);
+    const state_type & ex = static_cast<const state_type&>(x);
+    return wrappedObj_(ex);
   }
 
-  void gradient( std::vector<scalar_type> &g, const std::vector<scalar_type> &x, scalar_type &tol )
+  void gradient( ROL::Vector<scalar_type> &g, const ROL::Vector<scalar_type> &x, scalar_type &tol )
   {
-    state_type x2(x.size());
-    for (auto i=0; i<x2.extent(0); ++i) x2[i] = x[i];
-    state_type g2(g.size());
-
-    assert(g2.extent(0) == x2.extent(0));
-    return wrappedObj_.gradient(x2, g2);
+    const state_type & x2 = static_cast<const state_type&>(x);
+    state_type	     & g2 = static_cast<state_type&>(g);
+    wrappedObj_.gradient(x2, g2);
   }
 };
+
 
 template <typename system_type>
 class UnconstrainedRol
@@ -96,9 +104,11 @@ class UnconstrainedRol
 public:
   UnconstrainedRol(const ::pressio::optimizers::Parameters<scalar_t> & params) : params_(params)
   {
-    // convert params to rolParList
     rolParList_.sublist("Step").set("Type","Trust Region");
     rolParList_.sublist("Step").sublist("Trust Region").set("Subproblem Solver","Truncated CG");
+
+    ::pressio::optimizers::convertToRolParameterList(params, rolParList_);
+    rolParList_.print(std::cout);
   }
 
   void solve(const system_type & sysObj, state_t & optState)
@@ -106,16 +116,13 @@ public:
     using wrapper_t = RolObjectiveWrapper<scalar_t, system_type>;
     auto obj = ROL::makePtr<wrapper_t>(sysObj);
 
-    const auto optSize = optState.extent(0);
-    ROL::Ptr<ROL::StdVector<scalar_t> > x = ROL::makePtr<ROL::StdVector<scalar_t>>(optSize);
-    for (auto i=0; i<optState.extent(0); ++i) optState[i] = (*x)[i];
+    // make ptr from reference, does not make any new allocation
+    auto x = ROL::makePtrFromRef(optState);
 
-    ROL::OptimizationProblem<scalar_t> problem( obj, x );
+    ROL::OptimizationProblem<scalar_t> problem( obj, x);
     problem.check(std::cout);
     ROL::OptimizationSolver<scalar_t> solver( problem, rolParList_ );
     solver.solve(std::cout);
-    std::cout << (*x)[0] << " " << (*x)[1] << std::endl;
-    for (auto i=0; i<optState.extent(0); ++i) (*x)[i] = optState[i];
   }
 };
 

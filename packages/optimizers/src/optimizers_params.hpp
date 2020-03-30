@@ -55,48 +55,45 @@ template <typename scalar_type>
 class Parameters{
 
 private:
-  scalar_type gradientOptimalityTol_   = {}/* default value */;
-  scalar_type stepOptimalityTol_       = {}/* default value */;
-  scalar_type constraintOptimalityTol_ = {}/* default value */;
-  int maxIters_                      = {}/* default value */;
-  int metricsVerbosity_		       = {}/* default value */;
+  int maxIters_			       = 100;
+  scalar_type gradientOptimalityTol_   = 1e-10;
+  scalar_type stepOptimalityTol_       = 1e-12;
+  //  int metricsVerbosity_		       = {}/* default value */;
 
 public:
-  void setGradientOptimalityTolerance(scalar_type newTol){
-    /* minimum objective gradient magnitude at which to terminate */
-    gradientOptimalityTol_ = newTol;
-  }
-
-  void setObjFunctionChangeOptimalityTolerance(scalar_type newTol){
-    /* minimum CHANGE in objective function at which to terminate*/
-    stepOptimalityTol_ = newTol;
-  }
-
-  void setConstraintOptimalityTolerance(scalar_type newTol){
-    //  minimum constraint violation magnitude at which to terminate
-    // Conditional: on the gradient magnitude also below its tolerance.
-    constraintOptimalityTol_ = newTol;
-  }
-
   void setMaxIterations(int maxIter){
     // maximum number of optimization iterations.
     maxIters_ = maxIter;
   }
-
-  // getters corresponding to above setters
-  // -----------
-
-  // Optimization sub problem parameters
-
-  // Diagnostics
-  void setInfoVerbosity(int value){
-    /* various levels of verbosity
-       if value=0: print nothing
-       if value=1: print only obj function value
-       if value=2: print obj function and gradient value
-       etc. */
-    metricsVerbosity_ = value;
+  int getMaxIterations() const{
+    return maxIters_;
   }
+
+  void setGradientNormOptimalityTolerance(scalar_type newTol){
+    /* minimum objective gradient magnitude at which to terminate */
+    gradientOptimalityTol_ = newTol;
+  }
+  scalar_type getGradientNormOptimalityTolerance() const{
+    return gradientOptimalityTol_;
+  }
+
+  void setStepNormOptimalityTolerance(scalar_type newTol){
+    /* norm of the step at which to terminate*/
+    stepOptimalityTol_ = newTol;
+  }
+  scalar_type getStepNormOptimalityTolerance() const{
+    return stepOptimalityTol_;
+  }
+
+  // // Diagnostics
+  // void setInfoVerbosity(int value){
+  //   /* various levels of verbosity
+  //      if value=0: print nothing
+  //      if value=1: print only obj function value
+  //      if value=2: print obj function and gradient value
+  //      etc. */
+  //   metricsVerbosity_ = value;
+  // }
 };
 
 }}//end namespace pressio::optimizers
