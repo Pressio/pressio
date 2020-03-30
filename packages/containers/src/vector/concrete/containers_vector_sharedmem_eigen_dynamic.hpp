@@ -49,6 +49,10 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_EIGEN_DYNAMIC_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_EIGEN_DYNAMIC_HPP_
 
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "ROL_Vector.hpp"
+#endif
+
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
@@ -58,6 +62,9 @@ class Vector<wrapped_type,
 	       >
 	     >
   : public VectorSharedMemBase< Vector<wrapped_type> >
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  , public ROL::Vector< typename wrapped_type::Scalar>
+#endif
 {
 
   using this_t = Vector<wrapped_type>;
@@ -151,6 +158,50 @@ public:
     assert( i == 0 );
     return (data_.rows()==1) ? data_.cols() : data_.rows();
   }
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  int dimension() const final{
+    return data_.size();
+  }
+  void plus( const ROL::Vector<sc_t> &x ) final{
+    const this_t & ex = static_cast<const this_t&>(x);
+    data_ += *ex.data();
+  }
+  void axpy( const sc_t alpha, const ROL::Vector<sc_t> &x ) final{
+    const this_t & ex = static_cast<const this_t&>(x);
+    data_ += alpha * (*ex.data());
+  }
+  void scale( const sc_t alpha ) final{
+    data_ *= alpha;
+  }
+  void zero() final{
+    data_.setConstant(static_cast<sc_t>(0));
+  }
+  sc_t dot( const ROL::Vector<sc_t> &x ) const final{
+    const this_t & ex = static_cast<const this_t&>(x);
+    return data_.dot( *ex.data() );
+  }
+  sc_t norm() const final{
+    sc_t result = 0.0;
+    for (decltype(this->extent(0)) i=0; i<this->extent(0); i++)
+      result += data_[i]*data_[i];
+    return std::sqrt(result);
+  }
+  void set( const ROL::Vector<sc_t> &x ) final{
+    const this_t & ex = static_cast<const this_t&>(x);
+    data_ = *ex.data();
+  }
+  ROL::Ptr<ROL::Vector<sc_t> > clone() const final{
+    return ROL::makePtr<this_t>(data_);
+  }
+  ROL::Ptr<ROL::Vector<sc_t>> basis( const int i ) const final{
+    auto  b_ptr = clone();
+    auto& b_ref = static_cast<this_t&>(*b_ptr);
+    b_ref.zero();
+    b_ref[i] = sc_t(1);
+    return b_ptr;
+  }
+#endif
 
 private:
   friend VectorSharedMemBase< this_t >;
