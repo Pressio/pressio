@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_optimizers.hpp
+// optimizers_enums.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,19 +46,16 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_OPTIMIZERS_HPP_
-#define PRESSIO_OPTIMIZERS_HPP_
+#ifndef OPTIMIZERS_ENUMS_HPP_
+#define OPTIMIZERS_ENUMS_HPP_
 
-#include "pressio_mpl.hpp"
-#include "pressio_utils.hpp"
-#include "pressio_containers.hpp"
-#include "pressio_ops.hpp"
-#include "pressio_qr.hpp"
-#include "pressio_svd.hpp"
-#include "pressio_solvers.hpp"
+namespace pressio{ namespace optimizers{
 
-#include "optimizers/src/optimizers_enums.hpp"
-#include "optimizers/src/optimizers_params.hpp"
-#include "optimizers/src/optimizers_unconstrained.hpp"
+enum class stepMethod
+  {
+   undefined, lineSearch, trustRegion
+  };
 
+constexpr auto default_step_method = stepMethod::lineSearch;
+}}//end namespace pressio::optimizers
 #endif

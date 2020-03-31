@@ -46,6 +46,7 @@
 //@HEADER
 */
 
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef OPTIMIZERS_UNCONSTRAINED_HPP_
 #define OPTIMIZERS_UNCONSTRAINED_HPP_
 
@@ -54,17 +55,6 @@
 #include "ROL_StdObjective.hpp"
 
 namespace pressio{ namespace optimizers{
-
-
-template <typename scalar_type>
-void convertToRolParameterList(const Parameters<scalar_type> & params,
-			       ROL::ParameterList & rolParList)
-{
-  rolParList.sublist("Status Test").set("Iteration Limit", params.getMaxIterations());
-  rolParList.sublist("Status Test").set("Gradient Tolerance", params.getGradientNormOptimalityTolerance());
-  rolParList.sublist("Status Test").set("Step Tolerance", params.getStepNormOptimalityTolerance());
-}
-
 
 namespace impl{
 
@@ -98,15 +88,14 @@ class UnconstrainedRol
   using scalar_t = typename system_type::scalar_type;
   using state_t  = typename system_type::state_type;
 
-  const ::pressio::optimizers::Parameters<scalar_t> & params_;
   ROL::ParameterList rolParList_;
+  const ::pressio::optimizers::Parameters<scalar_t> & params_;
+
 
 public:
-  UnconstrainedRol(const ::pressio::optimizers::Parameters<scalar_t> & params) : params_(params)
+  UnconstrainedRol(const ::pressio::optimizers::Parameters<scalar_t> & params)
+    : params_(params)
   {
-    rolParList_.sublist("Step").set("Type","Trust Region");
-    rolParList_.sublist("Step").sublist("Trust Region").set("Subproblem Solver","Truncated CG");
-
     ::pressio::optimizers::convertToRolParameterList(params, rolParList_);
     rolParList_.print(std::cout);
   }
@@ -128,8 +117,11 @@ public:
 
 } //end namespace impl
 
+
 template <typename ...Args>
 using Unconstrained = impl::UnconstrainedRol<Args...>;
 
+
 }}//end namespace pressio::optimizers
+#endif
 #endif
