@@ -2,8 +2,7 @@
 #include "pressio_rom.hpp"
 #include "pressio_apps.hpp"
 #include "utils_tpetra.hpp"
-#include "../../wls/wls_driver.hpp"
-//namespace {
+#include "../../wls/wls_burgers_driver_mpi.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -41,4 +40,3 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-//}

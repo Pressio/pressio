@@ -1,7 +1,7 @@
 
 #include "pressio_rom.hpp"
 #include "pressio_apps.hpp"
-#include "../../wls/wls_driver.hpp"
+#include "../../wls/wls_burgers_driver_serial.hpp"
 
 
 //namespace {
