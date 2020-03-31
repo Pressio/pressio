@@ -74,7 +74,7 @@ template<
       >::value
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type	 & stepper,
+void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 start_time,
 		     const types::step_t num_steps,
