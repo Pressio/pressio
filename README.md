@@ -13,6 +13,10 @@ Specifically, the whole Pressio framework currently includes the following repos
 ## License
 Pressio is released with the following [LICENSE](./LICENSE).
 
+## Citation 
+
+Please see the following axXiv paper: https://arxiv.org/abs/2003.07798
+
 ## Cloning
 To clone `pressio` (provided you have Git) use: `git clone https://github.com/Pressio/pressio.git`
 
