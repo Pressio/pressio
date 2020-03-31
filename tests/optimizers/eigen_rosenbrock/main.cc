@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
 
   using opt_param_t = pressio::optimizers::Parameters<sc_t>;
   opt_param_t MyPars;
+  MyPars.setStepMethod(pressio::optimizers::stepMethod::trustRegion);
   MyPars.setGradientNormOptimalityTolerance(1e-8);
   MyPars.setStepNormOptimalityTolerance(1e-2);
 
