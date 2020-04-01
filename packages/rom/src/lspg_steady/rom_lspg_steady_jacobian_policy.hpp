@@ -75,15 +75,12 @@ public:
 
   JacobianPolicy(fom_states_data	& fomStates,
 		 const fom_apply_jac_policy	& applyJacFunctor,
-		 const apply_jac_return_type	& applyJacObj,
 		 const decoder_type		& decoder)
     : fom_apply_jac_policy(applyJacFunctor),
-      JJ_(applyJacObj),
       decoderObj_(decoder),
       fomStates_(fomStates){}
 
 public:
-
   template <
     typename lspg_state_t,
     typename lspg_jac_t,
@@ -120,12 +117,14 @@ public:
   apply_jac_return_t operator()(const lspg_state_t & romState,
 				const app_t	   & app) const
   {
-    (*this).template operator()(romState, JJ_, app);
-    return JJ_;
+    const auto & currFomState = fomStates_.getCRefToCurrentFomState();
+    const auto & basis = decoderObj_.getReferenceToJacobian();
+    apply_jac_return_t JJ(fom_apply_jac_policy::evaluate(app, currFomState, basis));
+    (*this).template operator()(romState, JJ, app);
+    return JJ;
   }
 
 protected:
-  mutable apply_jac_return_t JJ_   = {};
   const decoder_type & decoderObj_ = {};
   fom_states_data & fomStates_;
 };

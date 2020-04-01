@@ -61,16 +61,18 @@ template<
   typename time_type,
   typename solver_type,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
+    ::pressio::mpl::publicly_inherits_from<
+      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+    >::value and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  and !::pressio::containers::meta::is_array_pybind<state_type>::value
+    and !::pressio::containers::meta::is_array_pybind<state_type>::value
 #endif
     >::type * = nullptr
   >
-void integrateNSteps(stepper_type & stepper,
+void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 startTime,
 		     const time_type	 dt,
@@ -87,14 +89,24 @@ See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
   advancer_t::execute(numSteps, startTime, dt, odeStateInOut, stepper, solver);
 }
 
+
+
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+/* for pybind, we cannot use:
+ * implicitmethods::StepperBase<stepper_type> & stepper
+ * because the stepper is passed from Python so it does not know which overload to use
+ * and we get a type error since it sees the stepper as an python object
+ */
+
 template<
   typename stepper_type,
   typename state_type,
   typename time_type,
   typename solver_type,
   typename std::enable_if<
-    ::pressio::ode::details::traits<stepper_type>::is_implicit and
+    ::pressio::mpl::publicly_inherits_from<
+      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+    >::value and
     ::pressio::containers::meta::is_array_pybind<state_type>::value
     >::type * = nullptr
   >
@@ -103,7 +115,8 @@ void integrateNSteps(stepper_type & stepper,
 		     const time_type	 startTime,
 		     const time_type	 dt,
 		     const types::step_t numSteps,
-		     solver_type	 & solver){
+		     solver_type	 & solver)
+{
 
   static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
 		"You are trying to call integrateNSteps with an implicit stepper \
@@ -131,6 +144,9 @@ template<
   typename collector_type,
   typename solver_type,
   typename std::enable_if<
+    ::pressio::mpl::publicly_inherits_from<
+      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+    >::value and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value and
@@ -166,6 +182,9 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
+    ::pressio::mpl::publicly_inherits_from<
+      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+    >::value and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type>::value and
     ::pressio::ode::meta::is_legitimate_guesser<
@@ -202,6 +221,9 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
+    ::pressio::mpl::publicly_inherits_from<
+      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+    >::value and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value and
@@ -243,6 +265,9 @@ template<
   typename solver_type,
   typename guess_callback_t,
   typename std::enable_if<
+    ::pressio::mpl::publicly_inherits_from<
+      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+    >::value and
     ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
       solver_type, stepper_type, state_type
       >::value and

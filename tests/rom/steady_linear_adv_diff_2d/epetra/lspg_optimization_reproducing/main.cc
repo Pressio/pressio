@@ -73,25 +73,18 @@ int main(int argc, char *argv[]){
       appObjROM, *yRef, decoderObj, yROM);
 
   using rom_system_t = typename lspg_problem_type::lspg_system_t;
+  auto & system = lspgProblem.getSystemRef();
 
-  // linear solver
-  using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
-  using solver_tag   = pressio::solvers::linear::iterative::LSCG;
-  using linear_solver_t = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
-  linear_solver_t linSolverObj;
+  using opt_param_t = pressio::optimizers::Parameters<scalar_t>;
+  opt_param_t MyPars;
+  MyPars.setStepMethod(pressio::optimizers::stepMethod::lineSearch);
+  MyPars.setGradientNormOptimalityTolerance(1e-14);
+  MyPars.setStepNormOptimalityTolerance(1e-13);
+  MyPars.setMaxIterations(50);
 
-  // GaussNewton solver
-  // hessian comes up in GN solver, it is (J phi)^T (J phi)
-  // rom is solved using eigen, hessian is wrapper of eigen matrix
-  using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using converged_when_t = pressio::solvers::iterative::default_convergence;
-  using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
-    rom_system_t, converged_when_t, linear_solver_t>;
-  gnsolver_t solver(lspgProblem.getSystemRef(), yROM, linSolverObj);
-  solver.setTolerance(1e-14);
-  solver.setMaxIterations(200);
-  solver.solve(lspgProblem.getSystemRef(), yROM);
+  using opt_prob_t  = pressio::optimizers::Unconstrained<rom_system_t>;
+  opt_prob_t optProblem(MyPars);
+  optProblem.solve(system, yROM);
 
   std::cout << std::setprecision(15) << *yROM.data() << std::endl;
 

@@ -79,9 +79,7 @@ private:
   fom_apply_jac_policy_t	applyJacobQuerier_;
   fom_state_t			fomStateReference_;
   fom_state_reconstr_t		fomStateReconstructor_;
-  fom_velocity_t		fomVelocityRef_;
   fom_states_data		fomStates_;
-  lspg_matrix_t			jPhiMatrix_;
   lspg_residual_policy_t	residualPolicy_;
   lspg_jacobian_policy_t	jacobianPolicy_;
   lspg_system_t			systemObj_;
@@ -96,21 +94,18 @@ public:
   }
 
 public:
-  ProblemGenerator(const fom_t	& appObj,
+  ProblemGenerator(const fom_t		    & appObj,
 		   const fom_native_state_t & yFomRefNative,
-		   const decoder_t	& decoder,
-		   lspg_state_t	& yROM)
+		   const decoder_t	    & decoder,
+		   lspg_state_t		    & yROM)
     : rhsQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomVelocityRef_( rhsQuerier_.evaluate(appObj, fomStateReference_) ),
       fomStates_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj, fomStateReference_,
-					  decoder.getReferenceToJacobian())),
-      residualPolicy_(fomVelocityRef_, fomStates_, rhsQuerier_),
-      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
-      systemObj_(appObj, residualPolicy_, jacobianPolicy_)
+      residualPolicy_(fomStates_, rhsQuerier_),
+      jacobianPolicy_(fomStates_, applyJacobQuerier_, decoder),
+      systemObj_(appObj, residualPolicy_, jacobianPolicy_, yROM)
   {}
 
 };

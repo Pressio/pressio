@@ -55,6 +55,7 @@
 #include "pressio_ops.hpp"
 #include "pressio_qr.hpp"
 #include "pressio_svd.hpp"
+#include "pressio_optimizers.hpp"
 #include "pressio_solvers.hpp"
 #include "pressio_ode.hpp"
 

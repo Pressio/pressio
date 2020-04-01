@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_residual_policy.hpp
+// optimizers_unconstrained.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,76 +46,82 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
-#define ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#ifndef OPTIMIZERS_UNCONSTRAINED_HPP_
+#define OPTIMIZERS_UNCONSTRAINED_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
+#include "ROL_OptimizationSolver.hpp"
+#include "ROL_RandomVector.hpp"
+#include "ROL_StdObjective.hpp"
 
-template <
-  typename residual_type,
-  typename fom_states_data,
-  typename fom_eval_rhs_policy
-  >
-class ResidualPolicy : protected fom_eval_rhs_policy
+namespace pressio{ namespace optimizers{
+
+namespace impl{
+
+template<typename scalar_type, typename system_type>
+class RolObjectiveWrapper : public ROL::Objective<scalar_type>
 {
+  using state_type = typename system_type::state_type;
+  const system_type & wrappedObj_;
 
 public:
-  using this_t = ResidualPolicy<residual_type, fom_states_data,	fom_eval_rhs_policy>;
+  RolObjectiveWrapper(const system_type & wrappedObj) : wrappedObj_(wrappedObj){}
 
-  static constexpr bool isResidualPolicy_ = true;
-  using residual_t = residual_type;
-
-public:
-  ResidualPolicy() = delete;
-  ~ResidualPolicy() = default;
-
-  ResidualPolicy(fom_states_data & fomStatesIn,
-		 const fom_eval_rhs_policy & fomEvalRhsFunctor)
-    : fom_eval_rhs_policy(fomEvalRhsFunctor),
-      fomStates_(fomStatesIn){}
-
-public:
-  template <
-    typename lspg_state_t,
-    typename lspg_residual_t,
-    typename fom_t>
-  void operator()(const lspg_state_t	& romState,
-		  lspg_residual_t	& romR,
-  		  const fom_t		& app) const
+  scalar_type value(const ROL::Vector<scalar_type> &x, scalar_type &tol)
   {
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("lspg residual");
-#endif
-
-    fomStates_.template reconstructCurrentFomState(romState);
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->start("fom eval rhs");
-#endif
-
-    fom_eval_rhs_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), romR);
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("fom eval rhs");
-    timer->stop("lspg residual");
-#endif
+    const state_type & ex = static_cast<const state_type&>(x);
+    return wrappedObj_(ex);
   }
 
-  template <typename lspg_state_t, typename fom_t>
-  residual_t operator()(const lspg_state_t & romState,
-		       const fom_t	  & app) const
+  void gradient( ROL::Vector<scalar_type> &g, const ROL::Vector<scalar_type> &x, scalar_type &tol )
   {
-    const auto & currFomState = fomStates_.getCRefToCurrentFomState();
-    residual_t R(fom_eval_rhs_policy::evaluate(app, currFomState));
-    (*this).template operator()(romState, R, app);
-    return R;
+    const state_type & x2 = static_cast<const state_type&>(x);
+    state_type	     & g2 = static_cast<state_type&>(g);
+    wrappedObj_.gradient(x2, g2);
+  }
+};
+
+
+template <typename system_type>
+class UnconstrainedRol
+{
+  using scalar_t = typename system_type::scalar_type;
+  using state_t  = typename system_type::state_type;
+
+  ROL::ParameterList rolParList_;
+  const ::pressio::optimizers::Parameters<scalar_t> & params_;
+
+
+public:
+  UnconstrainedRol(const ::pressio::optimizers::Parameters<scalar_t> & params)
+    : params_(params)
+  {
+    ::pressio::optimizers::convertToRolParameterList(params, rolParList_);
+    rolParList_.print(std::cout);
   }
 
-protected:
-  fom_states_data & fomStates_;
+  void solve(const system_type & sysObj, state_t & optState)
+  {
+    using wrapper_t = RolObjectiveWrapper<scalar_t, system_type>;
+    auto obj = ROL::makePtr<wrapper_t>(sysObj);
 
-};//end class
+    // make ptr from reference, does not make any new allocation
+    auto x = ROL::makePtrFromRef(optState);
 
-}}}}//end namespace pressio::rom::lspg::steady
+    ROL::OptimizationProblem<scalar_t> problem( obj, x);
+    problem.check(std::cout);
+    ROL::OptimizationSolver<scalar_t> solver( problem, rolParList_ );
+    solver.solve(std::cout);
+  }
+};
+
+} //end namespace impl
+
+
+template <typename ...Args>
+using Unconstrained = impl::UnconstrainedRol<Args...>;
+
+
+}}//end namespace pressio::optimizers
+#endif
 #endif
