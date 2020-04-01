@@ -2,9 +2,6 @@
 
 #include "pressio_rom.hpp"
 #include "pressio_apps.hpp"
-<<<<<<< HEAD:tests/rom/burgers1d/tpetra_block/wls_euler_normal_eq_velocity_api_kokkos_rom/main.cc
-#include "utils_tpetra.hpp"
-=======
 #include "burgers_fom_functions_eigen.hpp"
 #include "utils_eigen.hpp"
 #include "rom_data_type_eigen.hpp"
@@ -36,9 +33,6 @@ auto readSol(::pressio::ode::implicitmethods::BDF2 & odeTag, const int fomSize, 
   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);
   return trueY;
 }
-
->>>>>>> 297c4c2a1ebde84cd5d145f476e64feaeb54cb23:tests/rom/burgers1d/wls/wls_burgers_driver_mpi.hpp
-
 
 template <
   typename fom_t,
@@ -75,16 +69,8 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   int romSize = 11;
 
   // create/read jacobian of the decoder
-<<<<<<< HEAD:tests/rom/burgers1d/tpetra_block/wls_euler_normal_eq_velocity_api_kokkos_rom/main.cc
-  auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize,
-                 numCell, Comm, appObj.getDataMap());
-  fom_dmat_t tpb_phi(*tpw_phi.data(), *appObj.getDataMap(), 1);
-  decoder_d_t decoderObj(tpb_phi);
-=======
   ode_tag odeTag;
   auto decoderObj = readBasis<decoder_d_t,fom_dmat_t>(appObj,odeTag,romSize,fomSize,Comm);
-
->>>>>>> 297c4c2a1ebde84cd5d145f476e64feaeb54cb23:tests/rom/burgers1d/wls/wls_burgers_driver_mpi.hpp
 
   // for this problem, my reference state = initial state
   // get initial condition
@@ -153,23 +139,5 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   return checkStr;
 }
 
-<<<<<<< HEAD:tests/rom/burgers1d/tpetra_block/wls_euler_normal_eq_velocity_api_kokkos_rom/main.cc
-
-int main(int argc, char *argv[])
-{
-  using tcomm_t		   = Teuchos::MpiComm<int>;
-  using rcpcomm_t	   = Teuchos::RCP<const tcomm_t>;
-
-  Tpetra::ScopeGuard tpetraScope (&argc, &argv);
-  {
-    int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
-    doRun< tcomm_t, pressio::solvers::linear::direct::potrsU, pressio::matrixUpperTriangular >(Comm, rank);
-    doRun< tcomm_t, pressio::solvers::linear::direct::potrsL, pressio::matrixLowerTriangular >(Comm, rank);
-  }
-  return 0;
-}
-=======
 }// end namespace
 #endif
->>>>>>> 297c4c2a1ebde84cd5d145f476e64feaeb54cb23:tests/rom/burgers1d/wls/wls_burgers_driver_mpi.hpp
