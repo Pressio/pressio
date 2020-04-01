@@ -69,23 +69,20 @@ std::string doRun()
   using native_state_t  = typename fom_t::state_type;
   using fom_dmat_t      = typename fom_t::dense_matrix_type;
   using fom_state_t     = pressio::containers::Vector<native_state_t>;
-  using decoder_jac_d_t	= pressio::containers::MultiVector<fom_dmat_t>;
-  using wls_state_d_t	= typename rom_data_t::wls_state_d_t;
-  using wls_hessian_d_t	= typename rom_data_t::wls_hessian_d_t;
-  using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, wls_state_d_t, fom_state_t>;
+  using decoder_jac_t	= pressio::containers::MultiVector<fom_dmat_t>;
+  using wls_state_t	= typename rom_data_t::wls_state_t;
+  using wls_hessian_t	= typename rom_data_t::wls_hessian_t;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, wls_state_t, fom_state_t>;
 
   // app object
   constexpr std::size_t fomSize = 20;
   auto appObj = appConstructor<fom_t>(fomSize);
   constexpr scalar_t dt = 0.01;
   constexpr auto t0 = ::pressio::utils::constants::zero<scalar_t>();
-  // for this problem, my reference state = initial state
-  auto & yFOM_IC_native = appObj.getInitialState();
-  // wrap into pressio container
-  fom_state_t yFOM_IC(yFOM_IC_native);
+  // wrap init cond with pressio container
+  const fom_state_t fomStateInitCond(appObj.getInitialState());
   //reference state is equal to the IC
-  fom_state_t & yRef = yFOM_IC;
-
+  const fom_state_t & fomStateReference = fomStateInitCond;
 
   constexpr pressio::rom::wls::rom_size_t romSize = 11;
   constexpr pressio::rom::wls::window_size_t numStepsInWindow = 5;
@@ -94,24 +91,25 @@ std::string doRun()
   constexpr pressio::rom::wls::window_size_t numWindows = (finalTime/dt)/numStepsInWindow;
 
   //  jacobian of the decoder
-  auto decoderObj = readBasis<decoder_d_t>(appObj,ode_tag(),romSize,fomSize);
+  auto decoderObj = readBasis<decoder_t>(appObj,ode_tag(),romSize,fomSize);
 
   //  lin solver
   using linear_solver_t = typename rom_data_t::linear_solver_t;
   linear_solver_t linear_solver;
 
-  //  WLS problem
-  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t, wls_state_d_t, decoder_d_t,
-								      ode_tag, wls_hessian_d_t,
-								      hessian_matrix_structure_tag>;
-  // create the wls system
-  wls_system_t wlsSystem(appObj, yFOM_IC, yRef, decoderObj, numStepsInWindow, romSize, linear_solver);
+  //*** WLS problem ***
+  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t, decoder_t, hessian_matrix_structure_tag>;
+  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, ode_tag, wls_hessian_t, policy_t>;
+
+  // create policy and wls system
+  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomStateReference, wls_system_t::timeStencilSize_);
+  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomStateReference, linear_solver);
 
   // create the wls state
-  wls_state_d_t  wlsState(wlsSize);
+  wls_state_t  wlsState(wlsSize);
   pressio::ops::set_zero(wlsState);
 
-  // - NL solver
+  // NL solver
   using gn_t = pressio::solvers::iterative::GaussNewton<linear_solver_t, wls_system_t>;
   gn_t GNSolver(wlsSystem, wlsState, linear_solver);
   GNSolver.setTolerance(1e-13);
@@ -131,9 +129,10 @@ std::string doRun()
   // process solution
   // -----------------
   const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
-  fom_state_t yFinal(yFOM_IC_native);
-  using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_d_t>;
-  fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
+  fom_state_t yFinal(fomStateInitCond);
+  pressio::ops::set_zero(yFinal);
+
+  const auto fomStateReconstructor = wlsSystem.getFomStateReconstructorCRef();
   fomStateReconstructor(wlsCurrentState, yFinal);
   const auto trueY = readSol(ode_tag(),fomSize, dt);
 

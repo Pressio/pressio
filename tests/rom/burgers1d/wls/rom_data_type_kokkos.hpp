@@ -11,10 +11,10 @@ struct romDataTypeKokkos
   using kll		= Kokkos::LayoutLeft;
   using k1dLl_d		= Kokkos::View<scalar_t*, kll, execution_space>;
   using k2dLl_d		= Kokkos::View<scalar_t**, kll, execution_space>;
-  using wls_state_d_t	= pressio::containers::Vector<k1dLl_d>;
-  using wls_hessian_d_t	= pressio::containers::Matrix<k2dLl_d>;
+  using wls_state_t	= pressio::containers::Vector<k1dLl_d>;
+  using wls_hessian_t	= pressio::containers::Matrix<k2dLl_d>;
   using lin_solver_tag  = pressio::solvers::linear::direct::potrsL;
-  using linear_solver_t = pressio::solvers::direct::KokkosDirect<lin_solver_tag, wls_hessian_d_t>;
+  using linear_solver_t = pressio::solvers::direct::KokkosDirect<lin_solver_tag, wls_hessian_t>;
 };
 
 }// end namespace
