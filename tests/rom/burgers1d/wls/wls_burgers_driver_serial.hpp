@@ -125,13 +125,17 @@ std::string doRun()
   const std::chrono::duration<double> elapsed = finishTime - startTime;
   std::cout << "Walltime = " << elapsed.count() << '\n';
 
+  // print summary from timers
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+  pressio::utils::TeuchosPerformanceMonitor::stackedTimersReportSerial();
+#endif
+
   // -----------------
   // process solution
   // -----------------
   const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
   fom_state_t yFinal(fomStateInitCond);
   pressio::ops::set_zero(yFinal);
-
   const auto fomStateReconstructor = wlsSystem.getFomStateReconstructorCRef();
   fomStateReconstructor(wlsCurrentState, yFinal);
   const auto trueY = readSol(ode_tag(),fomSize, dt);

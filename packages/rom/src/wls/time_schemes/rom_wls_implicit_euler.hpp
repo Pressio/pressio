@@ -55,7 +55,7 @@ template<typename fom_state_t, typename wls_state_t>
 class ImplicitEuler{
 
 public:
-  static constexpr int state_stencil_size_ = 1;
+  static constexpr ::pressio::rom::wls::window_size_t state_stencil_size_ = 1;
   static constexpr bool is_explicit	   = false;
 
 private:
@@ -71,7 +71,8 @@ public:
   ImplicitEuler & operator=(const ImplicitEuler &) = delete;
   ImplicitEuler & operator=(ImplicitEuler &&) = delete;
 
-  ImplicitEuler(int & romStateSize, const fom_state_t & fomState)
+  ImplicitEuler(::pressio::rom::wls::rom_size_t & romStateSize,
+		const fom_state_t & fomState)
     : romStateSize_(romStateSize),
       auxStatesContainer_(fomState)
   {}
@@ -88,7 +89,7 @@ public:
 			      residual_type & residual,
 			      const scalar_type & t,
 			      const scalar_type & dt,
-			      const int & step) const
+			      const window_size_t & step) const
   {
     appObj.velocity(*fomState.data(),t,*residual.data());
     ::pressio::ode::impl::time_discrete_residual<
@@ -108,7 +109,7 @@ public:
 			      const basis_type & phi,
 			      const scalar_type & t,
 			      const scalar_type & dt,
-			      const int & step,
+			      const ::pressio::rom::wls::window_size_t & step,
 			      int arg=0 ) const
   {
     // u^n - u^{n-1} - f ;

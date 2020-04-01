@@ -105,6 +105,11 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   const std::chrono::duration<double> elapsed = finishTime - startTime;
   std::cout << "Walltime = " << elapsed.count() << '\n';
 
+  // print summary from timers
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+  pressio::utils::TeuchosPerformanceMonitor::stackedTimersReportMPI();
+#endif
+
   // -----------------
   // process solution
   // -----------------

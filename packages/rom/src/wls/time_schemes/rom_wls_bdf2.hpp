@@ -55,7 +55,7 @@ template<typename fom_state_t, typename wls_state_t>
 class BDF2{
 
 public:
-  static constexpr int state_stencil_size_ = 2;
+  static constexpr ::pressio::rom::wls::window_size_t state_stencil_size_ = 2;
   static constexpr bool is_explicit	   = false;
 
 private:
@@ -73,7 +73,8 @@ public:
   BDF2 & operator=(const BDF2 &) = delete;
   BDF2 & operator=(BDF2 &&) = delete;
 
-  BDF2(int & romStateSize,const fom_state_t & fomState)
+  BDF2(::pressio::rom::wls::rom_size_t & romStateSize,
+       const fom_state_t & fomState)
     :  romStateSize_(romStateSize),
        auxStatesContainer_(fomState)
   {}
@@ -88,8 +89,8 @@ public:
 			      const fom_state_type & fomState,
 			      residual_type & residual,
 			      const scalar_type & t,
-			      const  scalar_type & dt,
-			      const int & step) const
+			      const scalar_type & dt,
+			      const pressio::rom::wls::window_size_t & step) const
   {
     if (step > 0){
       // u^n - 4./3.*u^{n-1} + 1./3.u^{n-2} - 2./3.*dt*f
@@ -118,7 +119,7 @@ public:
 			      const basis_type & phi,
 			      const scalar_type & t,
 			      const scalar_type & dt,
-			      const int & step,
+			      const pressio::rom::wls::window_size_t & step,
 			      int arg=0 ) const
   {
 
@@ -143,14 +144,12 @@ public:
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
         ::pressio::ops::do_update(Jphi, phi, cnm1);
         jacobianOneNeedsRecomputing_ = false;
-        std::cout << "here" << std::endl;
       }
 
       if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
         ::pressio::ops::do_update(Jphi, phi, cnm2);
         jacobianZeroNeedsRecomputing_ = false;
-        std::cout << "here" << std::endl;
       }
     }
   }
