@@ -1,21 +1,18 @@
 
-#include "pressio_rom.hpp"
-#include "pressio_apps.hpp"
 #include "../../wls/wls_burgers_driver_serial.hpp"
-
-
-//namespace {
 
 int main(int argc, char *argv[])
 {
   std::string checkStr = "PASSED";
-  using fom_t            = pressio::apps::Burgers1dEigen;
-  using scalar_t         = typename fom_t::scalar_type;
-  using rom_data_t       = romDataTypeEigen<scalar_t>;
-  using ode_tag_euler    = ::pressio::ode::implicitmethods::Euler;
-  using ode_tag_BDF2     = ::pressio::ode::implicitmethods::BDF2;
-  std::string checkStr1 = doRun< fom_t,rom_data_t, pressio::matrixLowerTriangular, ode_tag_euler >();
-  std::string checkStr2 = doRun< fom_t,rom_data_t, pressio::matrixLowerTriangular, ode_tag_BDF2 >();
+  using fom_t           = pressio::apps::Burgers1dEigen;
+  using scalar_t        = typename fom_t::scalar_type;
+  using rom_data_t      = romDataTypeEigen<scalar_t>;
+  using ode_tag_euler   = ::pressio::ode::implicitmethods::Euler;
+  using ode_tag_BDF2    = ::pressio::ode::implicitmethods::BDF2;
+  using lowTri		= pressio::matrixLowerTriangular;
+
+  const std::string checkStr1 = pressio::testing::wls::doRun< fom_t,rom_data_t, lowTri, ode_tag_euler >();
+  const std::string checkStr2 = pressio::testing::wls::doRun< fom_t,rom_data_t, lowTri, ode_tag_BDF2 >();
 
   if (checkStr1 == "FAILED"){
      std::cout << "WLS failed on implicit Euler" << std::endl;
@@ -29,5 +26,3 @@ int main(int argc, char *argv[])
   std::cout << checkStr << std::endl;
   return 0;
 }
-
-//}

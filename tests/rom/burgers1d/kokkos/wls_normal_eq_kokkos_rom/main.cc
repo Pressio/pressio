@@ -1,9 +1,5 @@
 
-#include "pressio_rom.hpp"
-#include "pressio_apps.hpp"
-#include "utils_tpetra.hpp"
 #include "../../wls/wls_burgers_driver_serial.hpp"
-//namespace {
 
 int main(int argc, char *argv[])
 {
@@ -12,14 +8,13 @@ int main(int argc, char *argv[])
   using rom_data_t         = romDataTypeKokkos<scalar_t>;
   using ode_tag_euler      = ::pressio::ode::implicitmethods::Euler;
   using ode_tag_BDF2       = ::pressio::ode::implicitmethods::BDF2;
+  using lowTri		= pressio::matrixLowerTriangular;
 
-  // scope guard needed for tpetra
   Kokkos::initialize (argc, argv);
   {
     std::string checkStr = "PASSED";
-
-    std::string checkStr1 = doRun< fom_t, rom_data_t, pressio::matrixLowerTriangular, ode_tag_euler>();
-    std::string checkStr2 = doRun< fom_t, rom_data_t, pressio::matrixLowerTriangular, ode_tag_BDF2>();
+    const std::string checkStr1 = pressio::testing::wls::doRun< fom_t, rom_data_t, lowTri, ode_tag_euler>();
+    const std::string checkStr2 = pressio::testing::wls::doRun< fom_t, rom_data_t, lowTri, ode_tag_BDF2>();
 
    if (checkStr1 == "FAILED"){
       std::cout << "WLS failed on implicit Euler" << std::endl;
@@ -34,5 +29,3 @@ int main(int argc, char *argv[])
   }
   return 0;
 }
-
-//}

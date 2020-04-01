@@ -58,7 +58,7 @@ struct DefaultHelper{
   using type = void;
 };
 
-//Explicit Euler specialization
+//BDF1 specialization
 template <typename fom_state_t, typename wls_state_t>
 struct DefaultHelper<::pressio::ode::implicitmethods::Euler, fom_state_t, wls_state_t>{
   using type = ::pressio::rom::wls::timeschemes::impl::ImplicitEuler<fom_state_t, wls_state_t>;
@@ -68,12 +68,6 @@ struct DefaultHelper<::pressio::ode::implicitmethods::Euler, fom_state_t, wls_st
 template <typename fom_state_t, typename wls_state_t>
 struct DefaultHelper<::pressio::ode::implicitmethods::BDF2, fom_state_t, wls_state_t>{
   using type = ::pressio::rom::wls::timeschemes::impl::BDF2<fom_state_t, wls_state_t>;
-};
-
-//Explicit Euler specialization
-template <typename fom_state_t, typename wls_state_t>
-struct DefaultHelper<::pressio::ode::explicitmethods::Euler, fom_state_t, wls_state_t>{
-  using type = ::pressio::rom::wls::timeschemes::impl::ExplicitEuler<fom_state_t, wls_state_t>;
 };
 
 } //end namespace pressio::rom::wls::timeschemes::helpers::impl

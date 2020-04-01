@@ -68,24 +68,15 @@ public:
   using state_type		= wls_state_type;
   using gradient_type		= wls_state_type;
   using hessian_type		= hessian_t;
-  // WLS types
-  using num_steps_in_window_t = wls_types::num_steps_in_window_t;
-  using rom_size_t = wls_types::rom_size_t;
-  using window_index_t = wls_types::window_index_t;
-  using global_step_index_t = wls_types::global_step_index_t;
-  using wls_problem_size_t = wls_types::wls_problem_size_t;
-  using wls_stencil_size_t = wls_types::wls_stencil_size_t;
-  using local_step_index_t = wls_types::local_step_index_t;
-
 
 public:
   using fom_native_state_t	= typename fom_type::state_type;
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
   using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<scalar_type, fom_state_t, decoder_t>;
   using decoder_jac_t		= typename decoder_t::jacobian_type;
-  // policy type (here policy knows how to compute hessian and gradient)
-  using hessian_gradient_pol_t	= ::pressio::rom::wls::HessianGradientSequentialPolicy<fom_type,decoder_t,hessian_matrix_structure_tag>;
 
+  // policy type (here policy knows how to compute hessian and gradient)
+  using hessian_gradient_pol_t = HessianGradientSequentialPolicy<fom_type,decoder_t,hessian_matrix_structure_tag>;
 
   // information on stencil width, time discrete resiudal, time discrete jacobian, etc.
   using time_stencil_t = ::pressio::rom::wls::timeschemes::timescheme_t<ode_tag, fom_state_t, wls_state_type>;
@@ -98,33 +89,31 @@ public:
 		"WLS: hessian_type must be a pressio container matrix");
 
 private:
-  const fom_type & appObj_;
   const fom_state_reconstr_t  fomStateReconstructorObj_;
 
   //size of generalized coordinates
-  rom_size_t romSize_			= {};
+  rom_size_t romSize_ = {};
   // object knowing the time stencil for doing chuncks of step
   time_stencil_t timeSchemeObj_;
 
   //number of discrete time instances in a window
-  window_index_t numStepsInWindow_		= {};
+  window_size_t numStepsInWindow_ = {};
 
   // policy for evaluating the hessian and gradient
   const hessian_gradient_pol_t hessian_gradient_polObj_;
 
-  window_index_t activeWindowIndex_	= {};
+  window_size_t activeWindowIndex_ = {};
+
   // global step number
-  global_step_index_t step_s_			= {};
+  window_size_t step_s_   = {};
   scalar_type dt_		= {};
   scalar_type windowStartTime_	= {};
 
   // cache the size of the wls problem: romSize*numStepsInWindow
-
-  wls_problem_size_t wlsProblemSize_         = romSize_*numStepsInWindow_;
-  wls_stencil_size_t wlsStencilSize_         = romSize_*timeStencilSize_;
+  window_size_t wlsProblemSize_ = romSize_*numStepsInWindow_;
+  window_size_t wlsStencilSize_ = romSize_*timeStencilSize_;
 
   wls_state_type wlsStateIC_;
-
 
 public:
 
@@ -132,11 +121,10 @@ public:
 			   const fom_state_t & yFOM_IC,
 			   const fom_state_t & yFOM_Ref,
 			   const decoder_t & decoderObj,
-			   const num_steps_in_window_t numStepsInWindow,
+			   const window_size_t numStepsInWindow,
 			   const rom_size_t romSize,
 			   const wls_state_type & wlsStateIcIn)
-    : appObj_(appObj),
-      fomStateReconstructorObj_(yFOM_Ref, decoderObj),
+    : fomStateReconstructorObj_(yFOM_Ref, decoderObj),
       romSize_(romSize),
       timeSchemeObj_(romSize_, yFOM_IC),
       numStepsInWindow_{numStepsInWindow},
@@ -166,11 +154,10 @@ public:
 			   const fom_state_t & yFOM_IC,
 			   const fom_state_t & yFOM_Ref,
 			   const decoder_t & decoderObj,
-			   const num_steps_in_window_t numStepsInWindow,
+			   const window_size_t numStepsInWindow,
 			   const rom_size_t romSize,
 			   linear_solver_type & linSolverObj)
-    : appObj_(appObj),
-      fomStateReconstructorObj_(yFOM_Ref, decoderObj),
+    : fomStateReconstructorObj_(yFOM_Ref, decoderObj),
       romSize_(romSize),
       timeSchemeObj_(romSize_, yFOM_IC),
       numStepsInWindow_{numStepsInWindow},
@@ -225,7 +212,7 @@ public:
   template <typename solverType>
   void advanceOneWindow(wls_state_type & wlsState,
 			solverType & solver,
-			const window_index_t & windowIndex,
+			const window_size_t & windowIndex,
 			scalar_type dt)
   {
     dt_			= dt; //set time step
@@ -237,18 +224,20 @@ public:
 
     // Loop to update the the wlsStateIC vector.
     // If we add multistep explicit methods, need to add things here.
-    const local_step_index_t start = std::max(0,this->timeStencilSize_  - this->numStepsInWindow_);
-    for (local_step_index_t i = 0; i < start; i++)
+    const auto start = std::max(0,this->timeStencilSize_  - this->numStepsInWindow_);
+    for (window_size_t i = 0; i < start; i++)
     {
       auto wlsTmpState	      = ::pressio::containers::span(wlsStateIC_, i*romSize_,     romSize_);
       const auto wlsTmpState2 = ::pressio::containers::span(wlsStateIC_, (i+1)*romSize_, romSize_);
       ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
     }
 
-    for (local_step_index_t i = start ; i < timeStencilSize_; i++)
+    for (window_size_t i = start ; i < timeStencilSize_; i++)
     {
       auto wlsTmpState  = ::pressio::containers::span(wlsStateIC_, i*romSize_, romSize_);
-      const auto wlsTmpState2 = ::pressio::containers::span(wlsState, (numStepsInWindow_ - timeStencilSize_+i)*romSize_, romSize_);
+      const auto wlsTmpState2 = ::pressio::containers::span(wlsState,
+							    (numStepsInWindow_-timeStencilSize_+i)*romSize_,
+							    romSize_);
       ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
     }
     std::cout << " Window " << windowIndex << " completed " << std::endl;

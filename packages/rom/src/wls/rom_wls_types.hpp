@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_wls_hessian_and_gradient_sequential_policy_impl.hpp
+// rom_wls_types.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -48,20 +48,11 @@
 #ifndef ROM_WLS_TYPES_HPP_
 #define ROM_WLS_TYPES_HPP_
 
-namespace pressio{ namespace rom{ namespace wls{ 
+namespace pressio{ namespace rom{ namespace wls{
 
-struct wls_types{
+using window_size_t = int32_t;
+using rom_size_t    = int32_t;
 
-  using num_steps_in_window_t = int;
-  using window_index_t = int;
-  using local_step_index_t = int;
-  using global_step_index_t = int;
-  using rom_size_t = int;
-  using wls_problem_size_t = int;
-  using wls_stencil_size_t = int;
-
-};
-
-} } } //ending namespace pressio
+}}} //ending namespace pressio::rom::wls
 
 #endif
