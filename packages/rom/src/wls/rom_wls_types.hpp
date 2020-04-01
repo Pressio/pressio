@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_wls_select_timescheme_helper.hpp
+// rom_wls_types.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -45,35 +45,14 @@
 // ************************************************************************
 //@HEADER
 */
+#ifndef ROM_WLS_TYPES_HPP_
+#define ROM_WLS_TYPES_HPP_
 
-#ifndef ROM_WLS_SELECT_ODE_HELPER_HPP_
-#define ROM_WLS_SELECT_ODE_HELPER_HPP_
+namespace pressio{ namespace rom{ namespace wls{
 
-namespace pressio{ namespace rom{ namespace wls{ namespace timeschemes{
+using window_size_t = int32_t;
+using rom_size_t    = int32_t;
 
-namespace impl{
+}}} //ending namespace pressio::rom::wls
 
-template <typename ode_tag, typename fom_state_t, typename wls_state_t>
-struct DefaultHelper{
-  using type = void;
-};
-
-//BDF1 specialization
-template <typename fom_state_t, typename wls_state_t>
-struct DefaultHelper<::pressio::ode::implicitmethods::Euler, fom_state_t, wls_state_t>{
-  using type = ::pressio::rom::wls::timeschemes::impl::ImplicitEuler<fom_state_t, wls_state_t>;
-};
-
-//BDF2 specialization
-template <typename fom_state_t, typename wls_state_t>
-struct DefaultHelper<::pressio::ode::implicitmethods::BDF2, fom_state_t, wls_state_t>{
-  using type = ::pressio::rom::wls::timeschemes::impl::BDF2<fom_state_t, wls_state_t>;
-};
-
-} //end namespace pressio::rom::wls::timeschemes::helpers::impl
-
-template <typename ode_tag, typename fom_state_t, typename wls_state_t>
-using timescheme_t = typename impl::DefaultHelper<ode_tag,fom_state_t, wls_state_t>::type;
-
-}}}} //ena namespace pressio::rom::wls::timeschemes::helpers
 #endif

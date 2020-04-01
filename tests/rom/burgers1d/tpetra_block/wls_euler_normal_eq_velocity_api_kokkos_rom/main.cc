@@ -1,55 +1,90 @@
+#ifndef WLS_BURGERS_DRIVER_MPI_HPP_ 
 
 #include "pressio_rom.hpp"
 #include "pressio_apps.hpp"
+<<<<<<< HEAD:tests/rom/burgers1d/tpetra_block/wls_euler_normal_eq_velocity_api_kokkos_rom/main.cc
 #include "utils_tpetra.hpp"
+=======
+#include "burgers_fom_functions_eigen.hpp"
+#include "utils_eigen.hpp"
+#include "rom_data_type_eigen.hpp"
 
-namespace {
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  #include "burgers_fom_functions_tpetra.hpp"
+  #include "burgers_fom_functions_tpetra_block.hpp"
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+  #include "burgers_fom_functions_kokkos.hpp"
+  #include "rom_data_type_kokkos.hpp"
+#endif
+
+namespace{
+
+template <typename scalar_t>
+auto readSol(::pressio::ode::implicitmethods::Euler & odeTag, const int fomSize, const scalar_t dt) 
+  -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10)) 
+{
+  auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
+  return trueY;
+}
+
+template <typename scalar_t>
+auto readSol(::pressio::ode::implicitmethods::BDF2 & odeTag, const int fomSize, const scalar_t dt) 
+  -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10)) 
+{
+  auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);
+  return trueY;
+}
+
+>>>>>>> 297c4c2a1ebde84cd5d145f476e64feaeb54cb23:tests/rom/burgers1d/wls/wls_burgers_driver_mpi.hpp
+
 
 template <
+  typename fom_t,
+  typename rom_data_t,
   typename tcomm_t,
-  typename lin_solver_tag,
   typename hessian_matrix_structure_tag,
+  typename ode_tag,
   typename rcpcomm_t
   >
-void doRun(rcpcomm_t & Comm, int rank)
+std::string doRun(rcpcomm_t & Comm, int rank)
 {
 
-  using fom_t		= pressio::apps::Burgers1dTpetraBlock;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t= typename fom_t::state_type;
-  //using native_dmat_d_t = typename fom_t::dense_matrix_type;
   using fom_dmat_t         = typename fom_t::dense_matrix_type;
   using fom_state_t   = ::pressio::containers::Vector<native_state_t>;
+  using decoder_jac_d_t	= pressio::containers::MultiVector<fom_dmat_t>;
 
   // wls state type
-  using execution_space = Kokkos::DefaultExecutionSpace;
-  using kll = Kokkos::LayoutLeft;
-  using k1dLl_d = Kokkos::View<scalar_t*, kll, execution_space>;
-  using k2dLl_d = Kokkos::View<scalar_t**, kll, execution_space>;
-
-  using wls_state_d_t	= pressio::containers::Vector<k1dLl_d>;
-  using hessian_d_t	= pressio::containers::Matrix<k2dLl_d>;
+  using wls_state_d_t	= typename rom_data_t::wls_state_d_t;
+  using hessian_d_t	= typename rom_data_t::hessian_d_t;
 
   // decoder jacobian type
-  using decoder_jac_d_t	= pressio::containers::MultiVector<fom_dmat_t>;
   using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, wls_state_d_t, fom_state_t>;
 
-  std::string checkStr {"PASSED"};
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
 
   // app object
-  constexpr int numCell = 20;
-  fom_t appObj({{5.0, 0.02, 0.02}}, numCell,Comm);
+  constexpr int fomSize = 20;
+  fom_t appObj({{5.0, 0.02, 0.02}}, fomSize,Comm);
   constexpr scalar_t dt = 0.01;
   constexpr auto t0 = zero;
 
   int romSize = 11;
 
   // create/read jacobian of the decoder
+<<<<<<< HEAD:tests/rom/burgers1d/tpetra_block/wls_euler_normal_eq_velocity_api_kokkos_rom/main.cc
   auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize,
                  numCell, Comm, appObj.getDataMap());
   fom_dmat_t tpb_phi(*tpw_phi.data(), *appObj.getDataMap(), 1);
   decoder_d_t decoderObj(tpb_phi);
+=======
+  ode_tag odeTag;
+  auto decoderObj = readBasis<decoder_d_t,fom_dmat_t>(appObj,odeTag,romSize,fomSize,Comm);
+
+>>>>>>> 297c4c2a1ebde84cd5d145f476e64feaeb54cb23:tests/rom/burgers1d/wls/wls_burgers_driver_mpi.hpp
 
   // for this problem, my reference state = initial state
   // get initial condition
@@ -63,14 +98,13 @@ void doRun(rcpcomm_t & Comm, int rank)
   // -----------------
   // lin solver
   // -----------------
-  using linear_solver_t = pressio::solvers::direct::KokkosDirect<lin_solver_tag, hessian_d_t>;
+  using linear_solver_t = typename rom_data_t::linear_solver_t;
   linear_solver_t linear_solver;
 
   // -----------------
   // WLS problem
   // -----------------
   constexpr int numStepsInWindow = 5;
-  using ode_tag      = ::pressio::ode::implicitmethods::Euler;
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<fom_t, wls_state_d_t, decoder_d_t,
 								      ode_tag, hessian_d_t,
 								      hessian_matrix_structure_tag>;
@@ -113,21 +147,13 @@ void doRun(rcpcomm_t & Comm, int rank)
   using fom_state_reconstr_t = pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_d_t>;
   fom_state_reconstr_t fomStateReconstructor(yRef, decoderObj);
   fomStateReconstructor(wlsCurrentState, yFinal);
-
-  // this is a reproducing ROM test, so the final reconstructed state
-  // has to match the FOM solution obtained with euler, same time-step, for 10 steps
-  auto yFF_v = yFinal.data()->getVectorView().getData();
-  int shift = (rank==0) ? 0 : 10;
-  const int myn = yFinal.data()->getMap()->getNodeNumElements();
-  const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
-  for (auto i=0; i<myn; i++)
-    if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
-
-  std::cout << checkStr << std::endl;
-
+  const auto trueY = readSol(odeTag,fomSize, dt);
+  //const   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
+  std::string checkStr = checkSol(appObj ,yFinal,trueY,rank);
+  return checkStr;
 }
-}// end namespace
 
+<<<<<<< HEAD:tests/rom/burgers1d/tpetra_block/wls_euler_normal_eq_velocity_api_kokkos_rom/main.cc
 
 int main(int argc, char *argv[])
 {
@@ -143,3 +169,7 @@ int main(int argc, char *argv[])
   }
   return 0;
 }
+=======
+}// end namespace
+#endif
+>>>>>>> 297c4c2a1ebde84cd5d145f476e64feaeb54cb23:tests/rom/burgers1d/wls/wls_burgers_driver_mpi.hpp

@@ -6,7 +6,7 @@
 
 namespace pressio{ namespace rom{ namespace test{ namespace eigen{
 
-template <typename T = int>
+template <typename T = std::size_t>
 auto convertFromVVecToMultiVec(
       const std::vector<std::vector<double>> & A0,
       T nrows, T ncols)
@@ -15,17 +15,15 @@ auto convertFromVVecToMultiVec(
   using eig_mat = Eigen::MatrixXd;
   pressio::containers::MultiVector<eig_mat> ADW(nrows, ncols);
 
-  for (int i=0; i<nrows; i++){
-    for (int j=0; j<ncols; j++)
+  for (T i=0; i<nrows; i++){
+    for (T j=0; j<ncols; j++)
       ADW(i,j) = A0[i][j];
   }
   return ADW;
 }
 
-template <typename T = int>
-auto readBasis(
-  std::string filename,
-  T romSize, T numCell)
+template <typename T = std::size_t>
+auto readBasis(std::string filename, T romSize, T numCell)
   ->pressio::containers::MultiVector<Eigen::MatrixXd>
 {
   std::vector<std::vector<double>> A0;

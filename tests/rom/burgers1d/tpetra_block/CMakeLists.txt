@@ -2,6 +2,5 @@
 add_subdirectory(lspg_euler_gn_qr)
 add_subdirectory(lspg_euler_normal_eq)
 add_subdirectory(lspg_euler_normal_eq_kokkos_rom)
-
-add_subdirectory(wls_euler_normal_eq_velocity_api)
-add_subdirectory(wls_euler_normal_eq_velocity_api_kokkos_rom)
+add_subdirectory(wls_normal_eq_velocity_api_eigen_rom)
+add_subdirectory(wls_normal_eq_velocity_api_kokkos_rom)
