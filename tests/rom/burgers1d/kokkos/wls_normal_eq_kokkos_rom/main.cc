@@ -27,5 +27,6 @@ int main(int argc, char *argv[])
 
     std::cout << checkStr << std::endl;
   }
+  Kokkos::finalize();
   return 0;
 }
