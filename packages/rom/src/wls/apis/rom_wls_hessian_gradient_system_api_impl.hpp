@@ -158,7 +158,7 @@ private:
   // delegated constructor to simplify the ones above
   SystemHessianGradientApi(const rom_size_t romSize,
 			   const window_size_t numStepsInWindow,
-  			   const decoder_t & decoderObj,
+			   const decoder_t & decoderObj,
 			   const policy_t & policy,
 			   const fom_state_t & fomStateReference)
     : romSize_(romSize),

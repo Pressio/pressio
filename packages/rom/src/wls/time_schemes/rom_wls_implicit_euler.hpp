@@ -124,7 +124,7 @@ public:
     if (arg == 1 && jacobianNeedsRecomputing_){
       constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
       ::pressio::ops::do_update(Jphi,phi,cnm1);
-      jacobianNeedsRecomputing_ = false;
+      jacobianNeedsRecomputing_ = true;
     }
   }
 

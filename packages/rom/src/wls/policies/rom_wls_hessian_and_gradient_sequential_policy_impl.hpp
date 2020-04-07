@@ -50,6 +50,7 @@
 #define ROM_WLS_HESSIAN_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
 
 #include "rom_wls_preconditioners_impl.hpp"
+#include "rom_wls_jacobians_container_impl.hpp"
 
 /*
 This header file contains the class used for computing the hessian and gradients in the WLS system.
@@ -67,7 +68,8 @@ template<
   typename fom_type,
   typename decoder_t,
   typename hessian_matrix_structure_tag,
-  typename preconditioner_t = ::pressio::rom::wls::preconditioners::impl::NoPreconditioner
+  typename preconditioner_t = ::pressio::rom::wls::preconditioners::impl::NoPreconditioner,
+  typename jacobians_container_t = typename ::pressio::rom::wls::impl::nonFrozenJacobiansContainer<typename decoder_t::jacobian_type>
   >
 class HessianGradientSequentialPolicy
 {
@@ -80,23 +82,32 @@ public:
 
   /* wls_jacs_t is for now a vector of item type = decoder_jac_t */
   using wls_jacs_t	      = std::vector<decoder_jac_t>;
-
+  jacobians_container_t Jacobians_;
 public:
   HessianGradientSequentialPolicy(rom_size_t romSize,
 				  window_size_t numStepsInWindow,
 				  const decoder_t & decoderObj,
 				  const fom_type & appObj,
-                                  const fom_state_t & fomState,
-                                  window_size_t timeStencilSize)
+          const fom_state_t & fomState,
+          window_size_t timeStencilSize,
+          const window_size_t jacobianUpdateFrequency = 1)
     : romSize_(romSize),
       phi_(decoderObj.getReferenceToJacobian()),
       appObj_(appObj),
       fomStateCurrent_(fomState),
       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)),
       // construct wls Jacobians from jacobian of the decoder: we might need to change this later
-      wlsJacs_(std::min(timeStencilSize+1,numStepsInWindow), phi_),
-      residual_( appObj.velocity( *fomState.data(), ::pressio::utils::constants::zero<scalar_t>()) )
-  {}
+      Jacobians_( timeStencilSize, numStepsInWindow , decoderObj.getReferenceToJacobian()), 
+      residual_( appObj.velocity( *fomState.data(), ::pressio::utils::constants::zero<scalar_t>()) ),
+      jacobianUpdateFrequency_(jacobianUpdateFrequency)
+  {
+    if(  (std::is_same<jacobians_container_t,::pressio::rom::wls::impl::nonFrozenJacobiansContainer<typename decoder_t::jacobian_type> >::value) and 
+         ( jacobianUpdateFrequency != 1 ) ){
+      std::cout << "Error, using nonFrozenJacobianContainer with jacobianUpdateFrequency > 1. To run with jacobianUpdateFrequency > 1, use frozenJacobiansContainer" << std::endl;
+      std::cout << "Setting jacobianUpdateFrequency = 1" << std::endl;
+      jacobianUpdateFrequency_ = 1;
+    }
+  }
 
 public:
   template <
@@ -121,10 +132,12 @@ public:
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
 
-    window_size_t n = 0;
-    scalar_t t = ts + n*dt;
-    window_size_t step = step_s + n;
+    window_size_t stepNumLocal = 0;
+    scalar_t t = ts + stepNumLocal*dt;
+    window_size_t stepNumGlobal = step_s + stepNumLocal;
+    //if (innerLoopCounter_%freezeFreq_ == 0){
     ::pressio::ops::set_zero(hess);
+    //}
     ::pressio::ops::set_zero(gradient);
 
     //get access to the state at the first window
@@ -138,7 +151,7 @@ public:
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("residual");
 #endif
-    timeSchemeObj.time_discrete_residual(appObj_, fomStateCurrent_, residual_, ts, dt, step);
+    timeSchemeObj.time_discrete_residual(appObj_, fomStateCurrent_, residual_, ts, dt, stepNumGlobal);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("residual");
 #endif
@@ -148,57 +161,73 @@ public:
     rnorm += ::pressio::ops::norm2(residual_);
 
     // compute jacobian over stencil
+    if (innerLoopCounter_%jacobianUpdateFrequency_ == 0){
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("jacobian");
 #endif
-    computeJacobiansOverStencil(timeSchemeObj, step,t,dt);
+      computeJacobiansOverStencil(timeSchemeObj, stepNumGlobal, stepNumLocal , t,dt);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("jacobian");
 #endif
+    } //end if for freezing
 
     // add to local block of hessian
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("hessian computation");
 #endif
     auto hess_block = ::pressio::containers::subspan(hess,
-						     std::make_pair( n*romSize_,(n+1)*romSize_ ) ,
-						     std::make_pair( n*romSize_,(n+1)*romSize_) );
+						     std::make_pair( stepNumLocal*romSize_,(stepNumLocal+1)*romSize_ ) ,
+						     std::make_pair( stepNumLocal*romSize_,(stepNumLocal+1)*romSize_) );
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-			    one, wlsJacs_[jacStencilSize_-1],
-			    wlsJacs_[jacStencilSize_-1], zero, hess_block);
+			    one, Jacobians_.getLocalJacobian(stepNumLocal,0),
+			    Jacobians_.getLocalJacobian(stepNumLocal,0), zero, hess_block);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("hessian computation");
 #endif
 
     // compute gradient[n*romSize_:(n+1)*romSize] += J^T r
-    auto gradientView = ::pressio::containers::span(gradient, n*romSize_, romSize_);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    timer->start("gradient computation");
+#endif
+    auto gradientView = ::pressio::containers::span(gradient, stepNumLocal*romSize_, romSize_);
     ::pressio::ops::product(::pressio::transpose(),
-			    one, wlsJacs_[jacStencilSize_-1], residual_,
+			    one, Jacobians_.getLocalJacobian(stepNumLocal,0), residual_,
 			    one, gradientView);
-
-    for (window_size_t n = 1; n < numStepsInWindow; n++)
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    timer->stop("gradient computation");
+#endif
+    for (window_size_t stepNumLocal = 1; stepNumLocal < numStepsInWindow; stepNumLocal++)
     {
-      updateResidualAndJacobian(timeSchemeObj, wlsState, fomStateReconstrObj, n,
+      updateResidualAndJacobian(timeSchemeObj, wlsState, fomStateReconstrObj, stepNumLocal,
 				step_s, ts, rnorm, gradient, dt);
 
-      const window_size_t sbar = std::min(n, jacStencilSize_);
+      const window_size_t sbar = std::min(stepNumLocal, jacStencilSize_);
       for (window_size_t i=0; i < sbar; i++)
       {
-      	auto gradientView = ::pressio::containers::span(gradient, (n-i)*romSize_, romSize_);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+        timer->start("gradient computation");
+#endif
+      	auto gradientView = ::pressio::containers::span(gradient, (stepNumLocal-i)*romSize_, romSize_);
         ::pressio::ops::product(::pressio::transpose(),
-				one, wlsJacs_[jacStencilSize_-i-1], residual_,
+				one, Jacobians_.getLocalJacobian( stepNumLocal, i ), residual_,
 				one, gradientView);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+        timer->stop("gradient computation");
+#endif
       }
 
+//      if (innerLoopCounter_%freezeFreq_ == 0){  
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("hessian computation");
 #endif
-      addToHessian(hess, n, sbar, hessian_matrix_structure_tag());
+      addToHessian(hess, stepNumLocal, sbar, hessian_matrix_structure_tag());
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("hessian computation");
 #endif
+//      }
 
     }//end loop over stepsInWindow
+  innerLoopCounter_ += 1;
   }//end operator()
 
 private:
@@ -215,8 +244,8 @@ private:
 							 std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
 							 std::make_pair( (n-j)*romSize_,(n-j+1)*romSize_ ) );
         ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
-				wlsJacs_[jacStencilSize_-i-1],
-				wlsJacs_[jacStencilSize_-j-1], one, hess_block);
+				Jacobians_.getLocalJacobian( n, i ),
+				Jacobians_.getLocalJacobian( n, j ), one, hess_block);
       }
     }// end assembling local component of global Hessian
   }
@@ -237,8 +266,8 @@ private:
 
         ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
 				one,
-				wlsJacs_[jacStencilSize_-j-1],
-				wlsJacs_[jacStencilSize_-i-1], one, hess_block);
+				Jacobians_.getLocalJacobian( n , j ),
+				Jacobians_.getLocalJacobian( n , i ), one, hess_block);
       }
     }// end assembling local component of global Hessian
   }
@@ -255,20 +284,22 @@ private:
 
   template <typename time_scheme_t>
   void computeJacobiansOverStencil(const time_scheme_t & timeSchemeObj,
-				   const window_size_t & stepNum,
+				   const window_size_t & stepNumGlobal,
+           const window_size_t & stepNumLocal,
 				   const scalar_t & t,
 				   const scalar_t & dt) const
   {
     for (window_size_t i = 0; i < jacStencilSize_; i++)
     {
+      window_size_t jac_entry_index = Jacobians_.getJacobianIndexOffset(stepNumLocal) +  (jacStencilSize_ -1) -i  ;
+      auto & jacLocal = Jacobians_.getLocalJacobian(stepNumLocal , i );
       timeSchemeObj.time_discrete_jacobian(appObj_,
                                            fomStateCurrent_,
-                                           wlsJacs_[jacStencilSize_ -i -1],
-                                           phi_, t, dt, stepNum, i);
-
-      if (timeSchemeObj.jacobianNeedsRecomputing(jacStencilSize_ -i -1)){
-        Preconditioner(appObj_, fomStateCurrent_, wlsJacs_[jacStencilSize_ -i -1], t);
-      }
+                                           jacLocal,
+                                           phi_, t, dt, stepNumGlobal, i);
+      //if (timeSchemeObj.jacobianNeedsRecomputing(jacStencilSize_ -i -1)){
+      Preconditioner(appObj_, fomStateCurrent_, jacLocal, t);
+      //}
     }
   }
 
@@ -312,13 +343,15 @@ private:
 
       rnorm += ::pressio::ops::norm2(residual_);
 
+      if (innerLoopCounter_%jacobianUpdateFrequency_ == 0){
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("jacobian");
 #endif
-      computeJacobiansOverStencil(timeSchemeObj,step,t,dt);
+      computeJacobiansOverStencil(timeSchemeObj,step,n,t,dt);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("jacobian");
 #endif
+      }
   }
 
 private:
@@ -328,9 +361,11 @@ private:
   mutable fom_state_t fomStateCurrent_; //working variable for the FOM state
   window_size_t jacStencilSize_;
 
-  mutable wls_jacs_t wlsJacs_;
   mutable residual_t residual_;	        // working variable for the time discrete residual
   const preconditioner_t Preconditioner{};
+  window_size_t jacobianUpdateFrequency_;
+  mutable window_size_t innerLoopCounter_ = 0;
+
 };
 
 }}}} //end namespace pressio::rom::wls::impl
