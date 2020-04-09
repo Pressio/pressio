@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_type_generator_common_impl.hpp
+// rom_galerkin_type_generator_common_velocity_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_TYPE_GENERATOR_COMMON_IMPL_HPP_
-#define ROM_GALERKIN_TYPE_GENERATOR_COMMON_IMPL_HPP_
+#ifndef ROM_GALERKIN_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
+#define ROM_GALERKIN_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
@@ -58,7 +58,7 @@ template <typename fom_t, typename galerkin_state_t>
 struct ExtractNativeHelper<
   fom_t, galerkin_state_t,
   mpl::enable_if_t<
-    ::pressio::rom::meta::is_legitimate_model_for_galerkin<fom_t>::value
+    ::pressio::rom::meta::is_legitimate_model_for_explicit_galerkin<fom_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and !::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
 #endif
@@ -74,7 +74,7 @@ template <typename fom_t, typename galerkin_state_t>
 struct ExtractNativeHelper<
   fom_t, galerkin_state_t,
   mpl::enable_if_t<
-    ::pressio::rom::meta::is_legitimate_model_for_galerkin<fom_t>::value
+    ::pressio::rom::meta::is_legitimate_model_for_explicit_galerkin<fom_t>::value
     and ::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
     >
   >
@@ -85,47 +85,66 @@ struct ExtractNativeHelper<
 #endif
 // ------------------------------------------------------------------------------------
 
-template < typename galerkin_state_type, typename ...Args >
-struct GalerkinCommonTypes
+template <typename ops_t, typename enable = void>
+struct FomStateReconHelper;
+
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< std::is_void<ops_t>::value >
+  >
+{
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+};
+
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< !std::is_void<ops_t>::value >
+  >
+{
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t, ops_t>;
+};
+//------------------------------------------------------------------------------
+
+
+template <typename fom_type, typename rom_state_type, typename ...Args >
+struct GalerkinCommonTypesVelocityApi
 {
   // the scalar type
-  using scalar_t = typename ::pressio::containers::details::traits<galerkin_state_type>::scalar_t;
+  using scalar_t		= typename ::pressio::containers::details::traits<rom_state_type>::scalar_t;
+
+  using fom_t			= fom_type;
+  using fom_native_state_t	= typename ExtractNativeHelper<fom_t, rom_state_type>::fom_native_state_t;
+  using fom_native_velocity_t	= typename ExtractNativeHelper<fom_t, rom_state_type>::fom_native_velocity_t;
+  // fom wrapper types
+  using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
+  using fom_velocity_t		= ::pressio::containers::Vector<fom_native_velocity_t>;
 
   // rom state type and native type
-  using galerkin_state_t	= galerkin_state_type;
+  using galerkin_state_t	= rom_state_type;
   using galerkin_native_state_t	= typename ::pressio::containers::details::traits<galerkin_state_t>::wrapped_t;
 
   // the Galerkin rhs type is (for now) same as state type
   using galerkin_residual_t	= galerkin_state_t;
 
-  // verify that args contains a valid fom/adapter type for Galerkin
-  using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::rom::meta::is_legitimate_model_for_galerkin, Args...>;
-  using fom_t = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
-  static_assert(!std::is_void<fom_t>::value and ic1::value < sizeof... (Args),
-		"A valid adapter/fom type must be passed to define a ROM Galerkin problem");
-
-  // get the native types
-  using fom_native_state_t	= typename ExtractNativeHelper<fom_t, galerkin_state_t>::fom_native_state_t;
-  using fom_native_velocity_t	= typename ExtractNativeHelper<fom_t, galerkin_state_t>::fom_native_velocity_t;
-  // declare wrapper types
-  using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_velocity_t		= ::pressio::containers::Vector<fom_native_velocity_t>;
-
   // verify the sequence contains a valid decoder type
   using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-    galerkin_state_type, fom_state_t, ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
+    galerkin_state_t, fom_state_t, ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
   using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
   static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
 		"A valid decoder type must be passed to define a ROM Galerkin problem");
   using decoder_jac_t = typename decoder_t::jacobian_type;
 
+  // if we have an admissible user-defined ops
+  using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
+    decoder_jac_t, galerkin_state_t, fom_state_t,
+    ::pressio::rom::meta::is_legitimate_custom_ops_for_galerkin_velocity_api, Args...>;
+  using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
-
-  // for now, set ops to void, i.e. we only use pressio ops
-  using ud_ops_t = void;
+  using fom_state_reconstr_t =
+    typename FomStateReconHelper<ud_ops_t>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t, ud_ops_t>;

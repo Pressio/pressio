@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_type_generator_common.hpp
+// rom_galerkin_problem_default.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,51 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_TYPE_GENERATOR_COMMON_HPP_
-#define ROM_GALERKIN_TYPE_GENERATOR_COMMON_HPP_
+#ifndef ROM_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
+#define ROM_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
 
-#include "./impl/rom_galerkin_type_generator_common_impl.hpp"
+#include "./impl_velocity_api/rom_galerkin_problem_type_generator_default_velocity_api.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
-template <
-  typename galerkin_state_type,
-  typename ...Args
-  >
-using CommonTypes = impl::GalerkinCommonTypes<galerkin_state_type, Args...>;
+namespace {
 
-}}}//end  namespace pressio::rom::galerkin
+template <typename T, typename enable = void>
+struct Helper{
+  template <typename ...Args>
+  using type = void;
+};
+
+template <typename T>
+struct Helper<
+  T,
+  mpl::enable_if_t<
+    ::pressio::rom::meta::model_meets_velocity_api_for_galerkin<T>::value
+    >
+  >
+{
+  template <typename ...Args>
+  using type = impl::DefaultProblemTypeGeneratorVelocityApi<T, Args...>;
+};
+
+// template <typename T>
+// struct Helper<
+//   T,
+//   mpl::enable_if_t<
+//     ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
+//     >
+//   >
+// {
+//   template <typename stepper_tag, typename rom_state_t, typename ...Args>
+//   using type = impl::DefaultProblemTypeGeneratorResidualApi<stepper_tag, T, rom_state_t, Args...>;
+// };
+
+}// end anonym namespace
+
+template <typename fom_type, typename ...Args>
+using Default = typename Helper<fom_type>::template type<Args...>;
+
+}//end namespace pressio::rom::galerkin
+
+}} //end namespace pressio::rom
 #endif

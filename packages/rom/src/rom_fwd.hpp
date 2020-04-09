@@ -90,23 +90,23 @@ struct QueryFomTimeDiscreteResidual;
 }// namespace pressio::rom::policy
 
 
-/* --- galerkin --- */
-namespace galerkin{
+// /* --- galerkin --- */
+// namespace galerkin{
 
-template <
-  typename fom_states_data_t,
-  typename fom_rhs_t,
-  typename decoder_jac_t,
-  typename ud_ops = void
-  >
-class DefaultExplicitVelocityPolicy;
+// template <
+//   typename fom_states_data_t,
+//   typename fom_rhs_t,
+//   typename decoder_jac_t,
+//   typename ud_ops = void
+//   >
+// class DefaultExplicitVelocityPolicy;
 
-template <
-  typename type_generator_t,
-  typename enable = void>
-class ProblemGenerator;
+// template <
+//   typename type_generator_t,
+//   typename enable = void>
+// class ProblemGenerator;
 
-} // end namespace pressio::rom::galerkin
+// } // end namespace pressio::rom::galerkin
 
 
 /*--- steady LSPG --- */

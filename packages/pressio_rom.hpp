@@ -100,10 +100,13 @@
 //----------------
 // galerkin
 //----------------
+// metaf for checking ops
+#include "rom/src/meta/rom_is_legitimate_custom_ops_for_galerkin_velocity_api.hpp"
+// meta for checking api
+#include "rom/src/meta/galerkin_velocity_api/rom_model_meets_velocity_api_for_galerkin.hpp"
 #include "rom/src/meta/rom_is_legitimate_model_for_galerkin.hpp"
-#include "rom/src/galerkin/rom_galerkin_explicit_velocity_policy.hpp"
-#include "rom/src/galerkin/rom_galerkin_type_generator_common.hpp"
-#include "rom/src/galerkin/rom_galerkin_problem_type_generator_default.hpp"
+// problem classes
+#include "rom/src/galerkin/rom_galerkin_problem_default.hpp"
 #include "rom/src/galerkin/rom_galerkin_problem_generator.hpp"
 
 //----------------
@@ -127,8 +130,9 @@
 #include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_velocity_methods.hpp"
 #include "rom/src/meta/lspg_velocity_api/rom_model_meets_velocity_api_for_unsteady_lspg.hpp"
 
-// metaf for checking residual api
+// metaf for checking residual api ops
 #include "rom/src/meta/rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp"
+// metaf for checking residual api
 #include "rom/src/meta/lspg_residual_api/rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
 #include "rom/src/meta/lspg_residual_api/rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp"
 #include "rom/src/meta/lspg_residual_api/rom_model_has_needed_apply_time_discrete_jacobian_methods.hpp"

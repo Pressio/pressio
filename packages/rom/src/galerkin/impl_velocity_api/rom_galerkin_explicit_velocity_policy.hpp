@@ -49,7 +49,7 @@
 #ifndef ROM_DEFAULT_GALERKIN_EXPLICIT_VELOCITY_POLICY_HPP_
 #define ROM_DEFAULT_GALERKIN_EXPLICIT_VELOCITY_POLICY_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <
   typename fom_states_data_type,
@@ -57,37 +57,48 @@ template <
   typename decoder_t,
   typename ud_ops
   >
-class DefaultExplicitVelocityPolicy
+class ExplicitVelocityPolicy
 {
-
-protected:
-  using this_t = DefaultExplicitVelocityPolicy<fom_states_data_type,
-					       fom_rhs_t,
-					       decoder_t,
-					       ud_ops>;
 
 public:
   static constexpr bool isResidualPolicy_ = true;
 
 public:
-  DefaultExplicitVelocityPolicy() = delete;
-  ~DefaultExplicitVelocityPolicy() = default;
+  ExplicitVelocityPolicy() = delete;
+  ~ExplicitVelocityPolicy() = default;
 
+  // 1. void ops
   template <
     typename _fom_rhs_t = fom_rhs_t,
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops>::value
-      and ::pressio::containers::meta::is_wrapper<_fom_rhs_t>::value
+      /*::pressio::containers::meta::is_wrapper<_fom_rhs_t>::value*/
       > * = nullptr
     >
-  DefaultExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
-				fom_states_data_type & fomStates,
-				const decoder_t & decoder)
+  ExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
+			 fom_states_data_type & fomStates,
+			 const decoder_t & decoder)
     : fomRhs_{fomRhs},
       phi_(decoder.getReferenceToJacobian()),
       fomStates_(fomStates){}
 
+  // 2. non-void ops
+  template <
+    typename _fom_rhs_t = fom_rhs_t,
+    typename _ud_ops = ud_ops,
+    ::pressio::mpl::enable_if_t<
+      !std::is_void<_ud_ops>::value
+      > * = nullptr
+    >
+  ExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
+			 fom_states_data_type & fomStates,
+			 const decoder_t & decoder,
+			 const _ud_ops & udOps)
+    : fomRhs_{fomRhs},
+      phi_(decoder.getReferenceToJacobian()),
+      fomStates_(fomStates),
+      udOps_{&udOps}{}
 
 public:
   /* for now, the ROM state and ROM velocity must be of the same type */
@@ -95,7 +106,8 @@ public:
   void operator()(const galerkin_state_t  & romState,
 		  galerkin_state_t	  & romRhs,
   		  const fom_t		  & app,
-		  const scalar_t	  & t) const{
+		  const scalar_t	  & t) const
+  {
     this->compute_impl(romState, romRhs, app, t);
   }
 
@@ -104,8 +116,7 @@ public:
 			      const fom_t	      & app,
 			      const scalar_t	      & t) const
   {
-    // TODO: make this better, maybe initialized somewhere else
-    // evenif this is called once, this is ugly
+    // this is called once
     galerkin_state_t result(romState);
     ::pressio::ops::set_zero(result);
     this->compute_impl(romState, result, app, t);
@@ -122,15 +133,15 @@ private:
     typename fom_state_t,
     typename _fom_rhs_t = fom_rhs_t,
     ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_wrapper<fom_state_t>::value
+      ::pressio::containers::meta::is_wrapper<fom_state_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and ::pressio::mpl::not_same<fom_t, pybind11::object>::value
 #endif
     > * = nullptr
   >
-  void queryFomVelocityDispatch(const fom_t & app,
-				const fom_state_t & fomState,
-				const scalar_t & time) const
+  void queryFomVelocity(const fom_t & app,
+			const fom_state_t & fomState,
+			const scalar_t & time) const
   {
     app.velocity(*fomState.data(), time, *fomRhs_.data());
   }
@@ -142,13 +153,13 @@ private:
     typename fom_state_t,
     typename _fom_rhs_t = fom_rhs_t,
     ::pressio::mpl::enable_if_t<
-      ::pressio::containers::meta::is_vector_wrapper_pybind<fom_state_t>::value and
+      /*::pressio::containers::meta::is_vector_wrapper_pybind<fom_state_t>::value and*/
       ::pressio::mpl::is_same<fom_t, pybind11::object>::value
       > * = nullptr
     >
-  void queryFomVelocityDispatch(const fom_t & app,
-				const fom_state_t & fomState,
-				const scalar_t & time) const
+  void queryFomVelocity(const fom_t & app,
+			const fom_state_t & fomState,
+			const scalar_t & time) const
   {
     *fomRhs_.data() = app.attr("velocity")(*fomState.data(), time);
   }
@@ -161,26 +172,30 @@ private:
     typename scalar_t,
     typename result_t,
     typename _ops_t = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      ::pressio::containers::meta::is_wrapper<result_t>::value and
-      std::is_void<_ops_t>::value
-      > * = nullptr
+    ::pressio::mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr
     >
-  void applyDecoderJacobianToFomVelDispatch(result_t & resObj) const
+  void applyDecoderJacobianToFomVel(result_t & result) const
   {
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
-    ::pressio::ops::product(::pressio::transpose(), one, phi_, fomRhs_, zero, resObj);
+    ::pressio::ops::product(::pressio::transpose(), one, phi_, fomRhs_, zero, result);
+  }
+
+  template <
+    typename scalar_t,
+    typename result_t,
+    typename _ops_t = ud_ops,
+    ::pressio::mpl::enable_if_t< !std::is_void<_ops_t>::value > * = nullptr
+    >
+  void applyDecoderJacobianToFomVel(result_t & result) const
+  {
+    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    udOps_->product(::pressio::transpose(), one, *phi_.data(), *fomRhs_.data(), zero, result);
   }
 
 private:
-  template <
-    typename galerkin_state_t,
-    typename fom_t,
-    typename scalar_t,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value > * = nullptr
-  >
+  template <typename galerkin_state_t, typename fom_t, typename scalar_t>
   void compute_impl(const galerkin_state_t  & romState,
 		    galerkin_state_t	    & romRhs,
 		    const fom_t		    & app,
@@ -197,14 +212,14 @@ private:
     timer->start("fom eval rhs");
 #endif
     const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    (*this).template queryFomVelocityDispatch<scalar_t>(app, yFom, t);
+    (*this).template queryFomVelocity<scalar_t>(app, yFom, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
     timer->start("phiT*fomRhs");
 #endif
 
-    (*this).template applyDecoderJacobianToFomVelDispatch<scalar_t>(romRhs);
+    (*this).template applyDecoderJacobianToFomVel<scalar_t>(romRhs);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("phiT*fomRhs");
@@ -216,18 +231,9 @@ protected:
   mutable fom_rhs_t fomRhs_ = {};
   const typename decoder_t::jacobian_type & phi_;
   fom_states_data_type & fomStates_;
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  typename std::conditional<
-    ::pressio::mpl::is_same<ud_ops, pybind11::object>::value,
-    ud_ops,
-    const ud_ops *
-    >::type udOps_ = {};
-#else
-    const ud_ops * udOps_ = {};
-#endif
+  const ud_ops * udOps_ = {};
 
 };//end class
 
-}}}//end namespace pressio::rom::galerkin
+}}}}//end namespace pressio::rom::galerkin::impl
 #endif
