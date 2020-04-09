@@ -154,7 +154,7 @@
 
 #include "rom/src/wls/policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
 #include "rom/src/wls/apis/rom_wls_hessian_gradient_system_api.hpp"
-#include "rom/src/wls/policies/rom_wls_jacobians_container_impl.hpp"
+#include "rom/src/wls/policies/rom_wls_jacobians_container.hpp"
 //------------------------------------
 // experimental galerkin residual api
 //------------------------------------

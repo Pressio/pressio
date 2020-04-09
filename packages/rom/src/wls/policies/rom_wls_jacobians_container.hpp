@@ -46,66 +46,17 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
-#define ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
+#ifndef ROM_WLS_JACOBIANS_CONTAINER_HPP_
+#define ROM_WLS_JACOBIANS_CONTAINER_HPP_
+#include "rom_wls_jacobians_container_impl.hpp"
+namespace pressio{ namespace rom{ namespace wls{
 
+template<typename ... Args>
+using frozenJacobiansContainer = ::pressio::rom::wls::impl::frozenJacobiansContainer<Args...>;
 
-namespace pressio{ namespace rom{ namespace wls{  namespace impl{
+template<typename ... Args>
+using nonFrozenJacobiansContainer = ::pressio::rom::wls::impl::nonFrozenJacobiansContainer<Args...>;
 
-
-template<typename decoder_jac_t>
-class frozenJacobiansContainer{
-
-  using wls_jacs_t   = std::vector<decoder_jac_t>;
-
-public:
-
-  frozenJacobiansContainer(const window_size_t timeStencilSize ,const window_size_t numStepsInWindow ,const decoder_jac_t  & phi ) 
-    :  wlsJacs_( std::min(timeStencilSize+1, numStepsInWindow)*numStepsInWindow, phi), 
-       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)) {}    
-
-  window_size_t getJacobianIndexOffset(window_size_t stepNumLocal) const {
-    return stepNumLocal*jacStencilSize_;
-  }
-
-  decoder_jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) const{
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
-  }
-
-private:
-  window_size_t jacStencilSize_;
-  mutable wls_jacs_t wlsJacs_;
-
-};
-
-
-
-template<typename decoder_jac_t>
-class nonFrozenJacobiansContainer{
-
-  using wls_jacs_t   = std::vector<decoder_jac_t>;
-
-public:
-
-  nonFrozenJacobiansContainer(const window_size_t timeStencilSize ,const window_size_t numStepsInWindow ,const decoder_jac_t  & phi ) 
-    :  wlsJacs_( std::min(timeStencilSize+1,numStepsInWindow) , phi), 
-       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)) {}    
-
-  window_size_t getJacobianIndexOffset(window_size_t stepNumLocal) const {
-    return 0;
-  }
-
-  decoder_jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) const{
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
-  }
-
-private:
-  window_size_t jacStencilSize_;
-  mutable wls_jacs_t wlsJacs_;
-
-};
-
-} } } }
-
+}}} // end namespace pressio::rom::wls
 #endif
 

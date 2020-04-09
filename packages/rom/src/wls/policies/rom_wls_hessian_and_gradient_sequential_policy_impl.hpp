@@ -49,8 +49,8 @@
 #ifndef ROM_WLS_HESSIAN_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
 #define ROM_WLS_HESSIAN_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
 
-#include "rom_wls_preconditioners_impl.hpp"
-#include "rom_wls_jacobians_container_impl.hpp"
+#include "rom_wls_preconditioners_impl.hpp" // this needs to get taken out of the impl namespace
+#include "rom_wls_jacobians_container.hpp"
 
 /*
 This header file contains the class used for computing the hessian and gradients in the WLS system.
@@ -103,8 +103,8 @@ public:
   {
     if(  (std::is_same<jacobians_container_t,::pressio::rom::wls::impl::nonFrozenJacobiansContainer<typename decoder_t::jacobian_type> >::value) and 
          ( jacobianUpdateFrequency != 1 ) ){
-      std::cout << "Error, using nonFrozenJacobianContainer with jacobianUpdateFrequency > 1. To run with jacobianUpdateFrequency > 1, use frozenJacobiansContainer" << std::endl;
-      std::cout << "Setting jacobianUpdateFrequency = 1" << std::endl;
+      ::pressio::utils::io::print_stdout("Error, using nonFrozenJacobianContainer with jacobianUpdateFrequency > 1. To run with jacobianUpdateFrequency > 1, use frozenJacobiansContainer  \n");
+      ::pressio::utils::io::print_stdout("Setting jacobianUpdateFrequency = 1  \n");
       jacobianUpdateFrequency_ = 1;
     }
   }

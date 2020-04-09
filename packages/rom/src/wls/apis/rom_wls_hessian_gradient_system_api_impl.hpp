@@ -238,7 +238,11 @@ public:
 							    romSize_);
       ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
     }
-    std::cout << " Window " << windowIndex << " completed " << std::endl;
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
+    ::pressio::utils::io::print_stdout("\n");
+    auto fmt = ::pressio::utils::io::underline();
+    ::pressio::utils::io::print_stdout(fmt, "Completed window ", windowIndex, ::pressio::utils::io::reset(), "\n");
+#endif
   }// end advanceOneWindow
 
 };
