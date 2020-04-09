@@ -63,14 +63,15 @@ const std::vector<double> bdf1Sol
   pressio::ops::fill(yROM, 0.0);
 
   using ode_tag = pressio::ode::explicitmethods::Euler;
-  using pressio::rom::galerkin::DefaultProblemType;
-  using galerkin_t = DefaultProblemType<ode_tag, rom_state_t, fom_t, decoder_t>;
-  pressio::rom::galerkin::ProblemGenerator<galerkin_t> galerkinProb(
-      appobj, y0n, decoderObj, yROM, t0);
+  using problem_t  = pressio::rom::galerkin::Problem<
+    pressio::rom::galerkin::Default, ode_tag, fom_t, rom_state_t, decoder_t>;
+  problem_t galerkinProb(appobj, y0n, decoderObj, yROM, t0);
 
   scalar_t fint = 35;
   auto nSteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
   pressio::ode::integrateNSteps(galerkinProb.getStepperRef(), yROM, 0.0, dt, nSteps);
+
+  std::cout << *yROM.data() << std::endl;
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = galerkinProb.getFomStateReconstructorCRef()(yROM);
