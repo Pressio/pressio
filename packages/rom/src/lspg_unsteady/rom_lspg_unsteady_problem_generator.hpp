@@ -114,7 +114,7 @@ template<
 };
 
 
-}// end namespace pressio::rom::impl
+}// end namespace pressio::rom::lspg::unsteady::impl
 
 
 template <

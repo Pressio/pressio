@@ -63,9 +63,6 @@ class ResidualPolicyVelocityApi : protected fom_velocity_eval_policy
 {
 
 public:
-  using this_t = ResidualPolicyVelocityApi<residual_type, fom_states_cont_type,
-					   fom_velocity_eval_policy, ud_ops>;
-
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
 
@@ -119,7 +116,7 @@ public:
     typename scalar_t
   >
   void operator()(const lspg_state_t		   & romState,
-  		  const prev_states_t & romPrevStates,
+  		  const prev_states_t		   & romPrevStates,
   		  const fom_t			   & app,
 		  const scalar_t		   & t,
 		  const scalar_t		   & dt,
@@ -137,7 +134,7 @@ public:
     typename scalar_t
     >
   residual_t operator()(const lspg_state_t		   & romState,
-			const prev_states_t & romPrevStates,
+			const prev_states_t		   & romPrevStates,
 			const fom_t			   & app,
 			const scalar_t			   & t,
 			const scalar_t			   & dt,
@@ -189,7 +186,7 @@ private:
   >
   void compute_impl(const lspg_state_t		     & romState,
 		    residual_t			     & romR,
-		    const prev_states_t & romPrevStates,
+		    const prev_states_t		     & romPrevStates,
 		    const fom_t			     & app,
 		    const scalar_t		     & t,
 		    const scalar_t		     & dt,
@@ -253,7 +250,7 @@ protected:
     const ud_ops *
     >::type udOps_ = {};
 #else
-    const ud_ops * udOps_ = {};
+  const ud_ops * udOps_ = {};
 #endif
 
 };//end class

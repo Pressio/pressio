@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_api_HPP_
-#define ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_api_HPP_
+#ifndef ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
+#define ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
 
 #include "../impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
 #include "../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
