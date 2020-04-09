@@ -78,6 +78,10 @@ public:
     return Ncell_;
   }
 
+  state_type const & getInitialState() const{
+    return U0_;
+  };
+
 public:
   void velocity(const state_type & u,
   		const scalar_type & t,
@@ -121,8 +125,11 @@ private:
 
     // init condition
     U_.resize(Ncell_);
-    for (int_t i=0; i<Ncell_; ++i)
+    U0_.resize(Ncell_);
+    for (int_t i=0; i<Ncell_; ++i){
       U_(i) = one;
+      U0_(i) = one;
+    }
   };
 
   void velocity_impl(const state_type & u,
@@ -162,6 +169,7 @@ private:
   state_type xGrid_;
 
   mutable state_type U_;
+  state_type U0_;
 
 };//end class
 
