@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_model_for_galerkin.hpp
+// rom_is_legitimate_custom_ops_for_galerkin_velocity_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,33 @@
 //@HEADER
 */
 
-#ifndef ROM_IS_LEGITIMATE_MODEL_FOR_GALERKIN_HPP_
-#define ROM_IS_LEGITIMATE_MODEL_FOR_GALERKIN_HPP_
+#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_GALERKIN_VELOCITY_API_HPP_
+#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_GALERKIN_VELOCITY_API_HPP_
 
 namespace pressio{ namespace rom{ namespace meta {
 
-template<typename T>
-struct is_legitimate_model_for_explicit_galerkin{
-  // explicit only works for velocity api for now
-  static constexpr bool value = ::pressio::rom::meta::model_meets_velocity_api_for_galerkin<T>::value;
-};
+template<
+  typename T,
+  typename mat_type, typename rom_state_type, typename fom_state_type,
+  typename enable = void
+  >
+struct is_legitimate_custom_ops_for_galerkin_velocity_api
+  : std::false_type{};
 
-// template<typename T>
-// struct is_legitimate_model_for_implicit_galerkin{
-//   // implicit only works for residual api for now
-//   static constexpr bool value = ::pressio::rom::meta::model_meets_residual_api_for_galerkin<T>::value;
-// };
-
-template<typename T>
-struct is_legitimate_model_for_galerkin{
-  static constexpr auto exp_v = is_legitimate_model_for_explicit_galerkin<T>::value;
-  //static constexpr auto imp_v = is_legitimate_model_for_implicit_galerkin<T>::value;
-  static constexpr bool value = (exp_v /*or imp_v*/) ? true : false;
-};
+template <
+  typename T,
+  typename mat_type, typename rom_state_type, typename fom_state_type
+  >
+struct is_legitimate_custom_ops_for_galerkin_velocity_api<
+  T, mat_type, rom_state_type, fom_state_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::rom::meta::is_legitimate_custom_ops_for_fom_state_reconstructor<
+      T, fom_state_type>::value
+      and
+    ::pressio::rom::meta::is_legitimate_custom_ops_for_linear_decoder<
+      T, mat_type, rom_state_type, fom_state_type>::value
+      >
+  > : std::true_type{};
 
 }}} // namespace pressio::rom::meta
 #endif

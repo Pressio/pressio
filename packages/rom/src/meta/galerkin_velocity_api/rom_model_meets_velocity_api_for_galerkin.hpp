@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_model_for_galerkin.hpp
+// rom_model_meets_velocity_api_for_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,28 @@
 //@HEADER
 */
 
-#ifndef ROM_IS_LEGITIMATE_MODEL_FOR_GALERKIN_HPP_
-#define ROM_IS_LEGITIMATE_MODEL_FOR_GALERKIN_HPP_
+#ifndef ROM_MODEL_MEETS_VELOCITY_API_FOR_GALERKIN_HPP_
+#define ROM_MODEL_MEETS_VELOCITY_API_FOR_GALERKIN_HPP_
 
 namespace pressio{ namespace rom{ namespace meta {
 
-template<typename T>
-struct is_legitimate_model_for_explicit_galerkin{
-  // explicit only works for velocity api for now
-  static constexpr bool value = ::pressio::rom::meta::model_meets_velocity_api_for_galerkin<T>::value;
-};
+template<typename T, typename enable = void>
+struct model_meets_velocity_api_for_galerkin : std::false_type{};
 
-// template<typename T>
-// struct is_legitimate_model_for_implicit_galerkin{
-//   // implicit only works for residual api for now
-//   static constexpr bool value = ::pressio::rom::meta::model_meets_residual_api_for_galerkin<T>::value;
-// };
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<>
+struct model_meets_velocity_api_for_galerkin<pybind11::object>
+  : std::true_type{};
+#endif
 
 template<typename T>
-struct is_legitimate_model_for_galerkin{
-  static constexpr auto exp_v = is_legitimate_model_for_explicit_galerkin<T>::value;
-  //static constexpr auto imp_v = is_legitimate_model_for_implicit_galerkin<T>::value;
-  static constexpr bool value = (exp_v /*or imp_v*/) ? true : false;
-};
+struct model_meets_velocity_api_for_galerkin<
+  T,
+  mpl::enable_if_t<
+    ::pressio::ode::meta::is_legitimate_model_for_explicit_ode<T>::value
+    >
+  > : std::true_type{};
+
 
 }}} // namespace pressio::rom::meta
 #endif
