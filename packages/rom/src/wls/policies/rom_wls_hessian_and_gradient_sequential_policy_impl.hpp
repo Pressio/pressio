@@ -79,10 +79,8 @@ public:
   using fom_state_t             = ::pressio::containers::Vector<fom_native_state_t>;
   using decoder_jac_t           = typename decoder_t::jacobian_type;
   using residual_t              = fom_state_t;
-
   /* wls_jacs_t is for now a vector of item type = decoder_jac_t */
   using wls_jacs_t	      = std::vector<decoder_jac_t>;
-  jacobians_container_t Jacobians_;
 public:
   HessianGradientSequentialPolicy(rom_size_t romSize,
 				  window_size_t numStepsInWindow,
@@ -365,6 +363,7 @@ private:
   const preconditioner_t Preconditioner{};
   window_size_t jacobianUpdateFrequency_;
   mutable window_size_t innerLoopCounter_ = 0;
+  jacobians_container_t Jacobians_;
 
 };
 
