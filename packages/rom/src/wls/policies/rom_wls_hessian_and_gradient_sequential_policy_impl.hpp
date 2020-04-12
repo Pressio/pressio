@@ -289,7 +289,6 @@ private:
   {
     for (window_size_t i = 0; i < jacStencilSize_; i++)
     {
-      window_size_t jac_entry_index = Jacobians_.getJacobianIndexOffset(stepNumLocal) +  (jacStencilSize_ -1) -i  ;
       auto & jacLocal = Jacobians_.getLocalJacobian(stepNumLocal , i );
       timeSchemeObj.time_discrete_jacobian(appObj_,
                                            fomStateCurrent_,
