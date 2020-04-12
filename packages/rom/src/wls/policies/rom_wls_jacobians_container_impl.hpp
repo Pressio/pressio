@@ -73,8 +73,8 @@ public:
   }
 
 private:
-  window_size_t jacStencilSize_;
   mutable wls_jacs_t wlsJacs_;
+  window_size_t jacStencilSize_;
 
 };
 
@@ -100,8 +100,8 @@ public:
   }
 
 private:
-  window_size_t jacStencilSize_;
   mutable wls_jacs_t wlsJacs_;
+  window_size_t jacStencilSize_;
 
 };
 
