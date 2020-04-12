@@ -357,12 +357,11 @@ private:
   const fom_type & appObj_;
   mutable fom_state_t fomStateCurrent_; //working variable for the FOM state
   window_size_t jacStencilSize_;
-
+  jacobians_container_t Jacobians_;
   mutable residual_t residual_;	        // working variable for the time discrete residual
   const preconditioner_t Preconditioner{};
   window_size_t jacobianUpdateFrequency_;
   mutable window_size_t innerLoopCounter_ = 0;
-  jacobians_container_t Jacobians_;
 
 };
 
