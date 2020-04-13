@@ -98,11 +98,14 @@ std::string doRun()
   linear_solver_t linear_solver;
 
   //*** WLS problem ***
-  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t, decoder_t, hessian_matrix_structure_tag>;
+  using precon_type = ::pressio::rom::wls::preconditioners::NoPreconditioner;
+  using jacobians_update_tag = ::pressio::rom::wls::FrozenJacobian;
+  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t, decoder_t, hessian_matrix_structure_tag,precon_type,jacobians_update_tag>;
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, ode_tag, wls_hessian_t, policy_t>;
 
   // create policy and wls system
-  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomStateReference, wls_system_t::timeStencilSize_);
+  int jacobianUpdateFrequency = 2;
+  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomStateReference, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
   wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomStateReference, linear_solver);
 
   // create the wls state
