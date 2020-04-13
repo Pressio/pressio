@@ -51,16 +51,6 @@
 
 namespace pressio{ namespace rom{
 
-/*--- others ---*/
-template <
-  typename fom_state_type,
-  std::size_t n,
-  typename reconstuctor_type,
-  typename ud_ops_t,
-  typename enable = void>
-class FomStatesStaticContainer;
-
-
 /*--- decorators ---*/
 namespace decorator{
 
@@ -88,25 +78,6 @@ struct QueryFomApplyJacobianDefault;
 struct QueryFomTimeDiscreteResidual;
 
 }// namespace pressio::rom::policy
-
-
-// /* --- galerkin --- */
-// namespace galerkin{
-
-// template <
-//   typename fom_states_data_t,
-//   typename fom_rhs_t,
-//   typename decoder_jac_t,
-//   typename ud_ops = void
-//   >
-// class DefaultExplicitVelocityPolicy;
-
-// template <
-//   typename type_generator_t,
-//   typename enable = void>
-// class ProblemGenerator;
-
-// } // end namespace pressio::rom::galerkin
 
 
 /*--- steady LSPG --- */

@@ -49,15 +49,15 @@
 #ifndef PRESSIO_ROM_EXP_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_IMPL_HPP_
 #define PRESSIO_ROM_EXP_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_IMPL_HPP_
 
+#include "rom_galerkin_type_generator_common_residual_api.hpp"
 #include "rom_galerkin_residual_policy_residual_api.hpp"
 #include "rom_galerkin_jacobian_policy_residual_api.hpp"
-#include "rom_galerkin_type_generator_common_residual_api.hpp"
 
-namespace pressio{ namespace rom{ namespace experimental{ namespace galerkin{ namespace impl{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <
-  typename stepper_tag,
   typename fom_type,
+  typename stepper_tag,
   typename rom_state_type,
   typename rom_jacobian_type,
   typename ... Args
@@ -65,7 +65,7 @@ template <
 struct DefaultProblemTypeGeneratorResidualApi
 {
   // pick the common types holder
-  using common_types = CommonTypesResidualApi<stepper_tag, fom_type, rom_state_type, rom_jacobian_type, Args...>;
+  using common_types = CommonTypesResidualApi<fom_type, rom_state_type, rom_jacobian_type, Args...>;
 
   using fom_t			= typename common_types::fom_t;
   using scalar_t		= typename common_types::scalar_t;
@@ -87,12 +87,12 @@ struct DefaultProblemTypeGeneratorResidualApi
   using ud_ops_t		= typename common_types::ud_ops_t;
 
   using fom_residual_querier_policy_t = ::pressio::rom::policy::QueryFomTimeDiscreteResidual;
-  using fom_apply_jac_policy_t = ::pressio::rom::policy::QueryFomApplyTimeDiscreteJacobian;
+  using fom_apply_jac_policy_t	      = ::pressio::rom::policy::QueryFomApplyTimeDiscreteJacobian;
 
-  using residual_policy_t	= ::pressio::rom::experimental::galerkin::impl::ResidualPolicyResidualApi<
+  using residual_policy_t	= ::pressio::rom::galerkin::impl::ResidualPolicyResidualApi<
     rom_residual_t, fom_residual_t, decoder_t, fom_states_data, fom_residual_querier_policy_t>;
 
-  using jacobian_policy_t	= ::pressio::rom::experimental::galerkin::impl::JacobianPolicyResidualApi<
+  using jacobian_policy_t	= ::pressio::rom::galerkin::impl::JacobianPolicyResidualApi<
     rom_jacobian_t, fom_apply_jacobian_t, decoder_t, fom_states_data, fom_apply_jac_policy_t>;
 
   using stepper_order_t  = typename common_types::order_setter;
@@ -105,5 +105,5 @@ struct DefaultProblemTypeGeneratorResidualApi
 
 };//end class
 
-}}}}}//end namespace
+}}}}//end namespace
 #endif

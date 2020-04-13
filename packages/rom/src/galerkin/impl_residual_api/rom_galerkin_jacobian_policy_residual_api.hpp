@@ -49,7 +49,7 @@
 #ifndef PRESSIO_ROM_EXP_GALERKIN_JACOBIAN_POLICY_RESIDUAL_API_HPP_
 #define PRESSIO_ROM_EXP_GALERKIN_JACOBIAN_POLICY_RESIDUAL_API_HPP_
 
-namespace pressio{ namespace rom{ namespace experimental{ namespace galerkin{ namespace impl{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template<
   typename rom_jacobian_type,
@@ -177,5 +177,5 @@ private:
   mutable fom_apply_jacobian_ret_type fomApplyJac_;
 };
 
-}}}}}//end namespace
+}}}}//end namespace
 #endif

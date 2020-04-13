@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// TBD
+// rom_model_meets_residual_api_for_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,22 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_EXP_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
-#define PRESSIO_ROM_EXP_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
+#ifndef ROM_MODEL_MEETS_RESIDUAL_API_FOR_GALERKIN_HPP_
+#define ROM_MODEL_MEETS_RESIDUAL_API_FOR_GALERKIN_HPP_
 
-#include "./impl/rom_galerkin_problem_type_generator_default_residual_api.hpp"
+namespace pressio{ namespace rom{ namespace meta {
 
-namespace pressio{ namespace rom{ namespace experimental{ namespace galerkin{
+template<typename T, typename enable = void>
+struct model_meets_residual_api_for_galerkin : std::false_type{};
 
-template <
-  typename stepper_tag,
-  typename fom_type,
-  typename rom_state_type,
-  typename rom_matrix_type,
-  typename ...Args
-  >
-using Default = impl::DefaultProblemTypeGeneratorResidualApi<
-  stepper_tag, fom_type, rom_state_type, rom_matrix_type, Args...>;
+template<typename T>
+struct model_meets_residual_api_for_galerkin<
+  T,
+  mpl::enable_if_t<
+    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
+    >
+  > : std::true_type{};
 
-}}}} //end namespace pressio::rom::experimental::galerkin
+
+}}} // namespace pressio::rom::meta
 #endif
