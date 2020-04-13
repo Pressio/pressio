@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_wls_preconditioners_impl.hpp
+// rom_wls_preconditioners.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,66 +46,36 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
-#define ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
+#ifndef ROM_WLS_PRECONDITIONERS_IMPL_HPP_
+#define ROM_WLS_PRECONDITIONERS_IMPL_HPP_
 
+/*
+Preconditioner objects for WLS. These act on the time local residuals and Jacobians
+*/
 
-namespace pressio{ namespace rom{ namespace wls{  namespace impl{
+namespace pressio{ namespace rom{ namespace wls{ namespace preconditioners{
 
-
-template<typename decoder_jac_t>
-class frozenJacobiansContainer{
-
-  using wls_jacs_t   = std::vector<decoder_jac_t>;
-
-public:
-
-  frozenJacobiansContainer(const window_size_t timeStencilSize ,const window_size_t numStepsInWindow ,const decoder_jac_t  & phi ) 
-    :  wlsJacs_( std::min(timeStencilSize+1, numStepsInWindow)*numStepsInWindow, phi), 
-       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)) {}    
-
-  window_size_t getJacobianIndexOffset(window_size_t stepNumLocal) const {
-    return stepNumLocal*jacStencilSize_;
+struct NoPreconditioner{
+  template <typename app_t, typename fom_state_t, typename operand_t, typename scalar_t>
+  void operator()(const app_t &appObj,
+		  const fom_state_t & yFom,
+		  operand_t & operand,
+		  const scalar_t & t) const
+  {
+    //no op
   }
-
-  decoder_jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) const{
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
-  }
-
-private:
-  mutable wls_jacs_t wlsJacs_;
-  window_size_t jacStencilSize_;
-
 };
 
-
-
-template<typename decoder_jac_t>
-class nonFrozenJacobiansContainer{
-
-  using wls_jacs_t   = std::vector<decoder_jac_t>;
-
-public:
-
-  nonFrozenJacobiansContainer(const window_size_t timeStencilSize ,const window_size_t numStepsInWindow ,const decoder_jac_t  & phi ) 
-    :  wlsJacs_( std::min(timeStencilSize+1,numStepsInWindow) , phi), 
-       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)) {}    
-
-  window_size_t getJacobianIndexOffset(window_size_t stepNumLocal) const {
-    return 0;
+struct AppPreconditioner{
+  template <typename app_t, typename fom_state_t, typename operand_t, typename scalar_t>
+  void operator()(const app_t & appObj,
+		  const fom_state_t & yFom,
+		  operand_t & operand,
+		  const scalar_t &t) const
+  {
+    appObj.applyPreconditioner(*yFom.data(), *operand.data(), t);
   }
-
-  decoder_jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) const{
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
-  }
-
-private:
-  mutable wls_jacs_t wlsJacs_;
-  window_size_t jacStencilSize_;
-
 };
 
-} } } }
-
+}}}}//end namespace pressio::rom::wls::preconditioners
 #endif
-

@@ -77,9 +77,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   linear_solver_t linear_solver;
 
   //*** WLS problem ***
-  using preconditioner_t = ::pressio::rom::wls::preconditioners::impl::NoPreconditioner;
-  using jacobians_container_t = typename ::pressio::rom::wls::impl::nonFrozenJacobiansContainer<typename decoder_t::jacobian_type>;
-  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t, decoder_t, hessian_matrix_structure_tag,preconditioner_t,jacobians_container_t>;
+  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t, decoder_t, hessian_matrix_structure_tag>;
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, ode_tag, wls_hessian_t, policy_t>;
   // create policy and wls system
   policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomStateReference, wls_system_t::timeStencilSize_);

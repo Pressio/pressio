@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_wls_preconditioners_impl.hpp
+// rom_wls_is_legitimate_preconditioner_type.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,40 +46,23 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_PRECONDITIONERS_IMPL_HPP_
-#define ROM_WLS_PRECONDITIONERS_IMPL_HPP_
+#ifndef ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
+#define ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
 
-/*
-Preconditioner objects for WLS. These act on the time local residuals and Jacobians
-*/
+namespace pressio{ namespace rom{ namespace wls{ namespace meta{
 
-namespace pressio{ namespace rom{ namespace wls{ namespace preconditioners{ namespace impl{
+template <typename T>
+struct is_legitimate_preconditioner_type : std::false_type{};
 
-struct NoPreconditioner{
-template <typename app_t,
-          typename fom_state_t,
-          typename operand_t,
-          typename scalar_t>
-void operator()(const app_t &appObj,
-                const fom_state_t & yFom,
-                operand_t & operand,
-                const scalar_t & t)const{}
-};
+template <>
+struct is_legitimate_preconditioner_type<
+  ::pressio::rom::wls::preconditioners::NoPreconditioner
+  > : std::true_type{};
 
+template <>
+struct is_legitimate_preconditioner_type<
+  ::pressio::rom::wls::preconditioners::AppPreconditioner
+  > : std::true_type{};
 
-struct AppPreconditioner{
-
-template <typename app_t,
-          typename fom_state_t,
-          typename operand_t,
-          typename scalar_t>
-void operator()(const app_t & appObj,
-                const fom_state_t & yFom,
-                operand_t & operand,
-                const scalar_t &t) const
-{
-    appObj.applyPreconditioner(*yFom.data(), *operand.data(), t);
-}
-};
-}}}}}//end namespace pressio
+}}}} // end namespace pressio::rom::wls::meta
 #endif
