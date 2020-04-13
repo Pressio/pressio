@@ -95,8 +95,8 @@ struct GaussNewtonNEqCustomOpsDetectionHelper{
 
 //   static_assert( std::is_void<type>::value or
 //     (!std::is_void<type>::value and ::pressio::containers::meta::is_multi_vector_wrapper<jacobian_t>::value),
-//      "For GaussNewton normal-eq solver, custom ops are currently supported when the \
-// jacobian is a multi-vector wrapper. If you are using this for doing ROM, this most likely\
+//      "For GaussNewton normal-eq solver, custom ops are currently supported when the 
+// jacobian is a multi-vector wrapper. If you are using this for doing ROM, this most likely
 // means you wrapped the Jacobian type of your basis with a matrix not a multi-vector.");
 
 };
