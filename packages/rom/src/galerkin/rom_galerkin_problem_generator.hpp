@@ -50,6 +50,7 @@
 #define PRESSIO_ROM_GALERKIN_PROBLEM_GENERATOR_HPP_
 
 #include "./impl_velocity_api/rom_galerkin_problem_generator_velocity_api.hpp"
+#include "./impl_residual_api/rom_galerkin_problem_generator_residual_api.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
@@ -63,21 +64,21 @@ struct ProblemHelper{
 template<template <class ...> class galerkin_t, typename fom_type, typename ...Args>
 struct ProblemHelper<galerkin_t, false, fom_type, Args...>
 {
-  using type = impl::ProblemGeneratorVelocityApi<galerkin_t, fom_type, Args...>;
-    // typename std::conditional<
-    // // if meets velocity API
-    // ::pressio::rom::meta::model_meets_velocity_api_for_explicit_galerkin<fom_type>::value,
-    // // then set the proper type
-    // impl::ProblemGeneratorVelocityApi<galerkin_t, fom_type, Args...>,
-    // // else
-    // typename std::conditional<
-    //   //check if meets residual API
-    //   ::pressio::rom::meta::model_meets_residual_api_for_implicit_galerkin<fom_type>::value,
-    //   impl::ProblemGeneratorResidualApi<galerkin_t, fom_type, Args...>,
-    //   //otherwise set void
-    //   void
-    //   >::type
-    // >::type;
+  using type =
+    typename std::conditional<
+    // if meets velocity API
+    ::pressio::rom::meta::model_meets_velocity_api_for_galerkin<fom_type>::value,
+    // then set the proper type
+    impl::ProblemGeneratorVelocityApi<galerkin_t, fom_type, Args...>,
+    // else
+    typename std::conditional<
+      //check if meets residual API
+      ::pressio::rom::meta::model_meets_residual_api_for_galerkin<fom_type>::value,
+      impl::ProblemGeneratorResidualApi<galerkin_t, fom_type, Args...>,
+      //otherwise set void
+      void
+      >::type
+    >::type;
 
   static_assert( !std::is_void<type>::value,
 		 "The model type you are using does meets neither the velociy \

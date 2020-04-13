@@ -49,12 +49,12 @@
 #ifndef PRESSIO_ROM_EXP_GALERKIN_PROBLEM_GENERATOR_RESIDUAL_API_IMPL_HPP_
 #define PRESSIO_ROM_EXP_GALERKIN_PROBLEM_GENERATOR_RESIDUAL_API_IMPL_HPP_
 
-namespace pressio{ namespace rom{ namespace experimental{ namespace galerkin{ namespace impl{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <
   template <class ...> class galerkin_type,
-  typename stepper_tag,
   typename fom_type,
+  typename stepper_tag,
   typename rom_state_type,
   typename rom_jacobian_type,
   typename ...Args
@@ -63,7 +63,7 @@ class ProblemGeneratorResidualApi
 {
 
 public:
-  using problem_t	= galerkin_type<stepper_tag, fom_type, rom_state_type, rom_jacobian_type, Args...>;
+  using problem_t	= galerkin_type<fom_type, stepper_tag, rom_state_type, rom_jacobian_type, Args...>;
 
   using fom_t		= typename problem_t::fom_t;
   using scalar_t	= typename problem_t::scalar_t;
@@ -133,5 +133,5 @@ public:
 
 };
 
-}}}}}//end namespace
+}}}}//end namespace
 #endif

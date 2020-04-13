@@ -98,18 +98,6 @@
 #include "rom/src/fomStateReconstructor/rom_reconstructor_fom_state.hpp"
 
 //----------------
-// galerkin
-//----------------
-// metaf for checking ops
-#include "rom/src/meta/rom_is_legitimate_custom_ops_for_galerkin_velocity_api.hpp"
-// meta for checking api
-#include "rom/src/meta/galerkin_velocity_api/rom_model_meets_velocity_api_for_galerkin.hpp"
-#include "rom/src/meta/rom_is_legitimate_model_for_galerkin.hpp"
-// problem classes
-#include "rom/src/galerkin/rom_galerkin_problem_default.hpp"
-#include "rom/src/galerkin/rom_galerkin_problem_generator.hpp"
-
-//----------------
 // steady LSPG
 //----------------
 #include "rom/src/lspg_steady/rom_lspg_steady_residual_policy.hpp"
@@ -129,7 +117,6 @@
 #include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"
 #include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_velocity_methods.hpp"
 #include "rom/src/meta/lspg_velocity_api/rom_model_meets_velocity_api_for_unsteady_lspg.hpp"
-
 // metaf for checking residual api ops
 #include "rom/src/meta/rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp"
 // metaf for checking residual api
@@ -140,11 +127,24 @@
 #include "rom/src/meta/lspg_residual_api/rom_model_meets_residual_api_for_unsteady_lspg.hpp"
 // metaf for checking valid model for unsteady lspg
 #include "rom/src/meta/rom_is_legitimate_model_for_unsteady_lspg.hpp"
-
+// lspg problems
 #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_default.hpp"
 #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_masked.hpp"
 #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_preconditioned.hpp"
 #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_generator.hpp"
+
+//----------------
+// galerkin
+//----------------
+// metaf for checking ops
+#include "rom/src/meta/rom_is_legitimate_custom_ops_for_galerkin_velocity_api.hpp"
+// meta for checking api
+#include "rom/src/meta/galerkin_velocity_api/rom_model_meets_velocity_api_for_galerkin.hpp"
+#include "rom/src/meta/galerkin_residual_api/rom_model_meets_residual_api_for_galerkin.hpp"
+#include "rom/src/meta/rom_is_legitimate_model_for_galerkin.hpp"
+// problem classes
+#include "rom/src/galerkin/rom_galerkin_problem_default.hpp"
+#include "rom/src/galerkin/rom_galerkin_problem_generator.hpp"
 
 //----------------
 // wls
@@ -165,11 +165,5 @@
 
 #include "rom/src/wls/policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
 #include "rom/src/wls/apis/rom_wls_hessian_gradient_system_api.hpp"
-
-//------------------------------------
-// experimental galerkin residual api
-//------------------------------------
-#include "rom/src/experimental/galerkin_residual_api/rom_galerkin_problem_default.hpp"
-#include "rom/src/experimental/galerkin_residual_api/rom_galerkin_problem_generator.hpp"
 
 #endif

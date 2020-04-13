@@ -58,9 +58,8 @@ struct GalerkinBDF1WithResidualApi
     using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
     using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
 
-    using problem_t = pressio::rom::experimental::galerkin::Problem<
-      pressio::rom::experimental::galerkin::Default, 
-      ode_tag, fom_t, rom_state_t, rom_jacobian_t, 
+    using problem_t = pressio::rom::galerkin::Problem<
+      pressio::rom::galerkin::Default, ode_tag, fom_t, rom_state_t, rom_jacobian_t,
       decoder_t, stepper_order, stepper_n_states>;
     using stepper_t  = typename problem_t::stepper_t;
     problem_t Problem(appobj, yRef, decoderObj, yROM_, t0);
@@ -73,7 +72,7 @@ struct GalerkinBDF1WithResidualApi
     linear_solver_t linSolverObj;
 
     // nonlinear system
-    using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, linear_solver_t, scalar_t>; 
+    using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, linear_solver_t, scalar_t>;
     nonlinear_solver_t solver(stepperObj, yROM_, linSolverObj);
     solver.setTolerance(1e-12);
     solver.setMaxIterations(4);
@@ -97,7 +96,7 @@ int main(int argc, char *argv[]){
 
   std::cout << "check that fom reconstructed state match" << std::endl;
 
-  const std::vector<double> gold = { 
+  const std::vector<double> gold = {
 1.35670784589790e+00,
 1.00980511428193e+00,
 1.00391615986692e+00,
@@ -136,4 +135,3 @@ int main(int argc, char *argv[]){
   std::cout << checkStr <<  std::endl;
   return 0;
 }
-

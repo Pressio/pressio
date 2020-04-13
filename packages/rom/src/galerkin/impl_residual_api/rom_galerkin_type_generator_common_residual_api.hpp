@@ -49,10 +49,9 @@
 #ifndef PRESSIO_ROM_EXP_GALERKIN_TYPE_GENERATOR_COMMON_RESIDUAL_API_HPP_
 #define PRESSIO_ROM_EXP_GALERKIN_TYPE_GENERATOR_COMMON_RESIDUAL_API_HPP_
 
-namespace pressio{ namespace rom{ namespace experimental{ namespace galerkin{ namespace impl{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <
-  typename stepper_tag,
   typename fom_type,
   typename rom_state_type,
   typename rom_jacobian_type,
@@ -68,7 +67,7 @@ struct CommonTypesResidualApi
   using fom_native_residual_t	= typename fom_t::residual_type;
 
   // fom wrapper types
-  using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
+  using fom_state_t    = ::pressio::containers::Vector<fom_native_state_t>;
   using fom_residual_t = ::pressio::containers::Vector<fom_native_residual_t>;
 
   // rom types
@@ -134,5 +133,5 @@ basically the size of the stpper stencil.");
 
 };
 
-}}}}}//end  namespace
+}}}}//end  namespace
 #endif

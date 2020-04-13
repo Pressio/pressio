@@ -57,17 +57,17 @@ struct is_legitimate_model_for_explicit_galerkin{
   static constexpr bool value = ::pressio::rom::meta::model_meets_velocity_api_for_galerkin<T>::value;
 };
 
-// template<typename T>
-// struct is_legitimate_model_for_implicit_galerkin{
-//   // implicit only works for residual api for now
-//   static constexpr bool value = ::pressio::rom::meta::model_meets_residual_api_for_galerkin<T>::value;
-// };
+template<typename T>
+struct is_legitimate_model_for_implicit_galerkin{
+  // implicit only works for residual api for now
+  static constexpr bool value = ::pressio::rom::meta::model_meets_residual_api_for_galerkin<T>::value;
+};
 
 template<typename T>
 struct is_legitimate_model_for_galerkin{
   static constexpr auto exp_v = is_legitimate_model_for_explicit_galerkin<T>::value;
-  //static constexpr auto imp_v = is_legitimate_model_for_implicit_galerkin<T>::value;
-  static constexpr bool value = (exp_v /*or imp_v*/) ? true : false;
+  static constexpr auto imp_v = is_legitimate_model_for_implicit_galerkin<T>::value;
+  static constexpr bool value = (exp_v or imp_v) ? true : false;
 };
 
 }}} // namespace pressio::rom::meta
