@@ -50,6 +50,7 @@
 #define ROM_GALERKIN_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
 
 #include "./impl_velocity_api/rom_galerkin_problem_type_generator_default_velocity_api.hpp"
+#include "./impl_residual_api/rom_galerkin_problem_type_generator_default_residual_api.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
@@ -73,17 +74,17 @@ struct Helper<
   using type = impl::DefaultProblemTypeGeneratorVelocityApi<T, Args...>;
 };
 
-// template <typename T>
-// struct Helper<
-//   T,
-//   mpl::enable_if_t<
-//     ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
-//     >
-//   >
-// {
-//   template <typename stepper_tag, typename rom_state_t, typename ...Args>
-//   using type = impl::DefaultProblemTypeGeneratorResidualApi<stepper_tag, T, rom_state_t, Args...>;
-// };
+template <typename T>
+struct Helper<
+  T,
+  mpl::enable_if_t<
+    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
+    >
+  >
+{
+  template <typename ...Args>
+  using type = impl::DefaultProblemTypeGeneratorResidualApi<T, Args...>;
+};
 
 }// end anonym namespace
 

@@ -51,8 +51,17 @@
 
 namespace pressio{ namespace rom{
 
+// template <
+//   typename fom_state_type,
+//   std::size_t n,
+//   typename reconstuctor_type,
+//   typename ud_ops_t,
+//   typename enable = void>
+// class FomStatesStaticContainer;
+
+
 template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename ud_ops_t>
-class FomStatesStaticContainer<fom_state_type, n, reconstuctor_type, ud_ops_t>
+class FomStatesStaticContainer/*<fom_state_type, n, reconstuctor_type, ud_ops_t>*/
 {
   static_assert( ::pressio::containers::meta::is_wrapper<fom_state_type>::value,
 		 "Currently, you can only create a FomStatesStaticContainer from types which have pressio wrappers.");

@@ -49,7 +49,7 @@
 #ifndef PRESSIO_ROM_EXP_GALERKIN_RESIDUAL_POLICY_RESIDUAL_API_HPP_
 #define PRESSIO_ROM_EXP_GALERKIN_RESIDUAL_POLICY_RESIDUAL_API_HPP_
 
-namespace pressio{ namespace rom{ namespace experimental{ namespace galerkin{ namespace impl{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <
   typename rom_residual_type,
@@ -186,5 +186,5 @@ private:
   mutable fom_residual_type fomR_;
 };
 
-}}}}}//end namespace
+}}}}//end namespace
 #endif
