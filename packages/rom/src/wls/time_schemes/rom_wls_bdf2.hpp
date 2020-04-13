@@ -143,13 +143,13 @@ public:
       if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
         ::pressio::ops::do_update(Jphi, phi, cnm1);
-        jacobianOneNeedsRecomputing_ = false;
+        jacobianOneNeedsRecomputing_ = true;
       }
 
       if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
         ::pressio::ops::do_update(Jphi, phi, cnm2);
-        jacobianZeroNeedsRecomputing_ = false;
+        jacobianZeroNeedsRecomputing_ = true;
       }
     }
   }
