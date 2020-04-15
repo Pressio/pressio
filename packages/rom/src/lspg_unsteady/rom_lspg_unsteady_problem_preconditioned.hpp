@@ -53,35 +53,18 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
-namespace impl{
-
-template <typename T, typename enable = void>
-struct PreconditionedHelper{
-  template <typename stepper_tag, typename lspg_state_t, typename ...Args>
-  using type = void;
-};
-
-template <typename T>
-struct PreconditionedHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
-    >
-  >
-{
-  template <typename stepper_tag, typename lspg_state_t, typename ...Args>
-  using type = impl::PreconditionedProblemTypeGeneratorVelocityApi<stepper_tag, T, lspg_state_t, Args...>;
-};
-
-}// end namespace pressio::rom::lspg::unsteady::impl
-
 template <
   typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ...Args
   >
-using Preconditioned = typename impl::PreconditionedHelper<fom_type>::template type<stepper_tag, lspg_state_type, Args...>;
+using Preconditioned =
+  mpl::conditional_t<
+  ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
+  impl::PreconditionedProblemTypeGeneratorVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>,
+  void
+  >;
 
 }}//end  namespace pressio::rom::lspg::unsteady
 

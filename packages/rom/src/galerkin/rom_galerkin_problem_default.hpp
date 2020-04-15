@@ -54,42 +54,17 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
-namespace {
-
-template <typename T, typename enable = void>
-struct Helper{
-  template <typename ...Args>
-  using type = void;
-};
-
-template <typename T>
-struct Helper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_galerkin<T>::value
-    >
-  >
-{
-  template <typename ...Args>
-  using type = impl::DefaultProblemTypeGeneratorVelocityApi<T, Args...>;
-};
-
-template <typename T>
-struct Helper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
-    >
-  >
-{
-  template <typename ...Args>
-  using type = impl::DefaultProblemTypeGeneratorResidualApi<T, Args...>;
-};
-
-}// end anonym namespace
-
 template <typename fom_type, typename ...Args>
-using Default = typename Helper<fom_type>::template type<Args...>;
+using Default =
+  mpl::conditional_t<
+  ::pressio::rom::meta::model_meets_velocity_api_for_galerkin<fom_type>::value,
+  impl::DefaultProblemTypeGeneratorVelocityApi<fom_type, Args...>,
+  mpl::conditional_t<
+    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
+    impl::DefaultProblemTypeGeneratorResidualApi<fom_type, Args...>,
+    void
+    >
+  >;
 
 }//end namespace pressio::rom::galerkin
 
