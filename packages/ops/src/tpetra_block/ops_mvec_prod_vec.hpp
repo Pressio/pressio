@@ -125,6 +125,7 @@ product(::pressio::nontranspose mode,
     "Types are not scalar compatible");
 
   const auto numVecs = A.numVectors();
+  (void)numVecs; //to avoid unused warning
   assert(size_t(numVecs) == size_t(x.extent(0)));
 
   using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,

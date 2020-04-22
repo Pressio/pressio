@@ -57,7 +57,9 @@ namespace pressio{ namespace ode{
 
 template<typename stepper_type, typename state_type, typename time_type>
 mpl::enable_if_t<
-  ::pressio::ode::details::traits<stepper_type>::is_explicit
+  ::pressio::mpl::publicly_inherits_from<
+    stepper_type, ::pressio::ode::explicitmethods::StepperBase<stepper_type>
+    >::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   and !::pressio::containers::meta::is_array_pybind<state_type>::value
 #endif
@@ -81,10 +83,19 @@ See the requirements inside ode_is_legitimate_explicit_state_type.hpp");
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+
+/* for pybind, we cannot use:
+ * explicitmethods::StepperBase<stepper_type> & stepper
+ * because the stepper is passed from Python so it does not know which overload to use
+ * and we get a type error since it sees the stepper as an python object
+ */
+
 template<typename stepper_type, typename state_type, typename time_type>
 mpl::enable_if_t<
-  ::pressio::ode::details::traits<stepper_type>::is_explicit
-  and ::pressio::containers::meta::is_array_pybind<state_type>::value
+  ::pressio::mpl::publicly_inherits_from<
+    stepper_type, ::pressio::ode::explicitmethods::StepperBase<stepper_type>
+    >::value and
+  ::pressio::containers::meta::is_array_pybind<state_type>::value
 >
 integrateNSteps(stepper_type & stepper,
 		state_type	 & odeStateInOut,
@@ -104,6 +115,7 @@ integrateNSteps(stepper_type & stepper,
 #endif
 
 
+
 template<
   typename stepper_type,
   typename state_type,
@@ -111,7 +123,9 @@ template<
   typename collector_type
 >
 mpl::enable_if_t<
-::pressio::ode::details::traits<stepper_type>::is_explicit
+  ::pressio::mpl::publicly_inherits_from<
+    stepper_type, ::pressio::ode::explicitmethods::StepperBase<stepper_type>
+    >::value
 >
 integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
 		state_type				 & odeStateInOut,

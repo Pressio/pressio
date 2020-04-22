@@ -54,56 +54,26 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
-namespace impl{
-
-template <typename T, typename enable = void>
-struct DefaultHelper{
-  template <typename stepper_tag, typename lspg_state_t, typename ...Args>
-  using type = void;
-};
-
-template <typename T>
-struct DefaultHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<T>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    or mpl::is_same<T, pybind11::object>::value
-#endif
-    >
-  >
-{
-  template <typename stepper_tag, typename lspg_state_t, typename ...Args>
-  using type = impl::DefaultProblemTypeGeneratorVelocityApi<stepper_tag, T, lspg_state_t, Args...>;
-};
-
-
-template <typename T>
-struct DefaultHelper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<T>::value
-    >
-  >
-{
-  template <typename stepper_tag, typename lspg_state_t, typename ...Args>
-  using type = impl::DefaultProblemTypeGeneratorResidualApi<stepper_tag, T, lspg_state_t, Args...>;
-};
-
-}// end namespace pressio::rom::lspg::unsteady::impl
-
 template <
   typename stepper_tag,
   typename fom_type,
   typename lspg_state_type,
   typename ...Args
   >
-using Default = typename impl::DefaultHelper<fom_type>::template type<stepper_tag, lspg_state_type, Args...>;
+using Default =
+  mpl::conditional_t<
+  ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
+  impl::DefaultProblemTypeGeneratorVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>,
+  mpl::conditional_t<
+    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
+    impl::DefaultProblemTypeGeneratorResidualApi<stepper_tag, fom_type, lspg_state_type, Args...>,
+    void
+    >
+  >;
 
 }}//end namespace pressio::rom::lspg::unsteady
 
-
-// These are here for backward compatibility, should be deleted at some point
+// This is here for backward compatibility, should be deleted at some point
 template <
   typename stepper_tag,
   typename fom_type,

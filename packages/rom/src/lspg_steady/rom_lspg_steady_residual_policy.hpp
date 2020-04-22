@@ -69,11 +69,9 @@ public:
   ResidualPolicy() = delete;
   ~ResidualPolicy() = default;
 
-  ResidualPolicy(const residual_t & RIn,
-		 fom_states_data & fomStatesIn,
+  ResidualPolicy(fom_states_data & fomStatesIn,
 		 const fom_eval_rhs_policy & fomEvalRhsFunctor)
     : fom_eval_rhs_policy(fomEvalRhsFunctor),
-      R_{RIn},
       fomStates_(fomStatesIn){}
 
 public:
@@ -108,12 +106,13 @@ public:
   residual_t operator()(const lspg_state_t & romState,
 		       const fom_t	  & app) const
   {
-    (*this).template operator()(romState, R_, app);
-    return R_;
+    const auto & currFomState = fomStates_.getCRefToCurrentFomState();
+    residual_t R(fom_eval_rhs_policy::evaluate(app, currFomState));
+    (*this).template operator()(romState, R, app);
+    return R;
   }
 
 protected:
-  mutable residual_t R_ = {};
   fom_states_data & fomStates_;
 
 };//end class

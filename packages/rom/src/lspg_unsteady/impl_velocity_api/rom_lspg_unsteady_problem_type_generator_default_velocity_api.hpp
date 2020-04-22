@@ -67,7 +67,7 @@ struct DefaultProblemTypeGeneratorVelocityApi{
 		 "\nTo use unsteady LSPG with the velocity api, \n \
 you cannot pass ode::implicitmethods::Arbitrary since that is only \n \
 valid when using the residual api. For the velocity api you need \n \
-to pass a valid enum from the ode steppers, like implicitmethods::Euler/BDF2");
+to pass a valid tag from the ode steppers, like implicitmethods::Euler/BDF2");
 
   /* here, the fom_type must satisfy the velocity api */
   static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,

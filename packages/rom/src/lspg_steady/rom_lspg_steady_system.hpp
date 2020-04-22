@@ -63,11 +63,14 @@ class System<
   app_type, lspg_state_type, lspg_residual_type,
   lspg_jacobian_type, residual_policy_type,
   jacobian_policy_type
-  >{
+  >
+{
 
   const app_type & app_;
   const residual_policy_type & residualEvaluator_;
   const jacobian_policy_type & jacobianEvaluator_;
+  mutable lspg_residual_type R_;
+  mutable lspg_jacobian_type J_;
 
 public:
   // these need to be public because are detected by solver
@@ -80,12 +83,16 @@ public:
   System() = delete;
   ~System() = default;
 
+  template <typename lspg_state_t>
   System(const app_type & appIn,
 	 const residual_policy_type & resPolicyObj,
-	 const jacobian_policy_type & jacPolicyObj)
+	 const jacobian_policy_type & jacPolicyObj,
+	 lspg_state_t	& yROM)
     : app_(appIn),
       residualEvaluator_(resPolicyObj),
-      jacobianEvaluator_(jacPolicyObj){}
+      jacobianEvaluator_(jacPolicyObj),
+      R_( residualEvaluator_(yROM, app_) ),
+      J_( jacobianEvaluator_(yROM, app_) ){}
 
 public:
   void residual(const lspg_state_type & romState, lspg_residual_type & R) const{
@@ -102,6 +109,23 @@ public:
 
   lspg_jacobian_type jacobian(const lspg_state_type & romState) const{
     return (this->jacobianEvaluator_).template operator()(romState, app_);
+  }
+
+  scalar_type operator()(const state_type & romState) const
+  {
+    this->residual(romState, R_);
+    constexpr auto two = ::pressio::utils::constants::two<scalar_type>();
+    const auto norm    = pressio::ops::norm2(R_);
+    return norm*norm;
+  }
+
+  void gradient( const state_type & romState, state_type & g) const
+  {
+    this->residual(romState, R_);
+    this->jacobian(romState, J_);
+    constexpr auto beta  = ::pressio::utils::constants::zero<scalar_type>();
+    constexpr auto alpha = ::pressio::utils::constants::two<scalar_type>();
+    ::pressio::ops::product(::pressio::transpose(), alpha, J_, R_, beta, g);
   }
 };//end class
 

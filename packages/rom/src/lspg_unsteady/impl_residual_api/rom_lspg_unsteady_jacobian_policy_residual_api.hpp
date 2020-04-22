@@ -74,8 +74,8 @@ public:
   ~JacobianPolicyResidualApi() = default;
 
   JacobianPolicyResidualApi(fom_states_data_type & fomStates,
-					const fom_querier_policy & fomQuerierFunctor,
-					const decoder_type & decoder)
+			    const fom_querier_policy & fomQuerierFunctor,
+			    const decoder_type & decoder)
     : fom_querier_policy(fomQuerierFunctor),
       decoderObj_(decoder),
       fomStates_(fomStates){}

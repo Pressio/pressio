@@ -93,6 +93,8 @@ int main(int argc, char *argv[]){
   solver.setMaxIterations(200);
   solver.solve(lspgProblem.getSystemRef(), yROM);
 
+  std::cout << std::setprecision(15) << *yROM.data() << std::endl;
+
   /* the ROM is run for a parameter point that was used to generate
    * the basis, so we should recover the FOM solution exactly */
   // reconstruct the fom corresponding to our rom final state

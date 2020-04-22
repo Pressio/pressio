@@ -266,7 +266,7 @@ struct CustomBdf1Solver
     ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
   };
 
-  void integrateToTimeWithStepSizeManagerLambda(double finalTime)
+  void integrateToTimeWithStepSizeManagerLambda(sc_t finalTime)
   {
     lin_solver_t linSolverObj;
     nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
@@ -278,9 +278,8 @@ struct CustomBdf1Solver
     ::pressio::ode::integrateToTargetTime(stepperObj_, y_, 0.0, finalTime, solverO, dtSetterLambda);
   };
 
-
   template <typename observer_t>
-  void integrateToTimeWithStepSizeManagerLambdaAndCollector(double finalTime, observer_t & observer)
+  void integrateToTimeWithStepSizeManagerLambdaAndCollector(sc_t finalTime, observer_t & observer)
   {
     lin_solver_t linSolverObj;
     nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);

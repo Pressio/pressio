@@ -59,14 +59,11 @@ template <
   typename rom_state_t>
 void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 				       const basis_t & phi,
-				       const fom_state_t & yFOM_IC,
-				       const fom_state_t & yRef,
+				       const fom_state_t & fomState,
+				       const fom_state_t & fomStateReference,
 				       rom_state_t & romState)
 {
-  /*
-  Compute the ROM coefficients from optimal L^2 projection of yFOM
-  */
-
+  /* Compute the ROM coefficients from optimal L^2 projection of yFOM */
   using hessian_t	= typename linear_solver_t::matrix_type;
   constexpr auto zero   = ::pressio::utils::constants::zero<scalar_t>();
   constexpr auto one    = ::pressio::utils::constants::one<scalar_t>();
@@ -76,17 +73,14 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 
   //compute hessian for phi^T phi
   hessian_t H(romSize,romSize);
-  // ::pressio::ops::dot(phi, phi, H);
-  ::pressio::ops::product(::pressio::transpose(), 
-        ::pressio::nontranspose(), one, phi, phi, zero, H);
+  ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one, phi, phi, zero, H);
 
-  //create a vector to store yFOM - yRef
-  fom_state_t b(yFOM_IC);
-  pressio::ops::do_update(b, one, yRef, negOne);
+  //create a vector to store fomState - fomStateReference
+  fom_state_t b(fomState);
+  pressio::ops::do_update(b, one, fomStateReference, negOne);
 
   // compute phi^T b
   rom_state_t r(romSize);
-  // pressio::ops::dot(phi, b, r);
   ::pressio::ops::product(::pressio::transpose(), one, phi, b, zero, r);
 
   // solve system for optimal L2 projection

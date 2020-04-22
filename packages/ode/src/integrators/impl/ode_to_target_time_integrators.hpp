@@ -86,7 +86,9 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
 
     step_t step	   = 1;
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
-    while (time < final_time)
+    constexpr auto eps = std::numeric_limits<time_type>::epsilon();
+    bool condition = true;
+    while (condition)
     {
       // call the dt manager to set the dt to use for current step
       dtManager(step, time, dt);
@@ -94,7 +96,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
-      ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
+      ::pressio::utils::io::print_stdout(fmt, "time step =", step, " t=", time, reset, "\n");
 #endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -105,7 +107,10 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
       timer->stop("time step");
 #endif
 
-      time = start_time + static_cast<time_type>(step) * dt;
+      time += dt;
+      // use numeric limits to avoid tricky roundoff accumulation
+      if ( std::abs(time - final_time) <= eps ) condition = false;
+
       step++;
     }
 
@@ -162,7 +167,9 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
 
     step_t step	   = 1;
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
-    while (time < final_time)
+    constexpr auto eps = std::numeric_limits<time_type>::epsilon();
+    bool condition = true;
+    while (condition)
     {
       // call the dt manager to set the dt to use for current step
       dtManager(step, time, dt);
@@ -181,8 +188,11 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
       timer->stop("time step");
 #endif
 
-      time = start_time + static_cast<time_type>(step) * dt;
+      time += dt;
       collector_dispatch::execute(collector, step, time, odeStateInOut);
+      // use numeric limits to avoid tricky roundoff accumulation
+      if ( std::abs(time - final_time) <= eps ) condition = false;
+
       step++;
     }
 

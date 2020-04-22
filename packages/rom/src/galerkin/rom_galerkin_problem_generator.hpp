@@ -46,105 +46,74 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_PROBLEM_GENERATOR_HPP_
-#define ROM_GALERKIN_PROBLEM_GENERATOR_HPP_
+#ifndef PRESSIO_ROM_GALERKIN_PROBLEM_GENERATOR_HPP_
+#define PRESSIO_ROM_GALERKIN_PROBLEM_GENERATOR_HPP_
+
+#include "./impl_velocity_api/rom_galerkin_problem_generator_velocity_api.hpp"
+#include "./impl_residual_api/rom_galerkin_problem_generator_residual_api.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
-template <typename problem_t>
-class ProblemGenerator<problem_t>
-  : public problem_t
-{
-public:
-  using typename problem_t::fom_t;
-  using typename problem_t::scalar_t;
-  using typename problem_t::fom_native_state_t;
-  using typename problem_t::fom_state_t;
-  using typename problem_t::fom_velocity_t;
+namespace impl{
 
-  using typename problem_t::galerkin_state_t;
-  using typename problem_t::galerkin_native_state_t;
-  using typename problem_t::decoder_t;
-  using typename problem_t::fom_state_reconstr_t;
-  using typename problem_t::fom_states_data;
-  using typename problem_t::ud_ops_t;
-
-  using typename problem_t::galerkin_residual_policy_t;
-  using typename problem_t::galerkin_stepper_t;
-
-private:
-  fom_state_t			fomStateReference_;
-  fom_state_reconstr_t		fomStateReconstructor_;
-  fom_velocity_t		fomVelocityRef_;
-  fom_states_data		fomStates_;
-  galerkin_residual_policy_t	residualPolicy_;
-  galerkin_stepper_t		stepperObj_;
-
-public:
-  galerkin_stepper_t & getStepperRef(){
-    return stepperObj_;
-  }
-
-  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
-    return fomStateReconstructor_;
-  }
-
-public:
-  ProblemGenerator() = delete;
-  ~ProblemGenerator() = default;
-
-  /*
-   * ud_ops_t   = void
-   * C++ types
-  */
-  template <
-    typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
-      std::is_void<_ud_ops_t>::value and
-      ::pressio::containers::meta::is_wrapper<galerkin_state_t>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
-#endif
-      > * = nullptr
-  >
-  ProblemGenerator(const fom_t		    & appObj,
-		   const fom_native_state_t & yFomRefNative,
-		   const decoder_t	    & decoder,
-		   galerkin_state_t	    & yROM,
-		   scalar_t		    t0)
-    : fomStateReference_(yFomRefNative),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomVelocityRef_( appObj.velocity(*fomStateReference_.data(), t0) ),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      residualPolicy_(fomVelocityRef_, fomStates_, decoder),
-      stepperObj_(yROM, appObj, residualPolicy_)
-  {}
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  /*
-   * ud_ops_t == void and state_type is wrapper of pybind11::array
-  */
-  template <
-    typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t<
-      std::is_void<_ud_ops_t>::value and
-      ::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
-      > * = nullptr
-  >
-  ProblemGenerator(const fom_t		    & appObj,
-		   fom_native_state_t	    yFomRefNative,
-		   const decoder_t	    & decoder,
-		   galerkin_native_state_t  yROM,
-		   scalar_t		    t0)
-    : fomStateReference_(yFomRefNative),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomVelocityRef_( appObj.attr("velocity")(*fomStateReference_.data(), t0) ),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      residualPolicy_(fomVelocityRef_, fomStates_, decoder),
-      stepperObj_(galerkin_state_t(yROM), appObj, residualPolicy_)
-  {}
-#endif
+template<template <class ...> class galerkin_t, bool isPython, typename fom_type, typename ...Args>
+struct ProblemHelper{
+  using type = void;
 };
 
-}}}//end namespace pressio::rom::galerkin
+template<template <class ...> class galerkin_t, typename fom_type, typename ...Args>
+struct ProblemHelper<galerkin_t, false, fom_type, Args...>
+{
+  using type =
+    typename std::conditional<
+    // if meets velocity API
+    ::pressio::rom::meta::model_meets_velocity_api_for_galerkin<fom_type>::value,
+    // then set the proper type
+    impl::ProblemGeneratorVelocityApi<galerkin_t, fom_type, Args...>,
+    // else
+    typename std::conditional<
+      //check if meets residual API
+      ::pressio::rom::meta::model_meets_residual_api_for_galerkin<fom_type>::value,
+      impl::ProblemGeneratorResidualApi<galerkin_t, fom_type, Args...>,
+      //otherwise set void
+      void
+      >::type
+    >::type;
+
+  static_assert( !std::is_void<type>::value,
+		 "The model type you are using does meets neither the velociy \
+nor the residual API, so I cannot instantiate a valid Galerkin problem. \n \
+Verify the API of your model/adapter class.");
+};
+
+
+template<template <class ...> class galerkin_t, typename fom_type, typename ...Args>
+struct ProblemHelper<galerkin_t, true, fom_type, Args...>
+{
+  // for Python, we only support velocity API
+  using type = impl::ProblemGeneratorVelocityApi<galerkin_t, fom_type, Args...>;
+};
+
+}// end namespace pressio::rom::galerkin::impl
+
+
+template <
+  template <class ...> class galerkin_type,
+  typename stepper_tag, typename fom_type, typename rom_state_t, typename decoder_t,
+  typename ...Args
+  >
+using Problem =
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  typename impl::ProblemHelper<
+	galerkin_type, mpl::is_same<fom_type, pybind11::object>::value,
+	fom_type, stepper_tag, rom_state_t, decoder_t, Args...>::type;
+#else
+  typename impl::ProblemHelper<
+	galerkin_type, false,
+	fom_type, stepper_tag, rom_state_t, decoder_t, Args...>::type;
+#endif
+
+}}//end namespace pressio::rom::galerkin
+
+}//end namespace pressio::rom
 #endif

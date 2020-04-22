@@ -123,13 +123,13 @@ public:
 
   ref_t operator[](std::size_t i)
   {
-    assert(i < extent_);
+    assert(i < (std::size_t)extent_);
     return nativeExprObj_(i);
   }
 
   const_ref_t operator[](std::size_t i) const
   {
-    assert(i < extent_);
+    assert(i < (std::size_t)extent_);
     return nativeExprObj_(i);
   }
 };

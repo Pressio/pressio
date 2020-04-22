@@ -107,9 +107,9 @@ public:
     nativeExprObj_(matObj_.data()->block(rowStart_, colStart_, numRows_, numCols_))
   {
     assert( rowStart_ >= 0 and rowStart_ < matObjIn.extent(0) );
-    assert( std::get<1>(rowRangeIn) <= matObjIn.extent(0) );
+    assert( (int)std::get<1>(rowRangeIn) <= matObjIn.extent(0) );
     assert( colStart_ >= 0 and colStart_ < matObjIn.extent(1) );
-    assert( std::get<1>(colRangeIn) <= matObjIn.extent(1) );
+    assert( (int)std::get<1>(colRangeIn) <= matObjIn.extent(1) );
 
     // here the ranges are exclusive of the last index (like Kokkos and Python)
     // so the indices of the last row and col included are:

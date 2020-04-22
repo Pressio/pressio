@@ -72,7 +72,7 @@ public:
   ~ResidualPolicyResidualApi() = default;
 
   ResidualPolicyResidualApi(fom_states_data_type & fomStatesIn,
-					const fom_querier_policy & fomQuerierFunctor)
+			    const fom_querier_policy & fomQuerierFunctor)
     : fom_querier_policy(fomQuerierFunctor),
       fomStates_(fomStatesIn){}
 
