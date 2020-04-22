@@ -192,13 +192,16 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 
     time_type time = start_time;
     time_type dt = {};
-    // call the dt manager to set the dt to use at the beginning
-    dtManager(zero, time, dt);
+    // // call the dt manager to set the dt to use at the beginning
+    // dtManager(zero, time, dt);
 
     step_t step	   = 1;
     ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
     for( ; step <= numSteps ; ++step)
     {
+      // call the dt manager to set the dt to use at the beginning
+      dtManager(step, time, dt);
+
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
       auto reset = utils::io::reset();
@@ -213,9 +216,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
       timer->stop("time step");
 #endif
 
-      time = start_time + static_cast<time_type>(step) * dt;
-      // call the dt manager to set the dt to use at the beginning
-      dtManager(step, time, dt);
+      time += dt;
     }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
