@@ -51,6 +51,18 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
+
+template<
+  typename app_type,
+  typename lspg_state_type,
+  typename lspg_residual_type,
+  typename lspg_jacobian_type,
+  typename residual_policy_type,
+  typename jacobian_policy_type,
+  typename enable = void
+  >
+class System;
+
 template<
   typename app_type,
   typename lspg_state_type,

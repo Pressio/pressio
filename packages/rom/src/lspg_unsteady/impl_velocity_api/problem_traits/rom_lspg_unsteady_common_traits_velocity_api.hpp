@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_type_generator_common_velocity_api.hpp
+// rom_lspg_unsteady_common_traits_velocity_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,11 +46,11 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
-#define ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_VELOCITY_API_HPP_
+#ifndef ROM_LSPG_UNSTEADY_COMMON_TRAITS_VELOCITY_API_HPP_
+#define ROM_LSPG_UNSTEADY_COMMON_TRAITS_VELOCITY_API_HPP_
 
-#include "../impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
-#include "../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
+#include "../..//impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
+#include "../../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
@@ -92,7 +92,7 @@ template <
   typename fom_type,
   typename lspg_state_type,
   typename ...Args>
-struct LSPGUnsteadyCommonTypesVelocityApi
+struct LSPGUnsteadyCommonTraitsVelocityApi
 {
   // the scalar type
   using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;

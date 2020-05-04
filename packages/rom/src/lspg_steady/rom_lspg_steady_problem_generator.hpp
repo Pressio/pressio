@@ -51,6 +51,9 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
+template <typename type_generator_t, typename enable = void>
+class ProblemGenerator;
+
 template <typename lspg_problem>
 class ProblemGenerator<lspg_problem > : lspg_problem
 {

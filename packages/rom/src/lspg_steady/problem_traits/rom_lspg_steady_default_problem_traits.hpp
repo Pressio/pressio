@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_type_generator_default.hpp
+// rom_lspg_steady_default_problem_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_TYPE_GENERATOR_DEFAULT_HPP_
-#define ROM_LSPG_STEADY_TYPE_GENERATOR_DEFAULT_HPP_
+#ifndef ROM_LSPG_STEADY_DEFAULT_PROBLEM_TRAITS_HPP_
+#define ROM_LSPG_STEADY_DEFAULT_PROBLEM_TRAITS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
@@ -56,12 +56,12 @@ template <
   typename decoder_type,
   typename lspg_state_type
   >
-struct DefaultProblemType
-  : CommonTypes<fom_type, decoder_type, lspg_state_type>
+struct DefaultProblemTraits
+  : CommonTraits<fom_type, decoder_type, lspg_state_type>
 {
 
-  using this_t = DefaultProblemType<fom_type, decoder_type, lspg_state_type>;
-  using base_t = CommonTypes<fom_type, decoder_type, lspg_state_type>;
+  using base_t = CommonTraits<fom_type, decoder_type, lspg_state_type>;
+  using this_t = DefaultProblemTraits<fom_type, decoder_type, lspg_state_type>;
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
@@ -110,6 +110,12 @@ struct DefaultProblemType
     lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class
+
+template <typename ...Args>
+using DefaultProblemType = DefaultProblemTraits<Args...>;
+
+template <typename ...Args>
+using DefaultProblem = DefaultProblemTraits<Args...>;
 
 }}}}//end  namespace pressio::rom::lspg::steady
 #endif

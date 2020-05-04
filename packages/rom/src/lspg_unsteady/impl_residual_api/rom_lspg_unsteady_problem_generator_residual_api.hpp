@@ -49,8 +49,6 @@
 #ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_api_HPP_
 #define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_api_HPP_
 
-#include "rom_lspg_unsteady_problem_type_generator_default_residual_api.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <

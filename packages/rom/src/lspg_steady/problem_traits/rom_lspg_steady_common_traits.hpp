@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_type_generator_common.hpp
+// rom_lspg_steady_common_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
-#define ROM_LSPG_STEADY_TYPE_GENERATOR_COMMON_HPP_
+#ifndef ROM_LSPG_STEADY_COMMON_TRAITS_HPP_
+#define ROM_LSPG_STEADY_COMMON_TRAITS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
@@ -56,13 +56,12 @@ template <
   typename decoder_type,
   typename lspg_state_type
   >
-struct CommonTypes<
-  fom_type, decoder_type, lspg_state_type,
-  mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value
-    >
-  >
+struct CommonTraits
 {
+  static_assert(::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value,
+		"the state type for steady lspg must be a vector wrapper");
+
+
   // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
   using scalar_t		= typename fom_t::scalar_type;

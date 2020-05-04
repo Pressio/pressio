@@ -61,7 +61,6 @@
 
 #include "rom/src/rom_ConfigDefs.hpp"
 
-#include "rom/src/rom_fwd.hpp"
 #include "rom/src/rom_static_container_fom_states.hpp"
 #include "rom/src/utils/rom_utils_set_gen_coordinates.hpp"
 #include "rom/src/meta/rom_has_dense_matrix_typedef.hpp"
@@ -103,10 +102,11 @@
 #include "rom/src/lspg_steady/rom_lspg_steady_residual_policy.hpp"
 #include "rom/src/lspg_steady/rom_lspg_steady_jacobian_policy.hpp"
 #include "rom/src/lspg_steady/rom_lspg_steady_system.hpp"
-#include "rom/src/lspg_steady/rom_lspg_steady_type_generator_common.hpp"
-#include "rom/src/lspg_steady/rom_lspg_steady_type_generator_default.hpp"
-#include "rom/src/lspg_steady/rom_lspg_steady_type_generator_preconditioned.hpp"
+#include "rom/src/lspg_steady/problem_traits/rom_lspg_steady_common_traits.hpp"
+#include "rom/src/lspg_steady/problem_traits/rom_lspg_steady_default_problem_traits.hpp"
+#include "rom/src/lspg_steady/problem_traits/rom_lspg_steady_preconditioned_problem_traits.hpp"
 #include "rom/src/lspg_steady/rom_lspg_steady_problem_generator.hpp"
+#include "rom/src/lspg_steady/rom_lspg_steady_api_aliases.hpp"
 
 //----------------
 // unsteady LSPG
