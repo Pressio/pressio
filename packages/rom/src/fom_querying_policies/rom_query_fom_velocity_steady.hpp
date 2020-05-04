@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_time_discrete_residual_policy.hpp
+// rom_query_fom_velocity_steady.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,56 +46,33 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
-#define ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
+#ifndef ROM_QUERY_FOM_VELOCITY_STEADY_HPP_
+#define ROM_QUERY_FOM_VELOCITY_STEADY_HPP_
 
 namespace pressio{ namespace rom{ namespace policy{
 
-struct QueryFomTimeDiscreteResidual
-{
+template <>
+struct QueryFomVelocityDefault<true>{
 
-  template <typename fom_state_t, typename fom_t>
-  auto evaluate(const fom_state_t & fomCurrentState,
-  		const fom_t   & fomObj) const
-    -> decltype(
-  		fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data())
-  		)
-  {
-    return fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data());
+  template <
+    typename fom_t,
+    typename state_t,
+    typename rhs_t
+    >
+  void evaluate(const fom_t	& fomObj,
+		const state_t & yFOM,
+		rhs_t		& rhs) const{
+    fomObj.velocity(*yFOM.data(), *rhs.data());
   }
 
   template <
-    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
+    typename fom_t,
+    typename state_t
     >
-  void evaluate(const fom_state_t & state_n,
-		const fom_state_t & state_nm1,
-		const fom_t   & fomObj,
-		const time_t  & time,
-		const time_t  & dt,
-  		const step_t  & step,
-  		result_t      & R) const
-  {
-    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-					 *state_n.data(),
-					 *state_nm1.data());
-  }
-
-  template <
-    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
-    >
-  void evaluate(const fom_state_t & state_n,
-		const fom_state_t & state_nm1,
-		const fom_state_t & state_nm2,
-		const fom_t   & fomObj,
-		const time_t  & time,
-		const time_t  & dt,
-  		const step_t  & step,
-  		result_t      & R) const
-  {
-    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-					 *state_n.data(),
-					 *state_nm1.data(),
-					 *state_nm2.data());
+  auto evaluate(const fom_t	& fomObj,
+		const state_t & yFOM) const
+    -> decltype(fomObj.velocity(*yFOM.data())){
+    return fomObj.velocity(*yFOM.data());
   }
 
 };

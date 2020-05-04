@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fwd.hpp
+// rom_query_fom_time_discrete_residual.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,75 +46,59 @@
 //@HEADER
 */
 
-#ifndef ROM_FORWARD_DECLARATIONS_HPP_
-#define ROM_FORWARD_DECLARATIONS_HPP_
+#ifndef ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
+#define ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace policy{
 
-/*--- steady LSPG --- */
-namespace lspg{ namespace steady{
+struct QueryFomTimeDiscreteResidual
+{
 
-template <
-  typename fom_type,
-  typename decoder_type,
-  typename lspg_state_type,
-  typename enable = void
-  >
-struct CommonTypes;
+  template <typename fom_state_t, typename fom_t>
+  auto evaluate(const fom_state_t & fomCurrentState,
+  		const fom_t   & fomObj) const
+    -> decltype(
+  		fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data())
+  		)
+  {
+    return fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data());
+  }
 
-template <
-  typename residual_type,
-  typename fom_states_data_type,
-  typename fom_rhs_eval_policy>
-class ResidualPolicy;
+  template <
+    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
+    >
+  void evaluate(const fom_state_t & state_n,
+		const fom_state_t & state_nm1,
+		const fom_t   & fomObj,
+		const time_t  & time,
+		const time_t  & dt,
+  		const step_t  & step,
+  		result_t      & R) const
+  {
+    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+					 *state_n.data(),
+					 *state_nm1.data());
+  }
 
-template<
-  typename fom_states_data,
-  typename apply_jac_return_type,
-  typename fom_apply_jac_policy,
-  typename decoder_t>
-class JacobianPolicy;
+  template <
+    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
+    >
+  void evaluate(const fom_state_t & state_n,
+		const fom_state_t & state_nm1,
+		const fom_state_t & state_nm2,
+		const fom_t   & fomObj,
+		const time_t  & time,
+		const time_t  & dt,
+  		const step_t  & step,
+  		result_t      & R) const
+  {
+    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+					 *state_n.data(),
+					 *state_nm1.data(),
+					 *state_nm2.data());
+  }
 
-template <
-  typename fom_type,
-  typename decoder_type,
-  typename lspg_state_type>
-struct DefaultProblemType;
+};
 
-template <
-  typename fom_type,
-  typename decoder_type,
-  typename lspg_state_type>
-struct PreconditionedProblemType;
-
-template<
-  typename app_type,
-  typename lspg_state_type,
-  typename lspg_residual_type,
-  typename lspg_jacobian_type,
-  typename residual_policy_type,
-  typename jacobian_policy_type,
-  typename enable = void
-  >
-class System;
-
-template <
-  typename type_generator_t,
-  typename enable = void>
-class ProblemGenerator;
-
-}} // end namespace lspg::steady
-
-
-// These are here for backward compatibility, should be deleted at some point
-template <typename ... Args>
-using DefaultLSPGSteadyTypeGenerator = ::pressio::rom::lspg::steady::DefaultProblemType<Args...>;
-
-template <typename ... Args>
-using PreconditionedLSPGSteadyTypeGenerator = ::pressio::rom::lspg::steady::PreconditionedProblemType<Args...>;
-
-template <typename problem_type, typename enable = void>
-using LSPGSteadyProblemGenerator = ::pressio::rom::lspg::steady::ProblemGenerator<problem_type>;
-
-}} // end namespace pressio::rom
+}}} //end namespace pressio::rom::policy
 #endif

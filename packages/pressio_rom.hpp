@@ -74,22 +74,22 @@
 #include "rom/src/decorators/rom_mask_decorator_residual.hpp"
 #include "rom/src/decorators/rom_mask_decorator_jacobian.hpp"
 
-//----------------------
-// fom-querying policies
-//----------------------
-#include "rom/src/fom_querying_policies/rom_query_fom_apply_jacobian_steady_policy.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_apply_jacobian_unsteady_policy.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_apply_time_discrete_jacobian_policy.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_time_discrete_residual_policy.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_velocity_steady_policy.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_velocity_unsteady_policy.hpp"
-
 //----------------
-// decoder-related classes
+// decoder classes
 //----------------
 #include "rom/src/meta/rom_is_legitimate_custom_ops_for_linear_decoder.hpp"
 #include "rom/src/decoder/rom_linear_decoder.hpp"
 #include "rom/src/meta/rom_is_legitimate_decoder_type.hpp"
+
+//----------------------
+// fom-querying policies
+//----------------------
+#include "rom/src/fom_querying_policies/rom_query_fom_velocity_unsteady.hpp"
+#include "rom/src/fom_querying_policies/rom_query_fom_velocity_steady.hpp"
+#include "rom/src/fom_querying_policies/rom_query_fom_apply_jacobian_unsteady.hpp"
+#include "rom/src/fom_querying_policies/rom_query_fom_apply_jacobian_steady.hpp"
+#include "rom/src/fom_querying_policies/rom_query_fom_apply_time_discrete_jacobian.hpp"
+#include "rom/src/fom_querying_policies/rom_query_fom_time_discrete_residual.hpp"
 
 //----------------
 // classes for fom state reconstructor
