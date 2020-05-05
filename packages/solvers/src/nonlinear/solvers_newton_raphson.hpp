@@ -151,7 +151,7 @@ private:
   template <
     typename _linear_solver_t = linear_solver_t,
     ::pressio::mpl::enable_if_t<
-      std::is_void<_linear_solver_t>::value == false
+      !::pressio::solvers::linear::details::traits<_linear_solver_t>::direct
       > * = nullptr
     >
   void stepSummaryPrintDispatcher(const _linear_solver_t & linSolverIn,
@@ -172,7 +172,7 @@ private:
   template <
     typename _linear_solver_t = linear_solver_t,
     ::pressio::mpl::enable_if_t<
-      ::pressio::solvers::linear::details::traits<_linear_solver_t>::direct == true
+      ::pressio::solvers::linear::details::traits<_linear_solver_t>::direct
       > * = nullptr
     >
   void stepSummaryPrintDispatcher(const _linear_solver_t & linSolverIn,
