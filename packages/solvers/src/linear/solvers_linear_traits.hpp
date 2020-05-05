@@ -85,7 +85,7 @@ struct traits<::pressio::solvers::linear::iterative::CG> {
   >
   using eigen_solver_type = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
 
-  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
   static constexpr bool eigen_enabled = true;
 };
 
@@ -98,7 +98,7 @@ struct traits<::pressio::solvers::linear::iterative::Bicgstab> {
   >
   using eigen_solver_type = Eigen::BiCGSTAB<MatrixT, PrecT>;
 
-  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
   static constexpr bool eigen_enabled = true;
 };
 
@@ -111,7 +111,7 @@ struct traits<::pressio::solvers::linear::iterative::LSCG> {
   >
   using eigen_solver_type = Eigen::LeastSquaresConjugateGradient<MatrixT, PrecT>;
 
-  static constexpr bool direct = false;
+  static constexpr bool iterative     = true;
   static constexpr bool eigen_enabled = true;
 };
 
