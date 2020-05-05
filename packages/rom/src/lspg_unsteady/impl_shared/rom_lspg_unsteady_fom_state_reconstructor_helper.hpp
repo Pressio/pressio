@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_time_discrete_residual_policy.hpp
+// rom_lspg_unsteady_fom_state_reconstructor_helper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,59 +46,31 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
-#define ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
+#ifndef ROM_LSPG_UNSTEADY_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_
+#define ROM_LSPG_UNSTEADY_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_
 
-namespace pressio{ namespace rom{ namespace policy{
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
-struct QueryFomTimeDiscreteResidual
+template <typename ops_t, typename enable = void>
+struct FomStateReconHelper;
+
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< std::is_void<ops_t>::value >
+  >
 {
-
-  template <typename fom_state_t, typename fom_t>
-  auto evaluate(const fom_state_t & fomCurrentState,
-  		const fom_t   & fomObj) const
-    -> decltype(
-  		fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data())
-  		)
-  {
-    return fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data());
-  }
-
-  template <
-    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
-    >
-  void evaluate(const fom_state_t & state_n,
-		const fom_state_t & state_nm1,
-		const fom_t   & fomObj,
-		const time_t  & time,
-		const time_t  & dt,
-  		const step_t  & step,
-  		result_t      & R) const
-  {
-    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-					 *state_n.data(),
-					 *state_nm1.data());
-  }
-
-  template <
-    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
-    >
-  void evaluate(const fom_state_t & state_n,
-		const fom_state_t & state_nm1,
-		const fom_state_t & state_nm2,
-		const fom_t   & fomObj,
-		const time_t  & time,
-		const time_t  & dt,
-  		const step_t  & step,
-  		result_t      & R) const
-  {
-    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-					 *state_n.data(),
-					 *state_nm1.data(),
-					 *state_nm2.data());
-  }
-
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 };
 
-}}} //end namespace pressio::rom::policy
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< !std::is_void<ops_t>::value >
+  >
+{
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t, ops_t>;
+};
+
+}}}}}//end  namespace pressio::rom::lspg::unsteady::impl
 #endif

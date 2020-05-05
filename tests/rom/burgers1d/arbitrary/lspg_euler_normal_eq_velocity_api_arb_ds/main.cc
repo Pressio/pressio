@@ -21,8 +21,38 @@ void readBasis(std::string filename, result_t & phi)
 
 
 template <typename sc_t, typename dec_jac_t>
-struct myOpsResidualApi
+struct myOps
 {
+  void time_discrete_residual(sc_t c_R,
+			      pressio::apps::arbds::Vector<sc_t> & R,
+			      sc_t c_xn,
+			      const pressio::apps::arbds::Vector<sc_t> & x_n,
+			      sc_t c_xnm1,
+			      const pressio::apps::arbds::Vector<sc_t> & x_nm1) const
+  {
+    // the time discrete residual is: R = c_xn*x_n + c_xnm1*x_nm1 + c_R*f;
+    // in input, R contains the velocity so we can do:
+    // R = c_xn*x_n + c_xnm1*x_nm1 + c_R*R;
+    for (auto i=0; i<R.extent(0); ++i)
+      R(i) = c_xn*x_n(i) +c_xnm1*x_nm1(i) + c_R*R(i);
+  }
+
+  void time_discrete_jacobian(sc_t c_J,
+			      dec_jac_t & J,
+			      sc_t c_phi,
+			      const dec_jac_t & phi) const
+  {
+    // this computes the action of the time-disc jac on phi, i.e.: J = tdJac*phi
+    // where tdJac = dR/dxn (where R is the time-disc residual above)
+    // on input, J contains phi*df/dxn
+
+    for (auto i=0; i<J.extent(0); ++i){
+      for (auto j=0; j<J.extent(1); ++j){
+    	J(i,j) = c_phi*phi(i,j) + c_J*J(i,j);
+      }
+    }
+  }
+
   //  y = beta * y + alpha*A*x
   template <typename x_t>
   void product(::pressio::nontranspose mode,
@@ -65,6 +95,7 @@ struct myOpsResidualApi
       y(i) += alpha * x(i);
   }
 };
+
 
 
 template <typename dec_jac_t, typename sc_t>
@@ -143,11 +174,9 @@ struct myOpsGN
   }
 };
 
-
-
-struct EulerLSPGWithResidualApi
+struct EulerLSPGWithVelocityApi
 {
-  using fom_t		= pressio::apps::Burgers1dArbDsResidualApiAdapter;
+  using fom_t		= pressio::apps::Burgers1dArbDsVelocityApiAdapter;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
   using native_dmat_t   = typename fom_t::dense_matrix_type;
@@ -159,14 +188,11 @@ struct EulerLSPGWithResidualApi
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
   using hessian_t	= pressio::containers::Matrix<eig_dyn_mat>;
 
-  using ops1_t		= myOpsResidualApi<scalar_t, native_dmat_t>;
+  using ops1_t		= myOps<scalar_t, native_dmat_t>;
   using opsGN_t		= myOpsGN<native_dmat_t, scalar_t>;
   static_assert(::pressio::solvers::meta::has_all_needed_methods_for_hessian<
   		opsGN_t, native_dmat_t, hessian_t, scalar_t >::value,
   		"opsGN_t does not have all methods for hessian");
-  static_assert(::pressio::solvers::meta::has_all_needed_methods_for_gradient<
-  		opsGN_t, native_dmat_t, native_state_t, lspg_state_t, scalar_t >::value,
-		"opsGN_t does not have all methods for gradient");
 
   using fom_state_t	= pressio::containers::Vector<native_state_t>;
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
@@ -175,7 +201,7 @@ struct EulerLSPGWithResidualApi
   native_state_t fomSol_ = {};
   lspg_state_t yROM_ = {};
 
-  EulerLSPGWithResidualApi()
+  EulerLSPGWithVelocityApi()
   {
     std::string checkStr {"PASSED"};
 
@@ -209,14 +235,10 @@ struct EulerLSPGWithResidualApi
     pressio::ops::fill(yROM_, pressio::utils::constants::zero<scalar_t>());
 
     // define LSPG type
-    using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-    using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-    using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-
-    using lspg_problem	 = pressio::rom::lspg::unsteady::Problem<
-      pressio::rom::DefaultLSPGUnsteady, ode_tag, fom_t, lspg_state_t,
-      decoder_t, stepper_order, stepper_n_states, scalar_t, ops1_t>;
-    using lspg_stepper_t	 = typename lspg_problem::lspg_stepper_t;
+    using ode_tag  = pressio::ode::implicitmethods::Euler;
+    using lspg_problem = pressio::rom::LSPGUnsteadyProblem<
+      pressio::rom::DefaultLSPGUnsteady, ode_tag, fom_t, lspg_state_t, decoder_t, ops1_t>;
+    using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
     lspg_problem lspgProblem(fomObj, yRef, decoderObj, yROM_, t0, myOps1);
 
     // linear solver
@@ -243,9 +265,9 @@ int main(int argc, char *argv[]){
 
   std::string checkStr {"PASSED"};
 
-  EulerLSPGWithResidualApi LSPGResidApi;
-  const auto residFomSol = LSPGResidApi.fomSol_;
-  const auto residRomSol = LSPGResidApi.yROM_;
+  EulerLSPGWithVelocityApi LSPG;
+  const auto residFomSol = LSPG.fomSol_;
+  const auto residRomSol = LSPG.yROM_;
 
   std::vector<double> goldFom = {
   				 1.23924053451073,

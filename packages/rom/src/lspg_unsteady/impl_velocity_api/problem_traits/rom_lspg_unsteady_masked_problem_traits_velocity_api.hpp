@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_type_generator_default_velocity_api.hpp
+// rom_lspg_unsteady_masked_problem_traits_velocity_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,12 +46,12 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_VELOCITY_api_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_VELOCITY_api_HPP_
+#ifndef ROM_LSPG_UNSTEADY_MASKED_PROBLEM_TRAITS_VELOCITY_API_HPP_
+#define ROM_LSPG_UNSTEADY_MASKED_PROBLEM_TRAITS_VELOCITY_API_HPP_
 
-#include "rom_lspg_unsteady_residual_policy_velocity_api.hpp"
-#include "rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
-#include "rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
+#include "../rom_lspg_unsteady_residual_policy_velocity_api.hpp"
+#include "../rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
+#include "rom_lspg_unsteady_common_traits_velocity_api.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
@@ -61,9 +61,9 @@ template <
   typename lspg_state_type,
   typename ... Args
   >
-struct DefaultProblemTypeGeneratorVelocityApi{
+struct MaskedProblemTraitsVelocityApi{
 
-  static_assert( !std::is_same< stepper_tag,  ::pressio::ode::implicitmethods::Arbitrary>::value,
+  static_assert( !std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
 		 "\nTo use unsteady LSPG with the velocity api, \n \
 you cannot pass ode::implicitmethods::Arbitrary since that is only \n \
 valid when using the residual api. For the velocity api you need \n \
@@ -77,7 +77,7 @@ However, the fom/adapter type you passed does not meet the velocity api. \n \
 Verify the fom/adapter class you are using meets the velocity api.");
 
   // pick the common types holder
-  using common_types_t = LSPGUnsteadyCommonTypesVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>;
+  using common_types_t = LSPGUnsteadyCommonTraitsVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>;
 
   using fom_t			= typename common_types_t::fom_t;
   using scalar_t		= typename common_types_t::scalar_t;
@@ -101,20 +101,29 @@ Verify the fom/adapter class you are using meets the velocity api.");
   using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyJacobianDefault<false>;
 
   // policy defining how to compute the LSPG time-discrete residual
-  using lspg_residual_policy_t	= ::pressio::rom::lspg::unsteady::impl::ResidualPolicyVelocityApi<
-    lspg_residual_t, fom_states_data, fom_eval_velocity_policy_t, ud_ops_t>;
+  using lspg_residual_policy_t =
+    ::pressio::rom::decorator::Masked<
+    ::pressio::rom::lspg::unsteady::impl::ResidualPolicyVelocityApi<
+      lspg_residual_t, fom_states_data, fom_eval_velocity_policy_t, ud_ops_t
+      >
+    >;
 
   // policy defining how to compute the LSPG time-discrete jacobian
-  using lspg_jacobian_policy_t	= ::pressio::rom::lspg::unsteady::impl::JacobianPolicyVelocityApi<
-    fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops_t>;
+  using lspg_jacobian_policy_t	=
+    ::pressio::rom::decorator::Masked<
+    ::pressio::rom::lspg::unsteady::impl::JacobianPolicyVelocityApi<
+      fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops_t
+      >
+    >;
 
+  // auxiliary stepper
   using aux_stepper_t = typename ::pressio::rom::lspg::unsteady::impl::auxStepperHelper<
-    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
+    stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_type,
     lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>::type;
 
-  // declare type of stepper object
-  using lspg_stepper_t		= ::pressio::ode::implicitmethods::Stepper<
-    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
+  // stepper object type
+  using lspg_stepper_t = ::pressio::ode::implicitmethods::Stepper<
+    stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_type,
     aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>;
 
 };//end class

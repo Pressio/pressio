@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_type_generator_default_residual_api.hpp
+// rom_lspg_unsteady_default_problem_traits_residual_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,12 +46,13 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_RESIDUAL_API_HPP_
+#ifndef ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_RESIDUAL_API_HPP_
+#define ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_RESIDUAL_API_HPP_
 
+#include "rom_lspg_unsteady_common_traits_residual_api.hpp"
 #include "rom_lspg_unsteady_residual_policy_residual_api.hpp"
 #include "rom_lspg_unsteady_jacobian_policy_residual_api.hpp"
-#include "rom_lspg_unsteady_type_generator_common_residual_api.hpp"
+
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
@@ -61,7 +62,7 @@ template <
   typename lspg_state_type,
   typename ... Args
   >
-struct DefaultProblemTypeGeneratorResidualApi
+struct DefaultProblemTraitsResidualApi
 {
   static_assert( std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
 		 "\nTo use unsteady LSPG with the residual api, \
@@ -75,7 +76,7 @@ However, the fom/adapter type you passed does not meet this api. \
 Verify the fom/adapter class you are using.");
 
   // pick the common types holder
-  using common_types_t = CommonTypesResidualApi<stepper_tag, fom_type, lspg_state_type, Args...>;
+  using common_types_t = CommonTraitsResidualApi<stepper_tag, fom_type, lspg_state_type, Args...>;
 
   using fom_t			= typename common_types_t::fom_t;
   using scalar_t		= typename common_types_t::scalar_t;

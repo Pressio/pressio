@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp
+// rom_query_fom_apply_jacobian_steady.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,42 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
-#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
+#ifndef ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
+#define ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace policy{
 
-template<
-  typename T,
-  typename fom_state_type,
-  typename enable = void
-  >
-struct is_legitimate_custom_ops_for_fom_state_reconstructor
-  : std::false_type{};
+template <>
+struct QueryFomApplyJacobianDefault<true>{
 
-template <
-  typename T,
-  typename fom_state_type
-  >
-struct is_legitimate_custom_ops_for_fom_state_reconstructor<
-  T, fom_state_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ops::meta::has_method_deep_copy<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-      >::value
-    and
-    ::pressio::ops::meta::has_method_set_zero<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-      >::value
-    and
-    ::pressio::ops::meta::has_method_axpy<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::scalar_t
-      >::value
+  template <
+    typename fom_t,
+    typename state_t,
+    typename operand_t
     >
-  > : std::true_type{};
+  auto evaluate(const fom_t	  & fomObj,
+		const state_t   & yFOM,
+		const operand_t & B) const
+    -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data()))
+  {
+    return fomObj.applyJacobian(*yFOM.data(), *B.data());
+  }
 
-}}} // namespace pressio::rom::meta
+  template <
+    typename fom_t,
+    typename state_t,
+    typename operand_t,
+    typename result_t
+    >
+  void evaluate(const fom_t	  & fomObj,
+		const state_t	  & yFOM,
+		const operand_t & B,
+		result_t	  & out) const
+  {
+    fomObj.applyJacobian(*yFOM.data(), *B.data(), *out.data());
+  }
+
+};
+
+}}} //end namespace pressio::rom::policy
 #endif

@@ -75,7 +75,11 @@ void time_discrete_residual(const fom_states_cont_t & fomStates,
 
   const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
   const auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
-  udOps->time_discrete_euler(*R.data(), *fomStateAt_n.data(), *fomStateAt_nm1.data(), dt);
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
+  const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+
+  udOps->time_discrete_residual(cf, *R.data(), cn, *fomStateAt_n.data(), cnm1, *fomStateAt_nm1.data());
 }
 
 

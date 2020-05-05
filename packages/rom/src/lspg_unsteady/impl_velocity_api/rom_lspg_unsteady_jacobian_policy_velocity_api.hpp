@@ -56,17 +56,14 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace 
 template<
   typename fom_states_data_type,
   typename apply_jac_return_type,
-  typename fom_apply_jac_policy,
+  typename fom_querier_policy,
   typename decoder_type,
   typename ud_ops
   >
-class JacobianPolicyVelocityApi : protected fom_apply_jac_policy
+class JacobianPolicyVelocityApi
 {
 
 public:
-  using this_t = JacobianPolicyVelocityApi<fom_states_data_type, apply_jac_return_type,
-					   fom_apply_jac_policy, decoder_type, ud_ops>;
-
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
 
@@ -87,11 +84,11 @@ public:
       std::is_void<_ud_ops>::value
       > * = nullptr
     >
-  JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
-			    const fom_apply_jac_policy  & applyJacFunctor,
+  JacobianPolicyVelocityApi(fom_states_data_type & fomStates,
+			    const fom_querier_policy & fomQuerier,
 			    const _apply_jac_return_type & applyJacObj,
-			    const decoder_type	    & decoder)
-    : fom_apply_jac_policy(applyJacFunctor),
+			    const decoder_type & decoder)
+    : fomQuerier_(fomQuerier),
       JJ_(applyJacObj),
       fomStates_(fomStates),
       decoderObj_(decoder){}
@@ -103,12 +100,12 @@ public:
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops>::value > * = nullptr
     >
-  JacobianPolicyVelocityApi(fom_states_data_type	    & fomStates,
-			    const fom_apply_jac_policy  & applyJacFunctor,
+  JacobianPolicyVelocityApi(fom_states_data_type & fomStates,
+			    const fom_querier_policy & fomQuerier,
 			    const _apply_jac_return_type & applyJacObj,
-			    const decoder_type	    & decoder,
-			    const _ud_ops		    & udOps)
-    : fom_apply_jac_policy(applyJacFunctor),
+			    const decoder_type & decoder,
+			    const _ud_ops & udOps)
+    : fomQuerier_(fomQuerier),
       JJ_(applyJacObj),
       fomStates_(fomStates),
       decoderObj_(decoder),
@@ -158,7 +155,8 @@ private:
   >
   void time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t  dt,
-				const decoder_jac_type & phi) const{
+				const decoder_jac_type & phi) const
+  {
     ::pressio::rom::lspg::unsteady::impl::time_discrete_jacobian<stepper_tag>(romJac, dt, phi);
   }
 
@@ -174,7 +172,8 @@ private:
   >
   void time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t dt,
-				const decoder_jac_type & phi) const{
+				const decoder_jac_type & phi) const
+  {
     ::pressio::rom::lspg::unsteady::impl::time_discrete_jacobian<stepper_tag>(romJac, dt, phi, udOps_);
   }
 
@@ -207,7 +206,7 @@ private:
     timer->start("fom apply jac");
 #endif
     const auto & basis = decoderObj_.getReferenceToJacobian();
-    fom_apply_jac_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), basis, romJac, t);
+    fomQuerier_.evaluate(app, fomStates_.getCRefToCurrentFomState(), basis, romJac, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");
@@ -224,6 +223,7 @@ private:
 
 
 protected:
+  const fom_querier_policy & fomQuerier_;
   mutable apply_jac_return_t JJ_ = {};
   fom_states_data_type & fomStates_;
   const decoder_type & decoderObj_ = {};

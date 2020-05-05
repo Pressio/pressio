@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp
+// rom_is_legitimate_custom_ops_for_unsteady_lspg_velocity_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,43 +46,31 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
-#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
+#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_VELOCITY_API_HPP_
+#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_VELOCITY_API_HPP_
 
 namespace pressio{ namespace rom{ namespace meta {
 
 template<
   typename T,
-  typename fom_state_type,
+  typename mat_type, typename rom_state_type, typename fom_state_type,
   typename enable = void
   >
-struct is_legitimate_custom_ops_for_fom_state_reconstructor
+struct is_legitimate_custom_ops_for_unsteady_lspg_velocity_api
   : std::false_type{};
 
 template <
   typename T,
-  typename fom_state_type
+  typename mat_type, typename rom_state_type, typename fom_state_type
   >
-struct is_legitimate_custom_ops_for_fom_state_reconstructor<
-  T, fom_state_type,
+struct is_legitimate_custom_ops_for_unsteady_lspg_velocity_api<
+  T, mat_type, rom_state_type, fom_state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ops::meta::has_method_deep_copy<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-      >::value
+    ::pressio::rom::meta::is_legitimate_custom_ops_for_fom_state_reconstructor<
+      T, fom_state_type>::value
     and
-    ::pressio::ops::meta::has_method_set_zero<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-      >::value
-    and
-    ::pressio::ops::meta::has_method_axpy<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::scalar_t
-      >::value
+    ::pressio::rom::meta::is_legitimate_custom_ops_for_linear_decoder<
+      T, mat_type, rom_state_type, fom_state_type>::value
     >
   > : std::true_type{};
 

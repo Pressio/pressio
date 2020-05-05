@@ -51,7 +51,7 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
-/* overload when decorating a jacobian policy */
+/* specialize for decorating a jacobian policy */
 template <typename preconditionable>
 class Preconditioned<
   preconditionable,

@@ -51,7 +51,11 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
-/* overload when decorating a residual policy */
+template <typename preconditionable, typename enable = void>
+class Preconditioned;
+
+
+/* specialize for decorating residual policy */
 template <typename preconditionable>
 class Preconditioned<
   preconditionable,

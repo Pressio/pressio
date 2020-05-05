@@ -56,14 +56,10 @@ template <
   typename fom_states_data_type,
   typename fom_querier_policy
   >
-class ResidualPolicyResidualApi : protected fom_querier_policy
+class ResidualPolicyResidualApi
 {
 
 public:
-  using this_t = ResidualPolicyResidualApi<residual_type,
-						       fom_states_data_type,
-						       fom_querier_policy>;
-
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
 
@@ -72,9 +68,8 @@ public:
   ~ResidualPolicyResidualApi() = default;
 
   ResidualPolicyResidualApi(fom_states_data_type & fomStatesIn,
-			    const fom_querier_policy & fomQuerierFunctor)
-    : fom_querier_policy(fomQuerierFunctor),
-      fomStates_(fomStatesIn){}
+			    const fom_querier_policy & fomQuerier)
+    : fomQuerier_(fomQuerier), fomStates_(fomStatesIn){}
 
 public:
   template <
@@ -100,7 +95,7 @@ public:
   {
     // this method only called once at the beginning
     fomStates_.template reconstructCurrentFomState(romState);
-    residual_t R( fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(), app) );
+    residual_t R( fomQuerier_.evaluate(fomStates_.getCRefToCurrentFomState(), app) );
     return R;
   }
 
@@ -142,7 +137,7 @@ private:
     doFomStatesReconstruction(romState, romPrevStates, step);
     const auto & yn   = fomStates_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    fom_querier_policy::evaluate(yn, ynm1, app, time, dt, step, romR);
+    fomQuerier_.evaluate(yn, ynm1, app, time, dt, step, romR);
   }
 
   // we have here n = 2 prev rom states
@@ -161,7 +156,7 @@ private:
     const auto & yn   = fomStates_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
     const auto & ynm2 = fomStates_.getCRefToFomStatePrevPrevStep();
-    fom_querier_policy::evaluate(yn, ynm1, ynm2, app, time, dt, step, romR);
+    fomQuerier_.evaluate(yn, ynm1, ynm2, app, time, dt, step, romR);
   }
 
 protected:
@@ -171,6 +166,7 @@ protected:
   // FOM states if we are not in a new time step.
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
+  const fom_querier_policy & fomQuerier_;
   fom_states_data_type & fomStates_;
 };
 

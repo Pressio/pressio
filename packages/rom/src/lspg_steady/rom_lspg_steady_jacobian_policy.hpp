@@ -55,6 +55,13 @@ template<
   typename fom_states_data,
   typename apply_jac_return_type,
   typename fom_apply_jac_policy,
+  typename decoder_t>
+class JacobianPolicy;
+
+template<
+  typename fom_states_data,
+  typename apply_jac_return_type,
+  typename fom_apply_jac_policy,
   typename decoder_type
   >
 class JacobianPolicy : protected fom_apply_jac_policy

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_apply_jacobian_steady_policy.hpp
+// ops_has_method_set_zero.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,29 @@
 //@HEADER
 */
 
-#ifndef ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
-#define ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_METHOD_SET_ZERO_HPP_
+#define OPS_SRC_META_OPS_HAS_METHOD_SET_ZERO_HPP_
 
-namespace pressio{ namespace rom{ namespace policy{
+namespace pressio{ namespace ops{ namespace meta {
 
-template <>
-struct QueryFomApplyJacobianDefault<true>{
+template <typename T, typename target_t, typename enable = void>
+struct has_method_set_zero
+  : std::false_type{};
 
-  template <
-    typename fom_t,
-    typename state_t,
-    typename operand_t
+template <typename T, typename target_t>
+struct has_method_set_zero<
+  T, target_t,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval< T const &>().set_zero
+	       (
+		std::declval<target_t &>()
+		)
+	       )
+      >::value
     >
-  auto evaluate(const fom_t	  & fomObj,
-		const state_t   & yFOM,
-		const operand_t & B) const
-    -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data()))
-  {
-    return fomObj.applyJacobian(*yFOM.data(), *B.data());
-  }
+  > : std::true_type{};
 
-  template <
-    typename fom_t,
-    typename state_t,
-    typename operand_t,
-    typename result_t
-    >
-  void evaluate(const fom_t	  & fomObj,
-		const state_t	  & yFOM,
-		const operand_t & B,
-		result_t	  & out) const
-  {
-    fomObj.applyJacobian(*yFOM.data(), *B.data(), *out.data());
-  }
-
-};
-
-}}} //end namespace pressio::rom::policy
+}}} //pressio::ops::meta
 #endif

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_apply_jacobian_unsteady_policy.hpp
+// rom_query_fom_velocity_unsteady.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,82 +46,83 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_APPLY_JACOBIAN_UNSTEADY_POLICY_HPP_
-#define ROM_QUERY_FOM_APPLY_JACOBIAN_UNSTEADY_POLICY_HPP_
+#ifndef ROM_QUERY_FOM_VELOCITY_UNSTEADY_HPP_
+#define ROM_QUERY_FOM_VELOCITY_UNSTEADY_HPP_
 
 namespace pressio{ namespace rom{ namespace policy{
 
-template <>
-struct QueryFomApplyJacobianDefault<false>{
+template <bool is_steady_problem>
+struct QueryFomVelocityDefault;
 
+template <>
+struct QueryFomVelocityDefault<false>{
+
+  //------------------------------------------
+  // enabled for native c++
+  //------------------------------------------
   template <
-    typename fom_t, typename state_t,
-    typename operand_t, typename time_t
+    typename fom_t, typename state_t, typename rhs_t, typename time_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
       !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
+      !::pressio::containers::meta::is_vector_wrapper_pybind<rhs_t>::value
       > * = nullptr
+#endif
+    >
+  void evaluate(const fom_t	& fomObj,
+		const state_t & yFOM,
+		rhs_t		& rhs,
+		const time_t	t) const
+  {
+    fomObj.velocity(*yFOM.data(), t, *rhs.data());
+  }
+
+  template <
+    typename fom_t, typename state_t, typename time_t
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    , mpl::enable_if_t<
+	mpl::not_same<fom_t, pybind11::object>::value and
+	!::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value
+	> * = nullptr
 #endif
     >
   auto evaluate(const fom_t	& fomObj,
-		const state_t   & yFOM,
-		const operand_t & B,
-		time_t		  t) const
-    -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data(), t))
+		const state_t & yFOM,
+		time_t		t) const
+    -> decltype(fomObj.velocity(*yFOM.data(), t))
   {
-    return fomObj.applyJacobian(*yFOM.data(), *B.data(), t);
+    return fomObj.velocity(*yFOM.data(), t);
   }
 
+
+  //------------------------------------------
+  // enabled when interfacing with python
+  //------------------------------------------
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
-    typename fom_t, typename state_t, typename operand_t,
-    typename result_t, typename time_t
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    , mpl::enable_if_t<
-      mpl::not_same<fom_t, pybind11::object>::value and
-      !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
+    typename state_t, typename rhs_t, typename time_t,
+    mpl::enable_if_t<
+      ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+      ::pressio::containers::meta::is_vector_wrapper_pybind<rhs_t>::value
       > * = nullptr
-#endif
     >
-  void evaluate(const fom_t	  & fomObj,
-		const state_t	  & yFOM,
-		const operand_t & B,
-		result_t	  & out,
-		time_t		  t) const
+  void evaluate(const pybind11::object & fomObj,
+		const state_t & yFOM,
+		rhs_t		& rhs,
+		time_t		t) const
   {
-    fomObj.applyJacobian(*yFOM.data(), *B.data(), t, *out.data());
+    *rhs.data() = fomObj.attr("velocity")(*yFOM.data(), t);
   }
 
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  template <typename state_t, typename operand_t, typename result_t, typename time_t>
+  template <typename state_t, typename time_t>
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-    ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
-    >
-  evaluate(const pybind11::object  & fomObj,
-  	   const state_t	  & yFOM,
-  	   const operand_t & B,
-  	   result_t	  & out,
-  	   const time_t	  t) const
-  {
-    *out.data() = fomObj.attr("applyJacobian")(*yFOM.data(), *B.data(), t);
-  }
-
-  template <typename state_t, typename operand_t, typename time_t>
-  mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-    ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
+    ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value,
     typename ::pressio::containers::details::traits<state_t>::wrapped_t
     >
-  evaluate(const pybind11::object & fomObj,
-	   const state_t   & yFOM,
-	   const operand_t & B,
-	   const time_t	   t) const
+  evaluate(const pybind11::object & fomObj, const state_t & yFOM, time_t t) const
   {
-    return fomObj.attr("applyJacobian")(*yFOM.data(), *B.data(), t);
+    return fomObj.attr("velocity")(*yFOM.data(), t);
   }
 #endif
 };

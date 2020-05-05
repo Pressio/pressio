@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp
+// rom_query_fom_time_discrete_residual.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,59 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
-#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
+#ifndef ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
+#define ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace policy{
 
-template<
-  typename T,
-  typename fom_state_type,
-  typename enable = void
-  >
-struct is_legitimate_custom_ops_for_fom_state_reconstructor
-  : std::false_type{};
+struct QueryFomTimeDiscreteResidual
+{
 
-template <
-  typename T,
-  typename fom_state_type
-  >
-struct is_legitimate_custom_ops_for_fom_state_reconstructor<
-  T, fom_state_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ops::meta::has_method_deep_copy<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-      >::value
-    and
-    ::pressio::ops::meta::has_method_set_zero<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-      >::value
-    and
-    ::pressio::ops::meta::has_method_axpy<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::scalar_t
-      >::value
+  template <typename fom_state_t, typename fom_t>
+  auto evaluate(const fom_state_t & fomCurrentState,
+  		const fom_t   & fomObj) const
+    -> decltype(
+  		fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data())
+  		)
+  {
+    return fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data());
+  }
+
+  template <
+    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
     >
-  > : std::true_type{};
+  void evaluate(const fom_state_t & state_n,
+		const fom_state_t & state_nm1,
+		const fom_t   & fomObj,
+		const time_t  & time,
+		const time_t  & dt,
+  		const step_t  & step,
+  		result_t      & R) const
+  {
+    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+					 *state_n.data(),
+					 *state_nm1.data());
+  }
 
-}}} // namespace pressio::rom::meta
+  template <
+    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
+    >
+  void evaluate(const fom_state_t & state_n,
+		const fom_state_t & state_nm1,
+		const fom_state_t & state_nm2,
+		const fom_t   & fomObj,
+		const time_t  & time,
+		const time_t  & dt,
+  		const step_t  & step,
+  		result_t      & R) const
+  {
+    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+					 *state_n.data(),
+					 *state_nm1.data(),
+					 *state_nm2.data());
+  }
+
+};
+
+}}} //end namespace pressio::rom::policy
 #endif

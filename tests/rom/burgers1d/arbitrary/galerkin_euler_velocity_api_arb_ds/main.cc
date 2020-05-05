@@ -89,7 +89,7 @@ struct myOps
   }
 
   void deep_copy(pressio::apps::arbds::Vector<sc_t> & to,
-		 const pressio::apps::arbds::Vector<sc_t> & from) const
+  		 const pressio::apps::arbds::Vector<sc_t> & from) const
   {
     // here you need do a deep copy from -> to
     to = from;

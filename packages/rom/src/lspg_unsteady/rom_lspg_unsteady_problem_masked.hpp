@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
 #define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_MASKED_HPP_
 
-#include "./impl_velocity_api/rom_lspg_unsteady_problem_type_generator_masked_velocity_api.hpp"
+#include "./impl_velocity_api/problem_traits/rom_lspg_unsteady_masked_problem_traits_velocity_api.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
@@ -62,7 +62,7 @@ template <
 using Masked =
   mpl::conditional_t<
   ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
-  impl::MaskedProblemTypeGeneratorVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>,
+  impl::MaskedProblemTraitsVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>,
   void
   >;
 
