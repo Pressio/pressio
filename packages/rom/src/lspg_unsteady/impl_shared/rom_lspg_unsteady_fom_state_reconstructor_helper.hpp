@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp
+// rom_lspg_unsteady_fom_state_reconstructor_helper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,31 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
-#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
+#ifndef ROM_LSPG_UNSTEADY_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_
+#define ROM_LSPG_UNSTEADY_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
-template<
-  typename T,
-  typename fom_state_type,
-  typename enable = void
+template <typename ops_t, typename enable = void>
+struct FomStateReconHelper;
+
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< std::is_void<ops_t>::value >
   >
-struct is_legitimate_custom_ops_for_fom_state_reconstructor
-  : std::false_type{};
+{
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+};
 
-template <
-  typename T,
-  typename fom_state_type
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< !std::is_void<ops_t>::value >
   >
-struct is_legitimate_custom_ops_for_fom_state_reconstructor<
-  T, fom_state_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ops::meta::has_method_deep_copy<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-      >::value
-    and
-    ::pressio::ops::meta::has_method_set_zero<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-      >::value
-    and
-    ::pressio::ops::meta::has_method_axpy<
-      T,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::scalar_t
-      >::value
-    >
-  > : std::true_type{};
+{
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t, ops_t>;
+};
 
-}}} // namespace pressio::rom::meta
+}}}}}//end  namespace pressio::rom::lspg::unsteady::impl
 #endif

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_api_HPP_
-#define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_api_HPP_
+#ifndef ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_API_HPP_
+#define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_API_HPP_
 
 #include "rom_lspg_time_discrete_residual.hpp"
 
@@ -56,10 +56,10 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace 
 template <
   typename residual_type,
   typename fom_states_cont_type,
-  typename fom_velocity_eval_policy,
+  typename fom_querier_policy,
   typename ud_ops
   >
-class ResidualPolicyVelocityApi : protected fom_velocity_eval_policy
+class ResidualPolicyVelocityApi
 {
 
 public:
@@ -83,8 +83,8 @@ public:
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
 			    fom_states_cont_type & fomStatesIn,
-			    const fom_velocity_eval_policy & fomEvalVelocityFunctor)
-    : fom_velocity_eval_policy(fomEvalVelocityFunctor),
+			    const fom_querier_policy & fomQuerier)
+    : fomQuerier_(fomQuerier),
       R_{RIn},
       fomStates_(fomStatesIn)
   {}
@@ -99,11 +99,11 @@ public:
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
 			    fom_states_cont_type & fomStatesIn,
-			    const fom_velocity_eval_policy & fomEvalVelocityFunctor,
+			    const fom_querier_policy & fomQuerier,
 			    const _ud_ops & udOps)
     : R_{RIn},
       fomStates_(fomStatesIn),
-      fom_velocity_eval_policy(fomEvalVelocityFunctor),
+      fomQuerier_(fomQuerier),
       udOps_{&udOps}
   {}
 
@@ -216,7 +216,7 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    fom_velocity_eval_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), romR, t);
+    fomQuerier_.evaluate(app, fomStates_.getCRefToCurrentFomState(), romR, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
@@ -239,6 +239,7 @@ protected:
   // FOM states if we are not in a new time step.
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
+  const fom_querier_policy & fomQuerier_;
   mutable residual_t R_ = {};
   fom_states_cont_type & fomStates_;
 

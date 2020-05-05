@@ -57,15 +57,10 @@ template<
   typename fom_querier_policy,
   typename decoder_type
   >
-class JacobianPolicyResidualApi : protected fom_querier_policy
+class JacobianPolicyResidualApi
 {
 
 public:
-  using this_t = JacobianPolicyResidualApi<fom_states_data_type,
-				    apply_jac_return_type,
-				    fom_querier_policy,
-				    decoder_type>;
-
   static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
 
@@ -74,11 +69,9 @@ public:
   ~JacobianPolicyResidualApi() = default;
 
   JacobianPolicyResidualApi(fom_states_data_type & fomStates,
-			    const fom_querier_policy & fomQuerierFunctor,
+			    const fom_querier_policy & fomQuerier,
 			    const decoder_type & decoder)
-    : fom_querier_policy(fomQuerierFunctor),
-      decoderObj_(decoder),
-      fomStates_(fomStates){}
+    : fomQuerier_(fomQuerier), decoderObj_(decoder), fomStates_(fomStates){}
 
 public:
   template <
@@ -106,7 +99,7 @@ public:
     // this is only called once
     fomStates_.template reconstructCurrentFomState(romState);
     const auto & phi = decoderObj_.getReferenceToJacobian();
-    apply_jac_return_t romJac(fom_querier_policy::evaluate(fomStates_.getCRefToCurrentFomState(), app, phi));
+    apply_jac_return_t romJac(fomQuerier_.evaluate(fomStates_.getCRefToCurrentFomState(), app, phi));
     return romJac;
   }
 
@@ -134,7 +127,7 @@ private:
     const auto & phi = decoderObj_.getReferenceToJacobian();
     const auto & yn   = fomStates_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    fom_querier_policy::evaluate(yn, ynm1, app, time, dt, step, phi, romJac);
+    fomQuerier_.evaluate(yn, ynm1, app, time, dt, step, phi, romJac);
   }
 
 
@@ -161,11 +154,11 @@ private:
     const auto & yn   = fomStates_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
     const auto & ynm2 = fomStates_.getCRefToFomStatePrevStep();
-    fom_querier_policy::evaluate(yn, ynm1, ynm2, app, time, dt, step, phi, romJac);
+    fomQuerier_.evaluate(yn, ynm1, ynm2, app, time, dt, step, phi, romJac);
   }
 
-
 protected:
+  const fom_querier_policy & fomQuerier_;
   const decoder_type & decoderObj_	= {};
   fom_states_data_type & fomStates_;
 };

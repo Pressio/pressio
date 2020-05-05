@@ -100,10 +100,10 @@ private:
   ::pressio::ode::types::step_t step0_;
   scalar_t			t0_;
   scalar_t			dt0_;
-  fom_r_querier_policy_t	residualQuerier_;
-  fom_apply_jac_policy_t	applyJacobQuerier_;
-  fom_state_t			fomStateReference_;
-  fom_state_reconstr_t		fomStateReconstructor_;
+  const fom_r_querier_policy_t	residualQuerier_;
+  const fom_apply_jac_policy_t	applyJacobQuerier_;
+  const fom_state_t		fomStateReference_;
+  const fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_data		fomStates_;
 
   lspg_residual_policy_t	residualPolicy_;

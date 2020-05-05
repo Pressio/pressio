@@ -51,32 +51,9 @@
 
 #include "../impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
 #include "../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
+#include "../impl_shared/rom_lspg_unsteady_fom_state_reconstructor_helper.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
-
-template <typename ops_t, typename enable = void>
-struct FomStateReconHelper;
-
-template <typename ops_t>
-struct FomStateReconHelper<
-  ops_t, mpl::enable_if_t< std::is_void<ops_t>::value >
-  >
-{
-  template <typename scalar_t, typename fom_state_t, typename decoder_t>
-  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
-};
-
-template <typename ops_t>
-struct FomStateReconHelper<
-  ops_t, mpl::enable_if_t< !std::is_void<ops_t>::value >
-  >
-{
-  template <typename scalar_t, typename fom_state_t, typename decoder_t>
-  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t, ops_t>;
-};
-//------------------------------------------------------------------------------
-
-
 
 template <
   typename stepper_tag,

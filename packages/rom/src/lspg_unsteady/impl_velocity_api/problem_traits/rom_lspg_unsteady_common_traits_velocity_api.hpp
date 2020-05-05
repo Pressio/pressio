@@ -51,6 +51,7 @@
 
 #include "../..//impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
 #include "../../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
+#include "../../impl_shared/rom_lspg_unsteady_fom_state_reconstructor_helper.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
@@ -108,13 +109,7 @@ struct LSPGUnsteadyCommonTraitsVelocityApi
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
 
-  /* for LSPG, the lspg_residual_type = fom_velocity_type
-   * and typically, the residual object has same size of velocity object
-   * this is because the residual is computed where the velocity is computed.
-   * This is important for sample mesh cases.
-   * For instance imagine BDF1, where the residual is:
-   *        R = -dt f() + y_n - y_n-1
-   */
+  /* for LSPG, the lspg_residual_type = fom_velocity_type */
   using lspg_residual_t		= fom_velocity_t;
 
   // verify that args contains a valid decoder type
@@ -137,14 +132,18 @@ struct LSPGUnsteadyCommonTraitsVelocityApi
    */
   using lspg_matrix_t		= decoder_jac_t;
 
+  // if we have an admissible user-defined ops
+  using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
+    decoder_jac_t, lspg_state_t, fom_state_t,
+    ::pressio::rom::meta::is_legitimate_custom_ops_for_unsteady_lspg_velocity_api, Args...>;
+  using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
+
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+  using fom_state_reconstr_t =
+    typename FomStateReconHelper<ud_ops_t>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // total num of fom states (i.e. stencil size plus the state at current step) needed
   static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;
-
-  // if we have a non-trivial user-defined ops, need to find from Args
-  using ud_ops_t = void;
 
   // type of class holding the fom states
   using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;

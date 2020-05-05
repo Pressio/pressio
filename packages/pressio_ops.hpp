@@ -57,6 +57,7 @@
 
 // meta
 #include "ops/src/meta/ops_has_method_deep_copy.hpp"
+#include "ops/src/meta/ops_has_method_set_zero.hpp"
 #include "ops/src/meta/ops_has_method_axpy.hpp"
 #include "ops/src/meta/ops_has_method_norm1.hpp"
 #include "ops/src/meta/ops_has_method_norm2.hpp"

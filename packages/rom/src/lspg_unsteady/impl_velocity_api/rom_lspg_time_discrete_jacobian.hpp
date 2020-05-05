@@ -86,9 +86,9 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const decoder_jac_type & phi,
 			    const ud_ops * udOps){
 
-  // prefactor showing in: prefactor*dt*J*phi
-  constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
-  udOps->time_discrete_jacobian(*jphi.data(), *phi.data(), prefactor, dt);
+  constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+  const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
+  udOps->time_discrete_jacobian(prefactor, *jphi.data(), one, *phi.data());
 }
 
 

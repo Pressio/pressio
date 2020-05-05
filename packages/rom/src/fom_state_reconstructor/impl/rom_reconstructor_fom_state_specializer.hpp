@@ -65,13 +65,11 @@ struct FomStateReconstructorSpecializer<
   scalar_type, fom_state_type, decoder_type
   >
 {
-  /* ------------------------------------------------ */
   // check for a valid scalar type
   static_assert(std::is_floating_point<scalar_type>::value,
 		"The first template arg passed to FomStateReconstructor class \
 must be a floating point type");
 
-  /* ------------------------------------------------ */
   // check for a valid FOM state type
   static_assert(::pressio::containers::meta::is_vector_wrapper<fom_state_type>::value,
     "The second template arg passed to FomStateReconstructor class \
@@ -91,19 +89,16 @@ struct FomStateReconstructorSpecializer<
   scalar_type, fom_state_type, decoder_type, ops_t
   >
 {
-  /* ------------------------------------------------ */
   // check for a valid scalar type
   static_assert(std::is_floating_point<scalar_type>::value,
 		"The first template arg passed to FomStateReconstructor class \
 must be a floating point type");
 
-  /* ------------------------------------------------ */
   // check for a valid FOM state type
   static_assert(::pressio::containers::meta::is_vector_wrapper<fom_state_type>::value,
 		"The second template arg passed to FomStateReconstructor class \
 represents the FOM state and must be (for now) a pressio vector wrapper.");
 
-  /* ------------------------------------------------ */
   // detect for valid ops
   static_assert(::pressio::rom::meta::is_legitimate_custom_ops_for_fom_state_reconstructor<
 		ops_t, fom_state_type >::value,
