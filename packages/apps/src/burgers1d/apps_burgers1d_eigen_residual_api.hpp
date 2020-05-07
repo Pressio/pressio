@@ -71,6 +71,7 @@ public:
   typedef Eigen::Triplet<scalar_type> Tr;
 
 public:
+
   explicit Burgers1dEigenResidualApi(eigVec params, ui_t Ncell=1000)
     : mu_(params), Ncell_(Ncell){
     this->setup();
@@ -80,6 +81,10 @@ public:
   ~Burgers1dEigenResidualApi() = default;
 
 public:
+  state_type const & getInitialState() const {
+    return U0_;
+  };
+
   template <typename step_t, typename ... Args>
   void timeDiscreteResidual(const step_t & step,
   			    const scalar_type & time,
@@ -133,6 +138,21 @@ private:
     R = yn - ynm1 - dt * f;
   }
 
+  // case when we two auxiliary states (BDF2)
+  template <typename step_t>
+  void timeDiscreteResidualImpl(const step_t & step,
+				const scalar_type & time,
+				const scalar_type & dt,
+				residual_type & R,
+				const state_type & yn,
+				const state_type & ynm1, 
+        const state_type & ynm2) const
+  {
+    const auto f =  this->velocity(yn, time);
+    R = yn - 4./3.*ynm1 + 1./3.*ynm2 - 2./3.*dt * f;
+  }
+
+
   // case when we only have a single auxiliary state
   template <typename step_t, typename state_t>
   void applyTimeDiscreteJacobianImpl(const step_t & step,
@@ -156,6 +176,32 @@ private:
     // compute A = J * B
     A = J * B;
   }
+
+  // case when we have two auxiliar states (BDF2) 
+  template <typename step_t, typename state_t>
+  void applyTimeDiscreteJacobianImpl(const step_t & step,
+				     const scalar_type & time,
+				     const scalar_type & dt,
+				     const dense_matrix_type & B,
+				     int id,
+				     dense_matrix_type & A,
+				     const state_t & yn,
+				     const state_t & ynm1, 
+             const state_t & ynm2) const
+  {
+    // compute Jacobian
+    auto J =  this->jacobian(yn, time);
+
+    // compute time discrete Jacobian
+    constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+    J.coeffs() *= -2./3.*dt;
+    for (std::size_t i=0; i<Ncell_; ++i)
+      J.coeffRef(i,i) += one;
+
+    // compute A = J * B
+    A = J * B;
+  }
+
 
 private:
   void setup(){

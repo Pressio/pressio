@@ -42,6 +42,14 @@ template <>
   return appObj;
 }
 
+template <>
+  pressio::apps::Burgers1dEigenResidualApi appConstructor<pressio::apps::Burgers1dEigenResidualApi>(std::size_t fomSize)
+{
+  pressio::apps::Burgers1dEigenResidualApi appObj( Eigen::Vector3d{5.0, 0.02, 0.02}, fomSize);
+  return appObj;
+}
+
+
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <>
   pressio::apps::Burgers1dKokkos appConstructor<pressio::apps::Burgers1dKokkos>(std::size_t fomSize)
@@ -100,7 +108,7 @@ std::string doRun()
   //*** WLS problem ***
   using precon_type = ::pressio::rom::wls::preconditioners::NoPreconditioner;
   using jacobians_update_tag = ::pressio::rom::wls::FrozenJacobian;
-  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t, decoder_t, hessian_matrix_structure_tag,precon_type,jacobians_update_tag>;
+  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t ,  decoder_t,ode_tag, hessian_matrix_structure_tag,precon_type,jacobians_update_tag>;
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, ode_tag, wls_hessian_t, policy_t>;
 
   // create policy and wls system

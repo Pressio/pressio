@@ -149,21 +149,22 @@
 //----------------
 // wls
 //----------------
-#include "rom/src/meta/wls_velocity_api/rom_model_meets_velocity_api_for_unsteady_wls.hpp"
+#include "rom/src/meta/wls_velocity_api/rom_model_meets_velocity_api_for_wls.hpp"
+#include "rom/src/meta/wls_residual_api/rom_model_meets_residual_api_for_wls.hpp"
 #include "rom/src/wls/rom_wls_types.hpp"
-
 #include "rom/src/wls/rom_wls_preconditioners.hpp"
 #include "rom/src/wls/meta/rom_wls_is_legitimate_preconditioner_type.hpp"
-
 #include "rom/src/wls/rom_wls_jacobian_updating_tag.hpp"
 #include "rom/src/wls/meta/rom_wls_is_legitimate_jacobian_updating_tag.hpp"
 #include "rom/src/wls/rom_wls_jacobians_container.hpp"
-
 #include "rom/src/wls/time_schemes/rom_wls_implicit_euler.hpp"
 #include "rom/src/wls/time_schemes/rom_wls_bdf2.hpp"
 #include "rom/src/wls/time_schemes/rom_wls_select_timescheme_helper.hpp"
-
 #include "rom/src/wls/policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
 #include "rom/src/wls/apis/rom_wls_hessian_gradient_system_api.hpp"
+
+//----------------
+// Common tags
+//----------------
 
 #endif

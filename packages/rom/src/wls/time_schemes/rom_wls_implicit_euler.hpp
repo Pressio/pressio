@@ -51,7 +51,12 @@
 
 namespace pressio{ namespace rom{ namespace wls{ namespace timeschemes{ namespace impl{
 
-template<typename fom_state_t, typename wls_state_t>
+
+/**
+Coupling of WLS for implcit Euler time discretization. We overload the operators 
+based on the API type 
+ */
+template<typename fom_state_t>
 class ImplicitEuler{
 
 public:
@@ -78,13 +83,19 @@ public:
   {}
 
 public:
+/**
+  time_discrete_residual Function overload for velocity API 
+ */
+
+
   template <
     typename fom_type,
     typename fom_state_type,
     typename residual_type,
     typename scalar_type
-    >
-  void time_discrete_residual(const fom_type & appObj,
+  >
+  typename std::enable_if<::pressio::rom::meta::model_meets_velocity_api_for_wls<fom_type>::value>::type
+  time_discrete_residual(const fom_type & appObj,
 			      const fom_state_type & fomState,
 			      residual_type & residual,
 			      const scalar_type & t,
@@ -96,14 +107,41 @@ public:
       ::pressio::ode::implicitmethods::Euler
       >(fomState, residual, auxStatesContainer_, dt);
   }
+/**
+  time_discrete_residual function overload for residual API 
+ */
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename residual_type,
+    typename scalar_type
+  >
+  typename std::enable_if<::pressio::rom::meta::model_meets_residual_api_for_wls<fom_type>::value>::type
+  time_discrete_residual(const fom_type & appObj,
+			      const fom_state_type & fomState,
+			      residual_type & residual,
+			      const scalar_type & t,
+			      const scalar_type & dt,
+			      const window_size_t & step) const
+  {
+    using nm1 = ::pressio::ode::nMinusOne;
+    auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+    appObj.timeDiscreteResidual(step,t,dt,*residual.data(),*fomState.data(),*fomStateNm1.data());
+  }
 
+
+/**
+  time_discrete_jacobian function overload for velocity API 
+ */
   template <
     typename fom_type,
     typename fom_state_type,
     typename jac_type,
     typename basis_type,
-    typename scalar_type>
-  void time_discrete_jacobian(const fom_type & appObj,
+    typename scalar_type
+  >
+  typename std::enable_if<::pressio::rom::meta::model_meets_velocity_api_for_wls<fom_type>::value>::type
+  time_discrete_jacobian(const fom_type & appObj,
 			      const fom_state_type & fomState,
 			      jac_type & Jphi,
 			      const basis_type & phi,
@@ -127,6 +165,45 @@ public:
       jacobianNeedsRecomputing_ = true;
     }
   }
+
+
+/**
+  time_discrete_jacobian function overload for residual API 
+ */
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename jac_type,
+    typename basis_type,
+    typename scalar_type
+  >
+  typename std::enable_if<::pressio::rom::meta::model_meets_residual_api_for_wls<fom_type>::value>::type
+  time_discrete_jacobian(const fom_type & appObj,
+			      const fom_state_type & fomState,
+			      jac_type & Jphi,
+			      const basis_type & phi,
+			      const scalar_type & t,
+			      const scalar_type & dt,
+			      const ::pressio::rom::wls::window_size_t & step,
+			      int arg=0 ) const
+  {
+    // u^n - u^{n-1} - f ;
+    if (arg == 0){
+      using nm1 = ::pressio::ode::nMinusOne;
+      auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+      appObj.applyTimeDiscreteJacobian(step,t,dt,*phi.data(),0,*Jphi.data(),*fomState.data(),*fomStateNm1.data());
+    }
+
+    //only perform computation once since this never changes
+    if (arg == 1 && jacobianNeedsRecomputing_){
+      constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
+      ::pressio::ops::do_update(Jphi,phi,cnm1);
+      jacobianNeedsRecomputing_ = true;
+    }
+  }
+
+
+
 
   bool jacobianNeedsRecomputing(std::size_t i) const{
     return jacobianNeedsRecomputing_;
