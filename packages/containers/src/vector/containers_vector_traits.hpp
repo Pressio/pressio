@@ -64,12 +64,6 @@ struct traits<
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !containers::meta::is_array_pybind<wrapped_type>::value
 #endif
-#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-      and !containers::meta::is_vector_armadillo<wrapped_type>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_BLAZE
-      and !containers::meta::is_dynamic_vector_blaze<wrapped_type>::value
-#endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
       and !containers::meta::is_vector_kokkos<wrapped_type>::value
 #endif
@@ -262,112 +256,6 @@ struct traits<Vector<wrapped_type,
   using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
   using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;
 };
-
-
-//*******************************
-// Armadillo column vector
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     ::pressio::mpl::enable_if_t<
-		       containers::meta::is_column_vector_armadillo<
-			 wrapped_type>::value
-		       >
-		     >
-	      >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Armadillo,
-				    true>
-{
-
-  static constexpr WrappedVectorIdentifier
-  wrapped_vector_identifier = WrappedVectorIdentifier::ArmadilloCol;
-
-  using scalar_t = typename wrapped_type::elem_type;
-  using ordinal_t = unsigned long;
-  using size_t    = ordinal_t;
-  using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-};
-#endif
-
-
-//*******************************
-// Armadillo row vector
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     ::pressio::mpl::enable_if_t<
-		       containers::meta::is_row_vector_armadillo<
-			 wrapped_type>::value
-		       >
-		     >
-	      >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Armadillo,
-				    true>
-{
-
-  static constexpr WrappedVectorIdentifier wrapped_vector_identifier
-  = WrappedVectorIdentifier::ArmadilloRow;
-
-  using scalar_t = typename wrapped_type::elem_type;
-  using ordinal_t = unsigned long;
-  using size_t    = ordinal_t;
-  using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-};
-#endif
-
-
-//*******************************
-// Blaze dynamic vector
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_BLAZE
-template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     ::pressio::mpl::enable_if_t<
-		       containers::meta::is_dynamic_vector_blaze<
-			 wrapped_type>::value
-		       >
-		     >
-	      >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Blaze,
-				    true>
-{
-
-  static constexpr WrappedVectorIdentifier
-  wrapped_vector_identifier = WrappedVectorIdentifier::BlazeDynamic;
-
-  using scalar_t = typename wrapped_type::ElementType;
-  using ordinal_t = unsigned long;
-  using size_t    = ordinal_t;
-  using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-};
-#endif
 
 
 //*******************************
