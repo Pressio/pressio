@@ -79,19 +79,21 @@ product(::pressio::transpose modeA,
   static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
 
+  // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
+
   // how many vectors are in A and B
   const auto numVecsA = A.numVectors();
   const auto numVecsB = B.numVectors();
-  assert(A.extent(0) == B.extent(0));
-  assert(C.extent(0) == numVecsA);
-  assert(C.extent(1) == numVecsB);
+  assert((std::size_t)A.extent(0) == (std::size_t)B.extent(0));
+  assert((std::size_t)C.extent(0) == (std::size_t)numVecsA);
+  assert((std::size_t)C.extent(1) == (std::size_t)numVecsB);
 
   auto const & Adata = *A.data();
   auto const & Bdata = *B.data();
   auto tmp = ::pressio::utils::constants::zero<scalar_type>();
   // compute dot between every column of A with every col of B
-  for (size_t i=0; i<(size_t)numVecsA; i++){
-    for (size_t j=0; j<(size_t)numVecsB; j++){
+  for (std::size_t i=0; i<(std::size_t)numVecsA; i++){
+    for (std::size_t j=0; j<(std::size_t)numVecsB; j++){
       C(i,j) = beta*C(i,j);
       Adata(i)->Dot( *(Bdata(j)), &tmp );
       C(i,j) += alpha*tmp;
@@ -146,23 +148,25 @@ product(::pressio::transpose modeA,
   static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
 		"Types are not scalar compatible");
 
+  // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
+
   // how many vectors are in A and B
   const auto numVecsA = A.numVectors();
   assert(C.extent(0) == numVecsA);
   assert(C.extent(1) == numVecsA);
   auto const & Adata = *A.data();
 
-  auto tmp = ::pressio::utils::constants::zero<scalar_type>();
+  scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>();
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
-  for (size_t i=0; i<(size_t)numVecsA; i++)
+  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
   {
     C(i,i) = beta*C(i,i);
     Adata(i)->Dot( *(Adata(i)), &tmp );
     C(i,i) += alpha*tmp;
 
-    for (size_t j=i+1; j<(size_t)numVecsA; j++)
+    for (std::size_t j=i+1; j<(std::size_t)numVecsA; j++)
     {
       C(i,j) = beta*C(i,j);
       C(j,i) = beta*C(j,i);

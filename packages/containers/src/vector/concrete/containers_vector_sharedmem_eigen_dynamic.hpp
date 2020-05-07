@@ -160,6 +160,8 @@ public:
   }
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  /* the following methods are needed to enable using this class
+     for the Rol optimization */
   int dimension() const final{
     return data_.size();
   }

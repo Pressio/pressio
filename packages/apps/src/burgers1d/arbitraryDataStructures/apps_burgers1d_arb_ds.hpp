@@ -112,7 +112,6 @@ public:
 private:
   void setup()
   {
-    constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
     constexpr auto one = ::pressio::utils::constants::one<sc_t>();
     constexpr auto two = ::pressio::utils::constants::two<sc_t>();
     constexpr auto oneHalf = one/two;

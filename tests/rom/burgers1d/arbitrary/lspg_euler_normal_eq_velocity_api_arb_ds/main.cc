@@ -12,8 +12,8 @@ void readBasis(std::string filename, result_t & phi)
 
   std::vector<std::vector<double>> A0;
   ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, nCols);
-  for (int i=0; i<nRows; i++){
-    for (int j=0; j<nCols; j++)
+  for (std::size_t i=0; i<nRows; i++){
+    for (std::size_t j=0; j<nCols; j++)
       phi(i,j) = A0[i][j];
   }
 }
@@ -33,7 +33,7 @@ struct myOps
     // the time discrete residual is: R = c_xn*x_n + c_xnm1*x_nm1 + c_R*f;
     // in input, R contains the velocity so we can do:
     // R = c_xn*x_n + c_xnm1*x_nm1 + c_R*R;
-    for (auto i=0; i<R.extent(0); ++i)
+    for (std::size_t i=0; i<R.extent(0); ++i)
       R(i) = c_xn*x_n(i) +c_xnm1*x_nm1(i) + c_R*R(i);
   }
 
@@ -46,8 +46,8 @@ struct myOps
     // where tdJac = dR/dxn (where R is the time-disc residual above)
     // on input, J contains phi*df/dxn
 
-    for (auto i=0; i<J.extent(0); ++i){
-      for (auto j=0; j<J.extent(1); ++j){
+    for (std::size_t i=0; i<J.extent(0); ++i){
+      for (std::size_t j=0; j<J.extent(1); ++j){
     	J(i,j) = c_phi*phi(i,j) + c_J*J(i,j);
       }
     }
@@ -65,10 +65,10 @@ struct myOps
     // x is subscriptable like a regular array, e.g. you can do x[i] or x(i)
     const auto nArows = A.extent(0);
     const auto nAcols = A.extent(1);
-    for (auto i=0; i<nArows; ++i)
+    for (std::size_t i=0; i<nArows; ++i)
     {
       y(i) = beta*y(i);
-      for (auto j=0; j<nAcols; ++j)
+      for (std::size_t j=0; j<nAcols; ++j)
 	y(i) += alpha * A(i,j) * x(j);
     }
   }
@@ -82,7 +82,7 @@ struct myOps
 
   void set_zero(pressio::apps::arbds::Vector<sc_t> & vec) const
   {
-    for (auto i=0; i<vec.extent(0); ++i)
+    for (std::size_t i=0; i<vec.extent(0); ++i)
      vec(i) = static_cast<sc_t>(0);
   }
 
@@ -91,7 +91,7 @@ struct myOps
 	    pressio::apps::arbds::Vector<sc_t> & y) const
   {
     // compute y = y + alfa * x
-    for (auto i=0; i<y.extent(0); ++i)
+    for (std::size_t i=0; i<y.extent(0); ++i)
       y(i) += alpha * x(i);
   }
 };
@@ -114,10 +114,10 @@ struct myOpsGN
     assert( A.extent(0) == B.extent(0) );
 
     // J^T J
-    for (auto i=0; i<A.extent(1); i++){
-      for (auto j=0; j<B.extent(1); j++){
+    for (std::size_t i=0; i<A.extent(1); i++){
+      for (std::size_t j=0; j<B.extent(1); j++){
     	C(i,j) = beta * C(i,j);
-    	for (auto k=0; k<A.extent(0); ++k){
+    	for (std::size_t k=0; k<A.extent(0); ++k){
     	  C(i,j) += alpha * A(k,i) * B(k,j);
     	}
       }
@@ -148,9 +148,9 @@ struct myOpsGN
 	       const sc_t beta,
 	       y_t & y) const
   {
-    for (auto i=0; i<A.extent(1); i++){
+    for (std::size_t i=0; i<A.extent(1); i++){
       y(i) = beta * y(i);
-      for (auto j=0; j<x.extent(0); j++){
+      for (std::size_t j=0; j<x.extent(0); j++){
 	y(i) += alpha * A(j,i) * x(j);
       }
     }
@@ -160,7 +160,7 @@ struct myOpsGN
   sc_t norm1(const pressio::apps::arbds::Vector<sc_t> & v) const
   {
     sc_t result{};
-    for (auto i=0; i<v.extent(0); ++i)
+    for (std::size_t i=0; i<v.extent(0); ++i)
       result += std::abs(v(i));
     return result;
   }
@@ -168,7 +168,7 @@ struct myOpsGN
   sc_t norm2(const pressio::apps::arbds::Vector<sc_t> & v) const
   {
     sc_t result{};
-    for (auto i=0; i<v.extent(0); ++i)
+    for (std::size_t i=0; i<v.extent(0); ++i)
       result += v(i)*v(i);
     return std::sqrt(result);
   }
@@ -227,7 +227,7 @@ struct EulerLSPGWithVelocityApi
 
     // for this problem, my reference state = initial state
     native_state_t yRef(numCell);
-    for (auto i=0; i<yRef.extent(0); ++i)
+    for (std::size_t i=0; i<yRef.extent(0); ++i)
       yRef(i) = pressio::utils::constants::one<scalar_t>();
 
     // define ROM state
@@ -294,7 +294,7 @@ int main(int argc, char *argv[]){
 
   std::cout << "check that fom reconstructed state match" << std::endl;
   // check the reconstructed fom state
-  for (auto i=0; i<residFomSol.extent(0); i++){
+  for (std::size_t i=0; i<residFomSol.extent(0); i++){
     std::cout << std::setprecision(14)
   	      << goldFom[i]
   	      << " "

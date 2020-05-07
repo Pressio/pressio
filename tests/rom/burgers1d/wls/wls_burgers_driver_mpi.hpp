@@ -50,13 +50,10 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   using wls_hessian_t	= typename rom_data_t::wls_hessian_t;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, wls_state_t, fom_state_t>;
 
-  constexpr auto zero = pressio::utils::constants::zero<scalar_t>();
-
   // app object
   constexpr std::size_t fomSize = 20;
   fom_t appObj({{5.0, 0.02, 0.02}}, fomSize,Comm);
   constexpr scalar_t dt = 0.01;
-  constexpr auto t0 = zero;
   // wrap init cond with pressio container
   const fom_state_t fomStateInitCond(appObj.getInitialState());
   //reference state is equal to the IC

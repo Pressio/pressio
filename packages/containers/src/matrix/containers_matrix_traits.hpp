@@ -138,8 +138,8 @@ struct traits< Matrix<
                                       wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
+  using scalar_t  = typename wrapped_type::Scalar;
+  using ordinal_t = typename wrapped_type::StorageIndex;
   using size_t    = ordinal_t;
   using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>>;
   using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>>;
@@ -400,8 +400,8 @@ struct traits<
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
-  using scalar_t	= typename wrapped_type::value_type;
-  using ordinal_t	= typename wrapped_type::ordinal_type;
+  using scalar_t  = typename wrapped_type::value_type;
+  using ordinal_t = typename wrapped_type::ordinal_type;
   using size_t    = ordinal_t;
 
   // the values of the crs matrix are stored in a 1d dynamic view,
@@ -452,7 +452,7 @@ struct traits<
   using scalar_t	  = typename wrapped_type::traits::value_type;
   using layout		  = typename wrapped_type::traits::array_layout;
   using ordinal_t	  = typename wrapped_type::traits::size_type;
-  using size_t    = ordinal_t;
+  using size_t		  = ordinal_t;
 
   using execution_space   = typename wrapped_type::traits::execution_space;
   using memory_space	  = typename wrapped_type::traits::memory_space;

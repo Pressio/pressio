@@ -65,14 +65,11 @@ class Vector<
 {
 
   using this_t		= Vector<wrapped_type>;
-  using der_t		= this_t;
   using sc_t		= typename details::traits<this_t>::scalar_t;
   using LO_t		= typename details::traits<this_t>::local_ordinal_t;
   using GO_t		= typename details::traits<this_t>::global_ordinal_t;
   using device_t	= typename details::traits<this_t>::device_t;
-  using wrap_t		= typename details::traits<this_t>::wrapped_t;
   using map_t		= typename details::traits<this_t>::data_map_t;
-  using mpicomm_t	= typename details::traits<this_t>::communicator_t;
 
 public:
   Vector() = delete;
@@ -81,7 +78,7 @@ public:
    * see https://github.com/trilinos/Trilinos/issues/4627
    * so for now we construct this one using other's data */
 
-  explicit Vector(const wrap_t & vecobj)
+  explicit Vector(const wrapped_type & vecobj)
     : data_( *vecobj.getMap(),
   	     vecobj.getBlockSize()){
     // just a trick to copy data
@@ -139,15 +136,15 @@ public:
     return *this;
   }
 
-  wrap_t const * data() const{
+  wrapped_type const * data() const{
     return &data_;
   }
 
-  wrap_t * data(){
+  wrapped_type * data(){
     return &data_;
   }
 
-  wrap_t dataCp(){
+  wrapped_type dataCp(){
     return data_;
   }
 
@@ -163,7 +160,7 @@ public:
 
 private:
   friend VectorDistributedBase< this_t >;
-  wrap_t data_ = {};
+  wrapped_type data_ = {};
 
 };//end class
 

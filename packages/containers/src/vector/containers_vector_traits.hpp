@@ -127,11 +127,11 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenRowStatic;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
-  using size_t    = ordinal_t;
+  using scalar_t   = typename wrapped_type::Scalar;
+  using ordinal_t  = typename wrapped_type::StorageIndex;
+  using size_t     = ordinal_t;
   using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
+  using data_return_t	    = wrapped_type *;
 
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
@@ -164,9 +164,9 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenColStatic;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
-  using size_t    = ordinal_t;
+  using scalar_t   = typename wrapped_type::Scalar;
+  using ordinal_t  = typename wrapped_type::StorageIndex;
+  using size_t     = ordinal_t;
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
@@ -201,9 +201,9 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenRowDynamic;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
-  using size_t    = ordinal_t;
+  using scalar_t   = typename wrapped_type::Scalar;
+  using ordinal_t  = typename wrapped_type::StorageIndex;
+  using size_t     = ordinal_t;
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
@@ -241,9 +241,9 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenColDynamic;
 
-  using scalar_t	 = typename wrapped_type::Scalar;
-  using ordinal_t	 = int;
-  using size_t    = ordinal_t;
+  using scalar_t   = typename wrapped_type::Scalar;
+  using ordinal_t  = typename wrapped_type::StorageIndex;
+  using size_t     = ordinal_t;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
@@ -281,11 +281,13 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::TeuchosSerialDense;
 
-  using scalar_t = typename wrapped_type::scalarType;
+  using scalar_t  = typename wrapped_type::scalarType;
   using ordinal_t = typename wrapped_type::ordinalType;
+  using size_t    = ordinal_t;
+
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
-  using size_t    = int;
+
   using reference_t = scalar_t &;
   using const_reference_t = scalar_t const &;
   static constexpr bool is_static = false;
@@ -317,14 +319,16 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Epetra;
 
-  using scalar_t = double;
-  using local_ordinal_t = int;
-  using global_ordinal_t = int;
-  using size_t    = global_ordinal_t;
-  using data_map_t = Epetra_BlockMap;
-  using communicator_t = Epetra_Comm;
+  using scalar_t	 = double;
+  using local_ordinal_t  = int;
+  using global_ordinal_t = long long;
+  using size_t		 = global_ordinal_t;
+  using data_map_t	 = Epetra_BlockMap;
+  using communicator_t   = Epetra_Comm;
+
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
+
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
 
@@ -355,11 +359,11 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Tpetra;
 
-  using scalar_t = typename wrapped_type::impl_scalar_type;
-  using local_ordinal_t = typename wrapped_type::local_ordinal_type;
+  using scalar_t	 = typename wrapped_type::impl_scalar_type;
+  using local_ordinal_t  = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
-  using data_map_t = typename wrapped_type::map_type;
-  using size_t    = global_ordinal_t;
+  using data_map_t	 = typename wrapped_type::map_type;
+  using size_t		 = global_ordinal_t;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
@@ -417,7 +421,7 @@ struct traits<Vector<wrapped_type,
   using scalar_t	   = typename wrapped_type::traits::value_type;
   using layout		   = typename wrapped_type::traits::array_layout;
   using ordinal_t	   = typename wrapped_type::traits::size_type;
-  using size_t    = ordinal_t;
+  using size_t		   = ordinal_t;
   using execution_space    = typename wrapped_type::traits::execution_space;
   using memory_space	   = typename wrapped_type::traits::memory_space;
   using device_type	   = typename wrapped_type::traits::device_type;

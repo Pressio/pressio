@@ -85,7 +85,7 @@ product(::pressio::nontranspose mode,
   static_assert( std::is_same<tpetra_mvb_dev_t, kokkos_v_dev_t>::value,
   		 "product: tpetra MV and kokkos wrapper need to have same device type" );
 
-  assert( A.numVectors() == x.extent(0) );
+  assert( (std::size_t)A.numVectors() == (std::size_t)x.extent(0) );
   const char ctA = 'N';
 
   // the the underlying tpetra multivector
@@ -124,10 +124,6 @@ product(::pressio::nontranspose mode,
   static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
     "Types are not scalar compatible");
 
-  const auto numVecs = A.numVectors();
-  (void)numVecs; //to avoid unused warning
-  assert(size_t(numVecs) == size_t(x.extent(0)));
-
   using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
 				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
   kokkos_view_t xview(x.data()->data(), x.extent(0));
@@ -163,10 +159,11 @@ product(::pressio::transpose mode,
 {
   /* workaround the non-constness of getVectorView*/
   using wrapped_t = typename containers::details::traits<x_type>::wrapped_t;
+  using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
   const auto xvv = const_cast<wrapped_t*>(x.data())->getVectorView();
   const auto mvA_mvv = A.data()->getMultiVectorView();
   const auto numVecs = A.numVectors();
-  for (std::size_t i=0; i<(std::size_t)numVecs; i++){
+  for (ord_t i=0; i<numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = mvA_mvv.getVector(i);
     y[i] = beta*y[i] + alpha * colI->dot(xvv);

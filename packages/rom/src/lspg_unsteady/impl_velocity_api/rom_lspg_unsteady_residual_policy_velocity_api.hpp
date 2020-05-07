@@ -101,9 +101,9 @@ public:
 			    fom_states_cont_type & fomStatesIn,
 			    const fom_querier_policy & fomQuerier,
 			    const _ud_ops & udOps)
-    : R_{RIn},
+    : fomQuerier_(fomQuerier),
+      R_{RIn},
       fomStates_(fomStatesIn),
-      fomQuerier_(fomQuerier),
       udOps_{&udOps}
   {}
 

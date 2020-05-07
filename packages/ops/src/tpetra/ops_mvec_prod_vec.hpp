@@ -80,11 +80,7 @@ void _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
 				      const scalar_type beta,
 				      y_type & y)
 {
-  // how many vectors are in A
-  const auto numVecs = A.numVectors();
-  // size of vecB
-  assert(size_t(numVecs) == size_t(x.extent(0)));
-  (void)numVecs;
+  assert(size_t(A.numVectors()) == size_t(x.extent(0)));
 
   using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
 				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
@@ -121,7 +117,7 @@ void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
 
-  assert( A.numVectors() == x.data()->extent(0) );
+  assert( (std::size_t)A.numVectors() == x.data()->extent(0) );
   const char ctA = 'N';
   const auto ALocalView_d = A.data()->getLocalViewDevice();
 
@@ -240,7 +236,7 @@ product(::pressio::transpose mode,
 		"Types are not scalar compatible");
 
   const auto numVecs = A.extent(1);
-  for (auto i=0; i<numVecs; i++){
+  for (std::size_t i=0; i<(std::size_t)numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = A.data()->getVector(i);
     y[i] = beta * y[i] + alpha * colI->dot(*x.data());

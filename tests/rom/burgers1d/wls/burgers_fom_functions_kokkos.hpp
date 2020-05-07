@@ -42,7 +42,7 @@ std::string checkSol(pressio::apps::Burgers1dKokkos & appObj,
   native_state_t_h yFinal_h("yFF_h", fomSize);
   Kokkos::deep_copy(yFinal_h, *yFinal.data());
 
-  for (auto i=0; i<fomSize; i++){
+  for (std::size_t i=0; i<fomSize; i++){
     if (std::abs(yFinal_h(i) - trueY[i]) > 1e-8) checkStr = "FAILED";
   }
   return checkStr;

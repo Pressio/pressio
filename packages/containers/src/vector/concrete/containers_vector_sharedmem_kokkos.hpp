@@ -65,7 +65,6 @@ class Vector<wrapped_type,
   using mytraits = typename details::traits<this_t>;
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename  mytraits::ordinal_t;
-  using wrap_t = typename mytraits::wrapped_t;
   using ref_t = typename mytraits::reference_t;
   using const_ref_t = typename mytraits::const_reference_t;
 
@@ -79,14 +78,14 @@ public:
   // of a view WITHOUT doing shallow copy.
   // We create a new object and deep_copy original.
 
-  explicit Vector(const wrap_t src)
+  explicit Vector(const wrapped_type src)
     : data_{src.label(), src.extent(0)}{
     Kokkos::deep_copy(data_, src);
   }
 
-  Vector(const std::string & label, size_t e1) : data_{label, e1}{}
+  Vector(const std::string & label, ord_t e1) : data_{label, e1}{}
 
-  Vector(const size_t e1) : data_{"empty", e1}{}
+  Vector(const ord_t e1) : data_{"empty", e1}{}
 
   // copy constructor implements copy semantics (for time being)
   Vector(const Vector & other)
@@ -166,10 +165,10 @@ public:
   };
 
 
-  wrap_t const * data() const{
+  wrapped_type const * data() const{
     return &data_;
   }
-  wrap_t * data(){
+  wrapped_type * data(){
     return &data_;
   }
 
@@ -184,7 +183,7 @@ public:
 
 private:
   friend VectorSharedMemBase< this_t >;
-  wrap_t data_ = {};
+  wrapped_type data_ = {};
 
 };//end class
 

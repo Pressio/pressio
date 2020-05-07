@@ -57,9 +57,10 @@ template <
     ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
     > * = nullptr
   >
-void resize(T & o, std::size_t newSz)
+void resize(T & o,
+	    typename ::pressio::containers::details::traits<T>::size_t newSz)
 {
-  o.data()->resize(newSz); 
+  o.data()->resize(newSz);
 }
 
 
@@ -69,7 +70,9 @@ template <
     ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<T>::value
     > * = nullptr
   >
-void resize(T & o, std::size_t nR, std::size_t nC)
+void resize(T & o,
+	    typename ::pressio::containers::details::traits<T>::size_t nR,
+	    typename ::pressio::containers::details::traits<T>::size_t nC)
 {
   o.data()->resize(nR, nC);
 }

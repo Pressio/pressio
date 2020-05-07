@@ -139,7 +139,7 @@ public:
     return this->extent(0)==0 ? true : false;
   }
 
-  ord_t extent(std::size_t i) const {
+  ord_t extent(ord_t i) const {
     assert(i==0);
     return data_.length();
   }
