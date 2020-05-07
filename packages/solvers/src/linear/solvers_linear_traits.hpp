@@ -57,14 +57,6 @@
 #include <Eigen/SparseQR>
 #include <Eigen/OrderingMethods>
 
-// #ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-//   #include "solvers_linear_wrapper_armadillo.hpp"
-// #endif
-// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-//   #include "AztecOO.h"
-// #endif
-
-
 namespace pressio{ namespace solvers{ namespace linear { namespace details {
 
 // Solvers traits

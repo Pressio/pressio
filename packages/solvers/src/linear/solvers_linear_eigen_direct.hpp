@@ -62,8 +62,6 @@ public:
 
   using this_t          = EigenDirect<solver_tag, MatrixT>;
   using base_interface  = LinearBase<MatrixT, this_t>;
-
-  using solver_t	= solver_tag;
   using matrix_type	= MatrixT;
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;

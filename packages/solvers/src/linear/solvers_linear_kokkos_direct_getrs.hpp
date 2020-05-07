@@ -71,15 +71,15 @@ public:
   		 ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<MatrixT>::value,
   		 "Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
 
-  using solver_t	= ::pressio::solvers::linear::direct::getrs;
-  using this_t          = KokkosDirect<solver_t, MatrixT>;
+  using solver_tag	= ::pressio::solvers::linear::direct::getrs;
+  using this_t          = KokkosDirect<solver_tag, MatrixT>;
   using matrix_type	= MatrixT;
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
   using exe_space       = typename containers::details::traits<MatrixT>::execution_space;
 
   using base_t  = LinearBase<MatrixT, this_t>;
-  using solver_traits   = linear::details::traits<solver_t>;
+  using solver_traits   = linear::details::traits<solver_tag>;
 
   static_assert( solver_traits::kokkos_enabled == true,
   		 "the native solver must suppport kokkos to use in KokkosDirect");
