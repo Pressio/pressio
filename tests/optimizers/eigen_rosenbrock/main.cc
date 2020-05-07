@@ -14,7 +14,6 @@ public:
 
   scalar_type operator()(const state_type & x) const
   {
-    const auto n = x.extent(0);
     scalar_type val = {};
     val = alpha_ * std::pow(std::pow( x[0], 2) - x[1], 2) + std::pow( x[0] - 1.0, 2);
     return val;

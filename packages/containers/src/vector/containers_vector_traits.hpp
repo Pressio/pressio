@@ -321,7 +321,7 @@ struct traits<Vector<wrapped_type,
 
   using scalar_t	 = double;
   using local_ordinal_t  = int;
-  using global_ordinal_t = long long;
+  using global_ordinal_t = int;
   using size_t		 = global_ordinal_t;
   using data_map_t	 = Epetra_BlockMap;
   using communicator_t   = Epetra_Comm;
