@@ -52,13 +52,11 @@
 
 namespace pressio{ namespace ops{
 
-template<
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
+template<typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
   >
-void deep_copy(T & dest, const T & src){
+deep_copy(T & dest, const T & src){
   using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   assert( dest.extent(0) == src.extent(0) );
   auto dest_proxy = dest.data()->mutable_unchecked();

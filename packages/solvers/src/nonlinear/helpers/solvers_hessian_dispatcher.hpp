@@ -97,11 +97,9 @@ public:
   HessianDispatcher(const ud_ops_t * udOps) : udOps_{udOps}{}
 
 public:
-  template <
-    typename J_t, typename result_t, typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t< !std::is_void<ud_ops_t>::value > * = nullptr
-    >
-  result_t evaluate(const J_t & J) const
+  template < typename J_t, typename result_t, typename _ud_ops_t = ud_ops_t >
+  mpl::enable_if_t< !std::is_void<ud_ops_t>::value, result_t>
+  evaluate(const J_t & J) const
   {
     using scalar_t	 = typename ::pressio::containers::details::traits<J_t>::scalar_t;
     constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
@@ -109,11 +107,9 @@ public:
 					      alpha, *J.data(), *J.data());
   }
 
-  template <
-    typename J_t, typename result_t, typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t< !std::is_void<ud_ops_t>::value > * = nullptr
-    >
-  void evaluate(const J_t & J, result_t & result) const
+  template <typename J_t, typename result_t, typename _ud_ops_t = ud_ops_t>
+  mpl::enable_if_t< !std::is_void<ud_ops_t>::value >
+  evaluate(const J_t & J, result_t & result) const
   {
     using scalar_t	 = typename ::pressio::containers::details::traits<J_t>::scalar_t;
     constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();

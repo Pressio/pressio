@@ -81,12 +81,12 @@ public:
   template <
     typename tag_name,
     typename prev_states_type,
-    typename scalar_type,
-    mpl::enable_if_t<
-      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<tag_name>::value
-      > * = nullptr
+    typename scalar_type
   >
-  void operator()(const state_type & odeCurrentState,
+  mpl::enable_if_t<
+    ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<tag_name>::value
+  >
+  operator()(const state_type & odeCurrentState,
 		  const prev_states_type & odePrevStates,
 		  const system_type & model,
 		  const scalar_type & t,
@@ -101,12 +101,13 @@ public:
   template <
     typename tag_name,
     typename prev_states_type,
-    typename scalar_type,
-    mpl::enable_if_t<
-      ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<tag_name>::value
-      > * = nullptr
-    >
-  residual_type operator()(const state_type & odeCurrentState,
+    typename scalar_type
+  >
+  mpl::enable_if_t<
+    ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<tag_name>::value,
+    residual_type
+  >
+  operator()(const state_type & odeCurrentState,
   			   const prev_states_type & odePrevStates,
   			   const system_type & model,
   			   const scalar_type & t,

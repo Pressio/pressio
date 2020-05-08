@@ -103,10 +103,10 @@ TEST(ops_multi_vector_eigen, mv_dot_mvEigen_ColMajorMatrix_subspanStore){
   // check orginal matrix is modified
   for (int i=0; i<20; i++){
     for (int j=0; j<25; j++){
-      if (i<10) EXPECT_DOUBLE_EQ( C(i,j), 0.);
-      if (i>12) EXPECT_DOUBLE_EQ( C(i,j), 0.);
-      if (j<15) EXPECT_DOUBLE_EQ( C(i,j), 0.);
-      if (j>18) EXPECT_DOUBLE_EQ( C(i,j), 0.);
+      if (i<10){ EXPECT_DOUBLE_EQ( C(i,j), 0.); }
+      if (i>12){ EXPECT_DOUBLE_EQ( C(i,j), 0.); }
+      if (j<15){ EXPECT_DOUBLE_EQ( C(i,j), 0.); }
+      if (j>18){ EXPECT_DOUBLE_EQ( C(i,j), 0.); }
     }
   }
 

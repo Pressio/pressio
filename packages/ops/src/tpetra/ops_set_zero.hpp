@@ -52,14 +52,12 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_tpetra<T>::value or
-    ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<T>::value
-    > * = nullptr
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_tpetra<T>::value or
+  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra<T>::value
   >
-void set_zero(T & v){
+set_zero(T & v){
   using value_t = typename ::pressio::containers::details::traits<T>::scalar_t;
   v.data()->putScalar( ::pressio::utils::constants::zero<value_t>() );
   // // putScalar doesn't sync afterwards, so we have to sync manually.

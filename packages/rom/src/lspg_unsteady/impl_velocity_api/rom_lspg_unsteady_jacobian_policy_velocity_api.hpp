@@ -80,9 +80,7 @@ public:
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
     typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      std::is_void<_ud_ops>::value
-      > * = nullptr
+    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyVelocityApi(fom_states_data_type & fomStates,
 			    const fom_querier_policy & fomQuerier,
@@ -98,7 +96,7 @@ public:
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
     typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops>::value > * = nullptr
+    ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyVelocityApi(fom_states_data_type & fomStates,
 			    const fom_querier_policy & fomQuerier,
@@ -148,12 +146,10 @@ private:
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-	std::is_void<_ud_ops>::value
-      > * = nullptr
+    typename _ud_ops = ud_ops
   >
-  void time_discrete_dispatcher(matrix_t & romJac,
+  ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
+  time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t  dt,
 				const decoder_jac_type & phi) const
   {
@@ -165,12 +161,10 @@ private:
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value
-      > * = nullptr
+    typename _ud_ops = ud_ops
   >
-  void time_discrete_dispatcher(matrix_t & romJac,
+  ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value >
+  time_discrete_dispatcher(matrix_t & romJac,
 				scalar_t dt,
 				const decoder_jac_type & phi) const
   {

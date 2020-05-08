@@ -52,13 +52,11 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename T,
-  ::pressio::mpl::enable_if_t<
-      ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void fill(T & v, typename ::pressio::containers::details::traits<T>::scalar_t value)
+fill(T & v, typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
   v.data()->putScalar( value );
 }

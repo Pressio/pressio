@@ -94,12 +94,12 @@ protected:
     typename T1 = state_t,
     typename T2 = residual_t,
     typename T3 = jacobian_t,
-    ::pressio::mpl::enable_if_t<
+    typename = ::pressio::mpl::enable_if_t<
       std::is_same<T1, typename system_in_t::state_type>::value and
       std::is_same<T2, typename system_in_t::residual_type>::value and
       std::is_same<T3, typename system_in_t::jacobian_type>::value and
       std::is_void<ud_ops_t>::value
-      > * = nullptr
+      >
     >
   GNHelperMixin(const system_in_t  & system,
 		const state_t	  & yState,
@@ -121,12 +121,12 @@ protected:
     typename T2 = residual_t,
     typename T3 = jacobian_t,
     typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t<
+    typename = ::pressio::mpl::enable_if_t<
       std::is_same<T1, typename system_in_t::state_type>::value and
       std::is_same<T2, typename system_in_t::residual_type>::value and
       std::is_same<T3, typename system_in_t::jacobian_type>::value and
       !std::is_void<ud_ops_t>::value
-      > * = nullptr
+      > 
     >
   GNHelperMixin(const system_in_t  & system,
 		const state_t	  & yState,
@@ -221,7 +221,7 @@ public:
 
   template <
     typename system_in_t, typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t< std::is_void<_ud_ops_t>::value > * = nullptr
+    typename = mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
     >
   GaussNewtonNormalEqResJacApi(const system_in_t  & system,
 			       const state_t	 & yState,
@@ -232,7 +232,7 @@ public:
 
   template <
     typename system_in_t, typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t< !std::is_void<_ud_ops_t>::value > * = nullptr
+    typename = mpl::enable_if_t< !std::is_void<_ud_ops_t>::value > 
     >
   GaussNewtonNormalEqResJacApi(const system_in_t  & system,
 			       const state_t	 & yState,

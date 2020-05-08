@@ -52,13 +52,11 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void set_zero(T & v){
+set_zero(T & v){
   using value_type = typename ::pressio::containers::details::traits<T>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants::zero<value_type>();
   v.data()->putScalar(zero);

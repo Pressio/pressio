@@ -52,14 +52,12 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value or
-    ::pressio::containers::meta::is_multi_vector_wrapper_epetra<T>::value
-    > * = nullptr
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value or
+  ::pressio::containers::meta::is_multi_vector_wrapper_epetra<T>::value
   >
-void fill(T & o, typename ::pressio::containers::details::traits<T>::scalar_t value)
+fill(T & o, typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
  o.data()->PutScalar(value);
 }

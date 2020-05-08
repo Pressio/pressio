@@ -127,8 +127,8 @@ public:
     typename T2 = standard_jac_policy_t,
     ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, residual_pol_t>::value and
-      mpl::is_same<T2, jacobian_pol_t>::value
-      > * = nullptr
+      mpl::is_same<T2, jacobian_pol_t>::value,
+      int> = 0
     >
   Stepper(const ode_state_type & stateIn0,
 	  const system_type & model)
@@ -138,8 +138,8 @@ public:
   template <
     typename T1 = standard_jac_policy_t,
     ::pressio::mpl::enable_if_t<
-      mpl::is_same<T1, jacobian_pol_t>::value
-      > * = nullptr
+      mpl::is_same<T1, jacobian_pol_t>::value,
+      int> = 0
     >
   Stepper(const ode_state_type & stateIn0,
 	  const system_type & model,

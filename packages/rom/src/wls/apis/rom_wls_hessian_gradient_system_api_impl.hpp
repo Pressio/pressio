@@ -128,8 +128,8 @@ public:
     ::pressio::mpl::publicly_inherits_from<
       linear_solver_type,
       ::pressio::solvers::LinearBase<typename linear_solver_type::matrix_type, linear_solver_type>
-      >::value
-    > * = nullptr
+      >::value,
+      int > = 0
   >
   SystemHessianGradientApi(const rom_size_t romSize,
 			   const window_size_t numStepsInWindow,

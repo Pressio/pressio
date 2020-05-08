@@ -83,11 +83,9 @@ public:
 
 private:
 
-  template<svdType svd_enum_value,
-	   typename std::enable_if<
-	     svd_enum_value==svdType::truncated
-	     >::type * = nullptr>
-  void computeImpl(matrix_type & A, int t, sc_t tol){
+  template<svdType svd_enum_value>
+  ::pressio::mpl::enable_if_t< svd_enum_value==svdType::truncated >
+  computeImpl(matrix_type & A, int t, sc_t tol){
     tol_ = tol;
     auto m = A.globalLength();
     auto n = A.globalNumVectors();

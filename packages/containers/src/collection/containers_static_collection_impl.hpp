@@ -101,37 +101,37 @@ public:
   StaticCollection() = delete;
 
   // constructor for n == 1
-  template <std::size_t _n = n, mpl::enable_if_t<_n == 1> * = nullptr>
+  template <std::size_t _n = n, mpl::enable_if_t<_n == 1, int> = 0>
   StaticCollection(T const & y)
     : data_{{y}}{}
 
   // constructor for n == 2
-  template <std::size_t _n = n, mpl::enable_if_t<_n == 2> * = nullptr>
+  template <std::size_t _n = n, mpl::enable_if_t<_n == 2, int> = 0>
   StaticCollection(T const & y)
     : data_{{y,y}}{}
 
   // constructor for n == 3
-  template <std::size_t _n = n, mpl::enable_if_t<_n == 3> * = nullptr>
+  template <std::size_t _n = n, mpl::enable_if_t<_n == 3, int> = 0>
   StaticCollection(T const & y)
     : data_{{y,y,y}}{}
 
   // constructor for n == 4
-  template <std::size_t _n = n, mpl::enable_if_t<_n == 4> * = nullptr>
+  template <std::size_t _n = n, mpl::enable_if_t<_n == 4, int> = 0>
   StaticCollection(T const & y)
     : data_{{y,y,y,y}}{}
 
   // constructor for n == 5
-  template <std::size_t _n = n, mpl::enable_if_t<_n == 5> * = nullptr>
+  template <std::size_t _n = n, mpl::enable_if_t<_n == 5, int> = 0>
   StaticCollection(T const & y)
     : data_{{y,y,y,y,y}}{}
 
   // constructor for n == 6
-  template <std::size_t _n = n, mpl::enable_if_t<_n == 6> * = nullptr>
+  template <std::size_t _n = n, mpl::enable_if_t<_n == 6, int> = 0>
   StaticCollection(T const & y)
     : data_{{y,y,y,y,y,y}}{}
 
   // constructor for n == 7
-  template <std::size_t _n = n, mpl::enable_if_t<_n == 7> * = nullptr>
+  template <std::size_t _n = n, mpl::enable_if_t<_n == 7, int> = 0>
   StaticCollection(T const & y)
     : data_{{y,y,y,y,y,y,y}}{}
 };

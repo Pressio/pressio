@@ -52,27 +52,24 @@
 
 namespace pressio{ namespace ops{
 
-
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value
-    > * = nullptr
+template <typename vec_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value,
+  typename ::pressio::containers::details::traits<vec_type>::scalar_t
   >
-auto max(const vec_type & a) -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
+max(const vec_type & a)
 {
   typename ::pressio::containers::details::traits<vec_type>::scalar_t result = {};
   a.data()->maxValue(&result);
   return result;
 }
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value
-    > * = nullptr
+template <typename vec_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value,
+  typename ::pressio::containers::details::traits<vec_type>::scalar_t
   >
-auto min(const vec_type & a) -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
+min(const vec_type & a)
 {
   typename ::pressio::containers::details::traits<vec_type>::scalar_t result = {};
   a.data()->minValue(&result);

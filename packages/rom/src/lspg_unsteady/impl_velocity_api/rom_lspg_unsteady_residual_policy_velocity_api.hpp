@@ -79,7 +79,7 @@ public:
   template <
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value > * = nullptr
+    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value, int > = 0
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
 			    fom_states_cont_type & fomStatesIn,
@@ -94,8 +94,7 @@ public:
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value
-      > * = nullptr
+      !std::is_void<_ud_ops>::value, int > = 0
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
 			    fom_states_cont_type & fomStatesIn,
@@ -149,12 +148,10 @@ private:
     typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-	std::is_void<_ud_ops>::value
-      > * = nullptr
+    typename _ud_ops = ud_ops
   >
-  void time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
+  ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
+  time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
 				residual_t			& romR,
 				const scalar_t			& dt) const{
     using namespace ::pressio::rom::lspg::unsteady::impl;
@@ -165,12 +162,10 @@ private:
     typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value
-      > * = nullptr
+    typename _ud_ops = ud_ops
   >
-  void time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
+  ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops>::value >
+  time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
   				residual_t			& romR,
   				const scalar_t			& dt) const{
     using namespace ::pressio::rom::lspg::unsteady::impl;

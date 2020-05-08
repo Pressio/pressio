@@ -51,14 +51,12 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value
-    > * = nullptr
+template <typename vec_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
+  typename ::pressio::containers::details::traits<vec_type>::scalar_t
   >
-auto norm1(const vec_type & a)
-  -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
+norm1(const vec_type & a)
 {
   using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
   sc_t result = 0.0;
@@ -68,14 +66,12 @@ auto norm1(const vec_type & a)
 }
 
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value
-    > * = nullptr
+template <typename vec_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
+  typename ::pressio::containers::details::traits<vec_type>::scalar_t
   >
-auto norm2(const vec_type & a)
-  -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
+norm2(const vec_type & a)
 {
   using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
   sc_t result = 0.0;

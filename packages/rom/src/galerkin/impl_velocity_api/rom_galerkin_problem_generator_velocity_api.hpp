@@ -108,13 +108,13 @@ public:
   */
   template <
     typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops_t>::value and
       ::pressio::containers::meta::is_wrapper<galerkin_state_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
 #endif
-      > * = nullptr
+      , int> = 0
   >
   ProblemGeneratorVelocityApi(const fom_t   & appObj,
 			      const fom_native_state_t & yFomRefNative,
@@ -134,13 +134,13 @@ public:
   */
   template <
     typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       !std::is_void<_ud_ops_t>::value and
       ::pressio::containers::meta::is_wrapper<galerkin_state_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
 #endif
-      > * = nullptr
+      , int> = 0
   >
   ProblemGeneratorVelocityApi(const fom_t   & appObj,
 			      const fom_native_state_t & yFomRefNative,
@@ -164,8 +164,8 @@ public:
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops_t>::value and
-      ::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
-      > * = nullptr
+      ::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value, 
+      int > = 0
   >
   ProblemGeneratorVelocityApi(const fom_t   & appObj,
 			      fom_native_state_t	    yFomRefNative,

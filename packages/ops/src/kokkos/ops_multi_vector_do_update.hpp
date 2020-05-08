@@ -58,27 +58,21 @@ namespace pressio{ namespace ops{
 //  overloads for computing: MV = a * MV + b * MV1
 // where MV is an kokkos multivector wrapper
 //----------------------------------------------------------------------
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_kokkos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_multi_vector_wrapper_kokkos<T>::value
   >
-void do_update(T & mv, const scalar_t &a,
+do_update(T & mv, const scalar_t &a,
 	       const T & mv1, const scalar_t &b)
 {
   KokkosBlas::axpby(b, *mv1.data(), a, *mv.data());
 }
 
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T>::value
   >
-void do_update(T & mv, const T & mv1, const scalar_t & b)
+do_update(T & mv, const T & mv1, const scalar_t & b)
 {
   constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
   KokkosBlas::axpby(b, *mv1.data(), zero, *mv.data());

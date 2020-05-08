@@ -114,26 +114,19 @@ private:
    * has host execution space
    * T and MatrixT have same execution space
    */
-  template <
-    typename _MatrixT = MatrixT,
-    typename T,
-    mpl::enable_if_t<
-      mpl::is_same<
-	typename ::pressio::containers::details::traits<_MatrixT>::layout,
-	Kokkos::LayoutLeft
-	>::value
-      and
-      ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
-      and
-      ::pressio::containers::details::traits<T>::has_host_execution_space
-      and
-      mpl::is_same<
-	typename containers::details::traits<T>::execution_space,
-	typename containers::details::traits<_MatrixT>::execution_space
-	>::value
-      > * = nullptr
+  template < typename _MatrixT = MatrixT, typename T>
+  mpl::enable_if_t<
+    mpl::is_same<
+      typename ::pressio::containers::details::traits<_MatrixT>::layout, Kokkos::LayoutLeft
+      >::value and
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value and
+    ::pressio::containers::details::traits<T>::has_host_execution_space and
+    mpl::is_same<
+      typename containers::details::traits<T>::execution_space,
+      typename containers::details::traits<_MatrixT>::execution_space
+      >::value
   >
-  void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
+  solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
     assert(A.extent(0) == b.extent(0) );
     assert(A.extent(1) == y.extent(0) );
     // gerts is for square matrices
@@ -175,29 +168,22 @@ private:
    * has CUDA execution space
    * T and MatrixT have same execution space
    */
-  template <
-    typename _MatrixT = MatrixT,
-    typename T,
-    mpl::enable_if_t<
-      mpl::is_same<
-	typename ::pressio::containers::details::traits<_MatrixT>::layout,
-	Kokkos::LayoutLeft
-	>::value
-      and
-      ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value
-      and
-      mpl::is_same<
-	typename containers::details::traits<T>::execution_space,
-	Kokkos::Cuda
-	>::value
-      and
-      mpl::is_same<
-	typename containers::details::traits<T>::execution_space,
-	typename containers::details::traits<_MatrixT>::execution_space
-      >::value
-      > * = nullptr
-  >
-  void solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y)
+  template < typename _MatrixT = MatrixT, typename T>
+  mpl::enable_if_t<
+    mpl::is_same<
+      typename ::pressio::containers::details::traits<_MatrixT>::layout,
+      Kokkos::LayoutLeft
+      >::value and
+    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value and
+    mpl::is_same<
+      typename containers::details::traits<T>::execution_space, Kokkos::Cuda
+      >::value and
+    mpl::is_same<
+      typename containers::details::traits<T>::execution_space,
+      typename containers::details::traits<_MatrixT>::execution_space
+    >::value
+    >
+  solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y)
   {
     assert(A.extent(0) == b.extent(0) );
     assert(A.extent(1) == y.extent(0) );

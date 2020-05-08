@@ -67,18 +67,16 @@ namespace pressio{ namespace ops{
 // begin namespace pressio::ops::impl
 namespace impl{
 
-template <
-  typename A_type, typename x_type, typename y_type, typename scalar_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
-    containers::meta::is_vector_wrapper_tpetra<y_type>::value
-    > * = nullptr
+template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
+  containers::meta::is_vector_wrapper_tpetra<y_type>::value
   >
-void _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
-				      const A_type & A,
-				      const x_type & x,
-				      const scalar_type beta,
-				      y_type & y)
+_product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
+				 const A_type & A,
+				 const x_type & x,
+				 const scalar_type beta,
+				 y_type & y)
 {
   assert(size_t(A.numVectors()) == size_t(x.extent(0)));
 
@@ -98,14 +96,12 @@ void _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
 
 
 // when the operand is a kokkos wrapper we use kokkos functionalities directly
-template <
-  typename A_type, typename x_type, typename y_type, typename scalar_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
-    containers::meta::is_vector_wrapper_tpetra<y_type>::value
-    > * = nullptr
+template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
+  containers::meta::is_vector_wrapper_tpetra<y_type>::value
   >
-void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
+_product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
 					     const A_type & A,
 					     const x_type & x,
 					     const scalar_type beta,

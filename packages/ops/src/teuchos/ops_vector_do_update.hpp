@@ -55,14 +55,11 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void do_update(T & v, const scalar_t a, const T & v1, const scalar_t b)
+do_update(T & v, const scalar_t a, const T & v1, const scalar_t b)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
@@ -71,14 +68,11 @@ void do_update(T & v, const scalar_t a, const T & v1, const scalar_t b)
   }
 }
 
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void do_update(T & v, const T & v1, const scalar_t  b)
+do_update(T & v, const T & v1, const scalar_t  b)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
@@ -90,14 +84,11 @@ void do_update(T & v, const T & v1, const scalar_t  b)
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void do_update(T & v, const scalar_t &a,
+do_update(T & v, const scalar_t &a,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c)
 {
@@ -108,16 +99,13 @@ void do_update(T & v, const scalar_t &a,
   }
 }
 
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c)
+do_update(T & v,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
@@ -130,17 +118,14 @@ void do_update(T & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d)
+do_update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
@@ -149,17 +134,14 @@ void do_update(T & v, const scalar_t &a,
   }
 }
 
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d)
+do_update(T & v,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
@@ -172,18 +154,15 @@ void do_update(T & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e)
+do_update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d,
+	  const T & v4, const scalar_t &e)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
@@ -192,18 +171,15 @@ void do_update(T & v, const scalar_t &a,
   }
 }
 
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
   >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e)
+do_update(T & v,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d,
+	  const T & v4, const scalar_t &e)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();

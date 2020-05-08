@@ -64,8 +64,8 @@ struct QueryFomApplyJacobianDefault<false>{
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
       !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
-      > * = nullptr
+      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
+      int > = 0
 #endif
     >
   auto evaluate(const fom_t	& fomObj,
@@ -84,8 +84,8 @@ struct QueryFomApplyJacobianDefault<false>{
     , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
       !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
-      > * = nullptr
+      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
+      int > = 0
 #endif
     >
   void evaluate(const fom_t	  & fomObj,

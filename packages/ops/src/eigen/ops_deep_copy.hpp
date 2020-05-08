@@ -55,19 +55,17 @@ namespace pressio{ namespace ops{
 // for wrappers, because we overload the = operator
 // and for now we do NOT have view semantics
 //--------------------------------------------------------------------------
-template<
-  typename T1, typename T2,
-  ::pressio::mpl::enable_if_t<
-    (::pressio::containers::meta::is_vector_wrapper_eigen<T1>::value or
-     ::pressio::containers::meta::is_matrix_wrapper_eigen<T1>::value or
-     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T1>::value) 
-    and
-    (::pressio::containers::meta::is_vector_wrapper_eigen<T2>::value or
-     ::pressio::containers::meta::is_matrix_wrapper_eigen<T2>::value or
-     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T2>::value)
-    > * = nullptr
+template<typename T1, typename T2>
+::pressio::mpl::enable_if_t<
+  (::pressio::containers::meta::is_vector_wrapper_eigen<T1>::value or
+   ::pressio::containers::meta::is_matrix_wrapper_eigen<T1>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T1>::value)
+  and
+  (::pressio::containers::meta::is_vector_wrapper_eigen<T2>::value or
+   ::pressio::containers::meta::is_matrix_wrapper_eigen<T2>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T2>::value)
   >
-void deep_copy(T2 & dest, const T1 & src){
+deep_copy(T2 & dest, const T1 & src){
   *dest.data() = *src.data();
 }
 

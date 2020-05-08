@@ -133,13 +133,13 @@ public:
     typename _fom_t = fom_t,
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_aux_stepper_t>::value and
       std::is_void<_ud_ops_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !std::is_same< _fom_t, pybind11::object >::value
 #endif
-      > * = nullptr
+    , int > = 0
   >
   ProblemGeneratorVelocityApi(const _fom_t	& appObj,
 			      const fom_native_state_t & fomStateReferenceNative,
@@ -177,13 +177,13 @@ public:
     typename _fom_t = fom_t,
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_aux_stepper_t>::value and
       !std::is_void<_ud_ops_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !std::is_same< _fom_t, pybind11::object >::value
 #endif
-      > * = nullptr
+      , int > = 0
   >
   ProblemGeneratorVelocityApi(const _fom_t & appObj,
 			      const fom_native_state_t & fomStateReferenceNative,
@@ -222,13 +222,13 @@ public:
     typename _fom_t = fom_t,
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       !std::is_void<_aux_stepper_t>::value and
       std::is_void<_ud_ops_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !std::is_same< _fom_t, pybind11::object >::value
 #endif
-      > * = nullptr
+      , int > = 0
   >
   ProblemGeneratorVelocityApi(const _fom_t	 & appObj,
 			      const fom_native_state_t & fomStateReferenceNative,
@@ -266,12 +266,12 @@ public:
     typename _lspg_state_t = lspg_state_t,
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_same< _fom_t, pybind11::object >::value and
       ::pressio::containers::meta::is_vector_wrapper_pybind<_lspg_state_t>::value and
       std::is_void<_aux_stepper_t>::value and
-      std::is_void<_ud_ops_t>::value
-      > * = nullptr
+      std::is_void<_ud_ops_t>::value, 
+      int > = 0
   >
   ProblemGeneratorVelocityApi(const _fom_t       & appObj,
 			      const fom_native_state_t fomStateReferenceIn,

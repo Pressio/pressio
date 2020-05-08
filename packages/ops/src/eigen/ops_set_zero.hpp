@@ -51,15 +51,14 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value or
-    ::pressio::containers::meta::is_matrix_wrapper_eigen<T>::value or
-    ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T>::value
-    > * = nullptr
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value or
+  ::pressio::containers::meta::is_matrix_wrapper_eigen<T>::value or
+  ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T>::value
   >
-void set_zero(T & v){
+set_zero(T & v)
+{
   using value_t = typename ::pressio::containers::details::traits<T>::scalar_t;
   v.data()->setConstant( ::pressio::utils::constants::zero<value_t>() );
 }

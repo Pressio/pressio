@@ -121,8 +121,10 @@ public:
 
 public:
 
-  template <typename _ud_ops_t = ud_ops_t,
-  mpl::enable_if_t< std::is_void<_ud_ops_t>::value > * = nullptr>
+  template <
+   typename _ud_ops_t = ud_ops_t,
+   mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+   >
   ProblemGeneratorResidualApi(const fom_t & appObj,
 			      const fom_native_state_t & fomStateReferenceNative,
 			      decoder_t	 & decoder,
@@ -144,8 +146,10 @@ public:
       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
   {}
 
-  template <typename _ud_ops_t = ud_ops_t,
-  mpl::enable_if_t< !std::is_void<_ud_ops_t>::value > * = nullptr>
+  template <
+   typename _ud_ops_t = ud_ops_t,
+   mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
+  >
   ProblemGeneratorResidualApi(const fom_t & appObj,
 			      const fom_native_state_t & fomStateReferenceNative,
 			      decoder_t & decoder,

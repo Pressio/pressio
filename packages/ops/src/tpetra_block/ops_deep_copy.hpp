@@ -55,13 +55,11 @@ namespace pressio{ namespace ops{
 //--------------------------------------------------------------------------
 // for wrappers, we overload the = operator
 //--------------------------------------------------------------------------
-template<
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_tpetra_block<T>::value
-    > * = nullptr
+template<typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_tpetra_block<T>::value
   >
-void deep_copy(T & dest, const T & src){
+deep_copy(T & dest, const T & src){
   dest = src;
 }
 

@@ -116,54 +116,45 @@ public:
 
   ~Vector() = default;
 
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      // todo: this is not entirely correct because this would work also
-      // for UMV space, needs to be fixed
-      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
-      > * = nullptr
-    >
-  sc_t & operator [] (ord_t i){
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    // todo: this is not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t &>
+  operator [] (ord_t i){
     return data_(i);
   };
 
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      // todo: this is not entirely correct because this would work also
-      // for UMV space, needs to be fixed
-      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
-      > * = nullptr
-    >
-  sc_t const & operator [] (ord_t i) const{
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    // todo: this is not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t const &>
+  operator [] (ord_t i) const{
     return data_(i);
   };
 
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      // todo: this is not entirely correct because this would work also
-      // for UMV space, needs to be fixed
-      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
-      > * = nullptr
-    >
-  sc_t & operator () (ord_t i){
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    // todo: this is not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t &>
+  operator () (ord_t i){
     return data_(i);
   };
 
-  template<
-    typename _wrapped_type = wrapped_type,
+  template<typename _wrapped_type = wrapped_type>
     mpl::enable_if_t<
       // todo: this is not entirely correct because this would work also
       // for UMV space, needs to be fixed
-      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
-      > * = nullptr
-    >
-  sc_t const & operator () (ord_t i) const{
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t const &>
+  operator () (ord_t i) const{
     return data_(i);
   };
-
 
   wrapped_type const * data() const{
     return &data_;

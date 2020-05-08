@@ -59,20 +59,20 @@ template<
   typename stepper_type,
   typename state_type,
   typename time_type,
-  typename solver_type,
-  typename std::enable_if<
-    ::pressio::mpl::publicly_inherits_from<
-      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
-    >::value and
-    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
-      solver_type, stepper_type, state_type
-      >::value
+  typename solver_type
+>
+mpl::enable_if_t<
+  ::pressio::mpl::publicly_inherits_from<
+    stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+  >::value and
+  ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type
+    >::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and !::pressio::containers::meta::is_array_pybind<state_type>::value
+  and !::pressio::containers::meta::is_array_pybind<state_type>::value
 #endif
-    >::type * = nullptr
-  >
-void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
+>
+integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 startTime,
 		     const time_type	 dt,
@@ -102,15 +102,15 @@ template<
   typename stepper_type,
   typename state_type,
   typename time_type,
-  typename solver_type,
-  typename std::enable_if<
-    ::pressio::mpl::publicly_inherits_from<
-      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
-    >::value and
-    ::pressio::containers::meta::is_array_pybind<state_type>::value
-    >::type * = nullptr
-  >
-void integrateNSteps(stepper_type & stepper,
+  typename solver_type
+>
+::pressio::mpl::enable_if_t<
+  ::pressio::mpl::publicly_inherits_from<
+    stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+  >::value and
+  ::pressio::containers::meta::is_array_pybind<state_type>::value
+>
+integrateNSteps(stepper_type & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 startTime,
 		     const time_type	 dt,
@@ -142,20 +142,20 @@ template<
   typename state_type,
   typename time_type,
   typename collector_type,
-  typename solver_type,
-  typename std::enable_if<
-    ::pressio::mpl::publicly_inherits_from<
-      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+  typename solver_type
+>
+::pressio::mpl::enable_if_t<
+  ::pressio::mpl::publicly_inherits_from<
+    stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+  >::value and
+  ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type
     >::value and
-    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
-      solver_type, stepper_type, state_type
-      >::value and
-    ode::meta::is_legitimate_collector<
-      collector_type, types::step_t, time_type, state_type
-      >::value
-    >::type * = nullptr
-  >
-void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
+  ode::meta::is_legitimate_collector<
+    collector_type, types::step_t, time_type, state_type
+    >::value
+>
+integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 startTime,
 		     const time_type	 dt,
@@ -180,19 +180,19 @@ template<
   typename state_type,
   typename time_type,
   typename solver_type,
-  typename guess_callback_t,
-  typename std::enable_if<
-    ::pressio::mpl::publicly_inherits_from<
-      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
-    >::value and
-    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
-      solver_type, stepper_type, state_type>::value and
-    ::pressio::ode::meta::is_legitimate_guesser<
-      guess_callback_t, types::step_t, time_type, state_type
-      >::value
-    >::type * = nullptr
-  >
-void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
+  typename guess_callback_t
+>
+::pressio::mpl::enable_if_t<
+  ::pressio::mpl::publicly_inherits_from<
+    stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+  >::value and
+  ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type>::value and
+  ::pressio::ode::meta::is_legitimate_guesser<
+    guess_callback_t, types::step_t, time_type, state_type
+    >::value
+>
+integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type		 & odeStateInOut,
 		     const time_type	 startTime,
 		     const time_type	 dt,
@@ -219,23 +219,23 @@ template<
   typename time_type,
   typename collector_type,
   typename solver_type,
-  typename guess_callback_t,
-  typename std::enable_if<
-    ::pressio::mpl::publicly_inherits_from<
-      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+  typename guess_callback_t
+>
+::pressio::mpl::enable_if_t<
+  ::pressio::mpl::publicly_inherits_from<
+    stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+  >::value and
+  ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type
     >::value and
-    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
-      solver_type, stepper_type, state_type
-      >::value and
-    ::pressio::ode::meta::is_legitimate_collector<
-      collector_type, types::step_t, time_type, state_type
-      >::value and
-    ::pressio::ode::meta::is_legitimate_guesser<
-      guess_callback_t, types::step_t, time_type, state_type
-      >::value
-    >::type * = nullptr
-  >
-void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
+  ::pressio::ode::meta::is_legitimate_collector<
+    collector_type, types::step_t, time_type, state_type
+    >::value and
+  ::pressio::ode::meta::is_legitimate_guesser<
+    guess_callback_t, types::step_t, time_type, state_type
+    >::value
+>
+integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type			& odeStateInOut,
 		     const time_type	        startTime,
 		     const time_type		dt,
@@ -263,23 +263,23 @@ template<
   typename time_type,
   typename collector_type,
   typename solver_type,
-  typename guess_callback_t,
-  typename std::enable_if<
-    ::pressio::mpl::publicly_inherits_from<
-      stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+  typename guess_callback_t
+>
+::pressio::mpl::enable_if_t<
+  ::pressio::mpl::publicly_inherits_from<
+    stepper_type, ::pressio::ode::implicitmethods::StepperBase<stepper_type>
+  >::value and
+  ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type
     >::value and
-    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
-      solver_type, stepper_type, state_type
-      >::value and
-    ::pressio::ode::meta::is_legitimate_collector<
-      collector_type, types::step_t, time_type, state_type
-      >::value and
-    ::pressio::ode::meta::is_legitimate_guesser<
-      guess_callback_t, types::step_t, time_type, state_type
-      >::value
-    >::type * = nullptr
-  >
-void integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
+  ::pressio::ode::meta::is_legitimate_collector<
+    collector_type, types::step_t, time_type, state_type
+    >::value and
+  ::pressio::ode::meta::is_legitimate_guesser<
+    guess_callback_t, types::step_t, time_type, state_type
+    >::value
+>
+integrateNSteps(implicitmethods::StepperBase<stepper_type> & stepper,
 		     state_type			& odeStateInOut,
 		     const time_type	        startTime,
 		     const time_type		dt,

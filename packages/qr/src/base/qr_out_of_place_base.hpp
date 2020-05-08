@@ -75,16 +75,13 @@ public:
     return this->underlying().cRefQFactorImpl();
   }
 
-  template <
-    typename vec_in_t,
-    typename vec_out_t,
-    ::pressio::mpl::enable_if_t<
-      containers::meta::is_vector_wrapper<vec_in_t>::value and
-      containers::meta::is_vector_wrapper<vec_out_t>::value and
-      meta::is_legitimate_vector_type_for_qr_project<vec_in_t, Q_t>::value
-      >* = nullptr
-    >
-  void applyQTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
+  template <typename vec_in_t, typename vec_out_t>
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_vector_wrapper<vec_in_t>::value and
+    containers::meta::is_vector_wrapper<vec_out_t>::value and
+    meta::is_legitimate_vector_type_for_qr_project<vec_in_t, Q_t>::value
+  >
+  applyQTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
     this->underlying().applyQTransposeImpl(vecIn, vecOut);
   }
 

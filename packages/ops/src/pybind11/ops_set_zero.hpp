@@ -52,13 +52,11 @@
 
 namespace pressio{ namespace ops{
 
-template<
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
+template<typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
   >
-void set_zero(T & v){
+set_zero(T & v){
   using traits	 = ::pressio::containers::details::traits<T>;
   using scalar_t = typename traits::scalar_t;
   using ord_t	 = typename traits::ordinal_t;

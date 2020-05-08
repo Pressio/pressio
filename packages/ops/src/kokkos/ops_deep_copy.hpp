@@ -55,19 +55,17 @@ namespace pressio{ namespace ops{
 //--------------------------------------------------------------------------
 // for wrappers, we overload the = operator
 //--------------------------------------------------------------------------
-template<
-  typename T1, typename T2,
-  ::pressio::mpl::enable_if_t<
-    (::pressio::containers::meta::is_vector_wrapper_kokkos<T1>::value or
-      ::pressio::containers::meta::is_matrix_wrapper_kokkos<T1>::value or
-      ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T1>::value) 
-    and
-    (::pressio::containers::meta::is_vector_wrapper_kokkos<T2>::value or
-      ::pressio::containers::meta::is_matrix_wrapper_kokkos<T2>::value or
-      ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T2>::value)
-    > * = nullptr
+template< typename T1, typename T2 >
+::pressio::mpl::enable_if_t<
+  (::pressio::containers::meta::is_vector_wrapper_kokkos<T1>::value or
+   ::pressio::containers::meta::is_matrix_wrapper_kokkos<T1>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T1>::value)
+  and
+  (::pressio::containers::meta::is_vector_wrapper_kokkos<T2>::value or
+   ::pressio::containers::meta::is_matrix_wrapper_kokkos<T2>::value or
+   ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T2>::value)
   >
-void deep_copy(T1 & dest, const T2 & src){
+deep_copy(T1 & dest, const T2 & src){
   Kokkos::deep_copy(*dest.data(), *src.data());
 }
 

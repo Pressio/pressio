@@ -85,9 +85,9 @@ public:
   //-------------------------------
   // specialize for n == 1
   //-------------------------------
-  template <typename prev_states_type, typename scalar_type,
-	    mpl::enable_if_t< prev_states_type::size()==1 > * = nullptr>
-  void operator()(const state_type & stateIn,
+  template <typename prev_states_type, typename scalar_type>
+  mpl::enable_if_t< prev_states_type::size()==1 >
+  operator()(const state_type & stateIn,
 		  const prev_states_type & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
@@ -106,9 +106,9 @@ public:
   //-------------------------------
   // specialize for n == 2
   //-------------------------------
-  template <typename prev_states_type, typename scalar_type,
-	    mpl::enable_if_t< prev_states_type::size()==2 > * = nullptr>
-  void operator()(const state_type & stateIn,
+  template <typename prev_states_type, typename scalar_type>
+  mpl::enable_if_t< prev_states_type::size()==2 >
+  operator()(const state_type & stateIn,
 		  const prev_states_type & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
@@ -129,9 +129,9 @@ public:
   //-------------------------------
   // specialize for n == 3
   //-------------------------------
-  template <typename prev_states_type, typename scalar_type,
-	    mpl::enable_if_t< prev_states_type::size()==3 > * = nullptr>
-  void operator()(const state_type & stateIn,
+  template <typename prev_states_type, typename scalar_type>
+  mpl::enable_if_t< prev_states_type::size()==3 >
+  operator()(const state_type & stateIn,
 		  const prev_states_type & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
