@@ -134,7 +134,7 @@ private:
 				const state_type & yn,
 				const state_type & ynm1) const
   {
-    const auto f =  this->velocity(yn, time);
+    const auto f =  this->velocityImpl(yn, time);
     R = yn - ynm1 - dt * f;
   }
 
@@ -145,10 +145,10 @@ private:
 				const scalar_type & dt,
 				residual_type & R,
 				const state_type & yn,
-				const state_type & ynm1, 
+				const state_type & ynm1,
         const state_type & ynm2) const
   {
-    const auto f =  this->velocity(yn, time);
+    const auto f =  this->velocityImpl(yn, time);
     R = yn - 4./3.*ynm1 + 1./3.*ynm2 - 2./3.*dt * f;
   }
 
@@ -165,7 +165,7 @@ private:
 				     const state_t & ynm1) const
   {
     // compute Jacobian
-    auto J =  this->jacobian(yn, time);
+    auto J =  this->jacobianImpl(yn, time);
 
     // compute time discrete Jacobian
     constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
@@ -177,7 +177,7 @@ private:
     A = J * B;
   }
 
-  // case when we have two auxiliar states (BDF2) 
+  // case when we have two auxiliar states (BDF2)
   template <typename step_t, typename state_t>
   void applyTimeDiscreteJacobianImpl(const step_t & step,
 				     const scalar_type & time,
@@ -186,11 +186,11 @@ private:
 				     int id,
 				     dense_matrix_type & A,
 				     const state_t & yn,
-				     const state_t & ynm1, 
+				     const state_t & ynm1,
              const state_t & ynm2) const
   {
     // compute Jacobian
-    auto J =  this->jacobian(yn, time);
+    auto J =  this->jacobianImpl(yn, time);
 
     // compute time discrete Jacobian
     constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
@@ -219,7 +219,7 @@ private:
     U0_ = U_;
   };
 
-  void velocity(const state_type & u,
+  void velocityImpl(const state_type & u,
   		const scalar_type t,
 		velocity_type & rhs) const
   {
@@ -232,14 +232,14 @@ private:
     }
   }
 
-  velocity_type velocity(const state_type & u,
+  velocity_type velocityImpl(const state_type & u,
   			 const scalar_type t) const{
     velocity_type RR(Ncell_);
-    this->velocity(u, t, RR);
+    this->velocityImpl(u, t, RR);
     return RR;
   }
 
-  void jacobian(const state_type & u,
+  void jacobianImpl(const state_type & u,
 		const scalar_type /*t*/,
 		jacobian_type & jac) const
   {
@@ -256,11 +256,11 @@ private:
     jac.setFromTriplets(tripletList.begin(), tripletList.end());
   }
 
-  jacobian_type jacobian(const state_type & u,
+  jacobian_type jacobianImpl(const state_type & u,
 			 const scalar_type t) const{
 
     jacobian_type JJ(u.size(), u.size());
-    this->jacobian(u, t, JJ);
+    this->jacobianImpl(u, t, JJ);
     return JJ;
   }
 
