@@ -57,21 +57,9 @@ for which a user must provide ops
 *******************************/
 template <typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
-    mpl::enable_if_t<
-      !containers::meta::is_dynamic_multi_vector_eigen<wrapped_type>::value
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-      and
-      !containers::meta::is_multi_vector_epetra<wrapped_type>::value and
-      !containers::meta::is_multi_vector_tpetra_block<wrapped_type>::value and
-      !containers::meta::is_multi_vector_tpetra<wrapped_type>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-      and
-      !containers::meta::is_multi_vector_kokkos<wrapped_type>::value
-#endif
-      >
+  MultiVector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    meta::is_multi_vector_arbitrary<wrapped_type>::value
     >
   >
   : public containers_shared_traits<MultiVector<wrapped_type>,
@@ -109,13 +97,9 @@ struct traits<
 //*******************************
 template<typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
-    ::pressio::mpl::enable_if_t<
-      meta::is_multi_vector_epetra<
-	wrapped_type
-	>::value
-      >
+  MultiVector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    meta::is_multi_vector_epetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<MultiVector<wrapped_type>,
@@ -149,13 +133,9 @@ struct traits<
 //*******************************
 template<typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
-    ::pressio::mpl::enable_if_t<
-      meta::is_multi_vector_tpetra<
-	wrapped_type
-	>::value
-      >
+  MultiVector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    meta::is_multi_vector_tpetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<MultiVector<wrapped_type>,
@@ -207,13 +187,9 @@ struct traits<
 //*******************************
 template<typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
-    ::pressio::mpl::enable_if_t<
-      meta::is_multi_vector_tpetra_block<
-	wrapped_type
-	>::value
-      >
+  MultiVector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    meta::is_multi_vector_tpetra_block<wrapped_type>::value
     >
   >
   : public containers_shared_traits<MultiVector<wrapped_type>,
@@ -264,11 +240,9 @@ struct traits<
 //*******************************
 template<typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
+  MultiVector<wrapped_type>,
     ::pressio::mpl::enable_if_t<
       meta::is_dynamic_multi_vector_eigen<wrapped_type>::value
-      >
     >
   >
   : public containers_shared_traits<
@@ -301,13 +275,9 @@ struct traits<
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
+  MultiVector<wrapped_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_multi_vector_kokkos<
-	wrapped_type
-	>::value
-      >
+      containers::meta::is_multi_vector_kokkos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<

@@ -83,6 +83,7 @@
 #include "containers/src/vector/meta/containers_native_teuchos_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_tpetra_block_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_tpetra_vector_meta.hpp"
+#include "containers/src/vector/meta/containers_native_arbitrary_vector_meta.hpp"
 
 #include "containers/src/vector/meta/containers_is_dense_vector_wrapper_teuchos.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_arbitrary.hpp"
@@ -112,6 +113,7 @@
 #include "containers/src/matrix/meta/containers_native_eigen_matrix_meta.hpp"
 #include "containers/src/matrix/meta/containers_native_kokkos_matrix_meta.hpp"
 #include "containers/src/matrix/meta/containers_native_trilinos_matrix_meta.hpp"
+#include "containers/src/matrix/meta/containers_native_arbitrary_matrix_meta.hpp"
 
 #include "containers/src/matrix/meta/containers_is_dense_matrix_wrapper_eigen.hpp"
 #include "containers/src/matrix/meta/containers_is_dense_matrix_wrapper_epetra.hpp"
@@ -147,6 +149,7 @@
 #include "containers/src/multi_vector/meta/containers_native_kokkos_multi_vector_meta.hpp"
 #include "containers/src/multi_vector/meta/containers_native_tpetra_block_multi_vector_meta.hpp"
 #include "containers/src/multi_vector/meta/containers_native_tpetra_multi_vector_meta.hpp"
+#include "containers/src/multi_vector/meta/containers_native_arbitrary_multi_vector_meta.hpp"
 
 #include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_tpetra.hpp"
 #include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_tpetra_block.hpp"
