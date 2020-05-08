@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_model_meets_velocity_api_for_unsteady_lspg.hpp
+// rom_model_meets_velocity_api_for_wls.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_MODEL_MEETS_VELOCITY_API_FOR_UNSTEADY_WLS_HPP_
-#define ROM_MODEL_MEETS_VELOCITY_API_FOR_UNSTEADY_WLS_HPP_
+#ifndef ROM_MODEL_MEETS_VELOCITY_API_FOR_WLS_HPP_
+#define ROM_MODEL_MEETS_VELOCITY_API_FOR_WLS_HPP_
 
 namespace pressio{ namespace rom{ namespace meta {
 
