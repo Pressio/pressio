@@ -132,8 +132,6 @@ struct traits<
   using size_t    = ordinal_t;
   using pair_t = std::pair<size_t, size_t>;
 
-  // the reference type is conditionnal because the native expression
-  // returns by value when object is const
   using reference_t = scalar_t &;
   using const_reference_t = scalar_t const &;
 

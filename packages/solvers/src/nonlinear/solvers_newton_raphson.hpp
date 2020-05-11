@@ -56,9 +56,9 @@ template <
   typename linear_solver_t,
   typename scalar_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  ,::pressio::mpl::enable_if_t<
+  , typename = ::pressio::mpl::enable_if_t<
      !std::is_same<linear_solver_t, pybind11::object>::value
-    > * = nullptr
+    >
 #endif
   >
 class NewtonRaphson
@@ -115,11 +115,10 @@ public:
     typename T1 = state_t,
     typename T2 = residual_t,
     typename T3 = jacobian_t,
-    ::pressio::mpl::enable_if_t<
+    typename = ::pressio::mpl::enable_if_t<
       std::is_same<T1, typename system_in_t::state_type>::value and
       std::is_same<T2, typename system_in_t::residual_type>::value and
-      std::is_same<T3, typename system_in_t::jacobian_type>::value
-      > * = nullptr
+      std::is_same<T3, typename system_in_t::jacobian_type>::value>
     >
   NewtonRaphson(const system_in_t & sys,
 		const state_t	  & stateIn,
@@ -148,13 +147,9 @@ private:
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
   // dispatch print based on whether the linear solver is iterative or not
-  template <
-    typename _linear_solver_t = linear_solver_t,
-    ::pressio::mpl::enable_if_t<
-      std::is_void<_linear_solver_t>::value == false
-      > * = nullptr
-    >
-  void stepSummaryPrintDispatcher(const _linear_solver_t & linSolverIn,
+  template <typename _linear_solver_t = linear_solver_t>
+  ::pressio::mpl::enable_if_t<_linear_solver_t::solver_traits::iterative> 
+  stepSummaryPrintDispatcher(const _linear_solver_t & linSolverIn,
 				  const scalar_t & normRes ,
 				  const scalar_t & normRes0,
 				  const scalar_t & normN) const
@@ -169,13 +164,9 @@ private:
 				       "\n");
   }
 
-  template <
-    typename _linear_solver_t = linear_solver_t,
-    ::pressio::mpl::enable_if_t<
-      ::pressio::solvers::linear::details::traits<_linear_solver_t>::direct == true
-      > * = nullptr
-    >
-  void stepSummaryPrintDispatcher(const _linear_solver_t & linSolverIn,
+  template <typename _linear_solver_t = linear_solver_t>
+  ::pressio::mpl::enable_if_t<_linear_solver_t::solver_traits::direct> 
+  stepSummaryPrintDispatcher(const _linear_solver_t & linSolverIn,
   				  const scalar_t & normRes ,
   				  const scalar_t & normRes0,
   				  const scalar_t & normN) const{
@@ -262,11 +253,11 @@ public:
 //   template <
 //     typename system_t,
 //     typename state_t,
-//     mpl::enable_if_t<
+//     typename = mpl::enable_if_t<
 //       containers::meta::is_cstyle_array_pybind11<state_t>::value and
 //       mpl::is_same<system_t, pybind11::object>::value and
 //       mpl::is_same<linear_solver_t, pybind11::object>::value
-//       > * = nullptr
+//       >
 //     >
 //   void solveImpl(const system_t & sys, state_t & x)
 //   {

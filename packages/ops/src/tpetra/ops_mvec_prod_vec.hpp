@@ -67,24 +67,18 @@ namespace pressio{ namespace ops{
 // begin namespace pressio::ops::impl
 namespace impl{
 
-template <
-  typename A_type, typename x_type, typename y_type, typename scalar_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
-    containers::meta::is_vector_wrapper_tpetra<y_type>::value
-    > * = nullptr
+template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
+  containers::meta::is_vector_wrapper_tpetra<y_type>::value
   >
-void _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
-				      const A_type & A,
-				      const x_type & x,
-				      const scalar_type beta,
-				      y_type & y)
+_product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
+				 const A_type & A,
+				 const x_type & x,
+				 const scalar_type beta,
+				 y_type & y)
 {
-  // how many vectors are in A
-  const auto numVecs = A.numVectors();
-  // size of vecB
-  assert(size_t(numVecs) == size_t(x.extent(0)));
-  (void)numVecs;
+  assert(size_t(A.numVectors()) == size_t(x.extent(0)));
 
   using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
 				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
@@ -102,14 +96,12 @@ void _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
 
 
 // when the operand is a kokkos wrapper we use kokkos functionalities directly
-template <
-  typename A_type, typename x_type, typename y_type, typename scalar_type,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
-    containers::meta::is_vector_wrapper_tpetra<y_type>::value
-    > * = nullptr
+template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_multi_vector_wrapper_tpetra<A_type>::value and
+  containers::meta::is_vector_wrapper_tpetra<y_type>::value
   >
-void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
+_product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
 					     const A_type & A,
 					     const x_type & x,
 					     const scalar_type beta,
@@ -121,7 +113,7 @@ void _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
 		 "product: tpetra MV and kokkos wrapper need to have same device type" );
 
-  assert( A.numVectors() == x.data()->extent(0) );
+  assert( (std::size_t)A.numVectors() == x.data()->extent(0) );
   const char ctA = 'N';
   const auto ALocalView_d = A.data()->getLocalViewDevice();
 
@@ -240,7 +232,7 @@ product(::pressio::transpose mode,
 		"Types are not scalar compatible");
 
   const auto numVecs = A.extent(1);
-  for (auto i=0; i<numVecs; i++){
+  for (std::size_t i=0; i<(std::size_t)numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = A.data()->getVector(i);
     y[i] = beta * y[i] + alpha * colI->dot(*x.data());

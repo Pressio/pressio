@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_time_discrete_residual_policy.hpp
+// apps_burgers1d_arb_ds_velocity_api_adapter.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,59 +46,77 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
-#define ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
+#ifndef PRESSIOAPPS_BURGERS1D_ARB_DS_VELOCITY_API_ADAPTER_HPP_
+#define PRESSIOAPPS_BURGERS1D_ARB_DS_VELOCITY_API_ADAPTER_HPP_
 
-namespace pressio{ namespace rom{ namespace policy{
+#include "../../apps_ConfigDefs.hpp"
+#include "apps_burgers1d_arb_ds.hpp"
 
-struct QueryFomTimeDiscreteResidual
+namespace pressio{ namespace apps{
+
+class Burgers1dArbDsVelocityApiAdapter
 {
+public:
+  using int_t		  = typename Burgers1dArbDs::int_t;
+  using scalar_type	  = typename Burgers1dArbDs::scalar_type;
+  using state_type	  = typename Burgers1dArbDs::state_type;
+  using velocity_type    = typename Burgers1dArbDs::velocity_type;
+  using residual_type	  = typename Burgers1dArbDs::state_type;
+  using dense_matrix_type = typename Burgers1dArbDs::dense_matrix_type;
+  using jacobian_type	  = typename Burgers1dArbDs::dense_matrix_type;
 
-  template <typename fom_state_t, typename fom_t>
-  auto evaluate(const fom_state_t & fomCurrentState,
-  		const fom_t   & fomObj) const
-    -> decltype(
-  		fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data())
-  		)
-  {
-    return fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data());
+  Burgers1dArbDsVelocityApiAdapter() = delete;
+
+  Burgers1dArbDsVelocityApiAdapter(const Burgers1dArbDs & appObj)
+    : appObj_{appObj},
+      f_{appObj.meshSize()},
+      JJ_{appObj.meshSize(), appObj.meshSize()}{}
+
+public:
+  void velocity(const state_type & u,
+  		const scalar_type & t,
+  		velocity_type & f) const{
+    appObj_.velocity(u, t, f);
   }
 
-  template <
-    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
-    >
-  void evaluate(const fom_state_t & state_n,
-		const fom_state_t & state_nm1,
-		const fom_t   & fomObj,
-		const time_t  & time,
-		const time_t  & dt,
-  		const step_t  & step,
-  		result_t      & R) const
-  {
-    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-					 *state_n.data(),
-					 *state_nm1.data());
+  velocity_type velocity(const state_type & u,
+			 const scalar_type & t) const{
+    appObj_.velocity(u, t, f_);
+    return f_;
   }
 
-  template <
-    typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
-    >
-  void evaluate(const fom_state_t & state_n,
-		const fom_state_t & state_nm1,
-		const fom_state_t & state_nm2,
-		const fom_t   & fomObj,
-		const time_t  & time,
-		const time_t  & dt,
-  		const step_t  & step,
-  		result_t      & R) const
-  {
-    fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
-					 *state_n.data(),
-					 *state_nm1.data(),
-					 *state_nm2.data());
+  // computes: A = Jac B
+  void applyJacobian(const state_type & y,
+		     const dense_matrix_type & B,
+		     scalar_type t,
+		     dense_matrix_type & A) const{
+    appObj_.jacobian(y, t, JJ_);
+
+    for (int_t i=0; i<A.extent(0); ++i){
+      for (int_t j=0; j<A.extent(1); ++j){
+	A(i,j) = ::pressio::utils::constants::zero<scalar_type>();
+	for (int_t k=0; k<JJ_.extent(1); ++k){
+	  A(i,j) += JJ_(i,k) * B(k,j);
+	}
+      }
+    }
   }
 
-};
+  // computes: A = Jac B
+  dense_matrix_type applyJacobian(const state_type & y,
+				  const dense_matrix_type & B,
+				  scalar_type t) const{
+    dense_matrix_type A( y.extent(0), B.extent(1) );
+    this->applyJacobian(y, B, t, A);
+    return A;
+  }
 
-}}} //end namespace pressio::rom::policy
+private:
+  const Burgers1dArbDs & appObj_;
+  mutable state_type f_;
+  mutable jacobian_type JJ_;
+
+};//end class
+
+}} //namespace pressio::apps
 #endif

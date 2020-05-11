@@ -97,10 +97,7 @@ public:
 
 public:
   // assignment with value
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-	      std::is_same<T, sc_t>::value> * = nullptr>
-  this_t & operator=(const T value){
+  this_t & operator=(const sc_t & value){
     for (ord_t i = 0; i != data_.size(); ++i)
       data_[i] = value;
     return *this;
@@ -160,6 +157,8 @@ public:
   }
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  /* the following methods are needed to enable using this class
+     for the Rol optimization */
   int dimension() const final{
     return data_.size();
   }

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_blaze_vector_meta.hpp
+// containers_native_arbitrary_matrix_meta.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,63 +46,39 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_BLAZE
-#ifndef CONTAINERS_NATIVE_BLAZE_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_BLAZE_VECTOR_META_HPP_
-
-#include <blaze/math/DynamicVector.h>
-#include <blaze/math/StaticVector.h>
-
+#ifndef CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_
+#define CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_
 
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
-struct is_static_vector_blaze : std::false_type {};
+struct is_matrix_arbitrary : std::false_type {};
 
 template <typename T>
-struct is_static_vector_blaze<T,
-	 ::pressio::mpl::enable_if_t<
-	   blaze::IsStatic<typename T::This>::value
-	   >
-      > : std::true_type{};
+struct is_matrix_arbitrary<
+  T,
+  ::pressio::mpl::enable_if_t<
+    !containers::meta::is_dense_matrix_eigen<T>::value and
+    !containers::meta::is_sparse_matrix_eigen<T>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    and !containers::meta::is_array_pybind<T>::value
+#endif
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+    and
+    !containers::meta::is_sparse_matrix_epetra<T>::value and
+    !containers::meta::is_dense_matrix_epetra<T>::value and
+    !containers::meta::is_dense_matrix_teuchos<T>::value and
+    !containers::meta::is_dense_matrix_teuchos_rcp<T>::value and
+    !containers::meta::is_sparse_matrix_tpetra<T>::value
+#endif
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    and
+    !containers::meta::is_sparse_matrix_kokkos<T>::value and
+    !containers::meta::is_dense_matrix_kokkos<T>::value
+#endif
+    >
+  > : std::true_type{};
 
-template <typename T, typename enable = void>
-struct is_dynamic_row_vector_blaze : std::false_type {};
-
-template <typename T>
-struct is_dynamic_row_vector_blaze<T,
-	 ::pressio::mpl::enable_if_t<
-	   std::is_same<T, blaze::DynamicVector<
-				typename T::ElementType,
-				blaze::rowVector>
-			>::value
-	   >
-      > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct is_dynamic_column_vector_blaze : std::false_type {};
-
-template <typename T>
-struct is_dynamic_column_vector_blaze<T,
-	 ::pressio::mpl::enable_if_t<
-	   std::is_same<T, blaze::DynamicVector<
-				typename T::ElementType,
-				blaze::columnVector>
-			>::value
-	   >
-      > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct is_dynamic_vector_blaze : std::false_type {};
-
-template <typename T>
-struct is_dynamic_vector_blaze<T,
-	   ::pressio::mpl::enable_if_t<
-	     is_dynamic_row_vector_blaze<T>::value ||
-	     is_dynamic_column_vector_blaze<T>::value
-	   >
-      > : std::true_type{};
 
 }}}//end namespace pressio::containers::meta
-#endif
 #endif

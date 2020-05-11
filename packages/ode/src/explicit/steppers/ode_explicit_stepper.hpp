@@ -96,7 +96,7 @@ public:
   // arbitrary policy, pressio ops
   template <
     typename _ops_t = ops_t,
-    mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr
+    mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0
     >
   Stepper(const state_type  & stateIn0,
 	  const system_type & model,
@@ -110,8 +110,8 @@ public:
     typename T = policy_t, typename _ops_t = ops_t,
     ::pressio::mpl::enable_if_t<
       mpl::is_same<T, std_vel_pol_t>::value and
-      std::is_void<_ops_t>::value
-      > * = nullptr
+      std::is_void<_ops_t>::value,
+      int > = 0
     >
   Stepper(const	state_type & stateIn0,
   	  const system_type & model)
@@ -122,7 +122,7 @@ public:
   // arbitrary policy, user-defined ops
   template <
     typename _ops_t = ops_t,
-    mpl::enable_if_t< !std::is_void<_ops_t>::value > * = nullptr
+    mpl::enable_if_t< !std::is_void<_ops_t>::value, int > = 0
     >
   Stepper(const state_type  & stateIn0,
 	  const system_type & model,
@@ -138,8 +138,8 @@ public:
     typename T = policy_t, typename _ops_t = ops_t,
     ::pressio::mpl::enable_if_t<
       mpl::is_same<T, std_vel_pol_t>::value and
-      !std::is_void<_ops_t>::value
-      > * = nullptr
+      !std::is_void<_ops_t>::value, 
+      int > = 0
     >
   Stepper(const	state_type & stateIn0,
   	  const system_type & model,

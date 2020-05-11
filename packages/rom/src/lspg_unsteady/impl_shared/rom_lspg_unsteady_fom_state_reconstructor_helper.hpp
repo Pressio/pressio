@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_armadillo_vector_meta.hpp
+// rom_lspg_unsteady_fom_state_reconstructor_helper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,49 +46,31 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-#ifndef CONTAINERS_NATIVE_ARMADILLO_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_ARMADILLO_VECTOR_META_HPP_
+#ifndef ROM_LSPG_UNSTEADY_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_
+#define ROM_LSPG_UNSTEADY_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_
 
-#include <armadillo>
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
-namespace pressio{ namespace containers{ namespace meta {
+template <typename ops_t, typename enable = void>
+struct FomStateReconHelper;
 
-template <typename T, typename enable = void>
-struct is_column_vector_armadillo : std::false_type {};
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< std::is_void<ops_t>::value >
+  >
+{
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+};
 
-template <typename T>
-struct is_column_vector_armadillo<T,
-	 ::pressio::mpl::enable_if_t<
-	   std::is_same<T,
-     	    arma::Col<typename T::elem_type>
-			>::value
-	   >
-      > : std::true_type{};
+template <typename ops_t>
+struct FomStateReconHelper<
+  ops_t, mpl::enable_if_t< !std::is_void<ops_t>::value >
+  >
+{
+  template <typename scalar_t, typename fom_state_t, typename decoder_t>
+  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t, ops_t>;
+};
 
-template <typename T, typename enable = void>
-struct is_row_vector_armadillo : std::false_type {};
-
-template <typename T>
-struct is_row_vector_armadillo<T,
-	 ::pressio::mpl::enable_if_t<
-	   std::is_same<T,
-     	    arma::Row<typename T::elem_type>
-			>::value
-	   >
-      > : std::true_type{};
-
-template <typename T, typename enable = void>
-struct is_vector_armadillo : std::false_type {};
-
-template <typename T>
-struct is_vector_armadillo<T,
-	 ::pressio::mpl::enable_if_t<
-	   is_row_vector_armadillo<T>::value or
-	   is_column_vector_armadillo<T>::valu
-	   >
-      > : std::true_type{};
-
-}}}//end namespace pressio::containers::meta
-#endif
+}}}}}//end  namespace pressio::rom::lspg::unsteady::impl
 #endif

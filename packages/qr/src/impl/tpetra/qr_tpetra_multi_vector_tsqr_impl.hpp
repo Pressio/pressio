@@ -106,23 +106,23 @@ public:
   }
 
   // if R_type != wrapper of Teuchos::SerialDenseMatrix
-  template <typename T = R_t,
-  	    ::pressio::mpl::enable_if_t<
-  	      !containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
-	      !std::is_void<T>::value
-  	      > * = nullptr>
-  const T & getCRefRFactor() const {
+  template <typename T = R_t>
+  ::pressio::mpl::enable_if_t<
+    !containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
+    const T & 
+  >
+  getCRefRFactor() const {
     this->Rmat_ = std::make_shared<T>(this->localR_->values());
     return *this->Rmat_;
   }
 
   // if R_type == wrapper of Teuchos::SerialDenseMatrix
-  template <typename T = R_t,
-  	    ::pressio::mpl::enable_if_t<
-  	      containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and
-	      !std::is_void<T>::value
-  	      > * = nullptr>
-  const T & getCRefRFactor() const {
+  template <typename T = R_t>
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
+    const T & 
+  >
+  getCRefRFactor() const {
     this->Rmat_ = std::make_shared<T>(*this->localR_, Teuchos::View);
     return *this->Rmat_;
   }

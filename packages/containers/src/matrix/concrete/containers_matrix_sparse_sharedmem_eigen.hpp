@@ -76,9 +76,12 @@ public:
   }
 
   // row-major matrix constructor
-  template <typename U = ord_t,
-	    typename std::enable_if<
-	      mytraits::is_row_major==1, U>::type * = nullptr>
+  template <
+    typename U = ord_t,
+    mpl::enable_if_t<
+     !std::is_void<U>::value and 
+     mytraits::is_row_major==1, int> = 0
+    >
   explicit Matrix(U nrows, U ncols, U nonZerosPerRow) {
     data_.resize(nrows, ncols);
     if( nonZerosPerRow > ncols )
@@ -89,9 +92,12 @@ public:
   }
 
   // col-major matrix constructor
-  template <typename U = ord_t,
-	    typename std::enable_if<
-	      mytraits::is_row_major==0, U>::type * = nullptr>
+  template <
+    typename U = ord_t,
+    mpl::enable_if_t<
+     !std::is_void<U>::value and
+      mytraits::is_row_major==0, int> = 0
+    >
   explicit Matrix(U nrows, U ncols, U nonZerosPerCol) {
     data_.resize(nrows, ncols);
     if( nonZerosPerCol > nrows )

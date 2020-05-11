@@ -112,6 +112,9 @@ class Matrix;
 
 namespace expressions{
 
+template <typename derived_type>
+class BaseExpr{};
+
 template <typename mat_t, typename enable = void>
 struct SubspanExpr;
 

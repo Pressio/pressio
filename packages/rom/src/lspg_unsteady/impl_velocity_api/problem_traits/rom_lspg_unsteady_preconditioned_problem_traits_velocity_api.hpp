@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_type_generator_preconditioned_velocity_api.hpp
+// rom_lspg_unsteady_preconditioned_problem_traits_velocity_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,12 +46,12 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_PRECONDITIONED_VELOCITY_API_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_PRECONDITIONED_VELOCITY_API_HPP_
+#ifndef ROM_LSPG_UNSTEADY_PRECONDITIONED_PROBLEM_TRAITS_VELOCITY_API_HPP_
+#define ROM_LSPG_UNSTEADY_PRECONDITIONED_PROBLEM_TRAITS_VELOCITY_API_HPP_
 
-#include "rom_lspg_unsteady_residual_policy_velocity_api.hpp"
-#include "rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
-#include "rom_lspg_unsteady_type_generator_common_velocity_api.hpp"
+#include "../rom_lspg_unsteady_residual_policy_velocity_api.hpp"
+#include "../rom_lspg_unsteady_jacobian_policy_velocity_api.hpp"
+#include "rom_lspg_unsteady_common_traits_velocity_api.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
@@ -61,7 +61,7 @@ template <
   typename lspg_state_type,
   typename ... Args
   >
-struct PreconditionedProblemTypeGeneratorVelocityApi{
+struct PreconditionedProblemTraitsVelocityApi{
 
   static_assert( !std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
 		 "\nTo use unsteady LSPG with the velocity api, \n \
@@ -77,7 +77,7 @@ However, the fom/adapter type you passed does not meet the velocity api. \n \
 Verify the fom/adapter class you are using meets the velocity api.");
 
   // pick the common types holder
-  using common_types_t = LSPGUnsteadyCommonTypesVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>;
+  using common_types_t = LSPGUnsteadyCommonTraitsVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>;
 
   using fom_t			= typename common_types_t::fom_t;
   using scalar_t		= typename common_types_t::scalar_t;

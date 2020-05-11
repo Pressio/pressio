@@ -53,6 +53,13 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
 template <
   typename residual_type,
+  typename fom_states_data_type,
+  typename fom_rhs_eval_policy>
+class ResidualPolicy;
+
+
+template <
+  typename residual_type,
   typename fom_states_data,
   typename fom_eval_rhs_policy
   >

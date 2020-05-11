@@ -123,8 +123,8 @@ public:
     typename T2 = standard_jac_policy_t,
     ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, residual_pol_t>::value and
-      mpl::is_same<T2, jacobian_pol_t>::value
-      > * = nullptr
+      mpl::is_same<T2, jacobian_pol_t>::value, 
+      int > = 0
     >
   Stepper(const ode_state_type & stateIn0,
 	  const system_type & model)
@@ -148,7 +148,7 @@ private:
   }
 
   // methods to do updating on the storage of previous states
-  template<std::size_t nAux, mpl::enable_if_t<nAux==1> * = nullptr>
+  template<std::size_t nAux, mpl::enable_if_t<nAux==1, int > = 0>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
     // copy y_n into y_n-1
     auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
@@ -156,7 +156,7 @@ private:
   }
 
   // when we have two aux states,
-  template<std::size_t nAux, mpl::enable_if_t<nAux==2> * = nullptr>
+  template<std::size_t nAux, mpl::enable_if_t<nAux==2, int> = 0>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
     // copy y_n-1 into y_n-2
     auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
@@ -167,7 +167,7 @@ private:
   }
 
   // when we have three aux states,
-  template<std::size_t nAux, mpl::enable_if_t<nAux==3> * = nullptr>
+  template<std::size_t nAux, mpl::enable_if_t<nAux==3, int> = 0>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
     auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
     auto & y_nm2 = this->auxStates_.get(ode::nMinusTwo());
@@ -178,7 +178,7 @@ private:
   }
 
   // when we have four aux states,
-  template<std::size_t nAux, mpl::enable_if_t<nAux==4> * = nullptr>
+  template<std::size_t nAux, mpl::enable_if_t<nAux==4, int> = 0>
   void updateAuxiliaryStorage(const ode_state_type & odeState){
     auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
     auto & y_nm2 = this->auxStates_.get(ode::nMinusTwo());

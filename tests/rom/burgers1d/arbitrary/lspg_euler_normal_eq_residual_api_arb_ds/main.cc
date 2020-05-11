@@ -12,8 +12,8 @@ void readBasis(std::string filename, result_t & phi)
 
   std::vector<std::vector<double>> A0;
   ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, nCols);
-  for (int i=0; i<nRows; i++){
-    for (int j=0; j<nCols; j++)
+  for (std::size_t i=0; i<nRows; i++){
+    for (std::size_t j=0; j<nCols; j++)
       phi(i,j) = A0[i][j];
   }
 }
@@ -35,10 +35,10 @@ struct myOpsResidualApi
     // x is subscriptable like a regular array, e.g. you can do x[i] or x(i)
     const auto nArows = A.extent(0);
     const auto nAcols = A.extent(1);
-    for (auto i=0; i<nArows; ++i)
+    for (std::size_t i=0; i<nArows; ++i)
     {
       y(i) = beta*y(i);
-      for (auto j=0; j<nAcols; ++j)
+      for (std::size_t j=0; j<nAcols; ++j)
 	y(i) += alpha * A(i,j) * x(j);
     }
   }
@@ -52,7 +52,7 @@ struct myOpsResidualApi
 
   void set_zero(pressio::apps::arbds::Vector<sc_t> & vec) const
   {
-    for (auto i=0; i<vec.extent(0); ++i)
+    for (std::size_t i=0; i<vec.extent(0); ++i)
      vec(i) = static_cast<sc_t>(0);
   }
 
@@ -61,7 +61,7 @@ struct myOpsResidualApi
 	    pressio::apps::arbds::Vector<sc_t> & y) const
   {
     // compute y = y + alfa * x
-    for (auto i=0; i<y.extent(0); ++i)
+    for (std::size_t i=0; i<y.extent(0); ++i)
       y(i) += alpha * x(i);
   }
 };
@@ -83,10 +83,10 @@ struct myOpsGN
     assert( A.extent(0) == B.extent(0) );
 
     // J^T J
-    for (auto i=0; i<A.extent(1); i++){
-      for (auto j=0; j<B.extent(1); j++){
+    for (std::size_t i=0; i<A.extent(1); i++){
+      for (std::size_t j=0; j<B.extent(1); j++){
     	C(i,j) = beta * C(i,j);
-    	for (auto k=0; k<A.extent(0); ++k){
+    	for (std::size_t k=0; k<A.extent(0); ++k){
     	  C(i,j) += alpha * A(k,i) * B(k,j);
     	}
       }
@@ -117,9 +117,9 @@ struct myOpsGN
 	       const sc_t beta,
 	       y_t & y) const
   {
-    for (auto i=0; i<A.extent(1); i++){
+    for (std::size_t i=0; i<A.extent(1); i++){
       y(i) = beta * y(i);
-      for (auto j=0; j<x.extent(0); j++){
+      for (std::size_t j=0; j<x.extent(0); j++){
 	y(i) += alpha * A(j,i) * x(j);
       }
     }
@@ -129,7 +129,7 @@ struct myOpsGN
   sc_t norm1(const pressio::apps::arbds::Vector<sc_t> & v) const
   {
     sc_t result{};
-    for (auto i=0; i<v.extent(0); ++i)
+    for (std::size_t i=0; i<v.extent(0); ++i)
       result += std::abs(v(i));
     return result;
   }
@@ -137,7 +137,7 @@ struct myOpsGN
   sc_t norm2(const pressio::apps::arbds::Vector<sc_t> & v) const
   {
     sc_t result{};
-    for (auto i=0; i<v.extent(0); ++i)
+    for (std::size_t i=0; i<v.extent(0); ++i)
       result += v(i)*v(i);
     return std::sqrt(result);
   }
@@ -201,7 +201,7 @@ struct EulerLSPGWithResidualApi
 
     // for this problem, my reference state = initial state
     native_state_t yRef(numCell);
-    for (auto i=0; i<yRef.extent(0); ++i)
+    for (std::size_t i=0; i<yRef.extent(0); ++i)
       yRef(i) = pressio::utils::constants::one<scalar_t>();
 
     // define ROM state
@@ -236,16 +236,6 @@ struct EulerLSPGWithResidualApi
     // compute the fom corresponding to our rom final state
     auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
-
-    // // this is a reproducing ROM test, so the final reconstructed state
-    // // has to match the FOM solution obtained with euler, same time-step, for 10 steps
-    // // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
-    // const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
-    // for (auto i=0; i<yFomFinal.extent(0); i++){
-    //   if (std::abs((*yFomFinal.data())(i) - trueY[i]) > 1e-10)
-    //     checkStr = "FAILED";
-    // }
-    // std::cout << checkStr <<  std::endl;
   }
 };
 
@@ -282,7 +272,7 @@ int main(int argc, char *argv[]){
 
   std::cout << "check that fom reconstructed state match" << std::endl;
   // check the reconstructed fom state
-  for (auto i=0; i<residFomSol.extent(0); i++){
+  for (std::size_t i=0; i<residFomSol.extent(0); i++){
     std::cout << std::setprecision(14)
   	      << goldFom[i]
   	      << " "

@@ -83,16 +83,17 @@ product(::pressio::transpose modeA,
 
   const auto numVecsA = A.numVectors();
   const auto numVecsB = B.numVectors();
-  assert( A.extent(0) == B.extent(0));
-  assert(C.extent(0) == numVecsA);
-  assert(C.extent(1) == numVecsB);
+  assert( (std::size_t)A.extent(0) == (std::size_t)B.extent(0));
+  assert( (std::size_t)C.extent(0) == (std::size_t)numVecsA );
+  assert( (std::size_t)C.extent(1) == (std::size_t)numVecsB );
+  // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
 
   // compute dot between every column of A with every col of B
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
   {
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = A.data()->getVector(i);
-    for (std::size_t j=0; j< (std::size_t)numVecsB; j++)
+    for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
     {
       const auto colJ = B.data()->getVector(j);
       C(i,j) = beta * C(i,j) + alpha * colI->dot(*colJ);
@@ -147,9 +148,10 @@ product(::pressio::transpose modeA,
 
   // how many vectors are in A and mvB
   const auto numVecsA = A.numVectors();
-  assert(C.extent(0) == numVecsA);
-  assert(C.extent(1) == numVecsA);
+  assert((std::size_t)C.extent(0) == (std::size_t)numVecsA);
+  assert((std::size_t)C.extent(1) == (std::size_t)numVecsA);
 
+  // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
   scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>();
 
   // A dot A = A^T*A, which yields a symmetric matrix
@@ -196,7 +198,7 @@ product(::pressio::transpose modeA,
   const auto comm = A.data()->getMap()->getComm();
 
   // C should be square matrix
-  assert( C.extent(0) == C.extent(1) );
+  assert( (std::size_t)C.extent(0) == (std::size_t)C.extent(1) );
   const auto n = C.extent(0);
   Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
   // create multivector that views the Kokkos matrix

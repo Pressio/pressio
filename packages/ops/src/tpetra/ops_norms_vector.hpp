@@ -52,30 +52,26 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
-    std::is_same<typename ::pressio::containers::details::traits<vec_type>::scalar_t,
-		 typename ::pressio::containers::details::traits<vec_type>::mag_t>::value
-    > * = nullptr
+template <typename vec_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
+  std::is_same<typename ::pressio::containers::details::traits<vec_type>::scalar_t,
+	       typename ::pressio::containers::details::traits<vec_type>::mag_t>::value,
+  typename ::pressio::containers::details::traits<vec_type>::mag_t
   >
-auto norm1(const vec_type & a)
-  -> typename ::pressio::containers::details::traits<vec_type>::mag_t
+norm1(const vec_type & a)
 {
   return a.data()->norm1();
 }
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
-    std::is_same<typename ::pressio::containers::details::traits<vec_type>::scalar_t,
-		 typename ::pressio::containers::details::traits<vec_type>::mag_t>::value
-    > * = nullptr
+template <typename vec_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
+  std::is_same<typename ::pressio::containers::details::traits<vec_type>::scalar_t,
+	       typename ::pressio::containers::details::traits<vec_type>::mag_t>::value,
+  typename ::pressio::containers::details::traits<vec_type>::mag_t
   >
-auto norm2(const vec_type & a)
-  -> typename ::pressio::containers::details::traits<vec_type>::mag_t
+norm2(const vec_type & a)
 {
   return a.data()->norm2();
 }

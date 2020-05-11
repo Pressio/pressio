@@ -54,25 +54,19 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
   >
-void do_update(T & v, const scalar_t a, const T & v1, const scalar_t b){
+do_update(T & v, const scalar_t a, const T & v1, const scalar_t b){
   (*v.data()) = a*(*v.data()) + b*(*v1.data());
 }
 
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
   >
-void do_update(T & v, const T & v1, const scalar_t  b){
+do_update(T & v, const T & v1, const scalar_t  b){
   (*v.data()) = b*(*v1.data());
 }
 
@@ -80,29 +74,23 @@ void do_update(T & v, const T & v1, const scalar_t  b){
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
   >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c){
+do_update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c){
   (*v.data()) = a*(*v.data()) + b*(*v1.data()) + c*(*v2.data());
 }
 
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
   >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c){
+do_update(T & v,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c){
   (*v.data()) = b*(*v1.data()) + c*(*v2.data());
 }
 
@@ -111,31 +99,25 @@ void do_update(T & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
   >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d){
+do_update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d){
   (*v.data()) = a*(*v.data()) + b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data());
 }
 
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
   >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d){
+do_update(T & v,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d){
   (*v.data()) = b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data());
 }
 
@@ -143,33 +125,27 @@ void do_update(T & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
-    > * = nullptr
+template< typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
   >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e){
+do_update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d,
+	  const T & v4, const scalar_t &e){
   (*v.data()) = a*(*v.data()) + b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data()) + e*(*v4.data());
 }
 
-template<
-  typename T,
-  typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
   >
-void do_update(T & v,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d,
-	       const T & v4, const scalar_t &e){
+do_update(T & v,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d,
+	  const T & v4, const scalar_t &e){
   (*v.data()) = b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data()) + e*(*v4.data());
 }
 

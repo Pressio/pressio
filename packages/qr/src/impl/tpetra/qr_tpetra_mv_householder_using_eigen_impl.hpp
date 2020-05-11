@@ -154,15 +154,6 @@ public:
   }
 
 private:
-
-  // template <typename T = R_type,
-  //       ::pressio::mpl::enable_if_t<
-  //         !std::is_void<R_type>::value
-  //         > * = nullptr>
-  // const R_type & cRefRFactorImpl() const {
-  //   return *Rmat_;
-  // }
-
   // todo: these must be moved somewhere else
   mutable std::shared_ptr<Q_t> Qmat_	= nullptr;
   mutable std::shared_ptr<R_t> Rmat_	= nullptr;

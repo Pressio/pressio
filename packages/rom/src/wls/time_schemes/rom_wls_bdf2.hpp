@@ -51,7 +51,7 @@
 
 namespace pressio{ namespace rom{ namespace wls{ namespace timeschemes{ namespace impl{
 
-template<typename fom_state_t, typename wls_state_t>
+template<typename fom_state_t>
 class BDF2{
 
 public:
@@ -80,12 +80,17 @@ public:
   {}
 
 public:
+/**
+  time_discrete_residual Function overload for velocity API 
+ */
   template <
     typename fom_type,
     typename fom_state_type,
     typename residual_type,
-    typename scalar_type>
-  void time_discrete_residual(const fom_type & appObj,
+    typename scalar_type
+>
+  typename std::enable_if<::pressio::rom::meta::model_meets_velocity_api_for_wls<fom_type>::value>::type
+  time_discrete_residual(const fom_type & appObj,
 			      const fom_state_type & fomState,
 			      residual_type & residual,
 			      const scalar_type & t,
@@ -107,13 +112,52 @@ public:
     }
    }
 
+  /**
+  time_discrete_residual function overload for residual API 
+  */
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename residual_type,
+    typename scalar_type
+  >
+  typename std::enable_if<::pressio::rom::meta::model_meets_residual_api_for_wls<fom_type>::value>::type
+  time_discrete_residual(const fom_type & appObj,
+			      const fom_state_type & fomState,
+			      residual_type & residual,
+			      const scalar_type & t,
+			      const scalar_type & dt,
+			      const pressio::rom::wls::window_size_t & step) const
+  {
+    if (step > 0){
+      using nm1 = ::pressio::ode::nMinusOne;
+      using nm2 = ::pressio::ode::nMinusTwo;
+      auto & fomStateNm2 = auxStatesContainer_.get(nm2());
+      auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+      appObj.timeDiscreteResidual(step,t,dt,*residual.data(),*fomState.data(),*fomStateNm1.data(),*fomStateNm2.data());
+    }
+
+    if (step == 0){
+      // u^n - u^{n-1}  - dt*f
+      using nm1 = ::pressio::ode::nMinusOne;
+      auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+      appObj.timeDiscreteResidual(step,t,dt,*residual.data(),*fomState.data(),*fomStateNm1.data());
+    }
+   }
+
+
+  /**
+   time_discrete_jacobian function overload for velocity API 
+  */
   template <
     typename fom_type,
     typename fom_state_type,
     typename jac_type,
     typename basis_type,
-    typename scalar_type>
-  void time_discrete_jacobian(const fom_type & appObj,
+    typename scalar_type
+  >
+  typename std::enable_if<::pressio::rom::meta::model_meets_velocity_api_for_wls<fom_type>::value>::type
+  time_discrete_jacobian(const fom_type & appObj,
 			      const fom_state_type & fomState,
 			      jac_type & Jphi,
 			      const basis_type & phi,
@@ -153,6 +197,70 @@ public:
       }
     }
   }
+
+
+
+
+  /**
+   time_discrete_jacobian function overload for residual API 
+  */
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename jac_type,
+    typename basis_type,
+    typename scalar_type
+  >
+  typename std::enable_if<::pressio::rom::meta::model_meets_residual_api_for_wls<fom_type>::value>::type
+  time_discrete_jacobian(const fom_type & appObj,
+			      const fom_state_type & fomState,
+			      jac_type & Jphi,
+			      const basis_type & phi,
+			      const scalar_type & t,
+			      const scalar_type & dt,
+			      const pressio::rom::wls::window_size_t & step,
+			      int arg=0 ) const
+  {
+    // u^n - u^{n-1} - dt*f ;
+    if (step == 0){
+      if (arg == 0){
+        using nm1 = ::pressio::ode::nMinusOne;
+        auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+        appObj.applyTimeDiscreteJacobian(step,t,dt,*phi.data(),0,*Jphi.data(),*fomState.data(),*fomStateNm1.data());
+      }
+    }
+
+    if (step > 0){
+      if (arg == 0){
+        using nm1 = ::pressio::ode::nMinusOne;
+        using nm2 = ::pressio::ode::nMinusTwo;
+        auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+        auto & fomStateNm2 = auxStatesContainer_.get(nm2());
+        appObj.applyTimeDiscreteJacobian(step,t,dt,*phi.data(),0,*Jphi.data(),*fomState.data(),*fomStateNm1.data(),*fomStateNm2.data());
+      }
+
+      if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
+        constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
+        ::pressio::ops::do_update(Jphi, phi, cnm1);
+        jacobianOneNeedsRecomputing_ = true;
+      }
+
+      if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
+        constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
+        ::pressio::ops::do_update(Jphi, phi, cnm2);
+        jacobianZeroNeedsRecomputing_ = true;
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
 
   bool jacobianNeedsRecomputing(std::size_t i) const{
     return (i==0) ? jacobianZeroNeedsRecomputing_ : jacobianOneNeedsRecomputing_;

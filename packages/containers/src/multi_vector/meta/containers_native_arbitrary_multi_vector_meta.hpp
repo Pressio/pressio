@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_expression_base.hpp
+// containers_native_arbitrary_multi_vector_meta.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,14 +46,32 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSION_BASE_HPP_
-#define CONTAINERS_EXPRESSION_BASE_HPP_
+#ifndef CONTAINERS_NATIVE_ARBITRARY_MULTI_VECTOR_META_HPP_
+#define CONTAINERS_NATIVE_ARBITRARY_MULTI_VECTOR_META_HPP_
 
-namespace pressio{ namespace containers{ namespace expressions{
+namespace pressio{ namespace containers{ namespace meta {
 
-template <typename derived_type>
-class BaseExpr{};
+template <typename T, typename enable = void>
+struct is_multi_vector_arbitrary : std::false_type {};
 
-}}} //end namespace pressio::containers::expressions
+template <typename T>
+struct is_multi_vector_arbitrary<
+  T,
+  ::pressio::mpl::enable_if_t<
+    !containers::meta::is_dynamic_multi_vector_eigen<T>::value
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+    and
+    !containers::meta::is_multi_vector_epetra<T>::value and
+    !containers::meta::is_multi_vector_tpetra_block<T>::value and
+    !containers::meta::is_multi_vector_tpetra<T>::value
+#endif
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    and
+    !containers::meta::is_multi_vector_kokkos<T>::value
+#endif
+    >
+  > : std::true_type{};
 
+
+}}}//end namespace pressio::containers::meta
 #endif

@@ -71,11 +71,10 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 {
   // how many vectors are in A
   const auto numVecs = A.numVectorsGlobal();
-  // size of b
-  assert(std::size_t(numVecs) == std::size_t(x.extent(0)));
 
-  // loop
-  for (std::size_t i=0; i<(std::size_t) A.extentLocal(0); i++){
+  // using go_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
+  // using lo_t = typename ::pressio::containers::details::traits<A_type>::local_ordinal_t;
+  for (std::size_t i=0; i<(std::size_t)A.extentLocal(0); i++){
     //rowSum = zero;
     y[i] = beta*y[i];
     for (std::size_t j=0; j<(std::size_t)numVecs; j++){
@@ -116,7 +115,7 @@ product(::pressio::nontranspose mode,
 // y = Eigen vector, passed in
 template <typename A_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_epetra<A_type>::value  
+  containers::meta::is_multi_vector_wrapper_epetra<A_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -128,13 +127,14 @@ product(::pressio::transpose mode,
   static_assert(containers::meta::are_scalar_compatible<A_type, y_type>::value,
 		"Types are not scalar compatible");
 
+  // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
   const auto numVecs = A.numVectorsGlobal();
-  assert( y.extent(0) == numVecs );
+  assert( (std::size_t)y.extent(0) == (std::size_t)numVecs );
 
   auto * mvNatData = A.data();
   const auto * vecNatData = x.data();
   auto tmp = ::pressio::utils::constants::zero<scalar_type>();
-  for (size_t i=0; i<(size_t)numVecs; i++)
+  for (std::size_t i=0; i<(std::size_t)numVecs; i++)
   {
     (*mvNatData)(i)->Dot(*vecNatData, &tmp);
     y[i] = beta * y[i] + alpha * tmp;

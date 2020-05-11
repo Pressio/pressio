@@ -129,9 +129,9 @@ private:
   }
 
   // we have here n = 1 prev rom states
-  template <typename rom_state_t, typename rom_prev_states_t, typename fom_t, typename scalar_t,
-	    mpl::enable_if_t< rom_prev_states_t::size()==1 > * = nullptr>
-  void compute_impl(const rom_state_t		        & romState,
+  template <typename rom_state_t, typename rom_prev_states_t, typename fom_t, typename scalar_t>
+  mpl::enable_if_t< rom_prev_states_t::size()==1 >
+  compute_impl(const rom_state_t		        & romState,
 		    const rom_prev_states_t		& romPrevStates,
 		    const fom_t			        & app,
 		    const scalar_t		        & time,
@@ -150,9 +150,9 @@ private:
   }
 
   // we have here n = 2 prev rom states
-  template <typename rom_state_t, typename rom_prev_states_t, typename fom_t, typename scalar_t,
-	    mpl::enable_if_t< rom_prev_states_t::size()==2 > * = nullptr>
-  void compute_impl(const rom_state_t			& romState,
+  template <typename rom_state_t, typename rom_prev_states_t, typename fom_t, typename scalar_t>
+  mpl::enable_if_t< rom_prev_states_t::size()==2 >
+  compute_impl(const rom_state_t			& romState,
 		    const rom_prev_states_t		& romPrevStates,
 		    const fom_t			        & app,
 		    const scalar_t		        & time,

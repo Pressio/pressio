@@ -49,8 +49,6 @@
 #ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_api_HPP_
 #define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_api_HPP_
 
-#include "rom_lspg_unsteady_problem_type_generator_default_residual_api.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
@@ -102,10 +100,10 @@ private:
   ::pressio::ode::types::step_t step0_;
   scalar_t			t0_;
   scalar_t			dt0_;
-  fom_r_querier_policy_t	residualQuerier_;
-  fom_apply_jac_policy_t	applyJacobQuerier_;
-  fom_state_t			fomStateReference_;
-  fom_state_reconstr_t		fomStateReconstructor_;
+  const fom_r_querier_policy_t	residualQuerier_;
+  const fom_apply_jac_policy_t	applyJacobQuerier_;
+  const fom_state_t		fomStateReference_;
+  const fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_data		fomStates_;
 
   lspg_residual_policy_t	residualPolicy_;
@@ -123,8 +121,10 @@ public:
 
 public:
 
-  template <typename _ud_ops_t = ud_ops_t,
-  mpl::enable_if_t< std::is_void<_ud_ops_t>::value > * = nullptr>
+  template <
+   typename _ud_ops_t = ud_ops_t,
+   mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+   >
   ProblemGeneratorResidualApi(const fom_t & appObj,
 			      const fom_native_state_t & fomStateReferenceNative,
 			      decoder_t	 & decoder,
@@ -146,8 +146,10 @@ public:
       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
   {}
 
-  template <typename _ud_ops_t = ud_ops_t,
-  mpl::enable_if_t< !std::is_void<_ud_ops_t>::value > * = nullptr>
+  template <
+   typename _ud_ops_t = ud_ops_t,
+   mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
+  >
   ProblemGeneratorResidualApi(const fom_t & appObj,
 			      const fom_native_state_t & fomStateReferenceNative,
 			      decoder_t & decoder,

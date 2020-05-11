@@ -73,7 +73,7 @@ public:
   using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<scalar_type, fom_state_t, decoder_t>;
 
   // information on stencil width, time discrete resiudal, time discrete jacobian, etc.
-  using time_stencil_t = ::pressio::rom::wls::timeschemes::timescheme_t<ode_tag, fom_state_t, wls_state_type>;
+  using time_stencil_t = ::pressio::rom::wls::timeschemes::timescheme_t<ode_tag, fom_state_t>;
   static constexpr auto timeStencilSize_ = time_stencil_t::state_stencil_size_;
 
 private:
@@ -96,7 +96,7 @@ private:
   const fom_state_reconstr_t fomStateReconstructor_;
 
   // object knowing the time stencil for doing chuncks of steps
-  time_stencil_t timeSchemeObj_;
+  //time_stencil_t timeSchemeObj_;
 
   window_size_t activeWindowIndex_ = {};
 
@@ -128,8 +128,8 @@ public:
     ::pressio::mpl::publicly_inherits_from<
       linear_solver_type,
       ::pressio::solvers::LinearBase<typename linear_solver_type::matrix_type, linear_solver_type>
-      >::value
-    > * = nullptr
+      >::value,
+      int > = 0
   >
   SystemHessianGradientApi(const rom_size_t romSize,
 			   const window_size_t numStepsInWindow,
@@ -165,8 +165,7 @@ private:
       numStepsInWindow_{numStepsInWindow},
       hessianGradientPolicy_(policy),
       wlsStateIC_(wlsStencilSize_),
-      fomStateReconstructor_(fomStateReference, decoderObj),
-      timeSchemeObj_(romSize_, fomStateReference)
+      fomStateReconstructor_(fomStateReference, decoderObj)
   {}
 
 public:
@@ -191,7 +190,7 @@ public:
                                  scalar_type		      & rnorm) const
   {
     rnorm = pressio::utils::constants::zero<scalar_type>();
-    hessianGradientPolicy_(timeSchemeObj_,
+    hessianGradientPolicy_(
 			   wls_state,
 			   wlsStateIC_,
 			   hessian,

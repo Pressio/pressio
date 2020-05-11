@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_api_HPP_
-#define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_api_HPP_
+#ifndef ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_API_HPP_
+#define ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_VELOCITY_API_HPP_
 
 #include "rom_lspg_time_discrete_residual.hpp"
 
@@ -56,10 +56,10 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace 
 template <
   typename residual_type,
   typename fom_states_cont_type,
-  typename fom_velocity_eval_policy,
+  typename fom_querier_policy,
   typename ud_ops
   >
-class ResidualPolicyVelocityApi : protected fom_velocity_eval_policy
+class ResidualPolicyVelocityApi
 {
 
 public:
@@ -79,12 +79,12 @@ public:
   template <
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value > * = nullptr
+    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value, int > = 0
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
 			    fom_states_cont_type & fomStatesIn,
-			    const fom_velocity_eval_policy & fomEvalVelocityFunctor)
-    : fom_velocity_eval_policy(fomEvalVelocityFunctor),
+			    const fom_querier_policy & fomQuerier)
+    : fomQuerier_(fomQuerier),
       R_{RIn},
       fomStates_(fomStatesIn)
   {}
@@ -94,16 +94,15 @@ public:
     typename _residual_type = residual_type,
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value
-      > * = nullptr
+      !std::is_void<_ud_ops>::value, int > = 0
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
 			    fom_states_cont_type & fomStatesIn,
-			    const fom_velocity_eval_policy & fomEvalVelocityFunctor,
+			    const fom_querier_policy & fomQuerier,
 			    const _ud_ops & udOps)
-    : R_{RIn},
+    : fomQuerier_(fomQuerier),
+      R_{RIn},
       fomStates_(fomStatesIn),
-      fom_velocity_eval_policy(fomEvalVelocityFunctor),
       udOps_{&udOps}
   {}
 
@@ -149,12 +148,10 @@ private:
     typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-	std::is_void<_ud_ops>::value
-      > * = nullptr
+    typename _ud_ops = ud_ops
   >
-  void time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
+  ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
+  time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
 				residual_t			& romR,
 				const scalar_t			& dt) const{
     using namespace ::pressio::rom::lspg::unsteady::impl;
@@ -165,12 +162,10 @@ private:
     typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value
-      > * = nullptr
+    typename _ud_ops = ud_ops
   >
-  void time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
+  ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops>::value >
+  time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
   				residual_t			& romR,
   				const scalar_t			& dt) const{
     using namespace ::pressio::rom::lspg::unsteady::impl;
@@ -216,7 +211,7 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    fom_velocity_eval_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), romR, t);
+    fomQuerier_.evaluate(app, fomStates_.getCRefToCurrentFomState(), romR, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
@@ -239,6 +234,7 @@ protected:
   // FOM states if we are not in a new time step.
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
+  const fom_querier_policy & fomQuerier_;
   mutable residual_t R_ = {};
   fom_states_cont_type & fomStates_;
 

@@ -265,7 +265,7 @@ protected:
 
   void assembleGraph(crs_graph_type & graph)
   {
-    using tarr_dt = Teuchos::ArrayView<scalar_type>;
+    // using tarr_dt = Teuchos::ArrayView<scalar_type>;
     using tarr_it = Teuchos::ArrayView<go_t>;
     std::array<go_t,1> ci1;
     std::array<go_t,2> ci2;

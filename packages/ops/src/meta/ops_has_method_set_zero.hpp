@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_vector_sharedmem_blaze_dynamic.hpp
+// ops_has_method_set_zero.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,87 +46,29 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_BLAZE
-#ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_
-#define CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_METHOD_SET_ZERO_HPP_
+#define OPS_SRC_META_OPS_HAS_METHOD_SET_ZERO_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio{ namespace ops{ namespace meta {
 
-template <typename wrapped_type>
-class Vector<wrapped_type,
-    ::pressio::mpl::enable_if_t<
-      containers::meta::is_dynamic_vector_blaze<wrapped_type>::value
-      >
+template <typename T, typename target_t, typename enable = void>
+struct has_method_set_zero
+  : std::false_type{};
+
+template <typename T, typename target_t>
+struct has_method_set_zero<
+  T, target_t,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval< T const &>().set_zero
+	       (
+		std::declval<target_t &>()
+		)
+	       )
+      >::value
     >
-  : public VectorSharedMemBase< Vector<wrapped_type> >
-{
+  > : std::true_type{};
 
-  using this_t = Vector<wrapped_type>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename  mytraits::ordinal_t;
-  using wrap_t = typename mytraits::wrapped_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
-
-public:
-  Vector() = default;
-
-  explicit Vector(ord_t insize){
-    this->resize(insize);
-  }
-  explicit Vector(const wrap_t & src) : data_(src){}
-
-public:
-  ref_t operator [] (ord_t i){
-    return data_[i];
-  };
-
-  const_ref_t operator [] (ord_t i) const{
-    return data_[i];
-  };
-
-  ref_t operator()(ord_t i){
-    return data_[i];
-  };
-  const_ref_t operator()(ord_t i) const{
-    return data_[i];
-  };
-
-  this_t & operator+=(const this_t & other) {
-    assert( other.size() == this->size() );
-    this->data_ += *other.data();
-    return *this;
-  }
-
-  this_t & operator-=(const this_t & other) {
-    assert( other.size() == this->size() );
-    this->data_ -= *other.data();
-    return *this;
-  }
-
-  wrap_t const * data() const{
-    return &data_;
-  }
-
-  wrap_t * data(){
-    return &data_;
-  }
-
-  bool empty() const{
-    return this->size()==0 ? true : false;
-  }
-
-  ord_t extent() const {
-    return data_.size();
-  }
-
-private:
-  friend VectorSharedMemBase< this_t >;
-  wrap_t data_ = {};
-
-};//end class
-}}//end namespace pressio::containers
-
-#endif /* CONTAINERS_VECTOR_CONCRETE_VECTOR_SHAREDMEM_BLAZE_DYNAMIC_HPP_ */
-#endif //PRESSIO_ENABLE_TPL_BLAZE
+}}} //pressio::ops::meta
+#endif

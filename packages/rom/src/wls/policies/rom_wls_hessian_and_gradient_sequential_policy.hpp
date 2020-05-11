@@ -55,7 +55,7 @@ namespace pressio{ namespace rom{ namespace wls{
 
 namespace impl{
 
-template<typename fom_type, typename decoder_type, typename hess_structure_tag, typename ...Args>
+template<typename fom_type, typename decoder_type, typename ode_tag, typename hess_structure_tag, typename ...Args>
 struct HessGradSeqPolHelper
 {
 
@@ -77,7 +77,7 @@ struct HessGradSeqPolHelper
   using prec_t = ::pressio::mpl::variadic::at_or_t<::pressio::rom::wls::preconditioners::NoPreconditioner, precIC::value, Args...>;
 
   // final type
-  using type = ::pressio::rom::wls::impl::HessianGradientSequentialPolicy<fom_type, decoder_type,
+  using type = ::pressio::rom::wls::impl::HessianGradientSequentialPolicy<fom_type, decoder_type, ode_tag,
 									  hess_structure_tag, prec_t, jac_cont_t>;
 };
 }//end namespace pressio::rom::wls::impl

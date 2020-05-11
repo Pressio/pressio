@@ -33,24 +33,28 @@ auto readSol(::pressio::ode::implicitmethods::BDF2 odeTag, const std::size_t fom
 
 
 template <typename fom_t>
-fom_t appConstructor(std::size_t fomSize){};
-
-template <>
-  pressio::apps::Burgers1dEigen appConstructor<pressio::apps::Burgers1dEigen>(std::size_t fomSize)
+pressio::mpl::enable_if_t< std::is_same<fom_t, pressio::apps::Burgers1dEigen>::value, fom_t >
+constructAppObj(std::size_t fomSize)
 {
-  pressio::apps::Burgers1dEigen appObj( Eigen::Vector3d{5.0, 0.02, 0.02}, fomSize);
-  return appObj;
-}
+  // pressio::apps::Burgers1dEigen appObj( Eigen::Vector3d{5.0, 0.02, 0.02}, fomSize);
+  return fom_t( Eigen::Vector3d{5.0, 0.02, 0.02}, fomSize);
+};
+
+template <typename fom_t>
+pressio::mpl::enable_if_t< std::is_same<fom_t, pressio::apps::Burgers1dEigenResidualApi>::value, fom_t >
+constructAppObj(std::size_t fomSize)
+{
+  return fom_t( Eigen::Vector3d{5.0, 0.02, 0.02}, fomSize);
+};
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <>
-  pressio::apps::Burgers1dKokkos appConstructor<pressio::apps::Burgers1dKokkos>(std::size_t fomSize)
+template <typename fom_t>
+pressio::mpl::enable_if_t< std::is_same<fom_t, pressio::apps::Burgers1dKokkos>::value, fom_t >
+constructAppObj(std::size_t fomSize)
 {
-  pressio::apps::Burgers1dKokkos appObj({{5.0, 0.02, 0.02}}, fomSize);
-  return appObj;
-}
+  return fom_t({{5.0, 0.02, 0.02}}, fomSize);
+};
 #endif
-
 } //end anonymous namespace
 
 
@@ -76,9 +80,9 @@ std::string doRun()
 
   // app object
   constexpr std::size_t fomSize = 20;
-  auto appObj = appConstructor<fom_t>(fomSize);
+  auto appObj = constructAppObj<fom_t>(fomSize);
   constexpr scalar_t dt = 0.01;
-  constexpr auto t0 = ::pressio::utils::constants::zero<scalar_t>();
+  // constexpr auto t0 = ::pressio::utils::constants::zero<scalar_t>();
   // wrap init cond with pressio container
   const fom_state_t fomStateInitCond(appObj.getInitialState());
   //reference state is equal to the IC
@@ -100,7 +104,7 @@ std::string doRun()
   //*** WLS problem ***
   using precon_type = ::pressio::rom::wls::preconditioners::NoPreconditioner;
   using jacobians_update_tag = ::pressio::rom::wls::FrozenJacobian;
-  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t, decoder_t, hessian_matrix_structure_tag,precon_type,jacobians_update_tag>;
+  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t ,  decoder_t,ode_tag, hessian_matrix_structure_tag,precon_type,jacobians_update_tag>;
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, ode_tag, wls_hessian_t, policy_t>;
 
   // create policy and wls system

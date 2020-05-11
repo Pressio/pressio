@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_type_generator_common_residual_api.hpp
+// rom_lspg_unsteady_common_traits_residual_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,14 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_RESIDUAL_API_HPP_
-#define ROM_LSPG_UNSTEADY_TYPE_GENERATOR_COMMON_RESIDUAL_API_HPP_
+#ifndef ROM_LSPG_UNSTEADY_COMMON_TRAITS_RESIDUAL_API_HPP_
+#define ROM_LSPG_UNSTEADY_COMMON_TRAITS_RESIDUAL_API_HPP_
 
 #include "../impl_shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
 #include "../impl_shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
+#include "../impl_shared/rom_lspg_unsteady_fom_state_reconstructor_helper.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
-
-template <typename ops_t, typename enable = void>
-struct FomStateReconHelper;
-
-template <typename ops_t>
-struct FomStateReconHelper<
-  ops_t, mpl::enable_if_t< std::is_void<ops_t>::value >
-  >
-{
-  template <typename scalar_t, typename fom_state_t, typename decoder_t>
-  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
-};
-
-template <typename ops_t>
-struct FomStateReconHelper<
-  ops_t, mpl::enable_if_t< !std::is_void<ops_t>::value >
-  >
-{
-  template <typename scalar_t, typename fom_state_t, typename decoder_t>
-  using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t, ops_t>;
-};
-//------------------------------------------------------------------------------
-
-
 
 template <
   typename stepper_tag,
@@ -84,7 +61,7 @@ template <
   typename lspg_state_type,
   typename ...Args
   >
-struct CommonTypesResidualApi
+struct CommonTraitsResidualApi
 {
   static_assert( ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
 		 "\nYou are trying to setup an unsteady LSPG problem requiring \n \

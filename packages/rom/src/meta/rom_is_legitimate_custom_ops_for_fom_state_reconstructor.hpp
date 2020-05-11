@@ -72,6 +72,11 @@ struct is_legitimate_custom_ops_for_fom_state_reconstructor<
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
       >::value
     and
+    ::pressio::ops::meta::has_method_set_zero<
+      T,
+      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
+      >::value
+    and
     ::pressio::ops::meta::has_method_axpy<
       T,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,

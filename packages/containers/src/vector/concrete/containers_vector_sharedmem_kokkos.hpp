@@ -65,7 +65,6 @@ class Vector<wrapped_type,
   using mytraits = typename details::traits<this_t>;
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename  mytraits::ordinal_t;
-  using wrap_t = typename mytraits::wrapped_t;
   using ref_t = typename mytraits::reference_t;
   using const_ref_t = typename mytraits::const_reference_t;
 
@@ -79,14 +78,14 @@ public:
   // of a view WITHOUT doing shallow copy.
   // We create a new object and deep_copy original.
 
-  explicit Vector(const wrap_t src)
+  explicit Vector(const wrapped_type src)
     : data_{src.label(), src.extent(0)}{
     Kokkos::deep_copy(data_, src);
   }
 
-  Vector(const std::string & label, size_t e1) : data_{label, e1}{}
+  Vector(const std::string & label, ord_t e1) : data_{label, e1}{}
 
-  Vector(const size_t e1) : data_{"empty", e1}{}
+  Vector(const ord_t e1) : data_{"empty", e1}{}
 
   // copy constructor implements copy semantics (for time being)
   Vector(const Vector & other)
@@ -117,59 +116,50 @@ public:
 
   ~Vector() = default;
 
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      // todo: this is not entirely correct because this would work also
-      // for UMV space, needs to be fixed
-      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
-      > * = nullptr
-    >
-  sc_t & operator [] (ord_t i){
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    // todo: this is not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t &>
+  operator [] (ord_t i){
     return data_(i);
   };
 
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      // todo: this is not entirely correct because this would work also
-      // for UMV space, needs to be fixed
-      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
-      > * = nullptr
-    >
-  sc_t const & operator [] (ord_t i) const{
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    // todo: this is not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t const &>
+  operator [] (ord_t i) const{
     return data_(i);
   };
 
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      // todo: this is not entirely correct because this would work also
-      // for UMV space, needs to be fixed
-      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
-      > * = nullptr
-    >
-  sc_t & operator () (ord_t i){
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    // todo: this is not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t &>
+  operator () (ord_t i){
     return data_(i);
   };
 
-  template<
-    typename _wrapped_type = wrapped_type,
+  template<typename _wrapped_type = wrapped_type>
     mpl::enable_if_t<
       // todo: this is not entirely correct because this would work also
       // for UMV space, needs to be fixed
-      std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value
-      > * = nullptr
-    >
-  sc_t const & operator () (ord_t i) const{
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t const &>
+  operator () (ord_t i) const{
     return data_(i);
   };
 
-
-  wrap_t const * data() const{
+  wrapped_type const * data() const{
     return &data_;
   }
-  wrap_t * data(){
+  wrapped_type * data(){
     return &data_;
   }
 
@@ -184,7 +174,7 @@ public:
 
 private:
   friend VectorSharedMemBase< this_t >;
-  wrap_t data_ = {};
+  wrapped_type data_ = {};
 
 };//end class
 

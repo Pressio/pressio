@@ -39,7 +39,6 @@ struct RunTest{
 
     using ret_t = ::pressio::containers::Matrix<k2d_d>;
     // self-dot
-    constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
     constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
     auto C_d = ::pressio::ops::product<ret_t>(::pressio::transpose(), ::pressio::nontranspose(), alpha, mvA_d);
 

@@ -57,14 +57,6 @@
 #include <Eigen/SparseQR>
 #include <Eigen/OrderingMethods>
 
-// #ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-//   #include "solvers_linear_wrapper_armadillo.hpp"
-// #endif
-// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-//   #include "AztecOO.h"
-// #endif
-
-
 namespace pressio{ namespace solvers{ namespace linear { namespace details {
 
 // Solvers traits
@@ -86,6 +78,7 @@ struct traits<::pressio::solvers::linear::iterative::CG> {
   using eigen_solver_type = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
 
   static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
   static constexpr bool eigen_enabled = true;
 };
 
@@ -99,6 +92,7 @@ struct traits<::pressio::solvers::linear::iterative::Bicgstab> {
   using eigen_solver_type = Eigen::BiCGSTAB<MatrixT, PrecT>;
 
   static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
   static constexpr bool eigen_enabled = true;
 };
 
@@ -111,7 +105,8 @@ struct traits<::pressio::solvers::linear::iterative::LSCG> {
   >
   using eigen_solver_type = Eigen::LeastSquaresConjugateGradient<MatrixT, PrecT>;
 
-  static constexpr bool direct = false;
+  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
   static constexpr bool eigen_enabled = true;
 };
 
@@ -136,6 +131,7 @@ struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
       Eigen::ColPivHouseholderQR<MatrixT>
       >::type;
 
+  static constexpr bool iterative = false;
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
 };
@@ -146,6 +142,7 @@ struct traits<::pressio::solvers::linear::direct::HouseholderQR> {
   template <typename MatrixT>
   using eigen_solver_type = Eigen::HouseholderQR<MatrixT>;
 
+  static constexpr bool iterative = false;
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
 };
@@ -156,6 +153,7 @@ struct traits<::pressio::solvers::linear::direct::PartialPivLU> {
   template <typename MatrixT>
   using eigen_solver_type = Eigen::PartialPivLU<MatrixT>;
 
+  static constexpr bool iterative = false;
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
 };
@@ -166,6 +164,7 @@ struct traits<::pressio::solvers::linear::direct::potrsL> {
   template <typename MatrixT>
   using eigen_solver_type = Eigen::LLT<MatrixT, Eigen::Lower>;
 
+  static constexpr bool iterative = false;
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
 #if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS

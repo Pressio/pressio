@@ -72,9 +72,8 @@ public:
     typename _fom_rhs_t = fom_rhs_t,
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<
-      std::is_void<_ud_ops>::value
-      /*::pressio::containers::meta::is_wrapper<_fom_rhs_t>::value*/
-      > * = nullptr
+      std::is_void<_ud_ops>::value, int
+      > = 0
     >
   ExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
 			 fom_states_data_type & fomStates,
@@ -88,8 +87,8 @@ public:
     typename _fom_rhs_t = fom_rhs_t,
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value
-      > * = nullptr
+      !std::is_void<_ud_ops>::value, int 
+      > = 0
     >
   ExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
 			 fom_states_data_type & fomStates,
@@ -131,15 +130,15 @@ private:
     typename scalar_t,
     typename fom_t,
     typename fom_state_t,
-    typename _fom_rhs_t = fom_rhs_t,
-    ::pressio::mpl::enable_if_t<
-      ::pressio::containers::meta::is_wrapper<fom_state_t>::value
+    typename _fom_rhs_t = fom_rhs_t
+  >
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_wrapper<fom_state_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and ::pressio::mpl::not_same<fom_t, pybind11::object>::value
 #endif
-    > * = nullptr
   >
-  void queryFomVelocity(const fom_t & app,
+  queryFomVelocity(const fom_t & app,
 			const fom_state_t & fomState,
 			const scalar_t & time) const
   {
@@ -151,13 +150,12 @@ private:
     typename scalar_t,
     typename fom_t,
     typename fom_state_t,
-    typename _fom_rhs_t = fom_rhs_t,
-    ::pressio::mpl::enable_if_t<
-      /*::pressio::containers::meta::is_vector_wrapper_pybind<fom_state_t>::value and*/
-      ::pressio::mpl::is_same<fom_t, pybind11::object>::value
-      > * = nullptr
-    >
-  void queryFomVelocity(const fom_t & app,
+    typename _fom_rhs_t = fom_rhs_t
+  >
+  ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::is_same<fom_t, pybind11::object>::value
+  >
+  queryFomVelocity(const fom_t & app,
 			const fom_state_t & fomState,
 			const scalar_t & time) const
   {
@@ -171,10 +169,10 @@ private:
   template <
     typename scalar_t,
     typename result_t,
-    typename _ops_t = ud_ops,
-    ::pressio::mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr
-    >
-  void applyDecoderJacobianToFomVel(result_t & result) const
+    typename _ops_t = ud_ops
+  >
+  ::pressio::mpl::enable_if_t< std::is_void<_ops_t>::value >
+  applyDecoderJacobianToFomVel(result_t & result) const
   {
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
@@ -184,10 +182,10 @@ private:
   template <
     typename scalar_t,
     typename result_t,
-    typename _ops_t = ud_ops,
-    ::pressio::mpl::enable_if_t< !std::is_void<_ops_t>::value > * = nullptr
-    >
-  void applyDecoderJacobianToFomVel(result_t & result) const
+    typename _ops_t = ud_ops
+  >
+  ::pressio::mpl::enable_if_t< !std::is_void<_ops_t>::value >
+  applyDecoderJacobianToFomVel(result_t & result) const
   {
     constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
     constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();

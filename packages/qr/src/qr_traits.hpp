@@ -238,8 +238,7 @@ template<
   ::pressio::mpl::enable_if_t<
     containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value or
     containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value or
-    containers::meta::is_multi_vector_wrapper_tpetra_block<matrix_type>::value
-    > * = nullptr
+    containers::meta::is_multi_vector_wrapper_tpetra_block<matrix_type>::value, int > = 0
   >
 struct traits_shared_trilinos_mv{
   using MV_t	 = typename containers::details::traits<matrix_type>::wrapped_t;

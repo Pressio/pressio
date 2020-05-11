@@ -61,21 +61,21 @@ template<
   typename state_type,
   typename time_type,
   typename solver_type,
-  typename step_size_cb_t,
-  typename std::enable_if<
-    std::is_same<
-    typename ::pressio::ode::details::traits<stepper_type>::tag_name,
-    ::pressio::ode::implicitmethods::Arbitrary
+  typename step_size_cb_t
+>
+::pressio::mpl::enable_if_t<
+  std::is_same<
+  typename ::pressio::ode::details::traits<stepper_type>::tag_name,
+  ::pressio::ode::implicitmethods::Arbitrary
+  >::value and
+  ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type
     >::value and
-    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
-      solver_type, stepper_type, state_type
-      >::value and
-    ::pressio::ode::meta::is_legitimate_time_step_size_setter<
-      step_size_cb_t, types::step_t, time_type
-      >::value
-    >::type * = nullptr
+  ::pressio::ode::meta::is_legitimate_time_step_size_setter<
+    step_size_cb_t, types::step_t, time_type
+    >::value
   >
-void integrateToTargetTime(stepper_type		& stepper,
+integrateToTargetTime(stepper_type		& stepper,
 			   state_type		& odeStateInOut,
 			   const time_type	start_time,
 			   const time_type	final_time,
@@ -101,24 +101,24 @@ template<
   typename time_type,
   typename solver_type,
   typename step_size_cb_t,
-  typename collector_type,
-  typename std::enable_if<
-    std::is_same<
-      typename ::pressio::ode::details::traits<stepper_type>::tag_name,
-      ::pressio::ode::implicitmethods::Arbitrary
-      >::value and
-    ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
-      solver_type, stepper_type, state_type
-      >::value and
-    ::pressio::ode::meta::is_legitimate_time_step_size_setter<
-      step_size_cb_t, types::step_t, time_type
-      >::value and
-    ode::meta::is_legitimate_collector<
-      collector_type, types::step_t, time_type, state_type
-      >::value
-    >::type * = nullptr
-  >
-void integrateToTargetTime(stepper_type		& stepper,
+  typename collector_type
+>
+::pressio::mpl::enable_if_t<
+  std::is_same<
+    typename ::pressio::ode::details::traits<stepper_type>::tag_name,
+    ::pressio::ode::implicitmethods::Arbitrary
+    >::value and
+  ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type
+    >::value and
+  ::pressio::ode::meta::is_legitimate_time_step_size_setter<
+    step_size_cb_t, types::step_t, time_type
+    >::value and
+  ode::meta::is_legitimate_collector<
+    collector_type, types::step_t, time_type, state_type
+    >::value
+>
+integrateToTargetTime(stepper_type		& stepper,
 			   state_type		& odeStateInOut,
 			   const time_type	start_time,
 			   const time_type	final_time,

@@ -70,20 +70,18 @@ public:
   template<
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
-      std::is_default_constructible<_wrapped_type>::value
-    > * = nullptr
+      std::is_default_constructible<_wrapped_type>::value, int
+    > = 0
   >
   Matrix(){};
-
 
   template<
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
-      std::is_constructible<_wrapped_type, size_t, size_t>::value
-    > * = nullptr
+      std::is_constructible<_wrapped_type, size_t, size_t>::value, int
+    > = 0
   >
   Matrix(size_t nR, size_t nC) : data_(nR, nC){};
-
 
   explicit Matrix(const wrapped_type & vecobj)
     : data_(vecobj){}
@@ -95,7 +93,6 @@ public:
     assert( k==0 or k==1);
     return data_.extent(k);
   }
-
 
   sc_t & operator()(size_t i, size_t j){
     return data_(i, j);

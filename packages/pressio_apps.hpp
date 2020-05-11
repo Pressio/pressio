@@ -73,6 +73,7 @@
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_vector.hpp"
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_residual_api_adapter.hpp"
+#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_velocity_api_adapter.hpp"
 
 // steady 2d adv-diff
 #include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp"

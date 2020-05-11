@@ -85,7 +85,7 @@ class ExplicitRungeKutta4StepperImpl<scalar_type,
   const ops_t * udOps_ = nullptr;
 
 public:
-  template <typename _ops_t = ops_t, mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr>
+  template <typename _ops_t = ops_t, mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0>
   ExplicitRungeKutta4StepperImpl(const system_type & model,
   				 const velocity_policy_type & policy_obj,
   				 const state_type & stateIn0,
@@ -93,7 +93,7 @@ public:
     : stateAuxStorage_{stateIn0}, veloAuxStorage_{f0}, sys_{model}, policy_{policy_obj}
   {}
 
-  template <typename _ops_t = ops_t, mpl::enable_if_t< !std::is_void<_ops_t>::value > * = nullptr>
+  template <typename _ops_t = ops_t, mpl::enable_if_t< !std::is_void<_ops_t>::value, int > = 0>
   ExplicitRungeKutta4StepperImpl(const system_type & model,
   				 const velocity_policy_type & policy_obj,
   				 const state_type & stateIn0,

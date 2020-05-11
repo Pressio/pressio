@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_vector_wrapper_blaze.hpp
+// rom_query_fom_velocity_steady.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,38 +46,36 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_BLAZE
-#ifndef CONTAINERS_IS_VECTOR_WRAPPER_BLAZE_HPP_
-#define CONTAINERS_IS_VECTOR_WRAPPER_BLAZE_HPP_
+#ifndef ROM_QUERY_FOM_VELOCITY_STEADY_HPP_
+#define ROM_QUERY_FOM_VELOCITY_STEADY_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace rom{ namespace policy{
 
-template <typename T, typename enable = void>
-struct is_dynamic_vector_wrapper_blaze : std::false_type {};
+template <>
+struct QueryFomVelocityDefault<true>{
 
-template <typename T>
-struct is_dynamic_vector_wrapper_blaze<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_vector &&
-       containers::details::traits<T>::wrapped_vector_identifier==
-       containers::details::WrappedVectorIdentifier::BlazeDynamic
-       >
-  > : std::true_type{};
+  template <
+    typename fom_t,
+    typename state_t,
+    typename rhs_t
+    >
+  void evaluate(const fom_t	& fomObj,
+		const state_t & yFOM,
+		rhs_t		& rhs) const{
+    fomObj.velocity(*yFOM.data(), *rhs.data());
+  }
 
+  template <
+    typename fom_t,
+    typename state_t
+    >
+  auto evaluate(const fom_t	& fomObj,
+		const state_t & yFOM) const
+    -> decltype(fomObj.velocity(*yFOM.data())){
+    return fomObj.velocity(*yFOM.data());
+  }
 
-template <typename T, typename enable = void>
-struct is_static_vector_wrapper_blaze : std::false_type {};
+};
 
-template <typename T>
-struct is_static_vector_wrapper_blaze<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_vector &&
-       containers::details::traits<T>::wrapped_vector_identifier==
-       containers::details::WrappedVectorIdentifier::BlazeStatic
-       >
-  > : std::true_type{};
-
-
-}}}//end namespace pressio::containers::meta
-#endif
+}}} //end namespace pressio::rom::policy
 #endif

@@ -255,7 +255,8 @@ protected:
 	  lo_t numEntries = 2;
 	  int err = 0;
 	  err = jac.getLocalRowView(i, localColInds, vals, numEntries);
-
+    (void)err;
+    
 	  if (i==0){
 	    // don't know why the indices here must be inverted, but this is right/
 	    // looks like block does strange here for storing the col indices of this point
@@ -272,7 +273,7 @@ protected:
 
   void assembleGraph(crs_graph_type & graph)
   {
-    using tarr_dt = Teuchos::ArrayView<scalar_type>;
+    // using tarr_dt = Teuchos::ArrayView<scalar_type>;
     using tarr_it = Teuchos::ArrayView<go_t>;
     std::array<go_t,1> ci1;
     std::array<go_t,2> ci2;

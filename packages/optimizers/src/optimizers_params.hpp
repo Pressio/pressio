@@ -132,6 +132,10 @@ void convertToRolParameterList(const Parameters<scalar_type> & params,
 	rolParList.sublist("Step").sublist("Trust Region").set("Subproblem Solver","Truncated CG");
 	break;
       }
+    default:
+      {
+	break;
+      }
     };
 }
 #endif

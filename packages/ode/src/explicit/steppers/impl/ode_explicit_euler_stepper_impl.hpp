@@ -82,7 +82,7 @@ class ExplicitEulerStepperImpl<scalar_type,
   const ops_t * udOps_ = nullptr;
 
 public:
-  template <typename _ops_t = ops_t, mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr>
+  template <typename _ops_t = ops_t, mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0>
   ExplicitEulerStepperImpl(const system_type & model,
   			   const velocity_policy_type & policy_obj,
   			   const state_type & stateIn0,
@@ -90,7 +90,7 @@ public:
     : sys_(model), policy_(policy_obj), veloAuxStorage_(f0)
   {}
 
-  template <typename _ops_t = ops_t, mpl::enable_if_t< !std::is_void<_ops_t>::value > * = nullptr>
+  template <typename _ops_t = ops_t, mpl::enable_if_t< !std::is_void<_ops_t>::value, int > = 0>
   ExplicitEulerStepperImpl(const system_type & model,
   			   const velocity_policy_type & policy_obj,
   			   const state_type & stateIn0,
@@ -116,10 +116,10 @@ public:
   /* user does NOT provide custom ops, so we use ops */
   template<
     typename _ops_t = ops_t,
-    typename _state_type = state_type,
-    mpl::enable_if_t< std::is_void<_ops_t>::value > * = nullptr
+    typename _state_type = state_type
   >
-  void doStep(_state_type & stateInOut,
+  mpl::enable_if_t< std::is_void<_ops_t>::value >
+  doStep(_state_type & stateInOut,
 	      const scalar_type & time,
 	      const scalar_type & dt,
 	      const types::step_t & step)
@@ -135,13 +135,13 @@ public:
   /* user provides custom ops */
   template<
     typename _ops_t = ops_t,
-    typename _state_type = state_type,
-    mpl::enable_if_t<
-      !std::is_void<_ops_t>::value and
-      containers::meta::is_wrapper<_state_type>::value
-      > * = nullptr
-    >
-  void doStep(_state_type & stateInOut,
+    typename _state_type = state_type
+  >
+  mpl::enable_if_t< 
+    !std::is_void<_ops_t>::value and
+    containers::meta::is_wrapper<_state_type>::value
+  > 
+  doStep(_state_type & stateInOut,
   	      const scalar_type & time,
   	      const scalar_type & dt,
   	      const types::step_t & step)

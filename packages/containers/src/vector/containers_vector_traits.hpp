@@ -57,36 +57,16 @@ for which a user must provide ops
 *******************************/
 template <typename wrapped_type>
 struct traits<
-  Vector<
-    wrapped_type,
-    mpl::enable_if_t<
-      !containers::meta::is_vector_eigen<wrapped_type>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !containers::meta::is_array_pybind<wrapped_type>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-      and !containers::meta::is_vector_armadillo<wrapped_type>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_BLAZE
-      and !containers::meta::is_dynamic_vector_blaze<wrapped_type>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-      and !containers::meta::is_vector_kokkos<wrapped_type>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-      and !containers::meta::is_vector_epetra<wrapped_type>::value
-      and !containers::meta::is_dense_vector_teuchos<wrapped_type>::value
-      and !containers::meta::is_vector_tpetra_block<wrapped_type>::value
-      and !containers::meta::is_vector_tpetra<wrapped_type>::value
-#endif
-      >
+  Vector<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_vector_arbitrary<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
 				    wrapped_type,
 				    true, false, false,
 				    WrappedPackageIdentifier::Undefined,
-            false>
+				    false>
 {
 
   using wrapped_t = wrapped_type;
@@ -114,15 +94,12 @@ struct traits<
 // Eigen STATIC ROW vector
 //*******************************
 template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
-		       containers::meta::is_static_row_vector_eigen<
-			 wrapped_type
-			 >::value
-		       >::type
-		     >
-	      >
+struct traits<
+  Vector<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_static_row_vector_eigen<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<Vector<wrapped_type>,
 				    wrapped_type,
 				    true, false, false,
@@ -133,11 +110,11 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenRowStatic;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
-  using size_t    = ordinal_t;
+  using scalar_t   = typename wrapped_type::Scalar;
+  using ordinal_t  = typename wrapped_type::StorageIndex;
+  using size_t     = ordinal_t;
   using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
+  using data_return_t	    = wrapped_type *;
 
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
@@ -151,15 +128,12 @@ struct traits<Vector<wrapped_type,
 // Eigen STATIC COLUMN vector
 //*******************************
 template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
-		       containers::meta::is_static_column_vector_eigen<
-			 wrapped_type
-			 >::value
-		       >::type
-		     >
-	      >
+struct traits<
+  Vector<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_static_column_vector_eigen<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<Vector<wrapped_type>,
 				    wrapped_type,
 				    true, false, false,
@@ -170,9 +144,9 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenColStatic;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
-  using size_t    = ordinal_t;
+  using scalar_t   = typename wrapped_type::Scalar;
+  using ordinal_t  = typename wrapped_type::StorageIndex;
+  using size_t     = ordinal_t;
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
@@ -188,15 +162,12 @@ struct traits<Vector<wrapped_type,
 // Eigen DYNAMIC ROW vector
 //*******************************
 template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
-		       containers::meta::is_dynamic_row_vector_eigen<
-			 wrapped_type
-			 >::value
-		       >::type
-		     >
-	      >
+struct traits<
+  Vector<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_dynamic_row_vector_eigen<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<Vector<wrapped_type>,
 				    wrapped_type,
 				    true, false, false,
@@ -207,9 +178,9 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenRowDynamic;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
-  using size_t    = ordinal_t;
+  using scalar_t   = typename wrapped_type::Scalar;
+  using ordinal_t  = typename wrapped_type::StorageIndex;
+  using size_t     = ordinal_t;
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
@@ -228,15 +199,12 @@ struct traits<Vector<wrapped_type,
 // Eigen DYNAMIC COLUMN vector
 //*******************************
 template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     typename
-		     std::enable_if<
-		       containers::meta::is_dynamic_column_vector_eigen<
-			 wrapped_type
-			 >::value
-		       >::type
-		     >
-	      >
+struct traits<
+  Vector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_dynamic_column_vector_eigen<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<Vector<wrapped_type>,
 				    wrapped_type,
 				    true, false, false,
@@ -247,9 +215,9 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::EigenColDynamic;
 
-  using scalar_t	 = typename wrapped_type::Scalar;
-  using ordinal_t	 = int;
-  using size_t    = ordinal_t;
+  using scalar_t   = typename wrapped_type::Scalar;
+  using ordinal_t  = typename wrapped_type::StorageIndex;
+  using size_t     = ordinal_t;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
@@ -265,124 +233,16 @@ struct traits<Vector<wrapped_type,
 
 
 //*******************************
-// Armadillo column vector
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     ::pressio::mpl::enable_if_t<
-		       containers::meta::is_column_vector_armadillo<
-			 wrapped_type>::value
-		       >
-		     >
-	      >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Armadillo,
-				    true>
-{
-
-  static constexpr WrappedVectorIdentifier
-  wrapped_vector_identifier = WrappedVectorIdentifier::ArmadilloCol;
-
-  using scalar_t = typename wrapped_type::elem_type;
-  using ordinal_t = unsigned long;
-  using size_t    = ordinal_t;
-  using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-};
-#endif
-
-
-//*******************************
-// Armadillo row vector
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     ::pressio::mpl::enable_if_t<
-		       containers::meta::is_row_vector_armadillo<
-			 wrapped_type>::value
-		       >
-		     >
-	      >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Armadillo,
-				    true>
-{
-
-  static constexpr WrappedVectorIdentifier wrapped_vector_identifier
-  = WrappedVectorIdentifier::ArmadilloRow;
-
-  using scalar_t = typename wrapped_type::elem_type;
-  using ordinal_t = unsigned long;
-  using size_t    = ordinal_t;
-  using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-};
-#endif
-
-
-//*******************************
-// Blaze dynamic vector
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_BLAZE
-template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-		     ::pressio::mpl::enable_if_t<
-		       containers::meta::is_dynamic_vector_blaze<
-			 wrapped_type>::value
-		       >
-		     >
-	      >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Blaze,
-				    true>
-{
-
-  static constexpr WrappedVectorIdentifier
-  wrapped_vector_identifier = WrappedVectorIdentifier::BlazeDynamic;
-
-  using scalar_t = typename wrapped_type::ElementType;
-  using ordinal_t = unsigned long;
-  using size_t    = ordinal_t;
-  using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-};
-#endif
-
-
-//*******************************
 // for teuchos serial dense vec
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
-struct traits<Vector<wrapped_type,
-	  typename
-	  std::enable_if<
-	    containers::meta::is_dense_vector_teuchos<
-	      wrapped_type>::value
-	    >::type
-	  >
-	>
+struct traits<
+  Vector<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_dense_vector_teuchos<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<Vector<wrapped_type>,
 				    wrapped_type,
 				    true, false, false,
@@ -393,11 +253,13 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::TeuchosSerialDense;
 
-  using scalar_t = typename wrapped_type::scalarType;
+  using scalar_t  = typename wrapped_type::scalarType;
   using ordinal_t = typename wrapped_type::ordinalType;
+  using size_t    = ordinal_t;
+
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
-  using size_t    = int;
+
   using reference_t = scalar_t &;
   using const_reference_t = scalar_t const &;
   static constexpr bool is_static = false;
@@ -411,32 +273,32 @@ struct traits<Vector<wrapped_type,
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
-struct traits<Vector<wrapped_type,
-	  typename
-	  std::enable_if<
-	    containers::meta::is_vector_epetra<
-	      wrapped_type>::value
-	    >::type
-	  >
-	>
+struct traits<
+  Vector<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_vector_epetra<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<Vector<wrapped_type>,
 				    wrapped_type,
 				    true, false, false,
-			       WrappedPackageIdentifier::Trilinos,
+				    WrappedPackageIdentifier::Trilinos,
 				    false>
 {
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Epetra;
 
-  using scalar_t = double;
-  using local_ordinal_t = int;
+  using scalar_t	 = double;
+  using local_ordinal_t  = int;
   using global_ordinal_t = int;
-  using size_t    = global_ordinal_t;
-  using data_map_t = Epetra_BlockMap;
-  using communicator_t = Epetra_Comm;
+  using size_t		 = global_ordinal_t;
+  using data_map_t	 = Epetra_BlockMap;
+  using communicator_t   = Epetra_Comm;
+
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
+
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
 
@@ -449,14 +311,11 @@ struct traits<Vector<wrapped_type,
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
-struct traits<Vector<wrapped_type,
-	  typename
-	  std::enable_if<
-	    containers::meta::is_vector_tpetra<
-	      wrapped_type>::value
-	    >::type
-	  >
-	>
+struct traits<
+  Vector<wrapped_type>,
+  mpl::enable_if_t<containers::meta::is_vector_tpetra<wrapped_type>::value
+		   >
+  >
   : public containers_shared_traits<Vector<wrapped_type>,
 				    wrapped_type,
 				    true, false, false,
@@ -467,11 +326,11 @@ struct traits<Vector<wrapped_type,
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Tpetra;
 
-  using scalar_t = typename wrapped_type::impl_scalar_type;
-  using local_ordinal_t = typename wrapped_type::local_ordinal_type;
+  using scalar_t	 = typename wrapped_type::impl_scalar_type;
+  using local_ordinal_t  = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
-  using data_map_t = typename wrapped_type::map_type;
-  using size_t    = global_ordinal_t;
+  using data_map_t	 = typename wrapped_type::map_type;
+  using size_t		 = global_ordinal_t;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
@@ -507,13 +366,12 @@ struct traits<Vector<wrapped_type,
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename wrapped_type>
-struct traits<Vector<wrapped_type,
-	  ::pressio::mpl::enable_if_t<
-	    containers::meta::is_vector_kokkos<
-	      wrapped_type>::value
-	    >
-	  >
-	>
+struct traits<
+  Vector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_vector_kokkos<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<
   Vector<wrapped_type>,
   wrapped_type,
@@ -529,7 +387,7 @@ struct traits<Vector<wrapped_type,
   using scalar_t	   = typename wrapped_type::traits::value_type;
   using layout		   = typename wrapped_type::traits::array_layout;
   using ordinal_t	   = typename wrapped_type::traits::size_type;
-  using size_t    = ordinal_t;
+  using size_t		   = ordinal_t;
   using execution_space    = typename wrapped_type::traits::execution_space;
   using memory_space	   = typename wrapped_type::traits::memory_space;
   using device_type	   = typename wrapped_type::traits::device_type;
@@ -570,14 +428,10 @@ struct traits<Vector<wrapped_type,
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
 struct traits<
-  Vector<wrapped_type,
-	 typename
-	 std::enable_if<
-	   containers::meta::is_vector_tpetra_block<
-	     wrapped_type
-	     >::value
-	   >::type
-	 >
+  Vector<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_vector_tpetra_block<wrapped_type>::value
+    >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
 				    wrapped_type,
@@ -629,11 +483,9 @@ struct traits<
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <typename wrapped_type>
 struct traits<
-  Vector<
-    wrapped_type,
+  Vector<wrapped_type>,
     mpl::enable_if_t<
       containers::meta::is_array_pybind<wrapped_type>::value
-      >
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,

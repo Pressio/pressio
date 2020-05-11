@@ -52,19 +52,16 @@
 
 namespace pressio{ namespace ops{
 
-
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
   >
-void do_update(T & v, scalar_t a, const T & v1, scalar_t b){
+do_update(T & v, scalar_t a, const T & v1, scalar_t b)
+{
   using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-
   auto v_proxy        = v.data()->mutable_unchecked();
   const auto v1_proxy = v1.data()->unchecked();
   for (ord_t i=0; i<v.extent(0); ++i){
@@ -72,13 +69,12 @@ void do_update(T & v, scalar_t a, const T & v1, scalar_t b){
   }
 }
 
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
   >
-void do_update(T & v, const T & v1, const scalar_t b){
+do_update(T & v, const T & v1, const scalar_t b)
+{
   using ord_t = typename ::pressio::containers::details::traits<T>::ordinat_t;
   auto v_proxy        = v.data()->mutable_unchecked();
   const auto v1_proxy = v1.data()->unchecked();
@@ -91,15 +87,13 @@ void do_update(T & v, const T & v1, const scalar_t b){
 //  overloads for computing:
 //  V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
   >
-void do_update(T & v, const scalar_t &a,
-         const T & v1, const scalar_t &b,
-         const T & v2, const scalar_t &c)
+do_update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c)
 {
   // assert(v.extent(0)==v1.extent(0)==v2.extent(0));
   using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
@@ -116,16 +110,14 @@ void do_update(T & v, const scalar_t &a,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template<
-  typename T, typename scalar_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
-    > * = nullptr
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
   >
-void do_update(T & v, const scalar_t &a,
-	       const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c,
-	       const T & v3, const scalar_t &d)
+do_update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d)
 {
   using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   auto v_proxy   = v.data()->mutable_unchecked();

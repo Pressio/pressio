@@ -67,10 +67,7 @@ class Vector<wrapped_type,
   using sc_t = typename details::traits<this_t>::scalar_t;
   using LO_t = typename details::traits<this_t>::local_ordinal_t;
   using GO_t = typename details::traits<this_t>::global_ordinal_t;
-  using der_t = this_t;
-  using wrap_t = typename details::traits<this_t>::wrapped_t;
   using map_t = typename details::traits<this_t>::data_map_t;
-  using mpicomm_t = typename details::traits<this_t>::communicator_t;
 
 public:
   // default cnstr
@@ -78,7 +75,7 @@ public:
 
   // cnstrs
   explicit Vector(const map_t & mapobj) : data_(mapobj){}
-  explicit Vector(const wrap_t & vecobj) : data_(vecobj){}
+  explicit Vector(const wrapped_type & vecobj) : data_(vecobj){}
 
   // copy cnstr
   Vector(Vector const & other) = default;
@@ -124,11 +121,11 @@ public:
     return *this;
   }
 
-  wrap_t const * data() const{
+  wrapped_type const * data() const{
     return &data_;
   }
 
-  wrap_t * data(){
+  wrapped_type * data(){
     return &data_;
   }
 
@@ -144,7 +141,7 @@ public:
 
 private:
   friend VectorDistributedBase< this_t >;
-  wrap_t data_ = {};
+  wrapped_type data_ = {};
 
 };//end class
 

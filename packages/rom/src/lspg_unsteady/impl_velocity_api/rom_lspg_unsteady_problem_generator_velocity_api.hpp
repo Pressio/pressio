@@ -49,10 +49,6 @@
 #ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_api_HPP_
 #define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_VELOCITY_api_HPP_
 
-#include "rom_lspg_unsteady_problem_type_generator_default_velocity_api.hpp"
-#include "rom_lspg_unsteady_problem_type_generator_masked_velocity_api.hpp"
-#include "rom_lspg_unsteady_problem_type_generator_preconditioned_velocity_api.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template <
@@ -94,11 +90,11 @@ public:
   using lspg_stepper_t		= typename lspg_problem_t::lspg_stepper_t;
 
 private:
-  fom_eval_velo_policy_t	veloQuerier_;
-  fom_apply_jac_policy_t	applyJacobQuerier_;
-  fom_state_t			fomStateReference_;
-  fom_state_reconstr_t		fomStateReconstructor_;
-  fom_velocity_t		fomVelocityRef_;
+  const fom_eval_velo_policy_t	veloQuerier_;
+  const fom_apply_jac_policy_t	applyJacobQuerier_;
+  const fom_state_t		fomStateReference_;
+  const fom_velocity_t		fomVelocityRef_;
+  const fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_data		fomStates_;
   lspg_matrix_t			jPhiMatrix_;
   lspg_residual_policy_t	residualPolicy_;
@@ -127,22 +123,23 @@ public:
   ProblemGeneratorVelocityApi() = delete;
   ~ProblemGeneratorVelocityApi() = default;
 
+
   /* specialize for:
    * - the fom_t is regular c++
    * - aux stepper is NOT needed (e.g. for BDF1)
-   * - ud_ops_t == void (so user relies on us providing the ops)
+   * - ud_ops_t == void
    */
   template <
     typename _fom_t = fom_t,
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_void<_aux_stepper_t>::value and
       std::is_void<_ud_ops_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !std::is_same< _fom_t, pybind11::object >::value
 #endif
-      > * = nullptr
+    , int > = 0
   >
   ProblemGeneratorVelocityApi(const _fom_t	& appObj,
 			      const fom_native_state_t & fomStateReferenceNative,
@@ -152,8 +149,8 @@ public:
     : veloQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
-      fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+      fomStateReconstructor_(fomStateReference_, decoder),
       fomStates_(fomStateReconstructor_, fomStateReference_),
       jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
   					      fomStateReference_,
@@ -169,22 +166,69 @@ public:
       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
   {}
 
+
+
   /* specialize for:
    * - the fom_t is regular c++
-   * - aux stepper is needed (e.g. for BDF2)
-   * - ud_ops_t == void (so user relies on us providing the ops)
+   * - aux stepper is NOT needed (e.g. for BDF1)
+   * - ud_ops_t == non-void
    */
   template <
     typename _fom_t = fom_t,
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
+      std::is_void<_aux_stepper_t>::value and
+      !std::is_void<_ud_ops_t>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      and !std::is_same< _fom_t, pybind11::object >::value
+#endif
+      , int > = 0
+  >
+  ProblemGeneratorVelocityApi(const _fom_t & appObj,
+			      const fom_native_state_t & fomStateReferenceNative,
+			      const decoder_t & decoder,
+			      lspg_state_t & yROM,
+			      scalar_t t0,
+			      const _ud_ops_t & udOps)
+    : veloQuerier_{},
+      applyJacobQuerier_{},
+      fomStateReference_(fomStateReferenceNative),
+      fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+      fomStateReconstructor_(fomStateReference_, decoder, udOps),
+      fomStates_(fomStateReconstructor_, fomStateReference_),
+      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
+  					      fomStateReference_,
+  					      decoder.getReferenceToJacobian(),
+  					      t0)),
+      // here we pass a fom velocity object to the residual policy to
+      // use it to initialize the residual data
+      // since the lspg residual is of same type and size of the fom velocity
+      // (this is true w and w/o hyperreduction)
+      residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_, udOps),
+      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder, udOps),
+      auxStepperObj_{},
+      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
+  {}
+
+
+
+  /* specialize for:
+   * - the fom_t is regular c++
+   * - aux stepper is needed (e.g. for BDF2)
+   * - ud_ops_t == void
+   */
+  template <
+    typename _fom_t = fom_t,
+    typename _aux_stepper_t = aux_stepper_t,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t<
       !std::is_void<_aux_stepper_t>::value and
       std::is_void<_ud_ops_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       and !std::is_same< _fom_t, pybind11::object >::value
 #endif
-      > * = nullptr
+      , int > = 0
   >
   ProblemGeneratorVelocityApi(const _fom_t	 & appObj,
 			      const fom_native_state_t & fomStateReferenceNative,
@@ -194,8 +238,8 @@ public:
     : veloQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
-      fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+      fomStateReconstructor_(fomStateReference_, decoder),
       fomStates_(fomStateReconstructor_, fomStateReference_),
       jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
   					      fomStateReference_,
@@ -215,18 +259,19 @@ public:
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /*- the fom_t is a pybind11::object
    * - aux stepper is NOT needed (e.g. for BDF1)
-   * - ud_ops_t == void (so user relies on us providing the ops)*/
+   * - ud_ops_t == void
+   */
   template <
     typename _fom_t = fom_t,
     typename _lspg_state_t = lspg_state_t,
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
-    typename ::pressio::mpl::enable_if_t<
+    ::pressio::mpl::enable_if_t<
       std::is_same< _fom_t, pybind11::object >::value and
       ::pressio::containers::meta::is_vector_wrapper_pybind<_lspg_state_t>::value and
       std::is_void<_aux_stepper_t>::value and
-      std::is_void<_ud_ops_t>::value
-      > * = nullptr
+      std::is_void<_ud_ops_t>::value, 
+      int > = 0
   >
   ProblemGeneratorVelocityApi(const _fom_t       & appObj,
 			      const fom_native_state_t fomStateReferenceIn,
@@ -236,8 +281,8 @@ public:
     : veloQuerier_{},
       applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceIn),
-      fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+      fomStateReconstructor_(fomStateReference_, decoder),
       fomStates_(fomStateReconstructor_, fomStateReference_),
       jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
 					      fomStateReference_,

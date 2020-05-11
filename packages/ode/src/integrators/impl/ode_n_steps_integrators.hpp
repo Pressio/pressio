@@ -183,7 +183,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 		      Args				  && ... args)
   {
     using step_t = ::pressio::ode::types::step_t;
-    constexpr auto zero = ::pressio::utils::constants::zero<step_t>();
+    // constexpr auto zero = ::pressio::utils::constants::zero<step_t>();
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();

@@ -87,10 +87,7 @@ public:
 
 public:
   // assignment with value
-  template <typename T,
-  	    ::pressio::mpl::enable_if_t<
-  	      std::is_same<T, sc_t>::value> * = nullptr>
-  this_t & operator=(const T value){
+  this_t & operator=(const sc_t value){
     for (ord_t i = 0; i != this->extent(0); ++i)
       data_[i] = value;
     return *this;
@@ -139,7 +136,7 @@ public:
     return this->extent(0)==0 ? true : false;
   }
 
-  ord_t extent(std::size_t i) const {
+  ord_t extent(ord_t i) const {
     assert(i==0);
     return data_.length();
   }

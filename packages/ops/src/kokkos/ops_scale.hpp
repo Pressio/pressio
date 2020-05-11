@@ -54,15 +54,13 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value or
-    ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T>::value or
-    ::pressio::containers::meta::is_matrix_wrapper_kokkos<T>::value
-    > * = nullptr
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value or
+  ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<T>::value or
+  ::pressio::containers::meta::is_matrix_wrapper_kokkos<T>::value
   >
-void scale(T & o, typename ::pressio::containers::details::traits<T>::scalar_t value)
+scale(T & o, typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
   KokkosBlas::scal( *o.data(), value, *o.data() );
 }

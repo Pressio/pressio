@@ -81,14 +81,16 @@ product(::pressio::transpose modeA,
   static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
   		"Types are not scalar compatible");
 
+  // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
+
   // get a tpetra multivector that views the data
   const auto Amvv = A.data()->getMultiVectorView();
   const auto Bmvv = B.data()->getMultiVectorView();
   const auto numVecsA = A.numVectors();
   const auto numVecsB = B.numVectors();
-  assert(A.extent(0) == B.extent(0));
-  assert(C.extent(0) == numVecsA);
-  assert(C.extent(1) == numVecsB);
+  assert((std::size_t)A.extent(0) == (std::size_t)B.extent(0));
+  assert((std::size_t)C.extent(0) == (std::size_t)numVecsA);
+  assert((std::size_t)C.extent(1) == (std::size_t)numVecsB);
 
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
   {
@@ -156,6 +158,8 @@ product(::pressio::transpose modeA,
   assert(C.extent(1) == numVecsA);
   scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>();
 
+  // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
+
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
   for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
@@ -201,7 +205,7 @@ product(::pressio::transpose modeA,
   const auto indexBase = mvView.getMap()->getIndexBase();
   const auto comm = mvView.getMap()->getComm();
   // C should be symmetric
-  assert( C.extent(0) == C.extent(1) );
+  assert( (std::size_t)C.extent(0) == (std::size_t)C.extent(1) );
   const auto n = C.extent(0);
   Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
   // create multivector that views the Kokkos matrix result

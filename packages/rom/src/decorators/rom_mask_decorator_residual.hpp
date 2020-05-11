@@ -51,6 +51,10 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
+template <typename maskable, typename enable = void>
+class Masked;
+
+
 template <typename maskable>
 class Masked<maskable,
   //enable when the maskable type is a residual

@@ -57,28 +57,9 @@ for which a user must provide ops
 *******************************/
 template <typename wrapped_type>
 struct traits<
-  Matrix<
-    wrapped_type,
+  Matrix<wrapped_type>,
     mpl::enable_if_t<
-      !containers::meta::is_dense_matrix_eigen<wrapped_type>::value and
-      !containers::meta::is_sparse_matrix_eigen<wrapped_type>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !containers::meta::is_array_pybind<wrapped_type>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-      and
-      !containers::meta::is_sparse_matrix_epetra<wrapped_type>::value and
-      !containers::meta::is_dense_matrix_epetra<wrapped_type>::value and
-      !containers::meta::is_dense_matrix_teuchos<wrapped_type>::value and
-      !containers::meta::is_dense_matrix_teuchos_rcp<wrapped_type>::value and
-      !containers::meta::is_sparse_matrix_tpetra<wrapped_type>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-      and
-      !containers::meta::is_sparse_matrix_kokkos<wrapped_type>::value and
-      !containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
-#endif
-      >
+      containers::meta::is_matrix_arbitrary<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -113,13 +94,10 @@ struct traits<
 // eigen dense matrix
 //***********************************
 template <typename wrapped_type>
-struct traits< Matrix<
-    wrapped_type,
-    typename
-    std::enable_if<
-      containers::meta::is_dense_matrix_eigen<
-	wrapped_type>::value
-      >::type
+struct traits<
+  Matrix<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_dense_matrix_eigen<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -138,8 +116,8 @@ struct traits< Matrix<
                                       wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
+  using scalar_t  = typename wrapped_type::Scalar;
+  using ordinal_t = typename wrapped_type::StorageIndex;
   using size_t    = ordinal_t;
   using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>>;
   using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>>;
@@ -150,14 +128,10 @@ struct traits< Matrix<
 // eigen sparse matrix
 //***********************************
 template <typename wrapped_type>
-struct traits< Matrix<
-    wrapped_type,
-    typename
-    std::enable_if<
-      containers::meta::is_sparse_matrix_eigen<
-	wrapped_type
-	>::value
-      >::type
+struct traits<
+  Matrix<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_sparse_matrix_eigen<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -192,14 +166,10 @@ struct traits< Matrix<
 //***********************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename wrapped_type>
-struct traits<Matrix
-   <wrapped_type,
-    typename
-    std::enable_if<
-      containers::meta::is_sparse_matrix_epetra<
-	wrapped_type
-	>::value
-      >::type
+struct traits<
+  Matrix<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_sparse_matrix_epetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -237,14 +207,12 @@ struct traits<Matrix
 //**********************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename wrapped_type>
-struct traits<Matrix<wrapped_type,
-	  typename
-	  std::enable_if<
-	    containers::meta::is_dense_matrix_teuchos<
-	      wrapped_type>::value
-	    >::type
-	  >
-	>
+struct traits<
+  Matrix<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_dense_matrix_teuchos<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<Matrix<wrapped_type>,
 				    wrapped_type,
 				    false, true, false,
@@ -278,14 +246,10 @@ struct traits<Matrix<wrapped_type,
 //***********************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename wrapped_type>
-struct traits<Matrix
-   <wrapped_type,
-    typename
-    std::enable_if<
-      containers::meta::is_dense_matrix_epetra<
-	wrapped_type
-	>::value
-      >::type
+struct traits<
+  Matrix<wrapped_type>,
+  mpl::enable_if_t<
+    containers::meta::is_dense_matrix_epetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -318,11 +282,12 @@ struct traits<Matrix
 // for tpetra crs matrix
 //*******************************
 template<typename wrapped_type>
-struct traits<Matrix<wrapped_type,
-      typename std::enable_if<
-       meta::is_sparse_matrix_tpetra<wrapped_type
-      >::value>::type>
-     >
+struct traits<
+  Matrix<wrapped_type>,
+  mpl::enable_if_t<
+    meta::is_sparse_matrix_tpetra<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<Matrix<wrapped_type>,
             wrapped_type, false, true, false,
 	    WrappedPackageIdentifier::Trilinos,false>,
@@ -375,13 +340,9 @@ struct traits<Matrix<wrapped_type,
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename wrapped_type>
 struct traits<
-  Matrix<
-    wrapped_type,
-    ::pressio::mpl::enable_if_t<
-      containers::meta::is_sparse_matrix_kokkos<
-	wrapped_type
-	>::value
-      >
+  Matrix<wrapped_type>,
+  mpl::enable_if_t<
+    meta::is_sparse_matrix_kokkos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<
@@ -400,8 +361,8 @@ struct traits<
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
-  using scalar_t	= typename wrapped_type::value_type;
-  using ordinal_t	= typename wrapped_type::ordinal_type;
+  using scalar_t  = typename wrapped_type::value_type;
+  using ordinal_t = typename wrapped_type::ordinal_type;
   using size_t    = ordinal_t;
 
   // the values of the crs matrix are stored in a 1d dynamic view,
@@ -424,13 +385,9 @@ struct traits<
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename wrapped_type>
 struct traits<
-  Matrix<
-    wrapped_type,
+  Matrix<wrapped_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_dense_matrix_kokkos<
-	wrapped_type
-	>::value
-      >
+      containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<
@@ -452,7 +409,7 @@ struct traits<
   using scalar_t	  = typename wrapped_type::traits::value_type;
   using layout		  = typename wrapped_type::traits::array_layout;
   using ordinal_t	  = typename wrapped_type::traits::size_type;
-  using size_t    = ordinal_t;
+  using size_t		  = ordinal_t;
 
   using execution_space   = typename wrapped_type::traits::execution_space;
   using memory_space	  = typename wrapped_type::traits::memory_space;
@@ -486,11 +443,9 @@ struct traits<
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <typename wrapped_type>
 struct traits<
-  Matrix<
-    wrapped_type,
+  Matrix<wrapped_type>,
     mpl::enable_if_t<
       containers::meta::is_array_pybind<wrapped_type>::value
-      >
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,

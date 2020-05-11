@@ -168,10 +168,10 @@ public:
     typename _ops_t = ops_t,
     typename _system_t = system_t,
     typename _jacobian_t = jacobian_t,
-    mpl::enable_if_t<
+    typename = mpl::enable_if_t<
       ::pressio::containers::meta::is_matrix_wrapper_pybind<_jacobian_t>::value
       and std::is_void<_ops_t>::value
-      > * = nullptr
+      >
     >
   PyGaussNewton(const _system_t	 & system,
 		const typename containers::details::traits<state_t>::wrapped_t & yState,

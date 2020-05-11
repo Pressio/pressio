@@ -70,16 +70,16 @@ public:
   template<
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
-      std::is_default_constructible<_wrapped_type>::value
-    > * = nullptr
+      std::is_default_constructible<_wrapped_type>::value, 
+      int > = 0
   >
   Vector(){};
 
   template<
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
-      std::is_constructible<_wrapped_type, size_t>::value
-    > * = nullptr
+      std::is_constructible<_wrapped_type, size_t>::value,
+      int > = 0
   >
   explicit Vector(size_t szIn) : data_(szIn){};
 

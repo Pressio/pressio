@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_vector_wrapper_armadillo.hpp
+// containers_native_arbitrary_vector_meta.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,34 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_ARMADILLO
-#ifndef CONTAINERS_IS_VECTOR_WRAPPER_ARMADILLO_HPP_
-#define CONTAINERS_IS_VECTOR_WRAPPER_ARMADILLO_HPP_
+#ifndef CONTAINERS_NATIVE_ARBITRARY_VECTOR_META_HPP_
+#define CONTAINERS_NATIVE_ARBITRARY_VECTOR_META_HPP_
 
 namespace pressio{ namespace containers{ namespace meta {
 
 template <typename T, typename enable = void>
-struct is_row_vector_wrapper_armadillo : std::false_type {};
+struct is_vector_arbitrary : std::false_type {};
 
 template <typename T>
-struct is_row_vector_wrapper_armadillo<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_vector &&
-       containers::details::traits<T>::wrapped_vector_identifier==
-       containers::details::WrappedVectorIdentifier::ArmadilloRow
-       >
+struct is_vector_arbitrary<
+  T,
+  ::pressio::mpl::enable_if_t<
+    !containers::meta::is_vector_eigen<T>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    and !containers::meta::is_array_pybind<T>::value
+#endif
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    and !containers::meta::is_vector_kokkos<T>::value
+#endif
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+    and !containers::meta::is_vector_epetra<T>::value
+    and !containers::meta::is_dense_vector_teuchos<T>::value
+    and !containers::meta::is_vector_tpetra_block<T>::value
+    and !containers::meta::is_vector_tpetra<T>::value
+#endif
+    >
   > : std::true_type{};
 
-
-template <typename T, typename enable = void>
-struct is_column_vector_wrapper_armadillo : std::false_type {};
-
-template <typename T>
-struct is_column_vector_wrapper_armadillo<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_vector &&
-       containers::details::traits<T>::wrapped_vector_identifier==
-       containers::details::WrappedVectorIdentifier::ArmadilloCol
-       >
-  > : std::true_type{};
 
 }}}//end namespace pressio::containers::meta
 #endif
-#endif // PRESSIO_ENABLE_TPL_ARMADILLO

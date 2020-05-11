@@ -77,20 +77,17 @@
 //------------------
 // VECTOR
 //------------------
-#include "containers/src/vector/meta/containers_native_armadillo_vector_meta.hpp"
-#include "containers/src/vector/meta/containers_native_blaze_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_eigen_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_epetra_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_kokkos_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_teuchos_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_tpetra_block_vector_meta.hpp"
 #include "containers/src/vector/meta/containers_native_tpetra_vector_meta.hpp"
+#include "containers/src/vector/meta/containers_native_arbitrary_vector_meta.hpp"
 
 #include "containers/src/vector/meta/containers_is_dense_vector_wrapper_teuchos.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_arbitrary.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_pybind.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper_armadillo.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper_blaze.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_eigen.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_epetra.hpp"
 #include "containers/src/vector/meta/containers_is_vector_wrapper_kokkos.hpp"
@@ -105,8 +102,6 @@
 #include "containers/src/vector/concrete/containers_vector_distributed_epetra.hpp"
 #include "containers/src/vector/concrete/containers_vector_distributed_tpetra_block.hpp"
 #include "containers/src/vector/concrete/containers_vector_distributed_tpetra.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_armadillo.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_blaze_dynamic.hpp"
 #include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_dynamic.hpp"
 #include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_static.hpp"
 #include "containers/src/vector/concrete/containers_vector_sharedmem_kokkos.hpp"
@@ -118,6 +113,7 @@
 #include "containers/src/matrix/meta/containers_native_eigen_matrix_meta.hpp"
 #include "containers/src/matrix/meta/containers_native_kokkos_matrix_meta.hpp"
 #include "containers/src/matrix/meta/containers_native_trilinos_matrix_meta.hpp"
+#include "containers/src/matrix/meta/containers_native_arbitrary_matrix_meta.hpp"
 
 #include "containers/src/matrix/meta/containers_is_dense_matrix_wrapper_eigen.hpp"
 #include "containers/src/matrix/meta/containers_is_dense_matrix_wrapper_epetra.hpp"
@@ -153,6 +149,7 @@
 #include "containers/src/multi_vector/meta/containers_native_kokkos_multi_vector_meta.hpp"
 #include "containers/src/multi_vector/meta/containers_native_tpetra_block_multi_vector_meta.hpp"
 #include "containers/src/multi_vector/meta/containers_native_tpetra_multi_vector_meta.hpp"
+#include "containers/src/multi_vector/meta/containers_native_arbitrary_multi_vector_meta.hpp"
 
 #include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_tpetra.hpp"
 #include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_tpetra_block.hpp"
@@ -175,8 +172,6 @@
 //------------------
 // expressions
 //------------------
-#include "containers/src/expressions/containers_expression_base.hpp"
-
 #include "containers/src/expressions/span/containers_vector_span_expression.hpp"
 #include "containers/src/expressions/span/containers_expressions_traits.hpp"
 #include "containers/src/expressions/span/containers_span.hpp"

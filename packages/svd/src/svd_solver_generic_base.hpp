@@ -66,11 +66,9 @@ private:
 
 public:
 
-  template<svdType svd_enum_value,
-	   typename std::enable_if<
-	     svd_enum_value==svdType::truncated
-	     >::type * = nullptr>
-  void compute(matrix_t & mat, int t, sc_t tol = 1e-12){
+  template<svdType svd_enum_value>
+	::pressio::mpl::enable_if_t< svd_enum_value==svdType::truncated >
+  compute(matrix_t & mat, int t, sc_t tol = 1e-12){
     this->underlying().template computeImpl<svd_enum_value>(mat, t, tol);
   }
 

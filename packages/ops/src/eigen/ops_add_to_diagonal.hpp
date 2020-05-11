@@ -51,14 +51,12 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<T>::value
-    > * = nullptr
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<T>::value
   >
-void addToDiagonal(T & o,
-		   typename ::pressio::containers::details::traits<T>::scalar_t value)
+addToDiagonal(T & o,
+	      typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
   auto & natObj = *o.data();
   auto ide(natObj);

@@ -145,12 +145,9 @@ public:
   /* when n == 2, it means I only have current state and previous one
    * so when I need to reconstruct the previous state, I can simply
    * overwrite the data in data_(1) */
-  template <
-    typename rom_state_t,
-    std::size_t _n = n,
-    ::pressio::mpl::enable_if_t<_n == 2> * = nullptr
-    >
-  void operator << (const rom_state_t & romStateIn)
+  template < typename rom_state_t, std::size_t _n = n>
+  ::pressio::mpl::enable_if_t<_n == 2>
+  operator << (const rom_state_t & romStateIn)
   {
     // reconstrct the FOM state at n-1
     fomStateReconstrObj_(romStateIn, data_(1));
@@ -160,13 +157,9 @@ public:
    * such that y_t-2 goes into y_t-3,
    * and y_t-1 goes into y_t-2, etc.
    * and then finally we overwrite data_(0) */
-  template <
-    typename _ud_ops_t = ud_ops_t, typename rom_state_t, std::size_t _n = n,
-    ::pressio::mpl::enable_if_t<
-      _n >= 3 and std::is_void<_ud_ops_t>::value
-    > * = nullptr
-		   >
-  void operator << (const rom_state_t & romStateIn)
+  template <typename _ud_ops_t = ud_ops_t, typename rom_state_t, std::size_t _n = n >
+  ::pressio::mpl::enable_if_t< _n >= 3 and std::is_void<_ud_ops_t>::value >
+  operator << (const rom_state_t & romStateIn)
   {
     // copy all states back, such that y_t-2 goes into y_t-3,
     // and y_t-1 goes into y_t-2, etc. so that y_t-1 is free to overwrite
@@ -179,13 +172,9 @@ public:
     fomStateReconstrObj_(romStateIn, data_(1));
   }
 
-  template <
-    typename _ud_ops_t = ud_ops_t, typename rom_state_t, std::size_t _n = n,
-    ::pressio::mpl::enable_if_t<
-      _n >= 3 and !std::is_void<_ud_ops_t>::value
-    > * = nullptr
-		   >
-  void operator << (const rom_state_t & romStateIn)
+  template <typename _ud_ops_t = ud_ops_t, typename rom_state_t, std::size_t _n = n >
+    ::pressio::mpl::enable_if_t< _n >= 3 and !std::is_void<_ud_ops_t>::value > 
+  operator << (const rom_state_t & romStateIn)
   {
     for (std::size_t i=n-2; i>=1; --i){
       const auto & src  = data_(i);
@@ -198,20 +187,16 @@ public:
 
 
 private:
-  template <
-  typename _ud_ops_t = ud_ops_t,
-  mpl::enable_if_t< std::is_void< _ud_ops_t>::value > * = nullptr
-  >
-  void resetContainersToZero(){
+  template <typename _ud_ops_t = ud_ops_t>
+  mpl::enable_if_t< std::is_void< _ud_ops_t>::value >
+  resetContainersToZero(){
     for (std::size_t i=0; i<n; i++)
       ::pressio::ops::set_zero(data_(i));
   }
 
-  template <
-  typename _ud_ops_t = ud_ops_t,
-  mpl::enable_if_t< !std::is_void< _ud_ops_t>::value > * = nullptr
-  >
-  void resetContainersToZero(){
+  template <typename _ud_ops_t = ud_ops_t>
+  mpl::enable_if_t< !std::is_void< _ud_ops_t>::value >
+  resetContainersToZero(){
     for (std::size_t i=0; i<n; i++)
       udOps_->set_zero(*data_(i).data());
   }

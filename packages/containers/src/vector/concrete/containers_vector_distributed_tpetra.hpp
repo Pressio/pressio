@@ -70,17 +70,14 @@ class Vector<wrapped_type,
   using LO_t = typename details::traits<this_t>::local_ordinal_t;
   using GO_t = typename details::traits<this_t>::global_ordinal_t;
   using device_t = typename details::traits<this_t>::device_t;
-  using der_t = this_t;
-  using wrap_t = typename details::traits<this_t>::wrapped_t;
   using map_t = typename details::traits<this_t>::data_map_t;
-  using mpicomm_t = typename details::traits<this_t>::communicator_t;
 
 public:
   // default cnstr
   Vector() = delete;
 
   // cnstrs
-  explicit Vector(const wrap_t & vecobj)
+  explicit Vector(const wrapped_type & vecobj)
     // use the deep_copy cnstr
     : data_(vecobj, Teuchos::Copy){}
 
@@ -131,19 +128,19 @@ public:
   }
 
   void print(std::string tag) const{
-    Tpetra::MatrixMarket::Writer<wrap_t>::writeDense
+    Tpetra::MatrixMarket::Writer<wrapped_type>::writeDense
       (std::cout << std::setprecision(15), data_, tag, tag);
   }
 
-  wrap_t const * data() const{
+  wrapped_type const * data() const{
     return &data_;
   }
 
-  wrap_t * data(){
+  wrapped_type * data(){
     return &data_;
   }
 
-  wrap_t dataCp(){
+  wrapped_type dataCp(){
     return data_;
   }
 
@@ -159,7 +156,7 @@ public:
 
 private:
   friend VectorDistributedBase< this_t >;
-  wrap_t data_ = {};
+  wrapped_type data_ = {};
 };//end class
 
 }}//end namespace pressio::containers

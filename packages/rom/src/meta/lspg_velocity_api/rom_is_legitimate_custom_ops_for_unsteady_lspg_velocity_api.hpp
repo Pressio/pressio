@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_apply_jacobian_steady_policy.hpp
+// rom_is_legitimate_custom_ops_for_unsteady_lspg_velocity_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,33 @@
 //@HEADER
 */
 
-#ifndef ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
-#define ROM_APPLY_FOM_JACOBIAN_STEADY_HPP_
+#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_VELOCITY_API_HPP_
+#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_VELOCITY_API_HPP_
 
-namespace pressio{ namespace rom{ namespace policy{
+namespace pressio{ namespace rom{ namespace meta {
 
-template <>
-struct QueryFomApplyJacobianDefault<true>{
+template<
+  typename T,
+  typename mat_type, typename rom_state_type, typename fom_state_type,
+  typename enable = void
+  >
+struct is_legitimate_custom_ops_for_unsteady_lspg_velocity_api
+  : std::false_type{};
 
-  template <
-    typename fom_t,
-    typename state_t,
-    typename operand_t
+template <
+  typename T,
+  typename mat_type, typename rom_state_type, typename fom_state_type
+  >
+struct is_legitimate_custom_ops_for_unsteady_lspg_velocity_api<
+  T, mat_type, rom_state_type, fom_state_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::rom::meta::is_legitimate_custom_ops_for_fom_state_reconstructor<
+      T, fom_state_type>::value
+    and
+    ::pressio::rom::meta::is_legitimate_custom_ops_for_linear_decoder<
+      T, mat_type, rom_state_type, fom_state_type>::value
     >
-  auto evaluate(const fom_t	  & fomObj,
-		const state_t   & yFOM,
-		const operand_t & B) const
-    -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data()))
-  {
-    return fomObj.applyJacobian(*yFOM.data(), *B.data());
-  }
+  > : std::true_type{};
 
-  template <
-    typename fom_t,
-    typename state_t,
-    typename operand_t,
-    typename result_t
-    >
-  void evaluate(const fom_t	  & fomObj,
-		const state_t	  & yFOM,
-		const operand_t & B,
-		result_t	  & out) const
-  {
-    fomObj.applyJacobian(*yFOM.data(), *B.data(), *out.data());
-  }
-
-};
-
-}}} //end namespace pressio::rom::policy
+}}} // namespace pressio::rom::meta
 #endif

@@ -61,15 +61,13 @@ public:
   NormDispatcher() = default;
   NormDispatcher(const ud_ops_t * udOps) : udOps_{udOps}{}
 
-  template <
-    typename vec_t, typename scalar_t,
-    mpl::enable_if_t<
-      !::pressio::containers::meta::is_vector_wrapper_arbitrary<vec_t>::value
-      > * = nullptr
+  template < typename vec_t, typename scalar_t >
+  mpl::enable_if_t<
+    !::pressio::containers::meta::is_vector_wrapper_arbitrary<vec_t>::value
     >
-  void evaluate(const vec_t & vecIn,
-		       scalar_t & result, 
-		       const ::pressio::solvers::Norm & normType) const
+  evaluate(const vec_t & vecIn,
+	   scalar_t & result,
+	   const ::pressio::solvers::Norm & normType) const
   {
     if (normType == ::pressio::solvers::Norm::L1){
       result = ::pressio::ops::norm1(vecIn);
@@ -82,16 +80,14 @@ public:
   }
 
 
-  template <
-    typename vec_t, typename scalar_t, typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t<
-      ::pressio::containers::meta::is_vector_wrapper_arbitrary<vec_t>::value and
-      !std::is_void<_ud_ops_t>::value
-      > * = nullptr
+  template < typename vec_t, typename scalar_t, typename _ud_ops_t = ud_ops_t>
+  mpl::enable_if_t<
+    ::pressio::containers::meta::is_vector_wrapper_arbitrary<vec_t>::value and
+    !std::is_void<_ud_ops_t>::value
     >
-  void evaluate(const vec_t & vecIn,
-		       scalar_t & result,
-		       const ::pressio::solvers::Norm & normType) const
+  evaluate(const vec_t & vecIn,
+	   scalar_t & result,
+	   const ::pressio::solvers::Norm & normType) const
   {
     if (normType == ::pressio::solvers::Norm::L1){
       result = udOps_->norm1( *vecIn.data() );

@@ -40,8 +40,8 @@ void readBasis(std::string filename, result_t & phi)
 
   std::vector<std::vector<double>> A0;
   ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, nCols);
-  for (int i=0; i<nRows; i++){
-    for (int j=0; j<nCols; j++)
+  for (std::size_t i=0; i<nRows; i++){
+    for (std::size_t j=0; j<nCols; j++)
       phi(i,j) = A0[i][j];
   }
 }
@@ -61,10 +61,10 @@ struct myOps
     // x is subscriptable like a regular array, e.g. you can do x[i] or x(i)
     const auto nArows = A.extent(0);
     const auto nAcols = A.extent(1);
-    for (auto i=0; i<nArows; ++i)
+    for (std::size_t i=0; i<nArows; ++i)
     {
       y(i) = beta*y(i);
-      for (auto j=0; j<nAcols; ++j)
+      for (std::size_t j=0; j<nAcols; ++j)
 	y(i) += alpha * A(i,j) * x(j);
     }
   }
@@ -81,15 +81,15 @@ struct myOps
     // y is subscriptable like a regular array
     const auto nArows = A.extent(0);
     const auto nAcols = A.extent(1);
-    for (auto j=0; j<nAcols; ++j){
+    for (std::size_t j=0; j<nAcols; ++j){
       y(j) = beta*y(j);
-      for (auto i=0; i<nArows; ++i)
+      for (std::size_t i=0; i<nArows; ++i)
     	y(j) += alpha * A(i,j) * x(i);
     }
   }
 
   void deep_copy(pressio::apps::arbds::Vector<sc_t> & to,
-		 const pressio::apps::arbds::Vector<sc_t> & from) const
+  		 const pressio::apps::arbds::Vector<sc_t> & from) const
   {
     // here you need do a deep copy from -> to
     to = from;
@@ -97,7 +97,7 @@ struct myOps
 
   void set_zero(pressio::apps::arbds::Vector<sc_t> & vec) const
   {
-    for (auto i=0; i<vec.extent(0); ++i)
+    for (std::size_t i=0; i<vec.extent(0); ++i)
      vec(i) = static_cast<sc_t>(0);
   }
 
@@ -106,7 +106,7 @@ struct myOps
 	    pressio::apps::arbds::Vector<sc_t> & y) const
   {
     // compute y = y + alfa * x
-    for (auto i=0; i<y.extent(0); ++i)
+    for (std::size_t i=0; i<y.extent(0); ++i)
       y(i) += alpha * x(i);
   }
 };
@@ -163,7 +163,7 @@ struct EulerGalerkinWithVelocityApi
 
     // for this problem, my reference state = initial state
     native_state_t yRef(numCell);
-    for (auto i=0; i<yRef.extent(0); ++i)
+    for (std::size_t i=0; i<yRef.extent(0); ++i)
       yRef(i) = pressio::utils::constants::one<scalar_t>();
 
     // define ROM state
@@ -193,7 +193,7 @@ int main(int argc, char *argv[]){
 
   std::cout << "check that fom reconstructed state match" << std::endl;
   // check the reconstructed fom state
-  for (auto i=0; i<probObj.fomSol_.extent(0); i++){
+  for (std::size_t i=0; i<probObj.fomSol_.extent(0); i++){
     std::cout << std::setprecision(14)
   	      << goldFom[i]
   	      << " "

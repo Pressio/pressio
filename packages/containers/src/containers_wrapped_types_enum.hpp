@@ -57,12 +57,10 @@ Wrapped library name for containers
 enum class WrappedPackageIdentifier{
    Undefined,
    Eigen,
-   Blaze,
    Trilinos,
    Kokkos,
-   Armadillo,
-   Arbitrary,
-   Pybind
+   Pybind,
+   Arbitrary
 };
 
 /*--------------------------------------------
@@ -84,13 +82,9 @@ enum class WrappedVectorIdentifier{
    EigenRowDynamic,
    EigenColDynamic,
    TeuchosSerialDense,
-   BlazeStatic,
-   BlazeDynamic,
    Kokkos,
-   ArmadilloCol,
-   ArmadilloRow,
-   Arbitrary,
-   Pybind
+   Pybind,
+   Arbitrary
 };
 
 /*--------------------------------------------
@@ -107,12 +101,9 @@ enum class WrappedMatrixIdentifier{
    TeuchosSerialDense,
    DenseEigen, // maybe more specific, like static or dynamic
    SparseEigen,
-   DenseBlaze, // maybe more specific
-   SparseBlaze,
-   Arbitrary,
-   Pybind
+   Pybind,
+   Arbitrary
 };
-
 
 /*--------------------------------------------
 Identifier for wrapped multivector
@@ -126,7 +117,6 @@ enum class WrappedMultiVectorIdentifier{
    Eigen,
    Arbitrary
 };
-
 
 }}} // end namespace pressio::containers::details
 #endif

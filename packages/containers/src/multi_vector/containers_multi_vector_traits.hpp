@@ -57,21 +57,9 @@ for which a user must provide ops
 *******************************/
 template <typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
-    mpl::enable_if_t<
-      !containers::meta::is_dynamic_multi_vector_eigen<wrapped_type>::value
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-      and
-      !containers::meta::is_multi_vector_epetra<wrapped_type>::value and
-      !containers::meta::is_multi_vector_tpetra_block<wrapped_type>::value and
-      !containers::meta::is_multi_vector_tpetra<wrapped_type>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-      and
-      !containers::meta::is_multi_vector_kokkos<wrapped_type>::value
-#endif
-      >
+  MultiVector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    meta::is_multi_vector_arbitrary<wrapped_type>::value
     >
   >
   : public containers_shared_traits<MultiVector<wrapped_type>,
@@ -109,13 +97,9 @@ struct traits<
 //*******************************
 template<typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
-    ::pressio::mpl::enable_if_t<
-      meta::is_multi_vector_epetra<
-	wrapped_type
-	>::value
-      >
+  MultiVector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    meta::is_multi_vector_epetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<MultiVector<wrapped_type>,
@@ -134,7 +118,7 @@ struct traits<
   using scalar_t = double;
   using local_ordinal_t = int;
   using global_ordinal_t = int;
-  using size_t    = global_ordinal_t;  
+  using size_t    = global_ordinal_t;
 
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
@@ -149,13 +133,9 @@ struct traits<
 //*******************************
 template<typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
-    ::pressio::mpl::enable_if_t<
-      meta::is_multi_vector_tpetra<
-	wrapped_type
-	>::value
-      >
+  MultiVector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    meta::is_multi_vector_tpetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<MultiVector<wrapped_type>,
@@ -171,7 +151,7 @@ struct traits<
   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
   using data_map_t = typename wrapped_type::map_type;
-  using size_t    = global_ordinal_t;  
+  using size_t    = global_ordinal_t;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
@@ -207,13 +187,9 @@ struct traits<
 //*******************************
 template<typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
-    ::pressio::mpl::enable_if_t<
-      meta::is_multi_vector_tpetra_block<
-	wrapped_type
-	>::value
-      >
+  MultiVector<wrapped_type>,
+  ::pressio::mpl::enable_if_t<
+    meta::is_multi_vector_tpetra_block<wrapped_type>::value
     >
   >
   : public containers_shared_traits<MultiVector<wrapped_type>,
@@ -229,7 +205,7 @@ struct traits<
   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
   using data_map_t = typename wrapped_type::map_type;
-  using size_t    = global_ordinal_t;  
+  using size_t    = global_ordinal_t;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
@@ -264,11 +240,9 @@ struct traits<
 //*******************************
 template<typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
+  MultiVector<wrapped_type>,
     ::pressio::mpl::enable_if_t<
       meta::is_dynamic_multi_vector_eigen<wrapped_type>::value
-      >
     >
   >
   : public containers_shared_traits<
@@ -287,9 +261,9 @@ struct traits<
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_t = typename wrapped_type::Scalar;
-  using ordinal_t = int;
-  using size_t    = ordinal_t;  
+  using scalar_t  = typename wrapped_type::Scalar;
+  using ordinal_t = typename wrapped_type::StorageIndex;
+  using size_t    = ordinal_t;
 
   static constexpr bool is_admissible_for_expression_templates = true;
 };
@@ -301,13 +275,9 @@ struct traits<
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename wrapped_type>
 struct traits<
-  MultiVector<
-    wrapped_type,
+  MultiVector<wrapped_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_multi_vector_kokkos<
-	wrapped_type
-	>::value
-      >
+      containers::meta::is_multi_vector_kokkos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<
@@ -333,7 +303,7 @@ struct traits<
   using scalar_t	  = typename wrapped_type::traits::value_type;
   using layout		  = typename wrapped_type::traits::array_layout;
   using ordinal_t	  = typename wrapped_type::traits::size_type;
-  using size_t    = ordinal_t;    
+  using size_t		  = ordinal_t;
   using execution_space	  = typename wrapped_type::traits::execution_space;
   using memory_space	  = typename wrapped_type::traits::memory_space;
   using device_type	  = typename wrapped_type::traits::device_type;

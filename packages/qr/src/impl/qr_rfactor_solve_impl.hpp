@@ -57,15 +57,12 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template<
-  typename vector_type,
-  typename R_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
-    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<R_type>::value
-    > * = nullptr
-  >
-void solve(const vector_type & rhs,
+template< typename vector_type, typename R_type> 
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
+  ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<R_type>::value
+>
+solve(const vector_type & rhs,
 	   const R_type & Rmatrix,
 	   vector_type & y){
   auto nat_rhs = rhs.data();
@@ -77,15 +74,12 @@ void solve(const vector_type & rhs,
 
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<
-  typename vector_type,
-  typename R_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
-    ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
-    > * = nullptr
-  >
-void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
+template<typename vector_type, typename R_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<vector_type>::value and
+  ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
+>
+solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
   using ord_t	 = typename R_type::element_type::ordinalType;
   using sc_t	 = typename R_type::element_type::scalarType;
@@ -147,15 +141,12 @@ void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 // }
 // #endif
 
-template<
-  typename vector_type,
-  typename R_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
-    ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
-    > * = nullptr
-  >
-void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
+template<typename vector_type, typename R_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<vector_type>::value and
+  ::pressio::containers::meta::is_dense_matrix_teuchos_rcp<R_type>::value
+>
+solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
   // todo: maybe here we should use directly backward substitution but it does
   // not seem to be available directly from teuchos
