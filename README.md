@@ -11,7 +11,7 @@ Specifically, the whole Pressio framework currently includes the following repos
 * `pressio-builder`: an auxiliary repo with bash helper scripts for configuring/building/installing `pressio`, and `pressio-tutorials`.
 
 ## Questions
-For questions, find us on Slack: pressioteam.slack.com or open an issue.
+For questions, find us on Slack: https://pressioteam.slack.com or open an issue.
 
 ## License and Citation
 Pressio is released with the following [LICENSE](./LICENSE).
