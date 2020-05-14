@@ -116,7 +116,7 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
   C_type C(A.numVectors(), A.numVectors());
   product(modeA, modeB, alpha, A, A, zero, C);
   return C;

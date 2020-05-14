@@ -174,8 +174,8 @@ private:
   ::pressio::mpl::enable_if_t< std::is_void<_ops_t>::value >
   applyDecoderJacobianToFomVel(result_t & result) const
   {
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), one, phi_, fomRhs_, zero, result);
   }
 
@@ -187,8 +187,8 @@ private:
   ::pressio::mpl::enable_if_t< !std::is_void<_ops_t>::value >
   applyDecoderJacobianToFomVel(result_t & result) const
   {
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     udOps_->product(::pressio::transpose(), one, *phi_.data(), *fomRhs_.data(), zero, result);
   }
 

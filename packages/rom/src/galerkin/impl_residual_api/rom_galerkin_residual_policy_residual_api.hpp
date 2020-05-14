@@ -99,8 +99,8 @@ public:
     fomStates_.reconstructCurrentFomState(romState);
     fom_residual_type fomR(fomQuerier_.evaluate(fomStates_.getCRefToCurrentFomState(), app));
     residual_t R(romState.extent(0));
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), one, phi_, fomR, zero, R);
     return R;
   }
@@ -144,8 +144,8 @@ private:
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
     fomQuerier_.evaluate(yn, ynm1, app, time, dt, step, fomR_);
 
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), one, phi_, fomR_, zero, romR);
   }
 
@@ -167,8 +167,8 @@ private:
     const auto & ynm2 = fomStates_.getCRefToFomStatePrevPrevStep();
     fomQuerier_.evaluate(yn, ynm1, ynm2, app, time, dt, step, fomR_);
 
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), one, phi_, fomR_, zero, romR);
   }
 

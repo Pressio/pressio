@@ -67,7 +67,7 @@ TEST(tpetraVectors, loopedVectorManipulation){
   // using myvec_dev_t = typename pressio::containers::details::traits<myvec_t>::device_t;
   // containers::Vector<> constr does a deep-copy (for now)
   myvec_t myx(x);  
-  myx.data()->putScalar(pressio::utils::constants::zero<ST>());
+  myx.data()->putScalar(pressio::utils::constants<ST>::zero());
 
   // modify the host (and then sync)
   myx.data()->modify<Kokkos::HostSpace>();

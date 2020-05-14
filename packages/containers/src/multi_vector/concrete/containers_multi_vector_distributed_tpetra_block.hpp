@@ -86,9 +86,9 @@ public:
 	     other.getBlockSize(),
 	     other.getNumVectors()){
     // just a trick to copy data
-    data_.update(::pressio::utils::constants::one<sc_t>(),
+    data_.update(::pressio::utils::constants<sc_t>::one(),
 		 other,
-		 ::pressio::utils::constants::zero<sc_t>());
+		 ::pressio::utils::constants<sc_t>::zero());
   }
 
   // delegate (for now) to the one above

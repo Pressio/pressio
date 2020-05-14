@@ -189,7 +189,7 @@ public:
                                  const pressio::solvers::Norm & normType,
                                  scalar_type		      & rnorm) const
   {
-    rnorm = pressio::utils::constants::zero<scalar_type>();
+    rnorm = pressio::utils::constants<scalar_type>::zero();
     hessianGradientPolicy_(
 			   wls_state,
 			   wlsStateIC_,

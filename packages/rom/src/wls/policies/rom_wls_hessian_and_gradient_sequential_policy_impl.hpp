@@ -98,7 +98,7 @@ public:
       appObj_(appObj),
       phi_(decoderObj.getReferenceToJacobian()),
       fomStateCurrent_(fomState),
-      residual_(appObj.velocity( *fomState.data(), ::pressio::utils::constants::zero<scalar_t>()) ),
+      residual_(appObj.velocity( *fomState.data(), ::pressio::utils::constants<scalar_t>::zero()) ),
       // construct wls Jacobians from jacobian of the decoder: we might need to change this later
       jacobians_( timeStencilSize, numStepsInWindow , phi_), 
       timeSchemeObj_(romSize_, fomState)
@@ -168,8 +168,8 @@ public:
                   const window_size_t step_s,
                   scalar_t & rnorm) const
   {
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
 
     window_size_t stepNumLocal = 0;
     scalar_t t = ts + stepNumLocal*dt;
@@ -275,7 +275,7 @@ private:
   {
     for (window_size_t i=0; i < sbar; i++){
       for (window_size_t j=0; j <= i; j++){
-        constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+        constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
         auto hess_block = ::pressio::containers::subspan(hess,
 							 std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
 							 std::make_pair( (n-j)*romSize_,(n-j+1)*romSize_ ) );
@@ -296,7 +296,7 @@ private:
     for (window_size_t i=0; i < sbar; i++){
       for (window_size_t j=0; j <= i; j++)
       {
-        constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+        constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
         auto hess_block = ::pressio::containers::subspan(hess,
 							 std::make_pair( (n-j)*romSize_, (n-j+1)*romSize_ ),
 							 std::make_pair( (n-i)*romSize_,(n-i+1)*romSize_ ) );
@@ -430,7 +430,7 @@ private:
 // 			   const int step_s,
 // 			   scalar_t & rnorm) const
 // {
-//   rnorm = ::pressio::utils::constants::zero<scalar_t>();
+//   rnorm = ::pressio::utils::constants<scalar_t>::zero();
 //   int n = 0;
 //   auto t = ts + n*dt;
 //   int step = step_s + n;

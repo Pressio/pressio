@@ -80,7 +80,7 @@ public:
 
   explicit Vector(ord_t insize){
     data_.resize(insize);
-    data_.setConstant( ::pressio::utils::constants::zero<sc_t>() );
+    data_.setConstant( ::pressio::utils::constants<sc_t>::zero() );
   }
   explicit Vector(const wrap_t & src) : data_(src){}
 

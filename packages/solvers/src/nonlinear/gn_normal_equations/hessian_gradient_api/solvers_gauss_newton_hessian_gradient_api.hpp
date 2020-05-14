@@ -147,8 +147,8 @@ private:
 
   void solveImpl(const system_type & sys, state_t & stateInOut)
   {
-    constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
-    constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_type>();
+    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto negOne = ::pressio::utils::constants<scalar_type>::negOne();
     const auto convCondDescr = std::string(is_converged_t::description_);
 
     const auto maxNonLIt  = iterative_base_t::maxIters_;

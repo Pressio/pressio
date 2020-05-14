@@ -100,8 +100,8 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
-    constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
+    constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 

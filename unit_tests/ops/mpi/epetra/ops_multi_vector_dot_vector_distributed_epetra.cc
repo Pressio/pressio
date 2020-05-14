@@ -46,8 +46,8 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   c2.data()->resize(4);
 
   {  
-  constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
-  constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
+  constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
+  constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
   ::pressio::ops::product(::pressio::transpose(), alpha, MV, b, beta, c2);
   EXPECT_EQ( c2.extent(0), 4);
   EXPECT_NEAR(c2[0], 4.4, 1e-12);

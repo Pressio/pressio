@@ -58,7 +58,7 @@ template <typename T>
   >
 set_zero(T & v){
   using value_type = typename ::pressio::containers::details::traits<T>::scalar_t;
-  constexpr auto zero = ::pressio::utils::constants::zero<value_type>();
+  constexpr auto zero = ::pressio::utils::constants<value_type>::zero();
   v.data()->putScalar(zero);
 }
 

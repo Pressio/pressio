@@ -118,7 +118,7 @@ product(::pressio::transpose modeA,
 {
   static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
 
   const auto numVecsA = A.numVectors();
   const auto numVecsB = B.numVectors();
@@ -152,7 +152,7 @@ product(::pressio::transpose modeA,
   assert((std::size_t)C.extent(1) == (std::size_t)numVecsA);
 
   // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
-  scalar_type tmp = ::pressio::utils::constants::zero<scalar_type>();
+  scalar_type tmp = ::pressio::utils::constants<scalar_type>::zero();
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
@@ -224,7 +224,7 @@ product(::pressio::transpose modeA,
   static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
 		"Types are not scalar compatible");
 
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_type>();
+  constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
   C_type C(A.numVectors(), A.numVectors());
   product(modeA, modeB, alpha, A, zero, C);
   return C;

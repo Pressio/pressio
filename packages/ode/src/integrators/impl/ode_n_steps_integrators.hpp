@@ -78,7 +78,7 @@ struct IntegratorNStepsWithCollectorAndConstDt
 
     using step_t = ::pressio::ode::types::step_t;
     using collector_dispatch = CallCollectorDispatch<collector_type, step_t, time_type, state_type>;
-    constexpr auto zero = ::pressio::utils::constants::zero<step_t>();
+    constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
 
     // time variable
     time_type time = start_time;
@@ -183,7 +183,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 		      Args				  && ... args)
   {
     using step_t = ::pressio::ode::types::step_t;
-    // constexpr auto zero = ::pressio::utils::constants::zero<step_t>();
+    // constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();

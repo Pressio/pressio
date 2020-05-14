@@ -25,7 +25,7 @@ int main(int argc, char *argv[]){
   using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, lspg_state_d_t, fom_state_t_d>;
 
   std::string checkStr {"PASSED"};
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
 
   Kokkos::initialize (argc, argv);
   {

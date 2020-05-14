@@ -82,7 +82,7 @@ std::string doRun()
   constexpr std::size_t fomSize = 20;
   auto appObj = constructAppObj<fom_t>(fomSize);
   constexpr scalar_t dt = 0.01;
-  // constexpr auto t0 = ::pressio::utils::constants::zero<scalar_t>();
+  // constexpr auto t0 = ::pressio::utils::constants<scalar_t>::zero();
   // wrap init cond with pressio container
   const fom_state_t fomStateInitCond(appObj.getInitialState());
   //reference state is equal to the IC

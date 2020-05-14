@@ -145,7 +145,7 @@ struct EulerGalerkinWithVelocityApi
     // adapter
     fom_t fomObj(appObj);
     scalar_t dt = 0.01;
-    const auto t0 = pressio::utils::constants::zero<scalar_t>();
+    const auto t0 = pressio::utils::constants<scalar_t>::zero();
 
     ops_t myOps;
 
@@ -164,11 +164,11 @@ struct EulerGalerkinWithVelocityApi
     // for this problem, my reference state = initial state
     native_state_t yRef(numCell);
     for (std::size_t i=0; i<yRef.extent(0); ++i)
-      yRef(i) = pressio::utils::constants::one<scalar_t>();
+      yRef(i) = pressio::utils::constants<scalar_t>::one();
 
     // define ROM state
     pressio::ops::resize(yROM_, romSize);
-    pressio::ops::fill(yROM_, pressio::utils::constants::zero<scalar_t>());
+    pressio::ops::fill(yROM_, pressio::utils::constants<scalar_t>::zero());
 
     using ode_tag = pressio::ode::explicitmethods::Euler;
     using problem_t  = pressio::rom::galerkin::Problem<

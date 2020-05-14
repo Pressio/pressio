@@ -192,9 +192,9 @@ private:
     sys.residual(y, res_);
     sys.jacobian(y, jac_);
 
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
-    constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto negOne = ::pressio::utils::constants<scalar_t>::negOne();
 
     // alpha for taking steps
     scalar_t alpha = one;
@@ -242,9 +242,9 @@ private:
       //--------------------------------------------------------------
       // hessian: J^T*J
       //--------------------------------------------------------------
-      constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
-      constexpr auto no   = ::pressio::utils::constants::zero<int>();
-      constexpr auto yes  = ::pressio::utils::constants::one<int>();
+      constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+      constexpr auto no   = ::pressio::utils::constants<int>::zero();
+      constexpr auto yes  = ::pressio::utils::constants<int>::one();
       constexpr auto transA = yes;
       constexpr auto transB = no;
       constexpr auto ovw    = yes;
@@ -266,8 +266,8 @@ private:
       //--------------------------------------------------------------
       // compute gradient: J^T*res
       //--------------------------------------------------------------
-      constexpr auto izero = ::pressio::utils::constants::zero<int>();
-      constexpr auto ione  = ::pressio::utils::constants::one<int>();
+      constexpr auto izero = ::pressio::utils::constants<int>::zero();
+      constexpr auto ione  = ::pressio::utils::constants<int>::one();
       constexpr auto transJ= yes;
       constexpr auto ow	   = yes;
       // use -1 here to scale the result becuase of the sign convention we use

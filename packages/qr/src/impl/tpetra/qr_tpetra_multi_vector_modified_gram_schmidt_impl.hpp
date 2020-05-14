@@ -78,15 +78,15 @@ public:
     {
       auto ak = A.data()->getVector(k);
       localR_(k,k) = ak->norm2();
-      rkkInv = utils::constants::one<sc_t>()/localR_(k,k);
+      rkkInv = utils::constants<sc_t>::one()/localR_(k,k);
 
       auto qk = Qmat_->data()->getVectorNonConst(k);
-      qk->update( rkkInv, *ak, utils::constants::zero<sc_t>() );
+      qk->update( rkkInv, *ak, utils::constants<sc_t>::zero() );
 
       for (auto j=k+1; j<A.numVectors(); j++){
       	auto aj = A.data()->getVectorNonConst(j);
       	localR_(k,j) = qk->dot(*aj);
-      	aj->update(-localR_(k,j), *qk, utils::constants::one<sc_t>());
+      	aj->update(-localR_(k,j), *qk, utils::constants<sc_t>::one());
       }
     }
   }
@@ -101,8 +101,8 @@ public:
   template < typename vector_in_t, typename vector_out_t>
   void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::constants::zero<sc_t>();
-    constexpr auto alpha = ::pressio::utils::constants::one<sc_t>();
+    constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 

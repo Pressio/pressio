@@ -24,8 +24,8 @@ TEST(ops_matrix_matrix_product, eigenDenseDense){
 
   containers::Matrix<Eigen::Matrix<double,3,2>> C2;
 
-  constexpr auto beta  = ::pressio::utils::constants::zero<double>();
-  constexpr auto alpha = ::pressio::utils::constants::one<double>();
+  constexpr auto beta  = ::pressio::utils::constants<double>::zero();
+  constexpr auto alpha = ::pressio::utils::constants<double>::one();
   ::pressio::ops::product(::pressio::nontranspose(), 
     ::pressio::nontranspose(), alpha, A, B, beta, C2);
   EXPECT_DOUBLE_EQ( C2(0,0), 27.0);

@@ -65,9 +65,9 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 {
   /* Compute the ROM coefficients from optimal L^2 projection of yFOM */
   using hessian_t	= typename linear_solver_t::matrix_type;
-  constexpr auto zero   = ::pressio::utils::constants::zero<scalar_t>();
-  constexpr auto one    = ::pressio::utils::constants::one<scalar_t>();
-  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+  constexpr auto zero   = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto one    = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto negOne = ::pressio::utils::constants<scalar_t>::negOne();
 
   const auto romSize = romState.extent(0);
 

@@ -129,8 +129,8 @@ void gauss_newton_neq_solve(const system_t & sys,
 
   //-------------------------------------------------------
 
-  constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
-  constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto negOne = ::pressio::utils::constants<scalar_t>::negOne();
   convCondDescr = std::string(is_converged_t::description_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT

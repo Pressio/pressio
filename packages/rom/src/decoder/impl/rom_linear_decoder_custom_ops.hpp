@@ -74,8 +74,8 @@ public:
   template <typename operand_t>
   void applyMapping(const operand_t & operand, fom_state_type & result) const
   {
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     udOps_.product(::pressio::nontranspose(), one, *phi_.data(), operand, zero, *result.data());
   }
 

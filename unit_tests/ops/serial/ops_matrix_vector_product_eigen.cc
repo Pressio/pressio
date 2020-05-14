@@ -15,8 +15,8 @@ TEST(ops_matrix_vector_product, eigenVectorDenseMatrix){
   containers::Matrix<natM_t> myM(M);
 
   containers::Vector<natV_t> myR;
-  constexpr auto beta  = ::pressio::utils::constants::zero<double>();
-  constexpr auto alpha = ::pressio::utils::constants::one<double>();
+  constexpr auto beta  = ::pressio::utils::constants<double>::zero();
+  constexpr auto alpha = ::pressio::utils::constants<double>::one();
   ::pressio::ops::product(::pressio::nontranspose(), alpha, myM, myV, beta, myR);
   EXPECT_DOUBLE_EQ( myR[0], 16.0);
   EXPECT_DOUBLE_EQ( myR[1], 28.0);

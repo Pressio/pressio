@@ -60,7 +60,7 @@ template <typename vec_type>
 norm1(const vec_type & a)
 {
   using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  sc_t result = ::pressio::utils::constants::zero<sc_t>();
+  sc_t result = ::pressio::utils::constants<sc_t>::zero();
   const auto a_proxy = a.data()->unchecked();
   for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
     result += std::abs(a_proxy(i));
@@ -75,7 +75,7 @@ template <typename vec_type>
 norm2(const vec_type & a)
 {
   using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  sc_t result = ::pressio::utils::constants::zero<sc_t>();
+  sc_t result = ::pressio::utils::constants<sc_t>::zero();
   const auto a_proxy = a.data()->unchecked();
   for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
     result += a_proxy(i)*a_proxy(i);

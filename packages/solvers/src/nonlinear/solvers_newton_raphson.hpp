@@ -220,8 +220,8 @@ public:
       linSolver_.solve(J_, R_, deltaState_);
 
       // y_new = y - correction
-      constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
-      constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+      constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+      constexpr auto negOne = ::pressio::utils::constants<scalar_t>::negOne();
       ::pressio::ops::do_update(stateInOut, one, deltaState_, negOne);
 
       // compute norms

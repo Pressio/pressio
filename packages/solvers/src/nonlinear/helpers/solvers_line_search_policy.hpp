@@ -95,8 +95,8 @@ struct LineSearchHelper<gn::ArmijoLineSearch>{
 
     ::pressio::ops::set_zero(ytrial);
 
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
 
     // eval obj function for current solution: f(y)
     scalar_t fy = zero;

@@ -131,8 +131,8 @@ TEST(ops, TpetraMultiVectorDotMultiVector){
 
 
   eig_mat_w C2(4,2);
-  constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
-  constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+  constexpr auto beta  = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto alpha = ::pressio::utils::constants<scalar_t>::one();
   ::pressio::ops::product(::pressio::transpose(), 
     ::pressio::nontranspose(), alpha, A, B, beta, C2);
 

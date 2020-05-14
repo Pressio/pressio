@@ -68,8 +68,8 @@ struct RunTest{
     wv vb_d(b_d);
 
     wv c_d("cd", mvA_d.extent(0));
-    constexpr auto beta  = ::pressio::utils::constants::zero<double>();
-    constexpr auto alpha = ::pressio::utils::constants::one<double>();
+    constexpr auto beta  = ::pressio::utils::constants<double>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<double>::one();
     ::pressio::ops::product(::pressio::nontranspose(), alpha, mvA_d, vb_d, beta, c_d);
     // auto c_d = ::pressio::ops::product(mvA_d, vb_d);
 

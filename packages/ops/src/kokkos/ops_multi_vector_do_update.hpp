@@ -74,7 +74,7 @@ template<typename T, typename scalar_t>
   >
 do_update(T & mv, const T & mv1, const scalar_t & b)
 {
-  constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
+  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
   KokkosBlas::axpby(b, *mv1.data(), zero, *mv.data());
 }
 

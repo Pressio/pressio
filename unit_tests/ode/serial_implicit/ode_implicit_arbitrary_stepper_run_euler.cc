@@ -148,7 +148,7 @@ private:
 				const state_t & ynm1) const
   {
     J =  this->jacobian(yn, time);
-    constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     J.coeffs() *= -dt;
     J.coeffRef(0,0) += one;
     J.coeffRef(1,1) += one;
@@ -299,9 +299,9 @@ struct CustomBdf1Solver
 
 TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
 {
-  constexpr double one = ::pressio::utils::constants::one<double>();
-  constexpr double two = ::pressio::utils::constants::two<double>();
-  constexpr double three = ::pressio::utils::constants::three<double>();
+  constexpr double one = ::pressio::utils::constants<double>::one();
+  constexpr double two = ::pressio::utils::constants<double>::two();
+  constexpr double three = ::pressio::utils::constants<double>::three();
   ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
   *y0.data() << one,two,three;
 
@@ -323,9 +323,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
 
 TEST(ode_implicit, arbitraryStepperRunEulerDtSetter)
 {
-  constexpr double one = ::pressio::utils::constants::one<double>();
-  constexpr double two = ::pressio::utils::constants::two<double>();
-  constexpr double three = ::pressio::utils::constants::three<double>();
+  constexpr double one = ::pressio::utils::constants<double>::one();
+  constexpr double two = ::pressio::utils::constants<double>::two();
+  constexpr double three = ::pressio::utils::constants<double>::three();
   ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
   *y0.data() << one,two,three;
 
@@ -347,9 +347,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetter)
 
 TEST(ode_implicit, arbitraryStepperRunEulerDtSetterWithWrongDt)
 {
-  constexpr double one = ::pressio::utils::constants::one<double>();
-  constexpr double two = ::pressio::utils::constants::two<double>();
-  constexpr double three = ::pressio::utils::constants::three<double>();
+  constexpr double one = ::pressio::utils::constants<double>::one();
+  constexpr double two = ::pressio::utils::constants<double>::two();
+  constexpr double three = ::pressio::utils::constants<double>::three();
   ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
   *y0.data() << one,two,three;
 
@@ -372,9 +372,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterWithWrongDt)
 
 TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeTrivial)
 {
-  constexpr double one = ::pressio::utils::constants::one<double>();
-  constexpr double two = ::pressio::utils::constants::two<double>();
-  constexpr double three = ::pressio::utils::constants::three<double>();
+  constexpr double one = ::pressio::utils::constants<double>::one();
+  constexpr double two = ::pressio::utils::constants<double>::two();
+  constexpr double three = ::pressio::utils::constants<double>::three();
   ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
   *y0.data() << one,two,three;
 
@@ -394,9 +394,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeTrivial)
 
 TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
 {
-  constexpr double one = ::pressio::utils::constants::one<double>();
-  constexpr double two = ::pressio::utils::constants::two<double>();
-  constexpr double three = ::pressio::utils::constants::three<double>();
+  constexpr double one = ::pressio::utils::constants<double>::one();
+  constexpr double two = ::pressio::utils::constants<double>::two();
+  constexpr double three = ::pressio::utils::constants<double>::three();
   ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
   *y0.data() << one,two,three;
 
@@ -424,9 +424,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
 
 TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivialWithCollector)
 {
-  constexpr double one = ::pressio::utils::constants::one<double>();
-  constexpr double two = ::pressio::utils::constants::two<double>();
-  constexpr double three = ::pressio::utils::constants::three<double>();
+  constexpr double one = ::pressio::utils::constants<double>::one();
+  constexpr double two = ::pressio::utils::constants<double>::two();
+  constexpr double three = ::pressio::utils::constants<double>::three();
   ::pressio::containers::Vector<Eigen::VectorXd> y0(3);
   *y0.data() << one,two,three;
 

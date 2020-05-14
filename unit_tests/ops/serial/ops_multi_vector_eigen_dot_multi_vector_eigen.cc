@@ -31,8 +31,8 @@ namespace{
   void doDot(const myMV_t & A, const myMV_t & B)
   {
     matrix_t C(A.extent(1), B.extent(1));
-    constexpr auto beta  = ::pressio::utils::constants::zero<double>();
-    constexpr auto alpha = ::pressio::utils::constants::one<double>();
+    constexpr auto beta  = ::pressio::utils::constants<double>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<double>::one();
     ::pressio::ops::product(::pressio::transpose(), 
       ::pressio::nontranspose(), alpha, A, B, beta, C);
     ASSERT_EQ(C.extent(0), 3);

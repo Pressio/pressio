@@ -147,7 +147,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
 
     using step_t = ::pressio::ode::types::step_t;
     using collector_dispatch = CallCollectorDispatch<collector_t, step_t, time_type, state_type>;
-    constexpr auto zero = ::pressio::utils::constants::zero<step_t>();
+    constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
 
     if (final_time < start_time)
       throw std::runtime_error("You cannot call an integrator with a final time < start time.");

@@ -73,8 +73,8 @@ struct RunTest{
     wv c_d("cd", mvA_d.extent(1));
 
     // ---- do operation ---
-    constexpr auto beta  = ::pressio::utils::constants::zero<double>();
-    constexpr auto alpha = ::pressio::utils::constants::one<double>();
+    constexpr auto beta  = ::pressio::utils::constants<double>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<double>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, mvA_d, vb_d, beta, c_d);
 
     using expected_ret_t = ::pressio::containers::Vector<k1d_d>;

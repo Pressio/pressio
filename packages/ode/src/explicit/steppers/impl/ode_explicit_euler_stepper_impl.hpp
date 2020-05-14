@@ -128,7 +128,7 @@ public:
     //eval RHS
     policy_(stateInOut, auxRhs0, sys_.get(), time);
     // y = y + dt * rhs
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::do_update(stateInOut, one, auxRhs0, dt);
   }
 
@@ -149,7 +149,7 @@ public:
     auto & auxRhs0 = veloAuxStorage_(0);
     policy_(stateInOut, auxRhs0, sys_.get(), time);
     // y = y + dt * rhs
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_type>();
+    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     udOps_->do_update(*stateInOut.data(), one, *auxRhs0.data(), dt);
   }
 };

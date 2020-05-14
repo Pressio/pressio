@@ -132,7 +132,7 @@ struct myOpsGN
 		   const dec_jac_t & A,
 		   const dec_jac_t & B) const
   {
-    constexpr auto beta = ::pressio::utils::constants::zero<sc_t>();
+    constexpr auto beta = ::pressio::utils::constants<sc_t>::zero();
     result_t C( A.extent(1), B.extent(1) );
     myOpsGN::product(modeA, modeB, alpha, A, B, beta, C);
     return C;
@@ -211,7 +211,7 @@ struct EulerLSPGWithVelocityApi
     // adapter
     fom_t fomObj(appObj);
     scalar_t dt = 0.01;
-    const auto t0 = pressio::utils::constants::zero<scalar_t>();
+    const auto t0 = pressio::utils::constants<scalar_t>::zero();
 
     ops1_t myOps1;
     opsGN_t myOps2;
@@ -228,11 +228,11 @@ struct EulerLSPGWithVelocityApi
     // for this problem, my reference state = initial state
     native_state_t yRef(numCell);
     for (std::size_t i=0; i<yRef.extent(0); ++i)
-      yRef(i) = pressio::utils::constants::one<scalar_t>();
+      yRef(i) = pressio::utils::constants<scalar_t>::one();
 
     // define ROM state
     pressio::ops::resize(yROM_, romSize);
-    pressio::ops::fill(yROM_, pressio::utils::constants::zero<scalar_t>());
+    pressio::ops::fill(yROM_, pressio::utils::constants<scalar_t>::zero());
 
     // define LSPG type
     using ode_tag  = pressio::ode::implicitmethods::Euler;

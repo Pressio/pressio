@@ -64,8 +64,8 @@ struct GradientDispatcher<void>
                   "Types are not scalar compatible");
 
     using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
-    constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto beta  = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, J, R, beta, result);
   }
 };
@@ -89,8 +89,8 @@ public:
   void evaluate(const J_t & J, const resid_t & R, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<J_t>::scalar_t;
-    constexpr auto beta  = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto alpha = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto beta  = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<scalar_t>::one();
     udOps_->product(::pressio::transpose(), alpha, *J.data(), *R.data(), beta, result);
   };
 };

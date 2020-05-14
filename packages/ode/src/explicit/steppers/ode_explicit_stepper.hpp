@@ -102,7 +102,7 @@ public:
 	  const system_type & model,
 	  const policy_t & policyObj)
     : myImpl_(model, policyObj, stateIn0,
-	      policyObj(stateIn0, model, utils::constants::zero<scalar_type>()))
+	      policyObj(stateIn0, model, utils::constants<scalar_type>::zero()))
   {}
 
   // standard policy, pressio ops
@@ -116,7 +116,7 @@ public:
   Stepper(const	state_type & stateIn0,
   	  const system_type & model)
     : myImpl_(model, T(), stateIn0,
-	      T()(stateIn0, model, utils::constants::zero<scalar_type>()))
+	      T()(stateIn0, model, utils::constants<scalar_type>::zero()))
   {}
 
   // arbitrary policy, user-defined ops
@@ -129,7 +129,7 @@ public:
 	  const policy_t & policyObj,
 	  const _ops_t & udOps)
     : myImpl_(model, policyObj, stateIn0,
-	      policyObj(stateIn0, model, utils::constants::zero<scalar_type>()),
+	      policyObj(stateIn0, model, utils::constants<scalar_type>::zero()),
 	      udOps)
   {}
 
@@ -145,7 +145,7 @@ public:
   	  const system_type & model,
 	  const _ops_t & udOps)
     : myImpl_(model, T(), stateIn0,
-	      T()(stateIn0, model, utils::constants::zero<scalar_type>()),
+	      T()(stateIn0, model, utils::constants<scalar_type>::zero()),
 	      udOps)
   {}
 

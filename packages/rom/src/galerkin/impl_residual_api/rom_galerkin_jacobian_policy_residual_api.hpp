@@ -104,8 +104,8 @@ public:
     const auto nRows = phi_.extent(1);
     const auto nCols = phi_.extent(1);
     rom_jacobian_t romJac(nRows, nCols);
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
                             one, phi_, fomApplyJac, zero, romJac);
     return romJac;
@@ -134,8 +134,8 @@ private:
     const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
     fomQuerier_.evaluate(yn, ynm1, app, time, dt, step, phi_, fomApplyJac_);
 
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
                             one, phi_, fomApplyJac_, zero, romJac);
   }
@@ -164,8 +164,8 @@ private:
     const auto & ynm2 = fomStates_.getCRefToFomStatePrevStep();
     fomQuerier_.evaluate(yn, ynm1, ynm2, app, time, dt, step, phi_, fomApplyJac_);
 
-    constexpr auto zero = ::pressio::utils::constants::zero<scalar_t>();
-    constexpr auto one  = ::pressio::utils::constants::one<scalar_t>();
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
                             one, phi_, fomApplyJac_, zero, romJac);
   }

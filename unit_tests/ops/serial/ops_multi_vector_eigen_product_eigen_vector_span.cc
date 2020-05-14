@@ -23,8 +23,8 @@ TEST(ops_multi_vector_serial_eigen_dynamic_class,
 
   auto sp = ::pressio::containers::span(b, 1, 3);
   pressio::containers::Vector<Eigen::VectorXd> c1(6);
-  constexpr auto beta  = ::pressio::utils::constants::zero<double>();
-  constexpr auto alpha = ::pressio::utils::constants::one<double>();
+  constexpr auto beta  = ::pressio::utils::constants<double>::zero();
+  constexpr auto alpha = ::pressio::utils::constants<double>::one();
   ::pressio::ops::product(::pressio::nontranspose(), alpha, A, sp, beta, c1);
 
   ASSERT_EQ( c1.extent(0), 6 );

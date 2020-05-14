@@ -94,7 +94,7 @@ void gauss_newton_qr_solve(const system_t & sys,
   using lsearch_helper = LineSearchHelper<line_search_t>;
   //-------------------------------------------------------
 
-  constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
   convCondDescr = std::string(is_converged_t::description_);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
@@ -109,7 +109,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #endif
 
   // alpha for taking steps
-  scalar_t alpha = ::pressio::utils::constants::one<scalar_t>();
+  scalar_t alpha = ::pressio::utils::constants<scalar_t>::one();
   // residual norm
   scalar_t normRes = {};
   // initial residual norm
@@ -185,7 +185,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 
     // compute correction: correction
     // by solving R correction = - Q^T Residual
-    pressio::ops::scale( QTResid, utils::constants::negOne<scalar_t>());
+    pressio::ops::scale( QTResid, utils::constants<scalar_t>::negOne());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("QR R-solve");

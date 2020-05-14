@@ -133,7 +133,7 @@ product(::pressio::transpose mode,
 
   auto * mvNatData = A.data();
   const auto * vecNatData = x.data();
-  auto tmp = ::pressio::utils::constants::zero<scalar_type>();
+  auto tmp = ::pressio::utils::constants<scalar_type>::zero();
   for (std::size_t i=0; i<(std::size_t)numVecs; i++)
   {
     (*mvNatData)(i)->Dot(*vecNatData, &tmp);

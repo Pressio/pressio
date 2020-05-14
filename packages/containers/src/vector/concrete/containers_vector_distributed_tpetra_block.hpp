@@ -82,9 +82,9 @@ public:
     : data_( *vecobj.getMap(),
   	     vecobj.getBlockSize()){
     // just a trick to copy data
-    data_.update(::pressio::utils::constants::one<sc_t>(),
+    data_.update(::pressio::utils::constants<sc_t>::one(),
 		 vecobj,
-		 ::pressio::utils::constants::zero<sc_t>());
+		 ::pressio::utils::constants<sc_t>::zero());
   }
 
   // here we do not default the copy and move because if we did that,
@@ -97,9 +97,9 @@ public:
   // copy assignment
   Vector & operator=(const Vector & other){
     if (&other != this){
-      this->data_.update(::pressio::utils::constants::one<sc_t>(),
+      this->data_.update(::pressio::utils::constants<sc_t>::one(),
 			 *other.data(),
-			 ::pressio::utils::constants::zero<sc_t>() );
+			 ::pressio::utils::constants<sc_t>::zero() );
     }
     return *this;
   }
@@ -109,9 +109,9 @@ public:
 
   // move assignment
   Vector & operator=(Vector && other){
-    this->data_.update(::pressio::utils::constants::one<sc_t>(),
+    this->data_.update(::pressio::utils::constants<sc_t>::one(),
 		       *other.data(),
-		       ::pressio::utils::constants::zero<sc_t>() );
+		       ::pressio::utils::constants<sc_t>::zero() );
     return *this;
   }
 
@@ -121,18 +121,18 @@ public:
   // compound add assignment when type(b) = type(this)
   // this += b
   this_t & operator+=(const this_t & other) {
-    this->data_.update(::pressio::utils::constants::one<sc_t>(),
+    this->data_.update(::pressio::utils::constants<sc_t>::one(),
 		       *other.data(),
-		       ::pressio::utils::constants::one<sc_t>() );
+		       ::pressio::utils::constants<sc_t>::one() );
     return *this;
   }
 
   // compound add assignment when type(b) = type(this)
   // this -= b
   this_t & operator-=(const this_t & other) {
-    this->data_.update(::pressio::utils::constants::negOne<sc_t>(),
+    this->data_.update(::pressio::utils::constants<sc_t>::negOne(),
 		       *other.data(),
-		       ::pressio::utils::constants::one<sc_t>() );
+		       ::pressio::utils::constants<sc_t>::one() );
     return *this;
   }
 

@@ -129,8 +129,8 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
   auto normLambda = static_cast<scalar_t>(0);
   auto normCbarR = static_cast<scalar_t>(0);
 
-  constexpr auto zeroConst  = ::pressio::utils::constants::zero<scalar_t>();
-  constexpr auto one = ::pressio::utils::constants::one<scalar_t>();
+  constexpr auto zeroConst  = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
 
   typename system_t::state_type dy_y(y.extent(0));
   typename system_t::state_type dy_lambda(lambda.extent(0));
@@ -209,7 +209,7 @@ void gauss_newtom_neq_conserv_solve(const system_t & sys,
     ::pressio::ops::product(::pressio::transpose(),
 			    one, jacob, resid, zeroConst, jTr2);
 
-    constexpr auto negOne = ::pressio::utils::constants::negOne<scalar_t>();
+    constexpr auto negOne = ::pressio::utils::constants<scalar_t>::negOne();
     ::pressio::ops::scale(jTr2, negOne);
     ::pressio::ops::scale(cbarR, negOne);
     b.data()->block(0, 0, jTr2.extent(0), 1) = *jTr2.data();

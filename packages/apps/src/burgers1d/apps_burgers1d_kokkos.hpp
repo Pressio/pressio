@@ -154,8 +154,8 @@ public:
 		     dense_matrix_type & A) const
   {
     auto JJ = jacobian(y, t);
-    constexpr auto zero = ::pressio::utils::constants::zero<sc_t>();
-    constexpr auto one = ::pressio::utils::constants::one<sc_t>();
+    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto one = ::pressio::utils::constants<sc_t>::one();
 
     const char ct = 'N';
     KokkosSparse::spmv(&ct, one, JJ, B, zero, A);

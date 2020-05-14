@@ -134,8 +134,8 @@ public:
   {
     this->residual(romState, R_);
     this->jacobian(romState, J_);
-    constexpr auto beta  = ::pressio::utils::constants::zero<scalar_type>();
-    constexpr auto alpha = ::pressio::utils::constants::two<scalar_type>();
+    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<scalar_type>::two();
     ::pressio::ops::product(::pressio::transpose(), alpha, J_, R_, beta, g);
   }
 };//end class

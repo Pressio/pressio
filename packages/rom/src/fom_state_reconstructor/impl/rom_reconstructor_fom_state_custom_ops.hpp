@@ -74,7 +74,7 @@ struct FomStateReconstructorCustomOps
     // map current romY to FOM state
     decoderObj_.applyMapping(romY, yOut);
 
-    constexpr auto one = ::pressio::utils::constants::one<scalar_type>();
+    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     // yOut = yOut + yFomReference_;
     udOps_.axpy(one, *yFomReference_.data(), *yOut.data());
   }
