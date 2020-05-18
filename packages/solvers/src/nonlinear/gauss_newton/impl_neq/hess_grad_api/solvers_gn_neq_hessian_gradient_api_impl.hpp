@@ -49,12 +49,12 @@
 #ifndef SOLVERS_GAUSS_NEWTON_HESSIAN_GRADIENT_API_HPP_
 #define SOLVERS_GAUSS_NEWTON_HESSIAN_GRADIENT_API_HPP_
 
-#include "../../helpers/solvers_converged_criterior_policy.hpp"
-#include "../../helpers/solvers_norm_dispatcher.hpp"
-#include "../../helpers/solvers_line_search_policy.hpp"
-#include "../../helpers/solvers_get_matrix_size_helper.hpp"
+#include "../../../helpers/solvers_converged_criterior_policy.hpp"
+#include "../../../helpers/solvers_norm_dispatcher.hpp"
+#include "../../../helpers/solvers_line_search_policy.hpp"
+#include "../../../helpers/solvers_get_matrix_size_helper.hpp"
 
-namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <
   typename system_type,
@@ -104,7 +104,7 @@ If you get this error, most likely it is because of  the typedefs inside your sy
   static_assert( std::is_same<line_search_type, ::pressio::solvers::iterative::gn::noLineSearch>::value,
 		 "Currently, the Gauss-Newton solver with hessian/gradient API, does not support a line-search.");
 
-  using is_converged_t = IsConvergedHelper<converged_when>;
+  using is_converged_t = ::pressio::solvers::iterative::impl::IsConvergedHelper<converged_when>;
 
   // --- data members ---
   linear_solver_type & linSolver_ = {};
@@ -125,7 +125,7 @@ If you get this error, most likely it is because of  the typedefs inside your sy
   scalar_type normResidual0_	  = {0};
   scalar_type normResidual_	  = {0};
 
-  NormDispatcher<void> normDispatcher_ = {};
+  ::pressio::solvers::iterative::impl::NormDispatcher<void> normDispatcher_ = {};
 
 public:
   GaussNewtonHessianGradientApi() = delete;
@@ -222,5 +222,5 @@ private:
   }
 };
 
-}}}}//end namespace pressio::solvers::iterative::impl
+}}}}//end namespace pressio::solvers::nonlinear::impl
 #endif

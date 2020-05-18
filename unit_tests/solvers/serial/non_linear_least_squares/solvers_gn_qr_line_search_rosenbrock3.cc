@@ -19,7 +19,7 @@ TEST(solvers_nonlinear_least_squares,
   using qr_algo = qr::Householder;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
-  solvers::iterative::GaussNewtonQR<problem_t, qr_type, lsearch_t> solver(problem, x);
+  solvers::nonlinear::GaussNewtonQR<problem_t, qr_type, lsearch_t> solver(problem, x);
 
   solver.setTolerance(1e-8);
   solver.solve(problem, x);
@@ -47,7 +47,7 @@ TEST(solvers_nonlinear_least_squares,
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
   using converged_when_t = solvers::iterative::default_convergence;
-  using gnsolver_t = solvers::iterative::GaussNewtonQR<
+  using gnsolver_t = solvers::nonlinear::GaussNewtonQR<
     qr_type, lsearch_t, converged_when_t, problem_t>;
   gnsolver_t solver(problem, x);
 
@@ -78,7 +78,7 @@ TEST(solvers_nonlinear_least_squares,
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
   using converged_when_t = solvers::iterative::converged_when::relativeNormResidualBelowTol;
-  using gnsolver_t = solvers::iterative::GaussNewtonQR<
+  using gnsolver_t = solvers::nonlinear::GaussNewtonQR<
     qr_type, lsearch_t, converged_when_t, problem_t>;
   gnsolver_t solver(problem, x);
 

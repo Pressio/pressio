@@ -56,14 +56,14 @@ TEST(solvers_meta, gn_with_qr){
   {
     static_assert(::pressio::solvers::meta::is_legitimate_qr_solver_for_gn_qr<qr_solver_t>::value, "" );
 
-    using picker_t = solvers::iterative::impl::GNQRSpecializationPicker<sys_t, qr_solver_t>;
-    using gn_solver_t = solvers::iterative::GaussNewtonQR<sys_t, qr_solver_t>;
+    using picker_t = solvers::nonlinear::impl::GaussNewtonQRSpecializer<sys_t, qr_solver_t>;
+    using gn_solver_t = solvers::nonlinear::GaussNewtonQR<sys_t, qr_solver_t>;
     static_assert( checkTypes<picker_t, sys_t, qr_solver_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNQRSpecializationPicker<qr_solver_t, sys_t>;
-    using gn_solver_t = solvers::iterative::GaussNewtonQR<qr_solver_t, sys_t>;
+    using picker_t = solvers::nonlinear::impl::GaussNewtonQRSpecializer<qr_solver_t, sys_t>;
+    using gn_solver_t = solvers::nonlinear::GaussNewtonQR<qr_solver_t, sys_t>;
     static_assert( checkTypes<picker_t, sys_t, qr_solver_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
@@ -87,26 +87,26 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
 
   // define types, then rotate, it should not matter
   {
-    using picker_t = solvers::iterative::impl::GNQRSpecializationPicker<sys_t,qr_solver_t, ls_t, conv_t>;
-    using gn_solver_t = solvers::iterative::GaussNewtonQR<sys_t,qr_solver_t,  ls_t, conv_t>;
+    using picker_t = solvers::nonlinear::impl::GaussNewtonQRSpecializer<sys_t,qr_solver_t, ls_t, conv_t>;
+    using gn_solver_t = solvers::nonlinear::GaussNewtonQR<sys_t,qr_solver_t,  ls_t, conv_t>;
     static_assert( checkTypes<picker_t, sys_t,qr_solver_t, ls_t, conv_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNQRSpecializationPicker<sys_t,  ls_t, conv_t,qr_solver_t>;
-    using gn_solver_t = solvers::iterative::GaussNewtonQR<sys_t,  ls_t, conv_t,qr_solver_t>;
+    using picker_t = solvers::nonlinear::impl::GaussNewtonQRSpecializer<sys_t,  ls_t, conv_t,qr_solver_t>;
+    using gn_solver_t = solvers::nonlinear::GaussNewtonQR<sys_t,  ls_t, conv_t,qr_solver_t>;
     static_assert( checkTypes<picker_t, sys_t,qr_solver_t, ls_t, conv_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNQRSpecializationPicker< conv_t, ls_t, sys_t,qr_solver_t>;
-    using gn_solver_t = solvers::iterative::GaussNewtonQR< conv_t, ls_t, sys_t,qr_solver_t>;
+    using picker_t = solvers::nonlinear::impl::GaussNewtonQRSpecializer< conv_t, ls_t, sys_t,qr_solver_t>;
+    using gn_solver_t = solvers::nonlinear::GaussNewtonQR< conv_t, ls_t, sys_t,qr_solver_t>;
     static_assert( checkTypes<picker_t, sys_t,qr_solver_t, ls_t, conv_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }
   {
-    using picker_t = solvers::iterative::impl::GNQRSpecializationPicker<ls_t, conv_t, qr_solver_t, sys_t>;
-    using gn_solver_t = solvers::iterative::GaussNewtonQR<ls_t, conv_t, qr_solver_t, sys_t>;
+    using picker_t = solvers::nonlinear::impl::GaussNewtonQRSpecializer<ls_t, conv_t, qr_solver_t, sys_t>;
+    using gn_solver_t = solvers::nonlinear::GaussNewtonQR<ls_t, conv_t, qr_solver_t, sys_t>;
     static_assert( checkTypes<picker_t, sys_t,qr_solver_t, ls_t, conv_t>::value, "");
     static_assert( !std::is_void<gn_solver_t>::value, "");
   }

@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
     using qr_algo = pressio::qr::TSQR;
     using qr_type = pressio::qr::QRSolver<rom_jac_t, qr_algo>;
     using converged_when_t = pressio::solvers::iterative::default_convergence;
-    using gnsolver_t  = pressio::solvers::iterative::GaussNewtonQR<
+    using gnsolver_t  = pressio::solvers::nonlinear::GaussNewtonQR<
            lspg_stepper_t, qr_type, converged_when_t>;
     gnsolver_t solver(lspgProblem.getStepperRef(), yROM);
     solver.setTolerance(1e-13);

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_py_gauss_newton.hpp
+// solvers_gn_neq_py_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -47,20 +47,16 @@
 */
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#ifndef SOLVERS_PY_GAUSS_NEWTON_HPP
-#define SOLVERS_PY_GAUSS_NEWTON_HPP
+#ifndef SOLVERS_GN_NEQ_PY_IMPL_HPP_
+#define SOLVERS_GN_NEQ_PY_IMPL_HPP_
 
-#include "../../helpers/solvers_converged_criterior_policy.hpp"
-#include "../../helpers/solvers_norm_dispatcher.hpp"
-#include "../../helpers/solvers_get_matrix_size_helper.hpp"
-#include "../../helpers/solvers_line_search_policy.hpp"
+#include "../../../helpers/solvers_converged_criterior_policy.hpp"
+#include "../../../helpers/solvers_norm_dispatcher.hpp"
+#include "../../../helpers/solvers_get_matrix_size_helper.hpp"
+#include "../../../helpers/solvers_line_search_policy.hpp"
 
-namespace pressio{ namespace solvers{ namespace iterative{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-/*
- * for interfacing with python
- * for time being, no-line search
-*/
 template <
   typename system_t,
   typename state_t,
@@ -339,6 +335,6 @@ private:
   }//end solveImpl
 };
 
-}}}//end namespace pressio::solvers::iterative
+}}}}//end namespace pressio::solvers::nonlinear::impl
 #endif
 #endif

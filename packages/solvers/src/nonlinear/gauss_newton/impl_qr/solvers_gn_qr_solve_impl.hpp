@@ -49,12 +49,12 @@
 #ifndef SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 #define SOLVERS_GAUSS_NEWTON_QR_IMPL_HPP
 
-#include "../helpers/solvers_converged_criterior_policy.hpp"
-#include "../helpers/solvers_norm_dispatcher.hpp"
-#include "../helpers/solvers_line_search_policy.hpp"
-#include "../helpers/solvers_get_matrix_size_helper.hpp"
+#include "../../helpers/solvers_converged_criterior_policy.hpp"
+#include "../../helpers/solvers_norm_dispatcher.hpp"
+#include "../../helpers/solvers_line_search_policy.hpp"
+#include "../../helpers/solvers_get_matrix_size_helper.hpp"
 
-namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <
   typename line_search_t,
@@ -78,20 +78,20 @@ void gauss_newton_qr_solve(const system_t & sys,
 			   scalar_t tolerance,
 			   std::string & convCondDescr,
 			   const ::pressio::solvers::Norm & normType,
-         const gradient_dispatcher_t & gradientDispatcher,
+			   const gradient_dispatcher_t & gradientDispatcher,
 			   const norm_dispatcher_t & normDispatcher)
 {
 
   using jacobian_t	= typename system_t::jacobian_type;
 
   // policy for checking convergence
-  using is_converged_t = IsConvergedHelper<converged_when_tag>;
+  using is_converged_t = ::pressio::solvers::iterative::impl::IsConvergedHelper<converged_when_tag>;
 
   /* policy for computing line search factor (alpha) such that
    * the update is done with stateInOut = stateInOut + alpha correction
    * alpha = 1 default when user does not want line search
    */
-  using lsearch_helper = LineSearchHelper<line_search_t>;
+  using lsearch_helper = ::pressio::solvers::iterative::impl::LineSearchHelper<line_search_t>;
   //-------------------------------------------------------
 
   constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
@@ -240,9 +240,7 @@ void gauss_newton_qr_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   timer->stop("QR-based Gauss Newton");
 #endif
-
 }
 
-
-}}}} //end namespace pressio::solvers::iterative::implo
+}}}} //end namespace pressio::solvers::nonlinear::implo
 #endif

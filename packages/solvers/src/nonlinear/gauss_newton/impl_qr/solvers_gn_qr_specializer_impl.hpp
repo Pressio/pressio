@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_gn_qr_specialization_picker.hpp
+// solvers_gn_qr_specializer_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,16 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_GN_QR_SPECIALIZATION_PICKER_HPP_
-#define SOLVERS_GN_QR_SPECIALIZATION_PICKER_HPP_
+#ifndef SOLVERS_GN_QR_SPECIALIZER_HPP_
+#define SOLVERS_GN_QR_SPECIALIZER_HPP_
 
-namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
+#include "./solvers_gn_qr_impl.hpp"
+
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <typename ... Args>
-struct GNQRSpecializationPicker{
+struct GaussNewtonQRSpecializer
+{
 
   // verify the sequence contains a valid system type
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
@@ -92,9 +95,9 @@ struct GNQRSpecializationPicker{
   static_assert(!std::is_void<convergence_t>::value,
   		"The convergence type for GN cannot be void");
 
-  using type = ::pressio::solvers::iterative::impl::GaussNewtonQR<
+  using type = ::pressio::solvers::nonlinear::impl::GaussNewtonQR<
     system_t, qr_solver_t, scalar_t, line_search_t, convergence_t>;
 };
 
-}}}}//end namespace pressio::solvers::iterative::impl
+}}}}//end namespace pressio::solvers::nonlinear::impl
 #endif

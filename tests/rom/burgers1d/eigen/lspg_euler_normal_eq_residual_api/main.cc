@@ -73,7 +73,7 @@ struct EulerLSPGWithResidualApi
     // GaussNewton solver
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
     using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-    using gnsolver_t   = pressio::solvers::iterative::GaussNewton<lspg_stepper_t, linear_solver_t>;
+    using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<lspg_stepper_t, linear_solver_t>;
     gnsolver_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
@@ -152,7 +152,7 @@ struct EulerLSPGWithVelocityApi
     // GaussNewton solver
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
     using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-    using gnsolver_t   = pressio::solvers::iterative::GaussNewton<lspg_stepper_t, linear_solver_t>;
+    using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<lspg_stepper_t, linear_solver_t>;
     gnsolver_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);

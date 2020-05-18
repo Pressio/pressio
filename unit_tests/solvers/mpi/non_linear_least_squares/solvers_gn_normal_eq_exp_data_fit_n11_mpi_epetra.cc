@@ -43,7 +43,7 @@ TEST(solvers_nonlin_lsq,
   linear_solver_t linSolver;
 
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
-  using gn_t = solvers::iterative::GaussNewton<
+  using gn_t = solvers::nonlinear::GaussNewton<
   linear_solver_t, problem_t, hessian_t, lsearch_t>;
   gn_t GNSolver(problem, x, linSolver);
 

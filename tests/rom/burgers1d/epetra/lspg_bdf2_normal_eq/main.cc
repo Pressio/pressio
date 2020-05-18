@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
   // rom is solved using eigen, hessian is wrapper of eigen matrix
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
+  using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<
     lspg_stepper_t, linear_solver_t>;
   gnsolver_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);

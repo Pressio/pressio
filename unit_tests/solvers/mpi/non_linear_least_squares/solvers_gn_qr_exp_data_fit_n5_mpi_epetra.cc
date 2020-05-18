@@ -30,7 +30,7 @@ TEST(solvers_nonlin_lsq,
   // define type of QR and GaussNewton solver
   using qr_algo = qr::TSQR;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
-  using gn_t    = solvers::iterative::GaussNewtonQR<problem_t, qr_type>;
+  using gn_t    = solvers::nonlinear::GaussNewtonQR<problem_t, qr_type>;
   gn_t GNSolver(problem, x);
 
   GNSolver.setTolerance(1e-8);
@@ -60,7 +60,7 @@ TEST(solvers_nonlin_lsq,
   // GaussNewton solver
   using qr_algo = qr::Householder;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
-  using gn_t    = solvers::iterative::GaussNewtonQR<problem_t, qr_type>;
+  using gn_t    = solvers::nonlinear::GaussNewtonQR<problem_t, qr_type>;
   gn_t GNSolver(problem, x);
 
   GNSolver.setTolerance(1e-8);

@@ -49,7 +49,10 @@
 #ifndef SOLVERS_GN_NEQ_SPECIALIZATION_PICKER_HPP_
 #define SOLVERS_GN_NEQ_SPECIALIZATION_PICKER_HPP_
 
-namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
+#include "./res_jac_api/solvers_gn_neq_res_jac_api_impl.hpp"
+#include "./hess_grad_api/solvers_gn_neq_hessian_gradient_api_impl.hpp"
+
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <typename T1, typename T2>
 struct ObserverTypesSupported{
@@ -80,6 +83,58 @@ struct ObserverTypesSupported<T, T>{
   using type = T;
 };
 
+
+
+template <
+  typename scalar_t,
+  typename gradient_t,
+  typename residual_t,
+  typename jacobian_t,
+  typename hessian_t,
+  typename ...Args
+  >
+struct GaussNewtonNEqCustomOpsDetectionHelper
+{
+
+  using gradient_native_t = typename ::pressio::containers::details::traits<gradient_t>::wrapped_t;
+  using residual_native_t = typename ::pressio::containers::details::traits<residual_t>::wrapped_t;
+  using jacobian_native_t = typename ::pressio::containers::details::traits<jacobian_t>::wrapped_t;
+
+  static_assert(::pressio::containers::meta::is_vector_wrapper<gradient_t>::value, "gigi");
+
+  /* detect if Args contain valid ops type with static methods to compute norm of residual */
+  using icNorm	  = ::pressio::mpl::variadic::find_if_ternary_pred_t<
+    residual_native_t, scalar_t, ::pressio::solvers::meta::has_all_needed_methods_norms, Args...>;
+  using norm_op_t = ::pressio::mpl::variadic::at_or_t<void, icNorm::value, Args...>;
+
+  /* detect if Args contain valid ops type with static methods to compute hessian */
+  using icHessMV = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
+    jacobian_native_t, hessian_t, scalar_t,
+    ::pressio::solvers::meta::has_all_needed_methods_for_hessian, Args...>;
+  using hess_op_t = ::pressio::mpl::variadic::at_or_t<void, icHessMV::value, Args...>;
+
+  /* detect if Args contain valid ops type with static methods to compute gradient J^T R */
+  using icGrad = ::pressio::mpl::variadic::find_if_quinary_pred_t<
+    jacobian_native_t, residual_native_t, gradient_t, scalar_t,
+    ::pressio::solvers::meta::has_all_needed_methods_for_gradient, Args...>;
+  using grad_op_t = ::pressio::mpl::variadic::at_or_t<void, icGrad::value, Args...>;
+
+  //find if there is a single type that contains all methods for all ops
+  static constexpr bool found = std::is_same<hess_op_t, norm_op_t>::value and
+  				  std::is_same<hess_op_t, grad_op_t>::value and
+  				  !std::is_void<hess_op_t>::value;
+
+  // here, I know that there is a single type for all ops, so it does not matter which one to use
+  using ops_t = norm_op_t;
+  using type = typename std::conditional< found, ops_t, void >::type;
+
+//   static_assert( std::is_void<type>::value or
+//     (!std::is_void<type>::value and ::pressio::containers::meta::is_multi_vector_wrapper<jacobian_t>::value),
+//      "For GaussNewton normal-eq solver, custom ops are currently supported when the
+// jacobian is a multi-vector wrapper. If you are using this for doing ROM, this most likely
+// means you wrapped the Jacobian type of your basis with a matrix not a multi-vector.");
+
+};
 
 
 
@@ -160,7 +215,7 @@ struct GNNEQSpecializeApi<
     scalar_t, gradient_t, residual_t, jacobian_t, hessian_t, Args...>::type;
 
   // the class type
-  using type = ::pressio::solvers::iterative::impl::GaussNewtonNormalEqResJacApi<
+  using type = ::pressio::solvers::nonlinear::impl::GaussNewtonNormalEqResJacApi<
     system_t, hessian_t, linear_solver_t, scalar_t, line_search_t,
     convergence_t, observer_t, ud_ops_t>;
 };
@@ -176,15 +231,15 @@ template <
 struct GNNEQSpecializeApi<
   false, system_t, scalar_t, linear_solver_t, line_search_t, convergence_t, Args...>
 {
-  using type = ::pressio::solvers::iterative::impl::GaussNewtonHessianGradientApi<
+  using type = ::pressio::solvers::nonlinear::impl::GaussNewtonHessianGradientApi<
     system_t, linear_solver_t, scalar_t, line_search_t, convergence_t>;
 };
 
 
 
 template <typename ... Args>
-struct GNNEQSpecializationPicker{
-
+struct GaussNewtonNormalEquationsSpecializer
+{
   /* ------------------------------------------------ */
   // verify the sequence contains a valid system type
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
@@ -232,5 +287,5 @@ default, or pick one that is valid.");
     typename GNNEQSpecializeApi<hasDefaultApi, system_t, scalar_t, linear_solver_t, line_search_t, convergence_t, Args...>::type;
 };
 
-}}}}//end namespace pressio::solvers::iterative::impl
+}}}}//end namespace pressio::solvers::nonlinear::impl
 #endif

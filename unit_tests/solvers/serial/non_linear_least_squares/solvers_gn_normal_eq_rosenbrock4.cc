@@ -24,7 +24,7 @@ TEST(solvers_nonlinear_least_squares, gn_hess_grad_api_rosenbrock4){
     using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolver;
 
-    using gn_t = solvers::iterative::GaussNewton<linear_solver_t, problem_t, hessian_t>;
+    using gn_t = solvers::nonlinear::GaussNewton<linear_solver_t, problem_t, hessian_t>;
     gn_t GNSolver(problem, x, linSolver);
     GNSolver.setTolerance(1e-1);
     GNSolver.solve(problem, x);
@@ -48,7 +48,7 @@ TEST(solvers_nonlinear_least_squares, gn_hess_grad_api_rosenbrock4){
     linear_solver_t linSolver;
 
     // GaussNewton solver
-    using gn_t = solvers::iterative::GaussNewton<linear_solver_t, problem_t>;
+    using gn_t = solvers::nonlinear::GaussNewton<linear_solver_t, problem_t>;
     gn_t GNSolver(problem, x, linSolver);
     GNSolver.setTolerance(1e-1);
     GNSolver.solve(problem, x);

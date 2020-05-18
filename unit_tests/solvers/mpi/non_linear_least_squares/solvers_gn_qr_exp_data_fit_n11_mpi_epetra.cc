@@ -39,7 +39,7 @@ TEST(solvers_nonlin_lsq,
   using qr_algo = qr::TSQR;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
-  using gn_t = solvers::iterative::GaussNewtonQR<
+  using gn_t = solvers::nonlinear::GaussNewtonQR<
 		    problem_t, qr_type, lsearch_t>;
   gn_t GNSolver(problem, x);
 
@@ -79,7 +79,7 @@ TEST(solvers_nonlin_lsq,
   using qr_algo = qr::Householder;
   using qr_type = qr::QRSolver<mat_type, qr_algo>;
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
-  using gn_t = solvers::iterative::GaussNewtonQR<
+  using gn_t = solvers::nonlinear::GaussNewtonQR<
 		    problem_t, qr_type, lsearch_t>;
   gn_t GNSolver(problem, x);
 

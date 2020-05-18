@@ -117,7 +117,7 @@ int main(int argc, char *argv[]){
   // rom is solved using eigen, hessian is wrapper of eigen matrix
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
   using converged_when_t = pressio::solvers::iterative::default_convergence;
-  using gnsolver_t   = pressio::solvers::iterative::GaussNewton<
+  using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<
     rom_system_t, converged_when_t, linear_solver_t, observer_t>;
   gnsolver_t solver(lspgProblem.getSystemRef(), yROM, linSolverObj, myResidSampler);
   solver.setTolerance(1e-14);

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_gauss_newton_normal_eq_impl.hpp
+// solvers_gn_neq_solve_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,16 +46,16 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
-#define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_IMPL_HPP
+#ifndef SOLVERS_GN_NEQ_SOLVE_IMPL_HPP_
+#define SOLVERS_GN_NEQ_SOLVE_IMPL_HPP_
 
-#include "../../helpers/solvers_converged_criterior_policy.hpp"
-#include "../../helpers/solvers_line_search_policy.hpp"
-#include "../../helpers/solvers_residual_observer_when_solver_converged.hpp"
-#include "../../helpers/solvers_residual_observer_each_solver_step.hpp"
-#include "../../helpers/solvers_get_matrix_size_helper.hpp"
+#include "../../../helpers/solvers_converged_criterior_policy.hpp"
+#include "../../../helpers/solvers_line_search_policy.hpp"
+#include "../../../helpers/solvers_residual_observer_when_solver_converged.hpp"
+#include "../../../helpers/solvers_residual_observer_each_solver_step.hpp"
+#include "../../../helpers/solvers_get_matrix_size_helper.hpp"
 
-namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <typename hessian_t>
 mpl::enable_if_t< !::pressio::containers::meta::is_dense_matrix_wrapper_eigen<hessian_t>::value >
@@ -114,18 +114,18 @@ void gauss_newton_neq_solve(const system_t & sys,
   //using jacobian_t	= typename system_t::jacobian_type;
 
   // policy to checking convergence
-  using is_converged_t = IsConvergedHelper<converged_when_tag>;
+  using is_converged_t = ::pressio::solvers::iterative::impl::IsConvergedHelper<converged_when_tag>;
 
   // policy to observing residual at each GN step
-  using residual_observer_each_step = ResidualObserverEachSolverStep<observer_t, residual_t>;
+  using residual_observer_each_step = ::pressio::solvers::iterative::impl::ResidualObserverEachSolverStep<observer_t, residual_t>;
 
   // policy to observing residual when converged before exiting
-  using residual_observer_when_conv = ResidualObserverWhenSolverConverged<observer_t, residual_t>;
+  using residual_observer_when_conv = ::pressio::solvers::iterative::impl::ResidualObserverWhenSolverConverged<observer_t, residual_t>;
 
   /* policy for computing line search factor (alpha) such that
    * the update is done with y = y + alpha correction
    * alpha = 1 default when user does not want line search*/
-  using lsearch_helper_t = LineSearchHelper<line_search_t>;
+  using lsearch_helper_t = ::pressio::solvers::iterative::impl::LineSearchHelper<line_search_t>;
 
   //-------------------------------------------------------
 
@@ -289,5 +289,5 @@ void gauss_newton_neq_solve(const system_t & sys,
 
 }// end
 
-}}}} //end namespace pressio::solvers::iterative::impl
+}}}} //end namespace pressio::solvers::nonlinear::impl
 #endif

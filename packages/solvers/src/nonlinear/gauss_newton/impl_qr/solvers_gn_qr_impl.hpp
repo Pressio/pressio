@@ -49,12 +49,21 @@
 #ifndef SOLVERS_GAUSS_NEWTON_QR_HPP
 #define SOLVERS_GAUSS_NEWTON_QR_HPP
 
-#include "./solvers_gauss_newton_qr_impl.hpp"
+#include "./solvers_gn_qr_solve_impl.hpp"
 
-namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+
+template <
+  typename system_t,
+  typename qr_solver_t,
+  typename scalar_t,
+  typename line_search_t,
+  typename when_converged_t,
+  typename enable = void
+  >
+class GaussNewtonQR;
 
 
-/* partial specialize for no observer type in templates parameters */
 template <
   typename system_type,
   typename qr_solver_type,
@@ -105,8 +114,8 @@ class GaussNewtonQR<system_type,
   // needed if/when line search is used
   state_t trialState_    = {};
 
-  NormDispatcher<void> normDispatcher_ = {};
-  GradientDispatcher<void> gradientDispatcher_ = {};
+  ::pressio::solvers::iterative::impl::NormDispatcher<void> normDispatcher_ = {};
+  ::pressio::solvers::iterative::impl::GradientDispatcher<void> gradientDispatcher_ = {};
 
 public:
   GaussNewtonQR() = delete;
@@ -121,7 +130,7 @@ public:
 	      std::is_same<T1, typename system_in_t::state_type>::value and
 	      std::is_same<T2, typename system_in_t::residual_type>::value and
 	      std::is_same<T3, typename system_in_t::jacobian_type>::value
-	      > 
+	      >
 	    >
   GaussNewtonQR(const system_in_t & system,
 		const state_t & yState,
@@ -152,5 +161,5 @@ private:
 
 };//class
 
-}}}}//end namespace pressio::solvers::iterative::impl
+}}}}//end namespace pressio::solvers::nonlinear::impl
 #endif

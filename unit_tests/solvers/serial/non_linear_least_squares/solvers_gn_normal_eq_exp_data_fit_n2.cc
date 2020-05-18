@@ -21,7 +21,7 @@ TEST(solvers_nonlinear_least_squares,
   linear_solver_t linSolver;
 
   // GaussNewton solver
-  using gn_t = solvers::iterative::GaussNewton<linear_solver_t, problem_t, hessian_t>;
+  using gn_t = solvers::nonlinear::GaussNewton<linear_solver_t, problem_t, hessian_t>;
   gn_t GNSolver(problem, x, linSolver);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
@@ -53,7 +53,7 @@ TEST(solvers_nonlinear_least_squares,
 
   // GaussNewton solver
   using converged_when_t = solvers::iterative::default_convergence;
-  using gn_t = solvers::iterative::GaussNewton
+  using gn_t = solvers::nonlinear::GaussNewton
     <linear_solver_t, converged_when_t, problem_t, hessian_t>;
   gn_t GNSolver(problem, x, linSolver);
   GNSolver.setTolerance(1e-8);
@@ -86,7 +86,7 @@ TEST(solvers_nonlinear_least_squares,
 
   // GaussNewton solver
   using converged_when_t = solvers::iterative::converged_when::absoluteNormGradientBelowTol;
-  using gn_t = solvers::iterative::GaussNewton
+  using gn_t = solvers::nonlinear::GaussNewton
     <linear_solver_t, converged_when_t, problem_t, hessian_t>;
   gn_t GNSolver(problem, x, linSolver);
   // 1e3 is chosen to test the convergence condition
@@ -120,7 +120,7 @@ TEST(solvers_nonlinear_least_squares,
 
   // GaussNewton solver
   using converged_when_t = solvers::iterative::converged_when::relativeNormGradientBelowTol;
-  using gn_t = solvers::iterative::GaussNewton
+  using gn_t = solvers::nonlinear::GaussNewton
     <linear_solver_t, converged_when_t, problem_t, hessian_t>;
   gn_t GNSolver(problem, x, linSolver);
   GNSolver.setTolerance(0.1);

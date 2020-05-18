@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_fwd.hpp
+// solvers_gn_custom_ops_detection_helper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,10 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_FORWARD_DECLARATIONS_HPP_
-#define SOLVERS_FORWARD_DECLARATIONS_HPP_
+#ifndef SOLVERS_SRC_SOLVERS_GN_NEQ_CUSTOM_OPS_DETECTION_HELPER_HPP_
+#define SOLVERS_SRC_SOLVERS_GN_NEQ_CUSTOM_OPS_DETECTION_HELPER_HPP_
 
-namespace pressio{ namespace solvers{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-namespace iterative{ namespace hacked{
-template <
-  typename scalar_t,
-  typename lin_solver_tag,
-  template <typename, typename> class lin_solver_t,
-  typename line_search_t,
-  typename when_converged_t = ::pressio::solvers::iterative::default_convergence,
-  typename system_t = void,
-  typename cbar_t = void,
-  typename enable = void
-  >
-class GaussNewtonConservative;
-}}//end namespace pressio::solvers::iterative::hacked
-
-}}//end namespace pressio::solvers
-
+}}}}//end namespace pressio::solvers::nonlinear::impl
 #endif

@@ -49,12 +49,12 @@
 #ifndef SOLVERS_GAUSS_NEWTON_NORMAL_EQ_RES_JAC_API_HPP
 #define SOLVERS_GAUSS_NEWTON_NORMAL_EQ_RES_JAC_API_HPP
 
-#include "./solvers_gauss_newton_normal_eq_impl.hpp"
-#include "../../helpers/solvers_norm_dispatcher.hpp"
-#include "../../helpers/solvers_hessian_dispatcher.hpp"
-#include "../../helpers/solvers_gradient_dispatcher.hpp"
+#include "./solvers_gn_neq_solve_impl.hpp"
+#include "../../../helpers/solvers_norm_dispatcher.hpp"
+#include "../../../helpers/solvers_hessian_dispatcher.hpp"
+#include "../../../helpers/solvers_gradient_dispatcher.hpp"
 
-namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <
   typename system_type,
@@ -75,9 +75,9 @@ protected:
   /* --- members --- */
   linear_solver_type & linSolver_ = {};
   ::pressio::solvers::Norm normType_ = ::pressio::solvers::defaultNormType;
-  HessianDispatcher<ud_ops_t> hessianDispatcher_ = {};
-  GradientDispatcher<ud_ops_t> gradientDispatcher_ = {};
-  NormDispatcher<ud_ops_t> normDispatcher_ = {};
+  ::pressio::solvers::iterative::impl::HessianDispatcher<ud_ops_t> hessianDispatcher_ = {};
+  ::pressio::solvers::iterative::impl::GradientDispatcher<ud_ops_t> gradientDispatcher_ = {};
+  ::pressio::solvers::iterative::impl::NormDispatcher<ud_ops_t> normDispatcher_ = {};
   residual_t residual_    = {};
   jacobian_t jacobian_    = {};
   hessian_type hessian_	  = {};
@@ -126,7 +126,7 @@ protected:
       std::is_same<T2, typename system_in_t::residual_type>::value and
       std::is_same<T3, typename system_in_t::jacobian_type>::value and
       !std::is_void<ud_ops_t>::value
-      > 
+      >
     >
   GNHelperMixin(const system_in_t  & system,
 		const state_t	  & yState,
@@ -147,6 +147,19 @@ protected:
   {}
 };
 
+
+template <
+  typename system_t,
+  typename hessian_t,
+  typename linear_solver_t,
+  typename scalar_t,
+  typename line_search_t,
+  typename when_converged_t,
+  typename resid_obs_t,
+  typename ud_ops_t,
+  typename enable = void
+  >
+class GaussNewtonNormalEqResJacApi;
 
 
 /* partial specialize for no observer type in templates parameters */
@@ -232,7 +245,7 @@ public:
 
   template <
     typename system_in_t, typename _ud_ops_t = ud_ops_t,
-    typename = mpl::enable_if_t< !std::is_void<_ud_ops_t>::value > 
+    typename = mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
     >
   GaussNewtonNormalEqResJacApi(const system_in_t  & system,
 			       const state_t	 & yState,
@@ -366,5 +379,5 @@ public:
 
 };
 
-}}}}//end namespace pressio::solvers::iterative::impl
+}}}}//end namespace pressio::solvers::nonlinear::impl
 #endif

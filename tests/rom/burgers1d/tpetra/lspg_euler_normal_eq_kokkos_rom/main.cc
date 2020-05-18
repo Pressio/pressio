@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    using gnsolver_t = pressio::solvers::iterative::GaussNewton<lspg_stepper_t, linear_solver_t>;
+    using gnsolver_t = pressio::solvers::nonlinear::GaussNewton<lspg_stepper_t, linear_solver_t>;
     gnsolver_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);

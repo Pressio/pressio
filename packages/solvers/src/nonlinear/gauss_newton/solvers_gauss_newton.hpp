@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_fwd.hpp
+// solvers_gauss_newton.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,27 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_FORWARD_DECLARATIONS_HPP_
-#define SOLVERS_FORWARD_DECLARATIONS_HPP_
+#ifndef SOLVERS_GAUSS_NEWTON_HPP_
+#define SOLVERS_GAUSS_NEWTON_HPP_
 
-namespace pressio{ namespace solvers{
+#include "./impl_neq/solvers_gn_neq_specializer_impl.hpp"
+#include "./impl_neq/res_jac_api/solvers_gn_neq_py_impl.hpp"
+#include "./impl_qr/solvers_gn_qr_specializer_impl.hpp"
 
-namespace iterative{ namespace hacked{
-template <
-  typename scalar_t,
-  typename lin_solver_tag,
-  template <typename, typename> class lin_solver_t,
-  typename line_search_t,
-  typename when_converged_t = ::pressio::solvers::iterative::default_convergence,
-  typename system_t = void,
-  typename cbar_t = void,
-  typename enable = void
-  >
-class GaussNewtonConservative;
-}}//end namespace pressio::solvers::iterative::hacked
+namespace pressio{ namespace solvers{ namespace nonlinear{
 
-}}//end namespace pressio::solvers
+/* alias: GN solvers normal equations */
+template <typename ... Args>
+using GaussNewton = typename impl::GaussNewtonNormalEquationsSpecializer<Args...>::type;
 
+/* alias: QR-based GN solvers */
+template <typename ... Args>
+using GaussNewtonQR = typename impl::GaussNewtonQRSpecializer<Args...>::type;
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename ... Args>
+using PyGaussNewton = typename impl::PyGaussNewton<Args...>::type;
+#endif
+
+}}}//end namespace pressio::solvers::nonlinear
 #endif

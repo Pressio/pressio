@@ -104,18 +104,8 @@
 // newton-raphson
 #include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
 
-// Gauss-Newton normal eq: residual jacobian api
-#include "solvers/src/nonlinear/gn_normal_equations/residual_jacobian_api/solvers_py_gauss_newton.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/residual_jacobian_api/solvers_gn_neq_custom_ops_detection_helper.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/residual_jacobian_api/solvers_gauss_newton_normal_eq_res_jac_api.hpp"
-#include "solvers/src/nonlinear/gn_normal_equations/residual_jacobian_api/solvers_gn_neq_specialization_picker.hpp"
-
-// Gauss-Newton normal eq: hessian gradient api
-#include "solvers/src/nonlinear/gn_normal_equations/hessian_gradient_api/solvers_gauss_newton_hessian_gradient_api.hpp"
-
-// Gauss-Newton QR
-#include "solvers/src/nonlinear/gn_qr_based/solvers_gauss_newton_qr.hpp"
-#include "solvers/src/nonlinear/gn_qr_based/solvers_gn_qr_specialization_picker.hpp"
+// Gauss-Newton
+#include "solvers/src/nonlinear/gauss_newton/solvers_gauss_newton.hpp"
 
 // Gauss-Newton conservative rom
 #include "solvers/src/nonlinear/gn_conservative_rom/solvers_gauss_newton_conservative.hpp"
