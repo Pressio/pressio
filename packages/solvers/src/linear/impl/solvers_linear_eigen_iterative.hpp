@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_linear_eigen_direct.hpp
+// solvers_linear_eigen_iterative.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,47 +46,60 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_EIGEN_DIRECT_HPP
-#define SOLVERS_LINEAR_EIGEN_DIRECT_HPP
+#ifndef SOLVERS_LINEAR_EIGEN_ITERATIVE_HPP
+#define SOLVERS_LINEAR_EIGEN_ITERATIVE_HPP
 
-namespace pressio { namespace solvers { namespace direct{
+namespace pressio { namespace solvers { namespace linear{ namespace impl{
 
 template<typename solver_tag, typename MatrixT>
-class EigenDirect
-  : public LinearBase<MatrixT, EigenDirect<solver_tag, MatrixT>>
+class EigenIterative
+  : public LinearBase<MatrixT, EigenIterative<solver_tag, MatrixT> >,
+    public IterativeBase< EigenIterative<solver_tag, MatrixT>,
+			  typename containers::details::traits<MatrixT>::scalar_t>
 {
-public:
   static_assert( ::pressio::containers::meta::is_matrix_wrapper_eigen<MatrixT>::value or
   		 ::pressio::containers::meta::is_multi_vector_wrapper_eigen<MatrixT>::value,
-  		 "Eigen direct solver needs a matrix type = wrapper of an eigen matrix");
+  		 "Eigen iterative solver needs a matrix type = wrapper of an eigen matrix");
 
-  using this_t          = EigenDirect<solver_tag, MatrixT>;
-  using base_interface  = LinearBase<MatrixT, this_t>;
+public:
   using matrix_type	= MatrixT;
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
 
+  using this_t          = EigenIterative<solver_tag, MatrixT>;
+  using base_interface  = LinearBase<MatrixT, this_t>;
+  using base_iterative  = IterativeBase<this_t, scalar_t>;
+
   using solver_traits   = linear::details::traits<solver_tag>;
   using native_solver_t = typename solver_traits::template eigen_solver_type<native_mat_t>;
+  using iteration_t	= typename base_iterative::iteration_t;
 
   static_assert( solver_traits::eigen_enabled == true,
-		 "the native solver must be from Eigen to use in EigenDirect");
-
-  static_assert( solver_traits::direct == true,
-		 "the native eigen solver must be direct to use in EigenDirect");
+		 "the native solver must be from Eigen to use in EigenIterative");
+  static_assert( solver_traits::direct == false,
+		 "The native eigen solver must be iterative to use in EigenIterative");
 
 public:
-  EigenDirect() = default;
-  EigenDirect(const EigenDirect &) = delete;
-  ~EigenDirect() = default;
+  EigenIterative() = default;
+  EigenIterative(const EigenIterative &) = delete;
+  ~EigenIterative() = default;
 
 private:
+  iteration_t getNumIterationsExecutedImpl() const {
+    return mysolver_.iterations();
+  }
+
+  scalar_t getFinalErrorImpl() const {
+    return mysolver_.error();
+  }
+
   void resetLinearSystemImpl(const MatrixT& A) {
     mysolver_.compute(*A.data());
   }
 
   template <typename T>
-  void solveImpl(const T& b, T & y) {
+  void solveImpl(const T& b, T & y)
+  {
     *y.data() = mysolver_.solve(*b.data());
   }
 
@@ -102,9 +115,10 @@ private:
     this->solve(b, y);
   }
 
+  friend base_iterative;
   friend base_interface;
   native_solver_t mysolver_ = {};
 };
 
-}}} // end namespace pressio::solvers::direct
+}}}} // end namespace pressio::solvers::iterarive::impl
 #endif

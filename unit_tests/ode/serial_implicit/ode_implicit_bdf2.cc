@@ -79,7 +79,7 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   stepper_t stepperObj(y, appObj, stepperAux);
 
   // define solver
-  using lin_solver_t = solvers::iterative::EigenIterative<
+  using lin_solver_t = solvers::linear::Solver<
     solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
   using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
@@ -133,7 +133,7 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   stepper_t stepperObj(y, appObj, res_pol_t(), jac_pol_t(), stepperAux);
 
   // define solver
-  using lin_solver_t = solvers::iterative::EigenIterative<
+  using lin_solver_t = solvers::linear::Solver<
     solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
   using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
@@ -189,7 +189,7 @@ TEST(ode_implicit_bdf2, numericsUserResidualDefaultJac){
   stepper_t stepperObj(y, appObj, res_pol_t(), stepperAux);
 
   // define solver
-  using lin_solver_t = solvers::iterative::EigenIterative<
+  using lin_solver_t = solvers::linear::Solver<
     solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
   using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;

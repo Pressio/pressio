@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
   stepper_t stepperObj(y, appObj);
 
   // define solver
-  using lin_solver_t = pressio::solvers::iterative::EigenIterative<
+  using lin_solver_t = pressio::solvers::linear::Solver<
     pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;
   using nonlin_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, scalar_t>; 

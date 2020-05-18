@@ -17,7 +17,7 @@ TEST(solvers_nonlinear_least_squares,
 
   // linear solver type
   using solver_tag	= solvers::linear::iterative::LSCG;
-  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
   // GaussNewton solver
@@ -48,7 +48,7 @@ TEST(solvers_nonlinear_least_squares,
 
   // linear solver type
   using solver_tag	= solvers::linear::iterative::LSCG;
-  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
   // GaussNewton solver
@@ -81,7 +81,7 @@ TEST(solvers_nonlinear_least_squares,
 
   // linear solver type
   using solver_tag	= solvers::linear::iterative::LSCG;
-  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
   // GaussNewton solver
@@ -115,7 +115,7 @@ TEST(solvers_nonlinear_least_squares,
 
   // linear solver type
   using solver_tag	= solvers::linear::iterative::LSCG;
-  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
   // GaussNewton solver

@@ -21,7 +21,7 @@ TEST(solvers_nonlinear_least_squares, gn_hess_grad_api_rosenbrock4){
     x[0] = -0.05; x[1] = 1.1; x[2] = 1.2; x[3] = 1.5;
 
     using solver_tag	= solvers::linear::direct::HouseholderQR;
-    using linear_solver_t = solvers::direct::EigenDirect<solver_tag, hessian_t>;
+    using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolver;
 
     using gn_t = solvers::iterative::GaussNewton<linear_solver_t, problem_t, hessian_t>;
@@ -44,7 +44,7 @@ TEST(solvers_nonlinear_least_squares, gn_hess_grad_api_rosenbrock4){
 
     // linear solver type
     using solver_tag	= solvers::linear::direct::HouseholderQR;
-    using linear_solver_t = solvers::direct::EigenDirect<solver_tag, hessian_t>;
+    using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolver;
 
     // GaussNewton solver

@@ -29,7 +29,7 @@ TEST(solvers_nonlin_lsq,
 
   // linear solver type
   using solver_tag  = solvers::linear::iterative::LSCG;
-  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
   using gn_t = solvers::iterative::GaussNewton<
@@ -63,7 +63,7 @@ TEST(solvers_nonlin_lsq,
 
   // linear solver type
   using solver_tag  = solvers::linear::iterative::LSCG;
-  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
   using lsearch_t = solvers::iterative::gn::ArmijoLineSearch;
@@ -98,7 +98,7 @@ TEST(solvers_nonlin_lsq,
 
   // linear solver type
   using solver_tag  = solvers::linear::iterative::LSCG;
-  using linear_solver_t = solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+  using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
   using converged_when_t = solvers::iterative::default_convergence;

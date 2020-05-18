@@ -56,7 +56,7 @@ struct IterativeBase
 {
   IterativeBase() = default;
   IterativeBase(const IterativeBase &) = delete;
-  ~IterativeBase() = default;
+  // ~IterativeBase() = default;
 
   using iteration_t = unsigned int;
 

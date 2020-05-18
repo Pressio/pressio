@@ -9,7 +9,7 @@ struct romDataTypeEigen
   using wls_state_t	= pressio::containers::Vector<eig_dyn_vec>;
   using wls_hessian_t   = pressio::containers::Matrix<eig_dyn_mat>;
   using lin_solver_tag	= pressio::solvers::linear::direct::potrsL;
-  using linear_solver_t = pressio::solvers::direct::EigenDirect<lin_solver_tag, wls_hessian_t>;
+  using linear_solver_t = pressio::solvers::linear::Solver<lin_solver_tag, wls_hessian_t>;
 };
 
 // end namespace

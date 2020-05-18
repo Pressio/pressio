@@ -51,10 +51,10 @@
 
 namespace pressio{ namespace solvers{
 
-namespace direct{
-template<typename SolverT, typename MatrixT, typename enable = void>
-class KokkosDirect;
-}//end namespace pressio::solvers::direct
+// namespace direct{
+// template<typename SolverT, typename MatrixT, typename enable = void>
+// class KokkosDirect;
+// }//end namespace pressio::solvers::direct
 
 namespace linear { namespace details {
 template <typename T>

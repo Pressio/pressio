@@ -63,7 +63,7 @@ struct LinearBase {
 
   LinearBase() = default;
   LinearBase(const LinearBase&) = delete;
-  ~LinearBase() = default;
+  // ~LinearBase() = default;
 
   template <typename CompatibleMatrixT>
   void resetLinearSystem(const CompatibleMatrixT& A)

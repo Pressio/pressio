@@ -175,7 +175,7 @@ struct Bdf1Solver
 						    state_t, res_t, jac_t, app_t>;
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
-  using lin_solver_t = ::pressio::solvers::iterative::EigenIterative<lin_solver_name, jac_t>;
+  using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
   using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
 
   app_t appObj_ = {};
@@ -223,7 +223,7 @@ struct CustomBdf1Solver
   static_assert( std::is_same<rp_t, std_r1>::value, "");
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
-  using lin_solver_t = ::pressio::solvers::iterative::EigenIterative<lin_solver_name, jac_t>;
+  using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
   using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
 
   app_t appObj_		= {};

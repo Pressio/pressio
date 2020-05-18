@@ -243,7 +243,7 @@ struct EulerLSPGWithVelocityApi
 
     // linear solver
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
-    using linear_solver_t  = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+    using linear_solver_t  = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;
 
     // GaussNewton solver

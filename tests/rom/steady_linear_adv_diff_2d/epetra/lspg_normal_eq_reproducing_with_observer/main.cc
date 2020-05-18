@@ -108,7 +108,7 @@ int main(int argc, char *argv[]){
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
   using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
   using solver_tag   = pressio::solvers::linear::iterative::LSCG;
-  using linear_solver_t = pressio::solvers::iterative::EigenIterative<
+  using linear_solver_t = pressio::solvers::linear::Solver<
     solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 

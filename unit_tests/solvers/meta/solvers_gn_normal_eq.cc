@@ -58,7 +58,7 @@ TEST(solvers_meta, gn_normal_equations){
 
   using hessian_type = containers::Matrix<Eigen::MatrixXd>;
   using tag = solvers::linear::iterative::LSCG;
-  using lin_solver_t = solvers::iterative::EigenIterative<tag, hessian_type>;
+  using lin_solver_t = solvers::linear::Solver<tag, hessian_type>;
 
   // define types, then rotate, it should not matter
   {
@@ -98,7 +98,7 @@ TEST(solvers_meta, gn_normal_equations_noHess){
 
   using hessian_type = containers::Matrix<Eigen::MatrixXd>;
   using tag = solvers::linear::iterative::LSCG;
-  using lin_solver_t = solvers::iterative::EigenIterative<tag, hessian_type>;
+  using lin_solver_t = solvers::linear::Solver<tag, hessian_type>;
 
   // define types, then rotate, it should not matter
   {
@@ -138,7 +138,7 @@ TEST(solvers_meta, gn_normal_equations_nondef_conv){
 
   using hessian_type = containers::Matrix<Eigen::MatrixXd>;
   using tag = solvers::linear::iterative::LSCG;
-  using lin_solver_t = solvers::iterative::EigenIterative<tag, hessian_type>;
+  using lin_solver_t = solvers::linear::Solver<tag, hessian_type>;
 
   using ls_t   = solvers::iterative::gn::ArmijoLineSearch;
   using conv_t = solvers::iterative::converged_when::absoluteNormCorrectionBelowTol;

@@ -67,7 +67,7 @@ struct EulerLSPGWithResidualApi
     using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
     using hessian_t	 = pressio::containers::Matrix<eig_dyn_mat>;
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
-    using linear_solver_t  = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+    using linear_solver_t  = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
@@ -146,7 +146,7 @@ struct EulerLSPGWithVelocityApi
     using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
     using hessian_t	 = pressio::containers::Matrix<eig_dyn_mat>;
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
-    using linear_solver_t  = pressio::solvers::iterative::EigenIterative<solver_tag, hessian_t>;
+    using linear_solver_t  = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;
 
     // GaussNewton solver

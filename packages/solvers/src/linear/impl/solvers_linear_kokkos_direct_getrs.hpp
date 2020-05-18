@@ -60,7 +60,7 @@
 #include <cusolverDn.h>
 #endif
 
-namespace pressio { namespace solvers { namespace direct{
+namespace pressio { namespace solvers { namespace linear{ namespace impl{
 
 template<typename MatrixT>
 class KokkosDirect<::pressio::solvers::linear::direct::getrs, MatrixT>
@@ -249,6 +249,6 @@ private:
 #endif
 };
 
-}}} // end namespace pressio::solvers::direct
+}}}} // end namespace pressio::solvers::linear::impl
 #endif
 #endif

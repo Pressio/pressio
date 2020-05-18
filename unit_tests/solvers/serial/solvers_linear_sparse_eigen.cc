@@ -28,7 +28,7 @@ TEST(solvers_linear_iterative, LSCGSparseEigen){
   vector_w_t y(2);
 
   // Solve linear system
-  using solver_t = iterative::EigenIterative<linear::iterative::LSCG, matrix_w_t>;
+  using solver_t = linear::Solver<linear::iterative::LSCG, matrix_w_t>;
   solver_t solver;
   solver.solve(A,b,y);
 

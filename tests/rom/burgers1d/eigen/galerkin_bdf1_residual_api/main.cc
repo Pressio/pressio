@@ -68,7 +68,7 @@ struct GalerkinBDF1WithResidualApi
 
     // linear solver
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
-    using linear_solver_t  = pressio::solvers::iterative::EigenIterative<solver_tag, rom_jacobian_t>;
+    using linear_solver_t  = pressio::solvers::linear::Solver<solver_tag, rom_jacobian_t>;
     linear_solver_t linSolverObj;
 
     // nonlinear system

@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
     // linear solver
     using hessian_t  = pressio::containers::Matrix<typename fom_t::mv_d>;
     using solver_tag   = pressio::solvers::linear::direct::getrs;
-    using linear_solver_t = pressio::solvers::direct::KokkosDirect<solver_tag, hessian_t>;
+    using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;
 
     // GaussNewton solver

@@ -75,7 +75,7 @@ TEST(solvers_linear_direct, getrs){
 
   // linear solver
   using solver_tag   = pressio::solvers::linear::direct::getrs;
-  using linear_solver_t = pressio::solvers::direct::KokkosDirect
+  using linear_solver_t = pressio::solvers::linear::Solver
     <solver_tag, wmat>;
   linear_solver_t lsObj;
   lsObj.solveAllowMatOverwrite(wA_d, wb_d, wx_d);
@@ -171,7 +171,7 @@ TEST(solvers_linear_direct, geqrf){
 
   // linear solver
   using solver_tag   = pressio::solvers::linear::direct::geqrf;
-  using linear_solver_t = pressio::solvers::direct::KokkosDirect<solver_tag, wmat>;
+  using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, wmat>;
   linear_solver_t lsObj;
   lsObj.solveAllowMatOverwrite(wA_d, wb_d, wx_d);
 

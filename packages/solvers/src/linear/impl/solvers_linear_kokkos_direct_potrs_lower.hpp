@@ -60,7 +60,7 @@
 #include <cusolverDn.h>
 #endif
 
-namespace pressio { namespace solvers { namespace direct{
+namespace pressio { namespace solvers { namespace linear{ namespace impl{
 
 template<typename MatrixT>
 class KokkosDirect<::pressio::solvers::linear::direct::potrsL, MatrixT>
@@ -105,13 +105,13 @@ private:
    */
   template < typename _MatrixT = MatrixT, typename T>
   mpl::enable_if_t<
-    mpl::is_same< 
-      typename ::pressio::containers::details::traits<_MatrixT>::layout, Kokkos::LayoutLeft 
+    mpl::is_same<
+      typename ::pressio::containers::details::traits<_MatrixT>::layout, Kokkos::LayoutLeft
     >::value and
     ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value and
     ::pressio::containers::details::traits<T>::has_host_execution_space and
     mpl::is_same<
-      typename containers::details::traits<T>::execution_space, 
+      typename containers::details::traits<T>::execution_space,
       typename containers::details::traits<_MatrixT>::execution_space
       >::value
   >
@@ -149,6 +149,6 @@ private:
 #endif
 };
 
-}}} // end namespace pressio::solvers::direct
+}}}} // end namespace pressio::solvers::linear::impl
 #endif
 #endif
