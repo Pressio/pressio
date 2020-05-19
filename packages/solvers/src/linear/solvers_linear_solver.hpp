@@ -51,10 +51,12 @@
 
 #include "solvers/src/linear/impl/solvers_linear_eigen_direct.hpp"
 #include "solvers/src/linear/impl/solvers_linear_eigen_iterative.hpp"
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "solvers/src/linear/impl/solvers_linear_kokkos_direct_geqrf.hpp"
 #include "solvers/src/linear/impl/solvers_linear_kokkos_direct_getrs.hpp"
 #include "solvers/src/linear/impl/solvers_linear_kokkos_direct_potrs_lower.hpp"
 #include "solvers/src/linear/impl/solvers_linear_kokkos_direct_potrs_upper.hpp"
+#endif
 
 namespace pressio{ namespace solvers{ namespace linear {
 
@@ -95,6 +97,8 @@ struct _LinearSolverSelector<
   using type = ::pressio::solvers::linear::impl::EigenDirect<tag, MatrixT>;
 };
 
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template<typename tag, typename MatrixT>
 struct _LinearSolverSelector<
   tag, MatrixT,
@@ -109,6 +113,7 @@ struct _LinearSolverSelector<
   using solver_traits   = linear::details::traits<tag>;
   using type = ::pressio::solvers::linear::impl::KokkosDirect<tag, MatrixT>;
 };
+#endif
 
 }// end namespace pressio::solvers::linear::impl
 
