@@ -86,7 +86,9 @@
 #include "solvers/src/meta/custom_ops_detection/solvers_has_all_needed_methods_for_gradient.hpp"
 
 #include "solvers/src/nonlinear/solvers_line_search_tags.hpp"
+#include "solvers/src/nonlinear/solvers_lm_schedule_policy_tags.hpp"
 #include "solvers/src/meta/solvers_is_legitimate_convergence_tag.hpp"
+#include "solvers/src/meta/solvers_is_legitimate_lm_schedule_policy_tag.hpp"
 #include "solvers/src/meta/solvers_is_legitimate_line_search_tag.hpp"
 #include "solvers/src/meta/solvers_is_legitimate_hessian_for_gn_normeq.hpp"
 #include "solvers/src/meta/solvers_is_legitimate_linear_solver_for_gn_normeq.hpp"
@@ -106,6 +108,8 @@
 
 // Gauss-Newton
 #include "solvers/src/nonlinear/gauss_newton/solvers_gauss_newton.hpp"
+// LM 
+#include "solvers/src/nonlinear/lm/solvers_lm.hpp"
 
 // Gauss-Newton conservative rom
 #include "solvers/src/nonlinear/gn_conservative_rom/solvers_gauss_newton_conservative.hpp"
