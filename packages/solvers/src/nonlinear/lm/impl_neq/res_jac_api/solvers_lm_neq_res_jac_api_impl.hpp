@@ -153,7 +153,7 @@ template <
   typename hessian_t,
   typename linear_solver_t,
   typename scalar_t,
-  typename line_search_t,
+  typename lm_schedule_policy_tag,
   typename when_converged_t,
   typename resid_obs_t,
   typename ud_ops_t,
@@ -168,7 +168,7 @@ template <
   typename hessian_type,
   typename linear_solver_type,
   typename scalar_type,
-  typename line_search_type,
+  typename lm_schedule_policy_tag,
   typename convergence_when_t,
   typename ud_ops_t
   >
@@ -177,24 +177,24 @@ class LMNormalEqResJacApi<
   hessian_type,
   linear_solver_type,
   scalar_type,
-  line_search_type,
+  lm_schedule_policy_tag,
   convergence_when_t,
   void,
   ud_ops_t
   >
   : public NonLinearSolverBase<
      LMNormalEqResJacApi<system_type, hessian_type, linear_solver_type, scalar_type,
-				  line_search_type, convergence_when_t, void, ud_ops_t>
+				  lm_schedule_policy_tag, convergence_when_t, void, ud_ops_t>
      >,
     public IterativeBase< LMNormalEqResJacApi<system_type, hessian_type,
 						       linear_solver_type, scalar_type,
-						       line_search_type, convergence_when_t,
+						       lm_schedule_policy_tag, convergence_when_t,
 						       void, ud_ops_t>, scalar_type>,
     protected LMHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type, ud_ops_t>
 {
 
   using this_t = LMNormalEqResJacApi<system_type, hessian_type, linear_solver_type,
-					      scalar_type, line_search_type, convergence_when_t,
+					      scalar_type, lm_schedule_policy_tag, convergence_when_t,
 					      void, ud_ops_t>;
 
   // need to be friend of base (crpt)
@@ -227,6 +227,9 @@ class LMNormalEqResJacApi<
   // dummy observer
   utils::impl::empty obsObj_ = {};
 
+  using lm_schedule_policy_t = pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,scalar_type>;
+  lm_schedule_policy_t LMSchedule_;
+
 public:
   LMNormalEqResJacApi() = delete;
   LMNormalEqResJacApi(const LMNormalEqResJacApi &) = delete;
@@ -241,7 +244,23 @@ public:
 			       linear_solver_type & linearSolverIn,
 			       const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
     :  lm_mixin_t(system, yState, linearSolverIn, normType),
-       obsObj_{}{}
+       obsObj_{},
+       LMSchedule_(){}
+
+  template <
+    typename system_in_t, typename _ud_ops_t = ud_ops_t,
+    typename = mpl::enable_if_t< std::is_void<_ud_ops_t>::value >,
+    typename lm_schedule_t
+    >
+  LMNormalEqResJacApi(const system_in_t  & system,
+			       const state_t	 & yState,
+			       linear_solver_type & linearSolverIn,
+             lm_schedule_t & lmSchedule,
+			       const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
+    :  lm_mixin_t(system, yState, linearSolverIn, normType),
+       obsObj_{},
+       LMSchedule_(lmSchedule){}
+
 
   template <
     typename system_in_t, typename _ud_ops_t = ud_ops_t,
@@ -253,16 +272,34 @@ public:
 			       const _ud_ops_t & udOps,
 			       const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
     :  lm_mixin_t(system, yState, linearSolverIn, normType, udOps),
-       obsObj_{}{}
+       obsObj_{},
+       LMSchedule_(){}
+
+  template <
+    typename system_in_t, typename _ud_ops_t = ud_ops_t,
+    typename = mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >,
+    typename lm_schedule_t
+    >
+  LMNormalEqResJacApi(const system_in_t  & system,
+			       const state_t	 & yState,
+			       linear_solver_type & linearSolverIn,
+			       const _ud_ops_t & udOps,
+             lm_schedule_t & lmSchedule,
+			       const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
+    :  lm_mixin_t(system, yState, linearSolverIn, normType, udOps),
+       obsObj_{},
+       LMSchedule_(){}
+
 
 private:
   template <typename system_t>
   void solveImpl(const system_t & sys, state_t & yState)
   {
+    LMSchedule_.reset();
     sys.residual(yState, residual_);
     sys.jacobian(yState, jacobian_);
 
-    lm_neq_solve<line_search_type, convergence_when_t>
+    lm_neq_solve<lm_schedule_policy_tag, convergence_when_t>
       (sys, yState, trialState_,
        residual_, jacobian_, correction_, gradient_,
        hessian_, linSolver_,
@@ -271,7 +308,7 @@ private:
        &obsObj_,
        non_lin_sol_base_t::convergenceConditionDescription_,
        normType_,
-       hessianDispatcher_, gradientDispatcher_, normDispatcher_);
+       hessianDispatcher_, gradientDispatcher_, normDispatcher_,LMSchedule_);
   }//end solveImpl
 };
 
@@ -283,7 +320,7 @@ template <
   typename hessian_type,
   typename linear_solver_type,
   typename scalar_type,
-  typename line_search_type,
+  typename lm_schedule_policy_tag,
   typename convergence_when_t,
   typename observer_t,
   typename ud_ops_t
@@ -293,25 +330,25 @@ class LMNormalEqResJacApi<
   hessian_type,
   linear_solver_type,
   scalar_type,
-  line_search_type,
+  lm_schedule_policy_tag,
   convergence_when_t,
   observer_t,
   ud_ops_t
   >
   : public NonLinearSolverBase< LMNormalEqResJacApi<system_type, hessian_type,
 							     linear_solver_type, scalar_type,
-							     line_search_type, convergence_when_t,
+							     lm_schedule_policy_tag, convergence_when_t,
 							     observer_t, ud_ops_t>>,
     public IterativeBase< LMNormalEqResJacApi<system_type, hessian_type,
 						       linear_solver_type, scalar_type,
-						       line_search_type, convergence_when_t,
+						       lm_schedule_policy_tag, convergence_when_t,
 						       observer_t, ud_ops_t>, scalar_type>,
     protected LMHelperMixin<system_type, hessian_type, linear_solver_type, scalar_type, ud_ops_t>
 {
 
   using this_t = LMNormalEqResJacApi<system_type, hessian_type,
 					      linear_solver_type, scalar_type,
-					      line_search_type, convergence_when_t,
+					      lm_schedule_policy_tag, convergence_when_t,
 					      observer_t, ud_ops_t>;
 
   // need to be friend of base (crpt)
@@ -344,6 +381,9 @@ class LMNormalEqResJacApi<
   // reference to observer object
   const observer_t & obsObj_;
 
+  using lm_schedule_policy_t = pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,scalar_type>;
+  lm_schedule_policy_t LMSchedule_;
+
 public:
   LMNormalEqResJacApi() = delete;
   LMNormalEqResJacApi(const LMNormalEqResJacApi &) = delete;
@@ -356,16 +396,29 @@ public:
 			       observer_t	 & obsIn,
 			       const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
     : lm_mixin_t(system, yState, linearSolverIn, normType),
-      obsObj_{obsIn}{}
+      obsObj_{obsIn},
+      LMSchedule_(){}
+
+  template <typename system_in_t, typename lm_schedule_t>
+  LMNormalEqResJacApi(const system_in_t  & system,
+			       const state_t	 & yState,
+			       linear_solver_type & linearSolverIn,
+			       observer_t	 & obsIn,
+             lm_schedule_t & lmSchedule,
+			       const ::pressio::solvers::Norm normType = ::pressio::solvers::defaultNormType)
+    : lm_mixin_t(system, yState, linearSolverIn, normType),
+      obsObj_{obsIn},
+      LMSchedule_(lmSchedule){}
+
 
   template <typename system_t>
   void solveImpl(const system_t & sys, state_t & yState)
   {
+    LMSchedule_.reset();
     sys.residual(yState, residual_);
     sys.jacobian(yState, jacobian_);
-
     lm_neq_solve<
-      line_search_type, convergence_when_t
+      lm_schedule_policy_tag, convergence_when_t
       >(sys, yState, trialState_,
 	residual_, jacobian_, correction_, gradient_,
 	hessian_, linSolver_,
@@ -374,7 +427,7 @@ public:
 	&obsObj_,
 	non_lin_sol_base_t::convergenceConditionDescription_,
 	normType_,
-	hessianDispatcher_, gradientDispatcher_, normDispatcher_);
+	hessianDispatcher_, gradientDispatcher_, normDispatcher_,LMSchedule_);
   }//end solveImpl
 
 };

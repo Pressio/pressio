@@ -67,20 +67,22 @@ class LMSchedule<pressio::solvers::iterative::lm::SchedulePolicy1, scalar_t>
 {
 
 private:
-    scalar_t beta_lm_;// = 2.;
-    scalar_t gamma_lm_;// = 3.;
-    scalar_t p_lm_;// = 0.25;
-    scalar_t nu_lm_;// =   2.;
-    scalar_t mu_;// = beta_lm_;
+    const scalar_t beta_lm_;
+    const scalar_t gamma_lm_;
+    const scalar_t p_lm_;
+    const scalar_t nu_lm_;
+    const scalar_t mu0_;
+    scalar_t mu_;
 
 public:
-    LMSchedule(){
-      beta_lm_ = 2.;
-      gamma_lm_ = 3.;
-      p_lm_ = 0.25;
-      nu_lm_ =   2.;
-      mu_ = beta_lm_;
-    }
+    LMSchedule():
+      beta_lm_{2.},
+      gamma_lm_{3.},
+      p_lm_{0.25},
+      nu_lm_{2.},
+      mu_{2.},
+      mu0_{2.}
+    {}
     LMSchedule(scalar_t beta_lm, 
                scalar_t gamma_lm, 
                scalar_t p_lm, 
@@ -90,11 +92,16 @@ public:
                gamma_lm_(gamma_lm),
                p_lm_(p_lm),
                nu_lm_(nu_lm),
-               mu_(mu_lm)
+               mu_(mu_lm),
+               mu0_(mu_lm)
     {}
    
     scalar_t getMu(){
       return mu_;
+    }
+
+    void reset(){
+      mu_ = mu0_;
     }
 
     template <
@@ -152,19 +159,21 @@ class LMSchedule<pressio::solvers::iterative::lm::SchedulePolicy2,scalar_t>
 {
 
 private:
-    scalar_t rho1_lm_;// = 0.25;
-    scalar_t rho2_lm_;// = 0.75;
-    scalar_t beta_lm_;// = 2.;
-    scalar_t gamma_lm_;// = 3.;
-    scalar_t mu_;// = 3.;
+    const scalar_t rho1_lm_;
+    const scalar_t rho2_lm_;
+    const scalar_t beta_lm_;
+    const scalar_t gamma_lm_;
+    const scalar_t mu0_;
+    scalar_t mu_;
 public:
-    LMSchedule(){
-      rho1_lm_ = 0.25;
-      rho2_lm_ = 0.75;
-      beta_lm_ = 2.;
-      gamma_lm_ = 3.;
-      scalar_t mu_ = 3.;
-    }
+    LMSchedule():
+      rho1_lm_{0.25},
+      rho2_lm_{0.75},
+      beta_lm_{2.},
+      gamma_lm_{3.},
+      mu_{3.},
+      mu0_{3.}
+    {}
     LMSchedule(scalar_t rho1_lm, 
                scalar_t rho2_lm, 
                scalar_t beta_lm, 
@@ -174,12 +183,18 @@ public:
                rho2_lm_(rho2_lm),
                beta_lm_(beta_lm),
                gamma_lm_(gamma_lm),
-               mu_(mu_lm)
+               mu_(mu_lm),
+               mu0_(mu_lm)
     {}
 
     scalar_t getMu(){
       return mu_;
     }
+
+    void reset(){
+      mu_ = mu0_;
+    }
+
 
     template <
       typename system_t,

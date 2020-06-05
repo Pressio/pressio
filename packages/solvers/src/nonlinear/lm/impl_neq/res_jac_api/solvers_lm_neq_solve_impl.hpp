@@ -75,7 +75,8 @@ template <
   typename hessian_dispatcher_t,
   typename gradient_dispatcher_t,
   typename norm_dispatcher_t,
-  typename observer_t = utils::impl::empty
+  typename observer_t = utils::impl::empty,
+  typename lm_schedule_t
   >
 void lm_neq_solve(const system_t & sys,
           typename system_t::state_type & stateInOut,
@@ -93,7 +94,8 @@ void lm_neq_solve(const system_t & sys,
           ::pressio::solvers::Norm normType,
           const hessian_dispatcher_t & hessianDispatcher,
           const gradient_dispatcher_t & gradientDispatcher,
-          const norm_dispatcher_t & normDispatcher)
+          const norm_dispatcher_t & normDispatcher,
+          lm_schedule_t & lmSchedule)
 {
 
   using residual_t	= typename system_t::residual_type;
@@ -108,13 +110,6 @@ void lm_neq_solve(const system_t & sys,
   // policy to observing residual when converged before exiting
   using residual_observer_when_conv = ::pressio::solvers::iterative::impl::ResidualObserverWhenSolverConverged<observer_t, residual_t>;
 
-  /* policy for computing line search factor (alpha) such that
-   * the update is done with y = y + alpha correction
-   * alpha = 1 default when user does not want line search*/
-  //using lm_schedule_t = LMDefaultSchedule<scalar_t>;
-  using lm_schedule_policy_t = pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,scalar_t>;
-
-  lm_schedule_policy_t LMSchedule;
   //-------------------------------------------------------
 
   constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
@@ -209,7 +204,7 @@ void lm_neq_solve(const system_t & sys,
     // store initial residual norm
     if (iStep==1) normGrad0 = normGrad;
 
-    auto mus = LMSchedule.getMu();
+    auto mus = lmSchedule.getMu();
     assemble_system(hessian,gradient,mus);
     // solve normal equations
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -236,10 +231,10 @@ void lm_neq_solve(const system_t & sys,
     // exit with error if NaNs detected in solution update dy
     if (std::isnan(correctionNorm)){
       throw std::runtime_error(
-        "Nonlinear solver: NEQ-based Gausss Newton: NaNs detected in solution update dy");
+        "Nonlinear solver: NEQ-based LM: NaNs detected in solution update dy");
     }
 
-    LMSchedule.evaluate(stateInOut,ytrial,correction,gradient,residual,sys);
+    lmSchedule.evaluate(stateInOut,ytrial,correction,gradient,residual,sys);
     // check convergence (whatever method user decided)
     const auto flag = is_converged_t::evaluate(stateInOut, correction, correctionNorm,
 					       normRes, normRes0,

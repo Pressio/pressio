@@ -69,13 +69,16 @@ int main() {
   linear_solver_t linSolverObj;
 
   using lm_schedule_policy_tag = pressio::solvers::iterative::lm::SchedulePolicy2;
+  //using lm_schedule_policy_t = pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double>;
+  pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double> LMSchedule(0.25,0.75,2.,3.,5.);
+
   using system_t = NonLinearLeastSquareSystem;
   using lmsolver_t   = pressio::solvers::nonlinear::LM<system_t, linear_solver_t,lm_schedule_policy_tag>;
   vector_w_t x0(2);
   x0[0] = 0.5;
   x0[1] = -2.;
   NonLinearLeastSquareSystem sys;
-  lmsolver_t solver(sys, x0, linSolverObj);
+  lmsolver_t solver(sys, x0, linSolverObj,LMSchedule);
   solver.solve(sys, x0);
 
   std::cout << "The solution of the nonlinear system is: " << std::endl << *x0.data() << std::endl;
