@@ -51,7 +51,7 @@
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace lm{
 
-struct SchedulePolicy1{};
+struct SchedulePolicyDefault{};
 struct SchedulePolicy2{};
 
 }}}}//end namespace pressio::solvers::iterative::gn

@@ -51,6 +51,23 @@
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
+template<typename scalar_t, typename hessian_t>
+scalar_t getMaxValOnDiag(hessian_t & hessian){
+  auto & HObj = *hessian.data();
+  int numCols = HObj.cols();
+  auto HDiag = HObj.diagonal();
+  scalar_t maxVal = 0.;
+  for (int i = 0; i< numCols; i++)
+  {
+    if (abs(HDiag[i]) > maxVal)
+    { 
+      maxVal = abs(HDiag[i]);
+    }
+  }
+  return maxVal;
+}
+
+
 template<typename lm_schedule_policy_tag, typename scalar_t>
 class LMSchedule;
 
@@ -59,20 +76,20 @@ Updating technique from
 DAMPING PARAMETER IN MARQUARDT’S METHOD
 Hans Bruun Nielsen
 TECHNICAL REPORT IMM-REP-1999-05
-
 Update given in Equation 2.5
+
+Note that we solve J^T J + diag(J^TJ)\mu  here
 */
 template<typename scalar_t>
-class LMSchedule<pressio::solvers::iterative::lm::SchedulePolicy1, scalar_t>
+class LMSchedule<pressio::solvers::iterative::lm::SchedulePolicyDefault, scalar_t>
 {
-
 private:
     const scalar_t beta_lm_;
     const scalar_t gamma_lm_;
     const scalar_t p_lm_;
-    const scalar_t nu_lm_;
-    const scalar_t mu0_;
-    scalar_t mu_;
+    const scalar_t tau_lm_;
+    scalar_t nu_lm_;
+    scalar_t mu_ = 0.;
 
 public:
     LMSchedule():
@@ -80,34 +97,34 @@ public:
       gamma_lm_{3.},
       p_lm_{0.25},
       nu_lm_{2.},
-      mu_{2.},
-      mu0_{2.}
+      tau_lm_{1.}
     {}
     LMSchedule(scalar_t beta_lm, 
                scalar_t gamma_lm, 
                scalar_t p_lm, 
-               scalar_t nu_lm, 
-               scalar_t mu_lm) : 
+               scalar_t tau_lm) : 
                beta_lm_(beta_lm),
                gamma_lm_(gamma_lm),
                p_lm_(p_lm),
-               nu_lm_(nu_lm),
-               mu_(mu_lm),
-               mu0_(mu_lm)
+               nu_lm_(beta_lm),
+               tau_lm_(tau_lm)
     {}
    
     scalar_t getMu(){
       return mu_;
     }
 
-    void reset(){
-      mu_ = mu0_;
+    template<typename hessian_t>
+    void reset(hessian_t H){
+      mu_ = tau_lm_;
     }
 
+    
     template <
       typename system_t,
       typename gradient_t,
       typename residual_t,
+      typename hessian_t,
       typename state_t
       >
     void evaluate(state_t & stateInOut, 
@@ -115,10 +132,29 @@ public:
                   const gradient_t & correction,
                   const gradient_t & gradient, 
                   residual_t & residual, 
+                  const hessian_t & hessian, 
                   const system_t & sys)
     {
       constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
       ::pressio::ops::do_update(ytrial, stateInOut, one, correction,one);
+      auto & HObj = *hessian.data();
+      auto tmp = (*correction.data());
+      for (int i=0; i< hessian.extent(0); i++){
+        tmp(i) *= HObj(i,i);
+      } 
+      auto tmp2 = (*correction.data());
+      for (int i=0; i< hessian.extent(0); i++){
+        tmp2(i) *= tmp(i);
+      } 
+      auto hh = tmp2.sum();
+      auto hg = ::pressio::ops::dot(correction,gradient);
+      auto denom = 0.5*(mu_*hh + hg);  //note sign difference in gradient
+      auto r2_old = ::pressio::ops::dot(residual,residual); 
+      sys.residual(ytrial, residual);
+      auto r2_new = ::pressio::ops::dot(residual,residual); 
+      auto rho = (r2_old - r2_new) / (denom);
+      /*
+      This block of code is used if we solve J^T J + I mu = J^TR
       auto hh = ::pressio::ops::dot(correction,correction);
       auto hg = ::pressio::ops::dot(correction,gradient);
       auto denom = 0.5*(mu_*hh + hg);  //note sign difference in gradient
@@ -126,6 +162,7 @@ public:
       sys.residual(ytrial, residual);
       auto r2_new = ::pressio::ops::dot(residual,residual); 
       auto rho = (r2_old - r2_new) / (denom);
+      */
       if (rho > 0){
         ::pressio::ops::do_update(stateInOut, one, correction, one);
         scalar_t mu_rat = 1 - (beta_lm_ - 1.)*pow(2.*rho-1,p_lm_);
@@ -144,8 +181,6 @@ public:
 
 };
 
-
-
 /*
 Updating technique from 
 DAMPING PARAMETER IN MARQUARDT’S METHOD
@@ -163,36 +198,35 @@ private:
     const scalar_t rho2_lm_;
     const scalar_t beta_lm_;
     const scalar_t gamma_lm_;
-    const scalar_t mu0_;
-    scalar_t mu_;
+    const scalar_t tau_lm_;
+    scalar_t mu_ = 0.;
 public:
     LMSchedule():
-      rho1_lm_{0.25},
-      rho2_lm_{0.75},
+      rho1_lm_{0.2},
+      rho2_lm_{0.8},
       beta_lm_{2.},
       gamma_lm_{3.},
-      mu_{3.},
-      mu0_{3.}
+      tau_lm_{1.}
     {}
-    LMSchedule(scalar_t rho1_lm, 
-               scalar_t rho2_lm, 
-               scalar_t beta_lm, 
+    LMSchedule(scalar_t beta_lm,
                scalar_t gamma_lm, 
-               scalar_t mu_lm) : 
-               rho1_lm_(rho1_lm),
-               rho2_lm_(rho2_lm),
+               scalar_t rho1_lm, 
+               scalar_t rho2_lm, 
+               scalar_t tau_lm) : 
                beta_lm_(beta_lm),
                gamma_lm_(gamma_lm),
-               mu_(mu_lm),
-               mu0_(mu_lm)
+               rho1_lm_(rho1_lm),
+               rho2_lm_(rho2_lm),
+               tau_lm_(tau_lm)
     {}
 
     scalar_t getMu(){
       return mu_;
     }
 
-    void reset(){
-      mu_ = mu0_;
+    template<typename hessian_t>
+    void reset(hessian_t H){
+      mu_ = tau_lm_;
     }
 
 
@@ -200,6 +234,7 @@ public:
       typename system_t,
       typename gradient_t,
       typename residual_t,
+      typename hessian_t,
       typename state_t
       >
     void evaluate(state_t & stateInOut, 
@@ -207,11 +242,21 @@ public:
                   const gradient_t & correction,
                   const gradient_t & gradient, 
                   residual_t & residual, 
+                  const hessian_t & hessian, 
                   const system_t & sys)
     {
       constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
       ::pressio::ops::do_update(ytrial, stateInOut, one, correction,one);
-      auto hh = ::pressio::ops::dot(correction,correction);
+      auto & HObj = *hessian.data();
+      auto tmp = (*correction.data());
+      for (int i=0; i< hessian.extent(0); i++){
+        tmp(i) *= HObj(i,i);
+      } 
+      auto tmp2 = (*correction.data());
+      for (int i=0; i< hessian.extent(0); i++){
+        tmp2(i) *= tmp(i);
+      } 
+      auto hh = tmp2.sum();
       auto hg = ::pressio::ops::dot(correction,gradient);
       auto denom = 0.5*(mu_*hh + hg);  //note sign difference in gradient
       auto r2_old = ::pressio::ops::dot(residual,residual); 
@@ -220,8 +265,9 @@ public:
       auto rho = (r2_old - r2_new) / (denom);
       if (rho < rho1_lm_){
         mu_ *= beta_lm_;
-      } else if (rho > rho2_lm_){
-        mu_ /= gamma_lm_;
+      } 
+      if (rho > rho2_lm_){
+        mu_ = mu_/gamma_lm_;
       }
       if (rho > 0){
         ::pressio::ops::do_update(stateInOut, one, correction,one);
@@ -233,5 +279,8 @@ public:
     } 
 
 };
+
+
+
 }}}} //end namespace pressio::solvers::iterative::impl
 #endif

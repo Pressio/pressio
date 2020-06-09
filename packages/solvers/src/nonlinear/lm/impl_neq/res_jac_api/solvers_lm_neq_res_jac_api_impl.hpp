@@ -295,7 +295,6 @@ private:
   template <typename system_t>
   void solveImpl(const system_t & sys, state_t & yState)
   {
-    LMSchedule_.reset();
     sys.residual(yState, residual_);
     sys.jacobian(yState, jacobian_);
 
@@ -414,7 +413,6 @@ public:
   template <typename system_t>
   void solveImpl(const system_t & sys, state_t & yState)
   {
-    LMSchedule_.reset();
     sys.residual(yState, residual_);
     sys.jacobian(yState, jacobian_);
     lm_neq_solve<

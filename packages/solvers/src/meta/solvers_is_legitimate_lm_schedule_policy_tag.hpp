@@ -55,9 +55,11 @@ template <typename T, typename enable = void>
 struct is_legitimate_lm_schedule_policy_tag
   : std::false_type{};
 
+
 template <>
-struct is_legitimate_lm_schedule_policy_tag<::pressio::solvers::iterative::lm::SchedulePolicy1>
+struct is_legitimate_lm_schedule_policy_tag<::pressio::solvers::iterative::lm::SchedulePolicyDefault>
   : std::true_type{};
+
 
 template <>
 struct is_legitimate_lm_schedule_policy_tag<::pressio::solvers::iterative::lm::SchedulePolicy2>

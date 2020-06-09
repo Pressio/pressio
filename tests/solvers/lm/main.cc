@@ -36,7 +36,7 @@ struct NonLinearLeastSquareSystem {
 
 
     void jacobian(const vector_w_t& x, matrix_w_t& jac) const {
-        jac.data()->coeffRef(0,0) = 1;
+        jac.data()->coeffRef(0,0) = 1.;
         jac.data()->coeffRef(0,1) = -x[1]*(2.*x[1] - 5.) + (5. - x[1])*x[1] - 2.;
         jac.data()->coeffRef(1,0) = 1.;
         jac.data()->coeffRef(1,1) = x[1]*(x[1] + 1.) - (-2.*x[1] - 1.)*x[1] - 14.;
@@ -49,8 +49,6 @@ struct NonLinearLeastSquareSystem {
       return jac;
     }
 
-    const double coeff[5] = {1.0, 2.0, 4.0, 5.0, 8.0};
-    const double vansw[5] = {3.2939, 4.2699, 7.1749, 9.3008, 20.259};
 };
 
 int main() {
@@ -69,8 +67,10 @@ int main() {
   linear_solver_t linSolverObj;
 
   using lm_schedule_policy_tag = pressio::solvers::iterative::lm::SchedulePolicy2;
-  //using lm_schedule_policy_t = pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double>;
-  pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double> LMSchedule(0.25,0.75,2.,3.,5.);
+  using lm_solver_tag = pressio::solvers::nonlinear::LM0;
+  //pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double> LMSchedule(2.,3.,3.,1.);
+  using lm_schedule_policy_tag = pressio::solvers::iterative::lm::SchedulePolicy2;
+  pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double> LMSchedule(2.,3.,0.2,0.8,1.);
 
   using system_t = NonLinearLeastSquareSystem;
   using lmsolver_t   = pressio::solvers::nonlinear::LM<system_t, linear_solver_t,lm_schedule_policy_tag>;
@@ -78,7 +78,8 @@ int main() {
   x0[0] = 0.5;
   x0[1] = -2.;
   NonLinearLeastSquareSystem sys;
-  lmsolver_t solver(sys, x0, linSolverObj,LMSchedule);
+  lmsolver_t solver(sys, x0, linSolverObj);
+  solver.setTolerance(1e-15);
   solver.solve(sys, x0);
 
   std::cout << "The solution of the nonlinear system is: " << std::endl << *x0.data() << std::endl;

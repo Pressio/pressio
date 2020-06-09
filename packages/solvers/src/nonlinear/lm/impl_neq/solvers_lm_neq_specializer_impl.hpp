@@ -267,7 +267,7 @@ do not contain a type that is admissible for the normal-equation solver.");
   // check if sequence contains a line search tag
   using ic4 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::solvers::meta::is_legitimate_lm_schedule_policy_tag, Args...>;
-  using default_policy_tag = ::pressio::solvers::iterative::lm::SchedulePolicy2;
+  using default_policy_tag = ::pressio::solvers::iterative::lm::SchedulePolicyDefault;
   using lm_schedule_policy_tag = ::pressio::mpl::variadic::at_or_t<default_policy_tag, ic4::value, Args...>;
   static_assert(!std::is_void<lm_schedule_policy_tag>::value,
 		"The line search type for LM cannot be void: either omit it so that I use the \
