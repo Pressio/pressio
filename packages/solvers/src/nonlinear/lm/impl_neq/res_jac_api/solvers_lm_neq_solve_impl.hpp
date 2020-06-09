@@ -54,18 +54,13 @@
 #include "../../../helpers/solvers_residual_observer_when_solver_converged.hpp"
 #include "../../../helpers/solvers_residual_observer_each_solver_step.hpp"
 #include "../../../helpers/solvers_get_matrix_size_helper.hpp"
-#include <iostream>
-#include <fstream>
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 
 template<typename hessian_t, typename scalar_t>
 hessian_t assemble_system(hessian_t hessian,const scalar_t & mu){
   auto & HObj = *hessian.data();
-  //HObj.diagonal() += mu;//*HObj.diagonal();
-  std::cout << "before " << HObj(0,1) << " " <<  HObj(1,1) << std::endl;
-  HObj.diagonal().array() += mu;
-  std::cout << "after " << HObj(0,1) << " " <<  HObj(1,1) << std::endl;
+  HObj.diagonal() = HObj.diagonal() + mu*HObj.diagonal();
   return hessian;
 }
 
@@ -150,10 +145,6 @@ void lm_neq_solve(const system_t & sys,
 #endif
 
   iteration_t iStep = 0;
-
-  std::ofstream outputFile;
-  outputFile.open("residuals.txt");
-
 
   while (++iStep <= maxNonLIt)
   {
@@ -254,7 +245,6 @@ void lm_neq_solve(const system_t & sys,
    auto gnorm= ::pressio::ops::dot(gradient,gradient);
    auto rnorm= ::pressio::ops::dot(residual,residual);
 
-    outputFile << mus << " " << rnorm << " " << gnorm << std::endl;
     // check convergence (whatever method user decided)
     const auto flag = is_converged_t::evaluate(stateInOut, correction, correctionNorm,
 					       normRes, normRes0,
@@ -282,7 +272,6 @@ void lm_neq_solve(const system_t & sys,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   timer->stop("NEQ-based LM");
 #endif
-  outputFile.close();
 }// end
 
 

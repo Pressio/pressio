@@ -66,11 +66,10 @@ int main() {
   using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
-  using lm_schedule_policy_tag = pressio::solvers::iterative::lm::SchedulePolicy2;
-  using lm_solver_tag = pressio::solvers::nonlinear::LM0;
+  //using lm_schedule_policy_tag = pressio::solvers::iterative::lm::SchedulePolicyDefault;
   //pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double> LMSchedule(2.,3.,3.,1.);
   using lm_schedule_policy_tag = pressio::solvers::iterative::lm::SchedulePolicy2;
-  pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double> LMSchedule(2.,3.,0.2,0.8,1.);
+  //pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double> LMSchedule(2.,3.,0.2,0.8,1.);
 
   using system_t = NonLinearLeastSquareSystem;
   using lmsolver_t   = pressio::solvers::nonlinear::LM<system_t, linear_solver_t,lm_schedule_policy_tag>;

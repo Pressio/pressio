@@ -51,23 +51,6 @@
 
 namespace pressio{ namespace solvers{ namespace iterative{ namespace impl{
 
-template<typename scalar_t, typename hessian_t>
-scalar_t getMaxValOnDiag(hessian_t & hessian){
-  auto & HObj = *hessian.data();
-  int numCols = HObj.cols();
-  auto HDiag = HObj.diagonal();
-  scalar_t maxVal = 0.;
-  for (int i = 0; i< numCols; i++)
-  {
-    if (abs(HDiag[i]) > maxVal)
-    { 
-      maxVal = abs(HDiag[i]);
-    }
-  }
-  return maxVal;
-}
-
-
 template<typename lm_schedule_policy_tag, typename scalar_t>
 class LMSchedule;
 
@@ -95,7 +78,7 @@ public:
     LMSchedule():
       beta_lm_{2.},
       gamma_lm_{3.},
-      p_lm_{0.25},
+      p_lm_{3.},
       nu_lm_{2.},
       tau_lm_{1.}
     {}
@@ -138,15 +121,11 @@ public:
       constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
       ::pressio::ops::do_update(ytrial, stateInOut, one, correction,one);
       auto & HObj = *hessian.data();
-      auto tmp = (*correction.data());
+      gradient_t tmpa(correction.extent(0));
       for (int i=0; i< hessian.extent(0); i++){
-        tmp(i) *= HObj(i,i);
+        (*tmpa.data())(i) = (*correction.data())(i)*HObj(i,i);
       } 
-      auto tmp2 = (*correction.data());
-      for (int i=0; i< hessian.extent(0); i++){
-        tmp2(i) *= tmp(i);
-      } 
-      auto hh = tmp2.sum();
+      auto hh = ::pressio::ops::dot(correction,tmpa);
       auto hg = ::pressio::ops::dot(correction,gradient);
       auto denom = 0.5*(mu_*hh + hg);  //note sign difference in gradient
       auto r2_old = ::pressio::ops::dot(residual,residual); 
@@ -248,15 +227,11 @@ public:
       constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
       ::pressio::ops::do_update(ytrial, stateInOut, one, correction,one);
       auto & HObj = *hessian.data();
-      auto tmp = (*correction.data());
+      gradient_t tmpa(correction.extent(0));
       for (int i=0; i< hessian.extent(0); i++){
-        tmp(i) *= HObj(i,i);
+        (*tmpa.data())(i) = (*correction.data())(i)*HObj(i,i);
       } 
-      auto tmp2 = (*correction.data());
-      for (int i=0; i< hessian.extent(0); i++){
-        tmp2(i) *= tmp(i);
-      } 
-      auto hh = tmp2.sum();
+      auto hh = ::pressio::ops::dot(correction,tmpa);
       auto hg = ::pressio::ops::dot(correction,gradient);
       auto denom = 0.5*(mu_*hh + hg);  //note sign difference in gradient
       auto r2_old = ::pressio::ops::dot(residual,residual); 
@@ -264,10 +239,10 @@ public:
       auto r2_new = ::pressio::ops::dot(residual,residual); 
       auto rho = (r2_old - r2_new) / (denom);
       if (rho < rho1_lm_){
-        mu_ *= beta_lm_;
+        mu_ = std::min(mu_*beta_lm_,pow(10.,7.));
       } 
       if (rho > rho2_lm_){
-        mu_ = mu_/gamma_lm_;
+        mu_ = std::max(pow(10.,-7.),mu_/gamma_lm_);
       }
       if (rho > 0){
         ::pressio::ops::do_update(stateInOut, one, correction,one);
