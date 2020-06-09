@@ -152,10 +152,10 @@ public:
         mu_ = mu_*nu_lm_;
         nu_lm_ = 2.*nu_lm_; 
       }
-      ::pressio::utils::io::print_stdout(std::scientific,
-  				    "mu =", mu_,
-  				    utils::io::reset(),
-  				    "\n");
+//      ::pressio::utils::io::print_stdout(std::scientific,
+//  				    "mu =", mu_,
+//  				    utils::io::reset(),
+//  				    "\n");
     } 
 
 };
@@ -247,10 +247,10 @@ public:
       if (rho > 0){
         ::pressio::ops::do_update(stateInOut, one, correction,one);
       }
-      ::pressio::utils::io::print_stdout(std::scientific,
-  				    "mu =", mu_,
-  				    utils::io::reset(),
-  				    "\n");
+//      ::pressio::utils::io::print_stdout(std::scientific,
+//  				    "mu =", mu_,
+//  				    utils::io::reset(),
+//  				    "\n");
     } 
 
 };
