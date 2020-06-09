@@ -52,7 +52,7 @@ struct NonLinearLeastSquareSystem {
 };
 
 int main() {
-
+  std::string checkStr = "PASSED";
   // Namespaces
   using namespace pressio;
   using namespace pressio::solvers;
@@ -66,21 +66,48 @@ int main() {
   using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
-  //using lm_schedule_policy_tag = pressio::solvers::iterative::lm::SchedulePolicyDefault;
-  //pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double> LMSchedule(2.,3.,3.,1.);
-  using lm_schedule_policy_tag = pressio::solvers::iterative::lm::SchedulePolicy2;
-  //pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag,double> LMSchedule(2.,3.,0.2,0.8,1.);
-
+  using lm_schedule_policy_tag1 = pressio::solvers::iterative::lm::SchedulePolicyDefault;
+  using lm_schedule_policy_tag2 = pressio::solvers::iterative::lm::SchedulePolicy2;
+  // We can also build a policy and pass it to the solver. For example, let's say we want to run 
+  // with lm_schedule_policy_tag_1 but with custom coefficients, we can do:
+  //    "pressio::solvers::iterative::impl::LMSchedule<lm_schedule_policy_tag1,double> LMSchedule(2.,3.,0.2,0.8,1.);"
+  // and pass to the solver below
+  //
   using system_t = NonLinearLeastSquareSystem;
-  using lmsolver_t   = pressio::solvers::nonlinear::LM<system_t, linear_solver_t,lm_schedule_policy_tag>;
+  using lmsolver_t1   = pressio::solvers::nonlinear::LM<system_t, linear_solver_t,lm_schedule_policy_tag1>;
+  using lmsolver_t2   = pressio::solvers::nonlinear::LM<system_t, linear_solver_t,lm_schedule_policy_tag2>;
+
   vector_w_t x0(2);
   x0[0] = 0.5;
   x0[1] = -2.;
   NonLinearLeastSquareSystem sys;
-  lmsolver_t solver(sys, x0, linSolverObj);
-  solver.setTolerance(1e-15);
-  solver.solve(sys, x0);
+  lmsolver_t1 solver1(sys, x0, linSolverObj);
+  // if we wanted to pass a schedule policy, solver1(sys, x0, linSolverObj,LMSchedule);
+  solver1.setTolerance(1e-15);
+  solver1.solve(sys, x0);
 
-  std::cout << "The solution of the nonlinear system is: " << std::endl << *x0.data() << std::endl;
+
+  vector_w_t x1(2);
+  x1[0] = 0.5;
+  x1[1] = -2.;
+  lmsolver_t2 solver2(sys, x0, linSolverObj);
+  solver2.setTolerance(1e-15);
+  solver2.solve(sys, x1);
+
+  vector_w_t xstar(2);
+  xstar[0] = 11.412779;
+  xstar[1] = -0.896805;
+
+  for (int i=0; i< 2; i++){
+    if (abs((*x0.data())(i) - (*xstar.data())(i)) > 1e-6){
+      checkStr = "FAILED";
+      std::cout << "Default policy failed" << std::endl;
+  } 
+    if (abs((*x1.data())(i) - (*xstar.data())(i)) > 1e-6){
+      checkStr = "FAILED";
+      std::cout << "Policy 2 failed" << std::endl;
+    } 
+ }
+  std::cout << checkStr << std::endl;
   return 0;
 }
