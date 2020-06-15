@@ -128,9 +128,11 @@ public:
       auto hh = ::pressio::ops::dot(correction,tmpa);
       auto hg = ::pressio::ops::dot(correction,gradient);
       auto denom = 0.5*(mu_*hh + hg);  //note sign difference in gradient
-      auto r2_old = ::pressio::ops::dot(residual,residual); 
+      auto r2_old = ::pressio::ops::norm2(residual); 
+      r2_old = r2_old*r2_old;
       sys.residual(ytrial, residual);
-      auto r2_new = ::pressio::ops::dot(residual,residual); 
+      auto r2_new = ::pressio::ops::norm2(residual);
+      r2_new = r2_new*r2_new; 
       auto rho = (r2_old - r2_new) / (denom);
       /*
       This block of code is used if we solve J^T J + I mu = J^TR
@@ -234,9 +236,11 @@ public:
       auto hh = ::pressio::ops::dot(correction,tmpa);
       auto hg = ::pressio::ops::dot(correction,gradient);
       auto denom = 0.5*(mu_*hh + hg);  //note sign difference in gradient
-      auto r2_old = ::pressio::ops::dot(residual,residual); 
+      auto r2_old = ::pressio::ops::norm2(residual);
+      r2_old = r2_old*r2_old; 
       sys.residual(ytrial, residual);
-      auto r2_new = ::pressio::ops::dot(residual,residual); 
+      auto r2_new = ::pressio::ops::norm2(residual);
+      r2_new = r2_new*r2_new; 
       auto rho = (r2_old - r2_new) / (denom);
       if (rho < rho1_lm_){
         mu_ = std::min(mu_*beta_lm_,pow(10.,7.));

@@ -242,9 +242,6 @@ void lm_neq_solve(const system_t & sys,
     lmSchedule.evaluate(stateInOut,ytrial,correction,gradient,residual,hessian,sys);
 
 
-   auto gnorm= ::pressio::ops::dot(gradient,gradient);
-   auto rnorm= ::pressio::ops::dot(residual,residual);
-
     // check convergence (whatever method user decided)
     const auto flag = is_converged_t::evaluate(stateInOut, correction, correctionNorm,
 					       normRes, normRes0,
