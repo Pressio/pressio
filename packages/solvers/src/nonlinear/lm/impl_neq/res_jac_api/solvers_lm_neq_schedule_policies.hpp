@@ -79,8 +79,8 @@ public:
       beta_lm_{2.},
       gamma_lm_{3.},
       p_lm_{3.},
-      nu_lm_{2.},
-      tau_lm_{1.}
+      tau_lm_{1.},
+      nu_lm_{2.}
     {}
     LMSchedule(scalar_t beta_lm, 
                scalar_t gamma_lm, 
