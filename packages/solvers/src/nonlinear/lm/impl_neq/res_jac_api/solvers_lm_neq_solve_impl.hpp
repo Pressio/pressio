@@ -113,8 +113,6 @@ void lm_neq_solve(const system_t & sys,
 
   //-------------------------------------------------------
 
-  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
-
   constexpr auto negOne = ::pressio::utils::constants<scalar_t>::negOne();
   convCondDescr = std::string(is_converged_t::description_);
 
