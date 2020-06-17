@@ -114,7 +114,7 @@ public:
     using scalar_t	 = typename ::pressio::containers::details::traits<J_t>::scalar_t;
     constexpr auto alpha = ::pressio::utils::constants<scalar_t>::one();
     constexpr auto beta  = ::pressio::utils::constants<scalar_t>::zero();
-    return udOps_->product(::pressio::transpose(), ::pressio::nontranspose(),
+    udOps_->product(::pressio::transpose(), ::pressio::nontranspose(),
 			   alpha, *J.data(), *J.data(), beta, result);
   }
 };
