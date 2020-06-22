@@ -79,7 +79,7 @@ TEST(containers_matrix_serial_eigen_diag_expressions, diag)
 }
 
 
-TEST(containers_matrix_serial_eigen_diag_expressions, subspanRowMajor)
+TEST(containers_matrix_serial_eigen_diag_expressions, diagRowMajor)
 {
   using eigmat_t = Eigen::Matrix<double, -1, -1, Eigen::RowMajor>;
   using myM_t = pressio::containers::Matrix<eigmat_t>;

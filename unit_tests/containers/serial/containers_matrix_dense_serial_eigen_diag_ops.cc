@@ -114,7 +114,7 @@ TEST(containers_matrix_serial_eigen_diag_ops, diag)
 
 }
 
-TEST(containers_matrix_serial_eigen_diag_ops, subspanRowMajor)
+TEST(containers_matrix_serial_eigen_diag_ops, diagRowMajor)
 {
   // col-major matrix (which is default in Eigen)
   using eigmat_t = Eigen::Matrix<double,-1,-1,Eigen::RowMajor>;
