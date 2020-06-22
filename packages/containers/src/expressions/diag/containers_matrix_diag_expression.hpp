@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_fwd.hpp
+// containers_matrix_diag_expressions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,85 +46,92 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_FORWARD_DECLARATIONS_HPP_
-#define CONTAINERS_FORWARD_DECLARATIONS_HPP_
+#ifndef CONTAINERS_MATRIX_DIAG_EXPRESSION_HPP_
+#define CONTAINERS_MATRIX_DIAG_EXPRESSION_HPP_
 
-namespace pressio{
+namespace pressio{ namespace containers{ namespace expressions{
 
-struct transpose{};
-struct nontranspose{};
+template <typename matrix_t>
+struct DiagExpr<
+  matrix_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<matrix_t>::value
+    >
+  >
+  : public VectorSharedMemBase< DiagExpr<matrix_t> >
+{
+  using this_t = DiagExpr<matrix_t>;
+  using mytraits = typename details::traits<this_t>;
+  using sc_t = typename mytraits::scalar_t;
+  using ord_t = typename mytraits::ordinal_t;
+  using size_t = typename mytraits::size_t;
 
-struct view{};
+  using ref_t = typename mytraits::reference_t;
+  using const_ref_t = typename mytraits::const_reference_t;
 
-struct matrixFull{};
-struct matrixUpperTriangular{};
-struct matrixLowerTriangular{};
+  using native_expr_t = typename mytraits::native_expr_t;
+  using data_return_t = typename mytraits::data_return_t;
+  using const_data_return_t = typename mytraits::const_data_return_t;
 
-namespace containers{
+  using pair_t = std::pair<std::size_t, std::size_t>;
 
-namespace details {
-template<typename T, typename enable = void>
-struct traits;
-
-template<typename T>
-struct traits<const T> : traits<T> {};
-}//end namespace containers::details
-
-template<typename derived_type>
-class ContainerBase;
-
-template<typename derived_type>
-class ContainerDistributedBase;
-template<typename derived_type>
-class ContainerSharedMemBase;
-
-template<typename derived_type>
-class MatrixDistributedBase;
-template<typename derived_type>
-class MatrixSharedMemBase;
-
-template<typename derived_type>
-class MultiVectorDistributedBase;
-template<typename derived_type>
-class MultiVectorSharedMemBase;
-
-template<typename derived_type>
-class VectorDistributedBase;
-template<typename derived_type>
-class VectorSharedMemBase;
+private:
+  matrix_t & matObj_;
+  native_expr_t nativeExprObj_;
+  ord_t extent_ = {};
+  ord_t numRows_ = {};
+  ord_t numCols_ = {};
 
 
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class Vector;
 
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class MultiVector;
+public:
+  DiagExpr() = delete;
+  ~DiagExpr() = default;
+  DiagExpr(const DiagExpr & other) = default;
+  DiagExpr(DiagExpr && other) = default;
+  DiagExpr & operator=(const DiagExpr & other) = default;
+  DiagExpr & operator=(DiagExpr && other) = default;
 
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class Matrix;
+  DiagExpr(matrix_t & matObjIn)
+    : matObj_(matObjIn),
+    nativeExprObj_(matObj_.data()->diagonal()),
+    numRows_(matObj_.data()->rows()),
+    numCols_(matObj_.data()->cols()),
+    extent_(matObj_.data()->rows())
+  {
+    assert(numRows_ == numCols_);
+  }
 
 
-namespace expressions{
+  size_t extent() const{
+    return extent_;
+  }
 
-template <typename derived_type>
-class BaseExpr{};
 
-template <typename mat_t, typename enable = void>
-struct SubspanExpr;
+  const_data_return_t data() const{
+    return &nativeExprObj_;
+  }
 
-template <typename vec_t, typename enable = void>
-struct SpanExpr;
+  data_return_t data(){
+    return &nativeExprObj_;
+  }
 
-template <typename mat_t, typename enable = void>
-struct DiagExpr;
+  ref_t operator()(std::size_t i)
+  {
+    assert(i < (std::size_t)extent_);
+    return nativeExprObj_(i);
+  }
 
-}
+  const_ref_t operator()(std::size_t i) const
+  {
+    assert(i < (std::size_t)extent_);
+    return nativeExprObj_(i);
+  }
 
-}} // end namespace pressio::containers
+
+};
+
+
+
+}}} //end namespace pressio::containers::expressions
 #endif

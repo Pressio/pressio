@@ -121,6 +121,10 @@ struct traits<
   using size_t    = ordinal_t;
   using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>>;
   using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>>;
+
+  using diag_ret_t = expressions::DiagExpr<Matrix<wrapped_type>>;
+  using diag_const_ret_t = expressions::DiagExpr< const Matrix<wrapped_type>>;
+
 };
 
 

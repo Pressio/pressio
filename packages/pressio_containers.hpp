@@ -180,6 +180,11 @@
 #include "containers/src/expressions/subspan/containers_expressions_traits.hpp"
 #include "containers/src/expressions/subspan/containers_subspan.hpp"
 
+#include "containers/src/expressions/diag/containers_matrix_diag_expression.hpp"
+#include "containers/src/expressions/diag/containers_expressions_traits.hpp"
+#include "containers/src/expressions/diag/containers_diag.hpp"
+
+
 #include "containers/src/meta/generic/containers_is_expression.hpp"
 
 //------------------
