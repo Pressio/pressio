@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_is_legitimate_lm_schedule_policy.hpp
+// solvers_convergence_criteria.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,22 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IS_LEGITIMATE_LM_SCHEDULE_POLICY_TAG_HPP_
-#define SOLVERS_IS_LEGITIMATE_LM_SCHEDULE_POLICY_TAG_HPP_
+#ifndef PRESSIO_SOLVERS_CONVERGENCE_CRITERIA_HPP_
+#define PRESSIO_SOLVERS_CONVERGENCE_CRITERIA_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+#include "./impl/convergence_mixin/solvers_stop_at_max_iters.hpp"
+#include "./impl/convergence_mixin/solvers_stop_when_correction_norm_below_tol.hpp"
 
-template <typename T, typename enable = void>
-struct is_legitimate_lm_schedule_policy_tag
-  : std::false_type{};
+namespace pressio{ namespace solvers{ namespace nonlinear{
 
+template<typename ... Args>
+using ConvergedWhenCorrectionNormBelowTol = impl::ConvergedWhenCorrectionNormBelowTol<Args...>;
+template<typename ... Args>
+using StopWhenCorrectionNormBelowTol = impl::ConvergedWhenCorrectionNormBelowTol<Args...>;
 
-template <>
-struct is_legitimate_lm_schedule_policy_tag<::pressio::solvers::iterative::lm::SchedulePolicyDefault>
-  : std::true_type{};
+template<typename ... Args> using ConvergedWhenMaxIters = impl::StopAtMaxIters<Args...>;
+template<typename ... Args> using StopWhenMaxIters = impl::StopAtMaxIters<Args...>;
+template<typename ... Args> using StopAfterMaxIters = impl::StopAtMaxIters<Args...>;
 
-
-template <>
-struct is_legitimate_lm_schedule_policy_tag<::pressio::solvers::iterative::lm::SchedulePolicy2>
-  : std::true_type{};
-
-
-}}} // namespace pressio::solvers::meta
+}}}
 #endif

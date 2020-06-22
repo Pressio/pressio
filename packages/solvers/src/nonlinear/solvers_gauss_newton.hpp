@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// solvers_gauss_newton.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,28 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_NORMS_HPP_
-#define OPS_SRC_OPS_EIGEN_NORMS_HPP_
+#ifndef PRESSIO_SOLVERS_GAUSS_NEWTON_HPP_
+#define PRESSIO_SOLVERS_GAUSS_NEWTON_HPP_
 
-namespace pressio{ namespace ops{
+#include "./impl/solvers_compose.hpp"
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
+namespace pressio{ namespace solvers{ namespace nonlinear{
+
+template<
+  typename system_t,
+  template<typename...> class update,
+  template<typename...> class looper,
+  typename ... Args
   >
-norm1(const vec_type & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.lpNorm<1>()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += std::abs(a(i));
-  return result;
-}
+using composeGaussNewton = impl::compose<system_t, GaussNewton, update, looper, void, Args...>;
 
-
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
+template<
+  typename system_t,
+  template<typename...> class update,
+  template<typename...> class looper,
+  typename ... Args
   >
-norm2(const vec_type & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.norm()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += a[i]*a[i];
-  return std::sqrt(result);
-}
+using composeGaussNewton_t = typename composeGaussNewton<system_t, update, looper, Args...>::type;
 
-}}//end namespace pressio::ops
+}}}
 #endif

@@ -20,7 +20,29 @@ struct Rosenbrock3 {
   static constexpr int nf = 4; // num functions
   static constexpr int nv = 3; // num variables
 
-  void residual(const state_type& x, residual_type & res) const {
+  residual_type createResidualObject(const state_type& x) const {
+    return residual_type(nf);
+  }
+
+  jacobian_type createJacobianObect(const state_type& x) const {
+    return jacobian_type(nf, nv);
+  }
+
+  void residualNorm(const state_type & state,
+		    pressio::solvers::Norm normKind,
+		    scalar_type & resNorm) const
+  {
+    // here I can create one R every time, because performance does not matter
+    // but it would be better to create a R only once
+    auto R = createResidualObject(state);
+    residual(state, R, normKind, resNorm);
+  }
+
+  void residual(const state_type& x,
+		residual_type & res,
+		::pressio::solvers::Norm normKind,
+		scalar_type & normResidual) const
+  {
     auto x1 = x[0];
     auto x2 = x[1];
     auto x3 = x[2];
@@ -29,12 +51,9 @@ struct Rosenbrock3 {
     res[1] = 10.*(x2 - x1*x1);
     res[2] = (1.-x1);
     res[3] = (1.-x2);
-  }
 
-  residual_type residual(const state_type& x) const {
-    residual_type res(nf);
-    this->residual(x, res);
-    return res;
+    if (normKind == pressio::solvers::Norm::L2) normResidual = res.data()->norm();
+    if (normKind == pressio::solvers::Norm::L1) normResidual = res.data()->lpNorm<1>();
   }
 
   void jacobian(const state_type & x, jacobian_type & jac) const {
@@ -45,19 +64,12 @@ struct Rosenbrock3 {
 
     JJ(0,1) = -20.*x2;
     JJ(0,2) = 10.;
-
     JJ(1,0) = -20.*x1;
     JJ(1,1) = 10.;
-
     JJ(2,0) = -1.;
     JJ(3,1) = -1.;
   }
 
-  jacobian_type jacobian(const state_type& x) const {
-    jacobian_type jac(nf, nv);
-    this->jacobian(x, jac);
-    return jac;
-  }
 };
 
 }}} //end namespace pressio::solvers::test

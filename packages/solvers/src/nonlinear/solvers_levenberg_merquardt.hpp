@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_is_legitimate_hessian_for_gn_normeq.hpp
+// solvers_levenberg_marquardt.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,23 +46,43 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IS_LEGITIMATE_HESSIAN_FOR_GN_NORMEQ_HPP_
-#define SOLVERS_IS_LEGITIMATE_HESSIAN_FOR_GN_NORMEQ_HPP_
+#ifndef PRESSIO_SOLVERS_LEVENBERG_MARQUARDT_HPP_
+#define PRESSIO_SOLVERS_LEVENBERG_MARQUARDT_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace nonlinear{
 
-template <typename T, typename enable = void>
-struct is_legitimate_hessian_for_gn_normeq
-  : std::false_type{};
+template<
+  typename system_t,
+  template<typename...> class update,
+  template<typename...> class looper,
+  typename ... Args
+  >
+using composeLM = impl::compose<system_t, LM, update, looper, void, Args...>;
 
-template <typename T>
-struct is_legitimate_hessian_for_gn_normeq<
-  T,
-  ::pressio::mpl::enable_if_t<
-    containers::meta::is_matrix_wrapper<T>::value or
-    containers::meta::is_multi_vector_wrapper<T>::value
-    >
-  > : std::true_type{};
+template<
+  typename system_t,
+  template<typename...> class update,
+  template<typename...> class looper,
+  typename ... Args
+  >
+using composeLevenbergMarquardt = composeLM<system_t, update, looper, Args...>;
 
-}}} // namespace pressio::solvers::meta
+
+template<
+  typename system_t,
+  template<typename...> class update,
+  template<typename...> class looper,
+  typename ... Args
+  >
+using composeLM_t = typename composeLM<system_t, update, looper, Args...>::type;
+
+template<
+  typename system_t,
+  template<typename...> class update,
+  template<typename...> class looper,
+  typename ... Args
+  >
+using composeLevenbergMarquardt_t = typename composeLM<system_t, update, looper, Args...>::type;
+
+}}}
 #endif

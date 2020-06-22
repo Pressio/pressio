@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_system_meets_gn_hessian_gradient_api.hpp
+// solvers_stop_at_max_iters.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,54 +46,39 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
-#define SOLVERS_SYSTEM_MEETS_GN_HESSIAN_GRADIENT_API_HPP_
+#ifndef PRESSIO_SOLVERS_STOP_AT_MAX_ITERS_HPP_
+#define PRESSIO_SOLVERS_STOP_AT_MAX_ITERS_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<typename T, typename enable = void>
-struct system_meets_gn_hessian_gradient_api : std::false_type{};
+template<typename sc_t, typename T>
+class StopAtMaxIters
+  : public T,
+    public IterativeBase< StopAtMaxIters<sc_t, T>, sc_t >
+{
+  using this_t = StopAtMaxIters<sc_t, T>;
+  using iterative_base_t = IterativeBase<this_t, sc_t>;
+  using typename iterative_base_t::iteration_t;
 
-template<typename T>
-struct system_meets_gn_hessian_gradient_api
-<T,
- ::pressio::mpl::enable_if_t<
-   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_scalar_typedef, T>::value and
-   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_state_typedef, T>::value and
-   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_hessian_typedef, T>::value and
-   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_gradient_typedef, T>::value and
-   // --- detect createHessianObject ---
-   ::pressio::mpl::is_same<
-     typename T::hessian_type,
-     decltype(
-	      std::declval<T const>().createHessianObject
-	      ( std::declval<typename T::state_type const&>() )
-	      )
-     >::value and
-   // --- detect createGradientObject ---
-   ::pressio::mpl::is_same<
-     typename T::gradient_type,
-     decltype(
-	      std::declval<T const>().createGradientObject
-	      (std::declval<typename T::state_type const&>())
-	      )
-     >::value and
-   // --- detect computeHessianAndGradient ---
-   std::is_void<
-     decltype(
-	      std::declval<T const>().computeHessianAndGradient
-	      (
-	       std::declval<typename T::state_type const&>(),
-	       std::declval<typename T::hessian_type &>(),
-	       std::declval<typename T::gradient_type &>(),
-	       /* does not matter here what we pass, just to test */
-	       ::pressio::solvers::Norm::L2,
-	       std::declval<typename T::scalar_type &>()
-	       )
-	      )
-     >::value
-   >
- > : std::true_type{};
+public:
+  StopAtMaxIters() = delete;
 
-}}} // namespace pressio::solvers::meta
+  template <typename ...Args>
+  StopAtMaxIters(Args &&... args)
+    : T(std::forward<Args>(args)...){}
+
+  template<typename system_t, typename state_t>
+  void solve(const system_t & sys, state_t & state)
+  {
+    iteration_t iStep = 0;
+    while (++iStep <= iterative_base_t::maxIters_)
+    {
+      T::computeCorrection(sys, state);
+      T::updateState(sys, state);
+      const auto & correction = T::viewCorrection();
+    }
+  }
+};
+
+}}}}
 #endif

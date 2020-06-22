@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// solvers_lm_gain_factor.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,52 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_NORMS_HPP_
-#define OPS_SRC_OPS_EIGEN_NORMS_HPP_
+#ifndef PRESSIO_SOLVERS_LM_GAIN_FACTOR_HPP_
+#define PRESSIO_SOLVERS_LM_GAIN_FACTOR_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-norm1(const vec_type & a)
+template<typename scalar_t, typename state_t>
+class LMGainFactor
 {
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.lpNorm<1>()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += std::abs(a(i));
-  return result;
-}
+private:
+  state_t cDiagH_; // = h * diag(J^T J)
+  state_t trialState_;
 
+public:
+  LMGainFactor(const state_t & state) : cDiagH_(state), trialState_(state){}
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-norm2(const vec_type & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.norm()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += a[i]*a[i];
-  return std::sqrt(result);
-}
+  template<typename system_t, typename hess_grad_correc_t>
+  scalar_t compute(const system_t & system,
+		   state_t & state,
+		   const scalar_t & mu,
+		   const hess_grad_correc_t & correctionObj)
+  {
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
 
-}}//end namespace pressio::ops
+    const auto & correction = correctionObj.viewCorrection();
+    const auto & g	    = correctionObj.getGradient();
+
+    //const auto HDiagV = T::getHessianDiagViewBeforeChange();
+    const auto & H = correctionObj.getHessianBeforeLMDiagonalScaling();
+
+    // denom
+    for (int i=0; i< H.extent(0); i++){ cDiagH_[i] = correction[i]*H(i,i); }
+    const auto den1 = ::pressio::ops::dot(correction, cDiagH_);
+    const auto den2 = ::pressio::ops::dot(correction, g);
+    auto denom = (one/two)*(mu*den1 + den2);
+
+    // numerator
+    auto norm = correctionObj.currentResidualNorm();
+    auto r2Old = norm*norm;
+    ::pressio::ops::do_update(trialState_, state, one, correction, one);
+    correctionObj.residualNorm(system, trialState_, norm);
+
+    return (r2Old - norm*norm) / denom;
+  }
+};
+
+}}}}
 #endif

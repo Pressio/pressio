@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// solvers_qr_corrector_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,54 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_NORMS_HPP_
-#define OPS_SRC_OPS_EIGEN_NORMS_HPP_
+#ifndef PRESSIO_SOLVERS_QR_CORRECTOR_IMPL_HPP_
+#define PRESSIO_SOLVERS_QR_CORRECTOR_IMPL_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
+template<
+  typename T, typename state_t, typename qr_solver_t, ::pressio::solvers::Norm normType
   >
-norm1(const vec_type & a)
+class QRCorrector : public T
 {
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.lpNorm<1>()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += std::abs(a(i));
-  return result;
-}
+  using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
+  state_t correction_ = {};
+  qr_solver_t & solverObj_;
+  sc_t residualNorm_ = {};
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-norm2(const vec_type & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.norm()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += a[i]*a[i];
-  return std::sqrt(result);
-}
+public:
+  static constexpr auto normType_ = normType;
 
-}}//end namespace pressio::ops
+  QRCorrector() = delete;
+
+  template <typename system_t, typename ...Args>
+  QRCorrector(const system_t & system, const state_t & state, qr_solver_t & solverObj)
+    : T(system, state), correction_(state), solverObj_(solverObj){}
+
+public:
+  template <typename system_t>
+  void computeCorrection(const system_t & sys, state_t & state)
+  {
+    T::computeOperators(sys, state, normType, residualNorm_);
+    auto & J = T::getJacobian();
+    auto & r = T::getResidual();
+    solverObj_.computeThin(J);
+    //solverObj_.applyQTranspose(r, QTResid);
+    // // compute correction: correction
+    // // by solving R correction = - Q^T Residual
+    // pressio::ops::scale( QTResid, utils::constants<sc_t>::negOne());
+    // solverObj_.solve(QTResid, correction);
+  }
+
+  const state_t & viewCorrection() const{ return correction_; }
+  const sc_t currentResidualNorm() const{ return residualNorm_; }
+
+  template< typename system_t>
+  void residualNorm(const system_t & system, const state_t & state, sc_t & result) const{
+    system.residualNorm(state, normType, result);
+  }
+};
+
+}}}}
 #endif

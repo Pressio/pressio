@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_is_legitimate_linear_solver_for_gn_normeq.hpp
+// solvers_lm_schedule1_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,31 +46,63 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IS_LEGITIMATE_LINEAR_SOLVER_FOR_GN_NORMEQ_HPP_
-#define SOLVERS_IS_LEGITIMATE_LINEAR_SOLVER_FOR_GN_NORMEQ_HPP_
+#ifndef PRESSIO_SOLVERS_LM_SCHEDULE2_UPDATER_HPP_
+#define PRESSIO_SOLVERS_LM_SCHEDULE2_UPDATER_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+#include "solvers_lm_gain_factor.hpp"
 
-template <typename T, typename enable = void>
-struct is_legitimate_linear_solver_for_gn_normeq
-  : std::false_type{};
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template <typename T>
-struct is_legitimate_linear_solver_for_gn_normeq<
-  T,
-  ::pressio::mpl::enable_if_t<
-    // the linear solver type has a public matrix_type typedef
-    ::pressio::mpl::is_detected<has_matrix_typedef, T>::value and
-    // the matrix_type is not void
-    !std::is_void<typename T::matrix_type>::value and
-    ::pressio::mpl::publicly_inherits_from<
-      T,
-      ::pressio::solvers::LinearBase<
-      typename T::matrix_type, T
-	>
-      >::value
-    >
-  > : std::true_type{};
+template<typename scalar_t, typename state_t, typename T>
+class LMSchedule2Updater : public T
+{
+private:
+  LMGainFactor<scalar_t, state_t> gainFactorEval_;
 
-}}} // namespace pressio::solvers::meta
+  using cnst		   = pressio::utils::constants<scalar_t>;
+  const scalar_t rho1_	   = static_cast<scalar_t>(0.2);
+  const scalar_t rho2_     = static_cast<scalar_t>(0.8);
+  const scalar_t beta_	   = cnst::two();
+  const scalar_t gammaInv_ = cnst::one()/cnst::three();
+  const scalar_t tau_	   = cnst::one();
+
+public:
+  template <typename system_t, typename ...Args>
+  LMSchedule2Updater(const system_t & sys, const state_t & state, Args &&... args)
+    : gainFactorEval_(state), T(sys, state, std::forward<Args>(args)...){}
+
+  template<typename system_t>
+  void updateState(const system_t & sys, state_t & state)
+  {
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
+    constexpr auto ten  = static_cast<scalar_t>(10);
+    constexpr auto seven  = static_cast<scalar_t>(7);
+    constexpr auto negSeven  = -seven;
+    constexpr auto tenToSev  = std::pow(ten, seven);
+    constexpr auto tenToNegSev  = std::pow(ten, negSeven);
+
+    const auto mu	    = T::getLMDampParam();
+    const auto & correction = T::viewCorrection();
+
+    // *** compute gain factor (rho) ***
+    const auto rho = gainFactorEval_.compute(sys, state, mu, *this);
+
+    // *** update mu ***
+    if (rho < rho1_){
+      T::setLMDampParam( std::min(mu*beta_, tenToSev) );
+    }
+
+    if (rho > rho2_){
+      T::setLMDampParam( std::max( tenToNegSev, mu*gammaInv_) );
+    }
+
+    if (rho > 0){
+      ::pressio::ops::do_update(state, one, correction, one);
+    }
+  }
+};
+
+}}}}
 #endif

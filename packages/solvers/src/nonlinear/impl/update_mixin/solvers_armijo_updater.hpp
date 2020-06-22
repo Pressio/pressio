@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_system_has_all_needed_residual_methods.hpp
+// solvers_armijo_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,73 +46,58 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SYSTEM_HAS_ALL_NEEDED_RESIDUAL_METHODS_HPP_
-#define SOLVERS_SYSTEM_HAS_ALL_NEEDED_RESIDUAL_METHODS_HPP_
+#ifndef PRESSIO_SOLVERS_ARMIJO_UPDATER_HPP_
+#define PRESSIO_SOLVERS_ARMIJO_UPDATER_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template <typename T, typename Arg, typename enable = void>
-struct has_residual_method_callable_with_one_arg{
-  using type = void;
-  static constexpr bool value = false;
-};
-
-template <typename T, typename Arg>
-struct has_residual_method_callable_with_one_arg<
-  T, Arg,
-  ::pressio::mpl::void_t<
-    decltype(std::declval<T>().residual(std::declval<Arg const&>()))
-    >
-  >
+template <typename state_t, typename T>
+class ArmijoUpdater : public T
 {
-  using type = decltype(std::declval<T>().residual(std::declval<Arg const&>()));
-  static constexpr bool value = true;
+  state_t trialState_;
+
+public:
+  ArmijoUpdater() = delete;
+
+  template <typename sys_t, typename ...Args>
+  ArmijoUpdater(const sys_t & sys, const state_t & state, Args... args)
+    : trialState_(state), T(sys, state, std::forward<Args>(args)...)
+  {}
+
+  template<typename system_t>
+  void updateState(const system_t & sys, state_t & state)
+  {
+    // // compute dy^T (gradient)
+    // const auto & g = operators_mng.viewGradient();
+    // const auto c2 = ::pressio::ops::dot(correction, g);
+    // const auto rhs = c1 * alpha * c2;
+
+    // bool done = false;
+    // while (not done)
+    // {
+    //   // update : ytrial = y + dy*alpha
+    //   ::pressio::ops::do_update(ytrial, y, one, dy, alpha);
+
+    //   // eval function for updated step solition: f(y + alpha*dy)
+    //   const auto fytrial = operators_.computeResidualNorm(ytrial);
+    //   auto lhs = fytrial-fy;
+
+    //   if (lhs <= rhs) done = true;
+
+    //   // exit when abs(fytrail-fy) < eps, leave eps = 1e-14 for now
+    //   // change later with some machine epsilon
+    //   if (std::abs(lhs) <= 1e-14) done = true;
+
+    //   /* convectional way to backtrack
+    //    * this is equivalent to using beta^m instead of alpha
+    //    * where m=0,1,2,...
+    //    * and stopping when we find the smallest integer
+    //    * to satisfy criterion
+    //    */
+    //   if (!done) alpha *= 0.5;
+    // }//while
+  }
 };
 
-
-template <typename T, typename FirstArg, typename SecondArg, typename = void>
-struct has_residual_method_callable_with_two_args : std::false_type{};
-
-template <typename T, typename FirstArg, typename SecondArg>
-struct has_residual_method_callable_with_two_args<
-  T, FirstArg, SecondArg,
-  ::pressio::mpl::void_t<
-    decltype(std::declval<T>().residual(std::declval<FirstArg const&>(),
-					std::declval<SecondArg&>()))
-    >
-  > : std::true_type{};
-
-
-
-template<
-  typename system_type,
-  typename state_type,
-  typename residual_type,
-  typename enable = void
-  >
-struct system_has_needed_residual_methods : std::false_type{};
-
-template<
-  typename system_type,
-  typename state_type,
-  typename residual_type
-  >
-struct system_has_needed_residual_methods
-< system_type, state_type, residual_type,
-  ::pressio::mpl::enable_if_t<
-      has_residual_method_callable_with_one_arg<system_type, state_type
-      >::value and
-      has_residual_method_callable_with_two_args<
-	system_type, state_type, residual_type
-      >::value and
-    // residual method with 1 argument returns a residual_type
-    std::is_same<
-	typename has_residual_method_callable_with_one_arg<
-	  system_type, state_type>::type,
-      residual_type
-      >::value
-  >
-  > : std::true_type{};
-
-}}} // namespace pressio::solvers::meta
+}}}}
 #endif

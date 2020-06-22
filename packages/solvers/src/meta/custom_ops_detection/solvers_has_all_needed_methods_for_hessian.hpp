@@ -62,9 +62,9 @@ template <typename T, typename jac_t, typename result_t, typename scalar_t>
 struct has_all_needed_methods_for_hessian<
   T, jac_t, result_t, scalar_t,
   mpl::enable_if_t<
-    ::pressio::ops::meta::has_nonvoid_method_product_mat_mat<
+    /*::pressio::ops::meta::has_nonvoid_method_product_mat_mat<
       T, ::pressio::transpose, ::pressio::nontranspose, scalar_t, jac_t, jac_t, result_t
-      >::value and
+      >::value and*/
     ::pressio::ops::meta::has_void_method_product_mat_mat<
       T, ::pressio::transpose, ::pressio::nontranspose, scalar_t, jac_t, jac_t, result_t
       >::value

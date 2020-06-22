@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// solvers_is_legitimate_linear_solver_for_least_squares_solver.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,31 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_NORMS_HPP_
-#define OPS_SRC_OPS_EIGEN_NORMS_HPP_
+#ifndef SOLVERS_IS_LEGITIMATE_LINEAR_SOLVER_FOR_LSQ_SOLVER_HPP_
+#define SOLVERS_IS_LEGITIMATE_LINEAR_SOLVER_FOR_LSQ_SOLVER_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace solvers{ namespace meta {
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-norm1(const vec_type & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.lpNorm<1>()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += std::abs(a(i));
-  return result;
-}
+template <typename T, typename enable = void>
+struct is_legitimate_linear_solver_for_least_squares_solver
+  : std::false_type{};
 
+template <typename T>
+struct is_legitimate_linear_solver_for_least_squares_solver<
+  T,
+  ::pressio::mpl::enable_if_t<
+    // the linear solver type has a public matrix_type typedef
+    ::pressio::mpl::is_detected<has_matrix_typedef, T>::value and
+    // the matrix_type is not void
+    !std::is_void<typename T::matrix_type>::value and
+    ::pressio::mpl::publicly_inherits_from<
+      T,
+      ::pressio::solvers::LinearBase<
+      typename T::matrix_type, T
+	>
+      >::value
+    >
+  > : std::true_type{};
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-norm2(const vec_type & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.norm()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += a[i]*a[i];
-  return std::sqrt(result);
-}
-
-}}//end namespace pressio::ops
+}}} // namespace pressio::solvers::meta
 #endif

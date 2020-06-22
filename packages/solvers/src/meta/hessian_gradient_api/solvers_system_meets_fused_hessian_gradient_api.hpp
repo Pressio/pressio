@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_system_has_all_needed_jacobian_methods.hpp
+// solvers_system_meets_fused_hessian_gradient_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,74 +46,71 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SYSTEM_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
-#define SOLVERS_SYSTEM_HAS_ALL_NEEDED_JACOBIAN_METHODS_HPP_
+#ifndef SOLVERS_SYSTEM_MEETS_FUSED_HESSIAN_GRADIENT_API_HPP_
+#define SOLVERS_SYSTEM_MEETS_FUSED_HESSIAN_GRADIENT_API_HPP_
 
 namespace pressio{ namespace solvers{ namespace meta {
 
-template <typename T, typename Arg, typename enable = void>
-struct has_jacobian_method_callable_with_one_arg{
-  using type = void;
-  static constexpr bool value = false;
-};
+template<typename T, typename enable = void>
+struct system_meets_fused_hessian_gradient_api : std::false_type{};
 
-template <typename T, typename Arg>
-struct has_jacobian_method_callable_with_one_arg<
-  T, Arg,
-  ::pressio::mpl::void_t<
-    decltype(std::declval<T>().jacobian(std::declval<Arg const&>()))
-    >
-  >{
-  using type = decltype(std::declval<T>().jacobian(std::declval<Arg const&>()));
-  static constexpr bool value = true;
-};
+template<typename T>
+struct system_meets_fused_hessian_gradient_api
+<T,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_scalar_typedef, T>::value and
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_state_typedef, T>::value and
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_hessian_typedef, T>::value and
+   ::pressio::mpl::is_detected<::pressio::solvers::meta::has_gradient_typedef, T>::value and
 
+   // --- detect createHessianObject ---
+   ::pressio::mpl::is_same<
+     typename T::hessian_type,
+     decltype(
+	      std::declval<T const>().createHessianObject
+	      ( std::declval<typename T::state_type const&>() )
+	      )
+     >::value and
 
-template <typename T, typename FirstArg, typename SecondArg, typename = void>
-struct has_jacobian_method_callable_with_two_args : std::false_type{};
+   // --- detect createGradientObject ---
+   ::pressio::mpl::is_same<
+     typename T::gradient_type,
+     decltype(
+	      std::declval<T const>().createGradientObject
+	      (std::declval<typename T::state_type const&>())
+	      )
+     >::value and
 
-template <typename T, typename FirstArg, typename SecondArg>
-struct has_jacobian_method_callable_with_two_args<
-  T, FirstArg, SecondArg,
-  ::pressio::mpl::void_t<
-    decltype(std::declval<T>().jacobian(std::declval<FirstArg const&>(),
-					std::declval<SecondArg&>()))
-    >
-  > : std::true_type{};
+   // --- detect computeHessianAndGradient ---
+   std::is_void<
+     decltype(
+	      std::declval<T const>().hessianAndGradient
+	      (
+	       std::declval<typename T::state_type const&>(),
+	       std::declval<typename T::hessian_type &>(),
+	       std::declval<typename T::gradient_type &>(),
+	       /* does not matter here what we pass, just to test */
+	       ::pressio::solvers::Norm::Undefined,
+	       std::declval<typename T::scalar_type &>()
+	       )
+	      )
+     >::value and
 
+   // --- detect residualNorm ---
+   std::is_void<
+     decltype(
+	      std::declval<T const>().residualNorm
+	      (
+	       std::declval<typename T::state_type const&>(),
+	       // the norm type and norm value
+	       ::pressio::solvers::Norm::Undefined,
+	       std::declval<typename T::scalar_type &>()
+	       )
+	      )
+     >::value
 
-
-template<
-  typename system_type,
-  typename state_type,
-  typename jacobian_type,
-  typename enable = void
-  >
-struct system_has_needed_jacobian_methods : std::false_type{};
-
-template<
-  typename system_type,
-  typename state_type,
-  typename jacobian_type
-  >
-struct system_has_needed_jacobian_methods
-< system_type, state_type, jacobian_type,
-  ::pressio::mpl::enable_if_t<
-      has_jacobian_method_callable_with_one_arg<
-	system_type, state_type
-      >::value and
-   // has method with 2 arguments,
-      has_jacobian_method_callable_with_two_args<
-	system_type, state_type, jacobian_type
-      >::value and
-    // method with 1 argument returns a jacobian_type
-    std::is_same<
-	typename has_jacobian_method_callable_with_one_arg<
-	  system_type, state_type>::type,
-      jacobian_type
-      >::value
-  >
-  > : std::true_type{};
+   >
+ > : std::true_type{};
 
 }}} // namespace pressio::solvers::meta
 #endif

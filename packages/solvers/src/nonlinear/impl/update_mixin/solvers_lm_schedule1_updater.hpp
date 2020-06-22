@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// solvers_lm_schedule1_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,58 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_NORMS_HPP_
-#define OPS_SRC_OPS_EIGEN_NORMS_HPP_
+#ifndef PRESSIO_SOLVERS_LM_SCHEDULE1_UPDATER_HPP_
+#define PRESSIO_SOLVERS_LM_SCHEDULE1_UPDATER_HPP_
 
-namespace pressio{ namespace ops{
+#include "solvers_lm_gain_factor.hpp"
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-norm1(const vec_type & a)
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+
+template<typename scalar_t, typename state_t, typename T>
+class LMSchedule1Updater : public T
 {
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.lpNorm<1>()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += std::abs(a(i));
-  return result;
-}
+private:
+  LMGainFactor<scalar_t, state_t> gainFactorEval_;
 
+  using cnst		   = pressio::utils::constants<scalar_t>;
+  const scalar_t beta_     = cnst::two();
+  const scalar_t gammaInv_ = cnst::one()/cnst::three();
+  const scalar_t p_	   = cnst::three();
+  const scalar_t tau_	   = cnst::one();
+  scalar_t nu_		   = cnst::two();
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-norm2(const vec_type & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.norm()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += a[i]*a[i];
-  return std::sqrt(result);
-}
+public:
+  template <typename system_t, typename ...Args>
+  LMSchedule1Updater(const system_t & sys, const state_t & state, Args &&... args)
+    : gainFactorEval_(state), T(sys, state, std::forward<Args>(args)...){}
 
-}}//end namespace pressio::ops
+  template<typename system_t>
+  void updateState(const system_t & sys, state_t & state)
+  {
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
+
+    const auto mu	    = T::getLMDampParam();
+    const auto & correction = T::viewCorrection();
+
+    // *** compute gain factor (rho) ***
+    const auto rho = gainFactorEval_.compute(sys, state, mu, *this);
+
+    // *** update mu ***
+    if (rho > 0){
+      ::pressio::ops::do_update(state, one, correction, one);
+      scalar_t mu_rat = one - (beta_ - one)*std::pow(two*rho - one, p_);
+      mu_rat = std::max(mu_rat, gammaInv_);
+      T::setLMDampParam(mu*mu_rat);
+      nu_ = beta_;
+    }
+    else{
+      T::setLMDampParam(mu*nu_);
+      nu_ = two*nu_;
+    }
+  }
+};
+
+}}}}
 #endif

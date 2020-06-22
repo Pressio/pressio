@@ -85,6 +85,7 @@
 #include "ops/src/eigen/ops_norms_vector.hpp"
 #include "ops/src/eigen/ops_vec_dot_vec.hpp"
 #include "ops/src/eigen/ops_vector_do_update.hpp"
+#include "ops/src/eigen/ops_elementwise_multiply.hpp"
 
 // Kokkos
 #include "ops/src/kokkos/ops_set_zero.hpp"

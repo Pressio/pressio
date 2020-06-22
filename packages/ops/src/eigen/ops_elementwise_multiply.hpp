@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_is_legitimate_convergence_tag.hpp
+// ops_elementwise_multiply.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,26 +46,26 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IS_LEGITIMATE_CONVERGENCE_TAG_HPP_
-#define SOLVERS_IS_LEGITIMATE_CONVERGENCE_TAG_HPP_
+#ifndef OPS_CONTAINER_OPS_EIGEN_ELEMENTWISE_MULTIPLY_HPP_
+#define OPS_CONTAINER_OPS_EIGEN_ELEMENTWISE_MULTIPLY_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace ops{
 
-template <typename T, typename enable = void>
-struct is_legitimate_convergence_tag : std::false_type{};
-
+//----------------------------------------------------------------------
+// computing:  y[i] = beta * y[i] + alpha * x[i] * z[i]
+//----------------------------------------------------------------------
 template <typename T>
-struct is_legitimate_convergence_tag<
-  T,
-  ::pressio::mpl::enable_if_t<
-    std::is_same<T, iterative::converged_when::absoluteNormCorrectionBelowTol>::value or
-    std::is_same<T, iterative::converged_when::absoluteNormResidualBelowTol>::value or
-    std::is_same<T, iterative::converged_when::relativeNormResidualBelowTol>::value or
-    std::is_same<T, iterative::converged_when::absoluteNormGradientBelowTol>::value or
-    std::is_same<T, iterative::converged_when::relativeNormGradientBelowTol>::value or
-    std::is_same<T, iterative::converged_when::completingNumMaxIters>::value
-    >
-  > : std::true_type{};
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
+  >
+elementwise_multiply(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
+		     const T & x,
+		     const T & z,
+		     typename ::pressio::containers::details::traits<T>::scalar_t beta,
+		     T & y)
+{
+  (*y.data()) = beta * (*y.data()) + alpha * (*x.data()) * (*z.data());
+}
 
-}}} // namespace pressio::solvers::meta
+}}//end namespace pressio::ops
 #endif

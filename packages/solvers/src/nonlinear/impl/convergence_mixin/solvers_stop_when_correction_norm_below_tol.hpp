@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// solvers_stop_when_correction_norm_below_tol.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,43 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_NORMS_HPP_
-#define OPS_SRC_OPS_EIGEN_NORMS_HPP_
+#ifndef PRESSIO_SOLVERS_STOP_WHEN_CORRECTION_NORM_BELOW_TOL_HPP_
+#define PRESSIO_SOLVERS_STOP_WHEN_CORRECTION_NORM_BELOW_TOL_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-norm1(const vec_type & a)
+template<typename sc_t, typename T>
+class ConvergedWhenCorrectionNormBelowTol
+  : public T,
+    public IterativeBase< ConvergedWhenCorrectionNormBelowTol<sc_t, T>, sc_t >
 {
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.lpNorm<1>()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += std::abs(a(i));
-  return result;
-}
+  using this_t = ConvergedWhenCorrectionNormBelowTol<sc_t, T>;
+  using iterative_base_t = IterativeBase<this_t, sc_t>;
+  using typename iterative_base_t::iteration_t;
 
+public:
+  ConvergedWhenCorrectionNormBelowTol() = delete;
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-norm2(const vec_type & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  // use a.norm()
-  sc_t result = 0.0;
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += a[i]*a[i];
-  return std::sqrt(result);
-}
+  template <typename ...Args>
+  ConvergedWhenCorrectionNormBelowTol(Args &&... args)
+    : T(std::forward<Args>(args)...){}
 
-}}//end namespace pressio::ops
+  template<typename system_t, typename state_t>
+  void solve(const system_t & sys, state_t & state)
+  {
+    iteration_t iStep = 0;
+    while (++iStep <= iterative_base_t::maxIters_)
+    {
+      T::computeCorrection(sys, state);
+      T::updateState(sys, state);
+
+      const auto & correction = T::viewCorrection();
+      const auto correctionNorm = ::pressio::ops::norm2(correction);
+      if (correctionNorm < iterative_base_t::tolerance_)
+	break;
+    }
+  }
+};
+
+}}}}
 #endif

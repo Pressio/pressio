@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_is_legitimate_line_search_tag.hpp
+// solvers_is_legitimate_hessian_for_least_squares_solver.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,23 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IS_LEGITIMATE_LINE_SEARCH_TAG_HPP_
-#define SOLVERS_IS_LEGITIMATE_LINE_SEARCH_TAG_HPP_
+#ifndef SOLVERS_IS_LEGITIMATE_HESSIAN_FOR_LSQ_SOLVER_HPP_
+#define SOLVERS_IS_LEGITIMATE_HESSIAN_FOR_LSQ_SOLVER_HPP_
 
 namespace pressio{ namespace solvers{ namespace meta {
 
 template <typename T, typename enable = void>
-struct is_legitimate_line_search_tag
+struct is_legitimate_hessian_for_least_squares_solver
   : std::false_type{};
 
-template <>
-struct is_legitimate_line_search_tag<::pressio::solvers::iterative::gn::noLineSearch>
-  : std::true_type{};
-
-template <>
-struct is_legitimate_line_search_tag<::pressio::solvers::iterative::gn::ArmijoLineSearch>
-  : std::true_type{};
+template <typename T>
+struct is_legitimate_hessian_for_least_squares_solver<
+  T,
+  ::pressio::mpl::enable_if_t<
+    containers::meta::is_matrix_wrapper<T>::value or
+    containers::meta::is_multi_vector_wrapper<T>::value
+    >
+  > : std::true_type{};
 
 }}} // namespace pressio::solvers::meta
 #endif
