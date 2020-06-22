@@ -218,13 +218,13 @@ public:
     return (i==0) ? numRows_ : numCols_;
   }
 
-  ref_t operator()(const std::size_t & i, const std::size_t & j){
+  ref_t operator()(const size_t & i, const size_t & j){
     assert(i < numRows_);
     assert(j < numCols_);
     return nativeExprObj_(i, j);
   }
 
-  const_ref_t const & operator()(const std::size_t & i, const std::size_t & j) const{
+  const_ref_t const & operator()(const size_t & i, const size_t & j) const{
     assert(i < numRows_);
     assert(j < numCols_);
     return nativeExprObj_(i, j);

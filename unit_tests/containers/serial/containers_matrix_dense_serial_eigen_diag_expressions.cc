@@ -60,7 +60,7 @@ namespace{
 };
 
 
-TEST(containers_matrix_serial_eigen_expressions, diag)
+TEST(containers_matrix_serial_eigen_diag_expressions, diag)
 {
   // col-major matrix (which is default in Eigen)
   using eigmat_t = Eigen::MatrixXd;
@@ -79,7 +79,7 @@ TEST(containers_matrix_serial_eigen_expressions, diag)
 }
 
 
-TEST(containers_matrix_serial_eigen_expressions, subspanRowMajor)
+TEST(containers_matrix_serial_eigen_diag_expressions, subspanRowMajor)
 {
   using eigmat_t = Eigen::Matrix<double, -1, -1, Eigen::RowMajor>;
   using myM_t = pressio::containers::Matrix<eigmat_t>;

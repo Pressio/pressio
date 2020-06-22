@@ -128,7 +128,7 @@ public:
 
   const_ref_t operator()(size_t i) const
   {
-    assert(i < (std::size_t)extent_);
+    assert(i < (size_t)extent_);
     return nativeExprObj_(i);
   }
 
