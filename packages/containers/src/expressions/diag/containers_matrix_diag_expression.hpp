@@ -107,6 +107,10 @@ public:
     return extent_;
   }
 
+  size_t extent(int i) const{
+    assert(i==0);
+    return extent_;
+  }
 
   const_data_return_t data() const{
     return &nativeExprObj_;
