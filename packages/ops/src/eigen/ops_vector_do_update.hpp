@@ -60,6 +60,8 @@ template<typename T, typename T1, typename scalar_t>
   ::pressio::containers::meta::is_vector_wrapper_eigen<T1>::value 
   >
 do_update(T & v, const scalar_t a, const T1 & v1, const scalar_t b){
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T,T1>::value,
+  "vector types T and T1 in ops/src/eigen/ops_vector_do_update.hpp are not scalar compatible");
   (*v.data()) = a*(*v.data()) + b*(*v1.data());
 }
 
@@ -69,6 +71,8 @@ template<typename T, typename T1, typename scalar_t>
   ::pressio::containers::meta::is_vector_wrapper_eigen<T1>::value
   >
 do_update(T & v, const T1 & v1, const scalar_t  b){
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T,T1>::value,
+  "vector types T and T1 in ops/src/eigen/ops_vector_do_update.hpp are not scalar compatible");
   (*v.data()) = b*(*v1.data());
 }
 
@@ -84,6 +88,8 @@ template<typename T, typename T1, typename T2, typename scalar_t>
 do_update(T & v, const scalar_t &a,
 	  const T1 & v1, const scalar_t &b,
 	  const T2 & v2, const scalar_t &c){
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T,T1,T2>::value,
+  "vector types T,T1,T2 in ops/src/eigen/ops_vector_do_update.hpp are not scalar compatible");
   (*v.data()) = a*(*v.data()) + b*(*v1.data()) + c*(*v2.data());
 }
 
@@ -96,6 +102,8 @@ template<typename T, typename T1, typename T2, typename scalar_t>
 do_update(T & v,
 	  const T1 & v1, const scalar_t &b,
 	  const T2 & v2, const scalar_t &c){
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T,T1,T2>::value,
+  "vector types T,T1,T2 in ops/src/eigen/ops_vector_do_update.hpp are not scalar compatible");
   (*v.data()) = b*(*v1.data()) + c*(*v2.data());
 }
 
@@ -119,6 +127,8 @@ do_update(T  & v, const scalar_t &a,
 	  const T1 & v1, const scalar_t &b,
 	  const T2 & v2, const scalar_t &c,
 	  const T3 & v3, const scalar_t &d){
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T,T1,T2,T3>::value,
+  "vector types T,T1,T2,T3 in ops/src/eigen/ops_vector_do_update.hpp are not scalar compatible");
   (*v.data()) = a*(*v.data()) + b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data());
 }
 
@@ -137,6 +147,8 @@ do_update(T & v,
 	  const T1 & v1, const scalar_t &b,
 	  const T2 & v2, const scalar_t &c,
 	  const T3 & v3, const scalar_t &d){
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T,T1,T2,T3>::value,
+  "vector types T,T1,T2,T3 in ops/src/eigen/ops_vector_do_update.hpp are not scalar compatible");
   (*v.data()) = b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data());
 }
 
@@ -162,6 +174,8 @@ do_update(T & v, const scalar_t &a,
 	  const T2 & v2, const scalar_t &c,
 	  const T3 & v3, const scalar_t &d,
 	  const T4 & v4, const scalar_t &e){
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T,T1,T2,T3,T4>::value,
+  "vector types T,T1,T2,T3,T4 in ops/src/eigen/ops_vector_do_update.hpp are not scalar compatible");
   (*v.data()) = a*(*v.data()) + b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data()) + e*(*v4.data());
 }
 
@@ -183,6 +197,8 @@ do_update(T & v,
 	  const T2 & v2, const scalar_t &c,
 	  const T3 & v3, const scalar_t &d,
 	  const T4 & v4, const scalar_t &e){
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T,T1,T2,T3,T4>::value,
+  "vector types T,T1,T2,T3,T4 in ops/src/eigen/ops_vector_do_update.hpp are not scalar compatible");
   (*v.data()) = b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data()) + e*(*v4.data());
 }
 

@@ -55,28 +55,35 @@ namespace pressio{ namespace ops{
  */
 
 // void specializiation
-template <typename vec_type>
+template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper_eigen<vec_type>::value
+  containers::meta::is_vector_wrapper_eigen<T0>::value and
+  containers::meta::is_vector_wrapper_eigen<T1>::value
   >
-dot(const vec_type & vecA,
-    const vec_type & vecB,
-    typename ::pressio::containers::details::traits<vec_type>::scalar_t & result)
+dot(const T0 & vecA,
+    const T1 & vecB,
+    typename ::pressio::containers::details::traits<T0>::scalar_t & result)
 {
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T0,T1>::value,
+  "vector types T0 and T1 in ops/src/eigen/ops_vec_dot_vec.hpp are not scalar compatible");
   assert(vecA.extent(0) == vecB.extent(0));
   result = vecA.data()->dot(*vecB.data());
 }
 
 
 // non-void specialize
-template <typename vec_type>
+template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
+  containers::meta::is_vector_wrapper_eigen<T0>::value and
+  containers::meta::is_vector_wrapper_eigen<T1>::value,
+  typename ::pressio::containers::details::traits<T0>::scalar_t
   >
-dot(const vec_type & vecA, const vec_type & vecB)
+dot(const T0 & vecA, const T1 & vecB)
 {
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
+
+  static_assert(::pressio::containers::meta::are_scalar_compatible<T0,T1>::value,
+  "vector types T0 and T1 in ops/src/eigen/ops_vec_dot_vec.hpp are not scalar compatible");
+  using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
   sc_t result = {};
   dot(vecA, vecB, result);
   return result;
