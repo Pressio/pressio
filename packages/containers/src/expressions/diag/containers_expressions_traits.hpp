@@ -65,13 +65,7 @@ struct traits<
   WrappedPackageIdentifier::Eigen, true>
 {
 
- 
-//  static constexpr auto wrapped_vector_identifier = std::conditional<
-//    pressio::containers::meta::is_dynamic_dense_matrix_wrapper_eigen<matrix_type>::value,
-//    typename WrappedVectorIdentifier::EigenColDynamic,
-//    typename WrappedVectorIdentifier::EigenColStatic>::type;
-
-  static constexpr auto wrapped_vector_identifier = WrappedVectorIdentifier::EigenColDynamic;
+  static constexpr auto wrapped_vector_identifier = WrappedVectorIdentifier::EigenColStatic;
 
   using wrapped_t = typename ::pressio::containers::details::traits<matrix_type>::wrapped_t;
   using scalar_t  = typename ::pressio::containers::details::traits<matrix_type>::scalar_t;
