@@ -107,7 +107,7 @@ public:
     return extent_;
   }
 
-  size_t extent(int i) const{
+  size_t extent(size_t i) const{
     assert(i==0);
     return extent_;
   }
@@ -120,13 +120,13 @@ public:
     return &nativeExprObj_;
   }
 
-  ref_t operator()(std::size_t i)
+  ref_t operator()(size_t i)
   {
-    assert(i < (std::size_t)extent_);
+    assert(i < (size_t)extent_);
     return nativeExprObj_(i);
   }
 
-  const_ref_t operator()(std::size_t i) const
+  const_ref_t operator()(size_t i) const
   {
     assert(i < (std::size_t)extent_);
     return nativeExprObj_(i);
