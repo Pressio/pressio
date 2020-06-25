@@ -108,20 +108,20 @@ struct system_meets_residual_jacobian_api
 	       std::declval<typename T::jacobian_type &>()
 	       )
 	      )
-     >::value and
-
-   // --- detect residualNorm ---
-   std::is_void<
-     decltype(
-	      std::declval<T const>().residualNorm
-	      (
-	       std::declval<typename T::state_type const&>(),
-	       // the norm type and norm value
-	       ::pressio::solvers::Norm::Undefined,
-	       std::declval<typename T::scalar_type &>()
-	       )
-	      )
      >::value
+
+   // // --- detect residualNorm ---
+   // std::is_void<
+   //   decltype(
+   // 	      std::declval<T const>().residualNorm
+   // 	      (
+   // 	       std::declval<typename T::state_type const&>(),
+   // 	       // the norm type and norm value
+   // 	       ::pressio::solvers::Norm::Undefined,
+   // 	       std::declval<typename T::scalar_type &>()
+   // 	       )
+   // 	      )
+   //   >::value
 
    >
  > : std::true_type{};

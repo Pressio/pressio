@@ -73,9 +73,7 @@ struct DefaultProblemTraits
   using typename base_t::decoder_t;
   using typename base_t::decoder_jac_t;
   using typename base_t::fom_state_reconstr_t;
-  using typename base_t::fom_states_data;
-
-  static constexpr bool is_steady = true;
+  using typename base_t::fom_states_manager_t;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -89,20 +87,13 @@ struct DefaultProblemTraits
    */
   using lspg_matrix_t		= decoder_jac_t;
 
-  // policy for evaluating the rhs of the fom object (<true> for steady overload)
-  using fom_eval_rhs_policy_t	= ::pressio::rom::policy::QueryFomVelocityDefault<this_t::is_steady>;
-
-  // policy for left multiplying the fom jacobian with decoder_jac_t
-  // possibly involving other stuff like explained above (<true> for steady overload
-  using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyJacobianDefault<this_t::is_steady>;
-
   // Policy defining how to compute the LSPG residual
   using lspg_residual_policy_t	= ::pressio::rom::lspg::steady::ResidualPolicy<
-	lspg_residual_t, fom_states_data, fom_eval_rhs_policy_t>;
+	lspg_residual_t, fom_states_manager_t>;
 
   // policy defining how to compute the LSPG jacobian
   using lspg_jacobian_policy_t	= ::pressio::rom::lspg::steady::JacobianPolicy<
-    fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t>;
+    fom_states_manager_t, lspg_matrix_t, decoder_t>;
 
   // system's type
   using lspg_system_t		= ::pressio::rom::lspg::steady::System<

@@ -49,19 +49,59 @@
 #ifndef PRESSIO_SOLVERS_CONVERGENCE_CRITERIA_HPP_
 #define PRESSIO_SOLVERS_CONVERGENCE_CRITERIA_HPP_
 
-#include "./impl/convergence_mixin/solvers_stop_at_max_iters.hpp"
-#include "./impl/convergence_mixin/solvers_stop_when_correction_norm_below_tol.hpp"
+#include "./impl/convergence_mixins/solvers_stop_at_max_iters.hpp"
+#include "./impl/convergence_mixins/solvers_stop_when_correction_norm_below_tol.hpp"
+#include "./impl/convergence_mixins/solvers_stop_when_residual_norm_below_tol.hpp"
+#include "./impl/convergence_mixins/solvers_stop_when_gradient_norm_below_tol.hpp"
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
+// correction norm below tol
 template<typename ... Args>
-using ConvergedWhenCorrectionNormBelowTol = impl::ConvergedWhenCorrectionNormBelowTol<Args...>;
+using ConvergedWhenCorrectionNormBelowTol = impl::StopWhenCorrectionNormBelowTol<Args...>;
 template<typename ... Args>
-using StopWhenCorrectionNormBelowTol = impl::ConvergedWhenCorrectionNormBelowTol<Args...>;
+using StopWhenCorrectionNormBelowTol      = impl::StopWhenCorrectionNormBelowTol<Args...>;
 
+// default convergence
+template<typename ... Args>
+using DefaultConvergence = impl::StopWhenCorrectionNormBelowTol<Args...>;
+
+//--------------------------------
+// stop at max iters
 template<typename ... Args> using ConvergedWhenMaxIters = impl::StopAtMaxIters<Args...>;
-template<typename ... Args> using StopWhenMaxIters = impl::StopAtMaxIters<Args...>;
-template<typename ... Args> using StopAfterMaxIters = impl::StopAtMaxIters<Args...>;
+template<typename ... Args> using StopWhenMaxIters	= impl::StopAtMaxIters<Args...>;
+template<typename ... Args> using StopAfterMaxIters	= impl::StopAtMaxIters<Args...>;
+template<typename ... Args> using StopAtMaxIters	= impl::StopAtMaxIters<Args...>;
+
+//--------------------------------
+// *** residual norm ***
+//--------------------------------
+// absolute norm below tol
+template<typename ... Args>
+using ConvergedWhenAbsoluteResidualNormBelowTol = impl::StopWhenResidualNormBelowTol<true, Args...>;
+template<typename ... Args>
+using StopWhenAbsoluteResidualNormBelowTol	= impl::StopWhenResidualNormBelowTol<true, Args...>;
+
+// relative residual norm below tol
+template<typename ... Args>
+using ConvergedWhenRelativeResidualNormBelowTol = impl::StopWhenResidualNormBelowTol<false, Args...>;
+template<typename ... Args>
+using StopWhenRelativeResidualNormBelowTol	= impl::StopWhenResidualNormBelowTol<false, Args...>;
+
+//--------------------------------
+// *** gradiet norm ***
+//--------------------------------
+// absolute gradient norm below tol
+template<typename ... Args>
+using ConvergedWhenAbsoluteGradientNormBelowTol = impl::StopWhenGradientNormBelowTol<true, Args...>;
+template<typename ... Args>
+using StopWhenAbsoluteGradientNormBelowTol	= impl::StopWhenGradientNormBelowTol<true, Args...>;
+
+// relative gradient norm below tol
+template<typename ... Args>
+using ConvergedWhenRelativeGradientNormBelowTol = impl::StopWhenGradientNormBelowTol<false, Args...>;
+template<typename ... Args>
+using StopWhenRelativeGradientNormBelowTol	= impl::StopWhenGradientNormBelowTol<false, Args...>;
 
 }}}
 #endif

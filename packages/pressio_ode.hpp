@@ -148,10 +148,8 @@
 // implicit policies
 #include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy.hpp"
 #include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy_for_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_residual_standard_policy_pybind11.hpp"
 #include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy.hpp"
 #include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy_for_arbitrary_stepper.hpp"
-#include "ode/src/implicit/policies/standard/ode_implicit_jacobian_standard_policy_pybind11.hpp"
 
 #include "ode/src/implicit/policies/meta/ode_is_implicit_residual_standard_policy.hpp"
 #include "ode/src/implicit/policies/meta/ode_is_implicit_jacobian_standard_policy.hpp"

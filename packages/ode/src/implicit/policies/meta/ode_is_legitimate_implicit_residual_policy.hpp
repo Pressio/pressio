@@ -76,37 +76,36 @@ template<
 struct is_legitimate_implicit_residual_policy<
   T, tag, numPrevStates, state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
-    // is callable with five args
+    // is callable with two args
     std::is_same<
       residual_t,
       decltype
       (
-       std::declval<T const>().template operator()
-       <tag>(
-	      std::declval<state_t const &>(),
-	      std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
-	      std::declval<system_t const &>(),
-	      std::declval<scalar_t const &>(),
-	      std::declval<scalar_t const &>(),
-	      std::declval<::pressio::ode::types::step_t>()
-	 )
+       std::declval<T const>().operator()
+       (
+	std::declval<state_t const &>(),
+	std::declval<system_t const &>()
+	)
        )
       >::value
     and
+
     // is callable with six
     std::is_void<
       decltype
       (
        std::declval<T const>().template operator()
        <tag>(
-	      std::declval<state_t const &>(),
-	      std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
-	      std::declval<system_t const &>(),
-	      std::declval<scalar_t const &>(),
-	      std::declval<scalar_t const &>(),
-	      std::declval<::pressio::ode::types::step_t>(),
-	      std::declval<residual_t &>()
-	 )
+	     std::declval<state_t const &>(),
+	     std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
+	     std::declval<system_t const &>(),
+	     std::declval<scalar_t const &>(),
+	     std::declval<scalar_t const &>(),
+	     std::declval<::pressio::ode::types::step_t>(),
+	     std::declval<residual_t &>(),
+	     ::pressio::solvers::Norm::Undefined,
+	     std::declval<scalar_t &>()
+	     )
        )
       >::value
     >

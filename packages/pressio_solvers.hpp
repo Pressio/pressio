@@ -80,13 +80,14 @@
 // *** non-linear *** //
 //**********************
 #include "solvers/src/meta/solvers_is_legitimate_linear_solver_for_least_squares_solver.hpp"
+#include "solvers/src/meta/solvers_is_legitimate_qr_solver_for_gn_qr.hpp"
 
 #include "solvers/src/meta/residual_jacobian_api/solvers_system_meets_residual_jacobian_api.hpp"
 #include "solvers/src/meta/residual_jacobian_api/solvers_system_meets_fused_residual_jacobian_api.hpp"
 #include "solvers/src/meta/hessian_gradient_api/solvers_system_meets_hessian_gradient_api.hpp"
 #include "solvers/src/meta/hessian_gradient_api/solvers_system_meets_fused_hessian_gradient_api.hpp"
 
-#include "solvers/src/nonlinear/solvers_tags.hpp"
+#include "solvers/src/nonlinear/solvers_nonlinear_tags.hpp"
 #include "solvers/src/nonlinear/solvers_updating_criteria.hpp"
 #include "solvers/src/nonlinear/solvers_convergence_criteria.hpp"
 #include "solvers/src/nonlinear/solvers_gauss_newton.hpp"
@@ -103,7 +104,7 @@
 // #include "solvers/src/meta/solvers_is_legitimate_lm_schedule_policy_tag.hpp"
 // #include "solvers/src/meta/solvers_is_legitimate_line_search_tag.hpp"
 // #include "solvers/src/meta/solvers_is_legitimate_hessian_for_gn_normeq.hpp"
-// #include "solvers/src/meta/solvers_is_legitimate_qr_solver_for_gn_qr.hpp"
+
 // #include "solvers/src/meta/solvers_is_legitimate_residual_observer_each_solver_step.hpp"
 // #include "solvers/src/meta/solvers_is_legitimate_residual_observer_when_converged.hpp"
 // #include "solvers/src/meta/solvers_system_meets_gn_hessian_gradient_api.hpp"

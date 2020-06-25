@@ -75,6 +75,12 @@ public:
 
 public:
 
+  jacobian_type operator()(const state_type & odeCurrentState, const system_type & model) const
+  {
+    jacobian_type JJ(model.jacobian(*odeCurrentState.data(), 0.));
+    return JJ;
+  }
+
   template <typename tag_name, typename scalar_t>
   void operator()(const state_type & odeCurrentState,
 		  const system_type & model,
@@ -86,19 +92,6 @@ public:
     model.jacobian( *odeCurrentState.data(), t, *J.data());
     ::pressio::ode::impl::time_discrete_jacobian<tag_name>(J, dt);
   }
-
-  template <typename tag_name, typename scalar_t>
-  jacobian_type operator()(const state_type & odeCurrentState,
-  			   const system_type & model,
-  			   const scalar_t & t,
-  			   const scalar_t & dt,
-			   const types::step_t & step) const
-  {
-    jacobian_type JJ(model.jacobian(*odeCurrentState.data(), t));
-    ::pressio::ode::impl::time_discrete_jacobian<tag_name>(JJ, dt);
-    return JJ;
-  }
-
 };//end class
 
 }}}}//end namespace pressio::ode::implicitmethods::policy

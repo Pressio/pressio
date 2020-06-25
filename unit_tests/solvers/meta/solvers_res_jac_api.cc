@@ -16,10 +16,6 @@ struct ValidSystemA {
   residual_type createResidualObject(const state_type& x) const;
   jacobian_type createJacobianObject(const state_type& x) const;
 
-  void residualNorm(const state_type & state,
-		    pressio::solvers::Norm normKind,
-		    scalar_type & resNorm) const;
-
   void residual(const state_type& x, residual_type & res,
 		::pressio::solvers::Norm normKind, scalar_type & normResidual) const;
 
@@ -37,11 +33,8 @@ struct NonValidSystemA1 {
   using residual_type	= state_type;
   using jacobian_type	= matrix_w_t;
 
-  residual_type createResidualObject(const state_type& x) const;
+  //residual_type createResidualObject(const state_type& x) const;
   jacobian_type createJacobianObject(const state_type& x) const;
-
-  /* void residualNorm(const state_type & state,
-     pressio::solvers::Norm normKind, scalar_type & resNorm) const; */
 
   void residual(const state_type& x, residual_type & res,
 		::pressio::solvers::Norm normKind, scalar_type & normResidual) const;

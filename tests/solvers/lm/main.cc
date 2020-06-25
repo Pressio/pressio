@@ -14,15 +14,15 @@ struct NonLinearLeastSquareSystem {
   using residual_type = vector_w_t;
   using jacobian_type = matrix_w_t;
 
-  void residualNorm(const state_type & state,
-		    pressio::solvers::Norm normKind,
-		    scalar_type & resNorm) const
-  {
-    // here I can create one R every time, because performance does not matter
-    // but it would be better to create a R only once
-    auto R = createResidualObject(state);
-    residual(state, R, normKind, resNorm);
-  }
+  // void residualNorm(const state_type & state,
+  // 		    pressio::solvers::Norm normKind,
+  // 		    scalar_type & resNorm) const
+  // {
+  //   // here I can create one R every time, because performance does not matter
+  //   // but it would be better to create a R only once
+  //   auto R = createResidualObject(state);
+  //   residual(state, R, normKind, resNorm);
+  // }
 
   void residual(const state_type& x, residual_type & res,
 		::pressio::solvers::Norm normKind, scalar_type & normResidual) const {

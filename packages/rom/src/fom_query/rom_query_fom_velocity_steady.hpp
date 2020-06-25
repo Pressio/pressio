@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_armijo_updater.hpp
+// rom_query_fom_velocity_steady.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,58 +46,26 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_ARMIJO_UPDATER_HPP_
-#define PRESSIO_SOLVERS_ARMIJO_UPDATER_HPP_
+#ifndef ROM_QUERY_FOM_VELOCITY_STEADY_HPP_
+#define ROM_QUERY_FOM_VELOCITY_STEADY_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio{ namespace rom{
 
-template <typename state_t, typename T>
-class ArmijoUpdater : public T
+template <typename fom_t, typename state_t, typename rhs_t>
+void queryFomVelocitySteady(const fom_t & fomObj,
+			    const state_t & yFOM,
+			    rhs_t & rhs)
 {
-  state_t trialState_;
+  fomObj.velocity(*yFOM.data(), *rhs.data());
+}
 
-public:
-  ArmijoUpdater() = delete;
+template <typename fom_t, typename state_t>
+auto queryFomVelocitySteady(const fom_t & fomObj,
+			    const state_t & yFOM)
+  -> decltype(fomObj.velocity(*yFOM.data()))
+{
+  return fomObj.velocity(*yFOM.data());
+}
 
-  template <typename sys_t, typename ...Args>
-  ArmijoUpdater(const sys_t & sys, const state_t & state, Args... args)
-    : trialState_(state), T(sys, state, std::forward<Args>(args)...)
-  {}
-
-  template<typename system_t>
-  void updateState(const system_t & sys, state_t & state)
-  {
-    // // compute dy^T (gradient)
-    // const auto & g = operators_mng.viewGradient();
-    // const auto c2 = ::pressio::ops::dot(correction, g);
-    // const auto rhs = c1 * alpha * c2;
-
-    // bool done = false;
-    // while (not done)
-    // {
-    //   // update : ytrial = y + dy*alpha
-    //   ::pressio::ops::do_update(ytrial, y, one, dy, alpha);
-
-    //   // eval function for updated step solition: f(y + alpha*dy)
-    //   const auto fytrial = operators_.computeResidualNorm(ytrial);
-    //   auto lhs = fytrial-fy;
-
-    //   if (lhs <= rhs) done = true;
-
-    //   // exit when abs(fytrail-fy) < eps, leave eps = 1e-14 for now
-    //   // change later with some machine epsilon
-    //   if (std::abs(lhs) <= 1e-14) done = true;
-
-    //   /* convectional way to backtrack
-    //    * this is equivalent to using beta^m instead of alpha
-    //    * where m=0,1,2,...
-    //    * and stopping when we find the smallest integer
-    //    * to satisfy criterion
-    //    */
-    //   if (!done) alpha *= 0.5;
-    // }//while
-  }
-};
-
-}}}}
+}} //end namespace pressio::rom
 #endif

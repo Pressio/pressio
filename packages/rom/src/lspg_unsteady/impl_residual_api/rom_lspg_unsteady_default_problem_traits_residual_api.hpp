@@ -91,22 +91,16 @@ Verify the fom/adapter class you are using.");
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
   using lspg_matrix_t		= typename common_types_t::lspg_matrix_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
-  using fom_states_data		= typename common_types_t::fom_states_data;
+  using fom_states_manager_t		= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= typename common_types_t::ud_ops_t;
-
-  // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
-  using fom_residual_querier_policy_t	= ::pressio::rom::policy::QueryFomTimeDiscreteResidual;
-
-  // policy for querying the J*phi from FOM
-  using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyTimeDiscreteJacobian;
 
   // policy to compute the LSPG time-discrete residual
   using lspg_residual_policy_t	= ::pressio::rom::lspg::unsteady::impl::ResidualPolicyResidualApi<
-    lspg_residual_t, fom_states_data, fom_residual_querier_policy_t>;
+    lspg_residual_t, fom_states_manager_t>;
 
   // policy to compute the LSPG time-discrete jacobian
   using lspg_jacobian_policy_t	= ::pressio::rom::lspg::unsteady::impl::JacobianPolicyResidualApi<
-    fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t>;
+    fom_states_manager_t, lspg_matrix_t, decoder_t>;
 
   using stepper_order_t  = typename common_types_t::order_setter;
   using tot_n_setter_t   = typename common_types_t::tot_n_setter;

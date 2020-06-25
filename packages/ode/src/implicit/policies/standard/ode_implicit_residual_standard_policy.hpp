@@ -67,56 +67,31 @@ class ResidualStandardPolicy<
   >
 {
 
-  using this_t = ResidualStandardPolicy<state_type, system_type, residual_type>;
-
 public:
   ResidualStandardPolicy() = default;
   ~ResidualStandardPolicy() = default;
 
 public:
-
-  // -----------------------------------------------------
-  // enable when stepper stepperName only needs previous states
-  // -----------------------------------------------------
-  template <
-    typename tag_name,
-    typename prev_states_type,
-    typename scalar_type
-  >
-  mpl::enable_if_t<
-    ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<tag_name>::value
-  >
-  operator()(const state_type & odeCurrentState,
-		  const prev_states_type & odePrevStates,
-		  const system_type & model,
-		  const scalar_type & t,
-		  const scalar_type & dt,
-		  const types::step_t & step,
-		  residual_type & R) const{
-
-    model.velocity(*odeCurrentState.data(), t, *R.data());
-    ::pressio::ode::impl::time_discrete_residual<tag_name>(odeCurrentState, R, odePrevStates, dt);
+  residual_type operator()(const state_type & odeCurrentState, const system_type & model) const
+  {
+    residual_type R(model.velocity(*odeCurrentState.data(), 0.));
+    return R;
   }
 
-  template <
-    typename tag_name,
-    typename prev_states_type,
-    typename scalar_type
-  >
-  mpl::enable_if_t<
-    ::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<tag_name>::value,
-    residual_type
-  >
+  template <typename tag_name, typename prev_states_type, typename scalar_type>
+  mpl::enable_if_t<::pressio::ode::meta::implicit_stepper_stencil_needs_previous_states_only<tag_name>::value>
   operator()(const state_type & odeCurrentState,
-  			   const prev_states_type & odePrevStates,
-  			   const system_type & model,
-  			   const scalar_type & t,
-  			   const scalar_type & dt,
-			   const types::step_t & step) const{
-
-    residual_type R(model.velocity(*odeCurrentState.data(), t));
+	     const prev_states_type & odePrevStates,
+	     const system_type & model,
+	     const scalar_type & t,
+	     const scalar_type & dt,
+	     const types::step_t & step,
+	     residual_type & R,
+	     ::pressio::solvers::Norm normKind,
+	     scalar_type & normValue) const
+  {
+    model.velocity(*odeCurrentState.data(), t, *R.data());
     ::pressio::ode::impl::time_discrete_residual<tag_name>(odeCurrentState, R, odePrevStates, dt);
-    return R;
   }
 
 };//end class

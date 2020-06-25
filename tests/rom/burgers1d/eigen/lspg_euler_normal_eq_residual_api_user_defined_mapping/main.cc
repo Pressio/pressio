@@ -58,11 +58,13 @@ int main(int argc, char *argv[])
   using linear_solver_t  = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
-  // GaussNewton solver
-  // hessian comes up in GN solver, it is (J phi)^T (J phi)
-  using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<lspg_stepper_t, linear_solver_t>;
-  gnsolver_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
+  // GaussNewton solver with normal equations
+  using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
+    lspg_stepper_t,
+    pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::DefaultConvergence,
+    linear_solver_t>;
+  nls_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(4);
 

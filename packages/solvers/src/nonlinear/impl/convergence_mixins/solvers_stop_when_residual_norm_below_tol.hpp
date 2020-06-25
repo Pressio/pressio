@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_jacobian_standard_policy_pybind11.hpp
+// solvers_stop_when_residual_norm_below_tol.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,52 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#ifndef ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_PYBIND11_HPP_
-#define ODE_POLICIES_STANDARD_IMPLICIT_JACOBIAN_STANDARD_POLICY_PYBIND11_HPP_
+#ifndef PRESSIO_SOLVERS_STOP_WHEN_RESIDUAL_NORM_BELOW_TOL_HPP_
+#define PRESSIO_SOLVERS_STOP_WHEN_RESIDUAL_NORM_BELOW_TOL_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<
-  typename state_type,
-  typename system_type,
-  typename jacobian_type
-  >
-class JacobianStandardPolicyPybind11<
-  state_type, system_type, jacobian_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
-    ::pressio::ode::meta::is_legitimate_jacobian_type<jacobian_type>::value and
-    mpl::is_same<system_type, pybind11::object >::value and
-    containers::meta::is_array_pybind11<state_type>::value and
-    containers::meta::is_array_pybind11<jacobian_type>::value
-    >
-  >
+template<bool absolute, typename sc_t, typename T>
+class StopWhenResidualNormBelowTol
+  : public T,
+    public IterativeBase< StopWhenResidualNormBelowTol<absolute, sc_t, T>, sc_t >
 {
-
-  using this_t = JacobianStandardPolicyPybind11<state_type, system_type, jacobian_type>;
-
-public:
-  JacobianStandardPolicyPybind11() = default;
-  ~JacobianStandardPolicyPybind11() = default;
+  using this_t = StopWhenResidualNormBelowTol<absolute, sc_t, T>;
+  using iterative_base_t = IterativeBase<this_t, sc_t>;
+  using typename iterative_base_t::iteration_t;
 
 public:
+  StopWhenResidualNormBelowTol() = delete;
 
-  // todo
+  template <typename ...Args>
+  StopWhenResidualNormBelowTol(Args &&... args)
+    : T(std::forward<Args>(args)...){}
 
-};//end class
+  template<typename system_t, typename state_t>
+  void solve(const system_t & sys, state_t & state)
+  {
 
-}}}}//end namespace pressio::ode::implicitmethods::policy
-#endif
+    sc_t resNorm0 = {};
+    iteration_t iStep = 0;
+    while (++iStep <= iterative_base_t::maxIters_)
+    {
+      T::computeCorrection(sys, state);
+      T::updateState(sys, state);
+
+      const auto resNorm = T::residualNormCurrentCorrectionStep();
+      if (iStep==1) resNorm0 = resNorm;
+
+      if (absolute){
+	if (resNorm < iterative_base_t::tolerance_)
+	  break;
+      }
+      else{
+	if (resNorm/resNorm0 < iterative_base_t::tolerance_)
+	  break;
+      }
+    }
+  }
+};
+
+}}}}
 #endif

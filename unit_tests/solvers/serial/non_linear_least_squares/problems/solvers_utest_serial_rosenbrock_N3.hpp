@@ -24,18 +24,8 @@ struct Rosenbrock3 {
     return residual_type(nf);
   }
 
-  jacobian_type createJacobianObect(const state_type& x) const {
+  jacobian_type createJacobianObject(const state_type& x) const {
     return jacobian_type(nf, nv);
-  }
-
-  void residualNorm(const state_type & state,
-		    pressio::solvers::Norm normKind,
-		    scalar_type & resNorm) const
-  {
-    // here I can create one R every time, because performance does not matter
-    // but it would be better to create a R only once
-    auto R = createResidualObject(state);
-    residual(state, R, normKind, resNorm);
   }
 
   void residual(const state_type& x,

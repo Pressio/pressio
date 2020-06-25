@@ -184,30 +184,21 @@ private:
     solver.solve(*this, odeState);
   }
 
-  void residualImpl(const state_type & odeState, residual_type & R) const
+  void residualImpl(const state_type & odeState,
+		    residual_type & R,
+		    ::pressio::solvers::Norm normKind,
+		    scalar_t & normValue) const
   {
     this->residual_obj_.template operator()<
       tag_name>(odeState, this->auxStates_,
-		this->sys_.get(), this->t_, this->dt_, this->step_, R);
-  }
-
-  residual_type residualImpl(const state_type & odeState) const
-  {
-    return this->residual_obj_.template operator()<
-      tag_name>(odeState, this->auxStates_,
-		this->sys_.get(), this->t_, this->dt_, this->step_);
+		this->sys_.get(), this->t_,
+		this->dt_, this->step_, R, normKind, normValue);
   }
 
   void jacobianImpl(const state_type & odeState, jacobian_type & J) const
   {
     this->jacobian_obj_.template operator()<
       tag_name>(odeState, this->sys_.get(), this->t_, this->dt_, this->step_, J);
-  }
-
-  jacobian_type jacobianImpl(const state_type & odeState) const
-  {
-    return this->jacobian_obj_.template operator()<
-      tag_name>(odeState, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
 };//end class

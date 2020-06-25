@@ -50,6 +50,23 @@ struct myOpsResidualApi
     to = from;
   }
 
+  // -------------------------------------------------------
+  sc_t norm1(const pressio::apps::arbds::Vector<sc_t> & v) const
+  {
+    sc_t result{};
+    for (std::size_t i=0; i<v.extent(0); ++i)
+      result += std::abs(v(i));
+    return result;
+  }
+
+  sc_t norm2(const pressio::apps::arbds::Vector<sc_t> & v) const
+  {
+    sc_t result{};
+    for (std::size_t i=0; i<v.extent(0); ++i)
+      result += v(i)*v(i);
+    return std::sqrt(result);
+  }
+
   void set_zero(pressio::apps::arbds::Vector<sc_t> & vec) const
   {
     for (std::size_t i=0; i<vec.extent(0); ++i)
@@ -161,12 +178,12 @@ struct EulerLSPGWithResidualApi
 
   using ops1_t		= myOpsResidualApi<scalar_t, native_dmat_t>;
   using opsGN_t		= myOpsGN<native_dmat_t, scalar_t>;
-  static_assert(::pressio::solvers::meta::has_all_needed_methods_for_hessian<
-  		opsGN_t, native_dmat_t, hessian_t, scalar_t >::value,
-  		"opsGN_t does not have all methods for hessian");
-  static_assert(::pressio::solvers::meta::has_all_needed_methods_for_gradient<
-  		opsGN_t, native_dmat_t, native_state_t, lspg_state_t, scalar_t >::value,
-		"opsGN_t does not have all methods for gradient");
+  // static_assert(::pressio::solvers::meta::has_all_needed_methods_for_hessian<
+  // 		opsGN_t, native_dmat_t, hessian_t, scalar_t >::value,
+  // 		"opsGN_t does not have all methods for hessian");
+  // static_assert(::pressio::solvers::meta::has_all_needed_methods_for_gradient<
+  // 		opsGN_t, native_dmat_t, native_state_t, lspg_state_t, scalar_t >::value,
+		// "opsGN_t does not have all methods for gradient");
 
   using fom_state_t	= pressio::containers::Vector<native_state_t>;
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
@@ -225,7 +242,12 @@ struct EulerLSPGWithResidualApi
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<lspg_stepper_t, linear_solver_t, opsGN_t>;
+    using gnsolver_t = pressio::solvers::nonlinear::composeGaussNewton_t<
+    lspg_stepper_t,
+    pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::DefaultConvergence,
+    linear_solver_t, opsGN_t>;
+    // using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<lspg_stepper_t, linear_solver_t, opsGN_t>;
     gnsolver_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj, myOps2);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);

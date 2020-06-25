@@ -64,25 +64,19 @@ public:
   using typename lspg_problem::fom_native_state_t;
   using typename lspg_problem::fom_state_t;
   using typename lspg_problem::fom_velocity_t;
-
   using typename lspg_problem::lspg_state_t;
   using typename lspg_problem::decoder_t;
   using typename lspg_problem::fom_state_reconstr_t;
-  using typename lspg_problem::fom_states_data;
-
+  using typename lspg_problem::fom_states_manager_t;
   using typename lspg_problem::lspg_matrix_t;
-  using typename lspg_problem::fom_eval_rhs_policy_t;
-  using typename lspg_problem::fom_apply_jac_policy_t;
   using typename lspg_problem::lspg_residual_policy_t;
   using typename lspg_problem::lspg_jacobian_policy_t;
   using typename lspg_problem::lspg_system_t;
 
 private:
-  fom_eval_rhs_policy_t		rhsQuerier_;
-  fom_apply_jac_policy_t	applyJacobQuerier_;
   fom_state_t			fomStateReference_;
   fom_state_reconstr_t		fomStateReconstructor_;
-  fom_states_data		fomStates_;
+  fom_states_manager_t		fomStatesMngr_;
   lspg_residual_policy_t	residualPolicy_;
   lspg_jacobian_policy_t	jacobianPolicy_;
   lspg_system_t			systemObj_;
@@ -101,13 +95,11 @@ public:
 		   const fom_native_state_t & yFomRefNative,
 		   const decoder_t	    & decoder,
 		   lspg_state_t		    & yROM)
-    : rhsQuerier_{},
-      applyJacobQuerier_{},
-      fomStateReference_(yFomRefNative),
+    : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      residualPolicy_(fomStates_, rhsQuerier_),
-      jacobianPolicy_(fomStates_, applyJacobQuerier_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      residualPolicy_(fomStatesMngr_),
+      jacobianPolicy_(fomStatesMngr_, decoder),
       systemObj_(appObj, residualPolicy_, jacobianPolicy_, yROM)
   {}
 

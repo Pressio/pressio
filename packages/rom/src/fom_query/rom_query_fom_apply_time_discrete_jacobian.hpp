@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_velocity_steady.hpp
+// rom_query_fom_apply_time_discrete_jacobian_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,66 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_VELOCITY_STEADY_HPP_
-#define ROM_QUERY_FOM_VELOCITY_STEADY_HPP_
+#ifndef ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
+#define ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
 
-namespace pressio{ namespace rom{ namespace policy{
+namespace pressio{ namespace rom{
 
-template <>
-struct QueryFomVelocityDefault<true>{
+template <class fom_state_t, class fom_t, class operand_t>
+auto queryFomApplyTimeDiscreteJacobian(const fom_state_t & fomCurrentState,
+				       const fom_t & fomObj,
+				       const operand_t & B)
+  -> decltype(fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(), *B.data()))
+{
+  return fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(),
+						      *B.data());
+}
 
-  template <
-    typename fom_t,
-    typename state_t,
-    typename rhs_t
-    >
-  void evaluate(const fom_t	& fomObj,
-		const state_t & yFOM,
-		rhs_t		& rhs) const{
-    fomObj.velocity(*yFOM.data(), *rhs.data());
-  }
+template <
+  class fom_state_t, class fom_t, class step_t, class time_t, class operand_t, class result_t
+  >
+void queryFomApplyTimeDiscreteJacobian(const fom_state_t & state_n,
+				       const fom_state_t & state_nm1,
+				       const fom_t & fomObj,
+				       const time_t & time,
+				       const time_t & dt,
+				       const step_t & step,
+				       const operand_t & B,
+				       result_t & A,
+				       // by default, we compute wrt current state
+				       int compute_jac_wrt_state_id = 0)
+{
+  fomObj.template applyTimeDiscreteJacobian(step, time, dt,
+					    *B.data(),
+					    compute_jac_wrt_state_id,
+					    *A.data(),
+					    *state_n.data(),
+					    *state_nm1.data());
+}
 
-  template <
-    typename fom_t,
-    typename state_t
-    >
-  auto evaluate(const fom_t	& fomObj,
-		const state_t & yFOM) const
-    -> decltype(fomObj.velocity(*yFOM.data())){
-    return fomObj.velocity(*yFOM.data());
-  }
+template <
+  class fom_state_t, class fom_t, class step_t, class time_t, class operand_t, class result_t
+  >
+void queryFomApplyTimeDiscreteJacobian(const fom_state_t & state_n,
+				       const fom_state_t & state_nm1,
+				       const fom_state_t & state_nm2,
+				       const fom_t & fomObj,
+				       const time_t & time,
+				       const time_t & dt,
+				       const step_t & step,
+				       const operand_t & B,
+				       result_t & A,
+				       // by default, we compute wrt current state
+				       int compute_jac_wrt_state_id = 0)
+{
+  fomObj.template applyTimeDiscreteJacobian(step, time, dt,
+					    *B.data(),
+					    compute_jac_wrt_state_id,
+					    *A.data(),
+					    *state_n.data(),
+					    *state_nm1.data(),
+					    *state_nm2.data());
+}
 
-};
-
-}}} //end namespace pressio::rom::policy
+}} //end namespace pressio::rom
 #endif

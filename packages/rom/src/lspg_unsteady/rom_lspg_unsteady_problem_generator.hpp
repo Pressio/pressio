@@ -68,7 +68,6 @@ struct ProblemHelper{
   using type = void;
 };
 
-
 template<
   template <class, class, class, class ...> class lspg_t,
   typename stepper_tag,
@@ -100,7 +99,6 @@ nor the residual API, so I cannot instantiate a valid LSPGUnsteadyProblem. \
 Verify the API of your model/adapter class.");
 };
 
-
 template<
   template <class, class, class, class ...> class lspg_t,
   typename stepper_tag,
@@ -113,9 +111,7 @@ template<
   using type = impl::ProblemGeneratorVelocityApi<lspg_t, stepper_tag, fom_type, lspg_state_t, Args...>;
 };
 
-
 }// end namespace pressio::rom::lspg::unsteady::impl
-
 
 template <
   template <class, class, class, class ...> class lspg_type,

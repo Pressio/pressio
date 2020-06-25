@@ -52,7 +52,7 @@
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <
-  typename fom_states_data_type,
+  typename fom_states_manager_t,
   typename fom_rhs_t,
   typename decoder_t,
   typename ud_ops
@@ -76,11 +76,11 @@ public:
       > = 0
     >
   ExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
-			 fom_states_data_type & fomStates,
+			 fom_states_manager_t & fomStatesMngr,
 			 const decoder_t & decoder)
     : fomRhs_{fomRhs},
       phi_(decoder.getReferenceToJacobian()),
-      fomStates_(fomStates){}
+      fomStatesMngr_(fomStatesMngr){}
 
   // 2. non-void ops
   template <
@@ -91,12 +91,12 @@ public:
       > = 0
     >
   ExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
-			 fom_states_data_type & fomStates,
+			 fom_states_manager_t & fomStatesMngr,
 			 const decoder_t & decoder,
 			 const _ud_ops & udOps)
     : fomRhs_{fomRhs},
       phi_(decoder.getReferenceToJacobian()),
-      fomStates_(fomStates),
+      fomStatesMngr_(fomStatesMngr),
       udOps_{&udOps}{}
 
 public:
@@ -204,12 +204,12 @@ private:
     timer->start("galerkin explicit velocity");
 #endif
 
-    fomStates_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    const auto & yFom = fomStates_.getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
     (*this).template queryFomVelocity<scalar_t>(app, yFom, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -228,7 +228,7 @@ private:
 protected:
   mutable fom_rhs_t fomRhs_ = {};
   const typename decoder_t::jacobian_type & phi_;
-  fom_states_data_type & fomStates_;
+  fom_states_manager_t & fomStatesMngr_;
   const ud_ops * udOps_ = {};
 
 };//end class

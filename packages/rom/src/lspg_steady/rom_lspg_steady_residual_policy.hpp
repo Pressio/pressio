@@ -51,24 +51,11 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 
-template <
-  typename residual_type,
-  typename fom_states_data_type,
-  typename fom_rhs_eval_policy>
-class ResidualPolicy;
-
-
-template <
-  typename residual_type,
-  typename fom_states_data,
-  typename fom_eval_rhs_policy
-  >
-class ResidualPolicy : protected fom_eval_rhs_policy
+template <typename residual_type, typename fom_states_manager_t>
+class ResidualPolicy
 {
 
 public:
-  using this_t = ResidualPolicy<residual_type, fom_states_data,	fom_eval_rhs_policy>;
-
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
 
@@ -76,16 +63,22 @@ public:
   ResidualPolicy() = delete;
   ~ResidualPolicy() = default;
 
-  ResidualPolicy(fom_states_data & fomStatesIn,
-		 const fom_eval_rhs_policy & fomEvalRhsFunctor)
-    : fom_eval_rhs_policy(fomEvalRhsFunctor),
-      fomStates_(fomStatesIn){}
+  ResidualPolicy(fom_states_manager_t & fomStatesMngr)
+    : fomStatesMngr_(fomStatesMngr){}
 
 public:
-  template <
-    typename lspg_state_t,
-    typename lspg_residual_t,
-    typename fom_t>
+
+  template <typename lspg_state_t, typename fom_t>
+  residual_t operator()(const lspg_state_t & romState,
+		       const fom_t	  & app) const
+  {
+    const auto & currFomState = fomStatesMngr_.getCRefToCurrentFomState();
+    residual_t R(::pressio::rom::queryFomVelocitySteady(app, currFomState));
+    (*this).template operator()(romState, R, app);
+    return R;
+  }
+
+  template <typename lspg_state_t, typename lspg_residual_t, typename fom_t>
   void operator()(const lspg_state_t	& romState,
 		  lspg_residual_t	& romR,
   		  const fom_t		& app) const
@@ -95,13 +88,13 @@ public:
     timer->start("lspg residual");
 #endif
 
-    fomStates_.template reconstructCurrentFomState(romState);
+    fomStatesMngr_.template reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
 
-    fom_eval_rhs_policy::evaluate(app, fomStates_.getCRefToCurrentFomState(), romR);
+    ::pressio::rom::queryFomVelocitySteady(app, fomStatesMngr_.getCRefToCurrentFomState(), romR);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
@@ -109,18 +102,8 @@ public:
 #endif
   }
 
-  template <typename lspg_state_t, typename fom_t>
-  residual_t operator()(const lspg_state_t & romState,
-		       const fom_t	  & app) const
-  {
-    const auto & currFomState = fomStates_.getCRefToCurrentFomState();
-    residual_t R(fom_eval_rhs_policy::evaluate(app, currFomState));
-    (*this).template operator()(romState, R, app);
-    return R;
-  }
-
 protected:
-  fom_states_data & fomStates_;
+  fom_states_manager_t & fomStatesMngr_;
 
 };//end class
 

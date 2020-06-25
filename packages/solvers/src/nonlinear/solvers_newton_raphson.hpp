@@ -126,8 +126,8 @@ public:
     : linSolver_{linearSolverIn},
       deltaState_(stateIn),
       prevState_(stateIn),
-      R_(sys.residual(stateIn)),
-      J_(sys.jacobian(stateIn))
+      R_(sys.createResidualObject(stateIn)),
+      J_(sys.createJacobianObject(stateIn))
   {}
 
   NewtonRaphson(const NewtonRaphson &) = delete;
@@ -198,7 +198,7 @@ public:
     normN_ = {0};
 
     // compute residual and jacobian
-    sys.residual(stateInOut, R_);
+    sys.residual(stateInOut, R_, pressio::solvers::Norm::L2, normRes_);
     sys.jacobian(stateInOut, J_);
 
     // reset step counter
@@ -236,7 +236,7 @@ public:
       if (normN_ < this->tolerance_)
       	break;
 
-      sys.residual(stateInOut, R_);
+      sys.residual(stateInOut, R_, pressio::solvers::Norm::L2, normRes_);
       sys.jacobian(stateInOut, J_);
     }//while
 

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_apply_time_discrete_jacobian_policy.hpp
+// solvers_hessian_gradient_corrector_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,74 +46,62 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
-#define ROM_QUERY_FOM_APPLY_TIME_DISCRETE_JACOBIAN_HPP_
+#ifndef PRESSIO_SOLVERS_HESSIAN_GRADIENT_CORRECTOR_IMPL_HPP_
+#define PRESSIO_SOLVERS_HESSIAN_GRADIENT_CORRECTOR_IMPL_HPP_
 
-namespace pressio{ namespace rom{ namespace policy{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-struct QueryFomApplyTimeDiscreteJacobian
+template<
+  typename T, typename state_t, typename lin_solver_t, ::pressio::solvers::Norm normType
+  >
+class HessianGradientCorrector : public T
 {
+  using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
-  template <class fom_state_t, class fom_t, class operand_t>
-  auto evaluate(const fom_state_t & fomCurrentState,
-  		const fom_t	  & fomObj,
-  		const operand_t   & B) const
-    -> decltype(
-  		fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(),
-							     *B.data())
-  		)
+  state_t correction_ = {};
+  lin_solver_t & solverObj_;
+  sc_t residualNorm_ = {};
+
+public:
+  static constexpr auto normType_ = normType;
+
+  HessianGradientCorrector() = delete;
+
+  template <typename system_t, typename ...Args>
+  HessianGradientCorrector(const system_t & system,
+			   const state_t & state,
+			   lin_solver_t & solverObj,
+			   Args && ... args)
+    : T(system, state, std::forward<Args>(args)...),
+      correction_(state), solverObj_(solverObj){}
+
+public:
+  template <typename system_t>
+  void computeCorrection(const system_t & sys, state_t & state)
   {
-    return fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(),
-							*B.data());
+    T::computeOperators(sys, state, normType, residualNorm_);
+
+    auto & H = T::getHessian();
+    auto & g = T::getGradient();
+    solverObj_.solve(H, g, correction_);
+
+    std::cout << std::fixed
+    	      << std::setprecision(15)
+    	      << residualNorm_ << " "
+    	      << pressio::ops::norm2(g) << " "
+    	      << pressio::ops::norm2(correction_)
+    	      << std::endl;
   }
 
-  template <
-    class fom_state_t, class fom_t, class step_t, class time_t, class operand_t, class result_t
-    >
-  void evaluate(const fom_state_t & state_n,
-		const fom_state_t & state_nm1,
-  		const fom_t	  & fomObj,
-  		const time_t	  & time,
-  		const time_t	  & dt,
-  		const step_t	  & step,
-  		const operand_t   & B,
-  		result_t	  & A,
-		// by default, we compute wrt current state
-  		int compute_jac_wrt_state_id = 0) const
-  {
-    fomObj.template applyTimeDiscreteJacobian(step, time, dt,
-  					      *B.data(),
-  					      compute_jac_wrt_state_id,
-  					      *A.data(),
-					      *state_n.data(),
-					      *state_nm1.data());
+  const state_t & viewCorrection() const{ return correction_; }
+  const sc_t residualNormCurrentCorrectionStep() const{ return residualNorm_; }
+
+  template< typename system_t>
+  void residualNorm(const system_t & system, const state_t & state, sc_t & result){
+    T::residualNorm(system, state, normType, result);
   }
 
-
-  template <
-    class fom_state_t, class fom_t, class step_t, class time_t, class operand_t, class result_t
-    >
-  void evaluate(const fom_state_t & state_n,
-		const fom_state_t & state_nm1,
-		const fom_state_t & state_nm2,
-  		const fom_t	  & fomObj,
-  		const time_t	  & time,
-  		const time_t	  & dt,
-  		const step_t	  & step,
-  		const operand_t   & B,
-  		result_t	  & A,
-		// by default, we compute wrt current state
-  		int compute_jac_wrt_state_id = 0) const
-  {
-    fomObj.template applyTimeDiscreteJacobian(step, time, dt,
-  					      *B.data(),
-  					      compute_jac_wrt_state_id,
-  					      *A.data(),
-					      *state_n.data(),
-					      *state_nm1.data(),
-					      *state_nm2.data());
-  }
 };
 
-}}} //end namespace pressio::rom::policy
+}}}}
 #endif

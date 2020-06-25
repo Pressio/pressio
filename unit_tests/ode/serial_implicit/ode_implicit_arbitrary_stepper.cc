@@ -14,7 +14,10 @@ public:
 		  const double & t,
 		  const double & dt,
 		  ::pressio::ode::types::step_t step,
-		  residual_type & R) const{
+		  residual_type & R,
+      ::pressio::solvers::Norm normKind,
+      double & normValue) const
+  {
     // here I would need to compute the time discrete residual
   }
 

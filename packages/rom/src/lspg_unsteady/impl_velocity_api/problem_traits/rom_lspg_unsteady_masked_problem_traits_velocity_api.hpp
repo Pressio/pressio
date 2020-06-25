@@ -90,21 +90,14 @@ Verify the fom/adapter class you are using meets the velocity api.");
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
   using lspg_matrix_t		= typename common_types_t::lspg_matrix_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
-  using fom_states_data		= typename common_types_t::fom_states_data;
+  using fom_states_manager_t		= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= typename common_types_t::ud_ops_t;
-
-  // policy for evaluating the rhs of the fom object (<false> for unsteady overload)
-  using fom_eval_velocity_policy_t	= ::pressio::rom::policy::QueryFomVelocityDefault<false>;
-
-  // policy for left multiplying the fom jacobian with decoder_jac_t
-  // possibly involving other stuff like explained above (<false> for unsteady overload)
-  using fom_apply_jac_policy_t	= ::pressio::rom::policy::QueryFomApplyJacobianDefault<false>;
 
   // policy defining how to compute the LSPG time-discrete residual
   using lspg_residual_policy_t =
     ::pressio::rom::decorator::Masked<
     ::pressio::rom::lspg::unsteady::impl::ResidualPolicyVelocityApi<
-      lspg_residual_t, fom_states_data, fom_eval_velocity_policy_t, ud_ops_t
+      lspg_residual_t, fom_states_manager_t, ud_ops_t
       >
     >;
 
@@ -112,7 +105,7 @@ Verify the fom/adapter class you are using meets the velocity api.");
   using lspg_jacobian_policy_t	=
     ::pressio::rom::decorator::Masked<
     ::pressio::rom::lspg::unsteady::impl::JacobianPolicyVelocityApi<
-      fom_states_data, lspg_matrix_t, fom_apply_jac_policy_t, decoder_t, ud_ops_t
+      fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_t
       >
     >;
 

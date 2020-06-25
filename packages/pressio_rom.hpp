@@ -61,7 +61,7 @@
 
 #include "rom/src/rom_ConfigDefs.hpp"
 
-#include "rom/src/rom_static_container_fom_states.hpp"
+#include "rom/src/rom_manager_fom_states_static.hpp"
 #include "rom/src/utils/rom_utils_set_gen_coordinates.hpp"
 #include "rom/src/meta/rom_has_dense_matrix_typedef.hpp"
 
@@ -81,14 +81,14 @@
 #include "rom/src/decoder/rom_linear_decoder.hpp"
 
 //----------------------
-// fom-querying policies
+// fom-querying functions
 //----------------------
-#include "rom/src/fom_querying_policies/rom_query_fom_velocity_unsteady.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_velocity_steady.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_apply_jacobian_unsteady.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_apply_jacobian_steady.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_apply_time_discrete_jacobian.hpp"
-#include "rom/src/fom_querying_policies/rom_query_fom_time_discrete_residual.hpp"
+#include "rom/src/fom_query/rom_query_fom_velocity_unsteady.hpp"
+#include "rom/src/fom_query/rom_query_fom_velocity_steady.hpp"
+#include "rom/src/fom_query/rom_query_fom_apply_jacobian_unsteady.hpp"
+#include "rom/src/fom_query/rom_query_fom_apply_jacobian_steady.hpp"
+#include "rom/src/fom_query/rom_query_fom_apply_time_discrete_jacobian.hpp"
+#include "rom/src/fom_query/rom_query_fom_time_discrete_residual.hpp"
 
 //----------------
 // classes for fom state reconstructor

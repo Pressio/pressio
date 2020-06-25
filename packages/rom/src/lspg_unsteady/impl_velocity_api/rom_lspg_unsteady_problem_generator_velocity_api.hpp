@@ -79,23 +79,19 @@ public:
   using lspg_state_t		= typename lspg_problem_t::lspg_state_t;
   using decoder_t		= typename lspg_problem_t::decoder_t;
   using fom_state_reconstr_t	= typename lspg_problem_t::fom_state_reconstr_t;
-  using fom_states_data		= typename lspg_problem_t::fom_states_data;
+  using fom_states_manager_t		= typename lspg_problem_t::fom_states_manager_t;
   using ud_ops_t		= typename lspg_problem_t::ud_ops_t;
   using lspg_matrix_t		= typename lspg_problem_t::lspg_matrix_t;
-  using fom_eval_velo_policy_t	= typename lspg_problem_t::fom_eval_velocity_policy_t;
-  using fom_apply_jac_policy_t	= typename lspg_problem_t::fom_apply_jac_policy_t;
   using lspg_residual_policy_t	= typename lspg_problem_t::lspg_residual_policy_t;
   using lspg_jacobian_policy_t	= typename lspg_problem_t::lspg_jacobian_policy_t;
   using aux_stepper_t		= typename lspg_problem_t::aux_stepper_t;
   using lspg_stepper_t		= typename lspg_problem_t::lspg_stepper_t;
 
 private:
-  const fom_eval_velo_policy_t	veloQuerier_;
-  const fom_apply_jac_policy_t	applyJacobQuerier_;
   const fom_state_t		fomStateReference_;
   const fom_velocity_t		fomVelocityRef_;
   const fom_state_reconstr_t	fomStateReconstructor_;
-  fom_states_data		fomStates_;
+  fom_states_manager_t		fomStatesMngr_;
   lspg_matrix_t			jPhiMatrix_;
   lspg_residual_policy_t	residualPolicy_;
   lspg_jacobian_policy_t	jacobianPolicy_;
@@ -123,7 +119,6 @@ public:
   ProblemGeneratorVelocityApi() = delete;
   ~ProblemGeneratorVelocityApi() = default;
 
-
   /* specialize for:
    * - the fom_t is regular c++
    * - aux stepper is NOT needed (e.g. for BDF1)
@@ -146,26 +141,21 @@ public:
 			      const decoder_t & decoder,
 			      lspg_state_t	 & yROM,
 			      scalar_t	 t0)
-    : veloQuerier_{},
-      applyJacobQuerier_{},
-      fomStateReference_(fomStateReferenceNative),
-      fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+    : fomStateReference_(fomStateReferenceNative),
+      fomVelocityRef_(::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0)),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
-  					      fomStateReference_,
-  					      decoder.getReferenceToJacobian(),
-  					      t0)),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
+								decoder.getReferenceToJacobian(), t0)),
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
       // since the lspg residual is of same type and size of the fom velocity
       // (this is true w and w/o hyperreduction)
-      residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_),
-      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
+      residualPolicy_(fomVelocityRef_, fomStatesMngr_),
+      jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
       auxStepperObj_{},
       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
   {}
-
 
 
   /* specialize for:
@@ -191,26 +181,21 @@ public:
 			      lspg_state_t & yROM,
 			      scalar_t t0,
 			      const _ud_ops_t & udOps)
-    : veloQuerier_{},
-      applyJacobQuerier_{},
-      fomStateReference_(fomStateReferenceNative),
-      fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+    : fomStateReference_(fomStateReferenceNative),
+      fomVelocityRef_( ::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0) ),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
-  					      fomStateReference_,
-  					      decoder.getReferenceToJacobian(),
-  					      t0)),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
+								decoder.getReferenceToJacobian(), t0)),
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
       // since the lspg residual is of same type and size of the fom velocity
       // (this is true w and w/o hyperreduction)
-      residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_, udOps),
-      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder, udOps),
+      residualPolicy_(fomVelocityRef_, fomStatesMngr_, udOps),
+      jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder, udOps),
       auxStepperObj_{},
       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
   {}
-
 
 
   /* specialize for:
@@ -235,22 +220,18 @@ public:
 			      const decoder_t	 & decoder,
 			      lspg_state_t	 & yROM,
 			      scalar_t  t0)
-    : veloQuerier_{},
-      applyJacobQuerier_{},
-      fomStateReference_(fomStateReferenceNative),
-      fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+    : fomStateReference_(fomStateReferenceNative),
+      fomVelocityRef_( ::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0) ),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
-  					      fomStateReference_,
-  					      decoder.getReferenceToJacobian(),
-  					      t0)),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
+								decoder.getReferenceToJacobian(), t0)),
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
       // since the lspg residual is of same type and size of the fom velocity
       // (this is true w and w/o hyperreduction)
-      residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_),
-      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
+      residualPolicy_(fomVelocityRef_, fomStatesMngr_),
+      jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
       auxStepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_),
       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_, auxStepperObj_)
   {}
@@ -270,7 +251,7 @@ public:
       std::is_same< _fom_t, pybind11::object >::value and
       ::pressio::containers::meta::is_vector_wrapper_pybind<_lspg_state_t>::value and
       std::is_void<_aux_stepper_t>::value and
-      std::is_void<_ud_ops_t>::value, 
+      std::is_void<_ud_ops_t>::value,
       int > = 0
   >
   ProblemGeneratorVelocityApi(const _fom_t       & appObj,
@@ -278,18 +259,14 @@ public:
 			      const decoder_t    & decoder,
 			      typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & yROM,
 			      scalar_t       t0)
-    : veloQuerier_{},
-      applyJacobQuerier_{},
-      fomStateReference_(fomStateReferenceIn),
-      fomVelocityRef_( veloQuerier_.evaluate(appObj, fomStateReference_, t0) ),
+    : fomStateReference_(fomStateReferenceIn),
+      fomVelocityRef_( ::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0) ),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(applyJacobQuerier_.evaluate(appObj,
-					      fomStateReference_,
-					      decoder.getReferenceToJacobian(),
-					      t0)),
-      residualPolicy_(fomVelocityRef_, fomStates_, veloQuerier_),
-      jacobianPolicy_(fomStates_, applyJacobQuerier_, jPhiMatrix_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
+								decoder.getReferenceToJacobian(), t0)),
+      residualPolicy_(fomVelocityRef_, fomStatesMngr_),
+      jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
       stepperObj_(_lspg_state_t(yROM), appObj, residualPolicy_, jacobianPolicy_)
   {}
 #endif

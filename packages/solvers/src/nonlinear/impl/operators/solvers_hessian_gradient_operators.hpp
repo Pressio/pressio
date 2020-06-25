@@ -79,6 +79,13 @@ public:
   const h_t & getHessian() const { return H_; }
   const g_t & getGradient() const{ return g_; }
 
+  template< typename system_t, typename state_t>
+  void residualNorm(const system_t & system, const state_t & state,
+		    ::pressio::solvers::Norm normType, sc_t & residualNorm)
+  {
+    system.residualNorm(state, normType, residualNorm);
+  }
+
   template<typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::meta::system_meets_hessian_gradient_api<system_t>::value>
   computeOperators(const system_t & sys, const state_t & state,
@@ -100,6 +107,7 @@ public:
     ::pressio::ops::scale(g_, ::pressio::utils::constants<sc_t>::negOne());
   }
 };
+
 
 
 
@@ -143,17 +151,36 @@ public:
       int
      > = 0
   >
-  HessianGradientOperatorsRJApi(const system_t & system, const state_t & state, const ud_ops_t * udOps)
+  HessianGradientOperatorsRJApi(const system_t & system,
+				const state_t & state,
+				const _ud_ops_t & udOps)
     : r_(system.createResidualObject(state)),
       J_(system.createJacobianObject(state)),
       g_(state),
-      H_(udOps.template product<h_t>(pT, pnT, ::pressio::utils::constants<sc_t>::one(), *J_.data(), *J_.data())){}
+      H_(udOps.template product<h_t>(pT, pnT, utils::constants<sc_t>::one(), *J_.data(), *J_.data())),
+      udOps_(&udOps){}
 
 public:
   h_t & getHessian(){ return H_; }
   g_t & getGradient(){ return g_; }
   const h_t & getHessian() const { return H_; }
   const g_t & getGradient() const{ return g_; }
+
+  template< typename system_t, typename state_t>
+  mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
+  residualNorm(const system_t & system, const state_t & state,
+	       ::pressio::solvers::Norm normType, sc_t & residualNorm)
+  {
+    system.residual(state, r_, normType, residualNorm);
+  }
+
+  template< typename system_t, typename state_t>
+  mpl::enable_if_t<pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>
+  residualNorm(const system_t & system, const state_t & state,
+	       ::pressio::solvers::Norm normType, sc_t & residualNorm)
+  {
+    system.residualNorm(state, normType, residualNorm);
+  }
 
   template<typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
@@ -214,7 +241,10 @@ private:
     // scale because of sign convention
     ::pressio::ops::scale(g_, ::pressio::utils::constants<sc_t>::negOne());
   }
+
 };
+
+
 
 
 template <typename h_t, typename g_t, typename r_t, typename j_t, typename ud_ops_t = void>
@@ -273,6 +303,14 @@ public:
   sc_t getLMDampParam() const{ return dampParam_; }
 
 public:
+  template< typename system_t, typename state_t>
+  mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
+  residualNorm(const system_t & system, const state_t & state,
+	       ::pressio::solvers::Norm normType, sc_t & residualNorm)
+  {
+    HGOpRJApi_.residualNorm(system, state, normType, residualNorm);
+  }
+
   template<typename system_t, typename state_t>
   void computeOperators(const system_t & sys, const state_t & state,
 			::pressio::solvers::Norm normType, sc_t & residualNorm)

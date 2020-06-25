@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_tags.hpp
+// solvers_stop_when_gradient_norm_below_tol.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,54 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_TAGS_HPP_
-#define PRESSIO_SOLVERS_TAGS_HPP_
+#ifndef PRESSIO_SOLVERS_STOP_WHEN_GRADIENT_NORM_BELOW_TOL_HPP_
+#define PRESSIO_SOLVERS_STOP_WHEN_GRADIENT_NORM_BELOW_TOL_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-// tags
-struct GaussNewton{};
-struct GaussNewtonQR{};
+template<bool absolute, typename sc_t, typename T>
+class StopWhenGradientNormBelowTol
+  : public T,
+    public IterativeBase< StopWhenGradientNormBelowTol<absolute, sc_t, T>, sc_t >
+{
+  using this_t = StopWhenGradientNormBelowTol<absolute, sc_t, T>;
+  using iterative_base_t = IterativeBase<this_t, sc_t>;
+  using typename iterative_base_t::iteration_t;
 
-struct LevenbergMarquardt{};
-using LM = LevenbergMarquardt;
+public:
+  StopWhenGradientNormBelowTol() = delete;
 
-}}}
+  template <typename ...Args>
+  StopWhenGradientNormBelowTol(Args &&... args)
+    : T(std::forward<Args>(args)...){}
+
+  template<typename system_t, typename state_t>
+  void solve(const system_t & sys, state_t & state)
+  {
+
+    sc_t norm0 = {};
+    iteration_t iStep = 0;
+    while (++iStep <= iterative_base_t::maxIters_)
+    {
+      T::computeCorrection(sys, state);
+      T::updateState(sys, state);
+
+      const auto & g = T::getGradient();
+      const auto norm = ::pressio::ops::norm2(g);
+
+      if (iStep==1) norm0 = norm;
+
+      if (absolute){
+      	if (norm < iterative_base_t::tolerance_)
+      	  break;
+      }
+      else{
+      	if (norm/norm0 < iterative_base_t::tolerance_)
+      	  break;
+      }
+    }
+  }
+};
+
+}}}}
 #endif

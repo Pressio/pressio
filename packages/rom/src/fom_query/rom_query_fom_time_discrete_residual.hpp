@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_qr_corrector_impl.hpp
+// rom_query_fom_time_discrete_residual.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,54 +46,52 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_QR_CORRECTOR_IMPL_HPP_
-#define PRESSIO_SOLVERS_QR_CORRECTOR_IMPL_HPP_
+#ifndef ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
+#define ROM_QUERY_FOM_TIME_DISCRETE_RESIDUAL_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio{ namespace rom{
 
-template<
-  typename T, typename state_t, typename qr_solver_t, ::pressio::solvers::Norm normType
-  >
-class QRCorrector : public T
+template <typename fom_state_t, typename fom_t>
+auto queryFomTimeDiscreteResidual(const fom_state_t & fomCurrentState,
+				  const fom_t   & fomObj)
+  -> decltype(fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data()))
 {
-  using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
+  return fomObj.createTimeDiscreteResidualObject(*fomCurrentState.data());
+}
 
-  state_t correction_ = {};
-  qr_solver_t & solverObj_;
-  sc_t residualNorm_ = {};
+template <
+  typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
+  >
+void queryFomTimeDiscreteResidual(const fom_state_t & state_n,
+				  const fom_state_t & state_nm1,
+				  const fom_t   & fomObj,
+				  const time_t  & time,
+				  const time_t  & dt,
+				  const step_t  & step,
+				  result_t      & R)
+{
+  fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+				       *state_n.data(),
+				       *state_nm1.data());
+}
 
-public:
-  static constexpr auto normType_ = normType;
+template <
+  typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename result_t
+  >
+void queryFomTimeDiscreteResidual(const fom_state_t & state_n,
+				  const fom_state_t & state_nm1,
+				  const fom_state_t & state_nm2,
+				  const fom_t   & fomObj,
+				  const time_t  & time,
+				  const time_t  & dt,
+				  const step_t  & step,
+				  result_t      & R)
+{
+  fomObj.template timeDiscreteResidual(step, time, dt, *R.data(),
+				       *state_n.data(),
+				       *state_nm1.data(),
+				       *state_nm2.data());
+}
 
-  QRCorrector() = delete;
-
-  template <typename system_t, typename ...Args>
-  QRCorrector(const system_t & system, const state_t & state, qr_solver_t & solverObj)
-    : T(system, state), correction_(state), solverObj_(solverObj){}
-
-public:
-  template <typename system_t>
-  void computeCorrection(const system_t & sys, state_t & state)
-  {
-    T::computeOperators(sys, state, normType, residualNorm_);
-    auto & J = T::getJacobian();
-    auto & r = T::getResidual();
-    solverObj_.computeThin(J);
-    //solverObj_.applyQTranspose(r, QTResid);
-    // // compute correction: correction
-    // // by solving R correction = - Q^T Residual
-    // pressio::ops::scale( QTResid, utils::constants<sc_t>::negOne());
-    // solverObj_.solve(QTResid, correction);
-  }
-
-  const state_t & viewCorrection() const{ return correction_; }
-  const sc_t currentResidualNorm() const{ return residualNorm_; }
-
-  template< typename system_t>
-  void residualNorm(const system_t & system, const state_t & state, sc_t & result) const{
-    system.residualNorm(state, normType, result);
-  }
-};
-
-}}}}
+}} //end namespace pressio::rom
 #endif

@@ -79,14 +79,11 @@ struct is_legitimate_implicit_jacobian_policy
      jacobian_t,
      decltype
      (
-      std::declval<T const>().template operator()
-      <tag>(
-	    std::declval<state_t const &>(),
-	    std::declval<system_t const &>(),
-	    std::declval<scalar_t const &>(),
-	    std::declval<scalar_t const &>(),
-	    std::declval<::pressio::ode::types::step_t const &>()
-	    )
+      std::declval<T const>().operator()
+      (
+       std::declval<state_t const &>(),
+       std::declval<system_t const &>()
+       )
       )
      >::value
    and

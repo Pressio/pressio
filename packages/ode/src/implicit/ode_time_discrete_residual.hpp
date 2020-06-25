@@ -65,19 +65,17 @@ template <
   >
 mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value>
 time_discrete_residual(const state_type	& odeCurrentState,
-		       residual_type	& R,
+		       residual_type & R,
 		       const pre_states_type & prevStates,
-		       const scalar_type	& dt)
+		       const scalar_type & dt)
 {
   using nm1 = ode::nMinusOne;
-
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
   // R = y_n - y_n-1 - dt*f()
   ::pressio::ops::do_update(R, cf, odeCurrentState, cn, prevStates.get(nm1()), cnm1);
 }
-
 
 template <
   typename stepper_tag,
@@ -88,9 +86,9 @@ template <
   >
 mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value>
 time_discrete_residual(const state_type	& odeCurrentState,
-		       residual_type	& R,
+		       residual_type & R,
 		       const pre_states_type & prevStates,
-		       const scalar_type	& dt)
+		       const scalar_type & dt)
 {
   using nm1 = ode::nMinusOne;
   using nm2 = ode::nMinusTwo;
@@ -104,9 +102,9 @@ time_discrete_residual(const state_type	& odeCurrentState,
   // R contains already f(y_n,t_n) so we can just update R by doing
   // R = -dt*2/3*R + y_n -4/3*y_n-1 + 1/3*y_n-2
   ::pressio::ops::do_update(R, cf,
-					odeCurrentState, cn,
-					prevStates.get(nm1()), cnm1,
-					prevStates.get(nm2()), cnm2);
+			    odeCurrentState, cn,
+			    prevStates.get(nm1()), cnm1,
+			    prevStates.get(nm2()), cnm2);
 }
 
 }}}//end namespace pressio::ode::impl

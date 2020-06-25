@@ -88,12 +88,12 @@ You need to pass a valid stepper_tag from ::pressio::ode::explicitmethods");
   using decoder_t		= typename common_types_t::decoder_t;
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
-  using fom_states_data		= typename common_types_t::fom_states_data;
+  using fom_states_manager_t		= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= typename common_types_t::ud_ops_t;
 
   // policy for evaluating the ode velocity
   using residual_policy_t =
-    ::pressio::rom::galerkin::impl::ExplicitVelocityPolicy<fom_states_data, fom_velocity_t,
+    ::pressio::rom::galerkin::impl::ExplicitVelocityPolicy<fom_states_manager_t, fom_velocity_t,
 							   decoder_t, ud_ops_t>;
 
   // declare type of stepper object

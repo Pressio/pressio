@@ -56,7 +56,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace 
 */
 template<
   typename stepper_tag,
-  typename fom_states_cont_t,
+  typename fom_states_manager_t,
   typename state_type,
   typename scalar_type,
   typename ud_ops
@@ -68,13 +68,13 @@ template<
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
 >
-time_discrete_residual(const fom_states_cont_t & fomStates,
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    state_type & R,
 			    const scalar_type & dt,
 			    const ud_ops * udOps){
 
-  const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
-  const auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
+  const auto & fomStateAt_n   = fomStatesMngr.getCRefToCurrentFomState();
+  const auto & fomStateAt_nm1 = fomStatesMngr.getCRefToFomStatePrevStep();
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
   const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
@@ -89,7 +89,7 @@ time_discrete_residual(const fom_states_cont_t & fomStates,
 */
 template<
   typename stepper_tag,
-  typename fom_states_cont_t,
+  typename fom_states_manager_t,
   typename residual_type,
   typename scalar_type
 >
@@ -97,12 +97,12 @@ template<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
   ::pressio::containers::meta::is_vector_wrapper_pybind<residual_type>::value
 >
-time_discrete_residual(const fom_states_cont_t & fomStates,
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    residual_type & R,
 			    const scalar_type & dt)
 {
-  auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
-  auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
+  auto & fomStateAt_n   = fomStatesMngr.getCRefToCurrentFomState();
+  auto & fomStateAt_nm1 = fomStatesMngr.getCRefToFomStatePrevStep();
 
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
@@ -123,7 +123,7 @@ time_discrete_residual(const fom_states_cont_t & fomStates,
 // ----------------------------------------------------------------------
 template<
   typename stepper_tag,
-  typename fom_states_cont_t,
+  typename fom_states_manager_t,
   typename state_type,
   typename scalar_type
 >
@@ -135,12 +135,12 @@ template<
 #endif
    )
 >
-time_discrete_residual(const fom_states_cont_t & fomStates,
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    state_type & R,
 			    scalar_type dt){
 
-  const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
-  const auto & fomStateAt_nm1 = fomStates.getCRefToFomStatePrevStep();
+  const auto & fomStateAt_n   = fomStatesMngr.getCRefToCurrentFomState();
+  const auto & fomStateAt_nm1 = fomStatesMngr.getCRefToFomStatePrevStep();
 
   assert( R.extent(0) == fomStateAt_n.extent(0) );
   assert( fomStateAt_n.extent(0) == fomStateAt_nm1.extent(0) );
@@ -156,7 +156,7 @@ time_discrete_residual(const fom_states_cont_t & fomStates,
 
 template<
   typename stepper_tag,
-  typename fom_states_cont_t,
+  typename fom_states_manager_t,
   typename state_type,
   typename scalar_type
 >
@@ -168,13 +168,13 @@ template<
 #endif
      )
   >
-time_discrete_residual(const fom_states_cont_t & fomStates,
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    state_type		& R,
 			    const scalar_type	& dt){
 
-  const auto & fomStateAt_n   = fomStates.getCRefToCurrentFomState();
-  const auto & fomStateAt_nm1   = fomStates.getCRefToFomStatePrevStep();
-  const auto & fomStateAt_nm2   = fomStates.getCRefToFomStatePrevPrevStep();
+  const auto & fomStateAt_n   = fomStatesMngr.getCRefToCurrentFomState();
+  const auto & fomStateAt_nm1   = fomStatesMngr.getCRefToFomStatePrevStep();
+  const auto & fomStateAt_nm2   = fomStatesMngr.getCRefToFomStatePrevPrevStep();
 
   assert( R.extent(0) == fomStateAt_n.extent(0) );
   assert( fomStateAt_n.extent(0) == fomStateAt_nm1.extent(0) );
@@ -185,8 +185,8 @@ time_discrete_residual(const fom_states_cont_t & fomStates,
   constexpr auto cnm2 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_;
   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
-  auto & y_nm1 = fomStates.getCRefToFomStatePrevStep();
-  auto & y_nm2 = fomStates.getCRefToFomStatePrevPrevStep();
+  auto & y_nm1 = fomStatesMngr.getCRefToFomStatePrevStep();
+  auto & y_nm2 = fomStatesMngr.getCRefToFomStatePrevPrevStep();
   // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
   ::pressio::ops::do_update(R, cf, fomStateAt_n, cn, y_nm1, cnm1, y_nm2, cnm2);
 }
@@ -231,11 +231,11 @@ struct time_discrete_single_entry_epetra;
 
 template <>
 struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::Euler>{
-  template <typename T, typename fom_states_cont_t>
+  template <typename T, typename fom_states_manager_t>
     static void evaluate(const T& dt,
 			 T & R,
 			 int lid,
-			 const fom_states_cont_t & odeStates)
+			 const fom_states_manager_t & odeStates)
   {
     const auto & y_n   = odeStates.getCRefToCurrentFomState();
     const auto & y_nm1 = odeStates.getCRefToFomStatePrevStep();
@@ -249,11 +249,11 @@ struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::Euler>
 
 template <>
 struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::BDF2>{
-  template <typename T, typename fom_states_cont_t>
+  template <typename T, typename fom_states_manager_t>
     static void evaluate(const T& dt,
 			 T & R,
 			 int lid,
-			 const fom_states_cont_t & odeStates)
+			 const fom_states_manager_t & odeStates)
   {
     const auto & y_n   = odeStates.getCRefToCurrentFomState();
     const auto & y_nm1 = odeStates.getCRefToFomStatePrevStep();
@@ -270,20 +270,20 @@ struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::BDF2>{
 
 template<
   typename stepper_tag,
-  typename fom_states_cont_t,
+  typename fom_states_manager_t,
   typename state_type,
   typename scalar_type
 >
 ::pressio::mpl::enable_if_t<
   containers::meta::is_vector_wrapper_epetra<state_type>::value == true
 >
-time_discrete_residual(const fom_states_cont_t & fomStates,
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    state_type & R,
 			    scalar_type dt){
   // On input: R contains the application RHS, i.e. if
   // dudt = f(x,u,...), R contains f(...)
 
-  const auto & y_n   = fomStates.getCRefToCurrentFomState();
+  const auto & y_n   = fomStatesMngr.getCRefToCurrentFomState();
 
   // the integral type of the global indices
   using GO_t = typename containers::details::traits<state_type>::global_ordinal_t;
@@ -309,7 +309,7 @@ time_discrete_residual(const fom_states_cont_t & fomStates,
     time_discrete_single_entry_epetra<
       stepper_tag
       >::template evaluate<
-      scalar_type, fom_states_cont_t>(dt, R[i], lid, fomStates);
+      scalar_type, fom_states_manager_t>(dt, R[i], lid, fomStatesMngr);
   }
 }
 
@@ -407,7 +407,7 @@ time_discrete_residual_tpetra_impl(const state_type & currentState,
 
 template<
   typename stepper_tag,
-  typename fom_states_cont_t,
+  typename fom_states_manager_t,
   typename state_type,
   typename scalar_type
 >
@@ -415,7 +415,7 @@ template<
   containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
 >
-time_discrete_residual(const fom_states_cont_t & odeStates,
+time_discrete_residual(const fom_states_manager_t & odeStates,
 			    state_type & R,
 			    const scalar_type & dt){
 
@@ -427,7 +427,7 @@ time_discrete_residual(const fom_states_cont_t & odeStates,
 
 template<
   typename stepper_tag,
-  typename fom_states_cont_t,
+  typename fom_states_manager_t,
   typename state_type,
   typename scalar_type
 >
@@ -435,13 +435,13 @@ template<
   containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value
 >
-time_discrete_residual(const fom_states_cont_t & fomStates,
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    state_type & R,
 			    scalar_type dt){
 
-  const auto & y_n   = fomStates.getCRefToCurrentFomState();
-  const auto & y_nm1 = fomStates.getCRefToFomStatePrevStep();
-  const auto & y_nm2 = fomStates.getCRefToFomStatePrevPrevStep();
+  const auto & y_n   = fomStatesMngr.getCRefToCurrentFomState();
+  const auto & y_nm1 = fomStatesMngr.getCRefToFomStatePrevStep();
+  const auto & y_nm2 = fomStatesMngr.getCRefToFomStatePrevPrevStep();
 
   time_discrete_residual_tpetra_impl<stepper_tag>(*y_n.data(), *R.data(), dt,
 						     *y_nm1.data(),
@@ -454,7 +454,7 @@ time_discrete_residual(const fom_states_cont_t & fomStates,
 *************************************/
 template<
   typename stepper_tag,
-  typename fom_states_cont_t,
+  typename fom_states_manager_t,
   typename state_type,
   typename scalar_type
 >
@@ -462,12 +462,12 @@ template<
   containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
 >
-time_discrete_residual(const fom_states_cont_t & fomStates,
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    state_type & R,
 			    const scalar_type & dt)
 {
-  const auto & y_n   = fomStates.getCRefToCurrentFomState();
-  const auto & y_nm1 = fomStates.getCRefToFomStatePrevStep();
+  const auto & y_n   = fomStatesMngr.getCRefToCurrentFomState();
+  const auto & y_nm1 = fomStatesMngr.getCRefToFomStatePrevStep();
 
   auto yn_vv   = const_cast<state_type &>(y_n).data()->getVectorView();
   auto ynm0_vv = const_cast<state_type &>(y_nm1).data()->getVectorView();
@@ -478,7 +478,7 @@ time_discrete_residual(const fom_states_cont_t & fomStates,
 
 template<
   typename stepper_tag,
-  typename fom_states_cont_t,
+  typename fom_states_manager_t,
   typename state_type,
   typename scalar_type
 >
@@ -486,13 +486,13 @@ template<
   containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value
 >
-time_discrete_residual(const fom_states_cont_t & fomStates,
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    state_type & R,
 			    scalar_type dt){
 
-  const auto & y_n   = fomStates.getCRefToCurrentFomState();
-  const auto & y_nm1 = fomStates.getCRefToFomStatePrevStep();
-  const auto & y_nm2 = fomStates.getCRefToFomStatePrevPrevStep();
+  const auto & y_n   = fomStatesMngr.getCRefToCurrentFomState();
+  const auto & y_nm1 = fomStatesMngr.getCRefToFomStatePrevStep();
+  const auto & y_nm2 = fomStatesMngr.getCRefToFomStatePrevPrevStep();
 
   auto yn_vv   = const_cast<state_type &>(y_n).data()->getVectorView();
   auto ynm1_vv = const_cast<state_type &>(y_nm1).data()->getVectorView();

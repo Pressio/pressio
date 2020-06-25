@@ -51,11 +51,7 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
-template <
-  typename residual_type,
-  typename fom_states_data_type,
-  typename fom_querier_policy
-  >
+template <typename residual_type, typename fom_states_manager_t>
 class ResidualPolicyResidualApi
 {
 
@@ -67,11 +63,19 @@ public:
   ResidualPolicyResidualApi() = delete;
   ~ResidualPolicyResidualApi() = default;
 
-  ResidualPolicyResidualApi(fom_states_data_type & fomStatesIn,
-			    const fom_querier_policy & fomQuerier)
-    : fomQuerier_(fomQuerier), fomStates_(fomStatesIn){}
+  ResidualPolicyResidualApi(fom_states_manager_t & fomStatesMngr)
+    : fomStatesMngr_(fomStatesMngr){}
 
 public:
+  template <typename lspg_state_t, typename fom_t>
+  residual_t operator()(const lspg_state_t & romState, const fom_t & app) const
+  {
+    // this method only called once at the beginning
+    fomStatesMngr_.template reconstructCurrentFomState(romState);
+    residual_t R( ::pressio::rom::queryFomTimeDiscreteResidual(fomStatesMngr_.getCRefToCurrentFomState(), app) );
+    return R;
+  }
+
   template <
     typename lspg_state_t,
     typename lspg_prev_states_t,
@@ -84,21 +88,19 @@ public:
 		  const scalar_t			& time,
 		  const scalar_t			& dt,
 		  const ::pressio::ode::types::step_t	& step,
-		  residual_t				& romR) const
+		  residual_t				& romR,
+		  ::pressio::solvers::Norm		normKind,
+		  scalar_t				& normValue) const
   {
     this->compute_impl(romState, romPrevStates, app, time, dt, step, romR);
-  }
 
-  template <typename lspg_state_t, typename fom_t>
-  residual_t operator()(const lspg_state_t  & romState,
-			const fom_t	    & app) const
-  {
-    // this method only called once at the beginning
-    fomStates_.template reconstructCurrentFomState(romState);
-    residual_t R( fomQuerier_.evaluate(fomStates_.getCRefToCurrentFomState(), app) );
-    return R;
+    if (normKind == ::pressio::solvers::Norm::L2)
+      normValue = ::pressio::ops::norm2(romR);
+    else if (normKind == ::pressio::solvers::Norm::L1)
+      normValue = ::pressio::ops::norm1(romR);
+    else
+      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
   }
-
 
 private:
   template <typename lspg_state_t, typename lspg_prev_states_t>
@@ -111,14 +113,14 @@ private:
      * where the time step does not change but this residual method
      * is called multiple times.
      */
-    fomStates_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.reconstructCurrentFomState(romState);
 
     /* the previous FOM states should only be recomputed when the time step changes
      * we do not need to reconstruct all the FOM states, we just need to reconstruct
      * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
     if (storedStep_ != step){
-      fomStates_ << romPrevStates.get(ode::nMinusOne());
+      fomStatesMngr_ << romPrevStates.get(ode::nMinusOne());
       storedStep_ = step;
     }
   }
@@ -126,18 +128,18 @@ private:
   // we have here n = 1 prev rom states
   template <typename lspg_state_t, typename lspg_prev_states_t, typename fom_t, typename scalar_t>
   mpl::enable_if_t< lspg_prev_states_t::size()==1 >
-  compute_impl(const lspg_state_t		        & romState,
-		    const lspg_prev_states_t			& romPrevStates,
-		    const fom_t			        & app,
-		    const scalar_t		        & time,
-		    const scalar_t			& dt,
-		    const ::pressio::ode::types::step_t & step,
-		    residual_t			        & romR) const
+  compute_impl(const lspg_state_t & romState,
+	       const lspg_prev_states_t & romPrevStates,
+	       const fom_t  & app,
+	       const scalar_t & time,
+	       const scalar_t & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       residual_t & romR) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
-    const auto & yn   = fomStates_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    fomQuerier_.evaluate(yn, ynm1, app, time, dt, step, romR);
+    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    ::pressio::rom::queryFomTimeDiscreteResidual(yn, ynm1, app, time, dt, step, romR);
   }
 
   // we have here n = 2 prev rom states
@@ -153,10 +155,10 @@ private:
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
 
-    const auto & yn   = fomStates_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStates_.getCRefToFomStatePrevPrevStep();
-    fomQuerier_.evaluate(yn, ynm1, ynm2, app, time, dt, step, romR);
+    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevPrevStep();
+    ::pressio::rom::queryFomTimeDiscreteResidual(yn, ynm1, ynm2, app, time, dt, step, romR);
   }
 
 protected:
@@ -166,8 +168,7 @@ protected:
   // FOM states if we are not in a new time step.
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
-  const fom_querier_policy & fomQuerier_;
-  fom_states_data_type & fomStates_;
+  fom_states_manager_t & fomStatesMngr_;
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

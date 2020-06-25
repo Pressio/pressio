@@ -69,5 +69,23 @@ template<
   >
 using composeGaussNewton_t = typename composeGaussNewton<system_t, update, looper, Args...>::type;
 
+
+template<
+  typename system_t,
+  template<typename...> class update,
+  template<typename...> class looper,
+  typename ... Args
+  >
+using composeGaussNewtonQR = impl::compose<system_t, GaussNewtonQR, update, looper, void, Args...>;
+
+template<
+  typename system_t,
+  template<typename...> class update,
+  template<typename...> class looper,
+  typename ... Args
+  >
+using composeGaussNewtonQR_t = typename composeGaussNewtonQR<system_t, update, looper, Args...>::type;
+
+
 }}}
 #endif

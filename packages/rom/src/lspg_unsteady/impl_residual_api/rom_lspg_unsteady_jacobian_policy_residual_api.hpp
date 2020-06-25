@@ -52,9 +52,8 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template<
-  typename fom_states_data_type,
+  typename fom_states_manager_t,
   typename apply_jac_return_type,
-  typename fom_querier_policy,
   typename decoder_type
   >
 class JacobianPolicyResidualApi
@@ -68,18 +67,14 @@ public:
   JacobianPolicyResidualApi() = delete;
   ~JacobianPolicyResidualApi() = default;
 
-  JacobianPolicyResidualApi(fom_states_data_type & fomStates,
-			    const fom_querier_policy & fomQuerier,
+  JacobianPolicyResidualApi(fom_states_manager_t & fomStatesMngr,
 			    const decoder_type & decoder)
-    : fomQuerier_(fomQuerier), decoderObj_(decoder), fomStates_(fomStates){}
+    : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr){}
 
 public:
   template <
-    typename lspg_state_t,
-    typename lspg_prev_states_t,
-    typename lspg_jac_t,
-    typename fom_t,
-    typename scalar_t
+    typename lspg_state_t, typename lspg_prev_states_t, typename lspg_jac_t,
+    typename fom_t, typename scalar_t
   >
   void operator()(const lspg_state_t			& romState,
 		  const lspg_prev_states_t		& romPrevStates,
@@ -93,18 +88,17 @@ public:
   }
 
   template <typename lspg_state_t, typename fom_t>
-  apply_jac_return_t operator()(const lspg_state_t			& romState,
-				const fom_t				& app) const
+  apply_jac_return_t operator()(const lspg_state_t & romState,
+				const fom_t & app) const
   {
     // this is only called once
-    fomStates_.template reconstructCurrentFomState(romState);
+    fomStatesMngr_.template reconstructCurrentFomState(romState);
     const auto & phi = decoderObj_.getReferenceToJacobian();
-    apply_jac_return_t romJac(fomQuerier_.evaluate(fomStates_.getCRefToCurrentFomState(), app, phi));
+    apply_jac_return_t romJac(::pressio::rom::queryFomApplyTimeDiscreteJacobian(fomStatesMngr_.getCRefToCurrentFomState(), app, phi));
     return romJac;
   }
 
 private:
-
   // we have here n = 1 prev rom states
   template<
     typename lspg_state_t, typename lspg_prev_states_t, typename fom_t,
@@ -122,14 +116,13 @@ private:
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
-    fomStates_.template reconstructCurrentFomState(romState);
+    fomStatesMngr_.template reconstructCurrentFomState(romState);
 
     const auto & phi = decoderObj_.getReferenceToJacobian();
-    const auto & yn   = fomStates_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    fomQuerier_.evaluate(yn, ynm1, app, time, dt, step, phi, romJac);
+    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    ::pressio::rom::queryFomApplyTimeDiscreteJacobian(yn, ynm1, app, time, dt, step, phi, romJac);
   }
-
 
   // we have here n = 2 prev rom states
   template<
@@ -148,19 +141,18 @@ private:
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
-    fomStates_.template reconstructCurrentFomState(romState);
+    fomStatesMngr_.template reconstructCurrentFomState(romState);
 
     const auto & phi = decoderObj_.getReferenceToJacobian();
-    const auto & yn   = fomStates_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStates_.getCRefToFomStatePrevStep();
-    fomQuerier_.evaluate(yn, ynm1, ynm2, app, time, dt, step, phi, romJac);
+    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    ::pressio::rom::queryFomApplyTimeDiscreteJacobian(yn, ynm1, ynm2, app, time, dt, step, phi, romJac);
   }
 
 protected:
-  const fom_querier_policy & fomQuerier_;
-  const decoder_type & decoderObj_	= {};
-  fom_states_data_type & fomStates_;
+  const decoder_type & decoderObj_ = {};
+  fom_states_manager_t & fomStatesMngr_;
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

@@ -67,8 +67,6 @@ class ResidualStandardPolicyForArbitraryStepper<
   >
 {
 
-  using this_t = ResidualStandardPolicyForArbitraryStepper<state_type, system_type, residual_type>;
-
 public:
   ResidualStandardPolicyForArbitraryStepper() = default;
   ~ResidualStandardPolicyForArbitraryStepper() = default;
@@ -76,8 +74,8 @@ public:
 public:
 
   residual_type operator()(const state_type & odeCurrentState,
-  			   const system_type & model) const{
-
+  			   const system_type & model) const
+  {
     residual_type R(model.createTimeDiscreteResidualObject(*odeCurrentState.data()));
     return R;
   }
@@ -93,12 +91,15 @@ public:
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
-		  residual_type & R) const{
-
+		  residual_type & R,
+      ::pressio::solvers::Norm normKind,
+      scalar_type & normValue) const
+  {
     const auto & ynm1 = prevStates.get(ode::nMinusOne());
 
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
+          normKind, normValue,
 					*odeCurrentState.data(),
 					*ynm1.data());
   }
@@ -114,13 +115,16 @@ public:
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
-		  residual_type & R) const{
-
+		  residual_type & R,
+      ::pressio::solvers::Norm normKind,
+      scalar_type & normValue) const
+  {
     const auto & ynm1 = prevStates.get(ode::nMinusOne());
     const auto & ynm2 = prevStates.get(ode::nMinusTwo());
 
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
+          normKind, normValue,
 					*odeCurrentState.data(),
 					*ynm1.data(),
 					*ynm2.data());
@@ -137,14 +141,17 @@ public:
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t &  step,
-		  residual_type & R) const{
-
+		  residual_type & R,
+      ::pressio::solvers::Norm normKind,
+      scalar_type & normValue) const
+  {
     const auto & ynm1 = prevStates.get(ode::nMinusOne());
     const auto & ynm2 = prevStates.get(ode::nMinusTwo());
     const auto & ynm3 = prevStates.get(ode::nMinusThree());
 
     model.template timeDiscreteResidual(step, t, dt,
 					*R.data(),
+          normKind, normValue,
 					*odeCurrentState.data(),
 					*ynm1.data(),
 					*ynm2.data(),

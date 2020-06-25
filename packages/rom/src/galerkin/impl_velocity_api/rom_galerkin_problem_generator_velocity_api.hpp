@@ -76,7 +76,7 @@ public:
   using galerkin_native_state_t	= typename problem_t::galerkin_native_state_t;
   using decoder_t		= typename problem_t::decoder_t;
   using fom_state_reconstr_t	= typename problem_t::fom_state_reconstr_t;
-  using fom_states_data		= typename problem_t::fom_states_data;
+  using fom_states_manager_t		= typename problem_t::fom_states_manager_t;
   using ud_ops_t		= typename problem_t::ud_ops_t;
 
   using residual_policy_t	= typename problem_t::residual_policy_t;
@@ -86,7 +86,7 @@ private:
   fom_state_t			fomStateReference_;
   fom_state_reconstr_t		fomStateReconstructor_;
   fom_velocity_t		fomVelocityRef_;
-  fom_states_data		fomStates_;
+  fom_states_manager_t		fomStatesMngr_;
   residual_policy_t		residualPolicy_;
   stepper_t			stepperObj_;
 
@@ -124,8 +124,8 @@ public:
     : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( appObj.velocity(*fomStateReference_.data(), t0) ),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      residualPolicy_(fomVelocityRef_, fomStates_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
       stepperObj_(yROM, appObj, residualPolicy_)
   {}
 
@@ -151,8 +151,8 @@ public:
     : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
       fomVelocityRef_( appObj.velocity(*fomStateReference_.data(), t0) ),
-      fomStates_(fomStateReconstructor_, &udOps, fomStateReference_),
-      residualPolicy_(fomVelocityRef_, fomStates_, decoder, udOps),
+      fomStatesMngr_(fomStateReconstructor_, &udOps, fomStateReference_),
+      residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder, udOps),
       stepperObj_(yROM, appObj, residualPolicy_)
   {}
 
@@ -175,8 +175,8 @@ public:
     : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( appObj.attr("velocity")(*fomStateReference_.data(), t0) ),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
-      residualPolicy_(fomVelocityRef_, fomStates_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
       stepperObj_(galerkin_state_t(yROM), appObj, residualPolicy_)
   {}
 #endif

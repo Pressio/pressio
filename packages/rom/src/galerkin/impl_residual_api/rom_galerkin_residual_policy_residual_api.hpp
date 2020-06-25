@@ -55,14 +55,12 @@ template <
   typename rom_residual_type,
   typename fom_residual_type,
   typename decoder_type,
-  typename fom_states_data_type,
-  typename fom_querier_policy
+  typename fom_states_manager_t
   >
 class ResidualPolicyResidualApi
 {
-  using scalar_t = typename ::pressio::containers::details::traits<rom_residual_type>::scalar_t;
-
 public:
+  using scalar_t = typename ::pressio::containers::details::traits<rom_residual_type>::scalar_t;
   using residual_t = rom_residual_type;
 
 public:
@@ -70,16 +68,26 @@ public:
   ~ResidualPolicyResidualApi() = default;
 
   template< typename app_t>
-  ResidualPolicyResidualApi(fom_states_data_type & fomStatesIn,
-			    const fom_querier_policy & fomQuerier,
+  ResidualPolicyResidualApi(fom_states_manager_t & fomStatesMngr,
 			    const decoder_type & decoder,
 			    const app_t & appObj)
-    : fomQuerier_(fomQuerier),
-      fomStates_(fomStatesIn),
+    : fomStatesMngr_(fomStatesMngr),
       phi_(decoder.getReferenceToJacobian()),
-      fomR_(fomQuerier_.evaluate(fomStates_.getCRefToCurrentFomState(), appObj)){}
+      fomR_(::pressio::rom::queryFomTimeDiscreteResidual(fomStatesMngr_.getCRefToCurrentFomState(), appObj)){}
 
 public:
+  template <typename rom_state_t, typename fom_t>
+  residual_t operator()(const rom_state_t & romState, const fom_t & app) const
+  {
+    residual_t R(romState.extent(0));
+    fomStatesMngr_.reconstructCurrentFomState(romState);
+    fom_residual_type fomR(::pressio::rom::queryFomTimeDiscreteResidual(fomStatesMngr_.getCRefToCurrentFomState(), app));
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    ::pressio::ops::product(::pressio::transpose(), one, phi_, fomR, zero, R);
+    return R;
+  }
+
   template <typename rom_state_t, typename rom_prev_states_t, typename fom_t>
   void operator()(const rom_state_t & romState,
                   const rom_prev_states_t & romPrevStates,
@@ -87,22 +95,18 @@ public:
                   const scalar_t & time,
                   const scalar_t & dt,
                   const ::pressio::ode::types::step_t & step,
-                  residual_t & romR) const
+                  residual_t & romR,
+		  ::pressio::solvers::Norm normKind,
+		  scalar_t & normValue) const
   {
     this->compute_impl(romState, romPrevStates, app, time, dt, step, romR);
-  }
 
-  // this method only called once at the beginning
-  template <typename rom_state_t, typename fom_t>
-  residual_t operator()(const rom_state_t & romState, const fom_t & app) const
-  {
-    fomStates_.reconstructCurrentFomState(romState);
-    fom_residual_type fomR(fomQuerier_.evaluate(fomStates_.getCRefToCurrentFomState(), app));
-    residual_t R(romState.extent(0));
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::product(::pressio::transpose(), one, phi_, fomR, zero, R);
-    return R;
+    if (normKind == ::pressio::solvers::Norm::L2)
+      normValue = ::pressio::ops::norm2(romR);
+    else if (normKind == ::pressio::solvers::Norm::L1)
+      normValue = ::pressio::ops::norm1(romR);
+    else
+      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
   }
 
 private:
@@ -116,14 +120,14 @@ private:
      * where the time step does not change but this residual method
      * is called multiple times.
      */
-    fomStates_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.reconstructCurrentFomState(romState);
 
     /* the previous FOM states should only be recomputed when the time step changes
      * we do not need to reconstruct all the FOM states, we just need to reconstruct
      * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
     if (storedStep_ != step){
-      fomStates_ << romPrevStates.get(ode::nMinusOne());
+      fomStatesMngr_ << romPrevStates.get(ode::nMinusOne());
       storedStep_ = step;
     }
   }
@@ -140,9 +144,9 @@ private:
 		    residual_t			        & romR) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
-    const auto & yn   = fomStates_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    fomQuerier_.evaluate(yn, ynm1, app, time, dt, step, fomR_);
+    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    ::pressio::rom::queryFomTimeDiscreteResidual(yn, ynm1, app, time, dt, step, fomR_);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
@@ -162,10 +166,10 @@ private:
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
 
-    const auto & yn   = fomStates_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStates_.getCRefToFomStatePrevPrevStep();
-    fomQuerier_.evaluate(yn, ynm1, ynm2, app, time, dt, step, fomR_);
+    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevPrevStep();
+    ::pressio::rom::queryFomTimeDiscreteResidual(yn, ynm1, ynm2, app, time, dt, step, fomR_);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
@@ -173,7 +177,6 @@ private:
   }
 
 private:
-  const fom_querier_policy & fomQuerier_;
 
   // storedStep is used to keep track of which step we are doing.
   // This is used to decide whether we need to update/recompute the previous
@@ -181,7 +184,7 @@ private:
   // FOM states if we are not in a new time step.
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
-  fom_states_data_type & fomStates_;
+  fom_states_manager_t & fomStatesMngr_;
   const typename decoder_type::jacobian_type & phi_;
   mutable fom_residual_type fomR_;
 };

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_residual_standard_policy_pybind11.hpp
+// solvers_qr_corrector_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,73 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#ifndef ODE_POLICIES_STANDARD_IMPLICIT_RESIDUAL_STANDARD_POLICY_PYBIND11_HPP_
-#define ODE_POLICIES_STANDARD_IMPLICIT_RESIDUAL_STANDARD_POLICY_PYBIND11_HPP_
+#ifndef PRESSIO_SOLVERS_QR_CORRECTOR_IMPL_HPP_
+#define PRESSIO_SOLVERS_QR_CORRECTOR_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template<
-  typename state_type,
-  typename system_type,
-  typename residual_type
+  typename T, typename state_t, typename qr_solver_t, ::pressio::solvers::Norm normType
   >
-class ResidualStandardPolicyPybind11<
-  state_type, system_type, residual_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value and
-    ::pressio::ode::meta::is_legitimate_implicit_residual_type<residual_type>::value and
-    mpl::is_same<system_type, pybind11::object >::value and
-    containers::meta::is_array_pybind11<state_type>::value and
-    containers::meta::is_array_pybind11<residual_type>::value
-    >
-  >
+class QRCorrector : public T
 {
+  using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
-  using this_t = ResidualStandardPolicyPybind11<state_type, system_type, residual_type>;
+  state_t correction_ = {};
+  state_t QTResid_ = {};
+  state_t g_ = {};
+
+  qr_solver_t & solverObj_;
+  sc_t residualNorm_ = {};
 
 public:
-  ResidualStandardPolicyPybind11() = default;
-  ~ResidualStandardPolicyPybind11() = default;
+  static constexpr auto normType_ = normType;
+
+  QRCorrector() = delete;
+
+  template <typename system_t>
+  QRCorrector(const system_t & system, const state_t & state, qr_solver_t & solverObj)
+    : T(system, state), correction_(state), QTResid_(state), g_(state), solverObj_(solverObj){}
 
 public:
+  template <typename system_t>
+  void computeCorrection(const system_t & sys, state_t & state)
+  {
+    T::computeOperators(sys, state, normType, residualNorm_);
 
-  // TODO
+    auto & r = T::getResidual();
+    auto & J = T::getJacobian();
 
-};//end class
+    // J = QR
+    solverObj_.computeThin(J);
+    // compute RTResid_ = Q^T r
+    solverObj_.applyQTranspose(r, QTResid_);
+    // compute gradient = R^T Q^T r
+    solverObj_.applyRTranspose(QTResid_, g_);
 
-}}}}//end namespace pressio::ode::implicitmethods::policy
-#endif
+    // solve: R correction = Q^T Residual
+    solverObj_.solve(QTResid_, correction_);
+    // scale by -1 for sign convention
+    pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
+
+    std::cout << std::fixed
+    	      << std::setprecision(15)
+    	      << residualNorm_ << " "
+    	      << pressio::ops::norm2(g_) << " "
+    	      << pressio::ops::norm2(correction_)
+    	      << std::endl;
+  }
+
+  const state_t & getGradient() const{ return g_; }
+  const state_t & viewCorrection() const{ return correction_; }
+  const sc_t residualNormCurrentCorrectionStep() const{ return residualNorm_; }
+
+  template< typename system_t>
+  void residualNorm(const system_t & system, const state_t & state, sc_t & result){
+    T::residualNorm(system, state, normType, result);
+  }
+
+};
+
+}}}}
 #endif

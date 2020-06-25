@@ -86,6 +86,11 @@ private:
     myImpl_.template applyQTranspose<vector_in_t, vector_out_t>(vecIn, vecOut);
   }
 
+  template < typename vector_in_t, typename vector_out_t>
+  void applyRTransposeImpl(const vector_in_t & vecIn, vector_out_t & vecOut) const{
+    myImpl_.template applyRTranspose<vector_in_t, vector_out_t>(vecIn, vecOut);
+  }
+
   template <typename vector_t>
   void solveImpl(const vector_t & rhs, vector_t & y)const{
     myImpl_.template doLinSolve<vector_t>(rhs, y);

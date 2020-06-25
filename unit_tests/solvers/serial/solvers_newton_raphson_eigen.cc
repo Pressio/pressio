@@ -16,16 +16,16 @@ struct ValidSystem {
   using jacobian_type = matrix_w_t;
   using scalar_type = double;
 
-  void residual(const state_type& x, residual_type& res) const {
+  void residual(const state_type& x, residual_type& res,
+                pressio::solvers::Norm normKind, 
+                scalar_type & norm) const 
+  {
     res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
     res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-  }
-
-  residual_type residual(const state_type& x) const {
-    residual_type res(2);
-    res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
-    res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-    return res;
+    if (normKind == pressio::solvers::Norm::L2) 
+      norm = res.data()->norm();
+    else if (normKind == pressio::solvers::Norm::L1) 
+      norm = res.data()->lpNorm<1>();
   }
 
   void jacobian(const state_type& x, jacobian_type& jac) const {
@@ -35,7 +35,14 @@ struct ValidSystem {
     jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
   }
 
-  jacobian_type jacobian(const state_type& x) const {
+  residual_type createResidualObject(const state_type& x) const {
+    residual_type res(2);
+    res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
+    res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
+    return res;
+  }
+
+  jacobian_type createJacobianObject(const state_type& x) const {
     jacobian_type jac(2, 2);
     jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
     jac.data()->coeffRef(0, 1) =  1.0;

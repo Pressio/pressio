@@ -87,7 +87,7 @@ struct CommonTraits
   using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data: we only need to store one FOM state
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t, void>;
+  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, 1, fom_state_reconstr_t, void>;
 };
 
 }}}}//end  namespace pressio::rom::lspg::steady

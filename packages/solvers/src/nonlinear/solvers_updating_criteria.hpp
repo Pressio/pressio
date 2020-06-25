@@ -49,10 +49,10 @@
 #ifndef PRESSIO_SOLVERS_UPDATING_CRITERIA_HPP_
 #define PRESSIO_SOLVERS_UPDATING_CRITERIA_HPP_
 
-#include "./impl/update_mixin/solvers_default_updater.hpp"
-#include "./impl/update_mixin/solvers_armijo_updater.hpp"
-#include "./impl/update_mixin/solvers_lm_schedule1_updater.hpp"
-#include "./impl/update_mixin/solvers_lm_schedule2_updater.hpp"
+#include "./impl/update_mixins/solvers_default_updater.hpp"
+#include "./impl/update_mixins/solvers_armijo_updater.hpp"
+#include "./impl/update_mixins/solvers_lm_schedule1_updater.hpp"
+#include "./impl/update_mixins/solvers_lm_schedule2_updater.hpp"
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 

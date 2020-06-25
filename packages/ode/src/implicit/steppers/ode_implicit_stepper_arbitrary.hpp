@@ -74,12 +74,9 @@ class Stepper<
   >
 {
 
-  using this_t	       = Stepper<::pressio::ode::implicitmethods::Arbitrary,
-				  ode_state_type,
-				  ode_residual_type,
-				  ode_jacobian_type,
-				  system_type,
-				  Args...>;
+  using this_t = Stepper<::pressio::ode::implicitmethods::Arbitrary,
+			  ode_state_type, ode_residual_type, ode_jacobian_type, system_type,
+			  Args...>;
   using stepper_base_t = StepperBase<this_t>;
   friend stepper_base_t;
 
@@ -123,7 +120,7 @@ public:
     typename T2 = standard_jac_policy_t,
     ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, residual_pol_t>::value and
-      mpl::is_same<T2, jacobian_pol_t>::value, 
+      mpl::is_same<T2, jacobian_pol_t>::value,
       int > = 0
     >
   Stepper(const ode_state_type & stateIn0,
@@ -191,15 +188,14 @@ private:
   }
 
 private:
-  void residualImpl(const state_type & odeState, residual_type & R) const
+  void residualImpl(const state_type & odeState,
+		    residual_type & R,
+		    ::pressio::solvers::Norm normKind,
+		    scalar_t & normValue) const
   {
     this->residual_obj_(odeState, this->auxStates_, this->sys_.get(),
-			this->t_, this->dt_, this->step_, R);
-  }
-
-  residual_type residualImpl(const state_type & odeState) const
-  {
-    return this->residual_obj_.operator()(odeState, this->sys_.get());
+			this->t_, this->dt_, this->step_, R,
+			normKind, normValue);
   }
 
   void jacobianImpl(const state_type & odeState, jacobian_type & J) const
@@ -207,12 +203,6 @@ private:
     this->jacobian_obj_(odeState, this->auxStates_, this->sys_.get(),
 			this->t_, this->dt_, this->step_, J);
   }
-
-  jacobian_type jacobianImpl(const state_type & odeState) const
-  {
-    return this->jacobian_obj_.operator()(odeState, this->sys_.get());
-  }
-
 };//end class
 
 }}} // end namespace pressio::ode::implicitmethods

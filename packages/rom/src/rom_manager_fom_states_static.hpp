@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_static_container_fom_states.hpp
+// rom_manager_fom_states_static.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,16 @@
 //@HEADER
 */
 
-#ifndef ROM_STATIC_CONTAINER_FOM_STATES_HPP_
-#define ROM_STATIC_CONTAINER_FOM_STATES_HPP_
+#ifndef ROM_MANAGER_FOM_STATES_STATIC_HPP_
+#define ROM_MANAGER_FOM_STATES_STATIC_HPP_
 
 namespace pressio{ namespace rom{
 
-// template <
-//   typename fom_state_type,
-//   std::size_t n,
-//   typename reconstuctor_type,
-//   typename ud_ops_t,
-//   typename enable = void>
-// class FomStatesStaticContainer;
-
-
 template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename ud_ops_t>
-class FomStatesStaticContainer/*<fom_state_type, n, reconstuctor_type, ud_ops_t>*/
+class ManagerFomStatesStatic
 {
   static_assert( ::pressio::containers::meta::is_wrapper<fom_state_type>::value,
-		 "Currently, you can only create a FomStatesStaticContainer from types which have pressio wrappers.");
+		 "Currently, you can only create a ManagerFomStatesStatic from types which have pressio wrappers.");
 
   static_assert( n>=1,
 		 "You are trying to instantiate a state FomStatesContainer object with zero size.\
@@ -74,10 +65,10 @@ public:
   using data_type  = ::pressio::containers::StaticCollection<fom_state_type, n>;
   using value_type = fom_state_type;
 
-  FomStatesStaticContainer() = delete;
+  ManagerFomStatesStatic() = delete;
 
   template <typename ... Args>
-  FomStatesStaticContainer(const reconstuctor_type & fomStateReconstr,
+  ManagerFomStatesStatic(const reconstuctor_type & fomStateReconstr,
 			   Args && ... args)
     : fomStateReconstrObj_(fomStateReconstr),
       data_( std::forward<Args>(args)... ){
@@ -85,7 +76,7 @@ public:
   }
 
   template <typename ... Args>
-  FomStatesStaticContainer(const reconstuctor_type & fomStateReconstr,
+  ManagerFomStatesStatic(const reconstuctor_type & fomStateReconstr,
          const ud_ops_t * udOps,
          Args && ... args)
     : udOps_(udOps),
@@ -94,7 +85,7 @@ public:
     this->resetContainersToZero();
   }
 
-  ~FomStatesStaticContainer() = default;
+  ~ManagerFomStatesStatic() = default;
 
 public:
   static constexpr std::size_t size() {
@@ -173,7 +164,7 @@ public:
   }
 
   template <typename _ud_ops_t = ud_ops_t, typename rom_state_t, std::size_t _n = n >
-    ::pressio::mpl::enable_if_t< _n >= 3 and !std::is_void<_ud_ops_t>::value > 
+    ::pressio::mpl::enable_if_t< _n >= 3 and !std::is_void<_ud_ops_t>::value >
   operator << (const rom_state_t & romStateIn)
   {
     for (std::size_t i=n-2; i>=1; --i){

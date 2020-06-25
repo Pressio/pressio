@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_hessian_gradient_corrector_impl.hpp
+// solvers_nonlinear_tags.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,55 +46,16 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_HESSIAN_GRADIENT_CORRECTOR_IMPL_HPP_
-#define PRESSIO_SOLVERS_HESSIAN_GRADIENT_CORRECTOR_IMPL_HPP_
+#ifndef PRESSIO_SOLVERS_NONLINEAR_TAGS_HPP_
+#define PRESSIO_SOLVERS_NONLINEAR_TAGS_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio{ namespace solvers{ namespace nonlinear{
 
-template<
-  typename T, typename state_t, typename lin_solver_t, ::pressio::solvers::Norm normType
-  >
-class HessianGradientCorrector : public T
-{
-  using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
+struct GaussNewton{};
+struct GaussNewtonQR{};
 
-  state_t correction_ = {};
-  lin_solver_t & solverObj_;
-  sc_t residualNorm_ = {};
+struct LevenbergMarquardt{};
+using LM = LevenbergMarquardt;
 
-public:
-  static constexpr auto normType_ = normType;
-
-  HessianGradientCorrector() = delete;
-
-  template <typename system_t, typename ...Args>
-  HessianGradientCorrector(const system_t & system, const state_t & state, lin_solver_t & solverObj)
-    : T(system, state), correction_(state), solverObj_(solverObj){}
-
-public:
-  template <typename system_t>
-  void computeCorrection(const system_t & sys, state_t & state)
-  {
-    T::computeOperators(sys, state, normType, residualNorm_);
-    auto & H = T::getHessian();
-    auto & g = T::getGradient();
-    solverObj_.solve(H, g, correction_);
-    std::cout << std::fixed
-    	      << std::setprecision(15)
-    	      << residualNorm_ << " "
-    	      << pressio::ops::norm2(g) << " "
-    	      << pressio::ops::norm2(correction_)
-    	      << std::endl;
-  }
-
-  const state_t & viewCorrection() const{ return correction_; }
-  const sc_t currentResidualNorm() const{ return residualNorm_; }
-
-  template< typename system_t>
-  void residualNorm(const system_t & system, const state_t & state, sc_t & result) const{
-    system.residualNorm(state, normType, result);
-  }
-};
-
-}}}}
+}}}
 #endif

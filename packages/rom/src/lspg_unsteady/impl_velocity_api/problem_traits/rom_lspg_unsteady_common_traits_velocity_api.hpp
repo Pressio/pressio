@@ -146,7 +146,7 @@ struct LSPGUnsteadyCommonTraitsVelocityApi
   static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;
 
   // type of class holding the fom states
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;
+  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unstedy::impl

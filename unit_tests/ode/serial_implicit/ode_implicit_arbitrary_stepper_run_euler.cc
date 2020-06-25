@@ -92,9 +92,9 @@ public:
                             const scalar_type & time,
                             const scalar_type & dt,
                             residual_type & R,
-                            Args && ... states) const
+                            Args && ... args) const
   {
-    this->timeDiscreteResidualImpl( step, time, dt, R, std::forward<Args>(states)... );
+    this->timeDiscreteResidualImpl( step, time, dt, R, std::forward<Args>(args)... );
   }
 
   template <typename step_t, typename ... Args>
@@ -132,11 +132,18 @@ private:
 				const scalar_type & time,
 				const scalar_type & dt,
 				residual_type & R,
+        ::pressio::solvers::Norm normKind,
+        scalar_type & normValue,
 				const state_type & yn,
 				const state_type & ynm1) const
   {
     const auto f =  this->velocity(yn, time);
     R = yn - ynm1 - dt * f;
+
+    if (normKind==::pressio::solvers::Norm::L2)
+      normValue = R.norm();
+    if (normKind==::pressio::solvers::Norm::L1)
+      normValue = R.lpNorm<1>();
   }
 
   template <typename step_t, typename state_t>

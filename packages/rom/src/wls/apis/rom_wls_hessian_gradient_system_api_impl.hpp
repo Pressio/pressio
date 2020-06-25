@@ -183,11 +183,11 @@ public:
     return g;
   }
 
-  void computeHessianAndGradient(const state_type	      & wls_state,
-                                 hessian_type		      & hessian,
-                                 gradient_type		      & gradient,
-                                 const pressio::solvers::Norm & normType,
-                                 scalar_type		      & rnorm) const
+  void hessianAndGradient(const state_type	      & wls_state,
+			  hessian_type		      & hessian,
+			  gradient_type		      & gradient,
+			  const pressio::solvers::Norm & normType,
+			  scalar_type		      & rnorm) const
   {
     rnorm = pressio::utils::constants<scalar_type>::zero();
     hessianGradientPolicy_(
@@ -202,6 +202,13 @@ public:
 			   step_s_,
 			   rnorm);
   }//end computeHessianAndGradient
+
+  void residualNorm(const state_type	      & wls_state,
+		    const pressio::solvers::Norm & normType,
+		    scalar_type		      & rnorm) const
+  {
+   // missing
+  }
 
   // method to advance one window. We may want to put this into some type of window stepper class
   // if we want to have more complex stepping

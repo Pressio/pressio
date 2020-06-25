@@ -55,8 +55,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace 
 
 template <
   typename residual_type,
-  typename fom_states_cont_type,
-  typename fom_querier_policy,
+  typename fom_states_manager_t,
   typename ud_ops
   >
 class ResidualPolicyVelocityApi
@@ -82,11 +81,8 @@ public:
     ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value, int > = 0
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-			    fom_states_cont_type & fomStatesIn,
-			    const fom_querier_policy & fomQuerier)
-    : fomQuerier_(fomQuerier),
-      R_{RIn},
-      fomStates_(fomStatesIn)
+			    fom_states_manager_t & fomStatesMngr)
+    : R_{RIn}, fomStatesMngr_(fomStatesMngr)
   {}
 
   // 2. non-void ops
@@ -97,32 +93,16 @@ public:
       !std::is_void<_ud_ops>::value, int > = 0
     >
   ResidualPolicyVelocityApi(const _residual_type & RIn,
-			    fom_states_cont_type & fomStatesIn,
-			    const fom_querier_policy & fomQuerier,
+			    fom_states_manager_t & fomStatesMngr,
 			    const _ud_ops & udOps)
-    : fomQuerier_(fomQuerier),
-      R_{RIn},
-      fomStates_(fomStatesIn),
-      udOps_{&udOps}
+    : R_{RIn}, fomStatesMngr_(fomStatesMngr), udOps_{&udOps}
   {}
 
 public:
-  template <
-    typename stepper_tag,
-    typename lspg_state_t,
-    typename prev_states_t,
-    typename fom_t,
-    typename scalar_t
-  >
-  void operator()(const lspg_state_t		   & romState,
-  		  const prev_states_t		   & romPrevStates,
-  		  const fom_t			   & app,
-		  const scalar_t		   & t,
-		  const scalar_t		   & dt,
-		  const ::pressio::ode::types::step_t & step,
-		  residual_t			   & romR) const
+  template <typename lspg_state_t, typename fom_t>
+  residual_t operator()(const lspg_state_t & romState, const fom_t & app) const
   {
-    this->compute_impl<stepper_tag>(romState, romR, romPrevStates, app, t, dt, step);
+    return R_;
   }
 
   template <
@@ -131,16 +111,19 @@ public:
     typename prev_states_t,
     typename fom_t,
     typename scalar_t
-    >
-  residual_t operator()(const lspg_state_t		   & romState,
-			const prev_states_t		   & romPrevStates,
-			const fom_t			   & app,
-			const scalar_t			   & t,
-			const scalar_t			   & dt,
-			const ::pressio::ode::types::step_t & step) const
+  >
+  void operator()(const lspg_state_t & romState,
+  		  const prev_states_t & romPrevStates,
+  		  const fom_t & app,
+		  const scalar_t & t,
+		  const scalar_t & dt,
+		  const ::pressio::ode::types::step_t & step,
+		  residual_t & romR,
+		  ::pressio::solvers::Norm normKind,
+		  scalar_t & normValue) const
   {
-    this->compute_impl<stepper_tag>(romState, R_, romPrevStates, app, t, dt, step);
-    return R_;
+    this->compute_impl<stepper_tag>(romState, romR, romPrevStates, app,
+				    t, dt, step, normKind, normValue);
   }
 
 private:
@@ -151,11 +134,21 @@ private:
     typename _ud_ops = ud_ops
   >
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
-  time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
-				residual_t			& romR,
-				const scalar_t			& dt) const{
+  time_discrete_dispatcher(const fom_state_cont_type & fomStates,
+			   residual_t & romR,
+			   const scalar_t & dt,
+			   ::pressio::solvers::Norm normKind,
+			   scalar_t & normValue) const
+  {
     using namespace ::pressio::rom::lspg::unsteady::impl;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt);
+
+    if (normKind == ::pressio::solvers::Norm::L2)
+      normValue = ::pressio::ops::norm2(romR);
+    else if (normKind == ::pressio::solvers::Norm::L1)
+      normValue = ::pressio::ops::norm1(romR);
+    else
+      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
   }
 
   template <
@@ -165,11 +158,21 @@ private:
     typename _ud_ops = ud_ops
   >
   ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops>::value >
-  time_discrete_dispatcher(const fom_state_cont_type	& fomStates,
-  				residual_t			& romR,
-  				const scalar_t			& dt) const{
+  time_discrete_dispatcher(const fom_state_cont_type & fomStates,
+			   residual_t & romR,
+			   const scalar_t & dt,
+			   ::pressio::solvers::Norm normKind,
+			   scalar_t & normValue) const
+  {
     using namespace ::pressio::rom::lspg::unsteady::impl;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt, udOps_);
+
+    if (normKind == ::pressio::solvers::Norm::L2)
+      normValue = udOps_->norm2(*romR.data());
+    else if (normKind == ::pressio::solvers::Norm::L1)
+      normValue = udOps_->norm1(*romR.data());
+    else
+      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
   }
 
   template <
@@ -185,7 +188,9 @@ private:
 		    const fom_t			     & app,
 		    const scalar_t		     & t,
 		    const scalar_t		     & dt,
-		    const ::pressio::ode::types::step_t & step) const
+		    const ::pressio::ode::types::step_t & step,
+		    ::pressio::solvers::Norm normKind,
+		    scalar_t & normValue) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -197,35 +202,34 @@ private:
      * where the time step does not change but this residual method
      * is called multiple times.
      */
-    fomStates_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.reconstructCurrentFomState(romState);
 
     /* the previous FOM states should only be recomputed when the time step changes
      * we do not need to reconstruct all the FOM states, we just need to reconstruct
      * the state at the previous step (i.e. t-dt) which is stored in romPrevStates(0)
      */
     if (storedStep_ != step){
-      fomStates_ << romPrevStates.get(ode::nMinusOne());
+      fomStatesMngr_ << romPrevStates.get(ode::nMinusOne());
       storedStep_ = step;
     }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    fomQuerier_.evaluate(app, fomStates_.getCRefToCurrentFomState(), romR, t);
+    ::pressio::rom::queryFomVelocityUnsteady(app, fomStatesMngr_.getCRefToCurrentFomState(), romR, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
     timer->start("time discrete residual");
 #endif
 
-    this->time_discrete_dispatcher<stepper_tag>(fomStates_, romR, dt);
+    this->time_discrete_dispatcher<stepper_tag>(fomStatesMngr_, romR, dt, normKind, normValue);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");
     timer->stop("lspg residual");
 #endif
   }
-
 
 protected:
   // storedStep is used to keep track of which step we are doing.
@@ -234,9 +238,8 @@ protected:
   // FOM states if we are not in a new time step.
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
-  const fom_querier_policy & fomQuerier_;
   mutable residual_t R_ = {};
-  fom_states_cont_type & fomStates_;
+  fom_states_manager_t & fomStatesMngr_;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   // here we do this conditional type because it seems when ud_ops= pybind11::object

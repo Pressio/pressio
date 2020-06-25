@@ -59,24 +59,15 @@ int main(int argc, char *argv[]){
   using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
-
-  using nls_t = pressio::solvers::nonlinear::exp::composeGaussNewton<
+  // GaussNewton solver with normal equations
+  using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
     lspg_stepper_t,
-    pressio::solvers::nonlinear::exp::DefaultUpdate,
-    pressio::solvers::nonlinear::exp::IterateUntilCorrectionNormBelowTol,
-    linear_solver_t
-    >::type;
-
+    pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    linear_solver_t>;
   nls_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
-
-  // // GaussNewton solver
-  // // hessian comes up in GN solver, it is (J phi)^T (J phi)
-  // // rom is solved using eigen, hessian is wrapper of eigen matrix
-  // using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  // using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<lspg_stepper_t, linear_solver_t>;
-  // gnsolver_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);
-  // // I know this should converge in few iters every step
+  // I know this should converge in few iters every step
   solver.setMaxIterations(4);
 
   // integrate in time

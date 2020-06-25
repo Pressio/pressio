@@ -72,14 +72,10 @@ public:
 
   using decoder_t	= typename problem_t::decoder_t;
   using fom_reconstr_t	= typename problem_t::fom_state_reconstr_t;
-  using fom_states_data	= typename problem_t::fom_states_data;
+  using fom_states_manager_t	= typename problem_t::fom_states_manager_t;
   using ud_ops_t	= typename problem_t::ud_ops_t;
 
   using rom_state_t	= typename problem_t::rom_state_t;
-
-  using fom_r_querier_policy_t = typename problem_t::fom_residual_querier_policy_t;
-  using fom_apply_jac_policy_t = typename problem_t::fom_apply_jac_policy_t;
-
   using residual_policy_t = typename problem_t::residual_policy_t;
   using jacobian_policy_t = typename problem_t::jacobian_policy_t;
 
@@ -89,11 +85,9 @@ private:
   ::pressio::ode::types::step_t step0_;
   scalar_t t0_;
   scalar_t dt0_;
-  fom_r_querier_policy_t residualQuerier_;
-  fom_apply_jac_policy_t applyJacobQuerier_;
   fom_state_t fomStateReference_;
   fom_reconstr_t fomStateReconstructor_;
-  fom_states_data fomStates_;
+  fom_states_manager_t fomStatesMngr_;
 
   residual_policy_t residualPolicy_;
   jacobian_policy_t jacobianPolicy_;
@@ -119,14 +113,12 @@ public:
     : step0_{},
       t0_{t0},
       dt0_{},
-      residualQuerier_{},
-      applyJacobQuerier_{},
       fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomStates_(fomStateReconstructor_, fomStateReference_),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       // policies
-      residualPolicy_(fomStates_, residualQuerier_, decoder, appObj),
-      jacobianPolicy_(fomStates_, applyJacobQuerier_, decoder, appObj),
+      residualPolicy_(fomStatesMngr_, decoder, appObj),
+      jacobianPolicy_(fomStatesMngr_, decoder, appObj),
       // stepper
       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
   {}

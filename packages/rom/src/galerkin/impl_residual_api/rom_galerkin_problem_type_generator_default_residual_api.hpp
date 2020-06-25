@@ -83,17 +83,14 @@ struct DefaultProblemTypeGeneratorResidualApi
   using decoder_t		= typename common_types::decoder_t;
   using decoder_jac_t		= typename common_types::decoder_jac_t;
   using fom_state_reconstr_t	= typename common_types::fom_state_reconstr_t;
-  using fom_states_data		= typename common_types::fom_states_data;
+  using fom_states_manager_t		= typename common_types::fom_states_manager_t;
   using ud_ops_t		= typename common_types::ud_ops_t;
 
-  using fom_residual_querier_policy_t = ::pressio::rom::policy::QueryFomTimeDiscreteResidual;
-  using fom_apply_jac_policy_t	      = ::pressio::rom::policy::QueryFomApplyTimeDiscreteJacobian;
-
   using residual_policy_t	= ::pressio::rom::galerkin::impl::ResidualPolicyResidualApi<
-    rom_residual_t, fom_residual_t, decoder_t, fom_states_data, fom_residual_querier_policy_t>;
+    rom_residual_t, fom_residual_t, decoder_t, fom_states_manager_t>;
 
   using jacobian_policy_t	= ::pressio::rom::galerkin::impl::JacobianPolicyResidualApi<
-    rom_jacobian_t, fom_apply_jacobian_t, decoder_t, fom_states_data, fom_apply_jac_policy_t>;
+    rom_jacobian_t, fom_apply_jacobian_t, decoder_t, fom_states_manager_t>;
 
   using stepper_order_t  = typename common_types::order_setter;
   using tot_n_setter_t   = typename common_types::tot_n_setter;

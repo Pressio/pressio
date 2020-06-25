@@ -147,7 +147,7 @@ struct GalerkinCommonTypesVelocityApi
     typename FomStateReconHelper<ud_ops_t>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data
-  using fom_states_data = ::pressio::rom::FomStatesStaticContainer<fom_state_t, 1, fom_state_reconstr_t, ud_ops_t>;
+  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, 1, fom_state_reconstr_t, ud_ops_t>;
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl

@@ -130,7 +130,7 @@ public:
     typename T2 = standard_jac_policy_t,
     ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, residual_pol_t>::value and
-      mpl::is_same<T2, jacobian_pol_t>::value, 
+      mpl::is_same<T2, jacobian_pol_t>::value,
     int> = 0
     >
   Stepper(const ode_state_type & stateIn0,
@@ -192,7 +192,6 @@ private:
     }
   }
 
-
   // enable when auxiliary stepper is implicit too
   // overload for when we have a guesser callback
   template<typename solver_type, typename guess_callback_t>
@@ -234,18 +233,14 @@ private:
     }
   }
 
-  void residualImpl(const state_type & odeState, residual_type & R) const
+  void residualImpl(const state_type & odeState,
+		    residual_type & R,
+		    ::pressio::solvers::Norm normKind,
+		    scalar_t & normValue) const
   {
     this->residual_obj_.template operator()<
-      tag_name>(odeState, this->auxStates_,
-		this->sys_.get(), this->t_, this->dt_, this->step_, R);
-  }
-
-  residual_type residualImpl(const state_type & odeState) const
-  {
-    return this->residual_obj_.template operator()<
-      tag_name>(odeState, this->auxStates_,
-		this->sys_.get(), this->t_, this->dt_, this->step_);
+      tag_name>(odeState, this->auxStates_, this->sys_.get(), this->t_,
+		this->dt_, this->step_, R, normKind, normValue);
   }
 
   void jacobianImpl(const state_type & odeState, jacobian_type & J) const
@@ -253,13 +248,6 @@ private:
     this->jacobian_obj_.template operator()<
       tag_name
       >(odeState, this->sys_.get(), this->t_, this->dt_, this->step_, J);
-  }
-
-  jacobian_type jacobianImpl(const state_type & odeState) const
-  {
-    return this->jacobian_obj_.template operator()<
-      tag_name
-      >(odeState, this->sys_.get(), this->t_, this->dt_, this->step_);
   }
 
 };//end class

@@ -97,10 +97,7 @@ public:
     static_cast<derived_type &>(*this).template doStep<solver_type>(odeState, time, dt, step, solver);
   }
 
-  template<
-    typename solver_type,
-    typename guess_cb_t
-    >
+  template<typename solver_type, typename guess_cb_t>
   void operator()(state_t & odeState,
 		  const scalar_t & time,
 		  const scalar_t & dt,
@@ -108,24 +105,28 @@ public:
 		  solver_type & solver,
 		  guess_cb_t && guesserCb)
   {
-    static_cast<derived_type &>(*this).template doStep<solver_type, guess_cb_t>(odeState, time, dt, step,
-										solver, std::forward<guess_cb_t>(guesserCb));
+    static_cast<derived_type &>(*this).template doStep<
+      solver_type, guess_cb_t>(odeState, time, dt, step, solver, std::forward<guess_cb_t>(guesserCb));
   }
 
-  void residual(const state_t & odeState, residual_t & R) const{
-    static_cast<const derived_type &>(*this).residualImpl(odeState, R);
+  residual_t createResidualObject(const state_t & odeState) const
+  {
+    return this->residual_obj_.operator()(odeState, sys_.get());
   }
 
-  residual_t residual(const state_t & odeState) const{
-    return static_cast<const derived_type &>(*this).residualImpl(odeState);
+  jacobian_t createJacobianObject(const state_t & odeState) const
+  {
+    return this->jacobian_obj_.operator()(odeState, sys_.get());
+  }
+
+  void residual(const state_t & odeState, residual_t & R,
+		::pressio::solvers::Norm normKind, scalar_t & normValue) const
+  {
+    static_cast<const derived_type &>(*this).residualImpl(odeState, R, normKind, normValue);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const{
     static_cast<const derived_type &>(*this).jacobianImpl(odeState, J);
-  }
-
-  jacobian_t jacobian(const state_t & odeState) const{
-    return static_cast<const derived_type &>(*this).jacobianImpl(odeState);
   }
 
 protected:
@@ -168,9 +169,9 @@ private:
   StepperBase & operator=(StepperBase && other)  = delete;
 
   StepperBase(const state_t & stateIn0,
-		      const system_t & model,
-		      const residual_pol_t & resPolicyObj,
-		      const jacobian_pol_t & jacPolicyObj)
+	      const system_t & model,
+	      const residual_pol_t & resPolicyObj,
+	      const jacobian_pol_t & jacPolicyObj)
     : sys_{model},
       auxStates_{stateIn0},
       residual_obj_{resPolicyObj},
@@ -187,7 +188,7 @@ private:
       int> = 0
     >
   StepperBase(const state_t & stateIn0,
-  		      const system_t & model)
+	      const system_t & model)
     : sys_{model},
       auxStates_{stateIn0},
       residual_obj_{},
@@ -202,8 +203,8 @@ private:
     int> = 0
     >
   StepperBase(const state_t & stateIn0,
-  		      const system_t & model,
-  		      const residual_pol_t & resPolicyObj)
+	      const system_t & model,
+	      const residual_pol_t & resPolicyObj)
     : sys_{model},
       auxStates_{stateIn0},
       residual_obj_{resPolicyObj},

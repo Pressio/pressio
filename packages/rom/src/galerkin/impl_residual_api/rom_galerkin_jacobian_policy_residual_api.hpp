@@ -55,14 +55,12 @@ template<
   typename rom_jacobian_type,
   typename fom_apply_jacobian_ret_type,
   typename decoder_type,
-  typename fom_states_data_type,
-  typename fom_querier_policy
+  typename fom_states_manager_t
   >
 class JacobianPolicyResidualApi
 {
-  using scalar_t = typename ::pressio::containers::details::traits<rom_jacobian_type>::scalar_t;
-
 public:
+  using scalar_t = typename ::pressio::containers::details::traits<rom_jacobian_type>::scalar_t;
   using rom_jacobian_t = rom_jacobian_type;
 
 public:
@@ -70,17 +68,33 @@ public:
   ~JacobianPolicyResidualApi() = default;
 
   template< typename app_t>
-  JacobianPolicyResidualApi(fom_states_data_type & fomStates,
-			    const fom_querier_policy & fomQuerier,
+  JacobianPolicyResidualApi(fom_states_manager_t & fomStatesMngr,
 			    const decoder_type & decoder,
 			    const app_t & appObj)
-    : fomQuerier_(fomQuerier),
-      fomStates_(fomStates),
+    : fomStatesMngr_(fomStatesMngr),
       phi_(decoder.getReferenceToJacobian()),
-      fomApplyJac_(fomQuerier_.evaluate(fomStates_.getCRefToCurrentFomState(), appObj, phi_))
+      fomApplyJac_(::pressio::rom::queryFomApplyTimeDiscreteJacobian(fomStatesMngr_.getCRefToCurrentFomState(), appObj, phi_))
   {}
 
 public:
+  // this is only called once
+  template <typename rom_state_t, typename fom_t>
+  rom_jacobian_t operator()(const rom_state_t & romState,
+			    const fom_t	      & app) const
+  {
+    fomStatesMngr_.template reconstructCurrentFomState(romState);
+    fom_apply_jacobian_ret_type fomApplyJac(::pressio::rom::queryFomApplyTimeDiscreteJacobian(fomStatesMngr_.getCRefToCurrentFomState(), app, phi_));
+
+    const auto nRows = phi_.extent(1);
+    const auto nCols = phi_.extent(1);
+    rom_jacobian_t romJac(nRows, nCols);
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+                            one, phi_, fomApplyJac, zero, romJac);
+    return romJac;
+  }
+
   template <typename rom_state_t, typename rom_prev_states_t, typename fom_t>
   void operator()(const rom_state_t			& romState,
 		  const rom_prev_states_t		& romPrevStates,
@@ -91,24 +105,6 @@ public:
 		  rom_jacobian_t			& romJac) const
   {
     this->compute_impl(romState, romPrevStates, app, time, dt, step, romJac);
-  }
-
-  // this is only called once
-  template <typename rom_state_t, typename fom_t>
-  rom_jacobian_t operator()(const rom_state_t & romState,
-			    const fom_t	      & app) const
-  {
-    fomStates_.template reconstructCurrentFomState(romState);
-    fom_apply_jacobian_ret_type fomApplyJac(fomQuerier_.evaluate(fomStates_.getCRefToCurrentFomState(), app, phi_));
-
-    const auto nRows = phi_.extent(1);
-    const auto nCols = phi_.extent(1);
-    rom_jacobian_t romJac(nRows, nCols);
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-                            one, phi_, fomApplyJac, zero, romJac);
-    return romJac;
   }
 
 private:
@@ -128,11 +124,11 @@ private:
   {
     // here we assume that the previous states have already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
-    fomStates_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.reconstructCurrentFomState(romState);
 
-    const auto & yn   = fomStates_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    fomQuerier_.evaluate(yn, ynm1, app, time, dt, step, phi_, fomApplyJac_);
+    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    ::pressio::rom::queryFomApplyTimeDiscreteJacobian(yn, ynm1, app, time, dt, step, phi_, fomApplyJac_);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
@@ -157,12 +153,12 @@ private:
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
-    fomStates_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.reconstructCurrentFomState(romState);
 
-    const auto & yn   = fomStates_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStates_.getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStates_.getCRefToFomStatePrevStep();
-    fomQuerier_.evaluate(yn, ynm1, ynm2, app, time, dt, step, phi_, fomApplyJac_);
+    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    ::pressio::rom::queryFomApplyTimeDiscreteJacobian(yn, ynm1, ynm2, app, time, dt, step, phi_, fomApplyJac_);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
@@ -171,8 +167,7 @@ private:
   }
 
 private:
-  const fom_querier_policy & fomQuerier_;
-  fom_states_data_type & fomStates_;
+  fom_states_manager_t & fomStatesMngr_;
   const typename decoder_type::jacobian_type & phi_;
   mutable fom_apply_jacobian_ret_type fomApplyJac_;
 };

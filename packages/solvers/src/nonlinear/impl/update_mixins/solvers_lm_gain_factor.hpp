@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_stop_when_correction_norm_below_tol.hpp
+// solvers_lm_gain_factor.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,50 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_STOP_WHEN_CORRECTION_NORM_BELOW_TOL_HPP_
-#define PRESSIO_SOLVERS_STOP_WHEN_CORRECTION_NORM_BELOW_TOL_HPP_
+#ifndef PRESSIO_SOLVERS_LM_GAIN_FACTOR_HPP_
+#define PRESSIO_SOLVERS_LM_GAIN_FACTOR_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<typename sc_t, typename T>
-class ConvergedWhenCorrectionNormBelowTol
-  : public T,
-    public IterativeBase< ConvergedWhenCorrectionNormBelowTol<sc_t, T>, sc_t >
+template<typename scalar_t, typename state_t>
+class LMGainFactor
 {
-  using this_t = ConvergedWhenCorrectionNormBelowTol<sc_t, T>;
-  using iterative_base_t = IterativeBase<this_t, sc_t>;
-  using typename iterative_base_t::iteration_t;
+private:
+  state_t cDiagH_; // = h * diag(J^T J)
+  state_t trialState_;
 
 public:
-  ConvergedWhenCorrectionNormBelowTol() = delete;
+  LMGainFactor(const state_t & state) : cDiagH_(state), trialState_(state){}
 
-  template <typename ...Args>
-  ConvergedWhenCorrectionNormBelowTol(Args &&... args)
-    : T(std::forward<Args>(args)...){}
-
-  template<typename system_t, typename state_t>
-  void solve(const system_t & sys, state_t & state)
+  template<typename system_t, typename hess_grad_correc_t>
+  scalar_t compute(const system_t & system,
+		   state_t & state,
+		   const scalar_t & mu,
+		   hess_grad_correc_t & correctionObj)
   {
-    iteration_t iStep = 0;
-    while (++iStep <= iterative_base_t::maxIters_)
-    {
-      T::computeCorrection(sys, state);
-      T::updateState(sys, state);
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
 
-      const auto & correction = T::viewCorrection();
-      const auto correctionNorm = ::pressio::ops::norm2(correction);
-      if (correctionNorm < iterative_base_t::tolerance_)
-	break;
-    }
+    const auto & correction = correctionObj.viewCorrection();
+    const auto & g	    = correctionObj.getGradient();
+
+    //const auto HDiagV = T::getHessianDiagViewBeforeChange();
+    const auto & H = correctionObj.getHessianBeforeLMDiagonalScaling();
+
+    // denom
+    for (int i=0; i< H.extent(0); i++){ cDiagH_[i] = correction[i]*H(i,i); }
+    const auto den1 = ::pressio::ops::dot(correction, cDiagH_);
+    const auto den2 = ::pressio::ops::dot(correction, g);
+    auto denom = (one/two)*(mu*den1 + den2);
+
+    // numerator
+    auto norm = correctionObj.residualNormCurrentCorrectionStep();
+    auto r2Old = norm*norm;
+    ::pressio::ops::do_update(trialState_, state, one, correction, one);
+    correctionObj.residualNorm(system, trialState_, norm);
+
+    return (r2Old - norm*norm) / denom;
   }
 };
 

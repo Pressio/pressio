@@ -54,9 +54,8 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{ namespace impl{
 
 template<
-  typename fom_states_data_type,
+  typename fom_states_manager_t,
   typename apply_jac_return_type,
-  typename fom_querier_policy,
   typename decoder_type,
   typename ud_ops
   >
@@ -82,15 +81,10 @@ public:
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<std::is_void<_ud_ops>::value, int > =0
     >
-  JacobianPolicyVelocityApi(fom_states_data_type & fomStates,
-			    const fom_querier_policy & fomQuerier,
+  JacobianPolicyVelocityApi(fom_states_manager_t & fomStatesMngr,
 			    const _apply_jac_return_type & applyJacObj,
 			    const decoder_type & decoder)
-    : fomQuerier_(fomQuerier),
-      JJ_(applyJacObj),
-      fomStates_(fomStates),
-      decoderObj_(decoder){}
-
+    : JJ_(applyJacObj), fomStatesMngr_(fomStatesMngr),  decoderObj_(decoder){}
 
   // 2. non-void ops
   template <
@@ -98,19 +92,25 @@ public:
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value, int > =0
     >
-  JacobianPolicyVelocityApi(fom_states_data_type & fomStates,
-			    const fom_querier_policy & fomQuerier,
+  JacobianPolicyVelocityApi(fom_states_manager_t & fomStatesMngr,
 			    const _apply_jac_return_type & applyJacObj,
 			    const decoder_type & decoder,
 			    const _ud_ops & udOps)
-    : fomQuerier_(fomQuerier),
-      JJ_(applyJacObj),
-      fomStates_(fomStates),
+    : JJ_(applyJacObj),
+      fomStatesMngr_(fomStatesMngr),
       decoderObj_(decoder),
       udOps_{&udOps}
   {}
 
 public:
+
+  template <typename lspg_state_t, typename app_t>
+  apply_jac_return_t operator()(const lspg_state_t & romState,
+				const app_t & app) const
+  {
+    return JJ_;
+  }
+
   template <
     typename stepper_tag,
     typename lspg_state_t, typename lspg_jac_t, typename app_t, typename scalar_t
@@ -124,21 +124,6 @@ public:
   {
     this->compute_impl<stepper_tag>(romState, romJac, app, time, dt, step);
   }
-
-  template <
-    typename stepper_tag,
-    typename lspg_state_t, typename app_t, typename scalar_t
-    >
-  apply_jac_return_t operator()(const lspg_state_t & romState,
-				const app_t	   & app,
-				const scalar_t     & time,
-				const scalar_t     & dt,
-				const ::pressio::ode::types::step_t & step) const
-  {
-    this->compute_impl<stepper_tag>(romState, JJ_, app, time, dt, step);
-    return JJ_;
-  }
-
 
 private:
   template <
@@ -194,13 +179,14 @@ private:
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
-    // fomStates_.reconstructCurrentFomState(romState);
+    // fomStatesMngr_.reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
 #endif
     const auto & basis = decoderObj_.getReferenceToJacobian();
-    fomQuerier_.evaluate(app, fomStates_.getCRefToCurrentFomState(), basis, romJac, t);
+    ::pressio::rom::queryFomApplyJacobianUnsteady(app, fomStatesMngr_.getCRefToCurrentFomState(),
+						  basis, romJac, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");
@@ -217,9 +203,8 @@ private:
 
 
 protected:
-  const fom_querier_policy & fomQuerier_;
   mutable apply_jac_return_t JJ_ = {};
-  fom_states_data_type & fomStates_;
+  fom_states_manager_t & fomStatesMngr_;
   const decoder_type & decoderObj_ = {};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
