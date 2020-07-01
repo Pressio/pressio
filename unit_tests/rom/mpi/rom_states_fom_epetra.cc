@@ -17,7 +17,7 @@ using fom_state_w_t = containers::Vector<Epetra_Vector>;
 using decoder_t		= rom::LinearDecoder<matrix_w_t, rom_state_t, fom_state_w_t>;
 
 using fom_state_rec_t	= rom::FomStateReconstructor<double, fom_state_w_t,decoder_t>;
-using fom_states	= rom::FomStatesStaticContainer<fom_state_w_t, 1, fom_state_rec_t, void>;
+using fom_states	= rom::ManagerFomStatesStatic<fom_state_w_t, 1, fom_state_rec_t, void>;
 
 struct mytest
 {

@@ -10,3 +10,10 @@ set(SRC1
   ${CMAKE_CURRENT_SOURCE_DIR}/ops_matrix_dense_serial_eigen_class.cc
   )
 add_serial_utest(ops_serial "${SRC1}")
+
+if(PRESSIO_ENABLE_TPL_TRILINOS)
+set(SRC2
+  ${CMAKE_CURRENT_SOURCE_DIR}/ops_teuchos_matrix_eigen_vector_product.cc
+  )
+add_serial_utest(ops_serial_2 "${SRC2}")
+endif()

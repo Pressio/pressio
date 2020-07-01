@@ -90,6 +90,12 @@ public:
     return *this->Qmat_;
   }
 
+  template < typename vector_in_t, typename vector_out_t>
+  void applyRTranspose(const vector_in_t & vecIn, vector_out_t & y) const
+  {
+    myImpl_.applyRTranspose(vecIn, y);
+  }
+
   void computeThinOutOfPlace(matrix_t & A){
     auto rows = A.extent(0);
     auto cols = A.numVectors();

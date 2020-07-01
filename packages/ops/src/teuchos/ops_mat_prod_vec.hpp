@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_line_search_tags.hpp
+// ops_mat_prod_vec.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,76 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINE_SEARCH_TAGS_HPP_
-#define SOLVERS_LINE_SEARCH_TAGS_HPP_
 
-namespace pressio{ namespace solvers{ namespace iterative{ namespace gn{
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#ifndef OPS_CONTAINER_OPS_TEUCHOS_MAT_PROD_VECTOR_HPP_
+#define OPS_CONTAINER_OPS_TEUCHOS_MAT_PROD_VECTOR_HPP_
 
-/* if you add more here, rememeber to change also the metafunction:
- * is_non_default_line_search_tag inside meta
- */
+namespace pressio{ namespace ops{
 
-struct noLineSearch{};
-struct ArmijoLineSearch{};
+/*
+ * y = beta * y + alpha*op(A)*x
+ *
+*/
 
-}}}}//end namespace pressio::solvers::iterative::gn
+//-------------------------------
+// specialize for op(A) = A
+//-------------------------------
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_dense_matrix_teuchos<A_type>::value and
+  containers::meta::is_vector_wrapper_eigen<x_type>::value and
+  containers::meta::is_vector_wrapper_eigen<y_type>::value
+  >
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
+{
+
+  assert( y.extent(0) == A.numRows() );
+  assert( x.extent(0) == A.numCols() );
+
+  using ord_t = typename A_type::ordinalType;
+  for (ord_t i=0;i<A.numRows(); ++i){
+    y(i) = {};
+    for (ord_t j=0; j<A.numCols(); ++j){
+      y(i) += A(i,j)*x(j);
+    }
+  }
+}
+
+//-------------------------------
+// specialize for op(A) = A^T
+//-------------------------------
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  containers::meta::is_dense_matrix_teuchos<A_type>::value and
+  containers::meta::is_vector_wrapper_eigen<x_type>::value and
+  containers::meta::is_vector_wrapper_eigen<y_type>::value
+  >
+product(::pressio::transpose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
+{
+
+  assert( y.extent(0) == A.numCols() );
+  assert( x.extent(0) == A.numRows() );
+
+  using ord_t = typename A_type::ordinalType;
+  for (ord_t j=0; j<A.numCols(); ++j){
+    y(j) = {};
+    for (ord_t i=0;i<A.numRows(); ++i){
+      y(j) += A(i,j)*x(i);
+    }
+  }
+}
+
+}}//end namespace pressio::ops
+#endif
 #endif

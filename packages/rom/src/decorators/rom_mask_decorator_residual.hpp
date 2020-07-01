@@ -76,6 +76,20 @@ public:
   ~Masked() = default;
 
 public:
+  template <typename ode_state_t, typename app_t>
+  residual_t operator()(const ode_state_t   & odeState,
+			const app_t	    & app) const
+  {
+    auto R1 = maskable::operator()(odeState, app);
+
+    if (!maskedR_){
+      maskedR_ = std::make_shared<residual_t>( app.applyMask(*R1.data(), 0.0) );
+    }
+    else
+      app.applyMask(*R1.data(), *maskedR_->data(), 0.);
+
+    return *maskedR_;
+  }
 
   template <
     typename stepper_tag,
@@ -91,40 +105,14 @@ public:
 		  const scalar_t      & t,
 		  const scalar_t      & dt,
 		  const ::pressio::ode::types::step_t & step,
-		  ode_res_t	      & R) const
+		  ode_res_t	      & R,
+		  ::pressio::solvers::Norm normKind,
+		  scalar_t & normValue) const
   {
     maskable::template operator()<
-      stepper_tag>(odeY, prevStates, app, t, dt, step, R_);
+      stepper_tag>(odeY, prevStates, app, t, dt, step, R_, normKind, normValue);
 
-    app.applyMask(*R_.data(), *R.data(), t);
-  }
-
-
-  template <
-    typename stepper_tag,
-    typename ode_state_t,
-    typename prev_states_t,
-    typename app_t,
-    typename scalar_t
-    >
-  residual_t operator()(const ode_state_t   & odeY,
-			const prev_states_t & prevStates,
-			const app_t	    & app,
-			const scalar_t	    & t,
-			const scalar_t	    & dt,
-			const ::pressio::ode::types::step_t & step) const
-  {
-    auto R1 = maskable::template operator()<
-      stepper_tag>(odeY, prevStates, app, t, dt, step);
-
-    if (!maskedR_){
-      maskedR_ = std::make_shared
-	<residual_t>( app.applyMask(*R1.data(), t) );
-    }
-    else
-      app.applyMask(*R1.data(), *maskedR_->data(), t);
-
-    return *maskedR_;
+    app.applyMask(*R_.data(), *R.data(), t);//, normKind, normValue);
   }
 
 };//end class

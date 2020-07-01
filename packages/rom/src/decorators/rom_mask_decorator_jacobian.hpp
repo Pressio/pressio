@@ -74,6 +74,18 @@ public:
   ~Masked() = default;
 
 public:
+  template <typename ode_state_t, typename app_t>
+  apply_jac_return_t operator()(const ode_state_t & odeY, const app_t & app) const
+  {
+    JJ_ = maskable::operator()(odeY, app);
+    if (!maskedJJ_){
+      maskedJJ_ = std::make_shared<apply_jac_return_t>( app.applyMask(*JJ_.data(), 0.) );
+    }
+    else
+      app.applyMask(*JJ_.data(), *maskedJJ_->data(), 0.);
+
+    return *maskedJJ_;
+  }
 
   template <
     typename stepper_tag,
@@ -92,29 +104,6 @@ public:
     maskable::template operator()<stepper_tag>(odeY, app, t, dt, step, JJ_);
     app.applyMask(*JJ_.data(), *odeJJ.data(), t);
   }
-
-  template <
-    typename stepper_tag,
-    typename ode_state_t,
-    typename app_t,
-    typename scalar_t
-    >
-  apply_jac_return_t operator()(const ode_state_t & odeY,
-				const app_t & app,
-				const scalar_t & t,
-				const scalar_t & dt,
-				const ::pressio::ode::types::step_t & step) const
-  {
-    maskable::template operator()<stepper_tag>(odeY, app, t, dt, step, JJ_);
-    if (!maskedJJ_){
-      maskedJJ_ = std::make_shared<apply_jac_return_t>( app.applyMask(*JJ_.data(), t) );
-    }
-    else
-      app.applyMask(*JJ_.data(), *maskedJJ_->data(), t);
-
-    return *maskedJJ_;
-  }
-
 
 };//end class
 

@@ -107,10 +107,18 @@ public:
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
+  template < typename vector_in_t, typename vector_out_t>
+  void applyRTranspose(const vector_in_t & vecIn, vector_out_t & y) const
+  {
+    constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
+    ::pressio::ops::product(::pressio::transpose(), alpha, *this->localR_, vecIn, beta, y);
+  }
+
   // if R_type != wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t>
   ::pressio::mpl::enable_if_t<
-    !containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value, 
+    !containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
     const T &
   >
   getCRefRFactor() const {
@@ -121,8 +129,8 @@ public:
   // if R_type == wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t>
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value, 
-    const T & 
+    containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
+    const T &
   >
   getCRefRFactor() const {
     this->Rmat_ = std::make_shared<T>(*this->localR_, Teuchos::View);

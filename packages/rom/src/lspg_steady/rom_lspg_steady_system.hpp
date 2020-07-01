@@ -107,16 +107,6 @@ public:
       J_( jacobianEvaluator_(yROM, app_) ){}
 
 public:
-  //::pressio::solvers::Norm normKind, scalar_t & normValue) const
-  void residual(const lspg_state_type & romState, lspg_residual_type & R) const
-  {
-    (this->residualEvaluator_).template operator()(romState, R, app_);
-  }
-
-  void jacobian(const lspg_state_type & romState, lspg_jacobian_type & J) const
-  {
-    (this->jacobianEvaluator_).template operator()(romState, J, app_);
-  }
 
   lspg_residual_type createResidualObject(const lspg_state_type & romState) const
   {
@@ -128,21 +118,36 @@ public:
     return (this->jacobianEvaluator_).template operator()(romState, app_);
   }
 
-  // scalar_type operator()(const state_type & romState) const
-  // {
-  //   this->residual(romState, R_);
-  //   const auto norm    = pressio::ops::norm2(R_);
-  //   return norm*norm;
-  // }
+  void residual(const lspg_state_type & romState,
+		lspg_residual_type & R,
+		::pressio::solvers::Norm normKind,
+		scalar_type & nrmValue) const
+  {
+    (this->residualEvaluator_).template operator()(romState, R, app_, normKind, nrmValue);
+  }
 
-  // void gradient( const state_type & romState, state_type & g) const
-  // {
-  //   this->residual(romState, R_);
-  //   this->jacobian(romState, J_);
-  //   constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
-  //   constexpr auto alpha = ::pressio::utils::constants<scalar_type>::two();
-  //   ::pressio::ops::product(::pressio::transpose(), alpha, J_, R_, beta, g);
-  // }
+  void jacobian(const lspg_state_type & romState, lspg_jacobian_type & J) const
+  {
+    (this->jacobianEvaluator_).template operator()(romState, J, app_);
+  }
+
+  // the following are needed to interface with the optimizers
+  scalar_type operator()(const state_type & romState) const
+  {
+    scalar_type normR = {};
+    this->residual(romState, R_, ::pressio::solvers::Norm::L2, normR);
+    return normR*normR;
+  }
+
+  void gradient( const state_type & romState, state_type & g) const
+  {
+    scalar_type normR = {};
+    this->residual(romState, R_, ::pressio::solvers::Norm::L2, normR);
+    this->jacobian(romState, J_);
+    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<scalar_type>::two();
+    ::pressio::ops::product(::pressio::transpose(), alpha, J_, R_, beta, g);
+  }
 };//end class
 
 }}}} // end namespace pressio::ode::lspg::steady

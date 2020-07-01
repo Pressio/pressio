@@ -64,7 +64,7 @@ class Preconditioned<
 {
 
   using typename preconditionable::residual_t;
-  using preconditionable::fomStates_;
+  using preconditionable::fomStatesMngr_;
 
 public:
   Preconditioned() = delete;
@@ -84,6 +84,17 @@ public:
   //-------------------------------
   // for unsteady LSPG
   //-------------------------------
+  template <typename ode_state_t, typename app_t>
+  residual_t operator()(const ode_state_t   & odeState,
+			const app_t	    & app) const
+  {
+    auto result = preconditionable::operator()(odeState, app);
+
+    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
+    app.applyPreconditioner(*yFom.data(), *result.data(), 0.);
+    return result;
+  }
+
   template <
     typename stepper_tag,
     typename lspg_res_t,
@@ -98,54 +109,33 @@ public:
 		  const scalar_t	& t,
 		  const scalar_t	& dt,
 		  const ::pressio::ode::types::step_t & step,
-		  lspg_res_t		& R) const
+		  lspg_res_t		& R,
+		  ::pressio::solvers::Norm normKind,
+		  scalar_t & normValue) const
   {
     preconditionable::template operator()<
-      stepper_tag>(odeState, prevStates, app, t, dt, step, R);
+      stepper_tag>(odeState, prevStates, app, t, dt, step, R, normKind, normValue);
 
-    const auto & yFom = fomStates_.getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *R.data(), t);
   }
-
-  template <
-    typename stepper_tag,
-    typename ode_state_t,
-    typename prev_states_t,
-    typename app_t,
-    typename scalar_t
-  >
-  residual_t operator()(const ode_state_t   & odeState,
-			const prev_states_t & prevStates,
-			const app_t	    & app,
-			const scalar_t	    & time,
-			const scalar_t	    & dt,
-			const ::pressio::ode::types::step_t & step) const
-  {
-    auto result = preconditionable::template operator()<
-      stepper_tag>(odeState, prevStates, app, time, dt, step);
-
-    const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *result.data(), time);
-    return result;
-  }
-
 
   //-------------------------------
   // for steady LSPG
   //-------------------------------
-  template <
-      typename lspg_state_t,
-      typename fom_t>
-  residual_t operator()(const lspg_state_t  & odeState,
-			const fom_t	    & app) const
-  {
-    auto result = preconditionable::template operator()
-      <lspg_state_t, fom_t>(odeState, app);
+  // template <
+  //     typename lspg_state_t,
+  //     typename fom_t>
+  // residual_t operator()(const lspg_state_t  & odeState,
+  // 			const fom_t	    & app) const
+  // {
+  //   auto result = preconditionable::template operator()
+  //     <lspg_state_t, fom_t>(odeState, app);
 
-    const auto & yFom = fomStates_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *result.data());
-    return result;
-  }
+  //   const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
+  //   app.applyPreconditioner(*yFom.data(), *result.data());
+  //   return result;
+  // }
 
   template <
       typename lspg_state_t,
@@ -158,7 +148,7 @@ public:
     preconditionable::template operator()
       <lspg_state_t, lspg_residual_t, fom_t>(odeState, romR, app);
 
-    const auto & yFom = fomStates_.getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *romR.data());
   }
 

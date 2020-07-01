@@ -83,7 +83,7 @@ public:
 
     auto & H = T::getHessian();
     auto & g = T::getGradient();
-    solverObj_.solve(H, g, correction_);
+    solverObj_.solveAllowMatOverwrite(H, g, correction_);
 
     std::cout << std::fixed
     	      << std::setprecision(15)

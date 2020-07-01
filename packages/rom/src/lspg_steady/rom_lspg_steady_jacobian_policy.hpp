@@ -79,7 +79,6 @@ public:
     const auto & currFomState = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & basis = decoderObj_.getReferenceToJacobian();
     apply_jac_return_t JJ(::pressio::rom::queryFomApplyJacobianSteady(app, currFomState, basis));
-    (*this).template operator()(romState, JJ, app);
     return JJ;
   }
 

@@ -115,6 +115,7 @@
 #include "ops/src/teuchos/ops_deep_copy.hpp"
 #include "ops/src/teuchos/ops_norms_vector.hpp"
 #include "ops/src/teuchos/ops_vector_do_update.hpp"
+#include "ops/src/teuchos/ops_mat_prod_vec.hpp"
 
 // Tpetra
 #include "ops/src/tpetra/ops_set_zero.hpp"

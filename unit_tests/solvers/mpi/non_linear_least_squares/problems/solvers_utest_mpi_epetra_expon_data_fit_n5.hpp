@@ -102,15 +102,24 @@ struct ExpDataFitN5
     return x[0] + x[1] * exp(-t*x[3]) + x[2]*exp(-t*x[4]);
   }
 
-  void residual(const state_type& x, residual_type & R) const {
+  residual_type createResidualObject(const state_type& x) const {
+    return *R_;
+  }
+
+  jacobian_type createJacobianObject(const state_type & x) const{
+    return *J_;
+  }//end jacobian
+
+  void residual(const state_type& x, residual_type & R,
+    ::pressio::solvers::Norm normKind,
+    scalar_type & normResidual) const 
+  {
     for (auto i=0; i< NumMyElem_; i++){
       R[i] = (*yy_)[i] - this->model(x, (*tt_)[i]);
     };
-  }
 
-  residual_type residual(const state_type& x) const {
-    residual(x, *R_);
-    return *R_;
+    if (normKind == pressio::solvers::Norm::L2) R.data()->Norm2(&normResidual);
+    if (normKind == pressio::solvers::Norm::L1) R.data()->Norm1(&normResidual);
   }
 
   void jacobian(const state_type & x, jacobian_type & jac) const{
@@ -126,39 +135,7 @@ struct ExpDataFitN5
     //jac.data()->Print(std::cout);
   }//end jacobian
 
-  jacobian_type jacobian(const state_type & x) const{
-    jacobian(x, *J_);
-    return *J_;
-  }//end jacobian
-
 };
 
 }}} //end namespace pressio::solvers::test
 #endif
-
-
-
-
-/* this is jacobian when using a crs matrix */
-// void jacobian(const state_type & x, jacobian_type & jac) const{
-//   std::vector<int> Indices {0, 1, 2, 3, 4};
-//   std::vector<double> Values {0., 0., 0, 0, 0,};
-//   for (int i=0; i<NumMyElem_; i++)
-//     {
-// 	scalar_type t = (*tt_)[i];
-
-// 	int thisGID = myGel_[i];
-// 	Values[0] = -1.0;
-// 	Values[1] = -exp(-t*x[3]);
-// 	Values[2] = -exp(-t*x[4]);
-// 	Values[3] = x[1]*exp(-t*x[2])*t;
-// 	Values[4] = x[2]*exp(-t*x[3])*t;
-
-// 	if (jac.isFillingCompleted())
-// 	  jac.data()->ReplaceGlobalValues(thisGID, 5, Values.data(), Indices.data() );
-// 	else
-// 	  jac.data()->InsertGlobalValues(thisGID, 5, Values.data(), Indices.data() );
-//     }
-//   if (!jac.isFillingCompleted())
-//     jac.fillingIsCompleted();
-// }//end jacobian

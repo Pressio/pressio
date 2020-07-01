@@ -54,7 +54,6 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace steady{
 template <typename residual_type, typename fom_states_manager_t>
 class ResidualPolicy
 {
-
 public:
   static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
@@ -74,27 +73,37 @@ public:
   {
     const auto & currFomState = fomStatesMngr_.getCRefToCurrentFomState();
     residual_t R(::pressio::rom::queryFomVelocitySteady(app, currFomState));
-    (*this).template operator()(romState, R, app);
     return R;
   }
 
-  template <typename lspg_state_t, typename lspg_residual_t, typename fom_t>
+  template <typename lspg_state_t, typename lspg_residual_t, typename fom_t, typename sc_t>
   void operator()(const lspg_state_t	& romState,
 		  lspg_residual_t	& romR,
-  		  const fom_t		& app) const
+  		  const fom_t		& app,
+		  ::pressio::solvers::Norm normKind,
+		  sc_t & normValue) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("lspg residual");
 #endif
 
-    fomStatesMngr_.template reconstructCurrentFomState(romState);
+    fomStatesMngr_.reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
 
-    ::pressio::rom::queryFomVelocitySteady(app, fomStatesMngr_.getCRefToCurrentFomState(), romR);
+    ::pressio::rom::queryFomVelocitySteady(app,
+					   fomStatesMngr_.getCRefToCurrentFomState(),
+					   romR);
+
+    if (normKind == ::pressio::solvers::Norm::L2)
+      normValue = ::pressio::ops::norm2(romR);
+    else if (normKind == ::pressio::solvers::Norm::L1)
+      normValue = ::pressio::ops::norm1(romR);
+    else
+      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

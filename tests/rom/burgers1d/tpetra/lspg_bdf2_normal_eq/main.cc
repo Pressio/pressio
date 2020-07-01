@@ -63,11 +63,12 @@ int main(int argc, char *argv[]){
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    // hessian comes up in GN solver, it is (J phi)^T (J phi)
-    // rom is solved using eigen, hessian is wrapper of eigen matrix
-    using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<
-      lspg_stepper_t, linear_solver_t>;
-    gnsolver_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
+    using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
+      lspg_stepper_t,
+      pressio::solvers::nonlinear::DefaultUpdate,
+      pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+      linear_solver_t>;
+    nls_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
     solver.setTolerance(1e-13);
     // I know this should converge in few iters at every step
     solver.setMaxIterations(5);
