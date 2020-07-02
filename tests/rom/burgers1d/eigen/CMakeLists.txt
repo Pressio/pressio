@@ -2,6 +2,7 @@ add_subdirectory(lspg_euler_normal_eq)
 add_subdirectory(lspg_bdf2_normal_eq)
 add_subdirectory(lspg_euler_normal_eq_residual_api)
 add_subdirectory(lspg_euler_normal_eq_residual_api_user_defined_mapping)
+add_subdirectory(lspg_euler_normal_eq_residual_api_libtorch_mapping)
 
 add_subdirectory(wls_normal_eq_velocity_api_eigen_rom)
 add_subdirectory(galerkin_bdf1_residual_api)

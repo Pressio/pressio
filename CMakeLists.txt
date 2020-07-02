@@ -32,15 +32,15 @@ endif()
 # we need c++11
 #=====================================================================
 # commands to test if compiler supports C++11
-include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORT_CPP11)
-if(NOT COMPILER_SUPPORT_CPP11)
-  message(FATAL_ERROR "Compiler does not support -std=c++11. This is required.")
-endif()
+#include(CheckCXXCompilerFlag)
+#check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORT_CPP11)
+#if(NOT COMPILER_SUPPORT_CPP11)
+#  message(FATAL_ERROR "Compiler does not support -std=c++11. This is required.")
+#endif()
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fopenmp")
 
 #=====================================================================
 # other stuff
