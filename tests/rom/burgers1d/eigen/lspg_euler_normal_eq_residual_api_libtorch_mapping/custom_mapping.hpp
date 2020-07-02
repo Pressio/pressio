@@ -24,7 +24,8 @@ public:
 
   MyCustomDecoder(const int romSize, const int numCell)
     : romSize_{romSize},
-      jac_{pressio::rom::test::eigen::readBasis("basis.txt", romSize, numCell)}
+      jac_{numCell, romSize}
+      //jac_{pressio::rom::test::eigen::readBasis("basis.txt", romSize, numCell)}
   {}
 
   template <typename rom_state_type>
