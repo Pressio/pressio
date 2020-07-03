@@ -25,7 +25,9 @@ int main(int argc, char *argv[])
   fom_t appobj( mu, numCell);
 
   auto t0 = static_cast<scalar_t>(0);
+  scalar_t fint = 1.00;
   scalar_t dt = 0.01;
+  auto Nsteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
   constexpr int romSize = 8;
 
   // create decoder obj
@@ -38,7 +40,15 @@ int main(int argc, char *argv[])
   // define ROM state
   lspg_state_t yROM_ = {};
   ::pressio::ops::resize(yROM_, romSize);
-  ::pressio::ops::fill(yROM_, 0.0);
+  //::pressio::ops::fill(yROM_, 0.0);
+  yROM_(0) = -0.0072;
+  yROM_(1) = -0.7842;
+  yROM_(2) = -0.6795;
+  yROM_(3) = -0.6600;
+  yROM_(4) = -0.7119;
+  yROM_(5) = -0.6995;
+  yROM_(6) = -0.7610;
+  yROM_(7) = -0.3957;
 
   // define LSPG type
   using ode_tag		 = pressio::ode::implicitmethods::Arbitrary;
@@ -67,21 +77,16 @@ int main(int argc, char *argv[])
   solver.setMaxIterations(4);
 
   // integrate in time
-  pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM_, 0.0, dt, 10, solver);
+  pressio::ode::integrateNSteps(lspgProblem.getStepperRef(), yROM_, 0.0, dt, Nsteps, solver);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
+  
+  //std::cout << std::setprecision(14)
+  for (auto i=0; i<yFomFinal.extent(0); i++){
+    std::cout << yFomFinal[i] << std::endl;
+  }
 
-  // this is a reproducing ROM test, so the final reconstructed state
-  // has to match the FOM solution obtained with euler, same time-step, for 10 steps
-  // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
-  //
-  //const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
-  //for (auto i=0; i<yFomFinal.extent(0); i++){
-  //  std::cout<<i<<std::endl;
-  //  if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
-  //    checkStr = "FAILED";
-  //}
   std::cout << checkStr <<  std::endl;
 
   return 0;
