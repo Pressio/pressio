@@ -41,9 +41,7 @@ TEST(user_defined_model, admissibleExplicitOde){
   // 		double>::value, "");
 
   static_assert(
-    ode::meta::is_legitimate_model_for_explicit_ode<app_t>::value, "");
-  static_assert(
-    !ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
-
-
+    ode::meta::admissible_system_explicit_ode<app_t>::value, "");
+  // static_assert(
+  //   !ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
 }

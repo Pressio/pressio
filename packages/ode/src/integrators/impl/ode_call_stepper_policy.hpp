@@ -60,7 +60,7 @@ struct ExplicitDoStepBasic
 		      state_t & stateInOut,
 		      stepper_t & stepper)
   {
-    stepper(stateInOut, time, dt, step);
+    stepper.doStep(stateInOut, time, dt, step);
   }
 };
 
@@ -76,7 +76,7 @@ struct ImplicitDoStepBasic
 		      stepper_t & stepper,
 		      solver_type & solver)
   {
-    stepper(stateInOut, time, dt, step, solver);
+    stepper.doStep(stateInOut, time, dt, step, solver);
   }
 };
 
@@ -93,7 +93,7 @@ struct ImplicitDoStepWithGuesser
 		      solver_type & solver,
 		      guesser_cb_t && guessCb)
   {
-    stepper(stateInOut, time, dt, step, solver, std::forward<guesser_cb_t>(guessCb));
+    stepper.doStep(stateInOut, time, dt, step, solver, std::forward<guesser_cb_t>(guessCb));
   }
 };
 

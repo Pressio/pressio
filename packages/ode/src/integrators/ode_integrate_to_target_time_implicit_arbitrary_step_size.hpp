@@ -65,13 +65,13 @@ template<
 >
 ::pressio::mpl::enable_if_t<
   std::is_same<
-  typename ::pressio::ode::details::traits<stepper_type>::tag_name,
+  typename stepper_type::tag_name,
   ::pressio::ode::implicitmethods::Arbitrary
   >::value and
-  ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+  ::pressio::ode::meta::legitimate_solver_for_implicit_stepper<
     solver_type, stepper_type, state_type
     >::value and
-  ::pressio::ode::meta::is_legitimate_time_step_size_setter<
+  ::pressio::ode::meta::legitimate_time_step_size_setter<
     step_size_cb_t, types::step_t, time_type
     >::value
   >
@@ -82,10 +82,9 @@ integrateToTargetTime(stepper_type		& stepper,
 			   solver_type		& solver,
 			   step_size_cb_t	&& dtManager){
 
-  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+  static_assert(::pressio::ode::meta::legitimate_implicit_state_type<state_type>::value,
 		"You are trying to call integrateNSteps with an implicit stepper \
-but the state type you are using is not admissible for implicit time-stepping. \
-See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+but the state type you are using is not admissible for implicit time-stepping.");
 
   using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
   using advancer_t	 = impl::IntegratorToTargetTimeWithTimeStepSizeSetter<do_step_policy_t>;
@@ -105,17 +104,16 @@ template<
 >
 ::pressio::mpl::enable_if_t<
   std::is_same<
-    typename ::pressio::ode::details::traits<stepper_type>::tag_name,
-    ::pressio::ode::implicitmethods::Arbitrary
-    >::value and
-  ::pressio::ode::meta::is_legitimate_solver_for_implicit_stepper<
+    typename stepper_type::tag_name, 
+    ::pressio::ode::implicitmethods::Arbitrary>::value and
+  ::pressio::ode::meta::legitimate_solver_for_implicit_stepper<
     solver_type, stepper_type, state_type
     >::value and
-  ::pressio::ode::meta::is_legitimate_time_step_size_setter<
+  ::pressio::ode::meta::legitimate_time_step_size_setter<
     step_size_cb_t, types::step_t, time_type
     >::value and
   ode::meta::is_legitimate_collector<
-    collector_type, types::step_t, time_type, state_type
+    collector_type, time_type, state_type
     >::value
 >
 integrateToTargetTime(stepper_type		& stepper,
@@ -126,10 +124,9 @@ integrateToTargetTime(stepper_type		& stepper,
 			   step_size_cb_t	&& dtManager,
 			   collector_type	& collector){
 
-  static_assert(::pressio::ode::meta::is_legitimate_implicit_state_type<state_type>::value,
+  static_assert(::pressio::ode::meta::legitimate_implicit_state_type<state_type>::value,
 		"You are trying to call integrateNSteps with an implicit stepper \
-but the state type you are using is not admissible for implicit time-stepping. \
-See the requirements inside ode_is_legitimate_implicit_state_type.hpp");
+but the state type you are using is not admissible for implicit time-stepping.");
 
   using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
   using advancer_t	 = impl::IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector<do_step_policy_t>;

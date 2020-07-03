@@ -10,7 +10,7 @@ struct MyApp{
 
 public:
   void velocity(const state_type & y,
-		scalar_type t,
+		const scalar_type & t,
     velocity_type & R) const{
     R[0] = -10. * y[0];
     R[1] = -10. * y[1];
@@ -18,7 +18,7 @@ public:
   };
 
   velocity_type velocity(const state_type & y,
-			 scalar_type t) const{
+			 const scalar_type & t) const{
     velocity_type R(y);
     velocity(y, t, R);
     return R;
@@ -83,7 +83,7 @@ TEST(ode_explicit_rk4, userDefinedOps){
 
   MyOps opsObj;
   using stepper_t = ode::ExplicitStepper<
-    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, double, MyOps>;
+    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, MyOps>;
   stepper_t stepperObj(y, appObj, opsObj);
 
   // integrate in time

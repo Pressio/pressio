@@ -178,8 +178,9 @@ struct Bdf1Solver
   using res_t		= ::pressio::containers::Vector<nveloc_t>;
   using jac_t		= ::pressio::containers::Matrix<njacobian_t>;
 
-  using stepper_t = ::pressio::ode::ImplicitStepper<::pressio::ode::implicitmethods::Euler,
-						    state_t, res_t, jac_t, app_t>;
+  using stepper_t = ::pressio::ode::ImplicitStepper<
+            ::pressio::ode::implicitmethods::Euler,
+				    state_t, res_t, jac_t, app_t>;
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
@@ -217,17 +218,10 @@ struct CustomBdf1Solver
 
   using my_custom_order = ::pressio::ode::types::StepperOrder<1>;
   using my_num_states	= ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-  using stepper_t = ::pressio::ode::ImplicitStepper<::pressio::ode::implicitmethods::Arbitrary,
-						    state_t, res_t, jac_t, app_t,
-						    my_custom_order, my_num_states>;
-
-  using traits = ::pressio::ode::details::traits<stepper_t>;
-  using rp_t = typename traits::residual_policy_t;
-  static_assert( !std::is_void<rp_t>::value, "");
-
-  using std_r1 = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicyForArbitraryStepper<state_t, app_t, res_t>;
-  using std_r2 = typename traits::standard_res_policy_t;
-  static_assert( std::is_same<rp_t, std_r1>::value, "");
+  using stepper_t = ::pressio::ode::ImplicitStepper<
+          ::pressio::ode::implicitmethods::Arbitrary,
+			    state_t, res_t, jac_t, app_t,
+			    my_custom_order, my_num_states>;
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
@@ -288,6 +282,10 @@ struct CustomBdf1Solver
   template <typename observer_t>
   void integrateToTimeWithStepSizeManagerLambdaAndCollector(sc_t finalTime, observer_t & observer)
   {
+    static_assert( pressio::ode::meta::collector_callable_with_step_time_native_container_return_void<
+      observer_t, double, state_t
+      >::value, "");
+
     lin_solver_t linSolverObj;
     nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
     using step_t = ::pressio::ode::types::step_t;

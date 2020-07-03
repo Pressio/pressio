@@ -77,7 +77,7 @@ struct IntegratorNStepsWithCollectorAndConstDt
 #endif
 
     using step_t = ::pressio::ode::types::step_t;
-    using collector_dispatch = CallCollectorDispatch<collector_type, step_t, time_type, state_type>;
+    using collector_dispatch = CallCollectorDispatch<collector_type, time_type, state_type>;
     constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
 
     // time variable

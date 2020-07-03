@@ -71,10 +71,9 @@ integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
 		const ::pressio::ode::types::step_t num_steps)
 {
 
-  static_assert(::pressio::ode::meta::is_legitimate_explicit_state_type<state_type>::value,
+  static_assert(::pressio::ode::meta::legitimate_explicit_state_type<state_type>::value,
 		"You are trying to call integrateNSteps with an explicit stepper \
-but the state type you are using is not admissible for explicit time-stepping. \
-See the requirements inside ode_is_legitimate_explicit_state_type.hpp");
+but the state type you are using is not admissible for explicit time-stepping.");
 
   using do_step_policy_t = impl::ExplicitDoStepBasic;
   using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
@@ -135,14 +134,12 @@ integrateNSteps(explicitmethods::StepperBase<stepper_type> & stepper,
 		collector_type			 & collector)
 {
 
-  static_assert(::pressio::ode::meta::is_legitimate_explicit_state_type<state_type>::value,
+  static_assert(::pressio::ode::meta::legitimate_explicit_state_type<state_type>::value,
 		"You are trying to call integrateNSteps with an explicit stepper \
-but the state type you are using is not admissible for explicit time-stepping.\
-See the requirements inside ode_is_legitimate_explicit_state_type.hpp");
-
+but the state type you are using is not admissible for explicit time-stepping.");
 
   static_assert(::pressio::ode::meta::is_legitimate_collector<
-      collector_type, ::pressio::ode::types::step_t, time_type, state_type
+      collector_type, time_type, state_type
 		>::value, "You are trying to call integrateNSteps with an explicit stepper \
 and a collector, but the collector type you are using is not admissible. \
 It does not meet the API of a valid collector. See requirements in ode_is_legitimate_collector.hpp");

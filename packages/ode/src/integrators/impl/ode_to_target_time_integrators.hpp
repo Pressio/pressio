@@ -146,7 +146,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
   {
 
     using step_t = ::pressio::ode::types::step_t;
-    using collector_dispatch = CallCollectorDispatch<collector_t, step_t, time_type, state_type>;
+    using collector_dispatch = CallCollectorDispatch<collector_t, time_type, state_type>;
     constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
 
     if (final_time < start_time)
@@ -162,7 +162,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
 
     time_type time = start_time;
     time_type dt = {};
-    // pass initial condition to collector object
+    // // pass initial condition to collector object
     collector_dispatch::execute(collector, zero, time, odeStateInOut);
 
     step_t step	   = 1;

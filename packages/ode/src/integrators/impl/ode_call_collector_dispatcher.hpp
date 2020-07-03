@@ -53,7 +53,7 @@ namespace pressio{ namespace ode{ namespace impl{
 
 //this is within the impl namespace, so should not be used outside
 template <
-  typename collector_type, typename int_type, typename time_type, typename state_type,
+  typename collector_type, typename time_type, typename state_type,
   typename enable = void
   >
 struct CallCollectorDispatch;
@@ -62,20 +62,20 @@ struct CallCollectorDispatch;
 // this is within the impl namespace, so should not be used outside
 // specialize for when collector accepts a native type
 template <
-  typename collector_type, typename int_type, typename time_type, typename state_type
+  typename collector_type, typename time_type, typename state_type
   >
 struct CallCollectorDispatch<
-  collector_type, int_type, time_type, state_type,
+  collector_type, time_type, state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_wrapper<state_type>::value and
-    ::pressio::ode::meta::collector_accepts_native_container<
-      collector_type, int_type, time_type, state_type
+    ::pressio::ode::meta::collector_callable_with_step_time_native_container_return_void<
+      collector_type, time_type, state_type
       >::value
     >
   >
 {
   static void execute(collector_type	& collector,
-		      const int_type	& step,
+		      const ::pressio::ode::types::step_t	& step,
 		      const time_type	& time,
 		      const state_type	& yIn){
 
@@ -87,20 +87,20 @@ struct CallCollectorDispatch<
 //this is within the impl namespace, so should not be used outside
 // specialize for when collector accepts a pressio container directly
 template <
-  typename collector_type, typename int_type, typename time_type, typename state_type
+  typename collector_type, typename time_type, typename state_type
   >
 struct CallCollectorDispatch<
-  collector_type, int_type, time_type, state_type,
+  collector_type, time_type, state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::meta::is_wrapper<state_type>::value and
-    ::pressio::ode::meta::collector_accepts_pressio_container<
-      collector_type, int_type, time_type, state_type
+    ::pressio::ode::meta::collector_callable_with_step_time_pressio_container_return_void<
+      collector_type, time_type, state_type
       >::value
     >
   >
 {
   static void execute(collector_type	& collector,
-		      const int_type	& step,
+		      const ::pressio::ode::types::step_t	& step,
 		      const time_type	& time,
 		      const state_type	& yIn){
 
