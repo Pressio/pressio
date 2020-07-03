@@ -18,34 +18,31 @@ struct MyCustomDecoder
 private:
   const int romSize_ = {};
   mutable jacobian_type jac_;
-
+  const char* filename_;
+  mutable torch::jit::script::Module decoder_;
 public:
   MyCustomDecoder() = delete;
 
-  MyCustomDecoder(const int romSize, const int numCell)
+  MyCustomDecoder(const int romSize, const int numCell, const char* filename)
     : romSize_{romSize},
-      jac_{numCell, romSize}
-      //jac_{pressio::rom::test::eigen::readBasis("basis.txt", romSize, numCell)}
-  {}
+      jac_{numCell, romSize},
+      filename_{filename}
+  {
+    try {
+        decoder_ = torch::jit::load(filename);
+        }
+    catch (const c10::Error& e) {
+        std::cerr << "error loading the model\n";
+        }
+
+  }
 
   template <typename rom_state_type>
   void applyMapping(const rom_state_type & romState, fom_state_type & result) const
   {
     // here romState has same type as the one you used for lspg_state_t in main
     // result is a pressio::containers::Vector< native_state_type>
-    // to get a reference to native data, use data() as follows:
 
-    // Create module here because applyMapping() is required to be const and module.forward is nonstatic 
-    torch::jit::script::Module module;
-    try {
-        // Deserialize the ScriptModule from a file using torch::jit::load().
-        // TODO: get rid of hardcoded path
-        module = torch::jit::load("/scratch/cpp_autoencoder/burgers1d/traced_model.pt");
-        }
-    catch (const c10::Error& e) {
-        std::cerr << "error loading the model\n";
-        }
-    
     // Create a vector of inputs.
     std::vector<torch::jit::IValue> inputs;
     torch::Tensor f=torch::empty({1,romSize_});
@@ -54,7 +51,7 @@ public:
     inputs.push_back(f);
 
     // Execute model
-    at::Tensor model_output = module.forward(inputs).toTensor();
+    at::Tensor model_output = decoder_.forward(inputs).toTensor();
     int numCell = model_output.sizes()[2];
 
     // Save output
@@ -62,22 +59,13 @@ public:
       result[i] = model_output[0][0][i].item<double>();
 
     // Update Jacobian
+    // TODO: move to getReferenceToJacobian() once romState is accessible there
     updateJacobian(romState);
   }
 
   template <typename rom_state_type>
   void updateJacobian(const rom_state_type & romState) const
   {
-    torch::jit::script::Module module;
-    try {
-        // Deserialize the ScriptModule from a file using torch::jit::load().
-        // TODO: get rid of hardcoded path
-        module = torch::jit::load("/scratch/cpp_autoencoder/burgers1d/traced_model.pt");
-        }
-    catch (const c10::Error& e) {
-        std::cerr << "error loading the model\n";
-        }
-
     // Create a vector of inputs.
     std::vector<torch::jit::IValue> inputs;
     torch::Tensor f=torch::empty({1,romSize_});
@@ -86,14 +74,14 @@ public:
     inputs.push_back(f);
 
     // Execute model for romState
-    at::Tensor model_output = module.forward(inputs).toTensor();
+    at::Tensor model_output = decoder_.forward(inputs).toTensor();
     int numCell = model_output.sizes()[2];
 
     // Execute model for perturbed romStates and update Jacobian
     const float eps = 0.01;
     for(int param=0; param<romSize_; param++) {
       f[0][param] += eps;
-      at::Tensor shifted_model_output = module.forward(inputs).toTensor();
+      at::Tensor shifted_model_output = decoder_.forward(inputs).toTensor();
       f[0][param] -= eps;
 
       // Update Jacobian column

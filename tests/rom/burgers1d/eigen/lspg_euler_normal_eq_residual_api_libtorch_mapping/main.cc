@@ -31,7 +31,8 @@ int main(int argc, char *argv[])
   constexpr int romSize = 8;
 
   // create decoder obj
-  decoder_t decoderObj(romSize, numCell);
+  // TODO: add decoder file to repo
+  decoder_t decoderObj(romSize, numCell, "/scratch/cpp_autoencoder/burgers1d/traced_model.pt");
 
   // for this problem, my reference state = initial state
   native_state_t yRef(numCell);
@@ -40,7 +41,6 @@ int main(int argc, char *argv[])
   // define ROM state
   lspg_state_t yROM_ = {};
   ::pressio::ops::resize(yROM_, romSize);
-  //::pressio::ops::fill(yROM_, 0.0);
   yROM_(0) = -0.0072;
   yROM_(1) = -0.7842;
   yROM_(2) = -0.6795;
@@ -69,7 +69,6 @@ int main(int argc, char *argv[])
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
-  // hessian comes up in GN solver, it is (J phi)^T (J phi)
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
   using gnsolver_t   = pressio::solvers::iterative::GaussNewton<lspg_stepper_t, linear_solver_t>;
   gnsolver_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
@@ -82,7 +81,8 @@ int main(int argc, char *argv[])
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
   
-  //std::cout << std::setprecision(14)
+  // TODO: check accuracy of final state
+
   for (auto i=0; i<yFomFinal.extent(0); i++){
     std::cout << yFomFinal[i] << std::endl;
   }
